@@ -1,110 +1,129 @@
-Return-Path: <SRS0=3X/b=OC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=bI2a=OD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EFBEC433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C4D5C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 08:19:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F83561056
-	for <linux-mtd@archiver.kernel.org>; Sun, 12 Sep 2021 21:43:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2F83561056
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id E98C760EE9
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Sep 2021 08:19:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E98C760EE9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SpO//4wLxY5dzZCkjjDsKWCaxtsWhCh69DTegg6XzEU=; b=sbbuj8C2k6178C
-	eFEmAx7sh5vT9hRfvz3eZcbWfUXkLVTB6qtihke1RZWGjTyeOgx0tXh7MZm3pGtVjSWoXQVWP0h5Q
-	pvVDN1rmaASeKxVC1iQhZn53YydRyRvR4gtNvasrfNeIPdLcZpl1XxoAOt3IWTaKsGgGQZ4YpxfWf
-	5qYneCdecuVl4yzQ/EQyPz+IcOSaRJaie58j8z52+rUfB0noSnjROMZ0VMX8CJD3GxfTrl905Ay3p
-	WPtg66xrJxwb2d678F5g9Cl6vlSOqoI+3gOGtVAnFNiKNGRqiOx5S9SXDh4ctlTmGa3ohMVgu90LA
-	HjvDNR8mkXH2IXwaYyhA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=8uoL3UGtSMbvYJcdnLueCZ+mADJeMskWA4by4aQnfxg=; b=rYk7lzNlpvrhw48Cuipv/yiWZ3
+	CWI0n7jVuz9GBr7WLV0F8k/hYRlYDTsJcsj4rKtA/dicSvLJQLN4zra++AP1cDsYk8f3QtmGG4tKI
+	NKUdqNu01CSeqqtRWOn5dtabd+tzQfmGFUHVbyqvxYocFqrB4NIHtdkfDT8rcIeMxhDbED+hjQN4f
+	1zzkxlNkVj3wDqcQMafM+DlPyT6/4s+qjVABkLMT6h2zWESVQa0Bq+5kK539a48APkry7v6C7P1Yq
+	wYvyFTO07aR+w/G2CpSKa/I24eKof6hogd3GDXMclY+RO8H3UVJgVBRmHiARKArLLI1vth5GRBZBb
+	IFjjrwRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mPXF5-00HL8o-7R; Sun, 12 Sep 2021 21:42:27 +0000
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
+	id 1mPhAM-000h9J-LZ; Mon, 13 Sep 2021 08:18:14 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mPVoV-00H7G5-K7
- for linux-mtd@lists.infradead.org; Sun, 12 Sep 2021 20:11:02 +0000
-Received: by mail-wr1-x433.google.com with SMTP id d21so3617623wra.12
- for <linux-mtd@lists.infradead.org>; Sun, 12 Sep 2021 13:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=oC7v5kGj1L+6JTSC+Cwvgt7c3a5VSA/RJX3RsTPWnXQ=;
- b=F6GtrWyCicJgiQylpOOjf8FlSYHNkPVPEAGjVpNxwr3knDW6GqnOvy88kgiAEhxGVw
- IRxqbweFvZZpB/P12/DJGwR9/frL8wvT0/QPZrkvnCLzo1hDTGggF5H1Mqb0Unzo6CWR
- SI3xlCjV/vac0w0MHgMhAQPAhr5XyJXKYA+rjWoXboxIC2wZzPuVRoPaDZhdways9X6k
- widTcOt+ZSCQf9isIV1sWy89Ao5uDR+bq7tlFn1UbO1Fov70KyGKzU8y7pGUPLTToJoa
- waJui1b+5ijH/fKDGZJbbWjS7CMcYkEpM2vHAEOjBhxvlPySVEzV7OKonU6Sx1x8mIoe
- VCcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=oC7v5kGj1L+6JTSC+Cwvgt7c3a5VSA/RJX3RsTPWnXQ=;
- b=4DGdDUTQwTls16sPV9AgsZK/+mD1TG/J2JvTWCMmRAHWG54VLgt6p6RwCZdTLD8nu5
- AlXW2Zp0Mjnyag0akUbYPTBEqodw9tl9Sza+yz/ThQ4IysrnhG9hg2pQfX4dSDhynrzC
- 9BplSJmARtU3q1D0Q7rUwnDqZjnHNXLBX7hGcTYmnTJ9przqlqI9DRG3HVsfQHl9Jwll
- NKRCBebC4NuLASd0gteR+kNdcvYfDTVlyZAV4Te1MgRZhTZrB0XbN66gFEcuIwGTuFYw
- d90ed72RtH3bYXt2pzZhWGAyNcQC5yRxh2Tb/P474CJybVXmzS2vopFe/GEitnlGSzlo
- 234A==
-X-Gm-Message-State: AOAM5318KMqI4fjVYrN/NOt453DpKGF49E+rxOphSalopmTWLiRKrI6W
- lly2tfPXF2vBRYb78IM8g44=
-X-Google-Smtp-Source: ABdhPJxGB0fMGTHyAAtKYSiZJWMsjTJYbdgbPGK6F9fGz3Mt92VtlxkgjtKioNd43H6Mhm9LpnI78A==
-X-Received: by 2002:adf:902b:: with SMTP id h40mr8677461wrh.342.1631477454125; 
- Sun, 12 Sep 2021 13:10:54 -0700 (PDT)
-Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru.
- [46.138.83.36])
- by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.10.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 12 Sep 2021 13:10:53 -0700 (PDT)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Ulf Hansson <ulf.hansson@linaro.org>, Viresh Kumar <vireshk@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Mikko Perttunen <mperttunen@nvidia.com>,
- Peter Chen <peter.chen@kernel.org>, Mark Brown <broonie@kernel.org>,
- Lee Jones <lee.jones@linaro.org>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Lucas Stach <dev@lynxeye.de>,
- Stefan Agner <stefan@agner.ch>, Adrian Hunter <adrian.hunter@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>
-Cc: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-clk@vger.kernel.org
-Subject: [PATCH v11 33/34] ARM: tegra: Add Memory Client resets to Tegra30
- GR2D, GR3D and Host1x
-Date: Sun, 12 Sep 2021 23:08:31 +0300
-Message-Id: <20210912200832.12312-34-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210912200832.12312-1-digetx@gmail.com>
-References: <20210912200832.12312-1-digetx@gmail.com>
+ id 1mPhAJ-000h76-60
+ for linux-mtd@lists.infradead.org; Mon, 13 Sep 2021 08:18:12 +0000
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18D7H3eH032230;
+ Mon, 13 Sep 2021 04:17:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/QzFF3fZPcOazDgK94YUNtDPRVXwWmwYXrgzAl0cjS8=;
+ b=LZ1IatJS4Vf8fkMOpw3nPsnMsWvXi1zKOHNtdoJR3WA1JOBt6akxtAUeaFcmfSrgtfzv
+ 4NRm+1ZMgBCrY9RGl4dUX70gpcEuR/zoFChDQB/2NaF/00szr5Oq+z1uBI4QDWhfD6zc
+ P4rPwNr4fozCqJ0RGb+LWgtoO6TFVqtlItWyJVzIn+2xzExDULNQ2sA1K5ofpZpOPT8T
+ 41lEG9BrbDHup3b+CuJPl0uLd2nP2dTMKAS/okY1PdF2CEfrb2UeKEaug1ngWcpv8R0f
+ l5A1Tv0GjOGn+bmD16W5XhxbS2fbbACIEnfaoLzXVgrhfKN3kKq+UCiD6E2iiWjFNGh3 QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3b19j7cd6k-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 13 Sep 2021 04:17:57 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+ by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18D7xD27005324;
+ Mon, 13 Sep 2021 04:17:56 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.102])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3b19j7cd5w-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 13 Sep 2021 04:17:56 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+ by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18D8DW0J022837;
+ Mon, 13 Sep 2021 08:17:53 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com
+ (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+ by ppma06ams.nl.ibm.com with ESMTP id 3b0kqj52da-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 13 Sep 2021 08:17:53 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com
+ [9.149.105.58])
+ by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 18D8HnQ554067622
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 13 Sep 2021 08:17:49 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 75FA24C091;
+ Mon, 13 Sep 2021 08:17:49 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 7AD8A4C0A0;
+ Mon, 13 Sep 2021 08:17:48 +0000 (GMT)
+Received: from [9.145.51.25] (unknown [9.145.51.25])
+ by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+ Mon, 13 Sep 2021 08:17:48 +0000 (GMT)
+Subject: Re: [PATCH 6/9] s390/block/dasd_genhd: add error handling support for
+ add_disk()
+To: Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+ gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+ atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+ oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+ shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+ dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org
+Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-7-mcgrof@kernel.org>
+From: =?UTF-8?Q?Jan_H=c3=b6ppner?= <hoeppner@linux.ibm.com>
+Message-ID: <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
+Date: Mon, 13 Sep 2021 10:17:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210902174105.2418771-7-mcgrof@kernel.org>
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iIf5PatQK3tLGbkyIENHhS0UWFy_EX4T
+X-Proofpoint-GUID: iNtwPwv-S4pcIL1NuHAo4zaBrJP6dp5o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109120024
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210912_131055_728327_96F5B92D 
-X-CRM114-Status: GOOD (  11.92  )
+X-CRM114-CacheID: sfid-20210913_011811_248076_DE5AFB33 
+X-CRM114-Status: GOOD (  25.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,58 +140,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Memory access must be blocked before hardware reset is asserted and before
-power is gated, otherwise a serious hardware fault is inevitable. Add
-reset for memory clients to the GR2D, GR3D and Host1x nodes.
+On 02/09/2021 19:41, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/s390/block/dasd_genhd.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_genhd.c
+> index fa966e0db6ca..ba07022283bc 100644
+> --- a/drivers/s390/block/dasd_genhd.c
+> +++ b/drivers/s390/block/dasd_genhd.c
+> @@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
+>  {
+>  	struct gendisk *gdp;
+>  	struct dasd_device *base;
+> -	int len;
+> +	int len, rc;
+>  
+>  	/* Make sure the minor for this device exists. */
+>  	base = block->base;
+> @@ -79,7 +79,11 @@ int dasd_gendisk_alloc(struct dasd_block *block)
+>  	dasd_add_link_to_gendisk(gdp, base);
+>  	block->gdp = gdp;
+>  	set_capacity(block->gdp, 0);
+> -	device_add_disk(&base->cdev->dev, block->gdp, NULL);
+> +
+> +	rc = device_add_disk(&base->cdev->dev, block->gdp, NULL);
+> +	if (rc)
+> +		return rc;
+> +
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra30.dtsi | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+I think, just like with some of the other changes, there is some
+cleanup required before returning. I'll prepare a patch and
+come back to you.
 
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 9c7616abaa2e..58ef4983e511 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -123,8 +123,8 @@ host1x@50000000 {
- 		interrupt-names = "syncpt", "host1x";
- 		clocks = <&tegra_car TEGRA30_CLK_HOST1X>;
- 		clock-names = "host1x";
--		resets = <&tegra_car 28>;
--		reset-names = "host1x";
-+		resets = <&tegra_car 28>, <&mc TEGRA30_MC_RESET_HC>;
-+		reset-names = "host1x", "mc";
- 		iommus = <&mc TEGRA_SWGROUP_HC>;
- 		operating-points-v2 = <&host1x_dvfs_opp_table>;
- 		power-domains = <&pd_heg>;
-@@ -190,8 +190,8 @@ gr2d@54140000 {
- 			reg = <0x54140000 0x00040000>;
- 			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&tegra_car TEGRA30_CLK_GR2D>;
--			resets = <&tegra_car 21>;
--			reset-names = "2d";
-+			resets = <&tegra_car 21>, <&mc TEGRA30_MC_RESET_2D>;
-+			reset-names = "2d", "mc";
- 			operating-points-v2 = <&gr2d_dvfs_opp_table>;
- 			power-domains = <&pd_heg>;
- 
-@@ -205,8 +205,10 @@ gr3d@54180000 {
- 				 <&tegra_car TEGRA30_CLK_GR3D2>;
- 			clock-names = "3d", "3d2";
- 			resets = <&tegra_car 24>,
--				 <&tegra_car 98>;
--			reset-names = "3d", "3d2";
-+				 <&tegra_car 98>,
-+				 <&mc TEGRA30_MC_RESET_3D>,
-+				 <&mc TEGRA30_MC_RESET_3D2>;
-+			reset-names = "3d", "3d2", "mc", "mc2";
- 			operating-points-v2 = <&gr3d_dvfs_opp_table>;
- 			power-domains = <&pd_3d0>, <&pd_3d1>;
- 			power-domain-names = "3d0", "3d1";
--- 
-2.32.0
+>  	return 0;
+>  }
+>  
+> 
 
 
 ______________________________________________________
