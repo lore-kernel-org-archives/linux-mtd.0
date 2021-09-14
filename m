@@ -2,62 +2,61 @@ Return-Path: <SRS0=r5sn=OE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 516E0C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28BBCC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:38:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1012F60555
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:31:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1012F60555
+	by mail.kernel.org (Postfix) with ESMTPS id DE30760F8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:38:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE30760F8F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DGCT1OcCeMZ4uTvNCm3kHPMzHocze8DtitihSFafQ2g=; b=H4XYDXSUzaClnN
-	BidDVcRDwnZr29Wf0JWBWTWcasymb4dl1W/IZZ0PM62xvmaFbzdjS72blLPlRXYrizlzf0lyfnyL8
-	zrIZadVpcZ6QU9qcHDZh2ChsZIP7orIHSGBa8qgd4LxR1kHWAAK/QM9ly3he9IN2QQz2pxlk8NXTY
-	QTcCFSUtCE+vjk7viFEXNqif/Hp2B94MAFAmEa7bWrKR7/vdSTBjN3JXTWNbVshFtbyGwdk7ngg2p
-	YKKw+0qD8mDEHKPg3ZFxoSjejf8HaRNayrAR+fm5UcejnSxdVVtWzf0npyuypPD3vVdYsK4ig1znu
-	Qj1bfLdsUpS4qpsUcyIw==;
+	List-Owner; bh=hoBO0bbVL2XwSFsL0MnhcB/zPbghKKTYpF6dY9oQlOo=; b=dN/kJzAs9jH770
+	dhXXkLGN4XFQ8aVXT8o7fvtmDsmV7X5jP19w/XDUKRStJopKdVjva9mj+gu4FHMJ5Ceyr3oefDS3h
+	BgrI/tDR+hFQEOgcCaL0nFKiMC0cpJu1TWYKFwHlqJ7retmHhjqBbyxIT0b7UXEBOQLb1nnuK141n
+	woOk9HyXKXjj3r9Se4SuPgGQrZwcsdC8BX7Q0wHWu7oByYa3lBbODkHzYj6QBo8x/biRTF68ehbSR
+	aCpOlz+hI0lIWmSC5HpcGQRgHyt86KPPgIPvdtAKY/NJtmDBhEIzVa2O7SD9gnt4VcCpp7uVrSo92
+	DD0gNLfY6P30hZV8C36w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQCH8-006ZHU-2P; Tue, 14 Sep 2021 17:31:18 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1mQCNI-006ZkF-U9; Tue, 14 Sep 2021 17:37:40 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQCH4-006ZGx-T0
- for linux-mtd@lists.infradead.org; Tue, 14 Sep 2021 17:31:16 +0000
+ id 1mQCNF-006ZjR-08
+ for linux-mtd@lists.infradead.org; Tue, 14 Sep 2021 17:37:38 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 59185E0008;
- Tue, 14 Sep 2021 17:31:09 +0000 (UTC)
-Date: Tue, 14 Sep 2021 19:31:08 +0200
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3EF1320007;
+ Tue, 14 Sep 2021 17:37:33 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Bert Vermeulen <bert@biot.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Patrice Chotard <patrice.chotard@foss.st.com>, Boris Brezillon
- <boris.brezillon@collabora.com>, Christophe Kerello
- <christophe.kerello@foss.st.com>, Mark Brown <broonie@kernel.org>,
- Alexander Lobakin <alobakin@pm.me>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
-Message-ID: <20210914193108.78df5367@xps13>
-In-Reply-To: <20210908201624.237634-1-bert@biot.com>
-References: <20210908201624.237634-1-bert@biot.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Md Sadre Alam <mdalam@codeaurora.org>, miquel.raynal@bootlin.com,
+ mani@kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: sricharan@codeaurora.org,
+	stable@kernel.org
+Subject: Re: [PATCH V6] mtd: rawnand: qcom: Update code word value for raw read
+Date: Tue, 14 Sep 2021 19:37:32 +0200
+Message-Id: <20210914173732.167846-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <1630998357-1359-1-git-send-email-mdalam@codeaurora.org>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'f60f5741002b9fde748cff65fd09bd6222c5db0c'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210914_103115_113961_EF27F6F9 
-X-CRM114-Status: GOOD (  17.47  )
+X-CRM114-CacheID: sfid-20210914_103737_227298_F463E07A 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,38 +68,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQmVydCwKClJpY2hhcmQsIGEgcXVlc3Rpb24gZm9yIHlvdSBiZWxvdyEKCmJlcnRAYmlvdC5j
-b20gd3JvdGUgb24gV2VkLCAgOCBTZXAgMjAyMSAyMjoxNjoxOSArMDIwMDoKCj4gVGhpcyBhZGRz
-IGEgbmV3IHZlbmRvciBFdHJvbiwgYW5kIHN1cHBvcnQgZm9yIGEgMkdiIGNoaXAuCj4gCj4gVGhl
-IGRhdGFzaGVldCBpcyBhdmFpbGFibGUgYXQKPiBodHRwczovL3d3dy5ldHJvbi5jb20vY24vcHJv
-ZHVjdHMvRU03MyU1QjglNURDJTVCRF9FX0YlNURWQyUyMFNQSSUyME5BTkQlMjBGbGFzaF9Qcm9t
-b3Rpb25fUmV2JTIwMV8wMEEucGRmCj4gCj4gU2lnbmVkLW9mZi1ieTogQmVydCBWZXJtZXVsZW4g
-PGJlcnRAYmlvdC5jb20+Cj4gLS0tCj4gdjI6Cj4gLSBNYWRlIG9vYmxheW91dF9mcmVlL19lY2Mg
-ZGVwZW5kIG9uIGNoaXAtc3BlY2lmaWMgcGFyYW1ldGVycywgaW5zdGVhZCBvZgo+ICAgaGFyZGNv
-ZGVkIHRvIHRoaXMgMkdiIGNoaXAgb25seQo+IC0gRml4ZWQgbWFudWZhY3R1cmVyIG9yZGVyaW5n
-Cj4gLSBGaXhlZCBtaW5vciBmb3JtYXR0aW5nIGlzc3VlcyBhcyByZXBvcnRlZAo+IC0gUmVtb3Zl
-ZCBkZWJ1ZyBjb21tZW50Cj4gCj4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL01ha2VmaWxlIHwgICAy
-ICstCj4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyAgIHwgICAxICsKPiAgZHJpdmVycy9t
-dGQvbmFuZC9zcGkvZXRyb24uYyAgfCAxMDQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKwo+ICBpbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmggICB8ICAgMSArCj4gIDQgZmlsZXMg
-Y2hhbmdlZCwgMTA3IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAgY3JlYXRlIG1vZGUg
-MTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvc3BpL2V0cm9uLmMKClsuLi5dCgo+ICtzdGF0aWMgaW50
-IGV0cm9uX2VjY19nZXRfc3RhdHVzKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwgdTgg
-c3RhdHVzKQo+ICt7Cj4gKwlzd2l0Y2ggKHN0YXR1cyAmIFNUQVRVU19FQ0NfTUFTSykgewo+ICsJ
-Y2FzZSBTVEFUVVNfRUNDX05PX0JJVEZMSVBTOgo+ICsJCXJldHVybiAwOwo+ICsKPiArCWNhc2Ug
-U1RBVFVTX0VDQ19IQVNfQklURkxJUFM6Cj4gKwkJLyogQmV0d2VlbiAxLTcgYml0ZmxpcHMgd2Vy
-ZSBjb3JyZWN0ZWQgKi8KPiArCQlyZXR1cm4gNzsKCk1tbWggdGhpcyBpcyBhIGJpdCBwcm9ibGVt
-YXRpYywgaGF2aW5nIG5vIGludGVybWVkaWF0ZSB2YWx1ZSBtZWFucyBhCnNpbmdsZSBiaXRmbGlw
-IHdpbGwgdHJpZ2dlciBVQkkgdG8gbW92ZSB0aGUgZGF0YSBhcm91bmQgYXMgaXRzCnRocmVzaG9s
-ZCB3aWxsIGJlIHJlYWNoZWQuIFJpY2hhcmQsIGFueSBmZWVkYmFjayBvbiB0aGlzPwoKPiArCj4g
-KwljYXNlIFNUQVRVU19FQ0NfTUFTSzoKPiArCQkvKiBNYXhpbXVtIGJpdGZsaXBzIHdlcmUgY29y
-cmVjdGVkICovCj4gKwkJcmV0dXJuIDg7Cj4gKwo+ICsJY2FzZSBTVEFUVVNfRUNDX1VOQ09SX0VS
-Uk9SOgo+ICsJCXJldHVybiAtRUJBRE1TRzsKPiArCX0KPiArCj4gKwlyZXR1cm4gLUVJTlZBTDsK
-PiArfQoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Tue, 2021-09-07 at 07:05:57 UTC, Md Sadre Alam wrote:
+> From QPIC V2 onwards there is a separate register to read
+> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+> 
+> qcom_nandc_read_cw_raw() is used to read only one code word
+> at a time. If we will configure number of code words to 1 in
+> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+> its reading the last code word, since from QPIC V2 onwards
+> we are having separate register to read the last code word,
+> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+> register to fetch data from controller buffer to system
+> memory.
+> 
+> Fixes: 503ee5aad430 ("mtd: rawnand: qcom: update last code word register")
+> Cc: stable@kernel.org
+> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
