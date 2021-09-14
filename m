@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28BBCC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C88E9C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:39:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DE30760F8F
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:38:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DE30760F8F
+	by mail.kernel.org (Postfix) with ESMTPS id 7593260F8F
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 17:39:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7593260F8F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,40 +23,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hoBO0bbVL2XwSFsL0MnhcB/zPbghKKTYpF6dY9oQlOo=; b=dN/kJzAs9jH770
-	dhXXkLGN4XFQ8aVXT8o7fvtmDsmV7X5jP19w/XDUKRStJopKdVjva9mj+gu4FHMJ5Ceyr3oefDS3h
-	BgrI/tDR+hFQEOgcCaL0nFKiMC0cpJu1TWYKFwHlqJ7retmHhjqBbyxIT0b7UXEBOQLb1nnuK141n
-	woOk9HyXKXjj3r9Se4SuPgGQrZwcsdC8BX7Q0wHWu7oByYa3lBbODkHzYj6QBo8x/biRTF68ehbSR
-	aCpOlz+hI0lIWmSC5HpcGQRgHyt86KPPgIPvdtAKY/NJtmDBhEIzVa2O7SD9gnt4VcCpp7uVrSo92
-	DD0gNLfY6P30hZV8C36w==;
+	List-Owner; bh=ymo2nLE6ENfcHJMm7soceknCag9cuYcHEj1zLOgwoQE=; b=XCyxw+W1/QUKjY
+	sEkiC6h7wU+6N/2pwe7pcky/+J1euIQAXUerEoYy7k27xDUOOzL0eqh9cQhPLUP/INNWSBJ22T7ml
+	o+MIT8Pp/WzpBadeW4JbWlTCplBewT4fOigW7l4ebcYviAu+bo6LWbMLG7juYMKBo/nj+A8yD+9cY
+	Rdy/bJZbLpBcaNmIK5coRMg/lA8xESXPrIqT6VsjaN9DKuc417HQuJ1AKzEnSaGnBTB55CkPypaD3
+	O+q8Pa/5HQHdcObJr27FF5SWQ+SbaIsXPDBrx/EZA398XS+mmLn+yoB/egddjdCiU0e/ZJiCB1O6I
+	deffAYQGj9GvtqWCtYGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQCNI-006ZkF-U9; Tue, 14 Sep 2021 17:37:40 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1mQCO8-006ZqT-PA; Tue, 14 Sep 2021 17:38:32 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQCNF-006ZjR-08
- for linux-mtd@lists.infradead.org; Tue, 14 Sep 2021 17:37:38 +0000
+ id 1mQCO4-006Zoi-Bi
+ for linux-mtd@lists.infradead.org; Tue, 14 Sep 2021 17:38:30 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3EF1320007;
- Tue, 14 Sep 2021 17:37:33 +0000 (UTC)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id A7EBB40005;
+ Tue, 14 Sep 2021 17:38:25 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Md Sadre Alam <mdalam@codeaurora.org>, miquel.raynal@bootlin.com,
- mani@kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: sricharan@codeaurora.org,
-	stable@kernel.org
-Subject: Re: [PATCH V6] mtd: rawnand: qcom: Update code word value for raw read
-Date: Tue, 14 Sep 2021 19:37:32 +0200
-Message-Id: <20210914173732.167846-1-miquel.raynal@bootlin.com>
+To: Colin King <colin.king@canonical.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: mtdswap: Remove redundant assignment of pointer eb
+Date: Tue, 14 Sep 2021 19:38:25 +0200
+Message-Id: <20210914173825.234641-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <1630998357-1359-1-git-send-email-mdalam@codeaurora.org>
+In-Reply-To: <20210910120023.46308-1-colin.king@canonical.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'f60f5741002b9fde748cff65fd09bd6222c5db0c'
+X-linux-mtd-patch-commit: b'b72841e4dcd54de486fca2e4ffa00b8defc1eecc'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210914_103737_227298_F463E07A 
-X-CRM114-Status: GOOD (  10.62  )
+X-CRM114-CacheID: sfid-20210914_103828_575903_689F11CC 
+X-CRM114-Status: UNSURE (   7.76  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,24 +75,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2021-09-07 at 07:05:57 UTC, Md Sadre Alam wrote:
-> From QPIC V2 onwards there is a separate register to read
-> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+On Fri, 2021-09-10 at 12:00:23 UTC, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> qcom_nandc_read_cw_raw() is used to read only one code word
-> at a time. If we will configure number of code words to 1 in
-> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
-> its reading the last code word, since from QPIC V2 onwards
-> we are having separate register to read the last code word,
-> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
-> register to fetch data from controller buffer to system
-> memory.
+> The pointer eb is being assigned a value that is never read, it is
+> being updated later on. The assignment is redundant and can be removed.
 > 
-> Fixes: 503ee5aad430 ("mtd: rawnand: qcom: update last code word register")
-> Cc: stable@kernel.org
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
 
