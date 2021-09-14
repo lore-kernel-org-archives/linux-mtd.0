@@ -2,51 +2,52 @@ Return-Path: <SRS0=r5sn=OE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 619F5C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD74C433EF
 	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 12:28:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B1276112D
+	by mail.kernel.org (Postfix) with ESMTPS id 93E2860F92
 	for <linux-mtd@archiver.kernel.org>; Tue, 14 Sep 2021 12:28:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2B1276112D
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 93E2860F92
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JxvF/Uzk6UNm1KSm52kEdOrGzc0LTNgNPeYIhPT8h+E=; b=PldWV/EFRIhaAm
-	2OVehq3kdknYFF8igTpMuJLaOaOBQ21sM63XDgU9VwrZ71D4P6m+nVWrBkbJxsFfhwo6VppINaruQ
-	xFOOFifs3caSqKqZJhGT/W7+FhVKPeWdwDJ15X8z+gdHGW3jglGoTaQzl9Yva0H/1Z3Qfj8PZBw60
-	qQPnJdj6MGLLii8V7jjKxlXRzpFtRZ5enh1I6k8nzply132TBcKiJklxeWkS3U5F6i6VrY8IKAE6w
-	56ubI+O/MM2FKNUUq/KeYo403VPQCeAMI72Czvmpf/XkDCNYou9qULDFRIjwkl0zxpZxLOBTXfNZH
-	HbDk1hyShmYJ4Ru4MhPQ==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=K/1USYkdnTFEzsGHDaCLXAkDYcuTC2WO/iOnwH8X84E=; b=EuQYgDiU+LOdVq
+	Vh5ykfRVEI6Msxb99yAdMI4DTIQ88N5quEcrdzhjrtLBZ37w/EB2rp7qjWt+FhqNNd2U0s58sXXc/
+	lPeVCT322Xv+FTmTUM3LVOLyExeQ6hbcYlFYE0wDg7Ylv3/pMxr0A6j7575565/Q4lAuOY+bHPYcK
+	1n8eWl36Zi2csu5z0nlyC3R2OCHjl3fF7woRLqOeaPiV4TpbjfB4UFu/rbZ+OK1ibp645aS7KslZu
+	f4Z4bdJqaXmLs1BAVpYH3EAA3coUmtLGOxQznvb3D15/Yz9a/trWh0RU6bJhmCD2juPK6wRoOSywL
+	OdW32bImuFYBGXv0ycOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQ7Wv-005ekj-AM; Tue, 14 Sep 2021 12:27:17 +0000
+	id 1mQ7X8-005enZ-C4; Tue, 14 Sep 2021 12:27:30 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQ7Wq-005ejt-Mf
- for linux-mtd@lists.infradead.org; Tue, 14 Sep 2021 12:27:14 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CE2560F92;
- Tue, 14 Sep 2021 12:27:09 +0000 (UTC)
+ id 1mQ7Ws-005ekU-U2
+ for linux-mtd@lists.infradead.org; Tue, 14 Sep 2021 12:27:17 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 321FC6112D;
+ Tue, 14 Sep 2021 12:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631622431;
- bh=3MW75SNryOfQxZCpvZDbF5g/YNXNSo6pjaNk3Uj8TZM=;
- h=From:To:Cc:Subject:Date:From;
- b=m/GC6/fpHAzTqnRWpOG5YN7GJxQ4QrtqsYu/qs3kCJc4M392bHpMjo4ZfJYlXAtzp
- bhRNS7w+BBQg0ojOICjv3zdsC6T5r9irOsm65Gsf8J24/7vwcsOaKbr8rxFGU0w2rA
- vouWmy2N1cnnln2PtW67EMy8XoIvJE/FH3O62bTytMyjhWx+mKOZTSo8Md4I2URkTp
- YXU+BwlSdzkyln4DkC3+bK3R7tpEzJPZ3hOigu0gMPLkzQPAePOxQivzurxm4/ZecI
- E7ZfMnEXkZcK2tpGGLMCutrCTysKaPh2NkRDkUaB08OuyjgYB+9Z4vL4wZAmeOhWq8
- Eqv+gzsxL09Sg==
+ s=k20201202; t=1631622434;
+ bh=JWOUTN1X7Cc7Ebp1upwtH/j9jK3kl0+01ZNz1pi+41Q=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=cidkkaJ4ciFLygqcAuGKqneCO+L1pVrJFFYNIO1QjzL3lXYqrwfoSFEE0pMjLFaEC
+ nH9qtqC65Jd8m4T7GklTtk4sZKLMHy40SuuQ+XW3cprW/yVMKJkoV5c2Vlm61eCmfD
+ uPhluWfke/6mkOYTn+Asa4Z9s7Rk69MPPb8HT5uYJq9BBDAC8dR1Ts8rRabC2V3P7H
+ Yx73S62i2JHF2gL4Ei1pWmKBcd4f0ZySxd3qAnuAByLITKOrw2Njs0XnWOOfcmzZEa
+ Y7LS3xVTSCkecb0q0DZIYpq0mCqzyVG8MOcdGeZURmbWAXgBLJ4MHlU+TGlG77YdV8
+ OWqJOJC5gLZUw==
 From: Roger Quadros <rogerq@kernel.org>
 To: tony@atomide.com
 Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
@@ -54,14 +55,15 @@ Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
  miquel.raynal@bootlin.com, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v4 0/8] dt-bindings: memory-controllers: ti,
- gpmc: Convert to yaml
-Date: Tue, 14 Sep 2021 15:26:57 +0300
-Message-Id: <20210914122705.15421-1-rogerq@kernel.org>
+Subject: [PATCH v4 1/8] ARM: dts: omap: Fixup GPMC child nodes
+Date: Tue, 14 Sep 2021 15:26:58 +0300
+Message-Id: <20210914122705.15421-2-rogerq@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210914122705.15421-1-rogerq@kernel.org>
+References: <20210914122705.15421-1-rogerq@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210914_052712_828072_EB7BB5CF 
-X-CRM114-Status: GOOD (  10.65  )
+X-CRM114-CacheID: sfid-20210914_052715_050669_217335EC 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,86 +81,613 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Fixes up the GPMC child nodes to prevent dtbs_check errors
+after device tree binding conversion to yaml.
 
-This series converts ti,gpmc memory controller and ti,gpmc-nand and
-ti,gpmc-onenand MTD controller bindings to yaml.
+- Use reg address as node name
+- gpmc,cycle2cycle-samecsen and gpmc,cycle2cycle-diffcsen are
+  boolean properties.
 
-cheers,
--roger
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+ .../boot/dts/logicpd-som-lv-baseboard.dtsi    |  2 +-
+ .../boot/dts/logicpd-torpedo-37xx-devkit.dts  |  2 +-
+ .../boot/dts/logicpd-torpedo-baseboard.dtsi   |  2 +-
+ arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     | 62 +++++++++----------
+ arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     | 59 +++++++++---------
+ arch/arm/boot/dts/omap-zoom-common.dtsi       | 16 ++---
+ arch/arm/boot/dts/omap2430-sdp.dts            |  6 +-
+ arch/arm/boot/dts/omap3-cm-t3x30.dtsi         |  6 +-
+ .../arm/boot/dts/omap3-devkit8000-common.dtsi |  4 +-
+ arch/arm/boot/dts/omap3-evm-37xx.dts          |  1 +
+ arch/arm/boot/dts/omap3-evm-common.dtsi       |  9 ---
+ .../boot/dts/omap3-evm-processor-common.dtsi  |  5 +-
+ arch/arm/boot/dts/omap3-evm.dts               |  1 +
+ arch/arm/boot/dts/omap3-igep0020-common.dtsi  |  5 +-
+ arch/arm/boot/dts/omap3-ldp.dts               |  5 +-
+ arch/arm/boot/dts/omap3-n900.dts              |  2 +-
+ .../dts/omap3-overo-chestnut43-common.dtsi    |  6 +-
+ .../arm/boot/dts/omap3-overo-tobi-common.dtsi |  6 +-
+ .../boot/dts/omap3-overo-tobiduo-common.dtsi  |  8 +--
+ arch/arm/boot/dts/omap3-sb-t35.dtsi           |  4 +-
+ arch/arm/boot/dts/omap4-duovero-parlor.dts    |  6 +-
+ 21 files changed, 105 insertions(+), 112 deletions(-)
 
-Changelog:
-v4
-- reference partition.yaml in ti,gpmc-nand.yaml and ti,gpmc-onenenc.yaml
-- use address-cells/size-cells: true instead of absolute size.
-
-v3:
-- fix indentation
-- split GPMC child timings/settings into ti,gpmc-child.yaml
-This allows us to refer to it at 3 places and avoid use of
-'additionalProperties: true' at 2 places.
-- specify defaults where applicable
-- reordered patches
-- added patch for making "gpmc,device-width" optional with defaults.
-- address all review comments.
-
-v2:
-- Fix all errors in dtbs_check and dt_bindings_check
-- remove references to gpmc-omap.txt
-- Convert ti,gpmc-nand and ti,gpmc-onenand bindings to yaml as well
-
-Roger Quadros (8):
-  ARM: dts: omap: Fixup GPMC child nodes
-  dt-bindings: mtd: Remove gpmc-nor.txt
-  dt-bindings: net: Remove gpmc-eth.txt
-  dt-bindings: memory-controllers: Introduce ti,gpmc-child
-  dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
-  dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
-  dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
-  memory: gpmc-omap: "gpmc,device-width" DT property is optional
-
- .../bindings/memory-controllers/omap-gpmc.txt | 157 -----------
- .../memory-controllers/ti,gpmc-child.yaml     | 245 ++++++++++++++++++
- .../bindings/memory-controllers/ti,gpmc.yaml  | 172 ++++++++++++
- .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 -----------
- .../devicetree/bindings/mtd/gpmc-nor.txt      |  98 -------
- .../devicetree/bindings/mtd/gpmc-onenand.txt  |  48 ----
- .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 121 +++++++++
- .../bindings/mtd/ti,gpmc-onenand.yaml         |  81 ++++++
- .../devicetree/bindings/net/gpmc-eth.txt      |  97 -------
- .../boot/dts/logicpd-som-lv-baseboard.dtsi    |   2 +-
- .../boot/dts/logicpd-torpedo-37xx-devkit.dts  |   2 +-
- .../boot/dts/logicpd-torpedo-baseboard.dtsi   |   2 +-
- arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     |  62 +++--
- arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     |  59 ++---
- arch/arm/boot/dts/omap-zoom-common.dtsi       |  16 +-
- arch/arm/boot/dts/omap2430-sdp.dts            |   6 +-
- arch/arm/boot/dts/omap3-cm-t3x30.dtsi         |   6 +-
- .../arm/boot/dts/omap3-devkit8000-common.dtsi |   4 +-
- arch/arm/boot/dts/omap3-evm-37xx.dts          |   1 +
- arch/arm/boot/dts/omap3-evm-common.dtsi       |   9 -
- .../boot/dts/omap3-evm-processor-common.dtsi  |   5 +-
- arch/arm/boot/dts/omap3-evm.dts               |   1 +
- arch/arm/boot/dts/omap3-igep0020-common.dtsi  |   5 +-
- arch/arm/boot/dts/omap3-ldp.dts               |   5 +-
- arch/arm/boot/dts/omap3-n900.dts              |   2 +-
- .../dts/omap3-overo-chestnut43-common.dtsi    |   6 +-
- .../arm/boot/dts/omap3-overo-tobi-common.dtsi |   6 +-
- .../boot/dts/omap3-overo-tobiduo-common.dtsi  |   8 +-
- arch/arm/boot/dts/omap3-sb-t35.dtsi           |   4 +-
- arch/arm/boot/dts/omap4-duovero-parlor.dts    |   6 +-
- drivers/memory/omap-gpmc.c                    |  41 +--
- 31 files changed, 750 insertions(+), 674 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc-child.yaml
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nor.txt
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
-
+diff --git a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+index 7d0468a23781..f2364cb114c5 100644
+--- a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
++++ b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+@@ -65,7 +65,7 @@
+ 		  1 0 0x2c000000 0x1000000	/* CS1: 16MB for LAN9221 */
+ 		  2 0 0x10000000 0x2000000>;    /* CS2: 32MB for NOR */
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@1,0 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&lan9221_pins>;
+ 		interrupt-parent = <&gpio5>;
+diff --git a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+index 5532db04046c..6357915d207b 100644
+--- a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
++++ b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+@@ -4,8 +4,8 @@
+ 
+ #include "omap36xx.dtsi"
+ #include "logicpd-torpedo-som.dtsi"
+-#include "omap-gpmc-smsc9221.dtsi"
+ #include "logicpd-torpedo-baseboard.dtsi"
++#include "omap-gpmc-smsc9221.dtsi"
+ 
+ / {
+ 	model = "LogicPD Zoom DM3730 Torpedo + Wireless Development Kit";
+diff --git a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
+index 533a47bc4a53..05049a34b6f1 100644
+--- a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
++++ b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
+@@ -95,7 +95,7 @@
+ 	ranges = <0 0 0x30000000 0x1000000	/* CS0: 16MB for NAND */
+ 		  1 0 0x2c000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@1,0 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&lan9221_pins>;
+ 		interrupt-parent = <&gpio5>;
+diff --git a/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
+index ded7e8fec9eb..2a462cb65a7d 100644
+--- a/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
++++ b/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
+@@ -20,36 +20,34 @@
+ 	};
+ };
+ 
+-&gpmc {
+-	ethernet@gpmc {
+-		compatible = "smsc,lan9221", "smsc,lan9115";
+-		bank-width = <2>;
+-		gpmc,device-width = <1>;
+-		gpmc,cycle2cycle-samecsen = <1>;
+-		gpmc,cycle2cycle-diffcsen = <1>;
+-		gpmc,cs-on-ns = <5>;
+-		gpmc,cs-rd-off-ns = <150>;
+-		gpmc,cs-wr-off-ns = <150>;
+-		gpmc,adv-on-ns = <0>;
+-		gpmc,adv-rd-off-ns = <15>;
+-		gpmc,adv-wr-off-ns = <40>;
+-		gpmc,oe-on-ns = <45>;
+-		gpmc,oe-off-ns = <140>;
+-		gpmc,we-on-ns = <45>;
+-		gpmc,we-off-ns = <140>;
+-		gpmc,rd-cycle-ns = <155>;
+-		gpmc,wr-cycle-ns = <155>;
+-		gpmc,access-ns = <120>;
+-		gpmc,page-burst-access-ns = <20>;
+-		gpmc,bus-turnaround-ns = <75>;
+-		gpmc,cycle2cycle-delay-ns = <75>;
+-		gpmc,wait-monitoring-ns = <0>;
+-		gpmc,clk-activation-ns = <0>;
+-		gpmc,wr-data-mux-bus-ns = <0>;
+-		gpmc,wr-access-ns = <0>;
+-		vddvario-supply = <&vddvario>;
+-		vdd33a-supply = <&vdd33a>;
+-		reg-io-width = <4>;
+-		smsc,save-mac-address;
+-	};
++&gpmc_ethernet {
++	compatible = "smsc,lan9221", "smsc,lan9115";
++	bank-width = <2>;
++	gpmc,device-width = <1>;
++	gpmc,cycle2cycle-samecsen;
++	gpmc,cycle2cycle-diffcsen;
++	gpmc,cs-on-ns = <5>;
++	gpmc,cs-rd-off-ns = <150>;
++	gpmc,cs-wr-off-ns = <150>;
++	gpmc,adv-on-ns = <0>;
++	gpmc,adv-rd-off-ns = <15>;
++	gpmc,adv-wr-off-ns = <40>;
++	gpmc,oe-on-ns = <45>;
++	gpmc,oe-off-ns = <140>;
++	gpmc,we-on-ns = <45>;
++	gpmc,we-off-ns = <140>;
++	gpmc,rd-cycle-ns = <155>;
++	gpmc,wr-cycle-ns = <155>;
++	gpmc,access-ns = <120>;
++	gpmc,page-burst-access-ns = <20>;
++	gpmc,bus-turnaround-ns = <75>;
++	gpmc,cycle2cycle-delay-ns = <75>;
++	gpmc,wait-monitoring-ns = <0>;
++	gpmc,clk-activation-ns = <0>;
++	gpmc,wr-data-mux-bus-ns = <0>;
++	gpmc,wr-access-ns = <0>;
++	vddvario-supply = <&vddvario>;
++	vdd33a-supply = <&vdd33a>;
++	reg-io-width = <4>;
++	smsc,save-mac-address;
+ };
+diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+index 7f6aefd13451..c1e78f929d2b 100644
+--- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
++++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+@@ -24,36 +24,33 @@
+ 	};
+ };
+ 
+-&gpmc {
+-	ethernet@gpmc {
+-		compatible = "smsc,lan9221","smsc,lan9115";
+-		bank-width = <2>;
++&gpmc_ethernet {
++	compatible = "smsc,lan9221","smsc,lan9115";
++	bank-width = <2>;
++	gpmc,mux-add-data = <0>;
++	gpmc,cs-on-ns = <0>;
++	gpmc,cs-rd-off-ns = <42>;
++	gpmc,cs-wr-off-ns = <36>;
++	gpmc,adv-on-ns = <6>;
++	gpmc,adv-rd-off-ns = <12>;
++	gpmc,adv-wr-off-ns = <12>;
++	gpmc,oe-on-ns = <0>;
++	gpmc,oe-off-ns = <42>;
++	gpmc,we-on-ns = <0>;
++	gpmc,we-off-ns = <36>;
++	gpmc,rd-cycle-ns = <60>;
++	gpmc,wr-cycle-ns = <54>;
++	gpmc,access-ns = <36>;
++	gpmc,page-burst-access-ns = <0>;
++	gpmc,bus-turnaround-ns = <0>;
++	gpmc,cycle2cycle-delay-ns = <0>;
++	gpmc,wr-data-mux-bus-ns = <18>;
++	gpmc,wr-access-ns = <42>;
++	gpmc,cycle2cycle-samecsen;
++	gpmc,cycle2cycle-diffcsen;
+ 
+-		gpmc,mux-add-data;
+-		gpmc,cs-on-ns = <0>;
+-		gpmc,cs-rd-off-ns = <42>;
+-		gpmc,cs-wr-off-ns = <36>;
+-		gpmc,adv-on-ns = <6>;
+-		gpmc,adv-rd-off-ns = <12>;
+-		gpmc,adv-wr-off-ns = <12>;
+-		gpmc,oe-on-ns = <0>;
+-		gpmc,oe-off-ns = <42>;
+-		gpmc,we-on-ns = <0>;
+-		gpmc,we-off-ns = <36>;
+-		gpmc,rd-cycle-ns = <60>;
+-		gpmc,wr-cycle-ns = <54>;
+-		gpmc,access-ns = <36>;
+-		gpmc,page-burst-access-ns = <0>;
+-		gpmc,bus-turnaround-ns = <0>;
+-		gpmc,cycle2cycle-delay-ns = <0>;
+-		gpmc,wr-data-mux-bus-ns = <18>;
+-		gpmc,wr-access-ns = <42>;
+-		gpmc,cycle2cycle-samecsen;
+-		gpmc,cycle2cycle-diffcsen;
+-
+-		vddvario-supply = <&vddvario>;
+-		vdd33a-supply = <&vdd33a>;
+-		reg-io-width = <4>;
+-		smsc,save-mac-address;
+-	};
++	vddvario-supply = <&vddvario>;
++	vdd33a-supply = <&vdd33a>;
++	reg-io-width = <4>;
++	smsc,save-mac-address;
+ };
+diff --git a/arch/arm/boot/dts/omap-zoom-common.dtsi b/arch/arm/boot/dts/omap-zoom-common.dtsi
+index d4ad9e58b199..47192c617cd1 100644
+--- a/arch/arm/boot/dts/omap-zoom-common.dtsi
++++ b/arch/arm/boot/dts/omap-zoom-common.dtsi
+@@ -3,8 +3,6 @@
+  * Common features on the Zoom debug board
+  */
+ 
+-#include "omap-gpmc-smsc911x.dtsi"
+-
+ &gpmc {
+ 	ranges = <3 0 0x10000000 0x1000000>,	/* CS3: 16MB for UART */
+ 		 <7 0 0x2c000000 0x01000000>;
+@@ -27,8 +25,8 @@
+ 		gpmc,mux-add-data = <0>;
+ 		gpmc,device-width = <1>;
+ 		gpmc,wait-pin = <1>;
+-		gpmc,cycle2cycle-samecsen = <1>;
+-		gpmc,cycle2cycle-diffcsen = <1>;
++		gpmc,cycle2cycle-samecsen;
++		gpmc,cycle2cycle-diffcsen;
+ 		gpmc,cs-on-ns = <5>;
+ 		gpmc,cs-rd-off-ns = <155>;
+ 		gpmc,cs-wr-off-ns = <155>;
+@@ -50,7 +48,7 @@
+ 		gpmc,wr-data-mux-bus-ns = <45>;
+ 		gpmc,wr-access-ns = <145>;
+ 	};
+-	uart@3,1 {
++	uart@3,100 {
+ 		compatible = "ns16550a";
+ 		reg = <3 0x100 8>;	/* CS3, offset 0x100, IO size 8 */
+ 		bank-width = <2>;
+@@ -61,7 +59,7 @@
+ 		clock-frequency = <1843200>;
+ 		current-speed = <115200>;
+ 	};
+-	uart@3,2 {
++	uart@3,200 {
+ 		compatible = "ns16550a";
+ 		reg = <3 0x200 8>;	/* CS3, offset 0x200, IO size 8 */
+ 		bank-width = <2>;
+@@ -72,7 +70,7 @@
+ 		clock-frequency = <1843200>;
+ 		current-speed = <115200>;
+ 	};
+-	uart@3,3 {
++	uart@3,300 {
+ 		compatible = "ns16550a";
+ 		reg = <3 0x300 8>;	/* CS3, offset 0x300, IO size 8 */
+ 		bank-width = <2>;
+@@ -84,9 +82,11 @@
+ 		current-speed = <115200>;
+ 	};
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@7,0 {
+ 		reg = <7 0 0xff>;
+ 		interrupt-parent = <&gpio5>;
+ 		interrupts = <30 IRQ_TYPE_LEVEL_LOW>;	/* gpio158 */
+ 	};
+ };
++
++#include "omap-gpmc-smsc911x.dtsi"
+diff --git a/arch/arm/boot/dts/omap2430-sdp.dts b/arch/arm/boot/dts/omap2430-sdp.dts
+index 7d27e907533f..f74906e4721b 100644
+--- a/arch/arm/boot/dts/omap2430-sdp.dts
++++ b/arch/arm/boot/dts/omap2430-sdp.dts
+@@ -34,7 +34,7 @@
+ 
+ &gpmc {
+ 	ranges = <5 0 0x08000000 0x01000000>;
+-	ethernet@gpmc {
++	ethernet@5,300 {
+ 		compatible = "smsc,lan91c94";
+ 		interrupt-parent = <&gpio5>;
+ 		interrupts = <21 IRQ_TYPE_LEVEL_LOW>;	/* gpio149 */
+@@ -43,8 +43,8 @@
+ 		gpmc,sync-clk-ps = <0>;
+ 		gpmc,mux-add-data = <2>;
+ 		gpmc,device-width = <1>;
+-		gpmc,cycle2cycle-samecsen = <1>;
+-		gpmc,cycle2cycle-diffcsen = <1>;
++		gpmc,cycle2cycle-samecsen;
++		gpmc,cycle2cycle-diffcsen;
+ 		gpmc,cs-on-ns = <6>;
+ 		gpmc,cs-rd-off-ns = <187>;
+ 		gpmc,cs-wr-off-ns = <187>;
+diff --git a/arch/arm/boot/dts/omap3-cm-t3x30.dtsi b/arch/arm/boot/dts/omap3-cm-t3x30.dtsi
+index 5e8943539fcc..2059463de9d6 100644
+--- a/arch/arm/boot/dts/omap3-cm-t3x30.dtsi
++++ b/arch/arm/boot/dts/omap3-cm-t3x30.dtsi
+@@ -47,13 +47,11 @@
+ 	};
+ };
+ 
+-#include "omap-gpmc-smsc911x.dtsi"
+-
+ &gpmc {
+ 	ranges = <5 0 0x2c000000 0x01000000>, /* CM-T3x30 SMSC9x Eth */
+ 		 <0 0 0x00000000 0x01000000>; /* CM-T3x NAND */
+ 
+-	smsc1: ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		compatible = "smsc,lan9221", "smsc,lan9115";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&smsc1_pins>;
+@@ -63,6 +61,8 @@
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc911x.dtsi"
++
+ &i2c1 {
+ 	twl: twl@48 {
+ 		reg = <0x48>;
+diff --git a/arch/arm/boot/dts/omap3-devkit8000-common.dtsi b/arch/arm/boot/dts/omap3-devkit8000-common.dtsi
+index 2c19d6e255bd..5e55198e4576 100644
+--- a/arch/arm/boot/dts/omap3-devkit8000-common.dtsi
++++ b/arch/arm/boot/dts/omap3-devkit8000-common.dtsi
+@@ -267,8 +267,8 @@
+ 		gpmc,mux-add-data = <0>;
+ 		gpmc,device-width = <1>;
+ 		gpmc,wait-pin = <0>;
+-		gpmc,cycle2cycle-samecsen = <1>;
+-		gpmc,cycle2cycle-diffcsen = <1>;
++		gpmc,cycle2cycle-samecsen;
++		gpmc,cycle2cycle-diffcsen;
+ 
+ 		gpmc,cs-on-ns = <6>;
+ 		gpmc,cs-rd-off-ns = <180>;
+diff --git a/arch/arm/boot/dts/omap3-evm-37xx.dts b/arch/arm/boot/dts/omap3-evm-37xx.dts
+index c9332195d096..077b1a19f171 100644
+--- a/arch/arm/boot/dts/omap3-evm-37xx.dts
++++ b/arch/arm/boot/dts/omap3-evm-37xx.dts
+@@ -7,6 +7,7 @@
+ #include "omap36xx.dtsi"
+ #include "omap3-evm-common.dtsi"
+ #include "omap3-evm-processor-common.dtsi"
++#include "omap-gpmc-smsc911x.dtsi"
+ 
+ / {
+ 	model = "TI OMAP37XX EVM (TMDSEVM3730)";
+diff --git a/arch/arm/boot/dts/omap3-evm-common.dtsi b/arch/arm/boot/dts/omap3-evm-common.dtsi
+index 17c89df6ce6b..2f7bdb248a51 100644
+--- a/arch/arm/boot/dts/omap3-evm-common.dtsi
++++ b/arch/arm/boot/dts/omap3-evm-common.dtsi
+@@ -4,7 +4,6 @@
+  */
+ 
+ #include <dt-bindings/input/input.h>
+-#include "omap-gpmc-smsc911x.dtsi"
+ 
+ / {
+ 	cpus {
+@@ -182,14 +181,6 @@
+ 	power = <50>;
+ };
+ 
+-&gpmc {
+-	ethernet@gpmc {
+-		interrupt-parent = <&gpio6>;
+-		interrupts = <16 8>;
+-		reg = <5 0 0xff>;
+-	};
+-};
+-
+ &vaux2 {
+ 	regulator-name = "usb_1v8";
+ 	regulator-min-microvolt = <1800000>;
+diff --git a/arch/arm/boot/dts/omap3-evm-processor-common.dtsi b/arch/arm/boot/dts/omap3-evm-processor-common.dtsi
+index e6ba30a21166..3adb967b96c4 100644
+--- a/arch/arm/boot/dts/omap3-evm-processor-common.dtsi
++++ b/arch/arm/boot/dts/omap3-evm-processor-common.dtsi
+@@ -217,8 +217,11 @@
+ 	ranges = <0 0 0x30000000 0x1000000>,	/* CS0: 16MB for NAND */
+ 		 <5 0 0x2c000000 0x01000000>;	/* CS5: 16MB for LAN9220 */
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&smsc911x_pins>;
++		interrupt-parent = <&gpio6>;
++		interrupts = <16 8>;
++		reg = <5 0 0xff>;
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/omap3-evm.dts b/arch/arm/boot/dts/omap3-evm.dts
+index 5cc0cf7cd16c..805856d47cda 100644
+--- a/arch/arm/boot/dts/omap3-evm.dts
++++ b/arch/arm/boot/dts/omap3-evm.dts
+@@ -7,6 +7,7 @@
+ #include "omap34xx.dtsi"
+ #include "omap3-evm-common.dtsi"
+ #include "omap3-evm-processor-common.dtsi"
++#include "omap-gpmc-smsc911x.dtsi"
+ 
+ / {
+ 	model = "TI OMAP35XX EVM (TMDSEVM3530)";
+diff --git a/arch/arm/boot/dts/omap3-igep0020-common.dtsi b/arch/arm/boot/dts/omap3-igep0020-common.dtsi
+index 73d8f471b9ec..104df84ea720 100644
+--- a/arch/arm/boot/dts/omap3-igep0020-common.dtsi
++++ b/arch/arm/boot/dts/omap3-igep0020-common.dtsi
+@@ -7,7 +7,6 @@
+  */
+ 
+ #include "omap3-igep.dtsi"
+-#include "omap-gpmc-smsc9221.dtsi"
+ 
+ / {
+ 
+@@ -217,7 +216,7 @@
+ 	ranges = <0 0 0x30000000 0x01000000>,	/* CS0: 16MB for NAND */
+ 		 <5 0 0x2c000000 0x01000000>;	/* CS5: 16MB for ethernet */
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&smsc9221_pins>;
+ 		reg = <5 0 0xff>;
+@@ -226,6 +225,8 @@
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc9221.dtsi"
++
+ &uart2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart2_pins>;
+diff --git a/arch/arm/boot/dts/omap3-ldp.dts b/arch/arm/boot/dts/omap3-ldp.dts
+index 9c6a92724590..a299f04217fd 100644
+--- a/arch/arm/boot/dts/omap3-ldp.dts
++++ b/arch/arm/boot/dts/omap3-ldp.dts
+@@ -6,7 +6,6 @@
+ 
+ #include <dt-bindings/input/input.h>
+ #include "omap34xx.dtsi"
+-#include "omap-gpmc-smsc911x.dtsi"
+ 
+ / {
+ 	model = "TI OMAP3430 LDP (Zoom1 Labrador)";
+@@ -148,13 +147,15 @@
+ 		};
+ 	};
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@1,0 {
+ 		interrupt-parent = <&gpio5>;
+ 		interrupts = <24 IRQ_TYPE_LEVEL_LOW>;
+ 		reg = <1 0 0xff>;
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc911x.dtsi"
++
+ &i2c1 {
+ 	clock-frequency = <2600000>;
+ 
+diff --git a/arch/arm/boot/dts/omap3-n900.dts b/arch/arm/boot/dts/omap3-n900.dts
+index 32335d4ce478..35602d7876aa 100644
+--- a/arch/arm/boot/dts/omap3-n900.dts
++++ b/arch/arm/boot/dts/omap3-n900.dts
+@@ -936,7 +936,7 @@
+ 	};
+ 
+ 	/* Ethernet is on some early development boards and qemu */
+-	ethernet@gpmc {
++	ethernet@1,0 {
+ 		compatible = "smsc,lan91c94";
+ 		interrupt-parent = <&gpio2>;
+ 		interrupts = <22 IRQ_TYPE_LEVEL_HIGH>;	/* gpio54 */
+diff --git a/arch/arm/boot/dts/omap3-overo-chestnut43-common.dtsi b/arch/arm/boot/dts/omap3-overo-chestnut43-common.dtsi
+index 2d2c61d7aa86..34b805851dd2 100644
+--- a/arch/arm/boot/dts/omap3-overo-chestnut43-common.dtsi
++++ b/arch/arm/boot/dts/omap3-overo-chestnut43-common.dtsi
+@@ -49,16 +49,16 @@
+ 	};
+ };
+ 
+-#include "omap-gpmc-smsc9221.dtsi"
+-
+ &gpmc {
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		reg = <5 0 0xff>;
+ 		interrupt-parent = <&gpio6>;
+ 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;	/* GPIO 176 */
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc9221.dtsi"
++
+ &lis33de {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/omap3-overo-tobi-common.dtsi b/arch/arm/boot/dts/omap3-overo-tobi-common.dtsi
+index 9bf4b88a4b50..895803654e3c 100644
+--- a/arch/arm/boot/dts/omap3-overo-tobi-common.dtsi
++++ b/arch/arm/boot/dts/omap3-overo-tobi-common.dtsi
+@@ -21,16 +21,16 @@
+ 	};
+ };
+ 
+-#include "omap-gpmc-smsc9221.dtsi"
+-
+ &gpmc {
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		reg = <5 0 0xff>;
+ 		interrupt-parent = <&gpio6>;
+ 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;	/* GPIO 176 */
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc9221.dtsi"
++
+ &lis33de {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
+index e5da3bc6f105..c212d72dcfe9 100644
+--- a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
++++ b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
+@@ -9,10 +9,8 @@
+ 
+ #include "omap3-overo-common-peripherals.dtsi"
+ 
+-#include "omap-gpmc-smsc9221.dtsi"
+-
+ &gpmc {
+-	smsc1: ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		reg = <5 0 0xff>;
+ 		interrupt-parent = <&gpio6>;
+ 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;	/* GPIO 176 */
+@@ -22,7 +20,7 @@
+ 		compatible = "smsc,lan9221","smsc,lan9115";
+ 		bank-width = <2>;
+ 
+-		gpmc,mux-add-data;
++		gpmc,mux-add-data = <0>;
+ 		gpmc,cs-on-ns = <0>;
+ 		gpmc,cs-rd-off-ns = <42>;
+ 		gpmc,cs-wr-off-ns = <36>;
+@@ -54,6 +52,8 @@
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc9221.dtsi"
++
+ &lis33de {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/omap3-sb-t35.dtsi b/arch/arm/boot/dts/omap3-sb-t35.dtsi
+index fb9842fa922c..5ec0893415e0 100644
+--- a/arch/arm/boot/dts/omap3-sb-t35.dtsi
++++ b/arch/arm/boot/dts/omap3-sb-t35.dtsi
+@@ -108,8 +108,8 @@
+ 		reg = <4 0 0xff>;
+ 		bank-width = <2>;
+ 		gpmc,device-width = <1>;
+-		gpmc,cycle2cycle-samecsen = <1>;
+-		gpmc,cycle2cycle-diffcsen = <1>;
++		gpmc,cycle2cycle-samecsen;
++		gpmc,cycle2cycle-diffcsen;
+ 		gpmc,cs-on-ns = <5>;
+ 		gpmc,cs-rd-off-ns = <150>;
+ 		gpmc,cs-wr-off-ns = <150>;
+diff --git a/arch/arm/boot/dts/omap4-duovero-parlor.dts b/arch/arm/boot/dts/omap4-duovero-parlor.dts
+index b294c22177cb..dfc50764c405 100644
+--- a/arch/arm/boot/dts/omap4-duovero-parlor.dts
++++ b/arch/arm/boot/dts/omap4-duovero-parlor.dts
+@@ -131,12 +131,10 @@
+ 	status = "disabled";
+ };
+ 
+-#include "omap-gpmc-smsc911x.dtsi"
+-
+ &gpmc {
+ 	ranges = <5 0 0x2c000000 0x1000000>;			/* CS5 */
+ 
+-	ethernet@gpmc {
++	gpmc_ethernet: ethernet@5,0 {
+ 		reg = <5 0 0xff>;
+ 		interrupt-parent = <&gpio2>;
+ 		interrupts = <12 IRQ_TYPE_LEVEL_LOW>;		/* gpio_44 */
+@@ -170,6 +168,8 @@
+ 	};
+ };
+ 
++#include "omap-gpmc-smsc911x.dtsi"
++
+ &dss {
+ 	status = "okay";
+ };
 -- 
 2.17.1
 
