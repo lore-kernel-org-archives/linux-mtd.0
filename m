@@ -4,106 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B05C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Sep 2021 07:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73C4FC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Sep 2021 08:14:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81B9861164
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Sep 2021 07:22:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 81B9861164
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id B2D4E6113E
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Sep 2021 08:14:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B2D4E6113E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kontron.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:To:Subject:Date:Message-ID:Reply-To:Cc:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=dV2SMl2VYh5nB6gDRQsES4P/+27NOCi+ParYkAmxhlw=; b=wUP6RNt2ACcXknABUg/kDh7zH3
-	F3eV6dvGPQSGNOxfgcykGEv65PM56mFev1qkO+ofbDvYwu5QRobBdlqPyw7nHckHu/o+e6KbGKp9G
-	Ku/A9SqBPqLYMzphfOzTBTkqDjR1S+DAqSCgGtXcVEopmiXi4FwQUt5RmrJQf0P0tHjgRlU9cKuZM
-	OaWVu4LR+rkzeWUVcO6Dd7a4QYeoP+2aCCFOtiO189o1xD8DxXYY+CPAyV7IhmMsAgJd+h/7eKCAq
-	f+g5X6Ib1mrsbDpsS5X3EF+4KBjmBbj+Sa5UvmvD3fGw0vBtPh/oWl9AD4aqFE+AGsmoCEfiIBvEE
-	i1GSOrww==;
+	bh=qelsfVHuAbskQN9xuJXgC0r/+d+URDVm+igS7i6I2+4=; b=Jt2FnvbHaDZXyYHU9xyA35326S
+	H1znLkQ2DjNuOwxWCO7Id0OvJNAz1ELn7UNFCNgFYwcEET47TSk4Np0XGu30KwZT5C6PmxE/bONMV
+	woJhj1TMC4cSn79EhAJEtbFUPQW77W8Q7s+7/VhI2ScibKCXUq/3sntpGS7/4CVhKEX57kRDFxtdN
+	Qq9iKJRTlHyU/Slu0mlA5ppuPtKh7ydVRfajSVmr/zRyYAWjSI29pXdDCLKWABGG4qu6M26FduLbZ
+	9RGwkptUssIJSa9A3DZUL1FmCjUVByRAqap2Dp6NB7ypdzVp8tcNEs6vOifDBJJRjLA5kQtlj879F
+	qlG9roIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQPEe-008I0j-Hc; Wed, 15 Sep 2021 07:21:36 +0000
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	id 1mQQ2s-008Qwo-Da; Wed, 15 Sep 2021 08:13:30 +0000
+Received: from mail-am6eur05on2090.outbound.protection.outlook.com
+ ([40.107.22.90] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQPEZ-008HzE-AZ
- for linux-mtd@lists.infradead.org; Wed, 15 Sep 2021 07:21:34 +0000
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 974DA3FDC7
- for <linux-mtd@lists.infradead.org>; Wed, 15 Sep 2021 07:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631690488;
- bh=GwQ4Jy7q0zIw9abt/H/LYy4Ryr50PZmRcGEGHow4tpE=;
- h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
- In-Reply-To:Content-Type;
- b=VsrSYEsv+X91eQ7Nwo1jmyIhlmMxlFVBvfaxtBiQU0OvZKfF9UBnA6/QDHWpPen6c
- KJQgEJzERhJUwc3LgBWhtJWbBu9phNYhaTqJmMoEmnOf+5q5e0dFSBMQ9RniWksoCH
- ndsBKIDliKFJQ1/nlu0Wc4idpzf+nSFHBa6rroplJIV/JH4JM4wn5Fn8hSs4WEpPyH
- mX6cg2vNclhPp/X6NOGB7L36ESdzMAKKbtwrE+0LpzN3+GL5fw5ppE3Ens+YVvrPQF
- CEbkKmOxCRdvR9zx8qcpBUFoXAMaYFnFU/HHBJvgXNZfDvqTtOARSHFdL/yPtl/bFg
- 1Qdsn8rySR/4Q==
-Received: by mail-ej1-f71.google.com with SMTP id
- ak17-20020a170906889100b005c5d1e5e707so1000566ejc.16
- for <linux-mtd@lists.infradead.org>; Wed, 15 Sep 2021 00:21:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=GwQ4Jy7q0zIw9abt/H/LYy4Ryr50PZmRcGEGHow4tpE=;
- b=v36lwFTf3x2Oegq8S6P14RZLBrveeNdc7fvtzpZjIyF4LI94vAUoi6OsEOLCxcZHef
- sSmeD3gn5Eyfe8leh62Atut62Tf3L8n/U3D6R0UPNNykRStaGvMtYf/QLDuMtLXi95n4
- xWNWCZe7gL4ugjLCHOzvPhKlysMlcb84F1gmq10b1cvIpP5tI24o167m0Ed63TL6/7dU
- QVJiC4ePmifZqHi8wL6eJMkDUy+TpoPxZrqtVykgQDX8RxPXhomm6L+brHeujMAfqlKv
- 8fFAfddFMcdzYejigSjmt0Es+5dkv86PM5QFLif2kDGjxzZIcRN5SM7L9wYpfKIcHYfx
- RHmQ==
-X-Gm-Message-State: AOAM532fQOteVYW+11fbgtjlAscXxH5qIsqJZIQDFDJ3QOY0V+2jUfLM
- EjIsyfFYUGNJLd4bVox4njd22AYmJl689+QkrfqJVR/2obCnS70bTi/dknrA9YWJ06FOk0fAb+w
- XYx0wyVjbj/0BPygd6qSOS0F2F8qVDLgGIYifxBW8CMs=
-X-Received: by 2002:a50:ae21:: with SMTP id c30mr24371704edd.120.1631690487960; 
- Wed, 15 Sep 2021 00:21:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzM4RiKsqMPyRVhAeljiEl808jk5yb6jei8PvkuwDNsEvZYP9ewbn7mbuLwJ6R7TL4catg2CA==
-X-Received: by 2002:a50:ae21:: with SMTP id c30mr24371676edd.120.1631690487538; 
- Wed, 15 Sep 2021 00:21:27 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net.
- [84.20.244.219])
- by smtp.gmail.com with ESMTPSA id h2sm6729850edd.43.2021.09.15.00.20.46
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 15 Sep 2021 00:20:57 -0700 (PDT)
-Subject: Re: [PATCH v4 7/8] dt-bindings: memory-controllers: ti, gpmc: Convert
- to yaml
-To: Roger Quadros <rogerq@kernel.org>, tony@atomide.com
-Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
- lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210914122705.15421-1-rogerq@kernel.org>
- <20210914122705.15421-8-rogerq@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <654bb29d-5580-3035-fc43-546a7e88e224@canonical.com>
-Date: Wed, 15 Sep 2021 09:20:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210914122705.15421-8-rogerq@kernel.org>
+ id 1mQQ2o-008Qvj-Et
+ for linux-mtd@lists.infradead.org; Wed, 15 Sep 2021 08:13:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=inGKvqsxqAiIlc0orw9e0P09vA3egthP8wEr4USJmhwtB3858EzTj5QQY/zFW9h4bv1XLI+lO5Uz2CFoLFLpZ1w4Q3Z6b/Jrloj9DtdrmGOVgMvEKEvjm6cM+PdFo5g2BNNCUr0a7Iek1CzhJZSw4m49cTVktfYc3hfi9oFpIB/oaalrnxz/2kR4mrBJEkEB79Hz/NoLUOBcKP4YOAyL2YiKX871Zu+d86JFEbDbybq3clHO826/ELkqxV5sTLT52GI3aD/OkrP+zIscOrHTEeWDAHT23reTwy9jzfAsQ0l5RUWSgMDsrsh468R+2OBJ1WNJqKJ0eMOSG2femNEoLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
+ bh=sSKAqkDQTwe211zrbFfw/eBgRMJl3t+iqZ/x+kByZD4=;
+ b=fCBDYENd2bEqji9TnplJUjAcIx3iGYms8RTBAjXTaJWhsHPb7O0ejQce92i9Jcq5QZ7Cqa8lKlelGYC0negHfqESMOa4oeoGUR4wpy2IPQlJkZxNNymzh6vU1SlDqR/gxjfXFv3d2kS4PuGHVfkj1TjPws8JDg5722cmOYh06kt30iJQtclBulqneAJ6ZJQYB4PsNavuydKUfGtTXKrJPe9cgv6+Dbpx2P0ytaYWeSZzL/k+bvkXwHfwfnCgV2wnrIQn7Bg+XwAaCpjh2QUREf1IqGLGh7MvJgrSGSkCo9L3W508PNHRHDXxSy/iHGmxM11uhm2P8L8Z9wCExfl9Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com; 
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sSKAqkDQTwe211zrbFfw/eBgRMJl3t+iqZ/x+kByZD4=;
+ b=hlTaS8v1wxDn1Tmt7SriYIwnQp+Yn21wJKTBtIh4cZG9yKsKTZVhcQts+D4mgR4MQ6GXs5SFNFygwhgGqWoNJdR/WztaXXAeqOhVIpeoTnO4dmNsTeOhAiwhQcbiIrA5FjY7/nGiu2iIUOi0UqCblM6E4uQ+5p5eDLVVEjZYy9Y=
+Authentication-Results: biot.com; dkim=none (message not signed)
+ header.d=none;biot.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM9PR10MB4370.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:26e::24)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 15 Sep
+ 2021 08:13:13 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e51f:c969:4825:8fc5]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e51f:c969:4825:8fc5%7]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
+ 08:13:13 +0000
+Message-ID: <879e35bd-55ff-f43d-5780-24918d82bc5a@kontron.de>
+Date: Wed, 15 Sep 2021 10:13:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
 Content-Language: en-US
+To: Bert Vermeulen <bert@biot.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>,
+ Mark Brown <broonie@kernel.org>, Alexander Lobakin <alobakin@pm.me>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20210908201624.237634-1-bert@biot.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20210908201624.237634-1-bert@biot.com>
+X-ClientProxiedBy: AM0PR04CA0088.eurprd04.prod.outlook.com
+ (2603:10a6:208:be::29) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.31.128] (80.147.118.32) by
+ AM0PR04CA0088.eurprd04.prod.outlook.com (2603:10a6:208:be::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 08:13:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5bf2537e-d757-4158-b537-08d97820a9f0
+X-MS-TrafficTypeDiagnostic: AM9PR10MB4370:
+X-Microsoft-Antispam-PRVS: <AM9PR10MB4370927E846AA74F0D21C218E9DB9@AM9PR10MB4370.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yeDmtpIkyZIE/jwbsycuXL9bUc5UEcXfRxixuFJ9Rm0dAhC6m+/T9LnPVy8SrP1cfJFX+ed5ZWBvt5LZg4c3lVL82CPsrbv912rLv3Z6Emuwtgn0F/OgpomaimfryaE3dHuXOglS1hY4ZW6yNnxzZYtyTRyhoiUZ63F67WS2aeqdlHbCxed41vO30eOPtZ5tdM6+H3P45Ybg7mcJRSCNXvG5sWTcwL9FAFsIgv1wk/vOgJOWMKJngWLna8PYfbqnlUoTiBjOrIomcAXiFS8TT9nXggxblfHfzLxN0nMwwAaefPmC3Y+03uwwlynfh7OcaWBdGQAClUZW7kuYOfMzkEuzLaOkGVdpUcl/qP2wBrFGZMk7IB25pAbb5rq9oOOsJr3xpEap16iJPM/XuUSQcdCCXfdz0TrA2zS7T9CxWl6KUPyBLe56uxa6z2wXeaF0MPFg8YXikJ7rCZwUQlKmoB2B+PUWtsO5oBJTMmCMiZl7QPXvks6gxLT5d57xbc+4uv7/lZ1fnmnXZE+7wcoRVIGFwPLIzBFQOsdQMsY9SogOuC/NPWalvPL6wc864gDw6XgoG7lvz8GcvxZMw0CmDTrU7FiKkOCuDKN2t2xmoErw5AwOfsrbpMGrgIiQ+Mf5cXF5kwd+H65fm+8hXdHJiM7EmaGhCC7UgBT5mSiRwuiy0/kRz1UMTNieXBfNIdh0bgbZ5sP90VOVA5KNsUzcFw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(4636009)(396003)(376002)(136003)(346002)(366004)(39860400002)(186003)(66556008)(7416002)(53546011)(26005)(66476007)(8676002)(31696002)(2906002)(45080400002)(966005)(83380400001)(86362001)(478600001)(44832011)(31686004)(38100700002)(316002)(8936002)(36756003)(110136005)(6486002)(921005)(5660300002)(16576012)(66946007)(956004)(2616005)(43740500002)(45980500001);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmNzamZNUzRBMHhGNWxtbEpldjdKRTBWdUswUEFwOThUYWtXNWNyMUMwVjdD?=
+ =?utf-8?B?WWhacnN2aFpjNkZHeTJNZmdVd0w1UHN6MTVydFVhRmZDTVdXQWRsK1c3QXhG?=
+ =?utf-8?B?OWtUc2FTRForVlFENkxWaEt2MWpONmlTajZTQnYvMm9YbkxqVWhCSS9POHph?=
+ =?utf-8?B?U3Evd1prdjQzVCtxQWZtZC9QQTcrZUxINWZWeHZtTjRMakhlM0MrYTR1S1B1?=
+ =?utf-8?B?MW9FUVUvSFVGT3VNaWhuYlVvWUhRSUhyY1JJVnkvN212SGVSZ2RBbitVNWxh?=
+ =?utf-8?B?aVhqTkNGQjFKWTdzdG9ROEFwdWh2YzdRVzg1bllPamNKM3NRTDBmSUNlRUh3?=
+ =?utf-8?B?Sm9NVzA3RVg3Rnc0UDNjYmtaR0FJZXBOczFXNHdZSkMwRUtuaTdWbWdsU2pI?=
+ =?utf-8?B?eFB0Z0pvUE5RK3lueWtQM21uQzJzc29aK3AyUVpQS2NBcFZVdWhPQmJKTUNV?=
+ =?utf-8?B?MXYwamZuZ0hrakFMZ2V1d20rV1QwZkVEL1l6NDljZjhqb250ampjSU5aQ1dJ?=
+ =?utf-8?B?N3FBbUgxSllOZkdFRFdrc2x0Z01oNlBqc0o3TTlqVVB6NUllbHdjS0JTNWor?=
+ =?utf-8?B?aWN1bUNMR05LN2gwRG5Pa3c0RnhQRlBPK2hyMHg1ZzYvZElDQm14RGFhMlZk?=
+ =?utf-8?B?enBmUEI4dWZVSU1xS3BSeUxjbSt2TnlNbmNCUllLWC9BdEU3S2x4dmVNMlJh?=
+ =?utf-8?B?dENiVHVPME55dU1ITmVTQ3NBamZKd29JUC9naTN4dThVeDFMTHl2cStiTldZ?=
+ =?utf-8?B?LzAwUzMveWxIQXR1Qm5wZ2MzMldvb29weTdvdW9YMWhxVWRQSEhLS0FNMUFZ?=
+ =?utf-8?B?UnpvcUNmWm9OZmtKLzdDU2hrd1BTV2NlV2N3T0VXWnFRVnNHbUNESzVjaG83?=
+ =?utf-8?B?NFlTYzZnSHYwRnRVNlV4VDZHd3c2ZWFUOFJDYjBIZE9xTWUwd0ZxR0UwQW1l?=
+ =?utf-8?B?MkJCSXFMdDZHRTNuUDJ1REVaWU1sMXhuS1BDdEpRZ1o0ZlNwMlBFdldVQjJx?=
+ =?utf-8?B?ejl0eFY1L0dJa3poanZaV0VjWXB2RUt4cnZiQkNJcWZSOHYvTFBtdmRURXIz?=
+ =?utf-8?B?QUNqTXBLZm5BVnhYTUJSK0llM1FZZEx6Z3ZRNFVZUWdHTm9EaU9rWHV0Slgy?=
+ =?utf-8?B?OU13UVZyZ2Y3Y0wvTXV2Zk55d0JvRERQNHdNV0d0eGxLUGczdXZnRjZuTjBT?=
+ =?utf-8?B?Y2NXbjMwSFN1Vk5BbE5kL0RWYllzNHZxN1JOd3BYeXJQM0dtelFOS25pUy9G?=
+ =?utf-8?B?MXNjb0tCbHh4UlhpU3hXbGovSmgvRXBlWHU3SkRxVGdwL0IrQ00vbzhoREpu?=
+ =?utf-8?B?c2loWC93ZlNDWHJFS1NhYjdHaWxiemFISnh4QnpESUR1MFgrNzBTbVg4M3Qw?=
+ =?utf-8?B?ZmFmb3ZYanQ5ZExrcUtlNnRreGtBUCtXSFVTazMxeG9UZlZGOEVRSzVWamZP?=
+ =?utf-8?B?L0h3S25oVzhVZm5zc0VZVVlYTXpZZjhmSW54NkM3eHZqUkxXSFVhMVdBd1ZE?=
+ =?utf-8?B?UHQ2S3JsRVhUK3hmeVFKM2ZUaVFRV0hBTHdTUDhxaVMzMURTcW9Ndm1KbHRF?=
+ =?utf-8?B?R28rS0ZmL0NVN3VmaGtRNFA1U2NlYjdTVkl4K3NwdmtJbllrS0xmK1pxaURh?=
+ =?utf-8?B?VXRSZWZlMEc3NktGUlpyVkZyQVF6QTJCVnAxaGRpbmRmaUNQUWtxVExtZEF1?=
+ =?utf-8?B?R3JyczFRdXhTQ3pZNjZqT2p3Rkgvdy9ZNm9kWU9jMTZ6cTc1eVNpVWRvY1JH?=
+ =?utf-8?Q?4GoWANU+aXymn/L8QS3BUz/OhCnab2lnZR7qjuk?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5bf2537e-d757-4158-b537-08d97820a9f0
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 08:13:13.7385 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6OYX/ph9+pQdhk6fZvmcT9lLvf0hhWcoG+LljuZxtidHaEoY6pwyEtsyld9UtWdRl3u4oHvDriznC0rase68iLjBo1oCq59FreDtPhR5SHI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4370
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210915_002131_712029_00D45FB1 
-X-CRM114-Status: GOOD (  45.03  )
+X-CRM114-CacheID: sfid-20210915_011326_776362_27693F9F 
+X-CRM114-Status: GOOD (  29.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,369 +164,189 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 14/09/2021 14:27, Roger Quadros wrote:
-> Convert omap-gpmc.txt to ti,gpmc.yaml.
+Hi Bert,
+
+On 08.09.21 22:16, Bert Vermeulen wrote:
+> This adds a new vendor Etron, and support for a 2Gb chip.
 > 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> The datasheet is available at
+> https://eur04.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.etron.com%2Fcn%2Fproducts%2FEM73%255B8%255DC%255BD_E_F%255DVC%2520SPI%2520NAND%2520Flash_Promotion_Rev%25201_00A.pdf&amp;data=04%7C01%7Cfrieder.schrempf%40kontron.de%7C871fa2a364d8484bbc0d08d97305f2f4%7C8c9d3c973fd941c8a2b1646f3942daf1%7C0%7C0%7C637667293724201439%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=SeopP6Mvu1CHj6eB22XlO78NGnMc3hCFzM%2F5jKmJZxU%3D&amp;reserved=0
+> 
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 > ---
->  .../bindings/memory-controllers/omap-gpmc.txt | 157 ----------------
->  .../bindings/memory-controllers/ti,gpmc.yaml  | 172 ++++++++++++++++++
->  2 files changed, 172 insertions(+), 157 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> v2:
+> - Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
+>   hardcoded to this 2Gb chip only
+> - Fixed manufacturer ordering
+> - Fixed minor formatting issues as reported
+> - Removed debug comment
 > 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt b/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> deleted file mode 100644
-> index c1359f4d48d7..000000000000
-> --- a/Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +++ /dev/null
-> @@ -1,157 +0,0 @@
-> -Device tree bindings for OMAP general purpose memory controllers (GPMC)
-> -
-> -The actual devices are instantiated from the child nodes of a GPMC node.
-> -
-> -Required properties:
-> -
-> - - compatible:		Should be set to one of the following:
-> -
-> -			ti,omap2420-gpmc (omap2420)
-> -			ti,omap2430-gpmc (omap2430)
-> -			ti,omap3430-gpmc (omap3430 & omap3630)
-> -			ti,omap4430-gpmc (omap4430 & omap4460 & omap543x)
-> -			ti,am3352-gpmc   (am335x devices)
-> -
-> - - reg:			A resource specifier for the register space
-> -			(see the example below)
-> - - ti,hwmods:		Should be set to "ti,gpmc" until the DT transition is
-> -			completed.
-> - - #address-cells:	Must be set to 2 to allow memory address translation
-> - - #size-cells:		Must be set to 1 to allow CS address passing
-> - - gpmc,num-cs:		The maximum number of chip-select lines that controller
-> -			can support.
-> - - gpmc,num-waitpins:	The maximum number of wait pins that controller can
-> -			support.
-> - - ranges:		Must be set up to reflect the memory layout with four
-> -			integer values for each chip-select line in use:
-> -
-> -			   <cs-number> 0 <physical address of mapping> <size>
-> -
-> -			Currently, calculated values derived from the contents
-> -			of the per-CS register GPMC_CONFIG7 (as set up by the
-> -			bootloader) are used for the physical address decoding.
-> -			As this will change in the future, filling correct
-> -			values here is a requirement.
-> - - interrupt-controller: The GPMC driver implements and interrupt controller for
-> -			the NAND events "fifoevent" and "termcount" plus the
-> -			rising/falling edges on the GPMC_WAIT pins.
-> -			The interrupt number mapping is as follows
-> -			0 - NAND_fifoevent
-> -			1 - NAND_termcount
-> -			2 - GPMC_WAIT0 pin edge
-> -			3 - GPMC_WAIT1 pin edge, and so on.
-> - - interrupt-cells:	Must be set to 2
-> - - gpio-controller:	The GPMC driver implements a GPIO controller for the
-> -			GPMC WAIT pins that can be used as general purpose inputs.
-> -			0 maps to GPMC_WAIT0 pin.
-> - - gpio-cells:		Must be set to 2
-> -
-> -Required properties when using NAND prefetch dma:
-> - - dmas			GPMC NAND prefetch dma channel
-> - - dma-names		Must be set to "rxtx"
-> -
-> -Timing properties for child nodes. All are optional and default to 0.
-> -
-> - - gpmc,sync-clk-ps:	Minimum clock period for synchronous mode, in picoseconds
-> -
-> - Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
-> - - gpmc,cs-on-ns:	Assertion time
-> - - gpmc,cs-rd-off-ns:	Read deassertion time
-> - - gpmc,cs-wr-off-ns:	Write deassertion time
-> -
-> - ADV signal timings (in nanoseconds) corresponding to GPMC_CONFIG3:
-> - - gpmc,adv-on-ns:	Assertion time
-> - - gpmc,adv-rd-off-ns:	Read deassertion time
-> - - gpmc,adv-wr-off-ns:	Write deassertion time
-> - - gpmc,adv-aad-mux-on-ns:	Assertion time for AAD
-> - - gpmc,adv-aad-mux-rd-off-ns:	Read deassertion time for AAD
-> - - gpmc,adv-aad-mux-wr-off-ns:	Write deassertion time for AAD
-> -
-> - WE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
-> - - gpmc,we-on-ns	Assertion time
-> - - gpmc,we-off-ns:	Deassertion time
-> -
-> - OE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
-> - - gpmc,oe-on-ns:	Assertion time
-> - - gpmc,oe-off-ns:	Deassertion time
-> - - gpmc,oe-aad-mux-on-ns:	Assertion time for AAD
-> - - gpmc,oe-aad-mux-off-ns:	Deassertion time for AAD
-> -
-> - Access time and cycle time timings (in nanoseconds) corresponding to
-> - GPMC_CONFIG5:
-> - - gpmc,page-burst-access-ns: 	Multiple access word delay
-> - - gpmc,access-ns:		Start-cycle to first data valid delay
-> - - gpmc,rd-cycle-ns:		Total read cycle time
-> - - gpmc,wr-cycle-ns:		Total write cycle time
-> - - gpmc,bus-turnaround-ns:	Turn-around time between successive accesses
-> - - gpmc,cycle2cycle-delay-ns:	Delay between chip-select pulses
-> - - gpmc,clk-activation-ns: 	GPMC clock activation time
-> - - gpmc,wait-monitoring-ns:	Start of wait monitoring with regard to valid
-> -				data
-> -
-> -Boolean timing parameters. If property is present parameter enabled and
-> -disabled if omitted:
-> - - gpmc,adv-extra-delay:	ADV signal is delayed by half GPMC clock
-> - - gpmc,cs-extra-delay:		CS signal is delayed by half GPMC clock
-> - - gpmc,cycle2cycle-diffcsen:	Add "cycle2cycle-delay" between successive
-> -				accesses to a different CS
-> - - gpmc,cycle2cycle-samecsen:	Add "cycle2cycle-delay" between successive
-> -				accesses to the same CS
-> - - gpmc,oe-extra-delay:		OE signal is delayed by half GPMC clock
-> - - gpmc,we-extra-delay:		WE signal is delayed by half GPMC clock
-> - - gpmc,time-para-granularity:	Multiply all access times by 2
-> -
-> -The following are only applicable to OMAP3+ and AM335x:
-> - - gpmc,wr-access-ns:		In synchronous write mode, for single or
-> -				burst accesses, defines the number of
-> -				GPMC_FCLK cycles from start access time
-> -				to the GPMC_CLK rising edge used by the
-> -				memory device for the first data capture.
-> - - gpmc,wr-data-mux-bus-ns:	In address-data multiplex mode, specifies
-> -				the time when the first data is driven on
-> -				the address-data bus.
-> -
-> -GPMC chip-select settings properties for child nodes. All are optional.
-> -
-> -- gpmc,burst-length	Page/burst length. Must be 4, 8 or 16.
-> -- gpmc,burst-wrap	Enables wrap bursting
-> -- gpmc,burst-read	Enables read page/burst mode
-> -- gpmc,burst-write	Enables write page/burst mode
-> -- gpmc,device-width	Total width of device(s) connected to a GPMC
-> -			chip-select in bytes. The GPMC supports 8-bit
-> -			and 16-bit devices and so this property must be
-> -			1 or 2.
-> -- gpmc,mux-add-data	Address and data multiplexing configuration.
-> -			Valid values are 1 for address-address-data
-> -			multiplexing mode and 2 for address-data
-> -			multiplexing mode.
-> -- gpmc,sync-read	Enables synchronous read. Defaults to asynchronous
-> -			is this is not set.
-> -- gpmc,sync-write	Enables synchronous writes. Defaults to asynchronous
-> -			is this is not set.
-> -- gpmc,wait-pin		Wait-pin used by client. Must be less than
-> -			"gpmc,num-waitpins".
-> -- gpmc,wait-on-read	Enables wait monitoring on reads.
-> -- gpmc,wait-on-write	Enables wait monitoring on writes.
-> -
-> -Example for an AM33xx board:
-> -
-> -	gpmc: gpmc@50000000 {
-> -		compatible = "ti,am3352-gpmc";
-> -		ti,hwmods = "gpmc";
-> -		reg = <0x50000000 0x2000>;
-> -		interrupts = <100>;
-> -		dmas = <&edma 52 0>;
-> -		dma-names = "rxtx";
-> -		gpmc,num-cs = <8>;
-> -		gpmc,num-waitpins = <2>;
-> -		#address-cells = <2>;
-> -		#size-cells = <1>;
-> -		ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
-> -		interrupt-controller;
-> -		#interrupt-cells = <2>;
-> -		gpio-controller;
-> -		#gpio-cells = <2>;
-> -
-> -		/* child nodes go here */
-> -	};
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+>  drivers/mtd/nand/spi/Makefile |   2 +-
+>  drivers/mtd/nand/spi/core.c   |   1 +
+>  drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spinand.h   |   1 +
+>  4 files changed, 107 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mtd/nand/spi/etron.c
+> 
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+> index 9662b9c1d5a9..cc3c4e046ea9 100644
+> --- a/drivers/mtd/nand/spi/Makefile
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
+> +spinand-objs := core.o etron.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
+>  obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 446ba8d43fbc..2cbf25b8caa2 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -894,6 +894,7 @@ static const struct nand_ops spinand_ops = {
+>  };
+>  
+>  static const struct spinand_manufacturer *spinand_manufacturers[] = {
+> +	&etron_spinand_manufacturer,
+>  	&gigadevice_spinand_manufacturer,
+>  	&macronix_spinand_manufacturer,
+>  	&micron_spinand_manufacturer,
+> diff --git a/drivers/mtd/nand/spi/etron.c b/drivers/mtd/nand/spi/etron.c
 > new file mode 100644
-> index 000000000000..d6cd39bd3940
+> index 000000000000..1a92b9cf3043
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> @@ -0,0 +1,172 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +++ b/drivers/mtd/nand/spi/etron.c
+> @@ -0,0 +1,104 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
-> +title: Texas Instruments GPMC Memory Controller device-tree bindings
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mtd/spinand.h>
 > +
-> +maintainers:
-> +  - Tony Lindgren <tony@atomide.com>
-> +  - Roger Quadros <rogerq@kernel.org>
+> +#define SPINAND_MFR_ETRON			0xd5
 > +
-> +description:
-> +  The GPMC is a unified memory controller dedicated for interfacing
-> +  with external memory devices like
-> +  - Asynchronous SRAM-like memories and ASICs
-> +  - Asynchronous, synchronous, and page mode burst NOR flash
-> +  - NAND flash
-> +  - Pseudo-SRAM devices
+> +static SPINAND_OP_VARIANTS(read_cache_variants,
+> +		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
 > +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - ti,omap2420-gpmc
-> +          - ti,omap2430-gpmc
-> +          - ti,omap3430-gpmc
-> +          - ti,omap4430-gpmc
-> +          - ti,am3352-gpmc
+> +static SPINAND_OP_VARIANTS(write_cache_variants,
+> +		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
+> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+> +
+> +static SPINAND_OP_VARIANTS(update_cache_variants,
+> +		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+> +
+> +static int etron_oob_spare(struct mtd_info *mtd)
+> +{
+> +	if (mtd->size < 0x10000000)
+> +		return mtd->oobsize / 2;
+> +	else
+> +		return mtd->oobsize / 2 + mtd->oobsize / 16;
+> +}
+> +
+> +static int etron_ooblayout_ecc(struct mtd_info *mtd, int section,
+> +					struct mtd_oob_region *oobregion)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	oobregion->offset = etron_oob_spare(mtd);
+> +	oobregion->length = mtd->oobsize - oobregion->offset;
+> +
+> +	return 0;
+> +}
+> +
+> +static int etron_ooblayout_free(struct mtd_info *mtd, int section,
+> +			   struct mtd_oob_region *oobregion)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	oobregion->offset = 2;
+> +	oobregion->length = etron_oob_spare(mtd) - 2;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct mtd_ooblayout_ops etron_ooblayout = {
+> +	.ecc = etron_ooblayout_ecc,
+> +	.free = etron_ooblayout_free,
+> +};
+> +
+> +static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
+> +{
+> +	switch (status & STATUS_ECC_MASK) {
+> +	case STATUS_ECC_NO_BITFLIPS:
+> +		return 0;
+> +
+> +	case STATUS_ECC_HAS_BITFLIPS:
+> +		/* Between 1-7 bitflips were corrected */
+> +		return 7;
+> +
+> +	case STATUS_ECC_MASK:
 
-How about putting them in alphabetical order?
+I'm not sure if using STATUS_ECC_MASK here to check for the 0b11 pattern
+is really a good idea. I'd rather introduce a vendor-specific define for
+this as other drivers do (see toshiba.c, paragon.c or gigadevice.c). As
+this seems to be a common pattern among vendors we could also think
+about introducing a new common flag like STATUS_ECC_HAS_MAX_BITFLIPS or
+something like that and use this instead.
 
+> +		/* Maximum bitflips were corrected */
+> +		return 8;
 > +
-> +  reg:
-> +    maxItems: 1
+> +	case STATUS_ECC_UNCOR_ERROR:
+> +		return -EBADMSG;
+> +	}
 > +
-> +  interrupts:
-> +    maxItems: 1
+> +	return -EINVAL;
+> +}
 > +
-> +  clocks:
-> +    maxItems: 1
-> +    description: |
-> +      Functional clock. Used for bus timing calculations and
-> +      GPMC configuration.
-> +
-> +  clock-names:
-> +    items:
-> +      - const: fck
-> +
-> +  dmas:
-> +    items:
-> +      - description: DMA channel for GPMC NAND prefetch
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rxtx
-> +
-> +  "#address-cells": true
-> +
-> +  "#size-cells": true
-> +
-> +  gpmc,num-cs:
-> +    description: maximum number of supported chip-select lines.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  gpmc,num-waitpins:
-> +    description: maximum number of supported wait pins.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  ranges:
-> +    minItems: 1
-> +    description: |
-> +      Must be set up to reflect the memory layout with four
-> +      integer values for each chip-select line in use,
-> +      <cs-number> 0 <physical address of mapping> <size>
-> +    items:
-> +      - description: NAND bank 0
-> +      - description: NOR/SRAM bank 0
-> +      - description: NOR/SRAM bank 1
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  interrupt-controller:
-> +    description: |
-> +      The GPMC driver implements and interrupt controller for
-> +      the NAND events "fifoevent" and "termcount" plus the
-> +      rising/falling edges on the GPMC_WAIT pins.
-> +      The interrupt number mapping is as follows
-> +      0 - NAND_fifoevent
-> +      1 - NAND_termcount
-> +      2 - GPMC_WAIT0 pin edge
-> +      3 - GPMC_WAIT1 pin edge, and so on.
-> +
-> +  '#gpio-cells':
-> +    const: 2
-> +
-> +  gpio-controller:
-> +    description: |
-> +      The GPMC driver implements a GPIO controller for the
-> +      GPMC WAIT pins that can be used as general purpose inputs.
-> +      0 maps to GPMC_WAIT0 pin.
-> +
-> +  ti,hwmods:
-> +    description:
-> +      Name of the HWMOD associated with GPMC. This is for legacy
-> +      omap2/3 platforms only.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    deprecated: true
-> +
-> +  ti,no-idle-on-init:
-> +    description:
-> +      Prevent idling the module at init. This is for legacy omap2/3
-> +      platforms only.
-> +    type: boolean
-> +    deprecated: true
-> +
-> +patternProperties:
-> +  "@[0-7],[a-f0-9]+$":
-> +    type: object
-> +    description: |
-> +      The child device node represents the device connected to the GPMC
-> +      bus. The device can be a NAND chip, SRAM device, NOR device
-> +      or an ASIC.
-> +
-> +    allOf:
-> +      - $ref: "ti,gpmc-child.yaml"
-> +
-> +    unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpmc,num-cs
-> +  - gpmc,num-waitpins
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    gpmc: memory-controller@50000000 {
-> +      compatible = "ti,am3352-gpmc";
-> +      reg = <0x50000000 0x2000>;
-> +      interrupts = <100>;
-> +      clocks = <&l3s_clkctrl>;
-> +      clock-names = "fck";
-> +      dmas = <&edma 52 0>;
-> +      dma-names = "rxtx";
-> +      gpmc,num-cs = <8>;
-> +      gpmc,num-waitpins = <2>;
-> +      #address-cells = <2>;
-> +      #size-cells = <1>;
-> +      ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
-> +      interrupt-controller;
-> +      #interrupt-cells = <2>;
-> +      gpio-controller;
-> +      #gpio-cells = <2>;
-> +
-> +      nand@0,0 {
-> +        compatible = "ti,omap2-nand";
-> +        reg = <0 0 4>;
-> +        interrupt-parent = <&gpmc>;
-> +        interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-> +                     <1 IRQ_TYPE_NONE>; /* termcount */
+> +static const struct spinand_info etron_spinand_table[] = {
+> +	SPINAND_INFO("EM73D044VCx",
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x1f),
 
-Why these are interrupts of unspecified type (NONE)?
+According to the datasheet, the device id of the EM73D044VCL is 0x2e and
+not 0x1f. Am I missing something?
 
-> +        ti,nand-xfer-type = "prefetch-dma";
-> +        ti,nand-ecc-opt = "bch16";
-> +        ti,elm-id = <&elm>;
-> +        rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
-> +      };
-> +    };
+Best regards
+Frieder
+
+> +		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 1, 1, 1),
+> +		     NAND_ECCREQ(8, 512),
+> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +					      &write_cache_variants,
+> +					      &update_cache_variants),
+> +		     SPINAND_HAS_QE_BIT,
+> +		     SPINAND_ECCINFO(&etron_ooblayout, etron_ecc_get_status)),
+> +};
+> +
+> +static const struct spinand_manufacturer_ops etron_spinand_manuf_ops = {
+> +};
+> +
+> +const struct spinand_manufacturer etron_spinand_manufacturer = {
+> +	.id = SPINAND_MFR_ETRON,
+> +	.name = "Etron",
+> +	.chips = etron_spinand_table,
+> +	.nchips = ARRAY_SIZE(etron_spinand_table),
+> +	.ops = &etron_spinand_manuf_ops,
+> +};
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 6988956b8492..d7c0a0439652 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -260,6 +260,7 @@ struct spinand_manufacturer {
+>  };
+>  
+>  /* SPI NAND manufacturers */
+> +extern const struct spinand_manufacturer etron_spinand_manufacturer;
+>  extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+>  extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+>  extern const struct spinand_manufacturer micron_spinand_manufacturer;
 > 
-
-
-Best regards,
-Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
