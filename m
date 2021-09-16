@@ -2,20 +2,20 @@ Return-Path: <SRS0=norF=OG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F1C4C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 10:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0014FC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:39:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D15D361214
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 10:49:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D15D361214
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4C52661130
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:39:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C52661130
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=3e8.eu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -24,89 +24,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Message-ID:Subject:From:References:Cc:To:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=5E6csxRsajQGfWfr9WgVADE9caiN/9NWe1bIKkXHqK8=; b=GsNZ7LBlDA/y0BPIU0ri2+z5qY
-	871lZ1lWbLcAgAjjU5nn6uwGUR1BEh63wYPwPyWtpZNKWO1vXvuzu/SYpvCmlhL16Qq3NQIOwKNYN
-	VFo5YOiYKDXpgJ0Z7HEljrAAjwAx95lCVQQVqQvYGZ7z8WJ8cuKWn/eOGF5HN1X/W8zo8tjNTglpx
-	a4n2R1IqO5AvHde5hRocnzNapZpY1GNk+Le6x7SuH3AMGLmeoz2YXzwtAEdEa1ZDuWhsPR8SjgpKj
-	44vKVChvonbSYwnaKeH33yQYKCI9Yk8HH3WBaU7hHRcnfS+dMOpz61DofToelSS5nRwtyvrCUYp0I
-	cl/KndmQ==;
+	bh=H/SokR5aWjhg0nU4x60TrIgFeTePEABPnGQngHowFxg=; b=nGY5+BQKTw+YjVYw/15GxJC7P3
+	AbA4xsw1L3um0F9Fs/brNGlSPadxyw8MJvr6Lr86vgHRoNZvFDB5DADduxvNasm0eiytxA4XqhFOE
+	Dt9dYJSEuJisreU7hT8cKdUPg2YW/0b+CS/XU/1jaQabkKF0OEksLDWuCvgJvZNHJ4hENCIUXVRy7
+	GhiwRklM7VxCR6wp3VkOJT8jUGsrKR7SArsMhEwOn5kqEOMqeNjIrK17fe8U1/Bl2dPfqX1YeSX7P
+	K1LsqF+nBQYxtbZRD7NDpgK80rXALSwRbNwG8fU01XHFfWRzIG3+NXr5IgJlO3PWeJQTHV3y2np8R
+	61hGjYzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQowV-00At78-C5; Thu, 16 Sep 2021 10:48:35 +0000
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	id 1mQxDh-00CGdv-CK; Thu, 16 Sep 2021 19:38:53 +0000
+Received: from srv4.3e8.eu ([2001:67c:12a0:200::2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQowR-00At5e-Ni
- for linux-mtd@lists.infradead.org; Thu, 16 Sep 2021 10:48:33 +0000
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ id 1mQxDZ-00CGcm-PG
+ for linux-mtd@lists.infradead.org; Thu, 16 Sep 2021 19:38:49 +0000
+Received: from [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734]
+ (p200300c6cf1205a09abc95836f0ac734.dip0.t-ipconnect.de
+ [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734])
+ (using TLSv1.3 with cipher TLS_CHACHA20_POLY1305_SHA256 (256/256 bits))
  (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4313140268
- for <linux-mtd@lists.infradead.org>; Thu, 16 Sep 2021 10:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1631789302;
- bh=kVs9piweAjfYKX1/D2zYPYLh8oMdXLORitDm0x3OItc=;
- h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
- In-Reply-To:Content-Type;
- b=Z+L8RQG5ANhF34LExzxkQYwIdTOymYuyFGbAHKYFocaLCX0/e2gUFpLHUB9WHRMMs
- 7A2Y25zay3vg8bmSJm1K40XQMR2jhvOsRc4vZkPB27prf/XX70m7XzbDbKEzOrsDA5
- 4eN/c8CFj+3UMf/Id1ONvw7cbHle7KJshuKrLgiYqok8CT6sAc05yIyJCAraZx1k3b
- N0/Nj9iN/a3to9lQ3xF20cC6lxLica/SZUGPtlS0AB1vyKuV8NEbijWM3BcMnrCN6Q
- YunoCZdIEJnEx1excPiW39+kxfF95/AHsSnOkbL1sCOA6iNY/j3y4UVdrfkZDtEbs8
- Q/5MwZYmU8B9w==
-Received: by mail-ed1-f72.google.com with SMTP id
- y17-20020a50e611000000b003d051004603so4976018edm.8
- for <linux-mtd@lists.infradead.org>; Thu, 16 Sep 2021 03:48:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:to:cc:references:from:subject:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=kVs9piweAjfYKX1/D2zYPYLh8oMdXLORitDm0x3OItc=;
- b=Zvc929qwW8S57fprpjtYjFrPIFygqokj++1o7x9o2zb8ldSU5LFqB1Q03jbRk5y3A9
- jI+wuM3r61ZaaEOax2Ff2CT0RwXknmkZQTCh/Vy8vByeBHqu1ZPbLeR1fI1gfcxInxNb
- mxHOHqHXiSLVZ423BLxBaSOe734qKJKOCbcarxjjG2MiQlVyZaBFddcFDt1TRPKRsKyI
- Sd0UkdrkMAV6s3i9UrF18rYIHY2cPj/blh7uQfacJWkj0CF88jrwS2l1kOIiecnDremI
- YmJQu+4mY9jESGfGSQZVTLAN8oyt3vvbL4ckYigTsTWsbgtzLmz0yXtMHbjjnZw2FSKz
- aMrQ==
-X-Gm-Message-State: AOAM530w3d1WWHegtOH1dMngfTcoJplxG+9fxW6eNmW153FH46wYrXM1
- FfZlUsBQeMJN1u69OmFH1fGMEjIuner6UJCSfT+UaDXeLkVWdSzocGXmFEjzMlkmQH/bhc/iO4y
- Ct5pchgSqHtd8eMuohIO/1rZexZFZ9lJJJTj3kwFw3TY=
-X-Received: by 2002:a17:906:d045:: with SMTP id
- bo5mr5518396ejb.461.1631789301889; 
- Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynS1M3E+u6uh9PExpnyfy/1dCw+s8TwhyM85ZmKchIA4QZXHFyZ+/z9Io2RWKgwjZkL25Tow==
-X-Received: by 2002:a17:906:d045:: with SMTP id
- bo5mr5518370ejb.461.1631789301532; 
- Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net.
- [84.20.244.219])
- by smtp.gmail.com with ESMTPSA id m10sm1007452ejx.76.2021.09.16.03.48.19
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 16 Sep 2021 03:48:21 -0700 (PDT)
-To: Roger Quadros <rogerq@kernel.org>, tony@atomide.com
-Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
- lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-9-rogerq@kernel.org>
- <aa465bd9-b3d5-8d75-3e59-e86c2cd093cd@canonical.com>
- <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v3 8/8] memory: gpmc-omap: "gpmc, device-width" DT property
- is optional
-Message-ID: <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
-Date: Thu, 16 Sep 2021 12:48:19 +0200
+ by srv4.3e8.eu (Postfix) with ESMTPSA id 55F66600A9;
+ Thu, 16 Sep 2021 21:38:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3e8.eu;
+ s=mail20170724; t=1631821108;
+ bh=a33GpWWnFT3v41eI/sIwgek55Y5I8bXRNKTeri1tpmE=;
+ h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+ b=pi9e29V+QW+sGLIt+qY+Buh/nSOq+Iz9Nx2eZ08Wi/YBSgkw9NqITMl8jZFRIDnJ3
+ +HtfAbhOxK6IAwBTdl1Xa9gO/Zdp6pmJsurSjkbMgOuSiXMUF6mvwj1Ukc7CuNMBSV
+ AHuo3JJsjqygK5LwgTmljN0GRnGk1YuHXOnvNgQBSHEmv8ziKqxgi5pOcYnLAyvruh
+ KY5cAEmY9o2a+duv70z0Lcs+jIijTM8PoUem8+hF8z5SMYjBTMQQEuffPp5xRNytID
+ +G0czFuVrEOpHGf5W2Kp5ps6UDG0wMxCiejUqa2bCjr9iQ0J9WAUjGB3rc10CMb4ik
+ PSD4LQukH/vYg==
+To: Daniel Kestrel <kestrelseventyfour@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20210808072643.GA5084@ubuntu>
+From: Jan Hoffmann <jan@3e8.eu>
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
+Date: Thu, 16 Sep 2021 21:38:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
+In-Reply-To: <20210808072643.GA5084@ubuntu>
 Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210916_034831_958108_5C974431 
-X-CRM114-Status: GOOD (  29.76  )
+X-CRM114-CacheID: sfid-20210916_123846_161981_EBF6752B 
+X-CRM114-Status: GOOD (  18.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,73 +89,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 15/09/2021 11:11, Roger Quadros wrote:
-> Hi Krzysztof,
-> 
-> On 07/09/2021 15:36, Krzysztof Kozlowski wrote:
->> On 07/09/2021 13:32, Roger Quadros wrote:
->>> Check for valid gpmc,device-width, nand-bus-width and bank-width
->>> at one place. Default to 8-bit width if none present.
->>
->> I don't understand the message in the context of the patch. The title
->> says one property is optional - that's it. The message says you
->> consolidate checks. How is this related to the title?
->>
->> The patch itself moves around checking of properties and reads
->> nand-bus-width *always*. It does not "check at one place" but rather
->> "check always". In the same time, the patch does not remove
->> gpmc,device-width check in other place.
->>
->> All three elements - the title, message and patch - do different things.
->> What did you want to achieve here? Can you help in clarifying it?
->>
-> 
-> OK I will explain it better in commit log in next revision. Let me explain here a bit.
-> 
-> Prior to this patch it was working like this
-> 
-> 	/* in gpmc_read_settings_dt() */
-> 	s->device_width = 0;	/* invalid width, should be 1 for 8-bit, 2 for 16-bit */
-> 	of_property_read_u32(np, "gpmc,device-width", s->device_width);
-> 
-> 	/* in gpmc_probe_generic_child () */
-> 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
-> 		/* check for nand-bus-width, if absent set s->device_width to 1 (i.e. 8-bit) */
-> 	} else {
-> 		/* check for bank-width, if absent and s->device_width not set, error out */
-> 	}
-> 
-> So that means if all three, "gpmc,device-width". "nand-bus-width" and "bank-width" are missing then
-> it would create an error situation.
-> 
-> The patch is doing 3 things.
-> 1) Make sure all DT checks related to bus width are being done at one place for better readability.
+Hello,
 
-Not entirely. The gpmc,device-width is still done in the other place
-because you did not remove it from the code. Unless you meant parsing of
-gpmc,device-width not reading from DT? But then another round of checks
-is in gpmc_cs_program_settings() so not in one place.
+Configuration of the ECC engine type using device tree has actually
+worked before. I am using OpenWrt on a Fritzbox 7362 SL, which has a
+Micron 29F1G08ABADA flash chip. The bootloader of the device uses on-die
+ECC, so that has to be used for Linux as well. It is configured in DTS
+using "nand-ecc-mode = "on-die";". This worked fine with kernel 5.4.
+However, after switching to kernel 5.10 it is ignored and software ECC
+is used instead.
 
-If you consolidate the checks to one place, I would expect the code to
-be removed from other places, so from gpmc_cs_program_settings() and
-gpmc_read_settings_dt(). Since this is not happening, the message
-confuses me.
+If I understand this correctly, the situation is as follows:
 
-> 2) even if all 3 width properties are absent, we will not treat it as error and default to 8-bit.
+Originally, xway-nand did set defaults for ECC mode and algorithm, but
+different values could be configured using device tree.
 
-This is not mentioned in commit msg.
+Commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input
+parsing bits") broke these default values, as the ECC algorithm is now
+unconditionally set from the user configuration in rawnand_dt_init.
+Previously, the default value was only overwritten if the device tree
+actually contained a value.
 
-> 3) check for nand-bus-width regardless of whether compatible to "ti,omap2-nand" or not.
+This is fixed in d525914b5bd8 ("mtd: rawnand: xway: Move the ECC
+initialization to ->attach_chip()"). However, this makes it impossible
+to configure the ECC engine type in the device tree, as it is now
+overwritten by the default value in xway_attach_chip.
 
-Also not mentioned in commit msg.
+I am not sure if this patch is the best approach for fixing this, as it
+would again cause breakage for anyone who relies on the existing
+default value. And this kind of breakage seems to have been the reason
+for moving the default values to attach_chip in the first place (see
+https://lore.kernel.org/lkml/20201105084939.72ea6bfd@xps13/ ).
 
-Your commit reorganizes parsing and validating the child DT properties
-but it does not change from "multiple place" to "one place".
+As similar changes were applied to other NAND drivers, the same issue
+probably also exists there. Maybe it makes sense to add a proper fix
+for all of them?
 
-At least I don't see it.
-
-Best regards,
-Krzysztof
+Thanks,
+Jan
 
 ______________________________________________________
 Linux MTD discussion mailing list
