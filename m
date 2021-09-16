@@ -2,77 +2,98 @@ Return-Path: <SRS0=norF=OG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0014FC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90138C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:50:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C52661130
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:39:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C52661130
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=3e8.eu
+	by mail.kernel.org (Postfix) with ESMTPS id 6098F61251
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:50:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6098F61251
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:Subject:From:References:Cc:To:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=H/SokR5aWjhg0nU4x60TrIgFeTePEABPnGQngHowFxg=; b=nGY5+BQKTw+YjVYw/15GxJC7P3
-	AbA4xsw1L3um0F9Fs/brNGlSPadxyw8MJvr6Lr86vgHRoNZvFDB5DADduxvNasm0eiytxA4XqhFOE
-	Dt9dYJSEuJisreU7hT8cKdUPg2YW/0b+CS/XU/1jaQabkKF0OEksLDWuCvgJvZNHJ4hENCIUXVRy7
-	GhiwRklM7VxCR6wp3VkOJT8jUGsrKR7SArsMhEwOn5kqEOMqeNjIrK17fe8U1/Bl2dPfqX1YeSX7P
-	K1LsqF+nBQYxtbZRD7NDpgK80rXALSwRbNwG8fU01XHFfWRzIG3+NXr5IgJlO3PWeJQTHV3y2np8R
-	61hGjYzw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MwPe2TDtvb/3EBikNgLQQa+HcivQZmjN4MteDf/Hn20=; b=R0Cmru/t+ueDHz
+	s6di1tq6AZ2hmJaCDFMLuLv18XRImZm55GOh05ch7pUtU1wRR4cUuFHOaYOvubuDrRd8JPDvH5ldX
+	FYOqld/gZxNq+Bj2N6aCeP5+QmWEd01Ot2W9RfV2oDTYIwoV+xx3Zcy1Oayyrfz2uoR2SUNlO/gSF
+	Nv6i7DN5wqPgoojiLBoHm87xQ9P+TlQfw3NflSJCHORx/3J3HtyLPOgpJehqZv53UkTsunhgbAgGU
+	funLDnSVhg17ogpmyqIzXFfUoMtLvUAG0/3LGL0h0RZKA/i8J0d0RZF03b0GSMR4b8/GC3M437amo
+	Q4fyz9kQ9XUogrAGF1Dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQxDh-00CGdv-CK; Thu, 16 Sep 2021 19:38:53 +0000
-Received: from srv4.3e8.eu ([2001:67c:12a0:200::2])
+	id 1mQxNp-00CHTF-CA; Thu, 16 Sep 2021 19:49:21 +0000
+Received: from mail-ot1-f42.google.com ([209.85.210.42])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQxDZ-00CGcm-PG
- for linux-mtd@lists.infradead.org; Thu, 16 Sep 2021 19:38:49 +0000
-Received: from [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734]
- (p200300c6cf1205a09abc95836f0ac734.dip0.t-ipconnect.de
- [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734])
- (using TLSv1.3 with cipher TLS_CHACHA20_POLY1305_SHA256 (256/256 bits))
- (No client certificate requested)
- by srv4.3e8.eu (Postfix) with ESMTPSA id 55F66600A9;
- Thu, 16 Sep 2021 21:38:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3e8.eu;
- s=mail20170724; t=1631821108;
- bh=a33GpWWnFT3v41eI/sIwgek55Y5I8bXRNKTeri1tpmE=;
- h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
- b=pi9e29V+QW+sGLIt+qY+Buh/nSOq+Iz9Nx2eZ08Wi/YBSgkw9NqITMl8jZFRIDnJ3
- +HtfAbhOxK6IAwBTdl1Xa9gO/Zdp6pmJsurSjkbMgOuSiXMUF6mvwj1Ukc7CuNMBSV
- AHuo3JJsjqygK5LwgTmljN0GRnGk1YuHXOnvNgQBSHEmv8ziKqxgi5pOcYnLAyvruh
- KY5cAEmY9o2a+duv70z0Lcs+jIijTM8PoUem8+hF8z5SMYjBTMQQEuffPp5xRNytID
- +G0czFuVrEOpHGf5W2Kp5ps6UDG0wMxCiejUqa2bCjr9iQ0J9WAUjGB3rc10CMb4ik
- PSD4LQukH/vYg==
-To: Daniel Kestrel <kestrelseventyfour@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20210808072643.GA5084@ubuntu>
-From: Jan Hoffmann <jan@3e8.eu>
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-Message-ID: <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
-Date: Thu, 16 Sep 2021 21:38:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mQxNl-00CHS1-Nq
+ for linux-mtd@lists.infradead.org; Thu, 16 Sep 2021 19:49:19 +0000
+Received: by mail-ot1-f42.google.com with SMTP id
+ m7-20020a9d4c87000000b0051875f56b95so9792271otf.6
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Sep 2021 12:49:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=0KsoWtKkhaXMiBJDC0/XxZwnXXQWFGw8B4mYJMIPHr0=;
+ b=SNjrbRTeRc8Ky08SIzBqOlbPkEfcV1oQH/GeuUn+yhY3VE12UJtVN4N5NHZXyWff8l
+ k2VMWa5Kqye79cjVsNcfsH7JziowS8jM4HINcUnkxKrGZj2BQ/7vUFnGXhiLkG+fcquB
+ B08DPW8Fcig6arDIB0I5chKkV9U767PT2gTJy0GUxwn6RCNBgpXqpJtQTxh671TljpGv
+ rNHqjO4CAl6BGA5ibxCR9p3gAylmgMz+Edl9kuht0+xVaAjUKPD0AuanpaOxuvXJ3jGs
+ Jq583uCKqEN2kHGMskFDgRzmy6V9sL/qom3fzEivkwEE+fRr2bQEe4zVqsaz1E+eE7f2
+ 5a/A==
+X-Gm-Message-State: AOAM531sTD5ZilHbSZxJsx6Qbg3IM1pn9BU6XyO2c7tAuWMTWUyFHT7N
+ qJ/vJjgp1X6n2QhuahS3CBo/pij9/Q==
+X-Google-Smtp-Source: ABdhPJxEEp/Qsw3alHt8zhmxwHRpVnbr0IilY/Bi03MDyZNTmeQPJrTz7p+nPBP14eKxCi6oX/vdRA==
+X-Received: by 2002:a9d:70cc:: with SMTP id w12mr6143201otj.306.1631821755916; 
+ Thu, 16 Sep 2021 12:49:15 -0700 (PDT)
+Received: from robh.at.kernel.org
+ (107-211-252-53.lightspeed.cicril.sbcglobal.net. [107.211.252.53])
+ by smtp.gmail.com with ESMTPSA id z7sm948074oti.65.2021.09.16.12.49.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Sep 2021 12:49:15 -0700 (PDT)
+Received: (nullmailer pid 1377102 invoked by uid 1000);
+ Thu, 16 Sep 2021 19:49:11 -0000
+Date: Thu, 16 Sep 2021 14:49:11 -0500
+From: Rob Herring <robh@kernel.org>
+To: Dmitry Osipenko <digetx@gmail.com>
+Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Viresh Kumar <vireshk@kernel.org>, Lucas Stach <dev@lynxeye.de>,
+ linux-mmc@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, Peter Chen <peter.chen@kernel.org>, 
+ Richard Weinberger <richard@nod.at>, Nishanth Menon <nm@ti.com>,
+ linux-pwm@vger.kernel.org, 
+ Lee Jones <lee.jones@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, 
+ linux-tegra@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>, 
+ linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org, 
+ linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+ linux-mtd@lists.infradead.org, 
+ Mark Brown <broonie@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
+ linux-kernel@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>, 
+ devicetree@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+ linux-spi@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-pm@vger.kernel.org, 
+ linux-media@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v11 08/34] dt-bindings: host1x: Document Memory Client
+ resets of Host1x, GR2D and GR3D
+Message-ID: <YUOftwuVt7EqtA5I@robh.at.kernel.org>
+References: <20210912200832.12312-1-digetx@gmail.com>
+ <20210912200832.12312-9-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210808072643.GA5084@ubuntu>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20210912200832.12312-9-digetx@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210916_123846_161981_EBF6752B 
-X-CRM114-Status: GOOD (  18.48  )
+X-CRM114-CacheID: sfid-20210916_124917_806011_95356A4F 
+X-CRM114-Status: GOOD (  12.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,44 +110,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+On Sun, 12 Sep 2021 23:08:06 +0300, Dmitry Osipenko wrote:
+> Memory Client should be blocked before hardware reset is asserted in order
+> to prevent memory corruption and hanging of memory controller.
+> 
+> Document Memory Client resets of Host1x, GR2D and GR3D hardware units.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/display/tegra/nvidia,tegra20-host1x.txt          | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Configuration of the ECC engine type using device tree has actually
-worked before. I am using OpenWrt on a Fritzbox 7362 SL, which has a
-Micron 29F1G08ABADA flash chip. The bootloader of the device uses on-die
-ECC, so that has to be used for Linux as well. It is configured in DTS
-using "nand-ecc-mode = "on-die";". This worked fine with kernel 5.4.
-However, after switching to kernel 5.10 it is ignored and software ECC
-is used instead.
-
-If I understand this correctly, the situation is as follows:
-
-Originally, xway-nand did set defaults for ECC mode and algorithm, but
-different values could be configured using device tree.
-
-Commit d7157ff49a5b ("mtd: rawnand: Use the ECC framework user input
-parsing bits") broke these default values, as the ECC algorithm is now
-unconditionally set from the user configuration in rawnand_dt_init.
-Previously, the default value was only overwritten if the device tree
-actually contained a value.
-
-This is fixed in d525914b5bd8 ("mtd: rawnand: xway: Move the ECC
-initialization to ->attach_chip()"). However, this makes it impossible
-to configure the ECC engine type in the device tree, as it is now
-overwritten by the default value in xway_attach_chip.
-
-I am not sure if this patch is the best approach for fixing this, as it
-would again cause breakage for anyone who relies on the existing
-default value. And this kind of breakage seems to have been the reason
-for moving the default values to attach_chip in the first place (see
-https://lore.kernel.org/lkml/20201105084939.72ea6bfd@xps13/ ).
-
-As similar changes were applied to other NAND drivers, the same issue
-probably also exists there. Maybe it makes sense to add a proper fix
-for all of them?
-
-Thanks,
-Jan
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
