@@ -1,99 +1,76 @@
-Return-Path: <SRS0=norF=OG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=wNtg=OH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90138C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1C6EC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Sep 2021 07:18:18 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6098F61251
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Sep 2021 19:50:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6098F61251
+	by mail.kernel.org (Postfix) with ESMTPS id 8FF0960ED7
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Sep 2021 07:18:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8FF0960ED7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MwPe2TDtvb/3EBikNgLQQa+HcivQZmjN4MteDf/Hn20=; b=R0Cmru/t+ueDHz
-	s6di1tq6AZ2hmJaCDFMLuLv18XRImZm55GOh05ch7pUtU1wRR4cUuFHOaYOvubuDrRd8JPDvH5ldX
-	FYOqld/gZxNq+Bj2N6aCeP5+QmWEd01Ot2W9RfV2oDTYIwoV+xx3Zcy1Oayyrfz2uoR2SUNlO/gSF
-	Nv6i7DN5wqPgoojiLBoHm87xQ9P+TlQfw3NflSJCHORx/3J3HtyLPOgpJehqZv53UkTsunhgbAgGU
-	funLDnSVhg17ogpmyqIzXFfUoMtLvUAG0/3LGL0h0RZKA/i8J0d0RZF03b0GSMR4b8/GC3M437amo
-	Q4fyz9kQ9XUogrAGF1Dg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=mYQyBiN3OCjOCd6C0aKsbjJ+OuxMuB1J2/uo/jBQ81U=; b=bz3RLxM5V4eMUFLqmBooeTyuQ7
+	KFCcOJZbB1vaYjV43ha4LJpwAL42SlMMf3IZBVpgtO9/Z9qlrt/ESz0yQof6ZL8zPbFIP1ZNxgQ5u
+	VU9Lywr9dI5yCYrGzW7viRyqXRzcPSEIpb53Ea7CFVR7vPfIXPx6oDrEYfIdOeeAHCge9vdBFwxuf
+	J7QSbfy777EYiL79VufdBLjoKk/DOL4lGlfSEeyAw1jEgSqxOPfOY8xWdT081EqdO3yykYRB60EOy
+	kZRVDD45+8fxI/tnv4+hwoNunXCc3qr0ax8Jyxa0IMwMXpsDmtQTod++zYRW7ubbX49hJBU+6vcJe
+	NFBZdiYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mQxNp-00CHTF-CA; Thu, 16 Sep 2021 19:49:21 +0000
-Received: from mail-ot1-f42.google.com ([209.85.210.42])
+	id 1mR87b-00DMwo-Cu; Fri, 17 Sep 2021 07:17:19 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mQxNl-00CHS1-Nq
- for linux-mtd@lists.infradead.org; Thu, 16 Sep 2021 19:49:19 +0000
-Received: by mail-ot1-f42.google.com with SMTP id
- m7-20020a9d4c87000000b0051875f56b95so9792271otf.6
- for <linux-mtd@lists.infradead.org>; Thu, 16 Sep 2021 12:49:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=0KsoWtKkhaXMiBJDC0/XxZwnXXQWFGw8B4mYJMIPHr0=;
- b=SNjrbRTeRc8Ky08SIzBqOlbPkEfcV1oQH/GeuUn+yhY3VE12UJtVN4N5NHZXyWff8l
- k2VMWa5Kqye79cjVsNcfsH7JziowS8jM4HINcUnkxKrGZj2BQ/7vUFnGXhiLkG+fcquB
- B08DPW8Fcig6arDIB0I5chKkV9U767PT2gTJy0GUxwn6RCNBgpXqpJtQTxh671TljpGv
- rNHqjO4CAl6BGA5ibxCR9p3gAylmgMz+Edl9kuht0+xVaAjUKPD0AuanpaOxuvXJ3jGs
- Jq583uCKqEN2kHGMskFDgRzmy6V9sL/qom3fzEivkwEE+fRr2bQEe4zVqsaz1E+eE7f2
- 5a/A==
-X-Gm-Message-State: AOAM531sTD5ZilHbSZxJsx6Qbg3IM1pn9BU6XyO2c7tAuWMTWUyFHT7N
- qJ/vJjgp1X6n2QhuahS3CBo/pij9/Q==
-X-Google-Smtp-Source: ABdhPJxEEp/Qsw3alHt8zhmxwHRpVnbr0IilY/Bi03MDyZNTmeQPJrTz7p+nPBP14eKxCi6oX/vdRA==
-X-Received: by 2002:a9d:70cc:: with SMTP id w12mr6143201otj.306.1631821755916; 
- Thu, 16 Sep 2021 12:49:15 -0700 (PDT)
-Received: from robh.at.kernel.org
- (107-211-252-53.lightspeed.cicril.sbcglobal.net. [107.211.252.53])
- by smtp.gmail.com with ESMTPSA id z7sm948074oti.65.2021.09.16.12.49.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Sep 2021 12:49:15 -0700 (PDT)
-Received: (nullmailer pid 1377102 invoked by uid 1000);
- Thu, 16 Sep 2021 19:49:11 -0000
-Date: Thu, 16 Sep 2021 14:49:11 -0500
-From: Rob Herring <robh@kernel.org>
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Viresh Kumar <vireshk@kernel.org>, Lucas Stach <dev@lynxeye.de>,
- linux-mmc@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Peter De Schrijver <pdeschrijver@nvidia.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, Peter Chen <peter.chen@kernel.org>, 
- Richard Weinberger <richard@nod.at>, Nishanth Menon <nm@ti.com>,
- linux-pwm@vger.kernel.org, 
- Lee Jones <lee.jones@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, 
- linux-tegra@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>, 
- linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org, 
- linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
- linux-mtd@lists.infradead.org, 
- Mark Brown <broonie@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
- linux-kernel@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>, 
- devicetree@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
- linux-spi@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-pm@vger.kernel.org, 
- linux-media@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v11 08/34] dt-bindings: host1x: Document Memory Client
- resets of Host1x, GR2D and GR3D
-Message-ID: <YUOftwuVt7EqtA5I@robh.at.kernel.org>
-References: <20210912200832.12312-1-digetx@gmail.com>
- <20210912200832.12312-9-digetx@gmail.com>
+ id 1mR87Y-00DMvh-8b
+ for linux-mtd@lists.infradead.org; Fri, 17 Sep 2021 07:17:17 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 512AE61152;
+ Fri, 17 Sep 2021 07:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1631863035;
+ bh=ja8+tLdTmXfno2EXHr51WCR4GUxc76U00kgVCyJ/NGo=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=M4ewBQPtOqclfz0Ur4bXuvZKTjWgHGjINFiOawT7DeG8XrFKcauPh5bd7a9DXG/3N
+ VD3oPf2BhVIcMKZ6QKsNO8wZTcWOqMEtvd6MRFK9aNK6EqzM0mnMlxuLb1D9Q4sgSY
+ Iz/Pma94UcjIpkwjJ5BOumdpzaMBRwyXqOCaKIosCvsNhJqio5gxSKaQVTImdvReMi
+ TEWuOMlom04nNjWa3Yw7vARiih+dcMvuHShiv5xMCjjoyhRzLyoysS+Zli9Gu2JwiE
+ y4AiuolYY/i6UTP4mRGd56UFiXpoLys3x1OIbCQ1UZabOOIPJOd/ASxUtKc5OhqzQ4
+ /pPszyUB5KTLw==
+Subject: Re: [PATCH v3 8/8] memory: gpmc-omap: "gpmc, device-width" DT property
+ is optional
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, tony@atomide.com
+Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+ lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907113226.31876-1-rogerq@kernel.org>
+ <20210907113226.31876-9-rogerq@kernel.org>
+ <aa465bd9-b3d5-8d75-3e59-e86c2cd093cd@canonical.com>
+ <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
+ <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
+From: Roger Quadros <rogerq@kernel.org>
+Message-ID: <d574837c-b42a-53be-7885-9feb7183ce96@kernel.org>
+Date: Fri, 17 Sep 2021 10:17:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210912200832.12312-9-digetx@gmail.com>
+In-Reply-To: <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210916_124917_806011_95356A4F 
-X-CRM114-Status: GOOD (  12.39  )
+X-CRM114-CacheID: sfid-20210917_001716_396719_D174CEBA 
+X-CRM114-Status: GOOD (  28.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,19 +87,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 12 Sep 2021 23:08:06 +0300, Dmitry Osipenko wrote:
-> Memory Client should be blocked before hardware reset is asserted in order
-> to prevent memory corruption and hanging of memory controller.
-> 
-> Document Memory Client resets of Host1x, GR2D and GR3D hardware units.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../bindings/display/tegra/nvidia,tegra20-host1x.txt          | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 16/09/2021 13:48, Krzysztof Kozlowski wrote:
+> On 15/09/2021 11:11, Roger Quadros wrote:
+>> Hi Krzysztof,
+>>
+>> On 07/09/2021 15:36, Krzysztof Kozlowski wrote:
+>>> On 07/09/2021 13:32, Roger Quadros wrote:
+>>>> Check for valid gpmc,device-width, nand-bus-width and bank-width
+>>>> at one place. Default to 8-bit width if none present.
+>>>
+>>> I don't understand the message in the context of the patch. The title
+>>> says one property is optional - that's it. The message says you
+>>> consolidate checks. How is this related to the title?
+>>>
+>>> The patch itself moves around checking of properties and reads
+>>> nand-bus-width *always*. It does not "check at one place" but rather
+>>> "check always". In the same time, the patch does not remove
+>>> gpmc,device-width check in other place.
+>>>
+>>> All three elements - the title, message and patch - do different things.
+>>> What did you want to achieve here? Can you help in clarifying it?
+>>>
+>>
+>> OK I will explain it better in commit log in next revision. Let me explain here a bit.
+>>
+>> Prior to this patch it was working like this
+>>
+>> 	/* in gpmc_read_settings_dt() */
+>> 	s->device_width = 0;	/* invalid width, should be 1 for 8-bit, 2 for 16-bit */
+>> 	of_property_read_u32(np, "gpmc,device-width", s->device_width);
+>>
+>> 	/* in gpmc_probe_generic_child () */
+>> 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
+>> 		/* check for nand-bus-width, if absent set s->device_width to 1 (i.e. 8-bit) */
+>> 	} else {
+>> 		/* check for bank-width, if absent and s->device_width not set, error out */
+>> 	}
+>>
+>> So that means if all three, "gpmc,device-width". "nand-bus-width" and "bank-width" are missing then
+>> it would create an error situation.
+>>
+>> The patch is doing 3 things.
+>> 1) Make sure all DT checks related to bus width are being done at one place for better readability.
+> 
+> Not entirely. The gpmc,device-width is still done in the other place
+> because you did not remove it from the code. Unless you meant parsing of
+> gpmc,device-width not reading from DT? But then another round of checks
+> is in gpmc_cs_program_settings() so not in one place.
+
+By checking I meant parsing. But you are right, I missed the part in gpmc_cs_program_settings().
+
+> 
+> If you consolidate the checks to one place, I would expect the code to
+> be removed from other places, so from gpmc_cs_program_settings() and
+> gpmc_read_settings_dt(). Since this is not happening, the message
+> confuses me.
+> 
+>> 2) even if all 3 width properties are absent, we will not treat it as error and default to 8-bit.
+> 
+> This is not mentioned in commit msg.
+> 
+>> 3) check for nand-bus-width regardless of whether compatible to "ti,omap2-nand" or not.
+> 
+> Also not mentioned in commit msg.
+> 
+> Your commit reorganizes parsing and validating the child DT properties
+> but it does not change from "multiple place" to "one place".
+> 
+> At least I don't see it.
+
+OK. I will write a better commit log next time. Thanks for the review :)
+
+cheers,
+-roger
 
 ______________________________________________________
 Linux MTD discussion mailing list
