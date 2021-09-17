@@ -2,75 +2,61 @@ Return-Path: <SRS0=wNtg=OH=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1C6EC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Sep 2021 07:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DFA8C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Sep 2021 17:03:09 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FF0960ED7
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Sep 2021 07:18:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8FF0960ED7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1121460EC0
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Sep 2021 17:03:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1121460EC0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=mYQyBiN3OCjOCd6C0aKsbjJ+OuxMuB1J2/uo/jBQ81U=; b=bz3RLxM5V4eMUFLqmBooeTyuQ7
-	KFCcOJZbB1vaYjV43ha4LJpwAL42SlMMf3IZBVpgtO9/Z9qlrt/ESz0yQof6ZL8zPbFIP1ZNxgQ5u
-	VU9Lywr9dI5yCYrGzW7viRyqXRzcPSEIpb53Ea7CFVR7vPfIXPx6oDrEYfIdOeeAHCge9vdBFwxuf
-	J7QSbfy777EYiL79VufdBLjoKk/DOL4lGlfSEeyAw1jEgSqxOPfOY8xWdT081EqdO3yykYRB60EOy
-	kZRVDD45+8fxI/tnv4+hwoNunXCc3qr0ax8Jyxa0IMwMXpsDmtQTod++zYRW7ubbX49hJBU+6vcJe
-	NFBZdiYQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nQBlaizKyZ9xEjeH81ZIXzQOkD6MBNhx9VeybVLuDCo=; b=ftwBVzJXYS38Vw
+	8CjybZovbhEMIKWYeqll3FU8jVUSZjVM9DBmkPTWYfqAUhzk0zs7H6cO7TAjvpz3TItRtrLGVS7Yy
+	b2N455HiOhHM+phRNtECz+RM4Oxpz0g0RgWnn2kgFenOCIV0fqmQehBqXV6tuFILeuY1pkR9RorFS
+	PWJ9ctRQTsj0LIvVPfFtPRGvpHQp49hsR/d8ajpuAuM5k3tJF/7w4QlvaDBMiPXFvlpgglgcuOGAv
+	hQUKkHc83wALOuC2bhya65FlnioiU/QwHilt6b8JllOi0vqs78N0MjKHtpyWKJUFKofQvf0JfGCl8
+	1NaDq2OzfF7GAR7f49Fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mR87b-00DMwo-Cu; Fri, 17 Sep 2021 07:17:19 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mRHFW-00Ehai-NU; Fri, 17 Sep 2021 17:02:06 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mR87Y-00DMvh-8b
- for linux-mtd@lists.infradead.org; Fri, 17 Sep 2021 07:17:17 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 512AE61152;
- Fri, 17 Sep 2021 07:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1631863035;
- bh=ja8+tLdTmXfno2EXHr51WCR4GUxc76U00kgVCyJ/NGo=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=M4ewBQPtOqclfz0Ur4bXuvZKTjWgHGjINFiOawT7DeG8XrFKcauPh5bd7a9DXG/3N
- VD3oPf2BhVIcMKZ6QKsNO8wZTcWOqMEtvd6MRFK9aNK6EqzM0mnMlxuLb1D9Q4sgSY
- Iz/Pma94UcjIpkwjJ5BOumdpzaMBRwyXqOCaKIosCvsNhJqio5gxSKaQVTImdvReMi
- TEWuOMlom04nNjWa3Yw7vARiih+dcMvuHShiv5xMCjjoyhRzLyoysS+Zli9Gu2JwiE
- y4AiuolYY/i6UTP4mRGd56UFiXpoLys3x1OIbCQ1UZabOOIPJOd/ASxUtKc5OhqzQ4
- /pPszyUB5KTLw==
-Subject: Re: [PATCH v3 8/8] memory: gpmc-omap: "gpmc, device-width" DT property
- is optional
-To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, tony@atomide.com
-Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
- lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210907113226.31876-1-rogerq@kernel.org>
- <20210907113226.31876-9-rogerq@kernel.org>
- <aa465bd9-b3d5-8d75-3e59-e86c2cd093cd@canonical.com>
- <a881ac1f-2f00-e675-aea6-154b28ca6eff@kernel.org>
- <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
-From: Roger Quadros <rogerq@kernel.org>
-Message-ID: <d574837c-b42a-53be-7885-9feb7183ce96@kernel.org>
-Date: Fri, 17 Sep 2021 10:17:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mRHFS-00EhZh-OU
+ for linux-mtd@lists.infradead.org; Fri, 17 Sep 2021 17:02:04 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B0AE740006;
+ Fri, 17 Sep 2021 17:01:55 +0000 (UTC)
+Date: Fri, 17 Sep 2021 19:01:54 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Jan Hoffmann <jan@3e8.eu>
+Cc: Daniel Kestrel <kestrelseventyfour@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <20210917190154.76203a9a@xps13>
+In-Reply-To: <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
+References: <20210808072643.GA5084@ubuntu>
+ <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <35643319-e3b0-bde1-c51b-57c3b5474146@canonical.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210917_001716_396719_D174CEBA 
-X-CRM114-Status: GOOD (  28.49  )
+X-CRM114-CacheID: sfid-20210917_100202_979342_864FB5EB 
+X-CRM114-Status: GOOD (  26.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,86 +68,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-On 16/09/2021 13:48, Krzysztof Kozlowski wrote:
-> On 15/09/2021 11:11, Roger Quadros wrote:
->> Hi Krzysztof,
->>
->> On 07/09/2021 15:36, Krzysztof Kozlowski wrote:
->>> On 07/09/2021 13:32, Roger Quadros wrote:
->>>> Check for valid gpmc,device-width, nand-bus-width and bank-width
->>>> at one place. Default to 8-bit width if none present.
->>>
->>> I don't understand the message in the context of the patch. The title
->>> says one property is optional - that's it. The message says you
->>> consolidate checks. How is this related to the title?
->>>
->>> The patch itself moves around checking of properties and reads
->>> nand-bus-width *always*. It does not "check at one place" but rather
->>> "check always". In the same time, the patch does not remove
->>> gpmc,device-width check in other place.
->>>
->>> All three elements - the title, message and patch - do different things.
->>> What did you want to achieve here? Can you help in clarifying it?
->>>
->>
->> OK I will explain it better in commit log in next revision. Let me explain here a bit.
->>
->> Prior to this patch it was working like this
->>
->> 	/* in gpmc_read_settings_dt() */
->> 	s->device_width = 0;	/* invalid width, should be 1 for 8-bit, 2 for 16-bit */
->> 	of_property_read_u32(np, "gpmc,device-width", s->device_width);
->>
->> 	/* in gpmc_probe_generic_child () */
->> 	if (of_device_is_compatible(child, "ti,omap2-nand")) {
->> 		/* check for nand-bus-width, if absent set s->device_width to 1 (i.e. 8-bit) */
->> 	} else {
->> 		/* check for bank-width, if absent and s->device_width not set, error out */
->> 	}
->>
->> So that means if all three, "gpmc,device-width". "nand-bus-width" and "bank-width" are missing then
->> it would create an error situation.
->>
->> The patch is doing 3 things.
->> 1) Make sure all DT checks related to bus width are being done at one place for better readability.
-> 
-> Not entirely. The gpmc,device-width is still done in the other place
-> because you did not remove it from the code. Unless you meant parsing of
-> gpmc,device-width not reading from DT? But then another round of checks
-> is in gpmc_cs_program_settings() so not in one place.
-
-By checking I meant parsing. But you are right, I missed the part in gpmc_cs_program_settings().
-
-> 
-> If you consolidate the checks to one place, I would expect the code to
-> be removed from other places, so from gpmc_cs_program_settings() and
-> gpmc_read_settings_dt(). Since this is not happening, the message
-> confuses me.
-> 
->> 2) even if all 3 width properties are absent, we will not treat it as error and default to 8-bit.
-> 
-> This is not mentioned in commit msg.
-> 
->> 3) check for nand-bus-width regardless of whether compatible to "ti,omap2-nand" or not.
-> 
-> Also not mentioned in commit msg.
-> 
-> Your commit reorganizes parsing and validating the child DT properties
-> but it does not change from "multiple place" to "one place".
-> 
-> At least I don't see it.
-
-OK. I will write a better commit log next time. Thanks for the review :)
-
-cheers,
--roger
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSmFuLAoKamFuQDNlOC5ldSB3cm90ZSBvbiBUaHUsIDE2IFNlcCAyMDIxIDIxOjM4OjI2ICsw
+MjAwOgoKPiBIZWxsbywKPiAKPiBDb25maWd1cmF0aW9uIG9mIHRoZSBFQ0MgZW5naW5lIHR5cGUg
+dXNpbmcgZGV2aWNlIHRyZWUgaGFzIGFjdHVhbGx5Cj4gd29ya2VkIGJlZm9yZS4gSSBhbSB1c2lu
+ZyBPcGVuV3J0IG9uIGEgRnJpdHpib3ggNzM2MiBTTCwgd2hpY2ggaGFzIGEKPiBNaWNyb24gMjlG
+MUcwOEFCQURBIGZsYXNoIGNoaXAuIFRoZSBib290bG9hZGVyIG9mIHRoZSBkZXZpY2UgdXNlcyBv
+bi1kaWUKPiBFQ0MsIHNvIHRoYXQgaGFzIHRvIGJlIHVzZWQgZm9yIExpbnV4IGFzIHdlbGwuIEl0
+IGlzIGNvbmZpZ3VyZWQgaW4gRFRTCj4gdXNpbmcgIm5hbmQtZWNjLW1vZGUgPSAib24tZGllIjsi
+LiBUaGlzIHdvcmtlZCBmaW5lIHdpdGgga2VybmVsIDUuNC4KPiBIb3dldmVyLCBhZnRlciBzd2l0
+Y2hpbmcgdG8ga2VybmVsIDUuMTAgaXQgaXMgaWdub3JlZCBhbmQgc29mdHdhcmUgRUNDCj4gaXMg
+dXNlZCBpbnN0ZWFkLgo+IAo+IElmIEkgdW5kZXJzdGFuZCB0aGlzIGNvcnJlY3RseSwgdGhlIHNp
+dHVhdGlvbiBpcyBhcyBmb2xsb3dzOgo+IAo+IE9yaWdpbmFsbHksIHh3YXktbmFuZCBkaWQgc2V0
+IGRlZmF1bHRzIGZvciBFQ0MgbW9kZSBhbmQgYWxnb3JpdGhtLCBidXQKPiBkaWZmZXJlbnQgdmFs
+dWVzIGNvdWxkIGJlIGNvbmZpZ3VyZWQgdXNpbmcgZGV2aWNlIHRyZWUuCj4gCj4gQ29tbWl0IGQ3
+MTU3ZmY0OWE1YiAoIm10ZDogcmF3bmFuZDogVXNlIHRoZSBFQ0MgZnJhbWV3b3JrIHVzZXIgaW5w
+dXQKPiBwYXJzaW5nIGJpdHMiKSBicm9rZSB0aGVzZSBkZWZhdWx0IHZhbHVlcywgYXMgdGhlIEVD
+QyBhbGdvcml0aG0gaXMgbm93Cj4gdW5jb25kaXRpb25hbGx5IHNldCBmcm9tIHRoZSB1c2VyIGNv
+bmZpZ3VyYXRpb24gaW4gcmF3bmFuZF9kdF9pbml0Lgo+IFByZXZpb3VzbHksIHRoZSBkZWZhdWx0
+IHZhbHVlIHdhcyBvbmx5IG92ZXJ3cml0dGVuIGlmIHRoZSBkZXZpY2UgdHJlZQo+IGFjdHVhbGx5
+IGNvbnRhaW5lZCBhIHZhbHVlLgo+IAo+IFRoaXMgaXMgZml4ZWQgaW4gZDUyNTkxNGI1YmQ4ICgi
+bXRkOiByYXduYW5kOiB4d2F5OiBNb3ZlIHRoZSBFQ0MKPiBpbml0aWFsaXphdGlvbiB0byAtPmF0
+dGFjaF9jaGlwKCkiKS4gSG93ZXZlciwgdGhpcyBtYWtlcyBpdCBpbXBvc3NpYmxlCj4gdG8gY29u
+ZmlndXJlIHRoZSBFQ0MgZW5naW5lIHR5cGUgaW4gdGhlIGRldmljZSB0cmVlLCBhcyBpdCBpcyBu
+b3cKPiBvdmVyd3JpdHRlbiBieSB0aGUgZGVmYXVsdCB2YWx1ZSBpbiB4d2F5X2F0dGFjaF9jaGlw
+Lgo+IAo+IEkgYW0gbm90IHN1cmUgaWYgdGhpcyBwYXRjaCBpcyB0aGUgYmVzdCBhcHByb2FjaCBm
+b3IgZml4aW5nIHRoaXMsIGFzIGl0Cj4gd291bGQgYWdhaW4gY2F1c2UgYnJlYWthZ2UgZm9yIGFu
+eW9uZSB3aG8gcmVsaWVzIG9uIHRoZSBleGlzdGluZwo+IGRlZmF1bHQgdmFsdWUuIEFuZCB0aGlz
+IGtpbmQgb2YgYnJlYWthZ2Ugc2VlbXMgdG8gaGF2ZSBiZWVuIHRoZSByZWFzb24KPiBmb3IgbW92
+aW5nIHRoZSBkZWZhdWx0IHZhbHVlcyB0byBhdHRhY2hfY2hpcCBpbiB0aGUgZmlyc3QgcGxhY2Ug
+KHNlZQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMDExMDUwODQ5MzkuNzJlYTZi
+ZmRAeHBzMTMvICkuCj4gCj4gQXMgc2ltaWxhciBjaGFuZ2VzIHdlcmUgYXBwbGllZCB0byBvdGhl
+ciBOQU5EIGRyaXZlcnMsIHRoZSBzYW1lIGlzc3VlCj4gcHJvYmFibHkgYWxzbyBleGlzdHMgdGhl
+cmUuIE1heWJlIGl0IG1ha2VzIHNlbnNlIHRvIGFkZCBhIHByb3BlciBmaXgKPiBmb3IgYWxsIG9m
+IHRoZW0/CgpJIGFtIG5vdCBzdXJlIHRvIHVuZGVyc3RhbmQgeW91ciBtZXNzYWdlIGFzIGFuc3dl
+ciB0byB0aGlzIHRocmVhZC4KVGhlcmUgYXJlIHR3byBwcm9ibGVtcyBoZXJlOgoxLyBUaGUgRFQg
+dmFsdWVzIG5vdCBiZWluZyB0YWtlbiBpbnRvIGFjY291bnQKMi8gS2VzdHJlbCdzIGlzc3VlIHdp
+dGggdHdvIGRpZmZlcmVudCBpbnRlZ3JhdGlvbnMgd2l0aCBubyB3YXkgdG8KZGlzdGluZ3Vpc2gg
+YmV0d2VlbiB0aGVtLgoKMS8gSGFzIGFscmVhZHkgYmVlbiBmaXhlZCAoYXQgbGVhc3QgdGhhdCBp
+cyB3aGF0IEkgdGhpbmspCjIvIENhbm5vdCBlYXNpbHkgYmUgZml4ZWQgYW5kIEkgZG9uJ3QgdGhp
+bmsgdGhlcmUgaXMgYW55dGhpbmcgd2UgY2FuIGRvCmJlc2lkZXMgdGhlIG1hbnVmYWN0dXJlciAi
+Zml4aW5nIiB0aGUgYm9hcmQgZGVzY3JpcHRpb24uCgpBbSBJIG1pc3Npbmcgc29tZXRoaW5nPwoK
+VGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
