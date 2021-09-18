@@ -2,85 +2,78 @@ Return-Path: <SRS0=Yjms=OI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_ADSP_ALL,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16C93C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 18 Sep 2021 07:24:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DB2CC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 18 Sep 2021 21:28:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA7DF60238
-	for <linux-mtd@archiver.kernel.org>; Sat, 18 Sep 2021 07:24:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA7DF60238
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+	by mail.kernel.org (Postfix) with ESMTPS id 11E4C60F45
+	for <linux-mtd@archiver.kernel.org>; Sat, 18 Sep 2021 21:28:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 11E4C60F45
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=3e8.eu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BEJ0PV33+w6CUX3qtlkysUt+7sydYUCjMxb06kwKrN4=; b=CZARMELS1lKxD1
-	NWhNcuZG5mHJWAWB8iIPO4M9SAJVUDrr3slKexCQdxjdne9aPAVBryu9wnZywujKqBtrm8B5YaXAP
-	oQK/6K3DV0SXUPqI3xpEJeL4xHLNGBHUhyVxjmMZT7egj5ql9yTN3nGJEqMoU3SkQizjU+7aTfrNr
-	X0qtF10J+/3M8ndgEjnfjIDfJk6m6Jng+aiyjldD1EmaDDh1KpuVIxJcp/hN6yzVNJI2/s1pS5tWA
-	O4G4/K4O4ML4pfbyKiDGFu5YBUbQ1QcYS5bH2a1arb/IO6ipIt3jBnBftjnxTb4xpGu4lApZCA/mJ
-	EhDu0VedahebZ7QskhZw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:Subject:From:References:Cc:To:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=hQc9l7LFxenj2V7+3oJjQYy3qYQigy0+XYKIC2I6Mic=; b=yTnx+RWY9EMpg+QiNBl6odNpob
+	rI84QJX1dLF29K9CSXT7EfQMjGoEMHjVkuEYfr5xKkkpc6DGJ11w9neAJnY2OBOytl3XXiZW+a5Tz
+	MWUI0VpAi472i8UxIq5lBE6TudjedKmDReEcVoKXBCu3tNk+Je/d8AQd+fUp1VicIx8wCM8JzwnEW
+	eYDmZW8SV5Ut/+Wax95LtZQ0LCGAyP4LJlAloNjlhEfoaZ1uOXLbLETIbluIDB1BdLthyH+Cn1t7u
+	4I+IB1sCDJdOIQrXTCgaMkY1OzPSbsV4Tukh68puxqcckDmhtXZFxB4MS8tLnMJnfVhBbFm6Z+pHa
+	S/r0PUvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mRUgp-00FXEn-9U; Sat, 18 Sep 2021 07:23:11 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1mRhra-00GNmI-DU; Sat, 18 Sep 2021 21:27:10 +0000
+Received: from srv4.3e8.eu ([2001:67c:12a0:200::2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mRUgj-00FXE0-Pm
- for linux-mtd@lists.infradead.org; Sat, 18 Sep 2021 07:23:07 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id
- k23-20020a17090a591700b001976d2db364so9014610pji.2
- for <linux-mtd@lists.infradead.org>; Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=0x0f.com; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=3/DBi7RwM1M3KB0MW8LaNgi4t6NDHut6TlL12sSGe3I=;
- b=ee4W6IXi42isoeIZ0wephrXbvBx4HHDA254kQiLwvCc6GiGEzIIV5369o3RPPk5p9z
- wwn/pFJ7gXHA7JDHoULYnmmBTWeS7t6qekNjjx5bSmoujWlpXvsGpDLVaxups4Gigetw
- p7AgFhLyHig56IQMPpXtTsJ5VtzdgZIdOOnDM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=3/DBi7RwM1M3KB0MW8LaNgi4t6NDHut6TlL12sSGe3I=;
- b=r5m+BllYoIqXIbM0Puct3nMR+QuiEnrad+iWnrsYHog5Iza9A2e+FytpMGfmGoxE9T
- SXHiRXfDe8yKyRZJrMUlS7eICQruyGF68goO5yevGNiHGublq0TgXwBz3EJ/i92eGDdo
- n8FUcfnOxY+RjS1Z7bQ/Lcrh2tSWKpQYCLONsevXI0jPbwqP7kMh0r+8RQFIOEj2ztiT
- 73yEiIPxjah778C4khu7zlmI1PYkSRZ6/PbfWUmwg32MTyY8hLh1ao898cQHWpgRDPXx
- 9m/XwIL+8FmfAmfqnI6HaPZXaAbrkhYBhII+c1jsammsXlVmxrNCnxbHqbhXffbRezX5
- dCxA==
-X-Gm-Message-State: AOAM530W3vgqdT7KAk/1f7zgOC5juqC3ftZtezLyneu6sIfki5rGDdVJ
- lYjMR4xVRfIuJN4rxG2BVNVUcst9tOBmaA==
-X-Google-Smtp-Source: ABdhPJxYHdiYIx+50COYvEYU/ZRBpmNm7i5m7K/Gj8ydbBTNU4S0LYI1x8J2scs4T700kMM1ysSJ1g==
-X-Received: by 2002:a17:902:7103:b0:13d:9a6f:d158 with SMTP id
- a3-20020a170902710300b0013d9a6fd158mr2562644pll.49.1631949783096; 
- Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
-Received: from shiro.work (p864106-ipngn200510sizuokaden.shizuoka.ocn.ne.jp.
- [180.9.58.106])
- by smtp.googlemail.com with ESMTPSA id b7sm8746411pgs.64.2021.09.18.00.23.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Sep 2021 00:23:02 -0700 (PDT)
-From: Daniel Palmer <daniel@0x0f.com>
-To: linux-mtd@lists.infradead.org,
-	tudor.ambarus@microchip.com
-Cc: michael@walle.cc, p.yadav@ti.com, linux-kernel@vger.kernel.org,
- Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] mtd: spi-nor: Add support for ZB25VQ128
-Date: Sat, 18 Sep 2021 16:22:56 +0900
-Message-Id: <20210918072256.3505379-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.33.0
+ id 1mRhrW-00GNlR-8Y
+ for linux-mtd@lists.infradead.org; Sat, 18 Sep 2021 21:27:08 +0000
+Received: from [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734]
+ (p200300c6cf1205a09abc95836f0ac734.dip0.t-ipconnect.de
+ [IPv6:2003:c6:cf12:5a0:9abc:9583:6f0a:c734])
+ (using TLSv1.3 with cipher TLS_CHACHA20_POLY1305_SHA256 (256/256 bits))
+ (No client certificate requested)
+ by srv4.3e8.eu (Postfix) with ESMTPSA id DC4E4600A9;
+ Sat, 18 Sep 2021 23:26:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3e8.eu;
+ s=mail20170724; t=1632000412;
+ bh=C/aPzaf95uZFHaGAuqSsJ/yKi15mexvt0yMVqlpMCc0=;
+ h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+ b=aCEWlS9GqO3Zjs5Zm5GbmIGyRXk7bGcFFftlUj+/z2+r7HjfpzrEPg5W3m9O6CI85
+ +runf7LnW9zphnEsEY2JfxEee0aPeTTP9eWnI/4zAwGD9kN57g2MoCO0KqaCCfyNH0
+ byL6Brvzge3wRPTXeQ0rG9asWgzstoEnsoWujlDWpGV1uZvP37HwCvRf2/zLN7WM5g
+ hqjrB1QaTQjb9WZ9oq20EpPYOsfioXCkTknQ86+6yTxpWB8cYg5hfxoE7iutoWkBcD
+ EiyRl/0QK/mfa+tzqvoeJimTFxLrVc6gvoLVxR6ahJQyaBFTA/a09/HTEqZh+e5x65
+ MF8kl5lbz3WmA==
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Daniel Kestrel <kestrelseventyfour@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210808072643.GA5084@ubuntu>
+ <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu> <20210917190154.76203a9a@xps13>
+ <e9dd0653-139f-749b-c088-e756ee2d2132@3e8.eu> <20210917213246.319e60cb@xps13>
+From: Jan Hoffmann <jan@3e8.eu>
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <14eb0cb7-b0af-87bf-b9a5-3e35eeb43f54@3e8.eu>
+Date: Sat, 18 Sep 2021 23:26:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210917213246.319e60cb@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210918_002305_987385_3938E9FF 
-X-CRM114-Status: GOOD (  15.50  )
+X-CRM114-CacheID: sfid-20210918_142706_639434_66CF52A7 
+X-CRM114-Status: GOOD (  14.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,91 +85,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for the ZBIT ZB25VQ128 128MBit SPI NOR
-flash.
-
-Link: http://www.cipatelje.eu/pdf/ZB25VQ128.pdf
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/core.c   |  1 +
- drivers/mtd/spi-nor/core.h   |  1 +
- drivers/mtd/spi-nor/zbit.c   | 21 +++++++++++++++++++++
- 4 files changed, 24 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/zbit.c
-
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 6b904e439372..a6f3646824cb 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
- spi-nor-objs			+= winbond.o
- spi-nor-objs			+= xilinx.o
- spi-nor-objs			+= xmc.o
-+spi-nor-objs			+= zbit.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- 
- obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index cc08bd707378..75f6ac9485b9 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1846,6 +1846,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_winbond,
- 	&spi_nor_xilinx,
- 	&spi_nor_xmc,
-+	&spi_nor_zbit,
- };
- 
- static const struct flash_info *
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 3348e1dd1445..ad3b34a3b80f 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -489,6 +489,7 @@ extern const struct spi_nor_manufacturer spi_nor_sst;
- extern const struct spi_nor_manufacturer spi_nor_winbond;
- extern const struct spi_nor_manufacturer spi_nor_xilinx;
- extern const struct spi_nor_manufacturer spi_nor_xmc;
-+extern const struct spi_nor_manufacturer spi_nor_zbit;
- 
- extern const struct attribute_group *spi_nor_sysfs_groups[];
- 
-diff --git a/drivers/mtd/spi-nor/zbit.c b/drivers/mtd/spi-nor/zbit.c
-new file mode 100644
-index 000000000000..d240dd65d249
---- /dev/null
-+++ b/drivers/mtd/spi-nor/zbit.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021, Daniel Palmer<daniel@thingy.jp>
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info zbit_parts[] = {
-+	/* zbit */
-+	{ "zb25vq128", INFO(0x5e4018, 0, 64 * 1024, 256,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_zbit = {
-+	.name = "zbit",
-+	.parts = zbit_parts,
-+	.nparts = ARRAY_SIZE(zbit_parts),
-+};
--- 
-2.33.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdcOobCwKCj4gWWVzIHRoaXMgd2FzIG15IHVuZGVyc3RhbmRpbmcsIHRoYXQgb25seSBz
+b2Z0d2FyZSBFQ0MgZW5naW5lIHdhcwo+IHN1cHBvcnRlZC4gVGhlIG1haW5saW5lIGRyaXZlciBz
+aG93cyBhYnNvbHV0ZWx5IG5vIHNpZ25zIG9mIGhhcmR3YXJlCj4gRUNDIGVuZ2luZSBzdXBwb3J0
+Lgo+IAo+IFBlcmhhcHMgaG93ZXZlciB5b3UgbWVhbiB0aGF0IG9uLWRpZSBFQ0MgZW5naW5lIGFy
+ZSBub3Qgc3VwcG9ydGVkCj4gYW55bW9yZSBiZWNhdXNlIG9mIHRoZSBlbmdpbmVfdHlwZSBiZWlu
+ZyBzZXQgaW4gYXR0YWNoX2NoaXAoKT8KClllcywgdGhpcyBpcyBleGFjdGx5IHRoZSBpc3N1ZS4K
+Cj4gSWYgeWVzIHRoZW4gaW5kZWVkIHRoZXJlIGlzIHNvbWV0aGluZyB0byBkbywgcGVyaGFwcyBj
+aGVja2luZyBpZiBhbgo+IGVuZ2luZSBoYXMgYmVlbiBhbHJlYWR5IHNldCBpcyBlbm91Z2g/IFlv
+dSBjYW4gdHJ5IHNvbWV0aGluZyBsaWtlOgo+IAo+IGlmIChlbmdpbmVfdHlwZSA9PSB1bmtub3du
+KQo+IAllbmdpbmVfdHlwZSA9IHNvZnQ7CgpDaGVja2luZyBmb3IgTkFORF9FQ0NfRU5HSU5FX1RZ
+UEVfSU5WQUxJRCBkb2Vzbid0IHdvcmssIGFzIHRoZSBlbmdpbmUKdHlwZSBpcyBhbHJlYWR5IHNl
+dCB0byBOQU5EX0VDQ19FTkdJTkVfVFlQRV9PTl9IT1NUIGJ5IHJhd25hbmRfZHRfaW5pdC4KVGhl
+IGNvZGUgdGhlcmUgc2VlbXMgdG8gZXhwZWN0IHRoYXQgY2hpcC0+ZWNjLmVuZ2luZV90eXBlIGNv
+bnRhaW5zIHRoZQpkZWZhdWx0IHZhbHVlLCB3aGljaCBpcyBubyBsb25nZXIgdGhlIGNhc2UgYWZ0
+ZXIgY29tbWl0IDUyNTkxNGI1YmQ4CigibXRkOiByYXduYW5kOiB4d2F5OiBNb3ZlIHRoZSBFQ0Mg
+aW5pdGlhbGl6YXRpb24gdG8gLT5hdHRhY2hfY2hpcCgpIikuCgpUaGUgZm9sbG93aW5nIGluIGF0
+dGFjaF9jaGlwIHdvcmtzOgoKaWYgKGNoaXAtPmVjYy5lbmdpbmVfdHlwZSA9PSBOQU5EX0VDQ19F
+TkdJTkVfVFlQRV9PTl9IT1NUKQoJY2hpcC0+ZWNjLmVuZ2luZV90eXBlID0gTkFORF9FQ0NfRU5H
+SU5FX1RZUEVfU09GVDsKCkhvd2V2ZXIsIHRoaXMgd2lsbCBhbHNvIHNpbGVudGx5IHVzZSB0aGUg
+c29mdHdhcmUgRUNDIGVuZ2luZSBpZiBhbnlvbmUKYWN0dWFsbHkgY29uZmlndXJlcyB0aGUgb24t
+aG9zdCBoYXJkd2FyZSBFQ0MgZW5naW5lIGluIHRoZSBkZXZpY2UgdHJlZQood2hpY2ggaXMgb2Yg
+Y291cnNlIHVuc3VwcG9ydGVkIGZvciB4d2F5KS4KClRoYW5rcywKSmFuCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
