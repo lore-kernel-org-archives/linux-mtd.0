@@ -2,79 +2,71 @@ Return-Path: <SRS0=k7nY=OK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08DDDC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 14:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E35C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 14:45:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A56DB610CE
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 14:36:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A56DB610CE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id A88F360F46
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 14:45:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A88F360F46
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0NIOMT+/abZ1k56w6J2nlUuU0A6pusAhYlMj2a1Unrs=; b=UiXWgau8/AboVs
-	ci4MGVY3HAQJ5TVBzXfnjNCWVOC3TLt7ItacwF0UU1pRLm8rav21PQHjBskbRMfd0FAatGcHKXdBM
-	qz8dbXUMwslmW0mrA/lDGd7t3RgK6t0LEcJ9x4wJBrjYqUNN2AM2dggCxa4XFPK46zqaLbGFXs7C8
-	M4zXmjEbnDOu9+C+uQoIwiY08D9cGnWt0Z1CtQPNknRNqqhWjkIvMXNs0QGX1AAYwxhrS5E1xhiIM
-	mgAFsfuMyLupasogfZWne+rGwrKK6IiJ28xXPTM4iXc6X9EPpBZO3AEriy+rHF1GA0aM00hjqqRcF
-	HKvuM0d+NQ9uLi7wJcbA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MscncQWceFFX79x09EwKPD3qOyy7yZBzaksgiLvA278=; b=gQH9NG4kASfO2rmXRc3UvhGh+0
+	cb/uTg2h1lQ0mhy0f+WJ0P4ZmFfaX5yB6RPdZomuFzJiQdz8W0u3V1KQuUHLq/F9GABOHQNVXuEkC
+	VDSI8cuEPMMvpD74NOWuWj65gR/2tQvSBaEROKCicSdOBkFbMdsgXt+lBtgd7n43rHvYp+C3KaTyb
+	Hn+czn3cMDU7Lo7wNFLg0uT8L+9XQew+Y4izlyxoqGLx8mt1X258B/aNX8bIPiiRNmanZqU9fcBNE
+	3YO1SkQ+NgHsiZoWucdTyALqK9fiFJhvMZ3rYcBYlV7H8NOnjmJzd7cw3y3K2NqJlnJmlXxvudhRM
+	kMwnStaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSKOA-001xjZ-1u; Mon, 20 Sep 2021 14:35:22 +0000
-Received: from mail-ua1-f44.google.com ([209.85.222.44])
+	id 1mSKXZ-00216M-2u; Mon, 20 Sep 2021 14:45:05 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSKLg-001wVS-B9; Mon, 20 Sep 2021 14:32:49 +0000
-Received: by mail-ua1-f44.google.com with SMTP id 109so11262726uag.13;
- Mon, 20 Sep 2021 07:32:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=d1fA9sD4Re6cy9QvKdyaIPvjv83NrwqIwiME67fS8gw=;
- b=uOsE6ZyzJ/ZFAJT8yYI2/STSemRpSyhfTNdPFXgv9qHMZlSHFBOm4Ux9BCrye1QkYB
- kUzfkz20J+p7cn1O30mU5py2TX9QqmiHdWCGwzsTwMIZqKh0iXCOP1oE2lFG9tbp+8Uw
- ZqyWjacevKPzm1kPWAVoLgHTix7w15iyeihO87C94TUFFfpYRLz+6Hyq7tJdxxWcbEoP
- 1dUf62cg96xsr8JdR2WWMSHpF7/Ds6nIlHBc7aoZLHeUoK33ImH2cZ0zaasyi8u+ZJN2
- 1kLqnNNC/3JusRcPpKpOZRWxw6JllAcmcMcpd1Jr5rxMFUXfNwRB2+GAR3ORCBvVnlA/
- 2b3g==
-X-Gm-Message-State: AOAM532ecTew6w0HGrlBa9x+QO/xijAL5FSc646fpJX+wVdQZfI4jr74
- gs7RlSV9yCT+XdblHfZBhuNxMjKDp2PFl1sJiek=
-X-Google-Smtp-Source: ABdhPJyMCIfZZUlLRlGgiTjNjprimvUPIgx9dDOJ6a13gJeOJZt/lIf4W4G47j5QN8TUNgkF0wEBIumzqn+a8381x10=
-X-Received: by 2002:ab0:311a:: with SMTP id e26mr12181930ual.122.1632148366041; 
- Mon, 20 Sep 2021 07:32:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920132830.152802-1-krzysztof.kozlowski@canonical.com>
- <20210920132830.152802-4-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210920132830.152802-4-krzysztof.kozlowski@canonical.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 20 Sep 2021 16:32:34 +0200
-Message-ID: <CAMuHMdX5vhihbKrXh4x_VyA2Cc=nR+53g_fZPHsuHVF56rBvMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] riscv: dts: microchip: drop unused pinctrl-names
-To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+ id 1mSKXW-00215O-Dn
+ for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 14:45:03 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83BC760F6B;
+ Mon, 20 Sep 2021 14:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1632149102;
+ bh=7cDcGS8H3dVH16lHnrmM5SjCWdPr+91GxGQ+fdE0o4o=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=H4pyCnG33eGm6pwYU4CfGQyxRPxkIWjJD/Hl4BrjL+/FG3RuRGoXE3Vc4LmzOClR2
+ nZrdyOSYKZecUwPaJNfYA62XbP8KTgeNulG6YZwtCTeoYX490WAyUPt5dyolG4ShXF
+ UcYgwJRwcQUqqQGc4arypKSeP9MblRKHv+hBJaPZVEZA9sL8cUct0l6uYBIJ6O7oMW
+ fq1l7GzJnQoZ9rHzG1J3hK2CMSuMvgkZHTS4NnlxcXCSxffnMrifZ9jA1Cv5ohJUd9
+ EbYCMmd2fVmWsEycF5XI9bDl0xaNrqruag0dRfxYYwgkuvfdxy91Uf3lesM+sLK17k
+ Zj6909SBS+dBA==
+Date: Mon, 20 Sep 2021 15:44:18 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Apurva Nandan <a-nandan@ti.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, 
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor.dooley@microchip.com>, 
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- linux-riscv <linux-riscv@lists.infradead.org>
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, michael@walle.cc
+Subject: Re: [PATCH v2 2/2] dt-bindings: snps,dw-apb-ssi: Use 'flash' node
+ name instead of 'spi-flash' in example
+Message-ID: <20210920144418.GI4192@sirena.org.uk>
+References: <20210920142713.129295-1-a-nandan@ti.com>
+ <20210920142713.129295-3-a-nandan@ti.com>
+MIME-Version: 1.0
+In-Reply-To: <20210920142713.129295-3-a-nandan@ti.com>
+X-Cookie: diplomacy, n:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210920_073248_431344_3ACB62AC 
-X-CRM114-Status: GOOD (  19.36  )
+X-CRM114-CacheID: sfid-20210920_074502_590318_E17B5454 
+X-CRM114-Status: GOOD (  11.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,51 +78,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2684561985262223653=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Krzysztof,
 
-On Mon, Sep 20, 2021 at 3:28 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> pinctrl-names without pinctrl-0 does not have any sense:
->
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: sdhc@20008000: 'pinctrl-0' is a dependency of 'pinctrl-names'
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> ---
->
-> Changes since v1:
-> 1. Add review.
+--===============2684561985262223653==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lrvsYIebpInmECXG"
+Content-Disposition: inline
 
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -33,6 +33,7 @@ properties:
->        - items:
->            - enum:
->                - issi,is25lp016d
-> +              - issi,is25wp256
->                - micron,mt25qu02g
->                - mxicy,mx25r1635f
->                - mxicy,mx25u6435f
 
-This one looks like an accidental addition?
+--lrvsYIebpInmECXG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Gr{oetje,eeting}s,
+On Mon, Sep 20, 2021 at 07:57:13PM +0530, Apurva Nandan wrote:
+> Change the nodename in the example with spi-nand from 'spi-flash@1'
+> to 'flash@1' to make the schema uniform with both spi-nand and spi-nor
+> flashes. jedec,spi-nor.yaml uses 'flash@' nodename for spi-nor flashes,
+> so make the spi-nand examples in dt-bindings use it too for uniformity.
 
-                        Geert
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--lrvsYIebpInmECXG
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFInkEACgkQJNaLcl1U
+h9B3kgf8C0+e9onyf5hzlsH/Wy+bz8cm0v2pE7e7Jmbmb9T+l6SG5uVDV5XFg+hT
+TRA+OdGbxzmVJmozgcBeJW3rZHyfcv38uWuAJp7iQx6HjtOB5zRskChX76HvZUHE
+IlFilNB2KEW33E3eC+vBV8fzzwoG2Uu22OAHLAEIwZJmb+GdeQ5xPeGMuzjhdfva
+QCTEAOSopxfcphryTUeWGGLl5roXvR/8QCuySX/SOD7/5IIPmPnNo2mxmc+AdlfL
+rMAVTMBlzNvxY7MU2/zv75OEp2dgAixWaw+BhNKA5ns2HaNNTxGpJ1t3/oY0+3H7
+VXHvTG5vturPUxiDm/v7b9D5RDzHrw==
+=4fpd
+-----END PGP SIGNATURE-----
+
+--lrvsYIebpInmECXG--
+
+
+--===============2684561985262223653==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2684561985262223653==--
+
