@@ -2,85 +2,74 @@ Return-Path: <SRS0=k7nY=OK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10400C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 21:19:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F50CC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 21:58:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA0A161166
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 21:19:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CA0A161166
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id ACD88603E5
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 21:58:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ACD88603E5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nH6nBFcH968/OvE3BDO5TahImWM3hxS2L0NwDp3bo18=; b=qAWTmmgA4s/DmY
-	siQkIuTAgtqhfGllrgP5Vf4TfTkg2bjNKnSwBRpXJhXpyYANz+FUyPCke+1cZOJ/B+ZHDNItV9PKH
-	XtPWbV4E01c8xOKulhhcxjpiKEBtwaC6THs1l0/GdFv0IROe8teR0W/KtdznMsvZiAYa1KevI30we
-	hifCy6DdN25d6QuDp0NT31d8F2nukt+v3tY6JD61+X8Eevew1AdW5s6fRhNaL4/jI1PuRkCGDR/Qs
-	1OteKQa0awNgY8Ol2fiVqZJQ5kpfJ4uIaEgpeYgNjR/82FI0uKarOKJjj4nUQLMfFSdqIDsR8Kvys
-	tSzhs2BNfmp6iCH8LnCg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=hdQFin5jsf1oJ7Q7giLmpmZx6jpk0kUUFhEwibPTYfc=; b=zQvaAz5Eet+QIfn1sbyjX51Ux2
+	TcwlB2M/+DEzls3CMv14av7B1zYRjCXJP76L7ghnEC4aogaGAWbCU2Fqz1/iK+WR/fgVq2X6SAfpX
+	NOx9CfehcmfYZPi2rMnlt5A1+mZUqiD//OGs21p2YlqkrLc6hlQWqMffxBRAejwVIbl/9P4gzJTCC
+	/FQhPyR78VmVSlLoYvUEZ0xyg302zlrQ3pEoNRcctcGGjzYwOXsKLPa79jZ7IPOVkvRUlT8/Drs9u
+	47yNUExxmYuJHJlnkCyC1P3us0Ofm/9wcwZnXviL3JVLMBNuwT0Ly/aXPzSc4mQahIDhvrE7GFSiH
+	WAyiRtAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSQgx-0039hl-1p; Mon, 20 Sep 2021 21:19:11 +0000
-Received: from mail-ot1-f51.google.com ([209.85.210.51])
+	id 1mSRIU-003DBO-EC; Mon, 20 Sep 2021 21:57:58 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSQgu-0039gz-5t
- for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 21:19:09 +0000
-Received: by mail-ot1-f51.google.com with SMTP id
- 77-20020a9d0ed3000000b00546e10e6699so14382353otj.2
- for <linux-mtd@lists.infradead.org>; Mon, 20 Sep 2021 14:19:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=aDwWZhZ+JqLWINJ9PBWjjprFme0I94GN+ZK2QmZSREg=;
- b=WY5bd3waNUJ7RQNGL2bYSjf35febZ5+WLmL6sVHTCoZh/pJcXENw7sZzzB4KdDIFw7
- 4PnyxpJUwwn1Ts8Z9BnGo7UArR1u16Hj0XOvPa3zyHMDdE4zdnov9+vXI0nr6RVUmwJI
- 0ylF/kKiUbTvdV7A5egxem5q28EDbwup9ZHC6ZL2BTQGByfl+xrFEMy+NxfLQhPCsdJH
- OArOnkZaQNwk8I/2fAaLFiQtEkc9RsoECUgBsH4NtlXLykV0JfURVqUnYraqpq5s4zql
- XCdRmvcRqYA0diEMyd2uAl9NfgHj/dvsxt93q+8Wp4zsqLCZr+pxBnUnM6Ysc8V3/nub
- 4vXw==
-X-Gm-Message-State: AOAM53054F20ZowdffvGwS5hcovVdYYY5ASnIlMI8paVyPWOJflJzjAP
- o6WES5JVXzvKZmD8mdDHLA==
-X-Google-Smtp-Source: ABdhPJx3f4YFLCskuwGNYhf8vPy8jZ1Sjzlx0HNyVZO5/+wLIc/kmVv7xC42KpluZANdMdzendDhWg==
-X-Received: by 2002:a05:6830:43a0:: with SMTP id
- s32mr22937285otv.284.1632172746595; 
- Mon, 20 Sep 2021 14:19:06 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id j17sm3737710ots.10.2021.09.20.14.19.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Sep 2021 14:19:06 -0700 (PDT)
-Received: (nullmailer pid 785129 invoked by uid 1000);
- Mon, 20 Sep 2021 21:19:05 -0000
-Date: Mon, 20 Sep 2021 16:19:05 -0500
-From: Rob Herring <robh@kernel.org>
-To: Apurva Nandan <a-nandan@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Serge Semin <fancer.lancer@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, michael@walle.cc
-Subject: Re: [PATCH v2 2/2] dt-bindings: snps,dw-apb-ssi: Use 'flash' node
- name instead of 'spi-flash' in example
-Message-ID: <YUj6yUBx0xCY9QGj@robh.at.kernel.org>
-References: <20210920142713.129295-1-a-nandan@ti.com>
- <20210920142713.129295-3-a-nandan@ti.com>
+ id 1mSRIR-003D9D-E0
+ for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 21:57:57 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 769BC6169BCC;
+ Mon, 20 Sep 2021 23:57:50 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 0AvcPrvAVW6r; Mon, 20 Sep 2021 23:57:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id EDA726169BC6;
+ Mon, 20 Sep 2021 23:57:49 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id DNIdiH7vl84a; Mon, 20 Sep 2021 23:57:49 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id C555E6108471;
+ Mon, 20 Sep 2021 23:57:49 +0200 (CEST)
+Date: Mon, 20 Sep 2021 23:57:49 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: schaecsn@gmx.net
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <160773399.91203.1632175069460.JavaMail.zimbra@nod.at>
+In-Reply-To: <20210920024824.9E053899858@corona.crabdance.com>
+References: <20210907214034.11676-1-schaecsn@gmx.net>
+ <20210920024824.9E053899858@corona.crabdance.com>
+Subject: Re: [PATCH 0/1] ubifs: ubifs to export filesystem error counters
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210920142713.129295-3-a-nandan@ti.com>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: ubifs to export filesystem error counters
+Thread-Index: NK3hz+wHsV+cRgdZv72uXipe7rZn/w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210920_141908_266839_2C9B8E30 
-X-CRM114-Status: GOOD (  16.71  )
+X-CRM114-CacheID: sfid-20210920_145755_689237_3AF4D865 
+X-CRM114-Status: UNSURE (   6.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,45 +81,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 20, 2021 at 07:57:13PM +0530, Apurva Nandan wrote:
-> Change the nodename in the example with spi-nand from 'spi-flash@1'
-> to 'flash@1' to make the schema uniform with both spi-nand and spi-nor
-> flashes. jedec,spi-nor.yaml uses 'flash@' nodename for spi-nor flashes,
-> so make the spi-nand examples in dt-bindings use it too for uniformity.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Fixes should come first. Maybe Mark can apply this before you respin.
-
-Acked-by: Rob Herring <robh@kernel.org>
-
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> index ca91201a9926..d7e08b03e204 100644
-> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> @@ -171,7 +171,7 @@ examples:
->        cs-gpios = <&gpio0 13 0>,
->                   <&gpio0 14 0>;
->        rx-sample-delay-ns = <3>;
-> -      spi-flash@1 {
-> +      flash@1 {
->          compatible = "spi-nand";
->          reg = <1>;
->          rx-sample-delay-ns = <7>;
-> -- 
-> 2.25.1
-> 
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkhCgotLS0tLSBVcnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCj4gVm9uOiAiU3RlZmFuIFNjaGFl
+Y2tlbGVyIiA8c2NoYWVjc25AZ214Lm5ldD4KPiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5h
+dD4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1r
+ZXJuZWwiCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+Cj4gR2VzZW5kZXQ6IE1vbnRh
+ZywgMjAuIFNlcHRlbWJlciAyMDIxIDA0OjQ4OjI0Cj4gQmV0cmVmZjogUmU6IFtQQVRDSCAwLzFd
+IHViaWZzOiB1YmlmcyB0byBleHBvcnQgZmlsZXN5c3RlbSBlcnJvciBjb3VudGVycwoKPiBIZWxs
+byBtdGQvdWJpZnMsCj4gCj4gSSBqdXN0IHdhbnQgdG8gY2hlY2sgYmFjayBvbiB3aGF0IHlvdSB0
+aGluayBhYm91dCBoYXZpbmcgYSBzeXNmcyBmb3IgdWJpZnMgYW5kCj4gc3RhcnRpbmcgd2l0aCB0
+aGVzZSB0aHJlZSBjYWxsYmFja3MKPiAKPiAvc3lzL2ZzL3ViaWZzL3ViaVhfWS9lcnJvcnNfbWFn
+aWMKPiAvc3lzL2ZzL3ViaWZzL3ViaVhfWS9lcnJvcnNfbm9kZQo+IC9zeXMvZnMvdWJpZnMvdWJp
+WF9ZL2Vycm9yc19jcmMKCkkgZGlkbid0IGhhdmUgYSBjaGFuY2UgdG8gcmV2aWV3IHlvdXIgY2hh
+bmdlcyB0byBmYXIgYnV0IGluIGdlbmVyYWwgSSBsaWtlIHRoZSBpZGVhCmlmIGV4cG9zaW5nIHN1
+Y2ggYW4gaW50ZXJmYWNlLgpTb3JyeSBmb3IgYmVpbmcgYSBzbG93IG1haW50YWluZXIuCgpUaGFu
+a3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
