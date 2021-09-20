@@ -2,83 +2,75 @@ Return-Path: <SRS0=k7nY=OK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFB1FC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 19:28:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C53DEC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 19:34:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B98C661205
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 19:28:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B98C661205
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2797E61175
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 19:34:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2797E61175
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kubicz.engineer
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:In-Reply-To:
+	Message-ID:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3fEKRj6u469Cwm01z0RhnjYfFLX0BTO8mbgWzQYwKxo=; b=jXgLxrz3y/9kJV
-	+4EHeIjCR/GXf1NAGqEPt+7hscnuQUiJlcj+auk/4ZYAOOPFEKWTTql7zgBOKrFdPXAVwC7ttxMP/
-	KJlRxp+Ss9T01pzcwUqolqdptY/NE+joj7oALnynTGEU48ClRkYTH34wUl3UefDELIoSsA3FAW460
-	ZGQ2IYt2E68ellBeR13D+grerf9iarWFjY594WJs2yZGMfxk3rO3Hbxec9JAXDPws/6IGbK28bjpR
-	Ikc470riKqCg8pg4jZWmDZ3LvgfAIvnBuaJcTmVU/29rP03h44KyIxp5af+Blg7qCgoAVYkbEiEUB
-	ynNWGDFTXhoysuR97Yew==;
+	References:List-Owner; bh=l0XHGORXUNcE78T0qa/RY5ftN2Lvv3hR2hRyZkPQj+Q=; b=fu5
+	Lwt2YAWYzkEK9VdfAXklQva5spjkLzTNO25yoMTvp/kcM9bPrKNq8YIWXsAryagy1gvq8DACMtNJ2
+	i/CeuyPRT+M59uYaPxQD9IPIPH5N3SIjDN8gZGOXpcIcCyxJZv6DCpJBjjw+ReTPbaCUYbIagCdbw
+	DTrMw0lJuhag0z69LuNYUK6Bt+y3rlfQcKxt4FHcO+2oUxCXYvSsKboqiu/I0nGoOTpxnUwlvleFi
+	HpPeo1/Nfk8H4Jy12flOwsMM7ms6Os292AEvVkfVoFv8cY8PfMMso/tPnAq03tQnbzG8cyY2QcW2Y
+	MMd3cOZ48BLXeShl0PG/tVuY+YIEVrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSOwc-002vE7-WD; Mon, 20 Sep 2021 19:27:15 +0000
-Received: from mail-oi1-f171.google.com ([209.85.167.171])
+	id 1mSP2m-002wLM-Nr; Mon, 20 Sep 2021 19:33:36 +0000
+Received: from sender4-of-o51.zoho.com ([136.143.188.51])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSOwP-002vBZ-7s
- for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 19:27:02 +0000
-Received: by mail-oi1-f171.google.com with SMTP id a3so1391928oid.6
- for <linux-mtd@lists.infradead.org>; Mon, 20 Sep 2021 12:26:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=Ltg68ai17ryA61wLEpw2gWNDTuZWgZYYvpF3Lm1beig=;
- b=Z/SE6MYofZr/mYXLDMF+Tnm60EfURHJd3tCCUFUma+W4nZwNsXPu8R2fUu9ekN0rWI
- rMUOb6D/66yKNghlYLII4GESUk2l+dz+yKgA1tT+QZApXGK1KnJ9pjEgmITDo5rcu/+Q
- NxI5KhM02Qjcq2YYpET89+C35tjcHyUOm1jWkhk0EBeZdsOB8t2oN//5Jmdsg7RlH2jf
- QLKl0Z6J09kFubqRQjPP5AOKRCtCTf6HTkIuvdI/RlwduwSKKiMxfy/koXOjo9T4ADAO
- QrFMV0OhDMMafoIgbU5axvfx6bUyPoMSDR4jy2/eA8ngLwY1LmoMmNonH1U0q03A1U4y
- b2Lg==
-X-Gm-Message-State: AOAM533A7BOOqc7ZvsIeFW+oCGsVnsDINdYVlB4UJxMhlQkwBQPWZRcs
- w4Rk2hAH5B2Cf7dE5QVp7x7SfB0W4g==
-X-Google-Smtp-Source: ABdhPJz0ghhIQUq0/xBQQZcGfNHP33ZoBoPP4+VhuvRF80iBYfK9SyWhV3s1G7XFCiXra9a7WP+VNQ==
-X-Received: by 2002:a05:6808:2191:: with SMTP id
- be17mr574215oib.30.1632166019071; 
- Mon, 20 Sep 2021 12:26:59 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id bg38sm3452836oib.26.2021.09.20.12.26.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Sep 2021 12:26:58 -0700 (PDT)
-Received: (nullmailer pid 586178 invoked by uid 1000);
- Mon, 20 Sep 2021 19:26:55 -0000
-From: Rob Herring <robh@kernel.org>
-To: Apurva Nandan <a-nandan@ti.com>
-Cc: Serge Semin <fancer.lancer@gmail.com>, devicetree@vger.kernel.org,
- linux-spi@vger.kernel.org, michael@walle.cc,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>
-In-Reply-To: <20210920142713.129295-3-a-nandan@ti.com>
-References: <20210920142713.129295-1-a-nandan@ti.com>
- <20210920142713.129295-3-a-nandan@ti.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: snps,
- dw-apb-ssi: Use 'flash' node name instead of 'spi-flash' in example
-Date: Mon, 20 Sep 2021 14:26:55 -0500
-Message-Id: <1632166015.080380.586177.nullmailer@robh.at.kernel.org>
+ id 1mSP2j-002wKW-Hk
+ for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 19:33:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; t=1632166409; cv=none; 
+ d=zohomail.com; s=zohoarc; 
+ b=nl91KOWnb6HDS0mj85wknJ2bzqwTp3h9KIbr516tkCx0eD+ScOwGSEOeH/AHLoIkLm5Sz/HOhYX+Ifa05Uzx1fDvd/QX/8DMh/TEe5swTQHWxui3K19agNkgvy3yNbYJ6vAWN5YpHd3EWxXVjfc9iVQDw2h0StoteAfPWyXnOZU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
+ s=zohoarc; t=1632166409;
+ h=Content-Type:Content-Transfer-Encoding:Date:From:MIME-Version:Message-ID:Subject:To;
+ bh=vENLH+AJDPhIvOck/0uAm590ioju/qlA0wwRJoBummQ=; 
+ b=OlfdmHBxIL2qP39ao5jFN3KPkIZzmKSEysoCSsk+79B5DV/8/J9H7hGtQ3NtqpeW3jnZr+SR0Wy0MbQzfxelfz7S3WZ0/mQ+1c0pV8QRwwT8Zrjz5PidSHLC+2c5cZe2qgc6xAJRl0/dGSDnTIJvCTIqmmeScy9SUOePHSxC5Gg=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+ dkim=pass  header.i=kubicz.engineer;
+ spf=pass  smtp.mailfrom=filip@kubicz.engineer;
+ dmarc=pass header.from=<filip@kubicz.engineer>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1632166409; 
+ s=zoho; d=kubicz.engineer; i=filip@kubicz.engineer;
+ h=Date:From:To:Message-ID:In-Reply-To:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+ bh=vENLH+AJDPhIvOck/0uAm590ioju/qlA0wwRJoBummQ=;
+ b=ZqSG2B78crREfMF3LadQ9tabnYNmZTvJcrnfgM+Xhi1RNkf6uSVhmTK6DRWIy6TD
+ b9gBk4NuiEA0Y4t9T+t27rRneoGsaARPAUWO1/O0oMk7PR9jfRZRqIOo5K7CF2WM/hd
+ KnJsXVcm8MW4Q1M03797M0t95g3TvIlQLK3Qdgpw=
+Received: from mail.zoho.com by mx.zohomail.com
+ with SMTP id 1632166402915376.41797743391885;
+ Mon, 20 Sep 2021 12:33:22 -0700 (PDT)
+Date: Mon, 20 Sep 2021 21:33:22 +0200
+From: Filip Kubicz <filip@kubicz.engineer>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Message-ID: <17c04b2db3f.11955d8ed102190.1977520078612166881@kubicz.engineer>
+In-Reply-To: 
+Subject: =?UTF-8?Q?Re:=C2=A0MLC_NAND_support_in_ubifs?=
+MIME-Version: 1.0
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210920_122701_301575_D607A849 
-X-CRM114-Status: GOOD (  14.59  )
+X-CRM114-CacheID: sfid-20210920_123333_876519_554AFAA7 
+X-CRM114-Status: GOOD (  17.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,46 +82,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 20 Sep 2021 19:57:13 +0530, Apurva Nandan wrote:
-> Change the nodename in the example with spi-nand from 'spi-flash@1'
-> to 'flash@1' to make the schema uniform with both spi-nand and spi-nor
-> flashes. jedec,spi-nor.yaml uses 'flash@' nodename for spi-nor flashes,
-> so make the spi-nand examples in dt-bindings use it too for uniformity.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Hi All,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+I'm bumping up the question about NAND support since it looks like it slipped unnoticed between emails with patches. Does anyone know the answer?
 
-yamllint warnings/errors:
+Thank you in advance,
+Filip
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml:0:0: /example-0/spi@fff00000/flash@1: failed to match any schema with compatible: ['spi-nand']
+filip@kubicz.engineer
+tel. (+48) 697 088 078
 
-doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1530168
+---- On Thu, 09 Sep 2021 18:41:24 +0200 filip@kubicz.engineer  wrote ----
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+ > Hi! 
+ >  
+ > I would like to ask about MLC NAND support in UBIFS. 
+ >  
+ > I was recently bringing up a device with IMX6ULL and raw MLC NAND flash. I have built Linux 5.4 kernel, u-boot and rootfs (using buildroot), flashed them to my device with MLC NAND flash, and learned from dmesg error that MLC is unsupported by ubifs. Support removed in this commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b5094b7f135be 
+ >  
+ > Then I followed the story from Richard and Boris and watched the talk where they explain the issues with MLC, and propose an alternative: https://www.youtube.com/watch?v=9j2pOIiJqYw&ab_channel=TheLinuxFoundation 
+ > Alternative available since Linux 5.8: https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.8-NAND-MLC-SLC-Emulate 
+ >  
+ > My questions: 
+ > 1. Is NAND MLC (+ubifs) reliable to use with SLC emulate mode introduced in kernel 5.8? Or should I rather switch to eMMC for this design? SLC NAND is too costly at my required size. 
+ >  
+ > 2. If the MLC NAND is not supported, can you update these pages: 
+ > - http://www.linux-mtd.infradead.org/doc/ubifs.html 
+ > - https://www.kernel.org/doc/html/latest/filesystems/ubifs.html 
+ > - http://www.linux-mtd.infradead.org/faq/ubifs.html 
+ > Each of the documentation pages mention MLC, so you can get an idea that it is supported. But it looks like the MLC NAND flash is not supported by UBIFS. 
+ >  
+ > Kind regards, 
+ > Filip Kubicz 
+ >  
+ > filip@kubicz.engineer 
+ > tel. (+48) 697 088 078 
+ >  
+ >  
+ >  
+ > 
 
 
 ______________________________________________________
