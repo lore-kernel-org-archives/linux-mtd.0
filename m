@@ -5,103 +5,82 @@ X-Spam-Level:
 X-Spam-Status: No, score=-18.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57AECC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 13:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE20EC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 14:28:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E6F260F93
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 13:30:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E6F260F93
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9BDC760E76
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Sep 2021 14:28:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9BDC760E76
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dgx1QGgiSQc9AbxY/ruTnr5si91YYpngH38A9Rb0AOA=; b=ALr5rHAY9fGe1o
-	yxOUADIUIlwxiJQFRacDsaPL07GxISsullSaLhNJaukm9YIvTodvy9hj99gSd5x3DaZ0PcnTNgqgg
-	2TzpF9bGNEWRIPgnHuv1g5dGPO6k7/r7As96MuIbU8I8IDr2Jzt31OxeQDskfa7I2q73q0pSDgx7i
-	0gcbrdSEahjr1K8TkW1r4PDyZ7NUxJQLHbENXHlBE/pwH0sudyZhve/55FvH8IL4Ai0ZD6pFb/Ila
-	ovrI1fcsQWnLUkMN7oE/NVWJCVMOdQGs+egfI82wx7lIShcJtksL7XkFeRQKVosf1ibbiluAkg6TL
-	YfkWq6X5M1Zp15RcbojQ==;
+	List-Owner; bh=yBOz/LfljaOr5eviOiidYlHBAP9KBgcgKdFwbMPFNIY=; b=JQBrydM9huUK76
+	jjAIpqb+Ifnkl8uQNqoH2hajenJwiB1bFmlvXaUS0nRDmDbaVOOMg0Bl46CfBQCB02CadHJ8bTA3h
+	mghceGsuI7qjuiSz9nq7Urx9Ir34TdGs19738yQR7w2E3qhZP46ugCc2DzVfoZ8sR5M2MXEFAwSTa
+	5gBqI4wxfugR/3n6+L3Ym+VYuPJVEY8KR8EbD8Tz6IypUeKmfltSKFn0TAfouBOZnWjtfbZ+xeter
+	vZKIHOZ4mbRj2QXGD4Ky7CY5y12UzgJxbfGmKDzDanZZmk3Yhu9kuH1Q+lJzQh9TSWn3pFGrJ72Uk
+	UyE6EeG1EZWagPkIow9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSJN7-001mX7-TJ; Mon, 20 Sep 2021 13:30:14 +0000
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	id 1mSKGd-001uIs-0P; Mon, 20 Sep 2021 14:27:35 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSJLg-001lwI-GB
- for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 13:28:46 +0000
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 31246402D3
- for <linux-mtd@lists.infradead.org>; Mon, 20 Sep 2021 13:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1632144523;
- bh=xU11jaLpUDnoKTVDhNl4Nnz5+4KkmeAKnf0UgxOYDK0=;
- h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
- MIME-Version;
- b=qpLyJV7Y0LSL5eudECtLW4MNYCGwrihUPQDBdZzGXMPK2cbE93Jm3mC4Uriu9v8zp
- INKVkl29hARV0ZbmF8mdPrSRX35SHhxt543t1ooj9E60WCz3JT/Px94ZJwOztq3CkV
- v9hXY1sKcSSU22fPqQby64XhDnzWPHxRs+qBmdgCnovM9hHP0RB61HxxAypBwIs9yY
- Ud0tKFGS52FjKm4c/s8v3dekKCPFSPdS0dzFdRmGUdiaUQpxCUF7uUsMhnqiVG8URf
- AFI93K+nyfPE8VcuuaAXE1DT4xc0UEYhet/ZG/M6kY+4EROwPZCrgZa9Cq/+N8rnpe
- Q79kPZ1j5q24w==
-Received: by mail-wr1-f69.google.com with SMTP id
- v1-20020adfc401000000b0015e11f71e65so6094517wrf.2
- for <linux-mtd@lists.infradead.org>; Mon, 20 Sep 2021 06:28:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=xU11jaLpUDnoKTVDhNl4Nnz5+4KkmeAKnf0UgxOYDK0=;
- b=itKh2wmdxZUuk3btPwEhooV/SgD+EXOGwev1KhF+XVw4Ni4Tf9KWceKlHI9cdeIJ1W
- 62ASsEfGOXNzBDMGF8pU45mXtKhbWMoQHewz5Ye2MqWAv0mAzM1SF7RUUFJh9jqbWeew
- gJNN71Pilz5/LJGelA8/+dnPbvSHwrq/5Cx3hgnmIzyIQl7PeqKIZxyyb+askpmp6+8X
- SEpkU81YMDZLtDx4oqNDYqyE4+ECzrhdhkp+q1fRXKr+mAZeIe1NPNqLSP8P4+w0BeSb
- YyfW8EqLzbTHVshTP2AvzYFDlPeRUystmKXAMWzfT8VHQpMRAMUYBBlHPWcMyMUvrOKX
- KRuw==
-X-Gm-Message-State: AOAM532SgZSG6XbTkkCxXL7w5VerWVSj5MkOIXjVPArKjm9/uHsWFfdD
- uSMBQNOlVgqnvVpj2Jdf2K9kYjaFm1OWI8Ksxtht2ywJDtLZmRqJNRSTpYd8dG9mxRUuSCQFoDV
- ZlFTttzH5xmo+Y2/riL4TYVLmKn0SlgZjdcMZKzzD4Lk=
-X-Received: by 2002:a5d:6750:: with SMTP id l16mr28083261wrw.174.1632144522869; 
- Mon, 20 Sep 2021 06:28:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz+pvMcumgoT0ttERKgbkMAho4kf5IhwJqGeJAFaoWilhZCuHSEktQza8Pbu9In5bxiX7pNmg==
-X-Received: by 2002:a5d:6750:: with SMTP id l16mr28083236wrw.174.1632144522688; 
- Mon, 20 Sep 2021 06:28:42 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net.
- [84.20.244.219])
- by smtp.gmail.com with ESMTPSA id g1sm45429wmk.2.2021.09.20.06.28.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Sep 2021 06:28:42 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Conor Dooley <conor.dooley@microchip.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org
-Subject: [PATCH v2 5/5] riscv: dts: microchip: use vendor compatible for
- Cadence SD4HC
-Date: Mon, 20 Sep 2021 15:28:30 +0200
-Message-Id: <20210920132830.152802-5-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920132830.152802-1-krzysztof.kozlowski@canonical.com>
-References: <20210920132830.152802-1-krzysztof.kozlowski@canonical.com>
+ id 1mSKGZ-001uHq-Jg
+ for linux-mtd@lists.infradead.org; Mon, 20 Sep 2021 14:27:33 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KERQTu105736;
+ Mon, 20 Sep 2021 09:27:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1632148046;
+ bh=H3QGSlcSnRS77N+PEgMD1LRiROGAMlbfA1Mi9rr2mO8=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=abDlo1LjVlz5imyi8VP0vX3Sg+OYEp0gQB0L9Xnpm69LX4yJMoHZTK4qF2gHj9BYT
+ LmlxnLDXdFNAx9WSYaUriWF0jtGlaKvpzBlfx+WksHEk/aE9u3WSSWcfVmrcqxc7cz
+ qb7PqcvVdXfDBlAp8DRKSjrhfAFshuiBA9JeTmtk=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KERQbC045016
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 20 Sep 2021 09:27:26 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
+ Sep 2021 09:27:26 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 20 Sep 2021 09:27:26 -0500
+Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com
+ [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KERE43100694;
+ Mon, 20 Sep 2021 09:27:21 -0500
+From: Apurva Nandan <a-nandan@ti.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+ <robh+dt@kernel.org>, Serge Semin <fancer.lancer@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Apurva Nandan <a-nandan@ti.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
+CC: <michael@walle.cc>
+Subject: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema format
+Date: Mon, 20 Sep 2021 19:57:12 +0530
+Message-ID: <20210920142713.129295-2-a-nandan@ti.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210920142713.129295-1-a-nandan@ti.com>
+References: <20210920142713.129295-1-a-nandan@ti.com>
 MIME-Version: 1.0
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210920_062844_735248_D7C9C4B6 
-X-CRM114-Status: GOOD (  13.22  )
+X-CRM114-CacheID: sfid-20210920_072731_815833_4D4801A9 
+X-CRM114-Status: GOOD (  15.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,33 +97,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Licensed IP blocks should have their own vendor compatible.
+Convert spi-nand.txt binding to YAML format with an added example.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
+Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 ---
+ .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+ .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
+ 2 files changed, 62 insertions(+), 5 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 
-Changes since v1:
-1. New patch
----
- arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-index 55d86b078c53..7948c4249de5 100644
---- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-+++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-@@ -263,7 +263,7 @@ serial3: serial@20104000 {
- 		};
- 
- 		mmc: mmc@20008000 {
--			compatible = "cdns,sd4hc";
-+			compatible = "microchip,mpfs-sd4hc", "cdns,sd4hc";
- 			reg = <0x0 0x20008000 0x0 0x1000>;
- 			interrupt-parent = <&plic>;
- 			interrupts = <88>;
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+deleted file mode 100644
+index 8b51f3b6d55c..000000000000
+--- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-SPI NAND flash
+-
+-Required properties:
+-- compatible: should be "spi-nand"
+-- reg: should encode the chip-select line used to access the NAND chip
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+new file mode 100644
+index 000000000000..601beba8d971
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SPI NAND flash
++
++maintainers:
++  - Apurva Nandan <a-nandan@ti.com>
++
++allOf:
++  - $ref: "mtd.yaml#"
++
++properties:
++  compatible:
++    const: spi-nand
++
++  reg:
++    maxItems: 1
++
++  spi-max-frequency: true
++  spi-rx-bus-width: true
++  spi-tx-bus-width: true
++  rx-sample-delay-ns: true
++
++  '#address-cells': true
++  '#size-cells': true
++
++additionalProperties:
++  type: object
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@6 {
++            #address-cells = <1>;
++            #size-cells = <1>;
++            compatible = "spi-nand";
++            reg = <0x6>;
++            spi-max-frequency = <42000000>;
++
++            partitions {
++                compatible = "fixed-partitions";
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                partition@0 {
++                    label = "boot";
++                    reg = <0 0x200000>;
++                };
++
++                partition@200000 {
++                    label = "rootfs";
++                    reg = <0x200000 0xce0000>;
++                };
++            };
++        };
++    };
 -- 
-2.30.2
+2.25.1
 
 
 ______________________________________________________
