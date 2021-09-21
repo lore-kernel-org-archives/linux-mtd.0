@@ -7,14 +7,14 @@ X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15D1CC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Sep 2021 20:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B84C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Sep 2021 20:41:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC6B860FDA
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Sep 2021 20:39:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DC6B860FDA
+	by mail.kernel.org (Postfix) with ESMTPS id C7C8360FDA
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Sep 2021 20:41:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C7C8360FDA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -23,64 +23,63 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kkP7kVOpet1696M/AkPk1S7UjP0GCarhK8w8IUGTlsE=; b=oekHb76ouwr+Vf
-	5YnOgYc2NevS621Ckw5EzSiE+oiyBrr3w4sQzutbRQcb3ylPp6APY20kBzJCO2rig9cFD9QxRgMCE
-	E1fy5zhxOE2eFJEMxjJkENaP0zRQO5enJIGEP5esKkdBp/0/FzAsTDqBA4RAVgXqs64/6cwMvygPh
-	UAJ8f7lRVIbBFGvvNyGGQGZE/Sqr17Oc194Kc1IQ2cE/U0HVNA8n7h6aPjc2UZxsLfQuSeCLEOwXz
-	HYRleTX9Qv2CZxIDOD4E7rP3jxhDnFVpeKdm8+mc8O4l7MjNN5JpFwVEVLZ8AecpEfkFe9k9zh8rv
-	JBLwYAAdnocO0jt7g//g==;
+	List-Owner; bh=gH3HPARuFmrCVQt5NhLciYv1PMi+8XUP9NZzawfdPWY=; b=sofoLPXZzj56ml
+	nagn7K/kyhyrDsjdpBmecGb1aHHgYFubwtb+83HwY7ihMXNDTmuY4Lo9yxlr5pyNobaqx4iEGILO3
+	n1BDeoE1dcv8pksiDeX5hZW7YHbbtLxYAFbomHmXLbARqele1hI5stqbpa6Ay3XRwTqEzEsTonDlv
+	/qPWRKrmYdgi2nYGooKYdRAuWSoXJaJPn/3QQi8s91Ci6xgjT61PF5SH8A8cQjDTZkoVi2SBQGvVF
+	tsyO2lu0VJAxdPJO2XOjWkN5WzTF+krKJhXKGW1HE9w75I6ULFHYxFVoGT3N9NzO8DwxR6YUungx7
+	IZK6zEsoUdX9WGHe2gAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSmX6-005iAY-6h; Tue, 21 Sep 2021 20:38:28 +0000
-Received: from mail-ot1-f44.google.com ([209.85.210.44])
+	id 1mSmZI-005ikh-Ea; Tue, 21 Sep 2021 20:40:44 +0000
+Received: from mail-ot1-f48.google.com ([209.85.210.48])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSmX2-005i8v-1j
- for linux-mtd@lists.infradead.org; Tue, 21 Sep 2021 20:38:25 +0000
-Received: by mail-ot1-f44.google.com with SMTP id
- 67-20020a9d0449000000b00546e5a8062aso236223otc.9
- for <linux-mtd@lists.infradead.org>; Tue, 21 Sep 2021 13:38:23 -0700 (PDT)
+ id 1mSmZF-005ijh-An
+ for linux-mtd@lists.infradead.org; Tue, 21 Sep 2021 20:40:42 +0000
+Received: by mail-ot1-f48.google.com with SMTP id
+ 97-20020a9d006a000000b00545420bff9eso257785ota.8
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Sep 2021 13:40:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=s0hCVXKHoNUGYO2rOrlkceofb8qBLeKfxXe120uadrM=;
- b=TI2r1AWSznRlXvfjdWfpPm2eYmmwDEtoATudR/Uc2vH2Nr6e9VTRPJ6R05JiSLsZin
- ARExd2oQXGMDqHTFbKl2JW8jW+FF5o2pGqRvIVOyazCpTMWU/gvMfuwDI5+6w0fog8pL
- WWTj/SBx6IlYs3JbkhA2NBi/gPTr0kF/97nrWbtsXSXT3arpZfpuPYcT0VSVg6BpiC8K
- I6s/RWRFK7w82Du+UQzO+fX6I/WkH7oRdL1kT8ftzcdLyJXk6rekUelbnxe4srS1iqvN
- pm/lKIaaurcAUcmIcfzn9/C0bEmqBcuvBNSGuKUVBoWXIjEO42bsn8/bNrNNIf1F7NvV
- Rz6g==
-X-Gm-Message-State: AOAM532BDDYhbrcHWGjhZLiVZslvpgWKhdKJ2we5jfv5BCOOmlTMtx7U
- PIXsnq92GVZHRjdDpPrkgw==
-X-Google-Smtp-Source: ABdhPJxb8SjwgoWMU0sKmvW7UYVj9lzYNrUbsYB/MFhxnHuQzWDgUPsF943512sRTDwXp8ODWc26TQ==
-X-Received: by 2002:a05:6830:34b:: with SMTP id
- h11mr27633636ote.319.1632256703179; 
- Tue, 21 Sep 2021 13:38:23 -0700 (PDT)
+ bh=lIsMkc1Ru4Hy+3XDmUohr+N44VuUIeGdNclPrsd8TlE=;
+ b=ixp7K2IxH2YU3JYbwuawWU8mMGPwm1fOr7w4DXLrAOjKPu4FZCiPKZuMWYB0sszqHP
+ yYO8da0NzvS/WSyEvl4piTj/hh4rtOx9EUAqVKOmoQrE9EDB1SJnwTtTbpX0HSgixGMz
+ rVpKxp1Ag74HRfYpnZ2MGZeQoONodeCUpX6kly7aL3znaG0C6KvjTOdPM0Mb8qVhHZxt
+ l2MgxOpyBHzsQ0op9j8pKYjNcreATgOa0vozGoB36Jcxe0HpOylmQ3QKkWDnfySqoPPm
+ o20Ir2e7Hso/X/uZes3cyAakiI/BBAMAYztHsvN4GCyojHyE/Eh5msWmEiFm09d2CLbc
+ JCxA==
+X-Gm-Message-State: AOAM530zW8sl62RM08sG2U++LYDlST30uf3jhbQbtJXigfb3o+mK6Uio
+ Q8C9xfArZC4eMLHEdMAZIQ==
+X-Google-Smtp-Source: ABdhPJxkU1UAKTiSDKIIDMi5tHNRusRT64dD5UXCiQJ1rdrAm9DpC0NNzmKgqwE0+YNysku5MAzNGA==
+X-Received: by 2002:a9d:4b85:: with SMTP id k5mr5955996otf.103.1632256840367; 
+ Tue, 21 Sep 2021 13:40:40 -0700 (PDT)
 Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com.
  [192.154.179.36])
- by smtp.gmail.com with ESMTPSA id a3sm21559oie.3.2021.09.21.13.38.22
+ by smtp.gmail.com with ESMTPSA id c5sm17580otb.35.2021.09.21.13.40.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 21 Sep 2021 13:38:22 -0700 (PDT)
-Received: (nullmailer pid 3288151 invoked by uid 1000);
- Tue, 21 Sep 2021 20:38:21 -0000
-Date: Tue, 21 Sep 2021 15:38:21 -0500
+ Tue, 21 Sep 2021 13:40:39 -0700 (PDT)
+Received: (nullmailer pid 3291297 invoked by uid 1000);
+ Tue, 21 Sep 2021 20:40:38 -0000
+Date: Tue, 21 Sep 2021 15:40:38 -0500
 From: Rob Herring <robh@kernel.org>
 To: Roger Quadros <rogerq@kernel.org>
-Cc: krzysztof.kozlowski@canonical.com, devicetree@vger.kernel.org,
- robh+dt@kernel.org, miquel.raynal@bootlin.com, linux-omap@vger.kernel.org,
- grygorii.strashko@ti.com, tony@atomide.com, nm@ti.com,
- linux-mtd@lists.infradead.org, nsekhar@ti.com, linux-kernel@vger.kernel.org,
- lokeshvutla@ti.com
-Subject: Re: [PATCH v4 3/8] dt-bindings: net: Remove gpmc-eth.txt
-Message-ID: <YUpCvdZ+z7P4fZED@robh.at.kernel.org>
+Cc: krzysztof.kozlowski@canonical.com, nm@ti.com, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, nsekhar@ti.com, linux-omap@vger.kernel.org,
+ robh+dt@kernel.org, miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ lokeshvutla@ti.com, grygorii.strashko@ti.com, tony@atomide.com
+Subject: Re: [PATCH v4 4/8] dt-bindings: memory-controllers: Introduce
+ ti,gpmc-child
+Message-ID: <YUpDRkZqQjmfKZgz@robh.at.kernel.org>
 References: <20210914122705.15421-1-rogerq@kernel.org>
- <20210914122705.15421-4-rogerq@kernel.org>
+ <20210914122705.15421-5-rogerq@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20210914122705.15421-4-rogerq@kernel.org>
+In-Reply-To: <20210914122705.15421-5-rogerq@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210921_133824_116003_70DDB201 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20210921_134041_419067_C65F5242 
+X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,22 +96,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 14 Sep 2021 15:27:00 +0300, Roger Quadros wrote:
-> There is no GPMC Ethernet compatible or device driver. GPMC is
-> just a bus interface over which devices like Ethernet controller
-> can be to.
-> 
-> For SMSC 911x Ethernet chip bindings, please refer to
-> Documentation/devicetree/bindings/net/smsc,lan9115.yaml
+On Tue, 14 Sep 2021 15:27:01 +0300, Roger Quadros wrote:
+> This binding is meant for the child nodes of the TI GPMC node. The node
+> represents any device connected to the GPMC bus. It may be a Flash chip,
+> RAM chip or Ethernet controller, etc. These properties are meant for
+> configuring the GPMC settings/timings and will accompany the bindings
+> supported by the respective device.
 > 
 > Signed-off-by: Roger Quadros <rogerq@kernel.org>
 > ---
->  .../devicetree/bindings/net/gpmc-eth.txt      | 97 -------------------
->  1 file changed, 97 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
+>  .../memory-controllers/ti,gpmc-child.yaml     | 245 ++++++++++++++++++
+>  1 file changed, 245 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc-child.yaml
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
