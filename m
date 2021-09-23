@@ -1,69 +1,94 @@
-Return-Path: <SRS0=kzX/=OM=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Ceh7=ON=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF1C6C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Sep 2021 08:32:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0457C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Sep 2021 01:53:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67EA561168
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Sep 2021 08:32:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 67EA561168
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 919E26113E
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Sep 2021 01:53:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 919E26113E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J1fOCwlfjh5VlPzU6Dr9yx0I7LUzrXSkKtrNafZLQ7M=; b=A66D8DHRNrdB3o
-	Q3FRWXE2+mx/vmSTdjEaQlNohHog+jDxeWsvYXqEEirBLtkRFZ5EVlUfLAnYYgSBn3cUZBJB00ey5
-	EORiJOMUiShGZSc4MFMbH88aZgnJ8btYyu1sWW3NuFMJymrgYZC9oo1S1vcT70pJDOuhAkgaCHYE0
-	5vvR7ndLr7tDU5a2SYHa1JJ8O6J4GtDHvcIawCxNmNkcUXmW04/15EuCW+Fdt5abdqRdAZZ7bP4eO
-	Hf8pvtaTfEiB/0AXWrVxmvVLpQnOoHKftEvc9jAoN89OD7JhCaFU7UOEmy2Q+qrOU4GbQ1LWtvmSQ
-	7tfT82pzTHlEzjqx5Jmw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=S4cKjiSt2PLIbKwlrCfau4dUOemOi9+OPii0Vv8m+DY=; b=y9inJFm51/MntG
+	FYyPYzJFj53X/qkNGfYVrBMor5k7qZBW0kdcJ1YBnOyhhMcV5XAmbDjv1XjWFgJBXeQJv0UMKNcqC
+	V/sHYsOVMmfEEhVBkpxi7Msc0a06O9s8srMv4GuSO0qLtdSX4Qw1RLmFai8gXCX2G91mpCi07ubtF
+	bkoHwuwpqHHSJ94YLo9DLIwqCWIzvlo6mOMro4StRdYaX0TDsoxzONtv7ln5pJRbAwosxyCNZfcR/
+	qOY7hyVJX6YcGZ7glvzNcQ980/6LTBtsjmcOqC2uv0nhxDxivHV9ye7lEY13TSXsRF4L6C/uA2AXL
+	O5mBp+9WNnanXbBERLoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mSxfB-007TsO-CO; Wed, 22 Sep 2021 08:31:33 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1mTDv8-00A4rQ-RR; Thu, 23 Sep 2021 01:53:06 +0000
+Received: from mail-pj1-x1033.google.com ([2607:f8b0:4864:20::1033])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mSxf5-007TrP-HE
- for linux-mtd@lists.infradead.org; Wed, 22 Sep 2021 08:31:29 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E243EC0004;
- Wed, 22 Sep 2021 08:31:21 +0000 (UTC)
-Date: Wed, 22 Sep 2021 10:31:21 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Apurva Nandan <a-nandan@ti.com>, Serge Semin <fancer.lancer@gmail.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Mark Brown <broonie@kernel.org>, MTD Maling List
- <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-spi
- <linux-spi@vger.kernel.org>, Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema
- format
-Message-ID: <20210922103121.28d489ef@xps13>
-In-Reply-To: <CAL_Jsq+sg7f4pJGBhU48a4=uR7cYQmXsoSjbrktovV94m3+qFw@mail.gmail.com>
-References: <20210920142713.129295-1-a-nandan@ti.com>
- <20210920142713.129295-2-a-nandan@ti.com>
- <20210920150651.vvdhennblwhdi3jw@mobilestation>
- <YUj6RUNYDoWA30Ln@robh.at.kernel.org>
- <3c03fcdd-b015-8fda-eadc-e1b6d24ba88d@ti.com>
- <CAL_Jsq+sg7f4pJGBhU48a4=uR7cYQmXsoSjbrktovV94m3+qFw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mTDv5-00A4qj-HT
+ for linux-mtd@lists.infradead.org; Thu, 23 Sep 2021 01:53:05 +0000
+Received: by mail-pj1-x1033.google.com with SMTP id
+ on12-20020a17090b1d0c00b001997c60aa29so4795050pjb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Sep 2021 18:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=w0m5pdek4/Gq1QH2qsR623RAqp8S4w0CIYDU8k0g4bU=;
+ b=BUoFK1r5RSCFV/uRZjVqL+dHE46j0i1MvEN7pDEkDjJXk0g4IGvc1IHE/KzleL/nVJ
+ AlpmCUjD0ft9fxxjplyJEknzk/ccTQ9+skhxE+tzkYsDrvxwxCfyVvPxFLlZkGgT3Zzf
+ ZEPon+UzG6IMtYqCkE7By0iyZUMHlj/Xi2HpX5cXyuOTzu9Ddqst2Wzditgko+9AxFaH
+ zn13CU7+dADFILWLUkxLGWfuJP+XEZBm+ACC5DP5tRMxitPLMB8GKwtX0qFMJXco3Nby
+ tVjfNBVN7OtUJiIcaY7cX+x5Wg40a8V2BFuszlhxVlQUrupZppZ0b5gEyleIovw0kdCf
+ Ixww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=w0m5pdek4/Gq1QH2qsR623RAqp8S4w0CIYDU8k0g4bU=;
+ b=sOVSqrmKDwE8uPqos0syHL0IkKTFenp3zJF5au2NtWMf9L7e8WOlzuig+bBJszX/2E
+ 65nLrmhIupD+BGowghLxnG0APu3QVzSfcuk9odM9g5+/5eMSgboM2386QRoVS4Y2X3SM
+ bm4FKcltvjGXZ/ZCoFv3u7pS9LKqDnERUKeA8MVz3G8NazYXhDSPLvzBi2vfCAx6FAx2
+ vw8GYApugPxjr7K20tjswDU1rRc3/RiHJ53qA8tbye+3PCH2FiIplBoMiuf/3mbngKLI
+ dq/bHsYNiqN6iB9WXlvf0IzQveLD82qRM9kZL7Ng3pAwG1+aYbTyuwdDbFneJYAo0kIQ
+ /KsA==
+X-Gm-Message-State: AOAM532Y0JbqkgkcCzl57jySj2B43uQJJz8BLaZh8lK2fqjGFEbJ4rn4
+ DU6dro0NK463ilIZLSbX+6E=
+X-Google-Smtp-Source: ABdhPJxs6u80+faOKJAOnx9x4qwGGUXf1Yvy5bBQt7Ev51KiqgzuezEAQHTFxl9kXvANOo+hDI2ihw==
+X-Received: by 2002:a17:90b:4f82:: with SMTP id
+ qe2mr15018514pjb.131.1632361982158; 
+ Wed, 22 Sep 2021 18:53:02 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id g13sm3654396pfi.176.2021.09.22.18.52.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 22 Sep 2021 18:53:01 -0700 (PDT)
+From: CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <ren.xiaohui@zte.com.cn>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Palmer <daniel@0x0f.com>,
+ Alexander Lobakin <alobakin@pm.me>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Ren Xiaohui <ren.xiaohui@zte.com.cn>
+Subject: [PATCH] mtd: spinand: add merge-two-spinand function
+Date: Thu, 23 Sep 2021 01:52:41 +0000
+Message-Id: <20210923015241.248910-1-ren.xiaohui@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210922_013127_892167_EFF69882 
-X-CRM114-Status: GOOD (  42.54  )
+X-CRM114-CacheID: sfid-20210922_185303_659245_4CEDF57C 
+X-CRM114-Status: GOOD (  27.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,99 +100,578 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gUm9iLCBNYXJrLAoKcm9iaEBrZXJuZWwub3JnIHdyb3RlIG9uIFR1ZSwgMjEgU2VwIDIw
-MjEgMTQ6MTY6MDIgLTA1MDA6Cgo+IE9uIFR1ZSwgU2VwIDIxLCAyMDIxIGF0IDg6NDMgQU0gQXB1
-cnZhIE5hbmRhbiA8YS1uYW5kYW5AdGkuY29tPiB3cm90ZToKPiA+Cj4gPiBIaSBSb2IsCj4gPgo+
-ID4gT24gMjEvMDkvMjEgMjo0NiBhbSwgUm9iIEhlcnJpbmcgd3JvdGU6ICAKPiA+ID4gT24gTW9u
-LCBTZXAgMjAsIDIwMjEgYXQgMDY6MDY6NTFQTSArMDMwMCwgU2VyZ2UgU2VtaW4gd3JvdGU6ICAK
-PiA+ID4+IEhlbGxvIEFwdXJ2YQo+ID4gPj4KPiA+ID4+IE9uIE1vbiwgU2VwIDIwLCAyMDIxIGF0
-IDA3OjU3OjEyUE0gKzA1MzAsIEFwdXJ2YSBOYW5kYW4gd3JvdGU6ICAKPiA+ID4+PiBDb252ZXJ0
-IHNwaS1uYW5kLnR4dCBiaW5kaW5nIHRvIFlBTUwgZm9ybWF0IHdpdGggYW4gYWRkZWQgZXhhbXBs
-ZS4KPiA+ID4+Pgo+ID4gPj4+IFNpZ25lZC1vZmYtYnk6IEFwdXJ2YSBOYW5kYW4gPGEtbmFuZGFu
-QHRpLmNvbT4KPiA+ID4+PiAtLS0KPiA+ID4+PiAgIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
-ZC9zcGktbmFuZC50eHQgICAgICB8ICA1IC0tCj4gPiA+Pj4gICAuLi4vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tdGQvc3BpLW5hbmQueWFtbCAgICAgfCA2MiArKysrKysrKysrKysrKysrKysrCj4gPiA+
-Pj4gICAyIGZpbGVzIGNoYW5nZWQsIDYyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4g
-PiA+Pj4gICBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL210ZC9zcGktbmFuZC50eHQKPiA+ID4+PiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3NwaS1uYW5kLnlhbWwgIAo+ID4gPj4gVGhh
-bmtzIGZvciB0aGUgYmluZGluZ3MgY29udmVyc2lvbiBwYXRjaC4gVGhlcmUgYXJlIHNldmVyYWwg
-Y29tbWVudHMKPiA+ID4+IGJlbG93LiBCdXQgYmVmb3JlIGFkZHJlc3NpbmcgdGhlbSBpdCB3b3Vs
-ZCBiZSBiZXR0ZXIgdG8gYWxzbyBnZXQgYQo+ID4gPj4gcmVzcG9uc2UgZnJvbSBSb2IuCj4gPiA+
-PiAgCj4gPiA+Pj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9tdGQvc3BpLW5hbmQudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
-ZC9zcGktbmFuZC50eHQKPiA+ID4+PiBkZWxldGVkIGZpbGUgbW9kZSAxMDA2NDQKPiA+ID4+PiBp
-bmRleCA4YjUxZjNiNmQ1NWMuLjAwMDAwMDAwMDAwMAo+ID4gPj4+IC0tLSBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0Cj4gPiA+Pj4gKysrIC9kZXYv
-bnVsbAo+ID4gPj4+IEBAIC0xLDUgKzAsMCBAQAo+ID4gPj4+IC1TUEkgTkFORCBmbGFzaAo+ID4g
-Pj4+IC0KPiA+ID4+PiAtUmVxdWlyZWQgcHJvcGVydGllczoKPiA+ID4+PiAtLSBjb21wYXRpYmxl
-OiBzaG91bGQgYmUgInNwaS1uYW5kIgo+ID4gPj4+IC0tIHJlZzogc2hvdWxkIGVuY29kZSB0aGUg
-Y2hpcC1zZWxlY3QgbGluZSB1c2VkIHRvIGFjY2VzcyB0aGUgTkFORCBjaGlwCj4gPiA+Pj4gZGlm
-ZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQu
-eWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQueWFt
-bAo+ID4gPj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gPiA+Pj4gaW5kZXggMDAwMDAwMDAwMDAw
-Li42MDFiZWJhOGQ5NzEKPiA+ID4+PiAtLS0gL2Rldi9udWxsCj4gPiA+Pj4gKysrIGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC55YW1sCj4gPiA+Pj4gQEAg
-LTAsMCArMSw2MiBAQAo+ID4gPj4+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIu
-MCBPUiBCU0QtMi1DbGF1c2UpCj4gPiA+Pj4gKyVZQU1MIDEuMgo+ID4gPj4+ICstLS0KPiA+ID4+
-PiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvc3BpLW5hbmQueWFtbCMK
-PiA+ID4+PiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3Jl
-LnlhbWwjCj4gPiA+Pj4gKwo+ID4gPj4+ICt0aXRsZTogU1BJIE5BTkQgZmxhc2gKPiA+ID4+PiAr
-Cj4gPiA+Pj4gK21haW50YWluZXJzOgo+ID4gPj4+ICsgIC0gQXB1cnZhIE5hbmRhbiA8YS1uYW5k
-YW5AdGkuY29tPgo+ID4gPj4+ICsKPiA+ID4+PiArYWxsT2Y6Cj4gPiA+Pj4gKyAgLSAkcmVmOiAi
-bXRkLnlhbWwjIgo+ID4gPj4+ICsKPiA+ID4+PiArcHJvcGVydGllczoKPiA+ID4+PiArICBjb21w
-YXRpYmxlOgo+ID4gPj4+ICsgICAgY29uc3Q6IHNwaS1uYW5kCj4gPiA+Pj4gKwo+ID4gPj4+ICsg
-IHJlZzoKPiA+ID4+PiArICAgIG1heEl0ZW1zOiAxCj4gPiA+Pj4gKwo+ID4gPj4+ICsgIHNwaS1t
-YXgtZnJlcXVlbmN5OiB0cnVlCj4gPiA+Pj4gKyAgc3BpLXJ4LWJ1cy13aWR0aDogdHJ1ZQo+ID4g
-Pj4+ICsgIHNwaS10eC1idXMtd2lkdGg6IHRydWUKPiA+ID4+PiArICByeC1zYW1wbGUtZGVsYXkt
-bnM6IHRydWUgIAo+ID4gPj4gU2luY2UgaXQncyBhbiBTUEktY2xpZW50IGRldmljZSB0aGVyZSBh
-cmUgbW9yZSB0aGFuIHRoZXNlIHByb3BlcnRpZXMKPiA+ID4+IGNvdWxkIGJlIHNldCBmb3IgaXQu
-IFNlZSB0aGUgU1BJLWNvbnRyb2xsZXIgYmluZGluZ3Mgc2NoZW1hOgo+ID4gPj4gRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktY29udHJvbGxlci55YW1sCj4gPiA+PiBT
-byB0aGVyZSBpcyB0d28gcG9zc2libGUgd2F5cyB0byBtYWtlIGl0IG1vcmUgZ2VuZXJpYzoKPiA+
-ID4+IDEpIERldGFjaCB0aGUgc3BpLWNsaWVudCBwYXJ0IGZyb20gdGhlIHNwaS1jb250cm9sbGVy
-LnlhbWwgYmluZGluZ3MKPiA+ID4+IGludG8gYSBkZWRpY2F0ZWQgRFQtc2NoZW1hIGZpbGUgYW5k
-IHJlZmVyIHRvIHRoYXQgbmV3IHNjaGVtZSBmcm9tCj4gPiA+PiBoZXJlLiAgCj4gPiA+IFllcywg
-YXMgbWVudGlvbmVkIHRoZXJlJ3MgcGF0Y2hlcyBkb2luZyB0aGlzLiBCdXQgdGhlIGFib3ZlIGlz
-IGZpbmUuCj4gPiA+IFRoZXJlJ3Mgc29tZSB2YWx1ZSBpbiBkZWZpbmluZyBoZXJlIHdoaWNoIHBy
-b3BlcnRpZXMgYXJlIHZhbGlkLiAgCj4gPiBZZWFoIHJpZ2h0ICAKPiA+ID4+IDIpIEZvcmdldCBh
-Ym91dCB0aGVzZSBjb250cm9sbGVyLXNwZWNpZmljIHByb3BlcnRpZXMgYW5kIGxldCB0aGUKPiA+
-ID4+IHBhcmVudGFsIFNQSS1jb250cm9sbGVyIGJpbmRpbmdzIHBhcnNpbmcgdGhlbS4gT2YgY291
-cnNlIHRoZXJlIG11c3QgYmUKPiA+ID4+IGF0IGxlYXN0IG9uZSBvZiB0aGUgbmV4dCBwcm9wZXJ0
-aWVzIGRlY2xhcmVkIGZvciBpdCB0byB3b3JrOgo+ID4gPj4ge3VuZXZhbHVhdGVkUHJvcGVydGll
-cywgYWRkaXRpb25hbFByb3BlcnRpZXN9Lgo+ID4gPj4KPiA+ID4+IEl0J3MgdXAgdG8gUm9iIHRv
-IGRlY2lkZWQgd2hpY2ggYXBwcm9hY2ggaXMgYmV0dGVyIHRob3VnaC4uLgo+ID4gPj4gIAo+ID4g
-Pj4+ICsKPiA+ID4+PiArICAnI2FkZHJlc3MtY2VsbHMnOiB0cnVlCj4gPiA+Pj4gKyAgJyNzaXpl
-LWNlbGxzJzogdHJ1ZSAgCj4gPiA+PiBBcmVuJ3QgdGhleSBhbHdheXMgZXF1YWwgdG8gMT8gIAo+
-ID4gPiBObyBTUEkgbmFuZCBkZXZpY2VzID40R0I/ICAKPiA+IFllYWgsIHdlIGhhdmUgU1BJIE5B
-TkRzID40R0IsIGFuZCAiJyNhZGRyZXNzLWNlbGxzJzogdHJ1ZSIgYWxsb3dzIHRob3NlCj4gPiBz
-aXplcy4gIAo+ID4gPiAgCj4gPiA+Pj4gKwo+ID4gPj4+ICthZGRpdGlvbmFsUHJvcGVydGllczoK
-PiA+ID4+PiArICB0eXBlOiBvYmplY3QgIAo+ID4gPj4gSSdkIHN1Z2dlc3QgdG8gZWxhYm9yYXRl
-IHRoZSB3YXkgdGhlIHBhcnRpdGlvbiBzdWItbm9kZXMgbG9va3MKPiA+ID4+IGxpa2UsIGZvciBp
-bnN0YW5jZSwgdGhlIG5vZGUgbmFtZXMsIHN1cHBvcnRlZCBjb21wYXRpYmxlIG5hbWVzLAo+ID4g
-Pj4gbGFiZWxzLCBldGMuICAKPiA+ID4gVGhhdCBzaG91bGQgcHJvYmFibHkgYWxsIGJlIGluIG10
-ZC55YW1sLiBUaGUgcXVlc3Rpb24gaGVyZSBpcyB3aGV0aGVyCj4gPiA+IHBhcnRpdGlvbnMgYXJl
-IGFsd2F5cyB1bmRlciBhICdwYXJ0aXRpb25zJyBub2RlLiBNYXliZSB0aGlzIGlzIG5ldwo+ID4g
-PiBlbm91Z2ggdGhhdCBvbmx5IHRoZSBuZXcgd2F5IGhhcyB0byBiZSBzdXBwb3J0ZWQuIFRob3Vn
-aCBpZiBtdGQueWFtbAo+ID4gPiBzdXBwb3J0ZWQgYm90aCBmb3JtcywgYWxsb3dpbmcgYm90aCBh
-bGwgdGhlIHRpbWUgaXMgb2theSBJTU8uCj4gPiA+Cj4gPiA+IFJvYiAgCj4gPgo+ID4gSSBoYWQg
-YWRkZWQgdGhlICJwYXJ0aXRpb24iIG5vZGUgcHJvcGVydGllcyBpbiB0aGUgdjEgcGF0Y2gsIGJ1
-dCBhcyBwZXIKPiA+IHRoZSByZXZpZXdzIEkgcmVtb3ZlZCBpdC4KPiA+IEkgdGhpbmsgd2UgY2Fu
-IHByZWZlciBoYXZpbmcgdGhlbSBpbiBtdGQueWFtbCBpZiBuZWVkZWQsIGluIGEgc2VwYXJhdGUK
-PiA+IHBhdGNoIHNlcmllcy4KPiA+IERvIHlvdSBwcmVmZXIgdGhlIG10ZC55YW1sIGNoYW5nZXMg
-YXMgYSBwYXJ0IG9mIHRoaXMgc2VyaWVzIG9yIGFzIGEKPiA+IHNlcGFyYXRlIHBhdGNoPwo+ID4K
-PiA+IE90aGVyIHRoYW4gdGhhdCwgSSBkb24ndCBmaW5kIGFueSBuZWVkIGZvciBhIHYzIHBhdGNo
-IHJlLXJvbGwsIGRvIHlvdSBhZ3JlZT8gIAo+IAo+IFllYWgsIEkgc3VwcG9zZSBub3QuCj4gCj4g
-UmV2aWV3ZWQtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+Cj4gCj4gQW5kIGFjdHVh
-bGx5LCBpdCdzIE1pcXVlbCB0aGF0IHNob3VsZCBhcHBseSB0aGVzZSAyIHJhdGhlciB0aGFuIE1h
-cmsuCgpZZWFoLCBidXQgdGhhdCdzIGZpbmUgZm9yIHRoaXMgb25lLCBJIGRvbid0IGV4cGVjdCBj
-b25mbGljdHMgYW55d2F5LgoKQWNrZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxA
-Ym9vdGxpbi5jb20+CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+From: Ren Xiaohui <ren.xiaohui@zte.com.cn>
+
+Combine the two SPI NAND flash in the MTD layer
+
+Signed-off-by: Ren Xiaohui <ren.xiaohui@zte.com.cn>
+---
+ drivers/mtd/nand/spi/Kconfig          |   8 +
+ drivers/mtd/nand/spi/Makefile         |   2 +-
+ drivers/mtd/nand/spi/core.c           |  36 +++-
+ drivers/mtd/nand/spi/spi_nand_merge.c | 350 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h           |  14 +-
+ 5 files changed, 400 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/mtd/nand/spi/spi_nand_merge.c
+
+diff --git a/drivers/mtd/nand/spi/Kconfig b/drivers/mtd/nand/spi/Kconfig
+index 3d7649a..6aec3ef 100644
+--- a/drivers/mtd/nand/spi/Kconfig
++++ b/drivers/mtd/nand/spi/Kconfig
+@@ -7,3 +7,11 @@ menuconfig MTD_SPI_NAND
+ 	select SPI_MEM
+ 	help
+ 	  This is the framework for the SPI NAND device drivers.
++
++menuconfig MTD_SPI_NAND_MERGE
++	tristate "Two SPI NAND merge a mtd device"
++	select MTD_NAND_CORE
++	depends on MTD_SPI_NAND
++	select SPI_MEM
++	help
++	  This is the framework for Two SPI NAND merge a mtd device.
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 9662b9c..5d6475d 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
++spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o spi_nand_merge.o toshiba.o winbond.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 2c8685f..ee5e653 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -624,7 +624,7 @@ static int spinand_write_page(struct spinand_device *spinand,
+ 	return nand_ecc_finish_io_req(nand, (struct nand_page_io_req *)req);
+ }
+ 
+-static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
++int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
+ 			    struct mtd_oob_ops *ops)
+ {
+ 	struct spinand_device *spinand = mtd_to_spinand(mtd);
+@@ -669,8 +669,9 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
+ 
+ 	return ret ? ret : max_bitflips;
+ }
++EXPORT_SYMBOL(spinand_mtd_read);
+ 
+-static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
++int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
+ 			     struct mtd_oob_ops *ops)
+ {
+ 	struct spinand_device *spinand = mtd_to_spinand(mtd);
+@@ -704,6 +705,7 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL(spinand_mtd_write);
+ 
+ static bool spinand_isbad(struct nand_device *nand, const struct nand_pos *pos)
+ {
+@@ -725,7 +727,7 @@ static bool spinand_isbad(struct nand_device *nand, const struct nand_pos *pos)
+ 	return false;
+ }
+ 
+-static int spinand_mtd_block_isbad(struct mtd_info *mtd, loff_t offs)
++int spinand_mtd_block_isbad(struct mtd_info *mtd, loff_t offs)
+ {
+ 	struct nand_device *nand = mtd_to_nanddev(mtd);
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
+@@ -739,6 +741,7 @@ static int spinand_mtd_block_isbad(struct mtd_info *mtd, loff_t offs)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL(spinand_mtd_block_isbad);
+ 
+ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+ {
+@@ -764,7 +767,7 @@ static int spinand_markbad(struct nand_device *nand, const struct nand_pos *pos)
+ 	return spinand_write_page(spinand, &req);
+ }
+ 
+-static int spinand_mtd_block_markbad(struct mtd_info *mtd, loff_t offs)
++int spinand_mtd_block_markbad(struct mtd_info *mtd, loff_t offs)
+ {
+ 	struct nand_device *nand = mtd_to_nanddev(mtd);
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
+@@ -778,6 +781,7 @@ static int spinand_mtd_block_markbad(struct mtd_info *mtd, loff_t offs)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL(spinand_mtd_block_markbad);
+ 
+ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+ {
+@@ -808,8 +812,7 @@ static int spinand_erase(struct nand_device *nand, const struct nand_pos *pos)
+ 	return ret;
+ }
+ 
+-static int spinand_mtd_erase(struct mtd_info *mtd,
+-			     struct erase_info *einfo)
++int spinand_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
+ {
+ 	struct spinand_device *spinand = mtd_to_spinand(mtd);
+ 	int ret;
+@@ -820,8 +823,9 @@ static int spinand_mtd_erase(struct mtd_info *mtd,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL(spinand_mtd_erase);
+ 
+-static int spinand_mtd_block_isreserved(struct mtd_info *mtd, loff_t offs)
++int spinand_mtd_block_isreserved(struct mtd_info *mtd, loff_t offs)
+ {
+ 	struct spinand_device *spinand = mtd_to_spinand(mtd);
+ 	struct nand_device *nand = mtd_to_nanddev(mtd);
+@@ -835,6 +839,7 @@ static int spinand_mtd_block_isreserved(struct mtd_info *mtd, loff_t offs)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL(spinand_mtd_block_isreserved);
+ 
+ static int spinand_create_dirmap(struct spinand_device *spinand,
+ 				 unsigned int plane)
+@@ -1017,7 +1022,8 @@ spinand_select_op_variant(struct spinand_device *spinand,
+  * @table_size: size of the device description table
+  * @rdid_method: read id method to match
+  *
+- * Match between a device ID retrieved through the READ_ID command and an
++ * Should be used by SPI NAND manufacturer drivers when they want to find a
++ * match between a device ID retrieved through the READ_ID command and an
+  * entry in the SPI NAND description table. If a match is found, the spinand
+  * object will be initialized with information provided by the matching
+  * spinand_info entry.
+@@ -1295,6 +1301,10 @@ static int spinand_probe(struct spi_mem *mem)
+ 	mtd = spinand_to_mtd(spinand);
+ 	mtd->dev.parent = &mem->spi->dev;
+ 
++#ifdef CONFIG_MTD_SPI_NAND_MERGE
++	merge_mtd_register(mtd);
++#endif
++
+ 	ret = spinand_init(spinand);
+ 	if (ret)
+ 		return ret;
+@@ -1320,10 +1330,20 @@ static int spinand_remove(struct spi_mem *mem)
+ 	spinand = spi_mem_get_drvdata(mem);
+ 	mtd = spinand_to_mtd(spinand);
+ 
++#ifdef CONFIG_MTD_SPI_NAND_MERGE
++	if (mtd == get_merge_mtd(0) || mtd == get_merge_mtd(1)) {
++		pr_warn("this mtd device is merging, It is illegal.");
++		return 0;
++	}
+ 	ret = mtd_device_unregister(mtd);
+ 	if (ret)
+ 		return ret;
++	spinand_cleanup(spinand);
++#endif
+ 
++	ret = mtd_device_unregister(mtd);
++	if (ret)
++		return ret;
+ 	spinand_cleanup(spinand);
+ 
+ 	return 0;
+diff --git a/drivers/mtd/nand/spi/spi_nand_merge.c b/drivers/mtd/nand/spi/spi_nand_merge.c
+new file mode 100644
+index 0000000..fde1810
+--- /dev/null
++++ b/drivers/mtd/nand/spi/spi_nand_merge.c
+@@ -0,0 +1,350 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Merge Nand Chips driver
++ *
++ * Copyright 2021 - 2099 ZTE, Inc
++ *
++ * Author:
++ * Ren Xiaohui <ren.xiaohui@zte.com.cn>
++ */
++#include <linux/string.h>
++#include <linux/device.h>
++#include <linux/jiffies.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++#include <linux/of.h>
++#include <linux/slab.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/spi-mem.h>
++
++struct merge_mtd_info {
++	struct mtd_info *merge_spinand_mtd[2];
++	int merge_mtd_count;
++};
++static struct merge_mtd_info merge_mtd = {0};
++
++struct mtd_info *merge_mtd_register(struct mtd_info *mtd)
++{
++	if (merge_mtd.merge_mtd_count < 2)
++		merge_mtd.merge_spinand_mtd[merge_mtd.merge_mtd_count++] = mtd;
++
++	return 0;
++}
++EXPORT_SYMBOL(merge_mtd_register);
++
++struct mtd_info *get_merge_mtd(int index)
++{
++	return merge_mtd.merge_spinand_mtd[index];
++}
++EXPORT_SYMBOL(get_merge_mtd);
++
++static inline loff_t second_chip_addr(loff_t from)
++{
++	return from - merge_mtd.merge_spinand_mtd[0]->size;
++}
++
++static inline int select_chip(loff_t from, size_t len)
++{
++	int chip;
++	loff_t size = merge_mtd.merge_spinand_mtd[0]->size;
++
++	if ((from + len) <= size)
++		chip = 0;
++	else if (from >= size)
++		chip = 1;
++	else
++		chip = 2;
++
++	return chip;
++}
++
++static int merge_nand_erase(struct mtd_info *mtd, struct erase_info *instr)
++{
++	int ret, chip;
++	struct erase_info *erase_idx = NULL;
++
++	erase_idx = instr;
++	erase_idx->fail_addr = 0;
++
++	chip = select_chip(erase_idx->addr, erase_idx->len);
++	if (chip == 0) {
++		ret = spinand_mtd_erase(merge_mtd.merge_spinand_mtd[chip], erase_idx);
++	} else if (chip == 1) {
++
++		/* second chip */
++		instr->addr = second_chip_addr(erase_idx->addr);
++		instr->len = erase_idx->len;
++		ret =
++			spinand_mtd_erase(merge_mtd.merge_spinand_mtd[chip], erase_idx);
++	} else {
++		size_t len;
++		/* cross boundary */
++		len = erase_idx->len;
++		erase_idx->len =
++			merge_mtd.merge_spinand_mtd[0]->size - erase_idx->addr;
++		ret = spinand_mtd_erase(merge_mtd.merge_spinand_mtd[0], erase_idx);
++		if (ret)
++			goto bail_out;
++		erase_idx->addr = 0;
++		erase_idx->len = len - erase_idx->len;
++		ret = spinand_mtd_erase(merge_mtd.merge_spinand_mtd[1], erase_idx);
++	}
++
++bail_out:
++	return ret;
++}
++
++static int merge_spinand_read_oob(struct mtd_info *mtd, loff_t from,
++			 struct mtd_oob_ops *ops)
++{
++	int ret, chip;
++	size_t len = 0;
++
++	if (ops->datbuf)
++		len = ops->len;
++	else {
++		pr_warn("This ops->datbuf is NULL!\n");
++		return 0;
++	}
++
++	chip = select_chip(from, len);
++	if (chip == 0) {
++		ret = spinand_mtd_read(merge_mtd.merge_spinand_mtd[chip], from, ops);
++	} else if (chip == 1) {
++		/* second chip */
++		ret = spinand_mtd_read(merge_mtd.merge_spinand_mtd[chip],
++					second_chip_addr(from), ops);
++	} else {
++		loff_t _from[2];
++		size_t orig_len = ops->len;
++		uint8_t	*orig_datbuf = ops->datbuf;
++		size_t	retlen[2];
++		size_t	oobretlen[2];
++
++		/* cross boundary */
++		WARN_ON(ops->datbuf == NULL);
++		_from[0] = from;
++		ops->len = merge_mtd.merge_spinand_mtd[0]->size - from;
++		ret = spinand_mtd_read(merge_mtd.merge_spinand_mtd[0], _from[0], ops);
++		retlen[0] = ops->retlen;
++		oobretlen[0] = ops->oobretlen;
++		if (ret) {
++			ops->len = orig_len;
++			pr_warn("first chip read oob %llu err %d, abort read second chip\n",
++						_from[0], ret);
++			goto bail_out;
++		}
++
++		_from[1] = 0;
++		ops->len = orig_len - ops->len;
++		ops->datbuf += (merge_mtd.merge_spinand_mtd[1]->size - from);
++		ret = spinand_mtd_read(merge_mtd.merge_spinand_mtd[1], _from[1], ops);
++		retlen[1] = ops->retlen;
++		oobretlen[1] = ops->oobretlen;
++		ops->len = orig_len;
++		ops->datbuf = orig_datbuf;
++		ops->retlen = retlen[0] + retlen[1];
++		ops->oobretlen = oobretlen[0] + oobretlen[1];
++	}
++bail_out:
++	return ret;
++}
++
++static int merge_spinand_write_oob(struct mtd_info *mtd, loff_t to,
++			 struct mtd_oob_ops *ops)
++{
++	int ret, chip;
++	size_t len = 0;
++
++	if (ops->datbuf)
++		len = ops->len;
++	else {
++		pr_warn("This ops->datbuf is NULL!\n");
++		return 0;
++	}
++
++	chip = select_chip(to, len);
++	if (chip == 0) {
++		ret =
++				spinand_mtd_write(merge_mtd.merge_spinand_mtd[chip], to, ops);
++	} else if (chip == 1) {
++		/* second chip */
++		ret = spinand_mtd_write(merge_mtd.merge_spinand_mtd[chip],
++					second_chip_addr(to), ops);
++	} else {
++		loff_t _to[2];
++		size_t orig_len = ops->len;
++		uint8_t	*orig_datbuf = ops->datbuf;
++		size_t	retlen[2];
++		size_t	oobretlen[2];
++
++		/* cross boundary */
++		WARN_ON(ops->datbuf == NULL);
++		_to[0] = to;
++		ops->len = merge_mtd.merge_spinand_mtd[0]->size - to;
++		ret = spinand_mtd_write(merge_mtd.merge_spinand_mtd[0], _to[0], ops);
++		retlen[0] = ops->retlen;
++		oobretlen[0] = ops->oobretlen;
++		if (ret) {
++			ops->len = orig_len;
++			pr_warn("first chip write oob %llu err %d, abort write second chip\n",
++						_to[0], ret);
++			goto bail_out;
++		}
++
++		_to[1] = 0;
++		ops->len = orig_len - ops->len;
++		ops->datbuf += (merge_mtd.merge_spinand_mtd[0]->size - to);
++		ret = spinand_mtd_write(merge_mtd.merge_spinand_mtd[1], _to[1], ops);
++		retlen[1] = ops->retlen;
++		oobretlen[1] = ops->oobretlen;
++		ops->len = orig_len;
++		ops->datbuf = orig_datbuf;
++		ops->retlen = retlen[0] + retlen[1];
++		ops->oobretlen = oobretlen[0] + oobretlen[1];
++	}
++bail_out:
++	return ret;
++}
++
++static int merge_spinand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
++{
++	int chip = select_chip(ofs, 0);
++
++	if (chip == 0)
++		return spinand_mtd_block_isreserved(merge_mtd.merge_spinand_mtd[0], ofs);
++	else
++		return spinand_mtd_block_isreserved(merge_mtd.merge_spinand_mtd[1],
++					second_chip_addr(ofs));
++}
++
++static int merge_spinand_block_isbad(struct mtd_info *mtd, loff_t ofs)
++{
++	int chip = select_chip(ofs, 0);
++
++	if (chip == 0)
++		return spinand_mtd_block_isbad(merge_mtd.merge_spinand_mtd[0],
++						ofs);
++	else
++		return spinand_mtd_block_isbad(merge_mtd.merge_spinand_mtd[1],
++					second_chip_addr(ofs));
++}
++
++static int merge_spinand_block_markbad(struct mtd_info *mtd, loff_t ofs)
++{
++	int chip = select_chip(ofs, 0);
++
++	if (chip == 0)
++		return spinand_mtd_block_markbad(merge_mtd.merge_spinand_mtd[0], ofs);
++	else
++		return spinand_mtd_block_markbad(merge_mtd.merge_spinand_mtd[1],
++					second_chip_addr(ofs));
++}
++
++static int merge_nanddev_mtd_max_bad_blocks(struct mtd_info *mtd,
++					loff_t offs, size_t len)
++{
++	int chip = select_chip(offs, len);
++
++	if (chip == 0)
++		return nanddev_mtd_max_bad_blocks(merge_mtd.merge_spinand_mtd[0],
++						offs, len);
++	else
++		return nanddev_mtd_max_bad_blocks(merge_mtd.merge_spinand_mtd[1],
++					second_chip_addr(offs), len);
++}
++
++static int merge_mtds(void)
++{
++	int ret = 0;
++	struct mtd_info *merge_dev = NULL;
++
++	merge_dev = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
++	if (!merge_dev) {
++		pr_warn("The reason of merge failure\n");
++		ret = -ENOMEM;
++		return ret;
++	}
++
++	merge_dev->name = "merge_mtd";
++	merge_dev->size =
++		merge_mtd.merge_spinand_mtd[0]->size + merge_mtd.merge_spinand_mtd[1]->size;
++
++	if (merge_mtd.merge_spinand_mtd[0]->erasesize ==
++				merge_mtd.merge_spinand_mtd[1]->erasesize)
++		merge_dev->erasesize = merge_mtd.merge_spinand_mtd[0]->erasesize;
++	else {
++		pr_warn("error: These two spinands have different erasesize!\n");
++		return -1;
++	}
++
++	if (merge_mtd.merge_spinand_mtd[0]->writesize ==
++				merge_mtd.merge_spinand_mtd[1]->writesize)
++		merge_dev->writesize = merge_mtd.merge_spinand_mtd[0]->writesize;
++	else {
++		pr_warn("error: These two spinands have different writesize!\n");
++		return -1;
++	}
++	merge_dev->writebufsize = merge_mtd.merge_spinand_mtd[0]->writebufsize;
++	merge_dev->type = MTD_NANDFLASH;
++	merge_dev->flags = MTD_CAP_NANDFLASH;
++	merge_dev->_read_oob = merge_spinand_read_oob;
++	merge_dev->_write_oob = merge_spinand_write_oob;
++	merge_dev->_block_isbad = merge_spinand_block_isbad;
++	merge_dev->_block_markbad = merge_spinand_block_markbad;
++	merge_dev->_block_isreserved = merge_spinand_block_isreserved;
++	merge_dev->_erase = merge_nand_erase;
++	merge_dev->_max_bad_blocks = merge_nanddev_mtd_max_bad_blocks;
++
++	mtd_device_register(merge_dev, NULL, 0);
++	pr_notice("mtd%d: [%s] erase_size = %dKiB [%d], total_size = %lldKiB [%lld] ",
++				merge_dev->index,
++				merge_dev->name + strlen("merge_mtd: "),
++				merge_dev->erasesize >> 10, merge_dev->erasesize,
++				merge_dev->size >> 10, merge_dev->size);
++
++	return 0;
++}
++
++static int __init merge_mtd_init(void)
++{
++	int ret = 0;
++
++	pr_notice("merge starting...\n");
++
++	if (merge_mtd.merge_spinand_mtd[0] == NULL ||
++				merge_mtd.merge_spinand_mtd[1] == NULL) {
++		pr_warn("whoo...can not get any mtd device\n");
++		return -1;
++	}
++
++	if (merge_mtd.merge_spinand_mtd[0]->name == NULL ||
++		merge_mtd.merge_spinand_mtd[1]->name == NULL) {
++		pr_warn("error:Can not get mtd device name.");
++		pr_warn("the first spinand name:%s, second spinand name:%s.\n",
++			merge_mtd.merge_spinand_mtd[0]->name, merge_mtd.merge_spinand_mtd[1]->name);
++		return -1;
++	}
++	pr_notice("merge_spinand_mtd[0]->name = %s, merge_mtd.merge_spinand_mtd[1]->name = %s\n",
++		merge_mtd.merge_spinand_mtd[0]->name, merge_mtd.merge_spinand_mtd[1]->name);
++
++
++	ret = merge_mtds();
++
++	return ret;
++}
++
++
++static void merge_mtd_exit(void)
++{
++	pr_notice("exit ");
++	mtd_device_unregister(merge_mtd.merge_spinand_mtd[0]);
++	mtd_device_unregister(merge_mtd.merge_spinand_mtd[1]);
++}
++
++late_initcall(merge_mtd_init);
++module_exit(merge_mtd_exit);
++
++MODULE_DESCRIPTION("Merge two spi nand chips under one mtd device");
++MODULE_AUTHOR("renxiaohui <ren.xiaohui@zte.com.cn>");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6988956..9c5fb0f 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -504,12 +504,24 @@ static inline void spinand_set_of_node(struct spinand_device *spinand,
+ 	nanddev_set_of_node(&spinand->base, np);
+ }
+ 
+-int spinand_match_and_init(struct spinand_device *spinand,
++
++struct mtd_info *merge_mtd_register(struct mtd_info *mtd);
++struct mtd_info *get_merge_mtd(int index);
++
++int spinand_match_and_init(struct spinand_device *dev,
+ 			   const struct spinand_info *table,
+ 			   unsigned int table_size,
+ 			   enum spinand_readid_method rdid_method);
+ 
+ int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+ int spinand_select_target(struct spinand_device *spinand, unsigned int target);
++int spinand_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo);
++int spinand_mtd_block_isreserved(struct mtd_info *mtd, loff_t offs);
++int spinand_mtd_block_markbad(struct mtd_info *mtd, loff_t offs);
++int spinand_mtd_block_isbad(struct mtd_info *mtd, loff_t offs);
++int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
++			     struct mtd_oob_ops *ops);
++int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
++			    struct mtd_oob_ops *ops);
+ 
+ #endif /* __LINUX_MTD_SPINAND_H */
+-- 
+2.15.2
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
