@@ -2,67 +2,128 @@ Return-Path: <SRS0=Ceh7=ON=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18C30C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Sep 2021 06:43:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C86C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C521F60EB4
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Sep 2021 06:43:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C521F60EB4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 65A6261269
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Sep 2021 08:53:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 65A6261269
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LYSNJtPTgV6YF0MLTOGIkTuUSckbGCwqovBCu4j2Vsc=; b=PhaWn62B9sQddf
-	T0qU1CTIVny/q6y1gJiViSa3lt9ZCdQiAmqHJ2+NDe+kNfOuUQz/S0n8oRrXjboO+O8EPz7S59Vg7
-	Ht3OPq8d+qUjxmXmDNqtteT3uvskhWtc3S/WD5UHkivU08+cKM2VCdpaodPWPhRi+h0CCGnZkGk9A
-	xffo78l1qeGnI1nQ78RbLGg71vlAL5XUpkW4hFjSB3JzIZR7sT0ycdo3XPqxXBLzdz4W0nZe0GGqI
-	C5Pz5twuPP5j1LIhhn09q7e1RTBWh8ugccdiqI6SExnSpULSaec6nUjlUhQWvqV7P4TR4P5ilSnyn
-	UWxkt0k3oVOdWuWtX5Nw==;
+	List-Owner; bh=/HBzzGthvcbc0Ui19w/+1SCPMnfKAMMlYR+g1fQK4pU=; b=kRgHEmD95GxPPn
+	mGN7sOWai6ilZMlFl/xgRBql3LGLKA4iZ1eMAXF9Vw6RvTQxHTMkIZskD+PLczmdSvToBR3p8U/65
+	2HyEoO3mM6cYKtUj6XvICGzbFrCm2AsYP8qdOvbekgZqCQnn5f5YPJWvOAz7/IzXIOgs47q0+dXM8
+	DB1rQhJUqrIx3IdxUp7fXzgoh9zP+2tkea42yG7XL9UmT+xYVuLitmuB8duUpImyg5R5n1lm0/cB9
+	huKob0TltkNElEMVEK9wlThhtl9oo3vILDS9qs8pqBGyBGfuuB9NpIHEaOcFk6w8EXcJ9mHwNB/9N
+	sYvBNqcbo4sld+3vImUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mTIRc-00AP0L-SW; Thu, 23 Sep 2021 06:42:56 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1mTKTB-00Ah01-Cq; Thu, 23 Sep 2021 08:52:41 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mTIRZ-00AOzV-9E
- for linux-mtd@lists.infradead.org; Thu, 23 Sep 2021 06:42:54 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6C5851F4121C;
- Thu, 23 Sep 2021 07:42:49 +0100 (BST)
-Date: Thu, 23 Sep 2021 08:42:44 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: CGEL <cgel.zte@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Patrice Chotard
- <patrice.chotard@foss.st.com>, Christophe Kerello
- <christophe.kerello@foss.st.com>, Mark Brown <broonie@kernel.org>, Daniel
- Palmer <daniel@0x0f.com>, Alexander Lobakin <alobakin@pm.me>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Ren Xiaohui
- <ren.xiaohui@zte.com.cn>
-Subject: Re: [PATCH] mtd: spinand: add merge-two-spinand function
-Message-ID: <20210923084244.54a6a899@collabora.com>
-In-Reply-To: <20210923015241.248910-1-ren.xiaohui@zte.com.cn>
-References: <20210923015241.248910-1-ren.xiaohui@zte.com.cn>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+ id 1mTKT6-00AgzT-1b
+ for linux-mtd@lists.infradead.org; Thu, 23 Sep 2021 08:52:37 +0000
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18N7VEMw021941; 
+ Thu, 23 Sep 2021 04:52:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=vi//wIVyT+h5+C9jizJGkEb5o7LV4fbjChl0kUpetww=;
+ b=ZahMwh30SuExkEvWaCr4uDmzth0/Ynn/aa+vNfgPGvQyFRMZP7bCkaBLi1sy5ObAJiuL
+ LR6QwWhhMYvwuzAcrehriLgx+VJn6JTrHTJd+a/CPsF5+o8flAz5raWqxdCIbQGvkjs+
+ 3VE4VSyxbCWJZQpU/zj9VL9diXQQm4icfrC7Izb/Pk4ZHDc85pys8hJ0buAizg9eJfOB
+ p5GSaOWyBePyx3Cioe1YtKtLM3g0dXpsR4wC9TM7MxnEnfO+VEvwtSjIpl0d+xHKCzGR
+ PauF1TgmwASkD1w2mvn0DmP3UD5b1kbRtDtjSsOG2ghcvqqk0cYcnigj89TJnknQm9s7 4g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3b8n8q1skh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 23 Sep 2021 04:52:21 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+ by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18N87m8F003634;
+ Thu, 23 Sep 2021 04:52:19 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com
+ [159.122.73.72])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3b8n8q1sjg-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 23 Sep 2021 04:52:19 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+ by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18N8hx4k020988;
+ Thu, 23 Sep 2021 08:52:16 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com
+ (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+ by ppma06fra.de.ibm.com with ESMTP id 3b7q6pq4ab-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 23 Sep 2021 08:52:16 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com
+ [9.149.105.58])
+ by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
+ id 18N8lKmU54133162
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 23 Sep 2021 08:47:20 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 824174C1C0;
+ Thu, 23 Sep 2021 08:52:11 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 71F604C182;
+ Thu, 23 Sep 2021 08:52:10 +0000 (GMT)
+Received: from osiris (unknown [9.145.165.148])
+ by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+ Thu, 23 Sep 2021 08:52:10 +0000 (GMT)
+Date: Thu, 23 Sep 2021 10:52:08 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>, axboe@kernel.dk,
+ gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+ atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+ oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+ shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+ dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+ borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/9] s390/block/dcssblk: add error handling support for
+ add_disk()
+Message-ID: <YUxAOKY7dXZAABhI@osiris>
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-8-mcgrof@kernel.org>
+ <YTIscKy+jg5L/TMh@osiris> <YTLP8mYBX37R++9E@bombadil.infradead.org>
+ <20210906134346.19c14246@thinkpad>
+ <YT+B+vCUcpZEq8hM@bombadil.infradead.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <YT+B+vCUcpZEq8hM@bombadil.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 2XeQEdid_UYFD9jsrBRsyb10jcGxIyKO
+X-Proofpoint-GUID: oI5-SgomwrvMO_toFwGrIdfrCQ0BSo8E
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-23_02,2021-09-22_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 bulkscore=0
+ phishscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109230052
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210922_234253_505451_557DA77B 
-X-CRM114-Status: UNSURE (   9.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20210923_015236_126194_6E466CBD 
+X-CRM114-Status: GOOD (  31.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,16 +140,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 23 Sep 2021 01:52:41 +0000
-CGEL <cgel.zte@gmail.com> wrote:
-
-> From: Ren Xiaohui <ren.xiaohui@zte.com.cn>
+On Mon, Sep 13, 2021 at 09:53:14AM -0700, Luis Chamberlain wrote:
+> On Mon, Sep 06, 2021 at 01:43:46PM +0200, Gerald Schaefer wrote:
+> > On Fri, 3 Sep 2021 18:46:26 -0700
+> > Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > 
+> > > On Fri, Sep 03, 2021 at 04:08:48PM +0200, Heiko Carstens wrote:
+> > > > On Thu, Sep 02, 2021 at 10:41:03AM -0700, Luis Chamberlain wrote:
+> > > > > We never checked for errors on add_disk() as this function
+> > > > > returned void. Now that this is fixed, use the shiny new
+> > > > > error handling.
+> > > > > 
+> > > > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > > > ---
+> > > > >  drivers/s390/block/dcssblk.c | 4 +++-
+> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+> > > > > index 5be3d1c39a78..b0fd5009a12e 100644
+> > > > > --- a/drivers/s390/block/dcssblk.c
+> > > > > +++ b/drivers/s390/block/dcssblk.c
+> > > > > @@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+> > > > >  	}
+> > > > >  
+> > > > >  	get_device(&dev_info->dev);
+> > > > > -	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> > > > > +	rc = device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> > > > > +	if (rc)
+> > > > > +		goto put_dev;
+> > > > 
+> > > > This looks not correct to me. We seem to have now in case of an error:
+> > > > 
+> > > > - reference count imbalance (= memory leak)
+> > > > - dax cleanup is missing
+> > > 
+> > > Care to provide an alternative?
+> > 
+> > See patch below:
 > 
-> Combine the two SPI NAND flash in the MTD layer
+> Thanks! Will you queue this up on your end or do would you
+> prefer for me to roll this into my tree and eventually resend
+> with the rest?
 
-Just had a quick look, but it looks like you're re-implementing
-mtdconcat. Maybe you should just extend mtdconcat to cover your use
-cases.
+Please add the patch to your tree.
 
 ______________________________________________________
 Linux MTD discussion mailing list
