@@ -2,14 +2,14 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C7B4C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2979DC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:45:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A9EA610A2
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:45:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5A9EA610A2
+	by mail.kernel.org (Postfix) with ESMTPS id EC5E761157
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:45:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EC5E761157
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OPQ8nIY1unAwibS2yDC0+PB7KGXgxqSAdwZ6ohhMm7g=; b=qUbV3Mbc2B9c7Y
-	UfDMzzwoXRmBUjdp1ZJNNymjgfuImXTo3LyL8b/XISgxPZX03QISKHwzFJopWyIwItPIfR6/nNf9v
-	mfBY61wcUBYX016LVLNUnkDvhC37luRyGUiZjXA2gkJ/GeAQUUxqM3PB4rbZ07+jr4/Gb+GPvJPcm
-	z9fk/Uy0vokbpJf1TSNOQoP7SOg/34+ljIhdSUjJQzuyQi4P2H2E9fip+sE3+l1OfytfRqv5nDPab
-	FoWCJvjyywsocJHvxtzla6w43zsARosZBnlFl7VUab3Q+IWUTrFjF0rjxws/SsCBx6Cc9USr7IEgc
-	2w7432ZgDmlZWzmpeW/Q==;
+	List-Owner; bh=sfcCUp5u3HQccOanbVOO3ZYRi9pWexvKkDwPiMPzpjs=; b=PlBKhhuqlYJ4nV
+	zTUGok4vY0jZ9q3OlK6YAwsY1w/VRtiFfXqxCDSrqPM/s1TVVQ0C2iP5zBANM/QuQsdRxzOocrL1e
+	g9YKDGgplJZewTxCl1QDRhqZHQiVgaEy/HrOtVBP9SrTwcSV6B7UdWkDxcEs+VWDUFRZsYN5GKGjr
+	J8wL3MzrMzmaUwci1tfQvbXZPudBsjZBXANeZbJ/DbKwuiYD8bb/JqpepG3euj1aBgZjs23Vjt6LL
+	O3qXFdwOBw6ZduRB0EIp2XMCxBtJsxMiJnuRYTceGc/DeLk7gBFtiRAvN4bRy45b0rFqx80q2jnSx
+	yIfUdDamVOL4N+9Xfk5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUjRP-001cMb-Az; Mon, 27 Sep 2021 05:44:39 +0000
+	id 1mUjSC-001cb8-4G; Mon, 27 Sep 2021 05:45:28 +0000
 Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mUjQ3-001bmL-Bo; Mon, 27 Sep 2021 05:43:19 +0000
-X-UUID: 2d20bf4478e34d6f9ce1ed132e44b715-20210926
-X-UUID: 2d20bf4478e34d6f9ce1ed132e44b715-20210926
+ id 1mUjQ6-001bnE-1U; Mon, 27 Sep 2021 05:43:21 +0000
+X-UUID: 5649233960064165a37631ae14e73b1c-20210926
+X-UUID: 5649233960064165a37631ae14e73b1c-20210926
 Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
  (envelope-from <xiangsheng.hou@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1619722914; Sun, 26 Sep 2021 22:43:11 -0700
-Received: from MTKMBS07N2.mediatek.inc (172.21.101.141) by
+ with ESMTP id 1248422029; Sun, 26 Sep 2021 22:43:11 -0700
+Received: from mtkmbs07n1.mediatek.inc (172.21.101.16) by
  MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 26 Sep 2021 22:42:21 -0700
+ 15.0.1497.2; Sun, 26 Sep 2021 22:36:51 -0700
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 27 Sep 2021 13:42:20 +0800
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 27 Sep 2021 13:36:50 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 27 Sep 2021 13:42:19 +0800
+ Transport; Mon, 27 Sep 2021 13:36:48 +0800
 From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 To: <miquel.raynal@bootlin.com>, <broonie@kernel.org>
 CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
@@ -53,17 +53,17 @@ CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
  <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
  <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: [RFC,v2 2/4] mtd: ecc: realize Mediatek HW ECC driver
-Date: Mon, 27 Sep 2021 13:42:03 +0800
-Message-ID: <20210927054205.17960-3-xiangsheng.hou@mediatek.com>
+Subject: [RFC,v1 2/4] mtd: ecc: realize Mediatek HW ECC driver
+Date: Mon, 27 Sep 2021 13:36:27 +0800
+Message-ID: <20210927053629.17847-3-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210927054205.17960-1-xiangsheng.hou@mediatek.com>
-References: <20210927054205.17960-1-xiangsheng.hou@mediatek.com>
+In-Reply-To: <20210927053629.17847-1-xiangsheng.hou@mediatek.com>
+References: <20210927053629.17847-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210926_224315_578933_0CCFC887 
-X-CRM114-Status: GOOD (  21.92  )
+X-CRM114-CacheID: sfid-20210926_224318_202414_8BCF6883 
+X-CRM114-Status: GOOD (  24.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,18 +80,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The v2 driver export some function for snfi driver in spi
-subsystem to use, include nand parameter(page/spare size)
-and ecc status(enable/disable).Also need empty page check
-function export from snfi driver.
+The v1 driver add nfi register base in ecc dts node, due
+to the nfi driver(for spinand) at spi subsystem can not
+get nand parameter and ecc status.
 
 Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 ---
  drivers/mtd/nand/core.c    |   2 +-
  drivers/mtd/nand/ecc.c     |  19 +++
- drivers/mtd/nand/mtk_ecc.c | 315 +++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/mtk_ecc.c | 319 +++++++++++++++++++++++++++++++++++++
  include/linux/mtd/nand.h   |  12 ++
- 4 files changed, 347 insertions(+), 1 deletion(-)
+ 4 files changed, 351 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
 index 5e13a03d2b32..3db410de3ba2 100644
@@ -144,20 +143,50 @@ index 6c43dfda01d4..b334cd88c038 100644
  MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
  MODULE_DESCRIPTION("Generic ECC engine");
 diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-index ce0f8b491e5d..33c660f094f3 100644
+index ce0f8b491e5d..db72343adcdf 100644
 --- a/drivers/mtd/nand/mtk_ecc.c
 +++ b/drivers/mtd/nand/mtk_ecc.c
-@@ -61,9 +61,36 @@ struct mtk_ecc {
+@@ -41,10 +41,28 @@
+ #define ECC_IDLE_REG(op)	((op) == ECC_ENCODE ? ECC_ENCIDLE : ECC_DECIDLE)
+ #define ECC_CTL_REG(op)		((op) == ECC_ENCODE ? ECC_ENCCON : ECC_DECCON)
+ 
++/* nfi regs will be used in ecc driver */
++#define NFI_CNFG		0x00
++#define		CNFG_HW_ECC_EN		BIT(8)
++#define		CNFG_AUTO_FMT_EN	BIT(9)
++#define NFI_PAGEFMT		(0x04)
++#define		PAGEFMT_SPARE_SHIFT		(16)
++#define		PAGEFMT_FDM_ECC_SHIFT	(12)
++#define		PAGEFMT_FDM_SHIFT	(8)
++#define		PAGEFMT_SEC_SEL_512	BIT(2)
++#define		PAGEFMT_512_2K		(0)
++#define		PAGEFMT_2K_4K		(1)
++#define		PAGEFMT_4K_8K		(2)
++#define		PAGEFMT_8K_16K		(3)
++#define NFI_STA			0x60
++#define		STA_EMP_PAGE		BIT(12)
++
+ struct mtk_ecc_caps {
+ 	u32 err_mask;
+ 	const u8 *ecc_strength;
+ 	const u32 *ecc_regs;
++	const u8 *spare_size;
++	u8 num_spare_size;
+ 	u8 num_ecc_strength;
+ 	u8 ecc_mode_shift;
+ 	u32 parity_bits;
+@@ -55,15 +73,37 @@ struct mtk_ecc {
+ 	struct device *dev;
+ 	const struct mtk_ecc_caps *caps;
+ 	void __iomem *regs;
++	void __iomem *nfi_regs;
+ 	struct clk *clk;
+ 
+ 	struct completion done;
  	struct mutex lock;
  	u32 sectors;
- 
-+	u32 page_size;
-+	u32 spare_size_per_sector;
-+	u32 spare_size_idx;
 +	u32 fdm_size;
-+	u32 sector_size;
-+	bool ecc_en;
-+
+ 
  	u8 *eccdata;
  };
  
@@ -184,7 +213,7 @@ index ce0f8b491e5d..33c660f094f3 100644
  /* ecc strength that each IP supports */
  static const u8 ecc_strength_mt2701[] = {
  	4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
-@@ -79,6 +106,11 @@ static const u8 ecc_strength_mt7622[] = {
+@@ -79,6 +119,11 @@ static const u8 ecc_strength_mt7622[] = {
  	4, 6, 8, 10, 12, 14, 16
  };
  
@@ -196,88 +225,10 @@ index ce0f8b491e5d..33c660f094f3 100644
  enum mtk_ecc_regs {
  	ECC_ENCPAR00,
  	ECC_ENCIRQ_EN,
-@@ -447,6 +479,289 @@ unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
+@@ -447,6 +492,278 @@ unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
  }
  EXPORT_SYMBOL(mtk_ecc_get_parity_bits);
  
-+u32 mtk_ecc_get_pagesize(struct device_node *dn)
-+{
-+	struct mtk_ecc *ecc = NULL;
-+	struct device_node *child_np;
-+
-+	child_np = of_get_compatible_child(dn, "spi-nand");
-+
-+	ecc = of_mtk_ecc_get(child_np);
-+
-+	return ecc->page_size;
-+}
-+EXPORT_SYMBOL(mtk_ecc_get_pagesize);
-+
-+u32 mtk_ecc_get_sparesize(struct device_node *dn)
-+{
-+	struct mtk_ecc *ecc = NULL;
-+	struct device_node *child_np;
-+
-+	child_np = of_get_compatible_child(dn, "spi-nand");
-+
-+	ecc = of_mtk_ecc_get(child_np);
-+
-+	return ecc->spare_size_per_sector;
-+}
-+EXPORT_SYMBOL(mtk_ecc_get_sparesize);
-+
-+u32 mtk_ecc_get_spare_idx(struct device_node *dn)
-+{
-+	struct mtk_ecc *ecc = NULL;
-+	struct device_node *child_np;
-+
-+	child_np = of_get_compatible_child(dn, "spi-nand");
-+
-+	ecc = of_mtk_ecc_get(child_np);
-+
-+	return ecc->spare_size_idx;
-+}
-+EXPORT_SYMBOL(mtk_ecc_get_spare_idx);
-+
-+u32 mtk_ecc_get_fdmsize(struct device_node *dn)
-+{
-+	struct mtk_ecc *ecc = NULL;
-+	struct device_node *child_np;
-+
-+	child_np = of_get_compatible_child(dn, "spi-nand");
-+
-+	ecc = of_mtk_ecc_get(child_np);
-+
-+	return ecc->fdm_size;
-+}
-+EXPORT_SYMBOL(mtk_ecc_get_fdmsize);
-+
-+u32 mtk_ecc_get_sectorsize(struct device_node *dn)
-+{
-+	struct mtk_ecc *ecc = NULL;
-+	struct device_node *child_np;
-+
-+	child_np = of_get_compatible_child(dn, "spi-nand");
-+
-+	ecc = of_mtk_ecc_get(child_np);
-+
-+	return ecc->sector_size;
-+}
-+EXPORT_SYMBOL(mtk_ecc_get_sectorsize);
-+
-+bool mtk_ecc_get_status(struct device_node *dn)
-+{
-+	struct mtk_ecc *ecc = NULL;
-+	struct device_node *child_np;
-+
-+	child_np = of_get_compatible_child(dn, "spi-nand");
-+
-+	ecc = of_mtk_ecc_get(child_np);
-+
-+	return ecc->ecc_en;
-+}
-+EXPORT_SYMBOL(mtk_ecc_get_status);
-+
 +int mtk_ecc_prepare_io_req(struct nand_device *nand,
 +					  struct nand_page_io_req *req)
 +{
@@ -288,8 +239,6 @@ index ce0f8b491e5d..33c660f094f3 100644
 +	nand_ecc_tweak_req(&engine_conf->req_ctx, req);
 +
 +	if (req->mode == MTD_OPS_RAW) {
-+		/* set ecc status to disable */
-+		engine_conf->ecc->ecc_en = false;
 +		if (req->type == NAND_PAGE_WRITE) {
 +			/*
 +			 * format data and oob buf to Mediatek nand flash
@@ -298,8 +247,6 @@ index ce0f8b491e5d..33c660f094f3 100644
 +			mtk_ecc_format_page();
 +		}
 +	} else {
-+		/* set ecc status to enable */
-+		engine_conf->ecc->ecc_en = true;
 +		engine_conf->ecc_cfg.op = ECC_DECODE;
 +		if (req->type == NAND_PAGE_WRITE) {
 +			/*
@@ -314,6 +261,13 @@ index ce0f8b491e5d..33c660f094f3 100644
 +			engine_conf->ecc_cfg.op = ECC_ENCODE;
 +		}
 +
++		/*
++		 * this mainly config the nfi to be aware of
++		 * the operation is ecc enable
++		 */
++		val = CNFG_HW_ECC_EN | CNFG_AUTO_FMT_EN;
++		writew(val, engine_conf->ecc->nfi_regs + NFI_CNFG);
++
 +		ret = mtk_ecc_enable(engine_conf->ecc, &engine_conf->ecc_cfg);
 +	}
 +
@@ -324,7 +278,6 @@ index ce0f8b491e5d..33c660f094f3 100644
 +					  struct nand_page_io_req *req)
 +{
 +	struct mtk_ecc_conf *engine_conf = nand->ecc.ctx.priv;
-+	struct device_node *dn = nanddev_get_of_node(nand);
 +	struct mtd_info *mtd = nanddev_to_mtd(nand);
 +	u8 *spare_databuf = engine_conf->spare_databuf;
 +	int ret;
@@ -345,14 +298,12 @@ index ce0f8b491e5d..33c660f094f3 100644
 +		return 0;
 +	}
 +
-+	/* set ecc status to default disable */
-+	engine_conf->ecc->ecc_en = false;
 +	ret = mtk_ecc_wait_done(engine_conf->ecc, ECC_DECODE);
 +	if (ret)
 +		return -ETIMEDOUT;
 +
-+	/* check whether read empty by check nfi export function */
-+	ret = mtk_snfi_check_empty(dn);
++	/* check whether read empty by check nfi regs */
++	ret = readl(engine_conf->ecc->nfi_regs + NFI_STA) & STA_EMP_PAGE;
 +	if (ret) {
 +		memset(req->databuf.in, 0xff, mtd->writesize);
 +		memset(req->oobbuf.in, 0xff, mtd->oobsize);
@@ -400,32 +351,103 @@ index ce0f8b491e5d..33c660f094f3 100644
 +	/* todo */
 +}
 +
-+static int mtk_ecc_config_init(struct nand_device *nand)
++/*
++ * config nfi with nand parameter
++ * the nfi can not get nand parameter, due to the snfi
++ * driver in spi subsystem
++ */
++static int mtk_ecc_nfi_config(struct nand_device *nand)
 +{
 +	struct mtk_ecc_conf *engine_conf = nand->ecc.ctx.priv;
 +	struct nand_ecc_props *conf = &nand->ecc.ctx.conf;
 +	struct mtd_info *mtd = nanddev_to_mtd(nand);
-+	u32 sps, idx;
++	int oob_free, oob_ecc, spare, ret;
++	u32 val, idx;
++
++	/* calculate the spare size per sector */
++	ret = mtk_ecc_set_spare_per_sector(nand, &spare, &idx);
++	if (ret)
++		return ret;
++
++	/* calculate ecc strength per sector */
++	mtk_ecc_adjust_strength(engine_conf->ecc, &conf->strength);
++
++	/* config nfi with nand page size and spare size */
++	switch (mtd->writesize) {
++	case 512:
++		val = PAGEFMT_512_2K | PAGEFMT_SEC_SEL_512;
++		break;
++	case KB(2):
++		if (conf->step_size == 512)
++			val = PAGEFMT_2K_4K | PAGEFMT_SEC_SEL_512;
++		else
++			val = PAGEFMT_512_2K;
++		break;
++	case KB(4):
++		if (conf->step_size == 512)
++			val = PAGEFMT_4K_8K | PAGEFMT_SEC_SEL_512;
++		else
++			val = PAGEFMT_2K_4K;
++		break;
++	case KB(8):
++		if (conf->step_size == 512)
++			val = PAGEFMT_8K_16K | PAGEFMT_SEC_SEL_512;
++		else
++			val = PAGEFMT_4K_8K;
++		break;
++	case KB(16):
++		val = PAGEFMT_8K_16K;
++		break;
++	default:
++		dev_err(engine_conf->ecc->dev,
++			"invalid page len: %d\n", mtd->writesize);
++		return -EINVAL;
++	}
++
++	val |= idx << PAGEFMT_SPARE_SHIFT;
++	val |= engine_conf->ecc->fdm_size << PAGEFMT_FDM_SHIFT;
++	/* fdm size equal to fdm ecc size */
++	val |= engine_conf->ecc->fdm_size << PAGEFMT_FDM_ECC_SHIFT;
++	writel(val, engine_conf->ecc->nfi_regs + NFI_PAGEFMT);
++
++	return 0;
++}
++
++static int mtk_ecc_config_init(struct nand_device *nand)
++{
++
++	struct nand_ecc_props *conf = &nand->ecc.ctx.conf;
++	struct mtd_info *mtd = nanddev_to_mtd(nand);
 +
 +	conf->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
 +	conf->algo = NAND_ECC_ALGO_MTK_HWECC;
 +	conf->step_size = nand->ecc.user_conf.step_size;
 +	conf->strength = nand->ecc.user_conf.strength;
 +
-+	mtk_ecc_set_spare_per_sector(nand, &sps, &idx);
++	return mtk_ecc_nfi_config(nand);
++}
 +
-+	/* calculate ecc strength per sector */
-+	mtk_ecc_adjust_strength(engine_conf->ecc, &conf->strength);
++/*
++ * Get nfi register base from ecc node
++ * The nfi controller need get nand parameter when cowork with this
++ * HW ECC driver for high performance.
++ * However, the snfi(part of nfi) driver at spi subsystem, which
++ * can not get these information.
++ * Therefore, config nfi reg base at ecc node, and config nand parameter
++ * to nfi regs.
++ */
++static void __iomem *of_mtk_ecc_get_nfi_reg(struct device_node *of_node)
++{
++	void __iomem *reg = NULL;
++	struct device_node *np;
 +
-+	/*
-+	 * set ecc sector size, spare per sector and spare idx
-+	 * in nfi cnfg which will be get by snfi driver
-+	 */
-+	engine_conf->ecc->sector_size = conf->step_size;
-+	engine_conf->ecc->spare_size_per_sector = *sps;
-+	engine_conf->ecc->spare_size_idx = idx;
++	np = of_parse_phandle(of_node, "nand-ecc-engine", 0);
++	if (np) {
++		reg = of_iomap(np, 1);
++		of_node_put(np);
++	}
 +
-+	return 0;
++	return reg;
 +}
 +
 +int mtk_ecc_init_ctx(struct nand_device *nand)
@@ -437,19 +459,15 @@ index ce0f8b491e5d..33c660f094f3 100644
 +	engine_conf = kzalloc(sizeof(*engine_conf), GFP_KERNEL);
 +	engine_conf->ecc = of_mtk_ecc_get(dn);
 +
++	/* get nfi register base from ecc node */
++	engine_conf->ecc->nfi_regs = of_mtk_ecc_get_nfi_reg(dn);
++
 +	mtd_set_ooblayout();
 +
 +	nand->ecc.ctx.priv = engine_conf;
 +	ret = mtk_ecc_config_init(nand);
 +	if (ret)
 +		goto free_engine_conf;
-+
-+	/*
-+	 * the snfi driver need get nand parameter
-+	 * when work in ECC nfi mode
-+	 */
-+	engine_conf->ecc->page_size = nand->memorg.pagesize;
-+	engine_conf->ecc->spare_size = nand->memorg.oobsize;
 +
 +	/*
 +	 * bad mark setting to ensure the badmark position
@@ -486,6 +504,15 @@ index ce0f8b491e5d..33c660f094f3 100644
  static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
  	.err_mask = 0x3f,
  	.ecc_strength = ecc_strength_mt2701,
+@@ -471,6 +788,8 @@ static const struct mtk_ecc_caps mtk_ecc_caps_mt7622 = {
+ 	.err_mask = 0x3f,
+ 	.ecc_strength = ecc_strength_mt7622,
+ 	.ecc_regs = mt7622_ecc_regs,
++	.spare_size = spare_size_mt7622,
++	.num_spare_size = 4,
+ 	.num_ecc_strength = 7,
+ 	.ecc_mode_shift = 4,
+ 	.parity_bits = 13,
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
 index 32fc7edf65b3..fccca85f34ea 100644
 --- a/include/linux/mtd/nand.h
