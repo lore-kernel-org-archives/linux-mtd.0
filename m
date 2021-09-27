@@ -2,14 +2,14 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F201C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:20:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 817F6C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:21:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5714A60F94
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:20:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5714A60F94
+	by mail.kernel.org (Postfix) with ESMTPS id 49A4A60F94
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:21:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 49A4A60F94
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TI6Qd0b/FM655ruDXk54+gJuOfeoplfHnu0y6pu97fA=; b=ovnFc/d4/RVj36
-	RDaMsnZOf+Babh4sTIDB7RF+7vgA1Ik9Pb74tDmlmqUEHGNz3ZRoYHXE7VpF3GrSvZCwhzatNnaAQ
-	OQIuaa5QV45CtFdymRcTML5Fv9N3GkvQvvgqCF/9DZWv1jzeVFC9FhT4Oh+8wQgNvHY6AMfpx3J80
-	tOsU+BMbAXhiYF3noiR4Cq5g76jF6Y4QCrnC5wg2QJWpAN4oV7EApd/ZmiqUG6RSNCaWKVaL/V+Hg
-	UltpRRqTN+TdwiiwcmyUGIEz06cOAW26UvDNMKkBEyHPerIEkIdEhmDm4DbKycBgMEgOdYNhg5cCS
-	wu1iDbzTFEs9Sxwj0a8Q==;
+	List-Owner; bh=fb+hU4Wsspt3kqiZjF8rc7j0vSU/fhMIBrzjQiZFMhk=; b=z5U/Y6RWM1luz1
+	n0UxsiISbm1j/bsR3djvZBh0qKPlKoeZa+sgTfaHCpXk/NUjlk1KQyx4eBys5eHOz0ZRwEtP0CMIM
+	xAA1z4zUC/kXkkSPHbl8LhJSisYN/k7NTxW6wdf7kOAgbNLixNgn+4+UdYGSYenNXx8mKItPTBM78
+	FHosvkLmv5aLOSggNoitj/ovS9rqsx+7qZChpRexbbdJm4hV0uhGLyQgvgd3iZosT6FHc/o6ZQs5+
+	N6ir79sZfqLNpSXfla9RCLB1dC/Mjyub9+5PVllhwPkgellLj7TqjjsESZjeuz9GnIts24nZrzGm8
+	ScUR9f63PKVVPnEZZAAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUyyf-004bsc-E6; Mon, 27 Sep 2021 22:20:01 +0000
+	id 1mUyza-004cE0-0B; Mon, 27 Sep 2021 22:20:58 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mUyhC-004UJE-Bd; Mon, 27 Sep 2021 22:01:58 +0000
+ (Red Hat Linux)) id 1mUyhC-004UJT-HL; Mon, 27 Sep 2021 22:01:58 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -39,9 +39,9 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 01/10] mtip32xx: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:01:48 -0700
-Message-Id: <20210927220157.1069658-2-mcgrof@kernel.org>
+Subject: [PATCH v2 05/10] rnbd: add error handling support for add_disk()
+Date: Mon, 27 Sep 2021 15:01:52 -0700
+Message-Id: <20210927220157.1069658-6-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
 References: <20210927220157.1069658-1-mcgrof@kernel.org>
@@ -66,29 +66,51 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-The read_capacity_error error label already does what we need,
-so just re-use that.
-
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/mtip32xx/mtip32xx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/block/rnbd/rnbd-clt.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/block/mtip32xx/mtip32xx.c b/drivers/block/mtip32xx/mtip32xx.c
-index 901855717cb5..d0b40309f47e 100644
---- a/drivers/block/mtip32xx/mtip32xx.c
-+++ b/drivers/block/mtip32xx/mtip32xx.c
-@@ -3633,7 +3633,9 @@ static int mtip_block_initialize(struct driver_data *dd)
- 	set_capacity(dd->disk, capacity);
+diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
+index bd4a41afbbfc..1ba1c868535a 100644
+--- a/drivers/block/rnbd/rnbd-clt.c
++++ b/drivers/block/rnbd/rnbd-clt.c
+@@ -1384,8 +1384,10 @@ static void setup_request_queue(struct rnbd_clt_dev *dev)
+ 	blk_queue_write_cache(dev->queue, dev->wc, dev->fua);
+ }
  
- 	/* Enable the block device and add it to /dev */
--	device_add_disk(&dd->pdev->dev, dd->disk, mtip_disk_attr_groups);
-+	rv = device_add_disk(&dd->pdev->dev, dd->disk, mtip_disk_attr_groups);
-+	if (rv)
-+		goto read_capacity_error;
+-static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
++static int rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
+ {
++	int err;
++
+ 	dev->gd->major		= rnbd_client_major;
+ 	dev->gd->first_minor	= idx << RNBD_PART_BITS;
+ 	dev->gd->minors		= 1 << RNBD_PART_BITS;
+@@ -1410,7 +1412,11 @@ static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
  
- 	if (dd->mtip_svc_handler) {
- 		set_bit(MTIP_DDF_INIT_DONE_BIT, &dd->dd_flag);
+ 	if (!dev->rotational)
+ 		blk_queue_flag_set(QUEUE_FLAG_NONROT, dev->queue);
+-	add_disk(dev->gd);
++	err = add_disk(dev->gd);
++	if (err)
++		blk_cleanup_disk(dev->gd);
++
++	return err;
+ }
+ 
+ static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
+@@ -1426,8 +1432,7 @@ static int rnbd_client_setup_device(struct rnbd_clt_dev *dev)
+ 	rnbd_init_mq_hw_queues(dev);
+ 
+ 	setup_request_queue(dev);
+-	rnbd_clt_setup_gen_disk(dev, idx);
+-	return 0;
++	return rnbd_clt_setup_gen_disk(dev, idx);
+ }
+ 
+ static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
 -- 
 2.30.2
 
