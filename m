@@ -2,14 +2,14 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C152C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C95AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:43:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D84F760EB6
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:42:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D84F760EB6
+	by mail.kernel.org (Postfix) with ESMTPS id EA10160F9B
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 05:43:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EA10160F9B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EXYnRdGi4YVPKC6caY/YkVXRzC9EdjrX+2tyUyxuX+s=; b=zNG6RSzv4rb0Pp
-	RFHu+tWNtG2fLyF8kPYaOGzfAnfOBJHUv/GsY/rIuj3pf6WkLyi9JNpp4HRrz+DZJdeE42qdETq+V
-	uY2R+h81ZzAZy7+Dzh09w2NjZ4h8hq7zmHkXcAfykcEhHrec590A2B7Z//Uv3SBr4JWwdzVLUdCwR
-	RtFG11LOagsBx+QvreB46Mqeu0xdkv/55FQBWLrjKSZdCMX2kw2ta7JIwPb3BhFfW3NhFrCL6fXgP
-	MYeUG5Zli3s39GOY+JDg/2phaHWo5P8fdkD9e6kfrpHtRyjxzLtL38AvEmT6sIxbQ18imd+y2wXgC
-	OHmCd4zhOyQ1VEJ9NqoA==;
+	List-Owner; bh=+1Qv9Yyq2ZmnwI/OOp8Z2tl1Egfl5uT0izF8dLjYLbo=; b=KslCjNXJSLstw+
+	L5I8wJacY4oKca+gTZYBtKUp+1UqH/ZUunsJFy7qG6gBcSDPHYpPX2JPNNf45hgOFtO4FXSohaSUQ
+	gR2rtFYhB6aKeA8OSbE2U0HvVCAK4/FwAqtvtJiWRx3iyG8W+uLDZXkFTKtwqtgl/y+HCyXwiahT3
+	LkdeudGiH0wCiR/qlLmBpIGR2gIpDr19EsxLwqEXQu0tp42WLunNTamgPe2n8R+krI161BytXNIxB
+	Rq9tR2JxmK9LXzqmk8c9AUkeuU0DxP3xc5uJ1mUgE3h4Jr6IUVkyA7hzKjZdEitq62joxgpfmVky7
+	8mlXZfZugnw4JGSCs/ZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUjOj-001bFH-JY; Mon, 27 Sep 2021 05:41:53 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1mUjPP-001bVN-8C; Mon, 27 Sep 2021 05:42:35 +0000
+Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mUjOS-001bAw-EI; Mon, 27 Sep 2021 05:41:39 +0000
-X-UUID: fcf67711b40e451e89b25ea4f2626304-20210926
-X-UUID: fcf67711b40e451e89b25ea4f2626304-20210926
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
+ id 1mUjPH-001bSS-M0; Mon, 27 Sep 2021 05:42:31 +0000
+X-UUID: edbb62af8ef64a409f897216deef4370-20210926
+X-UUID: edbb62af8ef64a409f897216deef4370-20210926
+Received: from mtkcas68.mediatek.inc [(172.29.94.19)] by mailgw01.mediatek.com
  (envelope-from <xiangsheng.hou@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1088492150; Sun, 26 Sep 2021 22:41:31 -0700
+ with ESMTP id 1742984073; Sun, 26 Sep 2021 22:42:26 -0700
 Received: from MTKMBS07N2.mediatek.inc (172.21.101.141) by
  MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 26 Sep 2021 22:36:55 -0700
+ 15.0.1497.2; Sun, 26 Sep 2021 22:42:24 -0700
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
  mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 27 Sep 2021 13:36:53 +0800
+ 15.0.1497.2; Mon, 27 Sep 2021 13:42:22 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 27 Sep 2021 13:36:51 +0800
+ Transport; Mon, 27 Sep 2021 13:42:21 +0800
 From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 To: <miquel.raynal@bootlin.com>, <broonie@kernel.org>
 CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
@@ -53,17 +53,17 @@ CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
  <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
  <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: [RFC,v1 3/4] spi: add Mediatek SPI Nand controller driver
-Date: Mon, 27 Sep 2021 13:36:28 +0800
-Message-ID: <20210927053629.17847-4-xiangsheng.hou@mediatek.com>
+Subject: [RFC,v2 3/4] spi: add Mediatek SPI Nand controller driver
+Date: Mon, 27 Sep 2021 13:42:04 +0800
+Message-ID: <20210927054205.17960-4-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210927053629.17847-1-xiangsheng.hou@mediatek.com>
-References: <20210927053629.17847-1-xiangsheng.hou@mediatek.com>
+In-Reply-To: <20210927054205.17960-1-xiangsheng.hou@mediatek.com>
+References: <20210927054205.17960-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210926_224136_538105_0BBC192F 
-X-CRM114-Status: GOOD (  24.51  )
+X-CRM114-CacheID: sfid-20210926_224227_795358_23E17AC8 
+X-CRM114-Status: GOOD (  24.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,16 +80,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This version parse nand parameter and ecc status from
-nfi reg, which have been config at ecc driver due to
-the snfi driver can not get these information.
+This version parse nand parameter and ecc status from nfi reg,
+which have been config at ecc driver due to the snfi driver
+can not get nand parameter. Also need export nfi read empty
+status to ecc driver for check read empty or not.
 
 Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 ---
  drivers/spi/Kconfig        |   11 +
  drivers/spi/Makefile       |    1 +
- drivers/spi/spi-mtk-snfi.c | 1043 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 1055 insertions(+)
+ drivers/spi/spi-mtk-snfi.c | 1087 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 1099 insertions(+)
  create mode 100644 drivers/spi/spi-mtk-snfi.c
 
 diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
@@ -128,10 +129,10 @@ index 699db95c8441..0435624905d9 100644
  obj-$(CONFIG_SPI_MXIC)			+= spi-mxic.o
 diff --git a/drivers/spi/spi-mtk-snfi.c b/drivers/spi/spi-mtk-snfi.c
 new file mode 100644
-index 000000000000..afc93410975e
+index 000000000000..ed59c6cfc91a
 --- /dev/null
 +++ b/drivers/spi/spi-mtk-snfi.c
-@@ -0,0 +1,1043 @@
+@@ -0,0 +1,1087 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Driver for MediaTek SPI Nand interface
@@ -273,7 +274,8 @@ index 000000000000..afc93410975e
 +	bool ecc_en;
 +	u32 page_size;
 +	u32 fdm_size;
-+	u32 spare_size;
++	u32 spare_size_per_sector;
++	u32 spare_size_idx;
 +	u32 sectors;
 +	u32 sector_size;
 +
@@ -502,50 +504,54 @@ index 000000000000..afc93410975e
 +		writel(val, snfi->regs + SNFI_MISC_CTL);
 +	}
 +
-+	val = readl(snfi->regs + NFI_CNFG);
-+	if (val & CNFG_HW_ECC_EN)
-+		snfi->ecc_en = true;
++	/*
++	 * Get nand parameter and ecc status from the function
++	 * export by ecc driver
++	 */
++	snfi->ecc_en = mtk_ecc_get_status(snfi->dev->of_node);
++	snfi->sector_size = mtk_ecc_get_sectorsize(snfi->dev->of_node);
++	snfi->page_size = mtk_ecc_get_pagesize(snfi->dev->of_node);
++	snfi->spare_size_per_sector = mtk_ecc_get_sparesize(snfi->dev->of_node);
++	snfi->fdm_size = mtk_ecc_get_fdmsize(snfi->dev->of_node);
++	snfi->spare_size_idx = mtk_ecc_get_spare_idx(snfi->dev->of_node);
++	snfi->sectors = snfi->page_size / snfi->sector_size;
 +
-+	val = readl(snfi->regs + NFI_PAGEFMT);
-+	if (val & PAGEFMT_SEC_SEL_512)
-+		snfi->sector_size = 512;
-+	else
-+		snfi->sector_size = 1024;
-+
-+	config = val & PAGEFMT_PAGE_MASK;
-+	switch (config) {
-+	case PAGEFMT_512_2K:
-+		snfi->page_size = KB(2);
-+		if (val & PAGEFMT_SEC_SEL_512)	
-+			snfi->page_size = 512;
++	/* config nfi regs with nand parameter and ecc status */
++	switch (snfi->page_size) {
++	case 512:
++		val = PAGEFMT_512_2K | PAGEFMT_SEC_SEL_512;
 +		break;
-+	case PAGEFMT_2K_4K:
-+		snfi->page_size = KB(4);
-+		if (val & PAGEFMT_SEC_SEL_512)	
-+			snfi->page_size = KB(2);
++	case KB(2):
++		if (snfi->sector_size == 512)
++			val = PAGEFMT_2K_4K | PAGEFMT_SEC_SEL_512;
++		else
++			val = PAGEFMT_512_2K;
 +		break;
-+	case PAGEFMT_4K_8K:
-+		snfi->page_size = KB(8);
-+		if (val & PAGEFMT_SEC_SEL_512)	
-+			snfi->page_size = KB(4);
++	case KB(4):
++		if (snfi->sector_size == 512)
++			val = PAGEFMT_4K_8K | PAGEFMT_SEC_SEL_512;
++		else
++			val = PAGEFMT_2K_4K;
 +		break;
-+	case PAGEFMT_8K_16K:
-+		snfi->page_size = KB(16);
++	case KB(8):
++		if (snfi->sector_size == 512)
++			val = PAGEFMT_8K_16K | PAGEFMT_SEC_SEL_512;
++		else
++			val = PAGEFMT_4K_8K;
 +		break;
++	case KB(16):
++		val = PAGEFMT_8K_16K;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
-+	config = val & PAGEFMT_SPARE_MASK;
-+	config >>= snfi->caps->pageformat_spare_shift;
-+	snfi->spare_size = snfi->caps->spare_size[config];
++	val |= snfi->spare_size_idx << PAGEFMT_SPARE_SHIFT;
++	val |= snfi->fdm_size << PAGEFMT_FDM_SHIFT;
++	/* fdm size equal to fdm ecc size */
++	val |= snfi->fdm_size << PAGEFMT_FDM_ECC_SHIFT;
++	writel(val, snfi->regs + NFI_PAGEFMT);
 +
-+	config = val & PAGEFMT_FDM_MASK;
-+	snfi->fdm_size = config >> PAGEFMT_FDM_SHIFT;
-+
-+	if (!(val & PAGEFMT_SEC_SEL_512))
-+		snfi->spare_size <<= 1;
-+
-+	snfi->sectors = snfi->page_size / snfi->sector_size;
-+	
 +	return 0;
 +}
 +
@@ -823,7 +829,7 @@ index 000000000000..afc93410975e
 +	bool rx;
 +
 +	rx = op->data.dir == SPI_MEM_DATA_IN;
-+	
++
 +	ret = mtk_snfi_init(snfi);
 +	if (ret) {
 +		dev_warn(snfi->dev, "reset snfi fail\n");
@@ -963,6 +969,46 @@ index 000000000000..afc93410975e
 +
 +	return 0;
 +}
++
++static struct mtk_snfi *mtk_snfi_get(struct device_node *np)
++{
++	struct platform_device *pdev;
++	struct spi_controller *ctlr;
++	struct mtk_snfi *snfi = NULL;
++
++	pdev = of_find_device_by_node(np);
++	if (!pdev)
++		return ERR_PTR(-EPROBE_DEFER);
++
++	ctlr = spi_controller_get(platform_get_drvdata(pdev));
++	if (!ctlr) {
++		put_device(&pdev->dev);
++		return ERR_PTR(-EPROBE_DEFER);
++	}
++
++	snfi = spi_controller_get_devdata(ctlr);
++
++	return snfi;
++}
++
++/*
++ * export this function for HW ECC to use,
++ * due to the spim can not return this status
++ */
++bool mtk_snfi_check_empty(struct device_node *dn)
++{
++	struct device_node *parent_dn;
++	struct mtk_snfi *snfi;
++	bool read_empty;
++
++	parent_dn = of_get_parent(dn);
++	snfi = mtk_snfi_get(parent_dn);
++
++	read_empty = readl(snfi->regs + NFI_STA) & STA_EMP_PAGE;
++
++	return read_empty;
++}
++EXPORT_SYMBOL(mtk_snfi_check_empty);
 +
 +static const struct mtk_snfi_caps mtk_snfi_caps_mt7622 = {
 +	.spare_size = spare_size_mt7622,
@@ -1174,7 +1220,6 @@ index 000000000000..afc93410975e
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Xiangsheng Hou <xiangsheng.hou@mediatek.com>");
 +MODULE_DESCRIPTION("Mediatek SPI Nand Interface Driver");
-+
 -- 
 2.25.1
 
