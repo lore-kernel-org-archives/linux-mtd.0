@@ -2,14 +2,14 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5323AC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:28:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41257C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:29:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CBB760FC0
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:28:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0CBB760FC0
+	by mail.kernel.org (Postfix) with ESMTPS id 116E360FC0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:29:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 116E360FC0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wKnfEryLbAUiyTU1bequ2Ge5B1aq5GZIq7uizbAOeDU=; b=gZp3G1WSZF1iGc
-	Tu4G5QL+2UAI4KjMp5oma36T2U9u5yHwbu2oRsv1i2H2qe5sR/6X3nUh54eVGRptd0//uu8nfiwJL
-	A2aWSuIzY6eIA0VKePPZjtZdmWkFjpm7aLj8Xf7UG9spkUDriCfwrUS9wUKxBNPkiOTvnFYCiO8jI
-	hehtveqG2SwiXTpLsmAQ+Gnuunl4eSGNWioqRIaJfXL/H3TXvzCRqTQ9nU5m4AsuPXRDh1aGY69eL
-	kMfegKlUanQN1ZVdmGI3piDs+5XRBl3pDvx++WOpe8sh/njgXLPOGKu98xUPUw0Odp5GUzd4+eg8Y
-	luJxMWBUJ8B8dnT6+V4Q==;
+	List-Owner; bh=ry++vr2ZTNhD+Xz7b5T2OrOF9AMceP9vcFC65cibNtA=; b=fpNqlMIQldoASi
+	5ktlLXk0XZsT/6Df5osNsWsC2RVFhUs9/fkl/+rKH3+pE6rJT4UpOtCqcUFsGTFlGQgWzoOkfEl00
+	akx0nRvfJuVjUph+Gqg7gHZsLIDXBKYX1KhqYaO9GsrWcPNduJ0728UDfpschDhxwDgKsWAbjb/F9
+	O/9XkvY2wxnbNVahSWGfnos+hgpnuLwWtS15K6JEkXtRjPfDh4WGRYutuQ5gPSlPSYhTYKwAgOgJT
+	eCD2OQ4DIH9OH0vx1jGtqvC0iItZ5VvJau4UgjAW+duYGAPAQLu24VL+JonxQMTpBDMd26HWAXBE7
+	EI7T86Y3GaFIGZmLo++w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUz5x-004edo-8G; Mon, 27 Sep 2021 22:27:33 +0000
+	id 1mUz7L-004f3V-Do; Mon, 27 Sep 2021 22:28:59 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mUyhl-004Uts-MT; Mon, 27 Sep 2021 22:02:33 +0000
+ (Red Hat Linux)) id 1mUyhl-004Utz-PR; Mon, 27 Sep 2021 22:02:33 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
@@ -42,9 +42,10 @@ To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
 Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 2/6] rbd: add add_disk() error handling
-Date: Mon, 27 Sep 2021 15:02:28 -0700
-Message-Id: <20210927220232.1071926-3-mcgrof@kernel.org>
+Subject: [PATCH v2 4/6] s390/block/dasd_genhd: add error handling support for
+ add_disk()
+Date: Mon, 27 Sep 2021 15:02:30 -0700
+Message-Id: <20210927220232.1071926-5-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210927220232.1071926-1-mcgrof@kernel.org>
 References: <20210927220232.1071926-1-mcgrof@kernel.org>
@@ -69,35 +70,41 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
+Be sure to call dasd_gendisk_free() on error.
+
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/rbd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/s390/block/dasd_genhd.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-index e65c9d706f6f..341e5da6d029 100644
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -7054,7 +7054,9 @@ static ssize_t do_rbd_add(struct bus_type *bus,
- 	if (rc)
- 		goto err_out_image_lock;
+diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_genhd.c
+index fa966e0db6ca..80673dbfb1f9 100644
+--- a/drivers/s390/block/dasd_genhd.c
++++ b/drivers/s390/block/dasd_genhd.c
+@@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
+ {
+ 	struct gendisk *gdp;
+ 	struct dasd_device *base;
+-	int len;
++	int len, rc;
  
--	device_add_disk(&rbd_dev->dev, rbd_dev->disk, NULL);
-+	rc = device_add_disk(&rbd_dev->dev, rbd_dev->disk, NULL);
-+	if (rc)
-+		goto err_out_cleanup_disk;
+ 	/* Make sure the minor for this device exists. */
+ 	base = block->base;
+@@ -79,7 +79,13 @@ int dasd_gendisk_alloc(struct dasd_block *block)
+ 	dasd_add_link_to_gendisk(gdp, base);
+ 	block->gdp = gdp;
+ 	set_capacity(block->gdp, 0);
+-	device_add_disk(&base->cdev->dev, block->gdp, NULL);
++
++	rc = device_add_disk(&base->cdev->dev, block->gdp, NULL);
++	if (rc) {
++		dasd_gendisk_free(block);
++		return rc;
++	}
++
+ 	return 0;
+ }
  
- 	spin_lock(&rbd_dev_list_lock);
- 	list_add_tail(&rbd_dev->node, &rbd_dev_list);
-@@ -7068,6 +7070,8 @@ static ssize_t do_rbd_add(struct bus_type *bus,
- 	module_put(THIS_MODULE);
- 	return rc;
- 
-+err_out_cleanup_disk:
-+	rbd_free_disk(rbd_dev);
- err_out_image_lock:
- 	rbd_dev_image_unlock(rbd_dev);
- 	rbd_dev_device_release(rbd_dev);
 -- 
 2.30.2
 
