@@ -2,33 +2,33 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2812C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:32:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13256C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:34:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F69E60FED
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:32:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7F69E60FED
+	by mail.kernel.org (Postfix) with ESMTPS id C70576103B
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:34:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C70576103B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i1bsae0CQWPe0Fp+NH4FRwLcVLnImjJYxMwH8aJR+cE=; b=jfVOu3Q5g6pc1V
-	NZpR3xyVJJv5zpt3w8m9sWwhYtBN1yn/r3Quxv0MrZsjuOGszKkY8RIYu6Rn+vQejzL8TcMwID/t+
-	iY3qcmWl5RxjuadfRNuc4uoRxDrDAXA/PWIpCOM/vRcWQphTGIn8P9JJ7dltiaFNDLDhA4rs9OQe2
-	anOt45rxGzlu1THpBLoJQV2cg6QVylCLdXtHAvozklEjQaetIpzuYFAsZw7k0eUSvQ+BSOVut0K75
-	8BLSuETBCVp6MhmSJ/gOKX/dqSFBbxyM0GWYBwdPZiW9E5bNn0h9WshZteuwnnq73oVH89TZ/Sfk8
-	VHuAfOKt8olAK1Z9Gtow==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=+85FCkrEbpBE7XbC1Yoe0wXL88dTTJbYhAeYnVDWoBI=; b=XMqi0df7dD6xws
+	6/ploKRwJLWriWSJquBjjlXWI7wZ573x1o6SMTXiPF+Qd8+4NfHtfN2WBhzPXTnCHYmNM0zBHOc15
+	85YPnMLJFacp0Ql1Ebcq49XVlqU5z+PeufQ73QKJvlKiayKk1cahCVVmktm5XmozTh3KNB24COMol
+	LhKfgHhWpPzhhQxuLd6NG9xeDekj8FMBBdkECrnQsIyjgtkfMbt4CasRg/VuBtUvDS7u2AAavJd1z
+	jf0SeANuCo44BXfDQV83LQMvcgkLiiKtWkHYXNNiksL8iSnpuWD7MTFFfsBcy0J7iOHL3evcvkVjt
+	iDnQu2DJbram3KoeXCxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUzAR-004fzp-Ji; Mon, 27 Sep 2021 22:32:11 +0000
+	id 1mUzBv-004gSN-Oy; Mon, 27 Sep 2021 22:33:43 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mUyhl-004Uu2-Rg; Mon, 27 Sep 2021 22:02:33 +0000
+ (Red Hat Linux)) id 1mUyhl-004Utg-Hp; Mon, 27 Sep 2021 22:02:33 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
@@ -41,16 +41,12 @@ To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
  tj@kernel.org
 Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 5/6] s390/block/dcssblk: add error handling support for
- add_disk()
-Date: Mon, 27 Sep 2021 15:02:31 -0700
-Message-Id: <20210927220232.1071926-6-mcgrof@kernel.org>
+ linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v2 0/6] block: 5th batch of add_disk() error handling
+ conversions
+Date: Mon, 27 Sep 2021 15:02:26 -0700
+Message-Id: <20210927220232.1071926-1-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927220232.1071926-1-mcgrof@kernel.org>
-References: <20210927220232.1071926-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,44 +64,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+This is the 5th series of driver conversions for add_disk() error
+handling. This set along with the entire 7th set of patches can be
+found on my 20210927-for-axboe-add-disk-error-handling branch [0].
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On this v2 series the following changes have been made
+since the first iteration of this patchset:
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
----
- drivers/s390/block/dcssblk.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+  - rebased onto linux-next tag 20210927
+  - ms_block: dropped this patch as its already merged on linux-next
+  - mspro_block: dropped this patch as its already merged on linux-next
+  - dropped the s390/block/xpram patch as that driver is now removed
+  - s390/block/dcssblk: dropped my patch in favor of Gerald Schaefer's
+  - added respective reviewed-by/acked-by tags
 
-diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
-index 5be3d1c39a78..0741a9321712 100644
---- a/drivers/s390/block/dcssblk.c
-+++ b/drivers/s390/block/dcssblk.c
-@@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
- 	}
- 
- 	get_device(&dev_info->dev);
--	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
-+	rc = device_add_disk(&dev_info->dev, dev_info->gd, NULL);
-+	if (rc)
-+		goto out_dax;
- 
- 	switch (dev_info->segment_type) {
- 		case SEG_TYPE_SR:
-@@ -712,6 +714,10 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
- 	rc = count;
- 	goto out;
- 
-+out_dax:
-+	put_device(&dev_info->dev);
-+	kill_dax(dev_info->dax_dev);
-+	put_dax(dev_info->dax_dev);
- put_dev:
- 	list_del(&dev_info->lh);
- 	blk_cleanup_disk(dev_info->gd);
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210927-for-axboe-add-disk-error-handling
+
+Gerald Schaefer (1):
+  s390/block/dcssblk: add error handling support for add_disk()
+
+Luis Chamberlain (5):
+  cdrom/gdrom: add error handling support for add_disk()
+  rbd: add add_disk() error handling
+  mtd: add add_disk() error handling
+  s390/block/dasd_genhd: add error handling support for add_disk()
+  s390/block/scm_blk: add error handling support for add_disk()
+
+ drivers/block/rbd.c             |  6 +++++-
+ drivers/cdrom/gdrom.c           |  7 ++++++-
+ drivers/mtd/mtd_blkdevs.c       |  6 +++++-
+ drivers/s390/block/dasd_genhd.c | 10 ++++++++--
+ drivers/s390/block/dcssblk.c    |  8 +++++++-
+ drivers/s390/block/scm_blk.c    |  7 ++++++-
+ 6 files changed, 37 insertions(+), 7 deletions(-)
+
 -- 
 2.30.2
 
