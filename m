@@ -2,76 +2,93 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3963C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:37:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A282EC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:41:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FE706103B
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:37:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8FE706103B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6193460FED
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:41:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6193460FED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bhlYyWuaaH1kWiu/AUHBD4LoqWl3XCLBugXk4lq3Amo=; b=PEfV04t21NwnHB
-	uqrKbtpmZdj31VGQwPYz+bbFkrWdQEYTQ8QyYoeGTHgSnzIL9KEN5KIdRXm/sSziCmtHXHEC/tVIL
-	KBKOPcsNsbiIHMkxATj6kBHY1+/XPdnOk1eoljuH1kaG981mVOuQ/mGK1BEQJLa6sSFcsPn03t2ae
-	jNwJ3sW+jTLaM8RiJwmlQfGav08dkMUDdjkYasNij1Xy7FWKH5Bwth8QOThbrnQxtwlSbJvcQJFA8
-	aS0u/h/Z6J09C//hEtWcrtroo+jNHmRXs9JVaKS0aIUbLGXqWObJZtsG0vArtldNBrvPw+UTB7H47
-	E6d1CS/zwL3IsuGeVD1A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=/TBW2qigFIhFFMmduqmrmF/Ivfxlp1V4d3YyU9NRe8A=; b=s341r+YaolH6c+gUAFlvRZfiYY
+	jbX7tKxRFiA2zyJCZV40zFr842SdXfXrZSY5h3qmnBrVCcB34m8aeJihOtcxdt/Hoys8SDqmjvf7m
+	bQQeinonLOO5+hMaI3xPSmzUV39auu//Zj2C3+oMPw0MtgD2s9C4QJNanzcEizA3CJVB1FGMc+QDb
+	n1P0wVYMIACQRuqOr+9zj118qMBr8g14yM+C1l3ePhAnpvL+iKu65NSa2aNvi8de9183oba9/Ubl0
+	KT1xT4w3D0JzeFb9F5U0kp4hMG0etibeI3WUZNyvJbHByat3Xc3vsR+sCOtMTckxIIeHZLGcssLec
+	2lmqokpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUzFN-004hYh-KQ; Mon, 27 Sep 2021 22:37:17 +0000
-Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
+	id 1mUzIq-004iZQ-3Q; Mon, 27 Sep 2021 22:40:52 +0000
+Received: from mail-io1-xd2f.google.com ([2607:f8b0:4864:20::d2f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mUyr2-004YqX-6t
- for linux-mtd@lists.infradead.org; Mon, 27 Sep 2021 22:12:09 +0000
-Received: by mail-qt1-x82b.google.com with SMTP id c20so18162068qtb.2
- for <linux-mtd@lists.infradead.org>; Mon, 27 Sep 2021 15:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=AMu3KVG+C0neN9ZsGUlhnRWwKA7gUbler+qvelz4lhU=;
- b=ogMu5s1N93CRy1dt+p6ROJIIYW/1wEnTMSxjhExVqTohrpuPjQqjHLiFATIaty2PbT
- hvkqionemXt585mjBKDk8n5vtTqbBBOooEnXYS4SUHQpE4iiR7YXeMHLlwUiQDqkCxUq
- +5vyP8EjGPgXySM4t4hRK77M/rKxeGS4Tur2b6WqtvQ6n7/lfaJCStUks+6NLUHxByp4
- GpBh3FKijpfHLhFUDljHY0HCJ4JnFdBUMOW77NtumgKRxWE91EBLv3Qfew1F+Uwdd+oU
- MWIH9GYFqzGOpDeDzZ8jLjL72zT3zZIGJPBuEkwUmXaEgTTLV2uplB/wIDwftnrX8FTY
- 3DvQ==
+ id 1mUz9o-004foV-B2
+ for linux-mtd@lists.infradead.org; Mon, 27 Sep 2021 22:31:33 +0000
+Received: by mail-io1-xd2f.google.com with SMTP id s20so24828497ioa.4
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Sep 2021 15:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=sX6r+VtFysjF4oYWhq8xiiNNA4lX1D1DfLKUJZfhu90=;
+ b=OGr73FRvt46870zXruqJzO3SP1Ff106DAwHYXUFkbZMroSt9xlbgYfx7Ha7zEr+0eQ
+ fFB+gzMSVZ08KIy7nyZNnCarwiShb9palyfj0dXtHLBmtY9QZen0dwLXBl4Rvl7CxcNn
+ SP7cAuUENfc4oxY/hNo+0A66ksQ9JUCs/MnzyXpskmihN/bESuVMBxAXmMC+yskn4ewF
+ cvNKll/Bip9zfqynoppKB6jf4oU5D9Xmqy9wGOf+8D4/xEcZSZdSXUHc0DgUlJw88XJd
+ dW6kqum5J6035JIytkWK80yNFYf+nDLSA6v4LNgfQDtCvMy5K9RF5zPvdixHvFODqSpb
+ uFOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=AMu3KVG+C0neN9ZsGUlhnRWwKA7gUbler+qvelz4lhU=;
- b=lXdJGEzuxLnUXveW6AGSsdM+E5hGLSHlTXUAjIDuRyvh96HAoDnVyNEn5mydD33NkO
- QiRnQh8ngTfqzHjvdGcHItSUbbDCFgBD5S2QXJyzTK9lY+vRESSqU9uz9PtHxnlKWtEj
- 6u1N88JJUrNWrVCMm5/rIBiyeNKPX+Z8S6gwpZJt9R8G9ZeyXLXdq9/PGCS+Tb2nsmsv
- PR0pDKz2jMIPTmNJImWxCRtemTMKz8k6PlOBl6nDkYdkmrmJgrmsFitQy5oy0PrRPbLA
- c1b6kMy2/wxUXiGFI1DdHlz7wW+ZiX7lJ+UOI8AO8gkAEGpZmcESJ+jYYNmA7rKEK2yO
- JZmg==
-X-Gm-Message-State: AOAM533rG6xWGFwO/jseU4Rfeh7xnStg6+AziEjhKI+obq/9rBI3SnV4
- Xaclx8y/yIXxsEBDCetXmjz6z/ID2jwLkOlKp10=
-X-Google-Smtp-Source: ABdhPJzkBoZ12zOPElu8xM5aqGrEkr50S/pufi7WdQQNSQig5ur26Kqh75bX5YQEBWB/Wp2LIiAFExDRn9fzRPsBYz4=
-X-Received: by 2002:a05:622a:1712:: with SMTP id
- h18mr2270159qtk.389.1632780726284; 
- Mon, 27 Sep 2021 15:12:06 -0700 (PDT)
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=sX6r+VtFysjF4oYWhq8xiiNNA4lX1D1DfLKUJZfhu90=;
+ b=uunjTrkQNCPW2AJcyBJy//SMjk4YK0kdeSi2japdldiGqIKS8TUTh5ndQpZIgRAD8j
+ AvWFzkkNlHykt7Tewpx+UKEe3AkgxBmslM2JpSh8iTmq6t8lyMj1r8RHZ/1RX3XyTItT
+ fjb9/TvtyHJZJtFxNdBKZ4wpImLwoUrhcbWDxzg2UnMICB4QKDlzz/OWZFtEFYBatIxD
+ 8yF6Qkq6rNkfW8BuX2tfRzv4B2es9hPgTUkVIlaWTQcdacM8PSHgb9iXjAOl7OX3gfxY
+ hz1WL+Qj44eytgBZSJ2pG0e+VvUQHA1ITr1AHRwPvwaGiMDO5gXhjVAkeg7HlpIOWsMv
+ tKPg==
+X-Gm-Message-State: AOAM531v6agpZwP1I7Jj0fqr92NOHygHFC7D957fxB33lMAgIUfExyWC
+ JIpXe9tQUtKdaIPN0qyLiTkkdA==
+X-Google-Smtp-Source: ABdhPJzP/D0Hpjy1B2sLyeFE8yokRGllLNT0YFxbbt65jzTeEocCKfwSycbAz2t49gx5XfwHzWMFZw==
+X-Received: by 2002:a05:6638:dcc:: with SMTP id
+ m12mr1876527jaj.68.1632781891278; 
+ Mon, 27 Sep 2021 15:31:31 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+ by smtp.gmail.com with ESMTPSA id t16sm9791519ilm.68.2021.09.27.15.31.29
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 27 Sep 2021 15:31:30 -0700 (PDT)
+Subject: Re: [PATCH v2 00/10] block: fourth batch of add_disk() error handling
+ conversions
+To: Luis Chamberlain <mcgrof@kernel.org>, bhelgaas@google.com,
+ liushixin2@huawei.com, thunder.leizhen@huawei.com, lee.jones@linaro.org,
+ geoff@infradead.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+ paulus@samba.org, jim@jtan.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+ josh.h.morris@us.ibm.com, pjk1939@linux.ibm.com, tim@cyberelk.net,
+ richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210927220157.1069658-1-mcgrof@kernel.org>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <529d5e4a-82a4-2498-f63d-34c177ca4ab4@kernel.dk>
+Date: Mon, 27 Sep 2021 16:31:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <17c04b2db3f.11955d8ed102190.1977520078612166881@kubicz.engineer>
-In-Reply-To: <17c04b2db3f.11955d8ed102190.1977520078612166881@kubicz.engineer>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 28 Sep 2021 00:11:55 +0200
-Message-ID: <CAFLxGvxKhKjgqO=_6dgTHcnGpkaapeyvOO6zmGvHLwo6X+-aHw@mail.gmail.com>
-Subject: Re:  MLC NAND support in ubifs
-To: Filip Kubicz <filip@kubicz.engineer>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210927_151208_318079_F86F0AB4 
-X-CRM114-Status: GOOD (  21.51  )
+X-CRM114-CacheID: sfid-20210927_153132_441349_88F75582 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,47 +105,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 20, 2021 at 9:39 PM Filip Kubicz <filip@kubicz.engineer> wrote:
->
-> Hi All,
->
-> I'm bumping up the question about NAND support since it looks like it slipped unnoticed between emails with patches. Does anyone know the answer?
->
-> Thank you in advance,
-> Filip
->
-> filip@kubicz.engineer
-> tel. (+48) 697 088 078
->
->
-> ---- On Thu, 09 Sep 2021 18:41:24 +0200 filip@kubicz.engineer  wrote ----
->
->  > Hi!
->  >
->  > I would like to ask about MLC NAND support in UBIFS.
->  >
->  > I was recently bringing up a device with IMX6ULL and raw MLC NAND flash. I have built Linux 5.4 kernel, u-boot and rootfs (using buildroot), flashed them to my device with MLC NAND flash, and learned from dmesg error that MLC is unsupported by ubifs. Support removed in this commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b5094b7f135be
->  >
->  > Then I followed the story from Richard and Boris and watched the talk where they explain the issues with MLC, and propose an alternative: https://www.youtube.com/watch?v=9j2pOIiJqYw&ab_channel=TheLinuxFoundation
->  > Alternative available since Linux 5.8: https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.8-NAND-MLC-SLC-Emulate
->  >
->  > My questions:
->  > 1. Is NAND MLC (+ubifs) reliable to use with SLC emulate mode introduced in kernel 5.8? Or should I rather switch to eMMC for this design? SLC NAND is too costly at my required size.
+On 9/27/21 4:01 PM, Luis Chamberlain wrote:
+> This is the fourth batch of add_disk() error handling driver
+> conversions. This set along with the entire 7 set of driver conversions
+> can be found on my 20210927-for-axboe-add-disk-error-handling branch
+> [0].
 
-SLC emulation solves only the paired pages problem. You still get all
-other downsides of MLC. I'd not use it unless I'm forced to.
-
->  > 2. If the MLC NAND is not supported, can you update these pages:
->  > - http://www.linux-mtd.infradead.org/doc/ubifs.html
->  > - https://www.kernel.org/doc/html/latest/filesystems/ubifs.html
->  > - http://www.linux-mtd.infradead.org/faq/ubifs.html
->  > Each of the documentation pages mention MLC, so you can get an idea that it is supported. But it looks like the MLC NAND flash is not supported by UBIFS.
-
-Good point!
+Applied 1-2, 6, 8-9, thanks.
 
 -- 
-Thanks,
-//richard
+Jens Axboe
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
