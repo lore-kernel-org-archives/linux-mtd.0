@@ -2,33 +2,33 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D768C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:23:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2559EC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:24:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25E4761058
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:23:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 25E4761058
+	by mail.kernel.org (Postfix) with ESMTPS id D9BDA60F94
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:24:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D9BDA60F94
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xUE5iWWfyUybekgNWRPxnm1FgvdvNW0e1CJRVisn3V0=; b=ZUz73nSFg9jsdD
-	wJ2HREAD4OvgXmqdSzLosjwdwI+8SwD5d0bRMbPqf3ZDxzyvQPNyzEfLfwp6ixHrTFORRzciAlbHV
-	JX0KAuqfF0sp2irXB2QqeK05Zfb7Wpj0O6Qbs+6sJ3II/p2/B/H+EJQbRyitf7ieGU/4+msdSnm2w
-	PtGLsF+Kg+jl0nbrlvnBK2ryzo8SJlHfCP00uT5CYxJTufiIBSB4FtTahp29KgGCa35nIHUJb8Zwg
-	6/OEFwMS3tzNdJbEBVVv/IafvgcjWj3cR0V3PXVBGm/5QeNqLN1gEjwrsz3UlKNoEHfZH0sJlAvIp
-	30kmdYF5qNi9FDYb1tWg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=OVpFTOdFxOj7FDbjywEbtr+oErhO138CDGJU99dA/B8=; b=rwZEhleiSCoBnq
+	uBvhLIXMjgIGDJ4FwZfWwPIf2yCz4XBORNQgEi9XWvmBDjkOSUwQ/ic5YhAZBLNGDTmYLn6WGmg51
+	CcjXdXhhgVbp99bDR2vNU17pt1UZ5h12BtfcBiS0yN5RSSZyyyq9OmgOF8dX+nFC5eWQTe88moJUq
+	vKZLDzQI8G7+ffRZbjjqtrkUfCCv1VHxcUgtH8z9Sd/5a6PkQzdZiotBi6O+jwuGzDabeOvoL+Lll
+	88VH/MbYPJgDfg7+U/yAibRoAqs/3AHTxCFfYcJ1bjtfCzbMNtiKe/aYfnUFv5qnEoMSQ0qrW4lbT
+	8Fx9AuD/3sgt4QzUCEIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUz1L-004dCg-23; Mon, 27 Sep 2021 22:22:47 +0000
+	id 1mUz2F-004dXU-QO; Mon, 27 Sep 2021 22:23:43 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mUyhC-004UJb-K1; Mon, 27 Sep 2021 22:01:58 +0000
+ (Red Hat Linux)) id 1mUyhC-004UJ9-A2; Mon, 27 Sep 2021 22:01:58 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -39,13 +39,11 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 07/10] block/sunvdc: add error handling support for
- add_disk()
-Date: Mon, 27 Sep 2021 15:01:54 -0700
-Message-Id: <20210927220157.1069658-8-mcgrof@kernel.org>
+Subject: [PATCH v2 00/10] block: fourth batch of add_disk() error handling
+ conversions
+Date: Mon, 27 Sep 2021 15:01:47 -0700
+Message-Id: <20210927220157.1069658-1-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
-References: <20210927220157.1069658-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -63,52 +61,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+This is the fourth batch of add_disk() error handling driver
+conversions. This set along with the entire 7 set of driver conversions
+can be found on my 20210927-for-axboe-add-disk-error-handling branch
+[0].
 
-We re-use the same free tag call, so we also add a label for
-that as well.
+On this v2 series the following modifications have been made since the
+last v1 series of this patch set:
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/block/sunvdc.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+  - rebased onto linux-next tag 20210927
+  - added the only reviewed-by tag for this series for rnbd Jack Wang
 
-diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
-index 4d4bb810c2ae..6f45a53f7cbf 100644
---- a/drivers/block/sunvdc.c
-+++ b/drivers/block/sunvdc.c
-@@ -826,8 +826,8 @@ static int probe_disk(struct vdc_port *port)
- 	if (IS_ERR(g)) {
- 		printk(KERN_ERR PFX "%s: Could not allocate gendisk.\n",
- 		       port->vio.name);
--		blk_mq_free_tag_set(&port->tag_set);
--		return PTR_ERR(g);
-+		err = PTR_ERR(g);
-+		goto out_free_tag;
- 	}
- 
- 	port->disk = g;
-@@ -879,9 +879,17 @@ static int probe_disk(struct vdc_port *port)
- 	       port->vdisk_size, (port->vdisk_size >> (20 - 9)),
- 	       port->vio.ver.major, port->vio.ver.minor);
- 
--	device_add_disk(&port->vio.vdev->dev, g, NULL);
-+	err = device_add_disk(&port->vio.vdev->dev, g, NULL);
-+	if (err)
-+		goto out_cleanup_disk;
- 
- 	return 0;
-+
-+out_cleanup_disk:
-+	blk_cleanup_disk(g);
-+out_free_tag:
-+	blk_mq_free_tag_set(&port->tag_set);
-+	return err;
- }
- 
- static struct ldc_channel_config vdc_ldc_cfg = {
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210927-for-axboe-add-disk-error-handling
+
+Luis Chamberlain (10):
+  mtip32xx: add error handling support for add_disk()
+  pktcdvd: add error handling support for add_disk()
+  ps3disk: add error handling support for add_disk()
+  ps3vram: add error handling support for add_disk()
+  rnbd: add error handling support for add_disk()
+  block/rsxx: add error handling support for add_disk()
+  block/sunvdc: add error handling support for add_disk()
+  block/sx8: add error handling support for add_disk()
+  pf: add error handling support for add_disk()
+  mtd/ubi/block: add error handling support for add_disk()
+
+ drivers/block/mtip32xx/mtip32xx.c |  4 +++-
+ drivers/block/paride/pf.c         |  4 +++-
+ drivers/block/pktcdvd.c           |  4 +++-
+ drivers/block/ps3disk.c           |  8 ++++++--
+ drivers/block/ps3vram.c           |  7 ++++++-
+ drivers/block/rnbd/rnbd-clt.c     | 13 +++++++++----
+ drivers/block/rsxx/core.c         |  4 +++-
+ drivers/block/rsxx/dev.c          | 12 +++++++++---
+ drivers/block/sunvdc.c            | 14 +++++++++++---
+ drivers/block/sx8.c               | 13 +++++++++----
+ drivers/mtd/ubi/block.c           |  8 +++++++-
+ 11 files changed, 69 insertions(+), 22 deletions(-)
+
 -- 
 2.30.2
 
