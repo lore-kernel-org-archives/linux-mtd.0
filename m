@@ -2,14 +2,14 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67390C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:22:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D768C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:23:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 378656058D
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:22:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 378656058D
+	by mail.kernel.org (Postfix) with ESMTPS id 25E4761058
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:23:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 25E4761058
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YAlbfkEoawZaU0+WsGQGMu2/rgtFH/r3vykmlt8bmUM=; b=biBiYT/Z6fidXL
-	mETQ8ZrNV2UIhRJHTvYd89FfGqj+rtch7JMn04bpfoTgGD78obLgAELYvgNxnVsi7Xcb37phkGMxx
-	8lsi8K3YkjaGdLmzxBSyzruzOTzcEQCthgccIspsPoLMKeFjwXbZG+I6Pl81PjsVJJwQ/ZrvOPVQ/
-	bpqP/D2WYOl/xhUdo3leK7ej/uYAshEyv4EwQdstrmRovRts38355LsiEjjkFF5LvDUbfAMNa0pDE
-	SOGmY6t7UG7IbbYdMTnRbVgA5aMcGnMEjI2AFlLwnEpCeGhaSYUb00T1Fp8Zx6K5upJNCfKPwNx5q
-	Tnnv7Ys/IDWl81L8QyWw==;
+	List-Owner; bh=xUE5iWWfyUybekgNWRPxnm1FgvdvNW0e1CJRVisn3V0=; b=ZUz73nSFg9jsdD
+	wJ2HREAD4OvgXmqdSzLosjwdwI+8SwD5d0bRMbPqf3ZDxzyvQPNyzEfLfwp6ixHrTFORRzciAlbHV
+	JX0KAuqfF0sp2irXB2QqeK05Zfb7Wpj0O6Qbs+6sJ3II/p2/B/H+EJQbRyitf7ieGU/4+msdSnm2w
+	PtGLsF+Kg+jl0nbrlvnBK2ryzo8SJlHfCP00uT5CYxJTufiIBSB4FtTahp29KgGCa35nIHUJb8Zwg
+	6/OEFwMS3tzNdJbEBVVv/IafvgcjWj3cR0V3PXVBGm/5QeNqLN1gEjwrsz3UlKNoEHfZH0sJlAvIp
+	30kmdYF5qNi9FDYb1tWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUz0E-004cbl-T3; Mon, 27 Sep 2021 22:21:38 +0000
+	id 1mUz1L-004dCg-23; Mon, 27 Sep 2021 22:22:47 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mUyhC-004UJX-Ie; Mon, 27 Sep 2021 22:01:58 +0000
+ (Red Hat Linux)) id 1mUyhC-004UJb-K1; Mon, 27 Sep 2021 22:01:58 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
  thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
@@ -39,9 +39,10 @@ To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
 Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 06/10] block/rsxx: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:01:53 -0700
-Message-Id: <20210927220157.1069658-7-mcgrof@kernel.org>
+Subject: [PATCH v2 07/10] block/sunvdc: add error handling support for
+ add_disk()
+Date: Mon, 27 Sep 2021 15:01:54 -0700
+Message-Id: <20210927220157.1069658-8-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
 References: <20210927220157.1069658-1-mcgrof@kernel.org>
@@ -66,61 +67,48 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
+We re-use the same free tag call, so we also add a label for
+that as well.
+
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/rsxx/core.c |  4 +++-
- drivers/block/rsxx/dev.c  | 12 +++++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/block/sunvdc.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
-index 83636714b8d7..8d9d69f5dfbc 100644
---- a/drivers/block/rsxx/core.c
-+++ b/drivers/block/rsxx/core.c
-@@ -935,7 +935,9 @@ static int rsxx_pci_probe(struct pci_dev *dev,
- 			card->size8 = 0;
+diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
+index 4d4bb810c2ae..6f45a53f7cbf 100644
+--- a/drivers/block/sunvdc.c
++++ b/drivers/block/sunvdc.c
+@@ -826,8 +826,8 @@ static int probe_disk(struct vdc_port *port)
+ 	if (IS_ERR(g)) {
+ 		printk(KERN_ERR PFX "%s: Could not allocate gendisk.\n",
+ 		       port->vio.name);
+-		blk_mq_free_tag_set(&port->tag_set);
+-		return PTR_ERR(g);
++		err = PTR_ERR(g);
++		goto out_free_tag;
  	}
  
--	rsxx_attach_dev(card);
-+	st = rsxx_attach_dev(card);
-+	if (st)
-+		goto failed_create_dev;
+ 	port->disk = g;
+@@ -879,9 +879,17 @@ static int probe_disk(struct vdc_port *port)
+ 	       port->vdisk_size, (port->vdisk_size >> (20 - 9)),
+ 	       port->vio.ver.major, port->vio.ver.minor);
  
- 	/************* Setup Debugfs *************/
- 	rsxx_debugfs_dev_new(card);
-diff --git a/drivers/block/rsxx/dev.c b/drivers/block/rsxx/dev.c
-index 1cc40b0ea761..b2d3ac3efce2 100644
---- a/drivers/block/rsxx/dev.c
-+++ b/drivers/block/rsxx/dev.c
-@@ -192,6 +192,8 @@ static bool rsxx_discard_supported(struct rsxx_cardinfo *card)
- 
- int rsxx_attach_dev(struct rsxx_cardinfo *card)
- {
-+	int err = 0;
-+
- 	mutex_lock(&card->dev_lock);
- 
- 	/* The block device requires the stripe size from the config. */
-@@ -200,13 +202,17 @@ int rsxx_attach_dev(struct rsxx_cardinfo *card)
- 			set_capacity(card->gendisk, card->size8 >> 9);
- 		else
- 			set_capacity(card->gendisk, 0);
--		device_add_disk(CARD_TO_DEV(card), card->gendisk, NULL);
--		card->bdev_attached = 1;
-+		err = device_add_disk(CARD_TO_DEV(card), card->gendisk, NULL);
-+		if (err == 0)
-+			card->bdev_attached = 1;
- 	}
- 
- 	mutex_unlock(&card->dev_lock);
- 
--	return 0;
+-	device_add_disk(&port->vio.vdev->dev, g, NULL);
++	err = device_add_disk(&port->vio.vdev->dev, g, NULL);
 +	if (err)
-+		blk_cleanup_disk(card->gendisk);
++		goto out_cleanup_disk;
+ 
+ 	return 0;
 +
++out_cleanup_disk:
++	blk_cleanup_disk(g);
++out_free_tag:
++	blk_mq_free_tag_set(&port->tag_set);
 +	return err;
  }
  
- void rsxx_detach_dev(struct rsxx_cardinfo *card)
+ static struct ldc_channel_config vdc_ldc_cfg = {
 -- 
 2.30.2
 
