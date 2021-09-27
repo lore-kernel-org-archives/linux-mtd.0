@@ -2,14 +2,14 @@ Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D8F6C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5323AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:28:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59C7D60F24
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:26:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 59C7D60F24
+	by mail.kernel.org (Postfix) with ESMTPS id 0CBB760FC0
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 22:28:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0CBB760FC0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IkdrsdVS5lLadxFf1ebRmXF22u67ncwggUyE+Farpno=; b=Vf91Ssr6F7Ao9/
-	HdKYc+ce1+1tFqTJ8M0v4m6nzHHPhNL6kFXAlLzGNoFkY2d5REDu5ygTtj8stNAZEJPFsYQfozBPt
-	5FM7L4AB8zM9N9+lHfbWwkHn2DCf0RsOffe+ng43rJGjWjG6gwAqba2oLHhv2bYXnLjlc817CUS88
-	DdoCnjBKrNgE6hCxmbr2//fbNwiq2YL1rH9EVwAuv1GV4BWqoy76219tOKq7wwp9dUB1X+NaNWJ7s
-	N/ZfSAtxR5qb3SfAbca2AZw0H1nikfwMeV1XaQZT3thgGAq5OFW5BI/RtyOD4gme7ROBYgmYmKzUA
-	YjgZo4VCjeKBWVR5cShQ==;
+	List-Owner; bh=wKnfEryLbAUiyTU1bequ2Ge5B1aq5GZIq7uizbAOeDU=; b=gZp3G1WSZF1iGc
+	Tu4G5QL+2UAI4KjMp5oma36T2U9u5yHwbu2oRsv1i2H2qe5sR/6X3nUh54eVGRptd0//uu8nfiwJL
+	A2aWSuIzY6eIA0VKePPZjtZdmWkFjpm7aLj8Xf7UG9spkUDriCfwrUS9wUKxBNPkiOTvnFYCiO8jI
+	hehtveqG2SwiXTpLsmAQ+Gnuunl4eSGNWioqRIaJfXL/H3TXvzCRqTQ9nU5m4AsuPXRDh1aGY69eL
+	kMfegKlUanQN1ZVdmGI3piDs+5XRBl3pDvx++WOpe8sh/njgXLPOGKu98xUPUw0Odp5GUzd4+eg8Y
+	luJxMWBUJ8B8dnT6+V4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mUz4X-004eFV-6I; Mon, 27 Sep 2021 22:26:05 +0000
+	id 1mUz5x-004edo-8G; Mon, 27 Sep 2021 22:27:33 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mUyhC-004UJI-DG; Mon, 27 Sep 2021 22:01:58 +0000
+ (Red Hat Linux)) id 1mUyhl-004Uts-MT; Mon, 27 Sep 2021 22:02:33 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
-To: axboe@kernel.dk, bhelgaas@google.com, liushixin2@huawei.com,
- thunder.leizhen@huawei.com, lee.jones@linaro.org, geoff@infradead.org,
- mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
- jim@jtan.com, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
- josh.h.morris@us.ibm.com, pjk1939@linux.ibm.com, tim@cyberelk.net,
- richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 02/10] pktcdvd: add error handling support for add_disk()
-Date: Mon, 27 Sep 2021 15:01:49 -0700
-Message-Id: <20210927220157.1069658-3-mcgrof@kernel.org>
+To: axboe@kernel.dk, gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+ atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+ oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+ shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+ dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+ gor@linux.ibm.com, borntraeger@de.ibm.com, oberpar@linux.ibm.com,
+ tj@kernel.org
+Cc: linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v2 2/6] rbd: add add_disk() error handling
+Date: Mon, 27 Sep 2021 15:02:28 -0700
+Message-Id: <20210927220232.1071926-3-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210927220157.1069658-1-mcgrof@kernel.org>
-References: <20210927220157.1069658-1-mcgrof@kernel.org>
+In-Reply-To: <20210927220232.1071926-1-mcgrof@kernel.org>
+References: <20210927220232.1071926-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,29 +69,35 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-The out_mem2 error label already does what we need so
-re-use that.
-
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/pktcdvd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/block/rbd.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
-index 0f26b2510a75..415248962e67 100644
---- a/drivers/block/pktcdvd.c
-+++ b/drivers/block/pktcdvd.c
-@@ -2729,7 +2729,9 @@ static int pkt_setup_dev(dev_t dev, dev_t* pkt_dev)
- 	/* inherit events of the host device */
- 	disk->events = pd->bdev->bd_disk->events;
+diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+index e65c9d706f6f..341e5da6d029 100644
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -7054,7 +7054,9 @@ static ssize_t do_rbd_add(struct bus_type *bus,
+ 	if (rc)
+ 		goto err_out_image_lock;
  
--	add_disk(disk);
-+	ret = add_disk(disk);
-+	if (ret)
-+		goto out_mem2;
+-	device_add_disk(&rbd_dev->dev, rbd_dev->disk, NULL);
++	rc = device_add_disk(&rbd_dev->dev, rbd_dev->disk, NULL);
++	if (rc)
++		goto err_out_cleanup_disk;
  
- 	pkt_sysfs_dev_new(pd);
- 	pkt_debugfs_dev_new(pd);
+ 	spin_lock(&rbd_dev_list_lock);
+ 	list_add_tail(&rbd_dev->node, &rbd_dev_list);
+@@ -7068,6 +7070,8 @@ static ssize_t do_rbd_add(struct bus_type *bus,
+ 	module_put(THIS_MODULE);
+ 	return rc;
+ 
++err_out_cleanup_disk:
++	rbd_free_disk(rbd_dev);
+ err_out_image_lock:
+ 	rbd_dev_image_unlock(rbd_dev);
+ 	rbd_dev_device_release(rbd_dev);
 -- 
 2.30.2
 
