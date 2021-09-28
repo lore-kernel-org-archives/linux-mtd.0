@@ -2,62 +2,79 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B31EC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:13:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18F66C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:34:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB65E60FE3
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:13:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BB65E60FE3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id AAD5961058
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:34:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AAD5961058
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KnZl6dXTy7qUX269Dsxhd4V0riT1ppnvIU/2Ktk0IuA=; b=tKvTaNVoSzAttV
-	VjG/on0P3w3zXQxqXrBVAqUAm4mcCs+rr0FJYX92XOI1X7cJyLOBrvRRXXXxbuTZLzsbOkgiPhJfx
-	yt50ZNdO/4Vo3zttIZ6FdhSJ1B1VQXSiunKY5DKmMKVwA9tZyhjADwr4lHEIGyMA1hozfN5feGa0F
-	GEk9fL9ESPf6jJGP/wMz+/mjcUEX5IsuCDM1rII3wXop8JNE/n+sDUu304a8PKAH6yzmoaLxb4kq5
-	GnR13JJyGEnECa4tf7O2yCcHCgQ3VlFefLYFHzBoguLjlS5MVLw8elWhLxqkeXQ0ccsRy3hA2NqS7
-	L0/yZ2Alf9H1Jx5arvkQ==;
+	List-Owner; bh=H6d5Kd872tZkQRVZgS1WGAWd+CJBYkBSQuRppM2fEjI=; b=Zgm+Jby6rgg1KF
+	SRi6AJ0/K/FnKietWkv/hY3wXLR+VWE1Ysisqp68/IxH9TRnu6eBhhtPfynQR43JpGxcmYZxE6YFG
+	LkXdBBKCLHroEznWgXzZFFBT0cWS2fuGtaBsBFa07Ch8HJ4Hlfa2LelrouXCZf4fOMQ7P3yeIlOqx
+	J65Qazqd2Fx70pUY8n2EWzR4qX4JJD0E+EPc0sS08gZROxK+HryfCp1UtZe0RVq0k2fJ1cn4h6UUi
+	uNrsRWy9I+k2ddokTnvsbdtP6wpCGththoB4evoNeRVL5iQd7syW0JZsRGqH6aegC8EPRKqWbwUPj
+	Cml7kY25C4jwa72d/k2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVFiu-0081YU-Bd; Tue, 28 Sep 2021 16:12:52 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mVG3b-008622-Qe; Tue, 28 Sep 2021 16:34:15 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVFir-0081Xw-07
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 16:12:50 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F0FA611C3;
- Tue, 28 Sep 2021 16:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632845568;
- bh=DFUNqDy3Ot4Tq/eu+piBAz26Q4OJcSk95Ec7Bn5i6Dg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Dac+fqiHI1x2PWBuvFfxKNJDpFWhm/YXuGKyIH0a3CYgDU/rJjao/sCWx0YisD96a
- fYoWfKjze8RtTP7gJnFx4BxwiDzBTL5eRZzL16tVn5hxZjPcTT/WhLUAWcMURXtPFd
- YUyCR52j/GFh34N4oHXz+4AkaPYW3JBkyfLqKqtqqDE7MXxXoSbFtSBrCj+1hffvDA
- v/m2efbsgzH/ZaSrMRNmXGKxBvIPzFiYhQXewvMzCZPeo02x7zK7zzqIXvSfC0oyid
- sVsL/Fz3ZwH7JcrPn4s59UyUMXeeNlST4Ru2/mDlDO+qHRWXAwmxYSohpy1Nc95TxR
- 07tmeWhZ0/rIA==
-Date: Tue, 28 Sep 2021 21:42:19 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Md Sadre Alam <mdalam@codeaurora.org>
-Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 3/3] mtd: rawnand: qcom: Add support for page scope read
-Message-ID: <20210928161219.GD12183@thinkpad>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
- <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
+ id 1mVG3Z-00860v-4l
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 16:34:14 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18SGY7oi003138;
+ Tue, 28 Sep 2021 11:34:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1632846847;
+ bh=xSTXq8R8vgo138+dhfYd3IzStIxHaO1s9BsjwZOMBLA=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=VASFaVffwcLLoVPVobvxVSOnepc8KJZeW9yh3KTCIul8r/ahsukmB2n4U0qNH0AhO
+ tenUt9266pe4KizjcUzqr7sSF4wlkPgNZDkR+VD2RaX+hS11nCskGtoDrroYe2UT5D
+ EZKbRyOGmZGyLCSQ+/zjFs97yhewrNgWZuZPfUnU=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18SGY7Fl034589
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 28 Sep 2021 11:34:07 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 28
+ Sep 2021 11:34:06 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 28 Sep 2021 11:34:07 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18SGY6LM028980;
+ Tue, 28 Sep 2021 11:34:06 -0500
+Date: Tue, 28 Sep 2021 22:04:05 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Daniel Palmer <daniel@0x0f.com>
+CC: <linux-mtd@lists.infradead.org>, <tudor.ambarus@microchip.com>,
+ <michael@walle.cc>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for ZB25VQ128
+Message-ID: <20210928163403.iufy6rgn7imiebpz@ti.com>
+References: <20210918072256.3505379-1-daniel@0x0f.com>
+ <20210920112625.fnqayim5mg5iggag@ti.com>
+ <CAFr9PX=xKoa9fCbYf6Mpn=oudnY7A=6meKBSmzNHYLFad364tw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
+In-Reply-To: <CAFr9PX=xKoa9fCbYf6Mpn=oudnY7A=6meKBSmzNHYLFad364tw@mail.gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_091249_100059_4238626E 
-X-CRM114-Status: GOOD (  25.82  )
+X-CRM114-CacheID: sfid-20210928_093413_297054_43BDC4A5 
+X-CRM114-Status: GOOD (  22.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,131 +91,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 15, 2021 at 03:27:31PM +0530, Md Sadre Alam wrote:
-> QPIC V2.0 onwards QPIC controller support enhanced read mode
-> like page scope read and multi page read.
+On 28/09/21 10:15PM, Daniel Palmer wrote:
+> Hi Pratyush,
 > 
-
-Define page scope read.
-
-> In QPIC V1, SW is needed to write EXEC_CMD register for each
-> Code word and collect any Status related to that CW before
-> issueing EXEC_CMD for next CW.
+> On Mon, 20 Sept 2021 at 20:26, Pratyush Yadav <p.yadav@ti.com> wrote:
+> >
+> > Zbit should be in bank 10, so it should be preceeded by 9 0x7f bytes,
+> > correct? I don't see any logic to handle that in SPI NOR currently so I
+> > assume this manufacturer does not implement the continuation codes.
+> >
+> > In that case, it should go to the manufacturer collisions driver
+> > proposed here [0].
+> >
+> > [0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210727045222.905056-6-tudor.ambarus@microchip.com/
 > 
-> Page scope command is truly a page mode command where SW is
-> required to issue EXEC_CMD only once for a page. Controller
-> HW takes care of Codeword specific details and automatically
-> returns status associated with each CW to BAM pipe, dedicated
-> for status deposition.
+> Sorry, I'm not sure what I should do with this information. I didn't
+> even know about the continuation codes thing until now.
+> Is there something I need to do here or do I just need to wait for the
+> collision handling code to get merged?
+
+I think that should be what you need to do. Tudor, any plans on 
+re-rolling that patch series in the near future?
+
 > 
-> With this command, SW now can issue one read command for a page
-> and upon receiving completion interrupt, can process status,
-> that have already been deposited in memory through status BAM pipe.
+> Thanks,
 > 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 77 ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 71 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 07448c4..257dec7e 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -157,6 +157,10 @@
->  #define	OP_FETCH_ID			0xb
->  #define	OP_RESET_DEVICE			0xd
->  
-> +/* Auto status val and mask */
-> +#define	AUTO_STS_VAL			0x000B000B
+> Daniel
 
-Use non-cap hex.
-
-> +#define PAGE_SCOPE_READ			BIT(23)
-> +
->  /* Default Value for NAND_DEV_CMD_VLD */
->  #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
->  					 ERASE_START_VLD | SEQ_READ_START_VLD)
-> @@ -336,6 +340,8 @@ struct nandc_regs {
->  
->  	__le32 erased_cw_detect_cfg_clr;
->  	__le32 erased_cw_detect_cfg_set;
-> +
-> +	__le32 auto_sts_en;
->  };
->  
->  /*
-> @@ -421,6 +427,9 @@ struct qcom_nand_controller {
->  
->  	u32 cmd1, vld;
->  	const struct qcom_nandc_props *props;
-> +
-> +	__le32 *status_buf;
-> +	int sts_buf_size;
-
-Add kdoc for these two members.
-
->  };
->  
->  /*
-> @@ -487,6 +496,7 @@ struct qcom_nandc_props {
->  	bool is_bam;
->  	bool is_qpic;
->  	bool qpic_v2;
-> +	bool page_scope;
->  	u32 dev_cmd_reg_start;
->  };
->  
-> @@ -656,6 +666,8 @@ static __le32 *offset_to_nandc_reg(struct nandc_regs *regs, int offset)
->  		return &regs->cfg1;
->  	case NAND_DEV0_ECC_CFG:
->  		return &regs->ecc_bch_cfg;
-> +	case NAND_AUTO_STATUS_EN:
-> +		return &regs->auto_sts_en;
->  	case NAND_READ_STATUS:
->  		return &regs->clrreadstatus;
->  	case NAND_DEV_CMD1:
-> @@ -756,10 +768,13 @@ static void update_rw_regs(struct qcom_nand_host *host, int num_cw, bool read, i
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->  
->  	if (read) {
-> -		if (host->use_ecc)
-> +		if (host->use_ecc) {
->  			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
-> -		else
-> +			if (nandc->props->qpic_v2 && nandc->props->page_scope)
-
-Again, why you are checking for both conditions? Using "page_scope" is
-sufficient enough.
-
-> +				cmd |= PAGE_SCOPE_READ;
-> +		} else {
->  			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
-> +		}
->  	} else {
->  		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
->  	}
-
-[...]
-
->  	if (use_ecc) {
-> -		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> -		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> -			     NAND_BAM_NEXT_SGL);
-> +		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +			if (qcom_nandc_is_last_cw(ecc, cw))
-> +				write_reg_dma(nandc, NAND_EXEC_CMD, 1,
-> +					      NAND_BAM_NEXT_SGL);
-> +		} else {
-> +			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> +			read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> +			read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> +				     NAND_BAM_NEXT_SGL);
-> +		}
-
-You need to add a comment for this.
-
-Thanks,
-Mani
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
