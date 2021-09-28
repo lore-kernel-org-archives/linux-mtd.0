@@ -2,74 +2,97 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDA1BC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 12:30:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10FF0C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 12:35:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 874CF60F21
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 12:30:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 874CF60F21
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id CEED2611C3
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 12:35:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CEED2611C3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=giDXk5w27Vfzyry/9dh5aPp4VA8+trGJtPExxwranTw=; b=RTeUufJfuTR3bm0X4HzeT/Xsv6
-	qYKIsWg6bLJpcvqIv0CFQMUzMv+2+FElYkCksvdqCD50g065nhMeXATM6GTTiu6WxLGcq/okyAlRd
-	uXX8NEBij3fOvIhr2PEJjrY/vJoh6rL8wQsBMMctwjD301sY4NzadzXeFcMWb+1T4qOXGMvmQgLdm
-	nqTCGmiksalKV869Us2y5JpjZNhhOWpSS/R6Lb6YokvBQckmGXCxkwe2XSwKN08iC4t6/od2qAiSr
-	R9jTuX/x4Hw9V8zrL1rD2YWfzlmy5qTlIRd+1KBz7OoU1ghWtIlR2CrNoENrEcpx/ThXYJuO/mG7q
-	tt3y0QtQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=x5ebl8WjNRLbGN0GQNcyzjpkyVIXcK6MP/a+Th9nybw=; b=AsBeEhdBLBXfJ98YXV5j+QO7kr
+	BdXJgRMmchDnfwc+/bnuJLCNF/eaHgv8CEnVxQWAxuKA+DOYeWt1YEplBihSe8UFiGjq6ewA+GDH8
+	eXHSxmqo72q0rBBV1JJxBWY9WiN4AULnVlF1ggD2GKFa6PShf3jv3wbNH/2Wb5NseLfoL3/smBxEb
+	DSJ5xSnbv3oUelIvBnPQlz+zCTpv/ahlWhemDwgTsv/2faSnHZTXyUME4WKXf8KWmGNcYkyu2LGVd
+	VTQA1ApOZb7lSisc60dCIcsFIRzO6p1YMR7+gjKq2HEZ5i8OYj1XcNYs3m3CDBy5ZGtlVa9gY/Hm6
+	eEeIolQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVCEh-0077WR-Aj; Tue, 28 Sep 2021 12:29:27 +0000
-Received: from so254-9.mailgun.net ([198.61.254.9])
+	id 1mVCKI-0079db-LE; Tue, 28 Sep 2021 12:35:15 +0000
+Received: from mail-io1-xd35.google.com ([2607:f8b0:4864:20::d35])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVC6y-0072rq-G9
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 12:21:33 +0000
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1632831691; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4mvy6jjxS0ooczx9EnQFRgss43by5+4IkFrZGEXls7Q=;
- b=X99ntCHZjI6Cc0DAZam9hbBSmKuPOm+qNYZSE5bRSEmZa2rrlY/AMVA++CIhKtgRuBCU2iak
- hB8odPbLDBF13J13GOM4j2TtbSOY/DBEvEYb2gOcVSwCtzG4nSJfKd/H3RLR4Qtxbjg6E0f6
- Elx9s0CxcOi8Z3exZBED7EngVwI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 615308afb62327f2cb2dd86d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 12:21:03
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id D18F0C4338F; Tue, 28 Sep 2021 12:21:02 +0000 (UTC)
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested) (Authenticated sender: mdalam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 8169CC4360C;
- Tue, 28 Sep 2021 12:21:00 +0000 (UTC)
+ id 1mVCDV-007712-Jk
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 12:28:15 +0000
+Received: by mail-io1-xd35.google.com with SMTP id h129so27154893iof.1
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Sep 2021 05:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=eUW2/IJFZY83nPJmflQgcvtOV5+nVA8I+eyXlqMJPRU=;
+ b=3rbyBzZUI4kM0wtWn3uTCiL+iFQn37kynJEfwzTuvV788lRHsOgrxQX//6Ptwtyvhm
+ PRk4feijU3wh94ty5i1N66Ig+sABpOoZVeSM47DP356owZxXG4KVg3Qk+fU5UpN7qjXC
+ jeSW+Bttk5kETwDV3GWvC4MYYvgsuJqIuQTZDyroLwERBzQS4FN9yhIxNHryOdoEOwa3
+ o/15DNQGaey/vFs6hguKBx6L7zxTznRm9cJa3vz3CKspK4BMmY/hSPddKOKPDaXtB5dT
+ Z+Mr9kmkrhnMk9UXoVcl7QPhre4NUeznnkriL3TH5rbTeZtGvIvFfgKW43pdABZ6Z0cz
+ KdMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=eUW2/IJFZY83nPJmflQgcvtOV5+nVA8I+eyXlqMJPRU=;
+ b=KDrxX4z+I6gUhaK6zfTNPDYjTC1XTjmniOg7OX6rUyMrFWx0PimcPECQ1DAZnd6liw
+ r87IOWjG/+yz9ONiJ0I6reIDt7SQQ12nUEjGsN00TlY/bFQQ18ouLcyU7mCuxFwc9dhp
+ MVReS8LQmu4hyh9DDaEaFWV/hSj34C5QSxrELNPB50D80939WH0YfuwU6Bc/wkdJzACC
+ BuzZdGp5wP397GJDIyEiz+yGe1gc1e0yC/tLTFDu/CIwArsO4VGYPw++47HEGN8tjUb0
+ tROMfcC5+vYzcQwupuTXA267KDPageWHVzAy83wMBtx0lUWJTao+YWrRBJIvpVhhGtJ0
+ cysQ==
+X-Gm-Message-State: AOAM533xVBhM7tudc+7aeThErbzSrnCs6b04SAoe6uJD/XwV9j2K9mV2
+ LJcqtv7sRCtjw7C45gZ9HCuhOA==
+X-Google-Smtp-Source: ABdhPJwPZLFitXCog7R4G/mZxZzFOE8+azMCqbj1uCZcF9QhbMc4aOBoMdp9+4PWoLOwgLvLP0Uqqg==
+X-Received: by 2002:a6b:5114:: with SMTP id f20mr3764704iob.97.1632832092364; 
+ Tue, 28 Sep 2021 05:28:12 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+ by smtp.gmail.com with ESMTPSA id j17sm856634ile.20.2021.09.28.05.28.10
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 28 Sep 2021 05:28:11 -0700 (PDT)
+Subject: Re: [PATCH v2 0/6] block: 5th batch of add_disk() error handling
+ conversions
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, gregkh@linuxfoundation.org,
+ chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
+ maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
+ colin.king@canonical.com, shubhankarvk@gmail.com, baijiaju1990@gmail.com,
+ trix@redhat.com, dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+ borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+ linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20210927220232.1071926-1-mcgrof@kernel.org>
+ <25afa23b-52af-9b79-8bd8-5e31da62c291@kernel.dk> <YVLV3s66GVVSQ+tj@osiris>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <bfd9f85a-d6fb-c05a-5ec3-2e15ee08062d@kernel.dk>
+Date: Tue, 28 Sep 2021 06:28:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date: Tue, 28 Sep 2021 17:51:00 +0530
-From: mdalam@codeaurora.org
-To: miquel.raynal@bootlin.com, mani@kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: sricharan@codeaurora.org
-Subject: Re: [PATCH 3/3] mtd: rawnand: qcom: Add support for page scope read
-In-Reply-To: <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
- <1631699851-12172-4-git-send-email-mdalam@codeaurora.org>
-Message-ID: <8765976685ca3a04af1c102a69c9ca63@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <YVLV3s66GVVSQ+tj@osiris>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_052131_903845_4A91A116 
-X-CRM114-Status: GOOD (  34.85  )
+X-CRM114-CacheID: sfid-20210928_052813_783149_2A0345F5 
+X-CRM114-Status: GOOD (  15.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,234 +104,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2021-09-15 15:27, Md Sadre Alam wrote:
-> QPIC V2.0 onwards QPIC controller support enhanced read mode
-> like page scope read and multi page read.
+On 9/28/21 2:44 AM, Heiko Carstens wrote:
+> On Mon, Sep 27, 2021 at 04:32:17PM -0600, Jens Axboe wrote:
+>> On 9/27/21 4:02 PM, Luis Chamberlain wrote:
+>>> This is the 5th series of driver conversions for add_disk() error
+>>> handling. This set along with the entire 7th set of patches can be
+>>> found on my 20210927-for-axboe-add-disk-error-handling branch [0].
+>>
+>> Applied 1-2.
 > 
-> In QPIC V1, SW is needed to write EXEC_CMD register for each
-> Code word and collect any Status related to that CW before
-> issueing EXEC_CMD for next CW.
-> 
-> Page scope command is truly a page mode command where SW is
-> required to issue EXEC_CMD only once for a page. Controller
-> HW takes care of Codeword specific details and automatically
-> returns status associated with each CW to BAM pipe, dedicated
-> for status deposition.
-> 
-> With this command, SW now can issue one read command for a page
-> and upon receiving completion interrupt, can process status,
-> that have already been deposited in memory through status BAM pipe.
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 77 
-> ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 71 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
-> b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 07448c4..257dec7e 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -157,6 +157,10 @@
->  #define	OP_FETCH_ID			0xb
->  #define	OP_RESET_DEVICE			0xd
-> 
-> +/* Auto status val and mask */
-> +#define	AUTO_STS_VAL			0x000B000B
-> +#define PAGE_SCOPE_READ			BIT(23)
-> +
->  /* Default Value for NAND_DEV_CMD_VLD */
->  #define NAND_DEV_CMD_VLD_VAL		(READ_START_VLD | WRITE_START_VLD | \
->  					 ERASE_START_VLD | SEQ_READ_START_VLD)
-> @@ -336,6 +340,8 @@ struct nandc_regs {
-> 
->  	__le32 erased_cw_detect_cfg_clr;
->  	__le32 erased_cw_detect_cfg_set;
-> +
-> +	__le32 auto_sts_en;
->  };
-> 
->  /*
-> @@ -421,6 +427,9 @@ struct qcom_nand_controller {
-> 
->  	u32 cmd1, vld;
->  	const struct qcom_nandc_props *props;
-> +
-> +	__le32 *status_buf;
-> +	int sts_buf_size;
->  };
-> 
->  /*
-> @@ -487,6 +496,7 @@ struct qcom_nandc_props {
->  	bool is_bam;
->  	bool is_qpic;
->  	bool qpic_v2;
-> +	bool page_scope;
->  	u32 dev_cmd_reg_start;
->  };
-> 
-> @@ -656,6 +666,8 @@ static __le32 *offset_to_nandc_reg(struct
-> nandc_regs *regs, int offset)
->  		return &regs->cfg1;
->  	case NAND_DEV0_ECC_CFG:
->  		return &regs->ecc_bch_cfg;
-> +	case NAND_AUTO_STATUS_EN:
-> +		return &regs->auto_sts_en;
->  	case NAND_READ_STATUS:
->  		return &regs->clrreadstatus;
->  	case NAND_DEV_CMD1:
-> @@ -756,10 +768,13 @@ static void update_rw_regs(struct qcom_nand_host
-> *host, int num_cw, bool read, i
->  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> 
->  	if (read) {
-> -		if (host->use_ecc)
-> +		if (host->use_ecc) {
->  			cmd = OP_PAGE_READ_WITH_ECC | PAGE_ACC | LAST_PAGE;
-> -		else
-> +			if (nandc->props->qpic_v2 && nandc->props->page_scope)
-> +				cmd |= PAGE_SCOPE_READ;
-> +		} else {
->  			cmd = OP_PAGE_READ | PAGE_ACC | LAST_PAGE;
-> +		}
->  	} else {
->  		cmd = OP_PROGRAM_PAGE | PAGE_ACC | LAST_PAGE;
->  	}
-> @@ -788,6 +803,9 @@ static void update_rw_regs(struct qcom_nand_host
-> *host, int num_cw, bool read, i
->  	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
->  	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
-> 
-> +	if (nandc->props->qpic_v2 && nandc->props->page_scope)
-> +		nandc_set_reg(chip, NAND_AUTO_STATUS_EN, AUTO_STS_VAL);
-> +
->  	if (read)
->  		nandc_set_read_loc(chip, cw, 0, 0, host->use_ecc ?
->  				   host->cw_data : host->cw_size, 1);
-> @@ -1040,6 +1058,26 @@ static int prep_adm_dma_desc(struct
-> qcom_nand_controller *nandc, bool read,
->  }
-> 
->  /*
-> + * read_status_data_dma: prepares a DMA descriptor to transfer status 
-> from the
-> + *			 controller's status registers to buffer 'vaddr'
-> + * @reg_off:             offset within the controller's data buffer
-> + * @vaddr:               virtual address of the buffer we want to 
-> write to
-> + * @size:                DMA transaction size in bytes
-> + * @flags:               flags to control DMA descriptor preparation
-> + */
-> +static int read_status_data_dma(struct qcom_nand_controller *nandc,
-> int reg_off,
-> +				const u8 *vaddr, int size, unsigned int flags)
-> +{
-> +	struct bam_transaction *bam_txn = nandc->bam_txn;
-> +
-> +	sg_set_buf(&bam_txn->sts_sgl[bam_txn->sts_sgl_pos],
-> +		   vaddr, size);
-> +	bam_txn->sts_sgl_pos++;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
->   * read_reg_dma:	prepares a descriptor to read a given number of
->   *			contiguous registers to the reg_read_buf pointer
->   *
-> @@ -1186,13 +1224,20 @@ config_nand_cw_read(struct nand_chip *chip,
-> bool use_ecc, int cw)
->  		write_reg_dma(nandc, reg, 4, NAND_BAM_NEXT_SGL);
-> 
->  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-> -	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> 
->  	if (use_ecc) {
-> -		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> -		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> -			     NAND_BAM_NEXT_SGL);
-> +		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +			if (qcom_nandc_is_last_cw(ecc, cw))
-> +				write_reg_dma(nandc, NAND_EXEC_CMD, 1,
-> +					      NAND_BAM_NEXT_SGL);
-> +		} else {
-> +			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-> +			read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
-> +			read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
-> +				     NAND_BAM_NEXT_SGL);
-> +		}
->  	} else {
-> +		write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
->  		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
->  	}
->  }
-> @@ -1959,6 +2004,8 @@ static int read_page_ecc(struct qcom_nand_host
-> *host, u8 *data_buf,
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->  	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
->  	int i, ret;
-> +	__le32 *status_buf_start = nandc->status_buf;
-> +	__le32 *status_buf_cw = nandc->status_buf;
-> 
->  	config_nand_page_read(chip);
-> 
-> @@ -1994,6 +2041,12 @@ static int read_page_ecc(struct qcom_nand_host
-> *host, u8 *data_buf,
->  			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
->  				      data_size, 0);
-> 
-> +		if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +			read_status_data_dma(nandc, FLASH_BUF_ACC, (void *)status_buf_cw,
-> +					     (nandc->sts_buf_size >> 2), 0);
-> +			status_buf_cw += (nandc->sts_buf_size >> 4);
-> +		}
-> +
->  		/*
->  		 * when ecc is enabled, the controller doesn't read the real
->  		 * or dummy bad block markers in each chunk. To maintain a
-> @@ -2025,6 +2078,9 @@ static int read_page_ecc(struct qcom_nand_host
-> *host, u8 *data_buf,
->  		return ret;
->  	}
-> 
-> +	if (nandc->props->qpic_v2 && nandc->props->page_scope)
-> +		memmove(nandc->reg_read_buf, status_buf_start, nandc->sts_buf_size);
-> +
->  	return parse_read_errors(host, data_buf_start, oob_buf_start, page);
->  }
-> 
-> @@ -3005,6 +3061,14 @@ static int
-> qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
->  		}
->  	}
-> 
-> +	if (nandc->props->qpic_v2 && nandc->props->page_scope) {
-> +		nandc->sts_buf_size = mtd->writesize == SZ_2K ? 48 : 96;
-> +		nandc->status_buf = devm_kzalloc(nandc->dev, nandc->sts_buf_size,
-> +						 GFP_KERNEL);
-> +		if (!nandc->status_buf)
-> +			return -ENOMEM;
-> +	}
-> +
->  	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
->  	if (ret)
->  		nand_cleanup(chip);
-> @@ -3197,6 +3261,7 @@ static const struct qcom_nandc_props 
-> sdx55_nandc_props = {
->  	.is_bam = true,
->  	.is_qpic = true,
->  	.qpic_v2 = true,
-> +	.page_scope = true,
->  	.dev_cmd_reg_start = 0x7000,
->  };
+> Hmm.. naturally I would have expected that the dasd patch also would
+> go via block tree. But let's not spend too much time figuring out what
+> gets routed where.
+> Applied 4-6. Thanks!
 
-Ping! Please provide me some updates on this patch.
+I left the ones that have active maintainers for them to pick. Unless
+someone has already acked/reviwed it, in which case I picked it up.
+I've got no problems picking them up directly, but unless it's been
+reviewed by the maintainer, I prefer if they either do so or pick
+them up.
+
+-- 
+Jens Axboe
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
