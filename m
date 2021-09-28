@@ -1,82 +1,63 @@
-Return-Path: <SRS0=BNsP=OR=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E07DC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 23:29:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC1AC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 05:23:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18F5A611C3
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Sep 2021 23:29:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 18F5A611C3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4C4FB60F4F
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 05:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C4FB60F4F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a6zI8jv+KdKK6E5jaJb4NFFflgNTcFcaADa/THHKGSE=; b=G7nawR3Ak1kso3
-	sjop2HvIUenFsSdLZPzp1wS6mr0G5NV7G1ak5Hd/Sl1SqoaftdqhgMmEjCazw5lucYwSSSntrE2Cp
-	ZcSmKK1SoWejdw3MECeoxqUe/oKGjPf+xxVX618snlIcjETFygH2HqFWGndruc/nl85+bUxFRlMZ9
-	qxloBfS+hXS7v3F4tKXWLE7jGPEIBoe1WzNxtQGrq8KVcuRdSXUizsKdlce+0diWaffcCSjeRaOCq
-	hQqGOHwtKtbVpllj/0OwjNYNig8I47P8iAi0syYMx3dUTLRrOn2+6lWvuGz3e7Rwbh7ax5Ye9XOlo
-	twcdl3/T6WkMH+8Bqw8A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=l84mK0wAZW/O7ResksgTd5r7ERM7kifPld++CLTGQtA=; b=S+ide/T553enwU
+	3LlNAdOXp6rrK7tUxgcdeyV517tM79e7K1Z4xAxlT9iLvMUalqvhYIRvBBgIeo4x03sXJUm+MFYcA
+	ysA4u9xw67hW/ijDYJGL/c/cVnNWf16Tf7vvOMW4xkwaUgNtqgtvxSKiam+QWISLUNDEn9mT2qK6p
+	vixVAEbFrh/nPB6gd/KVPKVFN+/UeRoQEt6ODCle+5u1e/6/zg/xsWZ6uZ1F+Hm8Jump9t78/rTAL
+	uQlItnvJXcTmk5j8vbZCeI5Sakm8bnBec8EZEOyVoyvNqPyunD8V+ZQjMzLwE7MA4vKw6dGLrtsif
+	XGpI9KP0YX6eNRoiojMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mV02R-004tPJ-5Z; Mon, 27 Sep 2021 23:27:59 +0000
-Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
+	id 1mV5Zl-005cH6-PA; Tue, 28 Sep 2021 05:22:45 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mV02N-004tOW-P8
- for linux-mtd@lists.infradead.org; Mon, 27 Sep 2021 23:27:57 +0000
-Received: by mail-lf1-x134.google.com with SMTP id t10so84384290lfd.8
- for <linux-mtd@lists.infradead.org>; Mon, 27 Sep 2021 16:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=CNjVwNOreCVnGXxMa3eIII8LsiZt1BUYV58xP4ke9qY=;
- b=LhhH7IkIw+kfY7/iSu76gPEPRrZndBwB657Z3DEs/uhyyKaP/yz+ZiC7G3z1aYXLv+
- oKHnddZUWUjkKvdrXsl+/RNuYMn7NCeZmHHsweuWXBYhpixdbRNt+DEdqODe+dPKGeBF
- EwjTRFI+mcuuUzg6VvCI0Lw63lws375MhE9jhGs2qPtjNVwKwWLYdU+cwLt7HHzS45TO
- yaCRwnqlXtDUxUbhGt97b8a7Z+7yE5IonNMzC/MtIAhf2QrqS4XcknUlcOwd3bT53z8T
- kroZMh93UYDUNe4FcAQj5/PjBia8JuaXINvq7QaXhH6uoklT5EOyE+bX8sSlQ1cYr7g4
- V2nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=CNjVwNOreCVnGXxMa3eIII8LsiZt1BUYV58xP4ke9qY=;
- b=EzREa7+MvQVVdGGHIAVgaWlaPRm4H5qW+KfsKSRORlWkXHUlcTzhcs5ofpXTbEKHv8
- tDSBqRir0BbaIYpN9YPjNDW9+vqcBghoVqEqVsXbuKjQufHBIdUUpwQ23B5kCdoi8gKc
- 7H53HGMAQKeo/BxymVG6d/oy3JDE08zeRIOymAOYSsvNhPRBNtbf7EfqSfqu/WnOL3rv
- s01AYAHBB7GXzrTWEcDi5UG90+7vDuXe6mwOOKvG+kZQlj9SoKPU0hJ0T6P2AuIiD20R
- /X88WcwIQSQUsrMTz/NmkEmfM+rK1k2ptPoG/ocz4jAPAG4/jRXbrOMjyqMZiGSJg43s
- 8qpA==
-X-Gm-Message-State: AOAM532w9pYAVmeSC4sI+bcdQv9239/dm8rCmSnnEFwYa4+MVZ6APfRP
- 1NojA7Up9l70GvCEFi8WeaazHUhV4Bknrpg1l+lCCg==
-X-Google-Smtp-Source: ABdhPJw2EKvcRwRwNeXo4O2UwnzB+EKOgNqmwCSfbJZNDJd24C3ZQdno4QJnb9j9a92AOGS1jLIZjqOQhzQIdH7wjiE=
-X-Received: by 2002:a2e:510a:: with SMTP id f10mr2595006ljb.358.1632785273575; 
- Mon, 27 Sep 2021 16:27:53 -0700 (PDT)
+ id 1mV5Zj-005cGy-HT
+ for linux-mtd@bombadil.infradead.org; Tue, 28 Sep 2021 05:22:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=A04dM+Vo9/Fetf7krH0dGPC++Y24iPZldsb1IcuSrY8=; b=aRY4V1sGCTesXudqb9o16TDrY4
+ So7uD86nqB92AiLd9otKv6X6MfWgkOAeId/QuKEULs9GPk8juifoFzT1FcrlwMsQ7ZRhUI8kmCE+c
+ Yli36oAEOytrjPeUgbZNvzCjU2EzP9rba/ZlJ006Z+tuNmvc9v3TUlHcc8qJ/K2P6yp3IY1ADaqjS
+ J4NXRo7VuTMbjV8iDjYIIul09I5WL+RdhOTGjuJBq9NS8v9mf0g6z3H5Tny0BOZ/4hSyNzwEawg9e
+ 5eekUuS6ByryxDk1zzvY4nLWDB3xOU1vOs8rgt5f3Z8GKkntaFhrkCAQwL1iiiMTbmdpmGkBYAAPD
+ vjp2zNNg==;
+Received: from p4fdb05cb.dip0.t-ipconnect.de ([79.219.5.203] helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mV5ZG-00AW6O-LM; Tue, 28 Sep 2021 05:22:21 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-scsi@vger.kernel.org
+Subject: remove ->rq_disk
+Date: Tue, 28 Sep 2021 07:22:06 +0200
+Message-Id: <20210928052211.112801-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210927141045.1597593-1-arnd@kernel.org>
-In-Reply-To: <20210927141045.1597593-1-arnd@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 28 Sep 2021 01:27:41 +0200
-Message-ID: <CACRpkdbirEZiKQxSWSsiwwvpui5Pw6vON-C-=BLJei0s8znLxg@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] mtd: fixup CFI on ixp4xx
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Linus Walleij <linusw@kernel.org>,
- Imre Kaloz <kaloz@openwrt.org>, 
- Krzysztof Halasa <khalasa@piap.pl>, Arnd Bergmann <arnd@arndb.de>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
- Serge Semin <Sergey.Semin@baikalelectronics.ru>, linux-mtd@lists.infradead.org,
- linux-kernel <linux-kernel@vger.kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210927_162755_838080_3CC931D7 
-X-CRM114-Status: GOOD (  15.61  )
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,32 +74,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 27, 2021 at 4:10 PM Arnd Bergmann <arnd@kernel.org> wrote:
+Hi Jens,
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> drivers/mtd/maps/ixp4xx.c requires MTD_CFI_BE_BYTE_SWAP to be set
-> in order to compile.
->
-> drivers/mtd/maps/ixp4xx.c:57:4: error: #error CONFIG_MTD_CFI_BE_BYTE_SWAP required
->
-> This patch avoids the #error output by enforcing the policy in
-> Kconfig. Not sure if this is the right approach, but it helps doing
-> randconfig builds.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+this series removes the rq_disk field in struct request, which isn't
+needed now that we can get the disk from the request_queue.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-> Any other ideas for how to address it?
-
-We will "soon" have IXP4xx transitioned to device tree and then
-physmap-ixp4xx.c is used instead, and this entire driver can be
-deleted. I will get there, we just need to remember to mop of cruft
-like this at the end of it.
-
-Yours,
-Linus Walleij
+Diffstat:
+ block/blk-core.c                   |   10 ++++----
+ block/blk-exec.c                   |   10 ++------
+ block/blk-flush.c                  |    3 --
+ block/blk-merge.c                  |    7 ------
+ block/blk-mq.c                     |    1 
+ block/blk.h                        |    2 -
+ block/bsg-lib.c                    |    2 -
+ drivers/block/amiflop.c            |    2 -
+ drivers/block/ataflop.c            |    6 ++---
+ drivers/block/floppy.c             |    6 ++---
+ drivers/block/mtip32xx/mtip32xx.c  |    2 -
+ drivers/block/null_blk/trace.h     |    2 -
+ drivers/block/paride/pcd.c         |    2 -
+ drivers/block/paride/pd.c          |    6 ++---
+ drivers/block/paride/pf.c          |    4 +--
+ drivers/block/pktcdvd.c            |    2 -
+ drivers/block/rnbd/rnbd-clt.c      |    4 +--
+ drivers/block/sunvdc.c             |    2 -
+ drivers/block/sx8.c                |    4 +--
+ drivers/block/virtio_blk.c         |    2 -
+ drivers/md/dm-mpath.c              |    1 
+ drivers/mmc/core/block.c           |   12 +++++-----
+ drivers/mtd/mtd_blkdevs.c          |   10 +-------
+ drivers/nvme/host/core.c           |    4 +--
+ drivers/nvme/host/fault_inject.c   |    2 -
+ drivers/nvme/host/pci.c            |    7 ++----
+ drivers/nvme/host/trace.h          |    6 ++---
+ drivers/nvme/target/passthru.c     |    3 --
+ drivers/scsi/ch.c                  |    2 -
+ drivers/scsi/scsi_bsg.c            |    2 -
+ drivers/scsi/scsi_error.c          |    2 -
+ drivers/scsi/scsi_ioctl.c          |   43 ++++++++++++++-----------------------
+ drivers/scsi/scsi_lib.c            |    5 ++--
+ drivers/scsi/scsi_logging.c        |    4 ++-
+ drivers/scsi/sd.c                  |   26 +++++++++++-----------
+ drivers/scsi/sd_zbc.c              |    8 +++---
+ drivers/scsi/sg.c                  |    6 ++---
+ drivers/scsi/sr.c                  |   11 ++++-----
+ drivers/scsi/st.c                  |    4 +--
+ drivers/scsi/ufs/ufshcd.c          |    3 --
+ drivers/scsi/ufs/ufshpb.c          |    5 +---
+ drivers/scsi/virtio_scsi.c         |    2 -
+ drivers/target/target_core_pscsi.c |    2 -
+ drivers/usb/storage/transport.c    |    2 -
+ fs/nfsd/blocklayout.c              |    2 -
+ include/linux/blk-mq.h             |   11 ++-------
+ include/scsi/scsi_cmnd.h           |    2 -
+ include/scsi/scsi_device.h         |    4 +--
+ include/scsi/scsi_ioctl.h          |    4 +--
+ include/trace/events/block.h       |    8 +++---
+ kernel/trace/blktrace.c            |    2 -
+ 51 files changed, 125 insertions(+), 159 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
