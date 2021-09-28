@@ -2,54 +2,65 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB1C4C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 13:59:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B96E0C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 14:08:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EBA560F5B
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 13:59:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8EBA560F5B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 81FE1610E6
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 14:08:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 81FE1610E6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dl4CJHESTjcTzGyynMcsgpajRhQ+AAhYS/fwqPQB4OE=; b=LoT09zBAFSHV2N
-	R2GHpGgNv+3JhRRxErS/2YAHMGUsGVR2OCskIm0EoxWKa9JJF1w67wukpShvYEtwcGheaMhxmWofz
-	wselTvPmknnuYun6GKWiTxES2jYVfHCIfwrBE5QoX2yQgUh6SZSIo3Xd5HGovS601BKzI6JogVo86
-	t7oEdRt/NpEAgkK3JrBAUWRczFkhn5rU5+wPBc+IPj0zuf5pV7yXdMDGZEtlt91IhSLwgVpjF9xXO
-	aiAMS0BfizW/mL88a4CSIB4fyXAD1gwjR9BEJVMcSbOncgkNOVjs21I0rKzvOWULUdLrxkc4WCLPX
-	xYsZjDf5KMSg/wif5o3w==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YiUOUzpxDTHCIz+QoMRKWOMwQP+SaaRV5JPoMCUkEMM=; b=Ht1Bc4PE2V9trL
+	Mo2iID/5DGSzS4gQ/h3fIDJ7omUMnpQxnU4+g+tFUU1EVh6QsSiRwiQ8myWbJhkTS8W/jbSKU0I3z
+	rCRFvGodlq0m4H4JEjzm0g4/F+wlE1j/nFO4faNbGYi0RjFZRYpp6DAyCEyfXEL559RoE/BzLmU4p
+	8jOaCg2CvHfzRC1U86Nu2PnPSr4bemmN0Y8JKUmx6Qm47WNiYi+N5Xnoj5OeJiTJUi642ExdZvpjh
+	CTVj0xA/QeijY88p43Nq+NP0ttETTlDT/1Rh8sR5KZ7B3/ephbWzEXXcvJle07f1ZWL7vw6XtYXV5
+	2qOtxEWOs8aAAtUM50aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVDdV-007SzR-8r; Tue, 28 Sep 2021 13:59:09 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVDdR-007Sy3-Ju
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 13:59:08 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 48A271C0008;
- Tue, 28 Sep 2021 13:59:01 +0000 (UTC)
-Date: Tue, 28 Sep 2021 15:58:59 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: add MEMREAD ioctl
-Message-ID: <20210928155859.433844cb@xps13>
-In-Reply-To: <20210920070221.10173-1-kernel@kempniu.pl>
-References: <20210920070221.10173-1-kernel@kempniu.pl>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+	id 1mVDlh-007UA7-TX; Tue, 28 Sep 2021 14:07:38 +0000
+Received: from relmlor2.renesas.com ([210.160.252.172]
+ helo=relmlie6.idc.renesas.com)
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mVDle-007U8R-DO
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 14:07:36 +0000
+X-IronPort-AV: E=Sophos;i="5.85,329,1624287600"; d="scan'208";a="95435599"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 28 Sep 2021 23:07:32 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id A762140061B4;
+ Tue, 28 Sep 2021 23:07:28 +0900 (JST)
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/6] Add SPI Multi I/O Bus Controller support for RZ/G2L
+Date: Tue, 28 Sep 2021 15:07:15 +0100
+Message-Id: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_065905_967923_D6DD3147 
-X-CRM114-Status: GOOD (  43.33  )
+X-CRM114-CacheID: sfid-20210928_070734_591593_E2ABAD66 
+X-CRM114-Status: UNSURE (   9.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,151 +72,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWljaGHFgiwKCisgQm9yaXMganVzdCBpbiBjYXNlIHlvdSBoYXZlIGFueXRoaW5nIG9idmlv
-dXMgdGhhdCBwb3BzIHVwIGluIHlvdXIKICBoZWFkIHdoZW4gcmVhZGluZyB0aGUgZGVzY3JpcHRp
-b24sIG90aGVyd2lzZSBubyBuZWVkIHRvIHRob3JvdWdoZnVsbHkKICByZXZpZXcgdGhpcyA7KQoK
-a2VybmVsQGtlbXBuaXUucGwgd3JvdGUgb24gTW9uLCAyMCBTZXAgMjAyMSAwOTowMjoyMSArMDIw
-MDoKCj4gVXNlci1zcGFjZSBhcHBsaWNhdGlvbnMgbWFraW5nIHVzZSBvZiBNVEQgZGV2aWNlcyB2
-aWEgL2Rldi9tdGQqCj4gY2hhcmFjdGVyIGRldmljZXMgY3VycmVudGx5IGhhdmUgbGltaXRlZCBj
-YXBhYmlsaXRpZXMgZm9yIHJlYWRpbmcgZGF0YToKPiAKPiAgIC0gb25seSBkZXByZWNhdGVkIG1l
-dGhvZHMgb2YgYWNjZXNzaW5nIE9PQiBsYXlvdXQgaW5mb3JtYXRpb24gZXhpc3QsCj4gCj4gICAt
-IHRoZXJlIGlzIG5vIHdheSB0byBleHBsaWNpdGx5IHNwZWNpZnkgTVREIG9wZXJhdGlvbiBtb2Rl
-IHRvIHVzZTsgaXQKPiAgICAgaXMgYXV0by1zZWxlY3RlZCBiYXNlZCBvbiB0aGUgTVREIGZpbGUg
-bW9kZSAoTVREX0ZJTEVfTU9ERV8qKSBzZXQKPiAgICAgZm9yIHRoZSBjaGFyYWN0ZXIgZGV2aWNl
-OyBpbiBwYXJ0aWN1bGFyLCB0aGlzIHByZXZlbnRzIHVzaW5nCj4gICAgIE1URF9PUFNfQVVUT19P
-T0IgZm9yIHJlYWRzLAo+IAo+ICAgLSBhbGwgZXhpc3RpbmcgdXNlci1zcGFjZSBpbnRlcmZhY2Vz
-IHdoaWNoIGNhdXNlIG10ZF9yZWFkKCkgb3IKPiAgICAgbXRkX3JlYWRfb29iKCkgdG8gYmUgY2Fs
-bGVkICh2aWEgbXRkY2hhcl9yZWFkKCkgYW5kCj4gICAgIG10ZGNoYXJfcmVhZF9vb2IoKSwgcmVz
-cGVjdGl2ZWx5KSByZXR1cm4gc3VjY2VzcyBldmVuIHdoZW4gdGhvc2UKPiAgICAgZnVuY3Rpb25z
-IHJldHVybiAtRVVDTEVBTiBvciAtRUJBRE1TRzsgdGhpcyByZW5kZXJzIHVzZXItc3BhY2UKPiAg
-ICAgYXBwbGljYXRpb25zIHVzaW5nIHRoZXNlIGludGVyZmFjZXMgdW5hd2FyZSBvZiBhbnkgY29y
-cmVjdGVkCj4gICAgIGJpdGZsaXBzIG9yIHVuY29ycmVjdGFibGUgRUNDIGVycm9ycyBkZXRlY3Rl
-ZCBkdXJpbmcgcmVhZHMuCj4gCj4gTm90ZSB0aGF0IHRoZSBleGlzdGluZyBNRU1XUklURSBpb2N0
-bCBhbGxvd3MgdGhlIE1URCBvcGVyYXRpb24gbW9kZSB0bwo+IGJlIGV4cGxpY2l0bHkgc2V0LCBh
-bGxvd2luZyB1c2VyLXNwYWNlIGFwcGxpY2F0aW9ucyB0byB3cml0ZSBwYWdlIGRhdGEKPiBhbmQg
-T09CIGRhdGEgd2l0aG91dCByZXF1aXJpbmcgdGhlbSB0byBrbm93IGFueXRoaW5nIGFib3V0IHRo
-ZSBPT0IKPiBsYXlvdXQgb2YgdGhlIE1URCBkZXZpY2UgdGhleSBhcmUgd3JpdGluZyB0byAoTVRE
-X09QU19BVVRPX09PQikuICBBbHNvLAo+IHRoZSBNRU1XUklURSBpb2N0bCBkb2VzIG5vdCBtYW5n
-bGUgdGhlIHJldHVybiB2YWx1ZSBvZiBtdGRfd3JpdGVfb29iKCkuCj4gCj4gQWRkIGEgbmV3IGlv
-Y3RsLCBNRU1SRUFELCB3aGljaCBhZGRyZXNzZXMgdGhlIGFib3ZlIGlzc3Vlcy4gIEl0IGlzCj4g
-aW50ZW5kZWQgdG8gYmUgYSByZWFkLXNpZGUgY291bnRlcnBhcnQgb2YgdGhlIGV4aXN0aW5nIE1F
-TVdSSVRFIGlvY3RsLgo+IAo+IFVwZGF0ZSBpbmNsdWRlL3VhcGkvbXRkL210ZC1hYmkuaCBhY2Nv
-cmRpbmdseS4KCkkgaGF2ZSB0byBhZG1pdCBJIGFtIGdlbmVyYWxseSBzY2FyZWQgd2hlbmV2ZXIg
-c29tZXRoaW5nIHRvdWNoZXMgdGhpcwpmaWxlLiBXaGlsZSBJIGFtIHJlYWxseSBvcGVuIHRvIGFu
-eXRoaW5nIGludGVybmFsbHkgSSBrbm93IHdlIG5lZWQgdG8gYmUKY2FyZWZ1bCB3aXRoIHRoZXNl
-IGFkZGl0aW9ucywgaGVuY2UgSSB3aWxsIG9ubHkgbWVyZ2UgdGhpcyBwYXRjaCB3aXRoCmFsbCBv
-dGhlciBNVEQgbWFpbnRhaW5lcnMgYWNrcy4KCk9uIG15IHNpZGUgSSBhbSBmaW5lIHdpdGggdGhl
-IGFwcHJvYWNoIHRob3VnaC4KClRoYW5rcywKTWlxdcOobAoKPiBTaWduZWQtb2ZmLWJ5OiBNaWNo
-YcWCIEvEmXBpZcWEIDxrZXJuZWxAa2VtcG5pdS5wbD4KPiAtLS0KPiBUaGlzIHBhdGNoIGlzIGEg
-c2hhbWVsZXNzIGNhbHF1ZV5XXldeV2hlYXZpbHkgaW5zcGlyZWQgYnkgTUVNV1JJVEUgY29kZSwK
-PiBzbyBxdWl0ZSBhIGxvdCBvZiBjb3B5LXBhc3RpbmcgaGFwcGVuZWQuICBJIGd1ZXNzIGl0IGlz
-IHNvbWV3aGF0Cj4gZXhwZWN0ZWQgd2hlbiBhZGRpbmcgYSByZWFkLXNpZGUgY291bnRlcnBhcnQg
-b2YgZXhpc3RpbmcgY29kZSB3aGljaAo+IHRha2VzIGNhcmUgb2Ygd3JpdGVzLCBidXQgcGxlYXNl
-IGV4Y3VzZSBtZSBpZiBJIHdlbnQgdG9vIGZhci4KPiAKPiBOb3RlIHRoYXQgInNjcmlwdHMvY2hl
-Y2twYXRjaC5wbCAtLXN0cmljdCIgcmV0dXJucyB0d28gYWxpZ25tZW50Cj4gd2FybmluZ3MgZm9y
-IHRoaXMgcGF0Y2guICBHaXZlbiB0aGF0IGV4aXN0aW5nIGNvZGUgdHJpZ2dlcnMgdGhlIHNhbWUK
-PiB3YXJuaW5ncywgSSBhc3N1bWVkIHRoYXQgbG9jYWwgY29uc2lzdGVuY3kgdHJ1bXBzIGNoZWNr
-cGF0Y2gucGwncwo+IGNvbXBsYWludHMuCj4gCj4gIGRyaXZlcnMvbXRkL210ZGNoYXIuYyAgICAg
-IHwgNjAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgaW5jbHVkZS91
-YXBpL210ZC9tdGQtYWJpLmggfCA0MyArKysrKysrKysrKysrKysrKysrKysrKy0tLS0KPiAgMiBm
-aWxlcyBjaGFuZ2VkLCA5OCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL210ZC9tdGRjaGFyLmMgYi9kcml2ZXJzL210ZC9tdGRjaGFyLmMKPiBp
-bmRleCAxNTVlOTkxZDlkNzUuLjkyZTAwMjRiZGNmNyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210
-ZC9tdGRjaGFyLmMKPiArKysgYi9kcml2ZXJzL210ZC9tdGRjaGFyLmMKPiBAQCAtNjIxLDYgKzYy
-MSw1OCBAQCBzdGF0aWMgaW50IG10ZGNoYXJfd3JpdGVfaW9jdGwoc3RydWN0IG10ZF9pbmZvICpt
-dGQsCj4gIAlyZXR1cm4gcmV0Owo+ICB9Cj4gIAo+ICtzdGF0aWMgaW50IG10ZGNoYXJfcmVhZF9p
-b2N0bChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwKPiArCQlzdHJ1Y3QgbXRkX3JlYWRfcmVxIF9fdXNl
-ciAqYXJncCkKPiArewo+ICsJc3RydWN0IG10ZF9pbmZvICptYXN0ZXIgPSBtdGRfZ2V0X21hc3Rl
-cihtdGQpOwo+ICsJc3RydWN0IG10ZF9yZWFkX3JlcSByZXE7Cj4gKwlzdHJ1Y3QgbXRkX29vYl9v
-cHMgb3BzID0ge307Cj4gKwl2b2lkIF9fdXNlciAqdXNyX2RhdGEsICp1c3Jfb29iOwo+ICsJaW50
-IHJldDsKPiArCj4gKwlpZiAoY29weV9mcm9tX3VzZXIoJnJlcSwgYXJncCwgc2l6ZW9mKHJlcSkp
-KQo+ICsJCXJldHVybiAtRUZBVUxUOwo+ICsKPiArCXVzcl9kYXRhID0gKHZvaWQgX191c2VyICop
-KHVpbnRwdHJfdClyZXEudXNyX2RhdGE7Cj4gKwl1c3Jfb29iID0gKHZvaWQgX191c2VyICopKHVp
-bnRwdHJfdClyZXEudXNyX29vYjsKPiArCj4gKwlpZiAoIW1hc3Rlci0+X3JlYWRfb29iKQo+ICsJ
-CXJldHVybiAtRU9QTk9UU1VQUDsKPiArCW9wcy5tb2RlID0gcmVxLm1vZGU7Cj4gKwlvcHMubGVu
-ID0gKHNpemVfdClyZXEubGVuOwo+ICsJb3BzLm9vYmxlbiA9IChzaXplX3QpcmVxLm9vYmxlbjsK
-PiArCW9wcy5vb2JvZmZzID0gMDsKPiArCj4gKwlpZiAodXNyX2RhdGEpIHsKPiArCQlvcHMuZGF0
-YnVmID0ga21hbGxvYyhvcHMubGVuLCBHRlBfS0VSTkVMKTsKPiArCQlpZiAoSVNfRVJSKG9wcy5k
-YXRidWYpKQo+ICsJCQlyZXR1cm4gUFRSX0VSUihvcHMuZGF0YnVmKTsKPiArCX0gZWxzZSB7Cj4g
-KwkJb3BzLmRhdGJ1ZiA9IE5VTEw7Cj4gKwl9Cj4gKwo+ICsJaWYgKHVzcl9vb2IpIHsKPiArCQlv
-cHMub29iYnVmID0ga21hbGxvYyhvcHMub29ibGVuLCBHRlBfS0VSTkVMKTsKPiArCQlpZiAoSVNf
-RVJSKG9wcy5vb2JidWYpKSB7Cj4gKwkJCWtmcmVlKG9wcy5kYXRidWYpOwo+ICsJCQlyZXR1cm4g
-UFRSX0VSUihvcHMub29iYnVmKTsKPiArCQl9Cj4gKwl9IGVsc2Ugewo+ICsJCW9wcy5vb2JidWYg
-PSBOVUxMOwo+ICsJfQo+ICsKPiArCXJldCA9IG10ZF9yZWFkX29vYihtdGQsIChsb2ZmX3QpcmVx
-LnN0YXJ0LCAmb3BzKTsKPiArCj4gKwlpZiAoY29weV90b191c2VyKHVzcl9kYXRhLCBvcHMuZGF0
-YnVmLCBvcHMucmV0bGVuKSB8fAo+ICsJICAgIGNvcHlfdG9fdXNlcih1c3Jfb29iLCBvcHMub29i
-YnVmLCBvcHMub29icmV0bGVuKSkKPiArCQlyZXQgPSAtRUZBVUxUOwo+ICsKPiArCWtmcmVlKG9w
-cy5kYXRidWYpOwo+ICsJa2ZyZWUob3BzLm9vYmJ1Zik7Cj4gKwo+ICsJcmV0dXJuIHJldDsKPiAr
-fQo+ICsKPiAgc3RhdGljIGludCBtdGRjaGFyX2lvY3RsKHN0cnVjdCBmaWxlICpmaWxlLCB1X2lu
-dCBjbWQsIHVfbG9uZyBhcmcpCj4gIHsKPiAgCXN0cnVjdCBtdGRfZmlsZV9pbmZvICptZmkgPSBm
-aWxlLT5wcml2YXRlX2RhdGE7Cj4gQEAgLTY0Myw2ICs2OTUsNyBAQCBzdGF0aWMgaW50IG10ZGNo
-YXJfaW9jdGwoc3RydWN0IGZpbGUgKmZpbGUsIHVfaW50IGNtZCwgdV9sb25nIGFyZykKPiAgCWNh
-c2UgTUVNR0VUSU5GTzoKPiAgCWNhc2UgTUVNUkVBRE9PQjoKPiAgCWNhc2UgTUVNUkVBRE9PQjY0
-Ogo+ICsJY2FzZSBNRU1SRUFEOgo+ICAJY2FzZSBNRU1JU0xPQ0tFRDoKPiAgCWNhc2UgTUVNR0VU
-T09CU0VMOgo+ICAJY2FzZSBNRU1HRVRCQURCTE9DSzoKPiBAQCAtODE3LDYgKzg3MCwxMyBAQCBz
-dGF0aWMgaW50IG10ZGNoYXJfaW9jdGwoc3RydWN0IGZpbGUgKmZpbGUsIHVfaW50IGNtZCwgdV9s
-b25nIGFyZykKPiAgCQlicmVhazsKPiAgCX0KPiAgCj4gKwljYXNlIE1FTVJFQUQ6Cj4gKwl7Cj4g
-KwkJcmV0ID0gbXRkY2hhcl9yZWFkX2lvY3RsKG10ZCwKPiArCQkgICAgICAoc3RydWN0IG10ZF9y
-ZWFkX3JlcSBfX3VzZXIgKilhcmcpOwo+ICsJCWJyZWFrOwo+ICsJfQo+ICsKPiAgCWNhc2UgTUVN
-TE9DSzoKPiAgCXsKPiAgCQlzdHJ1Y3QgZXJhc2VfaW5mb191c2VyIGVpbmZvOwo+IGRpZmYgLS1n
-aXQgYS9pbmNsdWRlL3VhcGkvbXRkL210ZC1hYmkuaCBiL2luY2x1ZGUvdWFwaS9tdGQvbXRkLWFi
-aS5oCj4gaW5kZXggYjg2OTk5MGMyZGIyLi4zMzdlNmU1OTdmYWQgMTAwNjQ0Cj4gLS0tIGEvaW5j
-bHVkZS91YXBpL210ZC9tdGQtYWJpLmgKPiArKysgYi9pbmNsdWRlL3VhcGkvbXRkL210ZC1hYmku
-aAo+IEBAIC01NSw5ICs1NSw5IEBAIHN0cnVjdCBtdGRfb29iX2J1ZjY0IHsKPiAgICogQE1URF9P
-UFNfUkFXOglkYXRhIGFyZSB0cmFuc2ZlcnJlZCBhcy1pcywgd2l0aCBubyBlcnJvciBjb3JyZWN0
-aW9uOwo+ICAgKgkJCXRoaXMgbW9kZSBpbXBsaWVzICVNVERfT1BTX1BMQUNFX09PQgo+ICAgKgo+
-IC0gKiBUaGVzZSBtb2RlcyBjYW4gYmUgcGFzc2VkIHRvIGlvY3RsKE1FTVdSSVRFKSBhbmQgYXJl
-IGFsc28gdXNlZCBpbnRlcm5hbGx5Lgo+IC0gKiBTZWUgbm90ZXMgb24gIk1URCBmaWxlIG1vZGVz
-IiBmb3IgZGlzY3Vzc2lvbiBvbiAlTVREX09QU19SQVcgdnMuCj4gLSAqICVNVERfRklMRV9NT0RF
-X1JBVy4KPiArICogVGhlc2UgbW9kZXMgY2FuIGJlIHBhc3NlZCB0byBpb2N0bChNRU1XUklURSkg
-YW5kIGlvY3RsKE1FTVJFQUQpOyB0aGV5IGFyZQo+ICsgKiBhbHNvIHVzZWQgaW50ZXJuYWxseS4g
-U2VlIG5vdGVzIG9uICJNVEQgZmlsZSBtb2RlcyIgZm9yIGRpc2N1c3Npb24gb24KPiArICogJU1U
-RF9PUFNfUkFXIHZzLiAlTVREX0ZJTEVfTU9ERV9SQVcuCj4gICAqLwo+ICBlbnVtIHsKPiAgCU1U
-RF9PUFNfUExBQ0VfT09CID0gMCwKPiBAQCAtOTEsNiArOTEsMzIgQEAgc3RydWN0IG10ZF93cml0
-ZV9yZXEgewo+ICAJX191OCBwYWRkaW5nWzddOwo+ICB9Owo+ICAKPiArLyoqCj4gKyAqIHN0cnVj
-dCBtdGRfcmVhZF9yZXEgLSBkYXRhIHN0cnVjdHVyZSBmb3IgcmVxdWVzdGluZyBhIHJlYWQgb3Bl
-cmF0aW9uCj4gKyAqCj4gKyAqIEBzdGFydDoJc3RhcnQgYWRkcmVzcwo+ICsgKiBAbGVuOglsZW5n
-dGggb2YgZGF0YSBidWZmZXIKPiArICogQG9vYmxlbjoJbGVuZ3RoIG9mIE9PQiBidWZmZXIKPiAr
-ICogQHVzcl9kYXRhOgl1c2VyLXByb3ZpZGVkIGRhdGEgYnVmZmVyCj4gKyAqIEB1c3Jfb29iOgl1
-c2VyLXByb3ZpZGVkIE9PQiBidWZmZXIKPiArICogQG1vZGU6CU1URCBtb2RlIChzZWUgIk1URCBv
-cGVyYXRpb24gbW9kZXMiKQo+ICsgKiBAcGFkZGluZzoJcmVzZXJ2ZWQsIG11c3QgYmUgc2V0IHRv
-IDAKPiArICoKPiArICogVGhpcyBzdHJ1Y3R1cmUgc3VwcG9ydHMgaW9jdGwoTUVNUkVBRCkgb3Bl
-cmF0aW9ucywgYWxsb3dpbmcgZGF0YSBhbmQvb3IgT09CCj4gKyAqIHJlYWRzIGluIHZhcmlvdXMg
-bW9kZXMuIFRvIHJlYWQgZnJvbSBPT0Itb25seSwgc2V0IEB1c3JfZGF0YSA9PSBOVUxMLCBhbmQg
-dG8KPiArICogcmVhZCBkYXRhLW9ubHksIHNldCBAdXNyX29vYiA9PSBOVUxMLiBIb3dldmVyLCBz
-ZXR0aW5nIGJvdGggQHVzcl9kYXRhIGFuZAo+ICsgKiBAdXNyX29vYiB0byBOVUxMIGlzIG5vdCBh
-bGxvd2VkLgo+ICsgKi8KPiArc3RydWN0IG10ZF9yZWFkX3JlcSB7Cj4gKwlfX3U2NCBzdGFydDsK
-PiArCV9fdTY0IGxlbjsKPiArCV9fdTY0IG9vYmxlbjsKPiArCV9fdTY0IHVzcl9kYXRhOwo+ICsJ
-X191NjQgdXNyX29vYjsKPiArCV9fdTggbW9kZTsKPiArCV9fdTggcGFkZGluZ1s3XTsKPiArfTsK
-PiArCj4gICNkZWZpbmUgTVREX0FCU0VOVAkJMAo+ICAjZGVmaW5lIE1URF9SQU0JCQkxCj4gICNk
-ZWZpbmUgTVREX1JPTQkJCTIKPiBAQCAtMjA3LDYgKzIzMywxMiBAQCBzdHJ1Y3Qgb3RwX2luZm8g
-ewo+ICAjZGVmaW5lIE1FTVdSSVRFCQlfSU9XUignTScsIDI0LCBzdHJ1Y3QgbXRkX3dyaXRlX3Jl
-cSkKPiAgLyogRXJhc2UgYSBnaXZlbiByYW5nZSBvZiB1c2VyIGRhdGEgKG11c3QgYmUgaW4gbW9k
-ZSAlTVREX0ZJTEVfTU9ERV9PVFBfVVNFUikgKi8KPiAgI2RlZmluZSBPVFBFUkFTRQkJX0lPVygn
-TScsIDI1LCBzdHJ1Y3Qgb3RwX2luZm8pCj4gKy8qCj4gKyAqIE1vc3QgZ2VuZXJpYyByZWFkIGlu
-dGVyZmFjZTsgY2FuIHJlYWQgaW4tYmFuZCBhbmQvb3Igb3V0LW9mLWJhbmQgaW4gdmFyaW91cwo+
-ICsgKiBtb2RlcyAoc2VlICJzdHJ1Y3QgbXRkX3JlYWRfcmVxIikuIFRoaXMgaW9jdGwgaXMgbm90
-IHN1cHBvcnRlZCBmb3IgZmxhc2hlcwo+ICsgKiB3aXRob3V0IE9PQiwgZS5nLiwgTk9SIGZsYXNo
-Lgo+ICsgKi8KPiArI2RlZmluZSBNRU1SRUFECQkJX0lPV1IoJ00nLCAyNiwgc3RydWN0IG10ZF9y
-ZWFkX3JlcSkKPiAgCj4gIC8qCj4gICAqIE9ic29sZXRlIGxlZ2FjeSBpbnRlcmZhY2UuIEtlZXAg
-aXQgaW4gb3JkZXIgbm90IHRvIGJyZWFrIHVzZXJzcGFjZQo+IEBAIC0yNzAsOCArMzAyLDkgQEAg
-c3RydWN0IG10ZF9lY2Nfc3RhdHMgewo+ICAgKiBOb3RlOiAlTVREX0ZJTEVfTU9ERV9SQVcgcHJv
-dmlkZXMgdGhlIHNhbWUgZnVuY3Rpb25hbGl0eSBhcyAlTVREX09QU19SQVcgLQo+ICAgKiByYXcg
-YWNjZXNzIHRvIHRoZSBmbGFzaCwgd2l0aG91dCBlcnJvciBjb3JyZWN0aW9uIG9yIGF1dG9wbGFj
-ZW1lbnQgc2NoZW1lcy4KPiAgICogV2hlcmV2ZXIgcG9zc2libGUsIHRoZSBNVERfT1BTXyogbW9k
-ZSB3aWxsIG92ZXJyaWRlIHRoZSBNVERfRklMRV9NT0RFXyogbW9kZQo+IC0gKiAoZS5nLiwgd2hl
-biB1c2luZyBpb2N0bChNRU1XUklURSkpLCBidXQgaW4gc29tZSBjYXNlcywgdGhlIE1URF9GSUxF
-X01PREUgaXMKPiAtICogdXNlZCBvdXQgb2YgbmVjZXNzaXR5IChlLmcuLCBgd3JpdGUoKScsIGlv
-Y3RsKE1FTVdSSVRFT09CNjQpKS4KPiArICogKGUuZy4sIHdoZW4gdXNpbmcgaW9jdGwoTUVNV1JJ
-VEUpIG9yIGlvY3RsKE1FTVJFQUQpKSwgYnV0IGluIHNvbWUgY2FzZXMsIHRoZQo+ICsgKiBNVERf
-RklMRV9NT0RFIGlzIHVzZWQgb3V0IG9mIG5lY2Vzc2l0eSAoZS5nLiwgYHdyaXRlKCknLAo+ICsg
-KiBpb2N0bChNRU1XUklURU9PQjY0KSkuCj4gICAqLwo+ICBlbnVtIG10ZF9maWxlX21vZGVzIHsK
-PiAgCU1URF9GSUxFX01PREVfTk9STUFMID0gTVREX09UUF9PRkYsCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+Hi All,
+
+This patch series adds a couple of fixes for rpc-if driver and
+adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
+is identical to the RPC-IF block found on R-Car Gen3 SoC's.
+
+Note: patch applies on top of [1].
+
+[1] https://patchwork.kernel.org/project/linux-renesas-soc/patch/
+20210922091007.5516-1-wsa+renesas@sang-engineering.com/
+
+Cheers,
+Prabhakar
+
+Lad Prabhakar (6):
+  dt-bindings: memory: renesas,rpc-if: Add support for the R9A07G044
+  dt-bindings: memory: renesas,rpc-if: Add optional interrupts property
+  spi: spi-rpc-if: Check return value of rpcif_sw_init()
+  mtd: hyperbus: rpc-if: Check return value of rpcif_sw_init()
+  memory: renesas-rpc-if: Drop usage of RPCIF_DIRMAP_SIZE macro
+  memory: renesas-rpc-if: Add support for RZ/G2L
+
+ .../memory-controllers/renesas,rpc-if.yaml    | 52 +++++++++----
+ drivers/memory/renesas-rpc-if.c               | 73 +++++++++++++++----
+ drivers/mtd/hyperbus/rpc-if.c                 |  8 +-
+ drivers/spi/spi-rpc-if.c                      |  8 +-
+ include/memory/renesas-rpc-if.h               |  8 +-
+ 5 files changed, 116 insertions(+), 33 deletions(-)
+
+-- 
+2.17.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
