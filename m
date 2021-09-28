@@ -2,14 +2,14 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B4D0C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:27:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86984C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:28:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22E186137A
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:27:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 22E186137A
+	by mail.kernel.org (Postfix) with ESMTPS id 5221961381
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:28:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5221961381
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,38 +18,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VHn3Rhp0JKD2BMUnm80Gfi6hmZ2jaXhGbpyuXTuXdg8=; b=ILgfLNlLKR3hj6
-	t5JI+jCjZIYcgBe45omtMCdcCSvl1MofwICppvz68QkWao2CQSqQxTwETs/bc/LXWPDbOHA+8lUlH
-	cuBDDzMzXQeW8/Lwtq8TGmvBkrE610tQZN/tuf1AfaDaa7RhGjws1AWZBb8FEprizWGuYAAlLfZ+6
-	CXf+sMdnDHRx3waUFIdQqNOMgE/Bkgy3PBkCDj51t83W7cMi2o3JPQGeNli1ppL1LD/q6wwIt6rqy
-	Ae/WCR8IBqUP0td4tPfbxQTeMl7uwh2nXyVnMY7wLG7Qlr8yqunL5WTtQdRyjq5uws1c8M0gZ1N+A
-	ZZSbaB2pNk+GbG2zfCmw==;
+	List-Owner; bh=vhUrdXeQiy1pV6u0iEQkppMJCeaLH9nCJpCgEpg7CHU=; b=DNiBy2MYHVSnkE
+	GRz+kTpUAgB0rdcFm6exmozUtkwoW0SUJ6PKyvE8FHWSIxvmof7L/c2MtBC3DxTasBEO7DjYSUVtF
+	iTVI7Z/Z5P4jej2vwtWjiriVNryJETbExWhPAJgoJF8Nz/w+6fmO6qiR8AyM0ArB5uxmr+hPv13Nb
+	hr2ag5UwmA73kXSQpnBT3PIaTDE4a9kZge6k5ibxCsAooCRsoMn1YkpwDeFXKPUtH9lXFOUW2ZgQZ
+	CyaDwDaAYZKHTCEqKA5Qx8Iv/zFufugMnBpXR5bAUp9OGtLPo/A1tsSI7bbA0VB5+iptYMgbkH5B+
+	5pe5uQ4dkAbRrSkLCKKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVLYi-0094B6-3d; Tue, 28 Sep 2021 22:26:44 +0000
+	id 1mVLaC-0094fN-Ss; Tue, 28 Sep 2021 22:28:16 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVLNd-008zyd-PO; Tue, 28 Sep 2021 22:15:22 +0000
+ id 1mVLNe-008zz8-NE; Tue, 28 Sep 2021 22:15:22 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 87DA21C000A;
- Tue, 28 Sep 2021 22:15:15 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 65CFE1C000D;
+ Tue, 28 Sep 2021 22:15:16 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-arm-kernel@lists.infradead.org>, Vladimir Zapolskiy <vz@mleia.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 7/8] Revert "mtd: rawnand: lpc32xx_slc: Fix external use of SW
+Subject: [PATCH 8/8] Revert "mtd: rawnand: cs553x: Fix external use of SW
  Hamming ECC helper"
-Date: Wed, 29 Sep 2021 00:15:06 +0200
-Message-Id: <20210928221507.199198-8-miquel.raynal@bootlin.com>
+Date: Wed, 29 Sep 2021 00:15:07 +0200
+Message-Id: <20210928221507.199198-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210928221507.199198-1-miquel.raynal@bootlin.com>
 References: <20210928221507.199198-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_151518_119513_EA3A67AF 
-X-CRM114-Status: GOOD (  19.59  )
+X-CRM114-CacheID: sfid-20210928_151519_078013_C3BFD75C 
+X-CRM114-Status: GOOD (  20.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,7 +66,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This reverts commit c4b7d7c480d607e4f52d310d9d16b194868d0917.
+This reverts commit 56a8d3fd1f342d10ee7b27e9ac0f4d00b5fbb91c.
 
 Before the introduction of the ECC framework infrastructure, many
 drivers used the ->calculate/correct() Hamming helpers directly. The
@@ -103,49 +103,46 @@ helper, thus this fix from [2] can now be safely reverted.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/lpc32xx_slc.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+ drivers/mtd/nand/raw/cs553x_nand.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index d7dfc6fd85ca..6b7269cfb7d8 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -27,7 +27,6 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/mtd/lpc32xx_slc.h>
+diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
+index df40927e5678..6edf78c16fc8 100644
+--- a/drivers/mtd/nand/raw/cs553x_nand.c
++++ b/drivers/mtd/nand/raw/cs553x_nand.c
+@@ -18,7 +18,6 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
 -#include <linux/mtd/nand-ecc-sw-hamming.h>
- 
- #define LPC32XX_MODNAME		"lpc32xx-nand"
- 
-@@ -345,18 +344,6 @@ static int lpc32xx_nand_ecc_calculate(struct nand_chip *chip,
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/iopoll.h>
+@@ -241,15 +240,6 @@ static int cs_calculate_ecc(struct nand_chip *this, const u_char *dat,
  	return 0;
  }
  
--/*
-- * Corrects the data
-- */
--static int lpc32xx_nand_ecc_correct(struct nand_chip *chip,
--				    unsigned char *buf,
--				    unsigned char *read_ecc,
--				    unsigned char *calc_ecc)
+-static int cs553x_ecc_correct(struct nand_chip *chip,
+-			      unsigned char *buf,
+-			      unsigned char *read_ecc,
+-			      unsigned char *calc_ecc)
 -{
 -	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
 -				      chip->ecc.size, false);
 -}
 -
- /*
-  * Read a single byte from NAND device
-  */
-@@ -815,7 +802,7 @@ static int lpc32xx_nand_attach_chip(struct nand_chip *chip)
- 	chip->ecc.write_oob = lpc32xx_nand_write_oob_syndrome;
- 	chip->ecc.read_oob = lpc32xx_nand_read_oob_syndrome;
- 	chip->ecc.calculate = lpc32xx_nand_ecc_calculate;
--	chip->ecc.correct = lpc32xx_nand_ecc_correct;
-+	chip->ecc.correct = rawnand_sw_hamming_correct;
- 	chip->ecc.hwctl = lpc32xx_nand_ecc_enable;
+ static struct cs553x_nand_controller *controllers[4];
  
- 	/*
+ static int cs553x_attach_chip(struct nand_chip *chip)
+@@ -261,7 +251,7 @@ static int cs553x_attach_chip(struct nand_chip *chip)
+ 	chip->ecc.bytes = 3;
+ 	chip->ecc.hwctl  = cs_enable_hwecc;
+ 	chip->ecc.calculate = cs_calculate_ecc;
+-	chip->ecc.correct  = cs553x_ecc_correct;
++	chip->ecc.correct  = rawnand_sw_hamming_correct;
+ 	chip->ecc.strength = 1;
+ 
+ 	return 0;
 -- 
 2.27.0
 
