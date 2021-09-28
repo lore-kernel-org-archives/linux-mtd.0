@@ -2,14 +2,14 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78618C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 23:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D6C8C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 23:07:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2383E61390
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 23:05:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2383E61390
+	by mail.kernel.org (Postfix) with ESMTPS id 06336613A5
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 23:07:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 06336613A5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,38 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4yv+LZa1vSSaegvx65w5J/3XO4On6OyxHbcLJCFeTCM=; b=COHFK4/N/Q5vXq
-	8b5bJRO+V1C8Rks9cFf23kf1ODlFNMQR2seaaSkQ1MkdbMCBsczReUgaEXnF6VL3AhcNgjX/9YxVn
-	z34vEXK5kI7TCUUcgB9IRiqxSLO9AwYQaR1HdOXLkI5NzeumtgEzh57PpDB1CTUJpCK8G2OLJ9SkJ
-	qbJHrdwxKMNhVeC5gHXJrL9/w1PoFYrBotmYv/AdzAfQBQeOw64YudYHoHp3x2BZWT0OEt7r8LjTB
-	UQOuSJJzLljkDospaorGhplkv52a+pnqfeXa8oqmsyedkdSrr+OV/duXcYZUH/9cBS5d+wTY7wbEB
-	7xQntGuAoT5Wqio9qf+Q==;
+	List-Owner; bh=UCyx3xuYJXoBUSudoTgeQ/hWh29ZYGRtxYbLdAIM7F8=; b=YJAj8IC68cHAHY
+	S47DCZo5kMA9WRIAbo3ERnYHUedIJEgY37dJOJ1Nuh7HzBip0lAqHgZpC8Vqzg5viomhHdApvG/Ci
+	5UPS1W0t9/w8ADYz+Dw40Zr4NTuBi4HqRhY36ZhYDJc/MgTZJ9t1G7fWQb0VN/A6/N+Kabom8JHzc
+	Tvm2RbT6jS3apsC2dDVmEdMCKIJeNsnkAZEKqYDGmhSEuDgE2C2f1hbgjVtmVeRswR3EZuj6soOi2
+	KLwVZ9RfhTgyYi+wAM9WJZzT0p6M/jILlOJBora6y5vlcWCa1YqlRcXFhxCYI7Q5LtOnZDK9AVO1y
+	Q2hNZoie2RyUDYAYK2bw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVM9s-009CZJ-Og; Tue, 28 Sep 2021 23:05:08 +0000
+	id 1mVMBw-009CvJ-8X; Tue, 28 Sep 2021 23:07:16 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVLVM-00934K-R6
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 22:23:18 +0000
+ id 1mVLVO-00935O-PO
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 22:23:21 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 417C010000B;
- Tue, 28 Sep 2021 22:23:14 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 196BF10000D;
+ Tue, 28 Sep 2021 22:23:15 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org
-Subject: [PATCH 8/9] mtd: rawnand: socrates: Keep the driver compatible with
+ Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org,
+ Jan Hoffmann <jan@3e8.eu>,
+ Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Subject: [PATCH 9/9] mtd: rawnand: xway: Keep the driver compatible with
  on-die ECC engines
-Date: Wed, 29 Sep 2021 00:22:57 +0200
-Message-Id: <20210928222258.199726-19-miquel.raynal@bootlin.com>
+Date: Wed, 29 Sep 2021 00:22:58 +0200
+Message-Id: <20210928222258.199726-20-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210928222258.199726-1-miquel.raynal@bootlin.com>
 References: <20210928222258.199726-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_152317_077768_53758C19 
-X-CRM114-Status: GOOD (  20.77  )
+X-CRM114-CacheID: sfid-20210928_152319_017071_2EF79989 
+X-CRM114-Status: GOOD (  20.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,20 +93,22 @@ nand_scan(). During the initialization step, the core will consider this
 entry as the default engine for this driver. This value may of course
 be overloaded by the user if the usual DT properties are provided.
 
-Fixes: b36bf0a0fe5d ("mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip()")
+Fixes: d525914b5bd8 ("mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()")
 Cc: stable@vger.kernel.org
+Cc: Jan Hoffmann <jan@3e8.eu>
+Cc: Kestrel seventyfour <kestrelseventyfour@gmail.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/socrates_nand.c | 12 +++++++++---
+ drivers/mtd/nand/raw/xway_nand.c | 12 +++++++++---
  1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
-index 70f8305c9b6e..fb39cc7ebce0 100644
---- a/drivers/mtd/nand/raw/socrates_nand.c
-+++ b/drivers/mtd/nand/raw/socrates_nand.c
-@@ -119,9 +119,8 @@ static int socrates_nand_device_ready(struct nand_chip *nand_chip)
+diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+index 26751976e502..236fd8c5a958 100644
+--- a/drivers/mtd/nand/raw/xway_nand.c
++++ b/drivers/mtd/nand/raw/xway_nand.c
+@@ -148,9 +148,8 @@ static void xway_write_buf(struct nand_chip *chip, const u_char *buf, int len)
  
- static int socrates_attach_chip(struct nand_chip *chip)
+ static int xway_attach_chip(struct nand_chip *chip)
  {
 -	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 -
@@ -114,20 +118,20 @@ index 70f8305c9b6e..fb39cc7ebce0 100644
  		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
  
  	return 0;
-@@ -175,6 +174,13 @@ static int socrates_nand_probe(struct platform_device *ofdev)
- 	/* TODO: I have no idea what real delay is. */
- 	nand_chip->legacy.chip_delay = 20;	/* 20us command delay time */
+@@ -219,6 +218,13 @@ static int xway_nand_probe(struct platform_device *pdev)
+ 		    | NAND_CON_SE_P | NAND_CON_WP_P | NAND_CON_PRE_P
+ 		    | cs_flag, EBU_NAND_CON);
  
 +	/*
 +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
 +	 * Set ->engine_type before registering the NAND devices in order to
 +	 * provide a driver specific default value.
 +	 */
-+	nand_chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++	data->chip.ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 +
- 	dev_set_drvdata(&ofdev->dev, host);
- 
- 	res = nand_scan(nand_chip, 1);
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(&data->chip, 1);
+ 	if (err)
 -- 
 2.27.0
 
