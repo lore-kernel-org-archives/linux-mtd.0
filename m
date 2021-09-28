@@ -2,14 +2,14 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86984C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 598D0C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:30:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5221961381
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:28:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5221961381
+	by mail.kernel.org (Postfix) with ESMTPS id 20C436138D
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:30:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 20C436138D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,38 +18,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vhUrdXeQiy1pV6u0iEQkppMJCeaLH9nCJpCgEpg7CHU=; b=DNiBy2MYHVSnkE
-	GRz+kTpUAgB0rdcFm6exmozUtkwoW0SUJ6PKyvE8FHWSIxvmof7L/c2MtBC3DxTasBEO7DjYSUVtF
-	iTVI7Z/Z5P4jej2vwtWjiriVNryJETbExWhPAJgoJF8Nz/w+6fmO6qiR8AyM0ArB5uxmr+hPv13Nb
-	hr2ag5UwmA73kXSQpnBT3PIaTDE4a9kZge6k5ibxCsAooCRsoMn1YkpwDeFXKPUtH9lXFOUW2ZgQZ
-	CyaDwDaAYZKHTCEqKA5Qx8Iv/zFufugMnBpXR5bAUp9OGtLPo/A1tsSI7bbA0VB5+iptYMgbkH5B+
-	5pe5uQ4dkAbRrSkLCKKg==;
+	List-Owner; bh=4tG95kSdYQaU03DmAtk7EP1A0fJzNTePgf0G/FnYUQ0=; b=TV77vuMrhdRao4
+	ynbNjI5fPiHUT+H3t3nDi4tKztmDNxgx97UlzyuwWPl0MkA0h34TMGkj5H4FWczWzOx2o6qIeIdsj
+	xDuRx/qi7KYrtBzxKDh7ohzJJ3GpsAKDlfxDPX/h+I3ZAVHSmukkmLuoJaqdDZe9PFY15nASrry6l
+	N9OJoZqk/nDhM6wsZQzKBdW1jtFR9SvnHouIp0Xr2cKUd3aaxSTw/DWVlcLL2mzhUUlpVoZuvx4HG
+	7OM6lkYLkk48zHHy5clo0K7NN/CTJX49+qL9RdaCv5KW+TzqalQpLJipkeSNsnSMg2BRucljtsjFo
+	ZY89Ky/Vkgr+24HOXheQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVLaC-0094fN-Ss; Tue, 28 Sep 2021 22:28:16 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1mVLbl-0095G5-Kc; Tue, 28 Sep 2021 22:29:53 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVLNe-008zz8-NE; Tue, 28 Sep 2021 22:15:22 +0000
+ id 1mVLV8-0092vi-Ny
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 22:23:06 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 65CFE1C000D;
- Tue, 28 Sep 2021 22:15:16 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0C3DF100005;
+ Tue, 28 Sep 2021 22:22:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, Vladimir Zapolskiy <vz@mleia.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 8/8] Revert "mtd: rawnand: cs553x: Fix external use of SW
- Hamming ECC helper"
-Date: Wed, 29 Sep 2021 00:15:07 +0200
-Message-Id: <20210928221507.199198-9-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org
+Subject: [PATCH 1/9] mtd: rawnand: ams-delta: Keep the driver compatible with
+ on-die ECC engines
+Date: Wed, 29 Sep 2021 00:22:40 +0200
+Message-Id: <20210928222258.199726-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928221507.199198-1-miquel.raynal@bootlin.com>
-References: <20210928221507.199198-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928222258.199726-1-miquel.raynal@bootlin.com>
+References: <20210928222258.199726-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_151519_078013_C3BFD75C 
-X-CRM114-Status: GOOD (  20.08  )
+X-CRM114-CacheID: sfid-20210928_152303_008274_6863E8D8 
+X-CRM114-Status: GOOD (  20.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,83 +66,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This reverts commit 56a8d3fd1f342d10ee7b27e9ac0f4d00b5fbb91c.
+Following the introduction of the generic ECC engine infrastructure, it
+was necessary to reorganize the code and move the ECC configuration in
+the ->attach_chip() hook. Failing to do that properly lead to a first
+series of fixes supposed to stabilize the situation. Unfortunately, this
+only fixed the use of software ECC engines, preventing any other kind of
+engine to be used, including on-die ones.
 
-Before the introduction of the ECC framework infrastructure, many
-drivers used the ->calculate/correct() Hamming helpers directly. The
-point of this framework was to avoid this kind of hackish calls and use a
-proper and generic API but it is true that in certain cases, drivers
-still need to use these helpers in order to do ECC computations on
-behalf of their limited hardware.
+It is now time to (finally) fix the situation by ensuring that we still
+provide a default (eg. software ECC) but will still support different
+ECC engines such as on-die ECC engines if properly described in the
+device tree.
 
-Right after the introduction of the ECC engine core introduction, it was
-spotted that it was not possible to use the shiny rawnand software ECC
-helpers so easily because an ECC engine object should have been
-allocated and initialized first. While this works well in most cases,
-for these drivers just leveraging the power of a single helper in
-conjunction with some pretty old and limited hardware, it did not fit.
+There are no changes needed on the core side in order to do this, but we
+just need to leverage the logic there which allows:
+1- a subsystem default (set to Host engines in the raw NAND world)
+2- a driver specific default (here set to software ECC engines)
+3- any type of engine requested by the user (ie. described in the DT)
 
-The idea back then was to declare intermediate helpers which would make
-use of the exported software ECC engine bare functions while keeping the
-rawnand layer compatibility. As there was already functions with the
-rawnand_sw_hamming_ prefix it was decided to declare new local helpers
-for this purpose in each driver needing one.
+As the raw NAND subsystem has not yet been fully converted to the ECC
+engine infrastructure, in order to provide a default ECC engine for this
+driver we need to set chip->ecc.engine_type *before* calling
+nand_scan(). During the initialization step, the core will consider this
+entry as the default engine for this driver. This value may of course
+be overloaded by the user if the usual DT properties are provided.
 
-Besides being far from optimal, this design choice was blamed by Linus
-when he pulled the "fixes" pull request [1] so that is why now it is
-time to clean this mess up.
-
-The implementation of the rawnand_ecc_sw_* helpers has now been enhanced
-to support both cases, when the ECC object is instantiated and when it is
-not. This way, we can still use the existing and exported rawnand
-helpers while avoiding the need for each driver to declare its own
-helper, thus this fix from [2] can now be safely reverted.
-
-[1] https://lore.kernel.org/lkml/CAHk-=wh_ZHF685Fni8V9is17mj=pFisUaZ_0=gq6nbK+ZcyQmg@mail.gmail.com/
-[2] https://lore.kernel.org/linux-mtd/20210413161840.345208-1-miquel.raynal@bootlin.com
-
+Fixes: 59d93473323a ("mtd: rawnand: ams-delta: Move the ECC initialization to ->attach_chip()")
+Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/cs553x_nand.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ drivers/mtd/nand/raw/ams-delta.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-index df40927e5678..6edf78c16fc8 100644
---- a/drivers/mtd/nand/raw/cs553x_nand.c
-+++ b/drivers/mtd/nand/raw/cs553x_nand.c
-@@ -18,7 +18,6 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/iopoll.h>
-@@ -241,15 +240,6 @@ static int cs_calculate_ecc(struct nand_chip *this, const u_char *dat,
- 	return 0;
- }
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index ff1697f899ba..13de39aa3288 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -217,9 +217,8 @@ static int gpio_nand_setup_interface(struct nand_chip *this, int csline,
  
--static int cs553x_ecc_correct(struct nand_chip *chip,
--			      unsigned char *buf,
--			      unsigned char *read_ecc,
--			      unsigned char *calc_ecc)
--{
--	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
--				      chip->ecc.size, false);
--}
+ static int gpio_nand_attach_chip(struct nand_chip *chip)
+ {
+-	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 -
- static struct cs553x_nand_controller *controllers[4];
- 
- static int cs553x_attach_chip(struct nand_chip *chip)
-@@ -261,7 +251,7 @@ static int cs553x_attach_chip(struct nand_chip *chip)
- 	chip->ecc.bytes = 3;
- 	chip->ecc.hwctl  = cs_enable_hwecc;
- 	chip->ecc.calculate = cs_calculate_ecc;
--	chip->ecc.correct  = cs553x_ecc_correct;
-+	chip->ecc.correct  = rawnand_sw_hamming_correct;
- 	chip->ecc.strength = 1;
+-	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
++	if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT &&
++	    chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+ 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
  
  	return 0;
+@@ -370,6 +369,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	/* Release write protection */
+ 	gpiod_set_value(priv->gpiod_nwp, 0);
+ 
++	/*
++	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
++	 * Set ->engine_type before registering the NAND devices in order to
++	 * provide a driver specific default value.
++	 */
++	this->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(this, 1);
+ 	if (err)
 -- 
 2.27.0
 
