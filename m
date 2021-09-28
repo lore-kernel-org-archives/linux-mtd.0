@@ -2,119 +2,62 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2BB3C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 08:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 317A8C433FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 08:50:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F8CD60F12
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 08:45:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9F8CD60F12
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.ibm.com
+	by mail.kernel.org (Postfix) with ESMTPS id A69C8611EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 08:50:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A69C8611EF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fqX39sNK5BG+ofRgSB/Mv/8i++t+FPneqQwA1vtQJH8=; b=BEGJf3n9swVycq
-	hUtl1OYrUbG+WJ7VzUAM0oCgR2WDCT5gjtW9LwI7UebzH51b39MupxD5xPCQAhSM4CRjQHm7yHTdV
-	rds8vcqjAVCH+WkVAu6yjhlTgABuoC274Xyzq0vzxitzDCRpdtfh2fbIKmv3RFS4QQf6pYSRfReVL
-	n+719OzUCfIrCdowY+2ihO7zvCiAX31B09fJzfj8M5l3wYZjmT7danhZIa5jo4s1voGERReSUi8qM
-	RiOXEjJqhlUxN+0i013rjMIdBPkQd01drWQv4U8671Ly1l3TtAXYj9/uvtMWVonEMFQ3Uhx+/TgpI
-	1UPc1PoLf67AuTJPXfnw==;
+	List-Owner; bh=F0igIcJINJxKJpH4gPMFgzTBzP4xfPJNKWLCWrdepgI=; b=edMxb5oRhzt5fp
+	MSlU8zE+H2eRER3IvhmsKuDRQT2yE6VHclF/AM8j08wZVj27my3Q+k93hT0yLSrBwlRm9SFb4qq60
+	F+lFccppFJN1olpSc835/t0rwZWpWxS7AEqisJC/2nSxLp6gL3l0AUhUAmOn85ItgtUua2/48Z+Xi
+	LUJHGAOY7mjKns/02YZcvHJYvVpUclnCW03rpHEX7tnIuyO65TutQTD9J5MJhrQZxiBVid937eZ5u
+	UyQEPUaoiYR4pmuAzUn3amYgmaGiH4L17UfiYTeC5rO8LYLIEaFghVml/hJ836k+xcd5Dd8CPvcGG
+	R7MbvJVuKy2eIvCwdtDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mV8jA-006IyE-Ht; Tue, 28 Sep 2021 08:44:40 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1mV8nr-006KyC-B9; Tue, 28 Sep 2021 08:49:31 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mV8j6-006IwP-KG
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 08:44:37 +0000
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
- by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S8NPRj005548; 
- Tue, 28 Sep 2021 04:44:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
- h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=zBxfoBHkX8WZAFCzMW2WEkfCuH/znFi5cWiwbPqjqWM=;
- b=EGz9+271qGmkpAW3qZvfm5GhIfGvLkS9sQHypX5tsIotlkKWr2kV5oZY0YMYsWdeJIN7
- eUiRtCOCChOG9S8wIuGLIB2rLSTZa72xcVtajiOCtIpNi2CP8QArSEXGwiaiYw9EBVKL
- LHWObPhD6knPvm9aZh+SuHO92g3B6klmYQ1Sm6zqls3XkEqKAwclCbyjyKXGiH/nyJ6a
- B9K7lPZNN2FdYQZEzeJckB5wcVAZegaPQll5SQJGMHx08o1OOsCTWJp+Jg27qaBQOXLq
- Ll/w5rTWdDU0tzcImRkxehDQzZxDrcDjpG+P3c4PkbvhWPq/b4p6hTafmqFBgBSWQlbc sQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
- by mx0a-001b2d01.pphosted.com with ESMTP id 3bagsfe4rh-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 28 Sep 2021 04:44:23 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
- by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18S8iNuH031289;
- Tue, 28 Sep 2021 04:44:23 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com
- [169.51.49.102])
- by mx0a-001b2d01.pphosted.com with ESMTP id 3bagsfe4qw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 28 Sep 2021 04:44:23 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
- by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18S8hFQQ031611;
- Tue, 28 Sep 2021 08:44:20 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com
- (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
- by ppma06ams.nl.ibm.com with ESMTP id 3b9u1jbtpu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 28 Sep 2021 08:44:20 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com
- [9.149.105.61])
- by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
- 18S8iGao59572508
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Tue, 28 Sep 2021 08:44:16 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id AA92E11C06C;
- Tue, 28 Sep 2021 08:44:16 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
- by IMSVA (Postfix) with ESMTP id 951DF11C069;
- Tue, 28 Sep 2021 08:44:15 +0000 (GMT)
-Received: from osiris (unknown [9.145.163.77])
- by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
- Tue, 28 Sep 2021 08:44:15 +0000 (GMT)
-Date: Tue, 28 Sep 2021 10:44:14 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, gregkh@linuxfoundation.org,
- chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
- maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
- colin.king@canonical.com, shubhankarvk@gmail.com,
- baijiaju1990@gmail.com, trix@redhat.com, dongsheng.yang@easystack.cn,
- ceph-devel@vger.kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
- gor@linux.ibm.com, borntraeger@de.ibm.com, oberpar@linux.ibm.com,
- tj@kernel.org, linux-s390@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] block: 5th batch of add_disk() error handling
- conversions
-Message-ID: <YVLV3s66GVVSQ+tj@osiris>
-References: <20210927220232.1071926-1-mcgrof@kernel.org>
- <25afa23b-52af-9b79-8bd8-5e31da62c291@kernel.dk>
+ id 1mV8nf-006Ktz-Qx
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 08:49:21 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id DD91540007;
+ Tue, 28 Sep 2021 08:49:15 +0000 (UTC)
+Date: Tue, 28 Sep 2021 10:49:14 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Jan Hoffmann <jan@3e8.eu>
+Cc: Daniel Kestrel <kestrelseventyfour@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <20210928104914.44a90b63@xps13>
+In-Reply-To: <f800c48f-8e4a-ecdc-3198-c52be0425823@3e8.eu>
+References: <20210808072643.GA5084@ubuntu>
+ <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
+ <20210917190154.76203a9a@xps13>
+ <e9dd0653-139f-749b-c088-e756ee2d2132@3e8.eu>
+ <20210917213246.319e60cb@xps13>
+ <14eb0cb7-b0af-87bf-b9a5-3e35eeb43f54@3e8.eu>
+ <20210927183150.4be87140@xps13>
+ <f800c48f-8e4a-ecdc-3198-c52be0425823@3e8.eu>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <25afa23b-52af-9b79-8bd8-5e31da62c291@kernel.dk>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: YxG9ke3W_jbTNpwVPcs7XrGQVIxP9RN0
-X-Proofpoint-ORIG-GUID: iz_w5IRro-Zutc101Wh7ZoX-CWSF6VdI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-28_04,2021-09-28_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 phishscore=0 impostorscore=0 mlxscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2109280050
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_014436_697203_EF8C1F7B 
-X-CRM114-Status: GOOD (  17.59  )
+X-CRM114-CacheID: sfid-20210928_014920_040325_8CFCA90B 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,24 +69,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Sep 27, 2021 at 04:32:17PM -0600, Jens Axboe wrote:
-> On 9/27/21 4:02 PM, Luis Chamberlain wrote:
-> > This is the 5th series of driver conversions for add_disk() error
-> > handling. This set along with the entire 7th set of patches can be
-> > found on my 20210927-for-axboe-add-disk-error-handling branch [0].
-> 
-> Applied 1-2.
-
-Hmm.. naturally I would have expected that the dasd patch also would
-go via block tree. But let's not spend too much time figuring out what
-gets routed where.
-Applied 4-6. Thanks!
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSmFuLAoKamFuQDNlOC5ldSB3cm90ZSBvbiBNb24sIDI3IFNlcCAyMDIxIDIyOjMyOjEzICsw
+MjAwOgoKPiBIaSBNaXF1w6hsLAo+IAo+ID4gU28gd2hhdCBJIHByb3Bvc2UgaXM6Cj4gPiAtIGlu
+IHRoZSBkcml2ZXIgcHJvYmU6IHNldCB0aGUgZGVmYXVsdCB0byBzb2Z0d2FyZSBFQ0MKPiA+IC0g
+aW4gdGhlIGF0dGFjaCgpIGhvb2s6IGRyb3AgdGhlIGxpbmUgc2V0dGluZyB0aGUgZW5naW5lX3R5
+cGUgdG8gU09GVC4KPiA+IAo+ID4gUGxlYXNlIGNoZWNrIHRoZSBiZWxvdyBkaWZmIGFuZCB0ZWxs
+IG1lIGlmIGl0IHdvcmtzIGZvciB5b3UuIEknbGwgdGhlbgo+ID4gcHJvcG9zZSBhIHdpZGVyIHNl
+cmllcyBmaXhpbmcgdGhlIG90aGVyIGRyaXZlcnMgYXMgd2VsbC4gIAo+IAo+IEkgY2FuIGNvbmZp
+cm0gdGhhdCB5b3VyIHBhdGNoIGZpeGVzIHRoZSBpc3N1ZS4KPiAKPiBJIHRlc3RlZCB1c2luZyBr
+ZXJuZWwgNS4xMCBvbiBhIEZyaXR6Ym94IDczNjIgU0wgKHdpdGggb24tZGllIEVDQwo+IGNvbmZp
+Z3VyZWQgdmlhIGRldmljZSB0cmVlIHdoaWNoIHdhcyBicm9rZW4gYmVmb3JlKS4gSSBhbHNvIGNo
+ZWNrZWQgb24KPiBhIEZyaXR6Ym94IDc0MTIgKHRoaXMgZGV2aWNlIHVzZXMgc29mdHdhcmUgRUND
+KS4gQm90aCBhcmUgd29ya2luZyB3aXRoCj4gdGhpcyBwYXRjaC4KCkdyZWF0LCB0aGFua3MgZm9y
+IHRoZSBxdWljayBmZWVkYmFjay4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
