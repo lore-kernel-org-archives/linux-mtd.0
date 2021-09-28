@@ -2,66 +2,59 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD6BCC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 14:10:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E3C2C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 14:25:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BCD8611CB
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 14:10:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7BCD8611CB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bp.renesas.com
+	by mail.kernel.org (Postfix) with ESMTPS id 197C8611CA
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 14:25:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 197C8611CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+LQEDRZ6wbMadqBR4wMklIsKDNPB5sidEnqBmeW6INM=; b=vFezGD5gr6Eq0p
-	kN8SPdxv6Gw97GBvGl0H3jt2oPrFNpfGWpIG6vl2JXWwP3QMe70w8dtL7yzaMIh6BatQl+0zuQ6zi
-	V3lad5k+sHNN2pOp2H1HeoV/QGeFf8NnlR5yEUi7RTxUnrHDt3963eKOP0/pqkqkbJ5uekuFDUJkG
-	xGtxTrH/2pXiP6ZHPyGg7Ps8AkMlFr2QzS6RQNuif2GGp0iAtzIJ8N+yh2qOIlu3p3e9THz6hNgtT
-	5sBWseAN9zdYC6nn/r8Yao7ItagGpNWgcZ4d0AU7anJ1OqzeLEa0Kco0SYoQUM+37wrSjw+i+KXzC
-	QPWLgmwEqi2nMm+Jb6FQ==;
+	List-Owner; bh=PBTF2FjpcU5VHJH7eNMkNOpjkfAvuamDJytvVlsXdgs=; b=CyNVsYPsTZjVIp
+	1RXO56dYHde1nGAjgmyPkB8kiZCDT1zjbMevw94epni1iAONsw/zQgAL+h3UvbKnWegzI6Ljqgb2j
+	taQRJuIKhqx8d4aUe3g8THZ8PBRM/A7sgz3mtb6vxR8u6KGmipCGCn4dyVbcaAvQLhbImh1NjGq/3
+	OK1KLsjCUndFWcdEytAOT8prPEotXT6DuhUJIUkSkVcClngkf2qc4ldKomqzw2asLKOUZ17lH0dLm
+	KRDEQFbApRbm5OuocUuO4Nn92wsilpJQShSDtlScH+0R3CjlScwxtwMM3etBhxtS9emTuOyWmAx3f
+	zPeIzWqCUFN5cUPNimsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVDnk-007UoX-LF; Tue, 28 Sep 2021 14:09:44 +0000
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie5.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVDm0-007UCz-3r
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 14:07:58 +0000
-X-IronPort-AV: E=Sophos;i="5.85,329,1624287600"; d="scan'208";a="95295304"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 28 Sep 2021 23:07:55 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3581740061B4;
- Tue, 28 Sep 2021 23:07:52 +0900 (JST)
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Prabhakar <prabhakar.csengg@gmail.com>,
- Biju Das <biju.das.jz@bp.renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 6/6] memory: renesas-rpc-if: Add support for RZ/G2L
-Date: Tue, 28 Sep 2021 15:07:21 +0100
-Message-Id: <20210928140721.8805-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	id 1mVE1o-007ZMs-TE; Tue, 28 Sep 2021 14:24:17 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mVE1j-007ZFO-1w
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 14:24:13 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 2C0811F43CF4;
+ Tue, 28 Sep 2021 15:24:07 +0100 (BST)
+Date: Tue, 28 Sep 2021 16:24:02 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Boris
+ Brezillon <bbrezillon@kernel.org>
+Subject: Re: [PATCH] mtd: add MEMREAD ioctl
+Message-ID: <20210928162402.6bb64fcf@collabora.com>
+In-Reply-To: <20210928155859.433844cb@xps13>
+References: <20210920070221.10173-1-kernel@kempniu.pl>
+ <20210928155859.433844cb@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_070756_552639_B0587429 
-X-CRM114-Status: GOOD (  22.53  )
+X-CRM114-CacheID: sfid-20210928_072411_504927_707D7942 
+X-CRM114-Status: GOOD (  38.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,244 +66,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SPI Multi I/O Bus Controller on RZ/G2L SoC is almost identical to
-the RPC-IF interface found on R-Car Gen3 SoC's.
-
-This patch adds a new compatible string for the RZ/G2L family so
-that the timing values on RZ/G2L can be adjusted.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/memory/renesas-rpc-if.c | 65 ++++++++++++++++++++++++++++-----
- drivers/mtd/hyperbus/rpc-if.c   |  4 +-
- drivers/spi/spi-rpc-if.c        |  4 +-
- include/memory/renesas-rpc-if.h |  8 +++-
- 4 files changed, 68 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 140cb4e2b789..47dce166b328 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
- 
-@@ -24,14 +25,14 @@
- #define RPCIF_CMNCR_MOIIO2(val)	(((val) & 0x3) << 20)
- #define RPCIF_CMNCR_MOIIO1(val)	(((val) & 0x3) << 18)
- #define RPCIF_CMNCR_MOIIO0(val)	(((val) & 0x3) << 16)
--#define RPCIF_CMNCR_MOIIO_HIZ	(RPCIF_CMNCR_MOIIO0(3) | \
--				 RPCIF_CMNCR_MOIIO1(3) | \
--				 RPCIF_CMNCR_MOIIO2(3) | RPCIF_CMNCR_MOIIO3(3))
-+#define RPCIF_CMNCR_MOIIO_HIZ(val) (RPCIF_CMNCR_MOIIO0(val) | \
-+				 RPCIF_CMNCR_MOIIO1(val) | \
-+				 RPCIF_CMNCR_MOIIO2(val) | RPCIF_CMNCR_MOIIO3(val))
- #define RPCIF_CMNCR_IO3FV(val)	(((val) & 0x3) << 14) /* undocumented */
- #define RPCIF_CMNCR_IO2FV(val)	(((val) & 0x3) << 12) /* undocumented */
- #define RPCIF_CMNCR_IO0FV(val)	(((val) & 0x3) << 8)
--#define RPCIF_CMNCR_IOFV_HIZ	(RPCIF_CMNCR_IO0FV(3) | RPCIF_CMNCR_IO2FV(3) | \
--				 RPCIF_CMNCR_IO3FV(3))
-+#define RPCIF_CMNCR_IOFV_HIZ(val) (RPCIF_CMNCR_IO0FV(val) | RPCIF_CMNCR_IO2FV(val) | \
-+				 RPCIF_CMNCR_IO3FV(val))
- #define RPCIF_CMNCR_BSZ(val)	(((val) & 0x3) << 0)
- 
- #define RPCIF_SSLDR		0x0004	/* R/W */
-@@ -126,6 +127,9 @@
- #define RPCIF_SMDRENR_OPDRE	BIT(4)
- #define RPCIF_SMDRENR_SPIDRE	BIT(0)
- 
-+#define RPCIF_PHYADJ1		0x0070	/* R/W */
-+#define RPCIF_PHYADJ2		0x0074	/* R/W */
-+
- #define RPCIF_PHYCNT		0x007C	/* R/W */
- #define RPCIF_PHYCNT_CAL	BIT(31)
- #define RPCIF_PHYCNT_OCTA(v)	(((v) & 0x3) << 22)
-@@ -133,10 +137,12 @@
- #define RPCIF_PHYCNT_OCT	BIT(20)
- #define RPCIF_PHYCNT_DDRCAL	BIT(19)
- #define RPCIF_PHYCNT_HS		BIT(18)
-+#define RPCIF_PHYCNT_CKSEL(v)	(((v) & 0x3) << 16)
- #define RPCIF_PHYCNT_STRTIM(v)	(((v) & 0x7) << 15)
- #define RPCIF_PHYCNT_WBUF2	BIT(4)
- #define RPCIF_PHYCNT_WBUF	BIT(2)
- #define RPCIF_PHYCNT_PHYMEM(v)	(((v) & 0x3) << 0)
-+#define RPCIF_PHYCNT_PHYMEM_MASK GENMASK(1, 0)
- 
- #define RPCIF_PHYOFFSET1	0x0080	/* R/W */
- #define RPCIF_PHYOFFSET1_DDRTMG(v) (((v) & 0x3) << 28)
-@@ -245,18 +251,46 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
- 		return PTR_ERR(rpc->dirmap);
- 	rpc->size = resource_size(res);
- 
-+	rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
- 	rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 
- 	return PTR_ERR_OR_ZERO(rpc->rstc);
- }
- EXPORT_SYMBOL(rpcif_sw_init);
- 
--void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
-+static void rpcif_timing_adjust_sdr(struct rpcif *rpc)
-+{
-+	u32 data;
-+
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0xA5390000);
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000000);
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000022);
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00008080);
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000024);
-+
-+	regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
-+	regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ2, 0x00000030);
-+	regmap_write(rpc->regmap, RPCIF_PHYADJ1, 0x80000032);
-+}
-+
-+int rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
- {
- 	u32 dummy;
- 
- 	pm_runtime_get_sync(rpc->dev);
- 
-+	if (rpc->type == RPCIF_RZ_G2L) {
-+		int ret;
-+
-+		ret = reset_control_reset(rpc->rstc);
-+		if (ret)
-+			return ret;
-+		usleep_range(200, 300);
-+		rpcif_timing_adjust_sdr(rpc);
-+	}
-+
- 	/*
- 	 * NOTE: The 0x260 are undocumented bits, but they must be set.
- 	 *	 RPCIF_PHYCNT_STRTIM is strobe timing adjustment bits,
-@@ -265,8 +299,15 @@ void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
- 	 *	 On H3 ES1.x, the value should be 0, while on others,
- 	 *	 the value should be 7.
- 	 */
--	regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
--		     RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
-+	if (rpc->type == RPCIF_RCAR_GEN3) {
-+		regmap_write(rpc->regmap, RPCIF_PHYCNT, RPCIF_PHYCNT_STRTIM(7) |
-+			     RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260);
-+	} else {
-+		regmap_read(rpc->regmap, RPCIF_PHYCNT, &dummy);
-+		dummy &= ~RPCIF_PHYCNT_PHYMEM_MASK;
-+		dummy |= RPCIF_PHYCNT_PHYMEM(hyperflash ? 3 : 0) | 0x260;
-+		regmap_write(rpc->regmap, RPCIF_PHYCNT, dummy);
-+	}
- 
- 	/*
- 	 * NOTE: The 0x1511144 are undocumented bits, but they must be set
-@@ -284,7 +325,8 @@ void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
- 				   RPCIF_PHYINT_WPVAL, 0);
- 
- 	regmap_write(rpc->regmap, RPCIF_CMNCR, RPCIF_CMNCR_SFDE |
--		     RPCIF_CMNCR_MOIIO_HIZ | RPCIF_CMNCR_IOFV_HIZ |
-+		     RPCIF_CMNCR_MOIIO_HIZ(rpc->type == RPCIF_RZ_G2L ? 1 : 3) |
-+		     RPCIF_CMNCR_IOFV_HIZ(rpc->type == RPCIF_RZ_G2L ? 2 : 3) |
- 		     RPCIF_CMNCR_BSZ(hyperflash ? 1 : 0));
- 	/* Set RCF after BSZ update */
- 	regmap_write(rpc->regmap, RPCIF_DRCR, RPCIF_DRCR_RCF);
-@@ -296,6 +338,8 @@ void rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
- 	pm_runtime_put(rpc->dev);
- 
- 	rpc->bus_size = hyperflash ? 2 : 1;
-+
-+	return 0;
- }
- EXPORT_SYMBOL(rpcif_hw_init);
- 
-@@ -613,7 +657,8 @@ static int rpcif_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id rpcif_of_match[] = {
--	{ .compatible = "renesas,rcar-gen3-rpc-if", },
-+	{ .compatible = "renesas,rcar-gen3-rpc-if", .data = (void *)RPCIF_RCAR_GEN3 },
-+	{ .compatible = "renesas,rzg2l-rpc-if", .data = (void *)RPCIF_RZ_G2L },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, rpcif_of_match);
-diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
-index 367b0d72bf62..40bca89268c3 100644
---- a/drivers/mtd/hyperbus/rpc-if.c
-+++ b/drivers/mtd/hyperbus/rpc-if.c
-@@ -132,7 +132,9 @@ static int rpcif_hb_probe(struct platform_device *pdev)
- 
- 	rpcif_enable_rpm(&hyperbus->rpc);
- 
--	rpcif_hw_init(&hyperbus->rpc, true);
-+	error = rpcif_hw_init(&hyperbus->rpc, true);
-+	if (error)
-+		return error;
- 
- 	hyperbus->hbdev.map.size = hyperbus->rpc.size;
- 	hyperbus->hbdev.map.virt = hyperbus->rpc.dirmap;
-diff --git a/drivers/spi/spi-rpc-if.c b/drivers/spi/spi-rpc-if.c
-index 83796a4ead34..fe82f3575df4 100644
---- a/drivers/spi/spi-rpc-if.c
-+++ b/drivers/spi/spi-rpc-if.c
-@@ -156,7 +156,9 @@ static int rpcif_spi_probe(struct platform_device *pdev)
- 	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_TX_QUAD | SPI_RX_QUAD;
- 	ctlr->flags = SPI_CONTROLLER_HALF_DUPLEX;
- 
--	rpcif_hw_init(rpc, false);
-+	error = rpcif_hw_init(rpc, false);
-+	if (error)
-+		return error;
- 
- 	error = spi_register_controller(ctlr);
- 	if (error) {
-diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
-index 77c694a19149..7c93f5177532 100644
---- a/include/memory/renesas-rpc-if.h
-+++ b/include/memory/renesas-rpc-if.h
-@@ -57,6 +57,11 @@ struct rpcif_op {
- 	} data;
- };
- 
-+enum rpcif_type {
-+	RPCIF_RCAR_GEN3,
-+	RPCIF_RZ_G2L,
-+};
-+
- struct rpcif {
- 	struct device *dev;
- 	void __iomem *base;
-@@ -64,6 +69,7 @@ struct rpcif {
- 	struct regmap *regmap;
- 	struct reset_control *rstc;
- 	size_t size;
-+	enum rpcif_type type;
- 	enum rpcif_data_dir dir;
- 	u8 bus_size;
- 	void *buffer;
-@@ -78,7 +84,7 @@ struct rpcif {
- };
- 
- int rpcif_sw_init(struct rpcif *rpc, struct device *dev);
--void rpcif_hw_init(struct rpcif *rpc, bool hyperflash);
-+int rpcif_hw_init(struct rpcif *rpc, bool hyperflash);
- void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
- 		   size_t *len);
- int rpcif_manual_xfer(struct rpcif *rpc);
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLCBNaWNoYWwsCgpPbiBUdWUsIDI4IFNlcCAyMDIxIDE1OjU4OjU5ICswMjAwCk1p
+cXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgoKPiBIaSBNaWNo
+YcWCLAo+IAo+ICsgQm9yaXMganVzdCBpbiBjYXNlIHlvdSBoYXZlIGFueXRoaW5nIG9idmlvdXMg
+dGhhdCBwb3BzIHVwIGluIHlvdXIKPiAgIGhlYWQgd2hlbiByZWFkaW5nIHRoZSBkZXNjcmlwdGlv
+biwgb3RoZXJ3aXNlIG5vIG5lZWQgdG8gdGhvcm91Z2hmdWxseQo+ICAgcmV2aWV3IHRoaXMgOykK
+CkNvdXBsZSBvZiBjb21tZW50IGJlbG93LgoKCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYcWCIEvE
+mXBpZcWEIDxrZXJuZWxAa2VtcG5pdS5wbD4KPiA+IC0tLQo+ID4gVGhpcyBwYXRjaCBpcyBhIHNo
+YW1lbGVzcyBjYWxxdWVeV15XXldoZWF2aWx5IGluc3BpcmVkIGJ5IE1FTVdSSVRFIGNvZGUsCj4g
+PiBzbyBxdWl0ZSBhIGxvdCBvZiBjb3B5LXBhc3RpbmcgaGFwcGVuZWQuICBJIGd1ZXNzIGl0IGlz
+IHNvbWV3aGF0Cj4gPiBleHBlY3RlZCB3aGVuIGFkZGluZyBhIHJlYWQtc2lkZSBjb3VudGVycGFy
+dCBvZiBleGlzdGluZyBjb2RlIHdoaWNoCj4gPiB0YWtlcyBjYXJlIG9mIHdyaXRlcywgYnV0IHBs
+ZWFzZSBleGN1c2UgbWUgaWYgSSB3ZW50IHRvbyBmYXIuCj4gPiAKPiA+IE5vdGUgdGhhdCAic2Ny
+aXB0cy9jaGVja3BhdGNoLnBsIC0tc3RyaWN0IiByZXR1cm5zIHR3byBhbGlnbm1lbnQKPiA+IHdh
+cm5pbmdzIGZvciB0aGlzIHBhdGNoLiAgR2l2ZW4gdGhhdCBleGlzdGluZyBjb2RlIHRyaWdnZXJz
+IHRoZSBzYW1lCj4gPiB3YXJuaW5ncywgSSBhc3N1bWVkIHRoYXQgbG9jYWwgY29uc2lzdGVuY3kg
+dHJ1bXBzIGNoZWNrcGF0Y2gucGwncwo+ID4gY29tcGxhaW50cy4KPiA+IAo+ID4gIGRyaXZlcnMv
+bXRkL210ZGNoYXIuYyAgICAgIHwgNjAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysKPiA+ICBpbmNsdWRlL3VhcGkvbXRkL210ZC1hYmkuaCB8IDQzICsrKysrKysrKysrKysr
+KysrKysrKysrLS0tLQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgOTggaW5zZXJ0aW9ucygrKSwgNSBk
+ZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNoYXIuYyBi
+L2RyaXZlcnMvbXRkL210ZGNoYXIuYwo+ID4gaW5kZXggMTU1ZTk5MWQ5ZDc1Li45MmUwMDI0YmRj
+ZjcgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9tdGRjaGFyLmMKPiA+ICsrKyBiL2RyaXZl
+cnMvbXRkL210ZGNoYXIuYwo+ID4gQEAgLTYyMSw2ICs2MjEsNTggQEAgc3RhdGljIGludCBtdGRj
+aGFyX3dyaXRlX2lvY3RsKHN0cnVjdCBtdGRfaW5mbyAqbXRkLAo+ID4gIAlyZXR1cm4gcmV0Owo+
+ID4gIH0KPiA+ICAKPiA+ICtzdGF0aWMgaW50IG10ZGNoYXJfcmVhZF9pb2N0bChzdHJ1Y3QgbXRk
+X2luZm8gKm10ZCwKPiA+ICsJCXN0cnVjdCBtdGRfcmVhZF9yZXEgX191c2VyICphcmdwKQo+ID4g
+K3sKPiA+ICsJc3RydWN0IG10ZF9pbmZvICptYXN0ZXIgPSBtdGRfZ2V0X21hc3RlcihtdGQpOwo+
+ID4gKwlzdHJ1Y3QgbXRkX3JlYWRfcmVxIHJlcTsKPiA+ICsJc3RydWN0IG10ZF9vb2Jfb3BzIG9w
+cyA9IHt9Owo+ID4gKwl2b2lkIF9fdXNlciAqdXNyX2RhdGEsICp1c3Jfb29iOwo+ID4gKwlpbnQg
+cmV0Owo+ID4gKwo+ID4gKwlpZiAoY29weV9mcm9tX3VzZXIoJnJlcSwgYXJncCwgc2l6ZW9mKHJl
+cSkpKQo+ID4gKwkJcmV0dXJuIC1FRkFVTFQ7Cj4gPiArCj4gPiArCXVzcl9kYXRhID0gKHZvaWQg
+X191c2VyICopKHVpbnRwdHJfdClyZXEudXNyX2RhdGE7Cj4gPiArCXVzcl9vb2IgPSAodm9pZCBf
+X3VzZXIgKikodWludHB0cl90KXJlcS51c3Jfb29iOwo+ID4gKwo+ID4gKwlpZiAoIW1hc3Rlci0+
+X3JlYWRfb29iKQo+ID4gKwkJcmV0dXJuIC1FT1BOT1RTVVBQOwo+ID4gKwlvcHMubW9kZSA9IHJl
+cS5tb2RlOwo+ID4gKwlvcHMubGVuID0gKHNpemVfdClyZXEubGVuOwo+ID4gKwlvcHMub29ibGVu
+ID0gKHNpemVfdClyZXEub29ibGVuOwo+ID4gKwlvcHMub29ib2ZmcyA9IDA7Cj4gPiArCj4gPiAr
+CWlmICh1c3JfZGF0YSkgewo+ID4gKwkJb3BzLmRhdGJ1ZiA9IGttYWxsb2Mob3BzLmxlbiwgR0ZQ
+X0tFUk5FTCk7CgpIbSwgSSBrbm93IHRoZSB3cml0ZSBwYXRoIGRvZXMgdGhhdCwgYnV0IEknbSBy
+ZWFsbHkgbm90IHN1cmUKa21hbGxvYygpLWluZyBhIGJ1ZmZlciBvZiB0aGUgcmVxdWVzdGVkIHJl
+YWQgbGVuZ3RoIGlzIGEgZ29vZAppZGVhLiBIYXZpbmcgYSBsb29wIGRvaW5nIHJlYWRzIHdpdGgg
+YW4gZXJhc2VzaXplIGdyYW51bGFyaXR5IHdvdWxkCmF2b2lkIHRoaXMgdW5ib3VuZGVkIGFsbG9j
+YXRpb24gd2hpbGUga2VlcGluZyBwZXJmb3JtYW5jZSBhY2NlcHRhYmxlIGluCm1vc3QgY2FzZXMu
+Cgo+ID4gKwkJaWYgKElTX0VSUihvcHMuZGF0YnVmKSkKPiA+ICsJCQlyZXR1cm4gUFRSX0VSUihv
+cHMuZGF0YnVmKTsKPiA+ICsJfSBlbHNlIHsKPiA+ICsJCW9wcy5kYXRidWYgPSBOVUxMOwo+ID4g
+Kwl9Cj4gPiArCj4gPiArCWlmICh1c3Jfb29iKSB7Cj4gPiArCQlvcHMub29iYnVmID0ga21hbGxv
+YyhvcHMub29ibGVuLCBHRlBfS0VSTkVMKTsKPiA+ICsJCWlmIChJU19FUlIob3BzLm9vYmJ1Zikp
+IHsKPiA+ICsJCQlrZnJlZShvcHMuZGF0YnVmKTsKPiA+ICsJCQlyZXR1cm4gUFRSX0VSUihvcHMu
+b29iYnVmKTsKPiA+ICsJCX0KPiA+ICsJfSBlbHNlIHsKPiA+ICsJCW9wcy5vb2JidWYgPSBOVUxM
+Owo+ID4gKwl9Cj4gPiArCj4gPiArCXJldCA9IG10ZF9yZWFkX29vYihtdGQsIChsb2ZmX3QpcmVx
+LnN0YXJ0LCAmb3BzKTsKPiA+ICsKPiA+ICsJaWYgKGNvcHlfdG9fdXNlcih1c3JfZGF0YSwgb3Bz
+LmRhdGJ1Ziwgb3BzLnJldGxlbikgfHwKPiA+ICsJICAgIGNvcHlfdG9fdXNlcih1c3Jfb29iLCBv
+cHMub29iYnVmLCBvcHMub29icmV0bGVuKSkKPiA+ICsJCXJldCA9IC1FRkFVTFQ7Cj4gPiArCj4g
+PiArCWtmcmVlKG9wcy5kYXRidWYpOwo+ID4gKwlrZnJlZShvcHMub29iYnVmKTsKPiA+ICsKPiA+
+ICsJcmV0dXJuIHJldDsKPiA+ICt9Cj4gPiArCj4gPiAgc3RhdGljIGludCBtdGRjaGFyX2lvY3Rs
+KHN0cnVjdCBmaWxlICpmaWxlLCB1X2ludCBjbWQsIHVfbG9uZyBhcmcpCj4gPiAgewo+ID4gIAlz
+dHJ1Y3QgbXRkX2ZpbGVfaW5mbyAqbWZpID0gZmlsZS0+cHJpdmF0ZV9kYXRhOwo+ID4gQEAgLTY0
+Myw2ICs2OTUsNyBAQCBzdGF0aWMgaW50IG10ZGNoYXJfaW9jdGwoc3RydWN0IGZpbGUgKmZpbGUs
+IHVfaW50IGNtZCwgdV9sb25nIGFyZykKPiA+ICAJY2FzZSBNRU1HRVRJTkZPOgo+ID4gIAljYXNl
+IE1FTVJFQURPT0I6Cj4gPiAgCWNhc2UgTUVNUkVBRE9PQjY0Ogo+ID4gKwljYXNlIE1FTVJFQUQ6
+Cj4gPiAgCWNhc2UgTUVNSVNMT0NLRUQ6Cj4gPiAgCWNhc2UgTUVNR0VUT09CU0VMOgo+ID4gIAlj
+YXNlIE1FTUdFVEJBREJMT0NLOgo+ID4gQEAgLTgxNyw2ICs4NzAsMTMgQEAgc3RhdGljIGludCBt
+dGRjaGFyX2lvY3RsKHN0cnVjdCBmaWxlICpmaWxlLCB1X2ludCBjbWQsIHVfbG9uZyBhcmcpCj4g
+PiAgCQlicmVhazsKPiA+ICAJfQo+ID4gIAo+ID4gKwljYXNlIE1FTVJFQUQ6Cj4gPiArCXsKPiA+
+ICsJCXJldCA9IG10ZGNoYXJfcmVhZF9pb2N0bChtdGQsCj4gPiArCQkgICAgICAoc3RydWN0IG10
+ZF9yZWFkX3JlcSBfX3VzZXIgKilhcmcpOwo+ID4gKwkJYnJlYWs7Cj4gPiArCX0KPiA+ICsKPiA+
+ICAJY2FzZSBNRU1MT0NLOgo+ID4gIAl7Cj4gPiAgCQlzdHJ1Y3QgZXJhc2VfaW5mb191c2VyIGVp
+bmZvOwo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdWFwaS9tdGQvbXRkLWFiaS5oIGIvaW5jbHVk
+ZS91YXBpL210ZC9tdGQtYWJpLmgKPiA+IGluZGV4IGI4Njk5OTBjMmRiMi4uMzM3ZTZlNTk3ZmFk
+IDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS91YXBpL210ZC9tdGQtYWJpLmgKPiA+ICsrKyBiL2lu
+Y2x1ZGUvdWFwaS9tdGQvbXRkLWFiaS5oCj4gPiBAQCAtNTUsOSArNTUsOSBAQCBzdHJ1Y3QgbXRk
+X29vYl9idWY2NCB7Cj4gPiAgICogQE1URF9PUFNfUkFXOglkYXRhIGFyZSB0cmFuc2ZlcnJlZCBh
+cy1pcywgd2l0aCBubyBlcnJvciBjb3JyZWN0aW9uOwo+ID4gICAqCQkJdGhpcyBtb2RlIGltcGxp
+ZXMgJU1URF9PUFNfUExBQ0VfT09CCj4gPiAgICoKPiA+IC0gKiBUaGVzZSBtb2RlcyBjYW4gYmUg
+cGFzc2VkIHRvIGlvY3RsKE1FTVdSSVRFKSBhbmQgYXJlIGFsc28gdXNlZCBpbnRlcm5hbGx5Lgo+
+ID4gLSAqIFNlZSBub3RlcyBvbiAiTVREIGZpbGUgbW9kZXMiIGZvciBkaXNjdXNzaW9uIG9uICVN
+VERfT1BTX1JBVyB2cy4KPiA+IC0gKiAlTVREX0ZJTEVfTU9ERV9SQVcuCj4gPiArICogVGhlc2Ug
+bW9kZXMgY2FuIGJlIHBhc3NlZCB0byBpb2N0bChNRU1XUklURSkgYW5kIGlvY3RsKE1FTVJFQUQp
+OyB0aGV5IGFyZQo+ID4gKyAqIGFsc28gdXNlZCBpbnRlcm5hbGx5LiBTZWUgbm90ZXMgb24gIk1U
+RCBmaWxlIG1vZGVzIiBmb3IgZGlzY3Vzc2lvbiBvbgo+ID4gKyAqICVNVERfT1BTX1JBVyB2cy4g
+JU1URF9GSUxFX01PREVfUkFXLgo+ID4gICAqLwo+ID4gIGVudW0gewo+ID4gIAlNVERfT1BTX1BM
+QUNFX09PQiA9IDAsCj4gPiBAQCAtOTEsNiArOTEsMzIgQEAgc3RydWN0IG10ZF93cml0ZV9yZXEg
+ewo+ID4gIAlfX3U4IHBhZGRpbmdbN107Cj4gPiAgfTsKPiA+ICAKPiA+ICsvKioKPiA+ICsgKiBz
+dHJ1Y3QgbXRkX3JlYWRfcmVxIC0gZGF0YSBzdHJ1Y3R1cmUgZm9yIHJlcXVlc3RpbmcgYSByZWFk
+IG9wZXJhdGlvbgo+ID4gKyAqCj4gPiArICogQHN0YXJ0OglzdGFydCBhZGRyZXNzCj4gPiArICog
+QGxlbjoJbGVuZ3RoIG9mIGRhdGEgYnVmZmVyCj4gPiArICogQG9vYmxlbjoJbGVuZ3RoIG9mIE9P
+QiBidWZmZXIKPiA+ICsgKiBAdXNyX2RhdGE6CXVzZXItcHJvdmlkZWQgZGF0YSBidWZmZXIKPiA+
+ICsgKiBAdXNyX29vYjoJdXNlci1wcm92aWRlZCBPT0IgYnVmZmVyCj4gPiArICogQG1vZGU6CU1U
+RCBtb2RlIChzZWUgIk1URCBvcGVyYXRpb24gbW9kZXMiKQo+ID4gKyAqIEBwYWRkaW5nOglyZXNl
+cnZlZCwgbXVzdCBiZSBzZXQgdG8gMAo+ID4gKyAqCj4gPiArICogVGhpcyBzdHJ1Y3R1cmUgc3Vw
+cG9ydHMgaW9jdGwoTUVNUkVBRCkgb3BlcmF0aW9ucywgYWxsb3dpbmcgZGF0YSBhbmQvb3IgT09C
+Cj4gPiArICogcmVhZHMgaW4gdmFyaW91cyBtb2Rlcy4gVG8gcmVhZCBmcm9tIE9PQi1vbmx5LCBz
+ZXQgQHVzcl9kYXRhID09IE5VTEwsIGFuZCB0bwo+ID4gKyAqIHJlYWQgZGF0YS1vbmx5LCBzZXQg
+QHVzcl9vb2IgPT0gTlVMTC4gSG93ZXZlciwgc2V0dGluZyBib3RoIEB1c3JfZGF0YSBhbmQKPiA+
+ICsgKiBAdXNyX29vYiB0byBOVUxMIGlzIG5vdCBhbGxvd2VkLgo+ID4gKyAqLwo+ID4gK3N0cnVj
+dCBtdGRfcmVhZF9yZXEgewo+ID4gKwlfX3U2NCBzdGFydDsKPiA+ICsJX191NjQgbGVuOwo+ID4g
+KwlfX3U2NCBvb2JsZW47Cj4gPiArCV9fdTY0IHVzcl9kYXRhOwo+ID4gKwlfX3U2NCB1c3Jfb29i
+Owo+ID4gKwlfX3U4IG1vZGU7Cj4gPiArCV9fdTggcGFkZGluZ1s3XTsKPiA+ICt9OwoKSSBkbyBh
+Z3JlZSB0aGF0IGEgbmV3IGludGVyZmFjZSBpcyBuZWVkZWQsIGJ1dCBpZiB3ZSdyZSBhZGRpbmcg
+YSBuZXcKZW50cnkgcG9pbnQsIGxldCdzIG1ha2Ugc3VyZSBpdCBjb3ZlcnMgYWxsIHBvc3NpYmxl
+IHVzZSBjYXNlcyB3ZSBoYXZlCm5vdy4gQXQgdGhlIHZlcnkgbGVhc3QsIEkgdGhpbmsgd2UncmUg
+bWlzc2luZyBpbmZvIGFib3V0IHRoZSBtYXhpbXVtCm51bWJlciBvZiBjb3JyZWN0ZWQgYml0cyBw
+ZXIgRUNDIHJlZ2lvbiBvbiB0aGUgcG9ydGlvbiBiZWluZyByZWFkLgpQcm9wYWdhdGluZyBFVUNM
+RUFOIGVycm9ycyBpcyBuaWNlLCBidXQgaXQncyBub3QgcHJlY2lzZSBlbm91Z2ggSU1ITy4KCkkg
+cmVtZW1iZXIgZGlzY3Vzc2luZyBzZWFyY2ggYSBuZXcgUkVBRCBpb2N0bCB3aXRoIFNhc2NoYSBI
+YXVlciBhIGZldwp5ZWFycyBiYWNrLCBidXQgSSBjYW4ndCBmaW5kIHRoZSBkaXNjdXNzaW9uLi4u
+CgpSZWdhcmRzLAoKQm9yaXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
