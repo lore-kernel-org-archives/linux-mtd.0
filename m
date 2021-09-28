@@ -2,14 +2,14 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 793D6C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75DCDC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:36:12 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37D756115A
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:34:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 37D756115A
+	by mail.kernel.org (Postfix) with ESMTPS id 380CE61391
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 22:36:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 380CE61391
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,38 +18,38 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TZpMx716D7+rAyDygKwbEYJ6A0shw/h0T7UcZgQqYnQ=; b=KX1bGXvh78it6T
-	mGqNhOt+PGIfr1M8evNEWtN1jfAuIRrarMtu8bQKB12az0askUIOTEWdhuvSnE5l/xhwWs8JbmktL
-	zo+IVW+HDaM9o1hqphiD+vzXmzEikXRRLQZu1+QDlhrQhyhYus4IwlK97mOtsxPU240Ur6SvEzrKy
-	SsvRbN30pX5NJ8yw9faOhi6nGpAmare2JAhmK2irXPHU/SEFZ6K3EmKlO3QBYTgU38OWUvyjiANjV
-	H6PDcySIeZ6cwMxPtPVv+pNyK9sAQoLn/gG4a2Y+JltXvw9bcYM2cxQ5cxJvijduN4uGcYDFRFYha
-	P2gl93cn+Fd5buxOtS1g==;
+	List-Owner; bh=X8wS5LOPOcuN4ODpBslDT3UxfFTBewOHh/hKggX0vS0=; b=xSyyG/A1V3CHMf
+	cVnqqUzCeZr1+IBZIm7omNX/wiIy37c00mETTLHkJrknfTH3AkONDlI5xmskHMZ9bNOrZBfwOlLJ8
+	BrxTceWwnxfYHMKF3487EAlgTlscacu91U0q5vAB6wiIccJEJNm0K9hjXVxbUkX7zYqmlwPamvC80
+	n4XpLQR+Gas1K7zNN9/+w7tcTEJJ9Ug3zPuNIR2JIHfKR4FXtgUJv8UgT7o+9TXmd3LTVhwYaT8jO
+	vbeqrDGtAgEUjqR1c82gE8uLRQXac17EGfoLNYT7hgF/Mxi5rdIcRHkF9PEzFHA8AWg9nLRBrvvTZ
+	44f0MHOYmzUKsCmgG/rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVLfX-0096OX-0E; Tue, 28 Sep 2021 22:33:47 +0000
+	id 1mVLhE-0096oF-0K; Tue, 28 Sep 2021 22:35:32 +0000
 Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVLVA-0092wI-4i
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 22:23:06 +0000
+ id 1mVLVB-0092xE-Ns
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 22:23:08 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay11.mail.gandi.net (Postfix) with ESMTPSA id 8BFE4100007;
- Tue, 28 Sep 2021 22:23:01 +0000 (UTC)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6A51C100008;
+ Tue, 28 Sep 2021 22:23:03 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org
-Subject: [PATCH 3/9] mtd: rawnand: gpio: Keep the driver compatible with
+Subject: [PATCH 5/9] mtd: rawnand: orion: Keep the driver compatible with
  on-die ECC engines
-Date: Wed, 29 Sep 2021 00:22:42 +0200
-Message-Id: <20210928222258.199726-4-miquel.raynal@bootlin.com>
+Date: Wed, 29 Sep 2021 00:22:44 +0200
+Message-Id: <20210928222258.199726-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210928222258.199726-1-miquel.raynal@bootlin.com>
 References: <20210928222258.199726-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_152304_368725_E2A8A4BF 
-X-CRM114-Status: GOOD (  20.07  )
+X-CRM114-CacheID: sfid-20210928_152305_984678_FD222DAB 
+X-CRM114-Status: GOOD (  20.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,20 +91,20 @@ nand_scan(). During the initialization step, the core will consider this
 entry as the default engine for this driver. This value may of course
 be overloaded by the user if the usual DT properties are provided.
 
-Fixes: f6341f6448e0 ("mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()")
+Fixes: 553508cec2e8 ("mtd: rawnand: orion: Move the ECC initialization to ->attach_chip()")
 Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/gpio.c | 12 +++++++++---
+ drivers/mtd/nand/raw/orion_nand.c | 12 +++++++++---
  1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
-index fb7a086de35e..fdf073d2e1b6 100644
---- a/drivers/mtd/nand/raw/gpio.c
-+++ b/drivers/mtd/nand/raw/gpio.c
-@@ -163,9 +163,8 @@ static int gpio_nand_exec_op(struct nand_chip *chip,
+diff --git a/drivers/mtd/nand/raw/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
+index 66211c9311d2..2c87c7d89205 100644
+--- a/drivers/mtd/nand/raw/orion_nand.c
++++ b/drivers/mtd/nand/raw/orion_nand.c
+@@ -85,9 +85,8 @@ static void orion_nand_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
  
- static int gpio_nand_attach_chip(struct nand_chip *chip)
+ static int orion_nand_attach_chip(struct nand_chip *chip)
  {
 -	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 -
@@ -114,20 +114,20 @@ index fb7a086de35e..fdf073d2e1b6 100644
  		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
  
  	return 0;
-@@ -365,6 +364,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	if (gpiomtd->nwp && !IS_ERR(gpiomtd->nwp))
- 		gpiod_direction_output(gpiomtd->nwp, 1);
+@@ -190,6 +189,13 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
 +	/*
 +	 * This driver assumes that the default ECC engine should be TYPE_SOFT.
 +	 * Set ->engine_type before registering the NAND devices in order to
 +	 * provide a driver specific default value.
 +	 */
-+	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
++	nc->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
 +
- 	ret = nand_scan(chip, 1);
+ 	ret = nand_scan(nc, 1);
  	if (ret)
- 		goto err_wp;
+ 		goto no_dev;
 -- 
 2.27.0
 
