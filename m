@@ -2,63 +2,53 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3A4DC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34C4DC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:06:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BFE5861246
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:04:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFE5861246
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D15FB6127C
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 16:06:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D15FB6127C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i5NO/UozSiiufVL1DHSAu++1YrgF4lx5308PdJC1G2I=; b=4XO920i9Z6UN8S
-	PKrf/l0iOGJl2ipB7T3jcqqzAIgQqVksolXhVnQi0zbfSnaIgccM7hZlIzt+fqwiT01CtmTtPAPi/
-	duFmXvqlm5H2wezloKyLanDYgaYsUyO04svikGE9eFER7dnfUKiOwzOxQZKHafEzJyCJdqtHohSrK
-	ONkBNCARkh9Qs7uXfHypZj8b8gRZPMevja9CbUHP5xcusOiaW39mLXq2toTaXjdGRCJpXp08gjzPD
-	bc/pwPC5QJAh39v1cqMPT+uI0HUzsNmM6ECR+cV41P6FMYBryUzYBBiE8ZYvFzmKqoOoP2zVx6bo1
-	W/s3LA59uTKhdH+1jpxQ==;
+	List-Owner; bh=QWrNDqy6Yx7WqFvvZCwIp6pdMmNaC6k+v8HzbY4vQec=; b=O6Wc4MwRZKdsOK
+	ZDv4RSBEN1W6XcnltdYsJvEvp5ex1lNiKd1vM/m/xK4STX7Htq+PwCdpOvbIpwvoiCO9OpaOuwJCf
+	YIBC+LD9Mbmgy4h3/jjEg4XN2p43qNS6HQz1GYj2jctLkudwIlzm+dfgCDvPIcL4VhkdmJztnS33b
+	IGeQ3iv4X2kAKezbKP0bZ7OxhRzT9mGrUyJuelvcmR+DoG5GhfThLzT3Csx6ws3Cb2O+ycs/cVWXQ
+	Qga2Jr1JU1Z21Ey13+tCrllQf5kqGQjRKIIhmco7x8FdCYB2O+HwuuKAfdSLELGGs/uUup6lxqc0s
+	HORZxIP1WUEwyjq9iTRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVFZv-007z6u-GY; Tue, 28 Sep 2021 16:03:35 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mVFbm-007zqF-4C; Tue, 28 Sep 2021 16:05:30 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVFZs-007z5Q-2H
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 16:03:33 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71FBF61246;
- Tue, 28 Sep 2021 16:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1632845011;
- bh=qYrKrBfr8T/2j0JCiK/Uk789YYa1zr6c30wSL9bTRE8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=CAj0x9ZNGz5+Gh6ByVNOz2OUeMXT19vPrBaIgcejp3rN1sWb5E0561uS3s5ggDGCf
- eKmZ3rXV8eAJSqeJhWYd9yUkGbiUe85x2rDLQbmR/gEtzMjQXEEocDvC2sLp9Twiup
- fDvMScWmNfc66NhzafTaVLnn6DD97tyu99qDv/20mSmWieHbVx3GnGyXj0W6u5XBol
- Q7rMUnfBNshb5UOub1LQci6PTW85JQMCiMLhX0wYIPR3fWgTK7G3ytBR3o5BrHXRe+
- BhwvI479QaOJYPa1ZPMZ+WgEMkyNpCaSJT+V6Wru0cbx5vbmep3bRaHVZl974E8tUQ
- V6hvIQUIVngXA==
-Date: Tue, 28 Sep 2021 21:33:15 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Md Sadre Alam <mdalam@codeaurora.org>
-Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [PATCH 2/3] mtd: rawnand: qcom: Add sg list to handle status
- pipe request
-Message-ID: <20210928160315.GC12183@thinkpad>
-References: <1631699851-12172-1-git-send-email-mdalam@codeaurora.org>
- <1631699851-12172-3-git-send-email-mdalam@codeaurora.org>
+ id 1mVFbh-007znV-TS
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 16:05:27 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 7CB161C0012;
+ Tue, 28 Sep 2021 16:05:22 +0000 (UTC)
+Date: Tue, 28 Sep 2021 18:05:21 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Joachim Wiberg <troglobit@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Joern Engel <joern@lazybastard.org>
+Subject: Re: [RFC PATCH 1/1] mtd: block2mtd: add support for an optional
+ custom MTD label
+Message-ID: <20210928180521.4516405c@xps13>
+In-Reply-To: <20210928154937.2668575-1-troglobit@gmail.com>
+References: <20210928154937.2668575-1-troglobit@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1631699851-12172-3-git-send-email-mdalam@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_090332_174925_BFC02644 
-X-CRM114-Status: GOOD (  21.90  )
+X-CRM114-CacheID: sfid-20210928_090526_251246_632A1C7A 
+X-CRM114-Status: GOOD (  25.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,146 +60,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 15, 2021 at 03:27:30PM +0530, Md Sadre Alam wrote:
-> From QPIC V2.0 onwards there is separate pipe to read status
-> for each code word while reading in enhanced mode. page scope
-> read and multi page read.
-> 
-> This sgl list will be use to handle the request via status pipe
-> during page scope and multi page read.
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 42c6291..07448c4 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -213,6 +213,7 @@ nandc_set_reg(chip, reg,			\
->  #define QPIC_PER_CW_CMD_ELEMENTS	32
->  #define QPIC_PER_CW_CMD_SGL		32
->  #define QPIC_PER_CW_DATA_SGL		8
-> +#define	QPIC_PER_CW_STS_SGL		8
-
-Use space after #define
-
->  
->  #define QPIC_NAND_COMPLETION_TIMEOUT	msecs_to_jiffies(2000)
->  
-> @@ -258,6 +259,7 @@ struct bam_transaction {
->  	struct bam_cmd_element *bam_ce;
->  	struct scatterlist *cmd_sgl;
->  	struct scatterlist *data_sgl;
-> +	struct scatterlist *sts_sgl;
->  	u32 bam_ce_pos;
->  	u32 bam_ce_start;
->  	u32 cmd_sgl_pos;
-> @@ -266,6 +268,8 @@ struct bam_transaction {
->  	u32 tx_sgl_start;
->  	u32 rx_sgl_pos;
->  	u32 rx_sgl_start;
-> +	u32 sts_sgl_pos;
-> +	u32 sts_sgl_start;
->  	bool wait_second_completion;
->  	struct completion txn_done;
->  	struct dma_async_tx_descriptor *last_data_desc;
-> @@ -508,6 +512,8 @@ alloc_bam_transaction(struct qcom_nand_controller *nandc)
->  		((sizeof(*bam_txn->bam_ce) * QPIC_PER_CW_CMD_ELEMENTS) +
->  		(sizeof(*bam_txn->cmd_sgl) * QPIC_PER_CW_CMD_SGL) +
->  		(sizeof(*bam_txn->data_sgl) * QPIC_PER_CW_DATA_SGL));
-> +	if (nandc->props->qpic_v2)
-> +		bam_txn_size += (sizeof(*bam_txn->sts_sgl) * QPIC_PER_CW_STS_SGL);
->  
->  	bam_txn_buf = devm_kzalloc(nandc->dev, bam_txn_size, GFP_KERNEL);
->  	if (!bam_txn_buf)
-> @@ -526,6 +532,12 @@ alloc_bam_transaction(struct qcom_nand_controller *nandc)
->  
->  	bam_txn->data_sgl = bam_txn_buf;
->  
-> +	if (nandc->props->qpic_v2) {
-> +		bam_txn_buf +=
-> +			sizeof(*bam_txn->sts_sgl) * QPIC_PER_CW_STS_SGL * num_cw;
-> +		bam_txn->sts_sgl = bam_txn_buf;
-> +	}
-> +
->  	init_completion(&bam_txn->txn_done);
->  
->  	return bam_txn;
-> @@ -554,6 +566,12 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
->  		      QPIC_PER_CW_CMD_SGL);
->  	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
->  		      QPIC_PER_CW_DATA_SGL);
-> +	if (nandc->props->qpic_v2) {
-> +		bam_txn->sts_sgl_pos = 0;
-> +		bam_txn->sts_sgl_start = 0;
-> +		sg_init_table(bam_txn->sts_sgl, nandc->max_cwperpage *
-> +				QPIC_PER_CW_STS_SGL);
-> +	}
->  
->  	reinit_completion(&bam_txn->txn_done);
->  }
-> @@ -808,6 +826,12 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
->  		bam_txn->tx_sgl_start = bam_txn->tx_sgl_pos;
->  		dir_eng = DMA_MEM_TO_DEV;
->  		desc->dir = DMA_TO_DEVICE;
-> +	} else if (nandc->props->qpic_v2 && chan == nandc->sts_chan) {
-
-These two are mutually inclusive, so why can't you simply check for the
-existence of "nanc->sts_chan"?
-
-> +		sgl = &bam_txn->sts_sgl[bam_txn->sts_sgl_start];
-> +		sgl_cnt = bam_txn->sts_sgl_pos - bam_txn->sts_sgl_start;
-> +		bam_txn->sts_sgl_start = bam_txn->sts_sgl_pos;
-> +		dir_eng = DMA_DEV_TO_MEM;
-> +		desc->dir = DMA_FROM_DEVICE;
->  	} else {
->  		sgl = &bam_txn->data_sgl[bam_txn->rx_sgl_start];
->  		sgl_cnt = bam_txn->rx_sgl_pos - bam_txn->rx_sgl_start;
-> @@ -1394,6 +1418,14 @@ static int submit_descs(struct qcom_nand_controller *nandc)
->  			if (r)
->  				return r;
->  		}
-> +
-> +		if (nandc->props->qpic_v2) {
-
-I feel like you should just check for "nandc->sts_chan" instead of qpic_v2. This
-will make the driver work with future revisions of the IP as well.
-
-> +			if (bam_txn->sts_sgl_pos > bam_txn->sts_sgl_start) {
-> +				r = prepare_bam_async_desc(nandc, nandc->sts_chan, 0);
-> +				if (r)
-> +					return r;
-> +			}
-> +		}
->  	}
->  
->  	list_for_each_entry(desc, &nandc->desc_list, node)
-> @@ -1411,6 +1443,8 @@ static int submit_descs(struct qcom_nand_controller *nandc)
->  		dma_async_issue_pending(nandc->tx_chan);
->  		dma_async_issue_pending(nandc->rx_chan);
->  		dma_async_issue_pending(nandc->cmd_chan);
-> +		if (nandc->props->qpic_v2)
-> +			dma_async_issue_pending(nandc->sts_chan);
-
-Same here.
-
-Thanks,
-Mani
-
->  
->  		if (!wait_for_completion_timeout(&bam_txn->txn_done,
->  						 QPIC_NAND_COMPLETION_TIMEOUT))
-> -- 
-> 2.7.4
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSm9hY2hpbSwKCnRyb2dsb2JpdEBnbWFpbC5jb20gd3JvdGUgb24gVHVlLCAyOCBTZXAgMjAy
+MSAxNzo0OTozOCArMDIwMDoKCj4gVGhpcyBwYXRjaCBhZGRzIHN1cHBvcnQgZm9yIGFuIG9wdGlv
+bmFsIE1URCBsYWJlbCBmb3IgbXRkMmJsb2NrIGVtdWxhdGVkCj4gTVREIGRldmljZXMuICBVc2Vm
+dWwgd2hlbiwgZS5nLiB0ZXN0aW5nIGRldmljZSBpbWFnZXMgdXNpbmcgUWVtdS4gIFRoZQo+IGZv
+bGxvd2luZyAvZXRjL2ZzdGFiIGxpbmUgaW4gY2FuIHRoZW4gYmUgdXNlZCB0byBtb3VudCBhIGZp
+bGUgc3lzdGVtCj4gcmVnYXJkbGVzcyBvZiB0aGUgYWN0dWFsIE1URCBwYXJ0aXRpb24gbnVtYmVy
+Ogo+IAo+ICAgICBtdGQ6Q29uZmlnICAvbW50ICAgIGpmZnMyICAgbm9hdGltZSxub2RpcmF0aW1l
+ICAgICAgMCAgICAwCj4gCj4gS2VybmVsIGNvbW1hbmQgbGluZSBzeW50YXg6Cj4gCj4gICAgIGJs
+b2NrMm10ZC5ibG9jazJtdGQ9L2Rldi9zZGEsLENvbmZpZwo+IAo+IFRoZSAnLCwnIGlzIHRoZSBv
+cHRpb25hbCBlcmFzZV9zaXplLCB3aGljaCBsaWtlIGJlZm9yZSB0aGlzIHBhdGNoLAo+IGRlZmF1
+bHRzIHRvIFBBR0VfU0laRSB3aGVuIG9taXR0ZWQuCgpXZSBhbHJlYWR5IGhhdmUgYSBsYWJlbCBw
+cm9wZXJ0eSB0aGF0IGNhbiBiZSBhZGRlZCBpbiB0aGUgRFQsIGlzbid0Cml0IGVub3VnaD8KClRo
+YW5rcywKTWlxdcOobAoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBKb2FjaGltIFdpYmVyZyA8dHJvZ2xv
+Yml0QGdtYWlsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9jazJtdGQuYyB8
+IDI2ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNyBpbnNl
+cnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9k
+ZXZpY2VzL2Jsb2NrMm10ZC5jIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9ibG9jazJtdGQuYwo+IGlu
+ZGV4IGMwODcyMWIxMTY0Mi4uODdjZGYwNDFhMjE4IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRk
+L2RldmljZXMvYmxvY2sybXRkLmMKPiArKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL2Jsb2NrMm10
+ZC5jCj4gQEAgLTIxNCw3ICsyMTQsNyBAQCBzdGF0aWMgdm9pZCBibG9jazJtdGRfZnJlZV9kZXZp
+Y2Uoc3RydWN0IGJsb2NrMm10ZF9kZXYgKmRldikKPiAgCj4gIAo+ICBzdGF0aWMgc3RydWN0IGJs
+b2NrMm10ZF9kZXYgKmFkZF9kZXZpY2UoY2hhciAqZGV2bmFtZSwgaW50IGVyYXNlX3NpemUsCj4g
+LQkJaW50IHRpbWVvdXQpCj4gKwkJY2hhciAqbGFiZWwsIGludCB0aW1lb3V0KQo+ICB7Cj4gICNp
+Zm5kZWYgTU9EVUxFCj4gIAlpbnQgaTsKPiBAQCAtMjc4LDcgKzI3OCwxMCBAQCBzdGF0aWMgc3Ry
+dWN0IGJsb2NrMm10ZF9kZXYgKmFkZF9kZXZpY2UoY2hhciAqZGV2bmFtZSwgaW50IGVyYXNlX3Np
+emUsCj4gIAo+ICAJLyogU2V0dXAgdGhlIE1URCBzdHJ1Y3R1cmUgKi8KPiAgCS8qIG1ha2UgdGhl
+IG5hbWUgY29udGFpbiB0aGUgYmxvY2sgZGV2aWNlIGluICovCj4gLQluYW1lID0ga2FzcHJpbnRm
+KEdGUF9LRVJORUwsICJibG9jazJtdGQ6ICVzIiwgZGV2bmFtZSk7Cj4gKwlpZiAoIWxhYmVsKQo+
+ICsJCW5hbWUgPSBrYXNwcmludGYoR0ZQX0tFUk5FTCwgImJsb2NrMm10ZDogJXMiLCBkZXZuYW1l
+KTsKPiArCWVsc2UKPiArCQluYW1lID0ga3N0cmR1cChsYWJlbCwgR0ZQX0tFUk5FTCk7Cj4gIAlp
+ZiAoIW5hbWUpCj4gIAkJZ290byBlcnJfZGVzdHJveV9tdXRleDsKPiAgCj4gQEAgLTMwNCw3ICsz
+MDcsNyBAQCBzdGF0aWMgc3RydWN0IGJsb2NrMm10ZF9kZXYgKmFkZF9kZXZpY2UoY2hhciAqZGV2
+bmFtZSwgaW50IGVyYXNlX3NpemUsCj4gIAo+ICAJbGlzdF9hZGQoJmRldi0+bGlzdCwgJmJsa210
+ZF9kZXZpY2VfbGlzdCk7Cj4gIAlwcl9pbmZvKCJtdGQlZDogWyVzXSBlcmFzZV9zaXplID0gJWRL
+aUIgWyVkXVxuIiwKPiAtCQlkZXYtPm10ZC5pbmRleCwKPiArCQlkZXYtPm10ZC5pbmRleCwgbGFi
+ZWwgPyBsYWJlbCA6Cj4gIAkJZGV2LT5tdGQubmFtZSArIHN0cmxlbigiYmxvY2sybXRkOiAiKSwK
+PiAgCQlkZXYtPm10ZC5lcmFzZXNpemUgPj4gMTAsIGRldi0+bXRkLmVyYXNlc2l6ZSk7Cj4gIAly
+ZXR1cm4gZGV2Owo+IEBAIC0zODEsOCArMzg0LDggQEAgc3RhdGljIGludCBibG9jazJtdGRfc2V0
+dXAyKGNvbnN0IGNoYXIgKnZhbCkKPiAgCS8qIDgwIGZvciBkZXZpY2UsIDEyIGZvciBlcmFzZSBz
+aXplLCA4MCBmb3IgbmFtZSwgOCBmb3IgdGltZW91dCAqLwo+ICAJY2hhciBidWZbODAgKyAxMiAr
+IDgwICsgOF07Cj4gIAljaGFyICpzdHIgPSBidWY7Cj4gLQljaGFyICp0b2tlblsyXTsKPiAtCWNo
+YXIgKm5hbWU7Cj4gKwljaGFyICp0b2tlblszXTsKPiArCWNoYXIgKm5hbWUsICpsYWJlbCA9IE5V
+TEw7Cj4gIAlzaXplX3QgZXJhc2Vfc2l6ZSA9IFBBR0VfU0laRTsKPiAgCXVuc2lnbmVkIGxvbmcg
+dGltZW91dCA9IE1URF9ERUZBVUxUX1RJTUVPVVQ7Cj4gIAlpbnQgaSwgcmV0Owo+IEBAIC0zOTUs
+NyArMzk4LDcgQEAgc3RhdGljIGludCBibG9jazJtdGRfc2V0dXAyKGNvbnN0IGNoYXIgKnZhbCkK
+PiAgCXN0cmNweShzdHIsIHZhbCk7Cj4gIAlraWxsX2ZpbmFsX25ld2xpbmUoc3RyKTsKPiAgCj4g
+LQlmb3IgKGkgPSAwOyBpIDwgMjsgaSsrKQo+ICsJZm9yIChpID0gMDsgaSA8IDM7IGkrKykKPiAg
+CQl0b2tlbltpXSA9IHN0cnNlcCgmc3RyLCAiLCIpOwo+ICAKPiAgCWlmIChzdHIpIHsKPiBAQCAt
+NDE0LDcgKzQxNyw3IEBAIHN0YXRpYyBpbnQgYmxvY2sybXRkX3NldHVwMihjb25zdCBjaGFyICp2
+YWwpCj4gIAkJcmV0dXJuIDA7Cj4gIAl9Cj4gIAo+IC0JaWYgKHRva2VuWzFdKSB7Cj4gKwlpZiAo
+dG9rZW5bMV0gJiYgc3RybGVuKHRva2VuWzFdKSkgewo+ICAJCXJldCA9IHBhcnNlX251bSgmZXJh
+c2Vfc2l6ZSwgdG9rZW5bMV0pOwo+ICAJCWlmIChyZXQpIHsKPiAgCQkJcHJfZXJyKCJpbGxlZ2Fs
+IGVyYXNlIHNpemVcbiIpOwo+IEBAIC00MjIsNyArNDI1LDEyIEBAIHN0YXRpYyBpbnQgYmxvY2sy
+bXRkX3NldHVwMihjb25zdCBjaGFyICp2YWwpCj4gIAkJfQo+ICAJfQo+ICAKPiAtCWFkZF9kZXZp
+Y2UobmFtZSwgZXJhc2Vfc2l6ZSwgdGltZW91dCk7Cj4gKwlpZiAodG9rZW5bMl0pIHsKPiArCQls
+YWJlbCA9IHRva2VuWzJdOwo+ICsJCXByX2luZm8oIlVzaW5nIGN1c3RvbSBNVEQgbGFiZWwgJyVz
+JyBmb3IgZGV2ICVzXG4iLCBsYWJlbCwgbmFtZSk7Cj4gKwl9Cj4gKwo+ICsJYWRkX2RldmljZShu
+YW1lLCBlcmFzZV9zaXplLCBsYWJlbCwgdGltZW91dCk7Cj4gIAo+ICAJcmV0dXJuIDA7Cj4gIH0K
+PiBAQCAtNDU2LDcgKzQ2NCw3IEBAIHN0YXRpYyBpbnQgYmxvY2sybXRkX3NldHVwKGNvbnN0IGNo
+YXIgKnZhbCwgY29uc3Qgc3RydWN0IGtlcm5lbF9wYXJhbSAqa3ApCj4gIAo+ICAKPiAgbW9kdWxl
+X3BhcmFtX2NhbGwoYmxvY2sybXRkLCBibG9jazJtdGRfc2V0dXAsIE5VTEwsIE5VTEwsIDAyMDAp
+Owo+IC1NT0RVTEVfUEFSTV9ERVNDKGJsb2NrMm10ZCwgIkRldmljZSB0byB1c2UuIFwiYmxvY2sy
+bXRkPTxkZXY+Wyw8ZXJhc2VzaXplPl1cIiIpOwo+ICtNT0RVTEVfUEFSTV9ERVNDKGJsb2NrMm10
+ZCwgIkRldmljZSB0byB1c2UuIFwiYmxvY2sybXRkPTxkZXY+WyxbPGVyYXNlc2l6ZT5dWyw8bmFt
+ZT5dXVwiIik7Cj4gIAo+ICBzdGF0aWMgaW50IF9faW5pdCBibG9jazJtdGRfaW5pdCh2b2lkKQo+
+ICB7CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
