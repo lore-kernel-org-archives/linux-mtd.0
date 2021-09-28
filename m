@@ -2,14 +2,14 @@ Return-Path: <SRS0=WqWW=OS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 317A8C433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 08:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF4FC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 09:10:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A69C8611EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 08:50:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A69C8611EF
+	by mail.kernel.org (Postfix) with ESMTPS id EE81860FC2
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Sep 2021 09:10:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EE81860FC2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,46 +18,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F0igIcJINJxKJpH4gPMFgzTBzP4xfPJNKWLCWrdepgI=; b=edMxb5oRhzt5fp
-	MSlU8zE+H2eRER3IvhmsKuDRQT2yE6VHclF/AM8j08wZVj27my3Q+k93hT0yLSrBwlRm9SFb4qq60
-	F+lFccppFJN1olpSc835/t0rwZWpWxS7AEqisJC/2nSxLp6gL3l0AUhUAmOn85ItgtUua2/48Z+Xi
-	LUJHGAOY7mjKns/02YZcvHJYvVpUclnCW03rpHEX7tnIuyO65TutQTD9J5MJhrQZxiBVid937eZ5u
-	UyQEPUaoiYR4pmuAzUn3amYgmaGiH4L17UfiYTeC5rO8LYLIEaFghVml/hJ836k+xcd5Dd8CPvcGG
-	R7MbvJVuKy2eIvCwdtDw==;
+	List-Owner; bh=3yZQ7ZKG1z9PlYlh+K9mqUzY0IfLP5BXoJQu9VXldaY=; b=InLIURoK6fxdNv
+	YDrfDGlWxhhgE3IzL8TSdGp6DD0TpS/8I7058aL9U5TRNQR16Gt2XjI1Ie/cQ2e2IBzM30/KghQVG
+	NqHG0vS3qDCmHa+ITsldjBgH3LQKcJCrkhx9rVKpQ8o9JdoOaJtP/dwub/oSh2kAN1drRx6YWeFhm
+	zQG/+BCfTusA9nup4N8G77EpQgZmHpvr5G/SVXqWtkcdjsc+ZLawbYcnFeRgRoxxIb4xZakAC+3HE
+	xNRjh5qlsqQPs5kDg99nXYaMb+073/wKo4rxn64uZVhYXhHUagQOt+3S3SoN9WabXhUSdXOim0jFX
+	v57jXsVHkOwgVvkMvcFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mV8nr-006KyC-B9; Tue, 28 Sep 2021 08:49:31 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1mV97G-006Tf4-8b; Tue, 28 Sep 2021 09:09:34 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mV8nf-006Ktz-Qx
- for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 08:49:21 +0000
+ id 1mV8pw-006LnZ-Nf
+ for linux-mtd@lists.infradead.org; Tue, 28 Sep 2021 08:51:42 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id DD91540007;
- Tue, 28 Sep 2021 08:49:15 +0000 (UTC)
-Date: Tue, 28 Sep 2021 10:49:14 +0200
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2D63E2000A;
+ Tue, 28 Sep 2021 08:51:34 +0000 (UTC)
+Date: Tue, 28 Sep 2021 10:51:33 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jan Hoffmann <jan@3e8.eu>
-Cc: Daniel Kestrel <kestrelseventyfour@gmail.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-Message-ID: <20210928104914.44a90b63@xps13>
-In-Reply-To: <f800c48f-8e4a-ecdc-3198-c52be0425823@3e8.eu>
-References: <20210808072643.GA5084@ubuntu>
- <51f2ebf4-6df1-eba5-99f1-1ec88e475d20@3e8.eu>
- <20210917190154.76203a9a@xps13>
- <e9dd0653-139f-749b-c088-e756ee2d2132@3e8.eu>
- <20210917213246.319e60cb@xps13>
- <14eb0cb7-b0af-87bf-b9a5-3e35eeb43f54@3e8.eu>
- <20210927183150.4be87140@xps13>
- <f800c48f-8e4a-ecdc-3198-c52be0425823@3e8.eu>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-block@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 1/5] mtd_blkdevs: remove the sector out of range check
+ in do_blktrans_request
+Message-ID: <20210928105133.606b6eed@xps13>
+In-Reply-To: <20210928052211.112801-2-hch@lst.de>
+References: <20210928052211.112801-1-hch@lst.de>
+ <20210928052211.112801-2-hch@lst.de>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210928_014920_040325_8CFCA90B 
-X-CRM114-Status: GOOD (  15.58  )
+X-CRM114-CacheID: sfid-20210928_015140_951343_BEB372C7 
+X-CRM114-Status: GOOD (  10.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,19 +69,11 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSmFuLAoKamFuQDNlOC5ldSB3cm90ZSBvbiBNb24sIDI3IFNlcCAyMDIxIDIyOjMyOjEzICsw
-MjAwOgoKPiBIaSBNaXF1w6hsLAo+IAo+ID4gU28gd2hhdCBJIHByb3Bvc2UgaXM6Cj4gPiAtIGlu
-IHRoZSBkcml2ZXIgcHJvYmU6IHNldCB0aGUgZGVmYXVsdCB0byBzb2Z0d2FyZSBFQ0MKPiA+IC0g
-aW4gdGhlIGF0dGFjaCgpIGhvb2s6IGRyb3AgdGhlIGxpbmUgc2V0dGluZyB0aGUgZW5naW5lX3R5
-cGUgdG8gU09GVC4KPiA+IAo+ID4gUGxlYXNlIGNoZWNrIHRoZSBiZWxvdyBkaWZmIGFuZCB0ZWxs
-IG1lIGlmIGl0IHdvcmtzIGZvciB5b3UuIEknbGwgdGhlbgo+ID4gcHJvcG9zZSBhIHdpZGVyIHNl
-cmllcyBmaXhpbmcgdGhlIG90aGVyIGRyaXZlcnMgYXMgd2VsbC4gIAo+IAo+IEkgY2FuIGNvbmZp
-cm0gdGhhdCB5b3VyIHBhdGNoIGZpeGVzIHRoZSBpc3N1ZS4KPiAKPiBJIHRlc3RlZCB1c2luZyBr
-ZXJuZWwgNS4xMCBvbiBhIEZyaXR6Ym94IDczNjIgU0wgKHdpdGggb24tZGllIEVDQwo+IGNvbmZp
-Z3VyZWQgdmlhIGRldmljZSB0cmVlIHdoaWNoIHdhcyBicm9rZW4gYmVmb3JlKS4gSSBhbHNvIGNo
-ZWNrZWQgb24KPiBhIEZyaXR6Ym94IDc0MTIgKHRoaXMgZGV2aWNlIHVzZXMgc29mdHdhcmUgRUND
-KS4gQm90aCBhcmUgd29ya2luZyB3aXRoCj4gdGhpcyBwYXRjaC4KCkdyZWF0LCB0aGFua3MgZm9y
-IHRoZSBxdWljayBmZWVkYmFjay4KCkNoZWVycywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+SGkgQ2hyaXN0b3BoLAoKaGNoQGxzdC5kZSB3cm90ZSBvbiBUdWUsIDI4IFNlcCAyMDIxIDA3OjIy
+OjA3ICswMjAwOgoKPiBUaGUgYmxvY2sgbGF5ZXIgYWxyZWFkeSBwZXJmb3JtcyB0aGlzIGNoZWNr
+LCBubyBuZWVkIHRvIGR1cGxpY2F0ZSBpdCBpbgo+IHRoZSBkcml2ZXIuCj4gCj4gU2lnbmVkLW9m
+Zi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+CgpSZXZpZXdlZC1ieTogTWlxdWVs
+IFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KClRoYW5rcywKTWlxdcOobAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
