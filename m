@@ -2,85 +2,167 @@ Return-Path: <SRS0=NzJj=OT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7967C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Sep 2021 19:43:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CF2FC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Sep 2021 22:02:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9ACCA61439
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Sep 2021 19:43:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9ACCA61439
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=kempniu.pl
+	by mail.kernel.org (Postfix) with ESMTPS id E36C9613CE
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Sep 2021 22:02:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E36C9613CE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=equinix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IpISr6CQglPglZxnPUUSuz47yd80ZIWy4sRfmFR528M=; b=o/uLh5UXXvBL4N
-	xivJSoHFZ91vCZT0GO/Sq4EhyGU2KdX5PXkTuiJIrQGVMsr4PZFmkb9RzBo6VoaRrJvqgABnDOzC3
-	tixKv7aM9AzIvWJYsk6VT4s5mqpnK2A8R/xLz2byzJoEgv/bwTsR/H00DNlTS+QAxEteCeAhUqRh1
-	oAzDxxEvcSrJZCLqv929m6p7ZL56u8Pu41MuQ2f8H7UBDDXTXtXyYoNFLf93y/xoItWkPgsS/6391
-	xLWByd3QndmQq4urkxUsrBtNcdKNEC3PImBz1k84BN5ZIaW4ydbeJ5yC/0hkuFqQmit4b+5mRuBfT
-	XR6fNUp8+zctK8evZifA==;
+	List-Owner; bh=Rn4yHBjNx1s3njFa/m0Adwuz1bXxxhFyCTa4z58TUbo=; b=VXUNJEvAEQGozY
+	KmfT8m3/Vo0XR/3+8Np1AGfGDFWTCmK7LQNmt0LBCUSirY1BfxlT6hYHW6g3gsrvEK1iGwOiDArLV
+	ggOYXX02xUwA+glUCsrmsH8s97xkT67lZFSJzist9kGUxaQGAlEt2coMGHD+xi1osexJcdMQi0X7b
+	wiV3smlbpLoprhmRjPmOjVGWUpkYep3gXzEjO+eO87KYfs2eCLqcNyYkYkrduAnQtDLDT8jDGYhYl
+	nFO2Sw86wywgKFTtOOddJd4v6lnYpZXDvsHdbCAVN2h+w3EvP49nl0I8mVUTDtkj055QEL3X70o9M
+	G0oroJgdPx1v2uf2HzGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVfTN-00CCdr-Tn; Wed, 29 Sep 2021 19:42:33 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1mVhdg-00CSRx-TY; Wed, 29 Sep 2021 22:01:21 +0000
+Received: from mx0b-00268f01.pphosted.com ([148.163.159.192])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVfTK-00CCd5-5k
- for linux-mtd@lists.infradead.org; Wed, 29 Sep 2021 19:42:31 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id u18so15314288lfd.12
- for <linux-mtd@lists.infradead.org>; Wed, 29 Sep 2021 12:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kempniu.pl; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=fpTJo9PN19CwOpgH8yiUSJNn3It4EQ9dC+3Al0lph7I=;
- b=tl/tsT2Nrh6yQ+Rl3+dJK0ANroWNYbYFblftSnt7NYLQkg3QBbxlmOGrafH2Y9dq60
- T+9j4Aq0uVfWPZDjwLMqzhISmuzeLywWKwO3tUC6l+6mg1ycYLmEMc/sOK4jSrPbr/cT
- hYvlBN+kCNdan69XerxoD18kxuVU9ZCwThMkk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=fpTJo9PN19CwOpgH8yiUSJNn3It4EQ9dC+3Al0lph7I=;
- b=RuPsNGM8zTlLSgTIjb2DiU//5PZSP5LlJ7WhnHQwwpfSWMpoEwvctfMYyUTwCZtUOD
- QK9CsA8dhUmv050XHun6Zc8tTmafBcVJlq4SP1abS3OE8KtVrO5S6G6EgtETWBSHjXIl
- x61i6CW4ZOaLO8BHxpssMYlPCJhwVolZYwdXlDoffCRmPZUIGn8Sik+T9XZnluyr48Pm
- xnDB5mw4/Mgwc7CV7kUBcFznWeLEiyk3I0aVJXzQ4LbfyOq84Mkj8r2V0gnw9gZMzRBP
- crPjgPNMM9Rs5XCX1qi02arKi8I7SL5F1l3HQNTUTCbhra64pKkvnPg8H1fGZAst2uYy
- BITg==
-X-Gm-Message-State: AOAM530bMYpSIuu7PzA9gz1lWTlvFOCVuJ7mwSuPbmHFKknvN4VHbjyL
- bEcyQnOJGvXV41LY1IVRsDBtVA==
-X-Google-Smtp-Source: ABdhPJwU4jfdBet2tozUxiHUN7/qai9e5NS39a/T8NwbrMvUA4f4qE1xXnzZqQLEzNTuswAvuUVpCg==
-X-Received: by 2002:a05:6512:15a3:: with SMTP id
- bp35mr1436941lfb.11.1632944547503; 
- Wed, 29 Sep 2021 12:42:27 -0700 (PDT)
-Received: from larwa.hq.kempniu.pl ([2001:470:64df:111::e02])
- by smtp.gmail.com with ESMTPSA id 23sm86008ljq.83.2021.09.29.12.42.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Sep 2021 12:42:26 -0700 (PDT)
-Date: Wed, 29 Sep 2021 21:42:24 +0200
-From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Boris Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: add MEMREAD ioctl
-Message-ID: <YVTBoAnQKYLNpOPc@larwa.hq.kempniu.pl>
-References: <20210920070221.10173-1-kernel@kempniu.pl>
- <20210928155859.433844cb@xps13>
- <20210928162402.6bb64fcf@collabora.com>
- <20210928163519.08cd1138@xps13>
+ id 1mVhdT-00CSQ2-Dk; Wed, 29 Sep 2021 22:01:09 +0000
+Received: from pps.filterd (m0105197.ppops.net [127.0.0.1])
+ by mx0a-00268f01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TIrWRW015642; 
+ Wed, 29 Sep 2021 22:00:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=equinix.com;
+ h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=pps202002;
+ bh=nAd3hC6+9tYVMt8Hq06dVqDUgM3EOvSCsg7PgsPCOtw=;
+ b=hJVh2Ug8L75PAl2bDPF6TVfF2QMbsIxYqhPiB+cKb+nHlGTtK95HapdboS5OX8odMawL
+ EfPjsiwVrXogCWLSSR+tL4EyorHZ4sQGWKr5TOgH0oLSvCeC9jl7HdP5vfSMbEqTfIh7
+ qi5RBFzU0Hm5fUvDeFDA9Y/wk0VKaHUppM+XflcleRjIevJr/fTLG7Y2YqdjMoC7tfRI
+ 5HWjjB4AH8JtkRcNrCYbN4EkST8rWwypQDIgF1yQJAOnIR+OS63+JfGWascEpFRTOdl6
+ FgPsIDYxzJNpK47Jl3jqQP0kJXdVtf65p5KLHzJ+wPNBrRlaZJCmiZQGF7mqxqnoPYQR Rg== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
+ by mx0a-00268f01.pphosted.com with ESMTP id 3bcwtg8gds-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 29 Sep 2021 22:00:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PkfzAwXsAMcYz3l0vvm/Ovu1aLxPfu2szw2qoVUZDeFqAnyAl0HPX0+4Hr/502Z2NobkbNEtTd2PehHP6OOVl/1wK6sLERK5EaLqPtaj5HJRTaFCMFCg/sMZVeKRjO6jmzPukZrBZwQxsteUadncGBCIe+TQRSgWMNcvw4cDYjXLQbhbpZ89tHoaVM2RrxSAq30Ed3AljBRBd9q3Hr3li0VgCXsTp7EfgEt1UefaRmcqnFL4KBox4n59o3bpJ3ng3ugLQA3/wF+UVXzgN7Gfx1gJD402v2glpKDrgeTWk6PrNLq32vimcZE5dH7WrQj+Vp0wSWfK38+FpvlNcpSVKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version; 
+ bh=nAd3hC6+9tYVMt8Hq06dVqDUgM3EOvSCsg7PgsPCOtw=;
+ b=Cj08KNkBbxZ75iORZfPtZqSZv9OD0B29dZcQVfbrz8z7hrDizheV5W4Pq0HaCicoyjj8atFyP0hszfIN6s43Zqu2CGLmnVy9va88u+l3bCCnffw2Gr0OlAmDzvZxtnBlGbhkSzIXrF8KO64OAStJvaVYNRxP1u4lCZ2bAWNKEBanSsSlShjfmr2NwajnZWSrU6yVI6thog/Z6xEg0ww1wKzHtoHDARfUOFh5sxEYc6z2mHKoLppRT8IuYPxhbDaFpB3WETgbZvzCvrMMVYyAo9Z5CnNdZPpPIa5HU47wp08QA35VJYPvvNlje6icaXlaW/mtaRwPFHiDd4afRLSdOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
+Received: from DM8PR04MB8007.namprd04.prod.outlook.com (2603:10b6:5:314::20)
+ by DM8PR04MB8183.namprd04.prod.outlook.com (2603:10b6:8:2::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4566.14; Wed, 29 Sep 2021 22:00:39 +0000
+Received: from DM8PR04MB8007.namprd04.prod.outlook.com
+ ([fe80::8049:f2d5:9bed:efa0]) by DM8PR04MB8007.namprd04.prod.outlook.com
+ ([fe80::8049:f2d5:9bed:efa0%6]) with mapi id 15.20.4544.021; Wed, 29 Sep 2021
+ 22:00:39 +0000
+From: Zev Weiss <zweiss@equinix.com>
+To: Rob Herring <robh+dt@kernel.org>
+CC: Zev Weiss <zev@bewilderbeest.net>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-aspeed <linux-aspeed@lists.ozlabs.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Andrew Jeffery <andrew@aj.id.au>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, OpenBMC Maillist
+ <openbmc@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, Michael Walle <michael@walle.cc>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Jeremy Kerr
+ <jk@codeconstruct.com.au>, Frank Rowand <frowand.list@gmail.com>, Pratyush
+ Yadav <p.yadav@ti.com>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>, =?iso-8859-1?Q?C=E9dric_Le_Goater?=
+ <clg@kaod.org>
+Subject: Re: [PATCH 0/6] Dynamic aspeed-smc flash chips via "reserved" DT
+ status
+Thread-Topic: [PATCH 0/6] Dynamic aspeed-smc flash chips via "reserved" DT
+ status
+Thread-Index: AQHXtX1wzF3QB0SC6EG5ofzLnY2pNQ==
+Date: Wed, 29 Sep 2021 22:00:39 +0000
+Message-ID: <20210929220038.GS17315@packtop>
+References: <20210929115409.21254-1-zev@bewilderbeest.net>
+ <CAL_JsqJH+b5oFuSP+KBLBsN5QTA6xASuqXJWXUaDkHhugXPpnQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqJH+b5oFuSP+KBLBsN5QTA6xASuqXJWXUaDkHhugXPpnQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=equinix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 90de20b3-e77b-47e5-9080-08d9839492f8
+x-ms-traffictypediagnostic: DM8PR04MB8183:
+x-microsoft-antispam-prvs: <DM8PR04MB8183931B98C001B424AFDBCDC3A99@DM8PR04MB8183.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U4MJaYK8P7N5cy9b0b+NisAEZmqXCzs34R24DkWmKA6jUaVklVY2mFLX3qT9AmKPo8R3IvZQ5IobhUDoxNCRAt/1X9leVfJoySvVS8TRnBO8dNv9wzdcOx27AK/LYUhZtC+sUZgKz3EfYee+Xnb/Ld6vUCY+buqMHAqt+q/TIRAB/SMhopUAqLkiwmXiO+JJVINQKtJm1VJzGcPlAia7z1Xo3UBw2doykoY6cKuJ26GlaJAU5fNCxXEn1l66P738GDtL9kxWPVS0NQ/Hsy9OcAzejYohx+2YJRRf5wIVFr/KUBPe8/AyGuTZ0C4DV7GS+pedA/9sM8VC1FilYLI0ZgObucdkOlBaL4lPOF8WKpUu0zm1hs/APfDNbr75vwyytgODlIC3PUDC3CS+zsVtDMbf19IGQff6wfZUwWV+3Jza/TJoindPhKj+RIkVgUCS4GyqwOYUHpzBJ/eiKwe75XStx0BDvvlqQ0EqDK6ai2V+Qrm4yfQrOEwiMZ1Vz9Q+4wy3i2jLAgVP19VcSvz3avpck5bs3HgkeU8vwG/c24BWtEJp4gnJ9jfQJZlfmkZxW6q/p81ZATYwbQzFpg1UY7GH7hVs1fXIeiVz0fJI7lwz0bXfo8WZgGdoCOlBwKmjx/bvyOG/GJtjpbKT+rO7r3d5WGhYz2ihZqneyOawnbXF5KBjyqjCbrRUN6yiOJ9NMg7Kf9de+LOvlbDDNiU3SA==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM8PR04MB8007.namprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(7916004)(366004)(6512007)(9686003)(6506007)(5660300002)(4326008)(122000001)(38100700002)(38070700005)(83380400001)(71200400001)(186003)(66946007)(33716001)(66446008)(64756008)(91956017)(76116006)(7416002)(66476007)(66556008)(2906002)(8676002)(1076003)(33656002)(316002)(54906003)(26005)(6486002)(8936002)(86362001)(508600001);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?ljRbOsUboRe/8iu0ep+lQ/qFOqJxnQwpG0o33FS3Lni4pm7fba5RVD+Ui2?=
+ =?iso-8859-1?Q?UtYQmwoB61kWC736GvyXaetGStHOLoxK8ewRUiWQPDqLeQkgM1ECdEQA53?=
+ =?iso-8859-1?Q?hD2iU19SCaGmysba8Ho2ma5NeQsPopEcfgFf6HJ5nsFDcRqIvqOmmxZ/2e?=
+ =?iso-8859-1?Q?k25cgYptwuj8q1QHvs+3WedYhaRUOnLprhhaZT62LB8hU7wfwCu6fmNtML?=
+ =?iso-8859-1?Q?/nOVVdNNZ01vbIcJzN92nKGf5iIWGZTBDueDtg2Kv2CV9gMD82G0IyerHy?=
+ =?iso-8859-1?Q?WsaPcygbCaXdZPpK3TDs+Jeba7iwwYRAe3s9fBNEKmXf/XASoPX/JycMhK?=
+ =?iso-8859-1?Q?su0xyQxjiruCfNIwGMcwuOCMNnollaogwg58PJExR0ssmmPB7lbi0U6GPd?=
+ =?iso-8859-1?Q?NG2V09Ai1SOvA5LQZO1uM/fdvQWoxMobU91ObKGtMvL2NlP35X+yGEWb9V?=
+ =?iso-8859-1?Q?mhZCd+6ZK2imxRzKT5JWYvEYlzlmxSDAj47RyvmclQZVYayy8eL6TjGJ8b?=
+ =?iso-8859-1?Q?Wrop+eNdg/wR1tnwOKIEH1Ihyllb9TaAh1Y75o+jzpo3+zTAHdz6Y2Fsv8?=
+ =?iso-8859-1?Q?K5PKTXv10nAVGsP5XcdOQA2HjoJRI3CzTK/NldX/bbvDVR424DON4a+sGG?=
+ =?iso-8859-1?Q?k+aSklwk4yEL0FXDJhiuK6/0JLExFDNqGXku8TAF9pcIkv/+viwnxDy4vF?=
+ =?iso-8859-1?Q?/bxfoRKAWYdgIIbuHw0M+cpppA1UqQecVaYsh/2kROYZMb9OpZWJBVotCf?=
+ =?iso-8859-1?Q?M/sj72qu8jBtsar020s/K6JlxkUZOsqANvw/LGGsUQsqoNCkVIvJb/lvOi?=
+ =?iso-8859-1?Q?NlcU8ri1YPgQ4D0WmVqOkeOWQBnEaj/byVTPrhhepzKO4vKtIdebwMJYM1?=
+ =?iso-8859-1?Q?btPxWyW2xe7h5oheT6yxLzBynLVCJsatjZXvLsQ716LWB4O1SWMD7MSx4V?=
+ =?iso-8859-1?Q?1hmtt1xcsg8hp1LN7U42aVNY5KSxrQ9tPRK5OWLumK9JjVf5iCagpXBjcm?=
+ =?iso-8859-1?Q?AMmosiZbTWiBSzD6QeRAIIScrzEZx9l3uGHSes3AnH6+zsZTbyMx3Kn8dQ?=
+ =?iso-8859-1?Q?iJZXkwr7MJPTjncUNv+ksf2AHyPuL3YRPJTasVywHvczqXcmD03LjeG8yv?=
+ =?iso-8859-1?Q?yFBfc/fqlT0p3u2LYFxewsRV3iHoQXgSKzB3u3Bjhemxkt4zAsnRZlT1fU?=
+ =?iso-8859-1?Q?VENNM9hZ62mZCtEv85IqOyeiIP+XUpOgJRktkuc7ZLOZmzWlK/xy1XEfxX?=
+ =?iso-8859-1?Q?PyMIu4r2DVA++T7cvTNsc9NtYPrD+mDvy1Qqyr29M2MKf8V3O53BuCmz3Q?=
+ =?iso-8859-1?Q?k+yxJW2a0QCR6hyf7UqaliraS2InXPfc6XZWRoJIu0iut+U3P3UBwiJDdB?=
+ =?iso-8859-1?Q?N/mdhJ8RGE?=
+x-ms-exchange-transport-forked: True
+Content-ID: <3B0506D33DDF9740BD32F9BD8AD1A497@namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210928163519.08cd1138@xps13>
+X-OriginatorOrg: equinix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8007.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90de20b3-e77b-47e5-9080-08d9839492f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 22:00:39.2364 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RSU8YrEecd5C1VM+hfHQI3R53GNHQbOarcBzPrj3Afw4wl/FaOuu+5AjN8udmAHPOSG6Iq1EdQkFZbmzCPdEMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB8183
+X-Proofpoint-ORIG-GUID: LWeCFegyco8CltO6ZFaikpLoY6R7LGlZ
+X-Proofpoint-GUID: LWeCFegyco8CltO6ZFaikpLoY6R7LGlZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-29_08,2021-09-29_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 bulkscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=999 spamscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109290130
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210929_124230_314969_B13265EC 
-X-CRM114-Status: GOOD (  22.70  )
+X-CRM114-CacheID: sfid-20210929_150107_618725_E4B3B4E0 
+X-CRM114-Status: GOOD (  42.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,54 +174,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TWlxdWVsLCBCb3JpcywKClRoYW5rIHlvdSBib3RoIGZvciB5b3VyIGlucHV0LgoKPiA+IEkgZG8g
-YWdyZWUgdGhhdCBhIG5ldyBpbnRlcmZhY2UgaXMgbmVlZGVkLCBidXQgaWYgd2UncmUgYWRkaW5n
-IGEgbmV3Cj4gPiBlbnRyeSBwb2ludCwgbGV0J3MgbWFrZSBzdXJlIGl0IGNvdmVycyBhbGwgcG9z
-c2libGUgdXNlIGNhc2VzIHdlIGhhdmUKPiA+IG5vdy4gQXQgdGhlIHZlcnkgbGVhc3QsIEkgdGhp
-bmsgd2UncmUgbWlzc2luZyBpbmZvIGFib3V0IHRoZSBtYXhpbXVtCj4gPiBudW1iZXIgb2YgY29y
-cmVjdGVkIGJpdHMgcGVyIEVDQyByZWdpb24gb24gdGhlIHBvcnRpb24gYmVpbmcgcmVhZC4KPiA+
-IFByb3BhZ2F0aW5nIEVVQ0xFQU4gZXJyb3JzIGlzIG5pY2UsIGJ1dCBpdCdzIG5vdCBwcmVjaXNl
-IGVub3VnaCBJTUhPLgo+ID4gCj4gPiBJIHJlbWVtYmVyIGRpc2N1c3Npbmcgc2VhcmNoIGEgbmV3
-IFJFQUQgaW9jdGwgd2l0aCBTYXNjaGEgSGF1ZXIgYSBmZXcKPiA+IHllYXJzIGJhY2ssIGJ1dCBJ
-IGNhbid0IGZpbmQgdGhlIGRpc2N1c3Npb24uLi4KCkkgdGhpbmsgdGhpcyBpcyB0aGUgdGhyZWFk
-IGluIHF1ZXN0aW9uOgoKICAgIGh0dHBzOi8vd3d3LmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xp
-bnV4LW10ZC8yMDE2LUFwcmlsL3RocmVhZC5odG1sIzY3MDg1CgpJbiBmYWN0LCBpdCBsb29rcyBs
-aWtlIEJvcmlzIGJlYXQgbWUgdG8gcHJlcGFyaW5nIGEgZHJhZnQgcGF0Y2ggYWRkaW5nIGEKTUVN
-UkVBRCBpb2N0bCBieSBzb21lIGZpdmUgeWVhcnM6CgogICAgaHR0cHM6Ly93d3cuaW5mcmFkZWFk
-Lm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTYtQXByaWwvMDY3MTg3Lmh0bWwKCkl0IGlzIGFw
-cGFyZW50bHkgdHJ1ZSB0aGF0ICJldmVyeXRoaW5nIHRoYXQgY2FuIGJlIGludmVudGVkIGhhcyBi
-ZWVuCmludmVudGVkIi4uLiA6LSkgIEkgZGlkIHNlYXJjaCB0aGUgd2ViIGZvciBleGlzdGluZyBt
-ZW50aW9ucyBvZiBhCk1FTVJFQUQgaW9jdGwgYmVmb3JlIHN1Ym1pdHRpbmcgbXkgcGF0Y2gsIGJ1
-dCB0aGlzIHRocmVhZCBkaWQgbm90IHR1cm4KdXAgaW4gdGhlIHJlc3VsdHMgOigKCkFueXdheSwg
-YmFjayBpbiAyMDE2LCBTYXNjaGEgaGludGVkIHRoYXQgaGUgbWlnaHQgbW92ZSBmb3J3YXJkIHdp
-dGggdGhlCmRyYWZ0IHByZXBhcmVkIGJ5IEJvcmlzOgoKICAgIGh0dHBzOi8vd3d3LmluZnJhZGVh
-ZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE2LUFwcmlsLzA2NzIxNS5odG1sCgpidXQgSSBj
-YW5ub3QgZmluZCBhbnkgcmVsYXRlZCBzdWJtaXNzaW9ucyBmcm9tIFNhc2NoYSBpbiBsaW51eC1t
-dGQncwpQYXRjaHdvcmsuCgo+IFdlIGFsc28gZGlzY3Vzc2VkIGEgbXRkX2lvX29wIHNvbWUgdGlt
-ZSBhZ28sIHdoaWNoIHdvdWxkIGVxdWl2YWxlbnRseQo+IHJlcGxhY2UgbXRkX29vYl9vcHMgYXQg
-c29tZSBwb2ludCwgaW5jbHVkaW5nIG1vcmUgaW5mb3JtYXRpb24gc3VjaCBhcwo+IHRoZSBiaXRm
-bGlwcyB3aGljaCBoYXBwZW5lZCBvbiBldmVyeSBjaHVuayBpbnN0ZWFkIG9mIHRoZSBpbmZvcm1h
-dGlvbgo+IHJlZ2FyZGluZyB0aGUgbWF4aW11bSBudW1iZXIgb2YgYml0ZmxpcHMgaW4gb25lIG9m
-IHRoZSBjaHVua3Mgb25seS4KCklzIHRoYXQgZGlzY3Vzc2lvbiBhdmFpbGFibGUgb25saW5lPyAg
-U2VhcmNoIGVuZ2luZXMgc2VlbSB0byBiZQpvYmxpdmlvdXMgdG8gdGhhdCB0ZXJtLCB3aGljaCBt
-YWtlcyBpdCBoYXJkIGZvciBtZSB0byBnZXQgYWNxdWFpbnRlZAp3aXRoIHRoYXQgaWRlYSBhbmQv
-b3IgdG8gY29tbWVudCBvbiBpdCA7KQoKPiBJSVJDIHRoZSBwb2ludCB3YXMgdG8gZ2V0IHJpZCBv
-ZiB0aGUgbXRkX3tyZWFkLHdyaXRlfXssX29vYn0gaG9va3MgYW5kCj4gc3RydWN0dXJlcyBpbiBm
-YXZvciBvZiBhIG1vcmUgcm9idXN0IGFuZCBjb21wbGV0ZSBzZXQgb2Ygb3BlcmF0aW9ucy4KClRo
-YXQgc291bmRzIGxpa2UgYSBtYWpvciBvdmVyaGF1bCwgcmlnaHQ/CgpJIGd1ZXNzIHRoZSBiaWcg
-cXVlc3Rpb24gZnJvbSBteSBwZXJzcGVjdGl2ZSBpczogc2hvdWxkIEkgcmV2aXZlIEJvcmlzJwpv
-cmlnaW5hbCBlZmZvcnQgb24gdGhlIE1FTVJFQUQgaW9jdGwgKHdoaWNoIHJldHVybnMgbW9yZSBk
-ZXRhaWxlZApiaXRmbGlwIHN0YXRzIGluIHRoZSBzdHJ1Y3R1cmUgcGFzc2VkIGJ5IHVzZXIgc3Bh
-Y2UpIG9yIHdvdWxkIHRoYXQgYmUgYQp3YXN0ZSBvZiB0aW1lIGJlY2F1c2UgdGhlIHN1YnN5c3Rl
-bSB3aWxsIGJlIHN3aXRjaGVkIG92ZXIgd2hvbGVzYWxlIHRvIGEKbmV3IHdheSBvZiBkb2luZyBJ
-L08gKG10ZF9pb19vcCkgaW4gdGhlIGZvcmVzZWVhYmxlIGZ1dHVyZSBhbmQgdGhlcmVmb3JlCmV4
-cG9zaW5nIHlldCBhbm90aGVyIGlvY3RsIHRvIHVzZXIgc3BhY2UgdG9kYXkgd291bGQgYmUgZnJv
-d25lZCB1cG9uPwoKLS0gCkJlc3QgcmVnYXJkcywKTWljaGHFgiBLxJlwaWXFhAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Wed, Sep 29, 2021 at 09:08:03AM PDT, Rob Herring wrote:
+>On Wed, Sep 29, 2021 at 6:54 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+>>
+>> Hello,
+>>
+>> This patch series aims to improve a scenario that arises in OpenBMC
+>> and which isn't handled very well at the moment.  Certain devices, the
+>> example at hand being the flash chip used to store the host's firmware
+>> (e.g. the BIOS), may be shared between the BMC and the host system but
+>> only available to one or the other at any given time.  The device may
+>> thus be effectively off-limits to the BMC when it boots, and only
+>> usable after userspace performs the necessary steps to coordinate
+>> appropriately with the host (tracking its power state, twiddling
+>> GPIOs, sending IPMI commands, etc.).
+>>
+>> Neither the "okay" nor the "disabled" device-tree status values works
+>> nicely for the flash device this case -- an "okay" device gets probed
+>> automatically as soon as the device and a driver for it are available,
+>> and a "disabled" one gets forgotten about entirely, whereas we want
+>> the BMC's kernel to be aware of the existence of the device, but not
+>> try to actually do anything with it (i.e. probe it) until explicitly
+>> requested to do so by userspace.
+>
+>While Linux treats 'disabled' as gone forever, that's not exactly what
+>the spec says. Either disabled or reserved could change in theory. But
+>I do agree 'reserved' is the right choice for your use.
+
+True -- the spec's description of "disabled" also sounds like it could
+be an appropriate fit for this case, but the existing (somewhat
+different) interpretation in the kernel is well-established enough that
+I figured that ship had sailed.
+
+>
+>> However, while there's no support for it currently in the kernel tree,
+>> the device-tree spec [0] also lists "reserved" as a possible status
+>> value, and its description seems like a fairly reasonable fit for this
+>> situation:
+>>
+>>   Indicates that the device is operational, but should not be used.
+>>   Typically this is used for devices that are controlled by another
+>>   software component, such as platform firmware.
+>>
+>> These patches start making use of this status value in the aspeed-smc
+>> driver.  The first patch adds a companion routine to
+>> of_device_is_available() that checks for a "reserved" status instead
+>> of "okay".  The second patch is a small MTD adjustment to allow an
+>> unregistered device to be cleanly re-registered.  Patches 3 through 5
+>> modify the aspeed-smc driver to allow individual chips to be attached
+>> and detached at runtime, and to avoid automatically attaching any
+>> marked as reserved.  Finally, patch 6 employs the newly-supported
+>> status in adding support for the BIOS flash device to the ASRock Rack
+>> e3c246d4i BMC.
+>
+>I'm not sure this should be MTD specific. There's other cases where we
+>may want devices to become available. So the question is whether there
+>should be a more generic mechanism rather than each subsystem coming
+>up with their own thing.
+>
+
+Agreed, and in fact in an earlier version of these patches I had
+approached this via a more generic tweak to the driver-core code to
+inhibit attaching drivers to devices marked as reserved.  The problem I
+had with that is that it ended up being kind of limited in how far down
+the device tree it would actually take effect.  For example in this
+particular case, I could mark the entire aspeed-smc controller as
+reserved and prevent the driver core from binding the driver to it, but
+nothing more fine-grained than that.  If I marked an individual flash
+chip behind that controller as reserved, the aspeed-smc driver would get
+attached (as expected), but that driver (not the driver core) is
+responsible for inspecting its child devices and attaching them, and its
+existing probe routine only checks of_device_is_available() and hence
+can't distinguish between reserved and disabled.
+
+So while I should probably reincorporate the corresponding driver-core
+change, I don't see it as a complete solution, and I don't see an
+obvious way to achieve one centrally without requiring modifications in
+individual drivers, unfortunately.
+
+>There's out of tree support for applying overlays which could be used
+>here. The issue with it is we don't want it to be unconstrained where
+>an overlay can make any change anywhere in a DT.
+>
+
+Yeah, I'm vaguely aware of the dt-overlay patches, but had been under
+the impression that their prospects for mainlining were fairly dim and
+hence was looking at alternate approaches (of somewhat more limited scope).
+
+>Another possibility is making 'status' writeable from userspace. It is
+>just a sysfs file. That too may need to be opt-in.
+>
+
+The sysfs file you're referring to being those under
+/sys/firmware/devicetree I assume?  That's an interesting idea...in
+addition to making it opt-in, we'd presumably need to restrict what
+state transitions are allowed (maybe only okay<->reserved?).  Keeping
+/sys/firmware/fdt in sync with that seems like it might be a bit of a
+headache though...perhaps that would just remain a static reflection of
+whatever the state was at boot?
+
+
+Thanks,
+Zev
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
