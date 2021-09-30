@@ -2,60 +2,67 @@ Return-Path: <SRS0=K+kN=OU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E94C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 08:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26218C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 10:08:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D92F86187A
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 08:48:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D92F86187A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id E732761884
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 10:08:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E732761884
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lfEe15x896KbIiI3cUQGZGN0WJeVIUJxopRf8o79fHA=; b=e2krRjoesWhiBA
-	h+lCpqcLIWjZo8QRzw9An9hBrHYUtLgffdENcj0k8Dcuxgnj6FVpoXY2X9kUDOvnb+sc7GhAIrySX
-	GTMztFoEeRjcSVOT3b8NSUme9D7s7UZMiBYEJnNT9nH2/uwW/HmNzCg6WZktyhwVls5FUoFwXFCbO
-	mn+z3/PBLWEmUn1QS9ex1kDJmGYo5Vv7wsoru/4gRd8xRz/Mv8jOoEM+6PbCaYQ+DTQICi8stZGXw
-	nWOCzVi0kKJk604krReyKizMz8zfz2ft39SJ8wYSLvfGgrDEKThx853pX6llXTPgImu90vyq1quA7
-	8DHQCg5Z5W8i+0Smt4+Q==;
+	List-Owner; bh=YQwhlY92uC9O1JlDfXmUhDgnqwgEBc6B5I08X0eOjaY=; b=imiXDSHLAwlRvM
+	w549x4Am5DLIaULE2yq/VVsTQx2EQHvWxHgJ8+cvECzfBOvWwDj8l2PNY7QH/O7qqPF7NCl7cdNQE
+	GArQRqnokfn1Lij2nfL8dTqVhVySxkmt/4sLUt2Dgv0uJ0HZCps+kK/e+omFhWte1PZX7Foa1aQ5+
+	gbdkL4c47gfx0v6Augv9GB1k/vUerIN4AdNtVFxRVZXJ3w3r8+dhreUoKqJb+7zxNOPZkje5Ltsze
+	F+HPqd5HW1JbKkE4RgiXUm36o1oYNrqvnvqZjkI/LEfgws/OSxeffQohSEEXfKJNCTfwzjQUoN+ZM
+	WonCqrpf8YoOxSQoSiKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVrj5-00DSre-Ud; Thu, 30 Sep 2021 08:47:35 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1mVsyI-00DjSM-Gl; Thu, 30 Sep 2021 10:07:22 +0000
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVrj0-00DSqK-De
- for linux-mtd@lists.infradead.org; Thu, 30 Sep 2021 08:47:32 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 0C60A200007;
- Thu, 30 Sep 2021 08:47:21 +0000 (UTC)
-Date: Thu, 30 Sep 2021 10:47:21 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Boris
- Brezillon <bbrezillon@kernel.org>
-Subject: Re: [PATCH] mtd: add MEMREAD ioctl
-Message-ID: <20210930104721.03dc45bb@xps13>
-In-Reply-To: <20210930085133.13b5a228@collabora.com>
-References: <20210920070221.10173-1-kernel@kempniu.pl>
- <20210928155859.433844cb@xps13>
- <20210928162402.6bb64fcf@collabora.com>
- <20210928163519.08cd1138@xps13>
- <YVTBoAnQKYLNpOPc@larwa.hq.kempniu.pl>
- <20210930085133.13b5a228@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mVsyE-00DjQL-OV
+ for linux-mtd@lists.infradead.org; Thu, 30 Sep 2021 10:07:21 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10122"; a="288808498"
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; d="scan'208";a="288808498"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Sep 2021 03:07:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,335,1624345200"; d="scan'208";a="457387603"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga002.jf.intel.com with ESMTP; 30 Sep 2021 03:07:13 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+ id BE37F177; Thu, 30 Sep 2021 13:07:19 +0300 (EEST)
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Michael Walle <michael@walle.cc>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: [PATCH 1/3] mtd: spi-nor: intel-spi: Disable write protection only if
+ asked
+Date: Thu, 30 Sep 2021 13:07:17 +0300
+Message-Id: <20210930100719.2176-2-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210930100719.2176-1-mika.westerberg@linux.intel.com>
+References: <20210930100719.2176-1-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210930_014730_755343_A263B7F8 
-X-CRM114-Status: GOOD (  37.44  )
+X-CRM114-CacheID: sfid-20210930_030718_922248_E428A2B2 
+X-CRM114-Status: GOOD (  27.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,70 +74,315 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CmJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tIHdyb3RlIG9uIFRodSwgMzAgU2VwIDIwMjEg
-MDg6NTE6MzMgKzAyMDA6Cgo+IEh1IE1pY2hhbCwKPiAKPiBPbiBXZWQsIDI5IFNlcCAyMDIxIDIx
-OjQyOjI0ICswMjAwCj4gTWljaGHFgiBLxJlwaWXFhCA8a2VybmVsQGtlbXBuaXUucGw+IHdyb3Rl
-Ogo+IAo+ID4gTWlxdWVsLCBCb3JpcywKPiA+IAo+ID4gVGhhbmsgeW91IGJvdGggZm9yIHlvdXIg
-aW5wdXQuCj4gPiAgIAo+ID4gPiA+IEkgZG8gYWdyZWUgdGhhdCBhIG5ldyBpbnRlcmZhY2UgaXMg
-bmVlZGVkLCBidXQgaWYgd2UncmUgYWRkaW5nIGEgbmV3Cj4gPiA+ID4gZW50cnkgcG9pbnQsIGxl
-dCdzIG1ha2Ugc3VyZSBpdCBjb3ZlcnMgYWxsIHBvc3NpYmxlIHVzZSBjYXNlcyB3ZSBoYXZlCj4g
-PiA+ID4gbm93LiBBdCB0aGUgdmVyeSBsZWFzdCwgSSB0aGluayB3ZSdyZSBtaXNzaW5nIGluZm8g
-YWJvdXQgdGhlIG1heGltdW0KPiA+ID4gPiBudW1iZXIgb2YgY29ycmVjdGVkIGJpdHMgcGVyIEVD
-QyByZWdpb24gb24gdGhlIHBvcnRpb24gYmVpbmcgcmVhZC4KPiA+ID4gPiBQcm9wYWdhdGluZyBF
-VUNMRUFOIGVycm9ycyBpcyBuaWNlLCBidXQgaXQncyBub3QgcHJlY2lzZSBlbm91Z2ggSU1ITy4K
-PiA+ID4gPiAKPiA+ID4gPiBJIHJlbWVtYmVyIGRpc2N1c3Npbmcgc2VhcmNoIGEgbmV3IFJFQUQg
-aW9jdGwgd2l0aCBTYXNjaGEgSGF1ZXIgYSBmZXcKPiA+ID4gPiB5ZWFycyBiYWNrLCBidXQgSSBj
-YW4ndCBmaW5kIHRoZSBkaXNjdXNzaW9uLi4uICAgIAo+ID4gCj4gPiBJIHRoaW5rIHRoaXMgaXMg
-dGhlIHRocmVhZCBpbiBxdWVzdGlvbjoKPiA+IAo+ID4gICAgIGh0dHBzOi8vd3d3LmluZnJhZGVh
-ZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE2LUFwcmlsL3RocmVhZC5odG1sIzY3MDg1Cj4g
-PiAKPiA+IEluIGZhY3QsIGl0IGxvb2tzIGxpa2UgQm9yaXMgYmVhdCBtZSB0byBwcmVwYXJpbmcg
-YSBkcmFmdCBwYXRjaCBhZGRpbmcgYQo+ID4gTUVNUkVBRCBpb2N0bCBieSBzb21lIGZpdmUgeWVh
-cnM6Cj4gPiAKPiA+ICAgICBodHRwczovL3d3dy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51
-eC1tdGQvMjAxNi1BcHJpbC8wNjcxODcuaHRtbCAgCj4gCj4gRXhhY3RseSB0aGUgb25lIEkgd2Fz
-IHJlZmVycmluZyB0by4gTm90ZSB0aGF0IHRoaXMgcGF0Y2ggc3RpbGwgY29udGFpbnMKPiB0aGUg
-dW5ib3VuZGVkIG1hbGxvYyB3aGljaCBJIHRoaW5rIGlzIHdvcnRoIGZpeGluZywgYnV0IG90aGVy
-IHRoYW4KPiB0aGF0IGFuZCB0aGUgYWRkaXRpb24gb2YgRUNDIHN0YXRzLCBpdCBsb29rcyBwcmV0
-dHkgc2ltaWxhciB0byB5b3Vycy4KPiAKPiA+IAo+ID4gSXQgaXMgYXBwYXJlbnRseSB0cnVlIHRo
-YXQgImV2ZXJ5dGhpbmcgdGhhdCBjYW4gYmUgaW52ZW50ZWQgaGFzIGJlZW4KPiA+IGludmVudGVk
-Ii4uLiA6LSkgIEkgZGlkIHNlYXJjaCB0aGUgd2ViIGZvciBleGlzdGluZyBtZW50aW9ucyBvZiBh
-Cj4gPiBNRU1SRUFEIGlvY3RsIGJlZm9yZSBzdWJtaXR0aW5nIG15IHBhdGNoLCBidXQgdGhpcyB0
-aHJlYWQgZGlkIG5vdCB0dXJuCj4gPiB1cCBpbiB0aGUgcmVzdWx0cyA6KAo+ID4gCj4gPiBBbnl3
-YXksIGJhY2sgaW4gMjAxNiwgU2FzY2hhIGhpbnRlZCB0aGF0IGhlIG1pZ2h0IG1vdmUgZm9yd2Fy
-ZCB3aXRoIHRoZQo+ID4gZHJhZnQgcHJlcGFyZWQgYnkgQm9yaXM6Cj4gPiAKPiA+ICAgICBodHRw
-czovL3d3dy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxNi1BcHJpbC8wNjcy
-MTUuaHRtbAo+ID4gCj4gPiBidXQgSSBjYW5ub3QgZmluZCBhbnkgcmVsYXRlZCBzdWJtaXNzaW9u
-cyBmcm9tIFNhc2NoYSBpbiBsaW51eC1tdGQncwo+ID4gUGF0Y2h3b3JrLgo+ID4gICAKPiA+ID4g
-V2UgYWxzbyBkaXNjdXNzZWQgYSBtdGRfaW9fb3Agc29tZSB0aW1lIGFnbywgd2hpY2ggd291bGQg
-ZXF1aXZhbGVudGx5Cj4gPiA+IHJlcGxhY2UgbXRkX29vYl9vcHMgYXQgc29tZSBwb2ludCwgaW5j
-bHVkaW5nIG1vcmUgaW5mb3JtYXRpb24gc3VjaCBhcwo+ID4gPiB0aGUgYml0ZmxpcHMgd2hpY2gg
-aGFwcGVuZWQgb24gZXZlcnkgY2h1bmsgaW5zdGVhZCBvZiB0aGUgaW5mb3JtYXRpb24KPiA+ID4g
-cmVnYXJkaW5nIHRoZSBtYXhpbXVtIG51bWJlciBvZiBiaXRmbGlwcyBpbiBvbmUgb2YgdGhlIGNo
-dW5rcyBvbmx5LiAgICAKPiA+IAo+ID4gSXMgdGhhdCBkaXNjdXNzaW9uIGF2YWlsYWJsZSBvbmxp
-bmU/ICBTZWFyY2ggZW5naW5lcyBzZWVtIHRvIGJlCj4gPiBvYmxpdmlvdXMgdG8gdGhhdCB0ZXJt
-LCB3aGljaCBtYWtlcyBpdCBoYXJkIGZvciBtZSB0byBnZXQgYWNxdWFpbnRlZAo+ID4gd2l0aCB0
-aGF0IGlkZWEgYW5kL29yIHRvIGNvbW1lbnQgb24gaXQgOykgIAo+IAo+IE5vdCBzdXJlIHRoaXMg
-aGFzIGJlZW4gZGlzY3Vzc2VkIHB1YmxpY2x5LCBidXQgSSByZW1lbWJlciBzdWdnZXN0aW5nCj4g
-dGhhdCB0byBNaXF1ZWwgYSB3aGlsZSBhZ28gdG8gc2ltcGxpZnkgdGhlIGluLWtlcm5lbCBNVEQg
-aW50ZXJmYWNlLgoKSXQgY2VydGFpbmx5IGhhcHBlbmVkIG9uIElSQyBpbmRlZWQuCgo+ID4gPiBJ
-SVJDIHRoZSBwb2ludCB3YXMgdG8gZ2V0IHJpZCBvZiB0aGUgbXRkX3tyZWFkLHdyaXRlfXssX29v
-Yn0gaG9va3MgYW5kCj4gPiA+IHN0cnVjdHVyZXMgaW4gZmF2b3Igb2YgYSBtb3JlIHJvYnVzdCBh
-bmQgY29tcGxldGUgc2V0IG9mIG9wZXJhdGlvbnMuICAgIAo+ID4gCj4gPiBUaGF0IHNvdW5kcyBs
-aWtlIGEgbWFqb3Igb3ZlcmhhdWwsIHJpZ2h0Pwo+ID4gCj4gPiBJIGd1ZXNzIHRoZSBiaWcgcXVl
-c3Rpb24gZnJvbSBteSBwZXJzcGVjdGl2ZSBpczogc2hvdWxkIEkgcmV2aXZlIEJvcmlzJwo+ID4g
-b3JpZ2luYWwgZWZmb3J0IG9uIHRoZSBNRU1SRUFEIGlvY3RsICh3aGljaCByZXR1cm5zIG1vcmUg
-ZGV0YWlsZWQKPiA+IGJpdGZsaXAgc3RhdHMgaW4gdGhlIHN0cnVjdHVyZSBwYXNzZWQgYnkgdXNl
-ciBzcGFjZSkgb3Igd291bGQgdGhhdCBiZSBhCj4gPiB3YXN0ZSBvZiB0aW1lIGJlY2F1c2UgdGhl
-IHN1YnN5c3RlbSB3aWxsIGJlIHN3aXRjaGVkIG92ZXIgd2hvbGVzYWxlIHRvIGEKPiA+IG5ldyB3
-YXkgb2YgZG9pbmcgSS9PIChtdGRfaW9fb3ApIGluIHRoZSBmb3Jlc2VlYWJsZSBmdXR1cmUgYW5k
-IHRoZXJlZm9yZQo+ID4gZXhwb3NpbmcgeWV0IGFub3RoZXIgaW9jdGwgdG8gdXNlciBzcGFjZSB0
-b2RheSB3b3VsZCBiZSBmcm93bmVkIHVwb24/Cj4gPiAgIAo+IAo+IFRoYXQncyBub3QgbXkgY2Fs
-bCB0byBtYWtlLCBidXQgSSB0aGluayB0aG9zZSAyIHRoaW5ncyBhcmUgb3J0aG9nb25hbAo+IGFu
-ZCBjYW4gYmUgYWRkcmVzc2VkIHNlcGFyYXRlbHkuCgpBZ3JlZWQuCgpUaGFua3MsCk1pcXXDqGwK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Currently the driver tries to disable the BIOS write protection
+automatically even if this is not what the user wants. For this reason
+modify the driver so that by default it does not touch the write
+protection. Only if specifically asked by the user (setting writeable=1
+command line parameter) the driver tries to disable the BIOS write
+protection.
+
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+ drivers/mfd/lpc_ich.c                         | 59 +++++++++++++++++--
+ .../mtd/spi-nor/controllers/intel-spi-pci.c   | 29 +++++----
+ drivers/mtd/spi-nor/controllers/intel-spi.c   | 41 ++++++-------
+ include/linux/platform_data/x86/intel-spi.h   |  6 +-
+ 4 files changed, 96 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index f10e53187f67..9ffab9aafd81 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -63,6 +63,8 @@
+ #define SPIBASE_BYT		0x54
+ #define SPIBASE_BYT_SZ		512
+ #define SPIBASE_BYT_EN		BIT(1)
++#define BYT_BCR			0xfc
++#define BYT_BCR_WPD		BIT(0)
+ 
+ #define SPIBASE_LPT		0x3800
+ #define SPIBASE_LPT_SZ		512
+@@ -1084,12 +1086,57 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
+ 	return ret;
+ }
+ 
++static bool lpc_ich_byt_set_writeable(void __iomem *base, void *data)
++{
++	u32 val;
++
++	val = readl(base + BYT_BCR);
++	if (!(val & BYT_BCR_WPD)) {
++		val |= BYT_BCR_WPD;
++		writel(val, base + BYT_BCR);
++		val = readl(base + BYT_BCR);
++	}
++
++	return val & BYT_BCR_WPD;
++}
++
++static bool lpc_ich_lpt_set_writeable(void __iomem *base, void *data)
++{
++	struct pci_dev *pdev = data;
++	u32 bcr;
++
++	pci_read_config_dword(pdev, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_write_config_dword(pdev, BCR, bcr);
++		pci_read_config_dword(pdev, BCR, &bcr);
++	}
++
++	return bcr & BCR_WPD;
++}
++
++static bool lpc_ich_bxt_set_writeable(void __iomem *base, void *data)
++{
++	unsigned int spi = PCI_DEVFN(13, 2);
++	struct pci_bus *bus = data;
++	u32 bcr;
++
++	pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_bus_write_config_dword(bus, spi, BCR, bcr);
++		pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++	}
++
++	return bcr & BCR_WPD;
++}
++
+ static int lpc_ich_init_spi(struct pci_dev *dev)
+ {
+ 	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
+ 	struct resource *res = &intel_spi_res[0];
+ 	struct intel_spi_boardinfo *info;
+-	u32 spi_base, rcba, bcr;
++	u32 spi_base, rcba;
+ 
+ 	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (!info)
+@@ -1103,6 +1150,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 		if (spi_base & SPIBASE_BYT_EN) {
+ 			res->start = spi_base & ~(SPIBASE_BYT_SZ - 1);
+ 			res->end = res->start + SPIBASE_BYT_SZ - 1;
++
++			info->set_writeable = lpc_ich_byt_set_writeable;
+ 		}
+ 		break;
+ 
+@@ -1113,8 +1162,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 			res->start = spi_base + SPIBASE_LPT;
+ 			res->end = res->start + SPIBASE_LPT_SZ - 1;
+ 
+-			pci_read_config_dword(dev, BCR, &bcr);
+-			info->writeable = !!(bcr & BCR_WPD);
++			info->set_writeable = lpc_ich_lpt_set_writeable;
++			info->data = dev;
+ 		}
+ 		break;
+ 
+@@ -1135,8 +1184,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 			res->start = spi_base & 0xfffffff0;
+ 			res->end = res->start + SPIBASE_APL_SZ - 1;
+ 
+-			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
+-			info->writeable = !!(bcr & BCR_WPD);
++			info->set_writeable = lpc_ich_bxt_set_writeable;
++			info->data = bus;
+ 		}
+ 
+ 		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+index 1bc53b8bb88a..508f7ca098ef 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+@@ -16,12 +16,30 @@
+ #define BCR		0xdc
+ #define BCR_WPD		BIT(0)
+ 
++static bool intel_spi_pci_set_writeable(void __iomem *base, void *data)
++{
++	struct pci_dev *pdev = data;
++	u32 bcr;
++
++	/* Try to make the chip read/write */
++	pci_read_config_dword(pdev, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_write_config_dword(pdev, BCR, bcr);
++		pci_read_config_dword(pdev, BCR, &bcr);
++	}
++
++	return bcr & BCR_WPD;
++}
++
+ static const struct intel_spi_boardinfo bxt_info = {
+ 	.type = INTEL_SPI_BXT,
++	.set_writeable = intel_spi_pci_set_writeable,
+ };
+ 
+ static const struct intel_spi_boardinfo cnl_info = {
+ 	.type = INTEL_SPI_CNL,
++	.set_writeable = intel_spi_pci_set_writeable,
+ };
+ 
+ static int intel_spi_pci_probe(struct pci_dev *pdev,
+@@ -29,7 +47,6 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+ {
+ 	struct intel_spi_boardinfo *info;
+ 	struct intel_spi *ispi;
+-	u32 bcr;
+ 	int ret;
+ 
+ 	ret = pcim_enable_device(pdev);
+@@ -41,15 +58,7 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	/* Try to make the chip read/write */
+-	pci_read_config_dword(pdev, BCR, &bcr);
+-	if (!(bcr & BCR_WPD)) {
+-		bcr |= BCR_WPD;
+-		pci_write_config_dword(pdev, BCR, bcr);
+-		pci_read_config_dword(pdev, BCR, &bcr);
+-	}
+-	info->writeable = !!(bcr & BCR_WPD);
+-
++	info->data = pdev;
+ 	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
+ 	if (IS_ERR(ispi))
+ 		return PTR_ERR(ispi);
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index a413892ff449..f35597cbea0c 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -131,7 +131,6 @@
+  * @sregs: Start of software sequencer registers
+  * @nregions: Maximum number of regions
+  * @pr_num: Maximum number of protected range registers
+- * @writeable: Is the chip writeable
+  * @locked: Is SPI setting locked
+  * @swseq_reg: Use SW sequencer in register reads/writes
+  * @swseq_erase: Use SW sequencer in erase operation
+@@ -149,7 +148,6 @@ struct intel_spi {
+ 	void __iomem *sregs;
+ 	size_t nregions;
+ 	size_t pr_num;
+-	bool writeable;
+ 	bool locked;
+ 	bool swseq_reg;
+ 	bool swseq_erase;
+@@ -304,6 +302,14 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
+ 				  INTEL_SPI_TIMEOUT * 1000);
+ }
+ 
++static bool intel_spi_set_writeable(struct intel_spi *ispi)
++{
++	if (!ispi->info->set_writeable)
++		return false;
++
++	return ispi->info->set_writeable(ispi->base, ispi->info->data);
++}
++
+ static int intel_spi_init(struct intel_spi *ispi)
+ {
+ 	u32 opmenu0, opmenu1, lvscc, uvscc, val;
+@@ -316,19 +322,6 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		ispi->nregions = BYT_FREG_NUM;
+ 		ispi->pr_num = BYT_PR_NUM;
+ 		ispi->swseq_reg = true;
+-
+-		if (writeable) {
+-			/* Disable write protection */
+-			val = readl(ispi->base + BYT_BCR);
+-			if (!(val & BYT_BCR_WPD)) {
+-				val |= BYT_BCR_WPD;
+-				writel(val, ispi->base + BYT_BCR);
+-				val = readl(ispi->base + BYT_BCR);
+-			}
+-
+-			ispi->writeable = !!(val & BYT_BCR_WPD);
+-		}
+-
+ 		break;
+ 
+ 	case INTEL_SPI_LPT:
+@@ -358,6 +351,12 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Try to disable write protection if user asked to do so */
++	if (writeable && !intel_spi_set_writeable(ispi)) {
++		dev_warn(ispi->dev, "can't disable chip write protection\n");
++		writeable = false;
++	}
++
+ 	/* Disable #SMI generation from HW sequencer */
+ 	val = readl(ispi->base + HSFSTS_CTL);
+ 	val &= ~HSFSTS_CTL_FSMIE;
+@@ -884,9 +883,12 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+ 		/*
+ 		 * If any of the regions have protection bits set, make the
+ 		 * whole partition read-only to be on the safe side.
++		 *
++		 * Also if the user did not ask the chip to be writeable
++		 * mask the bit too.
+ 		 */
+-		if (intel_spi_is_protected(ispi, base, limit))
+-			ispi->writeable = false;
++		if (!writeable || intel_spi_is_protected(ispi, base, limit))
++			part->mask_flags |= MTD_WRITEABLE;
+ 
+ 		end = (limit << 12) + 4096;
+ 		if (end > part->size)
+@@ -927,7 +929,6 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 
+ 	ispi->dev = dev;
+ 	ispi->info = info;
+-	ispi->writeable = info->writeable;
+ 
+ 	ret = intel_spi_init(ispi);
+ 	if (ret)
+@@ -945,10 +946,6 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 
+ 	intel_spi_fill_partition(ispi, &part);
+ 
+-	/* Prevent writes if not explicitly enabled */
+-	if (!ispi->writeable || !writeable)
+-		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
+-
+ 	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+diff --git a/include/linux/platform_data/x86/intel-spi.h b/include/linux/platform_data/x86/intel-spi.h
+index 7f53a5c6f35e..7dda3f690465 100644
+--- a/include/linux/platform_data/x86/intel-spi.h
++++ b/include/linux/platform_data/x86/intel-spi.h
+@@ -19,11 +19,13 @@ enum intel_spi_type {
+ /**
+  * struct intel_spi_boardinfo - Board specific data for Intel SPI driver
+  * @type: Type which this controller is compatible with
+- * @writeable: The chip is writeable
++ * @set_writeable: Try to make the chip writeable (optional)
++ * @data: Data to be passed to @set_writeable can be %NULL
+  */
+ struct intel_spi_boardinfo {
+ 	enum intel_spi_type type;
+-	bool writeable;
++	bool (*set_writeable)(void __iomem *base, void *data);
++	void *data;
+ };
+ 
+ #endif /* INTEL_SPI_PDATA_H */
+-- 
+2.33.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
