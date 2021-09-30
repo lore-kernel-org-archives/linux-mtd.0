@@ -2,146 +2,81 @@ Return-Path: <SRS0=K+kN=OU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38CF9C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 15:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 315D3C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 16:24:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07089613CE
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 15:04:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 07089613CE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
+	by mail.kernel.org (Postfix) with ESMTPS id EED5661139
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 16:24:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EED5661139
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=bCTXBNKo3K/IgaG1RX2KxcvnsPTv6NoWNg2PVGl0gyU=; b=V5UiUnGANPod34yf0anoAtkG2a
-	zpLpVeEoQ05hP/cHMLElOv6rI5A4BfWGpZqHF8XeVJjdgKj0CXfyrJ0/L7OSuuxXrDLkLrQRYmaru
-	wOGG0SM+iyY+uV9qnUSSDr2fzJzjPYMnX/IGP0s7hCWdy21u+r1Q7rME5Ux0LLuPLQwi9w8pwgDtn
-	rsCpXLdLmTV6N3D8GL6o4nNji5lGz6m3DeZrhv8X8iIN4JVCZq+u0M09COJoMZllO2cpuM6M7yWzR
-	JvfCC+b08aRa4fg+wu99jeKfIRKCMWQ0AJmrO3KgYZSIvIjuxwW5NvSPCeIDxT0OZOZq/cEwyLLWB
-	Ix//R1TQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=e0sFRzNp/IXDdSTWX99nPyBsaTcS+LVMMsRkVV5909s=; b=uzvFEI2KSfrMif
+	xT1ZuGj8lA14TORHceiPdj+s8+1Q6nyKgReAHGEtE+jgFuuZd+PXcrLQLxdEMXo4bpIUPldz4rFFh
+	ubBrYKHHLkDGv8jY5PtEXZFJikzau79Kz7hbBqEk2yC6hVtn0i6JE6M5pXckrRRtbvYwU/nLTlCVa
+	P5JHZWfsAGgVjlkULsxABef5w7fmIeeF5aeYH9A4jDBAQqnN3l02aGoXjcsdzaIbAv23rEKGLxYzI
+	TiMP8Au6ZuV378n9ugc7lGh0JIhY7/8C7q/MTkmZvE8bfOJ3YyTOcSSmG6pkwy08V1PEwXNedomx+
+	XoH/O/miTh62VHiBu1NQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVxb2-00EsyC-Vx; Thu, 30 Sep 2021 15:03:41 +0000
-Received: from mail-eopbgr00134.outbound.protection.outlook.com
- ([40.107.0.134] helo=EUR02-AM5-obe.outbound.protection.outlook.com)
+	id 1mVyr0-00FE78-4S; Thu, 30 Sep 2021 16:24:14 +0000
+Received: from mail-ot1-x32a.google.com ([2607:f8b0:4864:20::32a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVxb0-00EsxD-7P
- for linux-mtd@lists.infradead.org; Thu, 30 Sep 2021 15:03:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QUJnv7b9DNXn3sxdFOE3kPldGymWkMv/tTkn4qkqlQ+hIKrLIIJzwEPHRhBLKe7WgdBSVMCy9mNhtGqAdYTUlTHvh/P/jJUvFz/wjtv1uEnL1XKKZtvl4nOfLWI/pugs0TbVNQN4gxWAcLipi9QGdFo8ylGxIkI5WTG6SwAHjUb2L5b1Bg4wpzXW5AOZ3XTYOWo4z02PEASjMXGN2qPLbSh69cMgjAcjm743myqaFlNZWn86zrzdSuwEyrSwiudTtSC0TDoQ84ARS85Jiou01eXmEyRTKF26bVqPqngbjZt7LwEG0nmZ+dGRfG1l1fw01r+5JRU+fMUPpABp9OP2ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=24T86wJKP3dsgtlJGPmzYBc8nJpUby8Uv0ARQV06gWI=;
- b=jDp/koR0cwTllBBl5KpbreGEeM5b+VIYmNs6Dn/SCAnxmRZI4bHR4/2bS2CnHouVq+mHYHIzi+JV5CL2/JswDQRES59zFJ6+387+6sP3JxW3blmjEHVImcJTwlLjF0WbTFL7wBY7d/LYGsH+wbJmLxQKSv/BKbSBuPW2FzZ7T5WCJCvvc7iqF8q8rGtu53ccapYLcpqY7ukT3KhPmX+trgPHjOn0A6EfbW9Zdq2tx9zyYWPaRgylh0xw9RoOqJtesoB+gQABXJ8GiDVLJ5cT98vVwomivJYLNnIrAqryXBVCCTENDWqxycmbSDehs0j2sDpSsJPsu0N4soJc83vriQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=24T86wJKP3dsgtlJGPmzYBc8nJpUby8Uv0ARQV06gWI=;
- b=WGKn2H4vkUGEV7HkI4mRqgVgLKtJEZsS2aIsoxEf5mGStuq6QMx7137aI7RvHEpMDTh7jiWycvslIXiJ7OrkxD4obhR3kkD3WL5Kf7loPJARs6evVkUoj0JCJh0/ZeNkICPR0JpENEh0/BEGngH0DyzBbvSFLms6HofFhNj9/ak=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM0PR07MB4036.eurprd07.prod.outlook.com (2603:10a6:208:50::19)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.10; Thu, 30 Sep
- 2021 15:03:33 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::91aa:4873:6782:4917]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::91aa:4873:6782:4917%7]) with mapi id 15.20.4587.007; Thu, 30 Sep 2021
- 15:03:33 +0000
-Subject: Re: [PATCH 3/3] Documentation / MTD: Rename the intel-spi driver
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Mark Brown <broonie@kernel.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Michael Walle <michael@walle.cc>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-References: <20210930100719.2176-1-mika.westerberg@linux.intel.com>
- <20210930100719.2176-4-mika.westerberg@linux.intel.com>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <7e898647-852d-e5f3-bda0-94fbcff88f40@nokia.com>
-Date: Thu, 30 Sep 2021 17:03:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210930100719.2176-4-mika.westerberg@linux.intel.com>
-Content-Language: en-US
-X-ClientProxiedBy: AS8PR04CA0027.eurprd04.prod.outlook.com
- (2603:10a6:20b:310::32) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+ id 1mVyqx-00FE5q-Gk
+ for linux-mtd@lists.infradead.org; Thu, 30 Sep 2021 16:24:12 +0000
+Received: by mail-ot1-x32a.google.com with SMTP id
+ r43-20020a05683044ab00b0054716b40005so8005602otv.4
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Sep 2021 09:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=jaRYUQiOKOkrLqBF5lwhFRj5c/+UwufKN3OBnbmarYU=;
+ b=qUARsv5IaOwHl70W+2zgrKIcEfEwuIGuuBCV/bvJgyYu4RyyKzQhUxvQdN7IoYqOz4
+ TNUzNdneVFpDCFqj0npJtS4JMgm/NR3U4WdlG0R+ph8egyRLC3Db+KdwgQ4Sj2epuy5n
+ b+qudvOhqJK7BzZNRgI22gv7QrZjtc1fGioKWD/AEADDVC42ZNafpwCzBNaQLjKYUwv+
+ SIOlG4OPhgoOdRK7+G+fG1oQaGc1OS6CivyYMEZR9zVrS7x9z5tQOYBchc/PWYf9XUGH
+ UyXk0BVdfTLTOj/YzyKpm+F0+UhdpFM898VMmT2BuenXPxBJs70r2UjuQbUzmmIP4rxo
+ OikQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=jaRYUQiOKOkrLqBF5lwhFRj5c/+UwufKN3OBnbmarYU=;
+ b=aXdEG0DxgGmAw36cxPE4esKd5rbLyGInMX8TlX8wT/xEEQ+wAbECst6LdO73nVqeW2
+ OlzmLIuCYWvWZsCq14XvAgNFZG2Pl6T3IkeBAPDzKeQKX7VxYsL/6M+9ZNsZe2EAevsy
+ 5dmnkbJFt+otyr8Bv2sNJE2XzihmqnKqbc44RE3iI1AL/Vh8MNR+PsLKOZVHTCnGCz7M
+ qxUPXFNGIKlPxK2/y8czQbNY7ataeb93wl9OfB/XYMFv7ubGOvt6oS9z7r1XSSFy7309
+ JoqBB3T2fcC7mrv072uO+JX7DAXMv7C7cbnxjE3z7htnff2c2Dd38gc9OOkRp6zH97qU
+ YrzQ==
+X-Gm-Message-State: AOAM53217VotY858RfiIBR2pjoVxtJO8S7N4QFG6tgRt3TIdHoZutaFV
+ H2mRtUv4Kc9Hgh7wCTDp80mua0RoWjg=
+X-Google-Smtp-Source: ABdhPJxmIOYuaQPQafoRN7ibl2/VYhrltAtXDD/QhHnbmJVW308pVZTPAOHWkuAcQaT6J0KExAykOA==
+X-Received: by 2002:a9d:604:: with SMTP id 4mr6132021otn.204.1633019048848;
+ Thu, 30 Sep 2021 09:24:08 -0700 (PDT)
+Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
+ [76.183.134.35])
+ by smtp.gmail.com with ESMTPSA id h18sm652833otg.2.2021.09.30.09.24.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 30 Sep 2021 09:24:08 -0700 (PDT)
+From: Chris Morgan <macroalpha82@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH] mtd: rawnand: hynix: Add support for H27UCG8T2ETR-BC MLC NAND
+Date: Thu, 30 Sep 2021 11:24:02 -0500
+Message-Id: <20210930162402.344-1-macroalpha82@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.168) by
- AS8PR04CA0027.eurprd04.prod.outlook.com (2603:10a6:20b:310::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend
- Transport; Thu, 30 Sep 2021 15:03:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9a1fb229-43a2-4900-fca6-08d98423785d
-X-MS-TrafficTypeDiagnostic: AM0PR07MB4036:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB4036149E6611D6F27E23C98988AA9@AM0PR07MB4036.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GVmOxA+kugpSXl+YGNXDIsmpbGHm5HM8DMvXEqX1o+5SBYCPjd1Bf37DCvzJpBjIxywIJmE+22ynik8Ie1i46FJXY0BJ0LTjf0f5BZX3kUWoMpLXpRc/RnDHANEo44igZz3+Q5ZR1DSVtNydhjV7v16qxSg8wLh2l6OpNSK8KnqpDHYbEoDWi8iUyNicGCX0OREfDcxxWqblr37BM77Xa8gXatiffohsEp7RV2b89JUYzJMJg9DCbWHEOntGQxElXpOTGpyh8MfCoXQoWG0cvxuIRz26H3XGMajFWFIczL6gnF22sDaY/tDvdTkwrdNJWgvZTjxXB7e+pC6yvsjGtmWgjUBC4zwsVlB3fAjOkuw8arl82x+q3MUaXtjQuLGaW/HBOoS4SlpCt6TGiBH+OJG1WHD5kZUm//Ybvp3dbhUYNWQHqzmwpFLqFBcKgB574r9ZBxksv9vAJ+97d6i47UdI2ixsiNGLc1Szr8B5DwtH1pfBcG1Hht2/dwBlpZbjYic2k36ztG3IICOY/vysCZJ/wo6Igsvgr4vyd47B3fMKJXZya7dtciR/9jwgf0KeDhyyY0J5CG2Uj2sPRFNyzUssP+taYlXJjhRcuf4WnWGXN/LIYhiSkDeqZXJImRg2r48xmn05IjsN05QzryjvKSZo+k8a3cOvFHWt1NTiBgPB9lQAv+vK6XOwKuUooh2VghA4tVdGjVjAs/pQ9UGGPiSI8Ddy5YpMfmTHnrgmEyQ2apk6Up9YQPP8LXaLykSkysW61p0XIQW/ukkcbOA/2w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AM0PR07MB4531.eurprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66556008)(6486002)(6512007)(110136005)(83380400001)(6666004)(2906002)(31696002)(8936002)(186003)(54906003)(31686004)(6506007)(53546011)(66476007)(52116002)(508600001)(8676002)(4744005)(26005)(38100700002)(38350700002)(4326008)(44832011)(316002)(5660300002)(36756003)(66946007)(2616005)(86362001)(7416002)(956004)(43740500002)(45980500001);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NHlhU0xCaS84VW1GK0ZqeWdWOWhvTzFnbk0zQzVMR1JWbThxQU9sempJM0Zu?=
- =?utf-8?B?SDBGRGRVYzVxVFdHNCtSNGFUY1poRnJFVjk2N0ovaFBDbzROKzk0Rk5oNUNi?=
- =?utf-8?B?dStNSDgyZFVTYjgvTEtIZ1VGWnJpTC9xQXJzRDJEb3VKUkVZQmtDUFZjRUlW?=
- =?utf-8?B?LzA4aHhFWGF3NURJVDd0RGZvL21KZy80UWpJM1pLRy8xZVNDQVdQanR0eTB1?=
- =?utf-8?B?MTE2am5pTjZQZi9wY1FONFhuTi9hUWpVNjdCck8wY0cwdzAxNVJRMHZTLytw?=
- =?utf-8?B?aDNOZ1lYenp6Y2xSd0NodUlRMWxkbEQzanVvZktaOWJEMWVhRFdRRTdGWktY?=
- =?utf-8?B?OTQ3VUtVUWRudlJ0Wm1XSWE1SDhXTjNwR05TazlaVHdKRFdzVVJHOCtWUjBN?=
- =?utf-8?B?WmZXV2lSUUQvQnB1dnVrcXBCZDh2azR1Z0RNcGlwQVBrWnJqdFJqK1MyMGtO?=
- =?utf-8?B?NFgzcjdMMHJwdHgxMWhLUGpPNFNuaDdJRURCRGxyY1ZhWUhnMFBTdGNieEds?=
- =?utf-8?B?b3FxL2RxUFM0bWxkM1A4SnRNa0pxenZwWjc1UnR4TU1uSHhDWVN2M1UxalRT?=
- =?utf-8?B?NDE3SGg3TGcvSE1NQ0NkT090NnhieStiNmNBNkhXSXYwajU4bTJnRURXcWMr?=
- =?utf-8?B?eVM5VElaS3dwVmc5UHJCYitvS0tMUlFxSDJncWVHVFoxbDFaVnVYNlpwN1B0?=
- =?utf-8?B?Q0orK25zc3poVmIvbGhYbzBHNk4yZjVLRmdDRCsrekRYdTRTZ3RVckJwNmg5?=
- =?utf-8?B?S0pGd1dEam52SHdvZi9udXl3WmFIcTdENzlZYTdmeCtvN2x2RjVtbnpXV3J4?=
- =?utf-8?B?QU91YmNJQytvM1VWQndqUW9tZmpyUmc5ZzV0Y3cwbURvTVJuTTVNLzNhZkxB?=
- =?utf-8?B?ODN6RElPcFI5ZlBxU0Y3bkhDbWNXRXRvVzBZS1RHeWtsQmZLdUlFMEI1S3pM?=
- =?utf-8?B?WWV0YUhTUWs4T2JCeitxN2NETzVXTHVkUGUwczBtL0o5ei8yOVhMSEZBeThD?=
- =?utf-8?B?dkc3ZVRHN3NFQzc1VmhvNytXOHd0alNBeU1ZQTV3Ulcvc05OUlV6bktzZzZh?=
- =?utf-8?B?aS9oNGt2aXhOL2EwRjlhd0t2UW91c1JkTTBsekMxTGg2aGIvd3E3UFlIYlZm?=
- =?utf-8?B?aTF5ZFBiWGZMakJUS0JreERTMERaeXJaY01UbHRCU1ZodUthV2twR0luQzhM?=
- =?utf-8?B?QlIrV1I2R1d4OE95U1c5dFlGSXlBUVQ1QVdxNUU0RzR5THFnNi9aeFJIekp2?=
- =?utf-8?B?eE9iclBmbWk1TFFUakdlRTlxOHNtNjNRblQxNjhtRGR2RWNFMnZHbnhEYkRW?=
- =?utf-8?B?VjJYZnZXdVFTVWticFVrV09GUlZLa0FSUDI2SUoyRWFoam1qUjhRSUJIWTdo?=
- =?utf-8?B?c0MrdGNEMjNPbE9MWWE1ZGREUFNuU3RYNmd0Ym9XTnUyYVpFdDZMODBaSGNh?=
- =?utf-8?B?cG16U0dXaHdFbDdhcEwyS3JLajRjVVlzeFJqdFpYdmx4UWZSeGMrbSsxVU5F?=
- =?utf-8?B?czU2TWlzSldRUzZNVElwT000T3BCR1NjRUhVR0xCYzlsVzZnMll4eTJ4VUU0?=
- =?utf-8?B?V3F6U1FvZThiaWlraEJSK1pMSGo2SXhNSE9STitqeVpvTlJMeVk2eTZMQjV6?=
- =?utf-8?B?TDNaUVlwaG1HaGk1VDFGSXBYL2tMbkpLbFpaUDdRcGY4NS9hNXhIdEgvdTdY?=
- =?utf-8?B?aURCc2VQZGp6Qzc2QVlFY0Myb2RjdGRsOXdCRWVZS0tsUk9Hcithd2lTb3By?=
- =?utf-8?Q?0YGbkrq2we4Mu45o69W9QTd5Qxqnl09G4gEgvtW?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a1fb229-43a2-4900-fca6-08d98423785d
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 15:03:32.9382 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bSLUnALXYCFB35vNHnz63khvKZiKPwtAVKyTOwCz3369xK6X84fsc0jZuWqIbnfL2h0sorCE1AWZfyM1n8mQMJi7q23OZ7dWE0IiCuzWZ8w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4036
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210930_080338_398574_CB5CC767 
-X-CRM114-Status: GOOD (  15.23  )
+X-CRM114-CacheID: sfid-20210930_092411_593898_2C40F43C 
+X-CRM114-Status: GOOD (  15.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,37 +93,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+From: Chris Morgan <macromorgan@hotmail.com>
 
-On 30/09/2021 12:07, Mika Westerberg wrote:
-> Since the driver is renamed (and moved) update the BIOS upgrade guide
-> accordingly from intel-spi to intel-spi. Keep the guide under MTD
-                   ^^^^^^^^^^^^^^^^^^^^^^
-Copy-paste error.
+Add support for the H27UCG8T2ETR-BC MLC NAND. The NAND is used widely
+in the NTC CHIP, is an MLC type NAND, and is 8GB in size. Neither
+JEDEC nor ONFI detection identifies it correctly, so the ID is added
+to the nand_ids.c file. Additionally, per the datasheet this NAND
+appears to use the same paired pages scheme as the Toshiba
+TC58TEG5DCLTA00 (dist3), so add support for that to enable use in
+SLC emulation mode.
 
-> documentation because this is pretty much still about MTD and SPI-NOR.
-> 
-> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> ---
->  Documentation/driver-api/mtd/index.rst                    | 2 +-
->  .../driver-api/mtd/{intel-spi.rst => spi-intel.rst}       | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
->  rename Documentation/driver-api/mtd/{intel-spi.rst => spi-intel.rst} (94%)
-> 
-> diff --git a/Documentation/driver-api/mtd/index.rst b/Documentation/driver-api/mtd/index.rst
-> index 436ba5a851d7..6a4278f409d7 100644
-> --- a/Documentation/driver-api/mtd/index.rst
-> +++ b/Documentation/driver-api/mtd/index.rst
-> @@ -7,6 +7,6 @@ Memory Technology Device (MTD)
->  .. toctree::
->     :maxdepth: 1
->  
-> -   intel-spi
-> +   spi-intel
+Tested on a NTC CHIP the device is able to write to a ubifs formatted
+partition, and then have U-Boot (with proposed patches) boot from a
+kernel located on that ubifs formatted partition.
 
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+---
+ drivers/mtd/nand/raw/nand_hynix.c | 14 ++++++++++++++
+ drivers/mtd/nand/raw/nand_ids.c   |  4 ++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
+index a9f50c9af109..0d4d4bbfdece 100644
+--- a/drivers/mtd/nand/raw/nand_hynix.c
++++ b/drivers/mtd/nand/raw/nand_hynix.c
+@@ -686,6 +686,16 @@ h27ucg8t2atrbc_choose_interface_config(struct nand_chip *chip,
+ 	return nand_choose_best_sdr_timings(chip, iface, NULL);
+ }
+ 
++static int h27ucg8t2etrbc_init(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++
++	chip->options |= NAND_NEED_SCRAMBLING;
++	mtd_set_pairing_scheme(mtd, &dist3_pairing_scheme);
++
++	return 0;
++}
++
+ static int hynix_nand_init(struct nand_chip *chip)
+ {
+ 	struct hynix_nand *hynix;
+@@ -707,6 +717,10 @@ static int hynix_nand_init(struct nand_chip *chip)
+ 		chip->ops.choose_interface_config =
+ 			h27ucg8t2atrbc_choose_interface_config;
+ 
++	if (!strncmp("H27UCG8T2ETR-BC", chip->parameters.model,
++		     sizeof("H27UCG8T2ETR-BC") - 1))
++		h27ucg8t2etrbc_init(chip);
++
+ 	ret = hynix_nand_rr_init(chip);
+ 	if (ret)
+ 		hynix_nand_cleanup(chip);
+diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+index b9945791a9d7..6e41902be35f 100644
+--- a/drivers/mtd/nand/raw/nand_ids.c
++++ b/drivers/mtd/nand/raw/nand_ids.c
+@@ -51,6 +51,10 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+ 		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+ 		  NAND_ECC_INFO(40, SZ_1K) },
++	{"H27UCG8T2ETR-BC 64G 3.3V 8-bit",
++		{ .id = {0xad, 0xde, 0x14, 0xa7, 0x42, 0x4a} },
++		  SZ_16K, SZ_8K, SZ_4M, NAND_NEED_SCRAMBLING, 6, 1664,
++		  NAND_ECC_INFO(40, SZ_1K) },
+ 	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
+ 		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
 -- 
-Best regards,
-Alexander Sverdlin.
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
