@@ -2,84 +2,146 @@ Return-Path: <SRS0=K+kN=OU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C346DC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 15:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38CF9C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 15:04:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87B9660F4A
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 15:02:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 87B9660F4A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+	by mail.kernel.org (Postfix) with ESMTPS id 07089613CE
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Sep 2021 15:04:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 07089613CE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JpNUV8QkglYermMEtBA+2uUrw/9f9PN4+e/f8Az0B4c=; b=TaUtm8BzyruBDDNqpRahRuFRkq
-	lEVXJzUC04H7lTQ2EbX1Git9poBqWqmUitGhkOaQoTWfyO4AbAeTXNUlj8ccuqSfil6RN2Qo0Mpd2
-	gp6SqYTxeophOu2bgCWW/GhQU+Xo614i4rrjoy4Y5VZgCiDWwclvvsfUwFeFi6xOwdl+Q94N7TFcx
-	nl87Nfyq/IjGOMCVucQlC1SpE7/Zs+pJerjIifuXx9ocBg29oZXUDaJZ2o6ZFTimK7gGmBsWCDvv2
-	ogxg480EKN/yzaHfxXsbGNQKsaFk1QsLngH5N6tq9tfzgWtOArLz8BRp81O/JyNlb1U7sY+HO13I+
-	bmsBNbNg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=bCTXBNKo3K/IgaG1RX2KxcvnsPTv6NoWNg2PVGl0gyU=; b=V5UiUnGANPod34yf0anoAtkG2a
+	zpLpVeEoQ05hP/cHMLElOv6rI5A4BfWGpZqHF8XeVJjdgKj0CXfyrJ0/L7OSuuxXrDLkLrQRYmaru
+	wOGG0SM+iyY+uV9qnUSSDr2fzJzjPYMnX/IGP0s7hCWdy21u+r1Q7rME5Ux0LLuPLQwi9w8pwgDtn
+	rsCpXLdLmTV6N3D8GL6o4nNji5lGz6m3DeZrhv8X8iIN4JVCZq+u0M09COJoMZllO2cpuM6M7yWzR
+	JvfCC+b08aRa4fg+wu99jeKfIRKCMWQ0AJmrO3KgYZSIvIjuxwW5NvSPCeIDxT0OZOZq/cEwyLLWB
+	Ix//R1TQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mVxZT-00EskM-3i; Thu, 30 Sep 2021 15:02:03 +0000
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+	id 1mVxb2-00EsyC-Vx; Thu, 30 Sep 2021 15:03:41 +0000
+Received: from mail-eopbgr00134.outbound.protection.outlook.com
+ ([40.107.0.134] helo=EUR02-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mVxZP-00EsjK-Sv
- for linux-mtd@lists.infradead.org; Thu, 30 Sep 2021 15:02:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=k1; bh=r+o3vngVkdgztVQkxkUxvPMjJ9nS
- mdIiV96Cw1ESXyc=; b=CXiUxsT2FblaWdUcBNRW+qgmMsmmSNwCXBs3DTwU3ScX
- SFb0bWfx+QD6R2MfmlF/a2igkJAipQBxDcYehr3rhi05Ed8fZsydSIBOlYBHa91a
- mqvamJacTStj4qLZENtzL7Z49MPxeNugnjA/yO0Q9qGWFe9JuNmPTeRtGVOPsTo=
-Received: (qmail 2119133 invoked from network); 30 Sep 2021 17:01:56 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
- authenticated); 30 Sep 2021 17:01:56 +0200
-X-UD-Smtp-Session: l3s3148p1@mcROujfNQIYgARa4RV6LAWawlO8I9jL3
-Date: Thu, 30 Sep 2021 17:01:56 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
- Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH 0/6] Add SPI Multi I/O Bus Controller support for RZ/G2L
-Message-ID: <YVXRZNxrgmfROlJy@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Mark Brown <broonie@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org,
- Prabhakar <prabhakar.csengg@gmail.com>,
- Biju Das <biju.das.jz@bp.renesas.com>
-References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ id 1mVxb0-00EsxD-7P
+ for linux-mtd@lists.infradead.org; Thu, 30 Sep 2021 15:03:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QUJnv7b9DNXn3sxdFOE3kPldGymWkMv/tTkn4qkqlQ+hIKrLIIJzwEPHRhBLKe7WgdBSVMCy9mNhtGqAdYTUlTHvh/P/jJUvFz/wjtv1uEnL1XKKZtvl4nOfLWI/pugs0TbVNQN4gxWAcLipi9QGdFo8ylGxIkI5WTG6SwAHjUb2L5b1Bg4wpzXW5AOZ3XTYOWo4z02PEASjMXGN2qPLbSh69cMgjAcjm743myqaFlNZWn86zrzdSuwEyrSwiudTtSC0TDoQ84ARS85Jiou01eXmEyRTKF26bVqPqngbjZt7LwEG0nmZ+dGRfG1l1fw01r+5JRU+fMUPpABp9OP2ZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=24T86wJKP3dsgtlJGPmzYBc8nJpUby8Uv0ARQV06gWI=;
+ b=jDp/koR0cwTllBBl5KpbreGEeM5b+VIYmNs6Dn/SCAnxmRZI4bHR4/2bS2CnHouVq+mHYHIzi+JV5CL2/JswDQRES59zFJ6+387+6sP3JxW3blmjEHVImcJTwlLjF0WbTFL7wBY7d/LYGsH+wbJmLxQKSv/BKbSBuPW2FzZ7T5WCJCvvc7iqF8q8rGtu53ccapYLcpqY7ukT3KhPmX+trgPHjOn0A6EfbW9Zdq2tx9zyYWPaRgylh0xw9RoOqJtesoB+gQABXJ8GiDVLJ5cT98vVwomivJYLNnIrAqryXBVCCTENDWqxycmbSDehs0j2sDpSsJPsu0N4soJc83vriQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=24T86wJKP3dsgtlJGPmzYBc8nJpUby8Uv0ARQV06gWI=;
+ b=WGKn2H4vkUGEV7HkI4mRqgVgLKtJEZsS2aIsoxEf5mGStuq6QMx7137aI7RvHEpMDTh7jiWycvslIXiJ7OrkxD4obhR3kkD3WL5Kf7loPJARs6evVkUoj0JCJh0/ZeNkICPR0JpENEh0/BEGngH0DyzBbvSFLms6HofFhNj9/ak=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
+ by AM0PR07MB4036.eurprd07.prod.outlook.com (2603:10a6:208:50::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.10; Thu, 30 Sep
+ 2021 15:03:33 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::91aa:4873:6782:4917]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::91aa:4873:6782:4917%7]) with mapi id 15.20.4587.007; Thu, 30 Sep 2021
+ 15:03:33 +0000
+Subject: Re: [PATCH 3/3] Documentation / MTD: Rename the intel-spi driver
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, Mark Brown <broonie@kernel.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Michael Walle <michael@walle.cc>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+References: <20210930100719.2176-1-mika.westerberg@linux.intel.com>
+ <20210930100719.2176-4-mika.westerberg@linux.intel.com>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <7e898647-852d-e5f3-bda0-94fbcff88f40@nokia.com>
+Date: Thu, 30 Sep 2021 17:03:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210930100719.2176-4-mika.westerberg@linux.intel.com>
+Content-Language: en-US
+X-ClientProxiedBy: AS8PR04CA0027.eurprd04.prod.outlook.com
+ (2603:10a6:20b:310::32) To AM0PR07MB4531.eurprd07.prod.outlook.com
+ (2603:10a6:208:6e::15)
 MIME-Version: 1.0
-In-Reply-To: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.168) by
+ AS8PR04CA0027.eurprd04.prod.outlook.com (2603:10a6:20b:310::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend
+ Transport; Thu, 30 Sep 2021 15:03:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9a1fb229-43a2-4900-fca6-08d98423785d
+X-MS-TrafficTypeDiagnostic: AM0PR07MB4036:
+X-Microsoft-Antispam-PRVS: <AM0PR07MB4036149E6611D6F27E23C98988AA9@AM0PR07MB4036.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GVmOxA+kugpSXl+YGNXDIsmpbGHm5HM8DMvXEqX1o+5SBYCPjd1Bf37DCvzJpBjIxywIJmE+22ynik8Ie1i46FJXY0BJ0LTjf0f5BZX3kUWoMpLXpRc/RnDHANEo44igZz3+Q5ZR1DSVtNydhjV7v16qxSg8wLh2l6OpNSK8KnqpDHYbEoDWi8iUyNicGCX0OREfDcxxWqblr37BM77Xa8gXatiffohsEp7RV2b89JUYzJMJg9DCbWHEOntGQxElXpOTGpyh8MfCoXQoWG0cvxuIRz26H3XGMajFWFIczL6gnF22sDaY/tDvdTkwrdNJWgvZTjxXB7e+pC6yvsjGtmWgjUBC4zwsVlB3fAjOkuw8arl82x+q3MUaXtjQuLGaW/HBOoS4SlpCt6TGiBH+OJG1WHD5kZUm//Ybvp3dbhUYNWQHqzmwpFLqFBcKgB574r9ZBxksv9vAJ+97d6i47UdI2ixsiNGLc1Szr8B5DwtH1pfBcG1Hht2/dwBlpZbjYic2k36ztG3IICOY/vysCZJ/wo6Igsvgr4vyd47B3fMKJXZya7dtciR/9jwgf0KeDhyyY0J5CG2Uj2sPRFNyzUssP+taYlXJjhRcuf4WnWGXN/LIYhiSkDeqZXJImRg2r48xmn05IjsN05QzryjvKSZo+k8a3cOvFHWt1NTiBgPB9lQAv+vK6XOwKuUooh2VghA4tVdGjVjAs/pQ9UGGPiSI8Ddy5YpMfmTHnrgmEyQ2apk6Up9YQPP8LXaLykSkysW61p0XIQW/ukkcbOA/2w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM0PR07MB4531.eurprd07.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(66556008)(6486002)(6512007)(110136005)(83380400001)(6666004)(2906002)(31696002)(8936002)(186003)(54906003)(31686004)(6506007)(53546011)(66476007)(52116002)(508600001)(8676002)(4744005)(26005)(38100700002)(38350700002)(4326008)(44832011)(316002)(5660300002)(36756003)(66946007)(2616005)(86362001)(7416002)(956004)(43740500002)(45980500001);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NHlhU0xCaS84VW1GK0ZqeWdWOWhvTzFnbk0zQzVMR1JWbThxQU9sempJM0Zu?=
+ =?utf-8?B?SDBGRGRVYzVxVFdHNCtSNGFUY1poRnJFVjk2N0ovaFBDbzROKzk0Rk5oNUNi?=
+ =?utf-8?B?dStNSDgyZFVTYjgvTEtIZ1VGWnJpTC9xQXJzRDJEb3VKUkVZQmtDUFZjRUlW?=
+ =?utf-8?B?LzA4aHhFWGF3NURJVDd0RGZvL21KZy80UWpJM1pLRy8xZVNDQVdQanR0eTB1?=
+ =?utf-8?B?MTE2am5pTjZQZi9wY1FONFhuTi9hUWpVNjdCck8wY0cwdzAxNVJRMHZTLytw?=
+ =?utf-8?B?aDNOZ1lYenp6Y2xSd0NodUlRMWxkbEQzanVvZktaOWJEMWVhRFdRRTdGWktY?=
+ =?utf-8?B?OTQ3VUtVUWRudlJ0Wm1XSWE1SDhXTjNwR05TazlaVHdKRFdzVVJHOCtWUjBN?=
+ =?utf-8?B?WmZXV2lSUUQvQnB1dnVrcXBCZDh2azR1Z0RNcGlwQVBrWnJqdFJqK1MyMGtO?=
+ =?utf-8?B?NFgzcjdMMHJwdHgxMWhLUGpPNFNuaDdJRURCRGxyY1ZhWUhnMFBTdGNieEds?=
+ =?utf-8?B?b3FxL2RxUFM0bWxkM1A4SnRNa0pxenZwWjc1UnR4TU1uSHhDWVN2M1UxalRT?=
+ =?utf-8?B?NDE3SGg3TGcvSE1NQ0NkT090NnhieStiNmNBNkhXSXYwajU4bTJnRURXcWMr?=
+ =?utf-8?B?eVM5VElaS3dwVmc5UHJCYitvS0tMUlFxSDJncWVHVFoxbDFaVnVYNlpwN1B0?=
+ =?utf-8?B?Q0orK25zc3poVmIvbGhYbzBHNk4yZjVLRmdDRCsrekRYdTRTZ3RVckJwNmg5?=
+ =?utf-8?B?S0pGd1dEam52SHdvZi9udXl3WmFIcTdENzlZYTdmeCtvN2x2RjVtbnpXV3J4?=
+ =?utf-8?B?QU91YmNJQytvM1VWQndqUW9tZmpyUmc5ZzV0Y3cwbURvTVJuTTVNLzNhZkxB?=
+ =?utf-8?B?ODN6RElPcFI5ZlBxU0Y3bkhDbWNXRXRvVzBZS1RHeWtsQmZLdUlFMEI1S3pM?=
+ =?utf-8?B?WWV0YUhTUWs4T2JCeitxN2NETzVXTHVkUGUwczBtL0o5ei8yOVhMSEZBeThD?=
+ =?utf-8?B?dkc3ZVRHN3NFQzc1VmhvNytXOHd0alNBeU1ZQTV3Ulcvc05OUlV6bktzZzZh?=
+ =?utf-8?B?aS9oNGt2aXhOL2EwRjlhd0t2UW91c1JkTTBsekMxTGg2aGIvd3E3UFlIYlZm?=
+ =?utf-8?B?aTF5ZFBiWGZMakJUS0JreERTMERaeXJaY01UbHRCU1ZodUthV2twR0luQzhM?=
+ =?utf-8?B?QlIrV1I2R1d4OE95U1c5dFlGSXlBUVQ1QVdxNUU0RzR5THFnNi9aeFJIekp2?=
+ =?utf-8?B?eE9iclBmbWk1TFFUakdlRTlxOHNtNjNRblQxNjhtRGR2RWNFMnZHbnhEYkRW?=
+ =?utf-8?B?VjJYZnZXdVFTVWticFVrV09GUlZLa0FSUDI2SUoyRWFoam1qUjhRSUJIWTdo?=
+ =?utf-8?B?c0MrdGNEMjNPbE9MWWE1ZGREUFNuU3RYNmd0Ym9XTnUyYVpFdDZMODBaSGNh?=
+ =?utf-8?B?cG16U0dXaHdFbDdhcEwyS3JLajRjVVlzeFJqdFpYdmx4UWZSeGMrbSsxVU5F?=
+ =?utf-8?B?czU2TWlzSldRUzZNVElwT000T3BCR1NjRUhVR0xCYzlsVzZnMll4eTJ4VUU0?=
+ =?utf-8?B?V3F6U1FvZThiaWlraEJSK1pMSGo2SXhNSE9STitqeVpvTlJMeVk2eTZMQjV6?=
+ =?utf-8?B?TDNaUVlwaG1HaGk1VDFGSXBYL2tMbkpLbFpaUDdRcGY4NS9hNXhIdEgvdTdY?=
+ =?utf-8?B?aURCc2VQZGp6Qzc2QVlFY0Myb2RjdGRsOXdCRWVZS0tsUk9Hcithd2lTb3By?=
+ =?utf-8?Q?0YGbkrq2we4Mu45o69W9QTd5Qxqnl09G4gEgvtW?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a1fb229-43a2-4900-fca6-08d98423785d
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 15:03:32.9382 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bSLUnALXYCFB35vNHnz63khvKZiKPwtAVKyTOwCz3369xK6X84fsc0jZuWqIbnfL2h0sorCE1AWZfyM1n8mQMJi7q23OZ7dWE0IiCuzWZ8w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4036
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210930_080200_250364_2A736E22 
-X-CRM114-Status: GOOD (  11.55  )
+X-CRM114-CacheID: sfid-20210930_080338_398574_CB5CC767 
+X-CRM114-Status: GOOD (  15.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,64 +153,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2284424423360575519=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi!
 
---===============2284424423360575519==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gdec5ePrzlj11VEg"
-Content-Disposition: inline
+On 30/09/2021 12:07, Mika Westerberg wrote:
+> Since the driver is renamed (and moved) update the BIOS upgrade guide
+> accordingly from intel-spi to intel-spi. Keep the guide under MTD
+                   ^^^^^^^^^^^^^^^^^^^^^^
+Copy-paste error.
 
+> documentation because this is pretty much still about MTD and SPI-NOR.
+> 
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> ---
+>  Documentation/driver-api/mtd/index.rst                    | 2 +-
+>  .../driver-api/mtd/{intel-spi.rst => spi-intel.rst}       | 8 ++++----
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+>  rename Documentation/driver-api/mtd/{intel-spi.rst => spi-intel.rst} (94%)
+> 
+> diff --git a/Documentation/driver-api/mtd/index.rst b/Documentation/driver-api/mtd/index.rst
+> index 436ba5a851d7..6a4278f409d7 100644
+> --- a/Documentation/driver-api/mtd/index.rst
+> +++ b/Documentation/driver-api/mtd/index.rst
+> @@ -7,6 +7,6 @@ Memory Technology Device (MTD)
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   intel-spi
+> +   spi-intel
 
---gdec5ePrzlj11VEg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-
-> This patch series adds a couple of fixes for rpc-if driver and
-> adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
-> is identical to the RPC-IF block found on R-Car Gen3 SoC's.
-
-I did some basic testing on the Falcon board with a Renesas R-Car V3U
-SoC and did not find a regression, so:
-
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-
---gdec5ePrzlj11VEg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFV0WMACgkQFA3kzBSg
-KbbtBQ//UDqnFRl9bJ/3z/krcE5cI7mn3iuGbS97ZGR6nqRDvSvmbIiQPTreCPNU
-VQqMfbLoLkHM9O9u7UR7ucjggb7kveCz1wAtz4h0WPArBvFXJXbOaaeU2dodlk2Y
-tYZCGkrfn5FhaRokcMK9MbIBxwwv5ZIypR1DBdyvPD5tX4QujTBrX2z/XzGkCfn2
-be+IxS8ibDKnx2VwD0ErPa7la4fKcGVh+4bVd8Wn3fCC+1lTBXaQl5sIcgZnS2H0
-HdhETeXxJTPLpPWKNjkYbO9gQRiKQ9iM9tg34hLjWvrgkG45LCct/Q/UTI998yeh
-4OXhypsgoFKnLjNJXh3CLAV1Ud8xQvglWV5YkLEyeinTb2xdk4LX45h+DKDOmcHU
-0GD2VvzY3ilwcneSAFRlae6EuJ+lvw6AingESituuIOPCtAmDbQ3MYkZsFHwDW2K
-rHnVMKNT6ajsehg9jmwIBOr7zAU1YEG0WrTXDI1KzoeL8hhczcGVRnhGOv0CMSXY
-tGrqEiVC9hSX6trxx60N42hLwuMxF2E4aS6mi/CsdkfPYfoOJ4YEWuvkMc+iG4mB
-4znsrDwaBYF47lX96RsW6nSI8prCyOsvf42vyZ6OeWJYOOlAgBSh9wGJN2IuYeh8
-BRop7XCqLmNVFAt/Q9CXDgsmXKcB+dE82t0MtavGfuwukYE01D4=
-=o3Q2
------END PGP SIGNATURE-----
-
---gdec5ePrzlj11VEg--
-
-
---===============2284424423360575519==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Best regards,
+Alexander Sverdlin.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2284424423360575519==--
-
