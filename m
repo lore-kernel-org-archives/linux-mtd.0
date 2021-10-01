@@ -2,77 +2,62 @@ Return-Path: <SRS0=UGcd=OV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 481E7C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Oct 2021 17:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B7D3C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Oct 2021 17:16:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 164B161B3C
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Oct 2021 17:08:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 164B161B3C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 04B6761A7D
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Oct 2021 17:16:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 04B6761A7D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZooNrxsyPjh3WLY43qNsbeXA8t867nf79JICoeN4RQ4=; b=CWeJplX5xPByaw
-	x4HLp6qqil0ua4fsuhMF+w0kEWFeuHImGn+dsRdV4t0P51bcn9ucTbbl9Fgk4gII/ymfXRXiCyBHx
-	isu1P2J52XciF+8z/suo54qROIdT+vjm2aQFLP+ZvuuFStR/Jesia86jViH3H0M6pnauz3vwu6eQ/
-	dWuneeSJM4d9q3dN7UAT3JytT1MLQ9k5VwQjM0b00+HcLRN6QSDZBw5D1KCDGXZy2VnKrFsJnzWIG
-	M8k0ENmo4Y6xKTpzxdsakHyvwFpdtbI0keZezo2FmIyPKgOJCSeha/lBA0XWrwGTYLaf9JqKJzUob
-	M+dpth17q0RtXK9eSJTg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1X6KUioJM3h3uq8tAaajoQZDSyqTT0BhmMYbx37/70U=; b=Um1Oh3nT3MRGpN
+	UY8AKEN1G/ToxJtBfj9yDVFZiFFDimaVBmk00OPfRNJ+0kNLienoe39JYDbnlmdWLs8Rl3lmlbDwd
+	i4frBh+wZtcPutDtaLdT/eGY42WitxuI2HZcd8lxBGaNvAzAUVY8gbQ8R7qVrkXjhsOeSKre2Mmol
+	MTS1XpX+jMzPMTM9ajknk4YJZB/WwXMgafBhyWH0ztIT8i171qJe17TR7yKLgv+PzCkVLqRJbENjj
+	Q9cSf+vYtf6HMYy2nPq2iSGGuFHBl1VESn4dWoIHy9lk38eb4/mWhM5G+4VRtsNaUMFnn4aWWsKau
+	5AiqSUD24IyIUxo86zjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mWM0V-000wVy-Eu; Fri, 01 Oct 2021 17:07:35 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1mWM8b-000xl1-55; Fri, 01 Oct 2021 17:15:57 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mWM0S-000wUP-N5; Fri, 01 Oct 2021 17:07:34 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 191H6rqG061157;
- Fri, 1 Oct 2021 12:06:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1633108013;
- bh=75/ZlFZWabhhUHcX+6tsrgMcaDfwtLbIN90enWzzYH0=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=anLqSUDVCQbprWfnKbHjGOB2KEoya4E9FtvVbsot8Jn+xMwjyJQIQtfNH/WNvOD6C
- ZJ3dc7Ijr901m8dTO1eAW4EPhW1h18APtdO7FUMMTZ0zabZs4VURdIFX2gwq9PhyP5
- 8O/HeCzrYRY5N8z47v+u7571yEUhQ6k8ybyyvM7g=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 191H6rBf033530
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 1 Oct 2021 12:06:53 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 1
- Oct 2021 12:06:52 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 1 Oct 2021 12:06:52 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 191H6p9U037400;
- Fri, 1 Oct 2021 12:06:52 -0500
-Date: Fri, 1 Oct 2021 22:36:50 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v2 16/35] mtd: spi-nor: core: Mark default_init() as
- deprecated
-Message-ID: <20211001170648.s3fgb3jcyctqf35w@ti.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-17-tudor.ambarus@microchip.com>
- <20210816193602.ze2w6qczvtgpwwdi@ti.com>
- <33dad358-b6f7-292b-2f02-7b5c9f9c8b2a@microchip.com>
+ id 1mWM8Y-000xkO-GP
+ for linux-mtd@lists.infradead.org; Fri, 01 Oct 2021 17:15:56 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10124"; a="205657263"
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; d="scan'208";a="205657263"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP; 01 Oct 2021 10:15:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,339,1624345200"; d="scan'208";a="619278641"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by fmsmga001.fm.intel.com with ESMTP; 01 Oct 2021 10:15:50 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 02BD3B8; Fri,  1 Oct 2021 20:15:56 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] mtd: spi-nor: intel-spi: Add support for Intel Ice
+ Lake-N SPI serial flash
+Date: Fri,  1 Oct 2021 20:15:30 +0300
+Message-Id: <20211001171530.15283-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <33dad358-b6f7-292b-2f02-7b5c9f9c8b2a@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211001_100732_885092_29E007FD 
-X-CRM114-Status: GOOD (  36.94  )
+X-CRM114-CacheID: sfid-20211001_101554_576281_DF3D9A1D 
+X-CRM114-Status: GOOD (  12.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,114 +69,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, Nicolas.Ferre@microchip.com, michael@walle.cc,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 01/10/21 02:18PM, Tudor.Ambarus@microchip.com wrote:
-> On 8/16/21 10:36 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On 27/07/21 07:52AM, Tudor Ambarus wrote:
-> >> The goal is to remove the spagetti init of params. The flash should
-> >> be initialized by the SFDP data, and when SFDP tables are not defined,
-> >> by the flash_info flags. SFDP data can be corrected by the
-> >> post_{bfpt, sfdp} when wrong, and in case of flash_info flags init,
-> >> we'll use the late_init() hook, where checking for the
-> >> SPI_NOR_SKIP_SFDP flag.
-> > 
-> > Why depreciate it? It is not like we have external callers that we need
-> > to notify. We know and control all the users of this function. Just move
-> > all users to late_init() and delete this. You have already done a large
-> > part of that work in the previous patches. Why not convert all other
-> > callers as well? Is there some complicated piece of code that stops you
-> > from touching it for now?
-> 
-> Nothing complicated, but I don't have flashes to test. Let's take them one by one:
-> 
-> drivers/mtd/spi-nor/gigadevice.c:static void gd25q256_default_init(struct spi_nor *nor)
-> sets nor->params->quad_enable method. Quad enable is SFDP discoverable, if I replace
-> the default_init() with late_init() I'll risk to overwrite the method discovered by SFDP.
-> 
-> drivers/mtd/spi-nor/issi.c:     .default_init = issi_default_init,
-> same for ISSI. Here it is a manufacturer default init, which is worse. All flashes
-> have to be checked. This is another reason why I strongly prefer late_init() calls
-> to set flags per flash and not at manufacturer level.
-> 
-> drivers/mtd/spi-nor/micron-st.c:static void mt35xu512aba_default_init(struct spi_nor *nor)
-> you have this flash. If the octal_dtr_enable method is not SFDP discoverable, I can
-> move if to late_init(). I'm waiting for your call. I'll need a tested-by after I'll
-> make the patch.
-> 
-> drivers/mtd/spi-nor/micron-st.c:        .default_init = micron_st_default_init,
-> This one is hard to get rid of. I won't be surprised if these fields are overwritten
-> when parsing SFDP. Moving them in late_init() will nullify SFDP parsing.
-> 
-> drivers/mtd/spi-nor/spansion.c:static void s28hs512t_default_init(struct spi_nor *nor)
-> you have this flash. I'll move it to late init if octal_dtr_enable method is not SFDP
-> discoverable. I'll need a tested-by.
-> 
-> drivers/mtd/spi-nor/winbond.c:static void winbond_default_init(struct spi_nor *nor)
-> 4byte addr mode is SFDP discoverable, if I move it in late_init() I'll overwrite what
-> I get from SFDP.
-> 
-> So just mark the hook as deprecated should be enough for now (at least for this release).
-> We'll probably never have all these flashes at hand, so maybe we'll agree for a time limit
-> after which we'll switch to late_init() or post_bfpt/sfpd() solely based on datasheet info.
-> If the datasheets will be wrong, we'll have bugs and people will scream, but nothing that
-> we can't handle/fix.
+Intel Ice Lake-N has the same SPI serial flash controller as Ice Lake-LP.
+Add Ice Lake-N PCI ID to the driver list of supported devices.
 
-Ok, makes sense to me.
+The device can be found on MacBookPro16,2 [1].
 
-> 
-> Cheers,
-> ta
-> 
-> > 
-> >>
-> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >> ---
-> >>  drivers/mtd/spi-nor/core.h | 5 ++---
-> >>  1 file changed, 2 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> >> index 13d5c5edfd27..625f4eed75f1 100644
-> >> --- a/drivers/mtd/spi-nor/core.h
-> >> +++ b/drivers/mtd/spi-nor/core.h
-> >> @@ -289,9 +289,8 @@ struct spi_nor_flash_parameter {
-> >>
-> >>  /**
-> >>   * struct spi_nor_fixups - SPI NOR fixup hooks
-> >> - * @default_init: called after default flash parameters init. Used to tweak
-> >> - *                flash parameters when information provided by the flash_info
-> >> - *                table is incomplete or wrong.
-> >> + * @default_init: Deprecated. Use the post_{bfpt, sfdp}, or the late_init()
-> >> + *                hooks instead.
-> >>   * @post_bfpt: called after the BFPT table has been parsed
-> >>   * @post_sfdp: called after SFDP has been parsed (is also called for SPI NORs
-> >>   *             that do not support RDSFDP). Typically used to tweak various
-> >> --
-> >> 2.25.1
-> >>
-> > 
-> > --
-> > Regards,
-> > Pratyush Yadav
-> > Texas Instruments Inc.
-> > 
-> 
+[1]: https://linux-hardware.org/?probe=f1c5cf0c43
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mtd/spi-nor/controllers/intel-spi-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+index 1bc53b8bb88a..f9bcd2dabb4f 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+@@ -70,6 +70,7 @@ static const struct pci_device_id intel_spi_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x1bca), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x34a4), (unsigned long)&bxt_info },
++	{ PCI_VDEVICE(INTEL, 0x38a4), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x43a4), (unsigned long)&cnl_info },
+ 	{ PCI_VDEVICE(INTEL, 0x4b24), (unsigned long)&bxt_info },
+ 	{ PCI_VDEVICE(INTEL, 0x4da4), (unsigned long)&bxt_info },
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.33.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
