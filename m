@@ -1,71 +1,168 @@
-Return-Path: <SRS0=Ykls=OX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=q46N=OY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B89FC433F5
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 Oct 2021 19:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB262C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Oct 2021 03:19:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2AD586187D
-	for <linux-mtd@archiver.kernel.org>; Sun,  3 Oct 2021 19:59:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2AD586187D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 6CAE4611EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Oct 2021 03:19:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6CAE4611EF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=XTTPoD9aF20+ejN6d0gIOkY6Cvbg8EaYJfa3G8oYCmc=; b=kxINCetjHnNzYaexu8XSjWzOYn
-	2bku4io2CYmCSroofUsl/tzS971m1+W8El9LVEk9mrmJg93wpnLDJUfUolCKPCWmJr0unsK8Sl3rY
-	P1/oNL644EYZ4zwpCHeLZZphpiPIbMZQXAsti9lHINHO0wD+ZyZotx1gNQPhYHy7/kZJSzHHnVHBA
-	ImZOrcCRmQ4ij0oHRTqzNYTnyM1AICGvjN+GbEK/Y8pRH2ZygtUTEQhBTTkzt62nFEqmoTe9miJkW
-	N63HqGgDssYYIGHU/5/QuczDVVmRG8yFsFT/YcXP7Sr0MEKgWhjp6ZPlHg+H1WTrFNrAx3CxV8MdZ
-	udAWigiw==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ja2Toa3Y0p8yxiotEBiHnMp9gZMFwu9STGxUXz8pmO8=; b=4t6zKNEzGED/Ui
+	NS7+sd5oD1o50ypwH9X4ZBTymmc6Wchp9RJxddJQb8euRRKHumGyF4W5f3nH206d/OI1F8fEkF/lX
+	RuTkbO2NcWjf4eKmsnSF2kSSyJ9Y7FBGq0f2LlTzNFn9iG1fLGMa+wDlJX84jDAuNpGbGmqNi7XAs
+	tAT+OsDyorTbGbjNfUJ1tUZ0pQ7M7vWWyaXvy2gmaCbSwBe1JsiT4Q8MRM3iPflr6PkPnFBa4XWYT
+	CBk+VZujmNyuWNDyQ16rA+RJ0yE/XZzHDqJw1lksNQcWQ3VJL2n2ZSwwN8gfc0/4uHQeDobJ17lzD
+	9FgMQw/U9nFuSmj2Hmyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mX7d9-004NQE-Da; Sun, 03 Oct 2021 19:58:39 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1mXEUb-004xDq-Ux; Mon, 04 Oct 2021 03:18:18 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mX7d2-004NPL-Ej
- for linux-mtd@lists.infradead.org; Sun, 03 Oct 2021 19:58:35 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 7510B61B8F4C;
- Sun,  3 Oct 2021 21:58:26 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id cbTNVwa62Y0x; Sun,  3 Oct 2021 21:58:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 54B8E608F449;
- Sun,  3 Oct 2021 21:58:25 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id GhBvbZycOL_5; Sun,  3 Oct 2021 21:58:25 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 27EB261B8F4C;
- Sun,  3 Oct 2021 21:58:25 +0200 (CEST)
-Date: Sun, 3 Oct 2021 21:58:25 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: schaecsn <schaecsn@gmx.net>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
- linux-kernel <linux-kernel@vger.kernel.org>, 
- Stefan Schaeckeler <sschaeck@cisco.com>
-Message-ID: <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at>
-In-Reply-To: <20210907214034.11676-2-schaecsn@gmx.net>
-References: <20210907214034.11676-1-schaecsn@gmx.net>
- <20210907214034.11676-2-schaecsn@gmx.net>
-Subject: Re: [PATCH 1/1] ubifs: ubifs to export filesystem error counters
+ id 1mXEUW-004xD9-3G; Mon, 04 Oct 2021 03:18:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1633317492; x=1664853492;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=UtM0zppbE08tp7W9sZbZZt48W7ZiyCAMNLPko1rU4PY=;
+ b=HNj0aq7Z0WaP5ruihOwrqG42C41iByZYPHAI6EiDqbeXKq5Vf/9yVJgh
+ MKJUFY3YjXTOrKWCihBcDUPlAigVwLHqsrjQs4Ut11Eoh0qeY+cCk8gAF
+ alpjVKYSJWQIF+MAVcw8CjcgUhqMj0Vf0s+0oCJusxvC3yNk5JVQHQnux
+ ef339fBpfcgd6LDSpyqMgJ1DZfucyavQ2C7CHXDpB3NFNgJAJhgMuc4xd
+ N9uQK9UyJRoRI6vU83syoJj8YNMSchOeizCvBmpUeL1FYG/Wd4MGHHEot
+ czLhSycLv52MQBKP0TRRz/luD1pJgsq6t3cuQZs/QVHy0qg1z4r8Ujyy8 A==;
+IronPort-SDR: 92zD8bc3xR8r9KOO7UfvcFnZpw04wrvwGG9TJ3nSDoTkfJmKuT0Xgz2PLsKMGnozSs7JFBwEAE
+ M3tjPTMwAEdTBcezSugdEWcXsVHOYn2Yw3PZZaRFHGj7diILFlkS1fSrTRZjeixuRgTVkMq+w3
+ wSFZxlPM1XHQcjPwwrRdMIjeIBP4WBgYzkhH3djKnS2xOSitcAnQe6nd8b3BPt/4gTCDEjpHKf
+ GpZGnzWZ1ouaPFCMIzzCvAy+bQ0xzyr1k+4sm5POt3P0BM9mFDNVf+Md5oVMamhy44oII9Ejpj
+ X+Ws/oqqRO+UF1CZOn6gVdD4
+X-IronPort-AV: E=Sophos;i="5.85,344,1624345200"; d="scan'208";a="71566047"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 03 Oct 2021 20:18:07 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Sun, 3 Oct 2021 20:18:07 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14 via Frontend Transport; Sun, 3 Oct 2021 20:18:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bhzkFR+ENLCSH72bobmqgYoE3fTMrwcr3Pw5whefvk7W/AutD9Qs6wZqQlKTjKI4SUnrSUr8NNBXzJppTouw3EwTK1LCtjBCjPK/8pL3tvG2BzVNX1uMIxSSrh12dgsW4pKBiW/UZFXimuWV3lEw3t3bAMitJD9yN7HdBk8hV97o+HuS3dTwtx6+69lFBPnOOtk5Y25t2qiPpHlEppRjp50uFOELrzSQM+3PbIC+Q4yztnSCJ+C30VNZ8TL0uexk4iSMKdiLzoWI47AWPj4ROvqcoGVnOPFl2P16jWaP+zilson9yE9fEw0oQvEaFvRLilzf398izoRKtnHH7Akxog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UtM0zppbE08tp7W9sZbZZt48W7ZiyCAMNLPko1rU4PY=;
+ b=GMd0W4cfRd/Abk1dzNYaE9+85wUc0sDgYZSsxn4FVpDrq+E7+Xl3lPMPoPxjfv4puzCrLB9o+Fpm/GEhlHJvn9QHKwPT/2jz1saTa+uk6OTILLx8C4EwDMbzbdUSKwuahZBsZdecrt8S/hZlJZ8+SBGcLx+CzkZxXFtuiqEuGCJry1Ey/LeGOF3L8inMBM7NPpOMgUDIg253F7om9JCZaVUhCOgdLeQyEftPvR7m1yxJ4c8msrxQXE89HgNFryo7vu3rytYUZ0mE12FEcqHrIhu97ThZbrS+UIhdDG/mEMOglM8W0OvXOKHjRZBaN48cS9WfpCwSoHX7Pz6KePb6LA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UtM0zppbE08tp7W9sZbZZt48W7ZiyCAMNLPko1rU4PY=;
+ b=WdYRUHhQYs0C/eSssbBaP+aFpSltKYFGi8QK7v+7DTslNm78gfG6wssnN3DYC4kmMm980/HzCQO6cNTEgyfvu3aQXwrAUAh6iux0Mrjv1t/q3Z1aFTlsjlEA204RWSN0bN77jSzT4PtVR+Lws5TF0qWatxBLGsLnXdvUKOjFCjI=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB2736.namprd11.prod.outlook.com (2603:10b6:805:5a::15)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Mon, 4 Oct
+ 2021 03:18:05 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::a496:d4af:df74:5213]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::a496:d4af:df74:5213%9]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
+ 03:18:05 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <p.yadav@ti.com>
+Subject: Re: [PATCH v2 18/35] mtd: spi-nor: Get rid of SPI_NOR_4B_OPCODES flag
+Thread-Topic: [PATCH v2 18/35] mtd: spi-nor: Get rid of SPI_NOR_4B_OPCODES flag
+Thread-Index: AQHXuM5x3Sn1HTf2W0qinCbUxi2img==
+Date: Mon, 4 Oct 2021 03:18:04 +0000
+Message-ID: <d7d7b602-0c42-dc14-71f5-9b89303a0941@microchip.com>
+References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
+ <20210727045222.905056-19-tudor.ambarus@microchip.com>
+ <20210817121626.5vcwuluheqfqrqc3@ti.com>
+In-Reply-To: <20210817121626.5vcwuluheqfqrqc3@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cd2f00be-13f9-4123-b380-08d986e594bc
+x-ms-traffictypediagnostic: SN6PR11MB2736:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB2736F12BE5284496F473C57DF0AE9@SN6PR11MB2736.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wY3CvapPhWIGnuiGUhjCccHH/ymIv2HWyjNd3riomQV8yPVYitroaegSlVw1Ac0IglFy3rPRPg80GC5IJTObTqdI8pk7L2YtOv6q4lGCtzJdMV3eXv6bfCZkzdR+7mtKzkcsHOuCDGgqW4abeTdqt8VRsUjZKoynLNs4wW/ug7hn/ycnosD5IXp/+uN6+9cBdyWzgqWZ9bV4UChYc9HdY0pjSRTu8haB4IRhMc/jONio1v/8QULlkjCt7S2Q8/MlrIJYGVfMyI5uqyRgRK0pZvLF/HQU1DFikXC7vanso68HdviZCB7nK2b0qBxGPLUZOpYRL2sAlu3vDcrWJH9jr9n1rNpEVEF+qDOP32vvdKgFqWkH93IienY3HnGYe/AH4PAcHwtx8ROMDO8TrMLFm4efn5SXAjRuNzPHVpCeBhND2Z2IpZyiqLFPTEWjoDa/0fIn8/ntwuRIf3RMW+C7FbyjRwh3uQYyq4A306J1MD31xgXTFuQUUaWQ+6s0Et52CE7RCGgw2eA3vlDqAYs4j3nc4OESFIrQDbfO6NCSq0oUmrIeWH+DeZvcOiRYDJLetcStcOWf47XA6bkJJNGX/m4UGK/T0SxO1+GJbkw+NoT0VVS/Z469Rq8j2pVWflcKeU+I1SJlMkT6WjEV4BurW8y6DH8fHSorygnXjNBnm75hBKctyNOYmXX8mZtH9w1H0tAc+iuSzg9FF1r4rsRNSiu8bqTICz8PHYWpp3Vc02G5/ZXNeJg/U0kEs/P/ARq/4czywpHCrNLlDQsQ+MPgHl8PX34yGKHYIUepNLEPhTw=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(122000001)(186003)(38100700002)(64756008)(83380400001)(26005)(2616005)(7416002)(6506007)(6512007)(30864003)(66446008)(31686004)(2906002)(71200400001)(53546011)(8936002)(54906003)(4326008)(86362001)(107886003)(66946007)(508600001)(316002)(66556008)(31696002)(6916009)(36756003)(66476007)(38070700005)(76116006)(91956017)(5660300002)(8676002)(6486002)(26583001)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dHVtR2RpeUtJR051ZEJoeEZXQXdJUldQYWlRT0pTbzl5Z2VDOUowT0RWaXRo?=
+ =?utf-8?B?N3dOd3B2bFpwOCtQT0lNYVRpbTNYb1RRTGEzMTZCTU5jVVhOOEhKUVlTUTlK?=
+ =?utf-8?B?NTZSdkwyQkg1ZVNlc3ZoSkM2SlVhaThaMjFWZ1lvbU9mYlJVQW1KOXFQUVlM?=
+ =?utf-8?B?UTZpVHRpZWtwT1VoeE9JTFZwcnlwdHowZ2pjbFZUNkpaNUkvZnJBM3hZUFhR?=
+ =?utf-8?B?UHB1ZFh3WTBMNjRjQi9DeWdvR0g5N1BDbE10TkttQmRkOWg2dW9MNHNWSWQ5?=
+ =?utf-8?B?WWhsaHJGa3ZaNHpWQU1EbTZPVFkyZ1g4TkRCMGFWb0NKaFlWbW14Z09BOWRX?=
+ =?utf-8?B?NFBjUVZaUUJ6cVlWd2JSVEMwa1AxMVFRZERFd3pIMXBTN2VnNXdXSURwbjFW?=
+ =?utf-8?B?NnByL3kveSt2MDhwNndpano5VXdRWEpML2ZjU0g2cmpXZjlxY3ZDS0FQQ2Ra?=
+ =?utf-8?B?cHkvemVrWDNIRWJPZVNCa2tQM0JnbW11ZHVwSGl1TENaZ21JVXUzK3h4dDlQ?=
+ =?utf-8?B?MjBUMkc4ZVlRRk1NVWNQVUtJaFJqOUd2ZnFtY2Fpa3ZINnlSUXQzdGM4c25o?=
+ =?utf-8?B?U2JWM0x0UzNBMTlzazFrU2RZZ1JSbW9lblZMRkJpRzZ4bE4zQ2MrZUNVcnh4?=
+ =?utf-8?B?YjVOMS9JRDVhUnBoMFJkTEg5N2FTNlJOMWYzYmR3bGgrMldMdmxDNnQrdzk0?=
+ =?utf-8?B?cTJIOFNXV1JvZ0c3ZXhpaXBNVnBSMWRxVnVDME04cHJvNWlleEo5bWxuMEdV?=
+ =?utf-8?B?TkF5QjRCa0VoeEtGQXlNb2xYdXNrdmd1WVIxMm5JdHJENDEyTHlMT21nMVRz?=
+ =?utf-8?B?bEJnSjFkZVluS3VwSks5bmtENk5sRjR1WGFBUllqc0g2T20vL0hMeW54U3FB?=
+ =?utf-8?B?bGJlUlA3UHc5Z1VKVEF3QXdyZW5CQVBDbis0M24vOFAzQ1pRUlhxcFBHVEN5?=
+ =?utf-8?B?SENQMnlKalRHR25VczE1NVd6NVllRDQ1Y3RWaTlmQjdjbThaSk1vQUY5OUc0?=
+ =?utf-8?B?bXgybUZpZTI2YmJFU2J2NFkzc25PY0JCMHhHODcvWjlKdFd5a2tCWDVQb1lx?=
+ =?utf-8?B?eGg0TTAySmQ3SXBkMUlYbWRIZVE2NU8yQ3dnV0lZVU5wQXFiK0Y0S2Y4cU1m?=
+ =?utf-8?B?bUxZbDQ5NmlWb0pjZGVoUW5oT3FKVU9oOUJ1amNNL2Y1eGtHdTNtLzRHeXgy?=
+ =?utf-8?B?TGJvT0VhWTlSTWlRRmVKS2NPWkI3UVFYYWZWUHBEcFFUNEpScGsxVWNLaW5x?=
+ =?utf-8?B?dGRDeDM0R3FnK1RTUEhXZUNVMUJXRzNSb2VEUUxyeHNQTHN5V241a1U0Y3lK?=
+ =?utf-8?B?eUJMWGRuYll1UEFoVnFkd2FUWGxRS2k0QzdNbjM3TEVseURocTNQMHByRjFW?=
+ =?utf-8?B?TEUxZ09qVjE5ZzRZQW8rd3pwcHQwUXlHelVTbk13RHhSMDhXa0tzVFlybVYr?=
+ =?utf-8?B?RUEzNmJacGExdlpuR0hhbDJIY2NlWTEvalRiek9CdGs5eFpOL2tNanRZSS95?=
+ =?utf-8?B?bE9NY2lsOXlCb1FoU3AxZVZrUHRSemxYUTI3eE9ENk1FYmV5MExLSE9yWHVB?=
+ =?utf-8?B?K09MeE5ERHMwZlV5bCsyUUUxUEdUWFJGaEFXUkIzN1dCY1Y2akxWOXNJMkVW?=
+ =?utf-8?B?c3IyRGxBd2tYcUlSb3VheEloNmY5MUc2bEhndWorYmxNNE02OTBUU2RsaC9O?=
+ =?utf-8?B?a3M2WGJBZ2dGTldTU21nTFRMU3NxcUhDTVJqT21qVDlGeWJDelJBT2hkNnI0?=
+ =?utf-8?Q?/U/96D06mdh6tms0vI=3D?=
+Content-ID: <556F48C781E15A46A3B4ED66F15E8534@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: ubifs to export filesystem error counters
-Thread-Index: R4HIb5yxzrB2cLTRigFILX4pEkVdpQ==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd2f00be-13f9-4123-b380-08d986e594bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Oct 2021 03:18:04.9110 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: O5/nTiQ34pQXJsOaKDPSaOsiRAZRhqC/tTOwyj/ys7/K+B7V6ZrA94Ni5rfjdBOFnrnXCeScJqDeaDKGTn39pQQs3xbjQ3Uuxlq5OyKHjyQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2736
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211003_125832_857336_B8C0F663 
-X-CRM114-Status: GOOD (  28.55  )
+X-CRM114-CacheID: sfid-20211003_201812_428173_62236680 
+X-CRM114-Status: GOOD (  19.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,230 +174,380 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+ richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
+ knaerzche@gmail.com, Nicolas.Ferre@microchip.com, michael@walle.cc,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
+ sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-U3RlZmFuLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogInNjaGFlY3Nu
-IiA8c2NoYWVjc25AZ214Lm5ldD4KPiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJs
-aW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1rZXJuZWwi
-Cj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+Cj4gQ0M6ICJzY2hhZWNzbiIgPHNjaGFl
-Y3NuQGdteC5uZXQ+LCAiU3RlZmFuIFNjaGFlY2tlbGVyIiA8c3NjaGFlY2tAY2lzY28uY29tPgo+
-IEdlc2VuZGV0OiBEaWVuc3RhZywgNy4gU2VwdGVtYmVyIDIwMjEgMjM6NDA6MzQKPiBCZXRyZWZm
-OiBbUEFUQ0ggMS8xXSB1YmlmczogdWJpZnMgdG8gZXhwb3J0IGZpbGVzeXN0ZW0gZXJyb3IgY291
-bnRlcnMKCj4gTm90IGFsbCB1YmlmcyBmaWxlc3lzdGVtIGVycm9ycyBhcmUgcHJvcGFnYXRlZCB0
-byB1c2Vyc3BhY2UuCj4gCj4gRXhwb3J0IGJhZCBtYWdpYywgYmFkIG5vZGUgYW5kIGNyYyBlcnJv
-cnMgdmlhIHN5c2ZzLiBUaGlzIGFsbG93cyB1c2Vyc3BhY2UKPiB0byBub3RpY2UgZmlsZXN5c3Rl
-bSBlcnJvcnM6Cj4gCj4gL3N5cy9mcy91Ymlmcy91YmlYX1kvZXJyb3JzX21hZ2ljCj4gL3N5cy9m
-cy91Ymlmcy91YmlYX1kvZXJyb3JzX25vZGUKPiAvc3lzL2ZzL3ViaWZzL3ViaVhfWS9lcnJvcnNf
-Y3JjCj4gCj4gVGhlIGNvdW50ZXJzIGFyZSByZXNldCB0byAwIHdpdGggYSByZW1vdW50LiBXcml0
-aW5nIGFueXRoaW5nIGludG8gdGhlCj4gY291bnRlcnMgYWxzbyBjbGVhcnMgdGhlbS4KCkkgdGhp
-bmsgdGhpcyBpcyBhIG5pY2UgZmVhdHVyZS4gVGhhbmtzIGZvciBpbXBsZW1lbnRpbmcgaXQuClBs
-ZWFzZSBzZWUgc29tZSBtaW5vciBuaXRzIGJlbG93LgoKSXMgdGhlcmUgYSBzcGVjaWZpYyByZWFz
-b24gd2h5IHlvdSBkaWRuJ3QgaW1wbGVtZW50IGl0IHZpYSBVQklGUydzIGRlYnVnZnMgaW50ZXJm
-YWNlPwpzeXNmcyBpcyBBQkksIHNvIHdlIGNhbm5vdCBjaGFuZ2UgbXVjaCBhbnltb3JlLgoKPiBT
-aWduZWQtb2ZmLWJ5OiBTdGVmYW4gU2NoYWVja2VsZXIgPHNzY2hhZWNrQGNpc2NvLmNvbT4KPiAt
-LS0KPiBmcy91Ymlmcy9NYWtlZmlsZSB8ICAgMiArLQo+IGZzL3ViaWZzL2lvLmMgICAgIHwgICA2
-ICsrCj4gZnMvdWJpZnMvc3VwZXIuYyAgfCAgMTcgKysrKy0KPiBmcy91Ymlmcy9zeXNmcy5jICB8
-IDE4NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gZnMv
-dWJpZnMvc3lzZnMuaCAgfCAgMzkgKysrKysrKysrKwo+IGZzL3ViaWZzL3ViaWZzLmggIHwgIDEx
-ICsrKwo+IDYgZmlsZXMgY2hhbmdlZCwgMjYwIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
-Cj4gY3JlYXRlIG1vZGUgMTAwNjQ0IGZzL3ViaWZzL3N5c2ZzLmMKPiBjcmVhdGUgbW9kZSAxMDA2
-NDQgZnMvdWJpZnMvc3lzZnMuaAo+IAo+IGRpZmYgLS1naXQgYS9mcy91Ymlmcy9NYWtlZmlsZSBi
-L2ZzL3ViaWZzL01ha2VmaWxlCj4gaW5kZXggNWM0Yjg0NTc1NGE3Li4zMTRjODBiMjRhNzYgMTAw
-NjQ0Cj4gLS0tIGEvZnMvdWJpZnMvTWFrZWZpbGUKPiArKysgYi9mcy91Ymlmcy9NYWtlZmlsZQo+
-IEBAIC01LDcgKzUsNyBAQCB1Ymlmcy15ICs9IHNocmlua2VyLm8gam91cm5hbC5vIGZpbGUubyBk
-aXIubyBzdXBlci5vIHNiLm8gaW8ubwo+IHViaWZzLXkgKz0gdG5jLm8gbWFzdGVyLm8gc2Nhbi5v
-IHJlcGxheS5vIGxvZy5vIGNvbW1pdC5vIGdjLm8gb3JwaGFuLm8KPiB1Ymlmcy15ICs9IGJ1ZGdl
-dC5vIGZpbmQubyB0bmNfY29tbWl0Lm8gY29tcHJlc3MubyBscHQubyBscHJvcHMubwo+IHViaWZz
-LXkgKz0gcmVjb3ZlcnkubyBpb2N0bC5vIGxwdF9jb21taXQubyB0bmNfbWlzYy5vIGRlYnVnLm8K
-PiAtdWJpZnMteSArPSBtaXNjLm8KPiArdWJpZnMteSArPSBtaXNjLm8gc3lzZnMubwo+IHViaWZz
-LSQoQ09ORklHX0ZTX0VOQ1JZUFRJT04pICs9IGNyeXB0by5vCj4gdWJpZnMtJChDT05GSUdfVUJJ
-RlNfRlNfWEFUVFIpICs9IHhhdHRyLm8KPiB1Ymlmcy0kKENPTkZJR19VQklGU19GU19BVVRIRU5U
-SUNBVElPTikgKz0gYXV0aC5vCj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL2lvLmMgYi9mcy91Ymlm
-cy9pby5jCj4gaW5kZXggMDBiNjFkYmE2MmI3Li4wYjE1OGU0MjBjYzEgMTAwNjQ0Cj4gLS0tIGEv
-ZnMvdWJpZnMvaW8uYwo+ICsrKyBiL2ZzL3ViaWZzL2lvLmMKPiBAQCAtMjM4LDYgKzIzOCw4IEBA
-IGludCB1Ymlmc19jaGVja19ub2RlKGNvbnN0IHN0cnVjdCB1Ymlmc19pbmZvICpjLCBjb25zdCB2
-b2lkCj4gKmJ1ZiwgaW50IGxlbiwKPiAJCWlmICghcXVpZXQpCj4gCQkJdWJpZnNfZXJyKGMsICJi
-YWQgbWFnaWMgJSMwOHgsIGV4cGVjdGVkICUjMDh4IiwKPiAJCQkJICBtYWdpYywgVUJJRlNfTk9E
-RV9NQUdJQyk7Cj4gKwkJaWYgKGMtPnN0YXRzKQo+ICsJCQljLT5zdGF0cy0+bWFnaWNfZXJyb3Jz
-Kys7CgpQbGVhc2Ugd3JhcCB0aGlzIGludG8gYSBoZWxwZXIgZnVuY3Rpb24uCgo+IAkJZXJyID0g
-LUVVQ0xFQU47Cj4gCQlnb3RvIG91dDsKPiAJfQo+IEBAIC0yNDYsNiArMjQ4LDggQEAgaW50IHVi
-aWZzX2NoZWNrX25vZGUoY29uc3Qgc3RydWN0IHViaWZzX2luZm8gKmMsIGNvbnN0IHZvaWQKPiAq
-YnVmLCBpbnQgbGVuLAo+IAlpZiAodHlwZSA8IDAgfHwgdHlwZSA+PSBVQklGU19OT0RFX1RZUEVT
-X0NOVCkgewo+IAkJaWYgKCFxdWlldCkKPiAJCQl1Ymlmc19lcnIoYywgImJhZCBub2RlIHR5cGUg
-JWQiLCB0eXBlKTsKPiArCQlpZiAoYy0+c3RhdHMpCj4gKwkJCWMtPnN0YXRzLT5ub2RlX2Vycm9y
-cysrOwoKU2FtZS4KCj4gCQlnb3RvIG91dDsKPiAJfQo+IAo+IEBAIC0yNzAsNiArMjc0LDggQEAg
-aW50IHViaWZzX2NoZWNrX25vZGUoY29uc3Qgc3RydWN0IHViaWZzX2luZm8gKmMsIGNvbnN0IHZv
-aWQKPiAqYnVmLCBpbnQgbGVuLAo+IAkJaWYgKCFxdWlldCkKPiAJCQl1Ymlmc19lcnIoYywgImJh
-ZCBDUkM6IGNhbGN1bGF0ZWQgJSMwOHgsIHJlYWQgJSMwOHgiLAo+IAkJCQkgIGNyYywgbm9kZV9j
-cmMpOwo+ICsJCWlmIChjLT5zdGF0cykKPiArCQkJYy0+c3RhdHMtPmNyY19lcnJvcnMrKzsKClNh
-bWUuCgo+IAkJZXJyID0gLUVVQ0xFQU47Cj4gCQlnb3RvIG91dDsKPiAJfQo+IGRpZmYgLS1naXQg
-YS9mcy91Ymlmcy9zdXBlci5jIGIvZnMvdWJpZnMvc3VwZXIuYwo+IGluZGV4IGYwZmIyNTcyN2Q5
-Ni4uNTBiOTM0ODU0YTg0IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL3N1cGVyLmMKPiArKysgYi9m
-cy91Ymlmcy9zdXBlci5jCj4gQEAgLTI0LDYgKzI0LDcgQEAKPiAjaW5jbHVkZSA8bGludXgvbW91
-bnQuaD4KPiAjaW5jbHVkZSA8bGludXgvbWF0aDY0Lmg+Cj4gI2luY2x1ZGUgPGxpbnV4L3dyaXRl
-YmFjay5oPgo+ICsjaW5jbHVkZSAic3lzZnMuaCIKPiAjaW5jbHVkZSAidWJpZnMuaCIKPiAKPiBz
-dGF0aWMgaW50IHViaWZzX2RlZmF1bHRfdmVyc2lvbl9zZXQoY29uc3QgY2hhciAqdmFsLCBjb25z
-dCBzdHJ1Y3Qga2VybmVsX3BhcmFtCj4gKmtwKQo+IEBAIC0xMjY0LDYgKzEyNjUsMTAgQEAgc3Rh
-dGljIGludCBtb3VudF91YmlmcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAJaWYgKGVycikKPiAJ
-CXJldHVybiBlcnI7Cj4gCj4gKwllcnIgPSB1Ymlmc19zeXNmc19yZWdpc3RlcihjKTsKPiArCWlm
-IChlcnIpCj4gKwkJZ290byBvdXRfZGVidWdnaW5nOwo+ICsKPiAJZXJyID0gY2hlY2tfdm9sdW1l
-X2VtcHR5KGMpOwo+IAlpZiAoZXJyKQo+IAkJZ290byBvdXRfZnJlZTsKPiBAQCAtMTY0MSw2ICsx
-NjQ2LDggQEAgc3RhdGljIGludCBtb3VudF91YmlmcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAJ
-dmZyZWUoYy0+c2J1Zik7Cj4gCWtmcmVlKGMtPmJvdHRvbV91cF9idWYpOwo+IAlrZnJlZShjLT5z
-dXBfbm9kZSk7Cj4gKwl1Ymlmc19zeXNmc191bnJlZ2lzdGVyKGMpOwo+ICtvdXRfZGVidWdnaW5n
-Ogo+IAl1Ymlmc19kZWJ1Z2dpbmdfZXhpdChjKTsKPiAJcmV0dXJuIGVycjsKPiB9Cj4gQEAgLTE2
-ODQsNiArMTY5MSw3IEBAIHN0YXRpYyB2b2lkIHViaWZzX3Vtb3VudChzdHJ1Y3QgdWJpZnNfaW5m
-byAqYykKPiAJa2ZyZWUoYy0+Ym90dG9tX3VwX2J1Zik7Cj4gCWtmcmVlKGMtPnN1cF9ub2RlKTsK
-PiAJdWJpZnNfZGVidWdnaW5nX2V4aXQoYyk7Cj4gKwl1Ymlmc19zeXNmc191bnJlZ2lzdGVyKGMp
-Owo+IH0KPiAKPiAvKioKPiBAQCAtMjQzNiwxNCArMjQ0NCwyMCBAQCBzdGF0aWMgaW50IF9faW5p
-dCB1Ymlmc19pbml0KHZvaWQpCj4gCj4gCWRiZ19kZWJ1Z2ZzX2luaXQoKTsKPiAKPiArCWVyciA9
-IHViaWZzX3N5c2ZzX2luaXQoKTsKPiArCWlmIChlcnIpCj4gKwkJZ290byBvdXRfZGJnOwo+ICsK
-PiAJZXJyID0gcmVnaXN0ZXJfZmlsZXN5c3RlbSgmdWJpZnNfZnNfdHlwZSk7Cj4gCWlmIChlcnIp
-IHsKPiAJCXByX2VycigiVUJJRlMgZXJyb3IgKHBpZCAlZCk6IGNhbm5vdCByZWdpc3RlciBmaWxl
-IHN5c3RlbSwgZXJyb3IgJWQiLAo+IAkJICAgICAgIGN1cnJlbnQtPnBpZCwgZXJyKTsKPiAtCQln
-b3RvIG91dF9kYmc7Cj4gKwkJZ290byBvdXRfc3lzZnM7Cj4gCX0KPiAJcmV0dXJuIDA7Cj4gCj4g
-K291dF9zeXNmczoKPiArCXViaWZzX3N5c2ZzX2V4aXQoKTsKPiBvdXRfZGJnOgo+IAlkYmdfZGVi
-dWdmc19leGl0KCk7Cj4gCXViaWZzX2NvbXByZXNzb3JzX2V4aXQoKTsKPiBAQCAtMjQ2Miw2ICsy
-NDc2LDcgQEAgc3RhdGljIHZvaWQgX19leGl0IHViaWZzX2V4aXQodm9pZCkKPiAJV0FSTl9PTihh
-dG9taWNfbG9uZ19yZWFkKCZ1Ymlmc19jbGVhbl96bl9jbnQpICE9IDApOwo+IAo+IAlkYmdfZGVi
-dWdmc19leGl0KCk7Cj4gKwl1Ymlmc19zeXNmc19leGl0KCk7Cj4gCXViaWZzX2NvbXByZXNzb3Jz
-X2V4aXQoKTsKPiAJdW5yZWdpc3Rlcl9zaHJpbmtlcigmdWJpZnNfc2hyaW5rZXJfaW5mbyk7Cj4g
-Cj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3N5c2ZzLmMgYi9mcy91Ymlmcy9zeXNmcy5jCj4gbmV3
-IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLmJhYzUzYTBmMDQ1MQo+IC0t
-LSAvZGV2L251bGwKPiArKysgYi9mcy91Ymlmcy9zeXNmcy5jCj4gQEAgLTAsMCArMSwxODcgQEAK
-PiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seQo+ICsvKgo+ICsgKiBU
-aGlzIGZpbGUgaXMgcGFydCBvZiBVQklGUy4KPiArICoKPiArICogQ29weXJpZ2h0IChDKSAyMDIx
-IENpc2NvIFN5c3RlbXMKPiArICoKPiArICogQXV0aG9yOiBTdGVmYW4gU2NoYWVja2VsZXIKPiAr
-ICovCj4gKwo+ICsKPiArI2luY2x1ZGUgPGxpbnV4L2ZzLmg+Cj4gKwo+ICsjaW5jbHVkZSAic3lz
-ZnMuaCIKPiArI2luY2x1ZGUgInViaWZzLmgiCj4gKwo+ICsKPiArZW51bSBhdHRyX2lkX3Qgewo+
-ICsJYXR0cl9lcnJvcnNfbWFnaWMsCj4gKwlhdHRyX2Vycm9yc19ub2RlLAo+ICsJYXR0cl9lcnJv
-cnNfY3JjLAo+ICt9Owo+ICsKPiArc3RydWN0IHViaWZzX2F0dHIgewo+ICsJc3RydWN0IGF0dHJp
-YnV0ZSBhdHRyOwo+ICsJZW51bSBhdHRyX2lkX3QgYXR0cl9pZDsKPiArfTsKPiArCj4gKyNkZWZp
-bmUgVUJJRlNfQVRUUihfbmFtZSwgX21vZGUsIF9pZCkJCQkJCVwKPiArc3RhdGljIHN0cnVjdCB1
-Ymlmc19hdHRyIHViaWZzX2F0dHJfIyNfbmFtZSA9IHsJCQkJXAo+ICsJLmF0dHIgPSB7Lm5hbWUg
-PSBfX3N0cmluZ2lmeShfbmFtZSksIC5tb2RlID0gX21vZGUgfSwJCVwKPiArCS5hdHRyX2lkID0g
-YXR0cl8jI19pZCwJCQkJCQlcCj4gK30KPiArCj4gKyNkZWZpbmUgVUJJRlNfQVRUUl9GVU5DKF9u
-YW1lLCBfbW9kZSkgVUJJRlNfQVRUUihfbmFtZSwgX21vZGUsIF9uYW1lKQo+ICsKPiArVUJJRlNf
-QVRUUl9GVU5DKGVycm9yc19tYWdpYywgMDY0NCk7Cj4gK1VCSUZTX0FUVFJfRlVOQyhlcnJvcnNf
-Y3JjLCAwNjQ0KTsKPiArVUJJRlNfQVRUUl9GVU5DKGVycm9yc19ub2RlLCAwNjQ0KTsKCkknbSBu
-b3Qgc3VyZSB3aGV0aGVyIGV2ZXJ5b25lIHNob3VsZCBiZSBhbGxvd2VkIHRvIHJlYWQgdGhlc2Ug
-c3RhdHMuCmRtZXNnIGlzIGFsc28gcmVzdHJpY3RlZCB0aGVzZSBkYXlzLiBBbiB1bnByaXZpbGVn
-ZWQgdXNlciBzaG91bGQgbm90IHNlZSB0aGUKZXJyb3JzIGhlIGNhbiBpbmRpcmVjdGx5IHRyaWdn
-ZXIuCgo+ICsjZGVmaW5lIEFUVFJfTElTVChuYW1lKSAoJnViaWZzX2F0dHJfIyNuYW1lLmF0dHIp
-Cj4gKwo+ICtzdGF0aWMgc3RydWN0IGF0dHJpYnV0ZSAqdWJpZnNfYXR0cnNbXSA9IHsKPiArCUFU
-VFJfTElTVChlcnJvcnNfbWFnaWMpLAo+ICsJQVRUUl9MSVNUKGVycm9yc19ub2RlKSwKPiArCUFU
-VFJfTElTVChlcnJvcnNfY3JjKSwKPiArCU5VTEwsCj4gK307Cj4gKwo+ICsKPiArc3RhdGljIHNz
-aXplX3QgdWJpZnNfYXR0cl9zaG93KHN0cnVjdCBrb2JqZWN0ICprb2JqLAo+ICsJCQkgICAgICAg
-c3RydWN0IGF0dHJpYnV0ZSAqYXR0ciwgY2hhciAqYnVmKQo+ICt7Cj4gKwlzdHJ1Y3QgdWJpZnNf
-aW5mbyAqc2JpID0gY29udGFpbmVyX29mKGtvYmosIHN0cnVjdCB1Ymlmc19pbmZvLAo+ICsJCQkJ
-CSAgICAgIGtvYmopOwo+ICsKPiArCXN0cnVjdCB1Ymlmc19hdHRyICphID0gY29udGFpbmVyX29m
-KGF0dHIsIHN0cnVjdCB1Ymlmc19hdHRyLCBhdHRyKTsKPiArCj4gKwlzd2l0Y2ggKGEtPmF0dHJf
-aWQpIHsKPiArCWNhc2UgYXR0cl9lcnJvcnNfbWFnaWM6Cj4gKwkJcmV0dXJuIHNucHJpbnRmKGJ1
-ZiwgUEFHRV9TSVpFLCAiJXVcbiIsCj4gKwkJCQlzYmktPnN0YXRzLT5tYWdpY19lcnJvcnMpOwo+
-ICsJY2FzZSBhdHRyX2Vycm9yc19ub2RlOgo+ICsJCXJldHVybiBzbnByaW50ZihidWYsIFBBR0Vf
-U0laRSwgIiV1XG4iLAo+ICsJCQkJc2JpLT5zdGF0cy0+bm9kZV9lcnJvcnMpOwo+ICsJY2FzZSBh
-dHRyX2Vycm9yc19jcmM6Cj4gKwkJcmV0dXJuIHNucHJpbnRmKGJ1ZiwgUEFHRV9TSVpFLCAiJXVc
-biIsCj4gKwkJCQlzYmktPnN0YXRzLT5jcmNfZXJyb3JzKTsKClBsZWFzZSB1c2Ugc3lzZnNfZW1p
-dCgpLgoKPiArCX0KPiArCXJldHVybiAwOwo+ICt9Owo+ICsKPiArCj4gK3N0YXRpYyBzc2l6ZV90
-IHViaWZzX2F0dHJfc3RvcmUoc3RydWN0IGtvYmplY3QgKmtvYmosCj4gKwkJCSAgICAgICBzdHJ1
-Y3QgYXR0cmlidXRlICphdHRyLAo+ICsJCQkgICAgICAgY29uc3QgY2hhciAqYnVmLCBzaXplX3Qg
-bGVuKQo+ICt7Cj4gKwlzdHJ1Y3QgdWJpZnNfaW5mbyAqc2JpID0gY29udGFpbmVyX29mKGtvYmos
-IHN0cnVjdCB1Ymlmc19pbmZvLAo+ICsJCQkJCSAgICAgIGtvYmopOwo+ICsKPiArCXN0cnVjdCB1
-Ymlmc19hdHRyICphID0gY29udGFpbmVyX29mKGF0dHIsIHN0cnVjdCB1Ymlmc19hdHRyLCBhdHRy
-KTsKPiArCj4gKwlzd2l0Y2ggKGEtPmF0dHJfaWQpIHsKPiArCWNhc2UgYXR0cl9lcnJvcnNfbWFn
-aWM6Cj4gKwkJc2JpLT5zdGF0cy0+bWFnaWNfZXJyb3JzID0gMDsKPiArCQlicmVhazsKPiArCWNh
-c2UgYXR0cl9lcnJvcnNfbm9kZToKPiArCQlzYmktPnN0YXRzLT5ub2RlX2Vycm9ycyA9IDA7Cj4g
-KwkJYnJlYWs7Cj4gKwljYXNlIGF0dHJfZXJyb3JzX2NyYzoKPiArCQlzYmktPnN0YXRzLT5jcmNf
-ZXJyb3JzID0gMDsKPiArCQlicmVhazsKPiArCX0KPiArCXJldHVybiBsZW47Cj4gK30KPiArCj4g
-Kwo+ICtzdGF0aWMgdm9pZCB1Ymlmc19zYl9yZWxlYXNlKHN0cnVjdCBrb2JqZWN0ICprb2JqKQo+
-ICt7Cj4gKwlzdHJ1Y3QgdWJpZnNfaW5mbyAqYyA9IGNvbnRhaW5lcl9vZihrb2JqLCBzdHJ1Y3Qg
-dWJpZnNfaW5mbywga29iaik7Cj4gKwo+ICsJY29tcGxldGUoJmMtPmtvYmpfdW5yZWdpc3Rlcik7
-Cj4gK30KPiArCj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHN5c2ZzX29wcyB1Ymlmc19hdHRy
-X29wcyA9IHsKPiArCS5zaG93CT0gdWJpZnNfYXR0cl9zaG93LAo+ICsJLnN0b3JlCT0gdWJpZnNf
-YXR0cl9zdG9yZSwKPiArfTsKPiArCj4gK3N0YXRpYyBzdHJ1Y3Qga29ial90eXBlIHViaWZzX3Ni
-X2t0eXBlID0gewo+ICsJLmRlZmF1bHRfYXR0cnMJPSB1Ymlmc19hdHRycywKPiArCS5zeXNmc19v
-cHMJPSAmdWJpZnNfYXR0cl9vcHMsCj4gKwkucmVsZWFzZQk9IHViaWZzX3NiX3JlbGVhc2UsCj4g
-K307Cj4gKwo+ICtzdGF0aWMgc3RydWN0IGtvYmpfdHlwZSB1Ymlmc19rdHlwZSA9IHsKPiArCS5z
-eXNmc19vcHMJPSAmdWJpZnNfYXR0cl9vcHMsCj4gK307Cj4gKwo+ICtzdGF0aWMgc3RydWN0IGtz
-ZXQgdWJpZnNfa3NldCA9IHsKPiArCS5rb2JqCT0gey5rdHlwZSA9ICZ1Ymlmc19rdHlwZX0sCj4g
-K307Cj4gKwo+ICsKPiAraW50IHViaWZzX3N5c2ZzX3JlZ2lzdGVyKHN0cnVjdCB1Ymlmc19pbmZv
-ICpjKQo+ICt7Cj4gKwlpbnQgcmV0LCBuOwo+ICsJY2hhciBkZnNfZGlyX25hbWVbVUJJRlNfREZT
-X0RJUl9MRU4rMV07Cj4gKwo+ICsJYy0+c3RhdHMgPSBremFsbG9jKHNpemVvZihzdHJ1Y3QgdWJp
-ZnNfc3RhdHNfaW5mbyksIEdGUF9LRVJORUwpOwo+ICsJaWYgKCFjLT5zdGF0cykgewo+ICsJCXJl
-dCA9IC1FTk9NRU07Cj4gKwkJZ290byBvdXRfbGFzdDsKPiArCX0KPiArCW4gPSBzbnByaW50Zihk
-ZnNfZGlyX25hbWUsIFVCSUZTX0RGU19ESVJfTEVOICsgMSwgVUJJRlNfREZTX0RJUl9OQU1FLAo+
-ICsJCSAgICAgYy0+dmkudWJpX251bSwgYy0+dmkudm9sX2lkKTsKPiArCj4gKwlpZiAobiA9PSBV
-QklGU19ERlNfRElSX0xFTikgewo+ICsJCS8qIFRoZSBhcnJheSBzaXplIGlzIHRvbyBzbWFsbCAq
-Lwo+ICsJCXJldCA9IC1FSU5WQUw7Cj4gKwkJZ290byBvdXRfbGFzdDsKCldoZXJlIGlzIGMtPnN0
-YXRzIHJlbGVhc2VkIGluIGNhc2Ugb2YgYW4gZXJyb3I/Cgo+ICsJfQo+ICsKPiArCWMtPmtvYmou
-a3NldCA9ICZ1Ymlmc19rc2V0Owo+ICsJaW5pdF9jb21wbGV0aW9uKCZjLT5rb2JqX3VucmVnaXN0
-ZXIpOwo+ICsKPiArCj4gKwlyZXQgPSBrb2JqZWN0X2luaXRfYW5kX2FkZCgmYy0+a29iaiwgJnVi
-aWZzX3NiX2t0eXBlLCBOVUxMLAo+ICsJCQkJICAgIiVzIiwgZGZzX2Rpcl9uYW1lKTsKPiArCWlm
-IChyZXQpCj4gKwkJZ290byBvdXRfcHV0Owo+ICsKPiArCXJldHVybiAwOwo+ICsKPiArb3V0X3B1
-dDoKPiArCWtvYmplY3RfcHV0KCZjLT5rb2JqKTsKPiArCXdhaXRfZm9yX2NvbXBsZXRpb24oJmMt
-PmtvYmpfdW5yZWdpc3Rlcik7Cj4gK291dF9sYXN0Ogo+ICsJdWJpZnNfZXJyKGMsICJjYW5ub3Qg
-Y3JlYXRlIHN5c2ZzIGVudHJ5IGZvciB1YmlmcyVkXyVkLCBlcnJvciAlZFxuIiwKPiArCQkgIGMt
-PnZpLnViaV9udW0sIGMtPnZpLnZvbF9pZCwgcmV0KTsKPiArCXJldHVybiByZXQ7Cj4gK30KPiAr
-Cj4gK3ZvaWQgdWJpZnNfc3lzZnNfdW5yZWdpc3RlcihzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKPiAr
-ewo+ICsJa29iamVjdF9kZWwoJmMtPmtvYmopOwo+ICsJa29iamVjdF9wdXQoJmMtPmtvYmopOwo+
-ICsJd2FpdF9mb3JfY29tcGxldGlvbigmYy0+a29ial91bnJlZ2lzdGVyKTsKPiArCj4gKwlrZnJl
-ZShjLT5zdGF0cyk7Cj4gK30KPiArCj4gK2ludCBfX2luaXQgdWJpZnNfc3lzZnNfaW5pdCh2b2lk
-KQo+ICt7Cj4gKwlpbnQgcmV0Owo+ICsKPiArCWtvYmplY3Rfc2V0X25hbWUoJnViaWZzX2tzZXQu
-a29iaiwgInViaWZzIik7Cj4gKwl1Ymlmc19rc2V0LmtvYmoucGFyZW50ID0gZnNfa29iajsKPiAr
-CXJldCA9IGtzZXRfcmVnaXN0ZXIoJnViaWZzX2tzZXQpOwo+ICsKPiArCXJldHVybiByZXQ7Cj4g
-K30KPiArCj4gK3ZvaWQgdWJpZnNfc3lzZnNfZXhpdCh2b2lkKQo+ICt7Cj4gKwlrc2V0X3VucmVn
-aXN0ZXIoJnViaWZzX2tzZXQpOwo+ICt9Cj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3N5c2ZzLmgg
-Yi9mcy91Ymlmcy9zeXNmcy5oCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAw
-MDAwMDAuLmExMGE4MjU4NWFmOAo+IC0tLSAvZGV2L251bGwKPiArKysgYi9mcy91Ymlmcy9zeXNm
-cy5oCgpEbyB3ZSByZWFsbHkgbmVlZCBhIG5ldyBoZWFkZXIgZmlsZT8KVXN1YWxseSBtb3N0IHJ1
-bi10aW1lIHN0dWZmIG9mIFVCSUZTIGlzIHBhcnQgb2YgdWJpZnMuaC4KCj4gQEAgLTAsMCArMSwz
-OSBAQAo+ICsvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMC1vbmx5ICovCj4gKy8q
-Cj4gKyAqIFRoaXMgZmlsZSBpcyBwYXJ0IG9mIFVCSUZTLgo+ICsgKgo+ICsgKiBDb3B5cmlnaHQg
-KEMpIDIwMjEgQ2lzY28gU3lzdGVtcwo+ICsgKgo+ICsgKiBBdXRob3I6IFN0ZWZhbiBTY2hhZWNr
-ZWxlcgo+ICsgKi8KPiArCj4gKyNpZm5kZWYgX19VQklGU19TWVNGU19IX18KPiArI2RlZmluZSBf
-X1VCSUZTX1NZU0ZTX0hfXwo+ICsKPiArc3RydWN0IHViaWZzX2luZm87Cj4gKwo+ICsvKgo+ICsg
-KiBUaGUgVUJJRlMgc3lzZnMgZGlyZWN0b3J5IG5hbWUgcGF0dGVybiBhbmQgbWF4aW11bSBuYW1l
-IGxlbmd0aCAoMyBmb3IgInViaSIKPiArICogKyAxIGZvciAiXyIgYW5kIHBsdXMgMngyIGZvciAy
-IFVCSSBudW1iZXJzIGFuZCAxIGZvciB0aGUgdHJhaWxpbmcgemVybyBieXRlLgo+ICsgKi8KPiAr
-I2RlZmluZSBVQklGU19ERlNfRElSX05BTUUgInViaSVkXyVkIgo+ICsjZGVmaW5lIFVCSUZTX0RG
-U19ESVJfTEVOICAoMyArIDEgKyAyKjIgKyAxKQo+ICsKPiArLyoqCj4gKyAqIHViaWZzX3N0YXRz
-X2luZm8gLSBwZXItRlMgc3RhdGlzdGljcyBpbmZvcm1hdGlvbi4KPiArICogQG1hZ2ljX2Vycm9y
-czogbnVtYmVyIG9mIGJhZCBtYWdpYyBudW1iZXJzICh3aWxsIGJlIHJlc2V0IHdpdGggYSBuZXcg
-bW91bnQpLgo+ICsgKiBAbm9kZV9lcnJvcnM6IG51bWJlciBvZiBiYWQgbm9kZXMgKHdpbGwgYmUg
-cmVzZXQgd2l0aCBhIG5ldyBtb3VudCkuCj4gKyAqIEBjcmNfZXJyb3JzOiBudW1iZXIgb2YgYmFk
-IGNyY3MgKHdpbGwgYmUgcmVzZXQgd2l0aCBhIG5ldyBtb3VudCkuCj4gKyAqLwo+ICtzdHJ1Y3Qg
-dWJpZnNfc3RhdHNfaW5mbyB7Cj4gKwl1bnNpZ25lZCBpbnQgbWFnaWNfZXJyb3JzOwo+ICsJdW5z
-aWduZWQgaW50IG5vZGVfZXJyb3JzOwo+ICsJdW5zaWduZWQgaW50IGNyY19lcnJvcnM7Cj4gK307
-Cj4gKwo+ICtpbnQgdWJpZnNfc3lzZnNfaW5pdCh2b2lkKTsKPiArdm9pZCB1Ymlmc19zeXNmc19l
-eGl0KHZvaWQpOwo+ICtpbnQgdWJpZnNfc3lzZnNfcmVnaXN0ZXIoc3RydWN0IHViaWZzX2luZm8g
-KmMpOwo+ICt2b2lkIHViaWZzX3N5c2ZzX3VucmVnaXN0ZXIoc3RydWN0IHViaWZzX2luZm8gKmMp
-Owo+ICsKPiArI2VuZGlmCj4gZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3ViaWZzLmggYi9mcy91Ymlm
-cy91Ymlmcy5oCj4gaW5kZXggYzM4MDY2Y2U5YWIwLi5iZmMwZjIwYjQxYTEgMTAwNjQ0Cj4gLS0t
-IGEvZnMvdWJpZnMvdWJpZnMuaAo+ICsrKyBiL2ZzL3ViaWZzL3ViaWZzLmgKPiBAQCAtMjcsMTIg
-KzI3LDE1IEBACj4gI2luY2x1ZGUgPGxpbnV4L3NlY3VyaXR5Lmg+Cj4gI2luY2x1ZGUgPGxpbnV4
-L3hhdHRyLmg+Cj4gI2luY2x1ZGUgPGxpbnV4L3JhbmRvbS5oPgo+ICsjaW5jbHVkZSA8bGludXgv
-c3lzZnMuaD4KPiArI2luY2x1ZGUgPGxpbnV4L2NvbXBsZXRpb24uaD4KPiAjaW5jbHVkZSA8Y3J5
-cHRvL2hhc2hfaW5mby5oPgo+ICNpbmNsdWRlIDxjcnlwdG8vaGFzaC5oPgo+ICNpbmNsdWRlIDxj
-cnlwdG8vYWxnYXBpLmg+Cj4gCj4gI2luY2x1ZGUgPGxpbnV4L2ZzY3J5cHQuaD4KPiAKPiArI2lu
-Y2x1ZGUgInN5c2ZzLmgiCj4gI2luY2x1ZGUgInViaWZzLW1lZGlhLmgiCj4gCj4gLyogVmVyc2lv
-biBvZiB0aGlzIFVCSUZTIGltcGxlbWVudGF0aW9uICovCj4gQEAgLTEyNTEsNiArMTI1NCwxMCBA
-QCBzdHJ1Y3QgdWJpZnNfZGVidWdfaW5mbzsKPiAgKiBAbW91bnRfb3B0czogVUJJRlMtc3BlY2lm
-aWMgbW91bnQgb3B0aW9ucwo+ICAqCj4gICogQGRiZzogZGVidWdnaW5nLXJlbGF0ZWQgaW5mb3Jt
-YXRpb24KPiArICogQHN0YXRzOiBzdGF0aXN0aWNzIGV4cG9ydGVkIG92ZXIgc3lzZnMKPiArICoK
-PiArICogQGtvYmo6IGtvYmplY3QgZm9yIC9zeXMvZnMvdWJpZnMvCj4gKyAqIEBrb2JqX3VucmVn
-aXN0ZXI6IGNvbXBsZXRpb24gdG8gdW5yZWdpc3RlciBzeXNmcyBrb2JqZWN0Cj4gICovCj4gc3Ry
-dWN0IHViaWZzX2luZm8gewo+IAlzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnZmc19zYjsKPiBAQCAtMTI4
-Niw2ICsxMjkzLDkgQEAgc3RydWN0IHViaWZzX2luZm8gewo+IAlzcGlubG9ja190IGNzX2xvY2s7
-Cj4gCXdhaXRfcXVldWVfaGVhZF90IGNtdF93cTsKPiAKPiArCXN0cnVjdCBrb2JqZWN0IGtvYmo7
-Cj4gKwlzdHJ1Y3QgY29tcGxldGlvbiBrb2JqX3VucmVnaXN0ZXI7Cj4gKwo+IAl1bnNpZ25lZCBp
-bnQgYmlnX2xwdDoxOwo+IAl1bnNpZ25lZCBpbnQgc3BhY2VfZml4dXA6MTsKPiAJdW5zaWduZWQg
-aW50IGRvdWJsZV9oYXNoOjE7Cj4gQEAgLTE0OTMsNiArMTUwMyw3IEBAIHN0cnVjdCB1Ymlmc19p
-bmZvIHsKPiAJc3RydWN0IHViaWZzX21vdW50X29wdHMgbW91bnRfb3B0czsKPiAKPiAJc3RydWN0
-IHViaWZzX2RlYnVnX2luZm8gKmRiZzsKPiArCXN0cnVjdCB1Ymlmc19zdGF0c19pbmZvICpzdGF0
-czsKPiB9Owo+IAo+IGV4dGVybiBzdHJ1Y3QgbGlzdF9oZWFkIHViaWZzX2luZm9zOwo+IC0tCj4g
-Mi4zMi4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 8/17/21 3:16 PM, Pratyush Yadav wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On 27/07/21 07:52AM, Tudor Ambarus wrote:
+>> Get rid of flash_info flags that indicate settings which can be
+>> discovered when parsing SFDP. It will be clearer who sets what,
+>> and we'll restrict the flash settings that a developer can choose to
+>> only settings that are not SFDP discoverable.
+>>
+>> Whether a flash supports 4byte opcodes or not, is discoverable when
+>> parsing the optional 4-byte address instruction table. Flashes that
+>> do not support the 4bait SFDP table should set the SNOR_F_4B_OPCODES
+>> flag in the late_init() call. Flashes that define the 4bait SFDP table
+>> but gets it wrong, should set the flag in a post_sfdp fixup hook.
+> 
+> I like the idea, not so much the execution. More on this below.
+> 
+>>
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>> ---
+>>  drivers/mtd/spi-nor/core.c       |  3 ---
+>>  drivers/mtd/spi-nor/core.h       | 32 ++++++++++++++++----------------
+>>  drivers/mtd/spi-nor/gigadevice.c |  7 ++++---
+>>  drivers/mtd/spi-nor/issi.c       | 12 ++++++------
+>>  drivers/mtd/spi-nor/macronix.c   | 18 ++++++++++--------
+>>  drivers/mtd/spi-nor/micron-st.c  | 22 +++++++++++++---------
+>>  drivers/mtd/spi-nor/spansion.c   | 12 ++++++------
+>>  7 files changed, 55 insertions(+), 51 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 6a8617346764..240d5c31af88 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -3204,9 +3204,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>>       if (ret)
+>>               return ret;
+>>
+>> -     if (info->flags & SPI_NOR_4B_OPCODES)
+>> -             nor->flags |= SNOR_F_4B_OPCODES;
+>> -
+>>       if (info->flags & SPI_NOR_IO_MODE_EN_VOLATILE)
+>>               nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
+>>
+>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> index 625f4eed75f1..dfdc51a26cad 100644
+>> --- a/drivers/mtd/spi-nor/core.h
+>> +++ b/drivers/mtd/spi-nor/core.h
+>> @@ -348,40 +348,36 @@ struct flash_info {
+>>                                        * S3AN flashes have specific opcode to
+>>                                        * read the status register.
+>>                                        */
+>> -#define SPI_NOR_4B_OPCODES   BIT(11) /*
+>> -                                      * Use dedicated 4byte address op codes
+>> -                                      * to support memory size above 128Mib.
+>> -                                      */
+>> -#define NO_CHIP_ERASE                BIT(12) /* Chip does not support chip erase */
+>> -#define SPI_NOR_SKIP_SFDP    BIT(13) /* Skip parsing of SFDP tables */
+>> -#define USE_CLSR             BIT(14) /* use CLSR command */
+>> -#define SPI_NOR_OCTAL_READ   BIT(15) /* Flash supports Octal Read */
+>> -#define SPI_NOR_TB_SR_BIT6   BIT(16) /*
+>> +#define NO_CHIP_ERASE                BIT(11) /* Chip does not support chip erase */
+>> +#define SPI_NOR_SKIP_SFDP    BIT(12) /* Skip parsing of SFDP tables */
+>> +#define USE_CLSR             BIT(13) /* use CLSR command */
+>> +#define SPI_NOR_OCTAL_READ   BIT(14) /* Flash supports Octal Read */
+>> +#define SPI_NOR_TB_SR_BIT6   BIT(15) /*
+>>                                        * Top/Bottom (TB) is bit 6 of
+>>                                        * status register. Must be used with
+>>                                        * SPI_NOR_HAS_TB.
+>>                                        */
+>> -#define SPI_NOR_4BIT_BP              BIT(17) /*
+>> +#define SPI_NOR_4BIT_BP              BIT(16) /*
+>>                                        * Flash SR has 4 bit fields (BP0-3)
+>>                                        * for block protection.
+>>                                        */
+>> -#define SPI_NOR_BP3_SR_BIT6  BIT(18) /*
+>> +#define SPI_NOR_BP3_SR_BIT6  BIT(17) /*
+>>                                        * BP3 is bit 6 of status register.
+>>                                        * Must be used with SPI_NOR_4BIT_BP.
+>>                                        */
+>> -#define SPI_NOR_OCTAL_DTR_READ       BIT(19) /* Flash supports octal DTR Read. */
+>> -#define SPI_NOR_OCTAL_DTR_PP BIT(20) /* Flash supports Octal DTR Page Program */
+>> -#define SPI_NOR_IO_MODE_EN_VOLATILE  BIT(21) /*
+>> +#define SPI_NOR_OCTAL_DTR_READ       BIT(18) /* Flash supports octal DTR Read. */
+>> +#define SPI_NOR_OCTAL_DTR_PP BIT(19) /* Flash supports Octal DTR Page Program */
+>> +#define SPI_NOR_IO_MODE_EN_VOLATILE  BIT(20) /*
+>>                                                * Flash enables the best
+>>                                                * available I/O mode via a
+>>                                                * volatile bit.
+>>                                                */
+>> -#define SPI_NOR_SWP_IS_VOLATILE      BIT(22) /*
+>> +#define SPI_NOR_SWP_IS_VOLATILE      BIT(21) /*
+>>                                        * Flash has volatile software write
+>>                                        * protection bits. Usually these will
+>>                                        * power-up in a write-protected state.
+>>                                        */
+>> -#define SPI_NOR_PARSE_SFDP   BIT(23) /*
+>> +#define SPI_NOR_PARSE_SFDP   BIT(22) /*
+>>                                        * Flash initialized based on the SFDP
+>>                                        * tables.
+>>                                        */
+>> @@ -569,4 +565,8 @@ static struct spi_nor __maybe_unused *mtd_to_spi_nor(struct mtd_info *mtd)
+>>       return mtd->priv;
+>>  }
+>>
+>> +static inline void snor_f_4b_opcodes(struct spi_nor *nor)
+> 
+> Maybe snor_set_f_4b_opcodes()?
+
+snor_f comes from SPI NOR Flags I guess, so probably snor_f_set_4b_opcodes if we're
+going this path.
+
+> 
+>> +{
+>> +     nor->flags |= SNOR_F_4B_OPCODES;
+>> +}
+>>  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
+>> diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
+>> index 447d84bb2128..ff523fe734ef 100644
+>> --- a/drivers/mtd/spi-nor/gigadevice.c
+>> +++ b/drivers/mtd/spi-nor/gigadevice.c
+>> @@ -47,9 +47,10 @@ static const struct flash_info gigadevice_parts[] = {
+>>                          SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+>>       { "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512,
+>>                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                        SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK |
+>> -                        SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
+>> -             .fixups = &gd25q256_fixups },
+>> +                        SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>> +                        SPI_NOR_TB_SR_BIT6)
+>> +             .fixups = &gd25q256_fixups,
+>> +             .late_init = snor_f_4b_opcodes, },
+>>  };
+>>
+>>  const struct spi_nor_manufacturer spi_nor_gigadevice = {
+>> diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+>> index 1e5bb5408b68..aeff8f60cbae 100644
+>> --- a/drivers/mtd/spi-nor/issi.c
+>> +++ b/drivers/mtd/spi-nor/issi.c
+>> @@ -45,9 +45,9 @@ static const struct flash_info issi_parts[] = {
+>>       { "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+>>                            SECT_4K | SPI_NOR_DUAL_READ) },
+>>       { "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
+>> -                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                          SPI_NOR_4B_OPCODES)
+>> -             .fixups = &is25lp256_fixups },
+>> +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .fixups = &is25lp256_fixups,
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
+>>                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>       { "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
+>> @@ -55,9 +55,9 @@ static const struct flash_info issi_parts[] = {
+>>       { "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
+>>                            SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>       { "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 512,
+>> -                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                         SPI_NOR_4B_OPCODES)
+>> -             .fixups = &is25lp256_fixups },
+>> +                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .fixups = &is25lp256_fixups,
+>> +             .late_init = snor_f_4b_opcodes, },
+>>
+>>       /* PMC */
+>>       { "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+>> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+>> index fba85efafb47..9709eb68b613 100644
+>> --- a/drivers/mtd/spi-nor/macronix.c
+>> +++ b/drivers/mtd/spi-nor/macronix.c
+>> @@ -105,29 +105,31 @@ static const struct flash_info macronix_parts[] = {
+>>       { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512,
+>>                             SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>>               .fixups = &mx25l25635_fixups },
+>> -     { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512,
+>> -                           SECT_4K | SPI_NOR_4B_OPCODES) },
+>> +     { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "mx25u51245g", INFO(0xc2253a, 0, 64 * 1024, 1024,
+>>                             SECT_4K | SPI_NOR_DUAL_READ |
+>> -                           SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                           SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16,
+>>                             SECT_4K | SPI_NOR_DUAL_READ |
+>>                             SPI_NOR_QUAD_READ) },
+>>       { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+>>       { "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024,
+>> -                           SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                           SPI_NOR_4B_OPCODES) },
+>> +                           SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024,
+>>                             SECT_4K | SPI_NOR_DUAL_READ |
+>> -                           SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                           SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048,
+>>                             SECT_4K | SPI_NOR_DUAL_READ |
+>>                             SPI_NOR_QUAD_READ) },
+>>       { "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048,
+>>                             SPI_NOR_QUAD_READ) },
+>>       { "mx66u2g45g",  INFO(0xc2253c, 0, 64 * 1024, 4096,
+>> -                           SECT_4K | SPI_NOR_DUAL_READ |
+>> -                           SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                           SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>  };
+>>
+>>  static void macronix_default_init(struct spi_nor *nor)
+>> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+>> index c224e59820a1..72cc4673bf88 100644
+>> --- a/drivers/mtd/spi-nor/micron-st.c
+>> +++ b/drivers/mtd/spi-nor/micron-st.c
+>> @@ -121,13 +121,13 @@ static struct spi_nor_fixups mt35xu512aba_fixups = {
+>>  static const struct flash_info micron_parts[] = {
+>>       { "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
+>>                              SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>> -                            SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ |
+>> -                            SPI_NOR_OCTAL_DTR_PP |
+>> +                            SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP |
+>>                              SPI_NOR_IO_MODE_EN_VOLATILE)
+>> -       .fixups = &mt35xu512aba_fixups},
+>> +       .fixups = &mt35xu512aba_fixups,
+>> +       .late_init = snor_f_4b_opcodes, },
+> 
+> This flash populated the 4BAIT table, so you can simply drop the flag.
+
+I'll do this in a dedicated patch, I'll need your tested-by tag.
+
+> No need for the late_init().
+> 
+> This makes me think that many other flashes might also have the 4BAIT
+> table but the developers chose to add this flag here since at that time
+> the norm was to populate all flash capabilities. I think we could be
+> able to drop many more .late_init like this. But unfortunately someone
+> needs to do the hard work of checking each flash, and most flash
+> datasheets don't even list the SFDP contents.
+> 
+> So while I think in the ideal world we would go check each flash, I
+> think this is an acceptable compromise. Let's not let perfection be the
+> enemy of good.
+
+The patch doesn't change how the code works now. If some flashes can drop
+some flags, we can drop them in dedicated patches.
+
+> 
+> While we are on this topic, I find this a bit "ugly". Having to set
+> late_init() for setting these flags for each flash is not exactly very
+> clean or readable. I don't know how the future will look like, but if
+> each flash/family needs its own late_init() to set some flags, it won't
+> be very readable. We seem to be trading one type of complexity for
+> another. I dunno which is the lesser evil though...
+
+Your point is valid. This patch removes SPI_NOR_4B_OPCODES and sets
+SNOR_F_4B_OPCODES in a late_init() hook, forcing the reader to go through
+the late_init() function to see what's there. As you saw, late_init() can be
+used for tweaking flash's parameters, settings and methods, not just NOR flags,
+so I would expect that this hook to be present among flashes that don't define
+the SFDP tables or for flashes that have parameters that are not SFDP discoverable,
+the hook will be there anyway.
+
+This patch opens the door on how we could handle the flash_info flags. All flash_info
+flags that can be determined when parsing SFDP can be removed and use for flashes that
+skip SFDP, SNOR_F equivalents in late_init() methods. spi_nor_info_init_params()
+should NOT be called for SFDP capable flashes anyway, because in case of SFDP flashes,
+all the settings done in spi_nor_info_init_params() are overwritten when parsing SFDP.
+1/ flashes with SFDP will set the flags as:
+SPI_NOR_PARSE_SFDP | non-sfdp-discoverable-flags
+2/ flashes without SFDP:
+SPI_NOR_SKIP_SFDP | non-sfdp-discoverable-flags
+and a late_init() for SNOR_F equivalents of flash_info flags from
+spi_nor_info_init_params()
+3/ flashes that collide, one with SFDP and the other without:
+SPI_NOR_PARSE_SFDP | non-sfdp-discoverable-flags
+and a late_init() for SNOR_F equivalents of flash_info flags from
+spi_nor_info_init_params(), that will be used for the flash without SFDP.
+4/ individual flash, no collisions, a flavor supports SFDP, the other not:
+SPI_NOR_PARSE_SFDP | non-sfdp-discoverable-flags
+and a late_init() for SNOR_F equivalents of flash_info flags from
+spi_nor_info_init_params(), that will be used for the flash without SFDP.
+
+Let me know what you think or if I missed something.
+
+Cheers,
+ta
+
+> 
+>>       { "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
+>> -                         SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
+>> -                         SPI_NOR_4B_OPCODES) },
+>> +                         SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ)
+>> +       .late_init = snor_f_4b_opcodes, },
+>>  };
+>>
+>>  static const struct flash_info st_parts[] = {
+>> @@ -149,25 +149,29 @@ static const struct flash_info st_parts[] = {
+>>                             SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>>       { "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512,
+>>                              SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+>> -                            SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                            SPI_NOR_QUAD_READ)
+>> +       .late_init = snor_f_4b_opcodes, },
+>>       { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K |
+>>                             USE_FSR | SPI_NOR_DUAL_READ |
+>>                             SPI_NOR_QUAD_READ) },
+>>       { "mt25qu256a",  INFO6(0x20bb19, 0x104400, 64 * 1024,  512,
+>>                              SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+>> -                            SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                            SPI_NOR_QUAD_READ)
+>> +       .late_init = snor_f_4b_opcodes, },
+>>       { "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512,
+>>                             SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>>       { "mt25ql512a",  INFO6(0x20ba20, 0x104400, 64 * 1024, 1024,
+>>                              SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+>> -                            SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                            SPI_NOR_QUAD_READ)
+>> +       .late_init = snor_f_4b_opcodes, },
+>>       { "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024,
+>>                             SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>>                             SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>>                             SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+>>       { "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024,
+>>                              SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+>> -                            SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>> +                            SPI_NOR_QUAD_READ)
+>> +       .late_init = snor_f_4b_opcodes, },
+>>       { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024,
+>>                             SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>>                             SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index aad7170768b4..af10833f56d8 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -259,14 +259,14 @@ static const struct flash_info spansion_parts[] = {
+>>       { "s25fl208k",  INFO(0x014014,      0,  64 * 1024,  16,
+>>                            SECT_4K | SPI_NOR_DUAL_READ) },
+>>       { "s25fl064l",  INFO(0x016017,      0,  64 * 1024, 128,
+>> -                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                          SPI_NOR_4B_OPCODES) },
+>> +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "s25fl128l",  INFO(0x016018,      0,  64 * 1024, 256,
+>> -                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                          SPI_NOR_4B_OPCODES) },
+>> +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512,
+>> -                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> -                          SPI_NOR_4B_OPCODES) },
+>> +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>> +             .late_init = snor_f_4b_opcodes, },
+>>       { "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1,
+>>                             SPI_NOR_NO_ERASE) },
+>>       { "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256,
+>> --
+>> 2.25.1
+>>
+> 
+> --
+> Regards,
+> Pratyush Yadav
+> Texas Instruments Inc.
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
