@@ -2,66 +2,85 @@ Return-Path: <SRS0=q46N=OY=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C61C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Oct 2021 05:55:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BFFDC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Oct 2021 05:59:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0279F6124D
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Oct 2021 05:55:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0279F6124D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arri.de
+	by mail.kernel.org (Postfix) with ESMTPS id BEDE16103D
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Oct 2021 05:59:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BEDE16103D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmx.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Message-Id:
+	References:Subject:In-reply-to:CC:To:From:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ufOMXGwTwLEOnufBtaCn4cPS6B5C2MJsWMFpAKIbAhE=; b=cnaADTm2I3pn7x
-	m6l9qBtWbAPlEAFiWwnI2k+mSq2bgDRLk52qcG6z3nauXjFiZ16xYdBtWNWDoCADy2Nm7W9Rl3czF
-	2v8rUKOHLZBUM5GL9nVkfuW5+Tm5KDhTut882Z++C/u4UBpwnBBCuIRaBTXKk27GqqVEl6b8FjN11
-	C2udOavtLBE8xzOEjrG+i7e6p9Oe5v1pBqwSuXlVZA5wbWIFrPMcFc3DFbn/v4jGVPe9luEuXQ+2D
-	5AfufMRWEcdfQvYTV4S4H8RMFjNTpKDitnpz3KEfGDWvqPAsRykMiSlErrcOMvZl4XBGpDGeWu6Pf
-	3UAiobCMHrSn+Beu/fqA==;
+	List-Owner; bh=3+nnf/CgzgEMfAfnpC7OX0jmXKBWcayxtqvIOnlyy80=; b=xxBWjsUPttufX2
+	+hTjZf+I933wCxGeArtWAXkwPxt7cs+2xjefuKJAkwGeoGHU/RoHGsiWnIfAzjGH186uqZ7SO2tu0
+	xjsHdPWuWVTit16oa1W7FIKA1z3a9vZyOZkwbEju066Qul683OKrlpyQAWZea6CJ6bsIYbIFK5S3g
+	8R75dkOprgwM/Xh/5t7Xf2/r1piyEj/DGzpRWkybYyQMSi7RuAHi1EDcDwAHcdrqlYvpmNku1iTgf
+	MTH9T8Bn1clZ+cKuH1UTapKBoI4KBg+cdNPzjROoEJtnELhaV6PnY6C6o59tjL2zzFW8VKKWF1hon
+	RDeywZiuCQPeP5m9D6ig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mXGvy-005AMS-Rn; Mon, 04 Oct 2021 05:54:42 +0000
-Received: from mailout12.rmx.de ([94.199.88.78])
+	id 1mXGza-005C64-0d; Mon, 04 Oct 2021 05:58:26 +0000
+Received: from mout.gmx.net ([212.227.17.22])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXGvt-005AGy-OY
- for linux-mtd@lists.infradead.org; Mon, 04 Oct 2021 05:54:41 +0000
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mailout12.rmx.de (Postfix) with ESMTPS id 4HN8zy3TK8zRq53;
- Mon,  4 Oct 2021 07:54:22 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by kdin01.retarus.com (Postfix) with ESMTPS id 4HN8zs0KXmz2xlQ;
- Mon,  4 Oct 2021 07:54:17 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.55.32) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 4 Oct
- 2021 07:54:16 +0200
-From: Christian Eggers <ceggers@arri.de>
-To: <linux-mtd@lists.infradead.org>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Greg Ungerer <gerg@kernel.org>, 
- Michael Nazzareno Trimarchi <michael@amarulasolutions.com>, Han Xu
- <han.xu@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: GPMI iMX6ull timeout on DMA
-Date: Mon, 4 Oct 2021 07:54:15 +0200
-Message-ID: <3160469.44csPzL39Z@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
-MIME-Version: 1.0
-X-Originating-IP: [192.168.55.32]
-X-RMX-ID: 20211004-075417-fLMDMrmDssxx-0@out01.hq
-X-RMX-SOURCE: 217.111.95.66
+ id 1mXGzW-005C29-Tf
+ for linux-mtd@lists.infradead.org; Mon, 04 Oct 2021 05:58:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=badeba3b8450; t=1633327086;
+ bh=3yQaFDx3HteINXfvXksHTXMue8daiL/SfDc07itzYXc=;
+ h=X-UI-Sender-Class:From:To:CC:In-reply-to:Subject:Reply-to:
+ References:Date;
+ b=C34tpHZ63vLX2lWlplKZFtVaP6QSvYENnT6CFy2STHzNlqVz6XIbbCVYNpsVDRDFW
+ BvUgClE9pCVUUxYhMc1YPkYEkWqZf2PTkH9pwOmCoR9ymLNJywMEsPuMdMeYeZNjwq
+ N49SJynqauYZwpzibAWPNzLet2y4i1eho40ozId8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from corona.crabdance.com ([173.228.106.131]) by mail.gmx.net
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1M3lYB-1mWzjq2m5T-000wlv; Mon, 04 Oct 2021 07:58:06 +0200
+Received: by corona.crabdance.com (Postfix, from userid 1000)
+ id C52AD899CC4; Sun,  3 Oct 2021 22:57:58 -0700 (PDT)
+From: Stefan Schaeckeler <schaecsn@gmx.net>
+To: richard@nod.at
+CC: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ sschaeck@cisco.com
+In-reply-to: <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at> (message
+ from Richard Weinberger on Sun, 3 Oct 2021 21:58:25 +0200 (CEST))
+Subject: Re: [PATCH 1/1] ubifs: ubifs to export filesystem error counters
+References: <20210907214034.11676-1-schaecsn@gmx.net>
+ <20210907214034.11676-2-schaecsn@gmx.net>
+ <1815586081.32955.1633291105033.JavaMail.zimbra@nod.at>
+Message-Id: <20211004055758.C52AD899CC4@corona.crabdance.com>
+Date: Sun,  3 Oct 2021 22:57:58 -0700 (PDT)
+X-Provags-ID: V03:K1:Zg0mDQu0TezbLoYA8pDQR0+RMH3KAnGSWTLtVxSkc71qesyBOPr
+ JBAf+vDG++ICxoeTj8f3iQe3YwwWUAK9o9I2YEP0s9tsLe4jckW0gqoysT8GPpP31/HaS2y
+ c4dWeRxMxRVkqy+5NQEhJX/4pSLhLYFcGX35nT709N4wJxjXWKjPlOPlaapuoKzNcn+O2mx
+ WNnJxPshu06YrrT1JY4gQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mhArpKz+4UI=:iUQjTCYBLI/S7wj60DELtH
+ cFRnjvOicAMHcSqcHAjqmlh1flfDRg/Q7Y9EPM+bXDGJfgSiXeydoJ9VcRxi6EBQP03FYY/UC
+ RcUaNGJJXW21XPyjlrsHuHx4vGuHFXWegwYSuf7YchEWxq5QPwPXSFvs+HjasRwOnlyCzAjBn
+ 5UBKL21UnGjmQL/CowHbBfaIujmh3viWS393J1V7ng0MpXIu4MfZg7tp/t0Jy947x4wC+gDYU
+ o9FUCcgYbuG1xW60Bwcoj5rDsTPQQquoXG6nS3HiFlhn6iQmJSbBp+dLCQ9A4kEg9EhS6yXXf
+ Unhzo8KaIfp9yj+7dkkjTxVt/8HfawXXFVHv9coDRNWHX7RXqpOfgqTTnV47qxB45q5mmOlVR
+ wIiUKhLqP4Rf3mGfHhWh3wFFoiTj0JNxMlPJankhQDV/UhHag2A5GzUAvO/527s2zIK4GrJDc
+ nKZdImbMDQR21zU1yzYEsnzLefIZBLYvtPHrG8R2TDwBVkwGeG9FQ+iEwgkQHhSNxCwC6WDup
+ +eTh8y3h6qrPd0p53CeQ/VYTqmCvbE5UoxrY9WxqdN8hnB2DKYPiJp/pFwzAE8WhSyp4GIhZ9
+ WXXD1H/X07ugFbE5J+6OEgB1Ko4Oui2vjGKyDg+go9LF5xzripN8UqOa3INpXspyub/7TO7Ha
+ EsXVbsAU2glLfjXt6M1oKCsGl6ecsxX5FMUBE6S121+2yaz9y/AqGY7/0l/lnUYdsGwfDREhE
+ r7LE9vMsxk6xdY931+w/mOPs+6EnPG1sZSvPlY1fRvht89qiEkaCCRnEr91hdnwmcd/FBszEd
+ rznQuT1vQ88k683h8mjS/xNu7iGc0Y330c1pmbPt9IxCQ0Ea7yYoQ3Nt18foCxEOgQ79vPy6/
+ vD9NmCzaSdN/8zzaC3Rsn/SImmCLX3KMgbgXou61OyOWxFEz/W93Uuhsayn0ELAAablDcaOmm
+ 4uG168dmiSg7swjlleuEKcZH/Nz2FsIaJE10CKoZS+SiaP96a6uj+nwLi3ljhsnK56fwx2+0I
+ l68YVuMYw/95VPz4dnDlmoeKp7v0+4uThgCM6eY/Uw+w/o3cyRMzULmfBHkClzy65dwj2GhS0
+ VB5OrH7zIvP6cs=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211003_225438_033170_EF80A775 
-X-CRM114-Status: GOOD (  18.07  )
+X-CRM114-CacheID: sfid-20211003_225823_341412_F7441110 
+X-CRM114-Status: GOOD (  27.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,123 +92,145 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: schaecsn@gmx.net
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Monday, 29 July 2019, 08:41:51 CEST, Greg Ungerer wrote:
-> Hi Miquel,
-> 
-> I am experiencing a problem with NAND flash DMA timeouts on
-> iMX6ull based boards. The problem is very similar to that
-> described in:
-> 
->    https://linux-mtd.infradead.narkive.com/JIUulfFB/gpmi-imx6ull-timeout-on-dma
-> 
-> That didn't come to any specific resolution that I could see
-> in that thread.
+Hello Richard,
 
-Hi all,
+> > Not all ubifs filesystem errors are propagated to userspace.
+> >
+> > Export bad magic, bad node and crc errors via sysfs. This allows userspace
+> > to notice filesystem errors:
+> >
+> > /sys/fs/ubifs/ubiX_Y/errors_magic
+> > /sys/fs/ubifs/ubiX_Y/errors_node
+> > /sys/fs/ubifs/ubiX_Y/errors_crc
+> >
+> > The counters are reset to 0 with a remount. Writing anything into the
+> > counters also clears them.
+>
+> I think this is a nice feature. Thanks for implementing it.
+> Please see some minor nits below.
+>
+> Is there a specific reason why you didn't implement it via UBIFS's debugfs interface?
 
-I am joining this thread because I am also affected by this problem. I use
-kernel 5.10.65-rt53 but I have seen this issue on many previous versions. In the
-past I only recognized this on my development setup but now this has been found
-by our testing team.
+These error counters are not meant for aiding debugging but for userspace to
+monitor the sanity of the filesystem. Also ext4 exports error counters via
+sysfs - it's probably a good idea to be consistent with them.
 
-In our test setup we simply perform a reboot every 30s. After 5 to 200 cycles
-the test stops due to this error.
-
-The kernel version I use already includes:
-
-> Han Xu <han.xu@nxp.com>
-> mtd: rawnand: gpmi: Fix the random DMA timeout issue
-
-Additionally I tried ...
-
-> Michael Trimarchi <michael@amarulasolutions.com>
-> mtd: nand: Calculate the clock before enable it
-
-... but the problem still persists.
-
-In my case, some registers show different values (annotated below):
-
-> 
-> The boot trace on the console for me looks like this:
-> 
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-  nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
-> nand: Micron MT29F2G08ABAEAWP
-  nand: Micron MT29F4G08ABADAH4
-> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> gpmi-nand 1806000.gpmi-nand: DMA timeout, last DMA
-> gpmi-nand 1806000.gpmi-nand: Show GPMI registers :
-> gpmi-nand 1806000.gpmi-nand: offset 0x000 : 0x20830002
-> gpmi-nand 1806000.gpmi-nand: offset 0x010 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x020 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x030 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x040 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x050 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x060 : 0x01c6800c
-> gpmi-nand 1806000.gpmi-nand: offset 0x070 : 0x00010101
-> gpmi-nand 1806000.gpmi-nand: offset 0x080 : 0xe0000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x090 : 0x23023336
-> gpmi-nand 1806000.gpmi-nand: offset 0x0a0 : 0x000001ee
-> gpmi-nand 1806000.gpmi-nand: offset 0x0b0 : 0xff000001
-> gpmi-nand 1806000.gpmi-nand: offset 0x0c0 : 0x00000001
-  gpmi-nand 1806000.nand-controller: offset 0x0c0 : 0x00000202
-> gpmi-nand 1806000.gpmi-nand: offset 0x0d0 : 0x05020000
-> gpmi-nand 1806000.gpmi-nand: Show BCH registers :
-> gpmi-nand 1806000.gpmi-nand: offset 0x000 : 0x00000100
-  gpmi-nand 1806000.nand-controller: offset 0x000 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x010 : 0x00000010
-> gpmi-nand 1806000.gpmi-nand: offset 0x020 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x030 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x040 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x050 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x060 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x070 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x080 : 0x030a2080
-  gpmi-nand 1806000.nand-controller: offset 0x080 : 0x070a4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x090 : 0x083e2080
-  gpmi-nand 1806000.nand-controller: offset 0x090 : 0x10da4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x0a0 : 0x070a4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x0b0 : 0x10da4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x0c0 : 0x070a4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x0d0 : 0x10da4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x0e0 : 0x070a4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x0f0 : 0x10da4080
-> gpmi-nand 1806000.gpmi-nand: offset 0x100 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x110 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x120 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x130 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x140 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x150 : 0x20484342
-> gpmi-nand 1806000.gpmi-nand: offset 0x160 : 0x01000000
-> gpmi-nand 1806000.gpmi-nand: offset 0x170 : 0x00000000
-> gpmi-nand 1806000.gpmi-nand: BCH Geometry :
-> GF length              : 13
-> ECC Strength           : 8
-> Page Size in Bytes     : 2110
-> Metadata Size in Bytes : 10
-> ECC Chunk0 Size in Bytes: 512
-> ECC Chunkn Size in Bytes: 512
-  ECC Chunk Size in Bytes: 512
-> ECC Chunk Count        : 4
-> Payload Size in Bytes  : 2048
-> Auxiliary Size in Bytes: 16
-> Auxiliary Status Offset: 12
-> Block Mark Byte Offset : 1999
-> Block Mark Bit Offset  : 0
-
-Please let me know if further information is required.
-
-regards
-Christian
+$ dir /sys/fs/ext4/sdb2/*error*
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/errors_count
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_block
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_errcode
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_func
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_ino
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_line
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/first_error_time
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_block
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_errcode
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_func
+-r--r--r-- 1 root root 4096 Oct  3 13:47 /sys/fs/ext4/sdb2/last_error_ino
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_line
+-r--r--r-- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/last_error_time
+--w------- 1 root root 4096 Oct  3 13:46 /sys/fs/ext4/sdb2/trigger_fs_error
 
 
+> sysfs is ABI, so we cannot change much anymore.
+
+Judging by the filesystem permissions above, ext4 does not seem to allow
+resetting error counters. If you worry about unchangable ABIs then we could
+play it safe and don't support write callbacks for resetting the error counters
+in an initial version of the ubifs sysfs. What do you think?
+
+When we are at it, in the current code, writing anything into a sysfs node
+resets the corresponding counter. One could fine-tune that to set the counter
+to whatever non-negative integer is passed.
 
 
+> > +		if (c->stats)
+> > +			c->stats->magic_errors++;
+>
+> Please wrap this into a helper function.
+
+Ack.
+
+
+> > +		if (c->stats)
+> > +			c->stats->node_errors++;
+>
+> Same.
+
+Ack.
+
+
+> > +		if (c->stats)
+> > +			c->stats->crc_errors++;
+>
+> Same.
+
+Ack.
+
+
+> > +#define UBIFS_ATTR_FUNC(_name, _mode) UBIFS_ATTR(_name, _mode, _name)
+> > +
+> > +UBIFS_ATTR_FUNC(errors_magic, 0644);
+> > +UBIFS_ATTR_FUNC(errors_crc, 0644);
+> > +UBIFS_ATTR_FUNC(errors_node, 0644);
+>
+> I'm not sure whether everyone should be allowed to read these stats.
+> dmesg is also restricted these days. An unprivileged user should not see the
+> errors he can indirectly trigger.
+
+I don't mind 600, but having error counters world-readable is consistent with
+ext4 (see dir above) and so I suggest to keep 644.
+
+
+> > +	case attr_errors_crc:
+> > +		return snprintf(buf, PAGE_SIZE, "%u\n",
+> > +				sbi->stats->crc_errors);
+>
+> Please use sysfs_emit().
+
+Ack.
+
+
+> > +	if (n == UBIFS_DFS_DIR_LEN) {
+> > +		/* The array size is too small */
+> > +		ret = -EINVAL;
+> > +		goto out_last;
+>
+> Where is c->stats released in case of an error?
+
+My fault. Will be fixed.
+
+
+> > diff --git a/fs/ubifs/sysfs.h b/fs/ubifs/sysfs.h
+> > new file mode 100644
+> > index 000000000000..a10a82585af8
+> > --- /dev/null
+> > +++ b/fs/ubifs/sysfs.h
+>
+> Do we really need a new header file?
+> Usually most run-time stuff of UBIFS is part of ubifs.h.
+
+I wanted to be consistent with debugfs where fs/ubifs/debug.c comes with its
+own header fs/ubifs/debug.h.
+
+
+I'll send out a new patch once we agree on all changes. To recap:
+
+- write callbacks: do we remove them? If not, do we keep them as is or do we
+  fine-tine them by letting a non-negative integer set the counter?
+
+- 644 (world-readable) counters to be consistent with ext4?
+
+- keep sysfs.h to be consistent with debugfs?
+
+ Stefan
 
 ______________________________________________________
 Linux MTD discussion mailing list
