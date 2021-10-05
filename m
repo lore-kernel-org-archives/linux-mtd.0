@@ -2,69 +2,86 @@ Return-Path: <SRS0=Jblq=OZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC9BDC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 09:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA9DC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 10:13:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 99E106128A
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 09:42:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 99E106128A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 07E146113A
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 10:13:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 07E146113A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=semihalf.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=54uVi2yV/dE/7XWLx1XKt+MkMv5+8LHG897XAwKeGuI=; b=YmRQZXvtZLW6R5
-	IGmXWjH1T6Onag0z6Pvlxq+JzyOfrtS3mSZkYCSK6dDJ9MGyAGkqvszkihuQ0pSktjlLNYjH2PbGI
-	6QEE1sE326mSzEwJI2e4vsKzbDbSfNDwmNXUW+nsLydTu2pdHjZgzH6oz4wFgBFwrb+0CoEqTKUdJ
-	X5lSZJgTGK3HYbaJLTd3c9Oc+y6r3Kce8aIg8V5wipKOU20mIyEkRBd4UxD+cZabMv2YWdkfc5FLO
-	SM9LVbSTQijO97teI+8ukIVj671EIQpLi2QVvJ/a4IbEEo75CJksMnRerk30xV/bXjKRRr/+Q6Sv+
-	OlXYXgNs45S1gIXx2waA==;
+	List-Owner; bh=y109DDvThUuWFCz40gBKD0CVI08SWTPU1l3LT7eulSU=; b=Fn3Nod5n7L10nW
+	A1voTQfAeANl8U3ThwGk1K6J5V6GotYP7UENhxbHMGYLBvtF6MsRPoUhPjptrg9C1G6YrcFKcU52w
+	g16Q1pwBkfWuPs+OcmAOKlwtsNbftdh2GU49vwYUnnOn8fzFrlY8/J3HAHa+4dLYPGiZrRi/zRUi3
+	ydIh8BWp3ORVWbUOUN9FpKi166fuySxPSR3JeM2CqRRVim6HD8oNPTg4SYu04lizQ0u9OGZCRvWan
+	eoKz43VSUr0NPj6186wE2uXoH0xRgxRUlOOO3mn9tBSGpHMpzNPVtstEpb2bJ8/ox4iKzkiirejPr
+	oJ8+dZGbLLdJgmpeYBFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mXgxL-009q1M-7s; Tue, 05 Oct 2021 09:41:51 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1mXhQr-009we1-As; Tue, 05 Oct 2021 10:12:21 +0000
+Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXgxI-009q0O-De
- for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 09:41:49 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10127"; a="226011635"
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; d="scan'208";a="226011635"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Oct 2021 02:41:46 -0700
-X-IronPort-AV: E=Sophos;i="5.85,348,1624345200"; d="scan'208";a="438633858"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Oct 2021 02:41:42 -0700
-Received: by lahna (sSMTP sendmail emulation); Tue, 05 Oct 2021 12:41:39 +0300
-Date: Tue, 5 Oct 2021 12:41:39 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
-Message-ID: <YVwd09KZwOQVvh4g@lahna>
-References: <20210930100719.2176-1-mika.westerberg@linux.intel.com>
- <20210930100719.2176-3-mika.westerberg@linux.intel.com>
- <CAHp75VdtOHn4ED-ixdDngBQw10OnKmbtTv=ydLs6dYbkjyqW4Q@mail.gmail.com>
+ id 1mXhQo-009wcw-VG
+ for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 10:12:20 +0000
+Received: by mail-lf1-x12e.google.com with SMTP id y23so44686453lfb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Oct 2021 03:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=semihalf-com.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=Fd2bVG3T2aDLLsUGg65DNy9VZxuxLh/QslDXMizwJK8=;
+ b=Ez5mYoeEnxP72wgv6au1eWbZZvt7siRLWpI9GsKBKBLepayHvuXHhoBFqZfseuORyY
+ h1HA3jABRlKS8tuWaG2UUN4XzRb4Jizd3n+k9ryDkBNUpWyPDxOui77+S9ZqKc3aD0eI
+ IhRttz3xOc3IW3LwIjPPFZxivXeffhFA5txSbttH+iOS9g7NO3HrB8pvutVsiiQaPsIG
+ 1ySZ3kqO9o7Bd1T6MoTMLAQEKlN8iKHV+m5My4Owt13LGlpQFTv1OWpU6AdxUVVKm/bP
+ 7UXovG3irUPeGNxrJ6iwxCqh0qKa2utVcRhWtScOoJ2MkJj+6XNlVCKFmGij7agmbAVh
+ KBXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=Fd2bVG3T2aDLLsUGg65DNy9VZxuxLh/QslDXMizwJK8=;
+ b=Cxvq3s+/xg9ZQ0FDzJc9KkJlYMgRcg6BXY/tSBSK/AEbZRkQIC7syv/9RQkhe4omGT
+ h53gE8oaRKxQtywZvtVEWM6+vKe1O9R7I+is5rPz3zvjFYqkkafzfNB4HMpWuBoYi1oh
+ nLeBKUp7SW9/vGTHuJmqbYsKt+QdKOJ1DhIKrtBGXG/1L7XScYrEWUPVrl2yNU/+y1Nm
+ bod3VOAGTMnMOFtLHSpT1pGNZlgvDWBQzs17yVnzvWQ5DvDb6EmpNEDQeI/Auby27yTY
+ Z+X71efc7irbJZJSx5qGlC64XA5jNMTjLKGyY294hs2KRoDqLCZKihKte6aHWjNNzWIO
+ cBoA==
+X-Gm-Message-State: AOAM5304dcCQNnQaemvumms26Ow86oKifhseJmshd4ng3ohy26WiIpWl
+ 1bCE41DVf15OSKxQ7Byts/JSTeWRa7eURjcvr7VMJg==
+X-Google-Smtp-Source: ABdhPJweYgnhJ9wfwnhC1naOEgjt465iKJfu5aOyclroBOPqShbw0RGuw1NZisfc1hj6jMsbtIvWVkehVRtpOKozveQ=
+X-Received: by 2002:a2e:b8cd:: with SMTP id s13mr21300509ljp.44.1633428736539; 
+ Tue, 05 Oct 2021 03:12:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdtOHn4ED-ixdDngBQw10OnKmbtTv=ydLs6dYbkjyqW4Q@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210920124141.1166544-1-pan@semihalf.com>
+ <20210920124141.1166544-4-pan@semihalf.com>
+ <ce254cc123f2809976c2f2404941a9074c458309.camel@pengutronix.de>
+In-Reply-To: <ce254cc123f2809976c2f2404941a9074c458309.camel@pengutronix.de>
+From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
+Date: Tue, 5 Oct 2021 13:12:05 +0200
+Message-ID: <CAF9_jYQVpG8imn3zjAGKeZqZqDPtWRYWLQjNSXi2SXjjzAKvfA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] reset: socfpga: add empty driver allowing consumers
+ to probe
+List-Id: <soc.lore.kernel.org>
+To: Philipp Zabel <p.zabel@pengutronix.de>, miquel.raynal@bootlin.com,
+ richard@nod.at, 
+ vigneshr@ti.com, robh+dt@kernel.org, arnd@arndb.de, olof@lixom.net, 
+ soc@kernel.org, dinguyen@kernel.org
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Tomasz Nowicki <tn@semihalf.com>, Konrad Adamczyk <ka@semihalf.com>,
+ Jacek Majkowski <jam@semihalf.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211005_024148_505036_43F96AE6 
-X-CRM114-Status: GOOD (  33.72  )
+X-CRM114-CacheID: sfid-20211005_031219_072776_73D2AA98 
+X-CRM114-Status: GOOD (  32.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,184 +93,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Andy,
-
-On Mon, Oct 04, 2021 at 05:29:47PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 30, 2021 at 1:08 PM Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
-> >
-> > The preferred way to implement SPI-NOR controller drivers is through SPI
-> > subsubsystem utilizing the SPI MEM core functions. This converts the
-> > Intel SPI flash controller driver over the SPI MEM by moving the driver
-> > from SPI-NOR subsystem to SPI subsystem and in one go make it use the
-> > SPI MEM functions. The driver name will be changed from intel-spi to
-> > spi-intel to match the convention used in the SPI subsystem.
-> 
-> ...
-> 
-> > +config SPI_INTEL_PCI
-> > +       tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-> > +       depends on PCI && (X86 || COMPILE_TEST)
-> 
-> Perhaps two entries, one of which will be the same as for platform case?
-
-Sure will do that in v2.
-
-> > +       depends on SPI_MEM
-> > +       select SPI_INTEL
-> > +       help
-> > +         This enables PCI support for the Intel PCH/PCU SPI controller in
-> > +         master mode. This controller is present in modern Intel hardware
-> > +         and is used to hold BIOS and other persistent settings. Using
-> > +         this driver it is possible to upgrade BIOS directly from Linux.
-> > +
-> > +         Say N here unless you know what you are doing. Overwriting the
-> > +         SPI flash may render the system unbootable.
-> > +
-> > +         To compile this driver as a module, choose M here: the module
-> > +         will be called spi-intel-pci.
-> > +
-> > +config SPI_INTEL_PLATFORM
-> > +       tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
-> > +       depends on X86 || COMPILE_TEST
-> > +       depends on SPI_MEM
-> > +       select SPI_INTEL
-> > +       help
-> > +         This enables platform support for the Intel PCH/PCU SPI
-> > +         controller in master mode. This controller is present in modern
-> > +         Intel hardware and is used to hold BIOS and other persistent
-> > +         settings. Using this driver it is possible to upgrade BIOS
-> > +         directly from Linux.
-> > +
-> > +         Say N here unless you know what you are doing. Overwriting the
-> > +         SPI flash may render the system unbootable.
-> > +
-> > +         To compile this driver as a module, choose M here: the module
-> > +         will be called spi-intel-platform.
-> 
-> ...
-> 
-> + Blank line ?
-
-OK
-
-> 
-> >  #include <linux/mtd/partitions.h>
-> >  #include <linux/mtd/spi-nor.h>
-> 
-> + Blank line?
-
-OK
-
-> > +#include <linux/spi/flash.h>
-> > +#include <linux/spi/spi.h>
-> > +#include <linux/spi/spi-mem.h>
-> 
-> The rationale is to show that we use two sub(sub)sytems here.
-
-Yup, got it.
-
-> ...
-> 
-> > -                       dev_err(ispi->dev, "read error: %llx: %#x\n", from,
-> > +                       dev_err(ispi->dev, "read error: %x: %#x\n", from,
-> >                                 status);
-> 
-> Now one line?
-> 
-> ...
-> 
-> > -                       dev_err(ispi->dev, "write error: %llx: %#x\n", to,
-> > +                       dev_err(ispi->dev, "write error: %x: %#x\n", to,
-> >                                 status);
-> 
-> Ditto.
-
-Sure for both.
-> 
-> ...
-> 
-> > +               ret = intel_spi_sw_cycle(ispi, opcode, 0,
-> > +                                        OPTYPE_WRITE_WITH_ADDR);
-> > +               return ret ? ret : 0;
-> 
-> Why not simply return intel_spi_dw_cycle(...); ?
-
-Good point. Will fix that.
-
-> ...
-> 
-> > +       val = readl(ispi->base + HSFSTS_CTL);
-> > +       val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
-> > +       val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
-> 
-> > +       val |= cmd;
-> > +       val |= HSFSTS_CTL_FGO;
-> 
-> Maybe swap these lines to group constants?
-
-OK
-
-> ...
-> 
-> > +       status = readl(ispi->base + HSFSTS_CTL);
-> > +       if (status & HSFSTS_CTL_FCERR)
-> > +               return -EIO;
-> 
-> > +       else if (status & HSFSTS_CTL_AEL)
-> 
-> Redundant 'else'
-
-Right.
-
-> > +               return -EACCES;
-> 
-> ...
-> 
-> > +static int intel_spi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
-> > +{
-> > +       struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
-> > +       size_t nbytes = op->data.nbytes;
-> > +       u8 opcode = op->cmd.opcode;
-> > +
-> > +       if (op->addr.nbytes) {
-> > +               if  (op->data.dir == SPI_MEM_DATA_IN)
-> > +                       return intel_spi_read(ispi, op->addr.val, nbytes,
-> > +                                             op->data.buf.in);
-> 
-> > +               else if (op->data.dir == SPI_MEM_DATA_OUT)
-> 
-> Redundant 'else' here and nearby.
-
-Right. I'll fix these in v2.
-
-> > +                       return intel_spi_write(ispi, op->addr.val, nbytes,
-> > +                                              op->data.buf.out);
-> > +               else if (op->data.dir == SPI_MEM_NO_DATA)
-> > +                       return intel_spi_erase(ispi, opcode, op->addr.val);
-> > +       } else {
-> > +               if  (op->data.dir == SPI_MEM_DATA_IN)
-> > +                       return intel_spi_read_reg(ispi, opcode, op->data.buf.in,
-> > +                                                 nbytes);
-> > +               else if (op->data.dir == SPI_MEM_DATA_OUT)
-> > +                       return intel_spi_write_reg(ispi, opcode, op->data.buf.out,
-> > +                                                  nbytes);
-> > +               else if (op->data.dir == SPI_MEM_NO_DATA)
-> > +                       return intel_spi_write_reg(ispi, opcode, NULL, 0);
-> >         }
-> 
-> > +       return -EINVAL;
-> > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBPY3QgNSwgMjAyMSBhdCAxMTozNCBBTSBQaGlsaXBwIFphYmVsIDxwLnphYmVsQHBl
+bmd1dHJvbml4LmRlPiB3cm90ZToKPgo+IEhpIFBhd2XFgiwKPgo+IE9uIE1vbiwgMjAyMS0wOS0y
+MCBhdCAxNDo0MSArMDIwMCwgUGF3ZcWCIEFuaWtpZWwgd3JvdGU6Cj4gPiBUaGUgZWFybHkgcmVz
+ZXQgZHJpdmVyIGRvZXNuJ3QgZXZlciBwcm9iZSwgd2hpY2ggY2F1c2VzIGNvbnN1bWluZwo+ID4g
+ZGV2aWNlcyB0byBiZSB1bmFibGUgdG8gcHJvYmUuIEFkZCBhbiBlbXB0eSBkcml2ZXIgdG8gc2V0
+IHRoaXMgZGV2aWNlCj4gPiBhcyBhdmFpbGFibGUsIGFsbG93aW5nIGNvbnN1bWVycyB0byBwcm9i
+ZS4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBQYXdlxYIgQW5pa2llbCA8cGFuQHNlbWloYWxmLmNv
+bT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvcmVzZXQvcmVzZXQtc29jZnBnYS5jIHwgMjYgKysrKysr
+KysrKysrKysrKysrKysrKysrKysKPiA+ICAxIGZpbGUgY2hhbmdlZCwgMjYgaW5zZXJ0aW9ucygr
+KQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Jlc2V0L3Jlc2V0LXNvY2ZwZ2EuYyBiL2Ry
+aXZlcnMvcmVzZXQvcmVzZXQtc29jZnBnYS5jCj4gPiBpbmRleCAyYTcyZjg2MWY3OTguLjhjNjQ5
+MmU1NjkzYyAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvcmVzZXQvcmVzZXQtc29jZnBnYS5jCj4g
+PiArKysgYi9kcml2ZXJzL3Jlc2V0L3Jlc2V0LXNvY2ZwZ2EuYwo+ID4gQEAgLTkyLDMgKzkyLDI5
+IEBAIHZvaWQgX19pbml0IHNvY2ZwZ2FfcmVzZXRfaW5pdCh2b2lkKQo+ID4gICAgICAgZm9yX2Vh
+Y2hfbWF0Y2hpbmdfbm9kZShucCwgc29jZnBnYV9lYXJseV9yZXNldF9kdF9pZHMpCj4gPiAgICAg
+ICAgICAgICAgIGExMF9yZXNldF9pbml0KG5wKTsKPiA+ICB9Cj4gPiArCj4gPiArLyoKPiA+ICsg
+KiBUaGUgZWFybHkgZHJpdmVyIGlzIHByb2JsZW1hdGljLCBiZWNhdXNlIGl0IGRvZXNuJ3QgcmVn
+aXN0ZXIKPiA+ICsgKiBpdHNlbGYgYXMgYSBkcml2ZXIuIFRoaXMgY2F1c2VzIGNlcnRhaW4gZGV2
+aWNlIGxpbmtzIHRvIHByZXZlbnQKPiA+ICsgKiBjb25zdW1lciBkZXZpY2VzIGZyb20gcHJvYmlu
+Zy4gVGhlIGhhY2t5IHNvbHV0aW9uIGlzIHRvIHJlZ2lzdGVyCj4gPiArICogYW4gZW1wdHkgZHJp
+dmVyLCB3aG9zZSBvbmx5IGpvYiBpcyB0byBhdHRhY2ggaXRzZWxmIHRvIHRoZSByZXNldAo+ID4g
+KyAqIG1hbmFnZXIgYW5kIGNhbGwgcHJvYmUuCj4gPiArICovCj4gPiArc3RhdGljIGNvbnN0IHN0
+cnVjdCBvZl9kZXZpY2VfaWQgc29jZnBnYV9yZXNldF9kdF9pZHNbXSA9IHsKPiA+ICsgICAgIHsg
+LmNvbXBhdGlibGUgPSAiYWx0cixyc3QtbWdyIiwgfSwKPiA+ICsgICAgIHsgLyogc2VudGluZWwg
+Ki8gfSwKPiA+ICt9Owo+ID4gKwo+ID4gK3N0YXRpYyBpbnQgcmVzZXRfc2ltcGxlX3Byb2JlKHN0
+cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gPiArewo+ID4gKyAgICAgcmV0dXJuIDA7Cj4g
+PiArfQo+ID4gKwo+ID4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIHJlc2V0X3NvY2Zw
+Z2FfZHJpdmVyID0gewo+ID4gKyAgICAgLnByb2JlICA9IHJlc2V0X3NpbXBsZV9wcm9iZSwKPiA+
+ICsgICAgIC5kcml2ZXIgPSB7Cj4gPiArICAgICAgICAgICAgIC5uYW1lICAgICAgICAgICA9ICJz
+b2NmcGdhLXJlc2V0IiwKPiA+ICsgICAgICAgICAgICAgLm9mX21hdGNoX3RhYmxlID0gc29jZnBn
+YV9yZXNldF9kdF9pZHMsCj4gPiArICAgICB9LAo+ID4gK307Cj4gPiArYnVpbHRpbl9wbGF0Zm9y
+bV9kcml2ZXIocmVzZXRfc29jZnBnYV9kcml2ZXIpOwo+Cj4gSWYgd2UgY2FuIGp1c3QgbGV0IGRl
+dmxpbmsgZGVsYXkgYWxsIGNvbnN1bWVycyB1bnRpbCB0aGUgZW1wdHkgZHJpdmVyIGlzCj4gcHJv
+YmVkLCBkb2VzIHRoZSByZXNldCBjb250cm9sbGVyIGhhdmUgdG8gYmUgcmVnaXN0ZXJlZCBlYXJs
+eSBhdCBhbGw/Cj4KPiByZWdhcmRzCj4gUGhpbGlwcAoKSSBhc2tlZCBEaW5oIGlmIHRoZSByZXNl
+dCBjb250cm9sbGVyIGNvZGUgbmVlZHMgdG8gYmUgY2FsbGVkIGVhcmx5OgoKPlRoYXQncyBjb3Jy
+ZWN0LiBJdCdzIGZvciBvbmUgb2YgdGhlIFNQIHRpbWVycy4KPgo+T24gOS8xNi8yMSA2OjEzIEFN
+LCBQYXdlxYIgQW5pa2llbCB3cm90ZToKPj4gSGksCj4+Cj4+IEkgd291bGQgbGlrZSB0byBhc2sg
+eW91IGFib3V0IHRoZSBmb2xsb3dpbmcgY29tbWl0Ogo+Pj4gY29tbWl0IGIzY2E5ODg4ZjM1ZmE2
+OTE5NTY5Y2YyN2M5MjlkYzBhYzQ5ZTk3MTYKPj4+IEF1dGhvcjogRGluaCBOZ3V5ZW4gPGRpbmd1
+eWVuQGtlcm5lbC5vcmc+Cj4+PiBEYXRlOiAgIFR1ZSBOb3YgMTMgMTI6NTA6NDggMjAxOCAtMDYw
+MAo+Pj4KPj4+ICAgICAgcmVzZXQ6IHNvY2ZwZ2E6IGFkZCBhbiBlYXJseSByZXNldCBkcml2ZXIg
+Zm9yIFNvQ0ZQR0EKPj4+Cj4+PiAgICAgIENyZWF0ZSBhIHNlcGFyYXRlIHJlc2V0IGRyaXZlciB0
+aGF0IHVzZXMgdGhlIHJlc2V0IG9wZXJhdGlvbnMgaW4KPj4+ICAgICAgcmVzZXQtc2ltcGxlLiBU
+aGUgcmVzZXQgZHJpdmVyIGZvciB0aGUgU29DRlBHQSBwbGF0Zm9ybSBuZWVkcyB0bwo+Pj4gICAg
+ICByZWdpc3RlciBlYXJseSBpbiBvcmRlciB0byBiZSBhYmxlIGJyaW5nIG9ubGluZSB0aW1lcnMg
+dGhhdCBuZWVkZWQKPj4+ICAgICAgZWFybHkgaW4gdGhlIGtlcm5lbCBib290dXAuCj4+PiAgICAg
+IFsuLi5dCj4+IFdoaWNoIG9ubGluZSB0aW1lcnMgaXMgdGhpcyBjb21taXQgbWVzc2FnZSByZWZl
+cnJpbmcgdG8/IEkgY291bGRuJ3QgZmluZAo+PiBhbnkgaW5mb3JtYXRpb24gYWJvdXQgdGhpcy4g
+V2l0aG91dCB0aGlzIHBhdGNoIHRoZSBrZXJuZWwgc2VlbXMgdG8gd29yawo+PiBmaW5lIG9uIGFu
+IEFycmlhIDEwICh3aXRoIE1lcmN1cnkgQUExIG1vZHVsZSkuIFdoYXQncyB0aGUgZXhhY3QgcmVh
+c29uCj4+IGEgcmVndWxhciBwbGF0Zm9ybSBkcml2ZXIgaXNuJ3Qgc3VmZmljaWVudD8KPj4KPj4g
+QmVzdCByZWdhcmRzLAo+PiBQYXdlxYIKPj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
