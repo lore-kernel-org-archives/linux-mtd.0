@@ -2,83 +2,65 @@ Return-Path: <SRS0=Jblq=OZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC7FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 08:05:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABB18C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 08:23:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A1FB61881
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 08:05:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5A1FB61881
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6DA7261371
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 08:23:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6DA7261371
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JS6wB4WKmwrM1KEppYx6Upyj/9IRo1Dmz3BZaUiWbr8=; b=1y8zORauHNlp9o
-	9sZGI5HrtDqekGpMnvYal/jnReKlegPWDfvJD0xqr9GUYy62kSTtRJqWzGAmWDBex4OHZWg1l6yVn
-	7X/lffPsaQsabQU27gUdtxPSGPbmMZM1V4Rw2YQRH0f5VPTGDdY+S5/QfnuJRaM4K6Gggct03K0Ob
-	p/E4r3iRNjGm/skf7rTUT0SfMUp8FrUr3AxVpVqouGCv+87wetzA8Ysc8Ryxe7SYfxsMY+9140iVx
-	fEuhZknPM0lqaz78Eivd9u3hLAYy7t93dLfb2186+bhZ/ahPrsbEGBvL62+sw8gIVIsJZv+aF5esY
-	MGGCFnWL+SD7Mk8d1yaw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lVW/eI2kCwbgqq7+hWKOqUV4qdD9BMEF8bjpwINhfB4=; b=xn3uMYtbbCPJS3
+	bwGxp5Rx+9o93mkhuTPOzjVrCHsOHJtCfJ5n5WKZUMD6lSTNQ0iqnNb8BUjI+5teJgyqVbQh5281V
+	VyGgLXARB01ns08vxPh4FNMivw5q1w1GBvDG/WuV18nV4h0ZK8y5cM6+4X92p8H7p7ppFxWbES/HV
+	AP3N7sRIEdtozas6Ib/suAUiKICrUWBYod8lB7V8+7jwZHs2QssmO+hqzFqunOoVxILNZdX+mobgb
+	p0qydfbKdsZW03YmGVzNodM+yLQyX1MYn9mHfo6CMNoNSHR/cgoeP5idR8PaMPauO9P5znvs9iyst
+	x9i8iVlqF9WGlC7exaoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mXfQy-009T5a-0i; Tue, 05 Oct 2021 08:04:20 +0000
-Received: from mail-wr1-x434.google.com ([2a00:1450:4864:20::434])
+	id 1mXfjD-009WaX-27; Tue, 05 Oct 2021 08:23:11 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXfQv-009T4n-Dn
- for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 08:04:18 +0000
-Received: by mail-wr1-x434.google.com with SMTP id e12so15490065wra.4
- for <linux-mtd@lists.infradead.org>; Tue, 05 Oct 2021 01:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version:organization
- :content-transfer-encoding;
- bh=Cw1s6avFkhn1KlgqlRSiCB9u7gw5G5qdUVq34g4v+AE=;
- b=lFn8OkT2a8hStQG2y5jVPYhowIgmOQ2arh53C+CRFvOMRBzJSjhKXLTj4fQ2B3R5fi
- dY4NLro1iSbSbWLCCCpXUIaHdsmhCePByi06EQo3iZfPPcfnXqUD3HlNJ5jCDsfViGiL
- DG1SqM8zNjdmV3nK054D0d8ya/6e1AeC0d2U7lRAzKyUMhKivDvQJMum1p8Aia/PAdev
- Cxc6ZXcSMXnGSVpTsV9DPpeiNscQNO6Q13SuRyOfs5v/TVsIRFYMboBjRKLFzKaTftGW
- oDdFvSdt8cZnqEMhA08uHHGliW4NjYixlFSz2TO7mHAXnAsv2Vhr9zG8hQWBPBca1P7w
- 6ZCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :organization:content-transfer-encoding;
- bh=Cw1s6avFkhn1KlgqlRSiCB9u7gw5G5qdUVq34g4v+AE=;
- b=xTkOHeFk7MI3Buc7PN/qaUecrQwRxUZIiKCDqoTK9FySeC5jtmMpARFBmaM7K/KB41
- D/C42dhwkUGmyH1Z972xfq1dn39mgiZtvAHoa7YA4kcvZSmSQ9ntwdmuvQIXkPYP0xcp
- xjj52L/Vom7IURtA/8rrafwM4N8sd9yp+d2g6gwkbVF4GxIhY9mW5Hi3PKOx3c+4Kml+
- DGVoWWg9AOt6WBzZhh8DJl4qVDmlbzvn9I8LxLvxZ0f2QPmCuI6lDZ0CJOT+tzBZKMc3
- 63hkNUG+cC5RHkHrN8ynnHMYMLWy+0V/NDwqcw3vnsKKQ3S07cMoPLTbK+CN1wwkNSXt
- 2Jzw==
-X-Gm-Message-State: AOAM5317LwVasAI9dno8/xvYjgR34EYX+dGumQq62CTFH8GSqqiD05FA
- q88nIL5F1VMLCuhee7TjpC8NmlU00q4=
-X-Google-Smtp-Source: ABdhPJzINUMSjvdGSprsjVTw2f6blm2FhCYwWzG2XXkWW+wE1QThRDyfSY20JhbQrKWLjOrdEde2qA==
-X-Received: by 2002:adf:a34b:: with SMTP id d11mr14662704wrb.107.1633421054379; 
- Tue, 05 Oct 2021 01:04:14 -0700 (PDT)
-Received: from wbg.labs.westermo.se (static-193-12-47-89.cust.tele2.se.
- [193.12.47.89])
- by smtp.gmail.com with ESMTPSA id v17sm6741370wrm.30.2021.10.05.01.04.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Oct 2021 01:04:13 -0700 (PDT)
-From: Joachim Wiberg <troglobit@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Joern Engel <joern@lazybastard.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Joachim Wiberg <troglobit@gmail.com>
-Subject: [PATCH 1/1] mtd: block2mtd: add support for an optional custom MTD
- label
-Date: Tue,  5 Oct 2021 10:03:59 +0200
-Message-Id: <20211005080359.170360-1-troglobit@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ id 1mXfj9-009WZG-6x
+ for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 08:23:09 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6D8531F41E9F;
+ Tue,  5 Oct 2021 09:23:05 +0100 (BST)
+Date: Tue, 5 Oct 2021 10:23:00 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211005102300.5da6d480@collabora.com>
+In-Reply-To: <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+References: <20211004065608.3190348-1-sean@geanix.com>
+ <20211004104147.579f3b01@collabora.com>
+ <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
+ <20211004115817.18739936@collabora.com>
+ <20211004101246.kagtezizympxupat@skn-laptop>
+ <20211004134700.26327f6f@collabora.com>
+ <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Organization: Westermo Network Technologies AB
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211005_010417_506313_66591E3D 
-X-CRM114-Status: GOOD (  17.49  )
+X-CRM114-CacheID: sfid-20211005_012307_557876_F83122D8 
+X-CRM114-Status: GOOD (  48.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,114 +77,156 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch adds support for an optional MTD label for mtd2block emulated
-MTD devices.  Useful when, e.g. testing device images using Qemu.  The
-following /etc/fstab line in can then be used to mount a file system
-regardless of the actual MTD partition number:
+On Tue, 5 Oct 2021 09:09:30 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
 
-    mtd:Config  /mnt    jffs2   noatime,nodiratime      0    0
+> On Mon, Oct 04, 2021 at 01:47:00PM +0200, Boris Brezillon wrote:
+> > On Mon, 4 Oct 2021 12:12:46 +0200
+> > Sean Nyekjaer <sean@geanix.com> wrote:
+> >   
+> > > On Mon, Oct 04, 2021 at 11:58:17AM +0200, Boris Brezillon wrote:  
+> > > > On Mon, 4 Oct 2021 10:55:09 +0200
+> > > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > > >     
+> > > > > On Mon, Oct 04, 2021 at 10:41:47AM +0200, Boris Brezillon wrote:    
+> > > > > > On Mon,  4 Oct 2021 08:56:09 +0200
+> > > > > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > > > > >       
+> > > > > > > This will prevent nand_get_device() from returning -EBUSY.
+> > > > > > > It will force mtd_write()/mtd_read() to wait for the nand_resume() to unlock
+> > > > > > > access to the mtd device.
+> > > > > > > 
+> > > > > > > Then we avoid -EBUSY is returned to ubifsi via mtd_write()/mtd_read(),
+> > > > > > > that will in turn hard error on every error returened.
+> > > > > > > We have seen during ubifs tries to call mtd_write before the mtd device
+> > > > > > > is resumed.      
+> > > > > > 
+> > > > > > I think the problem is here. Why would UBIFS/UBI try to write something
+> > > > > > to a device that's not resumed yet (or has been suspended already, if
+> > > > > > you hit this in the suspend path).
+> > > > > >       
+> > > > > > > 
+> > > > > > > Exec_op[0] speed things up, so we see this race when the device is
+> > > > > > > resuming. But it's actually "mtd: rawnand: Simplify the locking" that
+> > > > > > > allows it to return -EBUSY, before that commit it would have waited for
+> > > > > > > the mtd device to resume.      
+> > > > > > 
+> > > > > > Uh, wait. If nand_resume() was called before any writes/reads this
+> > > > > > wouldn't happen. IMHO, the problem is not that we return -EBUSY without
+> > > > > > blocking, the problem is that someone issues a write/read before calling
+> > > > > > mtd_resume().
+> > > > > >       
+> > > > > 
+> > > > > The commit msg from "mtd: rawnand: Simplify the locking" states this clearly.
+> > > > > 
+> > > > > """
+> > > > > Last important change to mention: we now return -EBUSY when someone
+> > > > > tries to access a device that as been suspended, and propagate this
+> > > > > error to the upper layer.
+> > > > > """
+> > > > > 
+> > > > > IMHO "mtd: rawnand: Simplify the locking" should never had been merged
+> > > > > before the upper layers was fixed to handle -EBUSY. ;)
+> > > > > Which they still not are...    
+> > > > 
+> > > > That's not really the problem here. Upper layers should never get
+> > > > -EBUSY in the first place if the MTD device was resumed before the UBI
+> > > > device. Looks like we have a missing UBI -> MTD parenting link, which
+> > > > would explain why things don't get resumed in the right order. Can you
+> > > > try with the following diff applied?
+> > > > 
+> > > > ---
+> > > > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> > > > index f399edc82191..1981ce8f3a26 100644
+> > > > --- a/drivers/mtd/ubi/build.c
+> > > > +++ b/drivers/mtd/ubi/build.c
+> > > > @@ -905,6 +905,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int
+> > > > ubi_num, ubi->dev.release = dev_release;
+> > > >         ubi->dev.class = &ubi_class;
+> > > >         ubi->dev.groups = ubi_dev_groups;
+> > > > +       ubi->dev.parent = &mtd->dev;
+> > > >  
+> > > >         ubi->mtd = mtd;
+> > > >         ubi->ubi_num = ubi_num;
+> > > >     
+> > > 
+> > > No change:
+> > > [   71.739193] Filesystems sync: 34.212 seconds
+> > > [   71.755044] Freezing user space processes ... (elapsed 0.004 seconds) done.
+> > > [   71.767289] OOM killer disabled.
+> > > [   71.770552] Freezing remaining freezable tasks ... (elapsed 0.004 seconds) done.
+> > > [   71.782182] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > [   71.824391] nand_suspend
+> > > [   71.825177] gpmi_pm_suspend
+> > > [   71.825676] PM: suspend devices took 0.040 seconds
+> > > [   71.825971] nand_write_oob - nand_get_device() returned -EBUSY
+> > > [   71.825985] ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 986:65536, written 0 bytes
+> > > [   71.826029] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.15.0-rc3-dirty #43
+> > > [   71.826043] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+> > > [   71.826054] Workqueue: writeback wb_workfn (flush-ubifs_0_8)
+> > > [   71.826094] [<c010da84>] (unwind_backtrace) from [<c010a1b4>] (show_stack+0x10/0x14)
+> > > [   71.826122] [<c010a1b4>] (show_stack) from [<c0989c30>] (dump_stack_lvl+0x40/0x4c)
+> > > [   71.826151] [<c0989c30>] (dump_stack_lvl) from [<c05ed690>] (ubi_io_write+0x510/0x6b0)
+> > > [   71.826178] [<c05ed690>] (ubi_io_write) from [<c05ea2f0>] (ubi_eba_write_leb+0xd0/0x968)
+> > > [   71.826204] [<c05ea2f0>] (ubi_eba_write_leb) from [<c05e8754>] (ubi_leb_write+0xd0/0xe8)
+> > > [   71.826232] [<c05e8754>] (ubi_leb_write) from [<c03d67bc>] (ubifs_leb_write+0x68/0x104)
+> > > [   71.826263] [<c03d67bc>] (ubifs_leb_write) from [<c03d79e8>] (ubifs_wbuf_write_nolock+0x28c/0x74c)
+> > > [   71.826291] [<c03d79e8>] (ubifs_wbuf_write_nolock) from [<c03ca18c>] (ubifs_jnl_write_data+0x1b8/0x2b4)
+> > > [   71.826319] [<c03ca18c>] (ubifs_jnl_write_data) from [<c03cd184>] (do_writepage+0x190/0x284)
+> > > [   71.826342] [<c03cd184>] (do_writepage) from [<c023083c>] (__writepage+0x14/0x68)
+> > > [   71.826367] [<c023083c>] (__writepage) from [<c0231748>] (write_cache_pages+0x1c8/0x3f0)
+> > > [   71.826390] [<c0231748>] (write_cache_pages) from [<c0233854>] (do_writepages+0xcc/0x1f4)
+> > > [   71.826413] [<c0233854>] (do_writepages) from [<c02d03dc>] (__writeback_single_inode+0x2c/0x1b4)
+> > > [   71.826440] [<c02d03dc>] (__writeback_single_inode) from [<c02d0a64>] (writeback_sb_inodes+0x200/0x470)
+> > > [   71.826466] [<c02d0a64>] (writeback_sb_inodes) from [<c02d0d10>] (__writeback_inodes_wb+0x3c/0xf4)
+> > > [   71.826493] [<c02d0d10>] (__writeback_inodes_wb) from [<c02d0f58>] (wb_writeback+0x190/0x1f0)
+> > > [   71.826520] [<c02d0f58>] (wb_writeback) from [<c02d21d8>] (wb_workfn+0x2c0/0x3d4)
+> > > [   71.826545] [<c02d21d8>] (wb_workfn) from [<c013ac04>] (process_one_work+0x1e0/0x440)
+> > > [   71.826574] [<c013ac04>] (process_one_work) from [<c013aeac>] (worker_thread+0x48/0x594)
+> > > [   71.826600] [<c013aeac>] (worker_thread) from [<c0142364>] (kthread+0x134/0x15c)
+> > > [   71.826625] [<c0142364>] (kthread) from [<c0100150>] (ret_from_fork+0x14/0x24)  
+> > 
+> > I'm not entirely sure, but given the timing, it looks like this
+> > actually happens in the suspend path, not it the resume path. What I
+> > don't get is why we still have a kernel thread running at that point.  
+> 
+> Have you seen the reproducer script?
 
-Kernel command line syntax:
+How would I know about this script or your previous attempt (mentioned
+at the end of this email) given I was not Cc-ed on the previous
+discussion, and nothing mentions it in this RFC...
 
-    block2mtd.block2mtd=/dev/sda,,Config
+> ---
+> root@iwg26-v1:/data/root# cat /data/crash.sh
+> #!/bin/sh -x
+> 
+> echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
+> 
+> rm /data/test50M
+> dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
+> cp /tmp/test50M /data/ &
+> sleep 1
+> echo mem > /sys/power/state
+> ---
+> 
+> As seen in the log above disk is synced before suspend.
+> cp is continuing to copy data to ubifs.
+> And then user space processes are frozen.
+> At this point the kernel thread would have unwritten data.
+> 
+> We tried to solve this with:
+> https://lkml.org/lkml/2021/9/1/280
 
-The ',,' is the optional erase_size, which like before this patch,
-defaults to PAGE_SIZE when omitted.
+I see. It's still unclear to me when the write happens. Is it in the
+suspend path (before the system is actually suspended), or in the
+resume path (when the system is being resumed).
 
-Signed-off-by: Joachim Wiberg <troglobit@gmail.com>
----
- drivers/mtd/devices/block2mtd.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index c08721b11642..9465b8ff48f6 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -214,7 +214,7 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
- 
- 
- static struct block2mtd_dev *add_device(char *devname, int erase_size,
--		int timeout)
-+		char *label, int timeout)
- {
- #ifndef MODULE
- 	int i;
-@@ -278,7 +278,10 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 
- 	/* Setup the MTD structure */
- 	/* make the name contain the block device in */
--	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
-+	if (!label)
-+		name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
-+	else
-+		name = kstrdup(label, GFP_KERNEL);
- 	if (!name)
- 		goto err_destroy_mutex;
- 
-@@ -304,7 +307,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
- 
- 	list_add(&dev->list, &blkmtd_device_list);
- 	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
--		dev->mtd.index,
-+		dev->mtd.index, label ? label :
- 		dev->mtd.name + strlen("block2mtd: "),
- 		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
- 	return dev;
-@@ -381,8 +384,8 @@ static int block2mtd_setup2(const char *val)
- 	/* 80 for device, 12 for erase size, 80 for name, 8 for timeout */
- 	char buf[80 + 12 + 80 + 8];
- 	char *str = buf;
--	char *token[2];
--	char *name;
-+	char *token[3];
-+	char *name, *label = NULL;
- 	size_t erase_size = PAGE_SIZE;
- 	unsigned long timeout = MTD_DEFAULT_TIMEOUT;
- 	int i, ret;
-@@ -395,7 +398,7 @@ static int block2mtd_setup2(const char *val)
- 	strcpy(str, val);
- 	kill_final_newline(str);
- 
--	for (i = 0; i < 2; i++)
-+	for (i = 0; i < 3; i++)
- 		token[i] = strsep(&str, ",");
- 
- 	if (str) {
-@@ -414,7 +417,7 @@ static int block2mtd_setup2(const char *val)
- 		return 0;
- 	}
- 
--	if (token[1]) {
-+	if (token[1] && strlen(token[1])) {
- 		ret = parse_num(&erase_size, token[1]);
- 		if (ret) {
- 			pr_err("illegal erase size\n");
-@@ -422,7 +425,12 @@ static int block2mtd_setup2(const char *val)
- 		}
- 	}
- 
--	add_device(name, erase_size, timeout);
-+	if (token[2]) {
-+		label = token[2];
-+		pr_info("Using custom MTD label '%s' for dev %s\n", label, name);
-+	}
-+
-+	add_device(name, erase_size, label, timeout);
- 
- 	return 0;
- }
-@@ -456,7 +464,7 @@ static int block2mtd_setup(const char *val, const struct kernel_param *kp)
- 
- 
- module_param_call(block2mtd, block2mtd_setup, NULL, NULL, 0200);
--MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>]\"");
-+MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,[<erasesize>][,<label>]]\"");
- 
- static int __init block2mtd_init(void)
- {
--- 
-2.25.1
-
+Anyway, let's admit writing to a storage device while it's suspended is
+a valid use case and requires the storage layer to put this request on
+old. This wait should not, IMHO, be handled at the NAND level, but at
+the MTD level (using a waitqueue, and an atomic to make
+suspended/resumed transitions safe). And abusing a mutex to implement
+that is certainly not a good idea.
 
 ______________________________________________________
 Linux MTD discussion mailing list
