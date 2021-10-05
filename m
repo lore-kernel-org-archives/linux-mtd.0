@@ -2,67 +2,60 @@ Return-Path: <SRS0=Jblq=OZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78E3BC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 08:59:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DADAC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 09:14:31 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 471476120F
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 08:59:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 471476120F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id D29E6613B5
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 09:14:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D29E6613B5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/eRESI3W6th6A4+IFx7A6Mih0ornIjV/XBIVOc+Eong=; b=YM9tSukE50+A2r
-	8nrW1zvRFcAyh46iv0LVirDUfbx54CsxKn8l1AbC9t6IiemoOKlyJORmWXMOvmjB5Dppelv70wiN4
-	WrpDvkPegJM+NGZJ7PPDTK7dbwOTdOCd8r60hp2yI95ymZMvTCE3ttRsj3gaVI1yTvdCoRS8QEXRI
-	r1L48u3zB1tWsQDIySloQp/4+EWRMSxPbgEFugGDXwOJFT5dYV9xOE7gf/jM0RiAW6ctUv2IosOFi
-	6oilH3p2s7SFmsHzW6fm1FkbDXyLZLq8CmO4TpdubjgTs5o1CGGBEDjb97e+NsFHe/fD42FU8KFbL
-	pGfuL2XtRvdzaJ4Zz26Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=U1NJhveHEFLoIBcxP4uwtdUnT2gRkC+cIXvoULJDPpE=; b=h3LZ+upNAq6/Vf
+	urmo3i6lsW61MHICkXie2VYAr+wvXaJ88+UdaDKxccGa/h3NRjqYGkhXg0YapuZzHM2dvNYGzToa7
+	ven6toOgH9Mb+wSarZjIDckRvEz6qxDsjNDje+ya91Vj2y+OoPfmOcGlThbPwS80sYvQntcsfN9fS
+	kbymJ1uMICtAeDxiLQ70NYyQa6sGosiEbOXDM4gdyBgmyXDFUlKgQYiNyJu9K2ZeN9r0sC2imT7CQ
+	PB3VD0vKs/3FI7nkdoKOxqgewsWKpKMTbgCsqZuCyN877DTsEH7BNLbcjno+OiSeUxEgutfHyzGHX
+	uhZd9LE+uf9Lq5/lHdQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mXgHc-009cND-SX; Tue, 05 Oct 2021 08:58:44 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1mXgWE-009iOU-Ld; Tue, 05 Oct 2021 09:13:50 +0000
+Received: from unicom145.biz-email.net ([210.51.26.145])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXgHa-009cKV-Cu
- for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 08:58:44 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3410D1F4385F;
- Tue,  5 Oct 2021 09:58:39 +0100 (BST)
-Date: Tue, 5 Oct 2021 10:58:36 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Sean Nyekjaer <sean@geanix.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
- <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211005105836.6c300f25@collabora.com>
-In-Reply-To: <20211005084938.jcbw24umhehoiirs@skn-laptop>
-References: <20211004065608.3190348-1-sean@geanix.com>
- <20211004104147.579f3b01@collabora.com>
- <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
- <20211004115817.18739936@collabora.com>
- <20211004101246.kagtezizympxupat@skn-laptop>
- <20211004134700.26327f6f@collabora.com>
- <20211005070930.epgxb5qzumk4awxq@skn-laptop>
- <20211005102300.5da6d480@collabora.com>
- <20211005084938.jcbw24umhehoiirs@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+ id 1mXgW9-009iLT-OI
+ for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 09:13:49 +0000
+Received: from ([60.208.111.195])
+ by unicom145.biz-email.net ((LNX1044)) with ASMTP (SSL) id ZLT00021;
+ Tue, 05 Oct 2021 17:13:21 +0800
+Received: from localhost.localdomain (10.200.104.119) by
+ jtjnmail201606.home.langchao.com (10.100.2.6) with Microsoft SMTP Server id
+ 15.1.2308.14; Tue, 5 Oct 2021 17:13:20 +0800
+From: Kai Song <songkai01@inspur.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Kai Song
+ <songkai01@inspur.com>
+Subject: [PATCH] ubi: Fix a mistake in comment
+Date: Tue, 5 Oct 2021 14:56:55 +0800
+Message-ID: <20211005065656.13497-1-songkai01@inspur.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+X-Originating-IP: [10.200.104.119]
+tUid: 2021100517132163fb41eca9b96765dce7d25a84d1c897
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211005_015842_604673_DCB1EB53 
-X-CRM114-Status: GOOD (  35.18  )
+X-CRM114-CacheID: sfid-20211005_021346_787427_E78C3A23 
+X-CRM114-Status: UNSURE (   9.28  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,73 +72,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 5 Oct 2021 10:49:38 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+Fixes: 2a734bb8d502 ("UBI: use debugfs for the extra checks knobs")
+There is a mistake in docstrings, it should be ubi_debugfs_exit_dev
+instead of dbg_debug_exit_dev.
 
-> On Tue, Oct 05, 2021 at 10:23:00AM +0200, Boris Brezillon wrote:
-> > On Tue, 5 Oct 2021 09:09:30 +0200
-> > Sean Nyekjaer <sean@geanix.com> wrote:  
-> 
-> [ ... ]
-> 
-> > > 
-> > > Have you seen the reproducer script?  
-> > 
-> > How would I know about this script or your previous attempt (mentioned
-> > at the end of this email) given I was not Cc-ed on the previous
-> > discussion, and nothing mentions it in this RFC...
-> >   
-> 
-> That's why I shared it here ;)
-> Initially I thought this was a bug introduced by exec_op.
-> 
-> > > ---
-> > > root@iwg26-v1:/data/root# cat /data/crash.sh
-> > > #!/bin/sh -x
-> > > 
-> > > echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
-> > > 
-> > > rm /data/test50M
-> > > dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
-> > > cp /tmp/test50M /data/ &
-> > > sleep 1
-> > > echo mem > /sys/power/state
-> > > ---
-> > > 
-> > > As seen in the log above disk is synced before suspend.
-> > > cp is continuing to copy data to ubifs.
-> > > And then user space processes are frozen.
-> > > At this point the kernel thread would have unwritten data.
-> > > 
-> > > We tried to solve this with:
-> > > https://lkml.org/lkml/2021/9/1/280  
-> > 
-> > I see. It's still unclear to me when the write happens. Is it in the
-> > suspend path (before the system is actually suspended), or in the
-> > resume path (when the system is being resumed).
-> > 
-> > Anyway, let's admit writing to a storage device while it's suspended is
-> > a valid use case and requires the storage layer to put this request on
-> > old. This wait should not, IMHO, be handled at the NAND level, but at
-> > the MTD level (using a waitqueue, and an atomic to make
-> > suspended/resumed transitions safe). And abusing a mutex to implement
-> > that is certainly not a good idea.  
-> 
-> I did't say this was the right solution ;) I actually asked in the RFC:
-> "Should we introduce a new mutex? Or maybe a spin_lock?"
-> 
-> What are you proposing, a waitqueue in mtd_info? That gets checked in
-> mtd_write()/mtd_read()?
+Signed-off-by: Kai Song <songkai01@inspur.com>
+---
+ drivers/mtd/ubi/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, and replacing the suspended state by an atomic, and providing a
-helper to wait on the device readiness. Helper you will call in every
-path involving a communication with the HW, not just mtd_read/write()
-(you're missing erase at least, and I fear there are other hooks that
-might lead to commands being issued to the device). But before we get
-there, I think it's important to understand what the kernel expects.
-IOW, if and when threads can do a request on a suspended device, and
-when it's acceptable to wait (vs returning -EBUSY), otherwise I fear
-we'll end up with deadlocks in the suspend/resume path.
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 3c0c8eca4d51..31d427ee191a 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -562,7 +562,7 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ }
+ 
+ /**
+- * dbg_debug_exit_dev - free all debugfs files corresponding to device @ubi
++ * ubi_debugfs_exit_dev - free all debugfs files corresponding to device @ubi
+  * @ubi: UBI device description object
+  */
+ void ubi_debugfs_exit_dev(struct ubi_device *ubi)
+-- 
+2.27.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
