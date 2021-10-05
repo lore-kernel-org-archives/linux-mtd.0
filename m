@@ -2,68 +2,69 @@ Return-Path: <SRS0=Jblq=OZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0B17C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 06:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CB96C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 07:10:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 591F160E98
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 06:04:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 591F160E98
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=arri.de
+	by mail.kernel.org (Postfix) with ESMTPS id 1079861409
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Oct 2021 07:10:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1079861409
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oNnQUtTJNmuJLip1rRWQaAr9sJA2tjyMb/vUvuNGhFg=; b=nSIXwr4Ig42NHc
-	rcNBhKScBPqNPsIx955jziPm24L5v7ZkNSqdBaZkoeNXamVaBM6DVVJuyMqtdCVdOUdUTkuGgW5kf
-	p4cd7sn010sx5mBsuIWmqbfaXypz/BNst+pRG2yWhSbv+BeW78vWXi/go9ZQTtcoy9RHkiqRlikn4
-	cWCEiwAufUjXXcrrsDx7ovdGFeIimdWbc1dl4YkuBt/ZyxZkFFe+kt0P3C2jKAiGzTc2BDmCQQZG2
-	bFjGHZzWLnepZ/Fa52nJj57XF3ZDkjidfsQhMrP3lWDFLEFwR4YdndSJf+dwSu0Zlvtw7pemWUn1u
-	jcB7g83YUjXeDPgog6kw==;
+	List-Owner; bh=ZvWzuet1wVkNAFhvNChPcpDy3qkHwbJ6shVjdG8TLug=; b=yYMRHXUXIhkMx5
+	giMts0qI2c90jJctvjuvSDGBEVulv02NNTBVmKwtHSp1piq7xnHGxJ6omQ8IaV3vilfZ+wg6GulLX
+	fisI8dM7FwhwuiKMs5yTnoSQgGEQY6FHZwvljw27X+rudwXXX0fN5Dk5io6MK11bGLB2u+KZKE9B0
+	Ns6H2IR8gf0MxFZY6qh31cmnpIWBm3IwHas88d0uCGyxEeFzb161m4KshPcTEmiNb1WhaGIrQ0JgI
+	8X/zPfItmSD54QbLEamWsPKVpsqTScdNeCo4aYhMcS408DTgnQQPE93vaFycYW3YQnQ0/89cCdMuJ
+	HqzoSk1Umig8tRb+3jVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mXdXi-00945Y-Su; Tue, 05 Oct 2021 06:03:10 +0000
-Received: from mailout03.rmx.de ([94.199.88.101])
+	id 1mXea6-009Gg4-13; Tue, 05 Oct 2021 07:09:42 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mXdXc-00941n-1o
- for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 06:03:06 +0000
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mailout03.rmx.de (Postfix) with ESMTPS id 4HNn7N371bzlmSN;
- Tue,  5 Oct 2021 08:02:56 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by kdin01.retarus.com (Postfix) with ESMTPS id 4HNn7H05Vhz30jm;
- Tue,  5 Oct 2021 08:02:51 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.55.17) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 5 Oct
- 2021 08:02:50 +0200
-From: Christian Eggers <ceggers@arri.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Han Xu <han.xu@nxp.com>
-CC: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
- <linux-mtd@lists.infradead.org>, Greg Ungerer <gerg@kernel.org>, Sascha Hauer
- <s.hauer@pengutronix.de>
-Subject: Re: GPMI iMX6ull timeout on DMA
-Date: Tue, 5 Oct 2021 08:02:50 +0200
-Message-ID: <2229542.ElGaqSPkdT@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20211004160620.3guajv5vvtfjrl7c@umbrella>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
- <20211004173351.36a66ccb@xps13> <20211004160620.3guajv5vvtfjrl7c@umbrella>
+ id 1mXea1-009GeG-2U
+ for linux-mtd@lists.infradead.org; Tue, 05 Oct 2021 07:09:39 +0000
+Received: from skn-laptop (_gateway [172.25.0.1])
+ by first.geanix.com (Postfix) with ESMTPSA id 6FFBDC23D0;
+ Tue,  5 Oct 2021 07:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1633417771; bh=GKTRWXeoYdsrzJBgSB5VWhXQCvyhEpmCpDIygADVHaI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=HlgLMB+oDpFD8umisKAKvCo0KGbrUT4nd+fpp8jKHxviPPo+v8rGYh1O7qtL+n4U5
+ LfWOYYHsnwAKySXIcxuMr19iRfkvHQekB3Jq2QwEHFI2NkYqqDwJlYwfVwHseD8NAN
+ AhgsPyWZ8hLy5FB70030BAdZyOAutmSgMxbeehNxWPx/kZhhihbxNoQxB3wa70Bjov
+ p5g72ccvGsze00rA6WTqBMcs089BMeeOEQepBd3NW1tbQJlI9lgHQwB8oU4k+Itqc2
+ 4Do66C8l0wEQx4Ydg90u/ve7y7WUYVrfO6tCqjQIHKTg6U7UTodQBV27vSNmUnOmlO
+ UtpqwUAwnh1Pw==
+Date: Tue, 5 Oct 2021 09:09:30 +0200
+From: Sean Nyekjaer <sean@geanix.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+References: <20211004065608.3190348-1-sean@geanix.com>
+ <20211004104147.579f3b01@collabora.com>
+ <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
+ <20211004115817.18739936@collabora.com>
+ <20211004101246.kagtezizympxupat@skn-laptop>
+ <20211004134700.26327f6f@collabora.com>
 MIME-Version: 1.0
-X-Originating-IP: [192.168.55.17]
-X-RMX-ID: 20211005-080251-XscPVFVMWdhh-0@out01.hq
-X-RMX-SOURCE: 217.111.95.66
+Content-Disposition: inline
+In-Reply-To: <20211004134700.26327f6f@collabora.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211004_230304_302005_AC558AF2 
-X-CRM114-Status: UNSURE (   9.40  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211005_000937_643145_74BE3532 
+X-CRM114-Status: GOOD (  37.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,26 +81,139 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Monday, 4 October 2021, 18:06:20 CEST, Han Xu wrote:
+On Mon, Oct 04, 2021 at 01:47:00PM +0200, Boris Brezillon wrote:
+> On Mon, 4 Oct 2021 12:12:46 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
 > 
-> Could you please try to add clock dis/enable when setting clock rate, in case
-> clock glitches.
+> > On Mon, Oct 04, 2021 at 11:58:17AM +0200, Boris Brezillon wrote:
+> > > On Mon, 4 Oct 2021 10:55:09 +0200
+> > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > >   
+> > > > On Mon, Oct 04, 2021 at 10:41:47AM +0200, Boris Brezillon wrote:  
+> > > > > On Mon,  4 Oct 2021 08:56:09 +0200
+> > > > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > > > >     
+> > > > > > This will prevent nand_get_device() from returning -EBUSY.
+> > > > > > It will force mtd_write()/mtd_read() to wait for the nand_resume() to unlock
+> > > > > > access to the mtd device.
+> > > > > > 
+> > > > > > Then we avoid -EBUSY is returned to ubifsi via mtd_write()/mtd_read(),
+> > > > > > that will in turn hard error on every error returened.
+> > > > > > We have seen during ubifs tries to call mtd_write before the mtd device
+> > > > > > is resumed.    
+> > > > > 
+> > > > > I think the problem is here. Why would UBIFS/UBI try to write something
+> > > > > to a device that's not resumed yet (or has been suspended already, if
+> > > > > you hit this in the suspend path).
+> > > > >     
+> > > > > > 
+> > > > > > Exec_op[0] speed things up, so we see this race when the device is
+> > > > > > resuming. But it's actually "mtd: rawnand: Simplify the locking" that
+> > > > > > allows it to return -EBUSY, before that commit it would have waited for
+> > > > > > the mtd device to resume.    
+> > > > > 
+> > > > > Uh, wait. If nand_resume() was called before any writes/reads this
+> > > > > wouldn't happen. IMHO, the problem is not that we return -EBUSY without
+> > > > > blocking, the problem is that someone issues a write/read before calling
+> > > > > mtd_resume().
+> > > > >     
+> > > > 
+> > > > The commit msg from "mtd: rawnand: Simplify the locking" states this clearly.
+> > > > 
+> > > > """
+> > > > Last important change to mention: we now return -EBUSY when someone
+> > > > tries to access a device that as been suspended, and propagate this
+> > > > error to the upper layer.
+> > > > """
+> > > > 
+> > > > IMHO "mtd: rawnand: Simplify the locking" should never had been merged
+> > > > before the upper layers was fixed to handle -EBUSY. ;)
+> > > > Which they still not are...  
+> > > 
+> > > That's not really the problem here. Upper layers should never get
+> > > -EBUSY in the first place if the MTD device was resumed before the UBI
+> > > device. Looks like we have a missing UBI -> MTD parenting link, which
+> > > would explain why things don't get resumed in the right order. Can you
+> > > try with the following diff applied?
+> > > 
+> > > ---
+> > > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> > > index f399edc82191..1981ce8f3a26 100644
+> > > --- a/drivers/mtd/ubi/build.c
+> > > +++ b/drivers/mtd/ubi/build.c
+> > > @@ -905,6 +905,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int
+> > > ubi_num, ubi->dev.release = dev_release;
+> > >         ubi->dev.class = &ubi_class;
+> > >         ubi->dev.groups = ubi_dev_groups;
+> > > +       ubi->dev.parent = &mtd->dev;
+> > >  
+> > >         ubi->mtd = mtd;
+> > >         ubi->ubi_num = ubi_num;
+> > >   
+> > 
+> > No change:
+> > [   71.739193] Filesystems sync: 34.212 seconds
+> > [   71.755044] Freezing user space processes ... (elapsed 0.004 seconds) done.
+> > [   71.767289] OOM killer disabled.
+> > [   71.770552] Freezing remaining freezable tasks ... (elapsed 0.004 seconds) done.
+> > [   71.782182] printk: Suspending console(s) (use no_console_suspend to debug)
+> > [   71.824391] nand_suspend
+> > [   71.825177] gpmi_pm_suspend
+> > [   71.825676] PM: suspend devices took 0.040 seconds
+> > [   71.825971] nand_write_oob - nand_get_device() returned -EBUSY
+> > [   71.825985] ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 986:65536, written 0 bytes
+> > [   71.826029] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted 5.15.0-rc3-dirty #43
+> > [   71.826043] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+> > [   71.826054] Workqueue: writeback wb_workfn (flush-ubifs_0_8)
+> > [   71.826094] [<c010da84>] (unwind_backtrace) from [<c010a1b4>] (show_stack+0x10/0x14)
+> > [   71.826122] [<c010a1b4>] (show_stack) from [<c0989c30>] (dump_stack_lvl+0x40/0x4c)
+> > [   71.826151] [<c0989c30>] (dump_stack_lvl) from [<c05ed690>] (ubi_io_write+0x510/0x6b0)
+> > [   71.826178] [<c05ed690>] (ubi_io_write) from [<c05ea2f0>] (ubi_eba_write_leb+0xd0/0x968)
+> > [   71.826204] [<c05ea2f0>] (ubi_eba_write_leb) from [<c05e8754>] (ubi_leb_write+0xd0/0xe8)
+> > [   71.826232] [<c05e8754>] (ubi_leb_write) from [<c03d67bc>] (ubifs_leb_write+0x68/0x104)
+> > [   71.826263] [<c03d67bc>] (ubifs_leb_write) from [<c03d79e8>] (ubifs_wbuf_write_nolock+0x28c/0x74c)
+> > [   71.826291] [<c03d79e8>] (ubifs_wbuf_write_nolock) from [<c03ca18c>] (ubifs_jnl_write_data+0x1b8/0x2b4)
+> > [   71.826319] [<c03ca18c>] (ubifs_jnl_write_data) from [<c03cd184>] (do_writepage+0x190/0x284)
+> > [   71.826342] [<c03cd184>] (do_writepage) from [<c023083c>] (__writepage+0x14/0x68)
+> > [   71.826367] [<c023083c>] (__writepage) from [<c0231748>] (write_cache_pages+0x1c8/0x3f0)
+> > [   71.826390] [<c0231748>] (write_cache_pages) from [<c0233854>] (do_writepages+0xcc/0x1f4)
+> > [   71.826413] [<c0233854>] (do_writepages) from [<c02d03dc>] (__writeback_single_inode+0x2c/0x1b4)
+> > [   71.826440] [<c02d03dc>] (__writeback_single_inode) from [<c02d0a64>] (writeback_sb_inodes+0x200/0x470)
+> > [   71.826466] [<c02d0a64>] (writeback_sb_inodes) from [<c02d0d10>] (__writeback_inodes_wb+0x3c/0xf4)
+> > [   71.826493] [<c02d0d10>] (__writeback_inodes_wb) from [<c02d0f58>] (wb_writeback+0x190/0x1f0)
+> > [   71.826520] [<c02d0f58>] (wb_writeback) from [<c02d21d8>] (wb_workfn+0x2c0/0x3d4)
+> > [   71.826545] [<c02d21d8>] (wb_workfn) from [<c013ac04>] (process_one_work+0x1e0/0x440)
+> > [   71.826574] [<c013ac04>] (process_one_work) from [<c013aeac>] (worker_thread+0x48/0x594)
+> > [   71.826600] [<c013aeac>] (worker_thread) from [<c0142364>] (kthread+0x134/0x15c)
+> > [   71.826625] [<c0142364>] (kthread) from [<c0100150>] (ret_from_fork+0x14/0x24)
 > 
-> clk_disable_unprepare(r->clock[0]);
-> clk_set_rate(r->clock[0], hw->clk_rate);
-> clk_prepare_enable(r->clock[0]);
-> 
-This looks promising! Last night I had a successful test run with more than 
-600 reboots! The test only stopped because my network was disturbed by the
-daily backup run...
+> I'm not entirely sure, but given the timing, it looks like this
+> actually happens in the suspend path, not it the resume path. What I
+> don't get is why we still have a kernel thread running at that point.
 
-I'll do further tests within the next 24 hours.
+Have you seen the reproducer script?
+---
+root@iwg26-v1:/data/root# cat /data/crash.sh
+#!/bin/sh -x
 
-regards
-Christian
+echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
 
+rm /data/test50M
+dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
+cp /tmp/test50M /data/ &
+sleep 1
+echo mem > /sys/power/state
+---
 
+As seen in the log above disk is synced before suspend.
+cp is continuing to copy data to ubifs.
+And then user space processes are frozen.
+At this point the kernel thread would have unwritten data.
 
+We tried to solve this with:
+https://lkml.org/lkml/2021/9/1/280
+
+/Sean
 
 ______________________________________________________
 Linux MTD discussion mailing list
