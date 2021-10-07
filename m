@@ -2,72 +2,67 @@ Return-Path: <SRS0=3zw0=O3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60A85C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 14:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92FDBC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 14:26:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5BDDD610E6
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 14:19:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5BDDD610E6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+	by mail.kernel.org (Postfix) with ESMTPS id 3A6AC6103B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 14:26:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3A6AC6103B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lug-owl.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=JL9PO98bW61pd144ge+bSoyzZkKuXmzL8Qv/C21cxws=; b=3UZw+c8n/c5gOXFPxUuVDxHrof
-	hfp9qJ1Y+FMmbtxNLMSpekBQKdqx5FDLa5nr9eVsDb4Lssw4oguPfKr7TIHBzEO+QQrVICIZfu2av
-	EFGe1YbA/kI8ORk6xVm9bhbnRF09ZwOA6UKdqPivT9vY3QfYBAwy3rwvd3i62t1p3sqQmMaxUhOlm
-	iXTWPWh0c3kgGdeF3quObfEVWcghBCV/4PGQBdzobZIn6uRkupDpFzTrMdDmfEOqkUmXp0H/CETT4
-	XRZ5Fri5Y8w31WIJNNdvEaI6BAwpNy+pXOREDDHLkCx09l90040G7EiNpocAIRU7Uf9LKKFO3qFeZ
-	l+shcwqw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=qsN+p4azU6DwMdzgK3xEDZeV2Qied5AxSO5QBP0O43E=; b=up7S0Jyhf7ZqlG5rWjJSWnV45e
+	WeWVunXbUl7mla3CjdXf0PwZwsm/yjvAPtm+X7L6r+SVlGg+wKnDkp0eTjXrKZPzbyUU2/b9WWeiA
+	DlAIblwwy/SgWqyNBFKm0Knh4uGMQ9sdaBAbRzX1CjpEvAbchEvE3hGSFADiJc+jGVbF8zLMV+TiT
+	ap/7atmd0j/kCCea/wievaISQ0wTQjzxEVqa63T0Nhr28xOYbnDAmDHz7XdXG/gJPzYQdlVcMs83j
+	i+ud4sJzx/pN870uwaaTUiXXVkIlpDpSDXnMbXyNUKz3sMAoRozYDa4l5sJMkbEXFkSPEqQg1DR6K
+	IoV3OlrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYUEs-00HZrd-GO; Thu, 07 Oct 2021 14:19:14 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYUEp-00HZqP-3o
- for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 14:19:13 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id C719E61B8F3A;
- Thu,  7 Oct 2021 16:19:07 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id 5vyxynEmSLqc; Thu,  7 Oct 2021 16:19:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 33FBD61B8F57;
- Thu,  7 Oct 2021 16:19:07 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id Lli0eC-QyWrU; Thu,  7 Oct 2021 16:19:07 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 00EF861B8F3A;
- Thu,  7 Oct 2021 16:19:06 +0200 (CEST)
-Date: Thu, 7 Oct 2021 16:19:06 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+	id 1mYULl-00HawF-Qo; Thu, 07 Oct 2021 14:26:21 +0000
+Received: from lug-owl.de ([2a03:4000:10:469::])
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mYULi-00HavE-7y
+ for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 14:26:19 +0000
+Received: by lug-owl.de (Postfix, from userid 1001)
+ id 8E5D041EF5; Thu,  7 Oct 2021 16:26:17 +0200 (CEST)
+Date: Thu, 7 Oct 2021 16:26:17 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Message-ID: <135911793.46658.1633616346904.JavaMail.zimbra@nod.at>
-In-Reply-To: <20211007135401.4z3gcunwr2uq7fpx@lug-owl.de>
+Subject: Re: PING: [PATCH] Don't overflow when writing a key
+Message-ID: <20211007142617.3hgjddbbvcowzgc3@lug-owl.de>
 References: <20211001192836.n6eek7rno7ewvmu7@lug-owl.de>
  <20211005144936.xnkzugjr3oygauei@lug-owl.de>
  <837215091.45041.1633589943979.JavaMail.zimbra@nod.at>
  <1970203009.45154.1633591205445.JavaMail.zimbra@nod.at>
  <20211007135401.4z3gcunwr2uq7fpx@lug-owl.de>
-Subject: Re: PING: [PATCH] Don't overflow when writing a key
+ <135911793.46658.1633616346904.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
-Thread-Topic: PING: [PATCH] Don't overflow when writing a key
-Thread-Index: NH6wZY+JoLrbmJESiXEB3JZxPJrl4g==
+In-Reply-To: <135911793.46658.1633616346904.JavaMail.zimbra@nod.at>
+X-Operating-System: Linux chamaeleon 5.8.0-0.bpo.2-amd64 
+X-gpg-fingerprint: 250D 3BCF 7127 0D8C A444  A961 1DBD 5E75 8399 E1BB
+X-gpg-key: wwwkeys.de.pgp.net
+X-Echelon-Enable: howto poison arsenous mail psychological biological nuclear
+ warfare test the bombastical terror of flooding the spy
+ listeners explosion sex drugs and rock'n'roll
+X-TKUeV: howto poison arsenous mail psychological biological nuclear warfare
+ test the bombastical terror of flooding the spy listeners explosion sex
+ drugs and rock'n'roll
+X-message-flag: Please send plain text messages only. Do not send HTML
+ emails. Thank you. 
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211007_071911_482980_86FBD3BE 
-X-CRM114-Status: GOOD (  15.72  )
+X-CRM114-CacheID: sfid-20211007_072618_457912_8836710F 
+X-CRM114-Status: GOOD (  14.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,109 +74,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============9115742817912734572=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBrZXlfd3JpdGUoKSB0YWtlcyBhIHVi
-aWZzX2tleSBhcyBzb3VyY2UgYW5kIHdyaXRlcyB0byBhIGJ1ZmZlci4KPj4gSXQgYXNzdW1lcyB0
-aGF0IHRoZSBwYXNzZWQgdWJpZnNfa2V5IGlzIGluIHNpbXBsZSBrZXkgZm9ybWF0IChiZWluZyBV
-QklGU19TS19MRU4KPj4gbG9uZykKPj4gYW5kIGl0IGFzc3VtZXMgdGhlIGJ1ZmZlciBpcyBVQklG
-U19NQVhfS0VZX0xFTiBsb25nLgo+PiBTbywgdGhlIGRlc3RpbmF0aW9uIGlzICpub3QqIGEgdW5p
-b24gdWJpZnNfa2V5IHN0cnVjdHVyZS4KPiAKPiBBaC4gVGhpcyBpcyBzb21ldGhpbmcgSSBwcm9i
-YWJseSBtaXN1bmRlcnN0b29kLiBBcyB0aGUgZGVzdGluYXRpb24gaXMKPiBjYXN0ZWQgdG8gYW4g
-dWJpZnNfa2V5IGFzIHdlbGwsIG15IGV4cGVjdGF0aW9uIHdhcyB0aGF0IHRoaXMgZnVuY3Rpb24K
-PiBzaG91bGQgbm90IHdyaXRlIG91dHNpZGUgdGhlIGJvdW5kcyBvZiBzdWNoIGFuIHViaWZzX2tl
-eSBzdHJ1Y3QuCj4gCj4+IFdlIGhhdmUgdGhyZWUgY2FsbGVycyBvZiBrZXlfd3JpdGUoKSwgYWxs
-IGluIGpvdXJuYWwuYwo+PiAKPj4gMS4gdWJpZnNfam5sX3dyaXRlX2RhdGEKPj4ga2V5X3dyaXRl
-KGMsIGtleSwgJmRhdGEtPmtleSk7Cj4+IAo+PiBkYXRhIGlzIHN0cnVjdCB1Ymlmc19kYXRhX25v
-ZGUgd2hlcmUga2V5IGlzIG9mIHNpemUgVUJJRlNfTUFYX0tFWV9MRU4uCj4+IAo+PiAyLiB1Ymlm
-c19qbmxfdXBkYXRlCj4+IAo+PiBTYW1lIHdpdGggc3RydWN0IHViaWZzX2RlbnRfbm9kZQo+PiAK
-Pj4gMy4gdWJpZnNfam5sX2RlbGV0ZV94YXR0cgo+PiAKPj4gU2FtZSBhZ2Fpbi4KPj4gCj4+IEFs
-bCB0aHJlZSBvYmplY3RzIGFyZSBzbGFiIGFsbG9jYXRlZCwgZGlkIHlvdSBjaGVjaywgaXMgdG9v
-IGZldyBtZW1vcnkKPj4gYWxsb2NhdGVkPwo+PiBJbiBvdGhlciB3b3JkcywgaG93IGRpZCB5b3Ug
-Y2FsY3VsYXRlIHRoZSBzaXplIG9mIHRhcmdldCBidWZmZXI/Cj4gCj4gWW91J3JlIHJpZ2h0LCB0
-aGUgY29kZSBpcyBjb3JyZWN0IHNvbWVob3csIGJ1dCB3YXMgbWlzbGVhZGluZyBtZS4KPiAKPiAg
-VGhlIHN1cHBsaWVkIGJ1ZmZlciAodWJpZnNfZGF0YV9ub2RlLmtleSkgaXMgYWN0dWFsbHkKPiBV
-QklGU19NQVhfS0VZX0xFTiBieXRlcyBsb25nLCBidXQgdXNlZCBhcyB1Ymlmc19rZXkgKHdoaWNo
-IGlzIHNtYWxsZXIpCj4gYW5kIHRoZW4gdGhlIHJlbWFpbmluZyBzcGFjZSBpcyB6ZXJvZWQgb3V0
-LCB0aHVzIHRoZXJlJ3MgYW4gYXNzdW1wdGlvbgo+IGFib3V0IHRoZSBidWZmZXIgc2l6ZS4KPiAK
-PiAgSSBhY3R1YWxseSBmb3VuZCB0aGlzIGR1ZSB0byBhIHdhcm5pbmcgZm9yIGtleS5oOjQzOToK
-PiAKPiBbbWsgYWxsIDIwMjEtMDktMTkgMTY6MjA6MzRdICAgYXJtLWxpbnV4LWdudWVhYmloZi1n
-Y2MKPiAtV3AsLU1NRCxmcy91Ymlmcy8uam91cm5hbC5vLmQgLW5vc3RkaW5jIC1pc3lzdGVtCj4g
-L3Zhci9saWIvbGFtaW5hci9ydW4vbGludXgtYXJtLWFzcGVlZF9nNF9kZWZjb25maWcvOC90b29s
-Y2hhaW4vYmluLy4uL2xpYi9nY2MvYXJtLWxpbnV4LWdudWVhYmloZi8xMi4wLjAvaW5jbHVkZQo+
-IC1JLi9hcmNoL2FybS9pbmNsdWRlIC1JLi9hcmNoL2FybS9pbmNsdWRlL2dlbmVyYXRlZCAgLUku
-L2luY2x1ZGUKPiAtSS4vYXJjaC9hcm0vaW5jbHVkZS91YXBpIC1JLi9hcmNoL2FybS9pbmNsdWRl
-L2dlbmVyYXRlZC91YXBpIC1JLi9pbmNsdWRlL3VhcGkKPiAtSS4vaW5jbHVkZS9nZW5lcmF0ZWQv
-dWFwaSAtaW5jbHVkZSAuL2luY2x1ZGUvbGludXgvY29tcGlsZXItdmVyc2lvbi5oIC1pbmNsdWRl
-Cj4gLi9pbmNsdWRlL2xpbnV4L2tjb25maWcuaCAtaW5jbHVkZSAuL2luY2x1ZGUvbGludXgvY29t
-cGlsZXJfdHlwZXMuaAo+IC1EX19LRVJORUxfXyAtbWxpdHRsZS1lbmRpYW4gLWZtYWNyby1wcmVm
-aXgtbWFwPS4vPSAtV2FsbCAtV3VuZGVmCj4gLVdlcnJvcj1zdHJpY3QtcHJvdG90eXBlcyAtV25v
-LXRyaWdyYXBocyAtZm5vLXN0cmljdC1hbGlhc2luZyAtZm5vLWNvbW1vbgo+IC1mc2hvcnQtd2No
-YXIgLWZuby1QSUUgLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbgo+IC1XZXJy
-b3I9aW1wbGljaXQtaW50IC1XZXJyb3I9cmV0dXJuLXR5cGUgLVduby1mb3JtYXQtc2VjdXJpdHkg
-LXN0ZD1nbnU4OQo+IC1mbm8tZHdhcmYyLWNmaS1hc20gLWZuby1vbWl0LWZyYW1lLXBvaW50ZXIg
-LW1hcGNzIC1tbm8tc2NoZWQtcHJvbG9nCj4gLWZuby1pcGEtc3JhIC1tYWJpPWFhcGNzLWxpbnV4
-IC1tZnB1PXZmcCAtbWFybSAtV2EsLW1uby13YXJuLWRlcHJlY2F0ZWQKPiAtRF9fTElOVVhfQVJN
-X0FSQ0hfXz01IC1tYXJjaD1hcm12NXRlIC1tdHVuZT1hcm05dGRtaSAtbXNvZnQtZmxvYXQgLVVh
-cm0KPiAtZm5vLWRlbGV0ZS1udWxsLXBvaW50ZXItY2hlY2tzIC1Xbm8tZnJhbWUtYWRkcmVzcyAt
-V25vLWZvcm1hdC10cnVuY2F0aW9uCj4gLVduby1mb3JtYXQtb3ZlcmZsb3cgLVduby1hZGRyZXNz
-LW9mLXBhY2tlZC1tZW1iZXIgLU8yCj4gLWZuby1hbGxvdy1zdG9yZS1kYXRhLXJhY2VzIC1XZnJh
-bWUtbGFyZ2VyLXRoYW49MTAyNCAtZnN0YWNrLXByb3RlY3Rvci1zdHJvbmcKPiAtV2ltcGxpY2l0
-LWZhbGx0aHJvdWdoPTUgLVduby1tYWluIC1Xbm8tdW51c2VkLWJ1dC1zZXQtdmFyaWFibGUKPiAt
-V25vLXVudXNlZC1jb25zdC12YXJpYWJsZSAtZm5vLW9taXQtZnJhbWUtcG9pbnRlciAtZm5vLW9w
-dGltaXplLXNpYmxpbmctY2FsbHMKPiAtZnRyaXZpYWwtYXV0by12YXItaW5pdD16ZXJvCj4gLWVu
-YWJsZS10cml2aWFsLWF1dG8tdmFyLWluaXQtemVyby1rbm93aW5nLWl0LXdpbGwtYmUtcmVtb3Zl
-ZC1mcm9tLWNsYW5nCj4gLWZuby1zdGFjay1jbGFzaC1wcm90ZWN0aW9uIC1nIC1nZHdhcmYtNCAt
-Zm5vLXZhci10cmFja2luZwo+IC1mZW1pdC1zdHJ1Y3QtZGVidWctYmFzZW9ubHkgLXBnIC1XZGVj
-bGFyYXRpb24tYWZ0ZXItc3RhdGVtZW50IC1XdmxhCj4gLVduby1wb2ludGVyLXNpZ24gLVduby1z
-dHJpbmdvcC10cnVuY2F0aW9uIC1Xbm8temVyby1sZW5ndGgtYm91bmRzCj4gLVduby1hcnJheS1i
-b3VuZHMgLVduby1zdHJpbmdvcC1vdmVyZmxvdyAtV25vLXJlc3RyaWN0IC1Xbm8tbWF5YmUtdW5p
-bml0aWFsaXplZAo+IC1mbm8tc3RyaWN0LW92ZXJmbG93IC1mbm8tc3RhY2stY2hlY2sgLWZjb25z
-ZXJ2ZS1zdGFjayAtV2Vycm9yPWRhdGUtdGltZQo+IC1XZXJyb3I9aW5jb21wYXRpYmxlLXBvaW50
-ZXItdHlwZXMgLVdlcnJvcj1kZXNpZ25hdGVkLWluaXQKPiAtV25vLXBhY2tlZC1ub3QtYWxpZ25l
-ZCAgICAtREtCVUlMRF9NT0RGSUxFPSciZnMvdWJpZnMvdWJpZnMiJwo+IC1ES0JVSUxEX0JBU0VO
-QU1FPSciam91cm5hbCInIC1ES0JVSUxEX01PRE5BTUU9JyJ1YmlmcyInCj4gLURfX0tCVUlMRF9N
-T0ROQU1FPWttb2RfdWJpZnMgLWMgLW8gZnMvdWJpZnMvam91cm5hbC5vIGZzL3ViaWZzL2pvdXJu
-YWwuYwo+IFttayBhbGwgMjAyMS0wOS0xOSAxNjoyMDozNV0gSW4gZmlsZSBpbmNsdWRlZCBmcm9t
-IC4vaW5jbHVkZS9saW51eC9zdHJpbmcuaDoyNjIsCj4gW21rIGFsbCAyMDIxLTA5LTE5IDE2OjIw
-OjM1XSAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L2JpdG1hcC5oOjEwLAo+
-IFttayBhbGwgMjAyMS0wOS0xOSAxNjoyMDozNV0gICAgICAgICAgICAgICAgICBmcm9tIC4vaW5j
-bHVkZS9saW51eC9jcHVtYXNrLmg6MTIsCj4gW21rIGFsbCAyMDIxLTA5LTE5IDE2OjIwOjM1XSAg
-ICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L3NtcC5oOjEzLAo+IFttayBhbGwg
-MjAyMS0wOS0xOSAxNjoyMDozNV0gICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51
-eC9sb2NrZGVwLmg6MTQsCj4gW21rIGFsbCAyMDIxLTA5LTE5IDE2OjIwOjM1XSAgICAgICAgICAg
-ICAgICAgIGZyb20KPiAuL2luY2x1ZGUvbGludXgvc3BpbmxvY2suaDo2MywKPiBbbWsgYWxsIDIw
-MjEtMDktMTkgMTY6MjA6MzVdICAgICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1ZGUvbGludXgv
-d2FpdC5oOjksCj4gW21rIGFsbCAyMDIxLTA5LTE5IDE2OjIwOjM1XSAgICAgICAgICAgICAgICAg
-IGZyb20gLi9pbmNsdWRlL2xpbnV4L3dhaXRfYml0Lmg6OCwKPiBbbWsgYWxsIDIwMjEtMDktMTkg
-MTY6MjA6MzVdICAgICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1ZGUvbGludXgvZnMuaDo2LAo+
-IFttayBhbGwgMjAyMS0wOS0xOSAxNjoyMDozNV0gICAgICAgICAgICAgICAgICBmcm9tIGZzL3Vi
-aWZzL3ViaWZzLmg6MTYsCj4gW21rIGFsbCAyMDIxLTA5LTE5IDE2OjIwOjM1XSAgICAgICAgICAg
-ICAgICAgIGZyb20gZnMvdWJpZnMvam91cm5hbC5jOjQ5Ogo+IFttayBhbGwgMjAyMS0wOS0xOSAx
-NjoyMDozNV0gSW4gZnVuY3Rpb24gJ21lbXNldCcsCj4gW21rIGFsbCAyMDIxLTA5LTE5IDE2OjIw
-OjM1XSAgICAgaW5saW5lZCBmcm9tICdrZXlfd3JpdGUucGFydC4wJyBhdAo+IGZzL3ViaWZzL2tl
-eS5oOjQzOToyOgo+IFttayBhbGwgMjAyMS0wOS0xOSAxNjoyMDozNV0gLi9pbmNsdWRlL2xpbnV4
-L2ZvcnRpZnktc3RyaW5nLmg6MTcyOjE3OiBlcnJvcjoKPiBjYWxsIHRvICdfX3dyaXRlX292ZXJm
-bG93JyBkZWNsYXJlZCB3aXRoIGF0dHJpYnV0ZSBlcnJvcjogZGV0ZWN0ZWQgd3JpdGUgYmV5b25k
-Cj4gc2l6ZSBvZiBvYmplY3QgcGFzc2VkIGFzIDFzdCBwYXJhbWV0ZXIKPiBbbWsgYWxsIDIwMjEt
-MDktMTkgMTY6MjA6MzVdICAgMTcyIHwgICAgICAgICAgICAgICAgIF9fd3JpdGVfb3ZlcmZsb3co
-KTsKPiBbbWsgYWxsIDIwMjEtMDktMTkgMTY6MjA6MzVdICAgICAgIHwgICAgICAgICAgICAgICAg
-IF5+fn5+fn5+fn5+fn5+fn5+fgo+IFttayBhbGwgMjAyMS0wOS0xOSAxNjoyMDozNV0gbWFrZVsy
-XTogKioqIFtzY3JpcHRzL01ha2VmaWxlLmJ1aWxkOjI3NzoKPiBmcy91Ymlmcy9qb3VybmFsLm9d
-IEVycm9yIDEKPiBbbWsgYWxsIDIwMjEtMDktMTkgMTY6MjA6MzVdIG1ha2VbMV06ICoqKiBbc2Ny
-aXB0cy9NYWtlZmlsZS5idWlsZDo1NDA6IGZzL3ViaWZzXQo+IEVycm9yIDIKCkhtbW0sIGZvcnRp
-ZnkgYXNzdW1lcyB0aGF0IHRoZSBidWZmZXIgYmVoaW5kICJ0byIgaXMgc2l6ZW9mICh1bmlvbiB1
-Ymlmc19rZXkpIGp1c3QgYmVjYXVzZQp0aGUgZnVuY3Rpb24gZG9lczoKdW5pb24gdWJpZnNfa2V5
-ICp0ID0gdG87Cj8KCkV2ZW4gdGhvdWdoIG1lbXNldCgpIG9wZXJhdGVzIG9uICJ0byIgYW5kIG5v
-dCAidCIuLi4KCj4gTWF5YmUgc3VwcGx5IGtleV93cml0ZSgpIHRoZSBjb21wbGV0ZSB0YXJnZXQg
-YnVmZmVyIGxlbmd0aCBhbmQKPiBtZW1zZXQoKSBpdCBmaXJzdCwgdGhlbiBwbGFjZSB0aGUgcHJv
-cGVybHkgZm9ybWF0dGVkIGtleSBpbnRvIGl0PwoKV2VsbCwgdGhhdCdzIHRoZSB3aG9sZSBwdXJw
-b3NlIG9mIGtleV93cml0ZSgpLiBJdCBmb3JtYXRzIGFuIGluLW1lbW9yeSBrZXkgZm9yCnRoZSBk
-aXNrIGZvcm1hdC4KSSBmZWFyIHRoaXMgaXMganVzdCBhIG1hdHRlciBvZiBzdGF0aWMgYW5hbHlz
-aXMgYmVpbmcgbm90IHNtYXJ0LgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+
+--===============9115742817912734572==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sfqbhzscrssh7apc"
+Content-Disposition: inline
+
+
+--sfqbhzscrssh7apc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2021-10-07 16:19:06 +0200, Richard Weinberger <richard@nod.at> wrot=
+e:
+> Hmmm, fortify assumes that the buffer behind "to" is sizeof (union ubifs_=
+key) just because
+> the function does:
+> union ubifs_key *t =3D to;
+> ?
+>=20
+> Even though memset() operates on "to" and not "t"...
+>=20
+> > Maybe supply key_write() the complete target buffer length and
+> > memset() it first, then place the properly formatted key into it?
+>=20
+> Well, that's the whole purpose of key_write(). It formats an in-memory ke=
+y for
+> the disk format.
+> I fear this is just a matter of static analysis being not smart.
+
+Guess so...
+
+Maybe it'll get better.  At least, that's been with a very modern GCC,
+so I guess this'll come up again in one way or another. (Either as a
+GCC bug, or by not simply having a key[] array were the data is
+"magically" written to, but some union with that array and probably a
+struct like struct ubifs_key (where, for practical purposes, it's
+__le32 j32 already is the on-disk representation.)
+
+So ...  The code does _not_ overflow, that's good first of all. It's
+just a bit confusing how the key bytes are written to the buffer. At
+least I was easily distracted by the two different sizes.
+
+Thanks,
+  Jan-Benedict
+
+--=20
+
+--sfqbhzscrssh7apc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQQlDTvPcScNjKREqWEdvV51g5nhuwUCYV8DhgAKCRAdvV51g5nh
+u+01AJ4i6G/AYxjW9xB7zmZ57ZmUSsxHrgCgkQt08IIn+5a4Ctzxfml6n1Md3ok=
+=8Aoi
+-----END PGP SIGNATURE-----
+
+--sfqbhzscrssh7apc--
+
+
+--===============9115742817912734572==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============9115742817912734572==--
+
