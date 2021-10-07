@@ -2,73 +2,62 @@ Return-Path: <SRS0=3zw0=O3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1123C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 11:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE5FFC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 12:09:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF5D761139
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 11:44:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AF5D761139
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	by mail.kernel.org (Postfix) with ESMTPS id B933E6124A
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 12:09:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B933E6124A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/Xyk4F2zeGtG5wWw3J2JqU26AauLPQYEIEogyOKqoqU=; b=0KQsnQq7X7oOET
-	fkv41N751QgdJ6n47yQbTJdmzFA392gEcZYaWy9mZo3g2DQmBvl0QgZhTWd8j9g+faMXoDIbYPjeQ
-	DKzoOGVc4iJ9bFwRGgGmR9NXWBYORGB+jHz/7awm3rffmFHu8cmHgJRvdtuRfy0sxD2OoOJtrRWFg
-	XuUrt8o6IZgBOz7D27XdhGOGuKAQD649y+6O31Ow+CNT8NegjxcVzcGITMub1NGyhhF4NMOLbTcjB
-	YLzoUBKPqLAGBQaMMYzyFKDO5pGIqjVWxlcsKGNV6BLRRoRqbFkgRrriGR9IU8fonIY/uVG8UoVvM
-	21wmTVjt/IEExilexjCQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ENA/hAQ/iOwoQYDNUli7OWWkj1lopTkfM/Gmif1dtuk=; b=aCy2jPn/EZ2cHp
+	Sv5UlNDH6vSl4do0NBZyRVrqaz9e4Au/utTi3jwWSAe2HlBnvan/QH5F1rLquQbSnEdMw7nVLzT2x
+	sWO82C92EImXfhi6AGH6TkXzaI7Bqo1M22gStUvarTMCZurlaQzckf3JP45rJXGwxZkCXYg1cQo91
+	a5aY3zhRi4aQxVICgmkb4Tca11qCOOxJ+08VrjI18bJI6enxIp7F8wIO8B0HdlfsDPMzwc/CVTFTr
+	y4+3d0zRKiKJE8bzlg2OccrhpotTs91Mj2LhKB/5KhNXVe/zlYf2EwW9EEras7RCNuJf9bfajL47b
+	6CiGoGKQij9XZkA7pxGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYRoh-00H8ra-W8; Thu, 07 Oct 2021 11:44:04 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1mYSCU-00HBnm-UT; Thu, 07 Oct 2021 12:08:38 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYRoe-00H8qW-1c
- for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 11:44:02 +0000
-Received: from skn-laptop (unknown [185.17.218.86])
- by first.geanix.com (Postfix) with ESMTPSA id 2D7CFC38AD;
- Thu,  7 Oct 2021 11:43:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1633607033; bh=tGOv96CmxfPCWNX+fP5w3IPJ826kr0pX+QTLBAEyfMo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To;
- b=d3v9mOJiEKq3Da4jxgpms5lSzfw1TT0oPw2CDqwQd1zh7t3Fs87Hje8lRRWD5rtJ6
- czUsZbiH/BCEr+QGOZZfvY2sYcEmltPHfXCppcDa0MDLpv7p76u2BmkV2hY1henf1V
- 53mn0o7yW3CyWcPhAO4zm3wShfxuHlGA3mYn7YcXgYZbhefR11yd9Zaw9JYZhiwW5n
- e2LHZCf7ISxH7C7ZiVtlBBiqDctt2scc9hnjxMlJziiUbhntDMPKEOv4WNHeGIKo3N
- mHqwW5Ty0aci2yzH3bQEJKmYBsFXLbx9Pz6iNUjPQoc5KTVua4iEpafpACQ0zo/lHC
- 9d3SzDw+Pi+Jg==
-Date: Thu, 7 Oct 2021 13:43:51 +0200
-From: Sean Nyekjaer <sean@geanix.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211007114351.3nafhtpefezxhanc@skn-laptop>
-References: <20211004065608.3190348-1-sean@geanix.com>
- <20211004104147.579f3b01@collabora.com>
- <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
- <20211004115817.18739936@collabora.com>
- <20211004101246.kagtezizympxupat@skn-laptop>
- <20211004134700.26327f6f@collabora.com>
- <20211005070930.epgxb5qzumk4awxq@skn-laptop>
- <20211005102300.5da6d480@collabora.com>
- <20211005084938.jcbw24umhehoiirs@skn-laptop>
- <20211005105836.6c300f25@collabora.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211005105836.6c300f25@collabora.com>
+ id 1mYSCS-00HBn8-1l
+ for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 12:08:37 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0E46124A;
+ Thu,  7 Oct 2021 12:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1633608515;
+ bh=HGmW2Bpu1a5bINyn8Ucb9I/QzXitFICRrfHlC6pBvyo=;
+ h=From:To:Cc:Subject:Date:From;
+ b=qrpuaWuWYUgvFHeoxYcoGRQfTOKj/mc808W/UqinXepQ5T7choodbBwd5koV1P1FQ
+ tnxk/DB1uq1ENhO4rRokT0ymGl88lECHW2GT51fIP02rcKkYyhhNsgryArkzEXyH4S
+ o9+cPFdfFhGAeEe1HAB9sdqOWl4PxxvzOsrgXjAZaDFKrlLIlf2/r3yzDKecYa9Z+P
+ bNjcxikeMXEjGYpLXkdn+OFirALx2Bdf6tUecjnnnR5Xn2zG8xwiLSnboBTX8L5w4c
+ awGfaC0DiP4/K0utyH2X2YdWrgNL2552Efl4NUd2xl89jiynScHxKiKz2x8kcc/WET
+ Sm8ViJilejvFg==
+From: Roger Quadros <rogerq@kernel.org>
+To: tony@atomide.com
+Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+ lokeshvutla@ti.com, nsekhar@ti.com, krzysztof.kozlowski@canonical.com,
+ miquel.raynal@bootlin.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v5 0/8] dt-bindings: memory-controllers: ti,
+ gpmc: Convert to yaml
+Date: Thu,  7 Oct 2021 15:08:22 +0300
+Message-Id: <20211007120830.17221-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211007_044400_445190_6F756D4E 
-X-CRM114-Status: GOOD (  46.84  )
+X-CRM114-CacheID: sfid-20211007_050836_145752_675D3D2B 
+X-CRM114-Status: GOOD (  12.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,187 +69,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 05, 2021 at 10:58:36AM +0200, Boris Brezillon wrote:
-> On Tue, 5 Oct 2021 10:49:38 +0200
-> Sean Nyekjaer <sean@geanix.com> wrote:
-> 
-> > On Tue, Oct 05, 2021 at 10:23:00AM +0200, Boris Brezillon wrote:
-> > > On Tue, 5 Oct 2021 09:09:30 +0200
-> > > Sean Nyekjaer <sean@geanix.com> wrote:  
-> > 
-> > [ ... ]
-> > 
-> > > > 
-> > > > Have you seen the reproducer script?  
-> > > 
-> > > How would I know about this script or your previous attempt (mentioned
-> > > at the end of this email) given I was not Cc-ed on the previous
-> > > discussion, and nothing mentions it in this RFC...
-> > >   
-> > 
-> > That's why I shared it here ;)
-> > Initially I thought this was a bug introduced by exec_op.
-> > 
-> > > > ---
-> > > > root@iwg26-v1:/data/root# cat /data/crash.sh
-> > > > #!/bin/sh -x
-> > > > 
-> > > > echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
-> > > > 
-> > > > rm /data/test50M
-> > > > dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
-> > > > cp /tmp/test50M /data/ &
-> > > > sleep 1
-> > > > echo mem > /sys/power/state
-> > > > ---
-> > > > 
-> > > > As seen in the log above disk is synced before suspend.
-> > > > cp is continuing to copy data to ubifs.
-> > > > And then user space processes are frozen.
-> > > > At this point the kernel thread would have unwritten data.
-> > > > 
-> > > > We tried to solve this with:
-> > > > https://lkml.org/lkml/2021/9/1/280  
-> > > 
-> > > I see. It's still unclear to me when the write happens. Is it in the
-> > > suspend path (before the system is actually suspended), or in the
-> > > resume path (when the system is being resumed).
-> > > 
-> > > Anyway, let's admit writing to a storage device while it's suspended is
-> > > a valid use case and requires the storage layer to put this request on
-> > > old. This wait should not, IMHO, be handled at the NAND level, but at
-> > > the MTD level (using a waitqueue, and an atomic to make
-> > > suspended/resumed transitions safe). And abusing a mutex to implement
-> > > that is certainly not a good idea.  
-> > 
-> > I did't say this was the right solution ;) I actually asked in the RFC:
-> > "Should we introduce a new mutex? Or maybe a spin_lock?"
-> > 
-> > What are you proposing, a waitqueue in mtd_info? That gets checked in
-> > mtd_write()/mtd_read()?
-> 
-> Yes, and replacing the suspended state by an atomic, and providing a
-> helper to wait on the device readiness. Helper you will call in every
-> path involving a communication with the HW, not just mtd_read/write()
-> (you're missing erase at least, and I fear there are other hooks that
-> might lead to commands being issued to the device). But before we get
-> there, I think it's important to understand what the kernel expects.
-> IOW, if and when threads can do a request on a suspended device, and
-> when it's acceptable to wait (vs returning -EBUSY), otherwise I fear
-> we'll end up with deadlocks in the suspend/resume path.
+Hi,
 
-I have a proposal [0] and yes I have ended up in many deadlocks during
-testing. The hardest part is the locking when going into suspend.
-I'm not sure the wait_queue is initialized the right place :)
-And I'm kinda abusing the nand_get_device() for this...
+This series converts ti,gpmc memory controller and ti,gpmc-nand and
+ti,gpmc-onenand MTD controller bindings to yaml.
 
-Who do you think we should add to the discussion?
+cheers,
+-roger
 
-/Sean
+Changelog:
+v5
+- separated DT changes so easy to review
+- dropped ethernet@gpmc label changes. I was trying to fix the dtbs_check
+ warning "'ethernet@gpmc' does not match any of the regexes: '@[0-7],[a-f0-9]+$', 'pinctrl-[0-9]+'"
+ but the patch causes a side effect for omap4-duovero-parlor.dts such that the
+ GPMC timings specified in the board DTS wer not being used but
+ being overridden by omap-gpmc-smsc911x.dtsi instead. This is not what we
+ want.
+- dropped patch "memory: gpmc-omap: "gpmc,device-width" DT property is optional"
+ I will pick this up in another series. Don't want this patch to hold back the .yaml cleanup series.
+- arranged compatibles in alphabetical order in ti,gpmc.yaml
+- fixed example in ti,gpmc-onenand.yaml
+- Rebased on 5.15-rc1
+- Added Acks
 
-[0]:
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..735dfff18143 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -337,11 +337,10 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  */
- static int nand_get_device(struct nand_chip *chip)
- {
-+       struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+       wait_event(mtd->wait_queue, atomic_read(&chip->suspended) == 0);
-        mutex_lock(&chip->lock);
--       if (chip->suspended) {
--               mutex_unlock(&chip->lock);
--               return -EBUSY;
--       }
-        mutex_lock(&chip->controller->lock);
+v4
+- reference partition.yaml in ti,gpmc-nand.yaml and ti,gpmc-onenenc.yaml
+- use address-cells/size-cells: true instead of absolute size.
 
-        return 0;
-@@ -4562,11 +4561,15 @@ static int nand_suspend(struct mtd_info *mtd)
-        struct nand_chip *chip = mtd_to_nand(mtd);
-        int ret = 0;
+v3:
+- fix indentation
+- split GPMC child timings/settings into ti,gpmc-child.yaml
+This allows us to refer to it at 3 places and avoid use of
+'additionalProperties: true' at 2 places.
+- specify defaults where applicable
+- reordered patches
+- added patch for making "gpmc,device-width" optional with defaults.
+- address all review comments.
 
-+       atomic_inc(&chip->suspended);
-        mutex_lock(&chip->lock);
-        if (chip->ops.suspend)
-                ret = chip->ops.suspend(chip);
--       if (!ret)
--               chip->suspended = 1;
-+       if (ret) {
-+               /* Wake things up again if suspend fails */
-+               atomic_dec(&chip->suspended);
-+               wake_up(&mtd->wait_queue);
-+       }
-        mutex_unlock(&chip->lock);
+v2:
+- Fix all errors in dtbs_check and dt_bindings_check
+- remove references to gpmc-omap.txt
+- Convert ti,gpmc-nand and ti,gpmc-onenand bindings to yaml as well
 
-        return ret;
-@@ -4581,10 +4584,12 @@ static void nand_resume(struct mtd_info *mtd)
-        struct nand_chip *chip = mtd_to_nand(mtd);
+Roger Quadros (8):
+  dt-bindings: mtd: Remove gpmc-nor.txt
+  dt-bindings: net: Remove gpmc-eth.txt
+  dt-bindings: memory-controllers: Introduce ti,gpmc-child
+  dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+  dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
+  dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+  ARM: dts: omap: Fix boolean properties
+    gpmc,cycle2cycle-{same|diff}csen
+  ARM: dts: omap: fix gpmc,mux-add-data type
 
-        mutex_lock(&chip->lock);
--       if (chip->suspended) {
-+       if (atomic_read(&chip->suspended)) {
-                if (chip->ops.resume)
-                        chip->ops.resume(chip);
--               chip->suspended = 0;
-+
-+               atomic_dec(&chip->suspended);
-+               wake_up(&mtd->wait_queue);
-        } else {
-                pr_err("%s called for a chip which is not in suspended state\n",
-                        __func__);
-@@ -5099,6 +5104,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
-        pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
-                (int)(targetsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
-                mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
-+
-+       init_waitqueue_head(&mtd->wait_queue);
-+
-        return 0;
+ .../bindings/memory-controllers/omap-gpmc.txt | 157 -----------
+ .../memory-controllers/ti,gpmc-child.yaml     | 245 ++++++++++++++++++
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 172 ++++++++++++
+ .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 -----------
+ .../devicetree/bindings/mtd/gpmc-nor.txt      |  98 -------
+ .../devicetree/bindings/mtd/gpmc-onenand.txt  |  48 ----
+ .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 121 +++++++++
+ .../bindings/mtd/ti,gpmc-onenand.yaml         |  81 ++++++
+ .../devicetree/bindings/net/gpmc-eth.txt      |  97 -------
+ arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     |   4 +-
+ arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     |   2 +-
+ arch/arm/boot/dts/omap-zoom-common.dtsi       |   4 +-
+ arch/arm/boot/dts/omap2430-sdp.dts            |   4 +-
+ .../arm/boot/dts/omap3-devkit8000-common.dtsi |   4 +-
+ .../boot/dts/omap3-overo-tobiduo-common.dtsi  |   2 +-
+ arch/arm/boot/dts/omap3-sb-t35.dtsi           |   4 +-
+ 16 files changed, 631 insertions(+), 559 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc-child.yaml
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nor.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
 
- free_detect_allocation:
-@@ -6264,6 +6272,8 @@ static int nand_scan_tail(struct nand_chip *chip)
-        if (chip->options & NAND_SKIP_BBTSCAN)
-                return 0;
+-- 
+2.17.1
 
-+       atomic_set(&chip->suspended, 0);
-+
-        /* Build bad block table */
-        ret = nand_create_bbt(chip);
-        if (ret)
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 88227044fc86..f7dcbc336170 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -360,6 +360,8 @@ struct mtd_info {
-        int (*_get_device) (struct mtd_info *mtd);
-        void (*_put_device) (struct mtd_info *mtd);
-
-+       wait_queue_head_t wait_queue;
-+
-        /*
-         * flag indicates a panic write, low level drivers can take appropriate
-         * action if required to ensure writes go through
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..c25c0749f8d0 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1293,7 +1293,7 @@ struct nand_chip {
-
-        /* Internals */
-        struct mutex lock;
--       unsigned int suspended : 1;
-+       atomic_t suspended;
-        int cur_cs;
-        int read_retries;
-        struct nand_secure_region *secure_regions;
 
 ______________________________________________________
 Linux MTD discussion mailing list
