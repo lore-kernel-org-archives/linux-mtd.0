@@ -2,47 +2,47 @@ Return-Path: <SRS0=3zw0=O3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE5FFC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 12:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E57C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 12:09:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B933E6124A
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 12:09:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B933E6124A
+	by mail.kernel.org (Postfix) with ESMTPS id EBFC060F90
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 12:09:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EBFC060F90
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ENA/hAQ/iOwoQYDNUli7OWWkj1lopTkfM/Gmif1dtuk=; b=aCy2jPn/EZ2cHp
-	Sv5UlNDH6vSl4do0NBZyRVrqaz9e4Au/utTi3jwWSAe2HlBnvan/QH5F1rLquQbSnEdMw7nVLzT2x
-	sWO82C92EImXfhi6AGH6TkXzaI7Bqo1M22gStUvarTMCZurlaQzckf3JP45rJXGwxZkCXYg1cQo91
-	a5aY3zhRi4aQxVICgmkb4Tca11qCOOxJ+08VrjI18bJI6enxIp7F8wIO8B0HdlfsDPMzwc/CVTFTr
-	y4+3d0zRKiKJE8bzlg2OccrhpotTs91Mj2LhKB/5KhNXVe/zlYf2EwW9EEras7RCNuJf9bfajL47b
-	6CiGoGKQij9XZkA7pxGg==;
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=chOpP7Lo3fBcR5nM4DaKeE0ej98Uecn6foFM2bmeQMw=; b=WFien7aT1+fETR
+	GDw5mJEYKZihGp82m432aKkV2+ILK+x0oNdvRyl2Qz6Tcz8H/yh5slehFAPjI+py5HkMbrjEvhRZ1
+	6Hk+4Tia1NnSPITshxuMq+PCUzTZN1KmWsIH+cAQ+8/vMUGTfM5k+6+OaqV3i806QzdFE/Orhl9Ce
+	o1lwGLzHP6hFV9li3IMNkqtPEHFvojLs2s8C6bkmpAIIuoOUDLpXRZ0ayWe0FeBJNc0SFSmpfmhkd
+	ZDih1lrFzeGDnjlFusfe5oHPAde8xi69Va/R6Xw/SzSigrLUzRRHTyU1RjTU7ryi8rYJd++j+0B7V
+	IvM/aYM/N+/7quwyk7qA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYSCU-00HBnm-UT; Thu, 07 Oct 2021 12:08:38 +0000
+	id 1mYSCh-00HBqT-Gc; Thu, 07 Oct 2021 12:08:51 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYSCS-00HBn8-1l
- for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 12:08:37 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0E46124A;
- Thu,  7 Oct 2021 12:08:33 +0000 (UTC)
+ id 1mYSCU-00HBno-VX
+ for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 12:08:40 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 308BC61350;
+ Thu,  7 Oct 2021 12:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1633608515;
- bh=HGmW2Bpu1a5bINyn8Ucb9I/QzXitFICRrfHlC6pBvyo=;
- h=From:To:Cc:Subject:Date:From;
- b=qrpuaWuWYUgvFHeoxYcoGRQfTOKj/mc808W/UqinXepQ5T7choodbBwd5koV1P1FQ
- tnxk/DB1uq1ENhO4rRokT0ymGl88lECHW2GT51fIP02rcKkYyhhNsgryArkzEXyH4S
- o9+cPFdfFhGAeEe1HAB9sdqOWl4PxxvzOsrgXjAZaDFKrlLIlf2/r3yzDKecYa9Z+P
- bNjcxikeMXEjGYpLXkdn+OFirALx2Bdf6tUecjnnnR5Xn2zG8xwiLSnboBTX8L5w4c
- awGfaC0DiP4/K0utyH2X2YdWrgNL2552Efl4NUd2xl89jiynScHxKiKz2x8kcc/WET
- Sm8ViJilejvFg==
+ s=k20201202; t=1633608518;
+ bh=0mS10icpgGltARCagko0u5kY5pXT9n7EuVyTjaXwffE=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=FaxfD0zhmqrZQQvInVMlouOmWPp89H9HKxJWHoMEYQmCiq1m2ep6diudbSPwfh5mP
+ PtWCtpEENh7OLqgjzQVef3QbpTJIQQWHnvgjuH96X91LHOsuKf7wPSrAOmB/wY2AoX
+ RqBDr2JSiwKYl1qTOQl8onOL+Fvbb3AIm0PgGms4Bn4oajRWb5lycIKANFmKXaAmOj
+ FoeJH9/pBIWUts+Wzvm36rNaoZowUVO3DLq7uuXPegf3stwjTAvt2GjCBScMSbT6WZ
+ 8+TIcj/BVS+eiAiDhJ3kdhoDARiexnmLFuEMyUH0ANBPg6WotC2D9xeBt8ci+105l9
+ gTVmhFSMXeeLA==
 From: Roger Quadros <rogerq@kernel.org>
 To: tony@atomide.com
 Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
@@ -50,14 +50,15 @@ Cc: robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
  miquel.raynal@bootlin.com, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v5 0/8] dt-bindings: memory-controllers: ti,
- gpmc: Convert to yaml
-Date: Thu,  7 Oct 2021 15:08:22 +0300
-Message-Id: <20211007120830.17221-1-rogerq@kernel.org>
+Subject: [PATCH v5 1/8] dt-bindings: mtd: Remove gpmc-nor.txt
+Date: Thu,  7 Oct 2021 15:08:23 +0300
+Message-Id: <20211007120830.17221-2-rogerq@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211007120830.17221-1-rogerq@kernel.org>
+References: <20211007120830.17221-1-rogerq@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211007_050836_145752_675D3D2B 
-X-CRM114-Status: GOOD (  12.26  )
+X-CRM114-CacheID: sfid-20211007_050839_071397_9ACBA7C0 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,87 +76,124 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+There is no GPMC NOR compatible or device driver. GPMC is just
+a bus interface over which standard (CFI/JEDC) NOR Flash chips
+can be attached.
 
-This series converts ti,gpmc memory controller and ti,gpmc-nand and
-ti,gpmc-onenand MTD controller bindings to yaml.
+For NOR chip bindings, please refer to
+Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
 
-cheers,
--roger
-
-Changelog:
-v5
-- separated DT changes so easy to review
-- dropped ethernet@gpmc label changes. I was trying to fix the dtbs_check
- warning "'ethernet@gpmc' does not match any of the regexes: '@[0-7],[a-f0-9]+$', 'pinctrl-[0-9]+'"
- but the patch causes a side effect for omap4-duovero-parlor.dts such that the
- GPMC timings specified in the board DTS wer not being used but
- being overridden by omap-gpmc-smsc911x.dtsi instead. This is not what we
- want.
-- dropped patch "memory: gpmc-omap: "gpmc,device-width" DT property is optional"
- I will pick this up in another series. Don't want this patch to hold back the .yaml cleanup series.
-- arranged compatibles in alphabetical order in ti,gpmc.yaml
-- fixed example in ti,gpmc-onenand.yaml
-- Rebased on 5.15-rc1
-- Added Acks
-
-v4
-- reference partition.yaml in ti,gpmc-nand.yaml and ti,gpmc-onenenc.yaml
-- use address-cells/size-cells: true instead of absolute size.
-
-v3:
-- fix indentation
-- split GPMC child timings/settings into ti,gpmc-child.yaml
-This allows us to refer to it at 3 places and avoid use of
-'additionalProperties: true' at 2 places.
-- specify defaults where applicable
-- reordered patches
-- added patch for making "gpmc,device-width" optional with defaults.
-- address all review comments.
-
-v2:
-- Fix all errors in dtbs_check and dt_bindings_check
-- remove references to gpmc-omap.txt
-- Convert ti,gpmc-nand and ti,gpmc-onenand bindings to yaml as well
-
-Roger Quadros (8):
-  dt-bindings: mtd: Remove gpmc-nor.txt
-  dt-bindings: net: Remove gpmc-eth.txt
-  dt-bindings: memory-controllers: Introduce ti,gpmc-child
-  dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
-  dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
-  dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
-  ARM: dts: omap: Fix boolean properties
-    gpmc,cycle2cycle-{same|diff}csen
-  ARM: dts: omap: fix gpmc,mux-add-data type
-
- .../bindings/memory-controllers/omap-gpmc.txt | 157 -----------
- .../memory-controllers/ti,gpmc-child.yaml     | 245 ++++++++++++++++++
- .../bindings/memory-controllers/ti,gpmc.yaml  | 172 ++++++++++++
- .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 -----------
- .../devicetree/bindings/mtd/gpmc-nor.txt      |  98 -------
- .../devicetree/bindings/mtd/gpmc-onenand.txt  |  48 ----
- .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 121 +++++++++
- .../bindings/mtd/ti,gpmc-onenand.yaml         |  81 ++++++
- .../devicetree/bindings/net/gpmc-eth.txt      |  97 -------
- arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     |   4 +-
- arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     |   2 +-
- arch/arm/boot/dts/omap-zoom-common.dtsi       |   4 +-
- arch/arm/boot/dts/omap2430-sdp.dts            |   4 +-
- .../arm/boot/dts/omap3-devkit8000-common.dtsi |   4 +-
- .../boot/dts/omap3-overo-tobiduo-common.dtsi  |   2 +-
- arch/arm/boot/dts/omap3-sb-t35.dtsi           |   4 +-
- 16 files changed, 631 insertions(+), 559 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc-child.yaml
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/mtd/gpmc-nor.txt      | 98 -------------------
+ 1 file changed, 98 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nor.txt
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
 
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nor.txt b/Documentation/devicetree/bindings/mtd/gpmc-nor.txt
+deleted file mode 100644
+index 2133be0d52f2..000000000000
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nor.txt
++++ /dev/null
+@@ -1,98 +0,0 @@
+-Device tree bindings for NOR flash connect to TI GPMC
+-
+-NOR flash connected to the TI GPMC (found on OMAP boards) are represented as
+-child nodes of the GPMC controller with a name of "nor".
+-
+-All timing relevant properties as well as generic GPMC child properties are
+-explained in a separate documents. Please refer to
+-Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+-
+-Required properties:
+-- bank-width: 		Width of NOR flash in bytes. GPMC supports 8-bit and
+-			16-bit devices and so must be either 1 or 2 bytes.
+-- compatible:		Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+-- gpmc,cs-on-ns:		Chip-select assertion time
+-- gpmc,cs-rd-off-ns:	Chip-select de-assertion time for reads
+-- gpmc,cs-wr-off-ns:	Chip-select de-assertion time for writes
+-- gpmc,oe-on-ns:	Output-enable assertion time
+-- gpmc,oe-off-ns:	Output-enable de-assertion time
+-- gpmc,we-on-ns		Write-enable assertion time
+-- gpmc,we-off-ns:	Write-enable de-assertion time
+-- gpmc,access-ns:	Start cycle to first data capture (read access)
+-- gpmc,rd-cycle-ns:	Total read cycle time
+-- gpmc,wr-cycle-ns:	Total write cycle time
+-- linux,mtd-name:	Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
+-- reg:			Chip-select, base address (relative to chip-select)
+-			and size of NOR flash. Note that base address will be
+-			typically 0 as this is the start of the chip-select.
+-
+-Optional properties:
+-- gpmc,XXX		Additional GPMC timings and settings parameters. See
+-			Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+-
+-Optional properties for partition table parsing:
+-- #address-cells: should be set to 1
+-- #size-cells: should be set to 1
+-
+-Example:
+-
+-gpmc: gpmc@6e000000 {
+-	compatible = "ti,omap3430-gpmc", "simple-bus";
+-	ti,hwmods = "gpmc";
+-	reg = <0x6e000000 0x1000>;
+-	interrupts = <20>;
+-	gpmc,num-cs = <8>;
+-	gpmc,num-waitpins = <4>;
+-	#address-cells = <2>;
+-	#size-cells = <1>;
+-
+-	ranges = <0 0 0x10000000 0x08000000>;
+-
+-	nor@0,0 {
+-		compatible = "cfi-flash";
+-		linux,mtd-name= "intel,pf48f6000m0y1be";
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		reg = <0 0 0x08000000>;
+-		bank-width = <2>;
+-
+-		gpmc,mux-add-data;
+-		gpmc,cs-on-ns = <0>;
+-		gpmc,cs-rd-off-ns = <186>;
+-		gpmc,cs-wr-off-ns = <186>;
+-		gpmc,adv-on-ns = <12>;
+-		gpmc,adv-rd-off-ns = <48>;
+-		gpmc,adv-wr-off-ns = <48>;
+-		gpmc,oe-on-ns = <54>;
+-		gpmc,oe-off-ns = <168>;
+-		gpmc,we-on-ns = <54>;
+-		gpmc,we-off-ns = <168>;
+-		gpmc,rd-cycle-ns = <186>;
+-		gpmc,wr-cycle-ns = <186>;
+-		gpmc,access-ns = <114>;
+-		gpmc,page-burst-access-ns = <6>;
+-		gpmc,bus-turnaround-ns = <12>;
+-		gpmc,cycle2cycle-delay-ns = <18>;
+-		gpmc,wr-data-mux-bus-ns = <90>;
+-		gpmc,wr-access-ns = <186>;
+-		gpmc,cycle2cycle-samecsen;
+-		gpmc,cycle2cycle-diffcsen;
+-
+-		partition@0 {
+-			label = "bootloader-nor";
+-			reg = <0 0x40000>;
+-		};
+-		partition@40000 {
+-			label = "params-nor";
+-			reg = <0x40000 0x40000>;
+-		};
+-		partition@80000 {
+-			label = "kernel-nor";
+-			reg = <0x80000 0x200000>;
+-		};
+-		partition@280000 {
+-			label = "filesystem-nor";
+-			reg = <0x240000 0x7d80000>;
+-		};
+-	};
+-};
 -- 
 2.17.1
 
