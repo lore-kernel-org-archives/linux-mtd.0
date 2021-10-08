@@ -2,81 +2,81 @@ Return-Path: <SRS0=3zw0=O3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC919C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ED70C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:00:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DE2B6101B
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:00:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7DE2B6101B
+	by mail.kernel.org (Postfix) with ESMTPS id 541046101B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:00:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 541046101B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Dt8HYwraFSb8/ZBwaelNh9w6C1ntCfASTBi/A2vxB60=; b=RCUkUj1hmHRd9a
-	NwMpbgBWbQJ8mp6Tvtd5ouRFKGKEsvaref9aYaHlrxd7Wrxkw5txIvYrpkH20yxeSXvfgNmPcoify
-	f4ArLQtNMwGnjaaMt0FGt3mrPSD1tZ14hlRGcBC5CGdQDea8fe6Pq2fT4DuNtFcQkEcvnqVxzFYdr
-	e45PLcEuMtE81YDUiJW/P4Do3kVVvF9gJW8KnOGhevwRuZxobOhmf8SH/4c3CgKBq3j71uJYN0UP8
-	kvhjVY2MHQEeww6ap8NijSHplQhYg51RM2JWOv97cSJWtGMm9kcDWkH/uOXdHx3/QHiecFP7MM5T7
-	FaJdMNROplyeNp6QKQkw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bJo8ngfyjsfJJ5xRH2x1lft4WkhiQeOT+m/URxZkCc4=; b=bMoKmw85C4mFSe
+	jVdcOxiHOuv3LlpbAjjod+gcZooyPYp6ZXQ15p/b96slXE5krAieCaf0m0PX8LYd5v+b3tlD/Py9T
+	u2HgJ+NrkL7U2E7bFjLYExO6+iFKFp9MpQOx0W1+2K4Ju7UMb8MYehwn9paX61k05Lq6tolYJNB+2
+	xzpFnf9Q1xONIT/E7N6OaLjGGp7p0oCpOtzu3JXFVUt/dHddHap/d29MIr+BKlWozXn+CDS87+9hx
+	6mXbzp7nuaPiH/L6yHYVTi6kO4otCAk+9NTqZr223yjrBtO2/CeLQJjtQx3W0ggtkWmNw8u6FSTPh
+	2BzJX7JJuQiwd7iThlCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYNNG-00GKcg-JW; Thu, 07 Oct 2021 06:59:26 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1mYNNU-00GKgI-Fe; Thu, 07 Oct 2021 06:59:40 +0000
+Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYNN4-00GKYJ-J9
- for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 06:59:15 +0000
-Received: by mail-pl1-x636.google.com with SMTP id x8so3247138plv.8
- for <linux-mtd@lists.infradead.org>; Wed, 06 Oct 2021 23:59:10 -0700 (PDT)
+ id 1mYNN9-00GKZz-4E
+ for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 06:59:20 +0000
+Received: by mail-pl1-x62f.google.com with SMTP id x8so3247322plv.8
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Oct 2021 23:59:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=FlRfcfXKzBTDDvuEg1gx8rMtAHAImiEFRdqtQU3h+3U=;
- b=qq9rI5WKUzce+vzYo2vr0+Or8AaUJiQdNHLjZv1N8xGqqWO1hH9VUdfm5lf9LiMdRa
- TdAaieu2YQWZ1vk/eEtuHKQ5GYtgTGssIX6QhM+0rRlIgKwVR98adpffbxfqhSlI+nHp
- kGeCnq8WS0tANHX1z/jA6u+peLNbjHhOhzu/JsJuEYiK2NWTX8qZS+sVV60YNFOEPzxL
- 7Ypm/zq+e4DFYP4Kf6wfgyoEzqn8nylADUhCpU/BpFkZfCxEXSncQd1XY7FHoOxUDDRt
- YjRPrCx00M1awteEIdHSfuZuy+RF97XXWptdHmF/7txyVUrVDu/gAlRkDRqa5qjkCGZq
- kVfg==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references;
+ bh=/yR4tv/3roNZnetTuH4RfLmYsSUbS549FSDUiBFB+i4=;
+ b=VMSAiQyIuoiORfwwnQUw90nwzV5QKc+fKvsn3ze40fz+nqM5gQjoD4O7nF+RkIp/eF
+ WXvofZ7DWIIAlZ9F0ReVfivB3hCa3Fi5BMJZchsL4O9lXDf9dwYobz644r9WnR3Jhdoh
+ 1Hwgt2WgQUpWTQYe+6gbaUhphje+tyd/iHblqLUET1rmkSbT1AvY3lc+fYiL5dG9UQVs
+ AThxVa85rOoANwNSCmwasiIIyzNtJa5pFgMghdJtuZEAMWouk1tR5E/fZ3e7CgbMf/wS
+ GSvz0fDTs/T+4/JL9cqPe0SOVP2rHldIwLa7+wcsBD5DpK8m1f+yHntsVw/CapTgbQvF
+ pvTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=FlRfcfXKzBTDDvuEg1gx8rMtAHAImiEFRdqtQU3h+3U=;
- b=vrOBaGy69TY8ZNmKmiJllfE2aVKhVMGGE16sxd2UP/WA8f+VUILsP98AZS+/HUfHAH
- g+Lv3HeNnBbkOMZugIPyIYha5OEM5yC5JYss8hrKj83BXlND5r49PkYjWDhzo6oKEpLv
- htWAoKBlVzaKT4KmUAYsfx1ClDeKtGbJjiFNsri3I+iVd9OJA3St5mZmUtK7CpP2yV1U
- J6e9z3Ef2O9/E8mVJQdiJ0LXVxY5Qd5ZIXrMzhIbqL/5vNSlxpRyFUj2FCOA4TdBuhxb
- lvAt2bh+fZcO6yPWrf1A86Vn5uKDwzzYG25DaduV9ZHetR22y3uDv96a7cDfr8ByF+Hu
- F7qg==
-X-Gm-Message-State: AOAM533aBZXVTR3tbydGiIo+icOYPqj8vW86gEAy6Kv0QZnBdivNgw/z
- arlANX4NRnh2O/ox4T+YnbTWq0iWBaUUAfy3
-X-Google-Smtp-Source: ABdhPJxnmRS5ilyYjUz/K4jpLxY2B4ZpiNXfUieqdflT7B/KF6sCgyYRXUKly4iABasoFHOrulh9VQ==
-X-Received: by 2002:a17:902:be0c:b0:13e:2b53:d3 with SMTP id
- r12-20020a170902be0c00b0013e2b5300d3mr2330972pls.86.1633589949926; 
- Wed, 06 Oct 2021 23:59:09 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references;
+ bh=/yR4tv/3roNZnetTuH4RfLmYsSUbS549FSDUiBFB+i4=;
+ b=FhDumcN+YGEL5h5ScboiDCOi9Kp+YJB2mxnEsaGyQe64FLfkjzAM4Fxm0oKZO6mN+d
+ bxh5X5CiQ5KDGvamI6Zyg2Sx1R133uzdoOdHuaELqGJM46OMHPSjlxxF6SiKt0+DNfTV
+ Pq1ZKqzGCtiz8O3/fmuRF6D2KEzuT+QRemIZ4y/mIKHESjoE9iefWFmFKzSWGniaHvpr
+ 9xFNy7E42J/6MiwV41RIGDTuc22fo0i/oHYmrhwLQEraxw/Bqtu46KPKPQOmjlQNShcH
+ ktzlHGg0+RkJSNBU4EXZ6r5XH/vDr53BYqSeyckEaqT/NJl0/+MLRxeIaOMMbdCEuMX0
+ iWyA==
+X-Gm-Message-State: AOAM530+ctBvklz/Kc2G/UAS49WaumkwjOWn89v5wzthcNEiqC75dVed
+ iO5WBxBR29fdAn3YRN+4FSzGOPpk1+jf7/0S
+X-Google-Smtp-Source: ABdhPJz90R0kzTOQiYQXmYCUOQUC5lD4AtO+XwfFU9W0t91vuv/8vLMWT16inIVN7pDnHjB6pzI8og==
+X-Received: by 2002:a17:903:2c2:b029:101:9c88:d928 with SMTP id
+ s2-20020a17090302c2b02901019c88d928mr2322125plk.62.1633589956028; 
+ Wed, 06 Oct 2021 23:59:16 -0700 (PDT)
 Received: from localhost.localdomain ([123.51.145.88])
- by smtp.googlemail.com with ESMTPSA id u12sm7137844pjr.2.2021.10.06.23.59.08
+ by smtp.googlemail.com with ESMTPSA id u12sm7137844pjr.2.2021.10.06.23.59.14
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 06 Oct 2021 23:59:09 -0700 (PDT)
+ Wed, 06 Oct 2021 23:59:15 -0700 (PDT)
 From: Zhengxun <zhengxunli.mxic@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: zhengxunli@mxic.com.tw,
 	Zhengxun <zhengxunli.mxic@gmail.com>
-Subject: [PATCH 0/4] mtd: spinand: Add continuous read mode support
-Date: Fri,  8 Oct 2021 14:57:55 +0800
-Message-Id: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
+Subject: [PATCH 1/4] mtd: spinand: Add support continuous read mode
+Date: Fri,  8 Oct 2021 14:57:56 +0800
+Message-Id: <1633676279-29708-2-git-send-email-zhengxunli.mxic@gmail.com>
 X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
+In-Reply-To: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
+References: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211006_235914_674436_C9A98A12 
-X-CRM114-Status: GOOD (  14.75  )
+X-CRM114-CacheID: sfid-20211006_235919_196125_3B8ED8C3 
+X-CRM114-Status: GOOD (  13.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,52 +88,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhpcyBzZXJpZXMgYWRkIHN1cHBvcnQgY29udGludW91cyByZWFkIG1vZGUgZm9yIFNQSSBOQU5E
-LgoKVGhlIE1hY3Jvbml4IFNQSSBOQU5EIHN1cHBvcnRzIGNvbnZlbnRpb25hbCByZWFkIG1vZGUg
-YW5kIGNvbnRpbnVvdXMKcmVhZCBtb2Rlcy4gSWYgdGhlIGNvbmZpZ3VyYXRpb24gcmVnaXN0ZXIg
-Yml0IOKAnENPTlTigJ0gPSAwLCB0aGUgZGV2aWNlCmlzIGluIGNvbnZlbnRpb25hbCByZWFkIG1v
-ZGUuIFRoZSBwYWdlIHJlYWQgb3BlcmF0aW9uIGFuZCBwYWdlIHJlYWQKY2FjaGUgUmFuZG9tLyBz
-ZXF1ZW50aWFsIG9wZXJhdGlvbiBpcyBzdXBwb3J0ZWQgaW4gdGhlIGNvbnZlbnRpb25hbApyZWFk
-IG1vZGUuIElmIHRoZSBjb25maWd1cmF0aW9uIHJlZ2lzdGVyIGJpdCDigJxDT05U4oCdID0gMSwg
-dGhlIGRldmljZQppcyBpbiBjb250aW51b3VzIHJlYWQgbW9kZSBhbmQgb25seSBjb250aW51b3Vz
-IHJlYWQgb3BlcmF0aW9uIGlzCnN1cHBvcnRlZC4gRHVyaW5nIHRoZSBjb250aW51b3VzIHJlYWQg
-bW9kZSwgdGhlIHBhZ2UgcmVhZCBjYWNoZQpyZWxhdGVkIGNvbW1hbmRzIGFyZSBub3Qgc3VwcG9y
-dGVkLiAoUGFnZSBDYWNoZSBTZXF1ZW50aWFsICgzMWgpLApQYWdlIFJlYWQgQ2FjaGUgUmFuZG9t
-ICgzMGgpIGFuZCBQYWdlIFJlYWQgQ2FjaGUgRW5kICgzRmgpKS4KClRoZSBjb250aW51b3VzIHJl
-YWQgb3BlcmF0aW9uIGluY2x1ZGluZzogZmlyc3RseSwgc3RhcnRpbmcgd2l0aCB0aGUgCnBhZ2Ug
-cmVhZCBjb21tYW5kIGFuZCB0aGUgMSBzdCBwYWdlIGRhdGEgd2lsbCBiZSByZWFkIGludG8gdGhl
-IGNhY2hlCmFmdGVyIHRoZSByZWFkIGxhdGVuY3kgdFJEX0NPTlQxLiBTZWNvbmRseSwgSXNzdWlu
-ZyB0aGUgUmVhZCBGcm9tCkNhY2hlIGNvbW1hbmRzICgwM2gvMEJoLzNCaC82QmgvQkJoL0VCaCkg
-dG8gcmVhZCBvdXQgdGhlIGRhdGEgZnJvbQpjYWNoZSBjb250aW51b3VzbHkuIFRoZSBjYWNoZSBp
-cyBkaXZpZGVkIGludG8gdHdvIGhhbHZlcywgd2hpbGUgb25lIApoYWxmIG9mIHRoZSBjYWNoZSBp
-cyBvdXRwdXR0aW5nIHRoZSBkYXRhLCB0aGUgb3RoZXIgaGFsZiB3aWxsIGJlCmxvYWRlZCBmb3Ig
-dGhlIG5ldyBkYXRhOyB0aGVyZWZvcmUsIHRoZSBob3N0IGNhbiByZWFkIG91dCB0aGUgZGF0YQpj
-b250aW51b3VzbHkgZnJvbSBwYWdlIHRvIHBhZ2UuIE11bHRpcGxlIG9mIFJlYWQgRnJvbSBDYWNo
-ZSBjb21tYW5kcwpjYW4gYmUgaXNzdWVkIGluIG9uZSBjb250aW51b3VzIHJlYWQgb3BlcmF0aW9u
-LCBlYWNoIFJlYWQgRnJvbSBDYWNoZQpjb21tYW5kIGlzIHJlcXVpcmVkIHRvIHJlYWQgbXVsdGlw
-bGUgNC1ieXRlIGRhdGEgZXhhY3RseTsgb3RoZXJ3aXNlLAp0aGUgZGF0YSBvdXRwdXQgd2lsbCBi
-ZSBvdXQgb2Ygc2VxdWVuY2UgZnJvbSBvbmUgUmVhZCBGcm9tIENhY2hlCmNvbW1hbmQgdG8gYW5v
-dGhlciBSZWFkIEZyb20gQ2FjaGUgY29tbWFuZC4gQWZ0ZXIgYWxsIHRoZSBkYXRhIGlzCnJlYWQg
-b3V0LCB0aGUgaG9zdCBzaG91bGQgaXNzdWUgRXhpdCBDb250aW51b3VzIFJlYWQgQ29tbWFuZCAo
-NjNoKQp0byB0ZXJtaW5hdGUgdGhpcyBjb250aW51b3VzIHJlYWQgb3BlcmF0aW9uLgoKVGhlIGRh
-dGEgb3V0cHV0IGZvciBlYWNoIHBhZ2Ugd2lsbCBhbHdheXMgc3RhcnQgZnJvbSBieXRlIDAgYW5k
-IGEKZnVsbCBwYWdlIGRhdGEgKDJLQikgc2hvdWxkIGJlIHJlYWQgb3V0IGZvciBlYWNoIHBhZ2Uu
-IElmIHRoZSBob3N0Cmp1c3Qgd2FudHMgdG8gcmVhZCBvdXQgcGFydGlhbCBwYWdlIGRhdGEsIEV4
-aXQgQ29udGludW91cyBSZWFkCkNvbW1hbmQgKDYzaCkgc2hvdWxkIGJlIGlzc3VlZCB0byB0ZXJt
-aW5hdGUgdGhlIGN1cnJlbnQgY29udGludW91cwpyZWFkIG9wZXJhdGlvbi4KClpoZW5neHVuICg0
-KToKICBtdGQ6IHNwaW5hbmQ6IEFkZCBzdXBwb3J0IGNvbnRpbnVvdXMgcmVhZCBtb2RlCiAgbXRk
-OiBzcGluYW5kOiBBZGQgY29udGludW91cyByZWFkIGV4aXQgY29tbWFuZAogIG10ZDogc3BpbmFu
-ZDogQWRkIHN1cHBvcnQgY29udGludW91cyByZWFkIG9wZXJhdGlvbgogIG10ZDogc3BpbmFuZDog
-bWFjcm9uaXg6IEFkZCBzdXBwb3J0IGZvciBNYWNyb25peCBNWDMxTEYyR0U0QkMgU1BJIE5BTkQK
-ICAgIGZsYXNoCgogZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jICAgICB8IDY1ICsrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9t
-YWNyb25peC5jIHwgMTEgKysrKysrKwogaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgICB8
-IDEwICsrKysrKysKIDMgZmlsZXMgY2hhbmdlZCwgNzcgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlv
-bnMoLSkKCi0tIAoyLjcuNAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+The patch supports setting the "CONT" bit of the configuration
+register and adding a continuous read mode flag for identification.
+
+Signed-off-by: Zhengxun <zhengxunli.mxic@gmail.com>
+---
+ drivers/mtd/nand/spi/core.c | 17 +++++++++++++++++
+ include/linux/mtd/spinand.h |  2 ++
+ 2 files changed, 19 insertions(+)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 2c8685f..bcdd438 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -193,6 +193,23 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
+ 			       enable ? CFG_QUAD_ENABLE : 0);
+ }
+ 
++static int spinand_continuous_read_enable(struct spinand_device *spinand)
++{
++	if (!(spinand->flags & SPINAND_HAS_CONT_READ_BIT))
++		return 0;
++
++	return spinand_upd_cfg(spinand, CFG_CONT_READ_ENABLE,
++			       CFG_CONT_READ_ENABLE);
++}
++
++static int spinand_continuous_read_disable(struct spinand_device *spinand)
++{
++	if (!(spinand->flags & SPINAND_HAS_CONT_READ_BIT))
++		return 0;
++
++	return spinand_upd_cfg(spinand, CFG_CONT_READ_ENABLE, 0);
++}
++
+ static int spinand_ecc_enable(struct spinand_device *spinand,
+ 			      bool enable)
+ {
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 6988956..04be10e 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -154,6 +154,7 @@
+ #define REG_CFG			0xb0
+ #define CFG_OTP_ENABLE		BIT(6)
+ #define CFG_ECC_ENABLE		BIT(4)
++#define CFG_CONT_READ_ENABLE	BIT(2)
+ #define CFG_QUAD_ENABLE		BIT(0)
+ 
+ /* status register */
+@@ -307,6 +308,7 @@ struct spinand_ecc_info {
+ 
+ #define SPINAND_HAS_QE_BIT		BIT(0)
+ #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
++#define SPINAND_HAS_CONT_READ_BIT	BIT(2)
+ 
+ /**
+  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+-- 
+2.7.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
