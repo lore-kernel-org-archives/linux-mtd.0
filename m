@@ -2,14 +2,14 @@ Return-Path: <SRS0=3zw0=O3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3545DC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:00:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D38DCC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:01:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3385610A5
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:00:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F3385610A5
+	by mail.kernel.org (Postfix) with ESMTPS id 8A8566101B
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Oct 2021 07:01:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8A8566101B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,65 +18,66 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yuKne3y4TpG0wr77/xed69V8nfk0LonKQNfrex18B70=; b=fLVQB8fZny09of
-	sO2MFjzADkLr7mCfNyGd0ZQS7DVLkQn92SrhrfEHKwVVee7IF3xBzNq+0r+H4AsMoaH5dDtJFjYP4
-	tcHwfxgRubWH7BNINjUxxLklmU6ol/QiwlYWf87hIQmgMDQ4bsPI5S96AzHHb0J0zW5RQ7BXAK3qm
-	KbriB4fl9UGc8sYrnvU59/23pI+SuAUppbdVp1WtIuBF/6fNbvZ1g0Kptc0/48XebDseptalSWLdv
-	5aeLIm0eCrDKllUpIn4Yxo+q5hM04P0Rg8dBSfhoz17i2Tg6x0vhP6xYje5NjC8DmfTBW1kOfh9Qc
-	bt9w4AimIys+scCKqrWw==;
+	List-Owner; bh=mVPTpFqq05BnbA7q5hdfqT7CiRlPsymnjOWoDSOD2SI=; b=bGEhIwYSirQUaR
+	PKjO8nKrIfiaI2K3849ZVCrfhMlsThUMt2a/w7U4R1JvTgT+8146/tfmjt2dB0YFV/bC2t/1PJeG5
+	5UY/DiyYXtwS83dmhppCgwaq/R1hoXGMfUgfRVv/ofnasfYqZmQIIJfuYLlVCqjRqfex5pSUIE92q
+	J13UfKmw4lAUjF2xXhCHVIyXRIUi8xlVHJnKpuwh2VK8scJDtOOfZv3YLTUoYpM5arDtyfmgg6hSu
+	rTbZ4sc/t3vn8UL/faWnjippyurdnpU6qr48Y441xjKjMEHuS011sKBcSRjOiK3ghiAwtejcdVMgU
+	b8bM/hAnMPDcV8yRFHxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYNOC-00GKu7-RS; Thu, 07 Oct 2021 07:00:24 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1mYNOZ-00GL1z-P6; Thu, 07 Oct 2021 07:00:47 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYNNC-00GKbV-Mc
- for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 06:59:24 +0000
-Received: by mail-pl1-x629.google.com with SMTP id l6so3245214plh.9
- for <linux-mtd@lists.infradead.org>; Wed, 06 Oct 2021 23:59:22 -0700 (PDT)
+ id 1mYNNF-00GKc3-5U
+ for linux-mtd@lists.infradead.org; Thu, 07 Oct 2021 06:59:26 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id on6so4073551pjb.5
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Oct 2021 23:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=YAFMQ2KZ4xVB0Wrc5fyZFtQ6EGFwRq1i0mBPkCu/hmk=;
- b=M6J2LPqVRY9irxDI+AJKVQnkvCpfnAIOnGEwHWQeuw2y0o2E9ceRSaa+r14G1qufoc
- ky8jHSBqgwQvoQqzigXgagZ6UxFbag3pnU0fQW1SSXIvvwfYRXDteiuqEUy66HzEuaLa
- LPqeK32RURz/48U7b4YvRxnd9jkQdpLTJa9qK0R8IK4Q3gie/2aSOC+9AJYDXWTING44
- 7Xr+x6BuIqaaNjoytmzSC+Xv7ymjXQheoQElMSPqGTaEhjqMkim1YCJvwDdRkwe8mPCD
- jlxErY/V6yfUdzDtGm2AQxdc/duI/FTSscCHIBQekHtodENooJfLw+JpAHbnd8gcPd8U
- SJ/g==
+ bh=4/TVR6gmOUuyYwhORDUD5veKft5xvF+3erzuqMvpL7g=;
+ b=qj57APgCNEfY322d4izcGzoa/4R8rFiSSUlhbj4GQMeTBU1ZrYJOyR0jG2fdk1rwsp
+ h9ap3qMSjsJYyLy0KPqJnTun5lLn/oBw4zYSaZq+LUZ3b6TXd7OL6LLUwoiqLsiM6AS/
+ JcPhLFEAnp7xjdGQ+VweTPxF0oZJZ8SyNw5XRMv5phh4lWTzluF6daZjNcJuNKTlfJCx
+ PKQMS2pLU1fDP9nN8G+aYrufReead3PKR0N5eVvHWCstunyElIs+ppOAJfb5xULFk//7
+ sm8hZ/PkV/sKxMVKRTBxk+rXL6/a2NICqYMlmNRVLhdHU51MvAbZr2cwU1KLenUZD7WA
+ /bsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=YAFMQ2KZ4xVB0Wrc5fyZFtQ6EGFwRq1i0mBPkCu/hmk=;
- b=YWhE39vYjFasFt44aNf8J/7Ds4ijuYb2MLHJScaj8r0qbp3d+slMcgCjE1PAyROdtq
- Kz8noxCR18H7OjCuyG2LqD42uScDbscUbzBQ/FbJm1/DO/1H6PIucsC1+tE7cGAyDsz6
- Fo3FhCfRG8DOwqFOwHQnXxWs+LTbOSnbNifT2w+XoRy2GiVNohPdgn0fXsd5TZBoJdhC
- LOs7R9rfdNZ1AElzeBYa+ZxdxY5klkkFA1E7lmmcZSe2QrfDTEe4MsuD3qTTyTz+0Jm6
- jHTw4j5frHL8DHvIyYnX6NE1Dax+0qkEjVGRDgu12oy+EE/JNVGq/P9WXuCaBgFA8g1Q
- fenQ==
-X-Gm-Message-State: AOAM531cpI5JMe8yNue8YcvfXQLN3T2vAalWAeeaW6PEVZf8lQJQSmMd
- sI4c/Kv9jjzI8vzUN5O0YZrZ0qJjxCQrBM2K
-X-Google-Smtp-Source: ABdhPJya87IZRzyEJadlSeppgtSuR5m7qPHfPsxcsiDaVJGlQhMLqbVR4zCW+EXBzdealLZf1+LKPQ==
-X-Received: by 2002:a17:903:228c:b0:13e:f389:4ca9 with SMTP id
- b12-20020a170903228c00b0013ef3894ca9mr2189946plh.80.1633589961212; 
- Wed, 06 Oct 2021 23:59:21 -0700 (PDT)
+ bh=4/TVR6gmOUuyYwhORDUD5veKft5xvF+3erzuqMvpL7g=;
+ b=sKRXTd5twxi4yKg0ocywQ+JsxIF9sg01g9pASFwqks/H6MRhEspFc/Uuz6LH5ZE79i
+ ZyM8FXRH+RQWIDeGSwlvactNuabJrTJ8f1DEPDmoJ9mTKfLc2v4y6wa6v5iFlBxsfI8M
+ YRVucXc5i9zb7m2HGqJXAJn60J8AHH71Z8dX+02fNo4U71F+5uj5SRvvwx5GNMamXXYQ
+ mpqSzEObd7ZLZNrkP9YQPNdPD81kHAW9zsSUW9xM2iwAvV5nQxU0UwuncnnuSEYhbTeG
+ EI2Viu6ZM5DMPwVV0ebxBgWJA9c7UdM3I3slbAD0GA4A1+U5W7J6zfgRAwPBwBHMNG0G
+ s6TA==
+X-Gm-Message-State: AOAM530hY9j7HYG3PrN/myUtH5VvQUsIgRq3tYUrn7s8Hu7FLGqpAs9l
+ HPY2ApjTgrcvgOZJudPpXV9AlQ3QVKPdieAQ
+X-Google-Smtp-Source: ABdhPJzmERW0ANWzmHThI8p3au6Yr76nnjljeNAx/PcMWfXo63eFppKD9T05RGBP/46J5uU9kLj1GA==
+X-Received: by 2002:a17:902:8543:b029:12d:461f:a6a8 with SMTP id
+ d3-20020a1709028543b029012d461fa6a8mr2299370plo.1.1633589963814; 
+ Wed, 06 Oct 2021 23:59:23 -0700 (PDT)
 Received: from localhost.localdomain ([123.51.145.88])
- by smtp.googlemail.com with ESMTPSA id u12sm7137844pjr.2.2021.10.06.23.59.19
+ by smtp.googlemail.com with ESMTPSA id u12sm7137844pjr.2.2021.10.06.23.59.22
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 06 Oct 2021 23:59:20 -0700 (PDT)
+ Wed, 06 Oct 2021 23:59:23 -0700 (PDT)
 From: Zhengxun <zhengxunli.mxic@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	miquel.raynal@bootlin.com
 Cc: zhengxunli@mxic.com.tw,
 	Zhengxun <zhengxunli.mxic@gmail.com>
-Subject: [PATCH 3/4] mtd: spinand: Add support continuous read operation
-Date: Fri,  8 Oct 2021 14:57:58 +0800
-Message-Id: <1633676279-29708-4-git-send-email-zhengxunli.mxic@gmail.com>
+Subject: [PATCH 4/4] mtd: spinand: macronix: Add support for Macronix
+ MX31LF2GE4BC SPI NAND flash
+Date: Fri,  8 Oct 2021 14:57:59 +0800
+Message-Id: <1633676279-29708-5-git-send-email-zhengxunli.mxic@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
 References: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211006_235922_771849_C63EAD33 
-X-CRM114-Status: GOOD (  19.63  )
+X-CRM114-CacheID: sfid-20211006_235925_239534_108361CD 
+X-CRM114-Status: GOOD (  11.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,115 +95,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The patch adds a continuous read start flag to support continuous
-read operations. The continuous read operation only issues a page
-read command (13h), issues multiple read commands from the cache
-(03h/0Bh/3Bh/6Bh/BBh/EBh) to read continuous address data, and
-finally issues an exit continuous read command (63h) to terminate
-this continuous read operation.
+The Macronix MX31LF2GE4BC are 3V, 2Gbit serial SLC NAND flash device.
 
-Since the continuous read mode can only read the entire page of data
-(2KB) and cannot read the oob data, the dynamic change mode is added
-to enable continuous read mode and disable continuous read mode in
-spinand_mtd_read to avoid writing and erasing operation is abnormal.
+MX"31", means SPI NAND
+MX31"LF", LF means 3V
+MX31LF"2G", 2G means 2Gbits
+MX31LF2G"E4", E4 means internal ECC and Quad I/O(x4)
+
+Validated via normal(default) and QUAD mode by read, erase, read back,
+on Xilinx Zynq PicoZed FPGA board which included Macronix
+SPI Host(drivers/spi/spi-mxic.c).
 
 Signed-off-by: Zhengxun <zhengxunli.mxic@gmail.com>
 ---
- drivers/mtd/nand/spi/core.c | 38 +++++++++++++++++++++++++++++---------
- include/linux/mtd/spinand.h |  2 ++
- 2 files changed, 31 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/spi/macronix.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 0d9632f..0369453 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -195,6 +195,8 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
- 
- static int spinand_continuous_read_enable(struct spinand_device *spinand)
- {
-+	spinand->cont_read_start = false;
+diff --git a/drivers/mtd/nand/spi/macronix.c b/drivers/mtd/nand/spi/macronix.c
+index 3f31f13..43cfd85 100644
+--- a/drivers/mtd/nand/spi/macronix.c
++++ b/drivers/mtd/nand/spi/macronix.c
+@@ -176,6 +176,17 @@ static const struct spinand_info macronix_spinand_table[] = {
+ 		     SPINAND_HAS_QE_BIT,
+ 		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
+ 				     mx35lf1ge4ab_ecc_get_status)),
++	SPINAND_INFO("MX31LF2GE4BC",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x2e),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT | SPINAND_HAS_CONT_READ_BIT,
++		     SPINAND_ECCINFO(&mx35lfxge4ab_ooblayout,
++				     mx35lf1ge4ab_ecc_get_status)),
 +
- 	if (!(spinand->flags & SPINAND_HAS_CONT_READ_BIT))
- 		return 0;
- 
-@@ -598,16 +600,22 @@ static int spinand_read_page(struct spinand_device *spinand,
- 	if (ret)
- 		return ret;
- 
--	ret = spinand_load_page_op(spinand, req);
--	if (ret)
--		return ret;
-+	if (!spinand->cont_read_start) {
- 
--	ret = spinand_wait(spinand,
--			   SPINAND_READ_INITIAL_DELAY_US,
--			   SPINAND_READ_POLL_DELAY_US,
--			   &status);
--	if (ret < 0)
--		return ret;
-+		ret = spinand_load_page_op(spinand, req);
-+		if (ret)
-+			return ret;
-+
-+		ret = spinand_wait(spinand,
-+				   SPINAND_READ_INITIAL_DELAY_US,
-+				   SPINAND_READ_POLL_DELAY_US,
-+				   &status);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (spinand->flags & SPINAND_HAS_CONT_READ_BIT)
-+			spinand->cont_read_start = true;
-+	}
- 
- 	spinand_ondie_ecc_save_status(nand, status);
- 
-@@ -667,6 +675,10 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
- 
- 	mutex_lock(&spinand->lock);
- 
-+	ret = spinand_continuous_read_enable(spinand);
-+	if (ret)
-+		return ret;
-+
- 	nanddev_io_for_each_page(nand, NAND_PAGE_READ, from, ops, &iter) {
- 		if (disable_ecc)
- 			iter.req.mode = MTD_OPS_RAW;
-@@ -689,6 +701,14 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
- 		ops->oobretlen += iter.req.ooblen;
- 	}
- 
-+	ret = spinand_continuous_read_exit(spinand);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_continuous_read_disable(spinand);
-+	if (ret)
-+		return ret;
-+
- 	mutex_unlock(&spinand->lock);
- 
- 	if (ecc_failed && !ret)
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index e044aba..c2a41a3 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -422,6 +422,7 @@ struct spinand_dirmap {
-  *		because the spi-mem interface explicitly requests that buffers
-  *		passed in spi_mem_op be DMA-able, so we can't based the bufs on
-  *		the stack
-+ * @cont_read_start: record the continuous read status
-  * @manufacturer: SPI NAND manufacturer information
-  * @priv: manufacturer private data
-  */
-@@ -450,6 +451,7 @@ struct spinand_device {
- 	u8 *databuf;
- 	u8 *oobbuf;
- 	u8 *scratchbuf;
-+	bool cont_read_start;
- 	const struct spinand_manufacturer *manufacturer;
- 	void *priv;
- };
+ 	SPINAND_INFO("MX31UF1GE4BC",
+ 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9e),
+ 		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
 -- 
 2.7.4
 
