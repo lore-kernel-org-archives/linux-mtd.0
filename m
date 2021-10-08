@@ -2,56 +2,66 @@ Return-Path: <SRS0=jKlu=O4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB46CC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 16:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26871C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 17:32:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 67E3A60ED7
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 16:53:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 67E3A60ED7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id E317A60F93
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 17:32:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E317A60F93
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=JY0OdbzWdjUeFPf1lY8QY8P3KV9b7P/SZQEPwV7ycEE=; b=aiR6ER//lb5Ujx
-	grbWcgC+BouYrm3hKQwamZK+veBXLtYBBDVssP1wSVsaU7UeLdhxbADYLTHElc2faGCtcq+nMijwP
-	brCzMfjOxBt6Zm4MTC/6yANqecc0tnCx+5qDug6kHMtHxpn/TTfPDusLAsD30XnvnThYZ7tc38efF
-	w4Ws/tR3SofoegKG8YjRWQBnVJ8ZyOYFdjHeIozmrR0W0FOJ+poZF2yL1WSdUcHp7GylRwInux3jo
-	4SF6QQ4fBohMbyQChQJ5oSOCxPH+PGgCrLSRBQZBKbuQVBdVbgfXBf2KthqvqcUHhPuhd7vtXppxy
-	xHZUtGoCu/R9fklhZXLg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MCTvhlKX4GvnKCQoDOLdkusQb7aNu3bugIAKPQ/oemo=; b=Q5l/9i5s5tAuiZ
+	aFhtUfXCBO8hBPyTjJqSYfNoGi6BSuq9gCTd5X8yqoqHkLKKGfRNNB+5C4KGpXC1G11PDmmmIc6A0
+	yBmIZaHRMxoTeVaEFgrXBksIP7HWMJ5Qp4uzuXiyYGnBnvt/EPzCNnZXFDs5TOAkZpqUqd3fYn7/w
+	uW2MSh+fpoVbDe86dN4mm90lbkZjCzF5BLN+YRclM89fun4/vrI8tDTvZZDZMJoqK4fjPJRHtWCFE
+	Z1zTBXrWrNBH3QgsghBG/SV1TDbQ/4u6QI2YizMdYqt1MasZhyxY3qLhN2h4yaKkl6k6esr4O6jXO
+	51o38KmGBwbz5dBbEQZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYt7J-003bv1-RP; Fri, 08 Oct 2021 16:53:05 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1mYtiN-003iLr-6P; Fri, 08 Oct 2021 17:31:23 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYsrV-003XSo-Vu
- for linux-mtd@lists.infradead.org; Fri, 08 Oct 2021 16:36:47 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 56175FF80D;
- Fri,  8 Oct 2021 16:36:41 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>,
- Michal Simek <monstr@monstr.eu>,
- Amit Kumar Mahapatra <akumarma@xilinx.com>,
+ id 1mYtiJ-003iKB-0L
+ for linux-mtd@lists.infradead.org; Fri, 08 Oct 2021 17:31:21 +0000
+Received: from skn-laptop (_gateway [172.25.0.1])
+ by first.geanix.com (Postfix) with ESMTPSA id 1487FC3B66;
+ Fri,  8 Oct 2021 17:31:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1633714276; bh=JWfS19275allVPCWaX4T20Mtdi7r0TA98mw4cxYeGko=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=PWcMunuVSeH7rAPyXy1fFh23IUGE+SJoEHu/9fWi1I/uAyrgs8vjzkiOgF78NZe7Z
+ 7ygVRXI/3qy6bS0gfft4O2h0u0pA4VBc1XtKYww7bwp7taAkUxuFwYNBt+c9ekozkd
+ NKhpy4lMcxI2NMH3+dh9/wiVrgSapHF1xX1VlD3jocqLlRSBcPIwddW5pwB7tnMEeq
+ fUG9VvVA2lNx+zQsP7YOUnurhRR9EttRhmYPGoVi0IyFyKZIcRMZSyDmCgv/R3KTtb
+ 4EAM0zWdj8WVlGg0faGaJpWhADELcMr95JtBGKT8vIRileOBSlzRS8DLHy0EKlXaEb
+ +SH4uk2HB+qrw==
+Date: Fri, 8 Oct 2021 19:31:14 +0200
+From: Sean Nyekjaer <sean@geanix.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>
-Cc: <linux-mtd@lists.infradead.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2] mtd: rawnand: arasan: Prevent an unsupported configuration
-Date: Fri,  8 Oct 2021 18:36:40 +0200
-Message-Id: <20211008163640.1753821-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+ Boris Brezillon <bbrezillon@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mtd: core: protect access to mtd devices while
+ in suspend
+Message-ID: <20211008173114.fmwbs3j3ufjvpcqd@skn-laptop>
+References: <20211008141524.20ca8219@collabora.com>
+ <20211008143825.3717116-1-sean@geanix.com>
+ <20211008173043.6263ba80@collabora.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211008173043.6263ba80@collabora.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211008_093646_225028_DF99A377 
-X-CRM114-Status: GOOD (  13.42  )
+X-CRM114-CacheID: sfid-20211008_103119_388924_9FD06E36 
+X-CRM114-Status: GOOD (  40.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,57 +78,136 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Under the following conditions:
-* after rounding up by 4 the number of bytes to transfer (this is
-  related to the controller's internal constraints),
-* if this (rounded) amount of data is situated beyond the end of the
-  device,
-* and only in NV-DDR mode,
-the Arasan NAND controller timeouts.
+On Fri, Oct 08, 2021 at 05:30:43PM +0200, Boris Brezillon wrote:
+> Hi Sean,
+> 
+> Can you please submit that as a separate thread, ideally with an
+> incremented version number, a changelog and a reference to all your
+> previous attempts.
 
-This currently can happen in a particular helper used when picking
-software ECC algorithms. Let's prevent this situation by refusing to use
-the NV-DDR interface with software engines.
+Yes, I'll do that with the next one.
 
-Fixes: 4edde6031458 ("mtd: rawnand: arasan: Support NV-DDR interface")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
+> 
+> On Fri,  8 Oct 2021 16:38:24 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
+> > This will prevent reading/writing/erasing to a suspended mtd device.
+> > It will force mtd_write()/mtd_read()/mtd_erase() to wait for
+> > mtd_resume() to unlock access to mtd devices.
+> 
+> I think this has to be done for all the hooks except ->_reboot(),
+> ->_get_device() and ->_put_device().
+> 
+> > 
+> > Exec_op[0] speed things up, so we see this race when rawnand devices going
+> 
+> Mention the commit directly:
+> 
+> Commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op") speed
+> things up, so we see this race when rawnand devices going ...
+> 
+> > into suspend. But it's actually "mtd: rawnand: Simplify the locking" that
+> 
+> But it's actually commit 013e6292aaf5 ("mtd: rawnand: Simplify the
+> locking") that ...
+> 
+> > allows it to return errors rather than locking, before that commit it would
+> > have waited for the rawnand device to resume.
+> > 
+> > Tested on a iMX6ULL.
+> > 
+> > [0]:
+> > ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+> > 
+> > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> 
+> You flagged yourself as the author even though you didn't really write
+> that code. I guess I'm fine with that, but I'd appreciate a
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> 
+> here, at least.
+> 
 
-Changes in v2:
-As v1 was too invasive Boris suggested to adopt a much simpler approach:
-let's just avoid the situation. That's what I am doing here.
+Of course, of course I forgot it... Still an RFC after all :)
 
- drivers/mtd/nand/raw/arasan-nand-controller.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> > ---
+> > 
+> > Hope I got it all :)
+> > 
+> >  drivers/mtd/mtdcore.c   | 57 ++++++++++++++++++++++++++++++++++++++++-
+> >  include/linux/mtd/mtd.h | 36 ++++++++++++++++++--------
+> >  2 files changed, 81 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > index c8fd7f758938..3c93202e6cbb 100644
+> > --- a/drivers/mtd/mtdcore.c
+> > +++ b/drivers/mtd/mtdcore.c
+> > @@ -36,6 +36,44 @@
+> >  
+> >  struct backing_dev_info *mtd_bdi;
+> >  
+> > +static void mtd_start_access(struct mtd_info *mtd)
+> > +{
+> > +	struct mtd_info *master = mtd_get_master(mtd);
+> > +
+> > +	/*
+> > +	 * Don't take the suspend_lock on devices that don't
+> > +	 * implement the suspend hook. Otherwise, lockdep will
+> > +	 * complain about nested locks when trying to suspend MTD
+> > +	 * partitions or MTD devices created by gluebi which are
+> > +	 * backed by real devices.
+> > +	 */
+> > +	if (!master->_suspend)
+> > +		return;
+> > +
+> 
+> You need to remove the ->_suspend()/->_resume() implementation in
+> mtd_concat.c, otherwise you'll hit the case described in the comment.
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 9cbcc698c64d..53bd10738418 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -973,6 +973,21 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
- 		nvddr = nand_get_nvddr_timings(conf);
- 		if (IS_ERR(nvddr))
- 			return PTR_ERR(nvddr);
-+
-+		/*
-+		 * The controller only supports data payload requests which are
-+		 * a multiple of 4. In practice, most data accesses are 4-byte
-+		 * aligned and this is not an issue. However, rounding up will
-+		 * simply be refused by the controller if we reached the end of
-+		 * the device *and* we are using the NV-DDR interface(!). In
-+		 * this situation, unaligned data requests ending at the device
-+		 * boundary will confuse the controller and cannot be performed.
-+		 *
-+		 * This is something that happens in nand_read_subpage() when
-+		 * selecting software ECC support and must be avoided.
-+		 */
-+		if (chip->ecc.engine_type == NAND_ECC_ENGINE_TYPE_SOFT)
-+			return -ENOTSUPP;
- 	} else {
- 		sdr = nand_get_sdr_timings(conf);
- 		if (IS_ERR(sdr))
--- 
-2.27.0
+Do you mean to remove concat_suspend() and concat_resume() together
+with the references to them?
+
+> 
+> BTW, did you test this series with lockdep enabled to make sure we
+> don't introduce a deadlock?
+> 
+
+Good you mentioned it... I thought the kernel had LOCKDEP enabled, but I
+guess it at some point got removed.
+
+It reveals that mtd_read_oob() -> mtd_start_access() is using the suspend_lock
+rw_semaphore before it's initialized...
+But it's not complaining when going suspend and resuming, will continue
+to test with LOCKDEP enabled.
+
+/Sean
+
+> > +	/*
+> > +	 * Wait until the device is resumed. Should we have a
+> > +	 * non-blocking mode here?
+> > +	 */
+> > +	while (1) {
+> > +		down_read(&master->master.suspend_lock);
+> > +		if (!master->master.suspended)
+> > +			return;
+> > +
+> > +		up_read(&master->master.suspend_lock);
+> > +		wait_event(master->master.resume_wq, master->master.suspended == 0);
+> > +	}
+> > +}
+> > +
+> > +static void mtd_end_access(struct mtd_info *mtd)
+> > +{
+> > +	struct mtd_info *master = mtd_get_master(mtd);
+> > +
+> > +	if (!master->_suspend)
+> > +		return;
+> > +
+> > +	up_read(&master->master.suspend_lock);
+> > +}
+> > +
 
 
 ______________________________________________________
