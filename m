@@ -2,97 +2,69 @@ Return-Path: <SRS0=jKlu=O4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5018FC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 12:09:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97C74C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 12:16:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B1DA060F92
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 12:09:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B1DA060F92
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+	by mail.kernel.org (Postfix) with ESMTPS id 5E18A60F5C
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Oct 2021 12:16:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E18A60F5C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I5qHqK1rphr8hegcyT2dtuGhaKZt/kjNvkVsQHtCAMk=; b=053aIrsltV/i2f
-	OSnkJ17Q4doMh+9q0egwJF2y/q6J7qEXR1SCcex+CorTfQPGb1G3Cc5cEIb0JxDUz81DlyfGU3qrQ
-	GNdruB/lzSj9leweevv8XqZ5mM/kv4D5OsRr/j4NbndZlLFAXHJdYU/4VLwkd1VVCxN+1ZIcd7EAY
-	sli5Ff7zZ5waLDOFXT3osjb1HlMJJeeVREt7b6eXdcO8G/8wkFA86PnWXtwCQP8msATDJV0hO5+kq
-	J7ecKqr9Ku6du/6WBSC6efNbhsnJiBoPmaknSgyOyu9TJvQN3mOFjygnwoa1AnQdWy7rHZ6UsOWS6
-	B9QNtQc20yeq04zC7DTQ==;
+	List-Owner; bh=vxdsA5jB4axflo/3RPwbI8MzrjAfO9V6NXm9uDJ8q3A=; b=0KxfKGONq5mFw5
+	tBBVjYpxGlDuipzSBq+zdjIIWmF8HrBot64GQ64cATRKFsIArvtT/aZKRFG0FfoOvZmWG49aLDiJL
+	o1GTWgaf7BsudoWzW1YL8iUvWFN722vv+XBNjt1BYxj1BmboICDVQqEq3LrGPBMX6f61h5LdnBOYN
+	n1xtKTGYkqztp/o1wQVOvnF3i3rnJVVCxe9o1vwFyXwHsscYDH8RsMvjBquDdb/KN3nmdIMVWekzS
+	v1Zy73Yq4Mi44fMy8aok7//8mgVsfBXN/yQSd0mLdfM6PJCrm73G2TCZWs4RAad94cwyYRdigDxB7
+	HmFl9jMBKz56t+ePvD1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mYofd-002ePy-4j; Fri, 08 Oct 2021 12:08:13 +0000
-Received: from mickerik.phytec.de ([195.145.39.210])
+	id 1mYomj-002fUo-N8; Fri, 08 Oct 2021 12:15:33 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mYofZ-002ePb-Bb
- for linux-mtd@lists.infradead.org; Fri, 08 Oct 2021 12:08:11 +0000
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
- q=dns/txt; i=@phytec.de; t=1633694881; x=1636286881;
- h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=1rsLIXl7Wbj26wZC4BpAZnncVwWc34nE1qBMxdzoVN8=;
- b=o7r5vrzVUBzmtBafAx/U+PSL3rWFfGQ83SGvlGv64gSZ+jpC9bHFQGckVMwsEAKr
- qlZJ35d+7TvUSKHb1mVOPpAK87M6ZxfHwqaVdK2OK6ay4T8v4ZmSwGXye3GW8mNm
- W0kNHTFG0uDA/jQGBYNZG9nJ3XoKe1FuoRyWfvtB/Mk=;
-X-AuditID: c39127d2-c275470000001d24-9e-616034a1c839
-Received: from florix.phytec.de (florix.phytec.de [172.16.0.118])
- (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (Client did not present a certificate)
- by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 82.49.07460.1A430616;
- Fri,  8 Oct 2021 14:08:01 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Fri, 8 Oct
- 2021 14:08:01 +0200
-Received: from Berlix.phytec.de ([fe80::6d58:38d4:5df2:e4ad]) by
- berlix.phytec.de ([fe80::6d58:38d4:5df2:e4ad%3]) with mapi id 15.01.2308.014; 
- Fri, 8 Oct 2021 14:08:01 +0200
-From: =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To: "ceggers@arri.de" <ceggers@arri.de>
-CC: "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>, "han.xu@nxp.com"
- <han.xu@nxp.com>, "michael@amarulasolutions.com"
- <michael@amarulasolutions.com>, Christian Hemp <C.Hemp@phytec.de>,
- "gerg@kernel.org" <gerg@kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: GPMI iMX6ull timeout on DMA
-Thread-Topic: GPMI iMX6ull timeout on DMA
-Thread-Index: AQHXuORDG2iX8NfYYEyb/LtFwX8hRavCPp0AgACYioCAAAkTAIAF4dYAgAAk5gA=
-Date: Fri, 8 Oct 2021 12:08:01 +0000
-Message-ID: <b6cc888f8211790ddee6683204f3b8e31a9facd4.camel@phytec.de>
-References: <89ae32a0-9b19-4735-90eb-4ffa22aad704@kernel.org>
- <20211004173351.36a66ccb@xps13> <20211004160620.3guajv5vvtfjrl7c@umbrella>
- <2091909.Mh6RI2rZIc@n95hx1g2>
-In-Reply-To: <2091909.Mh6RI2rZIc@n95hx1g2>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-ID: <E0C483733464BE49BC5CF3841675F586@phytec.de>
+ id 1mYomg-002fTs-1N
+ for linux-mtd@lists.infradead.org; Fri, 08 Oct 2021 12:15:32 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 219831F458C3;
+ Fri,  8 Oct 2021 13:15:28 +0100 (BST)
+Date: Fri, 8 Oct 2021 14:15:24 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211008141524.20ca8219@collabora.com>
+In-Reply-To: <20211008115413.cbkdxv3mpmmkyvjx@skn-laptop>
+References: <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+ <20211005102300.5da6d480@collabora.com>
+ <20211005084938.jcbw24umhehoiirs@skn-laptop>
+ <20211005105836.6c300f25@collabora.com>
+ <20211007114351.3nafhtpefezxhanc@skn-laptop>
+ <20211007141858.314533f2@collabora.com>
+ <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
+ <20211007151426.54db0764@collabora.com>
+ <20211008100425.uudzlda2n5ojqjzc@skn-laptop>
+ <20211008132038.77231e2a@collabora.com>
+ <20211008115413.cbkdxv3mpmmkyvjx@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRmVeSWpSXmKPExsWyRoChTHehSUKiwY+XihaNvdcZLXa82sJo
- sfBHA7PF7qZl7BanGltZLA6372O1+Lt9E4sDu8faj/dZPY6t2czqMW9NtcemVZ1sHpuX1Hts
- fLeDyaP/r0EAexSXTUpqTmZZapG+XQJXxoWdG1gLHmlU7O+UbGC8o97FyMkhIWAicWnKbHYQ
- W0hgOZNEy7ryLkYuIPsho8T05dtZIRIbGSWau8CK2ARcJD63fWMDsUUE1CUuTPzMDNLALPCY
- SWLinHNMIAlhAQ2JB++PMkMUaUpc3r+cCcL2kzi9czXYIBYBFYkTi86A1fAKuEks+XaOGWLz
- GkaJY5+mgCU4BbQkpr+ZzAJiMwrISnQ2vAMbxCwgLrHp2XdWiBcEJJbsOc8MYYtKvHz8Dyqu
- INHW0wlUzwFUrymxfpc+RKuFxJy2ecwQtqLElO6H7BA3CEqcnPmEZQKj+CwkG2YhdM9C0j0L
- SfcsJN0LGFlXMQrlZiZnpxZlZusVZFSWpCbrpaRuYgRG8eGJ6pd2MPbN8TjEyMTBeIhRgoNZ
- SYQ33z42UYg3JbGyKrUoP76oNCe1+BCjNAeLkjjv/R6mRCGB9MSS1OzU1ILUIpgsEwenVAOj
- 7LuOlwXJO48umjWxNvW2Ld+5SD7elI3Bd9nOze76N8sm7+eL81vZRadmaMV8+3knTv9Fzj3Z
- C4vfmQi3zZ9jd3VKNWvjwmeSZ78H126N1FRaomxvrfd61/qizMaAPyvvx7zNyq8q/nizdtaP
- WRP/1m/TyvuVWxrIKVjcd+7W5E+/2ie+DOJ7pcRSnJFoqMVcVJwIAPh4npbQAgAA
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211008_050809_740717_D63477F5 
-X-CRM114-Status: GOOD (  30.73  )
+X-CRM114-CacheID: sfid-20211008_051530_401676_4AAECC1A 
+X-CRM114-Status: GOOD (  60.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,78 +76,262 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0aWFuLA0KDQpPbiBGcmksIDIwMjEtMTAtMDggYXQgMTE6NTUgKzAyMDAsIENocmlz
-dGlhbiBFZ2dlcnMgd3JvdGU6DQo+ICsgc2V0IFBIWVRFQyBkZXZlbG9wZXJzIG9uIChCKUNDDQo+
-IA0KPiBPbiBNb25kYXksIDQgT2N0b2JlciAyMDIxLCAxODowNjoyMCBDRVNULCBIYW4gWHUgd3Jv
-dGU6DQo+ID4gQ291bGQgeW91IHBsZWFzZSB0cnkgdG8gYWRkIGNsb2NrIGRpcy9lbmFibGUgd2hl
-biBzZXR0aW5nIGNsb2NrIHJhdGUsIGluDQo+ID4gY2FzZQ0KPiA+IGNsb2NrIGdsaXRjaGVzLg0K
-PiA+IA0KPiA+IGNsa19kaXNhYmxlX3VucHJlcGFyZShyLT5jbG9ja1swXSk7DQo+ID4gY2xrX3Nl
-dF9yYXRlKHItPmNsb2NrWzBdLCBody0+Y2xrX3JhdGUpOw0KPiA+IGNsa19wcmVwYXJlX2VuYWJs
-ZShyLT5jbG9ja1swXSk7DQo+ID4gDQo+IA0KPiBXaXRoIHRoaXMgY2hhbmdlLCB3ZSBtYWRlIG92
-ZXIgMjAwMCBzdWNjZXNzZnVsIHJlYm9vdHMgd2l0aG91dCBhbnkgR1BNSSBETUENCj4gdGltZW91
-dCBwcm9ibGVtcyENCj4gDQo+IEZyb20gUEhZVEVDIChvdXIgQlNQIHN1cHBsaWVyKSwgSSBnb3Qg
-c29tZSBwb3NzaWJsZSBiYWNrZ3JvdW5kIGZvciB0aGlzDQo+IHByb2JsZW0uIEZvciBvbGRlciBy
-ZXZpc2lvbnMgb2YgSU1YNkRRIHRoZXJlIHdhcyBhbiBlcnJhdGEgKEVSUjAwNzExNywgWzFdKQ0K
-PiBpbiB0aGUgUk9NIGJvb3Rsb2FkZXIgd2hpY2ggdHJpZ2dlcnMgYSBzaW1pbGFyIC8gdGhlIHNh
-bWUgYmVoYXZpb3I6DQo+IA0KPiA+IEZvciByYXcgTkFORCBib290LCBST00gc3dpdGNoZXMgdGhl
-IHNvdXJjZSBvZiBlbmZjX2Nsa19yb290IGZyb20gUExMMl9QRkQyDQo+ID4gdG8gUExMMy4gVGhl
-IHJvb3QgY2xvY2sgaXMgcmVxdWlyZWQgdG8gYmUgZ2F0ZWQgYmVmb3JlIHN3aXRjaGluZyB0aGUN
-Cj4gPiBzb3VyY2UNCj4gPiBjbG9jay4gSWYgdGhlIHJvb3QgY2xvY2sgaXMgbm90IGdhdGVkLCBj
-bG9jayBnbGl0Y2hlcyBtaWdodCBiZSBwYXNzZWQgdG8NCj4gPiB0aGUgZGl2aWRlciB0aGF0IGZv
-bGxvd3MgdGhlIGNsb2NrIG11eCwgYW5kIHRoZSBkaXZpZGVyIG1pZ2h0IGJlaGF2ZQ0KPiA+IHVu
-cHJlZGljdGFibHkuDQo+ID4gLi4uDQo+ID4gVGhpcyBwcm9ibGVtIGNhbiBhbHNvIG9jY3VyIGVs
-c2V3aGVyZSBpbiBhcHBsaWNhdGlvbiBjb2RlIGlmIHRoZSByb290DQo+ID4gY2xvY2sNCj4gPiBp
-cyBub3QgcHJvcGVybHkgZ2F0ZWQgd2hlbiB0aGUgY2xvY2sgY29uZmlndXJhdGlvbiBpcyBjaGFu
-Z2VkLg0KPiANCj4gSW4gbXkgY2FzZSAoTGludXggYm9vdCBvbiBpLk1YNlVMTCksIEkgcmVjb2du
-aXplZCB0aGF0IG9uIHRoZSAzcmQgY2FsbCBvZg0KPiBncG1pX25mY19hcHBseV90aW1pbmdzKCks
-IHRoZSByYXRlIG9mIHItPmNsb2NrWzBdIGlzIGNoYW5nZWQgDQo+IA0KPiAtIGZyb206IDIyIE1I
-eiAoQ1MyQ0RSOjpFTkZDX0NMS19QUkVEPTYgYW5kIENTMkNEUjo6RU5GQ19DTEtfUE9ERj0zKQ0K
-PiAtIHRvOiAgMTAwIE1IeiAoQ1MyQ0RSOjpFTkZDX0NMS19QUkVEPTQgYW5kIENTMkNEUjo6RU5G
-Q19DTEtfUE9ERj0xKQ0KPiANCj4gVGhlIHByb3Bvc2FsIGZyb20gZnJvbSBIYW4gWHUNCj4gPiBj
-bGtfZGlzYWJsZV91bnByZXBhcmUoci0+Y2xvY2tbMF0pOw0KPiA+IGNsa19zZXRfcmF0ZShyLT5j
-bG9ja1swXSwgaHctPmNsa19yYXRlKTsNCj4gPiBjbGtfcHJlcGFyZV9lbmFibGUoci0+Y2xvY2tb
-MF0pOw0KPiBkaXNhYmxlcyBvbmx5IENDR1I0OjpDRzE0IFtSQVdOQU5EX1VfR1BNSV9CQ0hfSU5Q
-VVRfR1BNSV9JT19DTEtfRU5BQkxFXQ0KPiBkdXJpbmcNCj4gdGhlIHJhdGUgY2hhbmdlLiBXaGls
-ZSB0aGlzIHdvcmtzIHZlcnkgZmluZSBvbiBteSBzeXN0ZW0sIHRoaXMgcHJvYmFibHkNCj4gZG9l
-c24ndA0KPiBmdWxmaWxsIHRoZSByZXF1aXJlbWVudHMgaW4gdGhlIGVycmF0YSBkZXNjcmlwdGlv
-bjoNCj4gDQo+ID4gRm9yIG90aGVyIG9jY3VycmVuY2VzIGluIGFwcGxpY2F0aW9uIGNvZGUsIHRo
-ZSBmb2xsb3dpbmcgcHJvY2VkdXJlIHNob3VsZA0KPiA+IGJlDQo+ID4gZm9sbG93ZWQgdG8gY2hh
-bmdlIHRoZSBjbG9jayBjb25maWd1cmF0aW9uIGZvciB0aGUgZW5mY19jbGtfcm9vdDoNCj4gPiAx
-KSBHYXRlIChkaXNhYmxlKSB0aGUgR1BNSS9CQ0ggY2xvY2tzIGluIHJlZ2lzdGVyIENDTV9DQ0dS
-NC4NCj4gPiAyKSBHYXRlIChkaXNhYmxlKSB0aGUgZW5mY19jbGtfcm9vdCBiZWZvcmUgY2hhbmdp
-bmcgdGhlIGVuZmNfY2xrX3Jvb3QNCj4gPiBzb3VyY2UNCj4gPiAgICBvciBkaXZpZGVycyBieSBj
-bGVhcmluZyBDQ01fQ0NHUjJbQ0c3XSB0byAy4oCZYjAwLiBUaGlzIGRpc2FibGVzIHRoZQ0KPiA+
-ICAgIGlvbXV4X2lwdF9jbGtfaW9fY2xrLg0KPiA+IDMpIENvbmZpZ3VyZSBDQ01fQ1MyQ0RSIGZv
-ciB0aGUgbmV3IGNsb2NrIHNvdXJjZSBjb25maWd1cmF0aW9uLg0KPiA+IDQpIEVuYWJsZSBlbmZj
-X2Nsa19yb290IGJ5IHNldHRpbmcgQ0NNX0NDR1IyW0NHN10gdG8gMuKAmWIxMS4gVGhpcyBlbmFi
-bGVzDQo+ID4gdGhlDQo+ID4gICAgaW9tdXhfaXB0X2Nsa19pb19jbGsuDQo+ID4gNSkgRW5hYmxl
-IHRoZSBHUE1JL0JDSCBjbG9ja3MgaW4gcmVnaXN0ZXIgQ0NNX0NDR1I0DQo+IA0KPiBJIGdvdCBh
-bm90aGVyIHNvbHV0aW9uIGZyb20gUEhZVEVDIChbMl0sIG5vdCBsZW5ndGh5IHRlc3RlZCB5ZXQp
-LCB3aGljaA0KPiBkaXNhYmxlcyBhbGwgR1BNSS9CQ0ggY2xvY2tzIG9uIENDR1I0ICh2ZXJpZmll
-ZCB3aXRoIGEgSlRBRyBkZWJ1Z2dlcik6DQo+IC0gQ0NHUjQ6OkNHMTUgIFtSQVdOQU5EX1VfR1BN
-SV9JTlBVVF9BUEJfQ0xLX0VOQUJMRV0NCj4gLSBDQ0dSNDo6Q0cxNCAgW1JBV05BTkRfVV9HUE1J
-X0JDSF9JTlBVVF9HUE1JX0lPX0NMS19FTkFCTEVdDQo+IC0gQ0NHUjQ6OkNHMTMgIFtSQVdOQU5E
-X1VfR1BNSV9CQ0hfSU5QVVRfQkNIX0NMS19FTkFCTEVdDQo+IC0gQ0NHUjQ6OkNHMTIgIFtSQVdO
-QU5EX1VfQkNIX0lOUFVUX0FQQl9DTEtfRU5BQkxFXQ0KPiAtIENDR1I0OjpDRzYgICBbUEwzMDFf
-TVg2UVBFUjFfQkNIQ0xLX0VOQUJMRV0NCj4gDQo+IENDTV9DQ0dSMltDRzddIGlzIHVzZWQgZm9y
-IElPTVVYX0lQVF9DTEtfSU9fRU5BQkxFIG9uIGkuTVg2VUxMLCBzbyBzdGVwIDIuDQo+IHNlZW1z
-IG5vdCB0byBhcHBseSBoZXJlLiBBY3R1YWxseSBJIGRvbid0IGtub3cgaG93IHRvIGdhdGUgRU5G
-Q19DTEtfUk9PVC4NCj4gDQo+IEkgd2lsbCBjeWNsaWMgdGVzdCB0aGUgc29sdXRpb24gZnJvbSBQ
-SFlURUMgb3ZlciB0aGUgd2Vla2VuZC4NCj4gDQo+IEBIYW4gWHU6IFNob3VsZCBJIHByZWZlciB0
-aGUgc29sdXRpb24gZnJvbSBQSFlURUM/DQo+IEBTdGVmYW4gUmllZG11ZWxsZXI6IEFyZSB5b3Ug
-d2lsbGluZyB0byBjb21taXQgdGhpcyB1cHN0cmVhbT8NCg0KWWVzIHN1cmUsIEkgY2FuIHByZXBh
-cmUgYSBwYXRjaCBiZWdpbm5pbmcgb2YgbmV4dCB3ZWVrLg0KQlRXLCB3ZSBoYXZlIHNlZW4gdGhl
-c2UgRE1BIHRpbWVvdXQgaXNzdWVzIG9uIHRoZSBpLk1YNiBTT0NzIGFzIHdlbGwuIFNvIHRoaXMN
-CmZpeCBpcyBub3Qgb25seSBmb3IgdGhlIGkuTVggNlVMTC4NCg0KUmVnYXJkcywNClN0ZWZhbg0K
-DQo+IA0KPiByZWdhcmRzDQo+IENocmlzdGlhbg0KPiANCj4gDQo+IFsxXSBodHRwczovL3d3dy5u
-eHAuY29tL2RvY3MvZW4vZXJyYXRhL0lNWDZEUUNFLnBkZg0KPiBbMl0gDQo+IGh0dHBzOi8vZ2l0
-LnBoeXRlYy5kZS9saW51eC1tYWlubGluZS9jb21taXQvP2g9djUuMTAuNDgtcGh5JmlkPTg2Njkz
-OWVhODExMDc2NGQ5YzEyYWY5NjBkNzQ2ZTJmN2Y1ZGViZTMNCj4gDQo+IA0KPiANCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
-ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Fri, 8 Oct 2021 13:54:13 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> On Fri, Oct 08, 2021 at 01:20:38PM +0200, Boris Brezillon wrote:
+> > Hi Sean,
+> > 
+> > On Fri, 8 Oct 2021 12:04:25 +0200
+> > Sean Nyekjaer <sean@geanix.com> wrote:
+> >   
+> > > On Thu, Oct 07, 2021 at 03:14:26PM +0200, Boris Brezillon wrote:  
+> > > > On Thu, 7 Oct 2021 14:39:16 +0200
+> > > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > > >     
+> > > > > > 
+> > > > > > wait_queue doesn't really describe what this waitqueue is used for
+> > > > > > (maybe resume_wq), and the suspended state should be here as well
+> > > > > > (actually, there's one already).      
+> > > > > 
+> > > > > I'll rename to something meaningful.    
+> > > > > > 
+> > > > > > Actually, what we need is a way to prevent the device from being
+> > > > > > suspended while accesses are still in progress, and new accesses from
+> > > > > > being queued if a suspend is pending. So, I think you need a readwrite
+> > > > > > lock here:
+> > > > > > 
+> > > > > > * take the lock in read mode for all IO accesses, check the
+> > > > > >   mtd->suspended value
+> > > > > >   - if true, release the lock, and wait (retry on wakeup)
+> > > > > >   - if false, just do the IO
+> > > > > > 
+> > > > > > * take the lock in write mode when you want to suspend/resume the
+> > > > > >   device and update the suspended field. Call wake_up_all() in the
+> > > > > >   resume path      
+> > > > > 
+> > > > > Could we use the chip->lock mutex for this? It's does kinda what you
+> > > > > described above?    
+> > > > 
+> > > > No you can't. Remember I suggested to move all of that logic to
+> > > > mtdcore.c, which doesn't know about the nand_chip struct.
+> > > >     
+> > > > > If we introduce a new lock, do we really need to have the suspended as
+> > > > > an atomic?    
+> > > > 
+> > > > Nope, I thought we could do without a lock, but we actually need to
+> > > > track active IO requests, not just the suspended state.    
+> > > 
+> > > I have only added wait_queue to read and write operations.  
+> > 
+> > It's still racy (see below).
+> >   
+> > > I'll have a look into where we should add further checks.
+> > >   
+> > > >     
+> > > > > 
+> > > > > I will test with some wait and retry added to nand_get_device().    
+> > > > 
+> > > > Again, I think there's a misunderstanding here: if you move it to the
+> > > > mtd layer, it can't be done in nand_get_device(). But once you've
+> > > > implemented it in mtdcore.c, you should be able to get rid of the
+> > > > nand_chip->suspended field.    
+> > > 
+> > > I have moved the suspended atomic and wake_queue to mtdcore.c.  
+> > 
+> > That doesn't work (see below).
+> >   
+> > > And kept
+> > > the suspended variable in nand_base as is fine for chip level suspend
+> > > status.  
+> > 
+> > Why? If you handle that at the MTD level you shouldn't need it at the
+> > NAND level? BTW, would you please care to detail your reasoning when
+> > you say you did or didn't do something. It's a bit hard to guess what
+> > led you to this conclusion...
+> >   
+> > > 
+> > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > > index c8fd7f758938..6492071eb4da 100644
+> > > --- a/drivers/mtd/mtdcore.c
+> > > +++ b/drivers/mtd/mtdcore.c
+> > > @@ -42,15 +42,24 @@ static int mtd_cls_suspend(struct device *dev)
+> > >  {
+> > >         struct mtd_info *mtd = dev_get_drvdata(dev);
+> > > 
+> > > -       return mtd ? mtd_suspend(mtd) : 0;
+> > > +       if (mtd) {
+> > > +               atomic_inc(&mtd->suspended);
+> > > +               return mtd_suspend(mtd);
+> > > +       }
+> > > +                                                                                                                                                                                                                                                                                                                                                                                             +       return 0;
+> > >  }
+> > > 
+> > >  static int mtd_cls_resume(struct device *dev)
+> > >  {
+> > >         struct mtd_info *mtd = dev_get_drvdata(dev);
+> > > 
+> > > -       if (mtd)
+> > > +       if (mtd) {
+> > >                 mtd_resume(mtd);
+> > > +               atomic_dec(&mtd->suspended);
+> > > +               wake_up_all(&mtd->resume_wq);
+> > > +       }
+> > > +
+> > >         return 0;
+> > >  }
+> > > @@ -678,6 +687,10 @@ int add_mtd_device(struct mtd_info *mtd)
+> > >         if (error)
+> > >                 goto fail_nvmem_add;
+> > > 
+> > > +       init_waitqueue_head(&mtd->resume_wq);
+> > > +
+> > > +       atomic_set(&mtd->suspended, 0);
+> > > +
+> > >         mtd_debugfs_populate(mtd);
+> > > 
+> > >         device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
+> > > @@ -1558,6 +1571,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+> > >         struct mtd_ecc_stats old_stats = master->ecc_stats;
+> > >         int ret_code;
+> > > 
+> > > +       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);  
+> > 
+> > That's racy:
+> > 
+> > thread A			thread B
+> > 			   |
+> > enters mtd_read()	   |
+> > passes the !suspended test |
+> > 			   |	enters mtd_suspend()
+> > 			   |	sets suspended to 1
+> > 			   |
+> > starts the IO		   |
+> > 			   |	suspends the device
+> > tries to finish the IO	   |
+> > on a suspended device	   |
+> > 
+> > 			 BOOM!
+> > 
+> > 
+> > Using an atomic doesn't solve any of that, you really need to make sure
+> > nothing tries to communicate with the device while you're suspending
+> > it, hence the suggestion to use a rw_semaphore to protect against that.
+> >   
+> > > +
+> > >         ops->retlen = ops->oobretlen = 0;
+> > > 
+> > >         ret_code = mtd_check_oob_ops(mtd, from, ops);
+> > > @@ -1597,6 +1612,8 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+> > >         struct mtd_info *master = mtd_get_master(mtd);
+> > >         int ret;
+> > > 
+> > > +       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);
+> > > +  
+> > 
+> > Please don't open-code this in every IO path, add helpers hiding all the
+> > complexity.
+> > 
+> > To sum-up, that's more or less what I add in mind:
+> > 
+> > static void mtd_start_access(struct mtd_info *mtd)
+> > {
+> > 	/*
+> > 	 * Don't take the suspend_lock on devices that don't
+> > 	 * implement the suspend hook. Otherwise, lockdep will
+> > 	 * complain about nested locks when trying to suspend MTD
+> > 	 * partitions or MTD devices created by gluebi which are
+> > 	 * backed by real devices.
+> > 	 */
+> > 	if (!mtd->_suspend)
+> > 		return;
+> > 
+> > 	/*
+> > 	 * Wait until the device is resumed. Should we have a
+> > 	 * non-blocking mode here?
+> > 	 */
+> > 	while (1) {
+> > 		down_read(&mtd->suspend_lock);
+> > 		if (!mtd->suspended)
+> > 			return;
+> > 
+> > 		up_read(&mtd->suspend_lock);
+> > 		wait_event(mtd->resume_wq, mtd->suspended == false);
+> > 	}
+> > }
+> > 
+> > static void mtd_end_access(struct mtd_info *mtd)
+> > {
+> > 	if (!mtd->_suspend)
+> > 		return;
+> > 
+> > 	up_read(&mtd->suspend_lock);
+> > }
+> > 
+> > static void mtd_suspend(struct mtd_info *mtd)
+> > {
+> > 	int ret;
+> > 
+> > 	if (!mtd->_suspend)
+> > 		return;
+> > 
+> > 	down_write(&mtd->suspend_lock);
+> > 	if (mtd->suspended == false) {
+> > 		ret = mtd->_suspend(mtd);
+> > 		if (!ret)
+> > 			mtd->suspended = true;
+> > 	}
+> > 	up_write(&mtd->suspend_lock);
+> > }
+> > 
+> > static void mtd_resume(struct mtd_info *mtd)
+> > {
+> > 	if (!mtd->_suspend)
+> > 		return;
+> > 
+> > 	down_write(&mtd->suspend_lock);
+> > 	if (mtd->suspended) {
+> > 		if (mtd->_resume)
+> > 			mtd->_resume(mtd);
+> > 
+> > 		mtd->suspended = false;
+> > 
+> > 		/* The MTD dev has been resumed, wake up all waiters. */
+> > 		wake_up_all(&mtd->resume_wq)
+> > 	}
+> > 	up_write(&mtd->suspend_lock);
+> > }
+> > 
+> > You then need to call mtd_{start,end}_access() in all MTD IO path
+> > (read/write/erase and maybe others too).  
+> 
+> Looks cool.
+> 
+> But you are introducing a new lock that basically does the
+> same as chip->lock in nand_base.c one level above ;)
+
+It doesn't serve the same purpose, no. This one is making sure suspend
+can't happen while IOs are in-flight, and IOs can't happen while the
+device is being suspended. The nand_chip->lock serializes all IO going
+through a chip (the new mtd->suspend_lock doesn't guarantee that). This
+being said, once you have this, you should be able to get rid of the
+nand_chip->suspended field.
+
+> You wrote that we didn't want to introduce a new lock :)
+
+Again, that's not what I said. I said using a lock to wait on devices
+going out of suspend was a bad idea, because then the lock is held when
+you enter suspend, and only released when the device gets resumed.
+That's quite a big/unbounded critical section, and we try to
+avoid that in general (ideally locks should be taken/released in the
+same function). What I do here is quite different, see how the
+mtd->suspend_lock is released before calling wait_event().
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
