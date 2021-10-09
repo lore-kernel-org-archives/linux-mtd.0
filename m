@@ -2,52 +2,49 @@ Return-Path: <SRS0=mnIE=O5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E2ACC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7041BC433FE
 	for <linux-mtd@archiver.kernel.org>; Sat,  9 Oct 2021 18:50:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1EF5260F24
+	by mail.kernel.org (Postfix) with ESMTPS id 2251760F9C
 	for <linux-mtd@archiver.kernel.org>; Sat,  9 Oct 2021 18:50:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1EF5260F24
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2251760F9C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Be27ckgHPq4T4sbTNMp5p0voZwbU4aEUPIJfEQkxzL0=; b=lCn2Hi5+PEwjKh
-	GSnXEiOPDP0OXMz7jRg5b14cPeonxloiVpSHDBs0XosDCtj/kM60CxPOjRs2QNnOAnSdt9gMhB3NH
-	YhdM4dOAZ30L7B9rpIjfpU5q1NuzMvrtiJkb9E6MJdO9hCuf+X2bEbgDoS9dpiWUybg/xj2KW87cB
-	UFcQA25xyizK6gS+9OybWRP3eOx94ppSl0hofp06mC9VWg5qNIOV1mX9ft+oyS7A1ipa5mhy0Pd3H
-	whCURzRgWFdT1GMvorMvt7eY+9jVbBWLzguPfk1oZhioKQSxOlXI54+mxsGmaggP/rGyFiQ+k7W/h
-	SfNRbfu2OI2H1mi33OoQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JWXXQu3C2K4JAQhXjYhEjTQOkLZ3aSVT29w2n/OlTBU=; b=ZxBm7RVmgXY4K5
+	SEwv9YmdA5aSZo29Lx7Jq/QCnqx/i1jaDQ8xFIiBxX+NYHgVbsYzojWMwUufWpbbOM0ZbOfaJofZw
+	ZzZW3KSOh+jE0/+WK8M+Ffc9KAVnLjyluFr9fmO7PrX3yoLCxzx/tE0MVB7yHZuvlfLvEZpHDXyMT
+	w8Fa/ojycO2oc2wFHYP8jvRRxVLabAZ16JqgeD17aA3Hx7EEOiZgUKlDz/THcbbChOXrJMJQE/sTy
+	RpdpiAU+lUavtAsuzSbHVOg9bfspfUFzf3kBQ8PyiMidXw0sorzp8SaxSr7qSNo6R7g9Pp1W72qg2
+	4kMguINqDyM8GCfBrCgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mZHQP-005z4f-4j; Sat, 09 Oct 2021 18:50:25 +0000
+	id 1mZHQD-005z3R-2k; Sat, 09 Oct 2021 18:50:13 +0000
 Received: from aposti.net ([89.234.176.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mZHQI-005z3t-Bk
- for linux-mtd@lists.infradead.org; Sat, 09 Oct 2021 18:50:19 +0000
+ id 1mZHQA-005z2n-99
+ for linux-mtd@lists.infradead.org; Sat, 09 Oct 2021 18:50:11 +0000
 From: Paul Cercueil <paul@crapouillou.net>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>
 Cc: list@opendingux.net, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
-Subject: [PATCH 1/3] mtd: rawnand/davinci: Don't calculate ECC when reading
- page
-Date: Sat,  9 Oct 2021 20:49:50 +0200
-Message-Id: <20211009184952.24591-2-paul@crapouillou.net>
-In-Reply-To: <20211009184952.24591-1-paul@crapouillou.net>
-References: <20211009184952.24591-1-paul@crapouillou.net>
+ Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 0/3] mtd: Ingenic NAND fix for JZ4740
+Date: Sat,  9 Oct 2021 20:49:49 +0200
+Message-Id: <20211009184952.24591-1-paul@crapouillou.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211009_115018_576984_260718C4 
-X-CRM114-Status: GOOD (  10.10  )
+X-CRM114-CacheID: sfid-20211009_115010_520155_EEFDB943 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,38 +61,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The function nand_davinci_read_page_hwecc_oob_first() does read the ECC
-data from the OOB area. Therefore it does not need to calculate the ECC
-as it is already available.
+Hi,
 
-Cc: <stable@vger.kernel.org> # v5.2
-Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the JZ4740")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/mtd/nand/raw/davinci_nand.c | 3 ---
- 1 file changed, 3 deletions(-)
+Looks like NAND support has been broken on the JZ4740 SoC for a while;
+it looks like it comes from the fact that the "hw_oob_first" mechanism
+was dropped from the NAND core and moved to the Davinci driver.
 
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 118da9944e3b..89de24d3bb7a 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -394,7 +394,6 @@ static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip *chip,
- 	int eccsteps = chip->ecc.steps;
- 	uint8_t *p = buf;
- 	uint8_t *ecc_code = chip->ecc.code_buf;
--	uint8_t *ecc_calc = chip->ecc.calc_buf;
- 	unsigned int max_bitflips = 0;
- 
- 	/* Read the OOB area first */
-@@ -420,8 +419,6 @@ static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip *chip,
- 		if (ret)
- 			return ret;
- 
--		chip->ecc.calculate(chip, p, &ecc_calc[i]);
--
- 		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
- 		if (stat == -EBADMSG &&
- 		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+It turns out the JZ4740 SoC needs it too; I didn't notice it when
+writing the new ingenic-nand driver (to replace the old jz4740-nand
+driver) most likely because my Device Tree had the "nand-ecc-mode" set
+to "hw_oob_first".
+
+I am not very sure about patch [1/3]; to me the original code does not
+make sense, and it didn't work out-of-the-box on the JZ4740 without it.
+By applying patch [1/3] the function nand_read_page_hwecc_oob_first()
+can be reused for the JZ4740 SoC as well. But I did not test patch [1/3]
+on Davinci.
+
+Cheers,
+-Paul
+
+Paul Cercueil (3):
+  mtd: rawnand/davinci: Don't calculate ECC when reading page
+  mtd: rawnand: Export nand_read_page_hwecc_oob_first()
+  mtd: rawnand/ingenic: JZ4740 needs 'oob_first' read page function
+
+ drivers/mtd/nand/raw/davinci_nand.c           | 73 +------------------
+ .../mtd/nand/raw/ingenic/ingenic_nand_drv.c   |  5 ++
+ drivers/mtd/nand/raw/nand_base.c              | 69 ++++++++++++++++++
+ include/linux/mtd/rawnand.h                   |  2 +
+ 4 files changed, 77 insertions(+), 72 deletions(-)
+
 -- 
 2.33.0
 
