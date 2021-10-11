@@ -2,60 +2,62 @@ Return-Path: <SRS0=sMU9=O7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86949C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 07:08:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 709A2C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 10:32:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4896360E53
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 07:08:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4896360E53
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=narfation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 43EDC60E0C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 10:32:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 43EDC60E0C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mj3Hn7qPuhWw3W3bt6q6dHKrazEy3EUojzSywXLhtbM=; b=hrflVN+tdMk2WyanAvyf2WE5Gx
-	PN6l0LL6QAQorS3GzOEI90XIRfEDxT29Q0MhnDYhx/C5IDkSYQmutq2NRVEVY25C/YzmTsY/67qzU
-	8IVwqsN7xeHGKQSzrL1hJoFuhd3UEH92X1drZjg1kET17eZEDVhiRYm09g4ITTgvXpcfLidPBPoqI
-	T/ONsSKj9gAZLCJB0uBzoG5raM6iNM2TuX4Ss88KL//eYhs4+8TZgziHZ03LbYfy8h6z8XAWj2Qoa
-	rA5D5XrOZcSl20DOK2Com2lZWDzE/6p5kzAh1xOhFMHroDNH7GQVz4iHa2pM4pURz1nbcUVyIMyGa
-	WXmka2IA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=mfnrk5/1GipDLyciXoF9a6emGyQyIEMc+3Fz22WHFPQ=; b=KCoyzF6+0D3Vek
+	EZJK/13qtisGcImH3iyHgwAfuqX+JFw78PzRzOGBi0AikzUyVhno8vPdNKDk62QgU4Q1pK2ofHSnd
+	RO0EUmWq43z9vfWnX1DKgGWBDVL3JlZkVkpQ7QFn4jp5i9arDqeALH/d9VaYW3lFInMxRMAGjof/H
+	T2LsyfDqRtrHqlL/hTRURp5hPYtzBSxyqrtXKVXe9wtwATCTvZXO0IhWcTP8t8VEyS2bGkfij3Ych
+	7FeC+/S681aMJyDbaomBLKvEdXg6T21I/Z6hgNLU0Wr/sXkflFLXsWjjr8C8W3TAQvN77cFkNNM7U
+	KCq8jXz+dyZ4vZyWrtvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mZpP8-0083N1-Ar; Mon, 11 Oct 2021 07:07:22 +0000
-Received: from dvalin.narfation.org ([2a00:17d8:100::8b1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mZpOr-0083Ha-E4
- for linux-mtd@lists.infradead.org; Mon, 11 Oct 2021 07:07:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
- s=20121; t=1633936023;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4A5IbiON99sAmaO5rSffIZ7vgzdOWfa8UnMZX6no8SI=;
- b=XZSyyuZJbarDtRPi2do9RZJzBnzxlFdszrY04nDqWis73okxBzpJoCfh+RA8SLDvuciTLZ
- 9hsVmEICvl3JjYKdA4KeElflamaETDHsW00Be2UMnIKCK70wPJeseVi5tjogKlBOy4AFgd
- +KVsAJZtmvzYHOzpzms4Kioebl+/rpw=
-From: Sven Eckelmann <sven@narfation.org>
-To: openwrt-devel@lists.openwrt.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>, Michael Walle <michael@walle.cc>,
- Adrian Schmutzler <dev@schmutzler.it>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-mtd@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+	id 1mZsat-008rRh-FG; Mon, 11 Oct 2021 10:31:43 +0000
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mZsaq-008rR3-5b
+ for linux-mtd@lists.infradead.org; Mon, 11 Oct 2021 10:31:41 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by muru.com (Postfix) with ESMTPS id 2D2568061;
+ Mon, 11 Oct 2021 10:32:09 +0000 (UTC)
+Date: Mon, 11 Oct 2021 13:31:36 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ =?utf-8?Q?Miqu=C3=A8l?= Raynal <miquel.raynal@bootlin.com>,
+ robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+ nsekhar@ti.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: nvmem: Defining cells on mtd created by mtdparts
-Date: Mon, 11 Oct 2021 09:06:56 +0200
-Message-ID: <14722734.oMan5NXi5u@sven-desktop>
-In-Reply-To: <18728084.NGlc0Rocea@sven-desktop>
-References: <18728084.NGlc0Rocea@sven-desktop>
+Subject: Re: [PATCH v5 0/8] dt-bindings: memory-controllers: ti, gpmc: Convert
+ to yaml
+Message-ID: <YWQSiNX/bBKcdTl2@atomide.com>
+References: <20211007120830.17221-1-rogerq@kernel.org>
+ <6b90a6fd-001f-a41a-b69f-2bd3ec8a8e26@canonical.com>
+ <e165b6ee-91d3-3a50-3b9d-3f15fa82a101@kernel.org>
+ <64b65579-7153-1e7d-9866-77ce07fd1df5@canonical.com>
+ <YWPRbmaJQN85wRIO@atomide.com>
+ <f2125e81-07da-92ea-899a-d06ecae1919f@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <f2125e81-07da-92ea-899a-d06ecae1919f@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211011_000705_673846_71AF16AC 
-X-CRM114-Status: GOOD (  10.92  )
+X-CRM114-CacheID: sfid-20211011_033140_276016_792D17AF 
+X-CRM114-Status: GOOD (  13.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,87 +69,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6822046365647018704=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============6822046365647018704==
-Content-Type: multipart/signed; boundary="nextPart27234856.iIAV7Kigx3"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart27234856.iIAV7Kigx3
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: openwrt-devel@lists.openwrt.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>, Michael Walle <michael@walle.cc>, Adrian Schmutzler <dev@schmutzler.it>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-kernel@vger.kernel.org
-Subject: Re: nvmem: Defining cells on mtd created by mtdparts
-Date: Mon, 11 Oct 2021 09:06:56 +0200
-Message-ID: <14722734.oMan5NXi5u@sven-desktop>
-In-Reply-To: <18728084.NGlc0Rocea@sven-desktop>
-References: <18728084.NGlc0Rocea@sven-desktop>
-
-On Sunday, 10 October 2021 14:53:13 CEST Sven Eckelmann wrote:
-[...]
-> Since there are most likely more devices out there which use mtdparts, I would 
-> guess that there might already be a strategy out there which can be used to 
-> define the nvmem-provider for mtdparts defined partitions. At least I saw that 
-> Bartosz Golaszewski added all the mtd devices automatically as nvmem provider 
-> in c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem 
-> API"). So there might also be something for nvmem-cells to find the correct 
-> mtd instead of relying on the fixed-partitions registration + of_node (which 
-> doesn't exist because it comes from mtdparts and not devicetree).
-
-Ansuel Smith just proposed in OpenWrt [1] a workaround. It basically adds a 
-minimal fixed-partitions parser to the mtd cmdlinepart parser (responsible for 
-the mtdparts=) that tries to find the matching (size + offset) fixed-partition 
-from the devicetree. The code in mtd_device_parse_register
-(add_mtd_partitions -> add_mtd_device -> mtd_nvmem_add) will then 
-automatically take care of the rest.
-
-Kind regards,
-	Sven
-
-[1] https://github.com/openwrt/openwrt/pull/4664#issuecomment-939567963
---nextPart27234856.iIAV7Kigx3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmFj4pAACgkQXYcKB8Em
-e0b9eBAArC/EsvvrKk2y7/99MES/Eds+2b37/9dxuvOPOxULMobk3Gu1VC1qhKv4
-Z2zYdWP1rGz14r+DqYD9YhSvw1wM8WMN6hT3A2QWErF36fPngvahOLXZjoagaDVN
-PQQ+G8KKV/5WtNGjiah8zMWBcXC0zzLVRkxLsZ2BwuSVXsFo0qJereWknxw7F/Qf
-dw86a5Yf7JbcPaL4oJg/522oC+6O8CLwakwmyjp5ZLDDqo/z+p4DgqDM8OVphX5v
-0MsYCT0YfvEJyVOZfkiUKljqIwyEgJbAtJDxIYAX6Riauz+cEmy6diArVOnNro8/
-EEQuoyJq6Vu9By2E/pnsDahrk1DIkd5pi1hnR8qTMf/VTD2YC85DWg1y7qKdpf8g
-pQ8HsH/5ZCgPcQJFXU50RNaxlHQq8BJVbGcO8SHKUSZY29lo17pafWwMfRKLO1fh
-Qhyk8l19iwmmQ09Uho1xbNE5CBzSP1RH76/4HTEFDXPYSOCu1zDuf5FSlSQZjTop
-KClni0PvXPqeDRRtkoMLO2/LIjE3S8cCsRF37zqJdN6Ko9drwk/Vsp1BEIkzBzB9
-hNihrk6JeaKhQ6Ogmtcw7pIMwrI8TXgvWlYqvaEt7KPHU0HKXOXdkS+4jO1nyaZD
-k4dLtPx5LW4kgHcY0JqaFLOZfTMwPiPL05cPTEp+WkyR7rJCktk=
-=iCmG
------END PGP SIGNATURE-----
-
---nextPart27234856.iIAV7Kigx3--
-
-
-
-
-
---===============6822046365647018704==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6822046365647018704==--
-
-
-
-
+KiBSb2dlciBRdWFkcm9zIDxyb2dlcnFAa2VybmVsLm9yZz4gWzIxMTAxMSAwNzowNF06Cj4gSGkg
+VG9ueSwKPiAKPiBPbiAxMS8xMC8yMDIxIDA4OjUzLCBUb255IExpbmRncmVuIHdyb3RlOgo+ID4g
+KiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGNhbm9uaWNhbC5jb20+
+IFsyMTEwMDkgMTQ6NTZdOgo+ID4+IE9uIDA4LzEwLzIwMjEgMjE6MTAsIFJvZ2VyIFF1YWRyb3Mg
+d3JvdGU6Cj4gPj4+IEtyenlzenRvZiwKPiA+Pj4KPiA+Pj4gT24gMDcvMTAvMjAyMSAyMDozNywg
+S3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToKPiA+Pj4+IE9uIDA3LzEwLzIwMjEgMTQ6MDgsIFJv
+Z2VyIFF1YWRyb3Mgd3JvdGU6Cj4gPj4+Pj4gSGksCj4gPj4+Pj4KPiA+Pj4+PiBUaGlzIHNlcmll
+cyBjb252ZXJ0cyB0aSxncG1jIG1lbW9yeSBjb250cm9sbGVyIGFuZCB0aSxncG1jLW5hbmQgYW5k
+Cj4gPj4+Pj4gdGksZ3BtYy1vbmVuYW5kIE1URCBjb250cm9sbGVyIGJpbmRpbmdzIHRvIHlhbWwu
+Cj4gPj4+Pj4KPiA+Pj4+PiBjaGVlcnMsCj4gPj4+Pj4gLXJvZ2VyCj4gPj4+Pj4KPiA+Pj4+Cj4g
+Pj4+PiBIaSwKPiA+Pj4+Cj4gPj4+PiBBbHRob3VnaCB5b3UgZGlkIG5vdCBtZW50aW9uIGl0IGhl
+cmUsIGl0IGxvb2tzIGxpa2UgeW91IGhhdmUgc29tZQo+ID4+Pj4gZGVwZW5kZW5jaWVzIGJldHdl
+ZW4gdGhlIHBhdGNoZXMuIE1heWJlIHRoaXMgc2hhbGwgZ28gc2ltcGx5IHZpYSBSb2IncyB0cmVl
+Pwo+ID4+Pj4KPiA+Pj4KPiA+Pj4gUm9iIGhhcyBhY2tlZCBhbGwgdGhlIERUIGJpbmRpbmcgcGF0
+Y2hlcy4KPiA+Pj4gU28gaXQgaXMgdXB0byB5b3UgYW5kIE1pcXXDqGwgdG8gZGVjaWRlIHRoZSBi
+ZXN0IHdheS4gTVREIHRyZWUgb3IgTWVtb3J5IGNvbnRyb2xsZXIgdHJlZQo+ID4+PiBmb3IgdGhl
+IGR0LWJpbmRpbmdzIHBhdGNoZXMuCj4gPj4+Cj4gPj4+IFRoZSBBUk06IGR0cyBjaGFuZ2VzIHNo
+b3VsZCBnbyB2aWEgVG9ueSdzIE9NQVAgU29DIHRyZWUuCj4gPj4+Cj4gPj4+IE9yIGlmIFRvbnkg
+aXMgT0sgd2l0aCBpdCB0aGVuIG1heWJlIGFsbCBwYXRjaGVzIGNhbiBnbyB2aWEgVG9ueSdzIHRy
+ZWU/IDopCj4gPj4+Cj4gPj4KPiA+Pgo+ID4+IEkgcmV2aWV3ZWQgdGhlIHR3byBtZW1vcnktY29u
+dHJvbGxlciBwYXRjaGVzLCBzbyBmZWVsIGZyZWUgdG8gdGFrZSB0aGVtCj4gPj4gdmlhIE1URCBv
+ciBPTUFQIFNvQy4KPiA+IAo+ID4gU291bmRzIGxpa2UgSSBzaG91bGQgcGljayB1cCB0aGVzZSBi
+ZWNhdXNlIG9mIHRoZSBkdHMgY2hhbmdlcy4KPiAKPiBUaGVyZSBpcyBubyBkZXBlbmRlbmN5IHdp
+dGggdGhlIGR0cyBwYXRjaGVzIGJ1dCBpdCB3b3VsZCBiZSBncmVhdCBpZiB5b3UgY2FuIHBpY2sg
+dGhlbSBhbGwgdXAuCgpPSyBhbGwgcHVzaGVkIG91dCBub3cgdG8gb21hcC1mb3ItdjUuMTYvZ3Bt
+Yy4KClRoYW5rcywKClRvbnkKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
