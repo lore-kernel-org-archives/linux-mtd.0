@@ -2,14 +2,14 @@ Return-Path: <SRS0=sMU9=O7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98CB8C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 20:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A00AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 20:50:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F0D260462
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 20:50:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F0D260462
+	by mail.kernel.org (Postfix) with ESMTPS id C71FF60C4C
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Oct 2021 20:50:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C71FF60C4C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,45 +18,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x7z1VYWIQI63OwjBgefs7UZiGP5o9eavc61YUlrx1Ps=; b=eoVNAZZ3pZoKMG
-	XilfrBh4Zu4v6qsULp8/9EzGKefd2avMB+KsvFhlZv6oQmeJjJfhYR7jpIM6PcT0KD1yob9fEifaK
-	REOoUvpf6p0onj4Pcsm8kMbVpFt+kLBcAVa58Tqk9jivnR9hz4i7NYnPVGILRTfgi76EjaVQk0WzE
-	iquRkzdNLTF3k6unUKA99EAqNTmOUoSQGCrMzSqr/kcb5m3+jznxW6QlaxsL0cKxunr73vnaFcg/2
-	+S0rnhI2mMhB5BfVjyrmvq3htNnhim7GaJA/+xd8ComARsRj919i06MSfNmhmVHRqCoS9/Wdkn/Y8
-	LRwxTaovZA3VzhKtNASg==;
+	List-Owner; bh=PuiTxU5U6V+J1Tcffk+SPKZxucZTVuWJyNz1KgGf30U=; b=2pJ6hb8RY99D+W
+	fmPS9IVYNqm01E1+Dpd4r1W7ZekRcuXDPDZ7cEDlqf94CBHtIssjgDoYlczA0uuEf4pB5Jmcx+6RK
+	CCkyrFCysbAv6FTkyjvjkJ4L+HTRTmwUFzpO6y4ZU1G2r79ZEF7JdemeVwI6ZNgEigUJVxCQ2sD6I
+	Y1UADhtIJ41HwuGYzJtpUVKAIWt9xgGBYnJ0qSeX173hXGoZ+YNgSg2+Z/mCA+CxwkvwlEeoq3Zkl
+	LmZQGqBVpMBL90Ak9DnmjhahthJHIv4WXS3pM87wPtaQ2iYoPiPkw3iNlo2NTXDK40jctsQTx0vXl
+	yxNR5sRzc3j/fo7PtIYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ma2El-00AeEV-Te; Mon, 11 Oct 2021 20:49:32 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1ma2FW-00AePu-EU; Mon, 11 Oct 2021 20:50:18 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ma2CV-00AdUY-R1
- for linux-mtd@lists.infradead.org; Mon, 11 Oct 2021 20:47:13 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19BKl5tQ071016;
- Mon, 11 Oct 2021 15:47:05 -0500
+ id 1ma2Ca-00AdVi-Rl
+ for linux-mtd@lists.infradead.org; Mon, 11 Oct 2021 20:47:18 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19BKlAax120562;
+ Mon, 11 Oct 2021 15:47:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1633985225;
- bh=DFZQnhqlxo23Wmwjp8fS/CEqoUGjmQJfz+RoEPGUJNY=;
+ s=ti-com-17Q1; t=1633985230;
+ bh=Jl27qxWYXXgX0CrAWa8WspGuO5ufeybya3LllQ9alsY=;
  h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=kfL7inrw9Uy0mByZ9k/uXRYknUVv3fhl/s9YeXBtqys0S7OprKf9vkjBfqQSsXzmx
- xfrjSXaIFUbX4EXf3U4QCCxFoGm0uP3jk8+Dj9jlVoSMjCev7OsTvbsgslxRC2mE5c
- B8MxSOcUzPobiRs8HCBIPhIZbPVqaQK/PlKN33ZQ=
+ b=zHoNajlvtAeI9nc1iQovOs7WA7wAWTRtTAPPI6ksCDk7KsdGYsiy188e4NFuN7J5u
+ mw4CXsQEm+eW818+iPI+tpeCGD1L6kaeN2P5hVKZY9EQ9zWfFZbTiHCdZr7+fpacpL
+ ADruIBkHx2fXjZVylEKWZKz8sfI1BMQZQQKXJRPk=
 Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19BKl5uM096784
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19BKlAfZ096615
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 11 Oct 2021 15:47:05 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
+ Mon, 11 Oct 2021 15:47:10 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
  (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 11
- Oct 2021 15:47:04 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2021 15:47:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 11 Oct 2021 15:47:04 -0500
+ Frontend Transport; Mon, 11 Oct 2021 15:47:09 -0500
 Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com
  [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19BKkKEl069811;
- Mon, 11 Oct 2021 15:47:00 -0500
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19BKkKEm069811;
+ Mon, 11 Oct 2021 15:47:05 -0500
 From: Apurva Nandan <a-nandan@ti.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown
@@ -67,18 +67,18 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>
 CC: <p.yadav@ti.com>
-Subject: [PATCH v2 07/14] mtd: spinand: Allow enabling Octal DTR mode in the
- core
-Date: Tue, 12 Oct 2021 02:16:12 +0530
-Message-ID: <20211011204619.81893-8-a-nandan@ti.com>
+Subject: [PATCH v2 08/14] mtd: spinand: winbond: Add support for write
+ volatile configuration register op
+Date: Tue, 12 Oct 2021 02:16:13 +0530
+Message-ID: <20211011204619.81893-9-a-nandan@ti.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211011204619.81893-1-a-nandan@ti.com>
 References: <20211011204619.81893-1-a-nandan@ti.com>
 MIME-Version: 1.0
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211011_134711_994526_604C55C7 
-X-CRM114-Status: GOOD (  16.43  )
+X-CRM114-CacheID: sfid-20211011_134717_021627_9063498C 
+X-CRM114-Status: GOOD (  20.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,121 +95,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Enable Octal DTR SPI mode, i.e. 8D-8D-8D mode, if the SPI NAND flash
-device supports it. Mixed OSPI (1S-1S-8S & 1S-8S-8S), mixed DTR modes
-(1S-1D-8D), etc. aren't supported yet.
+Volatile configuration register are a different set of configuration
+registers, i.e. they differ from the status registers. A different
+SPI instruction is required to write to these registers. Any changes
+to the Volatile Configuration Register get transferred directly to
+the Internal Configuration Register and instantly reflect on the
+device operation.
 
-The method to switch to Octal DTR SPI mode may vary across
-manufacturers. For example, for Winbond, it is enabled by writing
-values to the volatile configuration register. So, let the
-manufacturer's code have their own implementation for switching to
-Octal DTR SPI mode.
+In Winbond W35N01JW, these volatile configuration register must be
+configured in order to switch to Octal DTR SPI mode.
 
-Check for the SPI NAND device's support for Octal DTR mode using
-spinand flags, and if the op_templates allows 8D-8D-8D, call
-octal_dtr_enable() manufacturer op. If the SPI controller doesn't
-supports these modes, the selected op_templates will prevent switching
-to the Octal DTR mode. And finally update the spinand reg_proto
-on success.
+Add support for writing to volatile configuration registers using a
+new WRITE_VCR_OP template.
+
+Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
 
 Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 ---
- drivers/mtd/nand/spi/core.c | 46 +++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h |  3 +++
- 2 files changed, 49 insertions(+)
+ drivers/mtd/nand/spi/core.c    |  2 +-
+ drivers/mtd/nand/spi/winbond.c | 42 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |  1 +
+ 3 files changed, 44 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 8e6cf7941a0f..1210946f8447 100644
+index 1210946f8447..2bea21bd9747 100644
 --- a/drivers/mtd/nand/spi/core.c
 +++ b/drivers/mtd/nand/spi/core.c
-@@ -257,6 +257,48 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
- 			       enable ? CFG_QUAD_ENABLE : 0);
+@@ -445,7 +445,7 @@ static void spinand_ondie_ecc_save_status(struct nand_device *nand, u8 status)
+ 		engine_conf->status = status;
  }
  
-+static bool spinand_op_is_octal_dtr(const struct spi_mem_op *op)
-+{
-+	return  op->cmd.buswidth == 8 && op->cmd.dtr &&
-+		op->addr.buswidth == 8 && op->addr.dtr &&
-+		op->data.buswidth == 8 && op->data.dtr;
-+}
-+
-+static int spinand_init_octal_dtr_enable(struct spinand_device *spinand)
-+{
-+	struct device *dev = &spinand->spimem->spi->dev;
-+	int ret;
-+
-+	if (!(spinand->flags & SPINAND_HAS_OCTAL_DTR_BIT))
-+		return 0;
-+
-+	if (!(spinand_op_is_octal_dtr(spinand->op_templates.read_cache) &&
-+	      spinand_op_is_octal_dtr(spinand->op_templates.write_cache) &&
-+	      spinand_op_is_octal_dtr(spinand->op_templates.update_cache)))
-+		return 0;
-+
-+	if (!spinand->manufacturer->ops->octal_dtr_enable) {
-+		dev_dbg(dev,
-+			"Missing ->octal_dtr_enable(), unable to switch mode\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = spinand->manufacturer->ops->octal_dtr_enable(spinand);
-+	if (ret) {
-+		dev_err(dev,
-+			"Failed to enable Octal DTR SPI mode (err = %d)\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	spinand->reg_proto = SPINAND_OCTAL_DTR;
-+
-+	dev_dbg(dev,
-+		"%s SPI NAND switched to Octal DTR SPI (8D-8D-8D) mode\n",
-+		spinand->manufacturer->name);
-+	return 0;
-+}
-+
- static int spinand_ecc_enable(struct spinand_device *spinand,
- 			      bool enable)
+-static int spinand_write_enable_op(struct spinand_device *spinand)
++int spinand_write_enable_op(struct spinand_device *spinand)
  {
-@@ -1192,6 +1234,10 @@ static int spinand_init_flash(struct spinand_device *spinand)
- 	if (ret)
- 		return ret;
+ 	struct spi_mem_op op = SPINAND_WR_EN_DIS_OP(true);
  
-+	ret = spinand_init_octal_dtr_enable(spinand);
+diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
+index 76684428354e..89d8ee801f56 100644
+--- a/drivers/mtd/nand/spi/winbond.c
++++ b/drivers/mtd/nand/spi/winbond.c
+@@ -7,6 +7,7 @@
+  *	Boris Brezillon <boris.brezillon@bootlin.com>
+  */
+ 
++#include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/mtd/spinand.h>
+@@ -114,6 +115,47 @@ static int winbond_spinand_init(struct spinand_device *spinand)
+ 	return 0;
+ }
+ 
++/**
++ * winbond_write_vcr_op() - write values onto the volatile configuration
++ *			    registers (VCR)
++ * @spinand: the spinand device
++ * @reg: the address of the particular reg in the VCR to be written on
++ * @val: the value to be written on the reg in the VCR
++ *
++ * Volatile configuration registers are a separate set of configuration
++ * registers, i.e. they differ from the status registers SR-1/2/3. A different
++ * SPI instruction is required to write to these registers. Any changes
++ * to the Volatile Configuration Register get transferred directly to
++ * the Internal Configuration Register and instantly reflect on the
++ * device operation.
++ */
++static int winbond_write_vcr_op(struct spinand_device *spinand, u8 reg, u8 val)
++{
++	int ret;
++	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(0x81, 1),
++					  SPI_MEM_OP_ADDR(3, reg, 1),
++					  SPI_MEM_OP_NO_DUMMY,
++					  SPI_MEM_OP_DATA_OUT(1, spinand->scratchbuf, 1));
++
++	*spinand->scratchbuf = val;
++
++	ret = spinand_write_enable_op(spinand);
 +	if (ret)
 +		return ret;
 +
- 	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
- 	if (ret)
- 		return ret;
++	ret = spi_mem_exec_op(spinand->spimem, &op);
++	if (ret)
++		return ret;
++
++	/*
++	 * Write VCR operation doesn't set the busy bit in SR, so can't perform
++	 * a status poll. Minimum time of 50ns is needed to complete the write.
++	 * So, give thrice the minimum required delay.
++	 */
++	ndelay(150);
++	return 0;
++}
++
+ static const struct spinand_manufacturer_ops winbond_spinand_manuf_ops = {
+ 	.init = winbond_spinand_init,
+ };
 diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 35816b8cfe81..daa2ac5c3110 100644
+index daa2ac5c3110..21a4e5adcd59 100644
 --- a/include/linux/mtd/spinand.h
 +++ b/include/linux/mtd/spinand.h
-@@ -271,6 +271,7 @@ struct spinand_devid {
-  * @init: initialize a SPI NAND device
-  * @adjust_op: modify the ops for any variation in their cmd, address, dummy or
-  *	       data phase by the manufacturer
-+ * @octal_dtr_enable: switch the SPI NAND flash into Octal DTR SPI mode
-  * @cleanup: cleanup a SPI NAND device
-  *
-  * Each SPI NAND manufacturer driver should implement this interface so that
-@@ -280,6 +281,7 @@ struct spinand_manufacturer_ops {
- 	int (*init)(struct spinand_device *spinand);
- 	void (*adjust_op)(struct spi_mem_op *op,
- 			  const enum spinand_proto reg_proto);
-+	int (*octal_dtr_enable)(struct spinand_device *spinand);
- 	void (*cleanup)(struct spinand_device *spinand);
- };
+@@ -560,5 +560,6 @@ int spinand_match_and_init(struct spinand_device *spinand,
  
-@@ -348,6 +350,7 @@ struct spinand_ecc_info {
+ int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+ int spinand_select_target(struct spinand_device *spinand, unsigned int target);
++int spinand_write_enable_op(struct spinand_device *spinand);
  
- #define SPINAND_HAS_QE_BIT		BIT(0)
- #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
-+#define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
- 
- /**
-  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+ #endif /* __LINUX_MTD_SPINAND_H */
 -- 
 2.25.1
 
