@@ -2,69 +2,75 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80DA8C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 15:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0D7BC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 15:51:59 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EC1060F21
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 15:14:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2EC1060F21
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7BEC561130
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 15:51:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7BEC561130
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mit.edu
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4iTc/zBF53CDKNS6DEzEaz8+sjSLo/cFERDnQlxjkbo=; b=swRhrPd+HG3RpdbE0esPtikefd
-	ueonm2a3/N8+fMEND2V3w6fMYKtcBoCyeiwJnpLppnuPKBRN2X7JXEEfus1A+DVYTBgxz2p+ZWP3S
-	6BZhn4kU/CLMNVkuxA34p87XWQfcCweRX9SXiJnMSBv2p3ik9c/nZvSiaKb0hk61ZkkBOv7LGAnf3
-	R/jgArWI5ZTJj3jxlLbRZmATDknL6MCSDcf3boPzcDazM+gGvI+EGudzyp42IIqYYSJ+OmmeebGJl
-	ewctww3jvm8t4hgWsrqGwj8TtdV+gwLItDeFTvkVy1XP1w0CREiH37PBWMq+ZIFg7pxzRlBoToABh
-	6FPJjECw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SsPRJ9RpL3LhLrcx96gBGCt38TgCbtY713TSxPuAe6o=; b=uEJ/+jyiL6Rr33
+	gUTCrYtacLqfqMS6iQ3YZcBZYGSy0Ogcu4ef8CVMwWWK0xiQuOiiaTEhdEEE2l3ge7b/Tx9aWtiTu
+	f4Mar9MWwwY4AMmG1s21hbIFFHgVY+o8m+n/JzUm6lWkxPjFHSVIjJFnQjy/0is7VnpKLCP5Y59cu
+	huG3UeMMblrbwPSLG3Mu6yC303NZoF/RnPyE3Y0uWFcb2btT96X4UXHmqBoPbCKbgsDdntf1Oc+5j
+	rh3gkW6c2Uv1/36d2v6/WCEHKK3tIdfy5iXToJtwpbn094oaIVd+fGlsW+mUUkLdu6jtsoUK+xOl2
+	h64p2qOoZQ861hZUtBTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mafxA-00HJUS-Qc; Wed, 13 Oct 2021 15:14:00 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1magXI-00HRti-LA; Wed, 13 Oct 2021 15:51:20 +0000
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mafx7-00HJTj-Rv
- for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 15:13:59 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07E6E6112D;
- Wed, 13 Oct 2021 15:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1634138037;
- bh=jXEjCQ9GP5WHEHcqrHbhspO5YUVhZplNlVhS8sy9Lzw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=XpS5Xg6Vx+UP1oXKCWFL3THSryz90MTMKxTRARY6xHSmUE2locTh/5upu7UeVy3Kt
- 2SjNc2qeMXU9AvE6YzumlP/weWnKQ/fezGz90W3st9Jjm3yqkXJAPUEzCsMMyaJnD1
- Rd2eSHP7K92OJwqUgeEBcetC/nB6X8k1zNHX8CHKbGsAmeiA2qATqqnf5bsO40NI6k
- if2ReofH1yOFzq9SshOP0hE9Swl3uAyZKI9Oyp9MRvEBM52qFZWtv+ZlPLjqXe4nLH
- y/LVggddGF8aU6pkCjjDlo/ojDPF7inLzCEnqrK9W6y23fhKoi1Zho3zJlieZvC6lK
- Q3ywaYyH4dXqg==
-Date: Wed, 13 Oct 2021 16:13:54 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH v2 13/20] mtd: dataflash: Warn about failure to
- unregister mtd device
-Message-ID: <YWb3sjwS2FBsLHzL@sirena.org.uk>
-References: <20211012153945.2651412-1-u.kleine-koenig@pengutronix.de>
- <20211012153945.2651412-14-u.kleine-koenig@pengutronix.de>
- <20211013144429.65b294e5@xps13>
- <20211013140835.olo2dxdno6zlom7n@pengutronix.de>
- <20211013163357.41c7471d@xps13>
+ id 1magXE-00HRs8-U3; Wed, 13 Oct 2021 15:51:18 +0000
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net
+ [72.74.133.215]) (authenticated bits=0)
+ (User authenticated as tytso@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19DFp2vF009493
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 13 Oct 2021 11:51:03 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+ id 9296B15C00CA; Wed, 13 Oct 2021 11:51:02 -0400 (EDT)
+Date: Wed, 13 Oct 2021 11:51:02 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+ Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+ David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ Dave Kleikamp <shaggy@kernel.org>,
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+ Anton Altaparmakov <anton@tuxera.com>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+ Kees Cook <keescook@chromium.org>,
+ Phillip Lougher <phillip@squashfs.org.uk>, Jan Kara <jack@suse.com>,
+ linux-block@vger.kernel.org, dm-devel@redhat.com,
+ drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 25/29] ext4: use sb_bdev_nr_blocks
+Message-ID: <YWcAZq8eGQiZyxZS@mit.edu>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-26-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20211013163357.41c7471d@xps13>
-X-Cookie: Where do you think you're going today?
+Content-Disposition: inline
+In-Reply-To: <20211013051042.1065752-26-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_081357_941236_4E5E1ABA 
-X-CRM114-Status: GOOD (  13.32  )
+X-CRM114-CacheID: sfid-20211013_085117_200250_2736FBF6 
+X-CRM114-Status: UNSURE (   9.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,63 +82,18 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0606100581212937540=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Wed, Oct 13, 2021 at 07:10:38AM +0200, Christoph Hellwig wrote:
+> Use the sb_bdev_nr_blocks helper instead of open coding it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
---===============0606100581212937540==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9MC6GlOh61zZ2aFG"
-Content-Disposition: inline
-
-
---9MC6GlOh61zZ2aFG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Oct 13, 2021 at 04:33:57PM +0200, Miquel Raynal wrote:
-> > On Wed, Oct 13, 2021 at 02:44:29PM +0200, Miquel Raynal wrote:
-
-> > My (German) knowledge about the English Grammar claims that independent
-> > of how you spell SPI, it must be "an" because when I say it, it's
-> > [=C9=9Bspi:a=C9=AA] (unless you call it [spa=C9=AA]?)
-
-> I (personally) pronounce it [spa=C9=AA] with my French background and it
-> looks wrong to my eyes to use "an" before SPI because of that, but this
-> is biased and possibly wrong as well so please keep it your way, it's
-> fine.
-
-I'd say a here too but really don't care too much, I hadn't noticed.
-
---9MC6GlOh61zZ2aFG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFm97IACgkQJNaLcl1U
-h9D3oAf/TK7RMgsjwiupY4yI4pFAx2nOZ49AJm1rXlXuce/vB8g2nUzu/wSjiQ2P
-Sk6GO55MacBvHfV2bqAO0eC3R2u5r8lUqNaPxox8XYch1g7fCSr96ctl3IudvQvU
-tq6VirXogCT6DOY6/iHdXR0+zZpcoh0pDvhbpDxnk8VpKFl0Z9VgP/OLPnkriGQW
-mNolEk2UP/n1ZWQj9NY4jnZQRWSBorT3hrKbINLMG4DkFqUlNqU3rh0o22aB5cpB
-cZn3ncZmj7sBrsg4vXIzdacClRgt6Kh2PXbO1AzF0WAePF5AZ0nmSOIBg7KONbHz
-zpLVgnpm8xD/bEOHSo3A9WvppUYAKA==
-=ngOE
------END PGP SIGNATURE-----
-
---9MC6GlOh61zZ2aFG--
-
-
---===============0606100581212937540==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============0606100581212937540==--
-
