@@ -2,14 +2,14 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C7ABC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:53:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB06C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:55:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E11960FDC
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:53:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E11960FDC
+	by mail.kernel.org (Postfix) with ESMTPS id 38B5661039
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:55:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 38B5661039
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,32 +18,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cvhetnJAVlzt/BhV/Mrgfsfy4s6Fs1X9tdKqdJ//IC4=; b=ldos3Rw3mA3Znv
-	zEAaN+UkrWOQXHGJaq7kcM1CTUxjYBkPO3gIS2aFZ8KEgxWA0j3uIXq9IAMbX3/HL5/NpmkNIIlB3
-	ooT0aqPHLBWIGMT7ypklEGK8CRXeC+dYkJzBv1ypeWMgGBrylHHmTKqc9ZuN+eLOlt742Mbb2/9KB
-	N0Y0c3FPkXK+aPg7OfU52Zz904xPaFZAl6hnkYS9ibjyMPElAEaGiFJXXNKHLmynYcW5EHFxXc3iO
-	dCbNBDaKE2Snw3qjZUxrzOPUsUgYCzC2i+skllyam7oGjMngHXor2PUD2ETASHu2CNZOiYwUwIRhH
-	RHW13KTPgWqoPSFaLenQ==;
+	List-Owner; bh=6SCNj0m/HeKLT6dIxUNrpY5bVXxtCzlm0nQpDtwhhoI=; b=Z4y/TSWlgNR776
+	XsjUImOhiekV004BVHRtw+IpYhZK9KwC7nuvM/OmQcJGt5kRks6y3CgmeGUAUtFBi+OGoRiNBAQvg
+	3pHPx4KXQbAXidSu0Xer5kfDJ9Is7AVVtj4Su6q2ZWw8tikIw6CC70hREi/7KZ1u5TSCLsNqc758a
+	Tox9MtG+Y7/ZzHJgzuiKiPh0/6agcA5Jk92G6mfSuP0RwYJj5s22qrrbqKxbsLI0Ln9o+t6rYiiks
+	4YrvCHGjaSN8k/VoDCepH2Naj6psvLDQoGo7+jrQBDQQkd45AFd9d6+eRiYXbL2Am2NdTc6RbUtKS
+	ZuqaASWlRQWml9pv341g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1maXCS-00F2QM-Ms; Wed, 13 Oct 2021 05:53:12 +0000
+	id 1maXEc-00F2sk-FM; Wed, 13 Oct 2021 05:55:27 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maWxO-00EzHu-AG; Wed, 13 Oct 2021 05:37:38 +0000
+ id 1maWyt-00EzZj-IM; Wed, 13 Oct 2021 05:39:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=B7QUfk1V5g8os83d9H1pzKVS9Wky59aiatgX6MLOno0=; b=CuLaz4HX5JZzaiVl+rrp1XndWm
- e85pf4KU0S4KS7k7a+Wkegm4zhjEcCEdUBRwtldyb4HFr1gr6lgjLQj5gR2x0k9qZ9N9Fi8WCz2xT
- 8lNfgQhpAFUxT3Ufk/vyJR4YsqVM6aNVMZAfOHIMxlln4kh1U5jQB+VQARv68hhX7otTu4X5BswHz
- cDJoWPnUZvJYLvt/R4l57Ff41h5Bq0YtrIJd4PJZIkxEo6zcABBBk3oC13aDY8YQSnJFo4HO1M+Jv
- hM3ZRc3MS/f9El5do1DMz2+5eS1XxDW0umV7kD9UxXVALr22ThZ0cfVN+QmtRS3JTKFR+4iWuZfuY
- nidJqMvw==;
+ bh=Jn3vPWURqTLCTgey+1ZKUDn76o/D4LziuPXo21jTcNA=; b=hRwOIaUT4TV+iuM/Zg8w7n25xq
+ 4JP07oWgVj96DxAIyE5GugNAoImIQjt6YOnfusnDpQHqpMzsfUUyomS23Xdp6GlGxW3N9d9yv8zRS
+ Hpba9F54jbcMwbBNW8QibfhbiimOvdOmbo+bN2OBMyd97mLTimJW2mXzi7iAyeKKMK46Qo3qyEEEa
+ rak7t0pG0xoWK9og1uwIKQIsTozlfX1z449iRcMhaqjTRmWD/ItgnJgiWeePTgAAgRxi2mKfmIrf0
+ aPWD/qlzTxrcJbhN3jtl/ZC96e/wuQfBrUM++RgMnBjSBr/PpZLjvhZ0imDh0CcCecmWUWPsOtrDH
+ PvSE0SHg==;
 Received: from 089144212063.atnat0021.highway.a1.net ([89.144.212.63]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maWwF-0077wR-3t; Wed, 13 Oct 2021 05:36:43 +0000
+ id 1maWxN-007832-Di; Wed, 13 Oct 2021 05:38:03 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
@@ -65,9 +65,10 @@ Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
  jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
  linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
-Subject: [PATCH 22/29] squashfs: use bdev_nr_sectors instead of open coding it
-Date: Wed, 13 Oct 2021 07:10:35 +0200
-Message-Id: <20211013051042.1065752-23-hch@lst.de>
+Subject: [PATCH 23/29] block: use bdev_nr_sectors instead of open coding it in
+ blkdev_fallocate
+Date: Wed, 13 Oct 2021 07:10:36 +0200
+Message-Id: <20211013051042.1065752-24-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211013051042.1065752-1-hch@lst.de>
 References: <20211013051042.1065752-1-hch@lst.de>
@@ -94,32 +95,22 @@ Use the proper helper to read the block device size.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/squashfs/super.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ block/fops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
-index 60d6951915f44..e83042ecf0d86 100644
---- a/fs/squashfs/super.c
-+++ b/fs/squashfs/super.c
-@@ -16,6 +16,7 @@
+diff --git a/block/fops.c b/block/fops.c
+index 7bb9581a146cf..6e27dd2748504 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -548,7 +548,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 		return -EOPNOTSUPP;
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/blkdev.h>
- #include <linux/fs.h>
- #include <linux/fs_context.h>
- #include <linux/fs_parser.h>
-@@ -179,8 +180,8 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	/* Check the filesystem does not extend beyond the end of the
- 	   block device */
- 	msblk->bytes_used = le64_to_cpu(sblk->bytes_used);
--	if (msblk->bytes_used < 0 || msblk->bytes_used >
--			i_size_read(sb->s_bdev->bd_inode))
-+	if (msblk->bytes_used < 0 ||
-+	    msblk->bytes_used > (bdev_nr_sectors(sb->s_bdev) << SECTOR_SHIFT))
- 		goto failed_mount;
- 
- 	/* Check block size for sanity */
+ 	/* Don't go off the end of the device. */
+-	isize = i_size_read(bdev->bd_inode);
++	isize = bdev_nr_sectors(bdev) << SECTOR_SHIFT;
+ 	if (start >= isize)
+ 		return -EINVAL;
+ 	if (end >= isize) {
 -- 
 2.30.2
 
