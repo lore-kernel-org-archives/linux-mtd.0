@@ -2,57 +2,71 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD089C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 13:15:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92BF5C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 14:09:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 553E1610E7
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 13:15:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 553E1610E7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4A9EF60F94
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 14:09:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A9EF60F94
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5aEVIj629nTHo6jggjQvHY39giMpcPCvuvsEZOzf0Fs=; b=00+yk0Gr8p4Cf8
-	AhzCAMs941XMSEeMipK9U4hpxZlxBfcvHJD4/+iGhoNzB7zFwrO5NGZvlgBH0IWPnHaj+YCLhnI1+
-	dy0sgW3Sfk718v9b0Vtvk2ZSpRFYYAkFHLWOd2SvTfH9XZlUy3XsX9D2ivIbqPSsCyWez4llrADrX
-	wRBwUALC5iMrp6Yk15xLpEMsl6LwVJLAz6Xq0dCogtjRrLpFRtYfB2oF/gyon54jWY1ka81Ztx5jB
-	sxRBq6IkY2MVSWXeojncWYn04Up80U/oreuR65i7u3qckjdFzkJNYyWq0jlbRCS33CAQWrUcJExmv
-	+5mBF8TTwUIactg3WwRw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=xuZuWWn5TKj3P3MhBtOGqUIeLNehXQPHw2UduqXiBoQ=; b=p8MqK4aoN9cLnzbI3ivku76Osc
+	4zXJsnl+34RcEQMD4jb+nHH9ZlxdfKfK3cAdLIDOMZkfx3iBVo/vuFjwgjSxjGmEaqP2qvxXIQfV3
+	Q/qoeO6Fa1eB2L/8+2HQWSIm5zC2aDfFwiy2M57eGNg0zJLOTsXwI6rOP/ojK38AVk8p0LLnpuQCL
+	E+N5jO4/Px/CS3Y99i53ToYyFg2FWzJfvb36BhYvSI7jHZDC1b/LyMw3oxIfRIuXhZZBPw0CQF+Wb
+	xe/NWHO4rVWNRG1/HZ7MklMcIQAG1Ul408EK65LHGDl9q8lHjsIu6v7CWvsrP++VCRV1GM4iPUJgD
+	X4vzd0Bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mae5x-00Godb-6g; Wed, 13 Oct 2021 13:14:57 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1maew7-00H4cu-R7; Wed, 13 Oct 2021 14:08:51 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1madcY-00GeNX-Nl
- for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 12:44:36 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 361E160015;
- Wed, 13 Oct 2021 12:44:30 +0000 (UTC)
-Date: Wed, 13 Oct 2021 14:44:29 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, kernel@pengutronix.de,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+ id 1maew4-00H4cJ-FS
+ for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 14:08:50 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1maevt-0005KE-Ls; Wed, 13 Oct 2021 16:08:37 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1maevr-0005ch-Ur; Wed, 13 Oct 2021 16:08:35 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1maevr-0007hN-T5; Wed, 13 Oct 2021 16:08:35 +0200
+Date: Wed, 13 Oct 2021 16:08:35 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, linux-spi@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de
 Subject: Re: [PATCH v2 13/20] mtd: dataflash: Warn about failure to
  unregister mtd device
-Message-ID: <20211013144429.65b294e5@xps13>
-In-Reply-To: <20211012153945.2651412-14-u.kleine-koenig@pengutronix.de>
+Message-ID: <20211013140835.olo2dxdno6zlom7n@pengutronix.de>
 References: <20211012153945.2651412-1-u.kleine-koenig@pengutronix.de>
  <20211012153945.2651412-14-u.kleine-koenig@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20211013144429.65b294e5@xps13>
 MIME-Version: 1.0
+In-Reply-To: <20211013144429.65b294e5@xps13>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_054435_087233_7FF2407C 
-X-CRM114-Status: GOOD (  18.10  )
+X-CRM114-CacheID: sfid-20211013_070848_538594_390BD5FE 
+X-CRM114-Status: GOOD (  28.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,83 +78,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0559832535672418776=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIFR1ZSwgMTIg
-T2N0IDIwMjEgMTc6Mzk6MzggKzAyMDA6Cgo+IFdoZW4gYW4gc3BpIGRyaXZlcidzIHJlbW92ZSBm
-dW5jdGlvbiByZXR1cm5zIGEgbm9uLXplcm8gZXJyb3IgY29kZQoKU2hvdWxkIHdlIHMvYW4gc3Bp
-L2EgU1BJLz8KCj4gbm90aGluZyBoYXBwZW5zIGFwYXJ0IGZyb20gZW1pdHRpbmcgYSBnZW5lcmlj
-IGVycm9yIG1lc3NhZ2UuIE1ha2UgdGhpcwo+IGVycm9yIG1lc3NhZ2UgbW9yZSBkZXZpY2Ugc3Bl
-Y2lmaWMgYW5kIHJldHVybiB6ZXJvIGluc3RlYWQuCj4gCj4gU2lnbmVkLW9mZi1ieTogVXdlIEts
-ZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KPiAtLS0KPiAgZHJp
-dmVycy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMgfCA1ICsrKystCj4gIDEgZmlsZSBjaGFu
-Z2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL210
-ZF9kYXRhZmxhc2guYwo+IGluZGV4IDk4MDJlMjY1ZmNhOC4uMjY5MWI2Yjc5ZGY4IDEwMDY0NAo+
-IC0tLSBhL2RyaXZlcnMvbXRkL2RldmljZXMvbXRkX2RhdGFmbGFzaC5jCj4gKysrIGIvZHJpdmVy
-cy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMKPiBAQCAtOTE5LDcgKzkxOSwxMCBAQCBzdGF0
-aWMgaW50IGRhdGFmbGFzaF9yZW1vdmUoc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkKPiAgCXN0YXR1
-cyA9IG10ZF9kZXZpY2VfdW5yZWdpc3RlcigmZmxhc2gtPm10ZCk7Cj4gIAlpZiAoc3RhdHVzID09
-IDApCj4gIAkJa2ZyZWUoZmxhc2gpOwo+IC0JcmV0dXJuIHN0YXR1czsKPiArCWVsc2UKPiArCQlk
-ZXZfd2Fybigmc3BpLT5kZXYsICJGYWlsZWQgdG8gdW5yZWdpc3RlciBtdGQgZGV2aWNlICglcGUp
-XG4iLAo+ICsJCQkgRVJSX1BUUihzdGF0dXMpKTsKPiArCXJldHVybiAwOwoKQXMgcGFydCBvZiBh
-IHJlY2VudCBOQU5EIGNsZWFudXAgc2VyaWVzIHdlIGVuZGVkIHVwIGFkZGluZyBXQVJOX09OKCkg
-WzFdCnRvIG1ha2UgaXQgdmVyeSBjbGVhciB0aGF0IGlmIHRoaXMgaGFwcGVucywgaXQncyBub3Qg
-ZXhwZWN0ZWQgYXQgYWxsIChpdAp3YXMgQm9yaXMnIGFkdmljZSkuCgpJIGRvbid0IHRoaW5rIHRo
-ZXJlIGlzIG9ubHkgb25lIGdvb2Qgc29sdXRpb24gYnV0IHBlcmhhcHMgaXRzIGJlc3QgdG8Ka2Vl
-cCBpdCBzeW5jJ2VkIHdpdGggdGhlIG90aGVyIGRyaXZlcnMgaW4gTVREPwoKVGhhbmtzLApNaXF1
-w6hsCgpbMV0KZDZlNGZkNTIyNDYxIG10ZDogcmF3bmFuZDogbmFuZHNpbTogU3RvcCB1c2luZyBu
-YW5kX3JlbGVhc2UoKQo5ZmRkNzhmN2JjZGEgbXRkOiByYXduYW5kOiB4d2F5OiBTdG9wIHVzaW5n
-IG5hbmRfcmVsZWFzZSgpCmQ5ZjJhMWFmODE3ZCBtdGQ6IHJhd25hbmQ6IHZmNjEwOiBTdG9wIHVz
-aW5nIG5hbmRfcmVsZWFzZSgpCmY2ZmM3NTk3OGQ4OCBtdGQ6IHJhd25hbmQ6IHR4eDluZGZtYzog
-U3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQpmM2UxNjlmNDRiZGIgbXRkOiByYXduYW5kOiB0bWlv
-OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmFiMTM1YzUxYmI4MSBtdGQ6IHJhd25hbmQ6IHRh
-bmdvOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjA2OGQ4NmVjZDlkOSBtdGQ6IHJhd25hbmQ6
-IHN1bnhpOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjI0YWNjM2ZhOGIzNiBtdGQ6IHJhd25h
-bmQ6IHN0bTMyX2ZtYzI6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKYzEyMWNiOTgwYzA5IG10
-ZDogcmF3bmFuZDogc29jcmF0ZXM6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKMzVhMzdmOTE5
-OGU1IG10ZDogcmF3bmFuZDogc2hhcnBzbDogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQo1MGFi
-YWNiYjYyMWYgbXRkOiByYXduYW5kOiBzaF9mbGN0bDogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2Uo
-KQo5NzQ4MTEwYmQyMmMgbXRkOiByYXduYW5kOiBzM2MyNDEwOiBTdG9wIHVzaW5nIG5hbmRfcmVs
-ZWFzZSgpCjEwYjg3NzUwYWUxNyBtdGQ6IHJhd25hbmQ6IHI4NTI6IFN0b3AgdXNpbmcgbmFuZF9y
-ZWxlYXNlKCkKMGEyYmM5OTE5Y2Y3IG10ZDogcmF3bmFuZDogcWNvbTogU3RvcCB1c2luZyBuYW5k
-X3JlbGVhc2UoKQpkMWFhZTAwNWEwMGUgbXRkOiByYXduYW5kOiBwbGF0X25hbmQ6IFN0b3AgdXNp
-bmcgbmFuZF9yZWxlYXNlKCkKMjNjZjM0NjE1MDEwIG10ZDogcmF3bmFuZDogcGFzZW1pOiBTdG9w
-IHVzaW5nIG5hbmRfcmVsZWFzZSgpCjJkOWNmNmYxMjlmOCBtdGQ6IHJhd25hbmQ6IG94bmFzOiBT
-dG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmYzNDJkZjY3YjE5YSBtdGQ6IHJhd25hbmQ6IG9yaW9u
-OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmI0NTMzNjc5Yzk1OCBtdGQ6IHJhd25hbmQ6IG9t
-YXAyOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmE5Mzg0Zjk1ZmU3NyBtdGQ6IHJhd25hbmQ6
-IG5kZmM6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKOGZkNTA3YmI0MjEwIG10ZDogcmF3bmFu
-ZDogbXhpYzogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQpjNmRjMDgyNzkzZDIgbXRkOiByYXdu
-YW5kOiBteGM6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKMWZlYzMzM2FhZGMyIG10ZDogcmF3
-bmFuZDogbXRrOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjFhMzZhN2Y3ODg5OCBtdGQ6IHJh
-d25hbmQ6IG1wYzUxMjE6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKNWVjYmJhNjE3NDQ2IG10
-ZDogcmF3bmFuZDogbWFydmVsbDogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQoyMWI3NTgyNzc3
-MjQgbXRkOiByYXduYW5kOiBscGMzMnh4X3NsYzogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQo1
-ZjNiY2UzYTUyNzUgbXRkOiByYXduYW5kOiBscGMzMnh4X21sYzogU3RvcCB1c2luZyBuYW5kX3Jl
-bGVhc2UoKQoyOGRjYzRlOGE4MzEgbXRkOiByYXduYW5kOiBpbmdlbmljOiBTdG9wIHVzaW5nIG5h
-bmRfcmVsZWFzZSgpCjcxYTQ5MTdiNGQ0YiBtdGQ6IHJhd25hbmQ6IGhpc2k1MDQ6IFN0b3AgdXNp
-bmcgbmFuZF9yZWxlYXNlKCkKMTk0ZjZjNDhjZGQ4IG10ZDogcmF3bmFuZDogZ3BtaTogU3RvcCB1
-c2luZyBuYW5kX3JlbGVhc2UoKQpkYmUwMjQxNTcwZWQgbXRkOiByYXduYW5kOiBncGlvOiBTdG9w
-IHVzaW5nIG5hbmRfcmVsZWFzZSgpCjljYzAyZjRjMGE4NyBtdGQ6IHJhd25hbmQ6IGZzbWM6IFN0
-b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKZjZjNGU2NjE0OTFhIG10ZDogcmF3bmFuZDogZnNsX3Vw
-bTogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQplOWYyZjVhODA3NTQgbXRkOiByYXduYW5kOiBm
-c2xfaWZjOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjEyOGJiYmYwYWM0ZCBtdGQ6IHJhd25h
-bmQ6IGZzbF9lbGJjOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjYzYTE0NjA3NjhhMSBtdGQ6
-IHJhd25hbmQ6IGRpc2tvbmNoaXA6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKMDA5ZTJlMWQ4
-MzE4IG10ZDogcmF3bmFuZDogZGVuYWxpOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmE5NTc1
-YzQ4ZTUyMCBtdGQ6IHJhd25hbmQ6IGRhdmluY2k6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkK
-OTcwMDI0ZjAzMWFlIG10ZDogcmF3bmFuZDogY3M1NTN4OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFz
-ZSgpCjU0NGJhYzg5OTlhNiBtdGQ6IHJhd25hbmQ6IGNhZmU6IFN0b3AgdXNpbmcgbmFuZF9yZWxl
-YXNlKCkKOGI4OGY0ZTBhODhiIG10ZDogcmF3bmFuZDogY2FkZW5jZTogU3RvcCB1c2luZyBuYW5k
-X3JlbGVhc2UoKQo5MzdkMDM5ZGZkY2YgbXRkOiByYXduYW5kOiBicmNtbmFuZDogU3RvcCB1c2lu
-ZyBuYW5kX3JlbGVhc2UoKQo5MzY5MDQzMDU5MjggbXRkOiByYXduYW5kOiBiY200N3h4OiBTdG9w
-IHVzaW5nIG5hbmRfcmVsZWFzZSgpCjRhM2QyMWJjMjVjMSBtdGQ6IHJhd25hbmQ6IGF1MTU1MG5k
-OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjA4ZjI1Y2Q3NjdlMSBtdGQ6IHJhd25hbmQ6IGFt
-cy1kZWx0YTogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+
+--===============0559832535672418776==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4oiamhcwsch7pebo"
+Content-Disposition: inline
+
+
+--4oiamhcwsch7pebo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Oct 13, 2021 at 02:44:29PM +0200, Miquel Raynal wrote:
+> Hi Uwe,
+>=20
+> u.kleine-koenig@pengutronix.de wrote on Tue, 12 Oct 2021 17:39:38 +0200:
+>=20
+> > When an spi driver's remove function returns a non-zero error code
+>=20
+> Should we s/an spi/a SPI/?
+
+My (German) knowledge about the English Grammar claims that independent
+of how you spell SPI, it must be "an" because when I say it, it's
+[=C9=9Bspi:a=C9=AA] (unless you call it [spa=C9=AA]?)
+
+In my eyes "spi" is right, because SPI is the protocol and "spi" is the
+kernel framework. But I don't feel strong here and you're already the
+second who suggests something similar.
+=20
+> > nothing happens apart from emitting a generic error message. Make this
+> > error message more device specific and return zero instead.
+> >=20
+> > Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+> >  drivers/mtd/devices/mtd_dataflash.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/=
+mtd_dataflash.c
+> > index 9802e265fca8..2691b6b79df8 100644
+> > --- a/drivers/mtd/devices/mtd_dataflash.c
+> > +++ b/drivers/mtd/devices/mtd_dataflash.c
+> > @@ -919,7 +919,10 @@ static int dataflash_remove(struct spi_device *spi)
+> >  	status =3D mtd_device_unregister(&flash->mtd);
+> >  	if (status =3D=3D 0)
+> >  		kfree(flash);
+> > -	return status;
+> > +	else
+> > +		dev_warn(&spi->dev, "Failed to unregister mtd device (%pe)\n",
+> > +			 ERR_PTR(status));
+> > +	return 0;
+>=20
+> As part of a recent NAND cleanup series we ended up adding WARN_ON() [1]
+> to make it very clear that if this happens, it's not expected at all (it
+> was Boris' advice).
+>=20
+> I don't think there is only one good solution but perhaps its best to
+> keep it sync'ed with the other drivers in MTD?
+
+Well, if WARN_ON or dev_warn is the right thing is subjective. Your
+subjective counts more as you're an MTD maintainer. Can rework
+accordingly for v3.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4oiamhcwsch7pebo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFm6GAACgkQwfwUeK3K
+7AlUtQf+IHBiQyXezi4wzKiSkQvRhNa/hJarXpJUkdBSTDEf0TTYy8LuUwsaogqp
++5oSqdLjzgHTFVqFzEXXQ9+jKsKHGfjwbM3Ns8cbRYM3m97LVdYO5WhiiauSWcap
+yzg0zF9T19dSg6DJtYhVoFb88bzq2kmpu9pUmD9lwUUpcbC+cABHQnEF4tBU53XE
+4ZvilTboIB8y465QA7w0fRF7K8/Y/8/qix7JVbeg30qfbPHkuqC1RJIgC/c/S7W/
+sSirILxk3snigVHrwkUsy95JRE6k2puxrIDpI7YYHHMeCtBGxOCtBWRV1EXgmvaZ
+UuxUTrxUSUbODJAtCy3fAZ5w/O55Ow==
+=jrzI
+-----END PGP SIGNATURE-----
+
+--4oiamhcwsch7pebo--
+
+
+--===============0559832535672418776==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============0559832535672418776==--
+
