@@ -2,14 +2,14 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 849EBC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 07:45:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B9B0C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 07:47:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A15560EDF
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 07:45:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4A15560EDF
+	by mail.kernel.org (Postfix) with ESMTPS id 2FF6B603E9
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 07:47:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2FF6B603E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,50 +18,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=F+wcxZD5a8ukEGhkA9cI3p51q3LW5PNDBUplE8odPGU=; b=B/p+2HlE/ZofSV
-	c8fRzPvofFth8IUQIpadsBpXZtoMouF6zx80uQA337dT8/LIJk6pC0AZdlRRvAKZP3KUNXZNUER/Y
-	IZAnwl+ZRT5PcVNaZBd0j65PVy/WbVh7ahCc7SY7UtrtOVYEu71Fc7McWy3ZMF7CNHmBoCRjE6FtQ
-	9zekkB++NkZ2gc7elazhdTaVwDGNHqBiHL0dgj3kbqh1gRs+dJac0KuFD2KVltcB98QVSE3XR5KnH
-	i2gSdxW4sGcN0OE85jJBQrUZWgW96Onjo57AgyPu2Xc5H6MrLIjkOvs5Is9tbntpJ5ymndFrDT6wR
-	g3oYr/lqZedWPgBQxEAw==;
+	List-Owner; bh=PlloYstZ2xHBcravVw+R94ar3ePwmmv0O+sF07EtlVs=; b=EuV9fhnBPDPZ4e
+	L7H75uril4wp0WFe5JUP4ZbAhzTGN6EpOJNgskgHQGJNBpIf7fWgZuFZWNokJI5NtgGVjBbGKJCjb
+	sIARLwnXaSjrI6Yvy5wqy5sbElYaCziouuLpuvolK80RZV2+BBDkjJrpWd0d/jMNM8pprzHVmLi0H
+	udoaxSjQBlVA94CsmznD5z0CdwI6FSw1YccN8m+8Nxnbcm2wZ7HE1tf8va0jN0oiv+4hgkoVIYYP7
+	XlzokfvOor3EdTqP6AO7rULHh5rIEG3vnAH4RTq5zo6lSBK4jOmpmnwSQC9aIpWxW9gExByaoIuv+
+	+0elUMHZgnsfeAWtC/qQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1maYwY-00FQqw-SS; Wed, 13 Oct 2021 07:44:55 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1maYyI-00FRD8-JG; Wed, 13 Oct 2021 07:46:43 +0000
+Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maXZE-00F7NL-VC
- for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 06:16:46 +0000
-Received: by mail-pf1-x431.google.com with SMTP id m26so1542912pff.3
- for <linux-mtd@lists.infradead.org>; Tue, 12 Oct 2021 23:16:44 -0700 (PDT)
+ id 1maXZR-00F7Po-D5
+ for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 06:16:58 +0000
+Received: by mail-pj1-x1029.google.com with SMTP id
+ na16-20020a17090b4c1000b0019f5bb661f9so1481983pjb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Oct 2021 23:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=WC8qlO5hS71mDqsT8bl0w3ijZFYGEZDCAo8tBaqenJs=;
- b=aGzx5g9EmfagK2VYJKbeonxVbvTyFyy8ubTg44u1Ahx/MTDIDSZon1W91/+YJyEM+w
- qj/Bi7I6qMRTurFfMFJfRoGMnC8vVMBa/lQEQP7VCzyqkR4kCDSqk5gFGwAkYxrRmLwC
- vKA47OmSM4jrpJqdnIRH8x1Z1vvipau07Niuo=
+ bh=Vr2Ti0XXPw/GzVjOiY0OfTomtbZYRULNYJUDEzmrzO4=;
+ b=K4nvDpNl1g5m539wsQDBpCbf3zo170v/GW6ZnHLXNDrULUU4yYZgBZyGAb+wBnnkpe
+ Kw4TilugsMOouo/bETIRMTNNbwFs2By6YycSQiwP6WhM+z5A0iE/rlwHD7YheTZVwxWg
+ UujJ8p17bj864LNgI93in3n9RRNxotwxYx6iE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=WC8qlO5hS71mDqsT8bl0w3ijZFYGEZDCAo8tBaqenJs=;
- b=EXYbYcOsK4Izgjj5eyUvvRshjpwt/wpt0Em8T9X978xeExKKVlNQkKNtxR4FK2b3NZ
- ILgOE3wUFmrjfJO/7VBFvO9gqM7cRwavfGEXumjom/wNvRLWoc2xPYJT6jQV61UA2ASl
- J3k/p5nFz7e99ND9ehCwFYXUkjPmO+jZ6/wt5KtJapywLPHlQHVqhOFQfBqPjZlAe2ig
- 1Cc0NEhFuzdbzFD5yShrNscArKmIx6TmTpBHe5Blq9Y27b5bF8HPsz/pgc1pw0RrvWrK
- EjQZ+CkjhsClHdpvuvIrWzVDOsFcIdPCZAzSkE7xn8B6ZKbf8ni/fIWiIolH2nRV8P+6
- bx/Q==
-X-Gm-Message-State: AOAM532nOh+zhz1WRfhC+6MDZFWJob3YbQRnA2Pkzbsu80sYQPc9l3Yt
- zdaPJTcAX+BvMC/czED1R9mi/Q==
-X-Google-Smtp-Source: ABdhPJywBNvyfgfyQbknPTYchwSJjS8lkA7Ed3FT30CWk3r+y/Lrw7XBaVRa792lS0jCj03fnTC0tQ==
-X-Received: by 2002:a62:1b8e:0:b0:44c:9318:f6e1 with SMTP id
- b136-20020a621b8e000000b0044c9318f6e1mr36636622pfb.84.1634105804176; 
- Tue, 12 Oct 2021 23:16:44 -0700 (PDT)
+ bh=Vr2Ti0XXPw/GzVjOiY0OfTomtbZYRULNYJUDEzmrzO4=;
+ b=YLsgGEn5Oa+Fd+Ea7w9OOrRvHYfEL/GaPDU4iTXMYPtnTBraP6fiE2YJfvR6dOKgPG
+ c0E13r30Gfughy3YyzhSMZSSCWjClb+xX27nOOqjmWi+Rcpy+FFM6zj6FBxAyaWmnF51
+ PeiljJuJAb1R5wgZaoFE8hp1C+BCL0ntWP4RNb9y8bxW8SQpY/WSJ1n/r8HXEJrBe93p
+ ng9vkLDTCgCBhRttka+aMVqTqNSdO6a7WBHnaksVlYTNWEm8bv7nCE3TTyeJij/WhSWO
+ Vw/6FU8Rk2RQe3Gn6ktjzayxMh4CL1/LG76gUzVcqUu83SURcwtbLCsGOmVa8fQ2b+Ts
+ rD8Q==
+X-Gm-Message-State: AOAM53063ytQc81z3WIqUEK3L0rJo+w5UHCh7IrDRBf471QiE3yUY50z
+ YI7ZyQPjpxh/Kt2E0VzgDZIolQ==
+X-Google-Smtp-Source: ABdhPJyviIqYDhsPW2xustTPT0ttTkhiIBbQskiTA4bVnp1eNaDrTHxU5FKFz1farm1RVUHRoFmswQ==
+X-Received: by 2002:a17:90b:1c8f:: with SMTP id
+ oo15mr11110082pjb.169.1634105812260; 
+ Tue, 12 Oct 2021 23:16:52 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
- by smtp.gmail.com with ESMTPSA id z4sm13596761pfz.99.2021.10.12.23.16.43
+ by smtp.gmail.com with ESMTPSA id c64sm7486893pga.40.2021.10.12.23.16.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 12 Oct 2021 23:16:43 -0700 (PDT)
-Date: Tue, 12 Oct 2021 23:16:43 -0700
+ Tue, 12 Oct 2021 23:16:51 -0700 (PDT)
+Date: Tue, 12 Oct 2021 23:16:51 -0700
 From: Kees Cook <keescook@chromium.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
@@ -83,15 +84,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
  jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
  linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
-Subject: Re: [PATCH 14/29] hfs: use bdev_nr_sectors instead of open coding it
-Message-ID: <202110122316.C8D15CD2@keescook>
+Subject: Re: [PATCH 15/29] hfsplus: use bdev_nr_sectors instead of open
+ coding it
+Message-ID: <202110122316.9C54C2F@keescook>
 References: <20211013051042.1065752-1-hch@lst.de>
- <20211013051042.1065752-15-hch@lst.de>
+ <20211013051042.1065752-16-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211013051042.1065752-15-hch@lst.de>
+In-Reply-To: <20211013051042.1065752-16-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211012_231645_047488_544B8D8B 
+X-CRM114-CacheID: sfid-20211012_231657_467811_A92D12C7 
 X-CRM114-Status: GOOD (  11.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -109,7 +111,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 13, 2021 at 07:10:27AM +0200, Christoph Hellwig wrote:
+On Wed, Oct 13, 2021 at 07:10:28AM +0200, Christoph Hellwig wrote:
 > Use the proper helper to read the block device size.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
