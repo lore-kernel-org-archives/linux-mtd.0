@@ -2,67 +2,57 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93FB9C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 12:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD089C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 13:15:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5489C60C4B
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 12:47:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5489C60C4B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 553E1610E7
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 13:15:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 553E1610E7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ltrrLEm4boWCAiWl3x57BhSYxxAdxMGwukSRbr7OZNw=; b=g28Jh7R3qcSLAA
-	Mz7mGTAX51/6ntrh/SZT2WscRgEZtI70sAXIGHcVVV7AI8/8YyBhDyacvwxI40epzmQr/DVHrZj2H
-	vvu8divXVGSxBS9plN1Dp9O0MJz9U7NFLT8uD740Pt4YbfFC78gwvnjnBDZQuS2qPBfpdw8IRaVmn
-	kwOWTzge9yXuZ4zN0Y8x/ryJQdiBpw1Mych/RoK5mJC+HqPfUbQv4+8GxnC3EzX7zRhHoUfwawoGy
-	vC5rOdlBhdrFRbf5wITvi1DK0pfDIbpP2Dso3GighN6ChsAamF2qvcVI2a7dl3WsN6Svf2IYoZcSP
-	HcMYFQ8UW5aFoZf7+S+w==;
+	List-Owner; bh=5aEVIj629nTHo6jggjQvHY39giMpcPCvuvsEZOzf0Fs=; b=00+yk0Gr8p4Cf8
+	AhzCAMs941XMSEeMipK9U4hpxZlxBfcvHJD4/+iGhoNzB7zFwrO5NGZvlgBH0IWPnHaj+YCLhnI1+
+	dy0sgW3Sfk718v9b0Vtvk2ZSpRFYYAkFHLWOd2SvTfH9XZlUy3XsX9D2ivIbqPSsCyWez4llrADrX
+	wRBwUALC5iMrp6Yk15xLpEMsl6LwVJLAz6Xq0dCogtjRrLpFRtYfB2oF/gyon54jWY1ka81Ztx5jB
+	sxRBq6IkY2MVSWXeojncWYn04Up80U/oreuR65i7u3qckjdFzkJNYyWq0jlbRCS33CAQWrUcJExmv
+	+5mBF8TTwUIactg3WwRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1madey-00GfDL-OS; Wed, 13 Oct 2021 12:47:04 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1mae5x-00Godb-6g; Wed, 13 Oct 2021 13:14:57 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1macgQ-00GNsr-P2
- for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 11:44:35 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="207522319"
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; d="scan'208";a="207522319"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Oct 2021 04:44:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,370,1624345200"; d="scan'208";a="491422939"
-Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga008.jf.intel.com with ESMTP; 13 Oct 2021 04:44:25 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
- id 30194367; Wed, 13 Oct 2021 14:44:33 +0300 (EEST)
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Mark Brown <broonie@kernel.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Michael Walle <michael@walle.cc>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
+ id 1madcY-00GeNX-Nl
+ for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 12:44:36 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 361E160015;
+ Wed, 13 Oct 2021 12:44:30 +0000 (UTC)
+Date: Wed, 13 Oct 2021 14:44:29 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, kernel@pengutronix.de,
  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: [PATCH v3 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
-Date: Wed, 13 Oct 2021 14:44:31 +0300
-Message-Id: <20211013114432.31352-3-mika.westerberg@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211013114432.31352-1-mika.westerberg@linux.intel.com>
-References: <20211013114432.31352-1-mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v2 13/20] mtd: dataflash: Warn about failure to
+ unregister mtd device
+Message-ID: <20211013144429.65b294e5@xps13>
+In-Reply-To: <20211012153945.2651412-14-u.kleine-koenig@pengutronix.de>
+References: <20211012153945.2651412-1-u.kleine-koenig@pengutronix.de>
+ <20211012153945.2651412-14-u.kleine-koenig@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_044431_011600_A2AFC6A6 
-X-CRM114-Status: GOOD (  32.60  )
+X-CRM114-CacheID: sfid-20211013_054435_087233_7FF2407C 
+X-CRM114-Status: GOOD (  18.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,861 +64,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The preferred way to implement SPI-NOR controller drivers is through SPI
-subsubsystem utilizing the SPI MEM core functions. This converts the
-Intel SPI flash controller driver over the SPI MEM by moving the driver
-from SPI-NOR subsystem to SPI subsystem and in one go make it use the
-SPI MEM functions. The driver name will be changed from intel-spi to
-spi-intel to match the convention used in the SPI subsystem.
-
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mtd/spi-nor/controllers/Kconfig       |  36 --
- drivers/mtd/spi-nor/controllers/Makefile      |   3 -
- drivers/mtd/spi-nor/controllers/intel-spi.h   |  21 --
- drivers/spi/Kconfig                           |  39 +++
- drivers/spi/Makefile                          |   3 +
- .../intel-spi-pci.c => spi/spi-intel-pci.c}   |  20 +-
- .../spi-intel-platform.c}                     |  21 +-
- .../intel-spi.c => spi/spi-intel.c}           | 316 +++++++++++-------
- drivers/spi/spi-intel.h                       |  19 ++
- include/linux/mfd/lpc_ich.h                   |   2 +-
- .../x86/{intel-spi.h => spi-intel.h}          |   6 +-
- 11 files changed, 266 insertions(+), 220 deletions(-)
- delete mode 100644 drivers/mtd/spi-nor/controllers/intel-spi.h
- rename drivers/{mtd/spi-nor/controllers/intel-spi-pci.c => spi/spi-intel-pci.c} (86%)
- rename drivers/{mtd/spi-nor/controllers/intel-spi-platform.c => spi/spi-intel-platform.c} (65%)
- rename drivers/{mtd/spi-nor/controllers/intel-spi.c => spi/spi-intel.c} (79%)
- create mode 100644 drivers/spi/spi-intel.h
- rename include/linux/platform_data/x86/{intel-spi.h => spi-intel.h} (89%)
-
-diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
-index 5c0e0ec2e6d1..50f4f3484d42 100644
---- a/drivers/mtd/spi-nor/controllers/Kconfig
-+++ b/drivers/mtd/spi-nor/controllers/Kconfig
-@@ -26,39 +26,3 @@ config SPI_NXP_SPIFI
- 	  SPIFI is a specialized controller for connecting serial SPI
- 	  Flash. Enable this option if you have a device with a SPIFI
- 	  controller and want to access the Flash as a mtd device.
--
--config SPI_INTEL_SPI
--	tristate
--
--config SPI_INTEL_SPI_PCI
--	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
--	depends on X86 && PCI
--	select SPI_INTEL_SPI
--	help
--	  This enables PCI support for the Intel PCH/PCU SPI controller in
--	  master mode. This controller is present in modern Intel hardware
--	  and is used to hold BIOS and other persistent settings. Using
--	  this driver it is possible to upgrade BIOS directly from Linux.
--
--	  Say N here unless you know what you are doing. Overwriting the
--	  SPI flash may render the system unbootable.
--
--	  To compile this driver as a module, choose M here: the module
--	  will be called intel-spi-pci.
--
--config SPI_INTEL_SPI_PLATFORM
--	tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
--	depends on X86
--	select SPI_INTEL_SPI
--	help
--	  This enables platform support for the Intel PCH/PCU SPI
--	  controller in master mode. This controller is present in modern
--	  Intel hardware and is used to hold BIOS and other persistent
--	  settings. Using this driver it is possible to upgrade BIOS
--	  directly from Linux.
--
--	  Say N here unless you know what you are doing. Overwriting the
--	  SPI flash may render the system unbootable.
--
--	  To compile this driver as a module, choose M here: the module
--	  will be called intel-spi-platform.
-diff --git a/drivers/mtd/spi-nor/controllers/Makefile b/drivers/mtd/spi-nor/controllers/Makefile
-index e7abba491d98..6e2a1dc68466 100644
---- a/drivers/mtd/spi-nor/controllers/Makefile
-+++ b/drivers/mtd/spi-nor/controllers/Makefile
-@@ -2,6 +2,3 @@
- obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
- obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
- obj-$(CONFIG_SPI_NXP_SPIFI)	+= nxp-spifi.o
--obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
--obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
--obj-$(CONFIG_SPI_INTEL_SPI_PLATFORM)	+= intel-spi-platform.o
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.h b/drivers/mtd/spi-nor/controllers/intel-spi.h
-deleted file mode 100644
-index f2871179fd34..000000000000
---- a/drivers/mtd/spi-nor/controllers/intel-spi.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Intel PCH/PCU SPI flash driver.
-- *
-- * Copyright (C) 2016, Intel Corporation
-- * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-- */
--
--#ifndef INTEL_SPI_H
--#define INTEL_SPI_H
--
--#include <linux/platform_data/x86/intel-spi.h>
--
--struct intel_spi;
--struct resource;
--
--struct intel_spi *intel_spi_probe(struct device *dev,
--	struct resource *mem, const struct intel_spi_boardinfo *info);
--int intel_spi_remove(struct intel_spi *ispi);
--
--#endif /* INTEL_SPI_H */
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 83e352b0c8f9..5fe26de43537 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -406,6 +406,45 @@ config SPI_IMX
- 	help
- 	  This enables support for the Freescale i.MX SPI controllers.
- 
-+config SPI_INTEL
-+	tristate
-+
-+config SPI_INTEL_PCI
-+	tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
-+	depends on PCI
-+	depends on X86 || COMPILE_TEST
-+	depends on SPI_MEM
-+	select SPI_INTEL
-+	help
-+	  This enables PCI support for the Intel PCH/PCU SPI controller in
-+	  master mode. This controller is present in modern Intel hardware
-+	  and is used to hold BIOS and other persistent settings. Using
-+	  this driver it is possible to upgrade BIOS directly from Linux.
-+
-+	  Say N here unless you know what you are doing. Overwriting the
-+	  SPI flash may render the system unbootable.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called spi-intel-pci.
-+
-+config SPI_INTEL_PLATFORM
-+	tristate "Intel PCH/PCU SPI flash platform driver (DANGEROUS)"
-+	depends on X86 || COMPILE_TEST
-+	depends on SPI_MEM
-+	select SPI_INTEL
-+	help
-+	  This enables platform support for the Intel PCH/PCU SPI
-+	  controller in master mode. This controller is present in modern
-+	  Intel hardware and is used to hold BIOS and other persistent
-+	  settings. Using this driver it is possible to upgrade BIOS
-+	  directly from Linux.
-+
-+	  Say N here unless you know what you are doing. Overwriting the
-+	  SPI flash may render the system unbootable.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called spi-intel-platform.
-+
- config SPI_JCORE
- 	tristate "J-Core SPI Master"
- 	depends on OF && (SUPERH || COMPILE_TEST)
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index 699db95c8441..070918a79362 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -59,6 +59,9 @@ obj-$(CONFIG_SPI_HISI_KUNPENG)		+= spi-hisi-kunpeng.o
- obj-$(CONFIG_SPI_HISI_SFC_V3XX)		+= spi-hisi-sfc-v3xx.o
- obj-$(CONFIG_SPI_IMG_SPFI)		+= spi-img-spfi.o
- obj-$(CONFIG_SPI_IMX)			+= spi-imx.o
-+obj-$(CONFIG_SPI_INTEL)			+= spi-intel.o
-+obj-$(CONFIG_SPI_INTEL_PCI)		+= spi-intel-pci.o
-+obj-$(CONFIG_SPI_INTEL_PLATFORM)	+= spi-intel-platform.o
- obj-$(CONFIG_SPI_LANTIQ_SSC)		+= spi-lantiq-ssc.o
- obj-$(CONFIG_SPI_JCORE)			+= spi-jcore.o
- obj-$(CONFIG_SPI_LM70_LLP)		+= spi-lm70llp.o
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/spi/spi-intel-pci.c
-similarity index 86%
-rename from drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-rename to drivers/spi/spi-intel-pci.c
-index 508f7ca098ef..a177b10bc288 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
-+++ b/drivers/spi/spi-intel-pci.c
-@@ -2,16 +2,14 @@
- /*
-  * Intel PCH/PCU SPI flash PCI driver.
-  *
-- * Copyright (C) 2016, Intel Corporation
-+ * Copyright (C) 2016 - 2021 Intel Corporation
-  * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-  */
- 
--#include <linux/ioport.h>
--#include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- 
--#include "intel-spi.h"
-+#include "spi-intel.h"
- 
- #define BCR		0xdc
- #define BCR_WPD		BIT(0)
-@@ -46,7 +44,6 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
- 			       const struct pci_device_id *id)
- {
- 	struct intel_spi_boardinfo *info;
--	struct intel_spi *ispi;
- 	int ret;
- 
- 	ret = pcim_enable_device(pdev);
-@@ -59,17 +56,7 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
- 		return -ENOMEM;
- 
- 	info->data = pdev;
--	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
--	if (IS_ERR(ispi))
--		return PTR_ERR(ispi);
--
--	pci_set_drvdata(pdev, ispi);
--	return 0;
--}
--
--static void intel_spi_pci_remove(struct pci_dev *pdev)
--{
--	intel_spi_remove(pci_get_drvdata(pdev));
-+	return intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
- }
- 
- static const struct pci_device_id intel_spi_pci_ids[] = {
-@@ -98,7 +85,6 @@ static struct pci_driver intel_spi_pci_driver = {
- 	.name = "intel-spi",
- 	.id_table = intel_spi_pci_ids,
- 	.probe = intel_spi_pci_probe,
--	.remove = intel_spi_pci_remove,
- };
- 
- module_pci_driver(intel_spi_pci_driver);
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-platform.c b/drivers/spi/spi-intel-platform.c
-similarity index 65%
-rename from drivers/mtd/spi-nor/controllers/intel-spi-platform.c
-rename to drivers/spi/spi-intel-platform.c
-index f80f1086f928..293e03f239de 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi-platform.c
-+++ b/drivers/spi/spi-intel-platform.c
-@@ -2,20 +2,18 @@
- /*
-  * Intel PCH/PCU SPI flash platform driver.
-  *
-- * Copyright (C) 2016, Intel Corporation
-+ * Copyright (C) 2016 - 2021 Intel Corporation
-  * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-  */
- 
--#include <linux/ioport.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- 
--#include "intel-spi.h"
-+#include "spi-intel.h"
- 
- static int intel_spi_platform_probe(struct platform_device *pdev)
- {
- 	struct intel_spi_boardinfo *info;
--	struct intel_spi *ispi;
- 	struct resource *mem;
- 
- 	info = dev_get_platdata(&pdev->dev);
-@@ -23,24 +21,11 @@ static int intel_spi_platform_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	ispi = intel_spi_probe(&pdev->dev, mem, info);
--	if (IS_ERR(ispi))
--		return PTR_ERR(ispi);
--
--	platform_set_drvdata(pdev, ispi);
--	return 0;
--}
--
--static int intel_spi_platform_remove(struct platform_device *pdev)
--{
--	struct intel_spi *ispi = platform_get_drvdata(pdev);
--
--	return intel_spi_remove(ispi);
-+	return intel_spi_probe(&pdev->dev, mem, info);
- }
- 
- static struct platform_driver intel_spi_platform_driver = {
- 	.probe = intel_spi_platform_probe,
--	.remove = intel_spi_platform_remove,
- 	.driver = {
- 		.name = "intel-spi",
- 	},
-diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/spi/spi-intel.c
-similarity index 79%
-rename from drivers/mtd/spi-nor/controllers/intel-spi.c
-rename to drivers/spi/spi-intel.c
-index f35597cbea0c..6ce981637ba6 100644
---- a/drivers/mtd/spi-nor/controllers/intel-spi.c
-+++ b/drivers/spi/spi-intel.c
-@@ -2,21 +2,21 @@
- /*
-  * Intel PCH/PCU SPI flash driver.
-  *
-- * Copyright (C) 2016, Intel Corporation
-+ * Copyright (C) 2016 - 2021 Intel Corporation
-  * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-  */
- 
--#include <linux/err.h>
--#include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
--#include <linux/sched.h>
--#include <linux/sizes.h>
--#include <linux/mtd/mtd.h>
-+
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/spi-nor.h>
- 
--#include "intel-spi.h"
-+#include <linux/spi/flash.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
-+
-+#include "spi-intel.h"
- 
- /* Offsets are from @ispi->base */
- #define BFPREG				0x00
-@@ -92,8 +92,6 @@
- /* CPU specifics */
- #define BYT_PR				0x74
- #define BYT_SSFSTS_CTL			0x90
--#define BYT_BCR				0xfc
--#define BYT_BCR_WPD			BIT(0)
- #define BYT_FREG_NUM			5
- #define BYT_PR_NUM			5
- 
-@@ -125,10 +123,10 @@
-  * struct intel_spi - Driver private data
-  * @dev: Device pointer
-  * @info: Pointer to board specific info
-- * @nor: SPI NOR layer structure
-  * @base: Beginning of MMIO space
-  * @pregs: Start of protection registers
-  * @sregs: Start of software sequencer registers
-+ * @master: Pointer to the SPI controller structure
-  * @nregions: Maximum number of regions
-  * @pr_num: Maximum number of protected range registers
-  * @locked: Is SPI setting locked
-@@ -142,10 +140,10 @@
- struct intel_spi {
- 	struct device *dev;
- 	const struct intel_spi_boardinfo *info;
--	struct spi_nor nor;
- 	void __iomem *base;
- 	void __iomem *pregs;
- 	void __iomem *sregs;
-+	struct spi_controller *master;
- 	size_t nregions;
- 	size_t pr_num;
- 	bool locked;
-@@ -199,9 +197,6 @@ static void intel_spi_dump_regs(struct intel_spi *ispi)
- 			readl(ispi->sregs + OPMENU1));
- 	}
- 
--	if (ispi->info->type == INTEL_SPI_BYT)
--		dev_dbg(ispi->dev, "BCR=0x%08x\n", readl(ispi->base + BYT_BCR));
--
- 	dev_dbg(ispi->dev, "LVSCC=0x%08x\n", readl(ispi->base + LVSCC));
- 	dev_dbg(ispi->dev, "UVSCC=0x%08x\n", readl(ispi->base + UVSCC));
- 
-@@ -419,7 +414,6 @@ static int intel_spi_init(struct intel_spi *ispi)
- 	}
- 
- 	intel_spi_dump_regs(ispi);
--
- 	return 0;
- }
- 
-@@ -553,10 +547,9 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, size_t len,
- 	return 0;
- }
- 
--static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+static int intel_spi_read_reg(struct intel_spi *ispi, u8 opcode, void *buf,
- 			      size_t len)
- {
--	struct intel_spi *ispi = nor->priv;
- 	int ret;
- 
- 	/* Address of the first chip */
-@@ -574,10 +567,9 @@ static int intel_spi_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
- 	return intel_spi_read_block(ispi, buf, len);
- }
- 
--static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+static int intel_spi_write_reg(struct intel_spi *ispi, u8 opcode, const void *buf,
- 			       size_t len)
- {
--	struct intel_spi *ispi = nor->priv;
- 	int ret;
- 
- 	/*
-@@ -632,10 +624,9 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
- 	return intel_spi_hw_cycle(ispi, opcode, len);
- }
- 
--static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
--			      u_char *read_buf)
-+static ssize_t intel_spi_read(struct intel_spi *ispi, u32 from, size_t len,
-+			      void *read_buf)
- {
--	struct intel_spi *ispi = nor->priv;
- 	size_t block_size, retlen = 0;
- 	u32 val, status;
- 	ssize_t ret;
-@@ -647,16 +638,6 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
- 	if (WARN_ON_ONCE(ispi->atomic_preopcode))
- 		ispi->atomic_preopcode = 0;
- 
--	switch (nor->read_opcode) {
--	case SPINOR_OP_READ:
--	case SPINOR_OP_READ_FAST:
--	case SPINOR_OP_READ_4B:
--	case SPINOR_OP_READ_FAST_4B:
--		break;
--	default:
--		return -EINVAL;
--	}
--
- 	while (len > 0) {
- 		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
- 
-@@ -685,8 +666,7 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
- 			ret = -EACCES;
- 
- 		if (ret < 0) {
--			dev_err(ispi->dev, "read error: %llx: %#x\n", from,
--				status);
-+			dev_err(ispi->dev, "read error: %x: %#x\n", from, status);
- 			return ret;
- 		}
- 
-@@ -703,10 +683,9 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
- 	return retlen;
- }
- 
--static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
--			       const u_char *write_buf)
-+static ssize_t intel_spi_write(struct intel_spi *ispi, u32 to, size_t len,
-+			       const void *write_buf)
- {
--	struct intel_spi *ispi = nor->priv;
- 	size_t block_size, retlen = 0;
- 	u32 val, status;
- 	ssize_t ret;
-@@ -752,8 +731,7 @@ static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
- 			ret = -EACCES;
- 
- 		if (ret < 0) {
--			dev_err(ispi->dev, "write error: %llx: %#x\n", to,
--				status);
-+			dev_err(ispi->dev, "write error: %x: %#x\n", to, status);
- 			return ret;
- 		}
- 
-@@ -766,68 +744,160 @@ static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
- 	return retlen;
- }
- 
--static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
-+static int intel_spi_erase(struct intel_spi *ispi, u8 opcode, u32 offs)
- {
--	size_t erase_size, len = nor->mtd.erasesize;
--	struct intel_spi *ispi = nor->priv;
- 	u32 val, status, cmd;
- 	int ret;
- 
--	/* If the hardware can do 64k erase use that when possible */
--	if (len >= SZ_64K && ispi->erase_64k) {
-+	switch (opcode) {
-+	case SPINOR_OP_SE:
- 		cmd = HSFSTS_CTL_FCYCLE_ERASE_64K;
--		erase_size = SZ_64K;
--	} else {
-+		break;
-+
-+	case SPINOR_OP_BE_4K:
- 		cmd = HSFSTS_CTL_FCYCLE_ERASE;
--		erase_size = SZ_4K;
-+		break;
-+
-+	default:
-+		return -EINVAL;
- 	}
- 
--	if (ispi->swseq_erase) {
--		while (len > 0) {
--			writel(offs, ispi->base + FADDR);
-+	writel(offs, ispi->base + FADDR);
-+
-+	if (ispi->swseq_erase)
-+		return intel_spi_sw_cycle(ispi, opcode, 0,
-+					  OPTYPE_WRITE_WITH_ADDR);
-+
-+	/* Not needed with HW sequencer erase, make sure it is cleared */
-+	ispi->atomic_preopcode = 0;
-+
-+	val = readl(ispi->base + HSFSTS_CTL);
-+	val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
-+	val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
-+	val |= HSFSTS_CTL_FGO;
-+	val |= cmd;
-+	writel(val, ispi->base + HSFSTS_CTL);
-+
-+	ret = intel_spi_wait_hw_busy(ispi);
-+	if (ret)
-+		return ret;
-+
-+	status = readl(ispi->base + HSFSTS_CTL);
-+	if (status & HSFSTS_CTL_FCERR)
-+		return -EIO;
-+	if (status & HSFSTS_CTL_AEL)
-+		return -EACCES;
- 
--			ret = intel_spi_sw_cycle(ispi, nor->erase_opcode,
--						 0, OPTYPE_WRITE_WITH_ADDR);
--			if (ret)
--				return ret;
-+	return 0;
-+}
- 
--			offs += erase_size;
--			len -= erase_size;
-+static bool intel_spi_supports_mem_op(struct spi_mem *mem,
-+				      const struct spi_mem_op *op)
-+{
-+	struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
-+
-+	if (op->cmd.dtr)
-+		return false;
-+
-+	/*
-+	 * The Intel controller supports widths up to 4 but it handles
-+	 * them automatically and does not expose them to software. Here
-+	 * we accept anything up to 4.
-+	 */
-+	if (op->cmd.buswidth > 4 ||
-+	    (op->addr.nbytes && op->addr.buswidth > 4) ||
-+	    (op->dummy.nbytes && op->dummy.buswidth > 4))
-+		return false;
-+
-+	if (ispi->swseq_reg && ispi->locked) {
-+		int i;
-+
-+		/* Check if it is in the locked opcodes list */
-+		for (i = 0; i < ARRAY_SIZE(ispi->opcodes); i++) {
-+			if (ispi->opcodes[i] == op->cmd.opcode)
-+				goto check_opcode;
- 		}
- 
--		return 0;
-+		return false;
- 	}
- 
--	/* Not needed with HW sequencer erase, make sure it is cleared */
--	ispi->atomic_preopcode = 0;
-+check_opcode:
-+	switch (op->cmd.opcode) {
-+	case SPINOR_OP_RDID:
-+	case SPINOR_OP_RDSR:
-+	case SPINOR_OP_WRSR:
-+		return true;
- 
--	while (len > 0) {
--		writel(offs, ispi->base + FADDR);
-+	case SPINOR_OP_READ:
-+	case SPINOR_OP_READ_FAST:
-+	case SPINOR_OP_READ_4B:
-+	case SPINOR_OP_READ_FAST_4B:
-+		return true;
- 
--		val = readl(ispi->base + HSFSTS_CTL);
--		val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
--		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
--		val |= cmd;
--		val |= HSFSTS_CTL_FGO;
--		writel(val, ispi->base + HSFSTS_CTL);
-+	case SPINOR_OP_PP:
-+	case SPINOR_OP_PP_4B:
-+	case SPINOR_OP_WREN:
-+	case SPINOR_OP_WRDI:
-+		return true;
- 
--		ret = intel_spi_wait_hw_busy(ispi);
--		if (ret)
--			return ret;
-+	case SPINOR_OP_SE:
-+	case SPINOR_OP_SE_4B:
-+		return ispi->erase_64k;
- 
--		status = readl(ispi->base + HSFSTS_CTL);
--		if (status & HSFSTS_CTL_FCERR)
--			return -EIO;
--		else if (status & HSFSTS_CTL_AEL)
--			return -EACCES;
-+	case SPINOR_OP_BE_4K:
-+	case SPINOR_OP_BE_4K_4B:
-+		return true;
-+	}
- 
--		offs += erase_size;
--		len -= erase_size;
-+	return false;
-+}
-+
-+static int intel_spi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
-+{
-+	struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
-+	size_t nbytes = op->data.nbytes;
-+	u8 opcode = op->cmd.opcode;
-+
-+	if (op->addr.nbytes) {
-+		if  (op->data.dir == SPI_MEM_DATA_IN)
-+			return intel_spi_read(ispi, op->addr.val, nbytes,
-+					      op->data.buf.in);
-+		if (op->data.dir == SPI_MEM_DATA_OUT)
-+			return intel_spi_write(ispi, op->addr.val, nbytes,
-+					       op->data.buf.out);
-+		if (op->data.dir == SPI_MEM_NO_DATA)
-+			return intel_spi_erase(ispi, opcode, op->addr.val);
-+	} else {
-+		if  (op->data.dir == SPI_MEM_DATA_IN)
-+			return intel_spi_read_reg(ispi, opcode, op->data.buf.in,
-+						  nbytes);
-+		if (op->data.dir == SPI_MEM_DATA_OUT)
-+			return intel_spi_write_reg(ispi, opcode, op->data.buf.out,
-+						   nbytes);
-+		if (op->data.dir == SPI_MEM_NO_DATA)
-+			return intel_spi_write_reg(ispi, opcode, NULL, 0);
- 	}
- 
--	return 0;
-+	return -EINVAL;
-+}
-+
-+static const char *intel_spi_get_name(struct spi_mem *mem)
-+{
-+	const struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
-+
-+	/*
-+	 * Return name of the flash controller device to be compatible
-+	 * with the MTD version.
-+	 */
-+	return dev_name(ispi->dev);
- }
- 
-+static const struct spi_controller_mem_ops intel_spi_mem_ops = {
-+	.supports_op = intel_spi_supports_mem_op,
-+	.exec_op = intel_spi_exec_mem_op,
-+	.get_name = intel_spi_get_name,
-+};
-+
- static bool intel_spi_is_protected(const struct intel_spi *ispi,
- 				   unsigned int base, unsigned int limit)
- {
-@@ -896,70 +966,74 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
- 	}
- }
- 
--static const struct spi_nor_controller_ops intel_spi_controller_ops = {
--	.read_reg = intel_spi_read_reg,
--	.write_reg = intel_spi_write_reg,
--	.read = intel_spi_read,
--	.write = intel_spi_write,
--	.erase = intel_spi_erase,
--};
-+static int intel_spi_populate_chip(struct intel_spi *ispi)
-+{
-+	struct flash_platform_data *pdata;
-+	struct spi_board_info chip;
-+
-+	pdata = devm_kzalloc(ispi->dev, sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		return -ENOMEM;
-+
-+	pdata->nr_parts = 1;
-+	pdata->parts = devm_kcalloc(ispi->dev, sizeof(*pdata->parts),
-+				    pdata->nr_parts, GFP_KERNEL);
-+	if (!pdata->parts)
-+		return -ENOMEM;
-+
-+	intel_spi_fill_partition(ispi, pdata->parts);
-+
-+	memset(&chip, 0, sizeof(chip));
-+	snprintf(chip.modalias, 8, "spi-nor");
-+	chip.platform_data = pdata;
-+
-+	return spi_new_device(ispi->master, &chip) ? 0 : -ENODEV;
-+}
- 
--struct intel_spi *intel_spi_probe(struct device *dev,
--	struct resource *mem, const struct intel_spi_boardinfo *info)
-+/**
-+ * intel_spi_probe() - Probe the Intel SPI flash controller
-+ * @dev: Pointer to the parent device
-+ * @mem: MMIO resource
-+ * @info: Platform spefific information
-+ *
-+ * Probes Intel SPI flash controller and creates the flash chip device.
-+ * Returns %0 on success and negative errno in case of failure.
-+ */
-+int intel_spi_probe(struct device *dev, struct resource *mem,
-+		    const struct intel_spi_boardinfo *info)
- {
--	const struct spi_nor_hwcaps hwcaps = {
--		.mask = SNOR_HWCAPS_READ |
--			SNOR_HWCAPS_READ_FAST |
--			SNOR_HWCAPS_PP,
--	};
--	struct mtd_partition part;
-+	struct spi_controller *master;
- 	struct intel_spi *ispi;
- 	int ret;
- 
--	if (!info || !mem)
--		return ERR_PTR(-EINVAL);
-+	master = devm_spi_alloc_master(dev, sizeof(*ispi));
-+	if (!master)
-+		return -ENOMEM;
-+
-+	master->mem_ops = &intel_spi_mem_ops;
- 
--	ispi = devm_kzalloc(dev, sizeof(*ispi), GFP_KERNEL);
--	if (!ispi)
--		return ERR_PTR(-ENOMEM);
-+	ispi = spi_master_get_devdata(master);
- 
- 	ispi->base = devm_ioremap_resource(dev, mem);
- 	if (IS_ERR(ispi->base))
--		return ERR_CAST(ispi->base);
-+		return PTR_ERR(ispi->base);
- 
- 	ispi->dev = dev;
-+	ispi->master = master;
- 	ispi->info = info;
- 
- 	ret = intel_spi_init(ispi);
- 	if (ret)
--		return ERR_PTR(ret);
--
--	ispi->nor.dev = ispi->dev;
--	ispi->nor.priv = ispi;
--	ispi->nor.controller_ops = &intel_spi_controller_ops;
--
--	ret = spi_nor_scan(&ispi->nor, NULL, &hwcaps);
--	if (ret) {
--		dev_info(dev, "failed to locate the chip\n");
--		return ERR_PTR(ret);
--	}
--
--	intel_spi_fill_partition(ispi, &part);
-+		return ret;
- 
--	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
-+	ret = devm_spi_register_master(dev, master);
- 	if (ret)
--		return ERR_PTR(ret);
-+		return ret;
- 
--	return ispi;
-+	return intel_spi_populate_chip(ispi);
- }
- EXPORT_SYMBOL_GPL(intel_spi_probe);
- 
--int intel_spi_remove(struct intel_spi *ispi)
--{
--	return mtd_device_unregister(&ispi->nor.mtd);
--}
--EXPORT_SYMBOL_GPL(intel_spi_remove);
--
- MODULE_DESCRIPTION("Intel PCH/PCU SPI flash core driver");
- MODULE_AUTHOR("Mika Westerberg <mika.westerberg@linux.intel.com>");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/spi/spi-intel.h b/drivers/spi/spi-intel.h
-new file mode 100644
-index 000000000000..40f947f6941a
---- /dev/null
-+++ b/drivers/spi/spi-intel.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Intel PCH/PCU SPI flash driver.
-+ *
-+ * Copyright (C) 2016 - 2021, Intel Corporation
-+ * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-+ */
-+
-+#ifndef SPI_INTEL_H
-+#define SPI_INTEL_H
-+
-+#include <linux/platform_data/x86/spi-intel.h>
-+
-+struct resource;
-+
-+int intel_spi_probe(struct device *dev, struct resource *mem,
-+		    const struct intel_spi_boardinfo *info);
-+
-+#endif /* SPI_INTEL_H */
-diff --git a/include/linux/mfd/lpc_ich.h b/include/linux/mfd/lpc_ich.h
-index 39967a5eca6d..ea4a4b1b246a 100644
---- a/include/linux/mfd/lpc_ich.h
-+++ b/include/linux/mfd/lpc_ich.h
-@@ -8,7 +8,7 @@
- #ifndef LPC_ICH_H
- #define LPC_ICH_H
- 
--#include <linux/platform_data/x86/intel-spi.h>
-+#include <linux/platform_data/x86/spi-intel.h>
- 
- /* GPIO resources */
- #define ICH_RES_GPIO	0
-diff --git a/include/linux/platform_data/x86/intel-spi.h b/include/linux/platform_data/x86/spi-intel.h
-similarity index 89%
-rename from include/linux/platform_data/x86/intel-spi.h
-rename to include/linux/platform_data/x86/spi-intel.h
-index 7dda3f690465..a512ec37abbb 100644
---- a/include/linux/platform_data/x86/intel-spi.h
-+++ b/include/linux/platform_data/x86/spi-intel.h
-@@ -6,8 +6,8 @@
-  * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-  */
- 
--#ifndef INTEL_SPI_PDATA_H
--#define INTEL_SPI_PDATA_H
-+#ifndef SPI_INTEL_PDATA_H
-+#define SPI_INTEL_PDATA_H
- 
- enum intel_spi_type {
- 	INTEL_SPI_BYT = 1,
-@@ -28,4 +28,4 @@ struct intel_spi_boardinfo {
- 	void *data;
- };
- 
--#endif /* INTEL_SPI_PDATA_H */
-+#endif /* SPI_INTEL_PDATA_H */
--- 
-2.33.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIFR1ZSwgMTIg
+T2N0IDIwMjEgMTc6Mzk6MzggKzAyMDA6Cgo+IFdoZW4gYW4gc3BpIGRyaXZlcidzIHJlbW92ZSBm
+dW5jdGlvbiByZXR1cm5zIGEgbm9uLXplcm8gZXJyb3IgY29kZQoKU2hvdWxkIHdlIHMvYW4gc3Bp
+L2EgU1BJLz8KCj4gbm90aGluZyBoYXBwZW5zIGFwYXJ0IGZyb20gZW1pdHRpbmcgYSBnZW5lcmlj
+IGVycm9yIG1lc3NhZ2UuIE1ha2UgdGhpcwo+IGVycm9yIG1lc3NhZ2UgbW9yZSBkZXZpY2Ugc3Bl
+Y2lmaWMgYW5kIHJldHVybiB6ZXJvIGluc3RlYWQuCj4gCj4gU2lnbmVkLW9mZi1ieTogVXdlIEts
+ZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4KPiAtLS0KPiAgZHJp
+dmVycy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMgfCA1ICsrKystCj4gIDEgZmlsZSBjaGFu
+Z2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL210
+ZF9kYXRhZmxhc2guYwo+IGluZGV4IDk4MDJlMjY1ZmNhOC4uMjY5MWI2Yjc5ZGY4IDEwMDY0NAo+
+IC0tLSBhL2RyaXZlcnMvbXRkL2RldmljZXMvbXRkX2RhdGFmbGFzaC5jCj4gKysrIGIvZHJpdmVy
+cy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMKPiBAQCAtOTE5LDcgKzkxOSwxMCBAQCBzdGF0
+aWMgaW50IGRhdGFmbGFzaF9yZW1vdmUoc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkKPiAgCXN0YXR1
+cyA9IG10ZF9kZXZpY2VfdW5yZWdpc3RlcigmZmxhc2gtPm10ZCk7Cj4gIAlpZiAoc3RhdHVzID09
+IDApCj4gIAkJa2ZyZWUoZmxhc2gpOwo+IC0JcmV0dXJuIHN0YXR1czsKPiArCWVsc2UKPiArCQlk
+ZXZfd2Fybigmc3BpLT5kZXYsICJGYWlsZWQgdG8gdW5yZWdpc3RlciBtdGQgZGV2aWNlICglcGUp
+XG4iLAo+ICsJCQkgRVJSX1BUUihzdGF0dXMpKTsKPiArCXJldHVybiAwOwoKQXMgcGFydCBvZiBh
+IHJlY2VudCBOQU5EIGNsZWFudXAgc2VyaWVzIHdlIGVuZGVkIHVwIGFkZGluZyBXQVJOX09OKCkg
+WzFdCnRvIG1ha2UgaXQgdmVyeSBjbGVhciB0aGF0IGlmIHRoaXMgaGFwcGVucywgaXQncyBub3Qg
+ZXhwZWN0ZWQgYXQgYWxsIChpdAp3YXMgQm9yaXMnIGFkdmljZSkuCgpJIGRvbid0IHRoaW5rIHRo
+ZXJlIGlzIG9ubHkgb25lIGdvb2Qgc29sdXRpb24gYnV0IHBlcmhhcHMgaXRzIGJlc3QgdG8Ka2Vl
+cCBpdCBzeW5jJ2VkIHdpdGggdGhlIG90aGVyIGRyaXZlcnMgaW4gTVREPwoKVGhhbmtzLApNaXF1
+w6hsCgpbMV0KZDZlNGZkNTIyNDYxIG10ZDogcmF3bmFuZDogbmFuZHNpbTogU3RvcCB1c2luZyBu
+YW5kX3JlbGVhc2UoKQo5ZmRkNzhmN2JjZGEgbXRkOiByYXduYW5kOiB4d2F5OiBTdG9wIHVzaW5n
+IG5hbmRfcmVsZWFzZSgpCmQ5ZjJhMWFmODE3ZCBtdGQ6IHJhd25hbmQ6IHZmNjEwOiBTdG9wIHVz
+aW5nIG5hbmRfcmVsZWFzZSgpCmY2ZmM3NTk3OGQ4OCBtdGQ6IHJhd25hbmQ6IHR4eDluZGZtYzog
+U3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQpmM2UxNjlmNDRiZGIgbXRkOiByYXduYW5kOiB0bWlv
+OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmFiMTM1YzUxYmI4MSBtdGQ6IHJhd25hbmQ6IHRh
+bmdvOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjA2OGQ4NmVjZDlkOSBtdGQ6IHJhd25hbmQ6
+IHN1bnhpOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjI0YWNjM2ZhOGIzNiBtdGQ6IHJhd25h
+bmQ6IHN0bTMyX2ZtYzI6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKYzEyMWNiOTgwYzA5IG10
+ZDogcmF3bmFuZDogc29jcmF0ZXM6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKMzVhMzdmOTE5
+OGU1IG10ZDogcmF3bmFuZDogc2hhcnBzbDogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQo1MGFi
+YWNiYjYyMWYgbXRkOiByYXduYW5kOiBzaF9mbGN0bDogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2Uo
+KQo5NzQ4MTEwYmQyMmMgbXRkOiByYXduYW5kOiBzM2MyNDEwOiBTdG9wIHVzaW5nIG5hbmRfcmVs
+ZWFzZSgpCjEwYjg3NzUwYWUxNyBtdGQ6IHJhd25hbmQ6IHI4NTI6IFN0b3AgdXNpbmcgbmFuZF9y
+ZWxlYXNlKCkKMGEyYmM5OTE5Y2Y3IG10ZDogcmF3bmFuZDogcWNvbTogU3RvcCB1c2luZyBuYW5k
+X3JlbGVhc2UoKQpkMWFhZTAwNWEwMGUgbXRkOiByYXduYW5kOiBwbGF0X25hbmQ6IFN0b3AgdXNp
+bmcgbmFuZF9yZWxlYXNlKCkKMjNjZjM0NjE1MDEwIG10ZDogcmF3bmFuZDogcGFzZW1pOiBTdG9w
+IHVzaW5nIG5hbmRfcmVsZWFzZSgpCjJkOWNmNmYxMjlmOCBtdGQ6IHJhd25hbmQ6IG94bmFzOiBT
+dG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmYzNDJkZjY3YjE5YSBtdGQ6IHJhd25hbmQ6IG9yaW9u
+OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmI0NTMzNjc5Yzk1OCBtdGQ6IHJhd25hbmQ6IG9t
+YXAyOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmE5Mzg0Zjk1ZmU3NyBtdGQ6IHJhd25hbmQ6
+IG5kZmM6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKOGZkNTA3YmI0MjEwIG10ZDogcmF3bmFu
+ZDogbXhpYzogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQpjNmRjMDgyNzkzZDIgbXRkOiByYXdu
+YW5kOiBteGM6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKMWZlYzMzM2FhZGMyIG10ZDogcmF3
+bmFuZDogbXRrOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjFhMzZhN2Y3ODg5OCBtdGQ6IHJh
+d25hbmQ6IG1wYzUxMjE6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKNWVjYmJhNjE3NDQ2IG10
+ZDogcmF3bmFuZDogbWFydmVsbDogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQoyMWI3NTgyNzc3
+MjQgbXRkOiByYXduYW5kOiBscGMzMnh4X3NsYzogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQo1
+ZjNiY2UzYTUyNzUgbXRkOiByYXduYW5kOiBscGMzMnh4X21sYzogU3RvcCB1c2luZyBuYW5kX3Jl
+bGVhc2UoKQoyOGRjYzRlOGE4MzEgbXRkOiByYXduYW5kOiBpbmdlbmljOiBTdG9wIHVzaW5nIG5h
+bmRfcmVsZWFzZSgpCjcxYTQ5MTdiNGQ0YiBtdGQ6IHJhd25hbmQ6IGhpc2k1MDQ6IFN0b3AgdXNp
+bmcgbmFuZF9yZWxlYXNlKCkKMTk0ZjZjNDhjZGQ4IG10ZDogcmF3bmFuZDogZ3BtaTogU3RvcCB1
+c2luZyBuYW5kX3JlbGVhc2UoKQpkYmUwMjQxNTcwZWQgbXRkOiByYXduYW5kOiBncGlvOiBTdG9w
+IHVzaW5nIG5hbmRfcmVsZWFzZSgpCjljYzAyZjRjMGE4NyBtdGQ6IHJhd25hbmQ6IGZzbWM6IFN0
+b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKZjZjNGU2NjE0OTFhIG10ZDogcmF3bmFuZDogZnNsX3Vw
+bTogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQplOWYyZjVhODA3NTQgbXRkOiByYXduYW5kOiBm
+c2xfaWZjOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjEyOGJiYmYwYWM0ZCBtdGQ6IHJhd25h
+bmQ6IGZzbF9lbGJjOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjYzYTE0NjA3NjhhMSBtdGQ6
+IHJhd25hbmQ6IGRpc2tvbmNoaXA6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkKMDA5ZTJlMWQ4
+MzE4IG10ZDogcmF3bmFuZDogZGVuYWxpOiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCmE5NTc1
+YzQ4ZTUyMCBtdGQ6IHJhd25hbmQ6IGRhdmluY2k6IFN0b3AgdXNpbmcgbmFuZF9yZWxlYXNlKCkK
+OTcwMDI0ZjAzMWFlIG10ZDogcmF3bmFuZDogY3M1NTN4OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFz
+ZSgpCjU0NGJhYzg5OTlhNiBtdGQ6IHJhd25hbmQ6IGNhZmU6IFN0b3AgdXNpbmcgbmFuZF9yZWxl
+YXNlKCkKOGI4OGY0ZTBhODhiIG10ZDogcmF3bmFuZDogY2FkZW5jZTogU3RvcCB1c2luZyBuYW5k
+X3JlbGVhc2UoKQo5MzdkMDM5ZGZkY2YgbXRkOiByYXduYW5kOiBicmNtbmFuZDogU3RvcCB1c2lu
+ZyBuYW5kX3JlbGVhc2UoKQo5MzY5MDQzMDU5MjggbXRkOiByYXduYW5kOiBiY200N3h4OiBTdG9w
+IHVzaW5nIG5hbmRfcmVsZWFzZSgpCjRhM2QyMWJjMjVjMSBtdGQ6IHJhd25hbmQ6IGF1MTU1MG5k
+OiBTdG9wIHVzaW5nIG5hbmRfcmVsZWFzZSgpCjA4ZjI1Y2Q3NjdlMSBtdGQ6IHJhd25hbmQ6IGFt
+cy1kZWx0YTogU3RvcCB1c2luZyBuYW5kX3JlbGVhc2UoKQoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
+aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
+bnV4LW10ZC8K
