@@ -2,14 +2,14 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAF1DC4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AEB4C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:54:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B60C56109E
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:53:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B60C56109E
+	by mail.kernel.org (Postfix) with ESMTPS id F3A1261040
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:54:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F3A1261040
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ThvBt8gBzzVaj/j+ZIKeCGmcsaEek0wh95Ca0fmjvOQ=; b=MFdFB4Ci4K7FRd
-	6W/G77Hx5zVMOvF174lLLpiMwN6MAkZhtWqjkZYH2SR4lxUz3CieQvS1w53Jrdqmvk2neARq5SXtL
-	zaKSHr5Hjqtiy4wTezlQWP0rUgkuOpX64wkW79XQcTUfRXAZB0KXScHFW8KefjmrGy0usZxQfueJS
-	9ZNTBIg95gXPG+3uZxzt+Wqcs4lHPUeRP2Vnx110h45RDZSnV54oVj5fvobMhnaKiny8ZyQ3Pe7ME
-	erBQphNWE834A0a+gch9riHt88bboCQJUjTyhuXLWIwcBJzg/VsytdC5XVxLh3wnKYzug5LonRr6C
-	mayF1TdfNdhBvMf1oDaw==;
+	List-Owner; bh=7ph6i89r4TRnUyQavSgDxoyH3lmL2kh4gTfJ7Y58i6o=; b=ybl8MsA7UrTuyw
+	zxN3dSRf8kt2/nl3b3WwUxQMjqP41juK/7A/RQ6bzr98Z9qL+DyJgEWxeQqLWe0dU57U9NDfjosmZ
+	vxszoKSQOeEUZJwxxxHtrbiPneGs7mhQ8Bf5mGFfJqQa1AqzLMSAAlx9zkZvn6+jTLe+orTE4FFv3
+	txLXaurC6ZfLLGl12s8+wV3JnrFzVhVfJDMqw0GSo7KBAaP4l69BUfvEn+1nfIfS6sxgAUyyMsfky
+	8igzLa4Lcw5dnuE3aUqRV1CE1f3en3JcZN27ljjMHNHql5Ko0fXqMla4CKwlKVdCy60KAFhAA6r4t
+	lQSmXQ3/dYtL8SibDuFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1macoR-00GPbY-4R; Wed, 13 Oct 2021 11:52:47 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1macpe-00GPpm-Kv; Wed, 13 Oct 2021 11:54:02 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mabm5-00G5K3-AF; Wed, 13 Oct 2021 10:46:18 +0000
+ id 1mabmN-00G5Pe-Dz; Wed, 13 Oct 2021 10:46:42 +0000
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id C770222349;
- Wed, 13 Oct 2021 10:46:15 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id C7570201DD;
+ Wed, 13 Oct 2021 10:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1634121975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1634121993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7ReBJ39FQSq2Ri4gzsf/9HN/2AQLJSHkmbvHM+1gQDU=;
- b=Bs0jLE6dW9R2XV5QAW5PANZfFI55neOv68yBXHDkKdpWkALHM8icU9xbSzdfnCREFrZMct
- 3+2oN3aeDktCUFxEHYH/VXi16HIjV43KTI+7DyCyp9zZ7xbHI93O8kiQ8PoweiysaY4pPN
- UPyCFVv7pjQ3km4/YPlTqSGByM6p0LI=
+ bh=Or278HaFHEJv4/IhQug3hRkzHhUD8W5YgLbP9FdDHU8=;
+ b=igbm5YOuwvGUnm5YF9v3OxajvvQP7jBsiBdfXK5rgG5a6bYDqSa3nJFvVxE9ZDjgosFlir
+ VwX4dh+eUwDv7Jdmf0TOwS6aEkmZoqgcOnZom2x4FySVNc8YFic+9884rXAg/s0JQrcfuQ
+ kRxymIjtXZ63HsNGIhgkFuaKA5ZOxjQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1634121975;
+ s=susede2_ed25519; t=1634121993;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=7ReBJ39FQSq2Ri4gzsf/9HN/2AQLJSHkmbvHM+1gQDU=;
- b=r7uHZ7+0iVupNri72uYOV4o6jxkgpR8stOFMA8jxvLfFR9bxkjnCTl3Cs+7eA7SAyqgiLY
- muVAi/A9MWKYZLDw==
+ bh=Or278HaFHEJv4/IhQug3hRkzHhUD8W5YgLbP9FdDHU8=;
+ b=aXuMntUzmnD5JLBsUCJJVzyYr5CaLfp9W5noNZX1vQovb0idmDG3YgACaOSj1ZlRTSNYY4
+ 7wEIQwm8Z7QhHLBw==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
- by relay2.suse.de (Postfix) with ESMTP id A57B7A3B81;
- Wed, 13 Oct 2021 10:46:15 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id A9681A3B8E;
+ Wed, 13 Oct 2021 10:46:33 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
- id 7FB0E1E11B6; Wed, 13 Oct 2021 12:46:15 +0200 (CEST)
-Date: Wed, 13 Oct 2021 12:46:15 +0200
+ id 89CE61E11B6; Wed, 13 Oct 2021 12:46:33 +0200 (CEST)
+Date: Wed, 13 Oct 2021 12:46:33 +0200
 From: Jan Kara <jack@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
@@ -77,16 +77,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
  jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
  linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
-Subject: Re: [PATCH 28/29] reiserfs: use sb_bdev_nr_blocks
-Message-ID: <20211013104615.GH19200@quack2.suse.cz>
+Subject: Re: [PATCH 25/29] ext4: use sb_bdev_nr_blocks
+Message-ID: <20211013104633.GI19200@quack2.suse.cz>
 References: <20211013051042.1065752-1-hch@lst.de>
- <20211013051042.1065752-29-hch@lst.de>
+ <20211013051042.1065752-26-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211013051042.1065752-29-hch@lst.de>
+In-Reply-To: <20211013051042.1065752-26-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_034617_548511_C8A1EE40 
+X-CRM114-CacheID: sfid-20211013_034635_668154_1F2F028F 
 X-CRM114-Status: GOOD (  10.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -104,7 +104,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed 13-10-21 07:10:41, Christoph Hellwig wrote:
+On Wed 13-10-21 07:10:38, Christoph Hellwig wrote:
 > Use the sb_bdev_nr_blocks helper instead of open coding it.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
@@ -114,6 +114,7 @@ Looks good. Feel free to add:
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
