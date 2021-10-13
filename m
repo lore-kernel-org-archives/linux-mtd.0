@@ -2,14 +2,14 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08BC1C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25817C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:43:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C579C60F94
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:41:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C579C60F94
+	by mail.kernel.org (Postfix) with ESMTPS id 97C4C6023E
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:43:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 97C4C6023E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,32 +18,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NIUJfhp+WXUYtxFXUy67q7Mm/unz3TX6gA+0a5C9DaA=; b=cwNrZIfh7ex/J8
-	pDnZ9H6gwCV+NTKvNWCs6P1slLheOYnAaWTG8Uob5UP7IKZQfKgVw9yIGui5Wobikzsz/4jqlOoXj
-	kjPRiD/r1+ptjxiOn0NOjNN8rdwE7EP/c33w8uTS0tmL3emajkHq4mo25ceLYervJ95boeS+l21Wk
-	gtZSkHJk7PN636D6ueaMq0cgKXQRs5JHPGudSzyJPszhQIhprOzJDEk4TzgCfkZE9x3qby2S44/LS
-	PdGmO2+gANpWNKFQcStQWszbVrRPcL3QKoEucLbE3Yy4EqhSsUvO8BUfLUUoPZR6oy3hOxoqa3+9Y
-	cJLuJqX5+d4x3LH1/uBw==;
+	List-Owner; bh=Fz6M6GFRuB7MpDzQn93TV3GpzYY8Ax/f/VFbKOrcrfM=; b=oag+cgTPzje1ry
+	/fxltgFNWfrFPcfdG0+U5RskBnZ5fiRhAFNkRK5qWt+nGXJZs1rgYvjV+nNTeYYUKLHGEOwYO4lGe
+	mIfT8jo1qX+tTHZ4sTy9HOPr3kYXizQ7Pmocr4YucnrlZ7P3kPeIHoIOTYzQcjdoD8ON4uGW2vqEn
+	vGYKZChukz4/ePE8FHBV4mgp51yIXLWAMmPLt+u9Ec6RKTUfcFIMO/q+1A8HUZpBWjXnzs7xu0j2l
+	xSjZG7uvt+6MxtcWGhsUcCIGvSCpt+fkU+yQ1hUXUgQWmhPdZYD1t6JaqLKsrMMO9Bvl02ixKItKf
+	wCK1BvEzksPJ+fzZSJzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1maX0h-00Ezvj-Hu; Wed, 13 Oct 2021 05:41:03 +0000
+	id 1maX2O-00F0HU-4Y; Wed, 13 Oct 2021 05:42:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maWrJ-00Ey0v-U6; Wed, 13 Oct 2021 05:31:21 +0000
+ id 1maWsZ-00EyI5-BS; Wed, 13 Oct 2021 05:32:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=39HaYm26ck1Q/qs4DL8qNMVTN9Lr6ailLQ9qlOsD13M=; b=aHtBe1dA8jDL6nkYC2gqw40U9v
- J2fj1CwwPytuisPEPT+QqIPqcQL8qeP8ILip+Ab7OKF8Cx1l6cNtRM/EKOEIlwVPeU2yAnCydCn02
- 5u1wUYf1tItlO+Foc4rbLhqVkm8H5CK71rLqliO7JH8trcJ02f6RyBGKMz31rFqWdXkW1y9L+sahA
- XT3nV+TPR5tCHZkQ1sh73RyDt4oqzC4ySRvveksjUfsWkiF3PDnWxnnnZEAmJmGo7foAgtHOJFrc0
- 9y30dbLL2dRtoiGyPWTr1JTuXiPxu5Toub70OO8IJovwwh2Mk+WsF1BpUNv2XXzXuIZ3LugovSGBs
- QWI9O5nQ==;
+ bh=b/1WtCR7MZhJba3BS3poCWIl5wb8PwibdCVDGtUMTIg=; b=AibyI63hxlP0PaVEtM1IB45vue
+ B2Qp9sl1L0sVZCSdVPNP2iqBhSzPbqm6ldKWMyav2yvdMQ8khXEtRJDK2V9zGHlPUMeKa8c8v4s4E
+ hTRbUpkJ5IfZ1QXJr94uVSBQLjDMG1t+3M/ofV8sFHUaAtQSYoPoQsKWFIiX0cVrr8xgrr9ZfEvYU
+ VSxfoBUL4jMnlFdTu2kCpc9Pi2uWPogBS9qNnRhqO3RXf9uBkRWfNVq1ab8AfJFIv7CqvsjupDBKJ
+ 8pOAEhN8lIBVRjgAwbzXc7/iEd8mafeISKsRwX+b8XdVb8I+dz+5xaXlAxETrLmdZEU0hlvvnr1wv
+ uQt5wmrg==;
 Received: from 089144212063.atnat0021.highway.a1.net ([89.144.212.63]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maWpv-0077O7-6w; Wed, 13 Oct 2021 05:30:20 +0000
+ id 1maWrI-0077W8-Sa; Wed, 13 Oct 2021 05:31:47 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
@@ -65,10 +65,9 @@ Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
  jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
  linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
-Subject: [PATCH 17/29] nfs/blocklayout: use bdev_nr_sectors instead of open
- coding it
-Date: Wed, 13 Oct 2021 07:10:30 +0200
-Message-Id: <20211013051042.1065752-18-hch@lst.de>
+Subject: [PATCH 18/29] nilfs2: use bdev_nr_sectors instead of open coding it
+Date: Wed, 13 Oct 2021 07:10:31 +0200
+Message-Id: <20211013051042.1065752-19-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211013051042.1065752-1-hch@lst.de>
 References: <20211013051042.1065752-1-hch@lst.de>
@@ -95,31 +94,51 @@ Use the proper helper to read the block device size.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/nfs/blocklayout/dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nilfs2/ioctl.c     | 2 +-
+ fs/nilfs2/super.c     | 2 +-
+ fs/nilfs2/the_nilfs.c | 3 ++-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/blocklayout/dev.c b/fs/nfs/blocklayout/dev.c
-index acb1d22907daf..42772985cb43e 100644
---- a/fs/nfs/blocklayout/dev.c
-+++ b/fs/nfs/blocklayout/dev.c
-@@ -252,7 +252,7 @@ bl_parse_simple(struct nfs_server *server, struct pnfs_block_dev *d,
- 	d->bdev = bdev;
+diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
+index 640ac8fe891e6..4c12cc0e265e1 100644
+--- a/fs/nilfs2/ioctl.c
++++ b/fs/nilfs2/ioctl.c
+@@ -1107,7 +1107,7 @@ static int nilfs_ioctl_set_alloc_range(struct inode *inode, void __user *argp)
+ 		goto out;
  
+ 	ret = -ERANGE;
+-	if (range[1] > i_size_read(inode->i_sb->s_bdev->bd_inode))
++	if (range[1] > (bdev_nr_sectors(inode->i_sb->s_bdev) << SECTOR_SHIFT))
+ 		goto out;
  
--	d->len = i_size_read(d->bdev->bd_inode);
-+	d->len = bdev_nr_sectors(d->bdev) << SECTOR_SHIFT;
- 	d->map = bl_map_simple;
+ 	segbytes = nilfs->ns_blocks_per_segment * nilfs->ns_blocksize;
+diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
+index f6b2d280aab5a..1842663339acc 100644
+--- a/fs/nilfs2/super.c
++++ b/fs/nilfs2/super.c
+@@ -403,7 +403,7 @@ int nilfs_resize_fs(struct super_block *sb, __u64 newsize)
+ 	int ret;
  
- 	printk(KERN_INFO "pNFS: using block device %s\n",
-@@ -367,7 +367,7 @@ bl_parse_scsi(struct nfs_server *server, struct pnfs_block_dev *d,
- 		return PTR_ERR(bdev);
- 	d->bdev = bdev;
+ 	ret = -ERANGE;
+-	devsize = i_size_read(sb->s_bdev->bd_inode);
++	devsize = bdev_nr_sectors(sb->s_bdev) << SECTOR_SHIFT;
+ 	if (newsize > devsize)
+ 		goto out;
  
--	d->len = i_size_read(d->bdev->bd_inode);
-+	d->len = bdev_nr_sectors(d->bdev) << SECTOR_SHIFT;
- 	d->map = bl_map_simple;
- 	d->pr_key = v->scsi.pr_key;
+diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
+index c8bfc01da5d71..d68df998213e9 100644
+--- a/fs/nilfs2/the_nilfs.c
++++ b/fs/nilfs2/the_nilfs.c
+@@ -489,7 +489,8 @@ static int nilfs_load_super_block(struct the_nilfs *nilfs,
+ {
+ 	struct nilfs_super_block **sbp = nilfs->ns_sbp;
+ 	struct buffer_head **sbh = nilfs->ns_sbh;
+-	u64 sb2off = NILFS_SB2_OFFSET_BYTES(nilfs->ns_bdev->bd_inode->i_size);
++	loff_t size = bdev_nr_sectors(nilfs->ns_bdev) << SECTOR_SHIFT;
++	u64 sb2off = NILFS_SB2_OFFSET_BYTES(size);
+ 	int valid[2], swp = 0;
  
+ 	sbp[0] = nilfs_read_super_block(sb, NILFS_SB_OFFSET_BYTES, blocksize,
 -- 
 2.30.2
 
