@@ -2,88 +2,93 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96D57C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 18:23:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA9E5C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 19:38:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54A74610E8
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 18:23:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 54A74610E8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=eclypsium.com
+	by mail.kernel.org (Postfix) with ESMTPS id 59FF461168
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 19:38:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 59FF461168
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eZCKI2WnsmuWVxHNleYrryg4CvFiqLkP+/pWeSFS50A=; b=Ip7/VRg2/TBhSA
-	gH4q4eO8JwTuC5Uje43E1k/llh8gPmn0/IvtO5BQAWF6JzeCwoITUppozkt7LDAmyOYLSyzFIg1kG
-	VpYz0K+hHIOar1ZrnNVEp1MqfgJX6N+nsYeSfPbpIHevua7alBiJU9qc106+Tpy9FueftoOavf+87
-	F29ejUUpoi+f4GAhwdi5qpxiI8/NAeTc+qevgZdSoTHXrvEOVT/VVajARHVP72p3z28d7NDPk2vaz
-	k9ky7Yi+lZkkHPAyUQim2wwioe4R80nIlEOIZMgDax3bj30iDjxUu74t7cgna1A/L8VZ2umC14lW9
-	YsQ8bbVOs32Eo8fqIzdQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=rE5nJPhUucgX3gfmtlpzt59YxBPUhSGCFlM97rnLaK0=; b=j924QDVIxxCMg1l1mjQAXJH8ul
+	Y1AvPbKbhfzSoAfbS0H/fOSTV5h5aBUP9pc3BFdgd6AMWz+AegkWcWXHlBNerasvU28wH4XRwt4+3
+	SAiOwClaZcZ/WWflwkppUFYCPHx+8ToxlNU/O8Ab6/0lbqWQbVljA0vUBjUQNzhqFjKYx76atzouN
+	4/VLzd3yNZzXVzh51Bd2ERTmI9vUtBNJ8AVMBjwDUR4AoxLP8kFFeMoZsuM/5HDeKhi9Sc1zuH1dA
+	dcEW5HQW722Jaj8yMZ0egHARN1vuS25EMgx5g/6pWDK716wT5S2247G4cF/GpCgfInO7Z9D37+Qec
+	6IZoEh3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1maiu1-000Hnl-Pb; Wed, 13 Oct 2021 18:22:57 +0000
-Received: from mail-ua1-x92f.google.com ([2607:f8b0:4864:20::92f])
+	id 1mak3x-000RgL-Gv; Wed, 13 Oct 2021 19:37:17 +0000
+Received: from p3plsmtp05-02-2.prod.phx3.secureserver.net ([97.74.135.47]
+ helo=p3plwbeout05-02.prod.phx3.secureserver.net)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maity-000Hn9-Kl
- for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 18:22:56 +0000
-Received: by mail-ua1-x92f.google.com with SMTP id i22so6335856ual.10
- for <linux-mtd@lists.infradead.org>; Wed, 13 Oct 2021 11:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=eclypsium.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=JG1HQyyMPQTh6Csd4yNqjO3wLupEnpfFk+sqAUPlTOk=;
- b=TFFzvH5Pu9WlzGI0InQxPwB3KxmNZSBDchOU6UGGLQGd0Xsenl03vyAl6SHXmxKQjy
- 4qtW+cWYaPU4dr06zhFDGTUeLuqB776EveF7n2HPp0DP4OSGPKK6bfo9mGC73+t9asrW
- o75CBfjl6Ew/0ElWGVKnDFP6cyo6kQIUQlj3jQ0qrihFt0U9dE+TeihI0TxAfSf8lyeL
- ndGEYzI0Ey6wWTuWJuA96NjDAN9M2blmx7UFq3NkQYbpBFlJHkuZv5CIF0yrrbMqnQPD
- LubhmcsyJxzLoWH8v37eVMJAtypdbjA2h4XEq8hqTUCm8PqHOeL4kYfjICp9It2mktOZ
- pRiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=JG1HQyyMPQTh6Csd4yNqjO3wLupEnpfFk+sqAUPlTOk=;
- b=Bnddv83AAA+S7BIKTWQEcw891g9BXuCe3wLV4TzJtU1t7UJ4WYStDBfyr9sTevFTzV
- 9mxcv37YKD2NZBBDK/Oy69l2IBslDsPHw+6ZSp/W/dfUoNW+P2jb+h94nydgxavh0Kgq
- Y9iw6VcWa4nKiWSQ5mI/GFO4I0OSN3kACDZsW5VtEy7IjttHW2GF9lmCEK2vKR5oxhTn
- aewamXr4b7jLuxqOh1Eji8cZrWd+62lVroWJaRAQVNGC1Iw9qENhuuAKPyLuUT0wmn5t
- JGQJAvYeMtidBkmBEWqtHIr2gzVhLMmuGwJYaWDWMIKFgQzglFDoG1nBgG8QZrwXLldz
- gxnA==
-X-Gm-Message-State: AOAM531iOoiKhc1sQuae4zRoqFF302ugUOkRbpLAoyQvDh6BCW5l7d2w
- KOGZHVy/Fud8oIFjBFZm4xkLBmQGaCwyTF9ksnjZEg==
-X-Google-Smtp-Source: ABdhPJz69Ai0nTaBa5bEtqV6hL9jm5/HIGfcBAki8oEE+O1Uf7WRzLApuYsiDnVEd0spVImB3Qr9gvfCbOLu1452jrk=
-X-Received: by 2002:a67:e090:: with SMTP id f16mr1204482vsl.17.1634149372078; 
- Wed, 13 Oct 2021 11:22:52 -0700 (PDT)
+ id 1mak3t-000RfJ-EM
+ for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 19:37:15 +0000
+Received: from mailex.mailcore.me ([94.136.40.143]) by :WBEOUT: with ESMTP
+ id ak3ommBWcr0XRak3pmBNeN; Wed, 13 Oct 2021 12:37:09 -0700
+X-CMAE-Analysis: v=2.4 cv=CMfv4TnD c=1 sm=1 tr=0 ts=61673565
+ a=EhJYbXVJKsomWlz4CTV+qA==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=8gfv0ekSlNoA:10 a=FXvPX3liAAAA:8
+ a=Tqnnkb1RH65CB2acoZsA:9 a=QEXdDO2ut3YA:10 a=SM4aVyO6fsoA:10
+ a=UxLD5KG5Eu0A:10 a=OunuuIp3J4_2X_e7vt2U:22 a=fDQtvUcBV1mJc6yKnRhE:22
+ a=UObqyxdv-6Yh2QiB9mM_:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
+X-SID: ak3ommBWcr0XR
+Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175]
+ helo=[192.168.178.33])
+ by smtp01.mailcore.me with esmtpa (Exim 4.94.2)
+ (envelope-from <phillip@squashfs.org.uk>)
+ id 1mak3n-0001YR-Im; Wed, 13 Oct 2021 20:37:07 +0100
+Subject: Re: [PATCH 22/29] squashfs: use bdev_nr_sectors instead of open
+ coding it
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+ Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
+ Josef Bacik <josef@toxicpanda.com>, Theodore Ts'o <tytso@mit.edu>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ Dave Kleikamp <shaggy@kernel.org>,
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+ Anton Altaparmakov <anton@tuxera.com>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+ Kees Cook <keescook@chromium.org>, Jan Kara <jack@suse.com>,
+ linux-block@vger.kernel.org, dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+ linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+ linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+ linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+ reiserfs-devel@vger.kernel.org
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-23-hch@lst.de>
+From: Phillip Lougher <phillip@squashfs.org.uk>
+Message-ID: <cbd3585f-87c6-ab31-2911-4d3550287e22@squashfs.org.uk>
+Date: Wed, 13 Oct 2021 20:37:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210930100719.2176-1-mika.westerberg@linux.intel.com>
- <20210930100719.2176-2-mika.westerberg@linux.intel.com>
- <CAArk9MPWh4f1E=ecKBHy8PFzvU_y_ROgDyUU_O3ZQ0FuMhkj5Q@mail.gmail.com>
- <YVqOjF/xjqFV+Dl3@lahna>
- <CAArk9MPY+rCQse+JXtvb4KqunN9FZ=toK_v=PV-ro4cO6=5s7Q@mail.gmail.com>
- <YWag+RpkujjggPsW@lahna>
-In-Reply-To: <YWag+RpkujjggPsW@lahna>
-From: Mauro Lima <mauro.lima@eclypsium.com>
-Date: Wed, 13 Oct 2021 15:22:40 -0300
-Message-ID: <CAArk9MPKLy0abox-ULNNuQ1XO_96aJn449qM0pAp_amxFY6RDg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: intel-spi: Disable write protection
- only if asked
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Mark Brown <broonie@kernel.org>, 
- Lee Jones <lee.jones@linaro.org>, Michael Walle <michael@walle.cc>,
- Pratyush Yadav <p.yadav@ti.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>, 
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+In-Reply-To: <20211013051042.1065752-23-hch@lst.de>
+Content-Language: en-GB
+X-Mailcore-Auth: 439999529
+X-Mailcore-Domain: 1394945
+X-123-reg-Authenticated: phillip@squashfs.org.uk  
+X-Originating-IP: 82.69.79.175
+X-CMAE-Envelope: MS4xfGDtHBK8mz1x7fvOira6+ZLX1muqgEGY5KmLmIRgSfXvZoY1795NsRN97MrzCLIn3bLuRTjzfU2AYnSE9b0emgCcysjudVNPCNjKe0A6NDGNO/JlxBOL
+ r9oeglkrnL6syw/usExZ26EIiaeV81BtC8GghpARjg9LSTYaFe/tZW4cndNIdWYPbBwlUa6RhEg79VcVZUfnpj+E9R83OQrRoqlcL8UhEc163WaPqD3PTY32
+ OTP56cy4Rt/dBuaQPg6CxQ==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_112254_764197_478B8B3B 
-X-CRM114-Status: GOOD (  35.71  )
+X-CRM114-CacheID: sfid-20211013_123713_522117_34B0DA6E 
+X-CRM114-Status: UNSURE (   7.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,61 +100,17 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
-On Wed, Oct 13, 2021 at 6:04 AM Mika Westerberg
-<mika.westerberg@linux.intel.com> wrote:
->
-> Hi,
->
-> On Tue, Oct 12, 2021 at 03:49:22PM -0300, Mauro Lima wrote:
-> > Hi Mika
-> >
-> > On Mon, Oct 4, 2021 at 2:18 AM Mika Westerberg
-> > <mika.westerberg@linux.intel.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Fri, Oct 01, 2021 at 05:23:23PM -0300, Mauro Lima wrote:
-> > > > Question for maintainers: With these changes is it safe to remove the
-> > > > *(DANGEROUS)* tag from menuconfig?
-> > >
-> > > I don't think we want to remove that. This driver is not for regular
-> > > users, at least in its current form.
-> > Do we know why this is still dangerous for the user?
->
-> There was a bug in the driver in the past (that was already fixed but it
-> did not yet reach the stable trees or something like that). At this
-> unfortunate time there was no DANGEROUS in the name so Ubuntu kernel
-> went and enabled it. Combined with the bug certain Lenovo laptops BIOS
-> turned into read-only which prevented booting from non-default devices.
->
-> This happened even when the driver did not do any "write" or "erase"
-> operations, just clearing the status register or so.
->
-> We don't want that to happen again.
->
-> > My plan is to make a sys/class driver to query write protection status
-> > of the SPI, this will be
-> > used by fwupd to gather information about vendors, also should be easy
-> > for the user to use
-> > 'cat' and see the information from userspace. For this to be possible
-> > we need kernel engineers
-> > to compile the kernel with this driver enabled, but the (DANGEROUS)
-> > tag is a no go for most
-> > of them.
-> > Is there anything I can do to make this possible?
->
-> IMHO we can make certain parts of the driver, that are known not to
-> cause any issues available without the DANGEROUS. I mean the controller
-> exposes some information that I think you are intersted in and that does
-> not cause anything to be sent to the flash chip itself.
-This will work for me.
-Thanks!
+On 13/10/2021 06:10, Christoph Hellwig wrote:
+> Use the proper helper to read the block device size.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
 
 ______________________________________________________
 Linux MTD discussion mailing list
