@@ -2,51 +2,93 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16093C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38EA3C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:38:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 874C660527
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:26:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 874C660527
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id E2EF260FDA
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 11:38:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E2EF260FDA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NotXD7B2hKS2q1WVP/8XJQubYvLczOxRUwC31EA+4EM=; b=imwRogo8tMQ8GP
-	T88YqLV84arJw2QHJwpRO5w7Gtj6Ef+0LiTDUJoD8treH+m5w42ji+nVGU3y6zVxg9PgH0KTQVZva
-	KQsh0VN5rp50GBMWyM3L5x/3zwVDZLCOni7S8GikNZJiKz1EPlMJHJL5uXUJ8CtgWY9v0Qh8/Jtem
-	W1wlGjSLUOqsveAz3BMc5H0PvbEDBCX8pghKRQ2w4aisZE5ya1CptnhMEVxHONZDLO+Xpf83l/9ow
-	iuBtKNXIsBgZmHJPqX3dxPSThkRv/H3eOfXEsY8DAAElaOi10jIITkp+sMOjto2IoOY1rQRa5vbLx
-	uvR98ZYUMggg+yz2hsDA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=89Z7NlHT824dc7Dq7wASc2xQNCOtHhuSOiR8QmlU+MU=; b=sQqT8QShWkcaFv
+	PvrkBf/U0tXi1Jpdzo/b3Ee0BOiWran58YB1nKO6m9mE9ACKPfNyzXxeGIuAVSYYChcFOYs9uRtHM
+	jYmtQzsetSojQ0XZkhQ9JbD1QkDEj2cSq0YAuWmSIGWxa/S3oYPqxXXJJ1tVhTz71GBI4S+9TVkiR
+	UwrQzuYcsHdLJPIm1O2mZMa0koWC8EfRQJOiART7w0pS50Qv2hy4pRXVCwymyafcpNtvX+wk5Bf2J
+	nXxjoWkZf2sR1fuKabJTy4tJVQuSyYbHHP34Md/OlVhXtdtYKgVIOa6L/QAZtPlGAIFeLENkXMbTq
+	s6HjHLkPOZFW1/EjLdCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1macOd-00GIdU-1u; Wed, 13 Oct 2021 11:26:07 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1macZo-00GMFh-Lg; Wed, 13 Oct 2021 11:37:40 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mabBF-00Fu4C-LH
- for linux-mtd@lists.infradead.org; Wed, 13 Oct 2021 10:08:15 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id F02212000B;
- Wed, 13 Oct 2021 10:08:07 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: david.oberhollenzer@sigma-star.at
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH mtd-utils] mtd-tests: Read and write pages during speed tests
-Date: Wed, 13 Oct 2021 12:08:07 +0200
-Message-Id: <20211013100807.306920-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+ id 1mabiA-00G47s-7Z; Wed, 13 Oct 2021 10:42:15 +0000
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id F3C7D201DC;
+ Wed, 13 Oct 2021 10:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1634121729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z4HqZyTEwS9Rcr4e8FrndT8Yotl846xcwxeeXUm/Rbw=;
+ b=hfTvKDs9tMBALqogMul26UufXr/UDrQs6fQ2xFqJlV4HsPz2oyF/rJyg+bH01us42OgEr/
+ gQBKJJBLlltruRPrBFfyACC1OK0Ft4NyUMSfl4pAJ3vBBVqgnncaUQShaZ1/INd0ZXBrCL
+ clnKG5sWnOV98zZG/GDtQEKojpj+iI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1634121729;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Z4HqZyTEwS9Rcr4e8FrndT8Yotl846xcwxeeXUm/Rbw=;
+ b=viBbxLVUsu9I5SCs9Ro+b7QEHFxldjR3jplEXmW7M5M5jUxvO7kpggYe/iz58HOLGzWfYy
+ 3YAfJdO+WIda7fAA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+ by relay2.suse.de (Postfix) with ESMTP id 1EA1AA3B85;
+ Wed, 13 Oct 2021 10:42:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+ id EAB6D1E11B6; Wed, 13 Oct 2021 12:42:07 +0200 (CEST)
+Date: Wed, 13 Oct 2021 12:42:07 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+ Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+ David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+ Theodore Ts'o <tytso@mit.edu>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ Dave Kleikamp <shaggy@kernel.org>,
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+ Anton Altaparmakov <anton@tuxera.com>,
+ Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+ Kees Cook <keescook@chromium.org>,
+ Phillip Lougher <phillip@squashfs.org.uk>, Jan Kara <jack@suse.com>,
+ linux-block@vger.kernel.org, dm-devel@redhat.com,
+ drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 09/29] fs: simplify init_page_buffers
+Message-ID: <20211013104207.GD19200@quack2.suse.cz>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-10-hch@lst.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211013051042.1065752-10-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211013_030813_891683_371E3D5C 
-X-CRM114-Status: GOOD (  12.31  )
+X-CRM114-CacheID: sfid-20211013_034214_468753_73E23F6F 
+X-CRM114-Status: UNSURE (   9.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,41 +105,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The speed test does reads and writes of different sizes:
-- eraseblock
-- page
-- two pages
+On Wed 13-10-21 07:10:22, Christoph Hellwig wrote:
+> No need to convert from bdev to inode and back.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-At least this is the theory because, as opposed to the legacy kernel
-module doing the same measurement, the userspace tool uses the subpage
-size (hence accessing the same page 4, 8 or 16 times depending on the
-subpage setting). Of course if the controller does not support subpages,
-this issue is not visible.
+Looks good. Feel free to add:
 
-Use mtd.min_io_size instead for non-NOR devices in order to get the
-right bandwidth (at least one that fits the logs).
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- tests/mtd-tests/flash_speed.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tests/mtd-tests/flash_speed.c b/tests/mtd-tests/flash_speed.c
-index 0058269..2fc70a1 100644
---- a/tests/mtd-tests/flash_speed.c
-+++ b/tests/mtd-tests/flash_speed.c
-@@ -343,7 +343,7 @@ int main(int argc, char **argv)
- 		puts("not NAND flash, assume page size is 512 bytes.");
- 		pgsize = 512;
- 	} else {
--		pgsize = mtd.subpage_size;
-+		pgsize = mtd.min_io_size;
- 	}
- 
- 	pgcnt = mtd.eb_size / pgsize;
+								Honza
 -- 
-2.27.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
 ______________________________________________________
 Linux MTD discussion mailing list
