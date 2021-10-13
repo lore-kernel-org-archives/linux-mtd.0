@@ -2,14 +2,14 @@ Return-Path: <SRS0=kZCR=PB=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D53A3C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:51:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C7ABC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:53:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9373B60FDC
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:51:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9373B60FDC
+	by mail.kernel.org (Postfix) with ESMTPS id 1E11960FDC
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Oct 2021 05:53:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1E11960FDC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,32 +18,32 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vuZTWvp7FZAbU42QQLN1D1ABhKXoBT2esS1Oi749s1c=; b=ptaWmtHPt46PGW
-	S0XbXspr3+qHvPmXjOjjkQ7X2aBGWNnv8iK7pqn87uZG4FUZYbtooBaZuwRUQSMw1bLyuLQd5t45L
-	XcUcao0W+G7qvfLXKyT+x5cI+GV8cMg3zHpAx6IY5eR0b1H/6rc+ejD+d/O5jbS+FDvg1ezvWOYKj
-	H5HbdcduvHd/4NxnBmtRk6z3QaUzlURu/Lih3eA8wSdRqJKrf2DkCC6DoePm5jdoq53rowvykXCsQ
-	KhP9q/7LYSrEw9gzWMaZm4TjzzQHwCdWsyvoOyt4AwvMOQ3JXqAmsOOgFs8HvHl2ZTc4P9SVVcdol
-	ouQwR9IfHWlijwS/KVzQ==;
+	List-Owner; bh=cvhetnJAVlzt/BhV/Mrgfsfy4s6Fs1X9tdKqdJ//IC4=; b=ldos3Rw3mA3Znv
+	zEAaN+UkrWOQXHGJaq7kcM1CTUxjYBkPO3gIS2aFZ8KEgxWA0j3uIXq9IAMbX3/HL5/NpmkNIIlB3
+	ooT0aqPHLBWIGMT7ypklEGK8CRXeC+dYkJzBv1ypeWMgGBrylHHmTKqc9ZuN+eLOlt742Mbb2/9KB
+	N0Y0c3FPkXK+aPg7OfU52Zz904xPaFZAl6hnkYS9ibjyMPElAEaGiFJXXNKHLmynYcW5EHFxXc3iO
+	dCbNBDaKE2Snw3qjZUxrzOPUsUgYCzC2i+skllyam7oGjMngHXor2PUD2ETASHu2CNZOiYwUwIRhH
+	RHW13KTPgWqoPSFaLenQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1maXAS-00F1uf-Sk; Wed, 13 Oct 2021 05:51:09 +0000
+	id 1maXCS-00F2QM-Ms; Wed, 13 Oct 2021 05:53:12 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maWwF-00Ez3K-Hk; Wed, 13 Oct 2021 05:36:27 +0000
+ id 1maWxO-00EzHu-AG; Wed, 13 Oct 2021 05:37:38 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=neY9ZJPH9MOzXmChpQoZ9vtfCPorKJutFa1ekdF3DV4=; b=PfsnohEdvhV/ruqSbu6iivGJd0
- Zo3djyN81Xn383MmVLbTJS1kEa9ZCXS2mDK7N5D8NmAUj88uBINNyCVjbt3Hz2fQVnR03Zhjiq14G
- 7zKHh2mUo689xTR7fXEhFyPZxgwKxVIRy1j43hJzInRINaWAIzmG5d6Ld0VmrNJ+Kq8r9BVg4Cbci
- R/3myVb4K7ohrxlSfIhxqYAmYvFKTO+S1ZDDBa/9e8IX/lkJ4nmXRD2lGIKarWEbMdpJEKTQye58o
- teu82AOgZQfEvAkdOov+/Ln7EN2g7QtqcBdIkCnPq14ddL0H7JCQgOHyHVTLPqcDo9HQcK5qlrTAA
- FSxta/Cg==;
+ bh=B7QUfk1V5g8os83d9H1pzKVS9Wky59aiatgX6MLOno0=; b=CuLaz4HX5JZzaiVl+rrp1XndWm
+ e85pf4KU0S4KS7k7a+Wkegm4zhjEcCEdUBRwtldyb4HFr1gr6lgjLQj5gR2x0k9qZ9N9Fi8WCz2xT
+ 8lNfgQhpAFUxT3Ufk/vyJR4YsqVM6aNVMZAfOHIMxlln4kh1U5jQB+VQARv68hhX7otTu4X5BswHz
+ cDJoWPnUZvJYLvt/R4l57Ff41h5Bq0YtrIJd4PJZIkxEo6zcABBBk3oC13aDY8YQSnJFo4HO1M+Jv
+ hM3ZRc3MS/f9El5do1DMz2+5eS1XxDW0umV7kD9UxXVALr22ThZ0cfVN+QmtRS3JTKFR+4iWuZfuY
+ nidJqMvw==;
 Received: from 089144212063.atnat0021.highway.a1.net ([89.144.212.63]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1maWui-0077oT-Pz; Wed, 13 Oct 2021 05:35:26 +0000
+ id 1maWwF-0077wR-3t; Wed, 13 Oct 2021 05:36:43 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
@@ -65,9 +65,9 @@ Cc: Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
  jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
  linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
  ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
-Subject: [PATCH 21/29] reiserfs: use bdev_nr_sectors instead of open coding it
-Date: Wed, 13 Oct 2021 07:10:34 +0200
-Message-Id: <20211013051042.1065752-22-hch@lst.de>
+Subject: [PATCH 22/29] squashfs: use bdev_nr_sectors instead of open coding it
+Date: Wed, 13 Oct 2021 07:10:35 +0200
+Message-Id: <20211013051042.1065752-23-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211013051042.1065752-1-hch@lst.de>
 References: <20211013051042.1065752-1-hch@lst.de>
@@ -90,28 +90,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the proper helper to read the block device size and remove two
-cargo culted checks that can't be false.
+Use the proper helper to read the block device size.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/reiserfs/super.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/squashfs/super.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
-index 58481f8d63d5b..6c9681e2809f0 100644
---- a/fs/reiserfs/super.c
-+++ b/fs/reiserfs/super.c
-@@ -1986,8 +1986,7 @@ static int reiserfs_fill_super(struct super_block *s, void *data, int silent)
- 	 * smaller than the filesystem. If the check fails then abort and
- 	 * scream, because bad stuff will happen otherwise.
- 	 */
--	if (s->s_bdev && s->s_bdev->bd_inode
--	    && i_size_read(s->s_bdev->bd_inode) <
-+	if ((bdev_nr_sectors(s->s_bdev) << SECTOR_SHIFT) <
- 	    sb_block_count(rs) * sb_blocksize(rs)) {
- 		SWARN(silent, s, "", "Filesystem cannot be "
- 		      "mounted because it is bigger than the device");
+diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+index 60d6951915f44..e83042ecf0d86 100644
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -16,6 +16,7 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <linux/blkdev.h>
+ #include <linux/fs.h>
+ #include <linux/fs_context.h>
+ #include <linux/fs_parser.h>
+@@ -179,8 +180,8 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	/* Check the filesystem does not extend beyond the end of the
+ 	   block device */
+ 	msblk->bytes_used = le64_to_cpu(sblk->bytes_used);
+-	if (msblk->bytes_used < 0 || msblk->bytes_used >
+-			i_size_read(sb->s_bdev->bd_inode))
++	if (msblk->bytes_used < 0 ||
++	    msblk->bytes_used > (bdev_nr_sectors(sb->s_bdev) << SECTOR_SHIFT))
+ 		goto failed_mount;
+ 
+ 	/* Check block size for sanity */
 -- 
 2.30.2
 
