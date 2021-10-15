@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C19FDC433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:53:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69FDFC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:53:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F34461163
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:53:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8F34461163
+	by mail.kernel.org (Postfix) with ESMTPS id 3B63861101
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:53:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3B63861101
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7I/qDkpmFUNYvzOog8mV1z06p//VYVADkncLouHKS9s=; b=A6g+COHBFJN6H0
-	Z/eNukb71Z1ZDXvjwbbWUMPoodx+GjST2XapKy8BDnhrs+0tiZ0I9R0Y581j7mXEhZkIFUY7sdLJo
-	1q20nuNWyc8QzrJxXm2N1grw736MOn9ynMu9rYebcPwJl1yeT76nWdDKiymnmk8z5IPrTmzVoFeeA
-	CxVKYLGMmwVpLbY4yBNg7UBxd5VUeqVfPhL3yhUmfPNh0f1z/0aNNeqNZlx03Ku2nHK2FcqoTRjmm
-	I18d9EcrOKwzc4xl1wzgw2w5qx20RspwC5YlZqSzs7otgPqM3ES4jHDDvxxHPvnZX3Kvg/hJfJoZw
-	YUQI5PeWNPzfrMhWwbUQ==;
+	List-Owner; bh=gjNw6uRUHkZvOR9d9gnzUs1MY9sBReKxTtNG93Cmru4=; b=JCgmmTrkjAGuLu
+	W2kMwddbmKRB0Y7JfYUB0zRMsEgT9RAOr8aEL+egX1EuYaMiLcQkmhPZLeApPtDMQk1ZQOlZ+e3vC
+	HVuvy8WR1yVr/cOFJYLp4ZUDlZ4YSN5dQsooieJKwH3P0/vaYzGPAIfMmB5xGZd9uLFyCY+lnU9nk
+	tw2jV20gkqilC8VdCyO0pVRTNsRJBI4RJEJ1cfn1JYX18k3f6L1Co+XMevHjuaPGW5X8ay3uMQoRU
+	n7PCiThg0DD6gGV8tmVfUVJyUHzo4v+ul35QGskceiD7PUFaf+8tiu2suBX7Z2BWFjw2uykqKYPfL
+	VsaPBS9bGX7fhDP35xKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbX0N-009CEV-Vv; Fri, 15 Oct 2021 23:52:52 +0000
+	id 1mbX0f-009CUJ-Nf; Fri, 15 Oct 2021 23:53:09 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mbWzs-009C2v-VN; Fri, 15 Oct 2021 23:52:20 +0000
+ (Red Hat Linux)) id 1mbWzt-009C33-3r; Fri, 15 Oct 2021 23:52:21 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
  benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
@@ -40,9 +40,9 @@ Cc: linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
  linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
  linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 01/13] block/brd: add error handling support for add_disk()
-Date: Fri, 15 Oct 2021 16:52:07 -0700
-Message-Id: <20211015235219.2191207-2-mcgrof@kernel.org>
+Subject: [PATCH 05/13] nvdimm/btt: add error handling support for add_disk()
+Date: Fri, 15 Oct 2021 16:52:11 -0700
+Message-Id: <20211015235219.2191207-6-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211015235219.2191207-1-mcgrof@kernel.org>
 References: <20211015235219.2191207-1-mcgrof@kernel.org>
@@ -69,44 +69,24 @@ error handling.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/brd.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/nvdimm/btt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index 530b31240203..6065f493876f 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -372,6 +372,7 @@ static int brd_alloc(int i)
- 	struct brd_device *brd;
- 	struct gendisk *disk;
- 	char buf[DISK_NAME_LEN];
-+	int err = -ENOMEM;
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index 23ee8c005db5..57b921c5fbb5 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -1542,7 +1542,9 @@ static int btt_blk_init(struct btt *btt)
+ 	}
  
- 	mutex_lock(&brd_devices_mutex);
- 	list_for_each_entry(brd, &brd_devices, brd_list) {
-@@ -422,16 +423,20 @@ static int brd_alloc(int i)
- 	/* Tell the block layer that this is not a rotational device */
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
- 	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, disk->queue);
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
+ 	set_capacity(btt->btt_disk, btt->nlba * btt->sector_size >> 9);
+-	device_add_disk(&btt->nd_btt->dev, btt->btt_disk, NULL);
++	rc = device_add_disk(&btt->nd_btt->dev, btt->btt_disk, NULL);
++	if (rc)
 +		goto out_cleanup_disk;
  
- 	return 0;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(disk);
- out_free_dev:
- 	mutex_lock(&brd_devices_mutex);
- 	list_del(&brd->brd_list);
- 	mutex_unlock(&brd_devices_mutex);
- 	kfree(brd);
--	return -ENOMEM;
-+	return err;
- }
- 
- static void brd_probe(dev_t dev)
+ 	btt->nd_btt->size = btt->nlba * (u64)btt->sector_size;
+ 	nvdimm_check_and_set_ro(btt->btt_disk);
 -- 
 2.30.2
 
