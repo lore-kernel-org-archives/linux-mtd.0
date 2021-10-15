@@ -2,53 +2,59 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B94E2C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:08:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA27C433FE
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:14:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8082B60F70
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:08:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8082B60F70
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	by mail.kernel.org (Postfix) with ESMTPS id 65CE260FF2
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:14:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 65CE260FF2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Cc:To
-	:Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x9epKUZouBkaTZ/WDvq+kEUikQlj3lGLhlk18wkx38E=; b=WN6VRCKsYkaTxLwvhJbfRSC1v3
-	h38xTHUVRtxJztE94h4t7mSqR/UjhC+Jve7NAhRKql/s7EVuQ1QrG9SeGfBA4O+b4EVPoUEAVWfwG
-	geI5LLCuAcpf52sovVq+n8ro16iNco86pu6kLgOZdbvI2/7rHs7JBo5+uZZJyMqdfK7k9Q3l+I8rP
-	yOE78WNnJq7xHvJ7OZia1HLJyeuyzsBn3Vq62H19gDLkikwWfzyUVNONpvASBtFUUK6lsielVYuQ3
-	F/zDiU0Zfoqf2Ut7+RB8Kedvx4PG/XT4mPMJUhx03yLNXCckWRYihotzBrdT0B3/tlldz50n38uJ2
-	AfPKZdIA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=S/gR+YSMBj9eDG3n33jyGhP9snXAKrOcotaW2bKVM9c=; b=DSpH4e6TQqGvRw
+	GJ8yLgUW6D38FMuGP3AvqqnE/2bokPuIf0SUmIMdgo7sJ7kqF6AaTcnGbqaAmQzIrlzVKhwgnCFQZ
+	jDqJwBcUYTQk7E2N/fR+ZT3AYzwT96HCABXhaHtX8zv6Yp/Nya9Bgah+IU7LJU9qeR9VCacJM/rIP
+	WqfErPxk9ZDtaoiCeSlbVAPE22Y3W5cS4CQbcnKEYDFKCXwnW/S6gGO3Q81NQXM/O2gwuhHs2h31T
+	dpDqGowncLyVeWcCN+ES2RxqB3/+IseUB6GfdO5RbZ9Tc3DJp2mdU1IBeiwPuMP91ndVjtBVDOXwS
+	pKsDdjXje7kgS16xIwjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbJBc-006AKX-NE; Fri, 15 Oct 2021 09:07:33 +0000
-Received: from aposti.net ([89.234.176.197])
+	id 1mbJHu-006CKi-IF; Fri, 15 Oct 2021 09:14:02 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbIjp-0062Zg-2D
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 08:38:51 +0000
-Date: Fri, 15 Oct 2021 09:38:31 +0100
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1mbIwR-00662l-5S
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 08:51:53 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id D9F6624000C;
+ Fri, 15 Oct 2021 08:51:47 +0000 (UTC)
+Date: Fri, 15 Oct 2021 10:51:46 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Paul Cercueil <paul@crapouillou.net>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
  list@opendingux.net, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
  stable@vger.kernel.org
-Message-Id: <70G01R.2VROMW06O3O83@crapouillou.net>
-In-Reply-To: <20211015081313.60018976@xps13>
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
+Message-ID: <20211015105146.3d2fbd08@xps13>
+In-Reply-To: <70G01R.2VROMW06O3O83@crapouillou.net>
 References: <20211009184952.24591-1-paul@crapouillou.net>
  <20211009184952.24591-3-paul@crapouillou.net>
  <20211015081313.60018976@xps13>
+ <70G01R.2VROMW06O3O83@crapouillou.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_013849_335066_8376920C 
-X-CRM114-Status: GOOD (  28.42  )
+X-CRM114-CacheID: sfid-20211015_015151_554382_20F9ADAB 
+X-CRM114-Status: GOOD (  40.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,344 +66,181 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal =
-
-<miquel.raynal@bootlin.com> a =E9crit :
-> Hi Paul,
-> =
-
-> paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
-> =
-
->>  Move the function nand_read_page_hwecc_oob_first() (previously
->>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and =
-
->> export it
->>  as a GPL symbol, so that it can be used by more modules.
->> =
-
->>  Cc: <stable@vger.kernel.org> # v5.2
->>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the =
-
->> JZ4740")
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/mtd/nand/raw/davinci_nand.c | 70 =
-
->> +----------------------------
->>   drivers/mtd/nand/raw/nand_base.c    | 69 =
-
->> ++++++++++++++++++++++++++++
->>   include/linux/mtd/rawnand.h         |  2 +
->>   3 files changed, 72 insertions(+), 69 deletions(-)
->> =
-
->>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c =
-
->> b/drivers/mtd/nand/raw/davinci_nand.c
->>  index 89de24d3bb7a..45fec8c192ab 100644
->>  --- a/drivers/mtd/nand/raw/davinci_nand.c
->>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
->>  @@ -371,74 +371,6 @@ static int nand_davinci_correct_4bit(struct =
-
->> nand_chip *chip, u_char *data,
->>   	return corrected;
->>   }
->> =
-
->>  -/**
->>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
->>  - * @chip: nand chip info structure
->>  - * @buf: buffer to store read data
->>  - * @oob_required: caller requires OOB data read to chip->oob_poi
->>  - * @page: page number to read
->>  - *
->>  - * Hardware ECC for large page chips, require OOB to be read =
-
->> first. For this
->>  - * ECC mode, the write_page method is re-used from ECC_HW. These =
-
->> methods
->>  - * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME =
-
->> support with
->>  - * multiple ECC steps, follows the "infix ECC" scheme and =
-
->> reads/writes ECC from
->>  - * the data area, by overwriting the NAND manufacturer bad block =
-
->> markings.
->>  - */
->>  -static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip =
-
->> *chip,
->>  -						  uint8_t *buf,
->>  -						  int oob_required, int page)
->>  -{
->>  -	struct mtd_info *mtd =3D nand_to_mtd(chip);
->>  -	int i, eccsize =3D chip->ecc.size, ret;
->>  -	int eccbytes =3D chip->ecc.bytes;
->>  -	int eccsteps =3D chip->ecc.steps;
->>  -	uint8_t *p =3D buf;
->>  -	uint8_t *ecc_code =3D chip->ecc.code_buf;
->>  -	unsigned int max_bitflips =3D 0;
->>  -
->>  -	/* Read the OOB area first */
->>  -	ret =3D nand_read_oob_op(chip, page, 0, chip->oob_poi, =
-
->> mtd->oobsize);
->>  -	if (ret)
->>  -		return ret;
->>  -
->>  -	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);
->>  -	if (ret)
->>  -		return ret;
->>  -
->>  -	ret =3D mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
->>  -					 chip->ecc.total);
->>  -	if (ret)
->>  -		return ret;
->>  -
->>  -	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D eccsize) {
->>  -		int stat;
->>  -
->>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  -
->>  -		ret =3D nand_read_data_op(chip, p, eccsize, false, false);
->>  -		if (ret)
->>  -			return ret;
->>  -
->>  -		stat =3D chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  -		if (stat =3D=3D -EBADMSG &&
->>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  -			/* check for empty pages with bitflips */
->>  -			stat =3D nand_check_erased_ecc_chunk(p, eccsize,
->>  -							   &ecc_code[i],
->>  -							   eccbytes, NULL, 0,
->>  -							   chip->ecc.strength);
->>  -		}
->>  -
->>  -		if (stat < 0) {
->>  -			mtd->ecc_stats.failed++;
->>  -		} else {
->>  -			mtd->ecc_stats.corrected +=3D stat;
->>  -			max_bitflips =3D max_t(unsigned int, max_bitflips, stat);
->>  -		}
->>  -	}
->>  -	return max_bitflips;
->>  -}
->>  -
->>   =
-
->> /*----------------------------------------------------------------------=
-*/
->> =
-
->>   /* An ECC layout for using 4-bit ECC with small-page flash, storing
->>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct =
-
->> nand_chip *chip)
->>   			} else if (chunks =3D=3D 4 || chunks =3D=3D 8) {
->>   				mtd_set_ooblayout(mtd,
->>   						  nand_get_large_page_ooblayout());
->>  -				chip->ecc.read_page =3D nand_davinci_read_page_hwecc_oob_first;
->>  +				chip->ecc.read_page =3D nand_read_page_hwecc_oob_first;
->>   			} else {
->>   				return -EIO;
->>   			}
->>  diff --git a/drivers/mtd/nand/raw/nand_base.c =
-
->> b/drivers/mtd/nand/raw/nand_base.c
->>  index 3d6c6e880520..cb5f343b9fa2 100644
->>  --- a/drivers/mtd/nand/raw/nand_base.c
->>  +++ b/drivers/mtd/nand/raw/nand_base.c
->>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct =
-
->> nand_chip *chip, uint8_t *buf,
->>   	return max_bitflips;
->>   }
->> =
-
->>  +/**
->>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read with ECC
->>  + *                                  data read from OOB area
->>  + * @chip: nand chip info structure
->>  + * @buf: buffer to store read data
->>  + * @oob_required: caller requires OOB data read to chip->oob_poi
->>  + * @page: page number to read
->>  + *
->>  + * Hardware ECC for large page chips, require OOB to be read =
-
->> first. For this
-> =
-
-> requires
-> =
-
-> With this ECC configuration?
-> =
-
->>  + * ECC mode, the write_page method is re-used from ECC_HW. These =
-
->> methods
-> =
-
-> I do not understand this sentence nor the next one about syndrome. I
-> believe it is related to your engine and should not leak into the =
-
-> core.
-> =
-
->>  + * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME =
-
->> support with
->>  + * multiple ECC steps, follows the "infix ECC" scheme and =
-
->> reads/writes ECC from
->>  + * the data area, by overwriting the NAND manufacturer bad block =
-
->> markings.
-> =
-
-> That's a sentence I don't like. What do you mean exactly?
-> =
-
-> What "Infix ECC" scheme is?
-> =
-
-> Do you mean that unlike the syndrome  mode it *does not* overwrite the
-> BBM ?
-
-I don't mean anything. I did not write that comment. I just moved the =
-
-function verbatim with no changes. If something needs to be fixed, then =
-
-it needs to be fixed before/after this patch.
-
->>  + */
->>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t =
-
->> *buf,
->>  +				   int oob_required, int page)
->>  +{
->>  +	struct mtd_info *mtd =3D nand_to_mtd(chip);
->>  +	int i, eccsize =3D chip->ecc.size, ret;
->>  +	int eccbytes =3D chip->ecc.bytes;
->>  +	int eccsteps =3D chip->ecc.steps;
->>  +	uint8_t *p =3D buf;
->>  +	uint8_t *ecc_code =3D chip->ecc.code_buf;
->>  +	unsigned int max_bitflips =3D 0;
->>  +
->>  +	/* Read the OOB area first */
->>  +	ret =3D nand_read_oob_op(chip, page, 0, chip->oob_poi, =
-
->> mtd->oobsize);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);
-> =
-
-> Definitely not, your are requesting the chip to do the read_page
-> operation twice. You only need a nand_change_read_column I believe.
-
-Again, this code is just being moved around - don't shoot the messenger =
-
-:)
-
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	ret =3D mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
->>  +					 chip->ecc.total);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D eccsize) {
->>  +		int stat;
->>  +
->>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  +
->>  +		ret =3D nand_read_data_op(chip, p, eccsize, false, false);
->>  +		if (ret)
->>  +			return ret;
->>  +
->>  +		stat =3D chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  +		if (stat =3D=3D -EBADMSG &&
->>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  +			/* check for empty pages with bitflips */
->>  +			stat =3D nand_check_erased_ecc_chunk(p, eccsize,
->>  +							   &ecc_code[i],
->>  +							   eccbytes, NULL, 0,
->>  +							   chip->ecc.strength);
->>  +		}
->>  +
->>  +		if (stat < 0) {
->>  +			mtd->ecc_stats.failed++;
->>  +		} else {
->>  +			mtd->ecc_stats.corrected +=3D stat;
->>  +			max_bitflips =3D max_t(unsigned int, max_bitflips, stat);
->>  +		}
->>  +	}
->>  +	return max_bitflips;
->>  +}
->>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
->>  +
->>   /**
->>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC syndrome =
-
->> based page read
->>    * @chip: nand chip info structure
->>  diff --git a/include/linux/mtd/rawnand.h =
-
->> b/include/linux/mtd/rawnand.h
->>  index b2f9dd3cbd69..5b88cd51fadb 100644
->>  --- a/include/linux/mtd/rawnand.h
->>  +++ b/include/linux/mtd/rawnand.h
->>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip *chip, =
-
->> void *buf, unsigned int len,
->>   		      bool force_8bit, bool check_only);
->>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
->>   		       unsigned int len, bool force_8bit);
->>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t =
-
->> *buf,
->>  +				   int oob_required, int page);
-> =
-
-> You certainly want to add this symbol closer to the other read/write
-> page helpers?
-
-Where would that be? The other read/write page helpers are all "static" =
-
-so they don't appear in any header.
-
-Cheers,
--Paul
-
->> =
-
->>   /* Scan and identify a NAND device */
->>   int nand_scan_with_ids(struct nand_chip *chip, unsigned int =
-
->> max_chips,
-> =
-
-> =
-
-> Thanks,
-> Miqu=E8l
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUGF1bCwKCnBhdWxAY3JhcG91aWxsb3UubmV0IHdyb3RlIG9uIEZyaSwgMTUgT2N0IDIwMjEg
+MDk6Mzg6MzEgKzAxMDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBMZSB2ZW4uLCBvY3QuIDE1IDIwMjEg
+YXQgMDg6MTM6MTMgKzAyMDAsIE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
+b20+IGEgw6ljcml0IDoKPiA+IEhpIFBhdWwsCj4gPiAKPiA+IHBhdWxAY3JhcG91aWxsb3UubmV0
+IHdyb3RlIG9uIFNhdCwgIDkgT2N0IDIwMjEgMjA6NDk6NTEgKzAyMDA6Cj4gPiAgIAo+ID4+ICBN
+b3ZlIHRoZSBmdW5jdGlvbiBuYW5kX3JlYWRfcGFnZV9od2VjY19vb2JfZmlyc3QoKSAocHJldmlv
+dXNseQo+ID4+ICBuYW5kX2RhdmluY2lfcmVhZF9wYWdlX2h3ZWNjX29vYl9maXJzdCgpKSB0byBu
+YW5kX2Jhc2UuYywgYW5kID4+IGV4cG9ydCBpdAo+ID4+ICBhcyBhIEdQTCBzeW1ib2wsIHNvIHRo
+YXQgaXQgY2FuIGJlIHVzZWQgYnkgbW9yZSBtb2R1bGVzLiAgCj4gPj4gPj4gIENjOiA8c3RhYmxl
+QHZnZXIua2VybmVsLm9yZz4gIyB2NS4yICAKPiA+PiAgRml4ZXM6IGEwYWM3NzhlYjgyYyAoIm10
+ZDogcmF3bmFuZDogaW5nZW5pYzogQWRkIHN1cHBvcnQgZm9yIHRoZSA+PiBKWjQ3NDAiKQo+ID4+
+ICBTaWduZWQtb2ZmLWJ5OiBQYXVsIENlcmN1ZWlsIDxwYXVsQGNyYXBvdWlsbG91Lm5ldD4KPiA+
+PiAgLS0tCj4gPj4gICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kYXZpbmNpX25hbmQuYyB8IDcwID4+
+ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPj4gICBkcml2ZXJzL210ZC9uYW5kL3Jh
+dy9uYW5kX2Jhc2UuYyAgICB8IDY5ID4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiA+
+PiAgIGluY2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaCAgICAgICAgIHwgIDIgKwo+ID4+ICAgMyBm
+aWxlcyBjaGFuZ2VkLCA3MiBpbnNlcnRpb25zKCspLCA2OSBkZWxldGlvbnMoLSkgIAo+ID4+ID4+
+ICBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZGF2aW5jaV9uYW5kLmMgPj4gYi9k
+cml2ZXJzL210ZC9uYW5kL3Jhdy9kYXZpbmNpX25hbmQuYyAgCj4gPj4gIGluZGV4IDg5ZGUyNGQz
+YmI3YS4uNDVmZWM4YzE5MmFiIDEwMDY0NAo+ID4+ICAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jh
+dy9kYXZpbmNpX25hbmQuYwo+ID4+ICArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9kYXZpbmNp
+X25hbmQuYwo+ID4+ICBAQCAtMzcxLDc0ICszNzEsNiBAQCBzdGF0aWMgaW50IG5hbmRfZGF2aW5j
+aV9jb3JyZWN0XzRiaXQoc3RydWN0ID4+IG5hbmRfY2hpcCAqY2hpcCwgdV9jaGFyICpkYXRhLAo+
+ID4+ICAgCXJldHVybiBjb3JyZWN0ZWQ7Cj4gPj4gICB9ICAKPiA+PiA+PiAgLS8qKiAgCj4gPj4g
+IC0gKiBuYW5kX3JlYWRfcGFnZV9od2VjY19vb2JfZmlyc3QgLSBodyBlY2MsIHJlYWQgb29iIGZp
+cnN0Cj4gPj4gIC0gKiBAY2hpcDogbmFuZCBjaGlwIGluZm8gc3RydWN0dXJlCj4gPj4gIC0gKiBA
+YnVmOiBidWZmZXIgdG8gc3RvcmUgcmVhZCBkYXRhCj4gPj4gIC0gKiBAb29iX3JlcXVpcmVkOiBj
+YWxsZXIgcmVxdWlyZXMgT09CIGRhdGEgcmVhZCB0byBjaGlwLT5vb2JfcG9pCj4gPj4gIC0gKiBA
+cGFnZTogcGFnZSBudW1iZXIgdG8gcmVhZAo+ID4+ICAtICoKPiA+PiAgLSAqIEhhcmR3YXJlIEVD
+QyBmb3IgbGFyZ2UgcGFnZSBjaGlwcywgcmVxdWlyZSBPT0IgdG8gYmUgcmVhZCA+PiBmaXJzdC4g
+Rm9yIHRoaXMKPiA+PiAgLSAqIEVDQyBtb2RlLCB0aGUgd3JpdGVfcGFnZSBtZXRob2QgaXMgcmUt
+dXNlZCBmcm9tIEVDQ19IVy4gVGhlc2UgPj4gbWV0aG9kcwo+ID4+ICAtICogcmVhZC93cml0ZSBF
+Q0MgZnJvbSB0aGUgT09CIGFyZWEsIHVubGlrZSB0aGUgRUNDX0hXX1NZTkRST01FID4+IHN1cHBv
+cnQgd2l0aAo+ID4+ICAtICogbXVsdGlwbGUgRUNDIHN0ZXBzLCBmb2xsb3dzIHRoZSAiaW5maXgg
+RUNDIiBzY2hlbWUgYW5kID4+IHJlYWRzL3dyaXRlcyBFQ0MgZnJvbQo+ID4+ICAtICogdGhlIGRh
+dGEgYXJlYSwgYnkgb3ZlcndyaXRpbmcgdGhlIE5BTkQgbWFudWZhY3R1cmVyIGJhZCBibG9jayA+
+PiBtYXJraW5ncy4KPiA+PiAgLSAqLwo+ID4+ICAtc3RhdGljIGludCBuYW5kX2RhdmluY2lfcmVh
+ZF9wYWdlX2h3ZWNjX29vYl9maXJzdChzdHJ1Y3QgbmFuZF9jaGlwID4+ICpjaGlwLAo+ID4+ICAt
+CQkJCQkJICB1aW50OF90ICpidWYsCj4gPj4gIC0JCQkJCQkgIGludCBvb2JfcmVxdWlyZWQsIGlu
+dCBwYWdlKQo+ID4+ICAtewo+ID4+ICAtCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gbmFuZF90b19t
+dGQoY2hpcCk7Cj4gPj4gIC0JaW50IGksIGVjY3NpemUgPSBjaGlwLT5lY2Muc2l6ZSwgcmV0Owo+
+ID4+ICAtCWludCBlY2NieXRlcyA9IGNoaXAtPmVjYy5ieXRlczsKPiA+PiAgLQlpbnQgZWNjc3Rl
+cHMgPSBjaGlwLT5lY2Muc3RlcHM7Cj4gPj4gIC0JdWludDhfdCAqcCA9IGJ1ZjsKPiA+PiAgLQl1
+aW50OF90ICplY2NfY29kZSA9IGNoaXAtPmVjYy5jb2RlX2J1ZjsKPiA+PiAgLQl1bnNpZ25lZCBp
+bnQgbWF4X2JpdGZsaXBzID0gMDsKPiA+PiAgLQo+ID4+ICAtCS8qIFJlYWQgdGhlIE9PQiBhcmVh
+IGZpcnN0ICovCj4gPj4gIC0JcmV0ID0gbmFuZF9yZWFkX29vYl9vcChjaGlwLCBwYWdlLCAwLCBj
+aGlwLT5vb2JfcG9pLCA+PiBtdGQtPm9vYnNpemUpOwo+ID4+ICAtCWlmIChyZXQpCj4gPj4gIC0J
+CXJldHVybiByZXQ7Cj4gPj4gIC0KPiA+PiAgLQlyZXQgPSBuYW5kX3JlYWRfcGFnZV9vcChjaGlw
+LCBwYWdlLCAwLCBOVUxMLCAwKTsKPiA+PiAgLQlpZiAocmV0KQo+ID4+ICAtCQlyZXR1cm4gcmV0
+Owo+ID4+ICAtCj4gPj4gIC0JcmV0ID0gbXRkX29vYmxheW91dF9nZXRfZWNjYnl0ZXMobXRkLCBl
+Y2NfY29kZSwgY2hpcC0+b29iX3BvaSwgMCwKPiA+PiAgLQkJCQkJIGNoaXAtPmVjYy50b3RhbCk7
+Cj4gPj4gIC0JaWYgKHJldCkKPiA+PiAgLQkJcmV0dXJuIHJldDsKPiA+PiAgLQo+ID4+ICAtCWZv
+ciAoaSA9IDA7IGVjY3N0ZXBzOyBlY2NzdGVwcy0tLCBpICs9IGVjY2J5dGVzLCBwICs9IGVjY3Np
+emUpIHsKPiA+PiAgLQkJaW50IHN0YXQ7Cj4gPj4gIC0KPiA+PiAgLQkJY2hpcC0+ZWNjLmh3Y3Rs
+KGNoaXAsIE5BTkRfRUNDX1JFQUQpOwo+ID4+ICAtCj4gPj4gIC0JCXJldCA9IG5hbmRfcmVhZF9k
+YXRhX29wKGNoaXAsIHAsIGVjY3NpemUsIGZhbHNlLCBmYWxzZSk7Cj4gPj4gIC0JCWlmIChyZXQp
+Cj4gPj4gIC0JCQlyZXR1cm4gcmV0Owo+ID4+ICAtCj4gPj4gIC0JCXN0YXQgPSBjaGlwLT5lY2Mu
+Y29ycmVjdChjaGlwLCBwLCAmZWNjX2NvZGVbaV0sIE5VTEwpOwo+ID4+ICAtCQlpZiAoc3RhdCA9
+PSAtRUJBRE1TRyAmJgo+ID4+ICAtCQkgICAgKGNoaXAtPmVjYy5vcHRpb25zICYgTkFORF9FQ0Nf
+R0VORVJJQ19FUkFTRURfQ0hFQ0spKSB7Cj4gPj4gIC0JCQkvKiBjaGVjayBmb3IgZW1wdHkgcGFn
+ZXMgd2l0aCBiaXRmbGlwcyAqLwo+ID4+ICAtCQkJc3RhdCA9IG5hbmRfY2hlY2tfZXJhc2VkX2Vj
+Y19jaHVuayhwLCBlY2NzaXplLAo+ID4+ICAtCQkJCQkJCSAgICZlY2NfY29kZVtpXSwKPiA+PiAg
+LQkJCQkJCQkgICBlY2NieXRlcywgTlVMTCwgMCwKPiA+PiAgLQkJCQkJCQkgICBjaGlwLT5lY2Mu
+c3RyZW5ndGgpOwo+ID4+ICAtCQl9Cj4gPj4gIC0KPiA+PiAgLQkJaWYgKHN0YXQgPCAwKSB7Cj4g
+Pj4gIC0JCQltdGQtPmVjY19zdGF0cy5mYWlsZWQrKzsKPiA+PiAgLQkJfSBlbHNlIHsKPiA+PiAg
+LQkJCW10ZC0+ZWNjX3N0YXRzLmNvcnJlY3RlZCArPSBzdGF0Owo+ID4+ICAtCQkJbWF4X2JpdGZs
+aXBzID0gbWF4X3QodW5zaWduZWQgaW50LCBtYXhfYml0ZmxpcHMsIHN0YXQpOwo+ID4+ICAtCQl9
+Cj4gPj4gIC0JfQo+ID4+ICAtCXJldHVybiBtYXhfYml0ZmxpcHM7Cj4gPj4gIC19Cj4gPj4gIC0g
+IAo+ID4+ICAgPj4gLyotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICAKPiAqLwo+ID4+ID4+ICAgLyogQW4gRUNDIGxh
+eW91dCBmb3IgdXNpbmcgNC1iaXQgRUNDIHdpdGggc21hbGwtcGFnZSBmbGFzaCwgc3RvcmluZyAg
+Cj4gPj4gIEBAIC02NDgsNyArNTgwLDcgQEAgc3RhdGljIGludCBkYXZpbmNpX25hbmRfYXR0YWNo
+X2NoaXAoc3RydWN0ID4+IG5hbmRfY2hpcCAqY2hpcCkKPiA+PiAgIAkJCX0gZWxzZSBpZiAoY2h1
+bmtzID09IDQgfHwgY2h1bmtzID09IDgpIHsKPiA+PiAgIAkJCQltdGRfc2V0X29vYmxheW91dCht
+dGQsCj4gPj4gICAJCQkJCQkgIG5hbmRfZ2V0X2xhcmdlX3BhZ2Vfb29ibGF5b3V0KCkpOwo+ID4+
+ICAtCQkJCWNoaXAtPmVjYy5yZWFkX3BhZ2UgPSBuYW5kX2RhdmluY2lfcmVhZF9wYWdlX2h3ZWNj
+X29vYl9maXJzdDsKPiA+PiAgKwkJCQljaGlwLT5lY2MucmVhZF9wYWdlID0gbmFuZF9yZWFkX3Bh
+Z2VfaHdlY2Nfb29iX2ZpcnN0Owo+ID4+ICAgCQkJfSBlbHNlIHsKPiA+PiAgIAkJCQlyZXR1cm4g
+LUVJTzsKPiA+PiAgIAkJCX0KPiA+PiAgZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3
+L25hbmRfYmFzZS5jID4+IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiA+PiAg
+aW5kZXggM2Q2YzZlODgwNTIwLi5jYjVmMzQzYjlmYTIgMTAwNjQ0Cj4gPj4gIC0tLSBhL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPj4gICsrKyBiL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRfYmFzZS5jCj4gPj4gIEBAIC0zMTYwLDYgKzMxNjAsNzUgQEAgc3RhdGljIGludCBu
+YW5kX3JlYWRfcGFnZV9od2VjYyhzdHJ1Y3QgPj4gbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ICpi
+dWYsCj4gPj4gICAJcmV0dXJuIG1heF9iaXRmbGlwczsKPiA+PiAgIH0gIAo+ID4+ID4+ICArLyoq
+ICAKPiA+PiAgKyAqIG5hbmRfcmVhZF9wYWdlX2h3ZWNjX29vYl9maXJzdCAtIEhhcmR3YXJlIEVD
+QyBwYWdlIHJlYWQgd2l0aCBFQ0MKPiA+PiAgKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGRhdGEgcmVhZCBmcm9tIE9PQiBhcmVhCj4gPj4gICsgKiBAY2hpcDogbmFuZCBjaGlw
+IGluZm8gc3RydWN0dXJlCj4gPj4gICsgKiBAYnVmOiBidWZmZXIgdG8gc3RvcmUgcmVhZCBkYXRh
+Cj4gPj4gICsgKiBAb29iX3JlcXVpcmVkOiBjYWxsZXIgcmVxdWlyZXMgT09CIGRhdGEgcmVhZCB0
+byBjaGlwLT5vb2JfcG9pCj4gPj4gICsgKiBAcGFnZTogcGFnZSBudW1iZXIgdG8gcmVhZAo+ID4+
+ICArICoKPiA+PiAgKyAqIEhhcmR3YXJlIEVDQyBmb3IgbGFyZ2UgcGFnZSBjaGlwcywgcmVxdWly
+ZSBPT0IgdG8gYmUgcmVhZCA+PiBmaXJzdC4gRm9yIHRoaXMgIAo+ID4gCj4gPiByZXF1aXJlcwo+
+ID4gCj4gPiBXaXRoIHRoaXMgRUNDIGNvbmZpZ3VyYXRpb24/Cj4gPiAgIAo+ID4+ICArICogRUND
+IG1vZGUsIHRoZSB3cml0ZV9wYWdlIG1ldGhvZCBpcyByZS11c2VkIGZyb20gRUNDX0hXLiBUaGVz
+ZSA+PiBtZXRob2RzICAKPiA+IAo+ID4gSSBkbyBub3QgdW5kZXJzdGFuZCB0aGlzIHNlbnRlbmNl
+IG5vciB0aGUgbmV4dCBvbmUgYWJvdXQgc3luZHJvbWUuIEkKPiA+IGJlbGlldmUgaXQgaXMgcmVs
+YXRlZCB0byB5b3VyIGVuZ2luZSBhbmQgc2hvdWxkIG5vdCBsZWFrIGludG8gdGhlID4gY29yZS4K
+PiA+ICAgCj4gPj4gICsgKiByZWFkL3dyaXRlIEVDQyBmcm9tIHRoZSBPT0IgYXJlYSwgdW5saWtl
+IHRoZSBFQ0NfSFdfU1lORFJPTUUgPj4gc3VwcG9ydCB3aXRoCj4gPj4gICsgKiBtdWx0aXBsZSBF
+Q0Mgc3RlcHMsIGZvbGxvd3MgdGhlICJpbmZpeCBFQ0MiIHNjaGVtZSBhbmQgPj4gcmVhZHMvd3Jp
+dGVzIEVDQyBmcm9tCj4gPj4gICsgKiB0aGUgZGF0YSBhcmVhLCBieSBvdmVyd3JpdGluZyB0aGUg
+TkFORCBtYW51ZmFjdHVyZXIgYmFkIGJsb2NrID4+IG1hcmtpbmdzLiAgCj4gPiAKPiA+IFRoYXQn
+cyBhIHNlbnRlbmNlIEkgZG9uJ3QgbGlrZS4gV2hhdCBkbyB5b3UgbWVhbiBleGFjdGx5Pwo+ID4g
+Cj4gPiBXaGF0ICJJbmZpeCBFQ0MiIHNjaGVtZSBpcz8KPiA+IAo+ID4gRG8geW91IG1lYW4gdGhh
+dCB1bmxpa2UgdGhlIHN5bmRyb21lICBtb2RlIGl0ICpkb2VzIG5vdCogb3ZlcndyaXRlIHRoZQo+
+ID4gQkJNID8gIAo+IAo+IEkgZG9uJ3QgbWVhbiBhbnl0aGluZy4gSSBkaWQgbm90IHdyaXRlIHRo
+YXQgY29tbWVudC4gSSBqdXN0IG1vdmVkIHRoZSBmdW5jdGlvbiB2ZXJiYXRpbSB3aXRoIG5vIGNo
+YW5nZXMuIElmIHNvbWV0aGluZyBuZWVkcyB0byBiZSBmaXhlZCwgdGhlbiBpdCBuZWVkcyB0byBi
+ZSBmaXhlZCBiZWZvcmUvYWZ0ZXIgdGhpcyBwYXRjaC4KCldlbGwsIHRoaXMgY29tbWVudCBzaG91
+bGQgYmUgYWRhcHRlZCBiZWNhdXNlIGFzLWlzIEkgZG9uJ3QgdGhpbmsgaXQncwp3aXNlIHRvIG1v
+dmUgaXQgYXJvdW5kLgoKPiAKPiA+PiAgKyAqLwo+ID4+ICAraW50IG5hbmRfcmVhZF9wYWdlX2h3
+ZWNjX29vYl9maXJzdChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ID4+ICpidWYsCj4g
+Pj4gICsJCQkJICAgaW50IG9vYl9yZXF1aXJlZCwgaW50IHBhZ2UpCj4gPj4gICt7Cj4gPj4gICsJ
+c3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3RvX210ZChjaGlwKTsKPiA+PiAgKwlpbnQgaSwg
+ZWNjc2l6ZSA9IGNoaXAtPmVjYy5zaXplLCByZXQ7Cj4gPj4gICsJaW50IGVjY2J5dGVzID0gY2hp
+cC0+ZWNjLmJ5dGVzOwo+ID4+ICArCWludCBlY2NzdGVwcyA9IGNoaXAtPmVjYy5zdGVwczsKPiA+
+PiAgKwl1aW50OF90ICpwID0gYnVmOwo+ID4+ICArCXVpbnQ4X3QgKmVjY19jb2RlID0gY2hpcC0+
+ZWNjLmNvZGVfYnVmOwo+ID4+ICArCXVuc2lnbmVkIGludCBtYXhfYml0ZmxpcHMgPSAwOwo+ID4+
+ICArCj4gPj4gICsJLyogUmVhZCB0aGUgT09CIGFyZWEgZmlyc3QgKi8KPiA+PiAgKwlyZXQgPSBu
+YW5kX3JlYWRfb29iX29wKGNoaXAsIHBhZ2UsIDAsIGNoaXAtPm9vYl9wb2ksID4+IG10ZC0+b29i
+c2l6ZSk7Cj4gPj4gICsJaWYgKHJldCkKPiA+PiAgKwkJcmV0dXJuIHJldDsKPiA+PiAgKwo+ID4+
+ICArCXJldCA9IG5hbmRfcmVhZF9wYWdlX29wKGNoaXAsIHBhZ2UsIDAsIE5VTEwsIDApOyAgCj4g
+PiAKPiA+IERlZmluaXRlbHkgbm90LCB5b3VyIGFyZSByZXF1ZXN0aW5nIHRoZSBjaGlwIHRvIGRv
+IHRoZSByZWFkX3BhZ2UKPiA+IG9wZXJhdGlvbiB0d2ljZS4gWW91IG9ubHkgbmVlZCBhIG5hbmRf
+Y2hhbmdlX3JlYWRfY29sdW1uIEkgYmVsaWV2ZS4gIAo+IAo+IEFnYWluLCB0aGlzIGNvZGUgaXMg
+anVzdCBiZWluZyBtb3ZlZCBhcm91bmQgLSBkb24ndCBzaG9vdCB0aGUgbWVzc2VuZ2VyIDopCgpo
+YWhhCgpXZWxsLCBub3cgeW91IHRvdWNoIHRoZSBjb3JlLCBzbyBJIG5lZWQgdG8gYmUgbW9yZSBj
+YXJlZnVsLCBhbmQgdGhlCmNvZGUgaXMgZGVmaW5pdGVseSB3cm9uZywgc28gZXZlbiBpZiB3ZSBk
+b24ndCBtb3ZlIHRoYXQgY29kZSBvZmYsIHlvdQpkZWZpbml0ZWx5IHdhbnQgdG8gZml4IGl0IGlu
+IG9yZGVyIHRvIGltcHJvdmUgeW91ciBwZXJmb3JtYW5jZXMuCgo+ID4+ICArCWlmIChyZXQpCj4g
+Pj4gICsJCXJldHVybiByZXQ7Cj4gPj4gICsKPiA+PiAgKwlyZXQgPSBtdGRfb29ibGF5b3V0X2dl
+dF9lY2NieXRlcyhtdGQsIGVjY19jb2RlLCBjaGlwLT5vb2JfcG9pLCAwLAo+ID4+ICArCQkJCQkg
+Y2hpcC0+ZWNjLnRvdGFsKTsKPiA+PiAgKwlpZiAocmV0KQo+ID4+ICArCQlyZXR1cm4gcmV0Owo+
+ID4+ICArCj4gPj4gICsJZm9yIChpID0gMDsgZWNjc3RlcHM7IGVjY3N0ZXBzLS0sIGkgKz0gZWNj
+Ynl0ZXMsIHAgKz0gZWNjc2l6ZSkgewo+ID4+ICArCQlpbnQgc3RhdDsKPiA+PiAgKwo+ID4+ICAr
+CQljaGlwLT5lY2MuaHdjdGwoY2hpcCwgTkFORF9FQ0NfUkVBRCk7Cj4gPj4gICsKPiA+PiAgKwkJ
+cmV0ID0gbmFuZF9yZWFkX2RhdGFfb3AoY2hpcCwgcCwgZWNjc2l6ZSwgZmFsc2UsIGZhbHNlKTsK
+PiA+PiAgKwkJaWYgKHJldCkKPiA+PiAgKwkJCXJldHVybiByZXQ7Cj4gPj4gICsKPiA+PiAgKwkJ
+c3RhdCA9IGNoaXAtPmVjYy5jb3JyZWN0KGNoaXAsIHAsICZlY2NfY29kZVtpXSwgTlVMTCk7Cj4g
+Pj4gICsJCWlmIChzdGF0ID09IC1FQkFETVNHICYmCj4gPj4gICsJCSAgICAoY2hpcC0+ZWNjLm9w
+dGlvbnMgJiBOQU5EX0VDQ19HRU5FUklDX0VSQVNFRF9DSEVDSykpIHsKPiA+PiAgKwkJCS8qIGNo
+ZWNrIGZvciBlbXB0eSBwYWdlcyB3aXRoIGJpdGZsaXBzICovCj4gPj4gICsJCQlzdGF0ID0gbmFu
+ZF9jaGVja19lcmFzZWRfZWNjX2NodW5rKHAsIGVjY3NpemUsCj4gPj4gICsJCQkJCQkJICAgJmVj
+Y19jb2RlW2ldLAo+ID4+ICArCQkJCQkJCSAgIGVjY2J5dGVzLCBOVUxMLCAwLAo+ID4+ICArCQkJ
+CQkJCSAgIGNoaXAtPmVjYy5zdHJlbmd0aCk7Cj4gPj4gICsJCX0KPiA+PiAgKwo+ID4+ICArCQlp
+ZiAoc3RhdCA8IDApIHsKPiA+PiAgKwkJCW10ZC0+ZWNjX3N0YXRzLmZhaWxlZCsrOwo+ID4+ICAr
+CQl9IGVsc2Ugewo+ID4+ICArCQkJbXRkLT5lY2Nfc3RhdHMuY29ycmVjdGVkICs9IHN0YXQ7Cj4g
+Pj4gICsJCQltYXhfYml0ZmxpcHMgPSBtYXhfdCh1bnNpZ25lZCBpbnQsIG1heF9iaXRmbGlwcywg
+c3RhdCk7Cj4gPj4gICsJCX0KPiA+PiAgKwl9Cj4gPj4gICsJcmV0dXJuIG1heF9iaXRmbGlwczsK
+PiA+PiAgK30KPiA+PiAgK0VYUE9SVF9TWU1CT0xfR1BMKG5hbmRfcmVhZF9wYWdlX2h3ZWNjX29v
+Yl9maXJzdCk7Cj4gPj4gICsKPiA+PiAgIC8qKgo+ID4+ICAgICogbmFuZF9yZWFkX3BhZ2Vfc3lu
+ZHJvbWUgLSBbUkVQTEFDRUFCTEVdIGhhcmR3YXJlIEVDQyBzeW5kcm9tZSA+PiBiYXNlZCBwYWdl
+IHJlYWQKPiA+PiAgICAqIEBjaGlwOiBuYW5kIGNoaXAgaW5mbyBzdHJ1Y3R1cmUKPiA+PiAgZGlm
+ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaCA+PiBiL2luY2x1ZGUvbGludXgv
+bXRkL3Jhd25hbmQuaAo+ID4+ICBpbmRleCBiMmY5ZGQzY2JkNjkuLjViODhjZDUxZmFkYiAxMDA2
+NDQKPiA+PiAgLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oCj4gPj4gICsrKyBiL2lu
+Y2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaAo+ID4+ICBAQCAtMTUzOSw2ICsxNTM5LDggQEAgaW50
+IG5hbmRfcmVhZF9kYXRhX29wKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsID4+IHZvaWQgKmJ1Ziwg
+dW5zaWduZWQgaW50IGxlbiwKPiA+PiAgIAkJICAgICAgYm9vbCBmb3JjZV84Yml0LCBib29sIGNo
+ZWNrX29ubHkpOwo+ID4+ICAgaW50IG5hbmRfd3JpdGVfZGF0YV9vcChzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLCBjb25zdCB2b2lkICpidWYsCj4gPj4gICAJCSAgICAgICB1bnNpZ25lZCBpbnQgbGVu
+LCBib29sIGZvcmNlXzhiaXQpOwo+ID4+ICAraW50IG5hbmRfcmVhZF9wYWdlX2h3ZWNjX29vYl9m
+aXJzdChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ID4+ICpidWYsCj4gPj4gICsJCQkJ
+ICAgaW50IG9vYl9yZXF1aXJlZCwgaW50IHBhZ2UpOyAgCj4gPiAKPiA+IFlvdSBjZXJ0YWlubHkg
+d2FudCB0byBhZGQgdGhpcyBzeW1ib2wgY2xvc2VyIHRvIHRoZSBvdGhlciByZWFkL3dyaXRlCj4g
+PiBwYWdlIGhlbHBlcnM/ICAKPiAKPiBXaGVyZSB3b3VsZCB0aGF0IGJlPyBUaGUgb3RoZXIgcmVh
+ZC93cml0ZSBwYWdlIGhlbHBlcnMgYXJlIGFsbCAic3RhdGljIiBzbyB0aGV5IGRvbid0IGFwcGVh
+ciBpbiBhbnkgaGVhZGVyLgoKSSBiZWxpZXZlIHdlIHNob3VsZCBrZWVwIHRoaXMgaGVhZGVyIGxv
+Y2FsIGFzIGxvbmcgYXMgdGhlcmUgYXJlIG5vCm90aGVyIHVzZXJzLgoKClRoYW5rcywKTWlxdcOo
+bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
