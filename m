@@ -2,54 +2,61 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1E1BC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:31:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB8AAC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:36:17 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BC0161151
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:31:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7BC0161151
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
+	by mail.kernel.org (Postfix) with ESMTPS id 7A81C60698
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:36:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7A81C60698
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Cc:To
-	:Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=aycMyqCGyEhQ3zr+BExnKFbPOMsj6u9p8LHWkJk4DkQ=; b=uJ0Bc8w7+644zoeP6ZaxxLh9pJ
-	h7Ol6fdEcH0HPvztVF7qFdpIsbNf5Qd6wJI028AGRjQm46FE5o2XSoW3LbFM690XonKcOuuxi+0YY
-	BWXfmdv8mQcJxAnDWf3/BfL3WV9sWZ/mHMdZ2o/p68TgxACb5jAvtnyVgOTiBBzvVNZQODbnABma6
-	I1jqdudvhsQ2O8gaogajmwBDuCN0vezlCg9Uj1C5bsxIWeR6LTd4tgQsK0feunFfQncq3+tZCk435
-	hGq4XzgakpqwyRRxJjPPHaXZCTBBvyKeYS0qvbzLfd726gmBhKoS0NX8UnWXWwRTsiUuD5GguDlgg
-	T1kuGc7w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VP688ZbUCwIg/cPMrNv9eCDe65ifUvDEVdiCvaj0+Oc=; b=T3dOGTJW6PWhgj
+	0OtKp97FoBJ8I+/CDuvbvw+5Xc2ma2Re0GPVj7X1bAU15sU7DhBNDxzTaBMhVcCFhpjCbHnKDNb0t
+	TrJ1WtJ4SfwaKgB2uEEyVlWgSPtnC40oKouwAe0QmE1nwdb/LgFJMzDR5J8QSE3jQNyTNd7GSI5vq
+	cDcNH8o1PEvhZVP26XgtwLjl7UFNTgkXnPwJo/g+nLXpAcfwkBuC0lO+FaymyX1GiSmmyq48clXQt
+	dShROv0wouVQfIHQJ32ORB6ndtpt2GQ2BmnvGot3DoAwQS2ln0n+bdkm7TMd46UhJBi5amXtPZg5k
+	MkGNPb9yse5Rw4uBonBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbJXj-006ILa-0G; Fri, 15 Oct 2021 09:30:23 +0000
-Received: from aposti.net ([89.234.176.197])
+	id 1mbJce-006K8s-VK; Fri, 15 Oct 2021 09:35:29 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbJUq-006H0z-11
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 09:27:26 +0000
-Date: Fri, 15 Oct 2021 10:27:08 +0100
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1mbJcY-006K5R-6m
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 09:35:24 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5FFA710000E;
+ Fri, 15 Oct 2021 09:35:17 +0000 (UTC)
+Date: Fri, 15 Oct 2021 11:35:15 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Paul Cercueil <paul@crapouillou.net>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
  list@opendingux.net, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
  stable@vger.kernel.org
-Message-Id: <89I01R.QTBARVYLTBT02@crapouillou.net>
-In-Reply-To: <20211015105146.3d2fbd08@xps13>
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
+Message-ID: <20211015113515.7b10a2d5@xps13>
+In-Reply-To: <89I01R.QTBARVYLTBT02@crapouillou.net>
 References: <20211009184952.24591-1-paul@crapouillou.net>
  <20211009184952.24591-3-paul@crapouillou.net>
- <20211015081313.60018976@xps13> <70G01R.2VROMW06O3O83@crapouillou.net>
+ <20211015081313.60018976@xps13>
+ <70G01R.2VROMW06O3O83@crapouillou.net>
  <20211015105146.3d2fbd08@xps13>
+ <89I01R.QTBARVYLTBT02@crapouillou.net>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_022724_273306_5B73E2A3 
-X-CRM114-Status: GOOD (  36.00  )
+X-CRM114-CacheID: sfid-20211015_023522_571212_C40DF86C 
+X-CRM114-Status: GOOD (  39.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,380 +68,112 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-Le ven., oct. 15 2021 at 10:51:46 +0200, Miquel Raynal =
-
-<miquel.raynal@bootlin.com> a =E9crit :
-> Hi Paul,
-> =
-
-> paul@crapouillou.net wrote on Fri, 15 Oct 2021 09:38:31 +0100:
-> =
-
->>  Hi Miquel,
->> =
-
->>  Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal =
-
->> <miquel.raynal@bootlin.com> a =E9crit :
->>  > Hi Paul,
->>  >
->>  > paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
->>  >
->>  >>  Move the function nand_read_page_hwecc_oob_first() (previously
->>  >>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and =
-
->> >> export it
->>  >>  as a GPL symbol, so that it can be used by more modules.
->>  >> >>  Cc: <stable@vger.kernel.org> # v5.2
->>  >>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for =
-
->> the >> JZ4740")
->>  >>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  >>  ---
->>  >>   drivers/mtd/nand/raw/davinci_nand.c | 70 >> =
-
->> +----------------------------
->>  >>   drivers/mtd/nand/raw/nand_base.c    | 69 >> =
-
->> ++++++++++++++++++++++++++++
->>  >>   include/linux/mtd/rawnand.h         |  2 +
->>  >>   3 files changed, 72 insertions(+), 69 deletions(-)
->>  >> >>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c >> =
-
->> b/drivers/mtd/nand/raw/davinci_nand.c
->>  >>  index 89de24d3bb7a..45fec8c192ab 100644
->>  >>  --- a/drivers/mtd/nand/raw/davinci_nand.c
->>  >>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
->>  >>  @@ -371,74 +371,6 @@ static int =
-
->> nand_davinci_correct_4bit(struct >> nand_chip *chip, u_char *data,
->>  >>   	return corrected;
->>  >>   }
->>  >> >>  -/**
->>  >>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
->>  >>  - * @chip: nand chip info structure
->>  >>  - * @buf: buffer to store read data
->>  >>  - * @oob_required: caller requires OOB data read to =
-
->> chip->oob_poi
->>  >>  - * @page: page number to read
->>  >>  - *
->>  >>  - * Hardware ECC for large page chips, require OOB to be read =
-
->> >> first. For this
->>  >>  - * ECC mode, the write_page method is re-used from ECC_HW. =
-
->> These >> methods
->>  >>  - * read/write ECC from the OOB area, unlike the =
-
->> ECC_HW_SYNDROME >> support with
->>  >>  - * multiple ECC steps, follows the "infix ECC" scheme and >> =
-
->> reads/writes ECC from
->>  >>  - * the data area, by overwriting the NAND manufacturer bad =
-
->> block >> markings.
->>  >>  - */
->>  >>  -static int nand_davinci_read_page_hwecc_oob_first(struct =
-
->> nand_chip >> *chip,
->>  >>  -						  uint8_t *buf,
->>  >>  -						  int oob_required, int page)
->>  >>  -{
->>  >>  -	struct mtd_info *mtd =3D nand_to_mtd(chip);
->>  >>  -	int i, eccsize =3D chip->ecc.size, ret;
->>  >>  -	int eccbytes =3D chip->ecc.bytes;
->>  >>  -	int eccsteps =3D chip->ecc.steps;
->>  >>  -	uint8_t *p =3D buf;
->>  >>  -	uint8_t *ecc_code =3D chip->ecc.code_buf;
->>  >>  -	unsigned int max_bitflips =3D 0;
->>  >>  -
->>  >>  -	/* Read the OOB area first */
->>  >>  -	ret =3D nand_read_oob_op(chip, page, 0, chip->oob_poi, >> =
-
->> mtd->oobsize);
->>  >>  -	if (ret)
->>  >>  -		return ret;
->>  >>  -
->>  >>  -	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);
->>  >>  -	if (ret)
->>  >>  -		return ret;
->>  >>  -
->>  >>  -	ret =3D mtd_ooblayout_get_eccbytes(mtd, ecc_code, =
-
->> chip->oob_poi, 0,
->>  >>  -					 chip->ecc.total);
->>  >>  -	if (ret)
->>  >>  -		return ret;
->>  >>  -
->>  >>  -	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D =
-
->> eccsize) {
->>  >>  -		int stat;
->>  >>  -
->>  >>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  >>  -
->>  >>  -		ret =3D nand_read_data_op(chip, p, eccsize, false, false);
->>  >>  -		if (ret)
->>  >>  -			return ret;
->>  >>  -
->>  >>  -		stat =3D chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  >>  -		if (stat =3D=3D -EBADMSG &&
->>  >>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  >>  -			/* check for empty pages with bitflips */
->>  >>  -			stat =3D nand_check_erased_ecc_chunk(p, eccsize,
->>  >>  -							   &ecc_code[i],
->>  >>  -							   eccbytes, NULL, 0,
->>  >>  -							   chip->ecc.strength);
->>  >>  -		}
->>  >>  -
->>  >>  -		if (stat < 0) {
->>  >>  -			mtd->ecc_stats.failed++;
->>  >>  -		} else {
->>  >>  -			mtd->ecc_stats.corrected +=3D stat;
->>  >>  -			max_bitflips =3D max_t(unsigned int, max_bitflips, stat);
->>  >>  -		}
->>  >>  -	}
->>  >>  -	return max_bitflips;
->>  >>  -}
->>  >>  -
->>  >>   >> =
-
->> /*----------------------------------------------------------------------
->>  */
->>  >> >>   /* An ECC layout for using 4-bit ECC with small-page flash, =
-
->> storing
->>  >>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct =
-
->> >> nand_chip *chip)
->>  >>   			} else if (chunks =3D=3D 4 || chunks =3D=3D 8) {
->>  >>   				mtd_set_ooblayout(mtd,
->>  >>   						  nand_get_large_page_ooblayout());
->>  >>  -				chip->ecc.read_page =3D =
-
->> nand_davinci_read_page_hwecc_oob_first;
->>  >>  +				chip->ecc.read_page =3D nand_read_page_hwecc_oob_first;
->>  >>   			} else {
->>  >>   				return -EIO;
->>  >>   			}
->>  >>  diff --git a/drivers/mtd/nand/raw/nand_base.c >> =
-
->> b/drivers/mtd/nand/raw/nand_base.c
->>  >>  index 3d6c6e880520..cb5f343b9fa2 100644
->>  >>  --- a/drivers/mtd/nand/raw/nand_base.c
->>  >>  +++ b/drivers/mtd/nand/raw/nand_base.c
->>  >>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct =
-
->> >> nand_chip *chip, uint8_t *buf,
->>  >>   	return max_bitflips;
->>  >>   }
->>  >> >>  +/**
->>  >>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read =
-
->> with ECC
->>  >>  + *                                  data read from OOB area
->>  >>  + * @chip: nand chip info structure
->>  >>  + * @buf: buffer to store read data
->>  >>  + * @oob_required: caller requires OOB data read to =
-
->> chip->oob_poi
->>  >>  + * @page: page number to read
->>  >>  + *
->>  >>  + * Hardware ECC for large page chips, require OOB to be read =
-
->> >> first. For this
->>  >
->>  > requires
->>  >
->>  > With this ECC configuration?
->>  >
->>  >>  + * ECC mode, the write_page method is re-used from ECC_HW. =
-
->> These >> methods
->>  >
->>  > I do not understand this sentence nor the next one about =
-
->> syndrome. I
->>  > believe it is related to your engine and should not leak into the =
-
->> > core.
->>  >
->>  >>  + * read/write ECC from the OOB area, unlike the =
-
->> ECC_HW_SYNDROME >> support with
->>  >>  + * multiple ECC steps, follows the "infix ECC" scheme and >> =
-
->> reads/writes ECC from
->>  >>  + * the data area, by overwriting the NAND manufacturer bad =
-
->> block >> markings.
->>  >
->>  > That's a sentence I don't like. What do you mean exactly?
->>  >
->>  > What "Infix ECC" scheme is?
->>  >
->>  > Do you mean that unlike the syndrome  mode it *does not* =
-
->> overwrite the
->>  > BBM ?
->> =
-
->>  I don't mean anything. I did not write that comment. I just moved =
-
->> the function verbatim with no changes. If something needs to be =
-
->> fixed, then it needs to be fixed before/after this patch.
-> =
-
-> Well, this comment should be adapted because as-is I don't think it's
-> wise to move it around.
-
-OK.
-
-I think it says that BBM can be overwritten with this configuration, =
-
-but that would be if the OOB layout covers the BBM area.
-
->> =
-
->>  >>  + */
->>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, =
-
->> uint8_t >> *buf,
->>  >>  +				   int oob_required, int page)
->>  >>  +{
->>  >>  +	struct mtd_info *mtd =3D nand_to_mtd(chip);
->>  >>  +	int i, eccsize =3D chip->ecc.size, ret;
->>  >>  +	int eccbytes =3D chip->ecc.bytes;
->>  >>  +	int eccsteps =3D chip->ecc.steps;
->>  >>  +	uint8_t *p =3D buf;
->>  >>  +	uint8_t *ecc_code =3D chip->ecc.code_buf;
->>  >>  +	unsigned int max_bitflips =3D 0;
->>  >>  +
->>  >>  +	/* Read the OOB area first */
->>  >>  +	ret =3D nand_read_oob_op(chip, page, 0, chip->oob_poi, >> =
-
->> mtd->oobsize);
->>  >>  +	if (ret)
->>  >>  +		return ret;
->>  >>  +
->>  >>  +	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);
->>  >
->>  > Definitely not, your are requesting the chip to do the read_page
->>  > operation twice. You only need a nand_change_read_column I =
-
->> believe.
->> =
-
->>  Again, this code is just being moved around - don't shoot the =
-
->> messenger :)
-> =
-
-> haha
-> =
-
-> Well, now you touch the core, so I need to be more careful, and the
-> code is definitely wrong, so even if we don't move that code off, you
-> definitely want to fix it in order to improve your performances.
-
-I don't see the read_page being done twice?
-
-There's one read_oob, one read_page, then read_data in the loop.
-
->>  >>  +	if (ret)
->>  >>  +		return ret;
->>  >>  +
->>  >>  +	ret =3D mtd_ooblayout_get_eccbytes(mtd, ecc_code, =
-
->> chip->oob_poi, 0,
->>  >>  +					 chip->ecc.total);
->>  >>  +	if (ret)
->>  >>  +		return ret;
->>  >>  +
->>  >>  +	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D =
-
->> eccsize) {
->>  >>  +		int stat;
->>  >>  +
->>  >>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
->>  >>  +
->>  >>  +		ret =3D nand_read_data_op(chip, p, eccsize, false, false);
->>  >>  +		if (ret)
->>  >>  +			return ret;
->>  >>  +
->>  >>  +		stat =3D chip->ecc.correct(chip, p, &ecc_code[i], NULL);
->>  >>  +		if (stat =3D=3D -EBADMSG &&
->>  >>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
->>  >>  +			/* check for empty pages with bitflips */
->>  >>  +			stat =3D nand_check_erased_ecc_chunk(p, eccsize,
->>  >>  +							   &ecc_code[i],
->>  >>  +							   eccbytes, NULL, 0,
->>  >>  +							   chip->ecc.strength);
->>  >>  +		}
->>  >>  +
->>  >>  +		if (stat < 0) {
->>  >>  +			mtd->ecc_stats.failed++;
->>  >>  +		} else {
->>  >>  +			mtd->ecc_stats.corrected +=3D stat;
->>  >>  +			max_bitflips =3D max_t(unsigned int, max_bitflips, stat);
->>  >>  +		}
->>  >>  +	}
->>  >>  +	return max_bitflips;
->>  >>  +}
->>  >>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
->>  >>  +
->>  >>   /**
->>  >>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC =
-
->> syndrome >> based page read
->>  >>    * @chip: nand chip info structure
->>  >>  diff --git a/include/linux/mtd/rawnand.h >> =
-
->> b/include/linux/mtd/rawnand.h
->>  >>  index b2f9dd3cbd69..5b88cd51fadb 100644
->>  >>  --- a/include/linux/mtd/rawnand.h
->>  >>  +++ b/include/linux/mtd/rawnand.h
->>  >>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip =
-
->> *chip, >> void *buf, unsigned int len,
->>  >>   		      bool force_8bit, bool check_only);
->>  >>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
->>  >>   		       unsigned int len, bool force_8bit);
->>  >>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, =
-
->> uint8_t >> *buf,
->>  >>  +				   int oob_required, int page);
->>  >
->>  > You certainly want to add this symbol closer to the other =
-
->> read/write
->>  > page helpers?
->> =
-
->>  Where would that be? The other read/write page helpers are all =
-
->> "static" so they don't appear in any header.
-> =
-
-> I believe we should keep this header local as long as there are no
-> other users.
-
-I'll move it to internal.h then.
-
-Cheers,
--Paul
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUGF1bCwKCj4gPj4gICovICAKPiA+PiAgPj4gPj4gICAvKiBBbiBFQ0MgbGF5b3V0IGZvciB1
+c2luZyA0LWJpdCBFQ0Mgd2l0aCBzbWFsbC1wYWdlIGZsYXNoLCA+PiBzdG9yaW5nICAKPiA+PiAg
+Pj4gIEBAIC02NDgsNyArNTgwLDcgQEAgc3RhdGljIGludCBkYXZpbmNpX25hbmRfYXR0YWNoX2No
+aXAoc3RydWN0ID4+ID4+IG5hbmRfY2hpcCAqY2hpcCkKPiA+PiAgPj4gICAJCQl9IGVsc2UgaWYg
+KGNodW5rcyA9PSA0IHx8IGNodW5rcyA9PSA4KSB7Cj4gPj4gID4+ICAgCQkJCW10ZF9zZXRfb29i
+bGF5b3V0KG10ZCwKPiA+PiAgPj4gICAJCQkJCQkgIG5hbmRfZ2V0X2xhcmdlX3BhZ2Vfb29ibGF5
+b3V0KCkpOwo+ID4+ICA+PiAgLQkJCQljaGlwLT5lY2MucmVhZF9wYWdlID0gPj4gbmFuZF9kYXZp
+bmNpX3JlYWRfcGFnZV9od2VjY19vb2JfZmlyc3Q7Cj4gPj4gID4+ICArCQkJCWNoaXAtPmVjYy5y
+ZWFkX3BhZ2UgPSBuYW5kX3JlYWRfcGFnZV9od2VjY19vb2JfZmlyc3Q7Cj4gPj4gID4+ICAgCQkJ
+fSBlbHNlIHsKPiA+PiAgPj4gICAJCQkJcmV0dXJuIC1FSU87Cj4gPj4gID4+ICAgCQkJfQo+ID4+
+ICA+PiAgZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jID4+ID4+
+IGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiA+PiAgPj4gIGluZGV4IDNkNmM2
+ZTg4MDUyMC4uY2I1ZjM0M2I5ZmEyIDEwMDY0NAo+ID4+ICA+PiAgLS0tIGEvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvbmFuZF9iYXNlLmMKPiA+PiAgPj4gICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3
+L25hbmRfYmFzZS5jCj4gPj4gID4+ICBAQCAtMzE2MCw2ICszMTYwLDc1IEBAIHN0YXRpYyBpbnQg
+bmFuZF9yZWFkX3BhZ2VfaHdlY2Moc3RydWN0ID4+ID4+IG5hbmRfY2hpcCAqY2hpcCwgdWludDhf
+dCAqYnVmLAo+ID4+ICA+PiAgIAlyZXR1cm4gbWF4X2JpdGZsaXBzOwo+ID4+ICA+PiAgIH0gIAo+
+ID4+ICA+PiA+PiAgKy8qKiAgCj4gPj4gID4+ICArICogbmFuZF9yZWFkX3BhZ2VfaHdlY2Nfb29i
+X2ZpcnN0IC0gSGFyZHdhcmUgRUNDIHBhZ2UgcmVhZCA+PiB3aXRoIEVDQwo+ID4+ICA+PiAgKyAq
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgcmVhZCBmcm9tIE9PQiBhcmVh
+Cj4gPj4gID4+ICArICogQGNoaXA6IG5hbmQgY2hpcCBpbmZvIHN0cnVjdHVyZQo+ID4+ICA+PiAg
+KyAqIEBidWY6IGJ1ZmZlciB0byBzdG9yZSByZWFkIGRhdGEKPiA+PiAgPj4gICsgKiBAb29iX3Jl
+cXVpcmVkOiBjYWxsZXIgcmVxdWlyZXMgT09CIGRhdGEgcmVhZCB0byA+PiBjaGlwLT5vb2JfcG9p
+Cj4gPj4gID4+ICArICogQHBhZ2U6IHBhZ2UgbnVtYmVyIHRvIHJlYWQKPiA+PiAgPj4gICsgKgo+
+ID4+ICA+PiAgKyAqIEhhcmR3YXJlIEVDQyBmb3IgbGFyZ2UgcGFnZSBjaGlwcywgcmVxdWlyZSBP
+T0IgdG8gYmUgcmVhZCA+PiA+PiBmaXJzdC4gRm9yIHRoaXMgIAo+ID4+ICA+Cj4gPj4gID4gcmVx
+dWlyZXMKPiA+PiAgPgo+ID4+ICA+IFdpdGggdGhpcyBFQ0MgY29uZmlndXJhdGlvbj8KPiA+PiAg
+PiAgCj4gPj4gID4+ICArICogRUNDIG1vZGUsIHRoZSB3cml0ZV9wYWdlIG1ldGhvZCBpcyByZS11
+c2VkIGZyb20gRUNDX0hXLiA+PiBUaGVzZSA+PiBtZXRob2RzICAKPiA+PiAgPgo+ID4+ICA+IEkg
+ZG8gbm90IHVuZGVyc3RhbmQgdGhpcyBzZW50ZW5jZSBub3IgdGhlIG5leHQgb25lIGFib3V0ID4+
+IHN5bmRyb21lLiBJCj4gPj4gID4gYmVsaWV2ZSBpdCBpcyByZWxhdGVkIHRvIHlvdXIgZW5naW5l
+IGFuZCBzaG91bGQgbm90IGxlYWsgaW50byB0aGUgPj4gPiBjb3JlLgo+ID4+ICA+ICAKPiA+PiAg
+Pj4gICsgKiByZWFkL3dyaXRlIEVDQyBmcm9tIHRoZSBPT0IgYXJlYSwgdW5saWtlIHRoZSA+PiBF
+Q0NfSFdfU1lORFJPTUUgPj4gc3VwcG9ydCB3aXRoCj4gPj4gID4+ICArICogbXVsdGlwbGUgRUND
+IHN0ZXBzLCBmb2xsb3dzIHRoZSAiaW5maXggRUNDIiBzY2hlbWUgYW5kID4+ID4+IHJlYWRzL3dy
+aXRlcyBFQ0MgZnJvbQo+ID4+ICA+PiAgKyAqIHRoZSBkYXRhIGFyZWEsIGJ5IG92ZXJ3cml0aW5n
+IHRoZSBOQU5EIG1hbnVmYWN0dXJlciBiYWQgPj4gYmxvY2sgPj4gbWFya2luZ3MuICAKPiA+PiAg
+Pgo+ID4+ICA+IFRoYXQncyBhIHNlbnRlbmNlIEkgZG9uJ3QgbGlrZS4gV2hhdCBkbyB5b3UgbWVh
+biBleGFjdGx5Pwo+ID4+ICA+Cj4gPj4gID4gV2hhdCAiSW5maXggRUNDIiBzY2hlbWUgaXM/Cj4g
+Pj4gID4KPiA+PiAgPiBEbyB5b3UgbWVhbiB0aGF0IHVubGlrZSB0aGUgc3luZHJvbWUgIG1vZGUg
+aXQgKmRvZXMgbm90KiA+PiBvdmVyd3JpdGUgdGhlCj4gPj4gID4gQkJNID8gIAo+ID4+ID4+ICBJ
+IGRvbid0IG1lYW4gYW55dGhpbmcuIEkgZGlkIG5vdCB3cml0ZSB0aGF0IGNvbW1lbnQuIEkganVz
+dCBtb3ZlZCA+PiB0aGUgZnVuY3Rpb24gdmVyYmF0aW0gd2l0aCBubyBjaGFuZ2VzLiBJZiBzb21l
+dGhpbmcgbmVlZHMgdG8gYmUgPj4gZml4ZWQsIHRoZW4gaXQgbmVlZHMgdG8gYmUgZml4ZWQgYmVm
+b3JlL2FmdGVyIHRoaXMgcGF0Y2guICAKPiA+IAo+ID4gV2VsbCwgdGhpcyBjb21tZW50IHNob3Vs
+ZCBiZSBhZGFwdGVkIGJlY2F1c2UgYXMtaXMgSSBkb24ndCB0aGluayBpdCdzCj4gPiB3aXNlIHRv
+IG1vdmUgaXQgYXJvdW5kLiAgCj4gCj4gT0suCj4gCj4gSSB0aGluayBpdCBzYXlzIHRoYXQgQkJN
+IGNhbiBiZSBvdmVyd3JpdHRlbiB3aXRoIHRoaXMgY29uZmlndXJhdGlvbiwgYnV0IHRoYXQgd291
+bGQgYmUgaWYgdGhlIE9PQiBsYXlvdXQgY292ZXJzIHRoZSBCQk0gYXJlYS4KCklmIHRoZSBvb2Js
+YXlvdXQgcHJldmVudHMgdGhlIEJCTSB0byBiZSBzbWF0Y2hlZCBJJ20gZmluZSBhbmQgdGhpcwpz
+ZW50ZW5jZSBzaG91bGQgZGlzYXBwZWFyIGJlY2F1c2UgaXQncyBtaXNsZWFkaW5nLgoKPiA+PiA+
+PiAgPj4gICsgKi8gIAo+ID4+ICA+PiAgK2ludCBuYW5kX3JlYWRfcGFnZV9od2VjY19vb2JfZmly
+c3Qoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgPj4gdWludDhfdCA+PiAqYnVmLAo+ID4+ICA+PiAg
+KwkJCQkgICBpbnQgb29iX3JlcXVpcmVkLCBpbnQgcGFnZSkKPiA+PiAgPj4gICt7Cj4gPj4gID4+
+ICArCXN0cnVjdCBtdGRfaW5mbyAqbXRkID0gbmFuZF90b19tdGQoY2hpcCk7Cj4gPj4gID4+ICAr
+CWludCBpLCBlY2NzaXplID0gY2hpcC0+ZWNjLnNpemUsIHJldDsKPiA+PiAgPj4gICsJaW50IGVj
+Y2J5dGVzID0gY2hpcC0+ZWNjLmJ5dGVzOwo+ID4+ICA+PiAgKwlpbnQgZWNjc3RlcHMgPSBjaGlw
+LT5lY2Muc3RlcHM7Cj4gPj4gID4+ICArCXVpbnQ4X3QgKnAgPSBidWY7Cj4gPj4gID4+ICArCXVp
+bnQ4X3QgKmVjY19jb2RlID0gY2hpcC0+ZWNjLmNvZGVfYnVmOwo+ID4+ICA+PiAgKwl1bnNpZ25l
+ZCBpbnQgbWF4X2JpdGZsaXBzID0gMDsKPiA+PiAgPj4gICsKPiA+PiAgPj4gICsJLyogUmVhZCB0
+aGUgT09CIGFyZWEgZmlyc3QgKi8KPiA+PiAgPj4gICsJcmV0ID0gbmFuZF9yZWFkX29vYl9vcChj
+aGlwLCBwYWdlLCAwLCBjaGlwLT5vb2JfcG9pLCA+PiA+PiBtdGQtPm9vYnNpemUpOwo+ID4+ICA+
+PiAgKwlpZiAocmV0KQo+ID4+ICA+PiAgKwkJcmV0dXJuIHJldDsKPiA+PiAgPj4gICsKPiA+PiAg
+Pj4gICsJcmV0ID0gbmFuZF9yZWFkX3BhZ2Vfb3AoY2hpcCwgcGFnZSwgMCwgTlVMTCwgMCk7ICAK
+PiA+PiAgPgo+ID4+ICA+IERlZmluaXRlbHkgbm90LCB5b3VyIGFyZSByZXF1ZXN0aW5nIHRoZSBj
+aGlwIHRvIGRvIHRoZSByZWFkX3BhZ2UKPiA+PiAgPiBvcGVyYXRpb24gdHdpY2UuIFlvdSBvbmx5
+IG5lZWQgYSBuYW5kX2NoYW5nZV9yZWFkX2NvbHVtbiBJID4+IGJlbGlldmUuICAKPiA+PiA+PiAg
+QWdhaW4sIHRoaXMgY29kZSBpcyBqdXN0IGJlaW5nIG1vdmVkIGFyb3VuZCAtIGRvbid0IHNob290
+IHRoZSA+PiBtZXNzZW5nZXIgOikgIAo+ID4gCj4gPiBoYWhhCj4gPiAKPiA+IFdlbGwsIG5vdyB5
+b3UgdG91Y2ggdGhlIGNvcmUsIHNvIEkgbmVlZCB0byBiZSBtb3JlIGNhcmVmdWwsIGFuZCB0aGUK
+PiA+IGNvZGUgaXMgZGVmaW5pdGVseSB3cm9uZywgc28gZXZlbiBpZiB3ZSBkb24ndCBtb3ZlIHRo
+YXQgY29kZSBvZmYsIHlvdQo+ID4gZGVmaW5pdGVseSB3YW50IHRvIGZpeCBpdCBpbiBvcmRlciB0
+byBpbXByb3ZlIHlvdXIgcGVyZm9ybWFuY2VzLiAgCj4gCj4gSSBkb24ndCBzZWUgdGhlIHJlYWRf
+cGFnZSBiZWluZyBkb25lIHR3aWNlPwo+IAo+IFRoZXJlJ3Mgb25lIHJlYWRfb29iLCBvbmUgcmVh
+ZF9wYWdlLCB0aGVuIHJlYWRfZGF0YSBpbiB0aGUgbG9vcC4KCnJlYWRfb29iIGFuZCByZWFkX3Bh
+Z2UgYm90aCBlbmQgdXAgc2VuZGluZyBSRUFEMCBhbmQgUkVBRFNUQVJUIHNvCnRoZXkgZG8gcmVx
+dWVzdCB0aGUgY2hpcCB0byBwZXJmb3JtIGFuIGludGVybmFsIHJlYWQgdHdpY2UuIFlvdQpuZWVk
+IHRoaXMgb25seSBvbmNlLiBUaGUgY2FsbCB0byBuYW5kX3JlYWRfcGFnZV9vcCgpIHNob3VsZCBi
+ZSBhCm5hbmRfY2hhbmdlX3JlYWRfY29sdW1uKCkgd2l0aCBubyBkYXRhIHJlcXVlc3RlZC4gCgo+
+ID4+ICA+PiAgIC8qKgo+ID4+ICA+PiAgICAqIG5hbmRfcmVhZF9wYWdlX3N5bmRyb21lIC0gW1JF
+UExBQ0VBQkxFXSBoYXJkd2FyZSBFQ0MgPj4gc3luZHJvbWUgPj4gYmFzZWQgcGFnZSByZWFkCj4g
+Pj4gID4+ICAgICogQGNoaXA6IG5hbmQgY2hpcCBpbmZvIHN0cnVjdHVyZQo+ID4+ICA+PiAgZGlm
+ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaCA+PiA+PiBiL2luY2x1ZGUvbGlu
+dXgvbXRkL3Jhd25hbmQuaAo+ID4+ICA+PiAgaW5kZXggYjJmOWRkM2NiZDY5Li41Yjg4Y2Q1MWZh
+ZGIgMTAwNjQ0Cj4gPj4gID4+ICAtLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9yYXduYW5kLmgKPiA+
+PiAgPj4gICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaAo+ID4+ICA+PiAgQEAgLTE1
+MzksNiArMTUzOSw4IEBAIGludCBuYW5kX3JlYWRfZGF0YV9vcChzdHJ1Y3QgbmFuZF9jaGlwID4+
+ICpjaGlwLCA+PiB2b2lkICpidWYsIHVuc2lnbmVkIGludCBsZW4sCj4gPj4gID4+ICAgCQkgICAg
+ICBib29sIGZvcmNlXzhiaXQsIGJvb2wgY2hlY2tfb25seSk7Cj4gPj4gID4+ICAgaW50IG5hbmRf
+d3JpdGVfZGF0YV9vcChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCBjb25zdCB2b2lkICpidWYsCj4g
+Pj4gID4+ICAgCQkgICAgICAgdW5zaWduZWQgaW50IGxlbiwgYm9vbCBmb3JjZV84Yml0KTsKPiA+
+PiAgPj4gICtpbnQgbmFuZF9yZWFkX3BhZ2VfaHdlY2Nfb29iX2ZpcnN0KHN0cnVjdCBuYW5kX2No
+aXAgKmNoaXAsID4+IHVpbnQ4X3QgPj4gKmJ1ZiwKPiA+PiAgPj4gICsJCQkJICAgaW50IG9vYl9y
+ZXF1aXJlZCwgaW50IHBhZ2UpOyAgCj4gPj4gID4KPiA+PiAgPiBZb3UgY2VydGFpbmx5IHdhbnQg
+dG8gYWRkIHRoaXMgc3ltYm9sIGNsb3NlciB0byB0aGUgb3RoZXIgPj4gcmVhZC93cml0ZQo+ID4+
+ICA+IHBhZ2UgaGVscGVycz8gIAo+ID4+ID4+ICBXaGVyZSB3b3VsZCB0aGF0IGJlPyBUaGUgb3Ro
+ZXIgcmVhZC93cml0ZSBwYWdlIGhlbHBlcnMgYXJlIGFsbCA+PiAic3RhdGljIiBzbyB0aGV5IGRv
+bid0IGFwcGVhciBpbiBhbnkgaGVhZGVyLiAgCj4gPiAKPiA+IEkgYmVsaWV2ZSB3ZSBzaG91bGQg
+a2VlcCB0aGlzIGhlYWRlciBsb2NhbCBhcyBsb25nIGFzIHRoZXJlIGFyZSBubwo+ID4gb3RoZXIg
+dXNlcnMuICAKPiAKPiBJJ2xsIG1vdmUgaXQgdG8gaW50ZXJuYWwuaCB0aGVuLgoKV2h5IGRvIHlv
+dSB3YW50IHRvIHB1dCBpdCB0aGVyZSBpcyB0aGVyZSBpcyBvbmx5IG9uZSB1c2VyPwoKVGhhbmtz
+LApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
