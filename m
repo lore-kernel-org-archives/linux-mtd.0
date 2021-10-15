@@ -2,63 +2,53 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E80BBC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 08:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B94E2C433FE
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:08:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AED8161073
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 08:53:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AED8161073
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8082B60F70
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 09:08:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8082B60F70
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dlX8frUfVBvHppUCqzSS4aBGiN7qGXCGzN/MU4tQhe8=; b=Sh2Ofv5TVjiB7E
-	jLxXcUQFz0WbKsjQA9ZYtOJsXRcwsYGri0rx7EqwLw6Qt65xlYwy8KUeQLj8iQQFlR9K/lnPp5XlP
-	CZzwyCR9h+Y0KK8gkMzMJXnjVi1whUcsFmpcfljwqLxI74/FHu8bP81rKxWnLRm3EoU7Zi1HtF9vx
-	VWYkInOjNDAbg6e3PJrzGz5/kTRR7UMlANbl3fXJmW7tPSG8LAkIJfCmstWLEIXzVuJctrP+yFuJj
-	p/DTBlS0h35kjKrWaA87FvLxgjTcq91RKQj0ABNl8s00K4t6tsTpg0feqOQoqpsBRjtQFEKNsk03F
-	Sm3raj2ygnNKPM/25QUA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Cc:To
+	:Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=x9epKUZouBkaTZ/WDvq+kEUikQlj3lGLhlk18wkx38E=; b=WN6VRCKsYkaTxLwvhJbfRSC1v3
+	h38xTHUVRtxJztE94h4t7mSqR/UjhC+Jve7NAhRKql/s7EVuQ1QrG9SeGfBA4O+b4EVPoUEAVWfwG
+	geI5LLCuAcpf52sovVq+n8ro16iNco86pu6kLgOZdbvI2/7rHs7JBo5+uZZJyMqdfK7k9Q3l+I8rP
+	yOE78WNnJq7xHvJ7OZia1HLJyeuyzsBn3Vq62H19gDLkikwWfzyUVNONpvASBtFUUK6lsielVYuQ3
+	F/zDiU0Zfoqf2Ut7+RB8Kedvx4PG/XT4mPMJUhx03yLNXCckWRYihotzBrdT0B3/tlldz50n38uJ2
+	AfPKZdIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbIxU-0066R6-9K; Fri, 15 Oct 2021 08:52:56 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1mbJBc-006AKX-NE; Fri, 15 Oct 2021 09:07:33 +0000
+Received: from aposti.net ([89.234.176.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbIac-005zkc-PB
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 08:29:20 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B9D6924000F;
- Fri, 15 Oct 2021 08:29:13 +0000 (UTC)
-Date: Fri, 15 Oct 2021 10:29:11 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: jaimeliao@mxic.com.tw
-Cc: "Boris Brezillon" <bbrezillon@kernel.org>, "Mark Brown"
- <broonie@kernel.org>, devicetree@vger.kernel.org, juliensu@mxic.com.tw,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, "Richard Weinberger" <richard@nod.at>, "Rob
- Herring"<robh+dt@kernel.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tudor Ambarus"
- <Tudor.Ambarus@microchip.com>, "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>
-Subject: Re: =?UTF-8?B?5Zue5L+hOg==?= [RFC PATCH 09/10] spi: mxic: Add
- support for direct mapping
-Message-ID: <20211015102911.25732215@xps13>
-In-Reply-To: <OF032BE161.2014BA23-ON4825876C.0027CC4D-4825876C.0027D1E7@mxic.com.tw>
-References: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
- <20211008162228.1753083-10-miquel.raynal@bootlin.com>
- <OF032BE161.2014BA23-ON4825876C.0027CC4D-4825876C.0027D1E7@mxic.com.tw>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mbIjp-0062Zg-2D
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 08:38:51 +0000
+Date: Fri, 15 Oct 2021 09:38:31 +0100
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 2/3] mtd: rawnand: Export nand_read_page_hwecc_oob_first()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ list@opendingux.net, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ stable@vger.kernel.org
+Message-Id: <70G01R.2VROMW06O3O83@crapouillou.net>
+In-Reply-To: <20211015081313.60018976@xps13>
+References: <20211009184952.24591-1-paul@crapouillou.net>
+ <20211009184952.24591-3-paul@crapouillou.net>
+ <20211015081313.60018976@xps13>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_012918_994419_FC3E8F0D 
-X-CRM114-Status: UNSURE (   7.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211015_013849_335066_8376920C 
+X-CRM114-Status: GOOD (  28.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,21 +60,344 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gSmFpbWUsCgpqYWltZWxpYW9AbXhpYy5jb20udHcgd3JvdGUgb24gVHVlLCAxMiBPY3Qg
-MjAyMSAxNToxNDo1NiArMDgwMDoKCj4gSGkgTWlxdWVsCj4gCj4gWmhlbmd4dW5MaSBoYXZlIHBh
-dGNoIG5ldyBteGljIHNwaSBob3N0IGNvbnRyb2xsZXIgYmVmb3JlLgo+IFRoZSBwYXRjaCBuYW1l
-IGFzIGJlbG93Cj4gc3BpOiBteGljOiBwYXRjaCBmb3Igb2N0YWwgRFRSIG1vZGUgc3VwcG9ydAo+
-IFBsZWFzZSBwYXRjaCBteGljIEVDQyBlbmdpbmUgYmFzZSBvbiBsYXRlc3QgdmVyc2lvbi4KClll
-cyB5b3UgYXJlIHJpZ2h0LiBJIGRpZG4ndCByZWJhc2UgbXkgc2VyaWVzIGJlZm9yZSBzZW5kaW5n
-IGl0LCBhcwptZW50aW9uZWQgaW4gdGhlIGNvdmVyIGxldHRlciB0aGlzIHdhcyBqdXN0IGEgd2F5
-IHRvIHByb3ZpZGUgdGhpcyBjb2RlCnB1YmxpY2x5IGFzIHNvbWVvbmUgZnJvbSBNZWRpYXRlayBu
-ZWVkZWQgaXQgKGhlbmNlLCB0aGUgUkZDKS4gSSB3aWxsCnNvb24gc2VuZCBhIHJlYWwgdjEgd2l0
-aCB0aGUgYmluZGluZ3MgZml4ZWQgYXMgd2VsbC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
-aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Miquel,
+
+Le ven., oct. 15 2021 at 08:13:13 +0200, Miquel Raynal =
+
+<miquel.raynal@bootlin.com> a =E9crit :
+> Hi Paul,
+> =
+
+> paul@crapouillou.net wrote on Sat,  9 Oct 2021 20:49:51 +0200:
+> =
+
+>>  Move the function nand_read_page_hwecc_oob_first() (previously
+>>  nand_davinci_read_page_hwecc_oob_first()) to nand_base.c, and =
+
+>> export it
+>>  as a GPL symbol, so that it can be used by more modules.
+>> =
+
+>>  Cc: <stable@vger.kernel.org> # v5.2
+>>  Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the =
+
+>> JZ4740")
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   drivers/mtd/nand/raw/davinci_nand.c | 70 =
+
+>> +----------------------------
+>>   drivers/mtd/nand/raw/nand_base.c    | 69 =
+
+>> ++++++++++++++++++++++++++++
+>>   include/linux/mtd/rawnand.h         |  2 +
+>>   3 files changed, 72 insertions(+), 69 deletions(-)
+>> =
+
+>>  diff --git a/drivers/mtd/nand/raw/davinci_nand.c =
+
+>> b/drivers/mtd/nand/raw/davinci_nand.c
+>>  index 89de24d3bb7a..45fec8c192ab 100644
+>>  --- a/drivers/mtd/nand/raw/davinci_nand.c
+>>  +++ b/drivers/mtd/nand/raw/davinci_nand.c
+>>  @@ -371,74 +371,6 @@ static int nand_davinci_correct_4bit(struct =
+
+>> nand_chip *chip, u_char *data,
+>>   	return corrected;
+>>   }
+>> =
+
+>>  -/**
+>>  - * nand_read_page_hwecc_oob_first - hw ecc, read oob first
+>>  - * @chip: nand chip info structure
+>>  - * @buf: buffer to store read data
+>>  - * @oob_required: caller requires OOB data read to chip->oob_poi
+>>  - * @page: page number to read
+>>  - *
+>>  - * Hardware ECC for large page chips, require OOB to be read =
+
+>> first. For this
+>>  - * ECC mode, the write_page method is re-used from ECC_HW. These =
+
+>> methods
+>>  - * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME =
+
+>> support with
+>>  - * multiple ECC steps, follows the "infix ECC" scheme and =
+
+>> reads/writes ECC from
+>>  - * the data area, by overwriting the NAND manufacturer bad block =
+
+>> markings.
+>>  - */
+>>  -static int nand_davinci_read_page_hwecc_oob_first(struct nand_chip =
+
+>> *chip,
+>>  -						  uint8_t *buf,
+>>  -						  int oob_required, int page)
+>>  -{
+>>  -	struct mtd_info *mtd =3D nand_to_mtd(chip);
+>>  -	int i, eccsize =3D chip->ecc.size, ret;
+>>  -	int eccbytes =3D chip->ecc.bytes;
+>>  -	int eccsteps =3D chip->ecc.steps;
+>>  -	uint8_t *p =3D buf;
+>>  -	uint8_t *ecc_code =3D chip->ecc.code_buf;
+>>  -	unsigned int max_bitflips =3D 0;
+>>  -
+>>  -	/* Read the OOB area first */
+>>  -	ret =3D nand_read_oob_op(chip, page, 0, chip->oob_poi, =
+
+>> mtd->oobsize);
+>>  -	if (ret)
+>>  -		return ret;
+>>  -
+>>  -	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);
+>>  -	if (ret)
+>>  -		return ret;
+>>  -
+>>  -	ret =3D mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+>>  -					 chip->ecc.total);
+>>  -	if (ret)
+>>  -		return ret;
+>>  -
+>>  -	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D eccsize) {
+>>  -		int stat;
+>>  -
+>>  -		chip->ecc.hwctl(chip, NAND_ECC_READ);
+>>  -
+>>  -		ret =3D nand_read_data_op(chip, p, eccsize, false, false);
+>>  -		if (ret)
+>>  -			return ret;
+>>  -
+>>  -		stat =3D chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+>>  -		if (stat =3D=3D -EBADMSG &&
+>>  -		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+>>  -			/* check for empty pages with bitflips */
+>>  -			stat =3D nand_check_erased_ecc_chunk(p, eccsize,
+>>  -							   &ecc_code[i],
+>>  -							   eccbytes, NULL, 0,
+>>  -							   chip->ecc.strength);
+>>  -		}
+>>  -
+>>  -		if (stat < 0) {
+>>  -			mtd->ecc_stats.failed++;
+>>  -		} else {
+>>  -			mtd->ecc_stats.corrected +=3D stat;
+>>  -			max_bitflips =3D max_t(unsigned int, max_bitflips, stat);
+>>  -		}
+>>  -	}
+>>  -	return max_bitflips;
+>>  -}
+>>  -
+>>   =
+
+>> /*----------------------------------------------------------------------=
+*/
+>> =
+
+>>   /* An ECC layout for using 4-bit ECC with small-page flash, storing
+>>  @@ -648,7 +580,7 @@ static int davinci_nand_attach_chip(struct =
+
+>> nand_chip *chip)
+>>   			} else if (chunks =3D=3D 4 || chunks =3D=3D 8) {
+>>   				mtd_set_ooblayout(mtd,
+>>   						  nand_get_large_page_ooblayout());
+>>  -				chip->ecc.read_page =3D nand_davinci_read_page_hwecc_oob_first;
+>>  +				chip->ecc.read_page =3D nand_read_page_hwecc_oob_first;
+>>   			} else {
+>>   				return -EIO;
+>>   			}
+>>  diff --git a/drivers/mtd/nand/raw/nand_base.c =
+
+>> b/drivers/mtd/nand/raw/nand_base.c
+>>  index 3d6c6e880520..cb5f343b9fa2 100644
+>>  --- a/drivers/mtd/nand/raw/nand_base.c
+>>  +++ b/drivers/mtd/nand/raw/nand_base.c
+>>  @@ -3160,6 +3160,75 @@ static int nand_read_page_hwecc(struct =
+
+>> nand_chip *chip, uint8_t *buf,
+>>   	return max_bitflips;
+>>   }
+>> =
+
+>>  +/**
+>>  + * nand_read_page_hwecc_oob_first - Hardware ECC page read with ECC
+>>  + *                                  data read from OOB area
+>>  + * @chip: nand chip info structure
+>>  + * @buf: buffer to store read data
+>>  + * @oob_required: caller requires OOB data read to chip->oob_poi
+>>  + * @page: page number to read
+>>  + *
+>>  + * Hardware ECC for large page chips, require OOB to be read =
+
+>> first. For this
+> =
+
+> requires
+> =
+
+> With this ECC configuration?
+> =
+
+>>  + * ECC mode, the write_page method is re-used from ECC_HW. These =
+
+>> methods
+> =
+
+> I do not understand this sentence nor the next one about syndrome. I
+> believe it is related to your engine and should not leak into the =
+
+> core.
+> =
+
+>>  + * read/write ECC from the OOB area, unlike the ECC_HW_SYNDROME =
+
+>> support with
+>>  + * multiple ECC steps, follows the "infix ECC" scheme and =
+
+>> reads/writes ECC from
+>>  + * the data area, by overwriting the NAND manufacturer bad block =
+
+>> markings.
+> =
+
+> That's a sentence I don't like. What do you mean exactly?
+> =
+
+> What "Infix ECC" scheme is?
+> =
+
+> Do you mean that unlike the syndrome  mode it *does not* overwrite the
+> BBM ?
+
+I don't mean anything. I did not write that comment. I just moved the =
+
+function verbatim with no changes. If something needs to be fixed, then =
+
+it needs to be fixed before/after this patch.
+
+>>  + */
+>>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t =
+
+>> *buf,
+>>  +				   int oob_required, int page)
+>>  +{
+>>  +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+>>  +	int i, eccsize =3D chip->ecc.size, ret;
+>>  +	int eccbytes =3D chip->ecc.bytes;
+>>  +	int eccsteps =3D chip->ecc.steps;
+>>  +	uint8_t *p =3D buf;
+>>  +	uint8_t *ecc_code =3D chip->ecc.code_buf;
+>>  +	unsigned int max_bitflips =3D 0;
+>>  +
+>>  +	/* Read the OOB area first */
+>>  +	ret =3D nand_read_oob_op(chip, page, 0, chip->oob_poi, =
+
+>> mtd->oobsize);
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);
+> =
+
+> Definitely not, your are requesting the chip to do the read_page
+> operation twice. You only need a nand_change_read_column I believe.
+
+Again, this code is just being moved around - don't shoot the messenger =
+
+:)
+
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	ret =3D mtd_ooblayout_get_eccbytes(mtd, ecc_code, chip->oob_poi, 0,
+>>  +					 chip->ecc.total);
+>>  +	if (ret)
+>>  +		return ret;
+>>  +
+>>  +	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D eccsize) {
+>>  +		int stat;
+>>  +
+>>  +		chip->ecc.hwctl(chip, NAND_ECC_READ);
+>>  +
+>>  +		ret =3D nand_read_data_op(chip, p, eccsize, false, false);
+>>  +		if (ret)
+>>  +			return ret;
+>>  +
+>>  +		stat =3D chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+>>  +		if (stat =3D=3D -EBADMSG &&
+>>  +		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+>>  +			/* check for empty pages with bitflips */
+>>  +			stat =3D nand_check_erased_ecc_chunk(p, eccsize,
+>>  +							   &ecc_code[i],
+>>  +							   eccbytes, NULL, 0,
+>>  +							   chip->ecc.strength);
+>>  +		}
+>>  +
+>>  +		if (stat < 0) {
+>>  +			mtd->ecc_stats.failed++;
+>>  +		} else {
+>>  +			mtd->ecc_stats.corrected +=3D stat;
+>>  +			max_bitflips =3D max_t(unsigned int, max_bitflips, stat);
+>>  +		}
+>>  +	}
+>>  +	return max_bitflips;
+>>  +}
+>>  +EXPORT_SYMBOL_GPL(nand_read_page_hwecc_oob_first);
+>>  +
+>>   /**
+>>    * nand_read_page_syndrome - [REPLACEABLE] hardware ECC syndrome =
+
+>> based page read
+>>    * @chip: nand chip info structure
+>>  diff --git a/include/linux/mtd/rawnand.h =
+
+>> b/include/linux/mtd/rawnand.h
+>>  index b2f9dd3cbd69..5b88cd51fadb 100644
+>>  --- a/include/linux/mtd/rawnand.h
+>>  +++ b/include/linux/mtd/rawnand.h
+>>  @@ -1539,6 +1539,8 @@ int nand_read_data_op(struct nand_chip *chip, =
+
+>> void *buf, unsigned int len,
+>>   		      bool force_8bit, bool check_only);
+>>   int nand_write_data_op(struct nand_chip *chip, const void *buf,
+>>   		       unsigned int len, bool force_8bit);
+>>  +int nand_read_page_hwecc_oob_first(struct nand_chip *chip, uint8_t =
+
+>> *buf,
+>>  +				   int oob_required, int page);
+> =
+
+> You certainly want to add this symbol closer to the other read/write
+> page helpers?
+
+Where would that be? The other read/write page helpers are all "static" =
+
+so they don't appear in any header.
+
+Cheers,
+-Paul
+
+>> =
+
+>>   /* Scan and identify a NAND device */
+>>   int nand_scan_with_ids(struct nand_chip *chip, unsigned int =
+
+>> max_chips,
+> =
+
+> =
+
+> Thanks,
+> Miqu=E8l
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
