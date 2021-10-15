@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 553D4C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ABF1C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2940161151
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2940161151
+	by mail.kernel.org (Postfix) with ESMTPS id 6890C61151
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6890C61151
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=O435UnqL1dgxZMhvsJGemGaoiImItDAYY/+lmcJxeF4=; b=NjU7XQ5B7hY58O
-	Tn1qUpsC9XsyHRbKz+8nMg5RZTPTgHvp7NjM3fOxtwCjyKLrdr49xcTOYzR+jOAE8T2onMrnMhcwB
-	6UGSyPS9dasZVpRTvrTueJJYLJ7eh0svzebtASUrBNJNV61Km5qVAyMLDNel8KLgPTW5fL12d5QDz
-	7e0mDv5YPs3G7aSxnqQiaANaWNKyB4UqQdgINn6SJ32qtFqVbyeCL4n/qHOUCqkaEJKioOEEW6fII
-	DmYVt7xW00kPGWBR+ssPjzXSon6SJpo+sveelcnY32cVC3Vs1TCzB8i7koMV3kns1W8cwu9sazuvu
-	z2Fp8ZKjJCmoSET40vfA==;
+	List-Owner; bh=l18fftO6h5IjQQveB83yMSos/Bu1J8pMCdzE35BO6NU=; b=GWzOiw+hs8JLO3
+	NuLZdainHIvtiXAhgXFytVA7YGtgVxMlKa3yk5DL+Zt3k3Wraa5gF23vY+z5gqUcZGDXisLTmg3FZ
+	AtMLQ2RIrG5X6H3jSQDPTXMTz2ZcbEN6ituQmbsPpOI6QrG6PpfRwDgDfFDrNgkzQBSbieuQGueO3
+	Lqs0kwktB6fDouSP4uq7J+nAaBomF95PtVe/8iJMfJldjckiZMiyJkwg7HF8Ner31SnVUlMZ32AG7
+	6qXwzaBYsYDYhXlMUiOl5OzcVClhY1VZWuFOVvrp2UHCkvEzTlWuxybjdnoNprN00Zg8KZa8zV7Zr
+	EnmlNoEOpEm9PxdxH5MQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbWfI-0096Fc-IK; Fri, 15 Oct 2021 23:31:04 +0000
+	id 1mbWfX-0096Nl-3u; Fri, 15 Oct 2021 23:31:19 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mbWej-0095v3-Bg; Fri, 15 Oct 2021 23:30:29 +0000
+ (Red Hat Linux)) id 1mbWej-0095ux-8E; Fri, 15 Oct 2021 23:30:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
  agk@redhat.com, snitzer@redhat.com, colyli@suse.de,
@@ -44,10 +44,9 @@ Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com,
  linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 6/9] m68k/emu/nfblock: add error handling support for
- add_disk()
-Date: Fri, 15 Oct 2021 16:30:25 -0700
-Message-Id: <20211015233028.2167651-7-mcgrof@kernel.org>
+Subject: [PATCH 3/9] dm: add add_disk() error handling
+Date: Fri, 15 Oct 2021 16:30:22 -0700
+Message-Id: <20211015233028.2167651-4-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
 References: <20211015233028.2167651-1-mcgrof@kernel.org>
@@ -72,48 +71,34 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+There are two calls to dm_setup_md_queue() which can fail then,
+one on dm_early_create() and we can easily see that the error path
+there calls dm_destroy in the error path. The other use case is on
+the ioctl table_load case. If that fails userspace needs to call
+the DM_DEV_REMOVE_CMD to cleanup the state - similar to any other
+failure.
+
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- arch/m68k/emu/nfblock.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/md/dm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/emu/nfblock.c b/arch/m68k/emu/nfblock.c
-index 9a8394e96388..4de5a6087034 100644
---- a/arch/m68k/emu/nfblock.c
-+++ b/arch/m68k/emu/nfblock.c
-@@ -100,6 +100,7 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
- {
- 	struct nfhd_device *dev;
- 	int dev_id = id - NFHD_DEV_OFFSET;
-+	int err = -ENOMEM;
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 245fa4153306..6d3265ed37c0 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2086,7 +2086,9 @@ int dm_setup_md_queue(struct mapped_device *md, struct dm_table *t)
+ 	if (r)
+ 		return r;
  
- 	pr_info("nfhd%u: found device with %u blocks (%u bytes)\n", dev_id,
- 		blocks, bsize);
-@@ -130,16 +131,20 @@ static int __init nfhd_init_one(int id, u32 blocks, u32 bsize)
- 	sprintf(dev->disk->disk_name, "nfhd%u", dev_id);
- 	set_capacity(dev->disk, (sector_t)blocks * (bsize / 512));
- 	blk_queue_logical_block_size(dev->disk->queue, bsize);
--	add_disk(dev->disk);
-+	err = add_disk(dev->disk);
-+	if (err)
-+		goto out_cleanup_disk;
+-	add_disk(md->disk);
++	r = add_disk(md->disk);
++	if (r)
++		return r;
  
- 	list_add_tail(&dev->list, &nfhd_list);
- 
- 	return 0;
- 
-+out_cleanup_disk:
-+	blk_cleanup_disk(dev->disk);
- free_dev:
- 	kfree(dev);
- out:
--	return -ENOMEM;
-+	return err;
- }
- 
- static int __init nfhd_init(void)
+ 	r = dm_sysfs_init(md);
+ 	if (r) {
 -- 
 2.30.2
 
