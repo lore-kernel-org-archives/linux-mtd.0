@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CBA9C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 11:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 659EEC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 11:14:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DD74A610E8
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 11:10:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DD74A610E8
+	by mail.kernel.org (Postfix) with ESMTPS id 39EAA60E97
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 11:14:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 39EAA60E97
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,39 +18,39 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=stPGJa3wjOBGuNb4QaPPvhP0Z+TivGCSXg8Uw6sCfeI=; b=w3rMSobUqzu7ef
-	FjIcQ7+YkYbmqt/JCNZ4dqU7mhHVvHn8Ig5pAStDTaW5fIEzpeKNWTKWd1Xcf6/HGEzOaeigGKwq9
-	fGN7pZs1HuJFNGh7ZE3AxajcCctfQUBKNnLXt6dtehHElz2Vb9pU6yVCH3P8jpTwUIYJqf9FdMsKG
-	v7Bih0jUkrIwqDgYmu41htc2GAeoqAxwpjRW+nZ92h/LRauoUswJnB0jv25keyKtxKWEqtipv/SHZ
-	0QyR/rJIFIxEipChCO0MDc7Jkpcasngjwl0HW2fDUzDJjIdhbjnL2EXWR7e8G0mbQz1zh1m/QZVaC
-	Cp7IoHSGugAGp4prX9Sg==;
+	List-Owner; bh=CYGaIRVlO0NYb41UXit9lL0bHT9PC+RBtOBEWDMNfyI=; b=xQsvV61NwG4oWB
+	XbN54FDjgYeCkjHb4YRvBSJn2KziGa9PwH9MP8fKvEBP3KkW5v7re6+3yWiBoAmq0IZQ63ew+80Yo
+	1OAj6kJ+wg3cEY7N0sq2EwnqrafkGFizMBGV9JKs0FItOuAU1sj7kFAjltNz+0CIilLQ+U35H9Wni
+	lmWk745YEnPoVHAvv6w5znwGg1MAKGtSdfuArbPv+qyJoEAHp11BFO9Dw2RucdmBrMAp/RHZTNGbE
+	qhRWIU9zxpv2iJ5YHis0ncP7esetkQ2zlKiGTHquPXKjTpE7d13dxDPYSy86bEAXlLbUyqpYinNsn
+	vnrIBI7Jk7rLq/Qx4Q2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbL62-006dxj-Fw; Fri, 15 Oct 2021 11:09:54 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1mbL9Z-006en8-VE; Fri, 15 Oct 2021 11:13:34 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbKWO-006V7d-UM; Fri, 15 Oct 2021 10:33:06 +0000
+ id 1mbKWU-006VA3-Vk; Fri, 15 Oct 2021 10:33:14 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7B11A24000B;
- Fri, 15 Oct 2021 10:33:02 +0000 (UTC)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 50B1BC0009;
+ Fri, 15 Oct 2021 10:33:07 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>
-Subject: Re: [PATCH 4/8] Revert "mtd: rawnand: tmio: Fix external use of SW
- Hamming ECC helper"
-Date: Fri, 15 Oct 2021 12:33:02 +0200
-Message-Id: <20211015103302.950223-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 3/8] Revert "mtd: rawnand: txx9ndfmc: Fix external use of
+ SW Hamming ECC helper"
+Date: Fri, 15 Oct 2021 12:33:06 +0200
+Message-Id: <20211015103306.950290-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928221507.199198-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928221507.199198-4-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'048fbdd599101074285d605936a70a21632da9a4'
+X-linux-mtd-patch-commit: b'e7f466c51ce9179a7b5105f93fdb3e85ef6b61ce'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_033305_149205_9EBBFECF 
+X-CRM114-CacheID: sfid-20211015_033311_218039_27F9980B 
 X-CRM114-Status: GOOD (  19.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,8 +68,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2021-09-28 at 22:15:03 UTC, Miquel Raynal wrote:
-> This reverts commit 6a4c5ada577467a5f79e06f2c5e69c09983c22fb.
+On Tue, 2021-09-28 at 22:15:02 UTC, Miquel Raynal wrote:
+> This reverts commit 3d227a0b0ce319edbff6fd0d8af4d66689e477cc.
 > 
 > Before the introduction of the ECC framework infrastructure, many
 > drivers used the ->calculate/correct() Hamming helpers directly. The
