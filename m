@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A44B4C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:34:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3112C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:35:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A16060F9E
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:34:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1A16060F9E
+	by mail.kernel.org (Postfix) with ESMTPS id 5C44960F9E
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:35:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C44960F9E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,40 +18,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L/o2ne4FYftjyOjM3TTbL7RO848qtQmH9QWTNjAAYr4=; b=jYSoBWkA4f/TGq
-	KfEYTe6uMDnNjH6i9Q4cln4KL/ezAa2btt8JbxLRzbrG2RNrA5EDw5Me7I4bOb7+o040V+0DhjAWg
-	LG2+SFyteqnrY+HSgLAzMQpzAhcNV9Tm0w7ASlTf5smUiLpk5npgFUnBKI+YSAfCWBlhqI/LrwSUx
-	Ewvrm/EWCS9q+dIL5rqmWZdSvYgVdd5Z6BTmhv8oxOqeUqp8PrtQnsgvKGhlbrmM8RJZQWv7qAKJ1
-	leXuO8FE5K8H75JBMukA6x8pA5FpHTxjsb52K7YVBpKbyFvlfRJplMjkSOBWOzneJRmolm/IH7vJa
-	N6pWVEX9S/bApHK7iEJw==;
+	List-Owner; bh=GokP8y5sZdBmdPEZBdaQTkuUPgwlBMX6hu9aKzpDcCk=; b=DecRUM2oQz4od1
+	O0YOgYrhDfQYC60+KVgRqUGBwPzOZyBnikd5XuhyW8ms1IrSyA1/lwugYBHMPUTg/54s3wxHnHt/6
+	Zvzsp61wpDkrgeCQDTRF4XdwjehONLd+SuUYUUw0ZfMSMQZoOTLhNgvWwFqiMbdwEY9uNp0ErgmE0
+	2Qb1YvX3bgwbGAQuDvGz673myevBsLW31a8Fd4pPjsZW/S7TzsL6BB9P3xLadRMOO5mxd02z6C+cM
+	gMX+ulLptXPF0Nas6DTCNgkBBHPXn/k2/UrHG9jzU4q0+RrW9ypu4cdFSxlvJebjbRzFT7XlOAJHQ
+	L5fmkCSDYmXaKtAEIFIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbKXP-006VUe-N4; Fri, 15 Oct 2021 10:34:07 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1mbKY5-006Vfa-3t; Fri, 15 Oct 2021 10:34:49 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbKVF-006Uc9-Fe
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:31:54 +0000
+ id 1mbKVL-006Ue9-0t
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:32:00 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 542B820007;
- Fri, 15 Oct 2021 10:31:51 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 9211B1BF20B;
+ Fri, 15 Oct 2021 10:31:55 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Chris Morgan <macroalpha82@gmail.com>,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, richard@nod.at, vigneshr@ti.com,
- Chris Morgan <macromorgan@hotmail.com>
-Subject: Re: [PATCH] mtd: rawnand: hynix: Add support for H27UCG8T2ETR-BC MLC
- NAND
-Date: Fri, 15 Oct 2021 12:31:50 +0200
-Message-Id: <20211015103150.949320-1-miquel.raynal@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Jan Hoffmann <jan@3e8.eu>,
+ Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Subject: Re: [PATCH 9/9] mtd: rawnand: xway: Keep the driver compatible with
+ on-die ECC engines
+Date: Fri, 15 Oct 2021 12:31:55 +0200
+Message-Id: <20211015103155.949385-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210930162402.344-1-macroalpha82@gmail.com>
+In-Reply-To: <20210928222258.199726-10-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'eec417fd317a95a79257c20b3a1d66d4027549df'
+X-linux-mtd-patch-commit: b'6bcd2960af1b7bacb2f1e710ab0c0b802d900501'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_033153_691480_16062707 
-X-CRM114-Status: GOOD (  12.44  )
+X-CRM114-CacheID: sfid-20211015_033159_228133_13FD8FB2 
+X-CRM114-Status: GOOD (  19.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,24 +70,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-09-30 at 16:24:02 UTC, Chris Morgan wrote:
-> From: Chris Morgan <macromorgan@hotmail.com>
+On Tue, 2021-09-28 at 22:22:48 UTC, Miquel Raynal wrote:
+> Following the introduction of the generic ECC engine infrastructure, it
+> was necessary to reorganize the code and move the ECC configuration in
+> the ->attach_chip() hook. Failing to do that properly lead to a first
+> series of fixes supposed to stabilize the situation. Unfortunately, this
+> only fixed the use of software ECC engines, preventing any other kind of
+> engine to be used, including on-die ones.
 > 
-> Add support for the H27UCG8T2ETR-BC MLC NAND. The NAND is used widely
-> in the NTC CHIP, is an MLC type NAND, and is 8GB in size. Neither
-> JEDEC nor ONFI detection identifies it correctly, so the ID is added
-> to the nand_ids.c file. Additionally, per the datasheet this NAND
-> appears to use the same paired pages scheme as the Toshiba
-> TC58TEG5DCLTA00 (dist3), so add support for that to enable use in
-> SLC emulation mode.
+> It is now time to (finally) fix the situation by ensuring that we still
+> provide a default (eg. software ECC) but will still support different
+> ECC engines such as on-die ECC engines if properly described in the
+> device tree.
 > 
-> Tested on a NTC CHIP the device is able to write to a ubifs formatted
-> partition, and then have U-Boot (with proposed patches) boot from a
-> kernel located on that ubifs formatted partition.
+> There are no changes needed on the core side in order to do this, but we
+> just need to leverage the logic there which allows:
+> 1- a subsystem default (set to Host engines in the raw NAND world)
+> 2- a driver specific default (here set to software ECC engines)
+> 3- any type of engine requested by the user (ie. described in the DT)
 > 
-> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> As the raw NAND subsystem has not yet been fully converted to the ECC
+> engine infrastructure, in order to provide a default ECC engine for this
+> driver we need to set chip->ecc.engine_type *before* calling
+> nand_scan(). During the initialization step, the core will consider this
+> entry as the default engine for this driver. This value may of course
+> be overloaded by the user if the usual DT properties are provided.
+> 
+> Fixes: d525914b5bd8 ("mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()")
+> Cc: stable@vger.kernel.org
+> Cc: Jan Hoffmann <jan@3e8.eu>
+> Cc: Kestrel seventyfour <kestrelseventyfour@gmail.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Tested-by: Jan Hoffmann <jan@3e8.eu>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
