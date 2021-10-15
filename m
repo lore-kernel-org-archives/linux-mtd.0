@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F4B1C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02840C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:43:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECCFA6105A
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:41:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECCFA6105A
+	by mail.kernel.org (Postfix) with ESMTPS id C16A161053
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:43:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C16A161053
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,40 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AZI1C8wG4OaxxMqaXpKWwrpf9JFxwv9Co/yuxpbTSp8=; b=KxFl7K3n9yI+HB
-	uF7zIqHm5hOQBKh0AqiGv8JPGm8z/84olxbrpob3+IpbU3XWrmqLTr1/sCpWxNZBuuMGVUAruxTCQ
-	S18vV3Edw4WLtzEtrmPtt7mDtXZGEXlXSfMF0BDDlolAzsfXgzEJ81UrrZfT/gFadWIeC2KCWscIj
-	dVNtciOhSKzwkxAGacAZuwPt5U70ui7GSXfnXAtcoUSrjIhGcVz7FB0mPl+CoTOzMjuqsTDPdReAe
-	igr/OvPLujrziEtHuQIBeDgjJtbB3YBVXqwF6EQdh0MNH3IeNlxkrFO8CM01SfVucRnV74uyE9c43
-	mihMyelwwWXk9hJP1BHw==;
+	List-Owner; bh=s2mqYBOraEC8KmDT9H4pYbXi8xWmNa5qj06CPAPwrgc=; b=LyWPnxZMGFLWSH
+	jLYcsVYfq5OFShaf7tgVghcdnRpfbxoTt3nDGLu/jB7cqNUXq5/0LYIs/gvrU7gC9+cliaFRBsFyK
+	q6OOfVGO1ckKmKG5eJEgSyfIznL1F5h8hrb1ZeVkM+sQnjQFh8Aa/mi7pHRBHoAKHERorOBJI35x+
+	hceLeREh8+LdaPFU7J1sUVTl6DnBvqC9xcVM/uuZd+n7tjPCWPb00RU6JSC/ZtKooB9HdRu0kpFVc
+	50EPPaztmiiAnmho+Zg5JCUZCz7wdEycarFozcsNhecdPf6d+plWzgMsAS8Uodt1YKtkL3wql54tp
+	hD5NsUUygsJc7BfSHf8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbKdm-006X7i-U3; Fri, 15 Oct 2021 10:40:43 +0000
+	id 1mbKfn-006Xhi-TO; Fri, 15 Oct 2021 10:42:47 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbKVh-006Uom-PE
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:32:23 +0000
+ id 1mbKVm-006UrH-ID
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:32:28 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 499BB1C0009;
- Fri, 15 Oct 2021 10:32:19 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 5E99D1C000F;
+ Fri, 15 Oct 2021 10:32:24 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  stable@vger.kernel.org
-Subject: Re: [PATCH 4/9] mtd: rawnand: mpc5121: Keep the driver compatible
- with on-die ECC engines
-Date: Fri, 15 Oct 2021 12:32:18 +0200
-Message-Id: <20211015103218.949705-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 3/9] mtd: rawnand: gpio: Keep the driver compatible with
+ on-die ECC engines
+Date: Fri, 15 Oct 2021 12:32:23 +0200
+Message-Id: <20211015103223.949769-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928222258.199726-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928222258.199726-4-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'f9d8570b7fd6f4f08528ce2f5e39787a8a260cd6'
+X-linux-mtd-patch-commit: b'b5b5b4dc6fcd8194b9dd38c8acdc5ab71adf44f8'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_033221_995064_402FC945 
+X-CRM114-CacheID: sfid-20211015_033226_792911_33786AAF 
 X-CRM114-Status: GOOD (  19.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,7 +69,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2021-09-28 at 22:22:43 UTC, Miquel Raynal wrote:
+On Tue, 2021-09-28 at 22:22:42 UTC, Miquel Raynal wrote:
 > Following the introduction of the generic ECC engine infrastructure, it
 > was necessary to reorganize the code and move the ECC configuration in
 > the ->attach_chip() hook. Failing to do that properly lead to a first
@@ -95,7 +95,7 @@ On Tue, 2021-09-28 at 22:22:43 UTC, Miquel Raynal wrote:
 > entry as the default engine for this driver. This value may of course
 > be overloaded by the user if the usual DT properties are provided.
 > 
-> Fixes: 6dd09f775b72 ("mtd: rawnand: mpc5121: Move the ECC initialization to ->attach_chip()")
+> Fixes: f6341f6448e0 ("mtd: rawnand: gpio: Move the ECC initialization to ->attach_chip()")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
