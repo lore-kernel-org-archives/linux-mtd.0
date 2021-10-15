@@ -2,15 +2,15 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEEE1C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 06:55:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B3A0C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 07:45:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B90760F41
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 06:55:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8B90760F41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 17B4461108
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 07:45:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 17B4461108
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -18,44 +18,45 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4R2VjKcI20VA6tjME0fkQTphTBfhSegL/5dGz1w7ZSk=; b=ukCuFZDcmaglR6
-	7h1vh88uui6F+77PkuYiZhF8qqpbeRRY00Iz9zTTFJqKJqRYzO3tBGFfkJutSP9vVIBkV/0BRUdAM
-	0SxTP+jwCMF0o/DXj8YA/KKTSDetEs/i8t51meHsB4LwfuUdKdep0vB08zw25WuAUEAIrnvGIrnsw
-	aouCD73IwSYnbsjkMReKSs2G9TuZSOWHoU2hSn4DcZ813wFsb/6yqrQHGvOTPC8+HL2sKGJd9qrpK
-	V+2Io0t70iIL3tct6tREoW2ZDwbFbwTMg2+4wONb7kO+48VlHeg72ZC9FyZXJfhB/AoEEO5TyPqmV
-	Yo4sc1V9fJ30l6kq77WA==;
+	List-Owner; bh=1Mox/VGeQwPk1B7GipbGEX7EO7vGZbGjg4kNMPLQrgg=; b=aLPb4FNrXxd2dv
+	oivkrPqjsJE2GLtbVtMZFXAeXqPeyQ5PymPjsxgXg+kCfU533pWCc0/Tj7+twjvcSsTJbyVUFcy4d
+	tGhrY7oYE76SnkJvM7lZBKs02jp7Gh0kWQoqvGemEh4rlHGpeHqU9SGs6h1/TriS85QQMC2iOZXih
+	P8oDgVHJnWQHPoyw0IKc1XCCCSrcFtvskC5qlxQDnEHpOdNWUc9EWv3UkBEii9K5NDMzOgxAltHgd
+	jZP/uU5phJlHOl6B/Mt2lHn80xGD0xJir7zqha2bO18LlUhD5nlns60llekDuu5YqJDvz3wdOpU8o
+	uFAQjqg+ijxaw4R8NYow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbH7j-005cNP-OC; Fri, 15 Oct 2021 06:55:23 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1mbHtk-005jnP-Vo; Fri, 15 Oct 2021 07:45:01 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbH7g-005cL5-S6
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 06:55:22 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 651671F4502B;
- Fri, 15 Oct 2021 07:55:17 +0100 (BST)
-Date: Fri, 15 Oct 2021 08:55:11 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1mbHti-005jmM-8w
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 07:44:59 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7C5C8100018;
+ Fri, 15 Oct 2021 07:44:51 +0000 (UTC)
+Date: Fri, 15 Oct 2021 09:44:50 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Sean Nyekjaer <sean@geanix.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
- <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: core: protect access to MTD devices while in
- suspend
-Message-ID: <20211015085511.0e2ac916@collabora.com>
-In-Reply-To: <20211011115253.38497-2-sean@geanix.com>
-References: <20211011115253.38497-1-sean@geanix.com>
- <20211011115253.38497-2-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Cc: Han Xu <han.xu@nxp.com>, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: nand: raw: gpmi: new bch geometry settings
+Message-ID: <20211015094450.6350c630@xps13>
+In-Reply-To: <9f4ed2c6-7b3d-4933-2247-541855b800ba@geanix.com>
+References: <20210522205136.19465-1-han.xu@nxp.com>
+ <13c975bc-b37b-8708-9ac7-acdc62ef7108@geanix.com>
+ <20210525191308.jlxqvy7khptbuj4z@umbrella>
+ <20210526094136.279976a6@xps13>
+ <20210526141700.5gygssig4rnzn6mj@umbrella>
+ <20210526173123.1787713b@xps13>
+ <20210705104654.gko7ettkilrrosi7@skn-laptop>
+ <20210706025001.bqvrdye4v3cidm5v@umbrella>
+ <9f4ed2c6-7b3d-4933-2247-541855b800ba@geanix.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211014_235521_086267_FE8BCDB8 
-X-CRM114-Status: GOOD (  22.07  )
+X-CRM114-CacheID: sfid-20211015_004458_468066_9CAD6FFC 
+X-CRM114-Status: GOOD (  14.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,106 +68,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 11 Oct 2021 13:52:51 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
-
->  struct mtd_info {
-> @@ -476,10 +478,49 @@ static inline u32 mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
->  	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
->  }
->  
-> +static inline void mtd_start_access(struct mtd_info *mtd)
-> +{
-> +	struct mtd_info *master = mtd_get_master(mtd);
-
-mtd_start_{access,end}() should only be called on master devices, so I
-guess you can drop the mtd_get_master() call and use mtd directly.
-Maybe add a WARN_ON_ONCE(mtd != mtd_get_master(mtd)) so we can
-easily catch silly mistakes.
-
-> +
-> +	/*
-> +	 * Don't take the suspend_lock on devices that don't
-> +	 * implement the suspend hook. Otherwise, lockdep will
-> +	 * complain about nested locks when trying to suspend MTD
-> +	 * partitions or MTD devices created by gluebi which are
-> +	 * backed by real devices.
-> +	 */
-> +	if (!master->_suspend)
-> +		return;
-> +
-> +	/*
-> +	 * Wait until the device is resumed. Should we have a
-> +	 * non-blocking mode here?
-> +	 */
-> +	while (1) {
-> +		down_read(&master->master.suspend_lock);
-> +		if (!master->master.suspended)
-> +			return;
-> +
-> +		up_read(&master->master.suspend_lock);
-> +		wait_event(master->master.resume_wq, master->master.suspended == 0);
-> +	}
-> +}
-> +
-> +static inline void mtd_end_access(struct mtd_info *mtd)
-> +{
-> +	struct mtd_info *master = mtd_get_master(mtd);
-> +
-> +	if (!master->_suspend)
-> +		return;
-> +
-> +	up_read(&master->master.suspend_lock);
-> +}
-> +
->  static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
->  				     loff_t ofs, size_t len)
->  {
->  	struct mtd_info *master = mtd_get_master(mtd);
-> +	int ret;
->  
->  	if (!master->_max_bad_blocks)
->  		return -ENOTSUPP;
-> @@ -487,8 +528,12 @@ static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
->  	if (mtd->size < (len + ofs) || ofs < 0)
->  		return -EINVAL;
->  
-> -	return master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
-> -				       len);
-> +	mtd_start_access(mtd);
-> +	ret = master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
-> +				      len);
-> +	mtd_end_access(mtd);
-
-Please pass the master to those functions, there's no point walking the
-parent chain again in the start/end_access() functions if you already
-have the master retrieved in the caller. Oh, and there seems to be a
-common pattern here, so maybe it's worth adding those macros:
-
-#define mtd_no_suspend_void_call(master, method, ...) \
-	mtd_start_access(master); \
-	master->method(master, __VA_ARGS__); \
-	mtd_end_access(master);
-
-#define mtd_no_suspend_ret_call(ret, master, method, ...) \
-	mtd_start_access(master); \
-	ret = master->method(master, __VA_ARGS__); \
-	mtd_end_access(master);
-
-I don't really like the helper names, so feel free to propose something
-else.
-
-> +
-> +	return ret;
->  }
->  
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSGFuLAoKc2VhbkBnZWFuaXguY29tIHdyb3RlIG9uIFR1ZSwgMTIgT2N0IDIwMjEgMTE6MTU6
+MjcgKzAyMDA6Cgo+IE9uIDA2LzA3LzIwMjEgMDQuNTAsIEhhbiBYdSB3cm90ZToKPiA+IE9uIDIx
+LzA3LzA1IDEyOjQ2UE0sIFNlYW4gTnlla2phZXIgd3JvdGU6ICAKPiA+PiBPbiBXZWQsIE1heSAy
+NiwgMjAyMSBhdCAwNTozMToyM1BNICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgCj4gPj4+
+IEhpIEhhbiwgIAo+IAo+IFsgLi4uIF0KPiAKPiA+PiAKPiA+PiBIaSBIYW4sCj4gPj4gCj4gPj4g
+SXMgdGhpcyBzb21ldGhpbmcgeW91IGFyZSB3b3JraW5nIG9uPyBJZiBub3QgSSByZWFsbHkgdGhp
+bmsgd2UgbmVlZAo+ID4+IHRvIHJldmVydCB0aGUgY2hhbmdlcyB0byB1LWJvb3QsIHRvIGFsbGln
+biB2YW5pbGxhIHUtYm9vdCBhbmQKPiA+PiBrZXJuZWwuICAKPiA+IAo+ID4gSSB3aWxsIHNlbmQg
+cGF0Y2hlcyBmb3IgYm90aCBrZXJuZWwgYW5kIHUtYm9vdCB0byB1c2UgbGVnYWN5IGJjaAo+ID4g
+c2NoZW1lIGJ5IGRlZmF1bHQsIGFuZCBhZGQgc29tZSBjb2RlIHRvIHRyZWF0IGZldyBNTEMgbmFu
+ZCBjaGlwcyBhcwo+ID4gY29ybmVyIGNhc2VzLgo+ID4gICAKPiAKPiBIYXZlIEkgbWlzc2VkIHRo
+ZSBzZXJpZXMgcGF0Y2hlcyBmb3IgdGhpcz8gOikKClllcywgdGhpcyBuZWVkcyB0byBiZSBmaXhl
+ZC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
