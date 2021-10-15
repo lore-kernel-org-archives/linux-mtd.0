@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CBEDC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:32:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2ACAC433FE
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:32:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36FBD61041
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:32:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 36FBD61041
+	by mail.kernel.org (Postfix) with ESMTPS id B2D9560EE2
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:32:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B2D9560EE2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,46 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xAcKAcldj5Io+E+Cw8JsTVdbFPcC1eEvyeVnrh/YFWw=; b=K8g/r84w3Wu/+A
-	t3SD4lGkFL7Dr3w00BhrqMLnb7J3Cvs4TGnqyYZEk1w9t45WQLjjk4E4rOsvCFBzg7TX8GVY2X/D+
-	+wsR449rlDeNcIctSSnyiOZqlc589FnHv1/UGQ8dDAJvcSBqQxPUj5NJgrZCjqQJswoWBODKiysWv
-	44BzKG4iZjhWqFLNMnFF2XwrwJuWKNyc1Ae1yIwV2IEzCM+oC2lhtGJdQ7ju8pavlXsNOj5Qn2/AF
-	ujw4QZA3iwYpvhiEW/FLJexW7dGfCe+wkDI47M4cvstR0TuTsZnyk9l5U3KCeRzQ8265QFV2lRUXZ
-	0pkmRgdZwjaG0dg+tPcg==;
+	List-Owner; bh=4WVJrktp1vNGl9P/GkEp8ioikH4jWxbmkUaKFQ2RD0U=; b=cCioztIRVPymW5
+	EVXJtBfaidsO7D3yCPtMCEC2Lg0JYlVXAIAyQIhrLWt9bMp04Tq2OdO9q+0k3d1O8BvzmbIVl+tr7
+	WWY2A0sID1Jn1lStyOr0W+48j7gSdXuV0ZsuJEv1m18YN5HTSAi12uEC42blHDrYVZ9Fxy6Gm7ANL
+	VnB9jzqlrcXZ26reDc/VWGC9ecrAFC0cMpcNUzheBSt/P4B4X3ptcaRQXxriOs9x76hM3GTVmPyfA
+	aHLCtuxTFDM3ALaiy1T8Iy4He+sxiWHop4Dmbm74aS/EY9Xv12BKK3X1gStKZjvl6srnZ5mGOJIzY
+	ivRCvHIP9uxVBmEDi53w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbKUh-006UWK-C2; Fri, 15 Oct 2021 10:31:19 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1mbKUt-006UYA-Iq; Fri, 15 Oct 2021 10:31:31 +0000
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbKUd-006UVe-93
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:31:17 +0000
+ id 1mbKUi-006UWG-Vc
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:31:22 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 44DC81C0011;
- Fri, 15 Oct 2021 10:31:09 +0000 (UTC)
+ by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 21D7740010;
+ Fri, 15 Oct 2021 10:31:16 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Zev Weiss <zev@bewilderbeest.net>,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Michael Walle <michael@walle.cc>, Zhen Lei <thunder.leizhen@huawei.com>,
- Lee Jones <lee.jones@linaro.org>, Tian Tao <tiantao6@hisilicon.com>,
- Jon Hunter <jonathanh@nvidia.com>, Petr Malat <oss@malat.biz>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Mario Rugiero <mrugiero@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: core: don't remove debugfs directory if device is in
- use
-Date: Fri, 15 Oct 2021 12:31:07 +0200
-Message-Id: <20211015103107.948869-1-miquel.raynal@bootlin.com>
+To: Cai Huoqing <caihuoqing@baidu.com>, vigneshr@ti.com,
+ miquel.raynal@bootlin.com, richard@nod.at, robh+dt@kernel.org
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update the devicetree documentation path of
+ hyperbus
+Date: Fri, 15 Oct 2021 12:31:16 +0200
+Message-Id: <20211015103116.948934-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211014203953.5424-1-zev@bewilderbeest.net>
+In-Reply-To: <20211014110614.3320-1-caihuoqing@baidu.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c13de2386c78e890d4ae6f01a85eefd0b293fb08'
+X-linux-mtd-patch-commit: b'8a057b5fb480f231b6944ebe01114ceb6a297422'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_033116_060708_16CF82E2 
-X-CRM114-Status: UNSURE (   7.82  )
+X-CRM114-CacheID: sfid-20211015_033121_174951_BF8644A3 
+X-CRM114-Status: UNSURE (   5.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,14 +69,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-10-14 at 20:39:52 UTC, Zev Weiss wrote:
-> Previously, if del_mtd_device() failed with -EBUSY due to a non-zero
-> usecount, a subsequent call to attempt the deletion again would try to
-> remove a debugfs directory that had already been removed and panic.
-> With this change the second call can instead proceed safely.
+On Thu, 2021-10-14 at 11:06:14 UTC, Cai Huoqing wrote:
+> Change the devicetree documentation path
+> to "Documentation/devicetree/bindings/mtd/ti,am654-hbmc.yaml"
+> since 'cypress,hyperflash.txt' and 'ti,am654-hbmc.txt' have
+> been converted to 'ti,am654-hbmc.yaml'.
 > 
-> Fixes: e8e3edb95ce6 ("mtd: create per-device and module-scope debugfs entries")
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
