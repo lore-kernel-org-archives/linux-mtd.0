@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D873C4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D224FC433FE
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C7C46120C
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0C7C46120C
+	by mail.kernel.org (Postfix) with ESMTPS id A40416023E
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 23:31:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A40416023E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M8hlNCG4yDaH8Z7yk32NSfhuTbOj+4bWCv2iNOZjJsg=; b=zcSFhoU+OvZeY4
-	qD5A21I2kG/8JFlgK5tEWk3jc7Myy/+s56Ny3Q4dmSl3QEt/I1Q2qmVHXm5R4q0sX/KK3m2kLHABb
-	aBYqXot/ovRAy7njy/tnvZSJSVrgQXCS6b+/pG0uxY2Fti7hC9CMSVp5KDiqJzbi8LxVPmgnbL3bT
-	ckJ2Ax/+5BPRh3NRNlU4XqPWl9rA2YtPakkQiIqq8Lp11J8tgdx2gF6BmG3SpRLLttLWPE1IlcjG4
-	1x5v3c9/rI8iGQ7pP+pnFcnlKJ5YKw4ddyWobnl6YwtGtTz46w8EpymO7TmzbGtH2CWm8zFh4Fh/F
-	M0He3oIjokoqbEgu6rnQ==;
+	List-Owner; bh=LM9ScdUrllakSKHwxeCNnGD7l+fd3XvlE7XzP6mV7HA=; b=aoY/drvm2crkHT
+	MN0WBws1sLqXvZNgHdR+7RC6J4sdBPtOeq0q8kVIwIi7OfPVX9QGa5GDbRBNuASEAXfIRcqHdofSi
+	bdz2/d9rHwp3LRBVJVQf5redUUu6LhGI8IkQrdiRVowjn4LIW6KrjUYDjqwZCRGBDusY2DQLxLwXq
+	I9lM9Ka4jyXKfp+ajmXwb3rCuotVQPNf+0llTT+P+82TRNqruG/zhbHu9VnrBpvf1VH8Nv7y+F+QZ
+	WeoR20m70X/ZzDLe87VS/HsqZU6X88em+FQShbnsvI8Z68p7cr8qEnc1otzy4OmA+IS71lZH5yvW3
+	5Zif9flvbXroMyT/zZEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbWeq-0095xR-94; Fri, 15 Oct 2021 23:30:36 +0000
+	id 1mbWf5-00966y-9K; Fri, 15 Oct 2021 23:30:51 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mbWej-0095ut-6A; Fri, 15 Oct 2021 23:30:29 +0000
+ (Red Hat Linux)) id 1mbWej-0095uz-9F; Fri, 15 Oct 2021 23:30:29 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com,
  agk@redhat.com, snitzer@redhat.com, colyli@suse.de,
@@ -43,10 +43,10 @@ Cc: linux-scsi@vger.kernel.org, dm-devel@redhat.com,
  linux-bcache@vger.kernel.org, xen-devel@lists.xenproject.org,
  linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
  linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 1/9] scsi/sd: add error handling support for add_disk()
-Date: Fri, 15 Oct 2021 16:30:20 -0700
-Message-Id: <20211015233028.2167651-2-mcgrof@kernel.org>
+ Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 4/9] bcache: add error handling support for add_disk()
+Date: Fri, 15 Oct 2021 16:30:23 -0700
+Message-Id: <20211015233028.2167651-5-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
 References: <20211015233028.2167651-1-mcgrof@kernel.org>
@@ -71,35 +71,69 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-As with the error handling for device_add() we follow the same
-logic and just put the device so that cleanup is done via the
-scsi_disk_release().
+This driver doesn't do any unwinding with blk_cleanup_disk()
+even on errors after add_disk() and so we follow that
+tradition.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Coly Li <colyli@suse.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/scsi/sd.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/md/bcache/super.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index a646d27df681..d69f2e626e76 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3457,7 +3457,13 @@ static int sd_probe(struct device *dev)
- 		pm_runtime_set_autosuspend_delay(dev,
- 			sdp->host->hostt->rpm_autosuspend_delay);
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index f2874c77ff79..f0c32cdd6594 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -1082,7 +1082,9 @@ int bch_cached_dev_run(struct cached_dev *dc)
+ 		closure_sync(&cl);
  	}
--	device_add_disk(dev, gd, NULL);
-+
-+	error = device_add_disk(dev, gd, NULL);
-+	if (error) {
-+		put_device(&sdkp->dev);
-+		goto out;
-+	}
-+
- 	if (sdkp->capacity)
- 		sd_dif_config_host(sdkp);
  
+-	add_disk(d->disk);
++	ret = add_disk(d->disk);
++	if (ret)
++		goto out;
+ 	bd_link_disk_holder(dc->bdev, dc->disk.disk);
+ 	/*
+ 	 * won't show up in the uevent file, use udevadm monitor -e instead
+@@ -1534,10 +1536,11 @@ static void flash_dev_flush(struct closure *cl)
+ 
+ static int flash_dev_run(struct cache_set *c, struct uuid_entry *u)
+ {
++	int err = -ENOMEM;
+ 	struct bcache_device *d = kzalloc(sizeof(struct bcache_device),
+ 					  GFP_KERNEL);
+ 	if (!d)
+-		return -ENOMEM;
++		goto err_ret;
+ 
+ 	closure_init(&d->cl, NULL);
+ 	set_closure_fn(&d->cl, flash_dev_flush, system_wq);
+@@ -1551,9 +1554,12 @@ static int flash_dev_run(struct cache_set *c, struct uuid_entry *u)
+ 	bcache_device_attach(d, c, u - c->uuids);
+ 	bch_sectors_dirty_init(d);
+ 	bch_flash_dev_request_init(d);
+-	add_disk(d->disk);
++	err = add_disk(d->disk);
++	if (err)
++		goto err;
+ 
+-	if (kobject_add(&d->kobj, &disk_to_dev(d->disk)->kobj, "bcache"))
++	err = kobject_add(&d->kobj, &disk_to_dev(d->disk)->kobj, "bcache");
++	if (err)
+ 		goto err;
+ 
+ 	bcache_device_link(d, c, "volume");
+@@ -1567,7 +1573,8 @@ static int flash_dev_run(struct cache_set *c, struct uuid_entry *u)
+ 	return 0;
+ err:
+ 	kobject_put(&d->kobj);
+-	return -ENOMEM;
++err_ret:
++	return err;
+ }
+ 
+ static int flash_devs_run(struct cache_set *c)
 -- 
 2.30.2
 
