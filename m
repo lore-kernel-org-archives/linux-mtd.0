@@ -2,14 +2,14 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3112C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:35:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF5AAC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:36:06 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C44960F9E
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:35:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C44960F9E
+	by mail.kernel.org (Postfix) with ESMTPS id B1D6560F9E
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 10:36:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B1D6560F9E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,42 +18,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GokP8y5sZdBmdPEZBdaQTkuUPgwlBMX6hu9aKzpDcCk=; b=DecRUM2oQz4od1
-	O0YOgYrhDfQYC60+KVgRqUGBwPzOZyBnikd5XuhyW8ms1IrSyA1/lwugYBHMPUTg/54s3wxHnHt/6
-	Zvzsp61wpDkrgeCQDTRF4XdwjehONLd+SuUYUUw0ZfMSMQZoOTLhNgvWwFqiMbdwEY9uNp0ErgmE0
-	2Qb1YvX3bgwbGAQuDvGz673myevBsLW31a8Fd4pPjsZW/S7TzsL6BB9P3xLadRMOO5mxd02z6C+cM
-	gMX+ulLptXPF0Nas6DTCNgkBBHPXn/k2/UrHG9jzU4q0+RrW9ypu4cdFSxlvJebjbRzFT7XlOAJHQ
-	L5fmkCSDYmXaKtAEIFIg==;
+	List-Owner; bh=BfKwnnfFcLHQQ9RmvcY5vOIA/oeqXdWKcYPPbayUbao=; b=tmO53o23x2mgsA
+	xLyhNy+EWrGtlYv/KSEE9F4ftp7gj0K3APXQkEl2iJtH+TxpkBX3ArNztY2bsMpJt8271D4Ey1mjr
+	AFw8BNTLw9ZWT3pnajwJj6lVOox9qsmD7pOcr5R7Ff0BA3e9WbFZZBQiU6AyZQLPG2RWyXcosIy65
+	7jHv3khce3aJj6vWVlm8zp9gTGIatAshCNIeMU8VexNcg5TyJEkPHLQwbGaFagYihUKdB0fPvyvpb
+	QXSm7k/xmvtIkQOZOAr/eK/Ra+qyo/ejx3j3Wshy7gVmictULqKse21+eSg7pFSq686gUdKQQ/QC2
+	sTEIv8LPTV5SAWuVCB1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbKY5-006Vfa-3t; Fri, 15 Oct 2021 10:34:49 +0000
+	id 1mbKYq-006VtY-Q9; Fri, 15 Oct 2021 10:35:36 +0000
 Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbKVL-006Ue9-0t
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:32:00 +0000
+ id 1mbKVP-006Ufo-0r
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 10:32:04 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 9211B1BF20B;
- Fri, 15 Oct 2021 10:31:55 +0000 (UTC)
+ by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E5CBC1BF20F;
+ Fri, 15 Oct 2021 10:32:00 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Jan Hoffmann <jan@3e8.eu>,
- Kestrel seventyfour <kestrelseventyfour@gmail.com>
-Subject: Re: [PATCH 9/9] mtd: rawnand: xway: Keep the driver compatible with
- on-die ECC engines
-Date: Fri, 15 Oct 2021 12:31:55 +0200
-Message-Id: <20211015103155.949385-1-miquel.raynal@bootlin.com>
+ stable@vger.kernel.org
+Subject: Re: [PATCH 8/9] mtd: rawnand: socrates: Keep the driver compatible
+ with on-die ECC engines
+Date: Fri, 15 Oct 2021 12:32:00 +0200
+Message-Id: <20211015103200.949449-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210928222258.199726-10-miquel.raynal@bootlin.com>
+In-Reply-To: <20210928222258.199726-9-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'6bcd2960af1b7bacb2f1e710ab0c0b802d900501'
+X-linux-mtd-patch-commit: b'b4ebddd6540d78a7f977b3fea0261bd575c6ffe2'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_033159_228133_13FD8FB2 
-X-CRM114-Status: GOOD (  19.20  )
+X-CRM114-CacheID: sfid-20211015_033203_247291_D01A6995 
+X-CRM114-Status: GOOD (  19.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,7 +69,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2021-09-28 at 22:22:48 UTC, Miquel Raynal wrote:
+On Tue, 2021-09-28 at 22:22:47 UTC, Miquel Raynal wrote:
 > Following the introduction of the generic ECC engine infrastructure, it
 > was necessary to reorganize the code and move the ECC configuration in
 > the ->attach_chip() hook. Failing to do that properly lead to a first
@@ -96,12 +95,9 @@ On Tue, 2021-09-28 at 22:22:48 UTC, Miquel Raynal wrote:
 > entry as the default engine for this driver. This value may of course
 > be overloaded by the user if the usual DT properties are provided.
 > 
-> Fixes: d525914b5bd8 ("mtd: rawnand: xway: Move the ECC initialization to ->attach_chip()")
+> Fixes: b36bf0a0fe5d ("mtd: rawnand: socrates: Move the ECC initialization to ->attach_chip()")
 > Cc: stable@vger.kernel.org
-> Cc: Jan Hoffmann <jan@3e8.eu>
-> Cc: Kestrel seventyfour <kestrelseventyfour@gmail.com>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Tested-by: Jan Hoffmann <jan@3e8.eu>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
