@@ -2,77 +2,62 @@ Return-Path: <SRS0=LIJd=PD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEE9FC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 20:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 648BCC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 20:13:42 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 706D760EE2
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 20:06:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 706D760EE2
+	by mail.kernel.org (Postfix) with ESMTPS id CBB3460E74
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Oct 2021 20:13:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CBB3460E74
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amarulasolutions.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zHwnFwlqPwGdiHo0sJRSwPDeWsM5OGzBkfTsmeQdClw=; b=iG67tSmlUy2JZl
-	pa1mE5UV8yu3+xTjLBnmooRNF8brZvId8AG2LoNCHOJGrsHKgXJqy6SD7XfNSDk4f32yVhdIMIsOK
-	kftH/F6LOWvyVaND8riIB/8bUqbxjksUNeJW4gEqViTw5WqI9+XiU3C54y3QhOj/LqhPvnDb/MMVd
-	nBt10tX7k0433g3JCEgKD9c22GZXsunet3xxb8UxZYAy55XLaoocRXEdboJkiDqojInXc3cXcmYOa
-	jUkgr2w4WnuZoMUb/H99PWXhYXwgN53swv6FbPCMzkV7mpvpnpZE9gwVoduy2BU3BHMClK20nev5C
-	KleGvB6kG96NbEXTuNaA==;
+	List-Owner; bh=hd32TYQeNmSwWlTJJVGvBZpciAexkuORjAOOI1gRKJw=; b=wsLRlpn4sWTkSf
+	RQjeKef8D/z6UekTLa0pbK3yi9Qev4WCN3cOvnx6MH9WIqoBjzLWuE+qgCXe5isNofXVQ2MLawSNU
+	tKyP2EkyjiesblLIVY8NL5mglHsFluxpRFHKg/w2QDwj0dNFCJEfYG6y6Ms7d2CPeZgITy/hmA7Zo
+	WRG5vuA9QL37dfWoHldNLYfk2W3PugBPdaiz/ds7cD2H8/QPZwsUjeXYQD86azH9ub7V2c795YPfx
+	PguBm/JDDiEBVmnFsi/fP7rn1Hl5OHOm/mcwpnLHTyyvTJpfH3CWWbuuOVdwbJEVHOqzLzGoukqSR
+	frae0pOapcOAefZW9CSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbTSi-008g7I-8m; Fri, 15 Oct 2021 20:05:52 +0000
-Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
+	id 1mbTZk-008h2R-FY; Fri, 15 Oct 2021 20:13:08 +0000
+Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbTSe-008g6k-9c
- for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 20:05:50 +0000
-Received: by mail-ed1-x532.google.com with SMTP id ec8so42498010edb.6
- for <linux-mtd@lists.infradead.org>; Fri, 15 Oct 2021 13:05:46 -0700 (PDT)
+ id 1mbTZh-008h19-6n
+ for linux-mtd@lists.infradead.org; Fri, 15 Oct 2021 20:13:06 +0000
+Received: by mail-wr1-x42e.google.com with SMTP id e12so28363662wra.4
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Oct 2021 13:13:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amarulasolutions.com; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=vOEtaPNSFs11osxm82F/7qezNejb7ALjpBbHjGblxOc=;
- b=I+9dnB+typAjSFjAt2vf1Y59qpZ3U0l4rwU69Q7uz+CGYuInoNkV0CUye4Y/mqtwiG
- 3qMCZJKTuksVAcjiL/ofXpNR5TZ+If8OyhFtE2i+lrqHmgUkVOoLWXec9pilfyFmlFVA
- RXUgw2Vr/m00z2UwKY06bPhd3uo2WWIMOyJQI=
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=zX1XqEk+x+UHGN65uLyvN6Sqg6pAGXvalnPhwHKPfuQ=;
+ b=PClHgi/eZUYOayFJdi/yPgMC4hDeu89vNGMNGw3cHWR2g6w3mWxw9wIGUdgI7mH5zP
+ +hAjusa6PtqAE9BnKth72bi2tUvDCLQ2W1xhDNHZYRqBI0HCcbby2YNcVLmiQXfDN41A
+ AoxFB96xaexD9LZOOuC3ky7tnGqNfA1fiXxYg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=vOEtaPNSFs11osxm82F/7qezNejb7ALjpBbHjGblxOc=;
- b=PvjXnd/3sE6ZmcAaQlWiPgrQHgCeSgRVGMmGZy0qL5D7N4FOLjlVZW9qnbuVhRiGBH
- OzFGP4a5tpft0qrASHMJ9wlrm8bHbjjTtuTtVnivWgAwu98rC1UcwvMg+zFbNdWl4qrl
- sCXddU54R4mgbwwLJubDYHrq86eDNV5mQ6ijKe0RXrAv3b9cX96bErzGrbDUEIJ4A4VG
- GHbBdloRjQkKTZXZNsg2XCtke3mmDvi4W6p/NRrMsUPxRUrdi50oRqfI2cNjlbE4Gk33
- S/2TMzLzcZf6a6Xa4MuPXDUGYNRXr4jx2Fvqr11G/Ta4ljjJHZbAGlvoUUsaS8GzTo4G
- 1sMg==
-X-Gm-Message-State: AOAM532XjGhZTJIdrJX+YrEyIARuS1U+WTrr0UVp65SF9CXvdPolPVov
- A5j/0o84+GRiLqsORq/AbKIKxvf0ThpgeXfB
-X-Google-Smtp-Source: ABdhPJz6KQkwys1xMFsc//r/hRzdoqjiW9VOpEOrNoocw3afEBL89mJ34im2P5ARnP3C2GqAeBrt8w==
-X-Received: by 2002:a17:907:939:: with SMTP id
- au25mr9459952ejc.166.1634328345332; 
- Fri, 15 Oct 2021 13:05:45 -0700 (PDT)
-Received: from panicking (142-158-13-149.static.cpe.unicatlc.net.
- [149.13.158.142])
- by smtp.gmail.com with ESMTPSA id rk9sm4731852ejb.31.2021.10.15.13.05.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Oct 2021 13:05:44 -0700 (PDT)
-Date: Fri, 15 Oct 2021 22:05:41 +0200
-From: Michael Trimarchi <michael@amarulasolutions.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Greg Ungerer <gerg@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org
-Subject: Re: GPMI iMX6ull timeout on DMA
-Message-ID: <20211015200541.GA55401@panicking>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=zX1XqEk+x+UHGN65uLyvN6Sqg6pAGXvalnPhwHKPfuQ=;
+ b=ZqFugVOFW7/uElzsfGvigvQ8I3/AmuoQguOO9J7jtRU0jAKvtfScL7NBoxHAww76vK
+ WlYoGBmeIRy1s3dzT/ai0WtX+boTqyvtaeDp1CNXEUX6VRgnlo+r+nVgsEnXe+GYZpY9
+ /VYTDxbjJS3BgA1nMAHEkX5ZzjB20I98Z8pRwrvzMvLpsN4YH4JMLqrKlr5zumXnuIiM
+ 1QniUcb5x7Dcv8vMAzOPQnITKR5MC0udOGlQxTPKr8w3Hmms0IWDvMLudaQI0sUp6Ifq
+ ReenXZnDo7fJcwEDr0gVxDbjGS5HkmcJVmnDGYBnsniz8HNCOI6WjUi6v/YHqTRUeiea
+ OjaA==
+X-Gm-Message-State: AOAM5315zi4jAdf+HzVKRFevY4qh+rDOnBFL4DpKs/o8BNpEtBoEmmRm
+ KdhpqH87WgoH7IuG7v8xjneeibDhaQGuUw2dyaiUWw==
+X-Google-Smtp-Source: ABdhPJzJMBD+UL4yovRu7pG8b3Apg8ScWuUAssMnrYFENR7omxLAy+v5JFRpzUkT9oD6JlTbIvb3734u4RkXSBVHpew=
+X-Received: by 2002:a5d:6c62:: with SMTP id r2mr17356174wrz.412.1634328783590; 
+ Fri, 15 Oct 2021 13:13:03 -0700 (PDT)
+MIME-Version: 1.0
 References: <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
  <20190812093129.75888dad@collabora.com>
  <a47792dc-b19f-8af3-8748-5a21fb63271e@kernel.org>
@@ -82,13 +67,20 @@ References: <00b31833-69ba-42c5-57c9-37fa1f70efc5@kernel.org>
  <20210201151335.210af8ca@xps13>
  <CAOf5uwkivHhMX_mPJymBZxQge_wc4K1p_1S3gsQYHPV40aaj3w@mail.gmail.com>
  <CAOf5uwnXB-2xXXXxvH9Fo3ngscccA5Hv7iNTbUYRNFs_iLGJqw@mail.gmail.com>
- <20210201161433.0c4ff0e3@xps13>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20210201161433.0c4ff0e3@xps13>
+ <20210201161433.0c4ff0e3@xps13> <20211015200541.GA55401@panicking>
+In-Reply-To: <20211015200541.GA55401@panicking>
+From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date: Fri, 15 Oct 2021 22:12:50 +0200
+Message-ID: <CAOf5uw=26LZ9O9zqovo6enwRnA6DE398M4fqj_jKsKfShOLNUQ@mail.gmail.com>
+Subject: Re: GPMI iMX6ull timeout on DMA
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Greg Ungerer <gerg@kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, Boris Brezillon <bbrezillon@kernel.org>,
+ linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_130548_798103_92344119 
-X-CRM114-Status: GOOD (  45.45  )
+X-CRM114-CacheID: sfid-20211015_131305_280896_4E9FD600 
+X-CRM114-Status: GOOD (  43.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,206 +92,134 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi
-
-On Mon, Feb 01, 2021 at 04:14:33PM +0100, Miquel Raynal wrote:
-> Hi Michael,
-> =
-
-> Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote on
-> Mon, 1 Feb 2021 16:08:23 +0100:
-> =
-
-> > Hi
-> > =
-
-> > On Mon, Feb 1, 2021 at 3:32 PM Michael Nazzareno Trimarchi
-> > <michael@amarulasolutions.com> wrote:
-> > >
-> > > Hi
-> > >
-> > > On Mon, Feb 1, 2021 at 3:13 PM Miquel Raynal <miquel.raynal@bootlin.c=
-om> wrote:  =
-
-> > > >
-> > > > Hi Michael,
-> > > >
-> > > > Michael Nazzareno Trimarchi <michael@amarulasolutions.com> wrote on
-> > > > Sat, 30 Jan 2021 10:41:29 +0100:
-> > > >  =
-
-> > > > > Hi Miquel
-> > > > >
-> > > > > commit f8e6ad14388067f91b26d044185d95623fbc9535
-> > > > > Author: Michael Trimarchi <michael@amarulasolutions.com>
-> > > > > Date:   Fri Jan 29 08:46:53 2021 +0100
-> > > > >
-> > > > >     mtd: nand: Calculate the clock before enable it
-> > > > >
-> > > > >     Signed-off-by: Michael Trimarchi <michael@amarulasolutions.co=
-m>
-> > > > >     Change-Id: I79b0da39de0a9b32ea0b002fa200d7f44d4f8ce7
-> > > > >
-> > > > > diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-> > > > > b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-> > > > > index 322a008290e5..0bca52b3bc8f 100644
-> > > > > --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-> > > > > +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-> > > > > @@ -377,6 +377,7 @@ static void gpmi_nfc_compute_timings(struct
-> > > > > gpmi_nand_data *this,
-> > > > >                                      const struct nand_sdr_timing=
-s *sdr)
-> > > > >  {
-> > > > >         struct gpmi_nfc_hardware_timing *hw =3D &this->hw;
-> > > > > +       struct resources *r =3D &this->resources;
-> > > > >         unsigned int dll_threshold_ps =3D this->devdata->max_chai=
-n_delay;
-> > > > >         unsigned int period_ps, reference_period_ps;
-> > > > >         unsigned int data_setup_cycles, data_hold_cycles, addr_se=
-tup_cycles;
-> > > > > @@ -440,6 +441,8 @@ static void gpmi_nfc_compute_timings(struct
-> > > > > gpmi_nand_data *this,
-> > > > >                 hw->ctrl1n |=3D BF_GPMI_CTRL1_RDN_DELAY(sample_de=
-lay_factor) |
-> > > > >                               BM_GPMI_CTRL1_DLL_ENABLE |
-> > > > >                               (use_half_period ? BM_GPMI_CTRL1_HA=
-LF_PERIOD : 0);
-> > > > > +
-> > > > > +       clk_set_rate(r->clock[0], hw->clk_rate);
-> > > > >  }
-> > > > >
-> > > > >  void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
-> > > > > @@ -449,8 +452,6 @@ void gpmi_nfc_apply_timings(struct gpmi_nand_=
-data *this)
-> > > > >         void __iomem *gpmi_regs =3D r->gpmi_regs;
-> > > > >         unsigned int dll_wait_time_us;
-> > > > >
-> > > > > -       clk_set_rate(r->clock[0], hw->clk_rate);
-> > > > > -
-> > > > >         writel(hw->timing0, gpmi_regs + HW_GPMI_TIMING0);
-> > > > >         writel(hw->timing1, gpmi_regs + HW_GPMI_TIMING1);
-> > > > >
-> > > > > Right now I have this change applied and seems fine. That is the =
-only
-> > > > > difference I get. Clock is apply a bit earlier that when is enabl=
-ed
-> > > > > it.  =
-
-> > > >
-> > > > This is very interesting. So this would mean the issue you are
-> > > > experiencing comes from the clock driver which kind of returns too
-> > > > early from clk_set_rate()? Could you report this to the clk ML/NXP =
-clk
-> > > > maintainers and keep us in copy? If it is as global as it sounds, we
-> > > > might not be the only ones affected.
-> > > >  =
-
-> > >
-> > > The imx28 is broken too, so it's a general problem. I need to trace i=
-t down
-> > > I have a reverting for lts but it\s not the way to go
-> > >  =
-
-> > =
-
-> > For imx28 you ask to set the rate to 22Mhz but you don't care about the=
- clock
-> > that you get back. You get back 12Mhz because the base clock is 24 Mhz =
-and seems
-> > that it can not get the point. You need to check if the clock
-> > requested is in range or ask
-> > for set_rate_clk_min to avoid to have somenthing lower. Then for
-> > imx6ull because is sporadic
-> > I think that is more connected to the clk_set_rate and when you change
-> > the register. Can not be a
-> > setting time?
-> =
-
-> So, if I understand correctly, we face two different problems:
-> - imx6*: seems like a clock issue regarding the clock settlement
-> - imx28: actual NAND driver issue (does not check the validity of the
->   new frequency). This should be handled properly in
->   ->setup_interface().
->
-
-Somenthing like this? Not compile/tested
-
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-raw/gpmi-nand/gpmi-nand.c
-index 4d08e4ab5c1b..cc8146ab1b78 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -644,7 +644,7 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
-  *         RDN_DELAY =3D -----------------------     {3}
-  *                           RP
-  */
--static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
-+static int gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
- 				     const struct nand_sdr_timings *sdr)
- {
- 	struct gpmi_nfc_hardware_timing *hw =3D &this->hw;
-@@ -656,6 +656,7 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_d=
-ata *this,
- 	int sample_delay_ps, sample_delay_factor;
- 	u16 busy_timeout_cycles;
- 	u8 wrn_dly_sel;
-+	long clk_rate;
- =
-
- 	if (sdr->tRC_min >=3D 30000) {
- 		/* ONFI non-EDO modes [0-3] */
-@@ -671,6 +672,10 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_=
-data *this,
- 		wrn_dly_sel =3D BV_GPMI_CTRL1_WRN_DLY_SEL_NO_DELAY;
- 	}
- =
-
-+	clk_rate =3D clk_round_rate(r->clock[0], hw->clk_rate);
-+	if (clk_rate < hw->clk_rate || clk_rate <=3D 0)
-+		return -ENOTSUPP;
-+
- 	/* SDR core timings are given in picoseconds */
- 	period_ps =3D div_u64((u64)NSEC_PER_SEC * 1000, hw->clk_rate);
- =
-
-@@ -746,6 +751,7 @@ static int gpmi_setup_interface(struct nand_chip *chip,=
- int chipnr,
- {
- 	struct gpmi_nand_data *this =3D nand_get_controller_data(chip);
- 	const struct nand_sdr_timings *sdr;
-+	int ret =3D 0;
- =
-
- 	/* Retrieve required NAND timings */
- 	sdr =3D nand_get_sdr_timings(conf);
-@@ -761,11 +767,11 @@ static int gpmi_setup_interface(struct nand_chip *chi=
-p, int chipnr,
- 		return 0;
- =
-
- 	/* Do the actual derivation of the controller timings */
--	gpmi_nfc_compute_timings(this, sdr);
--
--	this->hw.must_apply_timings =3D true;
-+	ret =3D gpmi_nfc_compute_timings(this, sdr);
-+	if (!ret)
-+		this->hw.must_apply_timings =3D true;
- =
-
--	return 0;
-+	return ret;
- }
- =
-
- /* Clears a BCH interrupt. */
-> Thanks,
-> Miqu=E8l
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkKCk9uIEZyaSwgT2N0IDE1LCAyMDIxIGF0IDEwOjA1IFBNIE1pY2hhZWwgVHJpbWFyY2hpCjxt
+aWNoYWVsQGFtYXJ1bGFzb2x1dGlvbnMuY29tPiB3cm90ZToKPgo+IEhpCj4KPiBPbiBNb24sIEZl
+YiAwMSwgMjAyMSBhdCAwNDoxNDozM1BNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4g
+SGkgTWljaGFlbCwKPiA+Cj4gPiBNaWNoYWVsIE5henphcmVubyBUcmltYXJjaGkgPG1pY2hhZWxA
+YW1hcnVsYXNvbHV0aW9ucy5jb20+IHdyb3RlIG9uCj4gPiBNb24sIDEgRmViIDIwMjEgMTY6MDg6
+MjMgKzAxMDA6Cj4gPgo+ID4gPiBIaQo+ID4gPgo+ID4gPiBPbiBNb24sIEZlYiAxLCAyMDIxIGF0
+IDM6MzIgUE0gTWljaGFlbCBOYXp6YXJlbm8gVHJpbWFyY2hpCj4gPiA+IDxtaWNoYWVsQGFtYXJ1
+bGFzb2x1dGlvbnMuY29tPiB3cm90ZToKPiA+ID4gPgo+ID4gPiA+IEhpCj4gPiA+ID4KPiA+ID4g
+PiBPbiBNb24sIEZlYiAxLCAyMDIxIGF0IDM6MTMgUE0gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJh
+eW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4gPiA+ID4gPgo+ID4gPiA+ID4gSGkgTWljaGFlbCwK
+PiA+ID4gPiA+Cj4gPiA+ID4gPiBNaWNoYWVsIE5henphcmVubyBUcmltYXJjaGkgPG1pY2hhZWxA
+YW1hcnVsYXNvbHV0aW9ucy5jb20+IHdyb3RlIG9uCj4gPiA+ID4gPiBTYXQsIDMwIEphbiAyMDIx
+IDEwOjQxOjI5ICswMTAwOgo+ID4gPiA+ID4KPiA+ID4gPiA+ID4gSGkgTWlxdWVsCj4gPiA+ID4g
+PiA+Cj4gPiA+ID4gPiA+IGNvbW1pdCBmOGU2YWQxNDM4ODA2N2Y5MWIyNmQwNDQxODVkOTU2MjNm
+YmM5NTM1Cj4gPiA+ID4gPiA+IEF1dGhvcjogTWljaGFlbCBUcmltYXJjaGkgPG1pY2hhZWxAYW1h
+cnVsYXNvbHV0aW9ucy5jb20+Cj4gPiA+ID4gPiA+IERhdGU6ICAgRnJpIEphbiAyOSAwODo0Njo1
+MyAyMDIxICswMTAwCj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ICAgICBtdGQ6IG5hbmQ6IENhbGN1
+bGF0ZSB0aGUgY2xvY2sgYmVmb3JlIGVuYWJsZSBpdAo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiAg
+ICAgU2lnbmVkLW9mZi1ieTogTWljaGFlbCBUcmltYXJjaGkgPG1pY2hhZWxAYW1hcnVsYXNvbHV0
+aW9ucy5jb20+Cj4gPiA+ID4gPiA+ICAgICBDaGFuZ2UtSWQ6IEk3OWIwZGEzOWRlMGE5YjMyZWEw
+YjAwMmZhMjAwZDdmNDRkNGY4Y2U3Cj4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1saWIuYwo+ID4gPiA+ID4gPiBi
+L2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLWxpYi5jCj4gPiA+ID4gPiA+IGlu
+ZGV4IDMyMmEwMDgyOTBlNS4uMGJjYTUyYjNiYzhmIDEwMDY0NAo+ID4gPiA+ID4gPiAtLS0gYS9k
+cml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1saWIuYwo+ID4gPiA+ID4gPiArKysg
+Yi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9ncG1pLW5hbmQvZ3BtaS1saWIuYwo+ID4gPiA+ID4gPiBA
+QCAtMzc3LDYgKzM3Nyw3IEBAIHN0YXRpYyB2b2lkIGdwbWlfbmZjX2NvbXB1dGVfdGltaW5ncyhz
+dHJ1Y3QKPiA+ID4gPiA+ID4gZ3BtaV9uYW5kX2RhdGEgKnRoaXMsCj4gPiA+ID4gPiA+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgbmFuZF9zZHJfdGlt
+aW5ncyAqc2RyKQo+ID4gPiA+ID4gPiAgewo+ID4gPiA+ID4gPiAgICAgICAgIHN0cnVjdCBncG1p
+X25mY19oYXJkd2FyZV90aW1pbmcgKmh3ID0gJnRoaXMtPmh3Owo+ID4gPiA+ID4gPiArICAgICAg
+IHN0cnVjdCByZXNvdXJjZXMgKnIgPSAmdGhpcy0+cmVzb3VyY2VzOwo+ID4gPiA+ID4gPiAgICAg
+ICAgIHVuc2lnbmVkIGludCBkbGxfdGhyZXNob2xkX3BzID0gdGhpcy0+ZGV2ZGF0YS0+bWF4X2No
+YWluX2RlbGF5Owo+ID4gPiA+ID4gPiAgICAgICAgIHVuc2lnbmVkIGludCBwZXJpb2RfcHMsIHJl
+ZmVyZW5jZV9wZXJpb2RfcHM7Cj4gPiA+ID4gPiA+ICAgICAgICAgdW5zaWduZWQgaW50IGRhdGFf
+c2V0dXBfY3ljbGVzLCBkYXRhX2hvbGRfY3ljbGVzLCBhZGRyX3NldHVwX2N5Y2xlczsKPiA+ID4g
+PiA+ID4gQEAgLTQ0MCw2ICs0NDEsOCBAQCBzdGF0aWMgdm9pZCBncG1pX25mY19jb21wdXRlX3Rp
+bWluZ3Moc3RydWN0Cj4gPiA+ID4gPiA+IGdwbWlfbmFuZF9kYXRhICp0aGlzLAo+ID4gPiA+ID4g
+PiAgICAgICAgICAgICAgICAgaHctPmN0cmwxbiB8PSBCRl9HUE1JX0NUUkwxX1JETl9ERUxBWShz
+YW1wbGVfZGVsYXlfZmFjdG9yKSB8Cj4gPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIEJNX0dQTUlfQ1RSTDFfRExMX0VOQUJMRSB8Cj4gPiA+ID4gPiA+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICh1c2VfaGFsZl9wZXJpb2QgPyBCTV9HUE1JX0NUUkwxX0hBTEZf
+UEVSSU9EIDogMCk7Cj4gPiA+ID4gPiA+ICsKPiA+ID4gPiA+ID4gKyAgICAgICBjbGtfc2V0X3Jh
+dGUoci0+Y2xvY2tbMF0sIGh3LT5jbGtfcmF0ZSk7Cj4gPiA+ID4gPiA+ICB9Cj4gPiA+ID4gPiA+
+Cj4gPiA+ID4gPiA+ICB2b2lkIGdwbWlfbmZjX2FwcGx5X3RpbWluZ3Moc3RydWN0IGdwbWlfbmFu
+ZF9kYXRhICp0aGlzKQo+ID4gPiA+ID4gPiBAQCAtNDQ5LDggKzQ1Miw2IEBAIHZvaWQgZ3BtaV9u
+ZmNfYXBwbHlfdGltaW5ncyhzdHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRoaXMpCj4gPiA+ID4gPiA+
+ICAgICAgICAgdm9pZCBfX2lvbWVtICpncG1pX3JlZ3MgPSByLT5ncG1pX3JlZ3M7Cj4gPiA+ID4g
+PiA+ICAgICAgICAgdW5zaWduZWQgaW50IGRsbF93YWl0X3RpbWVfdXM7Cj4gPiA+ID4gPiA+Cj4g
+PiA+ID4gPiA+IC0gICAgICAgY2xrX3NldF9yYXRlKHItPmNsb2NrWzBdLCBody0+Y2xrX3JhdGUp
+Owo+ID4gPiA+ID4gPiAtCj4gPiA+ID4gPiA+ICAgICAgICAgd3JpdGVsKGh3LT50aW1pbmcwLCBn
+cG1pX3JlZ3MgKyBIV19HUE1JX1RJTUlORzApOwo+ID4gPiA+ID4gPiAgICAgICAgIHdyaXRlbCho
+dy0+dGltaW5nMSwgZ3BtaV9yZWdzICsgSFdfR1BNSV9USU1JTkcxKTsKPiA+ID4gPiA+ID4KPiA+
+ID4gPiA+ID4gUmlnaHQgbm93IEkgaGF2ZSB0aGlzIGNoYW5nZSBhcHBsaWVkIGFuZCBzZWVtcyBm
+aW5lLiBUaGF0IGlzIHRoZSBvbmx5Cj4gPiA+ID4gPiA+IGRpZmZlcmVuY2UgSSBnZXQuIENsb2Nr
+IGlzIGFwcGx5IGEgYml0IGVhcmxpZXIgdGhhdCB3aGVuIGlzIGVuYWJsZWQKPiA+ID4gPiA+ID4g
+aXQuCj4gPiA+ID4gPgo+ID4gPiA+ID4gVGhpcyBpcyB2ZXJ5IGludGVyZXN0aW5nLiBTbyB0aGlz
+IHdvdWxkIG1lYW4gdGhlIGlzc3VlIHlvdSBhcmUKPiA+ID4gPiA+IGV4cGVyaWVuY2luZyBjb21l
+cyBmcm9tIHRoZSBjbG9jayBkcml2ZXIgd2hpY2gga2luZCBvZiByZXR1cm5zIHRvbwo+ID4gPiA+
+ID4gZWFybHkgZnJvbSBjbGtfc2V0X3JhdGUoKT8gQ291bGQgeW91IHJlcG9ydCB0aGlzIHRvIHRo
+ZSBjbGsgTUwvTlhQIGNsawo+ID4gPiA+ID4gbWFpbnRhaW5lcnMgYW5kIGtlZXAgdXMgaW4gY29w
+eT8gSWYgaXQgaXMgYXMgZ2xvYmFsIGFzIGl0IHNvdW5kcywgd2UKPiA+ID4gPiA+IG1pZ2h0IG5v
+dCBiZSB0aGUgb25seSBvbmVzIGFmZmVjdGVkLgo+ID4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+IFRo
+ZSBpbXgyOCBpcyBicm9rZW4gdG9vLCBzbyBpdCdzIGEgZ2VuZXJhbCBwcm9ibGVtLiBJIG5lZWQg
+dG8gdHJhY2UgaXQgZG93bgo+ID4gPiA+IEkgaGF2ZSBhIHJldmVydGluZyBmb3IgbHRzIGJ1dCBp
+dFxzIG5vdCB0aGUgd2F5IHRvIGdvCj4gPiA+ID4KPiA+ID4KPiA+ID4gRm9yIGlteDI4IHlvdSBh
+c2sgdG8gc2V0IHRoZSByYXRlIHRvIDIyTWh6IGJ1dCB5b3UgZG9uJ3QgY2FyZSBhYm91dCB0aGUg
+Y2xvY2sKPiA+ID4gdGhhdCB5b3UgZ2V0IGJhY2suIFlvdSBnZXQgYmFjayAxMk1oeiBiZWNhdXNl
+IHRoZSBiYXNlIGNsb2NrIGlzIDI0IE1oeiBhbmQgc2VlbXMKPiA+ID4gdGhhdCBpdCBjYW4gbm90
+IGdldCB0aGUgcG9pbnQuIFlvdSBuZWVkIHRvIGNoZWNrIGlmIHRoZSBjbG9jawo+ID4gPiByZXF1
+ZXN0ZWQgaXMgaW4gcmFuZ2Ugb3IgYXNrCj4gPiA+IGZvciBzZXRfcmF0ZV9jbGtfbWluIHRvIGF2
+b2lkIHRvIGhhdmUgc29tZW50aGluZyBsb3dlci4gVGhlbiBmb3IKPiA+ID4gaW14NnVsbCBiZWNh
+dXNlIGlzIHNwb3JhZGljCj4gPiA+IEkgdGhpbmsgdGhhdCBpcyBtb3JlIGNvbm5lY3RlZCB0byB0
+aGUgY2xrX3NldF9yYXRlIGFuZCB3aGVuIHlvdSBjaGFuZ2UKPiA+ID4gdGhlIHJlZ2lzdGVyLiBD
+YW4gbm90IGJlIGEKPiA+ID4gc2V0dGluZyB0aW1lPwo+ID4KPiA+IFNvLCBpZiBJIHVuZGVyc3Rh
+bmQgY29ycmVjdGx5LCB3ZSBmYWNlIHR3byBkaWZmZXJlbnQgcHJvYmxlbXM6Cj4gPiAtIGlteDYq
+OiBzZWVtcyBsaWtlIGEgY2xvY2sgaXNzdWUgcmVnYXJkaW5nIHRoZSBjbG9jayBzZXR0bGVtZW50
+Cj4gPiAtIGlteDI4OiBhY3R1YWwgTkFORCBkcml2ZXIgaXNzdWUgKGRvZXMgbm90IGNoZWNrIHRo
+ZSB2YWxpZGl0eSBvZiB0aGUKPiA+ICAgbmV3IGZyZXF1ZW5jeSkuIFRoaXMgc2hvdWxkIGJlIGhh
+bmRsZWQgcHJvcGVybHkgaW4KPiA+ICAgLT5zZXR1cF9pbnRlcmZhY2UoKS4KPiA+Cj4KPiBTb21l
+bnRoaW5nIGxpa2UgdGhpcz8gTm90IGNvbXBpbGUvdGVzdGVkCj4KPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5jCj4gaW5kZXggNGQwOGU0YWI1YzFiLi5jYzgxNDZh
+YjFiNzggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWkt
+bmFuZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFuZC5j
+Cj4gQEAgLTY0NCw3ICs2NDQsNyBAQCBzdGF0aWMgaW50IGJjaF9zZXRfZ2VvbWV0cnkoc3RydWN0
+IGdwbWlfbmFuZF9kYXRhICp0aGlzKQo+ICAgKiAgICAgICAgIFJETl9ERUxBWSA9IC0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tICAgICB7M30KPiAgICogICAgICAgICAgICAgICAgICAgICAgICAgICBS
+UAo+ICAgKi8KPiAtc3RhdGljIHZvaWQgZ3BtaV9uZmNfY29tcHV0ZV90aW1pbmdzKHN0cnVjdCBn
+cG1pX25hbmRfZGF0YSAqdGhpcywKPiArc3RhdGljIGludCBncG1pX25mY19jb21wdXRlX3RpbWlu
+Z3Moc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzLAo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgbmFuZF9zZHJfdGltaW5ncyAqc2RyKQo+ICB7Cj4g
+ICAgICAgICBzdHJ1Y3QgZ3BtaV9uZmNfaGFyZHdhcmVfdGltaW5nICpodyA9ICZ0aGlzLT5odzsK
+PiBAQCAtNjU2LDYgKzY1Niw3IEBAIHN0YXRpYyB2b2lkIGdwbWlfbmZjX2NvbXB1dGVfdGltaW5n
+cyhzdHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRoaXMsCj4gICAgICAgICBpbnQgc2FtcGxlX2RlbGF5
+X3BzLCBzYW1wbGVfZGVsYXlfZmFjdG9yOwo+ICAgICAgICAgdTE2IGJ1c3lfdGltZW91dF9jeWNs
+ZXM7Cj4gICAgICAgICB1OCB3cm5fZGx5X3NlbDsKPiArICAgICAgIGxvbmcgY2xrX3JhdGU7Cj4K
+PiAgICAgICAgIGlmIChzZHItPnRSQ19taW4gPj0gMzAwMDApIHsKPiAgICAgICAgICAgICAgICAg
+LyogT05GSSBub24tRURPIG1vZGVzIFswLTNdICovCj4gQEAgLTY3MSw2ICs2NzIsMTAgQEAgc3Rh
+dGljIHZvaWQgZ3BtaV9uZmNfY29tcHV0ZV90aW1pbmdzKHN0cnVjdCBncG1pX25hbmRfZGF0YSAq
+dGhpcywKPiAgICAgICAgICAgICAgICAgd3JuX2RseV9zZWwgPSBCVl9HUE1JX0NUUkwxX1dSTl9E
+TFlfU0VMX05PX0RFTEFZOwo+ICAgICAgICAgfQo+Cj4gKyAgICAgICBjbGtfcmF0ZSA9IGNsa19y
+b3VuZF9yYXRlKHItPmNsb2NrWzBdLCBody0+Y2xrX3JhdGUpOwo+ICsgICAgICAgaWYgKGNsa19y
+YXRlIDwgaHctPmNsa19yYXRlIHx8IGNsa19yYXRlIDw9IDApCj4gKyAgICAgICAgICAgICAgIHJl
+dHVybiAtRU5PVFNVUFA7Cj4gKwo+ICAgICAgICAgLyogU0RSIGNvcmUgdGltaW5ncyBhcmUgZ2l2
+ZW4gaW4gcGljb3NlY29uZHMgKi8KPiAgICAgICAgIHBlcmlvZF9wcyA9IGRpdl91NjQoKHU2NClO
+U0VDX1BFUl9TRUMgKiAxMDAwLCBody0+Y2xrX3JhdGUpOwoKTm90IHN1cmUgaGVyZSBvcjoKCnBl
+cmlvZF9wcyA9IGRpdl91NjQoKHU2NClOU0VDX1BFUl9TRUMgKiAxMDAwLCBjbGtfcmF0ZSk7CgpN
+aWNoYWVsCgo+Cj4gQEAgLTc0Niw2ICs3NTEsNyBAQCBzdGF0aWMgaW50IGdwbWlfc2V0dXBfaW50
+ZXJmYWNlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGludCBjaGlwbnIsCj4gIHsKPiAgICAgICAg
+IHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcyA9IG5hbmRfZ2V0X2NvbnRyb2xsZXJfZGF0YShj
+aGlwKTsKPiAgICAgICAgIGNvbnN0IHN0cnVjdCBuYW5kX3Nkcl90aW1pbmdzICpzZHI7Cj4gKyAg
+ICAgICBpbnQgcmV0ID0gMDsKPgo+ICAgICAgICAgLyogUmV0cmlldmUgcmVxdWlyZWQgTkFORCB0
+aW1pbmdzICovCj4gICAgICAgICBzZHIgPSBuYW5kX2dldF9zZHJfdGltaW5ncyhjb25mKTsKPiBA
+QCAtNzYxLDExICs3NjcsMTEgQEAgc3RhdGljIGludCBncG1pX3NldHVwX2ludGVyZmFjZShzdHJ1
+Y3QgbmFuZF9jaGlwICpjaGlwLCBpbnQgY2hpcG5yLAo+ICAgICAgICAgICAgICAgICByZXR1cm4g
+MDsKPgo+ICAgICAgICAgLyogRG8gdGhlIGFjdHVhbCBkZXJpdmF0aW9uIG9mIHRoZSBjb250cm9s
+bGVyIHRpbWluZ3MgKi8KPiAtICAgICAgIGdwbWlfbmZjX2NvbXB1dGVfdGltaW5ncyh0aGlzLCBz
+ZHIpOwo+IC0KPiAtICAgICAgIHRoaXMtPmh3Lm11c3RfYXBwbHlfdGltaW5ncyA9IHRydWU7Cj4g
+KyAgICAgICByZXQgPSBncG1pX25mY19jb21wdXRlX3RpbWluZ3ModGhpcywgc2RyKTsKPiArICAg
+ICAgIGlmICghcmV0KQo+ICsgICAgICAgICAgICAgICB0aGlzLT5ody5tdXN0X2FwcGx5X3RpbWlu
+Z3MgPSB0cnVlOwo+Cj4gLSAgICAgICByZXR1cm4gMDsKPiArICAgICAgIHJldHVybiByZXQ7Cj4g
+IH0KPgo+ICAvKiBDbGVhcnMgYSBCQ0ggaW50ZXJydXB0LiAqLwo+ID4gVGhhbmtzLAo+ID4gTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
