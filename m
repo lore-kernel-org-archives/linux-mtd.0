@@ -2,90 +2,62 @@ Return-Path: <SRS0=/XBI=PE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A093C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 00:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF0B3C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 04:40:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CBD926120A
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 00:24:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CBD926120A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id BFBD561181
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 04:40:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFBD561181
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jRYv63ltHmWAgdN3BMJZmK1uX3zeGBn6H3eEipNaP6o=; b=FkQ5vldv+lnRE7
-	S2Ll9cHYHbasn9p0hSbCU069+JF/xWuY+05NrMR59UaEySCBQUnAMagyMmQQe1ltr7Pm8/3Sj4H7E
-	lzv1AQB4LTq6wGfDQLC4ezs+nbhwZQrPHq5kpBGV3rteiZnPt802IGxLF6aS2FrKF6X90RdrnUEbT
-	a0WU+BzNRmv8ORg3c0zqyO/Z/h1NqHYY+0v5JtSE4D6mWHlNkm5tj+Sj6+LY1qexxmtBgxKIA7AkH
-	BRzA/eZePVIWzej2piAkth6TsR2/fY8jD7QGKM/DNTOkO4ASRtbXkKleRnfCsVC+7hkxVMbzsoMlE
-	uk4Ck/KahEpgZZgZbPEg==;
+	List-Owner; bh=sJs2sA/dKLb/mRWFlAKR9CSRwhClM8qeUz/uLdCiNDc=; b=idJEgKLjh8Io5v
+	/puYEB2TlCopYFdBG1I5ZLP0iEzF8zRPTn+LrfWp5yZ71d2WEBTgGRGBt1c6hsVrRnlFKmi7bmWOf
+	kASrv6CBcj+ulD1SBS3ct+rULyv0FmEvBqgh8DHdz4UtIIaj1toW8nfvOitsLNtac9ueCDIw8tEhC
+	3G1J16EAFmBuDP10DOGwgqUXbGppcfmjljbiSg7Q4SZKWuxtxY7o+kiLcmgbW1GDfRIfbaU1/9VLg
+	lFUzItqvQWy1f+95x8T4iqKplayv1EcKgIDbG2JHUSeSkCAwyVgI/1LfAAkV4koJ6BY5QOTikXEuD
+	+gymyTY89K2yjVdGYzpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbXTz-009MhQ-FZ; Sat, 16 Oct 2021 00:23:27 +0000
-Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
+	id 1mbbTz-009jpx-Q2; Sat, 16 Oct 2021 04:39:43 +0000
+Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mbXKo-009Jet-Ta
- for linux-mtd@lists.infradead.org; Sat, 16 Oct 2021 00:14:00 +0000
-Received: by mail-pg1-x536.google.com with SMTP id q5so9975188pgr.7
- for <linux-mtd@lists.infradead.org>; Fri, 15 Oct 2021 17:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=intel-com.20210112.gappssmtp.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=rQCqnCKj+Qob3RGhvKowF7vjQkMvz3jzVYQ6ojJDBgk=;
- b=22FCMxDjuptu5z2WXUhWAGeGxsQDD/V8j37BH7gzChQavhMTsYfwOs16+0368VAEwm
- H9Kn5GtjOlGOoLtQHyP63Q2TpGtOd+bYEeoJ7yrQrZF8Gd5SjSTBe4bjtPPHCkHVAMnX
- IKOrAb7pR6jb0J/r9z7kk4abkd4nzTZJqkNyspbONodFaBFVZGgHceRMhIUL1AnjE8EE
- QtZ+EolKR2dxl4bSkgWIlNfGf3FEfjjORJKFElmg1CgQAa4omqi87tX+bb0lzqw7atj/
- 9H8nfrhpQOc6LGhupM+SVewu7XdQegTluU6pnHJSo4uAockAmkpsZzfTuVIRBEfs5F0h
- AY8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=rQCqnCKj+Qob3RGhvKowF7vjQkMvz3jzVYQ6ojJDBgk=;
- b=LUAct7xr+hP+KKkWh2O7Q05v3IBBtpny8S2+NUFwkusgJAk5BKG25jh6v3qtiUtfjw
- wi8yU78U5hSTBVbZvzZMH6e82w65jz1NuOyW7/HiWUsbSRwjOKpSWu2/M6QvM8O5xy3F
- GrLtpP952sfegMKbV6OHSl43dT85F6DmYGgyZPLUJAKJFOlmGGa3jhh6N/pZwrtXhQM+
- mOLu0tUYeG5ezTmMd4IgbD/giK08TMKZcv23/Zwhfmiy9WPgUvy7kK72nayAKBdlh9vx
- qSslPUJ7gxnzGtExt54BZiHp715JItgsZ//RnOqYIb2pk07M8zQod87w1a9FR4UQH0zO
- XjPw==
-X-Gm-Message-State: AOAM530N2TwF2ktt8GEDaIzKxQOUHbdwqGbtlJ5BXYA8HQe964GgqWm/
- 8bl56xOK/8x061FPKEFdPTAWZlwWOOQevIFjaFkBBw==
-X-Google-Smtp-Source: ABdhPJyHjqiChiYGgEV/QjEsOo/jEjfBLMsWIS4VVM51yMBTI+afNI+/nTgDPsjRchZ2uu+6VeHhZ/gjMvW7ySA684s=
-X-Received: by 2002:a63:6bc2:: with SMTP id g185mr6607076pgc.356.1634343237273; 
- Fri, 15 Oct 2021 17:13:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <20211015235219.2191207-7-mcgrof@kernel.org>
-In-Reply-To: <20211015235219.2191207-7-mcgrof@kernel.org>
-From: Dan Williams <dan.j.williams@intel.com>
-Date: Fri, 15 Oct 2021 17:13:48 -0700
-Message-ID: <CAPcyv4j+xLT=5RUodHWgnPjNq6t5OcmX1oM2zK2ML0U+OS_16Q@mail.gmail.com>
-Subject: Re: [PATCH 06/13] nvdimm/blk: avoid calling del_gendisk() on early
- failures
+ id 1mbbTx-009joe-K6; Sat, 16 Oct 2021 04:39:42 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 1695D68BEB; Sat, 16 Oct 2021 06:39:37 +0200 (CEST)
+Date: Sat, 16 Oct 2021 06:39:36 +0200
+From: Christoph Hellwig <hch@lst.de>
 To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Geoff Levand <geoff@infradead.org>, 
- Michael Ellerman <mpe@ellerman.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, 
- Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
- Minchan Kim <minchan@kernel.org>, 
- Nitin Gupta <ngupta@vflare.org>, senozhatsky@chromium.org, 
- Richard Weinberger <richard@nod.at>, miquel.raynal@bootlin.com, vigneshr@ti.com,
- Vishal L Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
- "Weiny, Ira" <ira.weiny@intel.com>, Keith Busch <kbusch@kernel.org>,
- Christoph Hellwig <hch@lst.de>, 
- Sagi Grimberg <sagi@grimberg.me>, linux-block@vger.kernel.org, 
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mtd@lists.infradead.org, 
- Linux NVDIMM <nvdimm@lists.linux.dev>, linux-nvme@lists.infradead.org, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
+ benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
+ minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
+ richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
+ dan.j.williams@intel.com, vishal.l.verma@intel.com,
+ dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
+ hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/13] nvme-multipath: add error handling support for
+ add_disk()
+Message-ID: <20211016043936.GB27339@lst.de>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-3-mcgrof@kernel.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211015235219.2191207-3-mcgrof@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211015_171359_053240_E780EC86 
-X-CRM114-Status: GOOD (  13.07  )
+X-CRM114-CacheID: sfid-20211015_213941_831740_8C597384 
+X-CRM114-Status: UNSURE (   6.75  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,22 +74,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> If nd_integrity_init() fails we'd get del_gendisk() called,
-> but that's not correct as we should only call that if we're
-> done with device_add_disk(). Fix this by providing unwinding
-> prior to the devm call being registered and moving the devm
-> registration to the very end.
->
-> This should fix calling del_gendisk() if nd_integrity_init()
-> fails. I only spotted this issue through code inspection. It
-> does not fix any real world bug.
->
+Thanks,
 
-Just fyi, I'm preparing patches to delete this driver completely as it
-is unused by any shipping platform. I hope to get that removal into
-v5.16.
+applied to nvme-5.16.
 
 ______________________________________________________
 Linux MTD discussion mailing list
