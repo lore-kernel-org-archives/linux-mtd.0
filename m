@@ -2,52 +2,71 @@ Return-Path: <SRS0=/XBI=PE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5198EC433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 00:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 431E6C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 00:21:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14F7F610E8
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 00:19:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 14F7F610E8
+	by mail.kernel.org (Postfix) with ESMTPS id 0712D610E8
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Oct 2021 00:21:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0712D610E8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5YVdY49k7DqmzynoZk07QGxxabjswdDrpc9cPqGV4w8=; b=zW9XCdH6d1JnAK
-	7c/sf/nx3wwbb+b91zAm1jrstwGzZ/1Cdp13/OTOI7misDb+zQUB9974+YxkQSh8l+US+MB8lalaX
-	T22ErftsnWmQkRQxm/BajG9RZ8bdb0RP+i1BABdTmO26D1ukb7BVY//ez34INm+Z0YrkcWAJx1Cqp
-	QCFVdSdFXxJjUsyg+69z5TfLWd65UyF1ihr1F/8pneRqc93WaPptCCWNuB1Ms8lHDHkY+Gp2hxpXS
-	vjc/VIZrMlXpJHJ+PaTac5co1G36Al319GUDOvmQwntdcKkQeAaL/FN68ILJXtKagvZnF28qFqYpQ
-	9QfzuO4+E/cbe49VAynQ==;
+	List-Owner; bh=ka3Lq0zUFoAW0TLa0/EvgWSBg4b2kxMmAp1WXRCUXp0=; b=vePzahzOHyq1Rr
+	tfCyUspChx4rE6Ky/2kSr87iR7ly5SSrLh/uiyOQ8R2VjFLh0fWwaZrItYaBefK/ruK3zq/FyKboj
+	fAJpdZrKpELH0TzjHtnw+odPttwbjPWTBKny3Sv1MXqmnFJ3hNnkbPwL1fVQSURn8mNxVU5epkk9t
+	nKGM/N/wZrQZKUuhQ3x821ClfeRQmB7eSOTPsf8wnwYWAgoZfaMHSci4yeVkZnUTCyVLM1ZgfKCSw
+	+E+gaeo76DgrSon3O8qDs3CwryVbrBHuiSz9tt6rpSdWBxUXeOovpg7LX0BRqzxgLf95UPuXVC/1i
+	1XP0aK2sokXqODIvBLZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mbXPb-009L59-32; Sat, 16 Oct 2021 00:18:55 +0000
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mbWzt-009C2x-0D; Fri, 15 Oct 2021 23:52:21 +0000
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
+	id 1mbXRy-009LtN-7s; Sat, 16 Oct 2021 00:21:22 +0000
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mbX8d-009FrR-7E; Sat, 16 Oct 2021 00:01:24 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18BA3611C3;
+ Sat, 16 Oct 2021 00:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1634342482;
+ bh=zERYufNJ1MZk5CclnMi+gL/h2WeGYYoy9Om0aXiHGLA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lAd5BhR7dX0bhUFdgALWUXGCQ+v5W0tvJIwfUWbRKvGKqR2h6V0I6ukKcRF5Dj+Nw
+ 0dFWCYUmBg7S2Rodk9yCf0H1+kehM9Vr5MyDW3E957s4BJA3cyS4uAhz4e17bCP29s
+ II0rzTuzcoBkDSvXr4ZGRWsUKw8yktjg7TyZT5pwSjCguTcC1658+kFky8M1STBicA
+ 7fLq43tAQkTcs+sDRgIw1Gv5v7j5U3hjGyPw8mDDVxsn00Q51dQWLT/IESbUsSNm65
+ nxOHSWjB0mZ+Ve03BmVAuGYwTgnYAMB4qLl+33yxh5AlIshuEdLL26zAeBOF+sdd/j
+ wOOh/LnbCmJTQ==
+Date: Fri, 15 Oct 2021 18:01:18 -0600
+From: Keith Busch <kbusch@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: axboe@kernel.dk, geoff@infradead.org, mpe@ellerman.id.au,
  benh@kernel.crashing.org, paulus@samba.org, jim@jtan.com,
  minchan@kernel.org, ngupta@vflare.org, senozhatsky@chromium.org,
  richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
- dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
- ira.weiny@intel.com, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me
-Cc: linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 02/13] nvme-multipath: add error handling support for
+ dan.j.williams@intel.com, vishal.l.verma@intel.com,
+ dave.jiang@intel.com, ira.weiny@intel.com, hch@lst.de,
+ sagi@grimberg.me, linux-block@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/13] nvme-multipath: add error handling support for
  add_disk()
-Date: Fri, 15 Oct 2021 16:52:08 -0700
-Message-Id: <20211015235219.2191207-3-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211015235219.2191207-1-mcgrof@kernel.org>
+Message-ID: <20211016000118.GA50317@C02WT3WMHTD6>
 References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-3-mcgrof@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211015235219.2191207-3-mcgrof@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20211015_170123_334676_728661C0 
+X-CRM114-Status: UNSURE (   9.55  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,57 +83,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On Fri, Oct 15, 2021 at 04:52:08PM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> Since we now can tell for sure when a disk was added, move
+> setting the bit NVME_NSHEAD_DISK_LIVE only when we did
+> add the disk successfully.
+> 
+> Nothing to do here as the cleanup is done elsewhere. We take
+> care and use test_and_set_bit() because it is protects against
+> two nvme paths simultaneously calling device_add_disk() on the
+> same namespace head.
 
-Since we now can tell for sure when a disk was added, move
-setting the bit NVME_NSHEAD_DISK_LIVE only when we did
-add the disk successfully.
+Looks good, thank you.
 
-Nothing to do here as the cleanup is done elsewhere. We take
-care and use test_and_set_bit() because it is protects against
-two nvme paths simultaneously calling device_add_disk() on the
-same namespace head.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/nvme/host/multipath.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index e8ccdd398f78..022837f7be41 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -496,13 +496,23 @@ int nvme_mpath_alloc_disk(struct nvme_ctrl *ctrl, struct nvme_ns_head *head)
- static void nvme_mpath_set_live(struct nvme_ns *ns)
- {
- 	struct nvme_ns_head *head = ns->head;
-+	int rc;
- 
- 	if (!head->disk)
- 		return;
- 
-+	/*
-+	 * test_and_set_bit() is used because it is protecting against two nvme
-+	 * paths simultaneously calling device_add_disk() on the same namespace
-+	 * head.
-+	 */
- 	if (!test_and_set_bit(NVME_NSHEAD_DISK_LIVE, &head->flags)) {
--		device_add_disk(&head->subsys->dev, head->disk,
--				nvme_ns_id_attr_groups);
-+		rc = device_add_disk(&head->subsys->dev, head->disk,
-+				     nvme_ns_id_attr_groups);
-+		if (rc) {
-+			clear_bit(NVME_NSHEAD_DISK_LIVE, &ns->flags);
-+			return;
-+		}
- 		nvme_add_ns_head_cdev(head);
- 	}
- 
--- 
-2.30.2
-
+Reviewed-by: Keith Busch <kbusch@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
