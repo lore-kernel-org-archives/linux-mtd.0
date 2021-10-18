@@ -1,69 +1,74 @@
-Return-Path: <SRS0=XCNP=PF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=Otrq=PG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6EFFC433EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Oct 2021 15:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB149C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 01:44:04 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90C4860FE3
-	for <linux-mtd@archiver.kernel.org>; Sun, 17 Oct 2021 15:27:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 90C4860FE3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8AAB5604D2
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 01:44:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8AAB5604D2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=GXVMpD5daf6tzDljL4w+uRS8XwDcjYwmY2KEbN7wAFI=; b=g0/x++KXMfS3aMAYCGKGkSBYI9
-	A7KdSc3ndQx/H7ik2OHdjVlnoB6FchtnXadoWQPBEYIC08xgad5TrxBmZ/btLzurmG5PP1M9uC1yM
-	dyutN36625R584M4Pmn1U4AaVAFrfnfi+YD51SZOsLFi8/qpfXsv1ghNxePQWxIhY7fLQxbVKXIVT
-	ahCz3Mg7GgOXLhyOUy29m/p2Ts5y8uy5JH3sSHkHi3qCLzQyGGqx4CH4KOft0gR0KfD6tCXPWUSiy
-	sMzrJg3W049RHuIVyZt8Rzk7OALW/syuHnFFbmVP7l+tnNkS1FNU/M/K8uoVa8l0xkqScF4j5iove
-	CrrDQ+uA==;
+	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
+	Subject:Cc:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=aImljpOmmgVcPnp73UvNy0s3qCe4vaxKFr4o6mS9TTs=; b=3cgvD8WX4gvFms
+	qHOuOPDEGVfnkNgv73llr2agZY3g8rXqH/B/YoEV3brTaN77aXvzz2v2VwpH1Xql3KjHOuJdY4j9N
+	V0m3ci/ZMvWVES0AEvMXcK3qq2JZ1ylKgNbnbdHbXlf2TtgP+KgGAUwFSGhHZdJN1qKROSY+Z7pPa
+	kRt2pIUg3pE4YjHokmlAKqMJZYAqjhvNgx7ZfM3zShQZz9gBmoBGojJTlLdqfpj8ojAuUlKGMKyF4
+	74r93dE8p+lvfEf4Pz9spj9IQmgaqQHObvn1AZIXs8HulhovrsOpck9v88RaW7ss6TWdx3s3KK+Vd
+	rZ0m/z7rwv2Macszy0aA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mc83x-00Cqye-O3; Sun, 17 Oct 2021 15:27:01 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1mcHgI-00Djnu-2S; Mon, 18 Oct 2021 01:43:14 +0000
+Received: from twhmllg3.macronix.com ([211.75.127.131])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mc83i-00CqwQ-VP; Sun, 17 Oct 2021 15:26:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
- :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=70ZKfllBjZHQa1J4GUObwLCze3CU8wCeQiJAaBSPZwY=; b=C4UNljiRQnxqpGr/gZae9CnIWT
- j7Uyl2yYks8L0q03i4Yj6wzbXHZfLRSnndsp7bwE+G+8kSeY6JWp3qOqYzPXZm7xgouB3Y3hUQhtB
- Pk4Hz6DQ4fJj9JpSQmWL3lPFrfCQD6hkq6x6Rwnt4SbkGg8suXrp9MdS/9GwqmQ6jlHlFEgk2ZXtF
- TIxTzVAunQ+vPdosDdlLDCl2JNMPGbY3ukZHFD5HB/10NLbW6nDO6fT48v5VJRLhpzgc3wB6XGEom
- dyYnzfPdzBD/IPULfN37GdDBH1ku04zKJuWqNo9uyCNES4imNkH0NlqGgJMRJ5knyNRf5ELnaJOvh
- Cfc6kr6w==;
-Received: from [2602:306:c5a2:a380:b27b:25ff:fe2c:51a8]
- by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mc83d-00ANfc-5J; Sun, 17 Oct 2021 15:26:41 +0000
-Subject: Re: [PATCH 00/13] block: add_disk() error handling stragglers
-To: Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
- mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
- jim@jtan.com, minchan@kernel.org, ngupta@vflare.org,
- senozhatsky@chromium.org, richard@nod.at, miquel.raynal@bootlin.com,
- vigneshr@ti.com, dan.j.williams@intel.com, vishal.l.verma@intel.com,
- dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org, hch@lst.de,
- sagi@grimberg.me
-Cc: linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
-From: Geoff Levand <geoff@infradead.org>
-Message-ID: <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
-Date: Sun, 17 Oct 2021 08:26:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mcHgD-00Djiv-8q
+ for linux-mtd@lists.infradead.org; Mon, 18 Oct 2021 01:43:11 +0000
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+ by TWHMLLG3.macronix.com with ESMTP id 19I1gdGm015281;
+ Mon, 18 Oct 2021 09:42:39 +0800 (GMT-8)
+ (envelope-from jaimeliao@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+ by Forcepoint Email with ESMTP id D550E851C17E8086009A;
+ Mon, 18 Oct 2021 09:42:39 +0800 (CST)
+In-Reply-To: <YWC8jgI74FgTudSD@robh.at.kernel.org>
+References: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
+ <20211008162228.1753083-4-miquel.raynal@bootlin.com>
+ <YWC8jgI74FgTudSD@robh.at.kernel.org>
+To: "Rob Herring" <robh@kernel.org>
+Cc: "Boris Brezillon" <bbrezillon@kernel.org>,
+ "Mark Brown" <broonie@kernel.org>, devicetree@vger.kernel.org,
+ juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ "Miquel Raynal" <miquel.raynal@bootlin.com>,
+ "Richard Weinberger" <richard@nod.at>,
+ "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+ "Tudor Ambarus" <Tudor.Ambarus@microchip.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>
+Subject: =?Big5?B?pl6rSDogUmU6IFtSRkMgUEFUQ0ggMDMvMTBdIGR0LWJpbmRpbmdzOiB2ZW5kb3It?=
+ =?Big5?B?cHJlZml4ZXM6IFVwZGF0ZSBNYWNyb25peCBwcmVmaXg=?=
 MIME-Version: 1.0
-In-Reply-To: <20211015235219.2191207-1-mcgrof@kernel.org>
-Content-Language: en-US
+X-KeepSent: 9A15BF2B:E4A73AE9-48258772:00093984;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
+Message-ID: <OF9A15BF2B.E4A73AE9-ON48258772.00093984-48258772.00096628@mxic.com.tw>
+From: jaimeliao@mxic.com.tw
+Date: Mon, 18 Oct 2021 09:42:39 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
+ HF265|July 25, 2018) at 2021/10/18 AM 09:42:39,
+ Serialize complete at 2021/10/18 AM 09:42:39
+X-MAIL: TWHMLLG3.macronix.com 19I1gdGm015281
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20211017_184309_626015_747AD1D1 
+X-CRM114-Status: GOOD (  16.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,20 +85,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Luis,
 
-On 10/15/21 4:52 PM, Luis Chamberlain wrote:
-> This patch set consists of al the straggler drivers for which we have
-> have no patch reviews done for yet. I'd like to ask for folks to please
-> consider chiming in, specially if you're the maintainer for the driver.
-> Additionally if you can specify if you'll take the patch in yourself or
-> if you want Jens to take it, that'd be great too.
+Hi Rob
 
-Do you have a git repo with the patch set applied that I can use to test with?
+> 
+> Re: [RFC PATCH 03/10] dt-bindings: vendor-prefixes: Update Macronix 
+prefix
+> 
+> On Fri, Oct 08, 2021 at 06:22:21PM +0200, Miquel Raynal wrote:
+> > When looking at compatible prefixes, Macronix is sometimes referred as
+> > mxicy:
+> > - mxicy,mx25r1635f
+> > - mxicy,mx25u6435f
+> > - mxicy,mx25v8035f
+> > - mxicy,mx25f0a-spi
+> > and sometimes as mxic:
+> > - mxic,multi-itfc-v009-nand-controller
+> > - mxic,enable-randomizer-otp
+> > 
+> > It looks like the more up-to-date way is mxic so declare this prefix 
+and
+> > mark the other one as deprecated.
+> 
+> mxicy is more widely used with flash parts. There's not a single dts 
+> file with 'mxic' which only seems to be some nand controller.
+Yes, you are right.
 
-Thanks.
+Hi Miquel
 
--Geoff
+Please keep using "mxicy,*" consistently for the compatible property, 
+thanks.
+
+> 
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/vendor-
+> prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > index b868cefc7c55..013a87850cd5 100644
+> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> > @@ -758,8 +758,11 @@ patternProperties:
+> >      description: Mundo Reader S.L.
+> >    "^murata,.*":
+> >      description: Murata Manufacturing Co., Ltd.
+> > +  "^mxic,.*":
+> > +    description: Macronix International Co., Ltd.
+> >    "^mxicy,.*":
+> >      description: Macronix International Co., Ltd.
+> > +    deprecated: true
+> >    "^myir,.*":
+> >      description: MYIR Tech Limited
+> >    "^national,.*":
+> > -- 
+> > 2.27.0
+> > 
+> > 
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
