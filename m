@@ -2,14 +2,14 @@ Return-Path: <SRS0=Otrq=PG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37348C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 16:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2853C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 20:32:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F308660EB4
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 16:17:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F308660EB4
+	by mail.kernel.org (Postfix) with ESMTPS id 8097E60EE2
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 20:32:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8097E60EE2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,37 +18,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bpBDPQubOLp15xBJ+TLloKfoiUUeMQThkalcO2zb5Og=; b=jKxsY6TUsWQuBh
-	s5nZMjvMvvJXlQEX9Ti/tgkRkD8DIdmJ7Fs1DgTMcz/swwy5zjnNa44QrTw2DD2aGSPueXKKG6FJm
-	+2OJUNVKCVCUxD28tZPlxmlxXFoWJOu6fweDG3hcp0EHmUaWGGg6GZ0ytGpgmDsGGQnVJi3Mb+4qT
-	29e4WHs0Uk7+2hUWg9qShjFMwecJ6nxhcg98xZyL6/p/E4PS1/ofpcPe5Blj7FfO4kIwXxmMwW9YD
-	5KoAlTCqje8sO4GJ+Ce3h8E1juPELSOXwitRjwNbsYxS4PjsqB9N1zfUt9ho5yPaw6M0LfH5izaoH
-	qnGCXngTbXCyjqqqfQ1g==;
+	List-Owner; bh=phYxrSsK+2Vzv6w1z94g/EKsPyiMt43OdO2EdHiLV8E=; b=zgJOuD/ZNS3dX5
+	8zKPnSWXD4CnoV2YgUEndKNh3BXV6sO/YAJqm+e+FGqYLMLWUqoHmZKvPt/jh16CBzvSQ9PTCu2m0
+	3qjOsgQ4D/triQ7fzp/uvx+Uka5abbrGmIs+cIgp4epgH8/FqmySEuD7MXGvn0Ab8072zMgvNx6Vg
+	GsOi+25dVHC8HqvIOO8rjddi7bMsivF7ut+mlcIJWyQ+JlYLA5uC08yhKBKxxqd/LlO89RZ5YyuEU
+	w507Rx9K//Wp5CPsqaVifGmCQj/IsEAXkWqgBqCK3AX6JJa6zsVOv/id25xsgLOHLoVcByvM7hM3D
+	6N9aOCHKPe8E6qcEXFnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mcVIw-00GTpA-2H; Mon, 18 Oct 2021 16:16:02 +0000
+	id 1mcZIf-00HDlj-4M; Mon, 18 Oct 2021 20:32:01 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mcVIn-00GToq-Uz; Mon, 18 Oct 2021 16:15:53 +0000
-Date: Mon, 18 Oct 2021 09:15:53 -0700
+ (Red Hat Linux)) id 1mcZIX-00HDlV-C4; Mon, 18 Oct 2021 20:31:53 +0000
+Date: Mon, 18 Oct 2021 13:31:53 -0700
 From: Luis Chamberlain <mcgrof@kernel.org>
-To: Geoff Levand <geoff@infradead.org>
-Cc: axboe@kernel.dk, mpe@ellerman.id.au, benh@kernel.crashing.org,
- paulus@samba.org, jim@jtan.com, minchan@kernel.org,
- ngupta@vflare.org, senozhatsky@chromium.org, richard@nod.at,
- miquel.raynal@bootlin.com, vigneshr@ti.com,
- dan.j.williams@intel.com, vishal.l.verma@intel.com,
- dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org,
- hch@lst.de, sagi@grimberg.me, linux-block@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] block: add_disk() error handling stragglers
-Message-ID: <YW2duaTqf3qUbTIm@bombadil.infradead.org>
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
+To: "Martin K. Petersen" <martin.petersen@oracle.com>, axboe@kernel.dk
+Cc: jejb@linux.ibm.com, agk@redhat.com, snitzer@redhat.com, colyli@suse.de,
+ kent.overstreet@gmail.com, boris.ostrovsky@oracle.com,
+ jgross@suse.com, sstabellini@kernel.org, roger.pau@citrix.com,
+ geert@linux-m68k.org, ulf.hansson@linaro.org, tj@kernel.org,
+ hare@suse.de, jdike@addtoit.com, richard@nod.at,
+ anton.ivanov@cambridgegreys.com, johannes.berg@intel.com,
+ krisman@collabora.com, chris.obbard@collabora.com,
+ thehajime@gmail.com, zhuyifei1999@gmail.com, haris.iqbal@ionos.com,
+ jinpu.wang@ionos.com, miquel.raynal@bootlin.com, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+ dm-devel@redhat.com, linux-bcache@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-m68k@lists.linux-m68k.org,
+ linux-um@lists.infradead.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/9] scsi/sd: add error handling support for add_disk()
+Message-ID: <YW3ZuQv1qpIXkd5b@bombadil.infradead.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
+ <20211015233028.2167651-2-mcgrof@kernel.org>
+ <yq1bl3ofjo5.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
+In-Reply-To: <yq1bl3ofjo5.fsf@ca-mkp.ca.oracle.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,23 +70,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Oct 17, 2021 at 08:26:33AM -0700, Geoff Levand wrote:
-> Hi Luis,
+On Sat, Oct 16, 2021 at 10:51:48PM -0400, Martin K. Petersen wrote:
 > 
-> On 10/15/21 4:52 PM, Luis Chamberlain wrote:
-> > This patch set consists of al the straggler drivers for which we have
-> > have no patch reviews done for yet. I'd like to ask for folks to please
-> > consider chiming in, specially if you're the maintainer for the driver.
-> > Additionally if you can specify if you'll take the patch in yourself or
-> > if you want Jens to take it, that'd be great too.
+> Luis,
 > 
-> Do you have a git repo with the patch set applied that I can use to test with?
+> > We never checked for errors on add_disk() as this function returned
+> > void. Now that this is fixed, use the shiny new error handling.
+> >
+> > As with the error handling for device_add() we follow the same logic
+> > and just put the device so that cleanup is done via the
+> > scsi_disk_release().
+> 
+> Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-Sure, although the second to last patch is in a state of flux given
-the ataflop driver currently is broken and so we're seeing how to fix
-that first:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211011-for-axboe-add-disk-error-handling
+Thanks, would you like Jens to pick this up and the other scsi/sr patch
+or are you taking it through your tree?
 
   Luis
 
