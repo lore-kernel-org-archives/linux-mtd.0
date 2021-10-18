@@ -2,73 +2,157 @@ Return-Path: <SRS0=Otrq=PG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB149C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 01:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7F81C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 05:35:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AAB5604D2
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 01:44:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8AAB5604D2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=mxic.com.tw
+	by mail.kernel.org (Postfix) with ESMTPS id 8912261027
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Oct 2021 05:35:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8912261027
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:From:Message-ID:MIME-Version:
-	Subject:Cc:To:References:In-Reply-To:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aImljpOmmgVcPnp73UvNy0s3qCe4vaxKFr4o6mS9TTs=; b=3cgvD8WX4gvFms
-	qHOuOPDEGVfnkNgv73llr2agZY3g8rXqH/B/YoEV3brTaN77aXvzz2v2VwpH1Xql3KjHOuJdY4j9N
-	V0m3ci/ZMvWVES0AEvMXcK3qq2JZ1ylKgNbnbdHbXlf2TtgP+KgGAUwFSGhHZdJN1qKROSY+Z7pPa
-	kRt2pIUg3pE4YjHokmlAKqMJZYAqjhvNgx7ZfM3zShQZz9gBmoBGojJTlLdqfpj8ojAuUlKGMKyF4
-	74r93dE8p+lvfEf4Pz9spj9IQmgaqQHObvn1AZIXs8HulhovrsOpck9v88RaW7ss6TWdx3s3KK+Vd
-	rZ0m/z7rwv2Macszy0aA==;
+	List-Owner; bh=yr/sbqMxTNESRSeUWJjoUW6BBgEzVhxkgHydeGishQk=; b=108fU03t3BJCLi
+	SEMMlGiSLMJqe/PPbR947pTf9qKAcaTAUdCcUTIcszO9oQWGHAQz1hpfDiCoHmI219tGtv613P/KQ
+	79lIAij40ECNUEHewHjG2LgDGfdcifS+Qrm5KfW/c2v26JJjcoCzGyvvDcCz6b0WO2vJlGZu4CvdI
+	A7zXhp2b92nN4jFZQAw2BEVCFQzBbBPEx1fBVvRxtyTmheale3WsgYrItNIsO6bsaX48PvR7+887Y
+	FDzj5KlUZnKY2b+bRIOwjxxhLFPZpj9HG6lOvfD+ZaT8AUkuAJbIp/VY+qV5Ep5hegbhkfLbyhzp3
+	21gfoKhYZu+lMe9ssBuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mcHgI-00Djnu-2S; Mon, 18 Oct 2021 01:43:14 +0000
-Received: from twhmllg3.macronix.com ([211.75.127.131])
+	id 1mcLHw-00EDPA-Fj; Mon, 18 Oct 2021 05:34:20 +0000
+Received: from mail-dm3nam07on2061.outbound.protection.outlook.com
+ ([40.107.95.61] helo=NAM02-DM3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mcHgD-00Djiv-8q
- for linux-mtd@lists.infradead.org; Mon, 18 Oct 2021 01:43:11 +0000
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
- by TWHMLLG3.macronix.com with ESMTP id 19I1gdGm015281;
- Mon, 18 Oct 2021 09:42:39 +0800 (GMT-8)
- (envelope-from jaimeliao@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
- by Forcepoint Email with ESMTP id D550E851C17E8086009A;
- Mon, 18 Oct 2021 09:42:39 +0800 (CST)
-In-Reply-To: <YWC8jgI74FgTudSD@robh.at.kernel.org>
-References: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
- <20211008162228.1753083-4-miquel.raynal@bootlin.com>
- <YWC8jgI74FgTudSD@robh.at.kernel.org>
-To: "Rob Herring" <robh@kernel.org>
-Cc: "Boris Brezillon" <bbrezillon@kernel.org>,
- "Mark Brown" <broonie@kernel.org>, devicetree@vger.kernel.org,
- juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- "Tudor Ambarus" <Tudor.Ambarus@microchip.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>,
- "Xiangsheng Hou" <Xiangsheng.Hou@mediatek.com>
-Subject: =?Big5?B?pl6rSDogUmU6IFtSRkMgUEFUQ0ggMDMvMTBdIGR0LWJpbmRpbmdzOiB2ZW5kb3It?=
- =?Big5?B?cHJlZml4ZXM6IFVwZGF0ZSBNYWNyb25peCBwcmVmaXg=?=
+ id 1mcLHs-00EDMq-Oh; Mon, 18 Oct 2021 05:34:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SkFlXdP7nxzGzd+Jpr2dtvsYaEvX4WEANNCQwukksK37LWnQSz6xoqkrFfEL85mGi8Jvy09xs+guBZe8hw9E2xhwLRBfDhg62pVwXImhMazjXf0q8O75kYDJQEJnJW+Kgn+qt3cnC4cIHCyxVCeOvkNm89T1Gi6dQJIy4yM3qODVN3+9hWRN456w0FeYQ2jtK8ija0Dx9RLJMFA4xJV7cX5m/G5+oUO1Lhe62a/bCLfg0FE1C3vJp6N4SSFlPy4603k+jJyL8rXFl4bqT6yJ6WqNYnwasHg4xpnKySVrjK52wtlLd2WrUF+lhcDa/pnu7DZR5+tu9WV6JUO48n98UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n8HfABdoK1WORKK1qh7/5b/I1BJF0sx9gWERXBVzWuU=;
+ b=bfd8uKXkLd4n9SG2/3WyiMjWC19JXqudqVh/sSDRYKjGCtE4vY/o40nR6DMPqylFd2uhB/EMdXQkfZfHR70FW7M/k13hb+IS8hxdoOiwPCE/o4Tmb8sCHF5NsWYamWLDxyM3Y6Yg1xUdwUlaS2JWOTKL3ZFbQLo7+XDYc3QpmLwQaF80pkxKur8ru9ObLEVchopXX8ECdlb7Q+1KQyIexyZbaVNDts2dAkvbxOfZSdVGH0cZuQPbZPayt05np241fiew0Dl+zQeBpr+G6grny8VIhdFb5kimtCAVncEcK0P1K62WrN9tlpSFfa5swooeUGfsaIiRtGsnWXH4WZQqkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n8HfABdoK1WORKK1qh7/5b/I1BJF0sx9gWERXBVzWuU=;
+ b=VPY0PSWsTOkiwPuQ+Gy3mDHnh6AGxtn5tp4cobGCBa2+b7KTk8s4LHnD3O/yKbObuzEjtDEKihuvuekiy4PmfPli7g3vxdZvARMXA0OWicJiYGUNbt7mDU1sVLrxonY11Z8La062K2QSMphCJAtTkrldvnvBQ2TqUgdEJ2yotII161jliCy/sDojfz5Q/XsuLtYSKBnwAkwZ3WlJ1IM+MsNF0fG+uqPtqZ9f41LCVWcVZWMA1WjdKcM9ounxYA7qfMw/6J8/OgQq9Hiq1NvRSfq3+Bt7PmazFZypZBd+DXZ9seCRmYn08TLxugB0OY8iEe077gJjbZD3ghFddGDgsQ==
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
+ by MWHPR12MB1392.namprd12.prod.outlook.com (2603:10b6:300:14::10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Mon, 18 Oct
+ 2021 05:34:13 +0000
+Received: from MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::3db1:105d:2524:524]) by MW2PR12MB4667.namprd12.prod.outlook.com
+ ([fe80::3db1:105d:2524:524%7]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 05:34:13 +0000
+From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
+To: Luis Chamberlain <mcgrof@kernel.org>, "axboe@kernel.dk" <axboe@kernel.dk>, 
+ "geoff@infradead.org" <geoff@infradead.org>, "mpe@ellerman.id.au"
+ <mpe@ellerman.id.au>, "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+ "paulus@samba.org" <paulus@samba.org>, "jim@jtan.com" <jim@jtan.com>,
+ "minchan@kernel.org" <minchan@kernel.org>, "ngupta@vflare.org"
+ <ngupta@vflare.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+ "richard@nod.at" <richard@nod.at>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
+ "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+ "vishal.l.verma@intel.com" <vishal.l.verma@intel.com>, "dave.jiang@intel.com"
+ <dave.jiang@intel.com>, "ira.weiny@intel.com" <ira.weiny@intel.com>,
+ "kbusch@kernel.org" <kbusch@kernel.org>, "hch@lst.de" <hch@lst.de>,
+ "sagi@grimberg.me" <sagi@grimberg.me>
+CC: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 02/13] nvme-multipath: add error handling support for
+ add_disk()
+Thread-Topic: [PATCH 02/13] nvme-multipath: add error handling support for
+ add_disk()
+Thread-Index: AQHXwh/gt9PBjaNbHkuXMsY5hErhlKvYP1AA
+Date: Mon, 18 Oct 2021 05:34:12 +0000
+Message-ID: <f312b3a4-3ab4-9897-877b-458c3eed2dd8@nvidia.com>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-3-mcgrof@kernel.org>
+In-Reply-To: <20211015235219.2191207-3-mcgrof@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7ec7078d-13f3-4ede-db03-08d991f8eb08
+x-ms-traffictypediagnostic: MWHPR12MB1392:
+x-microsoft-antispam-prvs: <MWHPR12MB1392BC181B77D6CBECD3BC36A3BC9@MWHPR12MB1392.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hnU4B3xRvwjiOSouMQqysCjomKBb02Wuw18TyARuD9GH/KJVdoOLqregaVb4vU7xXRyLYsNq0Dwf+agfKf2O23hnILk0hNg8rYVexMeYKLN7vD7drdgjsnwxqOAmPWTsAmz/lR2kF8JM5YwMlQBGQk22MvafBByuhCHVonEY57XziIrb1kOZOXWuddAfHrDCWnGChPQGL8+jJ3YuuCWeZ8URDbCcfVx8vzi6JlVeypQHjYBPAwaDuMDvxlGIUBCSbW/hxgS3EalQFT6WoOR6m5wieN6oSAnC3TI5ddiseTnSFCzwSmKwBd+QXZLTcYK4euYrz4Ij0FPfoJfyXSJU1bDS74O7NhN42t19+DCv4i9XpyX7qRr9ERfT27XnGUpOQlWkyAJ6rSn72tS9KZd2sCLAG0nVwzwylRNl142HJUnQX9vUGhmqAfPyH//O/RbjJiuqzR3JBCgUshr+kjOeJbmwrO+d9rkc3mEwqHPK8ecXwrAwmIjTQfxz1r1d1m+qW2RmVLCCd4g3pyKygeohyjOh9eulxYgqRzOUbSqN8Q1mgGiMZeAWoH0C5AElkJP70svFmljlAZO+6PvxC4ZJ1wcPamINPxY7+cfyjcjiusYmxJF/N2aPj9FySLSQ2MoC9OzdirRFjljEO5/BDe+X7hV1yE5Kb0KSg+afGpb8okp14MbuwysoPJQJyzCGqYx+0FGLuY4Ubi1fjaKsTYfC+xsy8f3iDJHIkVhF9t4zdmUsTYFJlKIb3vRfsH/NrZXR7rO3B+ra2yjIk2Go4/kNhgPylWQDNJDqs89kg6Q+qAI=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:MW2PR12MB4667.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(76116006)(4744005)(31696002)(8676002)(31686004)(38100700002)(2616005)(66476007)(91956017)(66556008)(36756003)(66946007)(26005)(86362001)(921005)(6486002)(5660300002)(316002)(66446008)(64756008)(71200400001)(6512007)(54906003)(6506007)(38070700005)(8936002)(186003)(53546011)(508600001)(122000001)(110136005)(4326008)(2906002)(7416002)(45980500001)(43740500002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eWRkOUtZdmVraGNxOUJRc0ZObXZlUGQzZFVOSDZvZzlDWm1rK2Ixbi9tUUNJ?=
+ =?utf-8?B?OEVYdjhnZEVwYjR5U2NHVFMvNzdRaFZGaTdKTm5FY3NrR2Z0VUR3SGFhc1RB?=
+ =?utf-8?B?Yk1qNm8rbGtTcWtnT2lhMDRZeTVUcElNTW44UTRSa0IwVFZDaXcxbUU2cEsz?=
+ =?utf-8?B?a24rTTNqa3V1bXhJdDFNb2dUUTN0ajVLTDNpeml3U0RXb1NCaWJFVmxuN1Y1?=
+ =?utf-8?B?Rk1GKzJxZzBlcjJpODIwVnQ2eEpPZkhaSTBKQk9Uajg2QTFrd3F0Q3g1amRH?=
+ =?utf-8?B?bWk4d3k0bnRLR3hPR0lBNmFRU0phVy9FeElWMTZsTHJRSm1lcytERXAxOWZ2?=
+ =?utf-8?B?RE12M0ZUcDE4Y2ZpTWp3R21hQ1U5Rkg3SXFiZXNyeVJiSXF5TW40ZCs2NVJt?=
+ =?utf-8?B?dlJ5TStuNHdaWm9Cejh1aWc5VCtRV1pKdk5Pbjc2SEZvRGdEWkVDVHZuRS9y?=
+ =?utf-8?B?dHVDREV3RzRuNFVIdlRXS0hVU0RCLzdGQm5GWVZrcDhhU1FPRExwRUJMM2lX?=
+ =?utf-8?B?TFlkcGttS0YzSzFuWHZzUnBFMGV3T0wyNncyQzBWRTJqSDlrcy9ySjREWll6?=
+ =?utf-8?B?ek9rS1AvZ0l5WmtpWjZuWk1JQ1FaNU10R01aNERSWXVERXhKQ09jVWxBVlN4?=
+ =?utf-8?B?UWNjZjlXZGd0V2xrRkkxdGVITGJvWG01L0V2SW03d3VURldmczNWbXllYnor?=
+ =?utf-8?B?TmVtTGt2UGkxQ2xrelVmQ2hMYnFDM2lOTUg1UkE1bW1zQjhEajVEb3R2dnZw?=
+ =?utf-8?B?NnJZZG1FWEpWVmg1MWpJRWxrOTdMdE01UGxnSHZkU0NObkhlTGlnOEdvOVBG?=
+ =?utf-8?B?U1owK045Wkg0SjZISWt3cHdQWlpvK3E3aUxGeWprV2pnN0xha3o0WjR4cm5E?=
+ =?utf-8?B?NE5sdW9Hdm9FWTVPT3o5c3JKWXBpZzFrbjdWdlFtVEpxMWFGd3dvNFBpNVVJ?=
+ =?utf-8?B?SmhCNkZPVElPR0lMbWoxWWhPRzd3Y1NaMC9FR2xwcFZsc3doaVlwYk5yT01n?=
+ =?utf-8?B?bFNTc1JBeGNuZXJ6Z0dxWjdXajczOVM4Zlo1LzNQNmNBdXZXQVJKZUMzTGtp?=
+ =?utf-8?B?bHVabDZpeTh6NEozclV3cjYrbmNMaG9JTXFzdCtlY2dhckpkTTVZbUFXUWJM?=
+ =?utf-8?B?d3kvYjdFN0hGMWFPWEIzTlFRdmZnYjVwSy9Gci8vMWNFRWwxaFRHWldFWVZJ?=
+ =?utf-8?B?Wm4yV2RxTEN2L2RKLysweTQvYnpOYStpbHZKNTlkVE9adyt2bzJSR3hweWlB?=
+ =?utf-8?B?UUpLcUhJV2xtREpubC8wTGpvRkRvNFNPVEJXWUlwV1lxVUh4aGMzbE1UV3dH?=
+ =?utf-8?B?UWR1eUFRanA5UlZHOGNFUmdlcWpSL1kwY21mTXpmbzlQZ0lscWt2cFhvcEpm?=
+ =?utf-8?B?aEtaUlVMUlEyYk9OdVlxOFFGcG9MRStoYWozSytlS0lXVFBMZEtENDlYZ3NJ?=
+ =?utf-8?B?UVRxeG5zM1lUY0RISVp3Y3RsSUt0MFZPSmpPZ3NBNmVzdjE1R2dhMGJnL1Uw?=
+ =?utf-8?B?bE1pdDJ1NUxHWkYvV0ppQ1lWZDFIcjZUZ0xWa2Z1b3pORW1ZQTZ2a210Qm9N?=
+ =?utf-8?B?cTl1Nk5OOXdqcy9jdTEyZnFVU0JpNUt6ZjlLcDFBWVFIQkVOSm10NzRkTFVR?=
+ =?utf-8?B?RnI1Tlp3WXpkNHJMNHpSd3JNYk9ib3hLMTlWcndkUU5sOFVVYlZBanNqcmE3?=
+ =?utf-8?B?Ym4xb3B5aGlhcll3Ky9adllNY3M0cmUzVTRQUVA1UXUvVTdqdkh1b1lseHov?=
+ =?utf-8?Q?hdbZFygMUyfHaK4PRM=3D?=
+x-ms-exchange-transport-forked: True
+Content-ID: <DC59B2D1E544344EBE8595BF7C37E65D@namprd12.prod.outlook.com>
 MIME-Version: 1.0
-X-KeepSent: 9A15BF2B:E4A73AE9-48258772:00093984;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP6 SHF907 April 26, 2018
-Message-ID: <OF9A15BF2B.E4A73AE9-ON48258772.00093984-48258772.00096628@mxic.com.tw>
-From: jaimeliao@mxic.com.tw
-Date: Mon, 18 Oct 2021 09:42:39 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10
- HF265|July 25, 2018) at 2021/10/18 AM 09:42:39,
- Serialize complete at 2021/10/18 AM 09:42:39
-X-MAIL: TWHMLLG3.macronix.com 19I1gdGm015281
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ec7078d-13f3-4ede-db03-08d991f8eb08
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2021 05:34:12.9159 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: e48IYkwRDv5ix58u7PvCUuSAFRDuEuaTh26Sash1lxDI3Nc/Jr7Rs+h8O4hbWL+q2kLtPNY32fFGrrw4+jV3kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1392
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211017_184309_626015_747AD1D1 
-X-CRM114-Status: GOOD (  16.18  )
+X-CRM114-CacheID: sfid-20211017_223416_840786_F0FA9259 
+X-CRM114-Status: GOOD (  11.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,94 +169,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-Hi Rob
-
+On 10/15/21 16:52, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
 > 
-> Re: [RFC PATCH 03/10] dt-bindings: vendor-prefixes: Update Macronix 
-prefix
+> Since we now can tell for sure when a disk was added, move
+> setting the bit NVME_NSHEAD_DISK_LIVE only when we did
+> add the disk successfully.
 > 
-> On Fri, Oct 08, 2021 at 06:22:21PM +0200, Miquel Raynal wrote:
-> > When looking at compatible prefixes, Macronix is sometimes referred as
-> > mxicy:
-> > - mxicy,mx25r1635f
-> > - mxicy,mx25u6435f
-> > - mxicy,mx25v8035f
-> > - mxicy,mx25f0a-spi
-> > and sometimes as mxic:
-> > - mxic,multi-itfc-v009-nand-controller
-> > - mxic,enable-randomizer-otp
-> > 
-> > It looks like the more up-to-date way is mxic so declare this prefix 
-and
-> > mark the other one as deprecated.
+> Nothing to do here as the cleanup is done elsewhere. We take
+> care and use test_and_set_bit() because it is protects against
+> two nvme paths simultaneously calling device_add_disk() on the
+> same namespace head.
 > 
-> mxicy is more widely used with flash parts. There's not a single dts 
-> file with 'mxic' which only seems to be some nand controller.
-Yes, you are right.
-
-Hi Miquel
-
-Please keep using "mxicy,*" consistently for the compatible property, 
-thanks.
-
-> 
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/vendor-
-> prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > index b868cefc7c55..013a87850cd5 100644
-> > --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> > @@ -758,8 +758,11 @@ patternProperties:
-> >      description: Mundo Reader S.L.
-> >    "^murata,.*":
-> >      description: Murata Manufacturing Co., Ltd.
-> > +  "^mxic,.*":
-> > +    description: Macronix International Co., Ltd.
-> >    "^mxicy,.*":
-> >      description: Macronix International Co., Ltd.
-> > +    deprecated: true
-> >    "^myir,.*":
-> >      description: MYIR Tech Limited
-> >    "^national,.*":
-> > -- 
-> > 2.27.0
-> > 
-> > 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
 
-CONFIDENTIALITY NOTE:
+Looks good.
 
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
 
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
 
 
 ______________________________________________________
