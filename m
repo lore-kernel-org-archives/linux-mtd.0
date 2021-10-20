@@ -2,61 +2,69 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA920C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C94CBC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:13:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D1AF60EB8
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:13:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6D1AF60EB8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6F19160EBD
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:13:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6F19160EBD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mZFJfg/omZTICqjPNodILJ0BQmUsOnGs3njRrVbPCmg=; b=gsGYaJkg5xEZ6s
-	W8Tj/lwLg1kmDKJn2W4l7p/5q2ci8T26hE3FMOS6IpYlnXUJo4EWinWlVMZCoACpZyhUahx2MtObO
-	/KVn7iwW8ZVZbx1rJ0iGY1q2Fulr1Y8BiWdWq+errrW+SaXOA6qRQ3MLNEIDc56HraUXKUKnkuouB
-	SBgr5UiZ89mxrePxEfHYTsxeQuZ7ffH5tpuYhT/4YZvAybBdR1cm22zsRQbj7BBApXhC2RfmH1n7K
-	LUimtmfrEwBRiZJG9yjb0nCghVzwQo6/CKV1XL4gYQYs6wTTsv9aYhIUOcb5Z3uOwwQB4gveAnsjc
-	blcS2CRyMG1WaLAsWFmg==;
+	List-Owner; bh=AXDosubV816opRkSCe4AwIgnDmLCSEXM30hitvZ9oS8=; b=pACabx7ohG9ML7
+	9OMy2JqgbE2R3Tybv5b4u4Qc8bQVCNB13SOAST1oveYEuCqWb2O9iNMgR9kpEo4GHZfGKgrKZO8sI
+	zi5VDXRQhKn8wZdiI1yClG+GXu6pwljegyI4MXJqI2htS28fbP/3Jil5xKeB+ezMDZI01DUXke9qF
+	4xjTZ+fSdL6ow3wGjsLR7q/45qZIaTmuBu5mmWGiNrGJzYfsWRijGGbGW6tmu9AujjkGSk+O2M0P2
+	QEZQLjcunzsFycFLJy+e8bCTU6Ot7sOJclHpQNVMYa55tvDFifMtG/VFHRwRxQ7JmIEAeeQ8JzTaV
+	JUHEqpor7+z8C86IFq2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1md5mA-003XRV-Dz; Wed, 20 Oct 2021 07:12:38 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1md5mM-003XTU-L3; Wed, 20 Oct 2021 07:12:50 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1md5m7-003XQd-1F
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 07:12:37 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 8D69720007;
- Wed, 20 Oct 2021 07:12:29 +0000 (UTC)
-Date: Wed, 20 Oct 2021 09:12:28 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1md5mD-003XRt-V8
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 07:12:44 +0000
+Received: from skn-laptop (unknown [185.233.254.173])
+ by first.geanix.com (Postfix) with ESMTPSA id 16648C7E51;
+ Wed, 20 Oct 2021 07:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1634713957; bh=7RKzYEKUzqJxN+fJSiMpNqB5gjIFZdyRqNN4Bv+4fwI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=iFwKrzXu/BKR0++MdzRg3GQKEoToCQbpY5xMsOnExv9bWYKIzxnDL5XqdeBnm3Bfs
+ 0+44H87Vb0VB9SkExkVlC6YtjdD7cLkL5qMpBqh8/04a/uo8pmJLW/16gqs/sjjit+
+ i4F5FqZ0AAjHgOHKa9OlS/GJZmZFvf81hXnUGy7th6oGqMnvgBG9hZo+swaKt1tRCn
+ QEwFDKwq/XhJ+qAs4vw4zz0M/E5pW/RGLZeHFDQu97CCSNKpDCJ8PnG1Z8okFG1sC7
+ 2gvKNCljbn35bdNgVNHSndZUi44TR2mfKH4oLKNoa70VZPSeGEl/9Y53upTNuW7eC1
+ 974DJtjWXJX3Q==
+Date: Wed, 20 Oct 2021 09:12:35 +0200
+From: Sean Nyekjaer <sean@geanix.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Sean Nyekjaer <sean@geanix.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
- <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
  suspend
-Message-ID: <20211020091228.136fde6e@xps13>
-In-Reply-To: <20211020090058.58af1087@collabora.com>
+Message-ID: <20211020071235.in3omswo2jqrahrd@skn-laptop>
 References: <20211011115253.38497-1-sean@geanix.com>
  <20211011160546.707b737b@collabora.com>
  <20211015082206.244a2316@xps13>
  <20211019180800.3v7emokse6lkpjvk@skn-laptop>
  <20211020085250.030ef244@collabora.com>
  <20211020090058.58af1087@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211020090058.58af1087@collabora.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_001235_399742_E007089C 
-X-CRM114-Status: GOOD (  35.10  )
+X-CRM114-CacheID: sfid-20211020_001242_719894_AC920049 
+X-CRM114-Status: GOOD (  22.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,118 +76,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBXZWQsIDIw
-IE9jdCAyMDIxIDA5OjAwOjU4ICswMjAwOgoKPiBPbiBXZWQsIDIwIE9jdCAyMDIxIDA4OjUyOjUw
-ICswMjAwCj4gQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4g
-d3JvdGU6Cj4gCj4gPiBPbiBUdWUsIDE5IE9jdCAyMDIxIDIwOjA4OjAwICswMjAwCj4gPiBTZWFu
-IE55ZWtqYWVyIDxzZWFuQGdlYW5peC5jb20+IHdyb3RlOgo+ID4gICAKPiA+ID4gT24gRnJpLCBP
-Y3QgMTUsIDIwMjEgYXQgMDg6MjI6MDZBTSArMDIwMCwgTWlxdWVsIFJheW5hbCB3cm90ZTogICAg
-Cj4gPiA+ID4gSGkgU2VhbiwKPiA+ID4gPiAKPiA+ID4gPiBib3Jpcy5icmV6aWxsb25AY29sbGFi
-b3JhLmNvbSB3cm90ZSBvbiBNb24sIDExIE9jdCAyMDIxIDE2OjA1OjQ2ICswMjAwOgo+ID4gPiA+
-ICAgICAgIAo+ID4gPiA+ID4gT24gTW9uLCAxMSBPY3QgMjAyMSAxMzo1Mjo1MCArMDIwMCAgICAg
-IAo+ID4gPiAKPiA+ID4gWyAuLi4gXQo+ID4gPiAgICAgCj4gPiA+ID4gICAgICAgCj4gPiA+ID4g
-PiA+IE9uZSAoc21hbGwpIGlzc3VlIHN0aWxsIHByZXNlbnQuIGdwbWlfbmFuZC5jIHVzZXMgdGhl
-IHJ3c2VtIGJlZm9yZSBpdCdzCj4gPiA+ID4gPiA+IGluaXRpYWxpemVkLiBTZWVtcyBjdW1iZXJz
-b21lIHRvIGhhdmUgZXZlcnkgbXRkL25hbmQgZHJpdmVyIHRvIGNhbGwKPiA+ID4gPiA+ID4gaW5p
-dF93YWl0cXVldWVfaGVhZCgpIGFuZCBpbml0X3J3c2VtKCkuIENvdWxkIHdlIHNvbWVob3cgbW92
-ZSB0aGUgY2FsbAo+ID4gPiA+ID4gPiB0byBtdGRfc2V0X2Rldl9kZWZhdWx0cygpIGJlZm9yZSBu
-YW5kX2NyZWF0ZV9iYnQoKT8gICAgICAgIAo+ID4gPiA+ID4gCj4gPiA+ID4gPiBJIGhhdmUgYSBu
-YXN0eSB0cmljayBmb3IgdGhhdCBvbmUsIGJ1dCBJJ20gbm90IHN1cmUgTWlxdWVsIHdpbGwgbGlr
-ZSBpdAo+ID4gPiA+ID4gKGFjdHVhbGx5LCBJIGRvbid0IGxpa2UgaXQgZWl0aGVyLCBidXQgaXQn
-cyBzbyBzaW1wbGUgY29tcGFyZWQgdG8gdGhlCj4gPiA+ID4gPiBvdGhlciBvcHRpb25zIHdlIGhh
-dmUgdGhhdCBJJ20gdGVtcHRlZCB0byBnbyBmb3IgdGhpcyBhcHByb2FjaCB1bnRpbAo+ID4gPiA+
-ID4gc29tZW9uZSBoYXMgdGltZSB0byBpbnZlc3QgaW4gYSBjbGVhbmVyIHNvbHV0aW9uIDotKSk6
-Cj4gPiA+ID4gPiAKPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9u
-YW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiA+ID4gPiBp
-bmRleCAzZDZjNmU4ODA1MjAuLmE5YWMyZDUyOGE0ZCAxMDA2NDQKPiA+ID4gPiA+IC0tLSBhL2Ry
-aXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiA+ID4gPiArKysgYi9kcml2ZXJzL210
-ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+ID4gPiA+ID4gQEAgLTYyMjIsOCArNjIyMiw2IEBAIHN0
-YXRpYyBpbnQgbmFuZF9zY2FuX3RhaWwoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiA+ID4gPiA+
-ICAgICAgICAgbXRkLT5fc3luYyA9IG5hbmRfc3luYzsKPiA+ID4gPiA+ICAgICAgICAgbXRkLT5f
-bG9jayA9IG5hbmRfbG9jazsKPiA+ID4gPiA+ICAgICAgICAgbXRkLT5fdW5sb2NrID0gbmFuZF91
-bmxvY2s7Cj4gPiA+ID4gPiAtICAgICAgIG10ZC0+X3N1c3BlbmQgPSBuYW5kX3N1c3BlbmQ7Cj4g
-PiA+ID4gPiAtICAgICAgIG10ZC0+X3Jlc3VtZSA9IG5hbmRfcmVzdW1lOwo+ID4gPiA+ID4gICAg
-ICAgICBtdGQtPl9yZWJvb3QgPSBuYW5kX3NodXRkb3duOwo+ID4gPiA+ID4gICAgICAgICBtdGQt
-Pl9ibG9ja19pc3Jlc2VydmVkID0gbmFuZF9ibG9ja19pc3Jlc2VydmVkOwo+ID4gPiA+ID4gICAg
-ICAgICBtdGQtPl9ibG9ja19pc2JhZCA9IG5hbmRfYmxvY2tfaXNiYWQ7Cj4gPiA+ID4gPiBAQCAt
-NjI2OSw2ICs2MjY3LDEzIEBAIHN0YXRpYyBpbnQgbmFuZF9zY2FuX3RhaWwoc3RydWN0IG5hbmRf
-Y2hpcCAqY2hpcCkKPiA+ID4gPiA+ICAgICAgICAgaWYgKHJldCkKPiA+ID4gPiA+ICAgICAgICAg
-ICAgICAgICBnb3RvIGVycl9mcmVlX3NlY3VyZV9yZWdpb25zOwo+ID4gPiA+ID4gIAo+ID4gPiA+
-ID4gKyAgICAgICAvKgo+ID4gPiA+ID4gKyAgICAgICAgKiBQb3B1bGF0ZSB0aGUgc3VzcGVuZC9y
-ZXN1bWUgaG9va3MgYWZ0ZXIgdGhlIEJCVCBoYXMgYmVlbiBzY2FubmVkIHRvCj4gPiA+ID4gPiAr
-ICAgICAgICAqIGF2b2lkIHVzaW5nIHRoZSBzdXNwZW5kIGxvY2sgYW5kIHJlc3VtZSB3YWl0cXVl
-dWUgd2hpY2ggYXJlIG9ubHkKPiA+ID4gPiA+ICsgICAgICAgICogaW5pdGlhbGl6ZWQgd2hlbiBt
-dGRfZGV2aWNlX3JlZ2lzdGVyKCkgaXMgY2FsbGVkLgo+ID4gPiA+ID4gKyAgICAgICAgKi8KPiA+
-ID4gPiA+ICsgICAgICAgbXRkLT5fc3VzcGVuZCA9IG5hbmRfc3VzcGVuZDsKPiA+ID4gPiA+ICsg
-ICAgICAgbXRkLT5fcmVzdW1lID0gbmFuZF9yZXN1bWU7Cj4gPiA+ID4gPiAgICAgICAgIHJldHVy
-biAwOyAgICAgIAo+ID4gPiA+IAo+ID4gPiA+IEknbSBmaW5lIHdpdGggdGhpcyBhcyBsb25nIGFz
-IGl0IGlzIGRvY3VtZW50ZWQgZm9yIG5vdy4KPiA+ID4gPiAgICAgICAKPiA+ID4gCj4gPiA+IEhp
-IEJvcmlzIGFuZCBNaXF1ZWwsCj4gPiA+IAo+ID4gPiBncG1pLW5hbmQuYyBzZXRzIE5BTkRfU0tJ
-UF9CQlRTQ0FOIHNvIHdlIHdvbid0IGdldCB0aGVyZSBhbmQgcG9wdWxhdGUKPiA+ID4gc3VzcGVu
-ZCByZXN1bWUgaG9va3MgOigKPiA+ID4gR3Vlc3MgdGhlcmUgaXMgb3RoZXIgZHJpdmVycyB0aGF0
-IGRvZXMgdGhlIHNhbWUgdGhpbmcuLi4gICAgCj4gPiAKPiA+IFRoaXMgc2hvdWxkIGZpeCB0aGUg
-aXNzdWU6Cj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jh
-c2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiBpbmRleCAzZDZjNmU4
-ODA1MjAuLmM5MmIxN2Y2Njk5NCAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3
-L25hbmRfYmFzZS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+
-ID4gQEAgLTYyMjIsOCArNjIyMiw2IEBAIHN0YXRpYyBpbnQgbmFuZF9zY2FuX3RhaWwoc3RydWN0
-IG5hbmRfY2hpcCAqY2hpcCkKPiA+ICAgICAgICAgbXRkLT5fc3luYyA9IG5hbmRfc3luYzsKPiA+
-ICAgICAgICAgbXRkLT5fbG9jayA9IG5hbmRfbG9jazsKPiA+ICAgICAgICAgbXRkLT5fdW5sb2Nr
-ID0gbmFuZF91bmxvY2s7Cj4gPiAtICAgICAgIG10ZC0+X3N1c3BlbmQgPSBuYW5kX3N1c3BlbmQ7
-Cj4gPiAtICAgICAgIG10ZC0+X3Jlc3VtZSA9IG5hbmRfcmVzdW1lOwo+ID4gICAgICAgICBtdGQt
-Pl9yZWJvb3QgPSBuYW5kX3NodXRkb3duOwo+ID4gICAgICAgICBtdGQtPl9ibG9ja19pc3Jlc2Vy
-dmVkID0gbmFuZF9ibG9ja19pc3Jlc2VydmVkOwo+ID4gICAgICAgICBtdGQtPl9ibG9ja19pc2Jh
-ZCA9IG5hbmRfYmxvY2tfaXNiYWQ7Cj4gPiBAQCAtNjI2MiwxMyArNjI2MCwyMSBAQCBzdGF0aWMg
-aW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gPiAgCj4gPiAgICAg
-ICAgIC8qIENoZWNrLCBpZiB3ZSBzaG91bGQgc2tpcCB0aGUgYmFkIGJsb2NrIHRhYmxlIHNjYW4g
-Ki8KPiA+ICAgICAgICAgaWYgKGNoaXAtPm9wdGlvbnMgJiBOQU5EX1NLSVBfQkJUU0NBTikKPiA+
-IC0gICAgICAgICAgICAgICByZXR1cm4gMDsKPiA+ICsgICAgICAgICAgICAgICBnb3RvIG91dDsK
-PiA+ICAKPiA+ICAgICAgICAgLyogQnVpbGQgYmFkIGJsb2NrIHRhYmxlICovCj4gPiAgICAgICAg
-IHJldCA9IG5hbmRfY3JlYXRlX2JidChjaGlwKTsKPiA+ICAgICAgICAgaWYgKHJldCkKPiA+ICAg
-ICAgICAgICAgICAgICBnb3RvIGVycl9mcmVlX3NlY3VyZV9yZWdpb25zOwo+ID4gIAo+ID4gK291
-dDoKPiA+ICsgICAgICAgLyoKPiA+ICsgICAgICAgICogUG9wdWxhdGUgdGhlIHN1c3BlbmQvcmVz
-dW1lIGhvb2tzIGFmdGVyIHRoZSBCQlQgaGFzIGJlZW4gc2Nhbm5lZCB0bwo+ID4gKyAgICAgICAg
-KiBhdm9pZCB1c2luZyB0aGUgc3VzcGVuZCBsb2NrIGFuZCByZXN1bWUgd2FpdHF1ZXVlIHdoaWNo
-IGFyZSBvbmx5Cj4gPiArICAgICAgICAqIGluaXRpYWxpemVkIHdoZW4gbXRkX2RldmljZV9yZWdp
-c3RlcigpIGlzIGNhbGxlZC4KPiA+ICsgICAgICAgICovCj4gPiArICAgICAgIG10ZC0+X3N1c3Bl
-bmQgPSBuYW5kX3N1c3BlbmQ7Cj4gPiArICAgICAgIG10ZC0+X3Jlc3VtZSA9IG5hbmRfcmVzdW1l
-Owo+ID4gICAgICAgICByZXR1cm4gMDsKPiA+ICAKPiA+ICBlcnJfZnJlZV9zZWN1cmVfcmVnaW9u
-czogIAo+IAo+IEFjdHVhbGx5LCB0aGlzIHZlcnNpb24gaXMgZXZlbiBjbGVhbmVyOgo+IAo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L25hbmRfYmFzZS5jCj4gaW5kZXggM2Q2YzZlODgwNTIwLi45OGMzOWI3ZjYyNzkg
-MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKPiArKysgYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+IEBAIC02MjIyLDggKzYyMjIsNiBAQCBz
-dGF0aWMgaW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gICAgICAg
-ICBtdGQtPl9zeW5jID0gbmFuZF9zeW5jOwo+ICAgICAgICAgbXRkLT5fbG9jayA9IG5hbmRfbG9j
-azsKPiAgICAgICAgIG10ZC0+X3VubG9jayA9IG5hbmRfdW5sb2NrOwo+IC0gICAgICAgbXRkLT5f
-c3VzcGVuZCA9IG5hbmRfc3VzcGVuZDsKPiAtICAgICAgIG10ZC0+X3Jlc3VtZSA9IG5hbmRfcmVz
-dW1lOwo+ICAgICAgICAgbXRkLT5fcmVib290ID0gbmFuZF9zaHV0ZG93bjsKPiAgICAgICAgIG10
-ZC0+X2Jsb2NrX2lzcmVzZXJ2ZWQgPSBuYW5kX2Jsb2NrX2lzcmVzZXJ2ZWQ7Cj4gICAgICAgICBt
-dGQtPl9ibG9ja19pc2JhZCA9IG5hbmRfYmxvY2tfaXNiYWQ7Cj4gQEAgLTYyNjEsMTQgKzYyNTks
-MjAgQEAgc3RhdGljIGludCBuYW5kX3NjYW5fdGFpbChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQo+
-ICAgICAgICAgICAgICAgICBnb3RvIGVycl9mcmVlX2ludGVyZmFjZV9jb25maWc7Cj4gIAo+ICAg
-ICAgICAgLyogQ2hlY2ssIGlmIHdlIHNob3VsZCBza2lwIHRoZSBiYWQgYmxvY2sgdGFibGUgc2Nh
-biAqLwo+IC0gICAgICAgaWYgKGNoaXAtPm9wdGlvbnMgJiBOQU5EX1NLSVBfQkJUU0NBTikKPiAt
-ICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gLQo+IC0gICAgICAgLyogQnVpbGQgYmFkIGJsb2Nr
-IHRhYmxlICovCj4gLSAgICAgICByZXQgPSBuYW5kX2NyZWF0ZV9iYnQoY2hpcCk7Cj4gLSAgICAg
-ICBpZiAocmV0KQo+IC0gICAgICAgICAgICAgICBnb3RvIGVycl9mcmVlX3NlY3VyZV9yZWdpb25z
-Owo+ICsgICAgICAgaWYgKGNoaXAtPm9wdGlvbnMgJiBOQU5EX1NLSVBfQkJUU0NBTikgewo+ICsg
-ICAgICAgICAgICAgICAvKiBCdWlsZCBiYWQgYmxvY2sgdGFibGUgKi8KPiArICAgICAgICAgICAg
-ICAgcmV0ID0gbmFuZF9jcmVhdGVfYmJ0KGNoaXApOwo+ICsgICAgICAgICAgICAgICBpZiAocmV0
-KQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJyX2ZyZWVfc2VjdXJlX3JlZ2lvbnM7
-Cj4gKyAgICAgICB9CgpOaWNlIGlkZWEuCgo+ICAKPiArICAgICAgIC8qCj4gKyAgICAgICAgKiBQ
-b3B1bGF0ZSB0aGUgc3VzcGVuZC9yZXN1bWUgaG9va3MgYWZ0ZXIgdGhlIEJCVCBoYXMgYmVlbiBz
-Y2FubmVkIHRvCj4gKyAgICAgICAgKiBhdm9pZCB1c2luZyB0aGUgc3VzcGVuZCBsb2NrIGFuZCBy
-ZXN1bWUgd2FpdHF1ZXVlIHdoaWNoIGFyZSBvbmx5Cj4gKyAgICAgICAgKiBpbml0aWFsaXplZCB3
-aGVuIG10ZF9kZXZpY2VfcmVnaXN0ZXIoKSBpcyBjYWxsZWQuCj4gKyAgICAgICAgKi8KPiArICAg
-ICAgIG10ZC0+X3N1c3BlbmQgPSBuYW5kX3N1c3BlbmQ7Cj4gKyAgICAgICBtdGQtPl9yZXN1bWUg
-PSBuYW5kX3Jlc3VtZTsKPiAgICAgICAgIHJldHVybiAwOwo+ICAKPiAgZXJyX2ZyZWVfc2VjdXJl
-X3JlZ2lvbnM6CgpDaGVlcnMsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+On Wed, Oct 20, 2021 at 09:00:58AM +0200, Boris Brezillon wrote:
+> On Wed, 20 Oct 2021 08:52:50 +0200
+> Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> 
+
+[ ... ]
+> > > 
+> > > Hi Boris and Miquel,
+> > > 
+> > > gpmi-nand.c sets NAND_SKIP_BBTSCAN so we won't get there and populate
+> > > suspend resume hooks :(
+> > > Guess there is other drivers that does the same thing...  
+> 
+> Actually, this version is even cleaner:
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 3d6c6e880520..98c39b7f6279 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+>         mtd->_sync = nand_sync;
+>         mtd->_lock = nand_lock;
+>         mtd->_unlock = nand_unlock;
+> -       mtd->_suspend = nand_suspend;
+> -       mtd->_resume = nand_resume;
+>         mtd->_reboot = nand_shutdown;
+>         mtd->_block_isreserved = nand_block_isreserved;
+>         mtd->_block_isbad = nand_block_isbad;
+> @@ -6261,14 +6259,20 @@ static int nand_scan_tail(struct nand_chip *chip)
+>                 goto err_free_interface_config;
+>  
+>         /* Check, if we should skip the bad block table scan */
+> -       if (chip->options & NAND_SKIP_BBTSCAN)
+> -               return 0;
+> -
+> -       /* Build bad block table */
+> -       ret = nand_create_bbt(chip);
+> -       if (ret)
+> -               goto err_free_secure_regions;
+> +       if (chip->options & NAND_SKIP_BBTSCAN) {
+> +               /* Build bad block table */
+> +               ret = nand_create_bbt(chip);
+> +               if (ret)
+> +                       goto err_free_secure_regions;
+> +       }
+>  
+> +       /*
+> +        * Populate the suspend/resume hooks after the BBT has been scanned to
+> +        * avoid using the suspend lock and resume waitqueue which are only
+> +        * initialized when mtd_device_register() is called.
+> +        */
+> +       mtd->_suspend = nand_suspend;
+> +       mtd->_resume = nand_resume;
+>         return 0;
+>  
+>  err_free_secure_regions:
+
+Why is the gpmi-nand.c and other drivers set NAND_SKIP_BBTSCAN and then
+call nand_create_bbt() directly?
+
+To me it looks like legacy leftover...
+
+/Sean
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
