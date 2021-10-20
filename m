@@ -2,173 +2,85 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F60EC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 11:40:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96A03C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 12:00:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3179660FD8
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 11:40:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3179660FD8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 44BDB61074
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 12:00:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 44BDB61074
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Subject:Cc:To:From:Message-ID:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HhOPfPCTamuuXsJH8lkU/FnYWggde8ynFBdmDVlaVz8=; b=LTw0vnS8MI6pQX
-	cnITxz3ZmqPhufupo6wJZA/4Sx2ocWN5+bB5J95stkPcLhIp/jY461+lfNaRwapsc0VRGc+GP7fMv
-	vRiEXmR2zZWRmHcuXBDJIwGFdizMXRr/05jy0hxYX5ItoIQIVTCd43oHbdJsy9Kn+j/ZmHdS0LP2a
-	Md2v9DCee9DmbPY+f4EBTVC8nZO5s5qZkeQvQzPacg9UzHuvXpYeb1u3dsErgpyGAxykoMvy2QUTg
-	o5jkSWXAJmqp+WQ6/mIMjdtvL4HQDDuwM7MPDgaDuKwCYmwCQm3k7WpCDKo+I1fQyoqdtfOgNybgH
-	9pJsyw6E4o7AIv2fWcYw==;
+	List-Owner; bh=7l39OAZ9bVJQ+31vSHn0kOZKx3NWWBRN+prwYE1mjGs=; b=DQrtjZ7bbPFOwI
+	Vx1FyBY8OO1KpkBtm56jdbOtGE+U65mrkYZd+yhciv7kqMWDIoLKIZcHy80Viiy9r14NhyveRudIS
+	K3aCHU/328r2bebFPGUr7AzODh8IKlJ0snAykiV8yKyo+UZXu5gtyWZNv3pJkgIZKIDYfwYZpwLNK
+	KwWz54Fh1ekZae1loMzy+1cc14cEArQgNKHcs56lquvVJors1bEkzO5tcA86TlchfWah6rnIvnEFy
+	qYHbKQlapM3D5r9hdVQ8WtSQKGw5YoNL1Ph2leBHcKNZN2jA6tI/u6q75miewah8lubdoJw9gShgN
+	lzGoS/ajSv1cHKEQgOAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1md9wG-004LDk-ID; Wed, 20 Oct 2021 11:39:21 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mdAFm-004Old-2Y; Wed, 20 Oct 2021 11:59:30 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1md9wC-004LBg-A9; Wed, 20 Oct 2021 11:39:17 +0000
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org
- [51.254.78.96])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4BCC3611B0;
- Wed, 20 Oct 2021 11:39:15 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
- by disco-boy.misterjones.org with esmtpsa (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <maz@kernel.org>)
- id 1md9w8-000Q93-UK; Wed, 20 Oct 2021 12:39:13 +0100
-Date: Wed, 20 Oct 2021 12:39:11 +0100
-Message-ID: <878ryoc4dc.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- patrice.chotard@foss.st.com
-Cc: Rob Herring <robh+dt@kernel.org>,
- maxime coquelin <mcoquelin.stm32@gmail.com>,
- alexandre torgue <alexandre.torgue@foss.st.com>,
- michael turquette <mturquette@baylibre.com>, stephen boyd
- <sboyd@kernel.org>, herbert xu <herbert@gondor.apana.org.au>,
- "david s . miller" <davem@davemloft.net>, david airlie <airlied@linux.ie>,
- daniel vetter <daniel@ffwll.ch>, thierry reding <thierry.reding@gmail.com>,
- sam ravnborg <sam@ravnborg.org>, yannick fertre
- <yannick.fertre@foss.st.com>, philippe cornu <philippe.cornu@foss.st.com>,
- benjamin gaignard <benjamin.gaignard@linaro.org>,
- vinod koul <vkoul@kernel.org>, ohad ben-cohen <ohad@wizery.com>,
- bjorn andersson <bjorn.andersson@linaro.org>,
- baolin wang <baolin.wang7@gmail.com>, jonathan cameron <jic23@kernel.org>,
- lars-peter clausen <lars@metafoo.de>,
- olivier moysan <olivier.moysan@foss.st.com>,
- arnaud pouliquen <arnaud.pouliquen@foss.st.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>,
- Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
- Lee Jones <lee.jones@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Kishon Vijay Abraham I <kishon@ti.com>,
- Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Matt Mackall
- <mpm@selenic.com>, Alessandro Zummo <a.zummo@towertech.it>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, Amit Kucheria
- <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck
- <linux@roeck-us.net>, Geert Uytterhoeven <geert+renesas@glider.be>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Ahmad Fatoum <a.fatoum@pengutronix.de>,
- Jagan Teki <jagan@amarulasolutions.com>, dillon min
- <dillon.minfei@gmail.com>, Marek Vasut <marex@denx.de>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Sebastian Reichel <sre@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Paul Cercueil <paul@crapouillou.net>,
- Fabien Dessenne <fabien.dessenne@foss.st.com>,
- Christophe Roullier <christophe.roullier@foss.st.com>,
- Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
- Lionel Debieve <lionel.debieve@foss.st.com>,
- Amelie Delaunay <amelie.delaunay@foss.st.com>,
- Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
- Ludovic Barre <ludovic.barre@foss.st.com>,
- Christophe Kerello <christophe.kerello@foss.st.com>,
- pascal Paillet <p.paillet@foss.st.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Jose Abreu <joabreu@synopsys.com>, Le Ray <erwan.leray@foss.st.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-crypto@vger.kernel.org, dri-devel@lists.freedesktop.org,
- dmaengine@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: dt-bindings: treewide: Update @st.com email address to
- @foss.st.com
-In-Reply-To: <22fb6f19-21eb-dcb5-fa31-bb243d4a7eaf@canonical.com>
-References: <20211020065000.21312-1-patrice.chotard@foss.st.com>
- <22fb6f19-21eb-dcb5-fa31-bb243d4a7eaf@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: krzysztof.kozlowski@canonical.com,
- patrice.chotard@foss.st.com, robh+dt@kernel.org, mcoquelin.stm32@gmail.com,
- alexandre.torgue@foss.st.com, mturquette@baylibre.com, sboyd@kernel.org,
- herbert@gondor.apana.org.au, davem@davemloft.net, airlied@linux.ie,
- daniel@ffwll.ch, thierry.reding@gmail.com, sam@ravnborg.org,
- yannick.fertre@foss.st.com, philippe.cornu@foss.st.com,
- benjamin.gaignard@linaro.org, vkoul@kernel.org, ohad@wizery.com,
- bjorn.andersson@linaro.org, baolin.wang7@gmail.com, jic23@kernel.org,
- lars@metafoo.de, olivier.moysan@foss.st.com, arnaud.pouliquen@foss.st.com,
- tglx@linutronix.de, jassisinghbrar@gmail.com, mchehab@kernel.org,
- hugues.fruchet@foss.st.com, fabrice.gasnier@foss.st.com, lee.jones@linaro.org,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, kuba@kernel.org,
- srinivas.kandagatla@linaro.org, kishon@ti.com, linus.walleij@linaro.org,
- lgirdwood@gmail.com, broonie@kernel.org, mathieu.poirier@linaro.org,
- mpm@selenic.com, a.zummo@towertech.i
- t, alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org, rafael@kernel.org,
- daniel.lezcano@linaro.org, amitk@kernel.org, rui.zhang@intel.com,
- wim@linux-watchdog.org, linux@roeck-us.net, geert+renesas@glider.be,
- viresh.kumar@linaro.org, a.fatoum@pengutronix.de, jagan@amarulasolutions.com,
- dillon.minfei@gmail.com, marex@denx.de, laurent.pinchart@ideasonboard.com,
- sre@kernel.org, dmitry.torokhov@gmail.com, paul@crapouillou.net,
- fabien.dessenne@foss.st.com, christophe.roullier@foss.st.com,
- gabriel.fernandez@foss.st.com, lionel.debieve@foss.st.com,
- amelie.delaunay@foss.st.com, pierre-yves.mordret@foss.st.com,
- ludovic.barre@foss.st.com, christophe.kerello@foss.st.com,
- p.paillet@foss.st.com, peppe.cavallaro@st.com, joabreu@synopsys.com,
- erwan.leray@foss.st.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-crypto@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- dmaengine@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-media@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-watchdog@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org);
- SAEximRunCond expanded to false
+ id 1mdAFi-004OkT-SC
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 11:59:28 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19KBxHvM090400;
+ Wed, 20 Oct 2021 06:59:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1634731157;
+ bh=rlMVQBrt/BXGNUndMGSC4aInghxlxwn1R/F4gxYaNVM=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=vivVc90Wv/k59eXzuyZWzXoAvqlwz2HRSAVKXwXFlVZlAEisxG7+EScOERqj8wNWN
+ 0dYLa/HtBTgAydnr52ILPxFkZiUHMXNAyQOrajuC3CQPTMjMJIqWnwZpJVIohn6WWo
+ CpfyuJqn+r7Lrw0B7raQ7SUN6lN5EXNiaGnRnCwE=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19KBxHmk062374
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 20 Oct 2021 06:59:17 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 20
+ Oct 2021 06:59:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 20 Oct 2021 06:59:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19KBxGJe025515;
+ Wed, 20 Oct 2021 06:59:16 -0500
+Date: Wed, 20 Oct 2021 17:29:15 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+CC: Mika Westerberg <mika.westerberg@linux.intel.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Mark Brown <broonie@kernel.org>, Lee Jones
+ <lee.jones@linaro.org>, Michael Walle <michael@walle.cc>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>, Mauro Lima
+ <mauro.lima@eclypsium.com>, Alexander Sverdlin
+ <alexander.sverdlin@nokia.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
+Message-ID: <20211020115913.uzo3ogkmrltnb26y@ti.com>
+References: <20211013114432.31352-1-mika.westerberg@linux.intel.com>
+ <20211013114432.31352-3-mika.westerberg@linux.intel.com>
+ <20211020114153.0f99c5df@collabora.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211020114153.0f99c5df@collabora.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_043916_422171_C5CDCD74 
-X-CRM114-Status: GOOD (  19.66  )
+X-CRM114-CacheID: sfid-20211020_045927_022669_639B89DD 
+X-CRM114-Status: GOOD (  22.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -185,29 +97,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Oct 2021 08:45:02 +0100,
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+On 20/10/21 11:41AM, Boris Brezillon wrote:
+> On Wed, 13 Oct 2021 14:44:31 +0300
+> Mika Westerberg <mika.westerberg@linux.intel.com> wrote:
 > 
-> On 20/10/2021 08:50, patrice.chotard@foss.st.com wrote:
-> > From: Patrice Chotard <patrice.chotard@foss.st.com>
+> > The preferred way to implement SPI-NOR controller drivers is through SPI
+> > subsubsystem utilizing the SPI MEM core functions. This converts the
+> > Intel SPI flash controller driver over the SPI MEM by moving the driver
+> > from SPI-NOR subsystem to SPI subsystem and in one go make it use the
+> > SPI MEM functions. The driver name will be changed from intel-spi to
+> > spi-intel to match the convention used in the SPI subsystem.
 > > 
-> > Not all @st.com email address are concerned, only people who have
-> > a specific @foss.st.com email will see their entry updated.
-> > For some people, who left the company, remove their email.
-> > 
 > 
-> Please split simple address change from maintainer updates (removal,
-> addition).
-> 
-> Also would be nice to see here explained *why* are you doing this.
+> I skimmed over the driver changes, and I'm skeptical about this "let's
+> convert all spi-nor controller drivers into spi-mem drivers even if
+> they don't fit the spi-mem model" strategy. Clearly, the intel
+> controller is much more limited than any other spi-mem controller (I
+> mean feature-wise not perf-wise of course). The fact that you have to
+> check the opcode to decide whether the operation is supported or not,
+> or the way you deduce when to issue an erase vs a regular read/write is
+> kind of hack-ish. Not saying we shouldn't support this case in spi-mem,
+> but it should at least be done in a more controlled way. Maybe with an
+> explicit array of supported spi_mem operations, and driver specific
+> hooks for each of these operations so anything falling outside is
+> clearly identified and rejected (we have this sort of things in the raw
+> NAND framework).
 
-And why this can't be done with a single update to .mailmap, like
-anyone else does.
+I am curious about how we can solve this. Any pointers to 
+functions/drivers in raw NAND framework that follow this model?
 
-	M.
+[...]
 
 -- 
-Without deviation from the norm, progress is not possible.
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
