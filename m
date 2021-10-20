@@ -2,83 +2,66 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A6C8C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C81FDC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:07:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC76E6115A
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:06:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CC76E6115A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	by mail.kernel.org (Postfix) with ESMTPS id 96A9F611C7
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:07:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 96A9F611C7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ybOsXrEnfuDPK2YEclMsz6qsk6vKRr83TYWahXIm0Pk=; b=foMw9Tu2lhA1v5
-	cewUV6jggd/5z2oGVLIrNFKt7x3Jm2aIHdgdCelAsUGkfx3W9zRFq0HRT6YZmuZFOoSZSxB4cSayz
-	KyheVN+90Cs/o7XFeDttQJ769syMjJCDt8OqILECQXDaWE3nXsvU4VRw+azEvzAp1e4WdLnuV5NFV
-	wdVXm2ZponN9ZUEVkJY8oi2kZfBywQj0Yon8e2kgMeuP5oPUDEc/dZ99hRwWJrtvmSLFZ7RDLvqkr
-	qAwWNwyREGnnsaGNpLV/4K57UarYHHdZCUJM5VWKukM9NtURz1jPCoS8FoNKOGJ6q0ryQIxy2mA1W
-	YhFiGalZtNCzqzU9k40w==;
+	List-Owner; bh=O3k5GsjnljEnkEKPCtxpuXyC+lHfB1Dag0cog5uZF5s=; b=3FnmTH/9fBo4v0
+	xQ/AA2zJ+JynKQodcQlc1Z9va/bTvcBVyCsAEloF7XlGmCEFciBRPryoiflkvcTgJQQZNiK0i3jmA
+	BgGuF9th9FnXbZwyQm5f0esTUv/8ON/MOW/jjwBBfC6jHQPxcJgZEXUk/CZRqxwV+RBzI3oRef7Ev
+	jIoc88Bw6sUiyrnbg5o7s9DDs4zCcd8EnmQvlaJ7xQioNJlzwWMpon3zFjcZKCIla+6WX3GUNOnG9
+	9UkKsDFE1MyN//RUsszmXYtzaXJVPGrr1hHB6RD8tTdKsRs2l/s/i3irXaV2GqbKWQGHzlDlxv9Wj
+	d8zQcgisLlpywycEhgvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1md6c5-003mcb-71; Wed, 20 Oct 2021 08:06:17 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1md6KJ-003iKD-Dn; Wed, 20 Oct 2021 07:47:55 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1md6c0-003mc2-VV
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 08:06:15 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19K8656a101524;
- Wed, 20 Oct 2021 03:06:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1634717165;
- bh=GXfKDQ1ul15UO9SWMiOrsfAfNsRqeQ5arl3FvVUzDyI=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=CCnYHSICmJoJEAAvrvqF0WGrz7KOIEpmwcflgpcmTATX/qgDLP181mjMiU1Dy+cuu
- k4/o1My1Yn1pcWIA78C46aOnWA/8N1ar0XT7qKOxizMALRKfvSOx849NiUVPYmD+rw
- m0brO9muM6umiDHpMZJvoJIEZrcFgfW/l26H75gg=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19K864UU060597
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 20 Oct 2021 03:06:05 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 20
- Oct 2021 03:06:04 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 20 Oct 2021 03:06:04 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19K863Vd001959;
- Wed, 20 Oct 2021 03:06:04 -0500
-Date: Wed, 20 Oct 2021 13:36:03 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Mark Brown
- <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, Michael Walle
- <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>,
- <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
-Message-ID: <20211020080601.c2uxccl3zaa557b2@ti.com>
-References: <20211013114432.31352-1-mika.westerberg@linux.intel.com>
- <20211013114432.31352-3-mika.westerberg@linux.intel.com>
+ id 1md6KF-003iFI-E5
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 07:47:53 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 53C191F43EA3;
+ Wed, 20 Oct 2021 08:47:44 +0100 (BST)
+Date: Wed, 20 Oct 2021 09:47:41 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
+ suspend
+Message-ID: <20211020094741.027a118d@collabora.com>
+In-Reply-To: <20211020072352.7fnano7wm5l4bfi6@skn-laptop>
+References: <20211011115253.38497-1-sean@geanix.com>
+ <20211011160546.707b737b@collabora.com>
+ <20211015082206.244a2316@xps13>
+ <20211019180800.3v7emokse6lkpjvk@skn-laptop>
+ <20211020085250.030ef244@collabora.com>
+ <20211020090058.58af1087@collabora.com>
+ <20211020091228.136fde6e@xps13>
+ <20211020072352.7fnano7wm5l4bfi6@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211013114432.31352-3-mika.westerberg@linux.intel.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_010613_995445_9D3DACD9 
-X-CRM114-Status: GOOD (  27.94  )
+X-CRM114-CacheID: sfid-20211020_004751_688068_A851A051 
+X-CRM114-Status: GOOD (  29.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,132 +78,111 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 13/10/21 02:44PM, Mika Westerberg wrote:
-> The preferred way to implement SPI-NOR controller drivers is through SPI
-> subsubsystem utilizing the SPI MEM core functions. This converts the
-> Intel SPI flash controller driver over the SPI MEM by moving the driver
-> from SPI-NOR subsystem to SPI subsystem and in one go make it use the
-> SPI MEM functions. The driver name will be changed from intel-spi to
-> spi-intel to match the convention used in the SPI subsystem.
+On Wed, 20 Oct 2021 09:23:52 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> On Wed, Oct 20, 2021 at 09:12:28AM +0200, Miquel Raynal wrote:
+> > > 
+> > > Actually, this version is even cleaner:
+> > > 
+> > > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > > index 3d6c6e880520..98c39b7f6279 100644
+> > > --- a/drivers/mtd/nand/raw/nand_base.c
+> > > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > > @@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > >         mtd->_sync = nand_sync;
+> > >         mtd->_lock = nand_lock;
+> > >         mtd->_unlock = nand_unlock;
+> > > -       mtd->_suspend = nand_suspend;
+> > > -       mtd->_resume = nand_resume;
+> > >         mtd->_reboot = nand_shutdown;
+> > >         mtd->_block_isreserved = nand_block_isreserved;
+> > >         mtd->_block_isbad = nand_block_isbad;
+> > > @@ -6261,14 +6259,20 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > >                 goto err_free_interface_config;
+> > >  
+> > >         /* Check, if we should skip the bad block table scan */
+> > > -       if (chip->options & NAND_SKIP_BBTSCAN)
+> > > -               return 0;
+> > > -
+> > > -       /* Build bad block table */
+> > > -       ret = nand_create_bbt(chip);
+> > > -       if (ret)
+> > > -               goto err_free_secure_regions;
+> > > +       if (chip->options & NAND_SKIP_BBTSCAN) {
+> > > +               /* Build bad block table */
+> > > +               ret = nand_create_bbt(chip);
+> > > +               if (ret)
+> > > +                       goto err_free_secure_regions;
+> > > +       }  
+> > 
+> > Nice idea.
+> >   
+> > >  
+> > > +       /*
+> > > +        * Populate the suspend/resume hooks after the BBT has been scanned to
+> > > +        * avoid using the suspend lock and resume waitqueue which are only
+> > > +        * initialized when mtd_device_register() is called.
+> > > +        */
+> > > +       mtd->_suspend = nand_suspend;
+> > > +       mtd->_resume = nand_resume;
+> > >         return 0;
+> > >  
+> > >  err_free_secure_regions:  
 > 
-> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/mtd/spi-nor/controllers/Kconfig       |  36 --
->  drivers/mtd/spi-nor/controllers/Makefile      |   3 -
->  drivers/mtd/spi-nor/controllers/intel-spi.h   |  21 --
->  drivers/spi/Kconfig                           |  39 +++
->  drivers/spi/Makefile                          |   3 +
->  .../intel-spi-pci.c => spi/spi-intel-pci.c}   |  20 +-
->  .../spi-intel-platform.c}                     |  21 +-
->  .../intel-spi.c => spi/spi-intel.c}           | 316 +++++++++++-------
->  drivers/spi/spi-intel.h                       |  19 ++
->  include/linux/mfd/lpc_ich.h                   |   2 +-
->  .../x86/{intel-spi.h => spi-intel.h}          |   6 +-
->  11 files changed, 266 insertions(+), 220 deletions(-)
->  delete mode 100644 drivers/mtd/spi-nor/controllers/intel-spi.h
->  rename drivers/{mtd/spi-nor/controllers/intel-spi-pci.c => spi/spi-intel-pci.c} (86%)
->  rename drivers/{mtd/spi-nor/controllers/intel-spi-platform.c => spi/spi-intel-platform.c} (65%)
->  rename drivers/{mtd/spi-nor/controllers/intel-spi.c => spi/spi-intel.c} (79%)
->  create mode 100644 drivers/spi/spi-intel.h
->  rename include/linux/platform_data/x86/{intel-spi.h => spi-intel.h} (89%)
-> 
-[...]
-> +static bool intel_spi_supports_mem_op(struct spi_mem *mem,
-> +				      const struct spi_mem_op *op)
-> +{
-> +	struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
-> +
-> +	if (op->cmd.dtr)
-> +		return false;
-> +
-> +	/*
-> +	 * The Intel controller supports widths up to 4 but it handles
-> +	 * them automatically and does not expose them to software. Here
-> +	 * we accept anything up to 4.
-> +	 */
-> +	if (op->cmd.buswidth > 4 ||
-> +	    (op->addr.nbytes && op->addr.buswidth > 4) ||
-> +	    (op->dummy.nbytes && op->dummy.buswidth > 4))
+> Could be a nice idea, but it doesn't work...
+> gpmi-nand.c calls nand_create_bbt() after this have run ;)
 
-Also need to check data buswidth here?
+Er, indeed. Can you try with this instead:
 
-Other than this,
-
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
-
-> +		return false;
-> +
-> +	if (ispi->swseq_reg && ispi->locked) {
-> +		int i;
-> +
-> +		/* Check if it is in the locked opcodes list */
-> +		for (i = 0; i < ARRAY_SIZE(ispi->opcodes); i++) {
-> +			if (ispi->opcodes[i] == op->cmd.opcode)
-> +				goto check_opcode;
->  		}
->  
-> -		return 0;
-> +		return false;
->  	}
->  
-> -	/* Not needed with HW sequencer erase, make sure it is cleared */
-> -	ispi->atomic_preopcode = 0;
-> +check_opcode:
-> +	switch (op->cmd.opcode) {
-> +	case SPINOR_OP_RDID:
-> +	case SPINOR_OP_RDSR:
-> +	case SPINOR_OP_WRSR:
-> +		return true;
->  
-> -	while (len > 0) {
-> -		writel(offs, ispi->base + FADDR);
-> +	case SPINOR_OP_READ:
-> +	case SPINOR_OP_READ_FAST:
-> +	case SPINOR_OP_READ_4B:
-> +	case SPINOR_OP_READ_FAST_4B:
-> +		return true;
->  
-> -		val = readl(ispi->base + HSFSTS_CTL);
-> -		val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
-> -		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
-> -		val |= cmd;
-> -		val |= HSFSTS_CTL_FGO;
-> -		writel(val, ispi->base + HSFSTS_CTL);
-> +	case SPINOR_OP_PP:
-> +	case SPINOR_OP_PP_4B:
-> +	case SPINOR_OP_WREN:
-> +	case SPINOR_OP_WRDI:
-> +		return true;
->  
-> -		ret = intel_spi_wait_hw_busy(ispi);
-> -		if (ret)
-> -			return ret;
-> +	case SPINOR_OP_SE:
-> +	case SPINOR_OP_SE_4B:
-> +		return ispi->erase_64k;
->  
-> -		status = readl(ispi->base + HSFSTS_CTL);
-> -		if (status & HSFSTS_CTL_FCERR)
-> -			return -EIO;
-> -		else if (status & HSFSTS_CTL_AEL)
-> -			return -EACCES;
-> +	case SPINOR_OP_BE_4K:
-> +	case SPINOR_OP_BE_4K_4B:
-> +		return true;
-> +	}
->  
-> -		offs += erase_size;
-> -		len -= erase_size;
-> +	return false;
-> +}
-> +
-[...]
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b7ad030225f8..548647bd27a4 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+  */
+ int nand_create_bbt(struct nand_chip *this)
+ {
++       struct mtd_info *mtd = nand_to_mtd(this)
++       int (*suspend) (struct mtd_info *) = mtd->_suspend;
++       int (*resume) (struct mtd_info *) = mtd->_resume;
+        int ret;
+ 
++       /*
++        * The BBT scan logic use the MTD helpers before the MTD layer had a
++        * chance to initialize the device, and that leads to issues when
++        * accessing the uninitialized suspend lock. Let's temporarily set the
++        * suspend/resume hooks to NULL to skip the lock acquire/release step.
++        *
++        * FIXME: This is an ugly hack, so please don't copy this pattern to
++        * other MTD implementations. The proper fix would be to implement a
++        * generic BBT scan logic at the NAND level that's not using any of the
++        * MTD helpers to access pages. We also might consider doing a two
++        * step initialization at the MTD level (mtd_device_init() +
++        * mtd_device_register()) so some of the fields are initialized
++        * early.
++        */
++       mtd->_suspend = NULL;
++       mtd->_resume = NULL;
++
+        /* Is a flash based bad block table requested? */
+        if (this->bbt_options & NAND_BBT_USE_FLASH) {
+                /* Use the default pattern descriptors */
+@@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
+                        return ret;
+        }
+ 
+-       return nand_scan_bbt(this, this->badblock_pattern);
++       ret = nand_scan_bbt(this, this->badblock_pattern);
++
++       /* Restore the suspend/resume hooks. */
++       mtd->_suspend = suspend;
++       mtd->_resume = resume;
++
++       return ret;
+ }
+ EXPORT_SYMBOL(nand_create_bbt);
+ 
 
 ______________________________________________________
 Linux MTD discussion mailing list
