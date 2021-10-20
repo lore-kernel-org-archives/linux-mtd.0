@@ -2,70 +2,65 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0054C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:25:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC5CAC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:30:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C023C60524
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:25:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C023C60524
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	by mail.kernel.org (Postfix) with ESMTPS id AB52D60FC3
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 07:30:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AB52D60FC3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SuSrQXXHPJFSBdHHwPx53lNxWfQNl7wx7HRwvWpty/o=; b=OP0JPIrMTVfAOW
-	1Rd1x+ytIJkmFS6pf0vm4IqIH2P+yIkSy+GrrPjCeM8BTloKYcHumHwRd318s5koRw4Pf1H+cU1bd
-	6OobE4TagSvwmli+LEEDzmp3D7u+3VGnZbWA8xrqeQarad4nhXItmJqcL7BbUI45v6zV3Ui0RWWMu
-	wIE095FLSVo4NDo0pJdW7oLMqkNjv+epTVcwvik7kMF1Arzgy/jqN1W8QQYb/GtZJ3sZT+lEbboZj
-	eMtVztd4ce3CTSxxT7L5sPw5xly63DfkgZoXVIioFCAuDYp8Ktbs0tcIrUgBBIz4zrdPM57zwXjyF
-	GGCgR9vNjo938XL+mzHQ==;
+	List-Owner; bh=DqTnZjpUmzbzWRcNl6PCwMakfwmGZ8LBiAVXWO03Rws=; b=YR4vh3udnOcEsR
+	qP29B4bAcjC96aucSwvF4n8E9UAkky9BfxmeRl2FzOWP1vg3gtOT2H0dWh9S5u0zHyVG1tQxxV2Fy
+	8qhPB8TnEBFIDQrPdcWdfcVg6qW5C3NfvqKXuuwDRPcRuF6aFMCiuNPtieYD1UBvJGQogLLNGfx8s
+	Ob/l9VZSmr/xPnFrVUUnz7bRFBbHTDnGQtPUkA7OOKtTEaSq8dr5a6M1buwrnNV/YNwufqBYL+MIw
+	6ii9VR8Clgunw9PvDa9qEGh4+kBo6UJNMXZY+gE0aUHiP9F7Ah8JsBIN0GM1nNciDEPm7zLOZlRnP
+	NHZJFBZPoQIao7bO+H0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1md5y3-003cS0-Q3; Wed, 20 Oct 2021 07:24:56 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1md63L-003eYa-Tn; Wed, 20 Oct 2021 07:30:23 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1md5x6-003c8B-35
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 07:23:57 +0000
-Received: from skn-laptop (unknown [185.233.254.173])
- by first.geanix.com (Postfix) with ESMTPSA id 831C1C7E64;
- Wed, 20 Oct 2021 07:23:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1634714633; bh=0fOWElFyi9S8CRUIgE+h4zZ2mGvEzLj6N86KS3DiB/8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To;
- b=Il8ZPG8eyyLejQX+QKApPZoXan+T7mBumIEfY/TgOZQqY64VM15HsJPZIt/a7WAMq
- aUD0FasIY+BzK/hOMvx/5JaUuhqf7h4SC1LAGkaSCLrdOcNVA6++pc0ThwB0o/Q4Pv
- gG6QHGr8eHa3VdcFslwiMESihf7DTuE+Q/II/OyfimAr5nONILXL4fO9c2eNjfpQWQ
- q6cNJnJHufcHDDBGRaADKUOD/QmGEciU0OB4Lm1A8cWGzlbAPrDuYomN74N/f4erDX
- Jr8XPTYwiq92VqC+lhnupdpelsuZQOUEpG3m7hU0zIS37L5E6rm/7FHFg3/1Blb8uW
- 9RrPa5ARJmEhg==
-Date: Wed, 20 Oct 2021 09:23:52 +0200
-From: Sean Nyekjaer <sean@geanix.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1md63B-003eV3-Sy
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 07:30:15 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 559111F421E2;
+ Wed, 20 Oct 2021 08:30:10 +0100 (BST)
+Date: Wed, 20 Oct 2021 09:30:07 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
  suspend
-Message-ID: <20211020072352.7fnano7wm5l4bfi6@skn-laptop>
+Message-ID: <20211020093007.0edb4ee4@collabora.com>
+In-Reply-To: <20211020071235.in3omswo2jqrahrd@skn-laptop>
 References: <20211011115253.38497-1-sean@geanix.com>
  <20211011160546.707b737b@collabora.com>
  <20211015082206.244a2316@xps13>
  <20211019180800.3v7emokse6lkpjvk@skn-laptop>
  <20211020085250.030ef244@collabora.com>
  <20211020090058.58af1087@collabora.com>
- <20211020091228.136fde6e@xps13>
+ <20211020071235.in3omswo2jqrahrd@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211020091228.136fde6e@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_002356_323612_178B2A6E 
-X-CRM114-Status: GOOD (  17.96  )
+X-CRM114-CacheID: sfid-20211020_003014_127382_AA3D463A 
+X-CRM114-Status: GOOD (  29.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,7 +77,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 20, 2021 at 09:12:28AM +0200, Miquel Raynal wrote:
+On Wed, 20 Oct 2021 09:12:35 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> On Wed, Oct 20, 2021 at 09:00:58AM +0200, Boris Brezillon wrote:
+> > On Wed, 20 Oct 2021 08:52:50 +0200
+> > Boris Brezillon <boris.brezillon@collabora.com> wrote:
+> >   
+> 
+> [ ... ]
+> > > > 
+> > > > Hi Boris and Miquel,
+> > > > 
+> > > > gpmi-nand.c sets NAND_SKIP_BBTSCAN so we won't get there and populate
+> > > > suspend resume hooks :(
+> > > > Guess there is other drivers that does the same thing...    
 > > 
 > > Actually, this version is even cleaner:
 > > 
@@ -116,9 +125,6 @@ On Wed, Oct 20, 2021 at 09:12:28AM +0200, Miquel Raynal wrote:
 > > +               if (ret)
 > > +                       goto err_free_secure_regions;
 > > +       }
-> 
-> Nice idea.
-> 
 > >  
 > > +       /*
 > > +        * Populate the suspend/resume hooks after the BBT has been scanned to
@@ -129,12 +135,21 @@ On Wed, Oct 20, 2021 at 09:12:28AM +0200, Miquel Raynal wrote:
 > > +       mtd->_resume = nand_resume;
 > >         return 0;
 > >  
-> >  err_free_secure_regions:
+> >  err_free_secure_regions:  
+> 
+> Why is the gpmi-nand.c and other drivers set NAND_SKIP_BBTSCAN and then
+> call nand_create_bbt() directly?
 
-Could be a nice idea, but it doesn't work...
-gpmi-nand.c calls nand_create_bbt() after this have run ;)
+Dunno, but there's a nand_boot_init() call between the nand_scan() and
+nand_create_bbt() calls, so I guess it has to do with something done in
+this function...
 
-/Sean
+> 
+> To me it looks like legacy leftover...
+
+If I were you, I wouldn't take the risk to change that in the same
+patch series. The suspend/resume changes are already quite invasive,
+so let's try to keep it as small/simple as possible.
 
 ______________________________________________________
 Linux MTD discussion mailing list
