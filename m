@@ -2,14 +2,14 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8509FC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0CD6C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:32:23 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4389B611B0
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:31:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4389B611B0
+	by mail.kernel.org (Postfix) with ESMTPS id 716DA60F59
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:32:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 716DA60F59
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LF0NzJ4hgkPcXQ/QSYvRiiAlLTyo6KmlXnZbgwF4dY4=; b=xLYxhEyA8yXqd/
-	DnptWZpieKM+C/eCwNsWXERi7wfND6XUbYB5oBotLbVu0CsQzplKf2XnKNVEVqZcowNnqwKDbPZr/
-	j+kRtbdQfEtnFj2W5wwyD2OYTDNxyKDrEfrw9//fPxDDbDZiXJyuTBqsfP67nrbOEDQINO+F6SUpZ
-	MAu9CD+3QyEmdvnA9+zTDS4+aoQ4wq2Eg+gymeNYakLdSAuZr6ddXZGFO31IIK3b6sq/DQksYiQZh
-	EafhxsY7FDmYTrvrHpInVPFDZeX5VOY2sw4y3SZ8JQpJG+VhkJUrYD3OpCSBM0NiRmZN+9VRuR/ui
-	0BtSKDrqYhkNTbti642g==;
+	List-Owner; bh=kiI4M8g+pVvm5vc6YJy9H41EE+vWFdAMwEISHdlvqlw=; b=vqK+I5DFv4gIba
+	FnPnVloVjqcciDlDgSnNRraZg46iV0YuuI+mP6TwR+iv8yCNRt0YCvIGsLTPLOhqHTtkoy837GjRN
+	dgSvB8AbW20GKQRRxmTyDExQyc1X8dl9SaiGeSbEnJp1BadKeadgGUsqwu7Y4g/O+NyEUguk8bHmO
+	x8/R+bnEHNR0x4GoGf6QQgdW4H7km7cRS4JMG4bYXpKOvWCQYA0VGMb5wyO+u8i5Zb0pu126h18Oh
+	gMQAOPI9pOJqrw4oRLeGsj/0Oe4AFN5RoJcV+k7BbUh5UBrEW22LAGjaLn/seKxZcQfM8alVqIO4u
+	IxxOBMdGnacCzcZY1KFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdCcI-004leR-8I; Wed, 20 Oct 2021 14:30:54 +0000
+	id 1mdCd4-004lta-BX; Wed, 20 Oct 2021 14:31:42 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdCZq-004kgo-UE
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 14:28:24 +0000
+ id 1mdCZs-004khF-5G
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 14:28:25 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 7239520003;
- Wed, 20 Oct 2021 14:28:20 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id A86432000D;
+ Wed, 20 Oct 2021 14:28:21 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -45,16 +45,16 @@ Cc: <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 07/18] dt-bindings: spi: mxic: Convert to yaml
-Date: Wed, 20 Oct 2021 16:27:58 +0200
-Message-Id: <20211020142809.349347-8-miquel.raynal@bootlin.com>
+Subject: [PATCH 08/18] dt-bindings: mtd: Describe Macronix NAND ECC engine
+Date: Wed, 20 Oct 2021 16:27:59 +0200
+Message-Id: <20211020142809.349347-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211020142809.349347-1-miquel.raynal@bootlin.com>
 References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_072823_273410_15A18959 
-X-CRM114-Status: GOOD (  14.27  )
+X-CRM114-CacheID: sfid-20211020_072824_500982_0F859204 
+X-CRM114-Status: GOOD (  12.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,132 +71,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Straightforward conversion from regular text to yaml schema of the
-Macronix SPI controller DT bindings.
+Describe Macronix NAND ECC engine. This engine may be used as an
+external engine or can be pipelined with either a raw NAND controller or
+a SPI controller. Both hardware designs with a SPI controller are shown
+in the examples.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- .../bindings/spi/mxicy,mx25f0a-spi.yaml       | 67 +++++++++++++++++++
- .../devicetree/bindings/spi/spi-mxic.txt      | 36 ----------
- 2 files changed, 67 insertions(+), 36 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-mxic.txt
+ .../bindings/mtd/mxicy,nand-ecc-engine.yaml   | 77 +++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mxicy,nand-ecc-engine.yaml
 
-diff --git a/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml b/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml
+diff --git a/Documentation/devicetree/bindings/mtd/mxicy,nand-ecc-engine.yaml b/Documentation/devicetree/bindings/mtd/mxicy,nand-ecc-engine.yaml
 new file mode 100644
-index 000000000000..4036c14fc533
+index 000000000000..804479999ccb
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/mxicy,mx25f0a-spi.yaml
-@@ -0,0 +1,67 @@
++++ b/Documentation/devicetree/bindings/mtd/mxicy,nand-ecc-engine.yaml
+@@ -0,0 +1,77 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/spi/mxicy,mx25f0a-spi.yaml#
++$id: http://devicetree.org/schemas/mtd/mxicy,nand-ecc-engine.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Macronix SPI controller device tree bindings
++title: Macronix NAND ECC engine device tree bindings
 +
 +maintainers:
 +  - Miquel Raynal <miquel.raynal@bootlin.com>
 +
-+allOf:
-+  - $ref: "spi-controller.yaml#"
-+
 +properties:
 +  compatible:
-+    const: mxicy,mx25f0a-spi
++    const: mxicy,nand-ecc-engine-rev3
 +
 +  reg:
-+    minItems: 2
-+    maxItems: 2
++    maxItems: 1
 +
-+  reg-names:
-+    items:
-+      - const: regs
-+      - const: dirmap
++  clocks:
++    maxItems: 1
 +
 +  interrupts:
 +    maxItems: 1
 +
-+  clocks:
-+    minItems: 3
-+    maxItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: send_clk
-+      - const: send_dly_clk
-+      - const: ps_clk
-+
-+  "#address-cells":
-+    const: 1
-+  "#size-cells":
-+    const: 0
-+
 +required:
 +  - compatible
 +  - reg
-+  - reg-names
-+  - clocks
-+  - clock-names
-+  - "#address-cells"
-+  - "#size-cells"
 +
-+unevaluatedProperties: false
++additionalProperties: false
 +
 +examples:
 +  - |
-+    spi@43c30000 {
-+      compatible = "mxicy,mx25f0a-spi";
-+      reg = <0x43c30000 0x10000>, <0xa0000000 0x20000000>;
-+      reg-names = "regs", "dirmap";
-+      clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 18>;
-+      clock-names = "send_clk", "send_dly_clk", "ps_clk";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
++    /* External configuration */
++    spi_controller0: spi@43c30000 {
++        compatible = "mxicy,mx25f0a-spi";
++        reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
++        reg-names = "regs", "dirmap";
++        clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
++        clock-names = "send_clk", "send_dly_clk", "ps_clk";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        flash@0 {
++            compatible = "spi-nand";
++            reg = <0>;
++            nand-ecc-engine = <&ecc_engine0>;
++        };
 +    };
-diff --git a/Documentation/devicetree/bindings/spi/spi-mxic.txt b/Documentation/devicetree/bindings/spi/spi-mxic.txt
-deleted file mode 100644
-index 7bcbb229b78b..000000000000
---- a/Documentation/devicetree/bindings/spi/spi-mxic.txt
-+++ /dev/null
-@@ -1,36 +0,0 @@
--Macronix SPI controller Device Tree Bindings
----------------------------------------------
--
--Required properties:
--- compatible: should be "mxicy,mx25f0a-spi"
--- #address-cells: should be 1
--- #size-cells: should be 0
--- reg: should contain 2 entries, one for the registers and one for the direct
--       mapping area
--- reg-names: should contain "regs" and "dirmap"
--- clock-names: should contain "ps_clk", "send_clk" and "send_dly_clk"
--- clocks: should contain 3 entries for the "ps_clk", "send_clk" and
--	  "send_dly_clk" clocks
--
--Optional properties:
--- interrupts: interrupt line connected to the SPI controller
--
--Example:
--
--	spi@43c30000 {
--		compatible = "mxicy,mx25f0a-spi";
--		reg = <0x43c30000 0x10000>, <0xa0000000 0x20000000>;
--		reg-names = "regs", "dirmap";
--		clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 18>;
--		clock-names = "send_clk", "send_dly_clk", "ps_clk";
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		flash@0 {
--			compatible = "jedec,spi-nor";
--			reg = <0>;
--			spi-max-frequency = <25000000>;
--			spi-tx-bus-width = <4>;
--			spi-rx-bus-width = <4>;
--		};
--	};
++
++    ecc_engine0: ecc@43c40000 {
++        compatible = "mxicy,nand-ecc-engine-rev3";
++        reg = <0x43c40000 0x10000>;
++    };
++
++  - |
++    /* Pipelined configuration */
++    spi_controller1: spi@43c30000 {
++        compatible = "mxicy,mx25f0a-spi";
++        reg = <0x43c30000 0x10000>, <0xa0000000 0x4000000>;
++        reg-names = "regs", "dirmap";
++        clocks = <&clkwizard 0>, <&clkwizard 1>, <&clkc 15>;
++        clock-names = "send_clk", "send_dly_clk", "ps_clk";
++        #address-cells = <1>;
++        #size-cells = <0>;
++        nand-ecc-engine = <&ecc_engine1>;
++
++        flash@0 {
++            compatible = "spi-nand";
++            reg = <0>;
++            nand-ecc-engine = <&spi_controller1>;
++        };
++    };
++
++    ecc_engine1: ecc@43c40000 {
++        compatible = "mxicy,nand-ecc-engine-rev3";
++        reg = <0x43c40000 0x10000>;
++    };
 -- 
 2.27.0
 
