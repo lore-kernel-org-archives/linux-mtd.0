@@ -2,38 +2,38 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B433DC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D2AFC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:29:21 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 74D286138B
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:29:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 74D286138B
+	by mail.kernel.org (Postfix) with ESMTPS id EFD4860EE9
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 14:29:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EFD4860EE9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=9OPedcVGcJBmr4JjEn40lSMRybxZVANB4LdrI7WdcjQ=; b=HihgLy7MXxI7rn
-	nZU1wH0PFBDJB0KGmsoUeAhAEa+l+7U/+6gmL4SNzebjz76aX4t1geg+ww8wfdPnUDnwJteQjtLlG
-	8tbKWUgQ0YcIww11oRwxpxRYwmbbAqgQqqXwi3V+ZtDJVUXv6iXzPirAgfwMg3GEyAC3Ht0NNSx0g
-	8K9mPjAb59dciv/cGkVnJeoTTqISkAgfyZc6jE+2CHJUz/j6UaUMdn7AqTu/Uk5T6fvXAuZOQClFX
-	0bkVGFzz1CVmaeaStSDTMxItrRlW3Nh+zwORAwP3Tu0EnMWqBMcVtspb4SMLK265ruSTn6Zju0uvW
-	nYGs70dT55HC//euB9sg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=338jExRrAWHC0FBq+V1dBWajMN0cyyMoCF4GyKBVSn0=; b=JJAvDc9b6meips
+	ojw5VlpJ51xMvKIwcBXLqSuUNCUDFDnOLY8KMp/Z3DDNOuUcevRUxLRQ4ZHFlXUGXoZ5l+k/piUye
+	bSXabvctmhb53deMc5ysACHdA9Zy2h2mzcfX3R9BGVdYWXeUbfZZE2DL68ShnpuuS9jGP2uPY4U9M
+	S3AIQJr/8WMWeCP2lgx7REQLrQF02SfQ1cpzjC0KwDUuz21nAHOYjwZsyz2xx6qsGa8i07WQzvVod
+	FvxsseFAe6dz/6M79CyYlyqVI2nnbz5+vgPflcNXgt5XRcc4UvMyKTp9C/l6keLls2NgPGEBaGYBA
+	k2iplqKnWT5aVbgUueSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdCZz-004kkk-Vo; Wed, 20 Oct 2021 14:28:32 +0000
+	id 1mdCaE-004kqd-6G; Wed, 20 Oct 2021 14:28:46 +0000
 Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdCZj-004kcu-4A
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 14:28:17 +0000
+ id 1mdCZk-004kdU-Hz
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 14:28:18 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id AE17A20003;
- Wed, 20 Oct 2021 14:28:09 +0000 (UTC)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id E690B20014;
+ Wed, 20 Oct 2021 14:28:13 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -45,14 +45,17 @@ Cc: <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 00/18] External ECC engines & Macronix support
-Date: Wed, 20 Oct 2021 16:27:51 +0200
-Message-Id: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+Subject: [PATCH 02/18] dt-bindings: mtd: nand-controller: Fix a comment in the
+ examples
+Date: Wed, 20 Oct 2021 16:27:53 +0200
+Message-Id: <20211020142809.349347-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_072815_463576_99DB3E58 
-X-CRM114-Status: GOOD (  14.90  )
+X-CRM114-CacheID: sfid-20211020_072816_750325_A6B143A4 
+X-CRM114-Status: GOOD (  10.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,82 +67,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gYWxsLAoKVGhpcyBzZXJpZXMgaXMgbm93IHN0YWJsZSBhbmQgYnJpbmdzIHN1cHBvcnQg
-Zm9yIGV4dGVybmFsL21vZHVsYXIgRUNDCmVuZ2luZXMsIGFuZCBsZXQgU1BJIGNvbnRyb2xsZXIg
-dXNpbmcgdGhlIEVDQyBmcmFtZXdvcmsuCgpBcyBhIGZpcnN0IGV4YW1wbGUsIE1hY3Jvbml4IEVD
-QyBlbmdpbmUgY2FuIGJlIHVzZWQgYXMgYW4KZXh0ZXJuYWwgZW5naW5lICh0YWtlcyB0aGUgZGF0
-YSwgcHJvY2VlZHMgdG8gdGhlIGNhbGN1bGF0aW9ucywgd3JpdGVzCmJhY2sgdGhlIEVDQyBieXRl
-cykgb3IgYXMgYSBwaXBlbGluZWQgZW5naW5lIGRvaW5nIG9uLXRoZS1mbHkKY2FsY3VsYXRpb25z
-ICh3aGljaCBpcyB2ZXJ5IGNvbW1vbiBpbiB0aGUgcmF3IE5BTkQgd29ybGQpLgoKSW4gdGhlIGRl
-dmljZSB0cmVlLCB0aGUgRUNDIGVuZ2luZSBzaG91bGQgYmUgZGVzY3JpYmVkIGFzIGEgc2VwYXJh
-dGVkIERUCm5vZGUuIFRoZW46CiogZXh0ZXJuYWwgY2FzZTogdGhlIGZsYXNoIG5vZGUgc2hvdWxk
-IHByb3ZpZGUgYSBuYW5kLWVjYy1lbmdpbmUKICBwcm9wZXJ0eSBwb2ludGluZyB0byB0aGUgRUND
-IGVuZ2luZSBub2RlLgoqIHBpcGVsaW5lZCBjYXNlOiB0aGUgZmxhc2ggbm9kZSBzaG91bGQgcHJv
-dmlkZSBhIG5hbmQtZWNjLWVuZ2luZQogIHByb3BlcnR5IHBvaW50aW5nIHRvIHRoZSBTUEkgY29u
-dHJvbGxlciwgaXRzZWxmIHdpdGggYW5vdGhlcgogIG5hbmQtZWNjLWVuZ2luZSBwcm9wZXJ0eSBw
-b2ludGluZyBhdCB0aGUgRUNDIGVuZ2luZSBub2RlLgoKVGhpcyBzZXJpZXMgY29tZXMgd2l0aCBh
-IGJ1bmNoIG9mIGltcHJvdmVtZW50cyBvbiB0aGUgYmluZGluZyBzaWRlIGFzCndlbGwuCgpDaGVl
-cnMsCk1pcXXDqGwKCkNoYW5nZXMgc2luY2UgdGhlIFJGQzoKKiBSZWJhc2VkIG9uIHRvcCBvZiB2
-NS4xNS1yYzEuCiogRml4ZWQgdGhlIGRpcm1hcCBjb25maWd1cmF0aW9uLgoqIEFkZGVkIHRoZSB2
-YXJpb3VzIHRhZ3MgcmVjZWl2ZWQuCiogRml4ZWQgdGhlIGJpbmRpbmdzIGFzIHJlcG9ydGVkIGJ5
-IHRoZSByb2JvdHMuCiogRml4ZWQgdGhlIHJldHVybiB2YWx1ZSBvZiB0aGUgaGVscGVyIGNvdW50
-aW5nIGJpdGZsaXBzLgoqIEluY2x1ZGVkIGEgZml4IGZyb20gSmFpbWUgTGlhbyBpbiB0aGUgZXh0
-ZXJuYWwgcGF0dGVybiBsb2dpYy4KKiBBZGRlZCB0aGUgeWFtbCBjb252ZXJzaW9uIG9mIE1hY3Jv
-bml4IFNQSSBjb250cm9sbGVyIGRlc2NyaXB0aW9uLgoqIEFkZGVkIHRoZSB5YW1sIGNvbnZlcnNp
-b24gb2YgdGhlIFNQSS1OQU5EIGRlc2NyaXB0aW9uLgoqIENyZWF0ZWQgYSBuYW5kLWNoaXAueWFt
-bCBmaWxlIHRvIHNoYXJlIHByb3BlcnRpZXMgYmV0d2VlbiBTUEktTkFORCBhbmQKICByYXcgTkFO
-RC4KCk1hc29uIFlhbmcgKDEpOgogIG10ZDogc3BpbmFuZDogbWFjcm9uaXg6IFVzZSByYW5kb20g
-cHJvZ3JhbSBsb2FkCgpNaXF1ZWwgUmF5bmFsICgxNyk6CiAgZHQtYmluZGluZ3M6IG10ZDogbmFu
-ZC1jb250cm9sbGVyOiBGaXggdGhlIHJlZyBwcm9wZXJ0eSBkZXNjcmlwdGlvbgogIGR0LWJpbmRp
-bmdzOiBtdGQ6IG5hbmQtY29udHJvbGxlcjogRml4IGEgY29tbWVudCBpbiB0aGUgZXhhbXBsZXMK
-ICBkdC1iaW5kaW5nczogbXRkOiBuYW5kLWNoaXA6IENyZWF0ZSBhIE5BTkQgY2hpcCBkZXNjcmlw
-dGlvbgogIGR0LWJpbmRpbmdzOiBtdGQ6IHNwaS1uYW5kOiBDb252ZXJ0IHNwaS1uYW5kIGRlc2Ny
-aXB0aW9uIGZpbGUgdG8geWFtbAogIGR0LWJpbmRpbmdzOiB2ZW5kb3ItcHJlZml4ZXM6IENsYXJp
-ZnkgTWFjcm9uaXggcHJlZml4CiAgZHQtYmluZGluZ3M6IHNwaTogbXhpYzogVGhlIGludGVycnVw
-dCBwcm9wZXJ0eSBpcyBub3QgbWFuZGF0b3J5CiAgZHQtYmluZGluZ3M6IHNwaTogbXhpYzogQ29u
-dmVydCB0byB5YW1sCiAgZHQtYmluZGluZ3M6IG10ZDogRGVzY3JpYmUgTWFjcm9uaXggTkFORCBF
-Q0MgZW5naW5lCiAgZHQtYmluZGluZ3M6IHNwaTogbXhpYzogRG9jdW1lbnQgdGhlIG5hbmQtZWNj
-LWVuZ2luZSBwcm9wZXJ0eQogIG10ZDogbmFuZDogZWNjOiBBZGQgaW5mcmFzdHJ1Y3R1cmUgdG8g
-c3VwcG9ydCBoYXJkd2FyZSBlbmdpbmVzCiAgbXRkOiBuYW5kOiBteGljLWVjYzogQWRkIE1hY3Jv
-bml4IGV4dGVybmFsIEVDQyBlbmdpbmUgc3VwcG9ydAogIG10ZDogbmFuZDogbXhpYy1lY2M6IFN1
-cHBvcnQgU1BJIHBpcGVsaW5lZCBtb2RlCiAgc3BpOiBteGljOiBGaXggdGhlIHRyYW5zbWl0IHBh
-dGgKICBzcGk6IG14aWM6IENyZWF0ZSBhIGhlbHBlciB0byBjb25maWd1cmUgdGhlIGNvbnRyb2xs
-ZXIgYmVmb3JlIGFuCiAgICBvcGVyYXRpb24KICBzcGk6IG14aWM6IENyZWF0ZSBhIGhlbHBlciB0
-byBlYXNlIHRoZSBzdGFydCBvZiBhbiBvcGVyYXRpb24KICBzcGk6IG14aWM6IEFkZCBzdXBwb3J0
-IGZvciBkaXJlY3QgbWFwcGluZwogIHNwaTogbXhpYzogQWRkIHN1cHBvcnQgZm9yIHBpcGVsaW5l
-ZCBFQ0Mgb3BlcmF0aW9ucwoKIC4uLi9iaW5kaW5ncy9tdGQvbXhpY3ksbmFuZC1lY2MtZW5naW5l
-LnlhbWwgICB8ICA3NyArKwogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL25hbmQtY2hpcC55
-YW1sICAgIHwgIDcxICsrCiAuLi4vYmluZGluZ3MvbXRkL25hbmQtY29udHJvbGxlci55YW1sICAg
-ICAgICAgfCAgNTcgKy0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC50eHQg
-ICAgICB8ICAgNSAtCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQueWFtbCAg
-ICAgfCAgMjcgKwogLi4uL2JpbmRpbmdzL3NwaS9teGljeSxteDI1ZjBhLXNwaS55YW1sICAgICAg
-IHwgIDczICsrCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLW14aWMudHh0ICAgICAg
-fCAgMzQgLQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnlhbWwgIHwg
-ICAzICsKIGRyaXZlcnMvbXRkL25hbmQvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICB8ICAg
-NiArCiBkcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgfCAgIDEg
-KwogZHJpdmVycy9tdGQvbmFuZC9jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDEwICst
-CiBkcml2ZXJzL210ZC9uYW5kL2VjYy1teGljLmMgICAgICAgICAgICAgICAgICAgfCA3OTkgKysr
-KysrKysrKysrKysrKysrCiBkcml2ZXJzL210ZC9uYW5kL2VjYy5jICAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgODkgKysKIGRyaXZlcnMvbXRkL25hbmQvc3BpL21hY3Jvbml4LmMgICAgICAgICAg
-ICAgICB8ICAgMiArLQogZHJpdmVycy9zcGkvc3BpLW14aWMuYyAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgMzI4ICsrKysrLS0KIGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLW14aWMuaCAgICAg
-ICAgICAgICB8ICAzNiArCiBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLmggICAgICAgICAgICAgICAg
-ICAgICAgfCAgMTEgKwogMTcgZmlsZXMgY2hhbmdlZCwgMTQ4MyBpbnNlcnRpb25zKCspLCAxNDYg
-ZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL210ZC9teGljeSxuYW5kLWVjYy1lbmdpbmUueWFtbAogY3JlYXRlIG1vZGUgMTAw
-NjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbmFuZC1jaGlwLnlhbWwK
-IGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRk
-L3NwaS1uYW5kLnR4dAogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQueWFtbAogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvbXhpY3ksbXgyNWYwYS1zcGkueWFtbAogZGVs
-ZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3Bp
-LW14aWMudHh0CiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9tdGQvbmFuZC9lY2MtbXhpYy5j
-CiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tdGQvbmFuZC1lY2MtbXhpYy5oCgot
-LSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The controller properties should be in the controller 'parent' node,
+while properties in the children nodes are specific to the NAND
+*chip*. This error was already present during the yaml conversion.
+
+Fixes: 2d472aba15ff ("mtd: nand: document the NAND controller/NAND chip DT representation")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ Documentation/devicetree/bindings/mtd/nand-controller.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index 811f03978fc6..5cd144a9ec99 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -184,7 +184,7 @@ examples:
+         nand-use-soft-ecc-engine;
+         nand-ecc-algo = "bch";
+ 
+-        /* controller specific properties */
++        /* NAND chip specific properties */
+       };
+ 
+       nand@1 {
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
