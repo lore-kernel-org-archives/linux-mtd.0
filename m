@@ -2,14 +2,14 @@ Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F907C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B38EC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:56:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3458C61183
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:54:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3458C61183
+	by mail.kernel.org (Postfix) with ESMTPS id 1873261004
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 08:56:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1873261004
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,44 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QQbVYHqEIzJ+4DDcUcl1YevQmi55jqlphNh/gjhGcQk=; b=FC35cDNis9iYA/
-	jCVmeler8WNDwKI2tiP1pqh2TjLvr1VzHPXADb57YHjzgJNjKzb587vd2l7OBiA5J8VF9KVRt8XMq
-	GJPbds2nRaYHKLG8fRvv3QsebjaI1q/nQWrC31ONMARjaCNV02xzMLnS+gA9mFCTfxkzuCH34vvUO
-	a+IsJB9Pp2lu3CnegSBhz8f2xh11rdsXO97n4195Smp3YdVu4C5PDr8mCze/50Y37vdNjsSXm4r28
-	c0Kj+CjDgsgST/+ubRA9kqHYeB6XrS78vzCWT0HSwRB8QEqs3jVBJekwhv4hTTUz10LfCqu2G9SLu
-	jIkv8jkqpewgYCA7meMQ==;
+	List-Owner; bh=lNbyDde5HzvmXaBu07TAvPi3VHGZXchyFt8DdT/McjA=; b=kq9FjpUMzfzE1D
+	Q3rS+sRKHm7MdAZ7a6OMSdkvRfejoV+zgagfhypy0i9gBz5IoWiETLd/4LZahyq2lPbKqzUcY7931
+	hgatR0lqOuYPdT1UP4xPI1hWR2HoEgQUSkIGotl6yeSiDm1YShoJAfTcWoVkzFbRxBLm7gQDwPNCR
+	FfnZKNlAWtGgQdaGxEC+x809UyEL49siPB1IDVkPkPkxgT6RNFVtuzI/PC+/X9ntg5k8nxsGKG7E1
+	Eov0R9q7bi/mc2UhuT/3qCahoku0lYTRRDigxl83ax03skb2RGGVd8m9Zq93NSnZ5QKlOa9zoT1P1
+	jx3TXlkGHV0/+Wht4Tpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1md7Ls-003tRE-5q; Wed, 20 Oct 2021 08:53:36 +0000
+	id 1md7O6-003tqy-Ns; Wed, 20 Oct 2021 08:55:54 +0000
 Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1md7Lo-003tPQ-Ec
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 08:53:34 +0000
+ id 1md7O3-003tqN-VL
+ for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 08:55:53 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 32EFD1F43F4A;
- Wed, 20 Oct 2021 09:53:29 +0100 (BST)
-Date: Wed, 20 Oct 2021 10:53:26 +0200
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 88FAC1F43D73;
+ Wed, 20 Oct 2021 09:55:50 +0100 (BST)
+Date: Wed, 20 Oct 2021 10:55:47 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Sean Nyekjaer <sean@geanix.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
  <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] mtd: rawnand: nand_bbt: hide suspend/resume
- hooks while scanning bbt
-Message-ID: <20211020105326.0dca864a@collabora.com>
-In-Reply-To: <20211020084534.2472305-2-sean@geanix.com>
+Subject: Re: [PATCH v2 4/4] mtd: mtdconcat: add suspend lock handling
+Message-ID: <20211020105547.23ed9324@collabora.com>
+In-Reply-To: <20211020084534.2472305-5-sean@geanix.com>
 References: <20211020084534.2472305-1-sean@geanix.com>
- <20211020084534.2472305-2-sean@geanix.com>
+ <20211020084534.2472305-5-sean@geanix.com>
 Organization: Collabora
 X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_015332_689997_8F4AD57C 
-X-CRM114-Status: GOOD (  25.75  )
+X-CRM114-CacheID: sfid-20211020_015552_178060_22D927C5 
+X-CRM114-Status: GOOD (  21.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,72 +71,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Oct 2021 10:45:31 +0200
+On Wed, 20 Oct 2021 10:45:34 +0200
 Sean Nyekjaer <sean@geanix.com> wrote:
 
-> From: Boris Brezillon <boris.brezillon@collabora.com>
-> 
-> The BBT scan logic use the MTD helpers before the MTD layer had a
-> chance to initialize the device, and that leads to issues when
-> accessing the uninitialized suspend lock. Let's temporarily set the
-> suspend/resume hooks to NULL to skip the lock acquire/release step.
+> Use MTD hooks to control suspend/resume of MTD devices.
+
+Please explain in great details why this is needed.
+
 > 
 > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> Tested-by: Sean Nyekjaer <sean@geanix.com>
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 
-It's missing our Signed-off-by tags.
+This patch should be moved earlier (before 'mtd: core: protect access to
+MTD devices while in suspend') in the series.
 
 > ---
->  drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
->  1 file changed, 27 insertions(+), 1 deletion(-)
+>  drivers/mtd/mtdconcat.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-> index b7ad030225f8..93d385703469 100644
-> --- a/drivers/mtd/nand/raw/nand_bbt.c
-> +++ b/drivers/mtd/nand/raw/nand_bbt.c
-> @@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
->   */
->  int nand_create_bbt(struct nand_chip *this)
->  {
-> +	struct mtd_info *mtd = nand_to_mtd(this);
-> +	int (*suspend) (struct mtd_info *) = mtd->_suspend;
-> +	void (*resume) (struct mtd_info *) = mtd->_resume;
->  	int ret;
+> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+> index f685a581df48..1ec36890118f 100644
+> --- a/drivers/mtd/mtdconcat.c
+> +++ b/drivers/mtd/mtdconcat.c
+> @@ -566,9 +566,11 @@ static int concat_suspend(struct mtd_info *mtd)
 >  
-> +	/*
-> +	 * The BBT scan logic use the MTD helpers before the MTD layer had a
-> +	 * chance to initialize the device, and that leads to issues when
-> +	 * accessing the uninitialized suspend lock. Let's temporarily set the
-> +	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
-> +	 *
-> +	 * FIXME: This is an ugly hack, so please don't copy this pattern to
-> +	 * other MTD implementations. The proper fix would be to implement a
-> +	 * generic BBT scan logic at the NAND level that's not using any of the
-> +	 * MTD helpers to access pages. We also might consider doing a two
-> +	 * step initialization at the MTD level (mtd_device_init() +
-> +	 * mtd_device_register()) so some of the fields are initialized
-> +	 * early.
-> +	 */
-> +	mtd->_suspend = NULL;
-> +	mtd->_resume = NULL;
-> +
->  	/* Is a flash based bad block table requested? */
->  	if (this->bbt_options & NAND_BBT_USE_FLASH) {
->  		/* Use the default pattern descriptors */
-> @@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
->  			return ret;
+>  	for (i = 0; i < concat->num_subdev; i++) {
+>  		struct mtd_info *subdev = concat->subdev[i];
+> -		if ((rc = mtd_suspend(subdev)) < 0)
+> +		rc = subdev->_suspend ? subdev->_suspend(subdev) : 0;
+> +		if (rc < 0)
+>  			return rc;
+
+Same here, you need a fat comment explaining why mtd_suspend() is not
+used.
+
 >  	}
->  
-> -	return nand_scan_bbt(this, this->badblock_pattern);
-> +	ret = nand_scan_bbt(this, this->badblock_pattern);
 > +
-> +	/* Restore the suspend/resume hooks. */
-> +	mtd->_suspend = suspend;
-> +	mtd->_resume = resume;
-> +
-> +	return ret;
+>  	return rc;
 >  }
->  EXPORT_SYMBOL(nand_create_bbt);
+>  
+> @@ -579,7 +581,8 @@ static void concat_resume(struct mtd_info *mtd)
+>  
+>  	for (i = 0; i < concat->num_subdev; i++) {
+>  		struct mtd_info *subdev = concat->subdev[i];
+> -		mtd_resume(subdev);
+> +		if (subdev->_resume)
+> +			subdev->_resume(subdev);
+
+Ditto.
+
+>  	}
+>  }
 >  
 
 
