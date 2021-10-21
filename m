@@ -2,47 +2,72 @@ Return-Path: <SRS0=KyYR=PJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 258CFC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Oct 2021 12:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C28E1C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Oct 2021 13:21:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4EA560F46
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Oct 2021 12:46:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D4EA560F46
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+	by mail.kernel.org (Postfix) with ESMTPS id 68F03610CB
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Oct 2021 13:21:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 68F03610CB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zB+b4d1cZn0lQfIBfKqGdX1k8UOfvi8iM1U44A+0LJo=; b=0nVcgkRhOgTvjZ
-	2cL7kBEVHlNLsOZ4l0nySIR3hcdsKeT05K3NhlmOHYfUvUcsqmM9rFUGmV7IPOw+gOp5aMR3AYup4
-	XPEEDSCaN/l9Up+Cs+F0NMi5ui1VUKaWDV0V2EhCf+3ITnZSkeVTTe2hTZ8vSd5IcntC7vYcH6ttG
-	pcKduaC9OoR5IRo7ibLtWC9n/bbfDhMpgEH7vkDWRXi9gZaiXeVXS49fj+EHDDC6Na3NSt57Rr4bm
-	yjTnc1XfsBBmflVpS9ZwxiczY/IkUVT5864efbhUOQtw3WcgofFYjYkxy3o1iB+xTBV6ktXaoTcGj
-	GgausfIGczJ49fT9ISBA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=p4W2N2Ql2v6wexej+cVlf2ctCqtTTYVvivxIoaE57Rg=; b=P064d55Hsyi+6AFO4+9ZPIFEjf
+	1JSRRdejVngvzYJTsYg5qq4TR4OeQjO9T1neI3ORkN9xuVlAIDhngZ2Jy/YJ2nWlo3fowmePLqV1N
+	GDhZUVB3TxNxbhe4QzxOAb48fB8tLlH7FVdO7fDqqjWRLh66nEvQ/w7boReguYEgpnsEI1YpnUEui
+	MUvFy5lXJwojvnol9hblm5kNMsD6fOaKFeOE/VNW78SF/Q8h2p1nEKqU+B+IZpRmVocjFiI24chY0
+	/yL+r2mbYh4wudKYYYGpPvLIXKWkwECKZBns8BR4joRjHvzxoMSriZm7nzGRmq8umpSyxEz+Fgt7p
+	9+bSuqCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdXSO-007XS6-Es; Thu, 21 Oct 2021 12:46:04 +0000
-Received: from [2001:4bb8:180:8777:dd70:8011:36d9:4c23] (helo=localhost)
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdXRL-007X1k-GZ; Thu, 21 Oct 2021 12:44:59 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jan Kara <jack@suse.cz>, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 5/5] mm: simplify bdi refcounting
-Date: Thu, 21 Oct 2021 14:44:41 +0200
-Message-Id: <20211021124441.668816-6-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211021124441.668816-1-hch@lst.de>
-References: <20211021124441.668816-1-hch@lst.de>
+	id 1mdY09-007d6H-9O; Thu, 21 Oct 2021 13:20:57 +0000
+Received: from frasgout.his.huawei.com ([185.176.79.56])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mdY05-007d5T-K3
+ for linux-mtd@lists.infradead.org; Thu, 21 Oct 2021 13:20:56 +0000
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
+ by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HZp0m2HLZz67wr1;
+ Thu, 21 Oct 2021 21:16:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 15:20:49 +0200
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Thu, 21 Oct 2021 14:20:48 +0100
+Subject: Re: BUG: KASAN: use-after-free in blk_mq_sched_tags_teardown
+To: Arnd Bergmann <arnd@arndb.de>, Naresh Kamboju <naresh.kamboju@linaro.org>
+CC: linux-block <linux-block@vger.kernel.org>, open list
+ <linux-kernel@vger.kernel.org>, linux-scsi <linux-scsi@vger.kernel.org>,
+ Kashyap Desai <kashyap.desai@broadcom.com>, Hannes Reinecke <hare@suse.de>,
+ Ming Lei <ming.lei@redhat.com>, <lkft-triage@lists.linaro.org>, Anders Roxell
+ <anders.roxell@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh R <vigneshr@ti.com>, linux-mtd
+ <linux-mtd@lists.infradead.org>
+References: <CA+G9fYvv6YsRM2Qf7AGMo3nwqkuAt_D1i+6H_ApHk3kmScyDyg@mail.gmail.com>
+ <CAK8P3a21U0jzMOUWp1rhrNrD3szxxrwo59SBYG89xpYJGXteRA@mail.gmail.com>
+From: John Garry <john.garry@huawei.com>
+Message-ID: <aae28ac1-aa3f-3602-8732-9b3a87e9cdf0@huawei.com>
+Date: Thu, 21 Oct 2021 14:20:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a21U0jzMOUWp1rhrNrD3szxxrwo59SBYG89xpYJGXteRA@mail.gmail.com>
+Content-Language: en-US
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20211021_062053_994164_FFEE58F2 
+X-CRM114-Status: GOOD (  17.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -54,95 +79,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Move grabbing and releasing the bdi refcount out of the common
-wb_init/wb_exit helpers into code that is only used for the non-default
-memcg driven bdi_writeback structures.
+On 21/10/2021 13:20, Arnd Bergmann wrote:
+> On Thu, Oct 21, 2021 at 2:01 PM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+>>
+>> Following KASAN BUG noticed on linux next 20211021 while booting qemu-arm64
+>> with allmodconfig.
+> 
+>> [   77.730367][    T5] Freed by task 1:
+>> [   77.732009][    T5]  kasan_save_stack+0x30/0x80
+>> [   77.734083][    T5]  kasan_set_track+0x30/0x80
+>> [   77.736085][    T5]  kasan_set_free_info+0x34/0x80
+>> [   77.738261][    T5]  ____kasan_slab_free+0xfc/0x1c0
+>> [   77.740433][    T5]  __kasan_slab_free+0x3c/0x80
+>> [   77.742518][    T5]  slab_free_freelist_hook+0x1d4/0x2c0
+>> [   77.744892][    T5]  kfree+0x160/0x300
+>> [   77.746618][    T5]  blktrans_dev_release+0x64/0x100
+>> [   77.748821][    T5]  del_mtd_blktrans_dev+0x1c0/0x240
+>> [   77.751079][    T5]  mtdblock_remove_dev+0x28/0x80
+>> [   77.753246][    T5]  blktrans_notify_remove+0xa4/0x140
+>> [   77.755507][    T5]  del_mtd_device+0x84/0x1c0
+>> [   77.757541][    T5]  mtd_device_unregister+0x90/0xc0
+>> [   77.759764][    T5]  physmap_flash_remove+0x58/0x180
+>> [   77.762012][    T5]  platform_remove+0x48/0xc0
+>> [   77.764032][    T5]  __device_release_driver+0x1dc/0x340
+>> [   77.766393][    T5]  driver_detach+0x138/0x200
+>> [   77.768396][    T5]  bus_remove_driver+0x100/0x180
+>> [   77.770554][    T5]  driver_unregister+0x64/0xc0
+>> [   77.772633][    T5]  platform_driver_unregister+0x28/0x80
+>> [   77.775042][    T5]  physmap_init+0xc4/0xfc
+>> [   77.776994][    T5]  do_one_initcall+0xb0/0x2c0
+>> [   77.779028][    T5]  do_initcalls+0x17c/0x244
+>> [   77.781023][    T5]  kernel_init_freeable+0x2d4/0x378
+>> [   77.783269][    T5]  kernel_init+0x34/0x180
+>> [   77.785196][    T5]  ret_from_fork+0x10/0x20
+>> [   77.787135][    T5]
+>> ...
+>> full boot log link,
+>> https://pastebin.com/xL5MYSD6
+> 
+> I think this is related to an earlier bug that Anders reported a while ago,
+> see [1]. I had looked at it originally, and found that this probably a
+> device that gets probed from CONFIG_MTD_PHYSMAP_COMPAT
+> and then freed again immediately after we find the device does not
+> exist, starting with commit dcb3e137ce9b ("[MTD] physmap: make
+> physmap compat explicit").
+> 
+> It's not really the fault of CONFIG_MTD_PHYSMAP_COMPAT
+> describing a nonexisting device, but instead it's something in the
+> cleanup path.
+> 
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/backing-dev.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+Maybe there is more than one issue, but the fix I mentioned in my 
+earlier reply resolves a UAF which can I trigger on my system:
 
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 768e9ae489f66..5ccb250898083 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -291,8 +291,6 @@ static int wb_init(struct bdi_writeback *wb, struct backing_dev_info *bdi,
- 
- 	memset(wb, 0, sizeof(*wb));
- 
--	if (wb != &bdi->wb)
--		bdi_get(bdi);
- 	wb->bdi = bdi;
- 	wb->last_old_flush = jiffies;
- 	INIT_LIST_HEAD(&wb->b_dirty);
-@@ -316,7 +314,7 @@ static int wb_init(struct bdi_writeback *wb, struct backing_dev_info *bdi,
- 
- 	err = fprop_local_init_percpu(&wb->completions, gfp);
- 	if (err)
--		goto out_put_bdi;
-+		return err;
- 
- 	for (i = 0; i < NR_WB_STAT_ITEMS; i++) {
- 		err = percpu_counter_init(&wb->stat[i], 0, gfp);
-@@ -330,9 +328,6 @@ static int wb_init(struct bdi_writeback *wb, struct backing_dev_info *bdi,
- 	while (i--)
- 		percpu_counter_destroy(&wb->stat[i]);
- 	fprop_local_destroy_percpu(&wb->completions);
--out_put_bdi:
--	if (wb != &bdi->wb)
--		bdi_put(bdi);
- 	return err;
- }
- 
-@@ -373,8 +368,6 @@ static void wb_exit(struct bdi_writeback *wb)
- 		percpu_counter_destroy(&wb->stat[i]);
- 
- 	fprop_local_destroy_percpu(&wb->completions);
--	if (wb != &wb->bdi->wb)
--		bdi_put(wb->bdi);
- }
- 
- #ifdef CONFIG_CGROUP_WRITEBACK
-@@ -397,6 +390,7 @@ static void cgwb_release_workfn(struct work_struct *work)
- 	struct bdi_writeback *wb = container_of(work, struct bdi_writeback,
- 						release_work);
- 	struct blkcg *blkcg = css_to_blkcg(wb->blkcg_css);
-+	struct backing_dev_info *bdi = wb->bdi;
- 
- 	mutex_lock(&wb->bdi->cgwb_release_mutex);
- 	wb_shutdown(wb);
-@@ -416,6 +410,7 @@ static void cgwb_release_workfn(struct work_struct *work)
- 
- 	percpu_ref_exit(&wb->refcnt);
- 	wb_exit(wb);
-+	bdi_put(bdi);
- 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
- 	kfree_rcu(wb, rcu);
- }
-@@ -497,6 +492,7 @@ static int cgwb_create(struct backing_dev_info *bdi,
- 	INIT_LIST_HEAD(&wb->b_attached);
- 	INIT_WORK(&wb->release_work, cgwb_release_workfn);
- 	set_bit(WB_registered, &wb->state);
-+	bdi_get(bdi);
- 
- 	/*
- 	 * The root wb determines the registered state of the whole bdi and
-@@ -528,6 +524,7 @@ static int cgwb_create(struct backing_dev_info *bdi,
- 	goto out_put;
- 
- err_fprop_exit:
-+	bdi_put(bdi);
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
- err_ref_exit:
- 	percpu_ref_exit(&wb->refcnt);
--- 
-2.30.2
+[  674.333618] FAT-fs (sda1): unable to read boot sector to mark fs as dirty
+[  674.422877] 
+==================================================================
+[  674.430097] BUG: KASAN: use-after-free in 
+blk_mq_sched_tags_teardown+0xb4/0x12c
+[  674.437412] Read of size 4 at addr ffff001053f40100 by task umount/557
+[  674.443934]
+[  674.445418] CPU: 6 PID: 557 Comm: umount Not tainted 
+5.15.0-rc3-00045-g000f88ac8830 #420
+[  674.453502] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon 
+D05 IT21 Nemo 2.0 RC0 04/18/2018
+[  674.462626] Call trace:
+[  674.465063]  dump_backtrace+0x0/0x2b4
+[  674.468724]  show_stack+0x1c/0x30
+[  674.472036]  dump_stack_lvl+0x68/0x84
+[  674.475695]  print_address_description.constprop.0+0x74/0x2b8
+[  674.481438]  kasan_report+0x1e4/0x24c
+[  674.485096]  __asan_load4+0x98/0xd0
+[  674.488579]  blk_mq_sched_tags_teardown+0xb4/0x12c
+[  674.493366]  blk_mq_exit_sched+0x110/0x140
+[  674.497459]  __elevator_exit+0x38/0x60
+[  674.501203]  blk_release_queue+0x10c/0x1cc
+[  674.505295]  kobject_put+0xac/0x180
+[  674.508780]  blk_put_queue+0x18/0x24
+[  674.512350]  disk_release+0x64/0x90
+[  674.515836]  device_release+0x98/0x110
+[  674.519581]  kobject_put+0xac/0x180
+[  674.523065]  put_device+0x18/0x30
+[  674.526374]  put_disk+0x30/0x44
+[  674.529511]  part_release+0x28/0x4c
+[  674.532993]  device_release+0x98/0x110
+[  674.536737]  kobject_put+0xac/0x180
+[  674.540221]  put_device+0x18/0x30
+[  674.543531]  blkdev_put+0xe4/0x340
+[  674.546930]  kill_block_super+0x60/0xa0
+[  674.550762]  deactivate_locked_super+0x78/0x104
+[  674.555289]  deactivate_super+0x90/0xac
+[  674.559121]  cleanup_mnt+0x164/0x214
+[  674.562691]  __cleanup_mnt+0x18/0x24
+[  674.566260]  task_work_run+0xb8/0x1cc
+[  674.569918]  do_notify_resume+0x11a8/0x1abc
+[  674.574098]  el0_svc+0x6c/0x7c
+[  674.577148]  el0t_64_sync_handler+0x1a8/0x1b0
+[  674.581500]  el0t_64_sync+0x1a0/0x1a4
+[  674.585157]
+[  674.586639] The buggy address belongs to the page:
+[  674.591420] page:(____ptrval____) refcount:0 mapcount:-128 
+mapping:0000000000000000 index:0x0 pfn:0x1053f40
+[  674.601154] flags: 0xbfffc0000000000(node=0|zone=2|lastcpupid=0xffff)
+[  674.607594] raw: 0bfffc0000000000 fffffc00415ff008 ffff0017fbffebb0 
+0000000000000000
+[  674.615331] raw: 0000000000000000 0000000000000006 00000000ffffff7f 
+0000000000000000
+[  674.623065] page dumped because: kasan: bad access detected
+[  674.628628]
+[  674.630109] Memory state around the buggy address:
+[  674.634891]  ffff001053f40000: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  674.642105]  ffff001053f40080: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  674.649319] >ffff001053f40100: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  674.656531]                    ^
+[  674.659751]  ffff001053f40180: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  674.666964]  ffff001053f40200: ff ff ff ff ff ff ff ff ff ff ff ff ff 
+ff ff ff
+[  674.674177] 
+==================================================================
+[  674.681389] Disabling lock debugging due to kernel taint
+root@(none)$
+root@(none)$
+
+Note that my baseline includes recent block changes which would be on 
+next 20211021
+
+Thanks,
+John
+
+>          Arnd
+> 
+> [1] https://lore.kernel.org/linux-mtd/CADYN=9Kjw_3cDGAvh9=+nNwdYof1kUPKG-SUOP5FsQhZ+gz62Q@mail.gmail.com/
+> .
+> 
 
 
 ______________________________________________________
