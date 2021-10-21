@@ -1,84 +1,94 @@
-Return-Path: <SRS0=lu4o=PI=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=KyYR=PJ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C48FBC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 21:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D50DC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Oct 2021 03:44:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A3D9611ED
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Oct 2021 21:15:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8A3D9611ED
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 22CC060FED
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Oct 2021 03:44:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 22CC060FED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nxB0RyJ0i2DvVApSxZQaB6FQgtoLBbUp56toaw2rctE=; b=UxJR/o0cf6XgQn
-	PP5h1klaAcOfWlV1rqO68MUBBQ/myIzRyJhWMO7QnJaHOgzQ+kpqE6Q3QSayLPJ5NI6e+Y9gfaBA5
-	LtYhIFXT9Q5SqHkt1hVGBPMQP6IIJi+pYGnbufgdbLMKCGJXcUoju88pBtIgyafzsq0yQ3TRzm2LY
-	jcNip6URuhH7aWCnLnazygu0gJQZS0PBndSR0boKfG2qR04Q85neeRXNnZKGNSQtzmIo9xh3nLL7V
-	ttiAbEEWv7yN4dWHuMk+XHGlTRwOSa3ttkI6JJ+sWxUaLnr8lGdHa88bEtYuid3CzB4YXE49DMGox
-	hzeB8PYBgPCp4jMLwoxw==;
+	List-Owner; bh=xZrtRXvOwpcID4+rRgynmJEl5TdegrTObRKJZeq5kj0=; b=Scd3TKuaaKMYks
+	Uw4+rlzzLIJu8PFZEXD0RYCT5Z6v5tpkxrd4gXjccA7gKCRrd5llm1v/4QH0DsIs/4CWAEHt4dKZR
+	mikRVI0paG+a2e8HOMlH09NxKwNgJOqJIGBq93KAHGOOvDZY+kO4++gEXw5Qn84fD4Jrt5jPBndtb
+	BhT96aelNOmTpcuVuGcZvIHGy460n91SG8HYVQPo7p75JzcrsDw2v8vWGxtS32mee3nVgtKgD8eWf
+	evbRC+4n+59ojVor2VzsfTB5IvMdCTi247ARd0Xa6nftWzPup3YA16ZcpgwRjfXNL/0fwFvrIVsTC
+	AJiMNUhbUTTocvwru1zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdIvU-005o50-1t; Wed, 20 Oct 2021 21:15:08 +0000
-Received: from mail-ot1-f47.google.com ([209.85.210.47])
+	id 1mdOzQ-006KFK-0m; Thu, 21 Oct 2021 03:43:36 +0000
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdIvF-005nz8-7M
- for linux-mtd@lists.infradead.org; Wed, 20 Oct 2021 21:14:54 +0000
-Received: by mail-ot1-f47.google.com with SMTP id
- s18-20020a0568301e1200b0054e77a16651so9854024otr.7
- for <linux-mtd@lists.infradead.org>; Wed, 20 Oct 2021 14:14:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=dmICp/48/qSEs70Ri+eIX62qUssRgZltzHF+47kbHhk=;
- b=ohpmGKGyC7SOOfqKfIapa8SmwawuVI/LrJrWuUK9oHfzghT/BspJvMYSieDWkLtEXq
- +iI4j7rmhPDzoBW1ffqN/SLCzmR6vBfd+ZCKcRHe+zQQbdxpaxsafBSgJEQhaZRhqbf/
- LzLZpzL7oKJl6fkOP2sLA2Ke7n6oaUyP0t2dzOKNkXtzI4f6kJmzxDZirlgVVNXtK9U4
- Bd8YGdFgdlvOEKgKlK+fU+tpUeeIOv9YMx40feP8x/uX88dFv9irZ0c6bLfMXmtyc/v4
- kcsKmgR2MxHgCvHGLRxvRi2DoFhXmtXHv4y7WGB6BitwtrmQV/PqxC+L67ms3fT1iTrD
- AndA==
-X-Gm-Message-State: AOAM533/gz5GTZQvcNbkgltVDm4o/Um0SnAfXX7Xfs0Vwq92Er5SOEjf
- kDam3UZUmzXm2msL/T17nA==
-X-Google-Smtp-Source: ABdhPJzFQpY139+LDDMM4EG73vjZiHXnA+KX2/jVPuaZ0J/OUKjeaw7YvzggrjVYGN3KqAOf2IVyhw==
-X-Received: by 2002:a05:6830:236b:: with SMTP id
- r11mr1333531oth.145.1634764492353; 
- Wed, 20 Oct 2021 14:14:52 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id n187sm639709oif.52.2021.10.20.14.14.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 Oct 2021 14:14:51 -0700 (PDT)
-Received: (nullmailer pid 2962587 invoked by uid 1000);
- Wed, 20 Oct 2021 21:14:47 -0000
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- Julien Su <juliensu@mxic.com.tw>, linux-spi@vger.kernel.org,
- Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
- Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20211020142809.349347-5-miquel.raynal@bootlin.com>
-References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-5-miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
- description file to yaml
-Date: Wed, 20 Oct 2021 16:14:47 -0500
-Message-Id: <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
+ id 1mdOzM-006KDT-Em; Thu, 21 Oct 2021 03:43:33 +0000
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+ by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L345vU029738; 
+ Thu, 21 Oct 2021 03:43:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2021-07-09;
+ bh=BSjTWby1MMCLQUchrOSGc4QoXnzcMZ91l35lRX12C+A=;
+ b=s10GXTgGaX78Zmg+DOSDrfc0P0mwy8l94S/NZcyOPTkKyIMY2Y0KlCwxCAx31besDrcr
+ gXfw3fEKtGCdejoVtEWUD00kuevcL/euKQ1b4LL0nm4E8CV6SIOFqCYP0rxj7RC74EVk
+ e1PqokwRndi0pkrqAVruOVLwEN5l5viuqDFrINzci/HP18Znfe79FD5iVhadUThPY2uw
+ odRGpVz8brO185YsW3tTaXuLihuEjMaflid8MLFI6u/8vn+luvxy/mDr7zofRsdPscVh
+ mNLR9sg3Koj94WqKMhqpn6d0kreDZqZeu97CD8yHp5SK3EUYUYKj0bD7U5PsVZFWhw4s kA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+ by mx0b-00069f02.pphosted.com with ESMTP id 3btkwj3wvw-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 21 Oct 2021 03:43:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+ by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19L3etve078225;
+ Thu, 21 Oct 2021 03:43:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by aserp3030.oracle.com with ESMTP id 3bqmshem6t-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Thu, 21 Oct 2021 03:43:08 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+ by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19L3gu8A082116;
+ Thu, 21 Oct 2021 03:43:07 GMT
+Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
+ by aserp3030.oracle.com with ESMTP id 3bqmshekyd-13;
+ Thu, 21 Oct 2021 03:43:07 +0000
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+To: zhuyifei1999@gmail.com, thehajime@gmail.com, hare@suse.de,
+ jinpu.wang@ionos.com, jgross@suse.com, johannes.berg@intel.com,
+ geert@linux-m68k.org, linux-mtd@lists.infradead.org,
+ miquel.raynal@bootlin.com, axboe@kernel.dk,
+ Luis Chamberlain <mcgrof@kernel.org>, jdike@addtoit.com,
+ kent.overstreet@gmail.com, richard@nod.at, colyli@suse.de,
+ agk@redhat.com, haris.iqbal@ionos.com, krisman@collabora.com,
+ roger.pau@citrix.com, anton.ivanov@cambridgegreys.com,
+ sstabellini@kernel.org, ulf.hansson@linaro.org, vigneshr@ti.com,
+ chris.obbard@collabora.com, jejb@linux.ibm.com,
+ boris.ostrovsky@oracle.com, tj@kernel.org, snitzer@redhat.com
+Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
+ linux-um@lists.infradead.org, linux-block@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ dm-devel@redhat.com, linux-bcache@vger.kernel.org
+Subject: Re: [PATCH 0/9] block: reviewed add_disk() error handling set
+Date: Wed, 20 Oct 2021 23:42:44 -0400
+Message-Id: <163478764105.7011.9400354892813636458.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211015233028.2167651-1-mcgrof@kernel.org>
+References: <20211015233028.2167651-1-mcgrof@kernel.org>
+MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: BAR8nzodBeKYX4DEPTjC7SU079lshTb2
+X-Proofpoint-GUID: BAR8nzodBeKYX4DEPTjC7SU079lshTb2
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211020_141453_287396_4D69A8FF 
-X-CRM114-Status: GOOD (  14.26  )
+X-CRM114-CacheID: sfid-20211020_204332_509227_CEFC1CC8 
+X-CRM114-Status: GOOD (  14.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,55 +100,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
-> Let's get rid of spi-nand.txt by converting it to yaml schema. While at
-> converting this file, let's actually pull all the generic properties
-> from nand-chip.yaml which might apply to a SPI-NAND chip.
+On Fri, 15 Oct 2021 16:30:19 -0700, Luis Chamberlain wrote:
+
+> Jens,
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
->  2 files changed, 27 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> I had last split up patches into 7 groups, but at this point now
+> most changes are merged except a few more drivers. Instead of creating
+> a new patch set for each of the 7 groups I'm creating 3 new groups of
+> patches now:
 > 
+> [...]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Applied to 5.16/scsi-queue, thanks!
 
-yamllint warnings/errors:
+[1/9] scsi/sd: add error handling support for add_disk()
+      https://git.kernel.org/mkp/scsi/c/2a7a891f4c40
+[2/9] scsi/sr: add error handling support for add_disk()
+      https://git.kernel.org/mkp/scsi/c/e9d658c2175b
 
-dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
-make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1441: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1543922
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
 
 ______________________________________________________
 Linux MTD discussion mailing list
