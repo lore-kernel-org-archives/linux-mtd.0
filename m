@@ -2,64 +2,77 @@ Return-Path: <SRS0=wahI=PK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D5D4C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:08:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18373C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:11:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4EB8B60249
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:08:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4EB8B60249
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id D04D1611F2
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:11:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D04D1611F2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5io56Kdam+rm+A9ONca0QtoQwI49qu+l+2FYQVNGtvM=; b=HajgIyrOWhM+G9J2zKG7NydcAc
-	YciYuKgg1P9K0R2ffmOMImVGPuebqItyuuihd4ZYUHw5arfqLITkZVYV9xys6PrPlSvWAigCII6Rh
-	gzxStvNRFFMtWtse0qP9m/sc1xdUTx+F3rIXzAFoIC8xNNUrrqfhiVqHoCFjy308mvi6j39xC65Uo
-	NQVDiLZnddplPqHF/IW4Xnz1mYa89OHz5xolgDrFUxYSC9otEllgjQnEEfaR63EO4PZ9dj/dVEtka
-	2y/l5mMTDO9FA0IuhP0DeOPR58Gz4P/6PF7FfSSFc/LHXuZIpL7LB2geRhhQIrP3ozijVxErTzdbR
-	YixnHjiQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XZhx4C+CPMjl3vCtKq9f/TeoYmnwK7fgKNl9HvlenYo=; b=FiVzjdnJ7A10Lg
+	4SdL/aO8EpZ08arN2PGn1Y9373c/m+na1dLDiGd1w4CYl5wykhoZMiVfQkG4bBTRUU2nexUHxghMX
+	G0ldJKqPERaJmTQkrAMTOGJjDQFkvChShEP97rLlKicGoEuuXhknnGitqqsDaevtBpw7UeBt3G1s2
+	e1g7DkLUGLxqNwIeNORodaHuBOR25NrQ9u1aY8bEhUiphnDrJQLuxmbYGoOW6ywKhZXGKwgGeckcC
+	4Px8JW3Z4FbHyVlrf299MFAqImtrTMrln57MUkG4oMJCwg8JY2hRxnXr1hsWkhLjmbF357mx2Nr6A
+	kBMcqKEgfRddaSQB0mdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdtKe-00Alt8-Ux; Fri, 22 Oct 2021 12:07:33 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mdtNo-00Amq4-Jh; Fri, 22 Oct 2021 12:10:48 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdtKO-00Almw-D9; Fri, 22 Oct 2021 12:07:17 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 152AC221E1;
- Fri, 22 Oct 2021 14:07:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1634904433;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=VJp9xk8Y6l4kfOWVSVljpS9QfBsuvhmUrD8MhgkcCoQ=;
- b=RS0hgIsw/OV2wl4PDNkafYUp928q3Rry3l605JCNQNC3YFRgZBYy6OBK/AUONyibRJY9I/
- vp2hvvROISKhC17o7WhF2VMQdWQxGsQW4A7uxo6cJYlCEw78T00JMq0oURnoq4clrXmufc
- /rdOaOr2u3BDd71EPTJ5M+1VcnHKfvo=
-MIME-Version: 1.0
-Date: Fri, 22 Oct 2021 14:07:13 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2 24/35] mtd: spi-nor: core: Fix spi_nor_flash_parameter
- otp description
-In-Reply-To: <20210727045222.905056-25-tudor.ambarus@microchip.com>
+ id 1mdtNm-00Amoe-6D; Fri, 22 Oct 2021 12:10:47 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19MCAEND110426;
+ Fri, 22 Oct 2021 07:10:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1634904614;
+ bh=NN6RuxeOoSnQqGsiaIc8oeHSON4ia+KScZNp/QEIULU=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=aMnq7qPkHNr3Ao7WqP9x8X/hcnC5r53H//ycOro0sjjpX2M5NsMwSk2sKU8UBoKHe
+ 9+fMHVix3Cxyb/g9YyzGP5OdL1BqZdOYgvlzd/Ihp+NHCtGj0+hPbeC8AITs4HBHK/
+ c4NXRPMb3iM3iiMKPIap+DbnpewQN1e6MLaceogs=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19MCAEXD066620
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 22 Oct 2021 07:10:14 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 22
+ Oct 2021 07:10:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 22 Oct 2021 07:10:14 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19MCADIt124786;
+ Fri, 22 Oct 2021 07:10:14 -0500
+Date: Fri, 22 Oct 2021 17:40:12 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH v2 17/35] mtd: spi-nor: Introduce
+ spi_nor_nonsfdp_flags_init()
+Message-ID: <20211022121010.mzul7qsxi6s4ru2w@ti.com>
 References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-25-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <31cf795a9c93ee3dc5fb23f15d32ca41@walle.cc>
-X-Sender: michael@walle.cc
+ <20210727045222.905056-18-tudor.ambarus@microchip.com>
+ <20210817102429.kmhuef5hxumllxjj@ti.com>
+ <4af8b3edebbe398dff1f8ef0bb98f2bc@walle.cc>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4af8b3edebbe398dff1f8ef0bb98f2bc@walle.cc>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211022_050716_634340_DC38068F 
-X-CRM114-Status: GOOD (  12.37  )
+X-CRM114-CacheID: sfid-20211022_051046_418539_7DE3063D 
+X-CRM114-Status: GOOD (  19.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,55 +84,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+Cc: macromorgan@hotmail.com, vigneshr@ti.com,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, jaimeliao@mxic.com.tw,
  richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
  knaerzche@gmail.com, nicolas.ferre@microchip.com,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
+ sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-07-27 06:52, schrieb Tudor Ambarus:
-> Update the description of the otp member of the
-> struct spi_nor_flash_parameter.
+On 22/10/21 01:21PM, Michael Walle wrote:
+> Am 2021-08-17 12:24, schrieb Pratyush Yadav:
+> > On 27/07/21 07:52AM, Tudor Ambarus wrote:
+> > > Used to initialize the NOR flags for settings that are not defined
+> > > in the JESD216 SFDP standard, thus can not be retrieved when parsing
+> > > SFDP. No functional change.
+> > 
+> > I am worried if the order in which these flags are set can cause some
+> > subtle bugs.
+> > 
+> > I can see one instance of it with SNOR_F_HAS_LOCK.
+> > spi_nor_late_init_params() checks for SNOR_F_HAS_LOCK and if there are
+> > no locking ops specified, it sets the default locking ops. This works
+> > fine before this patch because the flag is set before the function is
+> > called. But now, the flag will be set _after_ the function is called,
+> > and so you will never be able to set the default flags.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 7fb0cfabe85a..501d9212ba9b 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -250,7 +250,7 @@ struct spi_nor_otp {
->   *                      higher index in the array, the higher 
-> priority.
->   * @erase_map:		the erase map parsed from the SFDP Sector Map 
-> Parameter
->   *                      Table.
-> - * @otp_info:		describes the OTP regions.
+> Maybe we should just forbid to look at the SNOR_F_ flags in these
+> functions. Instead the information could also be deduced by looking at
+> the SPI_NOR_ flags.
 
-whoops.
+TBH I never quite understood why we have two sets of flags in the first 
+place, when the SNOR_F* flags pretty much mirror what SPI_NOR* flags 
+mean. Dunno...
 
-Reviewed-by: Michael Walle <michael@walle.cc>
-
-> + * @otp:		SPI NOR OTP info.
->   * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
->   * @quad_enable:	enables SPI NOR quad mode.
->   * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-> @@ -262,7 +262,6 @@ struct spi_nor_otp {
->   *                      e.g. different opcodes, specific address 
-> calculation,
->   *                      page size, etc.
->   * @locking_ops:	SPI NOR locking methods.
-> - * @otp:		SPI NOR OTP methods.
->   */
->  struct spi_nor_flash_parameter {
->  	u64				size;
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
