@@ -2,14 +2,14 @@ Return-Path: <SRS0=wahI=PK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCD9CC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D5D4C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:08:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9EFC961052
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:02:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9EFC961052
+	by mail.kernel.org (Postfix) with ESMTPS id 4EB8B60249
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:08:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4EB8B60249
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,48 +18,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HJaWTGjRs96flmJaItbCjSiQB/ISVjZ0kGXKOtTXZw8=; b=CLzm2jQzZaCW5if2LPf/Ht2V5J
-	jHAYxMvoKtX64QbGxIwQHV+jOF52KdNR2pwJ5FqM0YJMaYOm18gMDN1FpUJZpodG3Pw5BfPF/uWwS
-	67wY43KqW70oqmc3k0QTKdLWlj8G5FvTjZIoCSkL8um8YiVM4wlhaTX6X/uMIKN1UughfSYwal/qL
-	lQ0ZeNQzq0upjwtutQTleU9b0fHTrNQ/hBL36M91eJiVT+fhHrSeK17cWnrpXCERe5+G73bKIRWeJ
-	LZfggHRPvINyfez9t7y0QzIlAZL9b8DRryeOUSS8wZyGfd01IrF1IQ53YF3BMBoTRGgsxPnJ18yah
-	0B7qH8+Q==;
+	bh=5io56Kdam+rm+A9ONca0QtoQwI49qu+l+2FYQVNGtvM=; b=HajgIyrOWhM+G9J2zKG7NydcAc
+	YciYuKgg1P9K0R2ffmOMImVGPuebqItyuuihd4ZYUHw5arfqLITkZVYV9xys6PrPlSvWAigCII6Rh
+	gzxStvNRFFMtWtse0qP9m/sc1xdUTx+F3rIXzAFoIC8xNNUrrqfhiVqHoCFjy308mvi6j39xC65Uo
+	NQVDiLZnddplPqHF/IW4Xnz1mYa89OHz5xolgDrFUxYSC9otEllgjQnEEfaR63EO4PZ9dj/dVEtka
+	2y/l5mMTDO9FA0IuhP0DeOPR58Gz4P/6PF7FfSSFc/LHXuZIpL7LB2geRhhQIrP3ozijVxErTzdbR
+	YixnHjiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdtFV-00AkJe-SW; Fri, 22 Oct 2021 12:02:14 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1mdtKe-00Alt8-Ux; Fri, 22 Oct 2021 12:07:33 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdtEx-00AkB0-Sj; Fri, 22 Oct 2021 12:01:41 +0000
+ id 1mdtKO-00Almw-D9; Fri, 22 Oct 2021 12:07:17 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id BE094221E1;
- Fri, 22 Oct 2021 14:01:35 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 152AC221E1;
+ Fri, 22 Oct 2021 14:07:13 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1634904096;
+ s=mail2016061301; t=1634904433;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fhiVqGqa0ytdgEyzH7Oi0o/maMbcrwGvXZyeC1cWWUQ=;
- b=th7DLnnLKhiaf/s28emEx+ra3sqw9K/sQidtVaAWFRh6FZH+S1lTNAP4TLVOiBi0+VParZ
- 8p4rRix9oN+2lCujubqQaiLdgOuLel4r6qRrzT3joSt981WnZ/pX1w8orrsln5F165tuyv
- PQOJU4RTNHC5nPqjG7OR/EIpSu85xsk=
+ bh=VJp9xk8Y6l4kfOWVSVljpS9QfBsuvhmUrD8MhgkcCoQ=;
+ b=RS0hgIsw/OV2wl4PDNkafYUp928q3Rry3l605JCNQNC3YFRgZBYy6OBK/AUONyibRJY9I/
+ vp2hvvROISKhC17o7WhF2VMQdWQxGsQW4A7uxo6cJYlCEw78T00JMq0oURnoq4clrXmufc
+ /rdOaOr2u3BDd71EPTJ5M+1VcnHKfvo=
 MIME-Version: 1.0
-Date: Fri, 22 Oct 2021 14:01:35 +0200
+Date: Fri, 22 Oct 2021 14:07:13 +0200
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2 23/35] mtd: spi-nor: Get rid of nor->page_size
-In-Reply-To: <20210727045222.905056-24-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v2 24/35] mtd: spi-nor: core: Fix spi_nor_flash_parameter
+ otp description
+In-Reply-To: <20210727045222.905056-25-tudor.ambarus@microchip.com>
 References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-24-tudor.ambarus@microchip.com>
+ <20210727045222.905056-25-tudor.ambarus@microchip.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <585e8c1efafd4220f3b3e09c2396417a@walle.cc>
+Message-ID: <31cf795a9c93ee3dc5fb23f15d32ca41@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211022_050140_116804_CE99F052 
-X-CRM114-Status: UNSURE (   6.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211022_050716_634340_DC38068F 
+X-CRM114-Status: GOOD (  12.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,24 +83,43 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2021-07-27 06:52, schrieb Tudor Ambarus:
-> nor->page_size duplicated what nor->params->page_size indicates
-> for no good reason. page_size is a flash parameter of fixed value
-> and it is better suited to be found in nor->params->page_size.
+> Update the description of the otp member of the
+> struct spi_nor_flash_parameter.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 7fb0cfabe85a..501d9212ba9b 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -250,7 +250,7 @@ struct spi_nor_otp {
+>   *                      higher index in the array, the higher 
+> priority.
+>   * @erase_map:		the erase map parsed from the SFDP Sector Map 
+> Parameter
+>   *                      Table.
+> - * @otp_info:		describes the OTP regions.
 
-..
-
->  		/* Flash in Power of 2 mode */
-> -		nor->page_size = (nor->page_size == 264) ? 256 : 512;
-> -		nor->mtd.writebufsize = nor->page_size;
-> -		nor->mtd.size = 8 * nor->page_size * nor->info->n_sectors;
-> -		nor->mtd.erasesize = 8 * nor->page_size;
-> +		page_size = (nor->params->page_size == 264) ? 256 : 512;
-
-weird stuff.
+whoops.
 
 Reviewed-by: Michael Walle <michael@walle.cc>
+
+> + * @otp:		SPI NOR OTP info.
+>   * @octal_dtr_enable:	enables SPI NOR octal DTR mode.
+>   * @quad_enable:	enables SPI NOR quad mode.
+>   * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+> @@ -262,7 +262,6 @@ struct spi_nor_otp {
+>   *                      e.g. different opcodes, specific address 
+> calculation,
+>   *                      page size, etc.
+>   * @locking_ops:	SPI NOR locking methods.
+> - * @otp:		SPI NOR OTP methods.
+>   */
+>  struct spi_nor_flash_parameter {
+>  	u64				size;
 
 ______________________________________________________
 Linux MTD discussion mailing list
