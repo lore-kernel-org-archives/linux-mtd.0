@@ -2,173 +2,145 @@ Return-Path: <SRS0=wahI=PK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B42AC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 13:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A36DC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 14:36:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5485561163
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 13:35:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5485561163
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2FA2B60EBD
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 14:36:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2FA2B60EBD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CIOKhAdJE4jIzC5jCQSrZAY7gXftvvwOgysUr1MpUJ8=; b=NiQAWVfG1R/9lm
-	RQ0/KNJRqGGHcG5oMwMiMY39Bl2GYhg/sco8pHWJkQZEZecXRIN0oCaAzHjL9v1NRO3z6RLjwES2r
-	NRgGqG+MQMTO6QzS50yLCrl7qwsw5cmA3spSJ1wstYvLDpbtaqAb7NgFqEn1G2pKXA1Grfdb7bP4+
-	jyMpp85j5hCusQLEyZBNmqKVoMnpuKNLYl0g6EbuNravZH5tQRvMAtdutw521ilGmr9nnDx/SJhgH
-	VzTcLNyDxspqpg3z3TtW7Ad/d3byoG1CgW68jLe3OPh/uDa2kdBzss51p+wYMaTbsYL4SGrpFQeG3
-	GmGy8mDtPn44zKCyZgqw==;
+	List-Owner; bh=zEc/gN0+VknyDTB+eU4L+ry/H/Zai/bO0gXoYXIpwfc=; b=M82ZpZRQU5I98r
+	g1SAiXwjlysa40oDo/f+9Yp8PPduNdgVCgpBf/8j+QvwPN6fn1AY7AuaTZbLgaX7vxoCTQPFhXOJG
+	0JwG1XD0tuGAGmv30/rzmOiHtSQCvRy52BA+yHicQmYrhKcuqw7x2HYnHR4MZaVwq3jNOsHjr3ssu
+	jdGN2msedthwsZcYwAqz2YJgugqLmnTQRIelFMTv9PpRcKmyZpjZfxBPg98JUryc1QVgdC3LobZjw
+	GblK0UJhKj10N4Lv//eI7Podl8mzKSUBl4ewE6pFlle6zWRGU/Irv4elsvHK7BHEEQuuijXf3Qg1A
+	pnbxZ2pI515qMLYTJklQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdugc-00B7Lk-69; Fri, 22 Oct 2021 13:34:18 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1mdvdr-00BIEH-Qw; Fri, 22 Oct 2021 14:35:31 +0000
+Received: from mail-am6eur05on2081.outbound.protection.outlook.com
+ ([40.107.22.81] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdugW-00B7Ka-Fh; Fri, 22 Oct 2021 13:34:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1634909652; x=1666445652;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=rPkwvl6FacghV/ZoCmvZnJVT83yAMoUcz3VpyQ6xo10=;
- b=y6kbD4D6mH1s+GRxLMXtqHRdCXLENxcX6CjN3O/Qo9F7WCEozURvqJEe
- uhy1JFfPPuIC8cxmbVeioPt2q5pDZH4HF0FB2KivUjj9YJf67PFHCtXOW
- 6r5KNpQTTeqtNwfNb9Fe9jv4Tp8wMw90JRd1DP5tMRgVm1Rr66JYLY28z
- V0XQAqhpkfWd9/77oqFe0V75qberdWVZI1IAVnFderE5MdnPDENs76t3G
- pgMkl2gFV83hke/6YsihG4CkkV1OwuFN8sGJk3A/C3xq9mzcaVIyxPOZk
- ZnFM37scsEOizeQhF4/W58Ux3EfMgNeR5Nl35lFZQaMz7MnkfdysQDGdz A==;
-IronPort-SDR: mLf6tdFZqMphm5GU8v+IAPbIIIIHcsVlQEz94oyrZvSPAm1wPit76nLudRypWXI8tjcZ790Q4e
- DwCCD7nmnEofI6QDvSVADZyediDpTzMqh1vN8IfzgCVphbM14yoaGNPLW9d3131T0/0G8N4nIJ
- p0I8cBH1bsx3O9Sn/KFAiM1UamuKo++/Z7dEulk2ilERo//K4GXNHs2KWirJC3FjfhU4Bhb6b2
- m+ECqDO6nh7gUhw+fVVhmI5EqVkEx2Y93CHS1u5GvhR4lc0pLPqbAX8C2c1s3S2MezSZmHYIw7
- BGuU46Z3geaRNzsKUwDe9dJP
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; d="scan'208";a="141351425"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 22 Oct 2021 06:34:11 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 22 Oct 2021 06:34:11 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14 via Frontend Transport; Fri, 22 Oct 2021 06:34:11 -0700
+ id 1mdvdo-00BIDg-D5
+ for linux-mtd@lists.infradead.org; Fri, 22 Oct 2021 14:35:30 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ylix5oqkWqF3sXmm7q3Ss0mM247okOShOSq041vH/u96YtkiHpbtNZJ6N6ZkfqZey1u4S0SDhbfgG6Ah7ZCwRQHwF1GjEYLpdmee/pO9MMQXdaPfFRF0nO71d1FzRTubHO2tFo2XFRnpMIAgoqH2Bx0wKQrCQb38p6vta80hnWk125afhv2Y7wE4b/VDkqtxGFDGztiJyasa1/1gq+iWCs6BuyY0Sb4BsM98de8+WROId8A3IG/Yp3ztGawBhZM7MYOZKRiIBi2qog/xSo7m33iY5VXjUmlVGDHDSUIwMg1L9qq1QhOapQ98Gcjjn/B3K3VA4zniLicRaDgVN/aAHQ==
+ b=A4JR3vdIpgsV2wm6tB2ateVGh1R2fMIZCsSOxFvRsafYO+rxEDyMyGnCF/mKgumrC2tH57T+lZZ1Ba33Yq2sJfXBngOd7scnlzCdYcd1vKDntaoUasUcbbI9a+0H5OMSThACIdmghS1dpOvu7d0/sR+wM6Lj6C4yBHfn40EO/RNPFukJ7ENj7fawPC3Dcr0H2efoA1sGT9G7VIdOg0fPVvaISf4Ku/4bsZqjHPLxAgRdapGh2ucwTxJlji+pTOdKGgy2ui0KT1AjGumkOpOCXwZHnyOfu/RXl1x5sqbnNhrDvlSyrPK92TTZsj32zSrLkqSWpNGK2iyX4yritpJeaA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rPkwvl6FacghV/ZoCmvZnJVT83yAMoUcz3VpyQ6xo10=;
- b=PY1sL9IIRSgjO9K9XK32vWd33hRmHgNIZf3135qHDHgflRL7iOXhVPq0Ye4cF7RBrAd017P5I1qnW8DeW8S6cEpj2HtTPEEeVR9eZSemt9JY5cobeNeLaSlc8acMsC2UdIN3e7ZXGDobxWwXK4maRSriD1fh4wU62Y2obn/ZfjZEBhZLZZaujfAo0yeXOXKIi/RL+M7+VTvHNAMQ4sJW8nEl7r6dyhjv72G44dVlppwuGWXSTHGkPVlAdZOGvuJB6u8ttKy6lh+xNpH7kJ1PuJswfPWtBOB+BLNNzBTMpTKpcPWcHPbpfoyuqzn5pRSWKlhLmrKSwkDUBnC+bRAUUA==
+ bh=naE9qEWIpt22LZySiJKDW6iIulS2tb1k8eFn80P7efo=;
+ b=drjeKGeOyJSNuYXOjQSzfkrHuWdhUfqtNmG0yaAH4ptlB7Y01xlBvFy+ZDRQweqJuz2URY7IE3nP/FRWI3fh38y2EfSctMf4cs9oq3MY5yq05H5tyZ1M4wPJ+PobkILcS8OQPKgA7WGwDHWFS6Xpdn0svxbo9HN9Hk7RPxpn8I5RQNUQVhDEcJjUN0+uFcmnyHFJrJJZuPt1vvDXvT0WhEgkPXpmh/PZm516a0Bj2ilqIA53xP30sOntErJDEuTUcac+PbJJKdy2I+IMoejrLWeSVU0RN5MCJstmbCvfTXEp7jFaFbHLG+X8lIzcjpV+00j/vhamgR8glqoPO8RGMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rPkwvl6FacghV/ZoCmvZnJVT83yAMoUcz3VpyQ6xo10=;
- b=Dyup8z/e1txRsM0Ja90YQKjka9zB6EvArCnvIKf+4Ejor3kdn6jg0P3uE7EuVLfvNEsilPKJYsBz94NzLIBC2Ir5bi8fv6e98YNqPOp7Q/TfoDIonruJBCxB1R6vJIBJgeEacDyw/EcSMEIGb8TmAAOkbwPl8L6WZGjnGGU/Yls=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SA2PR11MB4794.namprd11.prod.outlook.com (2603:10b6:806:f9::11)
+ bh=naE9qEWIpt22LZySiJKDW6iIulS2tb1k8eFn80P7efo=;
+ b=iKEzBpKbKv3FBBed1p8032KaX6UBURc1L14hx0DzF90nipNOBXrZCnOCzV1vCSGJavryIdSGQ5RKwyX4S9+tirgSLjYUzHUu55452v16oEH1R3pDQw/6j82uJKSRrkT95eHGffI80HFWvznmZYCU3NQoeW8OnQBV3WIgfjfuNAc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
+ by DU2PR04MB8551.eurprd04.prod.outlook.com (2603:10a6:10:2d6::19)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
- 2021 13:34:02 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::38e9:ee20:d712:2fd8]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::38e9:ee20:d712:2fd8%6]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
- 13:34:02 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>
-Subject: Re: [PATCH v2 22/35] mtd: spi-nor: core: Use common naming scheme for
- setting mtd_info fields
-Thread-Topic: [PATCH v2 22/35] mtd: spi-nor: core: Use common naming scheme
- for setting mtd_info fields
-Thread-Index: AQHXx0N5rlK8gQtwg0iBL129ZDcJxg==
-Date: Fri, 22 Oct 2021 13:34:02 +0000
-Message-ID: <cb4ffd6f-1f68-1f29-c648-c464d5c8eef6@microchip.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-23-tudor.ambarus@microchip.com>
- <4c0ac0a3efa3075e77260185767c8554@walle.cc>
- <7d264652-abcb-b317-7745-36995deff003@microchip.com>
- <9c08f234068d328dd229893e836cda60@walle.cc>
-In-Reply-To: <9c08f234068d328dd229893e836cda60@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2c20bb53-8ee5-419a-198e-08d995609c4a
-x-ms-traffictypediagnostic: SA2PR11MB4794:
-x-microsoft-antispam-prvs: <SA2PR11MB4794653DBE976477F613B140F0809@SA2PR11MB4794.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4I5EmOGwnvLue2BCLnY5Gwx2qKwEln0Sl3ZYaoDICnVKH0052Qm91aeENWGqMaL5GZmXRLvJyuGitGxVxMD9ETXMlaFtcfzMkvLavByM9zxm55ZyZN5JQQPT2J/kT8TK8I8j2qAAOeVGTEeF4wDUfQpMCXE0fAzbcGAmCQgCNetm0Mo/xzE9YSRQE+e8MrPc9PYpzASHDsPaC5pYVLvw551pn5/jTP6oQ0eRgZRRNZSdnkqClPuA/uU10ZsgRNbBGhEfupxvFV1c5zFhHCIPmI1sX0tF1Ham80GFbs3qWF1gJXxtp9/O8g9QcGQ5ofdwoQhoiPcG2cCWqldNJhIfsb9ds1ET6rFB93VypEHq2NPm/jY1kgtbfrlQpIVZP9l6LYYVyPtC1SacD93oOvVPXjYVYo4s0ckYaVt3Av054KQkmOnH66LXUREt2QRy6C57DEQcSDOE+A7A/wbDuYSgGo/W9w34WzKCCG3gLP65VWugf0snsvg9jHOKja2R9pORmKYpaAfn309o1Glxzu6312NLTF5UIDo28J5CzvaZD49HQrPf88QPXM65BHr9mtj3vH3IGM9Wc1KRN35JKpMmTUDzGaektg1eJrp0M0DKNakUz/hKSMM0A+84PMjtGiQACphaDSRv2dFpnljPKnA+DbahNhTHrr1OWVfW/gU67/B4aFTvezB5Qv42so19eJh8n3Ap96+0bEJmBt9jS6ZISC5ywOXFqi/kEMWAO/XNbT3U3KqIdVeaCsNwpgbyOt/CbHbKNQEJNNMwr7lcv+6Ovg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(31696002)(4001150100001)(66446008)(64756008)(7416002)(5660300002)(86362001)(38100700002)(2616005)(122000001)(36756003)(31686004)(53546011)(2906002)(6506007)(186003)(26005)(4326008)(76116006)(508600001)(6486002)(71200400001)(6916009)(66476007)(91956017)(38070700005)(8936002)(6512007)(8676002)(316002)(66946007)(54906003)(66556008)(107886003)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NzZIaVhBekVMK3M5Z1d2L1BMR084NTU2OXUxY3ovejJ1TW9vT0hHenJMR1lV?=
- =?utf-8?B?RmVVNXQ4YXJDUWVnUU1ScUdoVG1CT2Q0RHkyTy9sbTN5Q1orMjV4MEZ4cXc5?=
- =?utf-8?B?UEhVSTRETjIxRjkybUJ0b01LNnFNRE1pRUI2S3cxeklkZStrUU56NnVCbFdK?=
- =?utf-8?B?RWlQejVwQjE2c2k2ZnlxOCs0M2F3VnlGYm5hQ3V1cU1hUXNVL1pQZXBCZkV1?=
- =?utf-8?B?NkpOQ2ZTZUVyYTIzQnRLSHhTUGFQdzNsaHhzSlFQd2hTdFA3WTNWd1dmc0Yr?=
- =?utf-8?B?MnZpWW5KM01LUFNiKzZ2cmxTM3BsSXVVd2M4M3EvczFuWjBkUlI3SXlpbVdW?=
- =?utf-8?B?ajdQSTFCOXE1clVjNkFRWFMrYXJpYWp6OXk3NmU5WDdlL3BIaytqeWNlMlRx?=
- =?utf-8?B?UVZrcDFyalIyUWYwbXpobGNmdERzcS9xVGt2cUprWGhmdlBaV2plR01lbkdS?=
- =?utf-8?B?Y1ZwbGZBemw3RHJxQmE2cFY0Q3V1YnNJVityRE4wMGtNc1l1TjNUVitwUzJQ?=
- =?utf-8?B?aldSVUpFMUN0ZFhvcGpYWWl5OWIwVXNNT3BNZG9YT0FSQVR0THNmejJkWEJJ?=
- =?utf-8?B?SWJaa1ZBU0lGVW1TOXR3WlVMb21GT1EwZENWL1FUM2R3czZQOUY0aW1RdGtZ?=
- =?utf-8?B?YkZ5RGpidG1rZkQ0bmEzT0dFcUxqL1Y3aVBGS2ZaUnBleE0xWjlEWk9yRVBM?=
- =?utf-8?B?QUJtaVZReTBkd24vMjVVeGtqdjJua2xFZHRyeGVMUXJOMVlxVTd6T21TSXlN?=
- =?utf-8?B?ZEIxLzUrblJrUUhaSUVWdUN1S2FaTWdEclJUUzJKamU0SGxTTm16TG1BaWFQ?=
- =?utf-8?B?UnJlYUIrY1VvZTFWSkE0dk9zWENTNS9QNml3VUR5SlNoTU9UMWxCVFJkcW1r?=
- =?utf-8?B?c1hvL1BxYXRtSFgxWWs5U1lNWlNROG5MczNjZkhHUHdBZ2QwQ2szdVp2TTFz?=
- =?utf-8?B?a0NTcVFVUkVBc1RRTXV2K0MrcEZPeUVyaXIyZHI2RE5KbmN2N0ZvTXlZMUMw?=
- =?utf-8?B?MGh4cnF6UUZTWjkrSGxMYVJhRWFFbWZ2SklxbmxiZ0NrcElDMnNaRXNPLzBE?=
- =?utf-8?B?NDg1ZzRWOGllK0dvL2RKbXFLVjNTcDM1T0dXU1BNWVhheXlnTTRtMVJYMkxG?=
- =?utf-8?B?cE9mbWhJYlhwYWE5MElZRnlLTTVZZDBPQzc2T0dZanM1MDNEWUdySUM1UTFP?=
- =?utf-8?B?eTh3czBSSEczVWRaZTIyNkRNR2hMZ2NNdWNTemxqdEpLeXc0TlE4QkR3VUpy?=
- =?utf-8?B?b3ZLcGtVVEJHMVZ4RGwvK1RVQVdtNi9xMXYvVzJad3hJM2M3U1lZQXZrTWdV?=
- =?utf-8?B?b0djcEJHWFNpQ1ZrQjBwa2Z1c0pyaWcxNW5ERjF2cVlkc0x5Nmx3RzloVW8w?=
- =?utf-8?B?Yk8wOS9tUDVRU2xDQ1lvcmJKWE1lbjIwYUVlbHVDQ3lwTlkycDJDenAxcWhY?=
- =?utf-8?B?d0Nva29rdGVuS3FweCtheU9GejhrYU53R1p5MUY4SHVnQ0xLeFpPbkZyeXNH?=
- =?utf-8?B?R0ZMOHVndlRoblNtV2JvRWdvOUpqN1pOVmJjVm9mVTUvVzZ4S2hQT2NXbzg5?=
- =?utf-8?B?Rm9YcTBERzBuNDJZZU5oNWtoMmsvM1gzdVV2NWxzT2VaQkwzRXlOMDlWNlVq?=
- =?utf-8?B?Ky9qdVZQQlI4N1N4Z29yQUZGZmJHMytUTGZsbnJXUjFEWXZ4V0RabkM5RURa?=
- =?utf-8?B?SVU1OEFxdUMzZ1NtQkRJTktFc09GN1Q5a05vdGFLZVhmbHZydUoySDdzVGUy?=
- =?utf-8?B?ZlE4TEpBbFBNQ25Mcy8zUlhKUXhHb0ZIZWRoUXNpVVNVMXp5UUJxenREZGhI?=
- =?utf-8?B?VzMrRnIxVTVvaFFDNmFNNjRGcVFGbURadE1SMkFrKzVJOHVDS2ZiTVhia1V2?=
- =?utf-8?B?eWU1MjZWTXd1VG1PQS9TWUVSdDNPMWE5KytTdGhZN29tbE15TW5uMzhpbU9S?=
- =?utf-8?Q?oDs9pJu5BosgU+Jx5QhaEm8DbkhixVhG?=
-Content-ID: <BF1DEBBAF1BB63458A0687575B151752@namprd11.prod.outlook.com>
+ 2021 14:35:22 +0000
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::f96e:198:8fae:c59]) by DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::f96e:198:8fae:c59%9]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
+ 14:35:22 +0000
+Date: Fri, 22 Oct 2021 09:35:14 -0500
+From: "han.xu@nxp.com" <han.xu@nxp.com>
+To: Stefan =?iso-8859-1?Q?Riedm=FCller?= <S.Riedmueller@phytec.de>
+Cc: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "michael@amarulasolutions.com" <michael@amarulasolutions.com>,
+ "ceggers@arri.de" <ceggers@arri.de>,
+ "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "gerg@kernel.org" <gerg@kernel.org>, Christian Hemp <C.Hemp@phytec.de>
+Subject: Re: [RFC PATCH 2/2] gpmi-nand: Add ERR007117 protection for
+ nfc_apply_timings
+Message-ID: <20211022143514.lplk6jaxklq3rxry@umbrella>
+References: <20211011084607.27a840e0@xps13>
+ <20211012090224.4101984-1-s.riedmueller@phytec.de>
+ <20211012090224.4101984-2-s.riedmueller@phytec.de>
+ <20211013050148.2w373kpbfaeuxbwm@umbrella>
+ <92d463460324d4501523f8a1da1f07c12fd6490f.camel@phytec.de>
+Content-Disposition: inline
+In-Reply-To: <92d463460324d4501523f8a1da1f07c12fd6490f.camel@phytec.de>
+User-Agent: NeoMutt/20171215
+X-ClientProxiedBy: SJ0PR05CA0083.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::28) To DU2PR04MB8774.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e1::21)
 MIME-Version: 1.0
+Received: from localhost (70.112.23.252) by
+ SJ0PR05CA0083.namprd05.prod.outlook.com (2603:10b6:a03:332::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend
+ Transport; Fri, 22 Oct 2021 14:35:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9a0033e7-ec75-4e1d-cb5e-08d995692df9
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8551:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-Microsoft-Antispam-PRVS: <DU2PR04MB85512796B9542D4E9BE6922597809@DU2PR04MB8551.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZxC5Jg0I3nE6/T39yU62O9+74g5iOlRYQe1LvyCb9U68OztU0LLelGYWkBQuVudN8rxTu1imBUkA/LOTEu+Nm5ql18QvwIcOKxX4qNhxY6UCQj9M0zphCZyUY3JCR3agHvZ/4hU+nLgpepXFhx9Twla06LYo3KWDy/bMz4L0Bn1EiX9V5zfsXHqbVtmFnsYQSjvoSAB/Fa+VvcIHBY1gTSzdn7zI05qDEAcwnoC7ipQObWvWT3Y36g+w6GdSkTQqlUGXiYQZMM6PlN4oyox6AJNETv/g8dF2jFir2yKzsxoNUCIoROYN0Xo53rc5+9wVFBgwgQwpfAhrYHlDP9RNZ/D5oTVYHAI6L8/eBWNQzZKrSD6KlbhL5no+6Jj2qi1VHM2Yr6I13L7J6L6ayaOjwt0IBI+LsK4drr1TUH5XtihSvMQ6tCzc1v8baLIeE3CfGBbstwpU0mFr8oF48A2q8KOsZ2GHYKgkWfeHJkf8JLu0f6qQ2sDvOVhOStyt7UmGgA8tbq3fJiJrilhJUKL+WQfigdplXXVW5B51Ieh8VBoWtQHzR+xsSpoEvKDfCoeVlJKsZbM5CtvrS3CLE67t9CgyNWju3LMBTBBRWfM9QiWU8VZLt/XDGVMpnkz9xZyqkSGqQ1WDO0Rhwsm2ljgHQjnVh+FhebPPA62I+xhe3WqMNNg3b/7a4WqL6vZuolHBy9MOZ5U12rQCU891oBERkg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DU2PR04MB8774.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(7916004)(366004)(1076003)(86362001)(33716001)(38350700002)(38100700002)(26005)(186003)(6666004)(8676002)(508600001)(6916009)(4326008)(956004)(4001150100001)(316002)(8936002)(66476007)(52116002)(6496006)(66574015)(6486002)(9686003)(66556008)(5660300002)(54906003)(66946007)(2906002)(83380400001);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?P89f24Ca0TfJx1+wKVzjoiuda2wTbWVblWn8ValBYRU1oDb5/KbN1/sebD?=
+ =?iso-8859-1?Q?BJmq7fOXpjJyEf7Ft6glXWoQkQNpjhswugxBWbDqHlWR9Sn9j/RlZcwJcz?=
+ =?iso-8859-1?Q?sgrcPxRzGCgItu4SZOSyhjUAsMnICL0XNXWgVOrogS5HiJEw2uLg0SqrIk?=
+ =?iso-8859-1?Q?papaY7BHePVtN/XgSmzNEESZ22XZzZxvk+VclwqTLiJYYhLBbUOgG8B0tF?=
+ =?iso-8859-1?Q?/EmBlgw0WeQOxxF+9e91POstKroRDVzpoYUwwQVMgsQL5hlyGTFNxn1OOa?=
+ =?iso-8859-1?Q?HguhDskrsOuGLM/ycHBLRz9AbpM5ukfTqAp/EfT6dTBPLqNc8WV8INAPUm?=
+ =?iso-8859-1?Q?QfTOTe3Q9Owb9NlnQgm8QBqK6Hy9noXLzK6u0oyMnlgVm0LvQtjb9M5hAI?=
+ =?iso-8859-1?Q?kGU/sYKqfstp7XlB3JxZ5POCEHPjmpzYQ3+C5UI32x9kdW2bS2hxWxehLY?=
+ =?iso-8859-1?Q?FoN3eVxOhkmkpXpyjW1IVfbbkOblTAGiy+4CB7Nu5DsnYligEmX3VMsc+G?=
+ =?iso-8859-1?Q?du5n30j60Z37iR7n474MD7Ks4JQoTzGByZgpV91tnC9DgTBoLc+kPa+zaV?=
+ =?iso-8859-1?Q?W7r5XzJERCNoVOGexIiDeC8gqx+Ux9rO2E67Kg2Xr83dpsw8XjGj03vIYr?=
+ =?iso-8859-1?Q?u7bKmojpQnH3EB+y1wdojDHT95kVboC5YEhgIaHTFjJOEASV8qw8bqC5zk?=
+ =?iso-8859-1?Q?w5d6EonTUuxfclrPFAauj8eOPXtCU2DrE+lyagbA9Fk2EWz6sAu3v2vE1y?=
+ =?iso-8859-1?Q?o0s3hCbv4Q4x0IYSXQOHHu4gCXSBAApjfWFzTSJXcRk1A6gb57F+ad1WbP?=
+ =?iso-8859-1?Q?6+pYba7RXjtbOdwrtxtVHFCIETX8U4mDWiIWKU3H6Tg7knJMcuV8ru30BZ?=
+ =?iso-8859-1?Q?AxFBJCr/NxKlwh5DinSlJ2gNCv18cX5/0Ix/es4GaULuPxVsrw52IvGdQU?=
+ =?iso-8859-1?Q?TEiVdnIHoB5kmS3O3EXKGRg0tfsv3AUAxCsiMCTj9673MDKm2UuUVqUVO6?=
+ =?iso-8859-1?Q?gupZcJfH/5vQmDDhp0Up99XLooOexgFUcFI0E6l2Yhm11TfETv1wpNLNuC?=
+ =?iso-8859-1?Q?+SVttrJ8mZaAzyK2UmzmFNlncDiZYg3iqRbrPU5ZaoXw64119TTPlvlOd9?=
+ =?iso-8859-1?Q?bxz9EyZfR1DsA2AV/gQQmHWr3iN6nRCIbDViWgGDuUsG6QGYuiDk8leTsE?=
+ =?iso-8859-1?Q?ndZIrcsuYTeI210/n7yA03reHZ48aw/8LvWl+iQNDeVCGVJXt3xBiSgC7O?=
+ =?iso-8859-1?Q?635lQMWOxZE7FmdhYd7yxyVwCjZSf/w7wOd+imEgOxAe0RIVAtPvddCAr/?=
+ =?iso-8859-1?Q?F5s/9gNf/oDXAW+jIYNdxb7CwOjyVErHl44oXo4ae8R6sHSaIJyNroke9o?=
+ =?iso-8859-1?Q?Ec+A0lwz6FbuuFcrOAcOX34lbj+5swvmZ5kuCrKG1Xxq2RiQTc3T1fQ1hv?=
+ =?iso-8859-1?Q?hgUZomL+4guEBhf9OBXEemosDW+0U1xcNOPeS+YpBda6C79jWe2j6vyM7o?=
+ =?iso-8859-1?Q?4=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a0033e7-ec75-4e1d-cb5e-08d995692df9
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c20bb53-8ee5-419a-198e-08d995609c4a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2021 13:34:02.0589 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4794
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 14:35:22.7246 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: han.xu@nxp.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8551
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211022_063412_620467_3138C3ED 
-X-CRM114-Status: GOOD (  24.95  )
+X-CRM114-CacheID: sfid-20211022_073528_501150_6DB1A3D7 
+X-CRM114-Status: GOOD (  34.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -180,52 +152,157 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, Nicolas.Ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTAvMjIvMjEgNDowOCBQTSwgTWljaGFlbCBXYWxsZSB3cm90ZToNCj4gRVhURVJOQUwgRU1B
-SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
-dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBBbSAyMDIxLTEwLTIyIDE0OjUxLCBzY2hyaWVi
-IFR1ZG9yLkFtYmFydXNAbWljcm9jaGlwLmNvbToNCj4+IE9uIDEwLzIyLzIxIDI6NTcgUE0sIE1p
-Y2hhZWwgV2FsbGUgd3JvdGU6DQo+Pj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5r
-cyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25vdw0KPj4+IHRoZSBjb250ZW50IGlz
-IHNhZmUNCj4+Pg0KPj4+IEFtIDIwMjEtMDctMjcgMDY6NTIsIHNjaHJpZWIgVHVkb3IgQW1iYXJ1
-czoNCj4+Pj4gVGhlIGZ1bmN0aW9ucyBuYW1lcyBhcmUgc2VsZiBleHBsYW5hdG9yeSwgZ2V0IHJp
-ZCBvZiB0aGUgY29tbWVudA0KPj4+PiBmb3IgdGhlIE9UUCBmdW5jdGlvbi4NCj4+Pg0KPj4+IE1o
-aC4gSSBzZWUsIHRoaXMgcGFydGx5IGFkZHJlc3NlcyBteSBjb21tZW50cyB0byB0aGUgcHJldmlv
-dXMgcGF0Y2guDQo+Pj4gTWF5YmUgaXQgd291bGQgaGF2ZSBiZWVuIGJldHRlciB0byBoYXZlIHRo
-aXMgc3F1YXNoZWQgaW50byBvbmUNCj4+PiBjb21taXQgOnANCj4+DQo+PiBvbmUgdGhpbmcgcGVy
-IHBhdGNoDQo+IA0KPiB3ZWxsIGl0IGlzIHJlYWxseSBqdXN0IG9uZSB0aGluZywgeW91J3JlIG1v
-dmluZyB0aGUgZnVuY3Rpb24uIGJ1dCB0aGVuDQo+IHRoZSBmdW5jdGlvbiBuYW1lIGRvZXNuJ3Qg
-bWFrZSBzZW5zZSBhbnltb3JlLiBTbyB0aGUgcGF0Y2ggb24gaXRzIG93bg0KPiBpcyB3cm9uZyBv
-ciBhdCBsZWFzdCBpdCBtYWtlcyB0aGluZ3Mgd29yc2UuIEFsc28sIEknbSByZXZpZXdpbmcgdGhh
-dA0KPiBqdXN0IHRvIHNlZSB0aGlzIGZ1bmN0aW9uIHdhcyByZW5hbWVkIChjb3JyZWN0bHkpIGlu
-IHRoZSBuZXh0IHBhdGNoLg0KDQpJJ2xsIHNxdWFzaCBpdCB0aGVuLg0KDQo+IA0KPj4+IEJ1dCBt
-eSBtYWluIGNvbmNlcm4gcmVtYWluczogd2hhdCBpZiB3ZSBuZWVkIG1vcmUgdGhhdCBqdXN0DQo+
-Pj4gdGhlIG10ZCBjYWxsYmFja3MgYXNzaWdtZW50cy4gQmFzaWNhbGx5IHdlIGxvb3NlIHRoZSBv
-dHBfaW5pdCgpDQo+Pj4gY2FsbC4NCj4+DQo+PiDCoMKgwqDCoMKgwqDCoCBpZiAoV0FSTl9PTigh
-aXNfcG93ZXJfb2ZfMihzcGlfbm9yX290cF9yZWdpb25fbGVuKG5vcikpKSkNCj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm47DQo+Pg0KPj4gaXMgdGhlcmUganVzdCB0byBh
-dm9pZCBzZXR0aW5nIHRoZSBtdGQgZnVuY3Rpb24gcG9pbnRlcnMgd2hlbiBPVFANCj4+IHJlZ2lv
-biBsZW5ndGggaXMgbm90IHBvd2VyIG9mIDIuIFRoaXMgaXMgbm90IGFuIGluaXQsIGp1c3QgYSBj
-aGVjaywNCj4+IHNvIGZvciB0aGUgbW9tZW50IEkgc2VlIGl0IG9rIHRvIGhhdmUgaXQgaW4gc3Bp
-X25vcl9zZXRfbXRkX290cF9vcHMoKS4NCj4gDQo+IEl0IGlzIGEgc2FuaXR5IGNoZWNrIHdoaWNo
-IGFjdHVhbGx5IGhhcyBub3RoaW5nIHRvIGRvIHdpdGggdGhlIG10ZCBvcHMNCj4gcmVnaXN0cmF0
-aW9uLiBKdXN0IHRvIHNlZSBpZiB0aGVyZSB3YXMgYSBtaXN0YWtlIGluIHRoZSBvdHAgaW5mbyBm
-bGFncy4NCj4gDQo+IE9mIGNvdXJzZSwgaWYgdGhhdCBpcyBub3QgdGhlIGNhc2UsIHdlIGRvbid0
-IHNldCB0aGUgb3BzLiBCdXQgdGhhdA0KPiBkb2Vzbid0DQo+IG1lYW4gaXQgaXMgcGFydCBvZiB0
-aGUgbXRkIG9wIGFzc2lnbWVudC4NCj4gDQo+IEkgc2FpZCBzdHJpY2x5IHNwZWFraW5nLCBJJ20g
-b2sgd2l0aCBoYXZpbmcgdGhhdCBpbiB0aGUgKG5vdyByZW5hbWVkKQ0KPiAib3RwIHNldCBtdGQg
-b3BzIiBmdW5jdGlvbi4NCg0Kb2ssIEknbGwga2VlcCBpdC4gSWYgY29uZGl0aW9uIGlzIHRydWUs
-IHlvdSBkb24ndCBzZXQgdGhlIG10ZCBvcHMuIEkgZmluZCBpdA0KcGFydCBvZiB0aGUgbXRkIG9w
-IGFzc2lnbm1lbnQuDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 21/10/22 08:45AM, Stefan Riedm=FCller wrote:
+> Hi Han,
+> =
+
+> sorry it took me some time to get back to you.
+> =
+
+> On Wed, 2021-10-13 at 00:01 -0500, Han Xu wrote:
+> > On 21/10/12 11:02AM, Stefan Riedmueller wrote:
+> > > According to i.MX 6 erratum ERR007117 gpmi clocks need to be gated off
+> > > when doing a gpmi_io clk rate change. So gate the clocks off before
+> > > the rate change in nfc_apply_timings and ungate them again after the
+> > > change.
+> > > =
+
+> > > Otherwise this rate change can lead to an unresponsive GPMI core which
+> > > results in DMA timeouts and failed driver probe:
+> > > =
+
+> > > [    4.072318] gpmi-nand 112000.gpmi-nand: DMA timeout, last DMA
+> > > ...
+> > > [    4.370355] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -110
+> > > ...
+> > > [    4.375988] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -22
+> > > [    4.381524] gpmi-nand 112000.gpmi-nand: Error in ECC-based read: -=
+22
+> > > [    4.387988] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -22
+> > > [    4.393535] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -22
+> > > ...
+> > > =
+
+> > > Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> > > ---
+> > > Hi,
+> > > =
+
+> > > I'm not sure about the error handling here, if it is actually neccess=
+ary.
+> > > So some feedback would be nice here.
+> > > =
+
+> > > Thanks,
+> > > Stefan
+> > > ---
+> > >  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 21 +++++++++++++++++++--
+> > >  1 file changed, 19 insertions(+), 2 deletions(-)
+> > > =
+
+> > > diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> > > b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> > > index a1f7000f033e..326c8a895f1f 100644
+> > > --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> > > +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+> > > @@ -713,15 +713,28 @@ static void gpmi_nfc_compute_timings(struct
+> > > gpmi_nand_data *this,
+> > >  			      (use_half_period ? BM_GPMI_CTRL1_HALF_PERIOD :
+> > > 0);
+> > >  }
+> > >  =
+
+> > > -static void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
+> > > +static int gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
+> > >  {
+> > >  	struct gpmi_nfc_hardware_timing *hw =3D &this->hw;
+> > >  	struct resources *r =3D &this->resources;
+> > >  	void __iomem *gpmi_regs =3D r->gpmi_regs;
+> > >  	unsigned int dll_wait_time_us;
+> > > +	int ret;
+> > > +
+> > > +	if (GPMI_IS_MX6Q(this)) {
+> > =
+
+> > Not only for 6Q but for GPMI_IS_MX6
+> =
+
+> Can you confirm that i.MX 6SX and i.MX 7 are affected by the ERR007117 er=
+ratum
+> as well? Because the i.MX 6UL/ULL are included by the GPMI_IS_MX6Q alread=
+y.
+
+i.MX6SX has the glitch issue for sure, but I can double check if it's due t=
+o the
+same errata. I will also go check if the errata will affect i.MX7
+
+> =
+
+> Or do we need another macro for i.MX 6UL/ULL as Christian has suggested
+> earlier?
+> =
+
+> Thanks,
+> Stefan
+> =
+
+> > =
+
+> > > +		ret =3D __gpmi_enable_clk(this, false);
+> > > +		if (ret)
+> > > +			return ret;
+> > > +	}
+> > >  =
+
+> > >  	clk_set_rate(r->clock[0], hw->clk_rate);
+> > >  =
+
+> > > +	if (GPMI_IS_MX6Q(this)) {
+> > > +		ret =3D __gpmi_enable_clk(this, true);
+> > > +		if (ret)
+> > > +			return ret;
+> > > +	}
+> > > +
+> > >  	writel(hw->timing0, gpmi_regs + HW_GPMI_TIMING0);
+> > >  	writel(hw->timing1, gpmi_regs + HW_GPMI_TIMING1);
+> > >  =
+
+> > > @@ -739,6 +752,8 @@ static void gpmi_nfc_apply_timings(struct
+> > > gpmi_nand_data *this)
+> > >  =
+
+> > >  	/* Wait for the DLL to settle. */
+> > >  	udelay(dll_wait_time_us);
+> > > +
+> > > +	return 0;
+> > >  }
+> > >  =
+
+> > >  static int gpmi_setup_interface(struct nand_chip *chip, int chipnr,
+> > > @@ -2271,7 +2286,9 @@ static int gpmi_nfc_exec_op(struct nand_chip *c=
+hip,
+> > >  	 */
+> > >  	if (this->hw.must_apply_timings) {
+> > >  		this->hw.must_apply_timings =3D false;
+> > > -		gpmi_nfc_apply_timings(this);
+> > > +		ret =3D gpmi_nfc_apply_timings(this);
+> > > +		if (ret)
+> > > +			return ret;
+> > >  	}
+> > >  =
+
+> > >  	dev_dbg(this->dev, "%s: %d instructions\n", __func__, op->ninstrs);
+> > > -- =
+
+> > > 2.25.1
+> > > =
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
