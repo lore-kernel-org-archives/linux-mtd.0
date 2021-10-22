@@ -2,70 +2,72 @@ Return-Path: <SRS0=wahI=PK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C08E2C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 03:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B28C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 07:51:28 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8656D6187F
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 03:13:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8656D6187F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id C42CE60EB8
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 07:51:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C42CE60EB8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=KfeETZqEhaY17dxn+2jO1lZ1Jm6HAwSJIM726BlXl0A=; b=J7bJ3S2ZdYv4ZGbHQCOR6GpW1v
-	CkiZOwhgOI6wDXkWeZ+/sU1nTsbYCPbUpdzz5nc/7pUe0cIZGDftdHmGyez+44FUiz0FE7Sg4fExa
-	a8+svV7NrePQDSsyuV3mJtqDFDB6Q2U74q+CEGJYqjtzMa9w1TELvZfnqLCX6AxvbndleDMd/x2tZ
-	Ri2VPXsuuInNjKTP3XR9UyIMTB5Lqr1cVDrBLSN9wGTjUFN0c9YWuC0Rt/btad8esbWu52NJ9luBp
-	1rEawWQGTM+TST3S8e5Jyib5l6qjMADwR9hrmGw9sTlJjZVkccpoCapFSmHt2BUNwBLca3YzVliyD
-	RYWnf1UA==;
+	bh=iX8iGwrVBBKQJOV0ZLnH4UFkqyN3ZRxwY3nVHseGo90=; b=xEgGrqFoiUNWKOhqRVjXPL7e9E
+	FJy/YeoLhySG/HxJqErsec+IxhYppGBpeOzsfk1hbG+EZlgtpGjRnsn5bYW1BUjt9nvrOse7cAm2Z
+	izSNM52Ehq1sCxqDmqCaThVNhGnfNNa59v3R69K99YtPiKIDby5QxQcleDCWN7h2S/2q7kJn0k+UL
+	HaxEVGo2UFsLPwS/9Z7EsyDE0Hck7YYeRDqpRmZFvtnjDsVy7yMmV8bh75baZ4NM5MVArIcuKyIXM
+	xGgs2dUNCN/3M2XCaaexdLvRon4WEt1UCeG9g+Rm8e5Kv7QvnWKaMXjMcqJ+WMKez9CwFYnuyYEGe
+	2TrVCFfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdkz1-009fDG-5e; Fri, 22 Oct 2021 03:12:39 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1mdpK1-00A1oT-4e; Fri, 22 Oct 2021 07:50:37 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdkyq-009fCH-B5; Fri, 22 Oct 2021 03:12:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=W0LD9iPvxxhEJ3MC2BpmyEY64d7qaINAGgTsXYSy428=; b=cYDUUwCiDlFw5AzyRMN9tlggeH
- 9bieqFxqnVXkwZshKFtrCWiWTRj42Do3v3duec5Oh2NeBr/KtY2JFs19YrFYe0pjKgkjitbcJVU74
- 3L08/bDkVn1tUvxtnfojRZTI4YQuqf0qGPiYnvURf63sODp5N4b02/KHuPw9GCLRd3M6EmVk8Ojgu
- oBS83rFU7lxFzpRkPtkVGxQiFpQdqzIyU3p0je/yXb3QsaRNe4eexfYRYdsHlsX8Pbp3yHsoQjWpz
- Wurr52oXnhVFBC7Wm/ZyMZRdkLB1Q5ijXqsDPwyM11+aSkVj9GJTqnh7As2hIZpDy+Zf5omesnM5z
- tH6JZAqw==;
-Received: from [2602:306:c5a2:a380:b27b:25ff:fe2c:51a8]
- by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdkxM-00DffH-LH; Fri, 22 Oct 2021 03:11:19 +0000
-Subject: Re: [PATCH 00/13] block: add_disk() error handling stragglers
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: axboe@kernel.dk, mpe@ellerman.id.au, benh@kernel.crashing.org,
- paulus@samba.org, jim@jtan.com, minchan@kernel.org, ngupta@vflare.org,
- senozhatsky@chromium.org, richard@nod.at, miquel.raynal@bootlin.com,
- vigneshr@ti.com, dan.j.williams@intel.com, vishal.l.verma@intel.com,
- dave.jiang@intel.com, ira.weiny@intel.com, kbusch@kernel.org, hch@lst.de,
- sagi@grimberg.me, linux-block@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <a31970d6-8631-9d9d-a36f-8f4fcebfb1e6@infradead.org>
- <YW2duaTqf3qUbTIm@bombadil.infradead.org>
-From: Geoff Levand <geoff@infradead.org>
-Message-ID: <24bc86d0-9d8d-8c8a-7f74-a87f9089342b@infradead.org>
-Date: Thu, 21 Oct 2021 20:10:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mdpJy-00A1o8-7V
+ for linux-mtd@lists.infradead.org; Fri, 22 Oct 2021 07:50:36 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 138286283EC6;
+ Fri, 22 Oct 2021 09:50:31 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id iJZTix-ApoP7; Fri, 22 Oct 2021 09:50:30 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 5ABAA6283ED0;
+ Fri, 22 Oct 2021 09:50:30 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 2jHEupQ1NCce; Fri, 22 Oct 2021 09:50:30 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 1DF846283EC6;
+ Fri, 22 Oct 2021 09:50:30 +0200 (CEST)
+Date: Fri, 22 Oct 2021 09:50:29 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: hch <hch@lst.de>
+Cc: joern <joern@lazybastard.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <977960225.24313.1634889029764.JavaMail.zimbra@nod.at>
+In-Reply-To: <20211019055309.GA20805@lst.de>
+References: <20211014145206.1488967-1-hch@lst.de>
+ <20211014145206.1488967-2-hch@lst.de>
+ <1862961222.73085.1634239699925.JavaMail.zimbra@nod.at>
+ <20211019055309.GA20805@lst.de>
+Subject: Re: [PATCH] mtd/block2mtd: don't poke into block layer internals
 MIME-Version: 1.0
-In-Reply-To: <YW2duaTqf3qUbTIm@bombadil.infradead.org>
-Content-Language: en-US
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF93 (Linux)/8.8.12_GA_3809)
+Thread-Topic: mtd/block2mtd: don't poke into block layer internals
+Thread-Index: hCuxEkvl/YU2P9bdUU3sPB7haE4eaQ==
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20211022_005034_469433_B2222E67 
+X-CRM114-Status: GOOD (  14.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,43 +79,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Luis,
-
-On 10/18/21 9:15 AM, Luis Chamberlain wrote:
-> On Sun, Oct 17, 2021 at 08:26:33AM -0700, Geoff Levand wrote:
->> Hi Luis,
->>
->> On 10/15/21 4:52 PM, Luis Chamberlain wrote:
->>> This patch set consists of al the straggler drivers for which we have
->>> have no patch reviews done for yet. I'd like to ask for folks to please
->>> consider chiming in, specially if you're the maintainer for the driver.
->>> Additionally if you can specify if you'll take the patch in yourself or
->>> if you want Jens to take it, that'd be great too.
->>
->> Do you have a git repo with the patch set applied that I can use to test with?
-> 
-> Sure, although the second to last patch is in a state of flux given
-> the ataflop driver currently is broken and so we're seeing how to fix
-> that first:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211011-for-axboe-add-disk-error-handling
-
-That branch has so many changes applied on top of the base v5.15-rc4
-that the patches I need to apply to test on PS3 with don't apply.
-
-Do you have something closer to say v5.15-rc5?  Preferred would be
-just your add_disk() error handling patches plus what they depend
-on.
-
-Thanks.
-
--Geoff
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImhjaCIgPGhjaEBsc3QuZGU+
+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4gQ0M6ICJoY2giIDxoY2hAbHN0LmRl
+PiwgImpvZXJuIiA8am9lcm5AbGF6eWJhc3RhcmQub3JnPiwgIk1pcXVlbCBSYXluYWwiIDxtaXF1
+ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwgIlZpZ25lc2gKPiBSYWdoYXZlbmRyYSIgPHZpZ25lc2hy
+QHRpLmNvbT4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4KPiBH
+ZXNlbmRldDogRGllbnN0YWcsIDE5LiBPa3RvYmVyIDIwMjEgMDc6NTM6MDkKPiBCZXRyZWZmOiBS
+ZTogW1BBVENIXSBtdGQvYmxvY2sybXRkOiBkb24ndCBwb2tlIGludG8gYmxvY2sgbGF5ZXIgaW50
+ZXJuYWxzCgo+IE9uIFRodSwgT2N0IDE0LCAyMDIxIGF0IDA5OjI4OjE5UE0gKzAyMDAsIFJpY2hh
+cmQgV2VpbmJlcmdlciB3cm90ZToKPj4gPiBpbnN0ZWFkLiAgTm90ZSB0aGF0IHRoaXMgY29udGFp
+bnMgYSBzbWFsbCBiZWhhdmlvciBjaGFuZ2UgaW4gdGhhdCBlcmFzZQo+PiA+IG5vdyB1bmNvbmRp
+dGlvbmFsbHkgd3JpdGVzIGFsbCBGcyBpbnN0ZWFkIG9mIGZpcnN0IHNjYW5uaW5nIGZvciB0aGVt
+Lgo+PiAKPj4gVW5sZXNzIHlvdSBoYXZlIGEgc3Ryb25nIG9waW5vaW4gSSdkIGxpa2UgdG8ga2Vl
+cCB0aGUgc2Nhbm5pbmcuCj4+IFRoZSBvcmlnaW5hbCB1c2UgY2FzZSBvZiBibG9jazJtdGQgaXMg
+dXNpbmcgQ29tcGFjdCBGbGFzaCAoQVRBKQo+PiBhcyBNVEQuIFNvbWUgb2YgdGhpcyBkZXZpY2Vz
+IGFyZSBzdXBlciBzdHVwaWQgYW5kIEkgZmVhciB0aGUgMHhGRiBzY2FubmluZwo+PiBpcyBoZXJl
+IHRvIGF2b2lkIHByb2dyYW1taW5nIDB4RkYgYnl0ZXMgaW50byB0aGUgTkFORC4KPj4gSnVzdCB0
+byBiZSBvbiB0aGUgc2FmZSBzaWRlLi4uCj4gCj4gSSBwbGF5ZWQgd2l0aCBrZWVwaW5nIHRoZSBz
+Y2FubmluZywgYnV0IGl0IHJlYWxseSBpcyBhIG1lc3MuICBTaG91bGRuJ3QKPiB0aGUgaGlnaGVy
+IGxheWVycyAodWJpLCBqZmZzMiwgZXRjKSBrbm93IHdoYXQgaGFzIGFscmVhZHkgYmVlbiBlcmFz
+ZWQ/CgpXZWxsLCB0aGUgaGlnaGVyIGxheWVycyBhcmUgYWxsb3dlZCB0byB1bmNvbmRpdGlvbmFs
+bHkgcmUtZXJhc2UgYSBibG9jay4KSSBoYWQgYSBzaG9ydCBkaXNjdXNzaW9uIHdpdGggTWlxdWVs
+LCBzaW5jZSBpdCBpcyBub3QgZW50aXJlbHkgY2xlYXIgd2hhdAp0aGUgcHVycG9zZSBvZiB0aGUg
+cmVhZC1iZWZvcmUtd3JpdGUgbG9naWMgaW4gdGhlIGVyYXNlIGhhbmRsZXIgaXMsIGxldCdzCmtl
+ZXAgb24gdGhlIHNhZmUgc2lkZSBhbmQga2VlcCBpdC4KCkVpdGhlciBpdCBpcyBhIHBlcmZvcm1h
+bmNlIG9wdGltaXphdGlvbiBiZWNhdXNlIGVyYXNlIHdhcyBzdXBlciBzbG93IG9uCmNvbXBhY3Qg
+Zmxhc2ggY2FyZHMgYXQgdGhlIHRpbWUgd2hlbiBKb2VybiBjcmVhdGVkIGJsb2NrMm10ZC4KT3Ig
+dGhleSBoYXZlIGJlZW4gc3VwZXIgc3R1cGlkXldzaW1wbGUgYW5kIHdyaXRpbmcgMHhGRiBieXRl
+cyB0byBhbiBlcmFzZWQKcmVnaW9uICh2aWEgbXRkX2VyYXNlKSB3YXMgcHJvYmxlbWF0aWMuCiAK
+PiBCdHcsIEpvZXJucyBhZGRyZXNzIGJvdW5jZXMuICBEb2VzIGFueW9uZSBrbm93IGlmIGhlIHN0
+aWxsIHdhbnRzIHRvCj4gbWFpbnRhaW4gYmxvY2sybXRkIGFuZCBoYXMgYSBuZXcgYWRkcmVzcyBv
+ciBpZiBoZSBzaG91bGQgYmUgcmVtb3ZlZCBmcm9tCj4gdGhlIG1haW50YWluZXJzIGxpc3Q/CgpJ
+IHNlbnQgYSBwYXRjaCB0byByZW1vdmUgaGltIGZyb20gdGhlIG1haW50YWluZXJzIGZpbGUuCklm
+IEpvZXJuIHJldHVybnMgSSdsbCBoYXBwaWx5IHJldmVydCB0aGUgcGF0Y2guCgpUaGFua3MsCi8v
+cmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
