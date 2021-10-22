@@ -2,170 +2,66 @@ Return-Path: <SRS0=wahI=PK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74103C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:37:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC64DC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:42:36 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 325386109E
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:37:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 325386109E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 91FA46101C
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 12:42:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 91FA46101C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ol8f5Is1Elq99sRsRI9GQd/4ajGRO+TPHbve+YV37eE=; b=1km9jdTrKQOdN7
-	Hp3aqNUuP91Butow94+/k7BZaHVgPDl/l6G1wPc5vklTpPXqMyzyJMH640a0ixD+zQcVpQMXS/rza
-	OZa+dHnzT8tVHQygjq3xRDYZziey4w/WsSlEaHx2XynGKwoVn7HVMlq16GNdDImEsb0AVVpN5QRHW
-	/rAhoLC6HgtO9qhttrG3la2jucyscYskinfxMACsPwBnceRnrujhM25JFf+8q1uBm+Lm20vSENPAl
-	bZYiuaAFk3jFALax94XT0yEnc+/7iIvvNGgpUGpeL4DPELfbw6NIiPtfcHVWLy9KKGC/Uk8pLRsLX
-	z6l/15Q2xpMZHU/1oIQg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=uyVzh0JCorKoQDRoUzKJYAgR3jBqPzTLgG0WA0PemMw=; b=tDbne1VT77t4HsElIDqJ5fBoh2
+	XZLYJatB/rHP6M+xX3xa65vXUwkY80UKWVKwpR7mGqoqnE3fvZ4s3ziX3SWlK0i/cgnyAwMd8v1eK
+	odClXzgW8+LhwpKxtVaibNqjFcgRWmVDk5AW30Ri+twt2vIg02wlbCWBcfbO92ZYLeRFBVVEdh9PS
+	KOVR/EORF9EFt7MZpWFDMHAKV4ov/w1M+JO6HNI1CzYZuaVfcnXpD3/vccetHpqLZ3TiTunKNtN8e
+	RtoFtyD6hBq/uOU4ZXfkr11rF1DAhQ9thGopTMckq/e6M0XJPUG7qY2SoFrI6p0qQ5iHTqW7TatrI
+	gRWps0mg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdtnK-00AtaP-Ng; Fri, 22 Oct 2021 12:37:10 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1mdtrx-00Av3M-HO; Fri, 22 Oct 2021 12:41:57 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdtnH-00AtZU-9Z; Fri, 22 Oct 2021 12:37:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1634906227; x=1666442227;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=b9LU25P4IKEJ66WEnYA+sClVXcqlkXbaOskVjreAWoo=;
- b=cGzWCMfros/gxzJ/GgIJUo0jSiJOcsTnMVc7nWCWt3QtpmoudTfPxB7q
- mzTDG0LCsdh7ucBUB7W5Uw8xTHfOSnumZ7icFzPuoljt1DV8EJRmVKxOi
- aLB6N6vyr8nG/oCq+hXCi/7nVdoMMPQKtQ66HBq7sh/V4FxoN+PduTBet
- IoYkLdLibye0FNP9ioZXmM4O5fXwPfWtJP6DOnNrgdsQEnR3OQLCUV4gK
- kHgAl99OF8jGk0Vk+VGQ1E8F8o/W28hENe/JkWKYVGBIMqRGdlkSpJIRL
- 7OYEqGmWFROtqM3VmPaS6wEC1f+r5G1MucQ6qeavsl5NKSzURH0gOoMdO Q==;
-IronPort-SDR: aqJXiD3Zh7NI9f0O2J5QzMSuHwdXmgIoW5IHjHEEkNLnkOrL1J0h4YwFvO1iMAiclluHUpzKQC
- yvFnyX+PdQiGBN9qNCZj3SHdaTIjPUN1lfheDfQmTdHgh0FdExE3lp1SnR5CGtILEsvs0JPBh0
- 1xx6wTZyAbYyrSNHfmLf7XnghQ7jhJvzKwDncJIKbT+AiLMJsDEhvKZ1dBnxI7CSGrsoIIugyg
- 0qeL2EdhBlx7W3e33Pw0jgGpo9XoM0vEyKhB4kbpvXZqdrXpKLoGozRp7glj7rTrmLfIROzV6E
- LdC+y8VB3QmSb0N6GP40ZB58
-X-IronPort-AV: E=Sophos;i="5.87,172,1631602800"; d="scan'208";a="134031852"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 22 Oct 2021 05:37:03 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 22 Oct 2021 05:37:03 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
- Transport; Fri, 22 Oct 2021 05:37:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=heaRxmlprnawjTYBSIm1jRS4GYs0ioRqtTAeQqRItJF4pdsO4By5Deen3VM3Dk4ayXumm1q5viSWyRT9Tc4EENJqQ+5z7mhjGRUFNtGpejVLfAYjJNpVNqsskmRZOdmeW3/ruMR+bz8Pgt2GgEJEopGZ2MJOicioJZd3eSOMFaFHuzHOiXjfOa9n/+2P5RBMelhCYEck/eptHY3/9ZF9oX4NJwO8LTaf7bi9SysBWYzm9lj0XQTM46te3NYbbMunJgh/KHoyEp1Ce0c3GkzZ9EHcMEkKOzznfEkCMSpMuLZElHYPLvRdgzy/LC20P5SbpI5XhuemIktg+vCE5xDpqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b9LU25P4IKEJ66WEnYA+sClVXcqlkXbaOskVjreAWoo=;
- b=obKsIiKsE3V+mKmQIEvZBcUkdp5wYoIkN7MemToZ8TE448N1iM0sOR/j4OhPCtwVhYSKhItb+mvuon8a/9cuaqrFLZYwYSCtVtQA5aqpFHnMSe4A9B/ACEEfljjgNLlNmMPUcdZqKgGp8ITmVwc/BLasajx3EfbRJA2q3l3G5SRysBXVJnrlv5IwOFSsTY6JxvmC3MRRnv74///qcvOfvGHCQ0LuMYJ1YU345nWKUlLbB+zMub23sse2bWFXdJ/N/yW/5IyWdinJ2OQrpR3DQtsjTrZ8BXrM1d4OTSBGgiTJ7NTQmAwNBByb6uQHkd+3JdIy+hi3gYuCowLUETDEfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b9LU25P4IKEJ66WEnYA+sClVXcqlkXbaOskVjreAWoo=;
- b=R7jPHvGYizlVryRY9InhU4BCfVmjr7hKwjuN+/UK35PY7LpifxEUX28EVl5Mbb7qDrkTBkUOv2X1gxUK75shPOj9gNVH6zWZZPUVfLpSWpMxzlpcCjFFicdAln8kn0sN9ukFePPdCrDL3mgO2wwWxLSHBOyo5NeBHAh3oBlDz0g=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SN6PR11MB3293.namprd11.prod.outlook.com (2603:10b6:805:be::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Fri, 22 Oct
- 2021 12:36:59 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::38e9:ee20:d712:2fd8]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::38e9:ee20:d712:2fd8%6]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
- 12:36:58 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>
-Subject: Re: [PATCH v2 25/35] mtd: spi-nor: core: Move
- spi_nor_set_addr_width() in spi_nor_setup()
-Thread-Topic: [PATCH v2 25/35] mtd: spi-nor: core: Move
- spi_nor_set_addr_width() in spi_nor_setup()
-Thread-Index: AQHXx0GBhH05A/TAe0ir30IVxUxj9w==
-Date: Fri, 22 Oct 2021 12:36:58 +0000
-Message-ID: <d48f232c-de8c-257f-bc21-be2354dd6106@microchip.com>
-References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
- <20210727045222.905056-26-tudor.ambarus@microchip.com>
- <4375732149fe8c96a85ee119395e7400@walle.cc>
-In-Reply-To: <4375732149fe8c96a85ee119395e7400@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3372cc93-f3f8-4d98-2774-08d99558a3f4
-x-ms-traffictypediagnostic: SN6PR11MB3293:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB3293027E60FA840E7BBBDD39F0809@SN6PR11MB3293.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IKRyilIItszpH8bURt8LFL0AQMWbb//0oueN6ASxWjV7ZS+/6QjUBze4JH6qi33/xs24cs0X8ZvT/QWTZpdREExrqRSd7LqzUuJinyBBoXJ5Gl0/M2sWsgscs6XUT08Z14PY+PDCUuqRR0GiaDtA8k0hPDKyyfVpsrKiE+pIB9nIaBYhrkjFyoqfgUfnPDqgKnq41siOe+j2PBmKaLpz9P2uzpHhXye8cOKzHVXFw5H8JeNSo22OYXzrjU7tKth9yU8mgcCOuBUnWWbol8tKVjt1nDgLCvu7EckH2GMLBVvZySE8eSMfdR/o1/7N4LVr151AXN2RJA6agtMy+g5D4PVv4VWWAbYtRY2ttpxG84/S2I6zm4tsWhUzBHydW6WlZPEnbVq4C5pcGSDE4xrxPBXMIrXa0ntsCZiLhM6OhpewP4gPm7+UdizGz03W33h87Vl5zWZRZ80Wgoe3s6Hzfiihs3MRbUUOFc2b8vm6+lMlr1TtNfOaHR9YI6sLQUlE8hHEVsy1qUjuEMDDxEzAIGXtpFEcOncP8VYPvNshT6KbEC9+nJPk2xPz/36I6zRN9HpURdsdJqg05lVZu+gqbV3dNsg6qog3qcPCa8kgkl5rKcn2mmJ+FzHSCyMoW1ltkL7iEJBp0iAdSsLShNFH8Oy4UQVGbxU3tB0inaefAgO5PnO9ahkZHJec7oV+gRbLBkTfmJFUSxXUlepYgAyqpn5Go9bUYLmDbylVeL/IQ793/wLo25rajO9foms4I5SbZNx0I686xNO70zqHw0brjg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(38100700002)(91956017)(8936002)(66946007)(66556008)(76116006)(66476007)(86362001)(7416002)(2616005)(122000001)(4326008)(6486002)(31686004)(31696002)(5660300002)(2906002)(64756008)(8676002)(6916009)(66446008)(508600001)(316002)(54906003)(38070700005)(6506007)(6512007)(36756003)(53546011)(71200400001)(107886003)(186003)(26005)(83380400001)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NzljRVo5T1BiSC9Mc0MyZzhGdis0TGdsaWYxYmp0ODFUdGtvMTdvWU90OHd2?=
- =?utf-8?B?YXVlT1FYUmZGaTc4d1lPNVZ1cVFKM3VOaUNMVWkzZXg3ZE1QYzFPUFh4cElN?=
- =?utf-8?B?dUM2K1BvNzVZMkNJV2VQbmZvM0JTTVozeVlUQjFqKytiZU9pT1lMZWpXWkFv?=
- =?utf-8?B?aHNSck5WZTBleVpFd3RTbGsxQlAxWFRBaG9menh4dUQzcEJleS95WHRUajRM?=
- =?utf-8?B?eFUzNEVkV2Fyc1BSdW1BSnlacHZoY1h6UU43aVFEVGpvTXU3NU5iMzJDZEdk?=
- =?utf-8?B?OGV1S0FidnQ4aFJ5THNzM1dMNFc4ZTJOK2JtWFM5SXpaYWpJWGw4YVdObkFP?=
- =?utf-8?B?MFduSk9Obkd2NzVHVis0bkVxVC9FOGpJT0dyOWRTSFU5NmVJT1MyZ1I4cUJZ?=
- =?utf-8?B?ZUNveGp4UGxaZC8xM2ZodjZlekYzdEhJcWJXa0JrQXNmRzdKU3VaMnBqZERt?=
- =?utf-8?B?YU9lYmdrSHZEdGFiL1FQTTZ2bUlQSnBZZWRaWnJQOFBjN0lWSjg1eDVUQ2dm?=
- =?utf-8?B?cHNYM1g2aVNlOU9pNUxpVHcwblRMNDJLb3RpdmEvSEk4M1VxRDMyWGNiQlNi?=
- =?utf-8?B?aEl6UFJiZTBQaGpGa0krb1N5QlFvcGNPbVdLaUo2akNmbDNIMWlid01TWkEv?=
- =?utf-8?B?U1VYeGhIM3R6WnNHcHBPTURNR0lBVWI2MTJreU00ZVNZekhQWE5Yam11d3oz?=
- =?utf-8?B?RWs5ck01RUh1QVZuM0FLQ3Bncm91TkZpTGhYUW90WlF2L21aSHVLNFRaRWtY?=
- =?utf-8?B?dWN1ZUNpb3c5QjFSV3c2TDBJUGEwOVFzSDZyYi9WNGhWbGUzSHhTZG9DazRY?=
- =?utf-8?B?ODhDMUY4Y3RGZTZadzVZWEFWa3NWalVXWlRYeHU2Q1YzRjc2YjdKVmQ3MHdy?=
- =?utf-8?B?WnNkbkJoZmJ3TTdGMDEzYU1kcEtYS3FhU2pBbXJ6VmJna0h3akNFQi82UEZv?=
- =?utf-8?B?V3ZPaDNibnppR3dONWJ6NVk4cC9ZT3c0aHFrSnlzRjBzWGFqN080V0NmZVp0?=
- =?utf-8?B?RnRmTzE2TXZISS9zT1BUcDNSaGlLWkJiOVZBeGxmdFFBTlRtODJ5VmVRTDhJ?=
- =?utf-8?B?dWxxcm1ZSnljVHVyOEFjZjcwTEl6WnpRUlp3bXFoSFRYby90UWJDMjlmM1Fn?=
- =?utf-8?B?TjhRNUQ4NDMzc0pwa0tCS3pCMVlVQzBpcW90VWtYSXU4c1M3b0ZEK0w0emZv?=
- =?utf-8?B?eUYzSXM0YTF0RzlZeURJWHMxVzdNZnVpT2FTeldndVN1WitrS0pkdGh5NEdO?=
- =?utf-8?B?RzJUSGNSeTFwV3FsTTBsWDJtYkV3bXI3aTVsU0lKUWZDWi9vS1NYeUpUcnR2?=
- =?utf-8?B?WUtXaXJQNUV0UkFiRGpueE5nQnU3RDdGQWRMblBteGMwZjF0L0d0elFjSG5V?=
- =?utf-8?B?cmVyejlWSDVpZ0tLcFZKeU1yRy9vVGxvemxYWU13WTF0ak9XQll2YmxuZjNJ?=
- =?utf-8?B?OVNKQkV5cHNGR2lBM0lwQ0lpSUdna29NYW9xWSs3RE11bzhJQzRUQ0NabXlq?=
- =?utf-8?B?bFM0eWlmOVp6VC9Vd1d1c2pud29UcUp5RnR1VFVIN3dEY2RuaDd0UTRMN3Z3?=
- =?utf-8?B?d2xwbWFqaU9JRzl3cXRTUC8yNC93ZHplWHlVN0lFMWVabHh6a1ZrMDEvSEJV?=
- =?utf-8?B?alkzbWgycVd2Tmk5REYwUFBuaHZobDdSNGVDQnM4WElLREFsdEdROWZ2SnAx?=
- =?utf-8?B?ZVFZUWJ3UUJVYlBzeXl1bEVBY1Z6U2VveU9GK1Qya05PUDdCcU5IRFM3N2tq?=
- =?utf-8?Q?Bz02gJL7AAGh8BCoU8=3D?=
-Content-ID: <4C019CC126BEF64AAB14167E7ABC37EE@namprd11.prod.outlook.com>
+ id 1mdtrN-00Aupw-GI; Fri, 22 Oct 2021 12:41:23 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 14046221E1;
+ Fri, 22 Oct 2021 14:41:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1634906479;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=6sTXouViOiPmAoRuK6VBrhne5A+9kl803eEHdAqh9tE=;
+ b=gLpPtRAOSvuzXOMbVmSQyrx/a/25G+IcrfXs8jZd/mV5qJ3xxTubjLpemyCOc70jK/VcXG
+ oxhLGRHcGBPfaksM5EhL97MiX2TsimxmN/mDwb2gUuep9ejP1iYX1XUKZfBjIR6Cp3bnfN
+ UsjCu8IIb2UimM5WzQ9/xXu2DTNJIs8=
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3372cc93-f3f8-4d98-2774-08d99558a3f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2021 12:36:58.9077 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tudor.ambarus@microchip.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3293
+Date: Fri, 22 Oct 2021 14:41:17 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH v2 26/35] mtd: spi-nor: core: Introduce
+ spi_nor_init_default_params()
+In-Reply-To: <42dd1311-7e75-a57c-c62c-d0d452608cdf@microchip.com>
+References: <20210727045222.905056-1-tudor.ambarus@microchip.com>
+ <20210727045222.905056-27-tudor.ambarus@microchip.com>
+ <20210824173018.n6fw6t6mg4bwah37@ti.com>
+ <42dd1311-7e75-a57c-c62c-d0d452608cdf@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <2919e1cfdf2b52780fbab6a196642d9d@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211022_053707_552903_42C70E9F 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20211022_054121_902826_8E056DCE 
+X-CRM114-Status: GOOD (  28.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -183,39 +79,218 @@ Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
  sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTAvMjIvMjEgMzoxMiBQTSwgTWljaGFlbCBXYWxsZSB3cm90ZToNCj4gRVhURVJOQUwgRU1B
-SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
-dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBBbSAyMDIxLTA3LTI3IDA2OjUyLCBzY2hyaWVi
-IFR1ZG9yIEFtYmFydXM6DQo+PiBzcGlfbm9yX3NldHVwKCkgY29uZmlndXJlcyB0aGUgU1BJIE5P
-UiBtZW1vcnkuIFNldHRpbmcgdGhlIGFkZHIgd2lkdGgNCj4+IGlzIHRvbyBhIGNvbmZpZ3VyYXRp
-b24sIGhlbmNlIHdlIGNhbiBtb3ZlIHRoZSBzcGlfbm9yX3NldF9hZGRyX3dpZHRoKCkNCj4+IGlu
-IHNwaV9ub3Jfc2V0dXAoKS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBUdWRvciBBbWJhcnVzIDx0
-dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQo+IA0KPiAuLg0KPiANCj4+IMKgc3RhdGljIGlu
-dCBzcGlfbm9yX3NldHVwKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+PiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9od2NhcHMg
-Kmh3Y2FwcykNCj4+IMKgew0KPj4gK8KgwqDCoMKgIGludCByZXQ7DQo+PiArDQo+PiDCoMKgwqDC
-oMKgIGlmICghbm9yLT5wYXJhbXMtPnNldHVwKQ0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCByZXR1cm4gMDsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHNwaV9ub3Jf
-c2V0X2FkZHJfd2lkdGgobm9yKTsNCj4+DQo+PiAtwqDCoMKgwqAgcmV0dXJuIG5vci0+cGFyYW1z
-LT5zZXR1cChub3IsIGh3Y2Fwcyk7DQo+PiArwqDCoMKgwqAgcmV0ID0gbm9yLT5wYXJhbXMtPnNl
-dHVwKG5vciwgaHdjYXBzKTsNCj4+ICvCoMKgwqDCoCBpZiAocmV0KQ0KPj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPj4gKw0KPj4gK8KgwqDCoMKgIHJldHVybiBzcGlf
-bm9yX3NldF9hZGRyX3dpZHRoKG5vcik7DQo+PiDCoH0NCj4gDQo+IFdoeSBub3QNCj4gDQo+IHN0
-YXRpYyBpbnQgc3BpX25vcl9zZXR1cChzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnN0IHN0cnVjdCBzcGlfbm9y
-X2h3Y2FwcyAqaHdjYXBzKQ0KPiB7DQo+IMKgwqDCoMKgwqDCoCBpbnQgcmV0Ow0KPiANCj4gwqDC
-oMKgwqDCoMKgIGlmIChub3ItPnBhcmFtcy0+c2V0dXApIHsNCj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCByZXQgPSBub3ItPnBhcmFtcy0+c2V0dXAobm9yLCBod2NhcHMpOw0KPiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChyZXQpDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiByZXQ7DQo+IMKgwqDCoMKgwqDCoCB9DQo+
-IA0KPiDCoMKgwqDCoMKgwqAgcmV0dXJuIHNwaV9ub3Jfc2V0X2FkZHJfd2lkdGgobm9yKQ0KPiB9
-DQo+IA0KPiAtbWljaGFlbA0KDQpyaWdodCwgSSdtIHJld29ya2luZyB0aGUgc2VyaWVzIHJpZ2h0
-IG5vdywgdGhhdCdzIGhvdyBJIHVwZGF0ZWQgaXQgdG9vLg0KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+Am 2021-10-04 06:17, schrieb Tudor.Ambarus@microchip.com:
+> On 8/24/21 8:30 PM, Pratyush Yadav wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> On 27/07/21 07:52AM, Tudor Ambarus wrote:
+>>> Called for all flashes, regardless if they define SFDP tables or not.
+>>> 
+>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/core.c | 92 
+>>> +++++++++++++++++++++-----------------
+>>>  1 file changed, 52 insertions(+), 40 deletions(-)
+>>> 
+>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>> index b3a01d7d6f0b..9193317f897d 100644
+>>> --- a/drivers/mtd/spi-nor/core.c
+>>> +++ b/drivers/mtd/spi-nor/core.c
+>>> @@ -2543,6 +2543,56 @@ static int spi_nor_setup(struct spi_nor *nor,
+>>>       return spi_nor_set_addr_width(nor);
+>>>  }
+>>> 
+>>> +/**
+>>> + * spi_nor_init_default_params() - Default initialization of flash 
+>>> parameters
+>>> + * and settings. Done for all flashes, regardless is they define 
+>>> SFDP tables
+>>> + * or not.
+>>> + * @nor:     pointer to a 'struct spi_nor'.
+>>> + */
+>>> +static void spi_nor_init_default_params(struct spi_nor *nor)
+>>> +{
+>>> +     struct spi_nor_flash_parameter *params = nor->params;
+>>> +     const struct flash_info *info = nor->info;
+>>> +     struct device_node *np = spi_nor_get_flash_node(nor);
+>>> +
+>>> +     params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+>>> +     params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+>>> +     params->setup = spi_nor_default_setup;
+>>> +     params->otp.org = &info->otp_org;
+>>> +
+>>> +     /* Default to 16-bit Write Status (01h) Command */
+>>> +     nor->flags |= SNOR_F_HAS_16BIT_SR;
+>>> +
+>>> +     /* Set SPI NOR sizes. */
+>>> +     params->writesize = 1;
+>>> +     params->size = (u64)info->sector_size * info->n_sectors;
+>>> +     params->page_size = info->page_size;
+>> 
+>> I think these two lines should go in spi_nor_info_init_params() since
+>> you are using the nor info to initialize these parameters. Otherwise,
+>> what even is the difference between these two functions?
+> 
+> I think a better name for spi_nor_info_init_params() is
+> spi_nor_nonsfdp_info_init_params(). This method will eventually be 
+> called
+> just for non SFDP flashes. Check conversation in 18/35.
+> 
+> And maybe I should rename spi_nor_nonsfdp_flags_init to
+> spi_nor_nonsfdp_info_init_snor_f.
+
+Urgh. I really dislike that suffix. Somehow the flags prefix
+creeps into the function name. If that function is expected
+to only set the SNOR_F_ flags then there should be a comment.
+
+>> 
+>>> +
+>>> +     if (!(info->flags & SPI_NOR_NO_FR)) {
+>>> +             /* Default to Fast Read for DT and non-DT platform 
+>>> devices. */
+>>> +             params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+>>> +
+>>> +             /* Mask out Fast Read if not requested at DT 
+>>> instantiation. */
+>>> +             if (np && !of_property_read_bool(np, "m25p,fast-read"))
+>>> +                     params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+>>> +     }
+
+Hm, this looks really weird.
+
+why not:
+
+/* default to fast read */
+params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+
+/* unless the flash doesn't support it */
+if (info->flags & SPI_NOR_NO_FR)
+     params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+
+/* or the device tree doesn't explicitly request it */
+if (np && !of_property_read_bool(np, "m25p,fast-read"))
+     params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+
+I know the old code was the same, but it might go into another
+patch. The SPI_NOR_NO_FR suggests that fast read was always the
+default. Otherwise, it would have been SPI_NOR_HAS_FAST_READ.
+
+>>> +
+>>> +     /* (Fast) Read settings. */
+>>> +     params->hwcaps.mask |= SNOR_HWCAPS_READ;
+>>> +     spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
+>>> +                               0, 0, SPINOR_OP_READ,
+>>> +                               SNOR_PROTO_1_1_1);
+>>> +
+>>> +     if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
+>>> +             
+>>> spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
+>>> +                                       0, 8, SPINOR_OP_READ_FAST,
+>>> +                                       SNOR_PROTO_1_1_1);
+>>> +     /* Page Program settings. */
+>>> +     params->hwcaps.mask |= SNOR_HWCAPS_PP;
+>>> +     spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+>>> +                             SPINOR_OP_PP, SNOR_PROTO_1_1_1);
+>>> +}
+>>> +
+>>>  /**
+>>>   * spi_nor_manufacturer_init_params() - Initialize the flash's 
+>>> parameters and
+>>>   * settings based on MFR register and ->default_init() hook.
+>>> @@ -2609,43 +2659,8 @@ static void spi_nor_info_init_params(struct 
+>>> spi_nor *nor)
+>>>       struct spi_nor_flash_parameter *params = nor->params;
+>>>       struct spi_nor_erase_map *map = &params->erase_map;
+>>>       const struct flash_info *info = nor->info;
+>>> -     struct device_node *np = spi_nor_get_flash_node(nor);
+>>>       u8 i, erase_mask;
+>>> 
+>>> -     /* Initialize default flash parameters and settings. */
+>>> -     params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+>>> -     params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+>>> -     params->setup = spi_nor_default_setup;
+>>> -     params->otp.org = &info->otp_org;
+>>> -
+>>> -     /* Default to 16-bit Write Status (01h) Command */
+>>> -     nor->flags |= SNOR_F_HAS_16BIT_SR;
+>>> -
+>>> -     /* Set SPI NOR sizes. */
+>>> -     params->writesize = 1;
+>>> -     params->size = (u64)info->sector_size * info->n_sectors;
+>>> -     params->page_size = info->page_size;
+>>> -
+>>> -     if (!(info->flags & SPI_NOR_NO_FR)) {
+>>> -             /* Default to Fast Read for DT and non-DT platform 
+>>> devices. */
+>>> -             params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+>>> -
+>>> -             /* Mask out Fast Read if not requested at DT 
+>>> instantiation. */
+>>> -             if (np && !of_property_read_bool(np, "m25p,fast-read"))
+>>> -                     params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+>>> -     }
+>>> -
+>>> -     /* (Fast) Read settings. */
+>>> -     params->hwcaps.mask |= SNOR_HWCAPS_READ;
+>>> -     spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
+>>> -                               0, 0, SPINOR_OP_READ,
+>>> -                               SNOR_PROTO_1_1_1);
+>>> -
+>>> -     if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
+>>> -             
+>>> spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
+>>> -                                       0, 8, SPINOR_OP_READ_FAST,
+>>> -                                       SNOR_PROTO_1_1_1);
+>>> -
+>>>       if (info->flags & SPI_NOR_DUAL_READ) {
+>>>               params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
+>>>               
+>>> spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
+>>> @@ -2674,11 +2689,6 @@ static void spi_nor_info_init_params(struct 
+>>> spi_nor *nor)
+>>>                                         SNOR_PROTO_8_8_8_DTR);
+>>>       }
+>>> 
+>>> -     /* Page Program settings. */
+>>> -     params->hwcaps.mask |= SNOR_HWCAPS_PP;
+>>> -     spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+>>> -                             SPINOR_OP_PP, SNOR_PROTO_1_1_1);
+>>> -
+>>>       if (info->flags & SPI_NOR_OCTAL_DTR_PP) {
+>>>               params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
+>>>               /*
+>>> @@ -2823,6 +2833,8 @@ static int spi_nor_init_params(struct spi_nor 
+>>> *nor)
+>>>       if (!nor->params)
+>>>               return -ENOMEM;
+>>> 
+>>> +     spi_nor_init_default_params(nor);
+>>> +
+>>>       spi_nor_info_init_params(nor);
+>>> 
+>>>       spi_nor_manufacturer_init_params(nor);
+>> 
+>> I am neutral towards this patch. I don't think it improves much, but 
+>> at
+>> the same time it doesn't make anything worse either.
+> 
+> I think it helps readability. It splits spi_nor_init_params() into
+> smaller logical chunks,
+> based on the type of initialization. We should usually avoid long
+> methods where we can split
+> them in logical chunks, it makes the code pleasant to read.
+
+I'm fine with that. Just want to say, that then we have to think
+about what goes where and where we draw the line.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
