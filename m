@@ -2,145 +2,86 @@ Return-Path: <SRS0=wahI=PK=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A36DC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 14:36:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA2EFC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 22:37:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FA2B60EBD
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 14:36:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2FA2B60EBD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 76AA060FD9
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Oct 2021 22:37:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 76AA060FD9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zEc/gN0+VknyDTB+eU4L+ry/H/Zai/bO0gXoYXIpwfc=; b=M82ZpZRQU5I98r
-	g1SAiXwjlysa40oDo/f+9Yp8PPduNdgVCgpBf/8j+QvwPN6fn1AY7AuaTZbLgaX7vxoCTQPFhXOJG
-	0JwG1XD0tuGAGmv30/rzmOiHtSQCvRy52BA+yHicQmYrhKcuqw7x2HYnHR4MZaVwq3jNOsHjr3ssu
-	jdGN2msedthwsZcYwAqz2YJgugqLmnTQRIelFMTv9PpRcKmyZpjZfxBPg98JUryc1QVgdC3LobZjw
-	GblK0UJhKj10N4Lv//eI7Podl8mzKSUBl4ewE6pFlle6zWRGU/Irv4elsvHK7BHEEQuuijXf3Qg1A
-	pnbxZ2pI515qMLYTJklQ==;
+	List-Owner; bh=HGtlU/YHC+n6PAL1kLI8VzMaxCwcmcUVdXwPkyNd6PM=; b=Q4vwsPJbjZpGLQ
+	dav9wWps/04cBwoltjmizRsltUP2rUhWMQjrbDYacAnpLOd3wBlw6aroZD6pwoReLrPu+yLsR5cHh
+	K72bNtod88v/CTV6/Kk0/xZsVCpSYnnkPZxdBIeQB6LLDhs5wYOgboSTTuAT+oYbXcwo7Zfsatad8
+	/Mhz1APtD9/TqSZMnsfjcddEET9OEsVu5cXCE0TixSQSCMl+GU07lj+/kvp2h1tD21rsa1EmmSI+l
+	WFahSivmXPzRmtxaIVPb2H0KCWf54dekIx9sZAujlVLFHN1LeMRFEUj6AIMbqv3GYzISwIap1CyvQ
+	feXR58PxnChppol3Yuqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mdvdr-00BIEH-Qw; Fri, 22 Oct 2021 14:35:31 +0000
-Received: from mail-am6eur05on2081.outbound.protection.outlook.com
- ([40.107.22.81] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
+	id 1me39F-00C2un-Ey; Fri, 22 Oct 2021 22:36:25 +0000
+Received: from mail-ot1-f52.google.com ([209.85.210.52])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mdvdo-00BIDg-D5
- for linux-mtd@lists.infradead.org; Fri, 22 Oct 2021 14:35:30 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A4JR3vdIpgsV2wm6tB2ateVGh1R2fMIZCsSOxFvRsafYO+rxEDyMyGnCF/mKgumrC2tH57T+lZZ1Ba33Yq2sJfXBngOd7scnlzCdYcd1vKDntaoUasUcbbI9a+0H5OMSThACIdmghS1dpOvu7d0/sR+wM6Lj6C4yBHfn40EO/RNPFukJ7ENj7fawPC3Dcr0H2efoA1sGT9G7VIdOg0fPVvaISf4Ku/4bsZqjHPLxAgRdapGh2ucwTxJlji+pTOdKGgy2ui0KT1AjGumkOpOCXwZHnyOfu/RXl1x5sqbnNhrDvlSyrPK92TTZsj32zSrLkqSWpNGK2iyX4yritpJeaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=naE9qEWIpt22LZySiJKDW6iIulS2tb1k8eFn80P7efo=;
- b=drjeKGeOyJSNuYXOjQSzfkrHuWdhUfqtNmG0yaAH4ptlB7Y01xlBvFy+ZDRQweqJuz2URY7IE3nP/FRWI3fh38y2EfSctMf4cs9oq3MY5yq05H5tyZ1M4wPJ+PobkILcS8OQPKgA7WGwDHWFS6Xpdn0svxbo9HN9Hk7RPxpn8I5RQNUQVhDEcJjUN0+uFcmnyHFJrJJZuPt1vvDXvT0WhEgkPXpmh/PZm516a0Bj2ilqIA53xP30sOntErJDEuTUcac+PbJJKdy2I+IMoejrLWeSVU0RN5MCJstmbCvfTXEp7jFaFbHLG+X8lIzcjpV+00j/vhamgR8glqoPO8RGMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=naE9qEWIpt22LZySiJKDW6iIulS2tb1k8eFn80P7efo=;
- b=iKEzBpKbKv3FBBed1p8032KaX6UBURc1L14hx0DzF90nipNOBXrZCnOCzV1vCSGJavryIdSGQ5RKwyX4S9+tirgSLjYUzHUu55452v16oEH1R3pDQw/6j82uJKSRrkT95eHGffI80HFWvznmZYCU3NQoeW8OnQBV3WIgfjfuNAc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
- by DU2PR04MB8551.eurprd04.prod.outlook.com (2603:10a6:10:2d6::19)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Fri, 22 Oct
- 2021 14:35:22 +0000
-Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::f96e:198:8fae:c59]) by DU2PR04MB8774.eurprd04.prod.outlook.com
- ([fe80::f96e:198:8fae:c59%9]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
- 14:35:22 +0000
-Date: Fri, 22 Oct 2021 09:35:14 -0500
-From: "han.xu@nxp.com" <han.xu@nxp.com>
-To: Stefan =?iso-8859-1?Q?Riedm=FCller?= <S.Riedmueller@phytec.de>
-Cc: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
- "michael@amarulasolutions.com" <michael@amarulasolutions.com>,
- "ceggers@arri.de" <ceggers@arri.de>,
- "bbrezillon@kernel.org" <bbrezillon@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gerg@kernel.org" <gerg@kernel.org>, Christian Hemp <C.Hemp@phytec.de>
-Subject: Re: [RFC PATCH 2/2] gpmi-nand: Add ERR007117 protection for
- nfc_apply_timings
-Message-ID: <20211022143514.lplk6jaxklq3rxry@umbrella>
-References: <20211011084607.27a840e0@xps13>
- <20211012090224.4101984-1-s.riedmueller@phytec.de>
- <20211012090224.4101984-2-s.riedmueller@phytec.de>
- <20211013050148.2w373kpbfaeuxbwm@umbrella>
- <92d463460324d4501523f8a1da1f07c12fd6490f.camel@phytec.de>
-Content-Disposition: inline
-In-Reply-To: <92d463460324d4501523f8a1da1f07c12fd6490f.camel@phytec.de>
-User-Agent: NeoMutt/20171215
-X-ClientProxiedBy: SJ0PR05CA0083.namprd05.prod.outlook.com
- (2603:10b6:a03:332::28) To DU2PR04MB8774.eurprd04.prod.outlook.com
- (2603:10a6:10:2e1::21)
+ id 1me39C-00C2tq-RA
+ for linux-mtd@lists.infradead.org; Fri, 22 Oct 2021 22:36:24 +0000
+Received: by mail-ot1-f52.google.com with SMTP id
+ v2-20020a05683018c200b0054e3acddd91so3609534ote.8
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Oct 2021 15:36:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=oOXe3VMjgKim4OsLC2/pNiSdoxCkW2CDkjd2aP4EASQ=;
+ b=KRNn9F7Ygsl3kUfC2xt8/7ikQlxuKUGEAEGjMJCq8ql9MvJ5cNTqMwfEOu7Q/2+ngA
+ /m9BOj8XT3Qx9YxRm/a9dDIwdyI1SmDOYRTB44gQt+Mkht14u+lTbKw71zeEZxu/QfGq
+ QwaBx3w1jP2lf5Dotyx/011fbevTkdU0kzECakNbglkdvxuHHVtCR09SYlbPB1EycFoV
+ tfrByAZ1yljlDzwoiK8PTCWbFEUyb5vxM3ueQiOyK1dtbRCHHCDnJzLV83BePIlgHgpO
+ od5zALRCOJhuHX7pnpciaegl5Rm0cfp1t/fl+cuiOekllGyQ82gRnIr5sJxU70OTEeTY
+ Tfnw==
+X-Gm-Message-State: AOAM530I5Yy9fZd8lyn/XRT5hxnGu6NPFeoYDrImKw1vKe08I9MqBd2q
+ yojmZ7I39uENSLBEAFm7og==
+X-Google-Smtp-Source: ABdhPJz3YY0oBGgzE95RJYSfRS7Vop51WChSu23ig9VAzKncjIpwvEfV3xpMXLgwneL2AKN6pHrWgA==
+X-Received: by 2002:a05:6830:2386:: with SMTP id
+ l6mr2082728ots.88.1634942180249; 
+ Fri, 22 Oct 2021 15:36:20 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id w17sm1981116otm.50.2021.10.22.15.36.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 22 Oct 2021 15:36:19 -0700 (PDT)
+Received: (nullmailer pid 3294476 invoked by uid 1000);
+ Fri, 22 Oct 2021 22:36:18 -0000
+Date: Fri, 22 Oct 2021 17:36:18 -0500
+From: Rob Herring <robh@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org,
+ Julien Su <juliensu@mxic.com.tw>, linux-spi@vger.kernel.org,
+ Jaime Liao <jaimeliao@mxic.com.tw>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+ Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
+ description file to yaml
+Message-ID: <YXM84oCOAr6pSOw2@robh.at.kernel.org>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+ <20211020142809.349347-5-miquel.raynal@bootlin.com>
+ <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
+ <20211021160932.4169f66f@xps13>
 MIME-Version: 1.0
-Received: from localhost (70.112.23.252) by
- SJ0PR05CA0083.namprd05.prod.outlook.com (2603:10b6:a03:332::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend
- Transport; Fri, 22 Oct 2021 14:35:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9a0033e7-ec75-4e1d-cb5e-08d995692df9
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8551:
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-Microsoft-Antispam-PRVS: <DU2PR04MB85512796B9542D4E9BE6922597809@DU2PR04MB8551.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZxC5Jg0I3nE6/T39yU62O9+74g5iOlRYQe1LvyCb9U68OztU0LLelGYWkBQuVudN8rxTu1imBUkA/LOTEu+Nm5ql18QvwIcOKxX4qNhxY6UCQj9M0zphCZyUY3JCR3agHvZ/4hU+nLgpepXFhx9Twla06LYo3KWDy/bMz4L0Bn1EiX9V5zfsXHqbVtmFnsYQSjvoSAB/Fa+VvcIHBY1gTSzdn7zI05qDEAcwnoC7ipQObWvWT3Y36g+w6GdSkTQqlUGXiYQZMM6PlN4oyox6AJNETv/g8dF2jFir2yKzsxoNUCIoROYN0Xo53rc5+9wVFBgwgQwpfAhrYHlDP9RNZ/D5oTVYHAI6L8/eBWNQzZKrSD6KlbhL5no+6Jj2qi1VHM2Yr6I13L7J6L6ayaOjwt0IBI+LsK4drr1TUH5XtihSvMQ6tCzc1v8baLIeE3CfGBbstwpU0mFr8oF48A2q8KOsZ2GHYKgkWfeHJkf8JLu0f6qQ2sDvOVhOStyt7UmGgA8tbq3fJiJrilhJUKL+WQfigdplXXVW5B51Ieh8VBoWtQHzR+xsSpoEvKDfCoeVlJKsZbM5CtvrS3CLE67t9CgyNWju3LMBTBBRWfM9QiWU8VZLt/XDGVMpnkz9xZyqkSGqQ1WDO0Rhwsm2ljgHQjnVh+FhebPPA62I+xhe3WqMNNg3b/7a4WqL6vZuolHBy9MOZ5U12rQCU891oBERkg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DU2PR04MB8774.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(7916004)(366004)(1076003)(86362001)(33716001)(38350700002)(38100700002)(26005)(186003)(6666004)(8676002)(508600001)(6916009)(4326008)(956004)(4001150100001)(316002)(8936002)(66476007)(52116002)(6496006)(66574015)(6486002)(9686003)(66556008)(5660300002)(54906003)(66946007)(2906002)(83380400001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?P89f24Ca0TfJx1+wKVzjoiuda2wTbWVblWn8ValBYRU1oDb5/KbN1/sebD?=
- =?iso-8859-1?Q?BJmq7fOXpjJyEf7Ft6glXWoQkQNpjhswugxBWbDqHlWR9Sn9j/RlZcwJcz?=
- =?iso-8859-1?Q?sgrcPxRzGCgItu4SZOSyhjUAsMnICL0XNXWgVOrogS5HiJEw2uLg0SqrIk?=
- =?iso-8859-1?Q?papaY7BHePVtN/XgSmzNEESZ22XZzZxvk+VclwqTLiJYYhLBbUOgG8B0tF?=
- =?iso-8859-1?Q?/EmBlgw0WeQOxxF+9e91POstKroRDVzpoYUwwQVMgsQL5hlyGTFNxn1OOa?=
- =?iso-8859-1?Q?HguhDskrsOuGLM/ycHBLRz9AbpM5ukfTqAp/EfT6dTBPLqNc8WV8INAPUm?=
- =?iso-8859-1?Q?QfTOTe3Q9Owb9NlnQgm8QBqK6Hy9noXLzK6u0oyMnlgVm0LvQtjb9M5hAI?=
- =?iso-8859-1?Q?kGU/sYKqfstp7XlB3JxZ5POCEHPjmpzYQ3+C5UI32x9kdW2bS2hxWxehLY?=
- =?iso-8859-1?Q?FoN3eVxOhkmkpXpyjW1IVfbbkOblTAGiy+4CB7Nu5DsnYligEmX3VMsc+G?=
- =?iso-8859-1?Q?du5n30j60Z37iR7n474MD7Ks4JQoTzGByZgpV91tnC9DgTBoLc+kPa+zaV?=
- =?iso-8859-1?Q?W7r5XzJERCNoVOGexIiDeC8gqx+Ux9rO2E67Kg2Xr83dpsw8XjGj03vIYr?=
- =?iso-8859-1?Q?u7bKmojpQnH3EB+y1wdojDHT95kVboC5YEhgIaHTFjJOEASV8qw8bqC5zk?=
- =?iso-8859-1?Q?w5d6EonTUuxfclrPFAauj8eOPXtCU2DrE+lyagbA9Fk2EWz6sAu3v2vE1y?=
- =?iso-8859-1?Q?o0s3hCbv4Q4x0IYSXQOHHu4gCXSBAApjfWFzTSJXcRk1A6gb57F+ad1WbP?=
- =?iso-8859-1?Q?6+pYba7RXjtbOdwrtxtVHFCIETX8U4mDWiIWKU3H6Tg7knJMcuV8ru30BZ?=
- =?iso-8859-1?Q?AxFBJCr/NxKlwh5DinSlJ2gNCv18cX5/0Ix/es4GaULuPxVsrw52IvGdQU?=
- =?iso-8859-1?Q?TEiVdnIHoB5kmS3O3EXKGRg0tfsv3AUAxCsiMCTj9673MDKm2UuUVqUVO6?=
- =?iso-8859-1?Q?gupZcJfH/5vQmDDhp0Up99XLooOexgFUcFI0E6l2Yhm11TfETv1wpNLNuC?=
- =?iso-8859-1?Q?+SVttrJ8mZaAzyK2UmzmFNlncDiZYg3iqRbrPU5ZaoXw64119TTPlvlOd9?=
- =?iso-8859-1?Q?bxz9EyZfR1DsA2AV/gQQmHWr3iN6nRCIbDViWgGDuUsG6QGYuiDk8leTsE?=
- =?iso-8859-1?Q?ndZIrcsuYTeI210/n7yA03reHZ48aw/8LvWl+iQNDeVCGVJXt3xBiSgC7O?=
- =?iso-8859-1?Q?635lQMWOxZE7FmdhYd7yxyVwCjZSf/w7wOd+imEgOxAe0RIVAtPvddCAr/?=
- =?iso-8859-1?Q?F5s/9gNf/oDXAW+jIYNdxb7CwOjyVErHl44oXo4ae8R6sHSaIJyNroke9o?=
- =?iso-8859-1?Q?Ec+A0lwz6FbuuFcrOAcOX34lbj+5swvmZ5kuCrKG1Xxq2RiQTc3T1fQ1hv?=
- =?iso-8859-1?Q?hgUZomL+4guEBhf9OBXEemosDW+0U1xcNOPeS+YpBda6C79jWe2j6vyM7o?=
- =?iso-8859-1?Q?4=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a0033e7-ec75-4e1d-cb5e-08d995692df9
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 14:35:22.7246 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: han.xu@nxp.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8551
+Content-Disposition: inline
+In-Reply-To: <20211021160932.4169f66f@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211022_073528_501150_6DB1A3D7 
-X-CRM114-Status: GOOD (  34.66  )
+X-CRM114-CacheID: sfid-20211022_153622_918912_84C5E264 
+X-CRM114-Status: GOOD (  32.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,156 +93,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/10/22 08:45AM, Stefan Riedm=FCller wrote:
-> Hi Han,
-> =
-
-> sorry it took me some time to get back to you.
-> =
-
-> On Wed, 2021-10-13 at 00:01 -0500, Han Xu wrote:
-> > On 21/10/12 11:02AM, Stefan Riedmueller wrote:
-> > > According to i.MX 6 erratum ERR007117 gpmi clocks need to be gated off
-> > > when doing a gpmi_io clk rate change. So gate the clocks off before
-> > > the rate change in nfc_apply_timings and ungate them again after the
-> > > change.
-> > > =
-
-> > > Otherwise this rate change can lead to an unresponsive GPMI core which
-> > > results in DMA timeouts and failed driver probe:
-> > > =
-
-> > > [    4.072318] gpmi-nand 112000.gpmi-nand: DMA timeout, last DMA
-> > > ...
-> > > [    4.370355] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -110
-> > > ...
-> > > [    4.375988] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -22
-> > > [    4.381524] gpmi-nand 112000.gpmi-nand: Error in ECC-based read: -=
-22
-> > > [    4.387988] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -22
-> > > [    4.393535] gpmi-nand 112000.gpmi-nand: Chip: 0, Error -22
-> > > ...
-> > > =
-
-> > > Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+On Thu, Oct 21, 2021 at 04:09:32PM +0200, Miquel Raynal wrote:
+> Hi Rob,
+> 
+> robh@kernel.org wrote on Wed, 20 Oct 2021 16:14:47 -0500:
+> 
+> > On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:
+> > > Let's get rid of spi-nand.txt by converting it to yaml schema. While at
+> > > converting this file, let's actually pull all the generic properties
+> > > from nand-chip.yaml which might apply to a SPI-NAND chip.
+> > > 
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > > > ---
-> > > Hi,
-> > > =
+> > >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
+> > >  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
+> > >  2 files changed, 27 insertions(+), 5 deletions(-)
+> > >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+> > >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> > >   
+> > 
+> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> > 
+> > yamllint warnings/errors:
+> > 
+> > dtschema/dtc warnings/errors:
+> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> > xargs: dt-doc-validate: exited with status 255; aborting
+> > make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
+> > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> > make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
+> > make[1]: *** Waiting for unfinished jobs....
+> > make: *** [Makefile:1441: dt_binding_check] Error 2
+> 
+> I am not able to reproduce this error and in general I don't understand
+> it. There is no relationship between this change and
+> snps,dw-apb-ssi.yaml. Also the fact that nand-chip-yaml do not exist,
+> it was just created in the patch before so I wonder how much I should
+> trust this error.
 
-> > > I'm not sure about the error handling here, if it is actually neccess=
-ary.
-> > > So some feedback would be nice here.
-> > > =
+I think you can ignore this. The prior patch should have been applied, 
+but looks like it wasn't. My script's patch applying logic is not what 
+I'd call robust.
 
-> > > Thanks,
-> > > Stefan
-> > > ---
-> > >  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 21 +++++++++++++++++++--
-> > >  1 file changed, 19 insertions(+), 2 deletions(-)
-> > > =
+> Also, maybe I am not using the tools properly, but it is very hard to
+> send correct bindings at the first try. Running make dt_binding_check
+> takes ages, any change in one yaml file will recheck the entire data
+> base and filtering out on a single yaml file is generally too
+> restrictive and still prints unrelated errors of syntax on other files.
 
-> > > diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > > b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > > index a1f7000f033e..326c8a895f1f 100644
-> > > --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > > +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> > > @@ -713,15 +713,28 @@ static void gpmi_nfc_compute_timings(struct
-> > > gpmi_nand_data *this,
-> > >  			      (use_half_period ? BM_GPMI_CTRL1_HALF_PERIOD :
-> > > 0);
-> > >  }
-> > >  =
+Do you set 'DT_SCHEMA_FILES'? That will check just the schema you set 
+it to. You still need to not set it at the end because any schema could 
+apply to any example, so we have to check everything.
 
-> > > -static void gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
-> > > +static int gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
-> > >  {
-> > >  	struct gpmi_nfc_hardware_timing *hw =3D &this->hw;
-> > >  	struct resources *r =3D &this->resources;
-> > >  	void __iomem *gpmi_regs =3D r->gpmi_regs;
-> > >  	unsigned int dll_wait_time_us;
-> > > +	int ret;
-> > > +
-> > > +	if (GPMI_IS_MX6Q(this)) {
-> > =
+Also using DT_SCHEMA_FILES should be a bit faster with what's queued for 
+5.16.
 
-> > Not only for 6Q but for GPMI_IS_MX6
-> =
+> I don't know how much of this is actually expected and/or if someone is
+> working on it.
 
-> Can you confirm that i.MX 6SX and i.MX 7 are affected by the ERR007117 er=
-ratum
-> as well? Because the i.MX 6UL/ULL are included by the GPMI_IS_MX6Q alread=
-y.
+Due to python startup times being slow, it turns out to generally be 
+faster to not have make track changes and do things incrementally. 
+That's why all the schema are checked at once (though sharded with 
+xargs). So I'm not really sure there's much we can do. I've certainly 
+investigated it.
 
-i.MX6SX has the glitch issue for sure, but I can double check if it's due t=
-o the
-same errata. I will also go check if the errata will affect i.MX7
-
-> =
-
-> Or do we need another macro for i.MX 6UL/ULL as Christian has suggested
-> earlier?
-> =
-
-> Thanks,
-> Stefan
-> =
-
-> > =
-
-> > > +		ret =3D __gpmi_enable_clk(this, false);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +	}
-> > >  =
-
-> > >  	clk_set_rate(r->clock[0], hw->clk_rate);
-> > >  =
-
-> > > +	if (GPMI_IS_MX6Q(this)) {
-> > > +		ret =3D __gpmi_enable_clk(this, true);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +	}
-> > > +
-> > >  	writel(hw->timing0, gpmi_regs + HW_GPMI_TIMING0);
-> > >  	writel(hw->timing1, gpmi_regs + HW_GPMI_TIMING1);
-> > >  =
-
-> > > @@ -739,6 +752,8 @@ static void gpmi_nfc_apply_timings(struct
-> > > gpmi_nand_data *this)
-> > >  =
-
-> > >  	/* Wait for the DLL to settle. */
-> > >  	udelay(dll_wait_time_us);
-> > > +
-> > > +	return 0;
-> > >  }
-> > >  =
-
-> > >  static int gpmi_setup_interface(struct nand_chip *chip, int chipnr,
-> > > @@ -2271,7 +2286,9 @@ static int gpmi_nfc_exec_op(struct nand_chip *c=
-hip,
-> > >  	 */
-> > >  	if (this->hw.must_apply_timings) {
-> > >  		this->hw.must_apply_timings =3D false;
-> > > -		gpmi_nfc_apply_timings(this);
-> > > +		ret =3D gpmi_nfc_apply_timings(this);
-> > > +		if (ret)
-> > > +			return ret;
-> > >  	}
-> > >  =
-
-> > >  	dev_dbg(this->dev, "%s: %d instructions\n", __func__, op->ninstrs);
-> > > -- =
-
-> > > 2.25.1
-> > > =
-
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
