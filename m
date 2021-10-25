@@ -2,14 +2,14 @@ Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5489C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F65CC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:08:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3E4860F6F
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:07:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3E4860F6F
+	by mail.kernel.org (Postfix) with ESMTPS id 3322560F9C
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:08:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3322560F9C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,18 +18,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2JvbuQDO+pNoPOMkmW6mgNCfPzkAeNQmLkE1xs6Gx6o=; b=WsZebX4jwA0XTK
-	iS2mrYCjl+XO2HQ5L0hOy6qlqQby85+1sXKB2Vpy1qG9SKaYPf+1xW/4kqgnVKCp+2an6pL4v/GdO
-	M1tcgOSFjgBsMIXW//cZXSvfvBfPTiXlgzMTpkCPEgg+4PH1IRjYAM+ae2zgE1mG51N7YhyGwwgmn
-	VArQeJ8FF+wROrWPGqex0ShNELtM5wnU1GC5Vi4i++aH7IziQVtil3eMs1V6UYDQV6jSgX2XnbW/A
-	xIh7usRXbfRwQuqM46hAyU/lzVRn+XmAml2Jv9vHTsMx8rgHbXTu8GDyeul+3OTrAxLCEznECAl5p
-	9rVHGSjIc5gsvZOWRNTQ==;
+	List-Owner; bh=IUjRmBp+HRIufWPTa4r7b0mEaH9y5tDaCCQ61DtkTNg=; b=cc4V91n30XUhDV
+	2JvhZxxszBww7CX+5ezoAq9xSWx9fppVlEitQ65B01VlqxAzMkVf/yvXsBXOR0RnG7GEBD+B2ukrj
+	84JYNIC5Hq2HVcyfJiiZPiJnfMsntsvvxLjGnCVH9GD7LwVWemnu9YkoIL9ZvZ21oOzEGGB7Jo6/C
+	edJdY5gAvAeuNWFxzqYQ+xg8fIrjcm/a8FwVgJsiPvGv0zBbfR2QzOgyHDIvxjGnb5j/jnthVG7bJ
+	wn6vLuSMguh4kllD2c0DAf342yDZaTAjFM11mWVsm5QcmrrWTUIuZzrlarkWgDeLw3183tXzbhq1j
+	ZErD9y83kTFery8pa+rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1meu4m-00FVJG-KD; Mon, 25 Oct 2021 07:07:20 +0000
+	id 1meu5U-00FVe9-Sm; Mon, 25 Oct 2021 07:08:04 +0000
 Received: from [2001:4bb8:184:6dcb:6093:467a:cccc:351c] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1meu32-00FUSR-6T; Mon, 25 Oct 2021 07:05:32 +0000
+ id 1meu34-00FUTK-Q7; Mon, 25 Oct 2021 07:05:35 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -37,9 +37,9 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 05/12] blk-mq: move blk_mq_flush_plug_list
-Date: Mon, 25 Oct 2021 09:05:10 +0200
-Message-Id: <20211025070517.1548584-6-hch@lst.de>
+Subject: [PATCH 06/12] block: move request based cloning helpers to blk-mq.c
+Date: Mon, 25 Oct 2021 09:05:11 +0200
+Message-Id: <20211025070517.1548584-7-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211025070517.1548584-1-hch@lst.de>
 References: <20211025070517.1548584-1-hch@lst.de>
@@ -60,217 +60,458 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Move blk_mq_flush_plug_list and blk_mq_plug_issue_direct down in blk-mq.c
-to prepare for marking blk_mq_request_issue_directly static without the
-need of a forward declaration.
+Keep all the request based code together.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-mq.c | 184 ++++++++++++++++++++++++-------------------------
- 1 file changed, 92 insertions(+), 92 deletions(-)
+ block/blk-core.c | 184 +----------------------------------------------
+ block/blk-mq.c   | 175 +++++++++++++++++++++++++++++++++++++++++++-
+ block/blk-mq.h   |   3 -
+ block/blk.h      |  10 +++
+ 4 files changed, 185 insertions(+), 187 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index d8f17b54e2c73..f46d41a760106 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2277,98 +2277,6 @@ static void blk_mq_commit_rqs(struct blk_mq_hw_ctx *hctx, int *queued,
- 	*queued = 0;
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 08c6077365ac9..8ae6ba9ec1050 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -618,7 +618,7 @@ static int __init setup_fail_make_request(char *str)
+ }
+ __setup("fail_make_request=", setup_fail_make_request);
+ 
+-static bool should_fail_request(struct block_device *part, unsigned int bytes)
++bool should_fail_request(struct block_device *part, unsigned int bytes)
+ {
+ 	return part->bd_make_it_fail && should_fail(&fail_make_request, bytes);
+ }
+@@ -632,15 +632,6 @@ static int __init fail_make_request_debugfs(void)
  }
  
--static void blk_mq_plug_issue_direct(struct blk_plug *plug, bool from_schedule)
+ late_initcall(fail_make_request_debugfs);
+-
+-#else /* CONFIG_FAIL_MAKE_REQUEST */
+-
+-static inline bool should_fail_request(struct block_device *part,
+-					unsigned int bytes)
 -{
--	struct blk_mq_hw_ctx *hctx = NULL;
--	struct request *rq;
--	int queued = 0;
--	int errors = 0;
+-	return false;
+-}
 -
--	while ((rq = rq_list_pop(&plug->mq_list))) {
--		bool last = rq_list_empty(plug->mq_list);
--		blk_status_t ret;
+ #endif /* CONFIG_FAIL_MAKE_REQUEST */
+ 
+ static inline bool bio_check_ro(struct bio *bio)
+@@ -1114,92 +1105,6 @@ int iocb_bio_iopoll(struct kiocb *kiocb, struct io_comp_batch *iob,
+ }
+ EXPORT_SYMBOL_GPL(iocb_bio_iopoll);
+ 
+-/**
+- * blk_cloned_rq_check_limits - Helper function to check a cloned request
+- *                              for the new queue limits
+- * @q:  the queue
+- * @rq: the request being checked
+- *
+- * Description:
+- *    @rq may have been made based on weaker limitations of upper-level queues
+- *    in request stacking drivers, and it may violate the limitation of @q.
+- *    Since the block layer and the underlying device driver trust @rq
+- *    after it is inserted to @q, it should be checked against @q before
+- *    the insertion using this generic function.
+- *
+- *    Request stacking drivers like request-based dm may change the queue
+- *    limits when retrying requests on other queues. Those requests need
+- *    to be checked against the new queue limits again during dispatch.
+- */
+-static blk_status_t blk_cloned_rq_check_limits(struct request_queue *q,
+-				      struct request *rq)
+-{
+-	unsigned int max_sectors = blk_queue_get_max_sectors(q, req_op(rq));
 -
--		if (hctx != rq->mq_hctx) {
--			if (hctx)
--				blk_mq_commit_rqs(hctx, &queued, from_schedule);
--			hctx = rq->mq_hctx;
--		}
+-	if (blk_rq_sectors(rq) > max_sectors) {
+-		/*
+-		 * SCSI device does not have a good way to return if
+-		 * Write Same/Zero is actually supported. If a device rejects
+-		 * a non-read/write command (discard, write same,etc.) the
+-		 * low-level device driver will set the relevant queue limit to
+-		 * 0 to prevent blk-lib from issuing more of the offending
+-		 * operations. Commands queued prior to the queue limit being
+-		 * reset need to be completed with BLK_STS_NOTSUPP to avoid I/O
+-		 * errors being propagated to upper layers.
+-		 */
+-		if (max_sectors == 0)
+-			return BLK_STS_NOTSUPP;
 -
--		ret = blk_mq_request_issue_directly(rq, last);
--		switch (ret) {
--		case BLK_STS_OK:
--			queued++;
--			break;
--		case BLK_STS_RESOURCE:
--		case BLK_STS_DEV_RESOURCE:
--			blk_mq_request_bypass_insert(rq, false, last);
--			blk_mq_commit_rqs(hctx, &queued, from_schedule);
--			return;
--		default:
--			blk_mq_end_request(rq, ret);
--			errors++;
--			break;
--		}
+-		printk(KERN_ERR "%s: over max size limit. (%u > %u)\n",
+-			__func__, blk_rq_sectors(rq), max_sectors);
+-		return BLK_STS_IOERR;
 -	}
 -
 -	/*
--	 * If we didn't flush the entire list, we could have told the driver
--	 * there was more coming, but that turned out to be a lie.
+-	 * The queue settings related to segment counting may differ from the
+-	 * original queue.
 -	 */
--	if (errors)
--		blk_mq_commit_rqs(hctx, &queued, from_schedule);
+-	rq->nr_phys_segments = blk_recalc_rq_segments(rq);
+-	if (rq->nr_phys_segments > queue_max_segments(q)) {
+-		printk(KERN_ERR "%s: over max segments limit. (%hu > %hu)\n",
+-			__func__, rq->nr_phys_segments, queue_max_segments(q));
+-		return BLK_STS_IOERR;
+-	}
+-
+-	return BLK_STS_OK;
 -}
 -
--void blk_mq_flush_plug_list(struct blk_plug *plug, bool from_schedule)
+-/**
+- * blk_insert_cloned_request - Helper for stacking drivers to submit a request
+- * @q:  the queue to submit the request
+- * @rq: the request being queued
+- */
+-blk_status_t blk_insert_cloned_request(struct request_queue *q, struct request *rq)
 -{
--	struct blk_mq_hw_ctx *this_hctx;
--	struct blk_mq_ctx *this_ctx;
--	unsigned int depth;
--	LIST_HEAD(list);
+-	blk_status_t ret;
 -
--	if (rq_list_empty(plug->mq_list))
--		return;
--	plug->rq_count = 0;
+-	ret = blk_cloned_rq_check_limits(q, rq);
+-	if (ret != BLK_STS_OK)
+-		return ret;
 -
--	if (!plug->multiple_queues && !plug->has_elevator) {
--		blk_mq_plug_issue_direct(plug, from_schedule);
--		if (rq_list_empty(plug->mq_list))
--			return;
--	}
+-	if (rq->rq_disk &&
+-	    should_fail_request(rq->rq_disk->part0, blk_rq_bytes(rq)))
+-		return BLK_STS_IOERR;
 -
--	this_hctx = NULL;
--	this_ctx = NULL;
--	depth = 0;
--	do {
--		struct request *rq;
+-	if (blk_crypto_insert_cloned_request(rq))
+-		return BLK_STS_IOERR;
 -
--		rq = rq_list_pop(&plug->mq_list);
+-	blk_account_io_start(rq);
 -
--		if (!this_hctx) {
--			this_hctx = rq->mq_hctx;
--			this_ctx = rq->mq_ctx;
--		} else if (this_hctx != rq->mq_hctx || this_ctx != rq->mq_ctx) {
--			trace_block_unplug(this_hctx->queue, depth,
--						!from_schedule);
--			blk_mq_sched_insert_requests(this_hctx, this_ctx,
--						&list, from_schedule);
--			depth = 0;
--			this_hctx = rq->mq_hctx;
--			this_ctx = rq->mq_ctx;
+-	/*
+-	 * Since we have a scheduler attached on the top device,
+-	 * bypass a potential scheduler on the bottom device for
+-	 * insert.
+-	 */
+-	return blk_mq_request_issue_directly(rq, true);
+-}
+-EXPORT_SYMBOL_GPL(blk_insert_cloned_request);
 -
--		}
+ static void update_io_ticks(struct block_device *part, unsigned long now,
+ 		bool end)
+ {
+@@ -1352,93 +1257,6 @@ int blk_lld_busy(struct request_queue *q)
+ }
+ EXPORT_SYMBOL_GPL(blk_lld_busy);
+ 
+-/**
+- * blk_rq_unprep_clone - Helper function to free all bios in a cloned request
+- * @rq: the clone request to be cleaned up
+- *
+- * Description:
+- *     Free all bios in @rq for a cloned request.
+- */
+-void blk_rq_unprep_clone(struct request *rq)
+-{
+-	struct bio *bio;
 -
--		list_add(&rq->queuelist, &list);
--		depth++;
--	} while (!rq_list_empty(plug->mq_list));
+-	while ((bio = rq->bio) != NULL) {
+-		rq->bio = bio->bi_next;
 -
--	if (!list_empty(&list)) {
--		trace_block_unplug(this_hctx->queue, depth, !from_schedule);
--		blk_mq_sched_insert_requests(this_hctx, this_ctx, &list,
--						from_schedule);
+-		bio_put(bio);
 -	}
 -}
+-EXPORT_SYMBOL_GPL(blk_rq_unprep_clone);
 -
- static void blk_mq_bio_to_request(struct request *rq, struct bio *bio,
- 		unsigned int nr_segs)
+-/**
+- * blk_rq_prep_clone - Helper function to setup clone request
+- * @rq: the request to be setup
+- * @rq_src: original request to be cloned
+- * @bs: bio_set that bios for clone are allocated from
+- * @gfp_mask: memory allocation mask for bio
+- * @bio_ctr: setup function to be called for each clone bio.
+- *           Returns %0 for success, non %0 for failure.
+- * @data: private data to be passed to @bio_ctr
+- *
+- * Description:
+- *     Clones bios in @rq_src to @rq, and copies attributes of @rq_src to @rq.
+- *     Also, pages which the original bios are pointing to are not copied
+- *     and the cloned bios just point same pages.
+- *     So cloned bios must be completed before original bios, which means
+- *     the caller must complete @rq before @rq_src.
+- */
+-int blk_rq_prep_clone(struct request *rq, struct request *rq_src,
+-		      struct bio_set *bs, gfp_t gfp_mask,
+-		      int (*bio_ctr)(struct bio *, struct bio *, void *),
+-		      void *data)
+-{
+-	struct bio *bio, *bio_src;
+-
+-	if (!bs)
+-		bs = &fs_bio_set;
+-
+-	__rq_for_each_bio(bio_src, rq_src) {
+-		bio = bio_clone_fast(bio_src, gfp_mask, bs);
+-		if (!bio)
+-			goto free_and_out;
+-
+-		if (bio_ctr && bio_ctr(bio, bio_src, data))
+-			goto free_and_out;
+-
+-		if (rq->bio) {
+-			rq->biotail->bi_next = bio;
+-			rq->biotail = bio;
+-		} else {
+-			rq->bio = rq->biotail = bio;
+-		}
+-		bio = NULL;
+-	}
+-
+-	/* Copy attributes of the original request to the clone request. */
+-	rq->__sector = blk_rq_pos(rq_src);
+-	rq->__data_len = blk_rq_bytes(rq_src);
+-	if (rq_src->rq_flags & RQF_SPECIAL_PAYLOAD) {
+-		rq->rq_flags |= RQF_SPECIAL_PAYLOAD;
+-		rq->special_vec = rq_src->special_vec;
+-	}
+-	rq->nr_phys_segments = rq_src->nr_phys_segments;
+-	rq->ioprio = rq_src->ioprio;
+-
+-	if (rq->bio && blk_crypto_rq_bio_prep(rq, rq->bio, gfp_mask) < 0)
+-		goto free_and_out;
+-
+-	return 0;
+-
+-free_and_out:
+-	if (bio)
+-		bio_put(bio);
+-	blk_rq_unprep_clone(rq);
+-
+-	return -ENOMEM;
+-}
+-EXPORT_SYMBOL_GPL(blk_rq_prep_clone);
+-
+ int kblockd_schedule_work(struct work_struct *work)
  {
-@@ -2508,6 +2416,98 @@ blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last)
- 	return ret;
+ 	return queue_work(kblockd_workqueue, work);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index f46d41a760106..923231023fe84 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2403,7 +2403,7 @@ static void blk_mq_try_issue_directly(struct blk_mq_hw_ctx *hctx,
+ 	hctx_unlock(hctx, srcu_idx);
  }
  
-+static void blk_mq_plug_issue_direct(struct blk_plug *plug, bool from_schedule)
+-blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last)
++static blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last)
+ {
+ 	blk_status_t ret;
+ 	int srcu_idx;
+@@ -2720,6 +2720,179 @@ void blk_mq_submit_bio(struct bio *bio)
+ 	blk_queue_exit(q);
+ }
+ 
++/**
++ * blk_cloned_rq_check_limits - Helper function to check a cloned request
++ *                              for the new queue limits
++ * @q:  the queue
++ * @rq: the request being checked
++ *
++ * Description:
++ *    @rq may have been made based on weaker limitations of upper-level queues
++ *    in request stacking drivers, and it may violate the limitation of @q.
++ *    Since the block layer and the underlying device driver trust @rq
++ *    after it is inserted to @q, it should be checked against @q before
++ *    the insertion using this generic function.
++ *
++ *    Request stacking drivers like request-based dm may change the queue
++ *    limits when retrying requests on other queues. Those requests need
++ *    to be checked against the new queue limits again during dispatch.
++ */
++static blk_status_t blk_cloned_rq_check_limits(struct request_queue *q,
++				      struct request *rq)
 +{
-+	struct blk_mq_hw_ctx *hctx = NULL;
-+	struct request *rq;
-+	int queued = 0;
-+	int errors = 0;
++	unsigned int max_sectors = blk_queue_get_max_sectors(q, req_op(rq));
 +
-+	while ((rq = rq_list_pop(&plug->mq_list))) {
-+		bool last = rq_list_empty(plug->mq_list);
-+		blk_status_t ret;
++	if (blk_rq_sectors(rq) > max_sectors) {
++		/*
++		 * SCSI device does not have a good way to return if
++		 * Write Same/Zero is actually supported. If a device rejects
++		 * a non-read/write command (discard, write same,etc.) the
++		 * low-level device driver will set the relevant queue limit to
++		 * 0 to prevent blk-lib from issuing more of the offending
++		 * operations. Commands queued prior to the queue limit being
++		 * reset need to be completed with BLK_STS_NOTSUPP to avoid I/O
++		 * errors being propagated to upper layers.
++		 */
++		if (max_sectors == 0)
++			return BLK_STS_NOTSUPP;
 +
-+		if (hctx != rq->mq_hctx) {
-+			if (hctx)
-+				blk_mq_commit_rqs(hctx, &queued, from_schedule);
-+			hctx = rq->mq_hctx;
-+		}
-+
-+		ret = blk_mq_request_issue_directly(rq, last);
-+		switch (ret) {
-+		case BLK_STS_OK:
-+			queued++;
-+			break;
-+		case BLK_STS_RESOURCE:
-+		case BLK_STS_DEV_RESOURCE:
-+			blk_mq_request_bypass_insert(rq, false, last);
-+			blk_mq_commit_rqs(hctx, &queued, from_schedule);
-+			return;
-+		default:
-+			blk_mq_end_request(rq, ret);
-+			errors++;
-+			break;
-+		}
++		printk(KERN_ERR "%s: over max size limit. (%u > %u)\n",
++			__func__, blk_rq_sectors(rq), max_sectors);
++		return BLK_STS_IOERR;
 +	}
 +
 +	/*
-+	 * If we didn't flush the entire list, we could have told the driver
-+	 * there was more coming, but that turned out to be a lie.
++	 * The queue settings related to segment counting may differ from the
++	 * original queue.
 +	 */
-+	if (errors)
-+		blk_mq_commit_rqs(hctx, &queued, from_schedule);
++	rq->nr_phys_segments = blk_recalc_rq_segments(rq);
++	if (rq->nr_phys_segments > queue_max_segments(q)) {
++		printk(KERN_ERR "%s: over max segments limit. (%hu > %hu)\n",
++			__func__, rq->nr_phys_segments, queue_max_segments(q));
++		return BLK_STS_IOERR;
++	}
++
++	return BLK_STS_OK;
 +}
 +
-+void blk_mq_flush_plug_list(struct blk_plug *plug, bool from_schedule)
++/**
++ * blk_insert_cloned_request - Helper for stacking drivers to submit a request
++ * @q:  the queue to submit the request
++ * @rq: the request being queued
++ */
++blk_status_t blk_insert_cloned_request(struct request_queue *q, struct request *rq)
 +{
-+	struct blk_mq_hw_ctx *this_hctx;
-+	struct blk_mq_ctx *this_ctx;
-+	unsigned int depth;
-+	LIST_HEAD(list);
++	blk_status_t ret;
 +
-+	if (rq_list_empty(plug->mq_list))
-+		return;
-+	plug->rq_count = 0;
++	ret = blk_cloned_rq_check_limits(q, rq);
++	if (ret != BLK_STS_OK)
++		return ret;
 +
-+	if (!plug->multiple_queues && !plug->has_elevator) {
-+		blk_mq_plug_issue_direct(plug, from_schedule);
-+		if (rq_list_empty(plug->mq_list))
-+			return;
-+	}
++	if (rq->rq_disk &&
++	    should_fail_request(rq->rq_disk->part0, blk_rq_bytes(rq)))
++		return BLK_STS_IOERR;
 +
-+	this_hctx = NULL;
-+	this_ctx = NULL;
-+	depth = 0;
-+	do {
-+		struct request *rq;
++	if (blk_crypto_insert_cloned_request(rq))
++		return BLK_STS_IOERR;
 +
-+		rq = rq_list_pop(&plug->mq_list);
++	blk_account_io_start(rq);
 +
-+		if (!this_hctx) {
-+			this_hctx = rq->mq_hctx;
-+			this_ctx = rq->mq_ctx;
-+		} else if (this_hctx != rq->mq_hctx || this_ctx != rq->mq_ctx) {
-+			trace_block_unplug(this_hctx->queue, depth,
-+						!from_schedule);
-+			blk_mq_sched_insert_requests(this_hctx, this_ctx,
-+						&list, from_schedule);
-+			depth = 0;
-+			this_hctx = rq->mq_hctx;
-+			this_ctx = rq->mq_ctx;
++	/*
++	 * Since we have a scheduler attached on the top device,
++	 * bypass a potential scheduler on the bottom device for
++	 * insert.
++	 */
++	return blk_mq_request_issue_directly(rq, true);
++}
++EXPORT_SYMBOL_GPL(blk_insert_cloned_request);
 +
-+		}
++/**
++ * blk_rq_unprep_clone - Helper function to free all bios in a cloned request
++ * @rq: the clone request to be cleaned up
++ *
++ * Description:
++ *     Free all bios in @rq for a cloned request.
++ */
++void blk_rq_unprep_clone(struct request *rq)
++{
++	struct bio *bio;
 +
-+		list_add(&rq->queuelist, &list);
-+		depth++;
-+	} while (!rq_list_empty(plug->mq_list));
++	while ((bio = rq->bio) != NULL) {
++		rq->bio = bio->bi_next;
 +
-+	if (!list_empty(&list)) {
-+		trace_block_unplug(this_hctx->queue, depth, !from_schedule);
-+		blk_mq_sched_insert_requests(this_hctx, this_ctx, &list,
-+						from_schedule);
++		bio_put(bio);
 +	}
 +}
++EXPORT_SYMBOL_GPL(blk_rq_unprep_clone);
 +
- void blk_mq_try_issue_list_directly(struct blk_mq_hw_ctx *hctx,
- 		struct list_head *list)
++/**
++ * blk_rq_prep_clone - Helper function to setup clone request
++ * @rq: the request to be setup
++ * @rq_src: original request to be cloned
++ * @bs: bio_set that bios for clone are allocated from
++ * @gfp_mask: memory allocation mask for bio
++ * @bio_ctr: setup function to be called for each clone bio.
++ *           Returns %0 for success, non %0 for failure.
++ * @data: private data to be passed to @bio_ctr
++ *
++ * Description:
++ *     Clones bios in @rq_src to @rq, and copies attributes of @rq_src to @rq.
++ *     Also, pages which the original bios are pointing to are not copied
++ *     and the cloned bios just point same pages.
++ *     So cloned bios must be completed before original bios, which means
++ *     the caller must complete @rq before @rq_src.
++ */
++int blk_rq_prep_clone(struct request *rq, struct request *rq_src,
++		      struct bio_set *bs, gfp_t gfp_mask,
++		      int (*bio_ctr)(struct bio *, struct bio *, void *),
++		      void *data)
++{
++	struct bio *bio, *bio_src;
++
++	if (!bs)
++		bs = &fs_bio_set;
++
++	__rq_for_each_bio(bio_src, rq_src) {
++		bio = bio_clone_fast(bio_src, gfp_mask, bs);
++		if (!bio)
++			goto free_and_out;
++
++		if (bio_ctr && bio_ctr(bio, bio_src, data))
++			goto free_and_out;
++
++		if (rq->bio) {
++			rq->biotail->bi_next = bio;
++			rq->biotail = bio;
++		} else {
++			rq->bio = rq->biotail = bio;
++		}
++		bio = NULL;
++	}
++
++	/* Copy attributes of the original request to the clone request. */
++	rq->__sector = blk_rq_pos(rq_src);
++	rq->__data_len = blk_rq_bytes(rq_src);
++	if (rq_src->rq_flags & RQF_SPECIAL_PAYLOAD) {
++		rq->rq_flags |= RQF_SPECIAL_PAYLOAD;
++		rq->special_vec = rq_src->special_vec;
++	}
++	rq->nr_phys_segments = rq_src->nr_phys_segments;
++	rq->ioprio = rq_src->ioprio;
++
++	if (rq->bio && blk_crypto_rq_bio_prep(rq, rq->bio, gfp_mask) < 0)
++		goto free_and_out;
++
++	return 0;
++
++free_and_out:
++	if (bio)
++		bio_put(bio);
++	blk_rq_unprep_clone(rq);
++
++	return -ENOMEM;
++}
++EXPORT_SYMBOL_GPL(blk_rq_prep_clone);
++
+ static size_t order_to_size(unsigned int order)
  {
+ 	return (size_t)PAGE_SIZE << order;
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index 08fb5922e611b..6e25303dbebe8 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -65,9 +65,6 @@ void blk_mq_request_bypass_insert(struct request *rq, bool at_head,
+ 				  bool run_queue);
+ void blk_mq_insert_requests(struct blk_mq_hw_ctx *hctx, struct blk_mq_ctx *ctx,
+ 				struct list_head *list);
+-
+-/* Used by blk_insert_cloned_request() to issue request directly */
+-blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last);
+ void blk_mq_try_issue_list_directly(struct blk_mq_hw_ctx *hctx,
+ 				    struct list_head *list);
+ 
+diff --git a/block/blk.h b/block/blk.h
+index 6a039e6c7d077..c5fc3f97d1e5a 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -454,4 +454,14 @@ long compat_blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg);
+ 
+ extern const struct address_space_operations def_blk_aops;
+ 
++#ifdef CONFIG_FAIL_MAKE_REQUEST
++bool should_fail_request(struct block_device *part, unsigned int bytes);
++#else /* CONFIG_FAIL_MAKE_REQUEST */
++static inline bool should_fail_request(struct block_device *part,
++					unsigned int bytes)
++{
++	return false;
++}
++#endif /* CONFIG_FAIL_MAKE_REQUEST */
++
+ #endif /* BLK_INTERNAL_H */
 -- 
 2.30.2
 
