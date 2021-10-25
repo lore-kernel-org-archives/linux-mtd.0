@@ -2,14 +2,14 @@ Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44ED6C43217
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:07:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5489C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:07:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 029FE60720
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:07:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 029FE60720
+	by mail.kernel.org (Postfix) with ESMTPS id B3E4860F6F
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 07:07:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3E4860F6F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,18 +18,18 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Og/WVRNcD9XOeqWvAp80IHz+2ub47vsWPl9U3Wn5ZKA=; b=35nJAjrw9U7xFS
-	PwvsmFvXK3EVRf/rrniQcB6QVvLpdIXujz945F57lMZt8S6JoLwiXqQgfAMn2MNLspuSPDiolLIog
-	nmnHOQL4mW8ZrcLgtkm7BTEtzJpDnA5q7sogsMVRNBm8ZBM2NUH4wybyE1SAXVrQejAHr2vYuKtC6
-	LtpXbsDVACOJzEZ50553+QzWSZakFDqaB/LhiVniQmyLqWxyw84D0q4st8kJMAz73iviyNE3Lu2+v
-	TUI3Cx55xhNi9OfjKBRcsKskn9FSaVwdfT6Vj9Heiy4YFoKPzlGzWNeT5pendNJvRpI0coLRVdBIO
-	Rqx5DV3CwGmFucrLW1xQ==;
+	List-Owner; bh=2JvbuQDO+pNoPOMkmW6mgNCfPzkAeNQmLkE1xs6Gx6o=; b=WsZebX4jwA0XTK
+	iS2mrYCjl+XO2HQ5L0hOy6qlqQby85+1sXKB2Vpy1qG9SKaYPf+1xW/4kqgnVKCp+2an6pL4v/GdO
+	M1tcgOSFjgBsMIXW//cZXSvfvBfPTiXlgzMTpkCPEgg+4PH1IRjYAM+ae2zgE1mG51N7YhyGwwgmn
+	VArQeJ8FF+wROrWPGqex0ShNELtM5wnU1GC5Vi4i++aH7IziQVtil3eMs1V6UYDQV6jSgX2XnbW/A
+	xIh7usRXbfRwQuqM46hAyU/lzVRn+XmAml2Jv9vHTsMx8rgHbXTu8GDyeul+3OTrAxLCEznECAl5p
+	9rVHGSjIc5gsvZOWRNTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1meu3z-00FUtl-H1; Mon, 25 Oct 2021 07:06:31 +0000
+	id 1meu4m-00FVJG-KD; Mon, 25 Oct 2021 07:07:20 +0000
 Received: from [2001:4bb8:184:6dcb:6093:467a:cccc:351c] (helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1meu2z-00FURL-IQ; Mon, 25 Oct 2021 07:05:30 +0000
+ id 1meu32-00FUSR-6T; Mon, 25 Oct 2021 07:05:32 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -37,9 +37,9 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 04/12] block: remove blk-exec.c
-Date: Mon, 25 Oct 2021 09:05:09 +0200
-Message-Id: <20211025070517.1548584-5-hch@lst.de>
+Subject: [PATCH 05/12] blk-mq: move blk_mq_flush_plug_list
+Date: Mon, 25 Oct 2021 09:05:10 +0200
+Message-Id: <20211025070517.1548584-6-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211025070517.1548584-1-hch@lst.de>
 References: <20211025070517.1548584-1-hch@lst.de>
@@ -60,277 +60,217 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-All this code is tightly coupled to the blk-mq core, so move it
-there.
+Move blk_mq_flush_plug_list and blk_mq_plug_issue_direct down in blk-mq.c
+to prepare for marking blk_mq_request_issue_directly static without the
+need of a forward declaration.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/Makefile   |   2 +-
- block/blk-exec.c | 116 -----------------------------------------------
- block/blk-mq.c   | 107 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+), 117 deletions(-)
- delete mode 100644 block/blk-exec.c
+ block/blk-mq.c | 184 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 92 insertions(+), 92 deletions(-)
 
-diff --git a/block/Makefile b/block/Makefile
-index 602f7f47b7b6d..9623aff1a346c 100644
---- a/block/Makefile
-+++ b/block/Makefile
-@@ -5,7 +5,7 @@
- 
- obj-y		:= bdev.o fops.o bio.o elevator.o blk-core.o blk-sysfs.o \
- 			blk-flush.o blk-settings.o blk-ioc.o blk-map.o \
--			blk-exec.o blk-merge.o blk-timeout.o \
-+			blk-merge.o blk-timeout.o \
- 			blk-lib.o blk-mq.o blk-mq-tag.o blk-stat.o \
- 			blk-mq-sysfs.o blk-mq-cpumap.o blk-mq-sched.o ioctl.o \
- 			genhd.o ioprio.o badblocks.o partitions/ blk-rq-qos.o \
-diff --git a/block/blk-exec.c b/block/blk-exec.c
-deleted file mode 100644
-index 1b8b47f6e79bb..0000000000000
---- a/block/blk-exec.c
-+++ /dev/null
-@@ -1,116 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Functions related to setting various queue properties from drivers
-- */
--#include <linux/kernel.h>
--#include <linux/module.h>
--#include <linux/bio.h>
--#include <linux/blkdev.h>
--#include <linux/blk-mq.h>
--#include <linux/sched/sysctl.h>
--
--#include "blk.h"
--#include "blk-mq-sched.h"
--
--/**
-- * blk_end_sync_rq - executes a completion event on a request
-- * @rq: request to complete
-- * @error: end I/O status of the request
-- */
--static void blk_end_sync_rq(struct request *rq, blk_status_t error)
--{
--	struct completion *waiting = rq->end_io_data;
--
--	rq->end_io_data = (void *)(uintptr_t)error;
--
--	/*
--	 * complete last, if this is a stack request the process (and thus
--	 * the rq pointer) could be invalid right after this complete()
--	 */
--	complete(waiting);
--}
--
--/**
-- * blk_execute_rq_nowait - insert a request to I/O scheduler for execution
-- * @bd_disk:	matching gendisk
-- * @rq:		request to insert
-- * @at_head:    insert request at head or tail of queue
-- * @done:	I/O completion handler
-- *
-- * Description:
-- *    Insert a fully prepared request at the back of the I/O scheduler queue
-- *    for execution.  Don't wait for completion.
-- *
-- * Note:
-- *    This function will invoke @done directly if the queue is dead.
-- */
--void blk_execute_rq_nowait(struct gendisk *bd_disk, struct request *rq,
--			   int at_head, rq_end_io_fn *done)
--{
--	WARN_ON(irqs_disabled());
--	WARN_ON(!blk_rq_is_passthrough(rq));
--
--	rq->rq_disk = bd_disk;
--	rq->end_io = done;
--
--	blk_account_io_start(rq);
--
--	/*
--	 * don't check dying flag for MQ because the request won't
--	 * be reused after dying flag is set
--	 */
--	blk_mq_sched_insert_request(rq, at_head, true, false);
--}
--EXPORT_SYMBOL_GPL(blk_execute_rq_nowait);
--
--static bool blk_rq_is_poll(struct request *rq)
--{
--	if (!rq->mq_hctx)
--		return false;
--	if (rq->mq_hctx->type != HCTX_TYPE_POLL)
--		return false;
--	if (WARN_ON_ONCE(!rq->bio))
--		return false;
--	return true;
--}
--
--static void blk_rq_poll_completion(struct request *rq, struct completion *wait)
--{
--	do {
--		bio_poll(rq->bio, NULL, 0);
--		cond_resched();
--	} while (!completion_done(wait));
--}
--
--/**
-- * blk_execute_rq - insert a request into queue for execution
-- * @bd_disk:	matching gendisk
-- * @rq:		request to insert
-- * @at_head:    insert request at head or tail of queue
-- *
-- * Description:
-- *    Insert a fully prepared request at the back of the I/O scheduler queue
-- *    for execution and wait for completion.
-- * Return: The blk_status_t result provided to blk_mq_end_request().
-- */
--blk_status_t blk_execute_rq(struct gendisk *bd_disk, struct request *rq, int at_head)
--{
--	DECLARE_COMPLETION_ONSTACK(wait);
--	unsigned long hang_check;
--
--	rq->end_io_data = &wait;
--	blk_execute_rq_nowait(bd_disk, rq, at_head, blk_end_sync_rq);
--
--	/* Prevent hang_check timer from firing at us during very long I/O */
--	hang_check = sysctl_hung_task_timeout_secs;
--
--	if (blk_rq_is_poll(rq))
--		blk_rq_poll_completion(rq, &wait);
--	else if (hang_check)
--		while (!wait_for_completion_io_timeout(&wait, hang_check * (HZ/2)));
--	else
--		wait_for_completion_io(&wait);
--
--	return (blk_status_t)(uintptr_t)rq->end_io_data;
--}
--EXPORT_SYMBOL(blk_execute_rq);
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index d04ee72ba1255..d8f17b54e2c73 100644
+index d8f17b54e2c73..f46d41a760106 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
-@@ -28,6 +28,7 @@
- #include <linux/crash_dump.h>
- #include <linux/prefetch.h>
- #include <linux/blk-crypto.h>
-+#include <linux/sched/sysctl.h>
- 
- #include <trace/events/block.h>
- 
-@@ -1031,6 +1032,112 @@ void blk_mq_start_request(struct request *rq)
+@@ -2277,98 +2277,6 @@ static void blk_mq_commit_rqs(struct blk_mq_hw_ctx *hctx, int *queued,
+ 	*queued = 0;
  }
- EXPORT_SYMBOL(blk_mq_start_request);
  
-+/**
-+ * blk_end_sync_rq - executes a completion event on a request
-+ * @rq: request to complete
-+ * @error: end I/O status of the request
-+ */
-+static void blk_end_sync_rq(struct request *rq, blk_status_t error)
-+{
-+	struct completion *waiting = rq->end_io_data;
-+
-+	rq->end_io_data = (void *)(uintptr_t)error;
-+
-+	/*
-+	 * complete last, if this is a stack request the process (and thus
-+	 * the rq pointer) could be invalid right after this complete()
-+	 */
-+	complete(waiting);
-+}
-+
-+/**
-+ * blk_execute_rq_nowait - insert a request to I/O scheduler for execution
-+ * @bd_disk:	matching gendisk
-+ * @rq:		request to insert
-+ * @at_head:    insert request at head or tail of queue
-+ * @done:	I/O completion handler
-+ *
-+ * Description:
-+ *    Insert a fully prepared request at the back of the I/O scheduler queue
-+ *    for execution.  Don't wait for completion.
-+ *
-+ * Note:
-+ *    This function will invoke @done directly if the queue is dead.
-+ */
-+void blk_execute_rq_nowait(struct gendisk *bd_disk, struct request *rq,
-+			   int at_head, rq_end_io_fn *done)
-+{
-+	WARN_ON(irqs_disabled());
-+	WARN_ON(!blk_rq_is_passthrough(rq));
-+
-+	rq->rq_disk = bd_disk;
-+	rq->end_io = done;
-+
-+	blk_account_io_start(rq);
-+
-+	/*
-+	 * don't check dying flag for MQ because the request won't
-+	 * be reused after dying flag is set
-+	 */
-+	blk_mq_sched_insert_request(rq, at_head, true, false);
-+}
-+EXPORT_SYMBOL_GPL(blk_execute_rq_nowait);
-+
-+static bool blk_rq_is_poll(struct request *rq)
-+{
-+	if (!rq->mq_hctx)
-+		return false;
-+	if (rq->mq_hctx->type != HCTX_TYPE_POLL)
-+		return false;
-+	if (WARN_ON_ONCE(!rq->bio))
-+		return false;
-+	return true;
-+}
-+
-+static void blk_rq_poll_completion(struct request *rq, struct completion *wait)
-+{
-+	do {
-+		bio_poll(rq->bio, NULL, 0);
-+		cond_resched();
-+	} while (!completion_done(wait));
-+}
-+
-+/**
-+ * blk_execute_rq - insert a request into queue for execution
-+ * @bd_disk:	matching gendisk
-+ * @rq:		request to insert
-+ * @at_head:    insert request at head or tail of queue
-+ *
-+ * Description:
-+ *    Insert a fully prepared request at the back of the I/O scheduler queue
-+ *    for execution and wait for completion.
-+ * Return: The blk_status_t result provided to blk_mq_end_request().
-+ */
-+blk_status_t blk_execute_rq(struct gendisk *bd_disk, struct request *rq,
-+		int at_head)
-+{
-+	DECLARE_COMPLETION_ONSTACK(wait);
-+	unsigned long hang_check;
-+
-+	rq->end_io_data = &wait;
-+	blk_execute_rq_nowait(bd_disk, rq, at_head, blk_end_sync_rq);
-+
-+	/* Prevent hang_check timer from firing at us during very long I/O */
-+	hang_check = sysctl_hung_task_timeout_secs;
-+
-+	if (blk_rq_is_poll(rq))
-+		blk_rq_poll_completion(rq, &wait);
-+	else if (hang_check)
-+		while (!wait_for_completion_io_timeout(&wait,
-+				hang_check * (HZ/2)))
-+			;
-+	else
-+		wait_for_completion_io(&wait);
-+
-+	return (blk_status_t)(uintptr_t)rq->end_io_data;
-+}
-+EXPORT_SYMBOL(blk_execute_rq);
-+
- static void __blk_mq_requeue_request(struct request *rq)
+-static void blk_mq_plug_issue_direct(struct blk_plug *plug, bool from_schedule)
+-{
+-	struct blk_mq_hw_ctx *hctx = NULL;
+-	struct request *rq;
+-	int queued = 0;
+-	int errors = 0;
+-
+-	while ((rq = rq_list_pop(&plug->mq_list))) {
+-		bool last = rq_list_empty(plug->mq_list);
+-		blk_status_t ret;
+-
+-		if (hctx != rq->mq_hctx) {
+-			if (hctx)
+-				blk_mq_commit_rqs(hctx, &queued, from_schedule);
+-			hctx = rq->mq_hctx;
+-		}
+-
+-		ret = blk_mq_request_issue_directly(rq, last);
+-		switch (ret) {
+-		case BLK_STS_OK:
+-			queued++;
+-			break;
+-		case BLK_STS_RESOURCE:
+-		case BLK_STS_DEV_RESOURCE:
+-			blk_mq_request_bypass_insert(rq, false, last);
+-			blk_mq_commit_rqs(hctx, &queued, from_schedule);
+-			return;
+-		default:
+-			blk_mq_end_request(rq, ret);
+-			errors++;
+-			break;
+-		}
+-	}
+-
+-	/*
+-	 * If we didn't flush the entire list, we could have told the driver
+-	 * there was more coming, but that turned out to be a lie.
+-	 */
+-	if (errors)
+-		blk_mq_commit_rqs(hctx, &queued, from_schedule);
+-}
+-
+-void blk_mq_flush_plug_list(struct blk_plug *plug, bool from_schedule)
+-{
+-	struct blk_mq_hw_ctx *this_hctx;
+-	struct blk_mq_ctx *this_ctx;
+-	unsigned int depth;
+-	LIST_HEAD(list);
+-
+-	if (rq_list_empty(plug->mq_list))
+-		return;
+-	plug->rq_count = 0;
+-
+-	if (!plug->multiple_queues && !plug->has_elevator) {
+-		blk_mq_plug_issue_direct(plug, from_schedule);
+-		if (rq_list_empty(plug->mq_list))
+-			return;
+-	}
+-
+-	this_hctx = NULL;
+-	this_ctx = NULL;
+-	depth = 0;
+-	do {
+-		struct request *rq;
+-
+-		rq = rq_list_pop(&plug->mq_list);
+-
+-		if (!this_hctx) {
+-			this_hctx = rq->mq_hctx;
+-			this_ctx = rq->mq_ctx;
+-		} else if (this_hctx != rq->mq_hctx || this_ctx != rq->mq_ctx) {
+-			trace_block_unplug(this_hctx->queue, depth,
+-						!from_schedule);
+-			blk_mq_sched_insert_requests(this_hctx, this_ctx,
+-						&list, from_schedule);
+-			depth = 0;
+-			this_hctx = rq->mq_hctx;
+-			this_ctx = rq->mq_ctx;
+-
+-		}
+-
+-		list_add(&rq->queuelist, &list);
+-		depth++;
+-	} while (!rq_list_empty(plug->mq_list));
+-
+-	if (!list_empty(&list)) {
+-		trace_block_unplug(this_hctx->queue, depth, !from_schedule);
+-		blk_mq_sched_insert_requests(this_hctx, this_ctx, &list,
+-						from_schedule);
+-	}
+-}
+-
+ static void blk_mq_bio_to_request(struct request *rq, struct bio *bio,
+ 		unsigned int nr_segs)
  {
- 	struct request_queue *q = rq->q;
+@@ -2508,6 +2416,98 @@ blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last)
+ 	return ret;
+ }
+ 
++static void blk_mq_plug_issue_direct(struct blk_plug *plug, bool from_schedule)
++{
++	struct blk_mq_hw_ctx *hctx = NULL;
++	struct request *rq;
++	int queued = 0;
++	int errors = 0;
++
++	while ((rq = rq_list_pop(&plug->mq_list))) {
++		bool last = rq_list_empty(plug->mq_list);
++		blk_status_t ret;
++
++		if (hctx != rq->mq_hctx) {
++			if (hctx)
++				blk_mq_commit_rqs(hctx, &queued, from_schedule);
++			hctx = rq->mq_hctx;
++		}
++
++		ret = blk_mq_request_issue_directly(rq, last);
++		switch (ret) {
++		case BLK_STS_OK:
++			queued++;
++			break;
++		case BLK_STS_RESOURCE:
++		case BLK_STS_DEV_RESOURCE:
++			blk_mq_request_bypass_insert(rq, false, last);
++			blk_mq_commit_rqs(hctx, &queued, from_schedule);
++			return;
++		default:
++			blk_mq_end_request(rq, ret);
++			errors++;
++			break;
++		}
++	}
++
++	/*
++	 * If we didn't flush the entire list, we could have told the driver
++	 * there was more coming, but that turned out to be a lie.
++	 */
++	if (errors)
++		blk_mq_commit_rqs(hctx, &queued, from_schedule);
++}
++
++void blk_mq_flush_plug_list(struct blk_plug *plug, bool from_schedule)
++{
++	struct blk_mq_hw_ctx *this_hctx;
++	struct blk_mq_ctx *this_ctx;
++	unsigned int depth;
++	LIST_HEAD(list);
++
++	if (rq_list_empty(plug->mq_list))
++		return;
++	plug->rq_count = 0;
++
++	if (!plug->multiple_queues && !plug->has_elevator) {
++		blk_mq_plug_issue_direct(plug, from_schedule);
++		if (rq_list_empty(plug->mq_list))
++			return;
++	}
++
++	this_hctx = NULL;
++	this_ctx = NULL;
++	depth = 0;
++	do {
++		struct request *rq;
++
++		rq = rq_list_pop(&plug->mq_list);
++
++		if (!this_hctx) {
++			this_hctx = rq->mq_hctx;
++			this_ctx = rq->mq_ctx;
++		} else if (this_hctx != rq->mq_hctx || this_ctx != rq->mq_ctx) {
++			trace_block_unplug(this_hctx->queue, depth,
++						!from_schedule);
++			blk_mq_sched_insert_requests(this_hctx, this_ctx,
++						&list, from_schedule);
++			depth = 0;
++			this_hctx = rq->mq_hctx;
++			this_ctx = rq->mq_ctx;
++
++		}
++
++		list_add(&rq->queuelist, &list);
++		depth++;
++	} while (!rq_list_empty(plug->mq_list));
++
++	if (!list_empty(&list)) {
++		trace_block_unplug(this_hctx->queue, depth, !from_schedule);
++		blk_mq_sched_insert_requests(this_hctx, this_ctx, &list,
++						from_schedule);
++	}
++}
++
+ void blk_mq_try_issue_list_directly(struct blk_mq_hw_ctx *hctx,
+ 		struct list_head *list)
+ {
 -- 
 2.30.2
 
