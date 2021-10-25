@@ -2,14 +2,14 @@ Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C1CC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:30:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7278EC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:31:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A82B60EFF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:30:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9A82B60EFF
+	by mail.kernel.org (Postfix) with ESMTPS id 38ECF61029
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:31:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 38ECF61029
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,40 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4VN0R1Xj/69gyoFJkO7Nz6Ru/oEYaPvPtEzDxOjbwgc=; b=LuDYKk+Wf6eQ6f
-	zxIpLO8I64iw6I8SmqntiBpHNOVdDRsDmMR8GXWe4ydddE2E1LxLDBOD9H2GdLZBCBeLhbnKnjjLC
-	9Fctw+QFq/KiKbKJXh+LRCQI7fowMQLIULkvLbfGoK49MF7iBf8kcvsMo0i2TARop7sFU6YCKyGA9
-	BOyEu09goFFJicB1LGSJOvrTy0NJ4MWbkApqO++QOq6+K2qdPgENGnI0ukHH2GP8KhPCf3eWatl28
-	2UH1sleC/+4wuSzljpQiHm136t0D+8F8pTTPg3K/q9gEnlCCG9EHaHkdYE54Uj7+dJyh3P6j6o9ET
-	nU/N4ogdj/tRej2mu9Jg==;
+	List-Owner; bh=jbu3rSkEZ4op9aPm0oPIqHHSBB27vYwXC9cJyQXhQ44=; b=O4YIC6q3rvjn9m
+	uN6hbgzWYTL18gUJCYMcKXTW2VXpAfbvKDMJ7jVtZevKQNFL2nFIXofbZ5gZFznwT0jiK3pmVgA03
+	sVSTs0bV/uutlGnsET9dlLF4ojg6uFETYnbIHCWwHQOn7ZW9SQhN8SG65RQ50Ycr/ReGbVy13dktG
+	Qcge9cINkxwWJpOfJMSTNy8dVsrIWEcmC5K0R5eeRcdgpAgHZOWAQsjOX+8UQ8gWmsyMINXFUuDCo
+	J7eooK3cBttioCsFpdbNPKDtJ3hWAJMCTBqPkvESgJuHaXwNGnAcoPUqwZYuvf2QFyKX1kGpKQ6kC
+	Wz7WeXdcPHuEtTbV29HA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1meqgH-00F8HG-MX; Mon, 25 Oct 2021 03:29:49 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1meqgw-00F8Um-A8; Mon, 25 Oct 2021 03:30:30 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1meqf1-00F7sI-Rd
+ id 1meqf2-00F7sd-Fn
  for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 03:28:34 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hd0jg1TQGzZcRT;
- Mon, 25 Oct 2021 11:26:31 +0800 (CST)
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd0lr69Ynz90PG;
+ Mon, 25 Oct 2021 11:28:24 +0800 (CST)
 Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:28:24 +0800
+ 15.1.2308.15; Mon, 25 Oct 2021 11:28:26 +0800
 Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
  (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 25
- Oct 2021 11:28:23 +0800
+ Oct 2021 11:28:25 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
  <Artem.Bityutskiy@nokia.com>, <ext-adrian.hunter@nokia.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>
-Subject: [PATCH 02/11] ubifs: Fix deadlock in concurrent rename whiteout and
- inode writeback
-Date: Mon, 25 Oct 2021 11:41:07 +0800
-Message-ID: <20211025034116.3544321-3-chengzhihao1@huawei.com>
+Subject: [PATCH 06/11] ubifs: Fix 'ui->dirty' race between do_tmpfile() and
+ writeback work
+Date: Mon, 25 Oct 2021 11:41:11 +0800
+Message-ID: <20211025034116.3544321-7-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211025034116.3544321-1-chengzhihao1@huawei.com>
 References: <20211025034116.3544321-1-chengzhihao1@huawei.com>
@@ -61,8 +61,8 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggema761-chm.china.huawei.com (10.1.198.203)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211024_202832_985350_E50FF9D6 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20211024_202833_056086_A4AA376A 
+X-CRM114-Status: GOOD (  12.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,76 +74,163 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Rm9sbG93aW5nIGh1bmcgdGFza3M6ClsgICA3Ny4wMjg3NjRdIHRhc2s6a3dvcmtlci91ODo0ICAg
-IHN0YXRlOkQgc3RhY2s6ICAgIDAgcGlkOiAgMTMyClsgICA3Ny4wMjg4MjBdIENhbGwgVHJhY2U6
-ClsgICA3Ny4wMjkwMjddICBzY2hlZHVsZSsweDhjLzB4MWIwClsgICA3Ny4wMjkwNjddICBtdXRl
-eF9sb2NrKzB4NTAvMHg2MApbICAgNzcuMDI5MDc0XSAgdWJpZnNfd3JpdGVfaW5vZGUrMHg2OC8w
-eDFmMCBbdWJpZnNdClsgICA3Ny4wMjkxMTddICBfX3dyaXRlYmFja19zaW5nbGVfaW5vZGUrMHg0
-M2MvMHg1NzAKWyAgIDc3LjAyOTEyOF0gIHdyaXRlYmFja19zYl9pbm9kZXMrMHgyNTkvMHg3NDAK
-WyAgIDc3LjAyOTE0OF0gIHdiX3dyaXRlYmFjaysweDEwNy8weDRkMApbICAgNzcuMDI5MTYzXSAg
-d2Jfd29ya2ZuKzB4MTYyLzB4N2IwCgpbICAgOTIuMzkwNDQyXSB0YXNrOmFhICAgICAgICAgICAg
-ICBzdGF0ZTpEIHN0YWNrOiAgICAwIHBpZDogMTUwNgpbICAgOTIuMzkwNDQ4XSBDYWxsIFRyYWNl
-OgpbICAgOTIuMzkwNDU4XSAgc2NoZWR1bGUrMHg4Yy8weDFiMApbICAgOTIuMzkwNDYxXSAgd2Jf
-d2FpdF9mb3JfY29tcGxldGlvbisweDgyLzB4ZDAKWyAgIDkyLjM5MDQ2OV0gIF9fd3JpdGViYWNr
-X2lub2Rlc19zYl9ucisweGIyLzB4MTEwClsgICA5Mi4zOTA0NzJdICB3cml0ZWJhY2tfaW5vZGVz
-X3NiX25yKzB4MTQvMHgyMApbICAgOTIuMzkwNDc2XSAgdWJpZnNfYnVkZ2V0X3NwYWNlKzB4NzA1
-LzB4ZGQwIFt1Ymlmc10KWyAgIDkyLjM5MDUwM10gIGRvX3JlbmFtZS5jb2xkKzB4N2YvMHgxODcg
-W3ViaWZzXQpbICAgOTIuMzkwNTQ5XSAgdWJpZnNfcmVuYW1lKzB4OGIvMHgxODAgW3ViaWZzXQpb
-ICAgOTIuMzkwNTcxXSAgdmZzX3JlbmFtZSsweGRiMi8weDExNzAKWyAgIDkyLjM5MDU4MF0gIGRv
-X3JlbmFtZWF0MisweDU1NC8weDc3MAoKLCBhcmUgY2F1c2VkIGJ5IGNvbmN1cnJlbnQgcmVuYW1l
-IHdoaXRlb3V0IGFuZCBpbm9kZSB3cml0ZWJhY2sgcHJvY2Vzc2VzOgoJcmVuYW1lX3doaXRlb3V0
-KFRocmVhZCAxKQkgICAgICAgIHdiX3dvcmtmbihUaHJlYWQyKQp1Ymlmc19yZW5hbWUKICBkb19y
-ZW5hbWUKICAgIGxvY2tfNF9pbm9kZXMgKEhvbGQgdWlfbXV0ZXgpCiAgICB1Ymlmc19idWRnZXRf
-c3BhY2UKICAgICAgbWFrZV9mcmVlX3NwYWNlCiAgICAgICAgc2hyaW5rX2xpYWJpbGl0eQoJICBf
-X3dyaXRlYmFja19pbm9kZXNfc2JfbnIKCSAgICBiZGlfc3BsaXRfd29ya190b193YnMgKFF1ZXVl
-IG5ldyB3YiB3b3JrKQoJCQkJCSAgICAgIHdiX2RvX3dyaXRlYmFjayh3YiB3b3JrKQoJCQkJCQlf
-X3dyaXRlYmFja19zaW5nbGVfaW5vZGUKCQkJCQkgICAgICAgICAgdWJpZnNfd3JpdGVfaW5vZGUK
-CQkJCQkgICAgICAgICAgICBMT0NLKHVpX211dGV4KQoJCQkJCQkJICAg4oaRCgkgICAgICB3Yl93
-YWl0X2Zvcl9jb21wbGV0aW9uIChXYWl0IHdiIHdvcmspIDwtLSBkZWFkbG9jayEKClJlcHJvZHVj
-ZXIgKERldGFpbCBwcm9ncmFtIGluIFtMaW5rXSk6CiAgMS4gU1lTX3JlbmFtZWF0MigiL21wL2Rp
-ci9maWxlIiwgIi9tcC9kaXIvd2hpdGVvdXQiLCBSRU5BTUVfV0hJVEVPVVQpCiAgMi4gQ29uc3Vt
-ZSBvdXQgb2Ygc3BhY2UgYmVmb3JlIGtlcm5lbChtZGVsYXkpIGRvaW5nIGJ1ZGdldCBmb3Igd2hp
-dGVvdXQKCkZpeCBpdCBieSBkb2luZyB3aGl0ZW91dCBzcGFjZSBidWRnZXQgYmVmb3JlIGxvY2tp
-bmcgdWJpZnMgaW5vZGVzLgpCVFcsIGl0IGFsc28gZml4ZXMgd3JvbmcgZ290byB0YWcgJ291dF9y
-ZWxlYXNlJyBpbiB3aGl0ZW91dCBidWRnZXQKZXJyb3IgaGFuZGxpbmcgcGF0aChJdCBzaG91bGQg
-YXQgbGVhc3QgcmVjb3ZlciBkaXIgaV9zaXplIGFuZCB1bmxvY2sKNCB1YmlmcyBpbm9kZXMpLgoK
-Rml4ZXM6IDllMGExZmZmOGRiNTZlYSAoInViaWZzOiBJbXBsZW1lbnQgUkVOQU1FX1dISVRFT1VU
-IikKTGluazogaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMTQ3
-MzMKU2lnbmVkLW9mZi1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4K
-LS0tCiBmcy91Ymlmcy9kaXIuYyB8IDI1ICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0KIDEgZmls
-ZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
-YS9mcy91Ymlmcy9kaXIuYyBiL2ZzL3ViaWZzL2Rpci5jCmluZGV4IGNmYTg4ODFkOGNjYS4uMjcz
-NWFkMWFmZmVkIDEwMDY0NAotLS0gYS9mcy91Ymlmcy9kaXIuYworKysgYi9mcy91Ymlmcy9kaXIu
-YwpAQCAtMTMyNCw2ICsxMzI0LDcgQEAgc3RhdGljIGludCBkb19yZW5hbWUoc3RydWN0IGlub2Rl
-ICpvbGRfZGlyLCBzdHJ1Y3QgZGVudHJ5ICpvbGRfZGVudHJ5LAogCiAJaWYgKGZsYWdzICYgUkVO
-QU1FX1dISVRFT1VUKSB7CiAJCXVuaW9uIHViaWZzX2Rldl9kZXNjICpkZXYgPSBOVUxMOworCQlz
-dHJ1Y3QgdWJpZnNfYnVkZ2V0X3JlcSB3aHRfcmVxOwogCiAJCWRldiA9IGttYWxsb2Moc2l6ZW9m
-KHVuaW9uIHViaWZzX2Rldl9kZXNjKSwgR0ZQX05PRlMpOwogCQlpZiAoIWRldikgewpAQCAtMTM0
-NSw2ICsxMzQ2LDIwIEBAIHN0YXRpYyBpbnQgZG9fcmVuYW1lKHN0cnVjdCBpbm9kZSAqb2xkX2Rp
-ciwgc3RydWN0IGRlbnRyeSAqb2xkX2RlbnRyeSwKIAkJd2hpdGVvdXRfdWktPmRhdGEgPSBkZXY7
-CiAJCXdoaXRlb3V0X3VpLT5kYXRhX2xlbiA9IHViaWZzX2VuY29kZV9kZXYoZGV2LCBNS0RFVigw
-LCAwKSk7CiAJCXViaWZzX2Fzc2VydChjLCAhd2hpdGVvdXRfdWktPmRpcnR5KTsKKworCQltZW1z
-ZXQoJndodF9yZXEsIDAsIHNpemVvZihzdHJ1Y3QgdWJpZnNfYnVkZ2V0X3JlcSkpOworCQl3aHRf
-cmVxLmRpcnRpZWRfaW5vID0gMTsKKwkJd2h0X3JlcS5kaXJ0aWVkX2lub19kID0gQUxJR04od2hp
-dGVvdXRfdWktPmRhdGFfbGVuLCA4KTsKKwkJLyoKKwkJICogVG8gYXZvaWQgZGVhZGxvY2sgYmV0
-d2VlbiBzcGFjZSBidWRnZXQgKGhvbGRzIHVpX211dGV4IGFuZAorCQkgKiB3YWl0cyB3YiB3b3Jr
-KSBhbmQgd3JpdGViYWNrIHdvcmsod2FpdHMgdWlfbXV0ZXgpLCBkbyBzcGFjZQorCQkgKiBidWRn
-ZXQgYmVmb3JlIHViaWZzIGlub2RlcyBsb2NrZWQuCisJCSAqLworCQllcnIgPSB1Ymlmc19idWRn
-ZXRfc3BhY2UoYywgJndodF9yZXEpOworCQlpZiAoZXJyKSB7CisJCQlpcHV0KHdoaXRlb3V0KTsK
-KwkJCWdvdG8gb3V0X3JlbGVhc2U7CisJCX0KIAl9CiAKIAlsb2NrXzRfaW5vZGVzKG9sZF9kaXIs
-IG5ld19kaXIsIG5ld19pbm9kZSwgd2hpdGVvdXQpOwpAQCAtMTQxOSwxNiArMTQzNCw2IEBAIHN0
-YXRpYyBpbnQgZG9fcmVuYW1lKHN0cnVjdCBpbm9kZSAqb2xkX2Rpciwgc3RydWN0IGRlbnRyeSAq
-b2xkX2RlbnRyeSwKIAl9CiAKIAlpZiAod2hpdGVvdXQpIHsKLQkJc3RydWN0IHViaWZzX2J1ZGdl
-dF9yZXEgd2h0X3JlcSA9IHsgLmRpcnRpZWRfaW5vID0gMSwKLQkJCQkuZGlydGllZF9pbm9fZCA9
-IFwKLQkJCQlBTElHTih1Ymlmc19pbm9kZSh3aGl0ZW91dCktPmRhdGFfbGVuLCA4KSB9OwotCi0J
-CWVyciA9IHViaWZzX2J1ZGdldF9zcGFjZShjLCAmd2h0X3JlcSk7Ci0JCWlmIChlcnIpIHsKLQkJ
-CWlwdXQod2hpdGVvdXQpOwotCQkJZ290byBvdXRfcmVsZWFzZTsKLQkJfQotCiAJCWluY19ubGlu
-ayh3aGl0ZW91dCk7CiAJCW1hcmtfaW5vZGVfZGlydHkod2hpdGVvdXQpOwogCi0tIAoyLjMxLjEK
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+'ui->dirty' is not protected by 'ui_mutex' in function do_tmpfile() which
+may race with ubifs_write_inode[wb_workfn] to access/update 'ui->dirty',
+finally dirty space is released twice.
+
+	open(O_TMPFILE)                wb_workfn
+do_tmpfile
+  ubifs_budget_space(ino_req = { .dirtied_ino = 1})
+  d_tmpfile // mark inode(tmpfile) dirty
+  ubifs_jnl_update // without holding tmpfile's ui_mutex
+    mark_inode_clean(ui)
+      if (ui->dirty)
+        ubifs_release_dirty_inode_budget(ui)  // release first time
+                                   ubifs_write_inode
+				     mutex_lock(&ui->ui_mutex)
+                                     ubifs_release_dirty_inode_budget(ui)
+				     // release second time
+				     mutex_unlock(&ui->ui_mutex)
+      ui->dirty = 0
+
+Run generic/476 can reproduce following message easily
+(See reproducer in [Link]):
+
+  UBIFS error (ubi0:0 pid 2578): ubifs_assert_failed [ubifs]: UBIFS assert
+  failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:554
+  UBIFS warning (ubi0:0 pid 2578): ubifs_ro_mode [ubifs]: switched to
+  read-only mode, error -22
+  Workqueue: writeback wb_workfn (flush-ubifs_0_0)
+  Call Trace:
+    ubifs_ro_mode+0x54/0x60 [ubifs]
+    ubifs_assert_failed+0x4b/0x80 [ubifs]
+    ubifs_release_budget+0x468/0x5a0 [ubifs]
+    ubifs_release_dirty_inode_budget+0x53/0x80 [ubifs]
+    ubifs_write_inode+0x121/0x1f0 [ubifs]
+    ...
+    wb_workfn+0x283/0x7b0
+
+Fix it by holding tmpfile ubifs inode lock during ubifs_jnl_update().
+Similar problem exists in whiteout renaming, but previous fix("ubifs:
+Rename whiteout atomically") has solved the problem.
+
+Fixes: 474b93704f32163 ("ubifs: Implement O_TMPFILE")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214765
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/ubifs/dir.c | 60 +++++++++++++++++++++++++-------------------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
+
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 6344e2bc9338..8a2c42e6b22b 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -399,6 +399,32 @@ static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry,
+ 	return ERR_PTR(err);
+ }
+ 
++/**
++ * lock_2_inodes - a wrapper for locking two UBIFS inodes.
++ * @inode1: first inode
++ * @inode2: second inode
++ *
++ * We do not implement any tricks to guarantee strict lock ordering, because
++ * VFS has already done it for us on the @i_mutex. So this is just a simple
++ * wrapper function.
++ */
++static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
++{
++	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
++	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
++}
++
++/**
++ * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
++ * @inode1: first inode
++ * @inode2: second inode
++ */
++static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
++{
++	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
++	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
++}
++
+ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
+ 			 struct dentry *dentry, umode_t mode)
+ {
+@@ -406,7 +432,7 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
+ 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1};
+ 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
+-	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
++	struct ubifs_inode *ui;
+ 	int err, instantiated = 0;
+ 	struct fscrypt_name nm;
+ 
+@@ -454,18 +480,18 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
+ 	instantiated = 1;
+ 	mutex_unlock(&ui->ui_mutex);
+ 
+-	mutex_lock(&dir_ui->ui_mutex);
++	lock_2_inodes(dir, inode);
+ 	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
+ 	if (err)
+ 		goto out_cancel;
+-	mutex_unlock(&dir_ui->ui_mutex);
++	unlock_2_inodes(dir, inode);
+ 
+ 	ubifs_release_budget(c, &req);
+ 
+ 	return 0;
+ 
+ out_cancel:
+-	mutex_unlock(&dir_ui->ui_mutex);
++	unlock_2_inodes(dir, inode);
+ out_inode:
+ 	make_bad_inode(inode);
+ 	if (!instantiated)
+@@ -692,32 +718,6 @@ static int ubifs_dir_release(struct inode *dir, struct file *file)
+ 	return 0;
+ }
+ 
+-/**
+- * lock_2_inodes - a wrapper for locking two UBIFS inodes.
+- * @inode1: first inode
+- * @inode2: second inode
+- *
+- * We do not implement any tricks to guarantee strict lock ordering, because
+- * VFS has already done it for us on the @i_mutex. So this is just a simple
+- * wrapper function.
+- */
+-static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
+-{
+-	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
+-	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
+-}
+-
+-/**
+- * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
+- * @inode1: first inode
+- * @inode2: second inode
+- */
+-static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
+-{
+-	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
+-	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
+-}
+-
+ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+ 		      struct dentry *dentry)
+ {
+-- 
+2.31.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
