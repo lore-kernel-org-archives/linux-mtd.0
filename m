@@ -2,64 +2,82 @@ Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47092C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:29:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 716FCC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:36:01 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 147C960EBD
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:29:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 147C960EBD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4384160EB1
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:36:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4384160EB1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JOx99KxQUNpQTr3KpRGAdV3hyP2cLlHPsyf87xB0ghM=; b=yxboxov4CS8wdJ
-	4lDCrdzaXWsCp1tpWBB9GB4Ec4K0+VycP3dQ5OiY4lU7fAPp+L0cwOAjtHM+smpGq4I2YD02auVDO
-	c/GVqUROEM+TCG7Jnv1bKxsxANVEwE5v09sd+Tj+0MMATo1xtKw9h5jVJc5jYGM9nOy1H4MwAVSXH
-	VFsQpbW0gobEtKAInB0sKEbZ3c0y87A9VDLNDiiXsK9AMZVt++fJ3T9W3Svc3n2ZJlNuY9++FnNVK
-	QYZ7crB+A3kY9jvnWk7vpkF9aER8RPQmfFw3xbJKpkmQQDB3uvWzqvt4Y8c/p06sS7J2Jj+mFkr2w
-	zNy9FD8EY7t7eZ2ikD3g==;
+	List-Owner; bh=5p0pgpjiek8pJst6R4LEF1QMPLv9082uaqbThRlrM+0=; b=0CFvez7qH4IOsQ
+	dwlPgNRzfFc5p9b5qanuYTp2IuzbvAFNz2MzX3aCRVARzd2SOfcJodsn1wqq/BeNaXBggy5VCBVwO
+	tG3jBZwAAu3DHpCJkDlwcvCedcZAGgoDC+HZ5fN1SU9Ehnw9IaugZ4Q3I95I8uggLs34tn+BINJ7T
+	Ar6fD6NIbxvcZ6LC654jpnVXfJvlqCRD4ZDU9lWLSZlJy6EYbl+Uc0j/SUnEDDqX6T4vEwUT0tczv
+	ElmHR0fpQQ9wfWmmjsnvTWn+5n0QVYV8EWjQ2BUwNLWTIb9T/zKLucJjOnLBPmsJv5Szoh4vdXrgE
+	ZiO49XL7+Se3udiEdWwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mewHx-00Fvg4-SM; Mon, 25 Oct 2021 09:29:05 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1mewOA-00Fxwi-Vs; Mon, 25 Oct 2021 09:35:31 +0000
+Received: from mail-ua1-x92e.google.com ([2607:f8b0:4864:20::92e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mewH1-00FvUn-Os
- for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 09:28:11 +0000
-Received: from zen.. (unknown [185.17.218.86])
- by first.geanix.com (Postfix) with ESMTPSA id D60A9D6861;
- Mon, 25 Oct 2021 09:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1635154080; bh=038jLJ8ZIomplxvGbzXp9SEcCbMFrdIXsyP6DJ+NpCg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=NYAIAbRqNDRPpSw5Z2N95w5Z9WgqbhiM0cr4HbzuYyvdAGkqIRqALbNix+b5UcZ5o
- HCBOG6Htjmza0aZQARexNEYC32LX7V4oKMigyY2EGSNtyf3Nheq3o8Rz0Yz6kEWHHQ
- 6Ipd28hq0tl3t9HiKL93qEQsuvjNlOosVsJ6RC12fsjdGgXHmdc3HQTqMjaev9X0nU
- Q4ncI+3wR1Yqrg9cZs0FFaABb9rnqxuIbUMSDS9lzmJWyxz7AL0MvjUy6uZCdSYC7q
- dDIEdaTocsR5SVzW6dh6d5LDiuIq/Z8Z9nkeGhaXb7vt/wCZOHka+pwKYPv8BDhkoG
- OrBrRczISFr+Q==
-From: Sean Nyekjaer <sean@geanix.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Sean Nyekjaer <sean@geanix.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/4] mtd: core: protect access to MTD devices while in
- suspend
-Date: Mon, 25 Oct 2021 11:27:51 +0200
-Message-Id: <20211025092752.2824678-4-sean@geanix.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211025092752.2824678-1-sean@geanix.com>
-References: <20211025092752.2824678-1-sean@geanix.com>
+ id 1mewO6-00FxtW-06
+ for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 09:35:27 +0000
+Received: by mail-ua1-x92e.google.com with SMTP id p23so7945278uaa.6
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Oct 2021 02:35:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=LB8BZYJIdwo1dkje94sBT8x1ZbPAWVxknyBv9ftdAu8=;
+ b=iZ8Oy0bXvo+EXgZSYyrGGf1QSUeXyck7vVTvWIjpPFUQS2TlHYPjXl0hIsDBlJ13LY
+ g57iZ8fF5DoJkPXPZcubpQe3FI+kU83rON4vyzNMFLdI0QebkR3Tq30brJ2XNL9StcqC
+ cxhVNPwJ4wekBm+Ni5fuHdehX4FAwxEWQiCsIU6+mVTN24kP/hEuV+DiVOpCV+S0VHre
+ DYeH9CvzlfbF4YTtQc7KB9hpLZRW8kQCdvy9Th09lLcSd7GWGY9ydBPnoZ3otmp34TKQ
+ 2hgFzNmBKZs8VXwqlAJw/yj6HlascjXW7seYy9GdQ8RFZxEiemnjDAzRsUQNE5xdbnXR
+ 8mnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=LB8BZYJIdwo1dkje94sBT8x1ZbPAWVxknyBv9ftdAu8=;
+ b=ILrRv4xUfMZ2c66PuGb2hQy8HvEazKZKVQ0AnTjBvBXAhIDxWZprLVbkf2w6TjVqtm
+ nn7jSQQJp6LGSIU3MSDmNR6+yCPOfTK2l+KGdWov3C4MCd1fBOJ5tyK6CgGzPhSnAx/t
+ eOtbTblU40KoVJbu+re9NBYNT/Jdaki7FFdFZcTR/aod3KJeG4myd2574hzHHwqOKsrU
+ ft9o8mi/6g42Cq3dY/XaqREe42+fvxML+BOLXQ5nwepau7I5by2ANFNUTtIf6ut3N1DS
+ mVAKtDjGrDWfxlhxtOY9/WrcWb6KLVmqGBjdCqk13dQXpvMcxzJ2vZhtUknVEj8mpi8N
+ oBxA==
+X-Gm-Message-State: AOAM531PUOI/i1nPVVmEP0g9ZMprVUi5y8U8/J4VIYS6awuG6mRmZ2J1
+ K4Fxp4HsTyCxsSP+kt/iAxo9W/+KlWtrmRSWe5KN+nS9mqTkkw==
+X-Google-Smtp-Source: ABdhPJysY2bq3I5q0n87R58oPDlapzWu5Xo66NIYCnm+B3/Ps0RxDhyTAVzLhloLiNTujSivhXYzwbny95aciuyETCY=
+X-Received: by 2002:ab0:7044:: with SMTP id v4mr13651916ual.76.1635154523841; 
+ Mon, 25 Oct 2021 02:35:23 -0700 (PDT)
 MIME-Version: 1.0
+References: <CADBnMviweAwc1oFz2-4KtGBAQb3hii1ZkJpZDELXY_CASpd53w@mail.gmail.com>
+ <1041553131.62488.1633978966122.JavaMail.zimbra@nod.at>
+ <CADBnMvibQS+PZW-fJY2E+mVw4C48BuBF4PoB704L6PRfG4Absw@mail.gmail.com>
+ <1040411488.65265.1634045778705.JavaMail.zimbra@nod.at>
+ <CADBnMvidNZEiJfSTLe-rj+V0N=EtW8jTrYXzc2KRJKNS-zkCjg@mail.gmail.com>
+ <CADBnMvhCmNQsYRVAveuf=Ri820bLyLdcrA71Nywh0mVL+X8Fng@mail.gmail.com>
+ <CADBnMviZDXD4p6U4fPDsMFsY1OJYEcjkNGTXDRbbM0mKDVpaAQ@mail.gmail.com>
+ <1035601262.21954.1634838266590.JavaMail.zimbra@nod.at>
+In-Reply-To: <1035601262.21954.1634838266590.JavaMail.zimbra@nod.at>
+From: Kristof Havasi <havasiefr@gmail.com>
+Date: Mon, 25 Oct 2021 11:35:12 +0200
+Message-ID: <CADBnMvidrikjUWU5TvM3+ifMXE9i=m-Huv34oCDBhprvLqCGQg@mail.gmail.com>
+Subject: Re: UBIFS panic during brown-out
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211025_022808_155685_2EA34369 
-X-CRM114-Status: GOOD (  21.07  )
+X-CRM114-CacheID: sfid-20211025_023526_099775_9F0630C0 
+X-CRM114-Status: GOOD (  17.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,539 +89,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prevent MTD access while in a suspended state. Also
-prevent suspending a device which is still currently in use.
-
-Commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") allows the
-rawnand layer to return errors rather than waiting in a blocking wait.
-
-Tested on a iMX6ULL.
-
-Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/mtd/mtdcore.c   | 124 +++++++++++++++++++++++++++++++++++-----
- include/linux/mtd/mtd.h |  81 +++++++++++++++++++++-----
- 2 files changed, 176 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 153229198947..8e6b7e858ada 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -777,6 +777,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
- 	INIT_LIST_HEAD(&mtd->partitions);
- 	mutex_init(&mtd->master.partitions_lock);
- 	mutex_init(&mtd->master.chrdev_lock);
-+	init_waitqueue_head(&mtd->master.resume_wq);
-+	init_rwsem(&mtd->master.suspend_lock);
- }
- 
- static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
-@@ -1267,7 +1269,9 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 	adjinstr.addr += mst_ofs;
- 
-+	mtd_start_access(master);
- 	ret = master->_erase(master, &adjinstr);
-+	mtd_end_access(master);
- 
- 	if (adjinstr.fail_addr != MTD_FAIL_ADDR_UNKNOWN) {
- 		instr->fail_addr = adjinstr.fail_addr - mst_ofs;
-@@ -1289,6 +1293,7 @@ int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	      void **virt, resource_size_t *phys)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	*retlen = 0;
- 	*virt = NULL;
-@@ -1301,8 +1306,12 @@ int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	if (!len)
- 		return 0;
- 
-+	mtd_start_access(master);
- 	from = mtd_get_master_ofs(mtd, from);
--	return master->_point(master, from, len, retlen, virt, phys);
-+	ret = master->_point(master, from, len, retlen, virt, phys);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_point);
- 
-@@ -1310,6 +1319,7 @@ EXPORT_SYMBOL_GPL(mtd_point);
- int mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_unpoint)
- 		return -EOPNOTSUPP;
-@@ -1317,7 +1327,12 @@ int mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
- 		return -EINVAL;
- 	if (!len)
- 		return 0;
--	return master->_unpoint(master, mtd_get_master_ofs(mtd, from), len);
-+
-+	mtd_start_access(master);
-+	ret =  master->_unpoint(master, mtd_get_master_ofs(mtd, from), len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_unpoint);
- 
-@@ -1372,6 +1387,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 	};
- 	int ret;
- 
-+	/* mtd_read_oob_std handles mtd access protection */
- 	ret = mtd_read_oob(mtd, from, &ops);
- 	*retlen = ops.retlen;
- 
-@@ -1388,6 +1404,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	};
- 	int ret;
- 
-+	/* mtd_write_oob_std handles mtd access protection */
- 	ret = mtd_write_oob(mtd, to, &ops);
- 	*retlen = ops.retlen;
- 
-@@ -1406,6 +1423,7 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 		    const u_char *buf)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	*retlen = 0;
- 	if (!master->_panic_write)
-@@ -1419,8 +1437,12 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
- 	if (!master->oops_panic_write)
- 		master->oops_panic_write = true;
- 
--	return master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
--				    retlen, buf);
-+	mtd_start_access(master);
-+	ret = master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
-+				   retlen, buf);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_panic_write);
- 
-@@ -1464,11 +1486,13 @@ static int mtd_read_oob_std(struct mtd_info *mtd, loff_t from,
- 	int ret;
- 
- 	from = mtd_get_master_ofs(mtd, from);
-+	mtd_start_access(master);
- 	if (master->_read_oob)
- 		ret = master->_read_oob(master, from, ops);
- 	else
- 		ret = master->_read(master, from, ops->len, &ops->retlen,
- 				    ops->datbuf);
-+	mtd_end_access(master);
- 
- 	return ret;
- }
-@@ -1480,11 +1504,13 @@ static int mtd_write_oob_std(struct mtd_info *mtd, loff_t to,
- 	int ret;
- 
- 	to = mtd_get_master_ofs(mtd, to);
-+	mtd_start_access(master);
- 	if (master->_write_oob)
- 		ret = master->_write_oob(master, to, ops);
- 	else
- 		ret = master->_write(master, to, ops->len, &ops->retlen,
- 				     ops->datbuf);
-+	mtd_end_access(master);
- 
- 	return ret;
- }
-@@ -1992,12 +2018,18 @@ int mtd_get_fact_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
- 			   struct otp_info *buf)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_get_fact_prot_info)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return master->_get_fact_prot_info(master, len, retlen, buf);
-+
-+	mtd_start_access(master);
-+	ret = master->_get_fact_prot_info(master, len, retlen, buf);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_get_fact_prot_info);
- 
-@@ -2005,13 +2037,19 @@ int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
- 			   size_t *retlen, u_char *buf)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	*retlen = 0;
- 	if (!master->_read_fact_prot_reg)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return master->_read_fact_prot_reg(master, from, len, retlen, buf);
-+
-+	mtd_start_access(master);
-+	ret = master->_read_fact_prot_reg(master, from, len, retlen, buf);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_read_fact_prot_reg);
- 
-@@ -2019,12 +2057,18 @@ int mtd_get_user_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
- 			   struct otp_info *buf)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_get_user_prot_info)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return master->_get_user_prot_info(master, len, retlen, buf);
-+
-+	mtd_start_access(master);
-+	ret =  master->_get_user_prot_info(master, len, retlen, buf);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_get_user_prot_info);
- 
-@@ -2032,13 +2076,19 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
- 			   size_t *retlen, u_char *buf)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	*retlen = 0;
- 	if (!master->_read_user_prot_reg)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return master->_read_user_prot_reg(master, from, len, retlen, buf);
-+
-+	mtd_start_access(master);
-+	ret = master->_read_user_prot_reg(master, from, len, retlen, buf);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_read_user_prot_reg);
- 
-@@ -2053,7 +2103,11 @@ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
-+
-+	mtd_start_access(master);
- 	ret = master->_write_user_prot_reg(master, to, len, retlen, buf);
-+	mtd_end_access(master);
-+
- 	if (ret)
- 		return ret;
- 
-@@ -2068,24 +2122,36 @@ EXPORT_SYMBOL_GPL(mtd_write_user_prot_reg);
- int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_lock_user_prot_reg)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return master->_lock_user_prot_reg(master, from, len);
-+
-+	mtd_start_access(master);
-+	ret = master->_lock_user_prot_reg(master, from, len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
- 
- int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_erase_user_prot_reg)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return master->_erase_user_prot_reg(master, from, len);
-+
-+	mtd_start_access(master);
-+	ret = master->_erase_user_prot_reg(master, from, len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
- 
-@@ -2093,6 +2159,7 @@ EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
- int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_lock)
- 		return -EOPNOTSUPP;
-@@ -2106,13 +2173,18 @@ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		len = (u64)mtd_div_by_eb(len, mtd) * master->erasesize;
- 	}
- 
--	return master->_lock(master, mtd_get_master_ofs(mtd, ofs), len);
-+	mtd_start_access(master);
-+	ret = master->_lock(master, mtd_get_master_ofs(mtd, ofs), len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_lock);
- 
- int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_unlock)
- 		return -EOPNOTSUPP;
-@@ -2126,13 +2198,18 @@ int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		len = (u64)mtd_div_by_eb(len, mtd) * master->erasesize;
- 	}
- 
--	return master->_unlock(master, mtd_get_master_ofs(mtd, ofs), len);
-+	mtd_start_access(master);
-+	ret = master->_unlock(master, mtd_get_master_ofs(mtd, ofs), len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_unlock);
- 
- int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_is_locked)
- 		return -EOPNOTSUPP;
-@@ -2146,13 +2223,18 @@ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 		len = (u64)mtd_div_by_eb(len, mtd) * master->erasesize;
- 	}
- 
--	return master->_is_locked(master, mtd_get_master_ofs(mtd, ofs), len);
-+	mtd_start_access(master);
-+	ret = master->_is_locked(master, mtd_get_master_ofs(mtd, ofs), len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_is_locked);
- 
- int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (ofs < 0 || ofs >= mtd->size)
- 		return -EINVAL;
-@@ -2162,13 +2244,18 @@ int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs)
- 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
- 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
- 
--	return master->_block_isreserved(master, mtd_get_master_ofs(mtd, ofs));
-+	mtd_start_access(master);
-+	ret = master->_block_isreserved(master, mtd_get_master_ofs(mtd, ofs));
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_block_isreserved);
- 
- int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (ofs < 0 || ofs >= mtd->size)
- 		return -EINVAL;
-@@ -2178,7 +2265,11 @@ int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
- 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
- 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
- 
--	return master->_block_isbad(master, mtd_get_master_ofs(mtd, ofs));
-+	mtd_start_access(master);
-+	ret = master->_block_isbad(master, mtd_get_master_ofs(mtd, ofs));
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_block_isbad);
- 
-@@ -2197,7 +2288,10 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
- 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
- 
-+	mtd_start_access(master);
- 	ret = master->_block_markbad(master, mtd_get_master_ofs(mtd, ofs));
-+	mtd_end_access(master);
-+
- 	if (ret)
- 		return ret;
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 88227044fc86..b074106e2d8e 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -231,6 +231,8 @@ struct mtd_master {
- 	struct mutex partitions_lock;
- 	struct mutex chrdev_lock;
- 	unsigned int suspended : 1;
-+	wait_queue_head_t resume_wq;
-+	struct rw_semaphore suspend_lock;
- };
- 
- struct mtd_info {
-@@ -476,10 +478,47 @@ static inline u32 mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
- 	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
- }
- 
-+static inline void mtd_start_access(struct mtd_info *master)
-+{
-+	WARN_ON_ONCE(master != mtd_get_master(master));
-+
-+	/*
-+	 * Don't take the suspend_lock on devices that don't
-+	 * implement the suspend hook. Otherwise, lockdep will
-+	 * complain about nested locks when trying to suspend MTD
-+	 * partitions or MTD devices created by gluebi which are
-+	 * backed by real devices.
-+	 */
-+	if (!master->_suspend)
-+		return;
-+
-+	/*
-+	 * Wait until the device is resumed. Should we have a
-+	 * non-blocking mode here?
-+	 */
-+	while (1) {
-+		down_read(&master->master.suspend_lock);
-+		if (!master->master.suspended)
-+			return;
-+
-+		up_read(&master->master.suspend_lock);
-+		wait_event(master->master.resume_wq, !master->master.suspended);
-+	}
-+}
-+
-+static inline void mtd_end_access(struct mtd_info *master)
-+{
-+	if (!master->_suspend)
-+		return;
-+
-+	up_read(&master->master.suspend_lock);
-+}
-+
- static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
- 				     loff_t ofs, size_t len)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
-+	int ret;
- 
- 	if (!master->_max_bad_blocks)
- 		return -ENOTSUPP;
-@@ -487,8 +526,12 @@ static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
- 	if (mtd->size < (len + ofs) || ofs < 0)
- 		return -EINVAL;
- 
--	return master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
--				       len);
-+	mtd_start_access(master);
-+	ret = master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
-+				      len);
-+	mtd_end_access(master);
-+
-+	return ret;
- }
- 
- int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
-@@ -546,30 +589,40 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
- static inline int mtd_suspend(struct mtd_info *mtd)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
--	int ret;
--
--	if (master->master.suspended)
--		return 0;
-+	int ret = 0;
- 
--	ret = master->_suspend ? master->_suspend(master) : 0;
--	if (ret)
-+	if (!master->_suspend)
- 		return ret;
- 
--	master->master.suspended = 1;
--	return 0;
-+	down_write(&master->master.suspend_lock);
-+	if (!master->master.suspended) {
-+		ret = master->_suspend(master);
-+		if (!ret)
-+			master->master.suspended = 1;
-+	}
-+	up_write(&master->master.suspend_lock);
-+
-+	return ret;
- }
- 
- static inline void mtd_resume(struct mtd_info *mtd)
- {
- 	struct mtd_info *master = mtd_get_master(mtd);
- 
--	if (!master->master.suspended)
-+	if (!master->_suspend)
- 		return;
- 
--	if (master->_resume)
--		master->_resume(master);
-+	down_write(&master->master.suspend_lock);
-+	if (master->master.suspended) {
-+		if (master->_resume)
-+			master->_resume(master);
-+
-+		master->master.suspended = 0;
- 
--	master->master.suspended = 0;
-+		/* The MTD dev has been resumed, wake up all waiters. */
-+		wake_up_all(&master->master.resume_wq);
-+	}
-+	up_write(&master->master.suspend_lock);
- }
- 
- static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
--- 
-2.33.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RGVhciBSaWNoYXJkLAoKT24gVGh1LCAyMSBPY3QgMjAyMSBhdCAxOTo0NCwgUmljaGFyZCBXZWlu
+YmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4gd3JvdGU6Cj4KPiBLcmlzdG9mLAo+Cj4gLS0tLS0gVXJz
+cHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+ID4gVm9uOiAiS3Jpc3RvZiBIYXZhc2kiIDxoYXZhc2ll
+ZnJAZ21haWwuY29tPgo+ID4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+Cj4gPiBDQzog
+ImxpbnV4LW10ZCIgPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPgo+ID4gR2VzZW5kZXQ6
+IERvbm5lcnN0YWcsIDIxLiBPa3RvYmVyIDIwMjEgMTc6MzM6MTUKPiA+IEJldHJlZmY6IFJlOiBV
+QklGUyBwYW5pYyBkdXJpbmcgYnJvd24tb3V0Cj4KPiA+IERlYXIgUmljaGFyZCwKPiA+Cj4gPiBJ
+IG5vdGljZWQgdGhhdCBJIGZvcmdvdCB0byBDYyBsaW51eC1tdGQgZnJvbSB0aGUgcHJldmlvdXMg
+ZW1haWxzLgo+ID4KPiA+IExhdGVzdCB1cGRhdGU6IHdlIGNvdWxkIHJlcHJvZHVjZSB0aGUgYnVn
+IHdpdGggYSB2NS4xMCBwb3J0Lgo+ID4gVGhlIHNhbWUgRVBFUk0gZXJyb3IgaXMgaGl0Lgo+ID4K
+PiA+IEhhcHB5IHRvIGhlYXIgYW55IGhpbnRzIG9uIGhvdyBJIGNhbiBzdXBwb3J0IGluIGZpeGlu
+ZyB0aGlzIGlzc3VlLgo+Cj4gc28gSSBmZWFyIHlvdSBmb3VuZCBhIGJ1ZyBpbiB0aGUgVUJJRlMg
+YXV0aCBjb2RlLgo+IElzIGl0IHBvc3NpYmxlIHRvIHNoYXJlIHRoZSBmaWxlc3lzdGVtIGFuZCB0
+aGV5IGtleW1hdGVyaWFsIHdpdGggbWU/CgpJIHVzZWQgb3VyIGJ1aWxkIHNlcnZlciB0byBnZW5l
+cmF0ZSB0aGUgdGVzdCBpbWFnZXMsIHdoZXJlIHdlIHVzZSBvbmUtdGltZQp0aHJvdy1hd2F5IGtl
+eXMvY2VydHMgZm9yIGVhY2ggYnVpbGQuIEFueXdheSwgSSBtYW5hZ2VkIHRvIHJldHJpZXZlCnRo
+ZSBrZXkgbWF0ZXJpYWxzCmZvciB0aGUgZmFpbGluZyB2NS4xMC1iYXNlZCB0ZXN0LgoKV2UgaGF2
+ZSB0aGUgZm9sbG93aW5nIGxheW91dCBvbiB0aGUgZmxhc2g6CjAwMDAgLSBbWFhYXSBwYXJ0aXRp
+b24gZm9yIGJvb3RzdHJhcCAoYXQ5MSkKW1hYWF0tICAgICAgICAgICBwYXJ0aXRpb24gZm9yIFVC
+SSBpbWFnZQoKd2hlcmUgdGhlIFVCSSBpbWFnZSBoYXM6Ci0gdm9sLTAgRFRCMCBbcm9dCi0gdm9s
+LTEgRFRCMSBbcm9dCi0gdm9sLTIgS2VybmVsMCBbcm9dCi0gdm9sLTMgS2VybmVsMSBbcm9dCi0g
+dm9sLTQgUm9vdEZTIFtkeW4sIGF1dG9yZXNpemVdCgpJIGRvbid0IGtub3cgaG93IHRvIGV4dHJh
+Y3Qgb25seSB0aGUgcm9vdEZTIGZyb20gdGhlICJicmlja2VkIiBkZXZpY2UuCkJ1dCBJIGNvdWxk
+IGR1bXAgdGhlIGZsYXNoIG9mIHRoYXQgZGV2aWNlIGFuZCBjcmVhdGUgYSBsaW5rIGZvciB5b3UK
+d2l0aCB0aGF0IGFuZCB0aGUga2V5cy9jZXJ0cy4KV291bGQgdGhhdCBoZWxwPwoKPgo+IFRoYW5r
+cywKPiAvL3JpY2hhcmQKCkJlc3QgUmVnYXJkcywKS3Jpc3TDs2YKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
