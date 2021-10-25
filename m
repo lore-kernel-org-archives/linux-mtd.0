@@ -2,103 +2,69 @@ Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 439B4C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77860C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:46:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CAFFE60F4F
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:40:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAFFE60F4F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
+	by mail.kernel.org (Postfix) with ESMTPS id 13BB760EFF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 09:46:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 13BB760EFF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ztSjoa71v7Q0pezN35yZQRHYdEuwZ26S6TO06Aiygdo=; b=adz+D/JWVCAGD4
-	kaOvXi53sA1Q83H/4+23aT7hWjC6UhWCipJlaYvzd8j5/d4bpNnaAa2tUdeHQUUyVw2hUCBPYeT6x
-	h4FvWs37MzYo12r/POcWjEeb82O8NAxHfCWqjg0gG2KIcLA7kg7llXxG52s8kkTZuDZ9BRL2XPtNj
-	QukNQqq6eoGd9F7gioIaPzCVbOaFIJBDNEW+G3VvvV734SppXSirCONuI1eqbgDjbdukri+oXcJ4L
-	YNiTTbAEqpSAw2dxE1g4ODiGofssgXu20LHyizBDbw+xakKBGFJ2YEyNSTD/PIw90JW7J2Fc7/P6b
-	C+Soccl1dFGajs7bZsuQ==;
+	List-Owner; bh=zMvM2T9wd8pWkMnSq5cukuvfgwD8wH+drZJ+zq3KBXk=; b=D6P5dNfdljQLVP
+	geK/kZGuFwGx8/aaFi+w9cU1FcUaYW+zawEuUNHy/RlNb3+4YMOr6U1R0ITtJLmy2+3z0zb/W1BD0
+	SpSv5ntdfCCTK2w1IwqpDR51oLKnsOMtJSeLsHdtJ45Y+idBnQiGbs1EuUV8Q138cgaPBZrwfg+kE
+	Yd9KHt08LFqVwGppL+sXGYuUOnckTpLDBz9ob91Xh5kkZwMB2KYyfffKlO78CPP7TjeSBwOJzYbbC
+	HJG06fA0IEQqbIm9kBVweI7lm4gT4VJZpPWF30mg43MDRq9SZwK8udErIm8wJaaa10RLkDjnrjMEZ
+	RSO6F/l+o9WgU42KX8zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mewRx-00FzA8-4d; Mon, 25 Oct 2021 09:39:25 +0000
-Received: from mickerik.phytec.de ([195.145.39.210])
+	id 1mewY4-00G0va-El; Mon, 25 Oct 2021 09:45:44 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mewRt-00Fz7F-7m
- for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 09:39:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
- q=dns/txt; i=@phytec.de; t=1635154756; x=1637746756;
- h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=86wgo+dENMrmOWgTh02SlSZd41Ja4TOuozw8C8udclw=;
- b=GblZgL3YVBrkB+O0Q3BdqZQ3zKCjkOd+49Zw7+1iDYI6YF1Dco/erCvctEa5vVaS
- 8ZbO2Q/gwgbjeTrh2VtmDPra7EioorWHRmYdWxUAaRGHsaqQ3HTOddAfigGLrJQ+
- F0TMKGIBRo4WC3t6lguOb2ch07Jln78Wqlht/5kLWZs=;
-X-AuditID: c39127d2-c275470000001d24-62-61767b43d007
-Received: from florix.phytec.de (florix.phytec.de [172.16.0.118])
- (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (Client did not present a certificate)
- by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id C1.AC.07460.34B76716;
- Mon, 25 Oct 2021 11:39:16 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 25 Oct
- 2021 11:39:15 +0200
-Received: from Berlix.phytec.de ([fe80::6d58:38d4:5df2:e4ad]) by
- berlix.phytec.de ([fe80::6d58:38d4:5df2:e4ad%3]) with mapi id 15.01.2308.014; 
- Mon, 25 Oct 2021 11:39:15 +0200
-From: =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To: "han.xu@nxp.com" <han.xu@nxp.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
- "michael@amarulasolutions.com" <michael@amarulasolutions.com>,
- "ceggers@arri.de" <ceggers@arri.de>, "bbrezillon@kernel.org"
- <bbrezillon@kernel.org>, Christian Hemp <C.Hemp@phytec.de>, "gerg@kernel.org"
- <gerg@kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC PATCH 2/2] gpmi-nand: Add ERR007117 protection for
- nfc_apply_timings
-Thread-Topic: [RFC PATCH 2/2] gpmi-nand: Add ERR007117 protection for
- nfc_apply_timings
-Thread-Index: AQHXv0fgZeaCUwiGl02m7VsJcpCtpKvQPsMAgA5jlgCAAGGdAIAEZEyA
-Date: Mon, 25 Oct 2021 09:39:15 +0000
-Message-ID: <a14524533eccd185224e1c2ec61895e1dbbf7ff8.camel@phytec.de>
-References: <20211011084607.27a840e0@xps13>
- <20211012090224.4101984-1-s.riedmueller@phytec.de>
- <20211012090224.4101984-2-s.riedmueller@phytec.de>
- <20211013050148.2w373kpbfaeuxbwm@umbrella>
- <92d463460324d4501523f8a1da1f07c12fd6490f.camel@phytec.de>
- <20211022143514.lplk6jaxklq3rxry@umbrella>
-In-Reply-To: <20211022143514.lplk6jaxklq3rxry@umbrella>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-ID: <CCF36E6A75DFDE469736204955BAE97E@phytec.de>
+ id 1mewY1-00G0uT-EI
+ for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 09:45:43 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10147"; a="210392004"
+X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; d="scan'208";a="210392004"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Oct 2021 02:45:38 -0700
+X-IronPort-AV: E=Sophos;i="5.87,179,1631602800"; d="scan'208";a="554151039"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Oct 2021 02:45:34 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 25 Oct 2021 12:43:20 +0300
+Date: Mon, 25 Oct 2021 12:43:20 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
+Message-ID: <YXZ8OJFICqYSatZX@lahna>
+References: <20211013114432.31352-1-mika.westerberg@linux.intel.com>
+ <20211013114432.31352-3-mika.westerberg@linux.intel.com>
+ <20211020114153.0f99c5df@collabora.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsWyRoChTNeluizR4ImJxeqW6YwWjb3XGS12
- vNrCaLHwRwOzxe6mZewWpxpbWSwOt+9jtfi7fROLA4fH2o/3WT2OrdnM6jFvTbXHplWdbB6b
- l9R7bHy3g8mj/69BAHsUl01Kak5mWWqRvl0CV8aRg0uZC/7pVxybztnA+ECvi5GDQ0LARKLn
- h2QXIxeHkMByJok7R6czQTiPGCWmnrzCBuFsYpTYt/w0excjJwebgIvE57ZvbCC2iICqxNsH
- DWAdzAIzmCVW/trBCJIQFoiQOLzrADNEUaRE//UX7BC2m0THtA+sIDYLUHPPxz0sIDYvUPzV
- kXesENs2Mklc/D4fbAOngLnEn53XwYoYBWQlOhveMYHYzALiEpuefQcbJCEgILFkz3lmCFtU
- 4uXjf1BxBYm2nk4mkD+ZBTQl1u/Sh2i1kFg16S4zhK0oMaX7ITvEDYISJ2c+YZnAKD4LyYZZ
- CN2zkHTPQtI9C0n3AkbWVYxCuZnJ2alFmdl6BRmVJanJeimpmxiB8Xx4ovqlHYx9czwOMTJx
- MB5ilOBgVhLhtflUkijEm5JYWZValB9fVJqTWnyIUZqDRUmc934PU6KQQHpiSWp2ampBahFM
- lomDU6qBcUKAr8qUaStY5U5POcy3sfn1bX8J/XLLWHZe3Q8M2S5NGRvTJ8zjL62bfNwmtzrl
- bgtz8muddXwxujPbPZnnq3bpBTqzzgqcZHhQb7Eye27ZedZ9U6ZULfohd+3MnrkHXupxC3fZ
- R5yScqm/OJVh1RrFXdcC/qbp3lg8f887qZI57Vf/qS69q8RSnJFoqMVcVJwIAH+OHgXVAgAA
+Content-Disposition: inline
+In-Reply-To: <20211020114153.0f99c5df@collabora.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211025_023921_646650_3ADE40CA 
-X-CRM114-Status: GOOD (  36.68  )
+X-CRM114-CacheID: sfid-20211025_024541_536358_F45C1097 
+X-CRM114-Status: GOOD (  40.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,90 +76,174 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSGFuLA0KDQpPbiBGcmksIDIwMjEtMTAtMjIgYXQgMDk6MzUgLTA1MDAsIGhhbi54dUBueHAu
-Y29tIHdyb3RlOg0KPiBPbiAyMS8xMC8yMiAwODo0NUFNLCBTdGVmYW4gUmllZG3DvGxsZXIgd3Jv
-dGU6DQo+ID4gSGkgSGFuLA0KPiA+IA0KPiA+IHNvcnJ5IGl0IHRvb2sgbWUgc29tZSB0aW1lIHRv
-IGdldCBiYWNrIHRvIHlvdS4NCj4gPiANCj4gPiBPbiBXZWQsIDIwMjEtMTAtMTMgYXQgMDA6MDEg
-LTA1MDAsIEhhbiBYdSB3cm90ZToNCj4gPiA+IE9uIDIxLzEwLzEyIDExOjAyQU0sIFN0ZWZhbiBS
-aWVkbXVlbGxlciB3cm90ZToNCj4gPiA+ID4gQWNjb3JkaW5nIHRvIGkuTVggNiBlcnJhdHVtIEVS
-UjAwNzExNyBncG1pIGNsb2NrcyBuZWVkIHRvIGJlIGdhdGVkIG9mZg0KPiA+ID4gPiB3aGVuIGRv
-aW5nIGEgZ3BtaV9pbyBjbGsgcmF0ZSBjaGFuZ2UuIFNvIGdhdGUgdGhlIGNsb2NrcyBvZmYgYmVm
-b3JlDQo+ID4gPiA+IHRoZSByYXRlIGNoYW5nZSBpbiBuZmNfYXBwbHlfdGltaW5ncyBhbmQgdW5n
-YXRlIHRoZW0gYWdhaW4gYWZ0ZXIgdGhlDQo+ID4gPiA+IGNoYW5nZS4NCj4gPiA+ID4gDQo+ID4g
-PiA+IE90aGVyd2lzZSB0aGlzIHJhdGUgY2hhbmdlIGNhbiBsZWFkIHRvIGFuIHVucmVzcG9uc2l2
-ZSBHUE1JIGNvcmUgd2hpY2gNCj4gPiA+ID4gcmVzdWx0cyBpbiBETUEgdGltZW91dHMgYW5kIGZh
-aWxlZCBkcml2ZXIgcHJvYmU6DQo+ID4gPiA+IA0KPiA+ID4gPiBbICAgIDQuMDcyMzE4XSBncG1p
-LW5hbmQgMTEyMDAwLmdwbWktbmFuZDogRE1BIHRpbWVvdXQsIGxhc3QgRE1BDQo+ID4gPiA+IC4u
-Lg0KPiA+ID4gPiBbICAgIDQuMzcwMzU1XSBncG1pLW5hbmQgMTEyMDAwLmdwbWktbmFuZDogQ2hp
-cDogMCwgRXJyb3IgLTExMA0KPiA+ID4gPiAuLi4NCj4gPiA+ID4gWyAgICA0LjM3NTk4OF0gZ3Bt
-aS1uYW5kIDExMjAwMC5ncG1pLW5hbmQ6IENoaXA6IDAsIEVycm9yIC0yMg0KPiA+ID4gPiBbICAg
-IDQuMzgxNTI0XSBncG1pLW5hbmQgMTEyMDAwLmdwbWktbmFuZDogRXJyb3IgaW4gRUNDLWJhc2Vk
-IHJlYWQ6DQo+ID4gPiA+IC0yMg0KPiA+ID4gPiBbICAgIDQuMzg3OTg4XSBncG1pLW5hbmQgMTEy
-MDAwLmdwbWktbmFuZDogQ2hpcDogMCwgRXJyb3IgLTIyDQo+ID4gPiA+IFsgICAgNC4zOTM1MzVd
-IGdwbWktbmFuZCAxMTIwMDAuZ3BtaS1uYW5kOiBDaGlwOiAwLCBFcnJvciAtMjINCj4gPiA+ID4g
-Li4uDQo+ID4gPiA+IA0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBTdGVmYW4gUmllZG11ZWxsZXIg
-PHMucmllZG11ZWxsZXJAcGh5dGVjLmRlPg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gSGksDQo+ID4g
-PiA+IA0KPiA+ID4gPiBJJ20gbm90IHN1cmUgYWJvdXQgdGhlIGVycm9yIGhhbmRsaW5nIGhlcmUs
-IGlmIGl0IGlzIGFjdHVhbGx5DQo+ID4gPiA+IG5lY2Nlc3NhcnkuDQo+ID4gPiA+IFNvIHNvbWUg
-ZmVlZGJhY2sgd291bGQgYmUgbmljZSBoZXJlLg0KPiA+ID4gPiANCj4gPiA+ID4gVGhhbmtzLA0K
-PiA+ID4gPiBTdGVmYW4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9ncG1pLW5hbmQvZ3BtaS1uYW5kLmMgfCAyMSArKysrKysrKysrKysrKysrKysrLS0NCj4gPiA+
-ID4gIDEgZmlsZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+
-ID4gPiANCj4gPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFu
-ZC9ncG1pLW5hbmQuYw0KPiA+ID4gPiBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9n
-cG1pLW5hbmQuYw0KPiA+ID4gPiBpbmRleCBhMWY3MDAwZjAzM2UuLjMyNmM4YTg5NWYxZiAxMDA2
-NDQNCj4gPiA+ID4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZ3BtaS1uYW5kL2dwbWktbmFu
-ZC5jDQo+ID4gPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2dwbWktbmFuZC9ncG1pLW5h
-bmQuYw0KPiA+ID4gPiBAQCAtNzEzLDE1ICs3MTMsMjggQEAgc3RhdGljIHZvaWQgZ3BtaV9uZmNf
-Y29tcHV0ZV90aW1pbmdzKHN0cnVjdA0KPiA+ID4gPiBncG1pX25hbmRfZGF0YSAqdGhpcywNCj4g
-PiA+ID4gIAkJCSAgICAgICh1c2VfaGFsZl9wZXJpb2QgPw0KPiA+ID4gPiBCTV9HUE1JX0NUUkwx
-X0hBTEZfUEVSSU9EIDoNCj4gPiA+ID4gMCk7DQo+ID4gPiA+ICB9DQo+ID4gPiA+ICANCj4gPiA+
-ID4gLXN0YXRpYyB2b2lkIGdwbWlfbmZjX2FwcGx5X3RpbWluZ3Moc3RydWN0IGdwbWlfbmFuZF9k
-YXRhICp0aGlzKQ0KPiA+ID4gPiArc3RhdGljIGludCBncG1pX25mY19hcHBseV90aW1pbmdzKHN0
-cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykNCj4gPiA+ID4gIHsNCj4gPiA+ID4gIAlzdHJ1Y3Qg
-Z3BtaV9uZmNfaGFyZHdhcmVfdGltaW5nICpodyA9ICZ0aGlzLT5odzsNCj4gPiA+ID4gIAlzdHJ1
-Y3QgcmVzb3VyY2VzICpyID0gJnRoaXMtPnJlc291cmNlczsNCj4gPiA+ID4gIAl2b2lkIF9faW9t
-ZW0gKmdwbWlfcmVncyA9IHItPmdwbWlfcmVnczsNCj4gPiA+ID4gIAl1bnNpZ25lZCBpbnQgZGxs
-X3dhaXRfdGltZV91czsNCj4gPiA+ID4gKwlpbnQgcmV0Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsJ
-aWYgKEdQTUlfSVNfTVg2USh0aGlzKSkgew0KPiA+ID4gDQo+ID4gPiBOb3Qgb25seSBmb3IgNlEg
-YnV0IGZvciBHUE1JX0lTX01YNg0KPiA+IA0KPiA+IENhbiB5b3UgY29uZmlybSB0aGF0IGkuTVgg
-NlNYIGFuZCBpLk1YIDcgYXJlIGFmZmVjdGVkIGJ5IHRoZSBFUlIwMDcxMTcNCj4gPiBlcnJhdHVt
-DQo+ID4gYXMgd2VsbD8gQmVjYXVzZSB0aGUgaS5NWCA2VUwvVUxMIGFyZSBpbmNsdWRlZCBieSB0
-aGUgR1BNSV9JU19NWDZRDQo+ID4gYWxyZWFkeS4NCj4gDQo+IGkuTVg2U1ggaGFzIHRoZSBnbGl0
-Y2ggaXNzdWUgZm9yIHN1cmUsIGJ1dCBJIGNhbiBkb3VibGUgY2hlY2sgaWYgaXQncyBkdWUgdG8N
-Cj4gdGhlDQo+IHNhbWUgZXJyYXRhLiBJIHdpbGwgYWxzbyBnbyBjaGVjayBpZiB0aGUgZXJyYXRh
-IHdpbGwgYWZmZWN0IGkuTVg3DQoNClRoYW5rcywgdGhhdCdsbCBiZSBncmVhdCENCg0KSSdsbCB3
-YWl0IGZvciB5b3VyIHJlc3BvbnNlLg0KDQpUaGFua3MsDQpTdGVmYW4NCg0KPiANCj4gPiBPciBk
-byB3ZSBuZWVkIGFub3RoZXIgbWFjcm8gZm9yIGkuTVggNlVML1VMTCBhcyBDaHJpc3RpYW4gaGFz
-IHN1Z2dlc3RlZA0KPiA+IGVhcmxpZXI/DQo+ID4gDQo+ID4gVGhhbmtzLA0KPiA+IFN0ZWZhbg0K
-PiA+IA0KPiA+ID4gPiArCQlyZXQgPSBfX2dwbWlfZW5hYmxlX2Nsayh0aGlzLCBmYWxzZSk7DQo+
-ID4gPiA+ICsJCWlmIChyZXQpDQo+ID4gPiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ID4gPiArCX0N
-Cj4gPiA+ID4gIA0KPiA+ID4gPiAgCWNsa19zZXRfcmF0ZShyLT5jbG9ja1swXSwgaHctPmNsa19y
-YXRlKTsNCj4gPiA+ID4gIA0KPiA+ID4gPiArCWlmIChHUE1JX0lTX01YNlEodGhpcykpIHsNCj4g
-PiA+ID4gKwkJcmV0ID0gX19ncG1pX2VuYWJsZV9jbGsodGhpcywgdHJ1ZSk7DQo+ID4gPiA+ICsJ
-CWlmIChyZXQpDQo+ID4gPiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ID4gPiArCX0NCj4gPiA+ID4g
-Kw0KPiA+ID4gPiAgCXdyaXRlbChody0+dGltaW5nMCwgZ3BtaV9yZWdzICsgSFdfR1BNSV9USU1J
-TkcwKTsNCj4gPiA+ID4gIAl3cml0ZWwoaHctPnRpbWluZzEsIGdwbWlfcmVncyArIEhXX0dQTUlf
-VElNSU5HMSk7DQo+ID4gPiA+ICANCj4gPiA+ID4gQEAgLTczOSw2ICs3NTIsOCBAQCBzdGF0aWMg
-dm9pZCBncG1pX25mY19hcHBseV90aW1pbmdzKHN0cnVjdA0KPiA+ID4gPiBncG1pX25hbmRfZGF0
-YSAqdGhpcykNCj4gPiA+ID4gIA0KPiA+ID4gPiAgCS8qIFdhaXQgZm9yIHRoZSBETEwgdG8gc2V0
-dGxlLiAqLw0KPiA+ID4gPiAgCXVkZWxheShkbGxfd2FpdF90aW1lX3VzKTsNCj4gPiA+ID4gKw0K
-PiA+ID4gPiArCXJldHVybiAwOw0KPiA+ID4gPiAgfQ0KPiA+ID4gPiAgDQo+ID4gPiA+ICBzdGF0
-aWMgaW50IGdwbWlfc2V0dXBfaW50ZXJmYWNlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGludCBj
-aGlwbnIsDQo+ID4gPiA+IEBAIC0yMjcxLDcgKzIyODYsOSBAQCBzdGF0aWMgaW50IGdwbWlfbmZj
-X2V4ZWNfb3Aoc3RydWN0IG5hbmRfY2hpcA0KPiA+ID4gPiAqY2hpcCwNCj4gPiA+ID4gIAkgKi8N
-Cj4gPiA+ID4gIAlpZiAodGhpcy0+aHcubXVzdF9hcHBseV90aW1pbmdzKSB7DQo+ID4gPiA+ICAJ
-CXRoaXMtPmh3Lm11c3RfYXBwbHlfdGltaW5ncyA9IGZhbHNlOw0KPiA+ID4gPiAtCQlncG1pX25m
-Y19hcHBseV90aW1pbmdzKHRoaXMpOw0KPiA+ID4gPiArCQlyZXQgPSBncG1pX25mY19hcHBseV90
-aW1pbmdzKHRoaXMpOw0KPiA+ID4gPiArCQlpZiAocmV0KQ0KPiA+ID4gPiArCQkJcmV0dXJuIHJl
-dDsNCj4gPiA+ID4gIAl9DQo+ID4gPiA+ICANCj4gPiA+ID4gIAlkZXZfZGJnKHRoaXMtPmRldiwg
-IiVzOiAlZCBpbnN0cnVjdGlvbnNcbiIsIF9fZnVuY19fLCBvcC0NCj4gPiA+ID4gPm5pbnN0cnMp
-Ow0KPiA+ID4gPiAtLSANCj4gPiA+ID4gMi4yNS4xDQo+ID4gPiA+IA0KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+On Wed, Oct 20, 2021 at 11:41:53AM +0200, Boris Brezillon wrote:
+> On Wed, 13 Oct 2021 14:44:31 +0300
+> Mika Westerberg <mika.westerberg@linux.intel.com> wrote:
+> 
+> > The preferred way to implement SPI-NOR controller drivers is through SPI
+> > subsubsystem utilizing the SPI MEM core functions. This converts the
+> > Intel SPI flash controller driver over the SPI MEM by moving the driver
+> > from SPI-NOR subsystem to SPI subsystem and in one go make it use the
+> > SPI MEM functions. The driver name will be changed from intel-spi to
+> > spi-intel to match the convention used in the SPI subsystem.
+> > 
+> 
+> I skimmed over the driver changes, and I'm skeptical about this "let's
+> convert all spi-nor controller drivers into spi-mem drivers even if
+> they don't fit the spi-mem model" strategy. Clearly, the intel
+> controller is much more limited than any other spi-mem controller (I
+> mean feature-wise not perf-wise of course). The fact that you have to
+> check the opcode to decide whether the operation is supported or not,
+> or the way you deduce when to issue an erase vs a regular read/write is
+> kind of hack-ish. Not saying we shouldn't support this case in spi-mem,
+> but it should at least be done in a more controlled way. Maybe with an
+> explicit array of supported spi_mem operations, and driver specific
+> hooks for each of these operations so anything falling outside is
+> clearly identified and rejected (we have this sort of things in the raw
+> NAND framework).
+
+I'm not fan of this either but this was requirement from the SPI-NOR
+maintainers before any new features can be added, and we have a bunch of
+new hardware that needs to be supported :(
+
+Sure, I can take a look at the array you suggest if that helps to get
+things moving. Any objections anyone for doing this?
+
+> > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> 
+> > +static bool intel_spi_supports_mem_op(struct spi_mem *mem,
+> > +				      const struct spi_mem_op *op)
+> > +{
+> > +	struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
+> > +
+> > +	if (op->cmd.dtr)
+> > +		return false;
+> > +
+> > +	/*
+> > +	 * The Intel controller supports widths up to 4 but it handles
+> > +	 * them automatically and does not expose them to software. Here
+> > +	 * we accept anything up to 4.
+> > +	 */
+> > +	if (op->cmd.buswidth > 4 ||
+> > +	    (op->addr.nbytes && op->addr.buswidth > 4) ||
+> > +	    (op->dummy.nbytes && op->dummy.buswidth > 4))
+> > +		return false;
+> > +
+> > +	if (ispi->swseq_reg && ispi->locked) {
+> > +		int i;
+> > +
+> > +		/* Check if it is in the locked opcodes list */
+> > +		for (i = 0; i < ARRAY_SIZE(ispi->opcodes); i++) {
+> > +			if (ispi->opcodes[i] == op->cmd.opcode)
+> > +				goto check_opcode;
+> >  		}
+> >  
+> > -		return 0;
+> > +		return false;
+> >  	}
+> >  
+> > -	/* Not needed with HW sequencer erase, make sure it is cleared */
+> > -	ispi->atomic_preopcode = 0;
+> > +check_opcode:
+> > +	switch (op->cmd.opcode) {
+> > +	case SPINOR_OP_RDID:
+> > +	case SPINOR_OP_RDSR:
+> > +	case SPINOR_OP_WRSR:
+> > +		return true;
+> 
+> Ouch. I hate how spi-nor specific stuff leak into the supposedly
+> spi-mem generic driver. Now if we want to allow such specialization, we
+> should at least make sure the whole operation is consistent instead of
+> checking the opcode, address, dummy and data cycles separately.
+
+OK.
+
+> > -	while (len > 0) {
+> > -		writel(offs, ispi->base + FADDR);
+> > +	case SPINOR_OP_READ:
+> > +	case SPINOR_OP_READ_FAST:
+> > +	case SPINOR_OP_READ_4B:
+> > +	case SPINOR_OP_READ_FAST_4B:
+> > +		return true;
+> >  
+> > -		val = readl(ispi->base + HSFSTS_CTL);
+> > -		val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
+> > -		val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+> > -		val |= cmd;
+> > -		val |= HSFSTS_CTL_FGO;
+> > -		writel(val, ispi->base + HSFSTS_CTL);
+> > +	case SPINOR_OP_PP:
+> > +	case SPINOR_OP_PP_4B:
+> > +	case SPINOR_OP_WREN:
+> > +	case SPINOR_OP_WRDI:
+> > +		return true;
+> >  
+> > -		ret = intel_spi_wait_hw_busy(ispi);
+> > -		if (ret)
+> > -			return ret;
+> > +	case SPINOR_OP_SE:
+> > +	case SPINOR_OP_SE_4B:
+> > +		return ispi->erase_64k;
+> >  
+> > -		status = readl(ispi->base + HSFSTS_CTL);
+> > -		if (status & HSFSTS_CTL_FCERR)
+> > -			return -EIO;
+> > -		else if (status & HSFSTS_CTL_AEL)
+> > -			return -EACCES;
+> > +	case SPINOR_OP_BE_4K:
+> > +	case SPINOR_OP_BE_4K_4B:
+> > +		return true;
+> > +	}
+> >  
+> > -		offs += erase_size;
+> > -		len -= erase_size;
+> > +	return false;
+> > +}
+> > +
+> > +static int intel_spi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> > +{
+> > +	struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
+> > +	size_t nbytes = op->data.nbytes;
+> > +	u8 opcode = op->cmd.opcode;
+> > +
+> > +	if (op->addr.nbytes) {
+> > +		if  (op->data.dir == SPI_MEM_DATA_IN)
+> > +			return intel_spi_read(ispi, op->addr.val, nbytes,
+> > +					      op->data.buf.in);
+> > +		if (op->data.dir == SPI_MEM_DATA_OUT)
+> > +			return intel_spi_write(ispi, op->addr.val, nbytes,
+> > +					       op->data.buf.out);
+> > +		if (op->data.dir == SPI_MEM_NO_DATA)
+> > +			return intel_spi_erase(ispi, opcode, op->addr.val);
+> 
+> That's risky IMHO, how can you be sure that NO_DATA means erase? Again,
+> it looks like the whole operation should be checked, not just the data
+> field.
+
+intel_spi_erase() does further checks based on the opcode:
+
+        switch (opcode) {
+        case SPINOR_OP_SE:
+                cmd = HSFSTS_CTL_FCYCLE_ERASE_64K;
+                break;
+
+        case SPINOR_OP_BE_4K:
+                cmd = HSFSTS_CTL_FCYCLE_ERASE;
+                break;
+
+        default:
+                return -EINVAL;
+        }
+
+I should probably add comment on the caller to make it clear though.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
