@@ -2,14 +2,14 @@ Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75224C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:29:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13B04C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:30:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3988361029
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:29:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3988361029
+	by mail.kernel.org (Postfix) with ESMTPS id A117160EFF
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 03:30:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A117160EFF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,40 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WVGzsFY4t3ruUx4yBefeME+fNCyzv3YA71N2Fc8tUsI=; b=bNyhz+C/P8ds39
-	wL6Xj65zAO+aSxHjz+tZW4hI9lvFweS20PqZVvLAmSyFqJwEfWY0hmPiZl7H8+K9YQhHYqMivxB0F
-	+rplY/mcwr5uUSyNTcqX84YB/acRa4dvM2BmEQb8KQbgchLQbdnG69w9G3aMJ0Gb35In+0xZ0OTZM
-	dMKc+dK4lsqB7CDJClBPO6bG8ZS1y8wX0EExIh+yZZKqXxJlbj3N0bmdHGIvUASOs5yvqT0dN9iSO
-	YAHqjEGJ33yJIizatk55hb+x//Qv57D8E11Q/ig3JyCDRO0QD/0ioTWI9GDA0hiA53q4p2agRZz0O
-	nbxJRpCAI7+xasNtLfpg==;
+	List-Owner; bh=/afB99GVolNsyr8EuJsGUr7JowfZLVbXsL8l7gdIVWA=; b=U2bteBcteX2zJP
+	/XIHFaq+bvIgXibg80dZEFvdGFSiUPDG08b92qIZac9IKefVScB8W/kyAvtmldlgQ9VLlFA4Y9m55
+	v4Zl+WjL2AThe1crXlO2ibieO9zwFt/l/zPLXsAfeKvqaEJjTWOizwEsmnNS5grKfliRjszENL+5z
+	yMZISSGhzvyIPR+0TMeTSNGjU9mIBxndu1oT1Zo7Ma4yupI2yXmY1oAET6gKrQYlDvoNSfaas2IQ5
+	kZvWCI3d9U4nUO/TsOfIjR7wcKjzJqlMYLup60wOgTxlu3M4+A0IaeP7NZrV+8f2vUzWUPqxCatdF
+	Cgv0lBhEcOf3dUNN1U5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1meqfg-00F85d-Kd; Mon, 25 Oct 2021 03:29:12 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1meqfw-00F89I-Fg; Mon, 25 Oct 2021 03:29:28 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1meqf2-00F7sy-BQ
+ id 1meqf1-00F7su-PW
  for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 03:28:34 +0000
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hd0lw2Qg5z90PJ;
- Mon, 25 Oct 2021 11:28:28 +0800 (CST)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hd0kP4cd6z8ttY;
+ Mon, 25 Oct 2021 11:27:09 +0800 (CST)
 Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Mon, 25 Oct 2021 11:28:23 +0800
+ 15.1.2308.15; Mon, 25 Oct 2021 11:28:28 +0800
 Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
  (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 25
- Oct 2021 11:28:22 +0800
+ Oct 2021 11:28:28 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
  <Artem.Bityutskiy@nokia.com>, <ext-adrian.hunter@nokia.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>
-Subject: [PATCH 01/11] ubifs: rename_whiteout: Fix double free for
- whiteout_ui->data
-Date: Mon, 25 Oct 2021 11:41:06 +0800
-Message-ID: <20211025034116.3544321-2-chengzhihao1@huawei.com>
+Subject: [PATCH 11/11] ubi: fastmap: Add all fastmap pebs into 'ai->fastmap'
+ when fm->used_blocks>=2
+Date: Mon, 25 Oct 2021 11:41:16 +0800
+Message-ID: <20211025034116.3544321-12-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211025034116.3544321-1-chengzhihao1@huawei.com>
 References: <20211025034116.3544321-1-chengzhihao1@huawei.com>
@@ -61,9 +61,8 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggema761-chm.china.huawei.com (10.1.198.203)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211024_202832_625189_595440F5 
-X-CRM114-Status: UNSURE (   7.53  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211024_202832_358462_E10EAE72 
+X-CRM114-Status: GOOD (  11.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,68 +79,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'whiteout_ui->data' will be freed twice if space budget fail for
-rename whiteout operation as following process:
+Fastmap pebs(pnum >= UBI_FM_MAX_START) won't be added into 'ai->fastmap'
+while attaching ubi device if 'fm->used_blocks' is greater than 2, which
+may cause warning from 'ubi_assert(ubi->good_peb_count == found_pebs)':
 
-rename_whiteout
-  dev = kmalloc
-  whiteout_ui->data = dev
-  kfree(whiteout_ui->data)  // Free first time
-  iput(whiteout)
-    ubifs_free_inode
-      kfree(ui->data)	    // Double free!
+  UBI assert failed in ubi_wl_init at 1878 (pid 2409)
+  Call Trace:
+    ubi_wl_init.cold+0xae/0x2af [ubi]
+    ubi_attach+0x1b0/0x780 [ubi]
+    ubi_init+0x23a/0x3ad [ubi]
+    load_module+0x22d2/0x2430
 
-KASAN reports:
-==================================================================
-BUG: KASAN: double-free or invalid-free in ubifs_free_inode+0x4f/0x70
-Call Trace:
-  kfree+0x117/0x490
-  ubifs_free_inode+0x4f/0x70 [ubifs]
-  i_callback+0x30/0x60
-  rcu_do_batch+0x366/0xac0
-  __do_softirq+0x133/0x57f
+Reproduce:
+  ID="0x20,0x33,0x00,0x00" # 16M 16KB PEB, 512 page
+  modprobe nandsim id_bytes=$ID
+  modprobe ubi mtd="0,0" fm_autoconvert  # Fastmap takes 2 pebs
+  rmmod ubi
+  modprobe ubi mtd="0,0" fm_autoconvert  # Attach by fastmap
 
-Allocated by task 1506:
-  kmem_cache_alloc_trace+0x3c2/0x7a0
-  do_rename+0x9b7/0x1150 [ubifs]
-  ubifs_rename+0x106/0x1f0 [ubifs]
-  do_syscall_64+0x35/0x80
+Add all fastmap pebs into list 'ai->fastmap' to make sure they can be
+counted into 'found_pebs'.
 
-Freed by task 1506:
-  kfree+0x117/0x490
-  do_rename.cold+0x53/0x8a [ubifs]
-  ubifs_rename+0x106/0x1f0 [ubifs]
-  do_syscall_64+0x35/0x80
-
-The buggy address belongs to the object at ffff88810238bed8 which
-belongs to the cache kmalloc-8 of size 8
-==================================================================
-
-Let ubifs_free_inode() free 'whiteout_ui->data'. BTW, delete unused
-assignment 'whiteout_ui->data_len = 0', process 'ubifs_evict_inode()
--> ubifs_jnl_delete_inode() -> ubifs_jnl_write_inode()' doesn't need it
-(because 'inc_nlink(whiteout)' won't be excuted by 'goto out_release',
- and the nlink of whiteout inode is 0).
-
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+Fixes: fdf10ed710c0aa ("ubi: Rework Fastmap attach base code")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/dir.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 41 ++++++++++++++-------------------------
+ 1 file changed, 15 insertions(+), 26 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 7c61d0ec0159..cfa8881d8cca 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1425,8 +1425,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 6b5f1ffd961b..88fdf8f5709f 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -828,24 +828,6 @@ static int find_fm_anchor(struct ubi_attach_info *ai)
+ 	return ret;
+ }
  
- 		err = ubifs_budget_space(c, &wht_req);
- 		if (err) {
--			kfree(whiteout_ui->data);
--			whiteout_ui->data_len = 0;
- 			iput(whiteout);
- 			goto out_release;
+-static struct ubi_ainf_peb *clone_aeb(struct ubi_attach_info *ai,
+-				      struct ubi_ainf_peb *old)
+-{
+-	struct ubi_ainf_peb *new;
+-
+-	new = ubi_alloc_aeb(ai, old->pnum, old->ec);
+-	if (!new)
+-		return NULL;
+-
+-	new->vol_id = old->vol_id;
+-	new->sqnum = old->sqnum;
+-	new->lnum = old->lnum;
+-	new->scrub = old->scrub;
+-	new->copy_flag = old->copy_flag;
+-
+-	return new;
+-}
+-
+ /**
+  * ubi_scan_fastmap - scan the fastmap.
+  * @ubi: UBI device object
+@@ -875,15 +857,11 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	if (fm_anchor < 0)
+ 		return UBI_NO_FASTMAP;
+ 
+-	/* Copy all (possible) fastmap blocks into our new attach structure. */
++	/* Add fastmap blocks(pnum < UBI_FM_MAX_START) into attach structure. */
+ 	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
+-		struct ubi_ainf_peb *new;
+-
+-		new = clone_aeb(ai, aeb);
+-		if (!new)
+-			return -ENOMEM;
+-
+-		list_add(&new->u.list, &ai->fastmap);
++		ret = add_aeb(ai, &ai->fastmap, aeb->pnum, aeb->ec, 0);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	down_write(&ubi->fm_protect);
+@@ -1029,6 +1007,17 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 				"err: %i)", i, pnum, ret);
+ 			goto free_hdr;
  		}
++
++		/*
++		 * Add left fastmap blocks (pnum >= UBI_FM_MAX_START) into
++		 * attach structure.
++		 */
++		if (pnum >= UBI_FM_MAX_START) {
++			ret = add_aeb(ai, &ai->fastmap, pnum,
++				      be64_to_cpu(ech->ec), 0);
++			if (ret)
++				goto free_hdr;
++		}
+ 	}
+ 
+ 	kfree(fmsb);
 -- 
 2.31.1
 
