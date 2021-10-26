@@ -2,62 +2,63 @@ Return-Path: <SRS0=fZpl=PO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7099C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE404C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6980F60E74
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6980F60E74
+	by mail.kernel.org (Postfix) with ESMTPS id A663860E74
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A663860E74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=S6k/GA63n8ZDiSN0lxeI1qsfoTAR5FrBdZerIFCG5zA=; b=TY+ZW66zqgAeVG
-	cfTzyULpmjlxi94qPu1nr1DCAXOQExEAJaFYFC/HOX8dniHjpwdhxI2uUW5jbMau295DIOjFU/b2C
-	GJ1YPlfmKcpclv3ySJpxe5J85zWQWMj7Cw9aDmVzo0t/Efp3Iw0d3hqg8ZfseyglD2SXFIG60b7Fb
-	2X+coNAkuhq2puwCuL2rtXN33ifr35kpbfMr9jS/MO1IbpeFkWG3x+Za2D9z38Q1F5WJxe4UhC2s8
-	ZGYbabMGtrdAZv1LhnQzDxbEISckwZQhZ8zxGzCGtL67aqUj/4krlHjD6oKl9vtG3I3KCHuyRCXV8
-	DmEvF6Qg3o3LzjwRsorg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bHX4zgtzR8h1ICSn+vH/4KMoRVQOHVzVFS8KaUDTPlM=; b=frRDpR5umxPGNy
+	aCR8Oap6Y4su6yblKllvWsAEVuCDAZ53KGE5SW1KMK5vvelLYadsBgK07Q8lyECfWfTBQFU8Y+eOX
+	yhQtfqCpRm8zjjLQcOylnZp8flmt+oJmYReUcatSWXu3hlpT5oW+b0gJzKoBrpSqZwVfNcnRdVKLR
+	si+BOwUXQsUvB9953XSiwmGm3Gpp7WVUHp+a4JdtYbCkB2ErmGVuF19I0awKVqZjW5GheawQIbPTf
+	Lz6PLp1ExratHHjypj1uEgWGi7+kat8B1k9ulGFxwNY+tRX1UTZc8KaOpoodQqP/owhuGJgUgYdgO
+	EfNwi+oWwoYHUW5Dbyxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfFRt-000jNf-Qz; Tue, 26 Oct 2021 05:56:37 +0000
+	id 1mfFSA-000jTE-TS; Tue, 26 Oct 2021 05:56:54 +0000
 Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfFRL-000jF5-9l
+ id 1mfFRO-000jGB-C3
  for linux-mtd@lists.infradead.org; Tue, 26 Oct 2021 05:56:10 +0000
 Received: from zen.. (unknown [185.17.218.86])
- by first.geanix.com (Postfix) with ESMTPSA id 029B8D6C1D;
- Tue, 26 Oct 2021 05:55:58 +0000 (UTC)
+ by first.geanix.com (Postfix) with ESMTPSA id 06FFBD6F84;
+ Tue, 26 Oct 2021 05:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1635227759; bh=h0WfNzdXW1YTJlL4xfDpH76ZL8VMf+fPy+pRovMxQhk=;
- h=From:To:Cc:Subject:Date;
- b=b2e8MNt/MPgJgdQzZljubImA+DHkFNu/NzcESXXESwMw2S8tROeSehhsj3ALT0Vu+
- ueqlBBUehKnon+qtFd8pGadSx0v5Mvyaaq2EWVhWBiOA650cSNOzxyAYEJPT0/KSCe
- O7a8fL6wogSo6OmRIRb5tEOfLt8YSKqmNu10nrdiIRgvk8MFBr3VGDYjEmTWTUhi11
- TSnT00gEwbDp3D1S4X03j2GxjKALTIlkBlJ4y0fb1AKvTMJkaq+uG2nrWLjB90rEXD
- CWI/Qdan6sG7jwvvGBC/GW/NNsCFtJdn1K0Cm1AGNa3RJMIPUWujsswFDBYFF27FtN
- auPSQzhlQgtSA==
+ t=1635227764; bh=DpYIWsQGX2i1qG2VKEU7tQ6gp/DP02vwh6pgvrOgzt4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=dlPbl3NNPaau09m/XrDeRexRQTws1WDmPJHkMyV2O+M8bsPIqMviADbpeQ4V+SYn6
+ URjivOXpZrbtmRBxVA17pylnRaljPLEM4e9chDShsvI9pwP1/A1qvk/AYkA6mcU90K
+ lrTu9OuoDA+oeu5pYcud/Nx1t8Q4o+OCvYCEsbIvabZ30l5kkqelTqLJJP03jQQyfz
+ 5/JagKX2Ll2oJ2+oF9IwfdoxXWXFWJgDNzWpf2EaJkYd2gxuaANew4S//Lnv0ChvIQ
+ GOvijYAx0RhAyUis2CUr8hoIpF6cWyQeSjq6eGVnxi0mLKP+SiYg1w53zC+EPg9b6k
+ wQGDpYKfY4+/g==
 From: Sean Nyekjaer <sean@geanix.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
 Cc: Sean Nyekjaer <sean@geanix.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/4] mtd: core: protect access to mtd devices while in
- suspend
-Date: Tue, 26 Oct 2021 07:55:47 +0200
-Message-Id: <20211026055551.3053598-1-sean@geanix.com>
+Subject: [PATCH v4 4/4] mtd: rawnand: remove suspended check
+Date: Tue, 26 Oct 2021 07:55:51 +0200
+Message-Id: <20211026055551.3053598-5-sean@geanix.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211026055551.3053598-1-sean@geanix.com>
+References: <20211026055551.3053598-1-sean@geanix.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211025_225604_002891_638ED773 
-X-CRM114-Status: GOOD (  11.29  )
+X-CRM114-CacheID: sfid-20211025_225606_742117_46184386 
+X-CRM114-Status: GOOD (  22.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,57 +75,168 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Follow-up on discussion in:
-https://lkml.org/lkml/2021/10/4/41
-https://lkml.org/lkml/2021/10/11/435
+Access is protected in upper MTD layer when MTD devices are suspended.
 
-Changes since v3:
- - edited commit msg and author for mtdconcat patch
+Commit ("mtd: core: protect access to MTD devices while in suspend")
+introduces access protection, so it's safe to remove suspended checks.
 
-Changes since v2:
- - added signoff's to patch from Boris
- - removed accidential line break
- - kept tests consistent: master->master.suspended == 0 -> !master->master.suspended
- - added comments to mtdconcat patch
- - moved mtdconcat before ('mtd: core: protect access to MTD devices while in suspend')
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 52 ++++++++------------------------
+ include/linux/mtd/rawnand.h      |  5 +--
+ 2 files changed, 14 insertions(+), 43 deletions(-)
 
-Changes since v1:
- - removed __mtd_suspend/__mtd_resume functions as they are not used by
-   mtdconcat anymore.
- - only master mtd_info is used for mtd_{start,end}_access(). Warn if we
-   got mtd's.
- - added Boris patch for using uninitialized _suspend/_resume hooks when
-   bbt scanning
- - mtdconcat uses device _suspend/_resume hooks
- - I don't really like the macro proposal from Boris
-   mtd_no_suspend_void_call()/mtd_no_suspend_ret_call() I think they
-   make the code complex to read and the macro's doesn't fit every
-   where anyway...
-
-Changes since from rfc v1/v2:
- - added access protection for all device access hooks in mtd_info.
- - added Suggested-by to [1/3] patch.
- - removed refereces to commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
-   from commit msg as commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") is 
-   to be blamed.
- - tested on a kernel with LOCKDEP enabled.
-
-Boris Brezillon (2):
-  mtd: rawnand: nand_bbt: hide suspend/resume hooks while scanning bbt
-  mtd: mtdconcat: don't use mtd_{suspend,resume}()
-
-Sean Nyekjaer (2):
-  mtd: core: protect access to MTD devices while in suspend
-  mtd: rawnand: remove suspended check
-
- drivers/mtd/mtdconcat.c          |  15 +++-
- drivers/mtd/mtdcore.c            | 124 +++++++++++++++++++++++++++----
- drivers/mtd/nand/raw/nand_base.c |  52 ++++---------
- drivers/mtd/nand/raw/nand_bbt.c  |  28 ++++++-
- include/linux/mtd/mtd.h          |  81 ++++++++++++++++----
- include/linux/mtd/rawnand.h      |   5 +-
- 6 files changed, 230 insertions(+), 75 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 3d6c6e880520..aa2874ae3c4a 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -332,19 +332,11 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+  * @chip: NAND chip structure
+  *
+  * Lock the device and its controller for exclusive access
+- *
+- * Return: -EBUSY if the chip has been suspended, 0 otherwise
+  */
+-static int nand_get_device(struct nand_chip *chip)
++static void nand_get_device(struct nand_chip *chip)
+ {
+ 	mutex_lock(&chip->lock);
+-	if (chip->suspended) {
+-		mutex_unlock(&chip->lock);
+-		return -EBUSY;
+-	}
+ 	mutex_lock(&chip->controller->lock);
+-
+-	return 0;
+ }
+ 
+ /**
+@@ -573,10 +565,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
+ 		nand_erase_nand(chip, &einfo, 0);
+ 
+ 		/* Write bad block marker to OOB */
+-		ret = nand_get_device(chip);
+-		if (ret)
+-			return ret;
+-
++		nand_get_device(chip);
+ 		ret = nand_markbad_bbm(chip, ofs);
+ 		nand_release_device(chip);
+ 	}
+@@ -3756,9 +3745,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 	    ops->mode != MTD_OPS_RAW)
+ 		return -ENOTSUPP;
+ 
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	if (!ops->datbuf)
+ 		ret = nand_do_read_oob(chip, from, ops);
+@@ -4345,13 +4332,11 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+ 			  struct mtd_oob_ops *ops)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int ret;
++	int ret = 0;
+ 
+ 	ops->retlen = 0;
+ 
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	switch (ops->mode) {
+ 	case MTD_OPS_PLACE_OOB:
+@@ -4410,10 +4395,8 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+ 	if (nand_region_is_secured(chip, instr->addr, instr->len))
+ 		return -EIO;
+ 
+-	/* Grab the lock and see if the device is available */
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	/* Grab the lock */
++	nand_get_device(chip);
+ 
+ 	/* Shift to get first page */
+ 	page = (int)(instr->addr >> chip->page_shift);
+@@ -4499,8 +4482,8 @@ static void nand_sync(struct mtd_info *mtd)
+ 
+ 	pr_debug("%s: called\n", __func__);
+ 
+-	/* Grab the lock and see if the device is available */
+-	WARN_ON(nand_get_device(chip));
++	/* Grab the lock */
++	nand_get_device(chip);
+ 	/* Release it and go back */
+ 	nand_release_device(chip);
+ }
+@@ -4517,9 +4500,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ 	int ret;
+ 
+ 	/* Select the NAND device */
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	nand_select_target(chip, chipnr);
+ 
+@@ -4565,8 +4546,6 @@ static int nand_suspend(struct mtd_info *mtd)
+ 	mutex_lock(&chip->lock);
+ 	if (chip->ops.suspend)
+ 		ret = chip->ops.suspend(chip);
+-	if (!ret)
+-		chip->suspended = 1;
+ 	mutex_unlock(&chip->lock);
+ 
+ 	return ret;
+@@ -4580,15 +4559,10 @@ static void nand_resume(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 
++
+ 	mutex_lock(&chip->lock);
+-	if (chip->suspended) {
+-		if (chip->ops.resume)
+-			chip->ops.resume(chip);
+-		chip->suspended = 0;
+-	} else {
+-		pr_err("%s called for a chip which is not in suspended state\n",
+-			__func__);
+-	}
++	if (chip->ops.resume)
++		chip->ops.resume(chip);
+ 	mutex_unlock(&chip->lock);
+ }
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index b2f9dd3cbd69..1198a6548912 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1237,9 +1237,7 @@ struct nand_secure_region {
+  * @pagecache.page: Page number currently in the cache. -1 means no page is
+  *                  currently cached
+  * @buf_align: Minimum buffer alignment required by a platform
+- * @lock: Lock protecting the suspended field. Also used to serialize accesses
+- *        to the NAND device
+- * @suspended: Set to 1 when the device is suspended, 0 when it's not
++ * @lock: Lock to serialize accesses to the NAND device
+  * @cur_cs: Currently selected target. -1 means no target selected, otherwise we
+  *          should always have cur_cs >= 0 && cur_cs < nanddev_ntargets().
+  *          NAND Controller drivers should not modify this value, but they're
+@@ -1293,7 +1291,6 @@ struct nand_chip {
+ 
+ 	/* Internals */
+ 	struct mutex lock;
+-	unsigned int suspended : 1;
+ 	int cur_cs;
+ 	int read_retries;
+ 	struct nand_secure_region *secure_regions;
 -- 
 2.33.0
 
