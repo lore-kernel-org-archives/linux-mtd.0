@@ -2,70 +2,70 @@ Return-Path: <SRS0=fZpl=PO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02A9AC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 19:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46D3EC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 19:37:30 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5BAD6103C
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 19:07:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C5BAD6103C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D5B4160720
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 19:37:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D5B4160720
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HzmzWpqq4fYDuFTh4FmS4oewH/Gpf5ipSmGAot9uJ1A=; b=w3LfdgcMfV54xr
-	NMk8Cr5vW3GLixjUkjGlMVzNTJVoB5jqUvhr+MoxgHrRDdnCkPxNrqjO7Ph7DKxOwcLKSeeCp9jDQ
-	mrY9b+r2Q1c8H8ebZSHHOwfHWYXUrXnnGx6UKg84dLWwQWtYCpv5CVGj1/VVi4COEKvedpm4IN21F
-	RfMFQJVrCw0rhu4ZyKUU9Ls378UzRd4FHz+L8hLcWBgNEYXdqhrz2xufo7R9ayv5eJg1w8W4v7bND
-	aQyaTsK+6xXEYFeOFQaD6ROC2a+35QpkfwAMRXdXEPWkKlVYoWPKxISGLeNl7DM6bVo6FCU6YUnhk
-	GzQDYIDXWpdBdw2ZmGWg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=3+jTiVkAXFYljyoq6uyRp8/P5ZJMJKU5K3hUHGrBVZY=; b=RZFay45yX/jeDKhFZzIIOJwQgk
+	RU36PRUtGQzcTW5ASLORcu1Gryt4DQJl59qMOhkNJ+DvDoNqZzPwcMVMr+U63bl5hCGM4m4MCEVTN
+	gapfqxPpSQR/+PbxlV6uGRGT48FJ0oSbulJ2lq/7CI2z3lcz4f9hs0bKCUdI+HHG8/sviwAoQQW8l
+	J0BaplK53+K75nLOorMEjg/bvs9eSL0SVGqvdMaAXq2e9xCN02rJm3zYsEugtPURXm3jvu+9XBW7a
+	4/wYJVV3cXOWvM2uLOA9F1SlTyJpBAk+yxrNBBLTmIXkAgo4aGhGxbPNww1OmIs3LJFcrnnGW9ZQe
+	AhaG8SQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfRmw-002r1R-5J; Tue, 26 Oct 2021 19:07:10 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mfSFc-002vlm-5N; Tue, 26 Oct 2021 19:36:48 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfRmt-002r0t-0a
- for linux-mtd@lists.infradead.org; Tue, 26 Oct 2021 19:07:08 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F3B96109D;
- Tue, 26 Oct 2021 19:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635275226;
- bh=vZTpReTVu8G45pFyoSoR2KCp22nstJkeL/RzTNGG1Ik=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qfK6NGcvyLii2uJZpeLvlkpovnVBvdFnxiETaIMv5jgznWWBvGi3iGMk9wfBugUWi
- Bw0kGMWlWGy/qDI08yvmRfJcGG2gLTBzqPuyAtxOVvSutZxXy4g29u+THRUIgNEmqc
- hoA1uH3iZwd/prK5FGNI+JheGBgdDXRlFCPS25nQg6/jtPJ0Cq9yb/BzLewUZh/d+n
- QdM11okNuFf8cWp3V3SsOi0w/XWgf/z+rJiG//PEhrfp2SU+rtIveOtHKB2VXjuYqZ
- O3O/RLiKiuszRSuR0FV4TfPmZuFd46pVg/9cJuSXR877e2xn0h9DzXjcs+qkXCoHse
- rAGrt2zPLX/Kg==
-From: Mark Brown <broonie@kernel.org>
-To: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>, Sergei Shtylyov <sergei.shtylyov@gmail.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Prabhakar <prabhakar.csengg@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>,
- linux-renesas-soc@vger.kernel.org
-In-Reply-To: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: (subset) [PATCH v2 0/7] Add SPI Multi I/O Bus Controller support
- for RZ/G2L
-Message-Id: <163527522326.2033998.11228661564873952732.b4-ty@kernel.org>
-Date: Tue, 26 Oct 2021 20:07:03 +0100
+ id 1mfSFZ-002vkw-R6
+ for linux-mtd@lists.infradead.org; Tue, 26 Oct 2021 19:36:47 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 6AC6361EAE61;
+ Tue, 26 Oct 2021 21:36:44 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id 7wGUL2xiZPGU; Tue, 26 Oct 2021 21:36:44 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id EA44561EAE60;
+ Tue, 26 Oct 2021 21:36:43 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id QBTsJ4QC7-1X; Tue, 26 Oct 2021 21:36:43 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id C1881608890D;
+ Tue, 26 Oct 2021 21:36:43 +0200 (CEST)
+Date: Tue, 26 Oct 2021 21:36:43 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: schaecsn <schaecsn@gmx.net>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-kernel <linux-kernel@vger.kernel.org>, 
+ Stefan Schaeckeler <sschaeck@cisco.com>
+Message-ID: <2065858791.38760.1635277003599.JavaMail.zimbra@nod.at>
+In-Reply-To: <20211010042239.2888-1-schaecsn@gmx.net>
+References: <20211010042239.2888-1-schaecsn@gmx.net>
+Subject: Re: [PATCH v2] ubifs: ubifs to export filesystem error counters
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF93 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: ubifs to export filesystem error counters
+Thread-Index: aM4D8UF/9n8qFEnXdnQOShonLtWUPw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211026_120707_097659_236D0C8E 
-X-CRM114-Status: GOOD (  13.93  )
+X-CRM114-CacheID: sfid-20211026_123646_049147_7CE128CF 
+X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,49 +77,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 25 Oct 2021 21:56:24 +0100, Lad Prabhakar wrote:
-> This patch series adds a couple of fixes for rpc-if driver and
-> adds support for RZ/G2L SoC, where the SPI Multi I/O Bus Controller
-> is identical to the RPC-IF block found on R-Car Gen3 SoC's.
-> 
-> Cheers,
-> Prabhakar
-> 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[3/7] spi: spi-rpc-if: Check return value of rpcif_sw_init()
-      commit: 0b0a281ed7001d4c4f4c47bdc84680c4997761ca
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+U3RlZmFuLAoKLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogInNjaGFlY3Nu
+IiA8c2NoYWVjc25AZ214Lm5ldD4KPiBBbjogInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4sICJs
+aW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1rZXJuZWwi
+Cj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+Cj4gQ0M6ICJzY2hhZWNzbiIgPHNjaGFl
+Y3NuQGdteC5uZXQ+LCAiU3RlZmFuIFNjaGFlY2tlbGVyIiA8c3NjaGFlY2tAY2lzY28uY29tPgo+
+IEdlc2VuZGV0OiBTb25udGFnLCAxMC4gT2t0b2JlciAyMDIxIDA2OjIyOjM5Cj4gQmV0cmVmZjog
+W1BBVENIIHYyXSB1YmlmczogdWJpZnMgdG8gZXhwb3J0IGZpbGVzeXN0ZW0gZXJyb3IgY291bnRl
+cnMKCj4gTm90IGFsbCB1YmlmcyBmaWxlc3lzdGVtIGVycm9ycyBhcmUgcHJvcGFnYXRlZCB0byB1
+c2Vyc3BhY2UuCj4gCj4gRXhwb3J0IGJhZCBtYWdpYywgYmFkIG5vZGUgYW5kIGNyYyBlcnJvcnMg
+dmlhIHN5c2ZzLiBUaGlzIGFsbG93cyB1c2Vyc3BhY2UKPiB0byBub3RpY2UgZmlsZXN5c3RlbSBl
+cnJvcnM6Cj4gCj4gL3N5cy9mcy91Ymlmcy91YmlYX1kvZXJyb3JzX21hZ2ljCj4gL3N5cy9mcy91
+Ymlmcy91YmlYX1kvZXJyb3JzX25vZGUKPiAvc3lzL2ZzL3ViaWZzL3ViaVhfWS9lcnJvcnNfY3Jj
+Cj4gCj4gVGhlIGNvdW50ZXJzIGFyZSByZXNldCB0byAwIHdpdGggYSByZW1vdW50Lgo+IAo+IFNp
+Z25lZC1vZmYtYnk6IFN0ZWZhbiBTY2hhZWNrZWxlciA8c3NjaGFlY2tAY2lzY28uY29tPgo+IC0t
+LQo+IENoYW5nZXMgaW4gdjI6Cj4gIC0gbWVyZ2VkIHN5c2ZzLmggaGVhZGVyIGludG8gdWJpZnMu
+aC4KPiAgLSBpby5jOiB3cmFwcGVkIGluY3JlbWVudGluZyBlcnJvciBjb3VudGVycyBpbnRvIG5l
+dyBmdW5jdGlvbnMKPiAgICByZWNvcmRfKl9lcnJvcigpLgo+ICAtIHN5c2ZzLmM6IHJlbW92ZWQg
+c3lzZnMgd3JpdGUgY2FsbGJhY2sgZm9yIGNsZWFyaW5nIHN0YXRzLgo+ICAtIHN5c2ZzLmM6IHVi
+aWZzX3N5c2ZzX3JlZ2lzdGVyKCk6IGZyZWUgYy0+c3RhdHMgb24gZXJyb3IuCj4gIC0gc3lzZnMu
+YzogdWJpZnNfYXR0cl9zaG93KCk6IHVzZSBzeXNmc19lbWl0KCkuCj4gCj4gZnMvdWJpZnMvTWFr
+ZWZpbGUgfCAgIDIgKy0KPiBmcy91Ymlmcy9pby5jICAgICB8ICAyMSArKysrKysrCj4gZnMvdWJp
+ZnMvc3VwZXIuYyAgfCAgMTYgKysrKy0KPiBmcy91Ymlmcy9zeXNmcy5jICB8IDE1MyArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gZnMvdWJpZnMvdWJpZnMu
+aCAgfCAgMzUgKysrKysrKysrKysKPiA1IGZpbGVzIGNoYW5nZWQsIDIyNSBpbnNlcnRpb25zKCsp
+LCAyIGRlbGV0aW9ucygtKQo+IGNyZWF0ZSBtb2RlIDEwMDY0NCBmcy91Ymlmcy9zeXNmcy5jCgpR
+dWV1ZWQgZm9yIDUuMTYuCgpJIGp1c3Qgbm90aWNlZCBmb3Jnb3QgdG8gcmVxdWVzdCBzeXNmcyBk
+b2N1bWVudGF0aW9uIGluIERvY3VtZW50YXRpb24vQUJJLy4KQ2FuIHlvdSBwbGVhc2Ugc2VuZCBh
+IGZvbGxvd3VwIHBhdGNoPwoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
