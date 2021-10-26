@@ -2,14 +2,14 @@ Return-Path: <SRS0=fZpl=PO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE404C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0B0C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A663860E74
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A663860E74
+	by mail.kernel.org (Postfix) with ESMTPS id CDCD461039
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:57:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CDCD461039
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,47 +18,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bHX4zgtzR8h1ICSn+vH/4KMoRVQOHVzVFS8KaUDTPlM=; b=frRDpR5umxPGNy
-	aCR8Oap6Y4su6yblKllvWsAEVuCDAZ53KGE5SW1KMK5vvelLYadsBgK07Q8lyECfWfTBQFU8Y+eOX
-	yhQtfqCpRm8zjjLQcOylnZp8flmt+oJmYReUcatSWXu3hlpT5oW+b0gJzKoBrpSqZwVfNcnRdVKLR
-	si+BOwUXQsUvB9953XSiwmGm3Gpp7WVUHp+a4JdtYbCkB2ErmGVuF19I0awKVqZjW5GheawQIbPTf
-	Lz6PLp1ExratHHjypj1uEgWGi7+kat8B1k9ulGFxwNY+tRX1UTZc8KaOpoodQqP/owhuGJgUgYdgO
-	EfNwi+oWwoYHUW5Dbyxg==;
+	List-Owner; bh=JOx99KxQUNpQTr3KpRGAdV3hyP2cLlHPsyf87xB0ghM=; b=ynHezOvHvFyxfY
+	pgLurYGhiOZ/qW+fwRvvhSMlw/NLQOo7iQczx06tjpMKs6pChyJmkpu67ad+LXS9gGheAe8lpjhNp
+	qLlZxQFg40ZS8Mfoa+qHoDJ/LV5oHmJhrRwus7cLEo6wf8CCZ/QVW7QViPInLSEnuSNv44Sc+LqkC
+	ZAHOwGh32FFd7tHtl/VERYGawlzcx1rm+Zobkd00rjLGpKSF3UbH06j4RCE8lrqlgHSqynqOLlInq
+	UCSXnoau/sKjo0FbxhuURabAV5ttSv8lZqvMv0P/ZjhZjgmPo+04gpjLOFafql0xGh7AnJ6REtONl
+	wneEqkqiIhwwQ9SCGrTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfFSA-000jTE-TS; Tue, 26 Oct 2021 05:56:54 +0000
+	id 1mfFSa-000jcd-Od; Tue, 26 Oct 2021 05:57:20 +0000
 Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfFRO-000jGB-C3
- for linux-mtd@lists.infradead.org; Tue, 26 Oct 2021 05:56:10 +0000
+ id 1mfFRN-000jFs-5n
+ for linux-mtd@lists.infradead.org; Tue, 26 Oct 2021 05:56:11 +0000
 Received: from zen.. (unknown [185.17.218.86])
- by first.geanix.com (Postfix) with ESMTPSA id 06FFBD6F84;
- Tue, 26 Oct 2021 05:56:04 +0000 (UTC)
+ by first.geanix.com (Postfix) with ESMTPSA id 7E827D6F82;
+ Tue, 26 Oct 2021 05:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1635227764; bh=DpYIWsQGX2i1qG2VKEU7tQ6gp/DP02vwh6pgvrOgzt4=;
+ t=1635227762; bh=038jLJ8ZIomplxvGbzXp9SEcCbMFrdIXsyP6DJ+NpCg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=dlPbl3NNPaau09m/XrDeRexRQTws1WDmPJHkMyV2O+M8bsPIqMviADbpeQ4V+SYn6
- URjivOXpZrbtmRBxVA17pylnRaljPLEM4e9chDShsvI9pwP1/A1qvk/AYkA6mcU90K
- lrTu9OuoDA+oeu5pYcud/Nx1t8Q4o+OCvYCEsbIvabZ30l5kkqelTqLJJP03jQQyfz
- 5/JagKX2Ll2oJ2+oF9IwfdoxXWXFWJgDNzWpf2EaJkYd2gxuaANew4S//Lnv0ChvIQ
- GOvijYAx0RhAyUis2CUr8hoIpF6cWyQeSjq6eGVnxi0mLKP+SiYg1w53zC+EPg9b6k
- wQGDpYKfY4+/g==
+ b=KGhcNZTVcldFE+z86hmuPWvccxEUXECH9LeZJhJP6Jcvw/t2OzNCePw9ke91lQ3b6
+ ZW6DM94YzXEb3YxxRhq5LVSRyxf/7yQd20XnpIP/o7tiOqC7X9b+9LDRoa1m0vdnuC
+ 0Rpg/0rLVMc6lbQ7/nroxgUjMp5f/SVozhObNPs7PMTdytB6mrWSF4B5BVav6tYfLX
+ LXKOD4GDGmAMLGGJ0OiWBphZ8Ev988k7g3EBIyHasL9DJj40ldMyxd3JS55GNnfk36
+ nc4SBK1VVrX1/sqeFN4qmsQmvr3k4w7bDYNP1yKR78fK/y4dh31q/bpccD0Zto1YRy
+ s1HVqY+8/txSA==
 From: Sean Nyekjaer <sean@geanix.com>
 To: Boris Brezillon <boris.brezillon@collabora.com>
 Cc: Sean Nyekjaer <sean@geanix.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] mtd: rawnand: remove suspended check
-Date: Tue, 26 Oct 2021 07:55:51 +0200
-Message-Id: <20211026055551.3053598-5-sean@geanix.com>
+Subject: [PATCH v4 3/4] mtd: core: protect access to MTD devices while in
+ suspend
+Date: Tue, 26 Oct 2021 07:55:50 +0200
+Message-Id: <20211026055551.3053598-4-sean@geanix.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211026055551.3053598-1-sean@geanix.com>
 References: <20211026055551.3053598-1-sean@geanix.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211025_225606_742117_46184386 
-X-CRM114-Status: GOOD (  22.58  )
+X-CRM114-CacheID: sfid-20211025_225605_549683_5DF59DF3 
+X-CRM114-Status: GOOD (  21.02  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,168 +76,530 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Access is protected in upper MTD layer when MTD devices are suspended.
+Prevent MTD access while in a suspended state. Also
+prevent suspending a device which is still currently in use.
 
-Commit ("mtd: core: protect access to MTD devices while in suspend")
-introduces access protection, so it's safe to remove suspended checks.
+Commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") allows the
+rawnand layer to return errors rather than waiting in a blocking wait.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Tested on a iMX6ULL.
+
+Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
 Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 52 ++++++++------------------------
- include/linux/mtd/rawnand.h      |  5 +--
- 2 files changed, 14 insertions(+), 43 deletions(-)
+ drivers/mtd/mtdcore.c   | 124 +++++++++++++++++++++++++++++++++++-----
+ include/linux/mtd/mtd.h |  81 +++++++++++++++++++++-----
+ 2 files changed, 176 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..aa2874ae3c4a 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -332,19 +332,11 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  * @chip: NAND chip structure
-  *
-  * Lock the device and its controller for exclusive access
-- *
-- * Return: -EBUSY if the chip has been suspended, 0 otherwise
-  */
--static int nand_get_device(struct nand_chip *chip)
-+static void nand_get_device(struct nand_chip *chip)
- {
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		mutex_unlock(&chip->lock);
--		return -EBUSY;
--	}
- 	mutex_lock(&chip->controller->lock);
--
--	return 0;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 153229198947..8e6b7e858ada 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -777,6 +777,8 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+ 	INIT_LIST_HEAD(&mtd->partitions);
+ 	mutex_init(&mtd->master.partitions_lock);
+ 	mutex_init(&mtd->master.chrdev_lock);
++	init_waitqueue_head(&mtd->master.resume_wq);
++	init_rwsem(&mtd->master.suspend_lock);
  }
  
- /**
-@@ -573,10 +565,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
- 		nand_erase_nand(chip, &einfo, 0);
+ static ssize_t mtd_otp_size(struct mtd_info *mtd, bool is_user)
+@@ -1267,7 +1269,9 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
  
- 		/* Write bad block marker to OOB */
--		ret = nand_get_device(chip);
--		if (ret)
--			return ret;
--
-+		nand_get_device(chip);
- 		ret = nand_markbad_bbm(chip, ofs);
- 		nand_release_device(chip);
- 	}
-@@ -3756,9 +3745,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 	    ops->mode != MTD_OPS_RAW)
- 		return -ENOTSUPP;
+ 	adjinstr.addr += mst_ofs;
  
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
++	mtd_start_access(master);
+ 	ret = master->_erase(master, &adjinstr);
++	mtd_end_access(master);
  
- 	if (!ops->datbuf)
- 		ret = nand_do_read_oob(chip, from, ops);
-@@ -4345,13 +4332,11 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
+ 	if (adjinstr.fail_addr != MTD_FAIL_ADDR_UNKNOWN) {
+ 		instr->fail_addr = adjinstr.fail_addr - mst_ofs;
+@@ -1289,6 +1293,7 @@ int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	      void **virt, resource_size_t *phys)
  {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	int ret;
-+	int ret = 0;
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
  
- 	ops->retlen = 0;
+ 	*retlen = 0;
+ 	*virt = NULL;
+@@ -1301,8 +1306,12 @@ int mtd_point(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	if (!len)
+ 		return 0;
  
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	switch (ops->mode) {
- 	case MTD_OPS_PLACE_OOB:
-@@ -4410,10 +4395,8 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 	if (nand_region_is_secured(chip, instr->addr, instr->len))
- 		return -EIO;
- 
--	/* Grab the lock and see if the device is available */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 
- 	/* Shift to get first page */
- 	page = (int)(instr->addr >> chip->page_shift);
-@@ -4499,8 +4482,8 @@ static void nand_sync(struct mtd_info *mtd)
- 
- 	pr_debug("%s: called\n", __func__);
- 
--	/* Grab the lock and see if the device is available */
--	WARN_ON(nand_get_device(chip));
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 	/* Release it and go back */
- 	nand_release_device(chip);
++	mtd_start_access(master);
+ 	from = mtd_get_master_ofs(mtd, from);
+-	return master->_point(master, from, len, retlen, virt, phys);
++	ret = master->_point(master, from, len, retlen, virt, phys);
++	mtd_end_access(master);
++
++	return ret;
  }
-@@ -4517,9 +4500,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ EXPORT_SYMBOL_GPL(mtd_point);
+ 
+@@ -1310,6 +1319,7 @@ EXPORT_SYMBOL_GPL(mtd_point);
+ int mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_unpoint)
+ 		return -EOPNOTSUPP;
+@@ -1317,7 +1327,12 @@ int mtd_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
+ 		return -EINVAL;
+ 	if (!len)
+ 		return 0;
+-	return master->_unpoint(master, mtd_get_master_ofs(mtd, from), len);
++
++	mtd_start_access(master);
++	ret =  master->_unpoint(master, mtd_get_master_ofs(mtd, from), len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_unpoint);
+ 
+@@ -1372,6 +1387,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
+ 	};
  	int ret;
  
- 	/* Select the NAND device */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
++	/* mtd_read_oob_std handles mtd access protection */
+ 	ret = mtd_read_oob(mtd, from, &ops);
+ 	*retlen = ops.retlen;
  
- 	nand_select_target(chip, chipnr);
+@@ -1388,6 +1404,7 @@ int mtd_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	};
+ 	int ret;
  
-@@ -4565,8 +4546,6 @@ static int nand_suspend(struct mtd_info *mtd)
- 	mutex_lock(&chip->lock);
- 	if (chip->ops.suspend)
- 		ret = chip->ops.suspend(chip);
--	if (!ret)
--		chip->suspended = 1;
- 	mutex_unlock(&chip->lock);
++	/* mtd_write_oob_std handles mtd access protection */
+ 	ret = mtd_write_oob(mtd, to, &ops);
+ 	*retlen = ops.retlen;
+ 
+@@ -1406,6 +1423,7 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 		    const u_char *buf)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	*retlen = 0;
+ 	if (!master->_panic_write)
+@@ -1419,8 +1437,12 @@ int mtd_panic_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+ 	if (!master->oops_panic_write)
+ 		master->oops_panic_write = true;
+ 
+-	return master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
+-				    retlen, buf);
++	mtd_start_access(master);
++	ret = master->_panic_write(master, mtd_get_master_ofs(mtd, to), len,
++				   retlen, buf);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_panic_write);
+ 
+@@ -1464,11 +1486,13 @@ static int mtd_read_oob_std(struct mtd_info *mtd, loff_t from,
+ 	int ret;
+ 
+ 	from = mtd_get_master_ofs(mtd, from);
++	mtd_start_access(master);
+ 	if (master->_read_oob)
+ 		ret = master->_read_oob(master, from, ops);
+ 	else
+ 		ret = master->_read(master, from, ops->len, &ops->retlen,
+ 				    ops->datbuf);
++	mtd_end_access(master);
  
  	return ret;
-@@ -4580,15 +4559,10 @@ static void nand_resume(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
+ }
+@@ -1480,11 +1504,13 @@ static int mtd_write_oob_std(struct mtd_info *mtd, loff_t to,
+ 	int ret;
  
+ 	to = mtd_get_master_ofs(mtd, to);
++	mtd_start_access(master);
+ 	if (master->_write_oob)
+ 		ret = master->_write_oob(master, to, ops);
+ 	else
+ 		ret = master->_write(master, to, ops->len, &ops->retlen,
+ 				     ops->datbuf);
++	mtd_end_access(master);
+ 
+ 	return ret;
+ }
+@@ -1992,12 +2018,18 @@ int mtd_get_fact_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
+ 			   struct otp_info *buf)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_get_fact_prot_info)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return master->_get_fact_prot_info(master, len, retlen, buf);
 +
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		if (chip->ops.resume)
--			chip->ops.resume(chip);
--		chip->suspended = 0;
--	} else {
--		pr_err("%s called for a chip which is not in suspended state\n",
--			__func__);
--	}
-+	if (chip->ops.resume)
-+		chip->ops.resume(chip);
- 	mutex_unlock(&chip->lock);
++	mtd_start_access(master);
++	ret = master->_get_fact_prot_info(master, len, retlen, buf);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_get_fact_prot_info);
+ 
+@@ -2005,13 +2037,19 @@ int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+ 			   size_t *retlen, u_char *buf)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	*retlen = 0;
+ 	if (!master->_read_fact_prot_reg)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return master->_read_fact_prot_reg(master, from, len, retlen, buf);
++
++	mtd_start_access(master);
++	ret = master->_read_fact_prot_reg(master, from, len, retlen, buf);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_read_fact_prot_reg);
+ 
+@@ -2019,12 +2057,18 @@ int mtd_get_user_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
+ 			   struct otp_info *buf)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_get_user_prot_info)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return master->_get_user_prot_info(master, len, retlen, buf);
++
++	mtd_start_access(master);
++	ret =  master->_get_user_prot_info(master, len, retlen, buf);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_get_user_prot_info);
+ 
+@@ -2032,13 +2076,19 @@ int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
+ 			   size_t *retlen, u_char *buf)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	*retlen = 0;
+ 	if (!master->_read_user_prot_reg)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return master->_read_user_prot_reg(master, from, len, retlen, buf);
++
++	mtd_start_access(master);
++	ret = master->_read_user_prot_reg(master, from, len, retlen, buf);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_read_user_prot_reg);
+ 
+@@ -2053,7 +2103,11 @@ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
++
++	mtd_start_access(master);
+ 	ret = master->_write_user_prot_reg(master, to, len, retlen, buf);
++	mtd_end_access(master);
++
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2068,24 +2122,36 @@ EXPORT_SYMBOL_GPL(mtd_write_user_prot_reg);
+ int mtd_lock_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_lock_user_prot_reg)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return master->_lock_user_prot_reg(master, from, len);
++
++	mtd_start_access(master);
++	ret = master->_lock_user_prot_reg(master, from, len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_lock_user_prot_reg);
+ 
+ int mtd_erase_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_erase_user_prot_reg)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return master->_erase_user_prot_reg(master, from, len);
++
++	mtd_start_access(master);
++	ret = master->_erase_user_prot_reg(master, from, len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
+ 
+@@ -2093,6 +2159,7 @@ EXPORT_SYMBOL_GPL(mtd_erase_user_prot_reg);
+ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_lock)
+ 		return -EOPNOTSUPP;
+@@ -2106,13 +2173,18 @@ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		len = (u64)mtd_div_by_eb(len, mtd) * master->erasesize;
+ 	}
+ 
+-	return master->_lock(master, mtd_get_master_ofs(mtd, ofs), len);
++	mtd_start_access(master);
++	ret = master->_lock(master, mtd_get_master_ofs(mtd, ofs), len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_lock);
+ 
+ int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_unlock)
+ 		return -EOPNOTSUPP;
+@@ -2126,13 +2198,18 @@ int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		len = (u64)mtd_div_by_eb(len, mtd) * master->erasesize;
+ 	}
+ 
+-	return master->_unlock(master, mtd_get_master_ofs(mtd, ofs), len);
++	mtd_start_access(master);
++	ret = master->_unlock(master, mtd_get_master_ofs(mtd, ofs), len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_unlock);
+ 
+ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (!master->_is_locked)
+ 		return -EOPNOTSUPP;
+@@ -2146,13 +2223,18 @@ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 		len = (u64)mtd_div_by_eb(len, mtd) * master->erasesize;
+ 	}
+ 
+-	return master->_is_locked(master, mtd_get_master_ofs(mtd, ofs), len);
++	mtd_start_access(master);
++	ret = master->_is_locked(master, mtd_get_master_ofs(mtd, ofs), len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_is_locked);
+ 
+ int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (ofs < 0 || ofs >= mtd->size)
+ 		return -EINVAL;
+@@ -2162,13 +2244,18 @@ int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+ 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
+ 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
+ 
+-	return master->_block_isreserved(master, mtd_get_master_ofs(mtd, ofs));
++	mtd_start_access(master);
++	ret = master->_block_isreserved(master, mtd_get_master_ofs(mtd, ofs));
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_block_isreserved);
+ 
+ int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
+ 
+ 	if (ofs < 0 || ofs >= mtd->size)
+ 		return -EINVAL;
+@@ -2178,7 +2265,11 @@ int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
+ 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
+ 
+-	return master->_block_isbad(master, mtd_get_master_ofs(mtd, ofs));
++	mtd_start_access(master);
++	ret = master->_block_isbad(master, mtd_get_master_ofs(mtd, ofs));
++	mtd_end_access(master);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mtd_block_isbad);
+ 
+@@ -2197,7 +2288,10 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
+ 		ofs = (loff_t)mtd_div_by_eb(ofs, mtd) * master->erasesize;
+ 
++	mtd_start_access(master);
+ 	ret = master->_block_markbad(master, mtd_get_master_ofs(mtd, ofs));
++	mtd_end_access(master);
++
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 88227044fc86..b074106e2d8e 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -231,6 +231,8 @@ struct mtd_master {
+ 	struct mutex partitions_lock;
+ 	struct mutex chrdev_lock;
+ 	unsigned int suspended : 1;
++	wait_queue_head_t resume_wq;
++	struct rw_semaphore suspend_lock;
+ };
+ 
+ struct mtd_info {
+@@ -476,10 +478,47 @@ static inline u32 mtd_oobavail(struct mtd_info *mtd, struct mtd_oob_ops *ops)
+ 	return ops->mode == MTD_OPS_AUTO_OOB ? mtd->oobavail : mtd->oobsize;
  }
  
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..1198a6548912 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1237,9 +1237,7 @@ struct nand_secure_region {
-  * @pagecache.page: Page number currently in the cache. -1 means no page is
-  *                  currently cached
-  * @buf_align: Minimum buffer alignment required by a platform
-- * @lock: Lock protecting the suspended field. Also used to serialize accesses
-- *        to the NAND device
-- * @suspended: Set to 1 when the device is suspended, 0 when it's not
-+ * @lock: Lock to serialize accesses to the NAND device
-  * @cur_cs: Currently selected target. -1 means no target selected, otherwise we
-  *          should always have cur_cs >= 0 && cur_cs < nanddev_ntargets().
-  *          NAND Controller drivers should not modify this value, but they're
-@@ -1293,7 +1291,6 @@ struct nand_chip {
++static inline void mtd_start_access(struct mtd_info *master)
++{
++	WARN_ON_ONCE(master != mtd_get_master(master));
++
++	/*
++	 * Don't take the suspend_lock on devices that don't
++	 * implement the suspend hook. Otherwise, lockdep will
++	 * complain about nested locks when trying to suspend MTD
++	 * partitions or MTD devices created by gluebi which are
++	 * backed by real devices.
++	 */
++	if (!master->_suspend)
++		return;
++
++	/*
++	 * Wait until the device is resumed. Should we have a
++	 * non-blocking mode here?
++	 */
++	while (1) {
++		down_read(&master->master.suspend_lock);
++		if (!master->master.suspended)
++			return;
++
++		up_read(&master->master.suspend_lock);
++		wait_event(master->master.resume_wq, !master->master.suspended);
++	}
++}
++
++static inline void mtd_end_access(struct mtd_info *master)
++{
++	if (!master->_suspend)
++		return;
++
++	up_read(&master->master.suspend_lock);
++}
++
+ static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
+ 				     loff_t ofs, size_t len)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
++	int ret;
  
- 	/* Internals */
- 	struct mutex lock;
--	unsigned int suspended : 1;
- 	int cur_cs;
- 	int read_retries;
- 	struct nand_secure_region *secure_regions;
+ 	if (!master->_max_bad_blocks)
+ 		return -ENOTSUPP;
+@@ -487,8 +526,12 @@ static inline int mtd_max_bad_blocks(struct mtd_info *mtd,
+ 	if (mtd->size < (len + ofs) || ofs < 0)
+ 		return -EINVAL;
+ 
+-	return master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
+-				       len);
++	mtd_start_access(master);
++	ret = master->_max_bad_blocks(master, mtd_get_master_ofs(mtd, ofs),
++				      len);
++	mtd_end_access(master);
++
++	return ret;
+ }
+ 
+ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
+@@ -546,30 +589,40 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
+ static inline int mtd_suspend(struct mtd_info *mtd)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
+-	int ret;
+-
+-	if (master->master.suspended)
+-		return 0;
++	int ret = 0;
+ 
+-	ret = master->_suspend ? master->_suspend(master) : 0;
+-	if (ret)
++	if (!master->_suspend)
+ 		return ret;
+ 
+-	master->master.suspended = 1;
+-	return 0;
++	down_write(&master->master.suspend_lock);
++	if (!master->master.suspended) {
++		ret = master->_suspend(master);
++		if (!ret)
++			master->master.suspended = 1;
++	}
++	up_write(&master->master.suspend_lock);
++
++	return ret;
+ }
+ 
+ static inline void mtd_resume(struct mtd_info *mtd)
+ {
+ 	struct mtd_info *master = mtd_get_master(mtd);
+ 
+-	if (!master->master.suspended)
++	if (!master->_suspend)
+ 		return;
+ 
+-	if (master->_resume)
+-		master->_resume(master);
++	down_write(&master->master.suspend_lock);
++	if (master->master.suspended) {
++		if (master->_resume)
++			master->_resume(master);
++
++		master->master.suspended = 0;
+ 
+-	master->master.suspended = 0;
++		/* The MTD dev has been resumed, wake up all waiters. */
++		wake_up_all(&master->master.resume_wq);
++	}
++	up_write(&master->master.suspend_lock);
+ }
+ 
+ static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
 -- 
 2.33.0
 
