@@ -1,84 +1,65 @@
-Return-Path: <SRS0=FqwB=PN=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=fZpl=PO=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F2DC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 21:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93D9BC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:56:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6F2361073
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Oct 2021 21:00:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6F2361073
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 593F161074
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Oct 2021 05:56:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 593F161074
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eqUD6kfr4ljVAn1r0eMFAm9EaQ/w4e33o3yNMsbNi6o=; b=06ZQc0cOvUcpAK
-	CKEL3RVfBM3/TBMLJzLZzaKhvuEjM05kgkMns+3mRWn2AOM6Y7W5xIboKRW8eUUEOxZkQMFsF5L7l
-	pWFXLumLV6AlSH9lOKu6Xejk+xYnIQv3BU2doZwonKJ4yZym0SodUufmFK4rYylGIIrT6QTOnZzFT
-	jD0WD7aboBXus3cWMz4Ml/LxeT5ZnxNiBivS56ahRDZbLwvA5qRi/JEAxk1XmvYTYkhYm454TlkiN
-	M0kKJYxHM9wecT5pQG9kyYbUm8G3YgbH53xLW10JnaXg9Y73BgLnZ7wgGPNEw4zvlHsSjeSbj+Qi6
-	XOfJ3lTUM2N8YLW/uswg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hyQGe+PiSp3t0YnEHHEmof9Ep587Qlhu+Lh/cML2BN4=; b=YyKSfDhvSQyHSN
+	c+uqxbCRRAz5JtYDubjiIZ6GU8xRj8uF+vxLEuOh+mE9vXDI58dD5lvXntEfAn7EMB3d4u4Ila/3D
+	5TX1F9UhcM2vP7ZcNaZ1PObUTWqS4vvOmOMfkS08j5OQQtsgLVvDVv1OYfjmaYDZPrVaw0s5pALLj
+	QNdBGb4dUFJTbVKtxEAxT1cftwziwexTkQ/502u4saKqjCxr57i/Fj0WCt+W4SjK4roym4LcvcJLr
+	wYzTthvuW6x+zOI9rpVG7BGkNymnaVzUl8EjYBN04Z8f3EZSGb11yMT7/BNZV3Co+W3dfmp3SAVM2
+	VkTZWx8FCzcmaemk6zKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mf74Y-00026G-1U; Mon, 25 Oct 2021 20:59:58 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1mfFRS-000jHr-L7; Tue, 26 Oct 2021 05:56:10 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mf72S-0001KW-Jz
- for linux-mtd@lists.infradead.org; Mon, 25 Oct 2021 20:57:49 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id y12so5127649eda.4
- for <linux-mtd@lists.infradead.org>; Mon, 25 Oct 2021 13:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=YOcpDB2bEq/LBIP5Nmj3ZGIJaD4nDPvU30poT+IIEsQ=;
- b=IY4fvIjHYJvLGZLrj+xFjbDdvMXERkWz43V8RwClQ/ywmTzOkDyGiNc9dvelYXfZr2
- pn20TkXmNbqgBmRD1AAhSHfMShkfifuIPoqx4IxVA4sPPMGFjnoTMcbJedkXPWBeQBI7
- qe8IJchAAhFp8uSzmj99e76yzjSjkTEpoCPUMUZVw/qyyviOpxgHaQdXeIPwEiBeEl/6
- fk/qazNBvWrxn1o4vNL3JZ0E95ii7yfc1qCNCJfWTR8et/FS3GtK/C4/W/ABbAuWVxSI
- Oqckb3S8gHWvJVtjRQ6QT1Ori7N7//ZYft8cvl/P3UdVD/mC4GPzqxZ1qWNcVt+Kzi7c
- yOpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=YOcpDB2bEq/LBIP5Nmj3ZGIJaD4nDPvU30poT+IIEsQ=;
- b=LU/uzpPKWTFhJmWXG9FmkFM0m5S5k1tiwhhJU1kIbk4Ci8fgWBjloh9GHY/m5yr8h6
- zEIsceNFxVnKc+OSRgPN6wkaoCsZs/8uPEJHHN4Q3MDiTVyY5b5R3v8bWxEi5dMpAZHs
- AiuHF8N1vkfBB8vjmdyNb4siCj5fqf4Gu2mX9tertP0JE+f8jUuK3mZZerbsp3awq+6Q
- 7G1uDFpktAshk5rpSjNapuMxuZsivUGblCcQH/9+4DZKFVMacYFbzr1LduUAKWgL8Xbj
- oM4ofZn78gUHiPXCyR3fDFT1mAIWbahKFt47IX73jQ6Zo10aNzQYGe+v8ys08XMWr/Mv
- N0rw==
-X-Gm-Message-State: AOAM533NArTC1/WfEPg0xXVz7aCxwp883/f2REn5yij56WiNsafuiQnY
- rP+dyTiLZ56VJFNlEVF56nE=
-X-Google-Smtp-Source: ABdhPJwPrA3toXmEGj2uIHj0F58/RSx/i9+wqLsWkZ1zSw+2RiVjV0WDE/M7DcHcwxO+jT7bPR2vng==
-X-Received: by 2002:a17:906:1707:: with SMTP id
- c7mr24567045eje.377.1635195466117; 
- Mon, 25 Oct 2021 13:57:46 -0700 (PDT)
-Received: from md2k7s8c.fritz.box ([2a02:810d:9040:4c1f:e0b6:d0e7:64d2:f3a0])
- by smtp.gmail.com with ESMTPSA id
- mp9sm6730317ejc.48.2021.10.25.13.57.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 25 Oct 2021 13:57:45 -0700 (PDT)
-From: Andreas Oetken <ennoerlangen@gmail.com>
-X-Google-Original-From: Andreas Oetken <andreas.oetken@siemens-energy.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Andreas Oetken <andreas.oetken@siemens-energy.com>
-Subject: [PATCH] drivers: mtd: Fixed breaking list in __mtd_del_partition.
-Date: Mon, 25 Oct 2021 22:57:24 +0200
-Message-Id: <20211025205724.3306739-1-andreas.oetken@siemens-energy.com>
-X-Mailer: git-send-email 2.30.2
+ id 1mfFRL-000jF6-9n
+ for linux-mtd@lists.infradead.org; Tue, 26 Oct 2021 05:56:08 +0000
+Received: from zen.. (unknown [185.17.218.86])
+ by first.geanix.com (Postfix) with ESMTPSA id 4FDDED6F7D;
+ Tue, 26 Oct 2021 05:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1635227760; bh=pSFGkotVeNb5qsNJzmaYe1nuIoE4MQOk1MI2epzMezw=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=mb4c8iQmnzJxx1dB8NEUWqgGmzC7/ebnkAlILjN+AKwCaCPhEUwOJaqLEcie/Myfr
+ wx6MzX1keEO1GrxO7anneoiClnG2OOLaaUblcnSC4pB9r80TlF45IObvhThZWbeBYy
+ s+OGmKSeBoBj/WOx6zHGfezRR48ZE/xKu6xSvUp1sDFWalZVQ/XsnWSS4HJAqXcVY/
+ gKyA8fZCESCdAzHFYU/PXm5dHffp504H7FQymVHOv3mPlGhILWPnuWpqTbU5EdXP7C
+ CE+ZQ93RqaegsqBaV7BvXCrI2GL7BIQGMeoxjkh3u7dCx+1lfazjKNO+Mj72uzk3rm
+ z53FfnOAcDnhg==
+From: Sean Nyekjaer <sean@geanix.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Sean Nyekjaer <sean@geanix.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/4] mtd: rawnand: nand_bbt: hide suspend/resume hooks
+ while scanning bbt
+Date: Tue, 26 Oct 2021 07:55:48 +0200
+Message-Id: <20211026055551.3053598-2-sean@geanix.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211026055551.3053598-1-sean@geanix.com>
+References: <20211026055551.3053598-1-sean@geanix.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211025_135748_705326_1D657D08 
-X-CRM114-Status: GOOD (  12.85  )
+X-CRM114-CacheID: sfid-20211025_225603_987041_9EF49779 
+X-CRM114-Status: GOOD (  16.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,30 +76,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Not the child partition should be removed from the partition list
-but the partition itself. Otherwise the partition list gets broken
-and any subsequent remove operations leads to a kernel panic.
+From: Boris Brezillon <boris.brezillon@collabora.com>
 
-Signed-off-by: Andreas Oetken <andreas.oetken@siemens-energy.com>
+The BBT scan logic use the MTD helpers before the MTD layer had a
+chance to initialize the device, and that leads to issues when
+accessing the uninitialized suspend lock. Let's temporarily set the
+suspend/resume hooks to NULL to skip the lock acquire/release step.
+
+Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 ---
- drivers/mtd/mtdpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_bbt.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 95d47422bbf20..5725818fa199f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -313,7 +313,7 @@ static int __mtd_del_partition(struct mtd_info *mtd)
- 	if (err)
- 		return err;
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index b7ad030225f8..93d385703469 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -1397,8 +1397,28 @@ static int nand_create_badblock_pattern(struct nand_chip *this)
+  */
+ int nand_create_bbt(struct nand_chip *this)
+ {
++	struct mtd_info *mtd = nand_to_mtd(this);
++	int (*suspend) (struct mtd_info *) = mtd->_suspend;
++	void (*resume) (struct mtd_info *) = mtd->_resume;
+ 	int ret;
  
--	list_del(&child->part.node);
-+	list_del(&mtd->part.node);
- 	free_partition(mtd);
++	/*
++	 * The BBT scan logic use the MTD helpers before the MTD layer had a
++	 * chance to initialize the device, and that leads to issues when
++	 * accessing the uninitialized suspend lock. Let's temporarily set the
++	 * suspend/resume hooks to NULL to skip the lock acquire/release step.
++	 *
++	 * FIXME: This is an ugly hack, so please don't copy this pattern to
++	 * other MTD implementations. The proper fix would be to implement a
++	 * generic BBT scan logic at the NAND level that's not using any of the
++	 * MTD helpers to access pages. We also might consider doing a two
++	 * step initialization at the MTD level (mtd_device_init() +
++	 * mtd_device_register()) so some of the fields are initialized
++	 * early.
++	 */
++	mtd->_suspend = NULL;
++	mtd->_resume = NULL;
++
+ 	/* Is a flash based bad block table requested? */
+ 	if (this->bbt_options & NAND_BBT_USE_FLASH) {
+ 		/* Use the default pattern descriptors */
+@@ -1422,7 +1442,13 @@ int nand_create_bbt(struct nand_chip *this)
+ 			return ret;
+ 	}
  
- 	return 0;
+-	return nand_scan_bbt(this, this->badblock_pattern);
++	ret = nand_scan_bbt(this, this->badblock_pattern);
++
++	/* Restore the suspend/resume hooks. */
++	mtd->_suspend = suspend;
++	mtd->_resume = resume;
++
++	return ret;
+ }
+ EXPORT_SYMBOL(nand_create_bbt);
+ 
 -- 
-2.30.2
+2.33.0
 
 
 ______________________________________________________
