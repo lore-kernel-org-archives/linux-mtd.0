@@ -2,85 +2,74 @@ Return-Path: <SRS0=tFGH=PP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E388C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D152C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:55:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08E4B61052
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08E4B61052
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0D87260C40
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:55:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0D87260C40
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+GN2SnDBQdTeLOS5hF4+Tr0a5Ik6bxmvCtKYj5tgpvI=; b=kys89Dh9XY68co
-	dfL5isXF3O8raI9OBUkdSHSKAfmKWzw4MokyfSIa4OvjK7XJe+0JuJrEFWwmnxhULUZ2EBpSmCjz5
-	MGt8t/q8vXa2Ys3lIVIy6uYgFnZLA8Pgh1BR/MbHSPGnO1O4goziIt9v2lpK+RyKKe4ZwVZERIGaS
-	ifPMtfpggeCOxA5bahFaq+RXnnUvLXc4BQdHwRofpAv913cGGZLjTERQzN5O2eO6iDjQ4pqIHkAmC
-	pXNZTYKLiiv+6UwBCoFShywTDOumoWHnsyUDBrZm58Zplu9h88X4SSF+Gu53H+94ONxnKPHouQPCO
-	KHqdJqVpTK2aOuDf7eNw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=wkHpjCZSq7GdeprqcqTjOulKUzuTGQC/OI7ZE66UAq4=; b=iTtw9QtkXaKpoLlTDfk+1TTV+g
+	2WMK6VWSHJ4umZwy6lnKc9cofze1nEttnvMGkUJBEFxBWSlgWg/u+UsfEkj9sBRA/N75x4PRSmT2z
+	LofSykEpR88uwwGEQw+Q7emyIObluyzFo7qWoJNEP/YvUJpnZer1vzDSBEp/EB5CzSkpwXzRGdyd/
+	6k2KWlAHlDjBMu/0OvZDP4+e/XVnwTsJC9nRolmOOXAxzii2UjDYJw+ZzVCyFYIbw/dKZRwa+PaJ+
+	YEIJ5X6cFQq4RuZ6x38TA4CsxtXHO6qnVOrlOJPA3FcZq30t8Gcuw9Ex+WRsoJiR61O60NNMZEnH1
+	j6P76uFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfgHF-004Zuq-Lk; Wed, 27 Oct 2021 10:35:25 +0000
-Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
+	id 1mfgZZ-004dGH-63; Wed, 27 Oct 2021 10:54:21 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfgG7-004ZYS-13
- for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 10:34:16 +0000
-Received: by mail-wm1-x32f.google.com with SMTP id
- b82-20020a1c8055000000b0032ccc728d63so1945856wmd.1
- for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 03:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=kShnARuTRPPZFlSFMm7BHRQXFKxgp6JyYFpoqdwp25M=;
- b=PO9lUskA+t3618cesdXDDaP60c8lid93P7uNqkqhtagUj0L2esD3J0EhRiBrWoMYeR
- 77xWx+tnkvC2ASo5nxNkfh1Q8CHd67YgzfaENGE1Y7Ya8CJnh18KzyBgROmqQV+eC0Rm
- glhUTRAuKPBMjY4yWG/+cLtpnvOKo2yRXE8Fqw15/sfRVkpTnQkIh/YEWVswem24zYas
- eklk5OM5QaDW+YT699vv4/tXDF8Q5QT0U4Q1uYeLNbOFnwo0KEgtJJeyGhyWYT+GzW60
- uxsR79H/7zbXgw5TYItuEjXcBb4Dj7VB08n5tqPe9/2VjpGzkIOM8AHiOGQhIdQ31w4b
- W5bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=kShnARuTRPPZFlSFMm7BHRQXFKxgp6JyYFpoqdwp25M=;
- b=2zUDZgZ9ott4CD4z2OfCxlZ+6FWYJS3RNXoIecsqRPWKMrkojIaWvjJOLRL7ThlfmV
- ApuSTC1HzwRQLSLHo4ZzFd+rqTqnGzZ2BG7rBjuQ6O+a5hi0unoh8Wxnwm2EnszKs1WT
- wuJHeROJb3xx95ScjMyoVXX8G8qbnIvxalcXB0gSsxDl2U/9Tt9qIbK+6abf1PJN6MPS
- 5NB7mClORK5RKSiKTQvj/BNP2ktiBmgvc6IZI4twgVTDwS/3essoKVPFBRe1S9Eqk641
- +6QzmuG/tMiX/ih+y+/xgbEorinI58PREY7wqpOmewd1eeergYNpsc5pD9Ic5F6cM6P2
- 8/1A==
-X-Gm-Message-State: AOAM532loEc/UB1woqrV4OaiBAqK+6JeVDJ32njcJF8GeSDNSG/T6h8U
- Erk2nUdH0kkkcZ2y6Je/7U+EpA0lt6pe3A==
-X-Google-Smtp-Source: ABdhPJydBpbQVtRJStGXv54bTK9hMCpVvtAZ+RicKvbIWCFFtJ2igeaj2ZTHmERrN9jbpPREOxPqVw==
-X-Received: by 2002:a7b:c40b:: with SMTP id k11mr4746048wmi.116.1635330853509; 
- Wed, 27 Oct 2021 03:34:13 -0700 (PDT)
-Received: from authentaworks.lxd (ip5f5be9ad.dynamic.kabel-deutschland.de.
- [95.91.233.173])
- by smtp.gmail.com with ESMTPSA id j10sm7140198wrx.94.2021.10.27.03.34.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 Oct 2021 03:34:13 -0700 (PDT)
-From: shiva.linuxworks@gmail.com
-X-Google-Original-From: sshivamurthy@micron.com
-To: tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ id 1mfgZQ-004dFL-Sa
+ for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 10:54:18 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id DBBAC60A59CB;
+ Wed, 27 Oct 2021 12:54:09 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id jAtqK5-KKcxu; Wed, 27 Oct 2021 12:54:09 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 3B85160A59CC;
+ Wed, 27 Oct 2021 12:54:09 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 4VSet6S7aa7W; Wed, 27 Oct 2021 12:54:09 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 1737160A59CB;
+ Wed, 27 Oct 2021 12:54:09 +0200 (CEST)
+Date: Wed, 27 Oct 2021 12:54:09 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: shiva linuxworks <shiva.linuxworks@gmail.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, 
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-kernel <linux-kernel@vger.kernel.org>, 
  Shivamurthy Shastri <sshivamurthy@micron.com>
-Subject: [PATCH 4/4] mtd: spi-nor: micron-st: add mt25qu128abb and mt25ql128abb
-Date: Wed, 27 Oct 2021 10:33:52 +0000
-Message-Id: <20211027103352.8879-5-sshivamurthy@micron.com>
-X-Mailer: git-send-email 2.25.1
+Message-ID: <771780049.41543.1635332049033.JavaMail.zimbra@nod.at>
 In-Reply-To: <20211027103352.8879-1-sshivamurthy@micron.com>
 References: <20211027103352.8879-1-sshivamurthy@micron.com>
+Subject: Re: [PATCH 0/4] enabling Advanced protection and security features
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF93 (Linux)/8.8.12_GA_3809)
+Thread-Topic: enabling Advanced protection and security features
+Thread-Index: e9NOfgAgmG4FgeEzOITeky2aCvZksw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211027_033415_102225_FCC8D3C0 
-X-CRM114-Status: GOOD (  10.86  )
+X-CRM114-CacheID: sfid-20211027_035413_099576_519BDCFB 
+X-CRM114-Status: UNSURE (   8.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,47 +81,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Shivamurthy Shastri <sshivamurthy@micron.com>
-
-Added new Micron SPI NOR flashes to structure flash_info, which supports
-advanced protection and security features.
-
-Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
----
- drivers/mtd/spi-nor/micron-st.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index b5d82e85fb92..2bebd76b091a 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -158,10 +158,17 @@ static const struct flash_info st_parts[] = {
- 			      SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128,
- 			      SECT_4K | SPI_NOR_QUAD_READ) },
-+	{ "mt25qu128abb", INFO6(0x20bb18, 0x12008c, 64 * 1024,  256,
-+				SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
-+				SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
-+				SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
- 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256,
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
-+	{ "mt25ql128abb", INFO6(0x20ba18, 0x12008c, 64 * 1024,  256,
-+				SECT_4K | USE_FSR | SPI_NOR_HAS_LOCK |
-+				SPI_NOR_QUAD_READ) },
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
- 	{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512,
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogInNoaXZhIGxpbnV4d29ya3Mi
+IDxzaGl2YS5saW51eHdvcmtzQGdtYWlsLmNvbT4KPiBBbjogIlR1ZG9yIEFtYmFydXMiIDx0dWRv
+ci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+LCAiTWljaGFlbCBXYWxsZSIgPG1pY2hhZWxAd2FsbGUu
+Y2M+LCAiUHJhdHl1c2ggWWFkYXYiCj4gPHAueWFkYXZAdGkuY29tPiwgIk1pcXVlbCBSYXluYWwi
+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiwgInJpY2hhcmQiIDxyaWNoYXJkQG5vZC5hdD4s
+ICJWaWduZXNoIFJhZ2hhdmVuZHJhIgo+IDx2aWduZXNockB0aS5jb20+Cj4gQ0M6ICJsaW51eC1t
+dGQiIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4sICJsaW51eC1rZXJuZWwiIDxsaW51
+eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPiwgIlNoaXZhbXVydGh5IFNoYXN0cmkiCj4gPHNzaGl2
+YW11cnRoeUBtaWNyb24uY29tPgo+IEdlc2VuZGV0OiBNaXR0d29jaCwgMjcuIE9rdG9iZXIgMjAy
+MSAxMjozMzo0OAo+IEJldHJlZmY6IFtQQVRDSCAwLzRdIGVuYWJsaW5nIEFkdmFuY2VkIHByb3Rl
+Y3Rpb24gYW5kIHNlY3VyaXR5IGZlYXR1cmVzCgo+IEZyb206IFNoaXZhbXVydGh5IFNoYXN0cmkg
+PHNzaGl2YW11cnRoeUBtaWNyb24uY29tPgo+IAo+IFN0YW5kYXJkIHByb3RlY3Rpb24gZmVhdHVy
+ZXMgaW4gU1BJIE5PUiBmbGFzaGVzIGFyZSBsZWdhY3kgYW5kIG9mZmVyIGEKPiBzaW1wbGUgd2F5
+IHRvIHByb3RlY3QgdGhlIG1lbW9yeSBhcnJheSBhZ2FpbnN0IGFjY2lkZW50YWwgb3IgdW53YW50
+ZWQKPiBtb2RpZmljYXRpb24gb2YgaXRzIGNvbnRlbnQuCj4gCj4gVGhlc2UgcGF0Y2hlcyBlbmFi
+bGUgdGhlIHN1cHBvcnQgZm9yIGFkdmFuY2VkIHNlY3RvciBwcm90ZWN0aW9uIHdoaWNoCj4gcHJv
+dGVjdHMgbWVtb3J5IGZyb20gYWNjaWRlbnRhbGx5IGNvcnJ1cHRpbmcgY29kZSBhbmQgZGF0YSBz
+dG9yZWQsIGFuZAo+IGl0IGFsc28gcHJldmVudHMgbWFsaWNpb3VzIGF0dGFja3MgdGhhdCBjb3Vs
+ZCBpbnRlbnRpb25hbGx5IG1vZGlmeSB0aGUKPiBjb2RlIG9yIGRhdGEgc3RvcmVkIGluIHRoZSBt
+ZW1vcnkuCj4gCj4gTWljcm9uIEZsYXNoZXMgb2ZmZXIgc29tZSBvZiB0aGUgYWR2YW5jZWQgcHJv
+dGVjdGlvbiBtZXRob2RzIHVzaW5nCj4gdm9sYXRpbGUgbG9jayBiaXRzLCBub24tdm9sYXRpbGUg
+bG9jayBiaXRzLCBnbG9iYWwgZnJlZXplIGJpdHMsIGFuZAo+IHBhc3N3b3JkLgoKQ2FuIHlvdSBw
+bGVhc2UgcG9pbnQgdXMgdG8gdGhlIHRlY2huaWNhbCBkb2N1bWVudGF0aW9uIG9mIHRoZXNlIGZl
+YXR1cmVzPwpJJ20gZXNwZWNpYWxseSBpbnRlcmVzdGVkIGluIHRoZSBwYXNzd29yZCBmZWF0dXJl
+LgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
