@@ -2,14 +2,14 @@ Return-Path: <SRS0=tFGH=PP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E4F4C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A6A7C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 631516103C
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 631516103C
+	by mail.kernel.org (Postfix) with ESMTPS id 330486103C
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 330486103C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,70 +18,71 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fzIDMCGE63xvlqsdfwkPnUyK1thuNvlv8BWN7pDwWXQ=; b=hU7+0yowJtVYxo
-	6M+Ff55jn5LYQswTFTslVKrdtfLSK785trc0aOSSQEDUYCTQRvXzPw+9YjL1kRfpbkI4akkmoQUBe
-	LKJq7APJezWVkUx8TOPMt9R8Q84yhLcII/BZlAQDyDBbxv8s5IXIojP/SlsQ1Ro/BNivh23nMcH/Y
-	/PzaKVlE35S5xm83Z08PRtwCA2Y2xI8mQMPl85oy8q12OrolrVZD9eVkx2XkPhFXittUpnb+R6lRN
-	ow2TBbQRD9f3RUKwOSvegtkSqjntKyhI5xpdRMr4kku+Bv3zWc2JNWnqQZYOna7F7+yK3eku5Jr9f
-	It6W9jz7Cj+1jCfFgY+g==;
+	List-Owner; bh=Qfd+spzPOXUKitwaaqLa5Wx4ghYZ5Kk0zEC9Zr7+14M=; b=arGxW+yFWW3Q4P
+	TzDJzRdP/AOySLqtEIFHsv1yGIM7+lMR18wihemBZcHaQmT/5umLbhfLFE+prlN/X1NM38gujxY0a
+	tkWkHvxOzdbJo4Kl5NOKAJpY4XXhuVX2TkgzKo68rwOSxFuuJngqeDpHCevJwxWXT3Yq1vwVth72m
+	Dic44pNBsUDoQluRxq5rq7B+RF1+XCBcpu5fBU6w08TOCbMqHPDe7mwN3Ixw2+q/DKHxt4qr+6pvH
+	hys4yplSfEj+f2SQoOAWZh2/55BwpGKyxGLS+mAGmUc/N/7/z/PBC8b66s+pT2y0VxbHe2XkB9Nb3
+	Ri8ixteodiLBAkZYBrgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfgGI-004ZcJ-OM; Wed, 27 Oct 2021 10:34:26 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1mfgGW-004Zf7-WA; Wed, 27 Oct 2021 10:34:41 +0000
+Received: from mail-wm1-x335.google.com ([2a00:1450:4864:20::335])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfgG2-004ZWI-Kx
- for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 10:34:12 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id e12so3317278wra.4
- for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 03:34:10 -0700 (PDT)
+ id 1mfgG4-004ZWx-Hw
+ for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 10:34:14 +0000
+Received: by mail-wm1-x335.google.com with SMTP id
+ a20-20020a1c7f14000000b003231d13ee3cso5833544wmd.3
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 03:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=+FphN78AXgH28AkDzvYuNYo1zQmgzrR8QaTKrIUkdiI=;
- b=k6Ua2ee1w06mtAjfJ3KHTf/v2vkQFo6AZYm2DASbGJMbypwEtIlXMp1pe/0X/l8YcQ
- 3foBi5QZHJhFXCXsdZL2fij3+Yogf/mTtVaqgEjAv2Fkw7iYpT+8gb+s9MYHFpO3hj2i
- TN36fvU2MfTs6XhEY0qPz54cApiYabkVVmdaWfOBxPv8hXX2GOFj0TX4Dx4N2wxHi8ZX
- Uz1xsOQ48LrG/8D0ugIv4CJ4z6u7Slh4rfxqm1HnZSEq8eQ+FP4xKZMAsQv49Q0N0CLe
- XAcU0fKgLVWwAseKkTpJs8hO7rkbBGZUp0R6fuLEYJ22GjKzaaWaSKL5w7R39tqx50wT
- pBeQ==
+ bh=vVb6A2wbzx6p3fdJxIaJnlRxaaRSljbVVgtWN9PLGqQ=;
+ b=GgCXBxjFWZIEpfEQlaaRu+cPNTw5e5bd1kf7Ia+LF7eILeRBb2XrMKdrllHECCz5IU
+ tdzLndK8YF5vgtu5Vo0PTF/ewcLrHDgZN5Xqo23pWhFp2dPAwFEYimJyS097/33+m9Kz
+ ndKeumGS9HMMja7T6TUm7DDW45bU3IuZ8x23JOXFH7ltzHsJO/H6xuHn3FcaE+iVBmHw
+ BZQz6OwyxsmujknQfCwzi6tnCc3CjWU/2MXY0edZPcfspeNEKHIbKETokAww90rJqdD7
+ c8OOg8MfO0Yh5M+m8xPhBWrTuku/Hl9vEIoSHSYkxcS0F9+yNTh9mRbe5O4bOhsE0hlv
+ QNHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=+FphN78AXgH28AkDzvYuNYo1zQmgzrR8QaTKrIUkdiI=;
- b=Xryh5vkyX7EVq9Nks9QMV6oUT7NlQs6k7vy5pwOBiarf8Q7pIMD56wLdg2eoneduGI
- NhYtoMrXC5ZA2K9cDsjUzJ6ir+6YnHOIhPVt8eqYjzVqD3CXTNCwozUoFVOwONg0VvAw
- IoBittpDm0EZr5QqbKwSND1xrzY8wBjI3EkuivVx/i5XCEHUGWK4dfm8bAvFToBtUaHG
- APMAj/CbU8wkP2jSqSm0HPcZC9YofxzZ4qXs3FnF9HgJzBwJMBaZYazHxm9wqpLULmnU
- Kh1AC9sLdDyBFsksF7UpaJdvv93pWMDEKSFTdf0qCuRscXAKHV5ke7lA8dWch4zfDoNH
- Vxxw==
-X-Gm-Message-State: AOAM533yPF7KCuYaxOBhn2Ub0EjiF2+XMmjg4LQKQyLLdaxuvHh9bZmC
- n+mLQDqGLDlar1nhv4AY92U=
-X-Google-Smtp-Source: ABdhPJy/5w9k7meVlbP35LqiI7Vh5leFYIjzw5vaSU0Y1ldDFWZzUgTKKRWrwEtPK1ZHGKV5eBckDA==
-X-Received: by 2002:a05:6000:184c:: with SMTP id
- c12mr38630307wri.127.1635330849031; 
- Wed, 27 Oct 2021 03:34:09 -0700 (PDT)
+ bh=vVb6A2wbzx6p3fdJxIaJnlRxaaRSljbVVgtWN9PLGqQ=;
+ b=X8HDeaWk5j+JLVjcxXVY3trz/JllOWmNt2Gx7Onho7pdG3laEY0/UDRW2crenH2+TD
+ c3x4XqLh/bWnhYeFNlm5iYA/atk+f+EIblzADrmO6+Ki9yZ/HHeE8pisFvGmpH8uv0w2
+ 65YUy0XmIt2NyVhCm9goJKqfnghWtkB99XHBZqQKf9DUXQSpypFsRMmTZZYxPMYLdmvM
+ g7s7alS0In6b7IS96aERix46YbHAL21sifisyrm2FN3dCzuETW8mDAizCwib0lRgrbxc
+ eAkOCZTuDl8rhYD6yVJ4BbexnjmlgDZno1bOHcLrDBIHt/L2DAsPEQMgdm0F0Huf/YaB
+ EhQg==
+X-Gm-Message-State: AOAM530PSQ4uSCXHwHzqeQPuXRn4nVjkkkzDAFxyUdb67moa5FoHT+qb
+ jntANl3Ke8vP8aY0srqw6e4=
+X-Google-Smtp-Source: ABdhPJyXSW9/ahDyrFTQnjw0IkP//VS8L5xUjcfQMATx8+Ky7jQR09yMl9ejckwpYA5h4T9TmAHBgA==
+X-Received: by 2002:a05:600c:4f96:: with SMTP id
+ n22mr4874941wmq.168.1635330850930; 
+ Wed, 27 Oct 2021 03:34:10 -0700 (PDT)
 Received: from authentaworks.lxd (ip5f5be9ad.dynamic.kabel-deutschland.de.
  [95.91.233.173])
- by smtp.gmail.com with ESMTPSA id j10sm7140198wrx.94.2021.10.27.03.34.07
+ by smtp.gmail.com with ESMTPSA id j10sm7140198wrx.94.2021.10.27.03.34.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 Oct 2021 03:34:08 -0700 (PDT)
+ Wed, 27 Oct 2021 03:34:10 -0700 (PDT)
 From: shiva.linuxworks@gmail.com
 X-Google-Original-From: sshivamurthy@micron.com
 To: tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Shivamurthy Shastri <sshivamurthy@micron.com>
-Subject: [PATCH 1/4] mtd: spi-nor: micron-st: add advanced protection and
- security features
-Date: Wed, 27 Oct 2021 10:33:49 +0000
-Message-Id: <20211027103352.8879-2-sshivamurthy@micron.com>
+Subject: [PATCH 2/4] mtd: spi-nor: add advanced protection and security
+ features support
+Date: Wed, 27 Oct 2021 10:33:50 +0000
+Message-Id: <20211027103352.8879-3-sshivamurthy@micron.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211027103352.8879-1-sshivamurthy@micron.com>
 References: <20211027103352.8879-1-sshivamurthy@micron.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211027_033410_721530_438D7FEA 
-X-CRM114-Status: GOOD (  16.54  )
+X-CRM114-CacheID: sfid-20211027_033412_631389_A6C0C771 
+X-CRM114-Status: GOOD (  17.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,321 +101,288 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-Micron SPI NOR flashes are enabled with advanced sector protection
-features, using volatile lock bits, non-volatile lock bits, global
-freeze bits and password.
-
-Advanced sector protection and security features offers additional
-levels of protection against accidentally corrupting code and data
-stored, and it also prevents malicious attacks that could intentionally
-modify or corrupt the code or data stored.
+Added functionalities to support advanced securtiy and protection
+features in new SPI NOR flashes.
 
 Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
 ---
- drivers/mtd/spi-nor/core.h      |  20 +++
- drivers/mtd/spi-nor/micron-st.c | 238 ++++++++++++++++++++++++++++++++
- 2 files changed, 258 insertions(+)
+ drivers/mtd/spi-nor/Makefile     |   2 +-
+ drivers/mtd/spi-nor/advprotsec.c | 209 +++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/core.c       |   2 +
+ include/linux/mtd/mtd.h          |  19 +++
+ 4 files changed, 231 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/spi-nor/advprotsec.c
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 3348e1dd1445..f6890973cb4a 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -187,6 +187,24 @@ struct spi_nor_locking_ops {
- 	int (*is_locked)(struct spi_nor *nor, loff_t ofs, uint64_t len);
- };
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 6b904e439372..8e96e2c65c7a 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
  
-+struct spi_nor_sec_ops {
-+	int (*secure_read)(struct spi_nor *nor, size_t len, u8 *buf);
-+	int (*secure_write)(struct spi_nor *nor, size_t len, u8 *buf);
-+	int (*read_nvlock_bits)(struct spi_nor *nor, u32 addr, size_t len,
-+				u8 *buf);
-+	int (*read_vlock_bits)(struct spi_nor *nor, u32 addr, size_t len,
-+			       u8 *buf);
-+	int (*read_global_freeze_bits)(struct spi_nor *nor, size_t len,
-+				       u8 *buf);
-+	int (*read_password)(struct spi_nor *nor, size_t len, u8 *buf);
-+	int (*write_global_freeze_bits)(struct spi_nor *nor, size_t len,
-+					u8 *buf);
-+	int (*write_vlock_bits)(struct spi_nor *nor, u32 addr, size_t len,
-+				u8 *buf);
-+	int (*write_nvlock_bits)(struct spi_nor *nor, u32 addr);
-+	int (*erase_nvlock_bits)(struct spi_nor *nor);
-+};
-+
- /**
-  * struct spi_nor_otp_organization - Structure to describe the SPI NOR OTP regions
-  * @len:	size of one OTP region in bytes.
-@@ -285,6 +303,8 @@ struct spi_nor_flash_parameter {
- 	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
- 
- 	const struct spi_nor_locking_ops *locking_ops;
-+
-+	const struct spi_nor_sec_ops *sec_ops;
- };
- 
- /**
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index c224e59820a1..b5d82e85fb92 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -16,6 +16,23 @@
- #define SPINOR_MT_OCT_DTR	0xe7	/* Enable Octal DTR. */
- #define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
- 
-+#define AUTHENTA_ID		0x8c
-+#define AUTHENTA_ID_BYTE	0x05
-+
-+#define SPINOR_OP_SECURE_READ			0x96
-+#define SPINOR_OP_SECURE_WRITE			0x9b
-+
-+#define SPINOR_OP_RD_VOL_LOCK_BITS		0xe8
-+#define SPINOR_OP_WR_VOL_LOCK_BITS		0xe5
-+#define SPINOR_OP_RD_NV_LOCK_BITS		0xe2
-+#define SPINOR_OP_WR_NV_LOCK_BITS		0xe3
-+#define SPINOR_OP_ER_NV_LOCK_BITS		0xe4
-+
-+#define SPINOR_OP_RD_GLOBAL_FREEZE_BITS		0xa7
-+#define SPINOR_OP_WR_GLOBAL_FREEZE_BITS		0xa6
-+
-+#define SPINOR_OP_RD_PASSWORD			0x27
-+
- static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
- {
- 	struct spi_mem_op op;
-@@ -247,12 +264,233 @@ static int st_micron_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	return spi_nor_write_disable(nor);
- }
- 
-+/**
-+ * authenta_secure_read() - read the secure packet from authenta SPI NOR
+-spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
++spi-nor-objs			:= core.o sfdp.o swp.o otp.o advprotsec.o sysfs.o
+ spi-nor-objs			+= atmel.o
+ spi-nor-objs			+= catalyst.o
+ spi-nor-objs			+= eon.o
+diff --git a/drivers/mtd/spi-nor/advprotsec.c b/drivers/mtd/spi-nor/advprotsec.c
+new file mode 100644
+index 000000000000..4dc8e67b16ef
+--- /dev/null
++++ b/drivers/mtd/spi-nor/advprotsec.c
+@@ -0,0 +1,209 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * SPI NOR Advanced Sector Protection and Security Features
 + *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @len: number of bytes to read
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
++ * Copyright (C) 2021 Micron Technology, Inc.
 + */
-+static int authenta_secure_read(struct spi_nor *nor, size_t len, u8 *buf)
-+{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SECURE_READ, 1),
-+			   SPI_MEM_OP_NO_ADDR,
-+			   SPI_MEM_OP_DUMMY(1, 1),
-+			   SPI_MEM_OP_DATA_IN(len, buf, 1));
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static int spi_nor_secure_read(struct mtd_info *mtd, size_t len, u8 *buf)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->secure_read(nor, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_secure_write() - write the secure packet to authenta SPI NOR
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @len: number of bytes to be written
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_secure_write(struct spi_nor *nor, size_t len, u8 *buf)
++static int spi_nor_secure_write(struct mtd_info *mtd, size_t len, u8 *buf)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SECURE_WRITE, 1),
-+			   SPI_MEM_OP_NO_ADDR,
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(len, buf, 1));
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->secure_write(nor, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_read_vlock_bits() - read the volatile lock bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @addr: address for volatile lock bits
-+ * @len: number of bytes to read
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_read_vlock_bits(struct spi_nor *nor, u32 addr,
-+				    size_t len, u8 *buf)
++static int spi_nor_read_vlock_bits(struct mtd_info *mtd, u32 addr, size_t len,
++				   u8 *buf)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_VOL_LOCK_BITS, 1),
-+			   SPI_MEM_OP_ADDR(nor->addr_width, addr, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(len, buf, 1));
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->read_vlock_bits(nor, addr, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_write_vlock_bits() - write data to the volatile lock bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @addr: address for volatile lock bits
-+ * @len: number of bytes to be written
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_write_vlock_bits(struct spi_nor *nor, u32 addr, size_t len,
-+				     u8 *buf)
++static int spi_nor_write_vlock_bits(struct mtd_info *mtd, u32 addr, size_t len,
++				    u8 *buf)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_VOL_LOCK_BITS, 1),
-+			   SPI_MEM_OP_ADDR(nor->addr_width, addr, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(len, buf, 1));
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->write_vlock_bits(nor, addr, len, buf);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_disable(nor);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_read_nvlock_bits() - read the non-volatile lock bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @addr: address for non-volatile lock bits
-+ * @len: number of bytes to be written
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_read_nvlock_bits(struct spi_nor *nor, u32 addr,
-+				     size_t len, u8 *buf)
++static int spi_nor_read_nvlock_bits(struct mtd_info *mtd, u32 addr, size_t len,
++				    u8 *buf)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_NV_LOCK_BITS, 1),
-+			   SPI_MEM_OP_ADDR(nor->addr_width, addr, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(len, buf, 1));
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->read_nvlock_bits(nor, addr, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_write_nvlock_bits() - write to the non-volatile lock bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @addr: address for non-volatile lock bits
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_write_nvlock_bits(struct spi_nor *nor, u32 addr)
++static int spi_nor_write_nvlock_bits(struct mtd_info *mtd, u32 addr)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_NV_LOCK_BITS, 1),
-+			   SPI_MEM_OP_ADDR(nor->addr_width, addr, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_NO_DATA);
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->write_nvlock_bits(nor, addr);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_disable(nor);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_erase_nvlock_bits() - erase the non-volatile lock bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_erase_nvlock_bits(struct spi_nor *nor)
++static int spi_nor_erase_nvlock_bits(struct mtd_info *mtd)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ER_NV_LOCK_BITS, 1),
-+			   SPI_MEM_OP_NO_ADDR,
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_NO_DATA);
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->erase_nvlock_bits(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_nor_write_disable(nor);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_read_global_freeze_bits() - read the global freeze bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @len: number of bytes to read
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_read_global_freeze_bits(struct spi_nor *nor, size_t len,
++static int spi_nor_read_global_freeze_bits(struct mtd_info *mtd, size_t len,
++					   u8 *buf)
++{
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
++
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->read_global_freeze_bits(nor, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
++}
++
++static int spi_nor_write_global_freeze_bits(struct mtd_info *mtd, size_t len,
 +					    u8 *buf)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_GLOBAL_FREEZE_BITS, 1),
-+			   SPI_MEM_OP_NO_ADDR,
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(len, buf, 1));
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->write_global_freeze_bits(nor, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_write_global_freeze_bits() - write data to the global freeze bits
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @len: number of bytes to be written
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_write_global_freeze_bits(struct spi_nor *nor, size_t len,
-+					     u8 *buf)
++static int spi_nor_read_password(struct mtd_info *mtd, size_t len, u8 *buf)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_GLOBAL_FREEZE_BITS, 1),
-+			   SPI_MEM_OP_NO_ADDR,
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(len, buf, 1));
++	struct spi_nor *nor = mtd_to_spi_nor(mtd);
++	int ret;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	ret = spi_nor_lock_and_prep(nor);
++	if (ret)
++		return ret;
++
++	ret = nor->params->sec_ops->read_password(nor, len, buf);
++
++	spi_nor_unlock_and_unprep(nor);
++	return ret;
 +}
 +
-+/**
-+ * authenta_read_password() - read the password
-+ *
-+ * @nor: pointer to 'struct spi_nor'
-+ * @len: number of bytes to read
-+ * @buf: pointer to dst buffer
-+ *
-+ * Return: 0 in case of success, a negative error code otherwise.
-+ */
-+static int authenta_read_password(struct spi_nor *nor, size_t len, u8 *buf)
++void spi_nor_register_security_ops(struct spi_nor *nor)
 +{
-+	struct spi_mem_op op =
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_PASSWORD, 1),
-+			   SPI_MEM_OP_NO_ADDR,
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_IN(len, buf, 1));
++	struct mtd_info *mtd = &nor->mtd;
 +
-+	return spi_mem_exec_op(nor->spimem, &op);
++	if (!nor->params->sec_ops)
++		return;
++
++	mtd->_secure_packet_read = spi_nor_secure_read;
++	mtd->_secure_packet_write = spi_nor_secure_write;
++	mtd->_read_vlock_bits = spi_nor_read_vlock_bits;
++	mtd->_write_vlock_bits = spi_nor_write_vlock_bits;
++	mtd->_read_nvlock_bits = spi_nor_read_nvlock_bits;
++	mtd->_write_nvlock_bits = spi_nor_write_nvlock_bits;
++	mtd->_erase_nvlock_bits = spi_nor_erase_nvlock_bits;
++	mtd->_read_global_freeze_bits = spi_nor_read_global_freeze_bits;
++	mtd->_write_global_freeze_bits = spi_nor_write_global_freeze_bits;
++	mtd->_read_password = spi_nor_read_password;
 +}
-+
-+static const struct spi_nor_sec_ops authenta_ops = {
-+	.secure_read = authenta_secure_read,
-+	.secure_write = authenta_secure_write,
-+	.read_vlock_bits = authenta_read_vlock_bits,
-+	.write_vlock_bits = authenta_write_vlock_bits,
-+	.read_nvlock_bits = authenta_read_nvlock_bits,
-+	.write_nvlock_bits = authenta_write_nvlock_bits,
-+	.erase_nvlock_bits = authenta_erase_nvlock_bits,
-+	.read_global_freeze_bits = authenta_read_global_freeze_bits,
-+	.write_global_freeze_bits = authenta_write_global_freeze_bits,
-+	.read_password = authenta_read_password,
-+};
-+
- static void micron_st_default_init(struct spi_nor *nor)
- {
- 	nor->flags |= SNOR_F_HAS_LOCK;
- 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
- 	nor->params->quad_enable = NULL;
- 	nor->params->set_4byte_addr_mode = st_micron_set_4byte_addr_mode;
-+
-+	if (nor->info->id[AUTHENTA_ID_BYTE] == AUTHENTA_ID)
-+		nor->params->sec_ops = &authenta_ops;
- }
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index cc08bd707378..864f3c7783b3 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3199,6 +3199,8 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
  
- static const struct spi_nor_fixups micron_st_fixups = {
+ 	spi_nor_register_locking_ops(nor);
+ 
++	spi_nor_register_security_ops(nor);
++
+ 	/* Send all the required SPI flash commands to initialize device */
+ 	ret = spi_nor_init(nor);
+ 	if (ret)
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 88227044fc86..bce358c9fb94 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -360,6 +360,25 @@ struct mtd_info {
+ 	int (*_get_device) (struct mtd_info *mtd);
+ 	void (*_put_device) (struct mtd_info *mtd);
+ 
++	/*
++	 * Security Operations
++	 */
++	int (*_secure_packet_read)(struct mtd_info *mtd, size_t len, u8 *buf);
++	int (*_secure_packet_write)(struct mtd_info *mtd, size_t len, u8 *buf);
++	int (*_read_vlock_bits)(struct mtd_info *mtd, u32 addr, size_t len,
++				u8 *buf);
++	int (*_write_vlock_bits)(struct mtd_info *mtd, u32 addr, size_t len,
++				 u8 *buf);
++	int (*_read_nvlock_bits)(struct mtd_info *mtd, u32 addr, size_t len,
++				 u8 *buf);
++	int (*_write_nvlock_bits)(struct mtd_info *mtd, u32 addr);
++	int (*_erase_nvlock_bits)(struct mtd_info *mtd);
++	int (*_read_global_freeze_bits)(struct mtd_info *mtd, size_t len,
++					u8 *buf);
++	int (*_write_global_freeze_bits)(struct mtd_info *mtd, size_t len,
++					 u8 *buf);
++	int (*_read_password)(struct mtd_info *mtd, size_t len, u8 *buf);
++
+ 	/*
+ 	 * flag indicates a panic write, low level drivers can take appropriate
+ 	 * action if required to ensure writes go through
 -- 
 2.25.1
 
