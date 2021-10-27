@@ -2,14 +2,14 @@ Return-Path: <SRS0=tFGH=PP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 155D3C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E388C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1BEF61052
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D1BEF61052
+	by mail.kernel.org (Postfix) with ESMTPS id 08E4B61052
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 10:35:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 08E4B61052
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,68 +18,69 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fpjx+xV5Tkve2+rvg9OvhGs6DZByhnMjRwa3eDpuw7o=; b=HopMQblGhpaAMi
-	ndLoRbeQkKOqnLGYrQ1XmCGnNE4ucbFahgFnNlie60NGR2kSwnSPRSbLWTcJ+lKsesztV/4a81ySd
-	0EdQZNRDdpoh0xVZ3wUTCaH1Chk0McoNg4JC1JuJ1HW6NE/Bb+xZcvcGG9nbUKsF8nsLHJRguMOpX
-	3mZMKViqW3hAwU+y9zEZaY2t+ZQhllVT9p7gReYaPsM770NLoGR8717aQBUHbRGKVsNRF3Kt3CmaA
-	fBh5ZtSQWQ8JAGB5A16k9Aswqmzbq3B6Ic29l0N1EYAZ9Gn2pp403QvxiWi0PITMWS9Nizm1+2ubK
-	2c2uxLpWbn/PZY26Whig==;
+	List-Owner; bh=+GN2SnDBQdTeLOS5hF4+Tr0a5Ik6bxmvCtKYj5tgpvI=; b=kys89Dh9XY68co
+	dfL5isXF3O8raI9OBUkdSHSKAfmKWzw4MokyfSIa4OvjK7XJe+0JuJrEFWwmnxhULUZ2EBpSmCjz5
+	MGt8t/q8vXa2Ys3lIVIy6uYgFnZLA8Pgh1BR/MbHSPGnO1O4goziIt9v2lpK+RyKKe4ZwVZERIGaS
+	ifPMtfpggeCOxA5bahFaq+RXnnUvLXc4BQdHwRofpAv913cGGZLjTERQzN5O2eO6iDjQ4pqIHkAmC
+	pXNZTYKLiiv+6UwBCoFShywTDOumoWHnsyUDBrZm58Zplu9h88X4SSF+Gu53H+94ONxnKPHouQPCO
+	KHqdJqVpTK2aOuDf7eNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfgGq-004Zlk-HU; Wed, 27 Oct 2021 10:35:00 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1mfgHF-004Zuq-Lk; Wed, 27 Oct 2021 10:35:25 +0000
+Received: from mail-wm1-x32f.google.com ([2a00:1450:4864:20::32f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfgG5-004ZXz-R6
- for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 10:34:15 +0000
-Received: by mail-wr1-x432.google.com with SMTP id d13so3263938wrf.11
- for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 03:34:13 -0700 (PDT)
+ id 1mfgG7-004ZYS-13
+ for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 10:34:16 +0000
+Received: by mail-wm1-x32f.google.com with SMTP id
+ b82-20020a1c8055000000b0032ccc728d63so1945856wmd.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 03:34:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=GEuhmJt1EbG7eS8Znq+HuEo/CA/NDTjfu/Nxazhdm9Y=;
- b=NX/oGmqLbSpHqAFabpzBNDb+3zZB8GnHTluimoJTA3PqE433VoDhBvG1adUZR52HNG
- Qr82xQeUTuPueOdhoR0YT0mnZUhXycM4MF4NSEbNzH5xCywXvmBPaMTjhH3DmmtFO+Fq
- qiRALv1gekguTlQ3oBsE+8jn5ANn+h49MofYlQX/U7by5dFKv98Tv14aBLdpbsypc/PH
- ahqtpbi8/GFt/Ib+3whIymw7tRG7HmuvHxRjoeSEUd/aowlX79xdy0XRUUgRBLw5+uMD
- Txc0yKF7HctqKC5R2JcKR2dfaVZKykie75ZRP3yt/+G8XZZE44eVX8WdU3A3raGoLzNU
- BiiQ==
+ bh=kShnARuTRPPZFlSFMm7BHRQXFKxgp6JyYFpoqdwp25M=;
+ b=PO9lUskA+t3618cesdXDDaP60c8lid93P7uNqkqhtagUj0L2esD3J0EhRiBrWoMYeR
+ 77xWx+tnkvC2ASo5nxNkfh1Q8CHd67YgzfaENGE1Y7Ya8CJnh18KzyBgROmqQV+eC0Rm
+ glhUTRAuKPBMjY4yWG/+cLtpnvOKo2yRXE8Fqw15/sfRVkpTnQkIh/YEWVswem24zYas
+ eklk5OM5QaDW+YT699vv4/tXDF8Q5QT0U4Q1uYeLNbOFnwo0KEgtJJeyGhyWYT+GzW60
+ uxsR79H/7zbXgw5TYItuEjXcBb4Dj7VB08n5tqPe9/2VjpGzkIOM8AHiOGQhIdQ31w4b
+ W5bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=GEuhmJt1EbG7eS8Znq+HuEo/CA/NDTjfu/Nxazhdm9Y=;
- b=gK9TMJ/3f9V+LDMyj6+b8Yz7GvsQWHp371+4atjcK9Paj5/Q7igsWNnRdrUYdN4XIn
- kNTNyrIP3wbn1LQifWFjQRCF/QJBnZ+v3+BxvxVbEYNFqffbTQIB+hxtSpTPmk/LSWY/
- xTRqSVIbguU5/fapeP2ivLD/U5VdbD0Mw0PR0xRSVPdQZs875K6dY6D1DfnFW5fut7/v
- bVUCM3DyK1NWWMt8Eu9S65cxo+NS6keZw7rAmc9puowrGAyQ1aDsAk+EnUKFzuIPJK58
- EDmcsgjIg/wLVmfAoiJzzPQkpSppFWJan1JoCP49JMozbRNAGEecIJj40dwRlnNwvS7t
- mA/w==
-X-Gm-Message-State: AOAM533YFHQB4yJJQibxB9hxZCCq443NCOo4KQCYc3d5StU53Q8OSRnA
- GGkiGt3YftSCJvwAdq6wePo=
-X-Google-Smtp-Source: ABdhPJzWPYfxHa1mpBqlglKHre7xfLAvWd+B/Cwy12NPxDJWKvtN2EajYm8K39U6M7nlGu41QZWWkg==
-X-Received: by 2002:adf:a486:: with SMTP id g6mr38845485wrb.130.1635330852262; 
- Wed, 27 Oct 2021 03:34:12 -0700 (PDT)
+ bh=kShnARuTRPPZFlSFMm7BHRQXFKxgp6JyYFpoqdwp25M=;
+ b=2zUDZgZ9ott4CD4z2OfCxlZ+6FWYJS3RNXoIecsqRPWKMrkojIaWvjJOLRL7ThlfmV
+ ApuSTC1HzwRQLSLHo4ZzFd+rqTqnGzZ2BG7rBjuQ6O+a5hi0unoh8Wxnwm2EnszKs1WT
+ wuJHeROJb3xx95ScjMyoVXX8G8qbnIvxalcXB0gSsxDl2U/9Tt9qIbK+6abf1PJN6MPS
+ 5NB7mClORK5RKSiKTQvj/BNP2ktiBmgvc6IZI4twgVTDwS/3essoKVPFBRe1S9Eqk641
+ +6QzmuG/tMiX/ih+y+/xgbEorinI58PREY7wqpOmewd1eeergYNpsc5pD9Ic5F6cM6P2
+ 8/1A==
+X-Gm-Message-State: AOAM532loEc/UB1woqrV4OaiBAqK+6JeVDJ32njcJF8GeSDNSG/T6h8U
+ Erk2nUdH0kkkcZ2y6Je/7U+EpA0lt6pe3A==
+X-Google-Smtp-Source: ABdhPJydBpbQVtRJStGXv54bTK9hMCpVvtAZ+RicKvbIWCFFtJ2igeaj2ZTHmERrN9jbpPREOxPqVw==
+X-Received: by 2002:a7b:c40b:: with SMTP id k11mr4746048wmi.116.1635330853509; 
+ Wed, 27 Oct 2021 03:34:13 -0700 (PDT)
 Received: from authentaworks.lxd (ip5f5be9ad.dynamic.kabel-deutschland.de.
  [95.91.233.173])
- by smtp.gmail.com with ESMTPSA id j10sm7140198wrx.94.2021.10.27.03.34.11
+ by smtp.gmail.com with ESMTPSA id j10sm7140198wrx.94.2021.10.27.03.34.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 Oct 2021 03:34:11 -0700 (PDT)
+ Wed, 27 Oct 2021 03:34:13 -0700 (PDT)
 From: shiva.linuxworks@gmail.com
 X-Google-Original-From: sshivamurthy@micron.com
 To: tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com,
  miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Shivamurthy Shastri <sshivamurthy@micron.com>
-Subject: [PATCH 3/4] mtd: add advanced protection and security ioctls
-Date: Wed, 27 Oct 2021 10:33:51 +0000
-Message-Id: <20211027103352.8879-4-sshivamurthy@micron.com>
+Subject: [PATCH 4/4] mtd: spi-nor: micron-st: add mt25qu128abb and mt25ql128abb
+Date: Wed, 27 Oct 2021 10:33:52 +0000
+Message-Id: <20211027103352.8879-5-sshivamurthy@micron.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211027103352.8879-1-sshivamurthy@micron.com>
 References: <20211027103352.8879-1-sshivamurthy@micron.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211027_033413_960462_075CA30C 
-X-CRM114-Status: GOOD (  13.25  )
+X-CRM114-CacheID: sfid-20211027_033415_102225_FCC8D3C0 
+X-CRM114-Status: GOOD (  10.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,200 +99,36 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-Added new ioctls for advanced protection and security features.
-These features are currently supported by new Micron SPI NOR flashes.
+Added new Micron SPI NOR flashes to structure flash_info, which supports
+advanced protection and security features.
 
 Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
 ---
- drivers/mtd/mtdchar.c      | 145 +++++++++++++++++++++++++++++++++++++
- include/uapi/mtd/mtd-abi.h |  11 +++
- 2 files changed, 156 insertions(+)
+ drivers/mtd/spi-nor/micron-st.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 155e991d9d75..97b97b80276d 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -654,6 +654,16 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	case MTDFILEMODE:
- 	case BLKPG:
- 	case BLKRRPART:
-+	case SECURE_PACKET_READ:
-+	case SECURE_PACKET_WRITE:
-+	case RD_VLOCK_BITS:
-+	case WR_VLOCK_BITS:
-+	case RD_NVLOCK_BITS:
-+	case WR_NVLOCK_BITS:
-+	case ER_NVLOCK_BITS:
-+	case RD_GLOBAL_FREEZE_BITS:
-+	case WR_GLOBAL_FREEZE_BITS:
-+	case RD_PASSWORD:
- 		break;
- 
- 	/* "dangerous" commands */
-@@ -1017,6 +1027,141 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		ret = 0;
- 		break;
- 	}
-+	case SECURE_PACKET_READ:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = kmalloc(buf.length, GFP_KERNEL);
-+		ret = master->_secure_packet_read(master, buf.length, oobbuf);
-+		if (copy_to_user(buf.ptr, oobbuf, buf.length))
-+			ret = -EFAULT;
-+		break;
-+	}
-+
-+	case SECURE_PACKET_WRITE:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = memdup_user(buf.ptr, buf.length);
-+		ret = master->_secure_packet_write(master, buf.length, oobbuf);
-+		break;
-+	}
-+
-+	case RD_VLOCK_BITS:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = kmalloc(buf.length, GFP_KERNEL);
-+		ret = master->_read_vlock_bits(master, buf.start, buf.length,
-+					       oobbuf);
-+		if (copy_to_user(buf.ptr, oobbuf, buf.length))
-+			ret = -EFAULT;
-+		break;
-+	}
-+
-+	case WR_VLOCK_BITS:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = memdup_user(buf.ptr, buf.length);
-+		ret = master->_write_vlock_bits(master, buf. start, buf.length,
-+						oobbuf);
-+		break;
-+	}
-+
-+	case RD_NVLOCK_BITS:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = kmalloc(buf.length, GFP_KERNEL);
-+		ret = master->_read_nvlock_bits(master, buf.start, buf.length,
-+						oobbuf);
-+		if (copy_to_user(buf.ptr, oobbuf, buf.length))
-+			ret = -EFAULT;
-+		break;
-+	}
-+
-+	case WR_NVLOCK_BITS:
-+	{
-+		struct mtd_oob_buf buf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		ret = master->_write_nvlock_bits(master, buf.start);
-+		break;
-+	}
-+
-+	case ER_NVLOCK_BITS:
-+	{
-+		ret = master->_erase_nvlock_bits(master);
-+		break;
-+	}
-+
-+	case RD_GLOBAL_FREEZE_BITS:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = kmalloc(buf.length, GFP_KERNEL);
-+		ret = master->_read_global_freeze_bits(master, buf.length,
-+						       oobbuf);
-+		if (copy_to_user(buf.ptr, oobbuf, buf.length))
-+			ret = -EFAULT;
-+		break;
-+	}
-+
-+	case WR_GLOBAL_FREEZE_BITS:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = memdup_user(buf.ptr, buf.length);
-+		ret = master->_write_global_freeze_bits(master, buf.length,
-+							oobbuf);
-+		break;
-+	}
-+
-+	case RD_PASSWORD:
-+	{
-+		struct mtd_oob_buf buf;
-+		u8 *oobbuf;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+
-+		oobbuf = kmalloc(buf.length, GFP_KERNEL);
-+		ret = master->_read_password(master, buf.length, oobbuf);
-+		if (copy_to_user(buf.ptr, oobbuf, buf.length))
-+			ret = -EFAULT;
-+		break;
-+	}
- 	}
- 
- 	return ret;
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index b869990c2db2..dbd7bf60d484 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -208,6 +208,17 @@ struct otp_info {
- /* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
- #define OTPERASE		_IOW('M', 25, struct otp_info)
- 
-+#define SECURE_PACKET_READ	_IOWR('M', 26, struct mtd_oob_buf)
-+#define SECURE_PACKET_WRITE	_IOWR('M', 27, struct mtd_oob_buf)
-+#define RD_VLOCK_BITS		_IOWR('M', 28, struct mtd_oob_buf)
-+#define WR_VLOCK_BITS		_IOWR('M', 29, struct mtd_oob_buf)
-+#define RD_NVLOCK_BITS		_IOWR('M', 30, struct mtd_oob_buf)
-+#define WR_NVLOCK_BITS		_IOWR('M', 31, struct mtd_oob_buf)
-+#define ER_NVLOCK_BITS		_IO('M', 32)
-+#define RD_GLOBAL_FREEZE_BITS	_IOWR('M', 33, struct mtd_oob_buf)
-+#define WR_GLOBAL_FREEZE_BITS	_IOWR('M', 34, struct mtd_oob_buf)
-+#define RD_PASSWORD		_IOWR('M', 35, struct mtd_oob_buf)
-+
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
-  * interfaces
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index b5d82e85fb92..2bebd76b091a 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -158,10 +158,17 @@ static const struct flash_info st_parts[] = {
+ 			      SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128,
+ 			      SECT_4K | SPI_NOR_QUAD_READ) },
++	{ "mt25qu128abb", INFO6(0x20bb18, 0x12008c, 64 * 1024,  256,
++				SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
++				SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
++				SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+ 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+ 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
++	{ "mt25ql128abb", INFO6(0x20ba18, 0x12008c, 64 * 1024,  256,
++				SECT_4K | USE_FSR | SPI_NOR_HAS_LOCK |
++				SPI_NOR_QUAD_READ) },
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+ 	{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512,
 -- 
 2.25.1
 
