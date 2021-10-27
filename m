@@ -2,82 +2,143 @@ Return-Path: <SRS0=tFGH=PP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14660C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 02:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C95C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 06:17:14 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D2D34610A3
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 02:04:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D2D34610A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9291760FBF
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 06:17:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9291760FBF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B1QtW89zXVHfi8omqgbvqb+rqSCiAt1hOcP0yXtxb7Y=; b=BHquplDexHKx+x
-	YQArXrYG6lhEShf/vfKbM4cE1FxQv1wGeh1TlYgQq67COO+k+psFj0k8mJJ8ec0/LUB7N63EJ4zJa
-	EWyDas3cR9MU9CZlzoXHpSt5IimGaGNzg5eCkpVy/f+2w0cvTBkK+LG/9hLPk5x5B0KEKGCNY4pVw
-	cvS/Up8Odfh0hqvh4EdxoD7ju2//t+FtBaF0x85RTecQZ1frXSYO0gNszFWh8kyYBwiwdNATgvkFf
-	em0vhYFRo3CF1rNJ/7163P8Ms6bdFpbkcNZuPFyLhuMbyDz5x473sMaReum9TdFJxQdTNTZRwAbHz
-	6XjsmpjrIJ0NtR2ICnWw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=XXmvJfQnhJVDBr37tayuiMgGyMF4nflv4dbCXgCN0nc=; b=tauQXNDMK8IplnD1dcjoJ8V2hT
+	jEy6QJcIwmK3wjXf5UuY2nsZg79P/nLidp+y0Tbvt/xZG5IcsBep15f4muInXGGhrWLktGy0lDiyP
+	fKCSSAjp2ZAOigu/umz53GnSSTTHbltmuuxNKuIph3XaE4ms+Ph/5SmaJ/QUxDJQAvgFxofRIf9rf
+	O9yTI572+8EhKJ4jOR44w3tNhkhAsAL+aa6TujX+XyokZiCvntxMtKQUKg2RqJtgaPU1mGTJMSeR4
+	kJ0UDPyrf0C9GHCT0IiTB7Lnz3tcozMcLdKYC/Pr9awiGyVm4UoaKFmV4xYKLUUgrwMhf11PjsXQ8
+	Dgga/eSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfYIh-003XuX-M2; Wed, 27 Oct 2021 02:04:23 +0000
-Received: from mail-qv1-xf34.google.com ([2607:f8b0:4864:20::f34])
+	id 1mfcEa-003zrA-Uj; Wed, 27 Oct 2021 06:16:25 +0000
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfYIb-003XtB-En
- for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 02:04:18 +0000
-Received: by mail-qv1-xf34.google.com with SMTP id c9so499367qvm.5
- for <linux-mtd@lists.infradead.org>; Tue, 26 Oct 2021 19:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=X8EX3z0PmgSLSoaGYAGZF7eObBwpILXqp8huU307IME=;
- b=Qrsyc+ohpF2siZtSmMi1YCLm6GxGzrPKiahppPPfqSASi5FB0z3pEJRxUiXcVbx6DR
- ysGGFVa0tOxD+Nclyhm6biH0NjzOlJ4y3cIWlew+slIMpm4zKw6juGvfejN2z0szd7Bo
- sotfLXixCgQ1XuUwq+O1157CMqlRW1SMQt+iCW2J6BydVqt4AbprRNo7QS4cwXfb21Di
- zsPeWR6edy+5vaYsj+zW1KPzKT5zhG9td8oh22fAH1zWQGMwPS/x/V4K/L2tuyLzHJ4h
- vFApcWvpP9dl7ZW5Zttb1yoEK9OoYmwqtT5QfEo/iDyDrH2GHnx6ROT8KlctzLII4vbo
- utaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=X8EX3z0PmgSLSoaGYAGZF7eObBwpILXqp8huU307IME=;
- b=l2FJRL5owyJ3nY1c6TX/XMFSmc3Jrwc08YEzANcY9QEp+2svAIhZQ4GIaQzFeaoJJn
- AgZFFT93VhtgndQg+IpsA/EZeYHjUh+lc2zDg7zVO5cFUHtwNhLwIYysfAi7fOOYeTIb
- axKf699myIPiJkykzkzi31s5U/IziROl6wfp8g7Heg2CQb8zKeqNm/OW8fgMlHH+vTfE
- ktFFobvC5zusTCnZeHaZNsSXLRvudTcUqnqw6I8ZQRKRUfrd3q2MKNY0TBUpLIIJDUtJ
- nJB8tdURFNRncFa1DDlysCzBd5kW1OxpOlhg39pm/hbqDJNxdxTpRspNn2K8xR+CQAQU
- dVRA==
-X-Gm-Message-State: AOAM531cxWBL9+UDuNu1Yaoi++ZyoGnOYD3Iot0KmvFBmOtUnyvttPuL
- gxhIltkXZCiOscbt8KlJ+I4=
-X-Google-Smtp-Source: ABdhPJxVlyTrQW3mxBiQDNz0Lvsofh5wR4Ka60k9U9P0iS6Me6klaMMMPkWs+YedERxETtzRS48rWQ==
-X-Received: by 2002:a05:6214:1ccb:: with SMTP id
- g11mr26661052qvd.64.1635300255952; 
- Tue, 26 Oct 2021 19:04:15 -0700 (PDT)
-Received: from atari.nover ([189.6.36.155])
- by smtp.gmail.com with ESMTPSA id m17sm12145838qtx.62.2021.10.26.19.04.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Oct 2021 19:04:15 -0700 (PDT)
-From: Wagner Popov dos Santos <wpopov@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: wpopov@gmail.com
-Subject: [PATCH 2/2] jffs2: solving deadlock on sync function
-Date: Tue, 26 Oct 2021 23:03:39 -0300
-Message-Id: <20211027020339.65303-2-wpopov@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211027020339.65303-1-wpopov@gmail.com>
-References: <20211027020339.65303-1-wpopov@gmail.com>
+ id 1mfcEX-003zqE-NS; Wed, 27 Oct 2021 06:16:23 +0000
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QIJftj012181; 
+ Wed, 27 Oct 2021 08:10:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=q0IzamWoBnMLIIIWgH1c6YZ0YARVpDAlAywCoCd8O6A=;
+ b=pLut+GxRqLoEwutxmEsKmT0U9f6n8Czu59GaLbziADOMwtznLgQUZ54Gw0mFG30LzTFI
+ mAf8pn9K9k2l9XDGD8kyB8y+cnm5BmAO3YB00+gyy/yFMSCCO5HF8/PQ6lATeCubYrNt
+ DdiIwe9I6oNJ1LpNKfJ0tNMiodtkGtIRzCLDVOx9JfwIBUGTkeKgOf8Hru+PdxHSGGIB
+ WmjLMAKdFPGg4+kJmvUsa+tgl9tTdDraTeFW116MnoqgEuCPXI2gblkV13eeEpJbnLHW
+ 9gSaSeXE68XwgQBNQi7Ez8d68t00m5nmdGyM96U93gZ2aaDRvaLknKJ4aiI1DjaFKmGE dQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com with ESMTP id 3bxputjet7-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 27 Oct 2021 08:10:55 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6E078100044;
+ Wed, 27 Oct 2021 08:10:46 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A09DC21810A;
+ Wed, 27 Oct 2021 08:10:46 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
+ 2021 08:10:43 +0200
+Subject: Re: dt-bindings: treewide: Update @st.com email address to
+ @foss.st.com
+To: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, Rob Herring
+ <robh+dt@kernel.org>, maxime coquelin <mcoquelin.stm32@gmail.com>,
+ "alexandre torgue" <alexandre.torgue@foss.st.com>, michael turquette
+ <mturquette@baylibre.com>, stephen boyd <sboyd@kernel.org>, herbert xu
+ <herbert@gondor.apana.org.au>, "david s . miller" <davem@davemloft.net>,
+ david airlie <airlied@linux.ie>, daniel vetter <daniel@ffwll.ch>, "thierry
+ reding" <thierry.reding@gmail.com>, sam ravnborg <sam@ravnborg.org>,
+ "yannick fertre" <yannick.fertre@foss.st.com>, philippe cornu
+ <philippe.cornu@foss.st.com>, benjamin gaignard
+ <benjamin.gaignard@linaro.org>,
+ vinod koul <vkoul@kernel.org>, ohad ben-cohen <ohad@wizery.com>,
+ bjorn andersson <bjorn.andersson@linaro.org>, baolin wang
+ <baolin.wang7@gmail.com>, jonathan cameron <jic23@kernel.org>, "lars-peter
+ clausen" <lars@metafoo.de>, olivier moysan <olivier.moysan@foss.st.com>,
+ arnaud pouliquen <arnaud.pouliquen@foss.st.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>, Jassi Brar
+ <jassisinghbrar@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>, Fabrice Gasnier
+ <fabrice.gasnier@foss.st.com>, Lee Jones <lee.jones@linaro.org>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Jakub Kicinski <kuba@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mathieu Poirier
+ <mathieu.poirier@linaro.org>, Matt Mackall <mpm@selenic.com>, "Alessandro
+ Zummo" <a.zummo@towertech.it>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, Viresh Kumar <viresh.kumar@linaro.org>, "Ahmad
+ Fatoum" <a.fatoum@pengutronix.de>, Jagan Teki <jagan@amarulasolutions.com>,
+ dillon min <dillon.minfei@gmail.com>, Marek Vasut <marex@denx.de>, "Laurent
+ Pinchart" <laurent.pinchart@ideasonboard.com>, Sebastian Reichel
+ <sre@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Fabien Dessenne <fabien.dessenne@foss.st.com>,
+ Christophe Roullier <christophe.roullier@foss.st.com>, Gabriel Fernandez
+ <gabriel.fernandez@foss.st.com>,
+ Lionel Debieve <lionel.debieve@foss.st.com>,
+ Amelie Delaunay <amelie.delaunay@foss.st.com>, Pierre-Yves MORDRET
+ <pierre-yves.mordret@foss.st.com>,
+ Ludovic Barre <ludovic.barre@foss.st.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>, pascal Paillet
+ <p.paillet@foss.st.com>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, "Jose
+ Abreu" <joabreu@synopsys.com>, Le Ray <erwan.leray@foss.st.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+ <dmaengine@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+ <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+ <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <netdev@vger.kernel.org>,
+ <linux-phy@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+ <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+ <linux-usb@vger.kernel.org>, <linux-watchdog@vger.kernel.org>
+References: <20211020065000.21312-1-patrice.chotard@foss.st.com>
+ <22fb6f19-21eb-dcb5-fa31-bb243d4a7eaf@canonical.com>
+From: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <e8ddc63b-a0b5-79ae-6aff-19810cf74920@foss.st.com>
+Date: Wed, 27 Oct 2021 08:10:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <22fb6f19-21eb-dcb5-fa31-bb243d4a7eaf@canonical.com>
+Content-Language: en-US
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_01,2021-10-26_01,2020-04-07_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211026_190417_518640_841DF30A 
-X-CRM114-Status: GOOD (  14.62  )
+X-CRM114-CacheID: sfid-20211026_231622_093336_CDDD453E 
+X-CRM114-Status: GOOD (  17.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,46 +155,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Correcting AB-BA deadlock in jffs2_fsync() involving alloc_sem
-semaphore and inodes.
+Hi Krzysztof
 
-The function jffs2_fsync() can't lock the inode because some
-process, or even the same process, that call the CG will acquire
-alloc_sem semaphore and will try to acquire the inode if it is
-inside the Erase Block that is marked to be processed.
+On 10/20/21 9:45 AM, Krzysztof Kozlowski wrote:
+> On 20/10/2021 08:50, patrice.chotard@foss.st.com wrote:
+>> From: Patrice Chotard <patrice.chotard@foss.st.com>
+>>
+>> Not all @st.com email address are concerned, only people who have
+>> a specific @foss.st.com email will see their entry updated.
+>> For some people, who left the company, remove their email.
+>>
+> 
+> Please split simple address change from maintainer updates (removal,
+> addition).
 
-Fixes: 02c24a82187d ("fs: push i_mutex and filemap_write_and_wait down into ->fsync() handlers")
+ok
 
-Signed-off-by: Wagner Popov dos Santos <wpopov@gmail.com>
----
- fs/jffs2/file.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> Also would be nice to see here explained *why* are you doing this.
 
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 7d8654a1472e..7f139704cb8d 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -39,10 +39,14 @@ int jffs2_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
- 	if (ret)
- 		return ret;
- 
--	inode_lock(inode);
--	/* Trigger GC to flush any pending writes for this inode */
-+	/* Trigger GC to flush any pending writes for this inode
-+	 *
-+	 * We need to leave the inode unlocked to avoid a deadlock condition
-+	 * because the function jffs2_garbage_collect_pass() can try to lock
-+	 * the same inode if it is inside the erase block that GC is
-+	 * processing.
-+	 */
- 	jffs2_flush_wbuf_gc(c, inode->i_ino);
--	inode_unlock(inode);
- 
- 	return 0;
- }
--- 
-2.20.1
+Our @foss.st.com address are dedicated for upstream activities, 
+i will add a comment about this.
 
+Thanks
+Patrice
+
+> 
+> Best regards,
+> Krzysztof
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
