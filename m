@@ -2,147 +2,93 @@ Return-Path: <SRS0=tFGH=PP=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81449C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 06:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A23BBC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 07:18:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 439A460FBF
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 06:17:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 439A460FBF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5906B60F9B
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Oct 2021 07:18:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5906B60F9B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=qtRqEWdJRMAk4G10Ym14jsd5uM8UI9lBe093Nq4T6xM=; b=FOS/RFqVveYJ1t1bdSwCYdcFau
-	btDivi5HYq08Tx+N0jKp7gi9gJNg1ukh32i3CpmFwXWzbFXZmGeZhypW05KjRnmjOttEJdhkIqHLd
-	1pKrMfO/nzRg/sWYH93PzoVZz7GeaXBdFWUmgeBNvyDQCZFHpqePw5V6qbK48JWAfeKj4Gr4GBcfY
-	kqtfpEhwU5WPT8K3/jhBtxR4rjGXiOrLWlPIdeKO5D9avhxCffOcWn/kpEkADKUvHtK4R0NMRvYb4
-	ZrbYwGyglCcK5nmkP1CXdiOMoH6vE7K0d1aS/iQLt7VJYLGVzAPqnt/5OuimOZSndU38EDQKYYdz1
-	ASR1YgjA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9WO7lGji+mZkos/zOSUQe0Tg1s0ZCl0vxJGArJefA78=; b=3QqhskfP+9Qm60
+	5sd+TpXMrFBNQkkDgBVvuhyATDP//PNeaKCwwh/nd3DO4HB8iyJqcxllWOp/Gb6umsahXcfdH+2AS
+	IBH1j5ZmhYqzCF6G9AGP1Np02NJlmxpZpbkiZuj8heVWtk8V+hMFx38RXAOHBcTvUEfViTkXRjBF0
+	FxfeX68IQuz92T/l/xP0TjwrsJ0AX07VV36hWN5JUGLpoZxye3JiH5ZHSu0O4M0IIH/Z1xnW1HgBa
+	rIvExHyiWutk8vZQoW9sIe6VNtpwDreyX6CqQDbBd0UGrAyFjZ5bef5nzbpG8So7MFYfFN8F5I7MU
+	/WPJ3/lSlDsmE7rYA5Nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mfcF7-003zvn-BA; Wed, 27 Oct 2021 06:16:57 +0000
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+	id 1mfdCD-00481e-PC; Wed, 27 Oct 2021 07:18:01 +0000
+Received: from mail-vk1-f179.google.com ([209.85.221.179])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mfcF3-003zu8-AR; Wed, 27 Oct 2021 06:16:54 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QIJReu011037; 
- Wed, 27 Oct 2021 08:11:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=nT19xZKAS1g6Wr2Uc3j1zTC0eEqLF61U2hb0csAByE8=;
- b=qpkz848/RtyF6rGQB646MxF7l3lRxh06i/JQDEq4QXdNf0bBls4oIzPKu9hJoks6f/Qu
- zZ5EPSZzQPRMBZmURzYyXHIGJHoV4pRjFM5QrtfySALfgLuclLRwFWXOohJuaq9ZdXXU
- 1A/tvhP9HqzAkj7qPpIoRWuTrxgBM2xIlkxBQmQxMEry3YegaYhl15hpEr+uFaZRHM09
- G2djmdsXb1j1BFg4VMmDFOY0NS6CiVjZ+SJVVgVnIEPs22BxO+HytLu9jDmcsJjCYtyk
- jzPyozDJ9b4xRK9AsLTKfGq8y+d1KoyRnwgOYG+KGwS3rDJRaK+8FSk1qCrfTltXZ7Qd XQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com with ESMTP id 3bxputjf0c-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Oct 2021 08:11:51 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0ACD410002A;
- Wed, 27 Oct 2021 08:11:49 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E23C3218104;
- Wed, 27 Oct 2021 08:11:48 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.51) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
- 2021 08:11:45 +0200
-Subject: Re: dt-bindings: treewide: Update @st.com email address to
- @foss.st.com
-To: Marc Zyngier <maz@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski@canonical.com>
-CC: Rob Herring <robh+dt@kernel.org>, maxime coquelin
- <mcoquelin.stm32@gmail.com>,
- alexandre torgue <alexandre.torgue@foss.st.com>,
- michael turquette <mturquette@baylibre.com>,
- stephen boyd <sboyd@kernel.org>, herbert xu <herbert@gondor.apana.org.au>,
- "david s . miller" <davem@davemloft.net>,
- david airlie <airlied@linux.ie>, daniel vetter <daniel@ffwll.ch>,
- thierry reding <thierry.reding@gmail.com>, sam ravnborg <sam@ravnborg.org>,
- yannick fertre <yannick.fertre@foss.st.com>, "philippe
- cornu" <philippe.cornu@foss.st.com>, benjamin gaignard
- <benjamin.gaignard@linaro.org>,
- vinod koul <vkoul@kernel.org>, ohad ben-cohen <ohad@wizery.com>,
- bjorn andersson <bjorn.andersson@linaro.org>, baolin wang
- <baolin.wang7@gmail.com>, jonathan cameron <jic23@kernel.org>, "lars-peter
- clausen" <lars@metafoo.de>, olivier moysan <olivier.moysan@foss.st.com>,
- arnaud pouliquen <arnaud.pouliquen@foss.st.com>, Thomas Gleixner
- <tglx@linutronix.de>, Jassi Brar <jassisinghbrar@gmail.com>,
- "Mauro Carvalho Chehab" <mchehab@kernel.org>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>,
- Fabrice Gasnier <fabrice.gasnier@foss.st.com>, Lee Jones
- <lee.jones@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, "Richard
- Weinberger" <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Kishon Vijay Abraham I <kishon@ti.com>,
- Linus Walleij <linus.walleij@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mathieu Poirier
- <mathieu.poirier@linaro.org>, Matt Mackall <mpm@selenic.com>, "Alessandro
- Zummo" <a.zummo@towertech.it>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Viresh Kumar <viresh.kumar@linaro.org>, "Ahmad
- Fatoum" <a.fatoum@pengutronix.de>, Jagan Teki <jagan@amarulasolutions.com>,
- dillon min <dillon.minfei@gmail.com>, Marek Vasut <marex@denx.de>, "Laurent
- Pinchart" <laurent.pinchart@ideasonboard.com>, Sebastian Reichel
- <sre@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Paul Cercueil <paul@crapouillou.net>,
- Fabien Dessenne <fabien.dessenne@foss.st.com>,
- Christophe Roullier <christophe.roullier@foss.st.com>, Gabriel Fernandez
- <gabriel.fernandez@foss.st.com>,
- Lionel Debieve <lionel.debieve@foss.st.com>,
- Amelie Delaunay <amelie.delaunay@foss.st.com>, Pierre-Yves MORDRET
- <pierre-yves.mordret@foss.st.com>,
- Ludovic Barre <ludovic.barre@foss.st.com>,
- Christophe Kerello <christophe.kerello@foss.st.com>, pascal Paillet
- <p.paillet@foss.st.com>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, "Jose
- Abreu" <joabreu@synopsys.com>, Le Ray <erwan.leray@foss.st.com>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-clk@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <dmaengine@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
- <linux-i2c@vger.kernel.org>, <linux-iio@vger.kernel.org>,
- <alsa-devel@alsa-project.org>, <linux-media@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <netdev@vger.kernel.org>,
- <linux-phy@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
- <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <linux-pm@vger.kernel.org>,
- <linux-usb@vger.kernel.org>, <linux-watchdog@vger.kernel.org>
-References: <20211020065000.21312-1-patrice.chotard@foss.st.com>
- <22fb6f19-21eb-dcb5-fa31-bb243d4a7eaf@canonical.com>
- <878ryoc4dc.wl-maz@kernel.org>
-From: Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <82492eb2-5a5e-39a2-a058-5e2ba75323e0@foss.st.com>
-Date: Wed, 27 Oct 2021 08:11:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ id 1mfdC6-0047zo-Ea
+ for linux-mtd@lists.infradead.org; Wed, 27 Oct 2021 07:18:00 +0000
+Received: by mail-vk1-f179.google.com with SMTP id d128so357196vkf.11
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 00:17:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=m3UqDuembNDHkRgC1yENIlEFdMz5fJYXnnqTuaz01pQ=;
+ b=0Izt9/dP7r0MgvB/pvXpwGNEu53J1Zq9jZTz60QZQo8tavelWFDoTzS+PWA+qxDnS+
+ SA6sg7v631Zos2IE52myhv9O9PFCYNxAX38gXLbihWcwrof4lyxlHmE+Yr84PfQVsPLJ
+ nKYqcTokkQrVRkwo9+jPl9S1DDU8ulGgBx7E2LigipPjZO+FJookrEbikxfe5ZMp8ls3
+ oFwgx+iwXSrEAYr0rXuI/V3BH4AzewoSOwrpYN8IXcxxbQ5ys4wKYaJDcTcdifF+FD+X
+ ox46fVHAX/UX4PJQjd/3RWgDyL+jnbmTL5P/poTKEpeP9Ug5Y1NXmxpeQvvR/SMXinR1
+ OtBg==
+X-Gm-Message-State: AOAM530CQExxZNzfd3LF9De9rEQL4ogqkzhrePXqvSnNSUdoxVZ9+kKw
+ pw/aPLAxkEI1N/eh3pvYDfCVxIPf69IWlA==
+X-Google-Smtp-Source: ABdhPJwEFeYj7r4UB1g+mer2UR1VqQhEeBEslwrtmFpQDvUYVf3gaZqRdNWHmN9YDDrajZw0FsJDvg==
+X-Received: by 2002:a05:6122:8d6:: with SMTP id
+ 22mr28549527vkg.21.1635319072315; 
+ Wed, 27 Oct 2021 00:17:52 -0700 (PDT)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com.
+ [209.85.221.171])
+ by smtp.gmail.com with ESMTPSA id p69sm553436uap.1.2021.10.27.00.17.50
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 27 Oct 2021 00:17:50 -0700 (PDT)
+Received: by mail-vk1-f171.google.com with SMTP id bc10so922443vkb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Oct 2021 00:17:50 -0700 (PDT)
+X-Received: by 2002:a1f:1841:: with SMTP id 62mr27839915vky.26.1635319070166; 
+ Wed, 27 Oct 2021 00:17:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <878ryoc4dc.wl-maz@kernel.org>
-Content-Language: en-US
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_01,2021-10-26_01,2020-04-07_01
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211025205631.21151-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 27 Oct 2021 09:17:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUjsVRwB0_TH5HD8CrPsM15K1RLatP_ABODMe2bQ4C2ow@mail.gmail.com>
+Message-ID: <CAMuHMdUjsVRwB0_TH5HD8CrPsM15K1RLatP_ABODMe2bQ4C2ow@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] memory: renesas-rpc-if: Return error in case
+ devm_ioremap_resource() fails
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>, 
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Prabhakar <prabhakar.csengg@gmail.com>, 
+ Biju Das <biju.das.jz@bp.renesas.com>, Chris Brandt <Chris.Brandt@renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211026_231653_683316_72C4B435 
-X-CRM114-Status: GOOD (  18.86  )
+X-CRM114-CacheID: sfid-20211027_001754_509602_7211AB5D 
+X-CRM114-Status: GOOD (  23.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -159,36 +105,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Marc
+Hi Prabhakar,
 
-On 10/20/21 1:39 PM, Marc Zyngier wrote:
-> On Wed, 20 Oct 2021 08:45:02 +0100,
-> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On 20/10/2021 08:50, patrice.chotard@foss.st.com wrote:
->>> From: Patrice Chotard <patrice.chotard@foss.st.com>
->>>
->>> Not all @st.com email address are concerned, only people who have
->>> a specific @foss.st.com email will see their entry updated.
->>> For some people, who left the company, remove their email.
->>>
->>
->> Please split simple address change from maintainer updates (removal,
->> addition).
->>
->> Also would be nice to see here explained *why* are you doing this.
-> 
-> And why this can't be done with a single update to .mailmap, like
-> anyone else does.
+CC seebe
 
-Thanks for the tips, yes, it will be simpler.
+On Mon, Oct 25, 2021 at 10:57 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Make sure we return error in case devm_ioremap_resource() fails for dirmap
+> resource.
+>
+> Fixes: ca7d8b980b67 ("memory: add Renesas RPC-IF driver")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Thanks
-Patrice
+Thanks for your patch!
 
-> 
-> 	M.
-> 
+> --- a/drivers/memory/renesas-rpc-if.c
+> +++ b/drivers/memory/renesas-rpc-if.c
+> @@ -243,7 +243,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
+>         res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
+>         rpc->dirmap = devm_ioremap_resource(&pdev->dev, res);
+>         if (IS_ERR(rpc->dirmap))
+> -               rpc->dirmap = NULL;
+> +               return PTR_ERR(rpc->dirmap);
+
+IIRC, it was intentional to make the dirmap optional (because the
+device can be used without and/or because some variants on other SoCs
+lack it?).  Unfortunately this is not reflected in the DT bindings
+(yet?).  All code using the dirmap does check if rpc->dirmap is
+valid first.
+
+>         rpc->size = resource_size(res);
+>
+>         rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
