@@ -2,14 +2,14 @@ Return-Path: <SRS0=emv8=PQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FE48C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:26:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8624C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:27:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3CB8E610A4
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:26:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3CB8E610A4
+	by mail.kernel.org (Postfix) with ESMTPS id AE72560E8F
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:27:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AE72560E8F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,69 +18,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rKBt2HZ9TkjtEOmpV1/sOf8yzBQU4z52TQsQ7B10dyI=; b=QgPht4yySWc9RU
-	HSLY5MFPzUb1jEe8eM7JbmGDDwBCNrf4f5mIgx53PMkabLtHOk/QJn2cmwGjuHsniWCmgLZgBgbTX
-	akkm9Uwd991FQWaJ+d03Dy37WjTf8kAXJqEsla6EYqtA/gVUCR0EOaXJ5X99Zrcb32bzBzbwxdaOw
-	RDsvjSxmqKR1qArHLcqUbB0jXyUmGZzOdUsI2n04oqUPQRhVxn2Yt0CFdqME369kwFqrAKX38PJ6b
-	Iity2UcbWP3JiqbS5PM4hafxauvORBl0krSAsaj/GwxsUrRusHJCAHLGP4Wi9BE0bEHQNfYlgicoH
-	Kf+mSNYjD/9thvkUOQNg==;
+	List-Owner; bh=IOdbgsuacFPSfBwxb4SrsrnUfcX/+KJTaWmikmLoKWc=; b=yLv0xzdVH05Vr1
+	8LNsQgwfwR8lzf2ekqlFUIO4MdC4CMPsH85QzH8BJ/IVslfEWddg1TbwNZ+fgjULuvI+GCKhx32Ha
+	pVAFmzkiN/TSYgZgF9Hum3oDbtWdBdu3eK9VAmBB0vnMDvRM32QIgTFV9tEnxtxJjPnaOZTMoUk6d
+	mFlKt7jdotFN2ntp2hAxsnlf5fcrgzDuY60H2LX4cbOo3jvs0L0XRf9Prlzf/SaR5SFukehljxq8e
+	JYttR3UfotiKAWrtm2uV8yFfFfmFr1sqmfDyKA1/BU2jzMjkSe4rY2XsiWl3DPbT+UztiTydlZSGS
+	y8uKNPJn4edalPZq09Zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgCty-0097tJ-Oa; Thu, 28 Oct 2021 21:25:34 +0000
-Received: from mail-ot1-f48.google.com ([209.85.210.48])
+	id 1mgCul-0097xQ-2w; Thu, 28 Oct 2021 21:26:23 +0000
+Received: from mail-ot1-f53.google.com ([209.85.210.53])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgCtv-0097sq-O4
- for linux-mtd@lists.infradead.org; Thu, 28 Oct 2021 21:25:32 +0000
-Received: by mail-ot1-f48.google.com with SMTP id
- x27-20020a9d459b000000b0055303520cc4so10496437ote.13
- for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2021 14:25:30 -0700 (PDT)
+ id 1mgCui-0097wm-F8
+ for linux-mtd@lists.infradead.org; Thu, 28 Oct 2021 21:26:21 +0000
+Received: by mail-ot1-f53.google.com with SMTP id
+ v2-20020a05683018c200b0054e3acddd91so10546658ote.8
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2021 14:26:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=q+wb9pAO3Q7/CorDpYBYPsQ7RQNJbzYpLrTDXU36ZuM=;
- b=wOVp3tZRiJKRqu6QO9xaMfgVH3zwgwPFDRbYG2arBGi0WsysRIwMlvXsndEnz7hUcL
- aZhFSVjDT8uwGCFHgsm4zfyvfWYY7a/YM09O8Q16iNbXL64yrtzHw1zyDHgdHvVVeb78
- WXUIovPo/J3G0qNStJhHJQA1WCy8sXNvTZIt0Hk2El3gPR0J3Ffc7dl9T7ZkAyoD+oKQ
- 54EW0XvwNsu5WpQQS0cxpvzAfWRm8Do900xrX09tQcj5N0CgfssdyaOU9J/NPkWiyctF
- G5tMSSPK2yVafg0xBb+gTA25jmZKuH1JxuDG+GFcGxo4Y8895V4a68hISlCNWTlNW8fR
- X4TQ==
-X-Gm-Message-State: AOAM531g0USfjlw6M8az7VK/6YCAjnxrKMuI2guEL7JjwfEpzhk9/vTD
- tDcs8W8cND5f6NOGxDszwg==
-X-Google-Smtp-Source: ABdhPJypFdc9331gl6AA1rnDnur8ut7w6EDbKwn/w23/osjkVNOViyhLs596mXdi0yYiX4C5Pu/1oQ==
-X-Received: by 2002:a05:6830:232b:: with SMTP id
- q11mr5660195otg.164.1635456330441; 
- Thu, 28 Oct 2021 14:25:30 -0700 (PDT)
+ bh=dshGJTXKhxAlRxDf0FyX5GlWtlY3Ecc9O706tlW+d0s=;
+ b=I11K+6KQ3oO0hiGwyKsMB2m+u5sIfj307Ruq2Myw0C+mirEIg9XBt25Qz4VwRBsP3s
+ wBDuXr8AchKqLazBZZediB7QFxdozLicBdenD+YgmFvQU8XwQ6s2VlETfiHfOA+1tOuB
+ dbXBv+TzSyBHFt/vDIefv11hpD/foH/avrDsN6Cb7o/ERcIMr3xd2JKg5oNzsCIN5xMg
+ 7CBt2UHdfAy24WJKEfHSqIBjoCvm1RFV6htYUqta9M92pTZB3Yk8cN2Xr/7VhjmxSEoU
+ UTTUWHkNMAOnoln2DtrqWvKLp/L/oG5nFyRC1c4rER7B6Dq8IPjZfMKJ/opns4RK13sh
+ Mvog==
+X-Gm-Message-State: AOAM5327SFDGXbgJcTmCRzo+bY3Br7+xKKYNHX7sE6A3mY7xczRAym3N
+ 9aGuSVCpELCfy2ZZSdMufA==
+X-Google-Smtp-Source: ABdhPJy3nAR6IwXfr5ce0NJ1RbxUXtRHrIb5BQhVH6kbqcnF6WXBWOQHEeB1ZutHwDV4jQn45hpiTQ==
+X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr5525992ota.337.1635456379145; 
+ Thu, 28 Oct 2021 14:26:19 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id z8sm1248084oof.47.2021.10.28.14.25.29
+ by smtp.gmail.com with ESMTPSA id i13sm1345977oik.6.2021.10.28.14.26.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Oct 2021 14:25:29 -0700 (PDT)
-Received: (nullmailer pid 613503 invoked by uid 1000);
- Thu, 28 Oct 2021 21:25:28 -0000
-Date: Thu, 28 Oct 2021 16:25:28 -0500
+ Thu, 28 Oct 2021 14:26:18 -0700 (PDT)
+Received: (nullmailer pid 614889 invoked by uid 1000);
+ Thu, 28 Oct 2021 21:26:17 -0000
+Date: Thu, 28 Oct 2021 16:26:17 -0500
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+Cc: linux-mtd@lists.infradead.org,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
- Jaime Liao <jaimeliao@mxic.com.tw>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Julien Su <juliensu@mxic.com.tw>
-Subject: Re: [PATCH 01/18] dt-bindings: mtd: nand-controller: Fix the reg
- property description
-Message-ID: <YXsVSIuS0/LOqnUH@robh.at.kernel.org>
+ Boris Brezillon <boris.brezillon@collabora.com>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ Julien Su <juliensu@mxic.com.tw>, Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 02/18] dt-bindings: mtd: nand-controller: Fix a comment
+ in the examples
+Message-ID: <YXsVeTmJBWnrWysb@robh.at.kernel.org>
 References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-2-miquel.raynal@bootlin.com>
+ <20211020142809.349347-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20211020142809.349347-3-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211028_142531_811359_68DF4746 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20211028_142620_528322_2E2DDEEB 
+X-CRM114-Status: GOOD (  12.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,12 +95,12 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Oct 2021 16:27:52 +0200, Miquel Raynal wrote:
-> The reg property of a NAND device always references the chip-select(s).
-> The ready/busy lines are described in the nand-rb property. I believe
-> this was a harmless copy/paste error during the conversion to yaml.
+On Wed, 20 Oct 2021 16:27:53 +0200, Miquel Raynal wrote:
+> The controller properties should be in the controller 'parent' node,
+> while properties in the children nodes are specific to the NAND
+> *chip*. This error was already present during the yaml conversion.
 > 
-> Fixes: 212e49693592 ("dt-bindings: mtd: Add YAML schemas for the generic NAND options")
+> Fixes: 2d472aba15ff ("mtd: nand: document the NAND controller/NAND chip DT representation")
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
 >  Documentation/devicetree/bindings/mtd/nand-controller.yaml | 2 +-
