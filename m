@@ -2,14 +2,14 @@ Return-Path: <SRS0=emv8=PQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F20B4C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 187FCC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:33:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C330960FF2
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C330960FF2
+	by mail.kernel.org (Postfix) with ESMTPS id DEA5D60FE3
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:33:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DEA5D60FE3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,67 +18,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8QBGGNBOLNoEULzl8A8YGrPDbBMMPSZzVTjp6j8lX30=; b=2OyPT+9W11D2GD
-	nMZc36QzA8QqSaXJo6WrbWv7aS5JNnltqqb6gyoE/bO5PYFlhAgQPcHOILH/IPmrfX9MeY+kz9dPW
-	jXKz7EdFpjg7RGnDy2JzRfHNI/vGA+9cV+n0AIPu/LUtY3Fjk5nYtCQWhGKGza7h6WVvbxoOwIr0w
-	38OozKyPkhLJbBYSQW/YKG5FDla9QOw6Kk25qVRJpzIyFU5xi5lvQ8q8XKUHXsIFpjl1GXOoHav2i
-	pQBGDhEIbGHigroNcOuxp5Gz/xSAEy+wg2l5BNmMBcHiO5T4JmTBw6jRcAoq2UN/iAaIsIFGKxHvS
-	ffJMyNrGjVMehrxlM6wg==;
+	List-Owner; bh=dYYl3fzUVOAuzMGSC3SffMjKzVkebc6XIGW85eOfmTo=; b=lm04B1mJfm3Z5R
+	Uj5J5xRFefGmgHC4k89o8tR4o5Y1vLr4ev7nZbWBfugVLg3Ysix5iy4bsosDRVaCHRm1RppMlJVH1
+	oqriQdsR8lEnfWOO27Gy1Kt0vibF3O0UUclOULe4y9TNmkyDs1IvRFg7PmzcgrOEIYWDoR8Ak8UM3
+	0DvE0nnPJMzJOuUEcR9BA09YABMGOaO0zOR/oDgNzux7vleHqi2SHMrqGS7ZZ/O6dVZjjMuqzLQnm
+	XToVv7wufBnSaVqDaL2CEwO1cXZQnUfEDZsvqhmj2W5Fw809ULgW6Qm5rhAX82w+yUJqWFz9/Poie
+	l3nFUf7UxEbNtCmYKAVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgCzl-0098lF-9f; Thu, 28 Oct 2021 21:31:33 +0000
-Received: from mail-oi1-f172.google.com ([209.85.167.172])
+	id 1mgD0N-0098uE-Gp; Thu, 28 Oct 2021 21:32:11 +0000
+Received: from mail-oi1-f178.google.com ([209.85.167.178])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgCzh-0098kI-Pk
- for linux-mtd@lists.infradead.org; Thu, 28 Oct 2021 21:31:31 +0000
-Received: by mail-oi1-f172.google.com with SMTP id q124so10272298oig.3
- for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2021 14:31:29 -0700 (PDT)
+ id 1mgD0K-0098t9-Fr
+ for linux-mtd@lists.infradead.org; Thu, 28 Oct 2021 21:32:09 +0000
+Received: by mail-oi1-f178.google.com with SMTP id g125so10256902oif.9
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2021 14:32:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=h+qPtDQaqseg1rU0SAu/DvoYp4TWdxNR8dGfzDgYPBA=;
- b=6YSCr6waWFjmbH8c2lbyyi/sq/sjR6ZH/lTNsXTr2DSYWfvQ/Q7IVFwpiUfPFsPAvo
- 8IrS2WmRUmYzXupqvxoBAY0Inwd2X4VmUaUAzfkO7Lh20y3tqv/93qiujfk9mZhJ9ERa
- CdAy2Ut5ZBc831MxziAaYW2oAHo1NIp6NRCAE/PS8i0v5IQkdhbsVzSAYJLOGqKUYrYz
- EF4RRjYo21qfl1yXabv62LpHJW7yhYT2z4dtF5vStYXS993V9r4FC5X46wULzw97omJK
- pUOtB/cf24N4QiSiroVLuMSDgJyA0zTFCwZEFT17eqSCevd2yl1kuK3/V0KMZJXKFx83
- KzKw==
-X-Gm-Message-State: AOAM530s9R9tTEiPUrz4ldP4epJbjXWJknvKvV/WBBhC+m2aL4/yh1OB
- aLGtPvPx1w8gp5momA07vg==
-X-Google-Smtp-Source: ABdhPJyn0uHM4S3b450KWKg+1utYRpqTm/tyjiH0wlvami17ti2zOIj1hgx4YhMjMlXM5T6rdPTGeg==
-X-Received: by 2002:aca:7c3:: with SMTP id 186mr5241810oih.60.1635456688810;
- Thu, 28 Oct 2021 14:31:28 -0700 (PDT)
+ bh=pV+lYlLAx38YX42772eORjOf2v8z4XTyW8SH1ArbmLs=;
+ b=h0VCzEJSbmcMuRVY1+jeO3jf8/bA6IuuZlebspv7VpqaHXeJAFxaisBkvRnVDxtYhk
+ nd7D67oPEm5azwUonHnnzVl/ybhqG4i+dof6EbYzDzKGJJhazkdwAq+P0pzD6XEp1d9r
+ mLu1nrv6h5pGB+AjLIr/6RJ6mVWSW5x/mRjz7+VVIu23l5Vz7V9cDg+Buc7pWKrBNgaW
+ RQ3TrTdfJ74cLU4Ev8IVcPuFdhBwbCvPzNfzOiYYDIDhydLqtZSEq0WlMgp2TrIiR+xE
+ R+f0NVXJpinVQtdOJNKvoxFUndXFiyAAgRPZ7vjlvlTOSEWUKbMfiLOTPB3VIcFZrY42
+ XpPg==
+X-Gm-Message-State: AOAM530T7B1QThCFUCpq3b176iWsOeU7THlgPecXhdxaMilp/9Jp8QHq
+ Ven0/NXmZDxvZapL4GTbXg==
+X-Google-Smtp-Source: ABdhPJyuxPMrmxNkcdcCEerZo6yZspo2c/4b31BFtQfeY5X28VqH21jX8eIJFihX+OyHXAGdgbwp9g==
+X-Received: by 2002:a54:4e8f:: with SMTP id c15mr4927670oiy.113.1635456727512; 
+ Thu, 28 Oct 2021 14:32:07 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id l2sm1370413otl.61.2021.10.28.14.31.27
+ by smtp.gmail.com with ESMTPSA id h17sm1261392oog.17.2021.10.28.14.32.06
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Oct 2021 14:31:28 -0700 (PDT)
-Received: (nullmailer pid 621898 invoked by uid 1000);
- Thu, 28 Oct 2021 21:31:27 -0000
-Date: Thu, 28 Oct 2021 16:31:27 -0500
+ Thu, 28 Oct 2021 14:32:06 -0700 (PDT)
+Received: (nullmailer pid 622969 invoked by uid 1000);
+ Thu, 28 Oct 2021 21:32:05 -0000
+Date: Thu, 28 Oct 2021 16:32:05 -0500
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, Jaime Liao <jaimeliao@mxic.com.tw>,
- Vignesh Raghavendra <vigneshr@ti.com>,
+Cc: Mark Brown <broonie@kernel.org>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Julien Su <juliensu@mxic.com.tw>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 05/18] dt-bindings: vendor-prefixes: Clarify Macronix
- prefix
-Message-ID: <YXsWrwPrDJh+d9ay@robh.at.kernel.org>
+ Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ linux-kernel@vger.kernel.org, Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Julien Su <juliensu@mxic.com.tw>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jaime Liao <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH 06/18] dt-bindings: spi: mxic: The interrupt property is
+ not mandatory
+Message-ID: <YXsW1Q1dh2+e2ONB@robh.at.kernel.org>
 References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-6-miquel.raynal@bootlin.com>
+ <20211020142809.349347-7-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-6-miquel.raynal@bootlin.com>
+In-Reply-To: <20211020142809.349347-7-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211028_143129_876378_AB6A0DF9 
-X-CRM114-Status: GOOD (  12.17  )
+X-CRM114-CacheID: sfid-20211028_143208_559442_9CC9864E 
+X-CRM114-Status: GOOD (  12.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,24 +95,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Oct 2021 16:27:56 +0200, Miquel Raynal wrote:
-> When looking at compatible prefixes, Macronix is sometimes referred as
-> "mxicy":
-> - mxicy,mx25r1635f
-> - mxicy,mx25u6435f
-> - mxicy,mx25v8035f
-> - mxicy,mx25f0a-spi
-> and sometimes as "mxic":
-> - mxic,multi-itfc-v009-nand-controller
-> - mxic,enable-randomizer-otp
+On Wed, 20 Oct 2021 16:27:57 +0200, Miquel Raynal wrote:
+> The interrupt property is not mandatory at all, this property should not
+> be part of the required properties list, so move it into the optional
+> properties list.
 > 
-> The oldest prefix that is also the one preferred by Macronix engineers
-> is "mxicy", so document the other one and mark it deprecated.
-> 
+> Fixes: 326e5c8d4a87 ("dt-binding: spi: Document Macronix controller bindings")
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
->  1 file changed, 3 insertions(+)
+>  Documentation/devicetree/bindings/spi/spi-mxic.txt | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
