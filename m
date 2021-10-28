@@ -2,14 +2,14 @@ Return-Path: <SRS0=emv8=PQ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56D39C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F20B4C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D821610CA
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:29:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D821610CA
+	by mail.kernel.org (Postfix) with ESMTPS id C330960FF2
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Oct 2021 21:32:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C330960FF2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,66 +18,67 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gBiUepaNdIq3Sgi22rX6E3hQ9wR1BvqHQ5bDzkbJtUg=; b=KAypUW0cDX/8J3
-	iG/rnQ/Vzh4tpFo07v7pgEXSI7lvrgdQLWqfgN+7KX7/CHa5JDBaaEr2MxBkiBDNH5RDPSTx0EL7B
-	GI3rrH1lTBGyBgKh1knSFLgizFoWW4mGO+2G+kXEJ1ecW2pievf++81guDeDm1hmiVIGOG/jPO2ws
-	+ctDsXR33a/FzptATOuJ0mGttNqFPnduvWUxfLnGNFsS3tc45gkwf1G30+eM8d5e1O+pYoRL6fR5W
-	Cqr+tA6VSb5w+RRwH4nlVKHrn5/ve10BKsVXdLDBBLgENVlVKjmFnL4iBFeG4ZWgZJ1Sw9Q8pGybh
-	F/+e/m6c2qBO+cQRKaaA==;
+	List-Owner; bh=8QBGGNBOLNoEULzl8A8YGrPDbBMMPSZzVTjp6j8lX30=; b=2OyPT+9W11D2GD
+	nMZc36QzA8QqSaXJo6WrbWv7aS5JNnltqqb6gyoE/bO5PYFlhAgQPcHOILH/IPmrfX9MeY+kz9dPW
+	jXKz7EdFpjg7RGnDy2JzRfHNI/vGA+9cV+n0AIPu/LUtY3Fjk5nYtCQWhGKGza7h6WVvbxoOwIr0w
+	38OozKyPkhLJbBYSQW/YKG5FDla9QOw6Kk25qVRJpzIyFU5xi5lvQ8q8XKUHXsIFpjl1GXOoHav2i
+	pQBGDhEIbGHigroNcOuxp5Gz/xSAEy+wg2l5BNmMBcHiO5T4JmTBw6jRcAoq2UN/iAaIsIFGKxHvS
+	ffJMyNrGjVMehrxlM6wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgCwu-0098Gd-KS; Thu, 28 Oct 2021 21:28:36 +0000
-Received: from mail-oi1-f170.google.com ([209.85.167.170])
+	id 1mgCzl-0098lF-9f; Thu, 28 Oct 2021 21:31:33 +0000
+Received: from mail-oi1-f172.google.com ([209.85.167.172])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgCws-0098G4-Bv
- for linux-mtd@lists.infradead.org; Thu, 28 Oct 2021 21:28:35 +0000
-Received: by mail-oi1-f170.google.com with SMTP id q124so10261033oig.3
- for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2021 14:28:32 -0700 (PDT)
+ id 1mgCzh-0098kI-Pk
+ for linux-mtd@lists.infradead.org; Thu, 28 Oct 2021 21:31:31 +0000
+Received: by mail-oi1-f172.google.com with SMTP id q124so10272298oig.3
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Oct 2021 14:31:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=UbQ3X7BD6qpgtn540MLFzrLrimBO17bm2/cyxoaaA+k=;
- b=bhESGk4ay0NN/RgOp2eiI57CqYVAOOufbREZdPyHa5xoojDPZDzkOg0mh6D+JWJnHc
- FDo9Nov3qHNK8ckE3vGM5PmMTODtydZu3j2swlIgAoSc/QxOAp6UrV9UT6GBKwihNl0X
- I1bNd3NKgs1PjY80Jp+ai89n6aQzgreF0pGSs6iQepzSK4wZ4Cw5i4ctxXEFOBw1jXfp
- HfR35JjkQH3nd9y5Wa3Bpxp6Aa4TAQgYBANYUaHuJly1nQ4GveYUhUZwPYjRWMYhcivb
- HOQEX8KWB/4956+sA8YEiLnFjsU9HYFGkyuhK3Z52PHypE2dgbmYPW2i/Houbx5edeiD
- c3DQ==
-X-Gm-Message-State: AOAM530GV3syw7MSxF55k7L8MSU0kIWHM9SW53gvQJtXXVjV4u9IC/y+
- J+T1cj6OGe4aEognxPd1rQ==
-X-Google-Smtp-Source: ABdhPJyGQdpbdp9+nSux0RGdftKN1RUp3rufQfJSKzdQIJX4Kd5pHVOiVZw6cP3YM+RToI8p67J7VQ==
-X-Received: by 2002:aca:280c:: with SMTP id 12mr10593329oix.93.1635456511984; 
- Thu, 28 Oct 2021 14:28:31 -0700 (PDT)
+ bh=h+qPtDQaqseg1rU0SAu/DvoYp4TWdxNR8dGfzDgYPBA=;
+ b=6YSCr6waWFjmbH8c2lbyyi/sq/sjR6ZH/lTNsXTr2DSYWfvQ/Q7IVFwpiUfPFsPAvo
+ 8IrS2WmRUmYzXupqvxoBAY0Inwd2X4VmUaUAzfkO7Lh20y3tqv/93qiujfk9mZhJ9ERa
+ CdAy2Ut5ZBc831MxziAaYW2oAHo1NIp6NRCAE/PS8i0v5IQkdhbsVzSAYJLOGqKUYrYz
+ EF4RRjYo21qfl1yXabv62LpHJW7yhYT2z4dtF5vStYXS993V9r4FC5X46wULzw97omJK
+ pUOtB/cf24N4QiSiroVLuMSDgJyA0zTFCwZEFT17eqSCevd2yl1kuK3/V0KMZJXKFx83
+ KzKw==
+X-Gm-Message-State: AOAM530s9R9tTEiPUrz4ldP4epJbjXWJknvKvV/WBBhC+m2aL4/yh1OB
+ aLGtPvPx1w8gp5momA07vg==
+X-Google-Smtp-Source: ABdhPJyn0uHM4S3b450KWKg+1utYRpqTm/tyjiH0wlvami17ti2zOIj1hgx4YhMjMlXM5T6rdPTGeg==
+X-Received: by 2002:aca:7c3:: with SMTP id 186mr5241810oih.60.1635456688810;
+ Thu, 28 Oct 2021 14:31:28 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id r44sm1512242otv.39.2021.10.28.14.28.30
+ by smtp.gmail.com with ESMTPSA id l2sm1370413otl.61.2021.10.28.14.31.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Oct 2021 14:28:31 -0700 (PDT)
-Received: (nullmailer pid 617930 invoked by uid 1000);
- Thu, 28 Oct 2021 21:28:30 -0000
-Date: Thu, 28 Oct 2021 16:28:30 -0500
+ Thu, 28 Oct 2021 14:31:28 -0700 (PDT)
+Received: (nullmailer pid 621898 invoked by uid 1000);
+ Thu, 28 Oct 2021 21:31:27 -0000
+Date: Thu, 28 Oct 2021 16:31:27 -0500
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+Cc: linux-mtd@lists.infradead.org, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>
-Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
- description file to yaml
-Message-ID: <YXsV/l+/vU1fBanY@robh.at.kernel.org>
+ Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Julien Su <juliensu@mxic.com.tw>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 05/18] dt-bindings: vendor-prefixes: Clarify Macronix
+ prefix
+Message-ID: <YXsWrwPrDJh+d9ay@robh.at.kernel.org>
 References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
- <20211020142809.349347-5-miquel.raynal@bootlin.com>
+ <20211020142809.349347-6-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211020142809.349347-5-miquel.raynal@bootlin.com>
+In-Reply-To: <20211020142809.349347-6-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211028_142834_438171_2AE2A599 
-X-CRM114-Status: GOOD (  11.90  )
+X-CRM114-CacheID: sfid-20211028_143129_876378_AB6A0DF9 
+X-CRM114-Status: GOOD (  12.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,18 +95,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 20, 2021 at 04:27:55PM +0200, Miquel Raynal wrote:
-> Let's get rid of spi-nand.txt by converting it to yaml schema. While at
-> converting this file, let's actually pull all the generic properties
-> from nand-chip.yaml which might apply to a SPI-NAND chip.
+On Wed, 20 Oct 2021 16:27:56 +0200, Miquel Raynal wrote:
+> When looking at compatible prefixes, Macronix is sometimes referred as
+> "mxicy":
+> - mxicy,mx25r1635f
+> - mxicy,mx25u6435f
+> - mxicy,mx25v8035f
+> - mxicy,mx25f0a-spi
+> and sometimes as "mxic":
+> - mxic,multi-itfc-v009-nand-controller
+> - mxic,enable-randomizer-otp
+> 
+> The oldest prefix that is also the one preferred by Macronix engineers
+> is "mxicy", so document the other one and mark it deprecated.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
->  2 files changed, 27 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
 
