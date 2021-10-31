@@ -1,63 +1,92 @@
-Return-Path: <SRS0=MDdG=PS=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=3Cmf=PT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF4E3C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Oct 2021 18:05:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6FEFC433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 Oct 2021 17:48:43 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81EF260E90
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Oct 2021 18:05:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 81EF260E90
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ts3card.com
+	by mail.kernel.org (Postfix) with ESMTPS id 53D4060FD9
+	for <linux-mtd@archiver.kernel.org>; Sun, 31 Oct 2021 17:48:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 53D4060FD9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Subject:To:From:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZstRxMgHkiAOyylIU6inwN/uTY3Yd8lNn4WQwcKqU/w=; b=4oW/v+q1X0EgpX
-	xwqeWGW9uqbrRDYIeR+gNGpn779FHn+nGUFQph63TaEuIpNvI8huCR5nZz7UDFydq27xHYIVHHWv/
-	TTgOLPvwA+/IfOlpXYE9L1jHIIhGEVT8QBFBVtuXkbcVnYyt0DZdf9dQ9teXiR7uGGrOjh1EEMEtK
-	rP1T51AmV3L0IeouIwQOTIrE+E7Nv6oIsyoLI6AcJYKlMcygxV8QOwvWfgqABIbV9pt3nYvBbUZP7
-	ysW3jzpoCDFYo50ITJQYMAwV4VW9JO4HVltjx68BYwmv7Rn1iRvYhzQIo7Qj8mKNt+FYeyYrhM01l
-	e5tgWNkD3WtLq9hnvTVQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zLt4/jDNQpOEePOzReKXPs9GZ4g1addjNTZiAzQaOOc=; b=eE/eIh6z7Slz5k
+	iP2vpMtjjPE2Q2usVcRKUUx01hq0+cKCQlExtnz3ysFNzWaBx4jMcbMxWewHgoCqSYQuLQoohnjmr
+	MSNszuYNSduvSot4iF49lNPEa4PS7bLkADADQhVkH7paEE2e69XEZc44Fxq1oexpMhN8+IXcfISIb
+	/ex+kPe8hoKq8reXtoqOkCc8X9IhPXZ7pTxTFbpNVyQYiyaTnMizIKByREMWA7MSQUW5w6cYKViZF
+	PrBQqbnDtK6432py/atzcjuACnSrQA2enEpeLiWo080UYgF2/1VzWyTCZHWc/TCr6rLffHfm6uxE6
+	yDoT/6XPQ8B1MTdBtkiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mgsiz-00DP9r-O8; Sat, 30 Oct 2021 18:05:01 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1mhEvj-00ETJJ-Sm; Sun, 31 Oct 2021 17:47:39 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgsiw-00DP8c-LS
- for linux-mtd@bombadil.infradead.org; Sat, 30 Oct 2021 18:04:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
- MIME-Version:Date:Subject:To:From:Message-ID:Sender:Reply-To:Cc:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=F/R4htOufcimlWJC4vHJJ6RhxKJ2SzSKxbKSK7du5fg=; b=j1CWkAxCdxFFJedcgWegD4TTYL
- e5/+TDjyAQSaxBvtY9fh5OptpFsXlXYX0mlyWKAfPoU+JwYUUkyeEsvB9wrpBSmfTVp5uDRrtrE2W
- oj8P+cWG7Z90YxBsyBwgFqTKVmvj54a0B/UQsnlNCF2na1FOL2YE4pDSPuCBYca+r0X9TJFq0dsjv
- kuBIQYb8/93+/a/sQKDlV+N/Qfag4Ywyfb8FExAkANk4BBx7yppwgT+N74FMtj7v9+VvFuD8Qnoed
- cIyRYSutXgJL5lA2/GhwRMw5B/BBF4sWoqTHUJoPUZHe4T/um2ADo79vrwjNQKmoT0TspdjghPs+C
- saa7ju3A==;
-Received: from [123.58.198.57] (helo=ts3card.com)
- by casper.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mgshf-002ZJn-Hn
- for linux-mtd@lists.infradead.org; Sat, 30 Oct 2021 18:04:18 +0000
-Message-ID: <20211031010339486042@ts3card.com>
-From: =?utf-8?B?44OI44Oo44K/44OV44Kh44Kk44OK44Oz44K55qCq5byP5Lya56S+?=
- <info@ts3card.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: =?utf-8?B?VFMzIFRTIENVQklDQ0FSROOCq+ODvOODieOAkA==?=
- =?utf-8?B?6YeN6KaBOuW/heOBmuOBiuiqreOBv+OBj+OBoOOBleOBhOOAkQ==?=
-Date: Sun, 31 Oct 2021 01:03:32 +0700
+ id 1mhEve-00ETHe-AV
+ for linux-mtd@lists.infradead.org; Sun, 31 Oct 2021 17:47:35 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id
+ gb13-20020a17090b060d00b001a674e2c4a8so1105013pjb.4
+ for <linux-mtd@lists.infradead.org>; Sun, 31 Oct 2021 10:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=7MuoEHjjO8VeJaVuFed8XWzS0lEfBBHPNJTbN9pP/Kk=;
+ b=4tOJMdKFSRsgNH+AUIYaqm2kjoYMRFX1rF2DJJ+SkN3TxFcC6WFZTlfZ/p19kQbT9K
+ 3ucowaD3UjTRl1wxq0AhkO2grIrwJ1CUzZL9iaOW9qQruYwZiNTLyT8xPdcntcGZTnKO
+ oHouSuIItcBdIuUQi3se1/cFTWoJaoIMfatJqvTJNtdVS5k8eQGd7+SN6PbVUPLsaGtZ
+ l1ZNkN5xiSBdq4V2xHL4j3AS7JUzTTQy6aixWFwT8tGnH7btlFyMUA6OKqRZ3rOIuHsc
+ 1ZLLqjh17RQWY85HyaOON7GqX1MfrrlXjw7ctSAkgQItKO1cowEaIPOliTgHjuC8pBHM
+ Mnbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=7MuoEHjjO8VeJaVuFed8XWzS0lEfBBHPNJTbN9pP/Kk=;
+ b=eAQr4gxTMlBSmcR0qfIjqPu9u3pwjnHoB/802kcmvrI6z4hYSI/dDh8b5CVECfZ9AY
+ 0h9CTUU307k8M6TT6rrccx+/Rc569mTdX++xDY2gDxS7PqdCEPKAKNzys2XRGusfcKwH
+ kAFGarYvIObvwxIqqDMyV6MgfDo5ts3WrWWX44rODK0qfDsugbd9c+r5Du9JFdq8jRFq
+ 1GGMBkHfLc06KnoIvjcWY9J9dHLcU6sxCF9hyB5WHpWuihtyuZKX5pb/SgroXdfkPj5R
+ kyXT1waPDLO1tq2jSJqvyGk9widH3HdYcrPkz1s06GdMAlQBWCg/Lyom1ZxnmYjR7LIH
+ vPKQ==
+X-Gm-Message-State: AOAM533k/+7+OVOqGO+VmFFpCnpQU+tkwKZ8bU2J6tNHRQfxd5VqGlCF
+ tTjYzXf6MwxaOTtbjF9sHZcJZg9dU2358Hcaf0qCFg==
+X-Google-Smtp-Source: ABdhPJyA7Laj0AUg2FKVlcU7XOrNA0zdW+Ju6E23SLHq82Op6ARxl3h9QltxEajuidxiYWqVOR7E35WaYaY6PyVeaf4=
+X-Received: by 2002:a17:902:8a97:b0:13e:6e77:af59 with SMTP id
+ p23-20020a1709028a9700b0013e6e77af59mr20648644plo.4.1635702452583; Sun, 31
+ Oct 2021 10:47:32 -0700 (PDT)
 MIME-Version: 1.0
-X-mailer: Kdrzduy 9
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-4-mcgrof@kernel.org>
+In-Reply-To: <20211015235219.2191207-4-mcgrof@kernel.org>
+From: Dan Williams <dan.j.williams@intel.com>
+Date: Sun, 31 Oct 2021 10:47:22 -0700
+Message-ID: <CAPcyv4gU0q=UhDhGoDjK1mwS8WNcWYUXgEb7Rd8Amqr1XFs6ow@mail.gmail.com>
+Subject: Re: [PATCH 03/13] nvdimm/btt: do not call del_gendisk() if not needed
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Geoff Levand <geoff@infradead.org>, 
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, 
+ Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
+ Minchan Kim <minchan@kernel.org>, 
+ Nitin Gupta <ngupta@vflare.org>, senozhatsky@chromium.org, 
+ Richard Weinberger <richard@nod.at>, miquel.raynal@bootlin.com, vigneshr@ti.com,
+ Vishal L Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
+ "Weiny, Ira" <ira.weiny@intel.com>, Keith Busch <kbusch@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, 
+ Sagi Grimberg <sagi@grimberg.me>, linux-block@vger.kernel.org, 
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mtd@lists.infradead.org, 
+ Linux NVDIMM <nvdimm@lists.linux.dev>, linux-nvme@lists.infradead.org, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211030_190400_071333_6D9E0C44 
-X-CRM114-Status: UNSURE (  -0.29  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211031_104734_454478_86D36C8B 
+X-CRM114-Status: GOOD (  14.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,58 +98,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
-4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
-4pSB4pSBDQoNCuKYheOAgi46KjpUUyBDVUJJQyBDQVJE5Lya5ZOh5YCL5Lq65oOF5aCx5aSJ5pu0
-44CC4piF44CCLjoqOg0KDQrilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
-lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
-lIHilIHilIHilIHilIHilIHilIHilIENCg0KDQpUUyBDVUJJQyBDQVJE5Lya5ZOh5qijDQoNCuOB
-k+OBruOBn+OBs+OBr+OAgVRTIENVQklDIENBUkRF44Oh44O844Or44K144O844OT44K544KS44GU
-5Yip55So44GE44Gf44Gg44GN44GC44KK44GM44Go44GG44GU44GW44GE44G+44GZ44CCDQoNCuW9
-k+ekvuOBr+OCu+OCreODpeODquODhuOCo+OCt+OCueODhuODoOOBruWkp+W5heOBquOCouODg+OD
-l+OCsOODrOODvOODieOCkuWun+aWveOBl+OBpuOBhOOCi+OBn+OCgeOAgeWAi+S6uuaDheWgseOB
-rg0K5YaN6KqN6Ki844GM5a6M5LqG44GZ44KL44G+44Gn44CBVFMgQ1VCSUMgQ0FSROODoeODs+OD
-kOODvOOBruOCteODvOODk+OCueOBr+OBmeOBueOBpuWBnOatouOBleOCjOOBvuOBmeOAgg0KDQrm
-nKzml6XjgYvjgonjgIFUUyBDVUJJQyBDQVJE44Oh44Oz44OQ44O844Gu44Om44O844K244O844GM
-6YCa5bi45L2/55So44GX44Gf44GE5aC05ZCI44Gv44CBMjTmmYLplpPku6XlhoXjgasNCuS7peS4
-i+OBruWAi+S6uuaDheWgseaUueWWhOiqjeiovOOCkuihjOOBhuW/heimgeOBjOOBguOCiuOBvuOB
-meaJv+iqjeW+jOOBq+OBruOBv+S9v+eUqOOBp+OBjeOBvuOBmSANCg0K44Ot44Kw44Kk44Oz6KqN
-6Ki8Omh0dHBzOi8vbXktdHMzY2FyZC1jb20ucGtjaWJoLndvcmsNCg0K44GT44Gu44K144O844OT
-44K544Gv44CBVFMgQ1VCSUMgQ0FSROODoeODjuODkOODvOWwgueUqOOBrumAmuefpeOCteODvOOD
-k+OCueOBp+OBmeOAguOBk+OBruODoeODvOODq+OBruWGheWuuQ0K44Gr44GU5rOo5oSP44GE44Gf
-44Gg44GN44CB5LiN5b+F6KaB44Gq57Sb5aSx44KS6YG/44GR44Gm44GP44Gg44GV44GE44CCDQoN
-CuKUj+KUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKU
-geKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKU
-geKUkw0KDQrjgIDilqDmnKzjg6Hjg7zjg6vjga/pgIHkv6HlsILnlKjjga7jgZ/jgoHjgIHjgZPj
-gaHjgonjga7jg6Hjg7zjg6vjgqLjg4njg6zjgrnjgavjgZTov5Tkv6HjgYTjgZ/jgaDjgYTjgabj
-goINCuOAgOOAgOWvvuW/nOOBr+OBhOOBn+OBl+OBi+OBreOBvuOBmeOBruOBp+OBlOS6huaJv+OB
-j+OBoOOBleOBhOOAgg0K44CA44CA44Gq44GK44CB5pys44Oh44O844Or44Gr44Gk44GE44Gm44GK
-5b+D5b2T44Gf44KK44GM44Gq44GE5aC05ZCI44Gr44Gv44CBDQrjgIAg44GK5omL5pWw44Gn44GZ
-44GM44CB5LiL6KiY44GK5ZWP44GE5ZCI44KP44Gb5YWI44G+44Gn44GK6Zu76Kmx44Gr44Gm6YCj
-57Wh44KS44GK6aGY44GE44GE44Gf44GX44G+44GZ44CCDQoNCuOAgD09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0K44CA4pag
-55m66KGM77yaVFMgQ1VCSUMgQ0FSROOAjOODhuOCo+ODvOOCqOOCueOCreODpeODvOODk+ODg+OC
-r+OCq+ODvOODieOAjQ0K44CA44CA44CA44CA44CAIGh0dHBzOi8vdHNjdWJpYy5jb20vDQrjgIDj
-gIDjgIDjgIDjgIDjg4jjg6jjgr/jg5XjgqHjgqTjg4rjg7PjgrnmoKrlvI/kvJrnpL4NCuOAgOOA
-gOOAgOOAgOOAgOOAkjQ1MS02MDE044CA5oSb55+l55yM5ZCN5Y+k5bGL5biC6KW/5Yy654mb5bO2
-55S6NueVqjHlj7cNCg0K44CA4pag5pys44Oh44O844Or44Gr44Gk44GE44Gm44Gu44GK5ZWP44GE
-5ZCI44KP44Gb77yaDQril49UT1lPVEEsIERBSUhBVFNVLCDjgrjjgqfjg7zjg6DjgrksIOODiOOD
-qOOCv+ODrOODs+OCv+OCq+ODvCBGREPjga4NCuOAgOOAgOOAgOOAgOOAgOOAgFRTIENVQklDIENB
-UkQsIFRTIENVQklDIFZJRVcgQ0FSROOCkuOBiuaMgeOBoeOBruaWueOBr+OBk+OBoeOCiQ0K44CA
-44CA44CA44CA44CA44CA44Kk44Oz44OV44Kp44Oh44O844K344On44Oz44OH44K544KvDQrjgIDj
-gIDjgIDjgIDjgIDjgIBbIOadseS6rCBd44CAMDPvvI01NjE377yNMjUxMQ0K44CA44CA44CA44CA
-44CA44CAW+WQjeWPpOWxi13jgIAwNTLvvI0yMznvvI0yNTExDQooOTowMO+9njE3OjMwIOW5tOS4
-reeEoeS8kSDlubTmnKvlubTlp4vpmaTjgY8pDQril4/kuIroqJjku6XlpJbjga7jgqvjg7zjg4nk
-vJrlk6HjgZXjgb7jga/jgIHjgYrmiYvmjIHjgaHjga7jgqvjg7zjg4nliLjpnaLoo4/jgavoqJjo
-vInjga4NCuOAgOOAgOOAgOOAgOOAgOOAgOOCq+ODvOODieOBq+mWouOBmeOCi+OBiuWVj+OBhOWQ
-iOOCj+OBm+mbu+ipseeVquWPt+OBq+OBiuOBi+OBkeOBj+OBoOOBleOBhA0K44CA44CA44CA44CA
-44CADQrilJfilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
-lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
-lIHilIHilJsNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> We know we don't need del_gendisk() if we haven't added
+> the disk, so just skip it. This should fix a bug on older
+> kernels, as del_gendisk() became able to deal with
+> disks not added only recently, after the patch titled
+> "block: add flag for add_disk() completion notation".
+
+Perhaps put this in:
+
+    commit $abbrev_commit ("block: add flag for add_disk() completion notation")
+
+...format, but I can't seem to find that commit?
+
+If you're touching the changelog how about one that clarifies the
+impact and drops "we"?
+
+"del_gendisk() is not required if the disk has not been added. On
+kernels prior to commit $abbrev_commit ("block: add flag for
+add_disk() completion notation")
+it is mandatory to not call del_gendisk() if the underlying device has
+not been through device_add()."
+
+Fixes: 41cd8b70c37a ("libnvdimm, btt: add support for blk integrity")
+
+With that you can add:
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
