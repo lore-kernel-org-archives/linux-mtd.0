@@ -1,63 +1,64 @@
-Return-Path: <SRS0=3Cmf=PT=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=1Z3h=PU=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 423D0C433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 31 Oct 2021 23:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61957C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Nov 2021 01:26:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F253D60F3A
-	for <linux-mtd@archiver.kernel.org>; Sun, 31 Oct 2021 23:16:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F253D60F3A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C459560F4F
+	for <linux-mtd@archiver.kernel.org>; Mon,  1 Nov 2021 01:26:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C459560F4F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=k1QUUjRYuQUpazZAl90Rma/Dc3QqJEdCCbcdZco0XBg=; b=vxVIYp6cNg+dPD
-	USChzV5y+yBVCfPjvoO39/cjJ89JAPGwdWUh2Rx8F5vDSquNZMecE5rJDe6XrDnr7joqOqM+3bGka
-	nO9+2MREEgoNRxDBscaYFiwC2NoRCAcJbGoyz5qKFIixHmouSC/DuHX5mLTxKIrjUMxXljUnbC+VK
-	dKisVabQJ7kzTB165piaBvALtz0vwVwjOwvD2EHEC6DKT8d/U4jSBiqjckMuIB7qJN15rQ6dgHfnH
-	8wRLpVrE0oqjTAZXN2wPGgv8toZ7NLyPxVk+YBZ5yJ3psLRzOd3gzR802IzjCIVKbDpwK/XQZizdL
-	0kLTwcSNy7YvsasA3lNA==;
+	List-Owner; bh=VM1FRsSIjQ90V8UBtcxSenv+lGANeXH8V1dse/n+RzA=; b=RCHbwnQ+lGXoXd
+	sXL9nwyBQCS8d/IUHBb5Tcyb0Mpn87sdM7YnBWgUY1M0Z6904gj9iE2v8lmcmfOqBcqs7G4QtTSOW
+	L/DdVXbOTR7ALk8TzgbaJON06PlH99opaupPUEZHj+ChoshNvBChbE7Z2RFSVBLKjXmTlgr5y1ygN
+	NrPtCUWozHmeN7I6XqCbs/9HcU1W7ud3oFL/5JCxL+E4euRPINpIFNzLzk02SF9taP0gMklVKlyRR
+	wy9Fy5z2+P7AUvK4vhwEHsabSpNnqhpkgoSaB7ze+ihfGm8LlHO84ltfpbVNdIsoYPj/Bk1rP7wva
+	XhzVUh3/t1brenvQAxag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mhK2f-00Etla-IN; Sun, 31 Oct 2021 23:15:09 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mhM4d-00F2AN-St; Mon, 01 Nov 2021 01:25:19 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mhK2c-00EtkY-0a
- for linux-mtd@lists.infradead.org; Sun, 31 Oct 2021 23:15:07 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6632F60E98;
- Sun, 31 Oct 2021 23:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1635722104;
- bh=suxkNGmue9aghjYNtvFMsxbmCggQU/mTEGgyuyM6yEo=;
- h=Date:From:To:Cc:Subject:From;
- b=fpGO32U+MsTNZbHohxpPwvg1Uq/nPjwDaBlA9NFDdb8JtWAGK6sTrbB+lu3yBYkyF
- C912kGL8/qX6nG76cT0WwM6WPK707JMNhvnTL1WWkGh2M5LK7Tqxpqo/tLnDABJkLt
- KquLGV9Z/3RgrdBlXFR2D/SFGhuDx+DdXnJHPEKL4noPzfIGweLhwzdWt36jzXblFS
- M9bf+mET+ZIt9lAOOjbeyet8ziREuNph58SvdfojegO9FZiaaJKNICUKkzQspjqpEz
- Ig8eS55+3Rs5M0buwjx5/KDMVkSANT3fdnOoTLsW761BJyErEqIFMlRRFT2g6yS1Yk
- gJbeRw++6EQtQ==
-Date: Sun, 31 Oct 2021 16:15:02 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fscrypt updates for 5.16
-Message-ID: <YX8jdp73zUDwlB5E@sol.localdomain>
+ id 1mhM4a-00F29h-77
+ for linux-mtd@lists.infradead.org; Mon, 01 Nov 2021 01:25:18 +0000
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HjFdr0H6Qz1DHwt;
+ Mon,  1 Nov 2021 09:22:56 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Mon, 1 Nov 2021 09:24:57 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 1 Nov
+ 2021 09:24:57 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <patchwork@huawei.com>, <libaokun1@huawei.com>, <yukuai3@huawei.com>,
+ "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next] ubi: fix race between ctrl_cdev_ioctl and ubi_cdev_ioctl
+Date: Mon, 1 Nov 2021 09:37:39 +0800
+Message-ID: <20211101013739.236430-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Disposition: inline
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211031_161506_105863_95BB045C 
-X-CRM114-Status: UNSURE (   6.99  )
+X-CRM114-CacheID: sfid-20211031_182516_835617_49015EB0 
+X-CRM114-Status: UNSURE (   9.68  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,48 +76,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
+Hulk Robot reported a KASAN report about use-after-free:
+ ==================================================================
+ BUG: KASAN: use-after-free in __list_del_entry_valid+0x13d/0x160
+ Read of size 8 at addr ffff888035e37d98 by task ubiattach/1385
+ [...]
+ Call Trace:
+  klist_dec_and_del+0xa7/0x4a0
+  klist_put+0xc7/0x1a0
+  device_del+0x4d4/0xed0
+  cdev_device_del+0x1a/0x80
+  ubi_attach_mtd_dev+0x2951/0x34b0 [ubi]
+  ctrl_cdev_ioctl+0x286/0x2f0 [ubi]
 
-  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
+ Allocated by task 1414:
+  device_add+0x60a/0x18b0
+  cdev_device_add+0x103/0x170
+  ubi_create_volume+0x1118/0x1a10 [ubi]
+  ubi_cdev_ioctl+0xb7f/0x1ba0 [ubi]
 
-are available in the Git repository at:
+ Freed by task 1385:
+  cdev_device_del+0x1a/0x80
+  ubi_remove_volume+0x438/0x6c0 [ubi]
+  ubi_cdev_ioctl+0xbf4/0x1ba0 [ubi]
+ [...]
+ ==================================================================
 
-  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
+The following race could cause the use-after-free problem:
+           cpu1                   cpu2                  cpu3
+_______________________|________________________|______________________
+ctrl_cdev_ioctl
+ ubi_attach_mtd_dev
+  uif_init
+                           ubi_cdev_ioctl
+                            ubi_create_volume
+                             cdev_device_add
+   ubi_add_volume
+   // sysfs exist
+   kill_volumes
+                                                    ubi_cdev_ioctl
+                                                     ubi_remove_volume
+                                                      cdev_device_del
+                                                       // first free
+    ubi_free_volume
+     cdev_del
+     // double free
+   cdev_device_del
 
-for you to fetch changes up to b7e072f9b77f4c516df96e0c22ec09f8b2e76ba1:
+The lock held by ctrl_cdev_ioctl is ubi_devices_mutex, but the lock held by
+ubi cdev_ioctl is ubi->device_mutex. Therefore, the two locks can be
+concurrent. However, volume addition and deletion operations are performed
+in both ctrl_cdev_ioctl and ubi_cdev_ioctl. When these operations are
+performed concurrently in both ioctl, a race condition may be triggered.The
+UAF stack above is one such case.
 
-  fscrypt: improve a few comments (2021-10-25 19:11:50 -0700)
+To solve this problem, add spin_lock(&ubi->volumes_lock) to ctrl_cdev_ioctl
+where volumes are added and deleted.
 
-----------------------------------------------------------------
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ drivers/mtd/ubi/build.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Some cleanups for fs/crypto/:
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index a7e3eb9befb6..708b1b96de01 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -467,6 +467,7 @@ static int uif_init(struct ubi_device *ubi)
+ 	if (err)
+ 		goto out_unreg;
+ 
++	spin_lock(&ubi->volumes_lock);
+ 	for (i = 0; i < ubi->vtbl_slots; i++)
+ 		if (ubi->volumes[i]) {
+ 			err = ubi_add_volume(ubi, ubi->volumes[i]);
+@@ -475,11 +476,13 @@ static int uif_init(struct ubi_device *ubi)
+ 				goto out_volumes;
+ 			}
+ 		}
++	spin_unlock(&ubi->volumes_lock);
+ 
+ 	return 0;
+ 
+ out_volumes:
+ 	kill_volumes(ubi);
++	spin_unlock(&ubi->volumes_lock);
+ 	cdev_device_del(&ubi->cdev, &ubi->dev);
+ out_unreg:
+ 	unregister_chrdev_region(ubi->cdev.dev, ubi->vtbl_slots + 1);
+-- 
+2.31.1
 
-- Allow 256-bit master keys with AES-256-XTS
-
-- Improve documentation and comments
-
-- Remove unneeded field fscrypt_operations::max_namelen
-
-----------------------------------------------------------------
-Eric Biggers (5):
-      fscrypt: remove fscrypt_operations::max_namelen
-      fscrypt: clean up comments in bio.c
-      fscrypt: improve documentation for inline encryption
-      fscrypt: allow 256-bit master keys with AES-256-XTS
-      fscrypt: improve a few comments
-
- Documentation/block/inline-encryption.rst |  2 +
- Documentation/filesystems/fscrypt.rst     | 83 +++++++++++++++++++++++--------
- fs/crypto/bio.c                           | 32 ++++++------
- fs/crypto/fname.c                         |  3 +-
- fs/crypto/fscrypt_private.h               | 16 ++++--
- fs/crypto/hkdf.c                          | 11 ++--
- fs/crypto/keysetup.c                      | 62 +++++++++++++++++------
- fs/ext4/super.c                           |  1 -
- fs/f2fs/super.c                           |  1 -
- fs/ubifs/crypto.c                         |  1 -
- include/linux/fscrypt.h                   |  3 --
- 11 files changed, 150 insertions(+), 65 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
