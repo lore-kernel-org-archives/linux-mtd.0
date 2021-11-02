@@ -2,69 +2,59 @@ Return-Path: <SRS0=5hwZ=PV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2976FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 13:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AB91C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 17:04:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F00B860C41
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 13:02:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org F00B860C41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5F0ED60F45
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 17:04:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F0ED60F45
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/Kl/sBTKK8M5FUjz+4qtTq7EsW7LEdp1Ajt9k3auHmQ=; b=V/jA40sBiuMThiqNVEEoTGq6++
-	7yyCtvzZG9wIohgZkuq89Rb/SUXQ7Oj+dSFpFm92OXa5oB0slHLW5xmI9BymdxHAMZwKG2ZkwdN2P
-	HpL6FYocahefiEujaSLgG4BOG7D7skFEg1hTuwUj4O/lkmNomwaKf2ZdnXXCAPkCpM0q/gq9jvvFY
-	E76uuOl6yYvriIMJ0rcB3/yUPXBn3UgcE1q6sDryDytUJmSIEuytWMOK+pHMlCmLdZYnCUOldMStG
-	pNldrA2azjOjlWahULBVRqsUvjBWtbhoQoba0ByB3Fp6TICmBi6Fp87f3GwYH7RCz21+o3FLJ3Oav
-	7Gd/rVrg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Nk41CXS8t36pUUJ3loeW3XHOO96kW8ujs1w78XGK5lk=; b=xee8kMti7WJDUa
+	hUJCDJep9zdCqQZzCNUnatrYH1/M9SdeRo0vjY3Fv0sYNwfD6WH3sVS0+Qi2S46oRj511LKYshgNI
+	McnZCVmlSYJnE2nT324zKhC4ZQWChFlh55+cPKrh2JAkUeNQCGdn77iCUYz6t93s/YL0u2tQBRHVu
+	n3db84Q7aBQelFBsZMxvtQIpy5ASnmaBtT4UU3w8zfX7yti5sjXSA75rbbWDEZWgT8SwuQHo+H6Ov
+	pVaYYPMj44wPQ03uCJBNy7AiDGatoPr8E29i+iqxRxICMjhrJ8zmW4vqulp6Yw8cFIgX+t5FHZ24D
+	2KkdGJuaVW4z29r5h5Tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mhtQQ-001jDR-NC; Tue, 02 Nov 2021 13:02:02 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mhtQN-001j7g-0y
- for linux-mtd@lists.infradead.org; Tue, 02 Nov 2021 13:02:01 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hk95T6YfLz90h1;
- Tue,  2 Nov 2021 21:01:33 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 21:01:42 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Tue, 2 Nov 2021 21:01:41 +0800
-Subject: Re: [PATCH -next] ubi: fix race between ctrl_cdev_ioctl and
- ubi_cdev_ioctl
-To: Baokun Li <libaokun1@huawei.com>, <richard@nod.at>,
- <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <patchwork@huawei.com>, <yukuai3@huawei.com>, Hulk Robot
- <hulkci@huawei.com>
-References: <20211101013739.236430-1-libaokun1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <decf845d-ce14-cfb7-9500-73f271b7a38e@huawei.com>
-Date: Tue, 2 Nov 2021 21:01:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1mhxCU-002RPh-Kf; Tue, 02 Nov 2021 17:03:54 +0000
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
+ (Red Hat Linux)) id 1mhxCQ-002RP3-6N; Tue, 02 Nov 2021 17:03:50 +0000
+Date: Tue, 2 Nov 2021 10:03:50 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Geoff Levand <geoff@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
+ Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+ senozhatsky@chromium.org, Richard Weinberger <richard@nod.at>,
+ miquel.raynal@bootlin.com, vigneshr@ti.com,
+ Vishal L Verma <vishal.l.verma@intel.com>,
+ Dave Jiang <dave.jiang@intel.com>,
+ "Weiny, Ira" <ira.weiny@intel.com>, Keith Busch <kbusch@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+ linux-block@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ linux-mtd@lists.infradead.org, Linux NVDIMM <nvdimm@lists.linux.dev>,
+ linux-nvme@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/13] nvdimm/btt: do not call del_gendisk() if not needed
+Message-ID: <YYFvdiOYoqRPx8JE@bombadil.infradead.org>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-4-mcgrof@kernel.org>
+ <CAPcyv4gU0q=UhDhGoDjK1mwS8WNcWYUXgEb7Rd8Amqr1XFs6ow@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211101013739.236430-1-libaokun1@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211102_060159_730653_FEC0051D 
-X-CRM114-Status: UNSURE (   9.85  )
-X-CRM114-Notice: Please train this message.
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4gU0q=UhDhGoDjK1mwS8WNcWYUXgEb7Rd8Amqr1XFs6ow@mail.gmail.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,33 +66,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjEvMTEvMSA5OjM3LCBCYW9rdW4gTGkg5YaZ6YGTOgpIaSwgQmFva3VuCj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jIGIvZHJpdmVycy9tdGQvdWJpL2J1aWxkLmMK
-PiBpbmRleCBhN2UzZWI5YmVmYjYuLjcwOGIxYjk2ZGUwMSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
-L210ZC91YmkvYnVpbGQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL3ViaS9idWlsZC5jCj4gQEAgLTQ2
-Nyw2ICs0NjcsNyBAQCBzdGF0aWMgaW50IHVpZl9pbml0KHN0cnVjdCB1YmlfZGV2aWNlICp1Ymkp
-Cj4gICAJaWYgKGVycikKPiAgIAkJZ290byBvdXRfdW5yZWc7Cj4gICAKPiArCXNwaW5fbG9jaygm
-dWJpLT52b2x1bWVzX2xvY2spOwo+ICAgCWZvciAoaSA9IDA7IGkgPCB1YmktPnZ0Ymxfc2xvdHM7
-IGkrKykKPiAgIAkJaWYgKHViaS0+dm9sdW1lc1tpXSkgewo+ICAgCQkJZXJyID0gdWJpX2FkZF92
-b2x1bWUodWJpLCB1YmktPnZvbHVtZXNbaV0pOwo+IEBAIC00NzUsMTEgKzQ3NiwxMyBAQCBzdGF0
-aWMgaW50IHVpZl9pbml0KHN0cnVjdCB1YmlfZGV2aWNlICp1YmkpCj4gICAJCQkJZ290byBvdXRf
-dm9sdW1lczsKPiAgIAkJCX0KPiAgIAkJfQo+ICsJc3Bpbl91bmxvY2soJnViaS0+dm9sdW1lc19s
-b2NrKTsKPiAgIAo+ICAgCXJldHVybiAwOwo+ICAgCj4gICBvdXRfdm9sdW1lczoKPiAgIAlraWxs
-X3ZvbHVtZXModWJpKTsKPiArCXNwaW5fdW5sb2NrKCZ1YmktPnZvbHVtZXNfbG9jayk7Cj4gICAJ
-Y2Rldl9kZXZpY2VfZGVsKCZ1YmktPmNkZXYsICZ1YmktPmRldik7Cj4gICBvdXRfdW5yZWc6Cj4g
-ICAJdW5yZWdpc3Rlcl9jaHJkZXZfcmVnaW9uKHViaS0+Y2Rldi5kZXYsIHViaS0+dnRibF9zbG90
-cyArIDEpOwoKVGhlcmUgc3RpbGwgZXhpc3Qgb25lIHBsYWNlIHRoYXQgdWJpX2F0dGFjaF9tdGRf
-ZGV2KCkgbWF5IHJhY2Ugd2l0aCAKdWJpX3JlbW92ZV92b2x1bWUoKToKCnViaS0+Ymd0X3RocmVh
-ZCA9IGt0aHJlYWRfY3JlYXRlKHViaV90aHJlYWQsIHViaSwgIiVzIiwgdWJpLT5iZ3RfbmFtZSkK
-CiDCoMKgwqAgZ290byBvdXRfZGVidWdmczsKCi4uLgoKb3V0X2RlYnVnZnM6CgogwqDCoMKgIHVi
-aV9kZWJ1Z2ZzX2V4aXRfZGV2KHViaSk7CgpvdXRfdWlmOgoKIMKgwqAgdWlmX2Nsb3NlKHViaSk7
-wqDCoMKgwqDCoCAvLyBBbm90aGVyIHByb2Nlc3MgZG9lcyBpb2N0bCB0byByZW1vdmUgdm9sdW1l
-LCAKd2hpY2ggbWF5IGNhdXNlIHZvbHVtZSBkb3VibGUgZnJlZS4KCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo=
+On Sun, Oct 31, 2021 at 10:47:22AM -0700, Dan Williams wrote:
+> On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >
+> > We know we don't need del_gendisk() if we haven't added
+> > the disk, so just skip it. This should fix a bug on older
+> > kernels, as del_gendisk() became able to deal with
+> > disks not added only recently, after the patch titled
+> > "block: add flag for add_disk() completion notation".
+> 
+> Perhaps put this in:
+> 
+>     commit $abbrev_commit ("block: add flag for add_disk() completion notation")
+> 
+> ...format, but I can't seem to find that commit?
+
+Indeed, that patch got dropped and it would seem Christoph preferred
+a simpler approach with the new disk_live()
+
+commit 40b3a52ffc5bc3b5427d5d35b035cfb19d03fdd6
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Wed Aug 18 16:45:32 2021 +0200
+
+    block: add a sanity check for a live disk in del_gendisk
+
+> If you're touching the changelog how about one that clarifies the
+> impact and drops "we"?
+> "del_gendisk() is not required if the disk has not been added. On
+> kernels prior to commit $abbrev_commit ("block: add flag for
+> add_disk() completion notation")
+> it is mandatory to not call del_gendisk() if the underlying device has
+> not been through device_add()."
+> 
+> Fixes: 41cd8b70c37a ("libnvdimm, btt: add support for blk integrity")
+> 
+> With that you can add:
+> 
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+
+You got it.
+
+  Luis
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
