@@ -2,59 +2,83 @@ Return-Path: <SRS0=5hwZ=PV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AB91C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 17:04:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 256D4C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 17:26:58 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F0ED60F45
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 17:04:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F0ED60F45
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id E899861051
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 17:26:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E899861051
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Nk41CXS8t36pUUJ3loeW3XHOO96kW8ujs1w78XGK5lk=; b=xee8kMti7WJDUa
-	hUJCDJep9zdCqQZzCNUnatrYH1/M9SdeRo0vjY3Fv0sYNwfD6WH3sVS0+Qi2S46oRj511LKYshgNI
-	McnZCVmlSYJnE2nT324zKhC4ZQWChFlh55+cPKrh2JAkUeNQCGdn77iCUYz6t93s/YL0u2tQBRHVu
-	n3db84Q7aBQelFBsZMxvtQIpy5ASnmaBtT4UU3w8zfX7yti5sjXSA75rbbWDEZWgT8SwuQHo+H6Ov
-	pVaYYPMj44wPQ03uCJBNy7AiDGatoPr8E29i+iqxRxICMjhrJ8zmW4vqulp6Yw8cFIgX+t5FHZ24D
-	2KkdGJuaVW4z29r5h5Tw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=O7wisWBjQ+hIZfJDmkVyIDEne5X0vaXAe9InpC5cAYk=; b=yip1Mu/bAdE0jU
+	4lSZrIZeGsaIpvuvG/kaNRlwg4P/41LRPUqv+90FcgfUovFdOHrbWrrMVIzpxzNTJ08NSIr5NbxAO
+	2ZYImnebKAWZGnywthnb/P0ii6pGIBGmJBaCGY7dwePu4MLuotZzv0OrIMX6hld9u5P2y0GQLdLqM
+	j4aZcXVQACyoAgdH3S7W5VDKRXYiwBs9qpgsFqWGJbnVeRNpHW9dydd7ftKP6EytZwbPeP07CJ8DV
+	DOZFx++xxDqkrssmTQ51JoFBC+qDnevcZv/55ePZm30q+w6wbwIfM6SlVTo7z+NMC15SCMBJXsBfo
+	ZPBZw30Baic8JEz+u8bQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mhxCU-002RPh-Kf; Tue, 02 Nov 2021 17:03:54 +0000
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1mhxCQ-002RP3-6N; Tue, 02 Nov 2021 17:03:50 +0000
-Date: Tue, 2 Nov 2021 10:03:50 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Geoff Levand <geoff@infradead.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
- Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
- senozhatsky@chromium.org, Richard Weinberger <richard@nod.at>,
- miquel.raynal@bootlin.com, vigneshr@ti.com,
- Vishal L Verma <vishal.l.verma@intel.com>,
- Dave Jiang <dave.jiang@intel.com>,
- "Weiny, Ira" <ira.weiny@intel.com>, Keith Busch <kbusch@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
- linux-block@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- linux-mtd@lists.infradead.org, Linux NVDIMM <nvdimm@lists.linux.dev>,
- linux-nvme@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/13] nvdimm/btt: do not call del_gendisk() if not needed
-Message-ID: <YYFvdiOYoqRPx8JE@bombadil.infradead.org>
-References: <20211015235219.2191207-1-mcgrof@kernel.org>
- <20211015235219.2191207-4-mcgrof@kernel.org>
- <CAPcyv4gU0q=UhDhGoDjK1mwS8WNcWYUXgEb7Rd8Amqr1XFs6ow@mail.gmail.com>
+	id 1mhxY4-002Ugn-89; Tue, 02 Nov 2021 17:26:12 +0000
+Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mhxY1-002UgO-WC
+ for linux-mtd@lists.infradead.org; Tue, 02 Nov 2021 17:26:11 +0000
+Received: by mail-ed1-x52b.google.com with SMTP id m14so402366edd.0
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Nov 2021 10:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1OdaxtB4LssE4g+n1VNEzexPIrO9OAMoPZzNOdCXvKY=;
+ b=D1hjG4k2rBHwrOqHw0wA0eXdXQDI2BQN6griH4YjxUHpAPZa4lOBz1Z8h8MV6iAF91
+ QIt0/fjNJVY4YJs/xgIzw9Ra/yCn9aB9fkEaDmTeR73Xs7YGi7v5KF0veLVLoIva203S
+ EYxZ+/yQXnrko3WCHSbQodZaLqvn4DibqUvrBrydUQYvOIWXz1SZEvtUBu9tFOauIRsr
+ 0IeOe43PsOOz7F8z65/f+nsvqYDx8T5BZ4a9SQGlFvmpjxbElqC+QVVCh0y2SoEMmY/H
+ vOpLLVrqnQdodcC/nmDCMluDiLBqrvtOwPqdlyjs+ciQjTtXiGL1lx5SChibTEp1hzq/
+ V1ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1OdaxtB4LssE4g+n1VNEzexPIrO9OAMoPZzNOdCXvKY=;
+ b=LcW3wmN3lYp3R/gfnHRUjFjv8IR2xVTcJTliIpbxtRl7XqQkdA1JMbMtJnmPbedcxI
+ Rp8zbgoa2ZfD1oVLoNoKI+JiIcjKpwac2d9u9qtgjgUHiYYq90AMM0ertnnX1ApanWs/
+ K06njuwpYIresU3eep8l95skXRufuj/ChRPEeueIv0i40lB+v8FRJCPw+00wYgKhfa59
+ 5Uvump/R5VRjqLGklpmDIW2WxmSFx8Z5KISLc/lKnBQG2jKBYcaN0/i9nJbkhrzRrOZi
+ ndjchqqEgxPMQOSQst1zelZi/k2taZurYnOi9XD5ymIIto18t4RRxMdZx7eiHZEEZCUU
+ vWAA==
+X-Gm-Message-State: AOAM530N89NqgY9GlXJf8VdbXNhFLXmCqW5Havv02zJfWjZBXeLAEE52
+ E8OLvM42La52QuxsRPfiQwQ=
+X-Google-Smtp-Source: ABdhPJxBNZe6+SXory3SW2EaJ0Q55CqSM6F40MCnVFQf5Lm6LwbjSvgWVKf8lR5vxNCMHV6MjEMaJA==
+X-Received: by 2002:aa7:cc96:: with SMTP id p22mr52797018edt.91.1635873967737; 
+ Tue, 02 Nov 2021 10:26:07 -0700 (PDT)
+Received: from md2k7s8c.fritz.box ([2a02:810d:9040:4c1f:e0b6:d0e7:64d2:f3a0])
+ by smtp.gmail.com with ESMTPSA id
+ ho17sm2954008ejc.111.2021.11.02.10.26.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 02 Nov 2021 10:26:07 -0700 (PDT)
+From: Andreas Oetken <ennoerlangen@gmail.com>
+X-Google-Original-From: Andreas Oetken <andreas.oetken@siemens-energy.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Andreas Oetken <ennoerlangen@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Andreas Oetken <andreas.oetken@siemens-energy.com>, stable@vger.kernel.org
+Subject: [PATCH v3] drivers: mtd: Fixed breaking list in __mtd_del_partition.
+Date: Tue,  2 Nov 2021 18:26:04 +0100
+Message-Id: <20211102172604.2921065-1-andreas.oetken@siemens-energy.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4gU0q=UhDhGoDjK1mwS8WNcWYUXgEb7Rd8Amqr1XFs6ow@mail.gmail.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20211102_102610_076384_C95F3AF5 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,47 +95,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Oct 31, 2021 at 10:47:22AM -0700, Dan Williams wrote:
-> On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > We know we don't need del_gendisk() if we haven't added
-> > the disk, so just skip it. This should fix a bug on older
-> > kernels, as del_gendisk() became able to deal with
-> > disks not added only recently, after the patch titled
-> > "block: add flag for add_disk() completion notation".
-> 
-> Perhaps put this in:
-> 
->     commit $abbrev_commit ("block: add flag for add_disk() completion notation")
-> 
-> ...format, but I can't seem to find that commit?
+Not the child partition should be removed from the partition list
+but the partition itself. Otherwise the partition list gets broken
+and any subsequent remove operations leads to a kernel panic.
 
-Indeed, that patch got dropped and it would seem Christoph preferred
-a simpler approach with the new disk_live()
+Fixes: 46b5889cc2c5 ("mtd: implement proper partition handling")
+Signed-off-by: Andreas Oetken <andreas.oetken@siemens-energy.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/mtd/mtdpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 40b3a52ffc5bc3b5427d5d35b035cfb19d03fdd6
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Wed Aug 18 16:45:32 2021 +0200
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 95d47422bbf20..5725818fa199f 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -313,7 +313,7 @@ static int __mtd_del_partition(struct mtd_info *mtd)
+ 	if (err)
+ 		return err;
+ 
+-	list_del(&child->part.node);
++	list_del(&mtd->part.node);
+ 	free_partition(mtd);
+ 
+ 	return 0;
+-- 
+2.30.2
 
-    block: add a sanity check for a live disk in del_gendisk
-
-> If you're touching the changelog how about one that clarifies the
-> impact and drops "we"?
-> "del_gendisk() is not required if the disk has not been added. On
-> kernels prior to commit $abbrev_commit ("block: add flag for
-> add_disk() completion notation")
-> it is mandatory to not call del_gendisk() if the underlying device has
-> not been through device_add()."
-> 
-> Fixes: 41cd8b70c37a ("libnvdimm, btt: add support for blk integrity")
-> 
-> With that you can add:
-> 
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-
-You got it.
-
-  Luis
 
 ______________________________________________________
 Linux MTD discussion mailing list
