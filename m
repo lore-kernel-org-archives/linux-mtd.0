@@ -2,65 +2,90 @@ Return-Path: <SRS0=5hwZ=PV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DC44C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 22:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C3CFC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 23:26:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9EC760EDF
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 22:03:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A9EC760EDF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lwn.net
+	by mail.kernel.org (Postfix) with ESMTPS id 1266C61073
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 23:26:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1266C61073
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EmE3y+TTX92T0CmC9FunaCYJuzOOx3d+yoc+I08Zqmg=; b=bUH1bN2/McET0S
-	h8uJmo7m7QM7Un5mA+APxICWG9oNGjFvagzmhKnwKC1SviwHJbhV3IlFJDo+OGw5uaQma9QEj8Hn7
-	LzRQnuhE+wNkXww4Ue++Dq4wSc6jMX6RDu+27iVSARkIWYwGhysUf6WXAFSxdV3z89KRHa88EUFsw
-	sw1Df21HVM4rAxg6eStw+4CdxnPAvaVAFvDu2UNGhGHIgD2qwki2IpHoGmSUSDhdz3x5qW7UNGus/
-	fft/nB4/SxwFEVZoB2GBltHU5+dmvKZ4fZssYhZlD6n6/Wpn9Q/M0wD4hDb6atQ4FLVqHhaY816SV
-	UWAGfDcdiAQ4HiLhiXfg==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=qXXdDnUYYnakYXSE1NDTxppT08dzPqTrMoyO3UWKmwE=; b=N3Mto80ao86KpW+UDZQXKcFYfY
+	vI9EwmoADTI7VrxYfYoCofbaj/mCQ5kUhVRtAET5dGwEaXm3BzMgSHT9PmeGo6qaka+muisQijylk
+	sSBZcNVGEuyjt3dSHrMAdmUM/8FkZTsBPG5R0PbLvkBTuMWpfMU/2LhZLXkJDQ95j9b49sarjIuac
+	R5uMLDav/KZublRaSuc3yBfRQQrsEX30k8oe28I1EbYMJ5RakUqr5O4uXV3aSlsWd/0xjicBtz6OP
+	Y2+lwpRXcWAala6LHhTFMk3B5HC9w2kvuorRvvE61QAUYkZUvEcuAHjZU/TM7N51GoeJa/TVM1upp
+	2hTIAj3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mi1rP-0036bN-1m; Tue, 02 Nov 2021 22:02:27 +0000
-Received: from ms.lwn.net ([45.79.88.28])
+	id 1mi3AS-003O4P-3f; Tue, 02 Nov 2021 23:26:12 +0000
+Received: from mail-yb1-xb29.google.com ([2607:f8b0:4864:20::b29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mi1rL-0036a2-Uy
- for linux-mtd@lists.infradead.org; Tue, 02 Nov 2021 22:02:25 +0000
-Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
- by ms.lwn.net (Postfix) with ESMTPA id F043C5ECA;
- Tue,  2 Nov 2021 22:02:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net F043C5ECA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
- t=1635890540; bh=8pBr2TGHVgYTbZKGOPAv1jDSquEjlbn/oydrgdQgtK4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=nr0bdIskuK2HW2Q8Cb+ryhQcfnecfgS2qIFFG8t0Lhb4/CSC/nJlM8fnEwozR90P2
- 5nOaoPg9FVzojETa+vWez9nZbujYQxyPkAhzSFlvjuKcbKoPjiG8wzHU1EmCEc1Sfc
- 9JczoYVn2KvbWysLKCLNBNxD91n4NoaLQKww/wYonip59A5O1GxKrPkfDXNK+QnXr4
- aKLnlu83RGYIJMsMt68uSr8uJPGnskpBfqA6i60F+hu/N5x8BSFRLrnoOwqU43ndNi
- zExnf+GC+77gu8NOVRM4x+uSr13jEwDyGYORVoURdtmZIQBWs5Pci8EtOX5o4C+4Gr
- uD7NThWjP8imQ==
-From: Jonathan Corbet <corbet@lwn.net>
-To: linux-kernel@vger.kernel.org
-Cc: Jonathan Corbet <corbet@lwn.net>, Boris Brezillon <bbrezillon@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH 6/9] mtd: remove unused header file
- <linux/mtd/latch-addr-flash.h>
-Date: Tue,  2 Nov 2021 16:02:00 -0600
-Message-Id: <20211102220203.940290-7-corbet@lwn.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211102220203.940290-1-corbet@lwn.net>
-References: <20211102220203.940290-1-corbet@lwn.net>
+ id 1mi3AO-003O3f-MV
+ for linux-mtd@lists.infradead.org; Tue, 02 Nov 2021 23:26:10 +0000
+Received: by mail-yb1-xb29.google.com with SMTP id 131so2058328ybc.7
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Nov 2021 16:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=Cu6J0IQ4SS7piVDY+POK17T7s5SlbfDSNogv9COZfaU=;
+ b=YO06sruHwC5tUgAXNeHgGeaZaGnp92/QWUrvCSGUnpDqr9ZWplO8rNzvu1cCyqL5hz
+ BoPmf49zAjvhKafF0J0rtslVp8loGQ3yofsK64n4oY5rJE8uIio7xO6PLSqsH8dw6yWn
+ Czy6abIv7AOxA43e7APwiuwbsp+Y+jbFOVSo4C1pMj+cZQHZDGpzDrhemxOg1PkDfbbf
+ 3jBH5zbW9IRkrNXSDWT1nODkOmgK+Y5cPZT5RC5aWhYv+H/QkkNYDGAT5252O4CKn9M0
+ moCr20unk6aa0cH8Gji2JBSnk0028qZ8Se1BNgtY2fsUt/g3+doQbOJCBVZgxK9NazYX
+ o1SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=Cu6J0IQ4SS7piVDY+POK17T7s5SlbfDSNogv9COZfaU=;
+ b=CO4CKj8P7Z6wlW+XWj2I8DWKeADdf006ZjLE2jRXE7qAFaq6JzP/arTygZoTXnzq7f
+ Pw2QLchzrAHiPF78JUIlfG1R1R9A/z4wKWOb5wMw1W0O75g2M+s9bIzGjG0ONUafGXay
+ fZwyXKCSq7dhP+x4Dr/1My060ruLQ+3tWwo65ltqFe3djQ8V715VcL1lK2KG7C835K1w
+ sVAeQFaVWPY6RaFNfGaxyd30XotK0EV6ELypsvMx0/Xd8UHaKVf2VKtayJCv8OaEAOO4
+ fNj3Ek9KIDaCnphPTUPTZsQU/7Q/kD9cpr+JcaSDHEw48/Hoq/Zo9uYwj208Ym8wT00p
+ Q/mQ==
+X-Gm-Message-State: AOAM531KS7mUjY7B+gKY6KmbuLjqo2xK6B+vCnro4ZJIzDiNPMqdtN5J
+ vh7d6mksFyQu/WuKmDMupGXUWBuCcZ9gbqT466w=
+X-Google-Smtp-Source: ABdhPJwedsYZLDHlJQjqewFfB4TtfbiChus+iG3ErkENprCWnTpybff4ZfVlqb49nzVBliXr45KvILkjXpx7uOdGgvk=
+X-Received: by 2002:a25:f502:: with SMTP id a2mr42181223ybe.254.1635895567114; 
+ Tue, 02 Nov 2021 16:26:07 -0700 (PDT)
 MIME-Version: 1.0
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <YYElefbpP4pwfmUl@shikoro>
+In-Reply-To: <YYElefbpP4pwfmUl@shikoro>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Tue, 2 Nov 2021 23:25:40 +0000
+Message-ID: <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>, 
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+ linux-mtd@lists.infradead.org, linux-spi <linux-spi@vger.kernel.org>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Prabhakar <prabhakar.csengg@gmail.com>, 
+ Biju Das <biju.das.jz@bp.renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211102_150224_026588_D0CB82F9 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20211102_162608_762585_E9A12EBC 
+X-CRM114-Status: GOOD (  15.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,39 +97,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Q29tbWl0IGQyNGRiZDc1NDFmZiAoIm10ZDogbWFwczogR2V0IHJpZCBvZiB0aGUgbGF0Y2gtYWRk
-ci1mbGFzaCBkcml2ZXIiKQpyZW1vdmVkIHRoZSBsYXN0IHVzZXIgb2YgPGxpbnV4L210ZC9sYXRj
-aC1hZGRyLWZsYXNoLmg+IGJ1dCBsZWZ0IHRoZSBoZWFkZXIKZmlsZSBiZWhpbmQuICBOb3RoaW5n
-IHVzZXMgdGhpcyBmaWxlLCBkZWxldGUgaXQgbm93LgoKQ2M6IEJvcmlzIEJyZXppbGxvbiA8YmJy
-ZXppbGxvbkBrZXJuZWwub3JnPgpDYzogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290
-bGluLmNvbT4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBWaWdu
-ZXNoIFJhZ2hhdmVuZHJhIDx2aWduZXNockB0aS5jb20+CkNjOiBsaW51eC1tdGRAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpTaWduZWQtb2ZmLWJ5OiBKb25hdGhhbiBDb3JiZXQgPGNvcmJldEBsd24ubmV0
-PgotLS0KIGluY2x1ZGUvbGludXgvbXRkL2xhdGNoLWFkZHItZmxhc2guaCB8IDI5IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyOSBkZWxldGlvbnMoLSkKIGRl
-bGV0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L210ZC9sYXRjaC1hZGRyLWZsYXNoLmgKCmRp
-ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9sYXRjaC1hZGRyLWZsYXNoLmggYi9pbmNsdWRl
-L2xpbnV4L210ZC9sYXRjaC1hZGRyLWZsYXNoLmgKZGVsZXRlZCBmaWxlIG1vZGUgMTAwNjQ0Cmlu
-ZGV4IGU5NGI4ZTEyODA3NC4uMDAwMDAwMDAwMDAwCi0tLSBhL2luY2x1ZGUvbGludXgvbXRkL2xh
-dGNoLWFkZHItZmxhc2guaAorKysgL2Rldi9udWxsCkBAIC0xLDI5ICswLDAgQEAKLS8qCi0gKiBJ
-bnRlcmZhY2UgZm9yIE5PUiBmbGFzaCBkcml2ZXIgd2hvc2UgaGlnaCBhZGRyZXNzIGxpbmVzIGFy
-ZSBsYXRjaGVkCi0gKgotICogQ29weXJpZ2h0IMKpIDIwMDggTW9udGFWaXN0YSBTb2Z0d2FyZSwg
-SW5jLiA8c291cmNlQG12aXN0YS5jb20+Ci0gKgotICogVGhpcyBmaWxlIGlzIGxpY2Vuc2VkIHVu
-ZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKLSAqIHZlcnNp
-b24gMi4gVGhpcyBwcm9ncmFtIGlzIGxpY2Vuc2VkICJhcyBpcyIgd2l0aG91dCBhbnkgd2FycmFu
-dHkgb2YgYW55Ci0gKiBraW5kLCB3aGV0aGVyIGV4cHJlc3Mgb3IgaW1wbGllZC4KLSAqLwotI2lm
-bmRlZiBfX0xBVENIX0FERFJfRkxBU0hfXwotI2RlZmluZSBfX0xBVENIX0FERFJfRkxBU0hfXwot
-Ci1zdHJ1Y3QgbWFwX2luZm87Ci1zdHJ1Y3QgbXRkX3BhcnRpdGlvbjsKLQotc3RydWN0IGxhdGNo
-X2FkZHJfZmxhc2hfZGF0YSB7Ci0JdW5zaWduZWQgaW50CQl3aWR0aDsKLQl1bnNpZ25lZCBpbnQJ
-CXNpemU7Ci0KLQlpbnQJCQkoKmluaXQpKHZvaWQgKmRhdGEsIGludCBjcyk7Ci0Jdm9pZAkJCSgq
-ZG9uZSkodm9pZCAqZGF0YSk7Ci0Jdm9pZAkJCSgqc2V0X3dpbmRvdykodW5zaWduZWQgbG9uZyBv
-ZmZzZXQsIHZvaWQgKmRhdGEpOwotCXZvaWQJCQkqZGF0YTsKLQotCXVuc2lnbmVkIGludAkJbnJf
-cGFydHM7Ci0Jc3RydWN0IG10ZF9wYXJ0aXRpb24JKnBhcnRzOwotfTsKLQotI2VuZGlmCi0tIAoy
-LjMxLjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Wolfram,
+
+Thank you for the review.
+
+On Tue, Nov 2, 2021 at 11:48 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> Hi Prabhakar,
+>
+> > +#define RPCIF_PHYADD         0x0070  /* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+> > +#define RPCIF_PHYWR          0x0074  /* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+>
+> Nice detailed research, thanks! Minor nit: Keep the sorting
+> alphabetical: D3, E3, V3M.
+>
+> > +static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
+> > +{
+> > +     u32 data;
+> > +
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000022);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000024);
+> > +
+> > +     regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
+> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+> > +}
+>
+> Still magic values here. Don't you have them explained in your Gen3
+> documentation? It is tables 62.16 and 62.17 in my versions.
+>
+Oops I missed that, does the below look good?
+
+#define RPCIF_PHYADD_ADD_MD 0x00
+#define RPCIF_PHYADD_ADD_RDLSEL 0x22
+#define RPCIF_PHYADD_ADD_FDLSEL 0x24
+#define RPCIF_PHYADD_ADD_RDLMON 0x26
+#define RPCIF_PHYADD_ADD_FDLMON 0x28
+
+#define RPCIF_PHYADD_ACCEN BIT(31)
+#define RPCIF_PHYADD_RW BIT(30)
+#define RPCIF_PHYADD_ADD(v) (v & 0x3f)
+
+#define RPCIF_MD_PHYREGEN_VAL 0xa539
+#define RPCIF_MD_PHYREGEN(v) ((v & 0xffff) << 16)
+
+#define RPCIF_RDLSEL_QSPI0DLTAPSEL(v) (v & 0x1f)
+#define RPCIF_RDLSEL_QSPI0DLSETEN(v) ((v & 0x1) << 7)
+#define RPCIF_RDLSEL_QSPI1DLTAPSEL(v) ((v & 0x1f) << 8)
+#define RPCIF_RDLSEL_QSPI1DLSETEN(v) ((v & 0x1) << 15)
+
+#define RPCIF_FDLSEL_QSPI0DLTAPSEL(v) (v & 0x1f)
+#define RPCIF_FDLSEL_QSPI0DLSETEN(v) ((v & 0x1) << 7)
+#define RPCIF_FDLSEL_QSPI1DLTAPSEL(v) ((v & 0x1f) << 8)
+#define RPCIF_FDLSEL_QSPI1DLSETEN(v) ((v & 0x1) << 15)
+
+> +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+>
+For the above do you have any suggestions? As I couldn't find any
+details about it or shall I just go with magic numbers for now?
+
+> Other than these, looks good.
+>
+thanks, once we agree upon above I shall re-spin v3.
+
+Cheers,
+Prabhakar
+
+> Thanks,
+>
+>    Wolfram
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
