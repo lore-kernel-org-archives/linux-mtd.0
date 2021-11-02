@@ -2,63 +2,84 @@ Return-Path: <SRS0=5hwZ=PV=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F054C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 11:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5166C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 11:49:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EEAE8603E9
-	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 11:04:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EEAE8603E9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=geanix.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5B27660F56
+	for <linux-mtd@archiver.kernel.org>; Tue,  2 Nov 2021 11:49:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5B27660F56
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bHX4zgtzR8h1ICSn+vH/4KMoRVQOHVzVFS8KaUDTPlM=; b=ixzoYGaP/9VFg1
-	xc3VZSmSdUTkKtv0wE1V86ORj2wpsADjDkWBi/MOHjJG2bzJoY7BJ2IehLub8Qkz4of1gd2igJPoP
-	uUVZPCGZ8e52HuOX8dGJdKjqVhxM/GdU7+XOE+bDK2GAYgmAXdEGn5VnSxc26V5PMprs4XFF8q/r6
-	tOYOGVueTUi0MPQnqC8vM7HfG50jurEfOAWxFEwAFNe8C/XqD8Br43WjzXRIao2Y9GNgAgPUE5ZtG
-	0TlGJKrAt7lu9e3j+qeHmhvNZFV/vFjIxQAqdaJB25IP+rfGDndDWbhANNsHHkK6htvOOWZ1U/F0z
-	1hdAp1hJV9SbeN8t1U+Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yzn4HFdNJ6+Vhd6yKRgbY+qbl5gwzOexnnm6YdcJLFg=; b=tXiRR6upkRETArYeXMOtmM6hMW
+	OgamTcl3sU/qYYguFdSw5kPn+Wu0UM3nwqwzM092FNLDz8kxtZBjw1q9xCkezkspzng6VkL6zyDWm
+	LUlF0wkji2Ya7FhdJil0DaOazD3bzh+04Equ7Z+XyUGF2Q8FJefYAdkOaipt8TLhhToheJNWePERN
+	24kgpGMVKguObLmWEVyXT4LVoeZRbxSdjrMOW8gDPwhdVe5gONyFWufHmyvZ09QIxIDm7KBw8yE7F
+	BEpYsBU8Xmo6JEbvFH73tyE2WJAf5rhE/BcrcGazGDD+T3uYS/yDzm2C7KoDpBPuHo9VTyVGLoXvo
+	JSJIy4lQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mhrZh-001R5g-PS; Tue, 02 Nov 2021 11:03:29 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1mhsH9-001YHH-Qv; Tue, 02 Nov 2021 11:48:23 +0000
+Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mhrYW-001Qd8-Og
- for linux-mtd@lists.infradead.org; Tue, 02 Nov 2021 11:02:18 +0000
-Received: from zen.. (unknown [185.17.218.86])
- by first.geanix.com (Postfix) with ESMTPSA id 408B4D747F;
- Tue,  2 Nov 2021 11:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1635850934; bh=DpYIWsQGX2i1qG2VKEU7tQ6gp/DP02vwh6pgvrOgzt4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=XjEeXsOe1x1ZRnaG9bJmovs49GhPJcD+3AwNjG6Ln+AETtqAMXRhGPsxGsJ510/kU
- LfNppilsOdb9HPs6c/rPT2vIdPDE2FFIBFYE2CyXpzawTPOFv9T00DsF5bBFV5T8+b
- 5I0X1CdteS2a5eAc4Y3D3XmH1ECRcy8ax6lWpAQpoyv/fWdeuPLvxp7YGEjWk+qN2c
- LQXDlpgOBZQ8BNzWbk2yYzGQHepcsSNEDBAWI+xy/z+5eLp9orPJTKRQf30vke+EV5
- Lip1D1qvO1UslkX6aRGJBMwjB9JfUbu68itExXPTbEa+yyryIqXqKXvcuzTZu4sWDy
- uUJO6wYdegy9Q==
-From: Sean Nyekjaer <sean@geanix.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Sean Nyekjaer <sean@geanix.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v5 4/4] mtd: rawnand: remove suspended check
-Date: Tue,  2 Nov 2021 12:02:04 +0100
-Message-Id: <20211102110204.3334609-5-sean@geanix.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211102110204.3334609-1-sean@geanix.com>
-References: <20211102110204.3334609-1-sean@geanix.com>
+ id 1mhsH6-001YGK-82
+ for linux-mtd@lists.infradead.org; Tue, 02 Nov 2021 11:48:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=k1; bh=dN9MYJ4hkMa2VeKQrok5+AhQyNq+
+ WxeIgQN6Qx6FS+Y=; b=V6tP6HsdN3Xj6iLwUvhxiY4tcwSh5biRiwe4NwNydSem
+ OSUAKddVbsfz9ExrsubzphmbNQ4SuIbUDhG3GWyVCxcfCUPoGqZoFd8pTEqtgAZN
+ eO+o7DQebaG8rWHzEe+5zfLTtVGzQ/rjIuIMp0B/KJD1YdwS4p8YJmZlA/Gy23s=
+Received: (qmail 3432356 invoked from network); 2 Nov 2021 12:48:09 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
+ authenticated); 2 Nov 2021 12:48:09 +0100
+X-UD-Smtp-Session: l3s3148p1@6ngQ3szPvrEgAQnoAGZOAQNlyaw0xFC0
+Date: Tue, 2 Nov 2021 12:48:09 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+Message-ID: <YYElefbpP4pwfmUl@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Mark Brown <broonie@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>
+References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
+In-Reply-To: <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211102_040217_128316_622DCF9F 
-X-CRM114-Status: GOOD (  22.84  )
+X-CRM114-CacheID: sfid-20211102_044820_617282_2638543F 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,177 +91,87 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7530846753464205909=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Access is protected in upper MTD layer when MTD devices are suspended.
 
-Commit ("mtd: core: protect access to MTD devices while in suspend")
-introduces access protection, so it's safe to remove suspended checks.
+--===============7530846753464205909==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Xw48OLVEQGVpdzaE"
+Content-Disposition: inline
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/mtd/nand/raw/nand_base.c | 52 ++++++++------------------------
- include/linux/mtd/rawnand.h      |  5 +--
- 2 files changed, 14 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..aa2874ae3c4a 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -332,19 +332,11 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  * @chip: NAND chip structure
-  *
-  * Lock the device and its controller for exclusive access
-- *
-- * Return: -EBUSY if the chip has been suspended, 0 otherwise
-  */
--static int nand_get_device(struct nand_chip *chip)
-+static void nand_get_device(struct nand_chip *chip)
- {
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		mutex_unlock(&chip->lock);
--		return -EBUSY;
--	}
- 	mutex_lock(&chip->controller->lock);
--
--	return 0;
- }
- 
- /**
-@@ -573,10 +565,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
- 		nand_erase_nand(chip, &einfo, 0);
- 
- 		/* Write bad block marker to OOB */
--		ret = nand_get_device(chip);
--		if (ret)
--			return ret;
--
-+		nand_get_device(chip);
- 		ret = nand_markbad_bbm(chip, ofs);
- 		nand_release_device(chip);
- 	}
-@@ -3756,9 +3745,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 	    ops->mode != MTD_OPS_RAW)
- 		return -ENOTSUPP;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	if (!ops->datbuf)
- 		ret = nand_do_read_oob(chip, from, ops);
-@@ -4345,13 +4332,11 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 			  struct mtd_oob_ops *ops)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
--	int ret;
-+	int ret = 0;
- 
- 	ops->retlen = 0;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	switch (ops->mode) {
- 	case MTD_OPS_PLACE_OOB:
-@@ -4410,10 +4395,8 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 	if (nand_region_is_secured(chip, instr->addr, instr->len))
- 		return -EIO;
- 
--	/* Grab the lock and see if the device is available */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 
- 	/* Shift to get first page */
- 	page = (int)(instr->addr >> chip->page_shift);
-@@ -4499,8 +4482,8 @@ static void nand_sync(struct mtd_info *mtd)
- 
- 	pr_debug("%s: called\n", __func__);
- 
--	/* Grab the lock and see if the device is available */
--	WARN_ON(nand_get_device(chip));
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 	/* Release it and go back */
- 	nand_release_device(chip);
- }
-@@ -4517,9 +4500,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
- 	int ret;
- 
- 	/* Select the NAND device */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	nand_select_target(chip, chipnr);
- 
-@@ -4565,8 +4546,6 @@ static int nand_suspend(struct mtd_info *mtd)
- 	mutex_lock(&chip->lock);
- 	if (chip->ops.suspend)
- 		ret = chip->ops.suspend(chip);
--	if (!ret)
--		chip->suspended = 1;
- 	mutex_unlock(&chip->lock);
- 
- 	return ret;
-@@ -4580,15 +4559,10 @@ static void nand_resume(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
-+
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		if (chip->ops.resume)
--			chip->ops.resume(chip);
--		chip->suspended = 0;
--	} else {
--		pr_err("%s called for a chip which is not in suspended state\n",
--			__func__);
--	}
-+	if (chip->ops.resume)
-+		chip->ops.resume(chip);
- 	mutex_unlock(&chip->lock);
- }
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..1198a6548912 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1237,9 +1237,7 @@ struct nand_secure_region {
-  * @pagecache.page: Page number currently in the cache. -1 means no page is
-  *                  currently cached
-  * @buf_align: Minimum buffer alignment required by a platform
-- * @lock: Lock protecting the suspended field. Also used to serialize accesses
-- *        to the NAND device
-- * @suspended: Set to 1 when the device is suspended, 0 when it's not
-+ * @lock: Lock to serialize accesses to the NAND device
-  * @cur_cs: Currently selected target. -1 means no target selected, otherwise we
-  *          should always have cur_cs >= 0 && cur_cs < nanddev_ntargets().
-  *          NAND Controller drivers should not modify this value, but they're
-@@ -1293,7 +1291,6 @@ struct nand_chip {
- 
- 	/* Internals */
- 	struct mutex lock;
--	unsigned int suspended : 1;
- 	int cur_cs;
- 	int read_retries;
- 	struct nand_secure_region *secure_regions;
--- 
-2.33.0
+--Xw48OLVEQGVpdzaE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi Prabhakar,
+
+> +#define RPCIF_PHYADD		0x0070	/* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+> +#define RPCIF_PHYWR		0x0074	/* R/W available on R-Car E3/D3/V3M and RZ/G2{E,L} */
+
+Nice detailed research, thanks! Minor nit: Keep the sorting
+alphabetical: D3, E3, V3M.
+
+> +static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
+> +{
+> +	u32 data;
+> +
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000022);
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00008080);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000024);
+> +
+> +	regmap_read(rpc->regmap, RPCIF_PHYCNT, &data);
+> +	regmap_write(rpc->regmap, RPCIF_PHYCNT, data | RPCIF_PHYCNT_CKSEL(3));
+> +	regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> +	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+> +}
+
+Still magic values here. Don't you have them explained in your Gen3
+documentation? It is tables 62.16 and 62.17 in my versions.
+
+Other than these, looks good.
+
+Thanks,
+
+   Wolfram
+
+--Xw48OLVEQGVpdzaE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGBJXkACgkQFA3kzBSg
+Kbai5w//U9777KhbnAVOH5ipoN2F3nwqrx58di9AO1NxfqlO2pTx9hlFix1jbQ3m
+BMbw0km4viA9iT8XWRI1GsI3EkxIP2HKQJKIww4vxziDvwmT5KtUWzFcvqc6/SE0
+Z8i1j9swoSfgJo0ZFeAhPjNl4YYtsf2ESUl1Wx1xFQc3oGDzsRHUULw5SugbX79H
+qgER7VTWeZhL4eQ1rBUCVVY3G2JPtsLhYZ2jf72jUDBIRS39/BlyaCrSETwzYVcH
+HRGodyfWogpB7t36UdbxesdWM+OMnKM0JCKZEf30sQeFp5YaTqcLYBoVvwg+tePC
+y25zwria2RbGl5FplptuDnj7cg1Khpz/n7uXCmeaOejk8yYF8DR6g1NET4Neo1Rz
+lXlukauT07VLU47RuuQqlg/4z39ai3DphF4ew2qMTSh4Sz11sAn9F3+OEPUuMUiG
+JIvu9CVrie13frUtSd7Xc2M897hyJMP7lKiUP2jrw5klHFPZH7yryCMvKeXEOALX
+rv0Jp10phC2oBtO6HjPlXIQUCcVnHe2BUXAISMDN6l1McnR16SoDi0F00d6Z9YB2
+G3Svf/sfaN+As5bNqkywaalSVfvt8IfqxqXtYRfLyKzwJCUY+f8JhF75sgX4HbGr
+eDYheRfVDVZHewRUDRkdYXtyBlczYwo3q6pgYOCW3gOJ9k12g2E=
+=45MZ
+-----END PGP SIGNATURE-----
+
+--Xw48OLVEQGVpdzaE--
+
+
+--===============7530846753464205909==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============7530846753464205909==--
+
