@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E2FC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B20DC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:47:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8ACD060F58
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:46:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8ACD060F58
+	by mail.kernel.org (Postfix) with ESMTPS id ECB5D604DA
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:47:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECB5D604DA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eXQrmUipAXN5OZtwulI9cB6Wzjst1R2qLv1n2RO4fg4=; b=uMsgL39B1+bBn/
-	Vn4GXswdwCl0W72a+IgUTCSJg5TJad3nJO2LZxEGo/zZtA5zl4QuDX80PSKQ7icyaR9nyrwI09jJ4
-	tsL1DDgBAONrkncbRAo6RaOt/tMS8Tdq50TSxaCtol4FrNjU9dGDRfHASR03IaaRamKf3fUj3dkPQ
-	08UP0uvRBRD4urk/odHMq16kB2CFwFbW8kvULewfHyA7u6HmeuQJRYSBE8BLxayG1yr02ztW4PTCr
-	mBmHkEvTYf+hf1nAcJSPM5fmRsnrtN/Dw5C8jamo7nKTaXg/HjjoVQ4rXsEYzblE0CNrTa9HKboLE
-	9EL/xf1nD0ZsgCmXKrBQ==;
+	List-Owner; bh=ZqC/ikLLhfpV+66MhkIPPGxnd9JgvwbLnKOOVbDldtA=; b=SrzCo5Mz1f3tws
+	itah+lOtsGcMKv2W4pNksv1nzRT8ZZR6P0wFXUC+pbQtobV3aiTQFef9TFqaqAwRiw3n5T3BSZRHs
+	oW7HZ2Q1DQSaHCO0fxvRG59Pl7WycbNZKcrB/pkT129OA3sZ5nk/I9bgu+GLSGuyrfypH/D7foDP6
+	hbvLp3uMv+cZMU7DesZZKpz9tCbHqklHKwEr/5ole0pQOIQghl/wIazefOwcYar5GhP+tqV/Ks4BE
+	2wNKMzJzfd4KU5RG4zvrS8ySHdvVibP1cxlaC4I/7HMkQzudTl8Vd5nnMN2sFc6w7RzbYUGwWSXM+
+	ONiMVP5Ea7Snx3EWbM9A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miKKe-005zQE-GI; Wed, 03 Nov 2021 17:45:52 +0000
+	id 1miKKu-005zc2-Ml; Wed, 03 Nov 2021 17:46:08 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miKKA-005z5Z-Ga; Wed, 03 Nov 2021 17:45:22 +0000
+ (Red Hat Linux)) id 1miKKA-005z5T-Bw; Wed, 03 Nov 2021 17:45:22 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,9 +39,10 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 07/13] nvdimm/pmem: use add_disk() error handling
-Date: Wed,  3 Nov 2021 10:45:15 -0700
-Message-Id: <20211103174521.1426407-8-mcgrof@kernel.org>
+Subject: [PATCH v3 04/13] nvdimm/blk: avoid calling del_gendisk() on early
+ failures
+Date: Wed,  3 Nov 2021 10:45:12 -0700
+Message-Id: <20211103174521.1426407-5-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103174521.1426407-1-mcgrof@kernel.org>
 References: <20211103174521.1426407-1-mcgrof@kernel.org>
@@ -62,41 +63,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that device_add_disk() supports returning an error, use
-that. We must unwind alloc_dax() on error.
+If nd_integrity_init() fails we'd get del_gendisk() called,
+but that's not correct as we should only call that if we're
+done with device_add_disk(). Fix this by providing unwinding
+prior to the devm call being registered and moving the devm
+registration to the very end.
+
+This should fix calling del_gendisk() if nd_integrity_init()
+fails. I only spotted this issue through code inspection. It
+does not fix any real world bug.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/pmem.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/nvdimm/blk.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index d98af6c31f42..fe7ece1534e1 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -505,7 +505,9 @@ static int pmem_attach_disk(struct device *dev,
- 	dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
- 	pmem->dax_dev = dax_dev;
+diff --git a/drivers/nvdimm/blk.c b/drivers/nvdimm/blk.c
+index b6c6866f9259..4eef67918a7e 100644
+--- a/drivers/nvdimm/blk.c
++++ b/drivers/nvdimm/blk.c
+@@ -239,6 +239,7 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
+ 	resource_size_t available_disk_size;
+ 	struct gendisk *disk;
+ 	u64 internal_nlba;
++	int rc;
  
--	device_add_disk(dev, disk, pmem_attribute_groups);
-+	rc = device_add_disk(dev, disk, pmem_attribute_groups);
-+	if (rc)
-+		goto out_cleanup_dax;
- 	if (devm_add_action_or_reset(dev, pmem_release_disk, pmem))
- 		return -ENOMEM;
+ 	internal_nlba = div_u64(nsblk->size, nsblk_internal_lbasize(nsblk));
+ 	available_disk_size = internal_nlba * nsblk_sector_size(nsblk);
+@@ -255,20 +256,26 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
+ 	blk_queue_logical_block_size(disk->queue, nsblk_sector_size(nsblk));
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
  
-@@ -516,6 +518,10 @@ static int pmem_attach_disk(struct device *dev,
- 	if (!pmem->bb_state)
- 		dev_warn(dev, "'badblocks' notification disabled\n");
+-	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
+-		return -ENOMEM;
+-
+ 	if (nsblk_meta_size(nsblk)) {
+-		int rc = nd_integrity_init(disk, nsblk_meta_size(nsblk));
++		rc = nd_integrity_init(disk, nsblk_meta_size(nsblk));
+ 
+ 		if (rc)
+-			return rc;
++			goto out_before_devm_err;
+ 	}
+ 
+ 	set_capacity(disk, available_disk_size >> SECTOR_SHIFT);
+ 	device_add_disk(dev, disk, NULL);
++
++	/* nd_blk_release_disk() is called if this fails */
++	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
++		return -ENOMEM;
++
+ 	nvdimm_check_and_set_ro(disk);
  	return 0;
 +
-+out_cleanup_dax:
-+	kill_dax(pmem->dax_dev);
-+	put_dax(pmem->dax_dev);
- out:
- 	blk_cleanup_disk(pmem->disk);
- 	return rc;
++out_before_devm_err:
++	blk_cleanup_disk(disk);
++	return rc;
+ }
+ 
+ static int nd_blk_probe(struct device *dev)
 -- 
 2.33.0
 
