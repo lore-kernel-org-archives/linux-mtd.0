@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C6FDC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65C13C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:05:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70FFF604DC
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:05:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 70FFF604DC
+	by mail.kernel.org (Postfix) with ESMTPS id 3728D611C1
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:05:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3728D611C1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ALcpOsC4OeCZkKaiMXMlDDSzVVPrGYhW7rClJawUVrk=; b=o4dqMRDKH91/tL
-	zTLScrdVAsZtHbX4uhDAGv7r7mj0GH8IdfR4Xb9iosBPt9LHYQd5dDbTX8xCC4ceHXEbggxNIW9Ep
-	y5eJ6fKW7EezjBWm9lV7PbcQjiKHRdHQw0twS90ejhPnK0DT3HHN7VCEKNL8axc5Vi3md00lJOYJM
-	Xx3VvULgrOOa+dsM268kkUcT1ytrGwHkPF2yeuWDJDDUYhVnzSud27P040snUn5yI902f7xziZD1v
-	eHjZzWJfjW+HB9hfblGOiA18HPw0kPSzwpVLrUw90qmrLisraZAWgLgYD7l2t+OaZawS5APClBIw6
-	xMGUW2hsSfvk1N2YxAog==;
+	List-Owner; bh=sRfQVESFJEG0vsLJlr9rPWH+KT3RCakmBUi5fz77vbs=; b=00GE6YYRMBlegb
+	QlowKpqJkaMBc1iH/fqOFpJG3FuL8PylFbLt1VkS2B2ts6EvcOvlmTOmwgFfwooy1cAq9GicMmmxh
+	r+FGQq2yQpBVRWYBXG+veYB65UFf1hcUDXohaX9aJpt6tXECHJlLVM4Dky4yFHDBU1z5AWH09AZMJ
+	ZKIQuThaOAk+Xe3qqq6Zx3+Z3SQ+4OoavKbliQxlAEyNAxHbnvaSfSZ1UTLhE+4Oi7wdra5qS1/1y
+	Q+hTmpNL0IoFtA6bBlRbZjfffNpDJcTWnYwMmbt0fZam6hkg5KbEY7gocxtnN+++FcoGrLC9KeFtz
+	vajHtk1sp7JSbAIHWR1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miPJW-006t0O-9k; Wed, 03 Nov 2021 23:05:02 +0000
+	id 1miPJj-006t6J-5x; Wed, 03 Nov 2021 23:05:15 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miPJ8-006seR-J4; Wed, 03 Nov 2021 23:04:38 +0000
+ (Red Hat Linux)) id 1miPJ8-006seX-Mg; Wed, 03 Nov 2021 23:04:38 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,9 +39,9 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v5 04/14] nvdimm/blk: add error handling support for add_disk()
-Date: Wed,  3 Nov 2021 16:04:27 -0700
-Message-Id: <20211103230437.1639990-5-mcgrof@kernel.org>
+Subject: [PATCH v5 07/14] z2ram: add error handling support for add_disk()
+Date: Wed,  3 Nov 2021 16:04:30 -0700
+Message-Id: <20211103230437.1639990-8-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103230437.1639990-1-mcgrof@kernel.org>
 References: <20211103230437.1639990-1-mcgrof@kernel.org>
@@ -64,40 +64,40 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
-error handling.
+error handling. Only the disk is cleaned up inside
+z2ram_register_disk() as the caller deals with the rest.
 
-Since nvdimm/blk uses devm we just need to move the devm
-registration towards the end. And in hindsight, that seems
-to also provide a fix given del_gendisk() should not be
-called unless the disk was already added via add_disk().
-The probably of that issue happening is low though, like
-OOM while calling devm_add_action(), so the fix is minor.
-
-We manually unwind in case of add_disk() failure prior
-to the devm registration.
-
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/blk.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/block/z2ram.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvdimm/blk.c b/drivers/nvdimm/blk.c
-index 4eef67918a7e..228c33b8d1d6 100644
---- a/drivers/nvdimm/blk.c
-+++ b/drivers/nvdimm/blk.c
-@@ -264,7 +264,9 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
- 	}
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index 4eef218108c6..ccc52c935faf 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
+ static int z2ram_register_disk(int minor)
+ {
+ 	struct gendisk *disk;
++	int err;
  
- 	set_capacity(disk, available_disk_size >> SECTOR_SHIFT);
--	device_add_disk(dev, disk, NULL);
-+	rc = device_add_disk(dev, disk, NULL);
-+	if (rc)
-+		goto out_before_devm_err;
+ 	disk = blk_mq_alloc_disk(&tag_set, NULL);
+ 	if (IS_ERR(disk))
+@@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
+ 		sprintf(disk->disk_name, "z2ram");
  
- 	/* nd_blk_release_disk() is called if this fails */
- 	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
+ 	z2ram_gendisk[minor] = disk;
+-	add_disk(disk);
+-	return 0;
++	err = add_disk(disk);
++	if (err)
++		blk_cleanup_disk(disk);
++	return err;
+ }
+ 
+ static int __init z2_init(void)
 -- 
 2.33.0
 
