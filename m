@@ -2,33 +2,33 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E47BC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:10:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0508C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:11:07 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2876604D2
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:10:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E2876604D2
+	by mail.kernel.org (Postfix) with ESMTPS id 9C051604D2
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:11:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9C051604D2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=P+25F939SG+4MfA90um/oSqCkp+uvQizWq5davgZVkw=; b=qSpDH6/pWbtnA8
-	BJTHgwNk7quI1YL+Dju/BoUoYyy6KbDjGKhWQbo/FFXVokQ4TmvzyuSFd4QS3Tcf24jDVfXKcwpZ8
-	Hnv04ZUA7tItgLMP77A59s4N9zL0/SjJVixBGS0GTnwGEKCgijC5dFWB1UQQyUHfsU/Um+xjmfKDz
-	pW+zZw+DBLFkd1C6OXsurlnvGKP9XMfQ6SLtKRfu0Am6xdFKw8jB2htEXSvP+/RNAQsqOR+OU6tOn
-	QULzubk9giMkeweig+aJUYmXz55ScfVVY3ubWyOPHJ38ID3LPRro8d34u4WhJWm2jL4+fQ+qF1SlK
-	M9SHMFkzTJKRI0dcsjUQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=n72Np2oxgCCoiCmG18W3cJU+YBJ+V67H9OTqAtp/zKg=; b=rPtnUIwZUhX8xe
+	3Fv7ej0hR6IGe0oCXCCJTouR8Q/Bo75mrTDtB7CwRkhpXQ12aZ5+qEuWBBPdkyNb5UA8eSWL6+Tsk
+	64z0LrP/WL+IxckNvHmXw+qQSBUFYjrNf0Fw0abvM6Yfd+AUrpbFKr0a8mRvJ0ynx2El0raHuiuba
+	+xhqfKUae4C+xgX54114nj6jxPOJXpCIa3GhJeVR7pKnW3xT7TrJTWC0K9StdhwKTLvI6vcWKTtkX
+	RSZand8ObfCKMPYlXENgJ11s5jP1fnqV8bewCz96tsHItRNnQmjEdt2ZnFAdc3Fs2MXU+BQND//Ll
+	UW6JA9HgIEk9/G8pOoZg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miPNp-006uwV-Ga; Wed, 03 Nov 2021 23:09:29 +0000
+	id 1miPOm-006vJI-CE; Wed, 03 Nov 2021 23:10:28 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miPJ8-006seT-K3; Wed, 03 Nov 2021 23:04:38 +0000
+ (Red Hat Linux)) id 1miPJ8-006seD-EU; Wed, 03 Nov 2021 23:04:38 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,13 +39,10 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v5 05/14] nvdimm/pmem: cleanup the disk if pmem_release_disk()
- is yet assigned
-Date: Wed,  3 Nov 2021 16:04:28 -0700
-Message-Id: <20211103230437.1639990-6-mcgrof@kernel.org>
+Subject: [PATCH v5 00/14] last set for add_disk() error handling
+Date: Wed,  3 Nov 2021 16:04:23 -0700
+Message-Id: <20211103230437.1639990-1-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211103230437.1639990-1-mcgrof@kernel.org>
-References: <20211103230437.1639990-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -63,56 +60,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prior to devm being able to use pmem_release_disk() there are other
-failure which can occur for which we must account for and release the
-disk for. Address those few cases.
+Jens,
 
-Fixes: 3dd60fb9d95d ("nvdimm/pmem: stop using q_usage_count as external pgmap refcount")
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/nvdimm/pmem.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+as requested, I've folded all pending changes into this series. This
+v5 pegs on Christoph's reviewed-by tags and since I was respinning I
+modified the ataprobe and floppy driver changes as he suggested.
 
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index c74d7bceb222..bcfc36e7295f 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -428,8 +428,10 @@ static int pmem_attach_disk(struct device *dev,
- 		bb_range.end = res->end;
- 	}
- 
--	if (IS_ERR(addr))
--		return PTR_ERR(addr);
-+	if (IS_ERR(addr)) {
-+		rc = PTR_ERR(addr);
-+		goto out;
-+	}
- 	pmem->virt_addr = addr;
- 
- 	blk_queue_write_cache(q, true, fua);
-@@ -454,7 +456,8 @@ static int pmem_attach_disk(struct device *dev,
- 		flags = DAXDEV_F_SYNC;
- 	dax_dev = alloc_dax(pmem, disk->disk_name, &pmem_dax_ops, flags);
- 	if (IS_ERR(dax_dev)) {
--		return PTR_ERR(dax_dev);
-+		rc = PTR_ERR(dax_dev);
-+		goto out;
- 	}
- 	dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
- 	pmem->dax_dev = dax_dev;
-@@ -469,8 +472,10 @@ static int pmem_attach_disk(struct device *dev,
- 					  "badblocks");
- 	if (!pmem->bb_state)
- 		dev_warn(dev, "'badblocks' notification disabled\n");
--
- 	return 0;
-+out:
-+	blk_cleanup_disk(pmem->disk);
-+	return rc;
- }
- 
- static int nd_pmem_probe(struct device *dev)
+I think this is it. The world of floppy has been exciting for v5.16.
+
+This goes based on your axboe/for-next tree as of just a few minutes ago.
+
+Luis Chamberlain (13):
+  nvdimm/btt: use goto error labels on btt_blk_init()
+  nvdimm/btt: add error handling support for add_disk()
+  nvdimm/blk: avoid calling del_gendisk() on early failures
+  nvdimm/blk: add error handling support for add_disk()
+  nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+  nvdimm/pmem: use add_disk() error handling
+  z2ram: add error handling support for add_disk()
+  block/sunvdc: add error handling support for add_disk()
+  mtd/ubi/block: add error handling support for add_disk()
+  block: update __register_blkdev() probe documentation
+  ataflop: address add_disk() error handling on probe
+  floppy: address add_disk() error handling on probe
+  block: add __must_check for *add_disk*() callers
+
+Tetsuo Handa (1):
+  ataflop: remove ataflop_probe_lock mutex
+
+ block/genhd.c           | 11 +++++---
+ drivers/block/ataflop.c | 61 +++++++++++++++++++++++++----------------
+ drivers/block/floppy.c  | 17 +++++++++---
+ drivers/block/sunvdc.c  | 14 ++++++++--
+ drivers/block/z2ram.c   |  7 +++--
+ drivers/mtd/ubi/block.c |  8 +++++-
+ drivers/nvdimm/blk.c    | 21 ++++++++++----
+ drivers/nvdimm/btt.c    | 20 +++++++++-----
+ drivers/nvdimm/pmem.c   | 21 ++++++++++----
+ include/linux/genhd.h   |  6 ++--
+ 10 files changed, 127 insertions(+), 59 deletions(-)
+
 -- 
 2.33.0
 
