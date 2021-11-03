@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C2DCC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:13:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0042C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:15:29 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C48760F70
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:13:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5C48760F70
+	by mail.kernel.org (Postfix) with ESMTPS id B7B92611AE
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 23:15:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7B92611AE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gFpU1bDL4YfeGfKZLQBKLmIPRbSQN3C79Y0PrzhPiLo=; b=0A3AWZMeFG2q/n
-	mjPVP7oXEcMx5uy+sYQ+CsZjdwxACOmX4+iJ7lMhpIelVfSm/5Y+LYPeAV+3Y/2/nJ8mO0Ze7d6na
-	glP38LkUFHXZZpfMmRVob/+rZXrVetOcESBEJvXY6dWYZMqEMHKCux9AZ0WxYwr2rKPYzgj5r4drx
-	c6aAu2szCbT8l49LKZ0a77D5L3ftKeqe5iYxAmz+kB2/XRtD9TVFrpWWwdIsiXYMGGTXMmgNw8Hpd
-	FXruI7wxvfXyis0FIVsteqyk475l/vEi4KFJLqkHVNl2Yb1DGH+Z+mBjfDn5zWaCOfvwY3qYKNgh5
-	hpgdsAugxGKKIQY+hZcA==;
+	List-Owner; bh=7yg2WNIrqPBEHMNyUyDwYdlsLvlRHe7l8ttBY7cMfgk=; b=BhqJe7wNOKlBRP
+	9X86ulxrxc0feE473hsx8vn29RbweOapH4aK9EjsbI2nCw870kRut4ZxthFzvoAGmk5l7BrdUw37a
+	6cGtefvDNQn8YbJ4kW+bQngClKW0FKrdPA+juijRWWksfJL1JTWSDSVpyKS+oqYhj0de0GEd7jGuq
+	bIGp8ze0nVwaQdDiIRovAqpCtjUL8h/khGC74nkPsMKbLWKld2v5l5oKlUKZ/XHIjCqhILKQVZCPy
+	9pT3nAqqsR9J0TTyg3IOiOgxgFTExAMZUv6M7UH1o8lHRusxHGIMfzAPOGJ1XxIcjvgnAIx1tcR8w
+	fCv2fkMW3+ic4q18UGEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miPRN-006wAs-2G; Wed, 03 Nov 2021 23:13:09 +0000
+	id 1miPT0-006wl8-Hh; Wed, 03 Nov 2021 23:14:50 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miPJ8-006seh-SO; Wed, 03 Nov 2021 23:04:38 +0000
+ (Red Hat Linux)) id 1miPJ8-006sej-TO; Wed, 03 Nov 2021 23:04:38 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,9 +39,9 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v5 12/14] ataflop: address add_disk() error handling on probe
-Date: Wed,  3 Nov 2021 16:04:35 -0700
-Message-Id: <20211103230437.1639990-13-mcgrof@kernel.org>
+Subject: [PATCH v5 13/14] floppy: address add_disk() error handling on probe
+Date: Wed,  3 Nov 2021 16:04:36 -0700
+Message-Id: <20211103230437.1639990-14-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103230437.1639990-1-mcgrof@kernel.org>
 References: <20211103230437.1639990-1-mcgrof@kernel.org>
@@ -69,38 +69,37 @@ supported. Address this.
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/block/ataflop.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/block/floppy.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 170dd193cef6..de8c3785899a 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2018,12 +2018,18 @@ static void ataflop_probe(dev_t dev)
- 
- 	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index 3873e789478e..c4267da716fe 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -4528,10 +4528,19 @@ static void floppy_probe(dev_t dev)
  		return;
--	if (!unit[drive].disk[type]) {
--		if (ataflop_alloc_disk(drive, type) == 0) {
--			add_disk(unit[drive].disk[type]);
--			unit[drive].registered[type] = true;
--		}
+ 
+ 	mutex_lock(&floppy_probe_lock);
+-	if (!disks[drive][type]) {
+-		if (floppy_alloc_disk(drive, type) == 0)
+-			add_disk(disks[drive][type]);
 -	}
-+	if (unit[drive].disk[type])
-+		return
-+	if (ataflop_alloc_disk(drive, type))
-+		return;
-+	if (add_disk(unit[drive].disk[type]))
++	if (disks[drive][type])
++		goto out;
++	if (floppy_alloc_disk(drive, type))
++		goto out;
++	if (add_disk(disks[drive][type]))
 +		goto cleanup_disk;
-+	unit[drive].registered[type] = true;
++out:
++	mutex_unlock(&floppy_probe_lock);
 +	return;
 +
 +cleanup_disk:
-+	blk_cleanup_disk(unit[drive].disk[type]);
-+	unit[drive].disk[type] = NULL;
++	blk_cleanup_disk(disks[drive][type]);
++	disks[drive][type] = NULL;
+ 	mutex_unlock(&floppy_probe_lock);
  }
  
- static void atari_floppy_cleanup(void)
 -- 
 2.33.0
 
