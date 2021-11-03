@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47308C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3D2FC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:26:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15F57610FC
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:25:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 15F57610FC
+	by mail.kernel.org (Postfix) with ESMTPS id 6292460E08
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:26:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6292460E08
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pz4q+e5LtoQg2ajy9Gf7EjQFhd8hZOaEhF24QKsl+Rw=; b=Dxh6vPohR3ty7J
-	CaRIQ32K69rKtGWW1pZn25KuZH9JL94l/0y+EWB1ULrUgIKZk2n8X7RRPeyb5D55EiAfIBHpphI20
-	Ahy/4dSfqlJu0trGNOcCweBGJQ7AsmDjUeb8j7rQi+3EQWZC3nZXaVeboP8Eiy9LCfJ2RgjgKAzGt
-	MLaDrKp6DoobrV0NOx3tza5nnyRArfSeVXTimElAns6rfICyAzXPnXl80CQE91LIFRa3mfX7NWubp
-	f/gCpoVU+1kuLmJwoYrqUtif2q1TmsYIQ3GjHS83aQtnZxaKoYmm8aK18Y2T+M+DJ2LL2A6Qxb7LS
-	V+aCI/cbUTCzAJISEAlw==;
+	List-Owner; bh=KPbOYhTpTd48haXl3+aa1Y9DZZjLFv2qKcjVkFCOCe4=; b=ZNDPRZIhEvZcmN
+	xm29PQnt6evNcUBXOEnK7WHTVwIv9a13g6jnUxUIbY2N+3l8D+0POMWR3AwubvbWA5ShAfcue0fc0
+	g0HVwGzRcbkQs9eXZ7rflhDUlu87DN7aWBKu7oph1eEn+RMs5d8OC7Dtvg7hYhjy80esaQrIzOlIo
+	HmMsA3qgaCUuOAcXTbPQWoiysm5bMSOmifYwSvvH5RSoYIbQ2D+OX54QPmiIPSrp2EVLVZxHIPKvZ
+	rogyW4nKfn0HfuMNPcsQv76ynyQe5TBkgNfdgtRcQnIuAVdStAoAisJiDtNDSNsKi+yc7biQuJ5Gn
+	T0jKiD4WNxcV07hTYVKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miFKT-0057vs-5Q; Wed, 03 Nov 2021 12:25:21 +0000
+	id 1miFLH-0058EH-IY; Wed, 03 Nov 2021 12:26:11 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miFHC-0056II-9o; Wed, 03 Nov 2021 12:21:58 +0000
+ (Red Hat Linux)) id 1miFHC-0056IS-Ep; Wed, 03 Nov 2021 12:21:58 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,9 +39,10 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/13] nvdimm/blk: add error handling support for add_disk()
-Date: Wed,  3 Nov 2021 05:21:49 -0700
-Message-Id: <20211103122157.1215783-6-mcgrof@kernel.org>
+Subject: [PATCH v2 10/13] mtd/ubi/block: add error handling support for
+ add_disk()
+Date: Wed,  3 Nov 2021 05:21:54 -0700
+Message-Id: <20211103122157.1215783-11-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103122157.1215783-1-mcgrof@kernel.org>
 References: <20211103122157.1215783-1-mcgrof@kernel.org>
@@ -66,37 +67,35 @@ We never checked for errors on add_disk() as this function
 returned void. Now that this is fixed, use the shiny new
 error handling.
 
-Since nvdimm/blk uses devm we just need to move the devm
-registration towards the end. And in hindsight, that seems
-to also provide a fix given del_gendisk() should not be
-called unless the disk was already added via add_disk().
-The probably of that issue happening is low though, like
-OOM while calling devm_add_action(), so the fix is minor.
-
-We manually unwind in case of add_disk() failure prior
-to the devm registration.
-
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/blk.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/block.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/blk.c b/drivers/nvdimm/blk.c
-index 4eef67918a7e..228c33b8d1d6 100644
---- a/drivers/nvdimm/blk.c
-+++ b/drivers/nvdimm/blk.c
-@@ -264,7 +264,9 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
- 	}
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index e003b4b44ffa..062e6c2c45f5 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -447,12 +447,18 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	list_add_tail(&dev->list, &ubiblock_devices);
  
- 	set_capacity(disk, available_disk_size >> SECTOR_SHIFT);
--	device_add_disk(dev, disk, NULL);
-+	rc = device_add_disk(dev, disk, NULL);
-+	if (rc)
-+		goto out_before_devm_err;
+ 	/* Must be the last step: anyone can call file ops from now on */
+-	add_disk(dev->gd);
++	ret = add_disk(dev->gd);
++	if (ret)
++		goto out_destroy_wq;
++
+ 	dev_info(disk_to_dev(dev->gd), "created from ubi%d:%d(%s)",
+ 		 dev->ubi_num, dev->vol_id, vi->name);
+ 	mutex_unlock(&devices_mutex);
+ 	return 0;
  
- 	/* nd_blk_release_disk() is called if this fails */
- 	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
++out_destroy_wq:
++	list_del(&dev->list);
++	destroy_workqueue(dev->wq);
+ out_remove_minor:
+ 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
+ out_cleanup_disk:
 -- 
 2.33.0
 
