@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1BDBC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:22:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 800CEC433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:23:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E514610FC
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:22:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6E514610FC
+	by mail.kernel.org (Postfix) with ESMTPS id 5450C61108
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:23:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5450C61108
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eD1seY7ts3Ax8lNwe8YTNKO9qCjT3ZJv3AG51hbLKSc=; b=2dco9m0kIE64QL
-	BRjiEta5hUMeNrLXtFDr78oDh4U3qp8TZKPbXFgTITKcJO8+yLdEPz66MlvkCwEii14aglFii9bFj
-	x+8Hj2vMPaKZ0T094ZMSGliuipu3xSTbj7/GQorvwOvSwIrljNYprzyqFMHd2Ok1VuwAxlZ6ltROQ
-	l1o90m/WWuy7oG3xISLOyoaew2tc4itV7ET02wU+cqE+ZsLRwEiFi2cCKGcl7Ockmyt+GT3TC5iuW
-	tIhqOdBvMbzf6XUoEw1xWcurvEt5Snwts1Ej93w5V1RDzwRz39q6VuOI35Aa6e5ysPsQ8NID41pNQ
-	fWiGCHe0s9O+3tqf5wMA==;
+	List-Owner; bh=i1SPOZLIFWpJYmP4NB1ovF/rZjmFph6bpAAmoFLwkvs=; b=CJ5O3pAwzbgPf6
+	OUSAeC1VUcdalr0gJ7cAl3nws3eWzC4GYq23lDYoVuEsFKYWMZpUsc6F5FU0aYllOzirghPN0aSLZ
+	JBC6W5Nqhn9NiVAmdv1iuqBQkjsVldnX2f85bXTn0Qe1bYMFKdV7GNONwUYGllk3u6cCIjOLxiyzZ
+	weLQjMpgkEsW0isCZrih0a+60puwfRLU3qF+QMe2iXkN5ufmtTDPihpiwCV4qgCND+bQrqMZSN6nW
+	eNmH4KcPiE4q0cNJyGLmOlQUzYEmoFkfN/xKP7OCjj08yluYy0mWMdHuWKyU90oCYB5Vq67qnTyqU
+	i1S3xrX6FivUcjMAFoCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miFHf-0056Zf-UG; Wed, 03 Nov 2021 12:22:27 +0000
+	id 1miFHt-0056gq-51; Wed, 03 Nov 2021 12:22:41 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miFHC-0056IM-Bq; Wed, 03 Nov 2021 12:21:58 +0000
+ (Red Hat Linux)) id 1miFHC-0056IQ-Dp; Wed, 03 Nov 2021 12:21:58 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,9 +39,10 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 07/13] nvdimm/pmem: use add_disk() error handling
-Date: Wed,  3 Nov 2021 05:21:51 -0700
-Message-Id: <20211103122157.1215783-8-mcgrof@kernel.org>
+Subject: [PATCH v2 09/13] block/sunvdc: add error handling support for
+ add_disk()
+Date: Wed,  3 Nov 2021 05:21:53 -0700
+Message-Id: <20211103122157.1215783-10-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103122157.1215783-1-mcgrof@kernel.org>
 References: <20211103122157.1215783-1-mcgrof@kernel.org>
@@ -62,40 +63,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that device_add_disk() supports returning an error, use
-that. We must unwind alloc_dax() on error.
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
+
+We re-use the same free tag call, so we also add a label for
+that as well.
 
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/pmem.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/block/sunvdc.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index d98af6c31f42..fe7ece1534e1 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -505,7 +505,9 @@ static int pmem_attach_disk(struct device *dev,
- 	dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
- 	pmem->dax_dev = dax_dev;
+diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
+index 4d4bb810c2ae..6f45a53f7cbf 100644
+--- a/drivers/block/sunvdc.c
++++ b/drivers/block/sunvdc.c
+@@ -826,8 +826,8 @@ static int probe_disk(struct vdc_port *port)
+ 	if (IS_ERR(g)) {
+ 		printk(KERN_ERR PFX "%s: Could not allocate gendisk.\n",
+ 		       port->vio.name);
+-		blk_mq_free_tag_set(&port->tag_set);
+-		return PTR_ERR(g);
++		err = PTR_ERR(g);
++		goto out_free_tag;
+ 	}
  
--	device_add_disk(dev, disk, pmem_attribute_groups);
-+	rc = device_add_disk(dev, disk, pmem_attribute_groups);
-+	if (rc)
-+		goto out_cleanup_dax;
- 	if (devm_add_action_or_reset(dev, pmem_release_disk, pmem))
- 		return -ENOMEM;
+ 	port->disk = g;
+@@ -879,9 +879,17 @@ static int probe_disk(struct vdc_port *port)
+ 	       port->vdisk_size, (port->vdisk_size >> (20 - 9)),
+ 	       port->vio.ver.major, port->vio.ver.minor);
  
-@@ -516,6 +518,10 @@ static int pmem_attach_disk(struct device *dev,
- 	if (!pmem->bb_state)
- 		dev_warn(dev, "'badblocks' notification disabled\n");
+-	device_add_disk(&port->vio.vdev->dev, g, NULL);
++	err = device_add_disk(&port->vio.vdev->dev, g, NULL);
++	if (err)
++		goto out_cleanup_disk;
+ 
  	return 0;
 +
-+out_cleanup_dax:
-+	kill_dax(pmem->dax_dev);
-+	put_dax(pmem->dax_dev);
- out:
- 	blk_cleanup_disk(pmem->disk);
- 	return rc;
++out_cleanup_disk:
++	blk_cleanup_disk(g);
++out_free_tag:
++	blk_mq_free_tag_set(&port->tag_set);
++	return err;
+ }
+ 
+ static struct ldc_channel_config vdc_ldc_cfg = {
 -- 
 2.33.0
 
