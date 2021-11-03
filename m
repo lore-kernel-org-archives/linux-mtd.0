@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E7FC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 16:09:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E55F2C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 16:09:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7012D60F39
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 16:09:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7012D60F39
+	by mail.kernel.org (Postfix) with ESMTPS id ADD4760F58
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 16:09:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ADD4760F58
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VggpqdQ62QaSKOvyT6WSq9hfo7vdoZQWKGzuNugCrRQ=; b=vun3CrX4iigZ0e
-	8nC1ttFKLP0ieoMoz2abaftX8GRiKsd3IZlZxSlGUXYITTf0Ee2w8EABZ1MSdQXEBS1r9GXVlORa3
-	tn+tZUyzcoEIKZON1wC7rAEWtc9uwsvPyTA2WP1VxcnZ7NXrf9VkBuY0TdwCTWx3BofJd74cr0JQb
-	Xcbj9JAAhxKnnRSyi4yGrX5jwLyrjC0dLCCv9sCi4bhO0CpDilwEkpKaG6+3aaqaFdFnPsK6HwaDO
-	Brtg/qbJkdRso3sZRyT/T/1uA9zcF/RAcZeW5h7Bc3lwtRFOFXStz+e0mZ2tzokzdc9qbMJ7BlJFY
-	AFfpsKLKPMdDTgbb14Ww==;
+	List-Owner; bh=33BzV552LTGfO0tJbSHG7HBQ6lj6gNL5FeZIQM7KRRI=; b=m+k5pFB5eqJHHu
+	Mv4AaFa6xYcLMto5DDv3nGKwX40L6ZgXdk9xOamXGlCWLQ6ya8sx9FyhFNWBLf+Z5gNBWLL+oPvam
+	fy2ykTVKayrMk3DnP5J5OCeaj5fMaiM3jeAf5hj0EC5fB0WX9PoW6H9zyoUg4UXFEX/YAU0AAY1it
+	lc1aaTIbeNJmMrx6sjZXvZ9TKUR58uDJ8jC2AqhhR18vZRM2dUkfJTtR/ZlbAQR7KXHexcaPPj/fM
+	GYzzdk1m3ZiZL9Q16fNTeT20pO/8FPKcB4c4kEHOT5arlC6xUsTBeLpLIYN4t4o7r9tv9ciE1vhps
+	4rAMMlEh9zbR0vob3cuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miIoa-005fD3-3m; Wed, 03 Nov 2021 16:08:40 +0000
+	id 1miIpM-005fS1-Cf; Wed, 03 Nov 2021 16:09:28 +0000
 Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1miInS-005em1-SO
- for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 16:07:32 +0000
+ id 1miIno-005evD-6y
+ for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 16:07:53 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
- id CE53C68AFE; Wed,  3 Nov 2021 17:07:28 +0100 (CET)
-Date: Wed, 3 Nov 2021 17:07:28 +0100
+ id 2DFB068AA6; Wed,  3 Nov 2021 17:07:50 +0100 (CET)
+Date: Wed, 3 Nov 2021 17:07:50 +0100
 From: Christoph Hellwig <hch@lst.de>
 To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
@@ -45,18 +45,18 @@ Cc: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 09/13] block/sunvdc: add error handling support for
+Subject: Re: [PATCH v2 10/13] mtd/ubi/block: add error handling support for
  add_disk()
-Message-ID: <20211103160728.GI31562@lst.de>
+Message-ID: <20211103160749.GJ31562@lst.de>
 References: <20211103122157.1215783-1-mcgrof@kernel.org>
- <20211103122157.1215783-10-mcgrof@kernel.org>
+ <20211103122157.1215783-11-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211103122157.1215783-10-mcgrof@kernel.org>
+In-Reply-To: <20211103122157.1215783-11-mcgrof@kernel.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211103_090731_109380_375DAE5B 
-X-CRM114-Status: GOOD (  12.99  )
+X-CRM114-CacheID: sfid-20211103_090752_434976_BE026F7A 
+X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,13 +73,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 03, 2021 at 05:21:53AM -0700, Luis Chamberlain wrote:
+On Wed, Nov 03, 2021 at 05:21:54AM -0700, Luis Chamberlain wrote:
 > We never checked for errors on add_disk() as this function
 > returned void. Now that this is fixed, use the shiny new
 > error handling.
-> 
-> We re-use the same free tag call, so we also add a label for
-> that as well.
 
 Looks good,
 
