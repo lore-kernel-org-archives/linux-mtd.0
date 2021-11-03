@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C8FCC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88FB8C433EF
 	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 16:03:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55AE660F39
+	by mail.kernel.org (Postfix) with ESMTPS id 553846056B
 	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 16:03:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 55AE660F39
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 553846056B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,22 +18,22 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m6LyfGRemM0WKRkhNK+aqnTsun2gddSIJelReRKKdjk=; b=vE+oDt0c5oLGcv
-	Qphe3fEQEsml/v47ddYG6qWB0vQcKZtG6SQVqZW3DdZd9znhLywykZbxejt7STMYzpQi3XPZdcWGP
-	tpBnGT12yE+iC1P3EJbavJ0Cgbg0NO1lzuliV3iEyUbHjZcrnO5IWMcs6p45IiiPgc60LCaX6oBwy
-	OqQeUoFP89XuP/6ZgWC1Dz/VEvUKjANY2Ey5OcHD/9e4+SveFmFvQF1+trwpq4GzlLU5q5IqCSbfq
-	dSmQISYp2iTiIWh7A08MNScmSyqdXe8zxOlJXfzNyBMDogHd0JYmK0cg7AWa4qZ6bI3Akr7qYOda0
-	5/m1bFukte7yVLqzN26w==;
+	List-Owner; bh=P7G6TMg8PqLTGBdM0qzWkS30dNmLXmppYwMCvl5I6Uo=; b=xxDtnjUItTmYJ1
+	JM1+Il3PTQTsfiqbSliM7eR7TW7Koq7+5Bha/9BDwWuDfMPEgP6wyyuGRTY+ermOqsRfo/Ckxc1jJ
+	bWjvxNxkLP1w6bC0vAOGRwo4+52u7yxic2yuLrw1xK7zGZQheiFpUE3CGW/SzoCaw/6Kr0ZwDAfKx
+	b5rix4JenY4riKVcEoWrgwaIordfO9/JOTkE0i6Y0n6APqxnYDgYapz4Bd/HTsOm5+MFGeu9QTSEC
+	L9Y/OG18zWdzyESijKEnXzJUKKHJxYfCtd9HZG1q7/USzLzbIpfGhdxDtdq7/SMf6qk5Am57ltkPu
+	F3uNvT/pawpq0ceMj8Lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miIj9-005dMF-O9; Wed, 03 Nov 2021 16:03:03 +0000
+	id 1miIix-005dId-E4; Wed, 03 Nov 2021 16:02:51 +0000
 Received: from verein.lst.de ([213.95.11.211])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1miIj5-005dKW-Ky
- for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 16:03:00 +0000
+ id 1miIiu-005dHq-32
+ for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 16:02:49 +0000
 Received: by verein.lst.de (Postfix, from userid 2407)
- id 964D268AFE; Wed,  3 Nov 2021 17:02:57 +0100 (CET)
-Date: Wed, 3 Nov 2021 17:02:57 +0100
+ id B962E68AA6; Wed,  3 Nov 2021 17:02:43 +0100 (CET)
+Date: Wed, 3 Nov 2021 17:02:43 +0100
 From: Christoph Hellwig <hch@lst.de>
 To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
@@ -45,19 +45,18 @@ Cc: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/13] nvdimm/btt: use goto error labels on
- btt_blk_init()
-Message-ID: <20211103160257.GB31562@lst.de>
+Subject: Re: [PATCH v2 01/13] nvdimm/btt: do not call del_gendisk() if not
+ needed
+Message-ID: <20211103160243.GA31562@lst.de>
 References: <20211103122157.1215783-1-mcgrof@kernel.org>
- <20211103122157.1215783-3-mcgrof@kernel.org>
+ <20211103122157.1215783-2-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211103122157.1215783-3-mcgrof@kernel.org>
+In-Reply-To: <20211103122157.1215783-2-mcgrof@kernel.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211103_090259_855291_C5EEDF24 
-X-CRM114-Status: UNSURE (   9.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211103_090248_306752_F8F3F5B8 
+X-CRM114-Status: GOOD (  14.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,7 +73,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Looks good,
+On Wed, Nov 03, 2021 at 05:21:45AM -0700, Luis Chamberlain wrote:
+> del_gendisk() is not required if the disk has not been added.
+> On kernels prior to commit 40b3a52ffc5bc3 ("block: add a sanity
+> check for a live disk in del_gendisk") it is mandatory to not
+> call del_gendisk() if the underlying device has not been through
+> device_add().
+
+And even with the sanity check is it wrong, and will trigger a WARN_ON.
+So maybe this commit log could use a little update?
+
+With that fixed I think this should go into 5.16 and -stable.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 
