@@ -2,91 +2,92 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F909C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 08:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E6CCC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 09:14:05 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57B6A60EFE
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 08:42:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 57B6A60EFE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+	by mail.kernel.org (Postfix) with ESMTPS id CF85561101
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 09:14:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CF85561101
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HUfvw18gKeclpp9bjiYWcIgIUAK39ZQGAAnqE7+PISg=; b=dKf9vllKjUFh7VdrSFz3GZ9rll
-	d9mgi58htV2chDS/LEnfQD2OIHayWHIKYAMKDsZt/61Ccv6uSZ7frjg7RKcxPqzqvqOgPXWX7l+tK
-	tDq+fCHQHBpBJ+YFF537qigG0sL/VueLapLMlZA0vyh28YMVk8MAc/CxK404uX0v8PPF52fC4mUGY
-	L2vfT5Q+ShpP0BvM1QIoMbLo9rz5ypVicfqWfCtcvPu+78gCTYoikoM2uorZgY139qYFrSfgrgBiY
-	wzMKUYpHjmMl3ub0ueHJ7F/oCY0JXlZoFv3IT9V1aiRESA4S8hN+5iAX5cnQuGryGC5DC1i4p5M5V
-	UBaMhLQw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=s97/oHkpZ9kxU+iLYSPFjNhNE12LnkWKPs8iGSitzzU=; b=jTpzxOisAxxmc5UjVGZyW1D9Dc
+	JfyB+1n1hkMQh6ZBCP9jHErIcZil/qFUB0KIeEok5K27dkakM6Pavi7tTm4raTT19TOoFsTLcxTcN
+	mTuSwer6tBFlmnJ++3uu29dh9fvXSNQZArbF3arqPHD71ONP+oBh4Lp73v82auCMn9TSc+lyMzOjA
+	3/gUfyYWdvYLPkrD3Idw4RChFk8HdwyxqXkcQm5G+0ksE1Ep5CghriNSEqDnjfH4b4S+YF6Wfdduo
+	V4Y/LYKlPuPCip079mHDMXJzwvsecxJ/3gX2bQ6WQ0vJ8kkKbljD8UlL92hg9sBoK5bcMHE3ib0k8
+	3RXz2Mnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miBqJ-004aLb-Us; Wed, 03 Nov 2021 08:42:00 +0000
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+	id 1miCKh-004gRg-Fp; Wed, 03 Nov 2021 09:13:23 +0000
+Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1miBqG-004aKm-8d
- for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 08:41:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=k1; bh=dMC2lX62GntGviPXdg/KWy3WWd2f
- nwOs+hAlvdSI+Lo=; b=QkUE+PYyhJ6Za2I7PJCop+MWdhAp1+DuxGz25qrGeOSO
- 4aZYDMTQ/rzXAh8NesG7J2PDQsMWCSKD7FxVLHhkCscS9xLyax7W5hGuYiokKYwN
- 7trj+QmOo/rS0vuMoxsz3Gluqen6Ok+q0NGYvlIKuUYWkKxXxI6icfsSqPXpDmo=
-Received: (qmail 3771547 invoked from network); 3 Nov 2021 09:41:47 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
- authenticated); 3 Nov 2021 09:41:47 +0100
-X-UD-Smtp-Session: l3s3148p1@kvpAYd7PnoAgAwDPXwjwAA05VFZREelC
-Date: Wed, 3 Nov 2021 09:41:44 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, 
- LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-spi <linux-spi@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
-Message-ID: <YYJLSCE9ak2I/9A/@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Rob Herring <robh+dt@kernel.org>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Mark Brown <broonie@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Sergei Shtylyov <sergei.shtylyov@gmail.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, 
- LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-spi <linux-spi@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Biju Das <biju.das.jz@bp.renesas.com>
+ id 1miCKe-004gOw-P0
+ for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 09:13:22 +0000
+Received: by mail-yb1-xb36.google.com with SMTP id 131so4726026ybc.7
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Nov 2021 02:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=B9PO03tEZQxGDCWOiWP9E4WHsaZ/xui8yPJ2nq9Ie+E=;
+ b=KNkljUFA7c2Z2y1ulLlQsP7Ck0sCiTe9vVMCyYsujALg8/+6C1sTuzdfujkKce2TSP
+ 2qc3FJADfMuB/Dkf3wAWX1tNWyKGhsi1X/vIYT2I4dFb63ADvugoIAjwBSoyf1YVnCuP
+ UjYlAlHZcTxh0mAA4eF++mz/VcVZH/iXBLc5TBoplRRfdKWSc24lMgXTGcX1Mo//I4lb
+ 0wBsK+ruU1brPD+R1um24lQM9ztWRNvk7R2gcznkFTeJy5TuZjos7StSNgZ5u4dJUh8y
+ EQg/PS+44XnptkjqcWiQ438ZCekYA8zhoxGBkJYeVkUfHs3DqCDZ2J8TuLeP48JKv9Fe
+ IpKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=B9PO03tEZQxGDCWOiWP9E4WHsaZ/xui8yPJ2nq9Ie+E=;
+ b=COeM1quf8WZwkzsXdjv7070Cl6g5lcJIsDeK/uK9lBytqQstv3t057Q4IvTjvlnOO6
+ 4AW6Ti75PBuQX+QpGAtEyRj1Bmg7ZrPFdU0jpHzFDa+e78zl6eUpgVBKtsFroJIXlL1U
+ pDCGe1XYlommuoXwreHEeTL9MbIEosyOFxa2zxuE23pwylg9d9mMjDjrXfzDlmMHcTEo
+ YrSicoF9oZjPXNGXyN3ME5JYAcKUhLzedHSawKwUUIiVdCoWD31fySBz3YhU5VTkJrq+
+ oZNOFPL9/IigPGFFYVhycuQBlaFgGQuB7jCcM+P+spCYcOYX9sKx2abustmtb8tfMMeA
+ pDHA==
+X-Gm-Message-State: AOAM532+wg73/TP9TdNJNCXiOg14dKtSLLYrho2ohMAbh9a7KyBmD8W0
+ uK3H6XSHxR+Ee4dgtVjNnsrP6tzafnq55sPY1lY=
+X-Google-Smtp-Source: ABdhPJy1YH1/YROO6BKv2SUado0SiJ9R1kr1ijbKaVjaSEbKjRERIu7xzUuf3qc1RKL89AnRU8esbXV+6wS1mZageH0=
+X-Received: by 2002:a25:dc4d:: with SMTP id y74mr16947684ybe.422.1635930799289; 
+ Wed, 03 Nov 2021 02:13:19 -0700 (PDT)
+MIME-Version: 1.0
 References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
  <20211025205631.21151-8-prabhakar.mahadev-lad.rj@bp.renesas.com>
  <YYElefbpP4pwfmUl@shikoro>
  <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <CA+V-a8uJxeSr=uoF14gccuSLG7WRqRk8X8uD9UDoxKPGM8hGgQ@mail.gmail.com>
+ <YYJLSCE9ak2I/9A/@ninjato>
+In-Reply-To: <YYJLSCE9ak2I/9A/@ninjato>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Wed, 3 Nov 2021 09:12:53 +0000
+Message-ID: <CA+V-a8sidj+FXF0k4dPCgZz2RUHyKsghc75-=Ka2vCkJEFP+xg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] memory: renesas-rpc-if: Add support for RZ/G2L
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, 
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Sergei Shtylyov <sergei.shtylyov@gmail.com>, 
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+ linux-mtd@lists.infradead.org, linux-spi <linux-spi@vger.kernel.org>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Biju Das <biju.das.jz@bp.renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211103_014156_620538_5212EDAC 
-X-CRM114-Status: GOOD (  12.94  )
+X-CRM114-CacheID: sfid-20211103_021320_843036_B9F6A140 
+X-CRM114-Status: GOOD (  17.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,91 +99,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8694203051947270102=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Wolfram,
 
---===============8694203051947270102==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pYP2Iqqm8byYnsBb"
-Content-Disposition: inline
-
-
---pYP2Iqqm8byYnsBb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Prabhakar,
-
-> Oops I missed that, does the below look good?
-
-Yes, only a minor nit.
-
->=20
-> #define RPCIF_PHYADD_ADD_MD 0x00
-> #define RPCIF_PHYADD_ADD_RDLSEL 0x22
-> #define RPCIF_PHYADD_ADD_FDLSEL 0x24
-> #define RPCIF_PHYADD_ADD_RDLMON 0x26
-> #define RPCIF_PHYADD_ADD_FDLMON 0x28
->=20
-> #define RPCIF_PHYADD_ACCEN BIT(31)
-> #define RPCIF_PHYADD_RW BIT(30)
-
-Maybe we could leave this because we don't use it? You decide.
-
-> > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
-> > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+On Wed, Nov 3, 2021 at 8:41 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> Hi Prabhakar,
+>
+> > Oops I missed that, does the below look good?
+>
+> Yes, only a minor nit.
+>
 > >
-> For the above do you have any suggestions? As I couldn't find any
-> details about it or shall I just go with magic numbers for now?
+> > #define RPCIF_PHYADD_ADD_MD 0x00
+> > #define RPCIF_PHYADD_ADD_RDLSEL 0x22
+> > #define RPCIF_PHYADD_ADD_FDLSEL 0x24
+> > #define RPCIF_PHYADD_ADD_RDLMON 0x26
+> > #define RPCIF_PHYADD_ADD_FDLMON 0x28
+> >
+> > #define RPCIF_PHYADD_ACCEN BIT(31)
+> > #define RPCIF_PHYADD_RW BIT(30)
+>
+> Maybe we could leave this because we don't use it? You decide.
+>
+Agreed will drop RPCIF_PHYADD_RW macro.
 
-Ack. I couldn't find docs about these as well. I suggest to add a
-comment where this value came from. We can ask the BSP and/or HW team
-for details and update this pair incrementally.
+> > > +     regmap_write(rpc->regmap, RPCIF_PHYWR, 0x00000030);
+> > > +     regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+> > >
+> > For the above do you have any suggestions? As I couldn't find any
+> > details about it or shall I just go with magic numbers for now?
+>
+> Ack. I couldn't find docs about these as well. I suggest to add a
+> comment where this value came from. We can ask the BSP and/or HW team
+> for details and update this pair incrementally.
+>
+Thanks, I'll add a comment stating the values have come from the
+RZ/G2L HW manual.
 
-> thanks, once we agree upon above I shall re-spin v3.
+Cheers,
+Prabhakar
 
-Cool, looking forward to it!
-
-Happy hacking,
-
-   Wolfram
-
-
---pYP2Iqqm8byYnsBb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGCS0QACgkQFA3kzBSg
-KbbuNhAAnt0A/Q1rD7IOA7oPFNk3ipuC9zHlHj5EodZ/Ad1DoMUIezY+NV5bSbEf
-HP4OuTP+/OSbd3bQbyBnNwM1P8dTR6FBK4CfqPnRISF5qm8AsB3ByoA5Webxy5QO
-GeP2cSJwY+zQetc9EcMoxARH+1ZztRDLK7CA/y5oiURwSeUBxafJ8uRuRYOTgoA6
-SAx9c7NAfH7D1Yv/eMsZrA7Kwe0Ms2wYwWyjLl9W0NDZiAgoPiUk2RDojMcbA00J
-6fvEd5wYY6yPyjay4dFXHjFp3SToPq6KZ2+oBCSaTqhJFoLLUgWgJUQSHO/0TgaQ
-Za8j3ncwdvj1lilrsxBZ7rdA9A/vyq6nFgBadvLVBB8wz/G9tWRSQZSKouvUQ6QO
-6yEsCic5yrg2cmgj4XU964fM5a1pCVYpISE6UX3R5l/gJwMlPtXeyP7w6n53ZvaJ
-lCtT8ulpZxdPrv6uHSH0qXEXwudZ2XxEOPlTYczJVXd5o6ckZCdeToDvZyR19AU9
-ud2N0oc39jcYI4B6P0afBxZiavi1cu4xixaBxl6xq5o0wx6BSZR0gqHNXznQ5GWo
-zsshKoBvM+tpInbYYJXBLj+9pLLjMjh5/1zEA6+zF5t6fcxTGbrQ/sSc/ssBXr+R
-b50WBFSq6RsGLUIVFJJAhWSDUpd7XBZpc2fzbzGcKKnpNBNweo4=
-=7d/U
------END PGP SIGNATURE-----
-
---pYP2Iqqm8byYnsBb--
-
-
---===============8694203051947270102==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> > thanks, once we agree upon above I shall re-spin v3.
+>
+> Cool, looking forward to it!
+>
+> Happy hacking,
+>
+>    Wolfram
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8694203051947270102==--
-
