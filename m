@@ -2,33 +2,33 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBDA3C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92323C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:49:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D1F8608FB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:48:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D1F8608FB
+	by mail.kernel.org (Postfix) with ESMTPS id 63BC860EE9
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:49:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 63BC860EE9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H7KYbJK82/C+OgJ/scgCpvRWsaJJlKlaiLHATTIMr8A=; b=JQLVqC+W+Vdoxo
-	JDZFrVlJhMGRUNgYjNcsUUs16FqZImsHwaM4PuBDvWTwwt/hmGteUwW3o03BKTJvpnQRGnBfvslzm
-	+DXwUEjrnaeWKQzmfvZxhUBYxHaTZhjmAX+YPdoUtMVgbNadIPcg1mo5Sq7CQ7XhlNjbJW3eP3lMs
-	IqwtCGZ+JZzFOq7Ga57RmBGc7wUlvCL+yICLLw9KKU4NLZpvfKuOf17nRjzRjFqQyTouMlH9rGrMi
-	wK6pSGY+mj6YCq81K1HVENkowKd3MNcN62mF1Spl9yDehh5/3QlrvHGozfJDgzOhdAnyv4ipDanPu
-	tGZDofrposO+ecrpV5Eg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=QdvKV/1WoSrqbI6vY4YbVRmni/Exc6KAQ0Eet4yAkH0=; b=L13pzSJ3DRPTgU
+	0adcquQS7bFimiTIue2GzZ+Nzss9dZGa1Oov7kIVEsG05a32SOQYgXQbzpMQjTrYmO+Y2Xa55jFWz
+	HEVqore8XfSL4lIcFwIzWYH9uPEdmA9h6ukE+4BJT+d18kvaIiC4q2htyImBESVWf62BPB7gKcbBT
+	5PMZ4bL+62MSGH3z3T0ZhBcJ7BAGXBWx1AvWZbDfoy+/lSmbox4t29cSqax+OpG2IKNBVApYi9YQi
+	G3c6fQ3i1XxA+TRQmsFDNBoXiia9Jn9IJPSgHh8tn6gwcvK0JIHCZ9XeBxonDzD6S+wroR3UsN5ip
+	RMb/7qXAp0Uw/bVYgubQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miKMZ-0060Mr-3e; Wed, 03 Nov 2021 17:47:51 +0000
+	id 1miKNF-0060dc-IC; Wed, 03 Nov 2021 17:48:33 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miKKA-005z5j-Kh; Wed, 03 Nov 2021 17:45:22 +0000
+ (Red Hat Linux)) id 1miKKA-005z5L-0I; Wed, 03 Nov 2021 17:45:22 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -38,15 +38,11 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  ming.lei@redhat.com, tj@kernel.org, mcgrof@kernel.org
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
- Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v3 11/13] ataflop: remove ataflop_probe_lock mutex
-Date: Wed,  3 Nov 2021 10:45:19 -0700
-Message-Id: <20211103174521.1426407-12-mcgrof@kernel.org>
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/13] block: add_disk() error handling stragglers
+Date: Wed,  3 Nov 2021 10:45:08 -0700
+Message-Id: <20211103174521.1426407-1-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211103174521.1426407-1-mcgrof@kernel.org>
-References: <20211103174521.1426407-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -64,139 +60,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+This v3 series has the following changes:
 
-Commit bf9c0538e485b591 ("ataflop: use a separate gendisk for each media
-format") introduced ataflop_probe_lock mutex, but forgot to unlock the
-mutex when atari_floppy_init() (i.e. module loading) succeeded. This will
-result in double lock deadlock if ataflop_probe() is called. Also,
-unregister_blkdev() must not be called from atari_floppy_init() with
-ataflop_probe_lock held when atari_floppy_init() failed, for
-ataflop_probe() waits for ataflop_probe_lock with major_names_lock held
-(i.e. AB-BA deadlock).
+ o clarifies the nvdimm/btt fix to not call del_gendisk to be a proper
+   fix regardless of kernel.
+ o Adds reviewed-by tags
+ o modified the __register_blkdev() changes so that we do not propagate
+   the error code from add_disk() but instead we just cleanup the
+   resources where needed, and update the documentation to reflect
+   suggestions by Christoph
 
-__register_blkdev() needs to be called last in order to avoid calling
-ataflop_probe() when atari_floppy_init() is about to fail, for memory for
-completing already-started ataflop_probe() safely will be released as soon
-as atari_floppy_init() released ataflop_probe_lock mutex.
+You can find these changes on tree:
 
-As with commit 8b52d8be86d72308 ("loop: reorder loop_exit"),
-unregister_blkdev() needs to be called first in order to avoid calling
-ataflop_alloc_disk() from ataflop_probe() after del_gendisk() from
-atari_floppy_exit().
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211103-for-axboe-add-disk-error-handling-v3
 
-By relocating __register_blkdev() / unregister_blkdev() as explained above,
-we can remove ataflop_probe_lock mutex, for probe function and __exit
-function are serialized by major_names_lock mutex.
+Luis Chamberlain (12):
+  nvdimm/btt: do not call del_gendisk() if not needed
+  nvdimm/btt: use goto error labels on btt_blk_init()
+  nvdimm/btt: add error handling support for add_disk()
+  nvdimm/blk: avoid calling del_gendisk() on early failures
+  nvdimm/blk: add error handling support for add_disk()
+  nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
+  nvdimm/pmem: use add_disk() error handling
+  z2ram: add error handling support for add_disk()
+  block/sunvdc: add error handling support for add_disk()
+  mtd/ubi/block: add error handling support for add_disk()
+  block: fix __register_blkdev() probe add_disk() failures
+  block: add __must_check for *add_disk*() callers
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: bf9c0538e485b591 ("ataflop: use a separate gendisk for each media format")
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-Tested-by: Michael Schmitz <schmitzmic@gmail.com>
----
- drivers/block/ataflop.c | 47 +++++++++++++++++++++++------------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+Tetsuo Handa (1):
+  ataflop: remove ataflop_probe_lock mutex
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index d14bdc3589b2..170dd193cef6 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -2008,8 +2008,6 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
- 	return 0;
- }
- 
--static DEFINE_MUTEX(ataflop_probe_lock);
--
- static void ataflop_probe(dev_t dev)
- {
- 	int drive = MINOR(dev) & 3;
-@@ -2020,14 +2018,32 @@ static void ataflop_probe(dev_t dev)
- 
- 	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
- 		return;
--	mutex_lock(&ataflop_probe_lock);
- 	if (!unit[drive].disk[type]) {
- 		if (ataflop_alloc_disk(drive, type) == 0) {
- 			add_disk(unit[drive].disk[type]);
- 			unit[drive].registered[type] = true;
- 		}
- 	}
--	mutex_unlock(&ataflop_probe_lock);
-+}
-+
-+static void atari_floppy_cleanup(void)
-+{
-+	int i;
-+	int type;
-+
-+	for (i = 0; i < FD_MAX_UNITS; i++) {
-+		for (type = 0; type < NUM_DISK_MINORS; type++) {
-+			if (!unit[i].disk[type])
-+				continue;
-+			del_gendisk(unit[i].disk[type]);
-+			blk_cleanup_queue(unit[i].disk[type]->queue);
-+			put_disk(unit[i].disk[type]);
-+		}
-+		blk_mq_free_tag_set(&unit[i].tag_set);
-+	}
-+
-+	del_timer_sync(&fd_timer);
-+	atari_stram_free(DMABuffer);
- }
- 
- static void atari_cleanup_floppy_disk(struct atari_floppy_struct *fs)
-@@ -2053,11 +2069,6 @@ static int __init atari_floppy_init (void)
- 		/* Amiga, Mac, ... don't have Atari-compatible floppy :-) */
- 		return -ENODEV;
- 
--	mutex_lock(&ataflop_probe_lock);
--	ret = __register_blkdev(FLOPPY_MAJOR, "fd", ataflop_probe);
--	if (ret)
--		goto out_unlock;
--
- 	for (i = 0; i < FD_MAX_UNITS; i++) {
- 		memset(&unit[i].tag_set, 0, sizeof(unit[i].tag_set));
- 		unit[i].tag_set.ops = &ataflop_mq_ops;
-@@ -2113,7 +2124,12 @@ static int __init atari_floppy_init (void)
- 	       UseTrackbuffer ? "" : "no ");
- 	config_types();
- 
--	return 0;
-+	ret = __register_blkdev(FLOPPY_MAJOR, "fd", ataflop_probe);
-+	if (ret) {
-+		printk(KERN_ERR "atari_floppy_init: cannot register block device\n");
-+		atari_floppy_cleanup();
-+	}
-+	return ret;
- 
- err_out_dma:
- 	atari_stram_free(DMABuffer);
-@@ -2121,9 +2137,6 @@ static int __init atari_floppy_init (void)
- 	while (--i >= 0)
- 		atari_cleanup_floppy_disk(&unit[i]);
- 
--	unregister_blkdev(FLOPPY_MAJOR, "fd");
--out_unlock:
--	mutex_unlock(&ataflop_probe_lock);
- 	return ret;
- }
- 
-@@ -2168,14 +2181,8 @@ __setup("floppy=", atari_floppy_setup);
- 
- static void __exit atari_floppy_exit(void)
- {
--	int i;
--
--	for (i = 0; i < FD_MAX_UNITS; i++)
--		atari_cleanup_floppy_disk(&unit[i]);
- 	unregister_blkdev(FLOPPY_MAJOR, "fd");
--
--	del_timer_sync(&fd_timer);
--	atari_stram_free( DMABuffer );
-+	atari_floppy_cleanup();
- }
- 
- module_init(atari_floppy_init)
+ block/genhd.c           | 11 +++++---
+ drivers/block/ataflop.c | 59 +++++++++++++++++++++++++----------------
+ drivers/block/floppy.c  | 11 ++++++--
+ drivers/block/sunvdc.c  | 14 +++++++---
+ drivers/block/z2ram.c   |  7 +++--
+ drivers/mtd/ubi/block.c |  8 +++++-
+ drivers/nvdimm/blk.c    | 21 ++++++++++-----
+ drivers/nvdimm/btt.c    | 21 +++++++++------
+ drivers/nvdimm/pmem.c   | 21 +++++++++++----
+ include/linux/genhd.h   |  6 ++---
+ 10 files changed, 122 insertions(+), 57 deletions(-)
+
 -- 
 2.33.0
 
