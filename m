@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B20DC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 114E6C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:47:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECB5D604DA
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:47:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org ECB5D604DA
+	by mail.kernel.org (Postfix) with ESMTPS id D9738610E7
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:47:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D9738610E7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZqC/ikLLhfpV+66MhkIPPGxnd9JgvwbLnKOOVbDldtA=; b=SrzCo5Mz1f3tws
-	itah+lOtsGcMKv2W4pNksv1nzRT8ZZR6P0wFXUC+pbQtobV3aiTQFef9TFqaqAwRiw3n5T3BSZRHs
-	oW7HZ2Q1DQSaHCO0fxvRG59Pl7WycbNZKcrB/pkT129OA3sZ5nk/I9bgu+GLSGuyrfypH/D7foDP6
-	hbvLp3uMv+cZMU7DesZZKpz9tCbHqklHKwEr/5ole0pQOIQghl/wIazefOwcYar5GhP+tqV/Ks4BE
-	2wNKMzJzfd4KU5RG4zvrS8ySHdvVibP1cxlaC4I/7HMkQzudTl8Vd5nnMN2sFc6w7RzbYUGwWSXM+
-	ONiMVP5Ea7Snx3EWbM9A==;
+	List-Owner; bh=sRfQVESFJEG0vsLJlr9rPWH+KT3RCakmBUi5fz77vbs=; b=hhUiItsFZBwC0q
+	VkLOazNPwKGf/EW/7KZQBxg3Es2OI74ikAD0I09y94tm1JI6bvL31ppagaUBQpOGA6Lvp0M3o4vfh
+	CKSgHbPb0wRa024i+lzeW8OrXS4Coyed5879k1XaTf3T4XEFZhr0XY9zolOZKtT/WKIXGBbberQdB
+	fk5BAbm+ios4gMR70ftAU64eiz86VaA4LXaUsilF+Qw4+uaqmGz4sx/tEyfGKK+tMqNTe+nGYD46r
+	HTcC8knPtEHhVan6A3PrGi1yBjWhJfcw1LpW4IPvti3FSTwglfgy4x1x68yl38gs6Pyot4jNQe4Xn
+	0t1KTYzWRnhIvWI3Pu6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miKKu-005zc2-Ml; Wed, 03 Nov 2021 17:46:08 +0000
+	id 1miKLC-005zkd-1u; Wed, 03 Nov 2021 17:46:26 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miKKA-005z5T-Bw; Wed, 03 Nov 2021 17:45:22 +0000
+ (Red Hat Linux)) id 1miKKA-005z5b-Hi; Wed, 03 Nov 2021 17:45:22 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,10 +39,9 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 04/13] nvdimm/blk: avoid calling del_gendisk() on early
- failures
-Date: Wed,  3 Nov 2021 10:45:12 -0700
-Message-Id: <20211103174521.1426407-5-mcgrof@kernel.org>
+Subject: [PATCH v3 08/13] z2ram: add error handling support for add_disk()
+Date: Wed,  3 Nov 2021 10:45:16 -0700
+Message-Id: <20211103174521.1426407-9-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103174521.1426407-1-mcgrof@kernel.org>
 References: <20211103174521.1426407-1-mcgrof@kernel.org>
@@ -63,66 +62,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If nd_integrity_init() fails we'd get del_gendisk() called,
-but that's not correct as we should only call that if we're
-done with device_add_disk(). Fix this by providing unwinding
-prior to the devm call being registered and moving the devm
-registration to the very end.
-
-This should fix calling del_gendisk() if nd_integrity_init()
-fails. I only spotted this issue through code inspection. It
-does not fix any real world bug.
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling. Only the disk is cleaned up inside
+z2ram_register_disk() as the caller deals with the rest.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/blk.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/block/z2ram.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvdimm/blk.c b/drivers/nvdimm/blk.c
-index b6c6866f9259..4eef67918a7e 100644
---- a/drivers/nvdimm/blk.c
-+++ b/drivers/nvdimm/blk.c
-@@ -239,6 +239,7 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
- 	resource_size_t available_disk_size;
+diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
+index 4eef218108c6..ccc52c935faf 100644
+--- a/drivers/block/z2ram.c
++++ b/drivers/block/z2ram.c
+@@ -318,6 +318,7 @@ static const struct blk_mq_ops z2_mq_ops = {
+ static int z2ram_register_disk(int minor)
+ {
  	struct gendisk *disk;
- 	u64 internal_nlba;
-+	int rc;
++	int err;
  
- 	internal_nlba = div_u64(nsblk->size, nsblk_internal_lbasize(nsblk));
- 	available_disk_size = internal_nlba * nsblk_sector_size(nsblk);
-@@ -255,20 +256,26 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
- 	blk_queue_logical_block_size(disk->queue, nsblk_sector_size(nsblk));
- 	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
+ 	disk = blk_mq_alloc_disk(&tag_set, NULL);
+ 	if (IS_ERR(disk))
+@@ -333,8 +334,10 @@ static int z2ram_register_disk(int minor)
+ 		sprintf(disk->disk_name, "z2ram");
  
--	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
--		return -ENOMEM;
--
- 	if (nsblk_meta_size(nsblk)) {
--		int rc = nd_integrity_init(disk, nsblk_meta_size(nsblk));
-+		rc = nd_integrity_init(disk, nsblk_meta_size(nsblk));
- 
- 		if (rc)
--			return rc;
-+			goto out_before_devm_err;
- 	}
- 
- 	set_capacity(disk, available_disk_size >> SECTOR_SHIFT);
- 	device_add_disk(dev, disk, NULL);
-+
-+	/* nd_blk_release_disk() is called if this fails */
-+	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
-+		return -ENOMEM;
-+
- 	nvdimm_check_and_set_ro(disk);
- 	return 0;
-+
-+out_before_devm_err:
-+	blk_cleanup_disk(disk);
-+	return rc;
+ 	z2ram_gendisk[minor] = disk;
+-	add_disk(disk);
+-	return 0;
++	err = add_disk(disk);
++	if (err)
++		blk_cleanup_disk(disk);
++	return err;
  }
  
- static int nd_blk_probe(struct device *dev)
+ static int __init z2_init(void)
 -- 
 2.33.0
 
