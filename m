@@ -2,67 +2,104 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89C53C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 01:21:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58F8BC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 01:28:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D8B261073
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 01:21:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4D8B261073
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1AD8F60F39
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 01:28:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1AD8F60F39
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xyr3cEUV5UlOY3x9cdI5kaqquQWgxwmfNM8O81vepGU=; b=fr+PJNLOJwABvp
-	C2vF7g5ggCOGalDVMqjx4uU/PdHuLob/Z75K/5UD1KVl3ZIQ4+ezOSZ0LAj4ZylzgoO4g3SJrIQm0
-	EGJngLDC3T9dKucV4ByGmDjC/TyOKOyurCsrmNxdZ7nCBLJUkEjcCFNfjkLVqutHjWMu1zPfGCxx1
-	O5N9rGyqFpEXkmz8cWu3tovyllWvyK2rk4SEphLH5rArkFahYhYmj7vInHwZXRoujwJQo65vhWuCr
-	C8M4Q7bMksAUrJqNvIG6NuEifK9ZoM23tIOUrsWXsZ1I31JfXWWEIqxnv2oo1k94X6utmRN+21CkM
-	meMRKscVUBN1gu2DwKvA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=rqEaN8fYC2y8JABGQhkjn3AiZYLQHiHRS9yhN0KdA1s=; b=vYlziWOc8NWw8eQsjkH76xroup
+	3LoewUAsDtzXvlFh1dvN/1Exsfsjn8HbrqhkOZG2kLtaLk4TxH5vkXh7skAaqMwxknevTYGV6y0QL
+	A6+7je/x+rmsKiDD9S3XNHpaxgRNbSf/5YztkGMCrO0GMlAWbucO10WZlNN/xBn4VCXrDHl8Zf0dY
+	TJqus1TYaPdVG7xYhp1CIqpQd+Ol3DTvpNgZPxeDrSHA/hXBUa2S5H1VPMLS/60o2xN1vK6zXt3C4
+	pQisjQwPgRD2jfmT4UsLVqznpfLX15r/jLia26gsVnOXj6ljB9tW4RQUensaX4A76i9kPtsswFLFt
+	NGMZWPuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mi4xJ-003jQb-U8; Wed, 03 Nov 2021 01:20:45 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1mi54a-003loM-Hy; Wed, 03 Nov 2021 01:28:16 +0000
+Received: from mail-il1-x12a.google.com ([2607:f8b0:4864:20::12a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mi4ww-003jOD-ID
- for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 01:20:24 +0000
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HkTRW3tXcz1DJ6t;
- Wed,  3 Nov 2021 09:18:15 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 3 Nov 2021 09:20:17 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Wed, 3 Nov
- 2021 09:20:16 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <patchwork@huawei.com>, <libaokun1@huawei.com>, <yukuai3@huawei.com>,
- <chengzhihao1@huawei.com>
-Subject: [PATCH -next V2 2/2] ubi: fix race between volume operations and
- uif_close
-Date: Wed, 3 Nov 2021 09:32:49 +0800
-Message-ID: <20211103013249.498805-3-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211103013249.498805-1-libaokun1@huawei.com>
-References: <20211103013249.498805-1-libaokun1@huawei.com>
+ id 1mi54X-003lkf-BG
+ for linux-mtd@lists.infradead.org; Wed, 03 Nov 2021 01:28:14 +0000
+Received: by mail-il1-x12a.google.com with SMTP id h2so927244ili.11
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Nov 2021 18:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=6py8bgQ0B5/+fIXWiAKE7dARK0paBlJ7XzGDJcrhlUo=;
+ b=fY4Xy+5HpEK8ZhIkUmNH1j3a9zqOyiBHtuJicBDonOsEEWvYTzx9H5pDPgOWuIZFPR
+ gqYcIlgwXR27OtzPc+K6hZMh8BxvcAmq2TC9oMlEXlzeFnfuyroynIjynj844KdajEzr
+ aj7umF/qQgApkedlFSqpjrB8YtmYWXJMn0TZryPNtobrhoKLPZbstgJWO/WT2obWdP6+
+ xGeASjXcTPUIMfM3qftKOY5NgzVzS+2dMQtAEEOYwog/HU4iF84L6ggDijD7fR4gCH/N
+ wLbIvSaoVm7hDUYbkSJMPmopfK02pXiCoJliqU6efpVekD43pTkO9y07oo7CZxfykj3n
+ RqfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=6py8bgQ0B5/+fIXWiAKE7dARK0paBlJ7XzGDJcrhlUo=;
+ b=6fJNYwwp0mwVwFFslafqKnxkGFpv6qBcHLLZT62ZX5aWkKI+Rc7nHXTeMRbcPnhcje
+ dWwCr8xRjSAtktzA7w4+Z6EvdXfwUn0I+mGKXLQZq7VsoRT/W9dVCmZ8v5plAAWwD1GZ
+ UOUiDF+W/dxSTBUZheIjhjnojh9JyNjlus/ZSN3fNqoz58CqQSjykWYieDnURRXdHFrC
+ nIvmICODdrvWua2nX9nVMuLGssPf1t76iTIfHJAkiOm5deiCrVD7Iy4VmZ70mbOf75Is
+ /xji2GBYqkrCh1DMDTQYuwYpa9evD88jAV313PIw6DFiHUCf6yEBQ356D36L+PEZWVtP
+ kS8g==
+X-Gm-Message-State: AOAM531jr1EmpNDOnJHUQJETErObScGHP1mBF59vr6l1J1nL5EeePtl6
+ 6sc8K5BOic4RHF08XiMQOXiOrg==
+X-Google-Smtp-Source: ABdhPJwO1JGTdFIdOfS6rJRB6NOgCNJYxGHsGlwnV1pIOoBRAmgNDLSmAlVORwzRNUcJ3aKtd2J9Zw==
+X-Received: by 2002:a05:6e02:190b:: with SMTP id
+ w11mr2361219ilu.211.1635902887266; 
+ Tue, 02 Nov 2021 18:28:07 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+ by smtp.gmail.com with ESMTPSA id k11sm446896ilv.66.2021.11.02.18.28.05
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 02 Nov 2021 18:28:06 -0700 (PDT)
+Subject: Re: [PATCH 06/13] nvdimm/blk: avoid calling del_gendisk() on early
+ failures
+To: Dan Williams <dan.j.williams@intel.com>,
+ Luis Chamberlain <mcgrof@kernel.org>
+Cc: Geoff Levand <geoff@infradead.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Jim Paris <jim@jtan.com>,
+ Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
+ senozhatsky@chromium.org, Richard Weinberger <richard@nod.at>,
+ miquel.raynal@bootlin.com, vigneshr@ti.com,
+ Vishal L Verma <vishal.l.verma@intel.com>, Dave Jiang
+ <dave.jiang@intel.com>, "Weiny, Ira" <ira.weiny@intel.com>,
+ Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Sagi Grimberg <sagi@grimberg.me>, linux-block@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mtd@lists.infradead.org,
+ Linux NVDIMM <nvdimm@lists.linux.dev>, linux-nvme@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211015235219.2191207-1-mcgrof@kernel.org>
+ <20211015235219.2191207-7-mcgrof@kernel.org>
+ <CAPcyv4j+xLT=5RUodHWgnPjNq6t5OcmX1oM2zK2ML0U+OS_16Q@mail.gmail.com>
+ <YYHTejXKvsGoDlOa@bombadil.infradead.org>
+ <CAPcyv4h1dqBm71OQ_A5Qv4agT3PhV7uoojmSB1pEpS-CXaWb5w@mail.gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <51f86768-04ca-bc7d-c17c-3d0357d84271@kernel.dk>
+Date: Tue, 2 Nov 2021 19:28:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAPcyv4h1dqBm71OQ_A5Qv4agT3PhV7uoojmSB1pEpS-CXaWb5w@mail.gmail.com>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211102_182022_896529_3B3ABE85 
-X-CRM114-Status: UNSURE (   7.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211102_182813_457114_09607511 
+X-CRM114-Status: GOOD (  20.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,79 +116,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-KASAN reported a UAF about ubi:
- ==================================================================
- BUG: KASAN: use-after-free in kobject_get+0x44/0xd0
- Write of size 4 at addr ffff8881216e5038 by task ubirmvol/18988
- [...]
- Call Trace:
-  kobject_get+0x44/0xd0
-  get_device+0x25/0x40
-  ubi_open_volume+0x22c/0x490 [ubi]
-  ubi_cdev_ioctl+0x300/0x11a0 [ubi]
+On 11/2/21 6:49 PM, Dan Williams wrote:
+> On Tue, Nov 2, 2021 at 5:10 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>>
+>> On Fri, Oct 15, 2021 at 05:13:48PM -0700, Dan Williams wrote:
+>>> On Fri, Oct 15, 2021 at 4:53 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>>>>
+>>>> If nd_integrity_init() fails we'd get del_gendisk() called,
+>>>> but that's not correct as we should only call that if we're
+>>>> done with device_add_disk(). Fix this by providing unwinding
+>>>> prior to the devm call being registered and moving the devm
+>>>> registration to the very end.
+>>>>
+>>>> This should fix calling del_gendisk() if nd_integrity_init()
+>>>> fails. I only spotted this issue through code inspection. It
+>>>> does not fix any real world bug.
+>>>>
+>>>
+>>> Just fyi, I'm preparing patches to delete this driver completely as it
+>>> is unused by any shipping platform. I hope to get that removal into
+>>> v5.16.
+>>
+>> Curious if are you going to nuking it on v5.16? Otherwise it would stand
+>> in the way of the last few patches to add __must_check for the final
+>> add_disk() error handling changes.
+> 
+> True, I don't think I can get it nuked in time, so you can add my
+> Reviewed-by for this one.
 
- Allocated by task 18850:
-  ubi_read_volume_table+0x676/0x1330 [ubi]
-  ubi_attach+0xd13/0x2460 [ubi]
-  ubi_attach_mtd_dev+0xafa/0x17b0 [ubi]
-  ctrl_cdev_ioctl+0x248/0x2b0 [ubi]
+Luis, I lost track of the nv* patches from this discussion. If you want
+them in 5.16 and they are reviewed, please do resend and I'll pick them
+up for the middle-of-merge-window push.
 
- Freed by task 18850:
-  kfree+0xa2/0x490
-  device_release+0x65/0x130
-  kobject_put+0x17b/0x330
-  device_unregister+0x39/0x90
-  uif_close+0x61/0xc0 [ubi]
-  ubi_attach_mtd_dev+0xdd2/0x17b0 [ubi]
-  ctrl_cdev_ioctl+0x248/0x2b0 [ubi]
- [...]
- ==================================================================
-
-The following race could cause the use-after-free problem:
-           cpu1                   cpu2                  cpu3
-_______________________|________________________|______________________
-ctrl_cdev_ioctl
- ubi_attach_mtd_dev
-  uif_init
-                           ubi_cdev_ioctl
-                            ubi_create_volume
-                             cdev_device_add
-  ubi_debugfs_init_dev
-  //error goto out_uif;
-  uif_close
-   kill_volumes
-                                                    ubi_cdev_ioctl
-                                                     ubi_remove_volume
-                                                      cdev_device_del
-                                                       // first free
-    ubi_free_volume
-    // double free
-
-To solve this problem, add spin_lock(&ubi->volumes_lock) in uif_close.
-
-Fixes: 801c135ce73d ("UBI: Unsorted Block Images")
-Reported-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- drivers/mtd/ubi/build.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 708b1b96de01..5a11cdc6e076 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -501,7 +501,9 @@ static int uif_init(struct ubi_device *ubi)
-  */
- static void uif_close(struct ubi_device *ubi)
- {
-+	spin_lock(&ubi->volumes_lock);
- 	kill_volumes(ubi);
-+	spin_unlock(&ubi->volumes_lock);
- 	cdev_device_del(&ubi->cdev, &ubi->dev);
- 	unregister_chrdev_region(ubi->cdev.dev, ubi->vtbl_slots + 1);
- }
 -- 
-2.31.1
+Jens Axboe
 
 
 ______________________________________________________
