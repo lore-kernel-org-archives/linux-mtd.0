@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BE4CC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09BADC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:52:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24A67608FB
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:51:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 24A67608FB
+	by mail.kernel.org (Postfix) with ESMTPS id BFF3560F90
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:52:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BFF3560F90
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q1Ye8PGyVMlVjKxfVhz97Gk45/biMKhb2FOtBGGBUtU=; b=F8IuUTwYTf476K
-	3kYKEt73WtCWgmd+3FPGKoood5y32RVMnxvaePi5gPkZ/SfbAzUzax7jzxmRGBvEK42bPpBOf7Cvz
-	9OVGBrsOFMKnFEPn51X60TZB6+LXiB2j74U+49Ma5HLJ0zSbodQNHThHzg4qvEcpmI4uk7HbyyiDQ
-	uu48rsOpBHnBIdUH5Z1eG8meaAShDl5zwGQdDfIGqwkWjQuMqUUFJmLxoOBc2eRIPnW6dDWJrI78y
-	SYIyO841M7hCYABRuxsSvoJhaHD9773NOHoPiUi+6lhXlIZfnZYbvEPbNK/3tjzaieheHAQkfblXM
-	8a/zPuSjoZtdc8hRMx7w==;
+	List-Owner; bh=d5H4XZE4B34Xp+bAclDTdePGxYHzcy62MoGHcSuNvN8=; b=vkKZnWgL0OyTai
+	1JBYahMO3cHgoURYM/32Xu2nC8V3uv28OfOC+2sesGPQn4B66hCv90BleiynuOX/Wq6jMBaTl2Ex0
+	l7eoS3xqyUhsL6QEHxxxLMzlVmY0OLlv3XQRhqHvicKnBAeSjLuKqd2zzihm6oF/VhZZ4KUKZG4s4
+	PA1jL96Tcib4xWTKOqCLtn4SgxYBkx1/z6LJQ5RTjnIj0O9vrt1VwYhwENMz5+QcUns+AvgI/2/hA
+	ajRwqhdwGSOgbHq30Znj6g4Mrrvsedh2/Ou6lG1yLGer4ryIgezGAKwhmQWPUIRXbhEPbIDOosB6D
+	ZRvmb+Au5y/WxLLo526A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miKP0-0061IP-1Q; Wed, 03 Nov 2021 17:50:22 +0000
+	id 1miKQ3-0061gD-Mo; Wed, 03 Nov 2021 17:51:27 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miKKA-005z5N-8Z; Wed, 03 Nov 2021 17:45:22 +0000
+ (Red Hat Linux)) id 1miKKA-005z5h-Ji; Wed, 03 Nov 2021 17:45:22 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,9 +39,10 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 01/13] nvdimm/btt: do not call del_gendisk() if not needed
-Date: Wed,  3 Nov 2021 10:45:09 -0700
-Message-Id: <20211103174521.1426407-2-mcgrof@kernel.org>
+Subject: [PATCH v3 10/13] mtd/ubi/block: add error handling support for
+ add_disk()
+Date: Wed,  3 Nov 2021 10:45:18 -0700
+Message-Id: <20211103174521.1426407-11-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103174521.1426407-1-mcgrof@kernel.org>
 References: <20211103174521.1426407-1-mcgrof@kernel.org>
@@ -62,28 +63,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-del_gendisk() should not called if the disk has not been added. Fix this.
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-Fixes: 41cd8b70c37a ("libnvdimm, btt: add support for blk integrity")
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/btt.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/ubi/block.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index f10a50ffa047..a62f23b945f1 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -1537,7 +1537,6 @@ static int btt_blk_init(struct btt *btt)
- 		int rc = nd_integrity_init(btt->btt_disk, btt_meta_size(btt));
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index e003b4b44ffa..062e6c2c45f5 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -447,12 +447,18 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	list_add_tail(&dev->list, &ubiblock_devices);
  
- 		if (rc) {
--			del_gendisk(btt->btt_disk);
- 			blk_cleanup_disk(btt->btt_disk);
- 			return rc;
- 		}
+ 	/* Must be the last step: anyone can call file ops from now on */
+-	add_disk(dev->gd);
++	ret = add_disk(dev->gd);
++	if (ret)
++		goto out_destroy_wq;
++
+ 	dev_info(disk_to_dev(dev->gd), "created from ubi%d:%d(%s)",
+ 		 dev->ubi_num, dev->vol_id, vi->name);
+ 	mutex_unlock(&devices_mutex);
+ 	return 0;
+ 
++out_destroy_wq:
++	list_del(&dev->list);
++	destroy_workqueue(dev->wq);
+ out_remove_minor:
+ 	idr_remove(&ubiblock_minor_idr, gd->first_minor);
+ out_cleanup_disk:
 -- 
 2.33.0
 
