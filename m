@@ -2,33 +2,33 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92323C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:49:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3AF7C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:50:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63BC860EE9
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:49:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 63BC860EE9
+	by mail.kernel.org (Postfix) with ESMTPS id 8406E608FB
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 17:50:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8406E608FB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=QdvKV/1WoSrqbI6vY4YbVRmni/Exc6KAQ0Eet4yAkH0=; b=L13pzSJ3DRPTgU
-	0adcquQS7bFimiTIue2GzZ+Nzss9dZGa1Oov7kIVEsG05a32SOQYgXQbzpMQjTrYmO+Y2Xa55jFWz
-	HEVqore8XfSL4lIcFwIzWYH9uPEdmA9h6ukE+4BJT+d18kvaIiC4q2htyImBESVWf62BPB7gKcbBT
-	5PMZ4bL+62MSGH3z3T0ZhBcJ7BAGXBWx1AvWZbDfoy+/lSmbox4t29cSqax+OpG2IKNBVApYi9YQi
-	G3c6fQ3i1XxA+TRQmsFDNBoXiia9Jn9IJPSgHh8tn6gwcvK0JIHCZ9XeBxonDzD6S+wroR3UsN5ip
-	RMb/7qXAp0Uw/bVYgubQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ALcpOsC4OeCZkKaiMXMlDDSzVVPrGYhW7rClJawUVrk=; b=zO8F5JauDsIEUx
+	d5htsdn8Gh7Ga6qVMcrP3T9ZcS7lFgpFGLH+A09oXlt24uDMM0tioMbad8eM2UjlPNLW+B+MaC1Y+
+	iWa2ETyQAXMzQh0bE3VpSPqwvIIRLjXCa40llTi4C5iRuKciP4Uby4P7bIBTnJiVgGWTWg3VasXS8
+	zZOP9SSlyFX2jZ+sCF2K21yHrOWzPTDip3gsHn+9y6/wYv0yab9K85zP8/C+mx0+MDfLjSM2mbvUg
+	wcMxSWfHuRLsQXW205t3dOkn6s8x/rsKByhwekCPqpBYKQ/7MGFvk7g01Er4XeuPUg3e/chgTL9Yp
+	Mg5NMFnUho7DO5v9pJpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miKNF-0060dc-IC; Wed, 03 Nov 2021 17:48:33 +0000
+	id 1miKO8-0060yd-EW; Wed, 03 Nov 2021 17:49:28 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miKKA-005z5L-0I; Wed, 03 Nov 2021 17:45:22 +0000
+ (Red Hat Linux)) id 1miKKA-005z5V-DC; Wed, 03 Nov 2021 17:45:22 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,10 +39,12 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 00/13] block: add_disk() error handling stragglers
-Date: Wed,  3 Nov 2021 10:45:08 -0700
-Message-Id: <20211103174521.1426407-1-mcgrof@kernel.org>
+Subject: [PATCH v3 05/13] nvdimm/blk: add error handling support for add_disk()
+Date: Wed,  3 Nov 2021 10:45:13 -0700
+Message-Id: <20211103174521.1426407-6-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211103174521.1426407-1-mcgrof@kernel.org>
+References: <20211103174521.1426407-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -60,49 +62,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This v3 series has the following changes:
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
- o clarifies the nvdimm/btt fix to not call del_gendisk to be a proper
-   fix regardless of kernel.
- o Adds reviewed-by tags
- o modified the __register_blkdev() changes so that we do not propagate
-   the error code from add_disk() but instead we just cleanup the
-   resources where needed, and update the documentation to reflect
-   suggestions by Christoph
+Since nvdimm/blk uses devm we just need to move the devm
+registration towards the end. And in hindsight, that seems
+to also provide a fix given del_gendisk() should not be
+called unless the disk was already added via add_disk().
+The probably of that issue happening is low though, like
+OOM while calling devm_add_action(), so the fix is minor.
 
-You can find these changes on tree:
+We manually unwind in case of add_disk() failure prior
+to the devm registration.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20211103-for-axboe-add-disk-error-handling-v3
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ drivers/nvdimm/blk.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Luis Chamberlain (12):
-  nvdimm/btt: do not call del_gendisk() if not needed
-  nvdimm/btt: use goto error labels on btt_blk_init()
-  nvdimm/btt: add error handling support for add_disk()
-  nvdimm/blk: avoid calling del_gendisk() on early failures
-  nvdimm/blk: add error handling support for add_disk()
-  nvdimm/pmem: cleanup the disk if pmem_release_disk() is yet assigned
-  nvdimm/pmem: use add_disk() error handling
-  z2ram: add error handling support for add_disk()
-  block/sunvdc: add error handling support for add_disk()
-  mtd/ubi/block: add error handling support for add_disk()
-  block: fix __register_blkdev() probe add_disk() failures
-  block: add __must_check for *add_disk*() callers
-
-Tetsuo Handa (1):
-  ataflop: remove ataflop_probe_lock mutex
-
- block/genhd.c           | 11 +++++---
- drivers/block/ataflop.c | 59 +++++++++++++++++++++++++----------------
- drivers/block/floppy.c  | 11 ++++++--
- drivers/block/sunvdc.c  | 14 +++++++---
- drivers/block/z2ram.c   |  7 +++--
- drivers/mtd/ubi/block.c |  8 +++++-
- drivers/nvdimm/blk.c    | 21 ++++++++++-----
- drivers/nvdimm/btt.c    | 21 +++++++++------
- drivers/nvdimm/pmem.c   | 21 +++++++++++----
- include/linux/genhd.h   |  6 ++---
- 10 files changed, 122 insertions(+), 57 deletions(-)
-
+diff --git a/drivers/nvdimm/blk.c b/drivers/nvdimm/blk.c
+index 4eef67918a7e..228c33b8d1d6 100644
+--- a/drivers/nvdimm/blk.c
++++ b/drivers/nvdimm/blk.c
+@@ -264,7 +264,9 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
+ 	}
+ 
+ 	set_capacity(disk, available_disk_size >> SECTOR_SHIFT);
+-	device_add_disk(dev, disk, NULL);
++	rc = device_add_disk(dev, disk, NULL);
++	if (rc)
++		goto out_before_devm_err;
+ 
+ 	/* nd_blk_release_disk() is called if this fails */
+ 	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
 -- 
 2.33.0
 
