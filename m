@@ -2,14 +2,14 @@ Return-Path: <SRS0=aZmf=PW=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 186F7C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47308C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:25:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D931360E08
-	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:25:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D931360E08
+	by mail.kernel.org (Postfix) with ESMTPS id 15F57610FC
+	for <linux-mtd@archiver.kernel.org>; Wed,  3 Nov 2021 12:25:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 15F57610FC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,17 +18,17 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xNwUbAWLb5cm+68a8ZnvfqkRzy9+0Km1XJOvZpw2ibQ=; b=kb9gxsT/amh+xQ
-	VAnxJuS0IRkwJ1qtw9THFjo4tqbDIJWQ/OJhiDwNsFmCPWF7l4SJGY7vbOPD9DDSEUpqtMBRGtUFi
-	lG80b7kw9Msmds+poE3IguDVfeH5f35aOJun3a6vFFYzd6lUFB+PVzNGjfEh7lJvetiKPYuRXf//3
-	ev4/hg83J1AFCmAGACtrZHldZS/kAoHgJrLJR+h+4nitFphZuIwMo1bYYFqk05cU5pbtItbYQPkj6
-	wfTqf6MQzmra4ngxJE2oD/jvSfiATKpC/jmc7EWVACPYzAQ5L/r5wHVAkpEPo/H8ViXX5tx38vbYq
-	fHbfmD9sA4HMMp6Kahsg==;
+	List-Owner; bh=pz4q+e5LtoQg2ajy9Gf7EjQFhd8hZOaEhF24QKsl+Rw=; b=Dxh6vPohR3ty7J
+	CaRIQ32K69rKtGWW1pZn25KuZH9JL94l/0y+EWB1ULrUgIKZk2n8X7RRPeyb5D55EiAfIBHpphI20
+	Ahy/4dSfqlJu0trGNOcCweBGJQ7AsmDjUeb8j7rQi+3EQWZC3nZXaVeboP8Eiy9LCfJ2RgjgKAzGt
+	MLaDrKp6DoobrV0NOx3tza5nnyRArfSeVXTimElAns6rfICyAzXPnXl80CQE91LIFRa3mfX7NWubp
+	f/gCpoVU+1kuLmJwoYrqUtif2q1TmsYIQ3GjHS83aQtnZxaKoYmm8aK18Y2T+M+DJ2LL2A6Qxb7LS
+	V+aCI/cbUTCzAJISEAlw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1miFJr-0057fE-Vr; Wed, 03 Nov 2021 12:24:44 +0000
+	id 1miFKT-0057vs-5Q; Wed, 03 Nov 2021 12:25:21 +0000
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
- (Red Hat Linux)) id 1miFHC-0056IK-Ap; Wed, 03 Nov 2021 12:21:58 +0000
+ (Red Hat Linux)) id 1miFHC-0056II-9o; Wed, 03 Nov 2021 12:21:58 +0000
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
  dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
@@ -39,10 +39,9 @@ To: axboe@kernel.dk, hch@lst.de, penguin-kernel@i-love.sakura.ne.jp,
 Cc: linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v2 06/13] nvdimm/pmem: cleanup the disk if pmem_release_disk()
- is yet assigned
-Date: Wed,  3 Nov 2021 05:21:50 -0700
-Message-Id: <20211103122157.1215783-7-mcgrof@kernel.org>
+Subject: [PATCH v2 05/13] nvdimm/blk: add error handling support for add_disk()
+Date: Wed,  3 Nov 2021 05:21:49 -0700
+Message-Id: <20211103122157.1215783-6-mcgrof@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211103122157.1215783-1-mcgrof@kernel.org>
 References: <20211103122157.1215783-1-mcgrof@kernel.org>
@@ -63,55 +62,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Prior to devm being able to use pmem_release_disk() there are other
-failure which can occur for which we must account for and release the
-disk for. Address those few cases.
+We never checked for errors on add_disk() as this function
+returned void. Now that this is fixed, use the shiny new
+error handling.
 
-Fixes: 3dd60fb9d95d ("nvdimm/pmem: stop using q_usage_count as external pgmap refcount")
+Since nvdimm/blk uses devm we just need to move the devm
+registration towards the end. And in hindsight, that seems
+to also provide a fix given del_gendisk() should not be
+called unless the disk was already added via add_disk().
+The probably of that issue happening is low though, like
+OOM while calling devm_add_action(), so the fix is minor.
+
+We manually unwind in case of add_disk() failure prior
+to the devm registration.
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
- drivers/nvdimm/pmem.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/nvdimm/blk.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index 9cc0d0ebfad1..d98af6c31f42 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -471,8 +471,10 @@ static int pmem_attach_disk(struct device *dev,
- 		bb_range.end = res->end;
+diff --git a/drivers/nvdimm/blk.c b/drivers/nvdimm/blk.c
+index 4eef67918a7e..228c33b8d1d6 100644
+--- a/drivers/nvdimm/blk.c
++++ b/drivers/nvdimm/blk.c
+@@ -264,7 +264,9 @@ static int nsblk_attach_disk(struct nd_namespace_blk *nsblk)
  	}
  
--	if (IS_ERR(addr))
--		return PTR_ERR(addr);
-+	if (IS_ERR(addr)) {
-+		rc = PTR_ERR(addr);
-+		goto out;
-+	}
- 	pmem->virt_addr = addr;
+ 	set_capacity(disk, available_disk_size >> SECTOR_SHIFT);
+-	device_add_disk(dev, disk, NULL);
++	rc = device_add_disk(dev, disk, NULL);
++	if (rc)
++		goto out_before_devm_err;
  
- 	blk_queue_write_cache(q, true, fua);
-@@ -497,7 +499,8 @@ static int pmem_attach_disk(struct device *dev,
- 		flags = DAXDEV_F_SYNC;
- 	dax_dev = alloc_dax(pmem, disk->disk_name, &pmem_dax_ops, flags);
- 	if (IS_ERR(dax_dev)) {
--		return PTR_ERR(dax_dev);
-+		rc = PTR_ERR(dax_dev);
-+		goto out;
- 	}
- 	dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
- 	pmem->dax_dev = dax_dev;
-@@ -512,8 +515,10 @@ static int pmem_attach_disk(struct device *dev,
- 					  "badblocks");
- 	if (!pmem->bb_state)
- 		dev_warn(dev, "'badblocks' notification disabled\n");
--
- 	return 0;
-+out:
-+	blk_cleanup_disk(pmem->disk);
-+	return rc;
- }
- 
- static int nd_pmem_probe(struct device *dev)
+ 	/* nd_blk_release_disk() is called if this fails */
+ 	if (devm_add_action_or_reset(dev, nd_blk_release_disk, disk))
 -- 
 2.33.0
 
