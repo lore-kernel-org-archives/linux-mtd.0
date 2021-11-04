@@ -2,64 +2,52 @@ Return-Path: <SRS0=xf6T=PX=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDC4AC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Nov 2021 13:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F523C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Nov 2021 17:08:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D39C6112D
-	for <linux-mtd@archiver.kernel.org>; Thu,  4 Nov 2021 13:49:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7D39C6112D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id EA1EF60F56
+	for <linux-mtd@archiver.kernel.org>; Thu,  4 Nov 2021 17:08:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EA1EF60F56
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AgHkZUQvprUtitmRujC9z6H7Lrs/CM1daQORqcltg5I=; b=mC0RHnwuGNx0SR
-	Qezzt+guDiDHKoIiILIEgkSxuisikRECDKHOAu+Vh5D9O60FFepDg1xWknhc2w2jDQ3RGQNffzUOT
-	ZZII3nwAs56pYt56h71P5u0Es6Ric2xIFbL5FmOPtQ1wMkmfyksGBxjF8Evj2EDG4PPbeOhKK1Jc/
-	MS0m3MooJqzYb57jeOnlCS5k4g53Qc6mTloWIDC3910XnpARmt2TReK0E2h+fwvCLJq+qtYJprncD
-	6xVXvJGKPVpMxMAnN3ry9Ydu7OmMMFu4XWLUSOAjRxFbEgmW0Tx7c6E921AVWreaFH/YWE1pVJz/5
-	mbydnLEsajlx1Bn3dXUw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cTK9jw1c2/7pAenMIojdVifLC0YYkjMZId8K8BTQJPA=; b=gxwdozF0bezmWu
+	oI6o9ZwGJv20auWAsPUUkzbHum4r8r1IhCM6YMaNJ76YhiSIf5Xlwnrn3hub+QMsB1U/QJOgTEdPh
+	0N+L08D6cW6aik57dHyf9aaCTDiEr0K8JqCpWVG3EhWG6SibXarChbQsvB/7Eeti4nRrF1s6zr4h8
+	efnl/mvPSod0bpSyWRnVNzhchrweXvzTO6Q5UPZGz3bxbWSJibxdt9blgRZinmKnm7aWZKqglDb3t
+	pEjVAWyGTZ3gCg0oWpW0zriTHhQM0y4Wyl6ifRH3AEkelRp4pVpfDTWHHl10YwjdiZtGn3lqJpclT
+	LIEHgGzHJMbra2XcTepg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mid6y-0092u4-4x; Thu, 04 Nov 2021 13:49:00 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mid6u-0092t9-Tq
- for linux-mtd@lists.infradead.org; Thu, 04 Nov 2021 13:48:58 +0000
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 4BC0C22221;
- Thu,  4 Nov 2021 14:48:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1636033729;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=hzn7IpexuRy/8kkxG32qAgyZ+pY82Q0NyVwXVe3onQk=;
- b=lQaeVNL3uDl1TL6fU5DXj+vyUA7hGIo4S1NzHbOKWOPC0AI8u8P7nydtrkLZWpAYEgXApI
- 35xq/DpHgQ/lfWexcu/y6RtxfVdrH8U1Vz5EHpM3u6U1CuGgaYdSk3wLIsJb2iFA1DWYvp
- S9TcPC3W01amoupb/ePK/DG0bSTfpOY=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Michael Walle <michael@walle.cc>
-Subject: [PATCH] mtd: core: provide unique name for nvmem device
-Date: Thu,  4 Nov 2021 14:48:43 +0100
-Message-Id: <20211104134843.2642800-1-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
+	id 1migDN-009aeA-5M; Thu, 04 Nov 2021 17:07:49 +0000
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2
+ (Red Hat Linux)) id 1migDJ-009ada-E1; Thu, 04 Nov 2021 17:07:45 +0000
+Date: Thu, 4 Nov 2021 10:07:45 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>, martin.petersen@oracle.com
+Cc: miquel.raynal@bootlin.com, hare@suse.de, jack@suse.cz, hch@lst.de,
+ song@kernel.org, dave.jiang@intel.com, richard@nod.at,
+ vishal.l.verma@intel.com, penguin-kernel@i-love.sakura.ne.jp,
+ tj@kernel.org, ira.weiny@intel.com, vigneshr@ti.com,
+ dan.j.williams@intel.com, ming.lei@redhat.com, efremov@linux.com,
+ linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-scsi@vger.kernel.org
+Subject: Re: [PATCH v5 00/14] last set for add_disk() error handling
+Message-ID: <YYQTYctDjaxU2tkQ@bombadil.infradead.org>
+References: <20211103230437.1639990-1-mcgrof@kernel.org>
+ <163602655191.22491.10844091970007142957.b4-ty@kernel.dk>
+ <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211104_064857_168866_146ADC4F 
-X-CRM114-Status: GOOD (  14.58  )
+Content-Disposition: inline
+In-Reply-To: <4764286a-99b4-39f7-ce5c-9e88cee1a538@kernel.dk>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,75 +59,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If there is more than one mtd device which supports OTP, there will
-be a kernel warning about duplicated sysfs entries and the probing will
-fail. This is because the nvmem device name is not unique. Make it
-unique by prepending the name of the mtd. E.g. before the name was
-"user-otp", now it will be "mtd0-user-otp".
-
-For reference the kernel splash is:
-[    4.665531] sysfs: cannot create duplicate filename '/bus/nvmem/devices/user-otp'
-[    4.673056] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.15.0-next-20211101+ #1296
-[    4.680565] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-[    4.688856] Call trace:
-[    4.691303]  dump_backtrace+0x0/0x1bc
-[    4.694984]  show_stack+0x24/0x30
-[    4.698306]  dump_stack_lvl+0x68/0x84
-[    4.701980]  dump_stack+0x18/0x34
-[    4.705302]  sysfs_warn_dup+0x70/0x90
-[    4.708973]  sysfs_do_create_link_sd+0x144/0x150
-[    4.713603]  sysfs_create_link+0x2c/0x50
-[    4.717535]  bus_add_device+0x74/0x120
-[    4.721293]  device_add+0x330/0x890
-[    4.724791]  device_register+0x2c/0x40
-[    4.728550]  nvmem_register+0x240/0x9f0
-[    4.732398]  mtd_otp_nvmem_register+0xb0/0x10c
-[    4.736854]  mtd_device_parse_register+0x28c/0x2b4
-[    4.741659]  spi_nor_probe+0x20c/0x2e0
-[    4.745418]  spi_mem_probe+0x78/0xbc
-[    4.749001]  spi_probe+0x90/0xf0
-[    4.752237]  really_probe.part.0+0xa4/0x320
-..
-[    4.873936] mtd mtd1: Failed to register OTP NVMEM device
-[    4.894468] spi-nor: probe of spi0.0 failed with error -17
-
-Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/mtdcore.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 9186268d361b..fc0bed14bfb1 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -825,8 +825,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
- 
- 	/* OTP nvmem will be registered on the physical device */
- 	config.dev = mtd->dev.parent;
--	/* just reuse the compatible as name */
--	config.name = compatible;
-+	config.name = kasprintf(GFP_KERNEL, "%s-%s", dev_name(&mtd->dev), compatible);
- 	config.id = NVMEM_DEVID_NONE;
- 	config.owner = THIS_MODULE;
- 	config.type = NVMEM_TYPE_OTP;
-@@ -842,6 +841,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
- 		nvmem = NULL;
- 
- 	of_node_put(np);
-+	kfree(config.name);
- 
- 	return nvmem;
- }
--- 
-2.30.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVGh1LCBOb3YgMDQsIDIwMjEgYXQgMDY6NTM6MzRBTSAtMDYwMCwgSmVucyBBeGJvZSB3cm90
+ZToKPiBPbiAxMS80LzIxIDU6NDkgQU0sIEplbnMgQXhib2Ugd3JvdGU6Cj4gPiBPbiBXZWQsIDMg
+Tm92IDIwMjEgMTY6MDQ6MjMgLTA3MDAsIEx1aXMgQ2hhbWJlcmxhaW4gd3JvdGU6Cj4gPj4gSmVu
+cywKPiA+Pgo+ID4+IGFzIHJlcXVlc3RlZCwgSSd2ZSBmb2xkZWQgYWxsIHBlbmRpbmcgY2hhbmdl
+cyBpbnRvIHRoaXMgc2VyaWVzLiBUaGlzCj4gPj4gdjUgcGVncyBvbiBDaHJpc3RvcGgncyByZXZp
+ZXdlZC1ieSB0YWdzIGFuZCBzaW5jZSBJIHdhcyByZXNwaW5uaW5nIEkKPiA+PiBtb2RpZmllZCB0
+aGUgYXRhcHJvYmUgYW5kIGZsb3BweSBkcml2ZXIgY2hhbmdlcyBhcyBoZSBzdWdnZXN0ZWQuCj4g
+Pj4KPiA+PiBJIHRoaW5rIHRoaXMgaXMgaXQuIFRoZSB3b3JsZCBvZiBmbG9wcHkgaGFzIGJlZW4g
+ZXhjaXRpbmcgZm9yIHY1LjE2Lgo+ID4+Cj4gPj4gWy4uLl0KPiA+IAo+ID4gQXBwbGllZCwgdGhh
+bmtzIQo+ID4gCj4gPiBbMDEvMTRdIG52ZGltbS9idHQ6IHVzZSBnb3RvIGVycm9yIGxhYmVscyBv
+biBidHRfYmxrX2luaXQoKQo+ID4gICAgICAgICBjb21taXQ6IDI3NjJmZjA2YWE0OWUzYTEzZmI0
+Yjc3OTEyMGY0ZjhjMTJjMzlmZDEKPiA+IFswMi8xNF0gbnZkaW1tL2J0dDogYWRkIGVycm9yIGhh
+bmRsaW5nIHN1cHBvcnQgZm9yIGFkZF9kaXNrKCkKPiA+ICAgICAgICAgY29tbWl0OiAxNmJlNzk3
+NGZmNWQwYTVjZDlmMzQ1NTcxYzNlYWMxYzNmNmJhNmRlCj4gPiBbMDMvMTRdIG52ZGltbS9ibGs6
+IGF2b2lkIGNhbGxpbmcgZGVsX2dlbmRpc2soKSBvbiBlYXJseSBmYWlsdXJlcwo+ID4gICAgICAg
+ICBjb21taXQ6IGI3NDIxYWZjZWMwYzc3YWI1ODYzMzU4N2RkYzI5ZDUzZTZlYjk1YWYKPiA+IFsw
+NC8xNF0gbnZkaW1tL2JsazogYWRkIGVycm9yIGhhbmRsaW5nIHN1cHBvcnQgZm9yIGFkZF9kaXNr
+KCkKPiA+ICAgICAgICAgY29tbWl0OiBkYzEwNGY0YmIyZDBhNjUyZGVlMDEwZTQ3YmM4OWMxYWQy
+YWIzN2M5Cj4gPiBbMDUvMTRdIG52ZGltbS9wbWVtOiBjbGVhbnVwIHRoZSBkaXNrIGlmIHBtZW1f
+cmVsZWFzZV9kaXNrKCkgaXMgeWV0IGFzc2lnbmVkCj4gPiAgICAgICAgIGNvbW1pdDogYWNjZjU4
+YWZiNjg5ZjgxZGFhZGRlMjQwODBlYTExNjRhZDJkYjc1Zgo+ID4gWzA2LzE0XSBudmRpbW0vcG1l
+bTogdXNlIGFkZF9kaXNrKCkgZXJyb3IgaGFuZGxpbmcKPiA+ICAgICAgICAgY29tbWl0OiA1YTE5
+MmNjYzMyZTI5ODFmNzIxMzQzYzc1MGI4Y2ZiNGMzZjQxMDA3Cj4gPiBbMDcvMTRdIHoycmFtOiBh
+ZGQgZXJyb3IgaGFuZGxpbmcgc3VwcG9ydCBmb3IgYWRkX2Rpc2soKQo+ID4gICAgICAgICBjb21t
+aXQ6IDE1NzMzNzU0Y2NmMzVjNDlkMmYzNmE3YWM1MWFkYzhiOTc1YzFjNzgKPiA+IFswOC8xNF0g
+YmxvY2svc3VudmRjOiBhZGQgZXJyb3IgaGFuZGxpbmcgc3VwcG9ydCBmb3IgYWRkX2Rpc2soKQo+
+ID4gICAgICAgICBjb21taXQ6IGY1ODNlYWVmMGFmMzliNzkyZDc0ZTM5NzIxYjViYTRiNjk0OGEy
+NzAKPiA+IFswOS8xNF0gbXRkL3ViaS9ibG9jazogYWRkIGVycm9yIGhhbmRsaW5nIHN1cHBvcnQg
+Zm9yIGFkZF9kaXNrKCkKPiA+ICAgICAgICAgY29tbWl0OiBlZDczOTE5MTI0YjJlNDg0OTBhZGJi
+ZTQ4ZmZlODg1YTJhNGM2ZmVlCj4gPiBbMTAvMTRdIGF0YWZsb3A6IHJlbW92ZSBhdGFmbG9wX3By
+b2JlX2xvY2sgbXV0ZXgKPiA+ICAgICAgICAgY29tbWl0OiA0ZGRiODVkMzY2MTNjNDViZGUwMGQz
+NjhiZjlmMzU3YmQwNzA4YTBjCj4gPiBbMTEvMTRdIGJsb2NrOiB1cGRhdGUgX19yZWdpc3Rlcl9i
+bGtkZXYoKSBwcm9iZSBkb2N1bWVudGF0aW9uCj4gPiAgICAgICAgIGNvbW1pdDogMjZlMDZmNWIx
+MzY3MWQxOTRkNjdhZThlMmI2NmY1MjRhYjE3NDE1Mwo+ID4gWzEyLzE0XSBhdGFmbG9wOiBhZGRy
+ZXNzIGFkZF9kaXNrKCkgZXJyb3IgaGFuZGxpbmcgb24gcHJvYmUKPiA+ICAgICAgICAgY29tbWl0
+OiA0NmE3ZGI0OTJlN2EyNzQwOGJjMTY0Y2JlNjQyNDY4M2U3OTUyOWIwCj4gPiBbMTMvMTRdIGZs
+b3BweTogYWRkcmVzcyBhZGRfZGlzaygpIGVycm9yIGhhbmRsaW5nIG9uIHByb2JlCj4gPiAgICAg
+ICAgIGNvbW1pdDogZWMyOGZjYzZjZmNkNDE4ZDIwMDM4YWQyYzQ5MmU4N2JmM2E5ZjAyNgo+ID4g
+WzE0LzE0XSBibG9jazogYWRkIF9fbXVzdF9jaGVjayBmb3IgKmFkZF9kaXNrKigpIGNhbGxlcnMK
+PiA+ICAgICAgICAgY29tbWl0OiAxNjk4NzEyZDg1ZWMyZjEyOGZjN2U3YzVkYzIwMThiNWVkMmI3
+Y2Y2Cj4gCj4gcml2ZXJzL3Njc2kvc2QuYzogSW4gZnVuY3Rpb24g4oCYc2RfcHJvYmXigJk6Cj4g
+ZHJpdmVycy9zY3NpL3NkLmM6MzU3Mzo5OiB3YXJuaW5nOiBpZ25vcmluZyByZXR1cm4gdmFsdWUg
+b2Yg4oCYZGV2aWNlX2FkZF9kaXNr4oCZIGRlY2xhcmVkIHdpdGggYXR0cmlidXRlIOKAmHdhcm5f
+dW51c2VkX3Jlc3VsdOKAmSBbLVd1bnVzZWQtcmVzdWx0XQo+ICAzNTczIHwgICAgICAgICBkZXZp
+Y2VfYWRkX2Rpc2soZGV2LCBnZCwgTlVMTCk7Cj4gICAgICAgfCAgICAgICAgIF5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fgo+IGRyaXZlcnMvc2NzaS9zci5jOiBJbiBmdW5jdGlvbiDigJhz
+cl9wcm9iZeKAmToKPiBkcml2ZXJzL3Njc2kvc3IuYzo3MzE6OTogd2FybmluZzogaWdub3Jpbmcg
+cmV0dXJuIHZhbHVlIG9mIOKAmGRldmljZV9hZGRfZGlza+KAmSBkZWNsYXJlZCB3aXRoIGF0dHJp
+YnV0ZSDigJh3YXJuX3VudXNlZF9yZXN1bHTigJkgWy1XdW51c2VkLXJlc3VsdF0KPiAgIDczMSB8
+ICAgICAgICAgZGV2aWNlX2FkZF9kaXNrKCZzZGV2LT5zZGV2X2dlbmRldiwgZGlzaywgTlVMTCk7
+Cj4gICAgICAgfCAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+Cj4gCj4gCj4gRHJvcHBpbmcgdGhlIGxhc3QgdHdvIHBhdGNoZXMuLi4KCk1hcnRp
+biBLIFBldGVyc29uIGhhcyB0aGUgcmVzcGVjdGl2ZSBwYXRjaGVzIG5lZWRlZCBxdWV1ZWQgdXAg
+b24gaGlzIHRyZWUKZm9yIHY1LjE2OgoKaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xp
+bnV4L2tlcm5lbC9naXQvbWtwL3Njc2kuZ2l0L2NvbW1pdC8/aD01LjE2L3Njc2ktc3RhZ2luZyZp
+ZD1lOWQ2NThjMjE3NWI5NWE4ZjA5MWIxMmRkZWZiMjcxNjgzYWVhY2Q5Cmh0dHBzOi8vZ2l0Lmtl
+cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L21rcC9zY3NpLmdpdC9jb21taXQvP2g9
+NS4xNi9zY3NpLXN0YWdpbmcmaWQ9MmE3YTg5MWY0YzQwNjgyMjgwMWVjZDY3NmIwNzZjNjRkZTA3
+MmM5ZQoKV291bGQgdGhlIGxhc3QgcGF0Y2ggYmUgc2VudCBvbmNlIHRoYXQgZ2V0cyB0byBMaW51
+cz8KCkFsc28gY3VyaW91cyB3aHkgZHJvcCB0aGUgbGFzdCB0d28gcGF0Y2hlcyBpbnN0ZWFkIGp1
+c3QgdGhlIGxhc3Qgb25lIGZvcgpub3c/CgogIEx1aXMKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
