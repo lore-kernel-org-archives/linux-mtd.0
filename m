@@ -2,14 +2,14 @@ Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26016C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:44:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 936C2C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:45:02 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFD4461165
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:44:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DFD4461165
+	by mail.kernel.org (Postfix) with ESMTPS id 539DF60F9D
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:45:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 539DF60F9D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,52 +18,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JOduXrhrwWo/lmt8+PUBvXRMg9jgmCnBJpEoYAgZJqs=; b=CWgqHIPGqCEFnE
-	u2IkGM5sGaiDFXyi9GF8STHGh5eXhQbc61xHcc2frUREvgKobDpElNBNp0vwUVSqV/Cjd8usdCFNu
-	7jqF9VXf5j/AyowErfwhLkXXqS1csamA531i0jFl0RgFXXsBOG1bcU7WKlv/k6gjvFq8j2edVQ1bH
-	uyMywbQQfnt8E1y9vSPHQxgrT/FWkSViKodfmoi9dmpyThpgxCVkq60wxlZegy/mC/UHVW68H9aun
-	T7T/TyzMSo1hNSIPlRPIKv8sx7tJBNEvxNodnPUxJT2NOKIptn1ieXmiT64WZgrbU5yNbtBAA9Cel
-	Qa1VKh/mAh4WGdMf6pZw==;
+	List-Owner; bh=4VN0R1Xj/69gyoFJkO7Nz6Ru/oEYaPvPtEzDxOjbwgc=; b=4vi49mTbyKUiVC
+	KOuoZ2W1Wlr1eibfZrWmZ6k4AebsUtuHVdeQfApXZrclWwUSNsA7BUSAoQSU38X7cVimxMb6sz+nx
+	jDmxlOJB9xF2/ddlMDrEHaZWhJeTGalZggI87yscL+1AjlY1oKMkTXlyUfaOv6DE7n6lsHTbzCUvG
+	SbiJIQG5SIOS46+/NA4I7oJmIMbRfgGWEMNPQIII8wJIPbtnsLURSU8lVXgj1piGxnvxtU5JTY2hP
+	NvaFDHcRQx0J7XjO5r38yXlUWKKXjYPYVth0ZIowIFtYEQseI0dhSuhmkHTM8BL0jmXpZ8K58Z8HV
+	HjJ5e7+jkICp9bVQLs1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mjOnG-00D7ic-US; Sat, 06 Nov 2021 16:43:51 +0000
+	id 1mjOnu-00D7tr-4i; Sat, 06 Nov 2021 16:44:30 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKzO-00CzUC-Ho
- for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:40:06 +0000
+ id 1mjKzP-00CzUC-TO
+ for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:40:08 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+ d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
  :MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
  Sender:Reply-To:Content-ID:Content-Description;
- bh=YBezpinT/ujCijNnmHGC6ZurKiQASxdyCs31lOqXZGA=; b=HTfAntiRSNTYxY+TCucZdTTtPL
- LQadar4+CSFMqIVhtCDYlsYnljcZZDXcceimzsQq7PCxWXUm6ARgXZGbtYrg4eGF1hlbwQQ+vY7SG
- A+t7ioIsgaKbWe7WW/hWoKfXe4H80OCfFv1M4KcAoW27Ab1JuVhpufvsrNDW1hBcrIFhPGN84q5pr
- iQSp8JeGby/0aopS7fWbztPl98OdH8iLuTRWAOEsJEBX2tizhV/2vVg8ZYscSjRIsYL20qyjwUfUi
- H2GVT0otFJyQs3bYIg84u6IfLaTwc57KXjvDNHGjxQfakPuHCjcLpV5T+CnFtxjl3/rIh5wSRd6Z8
- zgLKiZlQ==;
+ bh=I0SmIIrs/WGlWUjfDO2qBCDbX/YVyP1bZvyewAnPvGM=; b=LKfyJuT2O+kdKwzvRNVJp7OO00
+ colUJbIiIUEyOKmqynoGzvLHwn0sVCqBWEMhszbxtLx7X8tv+pcKTbSIYYEUKuaSF5Ok21VPRCe7n
+ XhZN4rbvC+vh5Fkk8/tUu/MTYQY6cvL/CNRVE60R/kyzeCUcomKGbIVO5pypzF4qYwApz+P7hJhip
+ hypN/VvA15EXAfYwDXnxmgbPL3hZ/cFzGuBMeAoPxU+XXgC3lO3hDj9gYiLlKbdwXjM/JgsXtaBrU
+ 4/fhyqFQFDenBeFr+/8c/CvadS5nhCGtMDB8zkaT3+Ps4sf8YtPWiB+oqBxikSm3rLijxH/RtTstM
+ zM4msn4g==;
 Received: from szxga01-in.huawei.com ([45.249.212.187])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKZe-00EVb0-G3
- for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:13:36 +0000
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbmq2xmGzZckQ;
- Sat,  6 Nov 2021 20:10:35 +0800 (CST)
+ id 1mjKZe-00EVar-G3
+ for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:13:35 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbmn0CRhzZcfm;
+ Sat,  6 Nov 2021 20:10:33 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 20:12:44 +0800
+ 15.1.2308.15; Sat, 6 Nov 2021 20:12:41 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 20:12:43 +0800
+ 2021 20:12:41 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 05/12] ubifs: Rename whiteout atomically
-Date: Sat, 6 Nov 2021 20:25:10 +0800
-Message-ID: <20211106122517.3304628-6-chengzhihao1@huawei.com>
+Subject: [PATCH v2 02/12] ubifs: Fix deadlock in concurrent rename whiteout
+ and inode writeback
+Date: Sat, 6 Nov 2021 20:25:07 +0800
+Message-ID: <20211106122517.3304628-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211106122517.3304628-1-chengzhihao1@huawei.com>
 References: <20211106122517.3304628-1-chengzhihao1@huawei.com>
@@ -73,8 +74,8 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211106_121331_410958_315850B9 
-X-CRM114-Status: GOOD (  24.65  )
+X-CRM114-CacheID: sfid-20211106_121331_331433_94A68756 
+X-CRM114-Status: GOOD (  10.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,427 +87,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, rename whiteout has 3 steps:
-  1. create tmpfile(which associates old dentry to tmpfile inode) for
-     whiteout, and store tmpfile to disk
-  2. link whiteout, associate whiteout inode to old dentry agagin and
-     store old dentry, old inode, new dentry on disk
-  3. writeback dirty whiteout inode to disk
-
-Suddenly power-cut or error occurring(eg. ENOSPC returned by budget,
-memory allocation failure) during above steps may cause kinds of problems:
-  Problem 1: ENOSPC returned by whiteout space budget (before step 2),
-	     old dentry will disappear after rename syscall, whiteout file
-	     cannot be found either.
-
-	     ls dir  // we get file, whiteout
-	     rename(dir/file, dir/whiteout, REANME_WHITEOUT)
-	     ENOSPC = ubifs_budget_space(&wht_req) // return
-	     ls dir  // empty (no file, no whiteout)
-  Problem 2: Power-cut happens before step 3, whiteout inode with 'nlink=1'
-	     is not stored on disk, whiteout dentry(old dentry) is written
-	     on disk, whiteout file is lost on next mount (We get "dead
-	     directory entry" after executing 'ls -l' on whiteout file).
-
-Now, we use following 3 steps to finish rename whiteout:
-  1. create an in-mem inode with 'nlink = 1' as whiteout
-  2. ubifs_jnl_rename (Write on disk to finish associating old dentry to
-     whiteout inode, associating new dentry with old inode)
-  3. iput(whiteout)
-
-Rely writing in-mem inode on disk by ubifs_jnl_rename() to finish rename
-whiteout, which avoids middle disk state caused by suddenly power-cut
-and error occurring.
-
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/dir.c     | 144 +++++++++++++++++++++++++++++----------------
- fs/ubifs/journal.c |  52 +++++++++++++---
- 2 files changed, 136 insertions(+), 60 deletions(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 6503e6857f6e..30fcfdbe0ab5 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -349,8 +349,56 @@ static int ubifs_create(struct user_namespace *mnt_userns, struct inode *dir,
- 	return err;
- }
- 
--static int do_tmpfile(struct inode *dir, struct dentry *dentry,
--		      umode_t mode, struct inode **whiteout)
-+static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
-+{
-+	int err;
-+	umode_t mode = S_IFCHR | WHITEOUT_MODE;
-+	struct inode *inode;
-+	struct ubifs_info *c = dir->i_sb->s_fs_info;
-+	struct fscrypt_name nm;
-+
-+	/*
-+	 * Create an inode('nlink = 1') for whiteout without updating journal,
-+	 * let ubifs_jnl_rename() store it on flash to complete rename whiteout
-+	 * atomically.
-+	 */
-+
-+	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
-+		dentry, mode, dir->i_ino);
-+
-+	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	inode = ubifs_new_inode(c, dir, mode);
-+	if (IS_ERR(inode)) {
-+		err = PTR_ERR(inode);
-+		goto out_free;
-+	}
-+
-+	init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
-+	ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
-+
-+	err = ubifs_init_security(dir, inode, &dentry->d_name);
-+	if (err)
-+		goto out_inode;
-+
-+	/* The dir size is updated by do_rename. */
-+	insert_inode_hash(inode);
-+
-+	return inode;
-+
-+out_inode:
-+	make_bad_inode(inode);
-+	iput(inode);
-+out_free:
-+	fscrypt_free_filename(&nm);
-+	ubifs_err(c, "cannot create whiteout file, error %d", err);
-+	return ERR_PTR(err);
-+}
-+
-+static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
-+			 struct dentry *dentry, umode_t mode)
- {
- 	struct inode *inode;
- 	struct ubifs_info *c = dir->i_sb->s_fs_info;
-@@ -392,25 +440,13 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	}
- 	ui = ubifs_inode(inode);
- 
--	if (whiteout) {
--		init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
--		ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
--	}
--
- 	err = ubifs_init_security(dir, inode, &dentry->d_name);
- 	if (err)
- 		goto out_inode;
- 
- 	mutex_lock(&ui->ui_mutex);
- 	insert_inode_hash(inode);
--
--	if (whiteout) {
--		mark_inode_dirty(inode);
--		drop_nlink(inode);
--		*whiteout = inode;
--	} else {
--		d_tmpfile(dentry, inode);
--	}
-+	d_tmpfile(dentry, inode);
- 	ubifs_assert(c, ui->dirty);
- 
- 	instantiated = 1;
-@@ -441,12 +477,6 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	return err;
- }
- 
--static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
--			 struct dentry *dentry, umode_t mode)
--{
--	return do_tmpfile(dir, dentry, mode, NULL);
--}
--
- /**
-  * vfs_dent_type - get VFS directory entry type.
-  * @type: UBIFS directory entry type
-@@ -1264,17 +1294,19 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 					.dirtied_ino = 3 };
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
- 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
-+	struct ubifs_budget_req wht_req;
- 	struct timespec64 time;
- 	unsigned int saved_nlink;
- 	struct fscrypt_name old_nm, new_nm;
- 
- 	/*
--	 * Budget request settings: deletion direntry, new direntry, removing
--	 * the old inode, and changing old and new parent directory inodes.
-+	 * Budget request settings:
-+	 *   req: deletion direntry, new direntry, removing the old inode,
-+	 *   and changing old and new parent directory inodes.
- 	 *
--	 * However, this operation also marks the target inode as dirty and
--	 * does not write it, so we allocate budget for the target inode
--	 * separately.
-+	 *   wht_req: new whiteout inode for RENAME_WHITEOUT.
-+	 *
-+	 *   ino_req: marks the target inode as dirty and does not write it.
- 	 */
- 
- 	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu flags 0x%x",
-@@ -1324,7 +1356,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 	if (flags & RENAME_WHITEOUT) {
- 		union ubifs_dev_desc *dev = NULL;
--		struct ubifs_budget_req wht_req;
- 
- 		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
- 		if (!dev) {
-@@ -1332,26 +1363,26 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			goto out_release;
- 		}
- 
--		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
--		if (err) {
--			if (whiteout)
--				iput(whiteout);
-+		/*
-+		 * The whiteout inode without dentry is pinned in memory,
-+		 * umount won't happen during rename process because we
-+		 * got parent dentry.
-+		 */
-+		whiteout = create_whiteout(old_dir, old_dentry);
-+		if (IS_ERR(whiteout)) {
-+			err = PTR_ERR(whiteout);
- 			kfree(dev);
- 			goto out_release;
- 		}
- 
--		spin_lock(&whiteout->i_lock);
--		whiteout->i_state |= I_LINKABLE;
--		spin_unlock(&whiteout->i_lock);
--
- 		whiteout_ui = ubifs_inode(whiteout);
- 		whiteout_ui->data = dev;
- 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
- 		ubifs_assert(c, !whiteout_ui->dirty);
- 
- 		memset(&wht_req, 0, sizeof(struct ubifs_budget_req));
--		wht_req.dirtied_ino = 1;
--		wht_req.dirtied_ino_d = ALIGN(whiteout_ui->data_len, 8);
-+		wht_req.new_ino = 1;
-+		wht_req.new_ino_d = ALIGN(whiteout_ui->data_len, 8);
- 		/*
- 		 * To avoid deadlock between space budget (holds ui_mutex and
- 		 * waits wb work) and writeback work(waits ui_mutex), do space
-@@ -1359,6 +1390,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		 */
- 		err = ubifs_budget_space(c, &wht_req);
- 		if (err) {
-+			/*
-+			 * Whiteout inode can not be written on flash by
-+			 * ubifs_jnl_write_inode(), because it's neither
-+			 * dirty nor zero-nlink.
-+			 */
- 			iput(whiteout);
- 			goto out_release;
- 		}
-@@ -1433,17 +1469,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
- 		if (unlink && IS_SYNC(new_inode))
- 			sync = 1;
--	}
--
--	if (whiteout) {
--		inc_nlink(whiteout);
--		mark_inode_dirty(whiteout);
--
--		spin_lock(&whiteout->i_lock);
--		whiteout->i_state &= ~I_LINKABLE;
--		spin_unlock(&whiteout->i_lock);
--
--		iput(whiteout);
-+		/*
-+		 * S_SYNC flag of whiteout inherits from the old_dir, and we
-+		 * have already check the old dir inode. So there is no need
-+		 * to check whiteout.
-+		 */
- 	}
- 
- 	err = ubifs_jnl_rename(c, old_dir, old_inode, &old_nm, new_dir,
-@@ -1454,6 +1484,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
- 	ubifs_release_budget(c, &req);
- 
-+	if (whiteout) {
-+		ubifs_release_budget(c, &wht_req);
-+		iput(whiteout);
-+	}
-+
- 	mutex_lock(&old_inode_ui->ui_mutex);
- 	release = old_inode_ui->dirty;
- 	mark_inode_dirty_sync(old_inode);
-@@ -1462,11 +1497,16 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	if (release)
- 		ubifs_release_budget(c, &ino_req);
- 	if (IS_SYNC(old_inode))
--		err = old_inode->i_sb->s_op->write_inode(old_inode, NULL);
-+		/*
-+		 * Rename finished here. Although old inode cannot be updated
-+		 * on flash, old ctime is not a big problem, don't return err
-+		 * code to userspace.
-+		 */
-+		old_inode->i_sb->s_op->write_inode(old_inode, NULL);
- 
- 	fscrypt_free_filename(&old_nm);
- 	fscrypt_free_filename(&new_nm);
--	return err;
-+	return 0;
- 
- out_cancel:
- 	if (unlink) {
-@@ -1487,11 +1527,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 				inc_nlink(old_dir);
- 		}
- 	}
-+	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
- 	if (whiteout) {
--		drop_nlink(whiteout);
-+		ubifs_release_budget(c, &wht_req);
- 		iput(whiteout);
- 	}
--	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
- out_release:
- 	ubifs_release_budget(c, &ino_req);
- 	ubifs_release_budget(c, &req);
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 8ea680dba61e..b0c91293e4cb 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1207,9 +1207,9 @@ int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
-  * @sync: non-zero if the write-buffer has to be synchronized
-  *
-  * This function implements the re-name operation which may involve writing up
-- * to 4 inodes and 2 directory entries. It marks the written inodes as clean
-- * and returns zero on success. In case of failure, a negative error code is
-- * returned.
-+ * to 4 inodes(new inode, whiteout inode, old and new parent directory inodes)
-+ * and 2 directory entries. It marks the written inodes as clean and returns
-+ * zero on success. In case of failure, a negative error code is returned.
-  */
- int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		     const struct inode *old_inode,
-@@ -1222,14 +1222,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	void *p;
- 	union ubifs_key key;
- 	struct ubifs_dent_node *dent, *dent2;
--	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
-+	int err, dlen1, dlen2, ilen, wlen, lnum, offs, len, orphan_added = 0;
- 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
- 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
- 	int move = (old_dir != new_dir);
--	struct ubifs_inode *new_ui;
-+	struct ubifs_inode *new_ui, *whiteout_ui;
- 	u8 hash_old_dir[UBIFS_HASH_ARR_SZ];
- 	u8 hash_new_dir[UBIFS_HASH_ARR_SZ];
- 	u8 hash_new_inode[UBIFS_HASH_ARR_SZ];
-+	u8 hash_whiteout_inode[UBIFS_HASH_ARR_SZ];
- 	u8 hash_dent1[UBIFS_HASH_ARR_SZ];
- 	u8 hash_dent2[UBIFS_HASH_ARR_SZ];
- 
-@@ -1249,9 +1250,20 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	} else
- 		ilen = 0;
- 
-+	if (whiteout) {
-+		whiteout_ui = ubifs_inode(whiteout);
-+		ubifs_assert(c, mutex_is_locked(&whiteout_ui->ui_mutex));
-+		ubifs_assert(c, whiteout->i_nlink == 1);
-+		ubifs_assert(c, !whiteout_ui->dirty);
-+		wlen = UBIFS_INO_NODE_SZ;
-+		wlen += whiteout_ui->data_len;
-+	} else
-+		wlen = 0;
-+
- 	aligned_dlen1 = ALIGN(dlen1, 8);
- 	aligned_dlen2 = ALIGN(dlen2, 8);
--	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) + ALIGN(plen, 8);
-+	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) +
-+	      ALIGN(wlen, 8) + ALIGN(plen, 8);
- 	if (move)
- 		len += plen;
- 
-@@ -1313,6 +1325,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		p += ALIGN(ilen, 8);
- 	}
- 
-+	if (whiteout) {
-+		pack_inode(c, p, whiteout, 0);
-+		err = ubifs_node_calc_hash(c, p, hash_whiteout_inode);
-+		if (err)
-+			goto out_release;
-+
-+		p += ALIGN(wlen, 8);
-+	}
-+
- 	if (!move) {
- 		pack_inode(c, p, old_dir, 1);
- 		err = ubifs_node_calc_hash(c, p, hash_old_dir);
-@@ -1352,6 +1373,9 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		if (new_inode)
- 			ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf,
- 						  new_inode->i_ino);
-+		if (whiteout)
-+			ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf,
-+						  whiteout->i_ino);
- 	}
- 	release_head(c, BASEHD);
- 
-@@ -1368,8 +1392,6 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		err = ubifs_tnc_add_nm(c, &key, lnum, offs, dlen2, hash_dent2, old_nm);
- 		if (err)
- 			goto out_ro;
--
--		ubifs_delete_orphan(c, whiteout->i_ino);
- 	} else {
- 		err = ubifs_add_dirt(c, lnum, dlen2);
- 		if (err)
-@@ -1390,6 +1412,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		offs += ALIGN(ilen, 8);
- 	}
- 
-+	if (whiteout) {
-+		ino_key_init(c, &key, whiteout->i_ino);
-+		err = ubifs_tnc_add(c, &key, lnum, offs, wlen,
-+				    hash_whiteout_inode);
-+		if (err)
-+			goto out_ro;
-+		offs += ALIGN(wlen, 8);
-+	}
-+
- 	ino_key_init(c, &key, old_dir->i_ino);
- 	err = ubifs_tnc_add(c, &key, lnum, offs, plen, hash_old_dir);
- 	if (err)
-@@ -1410,6 +1441,11 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		new_ui->synced_i_size = new_ui->ui_size;
- 		spin_unlock(&new_ui->ui_lock);
- 	}
-+	/*
-+	 * No need to mark whiteout inode clean.
-+	 * Whiteout don't have non-zero size, no need to update
-+	 * synced_i_size for whiteout_ui.
-+	 */
- 	mark_inode_clean(c, ubifs_inode(old_dir));
- 	if (move)
- 		mark_inode_clean(c, ubifs_inode(new_dir));
--- 
-2.31.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Rm9sbG93aW5nIGh1bmcgdGFza3M6ClsgICA3Ny4wMjg3NjRdIHRhc2s6a3dvcmtlci91ODo0ICAg
+IHN0YXRlOkQgc3RhY2s6ICAgIDAgcGlkOiAgMTMyClsgICA3Ny4wMjg4MjBdIENhbGwgVHJhY2U6
+ClsgICA3Ny4wMjkwMjddICBzY2hlZHVsZSsweDhjLzB4MWIwClsgICA3Ny4wMjkwNjddICBtdXRl
+eF9sb2NrKzB4NTAvMHg2MApbICAgNzcuMDI5MDc0XSAgdWJpZnNfd3JpdGVfaW5vZGUrMHg2OC8w
+eDFmMCBbdWJpZnNdClsgICA3Ny4wMjkxMTddICBfX3dyaXRlYmFja19zaW5nbGVfaW5vZGUrMHg0
+M2MvMHg1NzAKWyAgIDc3LjAyOTEyOF0gIHdyaXRlYmFja19zYl9pbm9kZXMrMHgyNTkvMHg3NDAK
+WyAgIDc3LjAyOTE0OF0gIHdiX3dyaXRlYmFjaysweDEwNy8weDRkMApbICAgNzcuMDI5MTYzXSAg
+d2Jfd29ya2ZuKzB4MTYyLzB4N2IwCgpbICAgOTIuMzkwNDQyXSB0YXNrOmFhICAgICAgICAgICAg
+ICBzdGF0ZTpEIHN0YWNrOiAgICAwIHBpZDogMTUwNgpbICAgOTIuMzkwNDQ4XSBDYWxsIFRyYWNl
+OgpbICAgOTIuMzkwNDU4XSAgc2NoZWR1bGUrMHg4Yy8weDFiMApbICAgOTIuMzkwNDYxXSAgd2Jf
+d2FpdF9mb3JfY29tcGxldGlvbisweDgyLzB4ZDAKWyAgIDkyLjM5MDQ2OV0gIF9fd3JpdGViYWNr
+X2lub2Rlc19zYl9ucisweGIyLzB4MTEwClsgICA5Mi4zOTA0NzJdICB3cml0ZWJhY2tfaW5vZGVz
+X3NiX25yKzB4MTQvMHgyMApbICAgOTIuMzkwNDc2XSAgdWJpZnNfYnVkZ2V0X3NwYWNlKzB4NzA1
+LzB4ZGQwIFt1Ymlmc10KWyAgIDkyLjM5MDUwM10gIGRvX3JlbmFtZS5jb2xkKzB4N2YvMHgxODcg
+W3ViaWZzXQpbICAgOTIuMzkwNTQ5XSAgdWJpZnNfcmVuYW1lKzB4OGIvMHgxODAgW3ViaWZzXQpb
+ICAgOTIuMzkwNTcxXSAgdmZzX3JlbmFtZSsweGRiMi8weDExNzAKWyAgIDkyLjM5MDU4MF0gIGRv
+X3JlbmFtZWF0MisweDU1NC8weDc3MAoKLCBhcmUgY2F1c2VkIGJ5IGNvbmN1cnJlbnQgcmVuYW1l
+IHdoaXRlb3V0IGFuZCBpbm9kZSB3cml0ZWJhY2sgcHJvY2Vzc2VzOgoJcmVuYW1lX3doaXRlb3V0
+KFRocmVhZCAxKQkgICAgICAgIHdiX3dvcmtmbihUaHJlYWQyKQp1Ymlmc19yZW5hbWUKICBkb19y
+ZW5hbWUKICAgIGxvY2tfNF9pbm9kZXMgKEhvbGQgdWlfbXV0ZXgpCiAgICB1Ymlmc19idWRnZXRf
+c3BhY2UKICAgICAgbWFrZV9mcmVlX3NwYWNlCiAgICAgICAgc2hyaW5rX2xpYWJpbGl0eQoJICBf
+X3dyaXRlYmFja19pbm9kZXNfc2JfbnIKCSAgICBiZGlfc3BsaXRfd29ya190b193YnMgKFF1ZXVl
+IG5ldyB3YiB3b3JrKQoJCQkJCSAgICAgIHdiX2RvX3dyaXRlYmFjayh3YiB3b3JrKQoJCQkJCQlf
+X3dyaXRlYmFja19zaW5nbGVfaW5vZGUKCQkJCQkgICAgICAgICAgdWJpZnNfd3JpdGVfaW5vZGUK
+CQkJCQkgICAgICAgICAgICBMT0NLKHVpX211dGV4KQoJCQkJCQkJICAg4oaRCgkgICAgICB3Yl93
+YWl0X2Zvcl9jb21wbGV0aW9uIChXYWl0IHdiIHdvcmspIDwtLSBkZWFkbG9jayEKClJlcHJvZHVj
+ZXIgKERldGFpbCBwcm9ncmFtIGluIFtMaW5rXSk6CiAgMS4gU1lTX3JlbmFtZWF0MigiL21wL2Rp
+ci9maWxlIiwgIi9tcC9kaXIvd2hpdGVvdXQiLCBSRU5BTUVfV0hJVEVPVVQpCiAgMi4gQ29uc3Vt
+ZSBvdXQgb2Ygc3BhY2UgYmVmb3JlIGtlcm5lbChtZGVsYXkpIGRvaW5nIGJ1ZGdldCBmb3Igd2hp
+dGVvdXQKCkZpeCBpdCBieSBkb2luZyB3aGl0ZW91dCBzcGFjZSBidWRnZXQgYmVmb3JlIGxvY2tp
+bmcgdWJpZnMgaW5vZGVzLgpCVFcsIGl0IGFsc28gZml4ZXMgd3JvbmcgZ290byB0YWcgJ291dF9y
+ZWxlYXNlJyBpbiB3aGl0ZW91dCBidWRnZXQKZXJyb3IgaGFuZGxpbmcgcGF0aChJdCBzaG91bGQg
+YXQgbGVhc3QgcmVjb3ZlciBkaXIgaV9zaXplIGFuZCB1bmxvY2sKNCB1YmlmcyBpbm9kZXMpLgoK
+Rml4ZXM6IDllMGExZmZmOGRiNTZlYSAoInViaWZzOiBJbXBsZW1lbnQgUkVOQU1FX1dISVRFT1VU
+IikKTGluazogaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMTQ3
+MzMKU2lnbmVkLW9mZi1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNvbT4K
+LS0tCiBmcy91Ymlmcy9kaXIuYyB8IDI1ICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0KIDEgZmls
+ZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
+YS9mcy91Ymlmcy9kaXIuYyBiL2ZzL3ViaWZzL2Rpci5jCmluZGV4IGNmYTg4ODFkOGNjYS4uMjcz
+NWFkMWFmZmVkIDEwMDY0NAotLS0gYS9mcy91Ymlmcy9kaXIuYworKysgYi9mcy91Ymlmcy9kaXIu
+YwpAQCAtMTMyNCw2ICsxMzI0LDcgQEAgc3RhdGljIGludCBkb19yZW5hbWUoc3RydWN0IGlub2Rl
+ICpvbGRfZGlyLCBzdHJ1Y3QgZGVudHJ5ICpvbGRfZGVudHJ5LAogCiAJaWYgKGZsYWdzICYgUkVO
+QU1FX1dISVRFT1VUKSB7CiAJCXVuaW9uIHViaWZzX2Rldl9kZXNjICpkZXYgPSBOVUxMOworCQlz
+dHJ1Y3QgdWJpZnNfYnVkZ2V0X3JlcSB3aHRfcmVxOwogCiAJCWRldiA9IGttYWxsb2Moc2l6ZW9m
+KHVuaW9uIHViaWZzX2Rldl9kZXNjKSwgR0ZQX05PRlMpOwogCQlpZiAoIWRldikgewpAQCAtMTM0
+NSw2ICsxMzQ2LDIwIEBAIHN0YXRpYyBpbnQgZG9fcmVuYW1lKHN0cnVjdCBpbm9kZSAqb2xkX2Rp
+ciwgc3RydWN0IGRlbnRyeSAqb2xkX2RlbnRyeSwKIAkJd2hpdGVvdXRfdWktPmRhdGEgPSBkZXY7
+CiAJCXdoaXRlb3V0X3VpLT5kYXRhX2xlbiA9IHViaWZzX2VuY29kZV9kZXYoZGV2LCBNS0RFVigw
+LCAwKSk7CiAJCXViaWZzX2Fzc2VydChjLCAhd2hpdGVvdXRfdWktPmRpcnR5KTsKKworCQltZW1z
+ZXQoJndodF9yZXEsIDAsIHNpemVvZihzdHJ1Y3QgdWJpZnNfYnVkZ2V0X3JlcSkpOworCQl3aHRf
+cmVxLmRpcnRpZWRfaW5vID0gMTsKKwkJd2h0X3JlcS5kaXJ0aWVkX2lub19kID0gQUxJR04od2hp
+dGVvdXRfdWktPmRhdGFfbGVuLCA4KTsKKwkJLyoKKwkJICogVG8gYXZvaWQgZGVhZGxvY2sgYmV0
+d2VlbiBzcGFjZSBidWRnZXQgKGhvbGRzIHVpX211dGV4IGFuZAorCQkgKiB3YWl0cyB3YiB3b3Jr
+KSBhbmQgd3JpdGViYWNrIHdvcmsod2FpdHMgdWlfbXV0ZXgpLCBkbyBzcGFjZQorCQkgKiBidWRn
+ZXQgYmVmb3JlIHViaWZzIGlub2RlcyBsb2NrZWQuCisJCSAqLworCQllcnIgPSB1Ymlmc19idWRn
+ZXRfc3BhY2UoYywgJndodF9yZXEpOworCQlpZiAoZXJyKSB7CisJCQlpcHV0KHdoaXRlb3V0KTsK
+KwkJCWdvdG8gb3V0X3JlbGVhc2U7CisJCX0KIAl9CiAKIAlsb2NrXzRfaW5vZGVzKG9sZF9kaXIs
+IG5ld19kaXIsIG5ld19pbm9kZSwgd2hpdGVvdXQpOwpAQCAtMTQxOSwxNiArMTQzNCw2IEBAIHN0
+YXRpYyBpbnQgZG9fcmVuYW1lKHN0cnVjdCBpbm9kZSAqb2xkX2Rpciwgc3RydWN0IGRlbnRyeSAq
+b2xkX2RlbnRyeSwKIAl9CiAKIAlpZiAod2hpdGVvdXQpIHsKLQkJc3RydWN0IHViaWZzX2J1ZGdl
+dF9yZXEgd2h0X3JlcSA9IHsgLmRpcnRpZWRfaW5vID0gMSwKLQkJCQkuZGlydGllZF9pbm9fZCA9
+IFwKLQkJCQlBTElHTih1Ymlmc19pbm9kZSh3aGl0ZW91dCktPmRhdGFfbGVuLCA4KSB9OwotCi0J
+CWVyciA9IHViaWZzX2J1ZGdldF9zcGFjZShjLCAmd2h0X3JlcSk7Ci0JCWlmIChlcnIpIHsKLQkJ
+CWlwdXQod2hpdGVvdXQpOwotCQkJZ290byBvdXRfcmVsZWFzZTsKLQkJfQotCiAJCWluY19ubGlu
+ayh3aGl0ZW91dCk7CiAJCW1hcmtfaW5vZGVfZGlydHkod2hpdGVvdXQpOwogCi0tIAoyLjMxLjEK
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
