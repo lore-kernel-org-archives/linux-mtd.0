@@ -2,80 +2,76 @@ Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EA58C4332F
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:49:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92134C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 17:10:19 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B1CD611EF
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:49:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6B1CD611EF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5B43D61284
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 17:10:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5B43D61284
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HexlUV5R++wR+YSk5TdPEBkQEBzC32/WGj+ghySHris=; b=BLii6qAzJA2VRg
-	8ERLH0Wac7b2N9n0wi5K9KGeEJHzKTvgcJNVMKnwiiRunSaPpNHEOZBsjsm57e88dHfY93WBKAnIO
-	MeZnpKIWyXt3Rs/Ynr6Z1zCH3xJ18dsB4fcNKtCX5MmNu3eQa30ozMSHwvFxYje00JMt9EkpGXRZs
-	YR2ZjR2A7v8PTgwXVR+NJZmHtvtZ6c+PXuCmJziMjsWMcXPahlO7kWscAkJ8Rt8GgOjmcmdolPegO
-	n9fa9mmHArKePao2LI+otGEMHJXU0RP5yAnktA5eupzPyOaF4aQEC2qMnt44warV34B6rE1aszM4A
-	f6Yv0dZwhD/VI+t9iUIw==;
+	List-Owner; bh=zMXTiSTGaptg82BXwiqiLlFGH8dXQRr5LcETFdJFG1E=; b=OOtAti2NrGhz1e
+	B8dV6XyEMxMeqAJqF7C0Tbo7b1/CgZVDfirwBc5pPPaj6hbk1aRxBlns36WOoEPdmrbaRliXt606h
+	/YE1CiD8TRwvnehJsw27cb8/w99FxG2eWVNkVSmByuUeIa+Iu3HtaQXdbaSNAOH6iuAj+BzZdy61h
+	nAt22jq7wrZ+XIBQsECp7YLTmBPEb86nYeYLcsssqn9ioYHuh5xVd1IuZTmWeqquADV09j3gcS6yt
+	b6ndssyUMSGB1HBjqiQe4bJOWVjeruHr4Ur1CtqhdISFXAmHT3ziEY1/PRd1ChVXp4XY7g/0Xz4PS
+	gkuPbDjpuu2kL9uri76Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mjOsC-00D8vi-Ej; Sat, 06 Nov 2021 16:48:56 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1mjPCI-00DFRf-UU; Sat, 06 Nov 2021 17:09:43 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKzX-00CzUC-EQ
- for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:40:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
- :MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
- Sender:Reply-To:Content-ID:Content-Description;
- bh=ShClMNyO4NBNUTum7moO8yMJ/bNR0pdDK4PO+qZjEQU=; b=oWm6xVJVoTC+9hio80BHp1i459
- u1cxSBArQpdFG9W8FFrQA92zKrkblAf9IFKRO3r0pYumem/GESAGpNsHQkkO4Wnr3nmtJJFDn8ZoA
- tjJEtuwuj3F/+d7N5ogv7cZk7+Wz0jFD3MjAE/VYE5hRBku0bz0zWK96AAanNjLTE7bbiha2udMFn
- WTBMqlc0g9jkZ0J9T77yoItjqxDkkbjaIeWK/wRWUHF+9KnTVISLR0UAkdWxlK0ChQ0Wldm9jLZTl
- y7PN+Jl4ZhQovVReZtzha9xhU+Z3M4GV3Rdgy+VWTtuhnKRDYywwjVGjmeZH6HyWbriSFY5MD0tC1
- sB9wbDgA==;
-Received: from szxga01-in.huawei.com ([45.249.212.187])
- by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKZR-00EVVf-07
- for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:13:22 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbmr1GNmzZclh;
- Sat,  6 Nov 2021 20:10:36 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ id 1mjOpG-00D8Go-Nx; Sat, 06 Nov 2021 16:45:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1636217154; x=1667753154;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=ndXgdMbnyk42/xvtMViQJVRpHDXd71BUKyKxzevKRc8=;
+ b=BWeTuuMbjBeI5Ai25K/7d366wv5LtYxBBddExkdtNFZ6+TqCAJD5IZDO
+ AKvenWCV3TaSsI8RGpbknkGPjMrTwdV3N0CmyJiwTtqz7XsH/l/m75mbi
+ ssEwH5e9z9SSGtsT/YfmGHtMM5MfzJr4JtL7tQkdNq7+c8j6ptkjDQ1Ce
+ rJgpdMAkYLPTfBr8Ga0X+JUmBIokRVS7kgbyzSY9pPFGkgm8njfKysKIE
+ wV+Jz4SasWJiAJ81LCsoInBEqn8C69T2MvMiSRJVK9Yura3YFJfnT+XSx
+ bOXUxZYetu87xhlO+RUmL5COJhnVJ9X0XFzEAGiCZbEMilmgVmANJj6dM g==;
+IronPort-SDR: 2oT4CpvyDJVRbqsB9cGrOxAx7PZc4cSku4QPEOphj5v2qbJaA5/sk0+52mA9PXwBAJfZwD1ZTT
+ Grh9iQHOZ17d2gEe4jyGbVzTHS/sKPiSO2IfYhytqOYJQTMSVsLDHgODhBiVu1nkY7cyTAyG+5
+ bsyk/3joRv+TrIn1XXBVS4QkVj5OWiwFtuNkm1mbuQFY5R4wXvfVJQus/2yHgjEBxrs9sHnt2v
+ I36t4tpgaommDISpKi821kPFq1845mykxW2P6+1ChSOudzN/OK4e4TFpIVdp4Xmbib1k6FzGEX
+ z1J3PU7CdHuN+imt+aP5wQ+U
+X-IronPort-AV: E=Sophos;i="5.87,214,1631602800"; d="scan'208";a="142416166"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 06 Nov 2021 04:37:09 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 20:12:45 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 20:12:44 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
- <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 06/12] ubifs: Fix 'ui->dirty' race between do_tmpfile() and
- writeback work
-Date: Sat, 6 Nov 2021 20:25:11 +0800
-Message-ID: <20211106122517.3304628-7-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211106122517.3304628-1-chengzhihao1@huawei.com>
-References: <20211106122517.3304628-1-chengzhihao1@huawei.com>
+ 15.1.2176.14; Sat, 6 Nov 2021 04:37:08 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Sat, 6 Nov 2021 04:37:03 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
+Subject: [PATCH v3 1/6] mtd: spi-nor: core: Report correct name in case of ID
+ collisions
+Date: Sat, 6 Nov 2021 13:36:52 +0200
+Message-ID: <20211106113657.172690-2-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211106113657.172690-1-tudor.ambarus@microchip.com>
+References: <20211106113657.172690-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211106_121318_480018_D3746225 
-X-CRM114-Status: GOOD (  12.33  )
+X-CRM114-CacheID: sfid-20211106_094554_862624_F8F573CA 
+X-CRM114-Status: GOOD (  13.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,161 +83,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: macromorgan@hotmail.com, jaimeliao@mxic.com.tw,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, richard@nod.at, esben@geanix.com,
+ linux@rasmusvillemoes.dk, knaerzche@gmail.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, code@reto-schneider.ch,
+ miquel.raynal@bootlin.com, heiko.thiery@gmail.com, sr@denx.de,
+ mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'ui->dirty' is not protected by 'ui_mutex' in function do_tmpfile() which
-may race with ubifs_write_inode[wb_workfn] to access/update 'ui->dirty',
-finally dirty space is released twice.
+Provide a way to report the correct flash name in case of ID collisions.
+There will be a single flash_info entry when flash IDs collide, and the
+differentiation between the flash types will be made at runtime
+if possible.
 
-	open(O_TMPFILE)                wb_workfn
-do_tmpfile
-  ubifs_budget_space(ino_req = { .dirtied_ino = 1})
-  d_tmpfile // mark inode(tmpfile) dirty
-  ubifs_jnl_update // without holding tmpfile's ui_mutex
-    mark_inode_clean(ui)
-      if (ui->dirty)
-        ubifs_release_dirty_inode_budget(ui)  // release first time
-                                   ubifs_write_inode
-				     mutex_lock(&ui->ui_mutex)
-                                     ubifs_release_dirty_inode_budget(ui)
-				     // release second time
-				     mutex_unlock(&ui->ui_mutex)
-      ui->dirty = 0
-
-Run generic/476 can reproduce following message easily
-(See reproducer in [Link]):
-
-  UBIFS error (ubi0:0 pid 2578): ubifs_assert_failed [ubifs]: UBIFS assert
-  failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:554
-  UBIFS warning (ubi0:0 pid 2578): ubifs_ro_mode [ubifs]: switched to
-  read-only mode, error -22
-  Workqueue: writeback wb_workfn (flush-ubifs_0_0)
-  Call Trace:
-    ubifs_ro_mode+0x54/0x60 [ubifs]
-    ubifs_assert_failed+0x4b/0x80 [ubifs]
-    ubifs_release_budget+0x468/0x5a0 [ubifs]
-    ubifs_release_dirty_inode_budget+0x53/0x80 [ubifs]
-    ubifs_write_inode+0x121/0x1f0 [ubifs]
-    ...
-    wb_workfn+0x283/0x7b0
-
-Fix it by holding tmpfile ubifs inode lock during ubifs_jnl_update().
-Similar problem exists in whiteout renaming, but previous fix("ubifs:
-Rename whiteout atomically") has solved the problem.
-
-Fixes: 474b93704f32163 ("ubifs: Implement O_TMPFILE")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214765
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- fs/ubifs/dir.c | 60 +++++++++++++++++++++++++-------------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
+ drivers/mtd/spi-nor/core.c  | 7 +++++--
+ drivers/mtd/spi-nor/sysfs.c | 2 +-
+ include/linux/mtd/spi-nor.h | 2 ++
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 30fcfdbe0ab5..ef39ba851bbc 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -397,6 +397,32 @@ static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
- 	return ERR_PTR(err);
- }
- 
-+/**
-+ * lock_2_inodes - a wrapper for locking two UBIFS inodes.
-+ * @inode1: first inode
-+ * @inode2: second inode
-+ *
-+ * We do not implement any tricks to guarantee strict lock ordering, because
-+ * VFS has already done it for us on the @i_mutex. So this is just a simple
-+ * wrapper function.
-+ */
-+static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
-+{
-+	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
-+	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
-+}
-+
-+/**
-+ * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
-+ * @inode1: first inode
-+ * @inode2: second inode
-+ */
-+static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
-+{
-+	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
-+	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
-+}
-+
- static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
- 			 struct dentry *dentry, umode_t mode)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index ea26f27a3229..3d97c189c332 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3132,7 +3132,7 @@ static void spi_nor_debugfs_init(struct spi_nor *nor,
  {
-@@ -404,7 +430,7 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
- 	struct ubifs_info *c = dir->i_sb->s_fs_info;
- 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1};
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
--	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
-+	struct ubifs_inode *ui;
- 	int err, instantiated = 0;
- 	struct fscrypt_name nm;
+ 	struct mtd_info *mtd = &nor->mtd;
  
-@@ -452,18 +478,18 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
- 	instantiated = 1;
- 	mutex_unlock(&ui->ui_mutex);
- 
--	mutex_lock(&dir_ui->ui_mutex);
-+	lock_2_inodes(dir, inode);
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
- 	if (err)
- 		goto out_cancel;
--	mutex_unlock(&dir_ui->ui_mutex);
-+	unlock_2_inodes(dir, inode);
- 
- 	ubifs_release_budget(c, &req);
- 
- 	return 0;
- 
- out_cancel:
--	mutex_unlock(&dir_ui->ui_mutex);
-+	unlock_2_inodes(dir, inode);
- out_inode:
- 	make_bad_inode(inode);
- 	if (!instantiated)
-@@ -690,32 +716,6 @@ static int ubifs_dir_release(struct inode *dir, struct file *file)
- 	return 0;
+-	mtd->dbg.partname = info->name;
++	mtd->dbg.partname = nor->name;
+ 	mtd->dbg.partid = devm_kasprintf(nor->dev, GFP_KERNEL, "spi-nor:%*phN",
+ 					 info->id_len, info->id);
  }
+@@ -3271,7 +3271,10 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
  
--/**
-- * lock_2_inodes - a wrapper for locking two UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- *
-- * We do not implement any tricks to guarantee strict lock ordering, because
-- * VFS has already done it for us on the @i_mutex. So this is just a simple
-- * wrapper function.
-- */
--static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
--{
--	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
--	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
--}
--
--/**
-- * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- */
--static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
--{
--	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
--	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
--}
--
- static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 		      struct dentry *dentry)
- {
+ 	spi_nor_set_mtd_info(nor);
+ 
+-	dev_info(dev, "%s (%lld Kbytes)\n", info->name,
++	if (!nor->name)
++		nor->name = info->name;
++
++	dev_info(dev, "%s (%lld Kbytes)\n", nor->name,
+ 			(long long)mtd->size >> 10);
+ 
+ 	dev_dbg(dev,
+diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+index 9aec9d8a98ad..017119768f32 100644
+--- a/drivers/mtd/spi-nor/sysfs.c
++++ b/drivers/mtd/spi-nor/sysfs.c
+@@ -25,7 +25,7 @@ static ssize_t partname_show(struct device *dev,
+ 	struct spi_mem *spimem = spi_get_drvdata(spi);
+ 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+ 
+-	return sysfs_emit(buf, "%s\n", nor->info->name);
++	return sysfs_emit(buf, "%s\n", nor->name);
+ }
+ static DEVICE_ATTR_RO(partname);
+ 
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index fc90fce26e33..be7ebaf092fe 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -369,6 +369,7 @@ struct spi_nor_flash_parameter;
+  * @bouncebuf:		bounce buffer used when the buffer passed by the MTD
+  *                      layer is not DMA-able
+  * @bouncebuf_size:	size of the bounce buffer
++ * @name:		used to point to correct name in case of ID collisions.
+  * @info:		SPI NOR part JEDEC MFR ID and other info
+  * @manufacturer:	SPI NOR manufacturer
+  * @addr_width:		number of address bytes
+@@ -398,6 +399,7 @@ struct spi_nor {
+ 	struct spi_mem		*spimem;
+ 	u8			*bouncebuf;
+ 	size_t			bouncebuf_size;
++	const char *name;
+ 	const struct flash_info	*info;
+ 	const struct spi_nor_manufacturer *manufacturer;
+ 	u8			addr_width;
 -- 
-2.31.1
+2.25.1
 
 
 ______________________________________________________
