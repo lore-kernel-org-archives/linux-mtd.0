@@ -2,14 +2,14 @@ Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FA67C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:43:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26016C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:44:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB17761165
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:43:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CB17761165
+	by mail.kernel.org (Postfix) with ESMTPS id DFD4461165
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:44:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DFD4461165
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,52 +18,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=17unYojUrCwAjgAwjkowSWZWIvkSaCthVSSTqJLOVxI=; b=Ou5Vp++MHKvkF9
-	RDBDukKtJNBwLyUgWaMAJiKxa9/ky7G+jjt4ozASoVL79zzcQp7jRHC5F2gfzbQ2eM+qR0Jzrfuov
-	QYRAtrFlmuJ5HnOrQvLaLK7ShfLKsf2onsWtPdWeFGZG5pA1gM+JVaUV2k9ZOJHgYEJEA8210ZgC7
-	+C419F6moPUYzIC+pf/CSuQtgXdz86tFVpcnbbTo0W76O3WzrZifNc1WuHZVTwAcO0SKGj9G2ZbGV
-	AVRDTPJ/dTkkXOhJWtTMd+NxGwBKnVvhLxyInUxSKSxToYYM3DOfpd8iNg/sPfI2i/mp66NsajvFV
-	dXNple7kVyIF4kgkBPyw==;
+	List-Owner; bh=JOduXrhrwWo/lmt8+PUBvXRMg9jgmCnBJpEoYAgZJqs=; b=CWgqHIPGqCEFnE
+	u2IkGM5sGaiDFXyi9GF8STHGh5eXhQbc61xHcc2frUREvgKobDpElNBNp0vwUVSqV/Cjd8usdCFNu
+	7jqF9VXf5j/AyowErfwhLkXXqS1csamA531i0jFl0RgFXXsBOG1bcU7WKlv/k6gjvFq8j2edVQ1bH
+	uyMywbQQfnt8E1y9vSPHQxgrT/FWkSViKodfmoi9dmpyThpgxCVkq60wxlZegy/mC/UHVW68H9aun
+	T7T/TyzMSo1hNSIPlRPIKv8sx7tJBNEvxNodnPUxJT2NOKIptn1ieXmiT64WZgrbU5yNbtBAA9Cel
+	Qa1VKh/mAh4WGdMf6pZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mjOmJ-00D7MP-0t; Sat, 06 Nov 2021 16:42:51 +0000
+	id 1mjOnG-00D7ic-US; Sat, 06 Nov 2021 16:43:51 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKzN-00CzUC-M4
- for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:40:05 +0000
+ id 1mjKzO-00CzUC-Ho
+ for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:40:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
  :MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
  Sender:Reply-To:Content-ID:Content-Description;
- bh=2gdeGPStzMfcuZa0Pw2bla2+ZF0eJqxLRFGiKsR25Po=; b=Yb2tevNp2d3ouAyXw3UKX+/DL/
- tvpzEUFNwbEwPkfnBGlTvVWXJxaEYSAbL1I68ncdsguKhjzaRTCgaE0TkSwXd14NSr2I6x2duW+v1
- n6261rsVpNyPPjSD+YAq7UgJtHsJZAHbiGtQGLcekCh8Emj6tW8SkXKXtf0I6ECSWEVfbCgbDfaR7
- 4FKxiSYqqlNSsWWUGxyiGh3T0Wlc+KzDUlTf+t7LvN9k+roGrM8K7V0lavRRFQq8unIedOfk/mgSE
- 5ewPdPCVbTSXfQdSOSn3QGC5b5uJPN/YYscYLYSX5HvEbd2vpaYwilN8ol2kbzVEdp+I+byUfD/ce
- TZIYNEjg==;
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+ bh=YBezpinT/ujCijNnmHGC6ZurKiQASxdyCs31lOqXZGA=; b=HTfAntiRSNTYxY+TCucZdTTtPL
+ LQadar4+CSFMqIVhtCDYlsYnljcZZDXcceimzsQq7PCxWXUm6ARgXZGbtYrg4eGF1hlbwQQ+vY7SG
+ A+t7ioIsgaKbWe7WW/hWoKfXe4H80OCfFv1M4KcAoW27Ab1JuVhpufvsrNDW1hBcrIFhPGN84q5pr
+ iQSp8JeGby/0aopS7fWbztPl98OdH8iLuTRWAOEsJEBX2tizhV/2vVg8ZYscSjRIsYL20qyjwUfUi
+ H2GVT0otFJyQs3bYIg84u6IfLaTwc57KXjvDNHGjxQfakPuHCjcLpV5T+CnFtxjl3/rIh5wSRd6Z8
+ zgLKiZlQ==;
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKZe-00EVWs-MH
- for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:13:37 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hmbnc0Kfbz8v8d;
- Sat,  6 Nov 2021 20:11:16 +0800 (CST)
+ id 1mjKZe-00EVb0-G3
+ for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:13:36 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbmq2xmGzZckQ;
+ Sat,  6 Nov 2021 20:10:35 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 20:12:48 +0800
+ 15.1.2308.15; Sat, 6 Nov 2021 20:12:44 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 20:12:47 +0800
+ 2021 20:12:43 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 10/12] ubifs: Fix to add refcount once page is set private
-Date: Sat, 6 Nov 2021 20:25:15 +0800
-Message-ID: <20211106122517.3304628-11-chengzhihao1@huawei.com>
+Subject: [PATCH v2 05/12] ubifs: Rename whiteout atomically
+Date: Sat, 6 Nov 2021 20:25:10 +0800
+Message-ID: <20211106122517.3304628-6-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211106122517.3304628-1-chengzhihao1@huawei.com>
 References: <20211106122517.3304628-1-chengzhihao1@huawei.com>
@@ -73,8 +73,8 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211106_121331_638708_A1330889 
-X-CRM114-Status: GOOD (  12.83  )
+X-CRM114-CacheID: sfid-20211106_121331_410958_315850B9 
+X-CRM114-Status: GOOD (  24.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,137 +91,418 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-MM defined the rule [1] very clearly that once page was set with PG_private
-flag, we should increment the refcount in that page, also main flows like
-pageout(), migrate_page() will assume there is one additional page
-reference count if page_has_private() returns true. Otherwise, we may
-get a BUG in page migration:
+Currently, rename whiteout has 3 steps:
+  1. create tmpfile(which associates old dentry to tmpfile inode) for
+     whiteout, and store tmpfile to disk
+  2. link whiteout, associate whiteout inode to old dentry agagin and
+     store old dentry, old inode, new dentry on disk
+  3. writeback dirty whiteout inode to disk
 
-  page:0000000080d05b9d refcount:-1 mapcount:0 mapping:000000005f4d82a8
-  index:0xe2 pfn:0x14c12
-  aops:ubifs_file_address_operations [ubifs] ino:8f1 dentry name:"f30e"
-  flags: 0x1fffff80002405(locked|uptodate|owner_priv_1|private|node=0|
-  zone=1|lastcpupid=0x1fffff)
-  page dumped because: VM_BUG_ON_PAGE(page_count(page) != 0)
-  ------------[ cut here ]------------
-  kernel BUG at include/linux/page_ref.h:184!
-  invalid opcode: 0000 [#1] SMP
-  CPU: 3 PID: 38 Comm: kcompactd0 Not tainted 5.15.0-rc5
-  RIP: 0010:migrate_page_move_mapping+0xac3/0xe70
-  Call Trace:
-    ubifs_migrate_page+0x22/0xc0 [ubifs]
-    move_to_new_page+0xb4/0x600
-    migrate_pages+0x1523/0x1cc0
-    compact_zone+0x8c5/0x14b0
-    kcompactd+0x2bc/0x560
-    kthread+0x18c/0x1e0
-    ret_from_fork+0x1f/0x30
+Suddenly power-cut or error occurring(eg. ENOSPC returned by budget,
+memory allocation failure) during above steps may cause kinds of problems:
+  Problem 1: ENOSPC returned by whiteout space budget (before step 2),
+	     old dentry will disappear after rename syscall, whiteout file
+	     cannot be found either.
 
-The BUG is caused by following process:
-PA(cpu 1)                           PB(cpu 2)
-ubifs_write_begin
-  page = grab_cache_page_write_begin
-  (refcnf = 3, for page creation process)
-ubifs_write_end
-  SetPagePrivate(page)
-  unlock_page(page)  // refcnt=3
-  put_page(page)
-    page_ref_dec_and_test
-                                      lock(page)
-                                      ...
-                                      ubifs_migrate_page
-                                        migrate_page_move_mapping
-                                          expected_page_refs get 3
-                                          (1 + mapping[1] + private[1])
-                                          page_ref_freeze  // refcnt = 0
-      atomic_dec_and_test(0 - 1 = -1)
-                                          page_ref_unfreeze
-                                          VM_BUG_ON_PAGE(-1 != 0, page)
+	     ls dir  // we get file, whiteout
+	     rename(dir/file, dir/whiteout, REANME_WHITEOUT)
+	     ENOSPC = ubifs_budget_space(&wht_req) // return
+	     ls dir  // empty (no file, no whiteout)
+  Problem 2: Power-cut happens before step 3, whiteout inode with 'nlink=1'
+	     is not stored on disk, whiteout dentry(old dentry) is written
+	     on disk, whiteout file is lost on next mount (We get "dead
+	     directory entry" after executing 'ls -l' on whiteout file).
 
-Actually zhangjun has tried to fix this problem [2] by recalculating page
-refcnt in ubifs_migrate_page(). It's better to follow MM rules [1], because
-just like Kirill suggested in [2], we need to check all users of
-page_has_private() helper. Like f2fs does in [3], fix it by adding/deleting
-refcount when setting/clearing private for a page. BTW, according to [4],
-we set 'page->private' as 1 because ubifs just simply SetPagePrivate().
-And, [5] provided a common helper to set/clear page private, ubifs can
-use this helper following the example of iomap, afs, btrfs, etc.
+Now, we use following 3 steps to finish rename whiteout:
+  1. create an in-mem inode with 'nlink = 1' as whiteout
+  2. ubifs_jnl_rename (Write on disk to finish associating old dentry to
+     whiteout inode, associating new dentry with old inode)
+  3. iput(whiteout)
 
-Jump [6] to find a reproducer.
+Rely writing in-mem inode on disk by ubifs_jnl_rename() to finish rename
+whiteout, which avoids middle disk state caused by suddenly power-cut
+and error occurring.
 
-[1] https://lore.kernel.org/lkml/2b19b3c4-2bc4-15fa-15cc-27a13e5c7af1@aol.com
-[2] https://www.spinics.net/lists/linux-mtd/msg04018.html
-[3] http://lkml.iu.edu/hypermail/linux/kernel/1903.0/03313.html
-[4] https://lore.kernel.org/linux-f2fs-devel/20210422154705.GO3596236@casper.infradead.org
-[5] https://lore.kernel.org/all/20200517214718.468-1-guoqing.jiang@cloud.ionos.com
-[6] https://bugzilla.kernel.org/show_bug.cgi?id=214961
-
-Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
+Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/file.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/ubifs/dir.c     | 144 +++++++++++++++++++++++++++++----------------
+ fs/ubifs/journal.c |  52 +++++++++++++---
+ 2 files changed, 136 insertions(+), 60 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 5cfa28cd00cd..6b45a037a047 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -570,7 +570,7 @@ static int ubifs_write_end(struct file *file, struct address_space *mapping,
- 	}
- 
- 	if (!PagePrivate(page)) {
--		SetPagePrivate(page);
-+		attach_page_private(page, (void *)1);
- 		atomic_long_inc(&c->dirty_pg_cnt);
- 		__set_page_dirty_nobuffers(page);
- 	}
-@@ -947,7 +947,7 @@ static int do_writepage(struct page *page, int len)
- 		release_existing_page_budget(c);
- 
- 	atomic_long_dec(&c->dirty_pg_cnt);
--	ClearPagePrivate(page);
-+	detach_page_private(page);
- 	ClearPageChecked(page);
- 
- 	kunmap(page);
-@@ -1304,7 +1304,7 @@ static void ubifs_invalidatepage(struct page *page, unsigned int offset,
- 		release_existing_page_budget(c);
- 
- 	atomic_long_dec(&c->dirty_pg_cnt);
--	ClearPagePrivate(page);
-+	detach_page_private(page);
- 	ClearPageChecked(page);
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 6503e6857f6e..30fcfdbe0ab5 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -349,8 +349,56 @@ static int ubifs_create(struct user_namespace *mnt_userns, struct inode *dir,
+ 	return err;
  }
  
-@@ -1471,8 +1471,8 @@ static int ubifs_migrate_page(struct address_space *mapping,
- 		return rc;
- 
- 	if (PagePrivate(page)) {
--		ClearPagePrivate(page);
--		SetPagePrivate(newpage);
-+		detach_page_private(page);
-+		attach_page_private(newpage, (void *)1);
+-static int do_tmpfile(struct inode *dir, struct dentry *dentry,
+-		      umode_t mode, struct inode **whiteout)
++static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
++{
++	int err;
++	umode_t mode = S_IFCHR | WHITEOUT_MODE;
++	struct inode *inode;
++	struct ubifs_info *c = dir->i_sb->s_fs_info;
++	struct fscrypt_name nm;
++
++	/*
++	 * Create an inode('nlink = 1') for whiteout without updating journal,
++	 * let ubifs_jnl_rename() store it on flash to complete rename whiteout
++	 * atomically.
++	 */
++
++	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
++		dentry, mode, dir->i_ino);
++
++	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
++	if (err)
++		return ERR_PTR(err);
++
++	inode = ubifs_new_inode(c, dir, mode);
++	if (IS_ERR(inode)) {
++		err = PTR_ERR(inode);
++		goto out_free;
++	}
++
++	init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
++	ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
++
++	err = ubifs_init_security(dir, inode, &dentry->d_name);
++	if (err)
++		goto out_inode;
++
++	/* The dir size is updated by do_rename. */
++	insert_inode_hash(inode);
++
++	return inode;
++
++out_inode:
++	make_bad_inode(inode);
++	iput(inode);
++out_free:
++	fscrypt_free_filename(&nm);
++	ubifs_err(c, "cannot create whiteout file, error %d", err);
++	return ERR_PTR(err);
++}
++
++static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
++			 struct dentry *dentry, umode_t mode)
+ {
+ 	struct inode *inode;
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
+@@ -392,25 +440,13 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
  	}
+ 	ui = ubifs_inode(inode);
  
- 	if (mode != MIGRATE_SYNC_NO_COPY)
-@@ -1496,7 +1496,7 @@ static int ubifs_releasepage(struct page *page, gfp_t unused_gfp_flags)
- 		return 0;
- 	ubifs_assert(c, PagePrivate(page));
- 	ubifs_assert(c, 0);
--	ClearPagePrivate(page);
-+	detach_page_private(page);
- 	ClearPageChecked(page);
- 	return 1;
+-	if (whiteout) {
+-		init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
+-		ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
+-	}
+-
+ 	err = ubifs_init_security(dir, inode, &dentry->d_name);
+ 	if (err)
+ 		goto out_inode;
+ 
+ 	mutex_lock(&ui->ui_mutex);
+ 	insert_inode_hash(inode);
+-
+-	if (whiteout) {
+-		mark_inode_dirty(inode);
+-		drop_nlink(inode);
+-		*whiteout = inode;
+-	} else {
+-		d_tmpfile(dentry, inode);
+-	}
++	d_tmpfile(dentry, inode);
+ 	ubifs_assert(c, ui->dirty);
+ 
+ 	instantiated = 1;
+@@ -441,12 +477,6 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
+ 	return err;
  }
-@@ -1567,7 +1567,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
- 	else {
- 		if (!PageChecked(page))
- 			ubifs_convert_page_budget(c);
--		SetPagePrivate(page);
-+		attach_page_private(page, (void *)1);
- 		atomic_long_inc(&c->dirty_pg_cnt);
- 		__set_page_dirty_nobuffers(page);
+ 
+-static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
+-			 struct dentry *dentry, umode_t mode)
+-{
+-	return do_tmpfile(dir, dentry, mode, NULL);
+-}
+-
+ /**
+  * vfs_dent_type - get VFS directory entry type.
+  * @type: UBIFS directory entry type
+@@ -1264,17 +1294,19 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 					.dirtied_ino = 3 };
+ 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
+ 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
++	struct ubifs_budget_req wht_req;
+ 	struct timespec64 time;
+ 	unsigned int saved_nlink;
+ 	struct fscrypt_name old_nm, new_nm;
+ 
+ 	/*
+-	 * Budget request settings: deletion direntry, new direntry, removing
+-	 * the old inode, and changing old and new parent directory inodes.
++	 * Budget request settings:
++	 *   req: deletion direntry, new direntry, removing the old inode,
++	 *   and changing old and new parent directory inodes.
+ 	 *
+-	 * However, this operation also marks the target inode as dirty and
+-	 * does not write it, so we allocate budget for the target inode
+-	 * separately.
++	 *   wht_req: new whiteout inode for RENAME_WHITEOUT.
++	 *
++	 *   ino_req: marks the target inode as dirty and does not write it.
+ 	 */
+ 
+ 	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu flags 0x%x",
+@@ -1324,7 +1356,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 
+ 	if (flags & RENAME_WHITEOUT) {
+ 		union ubifs_dev_desc *dev = NULL;
+-		struct ubifs_budget_req wht_req;
+ 
+ 		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
+ 		if (!dev) {
+@@ -1332,26 +1363,26 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 			goto out_release;
+ 		}
+ 
+-		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
+-		if (err) {
+-			if (whiteout)
+-				iput(whiteout);
++		/*
++		 * The whiteout inode without dentry is pinned in memory,
++		 * umount won't happen during rename process because we
++		 * got parent dentry.
++		 */
++		whiteout = create_whiteout(old_dir, old_dentry);
++		if (IS_ERR(whiteout)) {
++			err = PTR_ERR(whiteout);
+ 			kfree(dev);
+ 			goto out_release;
+ 		}
+ 
+-		spin_lock(&whiteout->i_lock);
+-		whiteout->i_state |= I_LINKABLE;
+-		spin_unlock(&whiteout->i_lock);
+-
+ 		whiteout_ui = ubifs_inode(whiteout);
+ 		whiteout_ui->data = dev;
+ 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
+ 		ubifs_assert(c, !whiteout_ui->dirty);
+ 
+ 		memset(&wht_req, 0, sizeof(struct ubifs_budget_req));
+-		wht_req.dirtied_ino = 1;
+-		wht_req.dirtied_ino_d = ALIGN(whiteout_ui->data_len, 8);
++		wht_req.new_ino = 1;
++		wht_req.new_ino_d = ALIGN(whiteout_ui->data_len, 8);
+ 		/*
+ 		 * To avoid deadlock between space budget (holds ui_mutex and
+ 		 * waits wb work) and writeback work(waits ui_mutex), do space
+@@ -1359,6 +1390,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		 */
+ 		err = ubifs_budget_space(c, &wht_req);
+ 		if (err) {
++			/*
++			 * Whiteout inode can not be written on flash by
++			 * ubifs_jnl_write_inode(), because it's neither
++			 * dirty nor zero-nlink.
++			 */
+ 			iput(whiteout);
+ 			goto out_release;
+ 		}
+@@ -1433,17 +1469,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
+ 		if (unlink && IS_SYNC(new_inode))
+ 			sync = 1;
+-	}
+-
+-	if (whiteout) {
+-		inc_nlink(whiteout);
+-		mark_inode_dirty(whiteout);
+-
+-		spin_lock(&whiteout->i_lock);
+-		whiteout->i_state &= ~I_LINKABLE;
+-		spin_unlock(&whiteout->i_lock);
+-
+-		iput(whiteout);
++		/*
++		 * S_SYNC flag of whiteout inherits from the old_dir, and we
++		 * have already check the old dir inode. So there is no need
++		 * to check whiteout.
++		 */
  	}
+ 
+ 	err = ubifs_jnl_rename(c, old_dir, old_inode, &old_nm, new_dir,
+@@ -1454,6 +1484,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
+ 	ubifs_release_budget(c, &req);
+ 
++	if (whiteout) {
++		ubifs_release_budget(c, &wht_req);
++		iput(whiteout);
++	}
++
+ 	mutex_lock(&old_inode_ui->ui_mutex);
+ 	release = old_inode_ui->dirty;
+ 	mark_inode_dirty_sync(old_inode);
+@@ -1462,11 +1497,16 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	if (release)
+ 		ubifs_release_budget(c, &ino_req);
+ 	if (IS_SYNC(old_inode))
+-		err = old_inode->i_sb->s_op->write_inode(old_inode, NULL);
++		/*
++		 * Rename finished here. Although old inode cannot be updated
++		 * on flash, old ctime is not a big problem, don't return err
++		 * code to userspace.
++		 */
++		old_inode->i_sb->s_op->write_inode(old_inode, NULL);
+ 
+ 	fscrypt_free_filename(&old_nm);
+ 	fscrypt_free_filename(&new_nm);
+-	return err;
++	return 0;
+ 
+ out_cancel:
+ 	if (unlink) {
+@@ -1487,11 +1527,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 				inc_nlink(old_dir);
+ 		}
+ 	}
++	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
+ 	if (whiteout) {
+-		drop_nlink(whiteout);
++		ubifs_release_budget(c, &wht_req);
+ 		iput(whiteout);
+ 	}
+-	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
+ out_release:
+ 	ubifs_release_budget(c, &ino_req);
+ 	ubifs_release_budget(c, &req);
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 8ea680dba61e..b0c91293e4cb 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -1207,9 +1207,9 @@ int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
+  * @sync: non-zero if the write-buffer has to be synchronized
+  *
+  * This function implements the re-name operation which may involve writing up
+- * to 4 inodes and 2 directory entries. It marks the written inodes as clean
+- * and returns zero on success. In case of failure, a negative error code is
+- * returned.
++ * to 4 inodes(new inode, whiteout inode, old and new parent directory inodes)
++ * and 2 directory entries. It marks the written inodes as clean and returns
++ * zero on success. In case of failure, a negative error code is returned.
+  */
+ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 		     const struct inode *old_inode,
+@@ -1222,14 +1222,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	void *p;
+ 	union ubifs_key key;
+ 	struct ubifs_dent_node *dent, *dent2;
+-	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
++	int err, dlen1, dlen2, ilen, wlen, lnum, offs, len, orphan_added = 0;
+ 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
+ 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
+ 	int move = (old_dir != new_dir);
+-	struct ubifs_inode *new_ui;
++	struct ubifs_inode *new_ui, *whiteout_ui;
+ 	u8 hash_old_dir[UBIFS_HASH_ARR_SZ];
+ 	u8 hash_new_dir[UBIFS_HASH_ARR_SZ];
+ 	u8 hash_new_inode[UBIFS_HASH_ARR_SZ];
++	u8 hash_whiteout_inode[UBIFS_HASH_ARR_SZ];
+ 	u8 hash_dent1[UBIFS_HASH_ARR_SZ];
+ 	u8 hash_dent2[UBIFS_HASH_ARR_SZ];
+ 
+@@ -1249,9 +1250,20 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 	} else
+ 		ilen = 0;
+ 
++	if (whiteout) {
++		whiteout_ui = ubifs_inode(whiteout);
++		ubifs_assert(c, mutex_is_locked(&whiteout_ui->ui_mutex));
++		ubifs_assert(c, whiteout->i_nlink == 1);
++		ubifs_assert(c, !whiteout_ui->dirty);
++		wlen = UBIFS_INO_NODE_SZ;
++		wlen += whiteout_ui->data_len;
++	} else
++		wlen = 0;
++
+ 	aligned_dlen1 = ALIGN(dlen1, 8);
+ 	aligned_dlen2 = ALIGN(dlen2, 8);
+-	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) + ALIGN(plen, 8);
++	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) +
++	      ALIGN(wlen, 8) + ALIGN(plen, 8);
+ 	if (move)
+ 		len += plen;
+ 
+@@ -1313,6 +1325,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 		p += ALIGN(ilen, 8);
+ 	}
+ 
++	if (whiteout) {
++		pack_inode(c, p, whiteout, 0);
++		err = ubifs_node_calc_hash(c, p, hash_whiteout_inode);
++		if (err)
++			goto out_release;
++
++		p += ALIGN(wlen, 8);
++	}
++
+ 	if (!move) {
+ 		pack_inode(c, p, old_dir, 1);
+ 		err = ubifs_node_calc_hash(c, p, hash_old_dir);
+@@ -1352,6 +1373,9 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 		if (new_inode)
+ 			ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf,
+ 						  new_inode->i_ino);
++		if (whiteout)
++			ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf,
++						  whiteout->i_ino);
+ 	}
+ 	release_head(c, BASEHD);
+ 
+@@ -1368,8 +1392,6 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 		err = ubifs_tnc_add_nm(c, &key, lnum, offs, dlen2, hash_dent2, old_nm);
+ 		if (err)
+ 			goto out_ro;
+-
+-		ubifs_delete_orphan(c, whiteout->i_ino);
+ 	} else {
+ 		err = ubifs_add_dirt(c, lnum, dlen2);
+ 		if (err)
+@@ -1390,6 +1412,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 		offs += ALIGN(ilen, 8);
+ 	}
+ 
++	if (whiteout) {
++		ino_key_init(c, &key, whiteout->i_ino);
++		err = ubifs_tnc_add(c, &key, lnum, offs, wlen,
++				    hash_whiteout_inode);
++		if (err)
++			goto out_ro;
++		offs += ALIGN(wlen, 8);
++	}
++
+ 	ino_key_init(c, &key, old_dir->i_ino);
+ 	err = ubifs_tnc_add(c, &key, lnum, offs, plen, hash_old_dir);
+ 	if (err)
+@@ -1410,6 +1441,11 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+ 		new_ui->synced_i_size = new_ui->ui_size;
+ 		spin_unlock(&new_ui->ui_lock);
+ 	}
++	/*
++	 * No need to mark whiteout inode clean.
++	 * Whiteout don't have non-zero size, no need to update
++	 * synced_i_size for whiteout_ui.
++	 */
+ 	mark_inode_clean(c, ubifs_inode(old_dir));
+ 	if (move)
+ 		mark_inode_clean(c, ubifs_inode(new_dir));
 -- 
 2.31.1
 
