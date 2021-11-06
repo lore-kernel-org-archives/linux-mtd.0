@@ -2,14 +2,14 @@ Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14EFFC433EF
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:42:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB020C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:43:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CAFC761165
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:42:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CAFC761165
+	by mail.kernel.org (Postfix) with ESMTPS id B7C0161165
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:43:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B7C0161165
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,53 +18,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VgBTih89FPgMECrmctB38d2krsblV4Xd6cAd7YGNqHw=; b=uDzrekRRkGJB93
-	fza94ttqM427hMUYfAT8asitl/sJkcX7T88cNDfdbBWk4fQSWWlsSgYQV2pf/T8vB7EA8KUrbh9ie
-	R3rJNIlciVafeVHBDqkfUDVHZ6s/4JFCf/WjUqKrWHQ8UIxCGgMvdbQ6HWPXRWjfAdLgQF5J6N7Hq
-	CVqOCKJdsK2m8P2787XmGod/f4qhSIY96720njKK7yLkA5LtpysipaUf9+4NAykFxGdwy+vl4vi/o
-	kZGrQpf4yZL6P9Jd+rWDX5FPidreA9PEUxULCoMWodhglNmsFOdl2qrmgYV3O6hA4rBFNJQCbOETk
-	e6pYMMX8aLF2lKMdPRlw==;
+	List-Owner; bh=Z4g3/wVn67xelKfUYAYfqrGjyEITdZjrJFNVIEcBwmo=; b=N1Z5f7nWhdvtN3
+	6XMz7JXb1jfWJ/wuUaO0ZDsubWcptWhOM/MNuaJgvNVE/6Hl03AImWRsQ/aaXsY07KnqF7g/xd5cv
+	FcT/t7jsSrZTeFUqFaA96r1Wz4IXvXwuR4NM/V+gfKw6pZgg0wBOKiVNsTOMHVrYBtYXKnRatBbOs
+	RB6x3cqqf/MCpgn5NVxeCf8bgxC6Iwv03D55O9+56o0Xjshn6slqtdzVhTMfJX9mdFfMfDGwb5UN2
+	IKjsoyX8gRj2jskrtRPQcME9Y81o3k54EsSQc1RA/83XHx1R3ZYkhpNyJ/VgLTdVvewC5wAaUwaDV
+	X+qAeHJOBi8yjrXHC5tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mjOle-00D71b-Nm; Sat, 06 Nov 2021 16:42:10 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1mjOmk-00D7XE-W4; Sat, 06 Nov 2021 16:43:19 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKcF-00Cymn-2y
- for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:16:11 +0000
+ id 1mjKzO-00CzUC-4v
+ for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:40:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
- MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
- :Reply-To:Content-ID:Content-Description;
- bh=na1mk0VsU43sbQ4py0U/YYf38A6yvsfOMRuSo1Ztz0w=; b=jWbdra4vP/Etkt3ez2ziVm60kR
- MoqwUD3ek4ulHbls2REgkAZ9MH9NjtrcfmaelsizMC+S5J41zy1uDLoFgMM3CC5Ju/H+WnHUYvfwB
- lr/wv5BU77vsbx8q4w3RlN27004szMUPadIX5rJwr4vOL/XI1bPKK9Uwh6bEJNO+LueNyjamlTWpR
- 9ZX5l8Aj6tkTBw53LGqQOjYI4OFeIh1GNko5Iemuwbp2ZR0lPiBnGMWvieEJPkrPj1aklDu+h9TVM
- LTf9Q8CIcfvTT29747YZRtWgjOCnCfpL9WUA/G1k471HnTTUhgh3rnPrUOPPCUgvgEzpVE0wnEZno
- ims2jScQ==;
-Received: from szxga02-in.huawei.com ([45.249.212.188])
- by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKaV-007Cwe-KN
- for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:15:11 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hmbjm5Bk8zbhZD;
- Sat,  6 Nov 2021 20:07:56 +0800 (CST)
+ d=infradead.org; s=desiato.20200630; h=Content-Type:Content-Transfer-Encoding
+ :MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=R83ejz65sE4+pAS2uVu/CHNOxeEfTx3DYUG1CbGg2hw=; b=IJoIZ1Lmvp+yGD0hH+CpZAUWAG
+ zUNSB7pbYLRRMCuhLI3fRK2jrp+0cmsKaNaozmXgjHQZKRMB+oArlbVflW9GZ3P3GzUfh+6d1VO+S
+ MFInyBobOoPad3ONJ4oIguWKbp14NqrMkxP4B/Ce/YtBrZcT68Rkb5MtgSNB8IYukB0VBQuO0ps70
+ BXjKTOoIBY8fe34hPOy2m7kSBFpcHNHRCv6kHxIJs1kol4+4dKrADGNC3z5D9zVzo4b13FPta/cyh
+ PKAaCYQqVA7ThPaDbxvqr+lchl2gy8H0Sa8Dm+jeDXHfaen4JbToahfe4WLOcFXeqpniEvrhqwnDu
+ 1fIFPEew==;
+Received: from szxga03-in.huawei.com ([45.249.212.189])
+ by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mjKZe-00EVWt-MI
+ for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:13:36 +0000
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Hmbnb27nBz8v8p;
+ Sat,  6 Nov 2021 20:11:15 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 20:12:43 +0800
+ 15.1.2308.15; Sat, 6 Nov 2021 20:12:47 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 20:12:42 +0800
+ 2021 20:12:46 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 04/12] ubifs: Add missing iput if do_tmpfile() failed in
- rename whiteout
-Date: Sat, 6 Nov 2021 20:25:09 +0800
-Message-ID: <20211106122517.3304628-5-chengzhihao1@huawei.com>
+Subject: [PATCH v2 09/12] ubifs: Fix read out-of-bounds in
+ ubifs_wbuf_write_nolock()
+Date: Sat, 6 Nov 2021 20:25:14 +0800
+Message-ID: <20211106122517.3304628-10-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211106122517.3304628-1-chengzhihao1@huawei.com>
 References: <20211106122517.3304628-1-chengzhihao1@huawei.com>
@@ -74,9 +74,8 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211106_121459_251854_AFE993C6 
-X-CRM114-Status: UNSURE (   7.37  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211106_121331_648100_747FC7FE 
+X-CRM114-Status: GOOD (  12.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,31 +92,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-whiteout inode should be put when do_tmpfile() failed if inode has been
-initialized. Otherwise we will get following warning during umount:
-  UBIFS error (ubi0:0 pid 1494): ubifs_assert_failed [ubifs]: UBIFS
-  assert failed: c->bi.dd_growth == 0, in fs/ubifs/super.c:1930
-  VFS: Busy inodes after unmount of ubifs. Self-destruct in 5 seconds.
+Function ubifs_wbuf_write_nolock() may access buf out of bounds in
+following process:
 
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+ubifs_wbuf_write_nolock():
+  aligned_len = ALIGN(len, 8);   // Assume len = 4089, aligned_len = 4096
+  if (aligned_len <= wbuf->avail) ... // Not satisfy
+  if (wbuf->used) {
+    ubifs_leb_write()  // Fill some data in avail wbuf
+    len -= wbuf->avail;   // len is still not 8-bytes aligned
+    aligned_len -= wbuf->avail;
+  }
+  n = aligned_len >> c->max_write_shift;
+  if (n) {
+    n <<= c->max_write_shift;
+    err = ubifs_leb_write(c, wbuf->lnum, buf + written,
+                          wbuf->offs, n);
+    // n > len, read out of bounds less than 8(n-len) bytes
+  }
+
+, which can be catched by KASAN:
+  =========================================================
+  BUG: KASAN: slab-out-of-bounds in ecc_sw_hamming_calculate+0x1dc/0x7d0
+  Read of size 4 at addr ffff888105594ff8 by task kworker/u8:4/128
+  Workqueue: writeback wb_workfn (flush-ubifs_0_0)
+  Call Trace:
+    kasan_report.cold+0x81/0x165
+    nand_write_page_swecc+0xa9/0x160
+    ubifs_leb_write+0xf2/0x1b0 [ubifs]
+    ubifs_wbuf_write_nolock+0x421/0x12c0 [ubifs]
+    write_head+0xdc/0x1c0 [ubifs]
+    ubifs_jnl_write_inode+0x627/0x960 [ubifs]
+    wb_workfn+0x8af/0xb80
+
+Function ubifs_wbuf_write_nolock() accepts that parameter 'len' is not 8
+bytes aligned, the 'len' represents the true length of buf (which is
+allocated in 'ubifs_jnl_xxx', eg. ubifs_jnl_write_inode), so
+ubifs_wbuf_write_nolock() must handle the length read from 'buf' carefully
+to write leb safely.
+
+Fetch a reproducer in [Link].
+
+Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214785
+Reported-by: Chengsong Ke <kechengsong@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/dir.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ubifs/io.c | 34 ++++++++++++++++++++++++++++++----
+ 1 file changed, 30 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 2735ad1affed..6503e6857f6e 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1334,6 +1334,8 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 00b61dba62b7..b019dd6f7fa0 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -833,16 +833,42 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 	 */
+ 	n = aligned_len >> c->max_write_shift;
+ 	if (n) {
+-		n <<= c->max_write_shift;
++		int m = n - 1;
++
+ 		dbg_io("write %d bytes to LEB %d:%d", n, wbuf->lnum,
+ 		       wbuf->offs);
+-		err = ubifs_leb_write(c, wbuf->lnum, buf + written,
+-				      wbuf->offs, n);
++
++		if (m) {
++			/* '(n-1)<<c->max_write_shift < len' is always true. */
++			m <<= c->max_write_shift;
++			err = ubifs_leb_write(c, wbuf->lnum, buf + written,
++					      wbuf->offs, m);
++			if (err)
++				goto out;
++			wbuf->offs += m;
++			aligned_len -= m;
++			len -= m;
++			written += m;
++		}
++
++		/*
++		 * The non-written len of buf may be less than 'n' because
++		 * parameter 'len' is not 8 bytes aligned, so here we read
++		 * min(len, n) bytes from buf.
++		 */
++		n = 1 << c->max_write_shift;
++		memcpy(wbuf->buf, buf + written, min(len, n));
++		if (n > len) {
++			ubifs_assert(c, n - len < 8);
++			ubifs_pad(c, wbuf->buf + len, n - len);
++		}
++
++		err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf, wbuf->offs, n);
+ 		if (err)
+ 			goto out;
+ 		wbuf->offs += n;
+ 		aligned_len -= n;
+-		len -= n;
++		len -= min(len, n);
+ 		written += n;
+ 	}
  
- 		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
- 		if (err) {
-+			if (whiteout)
-+				iput(whiteout);
- 			kfree(dev);
- 			goto out_release;
- 		}
 -- 
 2.31.1
 
