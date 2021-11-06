@@ -2,14 +2,14 @@ Return-Path: <SRS0=A6BC=PZ=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A05BC433FE
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:42:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 374DCC4332F
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:42:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5F6B86023D
-	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:42:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F6B86023D
+	by mail.kernel.org (Postfix) with ESMTPS id B3AEA6023D
+	for <linux-mtd@archiver.kernel.org>; Sat,  6 Nov 2021 16:42:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B3AEA6023D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,53 +18,53 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WVGzsFY4t3ruUx4yBefeME+fNCyzv3YA71N2Fc8tUsI=; b=012/Csr+SrnVZh
-	15Q/sG486jpkPlMi1nniaM7GxEC7m6yt+Rvm5h78hzlJWLhkMoPgCZforfJc7Z7GmjYg0t7kq/Bzz
-	wJEpVYIYJJG2y3bkcet81A4mL+Ms2uHeCKXfQPaCBWxx8pD5HJDhch7lkgIOWLWt7qXztjWfrNm5n
-	2wORyrwUiR6JhQEIPd4MS5FpRzBmZmxf1ju0G5icCqMY7t0m/YENd/c0inzAEWq7TPMbJd4pOdSNA
-	LQF/J2r4QbdnPuVzGjWvyxT3gZlVZUPXupTu+AhuBEg3u7SWnOj+kafBY8la1FwfacrnBE/k80wGu
-	yCwRAhu/1Nca4Jtpt9Qg==;
+	List-Owner; bh=9pdCC4O5t1nASC8sLKH/5o0ffg5NV6vjwuiWmL6Ceps=; b=RhHYiOUKDBswu9
+	rbQCDYMfXuFsOGc0N/Rqr7kgLzH+RfjwKGUuv7PgNB6z3x1HZ256SPpZYoApHfZSXqVheizaFHwM4
+	BsYLEAUYPJ66RHXVXwO1ht092PTb/sWsg2iN59ROUoZaflIjNFycy8c1WGfK/18Xxrbs77JCbd5yO
+	/uxA9wgL8h+vo9oF5UDmsnoK6sgAchZxshkjlsI2ZeZIcWLAenSYMjd3VRhgkDWaCZuxn7mqxayzw
+	4FmkR/t2JYwgHN+0DQvZfHI/1fC/z3ey9rPNl4H2LwGlSJahBLHEZYF1X6Wf/smpJTaEeHd4tKXU4
+	tNhFl5j+szsTNO62TtdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mjOkN-00D6R4-GZ; Sat, 06 Nov 2021 16:40:51 +0000
+	id 1mjOkn-00D6UI-FO; Sat, 06 Nov 2021 16:41:17 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKcZ-00Cynr-Tx
- for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:16:31 +0000
+ id 1mjKd5-00Cyoi-Mn
+ for linux-mtd@bombadil.infradead.org; Sat, 06 Nov 2021 12:17:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Type:Content-Transfer-Encoding:
  MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From:Sender
  :Reply-To:Content-ID:Content-Description;
- bh=kUmaDAbXjAKuugs6QX+IDIqrsUmH5gFjwbkIdSxfDEM=; b=IHabaNz0f1lqh4rtYMuswnP+9m
- Xg0Sio7zYHqsO5wsPpVbZeuuyTe116Wz9XpkDdqRpr8wYb5wjmEARwZwbb93lrWISY9yWz2xmJQE+
- vyDwrZr1LOYsVvGQlwLFwi3kOLdHTZBNCNGnZz7Siw1W7PEOB8GwC0ud5k+8GX9km1D/TFs/6cIKf
- HRiHtRY//nm1U3D6MbTBT8KKASpK3HqqWdB6nIzLMGtRBj9OUtMd0QlVrFu9o8nQnsLK/Yo5ASWv7
- nqDouLdvcNIGYPRc+QXr8EcDczi0i3T9GYz1aMQXfGdnAV2QrPsdtRCZ1fdCVVchjQNJYGgJFLXGW
- HZxs5WiQ==;
+ bh=UFpmzGbtEhsZLNTa1nkZG+BM7I9NaBghleODthp+qeo=; b=d2BErf1Lpysr9PL2JXaYcWOXEU
+ 0bXmW2BUNIsb9oIxOFOdBhqSmP1bok8iMOu6EA+fzk45cO7Nt0gSi24orhgqRQqWGIo35sfFpJIlW
+ IB4wE1JQeRQgnnoPnK7Xi+Mb4OukAOYnhg6kvnGHsMBCFYkdskfiK+idCYkWLEKZSZ7Ju0S4GaAbd
+ +B1HwjijWypDug9KUz9H35KKZnnLkpVyUA0YSLQZWvOGg8i0pmw06U5LlXhAARBtHrjCpiFvn2mSF
+ 4Wj+dl1LnTErWG80+LM40URjqbEGXY0dmczcVUV8S0x84NefBQkMbl1Cji5pkLsXaIoqZb6L2LVhR
+ +7ybl2dA==;
 Received: from szxga01-in.huawei.com ([45.249.212.187])
  by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mjKb5-007Cwd-7K
- for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:15:35 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbjk3p9Nzcb2D;
- Sat,  6 Nov 2021 20:07:54 +0800 (CST)
+ id 1mjKbJ-007Cwf-EV
+ for linux-mtd@lists.infradead.org; Sat, 06 Nov 2021 12:16:08 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hmbjq1QZ7zcb0k;
+ Sat,  6 Nov 2021 20:07:59 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 6 Nov 2021 20:12:41 +0800
+ 15.1.2308.15; Sat, 6 Nov 2021 20:12:45 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 6 Nov
- 2021 20:12:40 +0800
+ 2021 20:12:44 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v2 01/12] ubifs: rename_whiteout: Fix double free for
- whiteout_ui->data
-Date: Sat, 6 Nov 2021 20:25:06 +0800
-Message-ID: <20211106122517.3304628-2-chengzhihao1@huawei.com>
+Subject: [PATCH v2 07/12] ubifs: Rectify space amount budget for mkdir/tmpfile
+ operations
+Date: Sat, 6 Nov 2021 20:25:12 +0800
+Message-ID: <20211106122517.3304628-8-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211106122517.3304628-1-chengzhihao1@huawei.com>
 References: <20211106122517.3304628-1-chengzhihao1@huawei.com>
@@ -74,8 +74,8 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211106_121524_579319_68A3A815 
-X-CRM114-Status: UNSURE (   7.14  )
+X-CRM114-CacheID: sfid-20211106_121535_623161_64FB2EFB 
+X-CRM114-Status: UNSURE (   9.66  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,68 +93,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'whiteout_ui->data' will be freed twice if space budget fail for
-rename whiteout operation as following process:
+UBIFS should make sure the flash has enough space to store dirty (Data
+that is newer than disk) data (in memory), space budget is exactly
+designed to do that. If space budget calculates less data than we need,
+'make_reservation()' will do more work(return -ENOSPC if no free space
+lelf, sometimes we can see "cannot reserve xxx bytes in jhead xxx, error
+-28" in ubifs error messages) with ubifs inodes locked, which may effect
+other syscalls.
 
-rename_whiteout
-  dev = kmalloc
-  whiteout_ui->data = dev
-  kfree(whiteout_ui->data)  // Free first time
-  iput(whiteout)
-    ubifs_free_inode
-      kfree(ui->data)	    // Double free!
+A simple way to decide how much space do we need when make a budget:
+See how much space is needed by 'make_reservation()' in ubifs_jnl_xxx()
+function according to corresponding operation.
 
-KASAN reports:
-==================================================================
-BUG: KASAN: double-free or invalid-free in ubifs_free_inode+0x4f/0x70
-Call Trace:
-  kfree+0x117/0x490
-  ubifs_free_inode+0x4f/0x70 [ubifs]
-  i_callback+0x30/0x60
-  rcu_do_batch+0x366/0xac0
-  __do_softirq+0x133/0x57f
+It's better to report ENOSPC in ubifs_budget_space(), as early as we can.
 
-Allocated by task 1506:
-  kmem_cache_alloc_trace+0x3c2/0x7a0
-  do_rename+0x9b7/0x1150 [ubifs]
-  ubifs_rename+0x106/0x1f0 [ubifs]
-  do_syscall_64+0x35/0x80
-
-Freed by task 1506:
-  kfree+0x117/0x490
-  do_rename.cold+0x53/0x8a [ubifs]
-  ubifs_rename+0x106/0x1f0 [ubifs]
-  do_syscall_64+0x35/0x80
-
-The buggy address belongs to the object at ffff88810238bed8 which
-belongs to the cache kmalloc-8 of size 8
-==================================================================
-
-Let ubifs_free_inode() free 'whiteout_ui->data'. BTW, delete unused
-assignment 'whiteout_ui->data_len = 0', process 'ubifs_evict_inode()
--> ubifs_jnl_delete_inode() -> ubifs_jnl_write_inode()' doesn't need it
-(because 'inc_nlink(whiteout)' won't be excuted by 'goto out_release',
- and the nlink of whiteout inode is 0).
-
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+Fixes: 474b93704f32163 ("ubifs: Implement O_TMPFILE")
+Fixes: 1e51764a3c2ac05 ("UBIFS: add new flash file system")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/dir.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/ubifs/dir.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 7c61d0ec0159..cfa8881d8cca 100644
+index ef39ba851bbc..91207951138c 100644
 --- a/fs/ubifs/dir.c
 +++ b/fs/ubifs/dir.c
-@@ -1425,8 +1425,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+@@ -428,15 +428,18 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
+ {
+ 	struct inode *inode;
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1};
++	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
++					.dirtied_ino = 1};
+ 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
+ 	struct ubifs_inode *ui;
+ 	int err, instantiated = 0;
+ 	struct fscrypt_name nm;
  
- 		err = ubifs_budget_space(c, &wht_req);
- 		if (err) {
--			kfree(whiteout_ui->data);
--			whiteout_ui->data_len = 0;
- 			iput(whiteout);
- 			goto out_release;
- 		}
+ 	/*
+-	 * Budget request settings: new dirty inode, new direntry,
+-	 * budget for dirtied inode will be released via writeback.
++	 * Budget request settings: new inode, new direntry, changing the
++	 * parent directory inode.
++	 * Allocate budget separately for new dirtied inode, the budget will
++	 * be released via writeback.
+ 	 */
+ 
+ 	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+@@ -979,7 +982,8 @@ static int ubifs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
+ 	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+ 	struct ubifs_info *c = dir->i_sb->s_fs_info;
+ 	int err, sz_change;
+-	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1 };
++	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1,
++					.dirtied_ino = 1};
+ 	struct fscrypt_name nm;
+ 
+ 	/*
 -- 
 2.31.1
 
