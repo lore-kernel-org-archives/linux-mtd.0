@@ -2,90 +2,80 @@ Return-Path: <SRS0=0QAq=P3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 440B3C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 09:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88370C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 09:32:45 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE676610A3
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 09:27:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org EE676610A3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=tq-group.com
+	by mail.kernel.org (Postfix) with ESMTPS id 408416120D
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 09:32:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 408416120D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Content-ID:MIME-Version:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pgAhObAlo7b0N1cCmofBTunjszn9L+2CZRBhQwsHDbI=; b=FUpbN+Lzq3KnCu
-	vOSi9VlWTBaxV9+J3OUa2l/ZTecerLPWu7j3AYEXOTXbW2AzBBZVEeTYCeC8QXGOlAH2tiMrmNZyE
-	V8IHyQsdKd56Wghosse2pk8ilZeDss5kWmtjxnRnG/Tmax0a21pgsJHHl4oI5MTCcjmBgNiVFnsUs
-	Yhg8KJd1PnosbbWk9ljR1k/Lq/OD0GpSfVYnPewpKEKXGaCAxDjkBurKyxMTthdnzZIgwxJTtQK3c
-	3m3MEZeh4u+VnmPNiZuYXHHSCBSI2w+TbYZogUNG+qZ5Fzi9PJ1JPvzUaIux9IcwPBAV5LT1ffJuZ
-	QuJKPCEzFWWl+asNzgHA==;
+	List-Owner; bh=Mk7L5UZbD64LF5zUstxmcXbDy6Ke6T+yclOUf0sjvmA=; b=Da1t3UwRm5sJV7
+	aBuxaT7q8PjS2y356rwwpYqdIWY3w9kFeF2KhTis6zh/dkTsKMdJR+Mohrs85B7kZcQlPcf2n3/sm
+	+uK8L7dzuvaiyqDbqqIfjlEbYO4mZQ117ogtIExBwC86+g64xFv7VnOaGwHoAERwywkWaNSZb/ajJ
+	WK+bTfivj4dnxp7DYFknliDDylgNVORitKgNeQL+KTVRJ+DbB08HJjCOIBv8ukO2PRrWLbsYC5P9J
+	lQj2X+6HT66jXYfUvF2ec5clvn4XnvmfZAqvAVDbiH7UhMcd8M56Voww/oj07vcLVXVxlrftzuFOF
+	c5rtJSrNmfbO6Zg/5e5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mk0vZ-00FrLJ-1C; Mon, 08 Nov 2021 09:26:57 +0000
-Received: from mx2.tq-group.com ([93.104.207.82])
+	id 1mk10e-00FsXb-Pc; Mon, 08 Nov 2021 09:32:12 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mk0vW-00FrK6-Ea
- for linux-mtd@lists.infradead.org; Mon, 08 Nov 2021 09:26:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1636363614; x=1667899614;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:mime-version:content-id: content-transfer-encoding;
- bh=YsIfsjOydbJ7yEJPmixPtzgjosr/9p2WG1NwLYBVfNI=;
- b=GdsE/Hgg4c2suUKMhJgxRJHO9gLiT6w2enke6H3vHAUbCRNWFMe92aX8
- qZ55NCpU/DDkhnzUS1ZvgSbJMCSqKZszJ3eJxmTZ/unY9ZXg2anlzZ+d8
- wKUtr1855hHHwa1xai9vGwhKyE/cKofe3EUzzLh6P8HNF/m1t16eeDSsR
- n5P2DC4DLczu7SBpFRNB2IxypNPU+OxUv7tsRQReQszr4Mf21nlG4fSZr
- fuPIUB1vA0FFD7Q7ZqsEmybKgprLBJkTS/hhq/N8iu2fMDC1Ui0/UQfUi
- ZdFtr1kTuC+pRNzpAfMnB5Z90vK4/l8Jas0wcujmkaKJzAAHZSxnfHVhD A==;
-X-IronPort-AV: E=Sophos;i="5.87,218,1631570400"; 
-   d="scan'208";a="1159645"
-Received: from unknown (HELO tq-pgp-pr2.tq-net.de) ([192.168.6.18])
- by mx2-pgp.tq-group.com with ESMTP; 08 Nov 2021 10:26:49 +0100
-Received: from mx2.tq-group.com ([192.168.6.8])
- by tq-pgp-pr2.tq-net.de (PGP Universal service);
- Mon, 08 Nov 2021 10:26:49 +0100
-X-PGP-Universal: processed;
- by tq-pgp-pr2.tq-net.de on Mon, 08 Nov 2021 10:26:49 +0100
-X-IronPort-AV: E=Sophos;i="5.87,218,1631570400"; 
-   d="scan'208";a="1159644"
-Received: from vmail01.tq-net.de ([10.150.72.11])
- by mx2.tq-group.com with ESMTP; 08 Nov 2021 10:26:49 +0100
-Received: from vmail01.tq-net.de (10.150.72.11) by vmail01.tq-net.de
- (10.150.72.11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Mon, 8 Nov
- 2021 10:26:49 +0100
-Received: from vmail01.tq-net.de ([10.150.72.11]) by vmail01.tq-net.de
- ([10.150.72.11]) with mapi id 15.01.2308.015; Mon, 8 Nov 2021 10:26:49 +0100
-From: "Stein, Alexander" <Alexander.Stein@tq-group.com>
-To: "p.yadav@ti.com" <p.yadav@ti.com>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "michael@walle.cc" <michael@walle.cc>, "tudor.ambarus@microchip.com"
- <tudor.ambarus@microchip.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: (EXT) [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Topic: (EXT) [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Index: AQHX0uPOpq2SCHKAhUucvM9nE2hnpqv5TviA
-Date: Mon, 8 Nov 2021 09:26:49 +0000
-Message-ID: <5f104ec3b6ad492212105ad59ba135ff8ed2cd0d.camel@tq-group.com>
-References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
- <20211106075616.95401-2-tudor.ambarus@microchip.com>
-In-Reply-To: <20211106075616.95401-2-tudor.ambarus@microchip.com>
-Accept-Language: de-DE, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.150.72.21]
+ id 1mk10b-00FsTz-HC
+ for linux-mtd@lists.infradead.org; Mon, 08 Nov 2021 09:32:11 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mk10S-0007gN-Q1; Mon, 08 Nov 2021 10:32:00 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mk10Q-0005Zb-Mi; Mon, 08 Nov 2021 10:31:58 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1mk10Q-0001ED-Lj; Mon, 08 Nov 2021 10:31:58 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, linux-spi@vger.kernel.org
+Subject: [PATCH 2/4] mtd: mchp23k256: Warn about failure to unregister mtd
+ device
+Date: Mon,  8 Nov 2021 10:31:50 +0100
+Message-Id: <20211108093153.63792-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211108093153.63792-1-u.kleine-koenig@pengutronix.de>
+References: <20211108093153.63792-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Language: en-US
-Content-ID: <578596A275E6EF4698090A05E2C24D9E@tq-group.com>
+X-Patch-Hashes: v=1; h=sha256; i=oQ0rhox5HEbwbc0e75w1kKEc23U+uF8p5JmZ7F33OK0=;
+ m=7KSLr5cayipWkedCHz7+d6af4pRbjwTwvLxY0jhuRso=;
+ p=y8uE+X4rF0xYUl8SQTQfji1PmQ09gP0zkTFXjoDC/CM=;
+ g=8e6ec6dbe993af74eb7f5b477a7f711258598579
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de;
+ s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6;
+ b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGI7n0ACgkQwfwUeK3K7Ak9SAgAgpG
+ d0Z9DCFHMMHT8pXrABqPM4T/lG3bVlVpraazo4YIrIXyfj3Ycszn39lY7EotBwqVlxASMBWlDBaGb
+ CT5kDKkezRFABKpE47ZjEQwEAFdQmZjA/hxdG11NuTSmHzVvQF2Q0Y32hY/+fbZubh0O+teiFvF6Y
+ p88kogxiHYffoqqxjochbeNQCfsljjdpB/fiyCgLo/z96eq8IWSOQF+CbRgEzSTY3nBX3BePuCOP4
+ PZyxq4mUjKkhemU1GMs8/0GIzk0I0jfFiXlAVjw955iswQtWIxKA6MhCJ13V5efFOQ8/FXUxdJ7c0
+ Ci9yvdpEkObkrU+5+nyyJFmTHBoglRw==
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211108_012654_871289_F99BECCA 
-X-CRM114-Status: GOOD (  18.16  )
+X-CRM114-CacheID: sfid-20211108_013209_618407_D0E45B87 
+X-CRM114-Status: GOOD (  14.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,65 +87,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-Am Samstag, dem 06.11.2021 um 09:56 +0200 schrieb Tudor Ambarus:
-> When paring SFDP we may choose to mask out an erase type, passing
-> an erase size of zero to spi_nor_set_erase_type().
-> Fix shift-out-of-bounds and just clear the erase params when
-> passing zero for erase size.
-> While here avoid a superfluous dereference and use 'size' directly.
-> 
-> UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
-> shift exponent 4294967295 is too large for 32-bit type 'int'
-> 
-> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP
-> SPI NOR flash memories")
-> Reported-by: Alexander Stein <
-> Alexander.Stein@tq-group.com
-> >
-> Signed-off-by: Tudor Ambarus <
-> tudor.ambarus@microchip.com
-> >
-> ---
->  drivers/mtd/spi-nor/core.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 3d97c189c332..a1b5d5432f41 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2230,8 +2230,13 @@ void spi_nor_set_erase_type(struct
-> spi_nor_erase_type *erase, u32 size,
->  	erase->size = size;
->  	erase->opcode = opcode;
->  	/* JEDEC JESD216B Standard imposes erase sizes to be power of
-> 2. */
-> -	erase->size_shift = ffs(erase->size) - 1;
-> -	erase->size_mask = (1 << erase->size_shift) - 1;
-> +	if (size) {
-> +		erase->size_shift = ffs(size) - 1;
-> +		erase->size_mask = (1 << erase->size_shift) - 1;
-> +	} else {
-> +		erase->size_shift = 0;
-> +		erase->size_mask = 0;
-> +	}
->  }
->  
->  /**
-
-Tested-By: Alexander Stein <Alexander.Stein@tq-group.com>
-
-It fixes the UBSAN error and my spi-nor flash can still be detected.
-
-Best regards,
-Alexander
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+bXRkX2RldmljZV91bnJlZ2lzdGVyKCkgc2hvdWxkbid0IGZhaWwuIFdhaWwgbG91ZGx5IGlmIGl0
+IGRvZXMgYW55aG93LgoKVGhpcyBtYXRjaGVzIGhvdyBvdGhlciBkcml2ZXJzIChlLmcuIG5hbmQv
+cmF3L25hbmRzaW0uYykgdXNlCm10ZF9kZXZpY2VfdW5yZWdpc3RlcigpLgoKQnkgcmV0dXJuaW5n
+IDAgaW4gdGhlIHNwaSByZW1vdmUgY2FsbGJhY2sgYSBnZW5lcmljIGVycm9yIG1lc3NhZ2UgYnkg
+dGhlCnNwaSBmcmFtZXdvcmsgKGFuZCBub3RoaW5nIGVsc2UpIGlzIHN1cHByZXNzZWQuCgpTaWdu
+ZWQtb2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4
+LmRlPgotLS0KIGRyaXZlcnMvbXRkL2RldmljZXMvbWNocDIzazI1Ni5jIHwgNCArKystCiAxIGZp
+bGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvZGV2aWNlcy9tY2hwMjNrMjU2LmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL21j
+aHAyM2syNTYuYwppbmRleCA3N2M4NzJmZDNkODMuLmE4YjMxYmRkZjE0YiAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy9tdGQvZGV2aWNlcy9tY2hwMjNrMjU2LmMKKysrIGIvZHJpdmVycy9tdGQvZGV2aWNl
+cy9tY2hwMjNrMjU2LmMKQEAgLTIxMyw3ICsyMTMsOSBAQCBzdGF0aWMgaW50IG1jaHAyM2syNTZf
+cmVtb3ZlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpCiB7CiAJc3RydWN0IG1jaHAyM2syNTZfZmxh
+c2ggKmZsYXNoID0gc3BpX2dldF9kcnZkYXRhKHNwaSk7CiAKLQlyZXR1cm4gbXRkX2RldmljZV91
+bnJlZ2lzdGVyKCZmbGFzaC0+bXRkKTsKKwlXQVJOX09OKG10ZF9kZXZpY2VfdW5yZWdpc3Rlcigm
+Zmxhc2gtPm10ZCkpOworCisJcmV0dXJuIDA7CiB9CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2Zf
+ZGV2aWNlX2lkIG1jaHAyM2syNTZfb2ZfdGFibGVbXSA9IHsKLS0gCjIuMzAuMgoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQg
+ZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC1tdGQvCg==
