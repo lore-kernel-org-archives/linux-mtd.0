@@ -2,63 +2,84 @@ Return-Path: <SRS0=0QAq=P3=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECD12C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 10:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30A6EC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 11:05:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFD23611C0
-	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 10:32:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AFD23611C0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id E105161242
+	for <linux-mtd@archiver.kernel.org>; Mon,  8 Nov 2021 11:05:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E105161242
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=v3JPhL4rMN5GzVu8jNjb+fzuw50NchDSakMG8lvV2+k=; b=zb+7LrLCtY8bicoU0I95zkPnI5
-	Fc14MR8LJ2dtWIG889csjyBQoX44FR6Gp0yStDlzAPv5KpzoornnmMNd94UC5Ossa2QKmvy6ZCrYx
-	8BoSwHwNpdHUMXsOq+LVPKGBBtb+Acx9k8GWJheo3dnRadnkAXgTT2+oPF/rn3/VdNwHkfTsm5xt/
-	k9lrjG2BLzbh+jBzqNGdwrPrc3n7quiOLtcPcUZj592b90Lso/st3H64btBjCZ9ea3qWg5/xw3LAy
-	CJ2Rcclxa03WBoaInr8N9pc+91uWDrpJ+VB/2QEqiAAGbSPvGt3YE2m7XQtojUfeOcS7e75/cBkdI
-	DIx6b2ZQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rVT2DX8uiocNAffrxB+ShIxNUS2EfGTjuMDpZLo/pes=; b=1T5pDjk45M37Qa
+	7lQ3sd3d5U3pVUa52xlNVif4jONPZM1nsZflPlVjMCss2iiIbtu96Hhh8+DEPTo2Rwker4EgOa5rm
+	ZMeLKg8NMedjlyKDFHLYnWN5XFqnHYGtF4xVQjCZ8toTRz/D4EO2EmqdAqJHvmZGz9zhg5Vjs41MF
+	TP9iux2CBATc7KTWU/FuoqqAJ1eLiii+fWn3waEujzk7McMl9M+bcnRxqDnut8Ejw3Typhg/I6E3y
+	dNRxRvRTapCnjVPK3tC5AfeEOUNbtICQea1P5YDyQApJDCq+0/hTsFMD3nDYzP+KidLGrhgngh0gn
+	Y5x7rQto7mGFHBvJoO8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mk1wc-00G4RX-3A; Mon, 08 Nov 2021 10:32:06 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mk2SB-00GDyh-U8; Mon, 08 Nov 2021 11:04:43 +0000
+Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mk1wK-00G4KF-Km; Mon, 08 Nov 2021 10:31:50 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 88D9E22246;
- Mon,  8 Nov 2021 11:31:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1636367503;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=shtm3IYMlZclrxv6IEMa3o5J1TwnuLrh44nqqFiSZs4=;
- b=r8IVbv9dy8mGT/GmFJjLvkivrkU7OfAnAJZgW4itxpwU8l33tr8eLROr8LPH4H1po+urzz
- PM8m4G8gpv97eKvcrB84FtEVTfEF7NCbImcvn7+7FmxoMipAl37lYwMwTKd2V9PLxDxTKj
- 0WN6WCPWfZP3Sgwv9/BDv5Ik9TvoVUE=
+ id 1mk2S9-00GDxI-38
+ for linux-mtd@lists.infradead.org; Mon, 08 Nov 2021 11:04:42 +0000
+Received: by mail-wr1-x429.google.com with SMTP id n29so14407087wra.11
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Nov 2021 03:04:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to;
+ bh=at7QYPQleIMyEEiP1lZWrA5vbZFNe1ByBa3JnUgvYTI=;
+ b=FPH5lEqXwqlOdS3lvEYdwU26USTg3AEjZSimrTz1xHhQrSKichFIylk7o9x/NHKuBA
+ qreJo9Ey7fEuHTO2q7KjgQJ60W1tmR666UJY0uakKru4yMWHw7//3dXQGLyAFZYwHqPB
+ v4+Rcac6ESMS7NqmuvS6/nevgAO0AEeAmVi4g4pSy+3d4MAfKyy8sJSasrjOwi6Yvfhl
+ Yv2BkLhtEmjJZGwOBvVmFQNqnXe0t9GbebqG3rL79ktLUffsdixSm8ra6jQJMocCLBPO
+ 3fzjfRNlz83kQn5BK+QHhVkhZF2Dv9lGldQGZDMqUX+ecg8lkbBkdvPzH+5oLyvn2O2k
+ WlZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=at7QYPQleIMyEEiP1lZWrA5vbZFNe1ByBa3JnUgvYTI=;
+ b=g/0DRUuCGdGc+Ha66Zj3jMEVvdojCPx3fLUi0el3r06RuIVGecnRs5AUv/L24UvOaR
+ Cuhu3jH60rkd9wTQ7IDpy20rggYxojk4nN/n3ZRodKZx0spy1qj+glNy2/mAuISBm1Ha
+ z1AnyVrfvttxvGZ5o03k5QPV7wLR05SqIOhZeoRmNmqj4nJhCOFNlSXN5vd9zDZMxNK5
+ QHPtUM7r0zwxuXSd5sZ14ZtAUxqkgnXkX4MnLI1b0vIk0/PolsPGWQXc02IYIuiJA2ML
+ SGOzY02V9LigwXQjPpJjZHC00PV11IBgvzL99XfjImZxJFkKI09OnPG5OspOqoeB6aOB
+ V8yA==
+X-Gm-Message-State: AOAM5311GU55wqLpCxVsIKWYlvo120RgIZSb31QBVHiRQssoJtfkEaAv
+ DzbKsrJAVGWLa5C+PJdjLfztkw==
+X-Google-Smtp-Source: ABdhPJxIfD+/oLL8LVP2PucEMUp/d5K/YpD0mOO8GuwyEaidcy7PY+TFfSS5H5IeiitZm+5gCyvSmg==
+X-Received: by 2002:adf:f60e:: with SMTP id t14mr43363396wrp.112.1636369478423; 
+ Mon, 08 Nov 2021 03:04:38 -0800 (PST)
+Received: from google.com ([95.148.6.174])
+ by smtp.gmail.com with ESMTPSA id g13sm14916391wmk.37.2021.11.08.03.04.37
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 08 Nov 2021 03:04:38 -0800 (PST)
+Date: Mon, 8 Nov 2021 11:04:31 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Kumaravel.Thiagarajan@microchip.com
+Cc: Pragash.Mangalapandian@microchip.com, Sundararaman.H@microchip.com,
+ axboe@kernel.dk, linux-block@vger.kernel.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, gregkh@linuxfoundation.org
+Subject: Re: Reg: New MFD Driver for my PCIe Device
+Message-ID: <YYkEP62JRb4rCuXQ@google.com>
+References: <CH0PR11MB5380F5BD18F15014BA8B8479E9919@CH0PR11MB5380.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Date: Mon, 08 Nov 2021 11:31:41 +0100
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v3 00/25] mtd: spi-nor: Clean params init
-In-Reply-To: <7de434d9-0d40-1514-5a7f-5d179497d1c7@microchip.com>
-References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
- <7de434d9-0d40-1514-5a7f-5d179497d1c7@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <e7b5fd882ff7e11e121ce56f6c63092b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Disposition: inline
+In-Reply-To: <CH0PR11MB5380F5BD18F15014BA8B8479E9919@CH0PR11MB5380.namprd11.prod.outlook.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211108_023149_049546_EAD50ED0 
-X-CRM114-Status: GOOD (  24.34  )
+X-CRM114-CacheID: sfid-20211108_030441_192590_8CD4607E 
+X-CRM114-Status: GOOD (  18.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,113 +91,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, Nicolas.Ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-11-08 11:15, schrieb Tudor.Ambarus@microchip.com:
-> Hi,
-> 
-> On 10/29/21 8:26 PM, Tudor Ambarus wrote:
->> Clean spi_nor_scan() and the flash parameters initialization code.
->> Tested all the flashes from patch set. If someone can test the
->> locking ops on few flashes would be great. It seems that my flashes
->> have the non volatile bits weared out.
->> 
->> This patch set is split from:
->> https://lore.kernel.org/linux-mtd/20210727045222.905056-1-tudor.ambarus@microchip.com/
->> The ID collision series will be set in a dedicated patch set that will
->> depend on this one.
->> 
->> Changes in v3:
->> - move late_init() in struct spi_nor_fixups and update patches 
->> accordingly.
->> R-b tags were dropped.
->> - new patch "mtd: spi-nor: sst: Get rid of SST_WRITE flash_info flag"
->> moves manufacturer specific flag out of the core.
->> - update methods description to make it clear who sets when
->> - introduce flash_info flag masks to make it clear when one should be 
->> set.
->> - rework "parse SFDP first idea".
->> 
->> Tudor Ambarus (25):
->>   mtd: spi-nor: core: Fix spi_nor_flash_parameter otp description
->>   mtd: spi-nor: core: Use container_of to get the pointer to struct
->>     spi_nor
->>   mtd: spi-nor: Introduce spi_nor_set_mtd_info()
->>   mtd: spi-nor: Get rid of nor->page_size
->>   mtd: spi-nor: core: Introduce the late_init() hook
->>   mtd: spi-nor: atmel: Use flash late_init() for locking
->>   mtd: spi-nor: sst: Use flash late_init() for locking
->>   mtd: spi-nor: winbond: Use manufacturer late_init() for OTP ops
->>   mtd: spi-nor: xilinx: Use manufacturer late_init() to set setup 
->> method
->>   mtd: spi-nor: sst: Use manufacturer late_init() to set _write()
->>   mtd: spi-nor: spansion: Use manufacturer late_init()
->>   mtd: spi-nor: core: Call spi_nor_post_sfdp_fixups() only when SFDP 
->> is
->>     defined
->>   mtd: spi-nor: sst: Get rid of SST_WRITE flash_info flag
->>   mtd: spi-nor: Introduce flash_info flags masks
->>   mtd: spi-nor: Introduce spi_nor_nonsfdp_init_flags()
->>   mtd: spi-nor: Introduce spi_nor_init_fixup_flags()
->>   mtd: spi-nor: core: Introduce SPI_NOR_PARSE_SFDP
->>   mtd: spi-nor: core: Init flash params based on SFDP first for new
->>     flash additions
->>   mtd: spi-nor: core: Move spi_nor_set_addr_width() in spi_nor_setup()
->>   mtd: spi-nor: sst: sst26vf064b: Init flash based on SFDP
->>   mtd: spi-nor: winbond: w25q256jvm: Init flash based on SFDP
->>   mtd: spi-nor: spansion: s25fl256s0: Skip SFDP parsing
->>   mtd: spi-nor: gigadevice: gd25q256: Init flash based on SFDP
->>   mtd: spi-nor: issi: is25lp256: Init flash based on SFDP
->>   mtd: spi-nor: macronix: mx25l25635e: Init flash based on SFDP
->> 
->>  drivers/mtd/spi-nor/atmel.c      |   8 +-
->>  drivers/mtd/spi-nor/core.c       | 480 
->> +++++++++++++++++--------------
->>  drivers/mtd/spi-nor/core.h       | 106 ++++---
->>  drivers/mtd/spi-nor/gigadevice.c |   7 +-
->>  drivers/mtd/spi-nor/issi.c       |   6 +-
->>  drivers/mtd/spi-nor/macronix.c   |  15 +-
->>  drivers/mtd/spi-nor/micron-st.c  |  20 +-
->>  drivers/mtd/spi-nor/otp.c        |   2 +-
->>  drivers/mtd/spi-nor/spansion.c   |  15 +-
->>  drivers/mtd/spi-nor/sst.c        | 105 ++++---
->>  drivers/mtd/spi-nor/swp.c        |   2 +-
->>  drivers/mtd/spi-nor/winbond.c    |   7 +-
->>  drivers/mtd/spi-nor/xilinx.c     |  21 +-
->>  include/linux/mtd/spi-nor.h      |   2 -
->>  14 files changed, 460 insertions(+), 336 deletions(-)
->> 
-> 
-> I would like to apply this when -rc1 is out. Can some of you run some 
-> tests
-> and check if everything is ok? I have done few tests on the flashes 
-> that I
-> mentioned in the cover letter, all should be ok. I'm particularly 
-> interested
-> in the locking support. I can test the unlock_all on sst26vf064b 
-> validating
-> the locking part, but it would be good if locking is tested on other 
-> flash
-> too.
-> 
-
-FWIW, I've quickly tested the series on a W25Q32JW (OTP only) and 
-W25Q128 (OTP
-and locking, OTP patch is not upstream).
-
-Tested-by: Michael Walle <michael@walle.cc> #on w25q32jw and w25q128fw
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAwOCBOb3YgMjAyMSwgS3VtYXJhdmVsLlRoaWFnYXJhamFuQG1pY3JvY2hpcC5jb20g
+d3JvdGU6Cgo+IERlYXIgTGVlIEpvbmVzLAo+IAo+IEkgYW0gS3VtYXJhdmVsIFRoaWFnYXJhamFu
+IGZyb20gTWljcm9jaGlwLCBJbmRpYSBhbmQgSSBhbSBuZXcgdG8gTGludXggS2VybmVsIGRldmVs
+b3BtZW50Lgo+IAo+IEkgYW0gY3VycmVudGx5IHdvcmtpbmcgb24gbGludXgga2VybmVsIGRyaXZl
+ciBmb3Igb25lIG9mIG91ciBQQ0llIGJhc2VkIGRldmljZXMgd2hvc2UgQkFSIDAgbWFwcyBpbnRl
+cmZhY2UgcmVnaXN0ZXJzIGZvciBhIGdwaW8gY29udHJvbGxlciwgYW4gT1RQIG1lbW9yeSBkZXZp
+Y2UgY29udHJvbGxlciBhbmQgYW4gRUVQUk9NIGRldmljZSBjb250cm9sbGVyIGludG8gdGhlIGhv
+c3QgcHJvY2Vzc29yJ3MgbWVtb3J5IHNwYWNlLgo+IAo+IEJhc2VkIG9uIGVhcmxpZXIgaW5wdXRz
+IGZyb20gTGludXMgV2FsbGVpaiwgSSBoYXZlIGRldmVsb3BlZCB0aGlzIGFzIGEgbXVsdGktZnVu
+Y3Rpb24gZGV2aWNlIGRyaXZlciAtIEZpcnN0IE1GRCBkcml2ZXIgKGRyaXZlcnMvbWZkKSBnZXRz
+IGxvYWRlZCBmb3IgdGhlIFBDSWUgZGV2aWNlIGFuZCB0aGVuIGl0IHNwYXducyB0d28gY2hpbGQg
+ZGV2aWNlcyBmb3IgT1RQL0VFUFJPTSBhbmQgR1BJTyBzZXBhcmF0ZWx5LgoKWW91IG1heSB3aXNo
+IHRvIHNwZWFrIHdpdGggR3JlZyBhYm91dCB5b3VyIGFyY2hpdGVjdHVyYWwgZGVjaXNpb25zLgoK
+SGUgdXN1YWxseSBkaXNsaWtlcyB0aGUgY3JlYXRpb24gb2YgcGxhdGZvcm0gZGV2aWNlcyBmcm9t
+IFBDSSBvbmVzLgoKPiBJIGhhdmUgZm91ciBuZXcgZmlsZXMgaW4gbXkgbG9jYWwgbGludXggc291
+cmNlIHRyZWUgYXMgYmVsb3cgZm9yIGNvbW11bml0eSBzdWJtaXNzaW9uLgo+IAo+IDEuIG1jaHBf
+cGNpMXh4eHhfZ3AuaCB1bmRlciBpbmNsdWRlL2xpbnV4L21mZAo+IDIuIG1jaHBfcGNpMXh4eHhf
+Z3AuYyB1bmRlciBkcml2ZXJzL21mZAo+IDMuIG1jaHBfcGNpMXh4eHhfZ3Bpby5jIHVuZGVyIGRy
+aXZlcnMvZ3Bpbwo+IDQuIG1jaHBfcGNpMXh4eHhfIG90cGUycC5jIHVuZGVyIGRyaXZlcnMvbXRk
+L2RldmljZXMKPiAKPiBJIGhhdmUgYSBkb3VidCB3aXRoIHRoZSBsb2NhdGlvbiBvZiB0aGUgZm91
+cnRoIGZpbGUgZm9yIHRoZSBmb2xsb3dpbmcgcmVhc29ucy4KPiAKPiAxLiBJIGhhdmUgdmlzdWFs
+aXplZCBhbmQgYXJjaGl0ZWN0ZWQgdGhlIE9UUCBhbmQgRUVQUk9NIG1lbW9yaWVzIG9mIG15IGRl
+dmljZSBhcyBpbmRpdmlkdWFsIGJsb2NrIGRldmljZXMgc28gdGhhdCBJIGFtIGFibGUgdG8gdXNl
+IHRoZSBsaW51eCBkZCBjb21tYW5kIHRvIHByb2dyYW0gdGhlc2UgbWVtb3JpZXMgZnJvbSBhIGJp
+bmFyeSBmaWxlIGRpcmVjdGx5IG9yIGVkaXQgdGhlbSBkaXJlY3RseSB1c2luZyBhcHBsaWNhdGlv
+bnMgbGlrZSBoZXhlZGl0LCBib3RoIG9mIHdoaWNoIEkgYW0gYWJsZSB0byBkby4KPiAyLiBUaGVz
+ZSBvbmx5IGxvb2sgbW9yZSBsaWtlIGJsb2NrIGRldmljZXMgdG8gbWUgYW5kIG5vdCBNVEQgZGV2
+aWNlcyAob25seSB3cml0ZXMgYW5kIHJlYWRzIGFyZSBwb3NzaWJsZSBhbmQgbm90IGVyYXNlKS4K
+PiAKPiBDYW4gSSBtb3ZlIHRoZSBmb3VydGggZmlsZSBkaXJlY3RseSB1bmRlciBkcml2ZXJzL2Js
+b2NrIG9yIHNob3VsZCB0aGVyZSBiZSBhIG5ldyBzdWIgZGlyZWN0b3J5IHVuZGVyIGRyaXZlcnMv
+YmxvY2sgb3IgbGVhdmUgaXQgYXMgc3VjaCB1bmRlciBkcml2ZXJzL210ZC9kZXZpY2VzID8KClRo
+b3NlIGFyZSBxdWVzdGlvbnMgZm9yIHRoZSBNVEQvQmxvY2sgTWFpbnRhaW5lcnMuCgpJJ3ZlIENj
+J2VkIGFsbCBvZiB0aGUgcmVsZXZhbnQgcGFydGllcyBmb3IgeW91LgoKLS0gCkxlZSBKb25lcyBb
+5p2O55C85pavXQpTZW5pb3IgVGVjaG5pY2FsIExlYWQgLSBEZXZlbG9wZXIgU2VydmljZXMKTGlu
+YXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFybSBTb0NzCkZvbGxvdyBMaW5h
+cm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
