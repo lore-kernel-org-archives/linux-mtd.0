@@ -2,68 +2,62 @@ Return-Path: <SRS0=4x2W=P4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21AE4C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 12:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC68C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 12:55:52 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0A4761075
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 12:37:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E0A4761075
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 1D28C610F8
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 12:55:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D28C610F8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baidu.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
-	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EQ+9+bivNhmnOn++tojbFDvvjLINo6DPqkWmZ9g7GS8=; b=TR7FjZt1Ic+UKlNmAuJWtm6S2A
-	UXx7H5I27/trXCIJMyewCV+DOSyCDKXLG1bvoFdHWTbpb767FYok0dv61aAeZRmpFmN75mh4T66P/
-	rbd2E7IO5C0Zd0p+uPtxeYKkupjZmOOwV2Ehgy6YvHakqiQLZFeOUA/r9tme4mMU22DDEb1R2adwq
-	c+oXE8q4OJYtpXldtr06wlUYcDDc+GUvAa4ULkJzGp91fYaH5IQ9meADbcAV2zUqvQMu8YouuQV+a
-	SsQPqKG3rUbHxbkjfdPNQSY4Vf6jVJm7soNEqQYLsfZRN5Bp9niRT7HA81jG/unTIsonIlyi/USW/
-	XIiZG80w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YCulfuAytQRcNZ6YYLRq9AbPy1r+0/Uh+IXoFexf25A=; b=AlAYT+LzS0tS5z
+	4DkDpwlEw8DtHIy0UOloqcyTd8dMGv9/XWfWC9Qy6VW7TgrzZoAiPjz1LTVM2Pg068a+ZyhRLpEO5
+	G9i8jfNPW6cGc3xtwKQbzc2Dea4ih2tfb8K47Iefrzz5wUHgOmSEJcT7dC+4KbiHmm1v57RihX2dZ
+	Wr8e8KC1BnK7eD62KB/WFX7yYhDarteuioWnFQQlcJm9WgRTgzFbluWrX2dwO4XARCmJXaFUh5YAP
+	XAdDyUZc6u/ZaQlgjXltnAn+lj7a1BIjOvL3Nh617tD5vKQRjTo3MwXN+ZEvEpc0QBwC+knz4vSRC
+	sCf0AI3kerU1hvGV+XcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkQNX-0023pD-Ix; Tue, 09 Nov 2021 12:37:31 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkQNG-0023mS-OW; Tue, 09 Nov 2021 12:37:16 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id B45C922246;
- Tue,  9 Nov 2021 13:37:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1636461432;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=u57bZfUqg0fthdr9Ilh5RE4BZjuKqcpT8rvE173dRAw=;
- b=laPy2J73fBG2aomhGm7bvMFHayU/7e6EcgEC2LghPUFL+0Z7J8Kxvq6w4GHU95TOthnJt3
- s5Vi9NVqrNRJwCUOH+GEvPwMYfj+nR57j15bb8PD86z3Dgwi3J+4/PZZc7gWO0QO92mtwY
- RG4QFEKQkL7mJ6WH/6Dau+lsso1M4+s=
+	id 1mkQek-0029XU-2Y; Tue, 09 Nov 2021 12:55:18 +0000
+Received: from mx22.baidu.com ([220.181.50.185] helo=baidu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mkQeh-0029QH-Bq
+ for linux-mtd@lists.infradead.org; Tue, 09 Nov 2021 12:55:17 +0000
+Received: from BC-Mail-Ex24.internal.baidu.com (unknown [172.31.51.18])
+ by Forcepoint Email with ESMTPS id 288BCCBA614954A7DA0A;
+ Tue,  9 Nov 2021 20:55:03 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex24.internal.baidu.com (172.31.51.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 9 Nov 2021 20:55:02 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 9 Nov 2021 20:55:02 +0800
+From: Cai Huoqing <caihuoqing@baidu.com>
+To: <miquel.raynal@bootlin.com>
+CC: Cai Huoqing <caihuoqing@baidu.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: rawnand: denali: Add the dependency on HAS_IOMEM
+Date: Tue, 9 Nov 2021 20:54:55 +0800
+Message-ID: <20211109125457.213-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Date: Tue, 09 Nov 2021 13:37:11 +0100
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v3 20/25] mtd: spi-nor: sst: sst26vf064b: Init flash based
- on SFDP
-In-Reply-To: <804938ee-9726-8591-0efb-e9ac40a3d5e3@microchip.com>
-References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
- <20211029172633.886453-21-tudor.ambarus@microchip.com>
- <11ac4016-94ad-39ce-e845-0324543065fa@microchip.com>
- <feebb504a3d6f27061a1e2faadec8fe9@walle.cc>
- <804938ee-9726-8591-0efb-e9ac40a3d5e3@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <bd0c9e472d9151097b7d37d6bdd80f67@walle.cc>
-X-Sender: michael@walle.cc
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211109_043715_009389_BB625546 
-X-CRM114-Status: UNSURE (   8.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211109_045515_631031_362DF94C 
+X-CRM114-Status: GOOD (  10.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,32 +69,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, Nicolas.Ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-11-09 13:33, schrieb Tudor.Ambarus@microchip.com:
+The helper function devm_platform_ioremap_resource_xxx()
+needs HAS_IOMEM enabled, so add the dependency on HAS_IOMEM.
 
->> xxd please, and md5sum or sha256sum or really any
->> checksum is missing.
->> 
-> 
-> right, I forgot the checksum.
-> Just curious, why do you prefer xxd over hexdump? Does it matter
-> which tool we use?
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/mtd/nand/raw/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-xxd can do the reverse and its easier to get the binary version
-of it again. also, if you use hexdump without -C (or -c) I'm not
-sure about the endianess.
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 67b7cb67c030..0a45d3c6c15b 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -26,7 +26,7 @@ config MTD_NAND_DENALI_PCI
+ config MTD_NAND_DENALI_DT
+ 	tristate "Denali NAND controller as a DT device"
+ 	select MTD_NAND_DENALI
+-	depends on HAS_DMA && HAVE_CLK && OF
++	depends on HAS_DMA && HAVE_CLK && OF && HAS_IOMEM
+ 	help
+ 	  Enable the driver for NAND flash on platforms using a Denali NAND
+ 	  controller as a DT device.
+-- 
+2.25.1
 
--michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
