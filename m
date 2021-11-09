@@ -2,60 +2,57 @@ Return-Path: <SRS0=4x2W=P4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31121C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73CB6C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:47:26 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E9D06611AD
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:46:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E9D06611AD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+	by mail.kernel.org (Postfix) with ESMTPS id 121C260D42
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:47:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 121C260D42
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6uj91My1LFdsN100AQ5t35ppqC421nPJf+5MNnNFJno=; b=xGpTckW2va6P+q
-	B1KuD9D5IJ0lelYX/iAYer4dGTzIcrGbNM3DEjWYjOMkujFZkSYjAWJ+fim1/cpfsz6BcYbpTaxd6
-	5H6BEvYV2prkUMig8PUoc8HgW7z2Pv2e+yF9xha2wEXT8vrIcibwCyntoBNIqHzFInysQaWFlE6yX
-	KSszrk52xEk7YMQDwN3WDXysE0u3XhHHc5macU831t0SeBk/eZpAFSv50C3ki6dXjO17pZtzpf+Dj
-	goq56qi+TCsy5q8hRPK3iW9j2NB6JQ+5MOkG8b2ARELjMuVxMzvEg+op3lX/geURxEONFtrE4S1DR
-	Q2J9HvLlcp6rP7duGOgg==;
+	List-Owner; bh=yoI0UcyHPsLXUTR+V23SxIT/kmH5KLu61+4m5ItpaFw=; b=KGhN3mOxc0JEoY
+	7knSwPMjbWnkvGJ04wEfJ5VnH/DqQgN6tZru/CCJ7bTpZBdT0lWXfWM108YJks1gKf75adMW+h5Oa
+	hV2KCRtF8l5xOSUYVOjzmPVnz82RxbKy7xQZsFAYKUIFj30e0ppw+yIy0Wu2T4yhWrjBBZi2wFs4E
+	XaUx5E6M9NLsK142e5uvefMne9YqeMVIAC4ojo5Wqr5HWS9lIifj4s5qFQzbvbdC8ELZGh5tlDeDP
+	okJmUv/62ZpXGd2FjkTv5HhYFeh68nhyv0mztgJEC9r49GVGF1v5zkWyZjJCaiYQ/eU6tobatzGB8
+	h8mX1yncH/2FtH/w62ZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkPZF-001nky-BR; Tue, 09 Nov 2021 11:45:33 +0000
-Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
+	id 1mkPac-001nyW-A6; Tue, 09 Nov 2021 11:46:58 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkPZ9-001njz-EY
- for linux-mtd@lists.infradead.org; Tue, 09 Nov 2021 11:45:31 +0000
-Received: from local
- by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.94.2) (envelope-from <daniel@makrotopia.org>)
- id 1mkPZ3-0003n8-1T; Tue, 09 Nov 2021 12:45:21 +0100
-Date: Tue, 9 Nov 2021 11:45:12 +0000
-From: Daniel Golle <daniel@makrotopia.org>
-To: Trevor Woerner <twoerner@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Ezequiel Garcia <ezequiel@collabora.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
-Message-ID: <YYpfSNY9hOPmu165@makrotopia.org>
-References: <20210801234509.18774-1-ezequiel@collabora.com>
- <20211026150350.GA5136@localhost>
- <876982414.38679.1635274892099.JavaMail.zimbra@nod.at>
- <20211028133119.GA21237@localhost>
+ id 1mkPaX-001nwy-03; Tue, 09 Nov 2021 11:46:55 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 6421EC000A;
+ Tue,  9 Nov 2021 11:46:49 +0000 (UTC)
+Date: Tue, 9 Nov 2021 12:46:47 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Cc: <broonie@kernel.org>, <benliang.zhao@mediatek.com>,
+ <dandan.he@mediatek.com>, <guochun.mao@mediatek.com>,
+ <bin.zhang@mediatek.com>, <sanny.chen@mediatek.com>,
+ <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>,
+ <donghunt@amazon.com>, <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Subject: Re: [RFC,v3 3/5] spi: add Mediatek SPI Nand controller driver
+Message-ID: <20211109124647.0a831b1e@xps13>
+In-Reply-To: <20211022024021.14665-4-xiangsheng.hou@mediatek.com>
+References: <20211022024021.14665-1-xiangsheng.hou@mediatek.com>
+ <20211022024021.14665-4-xiangsheng.hou@mediatek.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211028133119.GA21237@localhost>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211109_034527_522972_625DB5B1 
-X-CRM114-Status: GOOD (  38.41  )
+X-CRM114-CacheID: sfid-20211109_034653_336907_4C1D4D7E 
+X-CRM114-Status: GOOD (  20.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,186 +64,135 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Oct 28, 2021 at 09:31:19AM -0400, Trevor Woerner wrote:
-> On Tue 2021-10-26 @ 09:01:32 PM, Richard Weinberger wrote:
-> > Trevor,
-> > =
-
-> > ----- Urspr=FCngliche Mail -----
-> > > Von: "Trevor Woerner" <twoerner@gmail.com>
-> > > An: "Ezequiel Garcia" <ezequiel@collabora.com>
-> > > CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linu=
-x-kernel@vger.kernel.org>, "richard"
-> > > <richard@nod.at>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Vigne=
-sh Raghavendra" <vigneshr@ti.com>
-> > > Gesendet: Dienstag, 26. Oktober 2021 17:03:50
-> > > Betreff: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
-> > =
-
-> > > On Sun 2021-08-01 @ 08:45:02 PM, Ezequiel Garcia wrote:
-> > >> Hi Richard, and everyone else:
-> > >> =
-
-> > >> Browsing the internet for "JFFS2 mtd" results in tutorials, articles
-> > >> and github.gists0 that point to mtdblock.
-> > >> =
-
-> > >> In fact, even the MTD wiki mentions that JFFS2
-> > >> needs mtdblock to mount a rootfs:
-> > >> =
-
-> > >>   http://www.linux-mtd.infradead.org/faq/jffs2.html
-> > >> =
-
-> > >> Moreover, I suspect there may be lots of users
-> > >> that still believe mtdblock is somehow needed to
-> > >> mount SquashFS.
-> > >> =
-
-> > >> I've taken a verbose route and added a pr_warn
-> > >> warning if the devices are NAND. I don't think using
-> > >> NAND without UBI is too wise, and given the amount
-> > >> of outdated tutorials I believe some advertising
-> > >> will help.
-> > > =
-
-> > > Not all NAND partitions on a device will contain linux root filesyste=
-ms. For a
-> > > linux root filesystem perhaps using UBI/UBIFS is preferred, yet these=
- messages
-> > > print out for each and every NAND partition:
-> > > =
-
-> > >	[    0.900827] Creating 8 MTD partitions on "nxp_lpc3220_slc":
-> > >	[    0.906431] 0x000000000000-0x000000020000 : "bootrom"
-> > >	[    0.913523] mtdblock: MTD device 'bootrom' is NAND, please conside=
-r using UBI
-> > >	block devices instead.
-> > >	[    0.933334] 0x000000020000-0x000000080000 : "uboot"
-> > >	[    0.940439] mtdblock: MTD device 'uboot' is NAND, please consider =
-using UBI
-> > >	block devices instead.
-> > >	[    0.963322] 0x000000080000-0x000000440000 : "fbkernel"
-> > >	[    0.970655] mtdblock: MTD device 'fbkernel' is NAND, please consid=
-er using
-> > >	UBI block devices instead.
-> > >	[    0.993361] 0x000000440000-0x000000920000 : "fbrootfs"
-> > >	[    1.000725] mtdblock: MTD device 'fbrootfs' is NAND, please consid=
-er using
-> > >	UBI block devices instead.
-> > >	[    1.023315] 0x000000920000-0x000000ce0000 : "c_kernel"
-> > >	[    1.030722] mtdblock: MTD device 'c_kernel' is NAND, please consid=
-er using
-> > >	UBI block devices instead.
-> > >	[    1.053444] 0x000000ce0000-0x000000d00000 : "c__atags"
-> > >	[    1.060742] mtdblock: MTD device 'c__atags' is NAND, please consid=
-er using
-> > >	UBI block devices instead.
-> > >	[    1.083349] 0x000000d00000-0x000001000000 : "c_rootfs"
-> > >	[    1.090702] mtdblock: MTD device 'c_rootfs' is NAND, please consid=
-er using
-> > >	UBI block devices instead.
-> > >	[    1.113335] 0x000001000000-0x000020000000 : "mender"
-> > >	[    1.131627] mtdblock: MTD device 'mender' is NAND, please consider=
- using UBI
-> > >	block devices instead.
-> > > =
-
-> > > NAND tends to be something found on older devices, the firmware/bootl=
-oaders
-> > > of older devices couldn't possibly understand UBI/UBIFS so many of th=
-ese
-> > > partitions need be "raw" partitions, or use something that predates U=
-BI.
-> > > =
-
-> > > Ironically my "mender" partition contains a UBI (with multiple UBIFSe=
-s inside)
-> > > yet I got the same "please use UBI" message as all the others (lol)
-> > > =
-
-> > > I'm specifying my partitions in DT with:
-> > > =
-
-> > > partitions {
-> > >        compatible =3D "fixed-partitions";
-> > >        #address-cells =3D <1>;
-> > >        #size-cells =3D <1>;
-> > > =
-
-> > >        mtd0@0       { label =3D "bootrom";   reg =3D <0x00000000 0x00=
-020000>; };
-> > >        mtd1@20000   { label =3D "uboot";     reg =3D <0x00020000 0x00=
-060000>; };
-> > >        mtd2@80000   { label =3D "fbkernel";  reg =3D <0x00080000 0x00=
-3c0000>; };
-> > >        mtd3@440000  { label =3D "fbrootfs";  reg =3D <0x00440000 0x00=
-4e0000>; };
-> > >        mtd4@920000  { label =3D "c_kernel";  reg =3D <0x00920000 0x00=
-3c0000>; };
-> > >        mtd5@ce0000  { label =3D "c__atags";  reg =3D <0x00ce0000 0x00=
-020000>; };
-> > >        mtd6@d00000  { label =3D "c_rootfs";  reg =3D <0x00d00000 0x00=
-300000>; };
-> > >        mtd7@1000000 { label =3D "mender";    reg =3D <0x01000000 0x1f=
-000000>; };
-> > > };
-> > > =
-
-> > > which is why, I assume, I'm getting these messages. Is there a UBI-fr=
-iendly
-> > > way to define them to avoid these messages?
-> > =
-
-> > Hmm, maybe it makes sense to advertise it only once and not for each mt=
-dblock device.
-> =
-
-> Are there known bugs or issues using ubi/jffs2/squashfs on top of mtdbloc=
-k? Is
-> mtdblock being deprecated? If so I could certainly understand warning use=
-rs of
-> the situation.
-
-In case of NAND flash, using mtdblock is generally not such a good idea
-as you miss out on features which are essential for the vitality of the
-flash (wear-leveling and such).
-
-UBI works on top of mtd device, it cannot work on top of mtdblock.
-
-For JFFS2 we got a hack which allows mounting using the mtdblock device
-but actually also uses the mtd device under the hood (being able to
-mount using mtdblock is a pure convenience feature for easier
-compatibility with userspace tools).
-
-So generally, when using mtdblock on top of NAND flash you are doing
-less-than-optimal in every case.
-
-> =
-
-> Is there a safe/easy way to update an older device in a way that wipes
-> the entire flash while running from flash? If not then having the kernel
-> perpetually advertising that I'm not using my flash a certain way isn't v=
-ery
-> useful, especially if there aren't any underlying reasons why my usage is=
-n't
-> valid.
-
-There are very good reasons for not using mtdblock on NAND flash, such
-as the complete lack of wear-leveling (which is mandatory if you want
-that flash to survive a couple of write cycles).
-
-Legacy setups are sometimes not easy to migrate, to do things properly
-you may have to replace or modify the way the device loads the kernel
-from flash during boot, like I did for a recent SPI-NAND based WiFi
-router:
-https://github.com/dangowrt/linksys-e8450-openwrt-installer
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgWGlhbmdzaGVuZywKCnhpYW5nc2hlbmcuaG91QG1lZGlhdGVrLmNvbSB3cm90ZSBvbiBGcmks
+IDIyIE9jdCAyMDIxIDEwOjQwOjE5ICswODAwOgoKPiBUaGlzIHZlcnNpb24gdGhlIFNQSSBkcml2
+ZXIgY293b3JrIHdpdGggTVRLIHBpcGVsaW5lZAo+IEhXIEVDQyBlbmdpbmUuCj4gCj4gU2lnbmVk
+LW9mZi1ieTogWGlhbmdzaGVuZyBIb3UgPHhpYW5nc2hlbmcuaG91QG1lZGlhdGVrLmNvbT4KPiAt
+LS0KClsuLi5dCgo+ICsvKiBFQ0Mgd3JhcHBlciAqLwo+ICtzdGF0aWMgc3RydWN0IG10a19zbmZp
+ICptdGtfbmFuZF90b19zcGkoc3RydWN0IG5hbmRfZGV2aWNlICpuYW5kKQo+ICt7Cj4gKwlzdHJ1
+Y3QgZGV2aWNlICpkZXYgPSBuYW5kLT5lY2MuZW5naW5lLT5kZXY7Cj4gKwlzdHJ1Y3Qgc3BpX21h
+c3RlciAqbWFzdGVyID0gZGV2X2dldF9kcnZkYXRhKGRldik7Cj4gKwlzdHJ1Y3QgbXRrX3NuZmkg
+KnNuZmkgPSBzcGlfbWFzdGVyX2dldF9kZXZkYXRhKG1hc3Rlcik7Cj4gKwo+ICsJcmV0dXJuIHNu
+Zmk7Cj4gK30KPiArCj4gK3N0YXRpYyBpbnQgbXRrX3NuZmlfc2V0X3NwYXJlX3Blcl9zZWN0b3Io
+c3RydWN0IG5hbmRfZGV2aWNlICpuYW5kLAo+ICsJCQkJc3RydWN0IG10a19zbmZpICpzbmZpLCB1
+MzIgKnNwcywgdTMyICppZHgpCj4gK3sKPiArCXN0cnVjdCBtdGtfZWNjX2VuZ2luZSAqZW5nID0g
+bmFuZC0+ZWNjLmN0eC5wcml2Owo+ICsJc3RydWN0IG5hbmRfZWNjX3Byb3BzICpjb25mID0gJm5h
+bmQtPmVjYy5jdHguY29uZjsKPiArCWNvbnN0IHU4ICpzcGFyZSA9IHNuZmktPmNhcHMtPnNwYXJl
+X3NpemU7Cj4gKwl1MzIgaSwgY2xvc2VzdF9zcGFyZSA9IDA7Cj4gKwo+ICsJZW5nLT5uc3RlcHMg
+PSBuYW5kLT5tZW1vcmcucGFnZXNpemUgLyBjb25mLT5zdGVwX3NpemU7Cj4gKwkqc3BzID0gbmFu
+ZC0+bWVtb3JnLm9vYnNpemUgLyBlbmctPm5zdGVwczsKPiArCj4gKwlpZiAoY29uZi0+c3RlcF9z
+aXplID09IDEwMjQpCj4gKwkJKnNwcyA+Pj0gMTsKPiArCj4gKwlpZiAoKCpzcHMgPCBzbmZpLT5m
+ZG1fc2l6ZSkgfHwgKCpzcHMgPCBNVEtfTkZJX01JTl9TUEFSRSkpCj4gKwkJcmV0dXJuIC1FSU5W
+QUw7Cj4gKwo+ICsJZm9yIChpID0gMDsgaSA8IHNuZmktPmNhcHMtPm51bV9zcGFyZV9zaXplOyBp
+KyspIHsKPiArCQlpZiAoKnNwcyA+PSBzcGFyZVtpXSAmJiBzcGFyZVtpXSA+PSBzcGFyZVtjbG9z
+ZXN0X3NwYXJlXSkgewo+ICsJCQljbG9zZXN0X3NwYXJlID0gaTsKPiArCQkJaWYgKCpzcHMgPT0g
+c3BhcmVbaV0pCj4gKwkJCQlicmVhazsKPiArCQl9Cj4gKwl9Cj4gKwo+ICsJKnNwcyA9IHNwYXJl
+W2Nsb3Nlc3Rfc3BhcmVdOwo+ICsJKmlkeCA9IGNsb3Nlc3Rfc3BhcmU7Cj4gKwo+ICsJaWYgKGNv
+bmYtPnN0ZXBfc2l6ZSA9PSAxMDI0KQo+ICsJCSpzcHMgPDw9IDE7Cj4gKwo+ICsJcmV0dXJuIDA7
+Cj4gK30KPiArCj4gK3N0YXRpYyBpbnQgbXRrX3NuZmlfZWNjX2luaXQoc3RydWN0IG5hbmRfZGV2
+aWNlICpuYW5kKQo+ICt7Cj4gKwlzdHJ1Y3QgbmFuZF9lY2NfcHJvcHMgKnJlcXMgPSAmbmFuZC0+
+ZWNjLnJlcXVpcmVtZW50czsKPiArCXN0cnVjdCBuYW5kX2VjY19wcm9wcyAqdXNlciA9ICZuYW5k
+LT5lY2MudXNlcl9jb25mOwo+ICsJc3RydWN0IG5hbmRfZWNjX3Byb3BzICpjb25mID0gJm5hbmQt
+PmVjYy5jdHguY29uZjsKPiArCXN0cnVjdCBtdGtfc25maSAqc25maSA9IG10a19uYW5kX3RvX3Nw
+aShuYW5kKTsKPiArCXN0cnVjdCBtdGtfZWNjX2VuZ2luZSAqZW5nOwo+ICsJdTMyIHNwYXJlLCBp
+ZHg7Cj4gKwlpbnQgcmV0Owo+ICsKPiArCWVuZyA9IGt6YWxsb2Moc2l6ZW9mKCplbmcpLCBHRlBf
+S0VSTkVMKTsKPiArCWlmICghZW5nKQo+ICsJCXJldHVybiAtRU5PTUVNOwo+ICsKPiArCW5hbmQt
+PmVjYy5jdHgucHJpdiA9IGVuZzsKPiArCW5hbmQtPmVjYy5lbmdpbmUtPnByaXYgPSBlbmc7Cj4g
+Kwo+ICsJLyogQ29uZmlndXJlIHRoZSBjb3JyZWN0aW9uIGRlcGVuZGluZyBvbiB0aGUgTkFORCBk
+ZXZpY2UgdG9wb2xvZ3kgKi8KPiArCWlmICh1c2VyLT5zdGVwX3NpemUgJiYgdXNlci0+c3RyZW5n
+dGgpIHsKPiArCQljb25mLT5zdGVwX3NpemUgPSB1c2VyLT5zdGVwX3NpemU7Cj4gKwkJY29uZi0+
+c3RyZW5ndGggPSB1c2VyLT5zdHJlbmd0aDsKPiArCX0gZWxzZSBpZiAocmVxcy0+c3RlcF9zaXpl
+ICYmIHJlcXMtPnN0cmVuZ3RoKSB7Cj4gKwkJY29uZi0+c3RlcF9zaXplID0gcmVxcy0+c3RlcF9z
+aXplOwo+ICsJCWNvbmYtPnN0cmVuZ3RoID0gcmVxcy0+c3RyZW5ndGg7Cj4gKwl9Cj4gKwo+ICsJ
+LyoKPiArCSAqIGFsaWduIGVjY3N0cmVuZ3RoIGFuZCBlY2NzaXplLgo+ICsJICogVGhlIE1USyBI
+VyBFQ0MgZW5naW5lIG9ubHkgc3VwcG9ydCA1MTIgYW5kIDEwMjQgZWNjc2l6ZS4KPiArCSAqLwo+
+ICsJaWYgKGNvbmYtPnN0ZXBfc2l6ZSA8IDEwMjQpIHsKPiArCQlpZiAobmFuZC0+bWVtb3JnLnBh
+Z2VzaXplID4gNTEyICYmCj4gKwkJCSAgICBzbmZpLT5jYXBzLT5tYXhfc2VjdG9yX3NpemUgPiA1
+MTIpIHsKPiArCQkJY29uZi0+c3RlcF9zaXplID0gMTAyNDsKPiArCQkJY29uZi0+c3RyZW5ndGgg
+PDw9IDE7Cj4gKwkJfSBlbHNlIHsKPiArCQkJY29uZi0+c3RlcF9zaXplID0gNTEyOwo+ICsJCX0K
+PiArCX0gZWxzZSB7Cj4gKwkJY29uZi0+c3RlcF9zaXplID0gMTAyNDsKPiArCX0KPiArCj4gKwly
+ZXQgPSBtdGtfc25maV9zZXRfc3BhcmVfcGVyX3NlY3RvcihuYW5kLCBzbmZpLCAmc3BhcmUsICZp
+ZHgpOwo+ICsKPiArCS8qIFRoZXNlIHdpbGwgYmUgdXNlZCBieSB0aGUgc25maSBkcml2ZXIgKi8K
+PiArCXNuZmktPmVjYy5wYWdlX3NpemUgPSBuYW5kLT5tZW1vcmcucGFnZXNpemU7Cj4gKwlzbmZp
+LT5lY2Muc3BhcmVfcGVyX3NlY3RvciA9IHNwYXJlOwo+ICsJc25maS0+ZWNjLnNwYXJlX2lkeCA9
+IGlkeDsKPiArCXNuZmktPmVjYy5zZWN0b3JzID0gbmFuZC0+bWVtb3JnLnBhZ2VzaXplIC8gY29u
+Zi0+c3RlcF9zaXplOwo+ICsKPiArCS8qIFRoZXNlIHdpbGwgYmUgdXNlZCBieSBIVyBFQ0MgZW5n
+aW5lICovCj4gKwllbmctPm9vYl9wZXJfc2VjdG9yID0gc3BhcmU7Cj4gKwllbmctPm5zdGVwcyA9
+IHNuZmktPmVjYy5zZWN0b3JzOwoKSSBiZWxpZXZlIG1vc3Qgb2YgdGhpcyBmdW5jdGlvbiBzaG91
+bGQgbW92ZSBpbnRvIG10a19lY2MuYy4KCj4gKwo+ICsJcmV0dXJuIHJldDsKPiArfQo+ICsKPiAr
+c3RhdGljIGludCBtdGtfc25maV9lY2NfaW5pdF9jdHgoc3RydWN0IG5hbmRfZGV2aWNlICpuYW5k
+KQo+ICt7Cj4gKwlzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lX29wcyAqb3BzID0gbXRrX2VjY19nZXRf
+cGlwZWxpbmVkX29wcygpOwo+ICsJaW50IHJldDsKPiArCj4gKwlyZXQgPSBtdGtfc25maV9lY2Nf
+aW5pdChuYW5kKTsKPiArCWlmIChyZXQpIHsKPiArCQlwcl9pbmZvKCJtdGsgc25maSBlY2MgaW5p
+dCBmYWlsIVxuIik7Cj4gKwkJcmV0dXJuIHJldDsKPiArCX0KPiArCj4gKwlyZXR1cm4gb3BzLT5p
+bml0X2N0eChuYW5kKTsKPiArfQo+ICsKPiArc3RhdGljIHZvaWQgbXRrX3NuZmlfZWNjX2NsZWFu
+dXBfY3R4KHN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCkKPiArewo+ICsJc3RydWN0IG5hbmRfZWNj
+X2VuZ2luZV9vcHMgKm9wcyA9IG10a19lY2NfZ2V0X3BpcGVsaW5lZF9vcHMoKTsKPiArCj4gKwlv
+cHMtPmNsZWFudXBfY3R4KG5hbmQpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IG10a19zbmZpX3By
+ZXBhcmVfZm9yX2VjYyhzdHJ1Y3QgbmFuZF9kZXZpY2UgKm5hbmQsCj4gKwkJCQkJc3RydWN0IG10
+a19zbmZpICpzbmZpKQo+ICt7Cj4gKwlzdHJ1Y3QgbmFuZF9lY2NfcHJvcHMgKmNvbmYgPSAmbmFu
+ZC0+ZWNjLmN0eC5jb25mOwo+ICsJc3RydWN0IG10a19lY2NfZW5naW5lICplbmcgPSBuYW5kLT5l
+Y2MuY3R4LnByaXY7Cj4gKwl1MzIgdmFsOwo+ICsKPiArCXN3aXRjaCAobmFuZC0+bWVtb3JnLnBh
+Z2VzaXplKSB7Cj4gKwljYXNlIDUxMjoKPiArCQl2YWwgPSBQQUdFRk1UXzUxMl8ySyB8IFBBR0VG
+TVRfU0VDX1NFTF81MTI7Cj4gKwkJYnJlYWs7Cj4gKwljYXNlIEtCKDIpOgo+ICsJCWlmIChjb25m
+LT5zdGVwX3NpemUgPT0gNTEyKQo+ICsJCQl2YWwgPSBQQUdFRk1UXzJLXzRLIHwgUEFHRUZNVF9T
+RUNfU0VMXzUxMjsKPiArCQllbHNlCj4gKwkJCXZhbCA9IFBBR0VGTVRfNTEyXzJLOwo+ICsJCWJy
+ZWFrOwo+ICsJY2FzZSBLQig0KToKPiArCQlpZiAoY29uZi0+c3RlcF9zaXplID09IDUxMikKPiAr
+CQkJdmFsID0gUEFHRUZNVF80S184SyB8IFBBR0VGTVRfU0VDX1NFTF81MTI7Cj4gKwkJZWxzZQo+
+ICsJCQl2YWwgPSBQQUdFRk1UXzJLXzRLOwo+ICsJCWJyZWFrOwo+ICsJY2FzZSBLQig4KToKPiAr
+CQlpZiAoY29uZi0+c3RlcF9zaXplID09IDUxMikKPiArCQkJdmFsID0gUEFHRUZNVF84S18xNksg
+fCBQQUdFRk1UX1NFQ19TRUxfNTEyOwo+ICsJCWVsc2UKPiArCQkJdmFsID0gUEFHRUZNVF80S184
+SzsKPiArCQlicmVhazsKPiArCWNhc2UgS0IoMTYpOgo+ICsJCXZhbCA9IFBBR0VGTVRfOEtfMTZL
+Owo+ICsJCWJyZWFrOwo+ICsJZGVmYXVsdDoKPiArCQlkZXZfZXJyKHNuZmktPmRldiwgImludmFs
+aWQgcGFnZSBsZW46ICVkXG4iLAo+ICsJCQkJbmFuZC0+bWVtb3JnLnBhZ2VzaXplKTsKPiArCQly
+ZXR1cm4gLUVJTlZBTDsKPiArCX0KPiArCj4gKwlzbmZpLT5mZG1fc2l6ZSA9IGVuZy0+ZmRtX3Np
+emU7Cj4gKwlzbmZpLT5mZG1fZWNjX3NpemUgPSBlbmctPmZkbV9lY2Nfc2l6ZTsKPiArCj4gKwl2
+YWwgfD0gc25maS0+ZWNjLnNwYXJlX2lkeCA8PCBQQUdFRk1UX1NQQVJFX1NISUZUOwo+ICsJdmFs
+IHw9IHNuZmktPmZkbV9zaXplIDw8IFBBR0VGTVRfRkRNX1NISUZUOwo+ICsJdmFsIHw9IHNuZmkt
+PmZkbV9lY2Nfc2l6ZSA8PCBQQUdFRk1UX0ZETV9FQ0NfU0hJRlQ7Cj4gKwl3cml0ZWwodmFsLCBz
+bmZpLT5yZWdzICsgTkZJX1BBR0VGTVQpOwo+ICsKPiArCXJldHVybiAwOwo+ICt9Cj4gKwo+ICtz
+dGF0aWMgaW50IG10a19zbmZpX2VjY19wcmVwYXJlX2lvX3JlcShzdHJ1Y3QgbmFuZF9kZXZpY2Ug
+Km5hbmQsCj4gKwkJCQkJCXN0cnVjdCBuYW5kX3BhZ2VfaW9fcmVxICpyZXEpCj4gK3sKPiArCXN0
+cnVjdCBuYW5kX2VjY19lbmdpbmVfb3BzICpvcHMgPSBtdGtfZWNjX2dldF9waXBlbGluZWRfb3Bz
+KCk7Cj4gKwlzdHJ1Y3QgbXRrX3NuZmkgKnNuZmkgPSBtdGtfbmFuZF90b19zcGkobmFuZCk7Cj4g
+KwlpbnQgcmV0Owo+ICsKPiArCXNuZmktPmVjYy5lbmFibGVkID0gKHJlcS0+bW9kZSAhPSBNVERf
+T1BTX1JBVyk7CgpTaG91bGRuJ3QgeW91IGNoZWNrIGVjYy5lbmFibGVkIGJlZm9yZSBjYWxsaW5n
+IHByZXBhcmVfZm9yX2VjYyA/Cgo+ICsJcmV0ID0gbXRrX3NuZmlfcHJlcGFyZV9mb3JfZWNjKG5h
+bmQsIHNuZmkpOwo+ICsJaWYgKHJldCkKPiArCQlyZXR1cm4gcmV0Owo+ICsKPiArCXJldHVybiBv
+cHMtPnByZXBhcmVfaW9fcmVxKG5hbmQsIHJlcSk7Cj4gK30KPiArCj4gK3N0YXRpYyBpbnQgbXRr
+X3NuZmlfZWNjX2ZpbmlzaF9pb19yZXEoc3RydWN0IG5hbmRfZGV2aWNlICpuYW5kLAo+ICsJCQkJ
+CQlzdHJ1Y3QgbmFuZF9wYWdlX2lvX3JlcSAqcmVxKQo+ICt7Cj4gKwlzdHJ1Y3QgbmFuZF9lY2Nf
+ZW5naW5lX29wcyAqb3BzID0gbXRrX2VjY19nZXRfcGlwZWxpbmVkX29wcygpOwo+ICsJc3RydWN0
+IG10a19lY2NfZW5naW5lICplbmcgPSBuYW5kLT5lY2MuY3R4LnByaXY7Cj4gKwlzdHJ1Y3QgbXRr
+X3NuZmkgKnNuZmkgPSBtdGtfbmFuZF90b19zcGkobmFuZCk7Cj4gKwo+ICsJaWYgKHNuZmktPmVj
+Yy5lbmFibGVkKSB7CgpJIGFtIGN1cnJlbnRseSBsb29raW5nIGF0IGEgYmV0dGVyIHdheSBvZiBr
+ZWVwaW5nIHRoaXMKaW5mb3JtYXRpb24sIHdoaWxlIGJlaW5nIHNhZmVyIGFnYWluc3QgY29uY3Vy
+cmVudCBhY2Nlc3Nlcy4gU28KZmFyIHBhcmFsbGVsIG9wZXJhdGlvbnMgYXJlIG5vdCBzdXBwb3J0
+ZWQgc28gdGhpcyBpcyBzYWZlLCBidXQKd2UgbWlnaHQgaW1wcm92ZSB0aGUgY29yZSBpbiBhIGxp
+dHRsZSB3aGlsZSBhbmQgSSBkb24ndCB3YW50CnRoaXMgdG8gYmUgYW4gaXNzdWUuIE15IG5leHQg
+aXRlcmF0aW9uIG9uIHRoZSBNYWNyb25peCBlbmdpbmUgd2lsbApzb2x2ZSB0aGlzLgoKPiArCQll
+bmctPnJlYWRfZW1wdHkgPQo+ICsJCQlyZWFkbChzbmZpLT5yZWdzICsgTkZJX1NUQSkgJiBTVEFf
+RU1QX1BBR0U7Cj4gKwkJc25maS0+ZWNjLmVuYWJsZWQgPSBmYWxzZTsKPiArCX0KPiArCj4gKwly
+ZXR1cm4gb3BzLT5maW5pc2hfaW9fcmVxKG5hbmQsIHJlcSk7Cj4gK30KPiArCj4gK3N0YXRpYyBz
+dHJ1Y3QgbmFuZF9lY2NfZW5naW5lX29wcyBtdGtfc25maV9lY2NfZW5naW5lX3BpcGVsaW5lZF9v
+cHMgPSB7Cj4gKwkuaW5pdF9jdHggPSBtdGtfc25maV9lY2NfaW5pdF9jdHgsCj4gKwkuY2xlYW51
+cF9jdHggPSBtdGtfc25maV9lY2NfY2xlYW51cF9jdHgsCj4gKwkucHJlcGFyZV9pb19yZXEgPSBt
+dGtfc25maV9lY2NfcHJlcGFyZV9pb19yZXEsCj4gKwkuZmluaXNoX2lvX3JlcSA9IG10a19zbmZp
+X2VjY19maW5pc2hfaW9fcmVxLAo+ICt9Owo+ICsKPiArc3RhdGljIGludCBtdGtfc25maV9lY2Nf
+cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwKPiArCQkJCXN0cnVjdCBtdGtfc25m
+aSAqc25maSkKPiArewo+ICsJc3RydWN0IG5hbmRfZWNjX2VuZ2luZSAqZWNjZW5nOwo+ICsKPiAr
+CWlmICghbXRrX2VjY19nZXRfcGlwZWxpbmVkX29wcygpKQo+ICsJCXJldHVybiAtRU9QTk9UU1VQ
+UDsKPiArCj4gKwllY2NlbmcgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwgc2l6ZW9mKCplY2Nl
+bmcpLCBHRlBfS0VSTkVMKTsKPiArCWlmICghZWNjZW5nKQo+ICsJCXJldHVybiAtRU5PTUVNOwo+
+ICsKPiArCWVjY2VuZy0+ZGV2ID0gJnBkZXYtPmRldjsKPiArCWVjY2VuZy0+b3BzID0gJm10a19z
+bmZpX2VjY19lbmdpbmVfcGlwZWxpbmVkX29wczsKPiArCj4gKwluYW5kX2VjY19yZWdpc3Rlcl9v
+bl9ob3N0X2h3X2VuZ2luZShlY2NlbmcpOwo+ICsJc25maS0+ZWNjLmVuZ2luZSA9IGVjY2VuZzsK
+PiArCj4gKwlyZXR1cm4gMDsKPiArfQo+ICsKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
