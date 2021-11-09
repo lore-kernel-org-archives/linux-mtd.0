@@ -2,62 +2,54 @@ Return-Path: <SRS0=4x2W=P4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC68C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 12:55:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C17A7C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 13:29:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D28C610F8
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 12:55:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1D28C610F8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baidu.com
+	by mail.kernel.org (Postfix) with ESMTPS id 81ACE6117A
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 13:29:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 81ACE6117A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YCulfuAytQRcNZ6YYLRq9AbPy1r+0/Uh+IXoFexf25A=; b=AlAYT+LzS0tS5z
-	4DkDpwlEw8DtHIy0UOloqcyTd8dMGv9/XWfWC9Qy6VW7TgrzZoAiPjz1LTVM2Pg068a+ZyhRLpEO5
-	G9i8jfNPW6cGc3xtwKQbzc2Dea4ih2tfb8K47Iefrzz5wUHgOmSEJcT7dC+4KbiHmm1v57RihX2dZ
-	Wr8e8KC1BnK7eD62KB/WFX7yYhDarteuioWnFQQlcJm9WgRTgzFbluWrX2dwO4XARCmJXaFUh5YAP
-	XAdDyUZc6u/ZaQlgjXltnAn+lj7a1BIjOvL3Nh617tD5vKQRjTo3MwXN+ZEvEpc0QBwC+knz4vSRC
-	sCf0AI3kerU1hvGV+XcQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=VyiFS3sGI5AB+50Nr1TBjrOdHW+oZQsEE5WevkjCGJI=; b=gFtoi5ESFqeUlM
+	sNCzyHd65yvoiDcKI5I3S+19yKuFTa7jfzpHSawz7twFQHVC4h/+j9y2CZo77bD+l4NJ4vsbwAMVN
+	NHCz+pdjee98HvSa71ASkRZ6A5yRVtAtKcEup5i/lpUwOv9e95ERttB+7ba0QJhz/Hi6GP9clTLqE
+	sGTcUoNWd06oBAxUdOVu4w6RFR45tcZz8L5mUycgXwDRWtKfjxyA6MACdSHOSQb+IHmr8KTBnjWnX
+	uAvjDoy0z8DbWtekiVrhfIALeiuzv+eYqPbZnKynxcDBf+k0kmRrNZ37ERO8kNTPbafAm6zDpPkTn
+	Eb5/V+vlJ51dAD28MIuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkQek-0029XU-2Y; Tue, 09 Nov 2021 12:55:18 +0000
-Received: from mx22.baidu.com ([220.181.50.185] helo=baidu.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkQeh-0029QH-Bq
- for linux-mtd@lists.infradead.org; Tue, 09 Nov 2021 12:55:17 +0000
-Received: from BC-Mail-Ex24.internal.baidu.com (unknown [172.31.51.18])
- by Forcepoint Email with ESMTPS id 288BCCBA614954A7DA0A;
- Tue,  9 Nov 2021 20:55:03 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex24.internal.baidu.com (172.31.51.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 9 Nov 2021 20:55:02 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 9 Nov 2021 20:55:02 +0800
-From: Cai Huoqing <caihuoqing@baidu.com>
-To: <miquel.raynal@bootlin.com>
-CC: Cai Huoqing <caihuoqing@baidu.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+	id 1mkRAy-002KEy-RM; Tue, 09 Nov 2021 13:28:36 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mkRAw-002KDs-Il
+ for linux-mtd@lists.infradead.org; Tue, 09 Nov 2021 13:28:36 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 51995C0004;
+ Tue,  9 Nov 2021 13:28:29 +0000 (UTC)
+Date: Tue, 9 Nov 2021 14:28:28 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Cai Huoqing <caihuoqing@baidu.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd: rawnand: denali: Add the dependency on HAS_IOMEM
-Date: Tue, 9 Nov 2021 20:54:55 +0800
-Message-ID: <20211109125457.213-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+Subject: Re: [PATCH] mtd: rawnand: denali: Add the dependency on HAS_IOMEM
+Message-ID: <20211109142828.3e4ec837@xps13>
+In-Reply-To: <20211109125457.213-1-caihuoqing@baidu.com>
+References: <20211109125457.213-1-caihuoqing@baidu.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211109_045515_631031_362DF94C 
-X-CRM114-Status: GOOD (  10.57  )
+X-CRM114-CacheID: sfid-20211109_052834_779310_A6E3951A 
+X-CRM114-Status: GOOD (  16.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,36 +61,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The helper function devm_platform_ioremap_resource_xxx()
-needs HAS_IOMEM enabled, so add the dependency on HAS_IOMEM.
-
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/mtd/nand/raw/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 67b7cb67c030..0a45d3c6c15b 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -26,7 +26,7 @@ config MTD_NAND_DENALI_PCI
- config MTD_NAND_DENALI_DT
- 	tristate "Denali NAND controller as a DT device"
- 	select MTD_NAND_DENALI
--	depends on HAS_DMA && HAVE_CLK && OF
-+	depends on HAS_DMA && HAVE_CLK && OF && HAS_IOMEM
- 	help
- 	  Enable the driver for NAND flash on platforms using a Denali NAND
- 	  controller as a DT device.
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2FpLAoKY2FpaHVvcWluZ0BiYWlkdS5jb20gd3JvdGUgb24gVHVlLCA5IE5vdiAyMDIxIDIw
+OjU0OjU1ICswODAwOgoKPiBUaGUgaGVscGVyIGZ1bmN0aW9uIGRldm1fcGxhdGZvcm1faW9yZW1h
+cF9yZXNvdXJjZV94eHgoKQo+IG5lZWRzIEhBU19JT01FTSBlbmFibGVkLCBzbyBhZGQgdGhlIGRl
+cGVuZGVuY3kgb24gSEFTX0lPTUVNLgo+IAo+IFNpZ25lZC1vZmYtYnk6IENhaSBIdW9xaW5nIDxj
+YWlodW9xaW5nQGJhaWR1LmNvbT4KPiAtLS0KCiBDYW4geW91IHBsZWFzZSBhZGQgYSBGaXhlcyB0
+YWc/Cgo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnIHwgMiArLQo+ICAxIGZpbGUgY2hh
+bmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcK
+PiBpbmRleCA2N2I3Y2I2N2MwMzAuLjBhNDVkM2M2YzE1YiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
+L210ZC9uYW5kL3Jhdy9LY29uZmlnCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZp
+Zwo+IEBAIC0yNiw3ICsyNiw3IEBAIGNvbmZpZyBNVERfTkFORF9ERU5BTElfUENJCj4gIGNvbmZp
+ZyBNVERfTkFORF9ERU5BTElfRFQKPiAgCXRyaXN0YXRlICJEZW5hbGkgTkFORCBjb250cm9sbGVy
+IGFzIGEgRFQgZGV2aWNlIgo+ICAJc2VsZWN0IE1URF9OQU5EX0RFTkFMSQo+IC0JZGVwZW5kcyBv
+biBIQVNfRE1BICYmIEhBVkVfQ0xLICYmIE9GCj4gKwlkZXBlbmRzIG9uIEhBU19ETUEgJiYgSEFW
+RV9DTEsgJiYgT0YgJiYgSEFTX0lPTUVNCj4gIAloZWxwCj4gIAkgIEVuYWJsZSB0aGUgZHJpdmVy
+IGZvciBOQU5EIGZsYXNoIG9uIHBsYXRmb3JtcyB1c2luZyBhIERlbmFsaSBOQU5ECj4gIAkgIGNv
+bnRyb2xsZXIgYXMgYSBEVCBkZXZpY2UuCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
