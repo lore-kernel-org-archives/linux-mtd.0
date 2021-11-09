@@ -2,53 +2,82 @@ Return-Path: <SRS0=4x2W=P4=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 829D1C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 407F1C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:16:39 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 184FD61178
-	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:11:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 184FD61178
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0FE7B6117A
+	for <linux-mtd@archiver.kernel.org>; Tue,  9 Nov 2021 11:16:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0FE7B6117A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=19AILzFQh9y4hm5dHa3+8DkSL5m24WpuiRLNrlWs/zg=; b=3epC81JIrVx0Ou
-	etcFnMKYeeNP8snuQl5Btrsfp4SOlgeWv+vAUcRtFnpturPwQwDXgF+IIQdjtLN2sbI1+zMzzEyjx
-	9+SdAfFy7jftT2JFiFEJ4D3/qWaRTr+wqeGyrUt5tV3JtkiSVlysqoICZP05qjdJqTTLADHY8VArQ
-	XxSDLQ455Qzi5NWvvwORg3zBRANrrctNj3OQbbnUC7QC/1Po+yhWmUBtPVfy5rk2MG2RJrIdNyuZ9
-	y137hounVoZ5niw0J+tmngNTmYrjvpbB6GcKGnQAdKb9KokVjjWQZP9CaETaBx4I7te0Qp3hoTaz9
-	hgZjKqvK2AWnRup5SiQA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=H8iVe2X3x9WwxD29ltnbLV6tP5DVrpQSkUY0hbfEvYM=; b=mBkB0GJt3lFX+iHv9iBMEhqQXP
+	T6cbZCl4dT6yK/Jmg5mNVE4OFRfix5EVzwVbBds5fUAWSa1bo0DjX7gls5WIbsCGit5DVk8wyIcFh
+	AzctGufytVA3nT2WjDw4m623mEP9uLE2URUc9pY8xbmXFSNNxdiwLHm+CMrT2FfIAsuHj1RoQ7jpo
+	8eui5zYhLotGW2mAzqIi1B0c28BBD2ixMEJ4a4QdQGE20ZqJcrH03kIfysGbGolOkXXGrrmlSSb0F
+	AwrFT0ywXsQI8lHxtLA2tivpwik1OXAEX806Jma7D9Jrd7pnIzBVOUdpLJYKRkJP9icwxZyK2D0VV
+	Kuk4cl1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkP1b-001fvE-I8; Tue, 09 Nov 2021 11:10:47 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1mkP6o-001gez-LR; Tue, 09 Nov 2021 11:16:10 +0000
+Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkP1X-001fuZ-BM
- for linux-mtd@lists.infradead.org; Tue, 09 Nov 2021 11:10:45 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2A0DF20008;
- Tue,  9 Nov 2021 11:10:38 +0000 (UTC)
-Date: Tue, 9 Nov 2021 12:10:36 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Zhengxun <zhengxunli.mxic@gmail.com>
-Cc: linux-mtd@lists.infradead.org, zhengxunli@mxic.com.tw
-Subject: Re: [PATCH 3/4] mtd: spinand: Add support continuous read operation
-Message-ID: <20211109121036.01376b0c@xps13>
-In-Reply-To: <1633676279-29708-4-git-send-email-zhengxunli.mxic@gmail.com>
-References: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
- <1633676279-29708-4-git-send-email-zhengxunli.mxic@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mkP6l-001gdr-PN
+ for linux-mtd@lists.infradead.org; Tue, 09 Nov 2021 11:16:09 +0000
+Received: by mail-ed1-x529.google.com with SMTP id x15so44005881edv.1
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Nov 2021 03:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=rVsY0bOoMyeQFsYvQfJLYPtYkclxmkriKyxzCkOTXMg=;
+ b=YahIOPb2qtFmAXmun3nR9l/ho8hUkKHZyHvVAvuE9kDrF6V7BoL2j4P054zaPHV3XF
+ p1asyOuoleg4QJFUWzQN+pqmrBN0JgTdLYe5rsvsTmcmwk8pYX2VGq1MJAw9SbDXeazJ
+ K2Ffx0HZfDzUGt/YnQJgM//hYH23/M6fChf+oDgj8WaYH5pa3HcAC9dxCtctC/mDUzMr
+ BfwXx7nr8izK0LqATpJMRYvYAeUkZ//Tuo7SKdmwQGTK0jn54Sfv4I8dLzma8R0Pv85I
+ hxTcsWLYnQ6UgfMlnN1sSfUxMHwfLtBppJSkaAEhxkH9RWzjRwDF7JCqogCwo4IjODqq
+ HsRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=rVsY0bOoMyeQFsYvQfJLYPtYkclxmkriKyxzCkOTXMg=;
+ b=4RWXKCwixF3F540AqEq835Pbru2l9S8rIwtjfnWn+75l6MD1VNEbFkyasGCPLRs0Gg
+ MVgxgFPSGbS+y3WZ0CiPqkC76di33U/lM/GFeh5IthWPms7IutpWE2s6PLlWgm+tZumh
+ mABEE0zcV1HuPFx2Q6l5qL9pQiS3YaJK1UAQW1CUIBs0mcNM4+T6Ht1QQ/YiKk30/VTt
+ kJQ8rI3mfb7DqeCILkgqfy8wzMEm2OH7s99grboE+ckSriAAOl2U1ZmvD43rKvk+OEmi
+ 565fwavp14KOOIckJglK7W1BHdo6QWddcLlpxXeRMho8HmXb/EqOVnuF3P5ilU51RqjS
+ T/Cg==
+X-Gm-Message-State: AOAM533ANymN5tl2Nzhq4ntcTBrv5d7g3W6ioUTWL8rE8jy2AHNAZpaj
+ xKFTHpmItjUncn7mFAxgpkwbydurhkXqBjSsIHU=
+X-Google-Smtp-Source: ABdhPJzQ1KrAe4zoA1w0iikZNSeX4IFNasgdzFgtAvBS7Sxn2unVRfdx+qvtVYnyIBY69xv5eswfCYx/TYLXEzzlvIk=
+X-Received: by 2002:a17:906:2ad2:: with SMTP id
+ m18mr8841239eje.64.1636456565939; 
+ Tue, 09 Nov 2021 03:16:05 -0800 (PST)
 MIME-Version: 1.0
+References: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
+In-Reply-To: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Tue, 9 Nov 2021 16:45:54 +0530
+Message-ID: <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
+Subject: Re: Kernel-4.14: With ubuntu-18.04 building rootfs images and booting
+ gives SQUASHFS error: xz decompression failed, data probably corrupt
+To: open list <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, dm-devel@redhat.com, 
+ Phillip Lougher <phillip@squashfs.org.uk>,
+ Mikulas Patocka <mpatocka@redhat.com>, 
+ Richard Weinberger <richard@nod.at>, Florian Fainelli <f.fainelli@gmail.com>,
+ sumit.semwal@linaro.org, adriens@google.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211109_031043_688989_3C8F25AA 
-X-CRM114-Status: GOOD (  28.12  )
+X-CRM114-CacheID: sfid-20211109_031607_847163_939FBD8D 
+X-CRM114-Status: GOOD (  15.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,87 +89,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgp6aGVuZ3h1bmxpLm14aWNAZ21haWwuY29tIHdyb3RlIG9uIEZyaSwgIDggT2N0IDIw
-MjEgMTQ6NTc6NTggKzA4MDA6Cgo+IFRoZSBwYXRjaCBhZGRzIGEgY29udGludW91cyByZWFkIHN0
-YXJ0IGZsYWcgdG8gc3VwcG9ydCBjb250aW51b3VzCj4gcmVhZCBvcGVyYXRpb25zLiBUaGUgY29u
-dGludW91cyByZWFkIG9wZXJhdGlvbiBvbmx5IGlzc3VlcyBhIHBhZ2UKPiByZWFkIGNvbW1hbmQg
-KDEzaCksIGlzc3VlcyBtdWx0aXBsZSByZWFkIGNvbW1hbmRzIGZyb20gdGhlIGNhY2hlCj4gKDAz
-aC8wQmgvM0JoLzZCaC9CQmgvRUJoKSB0byByZWFkIGNvbnRpbnVvdXMgYWRkcmVzcyBkYXRhLCBh
-bmQKPiBmaW5hbGx5IGlzc3VlcyBhbiBleGl0IGNvbnRpbnVvdXMgcmVhZCBjb21tYW5kICg2M2gp
-IHRvIHRlcm1pbmF0ZQo+IHRoaXMgY29udGludW91cyByZWFkIG9wZXJhdGlvbi4KPiAKPiBTaW5j
-ZSB0aGUgY29udGludW91cyByZWFkIG1vZGUgY2FuIG9ubHkgcmVhZCB0aGUgZW50aXJlIHBhZ2Ug
-b2YgZGF0YQo+ICgyS0IpCgpSZW1vdmUgdGhpcyBzaXplLCBpdCBpcyBoaWdobHkgdW5saWtlbHkg
-dGhhdCBhbGwgU1BJIE5BTkQgZGV2aWNlcyB3aWxsCmV2ZXIgYmUgcmVzdHJpY3RlZCB0byAya2lC
-IHJpZ2h0PwoKPiBhbmQgY2Fubm90IHJlYWQgdGhlIG9vYiBkYXRhLAoKVGhpcyBpcyBzb21ldGhp
-bmcgdGhhdCB5b3Ugc2VlbSB0byBza2lwIHRvIGNoZWNrIGluIHlvdXIgc2VyaWVzLgoKPiB0aGUg
-ZHluYW1pYyBjaGFuZ2UgbW9kZSBpcyBhZGRlZAo+IHRvIGVuYWJsZSBjb250aW51b3VzIHJlYWQg
-bW9kZSBhbmQgZGlzYWJsZSBjb250aW51b3VzIHJlYWQgbW9kZSBpbgo+IHNwaW5hbmRfbXRkX3Jl
-YWQgdG8gYXZvaWQgd3JpdGluZyBhbmQgZXJhc2luZyBvcGVyYXRpb24gaXMgYWJub3JtYWwuCj4g
-Cj4gU2lnbmVkLW9mZi1ieTogWmhlbmd4dW4gPHpoZW5neHVubGkubXhpY0BnbWFpbC5jb20+Cj4g
-LS0tCj4gIGRyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyB8IDM4ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLS0tLS0tLS0tCj4gIGluY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaCB8ICAy
-ICsrCj4gIDIgZmlsZXMgY2hhbmdlZCwgMzEgaW5zZXJ0aW9ucygrKSwgOSBkZWxldGlvbnMoLSkK
-PiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvY29yZS5jIGIvZHJpdmVycy9t
-dGQvbmFuZC9zcGkvY29yZS5jCj4gaW5kZXggMGQ5NjMyZi4uMDM2OTQ1MyAxMDA2NDQKPiAtLS0g
-YS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Nw
-aS9jb3JlLmMKPiBAQCAtMTk1LDYgKzE5NSw4IEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9pbml0X3F1
-YWRfZW5hYmxlKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKPiAgCj4gIHN0YXRpYyBp
-bnQgc3BpbmFuZF9jb250aW51b3VzX3JlYWRfZW5hYmxlKHN0cnVjdCBzcGluYW5kX2RldmljZSAq
-c3BpbmFuZCkKPiAgewo+ICsJc3BpbmFuZC0+Y29udF9yZWFkX3N0YXJ0ID0gZmFsc2U7CgpJIHJl
-YWxseSBkb24ndCBsaWtlIHRoZSAiPSBmYWxzZSIgaW4gdGhlICJyZWFkX2VuYWJsZSIgaG9vay4g
-V2h5IG5vdApqdXN0IGNoZWNraW5nIGRpcmVjdGx5IGluIG10ZF9yZWFkIGFuZCBkcm9wIHRoYXQg
-Ym9vbGVhbiA/Cgo+ICsKPiAgCWlmICghKHNwaW5hbmQtPmZsYWdzICYgU1BJTkFORF9IQVNfQ09O
-VF9SRUFEX0JJVCkpCj4gIAkJcmV0dXJuIDA7Cj4gIAo+IEBAIC01OTgsMTYgKzYwMCwyMiBAQCBz
-dGF0aWMgaW50IHNwaW5hbmRfcmVhZF9wYWdlKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFu
-ZCwKPiAgCWlmIChyZXQpCj4gIAkJcmV0dXJuIHJldDsKPiAgCj4gLQlyZXQgPSBzcGluYW5kX2xv
-YWRfcGFnZV9vcChzcGluYW5kLCByZXEpOwo+IC0JaWYgKHJldCkKPiAtCQlyZXR1cm4gcmV0Owo+
-ICsJaWYgKCFzcGluYW5kLT5jb250X3JlYWRfc3RhcnQpIHsKCkkgZG9uJ3QgZ2V0IHRoaXMgY2hl
-Y2suIFRoaXMgY29uZGl0aW9uIHdpbGwgYWx3YXlzIGJlIHRydWUuIFlvdSBjYW4KZHJvcCBpdC4K
-Cj4gIAo+IC0JcmV0ID0gc3BpbmFuZF93YWl0KHNwaW5hbmQsCj4gLQkJCSAgIFNQSU5BTkRfUkVB
-RF9JTklUSUFMX0RFTEFZX1VTLAo+IC0JCQkgICBTUElOQU5EX1JFQURfUE9MTF9ERUxBWV9VUywK
-PiAtCQkJICAgJnN0YXR1cyk7Cj4gLQlpZiAocmV0IDwgMCkKPiAtCQlyZXR1cm4gcmV0Owo+ICsJ
-CXJldCA9IHNwaW5hbmRfbG9hZF9wYWdlX29wKHNwaW5hbmQsIHJlcSk7Cj4gKwkJaWYgKHJldCkK
-PiArCQkJcmV0dXJuIHJldDsKPiArCj4gKwkJcmV0ID0gc3BpbmFuZF93YWl0KHNwaW5hbmQsCj4g
-KwkJCQkgICBTUElOQU5EX1JFQURfSU5JVElBTF9ERUxBWV9VUywKPiArCQkJCSAgIFNQSU5BTkRf
-UkVBRF9QT0xMX0RFTEFZX1VTLAo+ICsJCQkJICAgJnN0YXR1cyk7Cj4gKwkJaWYgKHJldCA8IDAp
-Cj4gKwkJCXJldHVybiByZXQ7Cj4gKwo+ICsJCWlmIChzcGluYW5kLT5mbGFncyAmIFNQSU5BTkRf
-SEFTX0NPTlRfUkVBRF9CSVQpCj4gKwkJCXNwaW5hbmQtPmNvbnRfcmVhZF9zdGFydCA9IHRydWU7
-Cj4gKwl9Cj4gIAo+ICAJc3BpbmFuZF9vbmRpZV9lY2Nfc2F2ZV9zdGF0dXMobmFuZCwgc3RhdHVz
-KTsKPiAgCj4gQEAgLTY2Nyw2ICs2NzUsMTAgQEAgc3RhdGljIGludCBzcGluYW5kX210ZF9yZWFk
-KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgZnJvbSwKPiAgCj4gIAltdXRleF9sb2NrKCZz
-cGluYW5kLT5sb2NrKTsKPiAgCj4gKwlyZXQgPSBzcGluYW5kX2NvbnRpbnVvdXNfcmVhZF9lbmFi
-bGUoc3BpbmFuZCk7Cj4gKwlpZiAocmV0KQo+ICsJCXJldHVybiByZXQ7Cj4gKwo+ICAJbmFuZGRl
-dl9pb19mb3JfZWFjaF9wYWdlKG5hbmQsIE5BTkRfUEFHRV9SRUFELCBmcm9tLCBvcHMsICZpdGVy
-KSB7Cj4gIAkJaWYgKGRpc2FibGVfZWNjKQo+ICAJCQlpdGVyLnJlcS5tb2RlID0gTVREX09QU19S
-QVc7Cj4gQEAgLTY4OSw2ICs3MDEsMTQgQEAgc3RhdGljIGludCBzcGluYW5kX210ZF9yZWFkKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgZnJvbSwKPiAgCQlvcHMtPm9vYnJldGxlbiArPSBp
-dGVyLnJlcS5vb2JsZW47Cj4gIAl9Cj4gIAo+ICsJcmV0ID0gc3BpbmFuZF9jb250aW51b3VzX3Jl
-YWRfZXhpdChzcGluYW5kKTsKPiArCWlmIChyZXQpCj4gKwkJcmV0dXJuIHJldDsKPiArCj4gKwly
-ZXQgPSBzcGluYW5kX2NvbnRpbnVvdXNfcmVhZF9kaXNhYmxlKHNwaW5hbmQpOwo+ICsJaWYgKHJl
-dCkKPiArCQlyZXR1cm4gcmV0OwoKVGhlIGFzeW1tZXRyeSBoZXJlIGxvb2tzIHN0cmFuZ2UuIFdo
-ZXJlIGRvIHdlIGFjdHVhbGx5IGVudGVyIHRoZQpjb250aW51b3VzIHJlYWQgbW9kZT8KCkRvIHlv
-dSBoYXZlIGFueSBpbmRpY2F0b3JzIHRoYXQgdGhpcyBjaGFuZ2UgaW1wcm92ZXMgdGhlIHBlcmZv
-cm1hbmNlcz8KSXQgd291bGQgYmUgZ29vZCB0byBzaGFyZSB0aGVtIGluIHRoZSBjb21taXQgbG9n
-LgoKPiArCj4gIAltdXRleF91bmxvY2soJnNwaW5hbmQtPmxvY2spOwo+ICAKPiAgCWlmIChlY2Nf
-ZmFpbGVkICYmICFyZXQpCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQu
-aCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaAo+IGluZGV4IGUwNDRhYmEuLmMyYTQxYTMg
-MTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gKysrIGIvaW5jbHVk
-ZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gQEAgLTQyMiw2ICs0MjIsNyBAQCBzdHJ1Y3Qgc3BpbmFu
-ZF9kaXJtYXAgewo+ICAgKgkJYmVjYXVzZSB0aGUgc3BpLW1lbSBpbnRlcmZhY2UgZXhwbGljaXRs
-eSByZXF1ZXN0cyB0aGF0IGJ1ZmZlcnMKPiAgICoJCXBhc3NlZCBpbiBzcGlfbWVtX29wIGJlIERN
-QS1hYmxlLCBzbyB3ZSBjYW4ndCBiYXNlZCB0aGUgYnVmcyBvbgo+ICAgKgkJdGhlIHN0YWNrCj4g
-KyAqIEBjb250X3JlYWRfc3RhcnQ6IHJlY29yZCB0aGUgY29udGludW91cyByZWFkIHN0YXR1cwo+
-ICAgKiBAbWFudWZhY3R1cmVyOiBTUEkgTkFORCBtYW51ZmFjdHVyZXIgaW5mb3JtYXRpb24KPiAg
-ICogQHByaXY6IG1hbnVmYWN0dXJlciBwcml2YXRlIGRhdGEKPiAgICovCj4gQEAgLTQ1MCw2ICs0
-NTEsNyBAQCBzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ugewo+ICAJdTggKmRhdGFidWY7Cj4gIAl1OCAq
-b29iYnVmOwo+ICAJdTggKnNjcmF0Y2hidWY7Cj4gKwlib29sIGNvbnRfcmVhZF9zdGFydDsKPiAg
-CWNvbnN0IHN0cnVjdCBzcGluYW5kX21hbnVmYWN0dXJlciAqbWFudWZhY3R1cmVyOwo+ICAJdm9p
-ZCAqcHJpdjsKPiAgfTsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+Hi,
+
+On Mon, 8 Nov 2021 at 20:00, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
+> Hi,
+> Here are few details.
+> * Linux Kernel: 4.14
+> * Processor: Qualcomm Arm32 Cortex-A7
+> * Storage: NAND 512MB
+> * Platform: Simple busybox
+> * Filesystem: UBIFS, Squashfs
+> * Build system: Linux Ubuntu 18.04 with Yocto build system
+> * Consists of nand raw partitions, squashfs ubi volumes.
+>
+> What we are trying to do:
+> We are trying to boot dm-verity enabled rootfs on our system.
+> The images for rootfs were generated on Ubuntu 18.04 machine using
+> Yocto build system.
+>
+> Issue:
+> Earlier, when we were using Ubuntu 16.04 to generate our images, the
+> system was booting fine even with dm-verity enabled.
+> Recently we switched to Ubuntu 18.04 build machine, and now with the
+> same changes we are seeing the below squashfs error, just after the
+> mount.
+> Note: with 18.04 also our rootfs is mounting successfully and
+> dm-verity is also working fine.
+> We only get these squashfs errors flooded in the boot logs:
+> {{{
+> ....
+> [    5.153479] device-mapper: init: dm-0 is ready
+> [    5.334282] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
+> ....
+> [    8.954120] SQUASHFS error: xz decompression failed, data probably corrupt
+> [    8.954153] SQUASHFS error: squashfs_read_data failed to read block 0x1106
+> [    8.970316] SQUASHFS error: Unable to read data cache entry [1106]
+> [    8.970349] SQUASHFS error: Unable to read page, block 1106, size 776c
+> [    8.980298] SQUASHFS error: Unable to read data cache entry [1106]
+> [    8.981911] SQUASHFS error: Unable to read page, block 1106, size 776c
+> [    8.988280] SQUASHFS error: Unable to read data cache entry [1106]
+> ....
+> }}}
+>
+Just one question:
+Is there any history about these squashfs errors while cross-compiling
+images on Ubuntu 18.04 or higher ?
+
+
+Thanks,
+Pintu
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
