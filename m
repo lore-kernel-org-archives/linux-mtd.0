@@ -2,60 +2,53 @@ Return-Path: <SRS0=TRF+=P5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03215C43217
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:52:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D581C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 16:50:13 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E89C6101C
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:52:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9E89C6101C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=126.com
+	by mail.kernel.org (Postfix) with ESMTPS id C6C256124D
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 16:50:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C6C256124D
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Message-ID:MIME-Version:Subject:To:From
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=L5c4jknLmlIw9SQ4yGN+N+lE6K/W9YQfknLf5+xITxo=; b=tJUWnyZuvm8Ix+
-	XJpnwrsW7/XTLzEJVFWDX3oUyvNjuvRQ5klNlGk3IZuhD0+8q6aQ0ely4FGjxJB0ZMFJ7Zn1jGUTJ
-	Fy1BRkldospCzQzk9sBwYqujTXWnUtt2OGeSw2ql1zu2LpWuozuW66RD6MDJaj8my5sFmU00GzsLy
-	4ORGOlxxsunzZ0T3JAkycnXW9Jg5PxYyLUMWTdgM5StQIUzPFTj6Z6/omqGfzkvk783ob+IV9QPq3
-	QlFbYjdIbazy8/97553p5O1+rI2zCksUOAUkaeZzqj2L4zBZ39Han44OmNeXELosWPnRMiPM7lpRk
-	p3JywN5lmTXH9a76dv7Q==;
+	List-Owner; bh=sxmA6K8o60RMOG1lwibUM4TddPGX8naMQUzsNSaNJ+I=; b=CYZHbwkIejZWEk
+	ckgR+XP4XJUcSifwZmQRHUM6SYcH0G7yjlNqTBnnukTW0qZ5gNWl09ghL12TlnPB9H99IiZFV18eM
+	TndefxHdJZo2OJaYIlH1DGyVbJU9GKLzPPXocqlb8nIspN9X+Jwz9Qu9dEEcnnDTo8qGV+hXzKQuM
+	pL5fw4eT9ehzS2o1LG3dYTY/JIH51ryq16cw4FqGbxFyuBtFUyBbg/fHh1Oi9QAJ3tLScwcNLwgZB
+	vssnl7xmQHywsqIsyrm+k3RQJPxgBeEwMj3yeq+ttKAdRgN2BJnJnSuSlN0ZrYkU/ehpYojHeZvWf
+	mt9ZYH48aKvVRhRG+wwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkpsu-005lZd-4E; Wed, 10 Nov 2021 15:51:36 +0000
-Received: from m1522.mail.126.com ([220.181.15.22])
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkpso-005lZI-Av
- for linux-mtd@lists.infradead.org; Wed, 10 Nov 2021 15:51:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
- s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=cjCcf
- 5gavdQ6PeaqWoEMo3R0BgTnono+Oqx6+iYlQmc=; b=aqgsy/UaQnZ877Q/fXjPx
- nrsMoyEYckT4jW2FI38Y83AckJw9lxrLjd5Eu/EyNvNJ86ypsMBCpzEep5J8nep2
- MwNmghe8ix+/N12FMn0zNko3og95apQx6/TX/YNwo4IH6LbpRCQ+f/3mxVsRPLQ/
- bSP3lMEV85GQkn3Om/ycF8=
-Received: from chenshumin86$126.com ( [36.36.173.151] ) by
- ajax-webmail-wmsvr22 (Coremail) ; Wed, 10 Nov 2021 23:51:27 +0800 (CST)
-X-Originating-IP: [36.36.173.151]
-Date: Wed, 10 Nov 2021 23:51:27 +0800 (CST)
-From: chenshumin86  <chenshumin86@126.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: help about ubifs error: ubifs_get_pnode.part.4: error -22
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
+	id 1mkqmj-005qTf-JQ; Wed, 10 Nov 2021 16:49:17 +0000
+Received: from mail3-166.sinamail.sina.com.cn ([202.108.3.166])
+ by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mkqmg-005qSC-Ic
+ for linux-mtd@lists.infradead.org; Wed, 10 Nov 2021 16:49:17 +0000
+Received: from unknown (HELO [192.168.3.50])([36.36.173.151])
+ by sina.com (172.16.97.23) with ESMTP
+ id 618BF7FD000069E5; Wed, 11 Nov 2021 00:49:03 +0800 (CST)
+X-Sender: chenshumin86@sina.com
+X-Auth-ID: chenshumin86@sina.com
+X-SMAIL-MID: 8395254919383
+To: linux-mtd@lists.infradead.org
+From: "chenshumin86@sina.com" <chenshumin86@sina.com>
+Subject: about ubifs error: ubifs_get_pnode.part.4: error -22
+Message-ID: <420ddfd9-b65a-f689-cd10-47c0056e2d21@sina.com>
+Date: Thu, 11 Nov 2021 00:49:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <629406b.532e.17d0a8c01c2.Coremail.chenshumin86@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: FsqowAAHD89_6othKfSTAQ--.8409W
-X-CM-SenderInfo: xfkh02pkxpx0iyw6ij2wof0z/1tbiYBFHJ1pEFL7mcQABsz
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211110_075131_200591_E70D73A7 
-X-CRM114-Status: UNSURE (   2.61  )
+X-CRM114-CacheID: sfid-20211110_084914_888489_33B3AB86 
+X-CRM114-Status: UNSURE (   5.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,87 +61,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CkRlYXIgc3VwcG9ydCB0ZWFtLAoKV2UgaGF2ZSBtZXQgb25lIHViaWZzIGVycm9yIGFuZCB0aGlz
-IGVycm9yIGZpbmFsbHkgc3dpdGNoIHRoZSBwYXJ0aXRpb24gCnRvIHJlYWQtb25seSBtb2RlLgpD
-b3VsZCB5b3UgYWR2aXNlIHNvbWUgdGlwcyBmb3IgbWUgdG8gZGlnIG91dCB0aGUgcm9vdCBjYXVz
-ZSBmb3IgdGhpcyBpc3N1ZT8KCktlcm5lbCB2ZXJzaW9uOiBWNC4xOQpDcmFzaCBsb2cgYXMgYmVs
-b3c6CgpPY3QgMjMgMTk6MDc6MzcgZXJyIGtlcm5lbDogWzE3Mjk4OC4yNjA5ODhdIFVCSUZTIGVy
-cm9yICh1YmkyOjAgcGlkIAoxNDMxMSk6IHViaWZzX2dldF9wbm9kZS5wYXJ0LjQ6IGVycm9yIC0y
-MiByZWFkaW5nIHBub2RlIGF0IDg6MTcwMzcKT2N0IDIzIDE5OjA3OjM3IGVyciBrZXJuZWw6IFsx
-NzI5ODguMjY5MDEyXSAocGlkIDE0MzExKSBkdW1waW5nIHBub2RlOgpPY3QgMjMgMTk6MDc6Mzcg
-ZXJyIGtlcm5lbDogWzE3Mjk4OC4yNzI4MTRdIMKgwqDCoMKgwqAgYWRkcmVzcyBjYWZlOWY4MCAK
-cGFyZW50IGNhZmU5YzgwIGNuZXh0IDAKT2N0IDIzIDE5OjA3OjM3IGVyciBrZXJuZWw6IFsxNzI5
-ODguMjc4MDA2XSDCoMKgwqDCoMKgIGZsYWdzIDAgaWlwIDMgbGV2ZWwgMCAKbnVtIDAKT2N0IDIz
-IDE5OjA3OjM3IGVyciBrZXJuZWw6IFsxNzI5ODguMjgxOTQ3XSDCoMKgwqDCoMKgIDA6IGZyZWUg
-MCBkaXJ0eSAzMzYwIApmbGFncyAxIGxudW0gMApPY3QgMjMgMTk6MDc6MzcgZXJyIGtlcm5lbDog
-WzE3Mjk4OC4yODY2MDldIMKgwqDCoMKgwqAgMTogZnJlZSAyMDQ4IGRpcnR5IAozOTc2IGZsYWdz
-IDEgbG51bSAwCk9jdCAyMyAxOTowNzozNyBlcnIga2VybmVsOiBbMTcyOTg4LjI5MTU5N10gwqDC
-oMKgwqDCoCAyOiBmcmVlIDAgZGlydHkgMTI4MDAwIApmbGFncyAxIGxudW0gMApPY3QgMjMgMTk6
-MDc6MzcgZXJyIGtlcm5lbDogWzE3Mjk4OC4yOTY0MjVdIMKgwqDCoMKgwqAgMzogZnJlZSAwIGRp
-cnR5IDEyNDQ0OCAKZmxhZ3MgMSBsbnVtIDAKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBb
-MTcyOTg4LjMwMTI2Nl0gQ1BVOiAxIFBJRDogMTQzMTEgQ29tbTogCmt3b3JrZXIvdTQ6MCBOb3Qg
-dGFpbnRlZCA0LjE5LjkwICMxCk9jdCAyMyAxOTowNzozNyB3YXJuIGtlcm5lbDogWzE3Mjk4OC4z
-MDc4OTNdIEhhcmR3YXJlIG5hbWU6IFNUTTMyIAooRGV2aWNlIFRyZWUgU3VwcG9ydCkKT2N0IDIz
-IDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjMxMzExOV0gV29ya3F1ZXVlOiB3cml0ZWJh
-Y2sgCndiX3dvcmtmbiAoZmx1c2gtdWJpZnNfMl8wKQpPY3QgMjMgMTk6MDc6Mzcgd2FybiBrZXJu
-ZWw6IFsxNzI5ODguMzE4ODg4XSBbPGMwMTExMGQ0Pl0gCih1bndpbmRfYmFja3RyYWNlKSBmcm9t
-IFs8YzAxMGNiYjQ+XSAoc2hvd19zdGFjaysweDEwLzB4MTQpCk9jdCAyMyAxOTowNzozNyB3YXJu
-IGtlcm5lbDogWzE3Mjk4OC4zMjY2NThdIFs8YzAxMGNiYjQ+XSAoc2hvd19zdGFjaykgCmZyb20g
-WzxjMDcwMzA4ND5dIChkdW1wX3N0YWNrKzB4OGMvMHhhMCkKT2N0IDIzIDE5OjA3OjM3IHdhcm4g
-a2VybmVsOiBbMTcyOTg4LjMzMzk1M10gWzxjMDcwMzA4ND5dIChkdW1wX3N0YWNrKSAKZnJvbSBb
-PGMwMzY3MjYwPl0gKHViaWZzX2dldF9wbm9kZS5wYXJ0LjQrMHgyMWMvMHgyOTQpCk9jdCAyMyAx
-OTowNzozNyB3YXJuIGtlcm5lbDogWzE3Mjk4OC4zNDI0OTRdIFs8YzAzNjcyNjA+XSAKKHViaWZz
-X2dldF9wbm9kZS5wYXJ0LjQpIGZyb20gWzxjMDM2OGNjOD5dIAoodWJpZnNfbHB0X2xvb2t1cF9k
-aXJ0eSsweDIwNC8weDI3YykKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjM1
-MjA0M10gWzxjMDM2OGNjOD5dIAoodWJpZnNfbHB0X2xvb2t1cF9kaXJ0eSkgZnJvbSBbPGMwMzZi
-Y2M4Pl0gKHViaWZzX3VwZGF0ZV9vbmVfbHArMHgzNC8weDEyOCkKT2N0IDIzIDE5OjA3OjM3IHdh
-cm4ga2VybmVsOiBbMTcyOTg4LjM2MTI0MF0gWzxjMDM2YmNjOD5dIAoodWJpZnNfdXBkYXRlX29u
-ZV9scCkgZnJvbSBbPGMwMzVhNjljPl0gKHViaWZzX3RuY19hZGQrMHhjYy8weDEzYykKT2N0IDIz
-IDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjM2OTY2NF0gWzxjMDM1YTY5Yz5dIAoodWJp
-ZnNfdG5jX2FkZCkgZnJvbSBbPGMwMzQ5YjUwPl0gKHViaWZzX2pubF93cml0ZV9pbm9kZSsweDE1
-OC8weDIzNCkKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjM3ODM0MF0gWzxj
-MDM0OWI1MD5dIAoodWJpZnNfam5sX3dyaXRlX2lub2RlKSBmcm9tIFs8YzAzNTEzNmM+XSAodWJp
-ZnNfd3JpdGVfaW5vZGUrMHg5MC8weGZjKQpPY3QgMjMgMTk6MDc6Mzcgd2FybiBrZXJuZWw6IFsx
-NzI5ODguMzg3MTYwXSBbPGMwMzUxMzZjPl0gCih1Ymlmc193cml0ZV9pbm9kZSkgZnJvbSBbPGMw
-MmQ1YjNjPl0gKF9fd3JpdGViYWNrX3NpbmdsZV9pbm9kZSsweDFlMC8weDQ0YykKT2N0IDIzIDE5
-OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjM5NjQ4M10gWzxjMDJkNWIzYz5dIAooX193cml0
-ZWJhY2tfc2luZ2xlX2lub2RlKSBmcm9tIFs8YzAyZDYyN2M+XSAKKHdyaXRlYmFja19zYl9pbm9k
-ZXMrMHgxZjQvMHg0YzQpCk9jdCAyMyAxOTowNzozNyB3YXJuIGtlcm5lbDogWzE3Mjk4OC40MDU5
-MDVdIFs8YzAyZDYyN2M+XSAKKHdyaXRlYmFja19zYl9pbm9kZXMpIGZyb20gWzxjMDJkNjVhND5d
-IChfX3dyaXRlYmFja19pbm9kZXNfd2IrMHg1OC8weDljKQpPY3QgMjMgMTk6MDc6Mzcgd2FybiBr
-ZXJuZWw6IFsxNzI5ODguNDE0OTMyXSBbPGMwMmQ2NWE0Pl0gCihfX3dyaXRlYmFja19pbm9kZXNf
-d2IpIGZyb20gWzxjMDJkNjg5ND5dICh3Yl93cml0ZWJhY2srMHgyYWMvMHgzOTApCk9jdCAyMyAx
-OTowNzozNyB3YXJuIGtlcm5lbDogWzE3Mjk4OC40MjM1MjNdIFs8YzAyZDY4OTQ+XSAod2Jfd3Jp
-dGViYWNrKSAKZnJvbSBbPGMwMmQ3MjNjPl0gKHdiX3dvcmtmbisweDMwYy8weDUwMCkKT2N0IDIz
-IDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjQzMTA3NV0gWzxjMDJkNzIzYz5dICh3Yl93
-b3JrZm4pIApmcm9tIFs8YzAxNDAxMmM+XSAocHJvY2Vzc19vbmVfd29yaysweDIxOC8weDUwNCkK
-T2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjQzODk3MV0gWzxjMDE0MDEyYz5d
-IAoocHJvY2Vzc19vbmVfd29yaykgZnJvbSBbPGMwMTQwZmI4Pl0gKHdvcmtlcl90aHJlYWQrMHg0
-NC8weDViYykKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjQ0NzEzMV0gWzxj
-MDE0MGZiOD5dIAood29ya2VyX3RocmVhZCkgZnJvbSBbPGMwMTQ1ZmY4Pl0gKGt0aHJlYWQrMHgx
-NGMvMHgxNTQpCk9jdCAyMyAxOTowNzozNyB3YXJuIGtlcm5lbDogWzE3Mjk4OC40NTQ1OTddIFs8
-YzAxNDVmZjg+XSAoa3RocmVhZCkgZnJvbSAKWzxjMDEwMTBlOD5dIChyZXRfZnJvbV9mb3JrKzB4
-MTQvMHgyYykKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjQ2MTg3N10gRXhj
-ZXB0aW9uIHN0YWNrKDB4Y2FlZDVmYjAgCnRvIDB4Y2FlZDVmZjgpCk9jdCAyMyAxOTowNzozNyB3
-YXJuIGtlcm5lbDogWzE3Mjk4OC40NjY5OTldIAo1ZmEwOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwMDAwMDAw
-MCAwMDAwMDAwMCAwMDAwMDAwMCAKMDAwMDAwMDAKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVs
-OiBbMTcyOTg4LjQ3NTI0N10gNWZjMDogMDAwMDAwMDAgMDAwMDAwMDAgCjAwMDAwMDAwIDAwMDAw
-MDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwCk9jdCAyMyAxOTowNzozNyB3
-YXJuIGtlcm5lbDogWzE3Mjk4OC40ODM0OTFdIDVmZTA6IDAwMDAwMDAwIDAwMDAwMDAwIAowMDAw
-MDAwMCAwMDAwMDAwMCAwMDAwMDAxMyAwMDAwMDAwMApPY3QgMjMgMTk6MDc6MzcgZXJyIGtlcm5l
-bDogWzE3Mjk4OC40OTAyNzldIFVCSUZTIGVycm9yICh1YmkyOjAgcGlkIAoxNDMxMSk6IHViaWZz
-X2dldF9wbm9kZS5wYXJ0LjQ6IGNhbGMgbnVtOiA0MwpPY3QgMjMgMTk6MDc6MzcgZXJyIGtlcm5l
-bDogWzE3Mjk4OC40OTc2OTVdIFVCSUZTIGVycm9yICh1YmkyOjAgcGlkIAoxNDMxMSk6IHViaWZz
-X3VwZGF0ZV9vbmVfbHA6IGNhbm5vdCB1cGRhdGUgcHJvcGVydGllcyBvZiBMRUIgMTg2LCBlcnJv
-ciAtMjIKT2N0IDIzIDE5OjA3OjM3IHdhcm4ga2VybmVsOiBbMTcyOTg4LjUwNzg4NF0gVUJJRlMg
-d2FybmluZyAodWJpMjowIHBpZCAKMTQzMTEpOiB1Ymlmc19yb19tb2RlLnBhcnQuMDogc3dpdGNo
-ZWQgdG8gcmVhZC1vbmx5IG1vZGUsIGVycm9yIC0yMgoKUmVnYXJkcywKU2ltb24gQ0hFTgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Dear ubifs supporters,
+
+We have met one ubifs error and this error finally switch the partition 
+to read-only mode.
+Could you advise some tips for me to dig out the root cause for this issue?
+
+Kernel version: V4.19
+Crash log as below:
+
+Oct 23 19:07:37 err kernel: [172988.260988] UBIFS error (ubi2:0 pid 
+14311): ubifs_get_pnode.part.4: error -22 reading pnode at 8:17037
+Oct 23 19:07:37 err kernel: [172988.269012] (pid 14311) dumping pnode:
+Oct 23 19:07:37 err kernel: [172988.272814]       address cafe9f80 
+parent cafe9c80 cnext 0
+Oct 23 19:07:37 err kernel: [172988.278006]       flags 0 iip 3 level 0 
+num 0
+Oct 23 19:07:37 err kernel: [172988.281947]       0: free 0 dirty 3360 
+flags 1 lnum 0
+Oct 23 19:07:37 err kernel: [172988.286609]       1: free 2048 dirty 
+3976 flags 1 lnum 0
+Oct 23 19:07:37 err kernel: [172988.291597]       2: free 0 dirty 128000 
+flags 1 lnum 0
+Oct 23 19:07:37 err kernel: [172988.296425]       3: free 0 dirty 124448 
+flags 1 lnum 0
+Oct 23 19:07:37 warn kernel: [172988.301266] CPU: 1 PID: 14311 Comm: 
+kworker/u4:0 Not tainted 4.19.90 #1
+Oct 23 19:07:37 warn kernel: [172988.307893] Hardware name: STM32 
+(Device Tree Support)
+Oct 23 19:07:37 warn kernel: [172988.313119] Workqueue: writeback 
+wb_workfn (flush-ubifs_2_0)
+Oct 23 19:07:37 warn kernel: [172988.318888] [<c01110d4>] 
+(unwind_backtrace) from [<c010cbb4>] (show_stack+0x10/0x14)
+Oct 23 19:07:37 warn kernel: [172988.326658] [<c010cbb4>] (show_stack) 
+from [<c0703084>] (dump_stack+0x8c/0xa0)
+Oct 23 19:07:37 warn kernel: [172988.333953] [<c0703084>] (dump_stack) 
+from [<c0367260>] (ubifs_get_pnode.part.4+0x21c/0x294)
+Oct 23 19:07:37 warn kernel: [172988.342494] [<c0367260>] 
+(ubifs_get_pnode.part.4) from [<c0368cc8>] 
+(ubifs_lpt_lookup_dirty+0x204/0x27c)
+Oct 23 19:07:37 warn kernel: [172988.352043] [<c0368cc8>] 
+(ubifs_lpt_lookup_dirty) from [<c036bcc8>] (ubifs_update_one_lp+0x34/0x128)
+Oct 23 19:07:37 warn kernel: [172988.361240] [<c036bcc8>] 
+(ubifs_update_one_lp) from [<c035a69c>] (ubifs_tnc_add+0xcc/0x13c)
+Oct 23 19:07:37 warn kernel: [172988.369664] [<c035a69c>] 
+(ubifs_tnc_add) from [<c0349b50>] (ubifs_jnl_write_inode+0x158/0x234)
+Oct 23 19:07:37 warn kernel: [172988.378340] [<c0349b50>] 
+(ubifs_jnl_write_inode) from [<c035136c>] (ubifs_write_inode+0x90/0xfc)
+Oct 23 19:07:37 warn kernel: [172988.387160] [<c035136c>] 
+(ubifs_write_inode) from [<c02d5b3c>] (__writeback_single_inode+0x1e0/0x44c)
+Oct 23 19:07:37 warn kernel: [172988.396483] [<c02d5b3c>] 
+(__writeback_single_inode) from [<c02d627c>] 
+(writeback_sb_inodes+0x1f4/0x4c4)
+Oct 23 19:07:37 warn kernel: [172988.405905] [<c02d627c>] 
+(writeback_sb_inodes) from [<c02d65a4>] (__writeback_inodes_wb+0x58/0x9c)
+Oct 23 19:07:37 warn kernel: [172988.414932] [<c02d65a4>] 
+(__writeback_inodes_wb) from [<c02d6894>] (wb_writeback+0x2ac/0x390)
+Oct 23 19:07:37 warn kernel: [172988.423523] [<c02d6894>] (wb_writeback) 
+from [<c02d723c>] (wb_workfn+0x30c/0x500)
+Oct 23 19:07:37 warn kernel: [172988.431075] [<c02d723c>] (wb_workfn) 
+from [<c014012c>] (process_one_work+0x218/0x504)
+Oct 23 19:07:37 warn kernel: [172988.438971] [<c014012c>] 
+(process_one_work) from [<c0140fb8>] (worker_thread+0x44/0x5bc)
+Oct 23 19:07:37 warn kernel: [172988.447131] [<c0140fb8>] 
+(worker_thread) from [<c0145ff8>] (kthread+0x14c/0x154)
+Oct 23 19:07:37 warn kernel: [172988.454597] [<c0145ff8>] (kthread) from 
+[<c01010e8>] (ret_from_fork+0x14/0x2c)
+Oct 23 19:07:37 warn kernel: [172988.461877] Exception stack(0xcaed5fb0 
+to 0xcaed5ff8)
+Oct 23 19:07:37 warn kernel: [172988.466999] 5fa0: 
+               00000000 00000000 00000000 00000000
+Oct 23 19:07:37 warn kernel: [172988.475247] 5fc0: 00000000 00000000 
+00000000 00000000 00000000 00000000 00000000 00000000
+Oct 23 19:07:37 warn kernel: [172988.483491] 5fe0: 00000000 00000000 
+00000000 00000000 00000013 00000000
+Oct 23 19:07:37 err kernel: [172988.490279] UBIFS error (ubi2:0 pid 
+14311): ubifs_get_pnode.part.4: calc num: 43
+Oct 23 19:07:37 err kernel: [172988.497695] UBIFS error (ubi2:0 pid 
+14311): ubifs_update_one_lp: cannot update properties of LEB 186, error -22
+Oct 23 19:07:37 warn kernel: [172988.507884] UBIFS warning (ubi2:0 pid 
+14311): ubifs_ro_mode.part.0: switched to read-only mode, error -22
+
+Regards,
+Shumin CHEN
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
