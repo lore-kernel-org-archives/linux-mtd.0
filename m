@@ -2,59 +2,58 @@ Return-Path: <SRS0=TRF+=P5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0628EC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF3FC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:03:47 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C788D61051
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:03:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C788D61051
+	by mail.kernel.org (Postfix) with ESMTPS id CD9EC61051
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:03:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CD9EC61051
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9j3cGawWabdzpqMx0lMND60fp+jKAf0R1FUcv5QSLbI=; b=QR+xdaZJC3dKJ3
-	zD2bZHbak4GQlRxMv9c7i/3Bwyn/MpMeSq+2T0hZmjajxGZe0J7ybcPpE/Px+AwS+cSVcy7JvCkP5
-	v2SNI9oSj11SUcpVdtnjqGtJHgPiYZ3PgE84Zijhisplrt1I2LRbFw307B9PazHCqhDvOmLTXoDRs
-	54Izc8pg1Mkq9TWucCrU1odI5q65t2koKRHOlbX+vqVgyX854CdTQa9IzLJ3VlgWwuxOQuk7aiD8K
-	0BMMELV8EagwEDE8buU0tMM3aTtfkF6CXkjwCXtl7h8bFzY6aDERSet9WWbEfg9jTmXsEhaS9Dhtr
-	Dkei4E23TO/2HmwhXGqg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mSEgXu2tuf17vsRfaTuM3ccvKCbP4SndCF/NOiS/9oA=; b=M66p8Q2GaMg5B9
+	EdG+jfGQYpdPDtnVxeAbI1SrFNsALr99bJIQM8ZegocJ7hf/pNAbwE9ujJdZ4HyX9O4xqIdwvolb2
+	AuyUrla2FrrZlPm3zUc+EQ+AwQgcq+GSF4M7xhlyCF4WDe98W+V+cfToU6cN3LDPYM+v8hhMQNQG7
+	8EFgEoOE6A33jhZ8JxaW/qRclAZRG/T3g3t+t8CR/CNHxLC6rOuaY+KxEc59Q8Xpcg2oOXtjN8g6e
+	7HsP9cD0nf71KgyfM6alfPdWSy6yxUY3fee8rDV/V7YksOJLi1s22rAGz072hdqME5vjOQqnhic/4
+	+WnMPCh87GPJ9LdJixjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkp7v-005gFE-QW; Wed, 10 Nov 2021 15:03:03 +0000
+	id 1mkp8C-005gJw-J5; Wed, 10 Nov 2021 15:03:20 +0000
 Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkp7M-005g0b-Ll; Wed, 10 Nov 2021 15:02:31 +0000
+ id 1mkp7O-005g1A-2c; Wed, 10 Nov 2021 15:02:33 +0000
 Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AAAj9pe017944;
- Wed, 10 Nov 2021 16:01:53 +0100
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AAAgJgS017974;
+ Wed, 10 Nov 2021 16:01:50 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=N5V+BbtvYrsb+kqmfbPEbma9cqG0GoeZx3DzAXMNF24=;
- b=IB2xpbz84oqAquUfdJaKwITkZVLAMk1Rp7HR3B0qfOJN5/kJ0nUP+gl31WA/m5xXIfYO
- aRJgliij5QJMLPFqHzYqYStiVGzCIOpp8NfpWy4LShFpRkbPzkwXtNQ9qpMZzDdVVGQX
- AcUF7IlqlPtP4R0Q7FTHzqMq2ZRPaKab5KpswqmoTpKsA0uJyZ56QQ1cXrPTwV0ZURPf
- nqEfS0GhBdFrW+KwiPp8t6pmqS8nN+55TjdoM0Yac0/bZNO+zmaWcQmB7oFoBA7sqRRZ
- w7sSQ7lvhpXQN3BMtIaZcuQwXG2p0uHBFnlLroDS3GZcwMobyCtv3Bj30BEM5uc2ssk3 6w== 
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=Sh0W/4ohStKFB2Xy24SvmA8j0+SruP92VNN5TAvdPDM=;
+ b=4ioO9K5CklY1uultzOl+2wdStUShYa9KwjSsBeH8j+ws1/hc6fEjrrK2S9QoFI+x3nKT
+ 9TKyTlI8oUzXv2dzA8dD0RCFdvtmNC39IwzbyhfWHEVQzT2tHtbZL+D1Ir6i19UE2Mu3
+ rL7pEWUsA7h0rQrPetRarCkcX3aZUyr0EqV6qgMzrA7eqvVLWdzEUlbJ6JRR15iweWC6
+ ZelRPAeDuz56JphJbCkPRNC/ioWG5rdZo3VU1xvOQwl9YMCWcMaNDDd+D9IzD1ZJ1TZf
+ eg4+EfFUEwtooNW2w9bh+Mu6POIfvoiQadGnf2juwF/X1+vGUUit+7n+93HVvDEMRjnT fA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c7ufnfufu-1
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c7ufnfuf8-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 10 Nov 2021 16:01:53 +0100
+ Wed, 10 Nov 2021 16:01:50 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8AD52100034;
- Wed, 10 Nov 2021 16:01:52 +0100 (CET)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3539E100034;
+ Wed, 10 Nov 2021 16:01:49 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 79616207568;
- Wed, 10 Nov 2021 16:01:52 +0100 (CET)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 10 Nov 2021 16:01:51
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F3764207568;
+ Wed, 10 Nov 2021 16:01:48 +0100 (CET)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 10 Nov 2021 16:01:48
  +0100
 From: <patrice.chotard@foss.st.com>
 To: Rob Herring <robh+dt@kernel.org>, maxime coquelin
@@ -122,23 +121,20 @@ CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-pm@vger.kernel.org>,
  <linux-usb@vger.kernel.org>, <linux-watchdog@vger.kernel.org>
-Subject: [PATCH v3 3/5] dt-bindings: media: Update maintainers for st,
- stm32-cec.yaml
-Date: Wed, 10 Nov 2021 16:01:42 +0100
-Message-ID: <20211110150144.18272-4-patrice.chotard@foss.st.com>
+Subject: [PATCH v3 0/5] Update STMicroelectronics maintainers email
+Date: Wed, 10 Nov 2021 16:01:39 +0100
+Message-ID: <20211110150144.18272-1-patrice.chotard@foss.st.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211110150144.18272-1-patrice.chotard@foss.st.com>
-References: <20211110150144.18272-1-patrice.chotard@foss.st.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.51]
+X-Originating-IP: [10.75.127.50]
 X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
  (10.75.127.5)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-10_05,2021-11-08_02,2020-04-07_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211110_070229_056012_D2F08A5B 
-X-CRM114-Status: GOOD (  16.78  )
+X-CRM114-CacheID: sfid-20211110_070230_471876_C1AF96F1 
+X-CRM114-Status: GOOD (  16.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,25 +153,77 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-Benjamin has left the company, remove his name from maintainers.
+Update maintainers name for some yaml files.
+Update @st.com email address to @foss.st.com as @foss.st.com email
+address is dedicated for upstream activities.
 
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- Documentation/devicetree/bindings/media/st,stm32-cec.yaml | 1 -
- 1 file changed, 1 deletion(-)
+Changes in v3:
+  _ fix typo in patch 2/3/4 commit message 
+  _ resend to missing mailing list
 
-diff --git a/Documentation/devicetree/bindings/media/st,stm32-cec.yaml b/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
-index d75019c093a4..33e47e371941 100644
---- a/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
-+++ b/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
-@@ -7,7 +7,6 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: STMicroelectronics STM32 CEC bindings
- 
- maintainers:
--  - Benjamin Gaignard <benjamin.gaignard@st.com>
-   - Yannick Fertre <yannick.fertre@st.com>
- 
- properties:
+Patrice Chotard (5):
+  dt-bindings: timer: Update maintainers for st,stm32-timer
+  dt-bindings: mfd: timers: Update maintainers for st,stm32-timers
+  dt-bindings: media: Update maintainers for st,stm32-cec.yaml
+  dt-bindings: media: Update maintainers for st,stm32-hwspinlock.yaml
+  dt-bindings: treewide: Update @st.com email address to @foss.st.com
+
+ Documentation/devicetree/bindings/arm/sti.yaml                | 2 +-
+ Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml     | 4 ++--
+ .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml        | 4 ++--
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml        | 2 +-
+ Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml  | 2 +-
+ Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml    | 2 +-
+ Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml   | 2 +-
+ Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml   | 2 +-
+ .../devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml  | 2 +-
+ .../devicetree/bindings/display/panel/orisetech,otm8009a.yaml | 2 +-
+ .../devicetree/bindings/display/panel/raydium,rm68200.yaml    | 2 +-
+ Documentation/devicetree/bindings/display/st,stm32-dsi.yaml   | 4 ++--
+ Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml  | 4 ++--
+ Documentation/devicetree/bindings/dma/st,stm32-dma.yaml       | 2 +-
+ Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml    | 2 +-
+ Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml      | 2 +-
+ .../devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml       | 3 +--
+ Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml       | 2 +-
+ .../devicetree/bindings/iio/adc/sigma-delta-modulator.yaml    | 2 +-
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml   | 2 +-
+ .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++--
+ Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml   | 2 +-
+ .../bindings/interrupt-controller/st,stm32-exti.yaml          | 4 ++--
+ Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml  | 4 ++--
+ Documentation/devicetree/bindings/media/st,stm32-cec.yaml     | 3 +--
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml    | 2 +-
+ .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml        | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml   | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml    | 3 +--
+ Documentation/devicetree/bindings/mfd/st,stmfx.yaml           | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stpmic1.yaml         | 2 +-
+ Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml | 2 +-
+ Documentation/devicetree/bindings/net/snps,dwmac.yaml         | 2 +-
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml        | 4 ++--
+ Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml   | 2 +-
+ Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml  | 2 +-
+ .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml         | 2 +-
+ .../devicetree/bindings/regulator/st,stm32-booster.yaml       | 2 +-
+ .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml       | 2 +-
+ .../devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml    | 2 +-
+ .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml        | 4 ++--
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml       | 2 +-
+ Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml       | 2 +-
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml   | 2 +-
+ Documentation/devicetree/bindings/sound/cirrus,cs42l51.yaml   | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml     | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-sai.yaml     | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml | 2 +-
+ Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml      | 4 ++--
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml       | 4 ++--
+ .../devicetree/bindings/thermal/st,stm32-thermal.yaml         | 2 +-
+ Documentation/devicetree/bindings/timer/st,stm32-timer.yaml   | 3 ++-
+ Documentation/devicetree/bindings/usb/st,stusb160x.yaml       | 2 +-
+ Documentation/devicetree/bindings/watchdog/st,stm32-iwdg.yaml | 4 ++--
+ 54 files changed, 67 insertions(+), 69 deletions(-)
+
 -- 
 2.17.1
 
