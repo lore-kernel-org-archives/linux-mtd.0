@@ -2,14 +2,14 @@ Return-Path: <SRS0=TRF+=P5=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F66C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58630C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:04:55 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4958B61051
-	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:04:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4958B61051
+	by mail.kernel.org (Postfix) with ESMTPS id 1118861055
+	for <linux-mtd@archiver.kernel.org>; Wed, 10 Nov 2021 15:04:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1118861055
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=foss.st.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,43 +18,43 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=e0t/ASWWIeyWZb6Y5RzXrxkW7c0RajXomHJEgQaqzs0=; b=vxwv6mwJJdztS6
-	ZaGBKqmNgBYvJjl+2OpZ9s54G5a6UCoPyFO7J/zmDBDzxyzz2huBXZivjvOLqxKh4JFHFjyIMU81c
-	ZiE2CMViMCYsJWGI+rPT/suVXq64+uJQMKwfhqBVBRikUZMhA7gyNLXD83gySMjfOy83r2kcPbaOC
-	aM/AG1QABMTwzcCmAV/DLJHK+osD6L9CFkyjmqzBkYaOU2yziXbzzEslJTZ0KnXvpBPm5t74S7prL
-	EsO0P1Zhqzdo62AOSGpKqzjrssq4AEoVfD+cMlFH7q8n1fzP0GmdrhYVH5piw5JJhcyEmWVpHwrjd
-	uJvCGnMM+hTCfKO/29Yw==;
+	List-Owner; bh=juql3tp+Tu3z4J6LDalBs5somjy13J2UBFijV4zI73k=; b=pL9jJQRHchfFmc
+	l2Uz7OvuQH0BQ1MvChNLSvkJywDWFhPZrs/OxxPy7smc+V3UNUAAWzFTlcSt9+heqx1hF/lDYzjc+
+	e7QN1KqlAcCjxVD7Bvk7eWc5eErksL1I3kr6i27Mm8YQz42lBoiDNw/XLx+vvFM1RzM9fRHklgBrT
+	y3jGyawH2+6lpJ+d6uWZHB5D2t/deJPc1c5qw4S3UMy3TaJ0l865tgll7Ry5kkJLEmCnp5NCmeRs5
+	gHgb7PAVlrDOxfjBIkMYiHfQ5fw4QvQDyH2WYbRMYJR79EXMSmLkGlXqVjDsY2FD2xFZJYiAJ20KN
+	96EAwLN8xlDNJvfrSWPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mkp8Z-005gQW-Cl; Wed, 10 Nov 2021 15:03:43 +0000
+	id 1mkp9C-005gaS-2i; Wed, 10 Nov 2021 15:04:22 +0000
 Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mkp7Q-005g39-Ix; Wed, 10 Nov 2021 15:02:34 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AABtael015784;
- Wed, 10 Nov 2021 16:01:51 +0100
+ id 1mkp7O-005g1B-Ea; Wed, 10 Nov 2021 15:02:36 +0000
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AAAj9pg017944;
+ Wed, 10 Nov 2021 16:01:54 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=tWFs/ry4/KSL5vVL8SHvxrfU4Kk4X6t32X10Gk/tZqc=;
- b=SzTfv8zpP7pC4W7be9E7Usy7PlKyzGher+oUnypj7ReodZDbMiicz2j/mPRjIpIThiiu
- qMsXo9KsKjLYYNRTcotzpOmB6GwlLmbq9XmmO0H8+5nrQxAKt/YwuzsF1X1IX5UpqWLf
- uBUNmuf46CSDkjxPLuo4tV2UsJ8Qb1mYP8jMkZvbdlhVuzV7wPGqV+ufx5LF1mwcbM0V
- oZISh+z62Ln1YtnTEKQp9bTA2DjDuwAimhvhWV7Mf4ZJsw8r5eszTER8Om9pYld1SxhA
- i7d0W9vXdv3IT31tBMchh4/b21zRXJIt1DCyy3emXTs6MnR+poKEjN2KtoK803Brnf9T 4Q== 
+ bh=CwHAN5vvC/aW9nelFZThPEaLfBBqnvPEMWMt//yc9u0=;
+ b=5DsLU6CzLKuK/4GIP7yekSoZcFXcdhB01dZ9ZQ9uxtMI5sAbixhsq49Otf5iPc3Zo/Wa
+ i4dBR5N7qL+dF7UbXhNia7QSyZGJtZ6NJf1osSBR7OYL9n0TiSjLO7FJ9CECuTfj1zfg
+ uC4uUGWk++Pcc6EzjfofewFxPs1Aa+7DyhFMeVEqVno0vieGV1qfkzRHPG0ZSAkqaHR/
+ oNs8Sa5G+/ndMM15KBKPHAZdNm+IvKv3A52yd1FKH2DQhTPUOFebyGPAcwNLsPOe87Tp
+ 1oLJ+xFbE9OE5SU66d4qR1jmyqzgqskh7shs+zUV86s/8yTOXbUG2YgwqkjgldVWareK Ww== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c8dmw16ab-1
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3c7ufnfug7-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 10 Nov 2021 16:01:51 +0100
+ Wed, 10 Nov 2021 16:01:54 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 69195100038;
- Wed, 10 Nov 2021 16:01:50 +0100 (CET)
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 25CAB100038;
+ Wed, 10 Nov 2021 16:01:54 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4BE70207568;
- Wed, 10 Nov 2021 16:01:50 +0100 (CET)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 10 Nov 2021 16:01:49
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 06E1B207568;
+ Wed, 10 Nov 2021 16:01:54 +0100 (CET)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 10 Nov 2021 16:01:53
  +0100
 From: <patrice.chotard@foss.st.com>
 To: Rob Herring <robh+dt@kernel.org>, maxime coquelin
@@ -122,23 +122,23 @@ CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <linux-pm@vger.kernel.org>,
  <linux-usb@vger.kernel.org>, <linux-watchdog@vger.kernel.org>
-Subject: [PATCH v3 1/5] dt-bindings: timer: Update maintainers for st,
- stm32-timer
-Date: Wed, 10 Nov 2021 16:01:40 +0100
-Message-ID: <20211110150144.18272-2-patrice.chotard@foss.st.com>
+Subject: [PATCH v3 5/5] dt-bindings: treewide: Update @st.com email address to
+ @foss.st.com
+Date: Wed, 10 Nov 2021 16:01:44 +0100
+Message-ID: <20211110150144.18272-6-patrice.chotard@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211110150144.18272-1-patrice.chotard@foss.st.com>
 References: <20211110150144.18272-1-patrice.chotard@foss.st.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.50]
+X-Originating-IP: [10.75.127.49]
 X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
  (10.75.127.5)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-11-10_05,2021-11-08_02,2020-04-07_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211110_070232_964781_F6BE556F 
-X-CRM114-Status: GOOD (  17.32  )
+X-CRM114-CacheID: sfid-20211110_070231_184912_A3213032 
+X-CRM114-Status: GOOD (  18.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,27 +157,803 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-Benjamin has left the company, add Fabrice and myself as maintainers.
+Not all @st.com email address are concerned, only people who have
+a specific @foss.st.com email will see their entry updated.
+For some people, who left the company, remove their email.
 
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc: Fabien Dessenne <fabien.dessenne@foss.st.com>
+Cc: Christophe Roullier <christophe.roullier@foss.st.com>
+Cc: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+Cc: Lionel Debieve <lionel.debieve@foss.st.com>
+Cc: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Cc: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Cc: Ludovic Barre <ludovic.barre@foss.st.com>
+Cc: Christophe Kerello <christophe.kerello@foss.st.com>
+Cc: pascal Paillet <p.paillet@foss.st.com>
+Cc: Erwan Le Ray <erwan.leray@foss.st.com>
+Cc: Philippe CORNU <philippe.cornu@foss.st.com>
+Cc: Yannick Fertre <yannick.fertre@foss.st.com>
+Cc: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: Hugues Fruchet <hugues.fruchet@foss.st.com>
 Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+Acked-By: Vinod Koul <vkoul@kernel.org>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- Documentation/devicetree/bindings/timer/st,stm32-timer.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/arm/sti.yaml                | 2 +-
+ Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml     | 4 ++--
+ .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml        | 4 ++--
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml        | 2 +-
+ Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml  | 2 +-
+ Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml    | 2 +-
+ Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml   | 2 +-
+ Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml   | 2 +-
+ .../devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml  | 2 +-
+ .../devicetree/bindings/display/panel/orisetech,otm8009a.yaml | 2 +-
+ .../devicetree/bindings/display/panel/raydium,rm68200.yaml    | 2 +-
+ Documentation/devicetree/bindings/display/st,stm32-dsi.yaml   | 4 ++--
+ Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml  | 4 ++--
+ Documentation/devicetree/bindings/dma/st,stm32-dma.yaml       | 2 +-
+ Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml    | 2 +-
+ Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml      | 2 +-
+ .../devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml       | 2 +-
+ Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml       | 2 +-
+ .../devicetree/bindings/iio/adc/sigma-delta-modulator.yaml    | 2 +-
+ Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml   | 2 +-
+ .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++--
+ Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml   | 2 +-
+ .../bindings/interrupt-controller/st,stm32-exti.yaml          | 4 ++--
+ Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml  | 4 ++--
+ Documentation/devicetree/bindings/media/st,stm32-cec.yaml     | 2 +-
+ Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml    | 2 +-
+ .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml        | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml   | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml    | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stmfx.yaml           | 2 +-
+ Documentation/devicetree/bindings/mfd/st,stpmic1.yaml         | 2 +-
+ Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml | 2 +-
+ Documentation/devicetree/bindings/net/snps,dwmac.yaml         | 2 +-
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml        | 4 ++--
+ Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml   | 2 +-
+ Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml  | 2 +-
+ .../devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml         | 2 +-
+ .../devicetree/bindings/regulator/st,stm32-booster.yaml       | 2 +-
+ .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml       | 2 +-
+ .../devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml    | 2 +-
+ .../devicetree/bindings/remoteproc/st,stm32-rproc.yaml        | 4 ++--
+ Documentation/devicetree/bindings/rng/st,stm32-rng.yaml       | 2 +-
+ Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml       | 2 +-
+ Documentation/devicetree/bindings/serial/st,stm32-uart.yaml   | 2 +-
+ Documentation/devicetree/bindings/sound/cirrus,cs42l51.yaml   | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml     | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-sai.yaml     | 2 +-
+ Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml | 2 +-
+ Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml      | 4 ++--
+ Documentation/devicetree/bindings/spi/st,stm32-spi.yaml       | 4 ++--
+ .../devicetree/bindings/thermal/st,stm32-thermal.yaml         | 2 +-
+ Documentation/devicetree/bindings/usb/st,stusb160x.yaml       | 2 +-
+ Documentation/devicetree/bindings/watchdog/st,stm32-iwdg.yaml | 4 ++--
+ 53 files changed, 65 insertions(+), 65 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/timer/st,stm32-timer.yaml b/Documentation/devicetree/bindings/timer/st,stm32-timer.yaml
-index 176aa3c9baf8..937aa8a56366 100644
---- a/Documentation/devicetree/bindings/timer/st,stm32-timer.yaml
-+++ b/Documentation/devicetree/bindings/timer/st,stm32-timer.yaml
-@@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: STMicroelectronics STM32 general-purpose 16 and 32 bits timers bindings
+diff --git a/Documentation/devicetree/bindings/arm/sti.yaml b/Documentation/devicetree/bindings/arm/sti.yaml
+index b1f28d16d3fb..a41cd8764885 100644
+--- a/Documentation/devicetree/bindings/arm/sti.yaml
++++ b/Documentation/devicetree/bindings/arm/sti.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: ST STi Platforms Device Tree Bindings
  
  maintainers:
--  - Benjamin Gaignard <benjamin.gaignard@st.com>
-+  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+-  - Patrice Chotard <patrice.chotard@st.com>
 +  - Patrice Chotard <patrice.chotard@foss.st.com>
  
  properties:
+   $nodename:
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml b/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
+index 8e711bd202fd..ecb28e90fd11 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,mlahb.yaml
+@@ -7,8 +7,8 @@ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ title: STMicroelectronics STM32 ML-AHB interconnect bindings
+ 
+ maintainers:
+-  - Fabien Dessenne <fabien.dessenne@st.com>
+-  - Arnaud Pouliquen <arnaud.pouliquen@st.com>
++  - Fabien Dessenne <fabien.dessenne@foss.st.com>
++  - Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+ 
+ description: |
+   These bindings describe the STM32 SoCs ML-AHB interconnect bus which connects
+diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+index 149afb5df5af..6f846d69c5e1 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+@@ -7,8 +7,8 @@ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ title: STMicroelectronics STM32 Platforms System Controller bindings
+ 
+ maintainers:
+-  - Alexandre Torgue <alexandre.torgue@st.com>
+-  - Christophe Roullier <christophe.roullier@st.com>
++  - Alexandre Torgue <alexandre.torgue@foss.st.com>
++  - Christophe Roullier <christophe.roullier@foss.st.com>
+ 
+ properties:
    compatible:
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index 9a77ab74be99..e33fbb62b430 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Platforms Device Tree Bindings
+ 
+ maintainers:
+-  - Alexandre Torgue <alexandre.torgue@st.com>
++  - Alexandre Torgue <alexandre.torgue@foss.st.com>
+ 
+ properties:
+   $nodename:
+diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+index 8b1ecb2ecdd5..a0ae4867ed27 100644
+--- a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
++++ b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Reset Clock Controller Binding
+ 
+ maintainers:
+-  - Gabriel Fernandez <gabriel.fernandez@st.com>
++  - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+ 
+ description: |
+   The RCC IP is both a reset and a clock controller.
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
+index cee624c14f07..b72e4858f9aa 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-crc.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 CRC bindings
+ 
+ maintainers:
+-  - Lionel Debieve <lionel.debieve@st.com>
++  - Lionel Debieve <lionel.debieve@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
+index a4574552502a..ed23bf94a8e0 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 CRYP bindings
+ 
+ maintainers:
+-  - Lionel Debieve <lionel.debieve@st.com>
++  - Lionel Debieve <lionel.debieve@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+index 6dd658f0912c..10ba94792d95 100644
+--- a/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
++++ b/Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 HASH bindings
+ 
+ maintainers:
+-  - Lionel Debieve <lionel.debieve@st.com>
++  - Lionel Debieve <lionel.debieve@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml b/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml
+index 3c3e51af154b..11fd68a70dca 100644
+--- a/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/snps,dw-mipi-dsi.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Synopsys DesignWare MIPI DSI host controller
+ 
+ maintainers:
+-  - Philippe CORNU <philippe.cornu@st.com>
++  - Philippe CORNU <philippe.cornu@foss.st.com>
+ 
+ description: |
+   This document defines device tree properties for the Synopsys DesignWare MIPI
+diff --git a/Documentation/devicetree/bindings/display/panel/orisetech,otm8009a.yaml b/Documentation/devicetree/bindings/display/panel/orisetech,otm8009a.yaml
+index 4b6dda6dbc0f..17cbd0ad32bf 100644
+--- a/Documentation/devicetree/bindings/display/panel/orisetech,otm8009a.yaml
++++ b/Documentation/devicetree/bindings/display/panel/orisetech,otm8009a.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Orise Tech OTM8009A 3.97" 480x800 TFT LCD panel (MIPI-DSI video mode)
+ 
+ maintainers:
+-  - Philippe CORNU <philippe.cornu@st.com>
++  - Philippe CORNU <philippe.cornu@foss.st.com>
+ 
+ description: |
+              The Orise Tech OTM8009A is a 3.97" 480x800 TFT LCD panel connected using
+diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm68200.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm68200.yaml
+index 39477793d289..e8ce2315631a 100644
+--- a/Documentation/devicetree/bindings/display/panel/raydium,rm68200.yaml
++++ b/Documentation/devicetree/bindings/display/panel/raydium,rm68200.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Raydium Semiconductor Corporation RM68200 5.5" 720p MIPI-DSI TFT LCD panel
+ 
+ maintainers:
+-  - Philippe CORNU <philippe.cornu@st.com>
++  - Philippe CORNU <philippe.cornu@foss.st.com>
+ 
+ description: |
+   The Raydium Semiconductor Corporation RM68200 is a 5.5" 720x1280 TFT LCD
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+index ed310bbe3afe..ce1ef93cce93 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-dsi.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 DSI host controller
+ 
+ maintainers:
+-  - Philippe Cornu <philippe.cornu@st.com>
+-  - Yannick Fertre <yannick.fertre@st.com>
++  - Philippe Cornu <philippe.cornu@foss.st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
+ 
+ description:
+   The STMicroelectronics STM32 DSI controller uses the Synopsys DesignWare MIPI-DSI host controller.
+diff --git a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+index 4ae3d75492d3..01e2da23790b 100644
+--- a/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
++++ b/Documentation/devicetree/bindings/display/st,stm32-ltdc.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 lcd-tft display controller
+ 
+ maintainers:
+-  - Philippe Cornu <philippe.cornu@st.com>
+-  - Yannick Fertre <yannick.fertre@st.com>
++  - Philippe Cornu <philippe.cornu@foss.st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+index 4bf676fd25dc..55faab6a468e 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
+@@ -50,7 +50,7 @@ description: |
+ 
+ 
+ maintainers:
+-  - Amelie Delaunay <amelie.delaunay@st.com>
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+   - $ref: "dma-controller.yaml#"
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+index c8d2b51d8410..f751796531c9 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 DMA MUX (DMA request router) bindings
+ 
+ maintainers:
+-  - Amelie Delaunay <amelie.delaunay@st.com>
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+   - $ref: "dma-router.yaml#"
+diff --git a/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml b/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
+index c30be840be1c..87b4afd2cf62 100644
+--- a/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
++++ b/Documentation/devicetree/bindings/dma/st,stm32-mdma.yaml
+@@ -50,7 +50,7 @@ description: |
+        if no HW ack signal is used by the MDMA client
+ 
+ maintainers:
+-  - Amelie Delaunay <amelie.delaunay@st.com>
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ allOf:
+   - $ref: "dma-controller.yaml#"
+diff --git a/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml
+index 8f136542a4ea..b18c616035a8 100644
+--- a/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml
++++ b/Documentation/devicetree/bindings/hwlock/st,stm32-hwspinlock.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Hardware Spinlock bindings
+ 
+ maintainers:
+-  - Fabien Dessenne <fabien.dessenne@st.com>
++  - Fabien Dessenne <fabien.dessenne@foss.st.com>
+ 
+ properties:
+   "#hwlock-cells":
+diff --git a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+index d747f4990ad8..c07289a643d8 100644
+--- a/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: I2C controller embedded in STMicroelectronics STM32 I2C platform
+ 
+ maintainers:
+-  - Pierre-Yves MORDRET <pierre-yves.mordret@st.com>
++  - Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+ 
+ allOf:
+   - $ref: /schemas/i2c/i2c-controller.yaml#
+diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+index a390343d0c2a..2287697f1f61 100644
+--- a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Device-Tree bindings for sigma delta modulator
+ 
+ maintainers:
+-  - Arnaud Pouliquen <arnaud.pouliquen@st.com>
++  - Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+index a58334c3bb76..a055c78cc047 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+@@ -19,7 +19,7 @@ description: |
+   Each STM32 ADC block can have up to 3 ADC instances.
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+index 733351dee252..7c260f209687 100644
+--- a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 DFSDM ADC device driver
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
+-  - Olivier Moysan <olivier.moysan@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
++  - Olivier Moysan <olivier.moysan@foss.st.com>
+ 
+ description: |
+   STM32 DFSDM ADC is a sigma delta analog-to-digital converter dedicated to
+diff --git a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+index 393f7005941a..6adeda4087fc 100644
+--- a/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml
+@@ -15,7 +15,7 @@ description: |
+   current.
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+index 6d3e68eb2e8b..d19c881b4abc 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/st,stm32-exti.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STM32 External Interrupt Controller Device Tree Bindings
+ 
+ maintainers:
+-  - Alexandre Torgue <alexandre.torgue@st.com>
+-  - Ludovic Barre <ludovic.barre@st.com>
++  - Alexandre Torgue <alexandre.torgue@foss.st.com>
++  - Ludovic Barre <ludovic.barre@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
+index b15da9ba90b2..8eb4bf52ea27 100644
+--- a/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
++++ b/Documentation/devicetree/bindings/mailbox/st,stm32-ipcc.yaml
+@@ -13,8 +13,8 @@ description:
+   channels (N) can be read from a dedicated register.
+ 
+ maintainers:
+-  - Fabien Dessenne <fabien.dessenne@st.com>
+-  - Arnaud Pouliquen <arnaud.pouliquen@st.com>
++  - Fabien Dessenne <fabien.dessenne@foss.st.com>
++  - Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-cec.yaml b/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
+index 33e47e371941..77144cc6f7db 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-cec.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 CEC bindings
+ 
+ maintainers:
+-  - Yannick Fertre <yannick.fertre@st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+index 41e1d0cd80e5..9c1262a276b5 100644
+--- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
++++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Digital Camera Memory Interface (DCMI) binding
+ 
+ maintainers:
+-  - Hugues Fruchet <hugues.fruchet@st.com>
++  - Hugues Fruchet <hugues.fruchet@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+index cba74205846a..6b516d3895af 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/st,stm32-fmc2-ebi.yaml
+@@ -19,7 +19,7 @@ description: |
+   Select. The FMC2 performs only one access at a time to an external device.
+ 
+ maintainers:
+-  - Christophe Kerello <christophe.kerello@st.com>
++  - Christophe Kerello <christophe.kerello@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+index 8bcea8dd7d90..ec7f0190f46e 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml
+@@ -17,7 +17,7 @@ description: |
+      - simple counter from IN1 input signal.
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+index 210a7c85b884..10b330d42901 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml
+@@ -17,7 +17,7 @@ description: |
+       programmable prescaler.
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
+index 19e9afb385ac..b2a4e4aa7ff6 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
+@@ -12,7 +12,7 @@ description: ST Multi-Function eXpander (STMFX) is a slave controller using I2C
+                through VDD) and resistive touchscreen controller.
+ 
+ maintainers:
+-  - Amelie Delaunay <amelie.delaunay@st.com>
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+index 305123e74a58..426658ad81d4 100644
+--- a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
++++ b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+@@ -9,7 +9,7 @@ title: STMicroelectonics STPMIC1 Power Management IC bindings
+ description: STMicroelectronics STPMIC1 Power Management IC
+ 
+ maintainers:
+-  - pascal Paillet <p.paillet@st.com>
++  - pascal Paillet <p.paillet@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+index 29c5ef24ac6a..eab8ea3da1fa 100644
+--- a/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics Flexible Memory Controller 2 (FMC2) Bindings
+ 
+ maintainers:
+-  - Christophe Kerello <christophe.kerello@st.com>
++  - Christophe Kerello <christophe.kerello@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index c115c95ee584..20980dd93203 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Synopsys DesignWare MAC Device Tree Bindings
+ 
+ maintainers:
+-  - Alexandre Torgue <alexandre.torgue@st.com>
++  - Alexandre Torgue <alexandre.torgue@foss.st.com>
+   - Giuseppe Cavallaro <peppe.cavallaro@st.com>
+   - Jose Abreu <joabreu@synopsys.com>
+ 
+diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+index d3f05d5934d5..577f4e284425 100644
+--- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+@@ -8,8 +8,8 @@ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ title: STMicroelectronics STM32 / MCU DWMAC glue layer controller
+ 
+ maintainers:
+-  - Alexandre Torgue <alexandre.torgue@st.com>
+-  - Christophe Roullier <christophe.roullier@st.com>
++  - Alexandre Torgue <alexandre.torgue@foss.st.com>
++  - Christophe Roullier <christophe.roullier@foss.st.com>
+ 
+ description:
+   This file documents platform glue layer for stmmac.
+diff --git a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
+index 0b80ce22a2f8..a48c8fa56bce 100644
+--- a/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
++++ b/Documentation/devicetree/bindings/nvmem/st,stm32-romem.yaml
+@@ -13,7 +13,7 @@ description: |
+   internal vref (VREFIN_CAL), unique device ID...
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ allOf:
+   - $ref: "nvmem.yaml#"
+diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+index 3329f1d33a4f..7bae8dff3ef6 100644
+--- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
++++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+@@ -24,7 +24,7 @@ description:
+   |_ UTMI switch_______|          OTG controller
+ 
+ maintainers:
+-  - Amelie Delaunay <amelie.delaunay@st.com>
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+index dfee6d38a701..ac88e01ec430 100644
+--- a/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/st,stm32-pinctrl.yaml
+@@ -8,7 +8,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STM32 GPIO and Pin Mux/Config controller
+ 
+ maintainers:
+-  - Alexandre TORGUE <alexandre.torgue@st.com>
++  - Alexandre TORGUE <alexandre.torgue@foss.st.com>
+ 
+ description: |
+   STMicroelectronics's STM32 MCUs intregrate a GPIO and Pin mux/config hardware
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32-booster.yaml b/Documentation/devicetree/bindings/regulator/st,stm32-booster.yaml
+index 9f1c70381b82..df0191b1ceba 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32-booster.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32-booster.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 booster for ADC analog input switches bindings
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ description: |
+   Some STM32 devices embed a 3.3V booster supplied by Vdda, that can be used
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+index 3cd4a254e4cb..836d4156d54c 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32-vrefbuf.yaml
+@@ -12,7 +12,7 @@ description: |
+   components through the dedicated VREF+ pin.
+ 
+ maintainers:
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ allOf:
+   - $ref: "regulator.yaml#"
+diff --git a/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml b/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
+index e6322bc3e447..bd07b9c81570 100644
+--- a/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
++++ b/Documentation/devicetree/bindings/regulator/st,stm32mp1-pwr-reg.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STM32MP1 PWR voltage regulators
+ 
+ maintainers:
+-  - Pascal Paillet <p.paillet@st.com>
++  - Pascal Paillet <p.paillet@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index 1e6225677e00..b587c97c282b 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -11,8 +11,8 @@ description:
+   boots firmwares on the ST32MP family chipset.
+ 
+ maintainers:
+-  - Fabien Dessenne <fabien.dessenne@st.com>
+-  - Arnaud Pouliquen <arnaud.pouliquen@st.com>
++  - Fabien Dessenne <fabien.dessenne@foss.st.com>
++  - Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+index 82bb2e97e889..9a6e4eaf4d3c 100644
+--- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
++++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+@@ -11,7 +11,7 @@ description: |
+   IP and is fully separated from other crypto functions.
+ 
+ maintainers:
+-  - Lionel Debieve <lionel.debieve@st.com>
++  - Lionel Debieve <lionel.debieve@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
+index 5456604b1c14..2359f541b770 100644
+--- a/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/st,stm32-rtc.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Real Time Clock Bindings
+ 
+ maintainers:
+-  - Gabriel Fernandez <gabriel.fernandez@st.com>
++  - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index f50f4ca893a0..333dc42722d2 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -5,7 +5,7 @@ $id: http://devicetree.org/schemas/serial/st,stm32-uart.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ maintainers:
+-  - Erwan Le Ray <erwan.leray@st.com>
++  - Erwan Le Ray <erwan.leray@foss.st.com>
+ 
+ title: STMicroelectronics STM32 USART bindings
+ 
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l51.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l51.yaml
+index 0d87e2c86a42..963a871e74da 100644
+--- a/Documentation/devicetree/bindings/sound/cirrus,cs42l51.yaml
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l51.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: CS42L51 audio codec DT bindings
+ 
+ maintainers:
+-  - Olivier Moysan <olivier.moysan@st.com>
++  - Olivier Moysan <olivier.moysan@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+index 6feb5a09c184..d3966ae04ad0 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 SPI/I2S Controller
+ 
+ maintainers:
+-  - Olivier Moysan <olivier.moysan@st.com>
++  - Olivier Moysan <olivier.moysan@foss.st.com>
+ 
+ description:
+   The SPI/I2S block supports I2S/PCM protocols when configured on I2S mode.
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+index f97132400bb6..1538d11ce9a8 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Serial Audio Interface (SAI)
+ 
+ maintainers:
+-  - Olivier Moysan <olivier.moysan@st.com>
++  - Olivier Moysan <olivier.moysan@foss.st.com>
+ 
+ description:
+   The SAI interface (Serial Audio Interface) offers a wide set of audio
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+index b7f7dc452231..837e830c47ac 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 S/PDIF receiver (SPDIFRX)
+ 
+ maintainers:
+-  - Olivier Moysan <olivier.moysan@st.com>
++  - Olivier Moysan <olivier.moysan@foss.st.com>
+ 
+ description: |
+   The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+index 983c4e54c0be..6ec6f556182f 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Quad Serial Peripheral Interface (QSPI) bindings
+ 
+ maintainers:
+-  - Christophe Kerello <christophe.kerello@st.com>
+-  - Patrice Chotard <patrice.chotard@st.com>
++  - Christophe Kerello <christophe.kerello@foss.st.com>
++  - Patrice Chotard <patrice.chotard@foss.st.com>
+ 
+ allOf:
+   - $ref: "spi-controller.yaml#"
+diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+index 2d9af4c506bb..3d64bed266ac 100644
+--- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
++++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+@@ -13,8 +13,8 @@ description: |
+   from 4 to 32-bit data size.
+ 
+ maintainers:
+-  - Erwan Leray <erwan.leray@st.com>
+-  - Fabrice Gasnier <fabrice.gasnier@st.com>
++  - Erwan Leray <erwan.leray@foss.st.com>
++  - Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+ 
+ allOf:
+   - $ref: "spi-controller.yaml#"
+diff --git a/Documentation/devicetree/bindings/thermal/st,stm32-thermal.yaml b/Documentation/devicetree/bindings/thermal/st,stm32-thermal.yaml
+index c0f59c56003d..bee41cff5142 100644
+--- a/Documentation/devicetree/bindings/thermal/st,stm32-thermal.yaml
++++ b/Documentation/devicetree/bindings/thermal/st,stm32-thermal.yaml
+@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 digital thermal sensor (DTS) binding
+ 
+ maintainers:
+-  - David Hernandez Sanchez <david.hernandezsanchez@st.com>
++  - Pascal Paillet <p.paillet@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/usb/st,stusb160x.yaml b/Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+index 9a51efa9d101..ead1571e0e43 100644
+--- a/Documentation/devicetree/bindings/usb/st,stusb160x.yaml
++++ b/Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+@@ -7,7 +7,7 @@ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
+ title: STMicroelectronics STUSB160x Type-C controller bindings
+ 
+ maintainers:
+-  - Amelie Delaunay <amelie.delaunay@st.com>
++  - Amelie Delaunay <amelie.delaunay@foss.st.com>
+ 
+ properties:
+   compatible:
+diff --git a/Documentation/devicetree/bindings/watchdog/st,stm32-iwdg.yaml b/Documentation/devicetree/bindings/watchdog/st,stm32-iwdg.yaml
+index 481bf91f988a..39736449ba64 100644
+--- a/Documentation/devicetree/bindings/watchdog/st,stm32-iwdg.yaml
++++ b/Documentation/devicetree/bindings/watchdog/st,stm32-iwdg.yaml
+@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: STMicroelectronics STM32 Independent WatchDoG (IWDG) bindings
+ 
+ maintainers:
+-  - Yannick Fertre <yannick.fertre@st.com>
+-  - Christophe Roullier <christophe.roullier@st.com>
++  - Yannick Fertre <yannick.fertre@foss.st.com>
++  - Christophe Roullier <christophe.roullier@foss.st.com>
+ 
+ allOf:
+   - $ref: "watchdog.yaml#"
 -- 
 2.17.1
 
