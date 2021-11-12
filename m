@@ -2,66 +2,82 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E22C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:15:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CAF0C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 13:55:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C129E60F93
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:15:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C129E60F93
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4C23B60F55
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 13:55:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4C23B60F55
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=vanguardiasur.com.ar
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KyBSuyshxhlS2r5epCHFYa1aGo0FEG4hUAtZr2Scn38=; b=lAaoHcxQcg0yP4
-	rh8LGmFXxUHDfA5GPF+oS4Q1+XxkGhC7OQ5g/W0BslV1Ntdt91aWYEtyPiz/9qWtNeJwOhBjkEFGD
-	1RgEvWJL2J4b3/6YfqZJX/zwTN+sRODae3mK7V1UstX26ROj2gY/bjJhvYne57EWhr2Ji3DkHFfeC
-	B4KBvIPFXacHicj42ir4ezg5mBgi2J590cuVR/ygYrtvctEdFyteBtSRF1QE4hZvRV6M1D2BOxfQc
-	OenIzS84Aw5t40s2Ty0O0VEXNNVKvEbWPUA1VgXAXiTkSJF9zOKeRJaaNVAbmuYsUH8DuK3mCSppD
-	T8sXgurMU8pnwPy8YMXA==;
+	List-Owner; bh=YN/CQYluR0kNzBZcxUtQrk9liu2E9khAOL7dRBZYShw=; b=ViXLi72ZmsMM4g
+	v2HeAKJSkfX4OuZXy28t7V7F7Z5N5heqKwaoES0USwuh+9/2KZ+GdProlX/hrbIZMfOR1HI9W3Nkc
+	zIfcjGNQJ0a7hDmYBiq1ERTYvOblczWglWreI92bVTL40pxSRq60sval0yjCeTQBNMKqKVibTRCcL
+	+GKFooz+Gtlfz53/vEo9tIRoZdCAvQOBCGimE4ASkBHwmeXPCPj10MlfEerHhtMsK6eU8cs8qYQzi
+	9MGC18UYUs9+yZWQbvDp5yJiCRFgUjI0K5if0EgneEiBFheAgitEdBsRj9qFC5Pu9/QDBvrbgxcgD
+	mURubTar79HYIxrkfs6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlVRz-00AFty-2V; Fri, 12 Nov 2021 12:14:35 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1mlX13-00Afg7-7Q; Fri, 12 Nov 2021 13:54:53 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlVJt-00ADOq-7X
- for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 12:06:16 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HrHNf479Tz914V;
- Fri, 12 Nov 2021 20:05:54 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 12 Nov 2021 20:05:35 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 12 Nov
- 2021 20:05:34 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <s.hauer@pengutronix.de>, <miquel.raynal@bootlin.com>,
- <vigneshr@ti.com>, <mcoquelin.stm32@gmail.com>,
- <kirill.shutemov@linux.intel.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <chengzhihao1@huawei.com>
-Subject: [PATCH v3 05/12] ubifs: Rename whiteout atomically
-Date: Fri, 12 Nov 2021 20:17:51 +0800
-Message-ID: <20211112121758.2208727-6-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211112121758.2208727-1-chengzhihao1@huawei.com>
-References: <20211112121758.2208727-1-chengzhihao1@huawei.com>
+ id 1mlX0z-00AfeO-Kb
+ for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 13:54:51 +0000
+Received: by mail-ed1-x533.google.com with SMTP id m14so38351090edd.0
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2021 05:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=XFbOW47p++5Cp7MSuv9aXwO4crIHKcrlkESq3jT8ocg=;
+ b=Ur8+BeDCD+UMR8C8nKTwJEK15dxhz2iLjUphXEkjzZztJ6qPmHvwI70j32vyEM8lKi
+ f6YfuZLkoGDclsn1UGjXTYVwDH47MZT7W6QAt2umrbdrhXunB3/eBjrX7hDBJFKdx+m0
+ W4RBBbsRTJASpIDX65wR32iTHH0n09Sf6Exbi18kVWP8a93dnYDEYulI5mt8AEjA6C0/
+ 6aNOimPnL6NUpe4G8fHKuNWWs++GXjJoolIoUwMOYmZ5WEClrEE6Hcmaiww/pkcQ1mKO
+ MLzZTZbuzE1UlRQcYGY/gV1EK5sYDADmKX1lI/IBrnfMfs/Z3VDMzDYUTH3hmJQ1V+nd
+ fDdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=XFbOW47p++5Cp7MSuv9aXwO4crIHKcrlkESq3jT8ocg=;
+ b=fVDhwLu0ZqJVaItEm5kFtk16ho7ZOxY9+SyiIUmjINGN2QTjq6h7pkhDUy/+OeDhnO
+ m2Ms1sMxcXKVWRp22t4MSGv2VSfdfFRG1tQWm6Xi0XDMvauZZah4s5nmyQcUXeahaacL
+ TPjTQRUXqpIInc/+t6WhXlfxu2Kj+p9G37CxQuTAywtGWPxkvpuV3yCI0omF+Qa67QAW
+ wtxl6DuYsg1ugP/XhAOldIGduTU9blHyi8rSfpts4ceJyhCpA8Zowx8JfgKLFNeA0QGd
+ zrFfo4+qvQTdXJ18+hpBWNLN+uWLBqW/8earVFtOw00ai+fmutV+KA8KgKVq3CGYxobF
+ Gysw==
+X-Gm-Message-State: AOAM530R8bAORwgEzxsPTnFq8XVrME9HHf1l2KoQbCsrfJ/J9eA5+aPy
+ lv0s/huBXcCx/v6glPFZaQkuHwJ9VKU1JN7vR7fBvC/aPow=
+X-Google-Smtp-Source: ABdhPJzaqmsZEbM3GUit9fpvX2daP0NAhbrhk9sbziTXHiAWVmKZ+Cpzej44QCqyqBaTr7O7zaBkFNJyKFPxLr9tL7A=
+X-Received: by 2002:a17:907:3f9d:: with SMTP id
+ hr29mr19337115ejc.369.1636725287586; 
+ Fri, 12 Nov 2021 05:54:47 -0800 (PST)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+References: <20210801234509.18774-1-ezequiel@collabora.com>
+ <20211026150350.GA5136@localhost>
+In-Reply-To: <20211026150350.GA5136@localhost>
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Fri, 12 Nov 2021 10:54:36 -0300
+Message-ID: <CAAEAJfD0ctKon7onbj5cCgN9OUnXpQ-gxG=DF6hXD9hW+Pw83A@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
+To: Trevor Woerner <twoerner@gmail.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211112_040613_661285_9573DC9F 
-X-CRM114-Status: GOOD (  23.80  )
+X-CRM114-CacheID: sfid-20211112_055449_886943_F5BC16DF 
+X-CRM114-Status: GOOD (  23.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,421 +94,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Currently, rename whiteout has 3 steps:
-  1. create tmpfile(which associates old dentry to tmpfile inode) for
-     whiteout, and store tmpfile to disk
-  2. link whiteout, associate whiteout inode to old dentry agagin and
-     store old dentry, old inode, new dentry on disk
-  3. writeback dirty whiteout inode to disk
+Hi Trevor,
 
-Suddenly power-cut or error occurring(eg. ENOSPC returned by budget,
-memory allocation failure) during above steps may cause kinds of problems:
-  Problem 1: ENOSPC returned by whiteout space budget (before step 2),
-	     old dentry will disappear after rename syscall, whiteout file
-	     cannot be found either.
+I am not reachable at ezequiel at collabora.com, so I missed this
+thread. Sorry about the delay, replying.
 
-	     ls dir  // we get file, whiteout
-	     rename(dir/file, dir/whiteout, REANME_WHITEOUT)
-	     ENOSPC = ubifs_budget_space(&wht_req) // return
-	     ls dir  // empty (no file, no whiteout)
-  Problem 2: Power-cut happens before step 3, whiteout inode with 'nlink=1'
-	     is not stored on disk, whiteout dentry(old dentry) is written
-	     on disk, whiteout file is lost on next mount (We get "dead
-	     directory entry" after executing 'ls -l' on whiteout file).
+On Tue, 26 Oct 2021 at 12:05, Trevor Woerner <twoerner@gmail.com> wrote:
+>
+> On Sun 2021-08-01 @ 08:45:02 PM, Ezequiel Garcia wrote:
+> > Hi Richard, and everyone else:
+> >
+> > Browsing the internet for "JFFS2 mtd" results in tutorials, articles
+> > and github.gists0 that point to mtdblock.
+> >
+> > In fact, even the MTD wiki mentions that JFFS2
+> > needs mtdblock to mount a rootfs:
+> >
+> >   http://www.linux-mtd.infradead.org/faq/jffs2.html
+> >
+> > Moreover, I suspect there may be lots of users
+> > that still believe mtdblock is somehow needed to
+> > mount SquashFS.
+> >
+> > I've taken a verbose route and added a pr_warn
+> > warning if the devices are NAND. I don't think using
+> > NAND without UBI is too wise, and given the amount
+> > of outdated tutorials I believe some advertising
+> > will help.
+>
+> Not all NAND partitions on a device will contain linux root filesystems. For a
+> linux root filesystem perhaps using UBI/UBIFS is preferred, yet these messages
+> print out for each and every NAND partition:
+>
+>         [    0.900827] Creating 8 MTD partitions on "nxp_lpc3220_slc":
+>         [    0.906431] 0x000000000000-0x000000020000 : "bootrom"
+>         [    0.913523] mtdblock: MTD device 'bootrom' is NAND, please consider using UBI block devices instead.
+>         [    0.933334] 0x000000020000-0x000000080000 : "uboot"
+>         [    0.940439] mtdblock: MTD device 'uboot' is NAND, please consider using UBI block devices instead.
+>         [    0.963322] 0x000000080000-0x000000440000 : "fbkernel"
+>         [    0.970655] mtdblock: MTD device 'fbkernel' is NAND, please consider using UBI block devices instead.
+>         [    0.993361] 0x000000440000-0x000000920000 : "fbrootfs"
+>         [    1.000725] mtdblock: MTD device 'fbrootfs' is NAND, please consider using UBI block devices instead.
+>         [    1.023315] 0x000000920000-0x000000ce0000 : "c_kernel"
+>         [    1.030722] mtdblock: MTD device 'c_kernel' is NAND, please consider using UBI block devices instead.
+>         [    1.053444] 0x000000ce0000-0x000000d00000 : "c__atags"
+>         [    1.060742] mtdblock: MTD device 'c__atags' is NAND, please consider using UBI block devices instead.
+>         [    1.083349] 0x000000d00000-0x000001000000 : "c_rootfs"
+>         [    1.090702] mtdblock: MTD device 'c_rootfs' is NAND, please consider using UBI block devices instead.
+>         [    1.113335] 0x000001000000-0x000020000000 : "mender"
+>         [    1.131627] mtdblock: MTD device 'mender' is NAND, please consider using UBI block devices instead.
+>
+> NAND tends to be something found on older devices, the firmware/bootloaders
+> of older devices couldn't possibly understand UBI/UBIFS so many of these
+> partitions need be "raw" partitions, or use something that predates UBI.
+>
+> Ironically my "mender" partition contains a UBI (with multiple UBIFSes inside)
+> yet I got the same "please use UBI" message as all the others (lol)
+>
+> I'm specifying my partitions in DT with:
+>
+> partitions {
+>         compatible = "fixed-partitions";
+>         #address-cells = <1>;
+>         #size-cells = <1>;
+>
+>         mtd0@0       { label = "bootrom";   reg = <0x00000000 0x00020000>; };
+>         mtd1@20000   { label = "uboot";     reg = <0x00020000 0x00060000>; };
+>         mtd2@80000   { label = "fbkernel";  reg = <0x00080000 0x003c0000>; };
+>         mtd3@440000  { label = "fbrootfs";  reg = <0x00440000 0x004e0000>; };
+>         mtd4@920000  { label = "c_kernel";  reg = <0x00920000 0x003c0000>; };
+>         mtd5@ce0000  { label = "c__atags";  reg = <0x00ce0000 0x00020000>; };
+>         mtd6@d00000  { label = "c_rootfs";  reg = <0x00d00000 0x00300000>; };
+>         mtd7@1000000 { label = "mender";    reg = <0x01000000 0x1f000000>; };
+> };
+>
+> which is why, I assume, I'm getting these messages. Is there a UBI-friendly
+> way to define them to avoid these messages?
+>
 
-Now, we use following 3 steps to finish rename whiteout:
-  1. create an in-mem inode with 'nlink = 1' as whiteout
-  2. ubifs_jnl_rename (Write on disk to finish associating old dentry to
-     whiteout inode, associating new dentry with old inode)
-  3. iput(whiteout)
+I feel the messages are actually helping you. You should not have mtdblock
+on any of these MTD devices, if I understood correctly, since you are not
+mounting a filesystem on any of them.
 
-Rely writing in-mem inode on disk by ubifs_jnl_rename() to finish rename
-whiteout, which avoids middle disk state caused by suddenly power-cut
-and error occurring.
+Just disable MTDBLOCK on your build and you will be good to go.
 
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/dir.c     | 144 +++++++++++++++++++++++++++++----------------
- fs/ubifs/journal.c |  52 +++++++++++++---
- 2 files changed, 136 insertions(+), 60 deletions(-)
+I am inclined to just leave the warnings, although they look spammy,
+precisely to help catch this mis-setups.
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 6503e6857f6e..deaf2d5dba5b 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -349,8 +349,56 @@ static int ubifs_create(struct user_namespace *mnt_userns, struct inode *dir,
- 	return err;
- }
- 
--static int do_tmpfile(struct inode *dir, struct dentry *dentry,
--		      umode_t mode, struct inode **whiteout)
-+static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
-+{
-+	int err;
-+	umode_t mode = S_IFCHR | WHITEOUT_MODE;
-+	struct inode *inode;
-+	struct ubifs_info *c = dir->i_sb->s_fs_info;
-+	struct fscrypt_name nm;
-+
-+	/*
-+	 * Create an inode('nlink = 1') for whiteout without updating journal,
-+	 * let ubifs_jnl_rename() store it on flash to complete rename whiteout
-+	 * atomically.
-+	 */
-+
-+	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
-+		dentry, mode, dir->i_ino);
-+
-+	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	inode = ubifs_new_inode(c, dir, mode);
-+	if (IS_ERR(inode)) {
-+		err = PTR_ERR(inode);
-+		goto out_free;
-+	}
-+
-+	init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
-+	ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
-+
-+	err = ubifs_init_security(dir, inode, &dentry->d_name);
-+	if (err)
-+		goto out_inode;
-+
-+	/* The dir size is updated by do_rename. */
-+	insert_inode_hash(inode);
-+
-+	return inode;
-+
-+out_inode:
-+	make_bad_inode(inode);
-+	iput(inode);
-+out_free:
-+	fscrypt_free_filename(&nm);
-+	ubifs_err(c, "cannot create whiteout file, error %d", err);
-+	return ERR_PTR(err);
-+}
-+
-+static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
-+			 struct dentry *dentry, umode_t mode)
- {
- 	struct inode *inode;
- 	struct ubifs_info *c = dir->i_sb->s_fs_info;
-@@ -392,25 +440,13 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	}
- 	ui = ubifs_inode(inode);
- 
--	if (whiteout) {
--		init_special_inode(inode, inode->i_mode, WHITEOUT_DEV);
--		ubifs_assert(c, inode->i_op == &ubifs_file_inode_operations);
--	}
--
- 	err = ubifs_init_security(dir, inode, &dentry->d_name);
- 	if (err)
- 		goto out_inode;
- 
- 	mutex_lock(&ui->ui_mutex);
- 	insert_inode_hash(inode);
--
--	if (whiteout) {
--		mark_inode_dirty(inode);
--		drop_nlink(inode);
--		*whiteout = inode;
--	} else {
--		d_tmpfile(dentry, inode);
--	}
-+	d_tmpfile(dentry, inode);
- 	ubifs_assert(c, ui->dirty);
- 
- 	instantiated = 1;
-@@ -441,12 +477,6 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
- 	return err;
- }
- 
--static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
--			 struct dentry *dentry, umode_t mode)
--{
--	return do_tmpfile(dir, dentry, mode, NULL);
--}
--
- /**
-  * vfs_dent_type - get VFS directory entry type.
-  * @type: UBIFS directory entry type
-@@ -1264,17 +1294,19 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 					.dirtied_ino = 3 };
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
- 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
-+	struct ubifs_budget_req wht_req;
- 	struct timespec64 time;
- 	unsigned int saved_nlink;
- 	struct fscrypt_name old_nm, new_nm;
- 
- 	/*
--	 * Budget request settings: deletion direntry, new direntry, removing
--	 * the old inode, and changing old and new parent directory inodes.
-+	 * Budget request settings:
-+	 *   req: deletion direntry, new direntry, removing the old inode,
-+	 *   and changing old and new parent directory inodes.
- 	 *
--	 * However, this operation also marks the target inode as dirty and
--	 * does not write it, so we allocate budget for the target inode
--	 * separately.
-+	 *   wht_req: new whiteout inode for RENAME_WHITEOUT.
-+	 *
-+	 *   ino_req: marks the target inode as dirty and does not write it.
- 	 */
- 
- 	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu flags 0x%x",
-@@ -1324,7 +1356,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 	if (flags & RENAME_WHITEOUT) {
- 		union ubifs_dev_desc *dev = NULL;
--		struct ubifs_budget_req wht_req;
- 
- 		dev = kmalloc(sizeof(union ubifs_dev_desc), GFP_NOFS);
- 		if (!dev) {
-@@ -1332,26 +1363,26 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			goto out_release;
- 		}
- 
--		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
--		if (err) {
--			if (whiteout)
--				iput(whiteout);
-+		/*
-+		 * The whiteout inode without dentry is pinned in memory,
-+		 * umount won't happen during rename process because we
-+		 * got parent dentry.
-+		 */
-+		whiteout = create_whiteout(old_dir, old_dentry);
-+		if (IS_ERR(whiteout)) {
-+			err = PTR_ERR(whiteout);
- 			kfree(dev);
- 			goto out_release;
- 		}
- 
--		spin_lock(&whiteout->i_lock);
--		whiteout->i_state |= I_LINKABLE;
--		spin_unlock(&whiteout->i_lock);
--
- 		whiteout_ui = ubifs_inode(whiteout);
- 		whiteout_ui->data = dev;
- 		whiteout_ui->data_len = ubifs_encode_dev(dev, MKDEV(0, 0));
- 		ubifs_assert(c, !whiteout_ui->dirty);
- 
- 		memset(&wht_req, 0, sizeof(struct ubifs_budget_req));
--		wht_req.dirtied_ino = 1;
--		wht_req.dirtied_ino_d = ALIGN(whiteout_ui->data_len, 8);
-+		wht_req.new_ino = 1;
-+		wht_req.new_ino_d = ALIGN(whiteout_ui->data_len, 8);
- 		/*
- 		 * To avoid deadlock between space budget (holds ui_mutex and
- 		 * waits wb work) and writeback work(waits ui_mutex), do space
-@@ -1359,6 +1390,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		 */
- 		err = ubifs_budget_space(c, &wht_req);
- 		if (err) {
-+			/*
-+			 * Whiteout inode can not be written on flash by
-+			 * ubifs_jnl_write_inode(), because it's neither
-+			 * dirty nor zero-nlink.
-+			 */
- 			iput(whiteout);
- 			goto out_release;
- 		}
-@@ -1433,17 +1469,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		sync = IS_DIRSYNC(old_dir) || IS_DIRSYNC(new_dir);
- 		if (unlink && IS_SYNC(new_inode))
- 			sync = 1;
--	}
--
--	if (whiteout) {
--		inc_nlink(whiteout);
--		mark_inode_dirty(whiteout);
--
--		spin_lock(&whiteout->i_lock);
--		whiteout->i_state &= ~I_LINKABLE;
--		spin_unlock(&whiteout->i_lock);
--
--		iput(whiteout);
-+		/*
-+		 * S_SYNC flag of whiteout inherits from the old_dir, and we
-+		 * have already checked the old dir inode. So there is no need
-+		 * to check whiteout.
-+		 */
- 	}
- 
- 	err = ubifs_jnl_rename(c, old_dir, old_inode, &old_nm, new_dir,
-@@ -1454,6 +1484,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
- 	ubifs_release_budget(c, &req);
- 
-+	if (whiteout) {
-+		ubifs_release_budget(c, &wht_req);
-+		iput(whiteout);
-+	}
-+
- 	mutex_lock(&old_inode_ui->ui_mutex);
- 	release = old_inode_ui->dirty;
- 	mark_inode_dirty_sync(old_inode);
-@@ -1462,11 +1497,16 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	if (release)
- 		ubifs_release_budget(c, &ino_req);
- 	if (IS_SYNC(old_inode))
--		err = old_inode->i_sb->s_op->write_inode(old_inode, NULL);
-+		/*
-+		 * Rename finished here. Although old inode cannot be updated
-+		 * on flash, old ctime is not a big problem, don't return err
-+		 * code to userspace.
-+		 */
-+		old_inode->i_sb->s_op->write_inode(old_inode, NULL);
- 
- 	fscrypt_free_filename(&old_nm);
- 	fscrypt_free_filename(&new_nm);
--	return err;
-+	return 0;
- 
- out_cancel:
- 	if (unlink) {
-@@ -1487,11 +1527,11 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 				inc_nlink(old_dir);
- 		}
- 	}
-+	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
- 	if (whiteout) {
--		drop_nlink(whiteout);
-+		ubifs_release_budget(c, &wht_req);
- 		iput(whiteout);
- 	}
--	unlock_4_inodes(old_dir, new_dir, new_inode, whiteout);
- out_release:
- 	ubifs_release_budget(c, &ino_req);
- 	ubifs_release_budget(c, &req);
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 8ea680dba61e..75dab0ae3939 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1207,9 +1207,9 @@ int ubifs_jnl_xrename(struct ubifs_info *c, const struct inode *fst_dir,
-  * @sync: non-zero if the write-buffer has to be synchronized
-  *
-  * This function implements the re-name operation which may involve writing up
-- * to 4 inodes and 2 directory entries. It marks the written inodes as clean
-- * and returns zero on success. In case of failure, a negative error code is
-- * returned.
-+ * to 4 inodes(new inode, whiteout inode, old and new parent directory inodes)
-+ * and 2 directory entries. It marks the written inodes as clean and returns
-+ * zero on success. In case of failure, a negative error code is returned.
-  */
- int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		     const struct inode *old_inode,
-@@ -1222,14 +1222,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	void *p;
- 	union ubifs_key key;
- 	struct ubifs_dent_node *dent, *dent2;
--	int err, dlen1, dlen2, ilen, lnum, offs, len, orphan_added = 0;
-+	int err, dlen1, dlen2, ilen, wlen, lnum, offs, len, orphan_added = 0;
- 	int aligned_dlen1, aligned_dlen2, plen = UBIFS_INO_NODE_SZ;
- 	int last_reference = !!(new_inode && new_inode->i_nlink == 0);
- 	int move = (old_dir != new_dir);
--	struct ubifs_inode *new_ui;
-+	struct ubifs_inode *new_ui, *whiteout_ui;
- 	u8 hash_old_dir[UBIFS_HASH_ARR_SZ];
- 	u8 hash_new_dir[UBIFS_HASH_ARR_SZ];
- 	u8 hash_new_inode[UBIFS_HASH_ARR_SZ];
-+	u8 hash_whiteout_inode[UBIFS_HASH_ARR_SZ];
- 	u8 hash_dent1[UBIFS_HASH_ARR_SZ];
- 	u8 hash_dent2[UBIFS_HASH_ARR_SZ];
- 
-@@ -1249,9 +1250,20 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 	} else
- 		ilen = 0;
- 
-+	if (whiteout) {
-+		whiteout_ui = ubifs_inode(whiteout);
-+		ubifs_assert(c, mutex_is_locked(&whiteout_ui->ui_mutex));
-+		ubifs_assert(c, whiteout->i_nlink == 1);
-+		ubifs_assert(c, !whiteout_ui->dirty);
-+		wlen = UBIFS_INO_NODE_SZ;
-+		wlen += whiteout_ui->data_len;
-+	} else
-+		wlen = 0;
-+
- 	aligned_dlen1 = ALIGN(dlen1, 8);
- 	aligned_dlen2 = ALIGN(dlen2, 8);
--	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) + ALIGN(plen, 8);
-+	len = aligned_dlen1 + aligned_dlen2 + ALIGN(ilen, 8) +
-+	      ALIGN(wlen, 8) + ALIGN(plen, 8);
- 	if (move)
- 		len += plen;
- 
-@@ -1313,6 +1325,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		p += ALIGN(ilen, 8);
- 	}
- 
-+	if (whiteout) {
-+		pack_inode(c, p, whiteout, 0);
-+		err = ubifs_node_calc_hash(c, p, hash_whiteout_inode);
-+		if (err)
-+			goto out_release;
-+
-+		p += ALIGN(wlen, 8);
-+	}
-+
- 	if (!move) {
- 		pack_inode(c, p, old_dir, 1);
- 		err = ubifs_node_calc_hash(c, p, hash_old_dir);
-@@ -1352,6 +1373,9 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		if (new_inode)
- 			ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf,
- 						  new_inode->i_ino);
-+		if (whiteout)
-+			ubifs_wbuf_add_ino_nolock(&c->jheads[BASEHD].wbuf,
-+						  whiteout->i_ino);
- 	}
- 	release_head(c, BASEHD);
- 
-@@ -1368,8 +1392,6 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		err = ubifs_tnc_add_nm(c, &key, lnum, offs, dlen2, hash_dent2, old_nm);
- 		if (err)
- 			goto out_ro;
--
--		ubifs_delete_orphan(c, whiteout->i_ino);
- 	} else {
- 		err = ubifs_add_dirt(c, lnum, dlen2);
- 		if (err)
-@@ -1390,6 +1412,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		offs += ALIGN(ilen, 8);
- 	}
- 
-+	if (whiteout) {
-+		ino_key_init(c, &key, whiteout->i_ino);
-+		err = ubifs_tnc_add(c, &key, lnum, offs, wlen,
-+				    hash_whiteout_inode);
-+		if (err)
-+			goto out_ro;
-+		offs += ALIGN(wlen, 8);
-+	}
-+
- 	ino_key_init(c, &key, old_dir->i_ino);
- 	err = ubifs_tnc_add(c, &key, lnum, offs, plen, hash_old_dir);
- 	if (err)
-@@ -1410,6 +1441,11 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
- 		new_ui->synced_i_size = new_ui->ui_size;
- 		spin_unlock(&new_ui->ui_lock);
- 	}
-+	/*
-+	 * No need to mark whiteout inode clean.
-+	 * Whiteout doesn't have non-zero size, no need to update
-+	 * synced_i_size for whiteout_ui.
-+	 */
- 	mark_inode_clean(c, ubifs_inode(old_dir));
- 	if (move)
- 		mark_inode_clean(c, ubifs_inode(new_dir));
--- 
-2.31.1
-
+Thanks,
+Ezequiel
 
 ______________________________________________________
 Linux MTD discussion mailing list
