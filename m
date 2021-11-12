@@ -2,14 +2,14 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 430D6C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A393CC433FE
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:07:57 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 029DE60F0F
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:07:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 029DE60F0F
+	by mail.kernel.org (Postfix) with ESMTPS id 6A6A160F93
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:07:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6A6A160F93
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,24 +18,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gikW1s+wzp1Sg7oqaaVvfLpchXurlhfgimdZrHfR+FQ=; b=N1Nw2xs+cDTWB8
-	TriQRlW0aEVvqCOO6r0Lfjlid84zfUKtIfrXSAgvVnWcxduWb1lsYsTgFxmKsys0S/wLADHDiRpeC
-	BSVsFfdXAPEwwm4UfyKK7yUC+8/tqgE/+1BXl9cVQkgZMbL3z3V6deIBP/OerGZVwmk0kIhCnK3IB
-	Ug/vA4uox2IKaP4a+gEyYprBimtysDAzwxrr68iDvyCG6ddumM6HI58BBqb2IOPutpEKb5OyAPm6o
-	7r7Edp2JV6ZZhYuCdjFSORVrM5DtVxCtWvVdYhCMVU9YXO1qtCfFaVFvWWl+AEni2Kpt/TACMbzLk
-	I/66lIVexJsSUW/qst8g==;
+	List-Owner; bh=VgBTih89FPgMECrmctB38d2krsblV4Xd6cAd7YGNqHw=; b=aXjxstr90ThV81
+	p7XmFkX18C4NojlMHbQmDoBL2eH7P7xPmHBMv46zMHFZ1AaQPSdu8R9TlN1doMNCSqRWNKGVqWyM7
+	gYG4pIlDVaxIu50QsFYvaGVkKzDQTRLIU7t0SnB2LA7Q2n6uVu2HZpHjgazDUxgDEkr2cUDvZiQgc
+	ovyPGw3Sc0DmLHG+kyNTpIps2zyWr+0eR4HgUWCKBv0VikkAdh8ppAr/UF28RLsTHe1rxLjF9BC4y
+	JbpTFpYr6n1dZGAz3vamLuBWgeGJrTy5eZARbUnJF2TbOh4JC7dLdJEP13N8pis5AUV3c09NllaBj
+	G8+4NFJkz0E86dTFOpMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlVKh-00ADgJ-In; Fri, 12 Nov 2021 12:07:03 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1mlVL7-00ADpu-No; Fri, 12 Nov 2021 12:07:29 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlVJR-00ADDv-Lb
+ id 1mlVJR-00ADDy-NB
  for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 12:05:50 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HrHGf5J2PzcbHN;
- Fri, 12 Nov 2021 20:00:42 +0800 (CST)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HrHGg2hyczbhDS;
+ Fri, 12 Nov 2021 20:00:43 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.15; Fri, 12 Nov 2021 20:05:34 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
@@ -48,10 +48,10 @@ To: <richard@nod.at>, <s.hauer@pengutronix.de>, <miquel.raynal@bootlin.com>,
  <kirill.shutemov@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>
-Subject: [PATCH v3 03/12] ubifs: Fix wrong number of inodes locked by ui_mutex
- in ubifs_inode comment
-Date: Fri, 12 Nov 2021 20:17:49 +0800
-Message-ID: <20211112121758.2208727-4-chengzhihao1@huawei.com>
+Subject: [PATCH v3 04/12] ubifs: Add missing iput if do_tmpfile() failed in
+ rename whiteout
+Date: Fri, 12 Nov 2021 20:17:50 +0800
+Message-ID: <20211112121758.2208727-5-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211112121758.2208727-1-chengzhihao1@huawei.com>
 References: <20211112121758.2208727-1-chengzhihao1@huawei.com>
@@ -61,8 +61,9 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211112_040545_895086_E2EC5096 
-X-CRM114-Status: GOOD (  10.57  )
+X-CRM114-CacheID: sfid-20211112_040545_945155_369DC398 
+X-CRM114-Status: UNSURE (   7.87  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,29 +80,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since 9ec64962afb1702f75b("ubifs: Implement RENAME_EXCHANGE") and
-9e0a1fff8db56eaaebb("ubifs: Implement RENAME_WHITEOUT") are applied,
-ubifs_rename locks and changes 4 ubifs inodes, correct the comment
-for ui_mutex in ubifs_inode.
+whiteout inode should be put when do_tmpfile() failed if inode has been
+initialized. Otherwise we will get following warning during umount:
+  UBIFS error (ubi0:0 pid 1494): ubifs_assert_failed [ubifs]: UBIFS
+  assert failed: c->bi.dd_growth == 0, in fs/ubifs/super.c:1930
+  VFS: Busy inodes after unmount of ubifs. Self-destruct in 5 seconds.
 
+Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/ubifs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/dir.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index c38066ce9ab0..972e41daff01 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -372,7 +372,7 @@ struct ubifs_gced_idx_leb {
-  * @ui_mutex exists for two main reasons. At first it prevents inodes from
-  * being written back while UBIFS changing them, being in the middle of an VFS
-  * operation. This way UBIFS makes sure the inode fields are consistent. For
-- * example, in 'ubifs_rename()' we change 3 inodes simultaneously, and
-+ * example, in 'ubifs_rename()' we change 4 inodes simultaneously, and
-  * write-back must not write any of them before we have finished.
-  *
-  * The second reason is budgeting - UBIFS has to budget all operations. If an
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 2735ad1affed..6503e6857f6e 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1334,6 +1334,8 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 
+ 		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
+ 		if (err) {
++			if (whiteout)
++				iput(whiteout);
+ 			kfree(dev);
+ 			goto out_release;
+ 		}
 -- 
 2.31.1
 
