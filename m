@@ -2,14 +2,14 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9B23C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 21:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF0BDC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 21:54:25 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CFFD60F0F
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 21:50:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8CFFD60F0F
+	by mail.kernel.org (Postfix) with ESMTPS id 9709961051
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 21:54:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 9709961051
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,47 +18,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=v//38xN9DAYlodY3MWSHVIKkH9V3K3s59mn//sLjlPg=; b=eI8PEqd7IcaINWQWUcAsl7CezT
-	OQPIv4cC2IGtJGk79xOAanvCPb6kKMid0pIVT5KvKPa8r5AOwmg8s6X/UoNN9eLmdLRzFIueXOvag
-	XsPQUNcPHnZUlENIBHguehBunHA6SprUtkahLN8Rw/O/b8VtTjz8OYc4pqt6/nYMz4y1doqC9Rrfy
-	2YJjTqtXywTTogdaSjuUb2hLTJ5k6RFopsb9+ynWnBiKEcdgRzZpU9uWarnoxfJoKsRnh8pU76yew
-	32/BzgJZmpGbtMTfzZCsXmLVSHFEAibQu+kzSjdo00a4jRPUPvPyNnmgE9lyUXq+icH3Cut1RtTRx
-	VyAL7dWQ==;
+	bh=8IuX74mrwrIeo1TdSuHnNqbH7SqqptNjqjWSMH4XBDQ=; b=jmPAz/fer2gME3rnPelQh3rLHk
+	Za5lTKJYhtg/VwOXw1Q6IrKuJWm/1KFBuaQrxB4B/i2ZXJ5Slbs+CauXU8rPEgUSQZ24OmEBnEALs
+	dQlmdbOtwh0vncIIGjZCehRnug1c/Tgsp30hu7HH0omzlg6aG4V2iv7+GJHJXlux3gsEY+LzUqC0O
+	9r3B7MXuPAOAf08GWcdWhzpXUCDbXdX+/1Lu19nDc5TOy4rLJ5v1ehkfTU7WsDJX1AiRRM6gdoXOo
+	GzmBJzGACzWfzxfpPHA0NqHEtB2RyNpxD0Jx2YHb/gvaRlELA6E772J+fzEkMbSbB2lp68K7doa4F
+	PJNkYj+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mleRF-00Bdlf-97; Fri, 12 Nov 2021 21:50:25 +0000
+	id 1mleUh-00BeWy-Ql; Fri, 12 Nov 2021 21:53:59 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mleR2-00BdkF-HI; Fri, 12 Nov 2021 21:50:14 +0000
+ id 1mleUS-00BeTN-J6; Fri, 12 Nov 2021 21:53:45 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 5DA3D22175;
- Fri, 12 Nov 2021 22:50:09 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id D54DD22175;
+ Fri, 12 Nov 2021 22:53:42 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1636753810;
+ s=mail2016061301; t=1636754022;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Nkko9N/e7xY6c4RJsfJU8th4g1PVUqm+qXWsMEpWEHY=;
- b=WZVKzJ4lt1CV2eDV9UpTKUTyD5u9dPWcTAYf/B/v2xgMiuxvv8t9fLWMHv6OdqFj5A+uoU
- r7VU2CParsj6pD58pNfAe57zJKiYV4QcYGQO0srSdDR2N7R6jJ+YFgF7P3TmPjclaZ7Mhs
- m6mLBrCwYN+vuwE2eIGhDKDthX+kkh8=
+ bh=67DAZHAkoZkgttQP3+MKA9AOvu5EzlgsMUcwZlkLJEk=;
+ b=ILsekL8e1xa1sstqLiHBio86Z5xtwuzknzBmEhA9hfHFZ2flHiksALfO7gdzSaiWu3Vy3A
+ maCaAxCMhgfRbFrtii3FR197rfJzO18sOqSMchjdHRL1tUuemiuC/k/AzYzI8Rb9bwqdbA
+ 0jjtzDKtiLa+L0KorslzkwWHfVGW59M=
 MIME-Version: 1.0
-Date: Fri, 12 Nov 2021 22:50:09 +0100
+Date: Fri, 12 Nov 2021 22:53:42 +0100
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v3 14/25] mtd: spi-nor: Introduce flash_info flags masks
-In-Reply-To: <20211029172633.886453-15-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v3 19/25] mtd: spi-nor: core: Move
+ spi_nor_set_addr_width() in spi_nor_setup()
+In-Reply-To: <20211029172633.886453-20-tudor.ambarus@microchip.com>
 References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
- <20211029172633.886453-15-tudor.ambarus@microchip.com>
+ <20211029172633.886453-20-tudor.ambarus@microchip.com>
 User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <3ededb98250e7e3a50a7c18d43efd5bd@walle.cc>
+Message-ID: <26721ac6aed35b3bf03753c0569762d5@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211112_135012_921237_F326607B 
-X-CRM114-Status: GOOD (  35.18  )
+X-CRM114-CacheID: sfid-20211112_135344_823700_B31696A0 
+X-CRM114-Status: UNSURE (   5.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,186 +84,14 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2021-10-29 19:26, schrieb Tudor Ambarus:
-> Clarify for what the flash_info flags are used for. Split them in
-> three categories:
-> 1/ NON_SFDP_FLAGS: flags that indicate support that is not defined
->    by the JESD216 standard in its SFDP tables.
-> 2/ SFDP_FLAGS: flags that indicate support that can be discovered
->    via SFDP. These flags are used when the flash does not define the
->    SFDP tables. Used together with SPI_NOR_SKIP_SFDP flag.
-> 3/ FIXUP_FLAGS: flags that indicate support that can be discovered
->    via SFDP ideally, but can not be discovered for this particular 
-> flash
->    because the SFDP table that indicates this support is not defined by
->    the flash. In case the table for this support is defined but has 
-> wrong
->    values, one should instead use a post_sfdp() hook to set the SNOR_F
->    equivalent flag.
-> 
-> Manufacturer specific flags like USE_CLSR, USE_FSR, SPI_NOR_XSR_RDY,
-> will be removed in a future series.
-
-While i like the partitioning of the flags, I don't really like
-that masks etc. Why don't you just use different members, like
-non_sfdp_flags sfdp_flags and fixup_flags?
-
-This will make sure, the flags won't get mixed up. Also I'm
-not sure about your intention of the
-   info_flags = nor->info->flags & SOME_MASK;
-pattern in the subsequent patches. But if you have different
-members you don't have to do that (although its superfluous
-anyway).
-
-The flags of each group can start with BIT(0) and reorganizations
-of the flags won't affect other groups and will then make these
-patches smaller and easier to review.
-
-If your concern is memory, then you can also use bitfields, no?
-To populate the flash_info structure, you already introduced a
-new macro. This can then just use the new member instead of
-".flags".
-
-> BIT(0) was kept for SPI_NOR_PARSE_SFDP (will be introduced in a
-> further patch).
+> spi_nor_setup() configures the SPI NOR memory. Setting the addr width
+> is too a configuration, hence we can move the spi_nor_set_addr_width()
+> in spi_nor_setup().
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.h | 89 ++++++++++++++++++++++++--------------
->  1 file changed, 57 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 6fc63ef4267b..1fadd0e74103 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -334,56 +334,81 @@ struct flash_info {
->  	u16		addr_width;
-> 
->  	u32		flags;
-> -#define SECT_4K			BIT(0)	/* SPINOR_OP_BE_4K works uniformly */
-> -#define SPI_NOR_NO_ERASE	BIT(1)	/* No erase command needed */
-> -#define SPI_NOR_NO_FR		BIT(3)	/* Can't do fastread */
-> -#define SECT_4K_PMC		BIT(4)	/* SPINOR_OP_BE_4K_PMC works uniformly */
-> -#define SPI_NOR_DUAL_READ	BIT(5)	/* Flash supports Dual Read */
-> -#define SPI_NOR_QUAD_READ	BIT(6)	/* Flash supports Quad Read */
-> -#define USE_FSR			BIT(7)	/* use flag status register */
-> -#define SPI_NOR_HAS_LOCK	BIT(8)	/* Flash supports lock/unlock via SR 
-> */
-> -#define SPI_NOR_HAS_TB		BIT(9)	/*
-> +#define SPI_NOR_SKIP_SFDP	BIT(1)	/* Skip parsing of SFDP tables */
-> +
-> +/*
-> + * Flags that indicate support that is not defined by the JESD216 
-> standard in
-> + * its SFDP tables.
-> + */
-> +#define NON_SFDP_FLAGS_MASK	GENMASK(15, 2)
-> +#define NON_SFDP_FLAGS(x)	((x) & NON_SFDP_FLAGS_MASK)
-> +#define SPI_NOR_HAS_LOCK	BIT(2)	/* Flash supports lock/unlock via SR 
-> */
-> +#define SPI_NOR_HAS_TB		BIT(3)	/*
->  					 * Flash SR has Top/Bottom (TB) protect
->  					 * bit. Must be used with
->  					 * SPI_NOR_HAS_LOCK.
->  					 */
-> -#define SPI_NOR_XSR_RDY		BIT(10)	/*
-> -					 * S3AN flashes have specific opcode to
-> -					 * read the status register.
-> -					 */
-> -#define SPI_NOR_4B_OPCODES	BIT(11)	/*
-> -					 * Use dedicated 4byte address op codes
-> -					 * to support memory size above 128Mib.
-> -					 */
-> -#define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
-> -#define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
-> -#define USE_CLSR		BIT(14)	/* use CLSR command */
-> -#define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */
-> -#define SPI_NOR_TB_SR_BIT6	BIT(16)	/*
-> +#define SPI_NOR_TB_SR_BIT6	BIT(4)	/*
->  					 * Top/Bottom (TB) is bit 6 of
->  					 * status register. Must be used with
->  					 * SPI_NOR_HAS_TB.
->  					 */
-> -#define SPI_NOR_4BIT_BP		BIT(17) /*
-> +#define SPI_NOR_4BIT_BP		BIT(5) /*
->  					 * Flash SR has 4 bit fields (BP0-3)
->  					 * for block protection.
->  					 */
-> -#define SPI_NOR_BP3_SR_BIT6	BIT(18) /*
-> +#define SPI_NOR_BP3_SR_BIT6	BIT(6) /*
->  					 * BP3 is bit 6 of status register.
->  					 * Must be used with SPI_NOR_4BIT_BP.
->  					 */
-> -#define SPI_NOR_OCTAL_DTR_READ	BIT(19) /* Flash supports octal DTR 
-> Read. */
-> -#define SPI_NOR_OCTAL_DTR_PP	BIT(20) /* Flash supports Octal DTR Page
-> Program */
-> -#define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(21) /*
-> -						 * Flash enables the best
-> -						 * available I/O mode via a
-> -						 * volatile bit.
-> -						 */
-> -#define SPI_NOR_SWP_IS_VOLATILE	BIT(22)	/*
-> +#define SPI_NOR_SWP_IS_VOLATILE	BIT(7)	/*
->  					 * Flash has volatile software write
->  					 * protection bits. Usually these will
->  					 * power-up in a write-protected state.
->  					 */
-> +#define SPI_NOR_NO_ERASE	BIT(8)	/* No erase command needed */
-> +#define NO_CHIP_ERASE		BIT(9) /* Chip does not support chip erase */
-> +#define SPI_NOR_NO_FR		BIT(10)	/* Can't do fastread */
-> +#define USE_CLSR		BIT(11)	/* use CLSR command */
-> +#define USE_FSR			BIT(12)	/* use flag status register */
-> +#define SPI_NOR_XSR_RDY		BIT(13)	/*
-> +					 * S3AN flashes have specific opcode to
-> +					 * read the status register.
-> +					 */
-> +
-> +/*
-> + * Flags that indicate support that can be discovered via SFDP. Used 
-> when SFDP
-> + * tables are not defined in the flash. These flags are used together 
-> with the
-> + * SPI_NOR_SKIP_SFDP flag.
-> + */
-> +#define SFDP_FLAGS_MASK		GENMASK(23, 16)
-> +#define SFDP_FLAGS(x)		((x) & SFDP_FLAGS_MASK)
-> +#define SECT_4K			BIT(16)	/* SPINOR_OP_BE_4K works uniformly */
-> +#define SECT_4K_PMC		BIT(17)	/* SPINOR_OP_BE_4K_PMC works uniformly */
-> +#define SPI_NOR_DUAL_READ	BIT(18)	/* Flash supports Dual Read */
-> +#define SPI_NOR_QUAD_READ	BIT(19)	/* Flash supports Quad Read */
-> +#define SPI_NOR_OCTAL_READ	BIT(20)	/* Flash supports Octal Read */
-> +#define SPI_NOR_OCTAL_DTR_READ	BIT(21) /* Flash supports octal DTR 
-> Read. */
-> +#define SPI_NOR_OCTAL_DTR_PP	BIT(22) /* Flash supports Octal DTR Page
-> Program */
-> +
-> +/*
-> + * Flags that indicate support that can be discovered via SFDP 
-> ideally, but can
-> + * not be discovered for this particular flash because the SFDP table 
-> that
-> + * indicates this support is not defined by the flash. In case the 
-> table for
-> + * this support is defined but has wrong values, one should instead 
-> use a
-> + * post_sfdp() hook to set the SNOR_F equivalent flag.
-> + */
-> +#define FIXUP_FLAGS_MASK	GENMASK(31, 24)
-> +#define FIXUP_FLAGS(x)		((x) & FIXUP_FLAGS_MASK)
-> +#define SPI_NOR_4B_OPCODES	BIT(24)	/*
-> +					 * Use dedicated 4byte address op codes
-> +					 * to support memory size above 128Mib.
-> +					 */
-> +#define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(25) /*
-> +						 * Flash enables the best
-> +						 * available I/O mode via a
-> +						 * volatile bit.
-> +						 */
-> 
->  	const struct spi_nor_otp_organization otp_org;
+> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
--- 
--michael
+Reviewed-by: Michael Walle <michael@walle.cc>
 
 ______________________________________________________
 Linux MTD discussion mailing list
