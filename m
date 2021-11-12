@@ -2,57 +2,87 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62DBBC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 04:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34ABFC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 07:19:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2443C60FBF
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 04:11:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2443C60FBF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=Nutricia.com
+	by mail.kernel.org (Postfix) with ESMTPS id E104E60FE7
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 07:19:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E104E60FE7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:From:To
-	:Date:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FS92iJVTgzSENH1/EJ829qXsAI7b+rB0GtgNzxpHJEU=; b=Bgk7YsUOIzeY5o
-	NxpPdZoPhgmE+Ort7xvh2X9hIa/rsZM8RMXuoWPPcj4YJIz7LR1B31PKZFIDSdlkZARM4B1/ouljb
-	MRcIZiBH5enS81rBuT1kUxN+goXX5tlv5FzCO8L5wcm3llXe66P/l0/1th3uEqpKGh2OdGE55NuLK
-	Fo0RIzjGu7DfAxC85Lq85VtpFyt3JfCjwPbB39svf14YrjCkkKBAOPEi+VH5/FtF0QQsKzqy976H4
-	ylCssvOFOv2Qkirvj8rGpEXpRfD8i7efPOoiVTuaJREBUd02pUP/LfqaOdGz9X4C89aILkVma0k8k
-	5NSBGSIKg6KBT2AvSNrQ==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=sB5nA67gb9YQ25s9Di3i8Sga8yzT0f0682838P+JPFM=; b=37EMds3smKH2AgXFXJkAa8fv/M
+	w61KDt0T7iK9bxUWOy6Ey0AU1kqkqt2FeYRBaWn6WRJ0obEkpaCEHLJ3qAvY3O3ky3HmoemluVEwo
+	amQc0B9hzvmb7q0gcpxxTZvryJfOLj762h7AeY8F1tfHfqaptFr0KMc/jC02m51TNjmZsaXnEKCHB
+	16oO91xqjzaeawFBwNXsenf5JrNzIogFJCLnuDQmnSR1g2IGKdxjpqsDClVp+8NTv1/fPmUmObaFk
+	G8ZcfP4ap2BZAZf58H/div5lzHF69JI6anYZDtRVgXyiLuGclFvJ+CtW29bv1AOyQyzVCRboFpwbT
+	FcfJyzEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlNu3-009KnW-O6; Fri, 12 Nov 2021 04:11:03 +0000
-Received: from a27-192.smtp-out.us-west-2.amazonses.com ([54.240.27.192])
+	id 1mlQq7-009b6H-Gb; Fri, 12 Nov 2021 07:19:11 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlNtj-009KmG-Ma
- for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 04:10:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
- s=7v7vs6w47njt4pimodk5mmttbegzsi6n; d=amazonses.com; t=1636690241;
- h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
- bh=ceFAmHBwf0VLu+PPayYXR38uBqLXqlKsllE8zBsRaV4=;
- b=asfOZ2FN6IRaN92lkoKueQdvsnABCjTUC3JEKSwbv6c+moW79ubNpnqrmKS6De27
- mMXiSHoWXEUMIMin0uTCM/Y3ljobgUegvxZcytN4giydSX8DgJNrd0ofLPd6ILaoMiJ
- EDvvWByr2cosT7CzEuqUKn8tym0W++KFfARPTOeQ=
-Date: Fri, 12 Nov 2021 04:10:41 +0000
-To: linux-mtd@lists.infradead.org
-From: Neocate WebSite <CustomerService@Nutricia.com>
-Subject: Feedback: jla9p9
-Message-ID: <0101017d12572850-81dac637-a9e6-444d-a0cf-a0b23ca77f4e-000000@us-west-2.amazonses.com>
-X-Mailer: PHPMailer 5.2.27 (https://github.com/PHPMailer/PHPMailer)
+ id 1mlQq4-009b5F-IU
+ for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 07:19:09 +0000
+Received: by mail-ed1-x531.google.com with SMTP id f8so34237412edy.4
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Nov 2021 23:19:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=23MuWJBgLsmpo3DWwY1zc1kp+jWhxY7Ijuwd9E4NgEk=;
+ b=Vkfd+Ngmf8e5tezD37bbnSLTKfHJ1YCgXEOfo9QxnVJIx47FaMesIQllT+O2nZMOr2
+ gAvUVCbxZ8MBfAjvB4r83cGCaZGmeit88cjzDaNHcUu6pZPw0LYuW9JyqobxIA/dxQZC
+ 4eMP7qYVNhdEXe1ow2gyqCBNF0azrNp8981zXIHktGMkqw21iUqvWRw/80AjHMwDrACB
+ 0u7izw69vSTCT6iREHudCfWLd7Tv9y4WYCS1LzBUA/Fxm/yMntlh8RW77MekZwOP1cRP
+ Nt4Q9tYszsWb72N4DV3BNTytV9coyEbqgmvvT1+gadXKqa26AKoGnusvqJMxfdIHWVYW
+ 2zHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=23MuWJBgLsmpo3DWwY1zc1kp+jWhxY7Ijuwd9E4NgEk=;
+ b=YZpjvcEm0158Arlg5XLwaECIhHRkFnTiThxVsRsryspKeFEdEq/yWz7HuKn1M062Lp
+ 44ru6STfUqyLTaoAdQ3nkRFLofF+jWWkW2gLxYRgkc8EYO3tRdG1tioFx6C7p/7mWu5r
+ 83BrRvpVKmyNzqYeHsfxCDwYjd39hAEWbFYp5qP/EHoPoxLPVF5n7EQGGHJyQm7iUwMa
+ ZFu8QcWkkvjlquIqZwinUgRKjsZkM6kKLIJmZmS82SGDQEZT4PK6qJJ+lSMNW3O2iWVO
+ 4Atnbof2QZc2zMR58L4CXxm8Ljpt7kT4jJLG1S2feq0bRrPzvW2TKsjFXi7GQIKDY2Fl
+ 9EPQ==
+X-Gm-Message-State: AOAM530BkJvDICOeWYuGsMdqXkcJVi3wxVzGCNX9SQJat6QHZqPuqyi5
+ VTHPLmU2jtJwOHRmfEa3IxlALUPudrWwJgZPmyE=
+X-Google-Smtp-Source: ABdhPJx13NMWj+ghQdIXzWAZXD21zp7HK2PPcgzpsVoQ5oiXGPhrERb6kk1sCFUWYPnyLmUI/dMVXMZ3WHQjPvatP2I=
+X-Received: by 2002:a17:906:fca3:: with SMTP id
+ qw3mr17312375ejb.285.1636701546085; 
+ Thu, 11 Nov 2021 23:19:06 -0800 (PST)
 MIME-Version: 1.0
-X-OriginalArrivalTime: 12 Nov 2021 04:10:41.0406 (UTC)
- FILETIME=[41B529E0:01D7D77B]
-Feedback-ID: 1.us-west-2.1bQBLq95eoJ95e7AoFYAtfy7MGNEuuwPNthqtDHz6Bo=:AmazonSES
-X-SES-Outgoing: 2021.11.12-54.240.27.192
+References: <CAOuPNLinoW5Cx=xbUcT-DB4RiQkAPpe=9hsc-Rkch0LxD0mh+Q@mail.gmail.com>
+ <CAOuPNLgquwOJg85kDcf67+4kTYP9N=45FvV+VDTJr6txYi5-wg@mail.gmail.com>
+ <CAOuPNLjFtS7ftg=+-K3S+0ndyNYmUNqXo7SHkyV4zK4G9bZ4Og@mail.gmail.com>
+In-Reply-To: <CAOuPNLjFtS7ftg=+-K3S+0ndyNYmUNqXo7SHkyV4zK4G9bZ4Og@mail.gmail.com>
+From: Pintu Agarwal <pintu.ping@gmail.com>
+Date: Fri, 12 Nov 2021 12:48:55 +0530
+Message-ID: <CAOuPNLg_YwyhK6iPZZbRWe57Kkr1d8LjJaDniCvvOqk4t2-Sog@mail.gmail.com>
+Subject: Re: Kernel-4.14: With ubuntu-18.04 building rootfs images and booting
+ gives SQUASHFS error: xz decompression failed, data probably corrupt
+To: open list <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, dm-devel@redhat.com, 
+ Phillip Lougher <phillip@squashfs.org.uk>,
+ Mikulas Patocka <mpatocka@redhat.com>, 
+ Richard Weinberger <richard@nod.at>, Florian Fainelli <f.fainelli@gmail.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ drosen@google.com, astrachan@google.com, speed.eom@samsung.com, 
+ Sami Tolvanen <samitolvanen@google.com>, snitzer@redhat.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211111_201043_789122_83877B6E 
-X-CRM114-Status: UNSURE (   1.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211111_231908_654160_4C94C8E1 
+X-CRM114-Status: GOOD (  12.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,16 +94,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RnJvbTog4p2k77iPIEFsaWNlIHNlbnQgeW91IGEgSE9UIHZpZGVvISBDbGljayBIZXJlOiBodHRw
-Oi8vYmV0b253ZXJrZW5kZWpvbmdlLm5sL3dwLWNvbnRlbnQvcGx1Z2lucy9mb3JtY3JhZnQvZmls
-ZS11cGxvYWQvc2VydmVyL2NvbnRlbnQvZmlsZXMvMTYxOGI5Mjk3MjI4MjAtLS1jb25maXJtLnBk
-Zj9rOHp2IOKdpO+4jyAzbzIwanUxIDxsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZz4KU3Vi
-amVjdDogamxhOXA5ClBob25lOiA5NDE3NjgzMDM1OTIKTWVzc2FnZTogZjVmYnpxCgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+On Tue, 9 Nov 2021 at 21:04, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+
+> > > We only get these squashfs errors flooded in the boot logs:
+> > > {{{
+> > > ....
+> > > [    5.153479] device-mapper: init: dm-0 is ready
+> > > [    5.334282] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
+> > > ....
+> > > [    8.954120] SQUASHFS error: xz decompression failed, data probably corrupt
+> > > [    8.954153] SQUASHFS error: squashfs_read_data failed to read block 0x1106
+> > > [    8.970316] SQUASHFS error: Unable to read data cache entry [1106]
+> > > [    8.970349] SQUASHFS error: Unable to read page, block 1106, size 776c
+> > > [    8.980298] SQUASHFS error: Unable to read data cache entry [1106]
+> > > [    8.981911] SQUASHFS error: Unable to read page, block 1106, size 776c
+> > > [    8.988280] SQUASHFS error: Unable to read data cache entry [1106]
+> > > ....
+> > > }}}
+> > >
+
+One more observation:
+When I disable FEC flag in bootloader, I see the below error:
+[    8.360791] device-mapper: verity: 253:0: data block 2 is corrupted
+[    8.361134] device-mapper: verity: 253:0: data block 3 is corrupted
+[    8.366016] SQUASHFS error: squashfs_read_data failed to read block 0x1106
+[    8.379652] SQUASHFS error: Unable to read data cache entry [1106]
+[    8.379680] SQUASHFS error: Unable to read page, block 1106, size 7770
+
+Also, now I see that the decompress error is gone, but the read error
+is still there.
+
+This seems to me that dm-verity detects some corrupted blocks but with
+FEC it auto corrects itself, how when dm-verity auto corrects itself,
+the squashfs decompression algorithm somehow could not understand it.
+
+So, it seems like there is some mis-match between the way FEC
+correction and the squashfs decompression happens ?
+
+Is this issue seen by anybody else here ?
+
+
+Thanks,
+Pintu
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
