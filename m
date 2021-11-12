@@ -2,56 +2,77 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C7FAC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 15:53:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59C07C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 16:53:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C744A60F45
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 15:53:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C744A60F45
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 159246103A
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 16:53:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 159246103A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MsVyzo+0VMb2FqJW6O9swBsgf4JkvuzNbxfz9nScuA0=; b=vAPahkaaQFTB2V
-	72DKc16AO5QPg52UvhkbE8CmvGQvCkeW0Hpc88mc/c8zGaNROfMXB1pB5nhgY1QImkm1+u5uZ9I46
-	63+KrSBpA3yKbAxG8ABjaWQw4zNmSP37FuzWQcc9plzmofjuGwzKnetufnATAvMo4vPwP9DMM1feX
-	zZ103VyNd6eLJcKrN9110zDMbDi0sOxzziKR7OZQjtaIdmhLihK174njDH8h+Ql3Pb2SwZAa4KcSK
-	cwgwXZP9fcmfhX82P0YzXlVuDertqn0sCWLidAH2RxjULXzpildSGOWhAl432tiB39W6PcM7xH0LO
-	ACdveJp0NNbyBTqgsfcA==;
+	List-Owner; bh=ncev+fAZHLRFB+csddi6CZgaXA8LzN7MHOCWd/efrII=; b=cUlxqHxBE5li5M
+	boFY8siv+cxwZyZ/vjy3yj+IPJXMvc+kMeW8LeX/gsUzzJsf5rTK/v0bky8OMaSJU8+J29v0syJin
+	gM5gVWw4ywoC6ha0IMmju43bLf7L0b7A82vV0fvyJA9rS3vdYlaIHnpeFkleYBngqNzhQHmiuKeHK
+	+sns4psv45nmxZRhJiGstknLcOjRJPd8CJbOrzHHxrk9Ub+eYHu0T5g02+SLUXgC8r/QpRxeWiWhg
+	chUs5DIxh0rmUwfhjL1j1hh12eHmc8154PBpEd+X/GI6AUsRsNP99SQfDOu+QEvu68FpInGDSCV3j
+	eiOw7C2FWBS5TSDZGA2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlYr7-00BAY2-D2; Fri, 12 Nov 2021 15:52:45 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1mlZnQ-00BGWn-Js; Fri, 12 Nov 2021 16:53:00 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlYr4-00BAWu-Ew
- for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 15:52:44 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1AF05E000A;
- Fri, 12 Nov 2021 15:52:37 +0000 (UTC)
-Date: Fri, 12 Nov 2021 16:52:36 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 4/4] mtd: rawnand: fsmc: Fix timing computation
-Message-ID: <20211112165236.12d71bc0@xps13>
-In-Reply-To: <20211112143855.2678989-5-herve.codina@bootlin.com>
-References: <20211112143855.2678989-1-herve.codina@bootlin.com>
- <20211112143855.2678989-5-herve.codina@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mlZnO-00BGVw-5U
+ for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 16:52:59 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72AFA61056
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2021 16:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1636735977;
+ bh=ayTNUIk6TIl82rv3BreaDM/dQMtYOu5c3Q5uMvQ1Wj4=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=ZKFkyq5Kvpv0qMn1FFRSzygnvIzPCO3DpokqTfCTj7Xnm8UopINNasLX3UjpbSvyi
+ fvrRCbd5kqO37d7d1LeuZ63g1SuIHXIV+DCjWuF6FlMAT/884AMV0PM/UsHkm7OIia
+ iobR/QagUFeNpJasCy2bSNX3w1Zx927WmFH39namU94V58aQm7rapdkVyHeR0ycjtE
+ Dujz4261khCp4I4Uya3FM+vQLaz460sjvYJanknUkHo2BEEPcBR9MryiVi6RQ3jiBz
+ eBLOS5qMBYUWvzhuJfqc7n9RVfMB+MPOmc1NkMdcmD4gslDFMVBRXBZXdOGtdgahbH
+ ajZWbxwUdt9qQ==
+Received: by mail-qv1-f44.google.com with SMTP id s9so6651861qvk.12
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2021 08:52:57 -0800 (PST)
+X-Gm-Message-State: AOAM531ltYPj14ddNZ4zfexi4Kg8w/UmbfZzZ9OxCMyeUz/XBOrsxaSb
+ ShYdP0kOHC7VHKjZqv03cd796ogRDbhw5DO8rQ==
+X-Google-Smtp-Source: ABdhPJx7hhG54lsgYFTa6wx9FXvUSqJOrNwO5HlpC6ZRJoQDR6e8SNqKYNbTXDnhkyu4QwsfydlynJjYeCqrG9t5T3U=
+X-Received: by 2002:a05:6214:27ee:: with SMTP id
+ jt14mr15926606qvb.5.1636735976586; 
+ Fri, 12 Nov 2021 08:52:56 -0800 (PST)
 MIME-Version: 1.0
+References: <20211112152411.818321-1-miquel.raynal@bootlin.com>
+ <20211112152411.818321-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20211112152411.818321-2-miquel.raynal@bootlin.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Fri, 12 Nov 2021 10:52:44 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL5A3RfvzRy+7+9OhyPv8sdU1ars2Jso-RyhDwrUqMb2A@mail.gmail.com>
+Message-ID: <CAL_JsqL5A3RfvzRy+7+9OhyPv8sdU1ars2Jso-RyhDwrUqMb2A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] spi: dt-bindings: Allow describing flashes with
+ two CS
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, 
+ Michael Walle <michael@walle.cc>, Mark Brown <broonie@kernel.org>, 
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Michal Simek <monstr@monstr.eu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211112_075242_796780_D1A15B58 
-X-CRM114-Status: GOOD (  31.23  )
+X-CRM114-CacheID: sfid-20211112_085258_259727_CF2B0D43 
+X-CRM114-Status: GOOD (  21.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,88 +84,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSGVydmUsCgpoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb20gd3JvdGUgb24gRnJpLCAxMiBOb3Yg
-MjAyMSAxNTozODo1NSArMDEwMDoKCj4gVGhlIHRpbWluZyBzZXR0aW5nIHdlcmUgaW5jb3JyZWN0
-IG9uIHNvbWUgbmFuZHMgbGVhZGluZyB0byBhCj4gZmFsbGJhY2sgdG8gbW9kZSAwIHRpbWluZyBv
-biBzb21lIE1pY3JvbiBuYW5kIG9yIHRvIGluY29ycmVjdAo+IGRhdGEgcmVhZHMgb24gc29tZSBX
-aW5ib25kIE5BTkQuCgpJbiBnZW5lcmFsIEkgcHJlZmVyIHdoZW4gYWNyb255bXMgdXNlIHVwcGVy
-IGNhc2VzIChOQU5EcywgTVRELCBldGMpLgpQbGVhc2UgYWxzbyBkbyB0aGUgY2hhbmdlIGluIHRo
-ZSBvdGhlciBjb21taXRzLgoKU2F5aW5nICJ0aW1pbmcgc2V0dGluZyB3ZXJlIGluY29ycmVjdCBv
-biBzb21lIG5hbmRzIiBpcyBpbmFjY3VyYXRlLiBJCnRoaW5rIHdlIGNhbiBjbGVhcmx5IHN0YXRl
-IHRoYXQgIlVuZGVyIGNlcnRhaW4gY2lyY3Vtc3RhbmNlcywgdGhlCnRpbWluZyBzZXR0aW5ncyBj
-YWxjdWxhdGVkIGJ5IHRoZSBGU01DIE5BTkQgY29udHJvbGxlciBkcml2ZXIgd2VyZQppbmFjY3Vy
-YXRlLiIgKG5vIG5lZWQgdG8gcHJlY2lzZSBhIE5BTkQgZGV2aWNlIGhlcmUpLgoKPiBUaGUgdGlt
-aW5nIGNvbXB1dGF0aW9uIGRpZCBub3QgdGFrZSBpbnRvIGFjY291bnQgdGhlIGZvbGxvd2luZwo+
-IGNvbnN0cmFpbnQgZ2l2ZW4gaW4gU1BFQXIzeHggcmVmZXJlbmNlIG1hbnVhbDoKPiAgIHR3YWl0
-ID49IHRDRUEgLSB0c2V0KlRDTEsgKyBUT1VUREVMICsgVElOREVMCj4gCj4gVGhpcyBwYXRjaCBh
-ZGRzIHRoaXMgY29uc3RyYWludCBhbmQgZml4ZXMgdGhlIGlzc3VlcyBvbiBib3RoCgpXZSBnZW5l
-cmFsbHkgdXNlIHRoZSBkZWNsYXJhdGl2ZSB0ZW5zZSBoZXJlLCBzdWNoIGFzICJBZGQgdGhpcwpj
-b25zdHJhaW50IGFuZCBmaXhlcy4uLiIgZXZlbiB0aG91Z2ggSSB3b3VsZCBoYXBwaWx5IHJlZm9y
-bXVsYXRlIHdpdGgKc29tZXRoaW5nIGxpa2UgIkVuaGFuY2UgdGhlIHRpbWluZ3MgY2FsY3VsYXRp
-b24gYnkgdGFraW5nIGludG8gYWNjb3VudAp0aGlzIGFkZGl0aW9uYWwgY29uc3RyYWludC4iCgpB
-bmQgdGhlbiB5b3UgY2FuIHByb3ZpZGUgeW91ciByZXN1bHRzLCBob3cgaXQgYmVoYXZlZCB3aXRo
-IHRoZSB0d28KTkFORHMgYW5kIHdoYXQgaW1wcm92ZW1lbnQgeW91IGJyaW5nIHdpdGggdGhpcyBh
-ZGRpdGlvbmFsIGNhbGN1bGF0aW9uLgoKPiBuYW5kcyBoYXZpbmcgdGhlIGJvdGggbmFuZHMgd29y
-a2luZyBhdCBtb2RlIDMgdGltaW5nLgo+IFRoZSBjaGFuZ2UgaGFzIG5vIGltcGFjdCBvbiBzbG93
-ZXIgdGltaW5nIG1vZGUgc3VjaCBhcyBtb2RlIDAuCj4gSW5kZWVkLCBvbiBtb2RlIDAgdGltaW5n
-LCBjb21wdXRlZCB2YWx1ZXMgYXJlIHRoZSBzYW1lIHdpdGggYW5kCj4gd2l0aG91dCB0aGUgcGF0
-Y2guCgpBIGZldyB2aXN1YWwgY2hhbmdlcyBleHBsYWluZWQgYmVsb3cgb3RoZXJ3aXNlIHRoZSBs
-b2dpYyBpcyBmaW5lLgoKPiBTaWduZWQtb2ZmLWJ5OiBIZXJ2ZSBDb2RpbmEgPGhlcnZlLmNvZGlu
-YUBib290bGluLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNtY19uYW5kLmMg
-fCAyNyArKysrKysrKysrKysrKysrKysrLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDE5IGlu
-c2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2ZzbWNfbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNtY19uYW5kLmMK
-PiBpbmRleCBiZmYwOTIxOWNlM2EuLmEzYWE2NmYzMDg2OSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9mc21jX25hbmQuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Zz
-bWNfbmFuZC5jCj4gQEAgLTI3OCw3ICsyNzgsNyBAQCBzdGF0aWMgaW50IGZzbWNfY2FsY190aW1p
-bmdzKHN0cnVjdCBmc21jX25hbmRfZGF0YSAqaG9zdCwKPiAgewo+ICAJdW5zaWduZWQgbG9uZyBo
-Y2xrID0gY2xrX2dldF9yYXRlKGhvc3QtPmNsayk7Cj4gIAl1bnNpZ25lZCBsb25nIGhjbGtuID0g
-TlNFQ19QRVJfU0VDIC8gaGNsazsKPiAtCXUzMiB0aGl6LCB0aG9sZCwgdHdhaXQsIHRzZXQ7Cj4g
-Kwl1MzIgdGhpeiwgdGhvbGQsIHR3YWl0LCB0c2V0LCB0bXA7Cj4gIAo+ICAJaWYgKHNkcnQtPnRS
-Q19taW4gPCAzMDAwMCkKPiAgCQlyZXR1cm4gLUVPUE5PVFNVUFA7Cj4gQEAgLTMxMCwxMyArMzEw
-LDYgQEAgc3RhdGljIGludCBmc21jX2NhbGNfdGltaW5ncyhzdHJ1Y3QgZnNtY19uYW5kX2RhdGEg
-Kmhvc3QsCj4gIAllbHNlIGlmICh0aW1zLT50aG9sZCA+IEZTTUNfVEhPTERfTUFTSykKPiAgCQl0
-aW1zLT50aG9sZCA9IEZTTUNfVEhPTERfTUFTSzsKPiAgCj4gLQl0d2FpdCA9IG1heChzZHJ0LT50
-UlBfbWluLCBzZHJ0LT50V1BfbWluKTsKPiAtCXRpbXMtPnR3YWl0ID0gRElWX1JPVU5EX1VQKHR3
-YWl0IC8gMTAwMCwgaGNsa24pIC0gMTsKPiAtCWlmICh0aW1zLT50d2FpdCA9PSAwKQo+IC0JCXRp
-bXMtPnR3YWl0ID0gMTsKPiAtCWVsc2UgaWYgKHRpbXMtPnR3YWl0ID4gRlNNQ19UV0FJVF9NQVNL
-KQo+IC0JCXRpbXMtPnR3YWl0ID0gRlNNQ19UV0FJVF9NQVNLOwo+IC0KPiAgCXRzZXQgPSBtYXgo
-c2RydC0+dENTX21pbiAtIHNkcnQtPnRXUF9taW4sCj4gIAkJICAgc2RydC0+dENFQV9tYXggLSBz
-ZHJ0LT50UkVBX21heCk7Cj4gIAl0aW1zLT50c2V0ID0gRElWX1JPVU5EX1VQKHRzZXQgLyAxMDAw
-LCBoY2xrbikgLSAxOwo+IEBAIC0zMjUsNiArMzE4LDI0IEBAIHN0YXRpYyBpbnQgZnNtY19jYWxj
-X3RpbWluZ3Moc3RydWN0IGZzbWNfbmFuZF9kYXRhICpob3N0LAo+ICAJZWxzZSBpZiAodGltcy0+
-dHNldCA+IEZTTUNfVFNFVF9NQVNLKQo+ICAJCXRpbXMtPnRzZXQgPSBGU01DX1RTRVRfTUFTSzsK
-PiAgCj4gKwl0d2FpdCA9IG1heChzZHJ0LT50UlBfbWluLCBzZHJ0LT50V1BfbWluKTsKPiArCj4g
-KwkvKiBBY2NvcmRpbmcgdG8gU1BFQXIzMDAgUmVmZXJlbmNlIE1hbnVhbCAoUk0wMDgyKSB3aGlj
-aCBnaXZlcyBtb3JlCgogICAgICAgICAgIF4KU2hvdWxkIGJlOgoKCS8qCgkgKiBBY2NvcmRpbmcg
-dG8uLi4KCj4gKwkgKiBpbmZvcm1hdGlvbiByZWxhdGVkIHRvIEZTTVNDIHRpbWluZ3MgdGhhbiB0
-aGUgU1BFQXI2MDAgb25lIChSTTAzMDUpLAo+ICsJICogICB0d2FpdCA+PSB0Q0VBIC0gdHNldCpU
-Q0xLICsgVE9VVERFTCArIFRJTkRFTAo+ICsJICogV2l0aCBUT1VUREVMID0gN25zIChPdXRwdXQg
-ZGVsYXkgZnJvbSB0aGUgZmxpcC1mbG9wcyB0byB0aGUgYm9hcmQpCj4gKwkgKiBhbmQgVElOREVM
-ID0gNW5zIChJbnB1dCBkZWxheSBmcm9tIHRoZSBib2FyZCB0byB0aGUgZmxpcGZsb3ApCgpUaGVz
-ZSB0d28gaW5mb3JtYXRpb24gc2hvdWxkIGJlIHBsYWNlZCBjbG9zZSB0byBUT1VUREVMIGFuZCBU
-SU5ERUwKZGVmaW5pdGlvbnMgKHNlZSBteSBjb21tZW50IGJlbG93KS4KCj4gKwkgKi8KPiArCXRt
-cCA9IHNkcnQtPnRDRUFfbWF4IC0gKHRpbXMtPnRzZXQgKyAxKSpoY2xrbioxMDAwICsgNzAwMCAr
-IDUwMDA7CgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4K
-VGhlIHN0eWxlIGhlcmUgaXMgd3JvbmcsIHlvdSBuZWVkIHNwYWNlcyBiZWZvcmUgYW5kIGFmdGVy
-IGEgIioiLgoKUGxlYXNlIGFsc28gZW5jbG9zZSB0aGVzZSB0d28gbXVsdGlwbGljYXRpb25zIHdp
-dGggcGFyZW50aGVzaXMgdG8gbWFrZQppdCBjbGVhciB0aGF0IHlvdSBkbyBub3QgaW50ZW5kIHRv
-IG11bHRpcGx5IDcwMDAgbm9yIDUwMDAuCgpGaW5hbGx5LCBkbyBub3QgdXNlIG9wZW4gY29kZWQg
-dmFsdWVzLCBwbGVhc2UgZGVmaW5lIHRoZW0gYXQgdGhlIHRvcCBzbwp0aGF0IHlvdXIgY29kZSBt
-YXRjaGVzIHlvdXIgY29tbWl0IG1lc3NhZ2UgKHVzaW5nIFRPVVRERUwgYW5kIFRJTkRFTCkuCllv
-dSBjYW4gZXZlbiBhZGQgYSBjb21tZW50IGV4cGxhaW5pbmcgZnJvbSB3aGVyZSB5b3UgZ290IHRo
-ZXNlIHZhbHVlcy4KCj4gKwlpZiAodHdhaXQgPCB0bXApCj4gKwkJdHdhaXQgPSB0bXA7CgpJIGRv
-bid0IGxpa2UgdGhlIHRtcCBuYW1pbmcsIHlvdSBjb3VsZCBjYWxsIHRoaXMgdmFyaWFibGUgdHdh
-aXRfbWluIGFuZAp1c2UgYSBtaW4oKSBjYWxjdWxhdGlvbiBoZXJlIHRvIGZpdCB0aGUgbWFudWFs
-IGJldHRlci4KCj4gKwo+ICsJdGltcy0+dHdhaXQgPSBESVZfUk9VTkRfVVAodHdhaXQgLyAxMDAw
-LCBoY2xrbikgLSAxOwo+ICsJaWYgKHRpbXMtPnR3YWl0ID09IDApCj4gKwkJdGltcy0+dHdhaXQg
-PSAxOwo+ICsJZWxzZSBpZiAodGltcy0+dHdhaXQgPiBGU01DX1RXQUlUX01BU0spCj4gKwkJdGlt
-cy0+dHdhaXQgPSBGU01DX1RXQUlUX01BU0s7Cj4gKwo+ICAJcmV0dXJuIDA7Cj4gIH0KPiAgCgoK
-VGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, Nov 12, 2021 at 9:24 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> The Xilinx QSPI controller has two advanced modes which allow the
+> controller to behave differently and consider two flashes as one single
+> storage.
+>
+> One of these two modes is quite complex to support from a binding point
+> of view and is the dual parallel memories. In this mode, each byte of
+> data is stored in both devices: the even bits in one, the odd bits in
+> the other. The split is automatically handled by the QSPI controller and
+> is transparent for the user.
+>
+> The other mode is simpler to support, it is called dual stacked
+> memories. The controller shares the same SPI bus but each of the devices
+> contain half of the data. Once in this mode, the controller does not
+> follow CS requests but instead internally wires the two CSlevels with
+> the value of the most significant address bit.
+>
+> Supporting these two modes will involve core changes which include the
+> possibility of providing two CS for a single SPI device.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  .../bindings/spi/spi-controller.yaml          |  6 ++---
+
+Needs to go to dt list...
+
+>  scripts/dtc/checks.c                          | 24 ++++++++++++-------
+
+We don't take changes to dtc in the kernel. It must go to upstream
+first and then we sync it.
+
+>  2 files changed, 18 insertions(+), 12 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> index 8246891602e7..51877b637bfe 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> @@ -20,7 +20,7 @@ properties:
+>      pattern: "^spi(@.*|-[0-9a-f])*$"
+>
+>    "#address-cells":
+> -    enum: [0, 1]
+> +    enum: [0, 1, 2]
+
+A single 'device' with 2 chip-selects would be 2 'reg' entries, not 2
+address cells. 2 address cells would be a chip-select plus some other
+data needed to access the device. Sounds like your case is the former.
+
+Rob
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
