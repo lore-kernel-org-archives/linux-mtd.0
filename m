@@ -2,75 +2,66 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44123C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 16:54:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECA06C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 21:29:50 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0331461073
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 16:54:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0331461073
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id BC64360F51
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 21:29:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org BC64360F51
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ttZHzrhzKqPezNp4KPdrBd9D2ldhLagU8Xcbf5E6MNY=; b=Zsn4kgPCzExXZ+
-	X+/ytJ5mQYbbQ+Vp0kjx34Fz3YjsoyM7On4dZflGmSweewVeb/2yUjUbqMl3rIDMEi+b+vSe1PWw7
-	qGCN7N+//XnBDXZ/pqOHH3BJZhUimN3/eKRGhAkAXcTliX8zl9m3r3Ktew8uA1p3uiqFd3Ghv5Uhe
-	A4b3IXD3+ljtz9IcDiZTJeoWXcnC06pfEivwYTcSyZAAyMOtqlNhQL2lffh7bFBq3WV9JRxbIOxit
-	byaQxy9On1BHB13mBOICfJFF5piF5nG8VP6AuvHGZ+y5cz3nm1gxjwagsZYNBu6BdfjxPue5Zq8re
-	rkS8j1Lr+AHS51+jPo6w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=zk35+oAEB1P56Qt7JYTxS3I7GSkg9wzf23Mfisa5eiI=; b=c+CdA8XzBBOBBBgPl5K1niMED7
+	rA3MGa3iaKX3tQqsjsg2miyIFO7B8nCdzraHTEOs/wfQqU57IDrvkJ30WwJ5KXbeet0qfQUvmQcqB
+	pfd6CmYwhMX4RGhu07k1wDhZIaAXg5/Bouzc34TWrU1y0bH9mzxl9nlaSzIs+81jHlj/R6t/Md4zV
+	9bTOb98Z5pUV4JwavxIby/3Cet7UpO7s2NeljK+1Ybizq2tlRd64vRMutTbl0KlvP/Pjrf/TsPBBK
+	YBRe/4GryotvoyRQntxTMz+6ygnycG4KQxSjB7DusgAS24oIe+UGV9Flu9/h5qZ9rOLCIxfZbSqjO
+	5nc1ekyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlZod-00BGoK-IB; Fri, 12 Nov 2021 16:54:15 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mle6a-00BbYP-Jv; Fri, 12 Nov 2021 21:29:04 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlZoZ-00BGn8-Fn
- for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 16:54:13 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 350DC610A8
- for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2021 16:54:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636736051;
- bh=YJ3b6qghz4CJTSI3Bn/PLFDREBcPXJdKnMO8g47aw8w=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=m1UfXESd5EwNlEltVKh5JPDTxiEyeR9zujtshfMP9BC9++MsZU4cDIGwZijx63iHc
- ZGY/wMYD2P2tjlDJUosP4fwqD7Hg0qddwzXCd/VC48els+GsekqRXcn5Sr05hGnur+
- k1P56KYwKXO3HhF/xNYuez2lU/TJcNvguYXFNZP+52Cj63FzpFWwCJU0wAJlGnKH9d
- gtbqI1NAwTAxDeXRxvEOrowO5NoBqUS+d5+GBWix3vybTyZnqnS7oVTm3Wrp+j6sos
- hywERqVNIxkHafIGJ5txf0SrSkMsyEyzZVFiiw8dniKmJhal4Q/hSPLc+VtBx456up
- u9bdjr7ElljEg==
-Received: by mail-qv1-f51.google.com with SMTP id j9so6657482qvm.10
- for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2021 08:54:11 -0800 (PST)
-X-Gm-Message-State: AOAM533hlPyvkqv9BJmk6niAWS7nDoux0J94Xfa07GpiOr2k98H6TG81
- LoucfXL8Ttm7hg46mokJXVhhrjEAB11e8sDTAg==
-X-Google-Smtp-Source: ABdhPJx5fitBGetF0tHL7BBcB7eTcVJS54gjY94AaDWCXRDWRoOBOSjN50+p/cXmqORQuy5yRL9d3oUeVjPhfKzV1q8=
-X-Received: by 2002:a0c:c984:: with SMTP id b4mr16054318qvk.45.1636736050298; 
- Fri, 12 Nov 2021 08:54:10 -0800 (PST)
+ id 1mle6M-00BbUu-HQ; Fri, 12 Nov 2021 21:28:52 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 893E722175;
+ Fri, 12 Nov 2021 22:28:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1636752524;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9x5G7L2qE7EZiLaOS3ZgDaofIZhSn9S4dJDcicP12ws=;
+ b=BXnFpcc3FhHongV+X1R6BPOTF/vvjAmtN4vkYxGEbGlrI3+kzTnnRTlPVrxv6GaQ37A/fw
+ w5DK3npZWAcL6RXzsRSAtrktlvOzBFFJ/3EB6l0jKB/rbYoh7IfhP9k4O7oxGgJ5/3dNQt
+ b11SU94INSHrEhbuN2gDgC0laQG87VI=
 MIME-Version: 1.0
-References: <20211112152411.818321-1-miquel.raynal@bootlin.com>
- <20211112152411.818321-3-miquel.raynal@bootlin.com>
-In-Reply-To: <20211112152411.818321-3-miquel.raynal@bootlin.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Fri, 12 Nov 2021 10:53:59 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+uU-wngeko0SP-fBCM1OaBu0iTa0uC4ykK4SkastH9bQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+uU-wngeko0SP-fBCM1OaBu0iTa0uC4ykK4SkastH9bQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] dt-binding: mtd: spi-nor: Allow two CS per device
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>, Mark Brown <broonie@kernel.org>, 
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Michal Simek <monstr@monstr.eu>
+Date: Fri, 12 Nov 2021 22:28:42 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tudor.Ambarus@microchip.com
+Subject: Re: [PATCH v3 13/25] mtd: spi-nor: sst: Get rid of SST_WRITE
+ flash_info flag
+In-Reply-To: <0d7dc115-f616-bd20-a924-f7ebb7649812@microchip.com>
+References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
+ <20211029172633.886453-14-tudor.ambarus@microchip.com>
+ <ef9e5b2e36b37293a8761cd01e334877@walle.cc>
+ <0d7dc115-f616-bd20-a924-f7ebb7649812@microchip.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <8bc435899268dec5a3329e9bcfe30440@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211112_085411_579144_FDB822E3 
-X-CRM114-Status: GOOD (  15.03  )
+X-CRM114-CacheID: sfid-20211112_132850_781682_EC6D0C50 
+X-CRM114-Status: GOOD (  17.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,40 +73,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+ richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
+ knaerzche@gmail.com, Nicolas.Ferre@microchip.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
+ sr@denx.de, p.yadav@ti.com, mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Nov 12, 2021 at 9:24 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> This will be needed in order to be able to describe Xilinx QSPI
-> controller stacked and parallel modes.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> index ed590d7c6e37..dc99629e40db 100644
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -46,7 +46,7 @@ properties:
->        identified by the JEDEC READ ID opcode (0x9F).
->
->    reg:
-> -    maxItems: 1
-> +    maxItems: 2
+Am 2021-11-09 13:31, schrieb Tudor.Ambarus@microchip.com:
+> On 11/9/21 2:21 PM, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Am 2021-10-29 19:26, schrieb Tudor Ambarus:
+>>> The flash_info flags should be generic and not manufacturer specific.
+>>> Get rid of the manufacturer specific flag and use the late_init() 
+>>> fixup
+>>> hook instead.
+>>> Please note that sst_write is now set at flash level and not 
+>>> globally,
+>>> per manufacturer. Manufacturer hooks are generally a bad idea, 
+>>> because
+>>> it affects settings for all the flashes and we might end up with 
+>>> fixups
+>>> for "manufacturer settings".
+>>> 
+>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>> 
+>> Reviewed-by: Michael Walle <michael@walle.cc>
+>> 
+>> I'm still not sure, if having a just one fixup function will scale 
+>> with
+>> different flashes. What do you think about having an additional 
+>> (opaque
+>> to the core) (bit)field for the manufacturer and flash fixups 
+>> functions?
+> 
+> Sounds fine. I can reserve few bits to manufacturers and introduce a
+> MANUF_FLAGS genmask for the flash_info flags. Each specific 
+> manufacturer
+> flag will be visible just for that manufacturer. Please check patch 
+> 14/25,
+> I can extend the idea from there.
+> 
+> 
+>> In this case, you can reuse the same function - and then a 
+>> manufacturer
+>> will make more sense (addressing Pratyush comment about a common
+>> manufacturer fixup here).
+>> 
+>> I.e. the SST_WRITE flag would go into these flags, set per flash 
+>> device
+>> and the fixup can still remain in the manufacturer fixup.
+>> 
+> 
+> Right. Let me know if a MANUF_FLAGS genmask is better than this patch.
 
-You need minItems here.
+Yes, I think so.
 
->
->    spi-max-frequency: true
->    spi-rx-bus-width: true
-> --
-> 2.27.0
->
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
