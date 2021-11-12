@@ -2,157 +2,77 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F5BCC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 07:43:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93185C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 08:37:11 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B265760FE3
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 07:43:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B265760FE3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 64DC060F42
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 08:37:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 64DC060F42
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:CC:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gtbNzQaboan10VDSmb7FVv5A+B7i0j/59hFLvcrBxDo=; b=oKmxsrX5CQvyfC
-	7BvRNBssc0WXrcYrTCvpmlA+1IosKUUIaSnUt+JJGaEMruor5g599WsU7zi89H8CJPtI06Algeh+V
-	XyOCu8L44i10OfwQE3O4BSD6z9Ly8V2nVX6NPFkavCkTNTfnqhVw0hj1z+waJDDtOBjy2GYXgh3P/
-	++vvJNsl+fJl4gSYgLMJeYJIa7gBbDVxdrOphe8eGOVYVpyKbyU+KFmvV4HVfui68W//GNkzw8G3x
-	6GkQ4uJ9xfLRwLoE+PxovOSNFYfkS/+vydX/AblxQWYY3BdSz+dBfGk383G6WTSeC8lAswYYoXbza
-	zTrUqOQBSnzh5GPAel4Q==;
+	List-Owner; bh=W2UE46fRAacZzAVlNpsrWop0Hh2c1r1ucG7Ij12gRmM=; b=ldXq+Vnz9KM2PV
+	ldcYNf1HsFWZLdCmoEq/+rYNtedr1+gfYk/Wp7LoagRdyNXUb/xqzXT5CJjRKpGWUslAnXB5/XuMA
+	RR7GdmbD5rs9mnZskeGIu8v+y573GFpLXCbvwl5MGnh+3ED5WoES5freFKMKFVdVIDVPdP8ASXhZ7
+	Gi1jPiaEwciSBv+KZgnJxPZ+gb7jDLzQn8X21TGLvceBmHQzvXLgFVc3hc7+Zfsv+dkIJYVJT6kZ1
+	E+47DgNSEtfz5T+ri+x/iZHO5TXyHIRCEVkbyc//dg7LHDDpHhNUryXhQibMicyT2hXBF9v9wuJU2
+	cb2xY3QEVV4o9KWroHiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlRCx-009cJJ-Oq; Fri, 12 Nov 2021 07:42:47 +0000
-Received: from mail-wm1-x32a.google.com ([2a00:1450:4864:20::32a])
+	id 1mlS2q-009iXF-OQ; Fri, 12 Nov 2021 08:36:25 +0000
+Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlRCt-009cHP-DC
- for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 07:42:46 +0000
-Received: by mail-wm1-x32a.google.com with SMTP id
- 67-20020a1c1946000000b0030d4c90fa87so6133350wmz.2
- for <linux-mtd@lists.infradead.org>; Thu, 11 Nov 2021 23:42:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=d4YpBbYWP9wG3LFBKWknnju7IW21BdQrAXLAFoUfJjk=;
- b=L0G7vqzIu4OmVtWPcfcfA5NzLtPk2i0H7s2BzObNlHQTFEkm03sqk/2QHQ4kjpk9BH
- XMXouE5QpmwrxFfo6B5ZLvuccwWWhT/w9Ko9Yi7L+7BfDDnicqyRLnT+TM8ck5H5bQEY
- cyD6P6qfh9iWldNqTQR7o5UJ+sXkSMXyDzLNU6kkBq7ka/+ZuUqEk/qcSbQ3GxXC7kiU
- cm9dyledHK9n0gr3crraQGaAfhd3vfTQwfXVu/kwmwojjE1dRCSgNEVgeiJJB70r7ke9
- OYePQHHEPa/usZJXytv516/nCeAGVXFsmZBOHnIcNaOTOhsULeXowN7ikvsxKqOo/gxw
- 3O2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=d4YpBbYWP9wG3LFBKWknnju7IW21BdQrAXLAFoUfJjk=;
- b=gj9kmXnWmZgWeya4xmuAoJP0GO5cNxiyW+lmIQlxdMnl0+u8SOe+4U729Mb+6i+3YA
- 6EAmrbfHR5PNT3sqCv/4AAZCoXjUE5s2JCuGMb6tD41EXqAfuLo/OkthyHR8w70xG0it
- 8nv5c3jU2qvZ8GO1YUN4lI4D2/jYYMhu9rgtSb22O9rdKsB6jBjDxka86IwoTBIgDxQs
- Ph9zujvv8ShpimTW48aCF0fwPF8g5kuq3ycAQAxQVnKuYtKL50KAxrf31kA+4D63fkYj
- tbth/MNHeoTR056lsklD9AjZqnpOpVMb34gObJ8tuZdNU9KBo6LgGjqTUyz6y5+D7l25
- AEmw==
-X-Gm-Message-State: AOAM533nVxDWbN8UjIvkWItFWsiJZlQiaowu6vh7bHycLMleRmMdpx39
- 937ELyjzAsfGMdluueZL6R4sWA==
-X-Google-Smtp-Source: ABdhPJyYtg+MHn61GMl0MRFqSO/sm1wnHgrm7yORmq7WT7ihtvN7d0mp317CBhRDaom5mAlXGDszmg==
-X-Received: by 2002:a05:600c:2107:: with SMTP id
- u7mr32377342wml.82.1636702961238; 
- Thu, 11 Nov 2021 23:42:41 -0800 (PST)
-Received: from google.com ([95.148.6.174])
- by smtp.gmail.com with ESMTPSA id q8sm4978469wrx.71.2021.11.11.23.42.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Nov 2021 23:42:40 -0800 (PST)
-Date: Fri, 12 Nov 2021 07:42:37 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Cc: patrice.chotard@foss.st.com, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- alexandre torgue <alexandre.torgue@foss.st.com>,
- jonathan cameron <jic23@kernel.org>,
- Ahmad Fatoum <a.fatoum@pengutronix.de>,
- olivier moysan <olivier.moysan@foss.st.com>,
- Amelie Delaunay <amelie.delaunay@foss.st.com>,
- linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org,
- Jassi Brar <jassisinghbrar@gmail.com>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- maxime coquelin <mcoquelin.stm32@gmail.com>,
- Matt Mackall <mpm@selenic.com>, vinod koul <vkoul@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- baolin wang <baolin.wang7@gmail.com>, linux-spi@vger.kernel.org,
- david airlie <airlied@linux.ie>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, netdev@vger.kernel.org,
- Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
- ohad ben-cohen <ohad@wizery.com>, linux-gpio@vger.kernel.org,
- Jose Abreu <joabreu@synopsys.com>, Le Ray <erwan.leray@foss.st.com>,
- herbert xu <herbert@gondor.apana.org.au>,
- michael turquette <mturquette@baylibre.com>,
- Christophe Kerello <christophe.kerello@foss.st.com>,
- Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Christophe Roullier <christophe.roullier@foss.st.com>,
- linux-serial@vger.kernel.org, Amit Kucheria <amitk@kernel.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- Ludovic Barre <ludovic.barre@foss.st.com>,
- "david s . miller" <davem@davemloft.net>,
- Lionel Debieve <lionel.debieve@foss.st.com>,
- linux-i2c@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>,
- thierry reding <thierry.reding@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Sebastian Reichel <sre@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- philippe cornu <philippe.cornu@foss.st.com>, linux-rtc@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Kishon Vijay Abraham I <kishon@ti.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>,
- alsa-devel@alsa-project.org, Zhang Rui <rui.zhang@intel.com>,
- linux-crypto@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-iio@vger.kernel.org, pascal Paillet <p.paillet@foss.st.com>,
- Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
- Fabien Dessenne <fabien.dessenne@foss.st.com>,
- linux-pm@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
- stephen boyd <sboyd@kernel.org>,
- dillon min <dillon.minfei@gmail.com>, devicetree@vger.kernel.org,
- yannick fertre <yannick.fertre@foss.st.com>, linux-kernel@vger.kernel.org,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>, linux-phy@lists.infradead.org,
- benjamin gaignard <benjamin.gaignard@linaro.org>,
- sam ravnborg <sam@ravnborg.org>, Jakub Kicinski <kuba@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Alessandro Zummo <a.zummo@towertech.it>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- linux-clk@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
- arnaud pouliquen <arnaud.pouliquen@foss.st.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Jagan Teki <jagan@amarulasolutions.com>, dmaengine@vger.kernel.org,
- linux-media@vger.kernel.org, daniel vetter <daniel@ffwll.ch>,
- Marc Zyngier <maz@kernel.org>,
- bjorn andersson <bjorn.andersson@linaro.org>,
- lars-peter clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 2/5] dt-bindings: mfd: timers: Update maintainers for
- st,stm32-timers
-Message-ID: <YY4a7ZxzhNq6Or+t@google.com>
-References: <20211110150144.18272-1-patrice.chotard@foss.st.com>
- <20211110150144.18272-3-patrice.chotard@foss.st.com>
- <YYwjPAoCtuM6iycz@robh.at.kernel.org>
+ id 1mlS0F-009hZ5-Fh; Fri, 12 Nov 2021 08:33:46 +0000
+X-UUID: af315736b6704b5bb60ae2365aec0476-20211112
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
+ bh=kBQAZvjV8W8WyMKflvU3tesC8meeJTEyIZ40hgjJ0qs=; 
+ b=pe1/3Q1fGin8Hiq54e3SBImsflVCGI0rcCvOge7rctHXjIj00NpqNFOYDmoiwKBwvEqrKr7wAtCMQZ5J6YbCqxjeUA67Od1qpzqWgB9/ebS/FFLIcyEpHK52QXqHFCjK9DwbhzA4c5rj77IWRhaniESIpU9vBVmtoImCJ+UE0aM=;
+X-UUID: af315736b6704b5bb60ae2365aec0476-20211112
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
+ (envelope-from <xiangsheng.hou@mediatek.com>)
+ (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1445289391; Fri, 12 Nov 2021 01:33:38 -0700
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 12 Nov 2021 00:33:36 -0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 12 Nov 2021 16:33:35 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 12 Nov 2021 16:33:34 +0800
+Message-ID: <4e23bb7db6b3868531752efe644833f5817e9660.camel@mediatek.com>
+Subject: Re: [RFC,v3 5/5] mtd: spinand: skip set/get oob data bytes when
+ interleaved case
+From: xiangsheng.hou <xiangsheng.hou@mediatek.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <broonie@kernel.org>, <benliang.zhao@mediatek.com>,
+ <dandan.he@mediatek.com>, <guochun.mao@mediatek.com>,
+ <bin.zhang@mediatek.com>, <sanny.chen@mediatek.com>,
+ <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
+ <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Date: Fri, 12 Nov 2021 16:33:34 +0800
+In-Reply-To: <20211109130518.70db0d5d@xps13>
+References: <20211022024021.14665-1-xiangsheng.hou@mediatek.com>
+ <20211022024021.14665-6-xiangsheng.hou@mediatek.com>
+ <20211109130518.70db0d5d@xps13>
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YYwjPAoCtuM6iycz@robh.at.kernel.org>
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211111_234243_609491_B8360570 
-X-CRM114-Status: GOOD (  15.24  )
+X-CRM114-CacheID: sfid-20211112_003344_998006_2ABBDF55 
+X-CRM114-Status: GOOD (  29.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -164,26 +84,265 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAxMCBOb3YgMjAyMSwgUm9iIEhlcnJpbmcgd3JvdGU6Cgo+IE9uIFdlZCwgMTAgTm92
-IDIwMjEgMTY6MDE6NDEgKzAxMDAsIHBhdHJpY2UuY2hvdGFyZEBmb3NzLnN0LmNvbSB3cm90ZToK
-PiA+IEZyb206IFBhdHJpY2UgQ2hvdGFyZCA8cGF0cmljZS5jaG90YXJkQGZvc3Muc3QuY29tPgo+
-ID4gCj4gPiBCZW5qYW1pbiBoYXMgbGVmdCB0aGUgY29tcGFueSwgcmVtb3ZlIGhpcyBuYW1lIGZy
-b20gbWFpbnRhaW5lcnMuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IFBhdHJpY2UgQ2hvdGFyZCA8
-cGF0cmljZS5jaG90YXJkQGZvc3Muc3QuY29tPgo+ID4gLS0tCj4gPiAgRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9zdCxzdG0zMi10aW1lcnMueWFtbCB8IDEgLQo+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGRlbGV0aW9uKC0pCj4gPiAKPiAKPiBMZWUgaW5kaWNhdGVkIGhlIHdh
-cyBnb2luZyB0byBwaWNrIHRoaXMgb25lIHVwLCBzbzoKPiAKPiBBY2tlZC1ieTogUm9iIEhlcnJp
-bmcgPHJvYmhAa2VybmVsLm9yZz4KClNpbmNlIHlvdSBhbHJlYWR5IG1lcmdlZCB0aGUgdHJlZXdp
-ZGUgcGF0Y2gsIHlvdSBtYXkgYXMgd2VsbCB0YWtlCnRoaXMgdG9vLiAgV2UnbGwgd29yayB0aHJv
-dWdoIGFueSBjb25mbGljdHMgdGhhdCBtYXkgb2NjdXIgYXMgYQpyZXN1bHQuCgpBY2tlZC1ieTog
-TGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4KCi0tIApMZWUgSm9uZXMgW+adjueQvOaW
-r10KU2VuaW9yIFRlY2huaWNhbCBMZWFkIC0gRGV2ZWxvcGVyIFNlcnZpY2VzCkxpbmFyby5vcmcg
-4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBBcm0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNl
-Ym9vayB8IFR3aXR0ZXIgfCBCbG9nCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Miquel,
+
+Firstly, I would like to introduce Mediatek HW ECC engine how it
+organize the whole nand page data.
+
+Take page size 2KB and OOB size 64B for example,
+
+nand page standard data format:
++---------------------------+------------+
+|                           |            |
+|        main area          |  oob area  |
+|                           |            |
++---------------------------+------------+
+
+Mediatek HW ECC pipelined data format(sector size 1KB):
++------------+-------+-----------+-------+
+|            |       |           |       |
+|  sector(0) | oob(0)|  sector(1)| oob(1)|
+|            |       |           |       |
++------------+-------+-----------+-------+
+
+Mediatek HW ECC engine organize data as sector in unit.
+The sector size can be 512 or 1024 bytes.
+The OOB free and ecc bytes are stored right after the sector(n)
+main data.
+
+oob(n) layout:
++-------+---------+-----------+
+|       |         |           |
+| part1 |  part2  |   part3   |
+|       |         |           |
++-------+---------+-----------+
+part1: OOB bytes will be protected by ecc engine which called FDM ECC
+part2: OOB bytes not be protected by ecc engine
+part3: OOB bytes to store ecc parity for (sector data + FDM ECC bytes)
+
+part1 and part2 called FDM(flash disk manage data) which can be used to
+store BBM or filesystem manage data(like jffs2).
+
+The FDM and FDM ECC can be configurable,
+FDM number of bytes: 0 ~ 8 bytes
+FDM ECC number of byte: 0 ~ FDM size 
+
+Therefore, the mtk ecc driver need to handle BBM swap and OOB shift
+operation before/after the write/read operation in
+ecc_finish/prepare_io_req.
+
+1. Why need BBM swap operation in mtk ecc driver?
+
+Ensure the BBM poisition consistent with nand specification.
+
+           main area           oob area
++---------------------------+------------+
+|                           |
+            |
+|                           |*           |
+|               
+            |            |
++---------------------------+------------+
+
+   sector(0)   oob(0)   sector(1)   oob(1)
++------------+-------+-----------+-------+
+|            |       |           |       |
+|            |       |       #   |       |
+|            |       |           |       |
++------------+-------+-----------+-------+
+
+(*): stand for the BBM
+(#): stand for one byte main data
+
+For the 2KB + 64B page case, the standard BBM position will be main
+data in Mediatek HW ECC data format. Therefore, the BBM swap between
+the BBM with one bye main data in sector(1).
+
+The data struct when BBM swap:
+
+   sector(0)   oob(0)   sector(1)   oob(1)
++------------+-------+-----------+-------+
+|            |       |       
+    |       |
+|            |       |       *   |#      |
+|            |  
+     |           |       |
++------------+-------+-----------+-------+
+
+2. Why need OOB shift opration in mtk ecc driver?
+
+Since the BBM located at oob(1) 1st byte in mtk ecc data format, the
+standard BBM position need at the 1st in the whole OOB area logically.
+
+Just take the data flow in prepare_io_req when write
+with MTD_OPS_AUTO_OOB for example:
+
+source:      data buf           oob buf
++---------------------------+------------+
+|                           |
+            |
+|                           |            |
+|               
+            |            |
++---------------------------+------------+
+
+1st: mtd_ooblayout_set_databytes
+        data buf              oob buf
++---------------------------+------------+
+|                           |
+            |
+|                           |*@@@@@@     |
+|               
+            |            |
++---------------------------+------------+
+(*): BBM, is reserve byte when set databyte
+(@): the free OOB data byte
+
+2nd: BBM swap
+
+           data buf            oob buf
+    sector(0)    sector(1)
++---------------------------+------------+
+|             |             |
+            |
+|             |       *     |#@@@@@@     |
+|             | 
+            |            |
++---------------------------+------------+
+(#): stand for one byte main data
+(*): stand for the BBM
+
+3rd: sector OOB shift
+
+           data buf            oob buf
+    sector(0)    sector(1)   oob(1) oob(0)
++---------------------------+------------+
+|             |             |
+      |     |
+|             |       *     |@@@   |#@@  |
+|             | 
+            |      |     |
++---------------------------+------------+
+
+The mtk ECC engine will auto place the data struct on flash
+as bellow finally.
+
+   sector(0)   oob(1)   sector(1)   oob(0)
++------------+-------+-----------+-------+
+|            |       |       
+    |       |
+|            |@@@    |       *   |#@@    |
+|            |  
+     |           |       |
++------------+-------+-----------+-------+
+
+The read data flow in finish_io_req is reverse with prepare_io_req when
+write.
+
+On Tue, 2021-11-09 at 13:05 +0100, Miquel Raynal wrote:
+> Hi Xiangsheng,
+> 
+> Has we discussed a while ago:
+> 
+> 	...it is possible that I did not test with MTD_OPS_AUTO_OOB
+> 	recently and indeed the ECC bytes will missing in this case. In
+> 	the write path, maybe the ->prepare_io hooks should spread the
+> 	user data following req->mode in req.oobbuf before computing
+> 	the codes. Similar logic should be applied to the read path.
+> 
+> Can you please add a patch for this situation in your next iteration?
+> It does not look like this situation has been handled.
+> 
+
+As talked above, I may put the set/get OOB data bytes to each ecc
+driver not at the spinand driver.
+
+This may have some advantage:
+1) Some ECC engine may protect the OOB bytes not only the main data.
+They will have same issue when read/write with MTD_OPS_AUTO_OOB.
+For this case, the OOB data bytes must set/get in
+prepare/finish_io_req.
+
+2) For the syndrome layout, the data format on the flash may not be
+consistent with nand specification. It`s better handled by the special
+ecc engine.
+
+Can you agree with this modification?
+And, I will work on this and send in next iteration.
+
+> xiangsheng.hou@mediatek.com wrote on Fri, 22 Oct 2021 10:40:21 +0800:
+> 
+> > For syndrome layout, ECC/free byte in oob layout and main
+> > data are interleaved. For this case, it is better to set/get
+> > oob data bytes in ECC engine.
+> 
+> I don't understand the last sentence
+
+Just as the discussion talked above.
+
+> > 
+> > For MTK ECC engine, although it can auto place data as sector +
+> > oob free + oob ecc for one page in pipelined. However, the bad
+> > mark will be not fit with nand spec. Therefore, there have bad
+> > mark swap operation in ecc engine.
+> > 
+> > But, the swap opeation(between bbm 0xff with 1byte main data) will
+> > lead to more one byte than oobavailable.
+> 
+> Sorry but again, I don't understand what you mean.
+> 
+
+           data buf            oob buf
++---------------------------+------------+
+|             |             |
+            |
+|             |       *     |#@@@@@@     |
+|             | 
+            |            |
++---------------------------+------------+
+(#): stand for one byte main data
+(*): stand for the BBM
+(@): the free OOB data byte
+
+Take write ooblen is mtd->oobavail for example,
+the data in standard OOB area will be one more main data byte, due to
+the BBM swap operation, lead to the expected OOB len as
+(mtd->oobavail + 1). This is not as expected for one page.
+
+> > Set oob databytes after
+> > bad mark swap will lead to lost one oob free byte.
+> 
+> We don't care about free OOB bytes really.
+> 
+
+The MTD_OPS_AUTO_OOB need handle the free OOB bytes. Some filesystem
+(like jffs2) also need store data at free OOB for management.
+
+> > 
+> > Therefore, just try to modify the spi nand framework for review.
+> > And this may be common for the interleaved case.
+> 
+> I don't get how falling back to a memcpy will solve your problem? Can
+> you please provide an anscii figure or something more visual to let
+> us
+> understand?
+
+As talked above, the BBM swap and OOB shift handled at mtk ecc driver.
+And the mtk controller will auto place data as mtk ECC data format in
+pipelined.
+
+Thanks
+Xiangsheng Hou
+
+
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
