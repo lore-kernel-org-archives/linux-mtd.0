@@ -2,14 +2,14 @@ Return-Path: <SRS0=6Wn1=P7=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C6E8C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:09:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E5ABC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:10:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2154760F93
-	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:09:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2154760F93
+	by mail.kernel.org (Postfix) with ESMTPS id 4AE3060F93
+	for <linux-mtd@archiver.kernel.org>; Fri, 12 Nov 2021 12:10:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 4AE3060F93
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,40 +18,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xvJAKkhSBPjPXxpVHseJ2tIFuLB/U+LzaiBKhi7LZdo=; b=fBEwnXfBnUGPl/
-	BiRSbsBgVWmrpGOrIo0O6tWdp5yPDIpGg78E0iulT11WYiO9kN2iqCc69aPXFQcDuGQ2vIb9Jz8Iw
-	40jwAEYA0SKLpA5qWJga5la/bSehNSzbzpuRYs+7KPFxjOVm2u/CmLJcWVzq/Ei13/i0Rf/WRahCp
-	m4kftJz4R4o9sQP35Z73EkPjdzbPvvjzgjgaj2fm0hWH9VRCmFm0uv+rvnf/5ysIkHPxdERSed5EI
-	H1sIUTIePqthw3zYW3gcjPjZYZ2vOIDoxeNHRAiuNh+nhPVbHsV7GhVXAt/1uODn8QNFybJybStU8
-	fnPok3hKP0ACaVsbb9bw==;
+	List-Owner; bh=GYX+WXVBSfumUvoMldyYTNQ7Zi6AMu8POn3OPqby4W4=; b=FnRxIV9UfEbnkV
+	IIC1PdHoFFIMfyPfmlSMLlhqmUfGD0Qr2hkdVkpVB4AeG7jeTxZ8kQNgwpLaT5gI+1ceVYElC2SF2
+	aFEC98ahSGUsXpRVFH51YpwEn/SdrH7298bC8PyI1DrYlPsH5MResWL04F2lFAiGH4A/nlp1EtlZ/
+	S7QZ0Aatl99tItYyxAiJBaJjjN4J0N163h16Gssu1Dc2Sfva4oQA2O4910+3d2tdBH3Hci9ThQ+bg
+	d40InzuKzf691nXtSRp4tXcV+/nzQzwDPuK1Y+HrbAHqHNvG5I662sDL/iZb2TXu6zcldsu3w6fHE
+	59ZYmyqzV1XmrSd35tJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mlVMf-00AENL-Ai; Fri, 12 Nov 2021 12:09:05 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1mlVNb-00AEd2-FK; Fri, 12 Nov 2021 12:10:03 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mlVJP-00ADE1-Pi
+ id 1mlVJR-00ADFO-GQ
  for linux-mtd@lists.infradead.org; Fri, 12 Nov 2021 12:05:50 +0000
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HrHGj0qWPzcbDq;
- Fri, 12 Nov 2021 20:00:45 +0800 (CST)
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HrHKm2jTFz1DJH8;
+ Fri, 12 Nov 2021 20:03:24 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 12 Nov 2021 20:05:36 +0800
+ 15.1.2308.15; Fri, 12 Nov 2021 20:05:40 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 12 Nov
- 2021 20:05:35 +0800
+ 2021 20:05:40 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <s.hauer@pengutronix.de>, <miquel.raynal@bootlin.com>,
  <vigneshr@ti.com>, <mcoquelin.stm32@gmail.com>,
  <kirill.shutemov@linux.intel.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>
-Subject: [PATCH v3 06/12] ubifs: Fix 'ui->dirty' race between do_tmpfile() and
- writeback work
-Date: Fri, 12 Nov 2021 20:17:52 +0800
-Message-ID: <20211112121758.2208727-7-chengzhihao1@huawei.com>
+Subject: [PATCH v3 12/12] ubi: fastmap: Add all fastmap pebs into
+ 'ai->fastmap' when fm->used_blocks>=2
+Date: Fri, 12 Nov 2021 20:17:58 +0800
+Message-ID: <20211112121758.2208727-13-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211112121758.2208727-1-chengzhihao1@huawei.com>
 References: <20211112121758.2208727-1-chengzhihao1@huawei.com>
@@ -61,8 +61,9 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211112_040544_237165_C6D8A642 
-X-CRM114-Status: GOOD (  11.96  )
+X-CRM114-CacheID: sfid-20211112_040545_917151_0779EA17 
+X-CRM114-Status: UNSURE (   9.50  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,154 +80,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'ui->dirty' is not protected by 'ui_mutex' in function do_tmpfile() which
-may race with ubifs_write_inode[wb_workfn] to access/update 'ui->dirty',
-finally dirty space is released twice.
+Fastmap pebs(pnum >= UBI_FM_MAX_START) won't be added into 'ai->fastmap'
+while attaching ubi device if 'fm->used_blocks' is greater than 2, which
+may cause warning from 'ubi_assert(ubi->good_peb_count == found_pebs)':
 
-	open(O_TMPFILE)                wb_workfn
-do_tmpfile
-  ubifs_budget_space(ino_req = { .dirtied_ino = 1})
-  d_tmpfile // mark inode(tmpfile) dirty
-  ubifs_jnl_update // without holding tmpfile's ui_mutex
-    mark_inode_clean(ui)
-      if (ui->dirty)
-        ubifs_release_dirty_inode_budget(ui)  // release first time
-                                   ubifs_write_inode
-				     mutex_lock(&ui->ui_mutex)
-                                     ubifs_release_dirty_inode_budget(ui)
-				     // release second time
-				     mutex_unlock(&ui->ui_mutex)
-      ui->dirty = 0
-
-Run generic/476 can reproduce following message easily
-(See reproducer in [Link]):
-
-  UBIFS error (ubi0:0 pid 2578): ubifs_assert_failed [ubifs]: UBIFS assert
-  failed: c->bi.dd_growth >= 0, in fs/ubifs/budget.c:554
-  UBIFS warning (ubi0:0 pid 2578): ubifs_ro_mode [ubifs]: switched to
-  read-only mode, error -22
-  Workqueue: writeback wb_workfn (flush-ubifs_0_0)
+  UBI assert failed in ubi_wl_init at 1878 (pid 2409)
   Call Trace:
-    ubifs_ro_mode+0x54/0x60 [ubifs]
-    ubifs_assert_failed+0x4b/0x80 [ubifs]
-    ubifs_release_budget+0x468/0x5a0 [ubifs]
-    ubifs_release_dirty_inode_budget+0x53/0x80 [ubifs]
-    ubifs_write_inode+0x121/0x1f0 [ubifs]
-    ...
-    wb_workfn+0x283/0x7b0
+    ubi_wl_init.cold+0xae/0x2af [ubi]
+    ubi_attach+0x1b0/0x780 [ubi]
+    ubi_init+0x23a/0x3ad [ubi]
+    load_module+0x22d2/0x2430
 
-Fix it by holding tmpfile ubifs inode lock during ubifs_jnl_update().
-Similar problem exists in whiteout renaming, but previous fix("ubifs:
-Rename whiteout atomically") has solved the problem.
+Reproduce:
+  ID="0x20,0x33,0x00,0x00" # 16M 16KB PEB, 512 page
+  modprobe nandsim id_bytes=$ID
+  modprobe ubi mtd="0,0" fm_autoconvert  # Fastmap takes 2 pebs
+  rmmod ubi
+  modprobe ubi mtd="0,0" fm_autoconvert  # Attach by fastmap
 
-Fixes: 474b93704f32163 ("ubifs: Implement O_TMPFILE")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214765
+Add all used fastmap pebs into list 'ai->fastmap' to make sure they can
+be counted into 'found_pebs'.
+
+Fixes: fdf10ed710c0aa ("ubi: Rework Fastmap attach base code")
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ubifs/dir.c | 60 +++++++++++++++++++++++++-------------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 35 +++++------------------------------
+ 1 file changed, 5 insertions(+), 30 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index deaf2d5dba5b..ebdc9aa04cbb 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -397,6 +397,32 @@ static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
- 	return ERR_PTR(err);
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 6b5f1ffd961b..01dcdd94c9d2 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -828,24 +828,6 @@ static int find_fm_anchor(struct ubi_attach_info *ai)
+ 	return ret;
  }
  
-+/**
-+ * lock_2_inodes - a wrapper for locking two UBIFS inodes.
-+ * @inode1: first inode
-+ * @inode2: second inode
-+ *
-+ * We do not implement any tricks to guarantee strict lock ordering, because
-+ * VFS has already done it for us on the @i_mutex. So this is just a simple
-+ * wrapper function.
-+ */
-+static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
-+{
-+	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
-+	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
-+}
-+
-+/**
-+ * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
-+ * @inode1: first inode
-+ * @inode2: second inode
-+ */
-+static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
-+{
-+	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
-+	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
-+}
-+
- static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
- 			 struct dentry *dentry, umode_t mode)
- {
-@@ -404,7 +430,7 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
- 	struct ubifs_info *c = dir->i_sb->s_fs_info;
- 	struct ubifs_budget_req req = { .new_ino = 1, .new_dent = 1};
- 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
--	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
-+	struct ubifs_inode *ui;
- 	int err, instantiated = 0;
- 	struct fscrypt_name nm;
- 
-@@ -452,18 +478,18 @@ static int ubifs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
- 	instantiated = 1;
- 	mutex_unlock(&ui->ui_mutex);
- 
--	mutex_lock(&dir_ui->ui_mutex);
-+	lock_2_inodes(dir, inode);
- 	err = ubifs_jnl_update(c, dir, &nm, inode, 1, 0);
- 	if (err)
- 		goto out_cancel;
--	mutex_unlock(&dir_ui->ui_mutex);
-+	unlock_2_inodes(dir, inode);
- 
- 	ubifs_release_budget(c, &req);
- 
- 	return 0;
- 
- out_cancel:
--	mutex_unlock(&dir_ui->ui_mutex);
-+	unlock_2_inodes(dir, inode);
- out_inode:
- 	make_bad_inode(inode);
- 	if (!instantiated)
-@@ -690,32 +716,6 @@ static int ubifs_dir_release(struct inode *dir, struct file *file)
- 	return 0;
- }
- 
--/**
-- * lock_2_inodes - a wrapper for locking two UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- *
-- * We do not implement any tricks to guarantee strict lock ordering, because
-- * VFS has already done it for us on the @i_mutex. So this is just a simple
-- * wrapper function.
-- */
--static void lock_2_inodes(struct inode *inode1, struct inode *inode2)
+-static struct ubi_ainf_peb *clone_aeb(struct ubi_attach_info *ai,
+-				      struct ubi_ainf_peb *old)
 -{
--	mutex_lock_nested(&ubifs_inode(inode1)->ui_mutex, WB_MUTEX_1);
--	mutex_lock_nested(&ubifs_inode(inode2)->ui_mutex, WB_MUTEX_2);
+-	struct ubi_ainf_peb *new;
+-
+-	new = ubi_alloc_aeb(ai, old->pnum, old->ec);
+-	if (!new)
+-		return NULL;
+-
+-	new->vol_id = old->vol_id;
+-	new->sqnum = old->sqnum;
+-	new->lnum = old->lnum;
+-	new->scrub = old->scrub;
+-	new->copy_flag = old->copy_flag;
+-
+-	return new;
 -}
 -
--/**
-- * unlock_2_inodes - a wrapper for unlocking two UBIFS inodes.
-- * @inode1: first inode
-- * @inode2: second inode
-- */
--static void unlock_2_inodes(struct inode *inode1, struct inode *inode2)
--{
--	mutex_unlock(&ubifs_inode(inode2)->ui_mutex);
--	mutex_unlock(&ubifs_inode(inode1)->ui_mutex);
--}
+ /**
+  * ubi_scan_fastmap - scan the fastmap.
+  * @ubi: UBI device object
+@@ -865,7 +847,6 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	struct ubi_vid_hdr *vh;
+ 	struct ubi_ec_hdr *ech;
+ 	struct ubi_fastmap_layout *fm;
+-	struct ubi_ainf_peb *aeb;
+ 	int i, used_blocks, pnum, fm_anchor, ret = 0;
+ 	size_t fm_size;
+ 	__be32 crc, tmp_crc;
+@@ -875,17 +856,6 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	if (fm_anchor < 0)
+ 		return UBI_NO_FASTMAP;
+ 
+-	/* Copy all (possible) fastmap blocks into our new attach structure. */
+-	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
+-		struct ubi_ainf_peb *new;
 -
- static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
- 		      struct dentry *dentry)
- {
+-		new = clone_aeb(ai, aeb);
+-		if (!new)
+-			return -ENOMEM;
+-
+-		list_add(&new->u.list, &ai->fastmap);
+-	}
+-
+ 	down_write(&ubi->fm_protect);
+ 	memset(ubi->fm_buf, 0, ubi->fm_size);
+ 
+@@ -1029,6 +999,11 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 				"err: %i)", i, pnum, ret);
+ 			goto free_hdr;
+ 		}
++
++		/* Add all fastmap blocks into attach structure. */
++		ret = add_aeb(ai, &ai->fastmap, pnum, be64_to_cpu(ech->ec), 0);
++		if (ret)
++			goto free_hdr;
+ 	}
+ 
+ 	kfree(fmsb);
 -- 
 2.31.1
 
