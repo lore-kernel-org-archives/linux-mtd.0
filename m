@@ -2,96 +2,79 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FDDBC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 10:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E3DC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 10:26:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F3E461B04
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 10:25:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 6F3E461B04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id E8FAF61BFA
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 10:26:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E8FAF61BFA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FTklb/Cqiqh7RxnpGHCGPoVYwScwXXOMoMldVkMYmH8=; b=nL2jbOi6M6RS/Q
-	/uQ9wW4ErpFQAFhrFDZ4mpkrtWDlFpAdr5l6LOaRW4HIdEZlP0Es9arS1ZvE1y4JWWanrrxeL3sB6
-	DaeAoMJzJhK3UQ3GzwPhSqkbf+im+svG30NfRf1lz55oDWoJbvK354HcWSSxBEpK9PWYhIBzkf5tB
-	WIYB5cqK7rNlxDRyO0dz1P4pfP+6JffKwafHDZDfWPd76lVkeEyhsBzCujlUOZL3UF/Rh9BWee0PG
-	fl5c66BxzAfs2k3DbUuHn049X+nBeYcin4w0ujfy/2gDJ+8KbIL1UnTzDkHsdQ24zczjEQPcXvN25
-	a3eLu6Fiuy50Ini0vgjA==;
+	List-Owner; bh=dqdHPqMsA2BhX+Hp4Kw+ND4Bt6fSW0vPMph771yjIFI=; b=hHuSs4y/eyS8Om
+	ijxgg6Yj3qFThTZQEEiYEH3dZ6IpjBNHndEUJ6LnZ9owLCs1teP2z2qSEvFhibnLvlUEyLVKnow6w
+	kt5RWD3PDYjr/3VciVz8szQtgsw0ozMN9XmHIONkY0HUwg27zTXg8aoOf8kKtgQJzLTDiOWbTVBvR
+	B2mq28LSI9mTw/eoeE6SyIMMfV2NLnTNEufQTeT7rKmMkKXcnBVnS602NqzWukmjpXQMoYi6iHRno
+	QTuvOmwCMyCfDaRu50Hc2x68BfLsSSeeWlvYqI6MD+MYx2kRVZv55V2LW/mc9VQL8pxcmqETHUaGh
+	rU80DtUg0yS+IUGcF5yw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmZA7-00FAqn-IV; Mon, 15 Nov 2021 10:24:32 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mmZBf-00FBLs-Og; Mon, 15 Nov 2021 10:26:08 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmZ7V-00FA6E-1z; Mon, 15 Nov 2021 10:21:50 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A21B63227;
- Mon, 15 Nov 2021 10:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636971708;
- bh=ngAS50rMmpV59azjOqW2oXCBrEGHx6Ekm0yN36KEY7k=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=oHFZaspA4e0JT2Bappei5MG7xUfxAKnXH43mnsdk+R7rbsdvrD3kUDLGpF994Lv8o
- iEcy1Ug+arpeVBA1gxKJr+XFzRMEEncjc2K9qzGu6o1iL3o1bXVBgArPKaXh3sM1KT
- pqByKGVIvlUsnVpeQARzzgb4qc9a17HQolmIyWVeIgrGPfLon8Wq7NbhnRmyj2zeoK
- 0Pg+gQgghuvRxMHQ7IajfS53HSxlou+O9e931O/rQqPebWyZ0jpnTj4gKlP7r3MKfQ
- +aPZLeOvA+8d8JqKBiRKzMCqrAk2Zb1jIIa11uVmY4fIYw/I+SHpBH5/oWpHirfE6z
- g6me8ygTpOC9g==
-Received: by mail-wr1-f49.google.com with SMTP id s13so29644355wrb.3;
- Mon, 15 Nov 2021 02:21:48 -0800 (PST)
-X-Gm-Message-State: AOAM532zYEdaIVrdGsp1EKWx10d8iO+rLPEhtphKTSbNCWa/6Q2R9S0/
- bppOd83763KTWhWgcKCn0Aev/2cs6Vwv/kcM3E8=
-X-Google-Smtp-Source: ABdhPJyrUjRCeMXfDabLLUXG4+a6meFiuvFYQKG804WvMbrQRiaBMGWgH0F0OdgqzdIGH+oZqJIqfFrTkkuSnIDyxB0=
-X-Received: by 2002:adf:df89:: with SMTP id z9mr45196660wrl.336.1636971706955; 
- Mon, 15 Nov 2021 02:21:46 -0800 (PST)
+ id 1mmZ8w-00FATI-E7
+ for linux-mtd@lists.infradead.org; Mon, 15 Nov 2021 10:23:21 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AFANCDl126391;
+ Mon, 15 Nov 2021 04:23:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1636971792;
+ bh=HJ44vHSf/yx1mqEyNAUnPFfW/9lCW+pRuJ+/mFaDbdU=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=KYkUSvG9z4UGemXMZWm5eByMm5V1KjGst46kGmL/iLHRwmO49AT/n6XAVJb9+8hBL
+ G+mo9WRNbiY2l+P+e5j9QQZKoNA57Ey16N5JGITFhpfD75HQZuJBC6LnJGuynxesku
+ +w8GsfwiWuiZs2ekC3PxoGl7NQLKRQztH3tw3DZQ=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AFANB3a028962
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 15 Nov 2021 04:23:12 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 15
+ Nov 2021 04:23:11 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 15 Nov 2021 04:23:11 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AFANAHj043570;
+ Mon, 15 Nov 2021 04:23:11 -0600
+Date: Mon, 15 Nov 2021 15:53:10 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael Walle
+ <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>, Mark Brown
+ <broonie@kernel.org>, <linux-mtd@lists.infradead.org>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Michal Simek <monstr@monstr.eu>
+Subject: Re: [RFC PATCH 0/3] Dual stacked/parallel memories bindings
+Message-ID: <20211115102308.64chfwj2vtssiyin@ti.com>
+References: <20211112152411.818321-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-9-arnd@kernel.org>
- <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
-In-Reply-To: <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
-From: Arnd Bergmann <arnd@kernel.org>
-Date: Mon, 15 Nov 2021 11:21:30 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
-Message-ID: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
-Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Andy Gross <agross@kernel.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Baolin Wang <baolin.wang7@gmail.com>, 
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Chunyan Zhang <zhang.lyra@gmail.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hyun Kwon <hyun.kwon@xilinx.com>, 
- Jaroslav Kysela <perex@perex.cz>, Jon Hunter <jonathanh@nvidia.com>, 
- Lars-Peter Clausen <lars@metafoo.de>, Laxman Dewangan <ldewangan@nvidia.com>, 
- Manivannan Sadhasivam <mani@kernel.org>, Mark Brown <broonie@kernel.org>, 
- Michal Simek <michal.simek@xilinx.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, 
- Orson Zhai <orsonzhai@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, 
- Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- ALSA Development Mailing List <alsa-devel@alsa-project.org>, 
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- dmaengine@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>, 
- linux-arm-msm <linux-arm-msm@vger.kernel.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, 
- linux-mtd <linux-mtd@lists.infradead.org>, 
- "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
- <linux-rpi-kernel@lists.infradead.org>, 
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, linux-staging@lists.linux.dev, 
- "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20211112152411.818321-1-miquel.raynal@bootlin.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_022149_166339_7A416CC7 
-X-CRM114-Status: GOOD (  26.25  )
+X-CRM114-CacheID: sfid-20211115_022318_617347_DF26DAA6 
+X-CRM114-Status: GOOD (  25.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,82 +86,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
-> > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
-> >       spin_lock_irqsave(&chan->lock, flags);
-> >
-> >       /*
-> > -      * Abuse the slave_id to indicate that the channel is part of a video
-> > -      * group.
-> > +      * Abuse the peripheral_config to indicate that the channel is part
->
-> Is it still an abuse, or is this now the right way to pass custom data
-> to the DMA engine driver ?
+On 12/11/21 04:24PM, Miquel Raynal wrote:
+> Hello Rob, Mark, Tudor & Pratyush,
+> =
 
-It doesn't make the driver any more portable, but it's now being
-more explicit about it. As far as I can tell, this is the best way
-to pass data that cannot be expressed through the regular interfaces
-in DT and the dmaengine API.
+> Here is an RFC to open the discussion about the sensitive task of
+> supporting specific SPI controller modes like Xilinx's where the
+> controller can highly abstract the hardware and provide access to a
+> single bigger device instead. I'll let you go through the series and
+> tell me what you think.
+> =
 
-Ideally there would be a generic way to pass this flag, but I couldn't
-figure out what this is actually doing, or whether there is a better
-way. Maybe Vinod has an idea.
+> I think there are two possible approaches:
+> 1- Describe the two devices as being a single one which is what we will
+>    get from the controller anyway (implies supporting two CS per SPI
+>    device)
+> or
+> 2- Describe the two devices in the device tree and then by software hack
+>    into the MTD core to simulate a single device to talk to.
 
-I'll change s/Abuse/Use/ for the moment until I get a definite answer.
+Approach 1 makes more sense to me since once we implement it you can =
 
-> > +      * of a video group.
-> >        */
-> > -     if (chan->id <= ZYNQMP_DPDMA_VIDEO2)
-> > -             chan->video_group = config->slave_id != 0;
-> > +     pconfig = config->peripheral_config;
->
-> This could be moved to the variable declaration above, up to you.
+also use such multi-CS flashes with "dumber" controllers as well like =
 
-I considered that but since it doesn't fit in a normal 80-column
-line, it seemed best to do it here.
+spi-cadence-quadspi. There, the driver would have to manually set the =
 
-> > +     if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
-> > +         config->peripheral_size == sizeof(*pconfig))
->
-> Silently ignoring a size mismatch isn't nice. Could we validate the size
-> at the beginning of the function and return an error ?
+chip select instead of it being done automatically by looking at the top =
 
-Yes, good idea. Since this would mean a bug in another driver,
-I'll add a WARN_ON() as well to make it clear which driver caused it.
-This is what I have now, let me know if you have any further suggestions:
+bit. This would at least work for the dual-stacked memories.
 
-        /*
-         * Use the peripheral_config to indicate that the channel is part
-         * of a video group. This requires matching use of the custom
-         * structure in each driver.
-         */
-        pconfig = config->peripheral_config;
-        if (WARN_ON(config->peripheral_size != 0 &&
-                    config->peripheral_size != sizeof(*pconfig)))
-                return -EINVAL;
+How I envision this being implemented is that SPI NOR would be aware of =
 
-        spin_lock_irqsave(&chan->lock, flags);
-        if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
-            config->peripheral_size == sizeof(*pconfig))
-                chan->video_group = pconfig->video_group;
-        spin_unlock_irqrestore(&chan->lock, flags);
+the number of Chip Selects and when to use which one, and it would =
 
-        return 0;
+specify the CS value in the SPI MEM op. The controller driver can then =
 
-> With these issues addressed,
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+execute this op as needed. One point to note here is that the entire =
 
-Thanks,
+memory won't be read in a single transaction. There would be 2 =
 
-       Arnd
+transactions: one with CS=3D0 and one with CS=3D1. Is this fine for you? Do =
+
+you have something else in mind?
+
+I am not sure how this model would work for a dual-parallel memory =
+
+though.
+
+> =
+
+> I have looked at the code, there is no good solution, but #2 definitely
+> looks horribly complicated and subject to a lot of corner cases to
+> handle, hence this proposal to go for solution #1.
+> =
+
+> Cheers,
+> Miqu=E8l
+> =
+
+> Miquel Raynal (3):
+>   spi: dt-bindings: Allow describing flashes with two CS
+>   dt-binding: mtd: spi-nor: Allow two CS per device
+>   spi: dt-bindings: zynqmp: Describe dual stacked/parallel memories
+>     modes
+> =
+
+>  .../bindings/mtd/jedec,spi-nor.yaml           |  2 +-
+>  .../bindings/spi/spi-controller.yaml          |  6 ++--
+>  .../bindings/spi/spi-zynqmp-qspi.yaml         | 31 +++++++++++++++++++
+>  scripts/dtc/checks.c                          | 24 ++++++++------
+>  4 files changed, 50 insertions(+), 13 deletions(-)
+> =
+
+> -- =
+
+> 2.27.0
+> =
+
+
+-- =
+
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
