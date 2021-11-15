@@ -2,103 +2,99 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86C22C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 12:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC076C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 12:39:15 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47E0663249
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 12:14:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 47E0663249
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
+	by mail.kernel.org (Postfix) with ESMTPS id C067A60EFD
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 12:39:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C067A60EFD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ESnjoUI+Da/mELJFR61o7m5ycQ/dxMdCgZNHGMm07A0=; b=0Bg1N3TCPLl+LlfvVntN6RCMFj
-	HfdLsB2J7p1UaAV8YaCX9da/8hvNOowM3TfqqpXoFJ/wVZWzIVniSlNLohMDECYrLXFPOPFMGQX1w
-	VD4t2uid/64XM1vtz118HAJN7xUTUctM0GgZ+qXni12k3OtREON94AQnRlCZVM2a8eEM7IOueSkB+
-	SH54OHdtTEy+zy24/5LMJZYicxd0pHWWETGY2D0tWJq4fz7ZUYwDWHTkq1K05g7+Av8aT+cFKxG4g
-	ilCVXMuAJtoNjWxpN9JBbjTwEj0VXw5Wzg5fvaJxicPhbU23SEbYJErd4hFsYXdJrEQS49HOfu6iO
-	zq6MWX4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MkQBtXtfLXAPWSeKl+fOA5wQ8HsEUlP/ffKdR9x36PQ=; b=Ik5/Pvgd+CWv/X
+	Dp73jDGUYijxMIZUwnOf9HgfFGx1yJ8+494v4cB8uFroHLdHMHroodcITdlsNRrX/V4s+Uu6gSQKL
+	Tpvf//xNwt8wrNXS4saU0nkzZdTgqT5XWQ4em5zs1HI6Dt7k1fPo6V8MtGt/ZyHJhKCNVrEvbXjbw
+	onbG++VmpJzh3cFm+IRbUdPL3ZwZDh4ASUyoKnZZGgQ3bAI3hIb9dT9c6V2aLBaRBn1HzRCmP2NSN
+	RUDFMUWi1Ykjwg8Jw0cfX3vUIoxqA4mU3SnJZJA1a9m5Jk1S5ttW8voD3/ztTsUzz3zVVbOwJ4bRa
+	YPxaK+YiZzh26emiq4SA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmarq-00FU4F-PX; Mon, 15 Nov 2021 12:13:46 +0000
-Received: from www381.your-server.de ([78.46.137.84])
+	id 1mmbFu-00FWxF-VX; Mon, 15 Nov 2021 12:38:39 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmarn-00FU33-OX; Mon, 15 Nov 2021 12:13:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
- s=default2002;
- h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
- MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID;
- bh=toF67llO+BAwsdq0Ra1tOzp5njbcpYDZtx+Ajrw2D5M=; b=Fdhydmz9sHTMX39b4OR+PnWK29
- ollzQvnmIQR6UYtKJJv+pdNenKDhmJoe1m+AZz1r/UzmBuh/s/zyEVT/qUSOAY+AepfailB3KakGl
- nzMJPMS8YSL/mnxq67rqUJ7DGip2AxA33Vlw4H7McDxqIsQkCuDgzYTS3PpC3S4JeCR7BBcBbUbNI
- zMk0Qwr7AHYBGE7YmvvEhxReJcSjOojKOUKKRtntZ7OnV/zed4/BbkqMvJs3SZ7PDbAEwJGvaYuyr
- n93yvvpN0QrMdCXLyiVSv13S7LoWnUnb5JznQFPOzPr8bw/l91uSL6xCRsqIjm0Tb3QDvxbpszYjo
- WFHKC7mA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
- by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1mmaYO-000B0u-Vm; Mon, 15 Nov 2021 12:53:41 +0100
-Received: from [82.135.83.112] (helo=[192.168.178.20])
- by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1mmaYO-000AKe-8G; Mon, 15 Nov 2021 12:53:40 +0100
-Subject: Re: [PATCH 01/11] ASoC: dai_dma: remove slave_id field
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Andy Gross <agross@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Baolin Wang <baolin.wang7@gmail.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Chunyan Zhang <zhang.lyra@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hyun Kwon <hyun.kwon@xilinx.com>, Jaroslav Kysela <perex@perex.cz>,
- Jon Hunter <jonathanh@nvidia.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Laxman Dewangan <ldewangan@nvidia.com>,
- Manivannan Sadhasivam <mani@kernel.org>, Mark Brown <broonie@kernel.org>,
- Michal Simek <michal.simek@xilinx.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, Orson Zhai
- <orsonzhai@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- dmaengine@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
- <linux-rpi-kernel@lists.infradead.org>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, linux-staging@lists.linux.dev,
- "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-2-arnd@kernel.org>
- <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
- <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-From: Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <d2dd42fc-e58a-0c06-7f7e-a6a2161c368d@metafoo.de>
-Date: Mon, 15 Nov 2021 12:53:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ id 1mmbFh-00FWuE-LY; Mon, 15 Nov 2021 12:38:27 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5027561B5E;
+ Mon, 15 Nov 2021 12:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1636979905;
+ bh=0vPaiFLUq2SXWicOiHJ0dTL68j+HqvYqhdUUZpm4Lbg=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=I+1x2XZxjf0LcgW3lMmbiJPZ71Bi+3kqOGuAZRKXN1JfNBFrZaiB21OzI8/74f0h0
+ Qq9j3mNJNww5Ebh37UUU7T73Uy/xgxrT9Cch7mYImOv2H/bbOmofM9xkajEGTkGGUU
+ hGAI73KgAeiXM888w+zysyYQTZ4yYyjDXcXqXXwQJ8IyYB0pf/b0pqA/XCjqw9IpRl
+ yCWpvb6UA7WovNrxde2iEzHRITt42AWtZE7nvXGbJMW3vN4eAR3DyqEs1DZrNZzLk2
+ tuMyHLag1K86+X0psZqBhLcvq1czh8i8zV/S46+iyDlDN0sbFnwCD3e9XH7d1GqYQT
+ IxYpNW3g9oKFg==
+Received: by mail-wm1-f48.google.com with SMTP id
+ 77-20020a1c0450000000b0033123de3425so15717843wme.0; 
+ Mon, 15 Nov 2021 04:38:25 -0800 (PST)
+X-Gm-Message-State: AOAM531FDLFGxOZ6l3NEJDDcaZSgAe0lRi05xICIe0pzXhMa+8bh3IjP
+ lujIvjMMaZLHSg25LKK1Q6HsVulB7GmlFwFVQkY=
+X-Google-Smtp-Source: ABdhPJwFTprJJd11s9duELVend6oLQx+lemeU4w9vOaJiXxZUrLq0sghW72KOFAqYJMNV8KCFht4GWVIPZFIhNgyYas=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr58047076wmi.173.1636979903584; 
+ Mon, 15 Nov 2021 04:38:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26354/Mon Nov 15 10:21:07 2021)
+References: <20211115085403.360194-1-arnd@kernel.org>
+ <20211115085403.360194-9-arnd@kernel.org>
+ <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
+ <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
+ <YZJJVA/92KYH8hQL@pendragon.ideasonboard.com>
+In-Reply-To: <YZJJVA/92KYH8hQL@pendragon.ideasonboard.com>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Mon, 15 Nov 2021 13:38:07 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a27rPBVbU-PrYR0BE4KV2DyJk7FoXaeDS=FU1=_RSwoQQ@mail.gmail.com>
+Message-ID: <CAK8P3a27rPBVbU-PrYR0BE4KV2DyJk7FoXaeDS=FU1=_RSwoQQ@mail.gmail.com>
+Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Andy Gross <agross@kernel.org>, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Baolin Wang <baolin.wang7@gmail.com>, 
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Chunyan Zhang <zhang.lyra@gmail.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hyun Kwon <hyun.kwon@xilinx.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Jon Hunter <jonathanh@nvidia.com>, 
+ Lars-Peter Clausen <lars@metafoo.de>, Laxman Dewangan <ldewangan@nvidia.com>, 
+ Manivannan Sadhasivam <mani@kernel.org>, Mark Brown <broonie@kernel.org>, 
+ Michal Simek <michal.simek@xilinx.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>, 
+ Orson Zhai <orsonzhai@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+ Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>, 
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ dmaengine@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
+ <linux-rpi-kernel@lists.infradead.org>, 
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, linux-staging@lists.linux.dev, 
+ "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_041343_841399_11ACDD7F 
-X-CRM114-Status: GOOD (  28.21  )
+X-CRM114-CacheID: sfid-20211115_043825_773919_D1B111A7 
+X-CRM114-Status: GOOD (  31.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,43 +106,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 11/15/21 11:42 AM, Arnd Bergmann wrote:
-> On Mon, Nov 15, 2021 at 11:14 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 11/15/21 9:53 AM, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> This field is never set, and serves no purpose, so remove it.
->> I agree that we should remove it. Its been legacy support code for a
->> while, but the description that there is no user is not right.
->>
->> The tegra20_spdif driver obviously uses it and that user is removed in
->> this patch. I think it makes sense to split that out into a separate
->> patch with a description why the driver will still work even with
->> slave_id removed. Maybe the best is to remove the whole tegra20_spdif
->> driver.
-> Ok, I'll split out the tegra patch and try to come up with a better
-> description for it. What I saw in that driver is it just passes down the
-> slave_id number from a 'struct resource', but there is nothing in
-> the kernel that sets up this resource.
+On Mon, Nov 15, 2021 at 12:49 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Mon, Nov 15, 2021 at 11:21:30AM +0100, Arnd Bergmann wrote:
+> > On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart wrote:
+> > > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
+> > > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
+> > > >       spin_lock_irqsave(&chan->lock, flags);
+> > > >
+> > > >       /*
+> > > > -      * Abuse the slave_id to indicate that the channel is part of a video
+> > > > -      * group.
+> > > > +      * Abuse the peripheral_config to indicate that the channel is part
+> > >
+> > > Is it still an abuse, or is this now the right way to pass custom data
+> > > to the DMA engine driver ?
+> >
+> > It doesn't make the driver any more portable, but it's now being
+> > more explicit about it. As far as I can tell, this is the best way
+> > to pass data that cannot be expressed through the regular interfaces
+> > in DT and the dmaengine API.
+> >
+> > Ideally there would be a generic way to pass this flag, but I couldn't
+> > figure out what this is actually doing, or whether there is a better
+> > way. Maybe Vinod has an idea.
 >
-> Do you or someone else have more information on the state of this
-> driver? I can see that it does not contain any of_device_id based
-> probing, so it seems that this is either dead code, the platform_device
-> gets created by some other code that is no longer compatible with
-> this driver.
+> I don't think we need a generic API in this case. The DMA engine is
+> specific to the display device, I don't foresee a need to mix-n-match.
 
-I've looked into this a while back, when I tried to remove slave_id. And 
-as far as I can tell there were never any in-tree users of this driver, 
-even back when we used platform board files. Maybe somebody from Nvidia 
-knows if there are out-of-tree users.
 
-- Lars
+Right. I wonder if there is even a point in using the dmaengine API
+in that case, I think for other single-purpose drivers we tend to just
+integrate the functionality in the client driver. No point changing this
+now of course, but it does feel odd.
 
+From my earlier reading of the driver, my impression was that this
+is just a memory-to-memory device, so it could be used that way
+as well, but does need a flag when working on the video memory.
+I couldn't quite make sense of that though.
+
+> >         /*
+> >          * Use the peripheral_config to indicate that the channel is part
+> >          * of a video group. This requires matching use of the custom
+> >          * structure in each driver.
+> >          */
+> >         pconfig = config->peripheral_config;
+> >         if (WARN_ON(config->peripheral_size != 0 &&
+> >                     config->peripheral_size != sizeof(*pconfig)))
+> >                 return -EINVAL;
+>
+> How about
+>
+>         if (WARN_ON(config->peripheral_config &&
+>                     config->peripheral_size != sizeof(*pconfig)))
+>
+> >
+> >         spin_lock_irqsave(&chan->lock, flags);
+> >         if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
+> >             config->peripheral_size == sizeof(*pconfig))
+>
+> And here you can test pconfig != NULL.
+
+Good idea. Changed now, using 'if (pconfig)' without the '!= NULL'
+in both expressions.
+
+        Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
