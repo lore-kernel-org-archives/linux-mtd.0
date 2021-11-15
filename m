@@ -2,14 +2,14 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E01CC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:00:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD029C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:01:51 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E8486321A
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:00:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 3E8486321A
+	by mail.kernel.org (Postfix) with ESMTPS id 75B9D63221
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:01:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 75B9D63221
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,30 +18,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FiMff/vgxEjhV4vBjriovCizUGptVvJONuHqs2kOAYI=; b=W58SOASOLMLlKE
-	FGV+fqqrb5AHkpaPnPmKHY4Diy1JbXAB6DsEfJU0VPCTdh4CKAsDVVMcqzOZNNxKijzpm9L6NJwbF
-	8wVfasnDsqvgregHY0byf4CajSLs1DoAlacFXaxijYmDM9Z7NWZTsdzn4hbQ7WwDf4/1nJCDNXqnw
-	asLS1Np1oi/T+0rT2e3QciwCEZR7g8lhADNTg0KT+LbGVqUcFRu3V5Aq0ilvJGCq/tQ4ZS59vPce5
-	mUS3xpEzB3qlYhTrzUrHs1Vik5hC+VzmSAGZvoJdK0gWXw1/D3CNLyvqJMBuLzDAoNfIsV+GnEnQ4
-	6nBDLBqWlKPS9aJRzHTg==;
+	List-Owner; bh=D/AmxxBn7LTfSwuz6u2YkTHf0R83+yMbmFeBrOh09WU=; b=HHxIjmzgznBPZP
+	M8bg4DBKCyAFEC5rYBofCCn2eJMlP5Uf1TQj+HTpGQdiBfhsCsImRMJwh3u9RumU7ceDRzYYujmID
+	WTE54Wemt9POo5qGb4pMKKkO0NFGkQpOZMo8ola0m+0x4Y2j5t7rvBS6dVakOjnAULjYzH8wEWIeW
+	jyNu2e9AK5fpC21MSryBN707SpXaNHrOUQ/TWQKQWYMy8XyDIlYbD4Aa//KVNC84I8sya+qtDp9U2
+	mv2aBV+Iss/GwHQ+MAFv091edw+8C3CV/LNBLy7yd8+ms9qQGentyit+JU8agOA63mxBi89zslZ3V
+	wbq6PUE8pBMdmgH70hRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmXq2-00EnwA-Np; Mon, 15 Nov 2021 08:59:42 +0000
+	id 1mmXre-00EoVg-Dz; Mon, 15 Nov 2021 09:01:22 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmXlU-00EmDE-6x; Mon, 15 Nov 2021 08:55:01 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9224463222;
- Mon, 15 Nov 2021 08:54:53 +0000 (UTC)
+ id 1mmXla-00EmGV-U4; Mon, 15 Nov 2021 08:55:08 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1DE63227;
+ Mon, 15 Nov 2021 08:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636966499;
- bh=SSVFq8V5QgZ8AMrKjuNifJwPRFV2bwVTfXVHbqPj2aU=;
+ s=k20201202; t=1636966506;
+ bh=6T6nVYUZYeuHx0KVvy6d2aAfM4hqSW/xkD9UxCrEiew=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=IWPlOAoNVZ+ir7KGxrildoWGM1mQnaf7ewCJRGxAlh7sp55Kq08VXBsh2HJq0UNxl
- eJrtqrhd9f07DrNoIIYQxXcw0Dj7MyBMWvAjpLeDa0bPZnGyAXGf8Nn/iif0W7tUNF
- aASGKwu2D0mv1fB6bh3667PFZmstR+abS6MkboFwlFENPAACABf6i0vQqciiacp6D+
- CIa/shXrYU7IuqNvw2zRLT7DL94AW8AmV/eR1AVEhs5f+SoYebk81ievQQ/PH1ufo+
- sAfTJSFcuSqXozuveEFZbfN7PIQy3f0IbF7les+K9TRndRM/0BhX+9Zl6TK4QdhdOX
- HbQ0zPRM57fFg==
+ b=XE1rkoS26Hg1qVOUe/8JhihPWyqzwdxtSu6KpZSliRxpkj1mrD33TUzc4f3D7Z563
+ QLiO1buUzxFjE4Smwu3DKTXQuDLm+gytZAgIqSOnAvyzoAXeDNMVaxRSz5FfYVxdzx
+ fxlDZ6etPDPs4+Tui9Els9qLGXd+sLiGd5gsTfkJ6/smITicktBYHNkHB4AAvmw0pc
+ NRLtSgumom3wapnQ8lOIVnzIUsTm+82JiaSwVIuKcuOx5tpNurM5w5orGkJkyh4UkT
+ ImBiCpR78cdAYk6E0uXXpxENctgamiDTvLJByR5cyn6kcnDn0EUp+6TdkBa4HYzUNn
+ uP4cknrvguDtA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
@@ -67,16 +67,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
  linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
  linux-tegra@vger.kernel.org
-Subject: [PATCH 02/11] spi: pic32: stop setting dma_config->slave_id
-Date: Mon, 15 Nov 2021 09:53:54 +0100
-Message-Id: <20211115085403.360194-3-arnd@kernel.org>
+Subject: [PATCH 03/11] mmc: bcm2835: stop setting chan_config->slave_id
+Date: Mon, 15 Nov 2021 09:53:55 +0100
+Message-Id: <20211115085403.360194-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211115085403.360194-1-arnd@kernel.org>
 References: <20211115085403.360194-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_005500_326617_4A700BF1 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20211115_005507_055420_57D737C5 
+X-CRM114-Status: UNSURE (   9.66  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,39 +96,34 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Setting slave_id makes no sense with DT based probing, and
-should eventually get removed entirely. Address this driver
-by no longer setting the field here.
-
-I could not find which DMA driver is used on PIC32, if it's
-in the tree at all, but none of the obvious ones even care
-about slave_id any more.
+The field is not interpreted by the DMA engine driver, as all the data
+is passed from devicetree instead. Remove the assignment so the field
+can eventually be deleted.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/spi/spi-pic32.c | 2 --
+ drivers/mmc/host/bcm2835.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
-index 5eb7b61bbb4d..f86433b29260 100644
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -370,7 +370,6 @@ static int pic32_spi_dma_config(struct pic32_spi *pic32s, u32 dma_width)
- 	cfg.src_addr_width = dma_width;
- 	cfg.dst_addr_width = dma_width;
- 	/* tx channel */
--	cfg.slave_id = pic32s->tx_irq;
- 	cfg.direction = DMA_MEM_TO_DEV;
- 	ret = dmaengine_slave_config(master->dma_tx, &cfg);
- 	if (ret) {
-@@ -378,7 +377,6 @@ static int pic32_spi_dma_config(struct pic32_spi *pic32s, u32 dma_width)
- 		return ret;
- 	}
- 	/* rx channel */
--	cfg.slave_id = pic32s->rx_irq;
- 	cfg.direction = DMA_DEV_TO_MEM;
- 	ret = dmaengine_slave_config(master->dma_rx, &cfg);
- 	if (ret)
+diff --git a/drivers/mmc/host/bcm2835.c b/drivers/mmc/host/bcm2835.c
+index 8c2361e66277..463b707d9e99 100644
+--- a/drivers/mmc/host/bcm2835.c
++++ b/drivers/mmc/host/bcm2835.c
+@@ -1293,14 +1293,12 @@ static int bcm2835_add_host(struct bcm2835_host *host)
+ 
+ 		host->dma_cfg_tx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 		host->dma_cfg_tx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-		host->dma_cfg_tx.slave_id = 13;		/* DREQ channel */
+ 		host->dma_cfg_tx.direction = DMA_MEM_TO_DEV;
+ 		host->dma_cfg_tx.src_addr = 0;
+ 		host->dma_cfg_tx.dst_addr = host->phys_addr + SDDATA;
+ 
+ 		host->dma_cfg_rx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 		host->dma_cfg_rx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-		host->dma_cfg_rx.slave_id = 13;		/* DREQ channel */
+ 		host->dma_cfg_rx.direction = DMA_DEV_TO_MEM;
+ 		host->dma_cfg_rx.src_addr = host->phys_addr + SDDATA;
+ 		host->dma_cfg_rx.dst_addr = 0;
 -- 
 2.30.2
 
