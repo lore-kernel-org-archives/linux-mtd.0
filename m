@@ -2,14 +2,14 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE9FDC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92F46C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:20:41 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 750F560D42
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:17:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 750F560D42
+	by mail.kernel.org (Postfix) with ESMTPS id 5335361B2B
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 09:20:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5335361B2B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,30 +18,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3Ax+TkiBjoQYm8yIzzzmghMiY9Z0E41xYPYCbCoT0KE=; b=NJM874IncjQsAs
-	92/xN4Hr2OsXySIjGGc/qhwplOGC4y2MAg1kcgFbADACvDFQt5qUdaMR1rxT+bkYF3iZeJ4nz9Qb4
-	ZcTXEGz5/P4r83KRJ28IvX3FH6VaULXWZa1c/D22ey1aLI4WNdhxLAGR5mPZ1Oxvj02QuTEkQfDZ1
-	iC4vGCPB2kfRq+RZRcmpAMSEF9fcgfjEcydf6BxerrqVECTWTt43ZP0tHlfVHB3y7gPdZ1/M/Juf1
-	8S3brYBWDSVOFgtdDz2dgNkEuB0HarLwNzVtbDu8yaJi23Ga2pGwPJz4riIOKO8cl3V1ybFlpm+2Q
-	Oe6NbiHZ5zUO1H3iyhzg==;
+	List-Owner; bh=wIVzuNc4isbrGQ5yiN1HONL2pE/yr0eB3whDx/e3PA8=; b=O7dAI6DJ5k9biN
+	jl6KsnmFJNk66Ilv2LM0eGDr1+L73vX/FMTWG77UyDgBGlkpoHvVfLxCNjmmdeMIdIN2G2YUKzZiP
+	0AhU8w8v1O+Jp8kCqEiSYQHlZ9QTBsYbadFaD/KiSx3/nnowTXgMTOpimoa4l3g1kqRDcMUXcW3Yn
+	CXOi0miBEZlPBQQhwZg/r13ndxoTTw+7D68nwrvmtQ/ThWVkBcJIPOEzED9sXpt7VWpT7plY0+eOm
+	X+Y3wNyrpNBd/tLV3rDGQQr63PPmtF2rjiQE0hRdC0j0dvcBWhDEEPyVj6KbwAjgyVw9cKUgNXyb/
+	jI5Y+Q7Y9Bsy5blg22Tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmY6S-00EsfX-5y; Mon, 15 Nov 2021 09:16:41 +0000
+	id 1mmY9o-00EtVC-Em; Mon, 15 Nov 2021 09:20:08 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmXmE-00EmXJ-22; Mon, 15 Nov 2021 08:55:49 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2223663223;
- Mon, 15 Nov 2021 08:55:38 +0000 (UTC)
+ id 1mmXmK-00Emab-32; Mon, 15 Nov 2021 08:55:53 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97B2063227;
+ Mon, 15 Nov 2021 08:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636966545;
- bh=dcMQMZncG8IjNijKZNej/gmwTiTYDPeCFK23hEXOfto=;
+ s=k20201202; t=1636966551;
+ bh=t+sujmlGUVrYtWCA2Iqgm4qzwcVm4cE+7MUCYHiTmt8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VYuJvxO5lVR/GiGcXXlpTenpQL8tS/RiB2q/z0CMEjbvV3OtExgDGliJ9mPslll9Z
- gJF9jW4NvrAMcYVtan/DOPn491D5evV0DjVoLO4PKbj3djKSiupC9gs/o/JDRousmF
- VfKHtJYY+yuBV0OABHqDiHSUkpE6qGp8SFfe7NSJEmA0l/mxODuVE3wHHx7vsA5sov
- Wa36nu6IAmzkpbTK/7+6RaXeDPwWYCIT8QDeBGczguXuJlI760X3i1oAk8E/g82B3L
- MDBneNRRk20n1rSG1Z9mUgJiWRhrqnptEhFZTTbLf+wXfy+4WmVGvjS1fVUD20TPas
- ktKoOqahs6Lsg==
+ b=E3hAwHAFBi1veWTZ9KC3LUqplVBzvhHkJdmHwzLmUaxHGxHQt/Uao9jUuL7+wYtM1
+ t5/KCd2DhDnIMvpS1fzLHld+q6AChRUElQMbmbJgDaTpHm5vW1Uyudi7cSpoV3wALW
+ 3+TEcRqIWccqr7FIxw+On4njyPKMPuD/VUQ+uBZMxLJI2xjFiVqAFgV6Ym1M8MXblp
+ H3AtGfulWPCW1XQE3Nvr6vFEwAXxjhfbUBy3AmIdd5/EjenYc84yhK4dgbFVtzWJe/
+ uGxVZ0BY9bYvtABbO19Hw4xqxf+bkbhZDmO0g57I7eSW+8dnN8ZNhH3IrlxeCNnqJt
+ h19+P/ZGx52Ig==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
@@ -67,17 +67,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
  linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
  linux-tegra@vger.kernel.org
-Subject: [PATCH 09/11] dmaengine: tegra20-apb: stop checking config->slave_id
-Date: Mon, 15 Nov 2021 09:54:01 +0100
-Message-Id: <20211115085403.360194-10-arnd@kernel.org>
+Subject: [PATCH 10/11] staging: ralink-gdma: stop using slave_id config
+Date: Mon, 15 Nov 2021 09:54:02 +0100
+Message-Id: <20211115085403.360194-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211115085403.360194-1-arnd@kernel.org>
 References: <20211115085403.360194-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_005546_251962_7C1C3032 
-X-CRM114-Status: UNSURE (   9.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211115_005552_223602_1E01D2E3 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,31 +95,83 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Nothing sets the slave_id field any more, so stop accessing
-it to allow the removal of this field.
+Picking the connection between a DMA controller and its attached device
+is done through devicetree using the "dmas" property, which is implemented
+by the gdma driver, but it also allows overriding the "req" configuration
+with the slave_id field, as it was done in some linux-2.6 era drivers.
+
+There is no driver in the tree that sets these values, so stop
+interpreting them before anything accidentally starts relying on it.
+Rename the field in the channel from "slave_id" to "req" to better match
+the purpose and the naming in the hardware.
+
+If any driver actually starts using this DMA engine, it may be necessary
+to implement a .xlate callback that sets this field at probe time.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/tegra20-apb-dma.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/staging/ralink-gdma/ralink-gdma.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-index b7260749e8ee..eaafcbe4ca94 100644
---- a/drivers/dma/tegra20-apb-dma.c
-+++ b/drivers/dma/tegra20-apb-dma.c
-@@ -343,12 +343,6 @@ static int tegra_dma_slave_config(struct dma_chan *dc,
- 	}
+diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+index b5229bc6eae5..f00240e62e1b 100644
+--- a/drivers/staging/ralink-gdma/ralink-gdma.c
++++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+@@ -106,7 +106,7 @@ struct gdma_dma_desc {
+ struct gdma_dmaengine_chan {
+ 	struct virt_dma_chan vchan;
+ 	unsigned int id;
+-	unsigned int slave_id;
++	unsigned int req;
  
- 	memcpy(&tdc->dma_sconfig, sconfig, sizeof(*sconfig));
--	if (tdc->slave_id == TEGRA_APBDMA_SLAVE_ID_INVALID &&
--	    sconfig->device_fc) {
--		if (sconfig->slave_id > TEGRA_APBDMA_CSR_REQ_SEL_MASK)
--			return -EINVAL;
--		tdc->slave_id = sconfig->slave_id;
--	}
- 	tdc->config_init = true;
- 
- 	return 0;
+ 	dma_addr_t fifo_addr;
+ 	enum gdma_dma_transfer_size burst_size;
+@@ -194,7 +194,6 @@ static int gdma_dma_config(struct dma_chan *c,
+ 			dev_err(dma_dev->ddev.dev, "only support 4 byte buswidth\n");
+ 			return -EINVAL;
+ 		}
+-		chan->slave_id = config->slave_id;
+ 		chan->fifo_addr = config->dst_addr;
+ 		chan->burst_size = gdma_dma_maxburst(config->dst_maxburst);
+ 		break;
+@@ -203,7 +202,6 @@ static int gdma_dma_config(struct dma_chan *c,
+ 			dev_err(dma_dev->ddev.dev, "only support 4 byte buswidth\n");
+ 			return -EINVAL;
+ 		}
+-		chan->slave_id = config->slave_id;
+ 		chan->fifo_addr = config->src_addr;
+ 		chan->burst_size = gdma_dma_maxburst(config->src_maxburst);
+ 		break;
+@@ -288,12 +286,12 @@ static int rt305x_gdma_start_transfer(struct gdma_dmaengine_chan *chan)
+ 		dst_addr = chan->fifo_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_DST_ADDR_FIXED |
+ 			(8 << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
+-			(chan->slave_id << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
++			(chan->req << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
+ 	} else if (chan->desc->direction == DMA_DEV_TO_MEM) {
+ 		src_addr = chan->fifo_addr;
+ 		dst_addr = sg->dst_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_SRC_ADDR_FIXED |
+-			(chan->slave_id << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
++			(chan->req << GDMA_RT305X_CTRL0_SRC_REQ_SHIFT) |
+ 			(8 << GDMA_RT305X_CTRL0_DST_REQ_SHIFT);
+ 	} else if (chan->desc->direction == DMA_MEM_TO_MEM) {
+ 		/*
+@@ -365,12 +363,12 @@ static int rt3883_gdma_start_transfer(struct gdma_dmaengine_chan *chan)
+ 		dst_addr = chan->fifo_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_DST_ADDR_FIXED;
+ 		ctrl1 = (32 << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
+-			(chan->slave_id << GDMA_REG_CTRL1_DST_REQ_SHIFT);
++			(chan->req << GDMA_REG_CTRL1_DST_REQ_SHIFT);
+ 	} else if (chan->desc->direction == DMA_DEV_TO_MEM) {
+ 		src_addr = chan->fifo_addr;
+ 		dst_addr = sg->dst_addr;
+ 		ctrl0 = GDMA_REG_CTRL0_SRC_ADDR_FIXED;
+-		ctrl1 = (chan->slave_id << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
++		ctrl1 = (chan->req << GDMA_REG_CTRL1_SRC_REQ_SHIFT) |
+ 			(32 << GDMA_REG_CTRL1_DST_REQ_SHIFT) |
+ 			GDMA_REG_CTRL1_COHERENT;
+ 	} else if (chan->desc->direction == DMA_MEM_TO_MEM) {
 -- 
 2.30.2
 
