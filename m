@@ -2,116 +2,89 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1257AC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 11:37:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD02C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 11:50:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D413361C32
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 11:37:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D413361C32
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=nvidia.com
+	by mail.kernel.org (Postfix) with ESMTPS id B9DDE63220
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 11:50:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B9DDE63220
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HM+TnDposeTUny0i+U9+WhBWzMOHzNdF/ZwONWXZbOI=; b=tIFlFtKWLNIjDq
-	96HRCuChuP5biWyjO4hieJ0qhDeh9QwacxKuMPd63IXDHby6PVO+kYx+SpvvmJOnYEaH8iPapMN2f
-	F40ycr7Yx6h6wXgPHcO3zW5+mCH4sexq8yK1ttHQTOEj5rFOoXO+h1f0jlKvfpAv+bSl2OdVCNJVp
-	H4tjaE0KvNoM7w7h0apbu3ialV28O2PL/zqwEDp1eDSbVQ1HO3kGAr4D8Yzzal1KZezZNzMD6mO+8
-	FKNOorYRxAIJNqXEpYWbkAEgPHCLF+M0Mg2QwLrapTSrMce57P96MlRqQ9pWdsbKPSUCkxR/jUtnS
-	mU+ufqp7TqG3UNdHdXpw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XfcSzD6198MRbVcZ7DqQ+pNb37GhT/1IyQrqmT8KN+8=; b=UiOXeAo40yYgxB
+	QJ7UpTXnl1P+07svBiVSTIzwNcJvaTCzf59lazBAD5hCQRuOkVI4tsm9AwvBVz/Ma2CKIKt2vPKkf
+	AOvxq1FnBr5rIZt644Cp/NEjqQuNyCC0JkZkjaRtvLm7rBNh6XEDGPbUizXCUo/jY4Ybvr/FxF/ZJ
+	Wvn8gCxlGJtBSSXNZkYFRZGL/J6wL9bay4AtTVT+xo6GrqarXBVhC91r1Y1wUijTsbekJ4rc/hHI0
+	nByk9BuNbQtUmqbe5W2FYhMQ9On0xF+uSta+tE9E4DLVIjzeXvYJ41IFVRaAN95IFqGaSdklStYo4
+	1hqhU9uvOiX0GqNsM86g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmaIR-00FPwe-2B; Mon, 15 Nov 2021 11:37:11 +0000
-Received: from mail-bn8nam08on2085.outbound.protection.outlook.com
- ([40.107.100.85] helo=NAM04-BN8-obe.outbound.protection.outlook.com)
+	id 1mmaV8-00FRke-8J; Mon, 15 Nov 2021 11:50:18 +0000
+Received: from perceval.ideasonboard.com ([213.167.242.64])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmaIN-00FPuP-8q
- for linux-mtd@lists.infradead.org; Mon, 15 Nov 2021 11:37:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E6aQQ4B7hC6qSsGcpxKcpAKlXRGtqiLGmXwwfXB2KjvttkDKOivQTp8ILJYDWbJAAnn4F1lhY0s2wvLqPMOD2LtcC4pFq9RSwyWbIzhgLvPDAl5tV3H5wTb83JnRd3SeomD8bMr0T20kntQwXADHhawMoR9GJJS1TxoFfzbKXMCVfA0yOBqMQ7M6UR6jg75+SZJKZLnTFmrnAz47bCBulugYhfETGivCK9RK0bwVcDdeOratL6fPjH7SQbv2b07trZD1jaFI9kQ8PH5AN8bdP+vh2Pv56LDWv+GlwODIxhmFNuExpTZVkeSbpozt6NtrYNO9YxoYSE4CZSTCTVG+ZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e4vTFYd6QSIQnK5LC/9sLqnvD9aLlTuQ+Ax3tdF4uoY=;
- b=Lpl6rvd6LmSPplW1yCXUkW9o+CwhJOaBbpml/E2wxQ2xzIAorQKOjR9nt+PRmemfpjl4JEIe4Te2BK4NcOS/29mGibttHZq9TQS/eaMadrcYkJdRr6I0EifrQeSpit2/Hn7Yqg+QZnc78JWlcOoXok5yTHC3SF7p2MQvv1aCttZAqLpYlQmRf3DX9FFCP9JeAz8uBDU+EGgRa3CrOjBA0JEdX3Hb4EKGTMdlCNiebWqtXbZGql1Rg2WZ/lpNc4pBf4DhRgQ46k6rQdMgSnVX2DjCrkCiN1heGZIcP9nmvGPi5Iz87peEWS31CzgE5vZH/sGMvRDwg9JKnGrLCTlhTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e4vTFYd6QSIQnK5LC/9sLqnvD9aLlTuQ+Ax3tdF4uoY=;
- b=Etq+FXa52YLD3FkWEg6NH6BIljOs1++4Fy7lOSFu4rXthnVAlcYm0FAyCOHaT5KLzHVHhlNZlPWl0r1gzNgOOVe8nlH+QdPR9t6z/FckSJIu92T6WIz48K9L9qhdG3PVKkdJQu1Wq91FN2wQdjdExNmAbU61rJSNLW2P+e/cI1WwyfEnAQYI62OX65E7KfKeQH4TDpCXrt6OMOBKWzjYymag/kKzfutEBnTEJaIyh8kCljZ+AYiE3qvtfi2L3fenqPan1Oq+ASAsjeyNcocKd8tCnIg3A5JKPXkKzy48t2twBX8Dr+glzf3BIaIN4jxmysXTrYmbWMnKAnVwJNVRzw==
-Received: from DM6PR06CA0022.namprd06.prod.outlook.com (2603:10b6:5:120::35)
- by DM5PR12MB1660.namprd12.prod.outlook.com (2603:10b6:4:9::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4690.26; Mon, 15 Nov 2021 11:37:02 +0000
-Received: from DM6NAM11FT049.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:120:cafe::58) by DM6PR06CA0022.outlook.office365.com
- (2603:10b6:5:120::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend
- Transport; Mon, 15 Nov 2021 11:37:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- DM6NAM11FT049.mail.protection.outlook.com (10.13.172.188) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4690.15 via Frontend Transport; Mon, 15 Nov 2021 11:37:02 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 15 Nov
- 2021 11:37:01 +0000
-Received: from moonraker.home (172.20.187.5) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Mon, 15 Nov 2021 11:37:00 +0000
-From: Jon Hunter <jonathanh@nvidia.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Jon Hunter
- <jonathanh@nvidia.com>
-Subject: [PATCH] mtd: dataflash: Add device-tree SPI IDs
-Date: Mon, 15 Nov 2021 11:36:55 +0000
-Message-ID: <20211115113655.237785-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+ id 1mmaUv-00FRiQ-3z; Mon, 15 Nov 2021 11:50:06 +0000
+Received: from pendragon.ideasonboard.com
+ (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+ by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8A4AB9CA;
+ Mon, 15 Nov 2021 12:50:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+ s=mail; t=1636977002;
+ bh=8re/QsV/3GPHXV9j74dqu0H+3pTypCailVuz8uMMvrE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=DTtRDp36OT7fx+mEQdB5Q6I6Uf3svTjc7O60k3oZ4d4LDZwX9gRNLXKCFKYdS58b6
+ iochdzQTE6K7vejlHf4MMrQFHA3VGrfZCRSuARACO154L7RPOUcQFEq3FEieaAnbP9
+ 1Q/7byArzgxRl2K9AECFy7SDhkfUFmq2YmZNiRrQ=
+Date: Mon, 15 Nov 2021 13:49:40 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Andy Gross <agross@kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Baolin Wang <baolin.wang7@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Chunyan Zhang <zhang.lyra@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hyun Kwon <hyun.kwon@xilinx.com>, Jaroslav Kysela <perex@perex.cz>,
+ Jon Hunter <jonathanh@nvidia.com>, Lars-Peter Clausen <lars@metafoo.de>,
+ Laxman Dewangan <ldewangan@nvidia.com>,
+ Manivannan Sadhasivam <mani@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Michal Simek <michal.simek@xilinx.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Orson Zhai <orsonzhai@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ dmaengine@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
+ <linux-rpi-kernel@lists.infradead.org>, 
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, linux-staging@lists.linux.dev,
+ "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 08/11] dmaengine: xilinx_dpdma: stop using slave_id field
+Message-ID: <YZJJVA/92KYH8hQL@pendragon.ideasonboard.com>
+References: <20211115085403.360194-1-arnd@kernel.org>
+ <20211115085403.360194-9-arnd@kernel.org>
+ <YZIk6cVb7XibrMjf@pendragon.ideasonboard.com>
+ <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b364fbb-8494-4ae7-9e0d-08d9a82c3e39
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1660:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1660F8AAA8A5681E48C8FEA4D9989@DM5PR12MB1660.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rTsZykAPcvfDNUjuwAZ5hac9S26aTAOOMatj/uxJ8DbICMXDbNPigcgFa5M3XAeoFLrpAua4EIPS4snlWz2gcT90hqLmxQ9V2CqKnszJf6nA3Zv3Y3I2eCvUxfBTAXqYIbDQ8S431Wt6dsPHuZm4qCuHOFYL+YtmQT5yt6/OfBPaCSNFqwO3302gN9Wny9zGzEZYjRbHxdI505LhVmfZ6lQh1I+6jxw7hXyetqj/iA1aMV/u1MFEB0+Q2xMCJXZOkPUxcbNSWwIqX1GoN9+qRHf2ia7caOb1yKreD56T9R4flVGOhqAvILVD+iXslGVbWvnTcJDbgZuWePRwFCgu18wqQqSt9VxaNx6pKh26xLl9JB1zRJeLTPXXIoMC1hX5JjfOg1N3URCR4Rze6MdOjLjjR3yCmBZ7ueNYG9Cp+uMekUW+sWXCH0b1Fzpd+pDwlN1ZLpGtPZmllRm1Y85FT9v4eWrabyObruph1yqvSVz4eNl0VHXixarn9SwdWIlBo1SyMBKKPebg/U9N+dJBXKZQDvEqKN/zWe/5zwYRXn6u46l3CsXuO/CZ0sBVaTysYUZEQTSy9MV6ymKBfkwbdsminZscO8srIzPygIEkFU6i1SUQxbusFtqVFU8hAza01c1c17OGE4ZDc8geiSSi+RwpukEQigyc/Um3uoqKfIAc7ReM5wwurWuSq6PrfuYxSy0Gmsucd6L3bph4ITBEyQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.36; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid05.nvidia.com; CAT:NONE;
- SFS:(4636009)(46966006)(36840700001)(426003)(8676002)(82310400003)(336012)(4326008)(47076005)(36860700001)(6666004)(2906002)(26005)(186003)(86362001)(8936002)(1076003)(36756003)(356005)(70206006)(107886003)(508600001)(5660300002)(2616005)(70586007)(7636003)(36906005)(54906003)(110136005)(83380400001)(316002);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2021 11:37:02.4397 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b364fbb-8494-4ae7-9e0d-08d9a82c3e39
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.36];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT049.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1660
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1Fu11-e0CK2of8u3ebdjom84UKuXhBKi5FUs5ZPPdOVA@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_033707_368587_9884DF3A 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20211115_035005_499145_920E46C5 
+X-CRM114-Status: GOOD (  33.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,52 +101,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Commit 5fa6863ba692 ("spi: Check we have a spi_device_id for each DT
-compatible") added a test to check that every SPI driver has a
-spi_device_id for each DT compatiable string defined by the driver
-and warns if the spi_device_id is missing. The spi_device_ids are
-missing for the dataflash driver and the following warnings are now
-seen.
+Hi Arnd,
 
- WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,at45
- WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,dataflash
+On Mon, Nov 15, 2021 at 11:21:30AM +0100, Arnd Bergmann wrote:
+> On Mon, Nov 15, 2021 at 10:14 AM Laurent Pinchart wrote:
+> > On Mon, Nov 15, 2021 at 09:54:00AM +0100, Arnd Bergmann wrote:
+> > > @@ -1285,11 +1287,13 @@ static int xilinx_dpdma_config(struct dma_chan *dchan,
+> > >       spin_lock_irqsave(&chan->lock, flags);
+> > >
+> > >       /*
+> > > -      * Abuse the slave_id to indicate that the channel is part of a video
+> > > -      * group.
+> > > +      * Abuse the peripheral_config to indicate that the channel is part
+> >
+> > Is it still an abuse, or is this now the right way to pass custom data
+> > to the DMA engine driver ?
+> 
+> It doesn't make the driver any more portable, but it's now being
+> more explicit about it. As far as I can tell, this is the best way
+> to pass data that cannot be expressed through the regular interfaces
+> in DT and the dmaengine API.
+> 
+> Ideally there would be a generic way to pass this flag, but I couldn't
+> figure out what this is actually doing, or whether there is a better
+> way. Maybe Vinod has an idea.
 
-Fix this by adding the necessary spi_device_ids.
+I don't think we need a generic API in this case. The DMA engine is
+specific to the display device, I don't foresee a need to mix-n-match.
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- drivers/mtd/devices/mtd_dataflash.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> I'll change s/Abuse/Use/ for the moment until I get a definite answer.
+> 
+> > > +      * of a video group.
+> > >        */
+> > > -     if (chan->id <= ZYNQMP_DPDMA_VIDEO2)
+> > > -             chan->video_group = config->slave_id != 0;
+> > > +     pconfig = config->peripheral_config;
+> >
+> > This could be moved to the variable declaration above, up to you.
+> 
+> I considered that but since it doesn't fit in a normal 80-column
+> line, it seemed best to do it here.
+> 
+> > > +     if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
+> > > +         config->peripheral_size == sizeof(*pconfig))
+> >
+> > Silently ignoring a size mismatch isn't nice. Could we validate the size
+> > at the beginning of the function and return an error ?
+> 
+> Yes, good idea. Since this would mean a bug in another driver,
+> I'll add a WARN_ON() as well to make it clear which driver caused it.
+> This is what I have now, let me know if you have any further suggestions:
+> 
+>         /*
+>          * Use the peripheral_config to indicate that the channel is part
+>          * of a video group. This requires matching use of the custom
+>          * structure in each driver.
+>          */
+>         pconfig = config->peripheral_config;
+>         if (WARN_ON(config->peripheral_size != 0 &&
+>                     config->peripheral_size != sizeof(*pconfig)))
+>                 return -EINVAL;
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 9802e265fca8..2b317ed6c103 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -96,6 +96,13 @@ struct dataflash {
- 	struct mtd_info		mtd;
- };
- 
-+static const struct spi_device_id dataflash_dev_ids[] = {
-+	{ "at45" },
-+	{ "dataflash" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, dataflash_dev_ids);
-+
- #ifdef CONFIG_OF
- static const struct of_device_id dataflash_dt_ids[] = {
- 	{ .compatible = "atmel,at45", },
-@@ -927,6 +934,7 @@ static struct spi_driver dataflash_driver = {
- 		.name		= "mtd_dataflash",
- 		.of_match_table = of_match_ptr(dataflash_dt_ids),
- 	},
-+	.id_table = dataflash_dev_ids,
- 
- 	.probe		= dataflash_probe,
- 	.remove		= dataflash_remove,
+How about
+
+ 	if (WARN_ON(config->peripheral_config &&
+		    config->peripheral_size != sizeof(*pconfig)))
+
+> 
+>         spin_lock_irqsave(&chan->lock, flags);
+>         if (chan->id <= ZYNQMP_DPDMA_VIDEO2 &&
+>             config->peripheral_size == sizeof(*pconfig))
+
+And here you can test pconfig != NULL.
+
+>                 chan->video_group = pconfig->video_group;
+>         spin_unlock_irqrestore(&chan->lock, flags);
+> 
+>         return 0;
+> 
+> > With these issues addressed,
+> >
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
 
 ______________________________________________________
 Linux MTD discussion mailing list
