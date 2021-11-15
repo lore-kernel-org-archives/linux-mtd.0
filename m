@@ -2,58 +2,79 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1686BC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:51:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D54D1C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:56:20 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4D2063213
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:51:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4D2063213
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thorsis.com
+	by mail.kernel.org (Postfix) with ESMTPS id A52DF61C48
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:56:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A52DF61C48
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YhBjqKQB36wNObMHEWJY9qan8xYKHNPB6MfGyd5kb6k=; b=CYfjn9z4UjVlYV
-	zEaWlfofA7YnUCUjmmtxXaomHyRoI5oW12UTaZ01j9azEcY9J55XHcSvccWGCdAtb5J4Epqut7nZ9
-	HYufT4hIdaaJjphVbXzFKr+k9uWn9FUmaijCpjFAT51kYRUyoZrdDzih1IdHyCci/MQU2DeTLEGTy
-	jbZYof1aj6rJ3/XKqgi/dXwOy9F1UsNS2Jd+BUCl9UgFCtBDKKQ4jqsoLtHwED7NBg0FzeDH/Ccmq
-	d0JKyqyCyIG1kgPO62/v88esk7ziDLUpoKG4s9T/DOvFvNq7jylkx38zrbkauZZLATx2A7gKQL5+f
-	7dTReCkSrxKGAUTD32iw==;
+	List-Owner; bh=zgGolQAeT5oNIMKx1V8Li4s6KnRm3kekK5Bf4rFLD4k=; b=eN3zr3nCYMG7Xt
+	AH7+KC/reADSp1RMy5CmTjCcBfss/CWp4gRlad2mWQAkfQZEOLuud+Js/6InkYHrFptkMyk5zlnX1
+	iv3ZdAugLMtf0Esz9gigOjNlr/5JfwSHEIy23SMxZybGbGT4nc4mVG/rDwT9TJSQrj/pVlxEkWdoz
+	AfvCJqjjlL6ntHeoAmcHWgF7shJYlgOmn+BId61q3QgeUJUwTPubf5uIeACra4O4kqC7Jic0ZgDWW
+	NxT7wZVf4RH3A1dk8Ahjy0+dw6jptdgNYyt9AEdgb9lx2hVOGhauzpHrn4JFewuFhtgfbH33jFY4r
+	8vHju6AzI1TY+U9xu3bA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmXhz-00Eknl-QN; Mon, 15 Nov 2021 08:51:23 +0000
-Received: from mail.thorsis.com ([92.198.35.195])
+	id 1mmXm9-00EmVG-Aq; Mon, 15 Nov 2021 08:55:41 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmXgw-00EkEA-Bh
- for linux-mtd@lists.infradead.org; Mon, 15 Nov 2021 08:50:20 +0000
-Received: from localhost (localhost [127.0.0.1])
- by mail.thorsis.com (Postfix) with ESMTP id 77CFB1A24
- for <linux-mtd@lists.infradead.org>; Mon, 15 Nov 2021 09:50:13 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
- by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id AAYfCBxIqhhe for <linux-mtd@lists.infradead.org>;
- Mon, 15 Nov 2021 09:50:13 +0100 (CET)
-Received: by mail.thorsis.com (Postfix, from userid 109)
- id 5867730CE; Mon, 15 Nov 2021 09:50:13 +0100 (CET)
-Received: from adahl by ada.ifak-system.com with local (Exim 4.92)
- (envelope-from <ada@thorsis.com>)
- id 1mmXgl-0005DS-E9; Mon, 15 Nov 2021 09:50:07 +0100
-From: Alexander Dahl <ada@thorsis.com>
-To: linux-mtd@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ubifs: Fix spelling mistakes
-Date: Mon, 15 Nov 2021 09:49:43 +0100
-Message-Id: <20211115084942.19429-1-ada@thorsis.com>
+ id 1mmXlH-00Em7k-Gg; Mon, 15 Nov 2021 08:54:49 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9880061BE2;
+ Mon, 15 Nov 2021 08:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1636966486;
+ bh=1h0g2AYqXFphX4dDyELLl2t7YQIUXZ6UIHT7JYg2iMs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=kv+C8zB0tbPMdXf3ORNkXrRH4MrGq92/hxOUWQ7rrNLjPwyN92rkebIKY8icgiOfU
+ pMdG65xZlUKOnr8NUOP6pmXxc3gZzuCmcsiwcDOb6St8hs6LkWB6n1ZZo98RlrnVvp
+ FkqOBIn33Yi9JZOuQ6miAmszWpYRosGKoEiu9hmpXWXS0VgUXakje0NXKySH0Rz+mZ
+ 5B6hNND+tRm0kn91fmSGmzeWYTduFgTH0JLa1xNb8xKQOI2gwIYz/OsIEp39PngVMt
+ ez7HK1j37N1+6Gl5sR4/i/hvvdNCZ5Sdb+Rvh2P8BC4uYTPFd5lIc2Ou5i9m3hH8E0
+ 48X4U7Q98MS4A==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Baolin Wang <baolin.wang7@gmail.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Chunyan Zhang <zhang.lyra@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hyun Kwon <hyun.kwon@xilinx.com>, Jaroslav Kysela <perex@perex.cz>,
+ Jon Hunter <jonathanh@nvidia.com>, Lars-Peter Clausen <lars@metafoo.de>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Laxman Dewangan <ldewangan@nvidia.com>,
+ Manivannan Sadhasivam <mani@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Michal Simek <michal.simek@xilinx.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Orson Zhai <orsonzhai@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>,
+ Thierry Reding <thierry.reding@gmail.com>, alsa-devel@alsa-project.org,
+ bcm-kernel-feedback-list@broadcom.com, dmaengine@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+ linux-tegra@vger.kernel.org
+Subject: [PATCH 00/11] dmaengine: kill off dma_slave_config->slave_id
+Date: Mon, 15 Nov 2021 09:53:52 +0100
+Message-Id: <20211115085403.360194-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_005018_604356_4B0E6C09 
-X-CRM114-Status: GOOD (  15.84  )
+X-CRM114-CacheID: sfid-20211115_005447_642694_2AFD7D76 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,66 +86,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Found with `codespell -i 3 -w fs/ubifs/**` and proof reading that parts.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Alexander Dahl <ada@thorsis.com>
----
+I recently came across some new uses of the 'slave_id' field that
+I had (almost) removed a few years ago. There are no legitimate
+uses of this field in the kernel, only a few stale references and
+two drivers that abuse the field as a side-channel between the
+dmaengine driver and its client.
 
-Notes:
-    v2
-    --
-    - rebased onto v5.16-rc1
+Let's change the xilinx and qualcomm drivers to use the documented
+side-channel (peripheral_data) instead, and remove the remnants of
+it to prevent new users from coming in.
 
- fs/ubifs/dir.c    | 4 ++--
- fs/ubifs/replay.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+As the last patch in the series depends on all the others, it would
+be nice have everything merged into the dmaengine tree for v5.17.
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 7c61d0ec0159..dbe72f664abf 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1207,7 +1207,7 @@ static int ubifs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
-  * @inode1: first inode
-  * @inode2: second inode
-  * @inode3: third inode
-- * @inode4: fouth inode
-+ * @inode4: fourth inode
-  *
-  * This function is used for 'ubifs_rename()' and @inode1 may be the same as
-  * @inode2 whereas @inode3 and @inode4 may be %NULL.
-@@ -1233,7 +1233,7 @@ static void lock_4_inodes(struct inode *inode1, struct inode *inode2,
-  * @inode1: first inode
-  * @inode2: second inode
-  * @inode3: third inode
-- * @inode4: fouth inode
-+ * @inode4: fourth inode
-  */
- static void unlock_4_inodes(struct inode *inode1, struct inode *inode2,
- 			    struct inode *inode3, struct inode *inode4)
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index 5260d3e531bb..4211e4456b1e 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -106,7 +106,7 @@ static int set_bud_lprops(struct ubifs_info *c, struct bud_entry *b)
- 		 * property values should be @lp->free == @c->leb_size and
- 		 * @lp->dirty == 0, but that is not the case. The reason is that
- 		 * the LEB had been garbage collected before it became the bud,
--		 * and there was not commit inbetween. The garbage collector
-+		 * and there was no commit in between. The garbage collector
- 		 * resets the free and dirty space without recording it
- 		 * anywhere except lprops, so if there was no commit then
- 		 * lprops does not have that information.
+       Arnd
 
-base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
+Arnd Bergmann (11):
+  ASoC: dai_dma: remove slave_id field
+  spi: pic32: stop setting dma_config->slave_id
+  mmc: bcm2835: stop setting chan_config->slave_id
+  dmaengine: shdma: remove legacy slave_id parsing
+  dmaengine: pxa/mmp: stop referencing config->slave_id
+  dmaengine: sprd: stop referencing config->slave_id
+  dmaengine: qcom-adm: stop abusing slave_id config
+  dmaengine: xilinx_dpdma: stop using slave_id field
+  dmaengine: tegra20-apb: stop checking config->slave_id
+  staging: ralink-gdma: stop using slave_id config
+  dmaengine: remove slave_id config field
+
+ drivers/dma/mmp_pdma.c                    |  6 ---
+ drivers/dma/pxa_dma.c                     |  7 ---
+ drivers/dma/qcom/qcom_adm.c               | 56 ++++++++++++++++++++---
+ drivers/dma/sh/shdma-base.c               |  8 ----
+ drivers/dma/sprd-dma.c                    |  3 --
+ drivers/dma/tegra20-apb-dma.c             |  6 ---
+ drivers/dma/xilinx/xilinx_dpdma.c         | 12 +++--
+ drivers/gpu/drm/xlnx/zynqmp_disp.c        |  9 +++-
+ drivers/mmc/host/bcm2835.c                |  2 -
+ drivers/mtd/nand/raw/qcom_nandc.c         | 14 +++++-
+ drivers/spi/spi-pic32.c                   |  2 -
+ drivers/staging/ralink-gdma/ralink-gdma.c | 12 ++---
+ drivers/tty/serial/msm_serial.c           | 15 +++++-
+ include/linux/dma/qcom_adm.h              | 12 +++++
+ include/linux/dma/xilinx_dpdma.h          | 11 +++++
+ include/linux/dmaengine.h                 |  4 --
+ include/sound/dmaengine_pcm.h             |  2 -
+ sound/core/pcm_dmaengine.c                |  5 +-
+ sound/soc/tegra/tegra20_spdif.c           |  1 -
+ 19 files changed, 119 insertions(+), 68 deletions(-)
+ create mode 100644 include/linux/dma/qcom_adm.h
+ create mode 100644 include/linux/dma/xilinx_dpdma.h
+
 -- 
 2.30.2
 
+Cc: Andy Gross <agross@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Baolin Wang <baolin.wang7@gmail.com>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Jon Hunter <jonathanh@nvidia.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: dmaengine@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rpi-kernel@lists.infradead.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: linux-staging@lists.linux.dev
+Cc: linux-tegra@vger.kernel.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
