@@ -2,98 +2,76 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82606C4332F
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 10:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FD3CC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 11:00:35 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48E9863211
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 10:43:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 48E9863211
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 400C5615A4
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 11:00:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 400C5615A4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w/1I6hFJesEDBorxu5mkBfc9/luwJk2AZcgt0LdzTuI=; b=Q5W6Vc5ZtkEN0R
-	h9gPACSIwjQAS35EEBg0U078acpMgKk0Mp0erODn/e56cO6IEI5sRduOrINIZSE8pOnM202/0iMSI
-	lEJw90wo9KetV/k0N6M6Yu9FfCT6DJ3AqpkiYNeoXMc51sJR389eXFWLrn00oxWv2aiPbzCfldmuC
-	rll2afaIswVF9AAf3yQHZ2R26dTtkKJekcicgdft7c/NFHqgv3xuPTaxD/0MHF/TNZrC+1jAo/YpH
-	SQOfTxb7gE9lwOcAezrzIajIfkyF0WetuB5XilIWMoDIlXHBhnBxiJ5eC3RX4d2O0dk+sbEaZkxRa
-	RIvN+IP1dWT7qfb58ucQ==;
+	List-Owner; bh=/E6kEIlPAzRjh2lgwBSUCILemTIcXfaljOcD0kn5U3M=; b=V8I3zDSeex6A6t
+	nl7YZU8v2N2+spCOug/K47DyR/O23v+x5IvHmjn4spLC6ICPno8no+WC2dlSSEtOt6PvsEt4OGinT
+	iHePWb9b0b78r01iNEd2rlEj0SScEZZTi1ZYUOQInRuhriCtaIwCmWRPQHFVxLwsKvXgTG9rwC/uN
+	EoxGZ45J5JYOYushZSa+uTUxgJSeTTgNH+PC3FwSsnnqUNpQaBZIQhKP9eN0c4nAaiYheV4uEjID1
+	qKeePtHi1cBXT+RpWdEWXcYNf2a98riaR/sT9foTtuz88fW1C/d76PkYeNeRUODNbYLn+5lasZD+4
+	Mr6IOfj0zXNX0wBiHn9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmZS6-00FF4s-Av; Mon, 15 Nov 2021 10:43:06 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mmZiS-00FIEr-NJ; Mon, 15 Nov 2021 11:00:00 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmZRW-00FEsi-TC; Mon, 15 Nov 2021 10:42:32 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D2D163210;
- Mon, 15 Nov 2021 10:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1636972950;
- bh=GF5ppKwJBGyzBz8YYmc0v0PuTfRZzEb8KsPYdX9kZys=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=Ah/2tRgiVpL5fsi7FPpcL635JDhcln6l2ExZIWHTLBUbMjdBJtz0DoVh8A2lD2GeS
- Vn5loajjfQVDFPQtLSRLZGgFOOu9gaKK3ygqoSrLlln9jWXCpaNqhh48lZ8c+k+4gu
- sRf7wuCD69gIDwdqAcDKjxNp/YsEuFSMvDDDQT7VHpaJYuJxZPW/xofRGd5PidTsHa
- kAWstx1aMCAeHyFhdJIprnubYysWs5QAKZBMy/vWApTOP0uD7D8phUBIQiY3lLQ5f/
- +MVP+HB9F9xrWDthVsi8GxjjhUCyNhOn85FTRAs3rVEuGA/K5Upw6e+cpw5gK86TyV
- zRQeafG4VMnqA==
-Received: by mail-wm1-f45.google.com with SMTP id
- 67-20020a1c1946000000b0030d4c90fa87so12038758wmz.2; 
- Mon, 15 Nov 2021 02:42:30 -0800 (PST)
-X-Gm-Message-State: AOAM5318+uDmUXB2h+TkoapURULBly94WftYPXfyog99SrvsTi2iLNXo
- CFLkz0RBMdQ22Nu+tmIQcZMvlc0/CKyh2p2WOb8=
-X-Google-Smtp-Source: ABdhPJxXAexhirAvGW2LKyfe3zijMEf2dKYT5qfqRJ6eAMXzz6GR60sm0yXhnH6+pWfe4YG9EjpedQhiHwxXAXFjyDM=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr57234330wmi.173.1636972948695; 
- Mon, 15 Nov 2021 02:42:28 -0800 (PST)
+ id 1mmZiQ-00FIEK-8B; Mon, 15 Nov 2021 10:59:59 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AFAxIXv027878;
+ Mon, 15 Nov 2021 04:59:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1636973958;
+ bh=2Ppy8vcDw55UZS9m4qNO0kmFOp2s7BUYDKrPFcgoQaA=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=mPe69Yx0MFwYJqUTs85nydmkbDUB5CK6JBOMXxAsja+9godfcUrsb4Jg4uBmS19/3
+ IOgngMc4OCwQHPXWdaknMSimFBvI9BZeghVPA+SC7/6ElhQ567ZJ17EpRPZqQUKKUv
+ iYeachOOZ+qUWFb9ELOnDIXAWB2Z9r0fOhnBu1SI=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AFAxILx086892
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 15 Nov 2021 04:59:18 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 15
+ Nov 2021 04:59:18 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 15 Nov 2021 04:59:18 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AFAxHCb114204;
+ Mon, 15 Nov 2021 04:59:17 -0600
+Date: Mon, 15 Nov 2021 16:29:16 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v3 02/25] mtd: spi-nor: core: Use container_of to get the
+ pointer to struct spi_nor
+Message-ID: <20211115105914.ie7zpuz7jjnq2wow@ti.com>
+References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
+ <20211029172633.886453-3-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-References: <20211115085403.360194-1-arnd@kernel.org>
- <20211115085403.360194-2-arnd@kernel.org>
- <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
-In-Reply-To: <647b842d-76a1-7a96-3ea7-8a37b62bc18e@metafoo.de>
-From: Arnd Bergmann <arnd@kernel.org>
-Date: Mon, 15 Nov 2021 11:42:12 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-Message-ID: <CAK8P3a2EVseM4t=e982fFhzBGSZxZ2_V-FHwr-fQPd-bkAKaJg@mail.gmail.com>
-Subject: Re: [PATCH 01/11] ASoC: dai_dma: remove slave_id field
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Andy Gross <agross@kernel.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Baolin Wang <baolin.wang7@gmail.com>, 
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Chunyan Zhang <zhang.lyra@gmail.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hyun Kwon <hyun.kwon@xilinx.com>, 
- Jaroslav Kysela <perex@perex.cz>, Jon Hunter <jonathanh@nvidia.com>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Laxman Dewangan <ldewangan@nvidia.com>, 
- Manivannan Sadhasivam <mani@kernel.org>, Mark Brown <broonie@kernel.org>, 
- Michal Simek <michal.simek@xilinx.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, 
- Orson Zhai <orsonzhai@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, 
- Scott Branden <sbranden@broadcom.com>, Takashi Iwai <tiwai@suse.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- ALSA Development Mailing List <alsa-devel@alsa-project.org>, 
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- dmaengine@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>, 
- linux-arm-msm <linux-arm-msm@vger.kernel.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, 
- linux-mtd <linux-mtd@lists.infradead.org>, 
- "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE"
- <linux-rpi-kernel@lists.infradead.org>, 
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, linux-staging@lists.linux.dev, 
- "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20211029172633.886453-3-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_024231_015749_04ED61A2 
-X-CRM114-Status: GOOD (  22.80  )
+X-CRM114-CacheID: sfid-20211115_025958_360713_EB0C1EE6 
+X-CRM114-Status: UNSURE (   8.24  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,39 +83,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+ richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
+ knaerzche@gmail.com, nicolas.ferre@microchip.com, michael@walle.cc,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
+ sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 15, 2021 at 11:14 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
->
-> On 11/15/21 9:53 AM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > This field is never set, and serves no purpose, so remove it.
->
-> I agree that we should remove it. Its been legacy support code for a
-> while, but the description that there is no user is not right.
->
-> The tegra20_spdif driver obviously uses it and that user is removed in
-> this patch. I think it makes sense to split that out into a separate
-> patch with a description why the driver will still work even with
-> slave_id removed. Maybe the best is to remove the whole tegra20_spdif
-> driver.
+On 29/10/21 08:26PM, Tudor Ambarus wrote:
+> "struct mtd_info mtd" is member of "struct spi_nor", there's no need
+> to use "mtd->priv". Get the pointer to the containing struct spi_nor
+> by using container_of. While here, make the function inline and
+> get rid of the __maybe_unused.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Ok, I'll split out the tegra patch and try to come up with a better
-description for it. What I saw in that driver is it just passes down the
-slave_id number from a 'struct resource', but there is nothing in
-the kernel that sets up this resource.
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
-Do you or someone else have more information on the state of this
-driver? I can see that it does not contain any of_device_id based
-probing, so it seems that this is either dead code, the platform_device
-gets created by some other code that is no longer compatible with
-this driver.
-
-      Arnd
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
