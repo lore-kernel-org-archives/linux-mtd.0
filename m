@@ -2,73 +2,58 @@ Return-Path: <SRS0=SfKP=QC=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65B76C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1686BC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:51:56 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA3C661B29
-	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:25:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org AA3C661B29
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	by mail.kernel.org (Postfix) with ESMTPS id A4D2063213
+	for <linux-mtd@archiver.kernel.org>; Mon, 15 Nov 2021 08:51:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A4D2063213
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=thorsis.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=A6sNvAn4+0DqHtfldLz7o7FzQW2H0vXqSspD/zLJ+FE=; b=e3F/dwkLd/vZGn
-	iN0UArL1dhNyUlQasw3D8IQDE9+K3N+0Q/3KBhelG1EgJPHl60/HhqoyDXIEMcbtzIzPLd3rAgwvr
-	kSNfvaiBOXlya68pPms0o0d66tFoeRsefyPia8+WG6CK9P+/jcxWlC5oV1vv1685C76eMfYhrIbYx
-	bOOp19+48e2L3ZPWrunXcKZ18ZgpEmciWcJ+Sk5oXvAxsjA1aXqP/x00PARnPyJvoZjcRSEBls0Ci
-	13ocy1//iFBL/aS3ev53UUa2lPjzV7+bmgopYnwM8gSNPUy6Z/8/NgSzoFHlgH9N8ClFoO/ZbapoD
-	VMm7AAWScUcLFCh+Rdww==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=YhBjqKQB36wNObMHEWJY9qan8xYKHNPB6MfGyd5kb6k=; b=CYfjn9z4UjVlYV
+	zEaWlfofA7YnUCUjmmtxXaomHyRoI5oW12UTaZ01j9azEcY9J55XHcSvccWGCdAtb5J4Epqut7nZ9
+	HYufT4hIdaaJjphVbXzFKr+k9uWn9FUmaijCpjFAT51kYRUyoZrdDzih1IdHyCci/MQU2DeTLEGTy
+	jbZYof1aj6rJ3/XKqgi/dXwOy9F1UsNS2Jd+BUCl9UgFCtBDKKQ4jqsoLtHwED7NBg0FzeDH/Ccmq
+	d0JKyqyCyIG1kgPO62/v88esk7ziDLUpoKG4s9T/DOvFvNq7jylkx38zrbkauZZLATx2A7gKQL5+f
+	7dTReCkSrxKGAUTD32iw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmXIY-00Egip-6t; Mon, 15 Nov 2021 08:25:06 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1mmXhz-00Eknl-QN; Mon, 15 Nov 2021 08:51:23 +0000
+Received: from mail.thorsis.com ([92.198.35.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmXIT-00Eghx-Bh
- for linux-mtd@lists.infradead.org; Mon, 15 Nov 2021 08:25:02 +0000
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1mmXIH-0006uC-Lr; Mon, 15 Nov 2021 09:24:49 +0100
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1mmXIE-00060h-RX; Mon, 15 Nov 2021 09:24:46 +0100
-Date: Mon, 15 Nov 2021 09:24:46 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
- mcoquelin.stm32@gmail.com, kirill.shutemov@linux.intel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/12] ubifs: Add missing iput if do_tmpfile() failed
- in rename whiteout
-Message-ID: <20211115082446.GC25697@pengutronix.de>
-References: <20211112121758.2208727-1-chengzhihao1@huawei.com>
- <20211112121758.2208727-5-chengzhihao1@huawei.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211112121758.2208727-5-chengzhihao1@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-IRC: #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:21:42 up 270 days, 11:45, 131 users,  load average: 0.32, 0.22,
- 0.27
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+ id 1mmXgw-00EkEA-Bh
+ for linux-mtd@lists.infradead.org; Mon, 15 Nov 2021 08:50:20 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by mail.thorsis.com (Postfix) with ESMTP id 77CFB1A24
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Nov 2021 09:50:13 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+ by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id AAYfCBxIqhhe for <linux-mtd@lists.infradead.org>;
+ Mon, 15 Nov 2021 09:50:13 +0100 (CET)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+ id 5867730CE; Mon, 15 Nov 2021 09:50:13 +0100 (CET)
+Received: from adahl by ada.ifak-system.com with local (Exim 4.92)
+ (envelope-from <ada@thorsis.com>)
+ id 1mmXgl-0005DS-E9; Mon, 15 Nov 2021 09:50:07 +0100
+From: Alexander Dahl <ada@thorsis.com>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ubifs: Fix spelling mistakes
+Date: Mon, 15 Nov 2021 09:49:43 +0100
+Message-Id: <20211115084942.19429-1-ada@thorsis.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211115_002501_421222_F5F4F3EF 
-X-CRM114-Status: GOOD (  24.09  )
+X-CRM114-CacheID: sfid-20211115_005018_604356_4B0E6C09 
+X-CRM114-Status: GOOD (  15.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,44 +65,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Nov 12, 2021 at 08:17:50PM +0800, Zhihao Cheng wrote:
-> whiteout inode should be put when do_tmpfile() failed if inode has been
-> initialized. Otherwise we will get following warning during umount:
->   UBIFS error (ubi0:0 pid 1494): ubifs_assert_failed [ubifs]: UBIFS
->   assert failed: c->bi.dd_growth == 0, in fs/ubifs/super.c:1930
->   VFS: Busy inodes after unmount of ubifs. Self-destruct in 5 seconds.
-> 
-> Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> ---
->  fs/ubifs/dir.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 2735ad1affed..6503e6857f6e 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -1334,6 +1334,8 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
->  
->  		err = do_tmpfile(old_dir, old_dentry, S_IFCHR | WHITEOUT_MODE, &whiteout);
->  		if (err) {
-> +			if (whiteout)
-> +				iput(whiteout);
+Found with `codespell -i 3 -w fs/ubifs/**` and proof reading that parts.
 
-Should this rather be done in do_tmpfile() directly?
+Signed-off-by: Alexander Dahl <ada@thorsis.com>
+---
 
-Sascha
+Notes:
+    v2
+    --
+    - rebased onto v5.16-rc1
 
+ fs/ubifs/dir.c    | 4 ++--
+ fs/ubifs/replay.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 7c61d0ec0159..dbe72f664abf 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1207,7 +1207,7 @@ static int ubifs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+  * @inode1: first inode
+  * @inode2: second inode
+  * @inode3: third inode
+- * @inode4: fouth inode
++ * @inode4: fourth inode
+  *
+  * This function is used for 'ubifs_rename()' and @inode1 may be the same as
+  * @inode2 whereas @inode3 and @inode4 may be %NULL.
+@@ -1233,7 +1233,7 @@ static void lock_4_inodes(struct inode *inode1, struct inode *inode2,
+  * @inode1: first inode
+  * @inode2: second inode
+  * @inode3: third inode
+- * @inode4: fouth inode
++ * @inode4: fourth inode
+  */
+ static void unlock_4_inodes(struct inode *inode1, struct inode *inode2,
+ 			    struct inode *inode3, struct inode *inode4)
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 5260d3e531bb..4211e4456b1e 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -106,7 +106,7 @@ static int set_bud_lprops(struct ubifs_info *c, struct bud_entry *b)
+ 		 * property values should be @lp->free == @c->leb_size and
+ 		 * @lp->dirty == 0, but that is not the case. The reason is that
+ 		 * the LEB had been garbage collected before it became the bud,
+-		 * and there was not commit inbetween. The garbage collector
++		 * and there was no commit in between. The garbage collector
+ 		 * resets the free and dirty space without recording it
+ 		 * anywhere except lprops, so if there was no commit then
+ 		 * lprops does not have that information.
+
+base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
