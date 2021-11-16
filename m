@@ -2,14 +2,14 @@ Return-Path: <SRS0=mJc1=QD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AB2EC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 10:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E77C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 10:33:08 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCBA363219
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 10:32:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org DCBA363219
+	by mail.kernel.org (Postfix) with ESMTPS id CFDD763217
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 10:33:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org CFDD763217
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,72 +18,72 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cUd+JbhWqRzSy81tGHoEf8xHovx9eEgXvwyCO7bS1n0=; b=Vgu8lyzs8w0vh4
-	a1M/wZ7krXhriPJlPUc9/e0rS297W72mH+UCpTofmTWo7JKrndU/wlC+Ro6DKRhV5smkwlF5MTqYI
-	I83Q8Q8B6Rvk/j9wVOm9G+u8Z3YJxBICiqH8ydAMx/gSBY0ulSOBAIL1QiJB90PmrqotAcQAvsGbR
-	Q81Uq6nqqc8sMi6fIAhdIcUbQ4jydvVLMstQ06A9ZKMYH5kRY1YFTefsdVJk0kRi5yCgI6jtNC/9X
-	N5/CwOeVUV5mYtGFVeQygLAzmcJ/mlJdRDBQbKGcYsOPXdR1iEs8hU5JDcz9vCwVFUTdiyPMbiJ/u
-	mR98gvcEpwsHEi3lHB3A==;
+	List-Owner; bh=kn+Cy2j2rDvnO+zEBw2f89AMMwoVCeo9ZCJ4EUcEL0M=; b=qQUxUVtEklUNaH
+	WpZ6QLIIpwh6v9T2aI1rZDvmmoK0io9SF2Lio9ABURN9RtrMA1vjcpOzl4KK9gnPkaW8aXPCdPyq+
+	JiTopWuGalLapgYl0+y/M/SqIWYpmntraNPyzdwG/rajbTs9cAL02RCMDJi0FJ16RmrysY8Lnf46E
+	ZUMJ7ASSzGt1zXOh+Nqv4QTb8mMkukthf82XYATHEoG0TMcCEGSe5S8gmG0SU2Ua667QOsBsBwiqi
+	s5nlLgN34mJ5BETDYym2883nRpn5O6GxcpdBvXnQevXDVJQd0oT0G8Z94W1hYgLn6GHgLY7O9CayE
+	Td+B9b0aKQx1WeC3eu+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmvlD-001CuS-6U; Tue, 16 Nov 2021 10:32:19 +0000
+	id 1mmvlZ-001D05-6f; Tue, 16 Nov 2021 10:32:41 +0000
 Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmvkh-001Cm9-3O
- for linux-mtd@lists.infradead.org; Tue, 16 Nov 2021 10:31:48 +0000
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197])
+ id 1mmvkj-001Cmx-Iy
+ for linux-mtd@lists.infradead.org; Tue, 16 Nov 2021 10:31:50 +0000
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B8F143F1AD
- for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2021 10:31:45 +0000 (UTC)
+ by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 63CE03F19A
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2021 10:31:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1637058705;
- bh=g5kT88EclUTS2mZGyESS2Hco+eCrz9DKbUmHpnwpdJI=;
+ s=20210705; t=1637058708;
+ bh=92zi+uaozVd3dQpRcG3KZ4gZNNYCSn9kCZHl66TmEQ4=;
  h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
  MIME-Version:Content-Type;
- b=T3K/NAbZ9JkTwqPo6/PR2fssfdYo90IgBnD7Nylg7Bej4XrYc+oAIC3XPcCc/JzJl
- xaER/H8fscF/jQjkA8R700vVGQ7l0vbsSj5jV+lp/A2BiSW4hYUR5AMPNNDdq4ygYF
- JLvWO/7Wm/9TmflamuEENM0pdBDfS8gYp82RlIgK/mD5i0BETchqemXCTvvxLq6cs0
- I2gopi6MB3rq9KBKU157+TEET/sClLByzfbFyu64CvnM2eDylgIKFWdhFSVkPdKwls
- owVBbgnX9KW1k5/1P3sS3ZCd3+UWNMaXVVU5aUVycF6Yorr0DemB1v9uIPDmMuBDUc
- BNGdqBLfsnvkw==
-Received: by mail-lj1-f197.google.com with SMTP id
- y11-20020a2e978b000000b00218df7f76feso6078377lji.11
- for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2021 02:31:45 -0800 (PST)
+ b=eSHrNXAaa7jcE23FJU6xMLwAh58fSEIpwvNDYd2SLdr+rc3pY/Ga8zMfWzT1cmTFK
+ oHq1nZvququpBpEg3suchbo+S0I2X/CYmyiaH6SXAoUv4AbD24mEzTV6j0ZnJkfYsl
+ LBXJf8oV0SHdmv4EjW8BECZkwOXuLO9jzZkUGNKkHq3bnknfqEbo5mAvaONc+qE8sx
+ SkXeDwJJg3fKPFfIRPweyf6LsetSVkR3tRyzFUpY+1dwM9NjzNWurepe9T+IdRvloP
+ mxbzJSmcS6jZp4Jb4dQfOl4gUTr1BsC+6yrr8bjVnQetNW0DMTjo/m4fovnUEC3mBa
+ AwkkS2Z14xkNw==
+Received: by mail-lf1-f69.google.com with SMTP id
+ f11-20020ac24e4b000000b004001e7ea61cso8043607lfr.6
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2021 02:31:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=g5kT88EclUTS2mZGyESS2Hco+eCrz9DKbUmHpnwpdJI=;
- b=ngSVZpTpT21Z3bF9SAbXcvxaShIXcouV3+y4q0IfaKr6N6C4bxsEEmeGnYcuPh1nx3
- GnIczdkIryD3RL/hgB9zjdFOKOetW9w7FMx0Mn/8V1Hxbh9vstGr8MAou2ns9AlRXCyl
- 9i4OetItAgUGF5lAaIVsGeP6G2BAvxF9l7YXopjI9QcMoijJuLKevpmgvh22I4EVODHI
- nVS650UkSgB8Genv3/IafZPPV1qZmiTtzaQPaphuXVa0KaRgRDG4X+4DV3FDom1gwPtW
- yE21zBBSLQz/jGf+RXt/1d69xPV4aIWYWiCqboVHSfXbGPKqR+VI3HcWmuXJkuD0VpbX
- wGxQ==
-X-Gm-Message-State: AOAM530hNHwbVTcIevWDEQbUj/hP4JiIDuAM2PQqXAhQFgbitCNQrxcY
- M7G7u+OIBcXqF/e9lyV6+6g8dTA2lpaAdYlhrs9KVZxPlSHr1g0j8EeJdulSItFn9bXoGBWctBd
- hfFDvJuKiYB2KnnrEgDEEeku1PDMLpfQzBlq4yEMLa/c=
-X-Received: by 2002:a05:6512:3a91:: with SMTP id
- q17mr5473876lfu.425.1637058705230; 
- Tue, 16 Nov 2021 02:31:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwUH80JQXZBEvDWfVj29pNQ2Zba/7Rx08vt0/WpoIec8KWneuc1zgQFATOcJm/krv8sKR6wdQ==
-X-Received: by 2002:a05:6512:3a91:: with SMTP id
- q17mr5473855lfu.425.1637058705021; 
- Tue, 16 Nov 2021 02:31:45 -0800 (PST)
+ bh=92zi+uaozVd3dQpRcG3KZ4gZNNYCSn9kCZHl66TmEQ4=;
+ b=1a5jZzRscweehRLpQjAcuDbKFu1U8EGwqpriKxC3vt7ax4lAp4BULnpLLMbyTGKZvw
+ ZHfL8tztHZxt+NT6xsXtsQQlK5jE3lBTyridfLs4qVNVvbxE7uJNmzivzuyaj5FXpF78
+ V14ExVzjdbaMIbLxpxHjNn3XeNbeohsrTEt8Hy1vkIs+7y93kYCaPx84Dcb9/XfaCAOb
+ ZrPmlg4bv9Whja8ThzfCA1XXJ/+/CmKZ8XAI1IgVUgVnK8fflEFPVfirZNLKFbVU23hP
+ xfM3CtyGCKxtkouyttkhBGMWBdJANA09hMsB2SleDICrU+70GAgQFcpHhdHm6NF/QAJh
+ 6oEw==
+X-Gm-Message-State: AOAM5319gXCGev4gFK0qegDv7L/n2DJmP0zND0UyMXMgR+w9WnQHTfcG
+ 9cwV26yn2OdTucLcZs2b9IqY1pw5UOy+Qb0Nv7vgEVPi+KCfNnxh2v+dJ06H9XEVBLi/D4s1dgg
+ dvDFJCIHU1sOfTpYdC+dVk8hy8MKSS91FETha1xc2FrY=
+X-Received: by 2002:a05:6512:1093:: with SMTP id
+ j19mr5749222lfg.340.1637058706565; 
+ Tue, 16 Nov 2021 02:31:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwFJQ83v72RjqgTGJjKyb8RGySZcPwWRf/nb5XIMU/rZuTUXd/qfX1IRjsZ+BlY4jF7IoGErg==
+X-Received: by 2002:a05:6512:1093:: with SMTP id
+ j19mr5749196lfg.340.1637058706395; 
+ Tue, 16 Nov 2021 02:31:46 -0800 (PST)
 Received: from localhost.localdomain (89-77-68-124.dynamic.chello.pl.
  [89.77.68.124])
- by smtp.gmail.com with ESMTPSA id j5sm1114418lfe.219.2021.11.16.02.31.43
+ by smtp.gmail.com with ESMTPSA id j5sm1114418lfe.219.2021.11.16.02.31.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 16 Nov 2021 02:31:44 -0800 (PST)
+ Tue, 16 Nov 2021 02:31:45 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
  Philipp Zabel <p.zabel@pengutronix.de>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
  Vignesh Raghavendra <vigneshr@ti.com>,
  Sergei Shtylyov <sergei.shtylyov@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>,
@@ -93,19 +93,18 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
  linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
  linux-kernel@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
  devicetree@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 5/7] memory: renesas-rpc-if: Return error in
- case devm_ioremap_resource() fails
-Date: Tue, 16 Nov 2021 11:31:04 +0100
-Message-Id: <163705866144.26823.3259399993902920486.b4-ty@canonical.com>
+Subject: Re: (subset) [PATCH v2 6/7] memory: renesas-rpc-if: Drop usage of
+ RPCIF_DIRMAP_SIZE macro
+Date: Tue, 16 Nov 2021 11:31:05 +0100
+Message-Id: <163705866144.26823.8540217279898779126.b4-ty@canonical.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211025205631.21151-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211025205631.21151-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20211025205631.21151-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211025205631.21151-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20211025205631.21151-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211116_023147_300641_D678B2A8 
-X-CRM114-Status: UNSURE (   9.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211116_023149_785738_37D10C52 
+X-CRM114-Status: GOOD (  11.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,16 +121,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 25 Oct 2021 21:56:29 +0100, Lad Prabhakar wrote:
-> Make sure we return error in case devm_ioremap_resource() fails for dirmap
-> resource.
+On Mon, 25 Oct 2021 21:56:30 +0100, Lad Prabhakar wrote:
+> RPCIF_DIRMAP_SIZE may differ on various SoC's. Instead of using
+> RPCIF_DIRMAP_SIZE macro use resource size to get dirmap size
+> which is already part of struct rpcif.
 > 
 > 
 
 Applied, thanks!
 
-[5/7] memory: renesas-rpc-if: Return error in case devm_ioremap_resource() fails
-      commit: 818fdfa89baac77a8df5a2c30f4fb798cc937aa0
+[6/7] memory: renesas-rpc-if: Drop usage of RPCIF_DIRMAP_SIZE macro
+      commit: 5da9b59b23d8112709034a07338e03dcc65fa11f
 
 Best regards,
 -- 
