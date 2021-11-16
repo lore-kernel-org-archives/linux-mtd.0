@@ -2,14 +2,14 @@ Return-Path: <SRS0=mJc1=QD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65281C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 10:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52296C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 11:08:32 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 316106112D
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 10:58:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 316106112D
+	by mail.kernel.org (Postfix) with ESMTPS id 24E3463222
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 11:08:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 24E3463222
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,59 +18,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=K2XlEhOhZRow5giDhItgdzZ1a8hEszL7PeEj8V9ota0=; b=bUyJkM5S4mMvE6
-	c/TKlfzK25APPxjka5YgJD+9NgKF706tgFbRJ6yyXfNPBY80afb7tshV8EPPxsKzTfVbIBps2HpE/
-	P0wJL7ESkTktK+JCj+FYXVf4tjNKPyjZW0snXxa4MxPcx/B4tvD/N7eMKw2qyUfu6Kyjy4HlmAmlJ
-	KXRmsZJ+6IMb1vaIfoQk2dRESEgCJXwR/BmoCd+sTIu+HcvcgDoAQxFWpPHf8rU7j/flLiCNTI5/7
-	LYGC+FRqNgUdl5ZU0BXzDDDy/MLeY3WfLiFTJDj3Zbe3P4prKCQ0O11Zh82VCjksZCLrBvSQo5qsg
-	puzp0/cDmKrQlBA1t/Qw==;
+	List-Owner; bh=5MhBDDmjqXJMGhf8hTnNHczGWjSmS3vcqG52xfFra0w=; b=tV/Xi3km/LoSqz
+	UcbZphtRP1aSISviQ6x9NaLbYqs0M/s+0P9oZZ1sycFA9xdwyHkHjCZW4UJ1NAyd144Jx08F+GWAU
+	voL9/DHweCp3OWGl48QSSjON6/ouqkQ4Mb5qdoEnCf3nc7LKf9EQYa1X4Gm226QwaLM4Lw4oT1DtL
+	5qDtpm7jxs7JYI8NUvTAWG0p5N9Gs2A9B7JXWOKmPAdPPAJoF80tKH1hRORIMXgmlShM5+CsHFVG6
+	aw4dRlRQZwx5sRxXBrC5JBK/zfQ80EmpQVaGFhU9jpNuAjxtCOrFObCV1kX7fABMeBjSsLVYkdNNs
+	awcv+yhu46IOI6JHQyXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mmwA7-001IfA-3G; Tue, 16 Nov 2021 10:58:03 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1mmwJp-001KpJ-3r; Tue, 16 Nov 2021 11:08:05 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mmwA2-001Idc-Ht; Tue, 16 Nov 2021 10:58:00 +0000
+ id 1mmwJm-001KoY-Ln; Tue, 16 Nov 2021 11:08:04 +0000
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AGAvQS8014543;
- Tue, 16 Nov 2021 04:57:26 -0600
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AGB7TXp018391;
+ Tue, 16 Nov 2021 05:07:29 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1637060246;
- bh=9tPrRLGqJKk/Nb1nA+Y3YgdyHCMQdFlK3AzubEUccYs=;
+ s=ti-com-17Q1; t=1637060849;
+ bh=W7BPQ9w6PkXWvf6AfFKAPYb5fuO29BsuaDL3eGP/S3k=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=ks1V/0Wf/cS0FO30+186FRS3MNFK8V2hX8d3tsuAS777Yq/TxARxXq4PFxL3nzfyr
- w2CqbPxuRWq24jxkDiD9YjGw2sJUzaiS1lVAvsa/svws+mf3y4CC2UkyEtICXhv9ON
- 4IjlbxHOSIGYcmXj+DtUHW6pDn1CxsxxCAJl5I6U=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AGAvQWA093736
+ b=S7x7M91uR/bjFoquOltPxVe02BwcToxqhLrKIJBLk2mi1ydL0sUZt6wI8WE8mFdc5
+ wvEJes7G8YW8BD1e7+hf3swZ7hX2NzmY1c7U9LV3H6lTuB7Uyy4NQ/R5+gtE4YAKh8
+ n4zNcHXLBizUFYg+wKVUmpdHx922s09mp0Nb9MbI=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AGB7Tw0108168
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 16 Nov 2021 04:57:26 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 16 Nov 2021 05:07:29 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 16
- Nov 2021 04:57:26 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ Nov 2021 05:07:29 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 16 Nov 2021 04:57:26 -0600
+ Frontend Transport; Tue, 16 Nov 2021 05:07:29 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AGAvPFN073367;
- Tue, 16 Nov 2021 04:57:25 -0600
-Date: Tue, 16 Nov 2021 16:27:24 +0530
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AGB7STE094989;
+ Tue, 16 Nov 2021 05:07:28 -0600
+Date: Tue, 16 Nov 2021 16:37:27 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v3 16/25] mtd: spi-nor: Introduce
- spi_nor_init_fixup_flags()
-Message-ID: <20211116105722.y3rlcubiqimlobjx@ti.com>
+Subject: Re: [PATCH v3 18/25] mtd: spi-nor: core: Init flash params based on
+ SFDP first for new flash additions
+Message-ID: <20211116110725.75qstkgfipfgjfso@ti.com>
 References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
- <20211029172633.886453-17-tudor.ambarus@microchip.com>
+ <20211029172633.886453-19-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211029172633.886453-17-tudor.ambarus@microchip.com>
+In-Reply-To: <20211029172633.886453-19-tudor.ambarus@microchip.com>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211116_025758_752573_2391715E 
-X-CRM114-Status: GOOD (  12.93  )
+X-CRM114-CacheID: sfid-20211116_030802_816290_A8DFDD61 
+X-CRM114-Status: GOOD (  12.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,17 +94,20 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 29/10/21 08:26PM, Tudor Ambarus wrote:
-> Initialize NOR flags for settings that can not be discovered by SFDP
-> for this particular flash because the SFDP table that indicates this
-> support is not defined in the flash. In case the table for his support
-> is defined but has wrong values, one should instead use a post_sfdp()
-> hook to set the SNOR_F equivalent flag.
-> Update all flash_info entries that use SPI_NOR_4B_OPCODES or
-> SPI_NOR_IO_MODE_EN_VOLATILE to also use the FIXUP_FLAGS() macro. This
-> should highlight to developers that those flags should be used only
-> as fixups, where flashes miss to define the SFDP tables that describe
-> those settings.
-> No functional change intended in this patch.
+> New flash additions that support SFDP should be declared with
+> SPI_NOR_PARSE_SFDP and with all the other flags that are not SFDP
+> discoverable.
+> Keep the old way of initializing the flash, until all the flashes
+> are converted to use either SPI_NOR_PARSE_SFDP or SPI_NOR_SKIP_SFDP.
+> Since we want to get rid of the default_init() hook, the rollback
+> mechanism for flashes that use SPI_NOR_PARSE_SFDP does not call
+> spi_nor_manufacturer_init_params().
+> Split spi_nor_info_init_params() in spi_nor_init_default_params()
+> and spi_nor_skip_sfdp_init_params(). spi_nor_init_default_params() is
+> called for all the flashes regardless if they support SFDP or not.
+> spi_nor_skip_sfdp_init_params() is called just for the flashes that
+> do not define SFDP and initializes parameters and setting solely based
+> on flash_info data.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
