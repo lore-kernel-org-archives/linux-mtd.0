@@ -2,63 +2,76 @@ Return-Path: <SRS0=mJc1=QD=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B65C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 15:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3BC3C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 18:13:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4392630EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 15:38:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C4392630EF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id A164661407
+	for <linux-mtd@archiver.kernel.org>; Tue, 16 Nov 2021 18:13:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A164661407
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=FHbT8EHBAYAqugE52sdOAb0b34EI9XRiMnkX4b3AMJM=; b=gP1ZndCHUh3emB
-	ctXGvX6XWgtbdMxzy9k7W5S63lHKciUg5C2mtP5bfdCCfF4niwiDIlmP3BMufiKCrEHVwVAM8OaKm
-	sB2yTY+D8VfEEx4CW5YUuGQczgRZfkbM8Zc3+lK9zRFRURwMrWs5yOXGkF5wIIzUFP8n0IsP6zljH
-	smNNChfXuNCPy7x7thvczooJNtAFTjAFa7dxytENL9KLLGYQawNDVQ4kWe8YVLJfR3MDc/xut8J39
-	9eqwepqFPwRU9Ms0MRM4EbXdKGroavKRp5UFU5xofxEdAL4Q2ybGk+KcL1sOtHYkUSxusfHyQsXEl
-	VVUUffEE8ejs3SNvDg1A==;
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=kKIsAsuxtQuAKNl85GcF9qXBVEY6o17Oz7ep/3I6jxA=; b=VvuJUIoA4FHAp/
+	kJLvAAb1O5Xc4Oy5EDEE3XiDPNU+AWcEzL6urI6fhMB4of81kp2J/yj/Gqa0UosxGA3KghIZBl6bW
+	yXgV3X5Xv1QwTyjOZDxZxxK8q2ZAKbuAOgGE8NOORoSzHI/OoFsLu5PQy5WSMQ0OvvdyOP+b2gvI9
+	uz0vUGzLFJIonW544YPsDqn8GAgYm4ZLEdmAkn0JohL0Jz0S7qqnB/kpEVY566yyPg6leDux0cFF8
+	W3xlBP3L1Ic7PYFWJIzEV2lOtYSeRFTiJEIO6H5se8FBFwE4NbLBDgwv7Aq+i08uZUAoxl+vdLhr3
+	J5ztJFHdMWGnhs5EUcCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mn0WY-0029b8-4Z; Tue, 16 Nov 2021 15:37:30 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1mn2wH-002XHI-AP; Tue, 16 Nov 2021 18:12:13 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mn0WT-0029Zh-Vw
- for linux-mtd@lists.infradead.org; Tue, 16 Nov 2021 15:37:28 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Htqn72LC7zcbLW;
- Tue, 16 Nov 2021 23:32:27 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 23:37:21 +0800
-Received: from use12-sp2.huawei.com (10.67.189.20) by
- dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 16 Nov 2021 23:37:21 +0800
-From: Jubin Zhong <zhongjubin@huawei.com>
-To: <dwmw2@infradead.org>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>,
- <kechengsong@huawei.com>, <chenzefeng2@huawei.com>
-Subject: [PATCH] jffs2: Fix truncate never update m/ctime
-Date: Tue, 16 Nov 2021 23:37:16 +0800
-Message-ID: <1637077036-67090-1-git-send-email-zhongjubin@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
+ id 1mn2wC-002XGI-Rv; Tue, 16 Nov 2021 18:12:11 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AGIBfcY003348;
+ Tue, 16 Nov 2021 12:11:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1637086301;
+ bh=0VbB7B/oLiz5/WW1IEYIfbxalMnH/aa/3TcRFwoPCO4=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=N3qJ1BsTVQ2uGsR3TcTDSMFtV06pDIKboWy1WxrL2EbDsRKkN5hrqO1p54N/X74fr
+ NBPpQq/i1QVRTjVmUCLAB1LUknmBGBek9+ApEOgSxb++0DegcggY/58O+p7ObSmnLv
+ 0xTvaK54HYKbqOpqEyiqMrQq4ieQembBqoHjD6cs=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AGIBfup039616
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 16 Nov 2021 12:11:41 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 16
+ Nov 2021 12:11:40 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 16 Nov 2021 12:11:40 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AGIBdTD063568;
+ Tue, 16 Nov 2021 12:11:40 -0600
+Date: Tue, 16 Nov 2021 23:41:39 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+Subject: Re: [PATCH v3 03/25] mtd: spi-nor: Introduce spi_nor_set_mtd_info()
+Message-ID: <20211116181137.ddo4tw3cafb4ozep@ti.com>
+References: <20211029172633.886453-1-tudor.ambarus@microchip.com>
+ <20211029172633.886453-4-tudor.ambarus@microchip.com>
+ <20211115185227.4b4gjnf5zi5bdw56@ti.com>
+ <f55d2c76-0265-b616-93fe-9b3db8f714bc@microchip.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.67.189.20]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <f55d2c76-0265-b616-93fe-9b3db8f714bc@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211116_073726_456559_7A4411DC 
-X-CRM114-Status: GOOD (  12.28  )
+X-CRM114-CacheID: sfid-20211116_101209_022221_941295D7 
+X-CRM114-Status: GOOD (  36.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,106 +83,236 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
+ richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
+ knaerzche@gmail.com, Nicolas.Ferre@microchip.com, michael@walle.cc,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
+ sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: zhongjubin <zhongjubin@huawei.com>
+On 16/11/21 02:25PM, Tudor.Ambarus@microchip.com wrote:
+> On 11/15/21 8:52 PM, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 29/10/21 08:26PM, Tudor Ambarus wrote:
+> >> Used to init all the mtd_info fields. Move the mtd_info init
+> >> the last thing in the spi_nor_scan(), so that we avoid superfluous
+> >> initialization of the mtd_info fields in case of errors.
+> >>
+> >> While here use common naming scheme for functions that are setting
+> >> mtd_info fields:
+> >> s/spi_nor_register_locking_ops/spi_nor_set_mtd_locking_ops
+> >> s/spi_nor_otp_init/spi_nor_set_mtd_otp_ops
+> >> The functions names are self explanatory, get rid of the comment
+> >> for the OTP function.
+> >>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >> ---
+> >>  drivers/mtd/spi-nor/core.c | 54 +++++++++++++++++++++-----------------
+> >>  drivers/mtd/spi-nor/core.h |  4 +--
+> >>  drivers/mtd/spi-nor/otp.c  |  2 +-
+> >>  drivers/mtd/spi-nor/swp.c  |  2 +-
+> >>  4 files changed, 34 insertions(+), 28 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index 277d1fde84c8..ae971c773334 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
+> >> @@ -3071,6 +3071,35 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+> >>       return info;
+> >>  }
+> >>
+> >> +static void spi_nor_set_mtd_info(struct spi_nor *nor)
+> >> +{
+> >> +     struct mtd_info *mtd = &nor->mtd;
+> >> +     struct device *dev = nor->dev;
+> >> +
+> >> +     spi_nor_set_mtd_locking_ops(nor);
+> >> +     spi_nor_set_mtd_otp_ops(nor);
+> >> +
+> >> +     mtd->dev.parent = dev;
+> >> +     if (!mtd->name)
+> >> +             mtd->name = dev_name(dev);
+> >> +     mtd->type = MTD_NORFLASH;
+> >> +     mtd->flags = MTD_CAP_NORFLASH;
+> >> +     if (nor->info->flags & SPI_NOR_NO_ERASE)
+> >> +             mtd->flags |= MTD_NO_ERASE;
+> >> +     mtd->writesize = nor->params->writesize;
+> >> +     mtd->writebufsize = nor->page_size;
+> >> +     mtd->size = nor->params->size;
+> >> +     mtd->_erase = spi_nor_erase;
+> >> +     mtd->_read = spi_nor_read;
+> >> +     /* Might be already set by some SST flashes. */
+> >> +     if (!mtd->_write)
+> >> +             mtd->_write = spi_nor_write;
+> >> +     mtd->_suspend = spi_nor_suspend;
+> >> +     mtd->_resume = spi_nor_resume;
+> >> +     mtd->_get_device = spi_nor_get_device;
+> >> +     mtd->_put_device = spi_nor_put_device;
+> > 
+> > You should also merge in spi_nor_debugfs_init() in here which
+> > initializes mtd->dbg.
+> > 
+> 
+> I was thinking of getting rid of debugfs entries since they duplicate
+> those on sysfs.
 
-Syscall truncate() never updates m/ctime in jffs2 even if the file
-size is changed. This is incorrect according to man file:
+Okay. Fine by me either way.
 
-  truncate (2):
-  If  the  size  changed, then the st_ctime and st_mtime fields
-  (respectively, time of last status change and time of last
-  modification; see stat(2)) for the file are updated, and the
-  set-user-ID and set-group-ID mode bits may be cleared.
+> 
+> >> +}
+> >> +
+> >>  int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >>                const struct spi_nor_hwcaps *hwcaps)
+> >>  {
+> >> @@ -3125,26 +3154,11 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >>       if (info->flags & SPI_NOR_HAS_LOCK)
+> >>               nor->flags |= SNOR_F_HAS_LOCK;
+> >>
+> >> -     mtd->_write = spi_nor_write;
+> >> -
+> >>       /* Init flash parameters based on flash_info struct and SFDP */
+> >>       ret = spi_nor_init_params(nor);
+> >>       if (ret)
+> >>               return ret;
+> >>
+> >> -     if (!mtd->name)
+> >> -             mtd->name = dev_name(dev);
+> >> -     mtd->type = MTD_NORFLASH;
+> >> -     mtd->writesize = nor->params->writesize;
+> >> -     mtd->flags = MTD_CAP_NORFLASH;
+> >> -     mtd->size = nor->params->size;
+> >> -     mtd->_erase = spi_nor_erase;
+> >> -     mtd->_read = spi_nor_read;
+> >> -     mtd->_suspend = spi_nor_suspend;
+> >> -     mtd->_resume = spi_nor_resume;
+> >> -     mtd->_get_device = spi_nor_get_device;
+> >> -     mtd->_put_device = spi_nor_put_device;
+> >> -
+> >>       if (info->flags & USE_FSR)
+> >>               nor->flags |= SNOR_F_USE_FSR;
+> >>       if (info->flags & SPI_NOR_HAS_TB) {
+> >> @@ -3166,12 +3180,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >>                       nor->flags |= SNOR_F_HAS_SR_BP3_BIT6;
+> >>       }
+> >>
+> >> -     if (info->flags & SPI_NOR_NO_ERASE)
+> >> -             mtd->flags |= MTD_NO_ERASE;
+> >> -
+> >> -     mtd->dev.parent = dev;
+> >>       nor->page_size = nor->params->page_size;
+> >> -     mtd->writebufsize = nor->page_size;
+> >>
+> >>       if (of_property_read_bool(np, "broken-flash-reset"))
+> >>               nor->flags |= SNOR_F_BROKEN_RESET;
+> >> @@ -3196,15 +3205,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+> >>       if (ret)
+> >>               return ret;
+> >>
+> >> -     spi_nor_register_locking_ops(nor);
+> >> -
+> >>       /* Send all the required SPI flash commands to initialize device */
+> >>       ret = spi_nor_init(nor);
+> >>       if (ret)
+> >>               return ret;
+> >>
+> >> -     /* Configure OTP parameters and ops */
+> >> -     spi_nor_otp_init(nor);
+> >> +     spi_nor_set_mtd_info(nor);
+> > 
+> > This will break multiple things.
+> 
+> this is gold :), thanks
+> > 
+> > - spi_nor_set_addr_width(), which is called by spi_nor-setup(). It
+> >   checks for nor->mtd.size which has not been set yet.> - spi_nor_spimem_check_op(), which is called (indirectly) by
+> >   spi_nor_default_setup(). It check for nor->mtd.size.
+> 
+> Let's use NOR parameters in SPI NOR core, thus nor->params->size instead,
+> and let the mtd fields for mtd. This will spare us of these problems.
+> And it's cleaner too.
 
-This is because truncate() will not set ATTR_CTIME and ATTR_MTIME even
-when file size is changed. Fix this special case just like what other
-filesystems do.
+I agree.
 
-Test Steps:
-  1. cd /path/to/mnt/point
-  2. dd if=/dev/zero of=test bs=1M count=1
-  3. stat test
-  4. /bin/my_truncate -s 1024 test
-  5. stat test
-  6. compare m/ctime of step 5 with step 3
+> 
+> > - spi_nor_try_unlock_all(), which is called by spi_nor_init(). I don't
+> >   think it actually uses any values you initialize here but still worth
+> >   pointing out.
+> 
+> we are safe here, the pointer to mtd is used just to get the pointer to
+> nor.
 
-Program source:
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <unistd.h>
-  #include <sys/types.h>
-  int main(int argc, char **argv)
-  {
-  	int ret;
-	char file_name[128] = {0};
+Yeah, but who knows if that might change some time later. I would prefer 
+we don't use a member we haven't initialized yet.
 
-	if (argc < 4 || argv == NULL || argv[1] == NULL ||
-argv[2] == NULL || argv[3] == NULL) {
-		return -1;
-	}
+> 
+> Thanks again.
+> ta
+> 
+> > 
+> >>
+> >>       dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+> >>                       (long long)mtd->size >> 10);
+> >> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> >> index 223a03769950..48f26d3f1b3c 100644
+> >> --- a/drivers/mtd/spi-nor/core.h
+> >> +++ b/drivers/mtd/spi-nor/core.h
+> >> @@ -548,8 +548,8 @@ int spi_nor_post_bfpt_fixups(struct spi_nor *nor,
+> >>
+> >>  void spi_nor_init_default_locking_ops(struct spi_nor *nor);
+> >>  void spi_nor_try_unlock_all(struct spi_nor *nor);
+> >> -void spi_nor_register_locking_ops(struct spi_nor *nor);
+> >> -void spi_nor_otp_init(struct spi_nor *nor);
+> >> +void spi_nor_set_mtd_locking_ops(struct spi_nor *nor);
+> >> +void spi_nor_set_mtd_otp_ops(struct spi_nor *nor);
+> >>
+> >>  static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+> >>  {
+> >> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+> >> index 983e40b19134..fa63d8571218 100644
+> >> --- a/drivers/mtd/spi-nor/otp.c
+> >> +++ b/drivers/mtd/spi-nor/otp.c
+> >> @@ -480,7 +480,7 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+> >>       return ret;
+> >>  }
+> >>
+> >> -void spi_nor_otp_init(struct spi_nor *nor)
+> >> +void spi_nor_set_mtd_otp_ops(struct spi_nor *nor)
+> >>  {
+> >>       struct mtd_info *mtd = &nor->mtd;
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+> >> index 8594bcbb7dbe..1f178313ba8f 100644
+> >> --- a/drivers/mtd/spi-nor/swp.c
+> >> +++ b/drivers/mtd/spi-nor/swp.c
+> >> @@ -414,7 +414,7 @@ void spi_nor_try_unlock_all(struct spi_nor *nor)
+> >>               dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
+> >>  }
+> >>
+> >> -void spi_nor_register_locking_ops(struct spi_nor *nor)
+> >> +void spi_nor_set_mtd_locking_ops(struct spi_nor *nor)
+> >>  {
+> >>       struct mtd_info *mtd = &nor->mtd;
+> >>
+> >> --
+> >> 2.25.1
+> >>
+> > 
+> > --
+> > Regards,
+> > Pratyush Yadav
+> > Texas Instruments Inc.
+> > 
+> 
 
-	if (strcmp(argv[1], "-s")) {
-		return -1;
-	}
-
-	if (realpath(argv[3], file_name) == NULL) {
-		printf("truncate: input file name %s err.\n", argv[3]);
-			return -1;
-		}
-
-		off_t size = (off_t)strtol(argv[2], 0, 0);
-		ret = truncate(file_name, size);
-		if (ret) {
-			printf("truncate return err %d\n", ret);
-		}
-		return ret;
-	}
-
-Signed-off-by: zhongjubin <zhongjubin@huawei.com>
-
-----
-v1:
-  https://lore.kernel.org/all/1636974018-31285-1-git-send-email-zhongjubin@huawei.com/
-  I considered fixing this problem in vfs_truncate(), but it is
-  suggested to implement the proper semantics in jffs's ->setattr.
----
- fs/jffs2/fs.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 2ac410477c4f..181f053d072b 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -114,8 +114,18 @@ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
- 
- 	ri->isize = cpu_to_je32((ivalid & ATTR_SIZE)?iattr->ia_size:inode->i_size);
- 	ri->atime = cpu_to_je32(I_SEC((ivalid & ATTR_ATIME)?iattr->ia_atime:inode->i_atime));
--	ri->mtime = cpu_to_je32(I_SEC((ivalid & ATTR_MTIME)?iattr->ia_mtime:inode->i_mtime));
--	ri->ctime = cpu_to_je32(I_SEC((ivalid & ATTR_CTIME)?iattr->ia_ctime:inode->i_ctime));
-+	/*
-+	 * Special case for truncate() where we should update the times despite not having
-+	 * ATTR_CTIME and ATTR_MTIME set.
-+	 */
-+	if ((ivalid & ATTR_SIZE) && (iattr->ia_size != inode->i_size) &&
-+			!(ivalid & (ATTR_CTIME | ATTR_MTIME))) {
-+		ri->mtime = cpu_to_je32(I_SEC(iattr->ia_mtime));
-+		ri->ctime = cpu_to_je32(I_SEC(iattr->ia_ctime));
-+	} else {
-+		ri->mtime = cpu_to_je32(I_SEC((ivalid & ATTR_MTIME)?iattr->ia_mtime:inode->i_mtime));
-+		ri->ctime = cpu_to_je32(I_SEC((ivalid & ATTR_CTIME)?iattr->ia_ctime:inode->i_ctime));
-+	}
- 
- 	ri->offset = cpu_to_je32(0);
- 	ri->csize = ri->dsize = cpu_to_je32(mdatalen);
 -- 
-2.12.3
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
