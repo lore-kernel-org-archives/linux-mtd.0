@@ -2,14 +2,14 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CC78C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59839C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:24 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23FCF61B2B
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 23FCF61B2B
+	by mail.kernel.org (Postfix) with ESMTPS id 2911161B2B
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 2911161B2B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IsCBag2MXobnVf4+jtc9291JkS2UTyzhNjU4GVLFJgk=; b=kLF6WNQf/CbZUK
-	9f1zjdcOH14IGLmvri23xZaRPa40lJgXXONjJ1457DTaf1cUiXoyRrI2FmMYGmSgm/MzJBAGJLYXl
-	QBUZtdPUbkCLHg206g9+1vqN/V17Ont+PrSAclSdoHgYwq/7DvawadPRNh+/S3Ng4Rh91GpRfV+0u
-	054QKL+CTPVRkhrW1wqtFk2FDTlkwP8yw9TqIosH0VBTqkb3pX2T1XhOHJhaBzIzne9Zw4okr9Q9q
-	Di1qZPognVpFHpHOnjKE0dx0Ckv/AZUSqHkV0F4aAW8wUQb0wPSsaCYWxPvY7Gzw0CgfTDEh9v6G6
-	moLjNM2DIjd6oC5m6cnw==;
+	List-Owner; bh=uDkhnGQE5tZLaK5trApEhN0oQOTaB+0Ms0Bxd+F0DJA=; b=KKKtlKNgx4KrP4
+	A7Yt4qiJPk1+VCq4FKAw0S9iK833zYs381xVtSNH1gYIKGTvrjoPQLlET3gC/ALWvexFMFAmcPGdN
+	YyHYiQeKfEkMQ9GmPDSsfGlks8sCKOFRHZBUgqrPmdGghu6yPEOx2c3GqLvhS1uehXn2R/SLZKsO2
+	fX9nxRU+aIeW1KYtMenKiVcC4YEf436HpCl11jnXPrnYRJ8UVLcqFOdZ3uS7iX5JDTPzxHAJxdQ3o
+	3q/u5eh9Zq8uKrtgoV1PGH+tSI+lRde2+2LJB+KHwBXjderd3jsN1LFX6gyoZefonPPurOwOcrdnk
+	4ZnTtKC2Z5oCDU1bDKpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnEDN-003Q4I-9V; Wed, 17 Nov 2021 06:14:37 +0000
+	id 1mnEDa-003Q6A-U6; Wed, 17 Nov 2021 06:14:50 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnECx-003Pxp-EI
- for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:11 +0000
+ id 1mnECy-003Py6-ME
+ for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=LjB+PW6droKOhO2mj2A/+eYS7xjIK3FEJ790igEy5r8=; b=AlqY5MsRheu/bSJmGs+30xVC25
- rAvzNtaIjwPTM0j5hsCxtXTsvzL7kjEIhKYivvjaMQp9uoaIrnnIrHMQDexNSkT0dSCIDpBd4Hr9M
- QoCvg8p6I7DuCpMq1rSiORlguB+rzdeS6OMMctRCr0TnOgNldxStgv/tRyJzeMLTcJDusBV7/sslb
- 5c7/N2I/3d3Bh6kP3fpsWRa4AqtGIAwSIigY0qY9IXVO/BvBK3keqUhkCW2eIX9X4m60pvNVlwI9O
- 3J1SHAdmh8xaF7LWVLe3cYMsLXMCD13WLSEANEb2tTqk9iry7rUQPTHhWFBpzU8qJkN00kKAq1A9X
- xzlgs5Gg==;
+ bh=4B5bPzZBI/RyRz5DgrZ23Yjj20qoEABWXooz0Jl0HiU=; b=aousJe038ZkoZyUbwpN7CwPnGG
+ Fy1M5rKKYRiZSv+VlzU+btB/DlBwVFKfM4AFpERfyrnKUFid6JcmW53drnTcXActvAzjFlEn4gYaR
+ 5NdyMri9i4l+6uzeu/uOMpEAepuU2apsMeeFaHFUoksQOzeVL1uR+qOsHRsDtZBkbTNSqVOHWIGOH
+ v86J0hIXkxSY5JUszlsyP07nPggVASqibOcRnFWZW6XnO5TpGVaHJfJLNOFBXEtOowyP5iMKuLAID
+ +2qaxvz7HaQItqBX2zSNgvnc4G7i3DYCs68WNkH1gJ0ilF4qubdl5ZwICZfaaXgiYHluM1+IB1e5j
+ cJ/Bqvxg==;
 Received: from 213-225-5-109.nat.highway.a1.net ([213.225.5.109]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnECu-007MER-Q0; Wed, 17 Nov 2021 06:14:09 +0000
+ id 1mnECw-007MEZ-Hc; Wed, 17 Nov 2021 06:14:11 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -52,9 +52,9 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 02/11] block: remove rq_flush_dcache_pages
-Date: Wed, 17 Nov 2021 07:13:55 +0100
-Message-Id: <20211117061404.331732-3-hch@lst.de>
+Subject: [PATCH 03/11] block: remove blk-exec.c
+Date: Wed, 17 Nov 2021 07:13:56 +0100
+Message-Id: <20211117061404.331732-4-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211117061404.331732-1-hch@lst.de>
 References: <20211117061404.331732-1-hch@lst.de>
@@ -77,123 +77,277 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This function is trivial, and flush_dcache_page is always defined, so
-just open code it in the 2.5 callers.
+All this code is tightly coupled to the blk-mq core, so move it
+there.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c          | 19 -------------------
- drivers/mtd/mtd_blkdevs.c | 10 ++++++++--
- drivers/mtd/ubi/block.c   |  6 +++++-
- include/linux/blk-mq.h    | 10 ----------
- 4 files changed, 13 insertions(+), 32 deletions(-)
+ block/Makefile   |   2 +-
+ block/blk-exec.c | 116 -----------------------------------------------
+ block/blk-mq.c   | 107 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 108 insertions(+), 117 deletions(-)
+ delete mode 100644 block/blk-exec.c
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index e27a659973965..f1ca31a89493a 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1297,25 +1297,6 @@ void blk_steal_bios(struct bio_list *list, struct request *rq)
- }
- EXPORT_SYMBOL_GPL(blk_steal_bios);
+diff --git a/block/Makefile b/block/Makefile
+index 44df57e562bf0..f38eaa6129296 100644
+--- a/block/Makefile
++++ b/block/Makefile
+@@ -5,7 +5,7 @@
  
--#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+ obj-y		:= bdev.o fops.o bio.o elevator.o blk-core.o blk-sysfs.o \
+ 			blk-flush.o blk-settings.o blk-ioc.o blk-map.o \
+-			blk-exec.o blk-merge.o blk-timeout.o \
++			blk-merge.o blk-timeout.o \
+ 			blk-lib.o blk-mq.o blk-mq-tag.o blk-stat.o \
+ 			blk-mq-sysfs.o blk-mq-cpumap.o blk-mq-sched.o ioctl.o \
+ 			genhd.o ioprio.o badblocks.o partitions/ blk-rq-qos.o \
+diff --git a/block/blk-exec.c b/block/blk-exec.c
+deleted file mode 100644
+index 1b8b47f6e79bb..0000000000000
+--- a/block/blk-exec.c
++++ /dev/null
+@@ -1,116 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Functions related to setting various queue properties from drivers
+- */
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/bio.h>
+-#include <linux/blkdev.h>
+-#include <linux/blk-mq.h>
+-#include <linux/sched/sysctl.h>
+-
+-#include "blk.h"
+-#include "blk-mq-sched.h"
+-
 -/**
-- * rq_flush_dcache_pages - Helper function to flush all pages in a request
-- * @rq: the request to be flushed
+- * blk_end_sync_rq - executes a completion event on a request
+- * @rq: request to complete
+- * @error: end I/O status of the request
+- */
+-static void blk_end_sync_rq(struct request *rq, blk_status_t error)
+-{
+-	struct completion *waiting = rq->end_io_data;
+-
+-	rq->end_io_data = (void *)(uintptr_t)error;
+-
+-	/*
+-	 * complete last, if this is a stack request the process (and thus
+-	 * the rq pointer) could be invalid right after this complete()
+-	 */
+-	complete(waiting);
+-}
+-
+-/**
+- * blk_execute_rq_nowait - insert a request to I/O scheduler for execution
+- * @bd_disk:	matching gendisk
+- * @rq:		request to insert
+- * @at_head:    insert request at head or tail of queue
+- * @done:	I/O completion handler
 - *
 - * Description:
-- *     Flush all pages in @rq.
+- *    Insert a fully prepared request at the back of the I/O scheduler queue
+- *    for execution.  Don't wait for completion.
+- *
+- * Note:
+- *    This function will invoke @done directly if the queue is dead.
 - */
--void rq_flush_dcache_pages(struct request *rq)
+-void blk_execute_rq_nowait(struct gendisk *bd_disk, struct request *rq,
+-			   int at_head, rq_end_io_fn *done)
 -{
--	struct req_iterator iter;
--	struct bio_vec bvec;
+-	WARN_ON(irqs_disabled());
+-	WARN_ON(!blk_rq_is_passthrough(rq));
 -
--	rq_for_each_segment(bvec, rq, iter)
--		flush_dcache_page(bvec.bv_page);
+-	rq->rq_disk = bd_disk;
+-	rq->end_io = done;
+-
+-	blk_account_io_start(rq);
+-
+-	/*
+-	 * don't check dying flag for MQ because the request won't
+-	 * be reused after dying flag is set
+-	 */
+-	blk_mq_sched_insert_request(rq, at_head, true, false);
 -}
--EXPORT_SYMBOL_GPL(rq_flush_dcache_pages);
--#endif
+-EXPORT_SYMBOL_GPL(blk_execute_rq_nowait);
 -
- /**
-  * blk_lld_busy - Check if underlying low-level drivers of a device are busy
-  * @q : the queue of the device being checked
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 4eaba6f4ec680..66f81d42fe778 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -46,6 +46,8 @@ static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			       struct mtd_blktrans_dev *dev,
- 			       struct request *req)
+-static bool blk_rq_is_poll(struct request *rq)
+-{
+-	if (!rq->mq_hctx)
+-		return false;
+-	if (rq->mq_hctx->type != HCTX_TYPE_POLL)
+-		return false;
+-	if (WARN_ON_ONCE(!rq->bio))
+-		return false;
+-	return true;
+-}
+-
+-static void blk_rq_poll_completion(struct request *rq, struct completion *wait)
+-{
+-	do {
+-		bio_poll(rq->bio, NULL, 0);
+-		cond_resched();
+-	} while (!completion_done(wait));
+-}
+-
+-/**
+- * blk_execute_rq - insert a request into queue for execution
+- * @bd_disk:	matching gendisk
+- * @rq:		request to insert
+- * @at_head:    insert request at head or tail of queue
+- *
+- * Description:
+- *    Insert a fully prepared request at the back of the I/O scheduler queue
+- *    for execution and wait for completion.
+- * Return: The blk_status_t result provided to blk_mq_end_request().
+- */
+-blk_status_t blk_execute_rq(struct gendisk *bd_disk, struct request *rq, int at_head)
+-{
+-	DECLARE_COMPLETION_ONSTACK(wait);
+-	unsigned long hang_check;
+-
+-	rq->end_io_data = &wait;
+-	blk_execute_rq_nowait(bd_disk, rq, at_head, blk_end_sync_rq);
+-
+-	/* Prevent hang_check timer from firing at us during very long I/O */
+-	hang_check = sysctl_hung_task_timeout_secs;
+-
+-	if (blk_rq_is_poll(rq))
+-		blk_rq_poll_completion(rq, &wait);
+-	else if (hang_check)
+-		while (!wait_for_completion_io_timeout(&wait, hang_check * (HZ/2)));
+-	else
+-		wait_for_completion_io(&wait);
+-
+-	return (blk_status_t)(uintptr_t)rq->end_io_data;
+-}
+-EXPORT_SYMBOL(blk_execute_rq);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 3ab34c4f20daf..c33411f9ce898 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -28,6 +28,7 @@
+ #include <linux/crash_dump.h>
+ #include <linux/prefetch.h>
+ #include <linux/blk-crypto.h>
++#include <linux/sched/sysctl.h>
+ 
+ #include <trace/events/block.h>
+ 
+@@ -1057,6 +1058,112 @@ void blk_mq_start_request(struct request *rq)
+ }
+ EXPORT_SYMBOL(blk_mq_start_request);
+ 
++/**
++ * blk_end_sync_rq - executes a completion event on a request
++ * @rq: request to complete
++ * @error: end I/O status of the request
++ */
++static void blk_end_sync_rq(struct request *rq, blk_status_t error)
++{
++	struct completion *waiting = rq->end_io_data;
++
++	rq->end_io_data = (void *)(uintptr_t)error;
++
++	/*
++	 * complete last, if this is a stack request the process (and thus
++	 * the rq pointer) could be invalid right after this complete()
++	 */
++	complete(waiting);
++}
++
++/**
++ * blk_execute_rq_nowait - insert a request to I/O scheduler for execution
++ * @bd_disk:	matching gendisk
++ * @rq:		request to insert
++ * @at_head:    insert request at head or tail of queue
++ * @done:	I/O completion handler
++ *
++ * Description:
++ *    Insert a fully prepared request at the back of the I/O scheduler queue
++ *    for execution.  Don't wait for completion.
++ *
++ * Note:
++ *    This function will invoke @done directly if the queue is dead.
++ */
++void blk_execute_rq_nowait(struct gendisk *bd_disk, struct request *rq,
++			   int at_head, rq_end_io_fn *done)
++{
++	WARN_ON(irqs_disabled());
++	WARN_ON(!blk_rq_is_passthrough(rq));
++
++	rq->rq_disk = bd_disk;
++	rq->end_io = done;
++
++	blk_account_io_start(rq);
++
++	/*
++	 * don't check dying flag for MQ because the request won't
++	 * be reused after dying flag is set
++	 */
++	blk_mq_sched_insert_request(rq, at_head, true, false);
++}
++EXPORT_SYMBOL_GPL(blk_execute_rq_nowait);
++
++static bool blk_rq_is_poll(struct request *rq)
++{
++	if (!rq->mq_hctx)
++		return false;
++	if (rq->mq_hctx->type != HCTX_TYPE_POLL)
++		return false;
++	if (WARN_ON_ONCE(!rq->bio))
++		return false;
++	return true;
++}
++
++static void blk_rq_poll_completion(struct request *rq, struct completion *wait)
++{
++	do {
++		bio_poll(rq->bio, NULL, 0);
++		cond_resched();
++	} while (!completion_done(wait));
++}
++
++/**
++ * blk_execute_rq - insert a request into queue for execution
++ * @bd_disk:	matching gendisk
++ * @rq:		request to insert
++ * @at_head:    insert request at head or tail of queue
++ *
++ * Description:
++ *    Insert a fully prepared request at the back of the I/O scheduler queue
++ *    for execution and wait for completion.
++ * Return: The blk_status_t result provided to blk_mq_end_request().
++ */
++blk_status_t blk_execute_rq(struct gendisk *bd_disk, struct request *rq,
++		int at_head)
++{
++	DECLARE_COMPLETION_ONSTACK(wait);
++	unsigned long hang_check;
++
++	rq->end_io_data = &wait;
++	blk_execute_rq_nowait(bd_disk, rq, at_head, blk_end_sync_rq);
++
++	/* Prevent hang_check timer from firing at us during very long I/O */
++	hang_check = sysctl_hung_task_timeout_secs;
++
++	if (blk_rq_is_poll(rq))
++		blk_rq_poll_completion(rq, &wait);
++	else if (hang_check)
++		while (!wait_for_completion_io_timeout(&wait,
++				hang_check * (HZ/2)))
++			;
++	else
++		wait_for_completion_io(&wait);
++
++	return (blk_status_t)(uintptr_t)rq->end_io_data;
++}
++EXPORT_SYMBOL(blk_execute_rq);
++
+ static void __blk_mq_requeue_request(struct request *rq)
  {
-+	struct req_iterator iter;
-+	struct bio_vec bvec;
- 	unsigned long block, nsect;
- 	char *buf;
- 
-@@ -76,13 +78,17 @@ static blk_status_t do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			}
- 		}
- 		kunmap(bio_page(req->bio));
--		rq_flush_dcache_pages(req);
-+
-+		rq_for_each_segment(bvec, req, iter)
-+			flush_dcache_page(bvec.bv_page);
- 		return BLK_STS_OK;
- 	case REQ_OP_WRITE:
- 		if (!tr->writesect)
- 			return BLK_STS_IOERR;
- 
--		rq_flush_dcache_pages(req);
-+		rq_for_each_segment(bvec, req, iter)
-+			flush_dcache_page(bvec.bv_page);
-+
- 		buf = kmap(bio_page(req->bio)) + bio_offset(req->bio);
- 		for (; nsect > 0; nsect--, block++, buf += tr->blksize) {
- 			if (tr->writesect(dev, block, buf)) {
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 062e6c2c45f5f..302426ab30f8d 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -294,6 +294,8 @@ static void ubiblock_do_work(struct work_struct *work)
- 	int ret;
- 	struct ubiblock_pdu *pdu = container_of(work, struct ubiblock_pdu, work);
- 	struct request *req = blk_mq_rq_from_pdu(pdu);
-+	struct req_iterator iter;
-+	struct bio_vec bvec;
- 
- 	blk_mq_start_request(req);
- 
-@@ -305,7 +307,9 @@ static void ubiblock_do_work(struct work_struct *work)
- 	blk_rq_map_sg(req->q, req, pdu->usgl.sg);
- 
- 	ret = ubiblock_read(pdu);
--	rq_flush_dcache_pages(req);
-+
-+	rq_for_each_segment(bvec, req, iter)
-+		flush_dcache_page(bvec.bv_page);
- 
- 	blk_mq_end_request(req, errno_to_blk_status(ret));
- }
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index a78d9a0f2a1be..308edc2a4925b 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -1132,14 +1132,4 @@ static inline bool blk_req_can_dispatch_to_zone(struct request *rq)
- }
- #endif /* CONFIG_BLK_DEV_ZONED */
- 
--#ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
--# error	"You should define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE for your platform"
--#endif
--#if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
--void rq_flush_dcache_pages(struct request *rq);
--#else
--static inline void rq_flush_dcache_pages(struct request *rq)
--{
--}
--#endif /* ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE */
- #endif /* BLK_MQ_H */
+ 	struct request_queue *q = rq->q;
 -- 
 2.30.2
 
