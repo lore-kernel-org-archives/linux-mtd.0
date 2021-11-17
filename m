@@ -2,14 +2,14 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C29FC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:16:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C15A7C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:17:10 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E87461B2B
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:16:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E87461B2B
+	by mail.kernel.org (Postfix) with ESMTPS id 74F6461B2B
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:17:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 74F6461B2B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UbDlrErSkcUnI9+Twvl+kBFRS+XtufmxUdnm3y6fa5s=; b=sD/R30de28cBrh
-	HGfR624KWEEoYi7Mhni/S/P5WEWensz3pDBuZ8uYaC/IOaZdg80yuM7MecU1AwuiYV1EQ4u+PdQED
-	0LJ9fn6LgXO84uiQPsyzRTjB+H7Rs9awSkq2YLpPiQxvNxRUsJuXZavUZ1LPU3I6ksuZRLAy8km7d
-	uoIl0M2BXmsEj4SbimxMFgoiJGNGMb/nRNjTfGIu25bCf8tcVAHhyP+TSh2O1rcVQzn6Idr0an1Yk
-	oUx5nEr3lQxyr5VqiBtglfhcVfgd/VSp3kxcDEfhFl9G+5R26nr7gpqrc1QVhQwRGv9IRP1lQTOHN
-	8/XOUA3zBJ4hbBbbtQKQ==;
+	List-Owner; bh=amN4P9qpLwDNkz299YEUwVAknNgAScH+izwsqvFTnL4=; b=FlReM7tGt7+Zer
+	dMCRp+q7tavp7yoM6AC2XfAUt7OGz04oqnqAG0urYG0aHIlEBD90oH4pJ24wLuFjn+qnE7CtTxyTo
+	AOeS97Ka/TtSU0O/MIYgCzPVj2Oj6jZO3HrVVl5rFd6/jA5URcPubJScRwGk8y8fG947UD6qr7/bV
+	s+ETSd0qpf0SH60mfDeAxcqb4FVZ7E/mpxr5drf8tpZuxmK7C+idd+DMtKOwj8BfwZZP3L1E/WeTf
+	VBj+8viGtVPZAQ0RL6Lj5YNb7onfSXLQTSzc08XU1QbhcPvBxdZuqBtpM8Tju9h+4+ObsqOm6Vyl7
+	BDHBqcnbPDhd7d+9jGmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnEEY-003QUg-PA; Wed, 17 Nov 2021 06:15:50 +0000
+	id 1mnEFK-003Qox-W5; Wed, 17 Nov 2021 06:16:39 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnED3-003PyX-Ko
- for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:17 +0000
+ id 1mnED5-003Pyd-5k
+ for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:19 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=sj4m7qIW4XnTc8yJ1sHaocTSvUI4MlzH3MUnD0CWBjQ=; b=oAcoHClEmyaFmZ64D1tZFg74Ug
- CGkqUPJk7YrjmFkgBcKkNTWXzuiNAGEIXaf5FQo65kLfXAeDZxVkbI7OQYxvb9fLrcNpfq1lbACOX
- xV/b+QdnQH7Bjyn3bqFD++QoqauB9/tD33xRPD2YlINHtRDnY6IkWE1V0ouA1OkxijsogSZ+a87BA
- s9GQqSW6kvGiH9odK5Bji4wfwB/R2pJqq9NeNUE2qNorMoroXfgjByPLXdh93cwphbF+rH9lAvVs6
- aMIgC9bjYKVW18RefONMvFAK83nbg8Rox4AV+FzUI8JVPSxZml50tJboIGkIUcwR4SkPvMV3rtKHW
- VYmFdqrw==;
+ bh=aN/HpC6wz8bll47+40mhrwWrH9ninZ18GAqRjH5cT1o=; b=azjkoGewnH7jnFCJwphvLSW1FO
+ ngIJHBJG7GgBqo4ELYXpGO9Ym4Q+hXt33dE9kw+Rkz/WzOJ3NiZt4XWiH0QHNQrCALaa8eT6+AQ4B
+ 7xNPb4rU2GWPCYY2WwCtZUVfjlreUEgkDc2D9ZPxyNQGsXZD13+9BeHd0FtECT9bcBQB4q7hUxh0t
+ oy54ffqzGvUWHrascqh9FxpVg3+wQRuxmuHMcb0/DSIFOWvMLV063uq7gOiSpjmQGqeV4vtjOmcoB
+ lX/MvzWaswPcHI7i1YJJODMAtIxtpNKbr9uayMFSkmpIgO7l99teFTl6zc0fwHey9gWEoCQnJ4kc3
+ muOoL59Q==;
 Received: from 213-225-5-109.nat.highway.a1.net ([213.225.5.109]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnED1-007MFn-7c; Wed, 17 Nov 2021 06:14:16 +0000
+ id 1mnED3-007MG1-0p; Wed, 17 Nov 2021 06:14:17 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -52,9 +52,9 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 06/11] block: move blk_rq_init to blk-mq.c
-Date: Wed, 17 Nov 2021 07:13:59 +0100
-Message-Id: <20211117061404.331732-7-hch@lst.de>
+Subject: [PATCH 07/11] block: move blk_steal_bios to blk-mq.c
+Date: Wed, 17 Nov 2021 07:14:00 +0100
+Message-Id: <20211117061404.331732-8-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211117061404.331732-1-hch@lst.de>
 References: <20211117061404.331732-1-hch@lst.de>
@@ -77,70 +77,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-blk_rq_init deals with a request structure, so move it to blk-mq.c
+Keep all the request based code together.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c | 17 -----------------
- block/blk-mq.c   | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 17 deletions(-)
+ block/blk-core.c | 21 ---------------------
+ block/blk-mq.c   | 21 +++++++++++++++++++++
+ 2 files changed, 21 insertions(+), 21 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index e1c928ec92946..a3384c85074e3 100644
+index a3384c85074e3..723a8c84aef12 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -109,23 +109,6 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q)
+@@ -1164,27 +1164,6 @@ void disk_end_io_acct(struct gendisk *disk, unsigned int op,
  }
- EXPORT_SYMBOL_GPL(blk_queue_flag_test_and_set);
+ EXPORT_SYMBOL(disk_end_io_acct);
  
--void blk_rq_init(struct request_queue *q, struct request *rq)
+-/*
+- * Steal bios from a request and add them to a bio list.
+- * The request must not have been partially completed before.
+- */
+-void blk_steal_bios(struct bio_list *list, struct request *rq)
 -{
--	memset(rq, 0, sizeof(*rq));
+-	if (rq->bio) {
+-		if (list->tail)
+-			list->tail->bi_next = rq->bio;
+-		else
+-			list->head = rq->bio;
+-		list->tail = rq->biotail;
 -
--	INIT_LIST_HEAD(&rq->queuelist);
--	rq->q = q;
--	rq->__sector = (sector_t) -1;
--	INIT_HLIST_NODE(&rq->hash);
--	RB_CLEAR_NODE(&rq->rb_node);
--	rq->tag = BLK_MQ_NO_TAG;
--	rq->internal_tag = BLK_MQ_NO_TAG;
--	rq->start_time_ns = ktime_get_ns();
--	rq->part = NULL;
--	blk_crypto_rq_set_defaults(rq);
+-		rq->bio = NULL;
+-		rq->biotail = NULL;
+-	}
+-
+-	rq->__data_len = 0;
 -}
--EXPORT_SYMBOL(blk_rq_init);
+-EXPORT_SYMBOL_GPL(blk_steal_bios);
 -
- #define REQ_OP_NAME(name) [REQ_OP_##name] = #name
- static const char *const blk_op_name[] = {
- 	REQ_OP_NAME(READ),
+ /**
+  * blk_lld_busy - Check if underlying low-level drivers of a device are busy
+  * @q : the queue of the device being checked
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 0362ec9ad4d14..8d0d18ef07d09 100644
+index 8d0d18ef07d09..300fa393e6445 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
-@@ -328,6 +328,23 @@ void blk_mq_wake_waiters(struct request_queue *q)
- 			blk_mq_tag_wakeup_all(hctx->tags, true);
+@@ -3011,6 +3011,27 @@ int blk_rq_prep_clone(struct request *rq, struct request *rq_src,
  }
+ EXPORT_SYMBOL_GPL(blk_rq_prep_clone);
  
-+void blk_rq_init(struct request_queue *q, struct request *rq)
++/*
++ * Steal bios from a request and add them to a bio list.
++ * The request must not have been partially completed before.
++ */
++void blk_steal_bios(struct bio_list *list, struct request *rq)
 +{
-+	memset(rq, 0, sizeof(*rq));
++	if (rq->bio) {
++		if (list->tail)
++			list->tail->bi_next = rq->bio;
++		else
++			list->head = rq->bio;
++		list->tail = rq->biotail;
 +
-+	INIT_LIST_HEAD(&rq->queuelist);
-+	rq->q = q;
-+	rq->__sector = (sector_t) -1;
-+	INIT_HLIST_NODE(&rq->hash);
-+	RB_CLEAR_NODE(&rq->rb_node);
-+	rq->tag = BLK_MQ_NO_TAG;
-+	rq->internal_tag = BLK_MQ_NO_TAG;
-+	rq->start_time_ns = ktime_get_ns();
-+	rq->part = NULL;
-+	blk_crypto_rq_set_defaults(rq);
++		rq->bio = NULL;
++		rq->biotail = NULL;
++	}
++
++	rq->__data_len = 0;
 +}
-+EXPORT_SYMBOL(blk_rq_init);
++EXPORT_SYMBOL_GPL(blk_steal_bios);
 +
- static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
- 		struct blk_mq_tags *tags, unsigned int tag, u64 alloc_time_ns)
+ static size_t order_to_size(unsigned int order)
  {
+ 	return (size_t)PAGE_SIZE << order;
 -- 
 2.30.2
 
