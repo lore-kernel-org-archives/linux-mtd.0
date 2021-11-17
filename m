@@ -2,14 +2,14 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7EE1C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28994C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:20:37 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B248861B51
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:19:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B248861B51
+	by mail.kernel.org (Postfix) with ESMTPS id D9E1061BFA
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:20:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org D9E1061BFA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fhWJnk/nQVQZW0z08VvKR2UjNVeCmPT+RuVL1voMOz4=; b=s+fad5PvtMmbZV
-	7LXoN4nESfP1V0NTzob+9xF9eGr8n1QbhAvjY0KPws9ivIrMSnEhzXslC5SWh57rDGSVzFEydfkHY
-	B6wl9NGaujroIGaGYN6vTJWH9q8MhXzh9Iq+OpJ8b5LKA3Eyy8oa5g4eHoosew7PdYHPF3NSrkAHY
-	mURNYodYnLitAHWBwRLZ/rUTnnOIyH9J/gYIC5239SPMQD5vgVcBjRRVMatymGusOWP9wi4ceAjy0
-	z39BDQJH07q68YqeMEQgDQhoi7BvZKwzRSgat57Du88jjvo8Q5V2bdIVAwC96nLZJiplVcWCnQaaG
-	CB2MXUACpR622Nts19Hw==;
+	List-Owner; bh=1uywC+FzjXG+Q0/6rz4JBH85mtO+99NWOiTkAvDPVOA=; b=GZpAza5Q/SgORT
+	BCraGQUhh9yO0XVkoxCIneM3n8GlR++CaYRt3mvszQQMvp212gFjnzB+QeGiRb1VLWjq0QL4DBX6Y
+	CrNpyuh4TneB75E7EbePRoWDPDL6ucvPz2X4vsBN94npu6K85hQmfAYDXFt0ETHWs2n4WMx+Mty3l
+	+DJuORd+uNPGYXBQ0pVM9V5k6LhnqKe19Bt2ZAs0Bq69ZE2REBM/6EWgXPGa4S9sMFe/CO5CMSRI5
+	fYzEUNqOw3H026e7pCa1nuP8WN352oG3CxjuHgpiEkTLZLdM0Onho+ki7wi4P/1Ag6jrQW1dwkKnZ
+	NgW624pfzTRcW2dhAt2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnEHX-003RXR-N6; Wed, 17 Nov 2021 06:18:55 +0000
+	id 1mnEIe-003Roz-E1; Wed, 17 Nov 2021 06:20:04 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnED9-003Pzc-WA
- for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:23 +0000
+ id 1mnEDC-003Q0V-0d
+ for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:26 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=ZokOpOCOOVArEBa9U6jFCgb/N+Jgswld+TuNUukB1Xw=; b=QkLvdG6MDjp9hn2CJkAmpoKZxc
- ySgsWoUOmSavCwQkV9lJtIHBA2KjQDfy/ODn5dbQeBwPiYnbNQBquPKpTVhSWDqz+OI3zGi1PpQsa
- 7qXdXaRVUoDgXW1mxGw2gTU9NjO1ux2LUn6ryYIrWHSJSA5YhXvGTmKgTIXH9d+qRIYoaUuNDRkID
- vtdmvBsn/gFmEeeAE022krvuArHIzCbjmIbQDAhVGkr5nlL8I2TroEwc0aoIZYEaCN5KQSr01PwuC
- wTi7pXxYcyvQl+c6AlmQKlRqPXTwvwu5JVEWwdropRtDgMtnyuOd0KOZSm7sKHxC1+Iop5o7aJ2Jl
- w57hJOkg==;
+ bh=viN/M0s94isJpAI9XG+tAyGwzk5B+gYmCJUD6Ta5toY=; b=DmCyOSBxb/zzr/09ETedwRIi2e
+ wWu/BkxWyRBfumSegeofjM4bpJqi0m9vEI6i0xBOuwI9Gwh9MMNARP0J1F9Vi9I05uDZZCDVSr+W7
+ v9lYzYgc/g9CT+TAXDZrBx3TfrOM9xdGQVNfZ5UL98rTwqUPY69IfH0kbS2cMcJum/4sAFZCyejEl
+ Ld9+aLsy/l6DJB7tm7Tuw0xxCu6mDG81/dFRT8+GIjorxEdkJ7tDF6hlJWRn+vUKnOlAoGTIyotui
+ COsMsboULPAegSzeAsB1bqpm86SsCfyVxLTBY193JUQFR0jleXGT9xRyU2za1UJ6jIBPeHLvLrHJd
+ qU0PwygQ==;
 Received: from 213-225-5-109.nat.highway.a1.net ([213.225.5.109]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnED7-007MGw-Qg; Wed, 17 Nov 2021 06:14:22 +0000
+ id 1mnED9-007MHU-OQ; Wed, 17 Nov 2021 06:14:24 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -52,9 +52,9 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 10/11] block: move blk_print_req_error to blk-mq.c
-Date: Wed, 17 Nov 2021 07:14:03 +0100
-Message-Id: <20211117061404.331732-11-hch@lst.de>
+Subject: [PATCH 11/11] block: don't include blk-mq headers in blk-core.c
+Date: Wed, 17 Nov 2021 07:14:04 +0100
+Message-Id: <20211117061404.331732-12-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211117061404.331732-1-hch@lst.de>
 References: <20211117061404.331732-1-hch@lst.de>
@@ -77,83 +77,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This function is only used by the request completion path.  Factor out
-a blk_status_to_str to keep blk_errors private in blk-core.c.
+All request based code is in the blk-mq files now.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c | 15 +++------------
- block/blk-mq.c   | 13 +++++++++++++
- block/blk.h      |  2 +-
- 3 files changed, 17 insertions(+), 13 deletions(-)
+ block/blk-core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index 89971630f092f..5722c1d9da09c 100644
+index 5722c1d9da09c..ee54b34d5e99c 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -199,22 +199,13 @@ int blk_status_to_errno(blk_status_t status)
- }
- EXPORT_SYMBOL_GPL(blk_status_to_errno);
+@@ -16,7 +16,6 @@
+ #include <linux/module.h>
+ #include <linux/bio.h>
+ #include <linux/blkdev.h>
+-#include <linux/blk-mq.h>
+ #include <linux/blk-pm.h>
+ #include <linux/blk-integrity.h>
+ #include <linux/highmem.h>
+@@ -47,8 +46,6 @@
+ #include <trace/events/block.h>
  
--void blk_print_req_error(struct request *req, blk_status_t status)
-+const char *blk_status_to_str(blk_status_t status)
- {
- 	int idx = (__force int)status;
+ #include "blk.h"
+-#include "blk-mq.h"
+-#include "blk-mq-sched.h"
+ #include "blk-pm.h"
+ #include "blk-throttle.h"
  
- 	if (WARN_ON_ONCE(idx >= ARRAY_SIZE(blk_errors)))
--		return;
--
--	printk_ratelimited(KERN_ERR
--		"%s error, dev %s, sector %llu op 0x%x:(%s) flags 0x%x "
--		"phys_seg %u prio class %u\n",
--		blk_errors[idx].name,
--		req->rq_disk ? req->rq_disk->disk_name : "?",
--		blk_rq_pos(req), req_op(req), blk_op_str(req_op(req)),
--		req->cmd_flags & ~REQ_OP_MASK,
--		req->nr_phys_segments,
--		IOPRIO_PRIO_CLASS(req->ioprio));
-+		return "<null>";
-+	return blk_errors[idx].name;
- }
- 
- /**
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index f8a39f4fce01e..1feb9ab65f28a 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -717,6 +717,19 @@ static void blk_account_io_completion(struct request *req, unsigned int bytes)
- 	}
- }
- 
-+static void blk_print_req_error(struct request *req, blk_status_t status)
-+{
-+	printk_ratelimited(KERN_ERR
-+		"%s error, dev %s, sector %llu op 0x%x:(%s) flags 0x%x "
-+		"phys_seg %u prio class %u\n",
-+		blk_status_to_str(status),
-+		req->rq_disk ? req->rq_disk->disk_name : "?",
-+		blk_rq_pos(req), req_op(req), blk_op_str(req_op(req)),
-+		req->cmd_flags & ~REQ_OP_MASK,
-+		req->nr_phys_segments,
-+		IOPRIO_PRIO_CLASS(req->ioprio));
-+}
-+
- /**
-  * blk_update_request - Complete multiple bytes without completing the request
-  * @req:      the request being processed
-diff --git a/block/blk.h b/block/blk.h
-index a1cbf17d18b98..296e3010f8d65 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -250,7 +250,7 @@ static inline void blk_integrity_del(struct gendisk *disk)
- 
- unsigned long blk_rq_timeout(unsigned long timeout);
- void blk_add_timer(struct request *req);
--void blk_print_req_error(struct request *req, blk_status_t status);
-+const char *blk_status_to_str(blk_status_t status);
- 
- bool blk_attempt_plug_merge(struct request_queue *q, struct bio *bio,
- 		unsigned int nr_segs, bool *same_queue_rq);
 -- 
 2.30.2
 
