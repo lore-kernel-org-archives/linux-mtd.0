@@ -2,67 +2,78 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7EF7C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 03:38:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 129EAC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 04:12:27 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D02A61545
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 03:38:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8D02A61545
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id B975A61A3A
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 04:12:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B975A61A3A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=acm.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:CC:To:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=zhScKlg1WWL7Fjz27QzKMip06KNp4oSdJ42oxfqE32Y=; b=0B9IySkZYuR3nCxu87tsx7DVOt
-	PKZwadwJAqtoS4dqrZ6LINu6B0S9eesJsSj4vstZt7xQGRd6iZY9FgGO4aw0haa+UaqZmoWVZDX/B
-	P3BByOB/T3UKQJbRsuXk4gBCj5FOCJD6myMDsL2g1KMCH89Mj7lU91tdhL8E2HshcWqQ5F4MzORHa
-	6S94HeJTdcchFJsLNFqtpJms1FKQ90+sgeStXjywfDNiXLytzw9dKut0lb2M+srRkrMd/OFTXVaVA
-	k1GWazfOjFIsYocH2OKMHI9AcI01DtnCYwSQRkoi5ZDaxX2jAkXkM+Q7VcnLDP13YD1nA38kW/dNh
-	czAI0bxQ==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zdWmrNzeDBqOK8ttp95rPG1AX0iKICgHTnyBMLx5xAY=; b=KDDuh2kPJMhEDZ
+	2XSh5QDPXDDQBrDS8NNTg6KgQAF0R7hWNle5i/mgJBc8zqVPKqnNQfLi1OBgwOYwhhz1l+FRKmQh1
+	/NROoG/+reSOZLzaroMKhR9eODrv0ZEHYZLla2WewWiOj1W66QrF92bW47xR+0ZwQWRDtmCnMgUCv
+	0ne3x5Ux320UjGspiBN3xQkznt+URZOm3AH51WzucwENI0zHfrzJKKAJDGogZN9I5zZyAqbZXj0dw
+	HD41qVpl9q6vcqxNXJLCbdvf3E1jHWbpMYg55TWyxWKxo3djeKlR6bdZ4yixV1AwZkt2zSMcBigkC
+	g7E11m8cy/VJCP6fLEwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnBlD-003Cqq-M6; Wed, 17 Nov 2021 03:37:23 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1mnCIS-003IWU-Sa; Wed, 17 Nov 2021 04:11:44 +0000
+Received: from mail-pf1-f181.google.com ([209.85.210.181])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnBl9-003Cp5-Vg
- for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 03:37:22 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hv7ll5dHkzbhyW;
- Wed, 17 Nov 2021 11:32:19 +0800 (CST)
-Received: from kwepemm600019.china.huawei.com (7.193.23.64) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 17 Nov 2021 11:37:14 +0800
-Received: from [10.174.177.210] (10.174.177.210) by
- kwepemm600019.china.huawei.com (7.193.23.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 17 Nov 2021 11:37:13 +0800
-To: <ming.lei@redhat.com>, <damien.lemoal@wdc.com>, <axboe@kernel.dk>,
- <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-block@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <yangerkun@huawei.com>, <yi.zhang@huawei.com>, <yebin10@huawei.com>,
- <houtao1@huawei.com>
-From: yangerkun <yangerkun@huawei.com>
-Subject: [QUESTION] blk_mq_freeze_queue in elevator_init_mq
-Message-ID: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
-Date: Wed, 17 Nov 2021 11:37:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ id 1mnCIQ-003IVG-Ko
+ for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 04:11:43 +0000
+Received: by mail-pf1-f181.google.com with SMTP id c4so1419547pfj.2
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2021 20:11:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=Bjo6JYh6swD0+7pP1y5ezzsjdxB7C1Snz29o1nBUET8=;
+ b=co+2rrD0KV3du7SLufph6b7anGv/jId3V1d3Ph75MXVnI8HC15nMVVp1zOrEW1gC7V
+ daTr3yYCnjHsQRXRxxcQ3ehdQrSFhbN/8qG7wIVsuKZWkt0GZfHNGGT7JYZu0uNbQGwU
+ 0au70zyBu8qFrkA2dGnreY3NUQXTJn/Tt1ZiIU0NUWVUOiVpKhGVANwgOtAcDO8uybUe
+ D0LMnxFUTcdlk2RRDT9XAmaQCYCkYECO1+xAH1wfVm4FAb4JzsOXbQrTKpg3CkU213KY
+ IJcho50OiqN4MkMUstn1OGZFGX1Sv2SNPBr21K+5f9h482GSsSbmjRG96PnKpn/wIFp7
+ 04Xw==
+X-Gm-Message-State: AOAM532MvLzDGv/kuLxSGZikSC6UkSC5zjI5Cgb3J2ADzp8ryyb0NT6M
+ woXyu6eAZ3zWf4yAC2oJkYQ=
+X-Google-Smtp-Source: ABdhPJxdovCRZWHCUQmOXeEIepOsGeHCMeOPUMgMASc6+IqAP1LSKlMrUCGgVueBcWmjWd+R1CZCrA==
+X-Received: by 2002:a05:6a00:1150:b0:4a2:7328:cce6 with SMTP id
+ b16-20020a056a00115000b004a27328cce6mr36018798pfm.67.1637122301246; 
+ Tue, 16 Nov 2021 20:11:41 -0800 (PST)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd?
+ ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+ by smtp.gmail.com with ESMTPSA id ng9sm4111639pjb.4.2021.11.16.20.11.40
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 16 Nov 2021 20:11:40 -0800 (PST)
+Message-ID: <59cb2cfd-3890-9fb4-9e77-a4b084d088e9@acm.org>
+Date: Tue, 16 Nov 2021 20:11:39 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [QUESTION] blk_mq_freeze_queue in elevator_init_mq
 Content-Language: en-US
-X-Originating-IP: [10.174.177.210]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600019.china.huawei.com (7.193.23.64)
-X-CFilter-Loop: Reflected
+To: yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com,
+ damien.lemoal@wdc.com, axboe@kernel.dk, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com
+Cc: linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
+ yi.zhang@huawei.com, yebin10@huawei.com, houtao1@huawei.com
+References: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211116_193720_245983_B8FD905E 
-X-CRM114-Status: UNSURE (   7.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211116_201142_702981_8127F0D1 
+X-CRM114-Status: GOOD (  13.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,34 +90,22 @@ Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Tm93ZGF5cyB3ZSBtZWV0IHRoZSBib290IHJlZ3Jlc3Npb24gd2hpbGUgZW5hYmxlIGxvdHMgb2Yg
-bXRkYmxvY2sKY29tcGFyZSB3aXRoIDQuNC4gVGhlIG1haW4gcmVhc29uIHdhcyB0aGF0IHRoZSBi
-bGtfbXFfZnJlZXplX3F1ZXVlIGluCmVsZXZhdG9yX2luaXRfbXEgd2lsbCB3YWl0IGEgUkNVIGdh
-cCB3aGljaCB3YW50IHRvIG1ha2Ugc3VyZSBubyBJTyB3aWxsCmhhcHBlbiB3aGlsZSBibGtfbXFf
-aW5pdF9zY2hlZC4KCk90aGVyIG1vZHVsZSBsaWtlIGxvb3AgbWVldHMgdGhpcyBwcm9ibGVtIHRv
-byBhbmQgaGFzIGJlZW4gZml4IHdpdGgKZm9sbG93IHBhdGNoZXM6CgogIDIxMTJmNWMxMzMwYSBs
-b29wOiBTZWxlY3QgSS9PIHNjaGVkdWxlciAnbm9uZScgZnJvbSBpbnNpZGUgYWRkX2Rpc2soKQog
-IDkwYjcxOTgwMDFmMiBibGstbXE6IEludHJvZHVjZSB0aGUgQkxLX01RX0ZfTk9fU0NIRURfQllf
-REVGQVVMVCBmbGFnCgpUaGV5IGNoYW5nZSB0aGUgZGVmYXVsdCBJTyBzY2hlZHVsZXIgZm9yIGxv
-b3AgdG8gJ25vbmUnLiBTbyBubyBuZWVkIHRvCmNhbGwgYmxrX21xX2ZyZWV6ZV9xdWV1ZSBhbmQg
-YmxrX21xX2luaXRfc2NoZWQuIEJ1dCBpdCBzZWVtcyBub3QKYXBwcm9wcmlhdGUgZm9yIG10ZGJs
-b2Nrcy4gTXRkYmxvY2tzIGNhbiB1c2UgJ21xLWRlYWRsaW5lJyB0byBoZWxwCm9wdGltaXplIHRo
-ZSByYW5kb20gd3JpdGUgd2l0aCB0aGUgaGVscCBvZiBtdGRibG9jaydzIGNhY2hlLiBPbmNlIGNo
-YW5nZQp0byAnbm9uZScsIHdlIG1heSBtZWV0IHRoZSByZWdyZXNzaW9uIGZvciByYW5kb20gd3Jp
-dGUuCgpjb21taXQgNzM3ZWI3OGU4MmQ1MmQzNWRmMTY2ZDI5YWYzMmJmNjE5OTJkZTcxZApBdXRo
-b3I6IERhbWllbiBMZSBNb2FsIDxkYW1pZW4ubGVtb2FsQHdkYy5jb20+CkRhdGU6ICAgVGh1IFNl
-cCA1IDE4OjUxOjMzIDIwMTkgKzA5MDAKCiAgICAgYmxvY2s6IERlbGF5IGRlZmF1bHQgZWxldmF0
-b3IgaW5pdGlhbGl6YXRpb24KCiAgICAgLi4uCgogICAgIEFkZGl0aW9uYWxseSwgdG8gbWFrZSBz
-dXJlIHRoYXQgdGhlIGVsZXZhdG9yIGluaXRpYWxpemF0aW9uIGlzIG5ldmVyCiAgICAgZG9uZSB3
-aGlsZSByZXF1ZXN0cyBhcmUgaW4tZmxpZ2h0ICh0aGVyZSBzaG91bGQgYmUgbm9uZSB3aGVuIHRo
-ZSBkZXZpY2UKICAgICBkcml2ZXIgY2FsbHMgZGV2aWNlX2FkZF9kaXNrKCkpLCBmcmVlemUgYW5k
-IHF1aWVzY2UgdGhlIGRldmljZSByZXF1ZXN0CiAgICAgcXVldWUgYmVmb3JlIGNhbGxpbmcgYmxr
-X21xX2luaXRfc2NoZWQoKSBpbiBlbGV2YXRvcl9pbml0X21xKCkuCiAgICAgLi4uCgpUaGlzIGNv
-bW1pdCBhZGQgYmxrX21xX2ZyZWV6ZV9xdWV1ZSBpbiBlbGV2YXRvcl9pbml0X21xIHdoaWNoIHRy
-eSB0bwptYWtlIHN1cmUgbm8gaW4tZmxpZ2h0IHJlcXVlc3Qgd2hpbGUgd2UgZ28gdGhyb3VnaCBi
-bGtfbXFfaW5pdF9zY2hlZC4KQnV0IGRvZXMgdGhlcmUgYW55IGRyaXZlcnMgY2FuIGxlYXZlIElP
-IGFsaXZlIHdoaWxlIHdlIGdvIHRocm91Z2gKZWxldmF0b3JfaW5pdF9tce+8nyBBbmQgaWYgbm8s
-IG1heWJlIHdlIGNhbiBqdXN0IHJlbW92ZSB0aGlzIGxvZ2ljYWwgdG8KZml4IHRoZSByZWdyZXNz
-aW9uLi4uCi4KLgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+T24gMTEvMTYvMjEgMTk6MzcsIHlhbmdlcmt1biB3cm90ZToKPiBUaGlzIGNvbW1pdCBhZGQgYmxr
+X21xX2ZyZWV6ZV9xdWV1ZSBpbiBlbGV2YXRvcl9pbml0X21xIHdoaWNoIHRyeSB0bwo+IG1ha2Ug
+c3VyZSBubyBpbi1mbGlnaHQgcmVxdWVzdCB3aGlsZSB3ZSBnbyB0aHJvdWdoIGJsa19tcV9pbml0
+X3NjaGVkLgo+IEJ1dCBkb2VzIHRoZXJlIGFueSBkcml2ZXJzIGNhbiBsZWF2ZSBJTyBhbGl2ZSB3
+aGlsZSB3ZSBnbyB0aHJvdWdoCj4gZWxldmF0b3JfaW5pdF9tce+8nyBBbmQgaWYgbm8sIG1heWJl
+IHdlIGNhbiBqdXN0IHJlbW92ZSB0aGlzIGxvZ2ljYWwgdG8KPiBmaXggdGhlIHJlZ3Jlc3Npb24u
+Li4KCkRvZXMgdGhpcyB1bnRlc3RlZCBwYXRjaCBoZWxwPyBQbGVhc2Ugbm90ZSB0aGF0IEknbSBu
+b3QgcmVjb21tZW5kaW5nIHRvCmludGVncmF0ZSB0aGlzIHBhdGNoIGluIHRoZSB1cHN0cmVhbSBr
+ZXJuZWwgYnV0IGlmIGl0IGhlbHBzIGl0IGNhbiBiZSBhCmJ1aWxkaW5nIGJsb2NrIG9mIGEgc29s
+dXRpb24uCgpUaGFua3MsCgpCYXJ0LgoKZGlmZiAtLWdpdCBhL2Jsb2NrL2Jsay1tcS5jIGIvYmxv
+Y2svYmxrLW1xLmMKaW5kZXggM2FiMzRjNGYyMGRhLi5iODVkY2I3MmE1NzkgMTAwNjQ0Ci0tLSBh
+L2Jsb2NrL2Jsay1tcS5jCisrKyBiL2Jsb2NrL2Jsay1tcS5jCkBAIC0xNjcsNiArMTY3LDcgQEAg
+dm9pZCBibGtfZnJlZXplX3F1ZXVlX3N0YXJ0KHN0cnVjdCByZXF1ZXN0X3F1ZXVlICpxKQogIAkJ
+bXV0ZXhfdW5sb2NrKCZxLT5tcV9mcmVlemVfbG9jayk7CiAgCQlpZiAocXVldWVfaXNfbXEocSkp
+CiAgCQkJYmxrX21xX3J1bl9od19xdWV1ZXMocSwgZmFsc2UpOworCQlzeW5jaHJvbml6ZV9yY3Vf
+ZXhwZWRpdGVkKCk7CiAgCX0gZWxzZSB7CiAgCQltdXRleF91bmxvY2soJnEtPm1xX2ZyZWV6ZV9s
+b2NrKTsKICAJfQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
 X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
 aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
