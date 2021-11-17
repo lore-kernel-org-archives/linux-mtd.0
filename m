@@ -2,76 +2,69 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F63C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 08:08:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F1EFC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 08:38:54 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A243361BD2
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 08:08:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A243361BD2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id C71C7611AF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 08:38:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org C71C7611AF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EYXvQQLvJNe3LSwm8cRhKhQIF2miJF+cnx2+47HWY7k=; b=Vkmu1YBgGtkJej
-	QjFQEFPWtqDXvuwlbX+ITXw5OqNA9RgTeMIT4P5/ErtnADzMHgJZIDoeIkpFn443AMw4XBR3bFGLj
-	OBznOzezVrPrO5ryPbjIlIDq3R8DL8mjL6Kwxl4KlJBzDmQxoF7lNcUQS7x/x+Sb4nYQEwhIADZRA
-	yJdDYw9wVI6S3T8U3BLiltbH793CBsdCWBmM/iA/OqvWQGezXfl4YfLjqrasYPngGTkjko0IhBMPC
-	ESIe4I8NQjSz3Enrau4PcmUnNtM+trXjRgGhSMmU5QWIDzULWRbLQcVuxPkPfvZ6rCHTBD3+OGsuU
-	5AVLoIZyYrLvraHSxs9Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=QLUWWbrIz5wTTtt8JxZ4425nuRmiaJm5If0MX5Iigio=; b=kKWUryG/2ZuTTq3tiICLiHs17B
+	/DtZcFj6hE9lX5Sq8zPZwTyd8dw7EmdBAByyZHHqFT5TWNquY0qR31pYGx1nvW2fYn5liF+cqB5S/
+	iUbgm60uszPOJ5MQVQPHjHyCJjrSCXcqOZd17GLWXW4NmB+D+mAFPWvgiSx9uEWfpcp4oclJOJvRm
+	fptWGumFY/WoVeb5XO9PUhhe1bETWqtrgpkVrdf1L/El3qbLSZDgxYzyd3r3+CJhTsRRoHjIAg3gp
+	unPIgP/83iMVJZBmnVqUGr+ctcPe62Pm/O/d/gKwJFfO9ZWvqPq2IJegzp957xo5jmoRDtudIm0hm
+	fKEmt5Zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnFyQ-003tgr-0K; Wed, 17 Nov 2021 08:07:18 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1mnGSD-003yar-Pu; Wed, 17 Nov 2021 08:38:05 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnFyN-003tgJ-3Y
- for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 08:07:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1637136430;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nilW13qTD/48ImqC9DdVhzc/yeDogF+YeNeQ4Gj89IE=;
- b=D1eMC9fhieQAVVpCvoGTfaNvLYpcQJ5hk83TyY6lcBTkWmzsFo0+f5EsIkiBJbTjwKY1pJ
- bIl1aOoHcAuLWxB7CtOMRKCydJINBn0V+/WwJ1DIJEGKb424LVDvveib2KdNLc5a6rggPS
- U9wy/w9edkc4PV7RqseOPe6o13V8818=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-150-P6Z69iaeNAiUp-WUxpRxFA-1; Wed, 17 Nov 2021 03:07:04 -0500
-X-MC-Unique: P6Z69iaeNAiUp-WUxpRxFA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
- [10.5.11.13])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38B101923761;
- Wed, 17 Nov 2021 08:07:02 +0000 (UTC)
-Received: from T590 (ovpn-8-24.pek2.redhat.com [10.72.8.24])
- by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B86F5BAE5;
- Wed, 17 Nov 2021 08:06:50 +0000 (UTC)
-Date: Wed, 17 Nov 2021 16:06:45 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: yangerkun <yangerkun@huawei.com>
-Cc: damien.lemoal@wdc.com, axboe@kernel.dk, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, linux-block@vger.kernel.org,
- linux-mtd@lists.infradead.org, yi.zhang@huawei.com,
- yebin10@huawei.com, houtao1@huawei.com
+ id 1mnGS9-003yYJ-JQ
+ for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 08:38:03 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HvGTh1M9WzZcwp;
+ Wed, 17 Nov 2021 16:35:36 +0800 (CST)
+Received: from kwepemm600019.china.huawei.com (7.193.23.64) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 17 Nov 2021 16:37:59 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ kwepemm600019.china.huawei.com (7.193.23.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Wed, 17 Nov 2021 16:37:58 +0800
 Subject: Re: [QUESTION] blk_mq_freeze_queue in elevator_init_mq
-Message-ID: <YZS4FYxtxYAXjtFJ@T590>
+To: Ming Lei <ming.lei@redhat.com>
+CC: <damien.lemoal@wdc.com>, <axboe@kernel.dk>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <vigneshr@ti.com>, <linux-block@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <yi.zhang@huawei.com>, <yebin10@huawei.com>, 
+ <houtao1@huawei.com>
 References: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
+ <YZS4FYxtxYAXjtFJ@T590>
+From: yangerkun <yangerkun@huawei.com>
+Message-ID: <774e0e26-9d2b-660f-196a-ea6651e2d845@huawei.com>
+Date: Wed, 17 Nov 2021 16:37:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YZS4FYxtxYAXjtFJ@T590>
+Content-Language: en-US
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600019.china.huawei.com (7.193.23.64)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211117_000715_266975_2FA049B9 
-X-CRM114-Status: GOOD (  21.84  )
+X-CRM114-CacheID: sfid-20211117_003801_840232_12746EC7 
+X-CRM114-Status: GOOD (  19.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,47 +76,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBOb3YgMTcsIDIwMjEgYXQgMTE6Mzc6MTNBTSArMDgwMCwgeWFuZ2Vya3VuIHdyb3Rl
-Ogo+IE5vd2RheXMgd2UgbWVldCB0aGUgYm9vdCByZWdyZXNzaW9uIHdoaWxlIGVuYWJsZSBsb3Rz
-IG9mIG10ZGJsb2NrCgpXaGF0IGlzIHlvdXIgYm9vdCByZWdyZXNzaW9uPyBBbnkgZG1lc2cgbG9n
-PwoKPiBjb21wYXJlIHdpdGggNC40LiBUaGUgbWFpbiByZWFzb24gd2FzIHRoYXQgdGhlIGJsa19t
-cV9mcmVlemVfcXVldWUgaW4KPiBlbGV2YXRvcl9pbml0X21xIHdpbGwgd2FpdCBhIFJDVSBnYXAg
-d2hpY2ggd2FudCB0byBtYWtlIHN1cmUgbm8gSU8gd2lsbAo+IGhhcHBlbiB3aGlsZSBibGtfbXFf
-aW5pdF9zY2hlZC4KClRoZXJlIGlzbid0IFJDVSBncmFjZSBwZXJpb2QgaW1wbGllZCBpbiB0aGUg
-YmxrX21xX2ZyZWV6ZV9xdWV1ZSgpIGNhbGxlZApmcm9tIGVsZXZhdG9yX2luaXRfbXEoKSwgYmVj
-YXVzZSB0aGUgLnFfdXNhZ2VfY291bnRlciB3b3JrcyBhdCBhdG9taWMgbW9kZQphdCB0aGF0IHRp
-bWUuCgo+IAo+IE90aGVyIG1vZHVsZSBsaWtlIGxvb3AgbWVldHMgdGhpcyBwcm9ibGVtIHRvbyBh
-bmQgaGFzIGJlZW4gZml4IHdpdGgKCkFnYWluLCB3aGF0IGlzIHRoZSBwcm9ibGVtPwoKPiBmb2xs
-b3cgcGF0Y2hlczoKPiAKPiAgMjExMmY1YzEzMzBhIGxvb3A6IFNlbGVjdCBJL08gc2NoZWR1bGVy
-ICdub25lJyBmcm9tIGluc2lkZSBhZGRfZGlzaygpCj4gIDkwYjcxOTgwMDFmMiBibGstbXE6IElu
-dHJvZHVjZSB0aGUgQkxLX01RX0ZfTk9fU0NIRURfQllfREVGQVVMVCBmbGFnCj4gCj4gVGhleSBj
-aGFuZ2UgdGhlIGRlZmF1bHQgSU8gc2NoZWR1bGVyIGZvciBsb29wIHRvICdub25lJy4gU28gbm8g
-bmVlZCB0bwo+IGNhbGwgYmxrX21xX2ZyZWV6ZV9xdWV1ZSBhbmQgYmxrX21xX2luaXRfc2NoZWQu
-IEJ1dCBpdCBzZWVtcyBub3QKPiBhcHByb3ByaWF0ZSBmb3IgbXRkYmxvY2tzLiBNdGRibG9ja3Mg
-Y2FuIHVzZSAnbXEtZGVhZGxpbmUnIHRvIGhlbHAKPiBvcHRpbWl6ZSB0aGUgcmFuZG9tIHdyaXRl
-IHdpdGggdGhlIGhlbHAgb2YgbXRkYmxvY2sncyBjYWNoZS4gT25jZSBjaGFuZ2UKPiB0byAnbm9u
-ZScsIHdlIG1heSBtZWV0IHRoZSByZWdyZXNzaW9uIGZvciByYW5kb20gd3JpdGUuCj4gCj4gY29t
-bWl0IDczN2ViNzhlODJkNTJkMzVkZjE2NmQyOWFmMzJiZjYxOTkyZGU3MWQKPiBBdXRob3I6IERh
-bWllbiBMZSBNb2FsIDxkYW1pZW4ubGVtb2FsQHdkYy5jb20+Cj4gRGF0ZTogICBUaHUgU2VwIDUg
-MTg6NTE6MzMgMjAxOSArMDkwMAo+IAo+ICAgICBibG9jazogRGVsYXkgZGVmYXVsdCBlbGV2YXRv
-ciBpbml0aWFsaXphdGlvbgo+IAo+ICAgICAuLi4KPiAKPiAgICAgQWRkaXRpb25hbGx5LCB0byBt
-YWtlIHN1cmUgdGhhdCB0aGUgZWxldmF0b3IgaW5pdGlhbGl6YXRpb24gaXMgbmV2ZXIKPiAgICAg
-ZG9uZSB3aGlsZSByZXF1ZXN0cyBhcmUgaW4tZmxpZ2h0ICh0aGVyZSBzaG91bGQgYmUgbm9uZSB3
-aGVuIHRoZSBkZXZpY2UKPiAgICAgZHJpdmVyIGNhbGxzIGRldmljZV9hZGRfZGlzaygpKSwgZnJl
-ZXplIGFuZCBxdWllc2NlIHRoZSBkZXZpY2UgcmVxdWVzdAo+ICAgICBxdWV1ZSBiZWZvcmUgY2Fs
-bGluZyBibGtfbXFfaW5pdF9zY2hlZCgpIGluIGVsZXZhdG9yX2luaXRfbXEoKS4KPiAgICAgLi4u
-Cj4gCj4gVGhpcyBjb21taXQgYWRkIGJsa19tcV9mcmVlemVfcXVldWUgaW4gZWxldmF0b3JfaW5p
-dF9tcSB3aGljaCB0cnkgdG8KPiBtYWtlIHN1cmUgbm8gaW4tZmxpZ2h0IHJlcXVlc3Qgd2hpbGUg
-d2UgZ28gdGhyb3VnaCBibGtfbXFfaW5pdF9zY2hlZC4KPiBCdXQgZG9lcyB0aGVyZSBhbnkgZHJp
-dmVycyBjYW4gbGVhdmUgSU8gYWxpdmUgd2hpbGUgd2UgZ28gdGhyb3VnaAo+IGVsZXZhdG9yX2lu
-aXRfbXHvvJ8gQW5kIGlmIG5vLCBtYXliZSB3ZSBjYW4ganVzdCByZW1vdmUgdGhpcyBsb2dpY2Fs
-IHRvCj4gZml4IHRoZSByZWdyZXNzaW9uLi4uCgpTQ1NJIHNob3VsZCBoYXZlIHBhc3N0aHJvdWdo
-IHJlcXVlc3RzIGF0IHRoYXQgbW9tZW50LgoKCgpUaGFua3MsCk1pbmcKCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+CgpPbiAyMDIxLzExLzE3IDE2OjA2LCBNaW5nIExlaSB3cm90ZToKPiBPbiBXZWQsIE5vdiAxNywg
+MjAyMSBhdCAxMTozNzoxM0FNICswODAwLCB5YW5nZXJrdW4gd3JvdGU6Cj4+IE5vd2RheXMgd2Ug
+bWVldCB0aGUgYm9vdCByZWdyZXNzaW9uIHdoaWxlIGVuYWJsZSBsb3RzIG9mIG10ZGJsb2NrCj4g
+Cj4gV2hhdCBpcyB5b3VyIGJvb3QgcmVncmVzc2lvbj8gQW55IGRtZXNnIGxvZz8KPiAKPj4gY29t
+cGFyZSB3aXRoIDQuNC4gVGhlIG1haW4gcmVhc29uIHdhcyB0aGF0IHRoZSBibGtfbXFfZnJlZXpl
+X3F1ZXVlIGluCj4+IGVsZXZhdG9yX2luaXRfbXEgd2lsbCB3YWl0IGEgUkNVIGdhcCB3aGljaCB3
+YW50IHRvIG1ha2Ugc3VyZSBubyBJTyB3aWxsCj4+IGhhcHBlbiB3aGlsZSBibGtfbXFfaW5pdF9z
+Y2hlZC4KPiAKPiBUaGVyZSBpc24ndCBSQ1UgZ3JhY2UgcGVyaW9kIGltcGxpZWQgaW4gdGhlIGJs
+a19tcV9mcmVlemVfcXVldWUoKSBjYWxsZWQKPiBmcm9tIGVsZXZhdG9yX2luaXRfbXEoKSwgYmVj
+YXVzZSB0aGUgLnFfdXNhZ2VfY291bnRlciB3b3JrcyBhdCBhdG9taWMgbW9kZQo+IGF0IHRoYXQg
+dGltZS4KCkVtbS4uLiBJdCdzIG15IGZhdWx0LiBXaGljaCBhZGQgdGhlIFJDVSBpcyBibGtfbXFf
+cXVpZXNjZV9xdWV1ZS4uLgoKPiAKPj4KPj4gT3RoZXIgbW9kdWxlIGxpa2UgbG9vcCBtZWV0cyB0
+aGlzIHByb2JsZW0gdG9vIGFuZCBoYXMgYmVlbiBmaXggd2l0aAo+IAo+IEFnYWluLCB3aGF0IGlz
+IHRoZSBwcm9ibGVtPwo+IAo+PiBmb2xsb3cgcGF0Y2hlczoKPj4KPj4gICAyMTEyZjVjMTMzMGEg
+bG9vcDogU2VsZWN0IEkvTyBzY2hlZHVsZXIgJ25vbmUnIGZyb20gaW5zaWRlIGFkZF9kaXNrKCkK
+Pj4gICA5MGI3MTk4MDAxZjIgYmxrLW1xOiBJbnRyb2R1Y2UgdGhlIEJMS19NUV9GX05PX1NDSEVE
+X0JZX0RFRkFVTFQgZmxhZwo+Pgo+PiBUaGV5IGNoYW5nZSB0aGUgZGVmYXVsdCBJTyBzY2hlZHVs
+ZXIgZm9yIGxvb3AgdG8gJ25vbmUnLiBTbyBubyBuZWVkIHRvCj4+IGNhbGwgYmxrX21xX2ZyZWV6
+ZV9xdWV1ZSBhbmQgYmxrX21xX2luaXRfc2NoZWQuIEJ1dCBpdCBzZWVtcyBub3QKPj4gYXBwcm9w
+cmlhdGUgZm9yIG10ZGJsb2Nrcy4gTXRkYmxvY2tzIGNhbiB1c2UgJ21xLWRlYWRsaW5lJyB0byBo
+ZWxwCj4+IG9wdGltaXplIHRoZSByYW5kb20gd3JpdGUgd2l0aCB0aGUgaGVscCBvZiBtdGRibG9j
+aydzIGNhY2hlLiBPbmNlIGNoYW5nZQo+PiB0byAnbm9uZScsIHdlIG1heSBtZWV0IHRoZSByZWdy
+ZXNzaW9uIGZvciByYW5kb20gd3JpdGUuCj4+Cj4+IGNvbW1pdCA3MzdlYjc4ZTgyZDUyZDM1ZGYx
+NjZkMjlhZjMyYmY2MTk5MmRlNzFkCj4+IEF1dGhvcjogRGFtaWVuIExlIE1vYWwgPGRhbWllbi5s
+ZW1vYWxAd2RjLmNvbT4KPj4gRGF0ZTogICBUaHUgU2VwIDUgMTg6NTE6MzMgMjAxOSArMDkwMAo+
+Pgo+PiAgICAgIGJsb2NrOiBEZWxheSBkZWZhdWx0IGVsZXZhdG9yIGluaXRpYWxpemF0aW9uCj4+
+Cj4+ICAgICAgLi4uCj4+Cj4+ICAgICAgQWRkaXRpb25hbGx5LCB0byBtYWtlIHN1cmUgdGhhdCB0
+aGUgZWxldmF0b3IgaW5pdGlhbGl6YXRpb24gaXMgbmV2ZXIKPj4gICAgICBkb25lIHdoaWxlIHJl
+cXVlc3RzIGFyZSBpbi1mbGlnaHQgKHRoZXJlIHNob3VsZCBiZSBub25lIHdoZW4gdGhlIGRldmlj
+ZQo+PiAgICAgIGRyaXZlciBjYWxscyBkZXZpY2VfYWRkX2Rpc2soKSksIGZyZWV6ZSBhbmQgcXVp
+ZXNjZSB0aGUgZGV2aWNlIHJlcXVlc3QKPj4gICAgICBxdWV1ZSBiZWZvcmUgY2FsbGluZyBibGtf
+bXFfaW5pdF9zY2hlZCgpIGluIGVsZXZhdG9yX2luaXRfbXEoKS4KPj4gICAgICAuLi4KPj4KPj4g
+VGhpcyBjb21taXQgYWRkIGJsa19tcV9mcmVlemVfcXVldWUgaW4gZWxldmF0b3JfaW5pdF9tcSB3
+aGljaCB0cnkgdG8KPj4gbWFrZSBzdXJlIG5vIGluLWZsaWdodCByZXF1ZXN0IHdoaWxlIHdlIGdv
+IHRocm91Z2ggYmxrX21xX2luaXRfc2NoZWQuCj4+IEJ1dCBkb2VzIHRoZXJlIGFueSBkcml2ZXJz
+IGNhbiBsZWF2ZSBJTyBhbGl2ZSB3aGlsZSB3ZSBnbyB0aHJvdWdoCj4+IGVsZXZhdG9yX2luaXRf
+bXHvvJ8gQW5kIGlmIG5vLCBtYXliZSB3ZSBjYW4ganVzdCByZW1vdmUgdGhpcyBsb2dpY2FsIHRv
+Cj4+IGZpeCB0aGUgcmVncmVzc2lvbi4uLgo+IAo+IFNDU0kgc2hvdWxkIGhhdmUgcGFzc3Rocm91
+Z2ggcmVxdWVzdHMgYXQgdGhhdCBtb21lbnQuCj4gCj4gCj4gCj4gVGhhbmtzLAo+IE1pbmcKPiAK
+PiAuCj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
