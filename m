@@ -2,78 +2,63 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 129EAC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 04:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 444A0C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:00 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B975A61A3A
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 04:12:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org B975A61A3A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=acm.org
+	by mail.kernel.org (Postfix) with ESMTPS id 0F0B461B66
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0F0B461B66
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zdWmrNzeDBqOK8ttp95rPG1AX0iKICgHTnyBMLx5xAY=; b=KDDuh2kPJMhEDZ
-	2XSh5QDPXDDQBrDS8NNTg6KgQAF0R7hWNle5i/mgJBc8zqVPKqnNQfLi1OBgwOYwhhz1l+FRKmQh1
-	/NROoG/+reSOZLzaroMKhR9eODrv0ZEHYZLla2WewWiOj1W66QrF92bW47xR+0ZwQWRDtmCnMgUCv
-	0ne3x5Ux320UjGspiBN3xQkznt+URZOm3AH51WzucwENI0zHfrzJKKAJDGogZN9I5zZyAqbZXj0dw
-	HD41qVpl9q6vcqxNXJLCbdvf3E1jHWbpMYg55TWyxWKxo3djeKlR6bdZ4yixV1AwZkt2zSMcBigkC
-	g7E11m8cy/VJCP6fLEwA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=qAlc06nN8q61a8etvkKVIYoZAUq3xaUM1wKVRLVcyDM=; b=C4Uayn8BRS1bYG
+	uBAlBsFnlCQFYygC7pg0x2ySc2hHWbGzvy2hpRGqZW0fs44CgsDdAFWuI0zbOalV83qrNYLI1k94A
+	T8LQfqYPLCI3Lamz3y6cnUC0Mvy8UwRhMYEVn5hJM9zgJpm4PN2+RuLfOwefPqVuQTKx/NsGFqLOM
+	8OfVxQAt97aLkgPhqGKY6LfkCzqveX9TX0rkOIdt8wKj6EToypcb9vCCSXNMHFV3j2PEcTZoqTHFq
+	tqtq1Z/JkZnqdsgmOQYDv7ye8yUh5vT6NK9m8LQgQfiQ9xkOMShH7xKEW84k0mWebzz02swOF/Qbr
+	c/LJynq3YF1P1WmzThIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnCIS-003IWU-Sa; Wed, 17 Nov 2021 04:11:44 +0000
-Received: from mail-pf1-f181.google.com ([209.85.210.181])
+	id 1mnECz-003Py9-1H; Wed, 17 Nov 2021 06:14:13 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnCIQ-003IVG-Ko
- for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 04:11:43 +0000
-Received: by mail-pf1-f181.google.com with SMTP id c4so1419547pfj.2
- for <linux-mtd@lists.infradead.org>; Tue, 16 Nov 2021 20:11:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=Bjo6JYh6swD0+7pP1y5ezzsjdxB7C1Snz29o1nBUET8=;
- b=co+2rrD0KV3du7SLufph6b7anGv/jId3V1d3Ph75MXVnI8HC15nMVVp1zOrEW1gC7V
- daTr3yYCnjHsQRXRxxcQ3ehdQrSFhbN/8qG7wIVsuKZWkt0GZfHNGGT7JYZu0uNbQGwU
- 0au70zyBu8qFrkA2dGnreY3NUQXTJn/Tt1ZiIU0NUWVUOiVpKhGVANwgOtAcDO8uybUe
- D0LMnxFUTcdlk2RRDT9XAmaQCYCkYECO1+xAH1wfVm4FAb4JzsOXbQrTKpg3CkU213KY
- IJcho50OiqN4MkMUstn1OGZFGX1Sv2SNPBr21K+5f9h482GSsSbmjRG96PnKpn/wIFp7
- 04Xw==
-X-Gm-Message-State: AOAM532MvLzDGv/kuLxSGZikSC6UkSC5zjI5Cgb3J2ADzp8ryyb0NT6M
- woXyu6eAZ3zWf4yAC2oJkYQ=
-X-Google-Smtp-Source: ABdhPJxdovCRZWHCUQmOXeEIepOsGeHCMeOPUMgMASc6+IqAP1LSKlMrUCGgVueBcWmjWd+R1CZCrA==
-X-Received: by 2002:a05:6a00:1150:b0:4a2:7328:cce6 with SMTP id
- b16-20020a056a00115000b004a27328cce6mr36018798pfm.67.1637122301246; 
- Tue, 16 Nov 2021 20:11:41 -0800 (PST)
-Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd?
- ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
- by smtp.gmail.com with ESMTPSA id ng9sm4111639pjb.4.2021.11.16.20.11.40
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 16 Nov 2021 20:11:40 -0800 (PST)
-Message-ID: <59cb2cfd-3890-9fb4-9e77-a4b084d088e9@acm.org>
-Date: Tue, 16 Nov 2021 20:11:39 -0800
+ id 1mnECx-003Pxq-EI
+ for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=DFAEmPcXtpPd/YSnlYCa7vsCV48/DH47DKoFE2HC6W8=; b=RQs+dlZc/iJE0doyQERQ7LRMgh
+ 3X1tfu/Q30APhRnF5Ef4VirkMrLgZ1op5aImQLxh2b11YXZPQ4A0b1Pz5C7orl1nszA1fJNUQa1s0
+ CchP5jsjhwMwU8fbUZMY/AVoGjYPobNJqsscv2ur2eRykbRO9NEACOeX4jVtYHit0/ub9X2HwUSu9
+ WhX5xrw4sP/NC1ISaYvxPA0dNQlSlQB8TtXdtJEuSaZI8m5mgr7EpJIYUzCcZnw9qw7C2F1eLhak7
+ ELd0fHnmNS+wpmEoMjwzFV2S7/f1OMSiHxhzHgT9BUeFCP/qEfqGOup2GJtEsihFbjIKuIkEG2qNC
+ 27gP8/EQ==;
+Received: from 213-225-5-109.nat.highway.a1.net ([213.225.5.109]
+ helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mnECr-007MEM-GM; Wed, 17 Nov 2021 06:14:06 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: move all struct request releated code out of blk-core.c (rebased)
+Date: Wed, 17 Nov 2021 07:13:53 +0100
+Message-Id: <20211117061404.331732-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [QUESTION] blk_mq_freeze_queue in elevator_init_mq
-Content-Language: en-US
-To: yangerkun <yangerkun@huawei.com>, ming.lei@redhat.com,
- damien.lemoal@wdc.com, axboe@kernel.dk, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com
-Cc: linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
- yi.zhang@huawei.com, yebin10@huawei.com, houtao1@huawei.com
-References: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <d9113bf8-4654-cb04-f79c-38e11493cb2c@huawei.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211116_201142_702981_8127F0D1 
-X-CRM114-Status: GOOD (  13.35  )
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,27 +70,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMTEvMTYvMjEgMTk6MzcsIHlhbmdlcmt1biB3cm90ZToKPiBUaGlzIGNvbW1pdCBhZGQgYmxr
-X21xX2ZyZWV6ZV9xdWV1ZSBpbiBlbGV2YXRvcl9pbml0X21xIHdoaWNoIHRyeSB0bwo+IG1ha2Ug
-c3VyZSBubyBpbi1mbGlnaHQgcmVxdWVzdCB3aGlsZSB3ZSBnbyB0aHJvdWdoIGJsa19tcV9pbml0
-X3NjaGVkLgo+IEJ1dCBkb2VzIHRoZXJlIGFueSBkcml2ZXJzIGNhbiBsZWF2ZSBJTyBhbGl2ZSB3
-aGlsZSB3ZSBnbyB0aHJvdWdoCj4gZWxldmF0b3JfaW5pdF9tce+8nyBBbmQgaWYgbm8sIG1heWJl
-IHdlIGNhbiBqdXN0IHJlbW92ZSB0aGlzIGxvZ2ljYWwgdG8KPiBmaXggdGhlIHJlZ3Jlc3Npb24u
-Li4KCkRvZXMgdGhpcyB1bnRlc3RlZCBwYXRjaCBoZWxwPyBQbGVhc2Ugbm90ZSB0aGF0IEknbSBu
-b3QgcmVjb21tZW5kaW5nIHRvCmludGVncmF0ZSB0aGlzIHBhdGNoIGluIHRoZSB1cHN0cmVhbSBr
-ZXJuZWwgYnV0IGlmIGl0IGhlbHBzIGl0IGNhbiBiZSBhCmJ1aWxkaW5nIGJsb2NrIG9mIGEgc29s
-dXRpb24uCgpUaGFua3MsCgpCYXJ0LgoKZGlmZiAtLWdpdCBhL2Jsb2NrL2Jsay1tcS5jIGIvYmxv
-Y2svYmxrLW1xLmMKaW5kZXggM2FiMzRjNGYyMGRhLi5iODVkY2I3MmE1NzkgMTAwNjQ0Ci0tLSBh
-L2Jsb2NrL2Jsay1tcS5jCisrKyBiL2Jsb2NrL2Jsay1tcS5jCkBAIC0xNjcsNiArMTY3LDcgQEAg
-dm9pZCBibGtfZnJlZXplX3F1ZXVlX3N0YXJ0KHN0cnVjdCByZXF1ZXN0X3F1ZXVlICpxKQogIAkJ
-bXV0ZXhfdW5sb2NrKCZxLT5tcV9mcmVlemVfbG9jayk7CiAgCQlpZiAocXVldWVfaXNfbXEocSkp
-CiAgCQkJYmxrX21xX3J1bl9od19xdWV1ZXMocSwgZmFsc2UpOworCQlzeW5jaHJvbml6ZV9yY3Vf
-ZXhwZWRpdGVkKCk7CiAgCX0gZWxzZSB7CiAgCQltdXRleF91bmxvY2soJnEtPm1xX2ZyZWV6ZV9s
-b2NrKTsKICAJfQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hi Jens,
+
+this series (against the for-5.16/passthrough-flag branch) removes the
+remaining struct request related code from blk-core.c and cleans up a
+few related bits around that.
+
+Diffstat:
+ b/block/Makefile            |    2 
+ b/block/blk-core.c          |  341 --------------------------
+ b/block/blk-mq.c            |  573 ++++++++++++++++++++++++++++++++++++--------
+ b/block/blk-mq.h            |    3 
+ b/block/blk.h               |   33 --
+ b/drivers/mtd/mtd_blkdevs.c |   10 
+ b/drivers/mtd/ubi/block.c   |    6 
+ b/drivers/scsi/scsi_lib.c   |   42 +++
+ b/include/linux/blk-mq.h    |   13 
+ block/blk-exec.c            |  116 --------
+ 10 files changed, 552 insertions(+), 587 deletions(-)
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
