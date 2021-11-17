@@ -2,90 +2,77 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35CC6C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 09:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF81FC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 09:33:03 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E8C6A63222
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 09:28:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E8C6A63222
+	by mail.kernel.org (Postfix) with ESMTPS id A70EF63236
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 09:33:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A70EF63236
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=6YFP2hh6K7Z7B28JYogkYVpNNzHPGFksRUeX4NccPuw=; b=SHYT5+8Zd5dngdNQ2kFPq5K55t
-	6hhF54+38alzAY2UEmkkOMoZqqeBHgDd1qEuSc2+iJ/Y+zjdAfEDzj1DtNnw5q0w+qWPOIAbM5/Pj
-	zdhmX4CV28rGIwtHw2lHGrHUHHPJVS5rra4RycgSb1QDmMkX9fsYjum1QD8STWXQ3dsD3pFFx7plH
-	wvmTABgwbOTZxF77P3pKqahTg6eNwcNTpVfNWXrpAuT4l1DkuOI2DhDQ+62f49TwbDrqSMv2fGJtJ
-	EUIj0aprmOVKlKgaJZbIkAxwqD901GN8A0RgNDwZDz4Bj2wRRf+hdI5boWeSHwwwoSI6TXpqfWLg4
-	7D5ecglA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=uapwgFtrKuvoO7Yhp94tFx8O+3BEttMMzY+3dh3//kI=; b=KfyRTKkKNHWf4n
+	mp6z6jpRWdp2kyGOzC1Tz+TIUlZYrAQZ8ELJ04+MCJ3scoyp6g6Nyio+qnHjNGCr/ClUm+ggVQoP2
+	U9PtxS5ZNderAIMKOrBa9+sgvMiaqzu4YJAjVuEQmA+4IHei4iL+sLOzjOJ96rc4uYUi8YY1wLArT
+	SNKRVlfddlL5gCHNQGl4xB5IBNFGmvTaSYGSCvXe0nj9KgIJxlnxh1lzbTceVZVJNnWdqdICU6MGz
+	23elGxQnvv8gIH1DyXSjOgS4pk0ImEqvYDhpaYejyHlmbnI9PPM9yAv7dWDNC5L6n3TmklfkCnWJo
+	DMp3gXvT3MMeSn3GGqhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnHEH-004F25-Ct; Wed, 17 Nov 2021 09:27:45 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1mnHIo-004GyA-2V; Wed, 17 Nov 2021 09:32:26 +0000
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnHAb-004DHR-EH
- for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 09:23:59 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id
- gx15-20020a17090b124f00b001a695f3734aso2092000pjb.0
- for <linux-mtd@lists.infradead.org>; Wed, 17 Nov 2021 01:23:56 -0800 (PST)
+ id 1mnHHX-004GOJ-Ir
+ for linux-mtd@lists.infradead.org; Wed, 17 Nov 2021 09:31:09 +0000
+Received: by mail-lj1-x232.google.com with SMTP id z8so4791712ljz.9
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Nov 2021 01:31:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=GVDZumbLhZnMj+r2ZednEyDcqlrfyStyBV1tNbpDxmc=;
- b=htkV/WIpjuTgLtxconUebXBVp5neitOW6xJZodMFGLX8ddnpx4LuljurXt42CQvIx4
- t5LAeCrI2QHRZQaS8+uDFLWltnivKY8eRwaONMxd8EM5qlWyznPvFN/LxKB9beAoIhXH
- 1qkMFmJSKUc9PNYKeHEYJNjXuWodyv1Z8gZjv8fQ1ySznDNrcjrEHMIXeOyxM+dI6Ovc
- t+UDN0TyyNS9ovB6gLHwKeWpok2HZyGQhnVaE9Er+X2Roo08FQqQ7KZLjL/HME3v5g8b
- ZkDdEwY1d990aTY7LtnI4nSlukRnMXEl4e7oQ3J/Cd2q8fdtgLrCMktvZ7IrQxUzoG6D
- FPKA==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=CfSakTtxToZ7HPhoLKvacbaLX9Otd8+6/aYtudjGlh4=;
+ b=kpTH+lvrUoXe8r8Y7ne7ct0k4MIWvMlv9mFirV7hWHz3/QQw05y2LO3Q+9Ps9zUvVn
+ Z67v1QMwN8KI0cqW3j3jHo65vp9/QvbebwIuGrgalgS9bfMhmxCRvme2yF/R3CihqjSB
+ 44tWKI12f+rBnuLDDo+JMwhevEDLEd5Ui+B3G168XkW98Xt+4E3jBq683DVrIQ/iGXyK
+ uv55HKhhdtuWmL+4VLp0HDDCNHHnWvGSLBC7pbhlJKOPnrAQTywPzStNd9EB4anSFnKZ
+ SiIeFMfCXjcol79XmgrrSXSUacHgO4eEFCKKc9QZE/gLbpB2G9RtmhYicLggJO6Nc1s8
+ r3/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=GVDZumbLhZnMj+r2ZednEyDcqlrfyStyBV1tNbpDxmc=;
- b=ZzBj3QNIUPMHjwJaGjEW9mcw8A7pppw+IH/BtrfWd4z1fpMLovZXfjBmm2OzH+e6Ls
- ERO8RtIeot3S+zgoEqaZuWAx6R0JnQKPkTPdzz0mL3i0U1t7rh3P2mwWRpBWNOqR3tCZ
- tjMYnAen0qnQ3nZnyCTaDUftU4IFZhSr9KdGJ+TbJncDvJsgMHVjiI2Q2/hUTilKCJHj
- OmuPHXNudRgLOPPDCV0q5HWmTkVNXmNUl/2HvroTnpuPSY6wTBZsy1cyYrMFWVVrsewd
- jEuhoa6iiIh4zvtuPq8WZt3GckYfIxperp8aSG2tzLTmhga7Af50eyYNmIeEO+DNqJ6S
- KBMQ==
-X-Gm-Message-State: AOAM533eT5DSNIvC77XE0zzSE3oOIgrGCi8qcP2rgyufvJfOrDbF79eo
- HJDrDQdyu6g1XyzOz8mXigw=
-X-Google-Smtp-Source: ABdhPJzXWDt8Zo6kQNasj73XvCtX6kEzMmCcEZ/x0jZPAThzeaknvGzCOI8GQINBrv4h3hyhaSbTPg==
-X-Received: by 2002:a17:90a:c398:: with SMTP id
- h24mr7718335pjt.73.1637141035586; 
- Wed, 17 Nov 2021 01:23:55 -0800 (PST)
-Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
- by smtp.gmail.com with ESMTPSA id
- mp12sm4724688pjb.39.2021.11.17.01.23.53
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 17 Nov 2021 01:23:55 -0800 (PST)
-Subject: Re: [PATCH v7 0/3] mtd: spi-nor: Add support for Cypress
- s25hl-t/s25hs-t
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, p.yadav@ti.com, Bacem.Daassi@infineon.com,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-References: <cover.1626677855.git.Takahiro.Kuwano@infineon.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-Message-ID: <d2503b2f-3190-7c0a-47dc-6ebf2f6e74ba@gmail.com>
-Date: Wed, 17 Nov 2021 18:23:52 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=CfSakTtxToZ7HPhoLKvacbaLX9Otd8+6/aYtudjGlh4=;
+ b=6EdUVvjAFoDghRGX8K3LcNpX+3QTADyi0l/IHXBs3vlkpxbKHngTKA70rrq/vTfwpE
+ gC/DgMoXRw7WstiZ6YfOMWqza/Sz2HnDxICsHV3TfqS+pnLRASYx8invchHZrNp7jLRl
+ xFAIVHeYhh1ZqP0vwjx6DqaQ6BNm6t5WCyKvp1XL14Af/lqaDaUCWcmxOaBvEkwyN5jM
+ ULWwRuQ5ejDpRPYJhVASdggo4rT+i+8Y6j6XQbc5ZO8IX+ps14pA7gzkkJIQ9gRtoRkn
+ J6ybAl9PZmtxSpcxG24mfABcXm/Ka95gm9+/+juRF1J4nUMnzpzArKohio9UZ0sf6Yre
+ 135w==
+X-Gm-Message-State: AOAM532HvtK1dcasxLsjaeKaaNcyyMUqOb/7QToRITaJKVuP5WbuBfle
+ se3D20iLndz4FFSH4G1ihrZKsxfTg30OuTbqVjGGqYy1cdE=
+X-Google-Smtp-Source: ABdhPJwuPmTeogxNE8oVMrbWkalLmHQFHKqlFQEKMOYreTvzkn3ND73nU3mJHCRLEKLnx5RjvZFoyKbzIiEWQ33ODrY=
+X-Received: by 2002:a2e:83c4:: with SMTP id s4mr5822704ljh.445.1637141464316; 
+ Wed, 17 Nov 2021 01:31:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1626677855.git.Takahiro.Kuwano@infineon.com>
-Content-Language: en-US
+References: <1633676279-29708-1-git-send-email-zhengxunli.mxic@gmail.com>
+ <1633676279-29708-4-git-send-email-zhengxunli.mxic@gmail.com>
+ <20211109121036.01376b0c@xps13>
+In-Reply-To: <20211109121036.01376b0c@xps13>
+From: Zhengxun Li <zhengxunli.mxic@gmail.com>
+Date: Wed, 17 Nov 2021 17:30:52 +0800
+Message-ID: <CACY_kjRt+ZYC76yB_NQLYVapUN2P=v6psgPa==NUEJwEcMO8Zg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mtd: spinand: Add support continuous read operation
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, zhengxunli@mxic.com.tw
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211117_012357_590963_23DF0C98 
-X-CRM114-Status: GOOD (  17.18  )
+X-CRM114-CacheID: sfid-20211117_013107_695122_22D5D518 
+X-CRM114-Status: GOOD (  35.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,199 +84,110 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-Any feedback on this series of patches?
-
-On 7/19/2021 5:03 PM, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> 
-> The S25HL-T/S25HS-T family is the Cypress Semper Flash with Quad SPI.
-> 
-> The summary datasheets can be found in the following links.
-> https://www.cypress.com/file/424146/download (256Mb/512Mb/1Gb, single die)
-> 
-> The full version can be found in the following links (registration
-> required).
-> https://community.cypress.com/t5/Semper-Flash-Access-Program/Datasheet-Semper-Flash-with-Quad-SPI/ta-p/260789?attachment-id=19522
-> 
-> Tested on Xilinx Zynq-7000 FPGA board.
-> 
-> Device ID and SFDP dumps:
-> ------------------------------------------------------------
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> s25hl512t
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> 342a1a0f0390
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> spansion
-> zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450080103ff00000114000100ff84000102500100ff81000116c801
-> 00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
-> 88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe3
-> ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-> 0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-> 00650090060500a10065009600650095716503d0716503d000000000b02e
-> 000088a489aa716503967165039600000000000000000000000000000000
-> 000000000000000000000000000000000000000000000000716505d57165
-> 05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-> fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
-> 0100fe0104fff1ff0000f8ff0200f8fff703f8ff0200f1ff0000ff0400ff
-> f8ffff03
-> zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 8a0aa90112e154ae3a797df2c211ef61  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> ------------------------------------------------------------
-> 
-> ------------------------------------------------------------
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> s25hl01gt
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> 342a1b0f0390
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> spansion
-> zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450080103ff00000114000100ff84000102500100ff81000116c801
-> 00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
-> 88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
-> ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-> 0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-> 00650090060500a10065009600650095716503d0716503d000000000b02e
-> 000088a489aa716503967165039600000000000000000000000000000000
-> 000000000000000000000000000000000000000000000000716505d57165
-> 05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-> fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
-> 0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
-> f8ffff07
-> zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> ------------------------------------------------------------
-> 
-> ------------------------------------------------------------
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> s25hs512t
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> 342b1a0f0390
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> spansion
-> zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450080103ff00000114000100ff84000102500100ff81000116c801
-> 00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
-> 88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b91e8ffe3
-> ec031c608a857a75f766805c84d6ddfff938f8a100000000000080000000
-> 0000f7f5ffff7b920ffe20ffffd80000800000000000c0ffc3ebc8ffe3eb
-> 00650090060500a10065009600650095716503d0716503d000000000b02e
-> 000088a489aa716503967165039600000000000000000000000000000000
-> 000000000000000000000000000000000000000000000000716505d57165
-> 05d50000ee72fc65ff0804008000fc65ff4002008000fd65ff0402008000
-> fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
-> 0100fe0104fff1ff0100f8ff0200f8fff703f8ff0200f1ff0100ff0400ff
-> f8ffff03
-> zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> f17d9e784602187a0933edec3688e30f  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> ------------------------------------------------------------
-> 
-> ------------------------------------------------------------
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-> s25hs01gt
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-> 342b1b0f0390
-> zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-> spansion
-> zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 53464450080103ff00000114000100ff84000102500100ff81000116c801
-> 00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
-> 88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
-> ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-> 0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-> 00650090060500a10065009600650095716503d0716503d000000000b02e
-> 000088a489aa716503967165039600000000000000000000000000000000
-> 000000000000000000000000000000000000000000000000716505d57165
-> 05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-> fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
-> 0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
-> f8ffff07
-> zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> ------------------------------------------------------------
-> 
-> 
-> ---
-> Changes in v7:
->   - Some changes were missing in v6 patch. Fix it
-> 
-> Changes in v6:
->   - Remove 2Gb dual die package parts and related changes to split mulit
->     die package support into another series of patches  
-> 
-> Changes in v5:
->   - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
->   - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
-> 
-> Changes in v4:
->   - Reword 'legacy' to 'default'
->   - Rename spi_nor_read() to spi_nor_default_ready()
->   - Fix dummy cycle calculation in spansion_read_any_reg()
->   - Modify comment for spansion_write_any_reg()
->   - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
->   - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
-> 
-> Changes in v3:
->   - Split into multiple patches
->   - Remove S25HL256T and S25HS256T
->   - Add S25HL02GT and S25HS02GT 
->   - Add support for multi-die package parts support
->   - Cleanup Read/Write Any Register implementation
->   - Remove erase_map fix for top/split sector layout
->   - Set ECC data unit size (16B) to writesize 
-> 
-> Changes in v2:
->   - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
->   - Check CFR3V[4] to determine page_size instead of force 512B
->   - Depend on the patchset below to support non-uniform sector layout
->     https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/
-> 
-> Takahiro Kuwano (3):
->   mtd: spi-nor: spansion: Add support for Read/Write Any Register
->   mtd: spi-nor: spansion: Add support for volatile QE bit
->   mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
-> 
->  drivers/mtd/spi-nor/spansion.c | 291 +++++++++++++++++++++++++++++++++
->  1 file changed, 291 insertions(+)
-> 
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKCj4gSGVsbG8sCj4KPiB6aGVuZ3h1bmxpLm14aWNAZ21haWwuY29tIHdyb3Rl
+IG9uIEZyaSwgIDggT2N0IDIwMjEgMTQ6NTc6NTggKzA4MDA6Cj4KPiA+IFRoZSBwYXRjaCBhZGRz
+IGEgY29udGludW91cyByZWFkIHN0YXJ0IGZsYWcgdG8gc3VwcG9ydCBjb250aW51b3VzCj4gPiBy
+ZWFkIG9wZXJhdGlvbnMuIFRoZSBjb250aW51b3VzIHJlYWQgb3BlcmF0aW9uIG9ubHkgaXNzdWVz
+IGEgcGFnZQo+ID4gcmVhZCBjb21tYW5kICgxM2gpLCBpc3N1ZXMgbXVsdGlwbGUgcmVhZCBjb21t
+YW5kcyBmcm9tIHRoZSBjYWNoZQo+ID4gKDAzaC8wQmgvM0JoLzZCaC9CQmgvRUJoKSB0byByZWFk
+IGNvbnRpbnVvdXMgYWRkcmVzcyBkYXRhLCBhbmQKPiA+IGZpbmFsbHkgaXNzdWVzIGFuIGV4aXQg
+Y29udGludW91cyByZWFkIGNvbW1hbmQgKDYzaCkgdG8gdGVybWluYXRlCj4gPiB0aGlzIGNvbnRp
+bnVvdXMgcmVhZCBvcGVyYXRpb24uCj4gPgo+ID4gU2luY2UgdGhlIGNvbnRpbnVvdXMgcmVhZCBt
+b2RlIGNhbiBvbmx5IHJlYWQgdGhlIGVudGlyZSBwYWdlIG9mIGRhdGEKPiA+ICgyS0IpCj4KPiBS
+ZW1vdmUgdGhpcyBzaXplLCBpdCBpcyBoaWdobHkgdW5saWtlbHkgdGhhdCBhbGwgU1BJIE5BTkQg
+ZGV2aWNlcyB3aWxsCj4gZXZlciBiZSByZXN0cmljdGVkIHRvIDJraUIgcmlnaHQ/CgpPa2F5LgoK
+PiA+IGFuZCBjYW5ub3QgcmVhZCB0aGUgb29iIGRhdGEsCj4KPiBUaGlzIGlzIHNvbWV0aGluZyB0
+aGF0IHlvdSBzZWVtIHRvIHNraXAgdG8gY2hlY2sgaW4geW91ciBzZXJpZXMuCgpJbiBmYWN0LCBv
+bmx5IEVDQy1GcmVlIFNQSS1OQU5EIHN1cHBvcnQgY29udGludW91cyByZWFkIG1vZGUgbm93LgoK
+PiA+IHRoZSBkeW5hbWljIGNoYW5nZSBtb2RlIGlzIGFkZGVkCj4gPiB0byBlbmFibGUgY29udGlu
+dW91cyByZWFkIG1vZGUgYW5kIGRpc2FibGUgY29udGludW91cyByZWFkIG1vZGUgaW4KPiA+IHNw
+aW5hbmRfbXRkX3JlYWQgdG8gYXZvaWQgd3JpdGluZyBhbmQgZXJhc2luZyBvcGVyYXRpb24gaXMg
+YWJub3JtYWwuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogWmhlbmd4dW4gPHpoZW5neHVubGkubXhp
+Y0BnbWFpbC5jb20+Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgfCAz
+OCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQo+ID4gIGluY2x1ZGUvbGlu
+dXgvbXRkL3NwaW5hbmQuaCB8ICAyICsrCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAzMSBpbnNlcnRp
+b25zKCspLCA5IGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
+YW5kL3NwaS9jb3JlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKPiA+IGluZGV4IDBk
+OTYzMmYuLjAzNjk0NTMgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3Jl
+LmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+ID4gQEAgLTE5NSw2ICsx
+OTUsOCBAQCBzdGF0aWMgaW50IHNwaW5hbmRfaW5pdF9xdWFkX2VuYWJsZShzdHJ1Y3Qgc3BpbmFu
+ZF9kZXZpY2UgKnNwaW5hbmQpCj4gPgo+ID4gIHN0YXRpYyBpbnQgc3BpbmFuZF9jb250aW51b3Vz
+X3JlYWRfZW5hYmxlKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCkKPiA+ICB7Cj4gPiAr
+ICAgICBzcGluYW5kLT5jb250X3JlYWRfc3RhcnQgPSBmYWxzZTsKPgo+IEkgcmVhbGx5IGRvbid0
+IGxpa2UgdGhlICI9IGZhbHNlIiBpbiB0aGUgInJlYWRfZW5hYmxlIiBob29rLiBXaHkgbm90Cj4g
+anVzdCBjaGVja2luZyBkaXJlY3RseSBpbiBtdGRfcmVhZCBhbmQgZHJvcCB0aGF0IGJvb2xlYW4g
+PwoKT2theSwgSSB3aWxsIGRlbGV0IGl0LgoKPiA+ICsKPiA+ICAgICAgIGlmICghKHNwaW5hbmQt
+PmZsYWdzICYgU1BJTkFORF9IQVNfQ09OVF9SRUFEX0JJVCkpCj4gPiAgICAgICAgICAgICAgIHJl
+dHVybiAwOwo+ID4KPiA+IEBAIC01OTgsMTYgKzYwMCwyMiBAQCBzdGF0aWMgaW50IHNwaW5hbmRf
+cmVhZF9wYWdlKHN0cnVjdCBzcGluYW5kX2RldmljZSAqc3BpbmFuZCwKPiA+ICAgICAgIGlmIChy
+ZXQpCj4gPiAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gPgo+ID4gLSAgICAgcmV0ID0gc3Bp
+bmFuZF9sb2FkX3BhZ2Vfb3Aoc3BpbmFuZCwgcmVxKTsKPiA+IC0gICAgIGlmIChyZXQpCj4gPiAt
+ICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gPiArICAgICBpZiAoIXNwaW5hbmQtPmNvbnRfcmVh
+ZF9zdGFydCkgewo+Cj4gSSBkb24ndCBnZXQgdGhpcyBjaGVjay4gVGhpcyBjb25kaXRpb24gd2ls
+bCBhbHdheXMgYmUgdHJ1ZS4gWW91IGNhbgo+IGRyb3AgaXQuCgpUaGlzIGNvbmRpdGlvbiBpcyBo
+ZWxwIHRvIGF2b2lkIGlzc3VlIHBhZ2UgcmVhZApjb21tYW5kIGFnYWluLiBUaGUgY29udGludW91
+cyByZWFkIG1vZGUgaGVscApTUEktTkFORCBwcmV2ZW50IGFsd2F5cyBpc3N1ZSBwYWdlIHJlYWQo
+MTNoKQpjb21tYW5kIGluIGNvbnRpbnVvdXMgYWRkcmVzcy4KCj4gPgo+ID4gLSAgICAgcmV0ID0g
+c3BpbmFuZF93YWl0KHNwaW5hbmQsCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgU1BJTkFO
+RF9SRUFEX0lOSVRJQUxfREVMQVlfVVMsCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgU1BJ
+TkFORF9SRUFEX1BPTExfREVMQVlfVVMsCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgJnN0
+YXR1cyk7Cj4gPiAtICAgICBpZiAocmV0IDwgMCkKPiA+IC0gICAgICAgICAgICAgcmV0dXJuIHJl
+dDsKPiA+ICsgICAgICAgICAgICAgcmV0ID0gc3BpbmFuZF9sb2FkX3BhZ2Vfb3Aoc3BpbmFuZCwg
+cmVxKTsKPiA+ICsgICAgICAgICAgICAgaWYgKHJldCkKPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICByZXR1cm4gcmV0Owo+ID4gKwo+ID4gKyAgICAgICAgICAgICByZXQgPSBzcGluYW5kX3dhaXQo
+c3BpbmFuZCwKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNQSU5BTkRfUkVB
+RF9JTklUSUFMX0RFTEFZX1VTLAo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+U1BJTkFORF9SRUFEX1BPTExfREVMQVlfVVMsCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAmc3RhdHVzKTsKPiA+ICsgICAgICAgICAgICAgaWYgKHJldCA8IDApCj4gPiArICAg
+ICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKPiA+ICsKPiA+ICsgICAgICAgICAgICAgaWYg
+KHNwaW5hbmQtPmZsYWdzICYgU1BJTkFORF9IQVNfQ09OVF9SRUFEX0JJVCkKPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICBzcGluYW5kLT5jb250X3JlYWRfc3RhcnQgPSB0cnVlOwo+ID4gKyAgICAg
+fQo+ID4KPiA+ICAgICAgIHNwaW5hbmRfb25kaWVfZWNjX3NhdmVfc3RhdHVzKG5hbmQsIHN0YXR1
+cyk7Cj4gPgo+ID4gQEAgLTY2Nyw2ICs2NzUsMTAgQEAgc3RhdGljIGludCBzcGluYW5kX210ZF9y
+ZWFkKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgZnJvbSwKPiA+Cj4gPiAgICAgICBtdXRl
+eF9sb2NrKCZzcGluYW5kLT5sb2NrKTsKPiA+Cj4gPiArICAgICByZXQgPSBzcGluYW5kX2NvbnRp
+bnVvdXNfcmVhZF9lbmFibGUoc3BpbmFuZCk7Cj4gPiArICAgICBpZiAocmV0KQo+ID4gKyAgICAg
+ICAgICAgICByZXR1cm4gcmV0Owo+ID4gKwo+ID4gICAgICAgbmFuZGRldl9pb19mb3JfZWFjaF9w
+YWdlKG5hbmQsIE5BTkRfUEFHRV9SRUFELCBmcm9tLCBvcHMsICZpdGVyKSB7Cj4gPiAgICAgICAg
+ICAgICAgIGlmIChkaXNhYmxlX2VjYykKPiA+ICAgICAgICAgICAgICAgICAgICAgICBpdGVyLnJl
+cS5tb2RlID0gTVREX09QU19SQVc7Cj4gPiBAQCAtNjg5LDYgKzcwMSwxNCBAQCBzdGF0aWMgaW50
+IHNwaW5hbmRfbXRkX3JlYWQoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLAo+ID4g
+ICAgICAgICAgICAgICBvcHMtPm9vYnJldGxlbiArPSBpdGVyLnJlcS5vb2JsZW47Cj4gPiAgICAg
+ICB9Cj4gPgo+ID4gKyAgICAgcmV0ID0gc3BpbmFuZF9jb250aW51b3VzX3JlYWRfZXhpdChzcGlu
+YW5kKTsKPiA+ICsgICAgIGlmIChyZXQpCj4gPiArICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4g
+PiArCj4gPiArICAgICByZXQgPSBzcGluYW5kX2NvbnRpbnVvdXNfcmVhZF9kaXNhYmxlKHNwaW5h
+bmQpOwo+ID4gKyAgICAgaWYgKHJldCkKPiA+ICsgICAgICAgICAgICAgcmV0dXJuIHJldDsKPgo+
+IFRoZSBhc3ltbWV0cnkgaGVyZSBsb29rcyBzdHJhbmdlLiBXaGVyZSBkbyB3ZSBhY3R1YWxseSBl
+bnRlciB0aGUKPiBjb250aW51b3VzIHJlYWQgbW9kZT8KCkluIHRoaXMgc2VyaWVzLCBlYWNoIHJl
+YWQgYWx3YXlzIGVudGVyIHRoZSBjb250aW51b3VzIHJlYWQgbW9kZS4KCj4KPiBEbyB5b3UgaGF2
+ZSBhbnkgaW5kaWNhdG9ycyB0aGF0IHRoaXMgY2hhbmdlIGltcHJvdmVzIHRoZSBwZXJmb3JtYW5j
+ZXM/Cj4gSXQgd291bGQgYmUgZ29vZCB0byBzaGFyZSB0aGVtIGluIHRoZSBjb21taXQgbG9nLgoK
+SSB3aWxsIHNoYXJlIHRoZSBwZXJmb3JtYW5jZXMgb2YgY29udGludW91cyByZWFkIG1vZGUuCgo+
+ID4gKwo+ID4gICAgICAgbXV0ZXhfdW5sb2NrKCZzcGluYW5kLT5sb2NrKTsKPiA+Cj4gPiAgICAg
+ICBpZiAoZWNjX2ZhaWxlZCAmJiAhcmV0KQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgv
+bXRkL3NwaW5hbmQuaCBiL2luY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaAo+ID4gaW5kZXggZTA0
+NGFiYS4uYzJhNDFhMyAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQu
+aAo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gPiBAQCAtNDIyLDYgKzQy
+Miw3IEBAIHN0cnVjdCBzcGluYW5kX2Rpcm1hcCB7Cj4gPiAgICogICAgICAgICAgIGJlY2F1c2Ug
+dGhlIHNwaS1tZW0gaW50ZXJmYWNlIGV4cGxpY2l0bHkgcmVxdWVzdHMgdGhhdCBidWZmZXJzCj4g
+PiAgICogICAgICAgICAgIHBhc3NlZCBpbiBzcGlfbWVtX29wIGJlIERNQS1hYmxlLCBzbyB3ZSBj
+YW4ndCBiYXNlZCB0aGUgYnVmcyBvbgo+ID4gICAqICAgICAgICAgICB0aGUgc3RhY2sKPiA+ICsg
+KiBAY29udF9yZWFkX3N0YXJ0OiByZWNvcmQgdGhlIGNvbnRpbnVvdXMgcmVhZCBzdGF0dXMKPiA+
+ICAgKiBAbWFudWZhY3R1cmVyOiBTUEkgTkFORCBtYW51ZmFjdHVyZXIgaW5mb3JtYXRpb24KPiA+
+ICAgKiBAcHJpdjogbWFudWZhY3R1cmVyIHByaXZhdGUgZGF0YQo+ID4gICAqLwo+ID4gQEAgLTQ1
+MCw2ICs0NTEsNyBAQCBzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2Ugewo+ID4gICAgICAgdTggKmRhdGFi
+dWY7Cj4gPiAgICAgICB1OCAqb29iYnVmOwo+ID4gICAgICAgdTggKnNjcmF0Y2hidWY7Cj4gPiAr
+ICAgICBib29sIGNvbnRfcmVhZF9zdGFydDsKPiA+ICAgICAgIGNvbnN0IHN0cnVjdCBzcGluYW5k
+X21hbnVmYWN0dXJlciAqbWFudWZhY3R1cmVyOwo+ID4gICAgICAgdm9pZCAqcHJpdjsKPiA+ICB9
+Owo+Cj4KPiBUaGFua3MsCj4gTWlxdcOobAoKQWxsIGluIGFsbCwgdGhlIGNvbnRpbnVvdXMgcmVh
+ZCBtb2RlIGNhbiBpbXByb3ZlCnRoZSByZWFkIHBlcmZvcm1hbmNlIG9mIGNvbnRpbnVvdXMgYWRk
+cmVzc2VzCmFuZCBhdm9pZCByZS1pc3N1aW5nIHBhZ2UgcmVhZCBjb21tYW5kcyB0aHJvdWdoCmVh
+Y2ggcGFnZS4KCkRvIHlvdSBoYXZlIGFueSBzdWdnZXN0aW9ucyBmb3IgdGhpcyBzZXJpZXM/CgpU
+aGFua3MsClpoZW5neHVuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
