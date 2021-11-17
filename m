@@ -2,14 +2,14 @@ Return-Path: <SRS0=s0lc=QE=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 701B2C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C29FC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:16:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39C3061B2B
-	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:15:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 39C3061B2B
+	by mail.kernel.org (Postfix) with ESMTPS id 5E87461B2B
+	for <linux-mtd@archiver.kernel.org>; Wed, 17 Nov 2021 06:16:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5E87461B2B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,33 +18,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2z9I0wPzSSaTRfAGjvMFHKh7ZVX2UPGWT5MfNo2cbDI=; b=hqORaCY55WfGc2
-	hW+EIZzT5X+Q7Bqo0BSItsRY99TeiRts00iSJmLrUAGteFcWnxC50qWtWpgxcAncArqdqFnbFfa7c
-	Iql8AESJ/szN+N3H97TXlHK7mztgBgJiinCc+36CreRQOnA8me1hUvG0uYD3LHNQIClOBQQgccd25
-	XlKt+yAd7KYIO67SbRkUnyH612+8NB5NFg26T5jm1DUNWOO5VuoX0zRDUkbdAvBJ2tf5sQPlbubPK
-	Ftr6PfLHbxJOEdLEWMjO8JG475YnueA0+T18OGfIkybqWhMNy1zK0q72AngvlUmK2/YLSQ2BGOzDX
-	NiqfB92xhcb093fi6KjQ==;
+	List-Owner; bh=UbDlrErSkcUnI9+Twvl+kBFRS+XtufmxUdnm3y6fa5s=; b=sD/R30de28cBrh
+	HGfR624KWEEoYi7Mhni/S/P5WEWensz3pDBuZ8uYaC/IOaZdg80yuM7MecU1AwuiYV1EQ4u+PdQED
+	0LJ9fn6LgXO84uiQPsyzRTjB+H7Rs9awSkq2YLpPiQxvNxRUsJuXZavUZ1LPU3I6ksuZRLAy8km7d
+	uoIl0M2BXmsEj4SbimxMFgoiJGNGMb/nRNjTfGIu25bCf8tcVAHhyP+TSh2O1rcVQzn6Idr0an1Yk
+	oUx5nEr3lQxyr5VqiBtglfhcVfgd/VSp3kxcDEfhFl9G+5R26nr7gpqrc1QVhQwRGv9IRP1lQTOHN
+	8/XOUA3zBJ4hbBbbtQKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnEE8-003QJM-5g; Wed, 17 Nov 2021 06:15:24 +0000
+	id 1mnEEY-003QUg-PA; Wed, 17 Nov 2021 06:15:50 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnED1-003PyO-Kr
- for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:15 +0000
+ id 1mnED3-003PyX-Ko
+ for linux-mtd@bombadil.infradead.org; Wed, 17 Nov 2021 06:14:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
  References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
  Content-Type:Content-ID:Content-Description;
- bh=IsPROaCipz2qEku5ZBq0gX9TFxSFlAzEARfEL6H87tY=; b=hhYVowLzafOFv5t8eJzlg+BWuG
- 7VqE2d7aQNFqOCv47qhVva5144E4Duy490/C228lJgN1rLca6VTjCB54NXPDq1WnfwV0yG57QJ0Sx
- vCHKN+kKmsR0BCgDY2QbS3ZnfIBWngdsNy3Z2g2rNCI6bo5D0Ec245umktpl5gEfmG3uTqniZyHJf
- OmlFVNkrP/TMK3C1SpEcPNvFj8UkP9gC+QnzR7urnoBi9aualtXssYTpXONtWpI5/vsnL0y6FZbUh
- iJmNlJjKtcxw/w6zmOKbHsxm+e69KAg4omH8SHc8SL85NjWqcUZece0yqapXXnZCX2pTjomRT82Xt
- KUYGz10Q==;
+ bh=sj4m7qIW4XnTc8yJ1sHaocTSvUI4MlzH3MUnD0CWBjQ=; b=oAcoHClEmyaFmZ64D1tZFg74Ug
+ CGkqUPJk7YrjmFkgBcKkNTWXzuiNAGEIXaf5FQo65kLfXAeDZxVkbI7OQYxvb9fLrcNpfq1lbACOX
+ xV/b+QdnQH7Bjyn3bqFD++QoqauB9/tD33xRPD2YlINHtRDnY6IkWE1V0ouA1OkxijsogSZ+a87BA
+ s9GQqSW6kvGiH9odK5Bji4wfwB/R2pJqq9NeNUE2qNorMoroXfgjByPLXdh93cwphbF+rH9lAvVs6
+ aMIgC9bjYKVW18RefONMvFAK83nbg8Rox4AV+FzUI8JVPSxZml50tJboIGkIUcwR4SkPvMV3rtKHW
+ VYmFdqrw==;
 Received: from 213-225-5-109.nat.highway.a1.net ([213.225.5.109]
  helo=localhost)
  by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnECz-007MF5-Dm; Wed, 17 Nov 2021 06:14:14 +0000
+ id 1mnED1-007MFn-7c; Wed, 17 Nov 2021 06:14:16 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -52,9 +52,9 @@ Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 05/11] block: move request based cloning helpers to blk-mq.c
-Date: Wed, 17 Nov 2021 07:13:58 +0100
-Message-Id: <20211117061404.331732-6-hch@lst.de>
+Subject: [PATCH 06/11] block: move blk_rq_init to blk-mq.c
+Date: Wed, 17 Nov 2021 07:13:59 +0100
+Message-Id: <20211117061404.331732-7-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211117061404.331732-1-hch@lst.de>
 References: <20211117061404.331732-1-hch@lst.de>
@@ -77,458 +77,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Keep all the request based code together.
+blk_rq_init deals with a request structure, so move it to blk-mq.c
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-core.c | 184 +----------------------------------------------
- block/blk-mq.c   | 175 +++++++++++++++++++++++++++++++++++++++++++-
- block/blk-mq.h   |   3 -
- block/blk.h      |  10 +++
- 4 files changed, 185 insertions(+), 187 deletions(-)
+ block/blk-core.c | 17 -----------------
+ block/blk-mq.c   | 17 +++++++++++++++++
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/block/blk-core.c b/block/blk-core.c
-index f1ca31a89493a..e1c928ec92946 100644
+index e1c928ec92946..a3384c85074e3 100644
 --- a/block/blk-core.c
 +++ b/block/blk-core.c
-@@ -592,7 +592,7 @@ static int __init setup_fail_make_request(char *str)
+@@ -109,23 +109,6 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q)
  }
- __setup("fail_make_request=", setup_fail_make_request);
+ EXPORT_SYMBOL_GPL(blk_queue_flag_test_and_set);
  
--static bool should_fail_request(struct block_device *part, unsigned int bytes)
-+bool should_fail_request(struct block_device *part, unsigned int bytes)
- {
- 	return part->bd_make_it_fail && should_fail(&fail_make_request, bytes);
- }
-@@ -606,15 +606,6 @@ static int __init fail_make_request_debugfs(void)
- }
- 
- late_initcall(fail_make_request_debugfs);
--
--#else /* CONFIG_FAIL_MAKE_REQUEST */
--
--static inline bool should_fail_request(struct block_device *part,
--					unsigned int bytes)
+-void blk_rq_init(struct request_queue *q, struct request *rq)
 -{
--	return false;
+-	memset(rq, 0, sizeof(*rq));
+-
+-	INIT_LIST_HEAD(&rq->queuelist);
+-	rq->q = q;
+-	rq->__sector = (sector_t) -1;
+-	INIT_HLIST_NODE(&rq->hash);
+-	RB_CLEAR_NODE(&rq->rb_node);
+-	rq->tag = BLK_MQ_NO_TAG;
+-	rq->internal_tag = BLK_MQ_NO_TAG;
+-	rq->start_time_ns = ktime_get_ns();
+-	rq->part = NULL;
+-	blk_crypto_rq_set_defaults(rq);
 -}
+-EXPORT_SYMBOL(blk_rq_init);
 -
- #endif /* CONFIG_FAIL_MAKE_REQUEST */
- 
- static inline bool bio_check_ro(struct bio *bio)
-@@ -1087,92 +1078,6 @@ int iocb_bio_iopoll(struct kiocb *kiocb, struct io_comp_batch *iob,
- }
- EXPORT_SYMBOL_GPL(iocb_bio_iopoll);
- 
--/**
-- * blk_cloned_rq_check_limits - Helper function to check a cloned request
-- *                              for the new queue limits
-- * @q:  the queue
-- * @rq: the request being checked
-- *
-- * Description:
-- *    @rq may have been made based on weaker limitations of upper-level queues
-- *    in request stacking drivers, and it may violate the limitation of @q.
-- *    Since the block layer and the underlying device driver trust @rq
-- *    after it is inserted to @q, it should be checked against @q before
-- *    the insertion using this generic function.
-- *
-- *    Request stacking drivers like request-based dm may change the queue
-- *    limits when retrying requests on other queues. Those requests need
-- *    to be checked against the new queue limits again during dispatch.
-- */
--static blk_status_t blk_cloned_rq_check_limits(struct request_queue *q,
--				      struct request *rq)
--{
--	unsigned int max_sectors = blk_queue_get_max_sectors(q, req_op(rq));
--
--	if (blk_rq_sectors(rq) > max_sectors) {
--		/*
--		 * SCSI device does not have a good way to return if
--		 * Write Same/Zero is actually supported. If a device rejects
--		 * a non-read/write command (discard, write same,etc.) the
--		 * low-level device driver will set the relevant queue limit to
--		 * 0 to prevent blk-lib from issuing more of the offending
--		 * operations. Commands queued prior to the queue limit being
--		 * reset need to be completed with BLK_STS_NOTSUPP to avoid I/O
--		 * errors being propagated to upper layers.
--		 */
--		if (max_sectors == 0)
--			return BLK_STS_NOTSUPP;
--
--		printk(KERN_ERR "%s: over max size limit. (%u > %u)\n",
--			__func__, blk_rq_sectors(rq), max_sectors);
--		return BLK_STS_IOERR;
--	}
--
--	/*
--	 * The queue settings related to segment counting may differ from the
--	 * original queue.
--	 */
--	rq->nr_phys_segments = blk_recalc_rq_segments(rq);
--	if (rq->nr_phys_segments > queue_max_segments(q)) {
--		printk(KERN_ERR "%s: over max segments limit. (%hu > %hu)\n",
--			__func__, rq->nr_phys_segments, queue_max_segments(q));
--		return BLK_STS_IOERR;
--	}
--
--	return BLK_STS_OK;
--}
--
--/**
-- * blk_insert_cloned_request - Helper for stacking drivers to submit a request
-- * @q:  the queue to submit the request
-- * @rq: the request being queued
-- */
--blk_status_t blk_insert_cloned_request(struct request_queue *q, struct request *rq)
--{
--	blk_status_t ret;
--
--	ret = blk_cloned_rq_check_limits(q, rq);
--	if (ret != BLK_STS_OK)
--		return ret;
--
--	if (rq->rq_disk &&
--	    should_fail_request(rq->rq_disk->part0, blk_rq_bytes(rq)))
--		return BLK_STS_IOERR;
--
--	if (blk_crypto_insert_cloned_request(rq))
--		return BLK_STS_IOERR;
--
--	blk_account_io_start(rq);
--
--	/*
--	 * Since we have a scheduler attached on the top device,
--	 * bypass a potential scheduler on the bottom device for
--	 * insert.
--	 */
--	return blk_mq_request_issue_directly(rq, true);
--}
--EXPORT_SYMBOL_GPL(blk_insert_cloned_request);
--
- static void update_io_ticks(struct block_device *part, unsigned long now,
- 		bool end)
- {
-@@ -1325,93 +1230,6 @@ int blk_lld_busy(struct request_queue *q)
- }
- EXPORT_SYMBOL_GPL(blk_lld_busy);
- 
--/**
-- * blk_rq_unprep_clone - Helper function to free all bios in a cloned request
-- * @rq: the clone request to be cleaned up
-- *
-- * Description:
-- *     Free all bios in @rq for a cloned request.
-- */
--void blk_rq_unprep_clone(struct request *rq)
--{
--	struct bio *bio;
--
--	while ((bio = rq->bio) != NULL) {
--		rq->bio = bio->bi_next;
--
--		bio_put(bio);
--	}
--}
--EXPORT_SYMBOL_GPL(blk_rq_unprep_clone);
--
--/**
-- * blk_rq_prep_clone - Helper function to setup clone request
-- * @rq: the request to be setup
-- * @rq_src: original request to be cloned
-- * @bs: bio_set that bios for clone are allocated from
-- * @gfp_mask: memory allocation mask for bio
-- * @bio_ctr: setup function to be called for each clone bio.
-- *           Returns %0 for success, non %0 for failure.
-- * @data: private data to be passed to @bio_ctr
-- *
-- * Description:
-- *     Clones bios in @rq_src to @rq, and copies attributes of @rq_src to @rq.
-- *     Also, pages which the original bios are pointing to are not copied
-- *     and the cloned bios just point same pages.
-- *     So cloned bios must be completed before original bios, which means
-- *     the caller must complete @rq before @rq_src.
-- */
--int blk_rq_prep_clone(struct request *rq, struct request *rq_src,
--		      struct bio_set *bs, gfp_t gfp_mask,
--		      int (*bio_ctr)(struct bio *, struct bio *, void *),
--		      void *data)
--{
--	struct bio *bio, *bio_src;
--
--	if (!bs)
--		bs = &fs_bio_set;
--
--	__rq_for_each_bio(bio_src, rq_src) {
--		bio = bio_clone_fast(bio_src, gfp_mask, bs);
--		if (!bio)
--			goto free_and_out;
--
--		if (bio_ctr && bio_ctr(bio, bio_src, data))
--			goto free_and_out;
--
--		if (rq->bio) {
--			rq->biotail->bi_next = bio;
--			rq->biotail = bio;
--		} else {
--			rq->bio = rq->biotail = bio;
--		}
--		bio = NULL;
--	}
--
--	/* Copy attributes of the original request to the clone request. */
--	rq->__sector = blk_rq_pos(rq_src);
--	rq->__data_len = blk_rq_bytes(rq_src);
--	if (rq_src->rq_flags & RQF_SPECIAL_PAYLOAD) {
--		rq->rq_flags |= RQF_SPECIAL_PAYLOAD;
--		rq->special_vec = rq_src->special_vec;
--	}
--	rq->nr_phys_segments = rq_src->nr_phys_segments;
--	rq->ioprio = rq_src->ioprio;
--
--	if (rq->bio && blk_crypto_rq_bio_prep(rq, rq->bio, gfp_mask) < 0)
--		goto free_and_out;
--
--	return 0;
--
--free_and_out:
--	if (bio)
--		bio_put(bio);
--	blk_rq_unprep_clone(rq);
--
--	return -ENOMEM;
--}
--EXPORT_SYMBOL_GPL(blk_rq_prep_clone);
--
- int kblockd_schedule_work(struct work_struct *work)
- {
- 	return queue_work(kblockd_workqueue, work);
+ #define REQ_OP_NAME(name) [REQ_OP_##name] = #name
+ static const char *const blk_op_name[] = {
+ 	REQ_OP_NAME(READ),
 diff --git a/block/blk-mq.c b/block/blk-mq.c
-index d70a470c9c1f1..0362ec9ad4d14 100644
+index 0362ec9ad4d14..8d0d18ef07d09 100644
 --- a/block/blk-mq.c
 +++ b/block/blk-mq.c
-@@ -2434,7 +2434,7 @@ static void blk_mq_try_issue_directly(struct blk_mq_hw_ctx *hctx,
- 	hctx_unlock(hctx, srcu_idx);
+@@ -328,6 +328,23 @@ void blk_mq_wake_waiters(struct request_queue *q)
+ 			blk_mq_tag_wakeup_all(hctx->tags, true);
  }
  
--blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last)
-+static blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last)
++void blk_rq_init(struct request_queue *q, struct request *rq)
++{
++	memset(rq, 0, sizeof(*rq));
++
++	INIT_LIST_HEAD(&rq->queuelist);
++	rq->q = q;
++	rq->__sector = (sector_t) -1;
++	INIT_HLIST_NODE(&rq->hash);
++	RB_CLEAR_NODE(&rq->rb_node);
++	rq->tag = BLK_MQ_NO_TAG;
++	rq->internal_tag = BLK_MQ_NO_TAG;
++	rq->start_time_ns = ktime_get_ns();
++	rq->part = NULL;
++	blk_crypto_rq_set_defaults(rq);
++}
++EXPORT_SYMBOL(blk_rq_init);
++
+ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
+ 		struct blk_mq_tags *tags, unsigned int tag, u64 alloc_time_ns)
  {
- 	blk_status_t ret;
- 	int srcu_idx;
-@@ -2821,6 +2821,179 @@ void blk_mq_submit_bio(struct bio *bio)
- 	}
- }
- 
-+/**
-+ * blk_cloned_rq_check_limits - Helper function to check a cloned request
-+ *                              for the new queue limits
-+ * @q:  the queue
-+ * @rq: the request being checked
-+ *
-+ * Description:
-+ *    @rq may have been made based on weaker limitations of upper-level queues
-+ *    in request stacking drivers, and it may violate the limitation of @q.
-+ *    Since the block layer and the underlying device driver trust @rq
-+ *    after it is inserted to @q, it should be checked against @q before
-+ *    the insertion using this generic function.
-+ *
-+ *    Request stacking drivers like request-based dm may change the queue
-+ *    limits when retrying requests on other queues. Those requests need
-+ *    to be checked against the new queue limits again during dispatch.
-+ */
-+static blk_status_t blk_cloned_rq_check_limits(struct request_queue *q,
-+				      struct request *rq)
-+{
-+	unsigned int max_sectors = blk_queue_get_max_sectors(q, req_op(rq));
-+
-+	if (blk_rq_sectors(rq) > max_sectors) {
-+		/*
-+		 * SCSI device does not have a good way to return if
-+		 * Write Same/Zero is actually supported. If a device rejects
-+		 * a non-read/write command (discard, write same,etc.) the
-+		 * low-level device driver will set the relevant queue limit to
-+		 * 0 to prevent blk-lib from issuing more of the offending
-+		 * operations. Commands queued prior to the queue limit being
-+		 * reset need to be completed with BLK_STS_NOTSUPP to avoid I/O
-+		 * errors being propagated to upper layers.
-+		 */
-+		if (max_sectors == 0)
-+			return BLK_STS_NOTSUPP;
-+
-+		printk(KERN_ERR "%s: over max size limit. (%u > %u)\n",
-+			__func__, blk_rq_sectors(rq), max_sectors);
-+		return BLK_STS_IOERR;
-+	}
-+
-+	/*
-+	 * The queue settings related to segment counting may differ from the
-+	 * original queue.
-+	 */
-+	rq->nr_phys_segments = blk_recalc_rq_segments(rq);
-+	if (rq->nr_phys_segments > queue_max_segments(q)) {
-+		printk(KERN_ERR "%s: over max segments limit. (%hu > %hu)\n",
-+			__func__, rq->nr_phys_segments, queue_max_segments(q));
-+		return BLK_STS_IOERR;
-+	}
-+
-+	return BLK_STS_OK;
-+}
-+
-+/**
-+ * blk_insert_cloned_request - Helper for stacking drivers to submit a request
-+ * @q:  the queue to submit the request
-+ * @rq: the request being queued
-+ */
-+blk_status_t blk_insert_cloned_request(struct request_queue *q, struct request *rq)
-+{
-+	blk_status_t ret;
-+
-+	ret = blk_cloned_rq_check_limits(q, rq);
-+	if (ret != BLK_STS_OK)
-+		return ret;
-+
-+	if (rq->rq_disk &&
-+	    should_fail_request(rq->rq_disk->part0, blk_rq_bytes(rq)))
-+		return BLK_STS_IOERR;
-+
-+	if (blk_crypto_insert_cloned_request(rq))
-+		return BLK_STS_IOERR;
-+
-+	blk_account_io_start(rq);
-+
-+	/*
-+	 * Since we have a scheduler attached on the top device,
-+	 * bypass a potential scheduler on the bottom device for
-+	 * insert.
-+	 */
-+	return blk_mq_request_issue_directly(rq, true);
-+}
-+EXPORT_SYMBOL_GPL(blk_insert_cloned_request);
-+
-+/**
-+ * blk_rq_unprep_clone - Helper function to free all bios in a cloned request
-+ * @rq: the clone request to be cleaned up
-+ *
-+ * Description:
-+ *     Free all bios in @rq for a cloned request.
-+ */
-+void blk_rq_unprep_clone(struct request *rq)
-+{
-+	struct bio *bio;
-+
-+	while ((bio = rq->bio) != NULL) {
-+		rq->bio = bio->bi_next;
-+
-+		bio_put(bio);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(blk_rq_unprep_clone);
-+
-+/**
-+ * blk_rq_prep_clone - Helper function to setup clone request
-+ * @rq: the request to be setup
-+ * @rq_src: original request to be cloned
-+ * @bs: bio_set that bios for clone are allocated from
-+ * @gfp_mask: memory allocation mask for bio
-+ * @bio_ctr: setup function to be called for each clone bio.
-+ *           Returns %0 for success, non %0 for failure.
-+ * @data: private data to be passed to @bio_ctr
-+ *
-+ * Description:
-+ *     Clones bios in @rq_src to @rq, and copies attributes of @rq_src to @rq.
-+ *     Also, pages which the original bios are pointing to are not copied
-+ *     and the cloned bios just point same pages.
-+ *     So cloned bios must be completed before original bios, which means
-+ *     the caller must complete @rq before @rq_src.
-+ */
-+int blk_rq_prep_clone(struct request *rq, struct request *rq_src,
-+		      struct bio_set *bs, gfp_t gfp_mask,
-+		      int (*bio_ctr)(struct bio *, struct bio *, void *),
-+		      void *data)
-+{
-+	struct bio *bio, *bio_src;
-+
-+	if (!bs)
-+		bs = &fs_bio_set;
-+
-+	__rq_for_each_bio(bio_src, rq_src) {
-+		bio = bio_clone_fast(bio_src, gfp_mask, bs);
-+		if (!bio)
-+			goto free_and_out;
-+
-+		if (bio_ctr && bio_ctr(bio, bio_src, data))
-+			goto free_and_out;
-+
-+		if (rq->bio) {
-+			rq->biotail->bi_next = bio;
-+			rq->biotail = bio;
-+		} else {
-+			rq->bio = rq->biotail = bio;
-+		}
-+		bio = NULL;
-+	}
-+
-+	/* Copy attributes of the original request to the clone request. */
-+	rq->__sector = blk_rq_pos(rq_src);
-+	rq->__data_len = blk_rq_bytes(rq_src);
-+	if (rq_src->rq_flags & RQF_SPECIAL_PAYLOAD) {
-+		rq->rq_flags |= RQF_SPECIAL_PAYLOAD;
-+		rq->special_vec = rq_src->special_vec;
-+	}
-+	rq->nr_phys_segments = rq_src->nr_phys_segments;
-+	rq->ioprio = rq_src->ioprio;
-+
-+	if (rq->bio && blk_crypto_rq_bio_prep(rq, rq->bio, gfp_mask) < 0)
-+		goto free_and_out;
-+
-+	return 0;
-+
-+free_and_out:
-+	if (bio)
-+		bio_put(bio);
-+	blk_rq_unprep_clone(rq);
-+
-+	return -ENOMEM;
-+}
-+EXPORT_SYMBOL_GPL(blk_rq_prep_clone);
-+
- static size_t order_to_size(unsigned int order)
- {
- 	return (size_t)PAGE_SIZE << order;
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index 8acfa650f5751..f39454456c064 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -65,9 +65,6 @@ void blk_mq_request_bypass_insert(struct request *rq, bool at_head,
- 				  bool run_queue);
- void blk_mq_insert_requests(struct blk_mq_hw_ctx *hctx, struct blk_mq_ctx *ctx,
- 				struct list_head *list);
--
--/* Used by blk_insert_cloned_request() to issue request directly */
--blk_status_t blk_mq_request_issue_directly(struct request *rq, bool last);
- void blk_mq_try_issue_list_directly(struct blk_mq_hw_ctx *hctx,
- 				    struct list_head *list);
- 
-diff --git a/block/blk.h b/block/blk.h
-index b4fed2033e48f..1bac4063afffb 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -493,4 +493,14 @@ int disk_register_independent_access_ranges(struct gendisk *disk,
- 				struct blk_independent_access_ranges *new_iars);
- void disk_unregister_independent_access_ranges(struct gendisk *disk);
- 
-+#ifdef CONFIG_FAIL_MAKE_REQUEST
-+bool should_fail_request(struct block_device *part, unsigned int bytes);
-+#else /* CONFIG_FAIL_MAKE_REQUEST */
-+static inline bool should_fail_request(struct block_device *part,
-+					unsigned int bytes)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_FAIL_MAKE_REQUEST */
-+
- #endif /* BLK_INTERNAL_H */
 -- 
 2.30.2
 
