@@ -2,54 +2,71 @@ Return-Path: <SRS0=oh1H=QF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29577C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Nov 2021 11:47:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36E51C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Nov 2021 13:06:48 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E3D5261AFB
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Nov 2021 11:47:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org E3D5261AFB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 02B6C61ACE
+	for <linux-mtd@archiver.kernel.org>; Thu, 18 Nov 2021 13:06:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 02B6C61ACE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=X6yyGNh3zMkf9Kz9tCENPQl7fs/6kZ2OJakmiKzZ4Yg=; b=MnyB+1LWJYKynx
-	cSW8oWO771YfdUC22qi86hsVsqpE35rreMTKgW0rfZv60hOd/TIQfZCXNDByROrGnBwmUK+ZAFJ6p
-	legLWgvCy3Ig5IaouqmccO9hJ9HvdzrXOp2x5oiai+WwxqGornd6l+TgrRPc3PO/AWqPnlXbNOAxW
-	3vmgZljeY77gbEqZRFFT2p4wCH+uxR/zTTCU5ak5XNGBJWd8I6dcOiKzAcP5qaQvTOoP5L8XGO0cR
-	kZSTTw5M8+tV6vhTVYhldFRg+n0pIF9fkgmXbQca9MLL+WL8VKNgUH+WcFr8mlLJqUrgWxgpSt0Ed
-	qh+PeOaOFdZpBqCH7H7Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ezHRMJxLjmWzKNsq7BoNUMCI4AlQ1ngKrR2UAj5Bc5A=; b=Upw3aoEczt1xS3
+	haEPbTKF3Qeh1SOUQTOgB8vXX61WPl2JPXXB14TyZTPFYTVJya9jU5Bqbc+nVXLmLjII6H1meZLZI
+	ffJt2jZnXuLoHw/sTJH5g2MjVMvL3VRYfJpX788etKk+PGFVTLEXXWyVQ3BNfnw87w5H+lE33hdNv
+	OnvBVJyUFkWTyFL4fPte8B1DdjuvY3GpbH6V6K1yTQTgbd/Cs4P04UY4McvFMm0vK3ys58jH3KoTl
+	tyAZlAqjm7AQ8sGEx9tYIbfkVzPA9AkmioJ4VJluBusFBUfuIr4VhTM3kgUtL3ujz4D6oFNpuaBfd
+	mMG5Wd9Nyu6Ln9GkGUNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnfsi-007duk-AK; Thu, 18 Nov 2021 11:47:08 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1mnh74-007oun-Lv; Thu, 18 Nov 2021 13:06:02 +0000
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnfsf-007dtv-8d
- for linux-mtd@lists.infradead.org; Thu, 18 Nov 2021 11:47:07 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 03CCDE0009;
- Thu, 18 Nov 2021 11:46:59 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: Introduce an expert mode for forensics and debugging
- purposes
-Date: Thu, 18 Nov 2021 12:46:59 +0100
-Message-Id: <20211118114659.1282855-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+ id 1mnh6o-007ot4-Rk
+ for linux-mtd@lists.infradead.org; Thu, 18 Nov 2021 13:05:48 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10171"; a="234011718"
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; d="scan'208";a="234011718"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Nov 2021 05:05:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,244,1631602800"; d="scan'208";a="587271066"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by FMSMGA003.fm.intel.com with ESMTP; 18 Nov 2021 05:05:40 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+ id F0173198; Thu, 18 Nov 2021 15:05:43 +0200 (EET)
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Lee Jones <lee.jones@linaro.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: [PATCH v4 1/3] mtd: spi-nor: intel-spi: Disable write protection only
+ if asked
+Date: Thu, 18 Nov 2021 16:05:41 +0300
+Message-Id: <20211118130543.11179-2-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211118130543.11179-1-mika.westerberg@linux.intel.com>
+References: <20211118130543.11179-1-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211118_034705_603201_E6FDF267 
-X-CRM114-Status: GOOD (  12.88  )
+X-CRM114-CacheID: sfid-20211118_050546_966829_D4FBD43C 
+X-CRM114-Status: GOOD (  26.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,108 +83,311 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When developping NAND controller drivers or when debugging filesystem
-corruptions, it is quite common to need hacking locally into the
-MTD/NAND core in order to get access to the content of the bad
-blocks. Instead of having multiple implementations out there let's
-provide a simple yet effective specific MTD-wide debugfs entry to fully
-disable these checks on purpose.
+Currently the driver tries to disable the BIOS write protection
+automatically even if this is not what the user wants. For this reason
+modify the driver so that by default it does not touch the write
+protection. Only if specifically asked by the user (setting writeable=1
+command line parameter) the driver tries to disable the BIOS write
+protection.
 
-A warning is added to inform the user when this mode gets enabled.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Mauro Lima <mauro.lima@eclypsium.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/mtdcore.c            | 10 ++++++++++
- drivers/mtd/nand/core.c          |  3 +++
- drivers/mtd/nand/raw/nand_base.c |  3 +++
- drivers/mtd/nand/raw/nand_bbt.c  |  3 +++
- include/linux/mtd/mtd.h          |  3 +++
- 5 files changed, 22 insertions(+)
+ drivers/mfd/lpc_ich.c                         | 59 +++++++++++++++++--
+ .../mtd/spi-nor/controllers/intel-spi-pci.c   | 29 +++++----
+ drivers/mtd/spi-nor/controllers/intel-spi.c   | 41 ++++++-------
+ include/linux/platform_data/x86/intel-spi.h   |  6 +-
+ 4 files changed, 96 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 9186268d361b..4d367d5c4021 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2365,6 +2365,14 @@ static struct backing_dev_info * __init mtd_bdi_init(const char *name)
- 	return ret ? ERR_PTR(ret) : bdi;
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index f10e53187f67..9ffab9aafd81 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -63,6 +63,8 @@
+ #define SPIBASE_BYT		0x54
+ #define SPIBASE_BYT_SZ		512
+ #define SPIBASE_BYT_EN		BIT(1)
++#define BYT_BCR			0xfc
++#define BYT_BCR_WPD		BIT(0)
+ 
+ #define SPIBASE_LPT		0x3800
+ #define SPIBASE_LPT_SZ		512
+@@ -1084,12 +1086,57 @@ static int lpc_ich_init_wdt(struct pci_dev *dev)
+ 	return ret;
  }
  
-+char *mtd_expert_analysis_warning =
-+	"Bad block checks have been entirely disabled.\n"
-+	"This is only reserved for post-mortem forensics and debug purposes.\n"
-+	"Never enable this mode if you do not know what you are doing!\n";
-+EXPORT_SYMBOL_GPL(mtd_expert_analysis_warning);
-+bool mtd_expert_analysis_mode;
-+EXPORT_SYMBOL_GPL(mtd_expert_analysis_mode);
++static bool lpc_ich_byt_set_writeable(void __iomem *base, void *data)
++{
++	u32 val;
 +
- static struct proc_dir_entry *proc_mtd;
- 
- static int __init init_mtd(void)
-@@ -2388,6 +2396,8 @@ static int __init init_mtd(void)
- 		goto out_procfs;
- 
- 	dfs_dir_mtd = debugfs_create_dir("mtd", NULL);
-+	debugfs_create_bool("expert_analysis_mode", 0600, dfs_dir_mtd,
-+			    &mtd_expert_analysis_mode);
- 
- 	return 0;
- 
-diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-index 5e13a03d2b32..33c7788d76c2 100644
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -21,6 +21,9 @@
-  */
- bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
++	val = readl(base + BYT_BCR);
++	if (!(val & BYT_BCR_WPD)) {
++		val |= BYT_BCR_WPD;
++		writel(val, base + BYT_BCR);
++		val = readl(base + BYT_BCR);
++	}
++
++	return val & BYT_BCR_WPD;
++}
++
++static bool lpc_ich_lpt_set_writeable(void __iomem *base, void *data)
++{
++	struct pci_dev *pdev = data;
++	u32 bcr;
++
++	pci_read_config_dword(pdev, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_write_config_dword(pdev, BCR, bcr);
++		pci_read_config_dword(pdev, BCR, &bcr);
++	}
++
++	return bcr & BCR_WPD;
++}
++
++static bool lpc_ich_bxt_set_writeable(void __iomem *base, void *data)
++{
++	unsigned int spi = PCI_DEVFN(13, 2);
++	struct pci_bus *bus = data;
++	u32 bcr;
++
++	pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_bus_write_config_dword(bus, spi, BCR, bcr);
++		pci_bus_read_config_dword(bus, spi, BCR, &bcr);
++	}
++
++	return bcr & BCR_WPD;
++}
++
+ static int lpc_ich_init_spi(struct pci_dev *dev)
  {
-+	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-+		return 0;
+ 	struct lpc_ich_priv *priv = pci_get_drvdata(dev);
+ 	struct resource *res = &intel_spi_res[0];
+ 	struct intel_spi_boardinfo *info;
+-	u32 spi_base, rcba, bcr;
++	u32 spi_base, rcba;
+ 
+ 	info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (!info)
+@@ -1103,6 +1150,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 		if (spi_base & SPIBASE_BYT_EN) {
+ 			res->start = spi_base & ~(SPIBASE_BYT_SZ - 1);
+ 			res->end = res->start + SPIBASE_BYT_SZ - 1;
 +
- 	if (nanddev_bbt_is_initialized(nand)) {
- 		unsigned int entry;
- 		int status;
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..b3a9bc08b4bb 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -321,6 +321,9 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
- 	if (nand_region_is_secured(chip, ofs, mtd->erasesize))
- 		return -EIO;
++			info->set_writeable = lpc_ich_byt_set_writeable;
+ 		}
+ 		break;
  
-+	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-+		return 0;
+@@ -1113,8 +1162,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 			res->start = spi_base + SPIBASE_LPT;
+ 			res->end = res->start + SPIBASE_LPT_SZ - 1;
+ 
+-			pci_read_config_dword(dev, BCR, &bcr);
+-			info->writeable = !!(bcr & BCR_WPD);
++			info->set_writeable = lpc_ich_lpt_set_writeable;
++			info->data = dev;
+ 		}
+ 		break;
+ 
+@@ -1135,8 +1184,8 @@ static int lpc_ich_init_spi(struct pci_dev *dev)
+ 			res->start = spi_base & 0xfffffff0;
+ 			res->end = res->start + SPIBASE_APL_SZ - 1;
+ 
+-			pci_bus_read_config_dword(bus, spi, BCR, &bcr);
+-			info->writeable = !!(bcr & BCR_WPD);
++			info->set_writeable = lpc_ich_bxt_set_writeable;
++			info->data = bus;
+ 		}
+ 
+ 		pci_bus_write_config_byte(bus, p2sb, 0xe1, 0x1);
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+index 1bc53b8bb88a..508f7ca098ef 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+@@ -16,12 +16,30 @@
+ #define BCR		0xdc
+ #define BCR_WPD		BIT(0)
+ 
++static bool intel_spi_pci_set_writeable(void __iomem *base, void *data)
++{
++	struct pci_dev *pdev = data;
++	u32 bcr;
 +
- 	if (chip->legacy.block_bad)
- 		return chip->legacy.block_bad(chip, ofs);
- 
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index b7ad030225f8..ab630af3a309 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -1455,6 +1455,9 @@ int nand_isbad_bbt(struct nand_chip *this, loff_t offs, int allowbbt)
- 	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
- 		 (unsigned int)offs, block, res);
- 
-+	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-+		return 0;
++	/* Try to make the chip read/write */
++	pci_read_config_dword(pdev, BCR, &bcr);
++	if (!(bcr & BCR_WPD)) {
++		bcr |= BCR_WPD;
++		pci_write_config_dword(pdev, BCR, bcr);
++		pci_read_config_dword(pdev, BCR, &bcr);
++	}
 +
- 	switch (res) {
- 	case BBT_BLOCK_GOOD:
- 		return 0;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index f5e7dfc2e4e9..1ffa933121f6 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -711,4 +711,7 @@ static inline int mtd_is_bitflip_or_eccerr(int err) {
- 
- unsigned mtd_mmap_capabilities(struct mtd_info *mtd);
- 
-+extern char *mtd_expert_analysis_warning;
-+extern bool mtd_expert_analysis_mode;
++	return bcr & BCR_WPD;
++}
 +
- #endif /* __MTD_MTD_H__ */
+ static const struct intel_spi_boardinfo bxt_info = {
+ 	.type = INTEL_SPI_BXT,
++	.set_writeable = intel_spi_pci_set_writeable,
+ };
+ 
+ static const struct intel_spi_boardinfo cnl_info = {
+ 	.type = INTEL_SPI_CNL,
++	.set_writeable = intel_spi_pci_set_writeable,
+ };
+ 
+ static int intel_spi_pci_probe(struct pci_dev *pdev,
+@@ -29,7 +47,6 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+ {
+ 	struct intel_spi_boardinfo *info;
+ 	struct intel_spi *ispi;
+-	u32 bcr;
+ 	int ret;
+ 
+ 	ret = pcim_enable_device(pdev);
+@@ -41,15 +58,7 @@ static int intel_spi_pci_probe(struct pci_dev *pdev,
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	/* Try to make the chip read/write */
+-	pci_read_config_dword(pdev, BCR, &bcr);
+-	if (!(bcr & BCR_WPD)) {
+-		bcr |= BCR_WPD;
+-		pci_write_config_dword(pdev, BCR, bcr);
+-		pci_read_config_dword(pdev, BCR, &bcr);
+-	}
+-	info->writeable = !!(bcr & BCR_WPD);
+-
++	info->data = pdev;
+ 	ispi = intel_spi_probe(&pdev->dev, &pdev->resource[0], info);
+ 	if (IS_ERR(ispi))
+ 		return PTR_ERR(ispi);
+diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/mtd/spi-nor/controllers/intel-spi.c
+index a413892ff449..f35597cbea0c 100644
+--- a/drivers/mtd/spi-nor/controllers/intel-spi.c
++++ b/drivers/mtd/spi-nor/controllers/intel-spi.c
+@@ -131,7 +131,6 @@
+  * @sregs: Start of software sequencer registers
+  * @nregions: Maximum number of regions
+  * @pr_num: Maximum number of protected range registers
+- * @writeable: Is the chip writeable
+  * @locked: Is SPI setting locked
+  * @swseq_reg: Use SW sequencer in register reads/writes
+  * @swseq_erase: Use SW sequencer in erase operation
+@@ -149,7 +148,6 @@ struct intel_spi {
+ 	void __iomem *sregs;
+ 	size_t nregions;
+ 	size_t pr_num;
+-	bool writeable;
+ 	bool locked;
+ 	bool swseq_reg;
+ 	bool swseq_erase;
+@@ -304,6 +302,14 @@ static int intel_spi_wait_sw_busy(struct intel_spi *ispi)
+ 				  INTEL_SPI_TIMEOUT * 1000);
+ }
+ 
++static bool intel_spi_set_writeable(struct intel_spi *ispi)
++{
++	if (!ispi->info->set_writeable)
++		return false;
++
++	return ispi->info->set_writeable(ispi->base, ispi->info->data);
++}
++
+ static int intel_spi_init(struct intel_spi *ispi)
+ {
+ 	u32 opmenu0, opmenu1, lvscc, uvscc, val;
+@@ -316,19 +322,6 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		ispi->nregions = BYT_FREG_NUM;
+ 		ispi->pr_num = BYT_PR_NUM;
+ 		ispi->swseq_reg = true;
+-
+-		if (writeable) {
+-			/* Disable write protection */
+-			val = readl(ispi->base + BYT_BCR);
+-			if (!(val & BYT_BCR_WPD)) {
+-				val |= BYT_BCR_WPD;
+-				writel(val, ispi->base + BYT_BCR);
+-				val = readl(ispi->base + BYT_BCR);
+-			}
+-
+-			ispi->writeable = !!(val & BYT_BCR_WPD);
+-		}
+-
+ 		break;
+ 
+ 	case INTEL_SPI_LPT:
+@@ -358,6 +351,12 @@ static int intel_spi_init(struct intel_spi *ispi)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Try to disable write protection if user asked to do so */
++	if (writeable && !intel_spi_set_writeable(ispi)) {
++		dev_warn(ispi->dev, "can't disable chip write protection\n");
++		writeable = false;
++	}
++
+ 	/* Disable #SMI generation from HW sequencer */
+ 	val = readl(ispi->base + HSFSTS_CTL);
+ 	val &= ~HSFSTS_CTL_FSMIE;
+@@ -884,9 +883,12 @@ static void intel_spi_fill_partition(struct intel_spi *ispi,
+ 		/*
+ 		 * If any of the regions have protection bits set, make the
+ 		 * whole partition read-only to be on the safe side.
++		 *
++		 * Also if the user did not ask the chip to be writeable
++		 * mask the bit too.
+ 		 */
+-		if (intel_spi_is_protected(ispi, base, limit))
+-			ispi->writeable = false;
++		if (!writeable || intel_spi_is_protected(ispi, base, limit))
++			part->mask_flags |= MTD_WRITEABLE;
+ 
+ 		end = (limit << 12) + 4096;
+ 		if (end > part->size)
+@@ -927,7 +929,6 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 
+ 	ispi->dev = dev;
+ 	ispi->info = info;
+-	ispi->writeable = info->writeable;
+ 
+ 	ret = intel_spi_init(ispi);
+ 	if (ret)
+@@ -945,10 +946,6 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 
+ 	intel_spi_fill_partition(ispi, &part);
+ 
+-	/* Prevent writes if not explicitly enabled */
+-	if (!ispi->writeable || !writeable)
+-		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
+-
+ 	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+diff --git a/include/linux/platform_data/x86/intel-spi.h b/include/linux/platform_data/x86/intel-spi.h
+index 7f53a5c6f35e..7dda3f690465 100644
+--- a/include/linux/platform_data/x86/intel-spi.h
++++ b/include/linux/platform_data/x86/intel-spi.h
+@@ -19,11 +19,13 @@ enum intel_spi_type {
+ /**
+  * struct intel_spi_boardinfo - Board specific data for Intel SPI driver
+  * @type: Type which this controller is compatible with
+- * @writeable: The chip is writeable
++ * @set_writeable: Try to make the chip writeable (optional)
++ * @data: Data to be passed to @set_writeable can be %NULL
+  */
+ struct intel_spi_boardinfo {
+ 	enum intel_spi_type type;
+-	bool writeable;
++	bool (*set_writeable)(void __iomem *base, void *data);
++	void *data;
+ };
+ 
+ #endif /* INTEL_SPI_PDATA_H */
 -- 
-2.27.0
+2.33.0
 
 
 ______________________________________________________
