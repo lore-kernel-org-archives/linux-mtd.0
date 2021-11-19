@@ -2,87 +2,57 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B35E3C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:58:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBE04C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 09:09:40 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 726C161AF0
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:58:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 726C161AF0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5AA13610A5
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 09:09:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5AA13610A5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zEKU9kvhqFmjWuJTAXqfD0QlhuU46aiINsL/OjRHCvk=; b=QrTLWZqFf+6Lr2
-	pHW4BAhxGnApx+WBfFLtuJhxRhZsKlkQPTa3MVpXqdcD/t1EKhHIMlb0qM+vM4Wp09ZusSSM6qDO+
-	cWS7DpzM80WLtfKWCbBxtXDjJ4U7sIV/cwbR43sceRAklahgm/3xE0Wo4WVMjWezfgzdcYbIUgYma
-	trJpVw9vrCG7PgSEwtSLy/yA8MK5vj2TW92JDf66HZyKOvrbLdUJGGRdjumncJvBdWdIQI5FCR2LG
-	rzi0XuZcCSuo6A9cfglI5P+kwco18SVIDj14fY3qOLNjBbLl7XBGA7ZZk13xhLXqeabQD0tWH2UuK
-	Yb1Iw82gwpgzGaOrg+gQ==;
+	List-Owner; bh=3aHBcnxxVA6VEiJBsMj0kpr4Vao1MFhpRJI1JSJpCFc=; b=bOob/zFI0JgvWL
+	zNn9TBZgNOCCC/2bbHGc+Oh8qxnQC86PEP61L7nCPAGbY7w+sHzPtg948qCzjlM7tqtJo288MRUFv
+	ZRubqE0hxz0j3xzII42eHE7RdOPENg3YCdY1DfqFXD9yVD6opvucJqrZGE3fHyG62wNXD30DiT1oU
+	HfQ/vW+cXwHvyHk3klj5Gf6T5aLWp3DIPDmJWPUEvesg6NCPt337UP3x/TdQpoJTt1MPV+nJNuCN4
+	4dODWSC96d+nOGeICzFKvoVPm4Ey5TJiXEmbdTPSGO0pGYX141qmXbhq6cafq4Jv7Yg9h1We8FAmz
+	eRfvQVpbA5cvRluIBsiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnziD-009rn2-TH; Fri, 19 Nov 2021 08:57:37 +0000
-Received: from mail-ua1-f46.google.com ([209.85.222.46])
+	id 1mnztL-009ugc-KO; Fri, 19 Nov 2021 09:09:07 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnzi9-009rkm-Sf; Fri, 19 Nov 2021 08:57:35 +0000
-Received: by mail-ua1-f46.google.com with SMTP id n6so19881923uak.1;
- Fri, 19 Nov 2021 00:57:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=cDmEtlUJW/U2TV/6uXra9mxD+3D+ySGPKfAlnRkVzM4=;
- b=gbGFdEBR0Duql8k716TLaC+MjpT/meXJcn4AzSStTI7pyUGy5o6PUgkfpPRYW/gRqy
- BVHzSEKFwHep3gVXyU1QutbPXuAagvNLYsiezBwMUYQ0AbD95X0VhYKWWheU/8J9MIQs
- 4Jqo1RZm8qnWfrRA3ho0Bp65kY1fsr+EFGZQ8w6YcrWsFHArhdxW1yot2icVXL4cK2BU
- +nZJaGePCsqx9pEG8r7VAzKxAF5jTV6zIrMRQaxp2TFDFQixDVwbDc7oAbr+ZIHYG3Cq
- TstvQUyIH1kyh82HxVvz75G/jwwBATQ1OYa0ylp+ller4oAziSR4YGR9N4XIe/Q74NeJ
- ZQ/Q==
-X-Gm-Message-State: AOAM532h4EtZdTfcE4/Sp9KLqv6JLkIONe33YMr3sSXUtLHfkIyC5+/n
- CFunhDCG8GUWaBQ1gu53vWf1wGx+3MgIcQ==
-X-Google-Smtp-Source: ABdhPJzECl9IcQJ22qJn/R0be7yuC6lbvL4YpW4IMEv4l3wCNPjmEauB8IJoYvOA9vlSRLw22LwzBQ==
-X-Received: by 2002:a9f:21d7:: with SMTP id 81mr46737879uac.39.1637312252304; 
- Fri, 19 Nov 2021 00:57:32 -0800 (PST)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com.
- [209.85.222.46])
- by smtp.gmail.com with ESMTPSA id s10sm1320656vkf.9.2021.11.19.00.57.31
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 19 Nov 2021 00:57:31 -0800 (PST)
-Received: by mail-ua1-f46.google.com with SMTP id w23so19813424uao.5;
- Fri, 19 Nov 2021 00:57:31 -0800 (PST)
-X-Received: by 2002:a05:6102:2910:: with SMTP id
- cz16mr91656903vsb.9.1637312251119; 
- Fri, 19 Nov 2021 00:57:31 -0800 (PST)
+ id 1mnztI-009ufR-Ni
+ for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 09:09:06 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D73F060014;
+ Fri, 19 Nov 2021 09:09:00 +0000 (UTC)
+Date: Fri, 19 Nov 2021 10:08:59 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 2/4] mtd: rawnand: Fix nand_choose_best_timings() on
+ unsupported interface
+Message-ID: <20211119100859.00b61e94@xps13>
+In-Reply-To: <20211119073909.1492538-3-herve.codina@bootlin.com>
+References: <20211119073909.1492538-1-herve.codina@bootlin.com>
+ <20211119073909.1492538-3-herve.codina@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211118111940.1275351-1-miquel.raynal@bootlin.com>
- <20211118111940.1275351-4-miquel.raynal@bootlin.com>
-In-Reply-To: <20211118111940.1275351-4-miquel.raynal@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 19 Nov 2021 09:57:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW=QgdrVHZXcZtQvtx=BUrugM6sPynt4EXMyA3=JxUV4g@mail.gmail.com>
-Message-ID: <CAMuHMdW=QgdrVHZXcZtQvtx=BUrugM6sPynt4EXMyA3=JxUV4g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] MAINTAINERS: Add an entry for Renesas RZ/N1 NAND
- controller
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>,
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Jimmy Lalande <jimmy.lalande@se.com>, 
- Milan Stevanovic <milan.stevanovic@se.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
- Magnus Damm <magnus.damm@gmail.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, 
- Gareth Williams <gareth.williams.jx@renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211119_005733_980925_422640F4 
-X-CRM114-Status: GOOD (  19.60  )
+X-CRM114-CacheID: sfid-20211119_010904_942693_18687DA4 
+X-CRM114-Status: GOOD (  22.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,54 +64,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-CC Gareth
-
-On Thu, Nov 18, 2021 at 12:19 PM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> Point to the driver and the bindings.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Thanks for your patch!
-
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16004,6 +16004,13 @@ S:     Supported
->  F:     Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
->  F:     drivers/iio/adc/rzg2l_adc.c
->
-> +RENESAS RZ/N1X NAND CONTROLLER DRIVER
-> +M:     Miquel Raynal <miquel.raynal@bootlin.com>
-> +L:     linux-mtd@lists.infradead.org
-> +S:     Maintained
-> +F:     Documentation/devicetree/bindings/mtd/renesas,r9a06g032-nand-controller.yaml
-
-.../renesas,rzn1-nand-controller.yaml
-
-> +F:     drivers/mtd/nand/raw/rzn1-nand-controller.c
-> +
->  RESET CONTROLLER FRAMEWORK
->  M:     Philipp Zabel <p.zabel@pengutronix.de>
->  S:     Maintained
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSGVydmUsCgpoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb20gd3JvdGUgb24gRnJpLCAxOSBOb3Yg
+MjAyMSAwODozOTowNyArMDEwMDoKCj4gV2hlbiB0aGUgTlYtRERSIGludGVyZmFjZSBpcyBub3Qg
+c3VwcG9ydGVkIGJ5IHRoZSBOQU5EIGNoaXAsCj4gdGhlIHZhbHVlIG9mIG9uZmktPm52ZGRyX3Rp
+bWluZ19tb2RlcyBpcyAwLiBJbiB0aGlzIGNhc2UsCj4gdGhlIGJlc3RfbW9kZSB2YXJpYWJsZSB2
+YWx1ZSBpbiBuYW5kX2Nob29zZV9iZXN0X252ZGRyX3RpbWluZ3MoKQo+IGlzIC0xLiBUaGUgbGFz
+dCBmb3ItbG9vcCBpcyBza2lwcGVkIGFuZCB0aGUgZnVuY3Rpb24gcmV0dXJucyBhbgo+IHVuaW5p
+dGlhbGl6ZWQgdmFsdWUuCgpBY3R1YWxseSBpcyBub3QgdGhlIGZpcnN0IHRpbWUgdGhpcyB1bmlu
+aXRpYWxpemVkIHZhbHVlIHRyaWdnZXJzIGJlbGxzCmJ1dCwgd2hpbGUgSSB0aGluayBpbiB0aGUg
+U0RSIHBhdGggaXQgaXMgc3RpbGwgbm90IG5lZWRlZCxpbiB0aGUgRERSCnBhdGNoIHlvdSBhcmUg
+cmlnaHQgdGhhdCBzb21ldGhpbmcgaXMgbWlzc2luZy4KCj4gSWYgdGhpcyByZXR1cm5lZCB2YWx1
+ZSBpcyAwLCB0aGUgbmFuZF9jaG9vc2VfYmVzdF9zZHJfdGltaW5ncygpCj4gaXMgbm90IGV4ZWN1
+dGVkIGFuZCBubyAnYmVzdCB0aW1pbmcnIGFyZSBzZXQuIFRoaXMgbGVhZHMgdGhlIGhvc3QKPiBj
+b250cm9sbGVyIGFuZCB0aGUgTkFORCBjaGlwIHdvcmtpbmcgYXQgZGVmYXVsdCBtb2RlIDAgdGlt
+aW5nCj4gZXZlbiBpZiBhIGJldHRlciB0aW1pbmcgY2FuIGJlIHVzZWQuCj4gCj4gRml4IHRoaXMg
+dW5pbml0aWFsemVkIHJldHVybmVkIHZhbHVlLgoKdHlwbyAgICAgICAgICAgICAgICBeCgo+IAo+
+IG5hbmRfY2hvb3NlX2Jlc3Rfc2RyX3RpbWluZ3MoKSBpcyBwcmV0dHkgc2ltaWxhciB0bwo+IG5h
+bmRfY2hvb3NlX2Jlc3RfbnZkZHJfdGltaW5ncygpLiBFdmVuIGlmIG9uZmktPnNkcl90aW1pbmdf
+bW9kZXMKPiBzaG91bGQgbmV2ZXIgYmUgc2VlbiBhcyAwLCBuYW5kX2Nob29zZV9iZXN0X3Nkcl90
+aW1pbmdzKCkgcmV0dXJuZWQKPiB2YWx1ZSBpcyBmaXhlZC4KCkkgc3RpbGwgZG9uJ3QgdGhpbmsg
+aXQgcmVhbGx5IG5lZWRlZCBieSBsZXQncyBrZWVwIHNvICBldmVyeW9uZQooaW5jbHVkaW5nIHJv
+Ym90cykgaXMgaGFwcHkgOikKCj4gCj4gRml4ZXM6IGE5ZWNjOGM4MTRlOSAoIm10ZDogcmF3bmFu
+ZDogQ2hvb3NlIHRoZSBiZXN0IHRpbWluZ3MsIE5WLUREUiBpbmNsdWRlZCIpCj4gU2lnbmVkLW9m
+Zi1ieTogSGVydmUgQ29kaW5hIDxoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb20+Cj4gLS0tCj4gQ2hh
+bmdlcyB2MSB0byB2MjoKPiAtIE5ldyBwYXRjaCBpbiB2MiBzZXJpZXMKPiAKPiAgZHJpdmVycy9t
+dGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgfCA0ICsrLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5z
+ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+
+IGluZGV4IDVjNmIwNjU4MzdlZi4uYTEzMDMyMGRlNDEyIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
+bXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZF9iYXNlLmMKPiBAQCAtOTI2LDcgKzkyNiw3IEBAIGludCBuYW5kX2Nob29zZV9iZXN0X3Nkcl90
+aW1pbmdzKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4gIAkJCQkgc3RydWN0IG5hbmRfc2RyX3Rp
+bWluZ3MgKnNwZWNfdGltaW5ncykKPiAgewo+ICAJY29uc3Qgc3RydWN0IG5hbmRfY29udHJvbGxl
+cl9vcHMgKm9wcyA9IGNoaXAtPmNvbnRyb2xsZXItPm9wczsKPiAtCWludCBiZXN0X21vZGUgPSAw
+LCBtb2RlLCByZXQ7Cj4gKwlpbnQgYmVzdF9tb2RlID0gMCwgbW9kZSwgcmV0ID0gLUVPUE5PVFNV
+UFA7Cj4gIAo+ICAJaWZhY2UtPnR5cGUgPSBOQU5EX1NEUl9JRkFDRTsKPiAgCj4gQEAgLTk3Nyw3
+ICs5NzcsNyBAQCBpbnQgbmFuZF9jaG9vc2VfYmVzdF9udmRkcl90aW1pbmdzKHN0cnVjdCBuYW5k
+X2NoaXAgKmNoaXAsCj4gIAkJCQkgICBzdHJ1Y3QgbmFuZF9udmRkcl90aW1pbmdzICpzcGVjX3Rp
+bWluZ3MpCj4gIHsKPiAgCWNvbnN0IHN0cnVjdCBuYW5kX2NvbnRyb2xsZXJfb3BzICpvcHMgPSBj
+aGlwLT5jb250cm9sbGVyLT5vcHM7Cj4gLQlpbnQgYmVzdF9tb2RlID0gMCwgbW9kZSwgcmV0Owo+
+ICsJaW50IGJlc3RfbW9kZSA9IDAsIG1vZGUsIHJldCA9IC1FT1BOT1RTVVBQOwo+ICAKPiAgCWlm
+YWNlLT50eXBlID0gTkFORF9OVkREUl9JRkFDRTsKPiAgCgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
