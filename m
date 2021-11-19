@@ -2,152 +2,56 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98C65C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:16:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF8B8C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:18:53 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FF9261A55
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:16:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5FF9261A55
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nokia.com
+	by mail.kernel.org (Postfix) with ESMTPS id A481F60E93
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:18:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org A481F60E93
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
-	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=DoD8Nwamm2IUGcFqVSpaePYFHnSsUWUf3A0qBQd9+Nk=; b=A0xIqA5CPHJ2LFysbz6SdqMHKO
-	vFYfRR+Rlx2SDj4xjKJd3yL/9sIIn6usbbJKFRomk4byMNOB33J4oB4WujQ43FuB1LhfZ6Q3cVNWO
-	tgB6te8Ix4AnJ97wne+OpgMMsRZsIF4PSI0vGbQAduKQ+YcSexMdGpgx1v77QuWvn/RA37m5ZZ8nV
-	5laJ8BfXSaqhEuPuwErnotpZ8bFHM+NuHErFSW5mHsSfIJaKxcb1692mxr+sD1h4YbzEze0RZXXyU
-	upUr634pWEg3GKLEXQgYIfWNl36tTTSj13ZxgKRpwpXjIsN5zAoe5Dz0piDC6DrFpmvpa3BlfaBsk
-	kj0gJAxg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=owA+OjH/oqVGiPxNMPAOsX2ZzrL0AFBHxVg3P5jb7OQ=; b=XsIHaPeZyqSXKO
+	R0YUJW/PsmrVMXeispLzz5fMN6xtupXiNgWq0wOo19WjoBGbW6Ml94cvEHpQxm164cq6QAxyPiVsB
+	8RBFeeTJkHfE6d4ewCThCenUxQOjPCkP4vQ7eDjWBE+kggctsTLx/zb4XX2TERbVtEYk8tAyRuv0E
+	GqRWRi/yrgBtPQsLd2kcPZk/fzeeugRescskaMnVJFNbHZEoZ6ebHkU8Qs0qmUb/QnnS5G0uO8qh2
+	Wxa0c4J6a4grGVp79gf4EPWhEoM8aJ83aw8Zc4Vjsr8s+/g+onHboSAUTyaFUKn9YOT1VVtgWlEnw
+	K6lUFD2gF4+q78fe3eoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnz3Q-009j3Z-36; Fri, 19 Nov 2021 08:15:28 +0000
-Received: from mail-eopbgr130100.outbound.protection.outlook.com
- ([40.107.13.100] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+	id 1mnz67-009ja0-5I; Fri, 19 Nov 2021 08:18:15 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnz3M-009j1l-KW
- for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 08:15:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jp3+fKAsC1iLvEodKlEJcpYq+khuIszPBa1p+EodRlNHgMokU/gm7XRUepO1Lc7lFDp91uCbS8O89Qo6GKcPfROwlaQdZ9MNukALf5bDwHyuCF1TGbIf6pMbeDJ6cKZdpUQf1T7hlzut2HhXkuuNhcdmzNRaoB2c/73qWxE8eygDFrMQtpJtPceJXjrUeumT7WidIjS7W6k+Wcj9d8GMHTmDaU9hBXWziZaZTfiOyuIZbNa8mbhxrbp9KYj8Y7Q1yWBNJoLY/oL6CxElio6V4SfN0TZXvii8UZpXP2P1b4Oc6dzPpQX5oqm7nGLj+Mx+XZcTN3Nnrh7LqKF+y+q4IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tdzesI3x117myp8ZRXFYQCatI4TCv+wh6JZYpgI96CA=;
- b=KT+2IZ6VMCx5yO1QmsbGVhv7RSLVnbzjaZN3MclQISJ6GvadNAxpUkZvTDyC+XxuztXz6HXUkuBwIAWQKBDvO0WxXzop1KBB8VvXWWjYcKgzBSGkCzbpFExUNvIhLzm4L1/mWFSn9427FfLJBgUOFfHsVrWGda4e03ElX5k6k3CQ/vCc1RV7GUKSuTg88qTjuPKqJhtz7QkSybMzifovZqE2Ka766er+wq5v/kFE8X1Pj+MebUnhcU1JPUzWvMwYgReMWk59YQ3MlDxNW9sM4LCdtG5bKJHVYNHZ7jrUYx2/mcYVIA1u/CymxU+whWiWyHKH1WCu+bRsHl37I3jF/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tdzesI3x117myp8ZRXFYQCatI4TCv+wh6JZYpgI96CA=;
- b=mhzFqVkpwRqFPVB/KrVDfoFvA6xy15LTmfG0xjfwmVRSxqcZ+RxreeCYGKsDx6lTQ3Oz0VVMzz+vexkyR75TbLRHuiHWQLD3vxTRP1JqoQhOxJJZLQXGTV+8V5FgBCX8yIaJ4IIy03IX0wZkZP384UDxmBUY4J9DBA/FaAvsoh8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM0PR07MB5841.eurprd07.prod.outlook.com (2603:10a6:208:118::33)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.11; Fri, 19 Nov
- 2021 08:15:21 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::555c:9e12:7c:f52f]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::555c:9e12:7c:f52f%7]) with mapi id 15.20.4713.024; Fri, 19 Nov 2021
- 08:15:20 +0000
-Message-ID: <c5b78f36-ba6f-7a7b-1cf3-48c2f27b2a30@nokia.com>
-Date: Fri, 19 Nov 2021 09:15:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Check for zero erase size in
- spi_nor_find_best_erase_type()
-Content-Language: en-US
-To: linux-mtd@lists.infradead.org
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20211119081147.9895-1-alexander.sverdlin@nokia.com>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-In-Reply-To: <20211119081147.9895-1-alexander.sverdlin@nokia.com>
-X-ClientProxiedBy: HE1PR0301CA0020.eurprd03.prod.outlook.com
- (2603:10a6:3:76::30) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+ id 1mnz64-009jYW-1E
+ for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 08:18:13 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 04858FF804;
+ Fri, 19 Nov 2021 08:18:07 +0000 (UTC)
+Date: Fri, 19 Nov 2021 09:18:06 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 1/4] mtd: rawnand: Fix nand_erase_op delay
+Message-ID: <20211119091806.76900103@xps13>
+In-Reply-To: <20211119073909.1492538-2-herve.codina@bootlin.com>
+References: <20211119073909.1492538-1-herve.codina@bootlin.com>
+ <20211119073909.1492538-2-herve.codina@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: from [0.0.0.0] (131.228.32.168) by
- HE1PR0301CA0020.eurprd03.prod.outlook.com (2603:10a6:3:76::30) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4713.19 via Frontend Transport; Fri, 19 Nov 2021 08:15:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f5196cb0-026a-4410-b29a-08d9ab34ba87
-X-MS-TrafficTypeDiagnostic: AM0PR07MB5841:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB584188E4BC6A99844C2BD58C889C9@AM0PR07MB5841.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VB2v+25VFHCn2UZ88VpWnVwIDk4LxOWfJsSokQ9ia7vXkusDuE+JDlRbAiBJXR+vpkqHykpT5S0GEPj+OYbIOYtMHNcTDlNys4zvYAcRooCVteQ97mz9MOdXhTxRwMeVmKAS0EC9qccjrmvd1VUvw4HjJuA0eOfZIdpV2t4do7R9k9J6GVfBTQ83aQvRSjcLCwB6wPuwRQAdAVfI+YwZD61kXVgnjhEyu6CCX5N/FCpKE9KIQCfMlAcQeGHm8hnQIJjwrsE41zcZo7h4xK7PJ7UqOQ46eUGhfbf5molQIPeuRONYxwfSnqbJZIroU9KrxBy8Ksd6wv7310tUQRTB+uAwUGZFqITEd7E6gaWk1avrw9K/cyhH99uXLWUFMGcKjPFcWlCMCtLZgbbJzYGU0/jnwoZuY4h5e5c6q2ddrjq44fVtwL1e+Eo7RYYUFhk63N9InffTW+ZneabXJmPuuMnUfWpc4ac568N5sHL2hkOvr8z/d4L05M2JKxhMslQaDMzyfsU/Or3GY5PhO3abD2VRRYXu2M5mnlED927eJoC/ackPhCRc0ka61cjb8sZstBykuoiEGFDJYQH+IPpjsrVBwSpSPowJUB5avDnrlirdZkCIS6GMGUcMbkbZyVrafgTsc1+birDWIBCEpdHS7nJRwEs7UeWXmi6pKgmLKKc/IBbk7YB93JnOoYbwf9lehbNLG8dyY2B8mCXpboLsG6EPWwubUS+um1mvIkqR6p6aj39wWHbr966aLzW5amX5SlP1B6v9ImAmp+wVXsfPo/wIiqbny/7mD11+6OH+miY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AM0PR07MB4531.eurprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66946007)(38350700002)(44832011)(82960400001)(38100700002)(86362001)(2616005)(2906002)(956004)(26005)(186003)(6666004)(8676002)(5660300002)(16576012)(508600001)(316002)(8936002)(54906003)(36756003)(52116002)(53546011)(4326008)(31686004)(66476007)(66556008)(6486002)(31696002)(6706004)(6916009)(78286007)(43740500002)(45980500001);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YkxMRGdaY2dCWGU0TkYza3p2K3pZN2tlRWw5SFJKVWdrRzhzV1prRklKRW1h?=
- =?utf-8?B?SGNEOE52bk92blBYYkk1WStIWlBuRGV3K2IvS0ZUdHVwdTdrSXBqZk83UUdQ?=
- =?utf-8?B?SStPeXN4dUFEeGdKdEMyQUxoQUJ1ejZ3MFdpWnpLRnRaK2VUamI0YzJrZVow?=
- =?utf-8?B?MkVNeXdHa0taWUlQWUdhbG9nU3RXRlBJMnI3Ymw5dDgvb2hVSGU0Zk92YzhE?=
- =?utf-8?B?YmZ1Q2xSYmJnUWM2T1dmWVNuVGFrN1FLV21yYnp6emhFL0hzMU1lNGpXNCtF?=
- =?utf-8?B?NkpCcnVwQngyU3BOdHpCU2ZONVA5V095Mkc5eXVGM0VaQTBkVDFGTXNzMnhr?=
- =?utf-8?B?dDY1MjIzVFRlZ2M5QjFRZXpucitJd2xjR0xWWWRwVEFSVHNDTXZ0R05yZ010?=
- =?utf-8?B?eU0zeE84Y0pQSm5hV2g1Mm0rUkFleEptMDRWRHNHUDhKYkUvUXlwc2Rmaytl?=
- =?utf-8?B?RXJCRng5c3A4RmFGL3F6cjE1U1RBc2JSMlF1c00zeGNSNkJGVE50KzE4SXBy?=
- =?utf-8?B?NURVTFZUTGQxbGZrNXlvRjQ2SldkbXBVVzgrNHFTRTgzckRCZVJxV3MzNEMw?=
- =?utf-8?B?cnZCTmNQbzBVTHhNdmNObmM3ZEZaQVJCU3RiSStTbWJ4SVpiRFNDTk5OVk45?=
- =?utf-8?B?NDRCem04dXl5U25HQTk1LzUwR1JkNDJIRnd6NWhnbWVsMjBXTEZrYldrcCtr?=
- =?utf-8?B?YnpYanFrRTdyRVkwOEtadHN5RHd2NWk0MXVUZGpQYmwvL0c2U0VMS0dkRkZB?=
- =?utf-8?B?MWdSUUhpNGd6RzlRV0FpbjhpY1RueVJIK08rcW9FeWo1cElaWGdDYUtDRkI5?=
- =?utf-8?B?TmF0Y29iYjRBYnA5bDhrV29kazZTUDN5VVVRQ1JHT01rNXpDTkhYSjBsQ1lF?=
- =?utf-8?B?Sm1VQkJ5NUlwd29neGpGdXhxV1NuQzUxbUVVNDRFVkczaW1wWnN2V1h3WWNJ?=
- =?utf-8?B?UXJ4RklFdTQ2d0dTWjNBb2NTdkVQakFaS1V6enRnYzhTYVZ4Nlp3eVRXdXZs?=
- =?utf-8?B?amtjMG1aMWxHUmtYUGJ0dVFlNWZWM1NOaFZyV2lJOVFONU1OcGpiOWEyTm5K?=
- =?utf-8?B?OVlPY042NlJoWS9JYitzdEhHRFBiR2pDUUNVMWpNSC94V3R1eDJBTVpadTFK?=
- =?utf-8?B?NzR1NW5oNGtEeDhoOXVwSUc3RVlWaFhUdndxNUVhK2tkK2pSQ1FQYkJoSllm?=
- =?utf-8?B?aVNGSGVia1NVSWhQU1RYcFlVWmJ4Z3BIN2FmWEVQc2xMVUJZMWMyR2p5ZHRr?=
- =?utf-8?B?cVMyNVRZR1RoV1lwNmVZQWJkWGY2NVlYTjQzMklTUmxnWGNuZlI1VzMya1FM?=
- =?utf-8?B?TFZscmU3VjFKZWdxMFlNV0h3N1Z5dE1wdzJIS05JMGFWQlFBeEpvQVlDVCs4?=
- =?utf-8?B?WE0wMFhzbVduV3JhTW5qNE5jQkgyQk91YVJEZ1NINEUySHdMRllacnBjak5m?=
- =?utf-8?B?bGhocmMvV2lseHU4L1AwSmxvNkFmRjQ5YVZaZWs1Ykg5dHJIOUhIR20zSWpM?=
- =?utf-8?B?UXM0bnF3SEkrbG9EQWl4SGt4TkVDYVhTNVg4MzVCRktOOTNWdzNxS05reGNh?=
- =?utf-8?B?d0Z3WG94QTdsRmJqRE9LaE1mMGd6TE5yZVpWV1dKQVhSRXpDSGdYRElNWmVz?=
- =?utf-8?B?VTRremFIT2E3OE1YV3NFc3ZEd3g3OWt3MlFvZjlNQXBQQnl2WTlMR0F6Q0Zz?=
- =?utf-8?B?TWpKbWxsb25neGhBZUlTMEdLY0d2L2VnZ0NuWXQwVjVUSzkxRW1VL1pMaE51?=
- =?utf-8?B?OC9KcXVqUUh3QTJQTkpJQ3ZpZ3lWTWhEQVVxWld6bUlIQmlFZW9iTkdXU2ZB?=
- =?utf-8?B?MnRaNWQ0eE9QbEUwVUNXMVhHVkdIblBSbDAzQWVCR0hnclA1aTlzM1hWQ0dQ?=
- =?utf-8?B?dlduOUppdjVxMHNjZU45YXJiV212eTVwbjlUejM3RTZZQlgxdEp3ZlJGTkVq?=
- =?utf-8?B?eklmUG9IZjFEbStnQWtaNGZlT0JVWHgvNlBTTDJ2eFd5a3RQUU1HckZrT0hR?=
- =?utf-8?B?dVcxN1FQbGxINXpDRkttQ05id3drRUpDR3MzRURpNXU1NkdIN3phckpTdzB6?=
- =?utf-8?B?QUNPNFI4WlZFVks4cXVQWVY4YUpUSkVRSjllUHRBK2cxZ2ZDZUNxWFp6NGhn?=
- =?utf-8?B?RmsvekcvQldpRW5wS05hSEtpYjlQd0VHVCtiQnNwWEVSV1ZXcUxnMG1BdFUz?=
- =?utf-8?B?cmY2a0dpRTFLZFBoWnNWWmhlelJjendyOThkdW1CbHBybjhZWTNqZDA1Y0ow?=
- =?utf-8?Q?B6Y/aLqHHanG15FUxTMGB2z8PxFubtsxm8FTMX3+mU=3D?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5196cb0-026a-4410-b29a-08d9ab34ba87
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 08:15:20.7739 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E5N+j/L0FMf8Zv6Ov6M4ZvmgX1IYNGyX3e+yiTSnxCLwkp+zl4Zizy6cDqVQO4XqHP/Mu4dH7+nPz5chbyWoXzMhoV9kEK/IZt3uNa+uYf0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB5841
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211119_001524_743924_D79BCE1B 
-X-CRM114-Status: GOOD (  17.04  )
+X-CRM114-CacheID: sfid-20211119_001812_252737_30EA9919 
+X-CRM114-Status: GOOD (  13.80  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -159,51 +63,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
-
-On 19/11/2021 09:11, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> 
-> Erase can be zeroed in spi_nor_parse_4bait() or
-> spi_nor_init_non_uniform_erase_map(). In practice it happened with
-> mt25qu256a, which supports 4K, 32K, 64K erases with 3b address commands,
-> but only 4K and 64K erase with 4b address commands.
-> 
-> Fixes: dc92843159a7 ("mtd: spi-nor: fix erase_type array to indicate current map conf")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-
-Please ignore this one (typo in the condition).
-v2 follows.
-
-> ---
->  drivers/mtd/spi-nor/core.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 88dd090..183ea9d 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1400,6 +1400,8 @@ spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
->  			continue;
->  
->  		erase = &map->erase_type[i];
-> +		if (!erase->opcode)
-> +			continue;
->  
->  		/* Alignment is not mandatory for overlaid regions */
->  		if (region->offset & SNOR_OVERLAID_REGION &&
-> 
-
--- 
-Best regards,
-Alexander Sverdlin.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgSGVydmUsCgpoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb20gd3JvdGUgb24gRnJpLCAxOSBOb3Yg
+MjAyMSAwODozOTowNiArMDEwMDoKCj4gTkFORF9PUF9DTUQoKSBleHBlY3QgYSBkZWxheSBwYXJh
+bWV0ZXIgaW4gbmFub3NlY29uZHMuCgpleHBlY3RzCgo+IFRoZSBkZWxheSB2YWx1ZSBpcyB3cm9u
+Z2x5IGdpdmVuIGluIG1pbGxpc2Vjb25kcy4KPiAKPiBGaXggdGhlIGNvbnZlcnNpb24gbWFjcm8g
+dXNlZCBpbiBvcmRlciB0byBzZXQgdGhpcwo+IGRlbGF5IGluIG5hbm9zZWNvbmRzLgo+IAoKSSBi
+ZWxpZXZlIHlvdSBzdGlsbCBtaXNzIHRoZSBGaXhlczogdGFnIGhlcmUgOikKCj4gU2lnbmVkLW9m
+Zi1ieTogSGVydmUgQ29kaW5hIDxoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb20+Cj4gLS0tCj4gQ2hh
+bmdlcyB2MSAtPiB2MjoKPiAtIENvbW1pdCBsb2cgcmV3b3JkCj4gCj4gIGRyaXZlcnMvbXRkL25h
+bmQvcmF3L25hbmRfYmFzZS5jIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24o
+KyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcv
+bmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwo+IGluZGV4IDNk
+NmM2ZTg4MDUyMC4uNWM2YjA2NTgzN2VmIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRfYmFzZS5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMK
+PiBAQCAtMTgzNyw3ICsxODM3LDcgQEAgaW50IG5hbmRfZXJhc2Vfb3Aoc3RydWN0IG5hbmRfY2hp
+cCAqY2hpcCwgdW5zaWduZWQgaW50IGVyYXNlYmxvY2spCj4gIAkJCU5BTkRfT1BfQ01EKE5BTkRf
+Q01EX0VSQVNFMSwgMCksCj4gIAkJCU5BTkRfT1BfQUREUigyLCBhZGRycywgMCksCj4gIAkJCU5B
+TkRfT1BfQ01EKE5BTkRfQ01EX0VSQVNFMiwKPiAtCQkJCSAgICBOQU5EX0NPTU1PTl9USU1JTkdf
+TVMoY29uZiwgdFdCX21heCkpLAo+ICsJCQkJICAgIE5BTkRfQ09NTU9OX1RJTUlOR19OUyhjb25m
+LCB0V0JfbWF4KSksCj4gIAkJCU5BTkRfT1BfV0FJVF9SRFkoTkFORF9DT01NT05fVElNSU5HX01T
+KGNvbmYsIHRCRVJTX21heCksCj4gIAkJCQkJIDApLAo+ICAJCX07CgpUaGFua3MsCk1pcXXDqGwK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
