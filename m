@@ -2,56 +2,88 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7962C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A29A5C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:42:34 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DB0661AD2
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:32:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 7DB0661AD2
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5F55F61994
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:42:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 5F55F61994
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JQ/zXnW1SkSnokn+jxxeqdoGtxzQMHU7rhttUa/bbrc=; b=f1ilghT4cXL6Mz
-	d7d4292XcvkdFY+mPp5kUUi/WsymdBrB8Fp2HRKQnrFF165h5rauROJ0OEeuL6eajKewOSl+u9bVe
-	Q3h9stDgPraqbToPa5BSXZ/Ei+TUej5N8cIPKAFAx9lhCNxzD/DIYw/xgedMzc4Fy2GAtdtc7/J2E
-	mMyVr5OB7PF0RLNceztld+RdjduH/g23vbz0HwY52u+ywtIKIfvQX+fehpLaySLkmazVVRUoFQ4pb
-	IMrMDQr9EP1q1ho8KPl/jYEOTfqwn4hW9+mOi8ioOtNOY0IJoWg55S/RR56pji7cVdbT3tf5re5Xl
-	Va5D5m6gblqccAGhdnlg==;
+	List-Owner; bh=9kef/HQy2axDaglhioBys2HwiLi5VQ4gNNhVLT8wGmE=; b=FVGJRpEu4jn4S2
+	TeA6WuegQFynEWGQNSYbSG/cqQ9915i1ZkN2hbtGvgHIvbexSDxIyXUtY7Fq1VD9Nmboj7DBdFLLc
+	U30nhIs2B0oUq9Y2t5CnkMjhWhENAUTFOzGEvsFrjcUhjG2dXiQhY5aJLsdtRfS1fis51iCWHWolA
+	g+089Lun7W39mcWSpaXs0Lie4Ktjq0Md7Xt6uhrachEVjgw1Ol4AW9kAeUOeb/pGgemn5aujGCO6B
+	I7GHRu8bkwL+6B6qi0qEWDEYtQjqEpXP8xgVooal0OznnWldRmIr9TliLv1LSScMINxalbnJ78Pii
+	V+bV5ObF8cB27TCoyvjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnzJd-009mF5-Bs; Fri, 19 Nov 2021 08:32:13 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1mnzSz-009nkq-0E; Fri, 19 Nov 2021 08:41:53 +0000
+Received: from mail-ua1-f53.google.com ([209.85.222.53])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnzJa-009mDg-3U
- for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 08:32:12 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 94574E000B;
- Fri, 19 Nov 2021 08:32:05 +0000 (UTC)
-Date: Fri, 19 Nov 2021 09:32:04 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 4/4] mtd: rawnand: fsmc: Fix timing computation
-Message-ID: <20211119093204.1511b4b8@xps13>
-In-Reply-To: <20211119073909.1492538-5-herve.codina@bootlin.com>
-References: <20211119073909.1492538-1-herve.codina@bootlin.com>
- <20211119073909.1492538-5-herve.codina@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1mnzSv-009nk7-W7; Fri, 19 Nov 2021 08:41:51 +0000
+Received: by mail-ua1-f53.google.com with SMTP id ay21so19679889uab.12;
+ Fri, 19 Nov 2021 00:41:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=4hbYdvHhEe2Uxe6rqTFYcB++vBPifwXHrniTsNrCDXE=;
+ b=4/anjzJP0eVlU47Nzr9rTvWaMNcgkJE63kJRt2FmNBgq+BA/Pj63+eZT1zbau9VKH0
+ V4dfqMwyzlbwePHiUz0ClddsQm1iWq3uo44W3eydeYMs6ztnCEarR1bETafPe9wTo0dk
+ B5+b5DX0Y4qdFjoBK941zMVa3TVIVWysRlQIVfdBGqhYrevaDTTMmaHlISElnaZZrOQN
+ dIfne6x/t5489mVU+9Ny6INxlrqe2SllnB9EYcRpicZTtCsHDRIu/fUwH0MVvancnXLc
+ cicoQDJfaoFr4LmbDNKTvSzNnKrk6H0fF1J/niQOhXeA2NMrLMDcg4BpanHay6nCM7Ie
+ DbqA==
+X-Gm-Message-State: AOAM531rNUJ1oqrWhsAdYS8/GS/CM1O3x8cMqYg1Jp3cJOYf+h1M3Hsz
+ Ius74WHCcfPP755S+w5w7ZDT8n8WXI2ckQ==
+X-Google-Smtp-Source: ABdhPJz/s8IEAeqEbUt2nKzybtcTsipfBdRw62n0Y+dlzQ2nJr0iVEoFxf3gQTXQPk6aDurGJgw3ow==
+X-Received: by 2002:a67:c79a:: with SMTP id t26mr81816094vsk.37.1637311308128; 
+ Fri, 19 Nov 2021 00:41:48 -0800 (PST)
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com.
+ [209.85.221.173])
+ by smtp.gmail.com with ESMTPSA id w11sm1286340vkm.14.2021.11.19.00.41.47
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 19 Nov 2021 00:41:47 -0800 (PST)
+Received: by mail-vk1-f173.google.com with SMTP id d130so5506480vke.0;
+ Fri, 19 Nov 2021 00:41:47 -0800 (PST)
+X-Received: by 2002:a05:6122:7d4:: with SMTP id
+ l20mr19232022vkr.26.1637311307063; 
+ Fri, 19 Nov 2021 00:41:47 -0800 (PST)
 MIME-Version: 1.0
+References: <20211118111940.1275351-1-miquel.raynal@bootlin.com>
+ <20211118111940.1275351-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20211118111940.1275351-2-miquel.raynal@bootlin.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 19 Nov 2021 09:41:35 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXi0PPXjH_hHxO1-Lz9fupe4oo936ENe9DzMW8Sb1G6mg@mail.gmail.com>
+Message-ID: <CAMuHMdXi0PPXjH_hHxO1-Lz9fupe4oo936ENe9DzMW8Sb1G6mg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: mtd: rzn1: Describe Renesas RZ/N1 NAND
+ controller
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
+ Michael Walle <michael@walle.cc>,
+ MTD Maling List <linux-mtd@lists.infradead.org>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Jimmy Lalande <jimmy.lalande@se.com>, 
+ Milan Stevanovic <milan.stevanovic@se.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+ Gareth Williams <gareth.williams.jx@renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211119_003210_446119_8FE7835B 
-X-CRM114-Status: GOOD (  29.04  )
+X-CRM114-CacheID: sfid-20211119_004150_056343_80D0C896 
+X-CRM114-Status: GOOD (  23.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,90 +95,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSGVydmUsCgpoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb20gd3JvdGUgb24gRnJpLCAxOSBOb3Yg
-MjAyMSAwODozOTowOSArMDEwMDoKCj4gVW5kZXIgY2VydGFpbiBjaXJjdW1zdGFuY2VzLCB0aGUg
-dGltaW5nIHNldHRpbmdzIGNhbGN1bGF0ZWQgYnkKPiB0aGUgRlNNQyBOQU5EIGNvbnRyb2xsZXIg
-ZHJpdmVyIHdlcmUgaW5hY2N1cmF0ZS4KPiBUaGVzZSBzZXR0aW5ncyBsZWFkIHRvIGluY29ycmVj
-dCBkYXRhIHJlYWRzIG9yIGZhbGxiYWNrIHRvCgpsZWQgdG8KCm9uZU9mOgogIC0gZmFsbGJhY2tz
-IHRvIHRpbWluZyBtb2RlIDAKICAtIGZhbGxiYWNrcyB0byBtb2RlIDAKYnV0ICJtb2RlIFggdGlt
-aW5nIiBkb2VzIG5vdCBsb29rIGdvb2QgOikgKHNhbWUgYmVsb3csIGl0IGFwcGxpZXMgYWxsCm92
-ZXIgdGhpcyBjb21taXQgbG9nKQoKPiBtb2RlIDAgdGltaW5ncyBkZXBlbmRpbmcgb24gTkFORCBj
-aGlwIHVzZWQuCgpkZXBlbmRpbmcgb24gdGhlIE5BTkQgY2hpcCB1c2VkCgo+IAo+IFRoZSB0aW1p
-bmcgY29tcHV0YXRpb24gZGlkIG5vdCB0YWtlIGludG8gYWNjb3VudCB0aGUgZm9sbG93aW5nCj4g
-Y29uc3RyYWludCBnaXZlbiBpbiBTUEVBcjN4eCByZWZlcmVuY2UgbWFudWFsOgo+ICAgdHdhaXQg
-Pj0gdENFQSAtIHRzZXQqVENMSyArIFRPVVRERUwgKyBUSU5ERUwKClNlZSBiZWxvdyBmb3IgdGhl
-IHN0eWxlIHJlcXVlc3QgKHRoaXMgcmVhbGx5IGlzIG5pdHBpY2tpbmcsIEknbSBzb3JyeSkKCj4g
-Cj4gRW5oYW5jZSB0aGUgdGltaW5ncyBjYWxjdWxhdGlvbiBieSB0YWtpbmcgaW50byBhY2NvdW50
-IHRoaXMKPiBhZGRpdGlvbmFsIGNvbnN0cmFpbnQuCj4gCj4gVGhlIGNoYW5nZSBoYXMgbm8gaW1w
-YWN0IG9uIHNsb3cgdGltaW5nIG1vZGUgc3VjaCBhcyBtb2RlIDAuCgpUaGlzIGNoYW5nZT8Kc2xv
-dyB0aW1pbmcgbW9kZXMKCj4gSW5kZWVkLCBvbiBtb2RlIDAgdGltaW5nLCBjb21wdXRlZCB2YWx1
-ZXMgYXJlIHRoZSBzYW1lIHdpdGggYW5kCj4gd2l0aG91dCB0aGUgcGF0Y2guCj4gCj4gVGhlIE5B
-TkQgdGhhdCBwcmV2aW91c2x5IHVzZWQgdGhlIG1vZGUgMCBmYWxsYmFjayB0aW1pbmcgaXMKPiB3
-b3JraW5nIGluIG1vZGUgMyB0aW1pbmcuCgpJIGJlbGlldmUgd2Ugc2hvdWxkIGJlIG1vcmUgZ2Vu
-ZXJpYzoKIk5BTkRzIHdoaWNoIHByZXZpb3VzbHkgc3RheWVkIGluIG1vZGUgMCBiZWNhdXNlIG9m
-IC4uLiBjYW4gbm93IHdvcmsKYXQgaGlnaGVyIHNwZWVkcyBhbmQgTkFORHMgd2hpY2ggd2VyZSBu
-b3Qgd29ya2luZyBhdCBhbGwgYmVjYXVzZSBvZiB0aGUKY29ycnVwdGVkIGRhdGEgcmV0dXJuZWQg
-aW50ZXJhY3QgYXQgaGlnaCBzcGVlZHMgd2l0aG91dCB0cm91Ymxlcy4KCk92ZXJhbGwgaW1wcm92
-ZW1lbnQgb24gYSA8Zmxhc2ggbmFtZS90eXBlPjoiCgo+IFRoZSByZWFkL3dyaXRlcyBhY2Nlc3Nl
-cyBwZXJmb3JtYW5jZXMgKGZsYXNoX3NwZWVkIHRvb2wgcmVzdWx0KQo+IGFyZSB0aGUgZm9sbG93
-aW5nOgo+ICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGUwICAgICAgIG1vZGUzCj4gZXJhc2Vi
-bG9jayB3cml0ZSBzcGVlZCAgMzIyMCBLaUIvcyAgNDUxMSBLaUIvcwo+IGVyYXNlYmxvY2sgcmVh
-ZCBzcGVlZCAgIDQ0OTEgS2lCL3MgIDc1MjkgS2lCL3MKPiAKPiBUaGUgTkFORCB3aGVyZSBkYXRh
-IHJlYWRzIHdlcmUgcHJldmlvdXNseSBpbmNvcnJlY3QgYXJlIGNvcnJlY3QKPiBhbmQgdGhpcyBO
-QU5EIGlzIGFsc28gd29ya2luZyBhdCBtb2RlIDMgdGltaW5nLgo+IAo+IFNpZ25lZC1vZmYtYnk6
-IEhlcnZlIENvZGluYSA8aGVydmUuY29kaW5hQGJvb3RsaW4uY29tPgo+IC0tLQo+IENoYW5nZXMg
-djEgdG8gdjI6Cj4gLSBDb21taXQgbG9nIHJld29yZAo+IC0gQWRkZWQgcGVyZm9ybWFuY2UgZGV0
-YWlscyBpbiBjb21taXQgbG9nCj4gLSBVc2VkICNkZWZpbmUgZm9yIFRPVVRERUwgYW5kIFRJTkRF
-TCBhbmQKPiAgIEZpeGVkIGNvZGluZyBzdHlsZQo+IC0gVXNlZCBtYXgzKCkKPiAKPiAgZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvZnNtY19uYW5kLmMgfCAzMiArKysrKysrKysrKysrKysrKysrKysrKyst
-LS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMo
-LSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNtY19uYW5kLmMgYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9mc21jX25hbmQuYwo+IGluZGV4IDBhNmM5ZWYwZWE4Yi4uNTZi
-OWRhMjUyMzQ2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2ZzbWNfbmFuZC5j
-Cj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNtY19uYW5kLmMKPiBAQCAtOTQsNiArOTQs
-MTQgQEAKPiAgCj4gICNkZWZpbmUgRlNNQ19CVVNZX1dBSVRfVElNRU9VVAkoMSAqIEhaKQo+ICAK
-PiArLyoKPiArICogQWNjb3JkaW5nIHRvIFNQRUFyMzAwIFJlZmVyZW5jZSBNYW51YWwgKFJNMDA4
-MikKPiArICogIFRPVURFTCA9IDducyAoT3V0cHV0IGRlbGF5IGZyb20gdGhlIGZsaXAtZmxvcHMg
-dG8gdGhlIGJvYXJkKQo+ICsgKiAgVElOREVMID0gNW5zIChJbnB1dCBkZWxheSBmcm9tIHRoZSBi
-b2FyZCB0byB0aGUgZmxpcGZsb3ApCj4gKyAqLwo+ICsjZGVmaW5lIFRPVVRERUwJNzAwMAo+ICsj
-ZGVmaW5lIFRJTkRFTAk1MDAwCj4gKwo+ICBzdHJ1Y3QgZnNtY19uYW5kX3RpbWluZ3Mgewo+ICAJ
-dTggdGNscjsKPiAgCXU4IHRhcjsKPiBAQCAtMjc4LDcgKzI4Niw3IEBAIHN0YXRpYyBpbnQgZnNt
-Y19jYWxjX3RpbWluZ3Moc3RydWN0IGZzbWNfbmFuZF9kYXRhICpob3N0LAo+ICB7Cj4gIAl1bnNp
-Z25lZCBsb25nIGhjbGsgPSBjbGtfZ2V0X3JhdGUoaG9zdC0+Y2xrKTsKPiAgCXVuc2lnbmVkIGxv
-bmcgaGNsa24gPSBOU0VDX1BFUl9TRUMgLyBoY2xrOwo+IC0JdTMyIHRoaXosIHRob2xkLCB0d2Fp
-dCwgdHNldDsKPiArCXUzMiB0aGl6LCB0aG9sZCwgdHdhaXQsIHRzZXQsIHR3YWl0X21pbjsKPiAg
-Cj4gIAlpZiAoc2RydC0+dFJDX21pbiA8IDMwMDAwKQo+ICAJCXJldHVybiAtRU9QTk9UU1VQUDsK
-PiBAQCAtMzEwLDEzICszMTgsNiBAQCBzdGF0aWMgaW50IGZzbWNfY2FsY190aW1pbmdzKHN0cnVj
-dCBmc21jX25hbmRfZGF0YSAqaG9zdCwKPiAgCWVsc2UgaWYgKHRpbXMtPnRob2xkID4gRlNNQ19U
-SE9MRF9NQVNLKQo+ICAJCXRpbXMtPnRob2xkID0gRlNNQ19USE9MRF9NQVNLOwo+ICAKPiAtCXR3
-YWl0ID0gbWF4KHNkcnQtPnRSUF9taW4sIHNkcnQtPnRXUF9taW4pOwo+IC0JdGltcy0+dHdhaXQg
-PSBESVZfUk9VTkRfVVAodHdhaXQgLyAxMDAwLCBoY2xrbikgLSAxOwo+IC0JaWYgKHRpbXMtPnR3
-YWl0ID09IDApCj4gLQkJdGltcy0+dHdhaXQgPSAxOwo+IC0JZWxzZSBpZiAodGltcy0+dHdhaXQg
-PiBGU01DX1RXQUlUX01BU0spCj4gLQkJdGltcy0+dHdhaXQgPSBGU01DX1RXQUlUX01BU0s7Cj4g
-LQo+ICAJdHNldCA9IG1heChzZHJ0LT50Q1NfbWluIC0gc2RydC0+dFdQX21pbiwKPiAgCQkgICBz
-ZHJ0LT50Q0VBX21heCAtIHNkcnQtPnRSRUFfbWF4KTsKPiAgCXRpbXMtPnRzZXQgPSBESVZfUk9V
-TkRfVVAodHNldCAvIDEwMDAsIGhjbGtuKSAtIDE7Cj4gQEAgLTMyNSw2ICszMjYsMjEgQEAgc3Rh
-dGljIGludCBmc21jX2NhbGNfdGltaW5ncyhzdHJ1Y3QgZnNtY19uYW5kX2RhdGEgKmhvc3QsCj4g
-IAllbHNlIGlmICh0aW1zLT50c2V0ID4gRlNNQ19UU0VUX01BU0spCj4gIAkJdGltcy0+dHNldCA9
-IEZTTUNfVFNFVF9NQVNLOwo+ICAKPiArCS8qCj4gKwkgKiBBY2NvcmRpbmcgdG8gU1BFQXIzMDAg
-UmVmZXJlbmNlIE1hbnVhbCAoUk0wMDgyKSB3aGljaCBnaXZlcyBtb3JlCj4gKwkgKiBpbmZvcm1h
-dGlvbiByZWxhdGVkIHRvIEZTTVNDIHRpbWluZ3MgdGhhbiB0aGUgU1BFQXI2MDAgb25lIChSTTAz
-MDUpLAo+ICsJICogICB0d2FpdCA+PSB0Q0VBIC0gdHNldCpUQ0xLICsgVE9VVERFTCArIFRJTkRF
-TAoKSXQgaXMgY2VydGFpbmx5IGJlc3QgaWYgaW4gcGxhaW4gdGV4dCB3ZSBmb2xsb3cgdGhlIHNh
-bWUgc3BhY2luZwpjb252ZW50aW9uIHRoYW4gaW4gdGhlIGNvZGU6ICh0c2V0ICogVENMSykuIFNh
-bWUgYXBwbGllcyB0byB5b3VyIGNvbW1pdApsb2cuCgo+ICsJICovCj4gKwl0d2FpdF9taW4gPSBz
-ZHJ0LT50Q0VBX21heCAtICgodGltcy0+dHNldCArIDEpICogaGNsa24gKiAxMDAwKQo+ICsJCSAg
-ICArIFRPVVRERUwgKyBUSU5ERUw7Cj4gKwl0d2FpdCA9IG1heDMoc2RydC0+dFJQX21pbiwgc2Ry
-dC0+dFdQX21pbiwgdHdhaXRfbWluKTsKPiArCj4gKwl0aW1zLT50d2FpdCA9IERJVl9ST1VORF9V
-UCh0d2FpdCAvIDEwMDAsIGhjbGtuKSAtIDE7Cj4gKwlpZiAodGltcy0+dHdhaXQgPT0gMCkKPiAr
-CQl0aW1zLT50d2FpdCA9IDE7Cj4gKwllbHNlIGlmICh0aW1zLT50d2FpdCA+IEZTTUNfVFdBSVRf
-TUFTSykKPiArCQl0aW1zLT50d2FpdCA9IEZTTUNfVFdBSVRfTUFTSzsKPiArCj4gIAlyZXR1cm4g
-MDsKPiAgfQo+ICAKCk90aGVyd2lzZSBsb29rcyBnb29kLgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
-TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Miquel,
+
+CC Gareth
+
+On Thu, Nov 18, 2021 at 12:19 PM Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> Add a Yaml description for this Renesas NAND controller bindings.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks for your patch!
+
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/renesas,r9a06g032-nand-controller.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/renesas,r9a06g032-nand-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Renesas RZ/N1x NAND flash controller device tree bindings
+> +
+> +maintainers:
+> +  - Miquel Raynal <miquel.raynal@bootlin.com>
+> +
+> +allOf:
+> +  - $ref: "nand-controller.yaml"
+> +
+> +properties:
+> +  compatible:
+> +    const: renesas,r9a06g032-nand-controller
+
+As the NAND Flash Controller is present on all of RZ/N1D, RZ/N1S,
+and RZ/N1L, I think you should add a family-specific compatible value
+"renesas,rzn1-nand-controller" as a fallback.
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    nand-controller@40102000 {
+> +        compatible = "renesas,r9a06g032-nand-controller";
+> +        reg = <0x40102000 0x2000>;
+> +        interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&hclk_nand>, <&clk_nand>;
+
+This clocks property is not based on an actual .dtsi, right?
+
+> +        clock-names = "hclk", "eclk";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +    };
+
+The rest looks good to me.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
