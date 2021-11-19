@@ -2,14 +2,14 @@ Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archi
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AB83C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1DECC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:56:49 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A1AD610D0
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:44:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 0A1AD610D0
+	by mail.kernel.org (Postfix) with ESMTPS id 63A3161AF0
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 08:56:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 63A3161AF0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -18,56 +18,55 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=d7cPC+wZZoULYgta43XVSQlqFj75W1cj+8SdnlWqT0k=; b=CA5EIQ5uTQC8J9
-	23aay7F95PSm+RYI0MCVDUBOQxsIkzUKYpwrF44W4ervN4tdM2CBJrG7zarnHwr4XBFMjVRD6lK9k
-	7VcKGArvcVTKAq0FMLTwppegyygeUCZtE3pWWg8/BBTiEZSyQE/y6cJbFtqkUzSo/KAV/ciFLV8AO
-	tiilpp6u9srJQsUEiHCoQuMNT9wIGxCTSOjAJbZEDwY/E+12Eqw6zFLyhprGZulbVhK3MC25Jneep
-	lFrpN8DxG7ZlF30EOZ3Hkhd0nEWrm4184ofW7PwMnoRolLORxFv7HfdnlTC923mIPZyr2Efc4zuzA
-	xMlYbsmecaFw7fSUpo6A==;
+	List-Owner; bh=98ToWyXJdawo9m6slfzZwBh1i2aJKIdRc/+49dtw4/I=; b=gSE6kKSwQEQXWv
+	iyWq+q87v7j59V5JT+AqwKIGhHRhXqhGYTqFNQRjapBCsZ5YDCw23ht612DZMjAqj31xpIWdtjZfm
+	Pd2pLgxPeYpF51GYV5lBRLFizpJEQgMslRyOHTCwG2LYOelYDjydLaROBolRcW3VtT7f41eHe9/7X
+	WsZtmyBMoirC22fP07q5ebSGYZNa+GB0ZBqnjsb/Ph5g9ZpmLGdePFhN17QjGs6SAaflVDhcmU5p3
+	L21TYjQdVWDfqTKyZI3pqObfcJNjU7820lje0jqAkMLqmwxg9CVqJVyG4U8GD5DlgM2LhjDaUqBMn
+	85EPW++qu/vejp2o2XHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnzUe-009oEw-1M; Fri, 19 Nov 2021 08:43:36 +0000
-Received: from mail-ua1-f47.google.com ([209.85.222.47])
+	id 1mnzgq-009rIk-GD; Fri, 19 Nov 2021 08:56:12 +0000
+Received: from mail-ua1-f51.google.com ([209.85.222.51])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnzUb-009oDX-5W; Fri, 19 Nov 2021 08:43:34 +0000
-Received: by mail-ua1-f47.google.com with SMTP id r15so19778793uao.3;
- Fri, 19 Nov 2021 00:43:32 -0800 (PST)
+ id 1mnzgm-009rGz-Of; Fri, 19 Nov 2021 08:56:11 +0000
+Received: by mail-ua1-f51.google.com with SMTP id i6so19796626uae.6;
+ Fri, 19 Nov 2021 00:56:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=8WOd2SODEE+htCsUwpfTOfsY7kLZIEqXetxyg07nI8k=;
- b=yanTCB0CHnqcV/LXBgbvr47xkRotXj1zwGb73ypBe5jImVcw/J7VdXyjt1vZgqLmyg
- Sh2rKH9stkeTPAZN/fi7EhNSbIs6TINP0K3WGxc4IKJnP6auDuwXogvPoJgUeicQ2Him
- SL0iObMONjF68APLBYnVjvAcOBNIbz5vHvNMedwu9Hq8k9IOyRnN/rJNcOu5qGIF/R1V
- YCxF7Qv0nmcgODUb+J4K8Go1sB6mH6QQOCJLtKvPtuoT7dldIlwONHRFxslqUb2G9I1D
- 9SHbeo8diWpsrY+T244gQ4o0Um48/o3UU3wFnARUWUQylxQO+H9S/fYScvF0ifkx3ndP
- tXBQ==
-X-Gm-Message-State: AOAM530pVmw9nnXSAnZuLItHizevuQ1+TidPbxGglgU21hrZrAVfH4CP
- tFK92QllDLd79wwtt6/5sO8pU1AC7+ueHw==
-X-Google-Smtp-Source: ABdhPJyaSzQF0uUy3LEJa4TeW3vJWtLS6EJhvZRSYYZFSFYM7OVTpHj7dQ02ZQTgQfvZjsRPauEpdQ==
-X-Received: by 2002:ab0:378b:: with SMTP id d11mr47024985uav.61.1637311411616; 
- Fri, 19 Nov 2021 00:43:31 -0800 (PST)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com.
- [209.85.222.50])
- by smtp.gmail.com with ESMTPSA id c9sm1500135uaf.12.2021.11.19.00.43.30
+ bh=Hor3EEYI9D9avRR4fz8RyU4t30hMlnEbgv5uVugQFeA=;
+ b=Y+0zVXm2hjBM68pt/Xyer+YvuZXsqkh+GQUBqha8wgvffajialI9C3qgQyJbC50ZHa
+ 71a11xCMWiHM+1Df24CENhoM2p6/+a25KqKQ8p8ArjgZPfpkjizxJZgGswiVP5PFIbgD
+ Oun0iP9LOqL3+JTu9TBveZB/mbcyt1KiFZ9ZEko9+CXzJ5jIntA3L4rqEFM32lzcgZ0F
+ ObnPVZwPw9AVhdrSja1Sc7R7RYcdILj5uGkm+kiy2zjGZOB/2nExgcYax5B3JzTkS509
+ IjrmvDhn/Ooj8PuCVQwUgr2PEoScfaLyJ54d1OWpaMe88hUqYCkOj5M7eXeoV650ZVnX
+ v7+Q==
+X-Gm-Message-State: AOAM530ywf8ZH7uGlf66XgJo5AHN/tzAdPuaMSTAhKICg5vjLNYwQ3OW
+ GkYvVnMskpKA00TlB0AgZ8PGDKDPwgu/tw==
+X-Google-Smtp-Source: ABdhPJxW2i8SB3V7gB2S3/Wdi9yqgXEj0Eb2cPFalhhFT1+Z5OFPreJyoptq8MwNan3MJR50dEhdtA==
+X-Received: by 2002:a67:b005:: with SMTP id z5mr92797697vse.59.1637312166800; 
+ Fri, 19 Nov 2021 00:56:06 -0800 (PST)
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com.
+ [209.85.221.177])
+ by smtp.gmail.com with ESMTPSA id n10sm1473753uaj.20.2021.11.19.00.56.06
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 19 Nov 2021 00:43:30 -0800 (PST)
-Received: by mail-ua1-f50.google.com with SMTP id b17so19858644uas.0;
- Fri, 19 Nov 2021 00:43:30 -0800 (PST)
-X-Received: by 2002:ab0:15a1:: with SMTP id i30mr46605103uae.122.1637311410025; 
- Fri, 19 Nov 2021 00:43:30 -0800 (PST)
+ Fri, 19 Nov 2021 00:56:06 -0800 (PST)
+Received: by mail-vk1-f177.google.com with SMTP id k83so5469900vke.7;
+ Fri, 19 Nov 2021 00:56:06 -0800 (PST)
+X-Received: by 2002:a05:6122:20ab:: with SMTP id
+ i43mr115054181vkd.19.1637312165815; 
+ Fri, 19 Nov 2021 00:56:05 -0800 (PST)
 MIME-Version: 1.0
 References: <20211118111940.1275351-1-miquel.raynal@bootlin.com>
- <20211118111940.1275351-2-miquel.raynal@bootlin.com>
- <CAMuHMdXi0PPXjH_hHxO1-Lz9fupe4oo936ENe9DzMW8Sb1G6mg@mail.gmail.com>
-In-Reply-To: <CAMuHMdXi0PPXjH_hHxO1-Lz9fupe4oo936ENe9DzMW8Sb1G6mg@mail.gmail.com>
+ <20211118111940.1275351-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20211118111940.1275351-3-miquel.raynal@bootlin.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 19 Nov 2021 09:43:18 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWMJ+KMSCWRs3KpzMnf2KkQjbXqFPH9ceJ5y04mQzv6=w@mail.gmail.com>
-Message-ID: <CAMuHMdWMJ+KMSCWRs3KpzMnf2KkQjbXqFPH9ceJ5y04mQzv6=w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: mtd: rzn1: Describe Renesas RZ/N1 NAND
- controller
+Date: Fri, 19 Nov 2021 09:55:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUTj_kHV6=fMJ=CjiHjBSi_TrnrjeT0BdaHkONHPxwnQA@mail.gmail.com>
+Message-ID: <CAMuHMdUTj_kHV6=fMJ=CjiHjBSi_TrnrjeT0BdaHkONHPxwnQA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd: rawnand: rzn1: Add new NAND controller driver
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
@@ -76,14 +75,13 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Jimmy Lalande <jimmy.lalande@se.com>, 
  Milan Stevanovic <milan.stevanovic@se.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
+ Magnus Damm <magnus.damm@gmail.com>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>, 
  Gareth Williams <gareth.williams.jx@renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211119_004333_230695_A60A424F 
-X-CRM114-Status: GOOD (  24.29  )
+X-CRM114-CacheID: sfid-20211119_005608_872457_B91F6551 
+X-CRM114-Status: GOOD (  28.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,41 +98,512 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Nov 19, 2021 at 9:41 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Nov 18, 2021 at 12:19 PM Miquel Raynal
-> <miquel.raynal@bootlin.com> wrote:
-> > Add a Yaml description for this Renesas NAND controller bindings.
-> >
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->
-> Thanks for your patch!
->
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/renesas,r9a06g032-nand-controller.yaml
-> > @@ -0,0 +1,60 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/renesas,r9a06g032-nand-controller.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Renesas RZ/N1x NAND flash controller device tree bindings
-> > +
-> > +maintainers:
-> > +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> > +
-> > +allOf:
-> > +  - $ref: "nand-controller.yaml"
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: renesas,r9a06g032-nand-controller
->
-> As the NAND Flash Controller is present on all of RZ/N1D, RZ/N1S,
-> and RZ/N1L, I think you should add a family-specific compatible value
-> "renesas,rzn1-nand-controller" as a fallback.
+Hi Miquel,
 
-And please rename the file to renesas,rzn1-nand-controller.yaml.
+CC Gareth
+
+On Thu, Nov 18, 2021 at 12:19 PM Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> Introduce Renesas RZ/N1x NAND controller driver which supports:
+> - All ONFI timing modes
+> - Different configurations of its internal ECC controller
+> - On-die (not tested) and software ECC support
+> - Several chips (not tested)
+> - Subpage accesses
+> - DMA and PIO
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks for your patch!
+
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -467,6 +467,12 @@ config MTD_NAND_PL35X
+>           Enables support for PrimeCell SMC PL351 and PL353 NAND
+>           controller found on Zynq7000.
+>
+> +config MTD_NAND_RZN1
+> +       tristate "Renesas RZ/N1D, RZ/N1S, RZ/N1L NAND controller"
+> +       depends on OF || COMPILE_TEST
+
+depends on ARCH_RENESAS || COMPILE_TEST
+
+> +       help
+> +         Enables support for Renesas RZ/N1x SoC family NAND controller.
+> +
+>  comment "Misc"
+>
+>  config MTD_SM_COMMON
+
+> --- /dev/null
+> +++ b/drivers/mtd/nand/raw/rzn1-nand-controller.c
+
+> +static int rzn1_read_subpage_hw_ecc(struct nand_chip *chip, u32 req_offset,
+> +                                   u32 req_len, u8 *bufpoi, int page)
+> +{
+> +       struct rzn1_nfc *nfc = to_rzn1_nfc(chip->controller);
+> +       struct mtd_info *mtd = nand_to_mtd(chip);
+> +       struct rzn1_nand_chip *rzn1_nand = to_rzn1_nand(chip);
+> +       unsigned int cs = to_nfc_cs(rzn1_nand);
+> +       unsigned int page_off = round_down(req_offset, chip->ecc.size);
+> +       unsigned int real_len = round_up(req_offset + req_len - page_off,
+> +                                        chip->ecc.size);
+> +       unsigned int start_chunk = page_off / chip->ecc.size;
+> +       unsigned int nchunks = real_len / chip->ecc.size;
+> +       unsigned int ecc_off = 2 + (start_chunk * chip->ecc.bytes);
+> +       struct rzn1_op rop = {
+> +               .command = COMMAND_INPUT_SEL_AHBS | COMMAND_0(NAND_CMD_READ0) |
+> +                          COMMAND_2(NAND_CMD_READSTART) | COMMAND_FIFO_SEL |
+> +                          COMMAND_SEQ_READ_PAGE,
+> +               .addr0_row = page,
+> +               .addr0_col = page_off,
+> +               .len = real_len,
+> +               .ecc_offset = ECC_OFFSET(mtd->writesize + ecc_off),
+> +       };
+> +       unsigned int max_bitflips = 0;
+> +       u32 ecc_stat;
+> +       int bf, ret, i;
+
+unsigned int i
+
+> +
+> +       /* Prepare controller */
+> +       rzn1_nfc_select_target(chip, chip->cur_cs);
+> +       rzn1_nfc_clear_status(nfc);
+> +       rzn1_nfc_en_correction(nfc);
+> +       rzn1_nfc_trigger_op(nfc, &rop);
+> +
+> +       while (!FIFO_STATE_C_EMPTY(readl(nfc->regs + FIFO_STATE_REG)))
+> +               cpu_relax();
+> +
+> +       while (FIFO_STATE_R_EMPTY(readl(nfc->regs + FIFO_STATE_REG)))
+> +               cpu_relax();
+> +
+> +       ioread32_rep(nfc->regs + FIFO_DATA_REG, bufpoi + page_off,
+> +                    real_len / 4);
+> +
+> +       if (!FIFO_STATE_R_EMPTY(readl(nfc->regs + FIFO_STATE_REG))) {
+> +               dev_err(nfc->dev, "Clearing residual data in the read FIFO\n");
+> +               rzn1_nfc_clear_fifo(nfc);
+> +       }
+> +
+> +       ret = rzn1_nfc_wait_end_of_op(nfc, chip);
+> +       rzn1_nfc_dis_correction(nfc);
+> +       if (ret) {
+> +               dev_err(nfc->dev, "Read subpage operation never ending\n");
+> +               return ret;
+> +       }
+> +
+> +       ecc_stat = readl_relaxed(nfc->regs + ECC_STAT_REG);
+> +
+> +       if (ECC_STAT_UNCORRECTABLE(cs, ecc_stat)) {
+> +               ret = nand_change_read_column_op(chip, mtd->writesize,
+> +                                                chip->oob_poi, mtd->oobsize,
+> +                                                false);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               for (i = start_chunk; i < nchunks; i++) {
+> +                       unsigned int dataoff = i * chip->ecc.size;
+> +                       unsigned int eccoff = 2 + (i * chip->ecc.bytes);
+> +
+> +                       bf = nand_check_erased_ecc_chunk(bufpoi + dataoff,
+> +                                                        chip->ecc.size,
+> +                                                        chip->oob_poi + eccoff,
+> +                                                        chip->ecc.bytes,
+> +                                                        NULL, 0,
+> +                                                        chip->ecc.strength);
+> +                       if (bf < 0) {
+> +                               mtd->ecc_stats.failed++;
+> +                       } else {
+> +                               mtd->ecc_stats.corrected += bf;
+> +                               max_bitflips = max_t(unsigned int, max_bitflips, bf);
+> +                       }
+> +               }
+> +       } else if (ECC_STAT_CORRECTABLE(cs, ecc_stat)) {
+> +               bf = ECC_CNT(cs, readl_relaxed(nfc->regs + ECC_CNT_REG));
+> +               /*
+> +                * The number of bitflips is an approximation given the fact
+> +                * that this controller does not provide per-chunk details but
+> +                * only gives statistics on the entire page.
+> +                */
+> +               mtd->ecc_stats.corrected += bf;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int rzn1_write_page_hw_ecc(struct nand_chip *chip, const u8 *buf,
+> +                                 int oob_required, int page)
+> +{
+> +       struct rzn1_nfc *nfc = to_rzn1_nfc(chip->controller);
+> +       struct mtd_info *mtd = nand_to_mtd(chip);
+> +       struct rzn1_nand_chip *rzn1_nand = to_rzn1_nand(chip);
+> +       unsigned int cs = to_nfc_cs(rzn1_nand);
+> +       struct rzn1_op rop = {
+> +               .command = COMMAND_INPUT_SEL_DMA | COMMAND_0(NAND_CMD_SEQIN) |
+> +                          COMMAND_1(NAND_CMD_PAGEPROG) | COMMAND_FIFO_SEL |
+> +                          COMMAND_SEQ_WRITE_PAGE,
+> +               .addr0_row = page,
+> +               .len = mtd->writesize,
+> +               .ecc_offset = ECC_OFFSET(mtd->writesize + 2),
+> +       };
+> +       dma_addr_t dma_addr;
+> +       int ret;
+> +
+> +       memcpy(nfc->buf, buf, mtd->writesize);
+> +
+> +       /* Prepare controller */
+> +       rzn1_nfc_select_target(chip, chip->cur_cs);
+> +       rzn1_nfc_clear_status(nfc);
+> +       reinit_completion(&nfc->complete);
+> +       rzn1_nfc_en_interrupts(nfc, INT_MEM_RDY(cs));
+> +       rzn1_nfc_en_correction(nfc);
+> +
+> +       /* Configure DMA */
+> +       dma_addr = dma_map_single(nfc->dev, (void *)nfc->buf, mtd->writesize,
+> +                                 DMA_TO_DEVICE);
+> +       writel(dma_addr, nfc->regs + DMA_ADDR_LOW_REG);
+> +       writel(mtd->writesize, nfc->regs + DMA_CNT_REG);
+> +       writel(DMA_TLVL_MAX, nfc->regs + DMA_TLVL_REG);
+> +
+> +       rzn1_nfc_trigger_op(nfc, &rop);
+> +       rzn1_nfc_trigger_dma(nfc);
+> +
+> +       ret = rzn1_nfc_wait_end_of_io(nfc, chip);
+> +       dma_unmap_single(nfc->dev, dma_addr, mtd->writesize, DMA_TO_DEVICE);
+> +       rzn1_nfc_dis_correction(nfc);
+> +       if (ret) {
+> +               dev_err(nfc->dev, "Write page operation never ending\n");
+> +               return ret;
+> +       }
+> +
+> +       if (oob_required) {
+
+Return early if !oob_required, to reduce indentation below?
+
+> +               ret = nand_change_write_column_op(chip, mtd->writesize,
+> +                                                 chip->oob_poi, mtd->oobsize,
+> +                                                 false);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+
+> +/*
+> + * This controller is simple enough and thus does not need to use the parser
+> + * provided by the core, instead, handle every situation here.
+> + */
+> +static int rzn1_nfc_exec_op(struct nand_chip *chip,
+> +                           const struct nand_operation *op, bool check_only)
+> +{
+> +       struct rzn1_nfc *nfc = to_rzn1_nfc(chip->controller);
+> +       const struct nand_op_instr *instr = NULL;
+> +       struct rzn1_op rop = {
+> +               .command = COMMAND_INPUT_SEL_AHBS,
+> +               .gen_seq_ctrl = GEN_SEQ_IMD_SEQ,
+> +       };
+> +       unsigned int cmd_phase = 0, addr_phase = 0, data_phase = 0,
+> +               delay_phase = 0, delays = 0;
+> +       unsigned int op_id, col_addrs, row_addrs, naddrs, remainder, words;
+> +       const u8 *addrs;
+> +       u32 last_bytes;
+> +       int i, ret;
+
+unsigned int i
+
+> +
+> +       if (!check_only)
+> +               rzn1_nfc_select_target(chip, op->cs);
+> +
+> +       for (op_id = 0; op_id < op->ninstrs; op_id++) {
+> +               instr = &op->instrs[op_id];
+> +
+> +               nand_op_trace("  ", instr);
+> +
+> +               switch (instr->type) {
+> +               case NAND_OP_CMD_INSTR:
+> +                       switch (cmd_phase++) {
+> +                       case 0:
+> +                               rop.command |= COMMAND_0(instr->ctx.cmd.opcode);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_CMD0_EN;
+> +                               break;
+> +                       case 1:
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_COMMAND_3(instr->ctx.cmd.opcode);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_CMD3_EN;
+> +                               if (addr_phase == 0)
+> +                                       addr_phase = 1;
+> +                               break;
+> +                       case 2:
+> +                               rop.command |= COMMAND_2(instr->ctx.cmd.opcode);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_CMD2_EN;
+> +                               if (addr_phase <= 1)
+> +                                       addr_phase = 2;
+> +                               break;
+> +                       case 3:
+> +                               rop.command |= COMMAND_1(instr->ctx.cmd.opcode);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_CMD1_EN;
+> +                               if (addr_phase <= 1)
+> +                                       addr_phase = 2;
+> +                               if (delay_phase == 0)
+> +                                       delay_phase = 1;
+> +                               if (data_phase == 0)
+> +                                       data_phase = 1;
+> +                               break;
+> +                       default:
+> +                               return -EOPNOTSUPP;
+> +                       }
+> +                       break;
+> +
+> +               case NAND_OP_ADDR_INSTR:
+> +                       addrs = instr->ctx.addr.addrs;
+> +                       naddrs = instr->ctx.addr.naddrs;
+> +                       if (naddrs > 5)
+> +                               return -EOPNOTSUPP;
+> +
+> +                       col_addrs = min(2U, naddrs);
+> +                       row_addrs = naddrs > 2 ? naddrs - col_addrs : 0;
+> +
+> +                       switch (addr_phase++) {
+> +                       case 0:
+> +                               for (i = 0; i < col_addrs; i++)
+> +                                       rop.addr0_col |= addrs[i] << (i * 8);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_COL_A0(col_addrs);
+> +
+> +                               for (i = 0; i < row_addrs; i++)
+> +                                       rop.addr0_row |= addrs[2 + i] << (i * 8);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_ROW_A0(row_addrs);
+> +
+> +                               if (cmd_phase == 0)
+> +                                       cmd_phase = 1;
+> +                               break;
+> +                       case 1:
+> +                               for (i = 0; i < col_addrs; i++)
+> +                                       rop.addr1_col |= addrs[i] << (i * 8);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_COL_A1(col_addrs);
+> +
+> +                               for (i = 0; i < row_addrs; i++)
+> +                                       rop.addr1_row |= addrs[2 + i] << (i * 8);
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_ROW_A1(row_addrs);
+> +
+> +                               if (cmd_phase <= 1)
+> +                                       cmd_phase = 2;
+> +                               break;
+> +                       default:
+> +                               return -EOPNOTSUPP;
+> +                       }
+> +                       break;
+> +
+> +               case NAND_OP_DATA_IN_INSTR:
+> +                       rop.read = true;
+> +                       fallthrough;
+> +               case NAND_OP_DATA_OUT_INSTR:
+> +                       rop.gen_seq_ctrl |= GEN_SEQ_DATA_EN;
+> +                       rop.buf = instr->ctx.data.buf.in;
+> +                       rop.len = instr->ctx.data.len;
+> +                       rop.command |= COMMAND_FIFO_SEL;
+> +
+> +                       switch (data_phase++) {
+> +                       case 0:
+> +                               if (cmd_phase <= 2)
+> +                                       cmd_phase = 3;
+> +                               if (addr_phase <= 1)
+> +                                       addr_phase = 2;
+> +                               if (delay_phase == 0)
+> +                                       delay_phase = 1;
+> +                               break;
+> +                       default:
+> +                               return -EOPNOTSUPP;
+> +                       }
+> +                       break;
+> +
+> +               case NAND_OP_WAITRDY_INSTR:
+> +                       switch (delay_phase++) {
+> +                       case 0:
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_DELAY0_EN;
+> +
+> +                               if (cmd_phase <= 2)
+> +                                       cmd_phase = 3;
+> +                               break;
+> +                       case 1:
+> +                               rop.gen_seq_ctrl |= GEN_SEQ_DELAY1_EN;
+> +
+> +                               if (cmd_phase <= 3)
+> +                                       cmd_phase = 4;
+> +                               if (data_phase == 0)
+> +                                       data_phase = 1;
+> +                               break;
+> +                       default:
+> +                               return -EOPNOTSUPP;
+> +                       }
+> +                       break;
+> +               }
+> +       }
+> +
+> +       /*
+> +        * Sequence 19 is generic and dedicated to write operations.
+> +        * Sequence 18 is also generic and works for all other operations.
+> +        */
+> +       if (rop.buf && !rop.read)
+> +               rop.command |= COMMAND_SEQ_GEN_OUT;
+> +       else
+> +               rop.command |= COMMAND_SEQ_GEN_IN;
+> +
+> +       if (delays > 1) {
+> +               dev_err(nfc->dev, "Cannot handle more than one wait delay\n");
+> +               return -EOPNOTSUPP;
+> +       }
+> +
+> +       if (check_only)
+> +               return 0;
+> +
+> +       rzn1_nfc_trigger_op(nfc, &rop);
+> +
+> +       words = rop.len / sizeof(u32);
+> +       remainder = rop.len % sizeof(u32);
+> +       if (rop.buf && rop.read) {
+> +               while (!FIFO_STATE_C_EMPTY(readl(nfc->regs + FIFO_STATE_REG)))
+> +                       cpu_relax();
+> +
+> +               while (FIFO_STATE_R_EMPTY(readl(nfc->regs + FIFO_STATE_REG)))
+> +                       cpu_relax();
+> +
+> +               ioread32_rep(nfc->regs + FIFO_DATA_REG, rop.buf, words);
+> +               if (remainder) {
+> +                       last_bytes = readl_relaxed(nfc->regs + FIFO_DATA_REG);
+> +                       memcpy(rop.buf + (words * sizeof(u32)), &last_bytes,
+> +                              remainder);
+> +               }
+> +
+> +               if (!FIFO_STATE_R_EMPTY(readl(nfc->regs + FIFO_STATE_REG))) {
+> +                       dev_warn(nfc->dev,
+> +                                "Clearing residual data in the read FIFO\n");
+> +                       rzn1_nfc_clear_fifo(nfc);
+> +               }
+> +       } else if (rop.len && !rop.read) {
+> +               while (FIFO_STATE_W_FULL(readl(nfc->regs + FIFO_STATE_REG)))
+> +                       cpu_relax();
+> +
+> +               iowrite32_rep(nfc->regs + FIFO_DATA_REG, rop.buf,
+> +                             DIV_ROUND_UP(rop.len, 4));
+> +
+> +               if (remainder) {
+> +                       last_bytes = 0;
+> +                       memcpy(&last_bytes, rop.buf + (words * sizeof(u32)), remainder);
+> +                       writel_relaxed(last_bytes, nfc->regs + FIFO_DATA_REG);
+> +               }
+> +
+> +               while (!FIFO_STATE_W_EMPTY(readl(nfc->regs + FIFO_STATE_REG)))
+> +                       cpu_relax();
+> +       }
+> +
+> +       ret = rzn1_nfc_wait_end_of_op(nfc, chip);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return 0;
+> +}
+
+
+> +static int rzn1_nfc_probe(struct platform_device *pdev)
+> +{
+> +       struct rzn1_nfc *nfc;
+> +       int irq, ret;
+> +
+> +       nfc = devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
+> +       if (!nfc)
+> +               return -ENOMEM;
+> +
+> +       nfc->dev = &pdev->dev;
+> +       nand_controller_init(&nfc->controller);
+> +       nfc->controller.ops = &rzn1_nfc_ops;
+> +       INIT_LIST_HEAD(&nfc->chips);
+> +       init_completion(&nfc->complete);
+> +
+> +       nfc->regs = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(nfc->regs))
+> +               return PTR_ERR(nfc->regs);
+> +
+> +       rzn1_nfc_dis_interrupts(nfc);
+> +       irq = platform_get_irq(pdev, 0);
+
+platform_get_irq_optional()
+
+> +       if (irq < 0) {
+
+What if this is a real error, or -EPROBE_DEFER?
+
+> +               dev_info(&pdev->dev, "Using polling\n");
+> +               nfc->use_polling = true;
+> +       } else {
+> +               ret = devm_request_irq(&pdev->dev, irq, rzn1_nfc_irq_handler, 0,
+> +                                      "rzn1-nand-controller", nfc);
+> +               if (ret < 0)
+> +                       return ret;
+> +       }
+> +
+> +       ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+> +       if (ret)
+> +               return ret;
+> +
+> +       nfc->hclk = devm_clk_get(&pdev->dev, "hclk");
+> +       if (IS_ERR(nfc->hclk))
+> +               return PTR_ERR(nfc->hclk);
+> +
+> +       nfc->eclk = devm_clk_get(&pdev->dev, "eclk");
+> +       if (IS_ERR(nfc->eclk))
+> +               return PTR_ERR(nfc->eclk);
+> +
+> +       ret = clk_prepare_enable(nfc->hclk);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = clk_prepare_enable(nfc->eclk);
+> +       if (ret)
+> +               goto disable_hclk;
+> +
+> +       rzn1_nfc_clear_fifo(nfc);
+> +
+> +       platform_set_drvdata(pdev, nfc);
+> +
+> +       ret = rzn1_nand_chips_init(nfc);
+> +       if (ret)
+> +               goto disable_eclk;
+> +
+> +       return 0;
+> +
+> +disable_eclk:
+> +       clk_disable_unprepare(nfc->eclk);
+> +disable_hclk:
+> +       clk_disable_unprepare(nfc->hclk);
+> +
+> +       return ret;
+> +}
+
+> +static const struct of_device_id rzn1_nfc_id_table[] = {
+> +       { .compatible = "renesas,r9a06g032-nand-controller" },
+
+Given my comment on the bindings, you probably want to match against
+"renesas,rzn1-nand-controller" instead.
+
+> +       {} /* sentinel */
+> +};
+> +MODULE_DEVICE_TABLE(of, nfc_id_table);
+> +
+> +static struct platform_driver rzn1_nfc_driver = {
+> +       .driver = {
+> +               .name   = "renesas-nfc",
+
+Perhaps s/nfc/nandc/ everywhere, to avoid confusion with the other nfc?
+
+> +               .of_match_table = of_match_ptr(rzn1_nfc_id_table),
+> +       },
+> +       .probe = rzn1_nfc_probe,
+> +       .remove = rzn1_nfc_remove,
+> +};
+> +module_platform_driver(rzn1_nfc_driver);
 
 Gr{oetje,eeting}s,
 
