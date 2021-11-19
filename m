@@ -1,82 +1,62 @@
-Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8EB2C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 19:14:22 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DF7761AE2
-	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 19:14:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 8DF7761AE2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8211C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 21:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kgpxtORHRlRBDyghKOWPdScJG7G4sIpZvNpukSRvJS0=; b=SGdfqTDO3krYiu
-	u/ZDZCW5YaITe97AkHhigYja34JGcRgKhNm5XmBHOKhx2wZii86s9GSYUXcwBOqFLGl78JF107aem
-	GRAhJlndcNhE1BumJYb6i8azRzfB6aGK0AZ5BkbdV65BZaO6rqUA5Thskh0lWyP982AWCQSSGSftb
-	OncJhLQBgpDvW8ehSCUsCUlnvOsvl2EzZwz2GNwyXeoOQEOFUcEL7RggQJJaXD9hFr8M1ik0KHlUx
-	2ZKnG3x4gCMb6MXnFkagRtIw9M3qWKKLt5b+E3kTNHO6IE7AoUJJi393rTQRa5azYPZiVx6rt1bVI
-	Ejc+fQyIJARGmeh1AOfQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=GCIneK62ao5p/L940yGNe2lPUtvXcGn3Hla5SD+XugQ=; b=G78abQy0lUEZkYJGxxZXsaJyrt
+	GIlJQXoIZAaWHLZaWW4uoylURR1yKWExe5xk+8d75rAp+to1DsRn4KK2gNwUAK0zWRK0tBDJxUImQ
+	nPEV/YSLVFY/f1Wa20S6YvxuICgPvDksQbZU9Q2DXe89w/GUILXFvsUTwt60R5RMm+Y5sy9SKaFlX
+	3edPCywhd8ofoPXkwLa+giD/Zr3lIQvfWeFn/mJySfXQ2FwbNyyFxLrFoljZ2x7RQzzKIxRSEvBe6
+	mQLwyA5WN5dWsyUUwi8zTiw6bIMzwlr1QCSrYHkE0Iy0q5M9Lx/c2eXAd0yChDtDQS0MW7tEGsPpo
+	m3uU6hfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mo9K9-00BPrj-6j; Fri, 19 Nov 2021 19:13:25 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1moBIj-00BbOs-Vv; Fri, 19 Nov 2021 21:20:06 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mo97f-00BNaX-Lu
- for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 19:00:33 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJJ0RHc055819;
- Fri, 19 Nov 2021 13:00:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1637348427;
- bh=dfEoMm7hITLdgNfFMQTJFr4xTgXw+iMI67chxIK/sHg=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=NvoiIHKFrysRI40PiQ3igBgKoHiMPHmQVIjRx/vKeglWfl3P0A8lrdG6t827LNYwi
- ZXw26kCBG9RFMJs4VTCwzbhBxMhqIjub7NGhq7HmRfMDgHzxgTj0HQxFrNhLbeXpk8
- uMuWXtDlHLYsqCI9euBNJG+j1nXsuXoiSU0rtAqU=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJJ0Ruw117808
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 19 Nov 2021 13:00:27 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
- Nov 2021 13:00:27 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 19 Nov 2021 13:00:27 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJJ0Qp9075775;
- Fri, 19 Nov 2021 13:00:26 -0600
-Date: Sat, 20 Nov 2021 00:30:25 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>, Mark Brown
- <broonie@kernel.org>, <linux-mtd@lists.infradead.org>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Michal Simek <monstr@monstr.eu>
-Subject: Re: [RFC PATCH 0/3] Dual stacked/parallel memories bindings
-Message-ID: <20211119190023.rzcvxonvtl7pwjl4@ti.com>
-References: <20211112152411.818321-1-miquel.raynal@bootlin.com>
- <20211115102308.64chfwj2vtssiyin@ti.com>
- <20211116091918.62143e75@xps13>
+ id 1moBIg-00BbNv-0O
+ for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 21:20:04 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 7110F22205;
+ Fri, 19 Nov 2021 22:19:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1637356796;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cUkcSEJdODljw5mRoN1I+VbKsGyg8RbPSdW+5boz/Lk=;
+ b=jXFH2YgXvQk0ZSq///qkQNrbyr1zUk2dvbckiq0uJOhENiUap00OA4TTkgpP3hXOwFLXna
+ Wuxez7EJLb7al1CFnqF6rujeEakipr/t8Kc9JDEiiXt4qVojm/eacacxNL+K1a92YMVnZM
+ rJvmmJXfrHVKW0He8+d/RuDHoVWLVIk=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211116091918.62143e75@xps13>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Date: Fri, 19 Nov 2021 22:19:56 +0100
+From: Michael Walle <michael@walle.cc>
+To: Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
+In-Reply-To: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
+References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <9a158e2ef6635212c1e353590e3b773b@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211119_110031_845386_013BAB76 
-X-CRM114-Status: GOOD (  46.63  )
+X-CRM114-CacheID: sfid-20211119_132002_684782_50FA5A39 
+X-CRM114-Status: GOOD (  14.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,104 +68,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 16/11/21 09:19AM, Miquel Raynal wrote:
-> Hi Pratyush,
-> 
-> p.yadav@ti.com wrote on Mon, 15 Nov 2021 15:53:10 +0530:
-> 
-> > On 12/11/21 04:24PM, Miquel Raynal wrote:
-> > > Hello Rob, Mark, Tudor & Pratyush,
-> > > 
-> > > Here is an RFC to open the discussion about the sensitive task of
-> > > supporting specific SPI controller modes like Xilinx's where the
-> > > controller can highly abstract the hardware and provide access to a
-> > > single bigger device instead. I'll let you go through the series and
-> > > tell me what you think.
-> > > 
-> > > I think there are two possible approaches:
-> > > 1- Describe the two devices as being a single one which is what we will
-> > >    get from the controller anyway (implies supporting two CS per SPI
-> > >    device)
-> > > or
-> > > 2- Describe the two devices in the device tree and then by software hack
-> > >    into the MTD core to simulate a single device to talk to.  
-> > 
-> > Approach 1 makes more sense to me since once we implement it you can 
-> > also use such multi-CS flashes with "dumber" controllers as well like 
-> > spi-cadence-quadspi. There, the driver would have to manually set the 
-> > chip select instead of it being done automatically by looking at the top 
-> > bit. This would at least work for the dual-stacked memories.
-> 
-> I believe it would. But in that case we should think about a more
-> generic binding for the stacked mode. So far I've proposed:
-> - xlnx,dual-stacked-memories
-> - xlnx,dual-parallel-memories
-> 
-> It actually looks like the former might be a generic binding. What do
-> you think is best between:
-> - 'dual-stacked-memories'
-> - 'stacked-memories' ('dual' is encoded in the reg property)
+Hi,
 
-I think this works best. This would also allow "triple" and "quad" 
-stacked flashes.
-
-> - no specific property, it's just a memory with two CS, again 'reg'
->   gives us the information.
+Am 2021-11-19 09:04, schrieb Alexander A Sverdlin:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> Then we could keep only the latter property, which looks more specific
-> to Xilinx and use it as a flash node property instead (as advised
-> by Mark).
+> Ignore 6th ID byte, secure version of mt25qu256a has 0x73 as 6th byte.
 
-Even if the parallel mode is only implemented by the Xilinx controller, 
-we would need to support it in the core, right? So we need to figure out 
-how that case would work as well.
+What is the secure version? What is the difference? Do you have some
+links to datasheets for both?
+
+Also please provide the SFDP data for this flash, see [1].
+
+-michael
+
+[1] 
+https://lore.kernel.org/linux-mtd/7038f037de3e224016d269324517400d@walle.cc/
 
 > 
-> > How I envision this being implemented is that SPI NOR would be aware of 
-> > the number of Chip Selects and when to use which one, and it would 
-> > specify the CS value in the SPI MEM op.
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  drivers/mtd/spi-nor/micron-st.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> Yes, this is the approach I had in mind to. This fits both the purpose
-> of SPI-NOR and SPI-NAND which will both need to be updated as well tu
-> support multi-CS.
-> 
-> > The controller driver can then 
-> > execute this op as needed. One point to note here is that the entire 
-> > memory won't be read in a single transaction. There would be 2 
-> > transactions: one with CS=0 and one with CS=1. Is this fine for you? Do 
-> > you have something else in mind?
-> 
-> I believe this should be let to the controller's discretion and appear
-> like a single op in the upper layers.
-
-But then how do you tell the controller when to change the CS if all it 
-sees is a single large transaction that spans across multiple flashes? 
-You mention in patch 1 that your controller automatically switches CS 
-based on most significant address bit, but that would only work if you 
-have two 2 GiB flashes wired in. In case someone uses two 1 GiB flashes, 
-the MSB always remains 0. And what about controllers that can't switch 
-the CS automatically?
-
-> 
-> > I am not sure how this model would work for a dual-parallel memory 
-> > though.
-> 
-> If the controller is aware of the two CS and knows about the full
-> request we can hope that integration won't be difficult (last famous
-> words).
-
-For your specific controller this might work but if we want this feature 
-implemented generically I think it would need some more thought.
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+> diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> b/drivers/mtd/spi-nor/micron-st.c
+> index f3d19b7..509a732 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -155,9 +155,9 @@ static const struct flash_info st_parts[] = {
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K |
+>  			      USE_FSR | SPI_NOR_DUAL_READ |
+>  			      SPI_NOR_QUAD_READ) },
+> -	{ "mt25qu256a",  INFO6(0x20bb19, 0x104400, 64 * 1024,  512,
+> -			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> -			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +	{ "mt25qu256a",  INFO(0x20bb19, 0x1044, 64 * 1024,  512,
+> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512,
+>  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+>  	{ "mt25ql512a",  INFO6(0x20ba20, 0x104400, 64 * 1024, 1024,
+> @@ -167,9 +167,9 @@ static const struct flash_info st_parts[] = {
+>  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>  			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+>  			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
+> -	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024,
+> -			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> -			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +	{ "mt25qu512a",  INFO(0x20bb20, 0x1044, 64 * 1024, 1024,
+> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024,
+>  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+>  			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
 
 ______________________________________________________
 Linux MTD discussion mailing list
