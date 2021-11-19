@@ -1,83 +1,56 @@
-Return-Path: <SRS0=oh1H=QF=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
+Return-Path: <SRS0=xpyr=QG=lists.infradead.org=linux-mtd-bounces+linux-mtd=archiver.kernel.org@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 528E7C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Nov 2021 22:24:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6692EC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 07:40:16 +0000 (UTC)
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1526561139
-	for <linux-mtd@archiver.kernel.org>; Thu, 18 Nov 2021 22:24:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 1526561139
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 139F661B3E
+	for <linux-mtd@archiver.kernel.org>; Fri, 19 Nov 2021 07:40:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 mail.kernel.org 139F661B3E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
 Authentication-Results: mail.kernel.org; spf=none smtp.mailfrom=lists.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PtavN46JESenslYDoODWSyrB0TmJ6Xk0vTcvah2oYzY=; b=r8mAzLhprVu2iU
-	aMjaESI5J6/Evjw8u/HPQOwCMEkhR5OXZcBtJVxL/2g2h64bD/g6TtL1GY5iK30ipKW4GQNveKaFa
-	BLiovur1nYrGtQ9dYFhc0nZvqNF+I0lBqi9QSrKnlpoMEOi1c81F05iiSfJZhZabBnhTcGJSXx8ly
-	GCd6nbf+lXoYOcTNQG6Qz5DepVkyUGD9mFSORbpR13wiVoZqPCheXsYgiBaCNSXVgjYQH3Ca0/K3C
-	Qa2cJrQlYmLTD4PpH0y7LRspVcdxhQZPXpkgDylxe/Z+A/KqFVtBPdKTRSBfzuLg9+wsav/ppPlsC
-	dbdEdJZRSJamOVfXqP4A==;
+	List-Owner; bh=dwOr0Rx2zhv0nt8XIovBLKjMSis6CjlyBgHhuo/ldbU=; b=uViMh+GST3cxfD
+	GlV1McVnubiYmfiBmxfb+YOk5CKyOc6aGdZXBecRWqt2+Pk7bQYLYBCYz58oMtJsxU2L29dTk4W2l
+	bRN/nP7F1M2lylyOAiGQLQcaDdHtSDQe9zfBZYAumNhvpVrT0yQCemb76wB4L2+JnsfqpYNjPTzWI
+	D/b19bnXDW8UcC9spXvjHZ0lNWy/k5L3VVSxQ0sYt9VtElXhxER1K8Wc2YThAnjW2aWOCc44NK3aE
+	DNb5zxWIuPFjFyql1FcmvaM0IAb04CHvu0pV0/JswI+JzJE+VozSj6INvjdn2S5LgUs4/6aXrIuxU
+	DQV6B1TcyLrpninOq21A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mnpow-008xhv-R4; Thu, 18 Nov 2021 22:23:54 +0000
-Received: from mail-ot1-f48.google.com ([209.85.210.48])
+	id 1mnyUi-009d0g-46; Fri, 19 Nov 2021 07:39:36 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mnpou-008xh9-63
- for linux-mtd@lists.infradead.org; Thu, 18 Nov 2021 22:23:53 +0000
-Received: by mail-ot1-f48.google.com with SMTP id
- g91-20020a9d12e4000000b0055ae68cfc3dso13531220otg.9
- for <linux-mtd@lists.infradead.org>; Thu, 18 Nov 2021 14:23:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=zzrLG1dp1sDs7fna1qV6Y2VpWnTsqTBbMcn4hdUaAzY=;
- b=t7ui+uFpKm/6krel47aJozbBpWTQ8yt4uHVgR+Y6Ra/dZpX2es+m8zVmHyW09c+Pp4
- I9GF+dOndj+NIaHuOU+fg43NWlUQIokAZ+rjgF9a93wVMH+mjMtEJiGE/sjfAiDgcOOQ
- bKpCP2PTW+gKdKV8okWlO7LsqJDiuScpCtuypFN32nsV+rFH8ugXKpiLFF5Q3TeClHXx
- upNH+y4LHW8d9jlAvagbQhLqS9rTTcREsRfck4BIF6oRvszrL1D0pLPUOIGvHYy2/gm8
- b0b/3WlfDo2sTLmx+2UQQSntkkdEoABoSRdBFSFHMK+2fM4hoBeBvVz3nWg6VMU6tW/n
- xc4g==
-X-Gm-Message-State: AOAM530TOmIFrnr0+Cv427IVP05xqWXpRpCIHUn2pot+hfEUUsuKwTAP
- MrDZTmGXGEfn7QP9a42WKBOAxx6CiA==
-X-Google-Smtp-Source: ABdhPJz5Z1YFMtbLnWkXmfMCsB7VO8FlPE/OAwfQ2S8cQOJtOZwMIcvu48+SzOghBsFb28Sw1iQ2ug==
-X-Received: by 2002:a9d:2077:: with SMTP id n110mr520097ota.261.1637274231192; 
- Thu, 18 Nov 2021 14:23:51 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id e14sm253782oow.3.2021.11.18.14.23.50
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 18 Nov 2021 14:23:50 -0800 (PST)
-Received: (nullmailer pid 1864953 invoked by uid 1000);
- Thu, 18 Nov 2021 22:23:49 -0000
-Date: Thu, 18 Nov 2021 16:23:49 -0600
-From: Rob Herring <robh@kernel.org>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
- Michael Walle <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] dt-bindings: mtd: spi-nor: Add a reference to
- spi-peripheral-props.yaml
-Message-ID: <YZbSdarZL7VmcT8B@robh.at.kernel.org>
-References: <20211109181911.2251-1-p.yadav@ti.com>
- <20211109181911.2251-4-p.yadav@ti.com>
+ id 1mnyUS-009cx5-P2
+ for linux-mtd@lists.infradead.org; Fri, 19 Nov 2021 07:39:22 +0000
+Received: (Authenticated sender: herve.codina@bootlin.com)
+ by relay7-d.mail.gandi.net (Postfix) with ESMTPA id 53DB820009;
+ Fri, 19 Nov 2021 07:39:18 +0000 (UTC)
+From: Herve Codina <herve.codina@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Herve Codina <herve.codina@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v2 1/4] mtd: rawnand: Fix nand_erase_op delay
+Date: Fri, 19 Nov 2021 08:39:06 +0100
+Message-Id: <20211119073909.1492538-2-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211119073909.1492538-1-herve.codina@bootlin.com>
+References: <20211119073909.1492538-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211109181911.2251-4-p.yadav@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211118_142352_255712_0FE69548 
-X-CRM114-Status: GOOD (  16.06  )
+X-CRM114-CacheID: sfid-20211118_233920_972859_23116CB3 
+X-CRM114-Status: UNSURE (   9.19  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,29 +67,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 09, 2021 at 11:49:11PM +0530, Pratyush Yadav wrote:
-> The spi-peripheral-props.yaml schema contains peripheral-specific
-> properties for SPI controllers that should be present in the peripheral
-> node. Add a reference to that so its constraints are followed.
-> 
-> additionalProperties: false cannot be used since it marks the controller
-> properties as unknown. Use unevaluatedProperties: false instead. This
-> has the side effect of allowing extra properties that are not specified
-> in the schema. The alternative is to list all the controller properties
-> in this schema but that would mean every peripheral binding would have
-> to repeat the same set of properties for each controller.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> ---
-> 
-> Changes in v3:
-> - s/slave/peripheral/g
-> 
->  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+NAND_OP_CMD() expect a delay parameter in nanoseconds.
+The delay value is wrongly given in milliseconds.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fix the conversion macro used in order to set this
+delay in nanoseconds.
+
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+Changes v1 -> v2:
+- Commit log reword
+
+ drivers/mtd/nand/raw/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 3d6c6e880520..5c6b065837ef 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1837,7 +1837,7 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+ 			NAND_OP_CMD(NAND_CMD_ERASE1, 0),
+ 			NAND_OP_ADDR(2, addrs, 0),
+ 			NAND_OP_CMD(NAND_CMD_ERASE2,
+-				    NAND_COMMON_TIMING_MS(conf, tWB_max)),
++				    NAND_COMMON_TIMING_NS(conf, tWB_max)),
+ 			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tBERS_max),
+ 					 0),
+ 		};
+-- 
+2.31.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
