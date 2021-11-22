@@ -4,68 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37768C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 13:25:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD1F6C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 15:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=8K7IZbyVFApYVp62NPbbYGp42KLWqUQ6P8c8aZG5JUc=; b=oJooM3haBmdXz+PVlL1jNg9HYv
-	8bEKPzoTktVjgVr+ubfpmQtsRk4uJ5wSdqZcbp+TSyIzPSWrgDIM+Apt4PcDRadzia+NOy978UFgM
-	3A2WtM30v+2R+jANC+N1lIzoD3tU4pw2t0kVzzsF/KjkFT1y0gWU9P6/Trd6OkdmPIqSXJ+h6oA34
-	Wk2XwJ1OsYIRVctC/1c4K6KMwPA7bUEsanU1n8dg4yMSuMs05eJ+Bd4FfsabVCYjGerLMCZBsS5Wm
-	ztEXhxZESBTV4fdGQlIwbP+8vw/VBEJoMtXcyRRgT0ZPmraNWh+1rUrYeZ8Og8+8NhHDn1nvirVAE
-	fMakK88w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bNA6DVoAvN7pHIqWVuDVeHsMns3fXEb4id4JCErjdGE=; b=QWZ4QujBP+73nBRjZjC/D8btYZ
+	0Yc+DM/3sLmSyu8lOfJHwoOW0jfclKZO5TLSWPOCjAnvFJyVhXpgEvHTpGfJN4ENMy9E/4Vi/WGSN
+	uhB+f3Rx8OeAJEbuG+MLTqDQOOnSj7pIdVbVmruO8ToVJctncT8L9L/EdUa9l3Z8SAKCxFLdpuZbH
+	5YgLmLAxUmip2tv2F4GNTI42GviEmAsOVDYLrNGcG3vyXz483l0k+X0A7sJ41eKmmtBZQp7uuFvOz
+	xzXngk/X3H0d4ljqtLPkNn2ZFBDhLFnqs+BSy/KmLF+G2agFCtH+tAXA9ldlHjMCaNZmVb4j9alw4
+	D/CgkWmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mp9JA-00GdUS-8c; Mon, 22 Nov 2021 13:24:32 +0000
-Received: from mail-ua1-f48.google.com ([209.85.222.48])
+	id 1mpAtT-00GySc-9S; Mon, 22 Nov 2021 15:06:07 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mp9J7-00GdTj-Aw; Mon, 22 Nov 2021 13:24:30 +0000
-Received: by mail-ua1-f48.google.com with SMTP id p37so36403276uae.8;
- Mon, 22 Nov 2021 05:24:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to;
- bh=xarPnle33Vd1NAVNINArZXI9fdyD3SNGNTfacLEzKQo=;
- b=g3fZWC21Xc5ojpP0Tc9HmC1jyLHAMGEGRaLw7XmPx59nd1/z3rpIw8/PiyvOMVqgny
- WTY50+vYMO4T4WUCiCXSMTsCdIgTQjTYdrDoDpbseZ712HGXiO0UeWcepLYZEY6DqMTI
- /Hy5HCGnp5KyGPmAjId9YaXtWRpmLgsbmqkeA68tbu7nOGDM+xna2iAZPNFnHyRr1OBA
- MkRaRv72sFs3txbo1KD0NHDZaWDcLcC/8GYO3wAZH5iKsKP+j7MYfjGMmVIGVM8QoozZ
- 6jLmI9Kumx3a35tfkcp6lWoo27+edNnHA0Vwfhh66Hz+pcyd7YttgulwIb/L4+GuEXwi
- JloQ==
-X-Gm-Message-State: AOAM531jus9U/xSROf9o2eoWd+C029upw0C+c9FTZIQenCBx1hcdvwl5
- 8OkZAmpVPKjsUCd8hcFQAU9tCgbfR53d/w==
-X-Google-Smtp-Source: ABdhPJy6HG/HqGJ9fqE68REEnuwYl4inOANbMC3VlHw2SlzTZay/fqDHlueAVimDLxqSYRl6NNFXpg==
-X-Received: by 2002:a67:7247:: with SMTP id n68mr124414378vsc.6.1637587463292; 
- Mon, 22 Nov 2021 05:24:23 -0800 (PST)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com.
- [209.85.222.50])
- by smtp.gmail.com with ESMTPSA id r24sm1889628vsn.1.2021.11.22.05.24.22
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 22 Nov 2021 05:24:22 -0800 (PST)
-Received: by mail-ua1-f50.google.com with SMTP id i6so36419981uae.6;
- Mon, 22 Nov 2021 05:24:22 -0800 (PST)
-X-Received: by 2002:a9f:248b:: with SMTP id 11mr85736008uar.14.1637587462423; 
- Mon, 22 Nov 2021 05:24:22 -0800 (PST)
+ id 1mpAtO-00GyOe-8d
+ for linux-mtd@lists.infradead.org; Mon, 22 Nov 2021 15:06:05 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 6704022246;
+ Mon, 22 Nov 2021 16:05:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1637593556;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cHiQOXU/aaxS9krTCFcOchW4k+7sx4xple/mjsKPuG4=;
+ b=cDZlkdYECjc/jCUTBbKKXzC0njWN/2G/jPn/3QA1OojmKEuLqVJPW5hxNgSWzdF5YhE6FD
+ CbxW4r9VnAmdVs384m6ys3e0h8HAEUJs9Arbt+cmTIVBLPDw2fWvfaPyggdPeDjevMHdZk
+ ITgemGzAjLMGEG1CuhswHtrR4h+hbTU=
 MIME-Version: 1.0
-References: <20211122111214.3801534-1-geert@linux-m68k.org>
-In-Reply-To: <20211122111214.3801534-1-geert@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 22 Nov 2021 14:24:11 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW7jcoNHyBomcbkkHU-m32uAureeHYj_PhaMC=O2b4wLA@mail.gmail.com>
-Message-ID: <CAMuHMdW7jcoNHyBomcbkkHU-m32uAureeHYj_PhaMC=O2b4wLA@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.16-rc2
-To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, 
- linux-um@lists.infradead.org, sparclinux@vger.kernel.org, 
- linux-ntfs-dev@lists.sourceforge.net, linuxppc-dev@lists.ozlabs.org
+Date: Mon, 22 Nov 2021 16:05:56 +0100
+From: Michael Walle <michael@walle.cc>
+To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
+In-Reply-To: <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
+References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
+ <9a158e2ef6635212c1e353590e3b773b@walle.cc>
+ <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <e9589af968d7b9dafbce17325dbf8472@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211122_052429_402249_05A3F624 
-X-CRM114-Status: GOOD (  17.59  )
+X-CRM114-CacheID: sfid-20211122_070602_520196_EF3303DF 
+X-CRM114-Status: GOOD (  19.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,69 +70,95 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 22, 2021 at 12:28 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.16-rc2[1] compared to v5.15[2].
->
-> Summarized:
->   - build errors: +13/-12
->   - build warnings: +3/-26
->
-> JFYI, when comparing v5.16-rc2[1] to v5.16-rc1[3], the summaries are:
->   - build errors: +6/-12
+Hi,
 
-  + /kisskb/src/drivers/mtd/nand/raw/mpc5121_nfc.c: error: unused
-variable 'mtd' [-Werror=unused-variable]:  => 294:19
+Am 2021-11-22 08:06, schrieb Alexander Sverdlin:
+> On 19/11/2021 22:19, Michael Walle wrote:
+>>> Ignore 6th ID byte, secure version of mt25qu256a has 0x73 as 6th 
+>>> byte.
+>> 
+>> What is the secure version? What is the difference? Do you have some
+>> links to datasheets for both?
+> 
+> For instance:
+> https://www.micron.com/products/nor-flash/serial-nor-flash/part-catalog/mt25qu256aba1ew7-0sit
+> https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-a/mt25q_qljs_u_256_aba_0.pdf?rev=594079234c1b496496b062c21ce162d6
+> 
+> https://www.micron.com/products/nor-flash/serial-nor-flash/part-catalog/mt25qu256aba8e12-1sit
+> https://media-www.micron.com/-/media/client/global/documents/products/data-sheet/nor-flash/serial-nor/mt25q/die-rev-a/mt25q_qljs_u_256_aba_0.pdf?rev=594079234c1b496496b062c21ce162d6
+> 
+> But the differences are in "MT25Q Security Addendum":
+> "The additional protection features available on the secure MT25Q
+> device include a
+> lock status register bit, top/bottom block address protection lock, 
+> volatile
+> configuration lock register at power up, protection management register 
+> lock,
+> and a nonvolatile configuration lock register."
+> This is only available under NDA from Micron.
 
-ppc32_allmodconfig (patch sent)
+So I take a wild guess here. There are lock bits (either in OTP or
+maybe until the next power cycle), to lock the corresponding
+top/bottom, block protection bits, right?
 
-  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing
-argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
-target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
-  + /kisskb/src/drivers/video/fbdev/riva/fbdev.c: error: passing
-argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
-target type [-Werror=discarded-qualifiers]:  => 2095:11, 2062:11
+> However as long as one doesn't use these security features, it appears
+> compatible with
+> non-secure version. That's why just ignoring the non-standard
+> configuration allows
+> to support it.
 
-um-all{mod,yes}config
+But if we ever support it, then we have to distiguish them. Thus,
+I was asking.
 
-  + /kisskb/src/fs/netfs/read_helper.c: error: implicit declaration of
-function 'flush_dcache_folio' [-Werror=implicit-function-declaration]:
- => 435:4
+>> Also please provide the SFDP data for this flash, see [1].
+> 
+> sfdp:
+> 53464450060101ff00060110300000ff84000102800000ffffffffffffff
+> ffffffffffffffffffffffffffffffffffffe520fbffffffff0f29eb276b
+> 273b27bbffffffffffff27bbffff29eb0c2010d80f520000244a99008b8e
+> 03d4ac0127387a757a75fbbdd55c4a0f82ff81bd3d36ffffffffffffffff
+> ffffffffffffffffffe7ffff21dcffff
+> 
+> md5sum:
+> 5ea738216f68c9f98987bb3725699a32
+> 
+> jedec_id:
+> 20bb191044
+> 
+> partname:
+> mt25qu256a
+> 
+> manufacturer:
+> st
+> 
+> (But last 3 do not make sense to me, as they come from the table I 
+> modify,
+> not from the chip itself). Further, I don't have 512Mbit chip to 
+> provide
+> SFDP for it.
 
-sparc-allmodconfig
-sparc64-allmodconfig
+Thanks, so that's the SFDP data for the mt25qu256aba8e12-1sit part. and 
+the
+jedec id is 20bb19104473, correct?
 
-  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2192 bytes is
-larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+You don't have the non-security part by chance?
 
-ppc64le_allmodconfig
+Mh, I'm undecided whether we should just duplicate the entry or if we
+should ignore the last byte ("Device configuration information", where 
+00h
+is standard). The commit which introduced the flash was 7f412111e276b.
+Vingesh?
 
-  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2256 bytes is
-larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+Can you elaborate on the 0x73? Is that a bitmask? If it was an 
+enumeration,
+I'd assumed it would be 01h (or some smaller value).
 
-powerpc-allyesconfig
-
-> Thanks to the linux-next team for providing the build service.
->
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/136057256686de39cc3a07c2e39ef6bc43003ff6/ (all 90 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf/ (all 90 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
