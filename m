@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07FB6C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 10:47:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78148C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 10:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=20rBuVJo5kANhQWHBgWLv7Cqk75FjBvxTmUxB8a6Zuk=; b=MyLzoRU9f0nJFZ
-	S/MRw39v9WGWY8emJ9sWv3LHAcvDPIswc/yz4fubUxSde3ffekCkm7KhQtPEgJUXEwwTSdqOd8prn
-	ruBvrOlTA1MoijqNJIrq/6JBlk1KFcy3qH6VRpv2+eQWTN5uVSWkaYUbzqpPUh3j/NsF2vjSU/Ztt
-	PpfI007m8DFvKwrsFcT0wtB5A/1ZYthT0rY9UO++gDrFukN36v4veQ4rHPOWVztRARoO44Pq3KCo9
-	UPktVsUe5euR0LecQ2atbvVK4vyXZRA6Q5mRlFjV0TRJdmOJ89LOoxsJg5V7LvUKPdKJuf+dSf3jl
-	VnAPdS0Wgu5EHIEkBmig==;
+	List-Owner; bh=qaOZfA/tbU4zSmueOHBVvfDBSAR9IHLBNSXTIm5dOT8=; b=0GnDwDf7lYLaCI
+	EPPVQ2pq47IVAbOId6QMHuLpVDvA6JrQ1lu+1wATvziUgSdA7hOLr55HBGFDMH+zozZtngYyKYGQ1
+	oFfjAFhFtsEKdKlMEw4XYNK/gPMucSvFEMOuZ+c64IP20N/ih2wyy2EgEyj3pBZdEF+AMI6UgUYJO
+	96oGQkh78b9ALITAnor3zu42D7aoFBv1Yt5EJM+5tJULNAgyf2QabnJfUhYDPF/o3OzIIhqWCvQSX
+	vn7kZrwcgTG12M+wEmgw6S6IJwuUFFSMaaKcaUoAzZTr7w9rcVE5YXFCOEuyWivlqDrtFPI47Er1S
+	Z0yCDay1GPt9kr5wGcSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mp6qk-00FuRV-TY; Mon, 22 Nov 2021 10:47:03 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1mp6ua-00FvC9-Vo; Mon, 22 Nov 2021 10:51:01 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mp5z1-00Fh5e-SO; Mon, 22 Nov 2021 09:51:33 +0000
+ id 1mp5z8-00Fh7c-Bc; Mon, 22 Nov 2021 09:51:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1637574691; x=1669110691;
+ t=1637574698; x=1669110698;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=qNTfVhM/ESG1LI59bGrfDvVS/SmU0iEocfait6l4Hhc=;
- b=GqT6vOw/MsRJncxOpEmUwXmFM0h37OfX0X+wUQVp4UNXcW83rSn7D0nN
- 5VEovDKCt1qS9D2flLsvwusdL6q3p8DSBXPH2x/bd6dGSoUuAaXuSWrhe
- coZbGAE1DmwsJTjhgCLi6RH6/4KiBc9pcWAzahwfSB9D7L869hLdB2V+r
- hkh4HOjMpjHFA7pCzdLhUGAeUvnJ1noNQxbX1SpuS02bOYztK/uHXG1F9
- ys02ZtPozOlyqd0SGMT0gCCBKqPpoKkIUUy8oAgtH3vJyzfFQFb1s4f4+
- 2pN7JFyh4wlWpCgY4Dv5LZQliBtnx/Pm8rduYkCOqGxvySMrvnrh4a19c A==;
-IronPort-SDR: AJkQeMawgIaunO86Vqq29jILesniWWsMIYsKyiUlJlED8ZgkyqRA0sLU+JxeQx/65gIY+OV1KF
- OhoZQTdtid0cIyY5ZbWoEhHWCF+2IQgY1v+ndfMfXXtJvFAMdQiWE42+/TnNx7SU3ZDLqY3Vo/
- OgFMUkYE/pWIjDEDY2PRguu8NL5GXUY9SCVnu84gEL8b6CCBz/SjE6ZSCc0lg3pcKB1d1N5juI
- wi+XBuxns9oyRE/AKcXjDS9V2OTjuGBQBWZE8RhCw3njPtjUEWJjDeh+HE6cxja/Ah8iWaiUDj
- V4tTa6MAwP9hMT0aLYWhytRs
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; d="scan'208";a="137310460"
+ bh=nuKtz7/UPsPwqZlihXZdlewhtp64cBNJXOnHtWUe+/M=;
+ b=ha9MMg6aOeig9ejjwqo8btMpEUlNkarW9Od5eTbwGcIX1QnUKfTqjucp
+ Eh4XEdcFa2WQ0QlUU1i47bTjb7TdDfgR3ypYOZTEbWuXYr/TAB34dln/A
+ VIInLowNcZxj4S8Px6DsSldcPx97hiHd8+WQj6TapoF22qx3MI5vB+50j
+ v8dDjXbBo+XM/htHS9g0EK/yg1eaEKfUJcYXD6u+qThPFd5GiCu5G8ONR
+ MBlhGB5vdiWPI/4FmCdSwsSABnlQuD4rHFLrbixRJhXCuDgkHnVaostU5
+ eLgU73OGbchF4DE1gcDDJQhbtOuDm2edChmphrJxKwwObwrPGsDZoRijY g==;
+IronPort-SDR: +0d47nm9gjvo3r3SwAFNHFBL9WCex+pBPTfFBoo+sWLPfE0lTMqM4OVWBDmcVt7RYDUhhYqaVR
+ MeYxmwmB5UAUJ+pKDBpxpZZFUT/xxBMjt6CurXwcNWEOtiAXQ3lrL0qyVqlnq9o6aO3XV/PdWz
+ p2G3DrzNTZBw0p5HPWY5BVgHz8K4oRa0Sqe2rSIlakAipgmk1mohM6uXiZ/8FpPLg/axkklE8X
+ z9EpaV5aIOedoFEgRuRx54z0UHRGArTBIc3n8N9MAJB4itA+FHlE7hIYRAlSqZ6rL1SXg7CG+9
+ Kvc8MPCyeb1KBPIpqvefhxBJ
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; d="scan'208";a="144713239"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 22 Nov 2021 02:51:30 -0700
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 22 Nov 2021 02:51:36 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 22 Nov 2021 02:51:29 -0700
+ 15.1.2176.14; Mon, 22 Nov 2021 02:51:34 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 22 Nov 2021 02:51:24 -0700
+ 15.1.2176.14 via Frontend Transport; Mon, 22 Nov 2021 02:51:30 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <michael@walle.cc>, <vigneshr@ti.com>, <p.yadav@ti.com>
-Subject: [PATCH v4 12/13] mtd: spi-nor: gigadevice: gd25q256: Init flash based
- on SFDP
-Date: Mon, 22 Nov 2021 11:50:19 +0200
-Message-ID: <20211122095020.393346-13-tudor.ambarus@microchip.com>
+Subject: [PATCH v4 13/13] mtd: spi-nor: issi: is25lp256: Init flash based on
+ SFDP
+Date: Mon, 22 Nov 2021 11:50:20 +0200
+Message-ID: <20211122095020.393346-14-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211122095020.393346-1-tudor.ambarus@microchip.com>
 References: <20211122095020.393346-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211122_015132_035565_AD4FDEFB 
-X-CRM114-Status: UNSURE (   9.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211122_015138_523479_53065BAB 
+X-CRM114-Status: GOOD (  10.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,51 +92,46 @@ Get rid of the static initialization of the flash parameters and
 init them when parsing SFDP.
 Generated a 256 Kbyte random data and did an erase, write, read back
 and compare test. The flash uses for reads SPINOR_OP_READ_1_4_4_4B 0xec,
-for erases SPINOR_OP_BE_4K_4B 0x21, and for writes SPINOR_OP_PP_1_1_4_4B
-0x34.
+for erases SPINOR_OP_BE_4K_4B 0x21, and for writes SPINOR_OP_PP_4B 0x12.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
 v4: use new flag macros
 
 root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
-c84019
+9d6019
 root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
-gigadevice
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/partname    
-gd25q256
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp > gd25q256-sfdp
+issi
+root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/partname
+is25lp256
+root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp > sfdp-is25lp256
 
-xxd -p sfdp-gd25q256
-53464450060102ff00060110300000ffc8000103900000ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520f3ffffffff0f44eb086b
-083b42bbeeffffffffff00ffffff00ff0c200f5210d800ff4262c9fe82e9
-1458ec6006337a757a7504bdd55c0006440008500001ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffff003600279cf9
-7764fccb58e3ffffffffffffffffffffffffffffffffffffffffffffffff
+xxd -p sfdp-is25lp256
+53464450060101ff00060110300000ff9d05010380000002ffffffffffff
+ffffffffffffffffffffffffffffffffffffe520f9ffffffff0f44eb086b
+083b80bbfeffffffffff00ffffff44eb0c200f5210d800ff234ac90082d8
+11cecccd68467a757a75f7aed55c4a422cfff030f2a9ffffffffffffffff
+ffffffffffffffff003600239ef9c0648fefffff
 
-sha1sum sfdp-gd25q256
-9f25eb3b17832b26dbba288f1b07de1f8a42e446  sfdp-gd25q256
+sha1sum sfdp-is25lp256
+98d61eb4691e61521b84b83e1ddb8132cae2fea5  sfdp-is25lp256
 
- drivers/mtd/spi-nor/gigadevice.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/issi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 94634797fdd6..e9817233c51f 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -53,9 +53,8 @@ static const struct flash_info gigadevice_parts[] = {
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
- 	{ "gd25q256", INFO(0xc84019, 0, 64 * 1024, 512)
--		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
--			       SPI_NOR_TB_SR_BIT6)
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index 6707fcfda055..c4fff3c36356 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -46,7 +46,7 @@ static const struct flash_info issi_parts[] = {
+ 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512)
 -		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
 +		PARSE_SFDP
-+		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_TB_SR_BIT6)
  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
- 		.fixups = &gd25q256_fixups },
- };
+ 		.fixups = &is25lp256_fixups },
+ 	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64)
 -- 
 2.25.1
 
