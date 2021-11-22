@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDB17C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 22:24:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4570DC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 22:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eb2DoIt7JjoMw1fVduOyP1O+KR0RARCsVDSDyC/xF8Y=; b=gkoBuS7N2AY+XF
-	wsM21Xse0yup0wxLuwVskcEMKacLYBxGy1cFCkUIuDTsxY5uWONgFqOpjKDe+l1EqGOschJ5RIiOi
-	/7gznk4LSisLeW9Hi4uRYsku2dsZ+2z+fGmGYlMvnvbtsTW1dog1OKKlcCS6wiK7qf0lkDFi8l8WQ
-	7ovOdGgUZttlLI2J44BvFAdvOEUV/4G6gy2jJ0WUfEmCVbsTPlSwyF1d/9/iqsCmfIsgp50FLQxjH
-	pA7lfY2vXl3aHODz6aocgEwPdyJck7YsvoHo+5CyPyFR1I5pEa01Ew9RWpCh9AahM8SNiJ+uRom3R
-	zTlQj3QamB/l5cETrd8Q==;
+	List-Owner; bh=l/b6U562joIz4JJmdKS0mmTxvuz2FT9FTuMNKLnysmw=; b=Ugn9tNO34ItFJ0
+	n+4W+szJ5C/rBs9TCd0MsvPwW5Zjor36UludNsp/v8UGjvXCg5/m9CyiOas3c9cdVM1XZG6+tznUc
+	WOhpGz+pjG4rtPsDhhqpVijGoU4t2q1W5g4Ije9KIBQShf75ndI456grGHDkIkECfDtFJCm94XbtC
+	uOJzLr1j7Fh0xr1ne/71ZV1IK+tOdRRdFb7o6RFHvBhkO2fiXCC1DkkIZ+WwhZx++HB75Tc8E/m6r
+	hIYNsrGGxQ1cjrohSMmENRV9OGugl8cfrXc1EEp45ZdV46ukrM1I04Qj1glTrcOem4wlWfJ1081Ug
+	O9dhWrtDIHDv/N6bbWFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mpHjF-00087T-N9; Mon, 22 Nov 2021 22:24:01 +0000
+	id 1mpHkS-0008dG-4u; Mon, 22 Nov 2021 22:25:16 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mpHi2-0007a3-2K; Mon, 22 Nov 2021 22:22:47 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4ED860F51;
- Mon, 22 Nov 2021 22:22:39 +0000 (UTC)
+ id 1mpHi8-0007cQ-Hr; Mon, 22 Nov 2021 22:22:53 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26DA261037;
+ Mon, 22 Nov 2021 22:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637619765;
- bh=DkH2C/0N1WYbkBTHTcXs+UoiXTHoHZhSHgkMmx0w2Xc=;
+ s=k20201202; t=1637619772;
+ bh=zgLZXkTyZeT2yxDxiCRe3tFY2/P5W/tmmoA+2l/FQdQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=G2Oxdt95V8shdcCR4rf8/SnteVMCqPXu7ONpufFbqQSZlnD5v72OrbusBId0aTBCO
- pP7ckP/ytX0pvpQkWJncqKZTFopWpfw907t6DuIdqszCUJmEH0P8XVWEEcD9/Gc22x
- BsbBGBjcTwnJPUC00tjAyAiRRBB7Q+yLxDG1vNK4N+lQXd5vI+hHx06boyzMJ/jE1f
- 5y/7vYtfL+uUibDbJ2SibZOim3YzH9m1BDyOZhEEUVCJq5dBjszMoc2+aYldAVpLgw
- ihYtpESUekvfxtkIZRBiMxX1y99UhIOUT9S4tCllpAW1AaavTuWHc9Nz22S82Orn3v
- 7aynnt3oUMzkw==
+ b=Vu62QhxeOG1cTVOI1XJg/cEM/6feijvDUEtMYFy8XGtjFmu3J1wivNmJYFrS1UcOV
+ D+7e8/dcFQJTEA2AuE8XH0Mo5hqIkvIU7jr7CXg/xJJcBc/3gkswZgRMRHG8yZS0C6
+ A3RlkUSxzEV8XzxTLRQEg6uwnlfUqY5RyXCBxp+xRMO+dd1lHyAqALGLeMHvmaTpcw
+ I7KwaDzzGuTLRIA8G7Pjt3vR4BnO8qW8/WDSQVat4v/Pe4kmO2BGzBrfFp32eScXMa
+ WlyfUsLnnvlA2nG0tzpq6/XyXcfBH7wJwB0PO2DRQHs2fGLdesV9Gr4tLV3qGoyVAl
+ oM4+hQ4U+pU9g==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
@@ -61,16 +61,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
  linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
  linux-tegra@vger.kernel.org
-Subject: [PATCH v2 02/11] ASoC: dai_dma: remove slave_id field
-Date: Mon, 22 Nov 2021 23:21:54 +0100
-Message-Id: <20211122222203.4103644-3-arnd@kernel.org>
+Subject: [PATCH v2 03/11] spi: pic32: stop setting dma_config->slave_id
+Date: Mon, 22 Nov 2021 23:21:55 +0100
+Message-Id: <20211122222203.4103644-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
 References: <20211122222203.4103644-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211122_142246_185924_C2CFF4F0 
-X-CRM114-Status: GOOD (  14.57  )
+X-CRM114-CacheID: sfid-20211122_142252_643178_E6BADA15 
+X-CRM114-Status: GOOD (  11.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,58 +89,40 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This field is no longer set from any driver now, so remove the
-last references as well.
+Setting slave_id makes no sense with DT based probing, and
+should eventually get removed entirely. Address this driver
+by no longer setting the field here.
 
+I could not find which DMA driver is used on PIC32, if it's
+in the tree at all, but none of the obvious ones even care
+about slave_id any more.
+
+Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/sound/dmaengine_pcm.h | 2 --
- sound/core/pcm_dmaengine.c    | 5 ++---
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/spi/spi-pic32.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index 9144bd547851..7403870c28bd 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -58,7 +58,6 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
-  * @maxburst: Maximum number of words(note: words, as in units of the
-  * src_addr_width member, not bytes) that can be send to or received from the
-  * DAI in one burst.
-- * @slave_id: Slave requester id for the DMA channel.
-  * @filter_data: Custom DMA channel filter data, this will usually be used when
-  * requesting the DMA channel.
-  * @chan_name: Custom channel name to use when requesting DMA channel.
-@@ -72,7 +71,6 @@ struct snd_dmaengine_dai_dma_data {
- 	dma_addr_t addr;
- 	enum dma_slave_buswidth addr_width;
- 	u32 maxburst;
--	unsigned int slave_id;
- 	void *filter_data;
- 	const char *chan_name;
- 	unsigned int fifo_size;
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index af08bb4bf578..6762fb2083e1 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -91,8 +91,8 @@ EXPORT_SYMBOL_GPL(snd_hwparams_to_dma_slave_config);
-  * @dma_data: DAI DMA data
-  * @slave_config: DMA slave configuration
-  *
-- * Initializes the {dst,src}_addr, {dst,src}_maxburst, {dst,src}_addr_width and
-- * slave_id fields of the DMA slave config from the same fields of the DAI DMA
-+ * Initializes the {dst,src}_addr, {dst,src}_maxburst, {dst,src}_addr_width
-+ * fields of the DMA slave config from the same fields of the DAI DMA
-  * data struct. The src and dst fields will be initialized depending on the
-  * direction of the substream. If the substream is a playback stream the dst
-  * fields will be initialized, if it is a capture stream the src fields will be
-@@ -124,7 +124,6 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
- 			slave_config->src_addr_width = dma_data->addr_width;
+diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
+index 5eb7b61bbb4d..f86433b29260 100644
+--- a/drivers/spi/spi-pic32.c
++++ b/drivers/spi/spi-pic32.c
+@@ -370,7 +370,6 @@ static int pic32_spi_dma_config(struct pic32_spi *pic32s, u32 dma_width)
+ 	cfg.src_addr_width = dma_width;
+ 	cfg.dst_addr_width = dma_width;
+ 	/* tx channel */
+-	cfg.slave_id = pic32s->tx_irq;
+ 	cfg.direction = DMA_MEM_TO_DEV;
+ 	ret = dmaengine_slave_config(master->dma_tx, &cfg);
+ 	if (ret) {
+@@ -378,7 +377,6 @@ static int pic32_spi_dma_config(struct pic32_spi *pic32s, u32 dma_width)
+ 		return ret;
  	}
- 
--	slave_config->slave_id = dma_data->slave_id;
- 	slave_config->peripheral_config = dma_data->peripheral_config;
- 	slave_config->peripheral_size = dma_data->peripheral_size;
- }
+ 	/* rx channel */
+-	cfg.slave_id = pic32s->rx_irq;
+ 	cfg.direction = DMA_DEV_TO_MEM;
+ 	ret = dmaengine_slave_config(master->dma_rx, &cfg);
+ 	if (ret)
 -- 
 2.29.2
 
