@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4DD6C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 22:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2FC9C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 22:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EViIFOIIClDVtoWrP8iWV8x0rA29brJQm5Lixp/NREs=; b=ZMvBMon7rPcpw+
-	nj3dRqeZHun3czh8FGkbH7dYTe/VEt66DNhykdcRWX6fRDgcp/JurZLk/Cn7SdZEjq6bRidP75rg4
-	njQLeP0TZjIifRSn78H99kOz2d8SJRCM0r8QwfVl497lXYG5W/CdveI6pr+ieFS9pcgpWJmhh9APe
-	92GMNaViA2oQ3SpasN9tDE/jTd2xU5Kfuu7KdZWfX3JHNTbeSJWsmn5nS+eX7UN5aec9p4TL9Q+Nn
-	SiCc637eGtmHLH96At4IJshj0N5PiROW05KWeFPzoy6yp38EamM+sdtro+iHcqa6KBOOPiwMmWPin
-	cPyceDc0rOC4F7m4wjSA==;
+	List-Owner; bh=0aUX+N91hMngT3psYH7AdfXRocjDMpn7II9RnEuZiJ4=; b=uAtBMvnf1MZISa
+	OHfku9GjzARlqruIlYhH7boDRt3xBGUgaI7U7pOLMZtF6M4nCNnCFUaEYaGl2GJ/P4Aj6XMQ60R+J
+	4VQ2BXr6srbaBUCRloUc3wOq797vKSKPwuuzpnlL99ufPJ6so0LrkAWz8gRATM8Ckxr2piKzPWOhB
+	2kol4nEwFvn0hkW5aYdUSW6eM/SQjcjIZ9WZ/JCTT/csDmhii4XO53h/0n26WxT+7fryigQA3ONwb
+	wPC3Rym/uy8boqQ1MIKNXtvTuEMm7rwY0eaRZa5HHfYD5YT89DOIT/vawR6MGTGgicYvHYLHIbYJi
+	Ih5DpsxuzXP82yv8hpQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mpI2i-000DKZ-PI; Mon, 22 Nov 2021 22:44:08 +0000
+	id 1mpI6R-000E8f-48; Mon, 22 Nov 2021 22:47:59 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mpHis-0007vX-0I; Mon, 22 Nov 2021 22:23:39 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8354861078;
- Mon, 22 Nov 2021 22:23:31 +0000 (UTC)
+ id 1mpHiy-0007yv-FD; Mon, 22 Nov 2021 22:23:46 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 064F96103C;
+ Mon, 22 Nov 2021 22:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637619817;
- bh=efjqB8lclC/CTZtvxidalnRW6k3GNlgXbza8zFiCoZM=;
+ s=k20201202; t=1637619824;
+ bh=kK/0hn3Tn2Fi1LQ6SeIagL/0lsO2CrpknZyQZAqq6H8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=U8NP1Zc1gLJF725LnCrWHgavWOnwK2Ly1UnDTKcbTcdYbgu+miYfDh7Q5MZ9ByoyK
- GvjVX6mKNAxeCgehUkVbusSV4QnRfJUYbwPUXViEyL36MN8wB2u6OmqubcsatL9+Mq
- yeV+rIZkvLJeCdnf9o9aNwg+uxPfN+v8kmtNfC7MLTzE2itRKsloRWob2HCygsanXX
- VTKTLI7mi+52T1tblQaF6Ba0ZDdU3kkLWFXoKX2E3e7ejJJSpfWQ0xjrJeJKfQB24g
- xd90ghdcOKTXQirzhVKhiK98fux08E5EopBbXH5f2PC+N20hBxkQSuiFisX18MW7Gu
- qmf6Z6dWyCwbA==
+ b=D2/yNDzBENZCV3sSIl45F//FfTAukYJn/aB/UGh8I2KaOy7hp22Bp+4Hk7x39Hi7u
+ 6e+dm5/YqhRogLXgrZ4AGc43mg64vHlOq1gIn5GVeiq9ATMgMjPD8mxPFDFaQ3aa+j
+ MQv7bncgFO5dExmwoX3s7KxgzNmRdjAvJ8L8yiSvS5qic4CJs5WDTicWXy2EK3Rvgg
+ cAaYtYpjbFTPUW/LIgaSPH1XVukM1CNyFl/il1Z3hpw7wYnUGTRu2xxQu7y1304Q4O
+ DqXPeJwj0DSwecC7x7qSXRZYQTTmspHVwU6Jw3E235yowtMHJ5mtFd1BPBQlG3mqm6
+ Syi2DD+et8CSw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
@@ -61,18 +61,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
  linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
  linux-tegra@vger.kernel.org
-Subject: [PATCH v2 10/11] dmaengine: tegra20-apb: stop checking
- config->slave_id
-Date: Mon, 22 Nov 2021 23:22:02 +0100
-Message-Id: <20211122222203.4103644-11-arnd@kernel.org>
+Subject: [PATCH v2 11/11] dmaengine: remove slave_id config field
+Date: Mon, 22 Nov 2021 23:22:03 +0100
+Message-Id: <20211122222203.4103644-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
 References: <20211122222203.4103644-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211122_142338_104698_26C4762E 
-X-CRM114-Status: UNSURE (   9.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211122_142344_757145_576473DD 
+X-CRM114-Status: GOOD (  11.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,31 +89,45 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Nothing sets the slave_id field any more, so stop accessing
-it to allow the removal of this field.
+All references to the slave_id field have been removed, so remove the
+field as well to prevent new references from creeping in again.
 
+Originally this allowed slave DMA drivers to configure which device
+is accessed with the dmaengine_slave_config() call, but this was
+inconsistent, as the same information is also passed while requesting
+a channel, and never changes in practice.
+
+In modern kernels, the device is always selected when requesting
+the channel, so the .slave_id field is no longer useful.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/tegra20-apb-dma.c | 6 ------
- 1 file changed, 6 deletions(-)
+ include/linux/dmaengine.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-index b7260749e8ee..eaafcbe4ca94 100644
---- a/drivers/dma/tegra20-apb-dma.c
-+++ b/drivers/dma/tegra20-apb-dma.c
-@@ -343,12 +343,6 @@ static int tegra_dma_slave_config(struct dma_chan *dc,
- 	}
- 
- 	memcpy(&tdc->dma_sconfig, sconfig, sizeof(*sconfig));
--	if (tdc->slave_id == TEGRA_APBDMA_SLAVE_ID_INVALID &&
--	    sconfig->device_fc) {
--		if (sconfig->slave_id > TEGRA_APBDMA_CSR_REQ_SEL_MASK)
--			return -EINVAL;
--		tdc->slave_id = sconfig->slave_id;
--	}
- 	tdc->config_init = true;
- 
- 	return 0;
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 9000f3ffce8b..0349b35235e6 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -418,9 +418,6 @@ enum dma_slave_buswidth {
+  * @device_fc: Flow Controller Settings. Only valid for slave channels. Fill
+  * with 'true' if peripheral should be flow controller. Direction will be
+  * selected at Runtime.
+- * @slave_id: Slave requester id. Only valid for slave channels. The dma
+- * slave peripheral will have unique id as dma requester which need to be
+- * pass as slave config.
+  * @peripheral_config: peripheral configuration for programming peripheral
+  * for dmaengine transfer
+  * @peripheral_size: peripheral configuration buffer size
+@@ -448,7 +445,6 @@ struct dma_slave_config {
+ 	u32 src_port_window_size;
+ 	u32 dst_port_window_size;
+ 	bool device_fc;
+-	unsigned int slave_id;
+ 	void *peripheral_config;
+ 	size_t peripheral_size;
+ };
 -- 
 2.29.2
 
