@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEBCDC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 22:31:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A545BC433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 22 Nov 2021 22:34:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0Kr0G75X0TM4U7gxjb8zdM6EJtWhagdbf40i7YcvSv4=; b=dvwWDjTQ5uxUE5
-	uj8iQOP/XoD4CJbr+jErwTeY9knPWhkityudsrqUPRYDSeatrvyUR3Akw7gdKT64bI9vgaey6ZNcl
-	AyHaGdUOKQP5ZDfg6TvZ/5BOMtZ1HQgB8wTSjh74MsHuwi8ifLcZiBFsLGSrlrVKRkfAkbGAFUReb
-	wvUB0zsrXm2rwjhoTzjtyRNyEys46EEznNvd9e+1+2ogGMiajdhoPf/H00S3wdpEVA+GPRRrOvaju
-	Py5AWZXT3aiHizft5jvTa+DMaPUvCc7gARD6o0o3omLocm8OtcWymKhewJoC0dOhCqvO0phn3uqnd
-	Dvpz8QDC2xuD4x9Ufdiw==;
+	List-Owner; bh=9YNaE/m9TUbF6rzGaNRowxh2YwznZqb22639GYTezao=; b=w1GbSuFq3mR2HT
+	O2oAco2BGoV+b6eIaNCsuctxFXucXtvLez/sdQ4maoirp/V+/ZHgUppWtoywYCIOOGArMQUkQNMse
+	dCYWrfPY7YWLRNmYRvfA4foJTUyqaXpwWLKq0q3P6qMqxIAgzwzmocwUumglW3hWvz9gba5cb0mfA
+	FDZUyydRHluqofJ1nJSorVtwH0/YkhDv7uHMJcI68WRpLFNZ8lWy+OLjRcd08XWdfhW/by+tPCAnr
+	nRNNG0Dbdr6HRna1zESPtR+lopsDNvA91LfPcbZzP/3tzfpYCHdIIvaUMcZMbHEt/67o+y40taBLX
+	WMNpUPjJmxDT48i6VyuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mpHpp-000ADU-NS; Mon, 22 Nov 2021 22:30:50 +0000
+	id 1mpHsk-000Ayy-Hb; Mon, 22 Nov 2021 22:33:50 +0000
 Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mpHiS-0007jl-1A; Mon, 22 Nov 2021 22:23:13 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9540861051;
- Mon, 22 Nov 2021 22:23:05 +0000 (UTC)
+ id 1mpHiY-0007mF-GS; Mon, 22 Nov 2021 22:23:19 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1651060FE6;
+ Mon, 22 Nov 2021 22:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637619791;
- bh=mEZeKwAu9cmy86njGDu0eXHIrGjfEnYmGSI37A9u8C4=;
+ s=k20201202; t=1637619798;
+ bh=McpWp/4AcEZeBd39ynQN6eTYVALGVNvs8cD8tBGVm+Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Mds7UvBahSLSVHiBQ9v2Ytg5G1Sxspx3HwfkVRigOS+lcbEmjTSyArF7E1ugjwBBD
- 2YqSubbC7b6D0R0dyKzHjgFlTme434/IjPEnvZwi2CG9RIUhvUPIqM1M6Qfe8xBdtS
- n7Cbk51NQppDYReLPMyQPjV7wY1ln/ndhpewTxxkL/meQAovg2HWZHUjvGmZNShKh4
- +lzzUkQ+p/BnGqZl17YTexH1jnjJNGGbt90k/iXE3j4vagAjUI+gZPiuTSca+PmE0+
- vis7Va7kgZlXo6RAiCjJUtA+avyjvYe+q5Y2LJSAAPAoO/7sW8Al8MVdglg/v4rbAT
- AcAek++ntYExw==
+ b=rpP6eKOrl9dj0+CGG0X5A92xrHnDtIWKLHyPyGZsCeDj6+Y3LlX4ce9t+tYu5Utwc
+ GAD/Dm5Ge6oMPjFnQSe7UC4zsOfp19LJfRk9htLP7pl58RZUdw4odqBlhALUfyEkPP
+ qLyhySmSJtoWdnOXs2KUJIGAxo1Y++knYawaZrSKgfizR+WGB/R0Co73Hc2RCgB+E0
+ SnKiJkIj+uf0eSIppmJ/1Qu+fX8RKmW186XR2XxbrB1rlTFDwIKlQBRQYQBOkHt4mL
+ PvQ4jmOgipvUVh2E0J+xZnDuaSHyDWJVEg2FeTDb2h+g2D3rOu3i4dwNJrZUZKWxqT
+ E58/3dIDp/niw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Vinod Koul <vkoul@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
@@ -61,16 +61,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
  linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
  linux-tegra@vger.kernel.org
-Subject: [PATCH v2 06/11] dmaengine: pxa/mmp: stop referencing config->slave_id
-Date: Mon, 22 Nov 2021 23:21:58 +0100
-Message-Id: <20211122222203.4103644-7-arnd@kernel.org>
+Subject: [PATCH v2 07/11] dmaengine: sprd: stop referencing config->slave_id
+Date: Mon, 22 Nov 2021 23:21:59 +0100
+Message-Id: <20211122222203.4103644-8-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
 References: <20211122222203.4103644-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211122_142312_148552_6802D23B 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20211122_142318_615425_0532CCBD 
+X-CRM114-Status: UNSURE (   8.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,53 +90,30 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The last driver referencing the slave_id on Marvell PXA and MMP platforms
-was the SPI driver, but this stopped doing so a long time ago, so the
-TODO from the earlier patch can no be removed.
+It appears that the code that reads the slave_id from the channel config
+was copied incorrectly from other drivers. Nothing ever sets this field
+on platforms that use this driver, so remove the reference.
 
-Fixes: b729bf34535e ("spi/pxa2xx: Don't use slave_id of dma_slave_config")
-Fixes: 13b3006b8ebd ("dma: mmp_pdma: add filter function")
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/dma/mmp_pdma.c | 6 ------
- drivers/dma/pxa_dma.c  | 7 -------
- 2 files changed, 13 deletions(-)
+ drivers/dma/sprd-dma.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/dma/mmp_pdma.c b/drivers/dma/mmp_pdma.c
-index a23563cd118b..5a53d7fcef01 100644
---- a/drivers/dma/mmp_pdma.c
-+++ b/drivers/dma/mmp_pdma.c
-@@ -727,12 +727,6 @@ static int mmp_pdma_config_write(struct dma_chan *dchan,
+diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+index 4357d2395e6b..7f158ef5672d 100644
+--- a/drivers/dma/sprd-dma.c
++++ b/drivers/dma/sprd-dma.c
+@@ -795,9 +795,6 @@ static int sprd_dma_fill_desc(struct dma_chan *chan,
+ 		return dst_datawidth;
+ 	}
  
- 	chan->dir = direction;
- 	chan->dev_addr = addr;
--	/* FIXME: drivers should be ported over to use the filter
--	 * function. Once that's done, the following two lines can
--	 * be removed.
--	 */
--	if (cfg->slave_id)
--		chan->drcmr = cfg->slave_id;
- 
- 	return 0;
- }
-diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
-index 52d04641e361..6078cc81892e 100644
---- a/drivers/dma/pxa_dma.c
-+++ b/drivers/dma/pxa_dma.c
-@@ -909,13 +909,6 @@ static void pxad_get_config(struct pxad_chan *chan,
- 		*dcmd |= PXA_DCMD_BURST16;
- 	else if (maxburst == 32)
- 		*dcmd |= PXA_DCMD_BURST32;
+-	if (slave_cfg->slave_id)
+-		schan->dev_id = slave_cfg->slave_id;
 -
--	/* FIXME: drivers should be ported over to use the filter
--	 * function. Once that's done, the following two lines can
--	 * be removed.
--	 */
--	if (chan->cfg.slave_id)
--		chan->drcmr = chan->cfg.slave_id;
- }
+ 	hw->cfg = SPRD_DMA_DONOT_WAIT_BDONE << SPRD_DMA_WAIT_BDONE_OFFSET;
  
- static struct dma_async_tx_descriptor *
+ 	/*
 -- 
 2.29.2
 
