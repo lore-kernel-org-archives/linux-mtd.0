@@ -4,74 +4,165 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 824ABC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Nov 2021 17:43:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60B2FC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Nov 2021 18:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WgmpkAU4Q+2t0HWvxcLO+pTu2jXJK9CusRTKYTdhNx4=; b=Nw6lSrQJ8WgGES
-	ZJBuZSDB7wC476Ss32mBRu6Iv0+P0QvxkUSI5N4vyTBkNen4flY9k21IT+Rel4lYmfg9F+6QgQwgn
-	6KflNgqlTHlCQhrV6E13l9m5ma52wbMqz7xEbdWS6r4xaB6hUDKB1eZkcCJDeLyV4Ly+uRizpxAR0
-	C1rcKBb6BfbA/LyPhSGuX7vjmsBFTdraCRvMzgKC9SklZpBlPxhXGPixICKQibHacohRGMsLy+8Of
-	rY0k+NFVRmMkdt0xyarOPlJ62DIse7MoAAQQiRHlKq/AkbF4kMrrI+A7IQcdce+XwmlCtmcLyF00B
-	x5Ngo7ZK6evEXpffbuKQ==;
+	List-Owner; bh=+kLBskZO6P/r22+djJB/ILIJBrVERJ2Cn34EbWvKpbk=; b=zaAv3C+viTNsEn
+	2nTLWhzVWRw/rRMXI8jVUWb7+m/M+MQigjduBAronNap1Bl1mG96VF3KvIwCxJDHTsmM0pDCwhM7y
+	Js332CIZSdZGtN2JgDRnMgghgXUOlYlFCYe7EmgjoLMep7Kfwt3+Q2z+MGlhNmu/EHfPXr1hc7DZk
+	Dzvysq3edo9GjSRuuHrxcn9/RwQ3WCGe04JMaHDD5rEhg929Sl2ACwa2oc1qjVlX668M3Gslkat0C
+	x5pMllHGvRtJeBMg1+TpPt42ndw0d93xTqIT4lSFKbyAjRh/totceqtan+IbEgJTtHqTsziURlCuf
+	PK9MXqruAbVN76I+HokQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mpZoF-0034dR-Gn; Tue, 23 Nov 2021 17:42:23 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1mpabh-003CVn-Nh; Tue, 23 Nov 2021 18:33:29 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mpZo9-0034cg-KQ
- for linux-mtd@lists.infradead.org; Tue, 23 Nov 2021 17:42:21 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1ANHgAUF039109;
- Tue, 23 Nov 2021 11:42:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1637689330;
- bh=C3Bb1vDGAhm1AJp5UEueP9HcLsWC2LXhC5cUz5gg8gU=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=DLhOavivfCAuJi1YPYoZd+mLtxDocGG+nuHf3IxBW7ubaCyfCHqpvIDsbXZCfodFn
- WnIrLV5VLzHId4SOZFFlsoBIIZDlqj/aXDiiK8gwBCksn24IKdo2P9lkRP4cbBqtf+
- RIG5dJos+M7iwQqJRzDHjg2nSga9nNks4oFpBj3o=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1ANHgAen079491
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 23 Nov 2021 11:42:10 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 23
- Nov 2021 11:42:09 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 23 Nov 2021 11:42:09 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1ANHg8bo069940;
- Tue, 23 Nov 2021 11:42:09 -0600
-Date: Tue, 23 Nov 2021 23:12:08 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-CC: Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Tudor
- Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-Message-ID: <20211123174206.bzh5yq2f7sgkqpmi@ti.com>
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
- <9a158e2ef6635212c1e353590e3b773b@walle.cc>
- <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
- <e9589af968d7b9dafbce17325dbf8472@walle.cc>
- <85251c3b-13c1-8b24-0ce2-6793ea55e39a@nokia.com>
+ id 1mpabd-003CUZ-4e
+ for linux-mtd@lists.infradead.org; Tue, 23 Nov 2021 18:33:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1637692404; x=1669228404;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=Wito7AFKrkAsZcFGEujyqlIKL+R68cfr/d7pC9+Wtbo=;
+ b=QgTGjCO0hBIoNMrQrVYNwOnSeNoiwu75FppETAp1HeP8rzxHfI3cajcp
+ J0FdxvYviJ7r2RvkHveVGr688a3cTMOJKPeUFMKL7y+4PDWFySC/X2yHD
+ 4OsRyhptgQzMlmrrJW5pgAbPqIPcTSi35JUWPWg+q4HcCWb8L5Qjs5V2R
+ sYjKFUo16SgnLtcOCcLHY/De7142MKvgRxX9mJClF2dhOQuITm9gH7ybA
+ 1EhVt6y+OvoA4krKABTnIYSd9VO/0P3IwgBebkK8re9+9VdeNBllys5cQ
+ 1ZKiBCn8lhTi1B713e5z6YsZxD55ASFnf00sBn8WP7l6opHsLakktAuGc w==;
+IronPort-SDR: Q3ZkuZNUALOn6/7CgFt9Uf+ivycMkTX7DYN8eECABvklHLTQi4e1IoiWnSq/ULU/H40i9fOFpC
+ 6VtTK5fJmyEoil2oDpMuham4CtoH4CJYaYSCFEaHtRU9O2/i0VxQVH/9sQw3Yc62UVnRbRpzLc
+ NIHL+gND1fkjMWXNAhcBTjZ677wL8NOn5ZYkBQV1stQ1J8jwpBbqobco2J37UdyG19AThHLXhp
+ pvwIyXtTKalg8fKGcbFWfmi2f3zRCAD/r3OSmBGXZAg1VmMsBlUOnBLmtCxxcFzgLVsa4PO9wV
+ g19+QRvEZ6xsP2889rBJE0up
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; d="scan'208";a="137502879"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 23 Nov 2021 11:33:21 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 23 Nov 2021 11:33:21 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14 via Frontend Transport; Tue, 23 Nov 2021 11:33:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hgRGFsSEl4GMSbWeAnOfIFmYTnatFeNA3UsXwA72MaJFWaGD03vvetvNT/eIUmdPXmHZeoguXRjr2OtBda7643us4wa6Pz9q3AgeN99O6oR0dC5NchdA/rbe8uKD9l9zjLRGtz9BcDPeYvTJ/Nuzus80htRTMRc1QVpy+lWKFa7Vmg5WQcmNqUL8Jkt0kHxePR/DJCeqbWtdND5BXteK0eL7H/RApLfRea5yUAzzTBU4Bf4STzhhBo1Hbcmr3hQK3z5DZ7WDzd5bPMGb0VCJ28c5K/aWUsjb7fyi3TPKZVN/36ToJoEfF7z6e64iuIBcNxNBiN/5Ca+YvMmuTuL+5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Wito7AFKrkAsZcFGEujyqlIKL+R68cfr/d7pC9+Wtbo=;
+ b=k9uu0HVzCnvd6Flfr8Odms82O6iNmYY1K5qDdsxdueoHRulRUKAiAL5iD9GSW8JfgFCVXn27nrkBrKz1t1c4Txca8PfGNlqyAE4Etphon892848jPzJNOyslSyOhUAx6JBn7vwn1rhHEDzW+c7attZXIWWkB9108C622E8Hn7fWsbqvIkK7Dnqay4J4D0bFPC2QmfmswAuhC+aorJ6SMxFw5EJ3n5q958wsSNu6/pXo4PzEBzd7jfBPUH08LSd06/OLQCHoSLjJaUJfnuQg8NAdugNw4Y76zIZzW41OSLzWJVaZHBOJxPJ+xiSQiDISYYc+hIQF+Al+VHb5kF0tB4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wito7AFKrkAsZcFGEujyqlIKL+R68cfr/d7pC9+Wtbo=;
+ b=GioKsrMnQT0S+a+4M+hvJHspWM8y366qYV3fj1g1EQnwjTVJO6DvSvFMtk2kCfqmuwFUt1BQc/0w31gpgJyCNr9xVzrztSugwKNfkq15esw1zPcQie0ifkFxuA81CRnlt0zw5mNoldl6z4EF6hE52cmiUc4qVDoWEUHkQARjVr0=
+Received: from CH0PR11MB5380.namprd11.prod.outlook.com (2603:10b6:610:bb::5)
+ by CH0PR11MB5220.namprd11.prod.outlook.com (2603:10b6:610:e3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
+ 2021 18:33:11 +0000
+Received: from CH0PR11MB5380.namprd11.prod.outlook.com
+ ([fe80::9160:91de:807d:1c17]) by CH0PR11MB5380.namprd11.prod.outlook.com
+ ([fe80::9160:91de:807d:1c17%9]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
+ 18:33:11 +0000
+From: <Kumaravel.Thiagarajan@microchip.com>
+To: <gregkh@linuxfoundation.org>
+CC: <lee.jones@linaro.org>, <Pragash.Mangalapandian@microchip.com>,
+ <Sundararaman.H@microchip.com>, <axboe@kernel.dk>,
+ <linux-block@vger.kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>, 
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <LakshmiPraveen.Kopparthi@microchip.com>, <Ronnie.Kunin@microchip.com>
+Subject: RE: Reg: New MFD Driver for my PCIe Device
+Thread-Topic: Reg: New MFD Driver for my PCIe Device
+Thread-Index: AdfUin4YS96OXFqCSACYGDyaPGcVfAABemOAAABYXQAAAHdcgAABPKYAAY/rIZAABzT1AACK+OwwAA0KDwAAzz9LUA==
+Date: Tue, 23 Nov 2021 18:33:11 +0000
+Message-ID: <CH0PR11MB5380DAC79E3D01C7D1D6008AE9609@CH0PR11MB5380.namprd11.prod.outlook.com>
+References: <CH0PR11MB5380F5BD18F15014BA8B8479E9919@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YYkEP62JRb4rCuXQ@google.com> <YYkGkEiPb+6J62hn@kroah.com>
+ <YYkJsbbHH6wdPvB9@google.com> <YYkR/szsDirtj1FP@kroah.com>
+ <CH0PR11MB5380791976D5837E024D5679E9999@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YZO+KktO3OhDEtlq@kroah.com>
+ <CH0PR11MB5380439460BADE102D91C18AE99C9@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YZe6TPrf4Drh7HpI@kroah.com>
+In-Reply-To: <YZe6TPrf4Drh7HpI@kroah.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 21c7d85f-fe19-44ec-ce39-08d9aeafb403
+x-ms-traffictypediagnostic: CH0PR11MB5220:
+x-microsoft-antispam-prvs: <CH0PR11MB522007486634FDB98C3B106CE9609@CH0PR11MB5220.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KMpDvngIH9eXvvCkXxSSxidbrmPQ0Eg+VEx5j9BdAfapsrFwMW84p06cWlyIYGEz9zvxJBNYlmaJlvNQsIzW60As0p5IbuyBx0sQXHYevJNIyt1WnIPMD+EkzYNSwN4tLYfCBd5vjVpw1H6k7PDHvLNlN9/ZaM6YlJQbIkawc6GC44nYY+sXIswx24gLTC+kRcL4dDkNx2jMI27TjCFO5axYxLkAWmV/ioXdp8xIi/pLr1OmDqHpQIfmT7oCN4uHkFhdR54PjDy7yRaeiNzV6ZuG9cSYYLH1jMqFX6/Fe6bQM1aDEWX7DGa1P2yKi0EduaKU6OIDlldaE74JR7SunHLIwYfaBmiZLPECJvVZ53/ZugTg07+asyLMmv2QWQGQpHP4+ger9rfhWfLvUPqaLx5FbUF4QYy2eb8ll9UEpQfH3t3UypnaGWQGYp4SAN+x7ujC5MeYOUQJ2Jbu6XgEflkoBQHuJCUuecIBHj5f/4gM+DwrDFLQ4dTpJzBxE7Qp5NqHBwC4XXZ9flC0+5CGKAbLqSXo9MecZssuEZ4VTeeMrcvnHq4CB/l2AeElLMSzRxdzkDLhsJKECP7MhMqBx7uqC42BHrHCSMO/NzYEogNkLyhok1DGo4pU2pyDbFUU0Xf4kG4LR/lDK59FSCUdq9mhGC4xD0A8oWCaC3bSh1dBeG2i3duqVlbmB7ReI8VvG1a+3D9KZTZubvBd99AIGQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CH0PR11MB5380.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(8936002)(8676002)(186003)(5660300002)(38100700002)(55016003)(66556008)(66946007)(64756008)(122000001)(66476007)(66446008)(76116006)(26005)(7696005)(6916009)(33656002)(52536014)(9686003)(38070700005)(53546011)(6506007)(71200400001)(54906003)(316002)(4326008)(508600001)(83380400001)(2906002)(86362001)(107886003);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?J2/Y7V1Yb5G2TlCiXdK9RDEmQTF3TshAgRK2uXe2eiTvngPzkC6Q5mTGITCP?=
+ =?us-ascii?Q?f7ZQwkvDUP1b02PuPq6ba7/g0YIo260ojVcVGHQRKidexY6b07cDjbP7fG69?=
+ =?us-ascii?Q?r6y0bptFKEBXDt6yecArC2YdzodVngo1IvU6Rodjl5zyJN8BAYRX8GihpwpT?=
+ =?us-ascii?Q?/x4/xuvxFD4YjZUwvZtOA7LqLaoXpGF7EW2/CViPyVysYcl65yFozc922Y8m?=
+ =?us-ascii?Q?3zJlxBoCU2eMrv8EoaPtym8NrPYWgoVn3aXkDhctMa/oKlCdA6geTqtAlIUu?=
+ =?us-ascii?Q?22PdJdplKdRNECx7BMJhQQ4knNEC3XcpE6WZe7ZgZMQWD51IkK/2NR2lUf9p?=
+ =?us-ascii?Q?3diaHAt8L6UeFUgbfN3JCKxvj3uRPpzt04NTkXN6Jcwbn7LXnWl3aCJPXuyJ?=
+ =?us-ascii?Q?gAyP+AVKCXYS9C6P5v2snzOkialGbVdP6FaRehebitXXYI5ZfII/ohv1InWx?=
+ =?us-ascii?Q?p+EYOxt9zE/RUvC87fuJR8JntlX94Z0M/TbSsPw046erGj4Pfm5t1r8Hj+ct?=
+ =?us-ascii?Q?65E74uENdvrbyV6XfLVt2eSN+QxJq6Ip0iKipvqn+xNVDmUxW7gYatudWh8G?=
+ =?us-ascii?Q?emLWz+fhDAHodrjbBz/RMGoTX/abDhkP4AsR+KCE1h4uuDWNkP53EsoJ5Vmh?=
+ =?us-ascii?Q?pfPB5GhNuVPvcs8VTfgdkRDeazwt3mY5fl2nW7LxRhv4RQRsyvpu8rjlHRz+?=
+ =?us-ascii?Q?ZXFbYwZq8Xq0Oo9McMIM9Z900ounQwDZaNi+EZWA7W6u+jE6U8m5lpdjFNSS?=
+ =?us-ascii?Q?jwkGEiKNsB+wvdkW3XWXdAL6DTixHhkyP8DMXs7KLbI1eX7DwOQLubbjQuw7?=
+ =?us-ascii?Q?Ga5O9wjBUGfsCRb9F1o0O9A41cVON1ATVAQRe/mUpC+4fiS0Y6ODuqSuuXXD?=
+ =?us-ascii?Q?trTGxsdtQ9uwfiguSbYARrO/C3bsxoKoOZYRnnqzdl5NBdzfcRBAM0ZjRn2/?=
+ =?us-ascii?Q?hS9tphLeJHQliUKNOymqq11U0qQQ+ScGS8vIX9oUTx8913r2tcgCqAqqYMCJ?=
+ =?us-ascii?Q?iXc9ppuR+MFCinmEKtfVZ9PDBoo7ZtQKsF0gfJDwE0HlPELcNnlDk/68g8sy?=
+ =?us-ascii?Q?UI0dwUN+cfxyG2dq1RmPrtI/NWy8qLFEMSIH76sUDduMzEqlqoOWcnfwxWgE?=
+ =?us-ascii?Q?JgJVE1ZH+Ia9EE34oUJVwJKVc/oij8cFNPGK+MOp96OQ5SK5xaB5TL8GE/WW?=
+ =?us-ascii?Q?wCmMeWY8c1eKS5hNsHD9WEQFn3kHZZ3b4+OhjtyobuGlCWeTqhRPyvcZ5YvF?=
+ =?us-ascii?Q?r6DeF1Sjcnm8bKR10CMtWRDr/v9dRniZlgcsswnX8fPC95Y5rgUfK2LmlwYj?=
+ =?us-ascii?Q?aUc9R+hQF/J7e3RKtHFtrjG5uORe2fQXFkfjwsrpskN+/fvrUXUXvnhPtL9y?=
+ =?us-ascii?Q?QiWCN4VG5mlnvaR2q9VpTIe0k5q3ERCSnXYX+rjzw6aIgT80WF37NY0COftc?=
+ =?us-ascii?Q?/JmnAP5wkx2xKITn4bh1yP6jNxLl9OMRaNF1Ovy1KZ0hYTlodfliW071YepT?=
+ =?us-ascii?Q?suAZ1G9QpILWHmP+J6X7lkU/KYbSseQ+Qi3b9nHRGWbapbSujISQhMY9qCo/?=
+ =?us-ascii?Q?3elG6hzrrC0m7A8AFCu4sn5NZ5e3qgcuMJUO3UxdGe9gEaavh+hR+ffHyTZp?=
+ =?us-ascii?Q?jb0qMJ2N9CiCgA/iG64y9KzhNXpYLM3153ni0ODpoWpms+5Zk/Svh9Gmcl0B?=
+ =?us-ascii?Q?zApJnC6MXumWkFjla1wGOQFMc9txh5q5ZIHWIsf12W8qKm6kaGa1Rz24HQ3W?=
+ =?us-ascii?Q?lR65ZDjg5g=3D=3D?=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <85251c3b-13c1-8b24-0ce2-6793ea55e39a@nokia.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5380.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21c7d85f-fe19-44ec-ce39-08d9aeafb403
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 18:33:11.1597 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NGC7jQpMn20o7fcb702YG/3IZbG/tNDEDgtT/N/yAIiN/9yHw1sj6IDNge4FreQun0lxZToOYuMA/8SiyKwGEJLHoRUT00ccesuiIRgDl4QJXSmXIoA68OOSaTDTDCuO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5220
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211123_094219_552708_13748B75 
-X-CRM114-Status: GOOD (  18.97  )
+X-CRM114-CacheID: sfid-20211123_103325_378060_4BD2A1D1 
+X-CRM114-Status: GOOD (  26.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,82 +174,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 23/11/21 01:13PM, Alexander Sverdlin wrote:
-> Dear maintainers!
-> =
+Dear Greg KH,
 
-> On 22/11/2021 16:05, Michael Walle wrote:
-> > Thanks, so that's the SFDP data for the mt25qu256aba8e12-1sit part. and=
- the
-> > jedec=A0id=A0is=A020bb19104473,=A0correct?
-> =
+Please find my answers inline below and let me know if you have any questions or comments.
 
-> While we are at this part, I've encountered another issue:
-> =
-
-> The chip supports 1-1-1, 1-1-4 and 1-4-4 write OPs in extended SPI mode,
-> while only 1-1-0 erase. (as well as 4-4-4/4-4-0, but that's not the issue=
- here,
-> I think).
-> =
-
-> Now the erase code (chip/sector) uses spi_nor_spimem_setup_op(nor, &op, n=
-or->write_proto)
-> in both functions.
-> =
-
-> In my opinion, as I look into Micron or Macronix datasheets, write_proto =
-has little to
-> do with erase_proto. (there is currently no separate erase_proto)
-
-I think this just worked for most flashes since both writes and erases =
-
-generally use 1-bit mode. 4 or 8 bit modes are generally used for reads =
-
-only.
-
-> =
-
-> Before I come up with a totally wrong patch, wanted to ask your opinion, =
-how should
-> it be solved, what do you think?
-> =
-
-> I do not see any erase-related tables for this in JESD216C.
-> I also cannot come up with an example of a chip with erase !=3D 1-1-0.
-
-See Micron MT35XU512ABA or Cypress S28HS512T (in spansion.c). Both have =
-
-erase in 8D-8D-8D mode.
-
-> =
-
-> Shall I hardcode 1-1-0 for erase?
-> Shall I introduce erase_proto? What would be the logic for its setting/di=
-scovery?
-
-I think introducing erase_proto would be the sensible thing. You would =
-
-have to see if we can discover erase protocol from SFDP. But my question =
-
-is: is that really worth it? Do you really need that little bit speed =
-
-boost you'd get by transmitting write data in 4 bit mode, since the =
-
-large portion of the time would be spent in the chip actually flashing =
-
-the data.
-
--- =
+Thank You.
 
 Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Kumaravel Thiagarajan
+
+> -----Original Message-----
+> From: Greg KH <gregkh@linuxfoundation.org>
+> Sent: Friday, November 19, 2021 8:23 PM
+> To: Kumaravel Thiagarajan - I21417 <Kumaravel.Thiagarajan@microchip.com>
+> Cc: lee.jones@linaro.org; Pragash Mangalapandian - I21326
+> <Pragash.Mangalapandian@microchip.com>; Sundararaman Hariharaputran -
+> I21286 <Sundararaman.H@microchip.com>; axboe@kernel.dk; linux-
+> block@vger.kernel.org; miquel.raynal@bootlin.com; richard@nod.at;
+> vigneshr@ti.com; linux-mtd@lists.infradead.org; Lakshmi Praveen Kopparthi
+> - I17972 <LakshmiPraveen.Kopparthi@microchip.com>; Ronnie Kunin -
+> C21729 <Ronnie.Kunin@microchip.com>
+> Subject: Re: Reg: New MFD Driver for my PCIe Device
+> 
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
+> 
+> On Fri, Nov 19, 2021 at 09:16:29AM +0000,
+> Kumaravel.Thiagarajan@microchip.com wrote:
+> > Dear Greg KH,
+> >
+> > I went through the documentation of aux bus and felt that it would be the
+> correct way to go as you said.
+> > I will migrate from MFD to aux bus.
+> >
+> > I have one more architectural question as below.
+> > I have written the driver such that it enumerates the OTP memory and
+> EEPROM memory as two separate block devices or disks each of size 8KB and
+> this enables me to use the linux dd command with "direct" option to dump
+> the configuration binary onto OTP or EEPROM devices.
+> > Also, this enables me to use the application like hexedit to view the OTP or
+> EEPROM devices in raw binary format.
+> > These devices are not based on mtd (memory technology device)
+> architecture as we don't have any erase functionality here.
+> > Can you please let me know a suitable location in kernel source tree for my
+> block or disk device driver?
+> 
+
+> So they are a read-only block device?
+KT: No. These block devices are writeable too. I program these block devices using the linux dd command with the "direct" option.
+
+> 
+> Why use a block device and not just the "normal" eeprom driver?
+KT: I thought the normal EEPROM driver can be used only for EEPROMs that are connected to I2C adapters for which there is a I2C Adapter driver available already. But my device has an inbuilt EEPROM controller hardware which is not like an I2C adapter.
+
+> Or a char device node and mmap the memory?
+KT: I am not sure if I clearly understand this. Are you suggesting to mmap the EEPROM memory? The EEPROM memory is not mapped into the address space directly. EEPROM and OTP controller registers are mapped into the address space of the processor and accessed by the kernel mode driver.
+
+> 
+> Anyway, no idea where to put them, drivers/misc/ ?
+KT: Ok. I can use this location.
+
+> 
+> thanks,
+> 
+> greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
