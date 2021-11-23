@@ -4,63 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49CFDC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Nov 2021 08:21:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 348F6C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Nov 2021 10:37:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ETdxq7/ryMSOK3gsXKMIzXJZB728g46wQ4ee6wQ2t+c=; b=YprUfa3St3BAek6Q7MrriNQZDp
-	PdLsVexBhT9cob2TbRVHkkOL/XYbY2N17bR8cy+YvXStV2e771aYum6/j6erjhHXkbZD8fkWhsJhz
-	DqygiKNqDT9yFwISORFi0OwQT4IBFq48Qiav+mC1DrkQLcvt+ckZv4oQOQaCrB+b/yd5GtQVSU9CC
-	SvUUZjmg9Tr+BKwW9AYxrrq1UpsECMVxnlwDF9vjf8dJmqSLNyMpklBwVtVSfTLIP8UUoP2so+zpC
-	pyOuPFgAIUSGLp0hEoUk7B9JzRU/k9RuPuk3vglXj8raTrX/mpQD7S/CtVI2sUomn8kDjZfTaDPG7
-	KQef32xw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZbujvqOFg/COZMiF3yX1HW8Dh4VP0yvo7dN9PkD8wtk=; b=YgvNhZRiywdLPv
+	MW1cOMJLTjADjiTz+BOJTuGpHPum8WN6VDb7tzPm5qcJNQiUZn5cBYeUJ/ZKKPAVIDVZc6/SYcYy1
+	jhIUlCSzRmjrQ/LVeMvW8gRYDu5O2rq5tzwEAQvp34JFrvZ5bvTb8X81zX7sZyI+VcoZpqMJNqP/Z
+	KKHgmRgiQoyjzqPM5aQuDQboVJLgmJHO9cA+PUWaofno4u0biaG2ZT5sg2xUnRJwHkV3XYeugg71Z
+	t9q8sTHL1JIQkmesnge/hhXv0JA4rfKL17RV92XOb7LHHJjDt1kcxTZN4p4oWTZZmyT7MuT3N97Wj
+	d36+vf3OFhb/qkXyr98g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mpR2U-001Fjo-Am; Tue, 23 Nov 2021 08:20:31 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mpT9u-001ikM-NE; Tue, 23 Nov 2021 10:36:18 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mpQwY-001DbT-2M
- for linux-mtd@lists.infradead.org; Tue, 23 Nov 2021 08:14:24 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 57CDB22236;
- Tue, 23 Nov 2021 09:14:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1637655259;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8YlTsZ1TQpMTDF60AMdfQkK5116GkhxBH8+vfDb1M1s=;
- b=jdpRgLNMRWk4/kA5tgF9617poSyVMSIQieedRlkYAfssWL8h2rnzghWcjlfBhfzeufi4wW
- xP0HUCx/ZEcxaMFUMaYr9ofvGy2+19S51NItOPpfSKwM1WtLdOQcmGHM2tnVlilh7AnfcD
- kv4ri3lsa60HzH5lJILc9i3pP4d411Y=
-MIME-Version: 1.0
-Date: Tue, 23 Nov 2021 09:14:18 +0100
-From: Michael Walle <michael@walle.cc>
-To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-In-Reply-To: <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
- <9a158e2ef6635212c1e353590e3b773b@walle.cc>
- <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
- <e9589af968d7b9dafbce17325dbf8472@walle.cc>
- <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <88db136a146edf53801d86509b52d40f@walle.cc>
-X-Sender: michael@walle.cc
+ id 1mpT9s-001ijo-OG
+ for linux-mtd@lists.infradead.org; Tue, 23 Nov 2021 10:36:17 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE18C60F41;
+ Tue, 23 Nov 2021 10:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637663775;
+ bh=Q0qoBg6VUv5HTkBCmx18bC2s0i4LoP2nemDb3MvC+LA=;
+ h=From:To:Cc:Subject:Date:From;
+ b=ZIi543eIIWLnrSxnVVFUAQ7PUVi8zCOq0hl/MUchGAD1kJN06u3Td9u9jlg/BFBZk
+ xJqof1RWuYIPD8AMb+93mkhRxgi6O/urULiViMpHJkBjpwtTaobytATwaxwilbE5Xx
+ fInJfX3Ae7dTRFSmUx4Yy9MUwDWfiVpdeA7q3DEtORi7vre/HkRWVqnS90dmBdNa8j
+ 7VQLiqt8jZLDJTtLojp4A6pB0wuhrwImkIGiiPAyk3b/WN8az3js9BJeJgBdBiOY+b
+ IhCx968aLbEIf/QQ/7/bQAG5JGYWrATHnMdLoBqOOyCQzM6/ZJTddHXSVSNs27BUA8
+ QF3S4xzGdkV4w==
+From: Roger Quadros <rogerq@kernel.org>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: kishon@ti.com, nm@ti.com, tony@atomide.com, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH 0/4] mtd: nand: omap2: Switch to exec_ops, support AM64 SoC
+Date: Tue, 23 Nov 2021 12:36:05 +0200
+Message-Id: <20211123103609.14063-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211123_001422_342229_D93434AA 
-X-CRM114-Status: GOOD (  22.64  )
+X-CRM114-CacheID: sfid-20211123_023616_829006_457A7F38 
+X-CRM114-Status: UNSURE (   7.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,72 +63,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-Am 2021-11-23 08:45, schrieb Alexander Sverdlin:
-> On 22/11/2021 16:05, Michael Walle wrote:
->>>>> Ignore 6th ID byte, secure version of mt25qu256a has 0x73 as 6th 
->>>>> byte.
+This series gets rid of the Legacy ops and switches to exec_ops framework.
 
->> You don't have the non-security part by chance?
-> 
-> Unfortunately no. And this is exactly the trigger for this patch:
-> one can get "secure" parts from Micron even though these "features" are 
-> not
-> required.
-> 
->> Mh, I'm undecided whether we should just duplicate the entry or if we
->> should ignore the last byte ("Device configuration information", where 
->> 00h
->> is standard). The commit which introduced the flash was 7f412111e276b.
->> Vingesh?
-> 
-> Some people ask themselves why this table keeps growing if there is 
-> SFDP...
-> I see the point in fixups, but maybe at some point we will be able to 
-> support
-> some devices just out of the box?
+Also add driver support for TI's AM64 SoC which contains a GPMC NAND controller.
 
-Are these features detectable by SFDP? Without knowing anything, as you 
-ignored
-my former question, I'd say no. So there will be two flashes, one with 
-these
-features and one without, both presumably have the same SFDP. Thus we'd 
-need
-these two entries anyway if we ever support these features. I get that 
-this
-might be under NDA, but then talk to Micron; I for myself can't get a 
-complete
-picture here.
+cheers,
+-roger
 
->> Can you elaborate on the 0x73? Is that a bitmask? If it was an 
->> enumeration,
->> I'd assumed it would be 01h (or some smaller value).
-> 
-> This "security addendum" where one need NDA just says "73h = Secure".
-> There is no explanation for it and no other variants.
+Roger Quadros (4):
+  dt-bindings: mtd: ti,gpmc-nand: Add compatible for AM64 NAND
+  mtd: nand: omap2: Allow build on K3 platforms
+  mtd: nand: omap2: move to exec_op interface
+  mtd: nand: omap2: Add support for NAND Controller on AM64 SoC
 
-Ok.
+ .../devicetree/bindings/mtd/ti,gpmc-nand.yaml |   5 +-
+ drivers/mtd/nand/raw/Kconfig                  |   2 +-
+ drivers/mtd/nand/raw/omap2.c                  | 525 ++++++++----------
+ 3 files changed, 251 insertions(+), 281 deletions(-)
 
-> I'd really suggest to try to autodetect whatever features are going to 
-> be
-> supported from this chip and only duplicate the entry if this 
-> auto-detection
-> fails.
+-- 
+2.17.1
 
-There is a bigger patch series [1] from Tudor which you can try. You'd 
-need to
-respin your patch against that anyway.
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/20211122095020.393346-1-tudor.ambarus@microchip.com/
 
 ______________________________________________________
 Linux MTD discussion mailing list
