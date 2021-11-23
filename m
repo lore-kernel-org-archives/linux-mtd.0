@@ -4,60 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 560F8C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 23 Nov 2021 13:15:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F7C1C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 23 Nov 2021 13:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rwFHfN6Joz5PyCnSzEcT0/t28fvRKp3tm55Y5DdnhfY=; b=dHmH14M8B3yWau
-	buKNuRs6TsuJuv/WPZc6eFA3QmlqdDRc6ooISOq+CKvLxWti4NjxfUftrdiIllsiHheREV0fyA1MM
-	wyU8Tb2o3XVgOyGPAzN7SxPTtoJ3YmlAn8DreTsKEdDORAi17XKNjga3rvneKvH99xqAeR+etLVrG
-	HC3b9Umz9RG2D62IWB4nan+VU2Gl0E4+fG9MyPREhvj+qA/SjQnjoirTDOYj/dQ6Wu7lMqu1kyARN
-	3bGe7X43X68+cXxF/TvhP3+Gj8wfel41sH5sEt4WFpRYhqoxp+o9hlYmOej0R6HHKi842b784bOI3
-	MlengOzut3UTrYcjmWtA==;
+	List-Owner; bh=rXIJnGdcLAzPNUj6bGWgpjXg+I4xp9akO6kM/qZ1W2g=; b=eWS4irIkUCOC5U
+	VYsWa1wvkkAuTF0AV21xP6efs9wTpQnMOBwX2aqCgBgUGVh/UEFqmTT/5FUN7v/Gt0Q9eTEXePImX
+	IgK4zdJSbRTfsCg0GdbFmTATM+6+owyngZqAgcbjOmpes3OqhnbcNttT4EyTgLMrBPIcrKUW+y+7M
+	BQnMZW5loX1fkTpn5kOsd29IOGY68hxGUQsGKelmy6NS3+DCJCt5NqxUQzgQiqW/CI2yatGwVjUMU
+	tygFWOtey9iXL92LdZfeatfnV5AjygddO35ZRju2EFKW1XmAO7ghdm0dQ/MtE0D/iXY8y3M9pTURs
+	PtOAqM6wJdv5QlTBIjsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mpVd9-002IxU-Eg; Tue, 23 Nov 2021 13:14:39 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1mpVhV-002L0l-MI; Tue, 23 Nov 2021 13:19:09 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mpVFd-002CL6-6S
- for linux-mtd@lists.infradead.org; Tue, 23 Nov 2021 12:50:23 +0000
-Received: from skn-laptop (_gateway [172.25.0.1])
- by first.geanix.com (Postfix) with ESMTPSA id 32EBAE1C24;
- Tue, 23 Nov 2021 12:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1637671814; bh=4tmbN6eLrnaQYFaDckhRieSB7/+V2AgHnKlniPtk7/Q=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To;
- b=OZoAyGrbeK1/0zWqoIs2K0MVQKI73w+Rw3ggiz+NAEe+NVPAunma2GQBPpxr5TDwc
- /GvwIiJiQ3UNaCdWLbHKl23ZXoRM9PCQKLKN4D9jN6RY+H5Ui+qXHSXr4TiccoGvSq
- EcBiXdNaKCAeTqB0p47B69Nwc3aH+BBSqOjMQm7wgFa00fj4dJ2XWBSp+UODQHXM1q
- EmtO19gfu+6UalPEwxyOc2V7+dl52XCi5Bn3vDxfjw37rMba0Q+0YfWiVYf6qpbNll
- t2hQ6gy70FAuOeQaFvvNXrhRjjKqhhsRnfw59nlSDcNKCB0P2YoYuSYHHoXklhl8mA
- Hii3s4oselSYw==
-Date: Tue, 23 Nov 2021 13:50:12 +0100
-From: Sean Nyekjaer <sean@geanix.com>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
+ id 1mpVW7-002GlQ-7H
+ for linux-mtd@lists.infradead.org; Tue, 23 Nov 2021 13:07:26 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DA17C1F45329;
+ Tue, 23 Nov 2021 13:07:19 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1637672840; bh=aY5f0ZE6mRocfP077BfQ+DyVCFKvaNgVw0KqMYW9Oac=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=SoWhcM/JM/MqGIt7YwcUG1aTR4lV8NcUNpHNd1tavD7rvzO2x0gjEKupPs1b+YzBt
+ vPw0I+0zkNnYbx6A8kSyh3+3Nekn/rmpcINVmlUPyZdd6BTyJfjOsCqq3AHA59y4q8
+ rGTD0h7Z3L29Ry3+IaC/6LNe6WQC4NNlMxn3w/9GUaW+zeWK4Mzypx6WsrqkWNjGs9
+ 1k+Lvc2gs11mnyD9k4ZU+nh5pHowjCrwAc5O7/cpxokvrFS8RjCklQE7ptesL3gRMt
+ aATPBprqsyaSPNpulU6Fbw2nAIJxDIi/q1RVe+26YdITCHfTD2DR5nuumb9jgPeFen
+ xMAU1FYo/Qrkg==
+Date: Tue, 23 Nov 2021 14:07:15 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Sean Nyekjaer <sean@geanix.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Boris Brezillon <bbrezillon@kernel.org>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while in
- suspend
-Message-ID: <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
+Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while
+ in suspend
+Message-ID: <20211123140715.280b2f70@collabora.com>
+In-Reply-To: <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
 References: <20211102110204.3334609-1-sean@geanix.com>
  <20211102110204.3334609-4-sean@geanix.com>
  <CGME20211123120353eucas1p2fb2561b7cfddd8d6e7decaef8b504f4c@eucas1p2.samsung.com>
  <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
+ <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211123_045021_809414_CCFEBCB7 
-X-CRM114-Status: GOOD (  19.49  )
+X-CRM114-CacheID: sfid-20211123_050723_461428_FC6EA592 
+X-CRM114-Status: GOOD (  10.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,86 +73,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBOb3YgMjMsIDIwMjEgYXQgMDE6MDM6NTJQTSArMDEwMCwgTWFyZWsgU3p5cHJvd3Nr
-aSB3cm90ZToKPiBIaSwKPiAKPiBPbiAwMi4xMS4yMDIxIDEyOjAyLCBTZWFuIE55ZWtqYWVyIHdy
-b3RlOgo+ID4gUHJldmVudCBNVEQgYWNjZXNzIHdoaWxlIGluIGEgc3VzcGVuZGVkIHN0YXRlLiBB
-bHNvCj4gPiBwcmV2ZW50IHN1c3BlbmRpbmcgYSBkZXZpY2Ugd2hpY2ggaXMgc3RpbGwgY3VycmVu
-dGx5IGluIHVzZS4KPiA+Cj4gPiBDb21taXQgMDEzZTYyOTJhYWY1ICgibXRkOiByYXduYW5kOiBT
-aW1wbGlmeSB0aGUgbG9ja2luZyIpIGFsbG93cyB0aGUKPiA+IHJhd25hbmQgbGF5ZXIgdG8gcmV0
-dXJuIGVycm9ycyByYXRoZXIgdGhhbiB3YWl0aW5nIGluIGEgYmxvY2tpbmcgd2FpdC4KPiA+Cj4g
-PiBUZXN0ZWQgb24gYSBpTVg2VUxMLgo+ID4KPiA+IFN1Z2dlc3RlZC1ieTogQm9yaXMgQnJlemls
-bG9uIDxib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbT4KPiA+IFNpZ25lZC1vZmYtYnk6IFNl
-YW4gTnlla2phZXIgPHNlYW5AZ2Vhbml4LmNvbT4KPiAKPiBUaGlzIHBhdGNoIGxhbmRlZCByZWNl
-bnRseSBpbiBsaW51eC1uZXh0IGFzIGNvbW1pdCA5ZDZhYmQ0ODllNzAgKCJtdGQ6IAo+IGNvcmU6
-IHByb3RlY3QgYWNjZXNzIHRvIE1URCBkZXZpY2VzIHdoaWxlIGluIHN1c3BlbmQiKS4gSSBmb3Vu
-ZCB0aGF0IGl0IAo+IHRyaWdnZXJzIHRoZSBmb2xsb3dpbmcgd2FybmluZyBvbiBteSB0ZXN0IHN5
-c3RlbXM6Cj4gCj4gSU5GTzogdHJ5aW5nIHRvIHJlZ2lzdGVyIG5vbi1zdGF0aWMga2V5Lgo+IFRo
-ZSBjb2RlIGlzIGZpbmUgYnV0IG5lZWRzIGxvY2tkZXAgYW5ub3RhdGlvbiwgb3IgbWF5YmUKPiB5
-b3UgZGlkbid0IGluaXRpYWxpemUgdGhpcyBvYmplY3QgYmVmb3JlIHVzZT8KPiB0dXJuaW5nIG9m
-ZiB0aGUgbG9ja2luZyBjb3JyZWN0bmVzcyB2YWxpZGF0b3IuCj4gQ1BVOiAxIFBJRDogMTYwNiBD
-b21tOiByZWJvb3QgTm90IHRhaW50ZWQgNS4xNi4wLXJjMSsgIzQxNjUKPiBIYXJkd2FyZSBuYW1l
-OiBsaW51eCxkdW1teS12aXJ0IChEVCkKPiBDYWxsIHRyYWNlOgo+ICDCoGR1bXBfYmFja3RyYWNl
-KzB4MC8weDFhYwo+ICDCoHNob3dfc3RhY2srMHgxOC8weDI0Cj4gIMKgZHVtcF9zdGFja19sdmwr
-MHg4Yy8weGI4Cj4gIMKgZHVtcF9zdGFjaysweDE4LzB4MzQKPiAgwqByZWdpc3Rlcl9sb2NrX2Ns
-YXNzKzB4NGEwLzB4NGNjCj4gIMKgX19sb2NrX2FjcXVpcmUrMHg3OC8weDIwY2MKPiAgwqBsb2Nr
-X2FjcXVpcmUucGFydC4wKzB4ZTAvMHgyMzAKPiAgwqBsb2NrX2FjcXVpcmUrMHg2OC8weDg0Cj4g
-IMKgZG93bl93cml0ZSsweDY0LzB4ZTAKPiAgwqBwaHlzbWFwX2ZsYXNoX3NodXRkb3duKzB4NjAv
-MHgxNDAKPiAgwqBwbGF0Zm9ybV9zaHV0ZG93bisweDI4LzB4NDAKPiAgwqBkZXZpY2Vfc2h1dGRv
-d24rMHgxNjAvMHgzNDAKPiAgwqBfX2RvX3N5c19yZWJvb3QrMHgxZjgvMHgyYTAKPiAgwqBfX2Fy
-bTY0X3N5c19yZWJvb3QrMHgyOC8weDM0Cj4gIMKgaW52b2tlX3N5c2NhbGwrMHg0OC8weDExNAo+
-ICDCoGVsMF9zdmNfY29tbW9uLmNvbnN0cHJvcC4wKzB4NjAvMHgxMWMKPiAgwqBkb19lbDBfc3Zj
-X2NvbXBhdCsweDFjLzB4NTAKPiAgwqBlbDBfc3ZjX2NvbXBhdCsweDRjLzB4MTAwCj4gIMKgZWww
-dF8zMl9zeW5jX2hhbmRsZXIrMHg5MC8weDE0MAo+ICDCoGVsMHRfMzJfc3luYysweDFhNC8weDFh
-OAo+IEZsYXNoIGRldmljZSByZWZ1c2VkIHN1c3BlbmQgZHVlIHRvIGFjdGl2ZSBvcGVyYXRpb24g
-KHN0YXRlIDIwKQo+IC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQo+IERFQlVH
-X1JXU0VNU19XQVJOX09OKHNlbS0+bWFnaWMgIT0gc2VtKTogY291bnQgPSAweDEsIG1hZ2ljID0g
-MHgwLCBvd25lciAKPiA9IDB4ZmZmZjU4OGI0NTQ3Yzc0MCwgY3VyciAweGZmZmY1ODhiNDU0N2M3
-NDAsIGxpc3Qgbm90IGVtcHR5Cj4gV0FSTklORzogQ1BVOiAxIFBJRDogMTYwNiBhdCBrZXJuZWwv
-bG9ja2luZy9yd3NlbS5jOjEzMjIgCj4gdXBfd3JpdGUrMHgxNDQvMHgxYTAKPiBNb2R1bGVzIGxp
-bmtlZCBpbjogYmx1ZXRvb3RoIGVjZGhfZ2VuZXJpYyBlY2MgcmZraWxsIGlwdjYKPiBDUFU6IDEg
-UElEOiAxNjA2IENvbW06IHJlYm9vdCBOb3QgdGFpbnRlZCA1LjE2LjAtcmMxKyAjNDE2NQo+IEhh
-cmR3YXJlIG5hbWU6IGxpbnV4LGR1bW15LXZpcnQgKERUKQo+IHBzdGF0ZTogNjAwMDAwMDUgKG5a
-Q3YgZGFpZiAtUEFOIC1VQU8gLVRDTyAtRElUIC1TU0JTIEJUWVBFPS0tKQo+IHBjIDogdXBfd3Jp
-dGUrMHgxNDQvMHgxYTAKPiBsciA6IHVwX3dyaXRlKzB4MTQ0LzB4MWEwCj4gc3AgOiBmZmZmODAw
-MDEwOWViYmQwCj4geDI5OiBmZmZmODAwMDEwOWViYmQwIHgyODogZmZmZjU4OGI0NTQ3Yzc0MCB4
-Mjc6IDAwMDAwMDAwMDAwMDAwMDAKPiB4MjY6IGZmZmZjZTAyMzhkNTY0NzAgeDI1OiAwMDAwMDAw
-MDAwMDAwMDA4IHgyNDogZmZmZmNlMDIzOWJiYTAzMAo+IHgyMzogZmZmZjU4OGI0NTE5MzhiMCB4
-MjI6IDAwMDAwMDAwMDAwMDAwMDAgeDIxOiBmZmZmNTg4YjQ0MDQ2YzgwCj4geDIwOiBmZmZmY2Uw
-MjM5N2EyMDAwIHgxOTogZmZmZjU4OGI0NTE5MzhiMCB4MTg6IDAwMDAwMDAwMDAwMDAwMzAKPiB4
-MTc6IDAwMDAwMDAwMDAwMDAwMDAgeDE2OiAwMDAwMDAwMDAwMDAwMDAwIHgxNTogZmZmZmZmZmZm
-ZmZmZmZmZgo+IHgxNDogMDAwMDAwMDAwMDAwMDAwNSB4MTM6IGZmZmZjZTAyMzk3YzUxOTggeDEy
-OiAwMDAwMDAwMDAwMDAwMzkwCj4geDExOiAwMDAwMDAwMDAwMDAwMTMwIHgxMDogZmZmZmNlMDIz
-OTgxZDE5OCB4OSA6IDAwMDAwMDAwZmZmZmYwMDAKPiB4OCA6IGZmZmZjZTAyMzk3YzUxOTggeDcg
-OiBmZmZmY2UwMjM5ODFkMTk4IHg2IDogMDAwMDAwMDAwMDAwMDAwMAo+IHg1IDogMDAwMDAwMDAw
-MDAwYmZmNCB4NCA6IDAwMDAwMDAwMDAwMDAwMDAgeDMgOiAwMDAwMDAwMDAwMDAwMDAwCj4geDIg
-OiAwMDAwMDAwMDAwMDAwMDAwIHgxIDogMDAwMDAwMDAwMDAwMDAwMCB4MCA6IGZmZmY1ODhiNDU0
-N2M3NDAKPiBDYWxsIHRyYWNlOgo+ICDCoHVwX3dyaXRlKzB4MTQ0LzB4MWEwCj4gIMKgcGh5c21h
-cF9mbGFzaF9zaHV0ZG93bisweDEzYy8weDE0MAo+ICDCoHBsYXRmb3JtX3NodXRkb3duKzB4Mjgv
-MHg0MAo+ICDCoGRldmljZV9zaHV0ZG93bisweDE2MC8weDM0MAo+ICDCoF9fZG9fc3lzX3JlYm9v
-dCsweDFmOC8weDJhMAo+ICDCoF9fYXJtNjRfc3lzX3JlYm9vdCsweDI4LzB4MzQKPiAgwqBpbnZv
-a2Vfc3lzY2FsbCsweDQ4LzB4MTE0Cj4gIMKgZWwwX3N2Y19jb21tb24uY29uc3Rwcm9wLjArMHg2
-MC8weDExYwo+ICDCoGRvX2VsMF9zdmNfY29tcGF0KzB4MWMvMHg1MAo+ICDCoGVsMF9zdmNfY29t
-cGF0KzB4NGMvMHgxMDAKPiAgwqBlbDB0XzMyX3N5bmNfaGFuZGxlcisweDkwLzB4MTQwCj4gIMKg
-ZWwwdF8zMl9zeW5jKzB4MWE0LzB4MWE4Cj4gaXJxIGV2ZW50IHN0YW1wOiAyNTQxCj4gaGFyZGly
-cXMgbGFzdMKgIGVuYWJsZWQgYXQgKDI1NDEpOiBbPGZmZmZjZTAyMzgyZDk0Yzg+XSAKPiBfcmF3
-X3NwaW5fdW5sb2NrX2lycSsweDQ0LzB4OTAKPiBoYXJkaXJxcyBsYXN0IGRpc2FibGVkIGF0ICgy
-NTQwKTogWzxmZmZmY2UwMjM4MmQ5OGNjPl0gCj4gX3Jhd19zcGluX2xvY2tfaXJxKzB4YWMvMHhi
-MAo+IHNvZnRpcnFzIGxhc3TCoCBlbmFibGVkIGF0ICgyMjc4KTogWzxmZmZmY2UwMjM3MjEwNDcw
-Pl0gX3N0ZXh0KzB4NDcwLzB4NWU4Cj4gc29mdGlycXMgbGFzdCBkaXNhYmxlZCBhdCAoMjI3Myk6
-IFs8ZmZmZmNlMDIzNzI5ZDkwND5dIAo+IF9faXJxX2V4aXRfcmN1KzB4MTgwLzB4MWFjCj4gLS0t
-WyBlbmQgdHJhY2UgZDA2MTYwYTE5M2I2NjhjMiBdLS0tCj4gRmxhc2ggZGV2aWNlIHJlZnVzZWQg
-c3VzcGVuZCBkdWUgdG8gYWN0aXZlIG9wZXJhdGlvbiAoc3RhdGUgMjApCj4gCj4gCj4gUmV2ZXJ0
-aW5nICRzdWJqZWN0IHBhdGNoIG9uIHRvcCBvZiBsaW51eC1uZXh0IGhpZGVzIHRoZSB3YXJuaW5n
-LiBUaGUgCj4gYWJvdmUgbG9nIGhhcyBiZWVuIGdhdGhlcmVkIG9uIFFFTVUvYXJtNjQgJ3ZpcnQn
-IG1hY2hpbmUsIGR1cmluZyB0aGUgCj4gcmVib290IG9wZXJhdGlvbi4gSWYgeW91IG5lZWQgbW9y
-ZSBpbmZvcm1hdGlvbiBob3cgdG8gcmVwcm9kdWNlIGl0LCBsZXQgCj4gbWUga25vdy4KPiAKPgoK
-SGksCgpUaGFua3MgTWFyZWsgOikKCkBCb3JpcyBkbyB3ZSBuZWVkIHRvIGRvIHNvbWV0aGluZyBz
-aW1pbGFyIGhlcmUgdG8gd2hhdCB3ZSBkaWQgd2l0aCB0aGUKbXRkY29uY2F0IHN0dWZmPwoKL1Nl
-YW4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, 23 Nov 2021 13:50:12 +0100
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> @Boris do we need to do something similar here to what we did with the
+> mtdconcat stuff?
+
+Absolutely, physmasp subdevices are never initialized/registered, so
+you can't call any of the mtd helpers taking the suspend lock on those.
+I guess it'd be better to call mtd_suspend/resume() on the concat device
+in though:
+
+static void physmap_flash_shutdown(struct platform_device *dev)
+{
+	struct physmap_flash_info *info = platform_get_drvdata(dev);
+
+	mtd_suspend(info->cmtd);
+}
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
