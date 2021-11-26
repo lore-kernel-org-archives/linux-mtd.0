@@ -4,50 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF073C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 09:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37ADCC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 11:11:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CI7tCC7tz/0kP8Eb7gtHWrllk2/tG9buxe6vrRNGKl4=; b=GSy7KSQ4IIq0AX
-	a7/jgctZFGgCHfBdNEaPEl8z52entV3ZAsLg4EZRUyfvozrqOVrl+2a8yzPcVPr6ILiTC+V8OGgaF
-	N2J2JzVzG8FJt3AomRrby/sYS4gDiheGMOLNDjfLmiEqrisulOiwk6Xc0X6qn76Pt8b3pTjFBuZY1
-	yRuUrzNosXaNgjNf2FYzvBnoohMnka0Sdj5LwZzCvO9E6il8TVc+nG70oTzALaOOLUuqTHgMwRb8/
-	mej/mOLg7wy6zDjcrKLEEqRei6LAZmCqi2QGi0yD/9yaL56LaBhZEPn98r1dLeCoxixuMtgQizXpb
-	E6bHPfUrLdXsJzcOuggA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=m5+6q/tlbD1bJAu5nO8KZ3hAGqHq5K2338DZGr1VGQ8=; b=M8NATrjfbk+E87XBmf6vqSsFii
+	tpSyz7TeKN1X3bOxhwLzSRP+7FhPl3WWjQyybJS42OnZ6sqiMNc4kDykc+GR9LjwhFJQjssA2QEF0
+	EXPBnrXRh9FAYoihkgAz0xz+8arGKmXCttHKAGnrBhBhF3sXC/eyQsEQijXCZXRVV3U8CeTeGzLtu
+	qqU9Dj3ly/7qfanHiLaGulBSjzWo30H2zwmobais2h6mCIevRvstfX+k5PGBJ3jN4DqRnTiN6lkK1
+	1M0vPsQ5xo2RUfFIAFIlNhU8BJ9fgQv5+Gn/kHq+cycDPpVgZco8pItYNUGsmf5I8tugxMr2h93HW
+	3Wzl4UFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqXkh-009kyH-I1; Fri, 26 Nov 2021 09:42:43 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1mqZ7Y-00A8WT-Rb; Fri, 26 Nov 2021 11:10:24 +0000
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqXkc-009kuQ-4r
- for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 09:42:40 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 600F0240012;
- Fri, 26 Nov 2021 09:42:32 +0000 (UTC)
-Date: Fri, 26 Nov 2021 10:42:31 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: richard@nod.at, vigneshr@ti.com, kishon@ti.com, nm@ti.com,
- tony@atomide.com, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller
- on AM64 SoC
-Message-ID: <20211126104231.7cc43149@xps13>
-In-Reply-To: <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
+ id 1mqZ7V-00A8W3-U7
+ for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 11:10:23 +0000
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FD56108E;
+ Fri, 26 Nov 2021 11:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1637925021;
+ bh=lGsIf27IbHfcOgsGFIGU9JUA1H2hVkUBJnwjrWuszu8=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=CGJORNk3tOcKW3OSKYXXsCb83LlB9glF+QxujQNEmvNZjMdpOiIS7tvfweSO/Tjp+
+ Oe6XMTHki2nZnufKvxr0xPeHuyiRZ3wdHp0DZX8FP506/mbtiCPjza/Geylmc9F7Dd
+ +iDBb3fBHwNyEviNGJEIFuVSiQ+VuJeZ9IAPNsnkqMXB0jchFhui3WPlS47CI4ZPvo
+ +Lfep70oohklOzR/QK/JRdz4ZjfpkTbcMOrtdIlgtQahcVfWajzdYIaXt+a1X4gQOG
+ q5m/Aq/Wx8FyJk+2heiqXkRZqxG8whieXmZnRNDdq2/JY3A+MavZ7NJwGVLh2X8UI1
+ 0jwheky+kKaaQ==
+Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
+ AM64 SoC
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Nishanth Menon <nm@ti.com>
+Cc: richard@nod.at, vigneshr@ti.com, kishon@ti.com, tony@atomide.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 References: <20211123103609.14063-1-rogerq@kernel.org>
- <20211123103609.14063-5-rogerq@kernel.org>
- <20211124131552.6b9bc506@xps13>
+ <20211123103609.14063-5-rogerq@kernel.org> <20211124131552.6b9bc506@xps13>
  <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20211126104231.7cc43149@xps13>
+From: Roger Quadros <rogerq@kernel.org>
+Message-ID: <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
+Date: Fri, 26 Nov 2021 13:10:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211126104231.7cc43149@xps13>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211126_014238_513609_F974BA52 
-X-CRM114-Status: GOOD (  53.08  )
+X-CRM114-CacheID: sfid-20211126_031022_060518_89001CC4 
+X-CRM114-Status: GOOD (  42.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -59,133 +71,226 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9nZXIsCgpyb2dlcnFAa2VybmVsLm9yZyB3cm90ZSBvbiBUaHUsIDI1IE5vdiAyMDIxIDE2
-OjEyOjAxICswMjAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24gMjQvMTEvMjAyMSAxNDoxNSwgTWlx
-dWVsIFJheW5hbCB3cm90ZToKPiA+IEhpIFJvZ2VyLAo+ID4gCj4gPiByb2dlcnFAa2VybmVsLm9y
-ZyB3cm90ZSBvbiBUdWUsIDIzIE5vdiAyMDIxIDEyOjM2OjA5ICswMjAwOgo+ID4gICAKPiA+PiBB
-TTY0IFNvQyBoYXMgYW4gaXNzdWUgd2hpY2ggcHJldmVudHMgcHJvcGVyIDgtYml0IGFuZCAxNi1i
-aXQKPiA+PiByZWFkcyBmcm9tIEdQTUMuIFdlIGFyZSBsaW1pdGVkIHRvIGRvIDMyLWJpdCByZWFk
-cyBvbmx5LiAgCj4gPiAKPiA+IEZpcnN0LCB0aGFua3MgZm9yIHRoaXMgc2VyaWVzISAgCj4gCj4g
-Tm8gcHJvYmxlbS4gSnVzdCBteSBqb2IgOikKPiAKPiA+ICAgCj4gPj4gRm9yY2UgMzItYml0IG9u
-bHkgcmVhZHMgb24gYWZmZWN0ZWQgcGxhdGZvcm1zLgo+ID4+ICAKPiA+IAo+ID4gUGxlYXNlIGNo
-YW5nZSB0aGUgY29tbWl0IHRpdGxlIHByZWZpeCB0bzogIm10ZDogcmF3bmFuZDogb21hcDI6IiBp
-bgo+ID4gcGF0Y2ggMiwgMywgNC4gIAo+IAo+IE9LLgo+IAo+ID4gICAgCj4gPj4gU2lnbmVkLW9m
-Zi1ieTogUm9nZXIgUXVhZHJvcyA8cm9nZXJxQGtlcm5lbC5vcmc+Cj4gPj4gLS0tCj4gPj4gIGRy
-aXZlcnMvbXRkL25hbmQvcmF3L29tYXAyLmMgfCAzNSArKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKwo+ID4+ICAxIGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKQo+ID4+Cj4g
-Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L29tYXAyLmMgYi9kcml2ZXJzL210
-ZC9uYW5kL3Jhdy9vbWFwMi5jCj4gPj4gaW5kZXggZjFmYzE0NmUwOWI5Li5kOTUyZGU3NzFiMzUg
-MTAwNjQ0Cj4gPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYwo+ID4+ICsrKyBi
-L2RyaXZlcnMvbXRkL25hbmQvcmF3L29tYXAyLmMKPiA+PiBAQCAtMjgsNiArMjgsNyBAQAo+ID4+
-ICAKPiA+PiAgI2luY2x1ZGUgPGxpbnV4L29tYXAtZ3BtYy5oPgo+ID4+ICAjaW5jbHVkZSA8bGlu
-dXgvcGxhdGZvcm1fZGF0YS9tdGQtbmFuZC1vbWFwMi5oPgo+ID4+ICsjaW5jbHVkZSA8bGludXgv
-c3lzX3NvYy5oPgo+ID4+ICAKPiA+PiAgI2RlZmluZQlEUklWRVJfTkFNRQkib21hcDItbmFuZCIK
-PiA+PiAgI2RlZmluZQlPTUFQX05BTkRfVElNRU9VVF9NUwk1MDAwCj4gPj4gQEAgLTE4MSw2ICsx
-ODIsNyBAQCBzdHJ1Y3Qgb21hcF9uYW5kX2luZm8gewo+ID4+ICAJdm9pZCAoKmRhdGFfb3V0KShz
-dHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+ID4+ICAJCQkgY29uc3Qgdm9pZCAqYnVmLCB1bnNpZ25l
-ZCBpbnQgbGVuLAo+ID4+ICAJCQkgYm9vbCBmb3JjZV84Yml0KTsKPiA+PiArCWJvb2wgZm9yY2Vf
-MzJiaXQ7ICAKPiA+IAo+ID4gSSBiZWxpZXZlIHdlIHNob3VsZCBoYXZlIGEgZHJpdmVyIGNhcGFi
-aWxpdHkgaW5zdGVhZCBvZiBzb21ldGhpbmcgaW4KPiA+IHRoZSBpbmZvIHN0cnVjdHVyZS4gWW91
-IGNhbiBzYXZlIHRoZSB2YWx1ZSBoZXJlIGFzIHdlbGwgaW4gdGhlIHByb2JlIGlmCj4gPiB5b3Ug
-d2FudCwgYnV0IEkgd291bGQgbGlrZSB0aGlzIGxpbWl0YXRpb24gdG8gYmUgdGllZCB0byB0aGUK
-PiA+IGNvbXBhdGlibGUuICAKPiAKPiBJIHdpbGwgZGlzY3VzcyBhYm91dCB0aGlzIGF0IHRoZSBl
-bmQuCj4gPiAgIAo+ID4+ICB9Owo+ID4+ICAKPiA+PiAgc3RhdGljIGlubGluZSBzdHJ1Y3Qgb21h
-cF9uYW5kX2luZm8gKm10ZF90b19vbWFwKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ID4+IEBAIC0y
-MDcwLDYgKzIwNzIsMjUgQEAgc3RhdGljIHZvaWQgb21hcF9uYW5kX2RhdGFfaW4oc3RydWN0IG5h
-bmRfY2hpcCAqY2hpcCwgdm9pZCAqYnVmLAo+ID4+ICAJc3RydWN0IG9tYXBfbmFuZF9pbmZvICpp
-bmZvID0gbXRkX3RvX29tYXAobmFuZF90b19tdGQoY2hpcCkpOwo+ID4+ICAJdTMyIGFsaWdubWVu
-dCA9ICgodWludHB0cl90KWJ1ZiB8IGxlbikgJiAzOwo+ID4+ICAKPiA+PiArCWlmIChpbmZvLT5m
-b3JjZV8zMmJpdCkgeyAgCj4gPiAKPiA+IEkgYW0gYSBsaXR0bGUgYml0IGJvdGhlcmVkIGJ5IHRo
-aXMgbGltaXRhdGlvbi4gVGhlIGZvcmNlOF9iaXQgZmxhZyBkb2VzCj4gPiBub3QgcmVxdWlyZSB0
-aGUgZHJpdmVyIHRvIHJlYWQgb25seSA4LWJpdHMgb2YgdGhlIGZpZm8gcmVnaXN0ZXIsIGl0Cj4g
-PiBhY3R1YWxseSByZXF1aXJlcyB0byB1c2Ugb25seSB0aGUgZmlyc3QgOC1iaXRzIG9mIHRoZSBO
-QU5EIGJ1cyAod2hpY2gKPiA+IGNhbiBhbHNvIGJlIDE2LWJpdCB3aWRlKS4gVGhlIG9sZGVyIGlt
-cGxlbWVudGF0aW9uIGp1c3QgbGltaXRlZCB0aGUKPiA+IG51bWJlciBvZiBiaXRzIHJlYWRzIHRv
-IGJlIDggd2l0aCBpb3JlYWQ4LCB3aGljaCBzZWVtcyB0byBiZSBhIGZpbmUKPiA+IHNvbHV0aW9u
-IGJ1dCB3b3VsZCByZXF1aXJlIG1vcmUgYWNjZXNzZXMgdGhhbiB1c2luZyBpb3JlYWQxNiAob3IK
-PiA+IGlvcmVhZDMyKSB3aGVuIHJlYWRpbmcgbW9yZSB0aGFuIDEgYnl0ZSBvbiBwbGF0Zm9ybXMg
-d2l0aCBvbmx5IDgtYml0Cj4gPiBidXNzZXMuICAKPiAKPiBJIGRpZG4ndCB1bmRlcnN0YW5kIHRo
-ZSBwdXJwb3NlIG9mIGZvcmNlOF9iaXQgZmxhZy4gCgpPbmx5IGFjY2VzcyB0aGUgbG93ZXN0IGJ5
-dGUgb24gdGhlIGJ1cy4gVGhpcyBpcyBvbmx5IG5lZWRlZCBmb3IKbWV0YS1kYXRhIHJlYWRzIChs
-aWtlIHN0YXR1cyByZWFkcyBvciBpZHMpIHdoZXJlIHRoZSB1cHBlciBieXRlIHdvdWxkCmJlIGEg
-ZHVwbGljYXRlLgoKPiBIb3cgc2hvdWxkIHRoZSBkcml2ZXIvY29udHJvbGxlciBiZWhhdmUgaWYg
-d2UgZ2V0IGEgZGF0YV9pbigpIGNhbGwgd2l0aCBsZW4gOCBhbmQgZm9yY2U4X2JpdCBmbGFnIHNl
-dD8KPiAKPiBlLmcuIGlmIDE2LWJpdCBOQU5EIElEIGFyZWEgY29udGFpbnMgKGxpdHRsZS1lbmRp
-YW4pIDJjIGQzIGQwIGE2IDY2IDQ1IDY3IGEzIDRmIDRlIDQ2IDQ5IGFiIGVmIDkwIGQzCj4gd2hh
-dCBzaG91bGQgZGF0YV9pbihsZW4gPSA4LCBmb3JjZV84X2JpdCA9IDEpIHJldHVybiBpbiBidWZm
-ZXI/Cj4gCj4gQmFzZWQgb24gd2hhdCB5b3Ugc2FpZCBlYXJsaWVyIG15IGd1ZXNzIGlzIGl0IHNo
-b3VsZCByZXR1cm4gMmMgZDAgNjYgNjcgNGYgNDYgYWIgOTA/CgpJZiBvbiBhIDE2LWJpdCBidXMs
-IHlvdSB3b3VsZCByZWNlaXZlIDJjIDJjIGQzIGQzIGQwIGQwIGE2IGE2IGV0YyBhbmQKb2YgY291
-cnNlIHRoYXQncyBub3Qgd2hhdCB5b3Ugd2FudC4KCj4gPiBNeSBwb2ludCBoZXJlIGlzIHRoYXQ6
-Cj4gPiAxLSB0aGUgbGltaXRlZCBjb250cm9sbGVycyBjYW5ub3QgYmUgdXNlZCB3aXRoIGEgMTYt
-Yml0IGJ1cwo+ID4gMi0gbm9uLWxpbWl0ZWQgY29udHJvbGxlcnMgY2FuIHVzZSBpb3JlYWQxNiBp
-ZiB0aGUgYnVzIHdpZHRoIGlzIDgtYml0cyAgCj4gCj4gU29ycnksIEkgZGlkIG5vdCB1bmRlcnN0
-YW5kIHRoaXMgZWl0aGVyLiBUaGUgVEkgR1BNQyBjb250cm9sbGVyIGhhcyBhIGNvbmZpZ3VyYXRp
-b24gc2V0dGluZyB3aGVyZSB3ZQo+IHNldCB0aGUgTkFORCBkZXZpY2UgYnVzIHdpZHRoICg4LWJp
-dCBvciAxNi1iaXQpLiBUaGVuIGl0IGF1dG9tYXRpY2FsbHkgY29udmVydHMgaW9yZWFkMTYgb3IK
-PiBpb3JlYWQzMiB0byBhcHByb3ByaWF0ZSBudW1iZXIgb2YgOC1iaXQgYWNjZXNzZXMgb3IgMTYt
-Yml0IGFjY2Vzc2VzIHRvIHRoZSBOQU5EIGNoaXAuCgpPayBncmVhdCwgaW4gdGhpcyBjYXNlIHlv
-dSBzaG91bGQgY29uZmlndXJlIHRoZSBidXMgd2lkdGggZGVwZW5kaW5nCm9uIHRoZSBhY3R1YWwg
-dXNlZCB3aWR0aCAoOCBvciAxNiBiaXRzKS4gV2hlbiBhbiA4LWJpdCBhY2Nlc3MgaXMKcmVxdWVz
-dGVkIHdpdGggZm9yY2VfOGJpdCwgeW91IHNob3VsZCBlbnN1cmUgdGhlIGJ1c3dpZHRoIGlzIGNo
-YW5nZWQKdG8gOCBhbmQgdGhlbiB1c2UgaW9yZWFkOC8xNi8zMiBhcyB5b3Ugd2lzaCBhbmQgdGhl
-biByZXR1cm4gdGhlIGJ1cwpiYWNrIGludG8gaXRzIGRlZmF1bHQgc3RhdGUuCgo+IAo+ID4gCj4g
-PiBJIGd1ZXNzIGl0J3MgZmluZSBub3QgdG8gY2hhbmdlIHRoZSBsb2dpYyB0byBhdm9pZCBicmVh
-a2luZyBib2FyZHMgc28KPiA+IHdlIGNhbiBqdXN0IGlnbm9yZSBbMl0gYnV0IEkgYmVsaXZlIHdl
-IHNob3VsZCBjaGVjayBjaGlwLT5vcHRpb25zICYKPiA+IE5BTkRfQlVTV0lEVEhfMTYgaW4gLT5h
-dHRhY2hfY2hpcCgpIGFuZCByZWZ1c2UgcHJvYmluZyBpZiB0aGlzIGZsYWcgaXMKPiA+IHNldC4K
-PiA+ICAgCj4gPj4gKwkJdTMyIHZhbDsKPiA+PiArCQlpbnQgbGVmdDsKPiA+PiArCQl1OCAqcHRy
-Owo+ID4+ICsKPiA+PiArCQlpb3JlYWQzMl9yZXAoaW5mby0+ZmlmbywgYnVmLCBsZW4gPj4gMik7
-Cj4gPj4gKwkJbGVmdCA9IGxlbiAmIDB4MzsKPiA+PiArCQlpZiAobGVmdCkgewo+ID4+ICsJCQl2
-YWwgPSBpb3JlYWQzMihpbmZvLT5maWZvKTsKPiA+PiArCQkJcHRyID0gKHU4ICopKGJ1ZiArIChs
-ZW4gLSBsZWZ0KSk7Cj4gPj4gKwkJCXdoaWxlIChsZWZ0LS0pIHsKPiA+PiArCQkJCSpwdHIrKyA9
-IHZhbCAmIDB4ZmY7Cj4gPj4gKwkJCQl2YWwgPj49IDg7Cj4gPj4gKwkJCX0KPiA+PiArCQl9Cj4g
-Pj4gKwo+ID4+ICsJCXJldHVybjsKPiA+PiArCX0KPiA+PiArCj4gPj4gIAlpZiAoZm9yY2VfOGJp
-dCB8fCAoYWxpZ25tZW50ICYgMSkpCj4gPj4gIAkJaW9yZWFkOF9yZXAoaW5mby0+ZmlmbywgYnVm
-LCBsZW4pOwo+ID4+ICAJZWxzZSBpZiAoYWxpZ25tZW50ICYgMykKPiA+PiBAQCAtMjE2OSw4ICsy
-MTkwLDE1IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbmFuZF9jb250cm9sbGVyX29wcyBvbWFwX25h
-bmRfY29udHJvbGxlcl9vcHMgPSB7Cj4gPj4gIHN0YXRpYyBzdHJ1Y3QgbmFuZF9jb250cm9sbGVy
-IG9tYXBfZ3BtY19jb250cm9sbGVyOwo+ID4+ICBzdGF0aWMgYm9vbCBvbWFwX2dwbWNfY29udHJv
-bGxlcl9pbml0aWFsaXplZDsKPiA+PiAgCj4gPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2
-aWNlX2lkIG9tYXBfbmFuZF9pZHNbXTsKPiA+PiArICAKPiA+IAo+ID4gSSBiZWxpZXZlIHRoaXMg
-Y2hhbmdlIHNob3VsZCBiZSBkcm9wcGVkLgo+ID4gICAKPiA+PiAgc3RhdGljIGludCBvbWFwX25h
-bmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiA+PiAgewo+ID4+ICsJY29u
-c3Qgc3RydWN0IHNvY19kZXZpY2VfYXR0cmlidXRlIGszX3NvY19kZXZpY2VzW10gPSB7Cj4gPj4g
-KwkJeyAuZmFtaWx5ID0gIkFNNjRYIiwgLnJldmlzaW9uID0gIlNSMS4wIiB9LAo+ID4+ICsJCXsg
-Lyogc2VudGluZWwgKi8gfQo+ID4+ICsJfTsKPiA+PiArCj4gPj4gIAlzdHJ1Y3Qgb21hcF9uYW5k
-X2luZm8JCSppbmZvOwo+ID4+ICAJc3RydWN0IG10ZF9pbmZvCQkJKm10ZDsKPiA+PiAgCXN0cnVj
-dCBuYW5kX2NoaXAJCSpuYW5kX2NoaXA7Cj4gPj4gQEAgLTIxODYsNiArMjIxNCwxMiBAQCBzdGF0
-aWMgaW50IG9tYXBfbmFuZF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ID4+
-ICAKPiA+PiAgCWluZm8tPnBkZXYgPSBwZGV2Owo+ID4+ICAKPiA+PiArCS8qIFNvbWUgU29DJ3Mg
-aGF2ZSAzMi1iaXQgYXQgbGVhc3QsIHJlYWQgbGltaXRhdGlvbiAqLwo+ID4+ICsJaWYgKHNvY19k
-ZXZpY2VfbWF0Y2goazNfc29jX2RldmljZXMpKSB7Cj4gPj4gKwkJZGV2X2luZm8oJnBkZXYtPmRl
-diwgImZvcmNlIDMyLWJpdFxuIik7Cj4gPj4gKwkJaW5mby0+Zm9yY2VfMzJiaXQgPSB0cnVlOwo+
-ID4+ICsJfQo+ID4+ICsgIAo+ID4gCj4gPiBBcyBzdWdnZXN0ZWQgYWJvdmUsIGp1c3QgYWRkaW5n
-IGEgY2FwYWJpbGl0eSBzdHJ1Y3R1cmUgdGllZCB0byB0aGUKPiA+IGNvbXBhdGlibGUgc3RyaW5n
-IGFuZCByZXRyaWV2ZWQgd2l0aCBvZl9kZXZpY2VfZ2V0X21hdGNoX2RhdGEoKSBzaG91bGQKPiA+
-IGJlIGVub3VnaCBhbmQgcmVwbGFjZSB0aGlzIG1hbnVhbCB0cmVlIHJlc2VhcmNoLiAgCj4gCj4g
-VGhlIHRyb3VibGUgY29tZXMgd2hlbiBUSSB1cGRhdGVzIHRoZSBzaWxpY29uIHJldmlzaW9uIHRv
-ICJTUjIuMCIgYW5kIHRoYXQgaGFzIHRoZSBpc3N1ZSBmaXhlZAo+IGJ1dCBzdGlsbCB1c2VzIHRo
-ZSBzYW1lIGNvbXBhdGlibGUuIFNvIGNvbXBhdGlibGUgc3RyaW5nIGJ5IGl0c2VsZiBpcyBub3Qg
-c3VmZmljaWVudCB0byBpZGVudGlmeQo+IHRoZSB0cm91YmxlZCBkZXZpY2VzLiBzb2NfZGV2aWNl
-X21hdGNoKCkgd2FzIHRoZSBlYXNpZXN0IHdheSB0byBhZGRyZXNzIHRoaXMuCgpUaGlzIGlzIHBy
-ZWNpc2VseSB3aGF0IGNvbXBhdGlibGVzIGFyZSBmb3IsIEkgYmVsaWV2ZSB3ZSBzaG91bGQgZGVj
-bGFyZQp0aGUgbmVjZXNzYXJ5IGFkZGl0aW9uYWwgY29tcGF0aWJsZXMgYW5kIGZpeCB0aGUgZGV2
-aWNlIHRyZWVzIHRoYXQgYXJlCndyb25nLgoKPiA+PiAgCWVyciA9IG9tYXBfZ2V0X2R0X2luZm8o
-ZGV2LCBpbmZvKTsKPiA+PiAgCWlmIChlcnIpCj4gPj4gIAkJcmV0dXJuIGVycjsKPiA+PiBAQCAt
-MjI4Niw2ICsyMzIwLDcgQEAgc3RhdGljIGludCBvbWFwX25hbmRfcmVtb3ZlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4gPj4gIAo+ID4+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2Rl
-dmljZV9pZCBvbWFwX25hbmRfaWRzW10gPSB7Cj4gPj4gIAl7IC5jb21wYXRpYmxlID0gInRpLG9t
-YXAyLW5hbmQiLCB9LAo+ID4+ICsJeyAuY29tcGF0aWJsZSA9ICJ0aSxhbTY0LW5hbmQiLCB9LAo+
-ID4+ICAJe30sCj4gPj4gIH07Cj4gPj4gIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIG9tYXBfbmFu
-ZF9pZHMpOyAgCj4gPiAKPiA+IFRoZSBjb252ZXJzaW9uIHRvIGV4ZWNfb3AgbG9va3MgZmluZSBv
-dGhlcndpc2UgOikgIAo+IAo+IFRoYW5rcyA6KQo+IAo+ID4gCj4gPiBUaGFua3MsCj4gPiBNaXF1
-w6hsCj4gPiAgIAo+IAo+IGNoZWVycywKPiAtcm9nZXIKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
++Rob and DT list
+
+Miques & Nishanth,
+
+On 26/11/2021 11:42, Miquel Raynal wrote:
+> Hi Roger,
+> 
+> rogerq@kernel.org wrote on Thu, 25 Nov 2021 16:12:01 +0200:
+> 
+>> Hi Miquel,
+>>
+>> On 24/11/2021 14:15, Miquel Raynal wrote:
+>>> Hi Roger,
+>>>
+>>> rogerq@kernel.org wrote on Tue, 23 Nov 2021 12:36:09 +0200:
+>>>   
+>>>> AM64 SoC has an issue which prevents proper 8-bit and 16-bit
+>>>> reads from GPMC. We are limited to do 32-bit reads only.  
+>>>
+>>> First, thanks for this series!  
+>>
+>> No problem. Just my job :)
+>>
+>>>   
+>>>> Force 32-bit only reads on affected platforms.
+>>>>  
+>>>
+>>> Please change the commit title prefix to: "mtd: rawnand: omap2:" in
+>>> patch 2, 3, 4.  
+>>
+>> OK.
+>>
+>>>    
+>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>>> ---
+>>>>  drivers/mtd/nand/raw/omap2.c | 35 +++++++++++++++++++++++++++++++++++
+>>>>  1 file changed, 35 insertions(+)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+>>>> index f1fc146e09b9..d952de771b35 100644
+>>>> --- a/drivers/mtd/nand/raw/omap2.c
+>>>> +++ b/drivers/mtd/nand/raw/omap2.c
+>>>> @@ -28,6 +28,7 @@
+>>>>  
+>>>>  #include <linux/omap-gpmc.h>
+>>>>  #include <linux/platform_data/mtd-nand-omap2.h>
+>>>> +#include <linux/sys_soc.h>
+>>>>  
+>>>>  #define	DRIVER_NAME	"omap2-nand"
+>>>>  #define	OMAP_NAND_TIMEOUT_MS	5000
+>>>> @@ -181,6 +182,7 @@ struct omap_nand_info {
+>>>>  	void (*data_out)(struct nand_chip *chip,
+>>>>  			 const void *buf, unsigned int len,
+>>>>  			 bool force_8bit);
+>>>> +	bool force_32bit;  
+>>>
+>>> I believe we should have a driver capability instead of something in
+>>> the info structure. You can save the value here as well in the probe if
+>>> you want, but I would like this limitation to be tied to the
+>>> compatible.  
+>>
+>> I will discuss about this at the end.
+>>>   
+>>>>  };
+>>>>  
+>>>>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
+>>>> @@ -2070,6 +2072,25 @@ static void omap_nand_data_in(struct nand_chip *chip, void *buf,
+>>>>  	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
+>>>>  	u32 alignment = ((uintptr_t)buf | len) & 3;
+>>>>  
+>>>> +	if (info->force_32bit) {  
+>>>
+>>> I am a little bit bothered by this limitation. The force8_bit flag does
+>>> not require the driver to read only 8-bits of the fifo register, it
+>>> actually requires to use only the first 8-bits of the NAND bus (which
+>>> can also be 16-bit wide). The older implementation just limited the
+>>> number of bits reads to be 8 with ioread8, which seems to be a fine
+>>> solution but would require more accesses than using ioread16 (or
+>>> ioread32) when reading more than 1 byte on platforms with only 8-bit
+>>> busses.  
+>>
+>> I didn't understand the purpose of force8_bit flag. 
+> 
+> Only access the lowest byte on the bus. This is only needed for
+> meta-data reads (like status reads or ids) where the upper byte would
+> be a duplicate.
+> 
+>> How should the driver/controller behave if we get a data_in() call with len 8 and force8_bit flag set?
+>>
+>> e.g. if 16-bit NAND ID area contains (little-endian) 2c d3 d0 a6 66 45 67 a3 4f 4e 46 49 ab ef 90 d3
+>> what should data_in(len = 8, force_8_bit = 1) return in buffer?
+>>
+>> Based on what you said earlier my guess is it should return 2c d0 66 67 4f 46 ab 90?
+> 
+> If on a 16-bit bus, you would receive 2c 2c d3 d3 d0 d0 a6 a6 etc and
+> of course that's not what you want.
+> 
+>>> My point here is that:
+>>> 1- the limited controllers cannot be used with a 16-bit bus
+>>> 2- non-limited controllers can use ioread16 if the bus width is 8-bits  
+>>
+>> Sorry, I did not understand this either. The TI GPMC controller has a configuration setting where we
+>> set the NAND device bus width (8-bit or 16-bit). Then it automatically converts ioread16 or
+>> ioread32 to appropriate number of 8-bit accesses or 16-bit accesses to the NAND chip.
+> 
+> Ok great, in this case you should configure the bus width depending
+> on the actual used width (8 or 16 bits). When an 8-bit access is
+> requested with force_8bit, you should ensure the buswidth is changed
+> to 8 and then use ioread8/16/32 as you wish and then return the bus
+> back into its default state.
+> 
+
+OK. I will try this out. Thanks for the tip.
+
+>>
+>>>
+>>> I guess it's fine not to change the logic to avoid breaking boards so
+>>> we can just ignore [2] but I belive we should check chip->options &
+>>> NAND_BUSWIDTH_16 in ->attach_chip() and refuse probing if this flag is
+>>> set.
+>>>   
+>>>> +		u32 val;
+>>>> +		int left;
+>>>> +		u8 *ptr;
+>>>> +
+>>>> +		ioread32_rep(info->fifo, buf, len >> 2);
+>>>> +		left = len & 0x3;
+>>>> +		if (left) {
+>>>> +			val = ioread32(info->fifo);
+>>>> +			ptr = (u8 *)(buf + (len - left));
+>>>> +			while (left--) {
+>>>> +				*ptr++ = val & 0xff;
+>>>> +				val >>= 8;
+>>>> +			}
+>>>> +		}
+>>>> +
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>>  	if (force_8bit || (alignment & 1))
+>>>>  		ioread8_rep(info->fifo, buf, len);
+>>>>  	else if (alignment & 3)
+>>>> @@ -2169,8 +2190,15 @@ static const struct nand_controller_ops omap_nand_controller_ops = {
+>>>>  static struct nand_controller omap_gpmc_controller;
+>>>>  static bool omap_gpmc_controller_initialized;
+>>>>  
+>>>> +static const struct of_device_id omap_nand_ids[];
+>>>> +  
+>>>
+>>> I believe this change should be dropped.
+>>>   
+>>>>  static int omap_nand_probe(struct platform_device *pdev)
+>>>>  {
+>>>> +	const struct soc_device_attribute k3_soc_devices[] = {
+>>>> +		{ .family = "AM64X", .revision = "SR1.0" },
+>>>> +		{ /* sentinel */ }
+>>>> +	};
+>>>> +
+>>>>  	struct omap_nand_info		*info;
+>>>>  	struct mtd_info			*mtd;
+>>>>  	struct nand_chip		*nand_chip;
+>>>> @@ -2186,6 +2214,12 @@ static int omap_nand_probe(struct platform_device *pdev)
+>>>>  
+>>>>  	info->pdev = pdev;
+>>>>  
+>>>> +	/* Some SoC's have 32-bit at least, read limitation */
+>>>> +	if (soc_device_match(k3_soc_devices)) {
+>>>> +		dev_info(&pdev->dev, "force 32-bit\n");
+>>>> +		info->force_32bit = true;
+>>>> +	}
+>>>> +  
+>>>
+>>> As suggested above, just adding a capability structure tied to the
+>>> compatible string and retrieved with of_device_get_match_data() should
+>>> be enough and replace this manual tree research.  
+>>
+>> The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
+>> but still uses the same compatible. So compatible string by itself is not sufficient to identify
+>> the troubled devices. soc_device_match() was the easiest way to address this.
+> 
+> This is precisely what compatibles are for, I believe we should declare
+> the necessary additional compatibles and fix the device trees that are
+> wrong.
+
+AFAIK TI SoCs don't have different compatibles for different revisions of the same SoC.
+My understanding is that the SoC is the same so compatible shouldn't change. Just that there were some
+hardware fixes and some quirks may not be needed anymore.
+
+Nishanth,
+
+Could you please chime in on why SoC revisions can't use different compatibles?
+
+> 
+>>>>  	err = omap_get_dt_info(dev, info);
+>>>>  	if (err)
+>>>>  		return err;
+>>>> @@ -2286,6 +2320,7 @@ static int omap_nand_remove(struct platform_device *pdev)
+>>>>  
+>>>>  static const struct of_device_id omap_nand_ids[] = {
+>>>>  	{ .compatible = "ti,omap2-nand", },
+>>>> +	{ .compatible = "ti,am64-nand", },
+>>>>  	{},
+>>>>  };
+>>>>  MODULE_DEVICE_TABLE(of, omap_nand_ids);  
+>>>
+>>> The conversion to exec_op looks fine otherwise :)  
+>>
+>> Thanks :)
+>>
+
+<snip>
+
+cheers,
+-roger
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
