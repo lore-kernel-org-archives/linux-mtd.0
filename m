@@ -4,62 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37ADCC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 11:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3BA6C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 11:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=m5+6q/tlbD1bJAu5nO8KZ3hAGqHq5K2338DZGr1VGQ8=; b=M8NATrjfbk+E87XBmf6vqSsFii
-	tpSyz7TeKN1X3bOxhwLzSRP+7FhPl3WWjQyybJS42OnZ6sqiMNc4kDykc+GR9LjwhFJQjssA2QEF0
-	EXPBnrXRh9FAYoihkgAz0xz+8arGKmXCttHKAGnrBhBhF3sXC/eyQsEQijXCZXRVV3U8CeTeGzLtu
-	qqU9Dj3ly/7qfanHiLaGulBSjzWo30H2zwmobais2h6mCIevRvstfX+k5PGBJ3jN4DqRnTiN6lkK1
-	1M0vPsQ5xo2RUfFIAFIlNhU8BJ9fgQv5+Gn/kHq+cycDPpVgZco8pItYNUGsmf5I8tugxMr2h93HW
-	3Wzl4UFA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=laRU26xVc3EJt7qkEJwH4KJa3xoYNm1e9VvhIJht3s0=; b=K4m3Aumo5tQkMH
+	mthfm2ktWQiKF2fnmvQ6mNFIJiBThwSxNs/+7nXRl9tBtOJoFyMOwhB0HcXAHskS8E2RU7AXLPU40
+	qGDjYMykjj5sLiShcxq46QtZdiB6mjTXGJL1zZWzCSTV5NW7w6sopU3uGFOVpOYhmFdRXQ7sFM5fC
+	PIWMP7a8/bc2QzWuqwE21xWd8DJ709t8bDGI66Z2MDPhXWWDqFmwUwZmXvHBpHN6V3Nt9c/yKq2Ia
+	whK0iWnc9kaXeKrpzyjO4qpPFZ8qlI6nh50utz4qu74UoZbU1hHObJPfenwK8P8fpMppjgxnSGemL
+	1hPg+damfNwYpqUZbEUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqZ7Y-00A8WT-Rb; Fri, 26 Nov 2021 11:10:24 +0000
-Received: from mail.kernel.org ([198.145.29.99])
+	id 1mqZZn-00ABAf-6L; Fri, 26 Nov 2021 11:39:35 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqZ7V-00A8W3-U7
- for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 11:10:23 +0000
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75FD56108E;
- Fri, 26 Nov 2021 11:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1637925021;
- bh=lGsIf27IbHfcOgsGFIGU9JUA1H2hVkUBJnwjrWuszu8=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=CGJORNk3tOcKW3OSKYXXsCb83LlB9glF+QxujQNEmvNZjMdpOiIS7tvfweSO/Tjp+
- Oe6XMTHki2nZnufKvxr0xPeHuyiRZ3wdHp0DZX8FP506/mbtiCPjza/Geylmc9F7Dd
- +iDBb3fBHwNyEviNGJEIFuVSiQ+VuJeZ9IAPNsnkqMXB0jchFhui3WPlS47CI4ZPvo
- +Lfep70oohklOzR/QK/JRdz4ZjfpkTbcMOrtdIlgtQahcVfWajzdYIaXt+a1X4gQOG
- q5m/Aq/Wx8FyJk+2heiqXkRZqxG8whieXmZnRNDdq2/JY3A+MavZ7NJwGVLh2X8UI1
- 0jwheky+kKaaQ==
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
- AM64 SoC
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Nishanth Menon <nm@ti.com>
-Cc: richard@nod.at, vigneshr@ti.com, kishon@ti.com, tony@atomide.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20211123103609.14063-1-rogerq@kernel.org>
- <20211123103609.14063-5-rogerq@kernel.org> <20211124131552.6b9bc506@xps13>
- <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
- <20211126104231.7cc43149@xps13>
-From: Roger Quadros <rogerq@kernel.org>
-Message-ID: <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
-Date: Fri, 26 Nov 2021 13:10:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ id 1mqZZk-00AB8r-Aw
+ for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 11:39:33 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id B1D7EFF80B;
+ Fri, 26 Nov 2021 11:39:28 +0000 (UTC)
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>
+Cc: Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+ Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Boris Brezillon <bbrezillon@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 01/20] dt-bindings: mtd: nand-controller: Fix the reg
+ property description
+Date: Fri, 26 Nov 2021 12:39:05 +0100
+Message-Id: <20211126113924.310459-2-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211126113924.310459-1-miquel.raynal@bootlin.com>
+References: <20211126113924.310459-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20211126104231.7cc43149@xps13>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211126_031022_060518_89001CC4 
-X-CRM114-Status: GOOD (  42.83  )
+X-CRM114-CacheID: sfid-20211126_033932_533266_AA8A844B 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,220 +67,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+Rob and DT list
+The reg property of a NAND device always references the chip-select(s).
+The ready/busy lines are described in the nand-rb property. I believe
+this was a harmless copy/paste error during the conversion to yaml.
 
-Miques & Nishanth,
+Fixes: 212e49693592 ("dt-bindings: mtd: Add YAML schemas for the generic NAND options")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/nand-controller.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 26/11/2021 11:42, Miquel Raynal wrote:
-> Hi Roger,
-> 
-> rogerq@kernel.org wrote on Thu, 25 Nov 2021 16:12:01 +0200:
-> 
->> Hi Miquel,
->>
->> On 24/11/2021 14:15, Miquel Raynal wrote:
->>> Hi Roger,
->>>
->>> rogerq@kernel.org wrote on Tue, 23 Nov 2021 12:36:09 +0200:
->>>   
->>>> AM64 SoC has an issue which prevents proper 8-bit and 16-bit
->>>> reads from GPMC. We are limited to do 32-bit reads only.  
->>>
->>> First, thanks for this series!  
->>
->> No problem. Just my job :)
->>
->>>   
->>>> Force 32-bit only reads on affected platforms.
->>>>  
->>>
->>> Please change the commit title prefix to: "mtd: rawnand: omap2:" in
->>> patch 2, 3, 4.  
->>
->> OK.
->>
->>>    
->>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>> ---
->>>>  drivers/mtd/nand/raw/omap2.c | 35 +++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 35 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
->>>> index f1fc146e09b9..d952de771b35 100644
->>>> --- a/drivers/mtd/nand/raw/omap2.c
->>>> +++ b/drivers/mtd/nand/raw/omap2.c
->>>> @@ -28,6 +28,7 @@
->>>>  
->>>>  #include <linux/omap-gpmc.h>
->>>>  #include <linux/platform_data/mtd-nand-omap2.h>
->>>> +#include <linux/sys_soc.h>
->>>>  
->>>>  #define	DRIVER_NAME	"omap2-nand"
->>>>  #define	OMAP_NAND_TIMEOUT_MS	5000
->>>> @@ -181,6 +182,7 @@ struct omap_nand_info {
->>>>  	void (*data_out)(struct nand_chip *chip,
->>>>  			 const void *buf, unsigned int len,
->>>>  			 bool force_8bit);
->>>> +	bool force_32bit;  
->>>
->>> I believe we should have a driver capability instead of something in
->>> the info structure. You can save the value here as well in the probe if
->>> you want, but I would like this limitation to be tied to the
->>> compatible.  
->>
->> I will discuss about this at the end.
->>>   
->>>>  };
->>>>  
->>>>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
->>>> @@ -2070,6 +2072,25 @@ static void omap_nand_data_in(struct nand_chip *chip, void *buf,
->>>>  	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
->>>>  	u32 alignment = ((uintptr_t)buf | len) & 3;
->>>>  
->>>> +	if (info->force_32bit) {  
->>>
->>> I am a little bit bothered by this limitation. The force8_bit flag does
->>> not require the driver to read only 8-bits of the fifo register, it
->>> actually requires to use only the first 8-bits of the NAND bus (which
->>> can also be 16-bit wide). The older implementation just limited the
->>> number of bits reads to be 8 with ioread8, which seems to be a fine
->>> solution but would require more accesses than using ioread16 (or
->>> ioread32) when reading more than 1 byte on platforms with only 8-bit
->>> busses.  
->>
->> I didn't understand the purpose of force8_bit flag. 
-> 
-> Only access the lowest byte on the bus. This is only needed for
-> meta-data reads (like status reads or ids) where the upper byte would
-> be a duplicate.
-> 
->> How should the driver/controller behave if we get a data_in() call with len 8 and force8_bit flag set?
->>
->> e.g. if 16-bit NAND ID area contains (little-endian) 2c d3 d0 a6 66 45 67 a3 4f 4e 46 49 ab ef 90 d3
->> what should data_in(len = 8, force_8_bit = 1) return in buffer?
->>
->> Based on what you said earlier my guess is it should return 2c d0 66 67 4f 46 ab 90?
-> 
-> If on a 16-bit bus, you would receive 2c 2c d3 d3 d0 d0 a6 a6 etc and
-> of course that's not what you want.
-> 
->>> My point here is that:
->>> 1- the limited controllers cannot be used with a 16-bit bus
->>> 2- non-limited controllers can use ioread16 if the bus width is 8-bits  
->>
->> Sorry, I did not understand this either. The TI GPMC controller has a configuration setting where we
->> set the NAND device bus width (8-bit or 16-bit). Then it automatically converts ioread16 or
->> ioread32 to appropriate number of 8-bit accesses or 16-bit accesses to the NAND chip.
-> 
-> Ok great, in this case you should configure the bus width depending
-> on the actual used width (8 or 16 bits). When an 8-bit access is
-> requested with force_8bit, you should ensure the buswidth is changed
-> to 8 and then use ioread8/16/32 as you wish and then return the bus
-> back into its default state.
-> 
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index bd217e6f5018..811f03978fc6 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -55,7 +55,7 @@ patternProperties:
+     properties:
+       reg:
+         description:
+-          Contains the native Ready/Busy IDs.
++          Contains the chip-select IDs.
+ 
+       nand-ecc-engine:
+         allOf:
+-- 
+2.27.0
 
-OK. I will try this out. Thanks for the tip.
-
->>
->>>
->>> I guess it's fine not to change the logic to avoid breaking boards so
->>> we can just ignore [2] but I belive we should check chip->options &
->>> NAND_BUSWIDTH_16 in ->attach_chip() and refuse probing if this flag is
->>> set.
->>>   
->>>> +		u32 val;
->>>> +		int left;
->>>> +		u8 *ptr;
->>>> +
->>>> +		ioread32_rep(info->fifo, buf, len >> 2);
->>>> +		left = len & 0x3;
->>>> +		if (left) {
->>>> +			val = ioread32(info->fifo);
->>>> +			ptr = (u8 *)(buf + (len - left));
->>>> +			while (left--) {
->>>> +				*ptr++ = val & 0xff;
->>>> +				val >>= 8;
->>>> +			}
->>>> +		}
->>>> +
->>>> +		return;
->>>> +	}
->>>> +
->>>>  	if (force_8bit || (alignment & 1))
->>>>  		ioread8_rep(info->fifo, buf, len);
->>>>  	else if (alignment & 3)
->>>> @@ -2169,8 +2190,15 @@ static const struct nand_controller_ops omap_nand_controller_ops = {
->>>>  static struct nand_controller omap_gpmc_controller;
->>>>  static bool omap_gpmc_controller_initialized;
->>>>  
->>>> +static const struct of_device_id omap_nand_ids[];
->>>> +  
->>>
->>> I believe this change should be dropped.
->>>   
->>>>  static int omap_nand_probe(struct platform_device *pdev)
->>>>  {
->>>> +	const struct soc_device_attribute k3_soc_devices[] = {
->>>> +		{ .family = "AM64X", .revision = "SR1.0" },
->>>> +		{ /* sentinel */ }
->>>> +	};
->>>> +
->>>>  	struct omap_nand_info		*info;
->>>>  	struct mtd_info			*mtd;
->>>>  	struct nand_chip		*nand_chip;
->>>> @@ -2186,6 +2214,12 @@ static int omap_nand_probe(struct platform_device *pdev)
->>>>  
->>>>  	info->pdev = pdev;
->>>>  
->>>> +	/* Some SoC's have 32-bit at least, read limitation */
->>>> +	if (soc_device_match(k3_soc_devices)) {
->>>> +		dev_info(&pdev->dev, "force 32-bit\n");
->>>> +		info->force_32bit = true;
->>>> +	}
->>>> +  
->>>
->>> As suggested above, just adding a capability structure tied to the
->>> compatible string and retrieved with of_device_get_match_data() should
->>> be enough and replace this manual tree research.  
->>
->> The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
->> but still uses the same compatible. So compatible string by itself is not sufficient to identify
->> the troubled devices. soc_device_match() was the easiest way to address this.
-> 
-> This is precisely what compatibles are for, I believe we should declare
-> the necessary additional compatibles and fix the device trees that are
-> wrong.
-
-AFAIK TI SoCs don't have different compatibles for different revisions of the same SoC.
-My understanding is that the SoC is the same so compatible shouldn't change. Just that there were some
-hardware fixes and some quirks may not be needed anymore.
-
-Nishanth,
-
-Could you please chime in on why SoC revisions can't use different compatibles?
-
-> 
->>>>  	err = omap_get_dt_info(dev, info);
->>>>  	if (err)
->>>>  		return err;
->>>> @@ -2286,6 +2320,7 @@ static int omap_nand_remove(struct platform_device *pdev)
->>>>  
->>>>  static const struct of_device_id omap_nand_ids[] = {
->>>>  	{ .compatible = "ti,omap2-nand", },
->>>> +	{ .compatible = "ti,am64-nand", },
->>>>  	{},
->>>>  };
->>>>  MODULE_DEVICE_TABLE(of, omap_nand_ids);  
->>>
->>> The conversion to exec_op looks fine otherwise :)  
->>
->> Thanks :)
->>
-
-<snip>
-
-cheers,
--roger
 
 ______________________________________________________
 Linux MTD discussion mailing list
