@@ -4,56 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4929CC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 12:38:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 401BBC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 13:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UBH5OGud9nbZsnFOotRXSUV+xcoCIe7vmYxHvLtMlTo=; b=WbtBcBwilO+miM
-	s41DG0jWAa8XruL+Xbe/EaDolRmLVeVRuZobMomT80dxRDRCb0SXJ8CyRiNI6HrDjfKFd1Od+Iuce
-	f5bbPTO6VlXwLIWXgNFwa0wd7u0lGSKreopLk28u4vRhg9nbOzxWiC2v1Z0ZmTKxQiQjQlhdQsYNC
-	9Yo7FVP5KXstNz4O2AIZ+y1y5MlY/sydZd+ImyHAC/3v9nEBBdsHnz5/GCsc+LpvhJyKYzdUsE+QK
-	cyYM4zu1dRxE2d/4WM8yyxYfqmS+fyP6BUld54jVap/K3N+prbRlQDymPzgsGjc4213jAlIf9zmo5
-	xRc3nCeyZqh/3sAwd+wA==;
+	List-Owner; bh=qo9IdkxhGDqGenwF24ojL2wqt7O5L3w5HWOXajN01QQ=; b=zZrDdE0+CwgKcE
+	4dkotlRtqGvZS1BwAiH9t/jmo+bs97gEQv9HmaIDs188+E5UXUdi+LM/j1fVaymN7JhVWOrcjt64O
+	Mc8Vql5PDOwn+eMu+o60Yh8OuSzaJabdUd64Cpw5j2zi9lUL4ZgHsnCvT/F1+hQ6BbIQbr0wa8vH8
+	1Xd4YrvXMXG56ccUvu2X7/ngbGEasvW8CICwe7RUxvDWBADZ+QBasuXo6kYpICOFfTVTsupt6hpfR
+	ush92pdsBhT/cMwkOSbaHICHZakEFcBPgtFZePi0imqGCcg5DZLlFoqmaOh5JAomWd1/hjZtO8fDC
+	sDlDYVjsDTi3dcXW5MzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqaU3-00APCX-Oy; Fri, 26 Nov 2021 12:37:43 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1mqasG-00AWeC-M4; Fri, 26 Nov 2021 13:02:44 +0000
+Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqaB9-00AKI7-Rd
- for linux-mtd@bombadil.infradead.org; Fri, 26 Nov 2021 12:18:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=dcDk16FRh8VOtFJsyjzmv3494okFf6MLGQiwtkQ2Qz8=; b=l4NJ7wzkR/uzPbZta1L/4r4Q6q
- D39qzFGpQOI75IkyLUYTzO/HjSPqq/bNcswTtXFmo1NTFI67JwBCMm3S6tqNk0PqAtB8aQk8CUkNS
- of2smMJkeowXj5U8+xWf6uGL/XjXyFwd7xAi1uDaVzbf51HD1N0omcbOWZGzXO4ZF7er0eQuDzIt3
- MuWZftuQkxZZPhpGOy7wcZG7UGIdxXgLGT3ucUx5YpyEhX7/7HwbyhHur+4IFBcaaVNkNhxooPpXo
- psBYZEdJEJMNM9mtxsBIVzvG+kDDdaJHZIRIDUqXwpJwL+WFpVzCHLWiBAk4NhzJ6h+wX2gIezIcT
- w4jJfJ1A==;
-Received: from [2001:4bb8:191:f9ce:bae8:5658:102a:5491] (helo=localhost)
- by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqaB7-00AWHY-GR; Fri, 26 Nov 2021 12:18:10 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-scsi@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>
-Subject: [PATCH 5/5] scsi: remove the gendisk argument to scsi_ioctl
-Date: Fri, 26 Nov 2021 13:18:02 +0100
-Message-Id: <20211126121802.2090656-6-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211126121802.2090656-1-hch@lst.de>
-References: <20211126121802.2090656-1-hch@lst.de>
+ id 1mqasC-00AWdM-UE
+ for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 13:02:42 +0000
+Received: by mail-lj1-x234.google.com with SMTP id j18so5431409ljc.12
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Nov 2021 05:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kempniu.pl; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to;
+ bh=TXOwpLv7KDX/kwKg8NXTBcWSQI5gKaFisLYfaSk/F6g=;
+ b=SUdbpVmqbbzQ7GMGk5ybLBcdUOA8DYSC2v6K5Tuaxkogxu2DNLA4ClyRinwEuhHJAJ
+ mctyH3gQW+gUfkKjDY2mFEhquFNAmjYC60OhMIAOsh921be6Z0RZaak/Ilanf1igyEhX
+ nwNb/g+aGgtFVtjXE2WGR/kuzy4dEn8Y3NG8Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=TXOwpLv7KDX/kwKg8NXTBcWSQI5gKaFisLYfaSk/F6g=;
+ b=GEt1B2Bu5NQc0ufim5wg4yIxpdaXyMzaUpWshyFECk+AEdSGCyJ7nyL/HSgFX8ii3u
+ iVvK/Cr3mHEcZCD6MPf7dYcCOb80ny9aeJI9sfxL+Po6M1nvUtPLOPuTSxQ6C9W8sxpc
+ KzyyA4RhG/Bev+tMBCbj1AsKeM1QHsdMbZJOtMnLBTZwET5GKWMadlc6QAhqSR8t/JTO
+ v8ipBVGNB1NjIpiT9lkTYrWFCCYBTedaqGBDLXxD+XXI90+HMOp7tZPCeiAs/L2/xjmo
+ RFNFQZ2AK5tYZ2Xd9Kbq8g1Ak9AgxCJhm4rCf00wZMTeWzgnYZ+ycVNgowBjyLG/EybO
+ QbFA==
+X-Gm-Message-State: AOAM530T3/wvsFqeQ38oHgjtBlzyfCHCDRlNkGrh9NEzWGSlS9hvIlZl
+ 0H/O23SYwg5Rn7Zb8pdLtGmtFg==
+X-Google-Smtp-Source: ABdhPJxUIahQRLbelSRGX08f9pSLdmcbvpjLK0Wt0SB+d6q+QgKmvzsKL3CRC0Q1NgyqKJbbE8NRFA==
+X-Received: by 2002:a2e:9ecb:: with SMTP id h11mr31283952ljk.212.1637931757336; 
+ Fri, 26 Nov 2021 05:02:37 -0800 (PST)
+Received: from larwa.hq.kempniu.pl ([2001:470:64df:111::e02])
+ by smtp.gmail.com with ESMTPSA id 18sm490378ljr.17.2021.11.26.05.02.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 26 Nov 2021 05:02:36 -0800 (PST)
+Date: Fri, 26 Nov 2021 14:02:33 +0100
+From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtdchar: prevent unbounded allocation in MEMWRITE ioctl
+Message-ID: <YaDa6Znbms3tVkr/@larwa.hq.kempniu.pl>
+References: <20211025082104.8017-1-kernel@kempniu.pl>
+ <20211122103122.424326a1@xps13>
+ <YZ98sDJZIqdhP0NF@larwa.hq.kempniu.pl>
+ <20211126103116.5bef6bc0@xps13>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
- casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Disposition: inline
+In-Reply-To: <20211126103116.5bef6bc0@xps13>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20211126_050241_075386_8FC3DF80 
+X-CRM114-Status: GOOD (  34.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,249 +84,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that blk_execute_rq does not take a gendisk argument there is no need
-to pass it through the scsi_ioctl callchain either.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
----
- drivers/scsi/ch.c         |  2 +-
- drivers/scsi/scsi_ioctl.c | 39 +++++++++++++++------------------------
- drivers/scsi/sd.c         |  2 +-
- drivers/scsi/sg.c         |  4 ++--
- drivers/scsi/sr.c         |  5 ++---
- drivers/scsi/st.c         |  2 +-
- include/scsi/scsi_ioctl.h |  4 ++--
- 7 files changed, 24 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/scsi/ch.c b/drivers/scsi/ch.c
-index 27012908b5861..6fa300daa31ea 100644
---- a/drivers/scsi/ch.c
-+++ b/drivers/scsi/ch.c
-@@ -877,7 +877,7 @@ static long ch_ioctl(struct file *file,
- 	}
- 
- 	default:
--		return scsi_ioctl(ch->device, NULL, file->f_mode, cmd, argp);
-+		return scsi_ioctl(ch->device, file->f_mode, cmd, argp);
- 
- 	}
- }
-diff --git a/drivers/scsi/scsi_ioctl.c b/drivers/scsi/scsi_ioctl.c
-index 340ba0ad6e707..e13fd380deb6f 100644
---- a/drivers/scsi/scsi_ioctl.c
-+++ b/drivers/scsi/scsi_ioctl.c
-@@ -408,8 +408,7 @@ static int scsi_complete_sghdr_rq(struct request *rq, struct sg_io_hdr *hdr,
- 	return ret;
- }
- 
--static int sg_io(struct scsi_device *sdev, struct gendisk *disk,
--		struct sg_io_hdr *hdr, fmode_t mode)
-+static int sg_io(struct scsi_device *sdev, struct sg_io_hdr *hdr, fmode_t mode)
- {
- 	unsigned long start_time;
- 	ssize_t ret = 0;
-@@ -499,19 +498,12 @@ static int sg_io(struct scsi_device *sdev, struct gendisk *disk,
- /**
-  * sg_scsi_ioctl  --  handle deprecated SCSI_IOCTL_SEND_COMMAND ioctl
-  * @q:		request queue to send scsi commands down
-- * @disk:	gendisk to operate on (option)
-  * @mode:	mode used to open the file through which the ioctl has been
-  *		submitted
-  * @sic:	userspace structure describing the command to perform
-  *
-  * Send down the scsi command described by @sic to the device below
-- * the request queue @q.  If @file is non-NULL it's used to perform
-- * fine-grained permission checks that allow users to send down
-- * non-destructive SCSI commands.  If the caller has a struct gendisk
-- * available it should be passed in as @disk to allow the low level
-- * driver to use the information contained in it.  A non-NULL @disk
-- * is only allowed if the caller knows that the low level driver doesn't
-- * need it (e.g. in the scsi subsystem).
-+ * the request queue @q.
-  *
-  * Notes:
-  *   -  This interface is deprecated - users should use the SG_IO
-@@ -530,8 +522,8 @@ static int sg_io(struct scsi_device *sdev, struct gendisk *disk,
-  *      Positive numbers returned are the compacted SCSI error codes (4
-  *      bytes in one int) where the lowest byte is the SCSI status.
-  */
--static int sg_scsi_ioctl(struct request_queue *q, struct gendisk *disk,
--		fmode_t mode, struct scsi_ioctl_command __user *sic)
-+static int sg_scsi_ioctl(struct request_queue *q, fmode_t mode,
-+		struct scsi_ioctl_command __user *sic)
- {
- 	enum { OMAX_SB_LEN = 16 };	/* For backward compatibility */
- 	struct request *rq;
-@@ -806,8 +798,8 @@ static int scsi_put_cdrom_generic_arg(const struct cdrom_generic_command *cgc,
- 	return 0;
- }
- 
--static int scsi_cdrom_send_packet(struct scsi_device *sdev, struct gendisk *disk,
--		fmode_t mode, void __user *arg)
-+static int scsi_cdrom_send_packet(struct scsi_device *sdev, fmode_t mode,
-+		void __user *arg)
- {
- 	struct cdrom_generic_command cgc;
- 	struct sg_io_hdr hdr;
-@@ -847,7 +839,7 @@ static int scsi_cdrom_send_packet(struct scsi_device *sdev, struct gendisk *disk
- 	hdr.cmdp = ((struct cdrom_generic_command __user *) arg)->cmd;
- 	hdr.cmd_len = sizeof(cgc.cmd);
- 
--	err = sg_io(sdev, disk, &hdr, mode);
-+	err = sg_io(sdev, &hdr, mode);
- 	if (err == -EFAULT)
- 		return -EFAULT;
- 
-@@ -862,8 +854,8 @@ static int scsi_cdrom_send_packet(struct scsi_device *sdev, struct gendisk *disk
- 	return err;
- }
- 
--static int scsi_ioctl_sg_io(struct scsi_device *sdev, struct gendisk *disk,
--		fmode_t mode, void __user *argp)
-+static int scsi_ioctl_sg_io(struct scsi_device *sdev, fmode_t mode,
-+		void __user *argp)
- {
- 	struct sg_io_hdr hdr;
- 	int error;
-@@ -871,7 +863,7 @@ static int scsi_ioctl_sg_io(struct scsi_device *sdev, struct gendisk *disk,
- 	error = get_sg_io_hdr(&hdr, argp);
- 	if (error)
- 		return error;
--	error = sg_io(sdev, disk, &hdr, mode);
-+	error = sg_io(sdev, &hdr, mode);
- 	if (error == -EFAULT)
- 		return error;
- 	if (put_sg_io_hdr(&hdr, argp))
-@@ -882,7 +874,6 @@ static int scsi_ioctl_sg_io(struct scsi_device *sdev, struct gendisk *disk,
- /**
-  * scsi_ioctl - Dispatch ioctl to scsi device
-  * @sdev: scsi device receiving ioctl
-- * @disk: disk receiving the ioctl
-  * @mode: mode the block/char device is opened with
-  * @cmd: which ioctl is it
-  * @arg: data associated with ioctl
-@@ -891,8 +882,8 @@ static int scsi_ioctl_sg_io(struct scsi_device *sdev, struct gendisk *disk,
-  * does not take a major/minor number as the dev field.  Rather, it takes
-  * a pointer to a &struct scsi_device.
-  */
--int scsi_ioctl(struct scsi_device *sdev, struct gendisk *disk, fmode_t mode,
--		int cmd, void __user *arg)
-+int scsi_ioctl(struct scsi_device *sdev, fmode_t mode, int cmd,
-+		void __user *arg)
- {
- 	struct request_queue *q = sdev->request_queue;
- 	struct scsi_sense_hdr sense_hdr;
-@@ -927,11 +918,11 @@ int scsi_ioctl(struct scsi_device *sdev, struct gendisk *disk, fmode_t mode,
- 	case SG_EMULATED_HOST:
- 		return sg_emulated_host(q, arg);
- 	case SG_IO:
--		return scsi_ioctl_sg_io(sdev, disk, mode, arg);
-+		return scsi_ioctl_sg_io(sdev, mode, arg);
- 	case SCSI_IOCTL_SEND_COMMAND:
--		return sg_scsi_ioctl(q, disk, mode, arg);
-+		return sg_scsi_ioctl(q, mode, arg);
- 	case CDROM_SEND_PACKET:
--		return scsi_cdrom_send_packet(sdev, disk, mode, arg);
-+		return scsi_cdrom_send_packet(sdev, mode, arg);
- 	case CDROMCLOSETRAY:
- 		return scsi_send_start_stop(sdev, 3);
- 	case CDROMEJECT:
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 8181857ddf53f..5ddb8e053a8e7 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -1574,7 +1574,7 @@ static int sd_ioctl(struct block_device *bdev, fmode_t mode,
- 
- 	if (is_sed_ioctl(cmd))
- 		return sed_ioctl(sdkp->opal_dev, cmd, p);
--	return scsi_ioctl(sdp, disk, mode, cmd, p);
-+	return scsi_ioctl(sdp, mode, cmd, p);
- }
- 
- static void set_media_not_present(struct scsi_disk *sdkp)
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 6c8ffad88f9e9..ad12b3261845b 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -1109,7 +1109,7 @@ sg_ioctl_common(struct file *filp, Sg_device *sdp, Sg_fd *sfp,
- 	case SCSI_IOCTL_SEND_COMMAND:
- 		if (atomic_read(&sdp->detaching))
- 			return -ENODEV;
--		return scsi_ioctl(sdp->device, NULL, filp->f_mode, cmd_in, p);
-+		return scsi_ioctl(sdp->device, filp->f_mode, cmd_in, p);
- 	case SG_SET_DEBUG:
- 		result = get_user(val, ip);
- 		if (result)
-@@ -1165,7 +1165,7 @@ sg_ioctl(struct file *filp, unsigned int cmd_in, unsigned long arg)
- 	ret = sg_ioctl_common(filp, sdp, sfp, cmd_in, p);
- 	if (ret != -ENOIOCTLCMD)
- 		return ret;
--	return scsi_ioctl(sdp->device, NULL, filp->f_mode, cmd_in, p);
-+	return scsi_ioctl(sdp->device, filp->f_mode, cmd_in, p);
- }
- 
- static __poll_t
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index c29589815468c..14c122839c409 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -561,8 +561,7 @@ static void sr_block_release(struct gendisk *disk, fmode_t mode)
- static int sr_block_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
- 			  unsigned long arg)
- {
--	struct gendisk *disk = bdev->bd_disk;
--	struct scsi_cd *cd = scsi_cd(disk);
-+	struct scsi_cd *cd = scsi_cd(bdev->bd_disk);
- 	struct scsi_device *sdev = cd->device;
- 	void __user *argp = (void __user *)arg;
- 	int ret;
-@@ -584,7 +583,7 @@ static int sr_block_ioctl(struct block_device *bdev, fmode_t mode, unsigned cmd,
- 		if (ret != -ENOSYS)
- 			goto put;
- 	}
--	ret = scsi_ioctl(sdev, disk, mode, cmd, argp);
-+	ret = scsi_ioctl(sdev, mode, cmd, argp);
- 
- put:
- 	scsi_autopm_put_device(sdev);
-diff --git a/drivers/scsi/st.c b/drivers/scsi/st.c
-index 06acc7db77550..e869e90e05afe 100644
---- a/drivers/scsi/st.c
-+++ b/drivers/scsi/st.c
-@@ -3829,7 +3829,7 @@ static long st_ioctl(struct file *file, unsigned int cmd_in, unsigned long arg)
- 		break;
- 	}
- 
--	retval = scsi_ioctl(STp->device, NULL, file->f_mode, cmd_in, p);
-+	retval = scsi_ioctl(STp->device, file->f_mode, cmd_in, p);
- 	if (!retval && cmd_in == SCSI_IOCTL_STOP_UNIT) {
- 		/* unload */
- 		STp->rew_at_close = 0;
-diff --git a/include/scsi/scsi_ioctl.h b/include/scsi/scsi_ioctl.h
-index d2cb9aeaf1f16..beac64e38b874 100644
---- a/include/scsi/scsi_ioctl.h
-+++ b/include/scsi/scsi_ioctl.h
-@@ -45,8 +45,8 @@ typedef struct scsi_fctargaddress {
- 
- int scsi_ioctl_block_when_processing_errors(struct scsi_device *sdev,
- 		int cmd, bool ndelay);
--int scsi_ioctl(struct scsi_device *sdev, struct gendisk *disk, fmode_t mode,
--		int cmd, void __user *arg);
-+int scsi_ioctl(struct scsi_device *sdev, fmode_t mode, int cmd,
-+		void __user *arg);
- int get_sg_io_hdr(struct sg_io_hdr *hdr, const void __user *argp);
- int put_sg_io_hdr(const struct sg_io_hdr *hdr, void __user *argp);
- bool scsi_cmd_allowed(unsigned char *cmd, fmode_t mode);
--- 
-2.30.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdcOobCwKCj4gPiAgNS4gVGhlIGFib3ZlIGNhdXNlcyB0aGUgZHJpdmVyIHRvIHJlY2Vp
+dmUgMjA0OCBieXRlcyBvZiBkYXRhIGZvciBhIHBhZ2UKPiA+ICAgICB3cml0ZSBpbiByYXcgbW9k
+ZSwgd2hpY2ggcmVzdWx0cyBpbiBhbiBlcnJvciB0aGF0IHByb3BhZ2F0ZXMgYWxsIHRoZQo+ID4g
+ICAgIHdheSB1cCB0byBtdGRjaGFyX3dyaXRlX2lvY3RsKCkuCj4gCj4gVGhpcyBpcyBkZWZpbml0
+ZWx5IGZhciBmcm9tIGFuIGV4cGVjdGVkIGJlaGF2aW9yLiBXcml0aW5nIGEgcGFnZQo+IHdpdGhv
+dXQgT09CIGlzIGNvbXBsZXRlbHkgZmluZS4KCkNvdWxkIGl0IGJlIGEgbmFuZHNpbSBxdWlyaz8g
+IFNvcnJ5LCBJIGRvIG5vdCBmZWVsIHF1YWxpZmllZCBlbm91Z2ggdG8KY29tbWVudCBvbiB0aGlz
+LiAgSSBwcmVwYXJlZCBhIGNvZGUgZmxvdyBhbmFseXNpcyBiZWxvdywgdGhvdWdoLgoKPiA+IFRo
+ZSBuYW5kc2ltIGRyaXZlciByZXR1cm5zIHRoZSBzYW1lIGVycm9yIGlmIHlvdSBwYXNzIHRoZSBm
+b2xsb3dpbmcKPiA+IHJlcXVlc3QgdG8gdGhlIE1FTVdSSVRFIGlvY3RsOgo+ID4gCj4gPiAgICAg
+c3RydWN0IG10ZF93cml0ZV9yZXEgcmVxID0gewo+ID4gICAgICAgICAuc3RhcnQgPSAyMDQ4LAo+
+ID4gICAgICAgICAubGVuID0gMjA0OCwKPiA+ICAgICAgICAgLm9vYmxlbiA9IDAsCj4gPiAgICAg
+ICAgIC51c3JfZGF0YSA9IDB4MTAwMDAwMDAsCj4gPiAgICAgICAgIC51c3Jfb29iID0gTlVMTCwK
+PiA+ICAgICAgICAgLm1vZGUgPSBNVERfT1BTX1JBVywKPiA+ICAgICB9Owo+ID4gCj4gPiBzbyBp
+dCBpcyBub3QgdGhlIGRyaXZlciB0aGF0IGlzIGJyb2tlbiBvciBpbnNhbmUsIGl0IGlzIHRoZSBz
+cGxpdHRpbmcKPiA+IHByb2Nlc3MgdGhhdCBtYXkgY2F1c2UgdGhlIE1FTVdSSVRFIGlvY3RsIHRv
+IHJldHVybiBkaWZmZXJlbnQgZXJyb3IKPiA+IGNvZGVzIHRoYW4gYmVmb3JlLgo+ID4gCj4gPiBJ
+IHBsYXllZCB3aXRoIHRoZSBjb2RlIGEgYml0IG1vcmUgYW5kIEkgZm91bmQgYSBmaXggd2hpY2gg
+YWRkcmVzc2VzIHRoaXMKPiA+IGlzc3VlIHdpdGhvdXQgYnJlYWtpbmcgb3RoZXIgc2NlbmFyaW9z
+OiBzZXR0aW5nIG9vYmJ1ZiB0byB0aGUgc2FtZQo+ID4gcG9pbnRlciBmb3IgZXZlcnkgbG9vcCBp
+dGVyYXRpb24gKGlmIG9vYmxlbiBpcyAwLCBubyBPT0IgZGF0YSB3aWxsIGJlCj4gPiB3cml0dGVu
+IGFueXdheSkuCj4gCj4gWW91IG1lYW4gdGhhdAo+IAl7IC51c2VyX29vYiA9IE5VTEwsIC5vb2Js
+ZW4gPSAwIH0KPiBmYWlscywgd2hpbGUKPiAJeyAudXNlcl9vb2IgPSByYW5kb20sIC5vb2JsZW4g
+PSAwIH0KPiB3b3Jrcz8gVGhpcyBzZWVtcyBhIGxpdHRsZSBiaXQgZnJhZ2lsZS4KClRoYXQgaXMg
+aW5kZWVkIHRoZSBiZWhhdmlvciBJIGFtIG9ic2VydmluZyB3aXRoIG5hbmRzaW0sIGV2ZW4gb24g
+YQprZXJuZWwgd2hpY2ggZG9lcyBub3QgaW5jbHVkZSBteSBwYXRjaC4KCj4gQ291bGQgeW91IHRl
+bGwgdXMgdGhlIG9yaWdpbiBvZiB0aGUgZXJyb3I/IEJlY2F1c2UgaW4KPiBuYW5kX2RvX3dyaXRl
+X29wcygpIGlmIG9wcy0+b29iYnVmIGlzIHBvcHVsYXRlZCB0aGVuIG9vYl9yZXF1aXJlZCBpcwo+
+IHNldCB0byB0cnVlIG5vIG1hdHRlciB0aGUgdmFsdWUgc2V0IGluIG9vYmxlbi4KCkNvcnJlY3Qg
+LSBhbmQgdGhhdCBpcyB3aGF0IGNhdXNlcyB0aGUgYmVoYXZpb3IgZGVzY3JpYmVkIGFib3ZlIChh
+bmQgd2h5CnRoZSB0d2VhayBJIGNhbWUgdXAgd2l0aCB3b3JrcyBhcm91bmQgdGhlIHByb2JsZW0p
+LgoKbmFuZF9kb193cml0ZV9vcHMoKSBjYWxscyBuYW5kX3dyaXRlX3BhZ2UoKSB3aXRoICdvb2Jf
+cmVxdWlyZWQnIHBhc3NlZAphcyB0aGUgZmlmdGggcGFyYW1ldGVyLiAgSW4gcmF3IG1vZGUsIG5h
+bmRfd3JpdGVfcGFnZSgpIGNhbGxzCm5hbmRfd3JpdGVfcGFnZV9yYXcoKS4gIEhlcmUgaXMgd2hh
+dCBoYXBwZW5zIHRoZXJlOgoKIDEuIG5hbmRfcHJvZ19wYWdlX2JlZ2luX29wKCkgc2V0cyB1cCBh
+IHBhZ2UgcHJvZ3JhbW1pbmcgb3BlcmF0aW9uIGJ5CiAgICBzZW5kaW5nIGEgZmV3IGNvbW1hbmRz
+IHRvIHRoZSBjaGlwLiAgU2VlIG5hbmRfZXhlY19wcm9nX3BhZ2Vfb3AoKQogICAgZm9yIGRldGFp
+bHMuICBOb3RlIHRoYXQgc2luY2UgdGhlICdwcm9nJyBwYXJhbWV0ZXIgaXMgc2V0IHRvIGZhbHNl
+LAogICAgdGhlIGxhc3QgdHdvIGluc3RydWN0aW9ucyBmcm9tIHRoZSAnaW5zdHJzJyBhcnJheSBh
+cmUgbm90IHJ1biB5ZXQuCgogMi4gJ29vYl9yZXF1aXJlZCcgaXMgY2hlY2tlZC4gIElmIGl0IGlz
+IHNldCB0byAxLCBPT0IgZGF0YSBpcyBzZW50IHRvCiAgICB0aGUgY2hpcDsgb3RoZXJ3aXNlLCBp
+dCBpcyBub3Qgc2VudC4KCiAzLiBuYW5kX3Byb2dfcGFnZV9lbmRfb3AoKSBpcyBjYWxsZWQgdG8g
+ZmluaXNoIHRoZSBwcm9ncmFtbWluZwogICAgb3BlcmF0aW9uLgoKQXQgdGhhdCBwb2ludCwgdGhl
+IEFDVElPTl9QUkdQQUdFIHN3aXRjaCBjYXNlIGluIG5zX2RvX3N0YXRlX2FjdGlvbigpCihpbiBk
+cml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kc2ltLmMpIGNoZWNrcyB3aGV0aGVyIHRoZSBudW1iZXIg
+b2YgYnl0ZXMKaXQgcmVjZWl2ZWQgc28gZmFyIGZvciB0aGlzIG9wZXJhdGlvbiAobnMtPnJlZ3Mu
+Y291bnQsIHVwZGF0ZWQgYnkKbnNfbmFuZF93cml0ZV9idWYoKSBhcyBkYXRhIGlzIHB1c2hlZCB0
+byB0aGUgY2hpcCkgZXF1YWxzIHRoZSBudW1iZXIgb2YKYnl0ZXMgaW4gYSBmdWxsIHBhZ2Ugd2l0
+aCBPT0IgZGF0YSAobnVtKS4gIElmIG5vdCwgYW4gZXJyb3IgaXMgcmV0dXJuZWQsCndoaWNoIHJl
+c3VsdHMgaW4gdGhlIE5BTkRfU1RBVFVTX0ZBSUwgZmxhZyBiZWluZyBzZXQgaW4gdGhlIHN0YXR1
+cyBieXRlLAp0cmlnZ2VyaW5nIGFuIC1FSU8uCgpUaGlzIGRvZXMgbm90IGhhcHBlbiBmb3IgYW55
+IG90aGVyIE1URCBvcGVyYXRpb24gbW9kZSBiZWNhdXNlIHRoZSBjaGlwCmNhbGxiYWNrcyB0aGF0
+IG5hbmRfd3JpdGVfcGFnZSgpIGludm9rZXMgaW4gdGhvc2Ugb3RoZXIgbW9kZXMgY2F1c2UgT09C
+CmRhdGEgdG8gYmUgc2VudCB0byB0aGUgY2hpcC4KCj4gUGx1cywgdGhlIGNvZGUgaW4gbXRkY2hh
+ciBpcyBjbGVhcjogLm9vYmJ1ZiBpcyBzZXQgdG8gTlVMTCBpZiB0aGVyZSBhcmUKPiBubyBPT0Jz
+IHByb3ZpZGVkIGJ5IHRoZSB1c2VyIHNvIEkgYmVsaWV2ZSB0aGlzIGlzIGEgc2l0dWF0aW9uIHRo
+YXQKPiBzaG91bGQgYWxyZWFkeSB3b3JrLiAKCkNvcnJlY3QsIHRob3VnaCBjdXJyZW50IG10ZGNo
+YXJfd3JpdGVfaW9jdGwoKSBjb2RlIG9ubHkgbG9va3MgYXQgdGhlCnZhbHVlIG9mIHRoZSAndXNy
+X29vYicgZmllbGQgaW4gdGhlIHN0cnVjdCBtdGRfd3JpdGVfcmVxIHBhc3NlZCB0byBpdCwKc28g
+ZXZlbiBpZiB5b3UgcGFzcyB7IC51c3Jfb29iID0gPHNvbWV0aGluZyBub24tTlVMTD4sIC5vb2Js
+ZW4gPSAwIH0sIGl0CndpbGwgc3RpbGwgc2V0IG9wcy5vb2JidWYgdG8gdGhlIHBvaW50ZXIgcmV0
+dXJuZWQgYnkgbWVtZHVwX3VzZXIoKS4KCi0tIApCZXN0IHJlZ2FyZHMsCk1pY2hhxYIgS8SZcGll
+xYQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
