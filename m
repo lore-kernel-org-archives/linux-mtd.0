@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB5A2C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 11:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E87C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 11:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LpSUXCXr9Zbh2R9xeUo228gJzZZGpU4IUIozUmBI9BU=; b=367vCrM8uPYxvz
-	L83WIbohlh0LDSdzPDnqLbLyAs9anP50+OxG0SC8eJVXSiaWGGxSKa4DSsnPtVJ/thdXfhGG7J/oF
-	wpaf9FsZHNlotNMXP8YwcFF+5hQL8RJdg277HLqpZGRlh8YYxOJp7cqwUNvuLmfaG8Jk6/CsPIcZt
-	yS2/qWb/Ke7Vd7aPvjVITFbRVN1pObYqgprKFg8LOBcp/xeSvoiOoWQBJzEg2RnYKtKkR9CMzi/13
-	M3F+0IHktWK+OdJG4uYeoQjoAc4BcMU0tfh0/FUxb1gCM+03JxGv3VvoqarerM5oQusDqQoI81qxK
-	D2Eb6qt4R82woti84CVQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SpHoUGqB9/lPgfCQ9Tg61/AQlQVRwDqxQH+Y6UwoMhA=; b=psVV1e/+4DqZDZ
+	A+t9fjMlBcscLvAKDo3Zzzy+/HFatMfNEOmZxYBR3EHPO7hDsxMQJnt9CRu+9DKeIo/JRVCh6cp/V
+	rltybnU3CljtByw6Npe4GJ58JhP7dSoR2PWMdXOEVQX2itfQatiGYMDwbHlU8YtfVbtDkXOZ92NBl
+	z+vlfb1oOBrz8zCrgH04rN6wbGiotp7inrPou/RDtXtWPvhiWNG4cdjJTmaz+wcEBrxVC932Dgasa
+	ny5/l7P2ni1r0aJaKs4r0kBCnvCy8iRBo6rmxCKYFmSAYNOWMyoT5AHn8Wd8FyN0sREOJZN9y+KUX
+	WlSrSydrQzb8PjgYY+5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqZa1-00ABFc-Bb; Fri, 26 Nov 2021 11:39:49 +0000
+	id 1mqZaH-00ABKs-S9; Fri, 26 Nov 2021 11:40:05 +0000
 Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqZZk-00AB8e-Au
- for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 11:39:34 +0000
+ id 1mqZZk-00AB8w-VX
+ for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 11:39:35 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 01197FF812;
- Fri, 26 Nov 2021 11:39:24 +0000 (UTC)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 06DDBFF80F;
+ Fri, 26 Nov 2021 11:39:29 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,15 +39,18 @@ Cc: Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <bbrezillon@kernel.org>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 00/20] External ECC engines & Macronix support
-Date: Fri, 26 Nov 2021 12:39:04 +0100
-Message-Id: <20211126113924.310459-1-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 02/20] dt-bindings: mtd: nand-controller: Fix a comment in
+ the examples
+Date: Fri, 26 Nov 2021 12:39:06 +0100
+Message-Id: <20211126113924.310459-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211126113924.310459-1-miquel.raynal@bootlin.com>
+References: <20211126113924.310459-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211126_033932_675166_6E72A279 
-X-CRM114-Status: GOOD (  18.24  )
+X-CRM114-CacheID: sfid-20211126_033933_168675_B8CA2E15 
+X-CRM114-Status: GOOD (  11.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -59,96 +62,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CkhlbGxvIGFsbCwKClRoaXMgc2VyaWVzIGlzIG5vdyBzdGFibGUgYW5kIGJyaW5ncyBzdXBwb3J0
-IGZvciBleHRlcm5hbC9tb2R1bGFyIEVDQwplbmdpbmVzLCBhbmQgbGV0IFNQSSBjb250cm9sbGVy
-IHVzaW5nIHRoZSBFQ0MgZnJhbWV3b3JrLgoKQXMgYSBmaXJzdCBleGFtcGxlLCBNYWNyb25peCBF
-Q0MgZW5naW5lIGNhbiBiZSB1c2VkIGFzIGFuCmV4dGVybmFsIGVuZ2luZSAodGFrZXMgdGhlIGRh
-dGEsIHByb2NlZWRzIHRvIHRoZSBjYWxjdWxhdGlvbnMsIHdyaXRlcwpiYWNrIHRoZSBFQ0MgYnl0
-ZXMpIG9yIGFzIGEgcGlwZWxpbmVkIGVuZ2luZSBkb2luZyBvbi10aGUtZmx5CmNhbGN1bGF0aW9u
-cyAod2hpY2ggaXMgdmVyeSBjb21tb24gaW4gdGhlIHJhdyBOQU5EIHdvcmxkKS4KCkluIHRoZSBk
-ZXZpY2UgdHJlZSwgdGhlIEVDQyBlbmdpbmUgc2hvdWxkIGJlIGRlc2NyaWJlZCBhcyBhIHNlcGFy
-YXRlZCBEVApub2RlLiBUaGVuOgoqIGV4dGVybmFsIGNhc2U6IHRoZSBmbGFzaCBub2RlIHNob3Vs
-ZCBwcm92aWRlIGEgbmFuZC1lY2MtZW5naW5lCiAgcHJvcGVydHkgcG9pbnRpbmcgdG8gdGhlIEVD
-QyBlbmdpbmUgbm9kZS4KKiBwaXBlbGluZWQgY2FzZTogdGhlIGZsYXNoIG5vZGUgc2hvdWxkIHBy
-b3ZpZGUgYSBuYW5kLWVjYy1lbmdpbmUKICBwcm9wZXJ0eSBwb2ludGluZyB0byB0aGUgU1BJIGNv
-bnRyb2xsZXIsIGl0c2VsZiB3aXRoIGFub3RoZXIKICBuYW5kLWVjYy1lbmdpbmUgcHJvcGVydHkg
-cG9pbnRpbmcgYXQgdGhlIEVDQyBlbmdpbmUgbm9kZS4KClRoaXMgc2VyaWVzIGNvbWVzIHdpdGgg
-YSBidW5jaCBvZiBpbXByb3ZlbWVudHMgb24gdGhlIGJpbmRpbmcgc2lkZSBhcwp3ZWxsLgoKQ2hl
-ZXJzLApNaXF1w6hsCgpDaGFuZ2VzIGluIHYyOgoqIEZpeGVkIHRoZSBiaW5kaW5ncyBhbmQgYWRk
-ZWQgUm9iJ3MgYWNrcyB3aGVuIHJlbGV2YW50LgoqIEFkZGVkIGxvY2tpbmcgaW4gdGhlIEVDQyBl
-bmdpbmUgZHJpdmVyLgoqIEJyb3VnaHQgbW9yZSBjaGFuZ2VzIGluIHRoZSBjb3JlIGluIG9yZGVy
-IHRvIGJyaW5nIHRoZSBFQ0MgaW5mb3JtYXRpb24KICBpbnRvIHRoZSBzcGlfbWVtX29wIHN0cnVj
-dHVyZSB3aXRoIHRoZSBpZGVhIG9mIGF2b2lkaW5nIGFueSByYWNlcwogIGJldHdlZW4gcGFyYWxs
-ZWwgY2FsbHMgb24gdGhlIHNhbWUgZW5naW5lLgoqIFJlb3JnYW5pemVkIHRoZSBFQ0MgZHJpdmVy
-IGVudGlyZWx5IGluIG9yZGVyIHRvIGhhdmUgYSBwZXItZW5naW5lIG14aWMKICBzdHJ1Y3R1cmUg
-cGx1cyBhIHBlci1OQU5EIGNvbnRleHQuIFRoaXMgbGVhZCB0byBhIG51bWJlciBvZiBjaGFuZ2Vz
-CiAgaW50ZXJuYWxseSB3aGljaCBjYW5ub3QgYWxsIGJlIGxpc3RlZC4KCkNoYW5nZXMgc2luY2Ug
-dGhlIFJGQzoKKiBSZWJhc2VkIG9uIHRvcCBvZiB2NS4xNS1yYzEuCiogRml4ZWQgdGhlIGRpcm1h
-cCBjb25maWd1cmF0aW9uLgoqIEFkZGVkIHRoZSB2YXJpb3VzIHRhZ3MgcmVjZWl2ZWQuCiogRml4
-ZWQgdGhlIGJpbmRpbmdzIGFzIHJlcG9ydGVkIGJ5IHRoZSByb2JvdHMuCiogRml4ZWQgdGhlIHJl
-dHVybiB2YWx1ZSBvZiB0aGUgaGVscGVyIGNvdW50aW5nIGJpdGZsaXBzLgoqIEluY2x1ZGVkIGEg
-Zml4IGZyb20gSmFpbWUgTGlhbyBpbiB0aGUgZXh0ZXJuYWwgcGF0dGVybiBsb2dpYy4KKiBBZGRl
-ZCB0aGUgeWFtbCBjb252ZXJzaW9uIG9mIE1hY3Jvbml4IFNQSSBjb250cm9sbGVyIGRlc2NyaXB0
-aW9uLgoqIEFkZGVkIHRoZSB5YW1sIGNvbnZlcnNpb24gb2YgdGhlIFNQSS1OQU5EIGRlc2NyaXB0
-aW9uLgoqIENyZWF0ZWQgYSBuYW5kLWNoaXAueWFtbCBmaWxlIHRvIHNoYXJlIHByb3BlcnRpZXMg
-YmV0d2VlbiBTUEktTkFORCBhbmQKICByYXcgTkFORC4KCk1hc29uIFlhbmcgKDEpOgogIG10ZDog
-c3BpbmFuZDogbWFjcm9uaXg6IFVzZSByYW5kb20gcHJvZ3JhbSBsb2FkCgpNaXF1ZWwgUmF5bmFs
-ICgxOSk6CiAgZHQtYmluZGluZ3M6IG10ZDogbmFuZC1jb250cm9sbGVyOiBGaXggdGhlIHJlZyBw
-cm9wZXJ0eSBkZXNjcmlwdGlvbgogIGR0LWJpbmRpbmdzOiBtdGQ6IG5hbmQtY29udHJvbGxlcjog
-Rml4IGEgY29tbWVudCBpbiB0aGUgZXhhbXBsZXMKICBkdC1iaW5kaW5nczogbXRkOiBuYW5kLWNo
-aXA6IENyZWF0ZSBhIE5BTkQgY2hpcCBkZXNjcmlwdGlvbgogIGR0LWJpbmRpbmdzOiBtdGQ6IHNw
-aS1uYW5kOiBDb252ZXJ0IHNwaS1uYW5kIGRlc2NyaXB0aW9uIGZpbGUgdG8geWFtbAogIGR0LWJp
-bmRpbmdzOiB2ZW5kb3ItcHJlZml4ZXM6IENsYXJpZnkgTWFjcm9uaXggcHJlZml4CiAgZHQtYmlu
-ZGluZ3M6IHNwaTogbXhpYzogVGhlIGludGVycnVwdCBwcm9wZXJ0eSBpcyBub3QgbWFuZGF0b3J5
-CiAgZHQtYmluZGluZ3M6IHNwaTogbXhpYzogQ29udmVydCB0byB5YW1sCiAgZHQtYmluZGluZ3M6
-IHNwaTogbXhpYzogRG9jdW1lbnQgdGhlIG5hbmQtZWNjLWVuZ2luZSBwcm9wZXJ0eQogIGR0LWJp
-bmRpbmdzOiBtdGQ6IERlc2NyaWJlIE1hY3Jvbml4IE5BTkQgRUNDIGVuZ2luZQogIG10ZDogbmFu
-ZDogZWNjOiBBZGQgaW5mcmFzdHJ1Y3R1cmUgdG8gc3VwcG9ydCBoYXJkd2FyZSBlbmdpbmVzCiAg
-bXRkOiBuYW5kOiBBZGQgYSBuZXcgaGVscGVyIHRvIHJldHJpZXZlIHRoZSBFQ0MgY29udGV4dAog
-IG10ZDogbmFuZDogbXhpYy1lY2M6IEFkZCBNYWNyb25peCBleHRlcm5hbCBFQ0MgZW5naW5lIHN1
-cHBvcnQKICBtdGQ6IG5hbmQ6IG14aWMtZWNjOiBTdXBwb3J0IFNQSSBwaXBlbGluZWQgbW9kZQog
-IG10ZDogc3BpbmFuZDogQ3JlYXRlIGRpcmVjdCBtYXBwaW5nIGRlc2NyaXB0b3JzIGZvciBFQ0Mg
-b3BlcmF0aW9ucwogIHNwaTogbXhpYzogRml4IHRoZSB0cmFuc21pdCBwYXRoCiAgc3BpOiBteGlj
-OiBDcmVhdGUgYSBoZWxwZXIgdG8gY29uZmlndXJlIHRoZSBjb250cm9sbGVyIGJlZm9yZSBhbgog
-ICAgb3BlcmF0aW9uCiAgc3BpOiBteGljOiBDcmVhdGUgYSBoZWxwZXIgdG8gZWFzZSB0aGUgc3Rh
-cnQgb2YgYW4gb3BlcmF0aW9uCiAgc3BpOiBteGljOiBBZGQgc3VwcG9ydCBmb3IgZGlyZWN0IG1h
-cHBpbmcKICBzcGk6IG14aWM6IEFkZCBzdXBwb3J0IGZvciBwaXBlbGluZWQgRUNDIG9wZXJhdGlv
-bnMKCiAuLi4vYmluZGluZ3MvbXRkL214aWN5LG5hbmQtZWNjLWVuZ2luZS55YW1sICAgfCAgNzcg
-KysKIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLWNoaXAueWFtbCAgICB8ICA3MSAr
-KwogLi4uL2JpbmRpbmdzL210ZC9uYW5kLWNvbnRyb2xsZXIueWFtbCAgICAgICAgIHwgIDU3ICst
-CiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0ICAgICAgfCAgIDUgLQog
-Li4uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3NwaS1uYW5kLnlhbWwgICAgIHwgIDI3ICsKIC4u
-Li9iaW5kaW5ncy9zcGkvbXhpY3ksbXgyNWYwYS1zcGkueWFtbCAgICAgICB8ICA2NiArKwogLi4u
-L2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1teGljLnR4dCAgICAgIHwgIDM0IC0KIC4uLi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy55YW1sICB8ICAgMyArCiBkcml2ZXJz
-L210ZC9uYW5kL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKwogZHJpdmVycy9t
-dGQvbmFuZC9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKIGRyaXZlcnMvbXRk
-L25hbmQvY29yZS5jICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArLQogZHJpdmVycy9tdGQv
-bmFuZC9lY2MtbXhpYy5jICAgICAgICAgICAgICAgICAgIHwgOTAxICsrKysrKysrKysrKysrKysr
-KwogZHJpdmVycy9tdGQvbmFuZC9lY2MuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgIDg4ICsr
-CiBkcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgICAgICAgICAgICAgICAgICAgfCAgMjggKy0K
-IGRyaXZlcnMvbXRkL25hbmQvc3BpL21hY3Jvbml4LmMgICAgICAgICAgICAgICB8ICAgMiArLQog
-ZHJpdmVycy9zcGkvc3BpLW14aWMuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgMzI2ICsrKysr
-Ky0KIGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLW14aWMuaCAgICAgICAgICAgICB8ICA1MCAr
-CiBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLmggICAgICAgICAgICAgICAgICAgICAgfCAgMzMgKwog
-aW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oICAgICAgICAgICAgICAgICAgIHwgICAyICsKIGlu
-Y2x1ZGUvbGludXgvc3BpL3NwaS1tZW0uaCAgICAgICAgICAgICAgICAgICB8ICAgMyArCiAyMCBm
-aWxlcyBjaGFuZ2VkLCAxNjQyIGluc2VydGlvbnMoKyksIDE0OCBkZWxldGlvbnMoLSkKIGNyZWF0
-ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL214aWN5
-LG5hbmQtZWNjLWVuZ2luZS55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLWNoaXAueWFtbAogZGVsZXRlIG1vZGUgMTAwNjQ0
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvc3BpLW5hbmQudHh0CiBjcmVh
-dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9zcGkt
-bmFuZC55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3NwaS9teGljeSxteDI1ZjBhLXNwaS55YW1sCiBkZWxldGUgbW9kZSAxMDA2NDQgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktbXhpYy50eHQKIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL2VjYy1teGljLmMKIGNyZWF0ZSBtb2RlIDEwMDY0
-NCBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLWVjYy1teGljLmgKCi0tIAoyLjI3LjAKCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The controller properties should be in the controller 'parent' node,
+while properties in the children nodes are specific to the NAND
+*chip*. This error was already present during the yaml conversion.
+
+Fixes: 2d472aba15ff ("mtd: nand: document the NAND controller/NAND chip DT representation")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/nand-controller.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+index 811f03978fc6..5cd144a9ec99 100644
+--- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
++++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+@@ -184,7 +184,7 @@ examples:
+         nand-use-soft-ecc-engine;
+         nand-ecc-algo = "bch";
+ 
+-        /* controller specific properties */
++        /* NAND chip specific properties */
+       };
+ 
+       nand@1 {
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
