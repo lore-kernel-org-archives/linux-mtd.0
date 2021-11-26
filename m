@@ -4,85 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E4AEC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 12:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40B99C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 12:29:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qXGquD998At+PQkhg8YUYBOkrFzCoZwaL8ovRovAxHg=; b=vOR1k4ounYe1W+
-	k5VLLzHgbXnrNCj9Ely37FwEV2rjGe5AQuv+ENe/w5XpIMmrjhev4yubUukft7FkDd98iqKMk8rok
-	c22LL3siQSW9bwNwv2krJcXOod6gADT4Bwdh7+LZwtwBORH7uXTd87TxeC+svsXnwcDZsI6Nad2VK
-	cPfPM3B1FzoaFPWFPm9h2qn/OLpjqUq68J7oWneehJemiK0XwFAK6N+MDsN8NAOmXk4nTRkCW60zz
-	25c5aZ3mct9/e+mzxNEwnswqD1ANVgzFh5r5HN5mD60oCwekZHbKNgAnZBc4iGvIsXQy0BetgeYQt
-	596mD518cKkh4hlZh7yg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=hlgGiofH3CGQfgt+aUzO8mmg+KfmPk/EDetBHvR3XaE=; b=l9G1c1Xz9ABzsY
+	Q+Anu28CxQ9nEuNunzH2uyERdpRzh/BRl5z8SmUV62hHer5cUFmBwr4tpf1zn0dJ5edoE9XeDrWjo
+	Z3Y0RrdUonozJurBfffdbaI2sGq5LZqv+x+AJzk3mw8VMoLj09kVY3eNwP191l92mGFXYvuSxLX3a
+	AOSfgrhjRdC2l98txA7dzWqqYv20itsW/lYVtS4E11yT+B2iSb4xb3umG4uR9GYjbhG+uKLN5S7Ut
+	7Wjqug2UE6bp8Lu0EF9OL9DPJ//NdODAPBTrtBehpMtmaXdux10Z+kIrhyDojL2i+s6bZwjTsGU8L
+	4mMKuIjTdEHcRkqYu4Vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqa9l-00AJwS-Rr; Fri, 26 Nov 2021 12:16:46 +0000
-Received: from mail-vk1-f176.google.com ([209.85.221.176])
+	id 1mqaKv-00AN4u-2U; Fri, 26 Nov 2021 12:28:17 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqZnO-00AEx3-HM; Fri, 26 Nov 2021 11:53:40 +0000
-Received: by mail-vk1-f176.google.com with SMTP id j1so5801506vkr.1;
- Fri, 26 Nov 2021 03:53:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=7Vr6LQRx/2btwNNMMTPm/WQ+WFiCgvUsdZ5S4F38wac=;
- b=AawbN6+JTu+hnaPdpLXdhRIkzyiyV5wwdFkPhoQ/N0/bknrq0ne48mlQb8NrW63MpL
- xNwLag1k8kU2uvFtrM++RVV8kCFLBSUklcWFhlnmv3/aCLFtwrCoxfqaV4RNMKEo0G1s
- 7nWvjOnX5NfXJdENkMy+ZzZoMjQrpRbLeL7wabmZTo35hfqUzHNd4G7GqIBw4YdQWobU
- ThZzmtshQGXLjGwjcvFBVAdsVYxXkhHkzlWEEaJoeKP74DV4/NHTZkw8JBFDiceLwy8W
- JCGdpZ8iaGwIkuxZ+2tbkR5+ySZpeGKsnmMBQpPYC04UBhvbu3HL/nS2UvaeCjicWScM
- p7Fg==
-X-Gm-Message-State: AOAM5317aVxgOwrJlt1pQLd4aRyY8VV1/gX3r4gVb4l0/D02+ewOqafI
- Es6xDann01w77tq6QQ/sS5RYJIHlvpHx2Q==
-X-Google-Smtp-Source: ABdhPJxU8XMMiiI1Ts9CZeVQzulEsGUJpcCrAdnqBWKZ/6KcxRTaSaDcYqCOatO7dkaZFcDQIwXmFA==
-X-Received: by 2002:a05:6122:2158:: with SMTP id
- m24mr18809027vkd.1.1637927617332; 
- Fri, 26 Nov 2021 03:53:37 -0800 (PST)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com.
- [209.85.222.53])
- by smtp.gmail.com with ESMTPSA id c9sm3825539uaf.12.2021.11.26.03.53.35
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 26 Nov 2021 03:53:35 -0800 (PST)
-Received: by mail-ua1-f53.google.com with SMTP id l24so18111128uak.2;
- Fri, 26 Nov 2021 03:53:35 -0800 (PST)
-X-Received: by 2002:a05:6102:3ed4:: with SMTP id
- n20mr16273698vsv.57.1637927615195; 
- Fri, 26 Nov 2021 03:53:35 -0800 (PST)
+ id 1mqaB6-00AKHA-FN
+ for linux-mtd@bombadil.infradead.org; Fri, 26 Nov 2021 12:18:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=Xa7hqASrrdIfGtS8qaD3qdcF3OYpNGlFpwwMebmiLrE=; b=fI5pv/RH+6N3RO2WI1bmtIPlGd
+ ZDq9FMvDyvuuFP6RO8GNEx5tLSQOdgcaQOmIJTmOPzJOrWsEulis4zqVUMb9Knf9cOgsuRq/N+4we
+ evxfnOe51eFgOs3Dbc14pfx5WKzfG5BhTvCHWnfQtf5iLYJulF1XgIGzoIN9HCGK9jaylpfwhCIxG
+ 2+r2DF2WZEe9UGELBF5Z+RntIJokJnxfVpmAEK132BPGg9K00G2ZRwXNvDEgwMNUtpIeE1i9hk/mM
+ RzBrQ67t9P27ZWVW95iHz6mDsmIyO1OuJb3APm1kNtPx/XMW324YzOii54uuTWMvBB2A7wUJ11dfM
+ huamnjTw==;
+Received: from [2001:4bb8:191:f9ce:bae8:5658:102a:5491] (helo=localhost)
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mqaB1-00AWFm-0W; Fri, 26 Nov 2021 12:18:03 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-block@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-scsi@vger.kernel.org
+Subject: remove ->rq_disk v2
+Date: Fri, 26 Nov 2021 13:17:57 +0100
+Message-Id: <20211126121802.2090656-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211118111940.1275351-1-miquel.raynal@bootlin.com>
- <20211118111940.1275351-2-miquel.raynal@bootlin.com>
- <CAMuHMdXi0PPXjH_hHxO1-Lz9fupe4oo936ENe9DzMW8Sb1G6mg@mail.gmail.com>
- <20211119101907.2ce429e6@xps13>
- <CAMuHMdU_uJv2dUk21DKJnLSUErhvObOb1wJOZTqv_UXZ0edRBQ@mail.gmail.com>
- <20211126124649.498366ee@xps13>
-In-Reply-To: <20211126124649.498366ee@xps13>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 26 Nov 2021 12:53:23 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX74Lj4Jy8Wpmy3Qze36knV5btGEa0O8Y0BjH4m51_D8w@mail.gmail.com>
-Message-ID: <CAMuHMdX74Lj4Jy8Wpmy3Qze36knV5btGEa0O8Y0BjH4m51_D8w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: mtd: rzn1: Describe Renesas RZ/N1 NAND
- controller
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>,
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Jimmy Lalande <jimmy.lalande@se.com>, 
- Milan Stevanovic <milan.stevanovic@se.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>, 
- Gareth Williams <gareth.williams.jx@renesas.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211126_035338_622398_8743A404 
-X-CRM114-Status: GOOD (  35.13  )
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ casper.infradead.org. See http://www.infradead.org/rpr.html
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,80 +68,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Hi Jens,
 
-On Fri, Nov 26, 2021 at 12:46 PM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> geert@linux-m68k.org wrote on Fri, 19 Nov 2021 10:36:16 +0100:
-> > On Fri, Nov 19, 2021 at 10:19 AM Miquel Raynal
-> > <miquel.raynal@bootlin.com> wrote:
-> > > geert@linux-m68k.org wrote on Fri, 19 Nov 2021 09:41:35 +0100:
-> > > > On Thu, Nov 18, 2021 at 12:19 PM Miquel Raynal
-> > > > <miquel.raynal@bootlin.com> wrote:
-> > > > > Add a Yaml description for this Renesas NAND controller bindings.
-> > > > >
-> > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> >
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/mtd/renesas,r9a06g032-nand-controller.yaml
-> > > > > @@ -0,0 +1,60 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/mtd/renesas,r9a06g032-nand-controller.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: Renesas RZ/N1x NAND flash controller device tree bindings
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > > +
-> > > > > +allOf:
-> > > > > +  - $ref: "nand-controller.yaml"
-> > > > > +
-> > > > > +properties:
-> > > > > +  compatible:
-> > > > > +    const: renesas,r9a06g032-nand-controller
-> > > >
-> > > > As the NAND Flash Controller is present on all of RZ/N1D, RZ/N1S,
-> > > > and RZ/N1L, I think you should add a family-specific compatible value
-> > > > "renesas,rzn1-nand-controller" as a fallback.
-> > >
-> > > I see, that's right, I should have added two compatibles.
-> > >
-> > > As there is currently only one 'specific' compatible (r9axxx), should I
-> > > describe the two compatibles as being mandatory? Or should I set the
-> > > most specific one as optional and the least specific one (rzn1)
-> > > mandatory?
-> >
-> > Yes please.
->
-> I am a little bit confused to which answered you said yes.
+this series removes the rq_disk field in struct request, which isn't
+needed now that we can get the disk from the request_queue.
 
-My apologies: yes to making both mandatory.
+Changes since v1:
+ - rebased to the latests for-5.17/block tree
 
-> >  Else you need to match on both in the driver, or we cannot
-> > differentiate later if the need ever arises.
->
-> I believe you meant "yes the two should be described as mandatory in the
-> bindings" (at least for now) so that when the need arises, the most
-> specific one can be replaced with a oneOf choice. Am I right?
-
-Exactly.
-
-You can already use "enum" for the most-specific one, so it's clear where
-to add new lines, and to minimize future changes.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Diffstat:
+ block/blk-flush.c                  |    3 --
+ block/blk-merge.c                  |    7 ------
+ block/blk-mq.c                     |   24 +++++++-------------
+ block/blk.h                        |    2 -
+ block/bsg-lib.c                    |    2 -
+ drivers/block/amiflop.c            |    2 -
+ drivers/block/ataflop.c            |    6 ++---
+ drivers/block/floppy.c             |    6 ++---
+ drivers/block/mtip32xx/mtip32xx.c  |    2 -
+ drivers/block/null_blk/trace.h     |    2 -
+ drivers/block/paride/pcd.c         |    2 -
+ drivers/block/paride/pd.c          |    6 ++---
+ drivers/block/paride/pf.c          |    4 +--
+ drivers/block/pktcdvd.c            |    2 -
+ drivers/block/rnbd/rnbd-clt.c      |    4 +--
+ drivers/block/sunvdc.c             |    2 -
+ drivers/block/sx8.c                |    4 +--
+ drivers/block/virtio_blk.c         |    2 -
+ drivers/md/dm-mpath.c              |    1 
+ drivers/mmc/core/block.c           |   12 +++++-----
+ drivers/mtd/mtd_blkdevs.c          |   10 +-------
+ drivers/nvme/host/core.c           |    4 +--
+ drivers/nvme/host/fault_inject.c   |    2 -
+ drivers/nvme/host/pci.c            |    7 ++----
+ drivers/nvme/host/trace.h          |    6 ++---
+ drivers/nvme/target/passthru.c     |    3 --
+ drivers/scsi/ch.c                  |    2 -
+ drivers/scsi/scsi_bsg.c            |    2 -
+ drivers/scsi/scsi_error.c          |    2 -
+ drivers/scsi/scsi_ioctl.c          |   43 ++++++++++++++-----------------------
+ drivers/scsi/scsi_lib.c            |    5 ++--
+ drivers/scsi/scsi_logging.c        |    4 ++-
+ drivers/scsi/sd.c                  |   26 +++++++++++-----------
+ drivers/scsi/sd_zbc.c              |    8 +++---
+ drivers/scsi/sg.c                  |    6 ++---
+ drivers/scsi/sr.c                  |   11 ++++-----
+ drivers/scsi/st.c                  |    4 +--
+ drivers/scsi/ufs/ufshpb.c          |    4 +--
+ drivers/scsi/virtio_scsi.c         |    2 -
+ drivers/target/target_core_pscsi.c |    2 -
+ drivers/usb/storage/transport.c    |    2 -
+ include/linux/blk-mq.h             |   11 ++-------
+ include/scsi/scsi_cmnd.h           |    2 -
+ include/scsi/scsi_device.h         |    4 +--
+ include/scsi/scsi_ioctl.h          |    4 +--
+ include/trace/events/block.h       |    8 +++---
+ kernel/trace/blktrace.c            |    2 -
+ 47 files changed, 124 insertions(+), 157 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
