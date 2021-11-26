@@ -4,33 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A62B6C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 14:43:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A3C5C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 26 Nov 2021 14:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bGibVihdWqsgwdUKMl9QPyxMLwc1rRO8emP3mV69tmM=; b=uzAFKEKQYDpBkc
-	F6+Pq2dW9mnKi5KTKPjCVs0L9M8NPxj8qjdL7dJAutF+/lNXkqOf5+MkEuMXzI/vw5yj5BYHmzy6f
-	pABKX9hyrPfESWVZI6u07gt1wzRS6Z4iyqWcpIa6cXhoJfXG0HF46Bka/o2UbdeWsOdtd1famh3i7
-	peC34hEZPf2eIQbeoTFxuaraAzMMXiXOXIIt1EeO4VFdzCEU3KDkjj0o36HbiZ+96fhW2VGglr49/
-	Z23b4CdixCjz7aq1n7aNelgaWr4MnFjd3EynvDruqBA+lfqRVOm1HLdY5u/H4HlAMwh+MsnWvxfzV
-	O0MA2yrnnM7D46S6XxUg==;
+	List-Owner; bh=8r36T082fTWPF3uqakWvNlXdWifcUMKqGV2dHg/1PSY=; b=Yl0sGgAfmuMSlS
+	7HA4zVIWaAz5QnAHEPJBCZ8RNk8L13nbf9g+//Y/ZltGgyK163uLF5j/HbTLPhpfmY0UL5qOR3hPD
+	nQlcrmYiO0uAcJFKfSdKMlEI8TYpJIWNsQamPobdpkXtQyVosuzal5RDgAhh+/hMjwKc+sgabjIVh
+	cpmaImSu5icr2C7PTIPaCeGQVoNv1mfD5ixS/5mxq0qsLCQ57QrrHuQLT0iBxTDxiKB/Sqd0HUNv/
+	QDOUOCk1lgJroH+/IyJr7aQH/ACud30EO43Ef0DChs23JQ+pfmpFItZZfzF4UYYcJG1xxJh0H+l3f
+	NjFeGtWj1CwjEKdd5oUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mqcR0-00AoAe-Cq; Fri, 26 Nov 2021 14:42:42 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1mqcVS-00ApF2-FX; Fri, 26 Nov 2021 14:47:18 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mqcQx-00Ao9z-3W
- for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 14:42:41 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id C166A240010;
- Fri, 26 Nov 2021 14:42:23 +0000 (UTC)
-Date: Fri, 26 Nov 2021 15:42:23 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1mqcVQ-00ApDf-4x
+ for linux-mtd@lists.infradead.org; Fri, 26 Nov 2021 14:47:17 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7FD1E1F46510;
+ Fri, 26 Nov 2021 14:47:12 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1637938033; bh=7Hjrs5DDzQftuc72fSu+h83YKub/H8Od0AhrO2w3qFI=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=MzMYC8T7zcflgKsRx6wkSldtw5GI2aIL7VjrcjicLBMdJeVvZAYGCurU6Rbqvfh7T
+ ESx2FCgYo6ECh3C/HQw/59zwz2vLT21ZTshz/2j+hM1IcIdM1XyBGZhkwsl0CuBeGz
+ uvWuO3EYo5jT/3zE8TkvGXo+jV67q+OEZpxKS5BKfkpLnaPasnu0QarpNLMS1yeLL8
+ JMdtEkZL0QCmfkaPPmC4VwTAyTh9UdKCvFYznKNDzN3PoBsd0nVDQ8sllfkYBlau36
+ O5vqySYe1Racfe0EfNMqdawcREl/Y9jYBjn6Fho4DTaSeJ9317mRXUaJQVr7v7FmMI
+ x0Ouh7W9f+G0g==
+Date: Fri, 26 Nov 2021 15:47:06 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
  Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
@@ -42,17 +54,18 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <thomas.petazzoni@bootlin.com>
 Subject: Re: [PATCH v2 15/20] mtd: spinand: Create direct mapping
  descriptors for ECC operations
-Message-ID: <20211126154223.28c71271@xps13>
-In-Reply-To: <20211126151352.3bdd2c1a@collabora.com>
+Message-ID: <20211126154706.2a528e72@collabora.com>
+In-Reply-To: <20211126154223.28c71271@xps13>
 References: <20211126113924.310459-1-miquel.raynal@bootlin.com>
  <20211126113924.310459-16-miquel.raynal@bootlin.com>
  <20211126151352.3bdd2c1a@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20211126154223.28c71271@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211126_064239_448292_91AD2E87 
-X-CRM114-Status: GOOD (  33.04  )
+X-CRM114-CacheID: sfid-20211126_064716_369028_058EB43C 
+X-CRM114-Status: GOOD (  20.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,100 +77,56 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBGcmksIDI2
-IE5vdiAyMDIxIDE1OjEzOjUyICswMTAwOgoKPiBPbiBGcmksIDI2IE5vdiAyMDIxIDEyOjM5OjE5
-ICswMTAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6
-Cj4gCj4gPiBJbiBvcmRlciBmb3IgcGlwZWxpbmVkIEVDQyBlbmdpbmVzIHRvIGJlIGFibGUgdG8g
-ZW5hYmxlL2Rpc2FibGUgdGhlIEVDQwo+ID4gZW5naW5lIG9ubHkgd2hlbiBuZWVkZWQgYW5kIGF2
-b2lkIHJhY2VzIHdoZW4gZnV0dXJlIHBhcmFsbGVsLW9wZXJhdGlvbnMKPiA+IHdpbGwgYmUgc3Vw
-cG9ydGVkLCB3ZSBuZWVkIHRvIHByb3ZpZGUgdGhlIGluZm9ybWF0aW9uIGFib3V0IHRoZSB1c2Ug
-b2YKPiA+IHRoZSBFQ0MgZW5naW5lIGluIHRoZSBkaXJlY3QgbWFwcGluZyBob29rcy4gQXMgZGly
-ZWN0IG1hcHBpbmcKPiA+IGNvbmZpZ3VyYXRpb25zIGFyZSBtZWFudCB0byBiZSBzdGF0aWMsIGl0
-IGlzIGJlc3QgdG8gY3JlYXRlIHR3byBuZXcKPiA+IG1hcHBpbmdzOiBvbmUgZm9yIHJlZ3VsYXIg
-J3JhdycgYWNjZXNzZXMgYW5kIG9uZSBmb3IgYWNjZXNzZXMgaW52b2x2aW5nCj4gPiBjb3JyZWN0
-aW9uLiBJdCBpcyB1cCB0byB0aGUgZHJpdmVyIHRvIHVzZSBvciBub3QgdGhlIG5ldyBFQ0MgZW5h
-YmxlCj4gPiBib29sZWFuIGNvbnRhaW5lZCBpbiB0aGUgc3BpLW1lbSBvcGVyYXRpb24uCj4gPiAK
-PiA+IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5j
-b20+Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgfCAyOCArKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tCj4gPiAgaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oIHwg
-IDIgKysKPiA+ICBpbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmggfCAgMyArKysgIAo+IAo+IEkn
-ZCBzcGxpdCB0aGF0IHBhdGNoIGluIDI6IG9uZSBhZGRpbmcgdGhlIGVjY19lbiBmaWVsZCB0byBz
-cGlfbWVtX29wCj4gYW5kIHRoZSBvdGhlciBvbmUgdXNpbmcgaXQgaW4gc3BpbmFuZC4KCkFzIHRo
-aXMgbmV3IHNwaV9tZW1fb3AgY291bGQgbm90IGJlIHVzZWQgd2l0aG91dCB0aGUgU1BJLU5BTkQg
-Y2hhbmdlcwpJIGRlY2lkZWQgdG8gcHV0IGV2ZXJ5dGhpbmcgaW4gYSBzaW5nbGUgcGF0Y2gsIGJ1
-dCBubyBwcm9ibGVtLCBJJ2xsCnNwbGl0IGl0LgoKPiAKPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDMx
-IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMKPiA+
-IGluZGV4IDcwMjdjMDk5MjVlMi4uMTBjY2ZmYjZiZjBkIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVy
-cy9tdGQvbmFuZC9zcGkvY29yZS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3NwaS9jb3Jl
-LmMKPiA+IEBAIC0zODEsNyArMzgxLDEwIEBAIHN0YXRpYyBpbnQgc3BpbmFuZF9yZWFkX2Zyb21f
-Y2FjaGVfb3Aoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpzcGluYW5kLAo+ID4gIAkJfQo+ID4gIAl9
-Cj4gPiAgCj4gPiAtCXJkZXNjID0gc3BpbmFuZC0+ZGlybWFwc1tyZXEtPnBvcy5wbGFuZV0ucmRl
-c2M7Cj4gPiArCWlmIChyZXEtPm1vZGUgPT0gTVREX09QU19SQVcpCj4gPiArCQlyZGVzYyA9IHNw
-aW5hbmQtPmRpcm1hcHNbcmVxLT5wb3MucGxhbmVdLnJkZXNjOwo+ID4gKwllbHNlCj4gPiArCQly
-ZGVzYyA9IHNwaW5hbmQtPmRpcm1hcHNbcmVxLT5wb3MucGxhbmVdLnJkZXNjX2VjYzsKPiA+ICAK
-PiA+ICAJd2hpbGUgKG5ieXRlcykgewo+ID4gIAkJcmV0ID0gc3BpX21lbV9kaXJtYXBfcmVhZChy
-ZGVzYywgY29sdW1uLCBuYnl0ZXMsIGJ1Zik7Cj4gPiBAQCAtNDUyLDcgKzQ1NSwxMCBAQCBzdGF0
-aWMgaW50IHNwaW5hbmRfd3JpdGVfdG9fY2FjaGVfb3Aoc3RydWN0IHNwaW5hbmRfZGV2aWNlICpz
-cGluYW5kLAo+ID4gIAkJCSAgICAgICByZXEtPm9vYmxlbik7Cj4gPiAgCX0KPiA+ICAKPiA+IC0J
-d2Rlc2MgPSBzcGluYW5kLT5kaXJtYXBzW3JlcS0+cG9zLnBsYW5lXS53ZGVzYzsKPiA+ICsJaWYg
-KHJlcS0+bW9kZSA9PSBNVERfT1BTX1JBVykKPiA+ICsJCXdkZXNjID0gc3BpbmFuZC0+ZGlybWFw
-c1tyZXEtPnBvcy5wbGFuZV0ud2Rlc2M7Cj4gPiArCWVsc2UKPiA+ICsJCXdkZXNjID0gc3BpbmFu
-ZC0+ZGlybWFwc1tyZXEtPnBvcy5wbGFuZV0ud2Rlc2NfZWNjOwo+ID4gIAo+ID4gIAl3aGlsZSAo
-bmJ5dGVzKSB7Cj4gPiAgCQlyZXQgPSBzcGlfbWVtX2Rpcm1hcF93cml0ZSh3ZGVzYywgY29sdW1u
-LCBuYnl0ZXMsIGJ1Zik7Cj4gPiBAQCAtODY2LDYgKzg3MiwyNCBAQCBzdGF0aWMgaW50IHNwaW5h
-bmRfY3JlYXRlX2Rpcm1hcChzdHJ1Y3Qgc3BpbmFuZF9kZXZpY2UgKnNwaW5hbmQsCj4gPiAgCj4g
-PiAgCXNwaW5hbmQtPmRpcm1hcHNbcGxhbmVdLnJkZXNjID0gZGVzYzsKPiA+ICAKPiA+ICsJaW5m
-by5vcF90bXBsID0gKnNwaW5hbmQtPm9wX3RlbXBsYXRlcy51cGRhdGVfY2FjaGU7Cj4gPiArCWlu
-Zm8ub3BfdG1wbC5lY2NfZW4gPSB0cnVlOwo+ID4gKwlkZXNjID0gZGV2bV9zcGlfbWVtX2Rpcm1h
-cF9jcmVhdGUoJnNwaW5hbmQtPnNwaW1lbS0+c3BpLT5kZXYsCj4gPiArCQkJCQkgIHNwaW5hbmQt
-PnNwaW1lbSwgJmluZm8pOwo+ID4gKwlpZiAoSVNfRVJSKGRlc2MpKQo+ID4gKwkJcmV0dXJuIFBU
-Ul9FUlIoZGVzYyk7Cj4gPiArCj4gPiArCXNwaW5hbmQtPmRpcm1hcHNbcGxhbmVdLndkZXNjX2Vj
-YyA9IGRlc2M7Cj4gPiArCj4gPiArCWluZm8ub3BfdG1wbCA9ICpzcGluYW5kLT5vcF90ZW1wbGF0
-ZXMucmVhZF9jYWNoZTsKPiA+ICsJaW5mby5vcF90bXBsLmVjY19lbiA9IHRydWU7Cj4gPiArCWRl
-c2MgPSBkZXZtX3NwaV9tZW1fZGlybWFwX2NyZWF0ZSgmc3BpbmFuZC0+c3BpbWVtLT5zcGktPmRl
-diwKPiA+ICsJCQkJCSAgc3BpbmFuZC0+c3BpbWVtLCAmaW5mbyk7Cj4gPiArCWlmIChJU19FUlIo
-ZGVzYykpCj4gPiArCQlyZXR1cm4gUFRSX0VSUihkZXNjKTsKPiA+ICsKPiA+ICsJc3BpbmFuZC0+
-ZGlybWFwc1twbGFuZV0ucmRlc2NfZWNjID0gZGVzYzsKPiA+ICsgIAo+IAo+IERpcmVjdCBtYXBw
-aW5ncyBhcmUgbm90IGZyZWUgKHRoZXkgbWlnaHQgcmVzZXJ2ZSBhIHBpZWNlIG9mIE1NSU8KPiBh
-ZGRyZXNzIHNwYWNlIGRlcGVuZGluZyBvbiB0aGUgc3BpLW1lbSBjb250cm9sbGVyIGltcGxlbWVu
-dGF0aW9uKSwgc28KPiBJJ2QgcmVjb21tZW5kIGNyZWF0aW5nIHRob3NlIG1hcHBpbmcgb25seSB3
-aGVuIHN0cmljdGx5IG5lZWRlZCwgdGhhdAo+IGlzLCB3aGVuIGRlYWxpbmcgd2l0aCBhIHBpcGVs
-aW5lZCBFQ0MuCgpUaGF0J3Mgd2hhdCBJIHRyaWVkIHRvIGRvIGluIHRoZSBmaXJzdCBwbGFjZSwg
-YnV0IHVuZm9ydHVuYXRlbHkgdGhlCmRpcmVjdCBtYXBwaW5ncyBhcmUgaW5zdGFudGlhdGVkIGF0
-IHRoZSB0aW1lIHRoZSBTUEkgY29udHJvbGxlciBnZXRzCnByb2JlZCwgd2hpY2ggaGFwcGVucyBi
-ZWZvcmUgdGhlIE5BTkQgZmxhc2ggYmVpbmcgaW5pdGlhbGl6ZWQgYW5kIGl0cwpFQ0MgZW5naW5l
-IGJlaW5nIHBpY2tlZC4gSGVuY2UsIGF0IHRoaXMgcG9pbnQsIHdlIGRvbid0IHJlYWxseSBrbm93
-IHdoYXQKZW5naW5lIHdpbGwgYmUgdXNlZCB3aXRoIHRoaXMgRUNDIGVuZ2luZS4gSSBmaW5hbGx5
-IGdhdmUgdXAgYW5kIGVuZGVkCnVwIGNyZWF0aW5nIDQgZGlybWFwcyAocGVyIGx1bikuIEkga25v
-dyBpdCdzIG5vdCBvcHRpbWFsIGFuZCBpbiBtb3N0CmNhc2VzIGNvbnN1bWUgbW9yZSBhZGRyZXNz
-IHNwYWNlIHRoYW4gbmVlZGVkIGJ1dCBjb3VsZG4ndCBmaW5kIGEKYmV0dGVyIHNvbHV0aW9uIHll
-dCA6LwoKPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmggYi9pbmNs
-dWRlL2xpbnV4L210ZC9zcGluYW5kLmgKPiA+IGluZGV4IDY5ODg5NTZiODQ5Mi4uM2FhMjgyNDBh
-NzdmIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gPiArKysg
-Yi9pbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgKPiA+IEBAIC0zODksNiArMzg5LDggQEAgc3Ry
-dWN0IHNwaW5hbmRfaW5mbyB7Cj4gPiAgc3RydWN0IHNwaW5hbmRfZGlybWFwIHsKPiA+ICAJc3Ry
-dWN0IHNwaV9tZW1fZGlybWFwX2Rlc2MgKndkZXNjOwo+ID4gIAlzdHJ1Y3Qgc3BpX21lbV9kaXJt
-YXBfZGVzYyAqcmRlc2M7Cj4gPiArCXN0cnVjdCBzcGlfbWVtX2Rpcm1hcF9kZXNjICp3ZGVzY19l
-Y2M7Cj4gPiArCXN0cnVjdCBzcGlfbWVtX2Rpcm1hcF9kZXNjICpyZGVzY19lY2M7Cj4gPiAgfTsK
-PiA+ICAKPiA+ICAvKioKPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVt
-LmggYi9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmgKPiA+IGluZGV4IDg1ZTJmZjdiODQwZC4u
-M2JlNTk0YmUyNGMwIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9zcGkvc3BpLW1lbS5o
-Cj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmgKPiA+IEBAIC05NCw2ICs5NCw3
-IEBAIGVudW0gc3BpX21lbV9kYXRhX2RpciB7Cj4gPiAgICoJCSBvcGVyYXRpb24gZG9lcyBub3Qg
-aW52b2x2ZSB0cmFuc2ZlcnJpbmcgZGF0YQo+ID4gICAqIEBkYXRhLmJ1Zi5pbjogaW5wdXQgYnVm
-ZmVyIChtdXN0IGJlIERNQS1hYmxlKQo+ID4gICAqIEBkYXRhLmJ1Zi5vdXQ6IG91dHB1dCBidWZm
-ZXIgKG11c3QgYmUgRE1BLWFibGUpCj4gPiArICogQGVjY19lbjogZXJyb3IgY29ycmVjdGlvbiBp
-cyByZXF1aXJlZAo+ID4gICAqLwo+ID4gIHN0cnVjdCBzcGlfbWVtX29wIHsKPiA+ICAJc3RydWN0
-IHsKPiA+IEBAIC0xMjYsNiArMTI3LDggQEAgc3RydWN0IHNwaV9tZW1fb3Agewo+ID4gIAkJCWNv
-bnN0IHZvaWQgKm91dDsKPiA+ICAJCX0gYnVmOwo+ID4gIAl9IGRhdGE7Cj4gPiArCj4gPiArCWJv
-b2wgZWNjX2VuOwo+ID4gIH07Cj4gPiAgCj4gPiAgI2RlZmluZSBTUElfTUVNX09QKF9fY21kLCBf
-X2FkZHIsIF9fZHVtbXksIF9fZGF0YSkJCVwgIAo+IAoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Fri, 26 Nov 2021 15:42:23 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> > > @@ -866,6 +872,24 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
+> > >  
+> > >  	spinand->dirmaps[plane].rdesc = desc;
+> > >  
+> > > +	info.op_tmpl = *spinand->op_templates.update_cache;
+> > > +	info.op_tmpl.ecc_en = true;
+> > > +	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
+> > > +					  spinand->spimem, &info);
+> > > +	if (IS_ERR(desc))
+> > > +		return PTR_ERR(desc);
+> > > +
+> > > +	spinand->dirmaps[plane].wdesc_ecc = desc;
+> > > +
+> > > +	info.op_tmpl = *spinand->op_templates.read_cache;
+> > > +	info.op_tmpl.ecc_en = true;
+> > > +	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
+> > > +					  spinand->spimem, &info);
+> > > +	if (IS_ERR(desc))
+> > > +		return PTR_ERR(desc);
+> > > +
+> > > +	spinand->dirmaps[plane].rdesc_ecc = desc;
+> > > +    
+> > 
+> > Direct mappings are not free (they might reserve a piece of MMIO
+> > address space depending on the spi-mem controller implementation), so
+> > I'd recommend creating those mapping only when strictly needed, that
+> > is, when dealing with a pipelined ECC.  
+> 
+> That's what I tried to do in the first place, but unfortunately the
+> direct mappings are instantiated at the time the SPI controller gets
+> probed, which happens before the NAND flash being initialized and its
+> ECC engine being picked. Hence, at this point, we don't really know what
+> engine will be used with this ECC engine. I finally gave up and ended
+> up creating 4 dirmaps (per lun). I know it's not optimal and in most
+> cases consume more address space than needed but couldn't find a
+> better solution yet :/
+
+Why do you have to create the ECC mappings that early? Can't you just
+create them after the ECC initialization is done? AFAICT, they won't be
+used before that anyway.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
