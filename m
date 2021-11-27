@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44A51C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 27 Nov 2021 18:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E67A2C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Nov 2021 23:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=34O6ZaCIncp4UfC4cOaoFFGoOt6lfaHp1Z7HEzB5MCc=; b=e/AmLj73SDmBCn
-	YXD6nMPQvBXlrXyBYzAWyt+HpNLVt6idK08lsSYDRf94a4asSxjng5rCXD8GONkiSAj1qMFFgOZXL
-	hC48oiVakTkD7W+okKAx0GvVG8dzSt4TuuC7w2Iw9CCk4vtQNHCqo9moS2Xqu6nsnyyBteC3A3Xcs
-	LQ/s36dk0AsKL8l6R+ynkIMFZ6x6irhr9kLfRPLiWvzkksX5Fuyx6je6lYodihwA9VZ2TE2wj0WxO
-	nt0g7HlMtDAZVmU8V/lzW7EdoNUMD846S+nWPENC4XZy6FFxG7lurtA3HwAEyVDN/j8HD4c1vwQY/
-	1x4wjcseBgUc174MkzqA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=8/XYxwiyvquhq58b9bJNOZsM+P3nHBZdGYAy6FT0IlA=; b=DcJh1GTZ/M9EyO
+	GXgqcq0DZcZTOb1u2/ym55bOgCXMsFiG3GsVwEQZ8Yx+dh3GVovBXWOEn/yJs4gNjchfc+zZ7cVRe
+	fqkQT8fL1ngwxNSs880Bph+Zm+PYB113f9GRaHBzGM0UdgNb0RR/yoc9NJCn/QjeXJ/ZQ/aaGAiBi
+	JgIivqGcx6Z2de5bOK0y6U7nyGqEEeOtDilJ6Hyrv7dw59Q2KZM5uCTySGmZd+0wRlEyrTg0lBVY7
+	OfNl2Fvyf9a/Hq/vR824FLsMK5O2mkkzUxTEmUZxKpkdgukudYJ98GdUGpDl0b2ICM+wvqGWYf2we
+	rjlxE9nq1p2t7P1ScJrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mr27R-00EBOp-Jd; Sat, 27 Nov 2021 18:08:13 +0000
-Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
+	id 1mr6t9-00EbhA-N7; Sat, 27 Nov 2021 23:13:47 +0000
+Received: from mail-oi1-f182.google.com ([209.85.167.182])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mr27O-00EBNZ-Lf
- for linux-mtd@lists.infradead.org; Sat, 27 Nov 2021 18:08:11 +0000
-Received: by mail-lj1-x231.google.com with SMTP id d11so25447029ljg.8
- for <linux-mtd@lists.infradead.org>; Sat, 27 Nov 2021 10:08:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2CoNm0drA3aI7lfneRSUhJcrvL7D1YbjC78jWyeY53I=;
- b=EGiK9q4xmxtSZ6Mrf7tDzIMrqC3/cJHmg9UJypohzII7Lfe8vo4oUvwUjUO93lmRVt
- vsnHmC03TxqHBycJMM/3tRQd1L62pb+E4TxKiAA6FYJ81OTf+H25bandB6lSVs6uW4qO
- 13O89pklmC3wvpkQsapdjMZWkUe4sMgls38E0s0HUSPWnWhQEnQaAMivEFnyIxt/flQa
- SpRuuXmcD4FHoEYd95n8lS4amIEOgCLs4XOtVGsgQ4JH4TAoXo2isNN+y5g5lIG5P8Jn
- eybK+yZyfrpFDrG320nGmKoqoF7yI8I5Zgr83eBhK8Zsb0reGJyvsiomVx7XUIynAC8P
- WB2g==
+ id 1mr6t0-00Ebgg-Gq
+ for linux-mtd@lists.infradead.org; Sat, 27 Nov 2021 23:13:39 +0000
+Received: by mail-oi1-f182.google.com with SMTP id be32so26395975oib.11
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Nov 2021 15:13:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=2CoNm0drA3aI7lfneRSUhJcrvL7D1YbjC78jWyeY53I=;
- b=2xl3RcaUMndqW/23cG/YHMA5VMogkB2d/vJeFSZIC7/d7vrUc1mdTJ4v6jXYhTZEt3
- f7id4mdoWMfmyzd7WlLKE+DdGG+Nv7vIbGXrEQBYdie4pRBevhOg9pVAij+5DyodcaZG
- OG5w9oifbYFMCyHjjJqRDuohqbTaXWR4r7wE9UJIj9dx4H4yOya9KbE81q0tqa5YdCSr
- RQKvqE7UCYf8zUThnhMUNYkNuPWNGvkjf+b3IK1T4mmtopIXUvDELw4rO2gul9tG9TIo
- nt9m6IjXp3hbAi1Clu1pjrD2P97QBO3TH/hvsHUWpO2FhznN4cgPWuZ131dSG8+LuW3+
- D+cQ==
-X-Gm-Message-State: AOAM5313k4ROwQMPo1ZjeQZEMTzI8LrRw8rGO/W7EucYHVJKfH7z0LnU
- 8bTeM8GL7bH8MYYASIMvNPg=
-X-Google-Smtp-Source: ABdhPJyQMYsswPacNEkC8SKE4hJwVUJoWLnn9y6MjPoxRv3q2R6B7vYoDnfzggdgtAC0DF6A7qVv2A==
-X-Received: by 2002:a2e:a376:: with SMTP id i22mr38977042ljn.201.1638036488063; 
- Sat, 27 Nov 2021 10:08:08 -0800 (PST)
-Received: from helga-MS-7721.makeup ([31.148.138.103])
- by smtp.gmail.com with ESMTPSA id m16sm793142lfj.59.2021.11.27.10.08.07
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=NHj7bPxI6fq1N93RbHviuq859RaSpvvAa3Q1mOwEKtc=;
+ b=ns3Q85+Xbn+EpSTmvceZ8mrvrrJIQLomFEZ/qC5RNx4ln+H9zoZ8SqOBYMpHHhz15m
+ tWYjkEQcPc3Jvm3todLkHmJVhrMQ7RaHuKrWQ0N8PcaiqPST1z34naObYO/myTWqwsf/
+ btWr4Bu9kWO0YrEhUL2qGkL0Ilrm8WpP+dHjsXP7fGrghBj/Yuqz7RQXMHmCMIh0el9f
+ e3VcW8pA0ZtZa/80U0cDqq+NMn4o87JC3gOu9TVPrcUCWLkvgnJKPHrYHjmDD8QQAgk5
+ GdEPUcpvfZ60gTLw9dp//EPk+2O4/dxBSZgapoMK6g0BhgWBkvc9QlXCYdFXuxVl9tUP
+ +zvg==
+X-Gm-Message-State: AOAM532PdbmWIRW65scZ7hixo2XeW4JVy3FfnE9//oRXl+2EAvmS9D8Q
+ zffjwHmW3MdNashWwSfu6w==
+X-Google-Smtp-Source: ABdhPJwAYQLRS1w5wIjJjByV/RMDaS4Nmwr980kCT4ajWNcu05VSEMfU6uzQlEU5RDZEhtt577Vmkg==
+X-Received: by 2002:a05:6808:44:: with SMTP id
+ v4mr31905725oic.123.1638054817351; 
+ Sat, 27 Nov 2021 15:13:37 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.248])
+ by smtp.gmail.com with ESMTPSA id e14sm1696635oow.3.2021.11.27.15.13.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 27 Nov 2021 10:08:07 -0800 (PST)
-From: Olga Kitaina <okitain@gmail.com>
-To: miquel.raynal@bootlin.com
-Cc: linux-mtd@lists.infradead.org,
-	Olga Kitaina <okitain@gmail.com>
-Subject: [PATCH] mtd: rawnand: arasan: Fix clock rate in NV-DDR
-Date: Sat, 27 Nov 2021 21:07:58 +0300
-Message-Id: <20211127180758.30884-1-okitain@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
+ Sat, 27 Nov 2021 15:13:36 -0800 (PST)
+Received: (nullmailer pid 1973543 invoked by uid 1000);
+ Sat, 27 Nov 2021 23:13:22 -0000
+From: Rob Herring <robh@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-spi@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Rob Herring <robh+dt@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
+ Michal Simek <monstr@monstr.eu>, linux-mtd@lists.infradead.org,
+ Pratyush Yadav <p.yadav@ti.com>
+In-Reply-To: <20211126163450.394861-6-miquel.raynal@bootlin.com>
+References: <20211126163450.394861-1-miquel.raynal@bootlin.com>
+ <20211126163450.394861-6-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 5/5] spi: dt-bindings: Add an example with two stacked
+ flashes
+Date: Sat, 27 Nov 2021 16:13:22 -0700
+Message-Id: <1638054802.100671.1973542.nullmailer@robh.at.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211127_100810_735098_BCCF1A82 
-X-CRM114-Status: GOOD (  13.38  )
+X-CRM114-CacheID: sfid-20211127_151338_579282_3DA10E68 
+X-CRM114-Status: GOOD (  11.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,57 +80,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-According to the Arasan NAND controller spec,
-the flash clock rate for SDR must be <= 100 MHz,
-while for NV-DDR it must be the same as the rate
-of the CLK line for the mode.
-The driver previously always set 100 MHz for NV-DDR, which
-would result in incorrect behavior for NV-DDR modes 0-4.
+On Fri, 26 Nov 2021 17:34:50 +0100, Miquel Raynal wrote:
+> Provide an example of how to describe two flashes in eg. stacked mode.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/spi/spi-controller.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-The appropriate clock rate can be calculated
-from the NV-DDR timing parameters as 1/tCK, or for rates
-measured in picoseconds, 10^12 / nand_nvddr_timings->tCK_min.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Signed-off-by: Olga Kitaina <okitain@gmail.com>
----
- drivers/mtd/nand/raw/arasan-nand-controller.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+yamllint warnings/errors:
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index 53bd10738418..ed4ee9942441 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -18,6 +18,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
-+#include <linux/math64.h>
- #include <linux/module.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-@@ -1043,7 +1044,12 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
- 				 DQS_BUFF_SEL_OUT(dqs_mode);
- 	}
- 
--	anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
-+	if (nand_interface_is_sdr)
-+		anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
-+	else
-+		/* ONFI timings are defined in picoseconds */
-+		anand->clk = div_u64((u64)NSEC_PER_SEC * 1000,
-+				     conf->timings.nvddr.tCK_min);
- 
- 	/*
- 	 * Due to a hardware bug in the ZynqMP SoC, SDR timing modes 0-1 work
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/spi/spi-controller.example.dts:40.23-45.15: Warning (spi_bus_reg): /example-0/spi@80010000/flash@2,3: SPI bus unit address format error, expected "2"
 
-base-commit: f53d4c109a666bf1a4883b45d546fba079258717
--- 
-2.20.1
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1560255
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
 
 ______________________________________________________
