@@ -4,76 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95829C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 27 Nov 2021 16:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44A51C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 27 Nov 2021 18:08:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gbBrUQAUSJS1XyYaKXyJgwoZpythW5CGrPaTBhQPVL8=; b=CDHzVzhE4eBubt
-	Eac4L1yjNMty9iJPHdSsl9s5Yty6gtTmljwNBpFgrPii4UtyiUmLqQYI7qB48WK4VvAefJk9SBN9H
-	n5YWALQF73FGmkN9fte+Gd/nXWcZhFgTNnyXBOxmfLXmHLuHs5c9JaOJyS/eo0FlC2VRWAMJ/UZxa
-	3e0XMGyql8LP6stEa0vhhOXry20PsFfq3qQO0x02Tt1eUw1ZHlmkZ+ZaWNlTlTpTP2OSWYdxr6XyS
-	BjGP/sGLSerIqR/f1suEDwQehgQXgngmjSNONTZMuDgeuRnz0ZtlZhIxnek/YtMuO8/s2OioB6Vxw
-	gTJtm4oP0ICnkwUL/kRw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=34O6ZaCIncp4UfC4cOaoFFGoOt6lfaHp1Z7HEzB5MCc=; b=e/AmLj73SDmBCn
+	YXD6nMPQvBXlrXyBYzAWyt+HpNLVt6idK08lsSYDRf94a4asSxjng5rCXD8GONkiSAj1qMFFgOZXL
+	hC48oiVakTkD7W+okKAx0GvVG8dzSt4TuuC7w2Iw9CCk4vtQNHCqo9moS2Xqu6nsnyyBteC3A3Xcs
+	LQ/s36dk0AsKL8l6R+ynkIMFZ6x6irhr9kLfRPLiWvzkksX5Fuyx6je6lYodihwA9VZ2TE2wj0WxO
+	nt0g7HlMtDAZVmU8V/lzW7EdoNUMD846S+nWPENC4XZy6FFxG7lurtA3HwAEyVDN/j8HD4c1vwQY/
+	1x4wjcseBgUc174MkzqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mr0sy-00E2ML-6y; Sat, 27 Nov 2021 16:49:12 +0000
-Received: from mail-il1-x134.google.com ([2607:f8b0:4864:20::134])
+	id 1mr27R-00EBOp-Jd; Sat, 27 Nov 2021 18:08:13 +0000
+Received: from mail-lj1-x231.google.com ([2a00:1450:4864:20::231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mr0sv-00E2La-4z
- for linux-mtd@lists.infradead.org; Sat, 27 Nov 2021 16:49:10 +0000
-Received: by mail-il1-x134.google.com with SMTP id 15so3205728ilq.2
- for <linux-mtd@lists.infradead.org>; Sat, 27 Nov 2021 08:49:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernel-dk.20210112.gappssmtp.com; s=20210112;
- h=from:to:cc:in-reply-to:references:subject:message-id:date
- :mime-version:content-transfer-encoding;
- bh=74KPh8uSppZNL+D6j5siIoZQyA62KjAQqI0tS1Kt2ew=;
- b=c1av8W8YwZl0rYTuLK41+9Y6KbEjsC054OmipQjloy3iXYC7YyFXB2Wtp+ZXxxoRIv
- w+2A5+9S6UJOj82FhyfbX6/sYgPT7QR4FW52XxB49Zw/HrDH+S9dcxSlUmarUsj3cjbk
- S997QYhw6+Vi21IGwDYKTezdwn03IlEIC9rAW7VmJrAC+7yG1SfSqBn3DhIzRio4K0JE
- iv74BA10O+6qSfhwztZzv5GPrZ4cuFRAMH7zLRsJvFKQSWFTcjHqkkFqkhBgfi3YT5qp
- YXHGWDFyvA7KxYYwJDvDnj3qqyyH1jGOgaTRcU+EnvvBNLJ+PJ9SejG9pqhb1UfntRh6
- hbqQ==
+ id 1mr27O-00EBNZ-Lf
+ for linux-mtd@lists.infradead.org; Sat, 27 Nov 2021 18:08:11 +0000
+Received: by mail-lj1-x231.google.com with SMTP id d11so25447029ljg.8
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Nov 2021 10:08:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=2CoNm0drA3aI7lfneRSUhJcrvL7D1YbjC78jWyeY53I=;
+ b=EGiK9q4xmxtSZ6Mrf7tDzIMrqC3/cJHmg9UJypohzII7Lfe8vo4oUvwUjUO93lmRVt
+ vsnHmC03TxqHBycJMM/3tRQd1L62pb+E4TxKiAA6FYJ81OTf+H25bandB6lSVs6uW4qO
+ 13O89pklmC3wvpkQsapdjMZWkUe4sMgls38E0s0HUSPWnWhQEnQaAMivEFnyIxt/flQa
+ SpRuuXmcD4FHoEYd95n8lS4amIEOgCLs4XOtVGsgQ4JH4TAoXo2isNN+y5g5lIG5P8Jn
+ eybK+yZyfrpFDrG320nGmKoqoF7yI8I5Zgr83eBhK8Zsb0reGJyvsiomVx7XUIynAC8P
+ WB2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
- :message-id:date:mime-version:content-transfer-encoding;
- bh=74KPh8uSppZNL+D6j5siIoZQyA62KjAQqI0tS1Kt2ew=;
- b=bo+b5LFRrEgUu6syoDFb6LWOzP1GnpPumvUbPAfbYkkkzfewLE4VW/B7hD/YazXaBd
- hc9NW93HxlGgKSm5+0hZ4xJOO/vxqktjLfQrBXFuGRwGblYrCLibU8gb7SDiiNkoLfgA
- gvwTLJm8fxDBlhUY2/ctzwcG8FLOBi4eCC4iHmg589qHdadqpvcvBAY3AmEZ0WqKsbYD
- qfDgqdAh5691VU0wMF468dO16nPe1KHgoR3Jawhj8ubVzPmKaHqcd6iXVJzCPUw5wJoi
- GNT27kPRutMEL3m945P/EQt2aJJCqax6SMVjjMEMtdicvlhCNLUOKLIvcId3nSfL1p40
- c1Lg==
-X-Gm-Message-State: AOAM531X+6ujIV1t0iuj8XzxeN8KyEtfGhF0n//B7wL34l6Naox2c2Wu
- bODj65Clikh8qOkZYxEOUByK2w==
-X-Google-Smtp-Source: ABdhPJzVO6OubbKRB4/DxJw16wVuobuViqS9/AcFVO+7BaRidIpnYUeZLIcUTT54fZ6eWNYxFicUbg==
-X-Received: by 2002:a05:6e02:188f:: with SMTP id
- o15mr10128692ilu.269.1638031748183; 
- Sat, 27 Nov 2021 08:49:08 -0800 (PST)
-Received: from [127.0.1.1] ([66.219.217.159])
- by smtp.gmail.com with ESMTPSA id a4sm5201613ild.52.2021.11.27.08.49.07
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=2CoNm0drA3aI7lfneRSUhJcrvL7D1YbjC78jWyeY53I=;
+ b=2xl3RcaUMndqW/23cG/YHMA5VMogkB2d/vJeFSZIC7/d7vrUc1mdTJ4v6jXYhTZEt3
+ f7id4mdoWMfmyzd7WlLKE+DdGG+Nv7vIbGXrEQBYdie4pRBevhOg9pVAij+5DyodcaZG
+ OG5w9oifbYFMCyHjjJqRDuohqbTaXWR4r7wE9UJIj9dx4H4yOya9KbE81q0tqa5YdCSr
+ RQKvqE7UCYf8zUThnhMUNYkNuPWNGvkjf+b3IK1T4mmtopIXUvDELw4rO2gul9tG9TIo
+ nt9m6IjXp3hbAi1Clu1pjrD2P97QBO3TH/hvsHUWpO2FhznN4cgPWuZ131dSG8+LuW3+
+ D+cQ==
+X-Gm-Message-State: AOAM5313k4ROwQMPo1ZjeQZEMTzI8LrRw8rGO/W7EucYHVJKfH7z0LnU
+ 8bTeM8GL7bH8MYYASIMvNPg=
+X-Google-Smtp-Source: ABdhPJyQMYsswPacNEkC8SKE4hJwVUJoWLnn9y6MjPoxRv3q2R6B7vYoDnfzggdgtAC0DF6A7qVv2A==
+X-Received: by 2002:a2e:a376:: with SMTP id i22mr38977042ljn.201.1638036488063; 
+ Sat, 27 Nov 2021 10:08:08 -0800 (PST)
+Received: from helga-MS-7721.makeup ([31.148.138.103])
+ by smtp.gmail.com with ESMTPSA id m16sm793142lfj.59.2021.11.27.10.08.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 27 Nov 2021 08:49:07 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-block@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Richard Weinberger <richard@nod.at>, linux-scsi@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-In-Reply-To: <20211126121802.2090656-1-hch@lst.de>
-References: <20211126121802.2090656-1-hch@lst.de>
-Subject: Re: remove ->rq_disk v2
-Message-Id: <163803174742.18774.4130157406940181436.b4-ty@kernel.dk>
-Date: Sat, 27 Nov 2021 09:49:07 -0700
+ Sat, 27 Nov 2021 10:08:07 -0800 (PST)
+From: Olga Kitaina <okitain@gmail.com>
+To: miquel.raynal@bootlin.com
+Cc: linux-mtd@lists.infradead.org,
+	Olga Kitaina <okitain@gmail.com>
+Subject: [PATCH] mtd: rawnand: arasan: Fix clock rate in NV-DDR
+Date: Sat, 27 Nov 2021 21:07:58 +0300
+Message-Id: <20211127180758.30884-1-okitain@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211127_084909_221287_408E35E0 
-X-CRM114-Status: GOOD (  13.65  )
+X-CRM114-CacheID: sfid-20211127_100810_735098_BCCF1A82 
+X-CRM114-Status: GOOD (  13.38  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,82 +85,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 26 Nov 2021 13:17:57 +0100, Christoph Hellwig wrote:
-> this series removes the rq_disk field in struct request, which isn't
-> needed now that we can get the disk from the request_queue.
-> 
-> Changes since v1:
->  - rebased to the latests for-5.17/block tree
-> 
-> Diffstat:
->  block/blk-flush.c                  |    3 --
->  block/blk-merge.c                  |    7 ------
->  block/blk-mq.c                     |   24 +++++++-------------
->  block/blk.h                        |    2 -
->  block/bsg-lib.c                    |    2 -
->  drivers/block/amiflop.c            |    2 -
->  drivers/block/ataflop.c            |    6 ++---
->  drivers/block/floppy.c             |    6 ++---
->  drivers/block/mtip32xx/mtip32xx.c  |    2 -
->  drivers/block/null_blk/trace.h     |    2 -
->  drivers/block/paride/pcd.c         |    2 -
->  drivers/block/paride/pd.c          |    6 ++---
->  drivers/block/paride/pf.c          |    4 +--
->  drivers/block/pktcdvd.c            |    2 -
->  drivers/block/rnbd/rnbd-clt.c      |    4 +--
->  drivers/block/sunvdc.c             |    2 -
->  drivers/block/sx8.c                |    4 +--
->  drivers/block/virtio_blk.c         |    2 -
->  drivers/md/dm-mpath.c              |    1
->  drivers/mmc/core/block.c           |   12 +++++-----
->  drivers/mtd/mtd_blkdevs.c          |   10 +-------
->  drivers/nvme/host/core.c           |    4 +--
->  drivers/nvme/host/fault_inject.c   |    2 -
->  drivers/nvme/host/pci.c            |    7 ++----
->  drivers/nvme/host/trace.h          |    6 ++---
->  drivers/nvme/target/passthru.c     |    3 --
->  drivers/scsi/ch.c                  |    2 -
->  drivers/scsi/scsi_bsg.c            |    2 -
->  drivers/scsi/scsi_error.c          |    2 -
->  drivers/scsi/scsi_ioctl.c          |   43 ++++++++++++++-----------------------
->  drivers/scsi/scsi_lib.c            |    5 ++--
->  drivers/scsi/scsi_logging.c        |    4 ++-
->  drivers/scsi/sd.c                  |   26 +++++++++++-----------
->  drivers/scsi/sd_zbc.c              |    8 +++---
->  drivers/scsi/sg.c                  |    6 ++---
->  drivers/scsi/sr.c                  |   11 ++++-----
->  drivers/scsi/st.c                  |    4 +--
->  drivers/scsi/ufs/ufshpb.c          |    4 +--
->  drivers/scsi/virtio_scsi.c         |    2 -
->  drivers/target/target_core_pscsi.c |    2 -
->  drivers/usb/storage/transport.c    |    2 -
->  include/linux/blk-mq.h             |   11 ++-------
->  include/scsi/scsi_cmnd.h           |    2 -
->  include/scsi/scsi_device.h         |    4 +--
->  include/scsi/scsi_ioctl.h          |    4 +--
->  include/trace/events/block.h       |    8 +++---
->  kernel/trace/blktrace.c            |    2 -
->  47 files changed, 124 insertions(+), 157 deletions(-)
-> 
-> [...]
+According to the Arasan NAND controller spec,
+the flash clock rate for SDR must be <= 100 MHz,
+while for NV-DDR it must be the same as the rate
+of the CLK line for the mode.
+The driver previously always set 100 MHz for NV-DDR, which
+would result in incorrect behavior for NV-DDR modes 0-4.
 
-Applied, thanks!
+The appropriate clock rate can be calculated
+from the NV-DDR timing parameters as 1/tCK, or for rates
+measured in picoseconds, 10^12 / nand_nvddr_timings->tCK_min.
 
-[1/5] mtd_blkdevs: remove the sector out of range check in do_blktrans_request
-      commit: c9e9ff5c8923f562091bebcd72164206cb48f08b
-[2/5] block: don't check ->rq_disk in merges
-      commit: e14b671dc11db224aad647a51581ee0320e132f7
-[3/5] block: remove the ->rq_disk field in struct request
-      commit: dc6d79f09226f4b4ff50dfa689c6982962ca53d1
-[4/5] block: remove the gendisk argument to blk_execute_rq
-      commit: 3d5ff0d19d14d9d2576f12621608600f562cef5c
-[5/5] scsi: remove the gendisk argument to scsi_ioctl
-      commit: 6273dc67219580d76880cb930d9fa97c52feee20
+Signed-off-by: Olga Kitaina <okitain@gmail.com>
+---
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Best regards,
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index 53bd10738418..ed4ee9942441 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -18,6 +18,7 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/iopoll.h>
++#include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -1043,7 +1044,12 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
+ 				 DQS_BUFF_SEL_OUT(dqs_mode);
+ 	}
+ 
+-	anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
++	if (nand_interface_is_sdr)
++		anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
++	else
++		/* ONFI timings are defined in picoseconds */
++		anand->clk = div_u64((u64)NSEC_PER_SEC * 1000,
++				     conf->timings.nvddr.tCK_min);
+ 
+ 	/*
+ 	 * Due to a hardware bug in the ZynqMP SoC, SDR timing modes 0-1 work
+
+base-commit: f53d4c109a666bf1a4883b45d546fba079258717
 -- 
-Jens Axboe
-
+2.20.1
 
 
 ______________________________________________________
