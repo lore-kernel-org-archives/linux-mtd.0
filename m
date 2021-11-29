@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D889C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 28 Nov 2021 16:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40C8EC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Nov 2021 04:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bYakYMmr2tEiNVxIkTCfdnStguz2eZfU6XMTFTHdimc=; b=RdzS4EtrKp2J0X
-	sPS6ArmSi8fGXMioiBkLuw4iDylyUI0Oy0uYEtg7dQesyQHDZrCgj53BVy4xULVpxfFNvTNSNVWWr
-	SqpypNohCKzGO7ichdwtejCGsLTd4Q/bLXMl71JvyH19tyQUyK9u5X46Ga4FKskBRXm4cao4ZkGzZ
-	4r5nTtRFWKV/paMtQp8mkWdwmSDLDkkTQyq+SFQAr5YWKC8ETM+jDGh7drwTRt+M5EXPhIMEqj8wD
-	s7MXpzp2Fh6EjYaaz626p8Xk5fj60QSq8iO+uw2N10kOogV92USmANCdaYs9g3um06bvWoArV+ukC
-	0YwMwEQzOnhIMCL+TrgA==;
+	List-Owner; bh=rZR+KUzHpOHXweEWfvSVEQ/GATpe6dys+FZ0xYUZdHU=; b=IEdNI5DgMb3Gby
+	efTpb4m2a7Ag4fxEtMql3XtQyQKZp1PpdvMkFVE71TxRfRQxF5yJx1fbfamFgRy9j5Vsi/SdEC/Is
+	e2Rl8eSGyxhqbXbZ+YTyQvm1/55IyojYG5GEhZ5BsUTzx06WbLVTzysHDpij+tsHu+OZKqdYYaN4K
+	gheOoVHcmH2vdWHDoFEEQLAMYSLU/bAmsHxiP66t0opo7LcA1FipN4L++bgdgmcPKR3VznGNL2Hgg
+	7vznlVoEhZ13cwp6uLD2CLzEcQ9m+X+6Bugt+IXpBZoM4LQp3SypyPX7Y+EWsGOobFddfPtbl2lub
+	leOj5H5UUnCey9gql3Aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mrNSO-00GGv7-T5; Sun, 28 Nov 2021 16:55:16 +0000
-Received: from mail-ot1-f47.google.com ([209.85.210.47])
+	id 1mrYPI-00HOGC-BU; Mon, 29 Nov 2021 04:36:48 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mrNSK-00GGuM-J6
- for linux-mtd@lists.infradead.org; Sun, 28 Nov 2021 16:55:13 +0000
-Received: by mail-ot1-f47.google.com with SMTP id
- 47-20020a9d0332000000b005798ac20d72so22063794otv.9
- for <linux-mtd@lists.infradead.org>; Sun, 28 Nov 2021 08:55:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=1Kx4mjHYh3JbxTIKV4lb6j/qBNb/1oR0ibaR7m8wF84=;
- b=1o6KUCecO9aQ4Jv8sjcHR8cK8H9dWuCoh/kchLMKNwbWgenpwX9c7XlLmvg8iRbYKK
- xA7JW0zVtLIyXMPzedrivCPIX5Dh6SMrgCabtQyTRLgdmPbChhZe9V9bABppVrsM31js
- Jl8gI18VyOFnCMCOKYoXqAbKxAE5LtOZYMlHivSjd6EdVSVKYidN6eQIeKbMd051yCqM
- yhrDVcRwe41cltQwqaQ8MBsKy6aUs3Z7i5Ei1uqP3cIKi1iRd6zU4OtNaSvbRjSCf4OI
- RsomfTps4lRQLv+SH358KvkYYc2lpLlPwlM2iyllTDoLSxM6dA4QQiHRksgtacfqF5KR
- FvGg==
-X-Gm-Message-State: AOAM531aCf4oz+eZimXXgrqdi4Y9TI39xN3k0osiSGYQn7XMZyJVbagk
- zAOUscIg4vRcrsEs7g2Pdg==
-X-Google-Smtp-Source: ABdhPJzH+fMrufpgBICy1lv/D36s6g3VY8c0AiVKM2GIpW7BfPG91KQD8bigrq9CNfmGjd4PMkzL1Q==
-X-Received: by 2002:a9d:12f2:: with SMTP id
- g105mr39803123otg.301.1638118511627; 
- Sun, 28 Nov 2021 08:55:11 -0800 (PST)
-Received: from robh.at.kernel.org ([2607:fb90:20d6:afc8:f6e9:d57a:3e26:ee41])
- by smtp.gmail.com with ESMTPSA id
- w5sm2159875otk.70.2021.11.28.08.55.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 28 Nov 2021 08:55:10 -0800 (PST)
-Received: (nullmailer pid 2710081 invoked by uid 1000);
- Sun, 28 Nov 2021 16:55:06 -0000
-Date: Sun, 28 Nov 2021 10:55:06 -0600
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-spi@vger.kernel.org, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Mark Brown <broonie@kernel.org>, Richard Weinberger <richard@nod.at>,
- Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, linux-mtd@lists.infradead.org,
- Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH v2 5/5] spi: dt-bindings: Add an example with two stacked
- flashes
-Message-ID: <YaO0ahOhM3XwLqND@robh.at.kernel.org>
-References: <20211126163450.394861-1-miquel.raynal@bootlin.com>
- <20211126163450.394861-6-miquel.raynal@bootlin.com>
- <1638054802.100671.1973542.nullmailer@robh.at.kernel.org>
+ id 1mrYPF-00HOFs-Eo
+ for linux-mtd@lists.infradead.org; Mon, 29 Nov 2021 04:36:47 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4aYml118115;
+ Sun, 28 Nov 2021 22:36:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1638160594;
+ bh=uc+McsQyh4vXxa36jTByMhq1Rk8pFaR494tnqxl9MhU=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=ePYbcrzO7ceJxKPbVR6kg0/SijmM02JHi6HmlYZIvtojBs+YQStyedtyQkHYHdL5P
+ cQAlRBJx1mpdRQFTxbKzoWMwrbbE9iKplbEPoK0dsdaaKHu7j8tQOgWTs4XDyRdJVs
+ 8MrHEwlIPYFZ8MQYT5Bb9ypyy/LiTdVekWi32aL8=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AT4aYES100018
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Sun, 28 Nov 2021 22:36:34 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sun, 28
+ Nov 2021 22:36:33 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Sun, 28 Nov 2021 22:36:34 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4aXji085863;
+ Sun, 28 Nov 2021 22:36:33 -0600
+Date: Sun, 28 Nov 2021 22:36:33 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Roger Quadros <rogerq@kernel.org>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <kishon@ti.com>, <tony@atomide.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
+ AM64 SoC
+Message-ID: <20211129043633.myxmgp6idbrqvx5p@unlisted>
+References: <20211123103609.14063-1-rogerq@kernel.org>
+ <20211123103609.14063-5-rogerq@kernel.org>
+ <20211124131552.6b9bc506@xps13>
+ <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
+ <20211126104231.7cc43149@xps13>
+ <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1638054802.100671.1973542.nullmailer@robh.at.kernel.org>
+In-Reply-To: <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211128_085512_658348_5FA7F59A 
-X-CRM114-Status: GOOD (  11.76  )
+X-CRM114-CacheID: sfid-20211128_203645_628911_9DC228A7 
+X-CRM114-Status: GOOD (  20.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,25 +90,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Nov 27, 2021 at 04:13:22PM -0700, Rob Herring wrote:
-> On Fri, 26 Nov 2021 17:34:50 +0100, Miquel Raynal wrote:
-> > Provide an example of how to describe two flashes in eg. stacked mode.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  Documentation/devicetree/bindings/spi/spi-controller.yaml | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/spi/spi-controller.example.dts:40.23-45.15: Warning (spi_bus_reg): /example-0/spi@80010000/flash@2,3: SPI bus unit address format error, expected "2"
+On 13:10-20211126, Roger Quadros wrote:
+[...]
 
-Unit-addresses are based on the first reg entry.
+> >>>> +	/* Some SoC's have 32-bit at least, read limitation */
+> >>>> +	if (soc_device_match(k3_soc_devices)) {
+> >>>> +		dev_info(&pdev->dev, "force 32-bit\n");
+> >>>> +		info->force_32bit = true;
+> >>>> +	}
+> >>>> +  
+> >>>
+> >>> As suggested above, just adding a capability structure tied to the
+> >>> compatible string and retrieved with of_device_get_match_data() should
+> >>> be enough and replace this manual tree research.  
+> >>
+> >> The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
+> >> but still uses the same compatible. So compatible string by itself is not sufficient to identify
+> >> the troubled devices. soc_device_match() was the easiest way to address this.
+> > 
+> > This is precisely what compatibles are for, I believe we should declare
+> > the necessary additional compatibles and fix the device trees that are
+> > wrong.
+> 
+> AFAIK TI SoCs don't have different compatibles for different revisions of the same SoC.
+> My understanding is that the SoC is the same so compatible shouldn't change. Just that there were some
+> hardware fixes and some quirks may not be needed anymore.
+> 
+> Nishanth,
+> 
+> Could you please chime in on why SoC revisions can't use different compatibles?
+> 
+
+The permutations of boards (with add-on cards) and SRs become
+un-manageable esp when Silicon Revisions(SRs) dont actually get into
+production. Instead, what we do suggest are one of two things:
+a) The dts in k.org always reflect the latest SR for the chip that is
+   going into production. Older SR revisions are supported as overlays on top
+   of the dtb.
+b) Where possible, use the chip-id framework[1] to dynamically detect
+   the variations. This might be easier with newer K3 generation SoCs.
+
+
+In this instance, an overlay corresponding to older SoC might be
+feasible.
+
+
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/soc/ti/k3-socinfo.yaml
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
 ______________________________________________________
 Linux MTD discussion mailing list
