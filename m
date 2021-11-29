@@ -4,73 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A240C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 29 Nov 2021 18:10:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48B53C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 29 Nov 2021 18:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IrS67Cbz2ZdU8ckHuoI6L7riLxAoNKSKaAfv5EIUQ2E=; b=zoazmNeTLf0fkX
-	c4X/aS6FHu3thyVOw85L31NWEadqF/KjzPpxUE8D/A/cj7kl5FQVFuRzkBnXAIY3n3qVA3juVd+Qb
-	dlsZf0gsQ/y6Lg4NiD27PqjQqfu0PwiyLvnpgZ9XdUvlS4yGga4XOLPo/+AowYgUFIzVo+lHmGvfJ
-	1Ikf6p3LlAbp/QwPbaoh7XQgY2I88OVS2ag/eHaK1xowAEMNz9yDTcnttS48ZsmhJxZCJD7YXB5MH
-	mbR4aI7gO6bpZ999rOD6J7iQ0lzoAtp+NYaK/FvRqznzrABX9rTMibfx1CVeDU3vC+qj673trVhIZ
-	Nzmah7GIYC1cx4fngMUA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=NrJv8yX1ck741qc6BsMoljEd/7KvQsokZZC+w36ylHE=; b=XjpdNzCjfSGLbQLrJ8d++3i/+c
+	q9z4q8K4BCRkoVlzOeHQYJEBsV21ma7i7ORX8mME8jC056wqSInrSnFvzZHwhL0a9MedjuRgiqOw4
+	i7fOjI7tOGE0pxbPXJ8+5dM3WRi2WQ9Kfb56ORTSHAhJS4jw6hGs/SWEhVmBrf7jZoLTQDeSwm5Ld
+	nbCVMv8AsHUrBBPVtlhPSBq4FGglM3uvO2XV2K/6LZ9W2Clb4/V7WTqOzpROCGqkQAER0Xsny4DzI
+	mhS71WAvXKy9+PVVkwesaDx2xjxtUcR4GakF7j4xTgecpVEKWoPgPIsR8k4sS/okatzXGwAeIiT1j
+	HhvNTm1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mrl68-001iUF-46; Mon, 29 Nov 2021 18:09:52 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1mrlC5-001jZt-6k; Mon, 29 Nov 2021 18:16:01 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mrl65-001iSx-N3
- for linux-mtd@lists.infradead.org; Mon, 29 Nov 2021 18:09:51 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1ATI9bdw085910;
- Mon, 29 Nov 2021 12:09:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1638209377;
- bh=7BzZum/wSpr+6OJerze3ARCjTNpCFGTq2Yr+iKCYVE8=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=G3U9OzgzLfAEvnAt1pP25EJH9XgDtuxUrXdMCff3ztCsgMYvYKSvtyoRevrqvGUWH
- t6Rtyz7SXl2lrdayZk2zjMnphy7bsnNFC/ExVgLhdtdZQZTxzBi0fOoVvfY/HLZbmO
- LtTYbOEWMqQM2VvqDHM45SGDGZtbnHtxacEHZUlA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1ATI9bNQ113862
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 29 Nov 2021 12:09:37 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 29
- Nov 2021 12:09:36 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 29 Nov 2021 12:09:36 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1ATI9ZYm037856;
- Mon, 29 Nov 2021 12:09:36 -0600
-Date: Mon, 29 Nov 2021 23:39:35 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Rob Herring <robh+dt@kernel.org>
-CC: Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>, Michael Walle
- <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>
+ id 1mrlC2-001jZJ-Fa
+ for linux-mtd@lists.infradead.org; Mon, 29 Nov 2021 18:15:59 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2890AB815B1;
+ Mon, 29 Nov 2021 18:15:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6452EC53FAD;
+ Mon, 29 Nov 2021 18:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638209755;
+ bh=4ZvxN/3yB6BIkS5mjsWCkybDGiWY3Py98ZFJY+s6Vj4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=E3PEpP+W+hDsvuPyeAajJimQVmbwxj2vGUyUBwsK5ThTOCuv+YHmnBNMyLUG7G8rF
+ 5o01BTshaoBe4BVtxyMikV3YpDda7S2O7n4eJe7DEADKrRJkrc8hg8g9lx+h5AYnRp
+ JtJNrW2SfymVAqN0xI4bM+fie8mRqdne78USgugV5E5JwVWJT5abjwphwrAcmT+OwE
+ ZL4CZ2ydWXwx6fSODO6V6qeQ5ytH7zXy7etv/RfSxAqg3b2nnPSHcxLwwyF2ldGQPJ
+ 0pgUSn0IkJKU1xSBqlha2PjmY6Uigr9n+kpysW/wNU5DBimNjt+01icl/evZTh+Ifd
+ D9pEACPTwiJdg==
+Date: Mon, 29 Nov 2021 18:15:50 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+ Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org
 Subject: Re: [PATCH v3 0/3] Add bindings for peripheral-specific SPI
  controller properties
-Message-ID: <20211129180935.nmymboy336hllly7@ti.com>
+Message-ID: <YaUY1gKnyoOEvo/M@sirena.org.uk>
 References: <20211109181911.2251-1-p.yadav@ti.com>
+ <20211129180935.nmymboy336hllly7@ti.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211109181911.2251-1-p.yadav@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20211129180935.nmymboy336hllly7@ti.com>
+X-Cookie: Thank god!! ... It's HENNY YOUNGMAN!!
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211129_100949_914280_2D64623D 
-X-CRM114-Status: GOOD (  17.78  )
+X-CRM114-CacheID: sfid-20211129_101558_685450_10469C56 
+X-CRM114-Status: GOOD (  15.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,65 +75,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2167108403903160768=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
 
-On 09/11/21 11:49PM, Pratyush Yadav wrote:
-> Hi,
-> 
-> This series adds bindings for peripheral-specific SPI controller properties.
-> See patch 1 for more info on the motivations behind this.
-> 
-> This is the best approach that I came up with with my limited knowledge
-> of JSON schema. It has some limitations that are mentioned in patch 1. I
-> don't know of any better ways to model this. Suggestions are welcome!
+--===============2167108403903160768==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qhLQH2s+5hgBKos4"
+Content-Disposition: inline
 
-Do you plan to take this series through your tree or should I poke Mark 
-about it?
 
-> 
-> Changes in v3:
-> - s/slave/peripheral/g
-> - Drop the | on description.
-> - Drop the compatible property.
-> 
-> Changes in v2:
-> - Move other subnode properties listed in spi-controller.yaml to
->   spi-slave-props.yaml
-> - Move the Cadence controller-specific properties out of
->   spi-slave-props.yaml. They will be added in a separate file.
-> - Add a reference to spi-slave-props.yaml in spi-controller.yaml.
-> - Update description.
-> 
-> Pratyush Yadav (3):
->   spi: dt-bindings: add schema listing peripheral-specific properties
->   spi: dt-bindings: cdns,qspi-nor: Move peripheral-specific properties
->     out
->   dt-bindings: mtd: spi-nor: Add a reference to
->     spi-peripheral-props.yaml
-> 
->  .../bindings/mtd/jedec,spi-nor.yaml           |  3 +-
->  .../spi/cdns,qspi-nor-peripheral-props.yaml   | 42 +++++++++
->  .../bindings/spi/cdns,qspi-nor.yaml           | 33 -------
->  .../bindings/spi/spi-controller.yaml          | 69 +-------------
->  .../bindings/spi/spi-peripheral-props.yaml    | 89 +++++++++++++++++++
->  5 files changed, 135 insertions(+), 101 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor-peripheral-props.yaml
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> 
-> --
-> 2.33.1.835.ge9e5ba39a7
-> 
+--qhLQH2s+5hgBKos4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+On Mon, Nov 29, 2021 at 11:39:35PM +0530, Pratyush Yadav wrote:
+> On 09/11/21 11:49PM, Pratyush Yadav wrote:
+
+> > This is the best approach that I came up with with my limited knowledge
+> > of JSON schema. It has some limitations that are mentioned in patch 1. I
+> > don't know of any better ways to model this. Suggestions are welcome!
+
+> Do you plan to take this series through your tree or should I poke Mark=
+=20
+> about it?
+
+I'd expect to take it through my tree but please allow a reasonable time
+for reviews...
+
+--qhLQH2s+5hgBKos4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGlGNUACgkQJNaLcl1U
+h9BdUAf8CPx2aYIuPUWc4Ka8OhpPDQXy+JJkgrtPsqFeOqDqSk2dwAUHat/zea2+
+GJatBwnEcSdBPtjJ9Lhu7MOI+Lj4255qllxHtem4dr4HtKUhFPFzxrlfaHpZ7b6g
+g3ilAzVvilA/svq+UldUzrI2X0x4eJx9vfb5DU57IJV55iYzKokCLUfcUxXPwGWi
+LXNwGOX8Gd8I+o9bnEUeAakeac+UEl0jwfyzea9wQb7+9QovJAFt0EfxnZ5aXXSL
+9Mg90x6V6YzzL06tntkPs4FNF7N5QrS+Lnb3temdqn21Wr3ezdCuf9wHwizXzyCz
+SA+x9BeNFM4Z6o72ym0004LMiYmb9w==
+=4TaM
+-----END PGP SIGNATURE-----
+
+--qhLQH2s+5hgBKos4--
+
+
+--===============2167108403903160768==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2167108403903160768==--
+
