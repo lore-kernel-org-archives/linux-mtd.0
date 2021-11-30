@@ -4,73 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26EB7C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 17:02:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2C50C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 17:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=SbqwL2PCTcqfzQh1Pi5jdkBCr4Frp6cZT6pq71LS7WY=; b=4Ik+9kaZfFoVS9
-	qB4q6gjhPmg5dDzqsHqvoZlDBpp/OlIgqyEdwK0aBwnI546UBDkatgMM7ZpB58KM9f/4kyPxXTXMi
-	HEqgoLOUZAz+UbnR7PBvQAxIjzxTXlenIKKVWPcy+JUlmRO5lzNj8C6vnO3tmEz40yvQUehbjHJpU
-	JpacRdufHCZ3AgU+tZ7nzBxwRKd0lD31eDj8I6myWBLjN+EBd9KtaPz/uoaL9aQsvvPcz0+BgH24N
-	FUKOTNYnv5QekxzKtiSSPLC4UWpTjj2jO5NggtMadFSJLtQNG0lJrbsPgmuFBBH7Jo9EDI8ajUHua
-	F5C1MKdpq1V07ttNAM/g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OXX5kn+k9OOuAvi/ptHqvBzHuit1DpRhcmzipIMUcEw=; b=iq4ohmdtWw3pH/
+	SwqYMgX5ypyt2Q4Nj6yOgaOF5VEOZH1ZvnCJ3EJNgBC8wPj2e70if/0d5BIieNCIQpuh2mbFTacmj
+	vFrOyfF168SJXZZQQBL/arvObfKWtIlAhRSMzj4YR6Mceovb38mGIuUAq4HFrMz63vhSsB7UfZ6sN
+	dZ0jVTIY+3PaV+vjGZShY6TGWuJYICue9icarh/qEPEcePxgRDHc/9l+dRwesoiizNPPTzyPJGb/6
+	Sf96g6aI3xXLiH2opflDoGmccPeeOpU988dL8apynKBEp3bfliJ/btLZoepbf340jUIhgkexjYjlE
+	mJNgKD3S4BI27HBju8zw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ms6W3-006FCe-Ru; Tue, 30 Nov 2021 17:02:03 +0000
-Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
+	id 1ms797-006MhT-9d; Tue, 30 Nov 2021 17:42:25 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ms6Vp-006F9O-Oa
- for linux-mtd@lists.infradead.org; Tue, 30 Nov 2021 17:01:51 +0000
-Received: by mail-ed1-x530.google.com with SMTP id o20so89030813eds.10
- for <linux-mtd@lists.infradead.org>; Tue, 30 Nov 2021 09:01:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=ItLJRdVR7LAsef3Zc3otAshgjCo8JOyf9CQ33YfhusM=;
- b=e2/2Rs08W60dK2anpjCuxzd2Ji9xC/KJD8tL7+nmu7Nrg+u8reOFQF69YJMuMh2Cyl
- hh5lkztbszvt5VQeeS8koZQQMDDbxnVCmOrzCUzJqaoC6nd7wGyL9aAkELRhtpcBXdCb
- k8zdHJ8+evS23Ut1/fZnJlAiUf7YmCWT7cs1091wdolaF21GHNJhAywGtyBXv2hVPjb4
- tl6Xjv/MaiFsyxqKvItvtfsWyztzyTs06+MCTY1iRZAUDsymKFFkGEbfxS+CkRunO0RP
- +plc4YjxnCoO+EJHX1xVmRXoQ/nfiaPocVdKIWhzJE8MN6r16pE5FKPFXF+clT5KncKO
- pR+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=ItLJRdVR7LAsef3Zc3otAshgjCo8JOyf9CQ33YfhusM=;
- b=KrBVMXeTuG58BeAzYH9GHkF1qHWx0FeL6Pj05Kmybi3cSJyR2vrMti3BdUMTjQxG2G
- ZrRW7mdr4TStrVEH44m5+klnYdk2TbVlUzAUoKg7TXajvYrOhkxZgwnZ/hXaKbMdOZiC
- JVY103XMGItaCAy++gh0QH4l/olqyw0NUxoltIZ/G2S5TF/FWUACsLtBV5YkBc5ti53C
- C/+WERmhn8x0remAboRm53hj9Bcgmv5w9NY72STxtTPIdXWz7IqKzP8TTeB2ndb6QHpb
- wjnInfGPpqq0vA7neabxXsC0AmgOVc75XHkE7EFjf4k9iDwr8reGZInKQxJP+avj0AeG
- fZiA==
-X-Gm-Message-State: AOAM531wQsPdYE5ZijNWFJyfpSP0CDndUicLFgiU4RvwfTCt7pjSL56G
- Gvp9fhzvnsTNZdnb1AG1648hyk0eNtsTKB+b2HHkiQ==
-X-Google-Smtp-Source: ABdhPJyICl7DQ/wtzllvI1IlerKslx88Nfr8uD+p+yzEUSG+QBFFPANlAcSVMe92eAl2jCy8s3ugts6aEb0b58z0yNs=
-X-Received: by 2002:a05:6402:845:: with SMTP id
- b5mr260543edz.392.1638291706707; 
- Tue, 30 Nov 2021 09:01:46 -0800 (PST)
+ id 1ms792-006Mey-Kt
+ for linux-mtd@lists.infradead.org; Tue, 30 Nov 2021 17:42:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1638294140; x=1669830140;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=Aj0iDteSL73mkv+QFTFEcTF0hPM4JHu/l59DOKChU3E=;
+ b=x9eze5d4Y9OGZt6qD0aAC1PWvDBXEwwo0mWFwUxH+XJe9TZWDL19F/Eu
+ Mu1hx76f4XFes++tZYucs5KDtCqicOYEweFY7+GugsIEGRoci5ff9k5Wv
+ 9lGxurCNSljlKycvWDIKvSbKyrv0tv8jpRPhyYaK60X3ruJs3SA2pj1Pv
+ 9K5qSzJVwtGhAJBedYYBzSUb2t04u0zA4oxbMFUPE5IYfiwJDjO1z12x+
+ BLJLEedJrShSy+nC7KxskXcmdLpxuyMoNrnnspai1q6jWxfyMEKnsj33h
+ k4tB/CdrBfFCDzjx8n/LVaVEqWd2QmJc3Y2k+0Svd6Wyw0aKEPqepWALq w==;
+IronPort-SDR: zl24utUqQkipDAA1pAN17tftVEU38Jj8afd7ygIT2Zov/4D+Cc6T+SgkdJOBHJX/Wq+MxHgnYL
+ v4XW/jv4iwV4MYHnu2LM7wju338LwlQfAjfafSGPr8rVjqBNrbakhTJtL+d4TPo3VJ7V2b3i2O
+ ytS2O7Kvv/sDcHPvMG8lfDve+go1rxNu1dMrxV1doBZJBtmLtYeB+3G71JavP5FUqCPFnOTrNJ
+ RJVEhblfQGrMmO8f5Du16OVZ/ymRQyxROQX9+BccpgZe79oEe2q68wZCC+Wghva6m/gUSsXDyv
+ qqC9yEvWBOuA0DT3OgxLza00
+X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; d="scan'208";a="138162188"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 Nov 2021 10:42:16 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 30 Nov 2021 10:42:16 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14 via Frontend Transport; Tue, 30 Nov 2021 10:42:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lIUEomj3XYpkF4dQyOA0ujDhk0teckPXGefMaiEt3CqD01fewVcT8Lf45P8jP7cH4bLf/sAxnK4bGov/jsW058/xt/tyk3YhyArDgQCJJL6A1clhhkYUK6iC/FgSURAkV7Td2tEITgw3vu6yfawDqJDfjaL07q9eZ1D2yjrMpU/6HLPCU+JRvHmZsPvlhUX5zYeCMwwNQ1RfY2wi1tm2n7i5ER+vnfcgXOMxRTznJagZKYbDp23h2suwCMF0J0EGSlG/EB/G4SHIC8w338yEa9T2f0599i2JlDzaSnYJxypC77QbzbMUqErlwUyp0Z7FnRTT92BOfz2YhdW89tDM6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Aj0iDteSL73mkv+QFTFEcTF0hPM4JHu/l59DOKChU3E=;
+ b=XKj1urTy+2GCiORwhznHPNAzgxWl+BUWpK4sQXZrBZUBM2nFcOJTdDW6b2JrIdols7pZpBZTscgI9aNKAOhxj4yn7//pPrI9N10spmZxUxJ7l24KQ0ilQkdybwhlgWTwrWPO3HVQGiXhwak+xFOryElocAOmoUmAXY5sQdlJDy/oQe2HVzMOKr62XFI7ytW1rixtcbisrEz6W96Ak1SjNC26+tVlgNjnaLcaRL88wNFWz6+85WTrVL1tZIpoD1I7EK2USjm1jqXhD02m5vASvbBEaKCRZXSCWh/YajUwhiPIU1ZlnsDTGUi4U/y9tjOvZdy1XvbSm5ulasbYOGKhKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Aj0iDteSL73mkv+QFTFEcTF0hPM4JHu/l59DOKChU3E=;
+ b=LsblCmVmALepedMCSD7y+ZY1AHAj8ptxQGVNIWBB/RJSbS0OMcU/CDmN1SNt+taZ49qqUqPMJGSxMxhI4vkghBzwIWz63MVDMPGT6oI0oX8tz09Ed+vwYN6EhZFdJFoZSnSwZlm2/jfMBxfcJa1EZyM0B1c/wOoOHTbdlEdhIRQ=
+Received: from BL1PR11MB5381.namprd11.prod.outlook.com (2603:10b6:208:308::23)
+ by BL0PR11MB2948.namprd11.prod.outlook.com (2603:10b6:208:75::30)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Tue, 30 Nov
+ 2021 17:42:14 +0000
+Received: from BL1PR11MB5381.namprd11.prod.outlook.com
+ ([fe80::6544:6ae1:e784:fa28]) by BL1PR11MB5381.namprd11.prod.outlook.com
+ ([fe80::6544:6ae1:e784:fa28%3]) with mapi id 15.20.4690.027; Tue, 30 Nov 2021
+ 17:42:14 +0000
+From: <Kumaravel.Thiagarajan@microchip.com>
+To: <gregkh@linuxfoundation.org>
+CC: <lee.jones@linaro.org>, <Pragash.Mangalapandian@microchip.com>,
+ <Sundararaman.H@microchip.com>, <axboe@kernel.dk>,
+ <linux-block@vger.kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>, 
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <LakshmiPraveen.Kopparthi@microchip.com>, <Ronnie.Kunin@microchip.com>
+Subject: RE: Reg: New MFD Driver for my PCIe Device
+Thread-Topic: Reg: New MFD Driver for my PCIe Device
+Thread-Index: AdfUin4YS96OXFqCSACYGDyaPGcVfAABemOAAABYXQAAAHdcgAABPKYAAY/rIZAABzT1AACK+OwwAA0KDwAAzz9LUAFfu+2A
+Date: Tue, 30 Nov 2021 17:42:14 +0000
+Message-ID: <BL1PR11MB538172ECC1F112D2F6E0D734E9679@BL1PR11MB5381.namprd11.prod.outlook.com>
+References: <CH0PR11MB5380F5BD18F15014BA8B8479E9919@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YYkEP62JRb4rCuXQ@google.com> <YYkGkEiPb+6J62hn@kroah.com>
+ <YYkJsbbHH6wdPvB9@google.com> <YYkR/szsDirtj1FP@kroah.com>
+ <CH0PR11MB5380791976D5837E024D5679E9999@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YZO+KktO3OhDEtlq@kroah.com>
+ <CH0PR11MB5380439460BADE102D91C18AE99C9@CH0PR11MB5380.namprd11.prod.outlook.com>
+ <YZe6TPrf4Drh7HpI@kroah.com>
+ <CH0PR11MB5380DAC79E3D01C7D1D6008AE9609@CH0PR11MB5380.namprd11.prod.outlook.com>
+In-Reply-To: <CH0PR11MB5380DAC79E3D01C7D1D6008AE9609@CH0PR11MB5380.namprd11.prod.outlook.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 83fc3e53-f847-4d67-bdf9-08d9b428bf2d
+x-ms-traffictypediagnostic: BL0PR11MB2948:
+x-microsoft-antispam-prvs: <BL0PR11MB29487AAC394637392E216DAFE9679@BL0PR11MB2948.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CgTPjF2ORI+is4D/wjqatT0T7K1ZQx5j7ZhzQhTMtokI7GSTg8ju2mphJ7BAB5/H5IbeEUwNk5TbvDBvN3c/aSMsJmY4DVG4FlsE8WE4Zf6EtuOKQb9tLc9gnlHlT1bEYwjHKqcjxd8CnDcA+vOcAsKhIz2QXNb51fGO9BlSQIgWIOdYfwpweinjMg0gUA1xeCNyeUpKbnTNp3BTpdz0ltIJsbHOGTHlJ6KliGbuZzXTjjvF/bSdKwlZgB4wEHeOaYyE7Bf6+qAtEdUdc54HNFaJK4Oc9eSHgqI6d8nNWyab/fuWqn4fMtj2kltsCBVtV9DpmHeT45wDShzBy2A84l73DF/xNNeWg42eoOGX1JFrKPx0mEFEEyTKeixH1gP4F7UX4gNj4wJ6IhKXCdKnEPNK0ceAcZb7/gwOHI85LtV/4nNaE2ZO6AY9e2fazCqQRRsK/tayu9gw4OOJA/zPPlqBGTQv1kgMUeQJvo5/c9atYeq96P+8SAaN6fiEW1yUaTkqbVttoGc77aCR9tQcLkRPK1Wk1pka2T2WsGEDsD4HLRI1ixmvTeOuZrxHLVB+ANovWBCYAIHr1T8kOyAyAZ7peN5ZzEwczNmbXv2D1MRLUlnW+akKmwlXQgdwKaad7td+LHf/6YYphnfHTgfvCOXF29SL28RcRDTzu4ja5nb8o5W19Y+U89XMlNAo6QpsQjb1wx5CeIh3o30wBT2Ypg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BL1PR11MB5381.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(71200400001)(26005)(8936002)(38100700002)(2906002)(5660300002)(8676002)(186003)(66556008)(66946007)(54906003)(38070700005)(83380400001)(33656002)(316002)(122000001)(66446008)(66476007)(6506007)(7696005)(55016003)(52536014)(107886003)(64756008)(76116006)(9686003)(53546011)(6916009)(4326008)(86362001)(508600001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?c0s6LfzjsiZ4plE8LUnyaIaSrRCDAPTSy2b6SWyeeDNkuff6n+RosTRctNnA?=
+ =?us-ascii?Q?/cxHOVYtWi84umqZc+MDaUFtNd0TzXSAvRL6IeY8xCpgxk5/T75H/w7PZXfY?=
+ =?us-ascii?Q?Wa20dlILZAN65f73JWXFw7RkEU5EFzI6QO60eRBM6jDjWOI4aIWmscASIwxi?=
+ =?us-ascii?Q?ve7v4DxVB9YbAJ0BEvsA+oz3pyr6aP6nzCdTjaQzPPQsjyz512W9jtGEpl82?=
+ =?us-ascii?Q?jAf0UziApLWV3wjVLWPftII29qRKIREzGlPhAjzON27Js04+jd0drBmdHeM1?=
+ =?us-ascii?Q?9+04esRqtHGnH49i4e9Kw4Ob5NW0KiNKtbUyJ1irECXcyfTRvSj4GpYhKcsB?=
+ =?us-ascii?Q?qjlPz7vEZyqWLTIU/HBMfPg2sDjLWt9v+L/8fStwrLlZRbIMEK1uC+u22/pS?=
+ =?us-ascii?Q?T9TE27E3LuAKoVa6p69iMbH6fWMDRFGhl7hUWzTOXpmcM7xaakaNcrp7Pf6Y?=
+ =?us-ascii?Q?w1lFlPQFhMZ8Zk2Zm1DvhCPH+cZsZXy8iK4X31a9OIULu79TTqcgY2OeweYx?=
+ =?us-ascii?Q?0xYDvEGno643eyXnFKe1MB2o60IZsTtvuIuJArzvp8qud/jThey0Gh+dQis9?=
+ =?us-ascii?Q?RxskQ1d1zO6XM3D4K3k3uKfQqOz5noiKz5s7g81DOpb3Zf9V3BLFgGs71JiM?=
+ =?us-ascii?Q?GEgBwP10h4WtwLHbq7Ce+gSil9iwS/Q6dxuRKI8CZBZbpZ0hr+t/0Eq3YRAA?=
+ =?us-ascii?Q?VdVTkszPltTNMm+9aCtr5Zyby+v7fUpiEtxDw3lsDS+efD3i3x+FzeYtBbBc?=
+ =?us-ascii?Q?cp+quZFkJ4WHLnjx0Mn6z1YdX7oQOXOJ3Tpu2x1bT/sRVieix3PYcHOAVdu+?=
+ =?us-ascii?Q?207iwX0R3fHEO79mqly3TfvDOUHF1FyBCNgMuzNOR/pw3VgWarOilDVc85H7?=
+ =?us-ascii?Q?qiZ5hkFD5DEvmleJHASSLn+ovb4ohTx+5EUecFJI0/PTk0TwtrQeBFv84YjN?=
+ =?us-ascii?Q?DD8eQBFvz09iQ9FNZZWaBbWa6OusxWViV8Srw3fOxJN9cQV9wbykRUrHgoTh?=
+ =?us-ascii?Q?aUCf4c65YR5M05BJinnpp9/08SWy3aSQ9jz1CStD+WyplRKl/FGkkv8IL95m?=
+ =?us-ascii?Q?asXAMZIoNamuwLeTRtcNgz0kHTd48nPn6INv+UJt6IRwluZFajH2sMG3UwHv?=
+ =?us-ascii?Q?rKbRntHbFNmEOsgmD4hY89GmJWaIQ/IO3PNda11EwNrAuEBHpS6jaMDaE4od?=
+ =?us-ascii?Q?yFZK3OhkOmTNXjPB+JWuduCCKOMEZ5Q/SGfoz/p5pTHBZQuFE8V501LRmSnb?=
+ =?us-ascii?Q?FB3cCGJ5/KvGgDd014ypjzQ2ksxE+vOV1FUZjySkYtVHS8MUdzoalfa3+yba?=
+ =?us-ascii?Q?4UcZDNgMcm3gSP4L/7gwuzxwrp2pRCt2qLeEHk9FBBCaXUIwzH2X99GNvY7h?=
+ =?us-ascii?Q?wRejCh/2lbfsuveNrsAFnQhI96cWVoxhvdYvIP2rcoi0qAzETUqGb9xQERqy?=
+ =?us-ascii?Q?zCpcNNJdJbPS5wawl0IuCjuVG+LklOr8MmLJ+J9QClrWY3cE+rHrIxr0Gjru?=
+ =?us-ascii?Q?YHopvjSfSpZD/NW3e6NVTe9eUfEGV2rLI9/rCCdeeffXZuVlGpnlLpbCVi4s?=
+ =?us-ascii?Q?GEUK4ZFSSxv5xeByL9xy1+94mQoUpFHXjGb7/eOjEwKrbhlSEn5A+C0hIz5P?=
+ =?us-ascii?Q?b6NwjAI8kaeHi4xffX+6JfHga7p3wlEFMLpA2cfxegNpAYwwb8n6NQtRbNpn?=
+ =?us-ascii?Q?FdhqmCI+Z5QSxzP2EKMidZf647A9wmH/TEndAhdwhgrx3Z3LFOdFYXmCFb5a?=
+ =?us-ascii?Q?ZpFxl6qQsA=3D=3D?=
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 30 Nov 2021 22:31:34 +0530
-Message-ID: <CA+G9fYuupqqemLbgoVL2kYL4d2AtZLBo1xcshWWae7gX5Ln-iA@mail.gmail.com>
-Subject: [next] WARNING: CPU: 2 PID: 66 at kernel/locking/rwsem.c:1298
- __up_read
-To: Linux-Next Mailing List <linux-next@vger.kernel.org>,
- linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Stephen Rothwell <sfr@canb.auug.org.au>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon <bbrezillon@kernel.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Sean Nyekjaer <sean@geanix.com>, Anders Roxell <anders.roxell@linaro.org>,
- =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5381.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83fc3e53-f847-4d67-bdf9-08d9b428bf2d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2021 17:42:14.7498 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tZtR3PQbIgAcJpjjJ/BnouQBNfotsH1lww3XBOPSZipCNOPVj0GTyaOnNcmZmQK4D/PdgFcIBhRlaHBRzUSV7JGn4FpfbkM1oIjN/BGjmNwVLb8vDUCWc9HFMmVIDVCy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR11MB2948
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211130_090149_816810_0D78D7A3 
-X-CRM114-Status: UNSURE (   7.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211130_094220_824087_1FFE4EBE 
+X-CRM114-Status: GOOD (  36.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,145 +180,108 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[Please ignore this email if it is already reported]
+Dear Greg KH,
 
-Regression found on qemu_arm64.
-Following kernel warnings reported on Linux next-20211130 while booting.
+In case you missed my last email below, I have tried to answer your questions in that email.
+Please let me know if you have any further questions or concerns.
+This will be help me to finalize the architecture for my driver.
 
+Thank You.
 
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git commit: 34f255a1e91ab44ff8926cf8294ff9144e62e861
-  git describe: next-20211130
-  make_kernelversion: 5.16.0-rc3
-  kernel-config: https://builds.tuxbuild.com/21dB06iPvDP58giSGHdE5W3Qc68/config
-  kernel-Image: https://builds.tuxbuild.com/21dB06iPvDP58giSGHdE5W3Qc68/Image.gz
-  build location: https://builds.tuxbuild.com/21dB06iPvDP58giSGHdE5W3Qc68/
+Regards,
+Kumar
 
-kernel warning:
---------------
-[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x000f0510]
-[    0.000000] Linux version 5.16.0-rc3-next-20211130
-(tuxmake@tuxmake) (aarch64-linux-gnu-gcc (Debian 11.2.0-9) 11.2.0, GNU
-ld (GNU Binutils for Debian) 2.37) #1 SMP PREEMPT @1638261010
-[    0.000000] Machine model: linux,dummy-virt
-<trim>
-[   69.203007] INFO: trying to register non-static key.
-[   69.203752] The code is fine but needs lockdep annotation, or maybe
-[   69.204508] you didn't initialize this object before use?
-[   69.205174] turning off the locking correctness validator.
-[   69.206024] CPU: 2 PID: 66 Comm: kworker/2:1H Not tainted
-5.16.0-rc3-next-20211130 #1
-[   69.207053] Hardware name: linux,dummy-virt (DT)
-[   69.208000] Workqueue: kblockd blk_mq_run_work_fn
-[   69.209944] Call trace:
-[   69.210435]  dump_backtrace+0x0/0x1dc
-[   69.211123]  show_stack+0x24/0x30
-[   69.211698]  dump_stack_lvl+0x8c/0xb8
-[   69.212296]  dump_stack+0x18/0x34
-[   69.212911]  register_lock_class+0x4c8/0x4ec
-[   69.213544]  __lock_acquire+0x78/0x20cc
-[   69.214122]  lock_acquire.part.0+0xe0/0x230
-[   69.214737]  lock_acquire+0x68/0x84
-[   69.215303]  down_read+0x78/0x94
-[   69.215863]  mtd_read_oob_std+0xb0/0x184
-[   69.216464]  mtd_read_oob+0x8c/0x150
-[   69.217043]  mtd_read+0x70/0xb0
-[   69.217595]  concat_read+0xe0/0x1b4
-[   69.218151]  mtd_read_oob_std+0x174/0x184
-[   69.218759]  mtd_read_oob+0x8c/0x150
-[   69.219336]  mtd_read+0x70/0xb0
-[   69.219872]  mtdblock_readsect+0x80/0x19c
-[   69.220457]  mtd_queue_rq+0x4d4/0x650
-[   69.221020]  blk_mq_dispatch_rq_list+0x1b8/0x8b4
-[   69.221654]  __blk_mq_do_dispatch_sched+0x270/0x300
-[   69.222327]  __blk_mq_sched_dispatch_requests+0x11c/0x17c
-[   69.223014]  blk_mq_sched_dispatch_requests+0x44/0x80
-[   69.223684]  __blk_mq_run_hw_queue+0x70/0xcc
-[   69.224309]  blk_mq_run_work_fn+0x2c/0x40
-[   69.224916]  process_one_work+0x280/0x700
-[   69.225522]  worker_thread+0x80/0x454
-[   69.226105]  kthread+0x17c/0x190
-[   69.226667]  ret_from_fork+0x10/0x20
-[   69.229322] ------------[ cut here ]------------
-[   69.230151] DEBUG_RWSEMS_WARN_ON(sem->magic != sem): count = 0x100,
-magic = 0x0, owner = 0xffff0000c0e6e601, curr 0xffff0000c0e6e600, list
-not empty
-[   69.232197] WARNING: CPU: 2 PID: 66 at kernel/locking/rwsem.c:1298
-__up_read+0x1e8/0x270
-[   69.233176] Modules linked in:
-[   69.233944] CPU: 2 PID: 66 Comm: kworker/2:1H Not tainted
-5.16.0-rc3-next-20211130 #1
-[   69.234814] Hardware name: linux,dummy-virt (DT)
-[   69.235441] Workqueue: kblockd blk_mq_run_work_fn
-[   69.236290] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   69.237159] pc : __up_read+0x1e8/0x270
-[   69.237792] lr : __up_read+0x1e8/0x270
-[   69.238398] sp : ffff8000084436f0
-[   69.238917] x29: ffff8000084436f0 x28: ffff0000c2c44408 x27: 0000000000040000
-[   69.240164] x26: ffff8000084439f8 x25: 0000000000000000 x24: 0000000000000000
-[   69.241315] x23: 0000000000000000 x22: 0000000000000000 x21: ffff800008443838
-[   69.242441] x20: ffffa75da2ec4000 x19: ffff0000c2ac28b0 x18: ffffffffffffffff
-[   69.243563] x17: 30322d7478656e2d x16: 3363722d302e3631 x15: ffff800088443407
-[   69.244683] x14: 000000000000000f x13: 656e776f202c3078 x12: 30203d2063696761
-[   69.245802] x11: ffffa75da2f49b48 x10: 00000000fffff000 x9 : ffffa75da0540b84
-[   69.246974] x8 : 00000000ffffefff x7 : ffffa75da2f49b48 x6 : 0000000000000001
-[   69.248078] x5 : ffffa75da2ec1000 x4 : ffffa75da2ec1440 x3 : 0000000000000000
-[   69.249181] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0000c0e6e600
-[   69.250363] Call trace:
-[   69.250847]  __up_read+0x1e8/0x270
-[   69.251419]  up_read+0x4c/0x80
-[   69.251950]  mtd_read_oob_std+0xe8/0x184
-[   69.252536]  mtd_read_oob+0x8c/0x150
-[   69.253099]  mtd_read+0x70/0xb0
-[   69.253630]  concat_read+0xe0/0x1b4
-[   69.254183]  mtd_read_oob_std+0x174/0x184
-[   69.254786]  mtd_read_oob+0x8c/0x150
-[   69.255350]  mtd_read+0x70/0xb0
-[   69.255890]  mtdblock_readsect+0x80/0x19c
-[   69.256477]  mtd_queue_rq+0x4d4/0x650
-[   69.257044]  blk_mq_dispatch_rq_list+0x1b8/0x8b4
-[   69.257677]  __blk_mq_do_dispatch_sched+0x270/0x300
-[   69.258337]  __blk_mq_sched_dispatch_requests+0x11c/0x17c
-[   69.258983]  blk_mq_sched_dispatch_requests+0x44/0x80
-[   69.259634]  __blk_mq_run_hw_queue+0x70/0xcc
-[   69.260254]  blk_mq_run_work_fn+0x2c/0x40
-[   69.260848]  process_one_work+0x280/0x700
-[   69.261447]  worker_thread+0x80/0x454
-[   69.262022]  kthread+0x17c/0x190
-[   69.262569]  ret_from_fork+0x10/0x20
-[   69.263285] irq event stamp: 41
-[   69.263815] hardirqs last  enabled at (41): [<ffffa75da18e8884>]
-exit_to_kernel_mode+0x34/0x170
-[   69.264778] hardirqs last disabled at (39): [<ffffa75da0410de4>]
-__do_softirq+0x564/0x5f8
-[   69.265691] softirqs last  enabled at (40): [<ffffa75da0410d00>]
-__do_softirq+0x480/0x5f8
-[   69.266539] softirqs last disabled at (35): [<ffffa75da04a6f7c>]
-__irq_exit_rcu+0x17c/0x1b0
-[   69.267544] ---[ end trace dce9abbec763b35e ]---
-
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-link:
------------
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20211130/testrun/6599984/suite/linux-log-parser/test/check-kernel-warning-4048437/log
-
-step to reproduce:
-------------------
-/usr/bin/qemu-system-aarch64 -cpu max -machine virt-2.10 -nographic \
- -net nic,model=virtio,macaddr=BA:DD:AD:FC:09:08 -net tap -m 4096 \
- -monitor none -kernel kernel/Image.gz \
- --append "console=ttyAMA0 root=/dev/vda rw" \
- -hda rootfs/rpb-console-image-lkft-juno-20211006155038.rootfs.ext4 \
- -m 4096 -smp 4 -nographic
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> -----Original Message-----
+> From: Kumaravel Thiagarajan - I21417
+> Sent: Wednesday, November 24, 2021 12:03 AM
+> To: Greg KH <gregkh@linuxfoundation.org>
+> Cc: lee.jones@linaro.org; Pragash Mangalapandian - I21326
+> <Pragash.Mangalapandian@microchip.com>; Sundararaman Hariharaputran -
+> I21286 <Sundararaman.H@microchip.com>; axboe@kernel.dk; linux-
+> block@vger.kernel.org; miquel.raynal@bootlin.com; richard@nod.at;
+> vigneshr@ti.com; linux-mtd@lists.infradead.org; Lakshmi Praveen Kopparthi
+> - I17972 <LakshmiPraveen.Kopparthi@microchip.com>; Ronnie Kunin -
+> C21729 <Ronnie.Kunin@microchip.com>
+> Subject: RE: Reg: New MFD Driver for my PCIe Device
+> 
+> Dear Greg KH,
+> 
+> Please find my answers inline below and let me know if you have any
+> questions or comments.
+> 
+> Thank You.
+> 
+> Regards,
+> Kumaravel Thiagarajan
+> 
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Friday, November 19, 2021 8:23 PM
+> > To: Kumaravel Thiagarajan - I21417
+> > <Kumaravel.Thiagarajan@microchip.com>
+> > Cc: lee.jones@linaro.org; Pragash Mangalapandian - I21326
+> > <Pragash.Mangalapandian@microchip.com>; Sundararaman
+> Hariharaputran -
+> > I21286 <Sundararaman.H@microchip.com>; axboe@kernel.dk; linux-
+> > block@vger.kernel.org; miquel.raynal@bootlin.com; richard@nod.at;
+> > vigneshr@ti.com; linux-mtd@lists.infradead.org; Lakshmi Praveen
+> > Kopparthi
+> > - I17972 <LakshmiPraveen.Kopparthi@microchip.com>; Ronnie Kunin -
+> > C21729 <Ronnie.Kunin@microchip.com>
+> > Subject: Re: Reg: New MFD Driver for my PCIe Device
+> >
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know
+> > the content is safe
+> >
+> > On Fri, Nov 19, 2021 at 09:16:29AM +0000,
+> > Kumaravel.Thiagarajan@microchip.com wrote:
+> > > Dear Greg KH,
+> > >
+> > > I went through the documentation of aux bus and felt that it would
+> > > be the
+> > correct way to go as you said.
+> > > I will migrate from MFD to aux bus.
+> > >
+> > > I have one more architectural question as below.
+> > > I have written the driver such that it enumerates the OTP memory and
+> > EEPROM memory as two separate block devices or disks each of size 8KB
+> > and this enables me to use the linux dd command with "direct" option
+> > to dump the configuration binary onto OTP or EEPROM devices.
+> > > Also, this enables me to use the application like hexedit to view
+> > > the OTP or
+> > EEPROM devices in raw binary format.
+> > > These devices are not based on mtd (memory technology device)
+> > architecture as we don't have any erase functionality here.
+> > > Can you please let me know a suitable location in kernel source tree
+> > > for my
+> > block or disk device driver?
+> >
+> 
+> > So they are a read-only block device?
+> KT: No. These block devices are writeable too. I program these block devices
+> using the linux dd command with the "direct" option.
+> 
+> >
+> > Why use a block device and not just the "normal" eeprom driver?
+> KT: I thought the normal EEPROM driver can be used only for EEPROMs that
+> are connected to I2C adapters for which there is a I2C Adapter driver
+> available already. But my device has an inbuilt EEPROM controller hardware
+> which is not like an I2C adapter.
+> 
+> > Or a char device node and mmap the memory?
+> KT: I am not sure if I clearly understand this. Are you suggesting to mmap the
+> EEPROM memory? The EEPROM memory is not mapped into the address
+> space directly. EEPROM and OTP controller registers are mapped into the
+> address space of the processor and accessed by the kernel mode driver.
+> 
+> >
+> > Anyway, no idea where to put them, drivers/misc/ ?
+> KT: Ok. I can use this location.
+> 
+> >
+> > thanks,
+> >
+> > greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
