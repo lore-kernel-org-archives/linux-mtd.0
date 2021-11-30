@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70F82C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 08:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B07F3C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 08:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3n6asBebjcOe/D4EPfsyJZ0xyLlcdgZLPduns++Z7Iw=; b=jKi7n+RH6KWK5g
-	GRLy57uuHqO89WyFPPLdYDn0OuIwOVq5bO8itlxnL+VuA0Mhlkmp9OmUKh8JvYqk1eyH8D6u/bZbf
-	d19sHcnMbS8y9XnQomPZ94pLfLPvcfKvx3ngdKSWVDYYrWJbilhpy50hfZX9V+1Az9D5R5EKu3xKF
-	FfgTUN8jscMbNHyYQ9Puu2E3QqnhYgxbvkUUILrvEEelGzP2CzulV0v4XXkHVM57bpGgKhVhLTzYv
-	IS8GQbBEWPc0Ft0q2sR+IF8+ZCvoWuZhO/drYStEpziOfkU1ZI1gJ2X9K1KuCvSEt4vZZENsRtT2d
-	W4LRExpLC7DMsNfDoeEw==;
+	List-Owner; bh=2OSyfuIOt3WeRkvWxpLG/WD3fhc3SIiNC8iAc0ZvJIY=; b=WmJ5HlhpMQebEB
+	Whgj4lHAV3++eVKenpMd8DHSyOmiiM8AInvWoQdNB5Pce5Z7gP5Hu0/uroze8RLMoewsAdVtF0ZPT
+	6vQWtmYY/V6IubyCzYiTZY8LsBgLwbjUqgFWvPYtonKXEo67u8n3fI/Yw33rRHC3tz3MCrJ8u+Ysu
+	X1L/r9PuWJu8xDbfqLhp3oW9XnOWqVzpDRETze5VN2G92CYxkMQytxTYXFeCsG7i75DkkBFFNFvRO
+	0IpCHZr37Vf3z3g0hqFuZH8EVsOcqNU2xgXyGyGCpf+DAtXuuzOoM8Y6aZi5c54OHmTQ22sOCWuM3
+	CVAiRpKR+M05CH5ZDhtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mryZX-0047jw-SD; Tue, 30 Nov 2021 08:33:07 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1mryZz-0047xP-AH; Tue, 30 Nov 2021 08:33:35 +0000
+Received: from mailgw01.mediatek.com ([216.200.240.184])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mryYx-0047Yn-QI; Tue, 30 Nov 2021 08:32:35 +0000
-X-UUID: 5a6e3b1e614f46649e4a1a17e45f1ed8-20211130
-X-UUID: 5a6e3b1e614f46649e4a1a17e45f1ed8-20211130
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
+ id 1mryYy-0047YX-Qp; Tue, 30 Nov 2021 08:32:35 +0000
+X-UUID: 7bcff6161cbf4d92a4cc44e31ff87d01-20211130
+X-UUID: 7bcff6161cbf4d92a4cc44e31ff87d01-20211130
+Received: from mtkcas67.mediatek.inc [(172.29.193.45)] by mailgw01.mediatek.com
  (envelope-from <xiangsheng.hou@mediatek.com>)
  (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1357177006; Tue, 30 Nov 2021 01:32:27 -0700
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ with ESMTP id 1933531433; Tue, 30 Nov 2021 01:32:30 -0700
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
  MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 30 Nov 2021 00:32:25 -0800
+ 15.0.1497.2; Tue, 30 Nov 2021 00:32:28 -0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 30 Nov 2021 16:32:23 +0800
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
+ Tue, 30 Nov 2021 16:32:27 +0800
 Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
  mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 30 Nov 2021 16:32:22 +0800
+ 15.0.1497.2 via Frontend Transport; Tue, 30 Nov 2021 16:32:25 +0800
 From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 To: <miquel.raynal@bootlin.com>, <broonie@kernel.org>
 CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
@@ -48,17 +48,18 @@ CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
  <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
  <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: [RFC,v4,3/5] spi: mtk: Add mediatek SPI Nand Flash interface driver
-Date: Tue, 30 Nov 2021 16:32:00 +0800
-Message-ID: <20211130083202.14228-4-xiangsheng.hou@mediatek.com>
+Subject: [RFC, v4,
+ 4/5] mtd: spinand: Move set/get OOB databytes to each ECC engines
+Date: Tue, 30 Nov 2021 16:32:01 +0800
+Message-ID: <20211130083202.14228-5-xiangsheng.hou@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211130083202.14228-1-xiangsheng.hou@mediatek.com>
 References: <20211130083202.14228-1-xiangsheng.hou@mediatek.com>
 MIME-Version: 1.0
 X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211130_003231_908121_BC9716C2 
-X-CRM114-Status: GOOD (  22.93  )
+X-CRM114-CacheID: sfid-20211130_003232_947559_17AB1478 
+X-CRM114-Status: GOOD (  21.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,1174 +76,508 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The SPI Nand Flash interface driver cowork with Mediatek pipelined
-HW ECC engine.
+Move set/get OOB databytes to each ECC engines when in AUTO mode.
+For read/write in AUTO mode, the OOB bytes include not only free
+date bytes but also ECC data bytes. And for some special ECC engine,
+the data bytes in OOB may be mixed with main data. For example,
+mediatek ECC engine will be one more main data byte swap with BBM.
+So, just put these operation in each ECC engine to distinguish
+the differentiation.
 
 Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 ---
- drivers/spi/Kconfig        |   11 +
- drivers/spi/Makefile       |    1 +
- drivers/spi/spi-mtk-snfi.c | 1117 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 1129 insertions(+)
- create mode 100644 drivers/spi/spi-mtk-snfi.c
+ drivers/mtd/nand/ecc-sw-bch.c           | 71 ++++++++++++++++---
+ drivers/mtd/nand/ecc-sw-hamming.c       | 71 ++++++++++++++++---
+ drivers/mtd/nand/spi/core.c             | 93 +++++++++++++++++--------
+ include/linux/mtd/nand-ecc-sw-bch.h     |  4 ++
+ include/linux/mtd/nand-ecc-sw-hamming.h |  4 ++
+ include/linux/mtd/spinand.h             |  4 ++
+ 6 files changed, 198 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 596705d24400..9cb6a173b1ef 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -535,6 +535,17 @@ config SPI_MT65XX
- 	  say Y or M here.If you are not sure, say N.
- 	  SPI drivers for Mediatek MT65XX and MT81XX series ARM SoCs.
+diff --git a/drivers/mtd/nand/ecc-sw-bch.c b/drivers/mtd/nand/ecc-sw-bch.c
+index 405552d014a8..bda31ef8f0b8 100644
+--- a/drivers/mtd/nand/ecc-sw-bch.c
++++ b/drivers/mtd/nand/ecc-sw-bch.c
+@@ -238,7 +238,9 @@ int nand_ecc_sw_bch_init_ctx(struct nand_device *nand)
+ 	engine_conf->code_size = code_size;
+ 	engine_conf->calc_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
+ 	engine_conf->code_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
+-	if (!engine_conf->calc_buf || !engine_conf->code_buf) {
++	engine_conf->oob_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
++	if (!engine_conf->calc_buf || !engine_conf->code_buf ||
++	    !engine_conf->oob_buf) {
+ 		ret = -ENOMEM;
+ 		goto free_bufs;
+ 	}
+@@ -267,6 +269,7 @@ int nand_ecc_sw_bch_init_ctx(struct nand_device *nand)
+ 	nand_ecc_cleanup_req_tweaking(&engine_conf->req_ctx);
+ 	kfree(engine_conf->calc_buf);
+ 	kfree(engine_conf->code_buf);
++	kfree(engine_conf->oob_buf);
+ free_engine_conf:
+ 	kfree(engine_conf);
  
-+config SPI_MTK_SNFI
-+	tristate "MediaTek SPI NAND interface"
-+	depends on MTD
-+	select MTD_SPI_NAND
-+	select MTD_NAND_ECC_MTK
-+	help
-+	  This selects the SPI NAND FLASH interface(SNFI),
-+	  which could be found on MediaTek Soc.
-+	  Say Y or M here.If you are not sure, say N.
-+	  Note Parallel Nand and SPI NAND is alternative on MediaTek SoCs.
-+
- config SPI_MT7621
- 	tristate "MediaTek MT7621 SPI Controller"
- 	depends on RALINK || COMPILE_TEST
-diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-index dd7393a6046f..57d11eecf662 100644
---- a/drivers/spi/Makefile
-+++ b/drivers/spi/Makefile
-@@ -73,6 +73,7 @@ obj-$(CONFIG_SPI_MPC52xx)		+= spi-mpc52xx.o
- obj-$(CONFIG_SPI_MT65XX)                += spi-mt65xx.o
- obj-$(CONFIG_SPI_MT7621)		+= spi-mt7621.o
- obj-$(CONFIG_SPI_MTK_NOR)		+= spi-mtk-nor.o
-+obj-$(CONFIG_SPI_MTK_SNFI)              += spi-mtk-snfi.o
- obj-$(CONFIG_SPI_MXIC)			+= spi-mxic.o
- obj-$(CONFIG_SPI_MXS)			+= spi-mxs.o
- obj-$(CONFIG_SPI_NPCM_FIU)		+= spi-npcm-fiu.o
-diff --git a/drivers/spi/spi-mtk-snfi.c b/drivers/spi/spi-mtk-snfi.c
-new file mode 100644
-index 000000000000..b4dce6d78176
---- /dev/null
-+++ b/drivers/spi/spi-mtk-snfi.c
-@@ -0,0 +1,1117 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for MediaTek SPI Nand Flash interface
-+ *
-+ * Copyright (C) 2021 MediaTek Inc.
-+ * Authors:	Xiangsheng Hou	<xiangsheng.hou@mediatek.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/interrupt.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/nand-ecc-mtk.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
-+
-+/* Registers used by the driver */
-+#define NFI_CNFG		(0x00)
-+#define		CNFG_DMA		BIT(0)
-+#define		CNFG_READ_EN		BIT(1)
-+#define		CNFG_DMA_BURST_EN	BIT(2)
-+#define		CNFG_HW_ECC_EN		BIT(8)
-+#define		CNFG_AUTO_FMT_EN	BIT(9)
-+#define		CNFG_OP_CUST		GENMASK(14, 13)
-+#define NFI_PAGEFMT		(0x04)
-+#define		PAGEFMT_512_2K		(0)
-+#define		PAGEFMT_2K_4K		(1)
-+#define		PAGEFMT_4K_8K		(2)
-+#define		PAGEFMT_8K_16K		(3)
-+#define		PAGEFMT_PAGE_MASK	GENMASK(1, 0)
-+#define		PAGEFMT_SEC_SEL_512	BIT(2)
-+#define		PAGEFMT_FDM_SHIFT	(8)
-+#define		PAGEFMT_FDM_ECC_SHIFT	(12)
-+#define		PAGEFMT_SPARE_SHIFT	(16)
-+#define		PAGEFMT_SPARE_MASK	GENMASK(21, 16)
-+#define NFI_CON			(0x08)
-+#define		CON_FIFO_FLUSH		BIT(0)
-+#define		CON_NFI_RST		BIT(1)
-+#define		CON_BRD			BIT(8)
-+#define		CON_BWR			BIT(9)
-+#define		CON_SEC_SHIFT		(12)
-+#define		CON_SEC_MASK		GENMASK(16, 12)
-+#define NFI_INTR_EN		(0x10)
-+#define		INTR_CUS_PROG_EN	BIT(7)
-+#define		INTR_CUS_READ_EN	BIT(8)
-+#define		INTR_IRQ_EN		BIT(31)
-+#define NFI_INTR_STA		(0x14)
-+#define NFI_CMD			(0x20)
-+#define		CMD_DUMMY		(0x00)
-+#define NFI_STRDATA		(0x40)
-+#define		STAR_EN			BIT(0)
-+#define NFI_STA			(0x60)
-+#define		NFI_FSM_MASK		GENMASK(19, 16)
-+#define		STA_EMP_PAGE		BIT(12)
-+#define NFI_ADDRCNTR		(0x70)
-+#define		CNTR_MASK		GENMASK(16, 12)
-+#define		ADDRCNTR_SEC_SHIFT	(12)
-+#define		ADDRCNTR_SEC(val) \
-+		(((val) & CNTR_MASK) >> ADDRCNTR_SEC_SHIFT)
-+#define NFI_STRADDR		(0x80)
-+#define NFI_BYTELEN		(0x84)
-+#define NFI_FDML(x)		(0xA0 + (x) * sizeof(u32) * 2)
-+#define NFI_FDMM(x)		(0xA4 + (x) * sizeof(u32) * 2)
-+#define NFI_MASTERSTA		(0x224)
-+#define		AHB_BUS_BUSY		GENMASK(1, 0)
-+#define SNFI_MAC_CTL		(0x500)
-+#define		MAC_WIP			BIT(0)
-+#define		MAC_WIP_READY		BIT(1)
-+#define		MAC_TRIG		BIT(2)
-+#define		MAC_EN			BIT(3)
-+#define		MAC_SIO_SEL		BIT(4)
-+#define SNFI_MAC_OUTL		(0x504)
-+#define SNFI_MAC_INL		(0x508)
-+#define SNFI_RD_CTL2		(0x510)
-+#define		RD_CMD_MASK		GENMASK(7, 0)
-+#define		RD_DUMMY_SHIFT		(8)
-+#define SNFI_RD_CTL3		(0x514)
-+#define		RD_ADDR_MASK		GENMASK(16, 0)
-+#define SNFI_PG_CTL1		(0x524)
-+#define		WR_LOAD_CMD_MASK	GENMASK(15, 8)
-+#define		WR_LOAD_CMD_SHIFT	(8)
-+#define SNFI_PG_CTL2		(0x528)
-+#define		WR_LOAD_ADDR_MASK	GENMASK(15, 0)
-+#define SNFI_MISC_CTL		(0x538)
-+#define		RD_CUSTOM_EN		BIT(6)
-+#define		WR_CUSTOM_EN		BIT(7)
-+#define		LATCH_LAT_SHIFT		(8)
-+#define		LATCH_LAT_MASK		GENMASK(9, 8)
-+#define		RD_MODE_X2		BIT(16)
-+#define		RD_MODE_X4		BIT(17)
-+#define		RD_MODE_DQUAL		BIT(18)
-+#define		RD_MODE_MASK		GENMASK(18, 16)
-+#define		WR_X4_EN		BIT(20)
-+#define		SW_RST			BIT(28)
-+#define SNFI_MISC_CTL2		(0x53c)
-+#define		WR_LEN_SHIFT		(16)
-+#define SNFI_DLY_CTL3		(0x548)
-+#define		SAM_DLY_MASK		GENMASK(5, 0)
-+#define SNFI_STA_CTL1		(0x550)
-+#define		SPI_STATE		GENMASK(3, 0)
-+#define		CUS_READ_DONE		BIT(27)
-+#define		CUS_PROG_DONE		BIT(28)
-+#define SNFI_CNFG		(0x55c)
-+#define		SNFI_MODE_EN		BIT(0)
-+#define SNFI_GPRAM_DATA		(0x800)
-+#define		SNFI_GPRAM_MAX_LEN	(160)
-+
-+#define MTK_SNFI_TIMEOUT		(500000)
-+#define MTK_SNFI_RESET_TIMEOUT		(1000000)
-+#define MTK_SNFI_AUTOSUSPEND_DELAY	(1000)
-+#define KB(x)				((x) * 1024UL)
-+
-+struct mtk_snfi_caps {
-+	u8 pageformat_spare_shift;
-+};
-+
-+struct mtk_snfi {
-+	struct device *dev;
-+	struct completion done;
-+	void __iomem *regs;
-+	const struct mtk_snfi_caps *caps;
-+
-+	struct clk *nfi_clk;
-+	struct clk *snfi_clk;
-+	struct clk *hclk;
-+
-+	struct nand_ecc_engine *engine;
-+
-+	u32 sample_delay;
-+	u32 read_latency;
-+
-+	void *tx_buf;
-+	dma_addr_t dma_addr;
-+};
-+
-+static struct mtk_ecc_engine *mtk_snfi_to_ecc_engine(struct mtk_snfi *snfi)
-+{
-+	return snfi->engine->priv;
-+}
-+
-+static void mtk_snfi_mac_enable(struct mtk_snfi *snfi)
-+{
-+	u32 val;
-+
-+	val = readl(snfi->regs + SNFI_MAC_CTL);
-+	val &= ~MAC_SIO_SEL;
-+	val |= MAC_EN;
-+
-+	writel(val, snfi->regs + SNFI_MAC_CTL);
-+}
-+
-+static int mtk_snfi_mac_trigger(struct mtk_snfi *snfi)
-+{
-+	int ret;
-+	u32 val;
-+
-+	val = readl(snfi->regs + SNFI_MAC_CTL);
-+	val |= MAC_TRIG;
-+	writel(val, snfi->regs + SNFI_MAC_CTL);
-+
-+	ret = readl_poll_timeout_atomic(snfi->regs + SNFI_MAC_CTL,
-+					val, val & MAC_WIP_READY,
-+					0, MTK_SNFI_TIMEOUT);
-+	if (ret < 0) {
-+		dev_err(snfi->dev, "wait for wip ready timeout\n");
-+		return -EIO;
-+	}
-+
-+	ret = readl_poll_timeout_atomic(snfi->regs + SNFI_MAC_CTL,
-+					val, !(val & MAC_WIP), 0,
-+					MTK_SNFI_TIMEOUT);
-+	if (ret < 0) {
-+		dev_err(snfi->dev, "command write timeout\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mtk_snfi_mac_disable(struct mtk_snfi *snfi)
-+{
-+	u32 val;
-+
-+	val = readl(snfi->regs + SNFI_MAC_CTL);
-+	val &= ~(MAC_TRIG | MAC_EN);
-+	writel(val, snfi->regs + SNFI_MAC_CTL);
-+}
-+
-+static int mtk_snfi_mac_op(struct mtk_snfi *snfi)
-+{
-+	int ret;
-+
-+	mtk_snfi_mac_enable(snfi);
-+	ret = mtk_snfi_mac_trigger(snfi);
-+	mtk_snfi_mac_disable(snfi);
-+
-+	return ret;
-+}
-+
-+static inline void mtk_snfi_read_oob_free(struct mtk_snfi *snfi,
-+					  const struct spi_mem_op *op)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	u8 *oobptr = op->data.buf.in;
-+	u32 vall, valm;
-+	int i, j;
-+
-+	oobptr += eng->section_size * eng->nsteps;
-+	for (i = 0; i < eng->nsteps; i++) {
-+		vall = readl(snfi->regs + NFI_FDML(i));
-+		valm = readl(snfi->regs + NFI_FDMM(i));
-+
-+		for (j = 0; j < eng->oob_free; j++)
-+			oobptr[j] = (j >= 4 ? valm : vall) >> ((j % 4) * 8);
-+
-+		oobptr += eng->oob_free;
-+	}
-+}
-+
-+static inline void mtk_snfi_write_oob_free(struct mtk_snfi *snfi,
-+					   const struct spi_mem_op *op)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	const u8 *oobptr = op->data.buf.out;
-+	u32 vall, valm;
-+	int i, j;
-+
-+	oobptr += eng->section_size * eng->nsteps;
-+	for (i = 0; i < eng->nsteps; i++) {
-+		vall = 0;
-+		valm = 0;
-+		for (j = 0; j < 8; j++) {
-+			if (j < 4)
-+				vall |= (j < eng->oob_free ? oobptr[j] : 0xff)
-+					<< (j * 8);
-+			else
-+				valm |= (j < eng->oob_free ? oobptr[j] : 0xff)
-+					<< ((j - 4) * 8);
-+		}
-+
-+		writel(vall, snfi->regs + NFI_FDML(i));
-+		writel(valm, snfi->regs + NFI_FDMM(i));
-+		oobptr += eng->oob_free;
-+	}
-+}
-+
-+static irqreturn_t mtk_snfi_irq(int irq, void *id)
-+{
-+	struct mtk_snfi *snfi = id;
-+	u32 sta, ien;
-+
-+	sta = readl(snfi->regs + NFI_INTR_STA);
-+	ien = readl(snfi->regs + NFI_INTR_EN);
-+
-+	if (!(sta & ien))
-+		return IRQ_NONE;
-+
-+	writel(0, snfi->regs + NFI_INTR_EN);
-+	complete(&snfi->done);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int mtk_snfi_enable_clk(struct device *dev, struct mtk_snfi *snfi)
-+{
-+	int ret;
-+
-+	ret = clk_prepare_enable(snfi->nfi_clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable nfi clk\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(snfi->snfi_clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable snfi clk\n");
-+		clk_disable_unprepare(snfi->nfi_clk);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(snfi->hclk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable hclk\n");
-+		clk_disable_unprepare(snfi->nfi_clk);
-+		clk_disable_unprepare(snfi->snfi_clk);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mtk_snfi_disable_clk(struct mtk_snfi *snfi)
-+{
-+	clk_disable_unprepare(snfi->nfi_clk);
-+	clk_disable_unprepare(snfi->snfi_clk);
-+	clk_disable_unprepare(snfi->hclk);
-+}
-+
-+static int mtk_snfi_reset(struct mtk_snfi *snfi)
-+{
-+	u32 val;
-+	int ret;
-+
-+	val = readl(snfi->regs + SNFI_MISC_CTL) | SW_RST;
-+	writel(val, snfi->regs + SNFI_MISC_CTL);
-+
-+	ret = readw_poll_timeout(snfi->regs + SNFI_STA_CTL1, val,
-+				 !(val & SPI_STATE), 0,
-+				 MTK_SNFI_RESET_TIMEOUT);
-+	if (ret) {
-+		dev_warn(snfi->dev, "wait spi idle timeout 0x%x\n", val);
-+		return ret;
-+	}
-+
-+	val = readl(snfi->regs + SNFI_MISC_CTL);
-+	val &= ~SW_RST;
-+	writel(val, snfi->regs + SNFI_MISC_CTL);
-+
-+	writew(CON_FIFO_FLUSH | CON_NFI_RST, snfi->regs + NFI_CON);
-+	ret = readw_poll_timeout(snfi->regs + NFI_STA, val,
-+				 !(val & NFI_FSM_MASK), 0,
-+				 MTK_SNFI_RESET_TIMEOUT);
-+	if (ret) {
-+		dev_warn(snfi->dev, "wait nfi fsm idle timeout 0x%x\n", val);
-+		return ret;
-+	}
-+
-+	val = readl(snfi->regs + NFI_STRDATA);
-+	val &= ~STAR_EN;
-+	writew(val, snfi->regs + NFI_STRDATA);
-+
-+	return 0;
-+}
-+
-+static int mtk_snfi_init(struct mtk_snfi *snfi)
-+{
-+	int ret;
-+	u32 val;
-+
-+	ret = mtk_snfi_reset(snfi);
-+	if (ret)
-+		return ret;
-+
-+	writel(SNFI_MODE_EN, snfi->regs + SNFI_CNFG);
-+
-+	if (snfi->sample_delay) {
-+		val = readl(snfi->regs + SNFI_DLY_CTL3);
-+		val &= ~SAM_DLY_MASK;
-+		val |= snfi->sample_delay;
-+		writel(val, snfi->regs + SNFI_DLY_CTL3);
-+	}
-+
-+	if (snfi->read_latency) {
-+		val = readl(snfi->regs + SNFI_MISC_CTL);
-+		val &= ~LATCH_LAT_MASK;
-+		val |= (snfi->read_latency << LATCH_LAT_SHIFT);
-+		writel(val, snfi->regs + SNFI_MISC_CTL);
-+	}
-+
-+	return 0;
-+}
-+
-+static void mtk_snfi_prepare_for_tx(struct mtk_snfi *snfi,
-+				    const struct spi_mem_op *op)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	u32 val;
-+
-+	val = readl(snfi->regs + SNFI_PG_CTL1);
-+	val &= ~WR_LOAD_CMD_MASK;
-+	val |= op->cmd.opcode << WR_LOAD_CMD_SHIFT;
-+	writel(val, snfi->regs + SNFI_PG_CTL1);
-+
-+	writel(op->addr.val & WR_LOAD_ADDR_MASK,
-+	       snfi->regs + SNFI_PG_CTL2);
-+
-+	val = readl(snfi->regs + SNFI_MISC_CTL);
-+	val |= WR_CUSTOM_EN;
-+	if (op->data.buswidth == 4)
-+		val |= WR_X4_EN;
-+	writel(val, snfi->regs + SNFI_MISC_CTL);
-+
-+	val = eng->nsteps * (eng->oob_per_section + eng->section_size);
-+	writel(val << WR_LEN_SHIFT, snfi->regs + SNFI_MISC_CTL2);
-+
-+	writel(INTR_CUS_PROG_EN | INTR_IRQ_EN, snfi->regs + NFI_INTR_EN);
-+}
-+
-+static void mtk_snfi_prepare_for_rx(struct mtk_snfi *snfi,
-+				    const struct spi_mem_op *op)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	u32 val, dummy_cycle;
-+
-+	dummy_cycle = (op->dummy.nbytes << 3) >>
-+			(ffs(op->dummy.buswidth) - 1);
-+	val = (op->cmd.opcode & RD_CMD_MASK) |
-+		  (dummy_cycle << RD_DUMMY_SHIFT);
-+	writel(val, snfi->regs + SNFI_RD_CTL2);
-+
-+	writel(op->addr.val & RD_ADDR_MASK,
-+	       snfi->regs + SNFI_RD_CTL3);
-+
-+	val = readl(snfi->regs + SNFI_MISC_CTL);
-+	val |= RD_CUSTOM_EN;
-+	val &= ~RD_MODE_MASK;
-+	if (op->data.buswidth == 4)
-+		val |= RD_MODE_X4;
-+	else if (op->data.buswidth == 2)
-+		val |= RD_MODE_X2;
-+
-+	if (op->addr.buswidth != 1)
-+		val |= RD_MODE_DQUAL;
-+
-+	writel(val, snfi->regs + SNFI_MISC_CTL);
-+
-+	val = eng->nsteps * (eng->oob_per_section + eng->section_size);
-+	writel(val, snfi->regs + SNFI_MISC_CTL2);
-+
-+	writel(INTR_CUS_READ_EN | INTR_IRQ_EN, snfi->regs + NFI_INTR_EN);
-+}
-+
-+static int mtk_snfi_prepare(struct mtk_snfi *snfi,
-+			    const struct spi_mem_op *op, bool rx)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	dma_addr_t addr;
-+	int ret;
-+	u32 val;
-+
-+	addr = dma_map_single(snfi->dev,
-+			      op->data.buf.in, op->data.nbytes,
-+			      rx ? DMA_FROM_DEVICE : DMA_TO_DEVICE);
-+	ret = dma_mapping_error(snfi->dev, addr);
-+	if (ret) {
-+		dev_err(snfi->dev, "dma mapping error\n");
-+		return -EINVAL;
-+	}
-+
-+	snfi->dma_addr = addr;
-+	writel(lower_32_bits(addr), snfi->regs + NFI_STRADDR);
-+
-+	if (op->ecc_en && !rx)
-+		mtk_snfi_write_oob_free(snfi, op);
-+
-+	val = readw(snfi->regs + NFI_CNFG);
-+	val |= CNFG_DMA | CNFG_DMA_BURST_EN | CNFG_OP_CUST;
-+	val |= rx ? CNFG_READ_EN : 0;
-+
-+	if (op->ecc_en)
-+		val |= CNFG_HW_ECC_EN | CNFG_AUTO_FMT_EN;
-+
-+	writew(val, snfi->regs + NFI_CNFG);
-+
-+	writel(eng->nsteps << CON_SEC_SHIFT, snfi->regs + NFI_CON);
-+
-+	init_completion(&snfi->done);
-+
-+	/* trigger state machine to custom op mode */
-+	writel(CMD_DUMMY, snfi->regs + NFI_CMD);
-+
-+	if (rx)
-+		mtk_snfi_prepare_for_rx(snfi, op);
-+	else
-+		mtk_snfi_prepare_for_tx(snfi, op);
-+
-+	return 0;
-+}
-+
-+static void mtk_snfi_trigger(struct mtk_snfi *snfi,
-+			     const struct spi_mem_op *op, bool rx)
-+{
-+	u32 val;
-+
-+	val = readl(snfi->regs + NFI_CON);
-+	val |= rx ? CON_BRD : CON_BWR;
-+	writew(val, snfi->regs + NFI_CON);
-+
-+	writew(STAR_EN, snfi->regs + NFI_STRDATA);
-+}
-+
-+static int mtk_snfi_wait_done(struct mtk_snfi *snfi,
-+			      const struct spi_mem_op *op, bool rx)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	struct device *dev = snfi->dev;
-+	u32 val;
-+	int ret;
-+
-+	ret = wait_for_completion_timeout(&snfi->done, msecs_to_jiffies(500));
-+	if (!ret) {
-+		dev_err(dev, "wait for %d completion done timeout\n", rx);
-+		return -ETIMEDOUT;
-+	}
-+
-+	if (rx) {
-+		ret = readl_poll_timeout_atomic(snfi->regs + NFI_BYTELEN,
-+						val,
-+						ADDRCNTR_SEC(val) >=
-+						eng->nsteps,
-+						0, MTK_SNFI_TIMEOUT);
-+		if (ret) {
-+			dev_err(dev, "wait for rx section count timeout\n");
-+			return -ETIMEDOUT;
-+		}
-+
-+		ret = readl_poll_timeout_atomic(snfi->regs + NFI_MASTERSTA,
-+						val,
-+						!(val & AHB_BUS_BUSY),
-+						0, MTK_SNFI_TIMEOUT);
-+		if (ret) {
-+			dev_err(dev, "wait for bus busy timeout\n");
-+			return -ETIMEDOUT;
-+		}
-+	} else {
-+		ret = readl_poll_timeout_atomic(snfi->regs + NFI_ADDRCNTR,
-+						val,
-+						ADDRCNTR_SEC(val) >=
-+						eng->nsteps,
-+						0, MTK_SNFI_TIMEOUT);
-+		if (ret) {
-+			dev_err(dev, "wait for tx section count timeout\n");
-+			return -ETIMEDOUT;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void mtk_snfi_complete(struct mtk_snfi *snfi,
-+			      const struct spi_mem_op *op, bool rx)
-+{
-+	u32 val;
-+
-+	dma_unmap_single(snfi->dev,
-+			 snfi->dma_addr, op->data.nbytes,
-+			 rx ? DMA_FROM_DEVICE : DMA_TO_DEVICE);
-+
-+	if (op->ecc_en && rx)
-+		mtk_snfi_read_oob_free(snfi, op);
-+
-+	val = readl(snfi->regs + SNFI_MISC_CTL);
-+	val &= rx ? ~RD_CUSTOM_EN : ~WR_CUSTOM_EN;
-+	writel(val, snfi->regs + SNFI_MISC_CTL);
-+
-+	val = readl(snfi->regs + SNFI_STA_CTL1);
-+	val |= rx ? CUS_READ_DONE : CUS_PROG_DONE;
-+	writew(val, snfi->regs + SNFI_STA_CTL1);
-+	val &= rx ? ~CUS_READ_DONE : ~CUS_PROG_DONE;
-+	writew(val, snfi->regs + SNFI_STA_CTL1);
-+
-+	/* Disable interrupt */
-+	val = readl(snfi->regs + NFI_INTR_EN);
-+	val &= rx ? ~INTR_CUS_READ_EN : ~INTR_CUS_PROG_EN;
-+	writew(val, snfi->regs + NFI_INTR_EN);
-+
-+	writew(0, snfi->regs + NFI_CNFG);
-+	writew(0, snfi->regs + NFI_CON);
-+}
-+
-+static int mtk_snfi_transfer_dma(struct mtk_snfi *snfi,
-+				 const struct spi_mem_op *op, bool rx)
-+{
-+	int ret;
-+
-+	ret = mtk_snfi_prepare(snfi, op, rx);
-+	if (ret)
-+		return ret;
-+
-+	mtk_snfi_trigger(snfi, op, rx);
-+
-+	ret = mtk_snfi_wait_done(snfi, op, rx);
-+
-+	mtk_snfi_complete(snfi, op, rx);
-+
-+	return ret;
-+}
-+
-+static int mtk_snfi_transfer_mac(struct mtk_snfi *snfi,
-+				 const u8 *txbuf, u8 *rxbuf,
-+				 const u32 txlen, const u32 rxlen)
-+{
-+	u32 i, j, val, tmp;
-+	u8 *p_tmp = (u8 *)(&tmp);
-+	u32 offset = 0;
-+	int ret = 0;
-+
-+	/* Move tx data to gpram in snfi mac mode */
-+	for (i = 0; i < txlen; ) {
-+		for (j = 0, tmp = 0; i < txlen && j < 4; i++, j++)
-+			p_tmp[j] = txbuf[i];
-+
-+		writel(tmp, snfi->regs + SNFI_GPRAM_DATA + offset);
-+		offset += 4;
-+	}
-+
-+	writel(txlen, snfi->regs + SNFI_MAC_OUTL);
-+	writel(rxlen, snfi->regs + SNFI_MAC_INL);
-+
-+	ret = mtk_snfi_mac_op(snfi);
-+	if (ret) {
-+		dev_warn(snfi->dev, "snfi mac operation fail\n");
-+		return ret;
-+	}
-+
-+	/* Get tx data from gpram in snfi mac mode */
-+	if (rxlen)
-+		for (i = 0, offset = rounddown(txlen, 4); i < rxlen; ) {
-+			val = readl(snfi->regs +
-+				    SNFI_GPRAM_DATA + offset);
-+			for (j = 0; i < rxlen && j < 4; i++, j++, rxbuf++) {
-+				if (i == 0)
-+					j = txlen % 4;
-+				*rxbuf = (val >> (j * 8)) & 0xff;
-+			}
-+			offset += 4;
-+		}
-+
-+	return ret;
-+}
-+
-+static int mtk_snfi_exec_op(struct spi_mem *mem,
-+			    const struct spi_mem_op *op)
-+{
-+	struct mtk_snfi *snfi = spi_controller_get_devdata(mem->spi->master);
-+	u8 *buf, *txbuf = snfi->tx_buf, *rxbuf = NULL;
-+	u32 txlen = 0, rxlen = 0;
+@@ -283,6 +286,7 @@ void nand_ecc_sw_bch_cleanup_ctx(struct nand_device *nand)
+ 		nand_ecc_cleanup_req_tweaking(&engine_conf->req_ctx);
+ 		kfree(engine_conf->calc_buf);
+ 		kfree(engine_conf->code_buf);
++		kfree(engine_conf->oob_buf);
+ 		kfree(engine_conf);
+ 	}
+ }
+@@ -299,22 +303,42 @@ static int nand_ecc_sw_bch_prepare_io_req(struct nand_device *nand,
+ 	int total = nand->ecc.ctx.total;
+ 	u8 *ecccalc = engine_conf->calc_buf;
+ 	const u8 *data;
+-	int i;
 +	int i, ret = 0;
-+	bool rx;
+ 
+ 	/* Nothing to do for a raw operation */
+ 	if (req->mode == MTD_OPS_RAW)
+ 		return 0;
+ 
+-	/* This engine does not provide BBM/free OOB bytes protection */
+-	if (!req->datalen)
+-		return 0;
+-
+ 	nand_ecc_tweak_req(&engine_conf->req_ctx, req);
+ 
+ 	/* No more preparation for page read */
+ 	if (req->type == NAND_PAGE_READ)
+ 		return 0;
+ 
++	if (req->ooblen) {
++		memset(engine_conf->oob_buf, 0xff,
++		       nanddev_per_page_oobsize(nand));
 +
-+	rx = op->data.dir == SPI_MEM_DATA_IN;
++		if (req->mode == MTD_OPS_AUTO_OOB) {
++			ret = mtd_ooblayout_set_databytes(mtd, req->oobbuf.out,
++							  engine_conf->oob_buf,
++							  req->ooboffs,
++							  mtd->oobavail);
++			if (ret)
++				return ret;
++		} else {
++			memcpy(engine_conf->oob_buf + req->ooboffs,
++			       req->oobbuf.out, req->ooblen);
++		}
 +
-+	ret = mtk_snfi_reset(snfi);
-+	if (ret) {
-+		dev_warn(snfi->dev, "snfi reset fail\n");
-+		return ret;
++		engine_conf->src_oob_buf = (void *)req->oobbuf.out;
++		req->oobbuf.out = engine_conf->oob_buf;
 +	}
 +
-+	/*
-+	 * If tx/rx data buswidth is not 0/1, use snfi DMA mode.
-+	 * Otherwise, use snfi mac mode.
-+	 */
-+	if (op->data.buswidth != 1 && op->data.buswidth != 0) {
-+		ret = mtk_snfi_transfer_dma(snfi, op, rx);
-+		if (ret)
-+			dev_warn(snfi->dev, "snfi dma transfer %d fail %d\n",
-+				 rx, ret);
-+		return ret;
-+	}
-+
-+	txbuf[txlen++] = op->cmd.opcode;
-+
-+	if (op->addr.nbytes)
-+		for (i = 0; i < op->addr.nbytes; i++)
-+			txbuf[txlen++] = op->addr.val >>
-+					(8 * (op->addr.nbytes - i - 1));
-+
-+	txlen += op->dummy.nbytes;
-+
-+	if (op->data.dir == SPI_MEM_DATA_OUT) {
-+		buf = (u8 *)op->data.buf.out;
-+		for (i = 0; i < op->data.nbytes; i++)
-+			txbuf[txlen++] = buf[i];
-+	}
-+
-+	if (op->data.dir == SPI_MEM_DATA_IN) {
-+		rxbuf = (u8 *)op->data.buf.in;
-+		rxlen = op->data.nbytes;
-+	}
-+
-+	ret = mtk_snfi_transfer_mac(snfi, txbuf, rxbuf, txlen, rxlen);
-+	if (ret)
-+		dev_warn(snfi->dev, "snfi mac transfer %d fail %d\n",
-+			 op->data.dir, ret);
-+
-+	return ret;
-+}
-+
-+static int mtk_snfi_check_buswidth(u8 width)
-+{
-+	switch (width) {
-+	case 1:
-+	case 2:
-+	case 4:
++	/* This engine does not provide BBM/free OOB bytes protection */
++	if (!req->datalen)
 +		return 0;
 +
-+	default:
-+		break;
+ 	/* Preparation for page write: derive the ECC bytes and place them */
+ 	for (i = 0, data = req->databuf.out;
+ 	     eccsteps;
+@@ -344,12 +368,36 @@ static int nand_ecc_sw_bch_finish_io_req(struct nand_device *nand,
+ 	if (req->mode == MTD_OPS_RAW)
+ 		return 0;
+ 
+-	/* This engine does not provide BBM/free OOB bytes protection */
+-	if (!req->datalen)
+-		return 0;
+-
+ 	/* No more preparation for page write */
+ 	if (req->type == NAND_PAGE_WRITE) {
++		if (req->ooblen)
++			req->oobbuf.out = engine_conf->src_oob_buf;
++
++		nand_ecc_restore_req(&engine_conf->req_ctx, req);
++		return 0;
 +	}
 +
-+	return -EOPNOTSUPP;
-+}
++	if (req->ooblen) {
++		memset(engine_conf->oob_buf, 0xff,
++		       nanddev_per_page_oobsize(nand));
 +
-+static bool mtk_snfi_supports_op(struct spi_mem *mem,
-+				 const struct spi_mem_op *op)
-+{
-+	int ret = 0;
-+
-+	if (!spi_mem_default_supports_op(mem, op))
-+		return false;
-+
-+	if (op->cmd.buswidth != 1)
-+		return false;
-+
-+	/*
-+	 * For one operation will use snfi mac mode when data
-+	 * buswidth is 0/1. However, the HW ECC engine can not
-+	 * be used in mac mode.
-+	 */
-+	if (op->ecc_en && op->data.buswidth == 1 &&
-+	    op->data.nbytes >= SNFI_GPRAM_MAX_LEN)
-+		return false;
-+
-+	switch (op->data.dir) {
-+	/* For spi mem data in, can support 1/2/4 buswidth */
-+	case SPI_MEM_DATA_IN:
-+		if (op->addr.nbytes)
-+			ret |= mtk_snfi_check_buswidth(op->addr.buswidth);
-+
-+		if (op->dummy.nbytes)
-+			ret |= mtk_snfi_check_buswidth(op->dummy.buswidth);
-+
-+		if (op->data.nbytes)
-+			ret |= mtk_snfi_check_buswidth(op->data.buswidth);
-+
-+		if (ret)
-+			return false;
-+
-+		break;
-+	case SPI_MEM_DATA_OUT:
-+		/*
-+		 * For spi mem data out, can support 0/1 buswidth
-+		 * for addr/dummy and 1/4 buswidth for data.
-+		 */
-+		if (op->addr.buswidth != 0 && op->addr.buswidth != 1)
-+			return false;
-+
-+		if (op->dummy.buswidth != 0 && op->dummy.buswidth != 1)
-+			return false;
-+
-+		if (op->data.buswidth != 1 && op->data.buswidth != 4)
-+			return false;
-+
-+		break;
-+	default:
-+		break;
++		if (req->mode == MTD_OPS_AUTO_OOB) {
++			ret = mtd_ooblayout_get_databytes(mtd,
++							  engine_conf->oob_buf,
++							  req->oobbuf.in,
++							  req->ooboffs,
++							  mtd->oobavail);
++			if (ret)
++				return ret;
++		} else {
++			memcpy(engine_conf->oob_buf,
++			       req->oobbuf.in + req->ooboffs, req->ooblen);
++		}
 +	}
 +
-+	return true;
-+}
++	/* This engine does not provide BBM/free OOB bytes protection */
++	if (!req->datalen) {
++		req->oobbuf.in = engine_conf->oob_buf;
+ 		nand_ecc_restore_req(&engine_conf->req_ctx, req);
+ 		return 0;
+ 	}
+@@ -379,6 +427,9 @@ static int nand_ecc_sw_bch_finish_io_req(struct nand_device *nand,
+ 		}
+ 	}
+ 
++	if (req->ooblen)
++		req->oobbuf.in = engine_conf->oob_buf;
 +
-+static int mtk_snfi_adjust_op_size(struct spi_mem *mem,
-+				   struct spi_mem_op *op)
-+{
-+	u32 len, max_len;
+ 	nand_ecc_restore_req(&engine_conf->req_ctx, req);
+ 
+ 	return max_bitflips;
+diff --git a/drivers/mtd/nand/ecc-sw-hamming.c b/drivers/mtd/nand/ecc-sw-hamming.c
+index 254db2e7f8bb..c90ff31e9656 100644
+--- a/drivers/mtd/nand/ecc-sw-hamming.c
++++ b/drivers/mtd/nand/ecc-sw-hamming.c
+@@ -507,7 +507,9 @@ int nand_ecc_sw_hamming_init_ctx(struct nand_device *nand)
+ 	engine_conf->code_size = 3;
+ 	engine_conf->calc_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
+ 	engine_conf->code_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
+-	if (!engine_conf->calc_buf || !engine_conf->code_buf) {
++	engine_conf->oob_buf = kzalloc(mtd->oobsize, GFP_KERNEL);
++	if (!engine_conf->calc_buf || !engine_conf->code_buf ||
++	    !engine_conf->oob_buf) {
+ 		ret = -ENOMEM;
+ 		goto free_bufs;
+ 	}
+@@ -522,6 +524,7 @@ int nand_ecc_sw_hamming_init_ctx(struct nand_device *nand)
+ 	nand_ecc_cleanup_req_tweaking(&engine_conf->req_ctx);
+ 	kfree(engine_conf->calc_buf);
+ 	kfree(engine_conf->code_buf);
++	kfree(engine_conf->oob_buf);
+ free_engine_conf:
+ 	kfree(engine_conf);
+ 
+@@ -537,6 +540,7 @@ void nand_ecc_sw_hamming_cleanup_ctx(struct nand_device *nand)
+ 		nand_ecc_cleanup_req_tweaking(&engine_conf->req_ctx);
+ 		kfree(engine_conf->calc_buf);
+ 		kfree(engine_conf->code_buf);
++		kfree(engine_conf->oob_buf);
+ 		kfree(engine_conf);
+ 	}
+ }
+@@ -553,22 +557,42 @@ static int nand_ecc_sw_hamming_prepare_io_req(struct nand_device *nand,
+ 	int total = nand->ecc.ctx.total;
+ 	u8 *ecccalc = engine_conf->calc_buf;
+ 	const u8 *data;
+-	int i;
++	int i, ret;
+ 
+ 	/* Nothing to do for a raw operation */
+ 	if (req->mode == MTD_OPS_RAW)
+ 		return 0;
+ 
+-	/* This engine does not provide BBM/free OOB bytes protection */
+-	if (!req->datalen)
+-		return 0;
+-
+ 	nand_ecc_tweak_req(&engine_conf->req_ctx, req);
+ 
+ 	/* No more preparation for page read */
+ 	if (req->type == NAND_PAGE_READ)
+ 		return 0;
+ 
++	if (req->ooblen) {
++		memset(engine_conf->oob_buf, 0xff,
++		       nanddev_per_page_oobsize(nand));
 +
-+	/*
-+	 * The op size only support SNFI_GPRAM_MAX_LEN which will
-+	 * use the snfi mac mode when data buswidth is 0/1.
-+	 * Otherwise, the snfi can max support 16KB.
-+	 */
-+	if (op->data.buswidth == 1 || op->data.buswidth == 0)
-+		max_len = SNFI_GPRAM_MAX_LEN;
-+	else
-+		max_len = KB(16);
++		if (req->mode == MTD_OPS_AUTO_OOB) {
++			ret = mtd_ooblayout_set_databytes(mtd, req->oobbuf.out,
++							  engine_conf->oob_buf,
++							  req->ooboffs,
++							  mtd->oobavail);
++			if (ret)
++				return ret;
++		} else {
++			memcpy(engine_conf->oob_buf + req->ooboffs,
++			       req->oobbuf.out, req->ooblen);
++		}
 +
-+	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-+	if (len > max_len)
-+		return -EOPNOTSUPP;
-+
-+	if ((len + op->data.nbytes) > max_len)
-+		op->data.nbytes = max_len - len;
-+
-+	return 0;
-+}
-+
-+static const struct mtk_snfi_caps mtk_snfi_caps_mt7622 = {
-+	.pageformat_spare_shift = 16,
-+};
-+
-+static const struct spi_controller_mem_ops mtk_snfi_ops = {
-+	.adjust_op_size = mtk_snfi_adjust_op_size,
-+	.supports_op = mtk_snfi_supports_op,
-+	.exec_op = mtk_snfi_exec_op,
-+};
-+
-+static const struct of_device_id mtk_snfi_id_table[] = {
-+	{ .compatible = "mediatek,mt7622-snfi",
-+	  .data = &mtk_snfi_caps_mt7622,
-+	},
-+	{  /* sentinel */ }
-+};
-+
-+/* ECC wrapper */
-+static struct mtk_snfi *mtk_nand_to_spi(struct nand_device *nand)
-+{
-+	struct device *dev = nand->ecc.engine->dev;
-+	struct spi_master *master = dev_get_drvdata(dev);
-+	struct mtk_snfi *snfi = spi_master_get_devdata(master);
-+
-+	return snfi;
-+}
-+
-+static int mtk_snfi_config(struct nand_device *nand,
-+			   struct mtk_snfi *snfi)
-+{
-+	struct mtk_ecc_engine *eng = mtk_snfi_to_ecc_engine(snfi);
-+	u32 val;
-+
-+	switch (nanddev_page_size(nand)) {
-+	case 512:
-+		val = PAGEFMT_512_2K | PAGEFMT_SEC_SEL_512;
-+		break;
-+	case KB(2):
-+		if (eng->section_size == 512)
-+			val = PAGEFMT_2K_4K | PAGEFMT_SEC_SEL_512;
-+		else
-+			val = PAGEFMT_512_2K;
-+		break;
-+	case KB(4):
-+		if (eng->section_size == 512)
-+			val = PAGEFMT_4K_8K | PAGEFMT_SEC_SEL_512;
-+		else
-+			val = PAGEFMT_2K_4K;
-+		break;
-+	case KB(8):
-+		if (eng->section_size == 512)
-+			val = PAGEFMT_8K_16K | PAGEFMT_SEC_SEL_512;
-+		else
-+			val = PAGEFMT_4K_8K;
-+		break;
-+	case KB(16):
-+		val = PAGEFMT_8K_16K;
-+		break;
-+	default:
-+		dev_err(snfi->dev, "invalid page len: %d\n",
-+			nanddev_page_size(nand));
-+		return -EINVAL;
++		engine_conf->src_oob_buf = (void *)req->oobbuf.out;
++		req->oobbuf.out = engine_conf->oob_buf;
 +	}
 +
-+	val |= eng->oob_per_section_idx << PAGEFMT_SPARE_SHIFT;
-+	val |= eng->oob_free << PAGEFMT_FDM_SHIFT;
-+	val |= eng->oob_free_protected << PAGEFMT_FDM_ECC_SHIFT;
-+	writel(val, snfi->regs + NFI_PAGEFMT);
++	/* This engine does not provide BBM/free OOB bytes protection */
++	if (!req->datalen)
++		return 0;
 +
-+	return 0;
-+}
+ 	/* Preparation for page write: derive the ECC bytes and place them */
+ 	for (i = 0, data = req->databuf.out;
+ 	     eccsteps;
+@@ -598,12 +622,36 @@ static int nand_ecc_sw_hamming_finish_io_req(struct nand_device *nand,
+ 	if (req->mode == MTD_OPS_RAW)
+ 		return 0;
+ 
+-	/* This engine does not provide BBM/free OOB bytes protection */
+-	if (!req->datalen)
+-		return 0;
+-
+ 	/* No more preparation for page write */
+ 	if (req->type == NAND_PAGE_WRITE) {
++		if (req->ooblen)
++			req->oobbuf.out = engine_conf->src_oob_buf;
 +
-+static int mtk_snfi_ecc_init_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine_ops *ops = mtk_ecc_get_pipelined_ops();
++		nand_ecc_restore_req(&engine_conf->req_ctx, req);
++		return 0;
++	}
 +
-+	return ops->init_ctx(nand);
-+}
++	if (req->ooblen) {
++		memset(engine_conf->oob_buf, 0xff,
++		       nanddev_per_page_oobsize(nand));
 +
-+static void mtk_snfi_ecc_cleanup_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine_ops *ops = mtk_ecc_get_pipelined_ops();
++		if (req->mode == MTD_OPS_AUTO_OOB) {
++			ret = mtd_ooblayout_get_databytes(mtd,
++							  engine_conf->oob_buf,
++							  req->oobbuf.in,
++							  req->ooboffs,
++							  mtd->oobavail);
++			if (ret)
++				return ret;
++		} else {
++			memcpy(engine_conf->oob_buf,
++			       req->oobbuf.in + req->ooboffs, req->ooblen);
++		}
++	}
 +
-+	ops->cleanup_ctx(nand);
-+}
++	/* This engine does not provide BBM/free OOB bytes protection */
++	if (!req->datalen) {
++		req->oobbuf.in = engine_conf->oob_buf;
+ 		nand_ecc_restore_req(&engine_conf->req_ctx, req);
+ 		return 0;
+ 	}
+@@ -633,6 +681,9 @@ static int nand_ecc_sw_hamming_finish_io_req(struct nand_device *nand,
+ 		}
+ 	}
+ 
++	if (req->ooblen)
++		req->oobbuf.in = engine_conf->oob_buf;
 +
-+static int mtk_snfi_ecc_prepare_io_req(struct nand_device *nand,
-+				       struct nand_page_io_req *req)
-+{
-+	struct nand_ecc_engine_ops *ops = mtk_ecc_get_pipelined_ops();
-+	struct mtk_snfi *snfi = mtk_nand_to_spi(nand);
-+	int ret;
-+
-+	ret = mtk_snfi_config(nand, snfi);
-+	if (ret)
-+		return ret;
-+
-+	return ops->prepare_io_req(nand, req);
-+}
-+
-+static int mtk_snfi_ecc_finish_io_req(struct nand_device *nand,
-+				      struct nand_page_io_req *req)
-+{
-+	struct nand_ecc_engine_ops *ops = mtk_ecc_get_pipelined_ops();
-+	struct mtk_ecc_engine *eng = nand_to_ecc_ctx(nand);
-+	struct mtk_snfi *snfi = mtk_nand_to_spi(nand);
-+
-+	if (req->mode != MTD_OPS_RAW)
-+		eng->read_empty = readl(snfi->regs + NFI_STA) & STA_EMP_PAGE;
-+
-+	return ops->finish_io_req(nand, req);
-+}
-+
-+static struct nand_ecc_engine_ops mtk_snfi_ecc_engine_pipelined_ops = {
-+	.init_ctx = mtk_snfi_ecc_init_ctx,
-+	.cleanup_ctx = mtk_snfi_ecc_cleanup_ctx,
-+	.prepare_io_req = mtk_snfi_ecc_prepare_io_req,
-+	.finish_io_req = mtk_snfi_ecc_finish_io_req,
-+};
-+
-+static int mtk_snfi_ecc_probe(struct platform_device *pdev,
-+			      struct mtk_snfi *snfi)
-+{
-+	struct nand_ecc_engine *ecceng;
-+
-+	if (!mtk_ecc_get_pipelined_ops())
-+		return -EOPNOTSUPP;
-+
-+	ecceng = devm_kzalloc(&pdev->dev, sizeof(*ecceng), GFP_KERNEL);
-+	if (!ecceng)
+ 	nand_ecc_restore_req(&engine_conf->req_ctx, req);
+ 
+ 	return max_bitflips;
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index c58f558302c4..9033036086f2 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -267,6 +267,12 @@ static int spinand_ondie_ecc_init_ctx(struct nand_device *nand)
+ 	if (!engine_conf)
+ 		return -ENOMEM;
+ 
++	engine_conf->oob_buf = kzalloc(nand->memorg.oobsize, GFP_KERNEL);
++	if (!engine_conf->oob_buf) {
++		kfree(engine_conf);
 +		return -ENOMEM;
-+
-+	ecceng->dev = &pdev->dev;
-+	ecceng->ops = &mtk_snfi_ecc_engine_pipelined_ops;
-+
-+	nand_ecc_register_on_host_hw_engine(ecceng);
-+
-+	snfi->engine = ecceng;
-+
-+	return 0;
-+}
-+
-+static int mtk_snfi_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct spi_controller *ctlr;
-+	struct mtk_snfi *snfi;
-+	struct resource *res;
-+	int ret, irq;
-+	u32 val = 0;
-+
-+	ctlr = spi_alloc_master(&pdev->dev, sizeof(*snfi));
-+	if (!ctlr)
-+		return -ENOMEM;
-+
-+	snfi = spi_controller_get_devdata(ctlr);
-+	snfi->dev = &pdev->dev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	snfi->regs = devm_ioremap_resource(snfi->dev, res);
-+	if (IS_ERR(snfi->regs)) {
-+		ret = PTR_ERR(snfi->regs);
-+		goto err_put_master;
 +	}
 +
-+	ret = of_property_read_u32(np, "sample-delay", &val);
-+	if (!ret)
-+		snfi->sample_delay = val;
+ 	nand->ecc.ctx.priv = engine_conf;
+ 
+ 	if (spinand->eccinfo.ooblayout)
+@@ -279,16 +285,40 @@ static int spinand_ondie_ecc_init_ctx(struct nand_device *nand)
+ 
+ static void spinand_ondie_ecc_cleanup_ctx(struct nand_device *nand)
+ {
+-	kfree(nand->ecc.ctx.priv);
++	struct spinand_ondie_ecc_conf *engine_conf = nand->ecc.ctx.priv;
 +
-+	ret = of_property_read_u32(np, "read-latency", &val);
-+	if (!ret)
-+		snfi->read_latency = val;
-+
-+	snfi->nfi_clk = devm_clk_get(snfi->dev, "nfi_clk");
-+	if (IS_ERR(snfi->nfi_clk)) {
-+		dev_err(snfi->dev, "not found nfi clk\n");
-+		ret = PTR_ERR(snfi->nfi_clk);
-+		goto err_put_master;
-+	}
-+
-+	snfi->snfi_clk = devm_clk_get(snfi->dev, "snfi_clk");
-+	if (IS_ERR(snfi->snfi_clk)) {
-+		dev_err(snfi->dev, "not found snfi clk\n");
-+		ret = PTR_ERR(snfi->snfi_clk);
-+		goto err_put_master;
-+	}
-+
-+	snfi->hclk = devm_clk_get(snfi->dev, "hclk");
-+	if (IS_ERR(snfi->hclk)) {
-+		dev_err(snfi->dev, "not found hclk\n");
-+		ret = PTR_ERR(snfi->hclk);
-+		goto err_put_master;
-+	}
-+
-+	ret = mtk_snfi_enable_clk(snfi->dev, snfi);
-+	if (ret)
-+		goto err_put_master;
-+
-+	snfi->caps = of_device_get_match_data(snfi->dev);
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0) {
-+		dev_err(snfi->dev, "not found snfi irq resource\n");
-+		ret = -EINVAL;
-+		goto clk_disable;
-+	}
-+
-+	ret = devm_request_irq(snfi->dev, irq, mtk_snfi_irq,
-+			       0, "mtk-snfi", snfi);
-+	if (ret) {
-+		dev_err(snfi->dev, "failed to request snfi irq\n");
-+		goto clk_disable;
-+	}
-+
-+	ret = dma_set_mask(snfi->dev, DMA_BIT_MASK(32));
-+	if (ret) {
-+		dev_err(snfi->dev, "failed to set dma mask\n");
-+		goto clk_disable;
-+	}
-+
-+	snfi->tx_buf = kzalloc(SNFI_GPRAM_MAX_LEN, GFP_KERNEL);
-+	if (!snfi->tx_buf) {
-+		ret = -ENOMEM;
-+		goto clk_disable;
-+	}
-+
-+	ctlr->dev.of_node = np;
-+	ctlr->mem_ops = &mtk_snfi_ops;
-+	ctlr->mode_bits = SPI_RX_DUAL | SPI_RX_QUAD | SPI_TX_QUAD;
-+	ctlr->auto_runtime_pm = true;
-+
-+	dev_set_drvdata(snfi->dev, ctlr);
-+
-+	ret = mtk_snfi_init(snfi);
-+	if (ret) {
-+		dev_err(snfi->dev, "failed to init snfi\n");
-+		goto free_buf;
-+	}
-+
-+	ret = mtk_snfi_ecc_probe(pdev, snfi);
-+	if (ret) {
-+		dev_warn(snfi->dev, "ECC engine not available\n");
-+		goto free_buf;
-+	}
-+
-+	pm_runtime_enable(snfi->dev);
-+
-+	ret = devm_spi_register_master(snfi->dev, ctlr);
-+	if (ret) {
-+		dev_err(snfi->dev, "failed to register spi master\n");
-+		goto disable_pm_runtime;
-+	}
-+
-+	return 0;
-+
-+disable_pm_runtime:
-+	pm_runtime_disable(snfi->dev);
-+
-+free_buf:
-+	kfree(snfi->tx_buf);
-+
-+clk_disable:
-+	mtk_snfi_disable_clk(snfi);
-+
-+err_put_master:
-+	spi_master_put(ctlr);
-+
-+	return ret;
-+}
-+
-+static int mtk_snfi_remove(struct platform_device *pdev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
-+	struct mtk_snfi *snfi = spi_controller_get_devdata(ctlr);
-+	struct nand_ecc_engine *eng = snfi->engine;
-+
-+	pm_runtime_disable(snfi->dev);
-+	nand_ecc_unregister_on_host_hw_engine(eng);
-+	kfree(snfi->tx_buf);
-+	spi_master_put(ctlr);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int mtk_snfi_runtime_suspend(struct device *dev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(dev);
-+	struct mtk_snfi *snfi = spi_controller_get_devdata(ctlr);
-+
-+	mtk_snfi_disable_clk(snfi);
-+
-+	return 0;
-+}
-+
-+static int mtk_snfi_runtime_resume(struct device *dev)
-+{
-+	struct spi_controller *ctlr = dev_get_drvdata(dev);
-+	struct mtk_snfi *snfi = spi_controller_get_devdata(ctlr);
++	kfree(engine_conf->oob_buf);
++	kfree(engine_conf);
+ }
+ 
+ static int spinand_ondie_ecc_prepare_io_req(struct nand_device *nand,
+ 					    struct nand_page_io_req *req)
+ {
++	struct spinand_ondie_ecc_conf *engine_conf = nand->ecc.ctx.priv;
+ 	struct spinand_device *spinand = nand_to_spinand(nand);
++	struct mtd_info *mtd = spinand_to_mtd(spinand);
+ 	bool enable = (req->mode != MTD_OPS_RAW);
 +	int ret;
+ 
+-	memset(spinand->oobbuf, 0xff, nanddev_per_page_oobsize(nand));
++	if (req->ooblen && req->type == NAND_PAGE_WRITE) {
++		memset(engine_conf->oob_buf, 0xff,
++		       nanddev_per_page_oobsize(nand));
 +
-+	ret = mtk_snfi_enable_clk(dev, snfi);
-+	if (ret)
-+		return ret;
++		if (req->mode == MTD_OPS_AUTO_OOB) {
++			ret = mtd_ooblayout_set_databytes(mtd, req->oobbuf.out,
++							  engine_conf->oob_buf,
++							  req->ooboffs,
++							  mtd->oobavail);
++			if (ret)
++				return ret;
++		} else {
++			memcpy(engine_conf->oob_buf + req->ooboffs,
++			       req->oobbuf.out, req->ooblen);
++		}
 +
-+	ret = mtk_snfi_init(snfi);
-+	if (ret)
-+		dev_err(dev, "failed to init snfi\n");
++		engine_conf->src_oob_buf = (void *)req->oobbuf.out;
++		req->oobbuf.out = engine_conf->oob_buf;
++	}
+ 
+ 	/* Only enable or disable the engine */
+ 	return spinand_ecc_enable(spinand, enable);
+@@ -306,8 +336,32 @@ static int spinand_ondie_ecc_finish_io_req(struct nand_device *nand,
+ 		return 0;
+ 
+ 	/* Nothing to do when finishing a page write */
+-	if (req->type == NAND_PAGE_WRITE)
++	if (req->type == NAND_PAGE_WRITE) {
++		if (req->ooblen)
++			req->oobbuf.out = engine_conf->src_oob_buf;
 +
-+	return ret;
-+}
-+#endif /* CONFIG_PM */
+ 		return 0;
++	}
 +
-+static const struct dev_pm_ops mtk_snfi_pm_ops = {
-+	SET_RUNTIME_PM_OPS(mtk_snfi_runtime_suspend,
-+			   mtk_snfi_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+};
++	if (req->ooblen) {
++		memset(engine_conf->oob_buf, 0xff,
++		       nanddev_per_page_oobsize(nand));
 +
-+static struct platform_driver mtk_snfi_driver = {
-+	.driver = {
-+		.name	= "mtk-snfi",
-+		.of_match_table = mtk_snfi_id_table,
-+		.pm = &mtk_snfi_pm_ops,
-+	},
-+	.probe		= mtk_snfi_probe,
-+	.remove		= mtk_snfi_remove,
-+};
++		if (req->mode == MTD_OPS_AUTO_OOB) {
++			ret = mtd_ooblayout_get_databytes(mtd,
++							  engine_conf->oob_buf,
++							  req->oobbuf.in,
++							  req->ooboffs,
++							  mtd->oobavail);
++			if (ret)
++				return ret;
++		} else {
++			memcpy(engine_conf->oob_buf,
++			       req->oobbuf.in + req->ooboffs, req->ooblen);
++		}
 +
-+module_platform_driver(mtk_snfi_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Xiangsheng Hou <xiangsheng.hou@mediatek.com>");
-+MODULE_DESCRIPTION("Mediatek SPI Nand Flash interface driver");
++		req->oobbuf.in = engine_conf->oob_buf;
++	}
+ 
+ 	/* Finish a page read: check the status, report errors/bitflips */
+ 	ret = spinand_check_ecc_status(spinand, engine_conf->status);
+@@ -360,7 +414,6 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+ 				      const struct nand_page_io_req *req)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+-	struct mtd_info *mtd = spinand_to_mtd(spinand);
+ 	struct spi_mem_dirmap_desc *rdesc;
+ 	unsigned int nbytes = 0;
+ 	void *buf = NULL;
+@@ -403,16 +456,9 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+ 		memcpy(req->databuf.in, spinand->databuf + req->dataoffs,
+ 		       req->datalen);
+ 
+-	if (req->ooblen) {
+-		if (req->mode == MTD_OPS_AUTO_OOB)
+-			mtd_ooblayout_get_databytes(mtd, req->oobbuf.in,
+-						    spinand->oobbuf,
+-						    req->ooboffs,
+-						    req->ooblen);
+-		else
+-			memcpy(req->oobbuf.in, spinand->oobbuf + req->ooboffs,
+-			       req->ooblen);
+-	}
++	if (req->ooblen)
++		memcpy(req->oobbuf.in, spinand->oobbuf + req->ooboffs,
++		       req->ooblen);
+ 
+ 	return 0;
+ }
+@@ -421,7 +467,6 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+ 				     const struct nand_page_io_req *req)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+-	struct mtd_info *mtd = spinand_to_mtd(spinand);
+ 	struct spi_mem_dirmap_desc *wdesc;
+ 	unsigned int nbytes, column = 0;
+ 	void *buf = spinand->databuf;
+@@ -433,27 +478,17 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
+ 	 * must fill the page cache entirely even if we only want to program
+ 	 * the data portion of the page, otherwise we might corrupt the BBM or
+ 	 * user data previously programmed in OOB area.
+-	 *
+-	 * Only reset the data buffer manually, the OOB buffer is prepared by
+-	 * ECC engines ->prepare_io_req() callback.
+ 	 */
+ 	nbytes = nanddev_page_size(nand) + nanddev_per_page_oobsize(nand);
+-	memset(spinand->databuf, 0xff, nanddev_page_size(nand));
++	memset(spinand->databuf, 0xff, nbytes);
+ 
+ 	if (req->datalen)
+ 		memcpy(spinand->databuf + req->dataoffs, req->databuf.out,
+ 		       req->datalen);
+ 
+-	if (req->ooblen) {
+-		if (req->mode == MTD_OPS_AUTO_OOB)
+-			mtd_ooblayout_set_databytes(mtd, req->oobbuf.out,
+-						    spinand->oobbuf,
+-						    req->ooboffs,
+-						    req->ooblen);
+-		else
+-			memcpy(spinand->oobbuf + req->ooboffs, req->oobbuf.out,
+-			       req->ooblen);
+-	}
++	if (req->ooblen)
++		memcpy(spinand->oobbuf + req->ooboffs, req->oobbuf.out,
++		       req->ooblen);
+ 
+ 	if (req->mode == MTD_OPS_RAW)
+ 		wdesc = spinand->dirmaps[req->pos.plane].wdesc;
+diff --git a/include/linux/mtd/nand-ecc-sw-bch.h b/include/linux/mtd/nand-ecc-sw-bch.h
+index 9da9969505a8..c4730badb77b 100644
+--- a/include/linux/mtd/nand-ecc-sw-bch.h
++++ b/include/linux/mtd/nand-ecc-sw-bch.h
+@@ -18,6 +18,8 @@
+  * @code_size: Number of bytes needed to store a code (one code per step)
+  * @calc_buf: Buffer to use when calculating ECC bytes
+  * @code_buf: Buffer to use when reading (raw) ECC bytes from the chip
++ * @oob_buf: Buffer to use when handle the data in OOB area.
++ * @src_oob_buf: Pointer be used to store source OOB buffer pointer when write
+  * @bch: BCH control structure
+  * @errloc: error location array
+  * @eccmask: XOR ecc mask, allows erased pages to be decoded as valid
+@@ -27,6 +29,8 @@ struct nand_ecc_sw_bch_conf {
+ 	unsigned int code_size;
+ 	u8 *calc_buf;
+ 	u8 *code_buf;
++	u8 *oob_buf;
++	void *src_oob_buf;
+ 	struct bch_control *bch;
+ 	unsigned int *errloc;
+ 	unsigned char *eccmask;
+diff --git a/include/linux/mtd/nand-ecc-sw-hamming.h b/include/linux/mtd/nand-ecc-sw-hamming.h
+index c6c71894c575..88788d53b911 100644
+--- a/include/linux/mtd/nand-ecc-sw-hamming.h
++++ b/include/linux/mtd/nand-ecc-sw-hamming.h
+@@ -19,6 +19,8 @@
+  * @code_size: Number of bytes needed to store a code (one code per step)
+  * @calc_buf: Buffer to use when calculating ECC bytes
+  * @code_buf: Buffer to use when reading (raw) ECC bytes from the chip
++ * @oob_buf: Buffer to use when handle the data in OOB area.
++ * @src_oob_buf: Pointer be used to store source OOB buffer pointer when write
+  * @sm_order: Smart Media special ordering
+  */
+ struct nand_ecc_sw_hamming_conf {
+@@ -26,6 +28,8 @@ struct nand_ecc_sw_hamming_conf {
+ 	unsigned int code_size;
+ 	u8 *calc_buf;
+ 	u8 *code_buf;
++	u8 *oob_buf;
++	void *src_oob_buf;
+ 	unsigned int sm_order;
+ };
+ 
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 3aa28240a77f..23b86941fbf6 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -312,9 +312,13 @@ struct spinand_ecc_info {
+  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+  * @status: status of the last wait operation that will be used in case
+  *          ->get_status() is not populated by the spinand device.
++ * @oob_buf: Buffer to use when handle the data in OOB area.
++ * @src_oob_buf: Pointer be used to store source OOB buffer pointer when write
+  */
+ struct spinand_ondie_ecc_conf {
+ 	u8 status;
++	u8 *oob_buf;
++	void *src_oob_buf;
+ };
+ 
+ /**
 -- 
 2.25.1
 
