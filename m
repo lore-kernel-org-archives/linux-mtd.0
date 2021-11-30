@@ -4,62 +4,134 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8B39C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 08:34:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 218EFC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 08:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=El6cI57KboNysfq+2iQHiQms54atW3LAcmDUaFBPv4I=; b=iU4mO1FAFvyhIq
-	0zX3DKkKIBTMfSGqtVQJvTqD+ZJjD4IpWapIYANLXDm4ow1yyORtpzKS/GfUnlvKXMkyBsXgWfbuB
-	TXUK9Vd+ixHLEoF+69xER37kQS6MWvkw2Qa2Cjek/X/vnImSvX5S8K2BpJnL7v9MKDPU3Vynf6D0S
-	q8nUhPM5+KvJGOzMjoe1wfBJ3JJ+t3jb5MNlwcEgjOFcdu4B5vHx+IQW4W61K/ixHdNsEkb82DQMC
-	OT3MtGg5/DqV/ZAN1FK7IHpjIYy9f233SpKaqKtoSSdAF94ppJY3p8QR3XqawnX8FoFesDQatqQAL
-	2BZ/7gkNVWo18Z44pxlg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:Date:Message-ID:From:
+	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AIwOqNYFx1Y8PR0euduCOoPDdMhwjmWNq+3epqxx+tA=; b=fzUo3AQW40+3o1uUyyzTtm/GMc
+	NgfduXRB3y6sAyNWuJQnauFNtAa/grerUUE2vkNcvL21/BQFrTu/mYgkjTp44pxJty5EVBeCEAWRr
+	jUznFue8oZ4E8gkpEE2/QdpkQdRT9idmheK2br7D28HSO/iPoUu5bj3Ts7SaQRcpEoSm7tmzJI852
+	pCnNy1BbpIXI3fowEuwqIEGtgOqsEbnBaIl2+ZKXr2+0oIpWsm6rA+37UHJxqU6atnrGsAVI5PrD5
+	2CziyFi1vk3oNxIXT3by8KEHO9a66JmH4l8ozJ7B+MACvC/nyA150TjU/v0F/LzJnq9v7umPoJcUJ
+	fXHwUJgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mryaa-0048D4-7g; Tue, 30 Nov 2021 08:34:12 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1mryt7-004CPI-Mx; Tue, 30 Nov 2021 08:53:21 +0000
+Received: from mail-dm6nam11on2060.outbound.protection.outlook.com
+ ([40.107.223.60] helo=NAM11-DM6-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mryZ0-0047ZS-QR; Tue, 30 Nov 2021 08:32:36 +0000
-X-UUID: 11837ba579aa4401bcbc1b851fcbe23e-20211130
-X-UUID: 11837ba579aa4401bcbc1b851fcbe23e-20211130
-Received: from mtkcas68.mediatek.inc [(172.29.94.19)] by mailgw02.mediatek.com
- (envelope-from <xiangsheng.hou@mediatek.com>)
- (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1321315218; Tue, 30 Nov 2021 01:32:34 -0700
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 30 Nov 2021 00:32:32 -0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Tue, 30 Nov 2021 16:32:30 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Tue, 30 Nov 2021 16:32:29 +0800
-From: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-To: <miquel.raynal@bootlin.com>, <broonie@kernel.org>
-CC: <xiangsheng.hou@mediatek.com>, <benliang.zhao@mediatek.com>,
- <dandan.he@mediatek.com>, <guochun.mao@mediatek.com>,
- <bin.zhang@mediatek.com>, <sanny.chen@mediatek.com>,
- <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
- <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: [RFC,v4,5/5] arm64: dts: mtk: Add snfi node
-Date: Tue, 30 Nov 2021 16:32:02 +0800
-Message-ID: <20211130083202.14228-6-xiangsheng.hou@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211130083202.14228-1-xiangsheng.hou@mediatek.com>
-References: <20211130083202.14228-1-xiangsheng.hou@mediatek.com>
+ id 1mryt4-004COG-VK
+ for linux-mtd@lists.infradead.org; Tue, 30 Nov 2021 08:53:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dcuZh02SVqZQ06W0SqbkrGe13cJwZLtdPf6NIlmPSAp/ul0HgBUqf6Jw+KQsG9o3LS7MviEl0AveBmvNnJo/zhxjl1yGtJmX7FjYSZsjZn4VY6Z9Hyr9r5XfCAoqxMWaRre7flrgem+EhB/G+aom0BFykibg2yARhDNM7bxPIkx8iYcRvBsRuIpeOZ5KHbBcVZbBpvTbpR3cCkZvoW7fq636Zv4dyw74OU7ERwwdYI602Sl51kdCIf/498RFXTd2RczPuc4p6j7keNTnwDMdv7g97qDIeeP+ci0d76Zc/O8IfM5jamLwx5EWqs0wn8okN6Cywe+AKJjzVQVe1365lQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1jLOKt+7ognj8dRsqV2z9yRskzWB//LILnPmu/AOJoc=;
+ b=SsOOARGMwReml3O8RaYZwDZ/Y30myUG3MwBqKNimpUNRDFXs/ZbjQTI6Kva5W0zsiq612vP5zOgsifYxlPTFhNjICF35RjVr/CkeazeL52lb32D7iHZe4BMfi/mJs6STU0Xg2kaDmkwgux32RXvI77RoY12DR7yrftQgr/bvPZwdW+N5RN3n/03FaCEoJ+2uhcRdZP1A88amCYs39ifjR8dzvKA6ougqp6JB1D9mb+WLwpbk8pMoFWRyuBShb2qlgcYVUMCxY2UHTgL6vaS6DORpDzrtShuqrz6I4ReVMf0DnUCa42ZdnDIKAOEYFIw5kCH87jDj03s4arPDrNBRjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1jLOKt+7ognj8dRsqV2z9yRskzWB//LILnPmu/AOJoc=;
+ b=LO05i1/OaDj2JueHc3Io2OnafM+ZKtQrioWVbRn9YzmPCNJ9RrHWPVLoNaGLNVFcJsupnLpiXnUX2O6LbkcbUAQXteCsPyyjPICW6WR9704akmgP80Yc7vGIltjkZQKQil3w5NNCOXg45J1ZQKj7aAlT9PTxPsChh4+2Q79WLsOOgTZOkAfNVF6wYCIPXibWWzQk1eMQlXOcyxgIlrvec52Br8KQB3PvvDSXp+J+U6HfCfRLZx57AModb1ucQomI1ifu1wb3JQsvYrD/pZQuBvMUNsynJcovkNjloqJmtUahW06zYO8CgTexvYFRz5BSaoOBT0u/XbkS5pNF3a2ONQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
+ MW4PR12MB5582.namprd12.prod.outlook.com (2603:10b6:303:182::5) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.14; Tue, 30 Nov 2021 08:53:15 +0000
+Received: from CO6PR12MB5444.namprd12.prod.outlook.com
+ ([fe80::ecac:528f:e36c:39d0]) by CO6PR12MB5444.namprd12.prod.outlook.com
+ ([fe80::ecac:528f:e36c:39d0%4]) with mapi id 15.20.4734.024; Tue, 30 Nov 2021
+ 08:53:15 +0000
+Subject: Re: [PATCH] mtd: dataflash: Add device-tree SPI IDs
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>
+References: <20211119183316.1329089-1-miquel.raynal@bootlin.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <a799095a-e046-ae56-c2db-f527e199b5fb@nvidia.com>
+Date: Tue, 30 Nov 2021 08:53:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20211119183316.1329089-1-miquel.raynal@bootlin.com>
+Content-Language: en-US
+X-ClientProxiedBy: AM0PR01CA0139.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:168::44) To CO6PR12MB5444.namprd12.prod.outlook.com
+ (2603:10b6:5:35e::8)
 MIME-Version: 1.0
-X-MTK: N
+Received: from [10.26.49.14] (195.110.77.193) by
+ AM0PR01CA0139.eurprd01.prod.exchangelabs.com (2603:10a6:208:168::44) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23 via Frontend
+ Transport; Tue, 30 Nov 2021 08:53:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1088cd04-486f-48ca-9df6-08d9b3ded8a7
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5582:
+X-Microsoft-Antispam-PRVS: <MW4PR12MB5582A8B6CD96E6E1FE739C2BD9679@MW4PR12MB5582.namprd12.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kqqxwgazpruAGe5ETJx0WThWBHVpEFAEFG9j3dHSLhYYeOChPt0AKYoVjY0GIZ2oWTOSQ9uVwKCpTdc1OLdeXCxh8gVPyodwgNgAncktPHtxqoByRhUDDf145mkryqTX/lAgbiCJtCQLsG8SxCbZcigqRhkekD8TeZugWxJ018cFMaiw+igl3paFpUArYt28g4b09Cc0dkaHE7I6jILAarvSVnWM4Tm6meu0NmQ+XESHnU9kU1+q5q1DJ2+YRQNh1QebgKK30TVPZ5SRZfIWYruFw9WT8yEtuq6QxHtt1lnAjQA0+RAbyxXLXMefKL+Hk6s6NZbkL8AA/vy60kG3hGlowVqHNme4Pb/LyjG1yfhpV01FFLgpFqkVtkPn026y8uDmVG3l/Ofqoa7DeaYeeLRRe0kZHniL40+3E/RCz/gBFuY0bMRvQWJEhlAGWdsJgu3i+ZaW8k3TVFkTe9pmtVcZ0Rb7GqNKPsXmmGeEfrQJXvOm1z3E4WV4a1cMOGW+Cg4EA1mZRRn6HFHIugpmwo8viQSFHxq9ARvWet1VRJ+Ek7wrJBfGukstroo0cpiVvIRlKDkWAUf9BMvCQFFK2wrgpi7BgGJemUi3DTeaGLAzeVN+lJvKi9KEVVtVVh/iDPj76DC9o21xf0j+ph1GPSN2h3IqZmkiYOtI2rLy5qoSUaC2IHDicQNY7CvDXQmwvbocMzVrOw20/ZJev1f+foGU+IZ1X3mTRpVi0Owz4BavLPArIJDkeFciFHSWK0LnT/OumvUitu70llFn+WB3YFNU3pRv8Qf2F/8uL1jZULo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CO6PR12MB5444.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(31696002)(186003)(53546011)(55236004)(16576012)(26005)(316002)(966005)(110136005)(66946007)(66556008)(66476007)(6666004)(508600001)(5660300002)(38100700002)(956004)(4744005)(8936002)(8676002)(6486002)(4326008)(86362001)(2906002)(83380400001)(36756003)(31686004)(2616005)(4001150100001)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SHozNnhPV2F3NlV5bXNjdEhCUXh5OC8rRGttUTB4bGpiQ01saXZxaFRLU09W?=
+ =?utf-8?B?S0R5dHFBSnJuNkxBYm1pOElMbzJYTUtQTzBia1NiYmVMY201d1I2S2xBZDds?=
+ =?utf-8?B?dEdHdzgwT3dRaHVzV01NWWdlOXJiTEF0M3hBVWc3RHRuMkdqUVRreklOT2FR?=
+ =?utf-8?B?Uy9PSFBqQVhTY1NMYmMwT2d1akYyeC9sSm9ocitRVS9DVy9oSjg1c1BPYzZs?=
+ =?utf-8?B?Yzl4bU9oMWtpUEdrd2hZY3VrTG96WXBQd3h1cGVGeXFjWHpxVE1aWGx4N1lB?=
+ =?utf-8?B?Yzd6clhrbkJscUptY2dHSW1NRkE4c21NYXpJZUJTZWh6S1NKVEZIRitvSUFT?=
+ =?utf-8?B?NUVsOUl6N2NUQThldXBhdWhGV0Y0UlNwOVRlUUdpdE11enk2TXFkNEV6aG5p?=
+ =?utf-8?B?b1VRbElXQ1FFVFF0RzVmMXJYL0RnTmZUVC9tRVdyN3VUeGdDakp6bGpUaW1P?=
+ =?utf-8?B?ZG9ibDZNd1RIb3dzRGd6djBlR0FzUDlkT085K2JveTd3U05PQzZrKzBJbmgz?=
+ =?utf-8?B?NmRpSU45ZGpZUHdYYjA1cTdrVk1ZVy9pMlZ0NEVGNllidXZNS3l0UkhiNWlB?=
+ =?utf-8?B?RHduYmYzVDlxR2hzMHJKU1pZa2pxY0JyWkIzZnBTWmhmQ05sa0Jkc1JqSXZ6?=
+ =?utf-8?B?aS94YldjTnNCU1RaZjJQNjBOSjZJd2Nnd2x4ajlmSmNaMTdWSzk4YkZkVUdr?=
+ =?utf-8?B?MmNxcDZKc25GK2dNUTcreWIxc1pxcHVCRTFuZVVZWTY4ZXI0N3RNZjUxTjVM?=
+ =?utf-8?B?ZnNlbDk3ZjRQTjloeDZDRzdqN1lqN1Y5eFFGTllJZEpQY1hxN3NaZDBPSjhV?=
+ =?utf-8?B?NElVWFloRGtmbWdERjNvNy9lam9CRGxPc2FuZGg4bDNxRFlUcnMrRjVWcmQ3?=
+ =?utf-8?B?VE8yTnQ3djVZTVQ2bExVZ1lyWkRXU2NLZ2xWVW5zd3QzaWV4WWtZWXozMXhU?=
+ =?utf-8?B?RzB0Q3dTdVFqTjNDdGtBcnZpZnBQTmZrS2hkL0FCbkFLUjg1ZElicVY5bFl6?=
+ =?utf-8?B?RExUWmtlVTd5R295ZlFFTGFGdXhsRmdTWExLYXBxMHhuR29Ua2g4SkVsSHBu?=
+ =?utf-8?B?ckNlYkVYdFcyUGVKdUpWQmkrWDlYMzVVMEpOVUFUalBQbkZLMzRxMzZKUXV6?=
+ =?utf-8?B?SU5uM2JDdS9ueUNFd0xra3VDa2JhMVI5R2QyKzZiNFhrRGhpUXVPTEdveVhm?=
+ =?utf-8?B?dUIvVWZpeW82QzltRzZxcHpnVVUzVEFBM1lKdFJ2WnQvZ2poOEFMZUk4K1p6?=
+ =?utf-8?B?QzhmNkpNdlFkMWo0clZqUFd2V0Vjd2JHYWJIUkFFR2s2RGVqOXFXNi8yUGEw?=
+ =?utf-8?B?OUhNNDI5dngvTmI5SWx4YzdTYjUyd1BYbWZmOTFvSUc0TkNlUldqemRsay82?=
+ =?utf-8?B?MitLZjdZM1VZNHVTNFg2RDUrWWVFeFhEN2lyVHh1U0M4ZS9hN3ZueHBtaGhI?=
+ =?utf-8?B?Wm5YdkpLN0ZPVG1JV2ZiTEdCc3pBTjBvSkVqSHhpbm0xQ1hGOEhOVzFEdSt6?=
+ =?utf-8?B?MDUxdFpwcGJqcHBNNUtCYlpZaVhsaUdBNGEyMUxNQUhYNWJQK1g2dkpSVmto?=
+ =?utf-8?B?bHhoMG1Ublh4Wk05aVRVajY1ZzJxLzM5cmpKL2dTODU4Nml6dEpJTHZPQktn?=
+ =?utf-8?B?YTVvV0RKc2V6dDJ6c0gwbVRYOSt6aTNjV0JqV1ZXTU54TUNHVnJFVS9ZZUdF?=
+ =?utf-8?B?MGxNQUpNNGxrMWZyNnUzNmRJaUl5NjVYL29QQU9tNzhIZUpEamdnVkhBZlB5?=
+ =?utf-8?Q?g9po3rSIh2DDjud2D1nJey9Jy980+CKlVNFGmjx?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1088cd04-486f-48ca-9df6-08d9b3ded8a7
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2021 08:53:15.0144 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8m9Dsn3rjbc6Q+DUEiVcPvAxa01LKDGjmMP7ZNjdDhAqmJCDRaQ8BP+ipl654A/wVYMH+9iyo4HtE8y/rAaBEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5582
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211130_003234_894310_3B5B5D46 
-X-CRM114-Status: UNSURE (   9.05  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211130_005319_070900_15A017CA 
+X-CRM114-Status: GOOD (  13.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,74 +143,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add snfi node for SPI NAND controller.
-Just take MT7622 for example at present.
+Hi Miquel,
 
-Signed-off-by: Xiangsheng Hou <xiangsheng.hou@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts | 16 ++++++++++++++++
- arch/arm64/boot/dts/mediatek/mt7622.dtsi     | 13 +++++++++++++
- 2 files changed, 29 insertions(+)
+On 19/11/2021 18:33, Miquel Raynal wrote:
+> On Mon, 2021-11-15 at 11:36:55 UTC, Jon Hunter wrote:
+>> Commit 5fa6863ba692 ("spi: Check we have a spi_device_id for each DT
+>> compatible") added a test to check that every SPI driver has a
+>> spi_device_id for each DT compatiable string defined by the driver
+>> and warns if the spi_device_id is missing. The spi_device_ids are
+>> missing for the dataflash driver and the following warnings are now
+>> seen.
+>>
+>>   WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,at45
+>>   WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,dataflash
+>>
+>> Fix this by adding the necessary spi_device_ids.
+>>
+>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> 
+> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-index 596c073d8b05..1a5bf553f3a3 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts
-@@ -530,6 +530,22 @@ &spi0 {
- 	status = "okay";
- };
- 
-+&snfi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&snfi_pins>;
-+	nand-ecc-engine = <&bch>;
-+	status = "disabled";
-+
-+	spi_nand@0 {
-+		compatible = "spi-nand";
-+		reg = <0>;
-+		spi-max-frequency = <104000000>;
-+		spi-tx-bus-width = <4>;
-+		spi-rx-bus-width = <4>;
-+		nand-ecc-engine = <&snfi>;
-+	};
-+};
-+
- &spi1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&spic1_pins>;
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-index 6f8cb3ad1e84..229ec2a3a65e 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-@@ -497,6 +497,19 @@ spi0: spi@1100a000 {
- 		status = "disabled";
- 	};
- 
-+	snfi: spi@1100d000 {
-+		compatible = "mediatek,mt7622-snfi";
-+		reg = <0 0x1100d000 0 0x1000>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&infracfg_ao CLK_INFRA_AO_NFI_BCLK_CK_SET>,
-+			 <&infracfg_ao CLK_INFRA_AO_NFI_INFRA_BCLK_CK_SET>,
-+			 <&infracfg_ao CLK_INFRA_AO_NFI_HCLK_CK_SET>;
-+		clock-names = "nfi_clk", "snfi_clk", "hclk";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		status = "disabled";
-+	};
-+
- 	thermal: thermal@1100b000 {
- 		#thermal-sensor-cells = <1>;
- 		compatible = "mediatek,mt7622-thermal";
+
+Please can you submit as a fix for v5.16? The commit that introduced 
+this is already in the mainline.
+
+Thanks
+Jon
+
 -- 
-2.25.1
-
+nvpublic
 
 ______________________________________________________
 Linux MTD discussion mailing list
