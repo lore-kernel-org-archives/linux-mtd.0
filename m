@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D876C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 11:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EB8BC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 30 Nov 2021 12:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AXYTgcqqWs9voxMuyJZO1aMYhHc48Ja/Uar5uyVx0Ns=; b=dBELPlEOJLr45A
-	tFiKf0j30Ji+nDY1Tlp4afJWruYk+s6vY3oMiliUsXXj9r6x8Py9wpSFzfiLevefcOS4FWF/BZsTi
-	Fe0paEvFYB+rFK23Lhaa26p2mtCtU8IdGSUwSCNgtbaVnWPMeXHePs6uBVRPQKZ62f5GsqgDe3ZRL
-	gDJnUuPPJBVE3FyLLNF518M05ELoaDHU94BAzi//IvCrcsfyRVCLMHaoo1M75byXDq85DhFOTxatA
-	GuGBsMh254qavRC8p1dN192SDgtn84TyqKGgFq3Wo1ALog0HesPj1SolsddIZjCnra/BkaaPSOF5B
-	xV9DY4W22KkNMZE0OOtA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3m8O1hLZMjw3aqmQd00ZXAtCrk2xgNgss8AgekXZ47Q=; b=RMrI5uAzmZ3CxZ
+	0nMbdoDItt+sQOwJ/ghMIJDJhVHmHJ+PeN8Ho3yAPzUZjnu5iUz3+LfXE+zQGnDfDd4tWATa39tvn
+	GQVQbdKNSAw0yUE811NB2dgNHLf1a9orwsupSU8gxzrU9i6KL6xyHkiJzaXmux6Nj+ty1shM8sD2/
+	97Fq5tjnfbE/IUkrbrSzVJc8qkEowvbK/+lCTiKD96RrABd7QHjg1rqjsEuwwT3JawwKB5haV2jtS
+	rWexzYz657d124noC394JctijsyZK+x6ecdcNwb/3rdTFDuRJ3ZiGoywUFNyqnA7AJAHaP6K0/jzK
+	XhzdS0KZctmdKnXsT5Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ms1Mp-004sDl-Gz; Tue, 30 Nov 2021 11:32:11 +0000
-Received: from mail-lj1-x22f.google.com ([2a00:1450:4864:20::22f])
+	id 1ms2S6-005A02-4x; Tue, 30 Nov 2021 12:41:42 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ms1Ml-004sCm-Tq
- for linux-mtd@lists.infradead.org; Tue, 30 Nov 2021 11:32:09 +0000
-Received: by mail-lj1-x22f.google.com with SMTP id k23so40571904lje.1
- for <linux-mtd@lists.infradead.org>; Tue, 30 Nov 2021 03:32:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kempniu.pl; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=X5b3YvPegq03gYSzvbahWzi/UFXFsEzYj5ZGA/leSgI=;
- b=Tp3Exh9ExxwZfrNgUk6Robd0zH/IDARvYBvLqEcDHNyml8HU7O5L7dKk2+DQjJIVCr
- 19F3gmzZ+XRr/lwW/yizWqnQFQwh6UNSqW+uxEw/XDK3xfxvvgKL+Wvu6yW65O7VFfXx
- 6Qxg2JYbAhqLQPybdJeXOGDl8dZhxi24lHo6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=X5b3YvPegq03gYSzvbahWzi/UFXFsEzYj5ZGA/leSgI=;
- b=tBn17ZjrjPy9GkHipq89uqbSbYmuaUC2z2TdwYithL4djSKvmDLzFGOcBcgvqUuZly
- rD+NSciPXZxtj+eG3wOjXzRY1/mXJssIiq/olZzR3L9FoqzhM/KQjseidQR6u21SjIUR
- bryxRBA5FBZ/aA7CCBbUMdl8f5WSUp4FxWwl1G9EZcJCtE79mQEy60fdFwkDW1rI6gGS
- v1NbfZkOgJOsbzl8a+3UUZq5PARINmc+r8A7pQ5brf5VBnA5aElsUoTa4hISupXUWes0
- kBObDnQoDAUl/y4rw9bqnwvTXqDuaVdEzzgdnHNk2P6+5SQikJSyx1uc40riUVcl+FVS
- vChw==
-X-Gm-Message-State: AOAM5339zlljmfN8/VWbnHqQT1XKN/BdQ8fuZb8dVDMbGPTQK0Lg4Yzw
- GtI2xfLj+y2R41eyKoSyLyjbNw==
-X-Google-Smtp-Source: ABdhPJzAJGMoIxxVFHK0gKBc56Pb+vSejIdKsa+bAgLTX9Vh0Ck6xGqoELcgMnNmXlnt4jC9PGB4NQ==
-X-Received: by 2002:a2e:144a:: with SMTP id 10mr51970178lju.75.1638271925020; 
- Tue, 30 Nov 2021 03:32:05 -0800 (PST)
-Received: from larwa.hq.kempniu.pl ([2001:470:64df:111::221])
- by smtp.gmail.com with ESMTPSA id l16sm1884472lfg.90.2021.11.30.03.32.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 30 Nov 2021 03:32:04 -0800 (PST)
-From: =?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ id 1ms2S1-0059z4-TM
+ for linux-mtd@lists.infradead.org; Tue, 30 Nov 2021 12:41:40 +0000
+Received: from skn-laptop (_gateway [172.25.0.1])
+ by first.geanix.com (Postfix) with ESMTPSA id 677F9E1E80;
+ Tue, 30 Nov 2021 12:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1638276092; bh=jjrzx4VWi8T+BA9gDPmooOJjmrzdkAebQ7CI9lqreQM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=jUGsSL8xUG1Z9vaRKZNA6iJMOhmtEU/eWuPpAjyerby+TLVkqkXIY3Qll2SdmIZSm
+ IEx8BNPAA+U8Wkn+EVEn6R9doq5g2zYHWEZgmsEZccvsK1dRGTsjIcruDMXVSnuE/r
+ bbZqIFvdzjBhA1RhmAIuNe4HnFNGojRKfqFFITHEK+YtJmyCnKb6EwvIIrW/o1Tu3g
+ IpdaKPtdvAJflwHvZf3CEVxS8dGACwDKcBUl9jskZAhpOFZ5e+oNX50PFNhsv2in8Q
+ TcNU3q0LdBT2MvJpsgytgVDIix5VfZYg7mVYs6wexDPQGJTx8m0XMuNXMAAFk0OyvR
+ r0Sjq5gYscLTQ==
+Date: Tue, 30 Nov 2021 13:41:31 +0100
+From: Sean Nyekjaer <sean@geanix.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtdchar: prevent unbounded allocation in MEMWRITE ioctl
-Date: Tue, 30 Nov 2021 12:31:49 +0100
-Message-Id: <20211130113149.21848-1-kernel@kempniu.pl>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while in
+ suspend
+Message-ID: <20211130124131.6pgu7enjgk6y536m@skn-laptop>
+References: <20211102110204.3334609-1-sean@geanix.com>
+ <20211102110204.3334609-4-sean@geanix.com>
+ <CGME20211123120353eucas1p2fb2561b7cfddd8d6e7decaef8b504f4c@eucas1p2.samsung.com>
+ <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
+ <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
+ <20211123140715.280b2f70@collabora.com>
+ <20211129101908.6f1aa715@xps13>
+ <20211129094129.xn364czofrgtvfb4@skn-laptop>
+ <63be9121-18c3-1ef2-c448-f99fb861490f@samsung.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <63be9121-18c3-1ef2-c448-f99fb861490f@samsung.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211130_033208_064424_1167276E 
-X-CRM114-Status: GOOD (  22.46  )
+X-CRM114-CacheID: sfid-20211130_044138_754006_C1D36C48 
+X-CRM114-Status: GOOD (  22.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,95 +74,173 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SW4gdGhlIG10ZGNoYXJfd3JpdGVfaW9jdGwoKSBmdW5jdGlvbiwgbWVtZHVwX3VzZXIoKSBpcyBj
-YWxsZWQgd2l0aCBpdHMKJ2xlbicgcGFyYW1ldGVyIHNldCB0byB2ZXJiYXRpbSB2YWx1ZXMgcHJv
-dmlkZWQgYnkgdXNlciBzcGFjZSB2aWEgYQpzdHJ1Y3QgbXRkX3dyaXRlX3JlcS4gIEJvdGggdGhl
-ICdsZW4nIGFuZCAnb29ibGVuJyBmaWVsZHMgb2YgdGhhdApzdHJ1Y3R1cmUgYXJlIDY0LWJpdCB1
-bnNpZ25lZCBpbnRlZ2Vycywgd2hpY2ggbWVhbnMgdGhlIE1FTVdSSVRFIGlvY3RsCmNhbiB0cmln
-Z2VyIHVuYm91bmRlZCBrZXJuZWwgbWVtb3J5IGFsbG9jYXRpb24gcmVxdWVzdHMuCgpGaXggYnkg
-aXRlcmF0aW5nIG92ZXIgdGhlIGJ1ZmZlcnMgcHJvdmlkZWQgYnkgdXNlciBzcGFjZSBpbiBhIGxv
-b3AsCnByb2Nlc3NpbmcgYXQgbW9zdCBtdGQtPmVyYXNlc2l6ZSBieXRlcyBpbiBlYWNoIGl0ZXJh
-dGlvbi4gIEFkb3B0IHNvbWUKY2hlY2tzIGZyb20gbXRkX2NoZWNrX29vYl9vcHMoKSB0byByZXRh
-aW4gYmFja3dhcmQgdXNlciBzcGFjZQpjb21wYXRpYmlsaXR5LgoKU3VnZ2VzdGVkLWJ5OiBCb3Jp
-cyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBjb2xsYWJvcmEuY29tPgpTaWduZWQtb2ZmLWJ5
-OiBNaWNoYcWCIEvEmXBpZcWEIDxrZXJuZWxAa2VtcG5pdS5wbD4KLS0tCkNoYW5nZXMgZnJvbSB2
-MToKCiAgLSBGaXhlZCBzcGxpdHRpbmcgY2VydGFpbiBsYXJnZSB3cml0ZXMgd2l0aCBPT0IgZGF0
-YSBtaXNzaW5nIGZvciBzb21lCiAgICBwYWdlcy4KCiAgLSBGaXhlZCBzcGxpdHRpbmcgbGFyZ2Ug
-bm9uLXBhZ2UtYWxpZ25lZCB3cml0ZXMuCgogIC0gUmV3b3JrZWQgT09CIGxlbmd0aCBhZGp1c3Rt
-ZW50IGNvZGUgdG8gZml4IG90aGVyIGNhc2VzIG9mCiAgICBtaXNoYW5kbGluZyBub24tcGFnZS1h
-bGlnbmVkIHdyaXRlcy4KCiAgLSBFeHRyYWN0ZWQgT09CIGxlbmd0aCBhZGp1c3RtZW50IGNvZGUg
-dG8gYSBoZWxwZXIgZnVuY3Rpb24gZm9yIGJldHRlcgogICAgcmVhZGFiaWxpdHkuCgogZHJpdmVy
-cy9tdGQvbXRkY2hhci5jIHwgMTEwICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0t
-LS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDg3IGluc2VydGlvbnMoKyksIDIzIGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNoYXIuYyBiL2RyaXZlcnMvbXRkL210ZGNo
-YXIuYwppbmRleCAxNTVlOTkxZDlkNzUuLmQwZjljNGIwMjg1YyAxMDA2NDQKLS0tIGEvZHJpdmVy
-cy9tdGQvbXRkY2hhci5jCisrKyBiL2RyaXZlcnMvbXRkL210ZGNoYXIuYwpAQCAtNTczLDE0ICs1
-NzMsMzIgQEAgc3RhdGljIGludCBtdGRjaGFyX2Jsa3BnX2lvY3RsKHN0cnVjdCBtdGRfaW5mbyAq
-bXRkLAogCX0KIH0KIAorc3RhdGljIHZvaWQgYWRqdXN0X29vYl9sZW5ndGgoc3RydWN0IG10ZF9p
-bmZvICptdGQsIHVpbnQ2NF90IHN0YXJ0LAorCQkJICAgICAgc3RydWN0IG10ZF9vb2Jfb3BzICpv
-cHMpCit7CisJdWludDMyX3Qgc3RhcnRfcGFnZSwgZW5kX3BhZ2U7CisJdTMyIG9vYl9wZXJfcGFn
-ZTsKKworCWlmIChvcHMtPmxlbiA9PSAwIHx8IG9wcy0+b29ibGVuID09IDApCisJCXJldHVybjsK
-KworCXN0YXJ0X3BhZ2UgPSBtdGRfZGl2X2J5X3dzKHN0YXJ0LCBtdGQpOworCWVuZF9wYWdlID0g
-bXRkX2Rpdl9ieV93cyhzdGFydCArIG9wcy0+bGVuIC0gMSwgbXRkKTsKKwlvb2JfcGVyX3BhZ2Ug
-PSBtdGRfb29iYXZhaWwobXRkLCBvcHMpOworCisJb3BzLT5vb2JsZW4gPSBtaW5fdChzaXplX3Qs
-IG9wcy0+b29ibGVuLAorCQkJICAgIChlbmRfcGFnZSAtIHN0YXJ0X3BhZ2UgKyAxKSAqIG9vYl9w
-ZXJfcGFnZSk7Cit9CisKIHN0YXRpYyBpbnQgbXRkY2hhcl93cml0ZV9pb2N0bChzdHJ1Y3QgbXRk
-X2luZm8gKm10ZCwKIAkJc3RydWN0IG10ZF93cml0ZV9yZXEgX191c2VyICphcmdwKQogewogCXN0
-cnVjdCBtdGRfaW5mbyAqbWFzdGVyID0gbXRkX2dldF9tYXN0ZXIobXRkKTsKIAlzdHJ1Y3QgbXRk
-X3dyaXRlX3JlcSByZXE7Ci0Jc3RydWN0IG10ZF9vb2Jfb3BzIG9wcyA9IHt9OwogCWNvbnN0IHZv
-aWQgX191c2VyICp1c3JfZGF0YSwgKnVzcl9vb2I7Ci0JaW50IHJldDsKKwl1aW50OF90ICpkYXRi
-dWYgPSBOVUxMLCAqb29iYnVmID0gTlVMTDsKKwlzaXplX3QgZGF0YnVmX2xlbiwgb29iYnVmX2xl
-bjsKKwlpbnQgcmV0ID0gMDsKIAogCWlmIChjb3B5X2Zyb21fdXNlcigmcmVxLCBhcmdwLCBzaXpl
-b2YocmVxKSkpCiAJCXJldHVybiAtRUZBVUxUOwpAQCAtNTkwLDMzICs2MDgsNzkgQEAgc3RhdGlj
-IGludCBtdGRjaGFyX3dyaXRlX2lvY3RsKHN0cnVjdCBtdGRfaW5mbyAqbXRkLAogCiAJaWYgKCFt
-YXN0ZXItPl93cml0ZV9vb2IpCiAJCXJldHVybiAtRU9QTk9UU1VQUDsKLQlvcHMubW9kZSA9IHJl
-cS5tb2RlOwotCW9wcy5sZW4gPSAoc2l6ZV90KXJlcS5sZW47Ci0Jb3BzLm9vYmxlbiA9IChzaXpl
-X3QpcmVxLm9vYmxlbjsKLQlvcHMub29ib2ZmcyA9IDA7Ci0KLQlpZiAodXNyX2RhdGEpIHsKLQkJ
-b3BzLmRhdGJ1ZiA9IG1lbWR1cF91c2VyKHVzcl9kYXRhLCBvcHMubGVuKTsKLQkJaWYgKElTX0VS
-UihvcHMuZGF0YnVmKSkKLQkJCXJldHVybiBQVFJfRVJSKG9wcy5kYXRidWYpOwotCX0gZWxzZSB7
-Ci0JCW9wcy5kYXRidWYgPSBOVUxMOworCisJaWYgKCF1c3JfZGF0YSkKKwkJcmVxLmxlbiA9IDA7
-CisKKwlpZiAoIXVzcl9vb2IpCisJCXJlcS5vb2JsZW4gPSAwOworCisJaWYgKHJlcS5zdGFydCAr
-IHJlcS5sZW4gPiBtdGQtPnNpemUpCisJCXJldHVybiAtRUlOVkFMOworCisJZGF0YnVmX2xlbiA9
-IG1pbl90KHNpemVfdCwgcmVxLmxlbiwgbXRkLT5lcmFzZXNpemUpOworCWlmIChkYXRidWZfbGVu
-ID4gMCkgeworCQlkYXRidWYgPSBrbWFsbG9jKGRhdGJ1Zl9sZW4sIEdGUF9LRVJORUwpOworCQlp
-ZiAoIWRhdGJ1ZikKKwkJCXJldHVybiAtRU5PTUVNOwogCX0KIAotCWlmICh1c3Jfb29iKSB7Ci0J
-CW9wcy5vb2JidWYgPSBtZW1kdXBfdXNlcih1c3Jfb29iLCBvcHMub29ibGVuKTsKLQkJaWYgKElT
-X0VSUihvcHMub29iYnVmKSkgewotCQkJa2ZyZWUob3BzLmRhdGJ1Zik7Ci0JCQlyZXR1cm4gUFRS
-X0VSUihvcHMub29iYnVmKTsKKwlvb2JidWZfbGVuID0gbWluX3Qoc2l6ZV90LCByZXEub29ibGVu
-LCBtdGQtPmVyYXNlc2l6ZSk7CisJaWYgKG9vYmJ1Zl9sZW4gPiAwKSB7CisJCW9vYmJ1ZiA9IGtt
-YWxsb2Mob29iYnVmX2xlbiwgR0ZQX0tFUk5FTCk7CisJCWlmICghb29iYnVmKSB7CisJCQlrZnJl
-ZShkYXRidWYpOworCQkJcmV0dXJuIC1FTk9NRU07CiAJCX0KLQl9IGVsc2UgewotCQlvcHMub29i
-YnVmID0gTlVMTDsKIAl9CiAKLQlyZXQgPSBtdGRfd3JpdGVfb29iKG10ZCwgKGxvZmZfdClyZXEu
-c3RhcnQsICZvcHMpOworCXdoaWxlIChyZXEubGVuID4gMCB8fCAoIXVzcl9kYXRhICYmIHJlcS5v
-b2JsZW4gPiAwKSkgeworCQlzdHJ1Y3QgbXRkX29vYl9vcHMgb3BzID0geworCQkJLm1vZGUgPSBy
-ZXEubW9kZSwKKwkJCS5sZW4gPSBtaW5fdChzaXplX3QsIHJlcS5sZW4sIGRhdGJ1Zl9sZW4pLAor
-CQkJLm9vYmxlbiA9IG1pbl90KHNpemVfdCwgcmVxLm9vYmxlbiwgb29iYnVmX2xlbiksCisJCQku
-ZGF0YnVmID0gZGF0YnVmLAorCQkJLm9vYmJ1ZiA9IG9vYmJ1ZiwKKwkJfTsKIAotCWtmcmVlKG9w
-cy5kYXRidWYpOwotCWtmcmVlKG9wcy5vb2JidWYpOworCQkvKgorCQkgKiBTaG9ydGVuIG5vbi1w
-YWdlLWFsaWduZWQsIGVyYXNlYmxvY2stc2l6ZWQgd3JpdGVzIHNvIHRoYXQKKwkJICogdGhlIHdy
-aXRlIGVuZHMgb24gYW4gZXJhc2VibG9jayBib3VuZGFyeS4gIFRoaXMgaXMgbmVjZXNzYXJ5CisJ
-CSAqIGZvciBhZGp1c3Rfb29iX2xlbmd0aCgpIHRvIHByb3Blcmx5IGhhbmRsZSBub24tcGFnZS1h
-bGlnbmVkCisJCSAqIHdyaXRlcy4KKwkJICovCisJCWlmIChvcHMubGVuID09IG10ZC0+ZXJhc2Vz
-aXplKQorCQkJb3BzLmxlbiAtPSBtdGRfbW9kX2J5X3dzKHJlcS5zdGFydCArIG9wcy5sZW4sIG10
-ZCk7CisKKwkJLyoKKwkJICogRm9yIHdyaXRlcyB3aGljaCBhcmUgbm90IE9PQi1vbmx5LCBhZGp1
-c3QgdGhlIGFtb3VudCBvZiBPT0IKKwkJICogZGF0YSB3cml0dGVuIGFjY29yZGluZyB0byB0aGUg
-bnVtYmVyIG9mIGRhdGEgcGFnZXMgd3JpdHRlbi4KKwkJICogVGhpcyBpcyBuZWNlc3NhcnkgdG8g
-cHJldmVudCBPT0IgZGF0YSBmcm9tIGJlaW5nIHNraXBwZWQKKwkJICogb3ZlciBpbiBkYXRhK09P
-QiB3cml0ZXMgcmVxdWlyaW5nIG11bHRpcGxlIG10ZF93cml0ZV9vb2IoKQorCQkgKiBjYWxscyB0
-byBiZSBjb21wbGV0ZWQuCisJCSAqLworCQlhZGp1c3Rfb29iX2xlbmd0aChtdGQsIHJlcS5zdGFy
-dCwgJm9wcyk7CisKKwkJaWYgKGNvcHlfZnJvbV91c2VyKGRhdGJ1ZiwgdXNyX2RhdGEsIG9wcy5s
-ZW4pIHx8CisJCSAgICBjb3B5X2Zyb21fdXNlcihvb2JidWYsIHVzcl9vb2IsIG9wcy5vb2JsZW4p
-KSB7CisJCQlyZXQgPSAtRUZBVUxUOworCQkJYnJlYWs7CisJCX0KKworCQlyZXQgPSBtdGRfd3Jp
-dGVfb29iKG10ZCwgcmVxLnN0YXJ0LCAmb3BzKTsKKwkJaWYgKHJldCkKKwkJCWJyZWFrOworCisJ
-CXJlcS5zdGFydCArPSBvcHMucmV0bGVuOworCQlyZXEubGVuIC09IG9wcy5yZXRsZW47CisJCXVz
-cl9kYXRhICs9IG9wcy5yZXRsZW47CisKKwkJcmVxLm9vYmxlbiAtPSBvcHMub29icmV0bGVuOwor
-CQl1c3Jfb29iICs9IG9wcy5vb2JyZXRsZW47CisJfQorCisJa2ZyZWUoZGF0YnVmKTsKKwlrZnJl
-ZShvb2JidWYpOwogCiAJcmV0dXJuIHJldDsKIH0KLS0gCjIuMzQuMQoKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+> On 29.11.2021 10:41, Sean Nyekjaer wrote:
+> > On Mon, Nov 29, 2021 at 10:19:08AM +0100, Miquel Raynal wrote:
+> >> boris.brezillon@collabora.com wrote on Tue, 23 Nov 2021 14:07:15 +0100:
+> >>> On Tue, 23 Nov 2021 13:50:12 +0100
+> >>> Sean Nyekjaer <sean@geanix.com> wrote:
+> >>>> @Boris do we need to do something similar here to what we did with the
+> >>>> mtdconcat stuff?
+> >>> Absolutely, physmasp subdevices are never initialized/registered, so
+> >>> you can't call any of the mtd helpers taking the suspend lock on those.
+> >>> I guess it'd be better to call mtd_suspend/resume() on the concat device
+> >>> in though:
+> >> Any chance that you will come up with a fix or v6 of the series anytime
+> >> soon?
+> >>
+> >>> static void physmap_flash_shutdown(struct platform_device *dev)
+> >>> {
+> >>> 	struct physmap_flash_info *info = platform_get_drvdata(dev);
+> >>>
+> >>> 	mtd_suspend(info->cmtd);
+
+There is one more issue when using concat during boot, I think we should
+start here :)
+It uses uninitialized rwsm.
+
+
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x411fd070]
+[    0.000000] Linux version 5.16.0-rc1-00013-g67bcbe202b48 (sean@zen) (aarch64-linux-gnu-gcc (GCC) 11.2.0, GNU ld (GNU Binutils) 2.37) #207 SMP PREEMPT Tue Nov 30 13:22:48 CET 2021
+[    0.000000] Machine model: linux,dummy-virt
+[    0.000000] efi: UEFI not found.
+[    0.000000] NUMA: No NUMA configuration found
+
+[ ... ]
+
+[    1.848327] 0.flash: Found 2 x16 devices at 0x0 in 32-bit bank. Manufacturer ID 0x000000 Chip ID 0x000000
+[    1.848567] Intel/Sharp Extended Query Table at 0x0031
+[    1.848999] Using buffer write method
+[    1.849237] Concatenating MTD devices:
+[    1.849347] (0): "0.flash"
+[    1.849637] (1): "0.flash"
+[    1.849726] into device "0.flash"
+[    1.904985] libphy: Fixed MDIO Bus: probed
+[    1.915812] tun: Universal TUN/TAP device driver, 1.6
+
+[ ... ]
+
+[    6.064628] The code is fine but needs lockdep annotation, or maybe
+[    6.064756] you didn't initialize this object before use?
+[    6.064857] turning off the locking correctness validator.
+[    6.065111] CPU: 0 PID: 49 Comm: kworker/0:1H Not tainted 5.16.0-rc1-00013-g67bcbe202b48 #207
+[    6.065273] Hardware name: linux,dummy-virt (DT)
+[    6.065572] Workqueue: kblockd blk_mq_run_work_fn
+[    6.065879] Call trace:
+[    6.065943]  dump_backtrace+0x0/0x1a0
+[    6.066057]  show_stack+0x1c/0x30
+[    6.066130]  dump_stack_lvl+0x8c/0xb8
+[    6.066206]  dump_stack+0x1c/0x38
+[    6.066270]  register_lock_class+0x49c/0x4c0
+[    6.066352]  __lock_acquire+0x78/0x20cc
+[    6.066422]  lock_acquire.part.0+0xe0/0x230
+[    6.066497]  lock_acquire+0x6c/0x90
+[    6.066562]  down_read+0x58/0x7c
+[    6.066626]  mtd_read_oob_std+0x98/0x170
+[    6.066703]  mtd_read_oob+0x80/0x13c
+[    6.066770]  mtd_read+0x64/0xa0
+[    6.066834]  concat_read+0xd4/0x1b0
+[    6.066900]  mtd_read_oob_std+0x158/0x170
+[    6.066972]  mtd_read_oob+0x80/0x13c
+[    6.067038]  mtd_read+0x64/0xa0
+[    6.067099]  mtdblock_readsect+0x6c/0x160
+[    6.067169]  mtd_queue_rq+0x240/0x460
+[    6.067234]  blk_mq_dispatch_rq_list+0x19c/0x830
+[    6.067313]  __blk_mq_do_dispatch_sched+0x248/0x2d4
+[    6.067397]  __blk_mq_sched_dispatch_requests+0x110/0x170
+[    6.067487]  blk_mq_sched_dispatch_requests+0x3c/0x80
+[    6.067573]  __blk_mq_run_hw_queue+0x60/0xa0
+[    6.067647]  blk_mq_run_work_fn+0x24/0x30
+[    6.067718]  process_one_work+0x28c/0x6e4
+[    6.067790]  worker_thread+0x78/0x464
+[    6.067856]  kthread+0x180/0x190
+[    6.067919]  ret_from_fork+0x10/0x20
+[    6.068868] ------------[ cut here ]------------
+[    6.068993] DEBUG_RWSEMS_WARN_ON(sem->magic != sem): count = 0x100, magic = 0x0, owner = 0xffff528f84c617c1, curr 0xffff528f84c617c0, list not empty
+[    6.069592] WARNING: CPU: 0 PID: 49 at kernel/locking/rwsem.c:1302 __up_read+0x1e8/0x270
+[    6.069790] Modules linked in:
+[    6.069963] CPU: 0 PID: 49 Comm: kworker/0:1H Not tainted 5.16.0-rc1-00013-g67bcbe202b48 #207
+[    6.070099] Hardware name: linux,dummy-virt (DT)
+[    6.070179] Workqueue: kblockd blk_mq_run_work_fn
+[    6.070347] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    6.070487] pc : __up_read+0x1e8/0x270
+[    6.070577] lr : __up_read+0x1e8/0x270
+[    6.070660] sp : ffff80001026b740
+[    6.070728] x29: ffff80001026b740 x28: 000000000003ff88 x27: 0000000000040000
+[    6.070912] x26: ffff80001026ba28 x25: ffff528f84e92000 x24: ffff528f8576d000
+[    6.071040] x23: 0000000000000000 x22: 0000000003ff0000 x21: ffff80001026b878
+[    6.071165] x20: ffffadee32213000 x19: ffff528f84e918b0 x18: ffffffffffffffff
+[    6.071292] x17: 672d33313030302d x16: 3163722d302e3631 x15: ffff80009026b457
+[    6.071418] x14: 0000000000000007 x13: ffffadee32236658 x12: 0000000000000384
+[    6.071543] x11: 000000000000012c x10: ffffadee32236658 x9 : ffffadee32236658
+[    6.071692] x8 : 00000000ffffefff x7 : ffffadee3228e658 x6 : ffffadee3228e658
+[    6.071817] x5 : 000000000000bff4 x4 : 0000000000000000 x3 : 0000000000000000
+[    6.071942] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff528f84c617c0
+[    6.072094] Call trace:
+[    6.072163]  __up_read+0x1e8/0x270
+[    6.072238]  up_read+0x44/0x300
+[    6.072301]  mtd_read_oob_std+0xd0/0x170
+[    6.072374]  mtd_read_oob+0x80/0x13c
+[    6.072441]  mtd_read+0x64/0xa0
+[    6.072502]  concat_read+0xd4/0x1b0
+[    6.072567]  mtd_read_oob_std+0x158/0x170
+[    6.072640]  mtd_read_oob+0x80/0x13c
+[    6.072706]  mtd_read+0x64/0xa0
+[    6.072766]  mtdblock_readsect+0x6c/0x160
+[    6.072843]  mtd_queue_rq+0x240/0x460
+[    6.072909]  blk_mq_dispatch_rq_list+0x19c/0x830
+[    6.072990]  __blk_mq_do_dispatch_sched+0x248/0x2d4
+[    6.073073]  __blk_mq_sched_dispatch_requests+0x110/0x170
+[    6.073163]  blk_mq_sched_dispatch_requests+0x3c/0x80
+[    6.073249]  __blk_mq_run_hw_queue+0x60/0xa0
+[    6.073325]  blk_mq_run_work_fn+0x24/0x30
+[    6.073421]  process_one_work+0x28c/0x6e4
+[    6.073568]  worker_thread+0x78/0x464
+[    6.073643]  kthread+0x180/0x190
+[    6.073710]  ret_from_fork+0x10/0x20
+[    6.073820] irq event stamp: 1529
+[    6.073891] hardirqs last  enabled at (1529): [<ffffadee3114576c>] _raw_spin_unlock_irq+0x48/0x9c
+[    6.074067] hardirqs last disabled at (1528): [<ffffadee31145b70>] _raw_spin_lock_irq+0xac/0xb0
+[    6.074211] softirqs last  enabled at (1444): [<ffffadee30010528>] __do_softirq+0x478/0x5f0
+[    6.074350] softirqs last disabled at (1429): [<ffffadee3009f064>] __irq_exit_rcu+0x184/0x1b0
+[    6.074506] ---[ end trace 738f7ffe764b66d5 ]---
+
+I can solve this with this hack from mtd_set_dev_defaults():
+
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index f4a4274489b4..a4b69b9558c9 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -693,6 +693,8 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 	concat->mtd.oobavail = subdev[0]->oobavail;
+ 
+ 	subdev_master = mtd_get_master(subdev[0]);
++	init_waitqueue_head(&subdev_master->master.resume_wq);
++	init_rwsem(&subdev_master->master.suspend_lock);
+ 	if (subdev_master->_writev)
+ 		concat->mtd._writev = concat_writev;
+ 	if (subdev_master->_read_oob)
+@@ -740,6 +742,8 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+ 		}
+ 
+ 		subdev_master = mtd_get_master(subdev[i]);
++		init_waitqueue_head(&subdev_master->master.resume_wq);
++		init_rwsem(&subdev_master->master.suspend_lock);
+ 		concat->mtd.size += subdev[i]->size;
+ 		concat->mtd.ecc_stats.badblocks +=
+ 			subdev[i]->ecc_stats.badblocks;
+
+I do not have a great overview of what is happing here with all these
+master devices :/
+
+Any ideas Boris/Miquel?
+
+/Sean
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
