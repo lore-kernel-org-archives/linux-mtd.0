@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D356CC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Dec 2021 07:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 466CCC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Dec 2021 08:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aEpMSDeNeta5v2WRkoJW+vOlkgir9YkoS4x11GPoN2Q=; b=yQVAXKalG6QXm7
-	86FNdcQFuzzESqy32D7B3s4F6TD+PikNYVvLfqHK3ntMfb9Pt7S7RTN50Enrr8YRJx1pYMv/J6CII
-	K4O9jYcgNbQY23VnjgIHaspCvpbuZNt4Fb3FC4rDOodBaKKAyiLZiqjJ7E3IEuCRLICEPBUxzK+wg
-	pqpMX65xUmU0tOzRWvQDUX8tPGNFE39SAslSOKHzDlOCeVbrFTR9vbq0o2Xge03o+Scr0rIFGHLzP
-	o7UX1Mq3CyP0vAeJUF8or7ZGOP7bKptiRbVq4P+/guhjadIbJxSB0wKCRNYwUfYkRb0lGm3jlgXXs
-	a03uJSWWR6jlwsG3eeXg==;
+	List-Owner; bh=J4Fobdsc/miti2T/ZeNqlLDhjvgQYXtZm3iPctDZrmo=; b=Y8kDOnvIQhwYQi
+	nBs0xdSnz1lahvNAhzBBjj+O7o2cL6QTkStXflUUhj/fdPMcxcpS1zAf5j9Z3Ek2s42T6wDNKC8HV
+	68kFsQL3NzSjs7tjub+KcPXmVEU0oI8f4+BlHdNQH+kUVklVNIdincdgu6nsbuTrG1GF4T5tA9IKo
+	zrZT76yvT3F/yLfzjtasSA5zzbJP/pefV9CZpjpXNJve1wyc3YNTv7uCEBhS09nOsLs6rkOZCYJEZ
+	/28DJrDW3baVrtGSVDQuVUp7uGxWOgdHMKPtyK0/4GH8kN7OGjCjMLbDX8zZlOfN+qjZA9wfmvyDn
+	m8LAwmZDXAvia8k6FDtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1msJxt-007dV9-LV; Wed, 01 Dec 2021 07:23:41 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1msKgZ-007mM7-Dc; Wed, 01 Dec 2021 08:09:51 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1msJxq-007dTZ-HR
- for linux-mtd@lists.infradead.org; Wed, 01 Dec 2021 07:23:40 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
- id 373BF68B05; Wed,  1 Dec 2021 08:23:29 +0100 (CET)
-Date: Wed, 1 Dec 2021 08:23:28 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- linux-mtd@lists.infradead.org, linux-block@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC -nxt] mtd_blkdevs: Set GENHD_FL_NO_PART
-Message-ID: <20211201072328.GA31765@lst.de>
-References: <c26dfdf9ce56e92d23530a09db386b283e62845d.1638289204.git.geert+renesas@glider.be>
+ id 1msKgW-007mL6-B4
+ for linux-mtd@lists.infradead.org; Wed, 01 Dec 2021 08:09:50 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 0AD3BE0012;
+ Wed,  1 Dec 2021 08:09:42 +0000 (UTC)
+Date: Wed, 1 Dec 2021 09:09:41 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Olga Kitaina <okitain@gmail.com>
+Cc: linux-mtd@lists.infradead.org, nagasure@xilinx.com, richard@nod.at,
+ vigneshr@ti.com, linux-kernel@vger.kernel.org, Michal Simek
+ <monstr@monstr.eu>
+Subject: Re: [PATCH] mtd: rawnand: arasan: Fix clock rate in NV-DDR
+Message-ID: <20211201090941.73e67f65@xps13>
+In-Reply-To: <fb6a4b49-7c10-4ed1-7054-5dd8ce2d8073@gmail.com>
+References: <20211127180758.30884-1-okitain@gmail.com>
+ <20211129095559.01aa63a6@xps13>
+ <3da5dff5-53d4-15db-075d-9b195f2f75dd@gmail.com>
+ <20211130082017.1400f24b@xps13>
+ <fb6a4b49-7c10-4ed1-7054-5dd8ce2d8073@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c26dfdf9ce56e92d23530a09db386b283e62845d.1638289204.git.geert+renesas@glider.be>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211130_232338_771545_D9D4CC37 
-X-CRM114-Status: GOOD (  20.03  )
+X-CRM114-CacheID: sfid-20211201_000948_684511_BA4C4BD7 
+X-CRM114-Status: GOOD (  39.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -58,36 +59,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, Nov 30, 2021 at 05:23:46PM +0100, Geert Uytterhoeven wrote:
-> When DT declares the partitions of an spi-nor device using
-> "fixed-partitions", the individual mtdblockN partitions are now scanned
-> for partitition tables, which should not happen.
-> 
-> Fix this by setting the GENHD_FL_NO_PART flag in the MTD block layer
-> interface.
-> 
-> Fixes: 1ebe2e5f9d68e94c ("block: remove GENHD_FL_EXT_DEVT")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Seen with e.g. arch/arm/boot/dts/r8a7791-koelsch.dts.
-> I only noticed because I have debug code to measure QSPI performance,
-> which informed me about 8 x 512 bytes being read from each partition
-> detected.
-> 
-> RFC as I'm not sure this is correct in all cases.
-> I did verify that in the absence of "fixed-partitions", the spi-nor
-> device is not scanned for partitions before and after commit
-> 1ebe2e5f9d68e94c.
-
-As far as I can tell mtd fixed partitions have nothing to do with
-the block layer concept of partitions.  What kind of behavior change
-did you see?
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgT2xnYSwKCisgTWljaGFsIChwbGVhc2UgYWRkIGhpbSBpbiBDYyBvZiB5b3VyIG5leHQgaXRl
+cmF0aW9uKQoKb2tpdGFpbkBnbWFpbC5jb20gd3JvdGUgb24gVHVlLCAzMCBOb3YgMjAyMSAyMzow
+ODoyMCArMDMwMDoKCj4gSGkgTWlxdWVsLAo+IAo+IE9uIDMwLjExLjIwMjEgMTA6MjAsIE1pcXVl
+bCBSYXluYWwgd3JvdGU6Cj4gPiBIaSBPbGdhLAo+ID4gCj4gPiBva2l0YWluQGdtYWlsLmNvbSB3
+cm90ZSBvbiBNb24sIDI5IE5vdiAyMDIxIDIxOjA2OjA1ICswMzAwOgo+ID4gICAKPiA+PiBIaSBN
+aXF1ZWwsCj4gPj4KPiA+PiBPbiAyOS4xMS4yMDIxIDExOjU1LCBNaXF1ZWwgUmF5bmFsIHdyb3Rl
+OiAgCj4gPj4+IEhpIE9sZ2EsCj4gPj4+Cj4gPj4+IFBsZWFzZSBhZGQgYWxsIHRoZSBNVEQgbWFp
+bnRhaW5lcnMgaW4gY29weSwgYXMgcmVxdWVzdGVkIGJ5Cj4gPj4+IGdldF9tYWludGFpbmVycy5w
+bC4KPiA+Pj4KPiA+Pj4gb2tpdGFpbkBnbWFpbC5jb20gd3JvdGUgb24gU2F0LCAyNyBOb3YgMjAy
+MSAyMTowNzo1OAo+ID4+PiArMDMwMDoKPiA+Pj4gICAgIAo+ID4+Pj4gQWNjb3JkaW5nIHRvIHRo
+ZSBBcmFzYW4gTkFORCBjb250cm9sbGVyIHNwZWMsCj4gPj4+PiB0aGUgZmxhc2ggY2xvY2sgcmF0
+ZSBmb3IgU0RSIG11c3QgYmUgPD0gMTAwIE1IeiwKPiA+Pj4+IHdoaWxlIGZvciBOVi1ERFIgaXQg
+bXVzdCBiZSB0aGUgc2FtZSBhcyB0aGUgcmF0ZQo+ID4+Pj4gb2YgdGhlIENMSyBsaW5lIGZvciB0
+aGUgbW9kZS4gICAgCj4gPj4+Cj4gPj4+IEkgY29tcGxldGVseSBtaXNzZWQgdGhhdCwgd2hlcmUg
+ZGlkIHlvdSBnZXQgdGhlIGluZm9ybWF0aW9uPyAgICAKPiA+Pgo+ID4+IFRoZSAiRGF0YSBJbnRl
+cmZhY2UgVHJhbnNpdGlvbnMiIGNoYXB0ZXIgb2YgdGhlIHNwZWMgY29udGFpbnMgdGltaW5ncyBm
+b3IgZmxhc2ggY2xvY2sgc2V0dXAgaW4gTlYtRERSCj4gPj4gYW5kIE5WLUREUjIgbW9kZXMuIFRo
+ZSAidGltZSBwZXJpb2QiIG9mIHRob3NlIGNsb2NrcyBpcyBlcXVhbCB0byB0Q0sgaW4gTlYtRERS
+IGFuZCB0UkMgaW4gTlYtRERSMi4KPiA+Pgo+ID4+IFRoZSBzYW1lIGNoYXB0ZXIgc2hvdWxkIGhh
+dmUgaW5mb3JtYXRpb24gYWJvdXQgbmVjZXNzYXJ5IHN0ZXBzIHRvIHN3aXRjaCBmcm9tIE5WLURE
+UiB0byBTRFIsCj4gPj4gd2hpY2ggaW5jbHVkZXMgc2V0dGluZyB0aGUgZmxhc2ggY2xvY2sgdG8g
+MTAwIE1Iei4KPiA+Pgo+ID4+Cj4gPj4gSnVzdCB0byBtYWtlIHN1cmUgaSdtIG5vdCBzaG9vdGlu
+ZyBteXNlbGYgaW4gdGhlIGZvb3Q6IGFtIEkgY2hhbmdpbmcgdGhlIHJpZ2h0IGNsb2NrPwo+ID4+
+IFRoZSBkb2N1bWVudGF0aW9uIHBvaW50cyBvdXQgdGhhdCB3ZSBoYXZlIHRvIGNoYW5nZSBmbGFz
+aF9jbGssIHdoaWNoIGkgdGhvdWdodCB3YXMKPiA+PiBuZmMtPmNvbnRyb2xsZXJfY2xrIGFuZCBz
+ZXQgdXAgYnkgYW5hbmQtPmNsaywgYnV0IGl0IHNlZW1zIGxpa2UgaXQgbWlnaHQgYWN0dWFsbHkg
+YmUgbmZjLT5idXNfY2xrLiAgCj4gPiAKPiA+IEkgYmVsaWV2ZSBJIG1hZGUgYSBzZXJpb3VzIG1p
+c3Rha2UsIHJlLXJlYWRpbmcgdGhlIGNvZGUgaXQgZmVlbHMgbGlrZQo+ID4gSSdtIGNoYW5naW5n
+IHRoZSBzeXN0ZW0ncyBjbG9jayAod2hpY2ggYmFzaWNhbGx5IGNoYW5nZXMgbm90aGluZyBpbiBv
+dXIKPiA+IGNhc2UpIGluc3RlYWQgb2YgY2hhbmdpbmcgdGhlIE5BTkQgYnVzIGNsb2NrLgo+ID4g
+ICAKPiA+PiBJbiB0aGF0IGNhc2UsIGRvZXMgc2V0dGluZyBuZmMtPmNvbnRyb2xsZXJfY2xrIHRv
+IDEwMCBNSHogYnkgZGVmYXVsdCBtYWtlIHNlbnNlPwo+ID4+IFRoZXJlIGlzbid0IGEgaGFyZCBs
+aW1pdCBvbiB3aGF0IHRoZSBzeXN0ZW0gY2xvY2sgbWlnaHQgYmUgKGJleW9uZCBhIHNwZWNpZmlj
+IFNvQyksCj4gPj4gYnV0IHRoZXJlIGFyZSB0aW1pbmcgcmVxdWlyZW1lbnRzIGZvciB0aGUgZmxh
+c2ggY2xvY2ssIGFuZCBzbyBzZXR0aW5nIGEgc3BlY2lmaWMgCj4gPj4gc3lzdGVtIGNsb2NrIGZy
+ZXF1ZW5jeSBzZWVtcyB1bm5lY2Vzc2FyeSBmb3IgbW9zdCBkZXZpY2VzLgo+ID4+ICAKPiA+IAo+
+ID4gUGxlYXNlIGNyZWF0ZSBhIHR3by1wYXRjaCBzZXJpZXM6Cj4gPiAxLSBTZXR0aW5nIHRoZSBy
+aWdodCBjbG9jayBpbiB0aGUgY3VycmVudCBjb2RlIGJhc2UgKGludmVydGluZyBidXNfY2xrCj4g
+PiBhbmQgY29udHJvbGxlcl9jbGsgd2hlcmUgcmVsZXZhbnQsIHNldHRpbmcgb25lIHRvIDEwME1I
+eiBhbmQgbGV0dGluZwo+ID4gdGhlIG90aGVyIGFzIGl0IGlzKQo+ID4gMi0gQ2hhbmdpbmcgdGhl
+IGRlZmF1bHQgTlYtRERSIHJhdGUgYmFzZWQgb24gdENLIChiZWxvdyBwYXRjaCkuCj4gPiAKPiA+
+IERvIHlvdSBoYXZlIHRoZSBuZWNlc3NhcnkgaGFyZHdhcmUgZm9yIHRlc3Rpbmc/ICAKPiAKPiBJ
+J20gc29ycnkgdG8gc2F5IC0gSSBkbyBub3QuIFRoZSBTb0MgdGhpcyBwcm9ibGVtIHdhcyBpbml0
+aWFsbHkgbm90aWNlZCBvbiBjYW4ndCBydW4gbGF0ZXN0IExpbnV4LAo+IGFuZCBldmVuIGlmIGl0
+IGRpZCBJIGhhdmUgbm8gd2F5IG9mIGFjcXVpcmluZyBhbiBOVi1ERFItY2FwYWJsZSBmbGFzaC4K
+PiAKPiBTaW5jZSBCb290bGluIG1lcmdlZCBpbiBOVi1ERFIgc3VwcG9ydCBpbnRvIHRoZSBrZXJu
+ZWwsIGlzIGl0IHBvc3NpYmxlIGZvciB5b3UgdG8gdGVzdCAKPiB0aGUgbmV4dCBpdGVyYXRpb24g
+b2YgdGhpcyBwYXRjaCBzZXJpZXMgb24gTlYtRERSIGhhcmR3YXJlIGFzIHdlbGw/Cj4gU2F5LCBi
+eSBwdXJwb3NlZnVsbHkgcHJldmVudGluZyBOVi1ERFIgbW9kZSA1IGZyb20gYmVpbmcgY2hvc2Vu
+IGluIGFuZmNfc2V0dXBfaW50ZXJmYWNlKCk/CgpJIGRvbid0IGhhdmUgdGhlIGhhcmR3YXJlIGFu
+eW1vcmUuCgpQbGVhc2Ugc2VuZCBhIHYyIHdpdGggdGhlIG5lY2Vzc2FyeSBjaGFuZ2VzLCB0aGVu
+IHdlIHdpbGwgYXNrIE5hZ2EgKG9yCnNvbWVib2R5IGVsc2UgZnJvbSB0aGUgc2FtZSB0ZWFtKSB3
+aXRoIGFjY2VzcyB0byB0aGUgYm9hcmQgdG8gdGVzdCBpdC4KCj4gPj4+PiBUaGUgZHJpdmVyIHBy
+ZXZpb3VzbHkgYWx3YXlzIHNldCAxMDAgTUh6IGZvciBOVi1ERFIsIHdoaWNoCj4gPj4+PiB3b3Vs
+ZCByZXN1bHQgaW4gaW5jb3JyZWN0IGJlaGF2aW9yIGZvciBOVi1ERFIgbW9kZXMgMC00Lgo+ID4+
+Pj4KPiA+Pj4+IFRoZSBhcHByb3ByaWF0ZSBjbG9jayByYXRlIGNhbiBiZSBjYWxjdWxhdGVkCj4g
+Pj4+PiBmcm9tIHRoZSBOVi1ERFIgdGltaW5nIHBhcmFtZXRlcnMgYXMgMS90Q0ssIG9yIGZvciBy
+YXRlcwo+ID4+Pj4gbWVhc3VyZWQgaW4gcGljb3NlY29uZHMsIDEwXjEyIC8gbmFuZF9udmRkcl90
+aW1pbmdzLT50Q0tfbWluLgo+ID4+Pj4gICAgCj4gPj4+Cj4gPj4+IFlvdSBuZWVkIGEgY291cGxl
+IG9mIEZpeGVzICsgQ2M6IHN0YWJsZSB0YWdzIGhlcmUsIG90aGVyd2lzZSB0aGUKPiA+Pj4gcGF0
+Y2ggbG9va3MgZ29vZCB0byBtZS4KPiA+Pj4gICAgIAo+ID4+Cj4gPj4gV2lsbCBpbmNsdWRlIGlu
+IHRoZSBuZXh0IGl0ZXJhdGlvbiBvZiB0aGUgcGF0Y2gsIHRoYW5rIHlvdS4KPiA+PiAgCj4gPj4+
+PiBTaWduZWQtb2ZmLWJ5OiBPbGdhIEtpdGFpbmEgPG9raXRhaW5AZ21haWwuY29tPgo+ID4+Pj4g
+LS0tCj4gPj4+PiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5j
+IHwgOCArKysrKysrLQo+ID4+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDEg
+ZGVsZXRpb24oLSkKPiA+Pj4+Cj4gPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2Fu
+LW5hbmQtY29udHJvbGxlci5jCj4gPj4+PiBpbmRleCA1M2JkMTA3Mzg0MTguLmVkNGVlOTk0MjQ0
+MSAxMDA2NDQKPiA+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNv
+bnRyb2xsZXIuYwo+ID4+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQt
+Y29udHJvbGxlci5jCj4gPj4+PiBAQCAtMTgsNiArMTgsNyBAQAo+ID4+Pj4gICNpbmNsdWRlIDxs
+aW51eC9ncGlvL2NvbnN1bWVyLmg+Cj4gPj4+PiAgI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5o
+Pgo+ID4+Pj4gICNpbmNsdWRlIDxsaW51eC9pb3BvbGwuaD4KPiA+Pj4+ICsjaW5jbHVkZSA8bGlu
+dXgvbWF0aDY0Lmg+Cj4gPj4+PiAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+ID4+Pj4gICNp
+bmNsdWRlIDxsaW51eC9tdGQvbXRkLmg+Cj4gPj4+PiAgI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0
+aXRpb25zLmg+Cj4gPj4+PiBAQCAtMTA0Myw3ICsxMDQ0LDEyIEBAIHN0YXRpYyBpbnQgYW5mY19z
+ZXR1cF9pbnRlcmZhY2Uoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgaW50IHRhcmdldCwKPiA+Pj4+
+ICAJCQkJIERRU19CVUZGX1NFTF9PVVQoZHFzX21vZGUpOwo+ID4+Pj4gIAl9Cj4gPj4+PiAgCj4g
+Pj4+PiAtCWFuYW5kLT5jbGsgPSBBTkZDX1hMTlhfU0RSX0RGTFRfQ09SRV9DTEs7Cj4gPj4+PiAr
+CWlmIChuYW5kX2ludGVyZmFjZV9pc19zZHIpCj4gPj4+PiArCQlhbmFuZC0+Y2xrID0gQU5GQ19Y
+TE5YX1NEUl9ERkxUX0NPUkVfQ0xLOwo+ID4+Pj4gKwllbHNlCj4gPj4+PiArCQkvKiBPTkZJIHRp
+bWluZ3MgYXJlIGRlZmluZWQgaW4gcGljb3NlY29uZHMgKi8KPiA+Pj4+ICsJCWFuYW5kLT5jbGsg
+PSBkaXZfdTY0KCh1NjQpTlNFQ19QRVJfU0VDICogMTAwMCwKPiA+Pj4+ICsJCQkJICAgICBjb25m
+LT50aW1pbmdzLm52ZGRyLnRDS19taW4pOwo+ID4+Pj4gIAo+ID4+Pj4gIAkvKgo+ID4+Pj4gIAkg
+KiBEdWUgdG8gYSBoYXJkd2FyZSBidWcgaW4gdGhlIFp5bnFNUCBTb0MsIFNEUiB0aW1pbmcgbW9k
+ZXMgMC0xIHdvcmsKPiA+Pj4+Cj4gPj4+PiBiYXNlLWNvbW1pdDogZjUzZDRjMTA5YTY2NmJmMWE0
+ODgzYjQ1ZDU0NmZiYTA3OTI1ODcxNyAgICAKPiA+Pj4KPiA+Pj4KPiA+Pj4gVGhhbmtzLAo+ID4+
+PiBNaXF1w6hsCj4gPj4+ICAgICAKPiA+IAo+ID4gCj4gPiBUaGFua3MsCj4gPiBNaXF1w6hsCj4g
+PiAgIAo+IAo+IFRoYW5rcywKPiBPbGdhLgoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
