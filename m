@@ -4,50 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 466CCC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Dec 2021 08:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FFBBC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Dec 2021 08:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=J4Fobdsc/miti2T/ZeNqlLDhjvgQYXtZm3iPctDZrmo=; b=Y8kDOnvIQhwYQi
-	nBs0xdSnz1lahvNAhzBBjj+O7o2cL6QTkStXflUUhj/fdPMcxcpS1zAf5j9Z3Ek2s42T6wDNKC8HV
-	68kFsQL3NzSjs7tjub+KcPXmVEU0oI8f4+BlHdNQH+kUVklVNIdincdgu6nsbuTrG1GF4T5tA9IKo
-	zrZT76yvT3F/yLfzjtasSA5zzbJP/pefV9CZpjpXNJve1wyc3YNTv7uCEBhS09nOsLs6rkOZCYJEZ
-	/28DJrDW3baVrtGSVDQuVUp7uGxWOgdHMKPtyK0/4GH8kN7OGjCjMLbDX8zZlOfN+qjZA9wfmvyDn
-	m8LAwmZDXAvia8k6FDtQ==;
+	List-Owner; bh=shIiZ1H8wQqZcbenlHUDghB+BbP9UyKYmS7+tGPhYJE=; b=L7rPnR45Rizwxm
+	SP2nc2Tu7WYyxEG2dc+M38yacEHMQHRyR1sQ0NbxNWSyOeIJ2f6TR0plTbN8fTmD8w3OL9X9U6WCf
+	TxOPtJwBtMriuQq8EcMjpDgyd51ctxkwj4ON/bhh21fQ1OHrOYJE0UE3Xstwu/DhY3I/D7WVMq0x+
+	Zvh0Uv1P7CH828jmI5VuzG42V0bvazttVQWIyMLrk3ktFkhfMfbpt2t0kfIMw2dLq4WLIjOq+51ay
+	ABUikygv0tAIewkIOY4JGMYZWqB8QISKPhFNLSoCCxvBZ7dG7c/WP2Pv3dxB80IiD/Tv2lq3zij6O
+	tNHjuQp3x9LGxu6j9xgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1msKgZ-007mM7-Dc; Wed, 01 Dec 2021 08:09:51 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1msKmx-007nKN-8m; Wed, 01 Dec 2021 08:16:27 +0000
+Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1msKgW-007mL6-B4
- for linux-mtd@lists.infradead.org; Wed, 01 Dec 2021 08:09:50 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 0AD3BE0012;
- Wed,  1 Dec 2021 08:09:42 +0000 (UTC)
-Date: Wed, 1 Dec 2021 09:09:41 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Olga Kitaina <okitain@gmail.com>
-Cc: linux-mtd@lists.infradead.org, nagasure@xilinx.com, richard@nod.at,
- vigneshr@ti.com, linux-kernel@vger.kernel.org, Michal Simek
- <monstr@monstr.eu>
+ id 1msKml-007nEy-Qb
+ for linux-mtd@lists.infradead.org; Wed, 01 Dec 2021 08:16:17 +0000
+Received: by mail-ed1-x52e.google.com with SMTP id v1so98023339edx.2
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Dec 2021 00:16:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=monstr-eu.20210112.gappssmtp.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=V6zQR0fGtot8Y0hr0EL8eBOomgUYse/RC/KrmAqMq4c=;
+ b=N3Jv//xt4KCpN2hwq3/lUeQmNMzmpXDcMhFnL/mORbGNyheFXxAcmxcjZIhUBxwhaX
+ o/YmqiqOI+AaXwMbzZfzLlBXLh8OC+R79N52vzOrY2jsd6rKIfK9hZBc+Ac4S91Cvq96
+ 8iW0LBMuy52nNLmNYSL/zT9xYIF9AXvK46T7zmSyizmjfuRdDMMysNFgcd0/ObTk4/57
+ MpsRx02bRwMDEEP0gRoKs4lhdk275wr6RLzUR0JVKAK3USDVeFKy2eZ4ig7I/srmHUQK
+ GKt1sZWFcpan5JoDXhY0gEAK45fPgYC1udTV9J2B7BeNT+7dBsqau0EsmNUv7Kd00ypw
+ tNDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=V6zQR0fGtot8Y0hr0EL8eBOomgUYse/RC/KrmAqMq4c=;
+ b=lwhCtbyRREMIybFk6FO7bjwbIYb2UBOWjqJsO1+zMRXyYUL7ZGCvvcCXTVQb6OGK0z
+ 7NrfOzRWeaZj3ROq6KWuCIzF2uZVmGxHhMP7pOe/t5sB5Aq+ekpAjUuSuCkikBKZs36G
+ /QAU52l9dHDkix9pGFtFqoHCGK9P0QgFCEfsXpc7QDAXF2Sir47sCBVDERB3kaq7ceAA
+ 1ZTBZtDDCvropGRNNhrMlliuPM5d/8zdTVb87mQ1s6YHZbm7j9RCqg8/F09ab0f80Op8
+ kcFO+nReB954HMVnjVd1YKs2NA3B8/96Sv+H61xBymXmBvzVNIgiwQn04Zgsp3OiCA42
+ SLCQ==
+X-Gm-Message-State: AOAM532OZeGRKn30IrRF4AH2GzW/ANT85mNDidRCwUlOc+nM6p6CA5I+
+ dVANMUjWsqRbzO5YLy7VUgfywQ==
+X-Google-Smtp-Source: ABdhPJw2TIwxrsYqtYN6BP9l9K2r8DpCSdz3W6t0gaidwFtoXgWxuCKj5Yk5vxSQdBMhC85ZX3lSVQ==
+X-Received: by 2002:a05:6402:42d4:: with SMTP id
+ i20mr6507147edc.372.1638346572931; 
+ Wed, 01 Dec 2021 00:16:12 -0800 (PST)
+Received: from ?IPV6:2a02:768:2307:40d6::e05? ([2a02:768:2307:40d6::e05])
+ by smtp.gmail.com with ESMTPSA id hq37sm11047185ejc.116.2021.12.01.00.16.12
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 01 Dec 2021 00:16:12 -0800 (PST)
+Message-ID: <734dfe79-6e3f-1e68-c167-bab3ae9e8d52@monstr.eu>
+Date: Wed, 1 Dec 2021 09:16:11 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
 Subject: Re: [PATCH] mtd: rawnand: arasan: Fix clock rate in NV-DDR
-Message-ID: <20211201090941.73e67f65@xps13>
-In-Reply-To: <fb6a4b49-7c10-4ed1-7054-5dd8ce2d8073@gmail.com>
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Olga Kitaina <okitain@gmail.com>,
+ Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Cc: linux-mtd@lists.infradead.org, nagasure@xilinx.com, richard@nod.at,
+ vigneshr@ti.com, linux-kernel@vger.kernel.org
 References: <20211127180758.30884-1-okitain@gmail.com>
  <20211129095559.01aa63a6@xps13>
  <3da5dff5-53d4-15db-075d-9b195f2f75dd@gmail.com>
  <20211130082017.1400f24b@xps13>
  <fb6a4b49-7c10-4ed1-7054-5dd8ce2d8073@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ <20211201090941.73e67f65@xps13>
+From: Michal Simek <monstr@monstr.eu>
+In-Reply-To: <20211201090941.73e67f65@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211201_000948_684511_BA4C4BD7 
-X-CRM114-Status: GOOD (  39.40  )
+X-CRM114-CacheID: sfid-20211201_001615_922407_BF7C6C39 
+X-CRM114-Status: GOOD (  24.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -59,100 +94,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgT2xnYSwKCisgTWljaGFsIChwbGVhc2UgYWRkIGhpbSBpbiBDYyBvZiB5b3VyIG5leHQgaXRl
-cmF0aW9uKQoKb2tpdGFpbkBnbWFpbC5jb20gd3JvdGUgb24gVHVlLCAzMCBOb3YgMjAyMSAyMzow
-ODoyMCArMDMwMDoKCj4gSGkgTWlxdWVsLAo+IAo+IE9uIDMwLjExLjIwMjEgMTA6MjAsIE1pcXVl
-bCBSYXluYWwgd3JvdGU6Cj4gPiBIaSBPbGdhLAo+ID4gCj4gPiBva2l0YWluQGdtYWlsLmNvbSB3
-cm90ZSBvbiBNb24sIDI5IE5vdiAyMDIxIDIxOjA2OjA1ICswMzAwOgo+ID4gICAKPiA+PiBIaSBN
-aXF1ZWwsCj4gPj4KPiA+PiBPbiAyOS4xMS4yMDIxIDExOjU1LCBNaXF1ZWwgUmF5bmFsIHdyb3Rl
-OiAgCj4gPj4+IEhpIE9sZ2EsCj4gPj4+Cj4gPj4+IFBsZWFzZSBhZGQgYWxsIHRoZSBNVEQgbWFp
-bnRhaW5lcnMgaW4gY29weSwgYXMgcmVxdWVzdGVkIGJ5Cj4gPj4+IGdldF9tYWludGFpbmVycy5w
-bC4KPiA+Pj4KPiA+Pj4gb2tpdGFpbkBnbWFpbC5jb20gd3JvdGUgb24gU2F0LCAyNyBOb3YgMjAy
-MSAyMTowNzo1OAo+ID4+PiArMDMwMDoKPiA+Pj4gICAgIAo+ID4+Pj4gQWNjb3JkaW5nIHRvIHRo
-ZSBBcmFzYW4gTkFORCBjb250cm9sbGVyIHNwZWMsCj4gPj4+PiB0aGUgZmxhc2ggY2xvY2sgcmF0
-ZSBmb3IgU0RSIG11c3QgYmUgPD0gMTAwIE1IeiwKPiA+Pj4+IHdoaWxlIGZvciBOVi1ERFIgaXQg
-bXVzdCBiZSB0aGUgc2FtZSBhcyB0aGUgcmF0ZQo+ID4+Pj4gb2YgdGhlIENMSyBsaW5lIGZvciB0
-aGUgbW9kZS4gICAgCj4gPj4+Cj4gPj4+IEkgY29tcGxldGVseSBtaXNzZWQgdGhhdCwgd2hlcmUg
-ZGlkIHlvdSBnZXQgdGhlIGluZm9ybWF0aW9uPyAgICAKPiA+Pgo+ID4+IFRoZSAiRGF0YSBJbnRl
-cmZhY2UgVHJhbnNpdGlvbnMiIGNoYXB0ZXIgb2YgdGhlIHNwZWMgY29udGFpbnMgdGltaW5ncyBm
-b3IgZmxhc2ggY2xvY2sgc2V0dXAgaW4gTlYtRERSCj4gPj4gYW5kIE5WLUREUjIgbW9kZXMuIFRo
-ZSAidGltZSBwZXJpb2QiIG9mIHRob3NlIGNsb2NrcyBpcyBlcXVhbCB0byB0Q0sgaW4gTlYtRERS
-IGFuZCB0UkMgaW4gTlYtRERSMi4KPiA+Pgo+ID4+IFRoZSBzYW1lIGNoYXB0ZXIgc2hvdWxkIGhh
-dmUgaW5mb3JtYXRpb24gYWJvdXQgbmVjZXNzYXJ5IHN0ZXBzIHRvIHN3aXRjaCBmcm9tIE5WLURE
-UiB0byBTRFIsCj4gPj4gd2hpY2ggaW5jbHVkZXMgc2V0dGluZyB0aGUgZmxhc2ggY2xvY2sgdG8g
-MTAwIE1Iei4KPiA+Pgo+ID4+Cj4gPj4gSnVzdCB0byBtYWtlIHN1cmUgaSdtIG5vdCBzaG9vdGlu
-ZyBteXNlbGYgaW4gdGhlIGZvb3Q6IGFtIEkgY2hhbmdpbmcgdGhlIHJpZ2h0IGNsb2NrPwo+ID4+
-IFRoZSBkb2N1bWVudGF0aW9uIHBvaW50cyBvdXQgdGhhdCB3ZSBoYXZlIHRvIGNoYW5nZSBmbGFz
-aF9jbGssIHdoaWNoIGkgdGhvdWdodCB3YXMKPiA+PiBuZmMtPmNvbnRyb2xsZXJfY2xrIGFuZCBz
-ZXQgdXAgYnkgYW5hbmQtPmNsaywgYnV0IGl0IHNlZW1zIGxpa2UgaXQgbWlnaHQgYWN0dWFsbHkg
-YmUgbmZjLT5idXNfY2xrLiAgCj4gPiAKPiA+IEkgYmVsaWV2ZSBJIG1hZGUgYSBzZXJpb3VzIG1p
-c3Rha2UsIHJlLXJlYWRpbmcgdGhlIGNvZGUgaXQgZmVlbHMgbGlrZQo+ID4gSSdtIGNoYW5naW5n
-IHRoZSBzeXN0ZW0ncyBjbG9jayAod2hpY2ggYmFzaWNhbGx5IGNoYW5nZXMgbm90aGluZyBpbiBv
-dXIKPiA+IGNhc2UpIGluc3RlYWQgb2YgY2hhbmdpbmcgdGhlIE5BTkQgYnVzIGNsb2NrLgo+ID4g
-ICAKPiA+PiBJbiB0aGF0IGNhc2UsIGRvZXMgc2V0dGluZyBuZmMtPmNvbnRyb2xsZXJfY2xrIHRv
-IDEwMCBNSHogYnkgZGVmYXVsdCBtYWtlIHNlbnNlPwo+ID4+IFRoZXJlIGlzbid0IGEgaGFyZCBs
-aW1pdCBvbiB3aGF0IHRoZSBzeXN0ZW0gY2xvY2sgbWlnaHQgYmUgKGJleW9uZCBhIHNwZWNpZmlj
-IFNvQyksCj4gPj4gYnV0IHRoZXJlIGFyZSB0aW1pbmcgcmVxdWlyZW1lbnRzIGZvciB0aGUgZmxh
-c2ggY2xvY2ssIGFuZCBzbyBzZXR0aW5nIGEgc3BlY2lmaWMgCj4gPj4gc3lzdGVtIGNsb2NrIGZy
-ZXF1ZW5jeSBzZWVtcyB1bm5lY2Vzc2FyeSBmb3IgbW9zdCBkZXZpY2VzLgo+ID4+ICAKPiA+IAo+
-ID4gUGxlYXNlIGNyZWF0ZSBhIHR3by1wYXRjaCBzZXJpZXM6Cj4gPiAxLSBTZXR0aW5nIHRoZSBy
-aWdodCBjbG9jayBpbiB0aGUgY3VycmVudCBjb2RlIGJhc2UgKGludmVydGluZyBidXNfY2xrCj4g
-PiBhbmQgY29udHJvbGxlcl9jbGsgd2hlcmUgcmVsZXZhbnQsIHNldHRpbmcgb25lIHRvIDEwME1I
-eiBhbmQgbGV0dGluZwo+ID4gdGhlIG90aGVyIGFzIGl0IGlzKQo+ID4gMi0gQ2hhbmdpbmcgdGhl
-IGRlZmF1bHQgTlYtRERSIHJhdGUgYmFzZWQgb24gdENLIChiZWxvdyBwYXRjaCkuCj4gPiAKPiA+
-IERvIHlvdSBoYXZlIHRoZSBuZWNlc3NhcnkgaGFyZHdhcmUgZm9yIHRlc3Rpbmc/ICAKPiAKPiBJ
-J20gc29ycnkgdG8gc2F5IC0gSSBkbyBub3QuIFRoZSBTb0MgdGhpcyBwcm9ibGVtIHdhcyBpbml0
-aWFsbHkgbm90aWNlZCBvbiBjYW4ndCBydW4gbGF0ZXN0IExpbnV4LAo+IGFuZCBldmVuIGlmIGl0
-IGRpZCBJIGhhdmUgbm8gd2F5IG9mIGFjcXVpcmluZyBhbiBOVi1ERFItY2FwYWJsZSBmbGFzaC4K
-PiAKPiBTaW5jZSBCb290bGluIG1lcmdlZCBpbiBOVi1ERFIgc3VwcG9ydCBpbnRvIHRoZSBrZXJu
-ZWwsIGlzIGl0IHBvc3NpYmxlIGZvciB5b3UgdG8gdGVzdCAKPiB0aGUgbmV4dCBpdGVyYXRpb24g
-b2YgdGhpcyBwYXRjaCBzZXJpZXMgb24gTlYtRERSIGhhcmR3YXJlIGFzIHdlbGw/Cj4gU2F5LCBi
-eSBwdXJwb3NlZnVsbHkgcHJldmVudGluZyBOVi1ERFIgbW9kZSA1IGZyb20gYmVpbmcgY2hvc2Vu
-IGluIGFuZmNfc2V0dXBfaW50ZXJmYWNlKCk/CgpJIGRvbid0IGhhdmUgdGhlIGhhcmR3YXJlIGFu
-eW1vcmUuCgpQbGVhc2Ugc2VuZCBhIHYyIHdpdGggdGhlIG5lY2Vzc2FyeSBjaGFuZ2VzLCB0aGVu
-IHdlIHdpbGwgYXNrIE5hZ2EgKG9yCnNvbWVib2R5IGVsc2UgZnJvbSB0aGUgc2FtZSB0ZWFtKSB3
-aXRoIGFjY2VzcyB0byB0aGUgYm9hcmQgdG8gdGVzdCBpdC4KCj4gPj4+PiBUaGUgZHJpdmVyIHBy
-ZXZpb3VzbHkgYWx3YXlzIHNldCAxMDAgTUh6IGZvciBOVi1ERFIsIHdoaWNoCj4gPj4+PiB3b3Vs
-ZCByZXN1bHQgaW4gaW5jb3JyZWN0IGJlaGF2aW9yIGZvciBOVi1ERFIgbW9kZXMgMC00Lgo+ID4+
-Pj4KPiA+Pj4+IFRoZSBhcHByb3ByaWF0ZSBjbG9jayByYXRlIGNhbiBiZSBjYWxjdWxhdGVkCj4g
-Pj4+PiBmcm9tIHRoZSBOVi1ERFIgdGltaW5nIHBhcmFtZXRlcnMgYXMgMS90Q0ssIG9yIGZvciBy
-YXRlcwo+ID4+Pj4gbWVhc3VyZWQgaW4gcGljb3NlY29uZHMsIDEwXjEyIC8gbmFuZF9udmRkcl90
-aW1pbmdzLT50Q0tfbWluLgo+ID4+Pj4gICAgCj4gPj4+Cj4gPj4+IFlvdSBuZWVkIGEgY291cGxl
-IG9mIEZpeGVzICsgQ2M6IHN0YWJsZSB0YWdzIGhlcmUsIG90aGVyd2lzZSB0aGUKPiA+Pj4gcGF0
-Y2ggbG9va3MgZ29vZCB0byBtZS4KPiA+Pj4gICAgIAo+ID4+Cj4gPj4gV2lsbCBpbmNsdWRlIGlu
-IHRoZSBuZXh0IGl0ZXJhdGlvbiBvZiB0aGUgcGF0Y2gsIHRoYW5rIHlvdS4KPiA+PiAgCj4gPj4+
-PiBTaWduZWQtb2ZmLWJ5OiBPbGdhIEtpdGFpbmEgPG9raXRhaW5AZ21haWwuY29tPgo+ID4+Pj4g
-LS0tCj4gPj4+PiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5j
-IHwgOCArKysrKysrLQo+ID4+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkKPiA+Pj4+Cj4gPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9y
-YXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2Fu
-LW5hbmQtY29udHJvbGxlci5jCj4gPj4+PiBpbmRleCA1M2JkMTA3Mzg0MTguLmVkNGVlOTk0MjQ0
-MSAxMDA2NDQKPiA+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNv
-bnRyb2xsZXIuYwo+ID4+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXJhc2FuLW5hbmQt
-Y29udHJvbGxlci5jCj4gPj4+PiBAQCAtMTgsNiArMTgsNyBAQAo+ID4+Pj4gICNpbmNsdWRlIDxs
-aW51eC9ncGlvL2NvbnN1bWVyLmg+Cj4gPj4+PiAgI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5o
-Pgo+ID4+Pj4gICNpbmNsdWRlIDxsaW51eC9pb3BvbGwuaD4KPiA+Pj4+ICsjaW5jbHVkZSA8bGlu
-dXgvbWF0aDY0Lmg+Cj4gPj4+PiAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+ID4+Pj4gICNp
-bmNsdWRlIDxsaW51eC9tdGQvbXRkLmg+Cj4gPj4+PiAgI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0
-aXRpb25zLmg+Cj4gPj4+PiBAQCAtMTA0Myw3ICsxMDQ0LDEyIEBAIHN0YXRpYyBpbnQgYW5mY19z
-ZXR1cF9pbnRlcmZhY2Uoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgaW50IHRhcmdldCwKPiA+Pj4+
-ICAJCQkJIERRU19CVUZGX1NFTF9PVVQoZHFzX21vZGUpOwo+ID4+Pj4gIAl9Cj4gPj4+PiAgCj4g
-Pj4+PiAtCWFuYW5kLT5jbGsgPSBBTkZDX1hMTlhfU0RSX0RGTFRfQ09SRV9DTEs7Cj4gPj4+PiAr
-CWlmIChuYW5kX2ludGVyZmFjZV9pc19zZHIpCj4gPj4+PiArCQlhbmFuZC0+Y2xrID0gQU5GQ19Y
-TE5YX1NEUl9ERkxUX0NPUkVfQ0xLOwo+ID4+Pj4gKwllbHNlCj4gPj4+PiArCQkvKiBPTkZJIHRp
-bWluZ3MgYXJlIGRlZmluZWQgaW4gcGljb3NlY29uZHMgKi8KPiA+Pj4+ICsJCWFuYW5kLT5jbGsg
-PSBkaXZfdTY0KCh1NjQpTlNFQ19QRVJfU0VDICogMTAwMCwKPiA+Pj4+ICsJCQkJICAgICBjb25m
-LT50aW1pbmdzLm52ZGRyLnRDS19taW4pOwo+ID4+Pj4gIAo+ID4+Pj4gIAkvKgo+ID4+Pj4gIAkg
-KiBEdWUgdG8gYSBoYXJkd2FyZSBidWcgaW4gdGhlIFp5bnFNUCBTb0MsIFNEUiB0aW1pbmcgbW9k
-ZXMgMC0xIHdvcmsKPiA+Pj4+Cj4gPj4+PiBiYXNlLWNvbW1pdDogZjUzZDRjMTA5YTY2NmJmMWE0
-ODgzYjQ1ZDU0NmZiYTA3OTI1ODcxNyAgICAKPiA+Pj4KPiA+Pj4KPiA+Pj4gVGhhbmtzLAo+ID4+
-PiBNaXF1w6hsCj4gPj4+ICAgICAKPiA+IAo+ID4gCj4gPiBUaGFua3MsCj4gPiBNaXF1w6hsCj4g
-PiAgIAo+IAo+IFRoYW5rcywKPiBPbGdhLgoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+Hi,
+
+
+On 12/1/21 09:09, Miquel Raynal wrote:
+> Hi Olga,
+> 
+> + Michal (please add him in Cc of your next iteration)
+> 
+> okitain@gmail.com wrote on Tue, 30 Nov 2021 23:08:20 +0300:
+> 
+>> Hi Miquel,
+>>
+>> On 30.11.2021 10:20, Miquel Raynal wrote:
+>>> Hi Olga,
+>>>
+>>> okitain@gmail.com wrote on Mon, 29 Nov 2021 21:06:05 +0300:
+>>>    
+>>>> Hi Miquel,
+>>>>
+>>>> On 29.11.2021 11:55, Miquel Raynal wrote:
+>>>>> Hi Olga,
+>>>>>
+>>>>> Please add all the MTD maintainers in copy, as requested by
+>>>>> get_maintainers.pl.
+>>>>>
+>>>>> okitain@gmail.com wrote on Sat, 27 Nov 2021 21:07:58
+>>>>> +0300:
+>>>>>      
+>>>>>> According to the Arasan NAND controller spec,
+>>>>>> the flash clock rate for SDR must be <= 100 MHz,
+>>>>>> while for NV-DDR it must be the same as the rate
+>>>>>> of the CLK line for the mode.
+>>>>>
+>>>>> I completely missed that, where did you get the information?
+>>>>
+>>>> The "Data Interface Transitions" chapter of the spec contains timings for flash clock setup in NV-DDR
+>>>> and NV-DDR2 modes. The "time period" of those clocks is equal to tCK in NV-DDR and tRC in NV-DDR2.
+>>>>
+>>>> The same chapter should have information about necessary steps to switch from NV-DDR to SDR,
+>>>> which includes setting the flash clock to 100 MHz.
+>>>>
+>>>>
+>>>> Just to make sure i'm not shooting myself in the foot: am I changing the right clock?
+>>>> The documentation points out that we have to change flash_clk, which i thought was
+>>>> nfc->controller_clk and set up by anand->clk, but it seems like it might actually be nfc->bus_clk.
+>>>
+>>> I believe I made a serious mistake, re-reading the code it feels like
+>>> I'm changing the system's clock (which basically changes nothing in our
+>>> case) instead of changing the NAND bus clock.
+>>>    
+>>>> In that case, does setting nfc->controller_clk to 100 MHz by default make sense?
+>>>> There isn't a hard limit on what the system clock might be (beyond a specific SoC),
+>>>> but there are timing requirements for the flash clock, and so setting a specific
+>>>> system clock frequency seems unnecessary for most devices.
+>>>>   
+>>>
+>>> Please create a two-patch series:
+>>> 1- Setting the right clock in the current code base (inverting bus_clk
+>>> and controller_clk where relevant, setting one to 100MHz and letting
+>>> the other as it is)
+>>> 2- Changing the default NV-DDR rate based on tCK (below patch).
+>>>
+>>> Do you have the necessary hardware for testing?
+>>
+>> I'm sorry to say - I do not. The SoC this problem was initially noticed on can't run latest Linux,
+>> and even if it did I have no way of acquiring an NV-DDR-capable flash.
+>>
+>> Since Bootlin merged in NV-DDR support into the kernel, is it possible for you to test
+>> the next iteration of this patch series on NV-DDR hardware as well?
+>> Say, by purposefully preventing NV-DDR mode 5 from being chosen in anfc_setup_interface()?
+> 
+> I don't have the hardware anymore.
+> 
+> Please send a v2 with the necessary changes, then we will ask Naga (or
+> somebody else from the same team) with access to the board to test it.
+
+Keep Amit in loop. He has access to HW and able to test.
+
+Thanks,
+Michal
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
