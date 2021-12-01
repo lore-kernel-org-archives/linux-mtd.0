@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E3BC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Dec 2021 10:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E013C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Dec 2021 13:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mw9umLczCOF6a+PYfGIynHWGHFKldRcRAL1Nij5EawY=; b=niGWXCcTxfWXlW
-	FnLjRJeDNod7Dj4GVYpCFbk9/5YeOEfK0dJpe5bhYtxcqbspvBZ6FRkyp29WgqOBtmE4crmYK5Y05
-	4RJQuNB+p3arKZoZCWc14GPd2WlCC2a3xlP5Jbfuelk3XAUD3TJ2f9A2XbhuRh3VpEr2wPA7HqccJ
-	vl37T8S12sYnvE7Cda13D7hO393xg6Ym7kHTXmOb0rP+bugxtUsTiZfq7lMdEkEmrREcLpLrLNGG1
-	ofO1zqQcl6vCe3l87hmkG6B/0ugE0a2KtKvGLkQgMXxDPBHSMnaMUvQWxy2K8JWhrlJT/O/JbnFiL
-	OPpTCwETseH5UFC3X0NA==;
+	List-Owner; bh=KxYXsSZV9AkI3Kb8hUWICb9bt8FTFj50a+URaMM6sTU=; b=fNTw0WGzyujgHL
+	okzq90/+3e2Zc0idWpU8hbu/MyQbfxxmZNoydcP/HcGtjBr9TF0tLAlV4QW6R9nev1FaucnbgBCce
+	ebkVa6n5iBjk0xqoQVF7zp+NMcTZSRTt6YetVD8emU4EUwosKMHxf6wc/CSZO2mSUgreR8HraYUJ1
+	Wx9Oqzox/uSbIKttS67jmA8JGckGbWqaVIrz9uaJK1zyRpIzDqjhUVFGYqFsmA2N6T+uyM1LLmrxL
+	C4rdhPwlteKjw4dtUEMQeiToSp+dBQQcrB1yat6WKcXm60JKN2Ooz3evQozZ6K8fWLzsX7fEq3a6c
+	fCkcxhihlCZHiLchqMPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1msMXs-0083JZ-I6; Wed, 01 Dec 2021 10:09:00 +0000
-Received: from mail-ua1-f44.google.com ([209.85.222.44])
+	id 1msPNp-008loc-Us; Wed, 01 Dec 2021 13:10:50 +0000
+Received: from mail-ua1-f49.google.com ([209.85.222.49])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1msMXp-0083IV-Aq
- for linux-mtd@lists.infradead.org; Wed, 01 Dec 2021 10:08:58 +0000
-Received: by mail-ua1-f44.google.com with SMTP id r15so47762138uao.3
- for <linux-mtd@lists.infradead.org>; Wed, 01 Dec 2021 02:08:55 -0800 (PST)
+ id 1msPII-008fLs-QX
+ for linux-mtd@lists.infradead.org; Wed, 01 Dec 2021 13:05:08 +0000
+Received: by mail-ua1-f49.google.com with SMTP id l24so48879243uak.2
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Dec 2021 05:05:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=OPPtbzDfyTfORykbO3S8ExCZdlOUf/q6E0viO28dDok=;
- b=WOUFSHlj0SRqW8oIqdLu99bwUi4eg+60kFSw2tQaaoZz21SympyCsZLzrcEEb1MvJB
- WM4D+LibjAMVHdNLay8vXgu30uA7MDoEgC38ohnkzdPOAfN1UmGCLyR+o8i+CiUIj5Eo
- PPl/wEO6iYXSbZLuk0m0GJPhZftwskey8siR45LkFmnsKzxTFN4/lYTmIdiBDL5cYAwj
- 3p4PbXPg5iRJ169mhFAhatl7vvLC7vN2p7HQ8bdumHoaeVNUJMvMi/02tibMQQxMbV59
- EdorbyVPZQLhWCU0v37oRTSpmRVOsNKFZSrE2TDDF9nnpm7dWSsE0Ee8VinPGRWsTbES
- Y54g==
-X-Gm-Message-State: AOAM533zl137UzH2iQXIUg2802El0SVlwZ5tdv9QF876eXkLeJWoqttO
- Tb/KmdcfQM3tAgQv3EM0L9HwStOMLAaX8w==
-X-Google-Smtp-Source: ABdhPJxsOKYaft0wk6Wj0GjFmQDlM2Mm7N/yamCIGCRTLOdyRNKZtZpaHHegoebQBV7CZpl/YN1eJQ==
-X-Received: by 2002:a67:31c9:: with SMTP id x192mr6027576vsx.63.1638353334485; 
- Wed, 01 Dec 2021 02:08:54 -0800 (PST)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com.
- [209.85.222.49])
- by smtp.gmail.com with ESMTPSA id l190sm11784138vsc.26.2021.12.01.02.08.53
+ bh=pSCANc5akMVyARPAGU2DAriDgbQMxgmWTdFVSgsUOA4=;
+ b=mr6AMaQXjEXnjRUTuHozFsyhuIWdy4pe6J90xHYOp7vbl9Wvo0iubxzQtwrzyVrwzY
+ 3wmodY9U3BBoC1tsrPwEAzPhjAUrRZ+aBVTaIcx7XMkXL+GQ6W344WC4FnhQZ2Co2pNP
+ 7D90ZLEr1M8KYhQH4MUiGHCXJHeTSVvvSTiTiqlmgJ2cRa6memTYn75PFWisLc0ZL041
+ a4s9aAmC0lDU/MZPJ8o/GUQuDrbzw1sKyajMoC8+gTVy5uyNz7e5msAZajO84BtEj2xd
+ MhRI6683jXr8/J+pNykA188bNImW9g3iT5xgVGbfNRKEXTWAV0gfhQZJ7+RV6IN/OVMY
+ Mmng==
+X-Gm-Message-State: AOAM532OJN1GxaanH5XJuf+5u2V2RaTUrUkbdbzbu9wOzSruQ9EuHyBC
+ n60yPsPplCiEOEneTzph0Dl+hXjOx2Q/qw==
+X-Google-Smtp-Source: ABdhPJzG6HJb6MmriLZj8IAORTNX5MKpkCSXj7NBxXEIm2Js46a+Jzdgj1aT4kAgMCapOwD+km1hSw==
+X-Received: by 2002:a05:6102:5109:: with SMTP id
+ bm9mr6954510vsb.10.1638363905253; 
+ Wed, 01 Dec 2021 05:05:05 -0800 (PST)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com.
+ [209.85.222.48])
+ by smtp.gmail.com with ESMTPSA id y2sm12233740vke.43.2021.12.01.05.05.04
  for <linux-mtd@lists.infradead.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 01 Dec 2021 02:08:53 -0800 (PST)
-Received: by mail-ua1-f49.google.com with SMTP id y5so47716513ual.7
- for <linux-mtd@lists.infradead.org>; Wed, 01 Dec 2021 02:08:53 -0800 (PST)
-X-Received: by 2002:a67:c106:: with SMTP id d6mr5459646vsj.77.1638353333064;
- Wed, 01 Dec 2021 02:08:53 -0800 (PST)
+ Wed, 01 Dec 2021 05:05:05 -0800 (PST)
+Received: by mail-ua1-f48.google.com with SMTP id az37so48753987uab.13
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Dec 2021 05:05:04 -0800 (PST)
+X-Received: by 2002:a05:6102:e10:: with SMTP id
+ o16mr6795674vst.5.1638363904281; 
+ Wed, 01 Dec 2021 05:05:04 -0800 (PST)
 MIME-Version: 1.0
-References: <c26dfdf9ce56e92d23530a09db386b283e62845d.1638289204.git.geert+renesas@glider.be>
- <20211201072328.GA31765@lst.de>
-In-Reply-To: <20211201072328.GA31765@lst.de>
+References: <20211130164558.85584-1-tsbogend@alpha.franken.de>
+ <20211130164558.85584-2-tsbogend@alpha.franken.de>
+In-Reply-To: <20211130164558.85584-2-tsbogend@alpha.franken.de>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 1 Dec 2021 11:08:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV7PbXwuBNBn4TtjXUvjzWiOQTYoOJTEACyN-k4DUj5-Q@mail.gmail.com>
-Message-ID: <CAMuHMdV7PbXwuBNBn4TtjXUvjzWiOQTYoOJTEACyN-k4DUj5-Q@mail.gmail.com>
-Subject: Re: [PATCH/RFC -nxt] mtd_blkdevs: Set GENHD_FL_NO_PART
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Miquel Raynal <miquel.raynal@bootlin.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle <michael@walle.cc>, 
- Pratyush Yadav <p.yadav@ti.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- linux-block@vger.kernel.org, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date: Wed, 1 Dec 2021 14:04:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUO-99bQPdLoLSPzDZ1KzT1_rS6eXEejEH4tf+XAtCgvw@mail.gmail.com>
+Message-ID: <CAMuHMdUO-99bQPdLoLSPzDZ1KzT1_rS6eXEejEH4tf+XAtCgvw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] MIPS: TXX9: Remove rbtx4939 board support
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ MTD Maling List <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211201_020857_416521_3B3F8D78 
-X-CRM114-Status: GOOD (  34.83  )
+X-CRM114-CacheID: sfid-20211201_050506_920226_299ACC2A 
+X-CRM114-Status: GOOD (  17.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,74 +89,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Christoph,
-
-On Wed, Dec 1, 2021 at 8:23 AM Christoph Hellwig <hch@lst.de> wrote:
-> On Tue, Nov 30, 2021 at 05:23:46PM +0100, Geert Uytterhoeven wrote:
-> > When DT declares the partitions of an spi-nor device using
-> > "fixed-partitions", the individual mtdblockN partitions are now scanned
-> > for partitition tables, which should not happen.
-> >
-> > Fix this by setting the GENHD_FL_NO_PART flag in the MTD block layer
-> > interface.
-> >
-> > Fixes: 1ebe2e5f9d68e94c ("block: remove GENHD_FL_EXT_DEVT")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > Seen with e.g. arch/arm/boot/dts/r8a7791-koelsch.dts.
-> > I only noticed because I have debug code to measure QSPI performance,
-> > which informed me about 8 x 512 bytes being read from each partition
-> > detected.
-> >
-> > RFC as I'm not sure this is correct in all cases.
-> > I did verify that in the absence of "fixed-partitions", the spi-nor
-> > device is not scanned for partitions before and after commit
-> > 1ebe2e5f9d68e94c.
+On Tue, Nov 30, 2021 at 5:46 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+> No active MIPS user own this board, so let's remove it.
 >
-> As far as I can tell mtd fixed partitions have nothing to do with
-> the block layer concept of partitions.  What kind of behavior change
-> did you see?
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-After the aforementioned commit, 8 x 512 bytes are being read from
-the start of each partition described by "fixed-partitions".
-Dmesg difference with debug print added to spi_nor_spimem_read_data():
+Thanks for your patch!
 
-  renesas_spi e6b10000.spi: registered master spi0
-  spi spi0.0: setup mode 3, 8 bits/w, 30000000 Hz max --> 0
-  spi-nor spi0.0: s25fl512s (65536 Kbytes)
-  3 fixed-partitions partitions found on MTD device spi0.0
-  Creating 3 MTD partitions on "spi0.0":
-  0x000000000000-0x000000080000 : "loader"
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 0 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 512 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 1024 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 1536 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 2048 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 2560 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 3072 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 3584 len 512
-  0x000000080000-0x000000600000 : "user"
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 524288 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 524800 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 525312 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 525824 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 526336 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 526848 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 527360 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 527872 len 512
-  0x000000600000-0x000004000000 : "flash"
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6291456 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6291968 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6292480 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6292992 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6293504 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6294016 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6294528 len 512
-+ spi-nor spi0.0: spi_nor_spimem_read_data: from 6295040 len 512
-  renesas_spi e6b10000.spi: registered child spi0.0
-  renesas_spi e6b10000.spi: probed
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks!
+My rbtx4927 still works fine afterwards, so
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
