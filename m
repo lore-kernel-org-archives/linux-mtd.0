@@ -4,66 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52D4FC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  2 Dec 2021 10:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B3BC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  2 Dec 2021 12:34:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MmcdgVrFNwN7wgGgDgIoCdVNMZurWnF4Cup/FayypzQ=; b=nCJNzi1K3MDKgS
-	6RtnGkSI4kndOLKKQvKd9N/kNqemOTtCJPg+juXfeEuZvKwrfgPvEbIamAgdOsCrVkZmoh83ysbo0
-	QvXOhF42PS1L6KjQuB1An7CobNKmJ7S4KN8spIzE+1wDrLtsJYdLAlRHuGl1eJbmQfu/ppMs+k0Z0
-	fg/KZaQIlL2W25+XQdBhQNevvQd6RDd+Z8tRJIW4gA+BHM+H8ngudMJcxt53v18R5UiYoMmP0gWuy
-	mYwzgqHGgQFN9sEmnSkIFjjf3Uib/MwXFHAl4B0Bba6DwJMHownIYb1AFPVmg+R51+8pzxksULVIO
-	CjWLcEEendD++2uGseeQ==;
+	List-Owner; bh=U64/CAFKF/S3XvOTo8Q/SZH8XHbTt/R13kfFRV8zh6w=; b=qdsKtBgUuuj0aP
+	qg/NHEdY+xP6ePYXuRdf8L87f5L5Wq1BLXeSHUSfo0yDMYJCEg7i/C2skt6O4oCYRXTbbPOWGabqt
+	MFtCNahEeI2SqbR2bW2k9aqhJj77KULOC1NsIN71smH5HgvL2OLL4yI8yCiutTXirp75pQH+ynAeA
+	xtHPuG3j+tVQDjyso9Guq4stuFwIMBWj+5EOmp5slCWReRjdvOcz1oAZGwTCsBAMld0QtToC0DVCn
+	pIae2XFIcSOUIKjiG9akzsSb4xwkE0Jd2Lbws+iZZRRFq1ZB+KZX3o6oxe0iApCrRTAhyt5G3vfPZ
+	CPdpWF3qtcGC2LDv+fKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1msiv6-00BjR0-TF; Thu, 02 Dec 2021 10:02:28 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1mslHf-00CJbL-8T; Thu, 02 Dec 2021 12:33:55 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1msiv3-00BjQ8-Sm; Thu, 02 Dec 2021 10:02:27 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1B2A1ugx109432;
- Thu, 2 Dec 2021 04:01:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1638439316;
- bh=RB9K8RDiTRZmoh9I9ZSSj7S9WpHWn5RK8xP8xlJt168=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=BgI3sq/wcNGOqsWetBvay8KXTCKtTRh3VQfNLZOphuRqVbpSXTylnAYGJ3qA/U2Nz
- 8iXJvDWB1zGlSrotLxe3VPaS9/05zmB8DkCYTmfID6Wkhu209IhH/y6uF7b6a9JrCo
- RHkFpKlHBto7YU7xlIPYX6FgZ3VPPe6Z1x2tLeFo=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1B2A1uVt049502
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 2 Dec 2021 04:01:56 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 2
- Dec 2021 04:01:56 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 2 Dec 2021 04:01:56 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1B2A1tmi100607;
- Thu, 2 Dec 2021 04:01:55 -0600
-Date: Thu, 2 Dec 2021 15:31:54 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v4 05/13] mtd: spi-nor: Rework the flash_info flags
-Message-ID: <20211202100152.h2j2hlsbf7xwvi3h@ti.com>
-References: <20211122095020.393346-1-tudor.ambarus@microchip.com>
- <20211122095020.393346-6-tudor.ambarus@microchip.com>
+ id 1mslCu-00CHuI-Gq
+ for linux-mtd@lists.infradead.org; Thu, 02 Dec 2021 12:29:02 +0000
+Received: by mail-ed1-x531.google.com with SMTP id z5so50318853edd.3
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Dec 2021 04:28:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=yIHJduGhi+IgJjblRtFiKjHLP7Ao4GSCzCbgjV6AI0g=;
+ b=bEYsv4wF853W8UKT+8STBH1C/eBQtC+ON3Re4sV3zlkHai540cHzD6xE96e+vYUGZi
+ UiohbLIkxHnwTZfDMk8iBLuuZC1mkyxp+elc2Tf9JiPj9KoORf+AfZ+2kv8le9J9oo7X
+ lm/NBTxhXW4+XeCD2V/KGi9weCBYzO1T6Rc+PzBInJF1bevBYSVqQO7J3gCUriljU9nr
+ FAHXa71KoufMw1NkUz2bQnW9uZUm+9EdfJHuxCZwSpEaKB6GCghqJGU8t4DAgaKVsEJ9
+ pGJ8mZC7zq3UTM1ntOtki3tLCO0ktvnYf0xTP8MdHcy821ym/i1+0j6sccsMWHLCfqAL
+ 4huQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=yIHJduGhi+IgJjblRtFiKjHLP7Ao4GSCzCbgjV6AI0g=;
+ b=Kv5xXkxXbQ38hyy2DDZSt/Z0m4CsD7oz+M8IFIZHi3KdKLuSOTE+CinKpFmbXgcWpF
+ LEricEev3RlAI3GaAjMZUgYZb9N14nhw196/gTbn5+O9VG2Ost2VFNWcTmdcQXN1hXyx
+ YWdqA6l2B9gyRPNGkbfpCupEmoIXoJdiwlag86PAuJSZyeSTpM+45KUtnC8G7TE+xaaI
+ XLdmtCGWNE8TQ/w/Ov166HESVxqtsdtC54OKUkAYAR+ZKjGbPQdjCTRINto6MNb35Jlm
+ /HqTMfmDbmSY2WzfRL4kjcBDIpwF+DcgRPw3JF2DrZr83fdhif0vKo7j3Y7quo3H/Bet
+ odfQ==
+X-Gm-Message-State: AOAM5324Wt4g2W4SyHmGE/O+XU12izR8elrofBt0H35Zns0pG07AZkb8
+ evWIcTO1bqdJcnladwOXlKD30dCoH+ATV6/Vk4HZCw==
+X-Google-Smtp-Source: ABdhPJwVLTfOeFrJH1vtaO5VgCmVt8kl/7m1GwfsGdFPILzfElCaVjFePEsuiYfj32fzPRUhQkb9mSEvHSNwJ50Wmo0=
+X-Received: by 2002:a05:6402:4389:: with SMTP id
+ o9mr17620193edc.138.1638448137066; 
+ Thu, 02 Dec 2021 04:28:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211122095020.393346-6-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CA+G9fYuupqqemLbgoVL2kYL4d2AtZLBo1xcshWWae7gX5Ln-iA@mail.gmail.com>
+In-Reply-To: <CA+G9fYuupqqemLbgoVL2kYL4d2AtZLBo1xcshWWae7gX5Ln-iA@mail.gmail.com>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Thu, 2 Dec 2021 13:28:46 +0100
+Message-ID: <CADYN=9KeKhZ-OSbx1QHKYfXu+p-nXVjubbay1sXd_g75LLSZRg@mail.gmail.com>
+Subject: Re: [next] WARNING: CPU: 2 PID: 66 at kernel/locking/rwsem.c:1298
+ __up_read
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+ sean@geanix.com, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Linux-Next Mailing List <linux-next@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>,
+ Stephen Rothwell <sfr@canb.auug.org.au>, Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon <bbrezillon@kernel.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>, 
+ Naresh Kamboju <naresh.kamboju@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211202_020226_050143_9728E390 
-X-CRM114-Status: GOOD (  27.97  )
+X-CRM114-CacheID: sfid-20211202_042900_612208_87F0C38E 
+X-CRM114-Status: GOOD (  12.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,83 +87,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, nicolas.ferre@microchip.com, michael@walle.cc,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 22/11/21 11:50AM, Tudor Ambarus wrote:
-> Clarify for what the flash_info flags are used for. Split them in
-> four categories and a bool:
-> 1/ FLAGS: flags that indicate support that is not defined by the JESD216
->    standard in its SFDP tables.
-> 2/ NO_SFDP_FLAGS: these flags are used when the flash does not define the
->    SFDP tables. These flags indicate support that can be discovered via
->    SFDP. Used together with SPI_NOR_SKIP_SFDP flag.
-> 3/ FIXUP_FLAGS: flags that indicate support that can be discovered
->    via SFDP ideally, but can not be discovered for this particular flash
->    because the SFDP table that indicates this support is not defined by
->    the flash. In case the table for this support is defined but has wrong
->    values, one should instead use a post_sfdp() hook to set the SNOR_F
->    equivalent flag.
-> 4/ MFR_FLAGS: manufacturer private flags. Used in the manufacturer
->    fixup hooks to differentiate support between flashes of the same
->    manufacturer.
-> 5/ PARSE_SFDP: sets info->parse_sfdp to true. All flash_info entries
->    that support SFDP should be converted to set info->parse_sfdp to true.
-> 
-> SPI NOR flashes that statically declare one of the
-> SPI_NOR_{DUAL, QUAD, OCTAL, OCTAL_DTR}_READ flags and do not support
-> the RDSFDP command are gratuiously receiving the RDSFDP command
-> in the attempt of parsing the SFDP tables. It is not desirable to issue
-> commands that are not supported, so introduce PARSE_SFDP to help on this
-> situation.
-> 
-> New flash additions/updates should be declared/updated to use either
-> PARSE_SFDP or SPI_NOR_SKIP_SFDP.  Once all the flash_info entries are
-> converted to use SPI_NOR_SKIP_SFDP or PARSE_SFDP, we can get rid of the
-> SPI_NOR_SKIP_SFDP flag and use just the bool nor->info->parse_sfdp to
-> determine whether to parse SFDP or not. SPI_NOR_SKIP_SFDP flag is kept
-> just as a way to differentiate whether a flash is converted to the new
-> flags logic or not.
-> Support that can be discovered when parsing SFDP should not be duplicated
-> by explicit flags at flash declaration. All the flash parameters will be
-> discovered when parsing SFDP. Sometimes manufacturers wrongly define some
-> fields in the SFDP tables. If that's the case, SFDP data can be amended
-> with the fixups() hooks. It is not common, but if the SFDP tables are
-> entirely wrong, and it does not worth the hassle to tweak the SFDP
-> parameters by using the fixups hooks, or if the flash does not define the
-> SFDP tables at all, then statically init the flash with the
-> SPI_NOR_SKIP_SFDP flag and specify the rest of flash capabilities with
-> the flash info flags.
-> 
-> With time, we want to convert all flashes to use PARSE_SFDP and
-> stop triggering the SFDP parsing with the
-> SPI_NOR_{DUAL, QUAD, OCTAL*}_READ flags. Getting rid of the
-> SPI_NOR_{OCTAL, OCTAL_DTR}_READ trigger is easily achievable,
-> the rest are a long term goal.
-> 
-> Manufacturer specific flags like USE_CLSR, USE_FSR, SPI_NOR_XSR_RDY,
-> will be removed in a future series.
-> 
-> No functional changes intended in this patch.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+On Tue, 30 Nov 2021 at 18:01, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> [Please ignore this email if it is already reported]
+>
+> Regression found on qemu_arm64.
+> Following kernel warnings reported on Linux next-20211130 while booting.
 
-Thanks, this looks quite good to me.
+I bisected down to 1ebe2e5f9d68 ("block: remove GENHD_FL_EXT_DEVT")
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+and when I reverted 1ebe2e5f9d68 ("block: remove GENHD_FL_EXT_DEVT") and the
+3 releated patches so patch 1ebe2e5f9d68 was reverted cleanly I
+managed to boot without
+a warning.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Related patches from next-20211130:
+9f18db572c97 ("block: don't set GENHD_FL_NO_PART for hidden gendisks")
+430cc5d3ab4d ("block: cleanup the GENHD_FL_* definitions")
+a4561f9fccc5 ("sr: set GENHD_FL_REMOVABLE earlier")
+
+With this said, if I revert 9d6abd489e70 ("mtd: core: protect access
+to MTD devices while in suspend")
+I didn't see the warning either.
+
+Any idea what can be wrong here or what a fix could be?
+
+Only apply this patch from Geert
+https://lore.kernel.org/lkml/c26dfdf9ce56e92d23530a09db386b283e62845d.1638289204.git.geert+renesas@glider.be/
+makes the warning go away too.
+
+Cheers,
+Anders
 
 ______________________________________________________
 Linux MTD discussion mailing list
