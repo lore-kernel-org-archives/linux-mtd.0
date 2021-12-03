@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2F0CC433FE
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Dec 2021 14:24:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CFAAC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Dec 2021 14:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=U1djMIsujXPgMTixHvT2mJ8JUzPeGUhXuGlpwcE5rwk=; b=NPt0P8BhLOzb0i
-	5+pB6sgctIELP77KsCaDze03uNwhVASCX0LYEVUSAQOJg6aqtwruDgCQzJlTRXr9HKDUBpaxod9by
-	DwMdaacV33XxJxSgT0NedXXV5pcsoCB885LncyIhYK8+cXy1L1PGzc1ufsdTXKwfm575VbAEBWkpQ
-	JZSEfozPVsylwNrjSHyOUB2iq3y96cWNgcFnNi9TWZg6boxoYk0OsMDmZ33k2E5sEGwL6fo/0Y5We
-	j35F8x0B6E2iH1FPTwM0ZoO3A/KZx7c/uuLsU3DMWMdbzjG6rlOR/JmlA9hDkCy8/A56c6fMtoxr8
-	QxYfLKQEnlUGQxBxiO3g==;
+	List-Owner; bh=teNOnif+TXUSKzGUiLRAKY3sDWQMgvpj2o6sjp6LeXM=; b=iMqH5mx6lqjiGZ
+	09jZP7b3AWs3BeIUqM/VeiZhnEFF5XMQwExzFQzKsXGWMfwHYw1w2makc2jP2TjT6HxaChQjUUTxa
+	pieB1M91I6h8CqvA85GqliO+5OcHIQOBSMImNyJi4+15BWdZYOGjy46AcvfWBaDEXjm/NxOj8IlqR
+	sGEjtC+C9NXDoOonBGbiE5paexGb+1ZB6aH9XakcVJei0TMQAXQz45Q/jBaXOadA7L6Yvcoc9z+Zx
+	Wp8w/wxkwyjMiyVuN9scLE/mXkenLyUZHZjvoeiimpAOgWE5CglKnh1GzbHlehHOW8nV5PZRtAq5h
+	XrVA47LlerjDd3DizbHQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mt9TK-00G80A-5t; Fri, 03 Dec 2021 14:23:34 +0000
+	id 1mt9Tq-00G8BI-Ic; Fri, 03 Dec 2021 14:24:06 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mt9Su-00G7va-Tr; Fri, 03 Dec 2021 14:23:10 +0000
+ id 1mt9Sy-00G7va-IW; Fri, 03 Dec 2021 14:23:14 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1638541389; x=1670077389;
+ t=1638541392; x=1670077392;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=pjrGyDAnno1WiQsVSso96VBXw9Fi71sKN0/2ZQDNSg8=;
- b=jscTd5kOFXixZMlEIjur9gw9wCbsZB7Xi8XQeVzCVjNs2cEMviSjEHlJ
- /EOb4/Su9I1JRwGC7QKMtFP+TnZW9HqYX2d5F7pbZ+wED5r4F/bh9FGAq
- 5mOn4mwsIU9r2cTxI5x4tzbbFJejADpwnQwWW0zmL54QolFDZn9b1Iy2f
- lgDlwtpMcl3VaOORZU+0nflmFe52oxYeRjugiMub2VQMp9l3KcEs3Or8p
- mtcKrz/hheqg86if9Osxf850Tdm3afxj+ex7bdQUzYdq+VFcjJgmRsvw1
- yEVl5ZuCvxN44ZWOgMVglXuOQ7zVRbp/dqSAIxOhn/fN7UFP1eDNxBU6B g==;
-IronPort-SDR: slbWBwQKiGJaQaHGHitKQc41Pu1tSvTXouKksBaCLrFHJABtE0bD5lf2rFiQv032y6da4YtnZp
- kOoVai0x2H0ga4RoGYq9r5uzcmkRhSOXs4w/XQUc8zhClZCSRSaRW/ut5FbOMU/Meqpl1WkeJl
- 1V5YXVJeLmUL8OIinEYfDisW8RNuxQ9/LylFbmvU711YpTkZX4Ojj15cBqTyRfKf42PjjphSXd
- UkdYUtsrvgHwZpSBCFe7KBwWcLFHBsi/IR26HwxvJy2sOX1yMLuNHCwnK1ehtIBypZ0eLHjpmz
- s1ogdxFwgGZfw+29Vy001VL5
-X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="141189157"
+ bh=B1F0QlkDSyvx7sR1o85IgR6ssn2dp2PdpkDFP3+THtA=;
+ b=wZF7HtSofd3XVlzD7WVzHJmf3Bu9zTAuGtUeIUNssFLNkT21UGAyU0Cg
+ 8rxBN8Jmvp3Mklkc/OM32DeNlADkz8A3V32nDe4yjfsZ1m6TxrdnxA+oj
+ quTC87Kec2Hf1HdFmrbTN7zrkUEbZXmmWMjcU8KEgaq2DZ4GV037O9RV9
+ 5BgZWOfzbL6OvvyXVKZ5/kFiSobY/epnwpJaeGC6eyKfwqKq099nQTdho
+ 9/FE6lvZogP3GgtejXA7UBTCtWNKMeL9OYHLoI1jID3ArnRQ9pgWFmeVR
+ TfKM2nLB2oNUTzSrW6hjvIwo6eJ3EmSwvbpChc0VXtXPSnqiPnrfA+4Mp w==;
+IronPort-SDR: 0Sv0W58e5VLDT0IYkV+xC29imGtuLDnbg47h+A1CY3X3VkPXDTgVvqpPZaQo1cf4rwxiYzmI/E
+ TDgE/BeovqGLj8vlrlqh/VU/9Q1kH51lfbzqRNGhk1DCjHGsc83EBBZ5xinXQ4JfzJ/Ii2ZxTm
+ WkLuKkRUeLtFMovR+6p0yKvmavyeHFldTgXv3S7l6NOVU6nBXOevL/qvlvugKPrMEp7jFXm88a
+ LutKczm5O8kRhsM8P41CtcS0SdIw7xi2X+YZA3N1WJI4OQjFhdOmBJlV9C8BN4rNF7XegNy/Ak
+ VcLMDZDzLXuvpqrnzexawE2o
+X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="141189173"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 03 Dec 2021 07:23:07 -0700
+ 03 Dec 2021 07:23:11 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 3 Dec 2021 07:23:06 -0700
+ 15.1.2176.14; Fri, 3 Dec 2021 07:23:11 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 3 Dec 2021 07:23:02 -0700
+ 15.1.2176.14 via Frontend Transport; Fri, 3 Dec 2021 07:23:07 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <michael@walle.cc>, <p.yadav@ti.com>
-Subject: [PATCH v5 01/14] mtd: spi-nor: Fix mtd size for s3an flashes
-Date: Fri, 3 Dec 2021 16:22:43 +0200
-Message-ID: <20211203142256.47370-2-tudor.ambarus@microchip.com>
+Subject: [PATCH v5 02/14] mtd: spi-nor: core: Don't use mtd_info in the NOR's
+ probe sequence of calls
+Date: Fri, 3 Dec 2021 16:22:44 +0200
+Message-ID: <20211203142256.47370-3-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211203142256.47370-1-tudor.ambarus@microchip.com>
 References: <20211203142256.47370-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211203_062309_054753_17C4E215 
-X-CRM114-Status: UNSURE (   9.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211203_062312_725512_CAD23900 
+X-CRM114-Status: GOOD (  14.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,32 +89,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As it was before the blamed commit, s3an_nor_scan() was called
-after mtd size was set with params->size, and it overwrote the mtd
-size value with '8 * nor->page_size * nor->info->n_sectors' when
-XSR_PAGESIZE was set. With the introduction of
-s3an_post_sfdp_fixups(), we missed to update the mtd size for the
-s3an flashes. Fix the mtd size by updating both nor->params->size,
-(which will update the mtd_info size later on) and nor->mtd.size
-(which is used in spi_nor_set_addr_width()).
+Use NOR parameters in the probe's sequence of calls, thus
+nor->params->size instead of nor->mtd.size and let the mtd_info
+fields be used by the mtd calls (mtd->_erase, mtd->_read, mtd->_write).
+mtd_info fields should not be used during probe because we haven't
+registered mtd yet. It's safe to drop xilinx's setting of nor->mtd.size,
+now that we use nor->params->size in spi_nor_set_addr_width().
 
 Fixes: 641edddb4f43 ("mtd: spi-nor: Add s3an_post_sfdp_fixups()")
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/xilinx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/core.c   | 8 ++++----
+ drivers/mtd/spi-nor/xilinx.c | 1 -
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 88dd0908d172..5b9c827d411c 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2115,7 +2115,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
+ 	 */
+ 	op->addr.nbytes = 4;
+ 	if (!spi_mem_supports_op(nor->spimem, op)) {
+-		if (nor->mtd.size > SZ_16M)
++		if (nor->params->size > SZ_16M)
+ 			return -EOPNOTSUPP;
+ 
+ 		/* If flash size <= 16MB, 3 address bytes are sufficient */
+@@ -3011,7 +3011,7 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
+ 		nor->addr_width = 3;
+ 	}
+ 
+-	if (nor->addr_width == 3 && nor->mtd.size > 0x1000000) {
++	if (nor->addr_width == 3 && nor->params->size > 0x1000000) {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ 		nor->addr_width = 4;
+ 	}
+@@ -3245,7 +3245,7 @@ static int spi_nor_create_read_dirmap(struct spi_nor *nor)
+ 				      SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
+ 				      SPI_MEM_OP_DATA_IN(0, NULL, 0)),
+ 		.offset = 0,
+-		.length = nor->mtd.size,
++		.length = nor->params->size,
+ 	};
+ 	struct spi_mem_op *op = &info.op_tmpl;
+ 
+@@ -3276,7 +3276,7 @@ static int spi_nor_create_write_dirmap(struct spi_nor *nor)
+ 				      SPI_MEM_OP_NO_DUMMY,
+ 				      SPI_MEM_OP_DATA_OUT(0, NULL, 0)),
+ 		.offset = 0,
+-		.length = nor->mtd.size,
++		.length = nor->params->size,
+ 	};
+ 	struct spi_mem_op *op = &info.op_tmpl;
+ 
 diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 7e970ccf7903..03d3b006a039 100644
+index 03d3b006a039..580562bc1e45 100644
 --- a/drivers/mtd/spi-nor/xilinx.c
 +++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -69,7 +69,8 @@ static int xilinx_nor_setup(struct spi_nor *nor,
- 		page_size = (nor->params->page_size == 264) ? 256 : 512;
+@@ -70,7 +70,6 @@ static int xilinx_nor_setup(struct spi_nor *nor,
  		nor->params->page_size = page_size;
  		nor->mtd.writebufsize = page_size;
--		nor->mtd.size = 8 * page_size * nor->info->n_sectors;
-+		nor->params->size = 8 * page_size * nor->info->n_sectors;
-+		nor->mtd.size = nor->params->size;
+ 		nor->params->size = 8 * page_size * nor->info->n_sectors;
+-		nor->mtd.size = nor->params->size;
  		nor->mtd.erasesize = 8 * page_size;
  	} else {
  		/* Flash in Default addressing mode */
