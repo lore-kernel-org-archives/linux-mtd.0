@@ -4,51 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE1AC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Dec 2021 13:38:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 076EDC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Dec 2021 13:40:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yv0u/Nbs083evtb4zNVEjNClN9B8ruP+fUTDGhIQfGg=; b=hGA1lwviSkSqWN
-	YqDrY7tMQjA2iGJ+gnRPBjLPMb2kCNOKJUv+7LjYfgpTmPPMiIUoiwUvMVa3TIzy/VCtSQ/a7FciU
-	om4wYeWjPI57FFl2gOcRZ3kYDJxuH3I75dCxY5grIyKB1M5TKw4Dudc8LLIKnM5hOgHtBjJOLQHb7
-	XnqL1pE5M7rtHCSHZ2dg+T3bfuRL+aSWR48zb29e4sxbhLhIRXkTeONhJI3fTVm14GAh0vXbGOdrx
-	/hHgXTsquptyYXB3Rm7F/M9BvrC5zfxkXY7oR3zaAsQmVqYfAilpWpSuDYEuXvsoaw+sOVPCuEqRL
-	65fBRxtmxsKnp7K7qaWQ==;
+	List-Owner; bh=cLRRLP6MxQhC5HZFdt5Pg8UYpoxwj2cmgJTJ+ybzeGY=; b=LYo2OPIsX5cQAb
+	DSAyZssymlZhjCLog25xl6h04iouEcz7PIGbamcToqaKTMmNAWlbVG1bgP01ZNXVkr3NFtWLPKTdN
+	o99E5fI2QWgb+6xxy/KZqKkvSRLRpaYgPwVEPQG/y9/V8Xvsahhkz4/v5TOv2lLGkD2csWqW630RD
+	mwtvmMQpr59cXYQSaZ51qxc7HK67PiF57bGEqcANcdWqu91qvaRUJWx2/urSDl3ank59kXMZyKDYP
+	hQpx28P/coSMVLT2Xvi4mDA4PmwvFonyvYBNTKKTwVlIw/dn2fSbOKP2AfeqML96KW8tx9VFiUEd9
+	U55hAcHv5qLGAeaC7uFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mt8lL-00FzUb-GL; Fri, 03 Dec 2021 13:38:07 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1mt8nJ-00G0De-Mx; Fri, 03 Dec 2021 13:40:09 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mt8ko-00FzLx-OP
- for linux-mtd@lists.infradead.org; Fri, 03 Dec 2021 13:37:36 +0000
+ id 1mt8nD-00G0BA-Dp
+ for linux-mtd@lists.infradead.org; Fri, 03 Dec 2021 13:40:05 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C6F88FF80D;
- Fri,  3 Dec 2021 13:37:31 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id D6B7A200005;
+ Fri,  3 Dec 2021 13:39:59 +0000 (UTC)
+Date: Fri, 3 Dec 2021 14:39:58 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] mtd: Introduce an expert mode for forensics and debugging
- purposes
-Date: Fri,  3 Dec 2021 14:37:31 +0100
-Message-Id: <20211203133731.1450042-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211118114659.1282855-1-miquel.raynal@bootlin.com>
-References: 
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Sean Nyekjaer <sean@geanix.com>, linux-kernel@vger.kernel.org, Marek
+ Szyprowski <m.szyprowski@samsung.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
+ <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while
+ in suspend
+Message-ID: <20211203143958.40645506@xps13>
+In-Reply-To: <20211130143705.5d0404aa@collabora.com>
+References: <20211102110204.3334609-4-sean@geanix.com>
+ <CGME20211123120353eucas1p2fb2561b7cfddd8d6e7decaef8b504f4c@eucas1p2.samsung.com>
+ <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
+ <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
+ <20211123140715.280b2f70@collabora.com>
+ <20211129101908.6f1aa715@xps13>
+ <20211129094129.xn364czofrgtvfb4@skn-laptop>
+ <63be9121-18c3-1ef2-c448-f99fb861490f@samsung.com>
+ <20211130124131.6pgu7enjgk6y536m@skn-laptop>
+ <20211130141551.400331c8@collabora.com>
+ <20211130132912.v6v45boce2zbnoy3@skn-laptop>
+ <20211130143705.5d0404aa@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'ba8546c1dfdc3f431803523272f6269a9fc0af5e'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211203_053734_956059_65DC6F26 
-X-CRM114-Status: UNSURE (   8.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211203_054003_645918_9BE79014 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,27 +68,33 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2021-11-18 at 11:46:59 UTC, Miquel Raynal wrote:
-> When developping NAND controller drivers or when debugging filesystem
-> corruptions, it is quite common to need hacking locally into the
-> MTD/NAND core in order to get access to the content of the bad
-> blocks. Instead of having multiple implementations out there let's
-> provide a simple yet effective specific MTD-wide debugfs entry to fully
-> disable these checks on purpose.
-> 
-> A warning is added to inform the user when this mode gets enabled.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next.
-
-Miquel
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgo+ID4gRmluZSBieSBtZSwgbGV0cyBkcm9wIHRoaXMgc2VyaWVzLgoKRllJIEkndmUg
+ZHJvcHBlZCB0aGUgZW50aXJlIHNlcmllcyBmcm9tIG10ZC9uZXh0LiBJJ20gd2FpdGluZyBmb3Ig
+dGhlCmZpeCBkaXNjdXNzZWQgYmVsb3cgKHdpdGhvdXQgYWJ1c2luZyB0aGUgY2hpcCBtdXRleCA7
+LSkgKS4KCkNoZWVycywKTWlxdcOobAoKPiA+IFdlIGhhdmUgKzEwLjAwMCBkZXZpY2VzIHRoYXQg
+cnVucyB3aXRoIHRoaXMgcGF0Y2g6Cj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
+YW5kL3Jhdy9uYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4g
+PiBpbmRleCAxZjBkNTQyZDU5MjMuLjU4ZDQ4YzMwNzBmYSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jh
+dy9uYW5kX2Jhc2UuYwo+ID4gQEAgLTQzMzcsNyArNDMzNyw2IEBAIHN0YXRpYyBpbnQgbmFuZF9z
+dXNwZW5kKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ID4gIAkJcmV0ID0gY2hpcC0+b3BzLnN1c3Bl
+bmQoY2hpcCk7Cj4gPiAgCWlmICghcmV0KQo+ID4gIAkJY2hpcC0+c3VzcGVuZGVkID0gMTsKPiA+
+IC0JbXV0ZXhfdW5sb2NrKCZjaGlwLT5sb2NrKTsKPiA+ICAKPiA+ICAJcmV0dXJuIHJldDsKPiA+
+ICB9Cj4gPiBAQCAtNDM1MCw3ICs0MzQ5LDYgQEAgc3RhdGljIHZvaWQgbmFuZF9yZXN1bWUoc3Ry
+dWN0IG10ZF9pbmZvICptdGQpCj4gPiAgewo+ID4gIAlzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwID0g
+bXRkX3RvX25hbmQobXRkKTsKPiA+ICAKPiA+IC0JbXV0ZXhfbG9jaygmY2hpcC0+bG9jayk7Cj4g
+PiAgCWlmIChjaGlwLT5zdXNwZW5kZWQpIHsKPiA+ICAJCWlmIChjaGlwLT5vcHMucmVzdW1lKQo+
+ID4gIAkJCWNoaXAtPm9wcy5yZXN1bWUoY2hpcCk7Cj4gPiAgIAo+IAo+IEJ1dCBpdCdzIGFidXNp
+bmcgdGhlIGNoaXAgbG9jay4uLiBVc2UgYSB3YWl0IHF1ZXVlIGFzIHdlIGRpZCBhdCB0aGUgTVRE
+Cj4gbGV2ZWwsIGFuZCBtYWtlIG5hbmRfZ2V0X2RldmljZSgpIHdhaXQgb24gdGhpcyB3YWl0IHF1
+ZXVlIHdoZW4gdGhlCj4gZGV2aWNlIGlzIHN1c3BlbmRlZC4KPiAKPiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMaW51eCBNVEQgZGlzY3Vz
+c2lvbiBtYWlsaW5nIGxpc3QKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
