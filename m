@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BBEEC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Dec 2021 14:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BB6FC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Dec 2021 14:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OvibHjid9wNBaRWlcZphdMWdymNY5PHQHy+J+4HYitw=; b=oGmp6Hyc+UiraE
-	JLsM4Qj0vlOa0SlFUFU8Ut6qGdBZZfvivIrzDTmar8UtsElq0MQlMsj3eZaW1gXvXzswXCCARkVfO
-	FHTXaMKBPPg5lYHi9DeQ1iZThuac+U+EDl4fG29NEIY/rB4IWWVXCB8DBJEPHMZb8cMqp0KrONucU
-	Ah8QYjutvKvoK0xc7IRlnVkLmhHp9XNfwMGHjcaJCOAN0K4OYBxfxLO+uZrLWoq+bvwaFdKfci/bX
-	juv0eJNXBSIJvhdV2RhYWtKkjdIbJHs1w7EuY659j2AnxxvTWxkcZvluizGd3UTn2WI/e4e1QSojp
-	Mp26Nw5wCpEK2VlRrFGw==;
+	List-Owner; bh=rtJc39d7Gg5gcOS0PXdmZDkSjMGdhrBMGE+6iJmxJEk=; b=Gz/P/fODWq46pd
+	1GN29qA2oYRQoWL8BRvb+egySNWHc28fp/u+PLcSxqUoQY0nqyTPjtcMIflCp4GZxzoiOWpv/Gq6/
+	HExtapYz6ISboF1GX9xQ36wBz8PcMBln3F8BHm3v2otbsV+vuXrh5gMZK0EhYqQbswGE93CxaRlf9
+	8TkAAx1pr1fnLVDU/r28T7e5701YUhX6Xa7Z8JLgXktrvTDTte2P3KKxOs0gPJNyBuIV65r+fbqXm
+	WYwTK5gZ74yb6fftmGU6RA0wjhPgiX5aJD3v78RpDaaMVam6jMeeiwQJMK+/0OubM3vJ75VnJEjei
+	UhlC+4bYCoxAlBaC1KKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mt9i1-00GCO9-Cx; Fri, 03 Dec 2021 14:38:45 +0000
+	id 1mt9lI-00GD7I-MQ; Fri, 03 Dec 2021 14:42:09 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mt9TV-00G83B-Pu; Fri, 03 Dec 2021 14:23:49 +0000
+ id 1mt9Tb-00G855-8b; Fri, 03 Dec 2021 14:23:53 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1638541425; x=1670077425;
+ t=1638541431; x=1670077431;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=yFyuhoePqZDdUXcjWN9cMq+DpVz9cr7i1pX5uIlLKI4=;
- b=PASd/lhpdI/7W/7kB9gIQNZlGp9VsJ7x/e9M82IynDSF/y3kxfDQdCw5
- LvZPfpn+j8RCDnPapf083HB/4BN0e2AqYN38vZ1XJVs7l5JSCUE8oQWVP
- /fX0CL4eMPpbEYINwmz+1+rXa2Hfe6ihfIkDgn2nsGJRDmrB1tJanOpwL
- DcN+Ct1VUjrMDwoQYl2E7s/DLG1Iq/FeBaEjPWSDw28qGHqJ5/T69HiXO
- kUYJpbntPgEpAUl9TbriT/tJXzsaIqEHeorCJOd10BuJbK6Qmuau8BQAl
- 6BP8FgI3N+6mjGWnyKqYzSXaZU1k4n5KSlGUig8lZ9ydxYyWevR0V3aCB w==;
-IronPort-SDR: zOy8KjP+iV3k6PJrjh/n41QiGAad7TgEX8KYPMyibSYmfqIidD9eZ+Ci7vNOvxPY6l8pjukhUg
- 51dsaxkdBKMFyfppH1xK7kPDOj+j2/+M5WOV+XiLhVBggjlJ8evPVK+p4DGO4gQNSRnWFUveZ0
- XnvCfGCcoX3e8TlwX1cSs/Jz7tcOZX1jHwYs8dKU4g7mbN3dEvqEsomdiRJyp2ljuXxkrYv5fZ
- avAjhvEyT3OmUtqWHdCSyLC7YwusuQiXXQZbTNnXgtvYKG8p+ehS+7rtvYgkN4w/Iaz5D61Ejy
- 5RN2YGefJo3c2ySd6mbIUs0M
-X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="78424715"
+ bh=8t3zu23uMVnnpno8aoRmey4GN3YlrzdE3+ON4rixrec=;
+ b=rTjpkRQSJQT2liPfs1xfHFO0I3In97adVo5kuF5aQHSavlO14sE4ufSb
+ ZAxlIDppUF1T0jp8TkwjpL2hb++BW5+a988M0wKmUP0PRJxdYLLUAxSZO
+ OqxfAQLfLrC8aJFwd1f+QdAKfI+aOfFT4l+556VvmDTyloHzZnw3F8127
+ 4LhTDhUaEZtlIFAPtedRQsbXmUOOaXAwFhlUfNqJItPi7RkaLAl+g0V5c
+ 2dB8taS7qwhdiTD+EUV8u9NFLPsODHwW6gylSiFx3LK792rUwnIcYa8Wd
+ Ai4PH0jJJhXqAVCrxbsJvW1w3pQA7oe4oFlLLFWhMlJrupMwsK4yXxw49 Q==;
+IronPort-SDR: oSJVGrUC02wU8AyUdUj5NXqUCeuw8Eax922UUWyrl8rTdRHjFHYIWJxRaDAgk7v4BBYGpBbnov
+ t7oDA/2o79zmKwzPxHe42/bZOqw4md/Ym/i3KP1DpPZOPSgfc7H1FQdb1KK7gWdutYqcBGDp8c
+ 8j+tcOz5ANPrd/pM28J4CyFbofBJonip5yPoYAxEiPiITfM2wxL8L9Ze79NKYzp7fC8J3eAAlb
+ L4nfEXeoc8P/gPX7ry8yfgGUxCcE8Bxhsw/k/9g0r57RuYNp2PthNpKQBWjGkvqHXwaXe/Xjv6
+ k8w+uuJTDEluWtbZzUC+LAoq
+X-IronPort-AV: E=Sophos;i="5.87,284,1631602800"; d="scan'208";a="138583104"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 03 Dec 2021 07:23:44 -0700
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 03 Dec 2021 07:23:49 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 3 Dec 2021 07:23:44 -0700
+ 15.1.2176.14; Fri, 3 Dec 2021 07:23:48 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 3 Dec 2021 07:23:39 -0700
+ 15.1.2176.14 via Frontend Transport; Fri, 3 Dec 2021 07:23:44 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <michael@walle.cc>, <p.yadav@ti.com>
-Subject: [PATCH v5 09/14] mtd: spi-nor: core: Init all flash parameters based
- on SFDP where possible
-Date: Fri, 3 Dec 2021 16:22:51 +0200
-Message-ID: <20211203142256.47370-10-tudor.ambarus@microchip.com>
+Subject: [PATCH v5 10/14] mtd: spi-nor: core: Move spi_nor_set_addr_width() in
+ spi_nor_setup()
+Date: Fri, 3 Dec 2021 16:22:52 +0200
+Message-ID: <20211203142256.47370-11-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211203142256.47370-1-tudor.ambarus@microchip.com>
 References: <20211203142256.47370-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211203_062345_992988_08B390A7 
-X-CRM114-Status: GOOD (  26.29  )
+X-CRM114-CacheID: sfid-20211203_062351_477835_C82AACBF 
+X-CRM114-Status: GOOD (  17.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,290 +89,153 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-New flash additions that support SFDP should be declared with
-PARSE_SFDP and with all the other flags that are not SFDP
-discoverable.
-
-Keep the old way of initializing the flash, until all the flashes
-are converted to use either PARSE_SFDP or SPI_NOR_SKIP_SFDP.
-
-Flashes that declare PARSE_SFDP do not have a roll-back mechanism
-because if spi_nor_parse_sfdp() returns an error it means that either
-BFPT is not supported, thus SFDP is not supported and the user didn't
-correctly declared the flash_info entry, or some memalloc failed.
-Either way we should return an error. The rest of the SFDP tables are
-optional, if one of the optional SFDP tables fails, we just continue.
-We would like to get rid of the default_init() hook, so the
-spi_nor_manufacturer_init_params() is not called in the new sequnce
-of flash initialization that is based solely on SFDP.
-
-Split spi_nor_info_init_params() in spi_nor_init_default_params()
-and spi_nor_no_sfdp_init_params(). spi_nor_init_default_params() is
-called for all the flashes regardless if they support SFDP or not.
-spi_nor_no_sfdp_init_params() is called just for the flashes that
-do not define SFDP and initializes parameters and setting solely
-based on flash_info data.
+spi_nor_setup() configures the SPI NOR memory. Setting the addr width
+is too a configuration, hence we can move the spi_nor_set_addr_width()
+in spi_nor_setup().
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Reviewed-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/core.c | 194 ++++++++++++++++++++++---------------
- 1 file changed, 116 insertions(+), 78 deletions(-)
+ drivers/mtd/spi-nor/core.c | 102 +++++++++++++++++++------------------
+ 1 file changed, 52 insertions(+), 50 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 86bbd1ca22fc..d5eaf9a705ae 100644
+index d5eaf9a705ae..075b6d0e092a 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2509,74 +2509,21 @@ static void spi_nor_manufacturer_init_params(struct spi_nor *nor)
+@@ -2484,13 +2484,61 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+ 	return 0;
+ }
+ 
++static int spi_nor_set_addr_width(struct spi_nor *nor)
++{
++	if (nor->addr_width) {
++		/* already configured from SFDP */
++	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
++		/*
++		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
++		 * in this protocol an odd address width cannot be used because
++		 * then the address phase would only span a cycle and a half.
++		 * Half a cycle would be left over. We would then have to start
++		 * the dummy phase in the middle of a cycle and so too the data
++		 * phase, and we will end the transaction with half a cycle left
++		 * over.
++		 *
++		 * Force all 8D-8D-8D flashes to use an address width of 4 to
++		 * avoid this situation.
++		 */
++		nor->addr_width = 4;
++	} else if (nor->info->addr_width) {
++		nor->addr_width = nor->info->addr_width;
++	} else {
++		nor->addr_width = 3;
++	}
++
++	if (nor->addr_width == 3 && nor->params->size > 0x1000000) {
++		/* enable 4-byte addressing if the device exceeds 16MiB */
++		nor->addr_width = 4;
++	}
++
++	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
++		dev_dbg(nor->dev, "address width is too large: %u\n",
++			nor->addr_width);
++		return -EINVAL;
++	}
++
++	/* Set 4byte opcodes when possible. */
++	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
++	    !(nor->flags & SNOR_F_HAS_4BAIT))
++		spi_nor_set_4byte_opcodes(nor);
++
++	return 0;
++}
++
+ static int spi_nor_setup(struct spi_nor *nor,
+ 			 const struct spi_nor_hwcaps *hwcaps)
+ {
+-	if (!nor->params->setup)
+-		return 0;
++	int ret;
+ 
+-	return nor->params->setup(nor, hwcaps);
++	if (nor->params->setup) {
++		ret = nor->params->setup(nor, hwcaps);
++		if (ret)
++			return ret;
++	}
++
++	return spi_nor_set_addr_width(nor);
  }
  
  /**
-- * spi_nor_sfdp_init_params() - Initialize the flash's parameters and settings
-- * based on JESD216 SFDP standard.
-+ * spi_nor_no_sfdp_init_params() - Initialize the flash's parameters and
-+ * settings based on nor->info->sfdp_flags. This method should be called only by
-+ * flashes that do not define SFDP tables. If the flash supports SFDP but the
-+ * information is wrong and the settings from this function can not be retrieved
-+ * by parsing SFDP, one should instead use the fixup hooks and update the wrong
-+ * bits.
-  * @nor:	pointer to a 'struct spi_nor'.
-- *
-- * The method has a roll-back mechanism: in case the SFDP parsing fails, the
-- * legacy flash parameters and settings will be restored.
-  */
--static void spi_nor_sfdp_init_params(struct spi_nor *nor)
+@@ -3075,49 +3123,6 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
+ 	return NULL;
+ }
+ 
+-static int spi_nor_set_addr_width(struct spi_nor *nor)
 -{
--	struct spi_nor_flash_parameter sfdp_params;
--
--	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
--
--	if (spi_nor_parse_sfdp(nor)) {
--		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
--		nor->addr_width = 0;
--		nor->flags &= ~SNOR_F_4B_OPCODES;
+-	if (nor->addr_width) {
+-		/* already configured from SFDP */
+-	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+-		/*
+-		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
+-		 * in this protocol an odd address width cannot be used because
+-		 * then the address phase would only span a cycle and a half.
+-		 * Half a cycle would be left over. We would then have to start
+-		 * the dummy phase in the middle of a cycle and so too the data
+-		 * phase, and we will end the transaction with half a cycle left
+-		 * over.
+-		 *
+-		 * Force all 8D-8D-8D flashes to use an address width of 4 to
+-		 * avoid this situation.
+-		 */
+-		nor->addr_width = 4;
+-	} else if (nor->info->addr_width) {
+-		nor->addr_width = nor->info->addr_width;
+-	} else {
+-		nor->addr_width = 3;
 -	}
+-
+-	if (nor->addr_width == 3 && nor->params->size > 0x1000000) {
+-		/* enable 4-byte addressing if the device exceeds 16MiB */
+-		nor->addr_width = 4;
+-	}
+-
+-	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
+-		dev_dbg(nor->dev, "address width is too large: %u\n",
+-			nor->addr_width);
+-		return -EINVAL;
+-	}
+-
+-	/* Set 4byte opcodes when possible. */
+-	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
+-	    !(nor->flags & SNOR_F_HAS_4BAIT))
+-		spi_nor_set_4byte_opcodes(nor);
+-
+-	return 0;
 -}
 -
--/**
-- * spi_nor_info_init_params() - Initialize the flash's parameters and settings
-- * based on nor->info data.
-- * @nor:	pointer to a 'struct spi_nor'.
-- */
--static void spi_nor_info_init_params(struct spi_nor *nor)
-+static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+ static void spi_nor_debugfs_init(struct spi_nor *nor,
+ 				 const struct flash_info *info)
  {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	struct spi_nor_erase_map *map = &params->erase_map;
--	const struct flash_info *info = nor->info;
--	struct device_node *np = spi_nor_get_flash_node(nor);
--	const u8 no_sfdp_flags = info->no_sfdp_flags;
-+	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
- 	u8 i, erase_mask;
+@@ -3249,15 +3254,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
+ 	 * - set the number of dummy cycles (mode cycles + wait states).
+ 	 * - set the SPI protocols for register and memory accesses.
++	 * - set the address width.
+ 	 */
+ 	ret = spi_nor_setup(nor, hwcaps);
+ 	if (ret)
+ 		return ret;
  
--	/* Initialize default flash parameters and settings. */
--	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
--	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
--	params->setup = spi_nor_default_setup;
--	params->otp.org = &info->otp_org;
+-	ret = spi_nor_set_addr_width(nor);
+-	if (ret)
+-		return ret;
 -
--	/* Default to 16-bit Write Status (01h) Command */
--	nor->flags |= SNOR_F_HAS_16BIT_SR;
--
--	/* Set SPI NOR sizes. */
--	params->writesize = 1;
--	params->size = (u64)info->sector_size * info->n_sectors;
--	params->page_size = info->page_size;
--
--	if (!(info->flags & SPI_NOR_NO_FR)) {
--		/* Default to Fast Read for DT and non-DT platform devices. */
--		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
--
--		/* Mask out Fast Read if not requested at DT instantiation. */
--		if (np && !of_property_read_bool(np, "m25p,fast-read"))
--			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
--	}
--
--	/* (Fast) Read settings. */
--	params->hwcaps.mask |= SNOR_HWCAPS_READ;
--	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
--				  0, 0, SPINOR_OP_READ,
--				  SNOR_PROTO_1_1_1);
--
--	if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
--		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
--					  0, 8, SPINOR_OP_READ_FAST,
--					  SNOR_PROTO_1_1_1);
--
- 	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
- 		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_1_1_2],
-@@ -2605,11 +2552,6 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
- 					  SNOR_PROTO_8_8_8_DTR);
- 	}
- 
--	/* Page Program settings. */
--	params->hwcaps.mask |= SNOR_HWCAPS_PP;
--	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
--				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
--
- 	if (no_sfdp_flags & SPI_NOR_OCTAL_DTR_PP) {
- 		params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
- 		/*
-@@ -2638,7 +2580,7 @@ static void spi_nor_info_init_params(struct spi_nor *nor)
- 		i++;
- 	}
- 	erase_mask |= BIT(i);
--	spi_nor_set_erase_type(&map->erase_type[i], info->sector_size,
-+	spi_nor_set_erase_type(&map->erase_type[i], nor->info->sector_size,
- 			       SPINOR_OP_SE);
- 	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
- }
-@@ -2739,6 +2681,98 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
- 		spi_nor_init_default_locking_ops(nor);
- }
- 
-+/**
-+ * spi_nor_sfdp_init_params_deprecated() - Deprecated way of initializing flash
-+ * parameters and settings based on JESD216 SFDP standard.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ *
-+ * The method has a roll-back mechanism: in case the SFDP parsing fails, the
-+ * legacy flash parameters and settings will be restored.
-+ */
-+static void spi_nor_sfdp_init_params_deprecated(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter sfdp_params;
-+
-+	memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
-+
-+	if (spi_nor_parse_sfdp(nor)) {
-+		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
-+		nor->addr_width = 0;
-+		nor->flags &= ~SNOR_F_4B_OPCODES;
-+	}
-+}
-+
-+/**
-+ * spi_nor_init_params_deprecated() - Deprecated way of initializing flash
-+ * parameters and settings.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ *
-+ * The method assumes that flash doesn't support SFDP so it initializes flash
-+ * parameters in spi_nor_no_sfdp_init_params() which later on can be overwritten
-+ * when parsing SFDP, if supported.
-+ */
-+static void spi_nor_init_params_deprecated(struct spi_nor *nor)
-+{
-+	spi_nor_no_sfdp_init_params(nor);
-+
-+	spi_nor_manufacturer_init_params(nor);
-+
-+	if ((SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_OCTAL_READ |
-+	     SPI_NOR_OCTAL_DTR_READ) &&
-+	    !(nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP))
-+		spi_nor_sfdp_init_params_deprecated(nor);
-+}
-+
-+/**
-+ * spi_nor_init_default_params() - Default initialization of flash parameters
-+ * and settings. Done for all flashes, regardless is they define SFDP tables
-+ * or not.
-+ * @nor:	pointer to a 'struct spi_nor'.
-+ */
-+static void spi_nor_init_default_params(struct spi_nor *nor)
-+{
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	const struct flash_info *info = nor->info;
-+	struct device_node *np = spi_nor_get_flash_node(nor);
-+
-+	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
-+	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
-+	params->setup = spi_nor_default_setup;
-+	params->otp.org = &info->otp_org;
-+
-+	/* Default to 16-bit Write Status (01h) Command */
-+	nor->flags |= SNOR_F_HAS_16BIT_SR;
-+
-+	/* Set SPI NOR sizes. */
-+	params->writesize = 1;
-+	params->size = (u64)info->sector_size * info->n_sectors;
-+	params->page_size = info->page_size;
-+
-+	if (!(info->flags & SPI_NOR_NO_FR)) {
-+		/* Default to Fast Read for DT and non-DT platform devices. */
-+		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
-+
-+		/* Mask out Fast Read if not requested at DT instantiation. */
-+		if (np && !of_property_read_bool(np, "m25p,fast-read"))
-+			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-+	}
-+
-+	/* (Fast) Read settings. */
-+	params->hwcaps.mask |= SNOR_HWCAPS_READ;
-+	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
-+				  0, 0, SPINOR_OP_READ,
-+				  SNOR_PROTO_1_1_1);
-+
-+	if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
-+		spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ_FAST],
-+					  0, 8, SPINOR_OP_READ_FAST,
-+					  SNOR_PROTO_1_1_1);
-+	/* Page Program settings. */
-+	params->hwcaps.mask |= SNOR_HWCAPS_PP;
-+	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
-+				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
-+}
-+
- /**
-  * spi_nor_init_params() - Initialize the flash's parameters and settings.
-  * @nor:	pointer to a 'struct spi_nor'.
-@@ -2759,7 +2793,7 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
-  * which can be overwritten by:
-  * 3/ SFDP flash parameters initialization. JESD216 SFDP is a standard and
-  *    should be more accurate that the above.
-- *		spi_nor_sfdp_init_params()
-+ *		spi_nor_parse_sfdp() or spi_nor_sfdp_init_params_deprecated()
-  *
-  *    Please note that there is a ->post_bfpt() fixup hook that can overwrite
-  *    the flash parameters and settings immediately after parsing the Basic
-@@ -2773,24 +2807,28 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
-  * parameters that are not declared in the JESD216 SFDP standard, or where SFDP
-  * tables are not defined at all.
-  *		spi_nor_late_init_params()
-+ *
-+ * Return: 0 on success, -errno otherwise.
-  */
- static int spi_nor_init_params(struct spi_nor *nor)
- {
-+	int ret;
-+
- 	nor->params = devm_kzalloc(nor->dev, sizeof(*nor->params), GFP_KERNEL);
- 	if (!nor->params)
- 		return -ENOMEM;
- 
--	spi_nor_info_init_params(nor);
--
--	spi_nor_manufacturer_init_params(nor);
-+	spi_nor_init_default_params(nor);
- 
--	if ((nor->info->parse_sfdp ||
--	     (nor->info->no_sfdp_flags & (SPI_NOR_DUAL_READ |
--					  SPI_NOR_QUAD_READ |
--					  SPI_NOR_OCTAL_READ |
--					  SPI_NOR_OCTAL_DTR_READ))) &&
--	    !(nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP))
--		spi_nor_sfdp_init_params(nor);
-+	if (nor->info->parse_sfdp) {
-+		ret = spi_nor_parse_sfdp(nor);
-+		if (ret) {
-+			dev_err(nor->dev, "BFPT parsing failed. Please consider using SPI_NOR_SKIP_SFDP when declaring the flash\n");
-+			return ret;
-+		}
-+	} else {
-+		spi_nor_init_params_deprecated(nor);
-+	}
- 
- 	spi_nor_late_init_params(nor);
- 
+ 	/* Send all the required SPI flash commands to initialize device */
+ 	ret = spi_nor_init(nor);
+ 	if (ret)
 -- 
 2.25.1
 
