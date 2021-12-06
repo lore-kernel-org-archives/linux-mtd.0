@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76FF6C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 21:27:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78B36C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 21:34:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7NxqkxiuBv0Lrgk87SEPAZjzrsaZVA5tXBQmD2oUiE8=; b=k5rS24+oo/ttF7
-	tXSyZZXcNf4CKYxNsQSfJAmpjEQAtZbz1fSvekV6x1nNpxZ2g7i6mdJYagftzgO0C8hLBVhmTPt/2
-	KKxU8qCNHBZCYLX+PXyzZicuq1ozS+rIOdBW9eT48mG7fIMHDyHNPvDeNIwaVhpUaK+MdX01SEpPB
-	tOLLwmwaYCF8LwXObMOIFxsrGGedWKRlqdn2K+qA1SQGFEHzg9FRd1W2MZ4chvXjQ43RFXDpOpTFr
-	1vt60NjISIcJp/Bslabj2P/vi6O039JsbR53royY6HIjcBtyt0NP1GehhhYmap+aYXASDdbl8pjjt
-	Ei7DZvpGh9KFFLWIOiFA==;
+	List-Owner; bh=rFODUXkKoi1uao0tLaCG0Z4NbGaHLULicsC3y4e7Y9o=; b=3xPT0ayaNFs4tR
+	LjeM50PjVD8FPwBEY+eCfDmj5POo7o+XI4Tm0mAabAon79EMuaokvK67RPEOXKWbF29P/LWxLmGYT
+	CzfiWqpeT50ZoQtQosm41NK/7MJyj6MK1fWEzK9CurQdPUmkrUmzms9ti/dXWMRs+dQJdyfJgn3sw
+	1FH61IedM0kQfhO1HXA04N+1SMsPABJRKiBmHVITSx3nYgDEjZcPYszrPRD14xfM38FrbpERnDDok
+	LC7PFvZuvMO+F99QSnZ2GV7fVWiCcuhxZenWcF93ik6MC8tV4VaqbpZpzCF4CMhzHLfIgPStKjJA7
+	nFlAhoB7Mfyixx5BfwdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muLV9-005s53-Dz; Mon, 06 Dec 2021 21:26:23 +0000
-Received: from mail-oi1-f173.google.com ([209.85.167.173])
+	id 1muLc5-005v21-5p; Mon, 06 Dec 2021 21:33:33 +0000
+Received: from mail-oo1-f46.google.com ([209.85.161.46])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muLQz-005qI0-VZ
- for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 21:22:07 +0000
-Received: by mail-oi1-f173.google.com with SMTP id m6so23902178oim.2
- for <linux-mtd@lists.infradead.org>; Mon, 06 Dec 2021 13:22:05 -0800 (PST)
+ id 1muLaC-005uAm-Q6
+ for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 21:31:38 +0000
+Received: by mail-oo1-f46.google.com with SMTP id
+ w5-20020a4a2745000000b002c2649b8d5fso4766872oow.10
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Dec 2021 13:31:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=MtzbU8c0o9gJTrJwZtxJGMONYkckI9EfUgoa5uU3qFA=;
- b=uxZS67ls5b403ZJPX3ENoS5BN6HHYRTt5MvKnkV/xkBQFI9WyVFU6tYAm+dr8Sriwq
- VVYPe/xIUHkiGUAgPWHVp12tE4YHfQKMdFVMWMXzoood96K3ryCOlMydkGx9tVD6hDrL
- i91CHC8xPd/oe2X7pYBtALE89XhcEFwqNYL1u90Bxx48UFoUyMKbzvmQMG+24pOgd826
- qzpLu0mC4zm2uQtAcf3jgWotKdvU7rVMCjPEoROUOCUZDTGCGHC42cKPnhzUUDUdBi0E
- sPEPgUrznVFyYeOGTFKPHuaCNN2p1Y2dE2QC1WT1BKpO6UxmOWZU6g3ViXn0jBfm8i/o
- /wLQ==
-X-Gm-Message-State: AOAM533Jbpsr1gsAxWej9MSOnH4U+ba41IN4vY0jQ2BqpRTBeq06dFSs
- 3zvnHJRM1xDhMPX3T4v6xG7WFqPXpg==
-X-Google-Smtp-Source: ABdhPJx+6qLHMV08kPKLLwEC00L0H/b5sMt6rFhfrItlQan9KP9JMfFD/XZlvj0GkVxmJHAGdNzU5g==
-X-Received: by 2002:aca:1c02:: with SMTP id c2mr1234161oic.53.1638825724466;
- Mon, 06 Dec 2021 13:22:04 -0800 (PST)
+ bh=zGVMocxzrwSJvpkLOikrjLjUvyP1cbBTRtuBKh0+UVo=;
+ b=KUDr1n6EEMoZ0X2luoXfwlfdqqbOA1Zr8PRMTxtK9ZHN3uZTVzZ9G2db4V8pCd+wI+
+ ZgymoIljTodJIJqNrDfck6klwsHjJLX8+2MR9qY9jdk/JdyOpvyFZI/JDjjAVEXfxmaP
+ xPFi1/koZmtphKco9AcA2dHIbIkqpeS+fPswLW7IucvDsq9vKqUiZGWmbwHeVYjlZdcW
+ 0rE7nwbyURz3Jm97VH+b0oRuYe1oIg7HH9qZv8ZXpLYHsCP/7vbJE+USBt1m10Gvurye
+ TI+Lp6BR41rWSB6RA6Cxs1H6kqk9E1sSkJz0Qbo5hLOIXcX0+3pHCV/VkdkI0HRlnC5S
+ UBiA==
+X-Gm-Message-State: AOAM530hgzKWPnkLbLh6wp8QwAsOQI3l0M42I31kG+gI5MAOBIXwAL/d
+ P1JN4ZFEszj6zpoyZH1W+A==
+X-Google-Smtp-Source: ABdhPJyKYQSIcGqPHmeo2t8IF2UE+YqzQpYLD8znNuCAHu6fH6Goz2Df3ODuTf5jffRIALOa3oXogQ==
+X-Received: by 2002:a4a:96f1:: with SMTP id t46mr23892589ooi.53.1638826294284; 
+ Mon, 06 Dec 2021 13:31:34 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id o19sm2980347oiw.22.2021.12.06.13.22.03
+ by smtp.gmail.com with ESMTPSA id i16sm2865342oig.15.2021.12.06.13.31.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Dec 2021 13:22:03 -0800 (PST)
-Received: (nullmailer pid 2606265 invoked by uid 1000);
- Mon, 06 Dec 2021 21:22:02 -0000
-Date: Mon, 6 Dec 2021 15:22:02 -0600
+ Mon, 06 Dec 2021 13:31:33 -0800 (PST)
+Received: (nullmailer pid 2619328 invoked by uid 1000);
+ Mon, 06 Dec 2021 21:31:32 -0000
+Date: Mon, 6 Dec 2021 15:31:32 -0600
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -59,17 +60,15 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
  devicetree@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Michal Simek <monstr@monstr.eu>
-Subject: Re: [PATCH v3 2/3] spi: dt-bindings: Describe stacked/parallel
- memories modes
-Message-ID: <Ya5++vUkIKXtE1ja@robh.at.kernel.org>
+Subject: Re: [PATCH v3 0/3] Stacked/parallel memories bindings
+Message-ID: <Ya6BNGHhflkXOItV@robh.at.kernel.org>
 References: <20211206095921.33302-1-miquel.raynal@bootlin.com>
- <20211206095921.33302-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211206095921.33302-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20211206095921.33302-1-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211206_132206_052203_ED2456A2 
-X-CRM114-Status: GOOD (  10.85  )
+X-CRM114-CacheID: sfid-20211206_133136_883276_9F56EA06 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,19 +85,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 06, 2021 at 10:59:20AM +0100, Miquel Raynal wrote:
-> Describe two new memories modes:
-> - A stacked mode when the bus is common but the address space extended
->   with an additinals wires.
-> - A parallel mode with parallel busses accessing parallel flashes where
->   the data is spread.
+On Mon, Dec 06, 2021 at 10:59:18AM +0100, Miquel Raynal wrote:
+> Hello Rob, Mark, Tudor & Pratyush,
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../bindings/spi/spi-peripheral-props.yaml    | 21 +++++++++++++++++++
->  1 file changed, 21 insertions(+)
+> Here is a third versions for these bindings, which applies on top of
+> Pratyush's work:
+> https://lore.kernel.org/all/20211109181911.2251-1-p.yadav@ti.com/
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Mark, can you either provide a stable branch with this or apply the 
+series? Note that there's going to be some other patches needing 
+spi-peripheral-props.yaml, so providing a branch might be better if you 
+don't want to collect the patches.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
