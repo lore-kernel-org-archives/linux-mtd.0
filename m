@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61475C433FE
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 10:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22E6BC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 10:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z4NgDIqRKEo2+dKCgIrbM4bKf0UXvniGNxS0ByjzjbY=; b=bHhPjGBCw2KaLZ
-	nq6/wCvvb7uTpSH4tDS0isPxiAbAOMc85RHVN8MBEOSE2cqncvlZ0KSmCNCieIF3v3q5UqliayqZ2
-	D83Vno6PHJ7TkyUhMeYoffG653JxQXlsLbXxxBPJPgC0DNp6H6OJGiQTwWdukkr1UtZO3XP0iWTrH
-	K9jwUKVSHXyi4kiIpwGi1MQdVjSwckMnHjqicaNuCilUO0pfODRueNXr0howE0zKFBzlW06Cacz+6
-	Ydnns0rFD8VEfV4RecC//iSFHWtml7SV7bL5AKgnaApl0JJajWKT13lZtWEaKRT7CPKWqQgHr5EyA
-	0gL5SxB9shvV3wJhIUfA==;
+	List-Owner; bh=rHCaNDIluX+SgUAV3Idmw4mrtSgP1cw+AF4VeijekDM=; b=ysSmBfybdir1Ad
+	MMLheJ1tqqOmCVZyZf3jzvfdilEdlmK/VgSKca4j1N9CVTW9F7lEPxZykpXTIIOdbu3fBNKD1NPYR
+	RMVBwKTLkLZpSAOZ2OCjgthQUEHW+lYkG/6+q5ohHUAXuHqVO/47LNytapYHos+NkHuH9CCf7sBQl
+	RHbj8igKMKe/+eswaW5xrkgl9EIecRX7cuHFDIfSlscphUZd5alpWgbygCDrouuY4Xtn71n1zXkZN
+	E6whBEKy4aJVL7VBPKeR3Jqg727XWsbs44VAMvdPBgtrLHMC1b+PD1VtuAu7uKl4VZaEm4AKcwJfp
+	Td/0W6Yccd/IUrF+3i4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muAmf-003Eej-3P; Mon, 06 Dec 2021 09:59:45 +0000
+	id 1muAmu-003Eik-Av; Mon, 06 Dec 2021 10:00:00 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muAmO-003EZh-V9
- for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 09:59:30 +0000
+ id 1muAmQ-003EaC-5y
+ for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 09:59:31 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7FF7324000B;
- Mon,  6 Dec 2021 09:59:25 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B73FB24001E;
+ Mon,  6 Dec 2021 09:59:27 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -36,18 +36,18 @@ To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  <linux-spi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
  <devicetree@vger.kernel.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Michal Simek <monstr@monstr.eu>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 1/3] dt-bindings: mtd: spi-nor: Allow two CS per device
-Date: Mon,  6 Dec 2021 10:59:19 +0100
-Message-Id: <20211206095921.33302-2-miquel.raynal@bootlin.com>
+ Michal Simek <monstr@monstr.eu>, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v3 2/3] spi: dt-bindings: Describe stacked/parallel memories
+ modes
+Date: Mon,  6 Dec 2021 10:59:20 +0100
+Message-Id: <20211206095921.33302-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211206095921.33302-1-miquel.raynal@bootlin.com>
 References: <20211206095921.33302-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211206_015929_162529_6B773565 
-X-CRM114-Status: GOOD (  12.87  )
+X-CRM114-CacheID: sfid-20211206_015930_399448_655483DF 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,45 +64,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Xilinx QSPI controller has two advanced modes which allow the
-controller to behave differently and consider two flashes as one single
-storage.
-
-One of these two modes is quite complex to support from a binding point
-of view and is the dual parallel memories. In this mode, each byte of
-data is stored in both devices: the even bits in one, the odd bits in
-the other. The split is automatically handled by the QSPI controller and
-is transparent for the user.
-
-The other mode is simpler to support, it is called dual stacked
-memories. The controller shares the same SPI bus but each of the devices
-contain half of the data. Once in this mode, the controller does not
-follow CS requests but instead internally wires the two CS levels with
-the value of the most significant address bit.
-
-Supporting these two modes will involve core changes which include the
-possibility of providing two CS for a single SPI device
+Describe two new memories modes:
+- A stacked mode when the bus is common but the address space extended
+  with an additinals wires.
+- A parallel mode with parallel busses accessing parallel flashes where
+  the data is spread.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../bindings/spi/spi-peripheral-props.yaml    | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index 39421f7233e4..4abfb4cfc157 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -47,7 +47,8 @@ properties:
-       identified by the JEDEC READ ID opcode (0x9F).
+diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+index 5dd209206e88..13aa6a2374c9 100644
+--- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
+@@ -82,6 +82,27 @@ properties:
+     description:
+       Delay, in microseconds, after a write transfer.
  
-   reg:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 2
- 
-   spi-max-frequency: true
-   spi-rx-bus-width: true
++  stacked-memories:
++    type: boolean
++    description: Several SPI memories can be wired in stacked mode.
++      This basically means that either a device features several chip
++      selects, or that different devices must be seen as a single
++      bigger chip. This basically doubles (or more) the total address
++      space with only a single additional wire, while still needing
++      to repeat the commands when crossing a chip boundary. XIP is
++      usually not supported in this mode.
++
++  parallel-memories:
++    type: boolean
++    description: Several SPI memories can be wired in parallel mode.
++      The devices are physically on a different buses but will always
++      act synchronously as each data word is spread across the
++      different memories (eg. even bits are stored in one memory, odd
++      bits in the other). This basically doubles the address space and
++      the throughput while greatly complexifying the wiring because as
++      many busses as devices must be wired. XIP is usually not
++      supported in this mode.
++
+ # The controller specific properties go here.
+ allOf:
+   - $ref: cdns,qspi-nor-peripheral-props.yaml#
 -- 
 2.27.0
 
