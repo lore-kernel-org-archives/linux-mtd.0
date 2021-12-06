@@ -4,69 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A4ADC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 15:05:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DFEDC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 16:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/v3U2vrqa5L5iQXVZZ5/J4dNe/aL9mz7pt92ubIfQZc=; b=GV1yagz+4EyXZw
-	zJJQ8K4NMaLIEFWQonXhPt1txdTYV+bUugC5uXNPMtYfIIAXWgdMfWEeJ1Ca8rvp88BSA97iBXF1U
-	ykHFW/nrjI6eEG3PwoEoGn5HlJdaFf7xVCWHhNcfWVzydoTBbRP0LT7GpMMPeImfD2MeG2JGnvDlG
-	qRfwYb+xWJZg//wtP6+rJJ2mMaDMcHwvnvWzibsih4PBy9lM+46rJPVy8WUuJmfapR5KBl+mg2F2k
-	9H/vwP/fJDzzKXUPotwu5N3d7zxOCPhDEvwQPO3QZzZxrKRUpy6SwTcu1xpKDSQ5jj6bUcpPfsXF9
-	khpbl9qlImwHLDNai06w==;
+	List-Owner; bh=LECTge1ZnDk0BA7gWd6hjfdj9Q2kNaI56cOZDzQ3CLU=; b=aZrbKjM7EldDVh
+	3ZibNfGU4xNTgl4oooEtVncBDPoa6nnqiG6SlTVNEsndS3JoNuZJUSg994hEoSWdmSuSpGIVrfODX
+	03l8Wo0xN6ATUtLB+kuqsXMHZjoH9Ls/TrACt+CUQVGwQGro4PT946PiJEjCC+DLj1LmesukzG89x
+	FwKJyWW8Tesy7yPEbcqyDjvPdopvGnK5lcRE7Owrh8+IQr7JtXahijPCYjk9/AQ1qQmsq9R8iR37E
+	tVbcUrFdPKJJxowcpZPItzxoBzJfa2pNSIhsZUUUVT7NSUR+9x7cPus5DA9IbGDaSNSIPNvwAdyJq
+	pN/xiBWR0vcSgsduE0og==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muFXt-004Mai-7m; Mon, 06 Dec 2021 15:04:49 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1muHA3-004qzl-Bv; Mon, 06 Dec 2021 16:48:19 +0000
+Received: from mail-io1-xd2e.google.com ([2607:f8b0:4864:20::d2e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muFXo-004MXU-AF; Mon, 06 Dec 2021 15:04:46 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1B6F4Fce051926;
- Mon, 6 Dec 2021 09:04:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1638803055;
- bh=wruBA6zsjv1Rf8NctYADKtc8E62M/IAHwiEvp8nwAUk=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Kye6OPj/Zgh+KyrIPY3qg7/uOpUs8w+cvgehPQWvHVrzo+OIkZq9ZhhYpUaxsLyJz
- +14N8adEA8HIVxVsZJsWemC6roKPSY2MYGLYgG7nr+7cKH0FzeVSEBlYlI236ThfSU
- /WAT3imZLeTtZwMXswIHUfXq1n1I8Ge+/nESPfRs=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1B6F4Fh7116549
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 6 Dec 2021 09:04:15 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 6
- Dec 2021 09:04:14 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 6 Dec 2021 09:04:14 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1B6F4Ex3034484;
- Mon, 6 Dec 2021 09:04:14 -0600
-Date: Mon, 6 Dec 2021 20:34:13 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH v5 09/14] mtd: spi-nor: core: Init all flash parameters
- based on SFDP where possible
-Message-ID: <20211206150411.wj2fl36dngwwawcc@ti.com>
-References: <20211203142256.47370-1-tudor.ambarus@microchip.com>
- <20211203142256.47370-10-tudor.ambarus@microchip.com>
- <20211206122244.in6pzwjnxxo7yd32@ti.com>
- <57890ba8-c0f8-b50a-7126-d74b92537f2e@microchip.com>
+ id 1muH99-004qaT-RG
+ for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 16:47:26 +0000
+Received: by mail-io1-xd2e.google.com with SMTP id b187so13634264iof.11
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Dec 2021 08:47:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+ h=from:to:cc:in-reply-to:references:subject:message-id:date
+ :mime-version:content-transfer-encoding;
+ bh=/0SXgGX28/0RTN9QU/DsVtJokxlTQv3WbGSp7DGmXk4=;
+ b=vFQjbp94JtKeOaM/W9yQ5MY4cFN7z0qA2qA2iJRdW07pfEvtmD/kzxr3XwN0QTkDhJ
+ daZkRrl4YOK3MV6id76gF4QeaRUv8z35S5stpG/Wi0po2NMTBELs01zHvhs08no3ySY8
+ YwywKRobhW1iRMqYsUsM0Ce+6+JM1tpQ4CK8s26d5eemYcpUQriAs+C86+FXdfWQMLc2
+ mGDUtvyvBg1PQdVoE24+SCnizqVNYJJjRSz63HmtwVyEH5/3P2wnuqMxZGVD9XpCVDXl
+ nnHfvuCiAqca3AA26dY6hJQbnZLjFYDadLZsKozq9CqnnQWYGMgDQtmDU14ndMXDqSsa
+ prJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+ :message-id:date:mime-version:content-transfer-encoding;
+ bh=/0SXgGX28/0RTN9QU/DsVtJokxlTQv3WbGSp7DGmXk4=;
+ b=Y+UTI4dISAAhN5dCr5GpbOaLDp9BMwVB+8uoXntjOQKgFMwCt0t4O1TYp3vkozYlCH
+ c29rpq7mVHR+f/4IfvPWVAdC9XY2lnXqelVCltH4XJ3Mw1EDVzbOWdpBwtzxjhxlVAKQ
+ ZPRPMu15MQzMEQO5hLEtBIsQHAKcq28BGXYvPSNzbnyjksItOfYjKIt2w9qjdMqAw9uo
+ ykPoiXS69nzQ2Y9TrHJ9UXFlLR2TiZuLvNXRBeGyBQBJ5JpRob9CLThycyVE1/kBsnOw
+ R7an3Qu0IcnK6+6jRI1FOvJ4gDtpduRebUmSyYko4m5KaP3+6Ql4qRUUqjlw6cLvYoSu
+ n27w==
+X-Gm-Message-State: AOAM5329P4xJpwNm8LMwhFvbNmG2Keb7t00dCt9ysF75Z2j82+O4K3IV
+ YA9KDEMS38BMvAA3iUv5WIb5uuofh5duy5Ik
+X-Google-Smtp-Source: ABdhPJxPuaBBKCW2wE1RbRqHqrMZuoqdQw4DulT5czheg7CyIsvbAohHPYPb+2Y15IHcw3V3ctPJ/A==
+X-Received: by 2002:a05:6602:2f11:: with SMTP id
+ q17mr35828341iow.75.1638809242834; 
+ Mon, 06 Dec 2021 08:47:22 -0800 (PST)
+Received: from x1.localdomain ([207.135.234.126])
+ by smtp.gmail.com with ESMTPSA id q12sm1289618ilo.60.2021.12.06.08.47.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 06 Dec 2021 08:47:22 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: miquel.raynal@bootlin.com, Christoph Hellwig <hch@lst.de>, vigneshr@ti.com,
+ richard@nod.at
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, linux-block@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+In-Reply-To: <20211206070409.2836165-1-hch@lst.de>
+References: <20211206070409.2836165-1-hch@lst.de>
+Subject: Re: [PATCH] mtd_blkdevs: don't scan partitions for plain mtdblock
+Message-Id: <163880924220.67311.13119218479398937498.b4-ty@kernel.dk>
+Date: Mon, 06 Dec 2021 09:47:22 -0700
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <57890ba8-c0f8-b50a-7126-d74b92537f2e@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211206_070444_672926_11011871 
-X-CRM114-Status: GOOD (  47.46  )
+X-CRM114-CacheID: sfid-20211206_084723_931580_EA15A4AD 
+X-CRM114-Status: UNSURE (   6.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,186 +85,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, Nicolas.Ferre@microchip.com, michael@walle.cc,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 06/12/21 01:52PM, Tudor.Ambarus@microchip.com wrote:
-> On 12/6/21 2:22 PM, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On 03/12/21 04:22PM, Tudor Ambarus wrote:
-> >> New flash additions that support SFDP should be declared with
-> >> PARSE_SFDP and with all the other flags that are not SFDP
-> >> discoverable.
-> >>
-> >> Keep the old way of initializing the flash, until all the flashes
-> >> are converted to use either PARSE_SFDP or SPI_NOR_SKIP_SFDP.
-> >>
-> >> Flashes that declare PARSE_SFDP do not have a roll-back mechanism
-> >> because if spi_nor_parse_sfdp() returns an error it means that either
-> >> BFPT is not supported, thus SFDP is not supported and the user didn't
-> >> correctly declared the flash_info entry, or some memalloc failed.
-> >> Either way we should return an error. The rest of the SFDP tables are
-> >> optional, if one of the optional SFDP tables fails, we just continue.
-> >> We would like to get rid of the default_init() hook, so the
-> >> spi_nor_manufacturer_init_params() is not called in the new sequnce
-> >> of flash initialization that is based solely on SFDP.
-> >>
-> >> Split spi_nor_info_init_params() in spi_nor_init_default_params()
-> >> and spi_nor_no_sfdp_init_params(). spi_nor_init_default_params() is
-> >> called for all the flashes regardless if they support SFDP or not.
-> >> spi_nor_no_sfdp_init_params() is called just for the flashes that
-> >> do not define SFDP and initializes parameters and setting solely
-> >> based on flash_info data.
-> >>
-> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >> ---
-> >>  drivers/mtd/spi-nor/core.c | 194 ++++++++++++++++++++++---------------
-> >>  1 file changed, 116 insertions(+), 78 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> >> index 86bbd1ca22fc..d5eaf9a705ae 100644
-> >> --- a/drivers/mtd/spi-nor/core.c
-> >> +++ b/drivers/mtd/spi-nor/core.c
-> >> @@ -2509,74 +2509,21 @@ static void spi_nor_manufacturer_init_params(struct spi_nor *nor)
-> >>  }
-> >>
-> >>  /**
-> >> - * spi_nor_sfdp_init_params() - Initialize the flash's parameters and settings
-> >> - * based on JESD216 SFDP standard.
-> >> + * spi_nor_no_sfdp_init_params() - Initialize the flash's parameters and
-> >> + * settings based on nor->info->sfdp_flags. This method should be called only by
-> >> + * flashes that do not define SFDP tables. If the flash supports SFDP but the
-> >> + * information is wrong and the settings from this function can not be retrieved
-> >> + * by parsing SFDP, one should instead use the fixup hooks and update the wrong
-> > 
-> > s/fixup hooks/fixup flags/ ?
+On Mon, 6 Dec 2021 08:04:09 +0100, Christoph Hellwig wrote:
+> mtdblock / mtdblock_ro set part_bits to 0 and thus nevever scanned
+> partitions.  Restore that behavior by setting the GENHD_FL_NO_PART flag.
 > 
-> fixup hooks is fine if we want to fix a wrong SFDP table.
-> fixup flags for settings that are not SFDP discoverable, i.e. where the table
-> is missing.
-
-Ok.
-
 > 
-> 3/ FIXUP_FLAGS: flags that indicate support that can be discovered
->    via SFDP ideally, but can not be discovered for this particular flash
->    because the SFDP table that indicates this support is not defined by
->    the flash. In case the table for this support is defined but has wrong
->    values, one should instead use a post_sfdp() hook to set the SNOR_F
->    equivalent flag.
-> > 
-> >> + * bits.
-> >>   * @nor:     pointer to a 'struct spi_nor'.
-> >> - *
-> >> - * The method has a roll-back mechanism: in case the SFDP parsing fails, the
-> >> - * legacy flash parameters and settings will be restored.
-> >>   */
-> >> -static void spi_nor_sfdp_init_params(struct spi_nor *nor)
-> >> -{
-> >> -     struct spi_nor_flash_parameter sfdp_params;
-> >> -
-> >> -     memcpy(&sfdp_params, nor->params, sizeof(sfdp_params));
-> >> -
-> >> -     if (spi_nor_parse_sfdp(nor)) {
-> >> -             memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
-> >> -             nor->addr_width = 0;
-> >> -             nor->flags &= ~SNOR_F_4B_OPCODES;
-> >> -     }
-> >> -}
-> > [...]
-> >> +
-> >> +/**
-> >> + * spi_nor_init_params_deprecated() - Deprecated way of initializing flash
-> >> + * parameters and settings.
-> >> + * @nor:     pointer to a 'struct spi_nor'.
-> >> + *
-> >> + * The method assumes that flash doesn't support SFDP so it initializes flash
-> >> + * parameters in spi_nor_no_sfdp_init_params() which later on can be overwritten
-> >> + * when parsing SFDP, if supported.
-> >> + */
-> >> +static void spi_nor_init_params_deprecated(struct spi_nor *nor)
-> >> +{
-> >> +     spi_nor_no_sfdp_init_params(nor);
-> >> +
-> >> +     spi_nor_manufacturer_init_params(nor);
-> >> +
-> >> +     if ((SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_OCTAL_READ |
-> >> +          SPI_NOR_OCTAL_DTR_READ) &&
-> >> +         !(nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP))
-> >> +             spi_nor_sfdp_init_params_deprecated(nor);
-> >> +}
-> >> +
-> > [...]
-> >> @@ -2773,24 +2807,28 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
-> >>   * parameters that are not declared in the JESD216 SFDP standard, or where SFDP
-> >>   * tables are not defined at all.
-> >>   *           spi_nor_late_init_params()
-> >> + *
-> >> + * Return: 0 on success, -errno otherwise.
-> >>   */
-> >>  static int spi_nor_init_params(struct spi_nor *nor)
-> >>  {
-> >> +     int ret;
-> >> +
-> >>       nor->params = devm_kzalloc(nor->dev, sizeof(*nor->params), GFP_KERNEL);
-> >>       if (!nor->params)
-> >>               return -ENOMEM;
-> >>
-> >> -     spi_nor_info_init_params(nor);
-> >> -
-> >> -     spi_nor_manufacturer_init_params(nor);
-> >> +     spi_nor_init_default_params(nor);
-> >>
-> >> -     if ((nor->info->parse_sfdp ||
-> >> -          (nor->info->no_sfdp_flags & (SPI_NOR_DUAL_READ |
-> >> -                                       SPI_NOR_QUAD_READ |
-> >> -                                       SPI_NOR_OCTAL_READ |
-> >> -                                       SPI_NOR_OCTAL_DTR_READ))) &&
-> >> -         !(nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP))
-> >> -             spi_nor_sfdp_init_params(nor);
-> >> +     if (nor->info->parse_sfdp) {
-> >> +             ret = spi_nor_parse_sfdp(nor);
-> >> +             if (ret) {
-> >> +                     dev_err(nor->dev, "BFPT parsing failed. Please consider using SPI_NOR_SKIP_SFDP when declaring the flash\n");
-> >> +                     return ret;
-> >> +             }
-> >> +     } else {
-> >> +             spi_nor_init_params_deprecated(nor);
-> > 
-> > Hmm, a flash without SFDP would always go via the "deprecated" path even
-> > if it is a new entry. It makes no difference in practice, but is just
-> > slightly confusing logically. Can we make this a bit clearer? How about
-> > this:
-> > 
-> >   if (nor->info->parse_sfdp) {
-> >         ...
-> >   } else if (nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP) {
-> >         spi_nor_no_sfdp_init_params();
-> >         spi_nor_manufacturer_init_params();
-> >   } else {
-> >         spi_nor_init_params_deprecated();
-> >   }
-> > 
-> >> +     }
-> 
-> Ok, will do. Can I add your R-b tag on a local v6 with this change that you
-> proposed? It will spare me of sending v6.
 
-Sure, go ahead.
+Applied, thanks!
 
+[1/1] mtd_blkdevs: don't scan partitions for plain mtdblock
+      commit: 776b54e97a7d993ba23696e032426d5dea5bbe70
+
+Best regards,
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Jens Axboe
+
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
