@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52BE2C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61475C433FE
 	for <linux-mtd@archiver.kernel.org>; Mon,  6 Dec 2021 10:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XtURfALEmNP4K5mLqwftIvjRTTTYX1bjZGzyGQZKc84=; b=lwNoHSN1E3LN58
-	7blKGd/piU5kg4Hlqu5nvREl0fIt4sEfsFxWmP0nUoDeIK6Uxog6MMniSFtfAKZpQpM9bQgwR5k6U
-	9XhxjVlmVOngY17HMv8vZxUx0XBxP1o63sS8HnzfBjC0H2r58oF72EJohKDKNTBEBRrxzkuA9UWeE
-	aSuIQd0bLi+VSTkHN5Xt+3ILmGA+p2TmfhyLSYMXXHwDGjC6MHkxkOpf6eQD/c85MeXG1t4TLfn2t
-	eqhjW7fQOevEQYm+H/7+2Z+3+GOrsFYb4TWfsnXyKyv1kBntCfF5zlT3M5OVEaMjmjPa51r53PfLR
-	uqnDegyLVQ7DiwAdqzlA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Z4NgDIqRKEo2+dKCgIrbM4bKf0UXvniGNxS0ByjzjbY=; b=bHhPjGBCw2KaLZ
+	nq6/wCvvb7uTpSH4tDS0isPxiAbAOMc85RHVN8MBEOSE2cqncvlZ0KSmCNCieIF3v3q5UqliayqZ2
+	D83Vno6PHJ7TkyUhMeYoffG653JxQXlsLbXxxBPJPgC0DNp6H6OJGiQTwWdukkr1UtZO3XP0iWTrH
+	K9jwUKVSHXyi4kiIpwGi1MQdVjSwckMnHjqicaNuCilUO0pfODRueNXr0howE0zKFBzlW06Cacz+6
+	Ydnns0rFD8VEfV4RecC//iSFHWtml7SV7bL5AKgnaApl0JJajWKT13lZtWEaKRT7CPKWqQgHr5EyA
+	0gL5SxB9shvV3wJhIUfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muAmS-003Ebb-2a; Mon, 06 Dec 2021 09:59:32 +0000
+	id 1muAmf-003Eej-3P; Mon, 06 Dec 2021 09:59:45 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muAmO-003EZD-4y
- for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 09:59:29 +0000
+ id 1muAmO-003EZh-V9
+ for linux-mtd@lists.infradead.org; Mon, 06 Dec 2021 09:59:30 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 54C5C24000A;
- Mon,  6 Dec 2021 09:59:22 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 7FF7324000B;
+ Mon,  6 Dec 2021 09:59:25 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -36,16 +36,18 @@ To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  <linux-spi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
  <devicetree@vger.kernel.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Michal Simek <monstr@monstr.eu>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 0/3] Stacked/parallel memories bindings
-Date: Mon,  6 Dec 2021 10:59:18 +0100
-Message-Id: <20211206095921.33302-1-miquel.raynal@bootlin.com>
+ Michal Simek <monstr@monstr.eu>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 1/3] dt-bindings: mtd: spi-nor: Allow two CS per device
+Date: Mon,  6 Dec 2021 10:59:19 +0100
+Message-Id: <20211206095921.33302-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211206095921.33302-1-miquel.raynal@bootlin.com>
+References: <20211206095921.33302-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211206_015928_383650_3957EDD3 
-X-CRM114-Status: UNSURE (   8.52  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211206_015929_162529_6B773565 
+X-CRM114-Status: GOOD (  12.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -57,37 +59,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gUm9iLCBNYXJrLCBUdWRvciAmIFByYXR5dXNoLAoKSGVyZSBpcyBhIHRoaXJkIHZlcnNp
-b25zIGZvciB0aGVzZSBiaW5kaW5ncywgd2hpY2ggYXBwbGllcyBvbiB0b3Agb2YKUHJhdHl1c2gn
-cyB3b3JrOgpodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMTExMDkxODE5MTEuMjI1MS0x
-LXAueWFkYXZAdGkuY29tLwoKQ2hlZXJzLApNaXF1w6hsCgpDaGFuZ2VzIGluIHYzOgoqIFJlYmFz
-ZWQgb24gdG9wIG9mIFByYXR5dXNoJ3MgcmVjZW50IGNoYW5nZXMuCiogRHJvcHBlZCB0aGUgY29t
-bWl0IGFsbG93aW5nIHRvIHByb3ZpZGUgdHdvIHJlZyBlbnRyaWVzIG9uIHRoZSBub2RlCiAgbmFt
-ZS4KKiBEcm9wcGVkIHRoZSBjb21taXQgcmVmZXJlbmNpbmcgc3BpLWNvbnRyb2xsZXIueWFtbCBm
-cm9tCiAgamVkZWMsc3BpLW5vci55YW1sLCBub3cgcmVwbGFjZWQgYnkgc3BpLXBlcmlwaGVyYWwt
-cHJvcHMueWFtbCBhbmQKICBhbHJlYWR5IGRvbmUgaW4gUHJhdHl1c2gncyBzZXJpZXMuCiogQWRk
-ZWQgUm9iJ3MgQWNrLgoqIEVuaGFuY2VkIGEgY29tbWl0IG1lc3NhZ2UuCiogTW92ZWQgdGhlIG5l
-dyBwcm9wZXJ0aWVzIHRvIHRoZSBuZXcgU1BJIHBlcmlwaGVyYWwgYmluZGluZyBmaWxlLgoKQ2hh
-bmdlcyBpbiB2MjoKKiBEcm9wcGVkIHRoZSBkdGMgY2hhbmdlcyBmb3Igbm93LgoqIE1vdmVkIHRo
-ZSBwcm9wZXJ0aWVzIGluIHRoZSBkZXZpY2UncyBub2Rlcywgbm90IHRoZSBjb250cm9sbGVyJ3Mu
-CiogRHJvcHBlZCB0aGUgdXNlbGVzcyAjYWRkcmVzcy1jZWxscyBjaGFuZ2UuCiogQWRkZWQgYSBt
-aXNzaW5nICJtaW5JdGVtcyIuCiogTW92ZWQgdGhlIG5ldyBwcm9wZXJ0aWVzIGluIHRoZSBzcGkt
-Y29udHJvbGxlci55YW1sIGZpbGUuCiogQWRkZWQgYW4gZXhhbXBsZSB1c2luZyB0d28gc3RhY2tl
-ZCBtZW1vcmllcyBpbiB0aGUKICBzcGktY29udHJvbGxlci55YW1sIGZpbGUuCiogUmVuYW1lZCB0
-aGUgcHJvcGVydGllcyB0byBkcm9wIHRoZSBYaWxpbnggcHJlZml4LgoqIEFkZGVkIGEgcGF0Y2gg
-dG8gZml4IHRoZSBzcGktbm9yIGplZGVjIHlhbWwgZmlsZS4KCk1pcXVlbCBSYXluYWwgKDMpOgog
-IGR0LWJpbmRpbmdzOiBtdGQ6IHNwaS1ub3I6IEFsbG93IHR3byBDUyBwZXIgZGV2aWNlCiAgc3Bp
-OiBkdC1iaW5kaW5nczogRGVzY3JpYmUgc3RhY2tlZC9wYXJhbGxlbCBtZW1vcmllcyBtb2Rlcwog
-IHNwaTogZHQtYmluZGluZ3M6IEFkZCBhbiBleGFtcGxlIHdpdGggdHdvIHN0YWNrZWQgZmxhc2hl
-cwoKIC4uLi9iaW5kaW5ncy9tdGQvamVkZWMsc3BpLW5vci55YW1sICAgICAgICAgICB8ICAzICsr
-LQogLi4uL2JpbmRpbmdzL3NwaS9zcGktY29udHJvbGxlci55YW1sICAgICAgICAgIHwgIDcgKysr
-KysrKwogLi4uL2JpbmRpbmdzL3NwaS9zcGktcGVyaXBoZXJhbC1wcm9wcy55YW1sICAgIHwgMjEg
-KysrKysrKysrKysrKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCAzMCBpbnNlcnRpb25zKCspLCAx
-IGRlbGV0aW9uKC0pCgotLSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
-dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+The Xilinx QSPI controller has two advanced modes which allow the
+controller to behave differently and consider two flashes as one single
+storage.
+
+One of these two modes is quite complex to support from a binding point
+of view and is the dual parallel memories. In this mode, each byte of
+data is stored in both devices: the even bits in one, the odd bits in
+the other. The split is automatically handled by the QSPI controller and
+is transparent for the user.
+
+The other mode is simpler to support, it is called dual stacked
+memories. The controller shares the same SPI bus but each of the devices
+contain half of the data. Once in this mode, the controller does not
+follow CS requests but instead internally wires the two CS levels with
+the value of the most significant address bit.
+
+Supporting these two modes will involve core changes which include the
+possibility of providing two CS for a single SPI device
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 39421f7233e4..4abfb4cfc157 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -47,7 +47,8 @@ properties:
+       identified by the JEDEC READ ID opcode (0x9F).
+ 
+   reg:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 2
+ 
+   spi-max-frequency: true
+   spi-rx-bus-width: true
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
