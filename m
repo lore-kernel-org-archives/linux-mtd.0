@@ -4,55 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D02EC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 10:54:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B99A7C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 12:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NP6jSZqKrIcP/J8n9FZXX73cX5+OzrBivvykh6/iFNQ=; b=K7fhRlP7s0CeiF
-	dZgI3v7SNIJ3qRHCgKr83vWz0hGmEHbPtczPSEb3C6jbGuyN42P4VyfNPnzPyEKsQRGqfcTX/Bt03
-	Ge5UIESBINe0Gz1BMyCQuK4wm5HBFtH6S1umYQSrSkB2bDa6tmJea2vW7hX7hJQ8ckw2kSAgvLjt/
-	0n9xsGzA0Of53/+Ny65P7YlLj0iyRFjJGgcQNqUrHEHsbaBEbdk/gsqIMuOFkxwdg7vbCvC0XH/AF
-	tJy0RTZCm+YwWMPArvM9iY1M4qyx5KzC42DMQ0o+XeG6/4X3uvg5MnRBtmQDcoJuw+17bnqtOPZji
-	g89IlZyREstU5/zKGl9A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=c56UO64U3J5V6syIu8FvDd649pUu7hxf/T9X09W1TzI=; b=iOAFtt7MDxXnwkVfKQoADJFdZ2
+	GaGjoXZ7vRZobonBiNdRgOZqqmJhpvHG5+ST4frdtHpNgVDfmi5vKQNpk/3FeJOY3FEXJUuW7MyQ7
+	yVKg+DOJ+pbQibtCAECpaM7UtI4JVXf+r/OGUVGJPwvxKlpKdhCJAoqsg4vjKQfEn5VNLLqcQC1tZ
+	ZvI0uwviC8d5gVSB/WGIfy89sXGjI1dQVL1bPm2ZHq7+wJMsALiMnreBrKGM2JKkRna7MHxYfSuKE
+	Jiyd6E4W6NTQSo38DyuAC3xdcO+/sCSVw0RLwpp0nlYeZZmiN3dwClwtjP3v3fwSxBNnbpBGOrlEH
+	ssnASf3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muY6R-008BO4-94; Tue, 07 Dec 2021 10:53:43 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1muZuS-008WyI-Lj; Tue, 07 Dec 2021 12:49:28 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muY6M-008BJJ-3S
- for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 10:53:39 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id F1644FF807;
- Tue,  7 Dec 2021 10:53:32 +0000 (UTC)
-Date: Tue, 7 Dec 2021 11:53:32 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
- Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <devicetree@vger.kernel.org>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Xiangsheng Hou
- <Xiangsheng.Hou@mediatek.com>, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
- <jaimeliao@mxic.com.tw>
-Subject: Re: [PATCH v3 17/22] mtd: spinand: Create direct mapping
- descriptors for ECC operations
-Message-ID: <20211207115332.09cab65f@xps13>
-In-Reply-To: <20211207104627.7bbad94d@collabora.com>
-References: <20211207093422.166934-1-miquel.raynal@bootlin.com>
- <20211207093422.166934-18-miquel.raynal@bootlin.com>
- <20211207104627.7bbad94d@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1muZt0-008WIE-VG
+ for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 12:48:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 702AACE1A7B;
+ Tue,  7 Dec 2021 12:47:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9956CC341C6;
+ Tue,  7 Dec 2021 12:47:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638881274;
+ bh=FipYZVN6opgkJyf2yaMQFgLB9XPA2FAttOydyqD8x6o=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=rkUyLQgyfaB3QXijxmpvfxVS5a/eWaNbeLldZ2j1nRN864yONm0UI/3oxNKEk0VlC
+ Uk1i2rKW0iCacDZzP988P25tDjZEn77aLOdhqNn5am+0+CnMHQzFdcrPiGYYvuoz5i
+ elhJQdprxinIKIE7VlIHuEcP50n9TBYYkbWJfynGiHrC5fgQaEDeKPu8tHs1TdWbzx
+ frVVdOLDtfDnvO4RVv7UBL/tkuvnR3hqfX5qc2lXF0KOa62soWajTQN+9mx+sJ5eNz
+ dRvxLTOVYu/FzsMyOdYmu7xGiiWl8tXPgORf8sfFWb470eTP8yxb4+Vs7mSNAAjgfa
+ UthZ820cAgmWg==
+Subject: Re: [PATCH] dt-bindings: mtd: ti,gpmc-nand: Add missing 'rb-gpios'
+To: Rob Herring <robh@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tony Lindgren <tony@atomide.com>
+Cc: devicetree@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211206174209.2297565-1-robh@kernel.org>
+From: Roger Quadros <rogerq@kernel.org>
+Message-ID: <e3eb7ba9-d333-31ed-285f-ef528ff0aa09@kernel.org>
+Date: Tue, 7 Dec 2021 14:47:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211206174209.2297565-1-robh@kernel.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_025338_322006_E33232C5 
-X-CRM114-Status: GOOD (  20.50  )
+X-CRM114-CacheID: sfid-20211207_044759_274265_2428B7D8 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,41 +72,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBUdWUsIDcg
-RGVjIDIwMjEgMTA6NDY6MjcgKzAxMDA6Cgo+IE9uIFR1ZSwgIDcgRGVjIDIwMjEgMTA6MzQ6MTcg
-KzAxMDAKPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZToK
-PiAKPiA+ICAvKioKPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmgg
-Yi9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmgKPiA+IGluZGV4IDg1ZTJmZjdiODQwZC4uM2Jl
-NTk0YmUyNGMwIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9zcGkvc3BpLW1lbS5oCj4g
-PiArKysgYi9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmgKPiA+IEBAIC05NCw2ICs5NCw3IEBA
-IGVudW0gc3BpX21lbV9kYXRhX2RpciB7Cj4gPiAgICoJCSBvcGVyYXRpb24gZG9lcyBub3QgaW52
-b2x2ZSB0cmFuc2ZlcnJpbmcgZGF0YQo+ID4gICAqIEBkYXRhLmJ1Zi5pbjogaW5wdXQgYnVmZmVy
-IChtdXN0IGJlIERNQS1hYmxlKQo+ID4gICAqIEBkYXRhLmJ1Zi5vdXQ6IG91dHB1dCBidWZmZXIg
-KG11c3QgYmUgRE1BLWFibGUpCj4gPiArICogQGVjY19lbjogZXJyb3IgY29ycmVjdGlvbiBpcyBy
-ZXF1aXJlZAo+ID4gICAqLwo+ID4gIHN0cnVjdCBzcGlfbWVtX29wIHsKPiA+ICAJc3RydWN0IHsK
-PiA+IEBAIC0xMjYsNiArMTI3LDggQEAgc3RydWN0IHNwaV9tZW1fb3Agewo+ID4gIAkJCWNvbnN0
-IHZvaWQgKm91dDsKPiA+ICAJCX0gYnVmOwo+ID4gIAl9IGRhdGE7Cj4gPiArCj4gPiArCWJvb2wg
-ZWNjX2VuOwo+ID4gIH07ICAKPiAKPiBJIHJlYWxseSB0aGluayB0aGlzIHNob3VsZCBiZSBpbiBp
-dCdzIG93biBjb21taXQuCgpPaCBjcmFwLCBJIGZvcmdvdCBhYm91dCB0aGF0LgoKPiBBbmQgeW91
-IG5lZWQgdG8gbWFrZQo+IHN1cmUgYWxsIGV4aXN0aW5nIGRyaXZlcnMgcmVqZWN0IG9wZXJhdGlv
-biB0aGF0IGhhdmUgZWNjX2VuIHNldCB0bwo+IHRydWUgKHRoYXQgc2hvdWxkbid0IGJlIHRvbyBj
-b21wbGljYXRlZCBzaW5jZSBtb3N0IG9mIHRoZW0gdXNlIGdlbmVyaWMKPiBoZWxwZXJzIHRvIGRv
-IHRoZSBjaGVjaykuCgpZZXMsIEkgY2FuIGFkZCB0aGlzIGNoZWNrIGFzIHdlbGwuCgpJIHdpbGwg
-cHJvcG9zZSBhIGZpcnN0IHBhdGNoIGNyZWF0aW5nIGEgc3BpLW1lbSBoZWxwZXIgdG8gZG8gZ2Vu
-ZXJpYwpjaGVja3MsIGdpdmVuIGEgbnVtYmVyIG9mIGFkZGl0aW9uYWwgcGFyYW1ldGVycyAoZHRy
-LCBlY2MpLiBUaGUgY3VycmVudApoZWxwZXJzIHdpbGwgY2FsbCB0aGlzIGdlbmVyaWMgZnVuY3Rp
-b24gZGVwZW5kaW5nIG9uIHdoYXQgdGhleSBjaGVjawooc3VwcG9ydCBmb3IgZHRyIG9yIG5vdCku
-IFRoZW4gSSB3aWxsIGV4cG9ydCB0aGlzIGdlbmVyaWMgaGVscGVyIGFuZApsZXQgdGhlIGRyaXZl
-cnMgdXNlIGl0IGRpcmVjdGx5IGlmIG5lZWRlZCwgaW4gb3JkZXIgdG8gYXZvaWQgdGhlCmV4cGxv
-c2lvbiBvZiBoZWxwZXJzIGluIHRoZSBjb3JlIHRvIGNoZWNrIGFsbCB0aGUgcG9zc2libGUgY29t
-YmluYXRpb25zLgoKSSdsbCBjZXJ0YWlubHkgcHJvcG9zZSBhIHY0IGp1c3Qgd2l0aCB0aGVzZSBw
-YXRjaGVzIGFuZCB0aGVuIGFwcGx5IHRoZW0Kd2l0aGluIHRoZSB2MyBpZiBldmVyeW9uZSBhZ3Jl
-ZXMgd2l0aCB0aGUgcmVzdC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1h
-aWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW10ZC8K
+
+
+On 06/12/2021 19:42, Rob Herring wrote:
+> With 'unevaluatedProperties' support implemented, the TI GPMC example
+> has a warning:
+> 
+> Documentation/devicetree/bindings/memory-controllers/ti,gpmc.example.dt.yaml: nand@0,0: Unevaluated properties are not allowed ('rb-gpios' was unexpected)
+> 
+> Add the missing definition for 'rb-gpios'.
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Roger Quadros <rogerq@kernel.org>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Reviewed-by: Roger Quadros <rogerq@kernel.org>
+
+> ---
+>  Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
