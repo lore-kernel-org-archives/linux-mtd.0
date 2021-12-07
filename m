@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 641A4C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 09:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13913C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 09:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4MzR1YkAdJuKyd+v7vH8xgav1i3ge+kwrr5grOmlhCw=; b=SE9/5YJoOQtm02
-	kkFS96JFHWFHTsf3dxTIyaghVFKISCI4KHRBw3rx9CH+L3SYU8NHXoFJgPJLfSnBD65Y52RsBNNzq
-	TIPNal0kg0JmI0JSUnk8jh1Aw4/9njxl5vIVizutY3uquDJ0rORebCLyvS/+UVE2HBstL7i4Z+wfm
-	cNnG0SQPIky/X1SxnApFsJ7xtaisxuBS/aH0d7YgOfDjrp57eY11+REKyMIBC1PnKIYekNUqchhiY
-	8vdRBbqvuId6TKWPNWxoPQc2VbCGPzsZUy6u+JFigr+6+j/+975e89EJOmmCuW7Ff+9a+qjFC9Vsf
-	N935vh4+OxjnCf+TBXNw==;
+	List-Owner; bh=zRfYWGu4dADH9vyiObhywga69iMIIfFZ72Hw7DYXU0c=; b=FzE/9aOh7r8VQr
+	9WWjGLzyE0s9abBHJmzrmqxGQcyv0FMzgRdY/wdEKq708bnzlrLldW5ERcKCg3pyjO3itt1YAFogn
+	bM3swbHZnscAEb6ekFtE0ZcCoHyJmKYl3Q2bFyw3y9drrRzx2SeU7mpCyJI+zJKXZxA2xes7xjQSZ
+	p7ENpGopf5L1M6dPGYFp7f6ZCe8ewbZnvC5n6yg7t/S+c6Nhn2AKKcxf/NEk+0YGDigqTOMMNGvo0
+	bjgazkdclAp3UQolLY3/Co//Ij/MOb8+0N2oUlRpcJn1nz9PpUu/t7AVWRo4Cn7iHl6BjdxpVY5ZX
+	YEOol80YMYxLEE0JgUgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muX2v-007ry8-HH; Tue, 07 Dec 2021 09:46:01 +0000
+	id 1muX4r-007sQc-9K; Tue, 07 Dec 2021 09:48:01 +0000
 Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muWs4-007ozY-Th
- for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:34:54 +0000
+ id 1muWs0-007oxB-Ff
+ for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:34:53 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 36BC260020;
- Tue,  7 Dec 2021 09:34:46 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id B544B60009;
+ Tue,  7 Dec 2021 09:34:41 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -40,16 +40,17 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 15/22] mtd: nand: mxic-ecc: Support SPI pipelined mode
-Date: Tue,  7 Dec 2021 10:34:15 +0100
-Message-Id: <20211207093422.166934-16-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 12/22] mtd: nand: ecc: Add infrastructure to support
+ hardware engines
+Date: Tue,  7 Dec 2021 10:34:12 +0100
+Message-Id: <20211207093422.166934-13-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 References: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_013449_264048_0C345649 
-X-CRM114-Status: GOOD (  30.10  )
+X-CRM114-CacheID: sfid-20211207_013444_821851_0D14EBC9 
+X-CRM114-Status: GOOD (  20.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,196 +62,228 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SW50cm9kdWNlIHRoZSBzdXBwb3J0IGZvciBhbm90aGVyIHBvc3NpYmxlIGNvbmZpZ3VyYXRpb246
-IHRoZSBFQ0MKZW5naW5lIG1heSB3b3JrIGFzIERNQSBtYXN0ZXIgKHBpcGVsaW5lZCkgYW5kIG1v
-dmUgaXRzZWxmIHRoZSBkYXRhCnRvL2Zyb20gdGhlIE5BTkQgY2hpcCBpbnRvIHRoZSBidWZmZXIs
-IGFwcGx5aW5nIHRoZSBuZWNlc3NhcnkKY29ycmVjdGlvbnMvY29tcHV0YXRpb25zIG9uIHRoZSBm
-bHkuCgpUaGlzIGRyaXZlciBvZmZlcnMgYW4gRUNDIGVuZ2luZSBpbXBsZW1lbnRhdGlvbiB0aGF0
-IG11c3QgYmUKaW5zdGF0aWF0ZWQgZnJvbSBhIFNQSSBjb250cm9sbGVyIGRyaXZlci4KClNpZ25l
-ZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+Ci0tLQog
-ZHJpdmVycy9tdGQvbmFuZC9lY2MtbXhpYy5jICAgICAgIHwgMjEwICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrLQogaW5jbHVkZS9saW51eC9tdGQvbmFuZC1lY2MtbXhpYy5oIHwgIDQ5ICsr
-KysrKysKIDIgZmlsZXMgY2hhbmdlZCwgMjU4IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkK
-IGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLWVjYy1teGljLmgKCmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2VjYy1teGljLmMgYi9kcml2ZXJzL210ZC9uYW5k
-L2VjYy1teGljLmMKaW5kZXggZWE4OGE0MTFlZDcwLi44ZWFjZGRmYThhYzYgMTAwNjQ0Ci0tLSBh
-L2RyaXZlcnMvbXRkL25hbmQvZWNjLW14aWMuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL2VjYy1t
-eGljLmMKQEAgLTE2LDYgKzE2LDcgQEAKICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KICNpbmNs
-dWRlIDxsaW51eC9tdGQvbXRkLmg+CiAjaW5jbHVkZSA8bGludXgvbXRkL25hbmQuaD4KKyNpbmNs
-dWRlIDxsaW51eC9tdGQvbmFuZC1lY2MtbXhpYy5oPgogI2luY2x1ZGUgPGxpbnV4L211dGV4Lmg+
-CiAjaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+CiAjaW5jbHVkZSA8bGludXgvb2ZfcGxhdGZv
-cm0uaD4KQEAgLTQwLDcgKzQxLDkgQEAKICNkZWZpbmUgSU5UUlBUX1NJR19FTiAweDBDCiAvKiBI
-b3N0IENvbnRyb2xsZXIgQ29uZmlndXJhdGlvbiAqLwogI2RlZmluZSBIQ19DT05GSUcgMHgxMAor
-I2RlZmluZSAgIERFVjJNRU0gMCAvKiBUUkFOU19UWVBfRE1BIGluIHRoZSBzcGVjICovCiAjZGVm
-aW5lICAgTUVNMk1FTSBCSVQoNCkgLyogVFJBTlNfVFlQX0lPIGluIHRoZSBzcGVjICovCisjZGVm
-aW5lICAgTUFQUElORyBCSVQoNSkgLyogVFJBTlNfVFlQX01BUFBJTkcgaW4gdGhlIHNwZWMgKi8K
-ICNkZWZpbmUgICBFQ0NfUEFDS0VEIDAgLyogTEFZT1VUX1RZUF9JTlRFR1JBVEVEIGluIHRoZSBz
-cGVjICovCiAjZGVmaW5lICAgRUNDX0lOVEVSTEVBVkVEIEJJVCgyKSAvKiBMQVlPVVRfVFlQX0RJ
-U1RSSUJVVEVEIGluIHRoZSBzcGVjICovCiAjZGVmaW5lICAgQlVSU1RfVFlQX0ZJWEVEIDAKQEAg
-LTg3LDYgKzkwLDcgQEAgc3RydWN0IG14aWNfZWNjX2VuZ2luZSB7CiAJaW50IGlycTsKIAlzdHJ1
-Y3QgY29tcGxldGlvbiBjb21wbGV0ZTsKIAlzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lIGV4dGVybmFs
-X2VuZ2luZTsKKwlzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lIHBpcGVsaW5lZF9lbmdpbmU7CiAJc3Ry
-dWN0IG11dGV4IGxvY2s7CiB9OwogCkBAIC0xMDQsNiArMTA4LDcgQEAgc3RydWN0IG14aWNfZWNj
-X2N0eCB7CiAJdTggKm9vYndpdGhzdGF0OwogCXN0cnVjdCBzY2F0dGVybGlzdCBzZ1syXTsKIAlz
-dHJ1Y3QgbmFuZF9wYWdlX2lvX3JlcSAqcmVxOworCXVuc2lnbmVkIGludCBwYWdlb2ZmczsKIH07
-CiAKIHN0YXRpYyBzdHJ1Y3QgbXhpY19lY2NfZW5naW5lICpleHRfZWNjX2VuZ190b19teGljKHN0
-cnVjdCBuYW5kX2VjY19lbmdpbmUgKmVuZykKQEAgLTExMSwxMSArMTE2LDE5IEBAIHN0YXRpYyBz
-dHJ1Y3QgbXhpY19lY2NfZW5naW5lICpleHRfZWNjX2VuZ190b19teGljKHN0cnVjdCBuYW5kX2Vj
-Y19lbmdpbmUgKmVuZykKIAlyZXR1cm4gY29udGFpbmVyX29mKGVuZywgc3RydWN0IG14aWNfZWNj
-X2VuZ2luZSwgZXh0ZXJuYWxfZW5naW5lKTsKIH0KIAorc3RhdGljIHN0cnVjdCBteGljX2VjY19l
-bmdpbmUgKnBpcF9lY2NfZW5nX3RvX214aWMoc3RydWN0IG5hbmRfZWNjX2VuZ2luZSAqZW5nKQor
-eworCXJldHVybiBjb250YWluZXJfb2YoZW5nLCBzdHJ1Y3QgbXhpY19lY2NfZW5naW5lLCBwaXBl
-bGluZWRfZW5naW5lKTsKK30KKwogc3RhdGljIHN0cnVjdCBteGljX2VjY19lbmdpbmUgKm5hbmRf
-dG9fbXhpYyhzdHJ1Y3QgbmFuZF9kZXZpY2UgKm5hbmQpCiB7CiAJc3RydWN0IG5hbmRfZWNjX2Vu
-Z2luZSAqZW5nID0gbmFuZC0+ZWNjLmVuZ2luZTsKIAotCXJldHVybiBleHRfZWNjX2VuZ190b19t
-eGljKGVuZyk7CisJaWYgKGVuZy0+aW50ZWdyYXRpb24gPT0gTkFORF9FQ0NfRU5HSU5FX0lOVEVH
-UkFUSU9OX0VYVEVSTkFMKQorCQlyZXR1cm4gZXh0X2VjY19lbmdfdG9fbXhpYyhlbmcpOworCWVs
-c2UKKwkJcmV0dXJuIHBpcF9lY2NfZW5nX3RvX214aWMoZW5nKTsKIH0KIAogc3RhdGljIGludCBt
-eGljX2VjY19vb2JsYXlvdXRfZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc2VjdGlvbiwK
-QEAgLTIwMyw2ICsyMTYsMzEgQEAgc3RhdGljIGlycXJldHVybl90IG14aWNfZWNjX2lzcihpbnQg
-aXJxLCB2b2lkICpkZXZfaWQpCiAJcmV0dXJuIElSUV9IQU5ETEVEOwogfQogCitzdGF0aWMgc3Ry
-dWN0IGRldmljZSAqbXhpY19lY2NfZ2V0X2VuZ2luZV9kZXYoc3RydWN0IGRldmljZSAqZGV2KQor
-eworCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKmVjY3BkZXY7CisJc3RydWN0IGRldmljZV9ub2Rl
-ICpucDsKKworCS8qCisJICogSWYgdGhlIGRldmljZSBub2RlIGNvbnRhaW5zIHRoaXMgcHJvcGVy
-dHksIGl0IG1lYW5zIHRoZSBkZXZpY2UgZG9lcworCSAqIG5vdCByZXByZXNlbnQgdGhlIGFjdHVh
-bCBFQ0MgZW5naW5lLgorCSAqLworCW5wID0gb2ZfcGFyc2VfcGhhbmRsZShkZXYtPm9mX25vZGUs
-ICJuYW5kLWVjYy1lbmdpbmUiLCAwKTsKKwlpZiAoIW5wKQorCQlyZXR1cm4gZGV2OworCisJZWNj
-cGRldiA9IG9mX2ZpbmRfZGV2aWNlX2J5X25vZGUobnApOworCWlmICghZWNjcGRldikgeworCQlv
-Zl9ub2RlX3B1dChucCk7CisJCXJldHVybiBOVUxMOworCX0KKworCXBsYXRmb3JtX2RldmljZV9w
-dXQoZWNjcGRldik7CisJb2Zfbm9kZV9wdXQobnApOworCisJcmV0dXJuICZlY2NwZGV2LT5kZXY7
-Cit9CisKIHN0YXRpYyBpbnQgbXhpY19lY2NfaW5pdF9jdHgoc3RydWN0IG5hbmRfZGV2aWNlICpu
-YW5kLCBzdHJ1Y3QgZGV2aWNlICpkZXYpCiB7CiAJc3RydWN0IG14aWNfZWNjX2VuZ2luZSAqbXhp
-YyA9IG5hbmRfdG9fbXhpYyhuYW5kKTsKQEAgLTM2NCw2ICs0MDIsNDIgQEAgc3RhdGljIGludCBt
-eGljX2VjY19pbml0X2N0eF9leHRlcm5hbChzdHJ1Y3QgbmFuZF9kZXZpY2UgKm5hbmQpCiAJcmV0
-dXJuIDA7CiB9CiAKK3N0YXRpYyBpbnQgbXhpY19lY2NfaW5pdF9jdHhfcGlwZWxpbmVkKHN0cnVj
-dCBuYW5kX2RldmljZSAqbmFuZCkKK3sKKwlzdHJ1Y3QgbXhpY19lY2NfZW5naW5lICpteGljID0g
-bmFuZF90b19teGljKG5hbmQpOworCXN0cnVjdCBteGljX2VjY19jdHggKmN0eDsKKwlzdHJ1Y3Qg
-ZGV2aWNlICpkZXY7CisJaW50IHJldDsKKworCS8qCisJICogSW4gdGhlIGNhc2Ugb2YgYSBwaXBl
-bGluZWQgZW5naW5lLCB0aGUgZGV2aWNlIHJlZ2lzdGVyaW5nIHRoZSBFQ0MKKwkgKiBlbmdpbmUg
-aXMgbm90IHRoZSBhY3R1YWwgRUNDIGVuZ2luZSBkZXZpY2UgYnV0IHRoZSBob3N0IGNvbnRyb2xs
-ZXIuCisJICovCisJZGV2ID0gbXhpY19lY2NfZ2V0X2VuZ2luZV9kZXYobmFuZC0+ZWNjLmVuZ2lu
-ZS0+ZGV2KTsKKwlpZiAoIWRldikKKwkJcmV0dXJuIC1FSU5WQUw7CisKKwlkZXZfaW5mbyhkZXYs
-ICJNYWNyb25peCBFQ0MgZW5naW5lIGluIHBpcGVsaW5lZC9tYXBwaW5nIG1vZGVcbiIpOworCisJ
-cmV0ID0gbXhpY19lY2NfaW5pdF9jdHgobmFuZCwgZGV2KTsKKwlpZiAocmV0KQorCQlyZXR1cm4g
-cmV0OworCisJY3R4ID0gbmFuZF90b19lY2NfY3R4KG5hbmQpOworCisJLyogQWxsIHN0ZXBzIHNo
-b3VsZCBiZSBoYW5kbGVkIGluIG9uZSBnbyBkaXJlY3RseSBieSB0aGUgaW50ZXJuYWwgRE1BICov
-CisJd3JpdGVsKGN0eC0+c3RlcHMsIG14aWMtPnJlZ3MgKyBDSFVOS19DTlQpOworCisJLyoKKwkg
-KiBJbnRlcmxlYXZlZCBFQ0Mgc2NoZW1lIGNhbm5vdCBiZSB1c2VkIG90aGVyd2lzZSBmYWN0b3J5
-IGJhZCBibG9jaworCSAqIG1hcmtlcnMgd291bGQgYmUgbG9zdC4gQSBwYWNrZWQgbGF5b3V0IGlz
-IG1hbmRhdG9yeS4KKwkgKi8KKwl3cml0ZWwoQlVSU1RfVFlQX0lOQ1JFQVNJTkcgfCBFQ0NfUEFD
-S0VEIHwgTUFQUElORywKKwkgICAgICAgbXhpYy0+cmVncyArIEhDX0NPTkZJRyk7CisKKwlyZXR1
-cm4gMDsKK30KKwogc3RhdGljIHZvaWQgbXhpY19lY2NfY2xlYW51cF9jdHgoc3RydWN0IG5hbmRf
-ZGV2aWNlICpuYW5kKQogewogCXN0cnVjdCBteGljX2VjY19jdHggKmN0eCA9IG5hbmRfdG9fZWNj
-X2N0eChuYW5kKTsKQEAgLTQxOSw2ICs0OTMsMTggQEAgc3RhdGljIGludCBteGljX2VjY19wcm9j
-ZXNzX2RhdGEoc3RydWN0IG14aWNfZWNjX2VuZ2luZSAqbXhpYywKIAlyZXR1cm4gcmV0OwogfQog
-CitpbnQgbXhpY19lY2NfcHJvY2Vzc19kYXRhX3BpcGVsaW5lZChzdHJ1Y3QgbmFuZF9lY2NfZW5n
-aW5lICplbmcsCisJCQkJICAgIHVuc2lnbmVkIGludCBkaXJlY3Rpb24sIGRtYV9hZGRyX3QgZGly
-bWFwKQoreworCXN0cnVjdCBteGljX2VjY19lbmdpbmUgKm14aWMgPSBwaXBfZWNjX2VuZ190b19t
-eGljKGVuZyk7CisKKwlpZiAoZGlybWFwKQorCQl3cml0ZWwoZGlybWFwLCBteGljLT5yZWdzICsg
-SENfU0xWX0FERFIpOworCisJcmV0dXJuIG14aWNfZWNjX3Byb2Nlc3NfZGF0YShteGljLCBkaXJl
-Y3Rpb24pOworfQorRVhQT1JUX1NZTUJPTF9HUEwobXhpY19lY2NfcHJvY2Vzc19kYXRhX3BpcGVs
-aW5lZCk7CisKIHN0YXRpYyB2b2lkIG14aWNfZWNjX2V4dHJhY3Rfc3RhdHVzX2J5dGVzKHN0cnVj
-dCBteGljX2VjY19jdHggKmN0eCkKIHsKIAl1OCAqYnVmID0gY3R4LT5vb2J3aXRoc3RhdDsKQEAg
-LTU5OCw2ICs2ODQsNjUgQEAgc3RhdGljIGludCBteGljX2VjY19maW5pc2hfaW9fcmVxX2V4dGVy
-bmFsKHN0cnVjdCBuYW5kX2RldmljZSAqbmFuZCwKIAlyZXR1cm4gbXhpY19lY2NfY291bnRfYml0
-ZXJycyhteGljLCBuYW5kKTsKIH0KIAorLyogUGlwZWxpbmVkIEVDQyBlbmdpbmUgaGVscGVycyAq
-Lworc3RhdGljIGludCBteGljX2VjY19wcmVwYXJlX2lvX3JlcV9waXBlbGluZWQoc3RydWN0IG5h
-bmRfZGV2aWNlICpuYW5kLAorCQkJCQkgICAgIHN0cnVjdCBuYW5kX3BhZ2VfaW9fcmVxICpyZXEp
-Cit7CisJc3RydWN0IG14aWNfZWNjX2VuZ2luZSAqbXhpYyA9IG5hbmRfdG9fbXhpYyhuYW5kKTsK
-KwlzdHJ1Y3QgbXhpY19lY2NfY3R4ICpjdHggPSBuYW5kX3RvX2VjY19jdHgobmFuZCk7CisJaW50
-IG5lbnRzOworCisJaWYgKHJlcS0+bW9kZSA9PSBNVERfT1BTX1JBVykKKwkJcmV0dXJuIDA7CisK
-KwluYW5kX2VjY190d2Vha19yZXEoJmN0eC0+cmVxX2N0eCwgcmVxKTsKKwljdHgtPnJlcSA9IHJl
-cTsKKworCS8qIENvcHkgdGhlIE9PQiBidWZmZXIgYW5kIGFkZCByb29tIGZvciB0aGUgRUNDIGVu
-Z2luZSBzdGF0dXMgYnl0ZXMgKi8KKwlteGljX2VjY19hZGRfcm9vbV9pbl9vb2JidWYoY3R4LCBj
-dHgtPm9vYndpdGhzdGF0LCBjdHgtPnJlcS0+b29iYnVmLmluKTsKKworCXNnX3NldF9idWYoJmN0
-eC0+c2dbMF0sIHJlcS0+ZGF0YWJ1Zi5pbiwgcmVxLT5kYXRhbGVuKTsKKwlzZ19zZXRfYnVmKCZj
-dHgtPnNnWzFdLCBjdHgtPm9vYndpdGhzdGF0LAorCQkgICByZXEtPm9vYmxlbiArIChjdHgtPnN0
-ZXBzICogU1RBVF9CWVRFUykpOworCisJbmVudHMgPSBkbWFfbWFwX3NnKG14aWMtPmRldiwgY3R4
-LT5zZywgMiwgRE1BX0JJRElSRUNUSU9OQUwpOworCWlmICghbmVudHMpCisJCXJldHVybiAtRUlO
-VkFMOworCisJbXV0ZXhfbG9jaygmbXhpYy0+bG9jayk7CisKKwl3cml0ZWwoc2dfZG1hX2FkZHJl
-c3MoJmN0eC0+c2dbMF0pLCBteGljLT5yZWdzICsgU0RNQV9NQUlOX0FERFIpOworCXdyaXRlbChz
-Z19kbWFfYWRkcmVzcygmY3R4LT5zZ1sxXSksIG14aWMtPnJlZ3MgKyBTRE1BX1NQQVJFX0FERFIp
-OworCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgbXhpY19lY2NfZmluaXNoX2lvX3JlcV9w
-aXBlbGluZWQoc3RydWN0IG5hbmRfZGV2aWNlICpuYW5kLAorCQkJCQkgICAgc3RydWN0IG5hbmRf
-cGFnZV9pb19yZXEgKnJlcSkKK3sKKwlzdHJ1Y3QgbXhpY19lY2NfZW5naW5lICpteGljID0gbmFu
-ZF90b19teGljKG5hbmQpOworCXN0cnVjdCBteGljX2VjY19jdHggKmN0eCA9IG5hbmRfdG9fZWNj
-X2N0eChuYW5kKTsKKwlpbnQgcmV0ID0gMDsKKworCWlmIChyZXEtPm1vZGUgPT0gTVREX09QU19S
-QVcpCisJCXJldHVybiAwOworCisJbXV0ZXhfdW5sb2NrKCZteGljLT5sb2NrKTsKKworCWRtYV91
-bm1hcF9zZyhteGljLT5kZXYsIGN0eC0+c2csIDIsIERNQV9CSURJUkVDVElPTkFMKTsKKworCWlm
-IChyZXEtPnR5cGUgPT0gTkFORF9QQUdFX1JFQUQpIHsKKwkJbXhpY19lY2NfZXh0cmFjdF9zdGF0
-dXNfYnl0ZXMoY3R4KTsKKwkJbXhpY19lY2NfcmVjb25zdHJ1Y3Rfb29iYnVmKGN0eCwgY3R4LT5y
-ZXEtPm9vYmJ1Zi5pbiwKKwkJCQkJICAgIGN0eC0+b29id2l0aHN0YXQpOworCQlyZXQgPSBteGlj
-X2VjY19jb3VudF9iaXRlcnJzKG14aWMsIG5hbmQpOworCX0KKworCW5hbmRfZWNjX3Jlc3RvcmVf
-cmVxKCZjdHgtPnJlcV9jdHgsIHJlcSk7CisKKwlyZXR1cm4gcmV0OworfQorCiBzdGF0aWMgc3Ry
-dWN0IG5hbmRfZWNjX2VuZ2luZV9vcHMgbXhpY19lY2NfZW5naW5lX2V4dGVybmFsX29wcyA9IHsK
-IAkuaW5pdF9jdHggPSBteGljX2VjY19pbml0X2N0eF9leHRlcm5hbCwKIAkuY2xlYW51cF9jdHgg
-PSBteGljX2VjY19jbGVhbnVwX2N0eCwKQEAgLTYwNSw2ICs3NTAsNjkgQEAgc3RhdGljIHN0cnVj
-dCBuYW5kX2VjY19lbmdpbmVfb3BzIG14aWNfZWNjX2VuZ2luZV9leHRlcm5hbF9vcHMgPSB7CiAJ
-LmZpbmlzaF9pb19yZXEgPSBteGljX2VjY19maW5pc2hfaW9fcmVxX2V4dGVybmFsLAogfTsKIAor
-c3RhdGljIHN0cnVjdCBuYW5kX2VjY19lbmdpbmVfb3BzIG14aWNfZWNjX2VuZ2luZV9waXBlbGlu
-ZWRfb3BzID0geworCS5pbml0X2N0eCA9IG14aWNfZWNjX2luaXRfY3R4X3BpcGVsaW5lZCwKKwku
-Y2xlYW51cF9jdHggPSBteGljX2VjY19jbGVhbnVwX2N0eCwKKwkucHJlcGFyZV9pb19yZXEgPSBt
-eGljX2VjY19wcmVwYXJlX2lvX3JlcV9waXBlbGluZWQsCisJLmZpbmlzaF9pb19yZXEgPSBteGlj
-X2VjY19maW5pc2hfaW9fcmVxX3BpcGVsaW5lZCwKK307CisKK3N0cnVjdCBuYW5kX2VjY19lbmdp
-bmVfb3BzICpteGljX2VjY19nZXRfcGlwZWxpbmVkX29wcyh2b2lkKQoreworCXJldHVybiAmbXhp
-Y19lY2NfZW5naW5lX3BpcGVsaW5lZF9vcHM7Cit9CitFWFBPUlRfU1lNQk9MX0dQTChteGljX2Vj
-Y19nZXRfcGlwZWxpbmVkX29wcyk7CisKK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICoK
-K214aWNfZWNjX2dldF9wZGV2KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnNwaV9wZGV2KQorewor
-CXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKmVuZ19wZGV2OworCXN0cnVjdCBkZXZpY2Vfbm9kZSAq
-bnA7CisKKwkvKiBSZXRyaWV2ZSB0aGUgbmFuZC1lY2MtZW5naW5lIHBoYW5kbGUgKi8KKwlucCA9
-IG9mX3BhcnNlX3BoYW5kbGUoc3BpX3BkZXYtPmRldi5vZl9ub2RlLCAibmFuZC1lY2MtZW5naW5l
-IiwgMCk7CisJaWYgKCFucCkKKwkJcmV0dXJuIE5VTEw7CisKKwkvKiBKdW1wIHRvIHRoZSBlbmdp
-bmUncyBkZXZpY2Ugbm9kZSAqLworCWVuZ19wZGV2ID0gb2ZfZmluZF9kZXZpY2VfYnlfbm9kZShu
-cCk7CisJb2Zfbm9kZV9wdXQobnApOworCisJcmV0dXJuIGVuZ19wZGV2OworfQorCit2b2lkIG14
-aWNfZWNjX3B1dF9waXBlbGluZWRfZW5naW5lKHN0cnVjdCBuYW5kX2VjY19lbmdpbmUgKmVuZykK
-K3sKKwlzdHJ1Y3QgbXhpY19lY2NfZW5naW5lICpteGljID0gcGlwX2VjY19lbmdfdG9fbXhpYyhl
-bmcpOworCisJcGxhdGZvcm1fZGV2aWNlX3B1dCh0b19wbGF0Zm9ybV9kZXZpY2UobXhpYy0+ZGV2
-KSk7Cit9CitFWFBPUlRfU1lNQk9MX0dQTChteGljX2VjY19wdXRfcGlwZWxpbmVkX2VuZ2luZSk7
-CisKK3N0cnVjdCBuYW5kX2VjY19lbmdpbmUgKgorbXhpY19lY2NfZ2V0X3BpcGVsaW5lZF9lbmdp
-bmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqc3BpX3BkZXYpCit7CisJc3RydWN0IHBsYXRmb3Jt
-X2RldmljZSAqZW5nX3BkZXY7CisJc3RydWN0IG14aWNfZWNjX2VuZ2luZSAqbXhpYzsKKworCWVu
-Z19wZGV2ID0gbXhpY19lY2NfZ2V0X3BkZXYoc3BpX3BkZXYpOworCWlmICghZW5nX3BkZXYpCisJ
-CXJldHVybiBFUlJfUFRSKC1FTk9ERVYpOworCisJbXhpYyA9IHBsYXRmb3JtX2dldF9kcnZkYXRh
-KGVuZ19wZGV2KTsKKwlpZiAoIW14aWMpIHsKKwkJcGxhdGZvcm1fZGV2aWNlX3B1dChlbmdfcGRl
-dik7CisJCXJldHVybiBFUlJfUFRSKC1FUFJPQkVfREVGRVIpOworCX0KKworCXJldHVybiAmbXhp
-Yy0+cGlwZWxpbmVkX2VuZ2luZTsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKG14aWNfZWNjX2dldF9w
-aXBlbGluZWRfZW5naW5lKTsKKworLyoKKyAqIE9ubHkgdGhlIGV4dGVybmFsIEVDQyBlbmdpbmUg
-aXMgZXhwb3J0ZWQgYXMgdGhlIHBpcGVsaW5lZCBpcyBTb0Mgc3BlY2lmaWMsIHNvCisgKiBpdCBp
-cyByZWdpc3RlcmVkIGRpcmVjdGx5IGJ5IHRoZSBkcml2ZXJzIHRoYXQgd3JhcCBpdC4KKyAqLwog
-c3RhdGljIGludCBteGljX2VjY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQog
-ewogCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7CmRpZmYgLS1naXQgYS9pbmNsdWRl
-L2xpbnV4L210ZC9uYW5kLWVjYy1teGljLmggYi9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLWVjYy1t
-eGljLmgKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwMDAwLi5mM2FhMWFjODJh
-ZWQKLS0tIC9kZXYvbnVsbAorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLWVjYy1teGljLmgK
-QEAgLTAsMCArMSw0OSBAQAorLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8K
-Ky8qCisgKiBDb3B5cmlnaHQgwqkgMjAxOSBNYWNyb25peAorICogQXV0aG9yOiBNaXF1w6hsIFJh
-eW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KKyAqCisgKiBIZWFkZXIgZm9yIHRoZSBN
-YWNyb25peCBleHRlcm5hbCBFQ0MgZW5naW5lLgorICovCisKKyNpZm5kZWYgX19NVERfTkFORF9F
-Q0NfTVhJQ19IX18KKyNkZWZpbmUgX19NVERfTkFORF9FQ0NfTVhJQ19IX18KKworI2luY2x1ZGUg
-PGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgorI2luY2x1ZGUgPGxpbnV4L2RldmljZS5oPgorCitz
-dHJ1Y3QgbXhpY19lY2NfZW5naW5lOworCisjaWYgSVNfRU5BQkxFRChDT05GSUdfTVREX05BTkRf
-RUNDX01YSUMpCisKK3N0cnVjdCBuYW5kX2VjY19lbmdpbmVfb3BzICpteGljX2VjY19nZXRfcGlw
-ZWxpbmVkX29wcyh2b2lkKTsKK3N0cnVjdCBuYW5kX2VjY19lbmdpbmUgKm14aWNfZWNjX2dldF9w
-aXBlbGluZWRfZW5naW5lKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnNwaV9wZGV2KTsKK3ZvaWQg
-bXhpY19lY2NfcHV0X3BpcGVsaW5lZF9lbmdpbmUoc3RydWN0IG5hbmRfZWNjX2VuZ2luZSAqZW5n
-KTsKK2ludCBteGljX2VjY19wcm9jZXNzX2RhdGFfcGlwZWxpbmVkKHN0cnVjdCBuYW5kX2VjY19l
-bmdpbmUgKmVuZywKKwkJCQkgICAgdW5zaWduZWQgaW50IGRpcmVjdGlvbiwgZG1hX2FkZHJfdCBk
-aXJtYXApOworCisjZWxzZSAvKiAhQ09ORklHX01URF9OQU5EX0VDQ19NWElDICovCisKK3N0YXRp
-YyBpbmxpbmUgc3RydWN0IG5hbmRfZWNjX2VuZ2luZV9vcHMgKm14aWNfZWNjX2dldF9waXBlbGlu
-ZWRfb3BzKHZvaWQpCit7CisJcmV0dXJuIE5VTEw7Cit9CisKK3N0YXRpYyBpbmxpbmUgc3RydWN0
-IG5hbmRfZWNjX2VuZ2luZSAqCitteGljX2VjY19nZXRfcGlwZWxpbmVkX2VuZ2luZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlICpzcGlfcGRldikKK3sKKwlyZXR1cm4gRVJSX1BUUigtRU9QTk9UU1VQ
-UCk7Cit9CisKK3N0YXRpYyBpbmxpbmUgdm9pZCBteGljX2VjY19wdXRfcGlwZWxpbmVkX2VuZ2lu
-ZShzdHJ1Y3QgbmFuZF9lY2NfZW5naW5lICplbmcpIHt9CisKK3N0YXRpYyBpbmxpbmUgaW50IG14
-aWNfZWNjX3Byb2Nlc3NfZGF0YV9waXBlbGluZWQoc3RydWN0IG5hbmRfZWNjX2VuZ2luZSAqZW5n
-LAorCQkJCQkJICB1bnNpZ25lZCBpbnQgZGlyZWN0aW9uLAorCQkJCQkJICBkbWFfYWRkcl90IGRp
-cm1hcCkKK3sKKwlyZXR1cm4gLUVPUE5PVFNVUFA7Cit9CisKKyNlbmRpZiAvKiBDT05GSUdfTVRE
-X05BTkRfRUNDX01YSUMgKi8KKworI2VuZGlmIC8qIF9fTVREX05BTkRfRUNDX01YSUNfSF9fICov
-Ci0tIAoyLjI3LjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Add the necessary helpers to register/unregister hardware ECC engines
+that will be called from ECC engine drivers.
+
+Also add helpers to get the right engine from the user
+perspective. Keep a reference of the in use ECC engine in order to
+prevent modules to be unloaded. Put the reference when the engine gets
+retired.
+
+A static list of hardware (only) ECC engines is setup to keep track of
+the registered engines.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/core.c  | 10 +++--
+ drivers/mtd/nand/ecc.c   | 88 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h | 28 +++++++++++++
+ 3 files changed, 123 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
+index df9646685c91..5628bd410f7e 100644
+--- a/drivers/mtd/nand/core.c
++++ b/drivers/mtd/nand/core.c
+@@ -232,7 +232,9 @@ static int nanddev_get_ecc_engine(struct nand_device *nand)
+ 		nand->ecc.engine = nand_ecc_get_on_die_hw_engine(nand);
+ 		break;
+ 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+-		pr_err("On-host hardware ECC engines not supported yet\n");
++		nand->ecc.engine = nand_ecc_get_on_host_hw_engine(nand);
++		if (PTR_ERR(nand->ecc.engine) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
+ 		break;
+ 	default:
+ 		pr_err("Missing ECC engine type\n");
+@@ -252,7 +254,7 @@ static int nanddev_put_ecc_engine(struct nand_device *nand)
+ {
+ 	switch (nand->ecc.ctx.conf.engine_type) {
+ 	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+-		pr_err("On-host hardware ECC engines not supported yet\n");
++		nand_ecc_put_on_host_hw_engine(nand);
+ 		break;
+ 	case NAND_ECC_ENGINE_TYPE_NONE:
+ 	case NAND_ECC_ENGINE_TYPE_SOFT:
+@@ -297,7 +299,9 @@ int nanddev_ecc_engine_init(struct nand_device *nand)
+ 	/* Look for the ECC engine to use */
+ 	ret = nanddev_get_ecc_engine(nand);
+ 	if (ret) {
+-		pr_err("No ECC engine found\n");
++		if (ret != -EPROBE_DEFER)
++			pr_err("No ECC engine found\n");
++
+ 		return ret;
+ 	}
+ 
+diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
+index 6c43dfda01d4..078f5ec38de3 100644
+--- a/drivers/mtd/nand/ecc.c
++++ b/drivers/mtd/nand/ecc.c
+@@ -96,6 +96,12 @@
+ #include <linux/module.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_platform.h>
++
++static LIST_HEAD(on_host_hw_engines);
++static DEFINE_MUTEX(on_host_hw_engines_mutex);
+ 
+ /**
+  * nand_ecc_init_ctx - Init the ECC engine context
+@@ -611,6 +617,88 @@ struct nand_ecc_engine *nand_ecc_get_on_die_hw_engine(struct nand_device *nand)
+ }
+ EXPORT_SYMBOL(nand_ecc_get_on_die_hw_engine);
+ 
++int nand_ecc_register_on_host_hw_engine(struct nand_ecc_engine *engine)
++{
++	struct nand_ecc_engine *item;
++
++	if (!engine)
++		return -EINVAL;
++
++	/* Prevent multiple registrations of one engine */
++	list_for_each_entry(item, &on_host_hw_engines, node)
++		if (item == engine)
++			return 0;
++
++	mutex_lock(&on_host_hw_engines_mutex);
++	list_add_tail(&engine->node, &on_host_hw_engines);
++	mutex_unlock(&on_host_hw_engines_mutex);
++
++	return 0;
++}
++EXPORT_SYMBOL(nand_ecc_register_on_host_hw_engine);
++
++int nand_ecc_unregister_on_host_hw_engine(struct nand_ecc_engine *engine)
++{
++	if (!engine)
++		return -EINVAL;
++
++	mutex_lock(&on_host_hw_engines_mutex);
++	list_del(&engine->node);
++	mutex_unlock(&on_host_hw_engines_mutex);
++
++	return 0;
++}
++EXPORT_SYMBOL(nand_ecc_unregister_on_host_hw_engine);
++
++static struct nand_ecc_engine *nand_ecc_match_on_host_hw_engine(struct device *dev)
++{
++	struct nand_ecc_engine *item;
++
++	list_for_each_entry(item, &on_host_hw_engines, node)
++		if (item->dev == dev)
++			return item;
++
++	return NULL;
++}
++
++struct nand_ecc_engine *nand_ecc_get_on_host_hw_engine(struct nand_device *nand)
++{
++	struct nand_ecc_engine *engine = NULL;
++	struct device *dev = &nand->mtd.dev;
++	struct platform_device *pdev;
++	struct device_node *np;
++
++	if (list_empty(&on_host_hw_engines))
++		return NULL;
++
++	/* Check for an explicit nand-ecc-engine property */
++	np = of_parse_phandle(dev->of_node, "nand-ecc-engine", 0);
++	if (np) {
++		pdev = of_find_device_by_node(np);
++		if (!pdev)
++			return ERR_PTR(-EPROBE_DEFER);
++
++		engine = nand_ecc_match_on_host_hw_engine(&pdev->dev);
++		platform_device_put(pdev);
++		of_node_put(np);
++
++		if (!engine)
++			return ERR_PTR(-EPROBE_DEFER);
++	}
++
++	if (engine)
++		get_device(engine->dev);
++
++	return engine;
++}
++EXPORT_SYMBOL(nand_ecc_get_on_host_hw_engine);
++
++void nand_ecc_put_on_host_hw_engine(struct nand_device *nand)
++{
++	put_device(nand->ecc.engine->dev);
++}
++EXPORT_SYMBOL(nand_ecc_put_on_host_hw_engine);
++
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
+ MODULE_DESCRIPTION("Generic ECC engine");
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 32fc7edf65b3..4ddd20fe9c9e 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -263,12 +263,36 @@ struct nand_ecc_engine_ops {
+ 			     struct nand_page_io_req *req);
+ };
+ 
++/**
++ * enum nand_ecc_engine_integration - How the NAND ECC engine is integrated
++ * @NAND_ECC_ENGINE_INTEGRATION_INVALID: Invalid value
++ * @NAND_ECC_ENGINE_INTEGRATION_PIPELINED: Pipelined engine, performs on-the-fly
++ *                                         correction, does not need to copy
++ *                                         data around
++ * @NAND_ECC_ENGINE_INTEGRATION_EXTERNAL: External engine, needs to bring the
++ *                                        data into its own area before use
++ */
++enum nand_ecc_engine_integration {
++	NAND_ECC_ENGINE_INTEGRATION_INVALID,
++	NAND_ECC_ENGINE_INTEGRATION_PIPELINED,
++	NAND_ECC_ENGINE_INTEGRATION_EXTERNAL,
++};
++
+ /**
+  * struct nand_ecc_engine - ECC engine abstraction for NAND devices
++ * @dev: Host device
++ * @node: Private field for registration time
+  * @ops: ECC engine operations
++ * @integration: How the engine is integrated with the host
++ *               (only relevant on %NAND_ECC_ENGINE_TYPE_ON_HOST engines)
++ * @priv: Private data
+  */
+ struct nand_ecc_engine {
++	struct device *dev;
++	struct list_head node;
+ 	struct nand_ecc_engine_ops *ops;
++	enum nand_ecc_engine_integration integration;
++	void *priv;
+ };
+ 
+ void of_get_nand_ecc_user_config(struct nand_device *nand);
+@@ -279,8 +303,12 @@ int nand_ecc_prepare_io_req(struct nand_device *nand,
+ int nand_ecc_finish_io_req(struct nand_device *nand,
+ 			   struct nand_page_io_req *req);
+ bool nand_ecc_is_strong_enough(struct nand_device *nand);
++int nand_ecc_register_on_host_hw_engine(struct nand_ecc_engine *engine);
++int nand_ecc_unregister_on_host_hw_engine(struct nand_ecc_engine *engine);
+ struct nand_ecc_engine *nand_ecc_get_sw_engine(struct nand_device *nand);
+ struct nand_ecc_engine *nand_ecc_get_on_die_hw_engine(struct nand_device *nand);
++struct nand_ecc_engine *nand_ecc_get_on_host_hw_engine(struct nand_device *nand);
++void nand_ecc_put_on_host_hw_engine(struct nand_device *nand);
+ 
+ #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_HAMMING)
+ struct nand_ecc_engine *nand_ecc_sw_hamming_get_engine(void);
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
