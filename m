@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 519BEC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 09:58:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EED3C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 10:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a06YPhXQZ/BtQpwObS6Q6aVa2JjTXhtMuNs37LVjneA=; b=BdpUeOsl5GXRSY
-	UyDZ1xUvIGgG1DC2uPWdedQ+7BZ62bgQN8SibrecxNy1nPGbfrKRwpbJleP5Veoe9pcqE71bVbgkC
-	tpcPiUsjGzt4fI0pWczqRurvgEbe5yyX15/fBKEW2gq+aSTCnnARR5WDpChk8dGJvT0e0RY5t3ce3
-	W31pa3wMhJyZsinou7eYkYZ1qhqYWo6D4yAA2FXUzriQuVW1s4+tFRuJwrOoj+NKNg7aCF71GIxwu
-	IRoI5KkrOM8dwEVCzM+1dXRkRq7zx/vQGOxL6SYF5VzLlDMnNNT9+ovKF4o7HsbpMC9Opo71BXjt9
-	KF2dR+SOxrTbeGVBwD7A==;
+	List-Owner; bh=7e4dLsElKG9NQMzD9AGHAnl+3xZLR/eYLSM7XC6Ewfc=; b=TO9gPmbsBIfF+1
+	M/bmM1vsBCxcv6LGsL9aizlZKVSDgHV9FzyFNwI21aeV0PyiPMF47dIGuFHBl9hpTTPUhXbQdy/pN
+	JpTmkNUuLGoazzFMkf+wNtu5fdD3ubwDwJ0sps+nFF/vyyOEwoh8kVsuyomT8KjKUmPhpiEGRcBgk
+	YBPtEXrrUz1QUFzg40AlzFR1TZCnf0XWT52+x3duTUNSo6E5x6ZvnMwVqkp597sjKFL+KQThrPGeN
+	Y1uIASju0A9LPXf0yJwMN3XRuClH8f9mUCA1VnJb/2A1eGG30HaxMECh+o440SL3hsO6H3zwDTINm
+	wkaIgQUnSVjKCMvXE7jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muXEU-007umv-3d; Tue, 07 Dec 2021 09:57:58 +0000
+	id 1muXJN-007vnU-RA; Tue, 07 Dec 2021 10:03:02 +0000
 Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muWs9-007p2J-Vd
- for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:34:55 +0000
+ id 1muWsB-007p3D-BH
+ for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:34:56 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D0CFF60013;
- Tue,  7 Dec 2021 09:34:50 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 8581F6001A;
+ Tue,  7 Dec 2021 09:34:52 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,18 +39,18 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org,
- Mason Yang <masonccyang@mxic.com.tw>, Zhengxun Li <zhengxunli@mxic.com.tw>
-Subject: [PATCH v3 18/22] spi: mxic: Fix the transmit path
-Date: Tue,  7 Dec 2021 10:34:18 +0100
-Message-Id: <20211207093422.166934-19-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v3 19/22] spi: mxic: Create a helper to configure the
+ controller before an operation
+Date: Tue,  7 Dec 2021 10:34:19 +0100
+Message-Id: <20211207093422.166934-20-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 References: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_013454_237457_09B133F8 
-X-CRM114-Status: GOOD (  11.14  )
+X-CRM114-CacheID: sfid-20211207_013455_575651_7D8E2A0C 
+X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,64 +67,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-By working with external hardware ECC engines, we figured out that
-Under certain circumstances, it is needed for the SPI controller to
-check INT_TX_EMPTY and INT_RX_NOT_EMPTY in both receive and transmit
-path (not only in the receive path). The delay penalty being
-negligible, move this code in the common path.
+Create the mxic_spi_set_hc_cfg() helper to configure the HC_CFG
+register. This helper will soon be used by the dirmap implementation and
+having this code factorized out earlier will clarify this addition.
 
-Fixes: b942d80b0a39 ("spi: Add MXIC controller driver")
-Cc: stable@vger.kernel.org
-Suggested-by: Mason Yang <masonccyang@mxic.com.tw>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-mxic.c | 28 ++++++++++++----------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
+ drivers/spi/spi-mxic.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 45889947afed..03fce4493aa7 100644
+index 03fce4493aa7..068543c40ce7 100644
 --- a/drivers/spi/spi-mxic.c
 +++ b/drivers/spi/spi-mxic.c
-@@ -304,25 +304,21 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
+@@ -280,6 +280,22 @@ static void mxic_spi_hw_init(struct mxic_spi *mxic)
+ 	       mxic->regs + HC_CFG);
+ }
  
- 		writel(data, mxic->regs + TXD(nbytes % 4));
- 
-+		ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+					 sts & INT_TX_EMPTY, 0, USEC_PER_SEC);
-+		if (ret)
-+			return ret;
++static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
++{
++	int nio = 1;
 +
-+		ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+					 sts & INT_RX_NOT_EMPTY, 0,
-+					 USEC_PER_SEC);
-+		if (ret)
-+			return ret;
++	if (spi->mode & (SPI_TX_OCTAL | SPI_RX_OCTAL))
++		nio = 8;
++	else if (spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
++		nio = 4;
++	else if (spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
++		nio = 2;
 +
-+		data = readl(mxic->regs + RXD);
- 		if (rxbuf) {
--			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
--						 sts & INT_TX_EMPTY, 0,
--						 USEC_PER_SEC);
--			if (ret)
--				return ret;
--
--			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
--						 sts & INT_RX_NOT_EMPTY, 0,
--						 USEC_PER_SEC);
--			if (ret)
--				return ret;
--
--			data = readl(mxic->regs + RXD);
- 			data >>= (8 * (4 - nbytes));
- 			memcpy(rxbuf + pos, &data, nbytes);
--			WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
--		} else {
--			readl(mxic->regs + RXD);
- 		}
- 		WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
++	return flags | HC_CFG_NIO(nio) |
++	       HC_CFG_TYPE(spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
++	       HC_CFG_SLV_ACT(spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1);
++}
++
+ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
+ 			      void *rxbuf, unsigned int len)
+ {
+@@ -357,7 +373,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 				const struct spi_mem_op *op)
+ {
+ 	struct mxic_spi *mxic = spi_master_get_devdata(mem->spi->master);
+-	int nio = 1, i, ret;
++	int i, ret;
+ 	u32 ss_ctrl;
+ 	u8 addr[8], cmd[2];
  
+@@ -365,18 +381,9 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (mem->spi->mode & (SPI_TX_OCTAL | SPI_RX_OCTAL))
+-		nio = 8;
+-	else if (mem->spi->mode & (SPI_TX_QUAD | SPI_RX_QUAD))
+-		nio = 4;
+-	else if (mem->spi->mode & (SPI_TX_DUAL | SPI_RX_DUAL))
+-		nio = 2;
+-
+-	writel(HC_CFG_NIO(nio) |
+-	       HC_CFG_TYPE(mem->spi->chip_select, HC_CFG_TYPE_SPI_NOR) |
+-	       HC_CFG_SLV_ACT(mem->spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1) |
+-	       HC_CFG_MAN_CS_EN,
++	writel(mxic_spi_prep_hc_cfg(mem->spi, HC_CFG_MAN_CS_EN),
+ 	       mxic->regs + HC_CFG);
++
+ 	writel(HC_EN_BIT, mxic->regs + HC_EN);
+ 
+ 	ss_ctrl = OP_CMD_BYTES(op->cmd.nbytes) |
 -- 
 2.27.0
 
