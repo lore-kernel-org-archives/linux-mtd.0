@@ -4,68 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4466BC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 14:44:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9691BC4321E
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 14:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yQaK8yOMO73M2hr5KhStY9LKtkd1rCPc1pDFiYzgU9Y=; b=xsbetCzWqi9z3D
-	+xaDVkO8oRuA69TTw1uM9gnPM34xahy6bw3pwCaxnpccOiYtUlARgFmCJNrB1cFXv7OFHEvZ0P2Qi
-	7GT8I0PseOPwCsBDWd4Kof1PKNRSLYBhFk5umFY9bO5xuhmAktkowQQ6FocgtJThsqo+pTp5MiL56
-	xWoFmKe1TZcxtiiM6LSKrKKjP4IDhVz4FqhEIWhWjjU9NGWd5V3AlmFRI6KYsCjcb3cnaexN7WqVY
-	Xvp6t+oBowexGoEkZC0l72VNA389Gkvsp3oXXs8Xnhh9SEGSQ1sd0ddLckHUOSdWSOaztLI5JgJ2L
-	CkukVZwn3jPCzHM1OO8Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=1AQELSO6804gjDu5mo7yNoIeKp0aSIJ6hya+4eTq604=; b=hG+U9yLNTuvmJCGlBsvHv+FYg3
+	DFqD0o1fmP0FkZv47PomblmipXtiqNrk5/frFP3WnaZ3DlhrStAHeblhE67R6gsiNeoQxdzwR4Xfa
+	VWR/zCJ1yd+KYvUu4lMkKoSBIfItUkqp8y3yEQZbGzZTRhKcQ8+20M6m+uw5ESxs+WiNaM2TXPgeO
+	Gp4K7wU2+xy35d/IDIwjBY1KXgV1DAHUFHcAjcppaGjS1vSv21E30WpNa0QigUERd2NyM+hi6b0rO
+	azzXKhtR7ZsgrGqlb6yHXpxr+gb4v/VPq3XU28yNApbUbpnHcXyPFy8iEz4VkH5JJslul2wBp6Y5H
+	8CzsWWcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mubgj-008zPJ-GS; Tue, 07 Dec 2021 14:43:26 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1mubuC-0093KE-50; Tue, 07 Dec 2021 14:57:20 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mub4t-008pOv-Rj; Tue, 07 Dec 2021 14:04:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1638885859; x=1670421859;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=TSuyxCLlRv2UfyTIFzJk7vAO2ci0ZWPes/2YwpOBPqM=;
- b=fQJUUQRKAoc2/izDRnteZ2clHdYnf8HRWlIRlaeUsTX+hSVGmT0LJkiu
- pEd6+dD4tjSmxqPXRvSj/Rz9ikn6KbDEp9DP73wBAwCuKKq7b4pKhP3fz
- WAH1Gdy7qG6KxiADx++KlxP5oEzjP4voB7mi0QmzdiXleVDi5+OxLvEr5
- RoZ9PPuBfxFOS7f19qB6sQ1+/qFysqb09arDLQi8SNlMpMizRe8Alai1Q
- zwYomQDFoS38HZqoy+J5PQuGOXSASL76WEK/gCPeNxqrUNwf3F2t5A9vB
- dDvnIei9WNIWRhJgKZ/r1+0HGr0dHzN9wb3D3Zr+9fuOZ9iWv7sDuZaDL g==;
-IronPort-SDR: nAHnF6L/Z+UqkYCiKESvszPTyYgD9p1CBwbIkEdR3XTymMorxV7l55UIt03eEuRyxrOCQWeGRm
- D1RbTYgbwEe5ACqHnX7C6FdCjniU4IyZfPQgPktsNq1aeGNkut5XGzWCjmI4cfIIUl8QuULNgd
- kXpU4x95A6MNKG8+oILM4u2dChUxmc2JnB1d4GDOm80nZJi5j3Me7WSC5Qk18U1gD7OP7nA6/2
- 7NsCecWms6eH2trQ6/2ZehvJjkNtgLpHgkmwKNTxZwbxTVXjtp6JwptEx7XFj8SqB/cbc2ynVl
- PXi87qxZM5lAfaanyoEeXvii
-X-IronPort-AV: E=Sophos;i="5.87,293,1631602800"; d="scan'208";a="141566333"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 07 Dec 2021 07:04:18 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 7 Dec 2021 07:04:12 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 7 Dec 2021 07:04:07 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <michael@walle.cc>, <p.yadav@ti.com>
-Subject: [PATCH v6 14/14] mtd: spi-nor: issi: is25lp256: Init flash based on
- SFDP
-Date: Tue, 7 Dec 2021 16:02:54 +0200
-Message-ID: <20211207140254.87681-15-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211207140254.87681-1-tudor.ambarus@microchip.com>
-References: <20211207140254.87681-1-tudor.ambarus@microchip.com>
+ id 1mubVF-008wmn-M2
+ for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 14:31:35 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by sin.source.kernel.org (Postfix) with ESMTPS id E6340CE1AB3;
+ Tue,  7 Dec 2021 14:31:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 950E9C341C1;
+ Tue,  7 Dec 2021 14:31:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1638887490;
+ bh=2Bh4lh5Rkbfd222vBGTTXMX5WNUB+LpWa4lBwnCFCk8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=DUKm/3ZOViVMPj/2iSbnfYwuu6LUpqK1EKt5eWIRgJX17jQchbt+HGore89+qOtWZ
+ VLsP4wguNH8jcjCJ+wNCw9FgPorPt2pwgAKtAQxddV579euQjkY+lmD+Zs+sakTKu1
+ jndGPhRLP+rrq65xNVohCzLFoHenMcE7zz71mJjx01q2MJ7Xj8Mbyi8hCeQSoAP0i8
+ e4ZhUd39Z5Fjd65MHUn2ZooMTHw1YEHHXPz7raS/S8RnQp/Jv9iXS0Or17je5kXvtg
+ zO6DBaa1Am2BHFuXyBDxQofq7pNyXzM+ZOvaSh8psUp4acI0zBVfPyVgZRaq1NBeCU
+ WGTno7r0a66iA==
+Date: Tue, 7 Dec 2021 14:31:24 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Michal Simek <monstr@monstr.eu>
+Subject: Re: [PATCH v3 0/3] Stacked/parallel memories bindings
+Message-ID: <Ya9wPJRbXU/PPQyE@sirena.org.uk>
+References: <20211206095921.33302-1-miquel.raynal@bootlin.com>
+ <Ya6BNGHhflkXOItV@robh.at.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <Ya6BNGHhflkXOItV@robh.at.kernel.org>
+X-Cookie: Only God can make random selections.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_060420_009878_A51C4A0E 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20211207_063133_942458_BC20E8E9 
+X-CRM114-Status: GOOD (  13.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,64 +74,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Cc: macromorgan@hotmail.com, vigneshr@ti.com,
- Tudor Ambarus <tudor.ambarus@microchip.com>, jaimeliao@mxic.com.tw,
- richard@nod.at, esben@geanix.com, linux@rasmusvillemoes.dk,
- knaerzche@gmail.com, nicolas.ferre@microchip.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- code@reto-schneider.ch, miquel.raynal@bootlin.com, heiko.thiery@gmail.com,
- sr@denx.de, mail@david-bauer.net, zhengxunli@mxic.com.tw
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3495386919568479584=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Get rid of the static initialization of the flash parameters and
-init them when parsing SFDP.
-Generated a 256 Kbyte random data and did an erase, write, read back
-and compare test. The flash uses for reads SPINOR_OP_READ_1_4_4_4B 0xec,
-for erases SPINOR_OP_BE_4K_4B 0x21, and for writes SPINOR_OP_PP_4B 0x12.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
-9d6019
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
-issi
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/partname
-is25lp256
-root@sama5d2-xplained:~# cat /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp > sfdp-is25lp256
+--===============3495386919568479584==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7A/CUCjAopGcjyUx"
+Content-Disposition: inline
 
-xxd -p sfdp-is25lp256
-53464450060101ff00060110300000ff9d05010380000002ffffffffffff
-ffffffffffffffffffffffffffffffffffffe520f9ffffffff0f44eb086b
-083b80bbfeffffffffff00ffffff44eb0c200f5210d800ff234ac90082d8
-11cecccd68467a757a75f7aed55c4a422cfff030f2a9ffffffffffffffff
-ffffffffffffffff003600239ef9c0648fefffff
 
-sha1sum sfdp-is25lp256
-98d61eb4691e61521b84b83e1ddb8132cae2fea5  sfdp-is25lp256
+--7A/CUCjAopGcjyUx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/mtd/spi-nor/issi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Dec 06, 2021 at 03:31:32PM -0600, Rob Herring wrote:
 
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 6707fcfda055..c4fff3c36356 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -46,7 +46,7 @@ static const struct flash_info issi_parts[] = {
- 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		PARSE_SFDP
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
- 		.fixups = &is25lp256_fixups },
- 	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64)
--- 
-2.25.1
+> Mark, can you either provide a stable branch with this or apply the=20
+> series? Note that there's going to be some other patches needing=20
+> spi-peripheral-props.yaml, so providing a branch might be better if you=
+=20
+> don't want to collect the patches.
 
+I'll apply the series but there's still debate about it so it looks like
+there will be further revisions.  Unfortunately the patch is buried in
+the middle of history so it's hard to pull out a sensible stable branch,
+Linus gets upset about topic branches which makes doing this sort of
+thing retroactively painful.
+
+--7A/CUCjAopGcjyUx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGvcDsACgkQJNaLcl1U
+h9DvkAf/WNSVex+DPxkrNpBCMq//Q078vBs2gu5YblTGl1/Q+9SZj7itBvS7nhkR
+UivBWCuOjGetI9o9Hk2iaMdmOkB+pKMyZrgcNlPG1gN/R5ATuxQbXWpClPD0vieU
+ycB/OZkrPm65/8+7W3cnKvjafg1Hp6xsSiJjKSLobR50WqecnA8sc2SemIB4JR2U
+7PKBkhK9TJsTrLmAWp43f0oQ6RX5vL537cA8bM8VlalX1L2zCpGfYNB3tzhAQwWe
+7vfJqkFJrl0vu6Cr2ai9oVeFfjA8marBUVlAlHzDsaVSoh3FRPXp33QArxm9uTMk
+cBICj53P2du8lFyzrfYDBsoRumowAw==
+=lecr
+-----END PGP SIGNATURE-----
+
+--7A/CUCjAopGcjyUx--
+
+
+--===============3495386919568479584==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3495386919568479584==--
+
