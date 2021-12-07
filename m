@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3537CC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 09:55:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 519BEC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 09:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HODhIIEbksvMZ9TgAgNkewyxJHCHOB6jbZsQqcVKFGo=; b=0+i0TASSdCGX+N
-	3J35xIV/CMWx8WbbEG0OvZmW5hJGo1gRpyak50/gP9dOv9ADFdEtGejxFtjH5nbbDVp7OjREupkSC
-	REYd+YHcEipso2YTL3V35+oqfKvXaKBJoNRkUWCkNgzOMKNKeAw5eSGk5Pge4/WugzBE5BluQFTDM
-	0dxfKUqaofVxKCPRNf1++TTk2Zmk+2UTosJSJhJ0dL9X1cA1bmarjpnerDiDbgKhnTogNabf4wpwf
-	3nWTR6Tnd9T3bIV+ALxS/92nUy835B+/NilFTybOEe5i70Dl9rwDhjuseNOntMgErpxudicE6AWkZ
-	8f7fuuqLPy8Efzrcghyg==;
+	List-Owner; bh=a06YPhXQZ/BtQpwObS6Q6aVa2JjTXhtMuNs37LVjneA=; b=BdpUeOsl5GXRSY
+	UyDZ1xUvIGgG1DC2uPWdedQ+7BZ62bgQN8SibrecxNy1nPGbfrKRwpbJleP5Veoe9pcqE71bVbgkC
+	tpcPiUsjGzt4fI0pWczqRurvgEbe5yyX15/fBKEW2gq+aSTCnnARR5WDpChk8dGJvT0e0RY5t3ce3
+	W31pa3wMhJyZsinou7eYkYZ1qhqYWo6D4yAA2FXUzriQuVW1s4+tFRuJwrOoj+NKNg7aCF71GIxwu
+	IRoI5KkrOM8dwEVCzM+1dXRkRq7zx/vQGOxL6SYF5VzLlDMnNNT9+ovKF4o7HsbpMC9Opo71BXjt9
+	KF2dR+SOxrTbeGVBwD7A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muXBd-007uF6-Qy; Tue, 07 Dec 2021 09:55:02 +0000
+	id 1muXEU-007umv-3d; Tue, 07 Dec 2021 09:57:58 +0000
 Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muWs8-007p1O-4N
+ id 1muWs9-007p2J-Vd
  for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:34:55 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id ED91060012;
- Tue,  7 Dec 2021 09:34:48 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D0CFF60013;
+ Tue,  7 Dec 2021 09:34:50 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,18 +39,18 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 17/22] mtd: spinand: Create direct mapping descriptors for
- ECC operations
-Date: Tue,  7 Dec 2021 10:34:17 +0100
-Message-Id: <20211207093422.166934-18-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org,
+ Mason Yang <masonccyang@mxic.com.tw>, Zhengxun Li <zhengxunli@mxic.com.tw>
+Subject: [PATCH v3 18/22] spi: mxic: Fix the transmit path
+Date: Tue,  7 Dec 2021 10:34:18 +0100
+Message-Id: <20211207093422.166934-19-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 References: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_013452_492160_5BDAD289 
-X-CRM114-Status: GOOD (  18.31  )
+X-CRM114-CacheID: sfid-20211207_013454_237457_09B133F8 
+X-CRM114-Status: GOOD (  11.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,121 +67,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In order for pipelined ECC engines to be able to enable/disable the ECC
-engine only when needed and avoid races when future parallel-operations
-will be supported, we need to provide the information about the use of
-the ECC engine in the direct mapping hooks. As direct mapping
-configurations are meant to be static, it is best to create two new
-mappings: one for regular 'raw' accesses and one for accesses involving
-correction. It is up to the driver to use or not the new ECC enable
-boolean contained in the spi-mem operation.
+By working with external hardware ECC engines, we figured out that
+Under certain circumstances, it is needed for the SPI controller to
+check INT_TX_EMPTY and INT_RX_NOT_EMPTY in both receive and transmit
+path (not only in the receive path). The delay penalty being
+negligible, move this code in the common path.
 
-As dirmaps are not free (they consume a few pages of MMIO address space)
-and because these extra entries are only meant to be used by pipelined
-engines, let's limit their use to this specific type of engine and save
-a bit of memory with all the other setups.
-
+Fixes: b942d80b0a39 ("spi: Add MXIC controller driver")
+Cc: stable@vger.kernel.org
+Suggested-by: Mason Yang <masonccyang@mxic.com.tw>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
+Reviewed-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/mtd/nand/spi/core.c | 35 +++++++++++++++++++++++++++++++++--
- include/linux/mtd/spinand.h |  2 ++
- include/linux/spi/spi-mem.h |  3 +++
- 3 files changed, 38 insertions(+), 2 deletions(-)
+ drivers/spi/spi-mxic.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 715cad26fdef..eb999e47e978 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -381,7 +381,10 @@ static int spinand_read_from_cache_op(struct spinand_device *spinand,
+diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+index 45889947afed..03fce4493aa7 100644
+--- a/drivers/spi/spi-mxic.c
++++ b/drivers/spi/spi-mxic.c
+@@ -304,25 +304,21 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
+ 
+ 		writel(data, mxic->regs + TXD(nbytes % 4));
+ 
++		ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
++					 sts & INT_TX_EMPTY, 0, USEC_PER_SEC);
++		if (ret)
++			return ret;
++
++		ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
++					 sts & INT_RX_NOT_EMPTY, 0,
++					 USEC_PER_SEC);
++		if (ret)
++			return ret;
++
++		data = readl(mxic->regs + RXD);
+ 		if (rxbuf) {
+-			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
+-						 sts & INT_TX_EMPTY, 0,
+-						 USEC_PER_SEC);
+-			if (ret)
+-				return ret;
+-
+-			ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
+-						 sts & INT_RX_NOT_EMPTY, 0,
+-						 USEC_PER_SEC);
+-			if (ret)
+-				return ret;
+-
+-			data = readl(mxic->regs + RXD);
+ 			data >>= (8 * (4 - nbytes));
+ 			memcpy(rxbuf + pos, &data, nbytes);
+-			WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
+-		} else {
+-			readl(mxic->regs + RXD);
  		}
- 	}
+ 		WARN_ON(readl(mxic->regs + INT_STS) & INT_RX_NOT_EMPTY);
  
--	rdesc = spinand->dirmaps[req->pos.plane].rdesc;
-+	if (req->mode == MTD_OPS_RAW)
-+		rdesc = spinand->dirmaps[req->pos.plane].rdesc;
-+	else
-+		rdesc = spinand->dirmaps[req->pos.plane].rdesc_ecc;
- 
- 	while (nbytes) {
- 		ret = spi_mem_dirmap_read(rdesc, column, nbytes, buf);
-@@ -452,7 +455,10 @@ static int spinand_write_to_cache_op(struct spinand_device *spinand,
- 			       req->ooblen);
- 	}
- 
--	wdesc = spinand->dirmaps[req->pos.plane].wdesc;
-+	if (req->mode == MTD_OPS_RAW)
-+		wdesc = spinand->dirmaps[req->pos.plane].wdesc;
-+	else
-+		wdesc = spinand->dirmaps[req->pos.plane].wdesc_ecc;
- 
- 	while (nbytes) {
- 		ret = spi_mem_dirmap_write(wdesc, column, nbytes, buf);
-@@ -866,6 +872,31 @@ static int spinand_create_dirmap(struct spinand_device *spinand,
- 
- 	spinand->dirmaps[plane].rdesc = desc;
- 
-+	if (nand->ecc.engine->integration != NAND_ECC_ENGINE_INTEGRATION_PIPELINED) {
-+		spinand->dirmaps[plane].wdesc_ecc = spinand->dirmaps[plane].wdesc;
-+		spinand->dirmaps[plane].rdesc_ecc = spinand->dirmaps[plane].rdesc;
-+
-+		return 0;
-+	}
-+
-+	info.op_tmpl = *spinand->op_templates.update_cache;
-+	info.op_tmpl.ecc_en = true;
-+	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
-+					  spinand->spimem, &info);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	spinand->dirmaps[plane].wdesc_ecc = desc;
-+
-+	info.op_tmpl = *spinand->op_templates.read_cache;
-+	info.op_tmpl.ecc_en = true;
-+	desc = devm_spi_mem_dirmap_create(&spinand->spimem->spi->dev,
-+					  spinand->spimem, &info);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	spinand->dirmaps[plane].rdesc_ecc = desc;
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 6988956b8492..3aa28240a77f 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -389,6 +389,8 @@ struct spinand_info {
- struct spinand_dirmap {
- 	struct spi_mem_dirmap_desc *wdesc;
- 	struct spi_mem_dirmap_desc *rdesc;
-+	struct spi_mem_dirmap_desc *wdesc_ecc;
-+	struct spi_mem_dirmap_desc *rdesc_ecc;
- };
- 
- /**
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 85e2ff7b840d..3be594be24c0 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -94,6 +94,7 @@ enum spi_mem_data_dir {
-  *		 operation does not involve transferring data
-  * @data.buf.in: input buffer (must be DMA-able)
-  * @data.buf.out: output buffer (must be DMA-able)
-+ * @ecc_en: error correction is required
-  */
- struct spi_mem_op {
- 	struct {
-@@ -126,6 +127,8 @@ struct spi_mem_op {
- 			const void *out;
- 		} buf;
- 	} data;
-+
-+	bool ecc_en;
- };
- 
- #define SPI_MEM_OP(__cmd, __addr, __dummy, __data)		\
 -- 
 2.27.0
 
