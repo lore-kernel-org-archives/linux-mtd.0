@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EE9BC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 10:08:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AC08C433FE
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Dec 2021 10:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kszQ/mQG/gANMoz5AuRUZEQmSBIUP6FLjizemUzGGME=; b=j0S01fKVPd1Mt7
-	r7kVQnrdSUVtIyLJC2IvsFuDd3prAwoldAxkQ6aEqI++EhY4qE4djQVj3Tl2IdqP5jng/EZBSFMK3
-	CyOAFgilMp10QtpCyOFXnzVEg8MeJIuO5uerWxqGKDXzhsQzI9eQdeAK2h38Gv1QXssNawfaI7uXV
-	ryMeq9vR5YkOlXmw1VvjirdWcUm39ODjTf5Tyufx+T3dqg/FiJP1wJ/fBQfoIqmxZpGS9I+30zPf/
-	YUt8YN2cL4RQ8ifei6/ILim4fa699I/Vit7+4BZIYcz77uGZZvENMketW2fEvYxoLC3wqLkonIpEJ
-	k+jrkgpSvLSBGgdvORgQ==;
+	List-Owner; bh=+yt6V3DfNEWTnoHSHJZeV6/ZU/BrAF2I2btxYQSKmZc=; b=pUQBBo4fE1JjqQ
+	ACvEyYXIhIu3aLqDSjmtAiHsGzPh+gZnAflBmqDmHaxzT0jZHBCdyZpe1d7wOW9PB01BJqwmdlHVH
+	aPKMaStgRigi7Uzyqo5hKp5bZImxr0NiQbVQrjrr8tp/arNKwqSML38uXJkJVpl4vOvHkXsOBwIS3
+	ND87TnmDSOWDUrLLtseaWLzAB3sKHqLgV+rUqlWut55nc/E2xoCwbetWnAlu8avYqFBh0wYy1NiXO
+	CqQIG+PJOykeIrCmB1r8SyN0LHPNqY8j6AOvLvIkmVcvPmyG14Khbzj1r711xVv+m0wijp5jNbhuh
+	wSOanWU+fydq5UzoMc6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muXOC-007whG-Hx; Tue, 07 Dec 2021 10:08:00 +0000
+	id 1muXQk-007xAG-Bd; Tue, 07 Dec 2021 10:10:38 +0000
 Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muWsE-007p5K-FB
- for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:35:00 +0000
+ id 1muWsG-007p6P-3o
+ for linux-mtd@lists.infradead.org; Tue, 07 Dec 2021 09:35:02 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 7F5C160014;
- Tue,  7 Dec 2021 09:34:55 +0000 (UTC)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 30FDF60025;
+ Tue,  7 Dec 2021 09:34:57 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,18 +39,17 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Zhengxun Li <zhengxunli@mxic.com.tw>
-Subject: [PATCH v3 21/22] spi: mxic: Add support for direct mapping
-Date: Tue,  7 Dec 2021 10:34:21 +0100
-Message-Id: <20211207093422.166934-22-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v3 22/22] spi: mxic: Add support for pipelined ECC operations
+Date: Tue,  7 Dec 2021 10:34:22 +0100
+Message-Id: <20211207093422.166934-23-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 References: <20211207093422.166934-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211207_013458_837572_530076BB 
-X-CRM114-Status: GOOD (  16.34  )
+X-CRM114-CacheID: sfid-20211207_013500_490160_AC22A2DC 
+X-CRM114-Status: GOOD (  18.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,189 +66,221 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement the ->dirmap_create() and ->dirmap_read/write() hooks to
-provide a fast path for read and write accesses.
+Some SPI-NAND chips do not have a proper on-die ECC engine providing
+error correction/detection. This is particularly an issue on embedded
+devices with limited resources because all the computations must
+happen in software, unless an external hardware engine is provided.
+
+These external engines are new and can be of two categories: external
+or pipelined. Macronix is providing both, the former being already
+supported. The second, however, is very SoC implementation dependent
+and must be instantiated by the SPI host controller directly.
+
+An entire subsystem has been contributed to support these engines which
+makes the insertion into another subsystem such as SPI quite
+straightforward without the need for a lot of specific functions.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Zhengxun Li <zhengxunli@mxic.com.tw>
-Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/spi/spi-mxic.c | 112 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 109 insertions(+), 3 deletions(-)
+ drivers/spi/Kconfig    |   2 +-
+ drivers/spi/spi-mxic.c | 112 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 111 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 83e352b0c8f9..bff75629e872 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -856,7 +856,7 @@ config SPI_SYNQUACER
+ 
+ config SPI_MXIC
+ 	tristate "Macronix MX25F0A SPI controller"
+-	depends on SPI_MASTER
++	depends on SPI_MASTER && MTD_NAND_ECC
+ 	help
+ 	  This selects the Macronix MX25F0A SPI controller driver.
+ 
 diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 3c4e64cbe812..485a7f2afb44 100644
+index 485a7f2afb44..a180165281e5 100644
 --- a/drivers/spi/spi-mxic.c
 +++ b/drivers/spi/spi-mxic.c
-@@ -172,6 +172,11 @@ struct mxic_spi {
+@@ -12,6 +12,8 @@
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand-ecc-mxic.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/spi/spi.h>
+@@ -167,6 +169,7 @@
+ #define HW_TEST(x)		(0xe0 + ((x) * 4))
+ 
+ struct mxic_spi {
++	struct device *dev;
+ 	struct clk *ps_clk;
+ 	struct clk *send_clk;
  	struct clk *send_dly_clk;
- 	void __iomem *regs;
- 	u32 cur_speed_hz;
+@@ -177,6 +180,12 @@ struct mxic_spi {
+ 		dma_addr_t dma;
+ 		size_t size;
+ 	} linear;
++
 +	struct {
-+		void __iomem *map;
-+		dma_addr_t dma;
-+		size_t size;
-+	} linear;
++		bool use_pipelined_conf;
++		struct nand_ecc_engine *pipelined_engine;
++		void *ctx;
++	} ecc;
  };
  
  static int mxic_spi_clk_enable(struct mxic_spi *mxic)
-@@ -296,7 +301,8 @@ static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
- 	       HC_CFG_SLV_ACT(spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1);
- }
+@@ -400,7 +409,15 @@ static ssize_t mxic_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
+ 	       LMODE_EN,
+ 	       mxic->regs + LRD_CTRL);
  
--static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op)
-+static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op,
-+				    unsigned int data_len)
- {
- 	u32 cfg = OP_CMD_BYTES(op->cmd.nbytes) |
- 		  OP_CMD_BUSW(fls(op->cmd.buswidth) - 1) |
-@@ -310,7 +316,8 @@ static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op)
- 	if (op->dummy.nbytes)
- 		cfg |= OP_DUMMY_CYC(op->dummy.nbytes);
+-	memcpy_fromio(buf, mxic->linear.map, len);
++	if (mxic->ecc.use_pipelined_conf && desc->info.op_tmpl.ecc_en) {
++		ret = mxic_ecc_process_data_pipelined(mxic->ecc.pipelined_engine,
++						      NAND_PAGE_READ,
++						      mxic->linear.dma + offs);
++		if (ret)
++			return ret;
++	} else {
++		memcpy_fromio(buf, mxic->linear.map, len);
++	}
  
--	if (op->data.nbytes) {
-+	/* Direct mapping data.nbytes field is not populated */
-+	if (data_len) {
- 		cfg |= OP_DATA_BUSW(fls(op->data.buswidth) - 1) |
- 		       (op->data.dtr ? OP_DATA_DDR : 0);
- 		if (op->data.dir == SPI_MEM_DATA_IN) {
-@@ -371,6 +378,77 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
+ 	writel(INT_LRD_DIS, mxic->regs + INT_STS);
+ 	writel(0, mxic->regs + LRD_CTRL);
+@@ -436,7 +453,15 @@ static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
+ 	       LMODE_EN,
+ 	       mxic->regs + LWR_CTRL);
+ 
+-	memcpy_toio(mxic->linear.map, buf, len);
++	if (mxic->ecc.use_pipelined_conf && desc->info.op_tmpl.ecc_en) {
++		ret = mxic_ecc_process_data_pipelined(mxic->ecc.pipelined_engine,
++						      NAND_PAGE_WRITE,
++						      mxic->linear.dma + offs);
++		if (ret)
++			return ret;
++	} else {
++		memcpy_toio(mxic->linear.map, buf, len);
++	}
+ 
+ 	writel(INT_LWR_DIS, mxic->regs + INT_STS);
+ 	writel(0, mxic->regs + LWR_CTRL);
+@@ -615,6 +640,80 @@ static int mxic_spi_transfer_one(struct spi_master *master,
  	return 0;
  }
  
-+static ssize_t mxic_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
-+					u64 offs, size_t len, void *buf)
++/* ECC wrapper */
++static int mxic_spi_mem_ecc_init_ctx(struct nand_device *nand)
 +{
-+	struct mxic_spi *mxic = spi_master_get_devdata(desc->mem->spi->master);
-+	int ret;
-+	u32 sts;
++	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
++	struct mxic_spi *mxic = nand->ecc.engine->priv;
 +
-+	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
-+		return -EINVAL;
++	mxic->ecc.use_pipelined_conf = true;
 +
-+	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
-+
-+	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
-+	       mxic->regs + LRD_CFG);
-+	writel(desc->info.offset + offs, mxic->regs + LRD_ADDR);
-+	len = min_t(size_t, len, mxic->linear.size);
-+	writel(len, mxic->regs + LRD_RANGE);
-+	writel(LMODE_CMD0(desc->info.op_tmpl.cmd.opcode) |
-+	       LMODE_SLV_ACT(desc->mem->spi->chip_select) |
-+	       LMODE_EN,
-+	       mxic->regs + LRD_CTRL);
-+
-+	memcpy_fromio(buf, mxic->linear.map, len);
-+
-+	writel(INT_LRD_DIS, mxic->regs + INT_STS);
-+	writel(0, mxic->regs + LRD_CTRL);
-+
-+	ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+				 sts & INT_LRD_DIS, 0, USEC_PER_SEC);
-+	if (ret)
-+		return ret;
-+
-+	return len;
++	return ops->init_ctx(nand);
 +}
 +
-+static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
-+					 u64 offs, size_t len,
-+					 const void *buf)
++static void mxic_spi_mem_ecc_cleanup_ctx(struct nand_device *nand)
 +{
-+	struct mxic_spi *mxic = spi_master_get_devdata(desc->mem->spi->master);
-+	u32 sts;
-+	int ret;
++	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
++	struct mxic_spi *mxic = nand->ecc.engine->priv;
 +
-+	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
-+		return -EINVAL;
++	mxic->ecc.use_pipelined_conf = false;
 +
-+	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
-+
-+	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
-+	       mxic->regs + LWR_CFG);
-+	writel(desc->info.offset + offs, mxic->regs + LWR_ADDR);
-+	len = min_t(size_t, len, mxic->linear.size);
-+	writel(len, mxic->regs + LWR_RANGE);
-+	writel(LMODE_CMD0(desc->info.op_tmpl.cmd.opcode) |
-+	       LMODE_SLV_ACT(desc->mem->spi->chip_select) |
-+	       LMODE_EN,
-+	       mxic->regs + LWR_CTRL);
-+
-+	memcpy_toio(mxic->linear.map, buf, len);
-+
-+	writel(INT_LWR_DIS, mxic->regs + INT_STS);
-+	writel(0, mxic->regs + LWR_CTRL);
-+
-+	ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+				 sts & INT_LWR_DIS, 0, USEC_PER_SEC);
-+	if (ret)
-+		return ret;
-+
-+	return len;
++	ops->cleanup_ctx(nand);
 +}
 +
- static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 				     const struct spi_mem_op *op)
- {
-@@ -396,6 +474,22 @@ static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 		return spi_mem_dtr_supports_op(mem, op);
- }
- 
-+static int mxic_spi_mem_dirmap_create(struct spi_mem_dirmap_desc *desc)
++static int mxic_spi_mem_ecc_prepare_io_req(struct nand_device *nand,
++					   struct nand_page_io_req *req)
 +{
-+	struct mxic_spi *mxic = spi_master_get_devdata(desc->mem->spi->master);
++	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
 +
-+	if (!mxic->linear.map)
-+		return -EINVAL;
++	return ops->prepare_io_req(nand, req);
++}
 +
-+	if (desc->info.offset + desc->info.length > U32_MAX)
-+		return -EINVAL;
++static int mxic_spi_mem_ecc_finish_io_req(struct nand_device *nand,
++					  struct nand_page_io_req *req)
++{
++	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
 +
-+	if (!mxic_spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
++	return ops->finish_io_req(nand, req);
++}
++
++static struct nand_ecc_engine_ops mxic_spi_mem_ecc_engine_pipelined_ops = {
++	.init_ctx = mxic_spi_mem_ecc_init_ctx,
++	.cleanup_ctx = mxic_spi_mem_ecc_cleanup_ctx,
++	.prepare_io_req = mxic_spi_mem_ecc_prepare_io_req,
++	.finish_io_req = mxic_spi_mem_ecc_finish_io_req,
++};
++
++static void mxic_spi_mem_ecc_remove(struct mxic_spi *mxic)
++{
++	if (mxic->ecc.pipelined_engine) {
++		mxic_ecc_put_pipelined_engine(mxic->ecc.pipelined_engine);
++		nand_ecc_unregister_on_host_hw_engine(mxic->ecc.pipelined_engine);
++	}
++}
++
++static int mxic_spi_mem_ecc_probe(struct platform_device *pdev,
++				  struct mxic_spi *mxic)
++{
++	struct nand_ecc_engine *eng;
++
++	if (!mxic_ecc_get_pipelined_ops())
 +		return -EOPNOTSUPP;
++
++	eng = mxic_ecc_get_pipelined_engine(pdev);
++	if (IS_ERR(eng))
++		return PTR_ERR(eng);
++
++	eng->dev = &pdev->dev;
++	eng->integration = NAND_ECC_ENGINE_INTEGRATION_PIPELINED;
++	eng->ops = &mxic_spi_mem_ecc_engine_pipelined_ops;
++	eng->priv = mxic;
++	mxic->ecc.pipelined_engine = eng;
++	nand_ecc_register_on_host_hw_engine(eng);
 +
 +	return 0;
 +}
 +
- static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
+ static int __maybe_unused mxic_spi_runtime_suspend(struct device *dev)
  {
-@@ -412,7 +506,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
+ 	struct spi_master *master = dev_get_drvdata(dev);
+@@ -660,6 +759,7 @@ static int mxic_spi_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, master);
  
- 	writel(HC_EN_BIT, mxic->regs + HC_EN);
+ 	mxic = spi_master_get_devdata(master);
++	mxic->dev = &pdev->dev;
  
--	writel(mxic_spi_mem_prep_op_cfg(op),
-+	writel(mxic_spi_mem_prep_op_cfg(op, op->data.nbytes),
- 	       mxic->regs + SS_CTRL(mem->spi->chip_select));
+ 	master->dev.of_node = pdev->dev.of_node;
  
- 	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
-@@ -454,6 +548,9 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- static const struct spi_controller_mem_ops mxic_spi_mem_ops = {
- 	.supports_op = mxic_spi_mem_supports_op,
- 	.exec_op = mxic_spi_mem_exec_op,
-+	.dirmap_create = mxic_spi_mem_dirmap_create,
-+	.dirmap_read = mxic_spi_mem_dirmap_read,
-+	.dirmap_write = mxic_spi_mem_dirmap_write,
- };
+@@ -705,6 +805,12 @@ static int mxic_spi_probe(struct platform_device *pdev)
  
- static void mxic_spi_set_cs(struct spi_device *spi, bool lvl)
-@@ -583,6 +680,15 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	if (IS_ERR(mxic->regs))
- 		return PTR_ERR(mxic->regs);
+ 	mxic_spi_hw_init(mxic);
  
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
-+	mxic->linear.map = devm_ioremap_resource(&pdev->dev, res);
-+	if (!IS_ERR(mxic->linear.map)) {
-+		mxic->linear.dma = res->start;
-+		mxic->linear.size = resource_size(res);
-+	} else {
-+		mxic->linear.map = NULL;
++	ret = mxic_spi_mem_ecc_probe(pdev, mxic);
++	if (ret == -EPROBE_DEFER) {
++		pm_runtime_disable(&pdev->dev);
++		return ret;
 +	}
 +
- 	pm_runtime_enable(&pdev->dev);
- 	master->auto_runtime_pm = true;
+ 	ret = spi_register_master(master);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "spi_register_master failed\n");
+@@ -717,8 +823,10 @@ static int mxic_spi_probe(struct platform_device *pdev)
+ static int mxic_spi_remove(struct platform_device *pdev)
+ {
+ 	struct spi_master *master = platform_get_drvdata(pdev);
++	struct mxic_spi *mxic = spi_master_get_devdata(master);
  
+ 	pm_runtime_disable(&pdev->dev);
++	mxic_spi_mem_ecc_remove(mxic);
+ 	spi_unregister_master(master);
+ 
+ 	return 0;
 -- 
 2.27.0
 
