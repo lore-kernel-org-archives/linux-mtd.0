@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C5C3C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FC63C433F5
 	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 16:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,40 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qzxC3gBOO28wxK40OaUb1fQsB+3pbPS24FZqvAZHbs0=; b=ofLoLq7qD0PI9f
-	jqSbf+04ZOqJFWtWanLg5UVZvwCWKOflz2U5KpUepRdNCP9OtAolIGiiYNB/mgsbtu2bp8m2Fjt8Z
-	aBb+e7mpbUS4sFiSXZp9RcLHUBVGYkmD0FAH5R7j5fOXcRYr99BH5KA0H0aQUadsVtnIPToyFjObu
-	dY16GMvHMzLG85HZu1BsxATVlqSaILwLxC2kR4Gy/vz2gqN/0spEgaw+gL0ly8HbuoRSTYa8EFCrE
-	vRzJ4Pijhb7BlhkA94UE5zp32GLCyfVyXbum5wWyDD1b1rIPzqS5RyXVkO2WmZXe/FO36nA0ItkaC
-	GYEIrEu4tyiEPuO/XzUQ==;
+	List-Owner; bh=u+HYvqUfOdTQbLehmDV9fYc/s3SMirwLKpx5V3YNpc4=; b=JfcDLZTRphRVFb
+	5EqKs8bjuS3q5LDQqpPUqj86pvTy7x1MVV25//rRfEe2JieE1fMQOVybBamDtRaixGG4Iq7S4lL5S
+	p8LOzOtWUwpotDvsKHR9gshmVZTsCmYYb4rQcrieh3dgbltCCXZKBakhy0La5yBjGjcRPdwHX8nDO
+	2q+HVfLAaGLBXA4lKVr4xC7Gc5sOy/1FVt16tuEpQ+YH3lW8DYzFYOqSXbjL+fBOOJqLdcYRrkPiP
+	qImd1tmOTxFgRMapGijVbq+YoOt1wRzen96nQn7yYl5jkO4fuQ/pdqPfJOeQ4j05lVeHf13MqEzAl
+	rwKo9D8hdi56V78Xu/0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvMct-00GlhO-9q; Thu, 09 Dec 2021 16:50:35 +0000
-Received: from relay1-d.mail.gandi.net ([217.70.183.193])
+	id 1mvMcd-00Glaj-DL; Thu, 09 Dec 2021 16:50:19 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvMcd-00Glap-Qv
- for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 16:50:21 +0000
+ id 1mvMcY-00GlZ7-0P
+ for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 16:50:15 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id EF45424000B;
- Thu,  9 Dec 2021 16:50:14 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id E3EEF200002;
+ Thu,  9 Dec 2021 16:50:08 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Colin Ian King <colin.i.king@gmail.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Rob Herring <robh@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: onenand: remove redundant variable ooblen
-Date: Thu,  9 Dec 2021 17:50:14 +0100
-Message-Id: <20211209165014.528564-1-miquel.raynal@bootlin.com>
+ Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@kernel.org>
+Cc: devicetree@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: ti,gpmc-nand: Add missing 'rb-gpios'
+Date: Thu,  9 Dec 2021 17:50:08 +0100
+Message-Id: <20211209165008.528500-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211205230729.79337-1-colin.i.king@gmail.com>
+In-Reply-To: <20211206174209.2297565-1-robh@kernel.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'df87a1efb8372bc119abb5757a458d688ae2d580'
+X-linux-mtd-patch-commit: b'c14e281a8e763442f73dfcb9830e6b58fbfb731e'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211209_085020_051175_6CE70468 
-X-CRM114-Status: UNSURE (   6.79  )
+X-CRM114-CacheID: sfid-20211209_085014_211759_AE6F3023 
+X-CRM114-Status: UNSURE (   8.36  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -65,12 +63,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 2021-12-05 at 23:07:29 UTC, Colin Ian King wrote:
-> Variable ooblen is being initialized with a value that is never read.
-> The variable is never used after this, so it is redundant and can be
-> removed.
+On Mon, 2021-12-06 at 17:42:09 UTC, Rob Herring wrote:
+> With 'unevaluatedProperties' support implemented, the TI GPMC example
+> has a warning:
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Documentation/devicetree/bindings/memory-controllers/ti,gpmc.example.dt.yaml: nand@0,0: Unevaluated properties are not allowed ('rb-gpios' was unexpected)
+> 
+> Add the missing definition for 'rb-gpios'.
+> 
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Roger Quadros <rogerq@kernel.org>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> Reviewed-by: Roger Quadros <rogerq@kernel.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
