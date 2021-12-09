@@ -4,79 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20933C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Dec 2021 16:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF9AEC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 09:06:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IRS9aOCbX/IwYWG1QFzhdh2Pwgy225DOMMNQet+8JSQ=; b=NN4fLslR88NH/v
-	VMX0L4PXc8YbxXCF/Ra9bZ7T7X835G8SmFXJ41psKc511UC6qC267euc8GOBFEtGqeSCrUcH2emI6
-	Wyk7foCeIka8UByGedvZ9kltuwO94Pvep/5qbENYE07FQccEBg0B9/wnwEQng7wbLBq2eDya9iUGx
-	1Iihj8MSvieJuPEfFxLEydDU9k1excCqvL3D5h2sldxBIC7qU5sxrB4eX9xI4DMxNAZyNUKI8bG6Q
-	D2IoQAnRB55kUpUu+c7CFk7AkE76ypt1ErUQmxDO14VzYDJbf+4Yr/jbEzYMHLSulh0F0LMtbwDfS
-	aCCAQR1s6wy5IwWPGaVA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LPp7af5m8dctOCBKdSBQ4mBPY41a4pnwQaJushK35vo=; b=OPOWnNFJ9oY077
+	AHuv7Jz7nxsHQzrv703CmjBy8iCBhkajMZzJlBul4jXrV3eXopaNHOqIoLMjijHyGEzcyfgZulCZz
+	cL4O2874SGMrvXu3Fk4U8mJzfgs4BqF1hXT5/X4XHETuvAwon5a/ne3PkI4RE1Rei3lk+HN3bywXZ
+	i/4+ghY5sp2sUErVHkTWL+5SaDehXJ2rnwT5w5N8YBdccuudL+eQeXeoA0gMJLRSR6yBo3t2wSfUm
+	nfZ+AGRA7yiPh1zULzwFoxKKlwtS4oDudvBGHfI/kR8LbMq/w/hAGaSwbe1mYyPKVEGxwx/r92n61
+	cP3LjEvv9o7ROl2caPmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1muzvX-00Dats-1N; Wed, 08 Dec 2021 16:36:19 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1mvFMV-00FJZV-EV; Thu, 09 Dec 2021 09:05:11 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1muzvS-00DasG-TD
- for linux-mtd@lists.infradead.org; Wed, 08 Dec 2021 16:36:16 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1B8GZwTu049909;
- Wed, 8 Dec 2021 10:35:58 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1638981358;
- bh=tw3OwjdRj9vPXb5r6L5qlp2b1Rq60gScqhejarKuboQ=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=phbfquo7sSUEfHU3aehyPafiMJo3S0rXoxXzAtxBVx3QZ0HamrR/0CUim9lktODSN
- s1eGtSrDum7rCKBfDsfn8S5h+wdpPkNhICmhgtoj9HikZfKwTu3xsYPL1EPdm3a/1g
- Z0mHyVdb4CyP8pZXtM2Ojfscbd/ejU9F/4zG3MNA=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1B8GZwZI066212
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 8 Dec 2021 10:35:58 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 8
- Dec 2021 10:35:58 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 8 Dec 2021 10:35:58 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1B8GZw1I075184;
- Wed, 8 Dec 2021 10:35:58 -0600
-Date: Wed, 8 Dec 2021 10:35:58 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Roger Quadros <rogerq@kernel.org>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <kishon@ti.com>, <tony@atomide.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
- AM64 SoC
-Message-ID: <20211208163558.5pvs7j7cmwwpmzrk@trickily>
-References: <20211123103609.14063-1-rogerq@kernel.org>
- <20211123103609.14063-5-rogerq@kernel.org>
- <20211124131552.6b9bc506@xps13>
- <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
- <20211126104231.7cc43149@xps13>
- <917ac002-9d4b-237d-94f3-bcd05f481f39@kernel.org>
- <20211129043633.myxmgp6idbrqvx5p@unlisted>
- <e36c46e2-1d0d-4dac-e9a0-3a0cbdd023fa@kernel.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e36c46e2-1d0d-4dac-e9a0-3a0cbdd023fa@kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ id 1mvFMS-00FJXT-HH
+ for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 09:05:09 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 48536B823F7;
+ Thu,  9 Dec 2021 09:05:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6161DC004DD;
+ Thu,  9 Dec 2021 09:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1639040704;
+ bh=+Uks86XpZtorbWZGFtvvEcGW8QVq+3G7N42yvIktwrk=;
+ h=From:To:Cc:Subject:Date:From;
+ b=NC0kBq1IL64fhjw5ghq+QUvQD5x9SwnDRKPAyQUo5W5qHuoLfeo1+Ji1fUCzyW0WM
+ UsxydwVmeMN4ane9FpvxnabG/7ng4GFZ5drHA/qeEzUD2+2Vi+VipaKucXLi3btwhV
+ EjG+eXYXYPyZEIqO/YoP+vGgDangZPKj1Lp+aeavV0Ql7fGMyDGZzX7G8R7IE0zeSO
+ ZGlvrFGEi+Y2f4f+wdJH3G7uPqfyqOUn0T0IXs29LjhdbZqJz3IZ82DKRjPLnhv4Zb
+ 9m7Y2+6gCpR+HW62QBjhi0ziZsiZ20P7mj6du4kW7xNoIhvB+28iFTVdGmcoMhq5hz
+ G3IZe0IoHb7qw==
+From: Roger Quadros <rogerq@kernel.org>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at
+Cc: vigneshr@ti.com, kishon@ti.com, nm@ti.com, tony@atomide.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v2 0/6] mtd: nand: omap2: Switch to exec_ops, support AM64 SoC
+Date: Thu,  9 Dec 2021 11:04:52 +0200
+Message-Id: <20211209090458.24830-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211208_083615_118807_4FE6FC43 
-X-CRM114-Status: UNSURE (   9.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211209_010508_754774_6C137835 
+X-CRM114-Status: GOOD (  10.30  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,37 +66,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 16:45-20211208, Roger Quadros wrote:
-[..]
+Hi,
 
-> Did I understand correctly that we can use a different compatible for older SoC
-> in the overlay? e.g. ti,am642-es1.0 ?
+This series gets rid of the Legacy ops and switches to exec_ops framework.
 
-If that is what we would desire. There are a few SR1.0 (not ES1.0)
-examples for previous devices in [1]
+Also add support for TI's AM64 SoC which contains a GPMC NAND controller.
 
-NOTE: the dts in k.org will always point to the latest production SRx.y
-device that has been released to market (aka products going to market).
-previous pre-production SR support tends to be with overlays for various
-quirks.
+Changelog:
+v2
+- Dropped the quirk code for AM64 SR1.0. Will add this later when
+there is more clarity on compatible ID that will be used for this SoC.
+Production version of AM64 SoC shouldn't require this quirk.
+- Changed commit message title to "mtd: rawnand: omap2:"
+- Added 2 new patches.
+	1) fixes force_8bit behaviour for DMA mode
+	2) drops unused variable
 
-> 
-> If so then I can get rid of soc_device_match and use compatibles matching only in this patch.
+Roger Quadros (6):
+  dt-bindings: mtd: ti,gpmc-nand: Add compatible for AM64 NAND
+  mtd: rawnand: omap2: Allow build on K3 platforms
+  mtd: rawnand: omap2: move to exec_op interface
+  mtd: rawnand: omap2: Add compatible for AM64 SoC
+  mtd: rawnand: omap2: fix force_8bit flag behaviour for DMA mode
+  mtd: rawnand: omap2: drop unused variable
 
-As appropriate for the subsystem.
-
-
-[1] https://git.ti.com/cgit/ti-linux-kernel/ti-upstream-tools/tree/arch/arm64/boot/dts/ti
+ .../devicetree/bindings/mtd/ti,gpmc-nand.yaml |   5 +-
+ drivers/mtd/nand/raw/Kconfig                  |   2 +-
+ drivers/mtd/nand/raw/omap2.c                  | 503 ++++++++----------
+ 3 files changed, 226 insertions(+), 284 deletions(-)
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
