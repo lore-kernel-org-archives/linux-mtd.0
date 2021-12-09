@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20FA7C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 17:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8022C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 17:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=96oLXQkfHR2kKHhb/SnzzSTdxlkGoEWyX6IlkShlJx8=; b=bRX2T5AnZfwdjU
-	iZXHwoZMcdYJQX2/MXQcZeeKy6TKfGPVNuUqidQSMY77p1WyRfuBEFdZh/slgL92ZZ3etkhhzZI+S
-	/UvoskPYcZXfIyFmseNSuGWZVuXjsWr1Gr8h69DCZMJYYaUOKy+0oSPue93g8bWsHJONSaBUXgJPU
-	snfexNQUEU0lJ5UCF2Sd0iMP1qYMl3ReBZ35zu+MdF+wW7dygleUlQ+CUak0iOc0h0h6O9oGbhoCV
-	j2GVe4ARJsHcTnBFwVOAkD4MrROPqvCordiRVPDTr1qo7NnE9naoW19m+KsrCJyn8dI1AGu835nWW
-	mz4Vk7FT8dQk0I+VVF8w==;
+	List-Owner; bh=QrjC/jJ/RYOC7t/TX/JYWZbRG+HbPd1hYgTBJ9lMSc8=; b=SbPoHoH+aSUq98
+	tFqPBfadiSb4Y+woTHgXWnNWoKIPWoslH2bY/Vfr4vrMTOc/hgf4Lr3jMRK6eiYxu1IhZ3b78xn37
+	qu66e3ZSvct+yZMFJ1O5qR3RaKo9Hzt8ujLAo795fveNbr2106FjnpuUlmf/l9S7A1Dl4wI+6/WYM
+	s3YTpFaWrLdW6MiXAlEvTmzmiH7y5LvqZXw60ZCrwFg1vpov5eNEUtBrHXvNYrKzkamNji9rDc8RV
+	V0GVyC+ByKGMmiCbXJgqdCDky6YLSKB2lss/KvKQOd39hLVxYuUrF8JD2VOzCjr9rGMMfgIVxRCVU
+	uNZQqbuPj5WDcQeaOy0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvNRd-00H1wq-DY; Thu, 09 Dec 2021 17:43:01 +0000
+	id 1mvNSF-00H2De-S4; Thu, 09 Dec 2021 17:43:39 +0000
 Received: from relay10.mail.gandi.net ([217.70.178.230])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvNPf-00H1Eb-GP
- for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 17:41:01 +0000
+ id 1mvNPg-00H1FW-OZ
+ for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 17:41:02 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay10.mail.gandi.net (Postfix) with ESMTPSA id CF0B424000C;
- Thu,  9 Dec 2021 17:40:56 +0000 (UTC)
+ by relay10.mail.gandi.net (Postfix) with ESMTPSA id 31EE6240008;
+ Thu,  9 Dec 2021 17:40:58 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -36,17 +36,17 @@ To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
 Cc: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4 04/12] spi: spi-mem: Add an ecc_en parameter to the
- spi_mem_op structure
-Date: Thu,  9 Dec 2021 18:40:38 +0100
-Message-Id: <20211209174046.535229-5-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 05/12] spi: spi-mem: Export the
+ spi_mem_generic_supports_op() helper
+Date: Thu,  9 Dec 2021 18:40:39 +0100
+Message-Id: <20211209174046.535229-6-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211209174046.535229-1-miquel.raynal@bootlin.com>
 References: <20211209174046.535229-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211209_094059_750511_1320A4E4 
-X-CRM114-Status: GOOD (  13.31  )
+X-CRM114-CacheID: sfid-20211209_094100_966672_A5AE2F3F 
+X-CRM114-Status: GOOD (  12.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,85 +63,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Soon the SPI-NAND core will need a way to request a SPI controller to
-enable ECC support for a given operation. This is because of the
-pipelined integration of certain ECC engines, which are directly managed
-by the SPI controller itself.
-
-Introduce a spi_mem_op additional field for this purpose: ecc_en.
-
-So far this field is left unset and checked to be false by all
-the SPI controller drivers in their ->supports_op() hook, as they all
-call spi_mem_default/dtr_supports_op().
+The combination of checks against the number of supported operations is
+going to increase exponentially each time we add a new parameter. So far
+we only had a dtr parameter. Now we are introducing an ECC parameter. We
+need to make this helper available for drivers with specific needs,
+instead of creating another set of helpers each time we want to check
+something new. In the future if we see that many different drivers use
+the same parameter values, we might be tempted to create a specific
+helper for that. But for now, let's just make the generic one available.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c       | 11 ++++++++---
- include/linux/spi/spi-mem.h |  3 +++
- 2 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/spi/spi-mem.c       |  7 ++++---
+ include/linux/spi/spi-mem.h | 13 +++++++++++++
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 013efaaaac75..9e06cd918273 100644
+index 9e06cd918273..48b55395178f 100644
 --- a/drivers/spi/spi-mem.c
 +++ b/drivers/spi/spi-mem.c
-@@ -162,7 +162,7 @@ static bool spi_mem_check_buswidth(struct spi_mem *mem,
+@@ -160,9 +160,9 @@ static bool spi_mem_check_buswidth(struct spi_mem *mem,
+ 	return true;
+ }
  
- static bool spi_mem_generic_supports_op(struct spi_mem *mem,
- 					const struct spi_mem_op *op,
--					bool dtr)
-+					bool dtr, bool ecc)
+-static bool spi_mem_generic_supports_op(struct spi_mem *mem,
+-					const struct spi_mem_op *op,
+-					bool dtr, bool ecc)
++bool spi_mem_generic_supports_op(struct spi_mem *mem,
++				 const struct spi_mem_op *op,
++				 bool dtr, bool ecc)
  {
  	if (!dtr) {
  		if (op->cmd.dtr || op->addr.dtr ||
-@@ -176,20 +176,25 @@ static bool spi_mem_generic_supports_op(struct spi_mem *mem,
- 			return false;
- 	}
+@@ -183,6 +183,7 @@ static bool spi_mem_generic_supports_op(struct spi_mem *mem,
  
-+	if (!ecc) {
-+		if (op->ecc_en)
-+			return false;
-+	}
-+
  	return spi_mem_check_buswidth(mem, op);
  }
++EXPORT_SYMBOL_GPL(spi_mem_generic_supports_op);
  
  bool spi_mem_dtr_supports_op(struct spi_mem *mem,
  			     const struct spi_mem_op *op)
- {
--	return spi_mem_generic_supports_op(mem, op, true);
-+	return spi_mem_generic_supports_op(mem, op, true, false);
- }
- EXPORT_SYMBOL_GPL(spi_mem_dtr_supports_op);
- 
- bool spi_mem_default_supports_op(struct spi_mem *mem,
- 				 const struct spi_mem_op *op)
- {
--	return spi_mem_generic_supports_op(mem, op, false);
-+	return spi_mem_generic_supports_op(mem, op, false, false);
- }
- EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
- 
 diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 85e2ff7b840d..3be594be24c0 100644
+index 3be594be24c0..07f637cbe77d 100644
 --- a/include/linux/spi/spi-mem.h
 +++ b/include/linux/spi/spi-mem.h
-@@ -94,6 +94,7 @@ enum spi_mem_data_dir {
-  *		 operation does not involve transferring data
-  * @data.buf.in: input buffer (must be DMA-able)
-  * @data.buf.out: output buffer (must be DMA-able)
-+ * @ecc_en: error correction is required
-  */
- struct spi_mem_op {
- 	struct {
-@@ -126,6 +127,8 @@ struct spi_mem_op {
- 			const void *out;
- 		} buf;
- 	} data;
-+
-+	bool ecc_en;
- };
+@@ -320,6 +320,10 @@ void spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+ 					  const struct spi_mem_op *op,
+ 					  struct sg_table *sg);
  
- #define SPI_MEM_OP(__cmd, __addr, __dummy, __data)		\
++bool spi_mem_generic_supports_op(struct spi_mem *mem,
++				 const struct spi_mem_op *op,
++				 bool dtr, bool ecc);
++
+ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				 const struct spi_mem_op *op);
+ 
+@@ -327,6 +331,7 @@ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+ 			     const struct spi_mem_op *op);
+ 
+ #else
++
+ static inline int
+ spi_controller_dma_map_mem_op_data(struct spi_controller *ctlr,
+ 				   const struct spi_mem_op *op,
+@@ -342,6 +347,14 @@ spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+ {
+ }
+ 
++static inline
++bool spi_mem_generic_supports_op(struct spi_mem *mem,
++				 const struct spi_mem_op *op,
++				 bool dtr, bool ecc)
++{
++	return false;
++}
++
+ static inline
+ bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				 const struct spi_mem_op *op)
 -- 
 2.27.0
 
