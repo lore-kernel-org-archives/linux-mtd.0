@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FF12C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 19:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55E64C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 19:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=XWR5N8riOEUWKXwT/I+MGPI6O4EvOCDP2hddQiqjExw=; b=EMLO8quQQWGWSj
-	KE0dqNETvpZ5Vhj0eQa9/au62Tuv10uQliIMhYvO4tX3kUGid8tdoPqdaR4q9quXj+98KvnN6xj0f
-	aivITf3hJXwml3iaXk5VJh72YRTxtAT9TQsiL5sGCNhL/zWGFq5dzd1MuU6I+UQbKwXcAeuW/HrMU
-	qo/i13hN8DHmMSB/QHxCk68Xa36ddzfTNDnJTVtpexbPIjz0LtCdMXNha/H1giReMMNXJnXdFRViI
-	d6hnoh7W5TR7Z+I2wMMA2kpyCTovEau5VuIu9N+S+Ds7QGSXdNraRmoOQDVkEIOLV+ntCOP3GhCqa
-	xpHpYxDwp/0l/RwDRCYQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ve+QfS3e6uA4WQqRwyDWWri0iRW+QrqPRedfqjw6Yek=; b=I2k04SECvjIYtB
+	VZCQLYd/JuqtxXrZO7egm2rgHhZVcjee344faEjan4KKvVeYemplUbJWHAVXR0rTNL3VLpqRCArIs
+	bk0rinwHdXsxbdTYDcvNJuLuX7iIsygbg2Trm9wX1T6fN+ksZv6lZ6jW9FDysL5+8vUF2J6AWOvt8
+	G97JZx9y42Cwh3FF6oaH3l7CxEFeNr5ibHTofbLIya12zAhyN/POZ3M/7CmQJvrddTcN9sPPyaS0e
+	MV0nLw88wBc7PGjx7dR1cqHJ/grzcNcGvOIT6Pt9jtJY6nAjcCOAkpCJbstROaWx/Igci0VMHIeiH
+	dYWCUGyPwwVuApzCpT1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvOim-00HJes-MN; Thu, 09 Dec 2021 19:04:48 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1mvOiy-00HJg5-Uy; Thu, 09 Dec 2021 19:05:01 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvOij-00HJde-8R
- for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 19:04:46 +0000
+ id 1mvOim-00HJem-Fd
+ for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 19:04:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1639076685; x=1670612685;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=iz/wXRu33P1x1tyycLT6awGPeINKLjvLTr6sCfJHrCg=;
- b=ZXbtv7z2isUMUHIvdVvhfbiST5FIezFT6PdV/CSZjoQaDppeVV1Um7Ek
- tQnNH0Oh93/Bz7snh3+BUtfPL/LxOo3/eEKdx3hz38Dk2fsnWWMaqJG81
- Terk5Ocow64CTDoKVmHjBUT2a8pVADUtOaoOkOQq9tPlaxcEL0O+psuOm
- GSjasd49f8lq2ReZPi+JeO3fgTjJqI7uCv3LPVTVhk7XXsKcGeNSNulPD
- Kjt8V0p0OgfrIa2tmkwocNZKBGEAmEKVzP7yrbcZqbRsXMCHZ0W7JvMyX
- QUdblCTQrpV2Lm2kYEx/3hUzOSPWPQI4UkP3WPzT3WcWcuMp7jjFSnNH3 w==;
-IronPort-SDR: Dr27Q0Aqr1naB51eowebzSme6O07Q5/fWEyx9gJw4gKlCCRfPyHSK8cZUwzVTc+JOK3dFqT4Jt
- H+ZXjzFzbjqOIbxsVNvoemWtH/hlIjCu6pElXDVRugVZoOLDSPMkSTDbfiReCBuSB8E6pcIgSy
- a/Div93VlCAWrKLOAKuq438zLm0xUIsW9/uU2Ix1O36VWpmXP0lZO4QIZtSwXebRG/NMAKtW87
- Nps+kX1A76FDP7BvKPYTiP0+gjs9uN4fUHCv3iHo+QK3vH1w7JBO94p8RtARELQusdeVe9MLrT
- iPnzGJjcm+rR/ZfyxbeIliwb
-X-IronPort-AV: E=Sophos;i="5.88,193,1635231600"; d="scan'208";a="141897012"
+ t=1639076688; x=1670612688;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=dj+wW0Pf9RQkTEuewd38HNa21MMrpj/logu81RBSntM=;
+ b=bu3axMIaYs3S6IUKHKZf99RlOAudt0kTqkD//tFiCPrOxdi5oWt4Qwoo
+ 6yyxHyQfwmDoqP36k3KH445RoX9PEe7Cvc8q2G65HGflJPpeITL0rEM6Y
+ b3OCzCEpWmcqTCthDVXnruhDXHBosthw7w9BnWqzjeFOe+yBY503cNEI5
+ +uypafbo5804nMbLBLXAr6IiJA8rT/pZzE1IaeyvsGVDS7qusNwv2RZn+
+ NG4dppTzv9KnRRj3zNUC9ZkLA6T09UfCGHyMBTC8Qwh40E+RwBu2ggZbn
+ SoCr32HdaEyVFaAHJANrWXqqx27qqFF1ML1DRvlYcpio/HZQYA0KBRSga Q==;
+IronPort-SDR: 8s9gxUcTAIrXG5MJs9gHK8V0ZCyMf6996xnq5LgxZPr5qCJYoH8choeBsfvS+0rPblUH1Jx+uJ
+ n52uvZ3b4gyzW0mbxIeey7DhgyKn4c09l/wsB4GxrS6UFBQHD78KURZ/aKJSijFXlO/UFSXAwk
+ V5ofeJTQb1Di1SH1jhcmRQ/LYvOqBvWD2OVMfTW9yWHoQQu2NiCHayca4QpaCl6Vq+KogJlPps
+ T4XGYl3EzY0w9PCbC90p2WcxB5ENM2jejEkt/L8USdVakzFI5SXGpBjpFAeYuaNeArPgXq3Wq4
+ Rw7Yypg0KEcr8+Av2NgDhNnj
+X-IronPort-AV: E=Sophos;i="5.88,193,1635231600"; d="scan'208";a="146135773"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 09 Dec 2021 12:04:42 -0700
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 09 Dec 2021 12:04:45 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 9 Dec 2021 12:04:42 -0700
+ 15.1.2176.14; Thu, 9 Dec 2021 12:04:45 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Thu, 9 Dec 2021 12:04:39 -0700
+ 15.1.2375.17 via Frontend Transport; Thu, 9 Dec 2021 12:04:42 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <p.yadav@ti.com>, <michael@walle.cc>
 CC: <vigneshr@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <nicolas.ferre@microchip.com>, <zhengxunli@mxic.com.tw>,
  <jaimeliao@mxic.com.tw>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 1/2] mtd: spi-nor: core: Introduce SPI_NOR_SOFT_RESET
- flash_info fixup_flag
-Date: Thu, 9 Dec 2021 21:04:35 +0200
-Message-ID: <20211209190436.401946-1-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 2/2] mtd: spi-nor: macronix: Add support for mx66lm1g45g
+Date: Thu, 9 Dec 2021 21:04:36 +0200
+Message-ID: <20211209190436.401946-2-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211209190436.401946-1-tudor.ambarus@microchip.com>
+References: <20211209190436.401946-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211209_110445_444134_8B900AA6 
-X-CRM114-Status: GOOD (  11.39  )
+X-CRM114-CacheID: sfid-20211209_110448_581338_76BC6560 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,59 +86,161 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Soft Reset and Rescue Sequence Support is defined in BFPT_DWORD(16)
-starting with JESD216A. The first version of SFDP, JESD216 (April 2011),
-defines just the first 9 BFPT DWORDS, thus it does not contain information
-about the Software Reset and Rescue Support. Since this support can not
-be discovered by parsing the first SFDP version, introduce a flash_info
-fixup_flag that will be used either by flashes that define
-JESD216 (April 2011) or by flashes that do not define SFDP at all.
-In case a flash defines BFPT_DWORD(16) but with wrong values, one should
-instead use a post_bfpt() hook and set SNOR_F_SOFT_RESET.
+mx66lm1g45g supports just 1-1-1, 8-8-8 and 8d-8d-8d modes. There are
+versions of mx66lm1g45g which do not support SFDP, thus use
+SPI_NOR_SKIP_SFDP. The RDID command issued through the octal peripheral
+interface outputs data always in STR mode for whatever reason. Since
+8d-8d-8s is not common, avoid reading the ID when enabling the octal dtr
+mode. Instead, read back the CR2 to check if the switch was successful.
+Tested in 1-1-1 and 8d-8d-8d modes using sama7g5 QSPI IP.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
-v2: no changes
+v2: SPI_NOR_SOFT_RESET as a FIXUP_FLAG
 
- drivers/mtd/spi-nor/core.c | 3 +++
- drivers/mtd/spi-nor/core.h | 3 +++
- 2 files changed, 6 insertions(+)
+# cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
+c2853b
+# cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
+macronix
+# cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/partname
+mx66lm1g45g
+# cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp
+cat: can't open '/sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp': No such file or directory
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2e21d5ac0e2d..32d80fdaa2a2 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2699,6 +2699,9 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
+ drivers/mtd/spi-nor/macronix.c | 113 +++++++++++++++++++++++++++++++++
+ 1 file changed, 113 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 67aaa83038b6..9d71149233e3 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -32,6 +32,112 @@ static struct spi_nor_fixups mx25l25635_fixups = {
+ 	.post_bfpt = mx25l25635_post_bfpt_fixups,
+ };
  
- 	if (fixup_flags & SPI_NOR_IO_MODE_EN_VOLATILE)
- 		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
++#define SPINOR_OP_READ_CR2		0x71
++#define SPINOR_OP_WRITE_CR2		0x72
++#define SPINOR_OP_MX_DTR_RD		0xee
 +
-+	if (fixup_flags & SPI_NOR_SOFT_RESET)
-+		nor->flags |= SNOR_F_SOFT_RESET;
- }
++#define SPINOR_REG_CR2_MODE_ADDR	0
++#define SPINOR_REG_CR2_DTR_OPI_ENABLE	BIT(1)
++#define SPINOR_REG_CR2_SPI		0
++
++#define SPINOR_REG_CR2_DUMMY_ADDR	0x300
++#define SPINOR_REG_CR2_DUMMY_20		0
++
++static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool enable)
++{
++	struct spi_mem_op op;
++	int ret;
++
++	/* Use 20 dummy cycles for memory array reads. */
++	if (enable) {
++		nor->bouncebuf[0] = SPINOR_REG_CR2_DUMMY_20;
++		op = (struct spi_mem_op)
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRITE_CR2, 1),
++				   SPI_MEM_OP_ADDR(4, SPINOR_REG_CR2_DUMMY_ADDR,
++						   1),
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
++
++		ret = spi_nor_write_enable(nor);
++		if (ret)
++			return ret;
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++		if (ret)
++			return ret;
++
++		ret = spi_nor_wait_till_ready(nor);
++		if (ret)
++			return ret;
++	}
++
++	/* Set/unset the octal and DTR enable bits. */
++	if (enable)
++		nor->bouncebuf[0] = SPINOR_REG_CR2_DTR_OPI_ENABLE;
++	else
++		nor->bouncebuf[0] = SPINOR_REG_CR2_SPI;
++
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRITE_CR2, 1),
++			   SPI_MEM_OP_ADDR(4, SPINOR_REG_CR2_MODE_ADDR, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
++	if (!enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
++
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	/* Read back CR2 to make sure the switch was successful. */
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_READ_CR2, 1),
++			   SPI_MEM_OP_ADDR(4, SPINOR_REG_CR2_MODE_ADDR, 1),
++			   SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
++			   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
++	if (enable)
++		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
++
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	if (enable) {
++		if (nor->bouncebuf[0] != SPINOR_REG_CR2_DTR_OPI_ENABLE) {
++			dev_dbg(nor->dev, "Failed to enable 8d-8d-8d mode.\n");
++			return -EINVAL;
++		}
++	} else if (nor->bouncebuf[0] != SPINOR_REG_CR2_SPI) {
++		dev_dbg(nor->dev, "Failed to disable 8d-8d-8d mode.\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void mx66lm1g45g_late_init(struct spi_nor *nor)
++{
++	nor->params->octal_dtr_enable = spi_nor_macronix_octal_dtr_enable;
++
++	/* Set the Fast Read settings. */
++	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
++	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
++				  0, 20, SPINOR_OP_MX_DTR_RD,
++				  SNOR_PROTO_8_8_8_DTR);
++
++	nor->cmd_ext_type = SPI_NOR_EXT_INVERT;
++	nor->params->rdsr_dummy = 4;
++	nor->params->rdsr_addr_nbytes = 4;
++}
++
++static struct spi_nor_fixups mx66lm1g45g_fixups = {
++	.late_init = mx66lm1g45g_late_init,
++};
++
+ static const struct flash_info macronix_parts[] = {
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1)
+@@ -100,6 +206,13 @@ static const struct flash_info macronix_parts[] = {
+ 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
++	{ "mx66lm1g45g", INFO(0xc2853b, 0, 64 * 1024, 2048)
++		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SECT_4K |
++			      SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP)
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE |
++			    SPI_NOR_SOFT_RESET)
++		.fixups = &mx66lm1g45g_fixups,
++	},
+ };
  
- /**
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 2afb610853a9..70c6bb7f5f04 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -373,6 +373,8 @@ struct spi_nor_fixups {
-  *                            memory size above 128Mib.
-  *   SPI_NOR_IO_MODE_EN_VOLATILE: flash enables the best available I/O mode
-  *                            via a volatile bit.
-+ *   SPI_NOR_SOFT_RESET:      flash supports software reset enable, reset
-+ *                            sequence.
-  * @mfr_flags:      manufacturer private flags. Used in the manufacturer fixup
-  *                  hooks to differentiate support between flashes of the same
-  *                  manufacturer.
-@@ -416,6 +418,7 @@ struct flash_info {
- 	u8 fixup_flags;
- #define SPI_NOR_4B_OPCODES		BIT(0)
- #define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(1)
-+#define SPI_NOR_SOFT_RESET		BIT(2)
- 
- 	u8 mfr_flags;
- 
+ static void macronix_default_init(struct spi_nor *nor)
 -- 
 2.25.1
 
