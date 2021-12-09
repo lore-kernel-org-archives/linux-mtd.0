@@ -4,29 +4,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E136C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 14:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66E6DC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 14:36:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ciu+F+vi+UyhtLUbPUKuMrW82hrAt32Icdl895RUE0w=; b=LufYqUSpj5xvAJ
-	ZwpqxNj2RWtV3d6314REK4xGSCcWdlGGrmzE4SlcemTDv6/8CoZZboenz8IolHsrtn5x31fFpLaSw
-	4yRP5zKIwB+nsRAo+x8jzjG1IKQD+uQpsJSrb/ySYwge6VH40BcWhTbfaIykNe0Yzr3rVXea/8axi
-	iq9cCuCOzLNcQMEqF7pBL74YJhl8C9qLsacu4M5Ec1BI+hcE5eKJGGsAWxPtpelv/3lt4dTuKn/Zm
-	4N4vOcVhN2X3jCLxlYde3obgv0AMmnDqtWrPNn6acBUjfl9i7zKd5QEZYWh0PubszIfr/MTgPoyfy
-	2atOdnrDe64IqVS+nfnA==;
+	List-Owner; bh=8T7huY/ubO7w00IyE404FAOvOFihYHKB6YqxsYqdhzc=; b=npTu0D7wBFmqOF
+	/34DINdoGxK/rBoiQ+lPPhWRVyc+na6qo763NBP8sJBO+BRW+2Sa/Hq082tY7Ah+SyObiNrcipwy0
+	vP48EYjo/lVBsfEkooUuG1DrVMe+7K9ER2XEPlONgckX1FRSdJtJD6gRAg4g9JoVveXXcvHWGi+F+
+	yXuBU+oaEiZEaYpVCQack+1nAj7e0xHtO9tp9byC9WLW49/iggRxNNEFfuf8HumBOP/2wdhhs0OOK
+	Ylg3RdWCUZuG1h+FGyXB42SBqQSyRYyFkm9EA9WqyY2x643AXfLbVjjRQsnwnJ62jMvZjFVT6vnEH
+	Zwa/RieS+EhqSk9Zds+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvKV7-00GLve-Ri; Thu, 09 Dec 2021 14:34:25 +0000
+	id 1mvKWP-00GMU7-DK; Thu, 09 Dec 2021 14:35:45 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvKTO-00GLFc-OU; Thu, 09 Dec 2021 14:32:40 +0000
+ id 1mvKTQ-00GLGI-At; Thu, 09 Dec 2021 14:32:41 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id D90A5200011;
- Thu,  9 Dec 2021 14:32:35 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5C8CC200006;
+ Thu,  9 Dec 2021 14:32:37 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,17 +39,16 @@ Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
  Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
  <linux-arm-kernel@lists.infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 3/4] MAINTAINERS: Add an entry for Renesas RZ/N1 NAND
- controller
-Date: Thu,  9 Dec 2021 15:32:27 +0100
-Message-Id: <20211209143228.525234-4-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 4/4] ARM: dts: r9a06g032: Describe NAND controller
+Date: Thu,  9 Dec 2021 15:32:28 +0100
+Message-Id: <20211209143228.525234-5-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211209143228.525234-1-miquel.raynal@bootlin.com>
 References: <20211209143228.525234-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211209_063238_995829_38BD2268 
-X-CRM114-Status: UNSURE (   7.85  )
+X-CRM114-CacheID: sfid-20211209_063240_563228_0FBEBD7E 
+X-CRM114-Status: UNSURE (   7.16  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,31 +66,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Point to the driver and the bindings.
+Describe the NAND controller contained in r9a06g032 SoCs.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/r9a06g032.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 43007f2d29e0..48be4107d05e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16287,6 +16287,13 @@ S:	Supported
- F:	Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
- F:	drivers/iio/adc/rzg2l_adc.c
+diff --git a/arch/arm/boot/dts/r9a06g032.dtsi b/arch/arm/boot/dts/r9a06g032.dtsi
+index c47896e4ab58..50198243d674 100644
+--- a/arch/arm/boot/dts/r9a06g032.dtsi
++++ b/arch/arm/boot/dts/r9a06g032.dtsi
+@@ -173,6 +173,18 @@ pinctrl: pinctrl@40067000 {
+ 			status = "okay";
+ 		};
  
-+RENESAS RZ/N1X NAND CONTROLLER DRIVER
-+M:	Miquel Raynal <miquel.raynal@bootlin.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mtd/renesas,rzn1-nand-controller.yaml
-+F:	drivers/mtd/nand/raw/rzn1-nand-controller.c
++		nand_controller: nand-controller@40102000 {
++			compatible = "renesas,r9a06g032-nand-controller",
++				     "renesas,rzn1-nand-controller";
++			reg = <0x40102000 0x2000>;
++			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&sysctrl R9A06G032_HCLK_NAND>, <&sysctrl R9A06G032_CLK_NAND>;
++			clock-names = "nand_hclk", "nand_eclk";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
 +
- RESET CONTROLLER FRAMEWORK
- M:	Philipp Zabel <p.zabel@pengutronix.de>
- S:	Maintained
+ 		gic: interrupt-controller@44101000 {
+ 			compatible = "arm,gic-400", "arm,cortex-a7-gic";
+ 			interrupt-controller;
 -- 
 2.27.0
 
