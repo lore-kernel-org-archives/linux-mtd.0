@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03314C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Dec 2021 13:26:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE1EC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Dec 2021 16:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=H+rg9ejyfvelQUEyTnZXGeAK99+pw/uhjgS1wT2wmAA=; b=Soy+hEVAcBxj6m
-	KiXIxtZutdlvGyNYixoZDXTJTRMCjkiruVPWZFsg4h7R0TftMON2Gtl2UXmwTuyA4APgSnyeZbzwK
-	G4e06uwlvgjcOOqJn6HhzU6m/sX5yebGBy7AOEP1W8skq5dAEjKRf8Sz/GPKEa5i6jhwjwCGNO82A
-	gLUdnDblh67GMiawjwS5LgWzpL7HfR3lUJNIqRZKQd4vn5wNxxQBnYiNSr7iiEdUlV70HuiiQQ9L9
-	U31JHQ5rSCt02V4bTwJnFqRZOBsrSvTBXH0YqcVdYFxnAY6q/637KIcOdA14nxS4gQSi8Cul1z1jg
-	V0Wofmt7KSZDAS23DIfw==;
+	List-Owner; bh=3dIKOoV9ml8rB1p3X82BURLbGeLNr/DaUl+Q86KnjGc=; b=Oruo2Xneq+ck/F
+	qT/bs3MQr+bGrxHrxXTAM10FmVD0f94dK2R1ewV1x08T2XG3nCNG1pzpF4HrCP/9rqRhJ3t6ntP34
+	vaZ9sK6b+hh6VV/04B1DFYxdGlxNDa1qej+thgKTl+DXoMieX0BjbKPfIGbaO+82DVfAu4vfgVwCX
+	IWWuktV5LUsTHUWxk5DDpxNWUvR7XL10485GUzztkYIK2Oz7u6kYRqXsvKi/+f0M1JEUrYgZyljk1
+	bbtBG7JiDeLUbomE1lGn7Iuwft66/d0MiLEjZQKu7hHpt9x/XXiVXXeVh6QyAd0hbHG/IUYqEIUYa
+	Ljm9CrZYsUzuT0GVcysA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvfuE-001xFt-Eb; Fri, 10 Dec 2021 13:25:46 +0000
-Received: from first.geanix.com ([116.203.34.67])
+	id 1mvik4-002aoB-9O; Fri, 10 Dec 2021 16:27:28 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvfu8-001xBk-VN
- for linux-mtd@lists.infradead.org; Fri, 10 Dec 2021 13:25:43 +0000
-Received: from skn-laptop.hadsten (_gateway [172.25.0.1])
- by first.geanix.com (Postfix) with ESMTPSA id 0DF63E1224;
- Fri, 10 Dec 2021 13:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1639142737; bh=GS8nU28XmAGY8uEhKtpj+mHtxIDS2aSZaH47P+RuMJ4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To;
- b=l9aCZX+bT6fxe3ElrjeFqc+E+iSt2XqqfELu8zGEtMhY8JSJVBFVvlS9J0+yfQh9q
- mBYh6QJo3//RbMnXcAsXOJPy+LoHDGelJjjyfLMArvIIltuVgubTfXnqKOE5IhWLBL
- zikACI90jrcIL2Zxwwvft2o1H+z8p8iC5i6+LXdTDK5vUfvaU772xDvGX5F91oXNN7
- jxhLAtIXIMoBU/lDOrLcrU/SXDoicFGqaobSR2ycpvUJlfIuz7KhXCWcK89HmY/f/a
- fbGktDk6T0CWpGUqYXCwd93XTirEZOm07sXHQ2iro5XZCA9syIvtH6QIbfkMUSZRi2
- NiTh+5RvG/VTg==
-Date: Fri, 10 Dec 2021 14:25:35 +0100
-From: Sean Nyekjaer <sean@geanix.com>
+ id 1mvik0-002al5-Bm
+ for linux-mtd@lists.infradead.org; Fri, 10 Dec 2021 16:27:26 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A2CA51F479A8;
+ Fri, 10 Dec 2021 16:27:20 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1639153641; bh=3vuMB4Y8J/FvjYDl+7RNvy8Z9ZC7n+/MQ/PXXyJh/1Y=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=V64OsVGPdq6yjPHyIxE5dstQArR9N98BCYUbwqdHbLX1R02s6d6/lWexAR1/w1VX9
+ dXQUs0vssOFcZWdHmFuJ/8n1VKqjtXxqHMfvbZEnMmJHQ4fhLxEu3b0zY1ZPieWUGK
+ 2GLu6+6RLhYcDj2HWH9UTzhHx3tgt6RMY1qeEH90KK7l/tuy6D1vhAJUuHL1kb33/p
+ FYia2tWYjjSoAfFjpsK2ide1/MTO27His2jE89gvB8WxoHcKLezuzo4J1gMSOpCwVy
+ RORjxdGNtnaK68V9w5gtN6cqPDS35g0/cpn15iJqoh+UdtcGNm8LvFUxCWxbgf+o+1
+ nVXJVSQgCwcPA==
+Date: Fri, 10 Dec 2021 17:27:17 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- linux-kernel@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while in
- suspend
-Message-ID: <20211210132535.gy7rqj5zblqlnz5y@skn-laptop.hadsten>
-References: <20211129101908.6f1aa715@xps13>
- <20211129094129.xn364czofrgtvfb4@skn-laptop>
- <63be9121-18c3-1ef2-c448-f99fb861490f@samsung.com>
- <20211130124131.6pgu7enjgk6y536m@skn-laptop>
- <20211130141551.400331c8@collabora.com>
- <20211130132912.v6v45boce2zbnoy3@skn-laptop>
- <20211130143705.5d0404aa@collabora.com>
- <20211203143958.40645506@xps13>
- <20211209140721.6ki7gznvxwyn3cze@skn-laptop.hinnerup>
- <20211209152811.318bdf17@xps13>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
+ <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v4 05/12] spi: spi-mem: Export the
+ spi_mem_generic_supports_op() helper
+Message-ID: <20211210172717.01fabb05@collabora.com>
+In-Reply-To: <20211209174046.535229-6-miquel.raynal@bootlin.com>
+References: <20211209174046.535229-1-miquel.raynal@bootlin.com>
+ <20211209174046.535229-6-miquel.raynal@bootlin.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211209152811.318bdf17@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211210_052541_507306_D5EDDA17 
-X-CRM114-Status: GOOD (  21.65  )
+X-CRM114-CacheID: sfid-20211210_082724_640424_1BCA238C 
+X-CRM114-Status: GOOD (  25.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,82 +72,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBEZWMgMDksIDIwMjEgYXQgMDM6Mjg6MTFQTSArMDEwMCwgTWlxdWVsIFJheW5hbCB3
-cm90ZToKPiBIaSBTZWFuLAo+IAo+IHNlYW5AZ2Vhbml4LmNvbSB3cm90ZSBvbiBUaHUsIDkgRGVj
-IDIwMjEgMTU6MDc6MjEgKzAxMDA6Cj4gCj4gPiBPbiBGcmksIERlYyAwMywgMjAyMSBhdCAwMjoz
-OTo1OFBNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gPiBIZWxsbywKPiA+ID4gICAK
-PiA+ID4gPiA+IEZpbmUgYnkgbWUsIGxldHMgZHJvcCB0aGlzIHNlcmllcy4gIAo+ID4gPiAKPiA+
-ID4gRllJIEkndmUgZHJvcHBlZCB0aGUgZW50aXJlIHNlcmllcyBmcm9tIG10ZC9uZXh0LiBJJ20g
-d2FpdGluZyBmb3IgdGhlCj4gPiA+IGZpeCBkaXNjdXNzZWQgYmVsb3cgKHdpdGhvdXQgYWJ1c2lu
-ZyB0aGUgY2hpcCBtdXRleCA7LSkgKS4gIAo+ID4gCj4gPiBDb29sLCBsb29raW5nIGZvcndhcmQg
-dG8gdGVzdCBhIHBhdGNoIHNlcmllcyA6KQo+IAo+IFRlc3Q/IFlvdSBtZWFuICJ3cml0ZSI/IDop
-Cj4gCj4gQ2hlZXJzLAo+IE1pcXXDqGwKCkhpIE1pcXVlbCwKClNob3VsZCB3ZSB1cyBhIGF0b21p
-YyBmb3IgdGhlIHN1c3BlbmRlZCB2YXJpYWJsZT8KCi9TZWFuCgpkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jh
-c2UuYwppbmRleCBiM2E5YmMwOGI0YmIuLmViNGVjOWE0MmQ0OSAxMDA2NDQKLS0tIGEvZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
-ZF9iYXNlLmMKQEAgLTMzOCwxNiArMzM4LDE5IEBAIHN0YXRpYyBpbnQgbmFuZF9pc2JhZF9iYm0o
-c3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgbG9mZl90IG9mcykKICAqCiAgKiBSZXR1cm46IC1FQlVT
-WSBpZiB0aGUgY2hpcCBoYXMgYmVlbiBzdXNwZW5kZWQsIDAgb3RoZXJ3aXNlCiAgKi8KLXN0YXRp
-YyBpbnQgbmFuZF9nZXRfZGV2aWNlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCitzdGF0aWMgdm9p
-ZCBuYW5kX2dldF9kZXZpY2Uoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKIHsKLQltdXRleF9sb2Nr
-KCZjaGlwLT5sb2NrKTsKLQlpZiAoY2hpcC0+c3VzcGVuZGVkKSB7CisJLyogV2FpdCB1bnRpbCB0
-aGUgZGV2aWNlIGlzIHJlc3VtZWQuICovCisJd2hpbGUgKDEpIHsKKwkJbXV0ZXhfbG9jaygmY2hp
-cC0+bG9jayk7CisJCWlmICghY2hpcC0+c3VzcGVuZGVkKSB7CisJCQltdXRleF9sb2NrKCZjaGlw
-LT5jb250cm9sbGVyLT5sb2NrKTsKKwkJCXJldHVybjsKKwkJfQogCQltdXRleF91bmxvY2soJmNo
-aXAtPmxvY2spOwotCQlyZXR1cm4gLUVCVVNZOwotCX0KLQltdXRleF9sb2NrKCZjaGlwLT5jb250
-cm9sbGVyLT5sb2NrKTsKIAotCXJldHVybiAwOworCQl3YWl0X2V2ZW50KGNoaXAtPnJlc3VtZV93
-cSwgIWNoaXAtPnN1c3BlbmRlZCk7CisJfQogfQogCiAvKioKQEAgLTU3Niw5ICs1NzksNyBAQCBz
-dGF0aWMgaW50IG5hbmRfYmxvY2tfbWFya2JhZF9sb3dsZXZlbChzdHJ1Y3QgbmFuZF9jaGlwICpj
-aGlwLCBsb2ZmX3Qgb2ZzKQogCQluYW5kX2VyYXNlX25hbmQoY2hpcCwgJmVpbmZvLCAwKTsKIAog
-CQkvKiBXcml0ZSBiYWQgYmxvY2sgbWFya2VyIHRvIE9PQiAqLwotCQlyZXQgPSBuYW5kX2dldF9k
-ZXZpY2UoY2hpcCk7Ci0JCWlmIChyZXQpCi0JCQlyZXR1cm4gcmV0OworCQluYW5kX2dldF9kZXZp
-Y2UoY2hpcCk7CiAKIAkJcmV0ID0gbmFuZF9tYXJrYmFkX2JibShjaGlwLCBvZnMpOwogCQluYW5k
-X3JlbGVhc2VfZGV2aWNlKGNoaXApOwpAQCAtMzc1OSw5ICszNzYwLDcgQEAgc3RhdGljIGludCBu
-YW5kX3JlYWRfb29iKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgZnJvbSwKIAkgICAgb3Bz
-LT5tb2RlICE9IE1URF9PUFNfUkFXKQogCQlyZXR1cm4gLUVOT1RTVVBQOwogCi0JcmV0ID0gbmFu
-ZF9nZXRfZGV2aWNlKGNoaXApOwotCWlmIChyZXQpCi0JCXJldHVybiByZXQ7CisJbmFuZF9nZXRf
-ZGV2aWNlKGNoaXApOwogCiAJaWYgKCFvcHMtPmRhdGJ1ZikKIAkJcmV0ID0gbmFuZF9kb19yZWFk
-X29vYihjaGlwLCBmcm9tLCBvcHMpOwpAQCAtNDM1Miw5ICs0MzUxLDcgQEAgc3RhdGljIGludCBu
-YW5kX3dyaXRlX29vYihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRvLAogCiAJb3BzLT5y
-ZXRsZW4gPSAwOwogCi0JcmV0ID0gbmFuZF9nZXRfZGV2aWNlKGNoaXApOwotCWlmIChyZXQpCi0J
-CXJldHVybiByZXQ7CisJbmFuZF9nZXRfZGV2aWNlKGNoaXApOwogCiAJc3dpdGNoIChvcHMtPm1v
-ZGUpIHsKIAljYXNlIE1URF9PUFNfUExBQ0VfT09COgpAQCAtNDQxNCw5ICs0NDExLDcgQEAgaW50
-IG5hbmRfZXJhc2VfbmFuZChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCBzdHJ1Y3QgZXJhc2VfaW5m
-byAqaW5zdHIsCiAJCXJldHVybiAtRUlPOwogCiAJLyogR3JhYiB0aGUgbG9jayBhbmQgc2VlIGlm
-IHRoZSBkZXZpY2UgaXMgYXZhaWxhYmxlICovCi0JcmV0ID0gbmFuZF9nZXRfZGV2aWNlKGNoaXAp
-OwotCWlmIChyZXQpCi0JCXJldHVybiByZXQ7CisJbmFuZF9nZXRfZGV2aWNlKGNoaXApOwogCiAJ
-LyogU2hpZnQgdG8gZ2V0IGZpcnN0IHBhZ2UgKi8KIAlwYWdlID0gKGludCkoaW5zdHItPmFkZHIg
-Pj4gY2hpcC0+cGFnZV9zaGlmdCk7CkBAIC00NTAzLDcgKzQ0OTgsNyBAQCBzdGF0aWMgdm9pZCBu
-YW5kX3N5bmMoc3RydWN0IG10ZF9pbmZvICptdGQpCiAJcHJfZGVidWcoIiVzOiBjYWxsZWRcbiIs
-IF9fZnVuY19fKTsKIAogCS8qIEdyYWIgdGhlIGxvY2sgYW5kIHNlZSBpZiB0aGUgZGV2aWNlIGlz
-IGF2YWlsYWJsZSAqLwotCVdBUk5fT04obmFuZF9nZXRfZGV2aWNlKGNoaXApKTsKKwluYW5kX2dl
-dF9kZXZpY2UoY2hpcCk7CiAJLyogUmVsZWFzZSBpdCBhbmQgZ28gYmFjayAqLwogCW5hbmRfcmVs
-ZWFzZV9kZXZpY2UoY2hpcCk7CiB9CkBAIC00NTIwLDkgKzQ1MTUsNyBAQCBzdGF0aWMgaW50IG5h
-bmRfYmxvY2tfaXNiYWQoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBvZmZzKQogCWludCBy
-ZXQ7CiAKIAkvKiBTZWxlY3QgdGhlIE5BTkQgZGV2aWNlICovCi0JcmV0ID0gbmFuZF9nZXRfZGV2
-aWNlKGNoaXApOwotCWlmIChyZXQpCi0JCXJldHVybiByZXQ7CisJbmFuZF9nZXRfZGV2aWNlKGNo
-aXApOwogCiAJbmFuZF9zZWxlY3RfdGFyZ2V0KGNoaXAsIGNoaXBucik7CiAKQEAgLTQ1OTMsNiAr
-NDU4Niw4IEBAIHN0YXRpYyB2b2lkIG5hbmRfcmVzdW1lKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQog
-CQkJX19mdW5jX18pOwogCX0KIAltdXRleF91bmxvY2soJmNoaXAtPmxvY2spOworCisJd2FrZV91
-cF9hbGwoJmNoaXAtPnJlc3VtZV93cSk7CiB9CiAKIC8qKgpAQCAtNTM3MCw2ICs1MzY1LDcgQEAg
-c3RhdGljIGludCBuYW5kX3NjYW5faWRlbnQoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdW5zaWdu
-ZWQgaW50IG1heGNoaXBzLAogCWNoaXAtPmN1cl9jcyA9IC0xOwogCiAJbXV0ZXhfaW5pdCgmY2hp
-cC0+bG9jayk7CisJaW5pdF93YWl0cXVldWVfaGVhZCgmY2hpcC0+cmVzdW1lX3dxKTsKIAogCS8q
-IEVuZm9yY2UgdGhlIHJpZ2h0IHRpbWluZ3MgZm9yIHJlc2V0L2RldGVjdGlvbiAqLwogCWNoaXAt
-PmN1cnJlbnRfaW50ZXJmYWNlX2NvbmZpZyA9IG5hbmRfZ2V0X3Jlc2V0X2ludGVyZmFjZV9jb25m
-aWcoKTsKZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL3Jhd25hbmQuaCBiL2luY2x1ZGUv
-bGludXgvbXRkL3Jhd25hbmQuaAppbmRleCBiMmY5ZGQzY2JkNjkuLjI0ODA1NDU2MDU4MSAxMDA2
-NDQKLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvcmF3bmFuZC5oCisrKyBiL2luY2x1ZGUvbGludXgv
-bXRkL3Jhd25hbmQuaApAQCAtMTI5NCw2ICsxMjk0LDcgQEAgc3RydWN0IG5hbmRfY2hpcCB7CiAJ
-LyogSW50ZXJuYWxzICovCiAJc3RydWN0IG11dGV4IGxvY2s7CiAJdW5zaWduZWQgaW50IHN1c3Bl
-bmRlZCA6IDE7CisJd2FpdF9xdWV1ZV9oZWFkX3QgcmVzdW1lX3dxOwogCWludCBjdXJfY3M7CiAJ
-aW50IHJlYWRfcmV0cmllczsKIAlzdHJ1Y3QgbmFuZF9zZWN1cmVfcmVnaW9uICpzZWN1cmVfcmVn
-aW9uczsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Thu,  9 Dec 2021 18:40:39 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> The combination of checks against the number of supported operations is
+> going to increase exponentially each time we add a new parameter. So far
+> we only had a dtr parameter. Now we are introducing an ECC parameter. We
+> need to make this helper available for drivers with specific needs,
+> instead of creating another set of helpers each time we want to check
+> something new. In the future if we see that many different drivers use
+> the same parameter values, we might be tempted to create a specific
+> helper for that. But for now, let's just make the generic one available.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/spi/spi-mem.c       |  7 ++++---
+>  include/linux/spi/spi-mem.h | 13 +++++++++++++
+>  2 files changed, 17 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 9e06cd918273..48b55395178f 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -160,9 +160,9 @@ static bool spi_mem_check_buswidth(struct spi_mem *mem,
+>  	return true;
+>  }
+>  
+> -static bool spi_mem_generic_supports_op(struct spi_mem *mem,
+> -					const struct spi_mem_op *op,
+> -					bool dtr, bool ecc)
+> +bool spi_mem_generic_supports_op(struct spi_mem *mem,
+> +				 const struct spi_mem_op *op,
+> +				 bool dtr, bool ecc)
+
+Looks like you're replacing a maintenance burden by another. Every time
+you'll add a new capability, you'll have to patch all the wrappers and
+the drivers using this generic function to pass the extra parameter.
+How about passing a
+
+	struct spi_mem_controller_caps {
+		bool dtr;
+		bool ecc;
+	};
+
+or making the caps a bitmask, such that next time you add a new cap, you
+can just assume all drivers have it set to 0 by default.
+
+>  {
+>  	if (!dtr) {
+>  		if (op->cmd.dtr || op->addr.dtr ||
+> @@ -183,6 +183,7 @@ static bool spi_mem_generic_supports_op(struct spi_mem *mem,
+>  
+>  	return spi_mem_check_buswidth(mem, op);
+>  }
+> +EXPORT_SYMBOL_GPL(spi_mem_generic_supports_op);
+>  
+>  bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+>  			     const struct spi_mem_op *op)
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index 3be594be24c0..07f637cbe77d 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -320,6 +320,10 @@ void spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+>  					  const struct spi_mem_op *op,
+>  					  struct sg_table *sg);
+>  
+> +bool spi_mem_generic_supports_op(struct spi_mem *mem,
+> +				 const struct spi_mem_op *op,
+> +				 bool dtr, bool ecc);
+> +
+>  bool spi_mem_default_supports_op(struct spi_mem *mem,
+>  				 const struct spi_mem_op *op);
+>  
+> @@ -327,6 +331,7 @@ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+>  			     const struct spi_mem_op *op);
+>  
+>  #else
+> +
+>  static inline int
+>  spi_controller_dma_map_mem_op_data(struct spi_controller *ctlr,
+>  				   const struct spi_mem_op *op,
+> @@ -342,6 +347,14 @@ spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+>  {
+>  }
+>  
+> +static inline
+> +bool spi_mem_generic_supports_op(struct spi_mem *mem,
+> +				 const struct spi_mem_op *op,
+> +				 bool dtr, bool ecc)
+> +{
+> +	return false;
+> +}
+> +
+>  static inline
+>  bool spi_mem_default_supports_op(struct spi_mem *mem,
+>  				 const struct spi_mem_op *op)
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
