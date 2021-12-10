@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 240ECC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Dec 2021 22:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FD69C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Dec 2021 02:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+Oti+0BQVSyLZ6XTUNYJPk+9Uz2WSx8ybWBA54+2nw4=; b=pibUAK+unHaPDzmSA9LOh5jxXZ
-	U8230hXzr3jmmdcaS7cYjAsMSVY8WRpdQpxOAQJeEMKXzv5umc6QMDJF/AJrK2I4Iq9BAUz8ZLjga
-	fVqjBzTQVV1LWxoHH8gsNH5VbRti2B0qa7aaoowTluoaqMfTYNZqfJtOrHr7Prxv+r5eNq8GV+ITM
-	QBQ5Gjbr/M9baP5xtDlCYkTcHUaTy6D1pNYvR8fxfchk5aG2POQDTHi4ArvVhYzvxYuEG1M+CIdrI
-	KW2Rthm1ICL1B+jYU27KEjiQAREMGHMkKfRy7Ak64msqP3CMly9ayfm9w5swKlav3hP8Nz6ZnP37u
-	7RJ1cQbg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UTAZpZVt9GQJvrPb6QUmRRBcSeR2Efvt0COPmNGy1oU=; b=Iwr2XVmcK6twT3
+	Fp3s7T4iF8baBpTngHcCxIwwXO4KjYEgZcoPYdpr5AuRXfvgOVsZCchHrlUI8Gm1An0StjbZ42Hif
+	eGIqCPFbxOKGCQv0VJEV7RlOcpVKNUE2oUBw+muDY0e33O7h5KgGVzyh4tsY55nZeMGQZCsU3RaCg
+	RcM/PaRh3HvcDZWtfGwQYS/l8izf3QIP/ZPTMiBauT+4l7Ixtu/awEb/MRnx54BG4U4PIKV01pqZC
+	BrBUwEIEYECIp5edT/jizcuYa9vkirzVrDNUb58ygXl2tOPmNzHc6kee+fcGYmIlxVgcPXHiSEFqY
+	KvMqjhmPI6FyuNMJwU/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mvRgZ-000Bma-Sq; Thu, 09 Dec 2021 22:14:43 +0000
-Received: from mail-lf1-x12e.google.com ([2a00:1450:4864:20::12e])
+	id 1mvVUV-000fMr-5P; Fri, 10 Dec 2021 02:18:31 +0000
+Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mvRgW-000BlA-WF
- for linux-mtd@lists.infradead.org; Thu, 09 Dec 2021 22:14:42 +0000
-Received: by mail-lf1-x12e.google.com with SMTP id l22so14695391lfg.7
- for <linux-mtd@lists.infradead.org>; Thu, 09 Dec 2021 14:14:40 -0800 (PST)
+ id 1mvVUS-000fMP-7q
+ for linux-mtd@lists.infradead.org; Fri, 10 Dec 2021 02:18:29 +0000
+Received: by mail-pf1-x431.google.com with SMTP id x5so7244127pfr.0
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Dec 2021 18:18:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:to:references:from
- :in-reply-to:content-transfer-encoding;
- bh=gIpbEmPxDp4BAdPOvRY3Yj0DvCa/hv+HcAkpqZLuC1Q=;
- b=m/SqmLOR9v+Eb0rCMH25MR/U8lhrsVMqK7waw3UwIEgQb6zs4Zv8M7RMV7Ts38qHMV
- Mn8CWhVj6uLD/t1lWqpeuMnMq5opzuj6tIJ++AG4ZQWtRfkU9h/sdYuKvNnNOlNrLrgH
- jPmmzC0DGb+q4ai0hWLTD/nRmMze2RjwWTlwNOzGZLoYqaKGIeu2hb5bcpDHcImu3px2
- fjsfNBPJvjY3THP9RsyoQ05+p8SE/J1x2JirBI3Oqp16OaDLTaY1uIHh+gKhPNy8X0ed
- FweDLnbOHwsCAMFVaFza7bIBIMHMPN61ozFfdVDoUlEblzif2ez4mQ/rDmiLGZRiKz70
- nkOg==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=poNSG/gxo2Fhzr7JKqoglN/TlnftEObbhIqVh18TXuQ=;
+ b=pZQFulNnonlKgH7+dXRF/vCwQt8w5zzPKB5f/V0va9u8wKzma0xk9ISqBBpimCFyj7
+ iTwKPa3eG70jVKX619oLdukAlEEnTyXNwzJJbXsemigerDOIPVVAdRdsFUKfoIpky3bU
+ BjeAK+8Ak+kehQ7t5AldpQr7gyG/Pcs/J7S6oycLlKuZyslDNoXXVyCXGzpNUZZsG7Li
+ hd994rtNWZJt/gHxV4K1e99354VPHmANsf2LPa2ebiYN+/9ttAU/YaZpdOwjcWQNaagV
+ 44IQHMzzhLRWM0yCFmE8dShUGgqjJDsEVMpDJFfJ9WFdek9zBwFNVPXIWtBjwm3k/Eu/
+ eyWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :to:references:from:in-reply-to:content-transfer-encoding;
- bh=gIpbEmPxDp4BAdPOvRY3Yj0DvCa/hv+HcAkpqZLuC1Q=;
- b=nplUB2ZkwQgKeFcdccnJ+hMEntBCqSs31XT3A/y/VtzB60/IMU+nGQ2blMKXSxyeJN
- peHTN7IvhDWgzeND3f6W23zbZckXA6CabAzWc4ya10d+urc9C8lBWuLm+MZhpHFlwyPU
- i5tQRdpqoI/q6rSB9jxTsCyzCYAT3jL/nF6YKLCHnmqLYp3o5FCbTx5XDB8u7duu3LRe
- wbH4Y7BqHoNNc/qmfbXREk2kOvb6s3ZHkxMOM/sFTYgMeBFqIEqs1UQcPK34rFV5Eng0
- /sB/gYRYLax4QEkzuSb85tmZ1Z6qmsvOTa8sREiITBXBIhR9WCE1SfQsx4sY38bTNBog
- bGCA==
-X-Gm-Message-State: AOAM5334RnLpl4ur35Wka3LO8+UPGGQHiJuy8ijJ16zL1B5be2mk6Y6i
- X1VgjF/OG4rdSxM3FRGBFk6Tr6+g5E0=
-X-Google-Smtp-Source: ABdhPJxZgwHMdb6mXwc+Q+tU0H+v1/8nmOEmr66X706IjzHa1D3mZM1Ni9IPhNxQg09Omb/QdOQ9yA==
-X-Received: by 2002:a05:6512:693:: with SMTP id
- t19mr8712951lfe.647.1639088079262; 
- Thu, 09 Dec 2021 14:14:39 -0800 (PST)
-Received: from [192.168.26.149]
- (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
- by smtp.googlemail.com with ESMTPSA id t7sm120049lji.43.2021.12.09.14.14.38
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 09 Dec 2021 14:14:38 -0800 (PST)
-Message-ID: <85498617-e63e-c746-6f42-662b5ea3df63@gmail.com>
-Date: Thu, 9 Dec 2021 23:14:38 +0100
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=poNSG/gxo2Fhzr7JKqoglN/TlnftEObbhIqVh18TXuQ=;
+ b=DF9f7tnGo+wqTAyDGfW/5q2DDe9C8ubgqtNAuWvTCNB98dAz/PpbjozJBAijLVf8eX
+ jlbXIzaZMeWCoMCPof69nBEJXQpdE/qfiQ/qF77owXyQAJLBPH2jma8+qrCU3C2G/iU5
+ 1UCf86pMlEqYqb3NcNzOu9pMDjDuYfGuwaB4luJ2rX0ZC0tXz+ofFJYwyP4e3UUodoIE
+ pSydR07Jpf1mpPIS5yw4tiNnuoY+T1+kYeudJx4UTaTBFLvcdIpfURJXdBZ3IXGq/gkx
+ FoomsJL2W3G8lWres2I7dev6rOl3NUZXb48nuSdhNs5ksWDfN5d9ZxZ7GqooVpxzfPlE
+ OuOQ==
+X-Gm-Message-State: AOAM5334GOpj4v3RCPq9OpGii2Ap7NZmhCADXc41WMTwm/57IplvBaxp
+ rG4nzZrm1Tw9Q8/gEMiujHQ=
+X-Google-Smtp-Source: ABdhPJyX+9SXt8lpomYrFFuvvvVEaEAAb0Fq4qTprNsXW5/3HNjOCWtqJKcWyDKG3mTMnEvOgFFuHA==
+X-Received: by 2002:a05:6a00:1516:b0:4a0:2c42:7f17 with SMTP id
+ q22-20020a056a00151600b004a02c427f17mr15524711pfu.74.1639102706632; 
+ Thu, 09 Dec 2021 18:18:26 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id n16sm970534pfv.123.2021.12.09.18.18.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 09 Dec 2021 18:18:26 -0800 (PST)
+From: cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To: han.xu@nxp.com
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Minghao Chi <chi.minghao@zte.com.cn>, Zeal Robot <zealci@zte.com.cm>
+Subject: [PATCH nand-next] mtd/nand:remove unneeded variable
+Date: Fri, 10 Dec 2021 02:18:22 +0000
+Message-Id: <20211210021822.423833-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
- Thunderbird/96.0
-Subject: Re: Identifying UBI volume instance / storing UBI volume metadata
-To: Olivier Valentin <valentio@free.fr>, openwrt-devel@lists.openwrt.org,
- MTD Maling List <linux-mtd@lists.infradead.org>
-References: <CACna6rwRtP-_SoAZVV0ZjFAcWQucRWVoZ0bxSZrFtDFW2McyYw@mail.gmail.com>
- <48BBA9D3-3DFB-4666-9FC5-6D4431486314@free.fr>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <48BBA9D3-3DFB-4666-9FC5-6D4431486314@free.fr>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211209_141441_090441_EA9E1DE9 
-X-CRM114-Status: GOOD (  11.89  )
+X-CRM114-CacheID: sfid-20211209_181828_306576_0C1EC43C 
+X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,28 +84,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 9.12.2021 21:11, Olivier Valentin wrote:
-> How about storing the squashfs into the rootfs ubi volume (as a bare file), start with an initramfs appended to the kernel and mount the root file with loopback block dev. The RW overlay part would be stored directly in the ubifs. (All modifications to the root image file would go in the overlay, so impossible to break the image)
-> 
-> This way, when you flash a new firmware, everything gets wiped, and you can factory reset by rm the RW directory.
-> 
-> It diverges quite a bit from OpenWRT usual way though.
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-Thanks for your reply. It doesn't fit OpenWrt's current design well but
-I think it's probably time to rework OpenWrt's init if needed.
+Return status directly from function called.
 
-Just to make sure I understood your correctly:
+Reported-by: Zeal Robot <zealci@zte.com.cm>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Do you suggest "rootfs" UBI volume using ubifs with something like:
-/root.squashfs
-/overlay/
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 10cc71829dcb..ab9d1099bafa 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1425,7 +1425,6 @@ static int gpmi_ecc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
+ 	struct bch_geometry *nfc_geo = &this->bch_geometry;
+-	int ret;
+ 
+ 	dev_dbg(this->dev, "ecc write page.\n");
+ 
+@@ -1445,9 +1444,7 @@ static int gpmi_ecc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 				    this->auxiliary_virt);
+ 	}
+ 
+-	ret = nand_prog_page_op(chip, page, 0, buf, nfc_geo->page_size);
+-
+-	return ret;
++	return nand_prog_page_op(chip, page, 0, buf, nfc_geo->page_size);
+ }
+ 
+ /*
+-- 
+2.25.1
 
-(and then initramfs as you described)?
 
 ______________________________________________________
 Linux MTD discussion mailing list
