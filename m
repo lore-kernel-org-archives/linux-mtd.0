@@ -4,58 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BB01C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 13:26:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C98A7C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 15:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Cc:To:
-	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=WUaYPZO/MDoDKlyWrZW+QLLRmooZ9CTBPv1pnHFI3Y4=; b=Bnfxh7Dld91STs
-	rzjji5EFuMcNtKLovYxU71r6ZrhKj9W7i5HNloo0wju9902/9TSeqIaoa2mQkgO+5IOIykRBSBlgt
-	0IY5i/N/RGyyqDdtbLvkCEknwy6KukVbgpHYqkYJ7D1EHnKw0748qgrLSEpWpoLMS3NkLm+RaEY50
-	V1MXDD8HL3NNYjEkp9bdaRvymPJ7s5dkszkva7P/zwoe6LvnyJ+J75j1oV2cnj5oLC6cl6rQyqrKI
-	/jBAqp0fjcyZXlaoqpplSvhYpHrfJ+6oBFHy6saG5G1mZK5Nl4DN1RtbW7akObl754bICTZOHinfr
-	JM3yBZUk1siXt+yAIl0w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=hWAIAPkbU+qbMRNU4Hb4/8dIZTpUcbHi1mExzlKteKo=; b=VFWw+yH0KchMF0
+	i2GBLiu4eHaFE275tD9d4geU5awUDphUnuuT2KZnsL3jAyMFVmuUS756raXJvtWcWhyh5nWZ2BAWi
+	jxtuyLpEOt5nrHn4MC5oh3IftZx7uzuODgWYk8Gd6DmmzO6Owao03IR4jS63ObEir5+EwkYHRGe6j
+	T84R/UgPveymyZMl5kOon+5M4tsi/eg9WU0Zh6ODJdMdHqXfThdfXFnOd2uPPGPGRBIqdZ26LZJLg
+	/e1fO2mGjbElpQne85Mn0UAdz3ZDYhJ0IOzZF4HPQwInIxulQ/fPLFl+lkq6KprVoWNPS5f+Oqmh8
+	lgcLukW6l58LjSDgumsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mwlKP-009fSr-DK; Mon, 13 Dec 2021 13:25:17 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1mwnd9-00ASCA-6f; Mon, 13 Dec 2021 15:52:47 +0000
+Received: from mail-io1-xd2c.google.com ([2607:f8b0:4864:20::d2c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mwlKK-009fRc-Qw
- for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 13:25:14 +0000
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
- by metis.ext.pengutronix.de with esmtp (Exim 4.92)
- (envelope-from <a.fatoum@pengutronix.de>)
- id 1mwlJx-0008Sf-9N; Mon, 13 Dec 2021 14:24:49 +0100
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: [BUG] mtd: cfi_cmdset_0002: write regression since v4.17-rc1
-To: linux-mtd@lists.infradead.org, ikegami@allied-telesis.co.jp,
- Joakim.Tjernlund@infinera.com, miquel.raynal@bootlin.com, vigneshr@ti.com,
- richard@nod.at, ikegami.t@gmail.com
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- linuxppc-dev@lists.ozlabs.org, Shaohui.Xie@nxp.com
-Message-ID: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
-Date: Mon, 13 Dec 2021 14:24:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ id 1mwnd3-00ASAg-Df
+ for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 15:52:45 +0000
+Received: by mail-io1-xd2c.google.com with SMTP id m9so19083143iop.0
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Dec 2021 07:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=CjOK7zG4lmsI/zp9Y5fQMp7GBNGBJj/NStUfv3M1YVc=;
+ b=dwo2lL/xcAhMSZxaD4BKaEmuczKzyAZqbBJYR+yDjtagIiQtaf/vB7gm48RoLcI/rI
+ VW1aBzFKjdGInllx2a4i4+Q40oYWfUOP+nlyVlKK0r+iGPJiWlNLyZ45eKchDZ9b2p1U
+ QhpZq7jCAqDY/M6pXX7CuP/c1coiEAJx2yDnw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=CjOK7zG4lmsI/zp9Y5fQMp7GBNGBJj/NStUfv3M1YVc=;
+ b=69hZuDe1EU0NVbpjX/nzDvMrEVPOGe+rB31II9gzBPlQKaXuZnpknHVOq49iSgk8iz
+ 3mLdlqPd6u3kyg3PA1HY8pNdnhhDYMr3zltWpaQWODN19LctmLB4YKpRkMCfAnhqYAHN
+ gkaQexkNEnCLAzb1hCow8S4hDCas2qTCPbeUBzVMKYjiHyDAUiR6TPJ7Ks11+AjdlNgg
+ 79KVS2PCm+LNHMZJ/r541DV+RpBvx2nBxABW8+khw0aB3/UOc6a2E8+GYTlewpYS5TmT
+ +rlAtq+4nceOQcgpa39r9/NleHEMn0PEsslc1WmwLkO1H+G9BtvUCUaw/yf1ZIQl3f1O
+ YBLA==
+X-Gm-Message-State: AOAM532EJE/Np200Co2wsRwN6T40Ygl/25pf+twDcC+rzyx9Om9qfk0W
+ TMzP+KaF2xfYvWCMhZuoYnu233BCqXVMjA==
+X-Google-Smtp-Source: ABdhPJzMDs7mFq1J/ojNEr7+L9LhHAj093RufLaem4uHpfxUZhxbtVYyabisWC2pbKrhe3TouS6EfA==
+X-Received: by 2002:a05:6638:4113:: with SMTP id
+ ay19mr34782162jab.149.1639410759189; 
+ Mon, 13 Dec 2021 07:52:39 -0800 (PST)
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com.
+ [209.85.166.180])
+ by smtp.gmail.com with ESMTPSA id a12sm8762066iow.6.2021.12.13.07.52.37
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 13 Dec 2021 07:52:38 -0800 (PST)
+Received: by mail-il1-f180.google.com with SMTP id v13so2093333ilm.8
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Dec 2021 07:52:37 -0800 (PST)
+X-Received: by 2002:a92:cdaa:: with SMTP id g10mr31230629ild.142.1639410757022; 
+ Mon, 13 Dec 2021 07:52:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: en-US
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+References: <1638427092-9139-1-git-send-email-quic_c_sbhanu@quicinc.com>
+In-Reply-To: <1638427092-9139-1-git-send-email-quic_c_sbhanu@quicinc.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 13 Dec 2021 07:52:24 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VB6hsEHEb8yZmB=xA__47p4vC6dBc528RV37dvAKTgOQ@mail.gmail.com>
+Message-ID: <CAD=FV=VB6hsEHEb8yZmB=xA__47p4vC6dBc528RV37dvAKTgOQ@mail.gmail.com>
+Subject: Re: [PATCH V2] mtd: spi-nor: winbond: Add support for winbond chip
+To: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+Cc: tudor.ambarus@microchip.com, michael@walle.cc, p.yadav@ti.com, 
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com, 
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ stummala@codeaurora.org, vbadigan@codeaurora.org, quic_rampraka@quicinc.com, 
+ quic_pragalla@quicinc.com, sartgarg@codeaurora.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211213_052512_893107_7220E70D 
-X-CRM114-Status: GOOD (  19.77  )
+X-CRM114-CacheID: sfid-20211213_075241_498796_F0006287 
+X-CRM114-Status: GOOD (  18.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,76 +95,58 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-I've been investigating a breakage on a PowerPC MPC8313: The SoC is connected
-via the "Enhanced Local Bus Controller" to a 8-bit-parallel S29GL064N flash,
-which is represented as a memory-mapped cfi-flash.
+On Wed, Dec 1, 2021 at 10:38 PM Shaik Sajida Bhanu
+<quic_c_sbhanu@quicinc.com> wrote:
+>
+> Add support for winbond W25Q512NW-IM chip.
+>
+> Signed-off-by: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+> ---
+> Changes since V1:
+>         Added space before name of the flash part as suggested by Doug.
 
-The regression began in v4.17-rc1 with
+When someone comments on V1, it's nice to CC them on V2. ;-)
 
-  dfeae1073583 ("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 96573f6..44f19f2 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -100,6 +100,9 @@ static const struct flash_info winbond_parts[] = {
+>                              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>         { "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
+>                             SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+> +       { "w25q512nw", INFO(0xef8020, 0, 64 * 1024, 1024,
+> +                          SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +                          SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
 
-and causes all flash write accesses on the hardware to fail. Example output
-after v5.1-rc2[1]:
+I had a quick look. Though I'm no expert on this driver, I believe
+that the name should be "w25q512nwm", not "w25q512nw" (you need an "m"
+at the end). Evidence:
 
-  root@host:~# mount -t jffs2 /dev/mtdblock0 /mnt
-  MTD do_write_buffer_wait(): software timeout, address:0x000c000b.
-  jffs2: Write clean marker to block at 0x000c0000 failed: -5
+The Winbond doc [1] shows:
 
-This issue still persists with v5.16-rc. Reverting aforementioned patch fixes
-it, but I am still looking for a change that keeps both Tokunori's and my
-hardware happy.
+W25Q512NW-IM is 0xef8020
+W25Q512NW-IQ/IN is 0xef6020
 
-What Tokunori's patch did is that it strengthened the success condition
-for flash writes:
+Comparing to a different datasheet [2], I see that:
 
- - Prior to the patch, DQ polling was done until bits
-   stopped toggling. This was taken as an indicator that the write succeeded
-   and was reported up the stack. i.e. success condition is chip_ready()
+W25Q256JW-IM is 0xef8019
+W25Q256JW is 0xef6019
 
- - After the patch, polling continues until the just written data is
-   actually read back, i.e. success condition is chip_good()
+Since "W25Q256JW-IM" is in code as "w25q256jwm" it implies to me that
+for the "-IM" suffix you just add a "m" to the end of the name.
 
-This new condition never holds for me, when DQ stabilizes, it reads 0xFF,
-never the just written data. The data is still written and can be read back
-on subsequent reads, just not at that point of time in the poll loop.
+[1] https://www.winbond.com/resource-files/W25Q512NW%20RevB%2007192021.pdf
+[2] https://www.winbond.com/resource-files/W25Q256JW%20SPI%20RevJ%2003102021%20Plus.pdf
 
-We haven't had write issues for the years predating that patch. As the
-regression has been mainline for a while, I am wondering what about my setup
-that makes it pop up here, but not elsewhere?
+After changing the name, feel free to add my Reviewed-by (and please
+CC me on v3).
 
-I consulted the data sheet[2] and found Figure 27, which describes DQ polling
-during embedded algorithms. DQ switches from status output to "True" (I assume
-True == all bits set == 0xFF) until CS# is reasserted. 
-
-I compared with another chip's datasheet, and it (Figure 8.4) doesn't describe
-such an intermittent "True" state. In any case, the driver polls a few hundred
-times, however, before giving up, so there should be enough CS# toggles.
-
-
-Locally, I'll revert this patch for now. I think accepting 0xFF as a success
-condition may be appropriate, but I don't yet have the rationale to back it up.
-
-I am investigating this some more, probably with a logic trace, but I wanted
-to report this in case someone has pointers and in case other people run into
-the same issue.
-
-
-Cheers,
-Ahmad
-
-[1] Prior to d9b8a67b3b95 ("mtd: cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer") 
-    first included with v5.1-rc2, failing writes just hung indefinitely in kernel space.
-    That's fixed, but the writes still fail.
-
-[2]: 001-98525 Rev. *B, https://www.infineon.com/dgdl/Infineon-S29GL064N_S29GL032N_64_Mbit_32_Mbit_3_V_Page_Mode_MirrorBit_Flash-DataSheet-v03_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ed556fd548b
-
-[3]: https://www.mouser.com/datasheet/2/268/SST39VF1601C-SST39VF1602C-16-Mbit-x16-Multi-Purpos-709008.pdf
-     Note that "true data" means valid data here, not all bits one.
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+-Doug
 
 ______________________________________________________
 Linux MTD discussion mailing list
