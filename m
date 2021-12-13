@@ -4,70 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C4AC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 11:07:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 997D2C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 11:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DfZlQNo2mzolhsS6W5eDzruoS3ZUbal6IF9Q0EsBafI=; b=Qd7TfS+TZQ7yel
-	5W3c/BLWzhN3bgGHuizXAzkvc03+ckx7y93KME8C68scHeR8D1xG0XjrxlrVc+c2xJzHacXS91zai
-	otVzMbbspVb6HqkFLly1m32kZ4Y1nK54MbrfZj6Ss1jFHCi5c3evHMaAkOb/gUKtyX7Idx7jbWQMg
-	eBmsXyNYs0RY75TCthjcTF6R8a9lBPtbVFICgxpsMG3xuMPRZMcQEhuvEYNqUhYU7PXQoyXKfHVyq
-	HR4tR1O76+jXZf14NJmuuCZDSUWdurFtTZXcJxviSbfsOOkGz2Qm4VPjbKpxYcDVL7I3Jd0ZGIgJu
-	p2PZlSt5lsaUzqFWJG1A==;
+	List-Owner; bh=EBrKLpiU5AM6KCXAJ6NYQfCt19pdK+0CVXDuEr5jh+g=; b=WR2hVIyVGHaSua
+	8vuAtvj0xL6z3Umj9VOI6xzSzYxnDGYfPpsG08bk/vyHSwc3I3ymfxUn+UkNqhkYdZYMXjLKiUDs9
+	LFT8bDyGogjHFtmzmmdoU950xOhPwWXjRIIfgRkl9GgyUbSI9+nWrk7IgYv6eEmuarxER4na/ZFZm
+	c5oTIUB1/jH5HKuot0hOBGynOLcmWE5Q/k9BbCzcTlMeQ+Mz7AzTN5TrDM0DmUbNsmoznsmUpL4pp
+	PgCz3t+4S67+RIjZnGbs5uTvAjZbhweSQGYgDz/4q/y1JCLECc+UlytdFx24oaz+O2GVTUzw1RzY1
+	g93LgLXUfcX9fEm0pATg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mwjAh-009Aw8-NY; Mon, 13 Dec 2021 11:07:07 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1mwjTe-009Fm1-DA; Mon, 13 Dec 2021 11:26:42 +0000
+Received: from mail-qv1-xf36.google.com ([2607:f8b0:4864:20::f36])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mwjAe-009AvE-Az
- for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 11:07:05 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0FB331F44952;
- Mon, 13 Dec 2021 11:07:02 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
- t=1639393622; bh=04bequcs/NusDXEPCLT88FK1oMcTVoR+NRtV8yyK19Y=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=HPNa0pEfIv5hz6GQwg7ADSOI51qVUCd/TfMdvCH8ku4dokzLlTwYUlnHF+7KdlYVC
- es/+H7R0Wapod9i7t5ThTjnFFIPLAcnnWoAAjAp1aaBSMcUVmMOn+nTln1rkvFoCur
- GLWAgdzgdri+jR4cx8wNswkEeY7Op9czgpY97qLRd0JUWL7QWBiNJm8jnNNgiCVMME
- dMSSxK2M+9N2zlQ4HU+MLN59N0bjXqM/VePCWMoJwabqapJlGKVMBSYfc/LLeBIgWl
- lzVPj72aHm+EwDEEpZC7pc/BTaRun+PpKExRo/DnLECuZq7Mos0BWQ4BhiN0caVfQC
- VyhDvSBVm/OJw==
-Date: Mon, 13 Dec 2021 12:06:58 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Sean Nyekjaer <sean@geanix.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
- Marek Szyprowski <m.szyprowski@samsung.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Boris Brezillon
- <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while
- in suspend
-Message-ID: <20211213120658.45f312a6@collabora.com>
-In-Reply-To: <20211213105012.65jk4rylxzncqdfy@skn-laptop>
-References: <20211130132912.v6v45boce2zbnoy3@skn-laptop>
- <20211130143705.5d0404aa@collabora.com>
- <20211203143958.40645506@xps13>
- <20211209140721.6ki7gznvxwyn3cze@skn-laptop.hinnerup>
- <20211209152811.318bdf17@xps13>
- <20211210132535.gy7rqj5zblqlnz5y@skn-laptop.hadsten>
- <20211213101025.42c27b43@xps13>
- <20211213102801.569b50b1@collabora.com>
- <20211213103350.22590c13@xps13>
- <20211213105336.7be369b7@collabora.com>
- <20211213105012.65jk4rylxzncqdfy@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+ id 1mwjTb-009Fl5-9j
+ for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 11:26:40 +0000
+Received: by mail-qv1-xf36.google.com with SMTP id p3so14039812qvj.9
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Dec 2021 03:26:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=eD6ckxYOFOb+e8Paz6iMpOBDcRBstNtUogT+wtDanIo=;
+ b=YVi7qSMIHAmqR1ziLS+oBD5WujjcwCE+4G3u70/XFkRKtNHL1rmXZEJ6FmKJIFdu02
+ G30X1MLGRJxf++u4dAJreJ13q94+xdZEYlYccDmaClkGWseDYg+fD8ts0JDIIZZviucL
+ HTEGgM4gQ9sUu8VL3lLv5/VSo1ZfHkDMvbT93gKgQ3pR7xt6x/KZENec/ExMhE0iQFJB
+ dwHUJjwa4xgINdLxvcqAJDMxWo1U3CHNleqylIUhodRUv3EH7OHwJQ1IY4STphC/7ly/
+ PmlpYT3LHnBODRFdhuqfX5iQhOFE/nphgwagOdAsYTHu7ewT0wzFaDV3M2h2sQVHCnOx
+ 3RdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=eD6ckxYOFOb+e8Paz6iMpOBDcRBstNtUogT+wtDanIo=;
+ b=D9CLMv3JOy7bPOrHLMpRieqHim6xhh3mLC8+0eU8Do597ZfuOSr9gRsNB/GQs/kVlB
+ gJf+rsBnH5wFDkw+D4C9p4JddZCWps9fWBDTZ+RkCn+ih7dWnzyaxa82YG0/u6qT2X/O
+ k5yEnubXkfHlTrHuBI8Pmnzb8mdtRyUvxNoMHMuiXq8Rc+MfRhD4DZP0QdUfkZcusAie
+ SXXwGd6K7/k4/I7T8bcYTuQs7V7wZZxwe4EvoZoJwpPK0Siv6JcW6Yc3X49YKVIjqPTB
+ NbztxL5ujer9zq7ZuVL4R2Zr1XWJngrTCowemqjtJ17wOoo/3sv2bFRWuSax2oO+og88
+ suTQ==
+X-Gm-Message-State: AOAM533VAWQSAsz/71X//mKqSls8LF6MlqeeEcPwXYunQJAThfwEs9s5
+ YTNgEQUtOJw/LbuzXpFafiQ0ogsQYyw=
+X-Google-Smtp-Source: ABdhPJyz8j/K09DZ5hzBHAp/+joA+v2M/C1JywjSTePQKxvwDTIJHTjCcK3ctzU6nAsJmW04ncaugA==
+X-Received: by 2002:a05:6214:5094:: with SMTP id
+ kk20mr40535508qvb.71.1639394798344; 
+ Mon, 13 Dec 2021 03:26:38 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id i14sm5900465qko.9.2021.12.13.03.26.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Dec 2021 03:26:37 -0800 (PST)
+From: cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To: miquel.raynal@bootlin.com
+Cc: cgel.zte@gmail.com, chi.minghao@zte.com.cn, han.xu@nxp.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ richard@nod.at, vigneshr@ti.com, zealci@zte.com.cn
+Subject: [PATCH v3 nand-next] mtd: rawnand: gpmi: remove unneeded variable
+Date: Mon, 13 Dec 2021 11:26:27 +0000
+Message-Id: <20211213112627.436745-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211213101519.25f4e2e1@xps13>
+References: <20211213101519.25f4e2e1@xps13>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211213_030704_573873_D19E9A33 
-X-CRM114-Status: GOOD (  27.65  )
+X-CRM114-CacheID: sfid-20211213_032639_378235_28B13B95 
+X-CRM114-Status: UNSURE (   9.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,56 +86,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAxMyBEZWMgMjAyMSAxMjo1MDoxMiArMDIwMApTZWFuIE55ZWtqYWVyIDxzZWFuQGdl
-YW5peC5jb20+IHdyb3RlOgoKPiBIaSBNaXF1ZWwgYW5kIEJvcmlzLAo+IAo+IE9uIE1vbiwgRGVj
-IDEzLCAyMDIxIGF0IDEwOjUzOjM2QU0gKzAxMDAsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToKPiA+
-IE9uIE1vbiwgMTMgRGVjIDIwMjEgMTA6MzM6NTAgKzAxMDAKPiA+IE1pcXVlbCBSYXluYWwgPG1p
-cXVlbC5yYXluYWxAYm9vdGxpbi5jb20+IHdyb3RlOgo+ID4gICAKPiA+ID4gSGVsbG8sCj4gPiA+
-IAo+ID4gPiBib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBNb24sIDEzIERl
-YyAyMDIxIDEwOjI4OjAxICswMTAwOgo+ID4gPiAgIAo+ID4gPiA+IE9uIE1vbiwgMTMgRGVjIDIw
-MjEgMTA6MTA6MjUgKzAxMDAKPiA+ID4gPiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJv
-b3RsaW4uY29tPiB3cm90ZToKPiA+ID4gPiAgICAgCj4gPiA+ID4gPiBIaSBTZWFuLAo+ID4gPiA+
-ID4gCj4gPiA+ID4gPiBzZWFuQGdlYW5peC5jb20gd3JvdGUgb24gRnJpLCAxMCBEZWMgMjAyMSAx
-NDoyNTozNSArMDEwMDoKPiA+ID4gPiA+ICAgICAgIAo+ID4gPiA+ID4gPiBPbiBUaHUsIERlYyAw
-OSwgMjAyMSBhdCAwMzoyODoxMVBNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgICAgICAg
-Cj4gPiA+ID4gPiA+ID4gSGkgU2VhbiwKPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBzZWFu
-QGdlYW5peC5jb20gd3JvdGUgb24gVGh1LCA5IERlYyAyMDIxIDE1OjA3OjIxICswMTAwOgo+ID4g
-PiA+ID4gPiA+ICAgICAgICAgICAKPiA+ID4gPiA+ID4gPiA+IE9uIEZyaSwgRGVjIDAzLCAyMDIx
-IGF0IDAyOjM5OjU4UE0gKzAxMDAsIE1pcXVlbCBSYXluYWwgd3JvdGU6ICAgICAgICAgIAo+ID4g
-PiA+ID4gPiA+ID4gPiBIZWxsbywKPiA+ID4gPiA+ID4gPiA+ID4gICAgICAgICAgICAgCj4gPiA+
-ID4gPiA+ID4gPiA+ID4gPiBGaW5lIGJ5IG1lLCBsZXRzIGRyb3AgdGhpcyBzZXJpZXMuICAgICAg
-ICAgICAgCj4gPiA+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gPiBGWUkgSSd2ZSBkcm9w
-cGVkIHRoZSBlbnRpcmUgc2VyaWVzIGZyb20gbXRkL25leHQuIEknbSB3YWl0aW5nIGZvciB0aGUK
-PiA+ID4gPiA+ID4gPiA+ID4gZml4IGRpc2N1c3NlZCBiZWxvdyAod2l0aG91dCBhYnVzaW5nIHRo
-ZSBjaGlwIG11dGV4IDstKSApLiAgICAgICAgICAgIAo+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4g
-PiA+ID4gPiBDb29sLCBsb29raW5nIGZvcndhcmQgdG8gdGVzdCBhIHBhdGNoIHNlcmllcyA6KSAg
-ICAgICAgICAKPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gPiBUZXN0PyBZb3UgbWVhbiAid3Jp
-dGUiPyA6KQo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IENoZWVycywKPiA+ID4gPiA+ID4g
-PiBNaXF1w6hsICAgICAgICAgIAo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gSGkgTWlxdWVsLAo+
-ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gU2hvdWxkIHdlIHVzIGEgYXRvbWljIGZvciB0aGUgc3Vz
-cGVuZGVkIHZhcmlhYmxlPyAgICAgICAgCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEkgaGF2ZW4ndCB0
-aG91Z2h0IGFib3V0IGl0IGV4dGVuc2l2ZWx5LCBhbiBhdG9taWMgdmFyaWFibGUgc291bmQgZmlu
-ZQo+ID4gPiA+ID4gYnV0IEkgYW0gZGVmaW5pdGVseSBub3QgYSBsb2NraW5nIGV4cGVydC4uLiAg
-ICAgIAo+ID4gPiA+IAo+ID4gPiA+IE5vIG5lZWQgdG8gdXNlIGFuIGF0b21pYyBpZiB0aGUgdmFy
-aWFibGUgaXMgYWxyZWFkeSBwcm90ZWN0ZWQgYnkgYSBsb2NrCj4gPiA+ID4gd2hlbiBhY2Nlc3Nl
-ZCwgYW5kIHRoaXMgc2VlbXMgdG8gYmUgY2FzZS4gICAgCj4gPiA+IAo+ID4gPiBNYXliZSB0aGVy
-ZSB3YXMgYSBjb25mdXNpb24gYWJvdXQgdGhpcyBsb2NrOiBJIHRoaW5rIEJvcmlzIGp1c3QgZG8g
-bm90Cj4gPiA+IHdhbnQgdGhlIGNvcmUgdG8gdGFrZSBhbnkgbG9jayBkdXJpbmcgYSBzdXNwZW5k
-IG9wZXJhdGlvbi4gQnV0IHlvdSBjYW4KPiA+ID4gc3RpbGwgdXNlIGxvY2tzLCBhcyBsb25nIGFz
-IHlvdSByZWxlYXNlIHRoZW0gYmVmb3JlIHN1c3BlbmRpbmcuCj4gPiA+IAo+ID4gPiBBbmQgYWxz
-bywgdGhhdCBjaGlwIGxvY2sgbWlnaHQgbm90IGJlIHRoZSBvbmUgeW91IHdhbnQgdG8gdGFrZSBi
-ZWNhdXNlCj4gPiA+IGl0J3MgYmVlbiBpbnRyb2R1Y2VkIGZvciBhbm90aGVyIHB1cnBvc2UuICAK
-PiA+IAo+ID4gQWNjZXNzIHRvIHRoZSBzdXNwZW5kZWQgZmllbGQgaXMgYWxyZWFkeSBwcm90ZWN0
-ZWQgYnkgdGhlIGNoaXAgbG9jaywKPiA+IGFuZCBJIHRoaW5rIGl0J3MganVzdCBmaW5lIHRvIGtl
-ZXAgaXQgdGhpcyB3YXkuICAKPiAKPiBJJ20gcmVhZGluZyB0aGUgc3VzcGVuZGVkIHZhcmlhYmxl
-IGluIHdhaXRfZXZlbnQoKSBvdXRzaWRlIHRoZSBsb2NrIDovCgpJdCBkb2Vzbid0IG1hdHRlciBi
-ZWNhdXNlIHlvdSdyZSBjaGVja2luZyBpdCBhZ2FpbiB3aXRoIHRoZSBsb2NrIGhlbGQKd2hlbiBk
-b2luZyBhIG5ldyBsb29wIGl0ZXJhdGlvbi4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
-c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-Cg==
+From: Minghao Chi <chi.minghao@zte.com.cn>
+
+Return status directly from function called.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+---
+change since v1: mtd/nand:remove unneeded variable
+             v2: mtd: rawnand: gpmi: remove unneeded variable
+             v3: move the update log here
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 10cc71829dcb..ab9d1099bafa 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1425,7 +1425,6 @@ static int gpmi_ecc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
+ 	struct bch_geometry *nfc_geo = &this->bch_geometry;
+-	int ret;
+ 
+ 	dev_dbg(this->dev, "ecc write page.\n");
+ 
+@@ -1445,9 +1444,7 @@ static int gpmi_ecc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 				    this->auxiliary_virt);
+ 	}
+ 
+-	ret = nand_prog_page_op(chip, page, 0, buf, nfc_geo->page_size);
+-
+-	return ret;
++	return nand_prog_page_op(chip, page, 0, buf, nfc_geo->page_size);
+ }
+ 
+ /*
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
