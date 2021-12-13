@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF5A1C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 10:32:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B57BC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 10:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:From:To:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=U6rETUFTWwoLOI5zA+ec0DkSiaeCImgSn9Y+pjB4ndM=; b=ocpyO/g2au1gJD
-	QIK/ZopiWl2j4+G9M/Nn1qE91YBTrYqVYV+SwMhGUxJFYtJZPovup1FZFER/myBczCoQsgDQk7QDg
-	tA7xTDq0R1xo9hNBap9NM/+1I5hCcWmxFemFnTN5pCIV4pKTzFH96LuCCbo80QWmpCtNMRXtx1j/A
-	kTBQiw9bu5v6HA/dNKBM+JeMr8fl8h9yfB0OOKkWFDe9wywsVqdj0gKUy7xknLIjCA5kE6wllx+5Q
-	L79FFqs5vdWvylMbhWB17JHOZ2AEuqL1ZHHX9N3HEz2SRbA+60g646+Z1hUc4b7rga5z8lL/06ZDg
-	m2rRUIDifvtPEoVzhk6Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=6O0eaw7Mw2NVHLN1Rx1ZTXLGRJOHpaEXSxvlOpFOr44=; b=VeSaOZIcPdhpRW
+	3/fXnVCrv+FCbQrWuRDnNRqPD0wVw5v1M9XUeUfZbwZ6ENvzlV7zufCXn5QqE8ZW/jLiZeCZw+QMv
+	ezCLo7Gj0GTO8A/E5cXvKjWFsfxZ52I9+mnd3o6Dw9aNZ1VloDic5FkZfrI+ixnhTWMptXA9w9pAq
+	YjUo7cmostjbSXXNVzUJb43wRmn4fIJK29ZknsrBitocAi/W8Hw39l+pTti6P4SCeXLNqFq/SUDh6
+	GjjSC2RzPx+TmhDlWKK59XRYD2zYBaT3bS0afJdZIb9OqiRRFJNKzydq8RhcIeWasHbnjr8j5PYQf
+	eGo5Pl0AWfQ0emRijdUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mwiby-0092B4-Kl; Mon, 13 Dec 2021 10:31:15 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1mwits-0098Je-5U; Mon, 13 Dec 2021 10:49:44 +0000
+Received: from mail-qt1-x82b.google.com ([2607:f8b0:4864:20::82b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mwiPG-008x8l-5j
- for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 10:18:07 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id t18so26064553wrg.11
- for <linux-mtd@lists.infradead.org>; Mon, 13 Dec 2021 02:18:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=smile-fr.20210112.gappssmtp.com; s=20210112;
- h=message-id:date:mime-version:user-agent:content-language:to:from
- :subject:content-transfer-encoding;
- bh=LDYCcCtjwel9nUP69aAG7MiwAOgxmgNMH8mzNFN+0nk=;
- b=P8UdRb6w1thbFdPvNy9DlxrRnId18cCzL13fEj4nOp/gHJEpWZYWqEpz4BWsV1qtAT
- HCnqP6YpiIJS+6xaNp6gT2riGB0CGUBa3BQidlKJFYWCmaYik/rMphHX7LFfNE2bMdjW
- J22ivo+a3V5J88c/WPT8QbBDpJbKSjoMW1j0FNY8IofX67drlIMvHsd7BvYNUwjLed/z
- duR94qAzXDSpD7pNFtDQTHWXYj7RxXcvl+gKXwXS6wBQX7tvV7VD3Sc0CypQxU8JE0ZX
- M5PPPGUuzTT9+YrcbMUFjx9uY7HtNtk6IQDFv7z8qPrnMAv9iLZ0FU0drjQlffle1a0H
- kj+A==
+ id 1mwitp-0098J4-Ur
+ for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 10:49:43 +0000
+Received: by mail-qt1-x82b.google.com with SMTP id n15so14784214qta.0
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Dec 2021 02:49:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=7vlfNfrOceOEoYXiDCyE8CsjbUpv2PQ5GDOLk4jPLtE=;
+ b=WHwgI4i/lIvtO/xog+9VopKiTNorTcd27b97xeXShSYZLzm188UY22HdGYZnVsUY/m
+ FfjIfhYfzesQ48+7a3qql/vBdi80iZy71cV55ilrkMiDvalGKSP5ZiwX35UCO+eohK/9
+ Um11+rY+gJTSb2da5Bmjdw7PmNhFrOAJGJpvKg2iu6eezERgpciSnDwpIIm9GnZe6ETY
+ dMq1oauC2wHsX6tUtt1Df0Ak9ykP6dnJu9QJNwDyjBVcoNjcWGU8RQMkElHYAjUf/qMb
+ VN4krq7nTGG3EqaR4VquEPq35YFtGRAN5fQkxWPGFG/NDae7CliNiSNwo3CMaoa/PTgn
+ QUmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent
- :content-language:to:from:subject:content-transfer-encoding;
- bh=LDYCcCtjwel9nUP69aAG7MiwAOgxmgNMH8mzNFN+0nk=;
- b=TlWbNwXswfTvsSjBUw42MBwUkKln/ua9qg9LbnWojgLOXxgRkoswOunsyYeBng2YHH
- iLmdc/avbsQvm6Bjhl2kjFHYxDpB0PmBWvBfFcmaeFlqupCbCBvODS/1DZLuWAtinMPP
- uU/N0SY1VRnb1TEdZ6Qf/skMiUOi8ovl2m38mdef4y4wWNprDq76rCucQ0Sw+cLXasnm
- 0F4jQTe2EhZ2FTODMqfSly4BJsotA9G4J12+w3d+YdoAqrmjte/Sj8a8nNbDlVizgSs/
- jePFCPnIKEGEmFDITb07K7/xjLrTPfhe/zDPoWeYHvX8CLxV/G5EzQGqVyOASFxAyirq
- uaqw==
-X-Gm-Message-State: AOAM530e5Q6IT+42Kzi2RFpzuhB2KxA4Cw/tbPVjH3l2cE4Z1AMQfm4U
- IyeQpZ+NIEVN+Frpwwgeqd6MIJZsBMDrqg==
-X-Google-Smtp-Source: ABdhPJxsTttHCkAdq4axqRz4vhQamOggOYj/BmKBIkqDLVaDvlDK80blzxPyWlcdh/x8Uo4Mti1L2A==
-X-Received: by 2002:a05:6000:18a5:: with SMTP id
- b5mr31792772wri.604.1639390684167; 
- Mon, 13 Dec 2021 02:18:04 -0800 (PST)
-Received: from ?IPV6:2a01:cb05:8f8a:1800:1c97:b8d1:b477:d53f?
- (2a01cb058f8a18001c97b8d1b477d53f.ipv6.abo.wanadoo.fr.
- [2a01:cb05:8f8a:1800:1c97:b8d1:b477:d53f])
- by smtp.gmail.com with ESMTPSA id ay29sm6676137wmb.44.2021.12.13.02.18.03
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 13 Dec 2021 02:18:03 -0800 (PST)
-Message-ID: <fb71fa47-a59f-9434-a16a-6b59da9e2646@smile.fr>
-Date: Mon, 13 Dec 2021 11:18:03 +0100
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=7vlfNfrOceOEoYXiDCyE8CsjbUpv2PQ5GDOLk4jPLtE=;
+ b=IsmLr76WBnrKkWQo3jgtAy7ZD346Iq4E9MXLTpj25rpWQrk12mThc8T+f2KjP7NvnD
+ DE+PCdnBCVCvM0wexf6tNEpDdIzpJnLZIxNNDF77wLyOo1kALwkDuRnAC61SWeciaNUs
+ ILaePACjCcm3tHcFJvI6ZflW+Hmr6h/7/iWA7tOS1VXSd2FuqCE9spf4604KSn1jL1/d
+ XHtfIVFzpnHqWaR2/anyFR9mDnuBE6kubVK8yE91zs6zTosqmqDEh3AIWBImHzuVRfXA
+ zcBrVHLbs5JxB7crFFojilE9WoCsTSh/Y0Ex1VHtgLDpEO4K148R6bPDLkw6SbM06qs7
+ sZyw==
+X-Gm-Message-State: AOAM531SYnhs9bUpAY8k4dpLv4SU4ZZYuUrmwZwUQ08RXXNkV5h8DgvX
+ jy+47OoLMMKni9BoxicUk4I=
+X-Google-Smtp-Source: ABdhPJzPAG4ov64AeneoCqMD8XRa2RVV0yc9vdWyYc/bORq1dEYKgI2qZ2TqWzWZ1Y1o8vjMzrQ7dw==
+X-Received: by 2002:ac8:5f93:: with SMTP id j19mr43808197qta.596.1639392579818; 
+ Mon, 13 Dec 2021 02:49:39 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id i6sm9089759qti.40.2021.12.13.02.49.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 13 Dec 2021 02:49:39 -0800 (PST)
+From: cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To: miquel.raynal@bootlin.com
+Cc: cgel.zte@gmail.com, chi.minghao@zte.com.cn, han.xu@nxp.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ richard@nod.at, vigneshr@ti.com, zealci@zte.com.cn
+Subject: [PATCH nand-next v2] mtd: rawnand: gpmi: remove unneeded variable
+Date: Mon, 13 Dec 2021 10:49:30 +0000
+Message-Id: <20211213104930.436602-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211213101519.25f4e2e1@xps13>
+References: <20211213101519.25f4e2e1@xps13>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To: linux-mtd@lists.infradead.org
-From: Romain Naour <romain.naour@smile.fr>
-Subject: GPMC omap nand using CS1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211213_021806_277275_92C39783 
-X-CRM114-Status: UNSURE (   6.33  )
+X-CRM114-CacheID: sfid-20211213_024942_036530_2FF3CEBA 
+X-CRM114-Status: UNSURE (   9.42  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,29 +90,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-I'm using an AM3505 cpu with two nand device, nand0 use CS0 and nand1 use CS1.
+Return status directly from function called.
+change since v1: mtd/nand:remove unneeded variable
+             v2: mtd: rawnand: gpmi: remove unneeded variable
 
-The nand0 is ok but nand1 is not detected.
-I get "nand: No NAND device found"
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Regarding the devicetree for nand1, I did something similar to omap3430-sdp.dts
-where the nand is on CS1.
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 10cc71829dcb..ab9d1099bafa 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1425,7 +1425,6 @@ static int gpmi_ecc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
+ 	struct bch_geometry *nfc_geo = &this->bch_geometry;
+-	int ret;
+ 
+ 	dev_dbg(this->dev, "ecc write page.\n");
+ 
+@@ -1445,9 +1444,7 @@ static int gpmi_ecc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 				    this->auxiliary_virt);
+ 	}
+ 
+-	ret = nand_prog_page_op(chip, page, 0, buf, nfc_geo->page_size);
+-
+-	return ret;
++	return nand_prog_page_op(chip, page, 0, buf, nfc_geo->page_size);
+ }
+ 
+ /*
+-- 
+2.25.1
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/arm/boot/dts/omap3430-sdp.dts?h=v5.15.6#n102
-
-I'm not sure this dts actually works since in nand_base.c nand_detect() call
-nand_reset(chip, 0) with cs = 0.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/mtd/nand/raw/nand_base.c?h=v5.15.6#n4945
-
-It seems it was possible to use two nand on gpmc (kernel 3.16):
-
-https://e2e.ti.com/support/processors-group/processors/f/processors-forum/343017/am335x-gpmc-with-two-nand-flash-in-device-tree
-
-Best regards,
-Romain
 
 ______________________________________________________
 Linux MTD discussion mailing list
