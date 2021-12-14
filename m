@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED0D6C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 17:33:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04CEAC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 17:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YOqm/RSEBqn+0bmgOkSQM79hVmOz1zqgtgK00dMzNQk=; b=WumnzWWRW+VYII
-	9zAWgNJ4KjODquhJek1DBeUGLCirahIedmMuoAveBt2c+mnRPm0KZwRb9HiaWB76WjpJHkTA1y8DW
-	H+bHBMNdowoPZ9ns+r/b3IxreXHOtpZNHR4da1djnQz+At1TduWvi8P3DQlvT6AfDh/LGkDsYmsP2
-	p3mwiFbiUEgvea8EQCfdHhzdNgHPLuY/jIpYJGwMx/LSlu7BFQwmJvVQxVfsLT6LU+8ssuQjJGIju
-	Ld6i/owg1h3MuCbz99nSWSRVQE6bsmmkr9rARTx2nXSVG4rvUtziavMegCSullSVJqiYrKz2NHxiP
-	8TsjKlrKV3voNugOOHFg==;
+	List-Owner; bh=+pwS2y6luZqxgpdqKxKzVNSoGjwtavaMTVBZumvYfqk=; b=S5DyM2Wc0Hkt8s
+	RYMeGOdSiOomci/DbDzRa+Vg+BOgK4fNVWGB0KZayMOWS0dLgQ5YGUsW/3rwICnyPKD2DYDRYh84M
+	Zr0K1NCUBc49130mNQeCKsfhBvqBOJgxj82CntYjNyORCRrUfpVlWMtirobMLTf+NOlWdllw1nPnP
+	hQ2+ILoZ0R3XbHo3qUEzxMNOxkNrl+4MMwq6Aizc61GkxdWycqEGdPgdGwXKJuHP0XuWTnWAf+K+2
+	KRe+oXwjkeXyGuchiow+59K9kN9ZM6Q0oz3t8BImVU1fm9HNOUMtkcMHm7itnwypcu9Sxm8UzqN6G
+	xPTiptTN1E5v5Sk/VJMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxBfi-00F8QE-TF; Tue, 14 Dec 2021 17:33:02 +0000
-Received: from mail-oi1-f172.google.com ([209.85.167.172])
+	id 1mxBkL-00F9ui-5H; Tue, 14 Dec 2021 17:37:49 +0000
+Received: from mail-oi1-f182.google.com ([209.85.167.182])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxBfg-00F8Ox-Ga
- for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 17:33:01 +0000
-Received: by mail-oi1-f172.google.com with SMTP id n66so28076251oia.9
- for <linux-mtd@lists.infradead.org>; Tue, 14 Dec 2021 09:32:58 -0800 (PST)
+ id 1mxBkI-00F9u0-Qb
+ for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 17:37:48 +0000
+Received: by mail-oi1-f182.google.com with SMTP id bf8so28148214oib.6
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Dec 2021 09:37:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=rvxtIzimXcRFfXqGjLWdjv+5BSddZaMd3oDAYyxaZ+g=;
- b=MvJCGhM05/QKQWfiIhYy+nVLr/vn0dcdAgy5YSyRrWEK9NcqqMHMnx8crRadbhJ5XS
- RLtkjEzW2aC+eCDpv3F8/ZxsbFcI8FVlg4AZQJyKaUUW6cUZ58dtB4LeILP3fsm+VBs/
- 5EKIBw6/8Oq8WAsjQuCLwCeWjKiyiyJON1BjQ/zHxIkT2nQmoMBVa8J8uGJ587c+w1oT
- MtmarxBnEtY0Ral9PNlNyRVwbpTYo2cBdmD/g3RCs6ta6ZlLZ6EUj0S+EhWxGD+eauhQ
- fK8RhrzkNBJiSrCLUA+cPZC0xyfZoIPF4LG0xclHLpbiaqZK1KwRsOvQvsoot8p2wUIx
- z4iw==
-X-Gm-Message-State: AOAM533M0SAgjFjuB+8uInylGht+6u0PHBsCGBNXTVe/ufCxH0Z0uowK
- jttTBMtMD/pXOkTGpf+JMQ==
-X-Google-Smtp-Source: ABdhPJwQp4AZp2XOUAaV2qtbp/48O9D/BKWTdzem70zoKVJJucdUhKwJfN/sJ+DOanODQduj+8PsAg==
-X-Received: by 2002:a05:6808:2187:: with SMTP id
- be7mr35137900oib.97.1639503178303; 
- Tue, 14 Dec 2021 09:32:58 -0800 (PST)
+ bh=WR9gGYu8QQ5K/woO2Lwtdpoe5T+WeJunkKn+dMZvc8w=;
+ b=41aSKs+cYWXtpUthNnWk5f5m/TYkwxptTwq95nancsVaF/jby4c0pVbScaS9UIttFg
+ 4C/sKT6L3CKsBBVo+rHf/211N9JyfDn/RXs9sGhmF1CLxvCL2sC6MLw6uO36vvsQu2ct
+ c9sOOcTUbpritas/UINIueensYujkOYKmsp6fv7zZM5lMrqxyiHVilTDKxn6k3Qs8S4+
+ VlpWVz9fi4fschVYKOOzJg9kPaPk3ZUIXaTCQUC72npMlxkcaYrnJall+miNVtruNRTc
+ zZCEGU8bP+WHqWWJVRC3degnQr+b5yPtmc+uRjHXlIPpMfhGyl7eUE9pYUl72xFhzUpO
+ y/4A==
+X-Gm-Message-State: AOAM531lJf6VIpYgbDnU4y4EizHfoM9U95C6wdnIYi5WSfIz0nafDdTP
+ dQz1Mb+ouEdE88smFOhwnw==
+X-Google-Smtp-Source: ABdhPJyeANG0XOSBeKhvl+rrKsdX6O51quAB/Q0zd1QnHPf6CDYKn4K8Pm5zHFarIk1R6asLr4/DpA==
+X-Received: by 2002:a05:6808:1509:: with SMTP id
+ u9mr35869237oiw.13.1639503465518; 
+ Tue, 14 Dec 2021 09:37:45 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
  [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id i16sm92679oig.15.2021.12.14.09.32.57
+ by smtp.gmail.com with ESMTPSA id c9sm98122oog.43.2021.12.14.09.37.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 14 Dec 2021 09:32:57 -0800 (PST)
-Received: (nullmailer pid 3597381 invoked by uid 1000);
- Tue, 14 Dec 2021 17:32:56 -0000
-Date: Tue, 14 Dec 2021 11:32:56 -0600
+ Tue, 14 Dec 2021 09:37:44 -0800 (PST)
+Received: (nullmailer pid 3604503 invoked by uid 1000);
+ Tue, 14 Dec 2021 17:37:44 -0000
+Date: Tue, 14 Dec 2021 11:37:44 -0600
 From: Rob Herring <robh@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -60,17 +60,17 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Michal Simek <monstr@monstr.eu>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>, devicetree@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] spi: dt-bindings: Describe stacked/parallel
- memories modes
-Message-ID: <YbjVSNAC8M5Y1nHp@robh.at.kernel.org>
+Subject: Re: [PATCH v4 3/3] spi: dt-bindings: Add an example with two stacked
+ flashes
+Message-ID: <YbjWaE5ZwmuRd/EI@robh.at.kernel.org>
 References: <20211210201039.729961-1-miquel.raynal@bootlin.com>
- <20211210201039.729961-3-miquel.raynal@bootlin.com>
+ <20211210201039.729961-4-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211210201039.729961-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20211210201039.729961-4-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211214_093300_593506_D6E229B2 
-X-CRM114-Status: GOOD (  24.19  )
+X-CRM114-CacheID: sfid-20211214_093746_894970_5B7E0EC5 
+X-CRM114-Status: GOOD (  15.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,76 +87,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 10, 2021 at 09:10:38PM +0100, Miquel Raynal wrote:
-> Describe two new memories modes:
-> - A stacked mode when the bus is common but the address space extended
->   with an additinals wires.
-> - A parallel mode with parallel busses accessing parallel flashes where
->   the data is spread.
+On Fri, Dec 10, 2021 at 09:10:39PM +0100, Miquel Raynal wrote:
+> Provide an example of how to describe two flashes in eg. stacked mode.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  .../bindings/spi/spi-peripheral-props.yaml    | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
+>  Documentation/devicetree/bindings/spi/spi-controller.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> index 5dd209206e88..4194fee8f556 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> +++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> @@ -82,6 +82,35 @@ properties:
->      description:
->        Delay, in microseconds, after a write transfer.
->  
-> +  stacked-memories:
-> +    $ref: /schemas/types.yaml#/definitions/uint64-matrix
-
-matrix or...
-
-> +    description: Several SPI memories can be wired in stacked mode.
-> +      This basically means that either a device features several chip
-> +      selects, or that different devices must be seen as a single
-> +      bigger chip. This basically doubles (or more) the total address
-> +      space with only a single additional wire, while still needing
-> +      to repeat the commands when crossing a chip boundary. The size of
-> +      each chip should be provided as members of the array.
-
-array?
-
-Sounds like an array from the description as there is only 1 element, 
-the size.
-
-> +    minItems: 2
-> +    maxItems: 2
-> +    items:
-> +      maxItems: 1
-
-This says you can only have 2 64-bit entries. Probably not what you 
-want. This looks like a case for a maxItems 'should be enough for now' 
-type of value.
-
+> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> index 36b72518f565..048d2bbc74a5 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> @@ -139,4 +139,11 @@ examples:
+>              spi-max-frequency = <100000>;
+>              reg = <1>;
+>          };
 > +
-> +  parallel-memories:
-> +    $ref: /schemas/types.yaml#/definitions/uint64-matrix
-> +    description: Several SPI memories can be wired in parallel mode.
-> +      The devices are physically on a different buses but will always
-> +      act synchronously as each data word is spread across the
-> +      different memories (eg. even bits are stored in one memory, odd
-> +      bits in the other). This basically doubles the address space and
-> +      the throughput while greatly complexifying the wiring because as
-> +      many busses as devices must be wired. The size of each chip should
-> +      be provided as members of the array.
-> +    minItems: 2
-> +    maxItems: 2
-> +    items:
-> +      maxItems: 1
-> +
->  # The controller specific properties go here.
->  allOf:
->    - $ref: cdns,qspi-nor-peripheral-props.yaml#
-> -- 
-> 2.27.0
-> 
-> 
+> +        flash@2 {
+> +          compatible = "jedec,spi-nor";
+> +          spi-max-frequency = <50000000>;
+> +          reg = <2>, <3>;
+> +          stacked-memories = /bits/ 64 <0x10000000>, /bits/ 64 <0x10000000>;
+
+stacked-memories = /bits/ 64 <0x10000000 0x10000000>;
+
+While the source syntax allows for multiple (and mixed) /bits/ 
+annotations, that's not something we support really.
+
+If you have problems with the schema tools on this, let me know. The 
+handling of this is not the greatest.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
