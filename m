@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37233C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 11:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54A7FC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 11:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=495lgiWyynSP8Di1TvHwgIifsmNQ4tRtPDhL9R+tpso=; b=gS4AX181jOkk93
-	9ixaqbWczZuDSVMERqSMsCaXoaStyNFbmy3879fnkMq98pe/q+USHoaWXu/niCjwj2aQJSL6whPDU
-	jwYz6Z3nTJv2Lg80WNfs60mY8EjHy+5D5HXE51JBYNLGcmjJtkrOsmjA/YgHbVGxFyNYm0JreBwQw
-	No2gGO7pSoPlmE8g6FBIoTSBhX4LB7fhCckOm/S96b70glFajO9KMkZYP+XDYI54Ai+mBNJ+RDUh6
-	sfa2n4kEjbdqw/e3mESIfcTxTJ7TZwcE6m9DnDr8ZRRP+cUlamQrrmPiPnMLc05AvHEQgGdaGWG7K
-	v0KXC50c5ZAP2xlmNgDg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1Fk05jcpMM6DssUNoPeIDWMZy70x6JHW5TckBAJv6rM=; b=EBxXpKt2Qa5Ok7
+	FDIZWTjPnKpyoCecsG9/SwUJjzL/gR7Fhvx5NoYdjtZ9kL1iDv1GshCMvRn4YSwBBYU0tNQSQzWsa
+	5lAiCq0qGdGDy4+h9Cd/3oFtJywPGcaFTgBNlNltnxI69nE88FKdwJQ6qpBXswM1c+adfLUlWObsP
+	sbvWRRFpvrohgb4+R3dYYURK0zPgcT8ZMrxT7jsRq/JvoMX73YhsuwGWAatSWRJ/tr1EqX50ZHAgq
+	HDC8xvfVvOS87N+IpNUYL2j3MRflqfuQ6pnH4NRwS1utWyHfWuQ1BluaRMjiE5kqgKXHI0zs83mjI
+	7DTHHuzDWYVkFaNaB/cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mx6Bs-00DjYn-8G; Tue, 14 Dec 2021 11:41:52 +0000
+	id 1mx6CL-00Djmd-TH; Tue, 14 Dec 2021 11:42:21 +0000
 Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mx6Bp-00DjWL-8U
- for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 11:41:50 +0000
+ id 1mx6Bp-00DjVj-8U
+ for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 11:41:51 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 05F2B24000D;
- Tue, 14 Dec 2021 11:41:45 +0000 (UTC)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id BBA38240009;
+ Tue, 14 Dec 2021 11:41:41 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,17 +39,14 @@ Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 01/13] mtd: nand: ecc: Provide a helper to retrieve a
- pilelined engine device
-Date: Tue, 14 Dec 2021 12:41:28 +0100
-Message-Id: <20211214114140.54629-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 00/13] Pipelined ECC engines & Macronix support
+Date: Tue, 14 Dec 2021 12:41:27 +0100
+Message-Id: <20211214114140.54629-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211214114140.54629-1-miquel.raynal@bootlin.com>
-References: <20211214114140.54629-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211214_034149_469163_04CBE160 
-X-CRM114-Status: GOOD (  14.87  )
+X-CRM114-CacheID: sfid-20211214_034149_605152_334BFCF7 
+X-CRM114-Status: GOOD (  19.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,84 +58,83 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In a pipelined engine situation, we might either have the host which
-internally has support for error correction, or have it using an
-external hardware block for this purpose. In the former case, the host
-is also the ECC engine. In the latter case, it is not. In order to get
-the right pointers on the right devices (for example: in order to devm_*
-allocate variables), let's introduce this helper which can safely be
-called by pipelined ECC engines in order to retrieve the right device
-structure.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/ecc.c   | 31 +++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h |  1 +
- 2 files changed, 32 insertions(+)
-
-diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
-index 078f5ec38de3..5250764cedee 100644
---- a/drivers/mtd/nand/ecc.c
-+++ b/drivers/mtd/nand/ecc.c
-@@ -699,6 +699,37 @@ void nand_ecc_put_on_host_hw_engine(struct nand_device *nand)
- }
- EXPORT_SYMBOL(nand_ecc_put_on_host_hw_engine);
- 
-+/*
-+ * In the case of a pipelined engine, the device registering the ECC
-+ * engine is not necessarily the ECC engine itself but may be a host controller.
-+ * It is then useful to provide a helper to retrieve the right device object
-+ * which actually represents the ECC engine.
-+ */
-+struct device *nand_ecc_get_engine_dev(struct device *host)
-+{
-+	struct platform_device *ecc_pdev;
-+	struct device_node *np;
-+
-+	/*
-+	 * If the device node contains this property, it means we need to follow
-+	 * it in order to get the right ECC engine device we are looking for.
-+	 */
-+	np = of_parse_phandle(host->of_node, "nand-ecc-engine", 0);
-+	if (!np)
-+		return host;
-+
-+	ecc_pdev = of_find_device_by_node(np);
-+	if (!ecc_pdev) {
-+		of_node_put(np);
-+		return NULL;
-+	}
-+
-+	platform_device_put(ecc_pdev);
-+	of_node_put(np);
-+
-+	return &ecc_pdev->dev;
-+}
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
- MODULE_DESCRIPTION("Generic ECC engine");
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index b617efa0a881..615b3e3a3920 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -309,6 +309,7 @@ struct nand_ecc_engine *nand_ecc_get_sw_engine(struct nand_device *nand);
- struct nand_ecc_engine *nand_ecc_get_on_die_hw_engine(struct nand_device *nand);
- struct nand_ecc_engine *nand_ecc_get_on_host_hw_engine(struct nand_device *nand);
- void nand_ecc_put_on_host_hw_engine(struct nand_device *nand);
-+struct device *nand_ecc_get_engine_dev(struct device *host);
- 
- #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_HAMMING)
- struct nand_ecc_engine *nand_ecc_sw_hamming_get_engine(void);
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gYWxsLAoKVGhpcyBpcyBhIHNlY29uZCB2ZXJzaW9uIG9mIHRoZSBzZWNvbmQgaGFsZiBv
+ZiB0aGUgIkV4dGVybmFsIEVDQyBlbmdpbmVzCiYgTWFjcm9uaXggc3VwcG9ydCIgc2VyaWVzLCBm
+b2N1c2luZyBvbiB0aGUgcGlwZWxpbmVkIHN1cHBvcnQuCgpDaGVlcnMsCk1pcXXDqGwKCkNoYW5n
+ZXMgaW4gdjU6CiogTW92ZWQgYSBoZWxwZXIgaW4gdGhlIGNvcmUgYXMgaXQgc2VlbXMgdGhhdCBp
+dCB3aWxsIGJlIHVzZWZ1bCBmb3IKICBvdGhlciBFQ0MgZW5naW5lcyBhcyB3ZWxsIChYaWFuZ3No
+ZW5nIEhvdSBmb3IgTWVkaWF0ZWsgd2lsbCBuZWVkIGl0KS4KKiBDaGFuZ2VkIHRoZSBwYXJhbWV0
+ZXJzIG9mIHRoZSBzcGlfbWVtX2dlbmVyaWNfc3VwcG9ydHNfb3AoKSBmdW5jdGlvbgogIGluIG9y
+ZGVyIHRvIHRha2UgYSBzdHJ1Y3R1cmUgYXMgaW5wdXQgaW5zdGVhZCBvZiBhIGxpc3Qgb2YgYXJn
+dW1lbnRzLAogIHdoaWNoIHdpbGwgYmUgbXVjaCBlYXNpZXIgdG8gY29tcGxlbWVudCBpbiB0aGUg
+ZnV0dXJlIGlmIGV2ZXIgbmVlZGVkLgoKQ2hhbmdlcyBpbiB2NDoKKiBUaGUgZmlyc3QgaGFsZiBv
+ZiB0aGUgc2VyaWVzIGhhcyBiZWVuIGxlZnQgYXNpZGUgKGFsbCB0aGUgYmluZGluZwogIGNoYW5n
+ZXMgKyB0aGUgZXh0ZXJuYWwgbW9kZSBpbiB0aGUgTWFjcm9uaXggZHJpdmVyKSwgbm93IGxldCdz
+IGZvY3VzCiAgb24gdGhlIHBpcGVsaW5lZCBtb2RlLgoqIEFkZGVkIHRoZSBlY2NfZW4gc3BpX21l
+bV9vcCBzdHJ1Y3R1cmUgcGFyYW1ldGVyIGluIGEgZGVkaWNhdGVkIGNvbW1pdC4KKiBJbnRyb2R1
+Y2VkIGEgbmV3IGhlbHBlciBmb3Igc3VwcG9ydGluZyBnZW5lcmljYWxseSB0aGUgc3VwcG9ydGVk
+IG9wcy4KKiBVc2VkIHRoaXMgbmV3IGhlbHBlciBpbiB0aGUgbWFjcm9uaXggZHJpdmVyLgoqIEJ5
+IGRlZmF1bHQgYWxsIHRoZSBvdGhlciBkcml2ZXJzIHdvdWxkIHJlZnVzZSBhIHNwaV9tZW1fb3Ag
+d2l0aCBlY2NfZW4KICBlbmFibGVkLgoKQ2hhbmdlcyBpbiB2MzoKKiBBZGRlZCBNYXJrJ3MgUi1i
+eS4KKiBBZGRlZCBhIGNvbW1pdCBjaGFuZ2luZyB0aGUgaW5pdGlhbGl6YXRpb24gb3JkZXIgYmV0
+d2VlbiB0aGUgZGlybWFwcwogIGFuZCB0aGUgRUNDIGVuZ2luZSBzbyB0aGF0IHRoZSBjb3JlIG1p
+Z2h0IG5vdyBpZiB3ZSBhcmUgdXNpbmcgYQogIHBpcGVsaW5lZCBlbmdpbmUgb3Igbm90LgoqIFN0
+b3BwZWQgY3JlYXRpbmcgYWRkaXRpb25hbCBkaXJtYXBzIHdpdGggRUNDIGlmIHRoZSBlbmdpbmUg
+aXMgbm90IGEKICBwaXBlbGluZWQgZW5naW5lLgoqIFNvbHZlZCB0aGUga2VybmVsIHRlc3Qgcm9i
+b3QgcmVwb3J0cy4gSW4gcGFydGljdWxhciwgSSBhZGRlZCBhCiAgZGVwZW5kZW5jeSBvbiBNVERf
+TkFORF9FQ0MgdG8gTWFjcm9uaXggU1BJIGNvbnRyb2xsZXIgZHJpdmVyLgoqIEFkZGVkIGEgcGF0
+Y2ggdG8gY2xlYW4gdGhlIE5BTkQgY29udHJvbGxlciB5YW1sIGZpbGUgYmVmb3JlIG1vdmluZwog
+IHNvbWUgYml0cyB0byBuYW5kLWNoaXAueWFtbC4gVGhpcyBhZGRyZXNzZXMgdGhlIGNvbW1lbnRz
+IG1hZGUgYnkgUm9iCiAgYWJvdXQgdGhlIHVzZWxlc3MgYWxsT2Yncy4KKiBVc2VkIHBsYXRmb3Jt
+X2dldF9pcnFfYnluYW1lX29wdGlvbmFsKCkgaW4gb3JkZXIgdG8gYXZvaWQgdXNlbGVzcwogIHdh
+cm5pbmdzIHdoZW4gdGhlcmUgaXMgbm8gSVJRLgoKQ2hhbmdlcyBpbiB2MjoKKiBGaXhlZCB0aGUg
+YmluZGluZ3MgYW5kIGFkZGVkIFJvYidzIGFja3Mgd2hlbiByZWxldmFudC4KKiBBZGRlZCBsb2Nr
+aW5nIGluIHRoZSBFQ0MgZW5naW5lIGRyaXZlci4KKiBCcm91Z2h0IG1vcmUgY2hhbmdlcyBpbiB0
+aGUgY29yZSBpbiBvcmRlciB0byBicmluZyB0aGUgRUNDIGluZm9ybWF0aW9uCiAgaW50byB0aGUg
+c3BpX21lbV9vcCBzdHJ1Y3R1cmUgd2l0aCB0aGUgaWRlYSBvZiBhdm9pZGluZyBhbnkgcmFjZXMK
+ICBiZXR3ZWVuIHBhcmFsbGVsIGNhbGxzIG9uIHRoZSBzYW1lIGVuZ2luZS4KKiBSZW9yZ2FuaXpl
+ZCB0aGUgRUNDIGRyaXZlciBlbnRpcmVseSBpbiBvcmRlciB0byBoYXZlIGEgcGVyLWVuZ2luZSBt
+eGljCiAgc3RydWN0dXJlIHBsdXMgYSBwZXItTkFORCBjb250ZXh0LiBUaGlzIGxlYWQgdG8gYSBu
+dW1iZXIgb2YgY2hhbmdlcwogIGludGVybmFsbHkgd2hpY2ggY2Fubm90IGFsbCBiZSBsaXN0ZWQu
+CgpDaGFuZ2VzIHNpbmNlIHRoZSBSRkM6CiogUmViYXNlZCBvbiB0b3Agb2YgdjUuMTUtcmMxLgoq
+IEZpeGVkIHRoZSBkaXJtYXAgY29uZmlndXJhdGlvbi4KKiBBZGRlZCB0aGUgdmFyaW91cyB0YWdz
+IHJlY2VpdmVkLgoqIEZpeGVkIHRoZSBiaW5kaW5ncyBhcyByZXBvcnRlZCBieSB0aGUgcm9ib3Rz
+LgoqIEZpeGVkIHRoZSByZXR1cm4gdmFsdWUgb2YgdGhlIGhlbHBlciBjb3VudGluZyBiaXRmbGlw
+cy4KKiBJbmNsdWRlZCBhIGZpeCBmcm9tIEphaW1lIExpYW8gaW4gdGhlIGV4dGVybmFsIHBhdHRl
+cm4gbG9naWMuCiogQWRkZWQgdGhlIHlhbWwgY29udmVyc2lvbiBvZiBNYWNyb25peCBTUEkgY29u
+dHJvbGxlciBkZXNjcmlwdGlvbi4KKiBBZGRlZCB0aGUgeWFtbCBjb252ZXJzaW9uIG9mIHRoZSBT
+UEktTkFORCBkZXNjcmlwdGlvbi4KKiBDcmVhdGVkIGEgbmFuZC1jaGlwLnlhbWwgZmlsZSB0byBz
+aGFyZSBwcm9wZXJ0aWVzIGJldHdlZW4gU1BJLU5BTkQgYW5kCiAgcmF3IE5BTkQuCgpNaXF1ZWwg
+UmF5bmFsICgxMyk6CiAgbXRkOiBuYW5kOiBlY2M6IFByb3ZpZGUgYSBoZWxwZXIgdG8gcmV0cmll
+dmUgYSBwaWxlbGluZWQgZW5naW5lIGRldmljZQogIG10ZDogbmFuZDogbXhpYy1lY2M6IFN1cHBv
+cnQgU1BJIHBpcGVsaW5lZCBtb2RlCiAgbXRkOiBzcGluYW5kOiBEZWxheSBhIGxpdHRsZSBiaXQg
+dGhlIGRpcm1hcCBjcmVhdGlvbgogIHNwaTogc3BpLW1lbTogQ3JlYXRlIGEgaGVscGVyIHRvIGdh
+dGhlciBhbGwgdGhlIHN1cHBvcnRzX29wIGNoZWNrcwogIHNwaTogc3BpLW1lbTogRXhwb3J0IHRo
+ZSBzcGlfbWVtX2dlbmVyaWNfc3VwcG9ydHNfb3AoKSBoZWxwZXIKICBzcGk6IHNwaS1tZW06IEFk
+ZCBhbiBlY2NfZW4gcGFyYW1ldGVyIHRvIHRoZSBzcGlfbWVtX29wIHN0cnVjdHVyZQogIG10ZDog
+c3BpbmFuZDogQ3JlYXRlIGRpcmVjdCBtYXBwaW5nIGRlc2NyaXB0b3JzIGZvciBFQ0Mgb3BlcmF0
+aW9ucwogIHNwaTogbXhpYzogRml4IHRoZSB0cmFuc21pdCBwYXRoCiAgc3BpOiBteGljOiBDcmVh
+dGUgYSBoZWxwZXIgdG8gY29uZmlndXJlIHRoZSBjb250cm9sbGVyIGJlZm9yZSBhbgogICAgb3Bl
+cmF0aW9uCiAgc3BpOiBteGljOiBDcmVhdGUgYSBoZWxwZXIgdG8gZWFzZSB0aGUgc3RhcnQgb2Yg
+YW4gb3BlcmF0aW9uCiAgc3BpOiBteGljOiBBZGQgc3VwcG9ydCBmb3IgZGlyZWN0IG1hcHBpbmcK
+ICBzcGk6IG14aWM6IFVzZSBzcGlfbWVtX2dlbmVyaWNfc3VwcG9ydHNfb3AoKQogIHNwaTogbXhp
+YzogQWRkIHN1cHBvcnQgZm9yIHBpcGVsaW5lZCBFQ0Mgb3BlcmF0aW9ucwoKIGRyaXZlcnMvbXRk
+L25hbmQvZWNjLW14aWMuYyAgICAgICB8IDE4MSArKysrKysrKysrKysrKystCiBkcml2ZXJzL210
+ZC9uYW5kL2VjYy5jICAgICAgICAgICAgfCAgMzEgKysrCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9j
+b3JlLmMgICAgICAgfCAgNTEgKysrKy0KIGRyaXZlcnMvc3BpL0tjb25maWcgICAgICAgICAgICAg
+ICB8ICAgMiArLQogZHJpdmVycy9zcGkvc3BpLW1lbS5jICAgICAgICAgICAgIHwgIDQwICsrKy0K
+IGRyaXZlcnMvc3BpL3NwaS1teGljLmMgICAgICAgICAgICB8IDMzNyArKysrKysrKysrKysrKysr
+KysrKysrKystLS0tLS0KIGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLW14aWMuaCB8ICA0OSAr
+KysrKwogaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oICAgICAgICAgIHwgICAxICsKIGluY2x1ZGUv
+bGludXgvbXRkL3NwaW5hbmQuaCAgICAgICB8ICAgMiArCiBpbmNsdWRlL2xpbnV4L3NwaS9zcGkt
+bWVtLmggICAgICAgfCAgMjUgKysrCiAxMCBmaWxlcyBjaGFuZ2VkLCA2MzkgaW5zZXJ0aW9ucygr
+KSwgODAgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tdGQv
+bmFuZC1lY2MtbXhpYy5oCgotLSAKMi4yNy4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
