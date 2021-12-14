@@ -4,60 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A937C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 07:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B036FC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 08:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6KB3RsBJpiAxEljiKSCPeHAJeI1TlAMT1nitWrnRCrE=; b=GqciYKrjhFOqfr
-	8BlsJmFYlQCUSrhaoSjuJHhB/tqSm4OP8QHmQP191VF6H/iWQY7J7cC5UX9Waiwpob8GeJ4fymJNz
-	s4Zg6G3coOKA/Yz6N36X1P8Y/AFE9w63dZDVHtVh3EXvL+AK8kEE+VGlsraIRZAq2Y/jw9lGtVLMd
-	X3yVe7XjhhK1yRGqmRzZxKHP5jDv8dkNh65ol3XKR5+N+QCAFN+8tBvKKYWdqw0NBv62fssoUS1wU
-	SeuGQkCLH/QzX1dX/UCoROcsnr/4wzqi1Ze4zHGB5tQnUza9seSXWikcs9cySRmOa8LCCwh+UH2Iy
-	jhMcdKqGW+E9m0aO/LQw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LFBSx+ner6cq1U4r1J/S8GYu8sLOQTv7NN2ujh6WQMQ=; b=aH91L4svYdtzCr
+	zFhatErTLwKlrZkH9K+qwTZQbOQdQKS41HvIFbmDsb1RU/ozl/5rGhAvnCJQUhoDDTVj4tE3EN4bq
+	vh34jsjp/ojL6bQmfpGJxKfilFqUfJ6B2JAvBvWayyOKz+OElu6UWkjqr0i+iFcBjIV3yuzi7lNqi
+	4X03GFUMS46+ovRXszFg2aK5c6tJQE05mDW2Cm2+YikEegQwwvyTUfjuKdYaWk9vs9MSCjQpGJ/Cn
+	+WDKbRia0ggzFes7wjuz8ffSkNCWIdslNlB1xWW3bONgTbs4rSPGt95q/fsOtVLWgIF6O1IECtUn2
+	k8p4Vf4V6YrsGM6d+W/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mx2EG-00CrIq-PI; Tue, 14 Dec 2021 07:28:04 +0000
-Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
+	id 1mx3Fh-00D2bT-VG; Tue, 14 Dec 2021 08:33:38 +0000
+Received: from mail.thebizzie.pl ([192.236.147.111])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mx2AE-00Cp93-A2
- for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 07:23:58 +0000
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74]
- helo=[192.168.66.200]); authenticated
- by wp530.webpack.hosteurope.de running ExIM with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
- id 1mx2A6-00068d-LC; Tue, 14 Dec 2021 08:23:46 +0100
-Message-ID: <dff2abcc-5813-2f2c-35ba-f03cd1f35ac3@leemhuis.info>
-Date: Tue, 14 Dec 2021 08:23:45 +0100
+ id 1mx3Ff-00D2aR-Jt
+ for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 08:33:36 +0000
+Received: by mail.thebizzie.pl (Postfix, from userid 1002)
+ id 6762C18159B; Tue, 14 Dec 2021 08:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=thebizzie.pl; s=mail;
+ t=1639470814; bh=kU+//Lu71IqgcFfjayWXuIc0mZtoyrYJc2YuqyU8eS8=;
+ h=Date:From:To:Subject:From;
+ b=lPv3XNSbKzokwHuBYpnABFcBsWStn/38d+t/O7AoVuTTeSLX/k5td6kPmufnTp5OS
+ s/PdKjY3CaP0ogstw5KT2zHPOCHCgSTqu7i5vYPL16mCNK/fjgM1RMtBdfd61X9St/
+ Kf1W+cAKwNCe1dAquXXYKocaNfWBKUdEMZ3peLNKr0dgk1myLWZxyXOIBjgV8QdIP3
+ +3oPG7pKhqxbvIF9R3DAU4JJdx3HMmUZ0Fixo539Oq2RfAUoKElloISUhJEWfIo6OM
+ vMMQbNdjeLQASwRelkr6YzbyKNXGgl3HOpBUeOJ9nBEM9LzLTCgigXzFd4mGEOeuJt
+ ZfafkWsIHUrbQ==
+Received: by mail.thebizzie.pl for <linux-mtd@lists.infradead.org>;
+ Tue, 14 Dec 2021 08:32:04 GMT
+Message-ID: <20211214074500-0.1.7.2vb.0.9md41264kr@thebizzie.pl>
+Date: Tue, 14 Dec 2021 08:32:04 GMT
+From: "Mateusz Adamczyk" <mateusz.adamczyk@thebizzie.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.thebizzie.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [BUG] mtd: cfi_cmdset_0002: write regression since v4.17-rc1
-Content-Language: en-BS
-To: Ahmad Fatoum <a.fatoum@pengutronix.de>, linux-mtd@lists.infradead.org,
- ikegami@allied-telesis.co.jp, Joakim.Tjernlund@infinera.com,
- miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at,
- ikegami.t@gmail.com,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- linuxppc-dev@lists.ozlabs.org, Shaohui.Xie@nxp.com
-References: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
-X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1639466634;
- 239428bb; 
-X-HE-SMSGID: 1mx2A6-00068d-LC
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211213_232354_590902_AC9B2206 
-X-CRM114-Status: GOOD (  36.57  )
+X-CRM114-CacheID: sfid-20211214_003335_832226_5FE5FABD 
+X-CRM114-Status: UNSURE (   1.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,136 +60,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-[TLDR: adding this regression to regzbot; most of this mail is compiled
-from a few templates paragraphs some of you might have seen already.]
-
-Hi, this is your Linux kernel regression tracker speaking.
-
-Top-posting for once, to make this easy accessible to everyone.
-
-Thanks for the report.
-
-Adding the regression mailing list to the list of recipients, as it
-should be in the loop for all regressions, as explained here:
-https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
-
-To be sure this issue doesn't fall through the cracks unnoticed, I'm
-adding it to regzbot, my Linux kernel regression tracking bot:
-
-#regzbot ^introduced dfeae1073583
-#regzbot title mtd: cfi_cmdset_0002: flash write accesses on the
-hardware fail on a PowerPC MPC8313 to a 8-bit-parallel S29GL064N flash
-#regzbot ignore-activity
-
-Reminder: when fixing the issue, please add a 'Link:' tag with the URL
-to the report (the parent of this mail), then regzbot will automatically
-mark the regression as resolved once the fix lands in the appropriate
-tree. For more details about regzbot see footer.
-
-Sending this to everyone that got the initial report, to make all aware
-of the tracking. I also hope that messages like this motivate people to
-directly get at least the regression mailing list and ideally even
-regzbot involved when dealing with regressions, as messages like this
-wouldn't be needed then.
-
-Don't worry, I'll send further messages wrt to this regression just to
-the lists (with a tag in the subject so people can filter them away), as
-long as they are intended just for regzbot. With a bit of luck no such
-messages will be needed anyway.
-
-Ciao, Thorsten (wearing his 'Linux kernel regression tracker' hat).
-
-P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
-on my table. I can only look briefly into most of them. Unfortunately
-therefore I sometimes will get things wrong or miss something important.
-I hope that's not the case here; if you think it is, don't hesitate to
-tell me about it in a public reply. That's in everyone's interest, as
-what I wrote above might be misleading to everyone reading this; any
-suggestion I gave thus might sent someone reading this down the wrong
-rabbit hole, which none of us wants.
-
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to get things rolling again and hence don't need to be CC on
-all further activities wrt to this regression.
-
-On 13.12.21 14:24, Ahmad Fatoum wrote:
-> Hi,
-> 
-> I've been investigating a breakage on a PowerPC MPC8313: The SoC is connected
-> via the "Enhanced Local Bus Controller" to a 8-bit-parallel S29GL064N flash,
-> which is represented as a memory-mapped cfi-flash.
-> 
-> The regression began in v4.17-rc1 with
-> 
->   dfeae1073583 ("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
-> 
-> and causes all flash write accesses on the hardware to fail. Example output
-> after v5.1-rc2[1]:
-> 
->   root@host:~# mount -t jffs2 /dev/mtdblock0 /mnt
->   MTD do_write_buffer_wait(): software timeout, address:0x000c000b.
->   jffs2: Write clean marker to block at 0x000c0000 failed: -5
-> 
-> This issue still persists with v5.16-rc. Reverting aforementioned patch fixes
-> it, but I am still looking for a change that keeps both Tokunori's and my
-> hardware happy.
-> 
-> What Tokunori's patch did is that it strengthened the success condition
-> for flash writes:
-> 
->  - Prior to the patch, DQ polling was done until bits
->    stopped toggling. This was taken as an indicator that the write succeeded
->    and was reported up the stack. i.e. success condition is chip_ready()
-> 
->  - After the patch, polling continues until the just written data is
->    actually read back, i.e. success condition is chip_good()
-> 
-> This new condition never holds for me, when DQ stabilizes, it reads 0xFF,
-> never the just written data. The data is still written and can be read back
-> on subsequent reads, just not at that point of time in the poll loop.
-> 
-> We haven't had write issues for the years predating that patch. As the
-> regression has been mainline for a while, I am wondering what about my setup
-> that makes it pop up here, but not elsewhere?
-> 
-> I consulted the data sheet[2] and found Figure 27, which describes DQ polling
-> during embedded algorithms. DQ switches from status output to "True" (I assume
-> True == all bits set == 0xFF) until CS# is reasserted. 
-> 
-> I compared with another chip's datasheet, and it (Figure 8.4) doesn't describe
-> such an intermittent "True" state. In any case, the driver polls a few hundred
-> times, however, before giving up, so there should be enough CS# toggles.
-> 
-> 
-> Locally, I'll revert this patch for now. I think accepting 0xFF as a success
-> condition may be appropriate, but I don't yet have the rationale to back it up.
-> 
-> I am investigating this some more, probably with a logic trace, but I wanted
-> to report this in case someone has pointers and in case other people run into
-> the same issue.
-> 
-> 
-> Cheers,
-> Ahmad
-> 
-> [1] Prior to d9b8a67b3b95 ("mtd: cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer") 
->     first included with v5.1-rc2, failing writes just hung indefinitely in kernel space.
->     That's fixed, but the writes still fail.
-> 
-> [2]: 001-98525 Rev. *B, https://www.infineon.com/dgdl/Infineon-S29GL064N_S29GL032N_64_Mbit_32_Mbit_3_V_Page_Mode_MirrorBit_Flash-DataSheet-v03_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ed556fd548b
-> 
-> [3]: https://www.mouser.com/datasheet/2/268/SST39VF1601C-SST39VF1602C-16-Mbit-x16-Multi-Purpos-709008.pdf
->      Note that "true data" means valid data here, not all bits one.
-> 
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKZG9zdHJ6ZWdhbSBtb8W8bGl3b8WbxIcgd3Nww7PFgnByYWN5IHogUGHF
+hHN0d2EgZmlybcSFLgoKxZp3aWFkY3p5bXkga29tcGxla3Nvd8SFIG9ic8WCdWfEmSBpbndlc3R5
+Y2ppIHcgZm90b3dvbHRhaWvEmSwga3TDs3JhIG9ibmnFvGEga29zenR5IGVuZXJnaWkgZWxla3Ry
+eWN6bmVqIG5hd2V0IG8gOTAlLgoKQ3p5IHPEhSBQYcWEc3R3byB6YWludGVyZXNvd2FuaSB3ZXJ5
+ZmlrYWNqxIUgd3N0xJlwbnljaCBwcm9wb3p5Y2ppPwoKClBvemRyYXdpYW0sCk1hdGV1c3ogQWRh
+bWN6eWsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
