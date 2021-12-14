@@ -4,79 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C63C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Dec 2021 18:55:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1A05C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 03:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:CC:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kvhpfC7b3alCRufRRTcrSszSzFAwq1imZZ0G2P5no9o=; b=i9ukmC3qV52wv+
-	7XKxRQ0v8IQsWInM3AxAGzLcTaOzw/99WztVa7xt191IUGEAycU91h4kFVJlCC+bBfAq8/pH8Uh2b
-	Mp3sX/qAOKicFb1thf9JxSw2Kxee8Y+3/DIHUv+KiKP9xhfTxM1b9btPMnf1mxM6ji36ET2jP1TvV
-	2Fo5NAHhF8Ae/bww9Y05v+C8J62ioc0NrfwGqwKPMBIX5yRwVBVB7YVMjNFLvY5ra0S2lW8RYJfiC
-	cniY7/jhHSgWiHYwhRPx9hGlgvSPoB3anPyiYS5z+Riu+63d0Bs2Sr//BR9sHBXiCWmPHwgAj++AW
-	zgpef/ngq/FWsIbhh4Pg==;
+	List-Owner; bh=NiyaOH60Yi4t7Qm3JNZnG0qwr6vyspZ5FLD9xck2Ua0=; b=NKM+3DLSz659mo
+	PCWA84O2f7zEolwPGubt42aGg6w6eSk3Ww7o4hm76KHRweAuUGmQIP4/i6dAuHBl6EnCkb9AvUnUF
+	w3cC4WvPlbfObesvxdzeCGpFC/wL6pOywLJg1Mp+nzwDORuUVuD81C4zF72AeM5Oj4ssw4g8TDKY3
+	5s2rDkYHVHFjvltyodZZ4POjEwMlVFwRxEqo6iHjgfapKi4qRBP7Wwcjix24Y1CG0OuPzhJfK5bxL
+	N4C/C6EVGsyxjA2t0acba2TZs+L6cTN98sc8OSGBSu8L7opjGgbXv7H1Hnf8zLBsA3k4Ovj6WoQ1T
+	hKWYhj92ibf+Pz1BwbNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mwqSd-00B1b8-Bp; Mon, 13 Dec 2021 18:54:07 +0000
-Received: from mail-wr1-x432.google.com ([2a00:1450:4864:20::432])
+	id 1mwygJ-00CPox-Vj; Tue, 14 Dec 2021 03:40:48 +0000
+Received: from mailgw02.mediatek.com ([216.200.240.185])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mwqSa-00B1aO-1a
- for linux-mtd@lists.infradead.org; Mon, 13 Dec 2021 18:54:06 +0000
-Received: by mail-wr1-x432.google.com with SMTP id c4so28672780wrd.9
- for <linux-mtd@lists.infradead.org>; Mon, 13 Dec 2021 10:54:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=smile-fr.20210112.gappssmtp.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=OnQ0gGcCnJDqn436BO9l2h0wuA0zcJ//yZKPZ6SYuac=;
- b=GQeuBggLVRg9QpJ+doF/+RSjBzQpjIjSS2Hg17vijTqTtFeDZdEi8nEWGL7X/nLvyC
- xYfnOyrPHAHjcnqETu1YuMVxh/cxjUJWvlJIzmu2GIf3aKNC9rdEMGjHGmDqezIgKasF
- +vse+otn/244v6GtHpRWjzFWubm2NyS8SLXtHQp9+2TWpWHd0SUNaokyJuzaVVyXtyf2
- fufJ7nr4w+rjN2SQ5bXMqpExDmrbU/d8LygIktP9ASe0qL/YnqehSry5I2vES9OJfVOv
- vXBt6jRLn4/N4PKMNJ91/9fnWQdAIyxgX25WEx9LGu4Oeih+HkUho7wMZr3snfNolmAm
- e8hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=OnQ0gGcCnJDqn436BO9l2h0wuA0zcJ//yZKPZ6SYuac=;
- b=7t4wXXVK6Zp9xi2yOPtCOsloHLa4PbLerQRy+rqebNMbuGZU1vbhJHR7V2xLn8hCE3
- O7Rq58ISt1H7bphxNMO+N29aUWyNzrCRyAz37eWISnnlBQFJQcsmNK/Fm7PVI8xHdld5
- RzW+q+DsOYeuiQvqGjg1hRLGJx1URFooZXoknW4InyZURD8t5aH5FFFcL28AI6rQwBHv
- sx3EtyfPztByBtINl/DSc87rBWCvqGmJGXQv1PPNqhYx41mDqTlSz8Zz4SZoXrG7ZEac
- ydLo9RlzsVQTZpv647HNBdSVF1Bmp213tZtKLyyDNfwybspbNMeXxEi6Ig17appGszaT
- NqEw==
-X-Gm-Message-State: AOAM531ZPKVKnYxtahbw3RAsH9Uf1EsW9gRNGTSTZjxVlkUkjLcYIepv
- hsHVQgaqnTmPQaz1TfS1OG1w+g==
-X-Google-Smtp-Source: ABdhPJxU+CV3Q7pyBlroxHGGWFzIGxmPi7ObTALotYmSHSYggCUHF8Za5FxpcAzQZ2qSkf/1tKicMQ==
-X-Received: by 2002:adf:8008:: with SMTP id 8mr355309wrk.188.1639421640610;
- Mon, 13 Dec 2021 10:54:00 -0800 (PST)
-Received: from ?IPV6:2a01:cb05:8f8a:1800:1c97:b8d1:b477:d53f?
- (2a01cb058f8a18001c97b8d1b477d53f.ipv6.abo.wanadoo.fr.
- [2a01:cb05:8f8a:1800:1c97:b8d1:b477:d53f])
- by smtp.gmail.com with ESMTPSA id f18sm11417650wre.7.2021.12.13.10.54.00
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 13 Dec 2021 10:54:00 -0800 (PST)
-Message-ID: <85d4f6e6-c73d-4965-6d18-f6cb1ccb3ed7@smile.fr>
-Date: Mon, 13 Dec 2021 19:53:59 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: GPMC omap nand using CS1
-Content-Language: fr
+ id 1mwygG-00CPmS-FC; Tue, 14 Dec 2021 03:40:46 +0000
+X-UUID: 3fe8a59a452448018ebfca1d29083734-20211213
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
+ bh=rJvDQCs7pP5C5yBWwIt6EGtvbp9bibB57XF4H9VB8QE=; 
+ b=mBd7Dd71cicHFYFkLZoxCJyyApGidO2gTfBFCzR4bu6+pt2kMIcfvjqanLkzxPWH2eI4YtNqvfptuDTJ4EizBvuqZYlgxDDGRyiOsLTjp3o3YlCWGKhjOs3etbccwAPgY2mv5+G99TxwE6q7+8PKZv+m6lFOcRFUwYS/HG9WVJI=;
+X-UUID: 3fe8a59a452448018ebfca1d29083734-20211213
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
+ (envelope-from <xiangsheng.hou@mediatek.com>)
+ (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1239892282; Mon, 13 Dec 2021 20:40:38 -0700
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 13 Dec 2021 19:32:14 -0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
+ Tue, 14 Dec 2021 11:32:12 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 14 Dec 2021 11:32:12 +0800
+Message-ID: <83808d907635b5edaa6622f1ae250ae23687eb76.camel@mediatek.com>
+Subject: Re: [RFC,v4,2/5] mtd: nand: ecc: mtk: Convert to the ECC
+ infrastructure
+From: xiangsheng.hou <xiangsheng.hou@mediatek.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org
-References: <fb71fa47-a59f-9434-a16a-6b59da9e2646@smile.fr>
- <20211213185021.0cb22fea@xps13>
-From: Romain Naour <romain.naour@smile.fr>
-In-Reply-To: <20211213185021.0cb22fea@xps13>
+CC: <broonie@kernel.org>, <benliang.zhao@mediatek.com>,
+ <dandan.he@mediatek.com>, <guochun.mao@mediatek.com>,
+ <bin.zhang@mediatek.com>, <sanny.chen@mediatek.com>,
+ <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
+ <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Date: Tue, 14 Dec 2021 11:32:14 +0800
+In-Reply-To: <20211213102956.559e98a1@xps13>
+References: <20211130083202.14228-1-xiangsheng.hou@mediatek.com>
+ <20211130083202.14228-3-xiangsheng.hou@mediatek.com>
+ <20211209113209.71fe8ea7@xps13>
+ <c7367dccd7b159ed36fd7d19fef25b0df8c5782d.camel@mediatek.com>
+ <20211210103426.0850d8d5@xps13>
+ <4debdf60521d13a2ee54e65fa2f545040e74fed7.camel@mediatek.com>
+ <20211213102956.559e98a1@xps13>
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK: N
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211213_105404_173994_D387815C 
-X-CRM114-Status: GOOD (  38.32  )
+X-CRM114-CacheID: sfid-20211213_194044_570129_2D0C6BF1 
+X-CRM114-Status: GOOD (  43.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,88 +82,243 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gTWlxdWVsLAoKTGUgMTMvMTIvMjAyMSDDoCAxODo1MCwgTWlxdWVsIFJheW5hbCBhIMOp
-Y3JpdMKgOgo+IEhlbGxvIFJvbWFpbiwKPiAKPiByb21haW4ubmFvdXJAc21pbGUuZnIgd3JvdGUg
-b24gTW9uLCAxMyBEZWMgMjAyMSAxMToxODowMyArMDEwMDoKPiAKPj4gSGVsbG8sCj4+Cj4+IEkn
-bSB1c2luZyBhbiBBTTM1MDUgY3B1IHdpdGggdHdvIG5hbmQgZGV2aWNlLCBuYW5kMCB1c2UgQ1Mw
-IGFuZCBuYW5kMSB1c2UgQ1MxLgo+Pgo+PiBUaGUgbmFuZDAgaXMgb2sgYnV0IG5hbmQxIGlzIG5v
-dCBkZXRlY3RlZC4KPj4gSSBnZXQgIm5hbmQ6IE5vIE5BTkQgZGV2aWNlIGZvdW5kIgo+IAo+IEVh
-c3kgYW5zd2VyIChzdXBwb3J0IDEwMSwgc29ycnkgYWJvdXQgdGhhdCA6LSkgKSwgZGlkIHlvdSBj
-aGVjayB0aGF0IHRoZQo+IENTIHdhcyB0b2dnbGluZyB3aXRoIGEgc2NvcGU/IEp1c3QgdG8gYmUg
-c3VyZSB0aGF0IHRoaXMgaXMgYSBOQU5ECj4gY29yZS9kcml2ZXIgaXNzdWUgYW5kIG5vdCBzb21l
-dGhpbmcgZWxzZT8KCldlbGwgSSB0cnVzdGVkIGJsaW5kbHkgdGhlIGhhcmR3YXJlIGRlc2lnbmVy
-IGhlcmUgOikKCkkgY2hlY2tlZCBmcm9tIHUtYm9vdDoKCiQgbmFuZCBpbmZvCgpEZXZpY2UgMDog
-TkFORCAyNTZNaUIgMywzViAxNi1iaXQsIHNlY3RvciBzaXplIDEyOCBLaUIKRGV2aWNlIDE6IE5B
-TkQgMjU2TWlCIDMsM1YgMTYtYml0LCBzZWN0b3Igc2l6ZSAxMjggS2lCCgpTbyBpdCBzZWVtcyBv
-ayByZWdhcmRpbmcgQ1MxLgoKQnV0IHRoaXMgaXMgYW4gdmVyeSBvbGQgdWJvb3QgKDIwMTEuMDkp
-IHdpdGggYSBsb3Qgb2YgdmVuZG9yIHBhdGNoIChUSQpwc3AwNC4wNi4wMC4wOCkgYW5kIGFkZGl0
-aW9uYWwgY3VzdG9tIHBhdGNoZXMuCgo+IAo+PiBSZWdhcmRpbmcgdGhlIGRldmljZXRyZWUgZm9y
-IG5hbmQxLCBJIGRpZCBzb21ldGhpbmcgc2ltaWxhciB0byBvbWFwMzQzMC1zZHAuZHRzCj4+IHdo
-ZXJlIHRoZSBuYW5kIGlzIG9uIENTMS4KPj4KPj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
-c2NtL2xpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LmdpdC90cmVlL2FyY2gvYXJtL2Jvb3Qv
-ZHRzL29tYXAzNDMwLXNkcC5kdHM/aD12NS4xNS42I24xMDIKPiAKPiBBbmQgdGhpcyBpcyBwcmVj
-aXNlbHkgdGhlIHJlYXNvbiB3aHkgd2Ugc3dpdGNoZWQgdG8gYSBuZXcKPiBEVCByZXByZXNlbnRh
-dGlvbjogYXMgbG9uZyBhcyB5b3UgaGF2ZSBhIHNpbmdsZSBjaGlwLCBub3QgZGVzY3JpYmluZwo+
-IHRoZSBOQU5EIGRldmljZSBpbnNpZGUgYSBiaWdnZXIgIm5hbmQiIG5vZGUgd2FzIGZpbmUuIEJ1
-dCB3aGVuZXZlciB3ZQo+IG5lZWQgdG8gc3VwcG9ydCBtb3JlIHRoYW4gb25lIGl0IHN0YXJ0cyB0
-byBiZSBhbiBpc3N1ZS4gSSBzYXcgdGhhdCB0aGUKPiBsb2dpYyBoZXJlIHdhcyB0byBhZGQgYSBz
-ZWNvbmQgbmFuZCBub2RlIHdoaWNoLCBvbiBhIHB1cmUgRFQKPiByZXByZXNlbnRhdGlvbiBsb2dp
-YyBpcyB3cm9uZzogdGhlIEdQTUMgaGFzIHN1Ym5vZGVzIHdoaWNoIGFyZSB0aGUKPiBkaWZmZXJl
-bnQgY29udHJvbGxlciAodGhlcmUgaXMgb25seSBvbmUgTkFORCBjb250cm9sbGVyIHRoZXJlKSB3
-aGljaAo+IHNob3VsZCBjb250YWluIHR3byBOQU5EIGRldmljZSBzdWJub2RlcyB3aXRoIHRoZWly
-IHNwZWNpZmljIHByb3BlcnRpZXMuCj4gQW55d2F5LCB0aGF0IGlzIG5vdCBob3cgdGhpcyBjb250
-cm9sbGVyIGlzIGN1cnJlbnRseSBiZWluZyBkZXNjcmliZWQsCj4gc28gbGV0J3MgYXNzdW1lIGNy
-ZWF0aW5nIHR3byBOQU5EIG5vZGVzIGlzIGZpbmUgYXQgbGVhc3QgdG8gbWFrZSBpdAo+IHdvcmsu
-CgpTb3JyeSwgSSBkaWRuJ3QgY2xvc2VseSBmb2xsb3dlZCB0aGUgbXRkIHVwc3RyZWFtIG5ld3Mg
-YWJvdXQgdGhlICJuZXcgRFQKcmVwcmVzZW50YXRpb24iIDotLwoKU28gdGhlIGN1cnJlbnQgR1BN
-QyBuYW5kIGJpbmRpbmcgaXMgbm90IGNvcnJlY3QgKGZyb20gRFQgcG9pbnQgb2Ygdmlldykgd2l0
-aApzZXZlcmFsIG5hbmQgZGV2aWNlcyBhbmQgbmVlZHMgdG8gYmUgY2hhbmdlZC4KCj4gCj4gSSBh
-c3N1bWUgeW91IHRyaWVkOgo+ICogYm9vdGluZyB3aXRoIG9ubHkgQ1MwIGRlc2NyaWJlZCAtPiB3
-b3Jrcwo+ICogYm9vdGluZyB3aXRoIG9ubHkgQ1MxIGRlc2NyaWJlZCAtPiBObyBOQU5EIGRldmlj
-ZSBmb3VuZCBlcnJvcgo+IEFtIEkgcmlnaHQ/CgpZZXMgSSBkaWQgdGhhdC4KCj4gCj4+IEknbSBu
-b3Qgc3VyZSB0aGlzIGR0cyBhY3R1YWxseSB3b3JrcyBzaW5jZSBpbiBuYW5kX2Jhc2UuYyBuYW5k
-X2RldGVjdCgpIGNhbGwKPj4gbmFuZF9yZXNldChjaGlwLCAwKSB3aXRoIGNzID0gMC4KPj4KPj4g
-aHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xp
-bnV4LmdpdC90cmVlL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jP2g9djUuMTUuNiNu
-NDk0NQo+IAo+IFRoaXMgaXMgaW5kZWVkIHRoZSBmaXJzdCBzdGVwLCB3ZSBhbHdheXMgc3RhcnQg
-d2l0aCB0aGUgZmlyc3QgQ1MgYW5kCj4gdGhlbiBpZiB0aGUgZmlyc3QgZGV2aWNlIHdhcyBkaXNj
-b3ZlcmVkLCB3ZSBjaGVjayBpZiB0aGUgb3RoZXIgQ1MgYXJlCj4gd2lyZWQuIFRoaXMgb25seSB3
-b3JrcyBvZiBjb3Vyc2UgaWYgbmFuZF9zY2FuKCkgcmVxdWVzdHMgc2Nhbm5pbmcgbW9yZQo+IHRo
-YW4gb25lIENTLiBUaGlzIGlzIGN1cnJlbnRseSBub3QgdGhlIGNhc2UgYW5kIHdhcyBhbHJlYWR5
-IGxpa2UgdGhhdAo+IGZvciBxdWl0ZSBzb21lIHRpbWUuIE1heWJlIHRoYXQgaXMgd2h5IHRoZSBO
-QU5EIGNvbnRyb2xsZXIgd2FzCj4gZGVzY3JpYmVkIHR3aWNlIGluIHRoZSBsaW5rIGJlbG93LCB0
-byBnZXQgdGhlIHByb2JlIG9mIHRoZSBjb250cm9sbGVyCj4gY2FsbGVkIHR3aWNlPwoKSW5kZWVk
-LCB0aGUgcHJvYmUgb2YgdGhlIGNvbnRyb2xsZXIgaXMgY2FsbGVkIHR3aWNlLiBJIG5lZWQgdG8g
-ZGlnIGludG8gdGhlIEdQTUMKbWFudWFsIHRvIHVuZGVyc3RhbmQgaWYgaXQgcmVhbGx5IHN1cHBv
-cnQgdHdvIChvciBtb3JlIHVwIHRvIDgpIG5hbmQgZGV2aWNlcy4KCk90aGVyIEdQTUMgdXNlIGNh
-cyBJIGZvdW5kIHVzZWQgb25lIG5hbmQsIG9uZSBmcmFtIGFuZCBvbmUgbm9yLgoKVGhlIGJvYXJk
-IHdhcyBkZXNpZ25lZCBhbG1vc3QgYSBkZWNhZGUgYWdvIHdpdGggdHdvIG5hbmQgZGV2aWNlcyB3
-aXJlZCB0byB0aGUKR1BNQyBjb250cm9sbGVyLi4uCgo+IAo+IEFueXdheSBpZiB0aGUgcXVlc3Rp
-b24gaXMgJ2hvdyBkbyBJIGdldCBDUzEgYmVpbmcgY2hlY2tlZCBmaXJzdCcsIHlvdQo+IHNob3Vs
-ZCBsb29rIGF0IHRoZSBwcm9iZSBmdW5jdGlvbiB3aGljaCBpbnN0YW50aWF0ZSB5b3VyIGNvbnRy
-b2xsZXIuCj4gVGhhdCBpcyB3aGVyZSB0aGUgZHJpdmVyIGlzIHN1cHBvc2VkIHRvIHBhcnNlIHRo
-ZSBEVCwgZmluZCB0aGUgcmlnaHQKPiBDUyB0byBoYW5kbGUgYW5kIHRoZW4gcmVnaXN0ZXIgdGhl
-IE5BTkQgY2hpcC4gRnJvbSB0aGUgY29yZQo+IHBlcnNwZWN0aXZlLCBpdCBjYW4gdXNlICJ0YXJn
-ZXQiIDAsIDEsIGV0YywgZXZlbiB0aG91Z2ggZnJvbSB0aGUKPiBjb250cm9sbGVyIHBlcnNwZWN0
-aXZlLCB0YXJnZXQgMCBmb3IgYSBnaXZlbiBjaGlwIG1pZ2h0IGJlIENTMS4gWW91IGNhbgo+IGxv
-b2sgYXQgInJlY2VudCIgZHJpdmVycywgbGlrZSBNYXJ2ZWxsIG9yIEFyYXNhbiB3aGljaCBzdXBw
-b3J0IHNldmVyYWwKPiBDUy4KCkFGQUlLLCBpdCdzIGZpbmUgaWYgQ1MwIGlzIGNoZWNrZWQgZmly
-c3QuCgo+IAo+PiBJdCBzZWVtcyBpdCB3YXMgcG9zc2libGUgdG8gdXNlIHR3byBuYW5kIG9uIGdw
-bWMgKGtlcm5lbCAzLjE2KToKPj4KPj4gaHR0cHM6Ly9lMmUudGkuY29tL3N1cHBvcnQvcHJvY2Vz
-c29ycy1ncm91cC9wcm9jZXNzb3JzL2YvcHJvY2Vzc29ycy1mb3J1bS8zNDMwMTcvYW0zMzV4LWdw
-bWMtd2l0aC10d28tbmFuZC1mbGFzaC1pbi1kZXZpY2UtdHJlZQo+IAo+IEkgaG9uZXN0bHkgZG8g
-bm90IGtub3cgaWYgdGhpcyBldmVyIHdvcmtlZCBvciBpZiBpdCB3YXMgc3VwcG9ydGVkCj4gdXBz
-dHJlYW0sIGl0IGlzIHZlcnkgbGlrZWx5LCBsb29raW5nIGF0IHRoZSBjdXJyZW50IGNvZGUgYmFz
-ZSwgdGhhdAo+IGlmIHlvdSB3YW50IHR3byBDUyBvbiB0aGlzIGJvYXJkIHlvdSBhcmUgZ29pbmcg
-dG8gbmVlZCB0byB3cml0ZSBhCj4gY291cGxlIG9mIHBhdGNoZXMgOikKCk1laCA6KQoKPiAKPiBH
-b29kIGx1Y2ssIGRvIG5vdCBoZXNpdGF0ZSBpZiB5b3UgaGF2ZSBvdGhlciBzcGVjaWZpYyBxdWVz
-dGlvbnMuCgpUaGFuayB5b3UgZm9yIHlvdXIgZmVlZCBiYWNrLgoKQmVzdCByZWdhcmRzLApSb21h
-aW4KCj4gCj4gVGhhbmtzLAo+IE1pcXXDqGwKPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Hi Miquel,
+
+
+On Mon, 2021-12-13 at 10:29 +0100, Miquel Raynal wrote:
+> Hi Xiangsheng,
+> 
+> xiangsheng.hou@mediatek.com wrote on Sat, 11 Dec 2021 11:25:46 +0800:
+> > 
+> > >   
+> > > > > > +				struct nand_page_io_req *req)
+> > > > > > +{
+> > > > > > +	struct mtk_ecc_engine *eng = nand_to_ecc_ctx(nand);
+> > > > > > +	int step_size = nand->ecc.ctx.conf.step_size;
+> > > > > > +	void *databuf, *oobbuf;
+> > > > > > +	int i;
+> > > > > > +
+> > > > > > +	if (req->type == NAND_PAGE_WRITE) {
+> > > > > > +		databuf = (void *)req->databuf.out;
+> > > > > > +		oobbuf = (void *)req->oobbuf.out;
+> > > > > > +
+> > > > > > +		/*
+> > > > > > +		 * Convert the source databuf and oobbuf to MTK
+> > > > > > ECC
+> > > > > > +		 * on-flash data format.
+> > > > > > +		 */
+> > > > > > +		for (i = 0; i < eng->nsteps; i++) {
+> > > > > > +			if (i == eng->bbm_ctl.section)
+> > > > > > +				eng->bbm_ctl.bbm_swap(nand,
+> > > > > > +						      databuf,
+> > > > > > oobbuf);    
+> > > > > 
+> > > > > Do you really need this swap? Isn't the overall move enough
+> > > > > to
+> > > > > put
+> > > > > the
+> > > > > BBM at the right place?
+> > > > >     
+> > > > 
+> > > > For OPS_RAW mode, need organize flash data in the MTK ECC
+> > > > engine
+> > > > data
+> > > > format. Other operation in this function only organize data by
+> > > > section
+> > > > and not include BBM swap.
+> > > > 
+> > > > For other mode, this function will not be called.  
+> > > 
+> > > Can you try to explain this with an ascii schema again? I'm sorry
+> > > but
+> > > I
+> > > don't follow it. Is the BBM placed in the first bytes of the
+> > > first
+> > > oob
+> > > area by the engine? Or is it place somewhere else?
+> > >   
+> > 
+> > Yes, the BBM will at the first OOB area in NAND standard layout
+> > after
+> > BBM swap.
+> > 
+> > 0. Differential on-flash data layout
+> > 
+> > NAND standard page layout
+> > +------------------------------+------------+
+> > >                              |            |
+> > >            main area         |   OOB area |
+> > >                              |            |
+> > 
+> > +------------------------------+------------+
+> > 
+> > MTK ECC on-flash page layout (2 section for example)
+> > +------------+--------+------------+--------+
+> > >            |        |            |        |    
+> > > section(0) | OOB(0) | section(1) | OOB(1) |
+> > >            |        |            |        | 
+> > 
+> > +------------+--------+------------+--------+
+> 
+> I think we are aligned on that part.
+> 
+> The BBM is purely a user conception, it is not something wired in the
+> hardware. What I mean is: why do *you* think the BBM should be
+> located
+> in the middle of section #1 ?
+
+Take NAND page 2KB and OOB 64 bytes for example.
+
+For the NAND perspective the BBM is located at OOB #0, the column
+address is 2048 in one page, and this should not only a user
+conception.
+
+No matter what layout, the BBM position need at column 2048(OOB #0).
+Because of the NAND device specification arrange this.
+
+That is, The BBM position of a worn bad block(user mark) need
+consistent with a factory bad block(flash vendor mark).
+
+For the MTK ECC engine reorganize data by section in unit.
+The step size will be 1024 bytes and the OOB area for each section will
+be 32 bytes with NAND page 2KB and OOB 64 bytes.
+
+The on-flash page data lauout for MTK ECC engine,
+column 2048 will be main data in the middle of section #1.
++----------------+-------+----------------+-------+
+|                |       |                |       |
+|     1024B      |  32B  |    1024B       |  32B  |
+|                |       |                |       |
++----------------+-------+----------------+-------+
+
+> 
+> There is one layout: the layout from the NAND/MTD perspective.
+> There is another layout: the layout of your ECC engine.
+> 
+> Just consider that the BBM should be at byte 0 of OOB #0 and you will
+> not need any BBM swap operation anymore. I don't understand why you
+> absolutely want to put it in section #1.
+
+For the read/write both in OPS_RAW mode, the data layout will be
+organized by the ECC engine, no matter how the layout comply with, this
+will be workable.
+
+However, it will be chaotic when mix OPS_RAW operation with
+OPS_AUTO_OOB/OPS_PLACE_OOB.
+
+That is, the OPS_RAW mode on-flash data layout need comply with
+OPS_AUTO_OOB/OPS_PLACE_OOB, this is the reorganize function purpose.
+
+Just take the mtd/tests/nandbiterrs.c for example.
+It will write data in OPS_PLACE_OOB mode and rewrite data in OPS_RAW
+mode after insert one bitflip. Then read in OPS_PLACE_OOB mode to check
+the bitflips.
+
+> > The standard BBM position will be section(1) main data,
+> > need do the BBM swap operation.
+> > 
+> > request buffer include req->databuf and req->oobbuf.
+> > +----------------------------+
+> > >                            |
+> > >     req->databuf           |
+> > >                            |
+> > 
+> > +----------------------------+
+> > 
+> > +-------------+
+> > >             |
+> > > req->oobbuf |
+> > >             |
+> > 
+> > +-------------+
+> > 
+> > 1. For the OPS_RAW mode
+> > 
+> > Expect the on-flash data format is like MTK ECC layout.
+> > The snfi controller will put the on-flash data as is
+> > spi_mem_op->data.buf.out.
+> > 
+> > Therefore, the ECC engine have to reorganize the request
+> > data and OOB buffer in 4 part for each section in
+> > OPS_RAW mode.
+> > 
+> > 1) BBM swap, only for the section need do the swap
+> > 2) section main data
+> > 3) OOB free data
+> > 4) OOB ECC data
+> > 
+> > The BBM swap will ensure the BBM position in MTK ECC
+> > on-flash layout is same as NAND standard layout in
+> > OPS_RAW mode.
+> > 
+> > for (i = 0; i < eng->nsteps; i++) {
+> > 
+> >         /* part 1: BBM swap */
+> >         if (i == eng->bbm_ctl.section)
+> >                 eng->bbm_ctl.bbm_swap(nand,
+> >                                       databuf, oobbuf);
+> > 
+> > 	/* part 2: main data in this section */
+> >         memcpy(mtk_ecc_section_ptr(nand, i),
+> >                databuf + mtk_ecc_data_off(nand, i),
+> >                step_size);
+> > 
+> >         /* part 3: OOB free data */
+> >         memcpy(mtk_ecc_oob_free_ptr(nand, i),
+> >                oobbuf + mtk_ecc_oob_free_position(nand, i),
+> >                eng->oob_free);
+> > 
+> >         /* part 4: OOB ECC data */
+> >         memcpy(mtk_ecc_oob_free_ptr(nand, i) + eng->oob_free,
+> >                oobbuf + eng->oob_free * eng->nsteps +
+> >                i * eng->oob_ecc,
+> >                eng->oob_ecc);
+> > }
+> > 
+> > 2. For non OPS_RAW mode
+> > 
+> > The snfi have a function called auto format with ECC enable.
+> > This will auto reorganize the request data and oob data in
+> > MTK ECC page layout by the snfi controller except the BBM position.
+> > 
+> > Therefore, the ECC engine only need do the BBM swap after set OOB
+> > data
+> > bytes in OPS_AUTO or after memcpy oob data in OPS_PLACE_OOB for
+> > write
+> > operation.
+> > 
+> > The BBM swap also ensure the BBM position in MTK ECC on-flash
+> > layout is
+> > same as NAND standard layout in non OPS_RAW mode.
+> > 
+> > if (req->ooblen) {
+> >         if (req->mode == MTD_OPS_AUTO_OOB) {
+> >                 ret = mtd_ooblayout_set_databytes(mtd,
+> >                                                   req->oobbuf.out,
+> >                                                   eng-
+> > >bounce_oob_buf,
+> >                                                   req->ooboffs,
+> >                                                   mtd->oobavail);
+> >                 if (ret)
+> >                         return ret;
+> >         } else {
+> >                 memcpy(eng->bounce_oob_buf + req->ooboffs,
+> >                        req->oobbuf.out,
+> >                        req->ooblen);
+> >         }
+> > }
+> > 
+> > eng->bbm_ctl.bbm_swap(nand, (void *)req->databuf.out,
+> >                       eng->bounce_oob_buf);
+> > 
+
+Thanks
+Xiangsheng Hou
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
