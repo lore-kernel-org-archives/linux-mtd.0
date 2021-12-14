@@ -4,73 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1A05C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 03:42:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A937C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 07:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:CC:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NiyaOH60Yi4t7Qm3JNZnG0qwr6vyspZ5FLD9xck2Ua0=; b=NKM+3DLSz659mo
-	PCWA84O2f7zEolwPGubt42aGg6w6eSk3Ww7o4hm76KHRweAuUGmQIP4/i6dAuHBl6EnCkb9AvUnUF
-	w3cC4WvPlbfObesvxdzeCGpFC/wL6pOywLJg1Mp+nzwDORuUVuD81C4zF72AeM5Oj4ssw4g8TDKY3
-	5s2rDkYHVHFjvltyodZZ4POjEwMlVFwRxEqo6iHjgfapKi4qRBP7Wwcjix24Y1CG0OuPzhJfK5bxL
-	N4C/C6EVGsyxjA2t0acba2TZs+L6cTN98sc8OSGBSu8L7opjGgbXv7H1Hnf8zLBsA3k4Ovj6WoQ1T
-	hKWYhj92ibf+Pz1BwbNw==;
+	List-Owner; bh=6KB3RsBJpiAxEljiKSCPeHAJeI1TlAMT1nitWrnRCrE=; b=GqciYKrjhFOqfr
+	8BlsJmFYlQCUSrhaoSjuJHhB/tqSm4OP8QHmQP191VF6H/iWQY7J7cC5UX9Waiwpob8GeJ4fymJNz
+	s4Zg6G3coOKA/Yz6N36X1P8Y/AFE9w63dZDVHtVh3EXvL+AK8kEE+VGlsraIRZAq2Y/jw9lGtVLMd
+	X3yVe7XjhhK1yRGqmRzZxKHP5jDv8dkNh65ol3XKR5+N+QCAFN+8tBvKKYWdqw0NBv62fssoUS1wU
+	SeuGQkCLH/QzX1dX/UCoROcsnr/4wzqi1Ze4zHGB5tQnUza9seSXWikcs9cySRmOa8LCCwh+UH2Iy
+	jhMcdKqGW+E9m0aO/LQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mwygJ-00CPox-Vj; Tue, 14 Dec 2021 03:40:48 +0000
-Received: from mailgw02.mediatek.com ([216.200.240.185])
+	id 1mx2EG-00CrIq-PI; Tue, 14 Dec 2021 07:28:04 +0000
+Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mwygG-00CPmS-FC; Tue, 14 Dec 2021 03:40:46 +0000
-X-UUID: 3fe8a59a452448018ebfca1d29083734-20211213
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
- bh=rJvDQCs7pP5C5yBWwIt6EGtvbp9bibB57XF4H9VB8QE=; 
- b=mBd7Dd71cicHFYFkLZoxCJyyApGidO2gTfBFCzR4bu6+pt2kMIcfvjqanLkzxPWH2eI4YtNqvfptuDTJ4EizBvuqZYlgxDDGRyiOsLTjp3o3YlCWGKhjOs3etbccwAPgY2mv5+G99TxwE6q7+8PKZv+m6lFOcRFUwYS/HG9WVJI=;
-X-UUID: 3fe8a59a452448018ebfca1d29083734-20211213
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
- (envelope-from <xiangsheng.hou@mediatek.com>)
- (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1239892282; Mon, 13 Dec 2021 20:40:38 -0700
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 13 Dec 2021 19:32:14 -0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Tue, 14 Dec 2021 11:32:12 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 14 Dec 2021 11:32:12 +0800
-Message-ID: <83808d907635b5edaa6622f1ae250ae23687eb76.camel@mediatek.com>
-Subject: Re: [RFC,v4,2/5] mtd: nand: ecc: mtk: Convert to the ECC
- infrastructure
-From: xiangsheng.hou <xiangsheng.hou@mediatek.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <broonie@kernel.org>, <benliang.zhao@mediatek.com>,
- <dandan.he@mediatek.com>, <guochun.mao@mediatek.com>,
- <bin.zhang@mediatek.com>, <sanny.chen@mediatek.com>,
- <mao.zhong@mediatek.com>, <yingjoe.chen@mediatek.com>, <donghunt@amazon.com>, 
- <rdlee@amazon.com>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date: Tue, 14 Dec 2021 11:32:14 +0800
-In-Reply-To: <20211213102956.559e98a1@xps13>
-References: <20211130083202.14228-1-xiangsheng.hou@mediatek.com>
- <20211130083202.14228-3-xiangsheng.hou@mediatek.com>
- <20211209113209.71fe8ea7@xps13>
- <c7367dccd7b159ed36fd7d19fef25b0df8c5782d.camel@mediatek.com>
- <20211210103426.0850d8d5@xps13>
- <4debdf60521d13a2ee54e65fa2f545040e74fed7.camel@mediatek.com>
- <20211213102956.559e98a1@xps13>
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ id 1mx2AE-00Cp93-A2
+ for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 07:23:58 +0000
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74]
+ helo=[192.168.66.200]); authenticated
+ by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ id 1mx2A6-00068d-LC; Tue, 14 Dec 2021 08:23:46 +0100
+Message-ID: <dff2abcc-5813-2f2c-35ba-f03cd1f35ac3@leemhuis.info>
+Date: Tue, 14 Dec 2021 08:23:45 +0100
 MIME-Version: 1.0
-X-MTK: N
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [BUG] mtd: cfi_cmdset_0002: write regression since v4.17-rc1
+Content-Language: en-BS
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>, linux-mtd@lists.infradead.org,
+ ikegami@allied-telesis.co.jp, Joakim.Tjernlund@infinera.com,
+ miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ ikegami.t@gmail.com,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linuxppc-dev@lists.ozlabs.org, Shaohui.Xie@nxp.com
+References: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
+X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1639466634;
+ 239428bb; 
+X-HE-SMSGID: 1mx2A6-00068d-LC
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211213_194044_570129_2D0C6BF1 
-X-CRM114-Status: GOOD (  43.56  )
+X-CRM114-CacheID: sfid-20211213_232354_590902_AC9B2206 
+X-CRM114-Status: GOOD (  36.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,238 +74,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+[TLDR: adding this regression to regzbot; most of this mail is compiled
+from a few templates paragraphs some of you might have seen already.]
 
+Hi, this is your Linux kernel regression tracker speaking.
 
-On Mon, 2021-12-13 at 10:29 +0100, Miquel Raynal wrote:
-> Hi Xiangsheng,
+Top-posting for once, to make this easy accessible to everyone.
+
+Thanks for the report.
+
+Adding the regression mailing list to the list of recipients, as it
+should be in the loop for all regressions, as explained here:
+https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
+
+To be sure this issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, my Linux kernel regression tracking bot:
+
+#regzbot ^introduced dfeae1073583
+#regzbot title mtd: cfi_cmdset_0002: flash write accesses on the
+hardware fail on a PowerPC MPC8313 to a 8-bit-parallel S29GL064N flash
+#regzbot ignore-activity
+
+Reminder: when fixing the issue, please add a 'Link:' tag with the URL
+to the report (the parent of this mail), then regzbot will automatically
+mark the regression as resolved once the fix lands in the appropriate
+tree. For more details about regzbot see footer.
+
+Sending this to everyone that got the initial report, to make all aware
+of the tracking. I also hope that messages like this motivate people to
+directly get at least the regression mailing list and ideally even
+regzbot involved when dealing with regressions, as messages like this
+wouldn't be needed then.
+
+Don't worry, I'll send further messages wrt to this regression just to
+the lists (with a tag in the subject so people can filter them away), as
+long as they are intended just for regzbot. With a bit of luck no such
+messages will be needed anyway.
+
+Ciao, Thorsten (wearing his 'Linux kernel regression tracker' hat).
+
+P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
+on my table. I can only look briefly into most of them. Unfortunately
+therefore I sometimes will get things wrong or miss something important.
+I hope that's not the case here; if you think it is, don't hesitate to
+tell me about it in a public reply. That's in everyone's interest, as
+what I wrote above might be misleading to everyone reading this; any
+suggestion I gave thus might sent someone reading this down the wrong
+rabbit hole, which none of us wants.
+
+BTW, I have no personal interest in this issue, which is tracked using
+regzbot, my Linux kernel regression tracking bot
+(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
+this mail to get things rolling again and hence don't need to be CC on
+all further activities wrt to this regression.
+
+On 13.12.21 14:24, Ahmad Fatoum wrote:
+> Hi,
 > 
-> xiangsheng.hou@mediatek.com wrote on Sat, 11 Dec 2021 11:25:46 +0800:
-> > 
-> > >   
-> > > > > > +				struct nand_page_io_req *req)
-> > > > > > +{
-> > > > > > +	struct mtk_ecc_engine *eng = nand_to_ecc_ctx(nand);
-> > > > > > +	int step_size = nand->ecc.ctx.conf.step_size;
-> > > > > > +	void *databuf, *oobbuf;
-> > > > > > +	int i;
-> > > > > > +
-> > > > > > +	if (req->type == NAND_PAGE_WRITE) {
-> > > > > > +		databuf = (void *)req->databuf.out;
-> > > > > > +		oobbuf = (void *)req->oobbuf.out;
-> > > > > > +
-> > > > > > +		/*
-> > > > > > +		 * Convert the source databuf and oobbuf to MTK
-> > > > > > ECC
-> > > > > > +		 * on-flash data format.
-> > > > > > +		 */
-> > > > > > +		for (i = 0; i < eng->nsteps; i++) {
-> > > > > > +			if (i == eng->bbm_ctl.section)
-> > > > > > +				eng->bbm_ctl.bbm_swap(nand,
-> > > > > > +						      databuf,
-> > > > > > oobbuf);    
-> > > > > 
-> > > > > Do you really need this swap? Isn't the overall move enough
-> > > > > to
-> > > > > put
-> > > > > the
-> > > > > BBM at the right place?
-> > > > >     
-> > > > 
-> > > > For OPS_RAW mode, need organize flash data in the MTK ECC
-> > > > engine
-> > > > data
-> > > > format. Other operation in this function only organize data by
-> > > > section
-> > > > and not include BBM swap.
-> > > > 
-> > > > For other mode, this function will not be called.  
-> > > 
-> > > Can you try to explain this with an ascii schema again? I'm sorry
-> > > but
-> > > I
-> > > don't follow it. Is the BBM placed in the first bytes of the
-> > > first
-> > > oob
-> > > area by the engine? Or is it place somewhere else?
-> > >   
-> > 
-> > Yes, the BBM will at the first OOB area in NAND standard layout
-> > after
-> > BBM swap.
-> > 
-> > 0. Differential on-flash data layout
-> > 
-> > NAND standard page layout
-> > +------------------------------+------------+
-> > >                              |            |
-> > >            main area         |   OOB area |
-> > >                              |            |
-> > 
-> > +------------------------------+------------+
-> > 
-> > MTK ECC on-flash page layout (2 section for example)
-> > +------------+--------+------------+--------+
-> > >            |        |            |        |    
-> > > section(0) | OOB(0) | section(1) | OOB(1) |
-> > >            |        |            |        | 
-> > 
-> > +------------+--------+------------+--------+
+> I've been investigating a breakage on a PowerPC MPC8313: The SoC is connected
+> via the "Enhanced Local Bus Controller" to a 8-bit-parallel S29GL064N flash,
+> which is represented as a memory-mapped cfi-flash.
 > 
-> I think we are aligned on that part.
+> The regression began in v4.17-rc1 with
 > 
-> The BBM is purely a user conception, it is not something wired in the
-> hardware. What I mean is: why do *you* think the BBM should be
-> located
-> in the middle of section #1 ?
-
-Take NAND page 2KB and OOB 64 bytes for example.
-
-For the NAND perspective the BBM is located at OOB #0, the column
-address is 2048 in one page, and this should not only a user
-conception.
-
-No matter what layout, the BBM position need at column 2048(OOB #0).
-Because of the NAND device specification arrange this.
-
-That is, The BBM position of a worn bad block(user mark) need
-consistent with a factory bad block(flash vendor mark).
-
-For the MTK ECC engine reorganize data by section in unit.
-The step size will be 1024 bytes and the OOB area for each section will
-be 32 bytes with NAND page 2KB and OOB 64 bytes.
-
-The on-flash page data lauout for MTK ECC engine,
-column 2048 will be main data in the middle of section #1.
-+----------------+-------+----------------+-------+
-|                |       |                |       |
-|     1024B      |  32B  |    1024B       |  32B  |
-|                |       |                |       |
-+----------------+-------+----------------+-------+
-
+>   dfeae1073583 ("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
 > 
-> There is one layout: the layout from the NAND/MTD perspective.
-> There is another layout: the layout of your ECC engine.
+> and causes all flash write accesses on the hardware to fail. Example output
+> after v5.1-rc2[1]:
 > 
-> Just consider that the BBM should be at byte 0 of OOB #0 and you will
-> not need any BBM swap operation anymore. I don't understand why you
-> absolutely want to put it in section #1.
+>   root@host:~# mount -t jffs2 /dev/mtdblock0 /mnt
+>   MTD do_write_buffer_wait(): software timeout, address:0x000c000b.
+>   jffs2: Write clean marker to block at 0x000c0000 failed: -5
+> 
+> This issue still persists with v5.16-rc. Reverting aforementioned patch fixes
+> it, but I am still looking for a change that keeps both Tokunori's and my
+> hardware happy.
+> 
+> What Tokunori's patch did is that it strengthened the success condition
+> for flash writes:
+> 
+>  - Prior to the patch, DQ polling was done until bits
+>    stopped toggling. This was taken as an indicator that the write succeeded
+>    and was reported up the stack. i.e. success condition is chip_ready()
+> 
+>  - After the patch, polling continues until the just written data is
+>    actually read back, i.e. success condition is chip_good()
+> 
+> This new condition never holds for me, when DQ stabilizes, it reads 0xFF,
+> never the just written data. The data is still written and can be read back
+> on subsequent reads, just not at that point of time in the poll loop.
+> 
+> We haven't had write issues for the years predating that patch. As the
+> regression has been mainline for a while, I am wondering what about my setup
+> that makes it pop up here, but not elsewhere?
+> 
+> I consulted the data sheet[2] and found Figure 27, which describes DQ polling
+> during embedded algorithms. DQ switches from status output to "True" (I assume
+> True == all bits set == 0xFF) until CS# is reasserted. 
+> 
+> I compared with another chip's datasheet, and it (Figure 8.4) doesn't describe
+> such an intermittent "True" state. In any case, the driver polls a few hundred
+> times, however, before giving up, so there should be enough CS# toggles.
+> 
+> 
+> Locally, I'll revert this patch for now. I think accepting 0xFF as a success
+> condition may be appropriate, but I don't yet have the rationale to back it up.
+> 
+> I am investigating this some more, probably with a logic trace, but I wanted
+> to report this in case someone has pointers and in case other people run into
+> the same issue.
+> 
+> 
+> Cheers,
+> Ahmad
+> 
+> [1] Prior to d9b8a67b3b95 ("mtd: cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer") 
+>     first included with v5.1-rc2, failing writes just hung indefinitely in kernel space.
+>     That's fixed, but the writes still fail.
+> 
+> [2]: 001-98525 Rev. *B, https://www.infineon.com/dgdl/Infineon-S29GL064N_S29GL032N_64_Mbit_32_Mbit_3_V_Page_Mode_MirrorBit_Flash-DataSheet-v03_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ed556fd548b
+> 
+> [3]: https://www.mouser.com/datasheet/2/268/SST39VF1601C-SST39VF1602C-16-Mbit-x16-Multi-Purpos-709008.pdf
+>      Note that "true data" means valid data here, not all bits one.
+> 
 
-For the read/write both in OPS_RAW mode, the data layout will be
-organized by the ECC engine, no matter how the layout comply with, this
-will be workable.
 
-However, it will be chaotic when mix OPS_RAW operation with
-OPS_AUTO_OOB/OPS_PLACE_OOB.
-
-That is, the OPS_RAW mode on-flash data layout need comply with
-OPS_AUTO_OOB/OPS_PLACE_OOB, this is the reorganize function purpose.
-
-Just take the mtd/tests/nandbiterrs.c for example.
-It will write data in OPS_PLACE_OOB mode and rewrite data in OPS_RAW
-mode after insert one bitflip. Then read in OPS_PLACE_OOB mode to check
-the bitflips.
-
-> > The standard BBM position will be section(1) main data,
-> > need do the BBM swap operation.
-> > 
-> > request buffer include req->databuf and req->oobbuf.
-> > +----------------------------+
-> > >                            |
-> > >     req->databuf           |
-> > >                            |
-> > 
-> > +----------------------------+
-> > 
-> > +-------------+
-> > >             |
-> > > req->oobbuf |
-> > >             |
-> > 
-> > +-------------+
-> > 
-> > 1. For the OPS_RAW mode
-> > 
-> > Expect the on-flash data format is like MTK ECC layout.
-> > The snfi controller will put the on-flash data as is
-> > spi_mem_op->data.buf.out.
-> > 
-> > Therefore, the ECC engine have to reorganize the request
-> > data and OOB buffer in 4 part for each section in
-> > OPS_RAW mode.
-> > 
-> > 1) BBM swap, only for the section need do the swap
-> > 2) section main data
-> > 3) OOB free data
-> > 4) OOB ECC data
-> > 
-> > The BBM swap will ensure the BBM position in MTK ECC
-> > on-flash layout is same as NAND standard layout in
-> > OPS_RAW mode.
-> > 
-> > for (i = 0; i < eng->nsteps; i++) {
-> > 
-> >         /* part 1: BBM swap */
-> >         if (i == eng->bbm_ctl.section)
-> >                 eng->bbm_ctl.bbm_swap(nand,
-> >                                       databuf, oobbuf);
-> > 
-> > 	/* part 2: main data in this section */
-> >         memcpy(mtk_ecc_section_ptr(nand, i),
-> >                databuf + mtk_ecc_data_off(nand, i),
-> >                step_size);
-> > 
-> >         /* part 3: OOB free data */
-> >         memcpy(mtk_ecc_oob_free_ptr(nand, i),
-> >                oobbuf + mtk_ecc_oob_free_position(nand, i),
-> >                eng->oob_free);
-> > 
-> >         /* part 4: OOB ECC data */
-> >         memcpy(mtk_ecc_oob_free_ptr(nand, i) + eng->oob_free,
-> >                oobbuf + eng->oob_free * eng->nsteps +
-> >                i * eng->oob_ecc,
-> >                eng->oob_ecc);
-> > }
-> > 
-> > 2. For non OPS_RAW mode
-> > 
-> > The snfi have a function called auto format with ECC enable.
-> > This will auto reorganize the request data and oob data in
-> > MTK ECC page layout by the snfi controller except the BBM position.
-> > 
-> > Therefore, the ECC engine only need do the BBM swap after set OOB
-> > data
-> > bytes in OPS_AUTO or after memcpy oob data in OPS_PLACE_OOB for
-> > write
-> > operation.
-> > 
-> > The BBM swap also ensure the BBM position in MTK ECC on-flash
-> > layout is
-> > same as NAND standard layout in non OPS_RAW mode.
-> > 
-> > if (req->ooblen) {
-> >         if (req->mode == MTD_OPS_AUTO_OOB) {
-> >                 ret = mtd_ooblayout_set_databytes(mtd,
-> >                                                   req->oobbuf.out,
-> >                                                   eng-
-> > >bounce_oob_buf,
-> >                                                   req->ooboffs,
-> >                                                   mtd->oobavail);
-> >                 if (ret)
-> >                         return ret;
-> >         } else {
-> >                 memcpy(eng->bounce_oob_buf + req->ooboffs,
-> >                        req->oobbuf.out,
-> >                        req->ooblen);
-> >         }
-> > }
-> > 
-> > eng->bbm_ctl.bbm_swap(nand, (void *)req->databuf.out,
-> >                       eng->bounce_oob_buf);
-> > 
-
-Thanks
-Xiangsheng Hou
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
