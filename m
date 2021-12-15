@@ -4,76 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 584C5C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 14 Dec 2021 19:54:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D38EEC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Dec 2021 15:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JD5mcmx56wgYOoQ5DAoQXp2sNsNQTj/WCKgHaNAazC0=; b=SPIeS7a+i3hK/w
-	JK0gRFqj0H3qjbGU3jpQjgHSmnbEqltq29WrpmO1aw2UttkN7gDM7YYnR3mwKnmbvhnEmexRP5F2l
-	7CQk6kr4M4w9wn4ZgLoDr2h7iaw2/Z7ltHTJ8eh0ixSijTxD2+WmwrjHxbs5lJH+5dEo5Qx01EePp
-	LATyf4zTRXpe3zO9qlfrtI5D5eS1rOuzKZvQXFH0RfburcO6eMy2CkY9sqA+n42rrSgmZykXoR8ve
-	JfJkJve3IVrj7LX4Q6kflGa4WwbrNuUHMYW4jSUKfbQyGBtg5cmfri4ohZnKyIx6Ll8LOrKTC3zxl
-	8V318SKXSzYI34i2ctVA==;
+	List-Owner; bh=jmX1vcrgJmix/Bx3d3hmRzTqHo2Zv1nQ5mxzN4ii89o=; b=4uxBsHfy6r6r4l
+	VSY23PHhROoR7hUnhJSxvX77d++uIYxMZd/otJ5ZwrYBAuCRe/fgsS8zH0F10mXyDlIHUrbTxtiR+
+	YNzJ4OewcVfn9jCA1jJrH9ROlO64+vg2IsNP0OXrtbJfbL/lcZKqeq6/KebovXGl7aj44m2sNVONU
+	dCu/1M2pBZzGqDI7F92Ec1FFmPFJsxHn7kwkQ0qHuHetEXaC0jdwLzmGyNw/qlsxTR1YPs3Dbicvb
+	BAkgieQ60Vuw1bRHfOOADpJdnUkRjN2JmcxOInV00LeCaTyFwRnf+mdj0f4Yyg6BAgcxUTml5f7zX
+	KK7WY1quFX2/60TkX4wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxDrj-00FfLC-IF; Tue, 14 Dec 2021 19:53:35 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1mxWLL-001OON-D7; Wed, 15 Dec 2021 15:37:23 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxDrf-00FfH9-PI
- for linux-mtd@lists.infradead.org; Tue, 14 Dec 2021 19:53:34 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BEJrJ48071964;
- Tue, 14 Dec 2021 13:53:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1639511599;
- bh=prAuP7mo0lP220rcwOXoftwQEXyH1pVi5J9ELzETj+M=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=G4ygR2h3C5W7GSGQEH4yQ9OioN623J5lc29taiP5ZrpLLNuw+pIakuJ5eXsESNfk+
- 6nkXkbbbC8h8waEtBJRl4InMCDvpUUnlqcNUr0uquGp2W2DG5rcp3LpwR4zVKBmoCY
- hs8lUfTKof3G4SxlbQLhemtnaPh8/N6vJox8O8RQ=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BEJrJGX100307
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 14 Dec 2021 13:53:19 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 14
- Dec 2021 13:53:18 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 14 Dec 2021 13:53:18 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BEJrImq099166;
- Tue, 14 Dec 2021 13:53:18 -0600
-Date: Wed, 15 Dec 2021 01:23:17 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Mark Brown
- <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Julien Su
- <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Boris Brezillon
- <boris.brezillon@collabora.com>,
- Xiangsheng Hou <xiangsheng.hou@mediatek.com>
-Subject: Re: [PATCH v5 04/13] spi: spi-mem: Create a helper to gather all the
- supports_op checks
-Message-ID: <20211214195315.f7wr6ao6bdma47cn@ti.com>
-References: <20211214114140.54629-1-miquel.raynal@bootlin.com>
- <20211214114140.54629-5-miquel.raynal@bootlin.com>
+ id 1mxWL5-001OLt-8Z; Wed, 15 Dec 2021 15:37:08 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id C644320000E;
+ Wed, 15 Dec 2021 15:36:58 +0000 (UTC)
+Date: Wed, 15 Dec 2021 16:36:57 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org, Magnus
+ Damm <magnus.damm@gmail.com>, Gareth Williams
+ <gareth.williams.jx@renesas.com>, Phil Edworthy
+ <phil.edworthy@renesas.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Geert
+ Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH v3 1/4] dt-bindings: mtd: rzn1: Describe Renesas RZ/N1
+ NAND controller
+Message-ID: <20211215163657.0ae52a78@xps13>
+In-Reply-To: <YbjxrFyfIz8Qydpb@robh.at.kernel.org>
+References: <20211209143228.525234-1-miquel.raynal@bootlin.com>
+ <20211209143228.525234-2-miquel.raynal@bootlin.com>
+ <YbjxrFyfIz8Qydpb@robh.at.kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211214114140.54629-5-miquel.raynal@bootlin.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211214_115331_932502_F43A4186 
-X-CRM114-Status: GOOD (  24.70  )
+X-CRM114-CacheID: sfid-20211215_073707_477346_95C48896 
+X-CRM114-Status: UNSURE (   7.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,132 +64,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On 14/12/21 12:41PM, Miquel Raynal wrote:
-> So far we check the support for:
-> - regular operations
-> - dtr operations
-> Soon, we will also need to check the support for ECC operations.
-> 
-> As the combinatorial will increase exponentially, let's gather all the
-> checks in a single generic function which takes a capabilities structure
-> as input. This new helper is supposed to be called by the currently
-> exported functions instead of repeating a similar implementation.
-
-Nice! I think this is a very good idea.
-
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/spi/spi-mem.c       | 34 +++++++++++++++++++++++++---------
->  include/linux/spi/spi-mem.h |  8 ++++++++
->  2 files changed, 33 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> index 37f4443ce9a0..4c6944d7b174 100644
-> --- a/drivers/spi/spi-mem.c
-> +++ b/drivers/spi/spi-mem.c
-> @@ -160,26 +160,42 @@ static bool spi_mem_check_buswidth(struct spi_mem *mem,
->  	return true;
->  }
->  
-> +static bool spi_mem_generic_supports_op(struct spi_mem *mem,
-> +					const struct spi_mem_op *op,
-> +					struct spi_mem_controller_caps *caps)
-> +{
-> +	if (!caps->dtr) {
-
-Nitpick: Please turn the order of the if-else around:
-
-  if (caps->dtr)
-    ...
-  else
-    ...
-
-> +		if (op->cmd.dtr || op->addr.dtr ||
-> +		    op->dummy.dtr || op->data.dtr)
-> +			return false;
-> +
-> +		if (op->cmd.nbytes != 1)
-> +			return false;
-> +	} else {
-> +		if (op->cmd.nbytes != 2)
-> +			return false;
-> +	}
-> +
-> +	return spi_mem_check_buswidth(mem, op);
-> +}
-> +
->  bool spi_mem_dtr_supports_op(struct spi_mem *mem,
->  			     const struct spi_mem_op *op)
->  {
-> -	if (op->cmd.nbytes != 2)
-> -		return false;
-> +	struct spi_mem_controller_caps caps = {
-> +		.dtr = true,
-> +	};
->  
-> -	return spi_mem_check_buswidth(mem, op);
-> +	return spi_mem_generic_supports_op(mem, op, &caps);
->  }
->  EXPORT_SYMBOL_GPL(spi_mem_dtr_supports_op);
->  
->  bool spi_mem_default_supports_op(struct spi_mem *mem,
->  				 const struct spi_mem_op *op)
-
-I know this would require a little bit more work from you, but can we 
-make spi_mem_default_supports_op() accept the caps as a parameter? And 
-drop spi_mem_dtr_supports_op() while we are at it? This would be a lot 
-neater I think since we won't have lots of wrapper functions lying 
-around.
-
->  {
-> -	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
-> -		return false;
-> +	struct spi_mem_controller_caps caps = {};
->  
-> -	if (op->cmd.nbytes != 1)
-> -		return false;
-> -
-> -	return spi_mem_check_buswidth(mem, op);
-> +	return spi_mem_generic_supports_op(mem, op, &caps);
->  }
->  EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
->  
-> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> index 85e2ff7b840d..f365efcfb719 100644
-> --- a/include/linux/spi/spi-mem.h
-> +++ b/include/linux/spi/spi-mem.h
-> @@ -220,6 +220,14 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
->  	return mem->drvpriv;
->  }
->  
-> +/**
-> + * struct spi_mem_controller_caps - SPI memory controller capabilities
-> + * @dtr: Supports DTR operations
-> + */
-> +struct spi_mem_controller_caps {
-> +	bool dtr;
-> +};
-> +
->  /**
->   * struct spi_controller_mem_ops - SPI memory operations
->   * @adjust_op_size: shrink the data xfer of an operation to match controller's
-> -- 
-> 2.27.0
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9iLAoKPiA+ICsgIGNsb2NrLW5hbWVzOgo+ID4gKyAgICBpdGVtczoKPiA+ICsgICAgICAt
+IGNvbnN0OiBuYW5kX2hjbGsKPiA+ICsgICAgICAtIGNvbnN0OiBuYW5kX2VjbGsgIAo+IAo+ICdu
+YW5kXycgaXMgcmVkdW5kYW50LgoKQWN0dWFsbHkgdGhlIG5hbmRfIHByZWZpeCB3YXMgdm9sdW50
+YXJ5IHRvIGJlIGNvbnNpc3RlbnQgd2l0aCB0aGUKc3BlY2lmaWNhdGlvbiB3aGljaCBjYWxsZWQg
+dGhlc2UgdHdvIGNsb2NrcyBOQU5EX0hDTEsgYW5kIE5BTkRfRVhMSy4KQnV0IHdoYXRldmVyLCBJ
+J2xsIGNoYW5nZSB0aGUgbmFtZXMuCgo+ID4gKyAgIiNhZGRyZXNzLWNlbGxzIjogdHJ1ZQo+ID4g
+KyAgIiNzaXplLWNlbGxzIjogdHJ1ZQo+ID4gKwo+ID4gK3JlcXVpcmVkOgo+ID4gKyAgLSBjb21w
+YXRpYmxlCj4gPiArICAtIHJlZwo+ID4gKyAgLSBjbG9ja3MKPiA+ICsgIC0gY2xvY2stbmFtZXMK
+PiA+ICsgIC0gaW50ZXJydXB0cwo+ID4gKwo+ID4gK2FkZGl0aW9uYWxQcm9wZXJ0aWVzOiB0cnVl
+ICAKPiAKPiB1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlCgpOb3Qgc3VyZSB3aHkgSSBwcm9w
+b3NlZCB0aGlzIHByb3BlcnR5IGluIHRoZSBmaXJzdCBwbGFjZS4gSSdsbCBjb3JyZWN0LgoKVGhh
+bmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
