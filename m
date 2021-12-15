@@ -4,33 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00A40C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Dec 2021 17:45:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC6B5C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Dec 2021 18:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4f3RAjLqaMFamHFv9yGgzeoreIHM8cGL8dTjcz92+Y4=; b=iMCoC0n+8w+RZn
-	HrJuSHIDgEqBkgBXTk06fZYlJMVsh2xHeaGCzOD0wRJouSS9BUKSQw6SAzv2s+SXk6zEM6fCubt0G
-	7aFry3fbfpax1ALc7hh+SVJ2fdRHRJ1BaJzHFBr37tl8Ngw8fDp9RclpNqx4vH2rUylHtSu1zaDbq
-	rHW28p9AxBdKMbuNPxDgkdcalIgOOW0ajNb8drxj1Fq+SHFUlptPGCAXNQ1PX1RABHECK3gc+/gS/
-	ywitGK0D3QijMcbGppgpbtFVJ+ifVbs0G+Ll+LXjI9JYLJr+0Asl3gkFQZsP8Kycva+ZtvmW5VJao
-	OAq8ZXCyyy3705JwXaXQ==;
+	List-Owner; bh=3kI7R6c6jt1eW2Rmi0kcdn9jRr5Afqy84Y+uFm4sARM=; b=JqWWqsi7QgzDxd
+	QMwx0q+/phXioOehr+B3/BUDftb8MCihqGwM5tbz3tA0IMk/0wYYgXXrNlW7LZjKjLr1ubCBMtWa4
+	unUJ3X3FJKIeHScULl1XoQ8D9mxwminVym0h4pd6mhj4vrKX//JI6DNwFmva4Cps8fXSsAqeMHJG1
+	Zwa4w3/pKaQy2iBVrDzE9hTgGwa3kaCuwjDzfl9x2k/LtGYQAdsZqrD/mJgF5SJU9CQ+YydsQ3iXq
+	bcJyf1nRU9QopTKfRKKnOe5yycdx45DDfAEMe4E0jslBQ781nP/dYmF44V5oNafp3o6M/6zMCCjeD
+	/XfB+A6Tz4Rv6N6kmFww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxYKV-0028W3-ON; Wed, 15 Dec 2021 17:44:39 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1mxZHi-002Hlg-D1; Wed, 15 Dec 2021 18:45:50 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxYKS-0028Ud-4X
- for linux-mtd@lists.infradead.org; Wed, 15 Dec 2021 17:44:38 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 113D61C0003;
- Wed, 15 Dec 2021 17:44:27 +0000 (UTC)
-Date: Wed, 15 Dec 2021 18:44:26 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
+ id 1mxZHf-002Hkd-1P
+ for linux-mtd@lists.infradead.org; Wed, 15 Dec 2021 18:45:48 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0B0591F458B8;
+ Wed, 15 Dec 2021 18:45:42 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1639593942; bh=dVQ+/+gYZ8IQGW/aj4iUhJT9IAnBcvhiGh388cAq+c0=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=eTBNWyPe4FNZeKpzsvgPrDC6p6L8GwavO7RgC0A3kCDT3hRtfCpScY/aBEvle8dsm
+ 3moN8PWPMVdNvm2AJ2OLram6TXrcW4No6bZXNc/oNu0UanwykU7ml2R0o1ZkRFm/su
+ xQFGQeYWZAbHPHsboenmTfV2Xib5ocyyI+zDuANOFT0WbvoIXrTfHA/nSVNx/sQlbV
+ CFLf9Th+4jhJj5YBNpGQMscPO4+At7cd9rekbKqMvLzy2NIZUfGJS7D4qflCFnbkBv
+ 6QUcXhelHYKXI2cvTOU2vrY+pNs1RvIekMBAskQukCEx6SzpqPu8XgSSQdb/cIuMAO
+ auRH0lKoWdI8w==
+Date: Wed, 15 Dec 2021 19:45:38 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
  Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
@@ -39,17 +51,18 @@ Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
  <jaimeliao@mxic.com.tw>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 Subject: Re: [PATCH v5 12/13] spi: mxic: Use spi_mem_generic_supports_op()
-Message-ID: <20211215184426.67fd3912@xps13>
-In-Reply-To: <20211214172410.2b26c17e@collabora.com>
+Message-ID: <20211215194538.0becb14b@collabora.com>
+In-Reply-To: <20211215184426.67fd3912@xps13>
 References: <20211214114140.54629-1-miquel.raynal@bootlin.com>
  <20211214114140.54629-13-miquel.raynal@bootlin.com>
  <20211214172410.2b26c17e@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20211215184426.67fd3912@xps13>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211215_094436_471900_81EF0EBC 
-X-CRM114-Status: GOOD (  28.19  )
+X-CRM114-CacheID: sfid-20211215_104547_449551_7A6DF118 
+X-CRM114-Status: GOOD (  35.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,68 +74,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQm9yaXMsCgpib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBUdWUsIDE0
-IERlYyAyMDIxIDE3OjI0OjEwICswMTAwOgoKPiBPbiBUdWUsIDE0IERlYyAyMDIxIDEyOjQxOjM5
-ICswMTAwCj4gTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6
-Cj4gCj4gPiBUaGlzIGRyaXZlciBjYW4gYmUgc2ltcGxpZmllZCBhIGxpdHRsZSBiaXQgYnkgdXNp
-bmcKPiA+IHNwaV9tZW1fZ2VuZXJpY19zdXBwb3J0c19vcCgpIGluc3RlYWQgb2YgdGhlCj4gPiBz
-cGlfbWVtX2RlZmF1bHQvZHRyX3N1cHBvcnRzX29wKCkgY291cGxlLiBUaGUgYWxsX2ZhbHNlIGJv
-b2xlYW4gaXMKPiA+IGludmVydGVkIHRvIGJlY29tZSBhIGR0ciBib29sZWFuLCB3aGljaCBjaGVj
-a3MgaWYgYXQgbGVhc3Qgb25lIG9mIHRoZQo+ID4gb3BlcmF0aW9uIG1lbWJlciB1c2VzIGR0ciBt
-b2RlLiBUaGUgaWRlYSBiZWhpbmQgdGhpcyBjaGFuZ2UgaXMgdG8KPiA+IHNpbXBsaWZ5IHRoZSBp
-bnRyb2R1Y3Rpb24gb2YgdGhlIHBpcGVsaW5lZCBFQ0MgZW5naW5lLgo+ID4gCj4gPiBTaWduZWQt
-b2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+ID4gLS0t
-Cj4gPiAgZHJpdmVycy9zcGkvc3BpLW14aWMuYyB8IDEwICsrKy0tLS0tLS0KPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9zcGkvc3BpLW14aWMuYyBiL2RyaXZlcnMvc3BpL3NwaS1teGljLmMKPiA+
-IGluZGV4IDQ4NWE3ZjJhZmI0NC4uNWU3MWFhNjMwNTA0IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVy
-cy9zcGkvc3BpLW14aWMuYwo+ID4gKysrIGIvZHJpdmVycy9zcGkvc3BpLW14aWMuYwo+ID4gQEAg
-LTQ1Miw3ICs0NTIsNyBAQCBzdGF0aWMgc3NpemVfdCBteGljX3NwaV9tZW1fZGlybWFwX3dyaXRl
-KHN0cnVjdCBzcGlfbWVtX2Rpcm1hcF9kZXNjICpkZXNjLAo+ID4gIHN0YXRpYyBib29sIG14aWNf
-c3BpX21lbV9zdXBwb3J0c19vcChzdHJ1Y3Qgc3BpX21lbSAqbWVtLAo+ID4gIAkJCQkgICAgIGNv
-bnN0IHN0cnVjdCBzcGlfbWVtX29wICpvcCkKPiA+ICB7Cj4gPiAtCWJvb2wgYWxsX2ZhbHNlOwo+
-ID4gKwlzdHJ1Y3Qgc3BpX21lbV9jb250cm9sbGVyX2NhcHMgY2FwcyA9IHt9Owo+ID4gIAo+ID4g
-IAlpZiAob3AtPmRhdGEuYnVzd2lkdGggPiA4IHx8IG9wLT5hZGRyLmJ1c3dpZHRoID4gOCB8fAo+
-ID4gIAkgICAgb3AtPmR1bW15LmJ1c3dpZHRoID4gOCB8fCBvcC0+Y21kLmJ1c3dpZHRoID4gOCkK
-PiA+IEBAIC00NjUsMTMgKzQ2NSw5IEBAIHN0YXRpYyBib29sIG14aWNfc3BpX21lbV9zdXBwb3J0
-c19vcChzdHJ1Y3Qgc3BpX21lbSAqbWVtLAo+ID4gIAlpZiAob3AtPmFkZHIubmJ5dGVzID4gNykK
-PiA+ICAJCXJldHVybiBmYWxzZTsKPiA+ICAKPiA+IC0JYWxsX2ZhbHNlID0gIW9wLT5jbWQuZHRy
-ICYmICFvcC0+YWRkci5kdHIgJiYgIW9wLT5kdW1teS5kdHIgJiYKPiA+IC0JCSAgICAhb3AtPmRh
-dGEuZHRyOwo+ID4gKwljYXBzLmR0ciA9IG9wLT5jbWQuZHRyIHx8IG9wLT5hZGRyLmR0ciB8fCBv
-cC0+ZHVtbXkuZHRyIHx8IG9wLT5kYXRhLmR0cjsgIAo+IAo+IEFyZSB5b3Ugc3VyZSB0aGF0J3Mg
-d2hhdCB5b3Ugd2FudCB0byBkbz8gc3BpX21lbV9jb250cm9sbGVyX2NhcHMgaXMKPiBzdXBwb3Nl
-ZCB0byBlbmNvZGUgdGhlIGNvbnRyb2xsZXIgY2FwYWJpbGl0aWVzLCBub3Qgd2hldGhlciB0aGUK
-PiBvcGVyYXRpb24gY29udGFpbnMgYSBEVFIgY3ljbGUgb3Igbm90LiBJJ2QgZXhwZWN0IHRoaXMg
-Y2FwcyBvYmplY3QgdG8gYmUKPiBzdGF0aWNhbGx5IGRlZmluZWQsIHdpdGggcG9zc2libHkgb25l
-IGluc3RhbmNlIHBlci1jb21wYXQgaWYgdGhlIGNhcHMKPiBkZXBlbmQgb24gdGhlIEhXIHJldmlz
-aW9uLgoKSW4gb3JkZXIgdG8ga2VlcCB0aGUgc2VyaWVzIGVhc3kgdG8gcmV2aWV3IEkgZGVjaWRl
-ZCB0byBnbyBmb3IgdGhlCmZvbGxvd2luZyBhcHByb2FjaDoKKiBJbnRyb2R1Y2UgdGhlIHNwaV9t
-ZW1fZ2VuZXJpY19zdXBwb3J0c19vcF9oZWxwZXIoKSB3aGljaCB0YWtlcyBhCiAgY2FwYWJpbGl0
-aWVzIHN0cnVjdHVyZS4gVGhpcyBoZWxwZXIgZ2F0aGVycyBhbGwgdGhlIGNoZWNrcyBmcm9tCiAg
-c3BpX21lbV9kZWZhdWx0X3N1cHBvcnRzX29wKCkgYW5kIHNwaV9tZW1fZHRyX3N1cHBvcnRzX29w
-KCkuIFRoZXNlCiAgdHdvIGhlbHBlcnMgbm93IGNhbGwgdGhlIG5ldyBvbmUgd2l0aCBlaXRoZXIg
-YSBOVUxMIHBvaW50ZXIgaW4gdGhlCiAgZm9ybWVyIGNhc2UsIG9yIGEgc3RydWN0dXJlIHdpdGgg
-dGhlIC5kdHIgcGFyYW1ldGVyIHNldCB0byB0cnVlIGluCiAgdGhlIGxhdHRlci4KKiBDaGFuZ2Ug
-dGhlIEFQSSBvZiBzcGlfbWVtX2RlZmF1bHRfc3VwcG9ydHNfb3AoKSwgdGhpcyBpbnZvbHZlcwog
-IHVwZGF0aW5nIG1hbnkgZGlmZmVyZW50IGRyaXZlcnMgc28gdGhpcyBjaGFuZ2UgZG9lcyBvbmx5
-IHRoYXQgaW4gYQogIHZlcnkgdHJhbnNwYXJlbnQgd2F5LCB3aXRoIG5vIGZ1bmN0aW9uYWwgY2hh
-bmdlcyBhdCBhbGwuIEFsbCB0aGUKICBkcml2ZXJzIHByb3ZpZGUgYSBOVUxMIHBhcmFtZXRlciBm
-b3IgdGhlIGNhcGFiaWxpdGllcyBzdHJ1Y3R1cmUuCiogQWN0dWFsbHkgbWFrZSB1c2Ugb2YgdGhl
-IG5ldyBwYXJhbWV0ZXIgb2YKICBzcGlfbWVtX2RlZmF1bHRfc3VwcG9ydHNfb3AoKSBpbiB0aGUg
-ZHJpdmVycyBDYWRlbmNlIGFuZCBNYWNyb25peCwKICB3aGljaCBkbyBoYXZlIERUUiBzdXBwb3J0
-LiBUaGlzIGtpbGxzIHRoZSBzcGlfbWVtX2R0cl9zdXBwb3J0c19vcCgpCiAgaGVscGVyLgoqIEtp
-bGwgdGhlIHRlbXBvcmFyeSBzcGlfbWVtX2dlbmVyaWNfc3VwcG9ydHNfb3AoKSBoZWxwZXIgYnkg
-bW92aW5nCiAgYWxsIHRoZSBsb2dpYyBiYWNrIGludG8gc3BpX21lbV9kZWZhdWx0X3N1cHBvcnRz
-X29wKCkuCgpUaGlzIGFwcHJvYWNoIGlzIHJlYWxseSBzdHJhaWdodGZvcndhcmQgYW5kIGVhc2ls
-eSBiaXNlY3RhYmxlIGlmCm5lZWRlZC4gV2hpbGUgd29ya2luZyBvbiB0aGlzLCBJIGZpeGVkIHRo
-ZSBjaGVjayB3ZSBkaXNjdXNzZWQgb24gSVJDCmFib3V0IHRoZSBjb21tYW5kIHBhcmFtZXRlciB3
-aGVuIGluIGEgRFRSIG9wZXJhdGlvbi4gSSBhbHNvIHJldmVydGVkCnRoZSBsb2dpYyBpbiB0aGUg
-dmFyaW91cyBjaGVja3MsIGFzIHlvdSBzdWdnZXN0ZWQuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed, 15 Dec 2021 18:44:26 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Hi Boris,
+> 
+> boris.brezillon@collabora.com wrote on Tue, 14 Dec 2021 17:24:10 +0100:
+> 
+> > On Tue, 14 Dec 2021 12:41:39 +0100
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > This driver can be simplified a little bit by using
+> > > spi_mem_generic_supports_op() instead of the
+> > > spi_mem_default/dtr_supports_op() couple. The all_false boolean is
+> > > inverted to become a dtr boolean, which checks if at least one of the
+> > > operation member uses dtr mode. The idea behind this change is to
+> > > simplify the introduction of the pipelined ECC engine.
+> > > 
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > ---
+> > >  drivers/spi/spi-mxic.c | 10 +++-------
+> > >  1 file changed, 3 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
+> > > index 485a7f2afb44..5e71aa630504 100644
+> > > --- a/drivers/spi/spi-mxic.c
+> > > +++ b/drivers/spi/spi-mxic.c
+> > > @@ -452,7 +452,7 @@ static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
+> > >  static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
+> > >  				     const struct spi_mem_op *op)
+> > >  {
+> > > -	bool all_false;
+> > > +	struct spi_mem_controller_caps caps = {};
+> > >  
+> > >  	if (op->data.buswidth > 8 || op->addr.buswidth > 8 ||
+> > >  	    op->dummy.buswidth > 8 || op->cmd.buswidth > 8)
+> > > @@ -465,13 +465,9 @@ static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
+> > >  	if (op->addr.nbytes > 7)
+> > >  		return false;
+> > >  
+> > > -	all_false = !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
+> > > -		    !op->data.dtr;
+> > > +	caps.dtr = op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr;    
+> > 
+> > Are you sure that's what you want to do? spi_mem_controller_caps is
+> > supposed to encode the controller capabilities, not whether the
+> > operation contains a DTR cycle or not. I'd expect this caps object to be
+> > statically defined, with possibly one instance per-compat if the caps
+> > depend on the HW revision.  
+> 
+> In order to keep the series easy to review I decided to go for the
+> following approach:
+> * Introduce the spi_mem_generic_supports_op_helper() which takes a
+>   capabilities structure. This helper gathers all the checks from
+>   spi_mem_default_supports_op() and spi_mem_dtr_supports_op(). These
+>   two helpers now call the new one with either a NULL pointer in the
+>   former case, or a structure with the .dtr parameter set to true in
+>   the latter.
+> * Change the API of spi_mem_default_supports_op(), this involves
+>   updating many different drivers so this change does only that in a
+>   very transparent way, with no functional changes at all. All the
+>   drivers provide a NULL parameter for the capabilities structure.
+> * Actually make use of the new parameter of
+>   spi_mem_default_supports_op() in the drivers Cadence and Macronix,
+>   which do have DTR support. This kills the spi_mem_dtr_supports_op()
+>   helper.
+> * Kill the temporary spi_mem_generic_supports_op() helper by moving
+>   all the logic back into spi_mem_default_supports_op().
+> 
+> This approach is really straightforward and easily bisectable if
+> needed.
+
+I don't really see the benefit of converting drivers one by one for
+such a trivial/mechanical change to be honest. After all, we're talking
+about adding a caps argument to spi_mem_default_supports_op() and
+making all existing callers pass a caps object that's zero initialized.
+I hope we can get this right in one shot...
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
