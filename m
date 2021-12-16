@@ -4,86 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F552C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 14:04:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B03C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 14:06:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=cGYSU2h8nyX3AzTtRFLat4OEh6Sj9dMY3AVNiudmer8=; b=TvM4HmiIrbIdjL
-	T4i1lZV1UySZJEAKIMqCAUAF8BtbhC1eiBCS5M6QtSjfRTYfFzFrQg8DbJ0Eu5BQxN+HeG8xDmLqL
-	ShFZd/CuIf/Y+nnO1M6Mfl3meIK6bvhZb3G297Kkn6i+cojgXkg7lpgBIBdRpFOWrh4yPZp8fSMPI
-	lMm62sdlF8Sz2g8A+eRUg5Prz0AWrBkqHVEuvTmrxTul5jWT/5As1m1pSjdeJpa45aW19hcOvXWOY
-	lM7IAIHiBHMbHxn7A4PYFgeB1imrvonTeoD+mdmPO/9RBpTdtWWMxgVMmXZUsdnKkvVQAx81I3CpN
-	DaUzsXPRzavcfWqUVjIQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UhVt8elmRpgdKUNaopwv5h2AcIwQAt29EjwpDnDBi8s=; b=b8vWfX5qUWnKUK3PXRBxBPHfq3
+	B4XbXiw5h8ccaJK6Ioy2dCY+UTSvU1PnfsMxCtOx11is4pt7t8PuqsldohgESMY2mQ/8wjft3/qLm
+	8jVo7i7vZjFamyEKWa48lCKh9U580BJyBv0D04Pqzio/WzZFnH2Ob6722PgFbCOm8Y3kYwi5DjrVR
+	W5vAlhRLsdY8hbi0ejPEZplnGkw81gAgDK9GHS03OGI/UvnAAwdf5cSbdWaFQJpPMH30dAkZIlLfl
+	lRhkYU40MT+VH4CPYBSPes9P+3oUH/tPJJlugwxm8j8xWNc6AcXY8P7RtW9s8mBzZW3iTULyZuSKB
+	/r07jGRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxrLt-0061iQ-Ky; Thu, 16 Dec 2021 14:03:21 +0000
-Received: from mail-ua1-f48.google.com ([209.85.222.48])
+	id 1mxrOH-0062V3-NY; Thu, 16 Dec 2021 14:05:50 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxrFU-005zMn-Fy; Thu, 16 Dec 2021 13:56:47 +0000
-Received: by mail-ua1-f48.google.com with SMTP id o1so47265567uap.4;
- Thu, 16 Dec 2021 05:56:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=r7QJ5cBXo5bJMtT1p7qM3PpjXsDY7rDmJRqDoolDi0U=;
- b=ZjFvM0ABMg+aaqRZuYv0sm8YyQfgWlAs2izYHMySt5h015yQ9URS7+So9ySHpViyBf
- Y0sjIczZzFqlkjMo6E37vs6lz7M+L8tu4VlzpxYQCpKqYE0lbEeJNO++A/ht7X8uO0YX
- 2JQbu8s+TIKiEJLjTQZjbEBdv41Oxc7WRzBStVrdMwRL7hou0vZcdl678Q23klLKsmxe
- 3a7P65jlAkZIG8m3snsv+WOMxrLJ+FnoSflYoDxmoWSB42pqvwf0oK+6dgsujHyP7g1X
- TbCQ+IQh9bUwj3bDkkyZnursCWF8PAdRcHA5/fY9ZawlMxQji/j9AB6JGRiix1jUEp9q
- JLhQ==
-X-Gm-Message-State: AOAM531kTJh0raxC8MDgF/cSJE7zo64V1+4QO/AYokXrXNrHSKCU5bpd
- ZOk5yWDHObEr7IxTysDZc6t/DCAhj8j1hg==
-X-Google-Smtp-Source: ABdhPJzXYr6XsLsuE0lCjJP5R3S00kMwzZAJrFyVqsIlPTnlTUtcLDXsA5wGLt0aRUf36M9+5Wt3jQ==
-X-Received: by 2002:a05:6102:6c4:: with SMTP id
- m4mr5404355vsg.20.1639663003320; 
- Thu, 16 Dec 2021 05:56:43 -0800 (PST)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com.
- [209.85.222.45])
- by smtp.gmail.com with ESMTPSA id 91sm1107311uac.10.2021.12.16.05.56.43
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 16 Dec 2021 05:56:43 -0800 (PST)
-Received: by mail-ua1-f45.google.com with SMTP id p2so47229052uad.11;
- Thu, 16 Dec 2021 05:56:43 -0800 (PST)
-X-Received: by 2002:a05:6102:c89:: with SMTP id
- f9mr5601778vst.68.1639662529143; 
- Thu, 16 Dec 2021 05:48:49 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1639662093.git.geert@linux-m68k.org>
- <20211215154619.166360-1-miquel.raynal@bootlin.com>
-In-Reply-To: <20211215154619.166360-1-miquel.raynal@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 16 Dec 2021 14:48:38 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUx0=b+GFP7Qvr9=L4tnf3K-UHatgKX=92EwRu3_7Bs_w@mail.gmail.com>
-Message-ID: <CAMuHMdUx0=b+GFP7Qvr9=L4tnf3K-UHatgKX=92EwRu3_7Bs_w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Renesas RZ/N1 NAND controller support
-To: Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>, 
- Rob Herring <robh+dt@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Paul Walmsley <paul.walmsley@sifive.com>, Anup Patel <anup.patel@wdc.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, linux-riscv <linux-riscv@lists.infradead.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, 
- Gareth Williams <gareth.williams.jx@renesas.com>,
- Phil Edworthy <phil.edworthy@renesas.com>, 
+ id 1mxrN2-00624z-Gj
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 14:04:33 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 27FE8B82460;
+ Thu, 16 Dec 2021 14:04:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2096CC36AE0;
+ Thu, 16 Dec 2021 14:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1639663469;
+ bh=Luhq9Qub5yOdRpagbotKjMjuKOEuUYM1ukB/Tmmo5RA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Qsa9sVPzdQq/HkMY6vGodXXyY/gHr3/pknTbXrKYwcb1l5xOvT78eU6utH9phJsfv
+ 0FCz/+WrII3lvmZqv1sBAIS4ySRdJw+g4WhSC4oaf6BP6b0wTU/qD7rKzlMGLgOI7D
+ 2r9ntikOZ0M1pb42NrlTzCrMv20nW0lxdMUaqRs7XXHfjd3bVxBSIj0nIlK94Jo8+X
+ l2YWsYNmaLCmK59txBpeLmQVqRh8uFcf1JBC/jFCsIiB08eeD/1fZMycpXKCB/1jUO
+ 8+oInW62gyn2wNz15oIUDTUpOAKzonLW9Ri0oqCVDrwm+9gg9X9qdgC25zLY31cGcR
+ 4vLi+teuXwAuQ==
+Date: Thu, 16 Dec 2021 14:04:18 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Milan Stevanovic <milan.stevanovic@se.com>, 
- Jimmy Lalande <jimmy.lalande@se.com>
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v5 12/13] spi: mxic: Use spi_mem_generic_supports_op()
+Message-ID: <YbtHYtcYsyrl5HaR@sirena.org.uk>
+References: <20211214114140.54629-1-miquel.raynal@bootlin.com>
+ <20211214114140.54629-13-miquel.raynal@bootlin.com>
+ <20211214172410.2b26c17e@collabora.com>
+ <20211215184426.67fd3912@xps13>
+ <20211215200548.75630b61@collabora.com>
+ <Ybo/r8neydqTxN6N@sirena.org.uk> <20211216100147.46c307ff@xps13>
+ <20211216105739.395a174d@xps13>
+MIME-Version: 1.0
+In-Reply-To: <20211216105739.395a174d@xps13>
+X-Cookie: No solicitors.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_055644_568984_5248A822 
-X-CRM114-Status: GOOD (  19.22  )
+X-CRM114-CacheID: sfid-20211216_060432_738615_32F1AEFA 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,33 +79,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2800435432359603979=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 16, 2021 at 2:44 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> From: Miquel Raynal <miquel.raynal@bootlin.com>
->
-> Hello,
->
-> Here is a short series bringing support for Renesas RZ/N1 NAND
-> controller.
 
-Oops, please ignore this email. Sorry for the noise.
+--===============2800435432359603979==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5fSdzfmMYl/ZYorm"
+Content-Disposition: inline
 
-Gr{oetje,eeting}s,
 
-                        Geert
+--5fSdzfmMYl/ZYorm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+On Thu, Dec 16, 2021 at 10:57:39AM +0100, Miquel Raynal wrote:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Actually as the spi-mem.h header is not included in spi.h, it makes
+> defining a static mem_caps entry harder. I'll go for another approach.
+> Maybe putting the capabilities within the spi_controller_mem_ops
+> structure, as these are highly related.
+
+Yeah, or putting a pointer to a static declaration of the caps in there
+rather than the caps directly.
+
+--5fSdzfmMYl/ZYorm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmG7R2IACgkQJNaLcl1U
+h9B2PAf+K0NVwjqkRGd2gFYHI+j38MwOND2szrpxpvuAzaheD/m0XGUf3IyHHo4B
+XOMkGUJRHfPXDBubovb7Qi2bfk27wPGtwPYrPGY8M44n8+1qThOZ8d+5jb+0WqXV
+DR15kfAO6BtfrQfp4f7oQwB0N/8G0h3zccEUGtJEDKY4r2MFapQ3qthwtovqWNCV
+8wMKvhQ7h+KJS6HSF/NJLGDJ+Dg19eBxKQeG9BQnZ/akhfUIIr7/83+nkH5tkrWK
+VD8ezK+frReFgvu/bAgR4EoUhhLCXGi8r5Qimwhci2Dfn91LVLjpmIjgoO5SbVYO
+vrqcZFQD+C4cnI2SCjWT5Si31cLpdQ==
+=VVs0
+-----END PGP SIGNATURE-----
+
+--5fSdzfmMYl/ZYorm--
+
+
+--===============2800435432359603979==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2800435432359603979==--
+
