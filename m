@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96B4EC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 13:50:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97AE4C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 13:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NhQh/eAJZF4VmWsIibSbn4nT5mKqRQ2FKnukfHSO2To=; b=toIzUYyA1EL6W6
-	YKEjVBRJJFPtgG1kBFeJbxrA1wlVS0VQyjSewC4qryPOSzynJLm9+9WdZ16LfwYUMXvVLUM/qWwnq
-	KHcAgon90yvwjc12Utr5APv6NPwCkK0gY0qin11SwuGxdbPNLE/IEM1nBqAy322cDKp9YLuhFqI9f
-	q+z+6KzE/e+f37f/Fsk3VCAVG7htJYwpnEpzdkDSoghY1TW3zxUyY3XHTRDng41FNRogyQAH8WL/v
-	zG0vge3Pdil8h2ET6ExNkDsq/7jg1SFu45pNHQpp9AsLPhajlqLqRiJ+0WO5nhzX6l7RLZADhFvrY
-	4yD4hCuLdF24TwUbucew==;
+	List-Owner; bh=NhQh/eAJZF4VmWsIibSbn4nT5mKqRQ2FKnukfHSO2To=; b=sqXc6VHrBo0GvT
+	lIYfaqV/251fLVT9FF6WVbiIbSvBoXLD5wXzgjm21O9PVe3rLhMMfuJ7JZQKWPfuuKyQPxzvoSsYK
+	9wBB3jLaV/WHvPCnFMAhUWZ6djSjfk3K/7yN0duXO7aug3d6+vQAEcV3TFjNlQub9SKXJwepC22hD
+	f3IdcZinP/LlQKTTrchArLnvsYyaxY/ojwzWh/FxvcDd3bzbhvWH0g4fn1BBd4kOxLrwxVj8FOIRP
+	encbTz7WW+pGHhQEA0mCGJ0qbkZI0/gxIcJYJjsEGo2x+EaPBXVLyY2yjpIRBDncoVO5npAbAj8HK
+	67++38dBj3WTjFRP+PcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxr96-005wpL-IP; Thu, 16 Dec 2021 13:50:08 +0000
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+	id 1mxrBc-005xtv-Fo; Thu, 16 Dec 2021 13:52:44 +0000
+Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxr0y-005t3A-HJ
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 13:41:46 +0000
+ id 1mxr3J-005u0B-2F
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 13:44:10 +0000
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d13f:527c:5504:a743])
- by andre.telenet-ops.be with bizsmtp
- id X1hT2600C250X30011hTDi; Thu, 16 Dec 2021 14:41:42 +0100
+ by albert.telenet-ops.be with bizsmtp
+ id X1js2600a250X30061jsKj; Thu, 16 Dec 2021 14:44:07 +0100
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mxr0g-005QFg-Nr; Thu, 16 Dec 2021 14:41:26 +0100
+ id 1mxr32-005QIK-4t; Thu, 16 Dec 2021 14:43:52 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1mxr0g-009y1q-9d; Thu, 16 Dec 2021 14:41:26 +0100
+ id 1mxr31-009y7q-Iw; Thu, 16 Dec 2021 14:43:51 +0100
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Sagar Kadam <sagar.kadam@sifive.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Anup Patel <anup.patel@wdc.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
  linux-mtd@lists.infradead.org
@@ -55,15 +55,15 @@ Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
  Milan Stevanovic <milan.stevanovic@se.com>,
  Jimmy Lalande <jimmy.lalande@se.com>
 Subject: [PATCH v4 0/4] Renesas RZ/N1 NAND controller support
-Date: Thu, 16 Dec 2021 14:41:24 +0100
+Date: Thu, 16 Dec 2021 14:43:50 +0100
 Message-ID: <20211215154619.166360-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1639661878.git.geert@linux-m68k.org>
-References: <cover.1639661878.git.geert@linux-m68k.org>
+In-Reply-To: <cover.1639662093.git.geert@linux-m68k.org>
+References: <cover.1639662093.git.geert@linux-m68k.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_054144_738295_F8E9490D 
-X-CRM114-Status: GOOD (  17.19  )
+X-CRM114-CacheID: sfid-20211216_054409_277926_4A7971F7 
+X-CRM114-Status: GOOD (  17.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,7 +79,7 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
-Message-ID: <20211216134124.WfRx44s0yIVHJHgUQbgSzU4dLF35Ukj0uH8hlnMfhBI@z>
+Message-ID: <20211216134350.F-JyuonOYOw60ZPSR5c22WuN-G3uUSLyS_hv2Yugv0k@z>
 
 RnJvbTogTWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KCkhlbGxvLAoK
 SGVyZSBpcyBhIHNob3J0IHNlcmllcyBicmluZ2luZyBzdXBwb3J0IGZvciBSZW5lc2FzIFJaL04x
