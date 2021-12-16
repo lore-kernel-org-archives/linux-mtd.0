@@ -4,72 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74790C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Dec 2021 20:37:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6321C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 08:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TSuG0pR5r5C7dk01jWtLCKDD8b1PKMKrnNvFXEnPKCk=; b=bYuMq+W7iX/F84
-	l1p3WH+tzbl0CFtmjD8pWjRYTHS/KwqOPr3EbuqrO8qgoxoaLqJKQnYyy6vBoZK+Y8goD4TRzGTj3
-	4up5Z+Jxq6C8K1eamjfGGnRXenT9EJ50JavevO3r0luDuAZacQzBErDpHRTwc2gSRC5rF4KfU7RFG
-	BmKq0BL3Mf2cd17oISxdmOk9+2Mc285K4OGE6/ycVpoCrJEijmoj1iEx4QPvAeVEioQ0ALhKxripy
-	o450x6+HJj1gGToiyrM+FACScb/6L0dQMN+4vb3OTlT65+7/2evEQcYYNfqf/MU7B4rMD0OcxK1/z
-	NOBcjvS+GAzQtfIWbxvQ==;
+	List-Owner; bh=mBihTtU2/Hkbk6y2WoNovvKPPx0sVzcWsfIZxCn1Q7s=; b=fgxllp9oYnKb3J
+	xc1arOxQVd9md4LeicvziwUq3WOsWQHfFjRxymljez/k4D9b7KVnd+PUmTxbJOlnXAZ9gnlMXTN1b
+	Tx0oN7P6oTvOXNhyGJhxr+nw/th2Br8UmXtxEUunUbSTopi+gJdofj0IAAV0hzaPPSIPmDCtXy/jl
+	4xFSepytUXWulXqM6nRFKKt0Aw26FJ4M7mq+Z4Rhpcwlx4W3dj3pY/d7MLKhzucot7pkzJjMkmM1u
+	imKbn0UXy0vlmC/1dOyBgS2Oi4rUojsOEWQmHWUe3RMectwDXbVmn9298lj+RBGlv7D6piP43Vnan
+	WDd3cSaWH05th1WaIUIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxb0l-002eD2-MT; Wed, 15 Dec 2021 20:36:27 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1mxlnl-0043K2-0T; Thu, 16 Dec 2021 08:07:45 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxb0e-002eBa-Ov
- for linux-mtd@lists.infradead.org; Wed, 15 Dec 2021 20:36:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1639600580; x=1671136580;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=NaX2LedrarFz0khULM+i3GiuzFS47CD+xm6gGAWsNJc=;
- b=S3koJ2gLgmziwP6JHp2J+ejhD7fMVmXyzwybmbKXrTa3QUAMGoWOV+2N
- x7A6Wg+lZ1oB0uU8ICmxN/otT1FHOlTXIkutaYBXwXz5BaXpsoyl22SA4
- YXjPhMGRpN5sqyqd7Lhh3lJX+5fBcSYdIJHHK4HDLtnL4DihUrwxGzDU+
- IRE4OQJePCPtGu8FmLNeaZsA53Dj4Soi14Rp/JfK0swRNy/4JW4ZADG8f
- R4KEBL4w47jvw/Kx3Z1UshAQNhGk1qdRkUqhkyR0yoLmdiux2laRUgyCx
- ytdOLykFLgCuChp7Z943r4B2Pa88EmbXqYH/WMSgXPqwUYUJL9N4Txh/f w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="325611230"
-X-IronPort-AV: E=Sophos;i="5.88,209,1635231600"; d="scan'208";a="325611230"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2021 12:36:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,209,1635231600"; d="scan'208";a="662061279"
-Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
- by fmsmga001.fm.intel.com with ESMTP; 15 Dec 2021 12:36:17 -0800
-Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1mxb0a-0002Ic-QY; Wed, 15 Dec 2021 20:36:16 +0000
-Date: Thu, 16 Dec 2021 04:35:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Cc: kbuild-all@lists.01.org, linux-renesas-soc@vger.kernel.org,
- Magnus Damm <magnus.damm@gmail.com>,
- Gareth Williams <gareth.williams.jx@renesas.com>,
- Phil Edworthy <phil.edworthy@renesas.com>
-Subject: Re: [PATCH v4 2/4] mtd: rawnand: rzn1: Add new NAND controller driver
-Message-ID: <202112160417.TvfPZeKJ-lkp@intel.com>
-References: <20211215154619.166360-3-miquel.raynal@bootlin.com>
+ id 1mxlni-0043G3-SF
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 08:07:44 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 78D2CE0009;
+ Thu, 16 Dec 2021 08:07:31 +0000 (UTC)
+Date: Thu, 16 Dec 2021 09:07:30 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
+ <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Michael
+ Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
+ <jaimeliao@mxic.com.tw>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v5 12/13] spi: mxic: Use spi_mem_generic_supports_op()
+Message-ID: <20211216090730.17cc5619@xps13>
+In-Reply-To: <Ybo/r8neydqTxN6N@sirena.org.uk>
+References: <20211214114140.54629-1-miquel.raynal@bootlin.com>
+ <20211214114140.54629-13-miquel.raynal@bootlin.com>
+ <20211214172410.2b26c17e@collabora.com>
+ <20211215184426.67fd3912@xps13>
+ <20211215200548.75630b61@collabora.com>
+ <Ybo/r8neydqTxN6N@sirena.org.uk>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211215154619.166360-3-miquel.raynal@bootlin.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211215_123620_860511_51CAF313 
-X-CRM114-Status: GOOD (  14.55  )
+X-CRM114-CacheID: sfid-20211216_000743_073901_33C72A62 
+X-CRM114-Status: GOOD (  13.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,70 +64,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-I love your patch! Yet something to improve:
-
-[auto build test ERROR on mtd/nand/next]
-[also build test ERROR on geert-renesas-devel/next mtd/mtd/next mtd/mtd/fixes linus/master v5.16-rc5 next-20211214]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Miquel-Raynal/Renesas-RZ-N1-NAND-controller-support/20211215-234825
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20211216/202112160417.TvfPZeKJ-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/4899a382aebedd2033aba1a8c662767c86c8d74d
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Miquel-Raynal/Renesas-RZ-N1-NAND-controller-support/20211215-234825
-        git checkout 4899a382aebedd2033aba1a8c662767c86c8d74d
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sh SHELL=/bin/bash drivers/mtd/nand/raw/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/mtd/nand/raw/rzn1-nand-controller.c:14:
->> drivers/mtd/nand/raw/rzn1-nand-controller.c:1408:25: error: 'nandc_id_table' undeclared here (not in a function); did you mean 'rzn1_nandc_id_table'?
-    1408 | MODULE_DEVICE_TABLE(of, nandc_id_table);
-         |                         ^~~~~~~~~~~~~~
-   include/linux/module.h:244:15: note: in definition of macro 'MODULE_DEVICE_TABLE'
-     244 | extern typeof(name) __mod_##type##__##name##_device_table               \
-         |               ^~~~
->> include/linux/module.h:244:21: error: '__mod_of__nandc_id_table_device_table' aliased to undefined symbol 'nandc_id_table'
-     244 | extern typeof(name) __mod_##type##__##name##_device_table               \
-         |                     ^~~~~~
-   drivers/mtd/nand/raw/rzn1-nand-controller.c:1408:1: note: in expansion of macro 'MODULE_DEVICE_TABLE'
-    1408 | MODULE_DEVICE_TABLE(of, nandc_id_table);
-         | ^~~~~~~~~~~~~~~~~~~
-
-
-vim +1408 drivers/mtd/nand/raw/rzn1-nand-controller.c
-
-  1403	
-  1404	static const struct of_device_id rzn1_nandc_id_table[] = {
-  1405		{ .compatible = "renesas,rzn1-nand-controller" },
-  1406		{} /* sentinel */
-  1407	};
-> 1408	MODULE_DEVICE_TABLE(of, nandc_id_table);
-  1409	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQm9yaXMsIE1hcmssCgpicm9vbmllQGtlcm5lbC5vcmcgd3JvdGUgb24gV2VkLCAxNSBEZWMg
+MjAyMSAxOToxOToxMSArMDAwMDoKCj4gT24gV2VkLCBEZWMgMTUsIDIwMjEgYXQgMDg6MDU6NDhQ
+TSArMDEwMCwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOgo+IAo+ID4gVGhlcmUncyBhbHNvIGEgc2Vj
+b25kIG9wdGlvbiB0aGF0IGRvZXNuJ3QgaW52b2x2ZSBwYXRjaGluZyBleGlzdGluZwo+ID4gdXNl
+cnM6IGFkZCBhIHNwaV9tZW1fY29udHJvbGxlcl9jYXBzIHRvIHRoZSBzcGlfY29udHJvbGxlciBz
+dHJ1Y3QsIGFuZAo+ID4gY2hlY2sgdGhpcyBpbnN0YW5jZSBpbiB5b3VyIHNwaV9tZW1fZGVmYXVs
+dF9zdXBwb3J0c19vcCgpCj4gPiBpbXBsZW1lbnRhdGlvbi4gTm90ZSB0aGF0IHRoZSBidXN3aWR0
+aCBjaGVjayBkb25lIGluIHRoZSBnZW5lcmljCj4gPiBoZWxwZXIgaXMgYWxyZWFkeSBiYXNlZCBv
+biBjYXBzIGV4cG9zZWQgYnkgdGhlIGNvbnRyb2xsZXIKPiA+IHRocm91Z2ggc3BpX2NvbnRyb2xs
+ZXIubW9kZV9iaXRzICh7UlgvVFh9X3tEVUFMLFFVQUQsT0NUQUx9IGJpdHMpLiAgCj4gCj4gVGhp
+cyBhcHByb2FjaCBpcyBxdWl0ZSBuaWNlIGZvciB0aGluZ3MgbGlrZSB0aGlzIC0gaGF2aW5nIHRo
+aW5ncyBhcyBkYXRhCj4gcmF0aGVyIHRoYW4gY29kZS4gIFRoZSBvbmx5IGlzc3VlIGlzIGlmIGFu
+eSBvZiB0aGUgY2FwcyBlbmQgdXAgdmFyeWluZwo+IGJ5IG9wZXJhdGlvbiBhbmQgd2UgbmVlZCBk
+aWZmZXJlbnQgY2FwYWJpbGl0aWVzIGJ1dCB0aGF0IGRvZXNuJ3QgbG9vawo+IHRvbyBsaWtlbHkg
+aGVyZSBJIHRoaW5rPwoKU3VyZSwgdGhhdCdzIGEgZ29vZCBpZGVhLCBJJ2xsIGxvb2sgaW50byBp
+dC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
