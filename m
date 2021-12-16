@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A776C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 18:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D1A2C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 18:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PAtXoMxGcRDSzKd51ngqv615Q53NlOKU0RjswGhFdGE=; b=B1+GtONEgJETb9
-	k/LLmTsCiBWshEZcjpi0Q2P56X7+31z0ZOcGXWyBgmzw7KQRlOoc7b76EuK4+mZJ0MZetbEXzUh0U
-	wvO3FIVmRyA/l2qAdql8S1xPTUZQbBH81mnaKs22OeGFsUp7jVtOV2OMlqtu2n9kzWYixsmeyR5Mv
-	SEFfTPuk3yYUbtx58HV/IDFCHjtmfj5aREx7wHQ88IOIiRmdjciK/ulSRmpJ7Tgu9tHGiAwYWRXmF
-	eZ6Xx2O0ppnp5/Z0XwHxxmxDAh69WcPNfcPfKhMk2dAK9XKSVGXka6ZcnxMVZVqTnIj7HJmLUutw7
-	8E4dqOE2mro0dJo1pM6A==;
+	List-Owner; bh=+EBqdYO+SSnu8EReoJDJl8oJ3JOmEumHdonGoi/67sU=; b=IHuqvhOgCkl+FW
+	tLsTvhpN0NEnUx4KBOXarB5py/giRTbQvBQ0Y3pgUx7PbIRDnujHUqJDCAAAuZYbPIJMgqPGF3DXN
+	cKYi62pd1cWgo2jJoxyz8MF2i7oO33JCxiJXFkiRh145UPdeFppFiL3e/rz7QnBSHjEKxzVE+bnzh
+	4IhMVnvcbav/FI0e03Mca++Hfj9wqH7YzaveY9KcYNIHiZooj/S4L2C/s+Pckh9gyawPIbwgUKxBc
+	eYa6umNPhbjyai1J6/T8TZsp02sSVzf7kpwkxsCAZjdtf42EPwWlirLgQdgl9d3hbJvilMilptRw+
+	7gYLJ52GsqwUu8dGxyAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxvtF-007DUL-T5; Thu, 16 Dec 2021 18:54:06 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1mxvu2-007Duj-Cf; Thu, 16 Dec 2021 18:54:54 +0000
+Received: from mga17.intel.com ([192.55.52.151])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxvsH-007Cx1-H5
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 18:53:08 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BGIqwr1038969;
- Thu, 16 Dec 2021 12:52:58 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1639680778;
- bh=Kt++jYH6T4k4HcW+Vzc/u+Ene+izPR3bx5dnQKR0r5Y=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=meBizeFsaCrRe83Rfm+VjfYFCgklCnXlb9wfP9lmJQfAIx6ABBq663/69oI3AesxO
- e61R5TWihCimtgxl1s5lUO0d90AfTGyDNdBsREdUrz8kFt+H1dMSWR0mBnnq4UdgKj
- X1CU2Bb12ZPxdErdXR1Sf8tbr1tgaLi0Dnw9qQDE=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BGIqwe5096585
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 16 Dec 2021 12:52:58 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 16
- Dec 2021 12:52:57 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 16 Dec 2021 12:52:57 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BGIquSl115696;
- Thu, 16 Dec 2021 12:52:57 -0600
-Date: Fri, 17 Dec 2021 00:22:56 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: micron-st: make mt25ql02g/mt25qu02g
- match more specific, add 4B opcodes
-Message-ID: <20211216185254.pt3quvb4wkzou6wh@ti.com>
-References: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
+ id 1mxvsm-007DFR-UU
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 18:53:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1639680816; x=1671216816;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=8MSCgFidKirbyqnLCDSCpxGAW0z3HoFpW9DqxP4Tj8A=;
+ b=S434J49B+4q267tfoZKUKDQA7A+qe790Ezhx4evFtIA7pfKlyHeHJC17
+ fsgBvgkuJlkDqYHgR9sEKfCUX+nPioVC2unA7+Hm9dAoLxIVSwhWrzMs7
+ 4EJr1zydoxFi6wZiThhAwm/nPD+eolDfrN/8u+uUH1FkT/q2KlXrTuqZ3
+ oUkMWMXSlUTFnCoxVDzZMpstgqscc+3Wt1Xjj99iFMHPlYIWkEIrY0WVi
+ pA7yO3vxhIm7/5HXbW8yQQX4yPgDmKXuaugW6MnY2pohdSQdqTbTplUFc
+ LsBFcr0pMu/+1VnnuCZfe5wdUMM5WRTWaxSSXuB/QSJD7qKkA72XCp0sU w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="220250468"
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="220250468"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Dec 2021 10:53:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="464797597"
+Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
+ by orsmga003.jf.intel.com with ESMTP; 16 Dec 2021 10:53:18 -0800
+Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1mxvsT-0003ga-VS; Thu, 16 Dec 2021 18:53:17 +0000
+Date: Fri, 17 Dec 2021 02:52:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org
+Cc: kbuild-all@lists.01.org
+Subject: Re: [PATCH v6 20/28] spi: spi-mem: Fill the spi-mem controller
+ capabilities of all the drivers
+Message-ID: <202112170204.FjtWNBvt-lkp@intel.com>
+References: <20211216111654.238086-21-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20211216111654.238086-21-miquel.raynal@bootlin.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_105305_714657_41A7116D 
-X-CRM114-Status: GOOD (  16.59  )
+X-CRM114-CacheID: sfid-20211216_105337_050970_2AEB4554 
+X-CRM114-Status: GOOD (  12.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,44 +86,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Matthias,
+Hi Miquel,
 
-On 07/10/21 02:08PM, Matthias Schiffer wrote:
-> Change the mt25ql02g/mt25qu02g entries to include SPI_NOR_4B_OPCODES. In
-> addition, the SPI_NOR_DUAL_READ flag is added to mt25ql02g; this seems
-> to have been an accidental omission, as mt25ql02g and mt25qu02g should
-> support the same features.
+I love your patch! Yet something to improve:
 
-The way flags are specified are changed a bit. See [0]. Please re-roll 
-your patch to use the new flag types. If this flash supports SFDP you 
-should ideally just need to set the sfdp flag to true and the core 
-should take care of the rest. Test reports with the new changes would be 
-much appreciated :-)
+[auto build test ERROR on broonie-spi/for-next]
+[also build test ERROR on mtd/nand/next mtd/mtd/next mtd/mtd/fixes v5.16-rc5 next-20211215]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-> 
-> In addition, the entries are made more specific by matching on the mt25q
-> extended ID, like it is already done for the smaller n25q derivatives.
-> It is unclear whether n25q derivatives with 2Gbit exist that do not
-> support 4B opcodes (like it is the case for sizes up to 512MBit), so we
-> do not have a match for such variants anymore (as we wouldn't even know
-> how to name such hypothetical models).
+url:    https://github.com/0day-ci/linux/commits/Miquel-Raynal/External-ECC-engines-Macronix-support/20211216-191821
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+config: openrisc-randconfig-r036-20211216 (https://download.01.org/0day-ci/archive/20211217/202112170204.FjtWNBvt-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/bf16b56f7a0cc5aa237129a6b8bd216dc2632c8b
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Miquel-Raynal/External-ECC-engines-Macronix-support/20211216-191821
+        git checkout bf16b56f7a0cc5aa237129a6b8bd216dc2632c8b
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=openrisc SHELL=/bin/bash
 
-Sounds good to me.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> 
-> The changes were tested with a mt25qu01g, which should support the same
-> features as the mt25ql02g/mt25qu02g.
-> 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> ---
-> 
+All errors (new ones prefixed by >>):
 
-[0] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=275622&state=%2A&archive=both
+>> or1k-linux-ld: drivers/spi/spi-dw-core.o:(.rodata+0x0): multiple definition of `spi_mem_no_caps'; drivers/spi/spi.o:(.rodata+0x40): first defined here
+   or1k-linux-ld: drivers/spi/spi-dw-dma.o:(.rodata+0x30): multiple definition of `spi_mem_no_caps'; drivers/spi/spi.o:(.rodata+0x40): first defined here
+   or1k-linux-ld: drivers/spi/spi-nxp-fspi.o:(.rodata+0x51c): multiple definition of `spi_mem_no_caps'; drivers/spi/spi.o:(.rodata+0x40): first defined here
+   or1k-linux-ld: drivers/spi/spi-zynqmp-gqspi.o:(.rodata+0x20c): multiple definition of `spi_mem_no_caps'; drivers/spi/spi.o:(.rodata+0x40): first defined here
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
