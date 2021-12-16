@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0243FC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 11:45:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29B22C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 11:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G+4HmaQlqaux9ns/5IAo6vm6h2mJYs2Og9xt3U4OaIo=; b=QeKJSNFaR1kfxO
-	5InUe2sgSmYP2hmM5CCm3F0/GEykvzQIAJDIqnfYNt44P6Cf5drDg8lP3VNQ2ZSwza0Mx25KB2HVG
-	bFa0a1tfOBmLKfHGQU/hiqI79sufoyP6zaA42N8ze8e7oMAI9LIJxaipEmezqjpVeZxK+aMY+itLx
-	H7rNpZg2c4ij3z7vONHayKU1MfVhzvU6Gul5O7l2Xf3f7C2G9XN66vdNds1izGYxBSQbFjD8RAdse
-	2U99LJE34Vb3Lyih+az6cCW3RBmViKByMm53KsGrIkfnHf0aArp9Cz5S+H+d3gD/jQQMsvLNd/oIv
-	kY7kJrtUUE8Bz+h7VUSQ==;
+	List-Owner; bh=495lgiWyynSP8Di1TvHwgIifsmNQ4tRtPDhL9R+tpso=; b=zZv5esqNMQTL8e
+	b3k2vqGiqxVQKjyfd+Ljvazy5wPtcUPaYq1wzUNcnBkoz6VC7onMzWpyef1qsNYbipYLiPhSPl1RG
+	NgXXyR3W8uH6QSOYk94HMNrC+DUyAJ2Wp2VCzRMmLvj8YNa+kzzO79Wbny2XMdiSkQuYhwOYtFGIg
+	AHfwSxcdLlUn9g0lMFsBsxYjm2CKFkIGsSyiktf280b7NlZbMLUcBGG52be4O6CfhUmBgoPlJqvT0
+	Vvboxu+emIxTM/2RnG5wNC53nweeOJ2uAt/qJsq4WjEaXrRKqUvtzVXu3Tgky+RouF+kVk/VA5ew9
+	5XP9OoBb19EMraYC44nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxpBT-005G6A-3u; Thu, 16 Dec 2021 11:44:27 +0000
+	id 1mxpDR-005GaO-Qz; Thu, 16 Dec 2021 11:46:29 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxolG-0056yK-Cu
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 11:17:24 +0000
+ id 1mxolK-0056zn-1Q
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 11:17:27 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 09183E000F;
- Thu, 16 Dec 2021 11:17:18 +0000 (UTC)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 9BEEFE0006;
+ Thu, 16 Dec 2021 11:17:22 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -38,18 +38,17 @@ To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
 Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v6 13/28] mtd: nand: Add a new helper to retrieve the ECC
- context
-Date: Thu, 16 Dec 2021 12:16:39 +0100
-Message-Id: <20211216111654.238086-14-miquel.raynal@bootlin.com>
+Subject: [PATCH v6 15/28] mtd: nand: ecc: Provide a helper to retrieve a
+ pilelined engine device
+Date: Thu, 16 Dec 2021 12:16:41 +0100
+Message-Id: <20211216111654.238086-16-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211216111654.238086-1-miquel.raynal@bootlin.com>
 References: <20211216111654.238086-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_031722_660549_389E44B6 
-X-CRM114-Status: UNSURE (   9.12  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211216_031726_284156_CB754DF2 
+X-CRM114-Status: GOOD (  15.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,32 +65,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Introduce nand_to_ecc_ctx() which will allow to easily jump to the
-private pointer of an ECC context given a NAND device. This is very
-handy, from the prepare or finish ECC hook, to get the internal context
-out of the NAND device object.
+In a pipelined engine situation, we might either have the host which
+internally has support for error correction, or have it using an
+external hardware block for this purpose. In the former case, the host
+is also the ECC engine. In the latter case, it is not. In order to get
+the right pointers on the right devices (for example: in order to devm_*
+allocate variables), let's introduce this helper which can safely be
+called by pipelined ECC engines in order to retrieve the right device
+structure.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- include/linux/mtd/nand.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/nand/ecc.c   | 31 +++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h |  1 +
+ 2 files changed, 32 insertions(+)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 4ddd20fe9c9e..b617efa0a881 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -990,6 +990,11 @@ int nanddev_markbad(struct nand_device *nand, const struct nand_pos *pos);
- int nanddev_ecc_engine_init(struct nand_device *nand);
- void nanddev_ecc_engine_cleanup(struct nand_device *nand);
+diff --git a/drivers/mtd/nand/ecc.c b/drivers/mtd/nand/ecc.c
+index 078f5ec38de3..5250764cedee 100644
+--- a/drivers/mtd/nand/ecc.c
++++ b/drivers/mtd/nand/ecc.c
+@@ -699,6 +699,37 @@ void nand_ecc_put_on_host_hw_engine(struct nand_device *nand)
+ }
+ EXPORT_SYMBOL(nand_ecc_put_on_host_hw_engine);
  
-+static inline void *nand_to_ecc_ctx(struct nand_device *nand)
++/*
++ * In the case of a pipelined engine, the device registering the ECC
++ * engine is not necessarily the ECC engine itself but may be a host controller.
++ * It is then useful to provide a helper to retrieve the right device object
++ * which actually represents the ECC engine.
++ */
++struct device *nand_ecc_get_engine_dev(struct device *host)
 +{
-+	return nand->ecc.ctx.priv;
++	struct platform_device *ecc_pdev;
++	struct device_node *np;
++
++	/*
++	 * If the device node contains this property, it means we need to follow
++	 * it in order to get the right ECC engine device we are looking for.
++	 */
++	np = of_parse_phandle(host->of_node, "nand-ecc-engine", 0);
++	if (!np)
++		return host;
++
++	ecc_pdev = of_find_device_by_node(np);
++	if (!ecc_pdev) {
++		of_node_put(np);
++		return NULL;
++	}
++
++	platform_device_put(ecc_pdev);
++	of_node_put(np);
++
++	return &ecc_pdev->dev;
 +}
 +
- /* BBT related functions */
- enum nand_bbt_block_status {
- 	NAND_BBT_BLOCK_STATUS_UNKNOWN,
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
+ MODULE_DESCRIPTION("Generic ECC engine");
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index b617efa0a881..615b3e3a3920 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -309,6 +309,7 @@ struct nand_ecc_engine *nand_ecc_get_sw_engine(struct nand_device *nand);
+ struct nand_ecc_engine *nand_ecc_get_on_die_hw_engine(struct nand_device *nand);
+ struct nand_ecc_engine *nand_ecc_get_on_host_hw_engine(struct nand_device *nand);
+ void nand_ecc_put_on_host_hw_engine(struct nand_device *nand);
++struct device *nand_ecc_get_engine_dev(struct device *host);
+ 
+ #if IS_ENABLED(CONFIG_MTD_NAND_ECC_SW_HAMMING)
+ struct nand_ecc_engine *nand_ecc_sw_hamming_get_engine(void);
 -- 
 2.27.0
 
