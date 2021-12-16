@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94CC8C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 11:35:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17E68C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 11:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rYRyIQgqVQktLOZ1+a5AL1+GUNpJ9ShfgpcNX6ilnmQ=; b=Qt3uUBR+STwJQj
-	EtFdp3tmim8RRb30iid34hlLXt5D6Oo0NR9bRRGA924oku6lXAvLHRo7OZDF4lWIYC1dmaL98cEMm
-	VXrS7aZLAjjahOEzg3gtV3BmzqXKiKEn9XyIrjZQFydPM1+G+oO5aIPH8AOCxaEfOZRhqSzDjPChN
-	t3vVxwUbsI4y/OAONDhhF+FpnHIYasEqDsBxJvLM3bDtu7cqLJfOLIqrN4V6Fm/8tywAxjeFqHV9E
-	jdSDgIj+U4KPO7yhOGe5c4gKZdqvE3v2WENeaKXssvlHoaGsvgd2Ajw6sz5n3ArEj/b/gn8HfjOGu
-	DARVbljBNdwe88op2KEA==;
+	List-Owner; bh=upBTZVmVuvXei4dC1f2Vn1rdHVUqyugg2ZTruBkEwDQ=; b=JMVk4I12ciD9xr
+	LIQMtE6dkjst9u/6+bnE3lCcu9LbyyYcPA3e5dWC4Zj45fgvt+A/YT9D8gkGZswjgYpDOgiB3Ti4e
+	dbgn8Qc7X1gm7uFR5tSiqGb607pt1epveLLlEcTZ1oYOft2GWH8Izww4YV77DB/uYicbbyGFKdSMG
+	joCC9atcQD/wXe9jFclVc1L1aDlcvkYd5DYAcd9HMFtb3AtMDyCBFGu2+t3nP4dHk+yLg2aqiEekS
+	Mxn4xw+Srm7WOHt2gk+ZIUJRZpNwhFPH89dUERJ7hkcwPhxdeCBVFXNGHxLFLt+wtXhTTmJZi++D2
+	9FqKVWFA35fM+En78vRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxp1t-005De5-R2; Thu, 16 Dec 2021 11:34:34 +0000
+	id 1mxp2l-005DsX-14; Thu, 16 Dec 2021 11:35:27 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxol3-0056pE-Mo
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 11:17:11 +0000
+ id 1mxol5-0056qO-2m
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 11:17:13 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 305C3E000D;
- Thu, 16 Dec 2021 11:17:06 +0000 (UTC)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id DDF0FE0005;
+ Thu, 16 Dec 2021 11:17:07 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -38,17 +38,17 @@ To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
 Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v6 06/28] dt-bindings: vendor-prefixes: Clarify Macronix prefix
-Date: Thu, 16 Dec 2021 12:16:32 +0100
-Message-Id: <20211216111654.238086-7-miquel.raynal@bootlin.com>
+Subject: [PATCH v6 07/28] dt-bindings: spi: mxic: The interrupt property is
+ not mandatory
+Date: Thu, 16 Dec 2021 12:16:33 +0100
+Message-Id: <20211216111654.238086-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211216111654.238086-1-miquel.raynal@bootlin.com>
 References: <20211216111654.238086-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_031709_949774_A012FA08 
-X-CRM114-Status: UNSURE (   7.32  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211216_031711_317048_0D79E5C2 
+X-CRM114-Status: GOOD (  10.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,39 +65,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-When looking at compatible prefixes, Macronix is sometimes referred as
-"mxicy":
-- mxicy,mx25r1635f
-- mxicy,mx25u6435f
-- mxicy,mx25v8035f
-- mxicy,mx25f0a-spi
-and sometimes as "mxic":
-- mxic,multi-itfc-v009-nand-controller
-- mxic,enable-randomizer-otp
+The interrupt property is not mandatory at all, this property should not
+be part of the required properties list, so move it into the optional
+properties list.
 
-The oldest prefix that is also the one preferred by Macronix engineers
-is "mxicy", so document the other one and mark it deprecated.
-
+Fixes: 326e5c8d4a87 ("dt-binding: spi: Document Macronix controller bindings")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/spi/spi-mxic.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index a867f7102c35..93d65dc3746c 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -774,6 +774,9 @@ patternProperties:
-     description: Mundo Reader S.L.
-   "^murata,.*":
-     description: Murata Manufacturing Co., Ltd.
-+  "^mxic,.*":
-+    description: Macronix International Co., Ltd.
-+    deprecated: true
-   "^mxicy,.*":
-     description: Macronix International Co., Ltd.
-   "^myir,.*":
+diff --git a/Documentation/devicetree/bindings/spi/spi-mxic.txt b/Documentation/devicetree/bindings/spi/spi-mxic.txt
+index 529f2dab2648..7bcbb229b78b 100644
+--- a/Documentation/devicetree/bindings/spi/spi-mxic.txt
++++ b/Documentation/devicetree/bindings/spi/spi-mxic.txt
+@@ -8,11 +8,13 @@ Required properties:
+ - reg: should contain 2 entries, one for the registers and one for the direct
+        mapping area
+ - reg-names: should contain "regs" and "dirmap"
+-- interrupts: interrupt line connected to the SPI controller
+ - clock-names: should contain "ps_clk", "send_clk" and "send_dly_clk"
+ - clocks: should contain 3 entries for the "ps_clk", "send_clk" and
+ 	  "send_dly_clk" clocks
+ 
++Optional properties:
++- interrupts: interrupt line connected to the SPI controller
++
+ Example:
+ 
+ 	spi@43c30000 {
 -- 
 2.27.0
 
