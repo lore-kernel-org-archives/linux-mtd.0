@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 269DCC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 20:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6986DC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 20:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lRJiTcVEDyYn0Wx19TdYhK2UmQL+/IrtBG8EIMTZC9Y=; b=JOlXT64FciB9JQ
-	O++bpOqqNh2kvCwzIOhfP0t1ixRamlN5cd9DWZC0HweC/SuvKZOsrPIwZJKJ2cun8YM8x1kFtlM+F
-	zif/3+ytOMRQcSJGqR6gy0TEJReM6HdShMsiJQiUq719zYolLMLhSHQCB7qUfc0yeT/f8Cp0JvVBN
-	gs5fzvxNeco3WoDrXk2zy0L1DyOFbJaJNhqx+VYA+GRj6kcvrrzXW1hfJhQoQeFToGLUEMbEGFHoj
-	ULS8uF3KhzMBGVv+t3H5JnoYMzdkc5zZQaZrtj88huQ9HJTbr3Ce6Pn3aYLWYZv+LebHZPpYM4jJH
-	U0A/eVRrN7Y7RmsE7AdQ==;
+	List-Owner; bh=75ZRyBN2/a8+OIC5XZecUv62BsEeoAVe71sutNguzyE=; b=tq6kSPoA05qQIu
+	Fl/lT+MYBHNQEKRsmJMdlZST/U452IiG5gBxgx/2aOBAiFCWzKLEiXSR/vXkMmFdYMsUxMPqJupw9
+	rE1ZDMIpFN2fzcWQV7VSsq4gxxHiLoSieXVytxBwW4WJFHa6KFZVo5hX7tY2y5eXpm8bNWuxK9dbr
+	rLzEgVKMFWZxSiRYxbzW77+SXU1fHoDTVCg5agNQpRxlZWu9/0xHrJoh3BGxEWJAtcEvNVzsoEE1d
+	xKeVe0cfL45fs1d2NqjYAj3U0uX6EIr7beglhY/gEOQiJqUtu5WVCH9r1Lm/eWnMSNWDWcDOhRpAr
+	VxIIAq0SU/TgXYmcoH5A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxx97-007Sir-9g; Thu, 16 Dec 2021 20:14:33 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1mxxA4-007Sv8-Ep; Thu, 16 Dec 2021 20:15:32 +0000
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxx94-007SiC-8e
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 20:14:31 +0000
+ id 1mxx9x-007StX-EY
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 20:15:26 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1639685670; x=1671221670;
+ t=1639685725; x=1671221725;
  h=date:from:to:cc:subject:message-id:references:
  mime-version:in-reply-to;
- bh=swA2B6MCWVmOpC9fnzvUkHxpMoIIBvJg2JcRkGrKd3Y=;
- b=iSOA5MmPvvAdGHTCYF6EJXzRAeYUiQdjsfxXFbzaBBZteNsdkRU3ngRp
- sm8wihSAG705BA69CnilacRb7pxssfSUNexR5dRHkJzy3X2u9Ot2XcLSC
- +Dqnc8T47VTA0cDeq8QwoNGOnoV1w46/VEELdm12go3NZT5GxjvqF1CIR
- UvwvFzSaez2o1r7PHrJiJ/XJUl9QwHwbiSB9jpjuMMrvgCzNSDQpw5q4Z
- mznR3Rj5dPO4F3Vq3/XDvGAupMQC7xThOpfYcUlc/wYZxGtmA/OsjRfLf
- a1gJHAGwhMoNfp9atx4w7YRYimwbZV6gCBKPcAvopJYJoGwT9CqrRkj/6 A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="263755821"
-X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="263755821"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2021 12:14:29 -0800
+ bh=3t7tVPDq17Bs5oBsrsC18t2E5pFFYQnWPZs/51fi/T4=;
+ b=YCraedoUsoO+N0Sykzl2lcewZcexX/E3nV3UsQde0FVlgoz/CcBv+nsa
+ vCqV5TL/3JNs+KkZUkbXHNunywZMjByVfNRlkiliO4JE8rnGLZuFC42Y0
+ d5pL6x/vW2NbJ/E1WTGZF9NnGx4SCCGzoVx9pDpXE/yWcRYzFAqU1tT5c
+ 5PAtTkv3CDY7BkIkCzps1FR/T/N2f5b6oFJMmw5rjIswnncrUsznljljM
+ nKtMoznQzfGrXCMKSyUaCHOthX685RKJjplrwmM80ZTjteTqLtZ26/CqE
+ InN/wJ/rN6Y3V0vDDGqzuTGwYN/HOq8c1ZkHxUyCIaKr5HcwMGwe4RLmQ g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="239535909"
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="239535909"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Dec 2021 12:15:24 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="546130562"
+X-IronPort-AV: E=Sophos;i="5.88,212,1635231600"; d="scan'208";a="756228471"
 Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
- by orsmga001.jf.intel.com with ESMTP; 16 Dec 2021 12:14:26 -0800
+ by fmsmga005.fm.intel.com with ESMTP; 16 Dec 2021 12:15:21 -0800
 Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
  (envelope-from <lkp@intel.com>)
- id 1mxx8u-0003ku-UH; Thu, 16 Dec 2021 20:14:20 +0000
-Date: Fri, 17 Dec 2021 04:14:18 +0800
+ id 1mxx9s-0003lH-V2; Thu, 16 Dec 2021 20:15:20 +0000
+Date: Fri, 17 Dec 2021 04:14:26 +0800
 From: kernel test robot <lkp@intel.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
@@ -59,17 +59,17 @@ To: Miquel Raynal <miquel.raynal@bootlin.com>,
  linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
  devicetree@vger.kernel.org
 Cc: kbuild-all@lists.01.org
-Subject: Re: [PATCH v6 20/28] spi: spi-mem: Fill the spi-mem controller
- capabilities of all the drivers
-Message-ID: <202112170416.Ew8eShY1-lkp@intel.com>
+Subject: [RFC PATCH] spi: spi-mem: cqspi_mem_caps can be static
+Message-ID: <20211216201426.GA41877@ee91f2b6365d>
 References: <20211216111654.238086-21-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20211216111654.238086-21-miquel.raynal@bootlin.com>
+X-Patchwork-Hint: ignore
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_121430_359232_8A72B831 
-X-CRM114-Status: GOOD (  15.12  )
+X-CRM114-CacheID: sfid-20211216_121525_569031_1E31686B 
+X-CRM114-Status: GOOD (  12.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,45 +86,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+drivers/spi/spi-cadence-quadspi.c:1592:38: warning: symbol 'cqspi_mem_caps' was not declared. Should it be static?
 
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on broonie-spi/for-next]
-[also build test WARNING on mtd/nand/next mtd/mtd/next mtd/mtd/fixes v5.16-rc5 next-20211215]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Miquel-Raynal/External-ECC-engines-Macronix-support/20211216-191821
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-config: i386-randconfig-s031-20211216 (https://download.01.org/0day-ci/archive/20211217/202112170416.Ew8eShY1-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/bf16b56f7a0cc5aa237129a6b8bd216dc2632c8b
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Miquel-Raynal/External-ECC-engines-Macronix-support/20211216-191821
-        git checkout bf16b56f7a0cc5aa237129a6b8bd216dc2632c8b
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash drivers/spi/
-
-If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-   drivers/spi/spi-mxic.c: note: in included file:
-   include/linux/spi/spi-mem.h:369:38: sparse: sparse: symbol 'spi_mem_no_caps' was not declared. Should it be static?
->> drivers/spi/spi-mxic.c:446:38: sparse: sparse: symbol 'mxic_spi_mem_caps' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
+Signed-off-by: kernel test robot <lkp@intel.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ spi-cadence-quadspi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index bc7ae56fe565fb..ca05ab4d0c5923 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1589,7 +1589,7 @@ static const char *cqspi_get_name(struct spi_mem *mem)
+ 	return devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev), mem->spi->chip_select);
+ }
+ 
+-const struct spi_controller_mem_caps cqspi_mem_caps = {
++static const struct spi_controller_mem_caps cqspi_mem_caps = {
+ 	.dtr = true,
+ };
+ 
 
 ______________________________________________________
 Linux MTD discussion mailing list
