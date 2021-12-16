@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50F98C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 11:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94CC8C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 11:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AiiNU83ka6cUh4gqFjSrcIeH2iPT7lDAN5KHQku6BkQ=; b=sl6JreZaDlsoey
-	kFY+ipZcD4cDJ6TFL9PQdAw1PF/dXL9ZgWdat0GmE5ELbMUXdCEXfoubmgYVZkgLLnnnTRoJyWSpG
-	biaU3XLZteN8Ytdtgopa3UYJsx3abgwkPAGq4dCKD33YOWs7LmNW+a/NCjRkoLURwGCDhyhc5FF4D
-	6+ygbf7LMOpYkr4uZLOyAgFkwML+q4+vgWxLm6aB0reRNrR0y0LiTrDw4/mfOrwMx6f6ff6OuaiQD
-	tLlbFO1ZysBvT+nOROHXs7fv0IF79ZOXhQ5E06S7Ulpswtd6ICygRMnBstJSABKVsHlMhutWInV0W
-	OAekzg1+nZISUw2JW+yw==;
+	List-Owner; bh=rYRyIQgqVQktLOZ1+a5AL1+GUNpJ9ShfgpcNX6ilnmQ=; b=Qt3uUBR+STwJQj
+	EtFdp3tmim8RRb30iid34hlLXt5D6Oo0NR9bRRGA924oku6lXAvLHRo7OZDF4lWIYC1dmaL98cEMm
+	VXrS7aZLAjjahOEzg3gtV3BmzqXKiKEn9XyIrjZQFydPM1+G+oO5aIPH8AOCxaEfOZRhqSzDjPChN
+	t3vVxwUbsI4y/OAONDhhF+FpnHIYasEqDsBxJvLM3bDtu7cqLJfOLIqrN4V6Fm/8tywAxjeFqHV9E
+	jdSDgIj+U4KPO7yhOGe5c4gKZdqvE3v2WENeaKXssvlHoaGsvgd2Ajw6sz5n3ArEj/b/gn8HfjOGu
+	DARVbljBNdwe88op2KEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxp0r-005DKx-Ag; Thu, 16 Dec 2021 11:33:29 +0000
+	id 1mxp1t-005De5-R2; Thu, 16 Dec 2021 11:34:34 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxol1-0056oc-Qc
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 11:17:09 +0000
+ id 1mxol3-0056pE-Mo
+ for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 11:17:11 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 828ADE000A;
- Thu, 16 Dec 2021 11:17:04 +0000 (UTC)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 305C3E000D;
+ Thu, 16 Dec 2021 11:17:06 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -38,17 +38,17 @@ To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
 Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v6 05/28] dt-bindings: mtd: spi-nand: Convert spi-nand
- description file to yaml
-Date: Thu, 16 Dec 2021 12:16:31 +0100
-Message-Id: <20211216111654.238086-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v6 06/28] dt-bindings: vendor-prefixes: Clarify Macronix prefix
+Date: Thu, 16 Dec 2021 12:16:32 +0100
+Message-Id: <20211216111654.238086-7-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211216111654.238086-1-miquel.raynal@bootlin.com>
 References: <20211216111654.238086-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_031708_076061_F7167988 
-X-CRM114-Status: GOOD (  13.43  )
+X-CRM114-CacheID: sfid-20211216_031709_949774_A012FA08 
+X-CRM114-Status: UNSURE (   7.32  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,63 +65,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Let's get rid of spi-nand.txt by converting it to yaml schema. While at
-converting this file, let's actually pull all the generic properties
-from nand-chip.yaml which might apply to a SPI-NAND chip.
+When looking at compatible prefixes, Macronix is sometimes referred as
+"mxicy":
+- mxicy,mx25r1635f
+- mxicy,mx25u6435f
+- mxicy,mx25v8035f
+- mxicy,mx25f0a-spi
+and sometimes as "mxic":
+- mxic,multi-itfc-v009-nand-controller
+- mxic,enable-randomizer-otp
+
+The oldest prefix that is also the one preferred by Macronix engineers
+is "mxicy", so document the other one and mark it deprecated.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
- .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
- 2 files changed, 27 insertions(+), 5 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-deleted file mode 100644
-index 8b51f3b6d55c..000000000000
---- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
-+++ /dev/null
-@@ -1,5 +0,0 @@
--SPI NAND flash
--
--Required properties:
--- compatible: should be "spi-nand"
--- reg: should encode the chip-select line used to access the NAND chip
-diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-new file mode 100644
-index 000000000000..431faac518a4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-@@ -0,0 +1,27 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: SPI-NAND flash device tree bindings
-+
-+maintainers:
-+  - Miquel Raynal <miquel.raynal@bootlin.com>
-+
-+allOf:
-+  - $ref: "nand-chip.yaml#"
-+
-+properties:
-+  compatible:
-+    const: spi-nand
-+
-+  reg:
-+    description: Encode the chip-select line on the SPI bus
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index a867f7102c35..93d65dc3746c 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -774,6 +774,9 @@ patternProperties:
+     description: Mundo Reader S.L.
+   "^murata,.*":
+     description: Murata Manufacturing Co., Ltd.
++  "^mxic,.*":
++    description: Macronix International Co., Ltd.
++    deprecated: true
+   "^mxicy,.*":
+     description: Macronix International Co., Ltd.
+   "^myir,.*":
 -- 
 2.27.0
 
