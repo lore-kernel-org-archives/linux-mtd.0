@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49C3FC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 10:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B92B6C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 10:16:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vGyslri0w7bpNr/bicghGyMUChyC2mzQ04PH/A7HrhU=; b=R2ZryMdr5IGcpG
-	StOmbX6+A1xZHhuSxkjbYFjqvTizlyBu7/GrCwseEg1qca518WqaBYUUTViHOQaznV+4wUv3xecxB
-	ms5LmLm3xto7yX+qj+4je6JQR7R7oq/bjI47yNWFtttv1eKwn93is2CsY2YpcJ84W1Drm4O7RmvwF
-	HZl2q52LKiC5dbhIjtVuCnhZM3og1c4Za+Izza5qx13SeQx6sLmFbzGiZhlXPDAPLqtiyZa9iyuWL
-	WE39ZQIQdG/pa6aHCe1ixfpdb/Gei+e+ilwAJ2Gc+RjqgrJdX90+674gHKDEaymu0KKDRPmGO/WXt
-	oMBunWoGYYWAb8/c/f0w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=R99Sj4+uHU7z9TPLB/2c9Tp7VS7w1+fPFjQ2Jl+8BJQ=; b=hLMmLfi1tN3Fc/1oTYbvsaNwh6
+	cMb6B34M6s7kfDYMnO/tVtVP1FKoQBi8KWODnqQK2DFQy3Quj/fBx+K37Mvky08GDGM3VJE1G7jxy
+	RILWWqYgHd6+uHJgu7vzooUR526B0ukCK7LjwC9q0ifH1O8PsKbfpGW3Ib+y1qqVjLBK37+P6hQNy
+	CCG+lLdIXr8lhrmHkHcXzBJcpVnMK5PSkjzkuW4v/2oaUQTDAdFxIFG4exN4RE5V3SE6cDgF747ZE
+	g3bdCvk5wa7yi3bAuD5sH7eWI1uVN05PoyUL3aybMDON2m7xDRpLI2YgcM+xurEw9zS018F0OEpw0
+	jiGRhPKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myA98-009PHj-FR; Fri, 17 Dec 2021 10:07:26 +0000
-Received: from mx1.tq-group.com ([93.104.207.81])
+	id 1myAHY-009RWZ-RI; Fri, 17 Dec 2021 10:16:09 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myA94-009PD6-6D
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 10:07:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1639735642; x=1671271642;
- h=message-id:subject:from:to:cc:date:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=X9d6MhpG2tpfvobV17CFhDsN/rl8WE4mQEBS0rQkbno=;
- b=FTF5I5FD1/2xFppaD+N+fj2vbRCRKSe/31vY+3KvUmPJ4tUYDQsysUkj
- ODRwUUvgKhuU3OU2IDwp8E9X0vnmfD1yJOYkYmBIxt4Iih3Loa4vAzwK+
- Sx+Z/A0u3YxerN0tujEksMJA+6ZSZ5kQY3IKv9628KJ38rqcn5tGKJuwJ
- c1DyOtavvCAecLBJz16CFJMimihq2u45z0AErIYrfi+74kNllJh0jyzsa
- MUfSo7+xUBHl8i/LpnR25qjAyeigY3GGoe4suLf5W2JBSxIwOV9bqzxBe
- QOIxvSq11Kl5NFeutqo3Mxbg81vwWPpv8HLyuKDHreQYD796OJV10SgrQ A==;
-X-IronPort-AV: E=Sophos;i="5.88,213,1635199200"; d="scan'208";a="21118277"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
- by mx1-pgp.tq-group.com with ESMTP; 17 Dec 2021 11:07:17 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
- by tq-pgp-pr1.tq-net.de (PGP Universal service);
- Fri, 17 Dec 2021 11:07:17 +0100
-X-PGP-Universal: processed;
- by tq-pgp-pr1.tq-net.de on Fri, 17 Dec 2021 11:07:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1639735637; x=1671271637;
- h=message-id:subject:from:to:cc:date:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=X9d6MhpG2tpfvobV17CFhDsN/rl8WE4mQEBS0rQkbno=;
- b=QiC9TfkWZAim4vugM71HNiLynMVtBpWbgxrgbSZK4ptWOcIT+xzBUkC1
- Bl52lrkFfwYjbEJOfbeMYL7qmKSfHE7pQ6bS82MMcHy9hZlzu4chBfB7Y
- qpeZJo2U1iOrA3yFZQ00bTcuRzMYnVNebTvtV/aMFL4+DW2g4fepjLcDL
- S5p70ywiKfzi7cRNPrtiZD4egtv7XssUTjKW5tMdaea/+8A5OkKnuLXeM
- c4pMbAWEuB0Hu4GylJQLhsKb+G34I7rvX08YLTcDn+qlhBeoa8458udAM
- 7Qpq8p6JNKYzSBsxM/BBxXW8hV6HImC7kaozqLN0i1/YqGChKLehhQj5y g==;
-X-IronPort-AV: E=Sophos;i="5.88,213,1635199200"; d="scan'208";a="21118276"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
- by mx1.tq-group.com with ESMTP; 17 Dec 2021 11:07:17 +0100
-Received: from schifferm-ubuntu (SCHIFFERM-M2.tq-net.de [10.121.201.15])
- by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 5C9C0280065;
- Fri, 17 Dec 2021 11:07:17 +0100 (CET)
-Message-ID: <fd52c394b8c5f727b04166ca29e893baa940e2a5.camel@ew.tq-group.com>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: micron-st: make
- mt25ql02g/mt25qu02g match more specific, add 4B opcodes
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
-Date: Fri, 17 Dec 2021 11:07:15 +0100
-In-Reply-To: <20211216185254.pt3quvb4wkzou6wh@ti.com>
-References: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
- <20211216185254.pt3quvb4wkzou6wh@ti.com>
-User-Agent: Evolution 3.36.5-0ubuntu1 
+ id 1myAHU-009RUN-Gs
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 10:16:06 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1DEB4B82783;
+ Fri, 17 Dec 2021 10:16:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42923C36AE5;
+ Fri, 17 Dec 2021 10:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1639736161;
+ bh=snv7D0bg9ZIaZv6KA4SVmu+ko2D49RQlrJ1DNDxan/8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=nKTv7WDyL0ctU78mqzrYXbzfKT1xMCCYbhm9mlFfJohpw5r8aM+EM10JCPaJSNemf
+ Baxsp5GxbZ+Y33sMVdtpMNcXu321ddyw5x9+2T+XhSSngGQw9AyrmeiRvcECA2nDmG
+ KtSd7QUvNJAMtIgb20Qq42gsVBkKJJxw4HktbLMzvXGaiEXU/4xqd+pmKtKMCM2rVy
+ 0tu1QZ/L39KhdDGmAM2fta8hGjSDVCmBYSJhlm23NWQW5QRi+J482SohgvgqhmODng
+ 0Kp1iPcCeHK4l1ywWUE5m5lWa1JaVD4CdTboOxIO5hBXURztc1IVC+Lk+w0p1kPfCk
+ vtu1HQcbT+jbg==
+Date: Fri, 17 Dec 2021 11:15:58 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org, Milan Stevanovic <milan.stevanovic@se.com>,
+ Jimmy Lalande <jimmy.lalande@se.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Ralph Siemsen <ralph.siemsen@linaro.org>
+Subject: Re: [PATCH v5 2/4] mtd: rawnand: rzn1: Add new NAND controller driver
+Message-ID: <YbxjXgIIj6yma+Ch@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ devicetree@vger.kernel.org,
+ Milan Stevanovic <milan.stevanovic@se.com>,
+ Jimmy Lalande <jimmy.lalande@se.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-renesas-soc@vger.kernel.org,
+ Magnus Damm <magnus.damm@gmail.com>,
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Ralph Siemsen <ralph.siemsen@linaro.org>
+References: <20211217090248.259122-1-miquel.raynal@bootlin.com>
+ <20211217090248.259122-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
+In-Reply-To: <20211217090248.259122-3-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_020722_600024_17B31467 
-X-CRM114-Status: GOOD (  23.22  )
+X-CRM114-CacheID: sfid-20211217_021604_881384_90ECC60D 
+X-CRM114-Status: GOOD (  20.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,64 +94,137 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5742364750425217308=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2021-12-17 at 00:22 +0530, Pratyush Yadav wrote:
-> Hi Matthias,
-> 
-> On 07/10/21 02:08PM, Matthias Schiffer wrote:
-> > Change the mt25ql02g/mt25qu02g entries to include
-> > SPI_NOR_4B_OPCODES. In
-> > addition, the SPI_NOR_DUAL_READ flag is added to mt25ql02g; this
-> > seems
-> > to have been an accidental omission, as mt25ql02g and mt25qu02g
-> > should
-> > support the same features.
-> 
-> The way flags are specified are changed a bit. See [0]. Please re-
-> roll 
-> your patch to use the new flag types. If this flash supports SFDP
-> you 
-> should ideally just need to set the sfdp flag to true and the core 
-> should take care of the rest. Test reports with the new changes would
-> be 
-> much appreciated :-)
 
-Will do. Is there an easy way to check which features the kernel
-detected from the SFDP with the new code?
+--===============5742364750425217308==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JEHMTQpb7VDnBZsA"
+Content-Disposition: inline
 
 
-> 
-> > In addition, the entries are made more specific by matching on the
-> > mt25q
-> > extended ID, like it is already done for the smaller n25q
-> > derivatives.
-> > It is unclear whether n25q derivatives with 2Gbit exist that do not
-> > support 4B opcodes (like it is the case for sizes up to 512MBit),
-> > so we
-> > do not have a match for such variants anymore (as we wouldn't even
-> > know
-> > how to name such hypothetical models).
-> 
-> Sounds good to me.
-> 
-> > The changes were tested with a mt25qu01g, which should support the
-> > same
-> > features as the mt25ql02g/mt25qu02g.
-> > 
-> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com
-> > >
-> > ---
-> > 
-> 
-> [0] 
-> https://patchwork.ozlabs.org/project/linux-mtd/list/?series=275622&state=%2A&archive=both
-> 
+--JEHMTQpb7VDnBZsA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi Miquel,
+
+thanks for this driver. I just discovered it, better late than never!
+
+On Fri, Dec 17, 2021 at 10:02:46AM +0100, Miquel Raynal wrote:
+> Introduce Renesas RZ/N1x NAND controller driver which supports:
+> - All ONFI timing modes
+> - Different configurations of its internal ECC controller
+> - On-die (not tested) and software ECC support
+> - Several chips (not tested)
+> - Subpage accesses
+> - DMA and PIO
+>=20
+> This controller was originally provided by Evatronix before being bought
+> by Cadence.
+>=20
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Tested-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+
+This IP core is also available on some Renesas R-Car Gen3 SoCs. I don't
+have a board with NAND equipped, so I sadly cannot test your patch and
+can only say that the code looks like it is in a really good shape and
+can only suggest some renaming.
+
+> ---
+>  drivers/mtd/nand/raw/Kconfig                |    6 +
+>  drivers/mtd/nand/raw/Makefile               |    1 +
+>  drivers/mtd/nand/raw/rzn1-nand-controller.c | 1422 +++++++++++++++++++
+
+Because the IP core is present elsewhere as well, how about
+drivers/mtd/nand/raw/r-nandc.c ? This is the name mentioned in the R-Car
+Gen3 docs.
+
+> +config MTD_NAND_RZN1
+
+MTD_NAND_RNANDC?
+
+> +	tristate "Renesas RZ/N1D, RZ/N1S, RZ/N1L NAND controller"
+
+"Renesas R-NANDC controller"?
+
+> +	help
+> +	  Enables support for Renesas RZ/N1x SoC family NAND controller.
+
+"support for the Renesas R-NANDC found on ... SoCs."?
+
+>  obj-$(CONFIG_MTD_NAND_PL35X)		+=3D pl35x-nand-controller.o
+> +obj-$(CONFIG_MTD_NAND_RZN1)		+=3D rzn1-nand-controller.o
+
+Might need updated sorting then maybe.
+
+> + * Evatronix/Renesas RZ/N1D, RZ/N1S, RZ/N1L NAND flash controller driver
+
+R-NANDC?
+
+> +struct rzn1_nand_chip_sel {
+> +	unsigned int cs;
+> +};
+
+Replace all 'rzn1_nand_' with 'rnandc_' in the file? I know this can be
+an annoying change.
+
+=2E..
+
+> +		ret =3D devm_request_irq(&pdev->dev, irq, rzn1_nandc_irq_handler, 0,
+> +				       "rzn1-nand-controller", nandc);
+
+"rnandc"?
+
+> +static const struct of_device_id rzn1_nandc_id_table[] =3D {
+> +	{ .compatible =3D "renesas,rzn1-nand-controller" },
+
+"rnandc"?
+
+> +MODULE_LICENSE("GPL");
+
+"GPL v2" according to the SPDX header.
+
+All the best,
+
+   Wolfram
+
+
+--JEHMTQpb7VDnBZsA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmG8Y1sACgkQFA3kzBSg
+KbaZMQ//T1w3ffnlVtf8txLcPIb5VcN8yeaQO8F9ZA7aFz0WL0XNiuOwTRfduqe4
+frqbeNLvsXBi9fxAJIUjyDfdo3zrnUG3ENyRZq7aE/IAwd+dHeVj4EHA5J2xasU6
+qyVZHqrv76C6CbWQvDeW5gmQjrpvl4N3A4yoRni7ONuWIEOxF67b3HCAlzvUxdoJ
+qslRugqWId+I7AK+swt/OH0sjYrvUvT68dttkE6WdvvJUm2F2ea0C5EFJcuF2Ixe
+R5NXN2M49NFZRUr4FJHaToCV7VrgJkAWpF7iwvp3+BjnOLALzywAN0ofLs3C0RM+
+F1PA7JyDBTQ9MWsNlUJVCAB/miTKKc1rYQc4AwvrpRjCQ/qJkeSUa1uC883SrrpA
+hAHTxKReXEgyzaMCmqvPPfTEC1BDpCQZfJyMAarUS2as43ijqyNyCfB/03DaKh40
+bKaUOZ3tBBNjc2x9MMeHs7/JnNy4z+2cwZM5+W1mVrJNZIO98P77ubpCG36Vg1Cp
+zcEXyhPB0jXw7JAOac3C0rDOm9LyNUQUxfk7Vb7yRlAVETqlbhw/0gmIpE9IEgiF
+qp+LLzFdfPEzGCfvI+G2qNk0qFw6LJsz7J2BOyIh62c+PIMfw9Rj2Y9Yr0g2DJDU
+cDYzE80kpm90PaceG0TPj5v0emVMJbyeCOIDHKtjHTG+uB8KxxY=
+=A8Ks
+-----END PGP SIGNATURE-----
+
+--JEHMTQpb7VDnBZsA--
+
+
+--===============5742364750425217308==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5742364750425217308==--
+
