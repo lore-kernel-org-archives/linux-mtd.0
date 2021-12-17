@@ -4,64 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57A3CC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 11:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE2EC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 11:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4FAR0GbnA7QKCx4xatn1x0P9x1LHEKOtlT2S3y4LA8Q=; b=Eu2IRVbDnHX0J+
-	ka0asAPGiCH86BjF4eEpLEyfyWIfG35ohue8XTdI4FUqMCy8UsQonEuFxXqq5V2fZEFILDhsXqCEQ
-	XFFYExKAztmIuiY9B8MinjvGz2qqoBuOWlj57FFYjzQf/M1zDwZRN7/DrwJX+i438jbQKn6c2lWsW
-	qVD0eSB9mQbYrAe/NrRwAbP7yuptKsJ9dyEAICIJJ9CnLH+SoeHVnfupI5+qvDwDHY3d+5hOLKMwh
-	u+dgwShm1iGcvCAhJckAfURP0ngVrl/fJxvaZdHpKU+EfGAgSHv5qE5KJlYlFHwuSohbQtpZQyAX8
-	aFop/ys8ELIl6Z+npcQg==;
+	List-Owner; bh=wgmFrzII+1Viuu8ilBoMK5rB9Ln1mUA6sfz/b2yOWow=; b=2Ds7Is5cF7kmkO
+	7JSXp7XLs8yTyCZQosWngL0H6MYioOBJJbAsWZrXhU2n3ZqeraJz+jNAVxj3f7mSP/96xkjjGg4lM
+	5zak6wzXZ+QSgm3WRnYkr6qWY3W3qJn06JxipNLdk1PaGflTM4jkPyGAxo67D6YHRqNJP3YQRxuhx
+	86ajknupejkyYGSInJkUVvFWsEpjzROXPs9BNAC0qSb9CVP8N+3LCiemlIu5l6WSCAf8uORUJ2rWm
+	bG45P8nEfjlZ0x8M2FFrFgy/Sr7egrlB7KvGvOHjBPP+9z9y5jJ/rlczqgk2I9lOj1a3nGuEk66sw
+	leXWD1k2YF1gZGOETVbg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myB4B-009fjc-7G; Fri, 17 Dec 2021 11:06:23 +0000
-Received: from mga11.intel.com ([192.55.52.93])
+	id 1myBa9-009tL6-Ra; Fri, 17 Dec 2021 11:39:26 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myB3O-009fUi-1I
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 11:05:35 +0000
-X-IronPort-AV: E=McAfee;i="6200,9189,10200"; a="237272478"
-X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; d="scan'208";a="237272478"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2021 03:05:32 -0800
-X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; d="scan'208";a="612088757"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Dec 2021 03:05:27 -0800
-Received: by lahna (sSMTP sendmail emulation); Fri, 17 Dec 2021 13:05:25 +0200
-Date: Fri, 17 Dec 2021 13:05:25 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
- Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
-Message-ID: <Ybxu9eNCBy3OgWLN@lahna>
-References: <20211118130543.11179-1-mika.westerberg@linux.intel.com>
- <20211118130543.11179-3-mika.westerberg@linux.intel.com>
- <20211216115100.448351e4@collabora.com> <Ybtn1VTsspxdIeT8@lahna>
- <20211216174347.69cf611c@collabora.com> <Ybxotgb927kpCizL@lahna>
- <20211217115206.33da307c@collabora.com>
+ id 1myBZ7-009sfw-8k
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 11:38:24 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BHBcB5J035737;
+ Fri, 17 Dec 2021 05:38:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1639741091;
+ bh=cUa4ryxylabq9HvOVK4F6JdzOWtWjNV2S+ltW8rqNMk=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=pxjhDF/dFbSAmqfHGcJpQhn6c688RCesYo70fRPdpoROzgCYugB1lkIj5bl1KhZDz
+ cxpxfHF8KHEU48J6p5Rga0Fnx55kZHCTfO7yjl4eOkFMWjSwrP7f5KjHa95pyWgz5O
+ CMWs/CO3BSLgd6G8ZHkx2d1+qVs8YaAzshMPcPA4=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BHBcB2Q059268
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 17 Dec 2021 05:38:11 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
+ Dec 2021 05:38:11 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 17 Dec 2021 05:38:11 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BHBcAur125712;
+ Fri, 17 Dec 2021 05:38:11 -0600
+Date: Fri, 17 Dec 2021 17:08:10 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+CC: <michael@walle.cc>, <vigneshr@ti.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
+ <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: macronix: Add support for mx66lm1g45g
+Message-ID: <20211217113810.mzqrwf6vxfniggn3@ti.com>
+References: <20211209190436.401946-1-tudor.ambarus@microchip.com>
+ <20211209190436.401946-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211217115206.33da307c@collabora.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211209190436.401946-2-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_030534_166647_78BD9342 
-X-CRM114-Status: GOOD (  20.68  )
+X-CRM114-CacheID: sfid-20211217_033821_467844_516A7F5F 
+X-CRM114-Status: GOOD (  30.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,39 +85,201 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 17, 2021 at 11:52:06AM +0100, Boris Brezillon wrote:
-> On Fri, 17 Dec 2021 12:38:46 +0200
-> Mika Westerberg <mika.westerberg@linux.intel.com> wrote:
-> 
-> > Hi,
-> > 
-> > On Thu, Dec 16, 2021 at 05:43:47PM +0100, Boris Brezillon wrote:
-> > > Why no just
-> > > 
-> > > 	if (iop->mem_op.addr.nbytes != op->addr.nbytes ||
-> > > 	    iop->mem_op.addr.dtr != op->addr.dtr)
-> > > 		return false;
-> > > 
-> > > then?  
-> > 
-> > That would be too simple ;-)
-> > 
-> > I'll do this change in v5.
-> 
-> I didn't review the driver thoroughly, but it looks clean an tidy. Feel
-> free to add
-> 
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+On 09/12/21 09:04PM, Tudor Ambarus wrote:
+> mx66lm1g45g supports just 1-1-1, 8-8-8 and 8d-8d-8d modes. There are
+> versions of mx66lm1g45g which do not support SFDP, thus use
+> SPI_NOR_SKIP_SFDP. The RDID command issued through the octal peripheral
+> interface outputs data always in STR mode for whatever reason. Since
 
-Thanks!
+Huh! I hope this is a mistake from the chip designers, because if it 
+isn't they need a stern talking-to ;-)
 
-> One more thing. I think it'd be good to implement the dirmap hooks (in
-> a follow-up series, not here), so you don't have to iterate over the ops
-> table every time a read/write request is issued. Should be as simple as
-> storing the exec_op() pointer in the driver-private dirmap pointer, and
-> calling this function when ->dirmap_{read,write}() is called.
+> 8d-8d-8s is not common, avoid reading the ID when enabling the octal dtr
+> mode. Instead, read back the CR2 to check if the switch was successful.
+> Tested in 1-1-1 and 8d-8d-8d modes using sama7g5 QSPI IP.
 
-Okay.
+Datasheet?
+
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+> v2: SPI_NOR_SOFT_RESET as a FIXUP_FLAG
+> 
+> # cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
+> c2853b
+> # cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
+> macronix
+> # cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/partname
+> mx66lm1g45g
+> # cat /sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp
+> cat: can't open '/sys/devices/platform/soc/e080c000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp': No such file or directory
+> 
+>  drivers/mtd/spi-nor/macronix.c | 113 +++++++++++++++++++++++++++++++++
+>  1 file changed, 113 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index 67aaa83038b6..9d71149233e3 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -32,6 +32,112 @@ static struct spi_nor_fixups mx25l25635_fixups = {
+>  	.post_bfpt = mx25l25635_post_bfpt_fixups,
+>  };
+>  
+> +#define SPINOR_OP_READ_CR2		0x71
+> +#define SPINOR_OP_WRITE_CR2		0x72
+> +#define SPINOR_OP_MX_DTR_RD		0xee
+> +
+> +#define SPINOR_REG_CR2_MODE_ADDR	0
+> +#define SPINOR_REG_CR2_DTR_OPI_ENABLE	BIT(1)
+> +#define SPINOR_REG_CR2_SPI		0
+> +
+> +#define SPINOR_REG_CR2_DUMMY_ADDR	0x300
+> +#define SPINOR_REG_CR2_DUMMY_20		0
+> +
+> +static int spi_nor_macronix_octal_dtr_enable(struct spi_nor *nor, bool enable)
+> +{
+> +	struct spi_mem_op op;
+> +	int ret;
+> +
+> +	/* Use 20 dummy cycles for memory array reads. */
+
+I just want to point out that if the default dummy cycle value can work 
+at the maximum frequency the flash supports, you don't need to do this. 
+I did it for S28 and MT35 because this wasn't the case but I remember 
+some flashes having sane defaults and not needing this.
+
+> +	if (enable) {
+> +		nor->bouncebuf[0] = SPINOR_REG_CR2_DUMMY_20;
+> +		op = (struct spi_mem_op)
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRITE_CR2, 1),
+> +				   SPI_MEM_OP_ADDR(4, SPINOR_REG_CR2_DUMMY_ADDR,
+> +						   1),
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+> +
+> +		ret = spi_nor_write_enable(nor);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = spi_nor_wait_till_ready(nor);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* Set/unset the octal and DTR enable bits. */
+> +	if (enable)
+> +		nor->bouncebuf[0] = SPINOR_REG_CR2_DTR_OPI_ENABLE;
+> +	else
+> +		nor->bouncebuf[0] = SPINOR_REG_CR2_SPI;
+> +
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRITE_CR2, 1),
+> +			   SPI_MEM_OP_ADDR(4, SPINOR_REG_CR2_MODE_ADDR, 1),
+> +			   SPI_MEM_OP_NO_DUMMY,
+> +			   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+
+This is not quite right. You can't have a 1-byte data phase in 8D mode 
+since then your data phase is only half a cycle. What happens to the 
+other half cycle would be undefined behavior for most controllers. I 
+sent some patches addressing this some time back [0]. Unfortunately they 
+fell off my radar.
+
+> +	if (!enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_nor_write_enable(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Read back CR2 to make sure the switch was successful. */
+> +	op = (struct spi_mem_op)
+> +		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_READ_CR2, 1),
+> +			   SPI_MEM_OP_ADDR(4, SPINOR_REG_CR2_MODE_ADDR, 1),
+> +			   SPI_MEM_OP_DUMMY(enable ? 4 : 0, 1),
+> +			   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
+
+Same as above.
+
+> +	if (enable)
+> +		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
+> +
+> +	ret = spi_mem_exec_op(nor->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (enable) {
+> +		if (nor->bouncebuf[0] != SPINOR_REG_CR2_DTR_OPI_ENABLE) {
+> +			dev_dbg(nor->dev, "Failed to enable 8d-8d-8d mode.\n");
+
+Nitpick: s/8d-8d-8d/8D-8D-8D/
+
+> +			return -EINVAL;
+> +		}
+> +	} else if (nor->bouncebuf[0] != SPINOR_REG_CR2_SPI) {
+> +		dev_dbg(nor->dev, "Failed to disable 8d-8d-8d mode.\n");
+
+Nitpick: s/8d-8d-8d/8D-8D-8D/
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void mx66lm1g45g_late_init(struct spi_nor *nor)
+> +{
+> +	nor->params->octal_dtr_enable = spi_nor_macronix_octal_dtr_enable;
+> +
+> +	/* Set the Fast Read settings. */
+> +	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
+> +	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
+> +				  0, 20, SPINOR_OP_MX_DTR_RD,
+> +				  SNOR_PROTO_8_8_8_DTR);
+> +
+> +	nor->cmd_ext_type = SPI_NOR_EXT_INVERT;
+> +	nor->params->rdsr_dummy = 4;
+> +	nor->params->rdsr_addr_nbytes = 4;
+> +}
+> +
+> +static struct spi_nor_fixups mx66lm1g45g_fixups = {
+> +	.late_init = mx66lm1g45g_late_init,
+> +};
+> +
+>  static const struct flash_info macronix_parts[] = {
+>  	/* Macronix */
+>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1)
+> @@ -100,6 +206,13 @@ static const struct flash_info macronix_parts[] = {
+>  	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+>  		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+> +	{ "mx66lm1g45g", INFO(0xc2853b, 0, 64 * 1024, 2048)
+> +		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SECT_4K |
+> +			      SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP)
+> +		FIXUP_FLAGS(SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE |
+> +			    SPI_NOR_SOFT_RESET)
+> +		.fixups = &mx66lm1g45g_fixups,
+> +	},
+>  };
+>  
+>  static void macronix_default_init(struct spi_nor *nor)
+> -- 
+> 2.25.1
+> 
+
+[0] https://lore.kernel.org/all/20210531181757.19458-1-p.yadav@ti.com/
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
