@@ -4,83 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB8ACC4332F
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 16:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6DBDC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 16:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3107LGrNCpypigb/tAuTLTRgRorDzP7VuVNjDR/wysk=; b=NY7SjtUuqct5I1
-	uqXp/us0AgNqWLOOpL3sTSMZ6Gltdo9uUssODl15CtfUAUcDvVBvRM6Jsi/pKVGfn/+mOxPCSarWj
-	LDT1CtqoRv6b7TQcOZs+f0Po+UMP5Wl5OaaUh/I0vnNfTMb7oI2piQVyg3PrvB9UXsHGZMRAdWGz/
-	Csy//QWiOrDPrBwBs74wZteYD4GlxRUKPWRJZZ4yMzr5O1I26haVmRy1iA9IdilzIJGELd4UN1S9G
-	jO/h6BvSJSMNx3aVFPIWcrjLXjv8A06n7gx7LrgjsGsxbHYDkVD7qlU1FMjrCVrrm0IhZluWOG2GV
-	ugfOdStklz4pHWENBuqw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=0ORql5rwQpGl5Zgf0vvH9QsydlCIGjC19HiiB1KGzR8=; b=Qzqn4Kh0TfOCvl
+	/X6djUpCPhBvBiCzYjs95hXrRvHfAjRFSRtkQdE9WBi2oaI3ltA9/mxjHBjUss92vGizB4tzTicM/
+	AawnOJjjcbSAxu6C+FuEg49XUTALrt+m4tUbkbnHjANWtEkTrRZw1z+K51Ld01y7H/sdAY3YKntNc
+	peNWDDfPkMNPHjTHqOBrvkw6Lv8PvUCMJB7ioLoXKB+oP0GrnV2gz8SOx/wmj5lGfYrc3XHVCmHNx
+	cm5PTSvut2uLxVLWYO5bEQcy4isjoBGcdOJu6jfCCpMQIxRezNPKTzvI6gPULj21b9mixB+2Djc9S
+	9zbn4F9xYYNs3L5/TaFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myFuY-00B7P9-Ls; Fri, 17 Dec 2021 16:16:47 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1myG0T-00B9IZ-Ko; Fri, 17 Dec 2021 16:22:54 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myFaG-00B1SL-08
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 15:55:50 +0000
-Received: by mail-ed1-x533.google.com with SMTP id z9so9536738edb.5
- for <linux-mtd@lists.infradead.org>; Fri, 17 Dec 2021 07:55:46 -0800 (PST)
+ id 1myFaH-00B1T4-Ku
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 15:55:52 +0000
+Received: by mail-ed1-x534.google.com with SMTP id g14so9453901edb.8
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Dec 2021 07:55:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amarulasolutions.com; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AfgZyMdEJhIrrC8KaYKPJsgOg20Fl0ent8NPVFsoxgs=;
- b=jQJPDfeUneKUEoWKPIw/VV44os2ZKX4YQslFa1zcE2bvla40AAxuuvcZava/OcOLYl
- ebuodp+o32Gk/rxi0DCEFl4gXg4ECbq7IBiMjNR9ACtIkZ6fApGCy1Rp9SNWADlTzJ8C
- npS7fGXItS9q+gBzdRWqsFWMUgygfjDJRoB+U=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=pCjPRfOE0ubdFKl1wroT8qZZ50obE6oG33Hg0XGM304=;
+ b=GT7+ilekxSTS5dFNut7H6CiyF+s4HbxoxVMua+CSJLqW+fj8bgZ36r7laPoZzjTKVO
+ /0ZsMq4hFsukMP44g8xdxWMyJ84oewN+Pqh49hxeu7h8jm/FApB0Emn134cSqYtoUf+Z
+ PIca9tyY8AbC86kn8KUvHaTa5CHPRYorzTGPQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=AfgZyMdEJhIrrC8KaYKPJsgOg20Fl0ent8NPVFsoxgs=;
- b=IQlBz0OGym8wfeVG6a7ha4Jt6OsNonXuFqzHGZkB2XoI0tp5eJC7NP2LqRlrK+x5st
- yrEjKMuInqw0RAAljgbvI4FeJEfIMeL+FIMP51QrPM3zaNEw5vJa7CwW5V/7hX3amRxe
- KR6ISd4qG5xCs6T4j4NzR/aUvV19HAMgUGfdN7AUt57VSnr5tHEmRfIgDrkzSU3YFQFt
- 4XQ0F9Z/ErgYHFVq20WCujlFHommUyTbCbdr7Em6G+F4THzyH09/0iNI1DJXcM8C8lwK
- 3qkltj2ieNI6XQVftI6VHk4XTH3s4YZlHd5jVGmvWj1sRchcV1YK2fx9pLUgh2bL39Gl
- lbSw==
-X-Gm-Message-State: AOAM533gR4AykI6nPz4LtT8tKuXUccq/cq3IGJww1MO1lxG/klESLiC4
- oYyMCufrKIzR/OMRba3I0/+p9g==
-X-Google-Smtp-Source: ABdhPJwrqR1fUITbPzQl9qu5oFZPzkp0eOH0jA+KuGRGaM/zEYWpckONxW4PWxfDYd99CLnUnT9rsw==
-X-Received: by 2002:a17:907:97d4:: with SMTP id
- js20mr3061659ejc.416.1639756545817; 
- Fri, 17 Dec 2021 07:55:45 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=pCjPRfOE0ubdFKl1wroT8qZZ50obE6oG33Hg0XGM304=;
+ b=kGU78fKfSGybAEDzgk+NAPBAPHzqeYJ4gRBwTa+weVfa5jUih4xTtRFzrSWOcYR2j5
+ 601wPlZ/El2+U7q9XoEWI5QdvnbPTLvusYExqIAf2/0fNew6cljRetBm7k+hXpSaDkpZ
+ IgZfclJ/i3ER62/nM0iVeL23KjqQEhIcLl0h5wsfqpBFQDM2FflyHip9zBhHpZ1Rnkp3
+ z1gOGEVlalZUxKRgegb9bi02J1KL+ltbVAUVjpYrZwZSy5PBckLjITG4gy+V/n93J3qp
+ Vli9dzkKP1ZWzHkfLSuLD5JqnZyQTBDWz8lASgIFGpDgI9HuKHzg8i7khzfrV5ojE2PE
+ VDnw==
+X-Gm-Message-State: AOAM532qf3ewY+Gs8H7yssFpXSVCvSk3ORIbSh7wirBZVAFKAxLiChyl
+ OR8u09+0TYzU7AXD6+IdNltqkw==
+X-Google-Smtp-Source: ABdhPJwq9J1DWJQ8i4E0EiIDgAaMs/AhSQZcnTaJ1HC6l3gTEc24oM/ESRtaqP0UYIOPboiOppaXCg==
+X-Received: by 2002:a17:907:1c81:: with SMTP id
+ nb1mr3125382ejc.9.1639756548087; 
+ Fri, 17 Dec 2021 07:55:48 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.amarulasolutions.com
  (host-79-56-50-241.retail.telecomitalia.it. [79.56.50.241])
- by smtp.gmail.com with ESMTPSA id i6sm772158edx.46.2021.12.17.07.55.43
+ by smtp.gmail.com with ESMTPSA id i6sm772158edx.46.2021.12.17.07.55.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 17 Dec 2021 07:55:45 -0800 (PST)
+ Fri, 17 Dec 2021 07:55:47 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, Han Xu <han.xu@nxp.com>,
- Michael Trimarchi <michael@amarulasolutions.com>,
- Michael Turquette <mturquette@baylibre.com>,
+ Michael Trimarchi <michael@amarulasolutions.com>, Han Xu <han.xu@nxp.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Richard Weinberger <richard@nod.at>, Sascha Hauer <s.hauer@pengutronix.de>,
- Shawn Guo <shawnguo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 0/4] Fix and improve gpmi nand on mx28
-Date: Fri, 17 Dec 2021 16:55:08 +0100
-Message-Id: <20211217155512.1877408-1-dario.binacchi@amarulasolutions.com>
+Subject: [RFC PATCH 2/4] mtd: rawnand: gpmi: support fast edo timings for mx28
+Date: Fri, 17 Dec 2021 16:55:10 +0100
+Message-Id: <20211217155512.1877408-3-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211217155512.1877408-1-dario.binacchi@amarulasolutions.com>
+References: <20211217155512.1877408-1-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_075548_840980_C4895C73 
-X-CRM114-Status: UNSURE (   9.26  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211217_075549_734426_F596FF05 
+X-CRM114-Status: GOOD (  13.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,31 +90,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Starting from [1], the series fixes the timings setting of the gpmi
-controller for the mx28 architecture, also adding support for fast
-edo mode timings. The whole series has been heavily tested with the
-mtd kernel test modules, and with repeated write cycles on nand.
+In the mx28 reference manual there are examples of how to set up the
+GPMI controller to support fast NAND EDO timing.
 
-The patches of the series were applied after applying patches [2]
-and [3] which at the moment are already in nand-next.
+This patch has been tested on a 2048/64 byte NAND (Micron MT29F2G08ABAEAH4).
+Kernel mtd tests:
+ - mtd_nandbiterrs
+ - mtd_nandecctest
+ - mtd_oobtest
+ - mtd_pagetest
+ - mtd_readtest
+ - mtd_speedtest
+ - mtd_stresstest
+ - mtd_subpagetest
+ - mtd_torturetest [cycles_count = 10000000]
+run without errors.
 
-[1] https://lore.kernel.org/r/20210702065350.209646-5-ebiggers@kernel.org
-[2] 73b68455f8ac ("mtd: rawnand: gpmi: Remove explicit default gpmi clock setting for i.MX6")
-[3] 7944f8346983 ("mtd: rawnand: gpmi: Add ERR007117 protection for nfc_apply_timings")
+Before this patch (mode 0):
+---------------------------
+eraseblock write speed is 2098 KiB/s
+eraseblock read speed is 2680 KiB/s
+page write speed is 1689 KiB/s
+page read speed is 2522 KiB/s
+2 page write speed is 1899 KiB/s
+2 page read speed is 2579 KiB/s
+erase speed is 128000 KiB/s
+2x multi-block erase speed is 73142 KiB/s
+4x multi-block erase speed is 204800 KiB/s
+8x multi-block erase speed is 256000 KiB/s
+16x multi-block erase speed is 256000 KiB/s
+32x multi-block erase speed is 256000 KiB/s
+64x multi-block erase speed is 256000 KiB/s
 
+After this patch (mode 5):
+-------------------------
+eraseblock write speed is 3390 KiB/s
+eraseblock read speed is 5688 KiB/s
+page write speed is 2680 KiB/s
+page read speed is 4876 KiB/s
+2 page write speed is 2909 KiB/s
+2 page read speed is 5224 KiB/s
+erase speed is 170666 KiB/s
+2x multi-block erase speed is 204800 KiB/s
+4x multi-block erase speed is 256000 KiB/s
+8x multi-block erase speed is 256000 KiB/s
+16x multi-block erase speed is 256000 KiB/s
+32x multi-block erase speed is 256000 KiB/s
+64x multi-block erase speed is 256000 KiB/s
 
-Dario Binacchi (3):
-  mtd: rawnand: gpmi: support fast edo timings for mx28
-  mtd: rawnand: gpmi: fix controller timings setting
-  mtd: rawnand: gpmi: validate controller clock rate
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
+---
 
-Michael Trimarchi (1):
-  clk: mxs: imx28: Reparent gpmi clk to ref_gpmi
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/clk/mxs/clk-imx28.c                |  3 +
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 75 +++++++++++++++++-----
- 2 files changed, 61 insertions(+), 17 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 65bcd1c548d2..fd935e893daf 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -772,8 +772,8 @@ static int gpmi_setup_interface(struct nand_chip *chip, int chipnr,
+ 	if (IS_ERR(sdr))
+ 		return PTR_ERR(sdr);
+ 
+-	/* Only MX6 GPMI controller can reach EDO timings */
+-	if (sdr->tRC_min <= 25000 && !GPMI_IS_MX6(this))
++	/* Only MX28/MX6 GPMI controller can reach EDO timings */
++	if (sdr->tRC_min <= 25000 && !GPMI_IS_MX28(this) && !GPMI_IS_MX6(this))
+ 		return -ENOTSUPP;
+ 
+ 	/* Stop here if this call was just a check */
 -- 
 2.32.0
 
