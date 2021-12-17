@@ -4,50 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 200B5C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 17:29:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9774DC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 18:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MR1Slqeq+OxoPcT79FMnbXtn72Vu5bEVl1wjBZosn64=; b=Hs8YQDiqtDC9nS
-	18fOO27dgCM4E+3jJeRr0jRc5CCH11+YsBRV1gohnJsJFTG25P4e0PHP3K8Nvn4Om5bIUei48/cMa
-	aMlDttb5YPrhW6LZfz3L/Ct/42PX1FBXA8CmYKs29gLt8NWJSsw3kfr8wqp3QVvfTKhVbGMv9FmIP
-	uMof4RTJBF8TV2U1KcXckWoQ+EC1CCkWKH01o8L1PLVzdS/9paljRS0FadyGG1XV07+ECtJ5D+/UQ
-	yitrahQzmEjoERl9OShwfAVtbS2xYlNeu9XV18M66d3cbJwz5ZyHvSYKOTj3YtlMSqSte8dfKtk/Z
-	g96S6GEf6OwqAKAiPTng==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=RYFBlC0n73/Sf4upi/zsy4cfdsJPPp1sy3nT8+zH+O0=; b=lWA/ZLMSeF/HJR
+	fP46dD0gdXnKCRtYdeP/oaArv0h7OTRafPKvv1HGnQdbSaCOJyE/NJRoXKQEHHxIz7DHQxTxyhODr
+	n7cRD+O27ypBceG7ph640YUdf0ESXiD3VDuzfN/p8UoT/dm2sSDILT4UaiuRWH+Xc24NHIcmuoS3q
+	97n4KZwbObZyC+BsHGR0qjcQ5Q5iLq9QKQ9gHi5T/2eHLc9efjFFi1pTEqJBHhwCRSu/XaOwAEe5V
+	Bw9OuvBHU3lcFrgq1d4hYzte7Utknw4a89YY3R66SutvEMOjXXlctedhL3I+GpMhLCmsQjPgyT+yl
+	IfZc/JQ3EWO0g2J99cFA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myH2G-00BTqF-L6; Fri, 17 Dec 2021 17:28:48 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1myHto-00BoHd-Ui; Fri, 17 Dec 2021 18:24:09 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myFvO-00B7k2-6H
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 16:17:40 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id A947A200009;
- Fri, 17 Dec 2021 16:17:34 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>
-Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v7 14/14] spi: mxic: Add support for pipelined ECC operations
-Date: Fri, 17 Dec 2021 17:16:54 +0100
-Message-Id: <20211217161654.367782-15-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211217161654.367782-1-miquel.raynal@bootlin.com>
-References: <20211217161654.367782-1-miquel.raynal@bootlin.com>
+ id 1myH6t-00BUsu-05
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 17:33:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1639762415; x=1671298415;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=e8rDwt+rUS5WewjAz5C0vn2vjW4Owt1/HbKwTqWf3EM=;
+ b=CWlTv5eYNKfmV9YaHLOED8DTOod43cCVwzVqdzc6lx07w8j01mmrjHxO
+ zDCfj6mJNF5R7QenkxUxzimUCALm2o6uj2VxqDVEqp92F9EBIUtxx4lGx
+ VIsvqgzdk/xKIvbhrMj1tPOwTTNmAWJTzSg0KPW+MsU/ggBuYVR2REUki
+ l9k3MCSZmjCafyf6Dlc4BZT8cb0fYQXKUYOi5c/66KECnor8zM2FfNZI7
+ PDAuNzg+OxXYDRgEytwlZysZ5otOG/glLSVmTfjn7FQUnAjmByZEy7nXs
+ djaWw8ChYJoZ6JRIbL4Z6HzUdenbmdAaqbv7u1lB95EGG4IwaMzqXP94J A==;
+IronPort-SDR: L8dISSoQfrXsBLfUSnlxEL36IbAXUpVPUAoCwbHJzTY42TjdzA9Ayk82KMAKbkKTXVgMOzkOxI
+ Zdqz3MPyy79oP+2QsruzBWmbfSlsIBd21YQLyf6J780fN9oYX4F/eyaNsl+hxIqhvGZoyRFzh2
+ 27q8xMxWGThrp6toFFIS78sWQzNjqTpK+sjgHEPqr3UvzOvNWdoupyCydtDt1hYY28vcprtfKN
+ kL39e/XaEK9lXEYkeXJFTQiWvOND9jAq+Eo9VAOmiOvtnCZFfB45WFGQyW94/I+5IU3pitYddf
+ ShIg1tJ3xylwbLLmKcpKv6yU
+X-IronPort-AV: E=Sophos;i="5.88,213,1635231600"; d="scan'208";a="147051392"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 17 Dec 2021 10:33:34 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Fri, 17 Dec 2021 10:33:33 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Fri, 17 Dec 2021 10:33:31 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <p.yadav@ti.com>, <michael@walle.cc>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH v4 1/2] mtd: spi-nor: core: Introduce SPI_NOR_SOFT_RESET
+ flash_info fixup_flag
+Date: Fri, 17 Dec 2021 19:33:28 +0200
+Message-ID: <20211217173329.553293-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_081738_586620_54262366 
-X-CRM114-Status: GOOD (  17.59  )
+X-CRM114-CacheID: sfid-20211217_093335_095686_3937AF77 
+X-CRM114-Status: GOOD (  10.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,231 +84,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some SPI-NAND chips do not have a proper on-die ECC engine providing
-error correction/detection. This is particularly an issue on embedded
-devices with limited resources because all the computations must
-happen in software, unless an external hardware engine is provided.
+The Soft Reset and Rescue Sequence Support is defined in BFPT_DWORD(16)
+starting with JESD216A. The first version of SFDP, JESD216 (April 2011),
+defines just the first 9 BFPT DWORDS, thus it does not contain information
+about the Software Reset and Rescue Support. Since this support can not
+be discovered by parsing the first SFDP version, introduce a flash_info
+fixup_flag that will be used either by flashes that define
+JESD216 (April 2011) or by flashes that do not define SFDP at all.
+In case a flash defines BFPT_DWORD(16) but with wrong values, one should
+instead use a post_bfpt() hook and set SNOR_F_SOFT_RESET.
 
-These external engines are new and can be of two categories: external
-or pipelined. Macronix is providing both, the former being already
-supported. The second, however, is very SoC implementation dependent
-and must be instantiated by the SPI host controller directly.
-
-An entire subsystem has been contributed to support these engines which
-makes the insertion into another subsystem such as SPI quite
-straightforward without the need for a lot of specific functions.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/spi/Kconfig    |   2 +-
- drivers/spi/spi-mxic.c | 113 ++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 112 insertions(+), 3 deletions(-)
+v4: no changes
+v3: collect R-b
+v2: no changes
+ drivers/mtd/spi-nor/core.c | 3 +++
+ drivers/mtd/spi-nor/core.h | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 83e352b0c8f9..bff75629e872 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -856,7 +856,7 @@ config SPI_SYNQUACER
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 2e21d5ac0e2d..32d80fdaa2a2 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2699,6 +2699,9 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
  
- config SPI_MXIC
- 	tristate "Macronix MX25F0A SPI controller"
--	depends on SPI_MASTER
-+	depends on SPI_MASTER && MTD_NAND_ECC
- 	help
- 	  This selects the Macronix MX25F0A SPI controller driver.
- 
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 97de058d2f80..7fc57e94b8b4 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -12,6 +12,8 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/nand-ecc-mxic.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
-@@ -167,6 +169,7 @@
- #define HW_TEST(x)		(0xe0 + ((x) * 4))
- 
- struct mxic_spi {
-+	struct device *dev;
- 	struct clk *ps_clk;
- 	struct clk *send_clk;
- 	struct clk *send_dly_clk;
-@@ -177,6 +180,12 @@ struct mxic_spi {
- 		dma_addr_t dma;
- 		size_t size;
- 	} linear;
+ 	if (fixup_flags & SPI_NOR_IO_MODE_EN_VOLATILE)
+ 		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
 +
-+	struct {
-+		bool use_pipelined_conf;
-+		struct nand_ecc_engine *pipelined_engine;
-+		void *ctx;
-+	} ecc;
- };
- 
- static int mxic_spi_clk_enable(struct mxic_spi *mxic)
-@@ -400,7 +409,15 @@ static ssize_t mxic_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
- 	       LMODE_EN,
- 	       mxic->regs + LRD_CTRL);
- 
--	memcpy_fromio(buf, mxic->linear.map, len);
-+	if (mxic->ecc.use_pipelined_conf && desc->info.op_tmpl.ecc_en) {
-+		ret = mxic_ecc_process_data_pipelined(mxic->ecc.pipelined_engine,
-+						      NAND_PAGE_READ,
-+						      mxic->linear.dma + offs);
-+		if (ret)
-+			return ret;
-+	} else {
-+		memcpy_fromio(buf, mxic->linear.map, len);
-+	}
- 
- 	writel(INT_LRD_DIS, mxic->regs + INT_STS);
- 	writel(0, mxic->regs + LRD_CTRL);
-@@ -436,7 +453,15 @@ static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
- 	       LMODE_EN,
- 	       mxic->regs + LWR_CTRL);
- 
--	memcpy_toio(mxic->linear.map, buf, len);
-+	if (mxic->ecc.use_pipelined_conf && desc->info.op_tmpl.ecc_en) {
-+		ret = mxic_ecc_process_data_pipelined(mxic->ecc.pipelined_engine,
-+						      NAND_PAGE_WRITE,
-+						      mxic->linear.dma + offs);
-+		if (ret)
-+			return ret;
-+	} else {
-+		memcpy_toio(mxic->linear.map, buf, len);
-+	}
- 
- 	writel(INT_LWR_DIS, mxic->regs + INT_STS);
- 	writel(0, mxic->regs + LWR_CTRL);
-@@ -539,6 +564,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 
- static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
- 	.dtr = true,
-+	.ecc = true,
- };
- 
- static const struct spi_controller_mem_ops mxic_spi_mem_ops = {
-@@ -612,6 +638,80 @@ static int mxic_spi_transfer_one(struct spi_master *master,
- 	return 0;
++	if (fixup_flags & SPI_NOR_SOFT_RESET)
++		nor->flags |= SNOR_F_SOFT_RESET;
  }
  
-+/* ECC wrapper */
-+static int mxic_spi_mem_ecc_init_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+	struct mxic_spi *mxic = nand->ecc.engine->priv;
-+
-+	mxic->ecc.use_pipelined_conf = true;
-+
-+	return ops->init_ctx(nand);
-+}
-+
-+static void mxic_spi_mem_ecc_cleanup_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+	struct mxic_spi *mxic = nand->ecc.engine->priv;
-+
-+	mxic->ecc.use_pipelined_conf = false;
-+
-+	ops->cleanup_ctx(nand);
-+}
-+
-+static int mxic_spi_mem_ecc_prepare_io_req(struct nand_device *nand,
-+					   struct nand_page_io_req *req)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+
-+	return ops->prepare_io_req(nand, req);
-+}
-+
-+static int mxic_spi_mem_ecc_finish_io_req(struct nand_device *nand,
-+					  struct nand_page_io_req *req)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+
-+	return ops->finish_io_req(nand, req);
-+}
-+
-+static struct nand_ecc_engine_ops mxic_spi_mem_ecc_engine_pipelined_ops = {
-+	.init_ctx = mxic_spi_mem_ecc_init_ctx,
-+	.cleanup_ctx = mxic_spi_mem_ecc_cleanup_ctx,
-+	.prepare_io_req = mxic_spi_mem_ecc_prepare_io_req,
-+	.finish_io_req = mxic_spi_mem_ecc_finish_io_req,
-+};
-+
-+static void mxic_spi_mem_ecc_remove(struct mxic_spi *mxic)
-+{
-+	if (mxic->ecc.pipelined_engine) {
-+		mxic_ecc_put_pipelined_engine(mxic->ecc.pipelined_engine);
-+		nand_ecc_unregister_on_host_hw_engine(mxic->ecc.pipelined_engine);
-+	}
-+}
-+
-+static int mxic_spi_mem_ecc_probe(struct platform_device *pdev,
-+				  struct mxic_spi *mxic)
-+{
-+	struct nand_ecc_engine *eng;
-+
-+	if (!mxic_ecc_get_pipelined_ops())
-+		return -EOPNOTSUPP;
-+
-+	eng = mxic_ecc_get_pipelined_engine(pdev);
-+	if (IS_ERR(eng))
-+		return PTR_ERR(eng);
-+
-+	eng->dev = &pdev->dev;
-+	eng->integration = NAND_ECC_ENGINE_INTEGRATION_PIPELINED;
-+	eng->ops = &mxic_spi_mem_ecc_engine_pipelined_ops;
-+	eng->priv = mxic;
-+	mxic->ecc.pipelined_engine = eng;
-+	nand_ecc_register_on_host_hw_engine(eng);
-+
-+	return 0;
-+}
-+
- static int __maybe_unused mxic_spi_runtime_suspend(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
-@@ -657,6 +757,7 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, master);
+ /**
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 2afb610853a9..70c6bb7f5f04 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -373,6 +373,8 @@ struct spi_nor_fixups {
+  *                            memory size above 128Mib.
+  *   SPI_NOR_IO_MODE_EN_VOLATILE: flash enables the best available I/O mode
+  *                            via a volatile bit.
++ *   SPI_NOR_SOFT_RESET:      flash supports software reset enable, reset
++ *                            sequence.
+  * @mfr_flags:      manufacturer private flags. Used in the manufacturer fixup
+  *                  hooks to differentiate support between flashes of the same
+  *                  manufacturer.
+@@ -416,6 +418,7 @@ struct flash_info {
+ 	u8 fixup_flags;
+ #define SPI_NOR_4B_OPCODES		BIT(0)
+ #define SPI_NOR_IO_MODE_EN_VOLATILE	BIT(1)
++#define SPI_NOR_SOFT_RESET		BIT(2)
  
- 	mxic = spi_master_get_devdata(master);
-+	mxic->dev = &pdev->dev;
+ 	u8 mfr_flags;
  
- 	master->dev.of_node = pdev->dev.of_node;
- 
-@@ -702,6 +803,12 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 
- 	mxic_spi_hw_init(mxic);
- 
-+	ret = mxic_spi_mem_ecc_probe(pdev, mxic);
-+	if (ret == -EPROBE_DEFER) {
-+		pm_runtime_disable(&pdev->dev);
-+		return ret;
-+	}
-+
- 	ret = spi_register_master(master);
- 	if (ret) {
- 		dev_err(&pdev->dev, "spi_register_master failed\n");
-@@ -714,8 +821,10 @@ static int mxic_spi_probe(struct platform_device *pdev)
- static int mxic_spi_remove(struct platform_device *pdev)
- {
- 	struct spi_master *master = platform_get_drvdata(pdev);
-+	struct mxic_spi *mxic = spi_master_get_devdata(master);
- 
- 	pm_runtime_disable(&pdev->dev);
-+	mxic_spi_mem_ecc_remove(mxic);
- 	spi_unregister_master(master);
- 
- 	return 0;
 -- 
-2.27.0
+2.25.1
 
 
 ______________________________________________________
