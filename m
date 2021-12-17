@@ -4,76 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 929F5C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 12:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19E5AC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 12:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2pMHZzzAD51BJQRznbn7zcQDputAzO0NMe/x9Lid2W4=; b=TQ7oajqjg1kaR5
-	0ia7FT0llNYw6heDxFwfzs6CGf1t3b+qTNhfOp7OhXQAYCKFXyO7Vq8YkSmmDO/brTIXhUL2EUYxS
-	42ziPOm3PgazlD82NBX2poXcvlmWv+URr4GENPKJTI7Qd5W01ySg9UIjuWovRo7FGP7IFGZwtzqzI
-	9Mvval+n8iXEYs1NcUf+FILDcb0ymo2MBb/IE81T1lEgZ113Pn6fhGwQOS3Q+Ch7yZTcd6knpiKpu
-	22bstvNinSOGTXfTZ14+zHSm03ricbOU4PqJE0kMBzr11UIZSxSC2aCwE1nooIni5dALKuAL3hTbT
-	6H1jq4EDgUID4yZuPCIQ==;
+	List-Owner; bh=mXv1mfAQi3CzZBcTYc4vAF3nYAEf0EdAwIi/PfbQh/4=; b=idjwj1NZ2YQ4WQ
+	/BjnNyH6G9aLjyroVYAk3sOlAIsoBBPohVD8fb34TuBAoynZUdLR8pcrrLyRSvO7LVV+PqIxANsxa
+	qtY78E91SyhnOU6qCSFD5EZM68KoSXgOZ8JNooRVblTIItN2O6ax6Bz6Rp1MIo1piw00zh4qm61W8
+	bVVHQjlrQmMLUk0OaIfNHOv+ZOTeCu/crmadwBgCSlGfO2u5deykxV02gI156ON9urQHY8AK1WGj4
+	cOaYfLmXZrhwGrQHvteZzQRJ7z6ocZHWO/IkX9RwdWJiN93/AmtkOAxdigh6c0h6NOmB3VgpkV0jS
+	8nADXPS3JMiqi8IeVJag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myCWT-00ABuM-6W; Fri, 17 Dec 2021 12:39:41 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1myCoK-00AGx9-0S; Fri, 17 Dec 2021 12:58:08 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myCWE-00ABmB-4X
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 12:39:28 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BHCdBfJ107898;
- Fri, 17 Dec 2021 06:39:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1639744751;
- bh=FAu+99gnOYXsg8Iibj0K87OAsF32t/5ttw3obRFik6g=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=mjgOFnMe4T6TZbBLv7RmhiefzGfP4lgrvktSCnoQmYMDup82s/kBd/bPvaV80CKYW
- iqnf/iw5HFfuaKmxEsGmrOEl3oryNa/L9M9CO4mXfU53/qxoH4Sx6UCtPxZGZ8V3xr
- 8ZfLBH/fXA/lx25gjm26f4E0EsIHRxCOY/JpVkII=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BHCdBmY041776
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 17 Dec 2021 06:39:11 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Dec 2021 06:39:11 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 17 Dec 2021 06:39:11 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BHCdAqP064527;
- Fri, 17 Dec 2021 06:39:11 -0600
-Date: Fri, 17 Dec 2021 18:09:10 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Michal Simek
+ id 1myCoG-00AGvz-Qa
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 12:58:07 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 7C8EBFF807;
+ Fri, 17 Dec 2021 12:58:01 +0000 (UTC)
+Date: Fri, 17 Dec 2021 13:58:00 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael
+ Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Michal Simek
  <monstr@monstr.eu>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Rob
  Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>, Mark Brown
  <broonie@kernel.org>, <linux-spi@vger.kernel.org>
 Subject: Re: [PATCH v4 2/3] spi: dt-bindings: Describe stacked/parallel
  memories modes
-Message-ID: <20211217123908.wmki3tlnk3k4nxha@ti.com>
+Message-ID: <20211217135800.3d91d2fe@xps13>
+In-Reply-To: <20211217123908.wmki3tlnk3k4nxha@ti.com>
 References: <20211210201039.729961-1-miquel.raynal@bootlin.com>
  <20211210201039.729961-3-miquel.raynal@bootlin.com>
  <20211214194431.4kpwfgvju6msh5d4@ti.com>
  <20211216172544.2005d96e@xps13>
+ <20211217123908.wmki3tlnk3k4nxha@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211216172544.2005d96e@xps13>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_043926_335333_A85E4F70 
-X-CRM114-Status: GOOD (  70.77  )
+X-CRM114-CacheID: sfid-20211217_045805_169094_55DF65F2 
+X-CRM114-Status: GOOD (  75.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,209 +63,170 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 16/12/21 05:25PM, Miquel Raynal wrote:
-> Hello Pratyush,
-> 
-> p.yadav@ti.com wrote on Wed, 15 Dec 2021 01:14:33 +0530:
-> 
-> > Hi Miquel,
-> > 
-> > On 10/12/21 09:10PM, Miquel Raynal wrote:
-> > > Describe two new memories modes:
-> > > - A stacked mode when the bus is common but the address space extended
-> > >   with an additinals wires.
-> > > - A parallel mode with parallel busses accessing parallel flashes where
-> > >   the data is spread.
-> > > 
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > ---
-> > >  .../bindings/spi/spi-peripheral-props.yaml    | 29 +++++++++++++++++++
-> > >  1 file changed, 29 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> > > index 5dd209206e88..4194fee8f556 100644
-> > > --- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> > > +++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> > > @@ -82,6 +82,35 @@ properties:
-> > >      description:
-> > >        Delay, in microseconds, after a write transfer.
-> > >  
-> > > +  stacked-memories:
-> > > +    $ref: /schemas/types.yaml#/definitions/uint64-matrix  
-> > 
-> > Why matrix? Can't you use array here? Sorry, I am not much familiar with 
-> > JSON schema.
-> 
-> Yes, Rob also opened the discussion, I've answered there on this point,
-> but I agree, this should be define as an array, but the current tooling
-> refused to accept what I wanted from a dt-writing point of view. More
-> on that on the dedicated thread.
-> 
-> > > +    description: Several SPI memories can be wired in stacked mode.
-> > > +      This basically means that either a device features several chip
-> > > +      selects, or that different devices must be seen as a single
-> > > +      bigger chip. This basically doubles (or more) the total address
-> > > +      space with only a single additional wire, while still needing
-> > > +      to repeat the commands when crossing a chip boundary. The size of
-> > > +      each chip should be provided as members of the array.
-> > > +    minItems: 2
-> > > +    maxItems: 2
-> > > +    items:
-> > > +      maxItems: 1  
-> > 
-> > Thanks. This looks better to me.
-> > 
-> > But before we go ahead, I think there has been some confusion around 
-> > what exactly your patches intend to support. Let's clear them up first. 
-> > What type of setup do you want to support?
-> 
-> Before I try to clarify your questions below, the setup that I have is:
-> 
-> Xilinx ZynqMP QSPI controller + 2 flashes.
-> 
-> What I want to describe is the specific handling of what the Xilinx
-> QSPI controller is able to do. This controller has two modes when wired
-> to more than one flash:
-> - stacked
-> - parallel
-> 
-> I have not entered the documentation nor the code in details yet, but I
-> believe that handling two flashes in the stacked configuration, besides
-> a couple of possible optimizations that are possible by the hardware,
-> is close to what any controller would do. Maybe there is one difference
-> though, when in the "stacked" mode, this controller treats the two
-> flashes as a single one, so that is why, if we want to support this
-> "advanced" mode, we *need* a way to know that this mode should be used
-> because the controller expects a wider range of addresses.
-
-Ok.
-
-> 
-> About the parallel configuration, there is absolutely no doubt that we
-> have no other choice than describing how the data is spread across two
-> devices. We don't really care about the manner, but the controller
-> needs to know how to assert the two CS internally so this definitely
-> something that needs to be described.
-
-Yes. And with device sizes as part of the property we should be able to 
-do this.
-
-> 
-> Now the question you might ask is, why do we define these properties as
-> flash properties then? And this is a real good question, I think both
-> actually work as long as we consider that we can only have either a
-> spi-memory or any other type of device on a single bus, but not both at
-> the same time. In v1 I proposed a controller property. Mark proposed to
-> switch for a device property which I did in v2 onward.
-
-I also think making it a device property makes more sense. You are 
-describing how the flashes are laid out, which is independent of the 
-controller. With the same SoC, I could have one board with a single 
-flash and another with a dual-die flash.
-
-> 
-> >   1. One single flash but with multiple dies, with each die sitting on a 
-> >      different CS.
-> 
-> Yes.
-> 
-> >   2. Two (or more) identical but independent flash memories to be 
-> >      treated as one.
-> 
-> Yes.
-> 
-> >   3. Two (or more) different and independent flash memories to be 
-> >      treated as one.
-> 
-> I don't know. My first proposal excluded these, but I believe we can
-> handle them with the change your proposed (the device size as part of
-> the property).
-> 
-> > In our earlier exchanges you said you want to support 2. And when I 
-> > wanted you to account for 3 as well you said we should use mtdconcat for 
-> > that.
-> 
-> Not that we should, but that we could because from a core perspective
-> it's way more challenging than supporting identical devices. But the
-> conversation drifted about the software backend that we should use
-> rather than on the actual description, because mtdconcat is not a
-> feature which benefits from any kind of description yet, so even if we
-> use mtdconcat as backed, we will need some kind of description here as
-> well. So, as I told previously, I am fine considering these setups
-> in my proposal, that's why I updated my proposal to include the
-> devices size, even though that is way out of scope compared to my
-> initial target.
-
-Right, and I appreciate that :-)
-
-> 
-> But here we are talking about driver code, which has nothing to do with
-> the bindings. If we focus on the bindings, I believe the solution with
-> the sizes covers all cases.
-
-I think it is important to discuss _how_ we would implement this in the 
-driver because this could help identify flaws or shortcomings in the 
-bindings. In this case, I agree with you that the solution with sizes 
-should cover all 3 cases and we now have lot more flexibility in how we 
-design the driver.
-
-> 
-> > So my question is, why can't we use mtdconcat for 2 as well, since 
-> > it is just a special case of 3? And if we are using mtdconcat, then why 
-> > do we need this at all? Shouldn't you then choose the chip at MTD layer 
-> > and use the respective SPI device to get the CS value, which would make 
-> > this property useless?
-> 
-> Reason 1:
-> As depicted above, while the stacked mode might more or less
-> fit the mtdconcat idea, it is absolutely not the case for the parallel
-> mode.
-
-Right. My question was mostly about the stacked mode.
-
-> 
-> Reason 2:
-> mtdconcat is a software backend. Here we are discussing bindings.
-> No matter what backed we finally pick, there will be the need for a
-> proper description and so far there has been no binding for mtdconcat
-> (even though I tried to push in favor of it a while ago without
-> success). So no matter what software solution we we adopt, we
-> *will* need an upstream binding description at some point. But
-> mtdconcat really means "there are two devices we want to consider as a
-> single". While here the point is: we have two devices that get
-> abstracted by the controller, and we still must describe that.
-> 
-> > I can see this making sense for case 1. For that case you said you don't 
-> > have an existing datasheet or device to propose. And if there is no real 
-> > device doing it I see little point in figuring out a binding for it.
-> 
-> Yes, because somewhat we focused the debate over the devices, while I
-> was initially talking about a controller abstraction. There is (at
-> least) one controller doing such abstractions, the Xilinx ZynqMP
-> generic QSPI controller, the spec is public (chapter 24):
-> https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf
-
-I think this _is_ a device problem first. The controller part should be 
-easy to do once we solve the device problem. Once we clearly describe 
-how the devices are laid out it should be simple for the controller side 
-to figure out what to do.
-
-> 
-> I hope all this clarifies the situation!
-
-Thanks. I am quite happy with this patch. I'll drop my R-by once you 
-figure out what type to use with these properties in v5.
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gUHJhdHl1c2gsCgpwLnlhZGF2QHRpLmNvbSB3cm90ZSBvbiBGcmksIDE3IERlYyAyMDIx
+IDE4OjA5OjEwICswNTMwOgoKPiBPbiAxNi8xMi8yMSAwNToyNVBNLCBNaXF1ZWwgUmF5bmFsIHdy
+b3RlOgo+ID4gSGVsbG8gUHJhdHl1c2gsCj4gPiAKPiA+IHAueWFkYXZAdGkuY29tIHdyb3RlIG9u
+IFdlZCwgMTUgRGVjIDIwMjEgMDE6MTQ6MzMgKzA1MzA6Cj4gPiAgIAo+ID4gPiBIaSBNaXF1ZWws
+Cj4gPiA+IAo+ID4gPiBPbiAxMC8xMi8yMSAwOToxMFBNLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAg
+Cj4gPiA+ID4gRGVzY3JpYmUgdHdvIG5ldyBtZW1vcmllcyBtb2RlczoKPiA+ID4gPiAtIEEgc3Rh
+Y2tlZCBtb2RlIHdoZW4gdGhlIGJ1cyBpcyBjb21tb24gYnV0IHRoZSBhZGRyZXNzIHNwYWNlIGV4
+dGVuZGVkCj4gPiA+ID4gICB3aXRoIGFuIGFkZGl0aW5hbHMgd2lyZXMuCj4gPiA+ID4gLSBBIHBh
+cmFsbGVsIG1vZGUgd2l0aCBwYXJhbGxlbCBidXNzZXMgYWNjZXNzaW5nIHBhcmFsbGVsIGZsYXNo
+ZXMgd2hlcmUKPiA+ID4gPiAgIHRoZSBkYXRhIGlzIHNwcmVhZC4KPiA+ID4gPiAKPiA+ID4gPiBT
+aWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgo+
+ID4gPiA+IC0tLQo+ID4gPiA+ICAuLi4vYmluZGluZ3Mvc3BpL3NwaS1wZXJpcGhlcmFsLXByb3Bz
+LnlhbWwgICAgfCAyOSArKysrKysrKysrKysrKysrKysrCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCAyOSBpbnNlcnRpb25zKCspCj4gPiA+ID4gCj4gPiA+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbCBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLXBlcmlwaGVyYWwtcHJv
+cHMueWFtbAo+ID4gPiA+IGluZGV4IDVkZDIwOTIwNmU4OC4uNDE5NGZlZThmNTU2IDEwMDY0NAo+
+ID4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLXBl
+cmlwaGVyYWwtcHJvcHMueWFtbAo+ID4gPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9zcGkvc3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbAo+ID4gPiA+IEBAIC04Miw2
+ICs4MiwzNSBAQCBwcm9wZXJ0aWVzOgo+ID4gPiA+ICAgICAgZGVzY3JpcHRpb246Cj4gPiA+ID4g
+ICAgICAgIERlbGF5LCBpbiBtaWNyb3NlY29uZHMsIGFmdGVyIGEgd3JpdGUgdHJhbnNmZXIuCj4g
+PiA+ID4gIAo+ID4gPiA+ICsgIHN0YWNrZWQtbWVtb3JpZXM6Cj4gPiA+ID4gKyAgICAkcmVmOiAv
+c2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50NjQtbWF0cml4ICAgIAo+ID4gPiAK
+PiA+ID4gV2h5IG1hdHJpeD8gQ2FuJ3QgeW91IHVzZSBhcnJheSBoZXJlPyBTb3JyeSwgSSBhbSBu
+b3QgbXVjaCBmYW1pbGlhciB3aXRoIAo+ID4gPiBKU09OIHNjaGVtYS4gIAo+ID4gCj4gPiBZZXMs
+IFJvYiBhbHNvIG9wZW5lZCB0aGUgZGlzY3Vzc2lvbiwgSSd2ZSBhbnN3ZXJlZCB0aGVyZSBvbiB0
+aGlzIHBvaW50LAo+ID4gYnV0IEkgYWdyZWUsIHRoaXMgc2hvdWxkIGJlIGRlZmluZSBhcyBhbiBh
+cnJheSwgYnV0IHRoZSBjdXJyZW50IHRvb2xpbmcKPiA+IHJlZnVzZWQgdG8gYWNjZXB0IHdoYXQg
+SSB3YW50ZWQgZnJvbSBhIGR0LXdyaXRpbmcgcG9pbnQgb2Ygdmlldy4gTW9yZQo+ID4gb24gdGhh
+dCBvbiB0aGUgZGVkaWNhdGVkIHRocmVhZC4KPiA+ICAgCj4gPiA+ID4gKyAgICBkZXNjcmlwdGlv
+bjogU2V2ZXJhbCBTUEkgbWVtb3JpZXMgY2FuIGJlIHdpcmVkIGluIHN0YWNrZWQgbW9kZS4KPiA+
+ID4gPiArICAgICAgVGhpcyBiYXNpY2FsbHkgbWVhbnMgdGhhdCBlaXRoZXIgYSBkZXZpY2UgZmVh
+dHVyZXMgc2V2ZXJhbCBjaGlwCj4gPiA+ID4gKyAgICAgIHNlbGVjdHMsIG9yIHRoYXQgZGlmZmVy
+ZW50IGRldmljZXMgbXVzdCBiZSBzZWVuIGFzIGEgc2luZ2xlCj4gPiA+ID4gKyAgICAgIGJpZ2dl
+ciBjaGlwLiBUaGlzIGJhc2ljYWxseSBkb3VibGVzIChvciBtb3JlKSB0aGUgdG90YWwgYWRkcmVz
+cwo+ID4gPiA+ICsgICAgICBzcGFjZSB3aXRoIG9ubHkgYSBzaW5nbGUgYWRkaXRpb25hbCB3aXJl
+LCB3aGlsZSBzdGlsbCBuZWVkaW5nCj4gPiA+ID4gKyAgICAgIHRvIHJlcGVhdCB0aGUgY29tbWFu
+ZHMgd2hlbiBjcm9zc2luZyBhIGNoaXAgYm91bmRhcnkuIFRoZSBzaXplIG9mCj4gPiA+ID4gKyAg
+ICAgIGVhY2ggY2hpcCBzaG91bGQgYmUgcHJvdmlkZWQgYXMgbWVtYmVycyBvZiB0aGUgYXJyYXku
+Cj4gPiA+ID4gKyAgICBtaW5JdGVtczogMgo+ID4gPiA+ICsgICAgbWF4SXRlbXM6IDIKPiA+ID4g
+PiArICAgIGl0ZW1zOgo+ID4gPiA+ICsgICAgICBtYXhJdGVtczogMSAgICAKPiA+ID4gCj4gPiA+
+IFRoYW5rcy4gVGhpcyBsb29rcyBiZXR0ZXIgdG8gbWUuCj4gPiA+IAo+ID4gPiBCdXQgYmVmb3Jl
+IHdlIGdvIGFoZWFkLCBJIHRoaW5rIHRoZXJlIGhhcyBiZWVuIHNvbWUgY29uZnVzaW9uIGFyb3Vu
+ZCAKPiA+ID4gd2hhdCBleGFjdGx5IHlvdXIgcGF0Y2hlcyBpbnRlbmQgdG8gc3VwcG9ydC4gTGV0
+J3MgY2xlYXIgdGhlbSB1cCBmaXJzdC4gCj4gPiA+IFdoYXQgdHlwZSBvZiBzZXR1cCBkbyB5b3Ug
+d2FudCB0byBzdXBwb3J0PyAgCj4gPiAKPiA+IEJlZm9yZSBJIHRyeSB0byBjbGFyaWZ5IHlvdXIg
+cXVlc3Rpb25zIGJlbG93LCB0aGUgc2V0dXAgdGhhdCBJIGhhdmUgaXM6Cj4gPiAKPiA+IFhpbGlu
+eCBaeW5xTVAgUVNQSSBjb250cm9sbGVyICsgMiBmbGFzaGVzLgo+ID4gCj4gPiBXaGF0IEkgd2Fu
+dCB0byBkZXNjcmliZSBpcyB0aGUgc3BlY2lmaWMgaGFuZGxpbmcgb2Ygd2hhdCB0aGUgWGlsaW54
+Cj4gPiBRU1BJIGNvbnRyb2xsZXIgaXMgYWJsZSB0byBkby4gVGhpcyBjb250cm9sbGVyIGhhcyB0
+d28gbW9kZXMgd2hlbiB3aXJlZAo+ID4gdG8gbW9yZSB0aGFuIG9uZSBmbGFzaDoKPiA+IC0gc3Rh
+Y2tlZAo+ID4gLSBwYXJhbGxlbAo+ID4gCj4gPiBJIGhhdmUgbm90IGVudGVyZWQgdGhlIGRvY3Vt
+ZW50YXRpb24gbm9yIHRoZSBjb2RlIGluIGRldGFpbHMgeWV0LCBidXQgSQo+ID4gYmVsaWV2ZSB0
+aGF0IGhhbmRsaW5nIHR3byBmbGFzaGVzIGluIHRoZSBzdGFja2VkIGNvbmZpZ3VyYXRpb24sIGJl
+c2lkZXMKPiA+IGEgY291cGxlIG9mIHBvc3NpYmxlIG9wdGltaXphdGlvbnMgdGhhdCBhcmUgcG9z
+c2libGUgYnkgdGhlIGhhcmR3YXJlLAo+ID4gaXMgY2xvc2UgdG8gd2hhdCBhbnkgY29udHJvbGxl
+ciB3b3VsZCBkby4gTWF5YmUgdGhlcmUgaXMgb25lIGRpZmZlcmVuY2UKPiA+IHRob3VnaCwgd2hl
+biBpbiB0aGUgInN0YWNrZWQiIG1vZGUsIHRoaXMgY29udHJvbGxlciB0cmVhdHMgdGhlIHR3bwo+
+ID4gZmxhc2hlcyBhcyBhIHNpbmdsZSBvbmUsIHNvIHRoYXQgaXMgd2h5LCBpZiB3ZSB3YW50IHRv
+IHN1cHBvcnQgdGhpcwo+ID4gImFkdmFuY2VkIiBtb2RlLCB3ZSAqbmVlZCogYSB3YXkgdG8ga25v
+dyB0aGF0IHRoaXMgbW9kZSBzaG91bGQgYmUgdXNlZAo+ID4gYmVjYXVzZSB0aGUgY29udHJvbGxl
+ciBleHBlY3RzIGEgd2lkZXIgcmFuZ2Ugb2YgYWRkcmVzc2VzLiAgCj4gCj4gT2suCj4gCj4gPiAK
+PiA+IEFib3V0IHRoZSBwYXJhbGxlbCBjb25maWd1cmF0aW9uLCB0aGVyZSBpcyBhYnNvbHV0ZWx5
+IG5vIGRvdWJ0IHRoYXQgd2UKPiA+IGhhdmUgbm8gb3RoZXIgY2hvaWNlIHRoYW4gZGVzY3JpYmlu
+ZyBob3cgdGhlIGRhdGEgaXMgc3ByZWFkIGFjcm9zcyB0d28KPiA+IGRldmljZXMuIFdlIGRvbid0
+IHJlYWxseSBjYXJlIGFib3V0IHRoZSBtYW5uZXIsIGJ1dCB0aGUgY29udHJvbGxlcgo+ID4gbmVl
+ZHMgdG8ga25vdyBob3cgdG8gYXNzZXJ0IHRoZSB0d28gQ1MgaW50ZXJuYWxseSBzbyB0aGlzIGRl
+ZmluaXRlbHkKPiA+IHNvbWV0aGluZyB0aGF0IG5lZWRzIHRvIGJlIGRlc2NyaWJlZC4gIAo+IAo+
+IFllcy4gQW5kIHdpdGggZGV2aWNlIHNpemVzIGFzIHBhcnQgb2YgdGhlIHByb3BlcnR5IHdlIHNo
+b3VsZCBiZSBhYmxlIHRvIAo+IGRvIHRoaXMuCj4gCj4gPiAKPiA+IE5vdyB0aGUgcXVlc3Rpb24g
+eW91IG1pZ2h0IGFzayBpcywgd2h5IGRvIHdlIGRlZmluZSB0aGVzZSBwcm9wZXJ0aWVzIGFzCj4g
+PiBmbGFzaCBwcm9wZXJ0aWVzIHRoZW4/IEFuZCB0aGlzIGlzIGEgcmVhbCBnb29kIHF1ZXN0aW9u
+LCBJIHRoaW5rIGJvdGgKPiA+IGFjdHVhbGx5IHdvcmsgYXMgbG9uZyBhcyB3ZSBjb25zaWRlciB0
+aGF0IHdlIGNhbiBvbmx5IGhhdmUgZWl0aGVyIGEKPiA+IHNwaS1tZW1vcnkgb3IgYW55IG90aGVy
+IHR5cGUgb2YgZGV2aWNlIG9uIGEgc2luZ2xlIGJ1cywgYnV0IG5vdCBib3RoIGF0Cj4gPiB0aGUg
+c2FtZSB0aW1lLiBJbiB2MSBJIHByb3Bvc2VkIGEgY29udHJvbGxlciBwcm9wZXJ0eS4gTWFyayBw
+cm9wb3NlZCB0bwo+ID4gc3dpdGNoIGZvciBhIGRldmljZSBwcm9wZXJ0eSB3aGljaCBJIGRpZCBp
+biB2MiBvbndhcmQuICAKPiAKPiBJIGFsc28gdGhpbmsgbWFraW5nIGl0IGEgZGV2aWNlIHByb3Bl
+cnR5IG1ha2VzIG1vcmUgc2Vuc2UuIFlvdSBhcmUgCj4gZGVzY3JpYmluZyBob3cgdGhlIGZsYXNo
+ZXMgYXJlIGxhaWQgb3V0LCB3aGljaCBpcyBpbmRlcGVuZGVudCBvZiB0aGUgCj4gY29udHJvbGxl
+ci4gV2l0aCB0aGUgc2FtZSBTb0MsIEkgY291bGQgaGF2ZSBvbmUgYm9hcmQgd2l0aCBhIHNpbmds
+ZSAKPiBmbGFzaCBhbmQgYW5vdGhlciB3aXRoIGEgZHVhbC1kaWUgZmxhc2guCj4gCj4gPiAgIAo+
+ID4gPiAgIDEuIE9uZSBzaW5nbGUgZmxhc2ggYnV0IHdpdGggbXVsdGlwbGUgZGllcywgd2l0aCBl
+YWNoIGRpZSBzaXR0aW5nIG9uIGEgCj4gPiA+ICAgICAgZGlmZmVyZW50IENTLiAgCj4gPiAKPiA+
+IFllcy4KPiA+ICAgCj4gPiA+ICAgMi4gVHdvIChvciBtb3JlKSBpZGVudGljYWwgYnV0IGluZGVw
+ZW5kZW50IGZsYXNoIG1lbW9yaWVzIHRvIGJlIAo+ID4gPiAgICAgIHRyZWF0ZWQgYXMgb25lLiAg
+Cj4gPiAKPiA+IFllcy4KPiA+ICAgCj4gPiA+ICAgMy4gVHdvIChvciBtb3JlKSBkaWZmZXJlbnQg
+YW5kIGluZGVwZW5kZW50IGZsYXNoIG1lbW9yaWVzIHRvIGJlIAo+ID4gPiAgICAgIHRyZWF0ZWQg
+YXMgb25lLiAgCj4gPiAKPiA+IEkgZG9uJ3Qga25vdy4gTXkgZmlyc3QgcHJvcG9zYWwgZXhjbHVk
+ZWQgdGhlc2UsIGJ1dCBJIGJlbGlldmUgd2UgY2FuCj4gPiBoYW5kbGUgdGhlbSB3aXRoIHRoZSBj
+aGFuZ2UgeW91ciBwcm9wb3NlZCAodGhlIGRldmljZSBzaXplIGFzIHBhcnQgb2YKPiA+IHRoZSBw
+cm9wZXJ0eSkuCj4gPiAgIAo+ID4gPiBJbiBvdXIgZWFybGllciBleGNoYW5nZXMgeW91IHNhaWQg
+eW91IHdhbnQgdG8gc3VwcG9ydCAyLiBBbmQgd2hlbiBJIAo+ID4gPiB3YW50ZWQgeW91IHRvIGFj
+Y291bnQgZm9yIDMgYXMgd2VsbCB5b3Ugc2FpZCB3ZSBzaG91bGQgdXNlIG10ZGNvbmNhdCBmb3Ig
+Cj4gPiA+IHRoYXQuICAKPiA+IAo+ID4gTm90IHRoYXQgd2Ugc2hvdWxkLCBidXQgdGhhdCB3ZSBj
+b3VsZCBiZWNhdXNlIGZyb20gYSBjb3JlIHBlcnNwZWN0aXZlCj4gPiBpdCdzIHdheSBtb3JlIGNo
+YWxsZW5naW5nIHRoYW4gc3VwcG9ydGluZyBpZGVudGljYWwgZGV2aWNlcy4gQnV0IHRoZQo+ID4g
+Y29udmVyc2F0aW9uIGRyaWZ0ZWQgYWJvdXQgdGhlIHNvZnR3YXJlIGJhY2tlbmQgdGhhdCB3ZSBz
+aG91bGQgdXNlCj4gPiByYXRoZXIgdGhhbiBvbiB0aGUgYWN0dWFsIGRlc2NyaXB0aW9uLCBiZWNh
+dXNlIG10ZGNvbmNhdCBpcyBub3QgYQo+ID4gZmVhdHVyZSB3aGljaCBiZW5lZml0cyBmcm9tIGFu
+eSBraW5kIG9mIGRlc2NyaXB0aW9uIHlldCwgc28gZXZlbiBpZiB3ZQo+ID4gdXNlIG10ZGNvbmNh
+dCBhcyBiYWNrZWQsIHdlIHdpbGwgbmVlZCBzb21lIGtpbmQgb2YgZGVzY3JpcHRpb24gaGVyZSBh
+cwo+ID4gd2VsbC4gU28sIGFzIEkgdG9sZCBwcmV2aW91c2x5LCBJIGFtIGZpbmUgY29uc2lkZXJp
+bmcgdGhlc2Ugc2V0dXBzCj4gPiBpbiBteSBwcm9wb3NhbCwgdGhhdCdzIHdoeSBJIHVwZGF0ZWQg
+bXkgcHJvcG9zYWwgdG8gaW5jbHVkZSB0aGUKPiA+IGRldmljZXMgc2l6ZSwgZXZlbiB0aG91Z2gg
+dGhhdCBpcyB3YXkgb3V0IG9mIHNjb3BlIGNvbXBhcmVkIHRvIG15Cj4gPiBpbml0aWFsIHRhcmdl
+dC4gIAo+IAo+IFJpZ2h0LCBhbmQgSSBhcHByZWNpYXRlIHRoYXQgOi0pCj4gCj4gPiAKPiA+IEJ1
+dCBoZXJlIHdlIGFyZSB0YWxraW5nIGFib3V0IGRyaXZlciBjb2RlLCB3aGljaCBoYXMgbm90aGlu
+ZyB0byBkbyB3aXRoCj4gPiB0aGUgYmluZGluZ3MuIElmIHdlIGZvY3VzIG9uIHRoZSBiaW5kaW5n
+cywgSSBiZWxpZXZlIHRoZSBzb2x1dGlvbiB3aXRoCj4gPiB0aGUgc2l6ZXMgY292ZXJzIGFsbCBj
+YXNlcy4gIAo+IAo+IEkgdGhpbmsgaXQgaXMgaW1wb3J0YW50IHRvIGRpc2N1c3MgX2hvd18gd2Ug
+d291bGQgaW1wbGVtZW50IHRoaXMgaW4gdGhlIAo+IGRyaXZlciBiZWNhdXNlIHRoaXMgY291bGQg
+aGVscCBpZGVudGlmeSBmbGF3cyBvciBzaG9ydGNvbWluZ3MgaW4gdGhlIAo+IGJpbmRpbmdzLiBJ
+biB0aGlzIGNhc2UsIEkgYWdyZWUgd2l0aCB5b3UgdGhhdCB0aGUgc29sdXRpb24gd2l0aCBzaXpl
+cyAKPiBzaG91bGQgY292ZXIgYWxsIDMgY2FzZXMgYW5kIHdlIG5vdyBoYXZlIGxvdCBtb3JlIGZs
+ZXhpYmlsaXR5IGluIGhvdyB3ZSAKPiBkZXNpZ24gdGhlIGRyaXZlci4KPiAKPiA+ICAgCj4gPiA+
+IFNvIG15IHF1ZXN0aW9uIGlzLCB3aHkgY2FuJ3Qgd2UgdXNlIG10ZGNvbmNhdCBmb3IgMiBhcyB3
+ZWxsLCBzaW5jZSAKPiA+ID4gaXQgaXMganVzdCBhIHNwZWNpYWwgY2FzZSBvZiAzPyBBbmQgaWYg
+d2UgYXJlIHVzaW5nIG10ZGNvbmNhdCwgdGhlbiB3aHkgCj4gPiA+IGRvIHdlIG5lZWQgdGhpcyBh
+dCBhbGw/IFNob3VsZG4ndCB5b3UgdGhlbiBjaG9vc2UgdGhlIGNoaXAgYXQgTVREIGxheWVyIAo+
+ID4gPiBhbmQgdXNlIHRoZSByZXNwZWN0aXZlIFNQSSBkZXZpY2UgdG8gZ2V0IHRoZSBDUyB2YWx1
+ZSwgd2hpY2ggd291bGQgbWFrZSAKPiA+ID4gdGhpcyBwcm9wZXJ0eSB1c2VsZXNzPyAgCj4gPiAK
+PiA+IFJlYXNvbiAxOgo+ID4gQXMgZGVwaWN0ZWQgYWJvdmUsIHdoaWxlIHRoZSBzdGFja2VkIG1v
+ZGUgbWlnaHQgbW9yZSBvciBsZXNzCj4gPiBmaXQgdGhlIG10ZGNvbmNhdCBpZGVhLCBpdCBpcyBh
+YnNvbHV0ZWx5IG5vdCB0aGUgY2FzZSBmb3IgdGhlIHBhcmFsbGVsCj4gPiBtb2RlLiAgCj4gCj4g
+UmlnaHQuIE15IHF1ZXN0aW9uIHdhcyBtb3N0bHkgYWJvdXQgdGhlIHN0YWNrZWQgbW9kZS4KPiAK
+PiA+IAo+ID4gUmVhc29uIDI6Cj4gPiBtdGRjb25jYXQgaXMgYSBzb2Z0d2FyZSBiYWNrZW5kLiBI
+ZXJlIHdlIGFyZSBkaXNjdXNzaW5nIGJpbmRpbmdzLgo+ID4gTm8gbWF0dGVyIHdoYXQgYmFja2Vk
+IHdlIGZpbmFsbHkgcGljaywgdGhlcmUgd2lsbCBiZSB0aGUgbmVlZCBmb3IgYQo+ID4gcHJvcGVy
+IGRlc2NyaXB0aW9uIGFuZCBzbyBmYXIgdGhlcmUgaGFzIGJlZW4gbm8gYmluZGluZyBmb3IgbXRk
+Y29uY2F0Cj4gPiAoZXZlbiB0aG91Z2ggSSB0cmllZCB0byBwdXNoIGluIGZhdm9yIG9mIGl0IGEg
+d2hpbGUgYWdvIHdpdGhvdXQKPiA+IHN1Y2Nlc3MpLiBTbyBubyBtYXR0ZXIgd2hhdCBzb2Z0d2Fy
+ZSBzb2x1dGlvbiB3ZSB3ZSBhZG9wdCwgd2UKPiA+ICp3aWxsKiBuZWVkIGFuIHVwc3RyZWFtIGJp
+bmRpbmcgZGVzY3JpcHRpb24gYXQgc29tZSBwb2ludC4gQnV0Cj4gPiBtdGRjb25jYXQgcmVhbGx5
+IG1lYW5zICJ0aGVyZSBhcmUgdHdvIGRldmljZXMgd2Ugd2FudCB0byBjb25zaWRlciBhcyBhCj4g
+PiBzaW5nbGUiLiBXaGlsZSBoZXJlIHRoZSBwb2ludCBpczogd2UgaGF2ZSB0d28gZGV2aWNlcyB0
+aGF0IGdldAo+ID4gYWJzdHJhY3RlZCBieSB0aGUgY29udHJvbGxlciwgYW5kIHdlIHN0aWxsIG11
+c3QgZGVzY3JpYmUgdGhhdC4KPiA+ICAgCj4gPiA+IEkgY2FuIHNlZSB0aGlzIG1ha2luZyBzZW5z
+ZSBmb3IgY2FzZSAxLiBGb3IgdGhhdCBjYXNlIHlvdSBzYWlkIHlvdSBkb24ndCAKPiA+ID4gaGF2
+ZSBhbiBleGlzdGluZyBkYXRhc2hlZXQgb3IgZGV2aWNlIHRvIHByb3Bvc2UuIEFuZCBpZiB0aGVy
+ZSBpcyBubyByZWFsIAo+ID4gPiBkZXZpY2UgZG9pbmcgaXQgSSBzZWUgbGl0dGxlIHBvaW50IGlu
+IGZpZ3VyaW5nIG91dCBhIGJpbmRpbmcgZm9yIGl0LiAgCj4gPiAKPiA+IFllcywgYmVjYXVzZSBz
+b21ld2hhdCB3ZSBmb2N1c2VkIHRoZSBkZWJhdGUgb3ZlciB0aGUgZGV2aWNlcywgd2hpbGUgSQo+
+ID4gd2FzIGluaXRpYWxseSB0YWxraW5nIGFib3V0IGEgY29udHJvbGxlciBhYnN0cmFjdGlvbi4g
+VGhlcmUgaXMgKGF0Cj4gPiBsZWFzdCkgb25lIGNvbnRyb2xsZXIgZG9pbmcgc3VjaCBhYnN0cmFj
+dGlvbnMsIHRoZSBYaWxpbnggWnlucU1QCj4gPiBnZW5lcmljIFFTUEkgY29udHJvbGxlciwgdGhl
+IHNwZWMgaXMgcHVibGljIChjaGFwdGVyIDI0KToKPiA+IGh0dHBzOi8vd3d3LnhpbGlueC5jb20v
+c3VwcG9ydC9kb2N1bWVudGF0aW9uL3VzZXJfZ3VpZGVzL3VnMTA4NS16eW5xLXVsdHJhc2NhbGUt
+dHJtLnBkZiAgCj4gCj4gSSB0aGluayB0aGlzIF9pc18gYSBkZXZpY2UgcHJvYmxlbSBmaXJzdC4g
+VGhlIGNvbnRyb2xsZXIgcGFydCBzaG91bGQgYmUgCj4gZWFzeSB0byBkbyBvbmNlIHdlIHNvbHZl
+IHRoZSBkZXZpY2UgcHJvYmxlbS4gT25jZSB3ZSBjbGVhcmx5IGRlc2NyaWJlIAo+IGhvdyB0aGUg
+ZGV2aWNlcyBhcmUgbGFpZCBvdXQgaXQgc2hvdWxkIGJlIHNpbXBsZSBmb3IgdGhlIGNvbnRyb2xs
+ZXIgc2lkZSAKPiB0byBmaWd1cmUgb3V0IHdoYXQgdG8gZG8uCj4gCj4gPiAKPiA+IEkgaG9wZSBh
+bGwgdGhpcyBjbGFyaWZpZXMgdGhlIHNpdHVhdGlvbiEgIAo+IAo+IFRoYW5rcy4gSSBhbSBxdWl0
+ZSBoYXBweSB3aXRoIHRoaXMgcGF0Y2guIEknbGwgZHJvcCBteSBSLWJ5IG9uY2UgeW91IAo+IGZp
+Z3VyZSBvdXQgd2hhdCB0eXBlIHRvIHVzZSB3aXRoIHRoZXNlIHByb3BlcnRpZXMgaW4gdjUuCgpH
+cmVhdCEgVGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgdGhpcyBkaXNjdXNzaW9uLCBpdCBmb3JjZWQg
+bWUgdG8gY2xhcmlmeQp0aGluZ3MgaW4gbXkgaGVhZCBhcyB3ZWxsIDotKQoKVGhhbmtzLApNaXF1
+w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
