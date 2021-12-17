@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60D53C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 10:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 641AAC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 10:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SWmTkyJl5d/T3PHzswzw//nQHwlzbdt16lekDYoHZRo=; b=t8BQZOTRGHo9hB
-	17sfaWl5XocsLgJeU3qF3/qZ30JU1UqbniZvXQyeQZon2MR4IcLjjDPcTtFUdhDHK8mOuA/F7oWw/
-	GoZiJ76G44lhCtVs54wBAlLppvDUcxryH3lJKkR2QQKsnkv3lrVWDqeTRl4qShfw/Swxz7CMQLms1
-	Ro8sGYZ8q8VR6/RGZ84w/oVqoYTOo17xVTGUG1V5jMBIiyZwqWh2rETb377GBbRiDJyQHkwfXBmvk
-	OyFAti8kZ1GhCEPHV2QcOV5Uhjt+54ZPyXOcVB7hRxA9tHZ9p964HxEPn8SoY2P9mGbXwFfy7XLwo
-	ZZVTNnh43dTZDIKlX9zA==;
+	List-Owner; bh=3o6JNwkRuT6w9WAvj9Y0BgX+ExWAN2waRX9oVuB24HM=; b=GNvxHV6GH7lAjc
+	MJwMa7KJL8sjGBw+EqQnPaMEht2EJcGYjG/yvLHud+zP2c7ljCOs5vbVyr0/UOUieY/dP56XfpBY3
+	6VTDTEWG+bR2JvLDPikaVq9g/HxnwVUfPMMffK3VDG2GkVBDC+UnKvgLtJ/wFMxxeWCzEOmo2CNqg
+	J0dU9GxFmOkUNxC5ZQb+x06XT4iQJPf8fQ71eRHL1jIpBg/oKdMQrMf3oDaNwECs7ACDvFJ1YGdL+
+	pWFbXdNzb1fFp2UkNq1pg06cJPWYWPiJWqfv5N0m2lROx7iKib6ok5xyZsIoWOjXN8clYT4/0vdcJ
+	FRWWBKSqiz2uZF76N+Nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myAmn-009ak0-8U; Fri, 17 Dec 2021 10:48:26 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1myAqc-009bwJ-QC; Fri, 17 Dec 2021 10:52:23 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myAgt-009ZHP-3y
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 10:42:24 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BHAgF6S104426;
- Fri, 17 Dec 2021 04:42:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1639737735;
- bh=S6ZLgkIQ+Q0XPCetUL1bICQ1qsCCb6+pIL5oIjtesTs=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=lV632QdrOsQRlkyaqM2cUdBiRrVzfa0QSpJPZeWqv5owiKoUcW+dSJ3Hd7SuqkaEl
- wO3IplgGBsMasb3gkjpFByCUO4HeQJP9ffYW7hugovsdk3h7Oi+dbjwdp0EgNO8rB1
- s3occh+pM0vq8kIxBLkItuENFi3nzRpTfdV5uti0=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BHAgFiS062610
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 17 Dec 2021 04:42:15 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 17
- Dec 2021 04:42:15 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 17 Dec 2021 04:42:15 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BHAgEI9062172;
- Fri, 17 Dec 2021 04:42:15 -0600
-Date: Fri, 17 Dec 2021 16:12:14 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-CC: <michael@walle.cc>, <vigneshr@ti.com>, <miquel.raynal@bootlin.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
- <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: core: Introduce SPI_NOR_SOFT_RESET
- flash_info fixup_flag
-Message-ID: <20211217104212.d37qeyomskjhdtvi@ti.com>
-References: <20211209190436.401946-1-tudor.ambarus@microchip.com>
+ id 1myAqV-009bu2-1k
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 10:52:16 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 21AA51F46C37;
+ Fri, 17 Dec 2021 10:52:10 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+ t=1639738330; bh=7OW2czdKX3FOlvIcEt9ndAFP8hy/VaLOI/2Yd90oy3o=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=W74HTJ6QKDRz52ZWbSD+FVBQv/wR3evutz2llqYeH5+ldowDRSPzWYz4FNTxwoPO3
+ BFpRavydFEFe2rQuArOnIisUB8rEsBPK8npBUzG7Uj2suLuBMQv1yhXmiZjRviX0Oi
+ +p7j59IhqOzqmiaCPF9LnUnZXsxQZiSzWDEK1CfyDmXFSbQ2ASczaWgzH2GEvSQSW8
+ Ko6DS1t5Zwg1ZPhur7T+hjIVIb/N7OwUS7PbzWX1FHZ5gg0kZ2POrTKh/8V7rAlRG4
+ dTf3i0uZKmxRlCdadqB9yRoxzD2/q9TmNI4D+9dyIgSwmo+aKhN8C1r5Fj3uHoY0+U
+ X+gaoWysGFnDA==
+Date: Fri, 17 Dec 2021 11:52:06 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Mark Brown
+ <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>, Michael Walle
+ <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Jonathan Corbet <corbet@lwn.net>, Mauro Lima
+ <mauro.lima@eclypsium.com>, Alexander Sverdlin
+ <alexander.sverdlin@nokia.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Hans-Gert Dahmen
+ <hans-gert.dahmen@immu.ne>, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
+Message-ID: <20211217115206.33da307c@collabora.com>
+In-Reply-To: <Ybxotgb927kpCizL@lahna>
+References: <20211118130543.11179-1-mika.westerberg@linux.intel.com>
+ <20211118130543.11179-3-mika.westerberg@linux.intel.com>
+ <20211216115100.448351e4@collabora.com> <Ybtn1VTsspxdIeT8@lahna>
+ <20211216174347.69cf611c@collabora.com> <Ybxotgb927kpCizL@lahna>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211209190436.401946-1-tudor.ambarus@microchip.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_024219_262672_361CC23E 
-X-CRM114-Status: GOOD (  10.80  )
+X-CRM114-CacheID: sfid-20211217_025215_346119_F602F595 
+X-CRM114-Status: GOOD (  15.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,25 +82,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/12/21 09:04PM, Tudor Ambarus wrote:
-> The Soft Reset and Rescue Sequence Support is defined in BFPT_DWORD(16)
-> starting with JESD216A. The first version of SFDP, JESD216 (April 2011),
-> defines just the first 9 BFPT DWORDS, thus it does not contain information
-> about the Software Reset and Rescue Support. Since this support can not
-> be discovered by parsing the first SFDP version, introduce a flash_info
-> fixup_flag that will be used either by flashes that define
-> JESD216 (April 2011) or by flashes that do not define SFDP at all.
-> In case a flash defines BFPT_DWORD(16) but with wrong values, one should
-> instead use a post_bfpt() hook and set SNOR_F_SOFT_RESET.
+On Fri, 17 Dec 2021 12:38:46 +0200
+Mika Westerberg <mika.westerberg@linux.intel.com> wrote:
+
+> Hi,
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> On Thu, Dec 16, 2021 at 05:43:47PM +0100, Boris Brezillon wrote:
+> > Why no just
+> > 
+> > 	if (iop->mem_op.addr.nbytes != op->addr.nbytes ||
+> > 	    iop->mem_op.addr.dtr != op->addr.dtr)
+> > 		return false;
+> > 
+> > then?  
+> 
+> That would be too simple ;-)
+> 
+> I'll do this change in v5.
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+I didn't review the driver thoroughly, but it looks clean an tidy. Feel
+free to add
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+One more thing. I think it'd be good to implement the dirmap hooks (in
+a follow-up series, not here), so you don't have to iterate over the ops
+table every time a read/write request is issued. Should be as simple as
+storing the exec_op() pointer in the driver-private dirmap pointer, and
+calling this function when ->dirmap_{read,write}() is called.
 
 ______________________________________________________
 Linux MTD discussion mailing list
