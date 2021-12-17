@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94EB7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 17:10:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7127BC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 17:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=inSBUEwVq/4OT2Pz13Goc1hFluEVOASOxrwVAiuo5xo=; b=o8z9giJ7UEKm48
-	Vk+lZSCk//gimBzHmAUXGQM4od+2UOYgerc/6oUSqK/o0uMkK+JYWtqoJCgP7JQVNOOgeKPIHEPaM
-	l7AZusTelJs0HKZNnY0/GkoEs7x6EDeNuh++XLPfH+phOt9Qb/x14ejyP3VPQzlytp4lbtCzwhlMd
-	vst/tFiaKq/o4kva+Ztevq6lP/TlZYLDnnsvRRp0a6/Ecf0Fmfjl7Guw01s6MEGLFTmdc4PN05N1K
-	ETs+rqM7WrCKttjS99Nh+D8vstJIns5HDmeEJun9a3+t29ZT9r8i9TYfh8jwRftimMb88ZLIlxPOe
-	rfmETFFwRb9t0HODaG4Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=zru+i7IjwCmyrzU3gjdDS5hdg7hwV0bcyy4etrULvZI=; b=srfoYmTOy7rkqk
+	pX7/vrJr/OH/C9pvUX35OZhWUbKvBExNaHPKgRWJrC0AnfETefE/nuWlaTDelLiRdwVRcI7eFBgGX
+	X5Kr1o8rJLX/bC5n11Z4VNSV55C6v4HhH2WmTMImzqYwL3i92UHY1WVGFn7p0RFgB6iXHsiAk5QnR
+	0OsEEw+OORJYRsEvWPciI/naa8hfMw7cwhp+EhI/pevRLIejByfE0TovJ0srNfjBVFzxixbgaEqfr
+	uQDD5Yq4lKt2IaUL5RaraKPhu7k9DjswGFNWvNiGMHFQWsuOE3+wP6wk6OD3teYeMVexQjvZ+aZzf
+	0e97x+UNm6+sEScshzvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myGjR-00BNi3-JS; Fri, 17 Dec 2021 17:09:21 +0000
+	id 1myGl3-00BOMM-01; Fri, 17 Dec 2021 17:11:01 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myFum-00B7Tb-Tn
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 16:17:03 +0000
+ id 1myFup-00B7UH-8N
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 16:17:04 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 02755200010;
- Fri, 17 Dec 2021 16:16:55 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 92E57200009;
+ Fri, 17 Dec 2021 16:16:59 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -38,14 +38,17 @@ Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v7 00/14] External ECC engines & Macronix support
-Date: Fri, 17 Dec 2021 17:16:40 +0100
-Message-Id: <20211217161654.367782-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v7 01/14] spi: spi-mem: Fix a DTR related check in
+ spi_mem_dtr_supports_op()
+Date: Fri, 17 Dec 2021 17:16:41 +0100
+Message-Id: <20211217161654.367782-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211217161654.367782-1-miquel.raynal@bootlin.com>
+References: <20211217161654.367782-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_081701_286349_B09AD9E5 
-X-CRM114-Status: GOOD (  23.31  )
+X-CRM114-CacheID: sfid-20211217_081703_477652_3CF89633 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -57,101 +60,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gYWxsLAoKQXMgSSByZWNlaXZlZCB0aGUgbGFzdCBtaXNzaW5nIGFjayBmcm9tIFJvYiBm
-b3IgdGhlIGZpcnN0IGhhbHZlIG9mIHRoZQpzZXJpZXMgKGJpbmRpbmdzICsgRUNDIHBhcnQpIEkn
-dmUgYXBwbGllZCB0aGUgYmVnaW5uaW5nIG9mIHRoZSBzZXJpZXMKaW4gYSBicmFuY2ggbmFtZWQg
-c3BpLW1lbS1lY2Mgb24gdGhlIE1URCBrb3JnIHJlcG9zaXRvcnksIGhlbmNlIG5vdyBJIGFtCnJl
-c2VuZGluZyBvbmx5IHRoZSBzZWNvbmQgaGFsdmUsIGluY2x1ZGluZyBzcGktbWVtIGFuZCBzcGkg
-Y2hhbmdlcywKbW9zdGx5LiBXaGVuIHRoYXQgc2Vjb25kIHBhcnQgd2lsbCBiZSB2YWxpZGF0ZWQs
-IEkgd2lsbCBhcHBseSBpdCBvbiB0b3AKb2YgdGhlIHNwaS1tZW0tZWNjIGJyYW5jaCBhbmQgc2V0
-IGFuIGltbXV0YWJsZSB0YWcsIHNoYXJlZCB3aXRoIHRoZSBzcGkKdHJlZS4KCkNoZWVycywKTWlx
-dcOobAoKQ2hhbmdlcyBpbiB2NzoKKiBBZGRlZCBhIG1hY3JvIHRvIGNoZWNrIGlmIHRoZSBjYXBz
-IGFyZSBwcmVzZW50IG9yIG5vdCBiZWZvcmUgYWNjZXNzaW5nCiAgdGhlbS4gVGhpcyBhbGxvd3Mg
-Zm9yIG9wdGlvbmFsIGNhcHMuCiogRHJvcHBlZCB0aGUgJ25vLWNhcHMnIGluc3RhbmNlIGNyZWF0
-ZWQgaW4gdjYuCiogUmV3b3JrZWQgYSBiaXQgYWxsIHRoZSBwYXRjaGVzIHVzaW5nIHRoZXNlIGNh
-cHMgdG8gaGF2ZSBhIG5pY2UgYW5kCiAgYmlzZWN0YWJsZSBzZXJpZXMsIGxpa2UgYWRkaW5nIG1p
-c3Npbmcgc3RhdGljIGtleXdvcmRzLgoKQ2hhbmdlcyBpbiB2NjoKKiBSZS1pbmNsdWRlIHRoZSBm
-aXJzdCBwYXRjaGVzIGJlY2F1c2UgYSBmZXcgdGhpbmdzIGhhdmUgY2hhbmdlZCBpbiB0aGUKICBi
-aW5kaW5ncy4gVGhlc2UgYXJlIG9ubHkgc3R5bGUgY2hhbmdlcyBhcyBSb2IgYXNrZWQgdG8gZ3Jv
-dXAgZXZlcnkKICBwcm9wZXJ0eSBhYm92ZSBvciBiZWxvdyB0aGUgZGVzY3JpcHRpb24gZmllbGQs
-IHdoaWNoIEkgYXBwbGllZCB0byBhbGwKICB0aGUgYmluZGluZyBjb21taXRzLCBidXQgd2l0aG91
-dCBhbnkgZnVydGhlciB1cGRhdGUuCiogQ3JlYXRlZCBhIHNwaS1tZW0gY2FwYWJpbGl0aWVzIHN0
-cnVjdHVyZS4gUHV0IHRoYXQgb25lIGluIHRoZSBzcGktbWVtCiAgb3BzIHN0cnVjdXJlIGFuZCBl
-bnN1cmVkIHRoYXQgYWxsIHRoZSBjb250cm9sbGVycyBwcm92aWRlZCBvbmUuCiogQ3JlYXRlZCBh
-IGRlZmF1bHQgIm5vLWNhcHMiIGVtcHR5IGluc3RhbmNlIHRoYXQgY29udHJvbGxlciBkcml2ZXJz
-IGNhbgogIHBvaW50IHRvIGJ5IGRlZmF1bHQuCiogRHJvcHBlZCB0aGUgc3BpX21lbV9nZW5lcmlj
-X2RlZmF1bHRzX29wKCkgaW50ZXJtZWRpYXRlIGhlbHBlciBlbnRpcmVseQogIChub3QgbmVlZGVk
-IGFueW1vcmUpLgoKQ2hhbmdlcyBpbiB2NToKKiBNb3ZlZCBhIGhlbHBlciBpbiB0aGUgY29yZSBh
-cyBpdCBzZWVtcyB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsIGZvcgogIG90aGVyIEVDQyBlbmdpbmVz
-IGFzIHdlbGwgKFhpYW5nc2hlbmcgSG91IGZvciBNZWRpYXRlayB3aWxsIG5lZWQgaXQpLgoqIENo
-YW5nZWQgdGhlIHBhcmFtZXRlcnMgb2YgdGhlIHNwaV9tZW1fZ2VuZXJpY19zdXBwb3J0c19vcCgp
-IGZ1bmN0aW9uCiAgaW4gb3JkZXIgdG8gdGFrZSBhIHN0cnVjdHVyZSBhcyBpbnB1dCBpbnN0ZWFk
-IG9mIGEgbGlzdCBvZiBhcmd1bWVudHMsCiAgd2hpY2ggd2lsbCBiZSBtdWNoIGVhc2llciB0byBj
-b21wbGVtZW50IGluIHRoZSBmdXR1cmUgaWYgZXZlciBuZWVkZWQuCgpDaGFuZ2VzIGluIHY0Ogoq
-IFRoZSBmaXJzdCBoYWxmIG9mIHRoZSBzZXJpZXMgaGFzIGJlZW4gbGVmdCBhc2lkZSAoYWxsIHRo
-ZSBiaW5kaW5nCiAgY2hhbmdlcyArIHRoZSBleHRlcm5hbCBtb2RlIGluIHRoZSBNYWNyb25peCBk
-cml2ZXIpLCBub3cgbGV0J3MgZm9jdXMKICBvbiB0aGUgcGlwZWxpbmVkIG1vZGUuCiogQWRkZWQg
-dGhlIGVjY19lbiBzcGlfbWVtX29wIHN0cnVjdHVyZSBwYXJhbWV0ZXIgaW4gYSBkZWRpY2F0ZWQg
-Y29tbWl0LgoqIEludHJvZHVjZWQgYSBuZXcgaGVscGVyIGZvciBzdXBwb3J0aW5nIGdlbmVyaWNh
-bGx5IHRoZSBzdXBwb3J0ZWQgb3BzLgoqIFVzZWQgdGhpcyBuZXcgaGVscGVyIGluIHRoZSBtYWNy
-b25peCBkcml2ZXIuCiogQnkgZGVmYXVsdCBhbGwgdGhlIG90aGVyIGRyaXZlcnMgd291bGQgcmVm
-dXNlIGEgc3BpX21lbV9vcCB3aXRoIGVjY19lbgogIGVuYWJsZWQuCgpDaGFuZ2VzIGluIHYzOgoq
-IEFkZGVkIE1hcmsncyBSLWJ5LgoqIEFkZGVkIGEgY29tbWl0IGNoYW5naW5nIHRoZSBpbml0aWFs
-aXphdGlvbiBvcmRlciBiZXR3ZWVuIHRoZSBkaXJtYXBzCiAgYW5kIHRoZSBFQ0MgZW5naW5lIHNv
-IHRoYXQgdGhlIGNvcmUgbWlnaHQgbm93IGlmIHdlIGFyZSB1c2luZyBhCiAgcGlwZWxpbmVkIGVu
-Z2luZSBvciBub3QuCiogU3RvcHBlZCBjcmVhdGluZyBhZGRpdGlvbmFsIGRpcm1hcHMgd2l0aCBF
-Q0MgaWYgdGhlIGVuZ2luZSBpcyBub3QgYQogIHBpcGVsaW5lZCBlbmdpbmUuCiogU29sdmVkIHRo
-ZSBrZXJuZWwgdGVzdCByb2JvdCByZXBvcnRzLiBJbiBwYXJ0aWN1bGFyLCBJIGFkZGVkIGEKICBk
-ZXBlbmRlbmN5IG9uIE1URF9OQU5EX0VDQyB0byBNYWNyb25peCBTUEkgY29udHJvbGxlciBkcml2
-ZXIuCiogQWRkZWQgYSBwYXRjaCB0byBjbGVhbiB0aGUgTkFORCBjb250cm9sbGVyIHlhbWwgZmls
-ZSBiZWZvcmUgbW92aW5nCiAgc29tZSBiaXRzIHRvIG5hbmQtY2hpcC55YW1sLiBUaGlzIGFkZHJl
-c3NlcyB0aGUgY29tbWVudHMgbWFkZSBieSBSb2IKICBhYm91dCB0aGUgdXNlbGVzcyBhbGxPZidz
-LgoqIFVzZWQgcGxhdGZvcm1fZ2V0X2lycV9ieW5hbWVfb3B0aW9uYWwoKSBpbiBvcmRlciB0byBh
-dm9pZCB1c2VsZXNzCiAgd2FybmluZ3Mgd2hlbiB0aGVyZSBpcyBubyBJUlEuCgpDaGFuZ2VzIGlu
-IHYyOgoqIEZpeGVkIHRoZSBiaW5kaW5ncyBhbmQgYWRkZWQgUm9iJ3MgYWNrcyB3aGVuIHJlbGV2
-YW50LgoqIEFkZGVkIGxvY2tpbmcgaW4gdGhlIEVDQyBlbmdpbmUgZHJpdmVyLgoqIEJyb3VnaHQg
-bW9yZSBjaGFuZ2VzIGluIHRoZSBjb3JlIGluIG9yZGVyIHRvIGJyaW5nIHRoZSBFQ0MgaW5mb3Jt
-YXRpb24KICBpbnRvIHRoZSBzcGlfbWVtX29wIHN0cnVjdHVyZSB3aXRoIHRoZSBpZGVhIG9mIGF2
-b2lkaW5nIGFueSByYWNlcwogIGJldHdlZW4gcGFyYWxsZWwgY2FsbHMgb24gdGhlIHNhbWUgZW5n
-aW5lLgoqIFJlb3JnYW5pemVkIHRoZSBFQ0MgZHJpdmVyIGVudGlyZWx5IGluIG9yZGVyIHRvIGhh
-dmUgYSBwZXItZW5naW5lIG14aWMKICBzdHJ1Y3R1cmUgcGx1cyBhIHBlci1OQU5EIGNvbnRleHQu
-IFRoaXMgbGVhZCB0byBhIG51bWJlciBvZiBjaGFuZ2VzCiAgaW50ZXJuYWxseSB3aGljaCBjYW5u
-b3QgYWxsIGJlIGxpc3RlZC4KCkNoYW5nZXMgc2luY2UgdGhlIFJGQzoKKiBSZWJhc2VkIG9uIHRv
-cCBvZiB2NS4xNS1yYzEuCiogRml4ZWQgdGhlIGRpcm1hcCBjb25maWd1cmF0aW9uLgoqIEFkZGVk
-IHRoZSB2YXJpb3VzIHRhZ3MgcmVjZWl2ZWQuCiogRml4ZWQgdGhlIGJpbmRpbmdzIGFzIHJlcG9y
-dGVkIGJ5IHRoZSByb2JvdHMuCiogRml4ZWQgdGhlIHJldHVybiB2YWx1ZSBvZiB0aGUgaGVscGVy
-IGNvdW50aW5nIGJpdGZsaXBzLgoqIEluY2x1ZGVkIGEgZml4IGZyb20gSmFpbWUgTGlhbyBpbiB0
-aGUgZXh0ZXJuYWwgcGF0dGVybiBsb2dpYy4KKiBBZGRlZCB0aGUgeWFtbCBjb252ZXJzaW9uIG9m
-IE1hY3Jvbml4IFNQSSBjb250cm9sbGVyIGRlc2NyaXB0aW9uLgoqIEFkZGVkIHRoZSB5YW1sIGNv
-bnZlcnNpb24gb2YgdGhlIFNQSS1OQU5EIGRlc2NyaXB0aW9uLgoqIENyZWF0ZWQgYSBuYW5kLWNo
-aXAueWFtbCBmaWxlIHRvIHNoYXJlIHByb3BlcnRpZXMgYmV0d2VlbiBTUEktTkFORCBhbmQKICBy
-YXcgTkFORC4KCk1pcXVlbCBSYXluYWwgKDE0KToKICBzcGk6IHNwaS1tZW06IEZpeCBhIERUUiBy
-ZWxhdGVkIGNoZWNrIGluIHNwaV9tZW1fZHRyX3N1cHBvcnRzX29wKCkKICBzcGk6IHNwaS1tZW06
-IEludHJvZHVjZSBhIGNhcGFiaWxpdHkgc3RydWN0dXJlCiAgc3BpOiBzcGktbWVtOiBDaGVjayB0
-aGUgY29udHJvbGxlciBleHRyYSBjYXBhYmlsaXRpZXMKICBzcGk6IGNhZGVuY2U6IFByb3ZpZGUg
-YSBjYXBhYmlsaXR5IHN0cnVjdHVyZQogIHNwaTogbXhpYzogUHJvdmlkZSBhIGNhcGFiaWxpdHkg
-c3RydWN0dXJlCiAgc3BpOiBzcGktbWVtOiBLaWxsIHRoZSBzcGlfbWVtX2R0cl9zdXBwb3J0c19v
-cCgpIGhlbHBlcgogIHNwaTogc3BpLW1lbTogQWRkIGFuIGVjY19lbiBwYXJhbWV0ZXIgdG8gdGhl
-IHNwaV9tZW1fb3Agc3RydWN0dXJlCiAgbXRkOiBzcGluYW5kOiBEZWxheSBhIGxpdHRsZSBiaXQg
-dGhlIGRpcm1hcCBjcmVhdGlvbgogIG10ZDogc3BpbmFuZDogQ3JlYXRlIGRpcmVjdCBtYXBwaW5n
-IGRlc2NyaXB0b3JzIGZvciBFQ0Mgb3BlcmF0aW9ucwogIHNwaTogbXhpYzogRml4IHRoZSB0cmFu
-c21pdCBwYXRoCiAgc3BpOiBteGljOiBDcmVhdGUgYSBoZWxwZXIgdG8gY29uZmlndXJlIHRoZSBj
-b250cm9sbGVyIGJlZm9yZSBhbgogICAgb3BlcmF0aW9uCiAgc3BpOiBteGljOiBDcmVhdGUgYSBo
-ZWxwZXIgdG8gZWFzZSB0aGUgc3RhcnQgb2YgYW4gb3BlcmF0aW9uCiAgc3BpOiBteGljOiBBZGQg
-c3VwcG9ydCBmb3IgZGlyZWN0IG1hcHBpbmcKICBzcGk6IG14aWM6IEFkZCBzdXBwb3J0IGZvciBw
-aXBlbGluZWQgRUNDIG9wZXJhdGlvbnMKCiBkcml2ZXJzL210ZC9uYW5kL3NwaS9jb3JlLmMgICAg
-ICAgfCAgNTEgKysrKy0KIGRyaXZlcnMvc3BpL0tjb25maWcgICAgICAgICAgICAgICB8ICAgMiAr
-LQogZHJpdmVycy9zcGkvc3BpLWNhZGVuY2UtcXVhZHNwaS5jIHwgIDEwICstCiBkcml2ZXJzL3Nw
-aS9zcGktbWVtLmMgICAgICAgICAgICAgfCAgMzIgKy0tCiBkcml2ZXJzL3NwaS9zcGktbXhpYy5j
-ICAgICAgICAgICAgfCAzNDAgKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tCiBpbmNsdWRl
-L2xpbnV4L210ZC9zcGluYW5kLmggICAgICAgfCAgIDIgKwogaW5jbHVkZS9saW51eC9zcGkvc3Bp
-LW1lbS5oICAgICAgIHwgIDI5ICsrLQogNyBmaWxlcyBjaGFuZ2VkLCAzNjYgaW5zZXJ0aW9ucygr
-KSwgMTAwIGRlbGV0aW9ucygtKQoKLS0gCjIuMjcuMAoKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+It seems that the number of command bytes must be "2" only when the
+command itself is sent in DTR mode. The current logic checks if the
+number of command bytes is "2" when any of the cycles is a DTR cycle. It
+is likely that so far no device was actually mixing DTR/non-DTR cycles
+in the same operation, explaining why this was left undetected until
+now.
+
+Fixes: 539cf68cd51b ("spi: spi-mem: add spi_mem_dtr_supports_op()")
+Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/spi/spi-mem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 37f4443ce9a0..c4da0c9b05e9 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -163,7 +163,7 @@ static bool spi_mem_check_buswidth(struct spi_mem *mem,
+ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+ 			     const struct spi_mem_op *op)
+ {
+-	if (op->cmd.nbytes != 2)
++	if (op->cmd.dtr && op->cmd.nbytes != 2)
+ 		return false;
+ 
+ 	return spi_mem_check_buswidth(mem, op);
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
