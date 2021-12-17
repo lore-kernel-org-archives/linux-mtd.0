@@ -4,74 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08737C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Dec 2021 21:09:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79955C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 07:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wSMKjMroLagF/BPTkNwHiy1CsDteS3a5tDABvRGuzw8=; b=gow4wle5gStqFM
-	d/amnY19piFdA7LTRDhgEBc6WBxY7R11IDLIaJtvTVZcMor4D/OhI69WP26HTmQluwfe71HWre1AP
-	PGAabpfxwtVq7Pqm3n9RiUxb+1iuAFs30suDg2wpCt7MM1oEyzhDu+JQSl1pdHAlZjFSAjjaj4s51
-	0BgMlWWYohqBU75oNbX7rfkdriuvgnt+9sg6bpi2ZVPttm9olrch4IpNKr4VeILA81SjU8QlY0Imi
-	OYTcWFz0zMw/IivW9z6ICQtzCzruI2P4PKrcSg6aA/lymjCqx1AtFFQBReRzcisgS8ZjTNyOY+F4h
-	DEOoSz/OhMHKQt4zAOVA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:From:To:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=rPDsS7WesFc5IBRCWDwkn59mOYgKpEQL8HsuTMRZ0w4=; b=p4QPQaeE460n03
+	75V+pIh7OvK928CoPyZvsITUBSTuoqa69TxDlW1JRYeIX5SkPyxC70Ope8uZG/NylZtbzqW5qw2Kv
+	CEGAtAk5CzsgJd1qfQZRF34eBGA3vsUcrbk+kr218HUVerJee3uOTYwQYUked6PO1ZKq3sbsNoTLi
+	6PsVIASKfJFg2/VAQaPLGHZHuLxghDsTEgYERmke0RmM5BIM/69JosMebieTlTzFJuXD8REy+11wK
+	h/G2MEx4Yom09KZim6e7GTCMNo8s71Cd1pdPJPgHPUk3h11/R1eNUul1QoVraisiObWl9FHGdvga3
+	6oIJbYOs1jXUQdTCWz4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mxxzx-007c12-GK; Thu, 16 Dec 2021 21:09:09 +0000
-Received: from mail-oi1-f174.google.com ([209.85.167.174])
+	id 1my7TW-008q2Y-09; Fri, 17 Dec 2021 07:16:18 +0000
+Received: from delivery.mailspamprotection.com ([185.56.85.134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mxxzu-007bzi-Go
- for linux-mtd@lists.infradead.org; Thu, 16 Dec 2021 21:09:07 +0000
-Received: by mail-oi1-f174.google.com with SMTP id q25so800703oiw.0
- for <linux-mtd@lists.infradead.org>; Thu, 16 Dec 2021 13:09:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=06/jjv/bJmHWFH5eUbQUmPo7yQuVde6Xip0Sorxfb7M=;
- b=KSpYJzTOf43XUQ+WEjpt3zTVpfTHha2vLC8oGMJs+ZR98l1uy0jqdRHXFeYCnAkHBY
- ddsEAtgDlHvz+bcgISmPrEYtrrjcfrpqdh8MPotD5ys6DinrNzY45wC2oMlRTDtyeUIX
- /Ce2zJHNd26uHmbbB+fX1+dLBUXcNXGo7EmMTOztXAGwaqD1f7eZ6xUbDKyEoukM1Lx1
- yt2IN7t5HPbRo0vuMhK6jVeOIibSeDAm21bEbbVKEKRG6OFpjh1McxssdcZPjSDRK7V8
- ff3oDDqbjz7a3dUlI/vv9iPh6P3Pqv9wvU78BclBlIkXCUxNypIri5eb8j6eNxLjJM+J
- XdAg==
-X-Gm-Message-State: AOAM5322gp7LXhB1WdM2s8yh+1hsdv0/LTDxR20V34CPNb/Kz6iEDm33
- ZXHYdii9+qD0LfH4KcVy5A==
-X-Google-Smtp-Source: ABdhPJyYWmGUU8dkqr2GR0ddHvgpdwaNTc1g8sUB/ahEy63zu3VTYyvBjyCm533wqZrALABZQx1a5g==
-X-Received: by 2002:aca:130e:: with SMTP id e14mr5746806oii.51.1639688945201; 
- Thu, 16 Dec 2021 13:09:05 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id e4sm1210472oiy.12.2021.12.16.13.09.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Dec 2021 13:09:04 -0800 (PST)
-Received: (nullmailer pid 766284 invoked by uid 1000);
- Thu, 16 Dec 2021 21:09:04 -0000
-Date: Thu, 16 Dec 2021 15:09:04 -0600
-From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, linux-mtd@lists.infradead.org,
- Julien Su <juliensu@mxic.com.tw>, Mark Brown <broonie@kernel.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Pratyush Yadav <p.yadav@ti.com>, Rob Herring <robh+dt@kernel.org>,
- Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH v6 03/28] dt-bindings: mtd: nand-controller: Harmonize
- the property types
-Message-ID: <Ybuq8AFCd7wC2RLe@robh.at.kernel.org>
-References: <20211216111654.238086-1-miquel.raynal@bootlin.com>
- <20211216111654.238086-4-miquel.raynal@bootlin.com>
+ id 1my7TR-008q1A-M1; Fri, 17 Dec 2021 07:16:15 +0000
+Received: from 3.129.213.35.bc.googleusercontent.com ([35.213.129.3]
+ helo=c57603.sgvps.net)
+ by se17.mailspamprotection.com with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
+ (Exim 4.92) (envelope-from <pranav.vaze@iwavesystems.com>)
+ id 1my7TF-000ESA-P1; Fri, 17 Dec 2021 01:16:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=iwavesystems.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+ MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+ List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=WShgbLy7yTLlDgDAvXl/1PnpfU1VqExH1yYpOwaiU9w=; b=NqeBEakc5I0vdEKvpVOQVg2rZi
+ rtobMW0RAJxiRgPHJnx4vylZ3nZyXQErGwf4NPDcVVPAIwJ2IBa3OBxJulXatdgVIHIVRqln9kp0Y
+ GPZlqrlUVpZpRhBReHz4/0cB/aJLKUVw49v9OC9h7ORe6p9R9Rct5jAKocwVdkhOvZV3ibQgQCa5u
+ IYNSM4noK1Le5bMw9QLhAyLbMFg6qHaYz/juTh2j9iocpX21wkvJnPMA84RBUrXNQB0/2MapUC+wQ
+ M9wWyAWTbj6+5o712A8RVyqqVlaAJ219E4TC12QR1191ghQVzBSbkdZ8d0jFkmdnkHJA+sLgCLwdm
+ aiA4s/pQ==;
+Received: from [106.51.91.40] (port=49038 helo=[192.168.3.84])
+ by c57603.sgvps.net with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.90-.1)
+ (envelope-from <pranav.vaze@iwavesystems.com>)
+ id 1my7T8-000Nqb-Dd; Fri, 17 Dec 2021 07:15:54 +0000
+To: linux-mtd@lists.infradead.org, linux-mtd-request@lists.infradead.org,
+ linux-mtd-owner@lists.infradead.org
+From: Pranav <pranav.vaze@iwavesystems.com>
+Subject: Error Prints during SPI Mount
+Message-ID: <e127aebd-06c2-98fe-3b64-b9312163e1e3@iwavesystems.com>
+Date: Fri, 17 Dec 2021 12:45:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211216111654.238086-4-miquel.raynal@bootlin.com>
+Content-Language: en-US
+X-Originating-IP: 35.213.129.3
+X-SpamExperts-Domain: c57603.sgvps.net
+X-SpamExperts-Username: 35.213.129.3
+Authentication-Results: mailspamprotection.com;
+ auth=pass smtp.auth=35.213.129.3@c57603.sgvps.net
+X-SpamExperts-Outgoing-Class: unsure
+X-SpamExperts-Outgoing-Evidence: Combined (0.30)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT/xyE5C1nILT0aAtlGXs5NZPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5yWSMymnwA2nDjpHsJM1J2xiMHJqzoVvwHfTRCzr4ESyIN6
+ pXsvwnPGvVINqtB1j391teMcKsl0PZD2/5VtkefKmhHwuZkwbQpbZ8u+YNzCruTJ5nOMj0yJyLc7
+ tizOP4Hut6f1G1E3JiKbl7cYPwsZB6Ngrg4QU4EP4UaW8AjohiTo7OJ9S5pEtMHTMMl4EvxxyJjb
+ PiGrtKpcAmsAajDkMj5lVfI8VQuJKizgKJSN8+WRZUNLLd9daw0JVQBwVXjnf9RpSYJUcTMWIUxH
+ SlE1e0lg49y6uoNnWH6tB0gY+S2c1d9za8tBdne94rHn+saQdnzW6aX6nCz8Bj7hJ/XmjMr4lvl0
+ wzKsIG/+Orup0pLDg5mvGWdBAYM9eqa+167eQrYyk6OZVgOtoiks/cABGtWMY6pkDtzG1I5XCIMF
+ yZx5dk0bQRRsQsDS6/1iF05YK+afUhIO/EEDry1INF8kBSNOmhlO2aCysenOELTVAOwEbjuUdBkI
+ 0ldE3lQRab8aSwwkzF4ks8Q5NmQD3k2Ym4aVlBObnVhI6K7gAuPO49sYTAqMWFdLs8XKPqOE59YH
+ grzwN60SL6E8qRDukEk/K1IpSpQd14m8hk1IDOthuuFRXaES+VBtxUuHvz+9tSryrS3qNmkm4cMT
+ Y6U6NZM4QyTWrQ+cgGUf4rfzlcQIhno8fmRB/Nw97k+xvb1cUqBpIV48jgZ/lRMzHmipmv8RGlGC
+ aItSoj5tvtyx4H0WuNjlDHh8k6TTdHl8m1/8O//XTYTZffDWUW5EOCBGabCD35A0tuDklJh3Nesp
+ cjs8ba9KmCbn8YxKCmLCCzAXNSCy8jdxesDMdzWGylfNz9olcXMc5OuHzTuNGVkd3xcewhyndlSO
+ MrGcf9aDLbM+iYc2P6hrhtRZpQ2cbJfa4KMyN6mG9OgEfwYjdW8ppBMOL7EuuTCQApzPDdNM41ak
+ RCXayfO9OTKL4IXtS12hvvu0Tn0wyurxRSe1xzdXFnlG7UpgqbL8TY8fzpVJC0FGFvP2IY7vc5k5
+ w0j5mYZLwrpJPAlbDjazCbhs7qBpykynMuBLMbeu6/I/l4zjq3X9UG6aGGJ1gPQ6JruKD23A3fbB
+ SLjW/KPX00LH8yxfvoyqPgmChmu2YbWdaQ0oDbW3mIBb4+wMnoNOy3jTfCiTSwG+9yu3PsN6rObO
+ y/Hw4kluyNbjfg2xWDgOSxRVqDwzjdGJPvNaeiE8VNvHdiCiBT9IovB+EMPgT6ngqsUK1CLmHzEv
+ uGslKTrRIXcXpFg5ivY=
+X-Report-Abuse-To: spam@quarantine1.mailspamprotection.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211216_130906_594685_17364870 
-X-CRM114-Status: GOOD (  10.84  )
+X-CRM114-CacheID: sfid-20211216_231613_771345_2FAEDE83 
+X-CRM114-Status: UNSURE (   4.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,27 +99,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 16 Dec 2021 12:16:29 +0100, Miquel Raynal wrote:
-> Harmonize the different properties in this file by:
-> * dropping the non-necessary allOf's
-> * always defining the keywords in the following order:
->     - first the "description" (when relevant),
->     - then the "type"/"$ref" and the other generic keywords ("enum",
->       "default", etc).
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  .../bindings/mtd/nand-controller.yaml         | 26 +++++++++----------
->  1 file changed, 12 insertions(+), 14 deletions(-)
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCldoaWxlIG1vdW50aW5nIHRoZSBTUEkgYmVsb3cgZXJyb3IgcHJpbnQgaXMgb2JzZXJ2ZWQ6
+CnJvb3RAaW14OHFtbWVrOn4jbW91bnQgLXQgamZmczIgL2Rldi9tdGRibG9jazAgL3J1bi9tZWRp
+YS9zcGkKW8KgwqAgMzQuNDMxMDc3XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1h
+Z2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDAwMDAwMDogMHhmZjg1IGluc3Rl
+YWQKW8KgwqAgMzQuNDc4MjY3XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2lj
+IGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDAxMDAwMDogMHhmZjg1IGluc3RlYWQK
+W8KgwqAgMzQuNTI2MDU3XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJp
+dG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDAyMDAwMDogMHhmZjg1IGluc3RlYWQKW8Kg
+wqAgMzQuNTczODgyXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1h
+c2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDAzMDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAg
+MzQuNjIxNjgyXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sg
+MHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDA0MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQu
+NjY5NTM2XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgx
+OTg1IG5vdCAKZm91bmQgYXQgMHgwMDA1MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQuNzE3
+MzQyXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1
+IG5vdCAKZm91bmQgYXQgMHgwMDA2MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQuNzY1MTYy
+XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5v
+dCAKZm91bmQgYXQgMHgwMDA3MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQuODEyOTQzXSBq
+ZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAK
+Zm91bmQgYXQgMHgwMDA4MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQuODYwNzI0XSBqZmZz
+MjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91
+bmQgYXQgMHgwMDA5MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQuOTA4NTQwXSBqZmZzMjog
+amZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQg
+YXQgMHgwMDBhMDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzQuOTU2NDQ2XSBqZmZzMjogamZm
+czJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQg
+MHgwMDBiMDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzUuMDA0Mjk0XSBqZmZzMjogamZmczJf
+c2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgw
+MDBjMDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzUuMDUyMTgxXSBqZmZzMjogamZmczJfc2Nh
+bl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDBk
+MDAwMDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzUuMTAwMDA5XSBqZmZzMjogamZmczJfc2Nhbl9l
+cmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDBlMDAw
+MDogMHhmZjg1IGluc3RlYWQKW8KgwqAgMzUuMTQ3NzgwXSBqZmZzMjogamZmczJfc2Nhbl9lcmFz
+ZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDBmMDAwMDog
+MHhmZjg1IGluc3RlYWQKW8KgwqAgMzUuMTk1NTk0XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJs
+b2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDEwMDAwMDogMHhm
+Zjg1IGluc3RlYWQKW8KgwqAgMzUuMjQzNDI5XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2Nr
+KCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDExMDAwMDogMHhmZjg1
+IGluc3RlYWQKW8KgwqAgMzUuMjkxMjUwXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6
+IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDEyMDAwMDogMHhmZjg1IGlu
+c3RlYWQKW8KgwqAgMzUuMzM4OTg0XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1h
+Z2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDEzMDAwMDogMHhmZjg1IGluc3Rl
+YWQKW8KgwqAgMzUuMzg2Nzk2XSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2lj
+IGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDE0MDAwMDogMHhmZjg1IGluc3RlYWQK
+W8KgwqAgMzUuNDM0NjEyXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJp
+dG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDE1MDAwMDogMHhmZjg1IGluc3RlYWQKW8Kg
+wqAgMzUuNDgyNDExXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1h
+c2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDE2MDAwMDogMHhmZjg1IGluc3RlYWQKClvCoMKg
+IDM1LjUzMDIxNV0gamZmczI6IGpmZnMyX3NjYW5fZXJhc2VibG9jaygpOiBNYWdpYyBiaXRtYXNr
+IDB4MTk4NSBub3QgCmZvdW5kIGF0IDB4MDAxNzAwMDA6IDB4ZmY4NSBpbnN0ZWFkClvCoMKgIDM1
+LjU3ODA4NF0gamZmczI6IGpmZnMyX3NjYW5fZXJhc2VibG9jaygpOiBNYWdpYyBiaXRtYXNrIDB4
+MTk4NSBub3QgCmZvdW5kIGF0IDB4MDAxODAwMDA6IDB4ZmY4NSBpbnN0ZWFkClvCoMKgIDM1LjYy
+NTc2MF0gamZmczI6IGpmZnMyX3NjYW5fZXJhc2VibG9jaygpOiBNYWdpYyBiaXRtYXNrIDB4MTk4
+NSBub3QgCmZvdW5kIGF0IDB4MDAxOTAwMDA6IDB4ZmY4NSBpbnN0ZWFkCgpbwqDCoCAzNS42NzM0
+MjJdIGpmZnMyOiBqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUg
+bm90IApmb3VuZCBhdCAweDAwMWEwMDAwOiAweGZmODUgaW5zdGVhZApbwqDCoCAzNS43MjEwODNd
+IGpmZnMyOiBqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90
+IApmb3VuZCBhdCAweDAwMWIwMDAwOiAweGZmODUgaW5zdGVhZApbwqDCoCAzNS43Njg3OTddIGpm
+ZnMyOiBqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IApm
+b3VuZCBhdCAweDAwMWMwMDAwOiAweGZmODUgaW5zdGVhZApbwqDCoCAzNS44MDgyMDhdIHVzYl9v
+dGcxX3ZidXM6IGRpc2FibGluZwpbwqDCoCAzNS44MTk0NThdIGpmZnMyOiBqZmZzMl9zY2FuX2Vy
+YXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IApmb3VuZCBhdCAweDAwMWQwMDAw
+OiAweGZmODUgaW5zdGVhZAoKW8KgwqAgMzUuODY3MTM0XSBqZmZzMjogamZmczJfc2Nhbl9lcmFz
+ZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDFlMDAwMDog
+MHhmZjg1IGluc3RlYWQKW8KgwqAgMzUuOTE0NzgxXSBqZmZzMjogamZmczJfc2Nhbl9lcmFzZWJs
+b2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCAKZm91bmQgYXQgMHgwMDFmMDAwMDogMHhm
+Zjg1IGluc3RlYWQKClvCoMKgIDM1Ljk2MjAwMF0gamZmczI6IENvd2FyZGx5IHJlZnVzaW5nIHRv
+IGVyYXNlIGJsb2NrcyBvbiBmaWxlc3lzdGVtIAp3aXRoIG5vIHZhbGlkIEpGRlMyIG5vZGVzClvC
+oMKgIDM1Ljk3MDQ3Nl0gamZmczI6IGVtcHR5X2Jsb2NrcyAwLCBiYWRfYmxvY2tzIDAsIGMtPm5y
+X2Jsb2NrcyAzMgptb3VudDogL3J1bi9tZWRpYS9zcGk6IGNhbid0IHJlYWQgc3VwZXJibG9jayBv
+biAvZGV2L210ZGJsb2NrMC4KClRoaXMgaXNzdWUgaXMgb2JzZXJ2ZWQgd2l0aCA1LjEwIGtlcm5l
+bC4KUGxlYXNlIGhlbHAgdXMgdG8gZml4IHRoaXMgaXNzdWUuCgoKUmVnYXJkcywKClByYW5hdgoK
+CgoKUmVnYXJkcywKClByYW5hdgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
