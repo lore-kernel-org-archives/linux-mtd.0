@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9B4FC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 17:19:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48E19C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Dec 2021 17:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lpdqcP3nXvq/GhvC4XlUxhpVfJRU50MVlyz2Y9CUCSU=; b=xGngAk7ZiD5MTP
-	HubmZTj2IoIqPo0XYQVpHRBY82HaBdMJa0UPUa8LkLpLL0aSdI6tlMq94RQFYjCue68GlOkHlbCI0
-	mY7nVzmbmRJjVoP9HjX/bNOlUNBfky07AZmMDiAjA6eqeno7gYanTcl56AEX/0TFumNEXeufPBwFj
-	5RknXsTW7wje7bJg1nm4/XbUojDdV9fgex2b7rEshLuHUtUTS1JkCjM4rD3VJi0JRsZsuEpqFTsiS
-	4urO2wI21svl+iRZi6xHGnQVF9MckAf1BGuMVkCetC5fwXHnG294UuJNJROhUotVpIPqaqNAfEupA
-	bbklj8uhm2KqFQqyWppQ==;
+	List-Owner; bh=JNMKhncpYCE4tBvWo764Zjb8SjCraL39qsVa+trg3g0=; b=3kzcYJ2W3Fj73s
+	EDRczN+WuAFTEsC5CFGzh0Aq2Bf8Q0UglU7AD+Xi5AljI4bl6fifGtXEyU8QNYa22z5HcDJHkS4Z8
+	CBKfA4BMpGiGV5wRn8g/3uq7Q5Vdylm4ybxzzXNWvKUiK5rOocAxftrvTIqpy4IpBKwjKHBnIJhEF
+	kfTUNVpL7imG6x/9i+HAN5wBK6wLK3OQzMiDID0UfjhcBc7C8Km5KpPSdDvC47sJTliEZa0d1rcwS
+	sQ0yw3XuaP/6FIGA9U45nzMB3AOHV61sxMdOGQYgBZ2lTiH8/OTDGIlnZbDNfWW/MFiafAmlF98N8
+	K2GGsIXkDrmRyOfaKZiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myGss-00BRj0-LI; Fri, 17 Dec 2021 17:19:06 +0000
+	id 1myGu8-00BS4o-P6; Fri, 17 Dec 2021 17:20:24 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myFv4-00B7aa-FR
- for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 16:17:20 +0000
+ id 1myFv7-00B7bx-99
+ for linux-mtd@lists.infradead.org; Fri, 17 Dec 2021 16:17:22 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id C07D320000D;
- Fri, 17 Dec 2021 16:17:14 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 7A289200013;
+ Fri, 17 Dec 2021 16:17:17 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -38,17 +38,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v7 07/14] spi: spi-mem: Add an ecc_en parameter to the
- spi_mem_op structure
-Date: Fri, 17 Dec 2021 17:16:47 +0100
-Message-Id: <20211217161654.367782-8-miquel.raynal@bootlin.com>
+Subject: [PATCH v7 08/14] mtd: spinand: Delay a little bit the dirmap creation
+Date: Fri, 17 Dec 2021 17:16:48 +0100
+Message-Id: <20211217161654.367782-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211217161654.367782-1-miquel.raynal@bootlin.com>
 References: <20211217161654.367782-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211217_081718_697543_61459625 
-X-CRM114-Status: GOOD (  11.29  )
+X-CRM114-CacheID: sfid-20211217_081721_541970_45D57E89 
+X-CRM114-Status: GOOD (  10.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,72 +64,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Soon the SPI-NAND core will need a way to request a SPI controller to
-enable ECC support for a given operation. This is because of the
-pipelined integration of certain ECC engines, which are directly managed
-by the SPI controller itself.
-
-Introduce a spi_mem_op additional field for this purpose: ecc_en.
-
-So far this field is left unset and checked to be false by all
-the SPI controller drivers in their ->supports_op() hook, as they all
-call spi_mem_default_supports_op().
+As we will soon tweak the dirmap creation to act a little bit
+differently depending on the picked ECC engine, we need to initialize
+dirmaps after ECC engines. This should not have any effect as dirmaps
+are not yet used at this point.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c       | 5 +++++
- include/linux/spi/spi-mem.h | 5 +++++
- 2 files changed, 10 insertions(+)
+ drivers/mtd/nand/spi/core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index cfe1c99db5f3..94758e7e747d 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -178,6 +178,11 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
- 			return false;
- 	}
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 7027c09925e2..715cad26fdef 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1209,14 +1209,6 @@ static int spinand_init(struct spinand_device *spinand)
+ 	if (ret)
+ 		goto err_free_bufs;
  
-+	if (op->ecc_en) {
-+		if (!spi_mem_controller_is_capable(ctlr, ecc))
-+			return false;
+-	ret = spinand_create_dirmaps(spinand);
+-	if (ret) {
+-		dev_err(dev,
+-			"Failed to create direct mappings for read/write operations (err = %d)\n",
+-			ret);
+-		goto err_manuf_cleanup;
+-	}
+-
+ 	ret = nanddev_init(nand, &spinand_ops, THIS_MODULE);
+ 	if (ret)
+ 		goto err_manuf_cleanup;
+@@ -1251,6 +1243,14 @@ static int spinand_init(struct spinand_device *spinand)
+ 	mtd->ecc_strength = nanddev_get_ecc_conf(nand)->strength;
+ 	mtd->ecc_step_size = nanddev_get_ecc_conf(nand)->step_size;
+ 
++	ret = spinand_create_dirmaps(spinand);
++	if (ret) {
++		dev_err(dev,
++			"Failed to create direct mappings for read/write operations (err = %d)\n",
++			ret);
++		goto err_cleanup_ecc_engine;
 +	}
 +
- 	return spi_mem_check_buswidth(mem, op);
- }
- EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index d7787c8f3746..e9238a858109 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -94,6 +94,7 @@ enum spi_mem_data_dir {
-  *		 operation does not involve transferring data
-  * @data.buf.in: input buffer (must be DMA-able)
-  * @data.buf.out: output buffer (must be DMA-able)
-+ * @ecc_en: error correction is required
-  */
- struct spi_mem_op {
- 	struct {
-@@ -126,6 +127,8 @@ struct spi_mem_op {
- 			const void *out;
- 		} buf;
- 	} data;
-+
-+	bool ecc_en;
- };
+ 	return 0;
  
- #define SPI_MEM_OP(__cmd, __addr, __dummy, __data)		\
-@@ -223,9 +226,11 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
- /**
-  * struct spi_controller_mem_caps - SPI memory controller capabilities
-  * @dtr: Supports DTR operations
-+ * @ecc: Supports operations with error correction
-  */
- struct spi_controller_mem_caps {
- 	bool dtr;
-+	bool ecc;
- };
- 
- #define spi_mem_controller_is_capable(ctlr, cap)		\
+ err_cleanup_ecc_engine:
 -- 
 2.27.0
 
