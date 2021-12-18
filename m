@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C727C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 18 Dec 2021 10:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF3C1C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 18 Dec 2021 10:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GYX+WXVBSfumUvoMldyYTNQ7Zi6AMu8POn3OPqby4W4=; b=P4BJWf0WhMnVG6
-	lFWeZ34x9DNobk/UAGe52B4WIcpxO7VizKYyMThOhGH8agZn/7rzkfnPDGP2RD3V+1IuLNazzlYhp
-	VANMDciPm6E0pRZiF4yhQ9Fht5QiZVW1PtPvPpJ5ubY9Uv13gDvVbnDShSOSERuAhHVDI9i8eTJdc
-	7jk7hA6QmEQCClWW+txy/TSpRq8CFyQ91fUINYrzZEyAqwC/CCcOncKQbXqUagKaOrV0AEwRHxMpR
-	EajVhPCnH+WKru4j/UGzOx3265ukPtjOhwpyT8KVRoyRWA0TWMJ1WyMx3049yzF60AubtJNHxAtFE
-	1dAvEcO8hJzQexoFISdw==;
+	List-Owner; bh=Z4g3/wVn67xelKfUYAYfqrGjyEITdZjrJFNVIEcBwmo=; b=KUgnKqN9a3tS5X
+	FHtpAd+zsHjCvgH3AlWQ3g5gr7t8uu0psm0e8JoNIM2AgUhACRiJE6t8s6j8NwZ+2zCW5N9Mvy/pn
+	Vjqk7pqUxEOLR5Fdz+dQeyTvM5ECnxT+DWyrYuWvwPxfsv/+H1UOW4ek93sEbubU9r/fcnU5CV85p
+	hmcfVNQann35uj3v7vxUEyR2qOHVGF84Sx1xXw5vgi8lNn++WDLzLaOmr08F6+fMguqnWLehUGUo1
+	bAdraeXZCUjsnZ9gAej+a08wycF4ph73KVr7/ODu3O4s5n5CMA870+g+Fulq8FeDmTHYMuI/hWnMM
+	asXZRbbovWOMHJQ/IL/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1myWy2-00DX6P-PV; Sat, 18 Dec 2021 10:29:30 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1myWzK-00DXN1-6t; Sat, 18 Dec 2021 10:30:50 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1myWsU-00DVSY-0J
+ id 1myWsU-00DVSB-90
  for linux-mtd@lists.infradead.org; Sat, 18 Dec 2021 10:23:48 +0000
-Received: from kwepemi100007.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JGMPD1xXDz91Pb;
- Sat, 18 Dec 2021 18:22:56 +0800 (CST)
+Received: from kwepemi100008.china.huawei.com (unknown [172.30.72.55])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JGMLb41rVz1DK5t;
+ Sat, 18 Dec 2021 18:20:39 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- kwepemi100007.china.huawei.com (7.221.188.115) with Microsoft SMTP Server
+ kwepemi100008.china.huawei.com (7.221.188.57) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 18 Dec 2021 18:23:43 +0800
+ 15.1.2308.20; Sat, 18 Dec 2021 18:23:40 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Sat, 18 Dec
- 2021 18:23:42 +0800
+ 2021 18:23:40 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>,
  <Artem.Bityutskiy@nokia.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <chengzhihao1@huawei.com>
-Subject: [PATCH v4 12/13] ubi: fastmap: Add all fastmap pebs into
- 'ai->fastmap' when fm->used_blocks>=2
-Date: Sat, 18 Dec 2021 18:35:11 +0800
-Message-ID: <20211218103512.370420-13-chengzhihao1@huawei.com>
+Subject: [PATCH v4 09/13] ubifs: Fix read out-of-bounds in
+ ubifs_wbuf_write_nolock()
+Date: Sat, 18 Dec 2021 18:35:08 +0800
+Message-ID: <20211218103512.370420-10-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211218103512.370420-1-chengzhihao1@huawei.com>
 References: <20211218103512.370420-1-chengzhihao1@huawei.com>
@@ -55,9 +55,8 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211218_022346_744394_7A815EF1 
-X-CRM114-Status: UNSURE (   9.25  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211218_022346_744351_213BB328 
+X-CRM114-Status: GOOD (  12.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,100 +73,106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Fastmap pebs(pnum >= UBI_FM_MAX_START) won't be added into 'ai->fastmap'
-while attaching ubi device if 'fm->used_blocks' is greater than 2, which
-may cause warning from 'ubi_assert(ubi->good_peb_count == found_pebs)':
+Function ubifs_wbuf_write_nolock() may access buf out of bounds in
+following process:
 
-  UBI assert failed in ubi_wl_init at 1878 (pid 2409)
+ubifs_wbuf_write_nolock():
+  aligned_len = ALIGN(len, 8);   // Assume len = 4089, aligned_len = 4096
+  if (aligned_len <= wbuf->avail) ... // Not satisfy
+  if (wbuf->used) {
+    ubifs_leb_write()  // Fill some data in avail wbuf
+    len -= wbuf->avail;   // len is still not 8-bytes aligned
+    aligned_len -= wbuf->avail;
+  }
+  n = aligned_len >> c->max_write_shift;
+  if (n) {
+    n <<= c->max_write_shift;
+    err = ubifs_leb_write(c, wbuf->lnum, buf + written,
+                          wbuf->offs, n);
+    // n > len, read out of bounds less than 8(n-len) bytes
+  }
+
+, which can be catched by KASAN:
+  =========================================================
+  BUG: KASAN: slab-out-of-bounds in ecc_sw_hamming_calculate+0x1dc/0x7d0
+  Read of size 4 at addr ffff888105594ff8 by task kworker/u8:4/128
+  Workqueue: writeback wb_workfn (flush-ubifs_0_0)
   Call Trace:
-    ubi_wl_init.cold+0xae/0x2af [ubi]
-    ubi_attach+0x1b0/0x780 [ubi]
-    ubi_init+0x23a/0x3ad [ubi]
-    load_module+0x22d2/0x2430
+    kasan_report.cold+0x81/0x165
+    nand_write_page_swecc+0xa9/0x160
+    ubifs_leb_write+0xf2/0x1b0 [ubifs]
+    ubifs_wbuf_write_nolock+0x421/0x12c0 [ubifs]
+    write_head+0xdc/0x1c0 [ubifs]
+    ubifs_jnl_write_inode+0x627/0x960 [ubifs]
+    wb_workfn+0x8af/0xb80
 
-Reproduce:
-  ID="0x20,0x33,0x00,0x00" # 16M 16KB PEB, 512 page
-  modprobe nandsim id_bytes=$ID
-  modprobe ubi mtd="0,0" fm_autoconvert  # Fastmap takes 2 pebs
-  rmmod ubi
-  modprobe ubi mtd="0,0" fm_autoconvert  # Attach by fastmap
+Function ubifs_wbuf_write_nolock() accepts that parameter 'len' is not 8
+bytes aligned, the 'len' represents the true length of buf (which is
+allocated in 'ubifs_jnl_xxx', eg. ubifs_jnl_write_inode), so
+ubifs_wbuf_write_nolock() must handle the length read from 'buf' carefully
+to write leb safely.
 
-Add all used fastmap pebs into list 'ai->fastmap' to make sure they can
-be counted into 'found_pebs'.
+Fetch a reproducer in [Link].
 
-Fixes: fdf10ed710c0aa ("ubi: Rework Fastmap attach base code")
+Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214785
+Reported-by: Chengsong Ke <kechengsong@huawei.com>
 Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- drivers/mtd/ubi/fastmap.c | 35 +++++------------------------------
- 1 file changed, 5 insertions(+), 30 deletions(-)
+ fs/ubifs/io.c | 34 ++++++++++++++++++++++++++++++----
+ 1 file changed, 30 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 6b5f1ffd961b..01dcdd94c9d2 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -828,24 +828,6 @@ static int find_fm_anchor(struct ubi_attach_info *ai)
- 	return ret;
- }
- 
--static struct ubi_ainf_peb *clone_aeb(struct ubi_attach_info *ai,
--				      struct ubi_ainf_peb *old)
--{
--	struct ubi_ainf_peb *new;
--
--	new = ubi_alloc_aeb(ai, old->pnum, old->ec);
--	if (!new)
--		return NULL;
--
--	new->vol_id = old->vol_id;
--	new->sqnum = old->sqnum;
--	new->lnum = old->lnum;
--	new->scrub = old->scrub;
--	new->copy_flag = old->copy_flag;
--
--	return new;
--}
--
- /**
-  * ubi_scan_fastmap - scan the fastmap.
-  * @ubi: UBI device object
-@@ -865,7 +847,6 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	struct ubi_vid_hdr *vh;
- 	struct ubi_ec_hdr *ech;
- 	struct ubi_fastmap_layout *fm;
--	struct ubi_ainf_peb *aeb;
- 	int i, used_blocks, pnum, fm_anchor, ret = 0;
- 	size_t fm_size;
- 	__be32 crc, tmp_crc;
-@@ -875,17 +856,6 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	if (fm_anchor < 0)
- 		return UBI_NO_FASTMAP;
- 
--	/* Copy all (possible) fastmap blocks into our new attach structure. */
--	list_for_each_entry(aeb, &scan_ai->fastmap, u.list) {
--		struct ubi_ainf_peb *new;
--
--		new = clone_aeb(ai, aeb);
--		if (!new)
--			return -ENOMEM;
--
--		list_add(&new->u.list, &ai->fastmap);
--	}
--
- 	down_write(&ubi->fm_protect);
- 	memset(ubi->fm_buf, 0, ubi->fm_size);
- 
-@@ -1029,6 +999,11 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 				"err: %i)", i, pnum, ret);
- 			goto free_hdr;
- 		}
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 00b61dba62b7..b019dd6f7fa0 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -833,16 +833,42 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 	 */
+ 	n = aligned_len >> c->max_write_shift;
+ 	if (n) {
+-		n <<= c->max_write_shift;
++		int m = n - 1;
 +
-+		/* Add all fastmap blocks into attach structure. */
-+		ret = add_aeb(ai, &ai->fastmap, pnum, be64_to_cpu(ech->ec), 0);
-+		if (ret)
-+			goto free_hdr;
+ 		dbg_io("write %d bytes to LEB %d:%d", n, wbuf->lnum,
+ 		       wbuf->offs);
+-		err = ubifs_leb_write(c, wbuf->lnum, buf + written,
+-				      wbuf->offs, n);
++
++		if (m) {
++			/* '(n-1)<<c->max_write_shift < len' is always true. */
++			m <<= c->max_write_shift;
++			err = ubifs_leb_write(c, wbuf->lnum, buf + written,
++					      wbuf->offs, m);
++			if (err)
++				goto out;
++			wbuf->offs += m;
++			aligned_len -= m;
++			len -= m;
++			written += m;
++		}
++
++		/*
++		 * The non-written len of buf may be less than 'n' because
++		 * parameter 'len' is not 8 bytes aligned, so here we read
++		 * min(len, n) bytes from buf.
++		 */
++		n = 1 << c->max_write_shift;
++		memcpy(wbuf->buf, buf + written, min(len, n));
++		if (n > len) {
++			ubifs_assert(c, n - len < 8);
++			ubifs_pad(c, wbuf->buf + len, n - len);
++		}
++
++		err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf, wbuf->offs, n);
+ 		if (err)
+ 			goto out;
+ 		wbuf->offs += n;
+ 		aligned_len -= n;
+-		len -= n;
++		len -= min(len, n);
+ 		written += n;
  	}
  
- 	kfree(fmsb);
 -- 
 2.31.1
 
