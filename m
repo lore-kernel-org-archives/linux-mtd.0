@@ -4,59 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7FE6C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Dec 2021 13:06:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38517C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Dec 2021 13:08:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GRCmNCMNNyDqAVjkKtWwa6KhzkplWPko+dvXKEVdHSs=; b=YXjjCgBY9VMOPVGHBS5VBvfDnr
-	k7mUSHip1kLNjL2oP5ASfsFWkNTXAnlGMSzu0NOk50fj9A7Lk/+heDj8pbrIlLQGKfmRBlX6rcYRC
-	n5urUPfW3oB4ihavcMAYvfDY6ZWG9m+6mJA3qqkBp2+Rp12Y1Fl4teUZmi7A2AedXiyoLfE3zORU7
-	dW5OCabZA8UNVkzPKGR7/XpB6L3oU3xHUzXOiaSpx+H+x7J567CVmMDI6J5kAKQPqLIGaQSvYuX5P
-	At4s1/m0yBCUtPZco+OGiF0EJ/QxHM08c5weyCezjEzJAr20YEXH1OhYQSuHnCA3cTz0GK0MW7iM3
-	PNxA6Yzw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/VBGJqTY8++te5Eii9cHWxunTlUM6gaUX3AlTjTZxTw=; b=QgfQIRoAQp5GpP
+	SMfKP40vxS+U+jkul9WtvF9Gn9iCYxJAoX+s2j+3mMrYWG0uHdnJOby1VrpRpIxtfIydVXxVHCvNE
+	+qayMc+l4DIuipaS0cO5e4jYlxD4ClPoxGn86Cx7194miV1nBpOjpvjIJoR8w7MTzKPLk9zviKMD0
+	tPBGyJObrAeeBwygX2ERAgAtZEZemFOSY4D/gNDZgIMZsaMq7ZxxcR7VMRM1VsNXUayGMojLkhlG3
+	mKIVxJfsc9KNMNvyCflTGlAimMZx9ZMPsejPntTEB2ckXv5ZegFSS0CC9viyuOokKrU8mTGHyCPIN
+	f3WKPQwbHfQ6XxpIDByA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzIMh-002SvZ-ON; Mon, 20 Dec 2021 13:06:07 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1mzIOP-002TQH-3V; Mon, 20 Dec 2021 13:07:53 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzIMc-002StG-Mv
- for linux-mtd@lists.infradead.org; Mon, 20 Dec 2021 13:06:05 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 53C87223ED;
- Mon, 20 Dec 2021 14:05:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1640005557;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dTY1s8xROZ8eZkA1A8ctnHjL2GpMHeZVdIQO7kot2X0=;
- b=i5vE1Jo8GK/6GI2L3R56z2AfVIbnr8IAvac2n4bkuLDzPzcfMuE+OqqURvhExSdy+T+cjg
- 4lnyOiNJb8KwXlIjf90s8+Hh7MAgn0S3Sb8qe20tqDujXveTPehf1q0dLvmYxPe3fPOaBX
- A9Q6DhxDCnp3s44BxzII7MGnK3Ai+f4=
-MIME-Version: 1.0
-Date: Mon, 20 Dec 2021 14:05:57 +0100
-From: Michael Walle <michael@walle.cc>
+ id 1mzIOL-002TO9-IR
+ for linux-mtd@lists.infradead.org; Mon, 20 Dec 2021 13:07:52 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BKD7lTe026049;
+ Mon, 20 Dec 2021 07:07:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1640005667;
+ bh=ohMqcHmhPR2W84Kq5KfuGTpt5lRbxI9i5rlrzdyRZas=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=n5hnrovOsteBiBdxbOuGmyvO4gDTrEO0MFY7HxKjkvZge4C0ZEAZPQcT+ybwwR1Rg
+ 2NbKwiPKu74vqyw8M2kgBdUTJeYLvhcxYlA4DMznhiVYEbQjx4BvcTbEs9hWbfxk5c
+ xgq/D6+uYd+W3rwT8BJ7AJ7COxAf2geMKFQeuaHo=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BKD7lUb050347
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 20 Dec 2021 07:07:47 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
+ Dec 2021 07:07:46 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 20 Dec 2021 07:07:46 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BKD7kI9128275;
+ Mon, 20 Dec 2021 07:07:46 -0600
+Date: Mon, 20 Dec 2021 18:37:45 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- zhuohao@chromium.org, p.yadav@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] mtd: core: Remove partid and partname debugfs files
-In-Reply-To: <20211217122636.474976-1-tudor.ambarus@microchip.com>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <zhuohao@chromium.org>, <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: core: Remove partid and partname debugfs files
+Message-ID: <20211220130743.jil62qbyb5lgds6p@ti.com>
 References: <20211217122636.474976-1-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4fb031eee886f1e88b4f0bab6a55c2bd@walle.cc>
-X-Sender: michael@walle.cc
+ <20211217122636.474976-3-tudor.ambarus@microchip.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20211217122636.474976-3-tudor.ambarus@microchip.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211220_050602_963802_71CF180A 
-X-CRM114-Status: UNSURE (   9.05  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211220_050749_724871_FB7D4DC9 
+X-CRM114-Status: GOOD (  19.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,23 +79,106 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2021-12-17 13:26, schrieb Tudor Ambarus:
-> SPI NOR has equivalent sysfs device attributes, thus let's remove the
-> duplicated debugfs entries. There's no one else using partid and 
-> partname
-> debugfs files, thus remove them from the mtd core as well.
+On 17/12/21 02:26PM, Tudor Ambarus wrote:
+> partid and partname debugfs file are no longer used in mtd, remove
+> dead code.
+
+Hmm, spi-nor was the only user? Quick grepping does confirm that.
+
 > 
-> If you find the idea acceptable, I would like to queue these through
-> spi-nor/next, I'll have some other patches that will depend on these.
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/mtdcore.c   | 35 +----------------------------------
+>  include/linux/mtd/mtd.h |  3 ---
+>  2 files changed, 1 insertion(+), 37 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 9186268d361b..1977755fc955 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -336,49 +336,16 @@ static const struct device_type mtd_devtype = {
+>  	.release	= mtd_release,
+>  };
+>  
+> -static int mtd_partid_debug_show(struct seq_file *s, void *p)
+> -{
+> -	struct mtd_info *mtd = s->private;
+> -
+> -	seq_printf(s, "%s\n", mtd->dbg.partid);
+> -
+> -	return 0;
+> -}
+> -
+> -DEFINE_SHOW_ATTRIBUTE(mtd_partid_debug);
+> -
+> -static int mtd_partname_debug_show(struct seq_file *s, void *p)
+> -{
+> -	struct mtd_info *mtd = s->private;
+> -
+> -	seq_printf(s, "%s\n", mtd->dbg.partname);
+> -
+> -	return 0;
+> -}
+> -
+> -DEFINE_SHOW_ATTRIBUTE(mtd_partname_debug);
+> -
+>  static struct dentry *dfs_dir_mtd;
+>  
+>  static void mtd_debugfs_populate(struct mtd_info *mtd)
+>  {
+> -	struct mtd_info *master = mtd_get_master(mtd);
+>  	struct device *dev = &mtd->dev;
+> -	struct dentry *root;
+>  
+>  	if (IS_ERR_OR_NULL(dfs_dir_mtd))
+>  		return;
+>  
+> -	root = debugfs_create_dir(dev_name(dev), dfs_dir_mtd);
+> -	mtd->dbg.dfs_dir = root;
+> -
+> -	if (master->dbg.partid)
+> -		debugfs_create_file("partid", 0400, root, master,
+> -				    &mtd_partid_debug_fops);
+> -
+> -	if (master->dbg.partname)
+> -		debugfs_create_file("partname", 0400, root, master,
+> -				    &mtd_partname_debug_fops);
+> +	mtd->dbg.dfs_dir = debugfs_create_dir(dev_name(dev), dfs_dir_mtd);
 
-I'm fine with it.
+What is the point of having creating the directory if there is not going 
+to be anything in it at all? I think we should drop the entire thing if 
+there is no intention of using it.
 
--michael
+>  }
+>  
+>  #ifndef CONFIG_MMU
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index f5e7dfc2e4e9..00cb269d0261 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -188,9 +188,6 @@ struct module;	/* only needed for owner field in mtd_info */
+>   */
+>  struct mtd_debug_info {
+>  	struct dentry *dfs_dir;
+> -
+> -	const char *partname;
+> -	const char *partid;
+>  };
+>  
+>  /**
+> -- 
+> 2.25.1
+> 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
