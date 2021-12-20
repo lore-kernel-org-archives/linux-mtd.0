@@ -4,58 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 885E6C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Dec 2021 14:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F10AC433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Dec 2021 15:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gyvKA+UAMb6dH2ZwOCOZStlCgB4JjvIgbAK/tH276+c=; b=qD6PThLaLsSt2N
-	mX4tFBcyJlrj17JhScD3Iz6mCkUNp4qqMTE9lFLgYltMAPmNQfV/+CTptIGFPniWkqEdQIOai47GE
-	ZLAlzu3jrmUtnWdh7B2cKazPjaa2RwqKRD0S0OYq53Q0Q4iT2cfxNVRSDcCy8N/1xvGhNlFfMiP8Y
-	sB6szA51z2oHlQdDbCT+3A5SR90w50dEQk8JBoESltbZ/j0ExwWrIHSznZZ1KYZzcqWwNExf+kK10
-	H+jKsgbVlW5bVBKsL8WzPIPBjffYBDjghFas2blKG1v+2xq8QFvhKyzX4E7F5qsy3jz+rY54eOSDd
-	myJOSidS4KHBwt1l3GTQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=E5baM64okieeyH067vS8qRPvzO/nbm4EBxBsc54OX+o=; b=0hPN9Yof65fO1nVA9rCmNdo75m
+	lSX0Ct/RVQ4jYgLc163uyFucDBcGJoyCf9qxu1JI1Zm/QPsEd5nSqd06c74ds6Jld2NTRJRIQQ7eH
+	egLd5HkXsr08JtmK979tOfpf9FnCBd3kkppR1mo6SEOtlRaY00RDPK5qBzETExavaVdaVkSdJxh+j
+	P6xSKqzabLgjA1UWW974wt9TRl9KTqeuL2ppPJcewHEqKt/oaRFTZE1Aw/YlZKaVA/16MAWwqi7IE
+	ZBag3TcZcjTYmmW1ydlCdhoOgqoY7mUFvRysZ5mFKgxAFdXsCa7EaihmncZJ2GPHALVOJlc7gJIs8
+	1Mya6zLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzJDU-002fn1-CC; Mon, 20 Dec 2021 14:00:41 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1mzKtE-0039zv-Dk; Mon, 20 Dec 2021 15:47:52 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzJ1f-002c4n-U7
- for linux-mtd@lists.infradead.org; Mon, 20 Dec 2021 13:48:32 +0000
-Received: from kwepemi500005.china.huawei.com (unknown [172.30.72.55])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JHgnq29CyzZdgq;
- Mon, 20 Dec 2021 21:45:19 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- kwepemi500005.china.huawei.com (7.221.188.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 20 Dec 2021 21:48:25 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 20 Dec
- 2021 21:48:25 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
- <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <chengzhihao1@huawei.com>
-Subject: [PATCH v5 14/14] ubifs: ubifs_releasepage: Remove ubifs_assert(0) to
- valid this process
-Date: Mon, 20 Dec 2021 21:59:51 +0800
-Message-ID: <20211220135951.4075801-15-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211220135951.4075801-1-chengzhihao1@huawei.com>
-References: <20211220135951.4075801-1-chengzhihao1@huawei.com>
+ id 1mzKtB-0039ys-5R
+ for linux-mtd@lists.infradead.org; Mon, 20 Dec 2021 15:47:50 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 6F4E5223ED;
+ Mon, 20 Dec 2021 16:47:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1640015267;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=8/3Ez7mRfxbwsP6b4TIPeFtFpVI24qbdeAeJgmIgils=;
+ b=oquRCuHl4wJfYFLqxMXoMRuJM79wwCuVzpxgAvwFiVJntyj/alqM9t+tlOv8GF1eB2mnAM
+ 4vCpA/UjcitQ+ib9GvB/xK55gSHTo2AxZhNR5lYAus82Y440jtRMQvrMIkyPod4eRZRs5C
+ bKOfYxALWPZET2WYvZ/bAsGrGaAoXbk=
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+Date: Mon, 20 Dec 2021 16:47:45 +0100
+From: Michael Walle <michael@walle.cc>
+To: Takahiro Kuwano <tkuw584924@gmail.com>
+Cc: Tudor.Ambarus@microchip.com, Takahiro.Kuwano@infineon.com,
+ juliensu@mxic.com.tw, jaimeliao@mxic.com.tw, Bacem.Daassi@infineon.com,
+ beanhuo@micron.com, shiva.linuxworks@gmail.com, sshivamurthy@micron.com,
+ p.yadav@ti.com, linux-mtd@lists.infradead.org
+Subject: Re: How does an SPI NOR handle a single byte write in Octal DTR mode?
+In-Reply-To: <d40c879c-c419-82c4-c385-0a03e105a622@gmail.com>
+References: <f593ded7-6cb1-7645-a0b4-dc20b5576d1d@microchip.com>
+ <d40c879c-c419-82c4-c385-0a03e105a622@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a7bd7dc6db2cb9f74aa6e7737e888625@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211220_054828_340642_A8140FAE 
-X-CRM114-Status: GOOD (  14.11  )
+X-CRM114-CacheID: sfid-20211220_074749_396713_24B50E71 
+X-CRM114-Status: UNSURE (   7.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,114 +70,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are two states for ubifs writing pages:
-1. Dirty, Private
-2. Not Dirty, Not Private
+Hi,
 
-The normal process cannot go to ubifs_releasepage() which means there
-exists pages being private but not dirty. Reproducer[1] shows that it
-could occur (which maybe related to [2]) with following process:
+Am 2021-12-20 11:32, schrieb Takahiro Kuwano:
+> In case of Infineon(Cypress) S28 devices, it can be done by 
+> de-asserting
+> chip select before clock falling (not sure typical controllers support 
+> this).
+> That means the device can take odd address in 8D-8D-8D mode.
 
-     PA                     PB                    PC
-lock(page)[PA]
-ubifs_write_end
-  attach_page_private         // set Private
-  __set_page_dirty_nobuffers  // set Dirty
-unlock(page)
+Ahh nice. FWIW, I had a quick look at the FlexSPI controller found on
+the NXP LS1028A, it doesn't seem to support deasserting the CS after
+half a clock cycle, though.
 
-write_cache_pages[PA]
-  lock(page)
-  clear_page_dirty_for_io(page)	// clear Dirty
-  ubifs_writepage
-
-                        do_truncation[PB]
-			  truncate_setsize
-			    i_size_write(inode, newsize) // newsize = 0
-
-    i_size = i_size_read(inode)	// i_size = 0
-    end_index = i_size >> PAGE_SHIFT
-    if (page->index > end_index)
-      goto out // jump
-out:
-unlock(page)   // Private, Not Dirty
-
-						generic_fadvise[PC]
-						  lock(page)
-						  invalidate_inode_page
-						    try_to_release_page
-						      ubifs_releasepage
-						        ubifs_assert(c, 0)
-		                                        // bad assertion!
-						  unlock(page)
-
-Then we may get following assertion failed:
-  UBIFS error (ubi0:0 pid 1683): ubifs_assert_failed [ubifs]:
-  UBIFS assert failed: 0, in fs/ubifs/file.c:1513
-  UBIFS warning (ubi0:0 pid 1683): ubifs_ro_mode [ubifs]:
-  switched to read-only mode, error -22
-  CPU: 2 PID: 1683 Comm: aa Not tainted 5.16.0-rc5-00184-g0bca5994cacc-dirty #308
-  Call Trace:
-    dump_stack+0x13/0x1b
-    ubifs_ro_mode+0x54/0x60 [ubifs]
-    ubifs_assert_failed+0x4b/0x80 [ubifs]
-    ubifs_releasepage+0x67/0x1d0 [ubifs]
-    try_to_release_page+0x57/0xe0
-    invalidate_inode_page+0xfb/0x130
-    __invalidate_mapping_pages+0xb9/0x280
-    invalidate_mapping_pagevec+0x12/0x20
-    generic_fadvise+0x303/0x3c0
-    ksys_fadvise64_64+0x4c/0xb0
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=215373
-[2] https://linux-mtd.infradead.narkive.com/NQoBeT1u/patch-rfc-ubifs-fix-assert-failed-in-ubifs-set-page-dirty
-
-Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/file.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 7cc2abcb70ae..4bafcb80d29c 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1494,14 +1494,23 @@ static int ubifs_releasepage(struct page *page, gfp_t unused_gfp_flags)
- 	struct inode *inode = page->mapping->host;
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 
--	/*
--	 * An attempt to release a dirty page without budgeting for it - should
--	 * not happen.
--	 */
- 	if (PageWriteback(page))
- 		return 0;
-+
-+	/*
-+	 * Page is private but not dirty, weird? There is one condition
-+	 * making it happened. ubifs_writepage skipped the page because
-+	 * page index beyonds isize (for example. truncated by other
-+	 * process named A), then the page is invalidated by fadvise64
-+	 * syscall before being truncated by process A.
-+	 */
- 	ubifs_assert(c, PagePrivate(page));
--	ubifs_assert(c, 0);
-+	if (PageChecked(page))
-+		release_new_page_budget(c);
-+	else
-+		release_existing_page_budget(c);
-+
-+	atomic_long_dec(&c->dirty_pg_cnt);
- 	detach_page_private(page);
- 	ClearPageChecked(page);
- 	return 1;
--- 
-2.31.1
-
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
