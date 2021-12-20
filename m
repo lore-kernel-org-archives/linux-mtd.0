@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F10AC433FE
-	for <linux-mtd@archiver.kernel.org>; Mon, 20 Dec 2021 15:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1683C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Dec 2021 16:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=E5baM64okieeyH067vS8qRPvzO/nbm4EBxBsc54OX+o=; b=0hPN9Yof65fO1nVA9rCmNdo75m
-	lSX0Ct/RVQ4jYgLc163uyFucDBcGJoyCf9qxu1JI1Zm/QPsEd5nSqd06c74ds6Jld2NTRJRIQQ7eH
-	egLd5HkXsr08JtmK979tOfpf9FnCBd3kkppR1mo6SEOtlRaY00RDPK5qBzETExavaVdaVkSdJxh+j
-	P6xSKqzabLgjA1UWW974wt9TRl9KTqeuL2ppPJcewHEqKt/oaRFTZE1Aw/YlZKaVA/16MAWwqi7IE
-	ZBag3TcZcjTYmmW1ydlCdhoOgqoY7mUFvRysZ5mFKgxAFdXsCa7EaihmncZJ2GPHALVOJlc7gJIs8
-	1Mya6zLQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=LnArHqs/euCV1xlB8SnSjvboEs75Iifo9Ndme1b+jl8=; b=meLTU+7UzlcLft
+	ffuwmVKJr7S1FR0bJ8nxg5L+S7XZGFEG/3WDBwy6gzxMOO6GItXQrjbMRJ5uF7pmz3CIzjSjaDPlq
+	7ek/u7ct9GzkS65hfPo1M5Pk/a9jZMrYWIPJysW2TVeDDGrp2ThZXp3BgfDENhhOQKzMbkRObFZ8o
+	4Uhk/jKGMAk00HBb99CIYcJNB1q1U0XOAn++VpQtj/SYHGFkDn1bZwPakoAEEAACfXZosOEnqkZep
+	k7wBBZHsVa9PR/ISpAHy/B9oPj3Wyg6WW8Sidq3LZV/dQSiQ3PGgyssadG2hpulxroHpx0Pgn/Ho1
+	yTq5aAapeDqteSkTeTJg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzKtE-0039zv-Dk; Mon, 20 Dec 2021 15:47:52 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1mzLnw-003MYU-Qk; Mon, 20 Dec 2021 16:46:28 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzKtB-0039ys-5R
- for linux-mtd@lists.infradead.org; Mon, 20 Dec 2021 15:47:50 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 6F4E5223ED;
- Mon, 20 Dec 2021 16:47:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1640015267;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=8/3Ez7mRfxbwsP6b4TIPeFtFpVI24qbdeAeJgmIgils=;
- b=oquRCuHl4wJfYFLqxMXoMRuJM79wwCuVzpxgAvwFiVJntyj/alqM9t+tlOv8GF1eB2mnAM
- 4vCpA/UjcitQ+ib9GvB/xK55gSHTo2AxZhNR5lYAus82Y440jtRMQvrMIkyPod4eRZRs5C
- bKOfYxALWPZET2WYvZ/bAsGrGaAoXbk=
+ id 1mzLns-003MWX-JQ
+ for linux-mtd@lists.infradead.org; Mon, 20 Dec 2021 16:46:26 +0000
+X-IronPort-AV: E=McAfee;i="6200,9189,10203"; a="240442507"
+X-IronPort-AV: E=Sophos;i="5.88,220,1635231600"; d="scan'208";a="240442507"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Dec 2021 08:46:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,220,1635231600"; d="scan'208";a="484114729"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga002.jf.intel.com with ESMTP; 20 Dec 2021 08:46:18 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+ id 34F35144; Mon, 20 Dec 2021 18:46:25 +0200 (EET)
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Lee Jones <lee.jones@linaro.org>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jonathan Corbet <corbet@lwn.net>, Mauro Lima <mauro.lima@eclypsium.com>,
+ Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: [PATCH v5 0/3] mtd: spi-nor / spi / MFD: Convert intel-spi to SPI MEM
+Date: Mon, 20 Dec 2021 19:46:22 +0300
+Message-Id: <20211220164625.9400-1-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Date: Mon, 20 Dec 2021 16:47:45 +0100
-From: Michael Walle <michael@walle.cc>
-To: Takahiro Kuwano <tkuw584924@gmail.com>
-Cc: Tudor.Ambarus@microchip.com, Takahiro.Kuwano@infineon.com,
- juliensu@mxic.com.tw, jaimeliao@mxic.com.tw, Bacem.Daassi@infineon.com,
- beanhuo@micron.com, shiva.linuxworks@gmail.com, sshivamurthy@micron.com,
- p.yadav@ti.com, linux-mtd@lists.infradead.org
-Subject: Re: How does an SPI NOR handle a single byte write in Octal DTR mode?
-In-Reply-To: <d40c879c-c419-82c4-c385-0a03e105a622@gmail.com>
-References: <f593ded7-6cb1-7645-a0b4-dc20b5576d1d@microchip.com>
- <d40c879c-c419-82c4-c385-0a03e105a622@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <a7bd7dc6db2cb9f74aa6e7737e888625@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211220_074749_396713_24B50E71 
-X-CRM114-Status: UNSURE (   7.98  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211220_084624_761616_1386970B 
+X-CRM114-Status: GOOD (  19.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,25 +69,96 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi all,
 
-Am 2021-12-20 11:32, schrieb Takahiro Kuwano:
-> In case of Infineon(Cypress) S28 devices, it can be done by 
-> de-asserting
-> chip select before clock falling (not sure typical controllers support 
-> this).
-> That means the device can take odd address in 8D-8D-8D mode.
+Based on discussion on the patch I sent some time ago here:
 
-Ahh nice. FWIW, I had a quick look at the FlexSPI controller found on
-the NXP LS1028A, it doesn't seem to support deasserting the CS after
-half a clock cycle, though.
+  http://lists.infradead.org/pipermail/linux-mtd/2021-June/086867.html
 
--michael
+it turns out that the preferred way to deal with the SPI flash controller
+drivers is through SPI MEM which is part of Linux SPI subsystem.
+
+This series does that for the intel-spi driver. This also renames the
+driver to follow the convention used in the SPI subsystem. The first patch
+improves the write protection handling to be slightly more safer. The
+following two patches do the conversion itself. Note the Intel SPI flash
+controller only allows commands such as read, write and so on and it
+internally uses whatever addressing etc. it figured from the SFDP on the
+flash device.
+
+Previous versions of the patch series can be found here:
+
+  v4: https://lore.kernel.org/linux-mtd/20211118130543.11179-1-mika.westerberg@linux.intel.com/
+  v3: https://lore.kernel.org/linux-mtd/20211013114432.31352-1-mika.westerberg@linux.intel.com/
+  v2: https://lore.kernel.org/linux-mtd/20211007112132.30934-1-mika.westerberg@linux.intel.com/
+  v1: https://lore.kernel.org/linux-mtd/20210930100719.2176-1-mika.westerberg@linux.intel.com/
+
+Changes from v4:
+
+  * Correct check in intel_spi_cmp_mem_op()
+  * Added tag from Boris
+
+Changes from v3:
+
+  * Create an array of supported opcodes and reject everything else.
+  * Fix checkpatch warnings reported by Mauro
+  * Added tags from Lee and Mauro
+
+Changes from v2:
+
+  * Added tag from Andy
+  * Check buswidth in intel_spi_supports_mem_op() and return false if octal
+    mode is asked. The Intel controllers support buswidths 1-4 but this is
+    not exposed to software. It figures this itself through SFDP tables.
+  * In case of software sequencer, support same opcodes than we support with
+    the hardware sequencer if found in the opcodes table.
+
+Changes from v1:
+
+  * Arrange dependencies in Kconfig entries the same way in both glue
+    drivers.
+  * Added empty lines between different subsystem includes.
+  * dev_err() to single line
+  * Return intel_spi_sw_cycle() directly in intel_spi_erase().
+  * Drop redundant elses.
+  * Fixed typo in the commit message of the patch 3/3.
+
+Mika Westerberg (3):
+  mtd: spi-nor: intel-spi: Disable write protection only if asked
+  mtd: spi-nor: intel-spi: Convert to SPI MEM
+  Documentation / MTD: Rename the intel-spi driver
+
+ Documentation/driver-api/mtd/index.rst        |   2 +-
+ .../mtd/{intel-spi.rst => spi-intel.rst}      |   8 +-
+ drivers/mfd/lpc_ich.c                         |  59 +-
+ drivers/mtd/spi-nor/controllers/Kconfig       |  36 -
+ drivers/mtd/spi-nor/controllers/Makefile      |   3 -
+ drivers/mtd/spi-nor/controllers/intel-spi.h   |  21 -
+ drivers/spi/Kconfig                           |  39 +
+ drivers/spi/Makefile                          |   3 +
+ .../intel-spi-pci.c => spi/spi-intel-pci.c}   |  49 +-
+ .../spi-intel-platform.c}                     |  21 +-
+ .../intel-spi.c => spi/spi-intel.c}           | 827 ++++++++++++------
+ drivers/spi/spi-intel.h                       |  19 +
+ include/linux/mfd/lpc_ich.h                   |   2 +-
+ .../x86/{intel-spi.h => spi-intel.h}          |  12 +-
+ 14 files changed, 699 insertions(+), 402 deletions(-)
+ rename Documentation/driver-api/mtd/{intel-spi.rst => spi-intel.rst} (94%)
+ delete mode 100644 drivers/mtd/spi-nor/controllers/intel-spi.h
+ rename drivers/{mtd/spi-nor/controllers/intel-spi-pci.c => spi/spi-intel-pci.c} (84%)
+ rename drivers/{mtd/spi-nor/controllers/intel-spi-platform.c => spi/spi-intel-platform.c} (65%)
+ rename drivers/{mtd/spi-nor/controllers/intel-spi.c => spi/spi-intel.c} (57%)
+ create mode 100644 drivers/spi/spi-intel.h
+ rename include/linux/platform_data/x86/{intel-spi.h => spi-intel.h} (64%)
+
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
