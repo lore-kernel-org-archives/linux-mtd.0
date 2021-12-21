@@ -4,65 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0382C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 20:02:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF79C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 21:28:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:Cc:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=TL0haqxScZPb9WpsxTSOKsCfB4RI+Nly8kSkeomR7Pw=; b=20JYnbTdyO8c1mtBWWH5Qh0TdY
-	jDQjeihNiNjGsz7IellJJFBPR5/KEBSzLm9mvarx2DuZ+72r3GpD/n8Oq1bmXMsoybwCk3Tk6KLtn
-	SzfuvlMGw8fOpEFSGnvxTZWouhlRinCwDGghq1MxgSZWJdEL4RPOY+eGtvkyO6Zu2iJA0CKZIGqXs
-	lhErVShSDbZcagvh0SasG9LfIfpxyRQdyALnOVZJG/PcLDllFsMNuxZ6WDffDDUEeinB/MDlFIfIx
-	0RFarlhzgWStSHkXahaZyUlarXcPQI0ZEE1RjnEfxIsXdfHVUWJTCBcslCiL/3Le2HX3WjbPiZcxf
-	h3E85riw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=/7ApA0YcNF/dvWENHHbHClR6wM/jooqI4FJsuofVAcw=; b=sb65JxDcthkug/
+	mdzqqUzCw/Jr7sHlf/npKl/k9rBPZ8lpI/AXMNw32e6dfl2/pynKwTVYrSPehm8MQ9n8mUTWhMlF5
+	BPAfCtuK0tCk9tmHvR+DVNFUKwOPJ6dE+U1C3VqQQX2XwvP5+xIlSDb8MbSiN0gbwoOJd1lh5c8Gg
+	pIRHBG/NARkLic+ZVz728JTIFEpqt9n8V9XyJFD1dEaz1P58drvOTWhRUluhJVZNegM/poBS5VrKi
+	6nIuhtmruLx4LRtSQtDWDsrgFgRq5iXZGPs+a3nTmsNsJrEPayOpRoiSrQ6pKzdk11aFkO6HzFKBE
+	nQCYAlIMOFW/7FLzBKJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzlKM-008LUL-9n; Tue, 21 Dec 2021 20:01:38 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzlKJ-008LTE-F1
- for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 20:01:37 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 2B149B819CB;
- Tue, 21 Dec 2021 20:01:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F1DFC36AE8;
- Tue, 21 Dec 2021 20:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1640116892;
- bh=vJkLjaATflEPsX+S3P13UPpgq8GAW8ytUv0DIV3pq8A=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=L7NkvhBKk8LWq5KpKKI3MfV/2OUSKilcD0MPAhJFzYbs6WDWSHpy7kTkKsizL2Pux
- 9pP7ahSftL8dbC7iGD5Wll8t+Lc5jlA5Hlz22y80o7I+k0NvYf5CjBjYeVcotP56U5
- UiLwWU7Bb0ngLAuOHwiL1DkF+OHC+P4cIozUR3cvQOKl9i9X4gJm9woahhlXUaPQQ/
- nUqeKPIlO1xn5pX1gfGuYd+HIsOib1LRyxeKQOWB1g8C/6p+srbfJo4FWgUccYZTnK
- PBRDqop+reGNUjbTPQfVV7KOzZm0hkadmvw6qfvpPL/P+4SrBGGE4G+mp7X7/LLFlm
- LKlt9tzZMabuQ==
-Subject: Re: [PATCH v4 3/4] memory: omap-gpmc: Use a compatible match table
- when checking for NAND controller
-To: krzysztof.kozlowski@canonical.com, miquel.raynal@bootlin.com,
- tony@atomide.com
-Cc: robh@kernel.org, kishon@ti.com, nm@ti.com, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211221131757.2030-1-rogerq@kernel.org>
- <20211221131757.2030-4-rogerq@kernel.org>
-From: Roger Quadros <rogerq@kernel.org>
-Message-ID: <51b8e895-95e1-0024-1457-ec534985c9f0@kernel.org>
-Date: Tue, 21 Dec 2021 22:01:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211221131757.2030-4-rogerq@kernel.org>
-Content-Language: en-US
+	id 1mzmfN-008XKO-P0; Tue, 21 Dec 2021 21:27:25 +0000
+Received: from relmlor1.renesas.com ([210.160.252.171]
+ helo=relmlie5.idc.renesas.com)
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mzmf8-008XHv-P8
+ for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 21:27:12 +0000
+X-IronPort-AV: E=Sophos;i="5.88,224,1635174000"; d="scan'208";a="104266469"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2021 06:27:05 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id CC3E141082DC;
+ Wed, 22 Dec 2021 06:27:03 +0900 (JST)
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ Prabhakar <prabhakar.csengg@gmail.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 0/2] mtd: nand: Use platform_get_irq*() variants to fetch IRQ's
+Date: Tue, 21 Dec 2021 21:26:07 +0000
+Message-Id: <20211221212609.31290-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_120135_824390_C28AA9A4 
-X-CRM114-Status: GOOD (  24.11  )
+X-CRM114-CacheID: sfid-20211221_132710_946204_E411084B 
+X-CRM114-Status: UNSURE (   6.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,98 +58,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
+Hi All,
 
-On 21/12/2021 15:17, Roger Quadros wrote:
-> As more compatibles can be added to the GPMC NAND controller driver
-> use a compatible match table.
-> 
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
->  drivers/memory/omap-gpmc.c                   | 6 +++++-
->  drivers/mtd/nand/raw/omap2.c                 | 5 +----
+This patch series aims to drop using platform_get_resource*() for IRQ
+types in preparation for removal of static setup of IRQ resource from
+DT core code.
 
-Will need your Ack for this one as well. Thanks :)
+Dropping usage of platform_get_resource*() was agreed based on
+the discussion [0].
 
+[0] https://patchwork.kernel.org/project/linux-renesas-soc/
+patch/20211209001056.29774-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 
->  include/linux/platform_data/mtd-nand-omap2.h | 9 ++++++++-
->  3 files changed, 14 insertions(+), 6 deletions(-)
+Note: I have just build tested the patches.
 
-cheers,
--roger
+Cheers,
+Prabhakar
 
-> 
-> diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-> index 624153048182..d19ffc895e5b 100644
-> --- a/drivers/memory/omap-gpmc.c
-> +++ b/drivers/memory/omap-gpmc.c
-> @@ -2091,6 +2091,7 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
->  	u32 val;
->  	struct gpio_desc *waitpin_desc = NULL;
->  	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
-> +	bool is_nand = false;
->  
->  	if (of_property_read_u32(child, "reg", &cs) < 0) {
->  		dev_err(&pdev->dev, "%pOF has no 'reg' property\n",
-> @@ -2183,7 +2184,10 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
->  		}
->  	}
->  
-> -	if (of_device_is_compatible(child, "ti,omap2-nand")) {
-> +	if (of_match_node(omap_nand_ids, child))
-> +		is_nand = true;
-> +
-> +	if (is_nand) {
->  		/* NAND specific setup */
->  		val = 8;
->  		of_property_read_u32(child, "nand-bus-width", &val);
-> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-> index b26d4947af02..e6dd8b4cf0d2 100644
-> --- a/drivers/mtd/nand/raw/omap2.c
-> +++ b/drivers/mtd/nand/raw/omap2.c
-> @@ -2352,10 +2352,7 @@ static int omap_nand_remove(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static const struct of_device_id omap_nand_ids[] = {
-> -	{ .compatible = "ti,omap2-nand", },
-> -	{},
-> -};
-> +/* omap_nand_ids defined in linux/platform_data/mtd-nand-omap2.h */
->  MODULE_DEVICE_TABLE(of, omap_nand_ids);
->  
->  static struct platform_driver omap_nand_driver = {
-> diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-> index de6ada739121..92f011805ad4 100644
-> --- a/include/linux/platform_data/mtd-nand-omap2.h
-> +++ b/include/linux/platform_data/mtd-nand-omap2.h
-> @@ -7,6 +7,7 @@
->  #define	_MTD_NAND_OMAP2_H
->  
->  #include <linux/mtd/partitions.h>
-> +#include <linux/mod_devicetable.h>
->  
->  #define	GPMC_BCH_NUM_REMAINDER	8
->  
-> @@ -61,4 +62,10 @@ struct gpmc_nand_regs {
->  	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
->  	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
->  };
-> -#endif
-> +
-> +static const struct of_device_id omap_nand_ids[] = {
-> +	{ .compatible = "ti,omap2-nand", },
-> +	{},
-> +};
-> +
-> +#endif /* _MTD_NAND_OMAP2_H */
-> 
+Lad Prabhakar (2):
+  mtd: rawnand: omap_elm: Use platform_get_irq() to get the interrupt
+  mtd: rawnand: gpmi: Use platform_get_irq_byname() to get the interrupt
+
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 11 ++++-------
+ drivers/mtd/nand/raw/omap_elm.c            | 16 +++++++---------
+ 2 files changed, 11 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
