@@ -4,51 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 758D5C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 21:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E38C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 23:33:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sV70jLWtxabhyPrMu6iYfbTkpLA9uP1GDMbLIdXe2y0=; b=WdhYItohZWllmp
-	vx/hlkMMUpChPt2tdkylR6KWJxUWupnh/PI/5Oq/NeqmLmhfbOqE/8tFQQegpotRMBp2fQtj+g86R
-	edlZhJrdxwWTe0XhSaUwj5EomfGFFRoVDCR5H0MhrvONf4V2LnEJR1JGqLRFZnCPhqqM5XHiMDViL
-	M5uDJMyxfWZpgZO/6AjeVNqWJmO7POJAkPNelnUiUPrLrpWyFB79Moew5YnCH3udLtmslFKcZ9xrI
-	E5/aVmf6ITdSWNBhkmM9dKul95ToJX6kk6Yq6WfqocMEIDc8tLg4CkfXPg1aVMGQqIsj+p87p1dAL
-	yHVuAEPrFvi2TyW6GkZw==;
+	List-Owner; bh=D5yOFuHR35MXsGE5tPxce7xB1ajb2/JPS5Kz43ry5qs=; b=Tr/uSfnV83ZNDn
+	svZHcryuYfI5K1NPfRk/BVCgbpMrLFmeZNBhSN1wVr15R2Vo2MgLVbv5fR4ncbT63w39fTbQGLOyu
+	5eLc352MFlXn880AWzonAJJbt61/ndxarTPQVPrUsLuC6xOfK/MrBtYvl3VV6iu3N9xEg5h0jE0/B
+	e/hSwD7KBkhfco/40PU9I/2PKK9SgPPHHargGDdYktN2FAqNlqwKyBgtl5ooPXeu+T45lvV/WriXt
+	jfKwn1WLMSvATOsi44kOTayf52ujlfx3vWbCmb9sxtFlAXftcC3Xt6bCAmz2Q6JOGg8GWOfjZL6li
+	9F2zZ9OWtcCawG5aEczA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzmfZ-008XKv-Mi; Tue, 21 Dec 2021 21:27:37 +0000
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie5.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzmf8-008XIF-QD
- for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 21:27:13 +0000
-X-IronPort-AV: E=Sophos;i="5.88,224,1635174000"; d="scan'208";a="104266477"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2021 06:27:10 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 490DA41082DB;
- Wed, 22 Dec 2021 06:27:08 +0900 (JST)
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
- Prabhakar <prabhakar.csengg@gmail.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/2] mtd: rawnand: gpmi: Use platform_get_irq_byname() to get
- the interrupt
-Date: Tue, 21 Dec 2021 21:26:09 +0000
-Message-Id: <20211221212609.31290-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211221212609.31290-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20211221212609.31290-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	id 1mzoc8-008jPl-EA; Tue, 21 Dec 2021 23:32:12 +0000
+Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1mzoc6-008jPJ-5B
+ for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 23:32:11 +0000
+Received: by mail-pj1-x1034.google.com with SMTP id
+ v13-20020a17090a088d00b001b0e3a74cf7so2941459pjc.1
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Dec 2021 15:32:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=lb+cvrC42rt2s8lO9hwyyl0Go0FOmSqUvPR9eMSdm50=;
+ b=l5hMFKb66uAkdch3eeXxvVZd3S1rtXGkVEBRvO07V1SNf1Hbu/DZF1vBbO5JL8NGgj
+ nEfQMT0r/p+WEIHoonLyBPLgF2dwB2J7+wXAhWj2Y+SRVIg+xS5MjCWVdkyPzjpdL71d
+ 3iqnD++8FzLiE8ysvDGWkjw29IvbMPCsfFZjQXfU7taLTkttOMeNL9eTLnNrAa9a20Wt
+ MRoh/DnucuITRG6J2aAwjqBnzmkW17Cgvms7qFRyWQWmVFTin7nB+odmBforcUpk1Fd+
+ PmLoaQD9pxaLl4ZN64eDad55iQB3nArZ6Ag6h1KTp23tO6Qe8tfWgKs/CwRWe0Nx/MdP
+ mW6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=lb+cvrC42rt2s8lO9hwyyl0Go0FOmSqUvPR9eMSdm50=;
+ b=md2/RfhgTN0yaN9+9n24pa2HahgebFFDPGjvefGZn5fbiGJo1VeLXQ3wo3lIQ/35rU
+ pFtlEq0DewZZ6f+LW8aJ4mYhcGNrQevc7377HNlfeK/P1X+PuUDVyhmvfhzsHTHPJQJZ
+ ecLwnV3JeD1KQH05Cwj2VRnwP91btyPknLoNJvHX97+zu6gUMhChBkCnULf4jatKoFZp
+ MnfV7kFTBTfOe0+GvefIXCwd4mnTrTVVWtK0FGSbr+HYv6ECtRJCroRvWtYmzEnTq3NW
+ In2DiD5CndZejbo03Z6cXiSNEviHuKJrtc4ukjfeAdZelS5IFBH8gXdKqe+m3rAGWLav
+ RO5A==
+X-Gm-Message-State: AOAM532/lHyy9nHECwm5iQ2S5g53kTQisDlKK6ZC3Qfyx2nFSCTEeYbG
+ RUP55s0u3ALkxl0rWg2ctEc=
+X-Google-Smtp-Source: ABdhPJyDZLoRtOpxb1hi61Z3QgitlD/OKOcU2QeDjYHzQvxJMDHxUwYsQzu5JtJS11rwNMDMz50d9g==
+X-Received: by 2002:a17:902:e282:b0:148:ef58:10d8 with SMTP id
+ o2-20020a170902e28200b00148ef5810d8mr606996plc.116.1640129528897; 
+ Tue, 21 Dec 2021 15:32:08 -0800 (PST)
+Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
+ by smtp.gmail.com with ESMTPSA id
+ q9sm173683pfj.114.2021.12.21.15.32.06
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 21 Dec 2021 15:32:08 -0800 (PST)
+Message-ID: <5c38b7ce-cf34-ec62-bdbd-56ee7a50e16a@gmail.com>
+Date: Wed, 22 Dec 2021 08:32:05 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: How does an SPI NOR handle a single byte write in Octal DTR mode?
+Content-Language: en-US
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor.Ambarus@microchip.com, Takahiro.Kuwano@infineon.com,
+ juliensu@mxic.com.tw, jaimeliao@mxic.com.tw, Bacem.Daassi@infineon.com,
+ beanhuo@micron.com, shiva.linuxworks@gmail.com, sshivamurthy@micron.com,
+ p.yadav@ti.com, linux-mtd@lists.infradead.org
+References: <f593ded7-6cb1-7645-a0b4-dc20b5576d1d@microchip.com>
+ <d40c879c-c419-82c4-c385-0a03e105a622@gmail.com>
+ <a7bd7dc6db2cb9f74aa6e7737e888625@walle.cc>
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <a7bd7dc6db2cb9f74aa6e7737e888625@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_132710_980408_F4F13731 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20211221_153210_234834_990D0D1C 
+X-CRM114-Status: UNSURE (   9.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,54 +93,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-platform_get_resource_byname(pdev, IORESOURCE_IRQ, ..) relies on static
-allocation of IRQ resources in DT core code, this causes an issue
-when using hierarchical interrupt domains using "interrupts" property
-in the node as this bypasses the hierarchical setup and messes up the
-irq chaining.
+Hi,
 
-In preparation for removal of static setup of IRQ resource from DT core
-code use platform_get_irq_byname().
+I need to correct my previous statement.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+On 12/21/2021 12:47 AM, Michael Walle wrote:
+> Hi,
+> 
+> Am 2021-12-20 11:32, schrieb Takahiro Kuwano:
+>> In case of Infineon(Cypress) S28 devices, it can be done by de-asserting
+>> chip select before clock falling (not sure typical controllers support this).
+This is true for single-byte register write op.
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index feccff8bdd15..1b64c5a5140d 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -991,16 +991,13 @@ static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
- {
- 	struct platform_device *pdev = this->pdev;
- 	const char *res_name = GPMI_NAND_BCH_INTERRUPT_RES_NAME;
--	struct resource *r;
- 	int err;
- 
--	r = platform_get_resource_byname(pdev, IORESOURCE_IRQ, res_name);
--	if (!r) {
--		dev_err(this->dev, "Can't get resource for %s\n", res_name);
--		return -ENODEV;
--	}
-+	err = platform_get_irq_byname(pdev, res_name);
-+	if (err < 0)
-+		return err;
- 
--	err = devm_request_irq(this->dev, r->start, irq_h, 0, res_name, this);
-+	err = devm_request_irq(this->dev, err, irq_h, 0, res_name, this);
- 	if (err)
- 		dev_err(this->dev, "error requesting BCH IRQ\n");
- 
--- 
-2.17.1
+>> That means the device can take odd address in 8D-8D-8D mode.
+For page program op, the S28 in 8D-8D-8D mode only supports programming
+multiples of 2-bytes and the address must start at an even address.
 
+> 
+> Ahh nice. FWIW, I had a quick look at the FlexSPI controller found on
+> the NXP LS1028A, it doesn't seem to support deasserting the CS after
+> half a clock cycle, though.
+> 
+> -michael
+
+Thanks,
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
