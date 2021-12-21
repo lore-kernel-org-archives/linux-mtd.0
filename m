@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83A68C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 17:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9174DC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 17:50:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=e+urQPmfaHrKOrPNHzjtajkxHHjck4ClFU/8AjRVcLM=; b=koJ92qIm12B+58
-	AFvHMtNyA6JMhHnpCFnKZ9rwKxM3eRtzeEL6tXA7WrUuVAriXgXqX6F/O5mPDwLUHtXwVdeEtyJxj
-	9aPIH2STEbq9TR2Ob+5Do9N/fOo2tJQWH55VYOAHyxHzz7JxZ9ruPRVU4oH06Hm3qDYrlUEzkz6s2
-	Mu3UIQ2l5sEYdQYyIf75OGPwKy3kW6vbhYif3D9X4t5P6KrmCkH+trQCt8+VXTmRC8HNwULjToIk4
-	IvElvtEe0KzSOfToVNkiKkEDMRonTXrz2OdNA3nZ4etyq7IR47XcA8zvMHAWhFioipSeH8nCdBdzu
-	76Q4P4HARobOCULoMloA==;
+	List-Owner; bh=bPWa4F8+KJ3lqrCXWWAPJfBBjUOABjfbjO/ZczzdNWg=; b=TRUPrJy2tnow87
+	6E9ZIyjUTCJvKcd+8Jep8/PcXGWAEneB866IeqVCjgjOEIJLpegg+NozzSoJNJYuxB/VBpIC2Rvvt
+	2iG9qiIvowvV+W1ZLyWFjVeiyKgY8qaV70qX5hVCJh0IUUv2o7l4Fx/uxOuKbOG0clvsjCwZq6mYE
+	bAsu/ZHKu1ZpZW3GBfwyY01/tmWXPooa8nC3QE6AMz3q9Xl01P/jFSGYZYa/JEbbdphM7AWGWE8uV
+	5v/ffZn3CwJWKYYp5j7t37eIjx24BEmBU5DO1OAnovX5u4OQBXPb+ejRbDMedWhcYRKmhVGXeXYkJ
+	Gp8u7doO6mjh9HbKxkkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzjGP-007vaY-IP; Tue, 21 Dec 2021 17:49:25 +0000
+	id 1mzjGf-007vfK-F3; Tue, 21 Dec 2021 17:49:41 +0000
 Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzjFv-007vSA-LX
+ id 1mzjFw-007vSX-6v
  for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 17:48:58 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 0FC53200005;
- Tue, 21 Dec 2021 17:48:48 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 78CD920000F;
+ Tue, 21 Dec 2021 17:48:53 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,16 +39,16 @@ Cc: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v8 01/14] spi: spi-mem: reject partial cycle transfers in
-Date: Tue, 21 Dec 2021 18:48:31 +0100
-Message-Id: <20211221174844.56385-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v8 04/14] spi: cadence-quadspi: Provide a capability structure
+Date: Tue, 21 Dec 2021 18:48:34 +0100
+Message-Id: <20211221174844.56385-5-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211221174844.56385-1-miquel.raynal@bootlin.com>
 References: <20211221174844.56385-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_094855_885159_2577E0CF 
-X-CRM114-Status: UNSURE (   9.58  )
+X-CRM114-CacheID: sfid-20211221_094856_416138_9B4ADCBC 
+X-CRM114-Status: UNSURE (   9.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,42 +66,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Pratyush Yadav <p.yadav@ti.com>
+This controller has DTR support, so advertize it with a capability now
+that the spi_controller_mem_ops structure contains this new field. This
+will later be used by the core to discriminate whether an operation is
+supported or not, in a more generic way than having different helpers.
 
-In 8D-8D-8D mode two bytes are transferred per cycle. So an odd number
-of bytes cannot be transferred because it would leave a residual half
-cycle at the end. Consider such a transfer invalid and reject it.
-
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/spi/spi-cadence-quadspi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 37f4443ce9a0..1dfd38d82607 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -163,7 +163,17 @@ static bool spi_mem_check_buswidth(struct spi_mem *mem,
- bool spi_mem_dtr_supports_op(struct spi_mem *mem,
- 			     const struct spi_mem_op *op)
- {
--	if (op->cmd.nbytes != 2)
-+	if (op->cmd.buswidth == 8 && op->cmd.nbytes % 2)
-+		return false;
-+
-+	if (op->addr.nbytes && op->addr.buswidth == 8 && op->addr.nbytes % 2)
-+		return false;
-+
-+	if (op->dummy.nbytes && op->dummy.buswidth == 8 && op->dummy.nbytes % 2)
-+		return false;
-+
-+	if (op->data.dir != SPI_MEM_NO_DATA &&
-+	    op->dummy.buswidth == 8 && op->data.nbytes % 2)
- 		return false;
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 101cc71bffa7..98e0cc4236e3 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1388,10 +1388,15 @@ static const char *cqspi_get_name(struct spi_mem *mem)
+ 	return devm_kasprintf(dev, GFP_KERNEL, "%s.%d", dev_name(dev), mem->spi->chip_select);
+ }
  
- 	return spi_mem_check_buswidth(mem, op);
++static const struct spi_controller_mem_caps cqspi_mem_caps = {
++	.dtr = true,
++};
++
+ static const struct spi_controller_mem_ops cqspi_mem_ops = {
+ 	.exec_op = cqspi_exec_mem_op,
+ 	.get_name = cqspi_get_name,
+ 	.supports_op = cqspi_supports_mem_op,
++	.caps = &cqspi_mem_caps,
+ };
+ 
+ static int cqspi_setup_flash(struct cqspi_st *cqspi)
 -- 
 2.27.0
 
