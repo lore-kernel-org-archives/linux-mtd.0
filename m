@@ -4,34 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23537C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 21:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 758D5C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 21:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Uo29tAk8Q05QdSJbDIces1AqOEwZDpiSAz+4WmnHhVg=; b=FnGgITYazKvITB
-	dER1yNT6RHXt2aP8Wb1aUpzSBfoKc/+N9YokJXJE1EPBDlk0m+f9er8mXQf5Rmsy1DNQVguedkrfm
-	ySkUfPgjBN2a55n7isFIV6HlkBdk47tWZmZTyUaP3dfj5XmZ8uKQqZ5rD0BV7LcEtzInJYUYXtSt5
-	bvbVgPwBYzkzkrZTx7JZeCaWyBwIJkKJHa4ecw0GhgES5Ty0YeUaQ9KEeUO14mQpd4/wqJcv/kxtJ
-	YXp78oN/G/wbWIc/4n7C/J+UIrW6a8zZtCsFSHw1TIWi3ZyCKpogfQQY4B5XRJzp1pVDZlPQ5V4YE
-	5zgxET7H2Xb02pDRxgWw==;
+	List-Owner; bh=sV70jLWtxabhyPrMu6iYfbTkpLA9uP1GDMbLIdXe2y0=; b=WdhYItohZWllmp
+	vx/hlkMMUpChPt2tdkylR6KWJxUWupnh/PI/5Oq/NeqmLmhfbOqE/8tFQQegpotRMBp2fQtj+g86R
+	edlZhJrdxwWTe0XhSaUwj5EomfGFFRoVDCR5H0MhrvONf4V2LnEJR1JGqLRFZnCPhqqM5XHiMDViL
+	M5uDJMyxfWZpgZO/6AjeVNqWJmO7POJAkPNelnUiUPrLrpWyFB79Moew5YnCH3udLtmslFKcZ9xrI
+	E5/aVmf6ITdSWNBhkmM9dKul95ToJX6kk6Yq6WfqocMEIDc8tLg4CkfXPg1aVMGQqIsj+p87p1dAL
+	yHVuAEPrFvi2TyW6GkZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzmfB-008XJW-PN; Tue, 21 Dec 2021 21:27:13 +0000
+	id 1mzmfZ-008XKv-Mi; Tue, 21 Dec 2021 21:27:37 +0000
 Received: from relmlor1.renesas.com ([210.160.252.171]
  helo=relmlie5.idc.renesas.com)
  by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzmf8-008XHx-PN
- for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 21:27:12 +0000
-X-IronPort-AV: E=Sophos;i="5.88,224,1635174000"; d="scan'208";a="104266473"
+ id 1mzmf8-008XIF-QD
+ for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 21:27:13 +0000
+X-IronPort-AV: E=Sophos;i="5.88,224,1635174000"; d="scan'208";a="104266477"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2021 06:27:07 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 22 Dec 2021 06:27:10 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 11EDC41082DB;
- Wed, 22 Dec 2021 06:27:05 +0900 (JST)
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 490DA41082DB;
+ Wed, 22 Dec 2021 06:27:08 +0900 (JST)
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -39,16 +39,16 @@ To: Han Xu <han.xu@nxp.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
  Prabhakar <prabhakar.csengg@gmail.com>,
  Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 1/2] mtd: rawnand: omap_elm: Use platform_get_irq() to get the
- interrupt
-Date: Tue, 21 Dec 2021 21:26:08 +0000
-Message-Id: <20211221212609.31290-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 2/2] mtd: rawnand: gpmi: Use platform_get_irq_byname() to get
+ the interrupt
+Date: Tue, 21 Dec 2021 21:26:09 +0000
+Message-Id: <20211221212609.31290-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211221212609.31290-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20211221212609.31290-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_132710_958904_089C90B7 
-X-CRM114-Status: GOOD (  12.59  )
+X-CRM114-CacheID: sfid-20211221_132710_980408_F4F13731 
+X-CRM114-Status: GOOD (  10.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,60 +66,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-platform_get_resource(pdev, IORESOURCE_IRQ, ..) relies on static
+platform_get_resource_byname(pdev, IORESOURCE_IRQ, ..) relies on static
 allocation of IRQ resources in DT core code, this causes an issue
 when using hierarchical interrupt domains using "interrupts" property
 in the node as this bypasses the hierarchical setup and messes up the
 irq chaining.
 
 In preparation for removal of static setup of IRQ resource from DT core
-code use platform_get_irq().
+code use platform_get_irq_byname().
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- drivers/mtd/nand/raw/omap_elm.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
-index 8bab753211e9..db105d9b560c 100644
---- a/drivers/mtd/nand/raw/omap_elm.c
-+++ b/drivers/mtd/nand/raw/omap_elm.c
-@@ -384,8 +384,8 @@ static irqreturn_t elm_isr(int this_irq, void *dev_id)
- static int elm_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index feccff8bdd15..1b64c5a5140d 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -991,16 +991,13 @@ static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
  {
- 	int ret = 0;
--	struct resource *irq;
- 	struct elm_info *info;
-+	int irq;
+ 	struct platform_device *pdev = this->pdev;
+ 	const char *res_name = GPMI_NAND_BCH_INTERRUPT_RES_NAME;
+-	struct resource *r;
+ 	int err;
  
- 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info)
-@@ -393,20 +393,18 @@ static int elm_probe(struct platform_device *pdev)
- 
- 	info->dev = &pdev->dev;
- 
--	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
--	if (!irq) {
--		dev_err(&pdev->dev, "no irq resource defined\n");
+-	r = platform_get_resource_byname(pdev, IORESOURCE_IRQ, res_name);
+-	if (!r) {
+-		dev_err(this->dev, "Can't get resource for %s\n", res_name);
 -		return -ENODEV;
 -	}
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
++	err = platform_get_irq_byname(pdev, res_name);
++	if (err < 0)
++		return err;
  
- 	info->elm_base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(info->elm_base))
- 		return PTR_ERR(info->elm_base);
- 
--	ret = devm_request_irq(&pdev->dev, irq->start, elm_isr, 0,
--			pdev->name, info);
-+	ret = devm_request_irq(&pdev->dev, irq, elm_isr, 0,
-+			       pdev->name, info);
- 	if (ret) {
--		dev_err(&pdev->dev, "failure requesting %pr\n", irq);
-+		dev_err(&pdev->dev, "failure requesting %d\n", irq);
- 		return ret;
- 	}
+-	err = devm_request_irq(this->dev, r->start, irq_h, 0, res_name, this);
++	err = devm_request_irq(this->dev, err, irq_h, 0, res_name, this);
+ 	if (err)
+ 		dev_err(this->dev, "error requesting BCH IRQ\n");
  
 -- 
 2.17.1
