@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5452C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 10:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2608AC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Dec 2021 10:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rReCVstd+GmZXlumCfO/UWhgkNW5ZRwlrttaScuFfzw=; b=w+vQSicjfYcLGz
-	fXKp9vviaE+C5PUPsM5rwP2DMKurPg3uqBfriBwCm+uVANadYh+gKcdGdOxrphjQXBEwDs9vPPR+T
-	9tQpR1AYmQX3ezhEboF9znfG5B9mxmYl3eR6CC4NLcx8/O/2q+POwaxEHo0EVtzYsIuAZuj7fns/b
-	2LOoYI8Wi8D5cpJrrYNT3QsRKHdXk4vopdkjFH49YZNCn1ta1Sjffy6QmK+BskR82i4/XA+b4+Egw
-	E97WRTyKNofoB6aA/YrIq9Zugm2iKAowRGsMPutQQrl7jJvnwlvKsJw0+X6q2M681d54SPz9BOZYN
-	mOUeru/FM5AkRZ0idAGg==;
+	List-Owner; bh=eC0UAfrQbCCfNq9u/fjEkrDl+ID6PeF8DBYHWU0MvPM=; b=T0P8pv1y18MH1z
+	fuvcriunBHxrcZh2mDU66TyGHndJJ7Do/RvFuH3TPXh+oWkeJh1/cQ3StbVcvYW03atCrO3WTKnfY
+	w1jrpG2KecCCBHd4XurJmRU37fyrk3SOMQlA4YyBDDMhXptUwYtca3vlh7Q9Sj1VeRiX7v7jW2hjz
+	N2rcp4kl21GOO2syjg3RAdv7Pr+pxcAVwwdwUoBIL5pLiBLaP/K908lVKW79QaNolT6qDfClIOeO/
+	oFIFjqK+0dcQepOSe92bZIam4F+Mp57ohP+4+9iUqAKBeQjz7SXNdNl3SZhuxjdn8OBSnTsj5aVN6
+	lnnS+MHSzAmjthznzdKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1mzc6x-006Keh-AT; Tue, 21 Dec 2021 10:11:11 +0000
+	id 1mzcAx-006MAY-0p; Tue, 21 Dec 2021 10:15:19 +0000
 Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1mzc6r-006Kdk-Ff
- for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 10:11:09 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BLAAuYd113637;
- Tue, 21 Dec 2021 04:10:56 -0600
+ id 1mzcAn-006M3j-Fe
+ for linux-mtd@lists.infradead.org; Tue, 21 Dec 2021 10:15:11 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BLAF35t114581;
+ Tue, 21 Dec 2021 04:15:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1640081456;
- bh=MyTlXd+JvUH2f7zfJ8YonT0PYM6b5k65iBjzl1xz2j4=;
+ s=ti-com-17Q1; t=1640081703;
+ bh=40NnMAfNyavw+mHDYO4/rAXDzD3CBKIyI2aZ0CGwH18=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=BtrlC1MYqQ+wyBMILyM9+4bvF3nlYddhZQKAWdn83t43STov52Qb8tdMRQAf/MeGo
- OQ/0J26AeODoeYxaEruM1o4fqGXpKGzELGIjE0HPn0u5PxhmmW11kKphGJwWvSrgNY
- A4twlYg3IP1xM3Ha5S1aS/kzr+QxNvavggBql8JQ=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BLAAuaw107091
+ b=IIGSXhFFp5l2kbRtnHKNSt3EGbk8mok1niqf7kkZL4ej7ELLzKkCirGSNJa2JqJ5t
+ 25nWZaC1ghIwWnv6XeFfSziOHKvRCaxAWQWkcnSnMFn6TuZ1MEFjr4Gj/YCo63A3fU
+ AfGg1ajeHMxEYlVD4y3yPa/k2i71wcG2xe2Dhlt8=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BLAF2f5120700
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 21 Dec 2021 04:10:56 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 21 Dec 2021 04:15:03 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
- Dec 2021 04:10:56 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2021 04:15:02 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 21 Dec 2021 04:10:56 -0600
+ Frontend Transport; Tue, 21 Dec 2021 04:15:02 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BLAAsjF055112;
- Tue, 21 Dec 2021 04:10:55 -0600
-Date: Tue, 21 Dec 2021 15:40:54 +0530
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BLAF1K3102331;
+ Tue, 21 Dec 2021 04:15:02 -0600
+Date: Tue, 21 Dec 2021 15:45:01 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Richard
@@ -60,21 +60,21 @@ CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Richard
  Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v7 06/14] spi: spi-mem: Kill the
- spi_mem_dtr_supports_op() helper
-Message-ID: <20211221101052.rgcikxeh3aygdjgh@ti.com>
+Subject: Re: [PATCH v7 01/14] spi: spi-mem: Fix a DTR related check in
+ spi_mem_dtr_supports_op()
+Message-ID: <20211221101459.sahoe2actpu5644b@ti.com>
 References: <20211217161654.367782-1-miquel.raynal@bootlin.com>
- <20211217161654.367782-7-miquel.raynal@bootlin.com>
- <20211220185840.ox5hs44hej6nhkxo@ti.com>
- <20211221105803.1596cf89@xps13>
+ <20211217161654.367782-2-miquel.raynal@bootlin.com>
+ <20211220183917.m3mywavgxsgq7yar@ti.com>
+ <20211221105058.69822ac5@xps13>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20211221105803.1596cf89@xps13>
+In-Reply-To: <20211221105058.69822ac5@xps13>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211221_021105_655387_19C82289 
-X-CRM114-Status: GOOD (  31.18  )
+X-CRM114-CacheID: sfid-20211221_021509_657304_4C695C06 
+X-CRM114-Status: GOOD (  28.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,114 +86,62 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/12/21 10:58AM, Miquel Raynal wrote:
+On 21/12/21 10:50AM, Miquel Raynal wrote:
 > Hi Pratyush,
-> =
-
-> p.yadav@ti.com wrote on Tue, 21 Dec 2021 00:28:42 +0530:
-> =
-
+> 
+> p.yadav@ti.com wrote on Tue, 21 Dec 2021 00:09:19 +0530:
+> 
 > > On 17/12/21 05:16PM, Miquel Raynal wrote:
-> > > Now that spi_mem_default_supports_op() has access to the static
-> > > controller capabilities (related to memory operations), and now that
-> > > these capabilities have been filled by the impacted controllers, there
-> > > is no need for a specific helper checking only DTR operations, so let=
-'s
-> > > just kill spi_mem_dtr_supports_op() and simply use
-> > > spi_mem_default_supports_op() instead.
-> > > =
+> > > It seems that the number of command bytes must be "2" only when the
+> > > command itself is sent in DTR mode. The current logic checks if the
+> > > number of command bytes is "2" when any of the cycles is a DTR cycle. It
+> > > is likely that so far no device was actually mixing DTR/non-DTR cycles
+> > > in the same operation, explaining why this was left undetected until
+> > > now.  
+> > 
+> > This was intentional. spi_mem_dtr_supports_op() must only be called when 
+> > the operation is DTR in all phases so I did not add any sanity checks if 
+> > someone was using it for non-DTR ops.
+> 
+> Maybe that was the original intention but since then the Macronix
+> driver has been merged and supports (at lest does not reject) these
+> modes.
 
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > ---
-> > >  drivers/spi/spi-cadence-quadspi.c |  5 +----
-> > >  drivers/spi/spi-mem.c             | 10 ----------
-> > >  drivers/spi/spi-mxic.c            | 10 +---------
-> > >  include/linux/spi/spi-mem.h       | 11 -----------
-> > >  4 files changed, 2 insertions(+), 34 deletions(-)
-> > > =
+But I don't see any code that actually creates mixed DTR ops. SPI NOR 
+does not do it for sure, and SPI NAND does not have DTR support yet. 
+Those are the only two users of SPI MEM I can see. So we are solving at 
+a problem that doesn't exist yet. Which is fine of course, I just want 
+to point it out.
 
-> > > diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-> > > index e137b1ec85d4..67d05ee8d6a0 100644
-> > > --- a/drivers/spi/spi-mxic.c
-> > > +++ b/drivers/spi/spi-mxic.c
-> > > @@ -335,8 +335,6 @@ static int mxic_spi_data_xfer(struct mxic_spi *mx=
-ic, const void *txbuf,
-> > >  static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
-> > >  				     const struct spi_mem_op *op)
-> > >  {
-> > > -	bool all_false;
-> > > -
-> > >  	if (op->data.buswidth > 8 || op->addr.buswidth > 8 ||
-> > >  	    op->dummy.buswidth > 8 || op->cmd.buswidth > 8)
-> > >  		return false;
-> > > @@ -348,13 +346,7 @@ static bool mxic_spi_mem_supports_op(struct spi_=
-mem *mem,
-> > >  	if (op->addr.nbytes > 7)
-> > >  		return false;
-> > >  =
+> 
+> > In fact, I added on to this 
+> > function in [0] to check nbytes for other phases as well. The patch fell 
+> > off my radar unfortunately, and it didn't get merged.
+> > 
+> > I would like to keep this as it is since we have no user of mixed 
+> > DTR/non-DTR modes yet.
+> 
+> I don't know if the Macronix driver really supports it or if it is the
+> driver that is doing the wrong checks but in appearance such mixed mode
+> could be used.
+> 
+> > But if you really want to support it, please 
+> > apply my patch first to make sure we check for every phase, not just 
+> > command.
+> > 
+> > [0] https://lore.kernel.org/all/20210531181757.19458-5-p.yadav@ti.com/
+> 
+> Nice, I might take that as well indeed in order to make the checks a
+> little bit more robust.
 
-> > > -	all_false =3D !op->cmd.dtr && !op->addr.dtr && !op->dummy.dtr &&
-> > > -		    !op->data.dtr;
-> > > -
-> > > -	if (all_false)
-> > > -		return spi_mem_default_supports_op(mem, op);
-> > > -	else
-> > > -		return spi_mem_dtr_supports_op(mem, op);
-> > > +	return spi_mem_default_supports_op(mem, op);  =
+Thanks.
 
-> > =
-
-> > Does this controller support mixed DTR modes? If it doesn't then it =
-
-> > should reject mixed DTR ops before calling =
-
-> > spi_mem_default_supports_op(). Anyway, the current driver doesn't check =
-
-> > for it either so this change does not make anything worse at the very =
-
-> > least.
-> =
-
-> The Cadence SPI driver does something like:
-> =
-
-> all_true =3D cmd.dtr && addr.dtr ...;
-> all_false =3D !cmd.dtr && !addr.dtr ...;
-> if (!all_true || !all_false)
-> 	return false;
-> =
-
-> This basically rules out any mixed DTR operation.
-> =
-
-> I believe Macronix code is inspired from this function, but they
-> intentionally dropped the all_true check, making the situation boolean:
-> either there is at least one DTR op, or there is none. So I believe
-> this was done on purpose and this controller supports mixed DTR ops.
-
-I see that your other patches in this series touch this driver so you =
-
-should have the datasheet right? Can you look and see for sure if it =
-
-does? I am fine with the patch as it is but if we can make the check =
-
-stricter it would be nice.
-
-> =
-
-> > Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-> =
-
-> Thanks,
-> Miqu=E8l
-
--- =
-
+-- 
 Regards,
 Pratyush Yadav
 Texas Instruments Inc.
