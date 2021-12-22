@@ -4,93 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C597DC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 22 Dec 2021 11:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1565BC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 22 Dec 2021 14:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=olELCwHRFhaXtVERnKpXQFeVK1ix3PlnTfLXdIce/Bg=; b=z3EAUuK74Rbq8a
-	NHgiefzf6Yyedrd1Id8H0/YUDcAbUnTgLgyCYRL/mSbptmJKAnY7W+4tBrFdvYJijurZTOnOtxW2D
-	utkzfvjN/SAZBnBidW+CLYSn6+IZsMQaXY4qYWydXnaP8fKZMUcHTX5gEW5A73A/V2VK0vT1VVHPI
-	WK5N/O+apAwZHy33OX8c9gCorEWvm0qVK7lkX57TQ8eWpSWxBLecmEs+MPZiUMU0cjxEkGTtok0yy
-	QiRGPprVq+/Nl7jTYWi4G/IjRBDH3yI2kUrWI7ABAJ/YMD2Maia3KLiUEDPaEBCKz07aaU23lmfge
-	R7iW4XL6q4rAnh7nc/gA==;
+	List-Owner; bh=SxFvso7A1DD2NvEkNdj7oi6dHlAEf0/JbLl/MQ472Ro=; b=iodhmmOCC+NGLs
+	LhBiTzOW4QUdKWYe+XkqUzHNbiKzo+1oFyTeHZ88ZeHlpt/LdQCclrtgBmlTNt0DzVXXIx6THT5p5
+	n3dO2UTUxSrrzd4TQeCD3sGCO+ylNxrkTv/Y6T+Q9PWoLemIPcr8JUDi1LFvshYFSoyxS7CmTTaeC
+	aUQ8mhn2nT3OzaI7jlvHGrGhx1ib/gq4xkgBsuhnyFjOpIy/Fgn9UzJ4YM8F5K/fX66WTL0ah7r9r
+	wky+ts1KfIuIaL2rhiwreb/wtQLsoK0iJT7uyo60v/c1N2cls2NxBUrZ+7MLjvgp95XYcjhdGYkd/
+	F1RY+bORAXWJPT4ueN9Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n008X-00AAqo-RT; Wed, 22 Dec 2021 11:50:25 +0000
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	id 1n02Ru-00AeQq-Gx; Wed, 22 Dec 2021 14:18:34 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n008V-00AAmc-AN
- for linux-mtd@lists.infradead.org; Wed, 22 Dec 2021 11:50:24 +0000
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5936D3F1F2
- for <linux-mtd@lists.infradead.org>; Wed, 22 Dec 2021 11:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1640173820;
- bh=IoWj9oNDweMrZAiZnpWJ2M9mqGVrhoH3F2ncAQcZpG8=;
- h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
- In-Reply-To:Content-Type;
- b=LqriuYkJoKTW1URXXG/eUf3KB/2NdA0N8HDriO9q1cAbXd0YdX/qFOBMKt0IA4Qvp
- 0DinGl6UUbPg1J2FKhuF9YcsgC8rrsCJsGIUFrTttDdh3ci+iLDs1fSu63+MeGShDd
- 0tJuivKYWpDxBjkEKWLQYMjI9KF3CNxoLwp/GIDeu9JW0MAugdpEmjBEHEaVaCVlpb
- KzgDG56MuGt/p00Yf3m08vTRg02Y56c78L5BXfxIwh97mXsEZc9aL90ERfOagAygI/
- au09L22qc9Mtv/pfqF2c6dLtxveFcCWSw77NEDlmksufWGhju24xRfNrlO+Z3ZxG1f
- Eqpg/5mnj3/VA==
-Received: by mail-lf1-f70.google.com with SMTP id
- p19-20020a19f113000000b00425930cf042so1101963lfh.22
- for <linux-mtd@lists.infradead.org>; Wed, 22 Dec 2021 03:50:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=IoWj9oNDweMrZAiZnpWJ2M9mqGVrhoH3F2ncAQcZpG8=;
- b=fBw+abyWI+E1j1ACvZZGD+LhT4U9B971L8Ft5lJcJI3Ipvxc/e5fAhYzSC6TUBPT9k
- L66D7CvX5Oq3VZntYK3JudICM1imH8JfUNUzirpBEwcaIZyeXt3kzILz6sX8hfNGZtmO
- oQWaH7sL+jvERNl4Lbs/c6LJBIxW+BHNejLfIYscWAqQvNv9x351IyzxTSMoZuloELl+
- 0Z5zJceKHT5d7g6LBExfYptbVK3IzLp21b7cNge4gs9692NyI0xoVVvp7YEFW8vXkSSf
- h+P6RPmjjMBxXZ2La5KMwrsszzrWIEkyxhgjHD2ZHLz5ZqY7cm4dP5y1G2Fct/u7nXun
- NL7g==
-X-Gm-Message-State: AOAM533Q8drrDnmWcay/ITyqvqX+mtQs06EhB9POJj14YXN/+9YNUX8w
- jG/XN4auA7FCAIuHhwVMcHCbkFyUtEUWOdXPjfhinRrWPn0KOLpllun5l5q007iaeQ0XVuw9m6+
- qUQs/erE2Kg1mBnRydbWTV5lRF3at+KacDmespyvyZpg=
-X-Received: by 2002:a2e:bb98:: with SMTP id y24mr1834332lje.315.1640173819744; 
- Wed, 22 Dec 2021 03:50:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyA35gJz13lmXvYXfWrxjhinbcGJguqP+W5VI63zqG4S459hkNVbC2c7iwZdwKh71gviVwf8Q==
-X-Received: by 2002:a2e:bb98:: with SMTP id y24mr1834322lje.315.1640173819594; 
- Wed, 22 Dec 2021 03:50:19 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
- by smtp.gmail.com with ESMTPSA id
- bi29sm191325lfb.234.2021.12.22.03.50.18
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 22 Dec 2021 03:50:18 -0800 (PST)
-Message-ID: <2b4386a4-0acc-5db1-fc55-b57ad8a84be3@canonical.com>
-Date: Wed, 22 Dec 2021 12:50:18 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v4 4/4] mtd: rawnand: omap2: Select GPMC device driver for
- ARCH_K3
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Roger Quadros <rogerq@kernel.org>
-Cc: tony@atomide.com, robh@kernel.org, kishon@ti.com, nm@ti.com,
- vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+ id 1n02Rr-00AePk-38
+ for linux-mtd@lists.infradead.org; Wed, 22 Dec 2021 14:18:33 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 77CBEE000D;
+ Wed, 22 Dec 2021 14:18:24 +0000 (UTC)
+Date: Wed, 22 Dec 2021 15:18:23 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: krzysztof.kozlowski@canonical.com, tony@atomide.com, robh@kernel.org,
+ kishon@ti.com, nm@ti.com, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 3/4] memory: omap-gpmc: Use a compatible match table
+ when checking for NAND controller
+Message-ID: <20211222151823.77179b74@xps13>
+In-Reply-To: <51b8e895-95e1-0024-1457-ec534985c9f0@kernel.org>
 References: <20211221131757.2030-1-rogerq@kernel.org>
- <20211221131757.2030-5-rogerq@kernel.org> <20211221144917.0a5d8f1a@xps13>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211221144917.0a5d8f1a@xps13>
+ <20211221131757.2030-4-rogerq@kernel.org>
+ <51b8e895-95e1-0024-1457-ec534985c9f0@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211222_035023_531964_1D51ECE9 
-X-CRM114-Status: GOOD (  13.83  )
+X-CRM114-CacheID: sfid-20211222_061831_452829_42AA9B77 
+X-CRM114-Status: GOOD (  22.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,45 +59,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/12/2021 14:49, Miquel Raynal wrote:
-> Hi Roger,
-> 
-> rogerq@kernel.org wrote on Tue, 21 Dec 2021 15:17:57 +0200:
-> 
->> The GPMC device driver is required for NAND controller
->> to work on K3 Architecture. Select it if required.
->>
->> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  drivers/mtd/nand/raw/Kconfig | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
->> index 67b7cb67c030..587f20c6184f 100644
->> --- a/drivers/mtd/nand/raw/Kconfig
->> +++ b/drivers/mtd/nand/raw/Kconfig
->> @@ -42,6 +42,7 @@ config MTD_NAND_OMAP2
->>  	tristate "OMAP2, OMAP3, OMAP4 and Keystone NAND controller"
->>  	depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
->>  	depends on HAS_IOMEM
->> +	select OMAP_GPMC if ARCH_K3
-> 
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> 
-
-This patch looks actually independent. Miquel, do you want me to take it
-via memory controller drivers tree (like three other patches)?
-
-
-Best regards,
-Krzysztof
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9nZXIsCgpyb2dlcnFAa2VybmVsLm9yZyB3cm90ZSBvbiBUdWUsIDIxIERlYyAyMDIxIDIy
+OjAxOjI4ICswMjAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24gMjEvMTIvMjAyMSAxNToxNywgUm9n
+ZXIgUXVhZHJvcyB3cm90ZToKPiA+IEFzIG1vcmUgY29tcGF0aWJsZXMgY2FuIGJlIGFkZGVkIHRv
+IHRoZSBHUE1DIE5BTkQgY29udHJvbGxlciBkcml2ZXIKPiA+IHVzZSBhIGNvbXBhdGlibGUgbWF0
+Y2ggdGFibGUuCj4gPiAKPiA+IENjOiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3Rs
+aW4uY29tPgo+ID4gU2lnbmVkLW9mZi1ieTogUm9nZXIgUXVhZHJvcyA8cm9nZXJxQGtlcm5lbC5v
+cmc+Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL21lbW9yeS9vbWFwLWdwbWMuYyAgICAgICAgICAgICAg
+ICAgICB8IDYgKysrKystCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYyAgICAgICAg
+ICAgICAgICAgfCA1ICstLS0tICAKPiAKPiBXaWxsIG5lZWQgeW91ciBBY2sgZm9yIHRoaXMgb25l
+IGFzIHdlbGwuIFRoYW5rcyA6KQo+IAo+IAo+ID4gIGluY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0
+YS9tdGQtbmFuZC1vbWFwMi5oIHwgOSArKysrKysrKy0KPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDE0
+IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pICAKPiAKPiBjaGVlcnMsCj4gLXJvZ2VyCj4g
+Cj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lbW9yeS9vbWFwLWdwbWMuYyBiL2RyaXZl
+cnMvbWVtb3J5L29tYXAtZ3BtYy5jCj4gPiBpbmRleCA2MjQxNTMwNDgxODIuLmQxOWZmYzg5NWU1
+YiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbWVtb3J5L29tYXAtZ3BtYy5jCj4gPiArKysgYi9k
+cml2ZXJzL21lbW9yeS9vbWFwLWdwbWMuYwo+ID4gQEAgLTIwOTEsNiArMjA5MSw3IEBAIHN0YXRp
+YyBpbnQgZ3BtY19wcm9iZV9nZW5lcmljX2NoaWxkKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBk
+ZXYsCj4gPiAgCXUzMiB2YWw7Cj4gPiAgCXN0cnVjdCBncGlvX2Rlc2MgKndhaXRwaW5fZGVzYyA9
+IE5VTEw7Cj4gPiAgCXN0cnVjdCBncG1jX2RldmljZSAqZ3BtYyA9IHBsYXRmb3JtX2dldF9kcnZk
+YXRhKHBkZXYpOwo+ID4gKwlib29sIGlzX25hbmQgPSBmYWxzZTsKPiA+ICAKPiA+ICAJaWYgKG9m
+X3Byb3BlcnR5X3JlYWRfdTMyKGNoaWxkLCAicmVnIiwgJmNzKSA8IDApIHsKPiA+ICAJCWRldl9l
+cnIoJnBkZXYtPmRldiwgIiVwT0YgaGFzIG5vICdyZWcnIHByb3BlcnR5XG4iLAo+ID4gQEAgLTIx
+ODMsNyArMjE4NCwxMCBAQCBzdGF0aWMgaW50IGdwbWNfcHJvYmVfZ2VuZXJpY19jaGlsZChzdHJ1
+Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2LAo+ID4gIAkJfQo+ID4gIAl9Cj4gPiAgCj4gPiAtCWlm
+IChvZl9kZXZpY2VfaXNfY29tcGF0aWJsZShjaGlsZCwgInRpLG9tYXAyLW5hbmQiKSkgewo+ID4g
+KwlpZiAob2ZfbWF0Y2hfbm9kZShvbWFwX25hbmRfaWRzLCBjaGlsZCkpCj4gPiArCQlpc19uYW5k
+ID0gdHJ1ZTsKPiA+ICsKPiA+ICsJaWYgKGlzX25hbmQpIHsKCm5pdHBpY2s6IHdoeSB0aGlzIGlu
+dGVybWVkaWF0ZSB2YXJpYWJsZT8KCk90aGVyd2lzZSBmb3IgdGhlIE5BTkQgYml0czoKCkFja2Vk
+LWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPgoKPiA+ICAJCS8q
+IE5BTkQgc3BlY2lmaWMgc2V0dXAgKi8KPiA+ICAJCXZhbCA9IDg7Cj4gPiAgCQlvZl9wcm9wZXJ0
+eV9yZWFkX3UzMihjaGlsZCwgIm5hbmQtYnVzLXdpZHRoIiwgJnZhbCk7Cj4gPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L29t
+YXAyLmMKPiA+IGluZGV4IGIyNmQ0OTQ3YWYwMi4uZTZkZDhiNGNmMGQyIDEwMDY0NAo+ID4gLS0t
+IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvb21hcDIuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvb21hcDIuYwo+ID4gQEAgLTIzNTIsMTAgKzIzNTIsNyBAQCBzdGF0aWMgaW50IG9tYXBf
+bmFuZF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiA+ICAJcmV0dXJuIHJl
+dDsKPiA+ICB9Cj4gPiAgCj4gPiAtc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgb21h
+cF9uYW5kX2lkc1tdID0gewo+ID4gLQl7IC5jb21wYXRpYmxlID0gInRpLG9tYXAyLW5hbmQiLCB9
+LAo+ID4gLQl7fSwKPiA+IC19Owo+ID4gKy8qIG9tYXBfbmFuZF9pZHMgZGVmaW5lZCBpbiBsaW51
+eC9wbGF0Zm9ybV9kYXRhL210ZC1uYW5kLW9tYXAyLmggKi8KPiA+ICBNT0RVTEVfREVWSUNFX1RB
+QkxFKG9mLCBvbWFwX25hbmRfaWRzKTsKPiA+ICAKPiA+ICBzdGF0aWMgc3RydWN0IHBsYXRmb3Jt
+X2RyaXZlciBvbWFwX25hbmRfZHJpdmVyID0gewo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlu
+dXgvcGxhdGZvcm1fZGF0YS9tdGQtbmFuZC1vbWFwMi5oIGIvaW5jbHVkZS9saW51eC9wbGF0Zm9y
+bV9kYXRhL210ZC1uYW5kLW9tYXAyLmgKPiA+IGluZGV4IGRlNmFkYTczOTEyMS4uOTJmMDExODA1
+YWQ0IDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL210ZC1uYW5k
+LW9tYXAyLmgKPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvcGxhdGZvcm1fZGF0YS9tdGQtbmFuZC1v
+bWFwMi5oCj4gPiBAQCAtNyw2ICs3LDcgQEAKPiA+ICAjZGVmaW5lCV9NVERfTkFORF9PTUFQMl9I
+Cj4gPiAgCj4gPiAgI2luY2x1ZGUgPGxpbnV4L210ZC9wYXJ0aXRpb25zLmg+Cj4gPiArI2luY2x1
+ZGUgPGxpbnV4L21vZF9kZXZpY2V0YWJsZS5oPgo+ID4gIAo+ID4gICNkZWZpbmUJR1BNQ19CQ0hf
+TlVNX1JFTUFJTkRFUgk4Cj4gPiAgCj4gPiBAQCAtNjEsNCArNjIsMTAgQEAgc3RydWN0IGdwbWNf
+bmFuZF9yZWdzIHsKPiA+ICAJdm9pZCBfX2lvbWVtCSpncG1jX2JjaF9yZXN1bHQ1W0dQTUNfQkNI
+X05VTV9SRU1BSU5ERVJdOwo+ID4gIAl2b2lkIF9faW9tZW0JKmdwbWNfYmNoX3Jlc3VsdDZbR1BN
+Q19CQ0hfTlVNX1JFTUFJTkRFUl07Cj4gPiAgfTsKPiA+IC0jZW5kaWYKPiA+ICsKPiA+ICtzdGF0
+aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBvbWFwX25hbmRfaWRzW10gPSB7Cj4gPiArCXsg
+LmNvbXBhdGlibGUgPSAidGksb21hcDItbmFuZCIsIH0sCj4gPiArCXt9LAo+ID4gK307Cj4gPiAr
+Cj4gPiArI2VuZGlmIC8qIF9NVERfTkFORF9PTUFQMl9IICovCj4gPiAgIAoKClRoYW5rcywKTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
