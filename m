@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2D83C43219
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 00:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1581AC4321E
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 00:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dRCc+At75jQwX4Z+qFNQ0aQeFYkWQ0zOOM8ovcUN5wk=; b=3Al6ZaBrLSpJAu
-	YteeAkkDRtJqgZWNJlFg0F5HgcjKP7oFp2+Bgucrd2PyAsIzno2mAWoGSSJepbyvby4OpnYwt2Oxk
-	zwOp5CCFWIppuYPZ8AMHYY0VNvXDFXzbFcX896JdbpG0aM9rR4HskQDoHwq3r6zpzT8EozSUkTROc
-	C2eG+uHRed7hb4uuYyAJTz+0Wd+t0VBfWQRI3X4xnYKyZL3s50SV6Gbf3xH2b+NtaK68ewurmZcBP
-	y4+TrSfEkm9k560Z3TiS2PKr34sLDa9VxWua+raMV1biJQfn6F1FWbkERixcktk5fkV5rj76expIW
-	3PjtxExd7LTThNbgc40g==;
+	List-Owner; bh=aktTzL8lwHZLe0xUrRQTqiqpHwAzgYwAKHzZJMLbmGY=; b=5F9JPAhaKOVXRq
+	6pN6glPhnf3j8Z5Yn1ZMIUgqR51lLVXfctJqdRN/Nc4a7tdR04czyZUKe9iXul2EAp7DbSmZiz0XR
+	41xjloF6Bl/uEIoO6xKNJZRPWgUxN7lUvE7L2Nhtupj4EK59jLmH3Hc135FMytmKEXy1G24xVGpsY
+	04YQa1RrkvZndPKxFAAs92fG0QWqsihWjoAM2HDviNvrKzZjDPVLnz1ramp6f/9QbAKkWQKK9rY4c
+	Pyhl8DumYrkngWrmqhyIC+GhPdCYwdBnlmUwYRMX0P3LAtyEkCXaWJWaEUiSMjxeUIFWMEqR4AcR2
+	xiT4uN5DiA1m4qFxM7Fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n0Bsf-00BXjv-3m; Thu, 23 Dec 2021 00:22:49 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1n0Bsr-00BXn3-Mh; Thu, 23 Dec 2021 00:23:01 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n0BsQ-00BXem-DT
- for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 00:22:35 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id w24so3015857ply.12
- for <linux-mtd@lists.infradead.org>; Wed, 22 Dec 2021 16:22:34 -0800 (PST)
+ id 1n0BsS-00BXfJ-6U
+ for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 00:22:37 +0000
+Received: by mail-pl1-x633.google.com with SMTP id x15so3054919plg.1
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Dec 2021 16:22:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=QmETOXOkNKQa2rKCeFKfspOjqOV7hD2bdN3ZZG5FHUI=;
- b=UC3LITshLiCeZPJfbMnFWKVzk+NdxgHQXUs2cuh5g0zkp5TWUKAhtNpar0sVngrS64
- IORiZyiJDJTK9/p6Xe/jHOAIWxXxok7ftwOY8v0n3D7cSHnWmi1Xm5cJ7S6TVY0wTo1K
- sQaN8CZ+WFyz6qC33tdUpAbi9QJy9PZ8ajCfveE0wC96V5UKhGFWICSEPZ35BCC0/vJS
- KhSi6hPabCtBKGD3YoZU7kQ/QkrKeT+Bpv/eP3HikmynvOThLJt8L8zRxv7o1plvy6eY
- cIvaeZywe3GqhIfdQmkRtIOhMCEqHDikDCpaVfslgxv3Q2eOTmSUr0sj2G4huJOEagm1
- c3Og==
+ bh=DknGyPcGjNy3srT0IigmczMVpbDaJUX0db4clA7nVyE=;
+ b=QxfW+YUo9bh17Swjkq0zfV9nRzqa+6MeWsmnb00FFEZs5uI2lLJ3EkzIrANj6bcSUl
+ c5+jLzpvHhIxlOWm0akQNmgBAmTIio5TXxTf3XGidCVA6qAA3IjUilqlbdrrxzUuWkUv
+ PmZsW9jvdLZJ2PZrg7CbyXIWCAQskyUTO6rHDvTUbi9v7fi7nBeDNtxgKcsePdo6Dc7J
+ T0lnyiO9padNcOdNawQqcKEOLZO2EZ8xG7D9CI0M4FFpWeHC9BwetVt5Us2H4MXxe7z7
+ 6deM+2JSNcPSW/IN4Gy1+b9nIPz4JcGzqvKOt7RjqIPawe6xyeUATroXMcFD8Ra42/d0
+ UkDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=QmETOXOkNKQa2rKCeFKfspOjqOV7hD2bdN3ZZG5FHUI=;
- b=uk22F/j3zxH+9KkLlHEhIJBfpRs8aB24htRUz2JshmeIHxv6lq/h0BuxLq3k1LRX8s
- GyREo3hr36jw3IynkESpxnHLXaxso6LAkAI5Moa+uL5KJpa86V4nv+H4ygCd3XKMrDmM
- ERowBpUb/zFqkoDiok2Wa0AVpwh92/+AHoz8jpRuJtSVJp8wjxxZbEcOcp/xwyHb6vST
- eZ5X5OHYZxPT8NSne5iiQ/UdGdPgK4HIGR5AnU42eE7mzuM/+L94lWC5L2AHP5on29Y+
- 5BWCAeeMVSHiaS0vowan4Gt3npKh8ch7pQhtJllrdWX7s2jSEKnLrQ6fKtDrG/VEh15q
- u4hw==
-X-Gm-Message-State: AOAM533ZM9QRZ243QM2jwtvc/SuQoTw765D0LFEoNyKc8Zv0yInADMyB
- qCsS5fzH54Bppolu+g/ALD+7aaH7pJc=
-X-Google-Smtp-Source: ABdhPJwhz8YZlay9PUCTslrKMaxwhliG6OEIIBNm11WCw9aJY46qwiWx1rz70bxyRDenBBotVqJCVw==
-X-Received: by 2002:a17:90a:cb0d:: with SMTP id z13mr42268pjt.89.1640218953323; 
- Wed, 22 Dec 2021 16:22:33 -0800 (PST)
+ bh=DknGyPcGjNy3srT0IigmczMVpbDaJUX0db4clA7nVyE=;
+ b=vxmC8cXXuViEp9T/54vs1T4Z4LNiszOwWOuBeZlSJW/Bbd1bT6bHxK/i664McsO4Ma
+ yrQxtXJEmRBswdhc0qyugJfYNNWJJ/gr1LD6gD5SCUwpARtzbAh95mSvSm0zYzbH/UKp
+ EVaLx9ueq8TH388ywwWOjz6A0pjoTgkrrRNOsArwV23jLasb64gN14OrfSRdb27+vODU
+ nzPOyx5HAwQxQUhszDPm9dqxEjI0Fu5vHEosSi8EmnyWk8qhcN2bcH+vwLx/b3Sebh/y
+ KH7HHny8cuFyBfleOfZ5MkUvr9neplKH4L5wZMMlRcF2jZD0ePxXFnjyZuIHRheDLRFm
+ /JhA==
+X-Gm-Message-State: AOAM53346SFvcEZLVmEkaQ7aHweguNMJY3vzi7P/tl/UyDR1N9rzMUNB
+ I7PJzm/5M4/WTcp64DKHMcZ1odiC9Go=
+X-Google-Smtp-Source: ABdhPJyWP5a3vUVMkg6PgbOpBWjwpnAx/lSUHLsZXUV83dbGPFKmgEnhKi29+REeORMYHIDI8QR2og==
+X-Received: by 2002:a17:902:d682:b0:148:c928:1fa1 with SMTP id
+ v2-20020a170902d68200b00148c9281fa1mr4949461ply.155.1640218955024; 
+ Wed, 22 Dec 2021 16:22:35 -0800 (PST)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
- by smtp.gmail.com with ESMTPSA id e24sm6720703pjt.45.2021.12.22.16.22.30
+ by smtp.gmail.com with ESMTPSA id e24sm6720703pjt.45.2021.12.22.16.22.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Dec 2021 16:22:32 -0800 (PST)
+ Wed, 22 Dec 2021 16:22:34 -0800 (PST)
 From: Florian Fainelli <f.fainelli@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Florian Fainelli <f.fainelli@gmail.com>,
@@ -71,17 +72,16 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
  (BCMA)), 
  bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
  DRIVER)
-Subject: [PATCH 1/9] mtd: rawnand: brcmnand: Allow SoC to provide I/O
- operations
-Date: Wed, 22 Dec 2021 16:22:17 -0800
-Message-Id: <20211223002225.3738385-2-f.fainelli@gmail.com>
+Subject: [PATCH 2/9] mtd: rawnand: brcmnand: Assign soc as early as possible
+Date: Wed, 22 Dec 2021 16:22:18 -0800
+Message-Id: <20211223002225.3738385-3-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211223002225.3738385-1-f.fainelli@gmail.com>
 References: <20211223002225.3738385-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211222_162234_478938_99A4BEDC 
-X-CRM114-Status: GOOD (  14.96  )
+X-CRM114-CacheID: sfid-20211222_162236_262664_68EFEBA7 
+X-CRM114-Status: GOOD (  11.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,107 +98,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow a brcmnand_soc instance to provide a custom set of I/O operations
-which we will require when using this driver on a BCMA bus which is not
-directly memory mapped I/O. Update the nand_{read,write}_reg accordingly
-to use the SoC operations if provided.
+In order to key off the brcmnand_probe() code in subsequent changes
+depending upon ctlr->soc, assign that variable as early as possible,
+instead of much later when we have checked that it is non-NULL.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 14 ++++++++++++--
- drivers/mtd/nand/raw/brcmnand/brcmnand.h | 23 +++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index f75929783b94..7a1673b1b1af 100644
+index 7a1673b1b1af..fcea5a7443e8 100644
 --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -594,13 +594,18 @@ enum {
+@@ -3008,6 +3008,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
  
- static inline u32 nand_readreg(struct brcmnand_controller *ctrl, u32 offs)
- {
-+	if (brcmnand_soc_has_ops(ctrl->soc))
-+		return brcmnand_soc_read(ctrl->soc, offs);
- 	return brcmnand_readl(ctrl->nand_base + offs);
- }
+ 	dev_set_drvdata(dev, ctrl);
+ 	ctrl->dev = dev;
++	ctrl->soc = soc;
  
- static inline void nand_writereg(struct brcmnand_controller *ctrl, u32 offs,
- 				 u32 val)
- {
--	brcmnand_writel(val, ctrl->nand_base + offs);
-+	if (brcmnand_soc_has_ops(ctrl->soc))
-+		brcmnand_soc_write(ctrl->soc, val, offs);
-+	else
-+		brcmnand_writel(val, ctrl->nand_base + offs);
- }
- 
- static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
-@@ -766,13 +771,18 @@ static inline void brcmnand_rmw_reg(struct brcmnand_controller *ctrl,
- 
- static inline u32 brcmnand_read_fc(struct brcmnand_controller *ctrl, int word)
- {
-+	if (brcmnand_soc_has_ops(ctrl->soc))
-+		return brcmnand_soc_read(ctrl->soc, ~0);
- 	return __raw_readl(ctrl->nand_fc + word * 4);
- }
- 
- static inline void brcmnand_write_fc(struct brcmnand_controller *ctrl,
- 				     int word, u32 val)
- {
--	__raw_writel(val, ctrl->nand_fc + word * 4);
-+	if (brcmnand_soc_has_ops(ctrl->soc))
-+		brcmnand_soc_write(ctrl->soc, val, ~0);
-+	else
-+		__raw_writel(val, ctrl->nand_fc + word * 4);
- }
- 
- static inline void edu_writel(struct brcmnand_controller *ctrl,
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-index eb498fbe505e..a3f2ad5f6572 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
-@@ -11,12 +11,19 @@
- 
- struct platform_device;
- struct dev_pm_ops;
-+struct brcmnand_io_ops;
- 
- struct brcmnand_soc {
- 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
- 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
- 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
- 				 bool is_param);
-+	const struct brcmnand_io_ops *ops;
-+};
-+
-+struct brcmnand_io_ops {
-+	u32 (*read_reg)(struct brcmnand_soc *soc, u32 offset);
-+	void (*write_reg)(struct brcmnand_soc *soc, u32 val, u32 offset);
- };
- 
- static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
-@@ -58,6 +65,22 @@ static inline void brcmnand_writel(u32 val, void __iomem *addr)
- 		writel_relaxed(val, addr);
- }
- 
-+static inline bool brcmnand_soc_has_ops(struct brcmnand_soc *soc)
-+{
-+	return soc && soc->ops && soc->ops->read_reg && soc->ops->write_reg;
-+}
-+
-+static inline u32 brcmnand_soc_read(struct brcmnand_soc *soc, u32 offset)
-+{
-+	return soc->ops->read_reg(soc, offset);
-+}
-+
-+static inline void brcmnand_soc_write(struct brcmnand_soc *soc, u32 val,
-+				      u32 offset)
-+{
-+	soc->ops->write_reg(soc, val, offset);
-+}
-+
- int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc);
- int brcmnand_remove(struct platform_device *pdev);
+ 	init_completion(&ctrl->done);
+ 	init_completion(&ctrl->dma_done);
+@@ -3148,8 +3149,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	 * interesting ways
+ 	 */
+ 	if (soc) {
+-		ctrl->soc = soc;
+-
+ 		ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
+ 				       DRV_NAME, ctrl);
  
 -- 
 2.25.1
