@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE2EC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 00:24:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A40C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 00:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EEU9eJIaRtBJxRe/YXZ+cZGoLQke70pAzF+N64e8le4=; b=ZrhnZBzGIoqaqB
-	2C/NOrdWuTr3n8Qm1yWPugwHmqG+JvTsVn816D0irpSzm1xl5JoLIfTFYznvQKJmaT5YuniXldxxp
-	6vbVeSdhjjYSSeUEg3gLQMg23t1RJqYyCdPJJieM80F5BzKlhnSDiA0Ulur7ctLGF5TWspaG83ffO
-	lEIhP0fBSB53bZQwr+fulu9YQ2FTbjsOxcUbD5rNqDWaLNkMXkKdrWhZgAIRULAOeDmZaENG6lF57
-	3dY17aT/ZrPRj9lWWIb/zBmH4j/CN6vt4ovsfC0Xi1H2OdZ7mA6RchbIQ2uiU33A5rkcmylzYVxeC
-	UJ9Sa2H/Elx1zJhWYBwQ==;
+	List-Owner; bh=zo9xG5KEK2Cr5xm5T5CX+g5ZnnLZ+KSdF2+BvBxYyXI=; b=bHXMkoz6+RiBmk
+	yybQLwLHK/PtWg+GpI+Q4hhYF119pTJ10oZR0QF4kRItWPFiIneMA5EzXxA3aFLnzAV5qOF6Wuz+1
+	pxwQOuKG6OrONprjapzi4dpt50SUlckpiBbn8Z9IBvN5L261fjLXt361QG7gnzpy66WSGwzwSKHtz
+	ugcPWDNA29OjXJsWqvPj8riWX/WLfggsew93Y80XgU5JUl/yxhgW/LfMdMKjS6Mnc6DPAXzz2XK1x
+	nqRWmgNIioaZ38n3mcB3q0jjl211IyMrkhXalxfQxlDA8rWIAd8XIXbCPAgDbtxlvA5aLnZT+dzuo
+	qA53fHh09C7d/Hj52R3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n0Bu4-00BYIu-2I; Thu, 23 Dec 2021 00:24:16 +0000
-Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
+	id 1n0Buj-00BYXp-Sq; Thu, 23 Dec 2021 00:24:58 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n0BsX-00BXgP-CS
- for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 00:22:42 +0000
-Received: by mail-pj1-x1036.google.com with SMTP id
- x1-20020a17090a2b0100b001b103e48cfaso5098030pjc.0
- for <linux-mtd@lists.infradead.org>; Wed, 22 Dec 2021 16:22:41 -0800 (PST)
+ id 1n0BsZ-00BXgk-7W
+ for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 00:22:45 +0000
+Received: by mail-pf1-x429.google.com with SMTP id m1so3715504pfk.8
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Dec 2021 16:22:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=uyUAWvS1gGoBBI9YnGm7NS9rETUeD3abG1ViwzHmvu4=;
- b=VTCer4Mtp8RLzMSH8RC2nIFh/FXARGwSh+ydQ/Ax+I+fTFnqaP2yerzTydFctlr16O
- ypRLn6pM0sZW+eEs5j3m6uqIftECAtEBSyNnSxxMydBnh+puZuZ9f9GUPODlp96Y9Kp2
- 3f+rs5DTXec0vcDs44+/1wz7NKLOecyqGUlXlGN0lv1UR2mudPzTDq432geawrgpMRVh
- gyLP/LrMqJ934tiegUuQRt6ZMnvdEd+TB11lpO53Sk9BPN2OmVR8AwxpCWjWuSLrhqmT
- NOwwZ4lTnDRBUge8dvQ4HJVWmj25Ej9AeTS2EE65OOAgPi3xauzZ3akmDVLB9olpWEQ7
- NNrQ==
+ bh=WrwpWLxiWx6mZCJiyoZtcTWmNjs4loZOAYfkmQ38gh0=;
+ b=B5ylfhV86Rh/vvH/mHcn/Ip2WU2wGp+wP2S70p2/h9wG9kF5AtkOfIc/o12mAJyBEa
+ ditS8hsoUaFat25XFpsKemcKqZGs6ibOjam+Gi79vx9oec1ghP2AGwDIO8PUT5odGuo6
+ Vw4M3zAySgvCIaqfvVQnp6qnhCi67jVY/vF61g8pScetURs0GF7OM8IAMPEQjzbfH3oc
+ lRjYUMOwO1kEWp+roPQx2QdCSJBZKS/H7tf8Oh8x1SQQoArAU+SeoaBjhcQwhq5zz2KD
+ Zq17T3kkoHy1Ww3H0kMLS1hKKPnubuuja3aKm5baG8hRxG1ri1MQNZxWuYMhGBLuWCOF
+ JRrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=uyUAWvS1gGoBBI9YnGm7NS9rETUeD3abG1ViwzHmvu4=;
- b=1K4uUlM3+pVtgpx3ieJkPDM57aiA69Xpw0bbGY/4SrM596JK9bUAH24bebBMbhV0Cj
- jRvC9ObDW97WmaBrko6k6uCwaJ3Q7yNrthUCFrqh3E7BRTDocOCAzuW+mDGEpAwBy3Mx
- 9IcqRnSjG4eeXLVW3VhiRWqxXwkd8YLCbHX+ugu6pgKdP5WAD8TTHiFOfsyCLMF8CzPM
- 5LJT4RRydVb3QE8nGXxKB3GfnG1w6jkC4xG1n+BgbsvQFp8UmHzXQgMFPV4Lf+PYIWAp
- P+7hv9HtghLpFiOFpinmFQB0lwbb4EEfht3vXcZBK9fk35itSNhnT0k/GGAA7ViYRebz
- 2S6A==
-X-Gm-Message-State: AOAM531F2x3KQfNru5Orlx2dU/KeB7I1aSszhY6wImobS94IhIBK/joS
- 2Bdq74Sw57dWmwblEkcOq8UssfN9s24=
-X-Google-Smtp-Source: ABdhPJy8wqp8KEVSmde4I2+jqXBoLwY02wjsZ6DHtmHFxSVGRiOxohuSF6x6WR9Hnxh/kobAf+wCeA==
-X-Received: by 2002:a17:902:d2c1:b0:148:f6af:f2c5 with SMTP id
- n1-20020a170902d2c100b00148f6aff2c5mr107318plc.7.1640218960290; 
- Wed, 22 Dec 2021 16:22:40 -0800 (PST)
+ bh=WrwpWLxiWx6mZCJiyoZtcTWmNjs4loZOAYfkmQ38gh0=;
+ b=UCidRerqEIrnwfmTx8CLC84weGmv4vYO7i8GPYm3hvR5Jgkvh+2367EXa7SqEuTF2U
+ cAuzTznKhUhEACZdSOICHwhceFy6Ha7ICmmolNfQgrGYWvwjFCbA+6yPNuFORKnLeram
+ c2W7F9ZNw+dqRWMDfRHxupC1b4R+0UH6BNr42L3KHkoxxrwHBUmvH1dfSUdWgxwPIA5K
+ Km79Q71MBPYdESjRrpvIPZD5mqijmSEOZQVQwJF4P2MvGWAb39uNoTRPiGpJHY9zF++E
+ g8orj6ACtU9lx9orw3NKtdjVunhAacp62oevn0Zydo9QcDZX/oZq27e0d3Nzf2YAIs8M
+ Mthg==
+X-Gm-Message-State: AOAM5321D6rn+YGYONopDvoalD6fuVTPoxGw0Ahqqrbegj/x4fon3cce
+ 7Qzn604KPf50fypnHTTJMh1fxxE/+cY=
+X-Google-Smtp-Source: ABdhPJyOPmJ6pH73MHEOBhkp5drVGU20fMMShEKfzZx4cNcOOCFlptto5aYiO766wpa+qFlf4BkCDw==
+X-Received: by 2002:a63:416:: with SMTP id 22mr89208pge.133.1640218962033;
+ Wed, 22 Dec 2021 16:22:42 -0800 (PST)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
- by smtp.gmail.com with ESMTPSA id e24sm6720703pjt.45.2021.12.22.16.22.38
+ by smtp.gmail.com with ESMTPSA id e24sm6720703pjt.45.2021.12.22.16.22.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 22 Dec 2021 16:22:39 -0800 (PST)
+ Wed, 22 Dec 2021 16:22:41 -0800 (PST)
 From: Florian Fainelli <f.fainelli@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Florian Fainelli <f.fainelli@gmail.com>,
@@ -73,16 +71,17 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
  (BCMA)), 
  bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
  DRIVER)
-Subject: [PATCH 5/9] mtd: rawnand: brcmnand: Allow working without interrupts
-Date: Wed, 22 Dec 2021 16:22:21 -0800
-Message-Id: <20211223002225.3738385-6-f.fainelli@gmail.com>
+Subject: [PATCH 6/9] mtd: rawnand: brcmnand: Add platform data structure for
+ BCMA
+Date: Wed, 22 Dec 2021 16:22:22 -0800
+Message-Id: <20211223002225.3738385-7-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211223002225.3738385-1-f.fainelli@gmail.com>
 References: <20211223002225.3738385-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211222_162241_445160_04643F9E 
-X-CRM114-Status: GOOD (  16.25  )
+X-CRM114-CacheID: sfid-20211222_162243_304707_DF50F1FA 
+X-CRM114-Status: GOOD (  25.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,93 +98,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The BCMA devices include the brcmnand controller but they do not wire up
-any interrupt line, allow the main interrupt to be optional and update
-the completion path to also check for the lack of an interrupt line.
+Update the BCMA's chipcommon nand flash driver to detect which
+chip-select is used and pass that information via platform data to the
+brcmnand driver. Make sure that the brcmnand platform data structure is
+always at the beginning of the platform data of the "nflash" device
+created by BCMA to allow brcmnand to safely de-reference it.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 52 +++++++++++-------------
- 1 file changed, 24 insertions(+), 28 deletions(-)
+ MAINTAINERS                                 |  1 +
+ drivers/bcma/driver_chipcommon_nflash.c     | 17 ++++++++++++++++-
+ include/linux/bcma/bcma_driver_chipcommon.h |  5 +++++
+ include/linux/platform_data/brcmnand.h      | 12 ++++++++++++
+ 4 files changed, 34 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/platform_data/brcmnand.h
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 60a7f375df83..e7947cff4dd1 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -213,7 +213,7 @@ struct brcmnand_controller {
- 	void __iomem		*nand_base;
- 	void __iomem		*nand_fc; /* flash cache */
- 	void __iomem		*flash_dma_base;
--	unsigned int		irq;
-+	int			irq;
- 	unsigned int		dma_irq;
- 	int			nand_version;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8912b2c1260c..37062172083c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3965,6 +3965,7 @@ L:	linux-mtd@lists.infradead.org
+ L:	bcm-kernel-feedback-list@broadcom.com
+ S:	Maintained
+ F:	drivers/mtd/nand/raw/brcmnand/
++F:	include/linux/platform_data/brcmnand.h
  
-@@ -1602,7 +1602,7 @@ static bool brcmstb_nand_wait_for_completion(struct nand_chip *chip)
- 	bool err = false;
- 	int sts;
+ BROADCOM STB PCIE DRIVER
+ M:	Jim Quinlan <jim2101024@gmail.com>
+diff --git a/drivers/bcma/driver_chipcommon_nflash.c b/drivers/bcma/driver_chipcommon_nflash.c
+index d4f699aef8c4..9457f4b7ea9d 100644
+--- a/drivers/bcma/driver_chipcommon_nflash.c
++++ b/drivers/bcma/driver_chipcommon_nflash.c
+@@ -7,18 +7,25 @@
  
--	if (mtd->oops_panic_write) {
-+	if (mtd->oops_panic_write || ctrl->irq < 0) {
- 		/* switch to interrupt polling and PIO mode */
- 		disable_ctrl_irqs(ctrl);
- 		sts = bcmnand_ctrl_poll_status(ctrl, NAND_CTRL_RDY,
-@@ -3130,33 +3130,29 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 	}
+ #include "bcma_private.h"
  
- 	/* IRQ */
--	ctrl->irq = platform_get_irq(pdev, 0);
--	if ((int)ctrl->irq < 0) {
--		dev_err(dev, "no IRQ defined\n");
--		ret = -ENODEV;
--		goto err;
--	}
--
--	/*
--	 * Some SoCs integrate this controller (e.g., its interrupt bits) in
--	 * interesting ways
--	 */
--	if (soc) {
--		ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
--				       DRV_NAME, ctrl);
-+	ctrl->irq = platform_get_irq_optional(pdev, 0);
-+	if (ctrl->irq >= 0) {
-+		/*
-+		 * Some SoCs integrate this controller (e.g., its interrupt bits) in
-+		 * interesting ways
-+		 */
-+		if (soc) {
-+			ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
-+					       DRV_NAME, ctrl);
++#include <linux/bitops.h>
+ #include <linux/platform_device.h>
++#include <linux/platform_data/brcmnand.h>
+ #include <linux/bcma/bcma.h>
  
--		/* Enable interrupt */
--		ctrl->soc->ctlrdy_ack(ctrl->soc);
--		ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
--	} else {
--		/* Use standard interrupt infrastructure */
--		ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
--				       DRV_NAME, ctrl);
--	}
--	if (ret < 0) {
--		dev_err(dev, "can't allocate IRQ %d: error %d\n",
--			ctrl->irq, ret);
--		goto err;
-+			/* Enable interrupt */
-+			ctrl->soc->ctlrdy_ack(ctrl->soc);
-+			ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
-+		} else {
-+			/* Use standard interrupt infrastructure */
-+			ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
-+					       DRV_NAME, ctrl);
-+		}
-+		if (ret < 0) {
-+			dev_err(dev, "can't allocate IRQ %d: error %d\n",
-+				ctrl->irq, ret);
-+			goto err;
-+		}
- 	}
++static const char *bcma_nflash_alt_name = "bcma_brcmnand";
++
+ struct platform_device bcma_nflash_dev = {
+ 	.name		= "bcma_nflash",
+ 	.num_resources	= 0,
+ };
  
- 	for_each_available_child_of_node(dn, child) {
++static const char *probes[] = { "bcm47xxpart", NULL };
++
+ /* Initialize NAND flash access */
+ int bcma_nflash_init(struct bcma_drv_cc *cc)
+ {
+ 	struct bcma_bus *bus = cc->core->bus;
++	u32 reg;
+ 
+ 	if (bus->chipinfo.id != BCMA_CHIP_ID_BCM4706 &&
+ 	    cc->core->id.rev != 38) {
+@@ -33,8 +40,16 @@ int bcma_nflash_init(struct bcma_drv_cc *cc)
+ 
+ 	cc->nflash.present = true;
+ 	if (cc->core->id.rev == 38 &&
+-	    (cc->status & BCMA_CC_CHIPST_5357_NAND_BOOT))
++	    (cc->status & BCMA_CC_CHIPST_5357_NAND_BOOT)) {
+ 		cc->nflash.boot = true;
++		/* Determine the chip select that is being used */
++		reg = bcma_cc_read32(cc, BCMA_CC_NAND_CS_NAND_SELECT) & 0xff;
++		cc->nflash.brcmnand_info.chip_select = ffs(reg) - 1;
++		cc->nflash.brcmnand_info.part_probe_types = probes;
++		cc->nflash.brcmnand_info.ecc_stepsize = 512;
++		cc->nflash.brcmnand_info.ecc_strength = 1;
++		bcma_nflash_dev.name = bcma_nflash_alt_name;
++	}
+ 
+ 	/* Prepare platform device, but don't register it yet. It's too early,
+ 	 * malloc (required by device_private_init) is not available yet. */
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index d35b9206096d..e3314f746bfa 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -3,6 +3,7 @@
+ #define LINUX_BCMA_DRIVER_CC_H_
+ 
+ #include <linux/platform_device.h>
++#include <linux/platform_data/brcmnand.h>
+ #include <linux/gpio.h>
+ 
+ /** ChipCommon core registers. **/
+@@ -599,6 +600,10 @@ struct bcma_sflash {
+ 
+ #ifdef CONFIG_BCMA_NFLASH
+ struct bcma_nflash {
++	/* Must be the fist member for the brcmnand driver to
++	 * de-reference that structure.
++	 */
++	struct brcmnand_platform_data brcmnand_info;
+ 	bool present;
+ 	bool boot;		/* This is the flash the SoC boots from */
+ };
+diff --git a/include/linux/platform_data/brcmnand.h b/include/linux/platform_data/brcmnand.h
+new file mode 100644
+index 000000000000..8b8777985dce
+--- /dev/null
++++ b/include/linux/platform_data/brcmnand.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef BRCMNAND_PLAT_DATA_H
++#define BRCMNAND_PLAT_DATA_H
++
++struct brcmnand_platform_data {
++	int	chip_select;
++	const char * const *part_probe_types;
++	unsigned int ecc_stepsize;
++	unsigned int ecc_strength;
++};
++
++#endif /* BRCMNAND_PLAT_DATA_H */
 -- 
 2.25.1
 
