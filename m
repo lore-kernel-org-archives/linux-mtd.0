@@ -4,73 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CE46C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 08:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CC24C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 08:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HHEm5Ek4YY5niaMBD8nMe1QDub1DF1wCSd59baeClrY=; b=LHFHmx7l8sh1ZS
-	yT+5dUdmbGjqvNyUB/MrtMudH1P8iHJ8dYawHx3CYwL7ICMpM2UWi2w3SwVHMeElNavme5nIMMGB7
-	8TYu7BhH/MR3ojcD38LgIRmS0Zem5jMMEZ8zp2QS35zhQoRm7N+n6iuF4IXN3NOIvIA+UHLrgpkji
-	wNhz/RQcCRuIPY0TYjIs+2krR8pCgDblNe6kTaOukpnL4Ev2WVOYNEMCYRAtkkct5ag0pczBuycee
-	t9Hl2j8DaFF+5mHd2xkzDZs8i9uPDcjOobj5VeF5zuNd9EkPaDCSe8te3ubEG6x6WpWTiXZx5kZ6M
-	skJckJXzgCdemtSXuG1Q==;
+	List-Owner; bh=io0WCml25JSKZhvW/YHAByJcCFLV1GnvUYXbSEgiJR8=; b=l5FIp49YBKX0A9
+	/Me+tVacsbr22Wfo9LBhT/k9Cz813J7uYQD/SgwOMypsMGiDbUILJ7FlERGCC1Oz0v1fLTsAt/+iN
+	TqM+xSNdU1GCXdGwbM63ICEfV9B62vrIIF5C11CXGcbh1iZi5y/1B4FCAEp4rmR9HrUHDvnXFeW/3
+	fiYCi2PNMy1+SlR3LYja3Lwz9rPsLFuEJvHdA8PAxE75PWh6xxD6coU1oN/zQfd6TO4FN1j26b0zm
+	WITBGGE9IW70+eHkxpp2ubYfpAH7/phEVgoH1EOe7NT1QwfgFrNTmz0+i6oQRCfAcCSjrGIY+iStJ
+	3ZDUB9zI841b9wmXMfcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n0JY3-00CHHR-J7; Thu, 23 Dec 2021 08:34:03 +0000
+	id 1n0JYn-00CHYr-Ag; Thu, 23 Dec 2021 08:34:49 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n0JDQ-00C9Tw-SS
- for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 08:12:46 +0000
+ id 1n0JK7-00CBqw-N7
+ for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 08:19:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1640247164; x=1671783164;
+ t=1640247579; x=1671783579;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=BwrzrJ/6YTXQmVhunDbHM6brVHrDnTmV495Q4TrLTv4=;
- b=K6Kc2Bd+m4oZt03pP2p/hJEdwK9Uh5xXDjiqT29H23pomJchkfBYZwkb
- 6i9C86ziqCz6uW+ExTIly07hFrkPwSpn5wxxowemqsOoIATkOdHftOmXp
- Ues8MhrdOKdUMOoARCG2WLpPDwEK9zqukL+0T+PdaXU+srVI0agxH3x35
- UUJPznHbilw+0ncbicSR/mmV6smrULulSdQvf6zeRAd3Be27b9E2Xem5r
- lhO3nnqUeHA4n2o8v2RWOjYvMQwbxwN2BzjbrKpW0VRTqv9rxiQ6aD7WS
- MvJayl61ryo+4EJbvtUbKDZ9SMithpB4V84ECVTuUD9bW1onk6aMNSZl2 w==;
-IronPort-SDR: la91+brDhCpArHicl38FM/x6yPp5p0SdcjoKhDBiQD0KepCaZEZkJ7cANjNY9mNa9CVbrh+3b6
- TialqdHfnq/faCTqgXnnY1mlCVpuFDeLOaCoovu0mPsJTg5roqaFkMrGdDvMOPuYZRc0ifDmjd
- qe+mfGejOpdimcbHsMPtG2lv8EneOV6ujhtfQ2k8BFPdmOUVWJRRlilFF78Q//Y3sytuI7Cn5K
- KJu7uUniHsDCyDh0BvTfPdZr/EWeY7RqS1yZhpzDaZZ7Mt/GjutNUNXG9dryUPFjCX2hA+Akj/
- 2KgMdIrqvxdtaPpb+QGuGOIA
-X-IronPort-AV: E=Sophos;i="5.88,228,1635231600"; d="scan'208";a="80469813"
+ bh=JRoAnEY3r8cgHd59JP9JgzeC0rdQQn8RTC7yoR73nTo=;
+ b=FtxLEB5RX5f9E9QcVVhmpHrsvkLpJrRFRkiaTLFpFYxaRXBQvHEm7lDB
+ MQHgRApDYo4KIgG9PpCOFjFXYTb3AgSplXe5bY0eK5rZZV6srH9VRMp6W
+ fx2oqz8vYiWmMKJEqs3IuOj2S+nDWS20LpSY6Em4Ixm2cB7wnybp5g6+e
+ L5ZTzbzZRCnyY6oV3+2GU9nmE5aFucZoCLmuiGcGd/Ffnav+CcX71t5Vx
+ IjoKzrNmkPmEfZ2TjaWGbpaudyMBzUYFVBYuDcqhqa76f+TtnMPLkH3vh
+ jA/6gSKxssX0m13UrTrEnqSrH9C4+zWW3p6ooYeFc2Bbyt+slQlusjQGh Q==;
+IronPort-SDR: WZDh+lJxetnRjEE4izqzl818toaMq8pJDzi/H12mKRCqXDTHWWKa6yGvwOHYZlEXl2wQCkKJQy
+ vdDFSfT46mzz1suMCM6/LvrH46+sGKHDHM3F08SSlNsqXiVsYx3wqeOov2bjPQ6IH8u89QSLLp
+ m3jcIZDN11fjrETYOl1N2B7pNRcXFdEXx5fcK7VZEOpH6Z7Rl53zD8EPAkhTkDZtzNlRa5hbtg
+ 70nUSfXVKXOyJpQkTm+oYhyE5nu7V/aLTW3BuHXzHLeiXLapKAc7cnClOtbsfWeRYVnFPqCnlU
+ Q5/zFqbmskwKDAJWQwf6cWvY
+X-IronPort-AV: E=Sophos;i="5.88,228,1635231600"; d="scan'208";a="140688299"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 23 Dec 2021 01:12:42 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 23 Dec 2021 01:19:38 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Thu, 23 Dec 2021 01:12:41 -0700
+ 15.1.2375.17; Thu, 23 Dec 2021 01:19:38 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Thu, 23 Dec 2021 01:12:39 -0700
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Thu, 23 Dec 2021 01:19:36 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Jonathan Neuschaefer <j.neuschaefer@gmx.net>,
- Flavio Suligoi <f.suligoi@asem.it>, Jonathan Corbet <corbet@lwn.net>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, <linux-doc@vger.kernel.org>, 
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v1] mtd: spi-nor: core: fix/remove references to spi-nor.c
-Date: Thu, 23 Dec 2021 10:12:38 +0200
-Message-ID: <164024714527.182368.2854659880404058320.b4-ty@microchip.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, <michael@walle.cc>,
+ <vigneshr@ti.com>, <p.yadav@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Constify part specific fixup hooks
+Date: Thu, 23 Dec 2021 10:19:34 +0200
+Message-ID: <164024756845.186441.13039859160300606228.b4-ty@microchip.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126092516.1431913-1-f.suligoi@asem.it>
-References: <20210126092516.1431913-1-f.suligoi@asem.it>
+In-Reply-To: <20211106102915.153552-1-tudor.ambarus@microchip.com>
+References: <20211106102915.153552-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211223_001245_048295_62A9BF71 
-X-CRM114-Status: UNSURE (   7.22  )
+X-CRM114-CacheID: sfid-20211223_001939_910515_755807FB 
+X-CRM114-Status: UNSURE (   4.09  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -88,20 +85,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 26 Jan 2021 10:25:16 +0100, Flavio Suligoi wrote:
-> The old file:
-> 
-> drivers/mtd/spi-nor/spi-nor.c
-> 
-> is not more present and now some of its code is
-> contained in:
-> 
-> [...]
+On Sat, 6 Nov 2021 12:29:15 +0200, Tudor Ambarus wrote:
+> Respect flash_info structure declaration.
 
 Applied to spi-nor/next, thanks!
 
-[1/1] mtd: spi-nor: core: fix/remove references to spi-nor.c
-      https://git.kernel.org/mtd/c/e7ad9f59f746
+[1/1] mtd: spi-nor: Constify part specific fixup hooks
+      https://git.kernel.org/mtd/c/65b54ff67afa
 
 Best regards,
 -- 
