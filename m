@@ -4,74 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06E37C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 16:25:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48631C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 23 Dec 2021 21:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q/w1dV5YvuN9Yz47WmJMo5dn9f7nf0+mg2kW/HGQdP0=; b=NYlMu8/94HXI8F
-	fBTClYDK10sHrsUlW32Yc0y7XOwhy6Kq0m7JmSlwW7teEYPxnAZY1z4C5QOZ5sVx93WD3AZZTiVhb
-	L3ZUN5q6tlJ7m82S3qo70m3s44PE9cUammVHhL3/p8A+kwHVdKUeQ2zDw7Wam1NsRjeOrtWvsDln6
-	fy7DJJJle4JBKEXy2hqBZ4b7Ab0VWOVru7EVQ2iFmA4dJYdSWUeKYIdpBiCz/Atxsl0KuoSvXhFiG
-	xukt3VS3XWE0Fx0el9BpVTR8mviLErYBupSnZZLXtoWlDJpXa5vQwMfKC/1aZUOuheaS2k4fo5IvN
-	I1U262hxZzA5Coas2XFQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=yy75XZbQBvqy4+2MK1pM9FMkrKVpvX6KsLy77tzPagg=; b=YPxkmQwIJZEEFQSvQ4gqUg6HgK
+	xD2gEcYIRdxtbO/Pho4l8OUJnqFmhtT4KgwXnAX+6ROlyaZpp2dsLvtO/ZilGdNDHxvTAby2RN5ml
+	bwtgPkCIRaHJGvfho/G+/DnPPkjHf61tYCuRmKdVhMSVLE0IM2l8wa8cHMECUv/AE1TGBZ0WQ0MjP
+	EhWYjKVZPLHVYoqOIpAv0nfOU5TMbmiFYXzS7CNfwVWviKaegCl+j9OzaR/AKtuNDjDpu+k3xiuPy
+	Dxu/jz0UU3Zctu7F6kZrQwPrRiP6L1AijR0oZt52NTIb9k9zvs4Xwd7pwKsSV68Gp8Q8nUPFuX7uM
+	bF/hlmBg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n0Qt3-00D4D1-U0; Thu, 23 Dec 2021 16:24:14 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1n0VI7-00DRe7-2E; Thu, 23 Dec 2021 21:06:23 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n0Qt0-00D4CC-0e
- for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 16:24:12 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1BNGO2Zu123677;
- Thu, 23 Dec 2021 10:24:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1640276642;
- bh=Iq/I994HXFx9f25hIiTM8IwYE6TUMFqEWlEnFgbfxdU=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=DxA0BkpTSHY3HLo7IXx8OJwameSE98Z30CckN5jgHRY9dvwceap5XBRxpkvyr+5Le
- oPXf8cagYc21rEIuBLn0d2NH/nmxtPYweQvJx27EFpouRHYL7geyzkgjbyExDNxaWJ
- sbQq9YjLgDMmza7Xg931TqZV7d1wWo3pemAXIjJc=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1BNGO145102237
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 23 Dec 2021 10:24:01 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 23
- Dec 2021 10:24:01 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 23 Dec 2021 10:24:01 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1BNGO0FW028418;
- Thu, 23 Dec 2021 10:24:01 -0600
-Date: Thu, 23 Dec 2021 21:54:00 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-CC: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 2/3] dt-bindings: nvmem: add U-Boot environment variables
- binding
-Message-ID: <20211223162358.wbfnibsma5lskxkw@ti.com>
-References: <20211222192320.21974-1-zajec5@gmail.com>
- <20211222192320.21974-2-zajec5@gmail.com>
+ id 1n0VI3-00DRdG-Og
+ for linux-mtd@lists.infradead.org; Thu, 23 Dec 2021 21:06:21 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 1E40F62DA5F6;
+ Thu, 23 Dec 2021 22:06:10 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id HYtd7jlW3cum; Thu, 23 Dec 2021 22:06:08 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id CDAF962DA606;
+ Thu, 23 Dec 2021 22:06:08 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id m-sTyrv93os1; Thu, 23 Dec 2021 22:06:08 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id A94BD62DA5F6;
+ Thu, 23 Dec 2021 22:06:08 +0100 (CET)
+Date: Thu, 23 Dec 2021 22:06:08 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: "libaokun (A)" <libaokun1@huawei.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-kernel <linux-kernel@vger.kernel.org>, yukuai3@huawei.com, 
+ Hulk Robot <hulkci@huawei.com>
+Message-ID: <509065063.197038.1640293568550.JavaMail.zimbra@nod.at>
+In-Reply-To: <7e00eda5-3b35-6d3c-29fb-664b12cca6dd@huawei.com>
+References: <20211105093022.1360601-1-libaokun1@huawei.com>
+ <7e00eda5-3b35-6d3c-29fb-664b12cca6dd@huawei.com>
+Subject: Re: [PATCH -next V3] ubi: fix race condition between
+ ctrl_cdev_ioctl and ubi_cdev_ioctl
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20211222192320.21974-2-zajec5@gmail.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF95 (Linux)/8.8.12_GA_3809)
+Thread-Topic: fix race condition between ctrl_cdev_ioctl and ubi_cdev_ioctl
+Thread-Index: slnxfsVHQxu1KgdXyEQFACaCLfZ3WA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211223_082411_126179_71742CE0 
-X-CRM114-Status: GOOD (  12.37  )
+X-CRM114-CacheID: sfid-20211223_130619_996776_EEA58787 
+X-CRM114-Status: UNSURE (   6.26  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,25 +80,27 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjIvMTIvMjEgMDg6MjNQTSwgUmFmYcWCIE1pxYJlY2tpIHdyb3RlOgo+IEZyb206IFJhZmHF
-giBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPiAKPiBUaGlzIGJpbmRpbmcgYWxsb3dzIGRl
-c2NyaWJpbmcgYSAocGFydCBvZikgTVREIGRldmljZSAocGFydGl0aW9uKSB0aGF0Cj4gY29udGFp
-bnMgYSBibG9jayB3aXRoIGVudmlyb25tZW50IHZhcmlhYmxlcy4gT3BlcmF0aW5nIHN5c3RlbSB1
-c3VhbGx5Cj4gbmVlZHMgdG8gcGFyc2UgdGhhdCBibG9jayB0byByZWFkIHZhcmlhYmxlcyB2YWx1
-ZXMgdGhhdCBtYXkgYWZmZWN0Cj4gYm9vdGluZyBwcm9jZXNzICYgZGV2aWNlIGNvbmZpZ3VyYXRp
-b24uCj4gCj4gU2lnbmVkLW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBs
-Pgo+IC0tLQo+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS91LWJvb3QsZW52LnlhbWwg
-fCA1NiArKysrKysrKysrKysrKysrKysrCj4gIE1BSU5UQUlORVJTICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB8ICA1ICsrCj4gIDIgZmlsZXMgY2hhbmdlZCwgNjEgaW5zZXJ0aW9u
-cygrKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL252bWVtL3UtYm9vdCxlbnYueWFtbAo+IAo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0vdS1ib290LGVudi55YW1sIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL3UtYm9vdCxlbnYueWFtbAo+IG5ldyBmaWxlIG1v
-ZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAwMDAwLi4wZjgwODg2OGZmZjMKPiAtLS0gL2Rldi9u
-dWxsCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL3UtYm9v
-dCxlbnYueWFtbAo+ICsKPiArcHJvcGVydGllczoKPiArICBjb21wYXRpYmxlOgo+ICsgICAgZW51
-bToKPiArICAgICAgLSB1LGJvb3QsZW52CgpUeXBvPyBJbiBwYXRjaCAzIHlvdSBtYXRjaCB1LWJv
-b3QsZW52LgoKLS0gClJlZ2FyZHMsClByYXR5dXNoIFlhZGF2ClRleGFzIEluc3RydW1lbnRzIElu
-Yy4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImxpYmFva3VuIChBKSIgPGxp
+YmFva3VuMUBodWF3ZWkuY29tPgo+IOWcqCAyMDIxLzExLzUgMTc6MzAsIEJhb2t1biBMaSDlhpnp
+gZM6Cj4gCj4gcGluZwoKVGhhbmtzIGZvciB5b3VyIHBhdGllbmNlLgogCj4+IEh1bGsgUm9ib3Qg
+cmVwb3J0ZWQgYSBLQVNBTiByZXBvcnQgYWJvdXQgdXNlLWFmdGVyLWZyZWU6CgpbLi4uXQoKPj4g
+VGhlIGNhdXNlIG9mIHRoaXMgcHJvYmxlbSBpcyB0aGF0IGNvbW1pdCA3MTRmYjg3ZThiYzAgbWFr
+ZSBkZXZpY2UKPj4gImF2YWlsYWJsZSIgYmVmb3JlIGl0IGJlY29tZXMgYWNjZXNzaWJsZSB2aWEg
+c3lzZnMuIFRoZXJlZm9yZSwgd2UKPj4gcm9sbCBiYWNrIHRoZSBtb2RpZmljYXRpb24uIFdlIHdp
+bGwgZml4IHRoZSByYWNlIGNvbmRpdGlvbiBiZXR3ZWVuCj4+IHViaSBkZXZpY2UgY3JlYXRpb24g
+YW5kIHVkZXYgYnkgcmVtb3ZpbmcgdWJpX2dldF9kZXZpY2UgaW4KPj4gdm9sX2F0dHJpYnV0ZV9z
+aG93IGFuZCBkZXZfYXR0cmlidXRlX3Nob3cuVGhpcyBhdm9pZHMgYWNjZXNzaW5nCj4+IHVuaW5p
+dGlhbGl6ZWQgdWJpX2RldmljZXNbdWJpX251bV0uCj4+Cj4+IHViaV9nZXRfZGV2aWNlIGlzIHVz
+ZWQgdG8gcHJldmVudCBkZXZpY2VzIGZyb20gYmVpbmcgZGVsZXRlZCBkdXJpbmcKPj4gc3lzZnMg
+ZXhlY3V0aW9uLiBIb3dldmVyLCBub3cga2VybmZzIGVuc3VyZXMgdGhhdCBkZXZpY2VzIHdpbGwg
+bm90Cj4+IGJlIGRlbGV0ZWQgYmVmb3JlIGFsbCByZWZlcmVuY2UgY291bnRpbmcgYXJlIHJlbGVh
+c2VkLgo+PiBUaGUga2V5IHByb2Nlc3MgaXMgc2hvd24gaW4gdGhlIGZvbGxvd2luZyBzdGFjay4K
+CnViaV9nZXRfZGV2aWNlKCkgaW4gZGV2X2F0dHJpYnV0ZV9zaG93KCkgaXMgdXNlZCB0byBkZXRl
+Y3Qgd2hldGhlcgp0aGUgdWJpIGRldmljZSBnb3QgZGV0YWNoZWQgd2hpbGUgdGhlIHN5c2ZzIGZp
+bGUgaXMgb3Blbi4KCkhtbS4gSSB0aG91Z2h0IGZvciBzeXNmcyB0aGlzIGlzIG5vdCB0aGUgY2Fz
+ZSBzaW5jZSBzeXNmcyBkb2VzIG5vdCBpbXBsZW1lbnQKYSByZWxlYXNlKCkgbWV0aG9kLiBTbyBr
+ZXJuZnNfZHJhaW5fb3Blbl9maWxlcygpIHdpbGwgcmV0dXJuIGVhcmx5LgpCdXQgdGhlcmUgaXMg
+YSBnb29kIGNoYW5jZSB0aGF0IEkgZG9uJ3QgZ290IGFsbCBrZXJuZnMvc3lzZnMgZGV0YWlscy4K
+ClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
