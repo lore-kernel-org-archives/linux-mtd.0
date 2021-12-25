@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63562C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66254C433FE
 	for <linux-mtd@archiver.kernel.org>; Sat, 25 Dec 2021 10:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,68 +12,68 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cJVwm660EYs1SiuRxNsdF5WV4hI66LES+NYXDeCN1pk=; b=yoZpbOdtAS8BSI
-	CDJi+AwxRPJ45bIMxC8eAFFtVPN6ltYsu018UMLAfh5FZRoEax/YNuWuuC8gaDvQlO3oFPptSQ3uY
-	i0k6rPXS09rn+3JCx5/7dfBGcRg3a8cpWNeXmYQI/E6n1joLI/5L/hgRp0iiubCKHqJFmCYTcAZd3
-	9T+PXpfXmh4YMgGa316rTcbFWLmdxxvPIe62+29QfamZVgubIiNuZeVcjti8RrSYvaAIluMyuRCTo
-	/SevPCpOPomfLF7HQwiFH74OKDTpU/iLicqY4WBGGn8SKNNEhsi/RqTARdk6kWXUxqIKmnEizbmi1
-	vW9etZ7ugAz4sNmUmD3w==;
+	List-Owner; bh=LNIrFZWdOmW4eTyLE/QNQWz+KSUAxEtCHaAyQwFg3ZQ=; b=zTCz+4M1Xd9pbZ
+	3Ibf8r+gOevdLcE6D358sbFd6ZN8nQdg6UxKEf+tWtyRryZo4Dv7RKsm30aepi2NG8MsCIP4FtrMZ
+	CkeHNz99W8KCcPGLSbB053GVOw9q4qDErimgfCfXDn3kqOO/kKaqil3R5km1D74+PGkOS6SA6BnyZ
+	pyGx8gV3PJOtN0k3W9zUqCL4FQ6XYbMAGX92doigZLHLggLJNwzSy5liBMvHxqm36jcwyED8DNZIa
+	q5dWI5EAwz5umFCxTsGlBPihiuWrtSEXutlmALnx+yC4aGxWZBjlDZezitsn8m7KzYePT5HRexSg+
+	tTXVhwH9CGWBbDg9GPjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n13wr-00Eo6r-2o; Sat, 25 Dec 2021 10:06:45 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1n13x5-00Eo8B-7Z; Sat, 25 Dec 2021 10:06:59 +0000
+Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n13wo-00Eo6U-9L
- for linux-mtd@lists.infradead.org; Sat, 25 Dec 2021 10:06:43 +0000
-Received: by mail-pg1-x532.google.com with SMTP id v25so9448421pge.2
- for <linux-mtd@lists.infradead.org>; Sat, 25 Dec 2021 02:06:41 -0800 (PST)
+ id 1n13x3-00Eo7M-2v
+ for linux-mtd@lists.infradead.org; Sat, 25 Dec 2021 10:06:58 +0000
+Received: by mail-pg1-x533.google.com with SMTP id v25so9448703pge.2
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Dec 2021 02:06:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=tr5XUUdLtNZAp31+iJJ7YFpkXDTAliU1rXFTU2oYGMU=;
- b=TdLQSmlB2gLGwclAt9mNo/9QYOsMYBTP6PtsssOCdDO8bqXtBVo4b82w9kiJMKhu2I
- KjXNz1BTS7KmgAcQV52Ax7V5/af0eW8lhhqJtf35K7XUK8bJ3KQYlSWVgMXt8spIm4Wp
- LStF6Jkn8THpepotqmceR60qAD5jCcB8YF8m0yuE/xuDU8ber2J5XsEIRvOA96zt8TpP
- 4gk1v1tdzSeqRJmvvjVVtdmLlTeEik7uoRuPARjrb65yWgXmmFwO+shXIbgpDnjZLU6Q
- hip/z9SpD3R8d1+MFESviY3B93KqLgTIVX1vYOpj3dSl0BsV1sVGL9LdnlBOx4q3wh/Y
- vV4g==
+ bh=HUimozoxjLlUVh1Qi+7L8g3Ewbj5TnU71txJNWxTO4Y=;
+ b=Sq2jlEB8IRczVrBgF6mBAJ5lXVF/Jjd451dpeaq6OSgxyj9dJNWw1qVCoMfVr/Z7Yp
+ 587Ec78pnZMzsRaSJE7WrlFtk6jCHHwOpnt+NGsQpM5kFWDUnXDH2ZlXJZOLOo7lc196
+ RdM5BqILpweahRNL0OFO2e5jmIu1FBScP9oz0nWQMpMDfORARBB711o5RlcREqzFczJD
+ lfZAKCK4qOcDv4b9mMcN6ag2HFZAXUXH2HeGbWiJxWL15fWXgti8y6snRViEr8jTTYeK
+ IK1DkpdDGKuic1wyKwIrt8k25JjMd5DRMHdy90ysWF5qMBLV52UkBXalf+gF6RF/G9Nk
+ O7Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=tr5XUUdLtNZAp31+iJJ7YFpkXDTAliU1rXFTU2oYGMU=;
- b=wqcv4gNrShtNo4kAhWx1mL0Z3StZqN8bR3MR3HF+c4c3fcmlTnEbv458dmpOr+RMTZ
- YdDAFEn01wqEswPXQlVPyH9wT1zcN6NbnKr130JBEixdRs7P+Nw8yUlg2AkvjncLloAr
- PsZlXo43ISMIX9wEG1Ab5JmtTgdj23YZhFzKKs/LXr4zEvsZM3UixxSqwOCk9gUrbdO3
- 3L/4VGANdJGa0BriazOpgnER55JSuch3qC9vT2yYQg8TmDEcUpiiqg95P33lkWVUJSBW
- 3az90dca9+7qxPMMq3S0KyDo3p8gZVudvZLsrpgh1fSpFTu6nWoGOWW1ArtRElj8bVWu
- e6hA==
-X-Gm-Message-State: AOAM532vp24SSNFucpDOkHU5cUJK8tFoCjIcBbyawHEdGPxo8A7lstqw
- 4PDhxe+E6LZEYrTGPfe3b0M=
-X-Google-Smtp-Source: ABdhPJykZ17Xl6Xri6yGAWosneOSr6CIeXWUESSCcoFY6BfxQ2EBaj2kpbkeORUEzSNLWQ439uyexg==
-X-Received: by 2002:a65:6241:: with SMTP id q1mr8931713pgv.98.1640426800696;
- Sat, 25 Dec 2021 02:06:40 -0800 (PST)
+ bh=HUimozoxjLlUVh1Qi+7L8g3Ewbj5TnU71txJNWxTO4Y=;
+ b=sU0lbnXzBZDrNrVec9yQVPs5bclYOZ+lyJufyz5YN2hAPH1vu50KWS+ySmADY49Oz0
+ WAV4dvnqi98pmvQXX0fJbj0PvJvFrgBAj+t6781gJ4UC5glc5/IrC4lWKYNSZRw7UGU5
+ 4ieL7VmXNIVA7dq+x825M9P3HtNrHJM4ZEFqlLzACBMGrJAdCCSVRxPtuQqtkw1WKVrc
+ nnQRRVrEny517oTi2ngo4vz7ZxWaY4ossqcZ30m0D7hEgreVubHKr4VrB504dTgwupDt
+ 7awpFKx7BBDMezuscxuHkXJJUlrEYUjAD6kzREN2ZTiVEPmFxYv/sTtVf3HVNLt7oVAN
+ 4iHg==
+X-Gm-Message-State: AOAM530PIARp/by+faI+66LyVvdzg28i2I9EdfDG6rZj7k5HixDrc6GU
+ RDrNZoihSbBdUjK+pehc3gj7v5lTUfVZ6gPU
+X-Google-Smtp-Source: ABdhPJwAvY5JWXTyFKJcxmY2a70V2qqbGlRZIfUO3b6sSt5MMg4Fs14WOgxU/vyvPDQ99LQKRheszQ==
+X-Received: by 2002:a05:6a00:2391:b0:4a2:cb64:2e01 with SMTP id
+ f17-20020a056a00239100b004a2cb642e01mr9956583pfc.45.1640426813013; 
+ Sat, 25 Dec 2021 02:06:53 -0800 (PST)
 Received: from localhost.localdomain (1-34-229-86.hinet-ip.hinet.net.
  [1.34.229.86])
- by smtp.gmail.com with ESMTPSA id ob8sm15980723pjb.38.2021.12.25.02.06.39
+ by smtp.gmail.com with ESMTPSA id i68sm1246109pfc.151.2021.12.25.02.06.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 25 Dec 2021 02:06:40 -0800 (PST)
+ Sat, 25 Dec 2021 02:06:52 -0800 (PST)
 From: s921975628@gmail.com
 To: richard@nod.at,
 	vigneshr@ti.com,
 	miquel.raynal@bootlin.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  RinHizakura <s921975628@gmail.com>
-Subject: [PATCH 1/3] mtd: rawnand: nandsim: Replace overflow check with
- kzalloc to single kcalloc
-Date: Sat, 25 Dec 2021 18:06:07 +0800
-Message-Id: <20211225100607.118932-1-s921975628@gmail.com>
+Subject: [PATCH 2/3] mtd: rawnand: nandsim: Merge repeat codes in
+ ns_switch_state
+Date: Sat, 25 Dec 2021 18:06:48 +0800
+Message-Id: <20211225100648.119011-1-s921975628@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211225_020642_371331_EE669407 
-X-CRM114-Status: UNSURE (   8.36  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211225_020657_161489_1F85EF31 
+X-CRM114-Status: GOOD (  11.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,36 +92,52 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: RinHizakura <s921975628@gmail.com>
 
-Instead of self-checking overflow and allocating an array of specific size
-by counting the total required space handy, we already have existed kernel
-API which responses for all these works.
+The moving block of codes is shared between both 'if' and 'else' condition,
+we can move it out to reduce the duplication.
 
 Signed-off-by: RinHizakura <s921975628@gmail.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ drivers/mtd/nand/raw/nandsim.c | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 0750121ac..3698fb430 100644
+index 3698fb430..2ef6bddf0 100644
 --- a/drivers/mtd/nand/raw/nandsim.c
 +++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -979,15 +979,8 @@ static int ns_read_error(unsigned int page_no)
- 
- static int ns_setup_wear_reporting(struct mtd_info *mtd)
- {
--	size_t mem;
+@@ -1731,14 +1731,6 @@ static void ns_switch_state(struct nandsim *ns)
+ 			"state: %s, nxstate: %s\n",
+ 		       ns_get_state_name(ns->state),
+ 		       ns_get_state_name(ns->nxstate));
 -
- 	wear_eb_count = div_u64(mtd->size, mtd->erasesize);
--	mem = wear_eb_count * sizeof(unsigned long);
--	if (mem / sizeof(unsigned long) != wear_eb_count) {
--		NS_ERR("Too many erase blocks for wear reporting\n");
--		return -ENOMEM;
--	}
--	erase_block_wear = kzalloc(mem, GFP_KERNEL);
-+	erase_block_wear = kcalloc(wear_eb_count, sizeof(unsigned long), GFP_KERNEL);
- 	if (!erase_block_wear) {
- 		NS_ERR("Too many erase blocks for wear reporting\n");
- 		return -ENOMEM;
+-		/* See, whether we need to do some action */
+-		if ((ns->state & ACTION_MASK) &&
+-		    ns_do_state_action(ns, ns->state) < 0) {
+-			ns_switch_to_ready_state(ns, NS_STATUS_FAILED(ns));
+-			return;
+-		}
+-
+ 	} else {
+ 		/*
+ 		 * We don't yet know which operation we perform.
+@@ -1755,12 +1747,13 @@ static void ns_switch_state(struct nandsim *ns)
+ 
+ 		if (ns_find_operation(ns, 0))
+ 			return;
++	}
+ 
+-		if ((ns->state & ACTION_MASK) &&
+-		    ns_do_state_action(ns, ns->state) < 0) {
+-			ns_switch_to_ready_state(ns, NS_STATUS_FAILED(ns));
+-			return;
+-		}
++	/* See, whether we need to do some action */
++	if ((ns->state & ACTION_MASK) &&
++	    ns_do_state_action(ns, ns->state) < 0) {
++		ns_switch_to_ready_state(ns, NS_STATUS_FAILED(ns));
++		return;
+ 	}
+ 
+ 	/* For 16x devices column means the page offset in words */
 -- 
 2.25.1
 
