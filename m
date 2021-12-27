@@ -4,51 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BAC8C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 01:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37F33C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 03:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:Cc:References:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5Vk7QybA0u9HzFZXQ81/ebS52p2zKlbthbGGr3YtYV4=; b=v4q4Tm+6Cj4SYL
-	rBtH+BdMci2+YIkQSifmLgiX5dkmj00z0sJMXbrCd2z7PbKK50hHxnOCYzloRAYKSFi58hLHiOjxo
-	8EtU1YFoEVHSIfN9BX0EGpt02kbZca7WzxOrKh8k20wCs40GyVPr6aWihg2RPrFNCh7bRA/mmCvrI
-	UResVC3NUjZpCr2Z9QEjVMQXlws9dolYliJLDRw7Wnk2nTqzZ41qET3dn2BUVzyZiFy28e2hu/xNo
-	rRsj40MFypfXLxk7HYZsP4I6dSMYok0MYhws1tnD7KWsZyeJbzzm28q/G6Kt+TazuO16iD1h5B6ch
-	sy/XO7pJWXGqg30SQYkw==;
+	List-Owner; bh=WVGzsFY4t3ruUx4yBefeME+fNCyzv3YA71N2Fc8tUsI=; b=MWeHcKe5hXt8Bt
+	BVFO1x7dXNM0oviOZ59H++eSQkCNnAUXvkM6eAs0kH1lTL7Fu7Zq/n2I6afm3H0SILHCnfL3dlflf
+	I3Nv4+J6WXgcvEs7EqRxZIVIMYCXN6tWskHPmYIY3RfDT4XtkG31ys827Fp4B+aVlew2TkZ6F53Lz
+	WJZSL94vAo0PaICPKTKb5ANJwgtHf9KeobtpcEXB6XDS4GWKieHExq0ypEsKtWHB6xSS5Um1QLGMj
+	pOxKr/8tkDlQqrF7HcCjxdC0vxjuq+KtJRIW8iqFxNh+TRXKRd+Usx1y/vC3hCbXyvbOQyZ5hCIbT
+	FOE4LGF30iJG1oy3wf/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n1f7p-00G0pW-FJ; Mon, 27 Dec 2021 01:48:33 +0000
-Received: from perseus.uberspace.de ([95.143.172.134])
+	id 1n1gQo-00G42n-SA; Mon, 27 Dec 2021 03:12:14 +0000
+Received: from szxga03-in.huawei.com ([45.249.212.189])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n1f7l-00G0nU-B3
- for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 01:48:31 +0000
-Received: (qmail 20248 invoked by uid 988); 27 Dec 2021 01:48:20 -0000
-Authentication-Results: perseus.uberspace.de;
-	auth=pass (plain)
-Message-ID: <f132a19f-d57e-af69-4da4-5c5c54a4c6ac@david-bauer.net>
-Date: Mon, 27 Dec 2021 02:48:19 +0100
+ id 1n1gQk-00G3ye-Lb
+ for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 03:12:12 +0000
+Received: from kwepemi500003.china.huawei.com (unknown [172.30.72.56])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4JMjM46rLdz8w58;
+ Mon, 27 Dec 2021 11:09:36 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ kwepemi500003.china.huawei.com (7.221.188.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 27 Dec 2021 11:12:02 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 27 Dec
+ 2021 11:12:01 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+ <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>,
+ <s.hauer@pengutronix.de>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 01/15] ubifs: rename_whiteout: Fix double free for
+ whiteout_ui->data
+Date: Mon, 27 Dec 2021 11:22:32 +0800
+Message-ID: <20211227032246.2886878-2-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211227032246.2886878-1-chengzhihao1@huawei.com>
+References: <20211227032246.2886878-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH] mtd: spi-nor: fix reading/writing of MX25L6405D
-Content-Language: de-DE
-To: vincent@systemli.org, linux-mtd@lists.infradead.org
-References: <20211227013542.1240124-1-vincent@systemli.org>
-Cc: tudor.ambarus@microchip.com
-From: David Bauer <mail@david-bauer.net>
-In-Reply-To: <20211227013542.1240124-1-vincent@systemli.org>
-X-Rspamd-Bar: ---
-X-Rspamd-Report: BAYES_HAM(-3) MIME_GOOD(-0.1)
-X-Rspamd-Score: -3.1
-Received: from unknown (HELO unkown) (::1)
- by perseus.uberspace.de (Haraka/2.8.28) with ESMTPSA;
- Mon, 27 Dec 2021 02:48:19 +0100
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211226_174829_715155_B27EFF25 
-X-CRM114-Status: GOOD (  18.63  )
+X-CRM114-CacheID: sfid-20211226_191210_918644_3AB1FC5A 
+X-CRM114-Status: UNSURE (   6.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,71 +68,76 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Nick,
+'whiteout_ui->data' will be freed twice if space budget fail for
+rename whiteout operation as following process:
 
-On 12/27/21 02:35, vincent@systemli.org wrote:
-> From: Nick Hainke <vincent@systemli.org>
-> 
-> Macronix MX25L6405D supports locking with four block protection bits in
-> its status register. Furthermore, the chip will not work with the "16-bit
-> Write Status (01h) Command". Add flash-specific fixup that disables the
-> SNOR_F_HAS_16BIT_SR flag.
+rename_whiteout
+  dev = kmalloc
+  whiteout_ui->data = dev
+  kfree(whiteout_ui->data)  // Free first time
+  iput(whiteout)
+    ubifs_free_inode
+      kfree(ui->data)	    // Double free!
 
-As briefly noted on IRC - all Macronix flash chips do seem to
-only have one status register. So removing the SNOR_F_HAS_16BIT_SR
-flag in macronix_default_init is probably the better fix.
+KASAN reports:
+==================================================================
+BUG: KASAN: double-free or invalid-free in ubifs_free_inode+0x4f/0x70
+Call Trace:
+  kfree+0x117/0x490
+  ubifs_free_inode+0x4f/0x70 [ubifs]
+  i_callback+0x30/0x60
+  rcu_do_batch+0x366/0xac0
+  __do_softirq+0x133/0x57f
 
-Best
-David
+Allocated by task 1506:
+  kmem_cache_alloc_trace+0x3c2/0x7a0
+  do_rename+0x9b7/0x1150 [ubifs]
+  ubifs_rename+0x106/0x1f0 [ubifs]
+  do_syscall_64+0x35/0x80
 
-> 
-> Tested on Nanostation M2 XM.
-> 
-> Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on
-> lock()/unlock()")
-> 
-> Signed-off-by: David Bauer <mail@david-bauer.net>
-> Signed-off-by: Nick Hainke <vincent@systemli.org>
-> ---
->   drivers/mtd/spi-nor/macronix.c | 13 ++++++++++++-
->   1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index 27498ed0cc0d..6dd148e9f660 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -8,6 +8,15 @@
->   
->   #include "core.h"
->   
-> +static void mx25l6405d_default_init_fixups(struct spi_nor *nor)
-> +{
-> +	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
-> +}
-> +
-> +static struct spi_nor_fixups mx25l6405d_fixups = {
-> +	.default_init = mx25l6405d_default_init_fixups,
-> +};
-> +
->   static int
->   mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
->   			    const struct sfdp_parameter_header *bfpt_header,
-> @@ -41,7 +50,9 @@ static const struct flash_info macronix_parts[] = {
->   	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
->   	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
->   	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
-> -	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
-> +	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K |
-> +			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP)
-> +		.fixups = &mx25l6405d_fixups },
->   	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
->   	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64,
->   			      SECT_4K | SPI_NOR_DUAL_READ |
+Freed by task 1506:
+  kfree+0x117/0x490
+  do_rename.cold+0x53/0x8a [ubifs]
+  ubifs_rename+0x106/0x1f0 [ubifs]
+  do_syscall_64+0x35/0x80
+
+The buggy address belongs to the object at ffff88810238bed8 which
+belongs to the cache kmalloc-8 of size 8
+==================================================================
+
+Let ubifs_free_inode() free 'whiteout_ui->data'. BTW, delete unused
+assignment 'whiteout_ui->data_len = 0', process 'ubifs_evict_inode()
+-> ubifs_jnl_delete_inode() -> ubifs_jnl_write_inode()' doesn't need it
+(because 'inc_nlink(whiteout)' won't be excuted by 'goto out_release',
+ and the nlink of whiteout inode is 0).
+
+Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/ubifs/dir.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 7c61d0ec0159..cfa8881d8cca 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1425,8 +1425,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 
+ 		err = ubifs_budget_space(c, &wht_req);
+ 		if (err) {
+-			kfree(whiteout_ui->data);
+-			whiteout_ui->data_len = 0;
+ 			iput(whiteout);
+ 			goto out_release;
+ 		}
+-- 
+2.31.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
