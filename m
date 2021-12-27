@@ -4,47 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06B85C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 01:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 110C2C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 01:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ipXxeMn5ajJqWlS6PulCJrtGsXrJS0W7Tz4i0q9/rLA=; b=OficItTxgwlC0R
-	2NLaW0rXdBRJgTAYT8K3KsoszwAgSv9VZDuuZWZr8dySlnaUoOFrCL3aAgcDRf9cUIAawKnHdRASE
-	VWDNPu7AAeBcaoTA/imPe2BruTGAKLh2P/+YcanehHU8cP1bpcIHGGjQCGUM7aunTMDXrcmWwOPPY
-	qy1Rb83YRhB7zdORPJzFvsr/tzfp52SsFgveL7LgGPBMCUYJkdiXlVgWO/UkWqDicdNL+QPYOJlaN
-	UB7n75nSI9iLw1WwegKTX5/gw8ldDT3QQPxcc+58PmHAOuWBKuF0vpL55T8zCcHl2FCQl2n7O+bwk
-	OGEhsnXA+BrH21KXc8Uw==;
+	List-Owner; bh=ipXxeMn5ajJqWlS6PulCJrtGsXrJS0W7Tz4i0q9/rLA=; b=pUz5PG7Ur6Nj04
+	DEF/ZMbdDOG9gvH72A+RhBMSNJLZ2t1NqCoagsKworyYRL3dAsctOp+qyQKKNuTf1lzjtkeST3I5S
+	7qDBdA6M+zZkp1zhlhnFbktSCUZYpzc8tMIOa6QZ2cABoU2EJloAFFx602YaDUx7IHk8zrIEQEyld
+	+MRlojk9o60Rl08ZHWPWamxHbiLKjqZojkzEtAuRnV6BJ2H3xUvgdghEujCYi7D810mfZHIp11W6/
+	zgmAOGotb/7bIC+NguKW9awUTuKhVLtXX578Mj6QTtZKVQFNJrEwOE3UiZlMMuBM1GviFVUy8CzQ/
+	CEl8R1dPrJB/UEhh7Duw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n1eZL-00Fyu6-KY; Mon, 27 Dec 2021 01:12:55 +0000
-Received: from mail1.systemli.org ([2a00:c38:11e:ffff::a032])
+	id 1n1evZ-00Fzdt-An; Mon, 27 Dec 2021 01:35:53 +0000
+Received: from mail1.systemli.org ([212.103.72.247])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n1eZE-00Fytl-Tq
- for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 01:12:50 +0000
+ id 1n1evX-00FzdX-3B
+ for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 01:35:52 +0000
 From: vincent@systemli.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
- s=default; t=1640567561;
+ s=default; t=1640568947;
  bh=pBGw2in93wvElXpOJ5wOGA09re3QZeq3M/lNxQ0hx7g=;
  h=From:To:Cc:Subject:Date:From;
- b=mb+r+VAqV5uN65zQIlBhGUxQ5emzGx9MxNQE0r8rrKrO8/ei2ngOSdU/ITjsTDEW3
- ncre2MvvfWQFbEbe7xYNy+QzRpgBd3cwrD7JYMNZQTP5PnXes6jUpoF1PnqQQRlbwR
- X6SAqO3goHeM6CmKg/f+zFFIxJaRR38bXsH6yQ2UUccPN2M28ffKDIjBnTRKKwturR
- xu+Ms9UGcC9wsol6BnkD/CdqbwN4IJ6L+GW4XqUGNI5MEb65vV8PvE+ZTDsUPTr5qF
- BlNKaNeAvwsXxCuM6VjTC0lm4ic/dEhr4772YVB1zbLCMcvcwlgkljT2PN4X9QfIKs
- YDbC/F3WpyjyQ==
+ b=Lmnf7WlqSLYom8CR5j04XTHN9rowQvjfxUTuufdiRdcDuwyaUXo7FyNcVFjTFkAbw
+ NoPZDxF0c4sif73g/qHLjy4L03MK5YRL22smPa0HFoCDVvH6bnbISzXUmnjUFo4WSe
+ SeFtLTyVfYUtNnDZXdFDYG/gzxYxKY3mOop/nj8dShu5q8Iv86Gfm9P6Lz9ms31W7T
+ op52SXBtunx5TG/DQZ9Mp7rOUKwN/NQWT6hj+4Xud2343HNf1TTbEQ0deX/N0f2awq
+ 32GA8s1l1l05fdGChLjaWtscWLEepiCeNUzjo+0XGjNLTFFbA47m37MYAqSpZXLMha
+ rVk9mT+bAM53w==
 To: linux-mtd@lists.infradead.org
 Cc: Nick Hainke <vincent@systemli.org>,
 	David Bauer <mail@david-bauer.net>
 Subject: [PATCH] mtd: spi-nor: fix reading/writing of MX25L6405D
-Date: Mon, 27 Dec 2021 02:12:30 +0100
-Message-Id: <20211227011230.1168054-1-vincent@systemli.org>
+Date: Mon, 27 Dec 2021 02:35:42 +0100
+Message-Id: <20211227013542.1240124-1-vincent@systemli.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211226_171249_308985_E73FDEAC 
+X-CRM114-CacheID: sfid-20211226_173551_294539_BC76C148 
 X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
