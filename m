@@ -4,58 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37F33C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 03:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 781E7C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 03:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WVGzsFY4t3ruUx4yBefeME+fNCyzv3YA71N2Fc8tUsI=; b=MWeHcKe5hXt8Bt
-	BVFO1x7dXNM0oviOZ59H++eSQkCNnAUXvkM6eAs0kH1lTL7Fu7Zq/n2I6afm3H0SILHCnfL3dlflf
-	I3Nv4+J6WXgcvEs7EqRxZIVIMYCXN6tWskHPmYIY3RfDT4XtkG31ys827Fp4B+aVlew2TkZ6F53Lz
-	WJZSL94vAo0PaICPKTKb5ANJwgtHf9KeobtpcEXB6XDS4GWKieHExq0ypEsKtWHB6xSS5Um1QLGMj
-	pOxKr/8tkDlQqrF7HcCjxdC0vxjuq+KtJRIW8iqFxNh+TRXKRd+Usx1y/vC3hCbXyvbOQyZ5hCIbT
-	FOE4LGF30iJG1oy3wf/w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kdsoykp2DEZ91Oih8LhR/TCmTSanlyzlEQOSTkbcnBY=; b=4pLbki3ssGuEV4
+	4EW7ZVwkcCXHMeI0BI1dwGTnEABSu4k2phzFCsY/AA35J3ueWXeyLr4PlRr5ZsmvCUZZ5fs+gYbcz
+	Dtg2/VnQcQqRMTeIcrYPtpc/D50PDxFKtDjPO7Z+fVzUiBW+2kY6AtqoBu70VziVizw43pnDmD//J
+	yyJv9bIO/uX8EYPpT6JcFRVTeKZ+W/0TyDH6Pw8bZ0hC/aYZ0JDybkYr722YSDOW1zKqxi1cIqJDR
+	Wh/+LmP0CdsPEjKveRCFA9uNdz8rgJDoq+nYe36MgVAGEts2kE8CvNg3G0fR9M4WV4UVWrJPNgeuk
+	omXUNmtDtm7oBNWSwr/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n1gQo-00G42n-SA; Mon, 27 Dec 2021 03:12:14 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1n1gR2-00G47y-W8; Mon, 27 Dec 2021 03:12:29 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n1gQk-00G3ye-Lb
- for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 03:12:12 +0000
-Received: from kwepemi500003.china.huawei.com (unknown [172.30.72.56])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4JMjM46rLdz8w58;
- Mon, 27 Dec 2021 11:09:36 +0800 (CST)
+ id 1n1gQk-00G3yf-JT
+ for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 03:12:15 +0000
+Received: from kwepemi100010.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JMjPN53YBzcbmr;
+ Mon, 27 Dec 2021 11:11:36 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- kwepemi500003.china.huawei.com (7.221.188.51) with Microsoft SMTP Server
+ kwepemi100010.china.huawei.com (7.221.188.54) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 27 Dec 2021 11:12:02 +0800
+ 15.1.2308.20; Mon, 27 Dec 2021 11:12:03 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 27 Dec
- 2021 11:12:01 +0800
+ 2021 11:12:00 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>,
  <s.hauer@pengutronix.de>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 01/15] ubifs: rename_whiteout: Fix double free for
- whiteout_ui->data
-Date: Mon, 27 Dec 2021 11:22:32 +0800
-Message-ID: <20211227032246.2886878-2-chengzhihao1@huawei.com>
+Subject: [PATCH v6 00/15] Some bugfixs for ubi/ubifs
+Date: Mon, 27 Dec 2021 11:22:31 +0800
+Message-ID: <20211227032246.2886878-1-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211227032246.2886878-1-chengzhihao1@huawei.com>
-References: <20211227032246.2886878-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211226_191210_918644_3AB1FC5A 
-X-CRM114-Status: UNSURE (   6.92  )
+X-CRM114-CacheID: sfid-20211226_191211_015425_60373476 
+X-CRM114-Status: UNSURE (   7.09  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,68 +70,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-'whiteout_ui->data' will be freed twice if space budget fail for
-rename whiteout operation as following process:
+v1->v2:
+  1. Add new fix for ubifs, "ubifs: Fix to add refcount once page is set
+  private"
+  2. Update "ubifs: Rename whiteout atomically":
+     1) Move inode mode in create_whiteout()
+     2) Don't check O_SYNC for whiteout, because it inherits from the old_dir
+     3) Remove useless 'synced_i_size ' assignment for whiteout, because
+	it's always be zero.
+     4) Remove unused variable 'ui' in create_whiteout()
+  3. Update "ubifs: setflags: Make dirtied_ino_d 8 bytes aligned":
+     1) Align dirtied_ino_d with 8 bytes.
 
-rename_whiteout
-  dev = kmalloc
-  whiteout_ui->data = dev
-  kfree(whiteout_ui->data)  // Free first time
-  iput(whiteout)
-    ubifs_free_inode
-      kfree(ui->data)	    // Double free!
+v2->v3:
+  1. Update "ubifs: Rename whiteout atomically":
+     1) Fix misspelling 'have already check the old dir inode' ->
+        'have already checked the old dir inode'
+     2) Fix misspelling "Whiteout don't have non-zero size" ->
+        "Whiteout  have non-zero size"
+  2. Update "ubifs: Fix to add refcount once page is set private"
+     1) Fix commit message to explain the root cause.
+  3. Update "ubi: fastmap: Add all fastmap pebs into 'ai->fastmap' when
+     fm->used_blocks>=2"
+     1) Add fastmap used pebs into 'ai' in for-loop, rather than in
+        two-steps(Add pebs [pnum<UBI_FM_MAX_START] then add pebs
+	[pnum>=UBI_FM_MAX_START] into 'ai').
 
-KASAN reports:
-==================================================================
-BUG: KASAN: double-free or invalid-free in ubifs_free_inode+0x4f/0x70
-Call Trace:
-  kfree+0x117/0x490
-  ubifs_free_inode+0x4f/0x70 [ubifs]
-  i_callback+0x30/0x60
-  rcu_do_batch+0x366/0xac0
-  __do_softirq+0x133/0x57f
+v3->v4:
+  1. Update "ubifs: Add missing iput if do_tmpfile() failed in rename whiteout":
+     1) Move whiteout cleanup into do_tmpfile() according to Sascha's advice
+  2. Add new fix for ubifs, "ubifs: ubifs_writepage: Mark page dirty after
+     writing inode failed"
 
-Allocated by task 1506:
-  kmem_cache_alloc_trace+0x3c2/0x7a0
-  do_rename+0x9b7/0x1150 [ubifs]
-  ubifs_rename+0x106/0x1f0 [ubifs]
-  do_syscall_64+0x35/0x80
+v4->v5:
+  1. Add new fix for ubifs, "ubifs: ubifs_releasepage: Remove ubifs_assert(0)
+     to valid this process"
 
-Freed by task 1506:
-  kfree+0x117/0x490
-  do_rename.cold+0x53/0x8a [ubifs]
-  ubifs_rename+0x106/0x1f0 [ubifs]
-  do_syscall_64+0x35/0x80
+v5->v6:
+  1. Add new fix for ubi: "ubi: fastmap: Fix high cpu usage of ubi_bgt by
+     making sure wl_pool not empty"
 
-The buggy address belongs to the object at ffff88810238bed8 which
-belongs to the cache kmalloc-8 of size 8
-==================================================================
+Zhihao Cheng (15):
+  ubifs: rename_whiteout: Fix double free for whiteout_ui->data
+  ubifs: Fix deadlock in concurrent rename whiteout and inode writeback
+  ubifs: Fix wrong number of inodes locked by ui_mutex in ubifs_inode
+    comment
+  ubifs: Add missing iput if do_tmpfile() failed in rename whiteout
+  ubifs: Rename whiteout atomically
+  ubifs: Fix 'ui->dirty' race between do_tmpfile() and writeback work
+  ubifs: Rectify space amount budget for mkdir/tmpfile operations
+  ubifs: setflags: Make dirtied_ino_d 8 bytes aligned
+  ubifs: Fix read out-of-bounds in ubifs_wbuf_write_nolock()
+  ubifs: Fix to add refcount once page is set private
+  ubi: fastmap: Return error code if memory allocation fails in
+    add_aeb()
+  ubi: fastmap: Add all fastmap pebs into 'ai->fastmap' when
+    fm->used_blocks>=2
+  ubifs: ubifs_writepage: Mark page dirty after writing inode failed
+  ubifs: ubifs_releasepage: Remove ubifs_assert(0) to valid this process
+  ubi: fastmap: Fix high cpu usage of ubi_bgt by making sure wl_pool not
+    empty
 
-Let ubifs_free_inode() free 'whiteout_ui->data'. BTW, delete unused
-assignment 'whiteout_ui->data_len = 0', process 'ubifs_evict_inode()
--> ubifs_jnl_delete_inode() -> ubifs_jnl_write_inode()' doesn't need it
-(because 'inc_nlink(whiteout)' won't be excuted by 'goto out_release',
- and the nlink of whiteout inode is 0).
+ drivers/mtd/ubi/fastmap-wl.c |   5 +-
+ drivers/mtd/ubi/fastmap.c    |  63 ++++------
+ drivers/mtd/ubi/wl.h         |  11 +-
+ fs/ubifs/dir.c               | 235 +++++++++++++++++++++--------------
+ fs/ubifs/file.c              |  45 ++++---
+ fs/ubifs/io.c                |  34 ++++-
+ fs/ubifs/ioctl.c             |   2 +-
+ fs/ubifs/journal.c           |  52 ++++++--
+ fs/ubifs/ubifs.h             |   2 +-
+ 9 files changed, 284 insertions(+), 165 deletions(-)
 
-Fixes: 9e0a1fff8db56ea ("ubifs: Implement RENAME_WHITEOUT")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ubifs/dir.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 7c61d0ec0159..cfa8881d8cca 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1425,8 +1425,6 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
- 
- 		err = ubifs_budget_space(c, &wht_req);
- 		if (err) {
--			kfree(whiteout_ui->data);
--			whiteout_ui->data_len = 0;
- 			iput(whiteout);
- 			goto out_release;
- 		}
 -- 
 2.31.1
 
