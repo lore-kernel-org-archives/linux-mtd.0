@@ -4,51 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E036AC433EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 26 Dec 2021 09:31:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06B85C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 01:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
-	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=UNnH3zhXkxrs2PieLM37dWimg5nYPY+/8xOklxaWyM0=; b=g32G1M0c8uMHke
-	f6T7pY+VvLaWXLZ56MLgP2FOh+W7V0/dYTzVAI0a8ilqgEy3rCUBOLw4eZORIlRDLmBFb0ecRk6Nb
-	RJRBGMcVBc8FBwceqI3cnTLPAbfawO/cVqnuIJnNh2ntEQzbCRmXNrLZDKrRdK09iYmkLzfM7m/kp
-	5dM0auw0RsMdUrJ5jM7wZf6rVVqVAI97OTMAv5QnbBEcYEPBjHgWuSViRMCRB9WS10X6bHOa9NLyH
-	3HwWp+OyDd6PqWmRH1+Rgp6VTyEqcyowktpSWRX+kC9NNNi6xIqAMeVTmCKU2zhyAT7r47vvgVCJJ
-	RhB1TJ5G/oh3JsKWY4kA==;
+	List-Owner; bh=ipXxeMn5ajJqWlS6PulCJrtGsXrJS0W7Tz4i0q9/rLA=; b=OficItTxgwlC0R
+	2NLaW0rXdBRJgTAYT8K3KsoszwAgSv9VZDuuZWZr8dySlnaUoOFrCL3aAgcDRf9cUIAawKnHdRASE
+	VWDNPu7AAeBcaoTA/imPe2BruTGAKLh2P/+YcanehHU8cP1bpcIHGGjQCGUM7aunTMDXrcmWwOPPY
+	qy1Rb83YRhB7zdORPJzFvsr/tzfp52SsFgveL7LgGPBMCUYJkdiXlVgWO/UkWqDicdNL+QPYOJlaN
+	UB7n75nSI9iLw1WwegKTX5/gw8ldDT3QQPxcc+58PmHAOuWBKuF0vpL55T8zCcHl2FCQl2n7O+bwk
+	OGEhsnXA+BrH21KXc8Uw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n1Pqp-00FPZ8-7O; Sun, 26 Dec 2021 09:29:59 +0000
-Received: from slot0.jllresort.com ([62.197.136.5])
+	id 1n1eZL-00Fyu6-KY; Mon, 27 Dec 2021 01:12:55 +0000
+Received: from mail1.systemli.org ([2a00:c38:11e:ffff::a032])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n1Pqg-00FPWN-Fr
- for linux-mtd@lists.infradead.org; Sun, 26 Dec 2021 09:29:51 +0000
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=jllresort.com;
- h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
- i=ele.mon@jllresort.com; bh=uxkHHwH/13+v35QJoKx48Pnu5Ys=;
- b=WH5lw0KT0dHKrK/oNqS3okuFECRo34PPkro5j8TH91p51K9Wnmf38B2L94tj56rElE/R/bs0EPrg
- j+YEly8cXQjxjTapOmfjN5eTAH8GaanNe9i0zj/UCw/sBXwfBzv/ZGRh3FNLb7BJEqCzNTTUmjdO
- fcrPSUALb+Zm2zCtn+xhZKG3K6TcS1CZkF6qYzdVjqbqvbwcSgYNqDLv+Kv9nrj6AmiLyfaOhhMk
- RUwz3BBn22uB6t0dNE7e8m/xVI9PRiN7jcV52PJBbzsCx9gIFEO4uBnDk7QMD71/A/nSXRDnhppc
- +4+QeOPsiD/Q/blmn7cPf3o/WULJeiK6dGaM8A==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=jllresort.com;
- b=MmWb4liRlu2S57vVSgXXx/Dy73KbjLYp2q/ny9dXtKhcyj/2ZP0wPAy0DhnK4qql+bMAcmjwOfYg
- +90YErZi7DjlzadRMU2F9S9gUJlQDjoNBhp0VvpFhRAFFHUw37aFb1PaKbUAs3w26lTL3XiVm7TX
- 902/hXBfMib73Glu7CYnOQBpZ2lU+ipR7E034JT4olW3L0CVPJ+ZzoLU7fLvw9VNZ6hK9rNJK4fp
- LFYVvWNQf/4PziwDLbMHmhtNvMgB2Qi9HnZ2zBhoaxz/2M85U9T2xJLN6ScnElbrnIEIwQqCRsp4
- lSrhcCLIdKS2qtOwLviU6XiGQszfS40viHHcgA==;
-From: ele.mon@jllresort.com
+ id 1n1eZE-00Fytl-Tq
+ for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 01:12:50 +0000
+From: vincent@systemli.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
+ s=default; t=1640567561;
+ bh=pBGw2in93wvElXpOJ5wOGA09re3QZeq3M/lNxQ0hx7g=;
+ h=From:To:Cc:Subject:Date:From;
+ b=mb+r+VAqV5uN65zQIlBhGUxQ5emzGx9MxNQE0r8rrKrO8/ei2ngOSdU/ITjsTDEW3
+ ncre2MvvfWQFbEbe7xYNy+QzRpgBd3cwrD7JYMNZQTP5PnXes6jUpoF1PnqQQRlbwR
+ X6SAqO3goHeM6CmKg/f+zFFIxJaRR38bXsH6yQ2UUccPN2M28ffKDIjBnTRKKwturR
+ xu+Ms9UGcC9wsol6BnkD/CdqbwN4IJ6L+GW4XqUGNI5MEb65vV8PvE+ZTDsUPTr5qF
+ BlNKaNeAvwsXxCuM6VjTC0lm4ic/dEhr4772YVB1zbLCMcvcwlgkljT2PN4X9QfIKs
+ YDbC/F3WpyjyQ==
 To: linux-mtd@lists.infradead.org
-Subject: Happy Weekend:
-Date: 26 Dec 2021 10:29:27 +0100
-Message-ID: <20211226102855.34834A02B6B218FF@jllresort.com>
+Cc: Nick Hainke <vincent@systemli.org>,
+	David Bauer <mail@david-bauer.net>
+Subject: [PATCH] mtd: spi-nor: fix reading/writing of MX25L6405D
+Date: Mon, 27 Dec 2021 02:12:30 +0100
+Message-Id: <20211227011230.1168054-1-vincent@systemli.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211226_012950_785660_362100DA 
-X-CRM114-Status: UNSURE (  -1.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211226_171249_308985_E73FDEAC 
+X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,21 +57,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: mustafa.ayvaz@ayvazburosu.com
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Greetings to you linux-mtd,
+From: Nick Hainke <vincent@systemli.org>
 
-I was wondering if you got my previous email? I have been trying 
-to reach you by email linux-mtd@lists.infradead.org, kindly get 
-back to me swiftly, it is very important and urgent.
+Macronix MX25L6405D supports locking with four block protection bits in
+its status register. Furthermore, the chip will not work with the "16-bit
+Write Status (01h) Command". Add flash-specific fixup that disables the
+SNOR_F_HAS_16BIT_SR flag.
 
-Thanks
-Mustafa Ayvaz
-Email: mustafa.ayvaz@ayvazburosu.com
+Tested on Nanostation M2 XM.
+
+Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on
+lock()/unlock()")
+
+Signed-off-by: David Bauer <mail@david-bauer.net>
+Signed-off-by: Nick Hainke <vincent@systemli.org>
+---
+ drivers/mtd/spi-nor/macronix.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 27498ed0cc0d..6dd148e9f660 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -8,6 +8,15 @@
+ 
+ #include "core.h"
+ 
++static void mx25l6405d_default_init_fixups(struct spi_nor *nor)
++{
++	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
++}
++
++static struct spi_nor_fixups mx25l6405d_fixups = {
++	.default_init = mx25l6405d_default_init_fixups,
++};
++
+ static int
+ mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+ 			    const struct sfdp_parameter_header *bfpt_header,
+@@ -41,7 +50,9 @@ static const struct flash_info macronix_parts[] = {
+ 	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+-	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K) },
++	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, SECT_4K |
++			      SPI_NOR_HAS_LOCK | SPI_NOR_4BIT_BP)
++		.fixups = &mx25l6405d_fixups },
+ 	{ "mx25u2033e",  INFO(0xc22532, 0, 64 * 1024,   4, SECT_4K) },
+ 	{ "mx25u3235f",	 INFO(0xc22536, 0, 64 * 1024,  64,
+ 			      SECT_4K | SPI_NOR_DUAL_READ |
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
