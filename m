@@ -4,89 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB3CAC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Dec 2021 17:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 600C1C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Dec 2021 07:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dLmCwUN5QoNrPZnwidjijdkaoiWiQR8UREzsW8dljQo=; b=eg7BU2mcv0I8hU
-	W8k3O0XsdmY7Sj1euypB1vRnfA5fKYxi4oSROkd/QXy8XYQIFTlmnWtqKpa8FcllTFAE62JPz/a/F
-	eStBI4fxp344BD68fh9Qw0thFxOJPfOOsjokZ4kefukQyW36lfASEBh7Nc0zuPq2bf+99A9bGDkBs
-	ProAhxRDEsun6Z7Qg9jOmFVkiI22B5SOrdnBVVF4CXXvGPwPpRlJ2+0GT7WZhVM2PxXeWqyKx+DMh
-	Y+kLs/U3ElHGMSW8VhaicCDLkoFBeShHmZEgz45p0JIeTWEIpsmvfr6g4ojmFWQ/WknFMdNcdNp2o
-	LcOsKBIFN7gX3VhT5ysA==;
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=OI/HpKYtCUj3KqyMRahcA3g4kx9h/jgsyaLkWvbWBeM=; b=syOlaRKsKbzQl4DieAiGEcaK/s
+	T0AqXySosj3kGowrzJoZWuYiQmKtNTMozNihGhhBZwUly19hcPMJmPB4/yul8DQ6QLuQHEXQxylw8
+	qtsdd662yTzjFQapf0p/mGfgRoQNAHICvt3CLXR2r+OJLv3rm7GM9po46LghibfKPPoFdUO+RkEpX
+	06/g6pyDIfdscONIStbG0gPXzfPfeSu1TotDGO0cHCEiDJdc87IqRZ7rj/qnFuG559PSlk/PTw4kW
+	loPm5/9PCB8Z28RYekmXLVROQqHMLcyaOPBEt8c+I8+LTMIY7OV/UDAMk4yoVVGls+aJTjC/d9s3W
+	k3If2tLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n1tRk-00H6JG-PK; Mon, 27 Dec 2021 17:06:04 +0000
-Received: from mail-ua1-x92b.google.com ([2607:f8b0:4864:20::92b])
+	id 1n27Dh-000Ntb-ER; Tue, 28 Dec 2021 07:48:29 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n1tRi-00H6IT-8z
- for linux-mtd@lists.infradead.org; Mon, 27 Dec 2021 17:06:03 +0000
-Received: by mail-ua1-x92b.google.com with SMTP id c36so2303296uae.13
- for <linux-mtd@lists.infradead.org>; Mon, 27 Dec 2021 09:06:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=/Jl9rD98P7u8+W/KPfuS6926/YvVcB+fWGfP5gXmcTo=;
- b=DDIfjCIH8zwOvNzVxa6/z0ntzbksgSSL55dovlZgWOtGSrp3q1ZaH60trhPrBO7InU
- VQzMnJflyMmq1QzPT7DEvhz62ejT/hFT0wjAjxwDXWyaPtjdk5Zi8t5nAy/6/jv76drI
- M9izPrQFhzXJCFjuvZ6thVvLO6WMqpQa1emRr/faWqTsHilWmOgaKDoE6iEMFYq8rx6x
- Ys1H9LtoD+fHreydGZ+bsh6TW1LLAI90CgvBxyVxyJKZhXp7ph/ujC1j74L22ZWv9PHX
- R6TGHEHxozjoooC98744KFk42Cdo+KUCfaMoA3Z3SErBc3wxVKqUdtqrhndUDDgmdg26
- 29Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=/Jl9rD98P7u8+W/KPfuS6926/YvVcB+fWGfP5gXmcTo=;
- b=lviEhYTdA1lLdzVBLQsBcleEObxdMdTO3U9kzLfMnJKjqinqN1mwsk+YweJMhK+D/t
- KspnTKTmklok/Fx57Gjsd3O/L6Ffg2M2MK5boIVJRYE4ZBI3KxeNgl2XojscWX4MOt2E
- BaU6agDej8ocQaY8YWRqjc6h71gcC/2C5NgdNHStMiJLHWWa2uFiw5lxXxKGnjR8Uk99
- rH+FFyi57Ju+4tv5v21JX/dNeynwR4jHD7eJOHuJnItCMhimFS8dQtoP6oLCU0mrN6xD
- zYc/P/S7KeKOvFFLEu7Af/z8FSxZf3WeH5IMxP9zSZbLV5Vjm7AhX9nPB4F1AgdwgLlc
- bBzA==
-X-Gm-Message-State: AOAM530EGoEm1V6sZq4NJv4sVVLZukADbmRiYUdESlAOTlHGCwT+SUmM
- DQo/1r7/FdsQlRL2rG5SGVg=
-X-Google-Smtp-Source: ABdhPJy0eYa4Kbf89/rW9lywsPSxvgEPpudw09MmZke+H+vogBjO7hdxao99ZqQw5ZKvwLE0rweVqg==
-X-Received: by 2002:a9f:2322:: with SMTP id 31mr5172057uae.133.1640624760159; 
- Mon, 27 Dec 2021 09:06:00 -0800 (PST)
-Received: from [10.230.29.137] ([192.19.223.252])
- by smtp.gmail.com with ESMTPSA id 92sm3030310uar.19.2021.12.27.09.05.57
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 27 Dec 2021 09:05:59 -0800 (PST)
-Message-ID: <ee2d9730-6f7c-a210-8949-0eb2edd9b22e@gmail.com>
-Date: Mon, 27 Dec 2021 09:05:52 -0800
+ id 1n27Dc-000NsF-6d
+ for linux-mtd@lists.infradead.org; Tue, 28 Dec 2021 07:48:26 +0000
+Received: from kwepemi100003.china.huawei.com (unknown [172.30.72.54])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JNRTZ2K3mzbjgS;
+ Tue, 28 Dec 2021 15:47:46 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ kwepemi100003.china.huawei.com (7.221.188.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 28 Dec 2021 15:48:14 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 28 Dec 2021 15:48:13 +0800
+Subject: Re: [PATCH -next V3] ubi: fix race condition between ctrl_cdev_ioctl
+ and ubi_cdev_ioctl
+To: Richard Weinberger <richard@nod.at>, "libaokun (A)" <libaokun1@huawei.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>, linux-kernel
+ <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>, Hulk Robot
+ <hulkci@huawei.com>
+References: <20211105093022.1360601-1-libaokun1@huawei.com>
+ <7e00eda5-3b35-6d3c-29fb-664b12cca6dd@huawei.com>
+ <509065063.197038.1640293568550.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <b8f6bbf3-cca4-9bfa-f70a-393f04edd21f@huawei.com>
+Date: Tue, 28 Dec 2021 15:48:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH 5/9] mtd: rawnand: brcmnand: Allow working without
- interrupts
-Content-Language: en-US
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Brian Norris <computersforpeace@gmail.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Cai Huoqing <caihuoqing@baidu.com>, Colin Ian King <colin.king@intel.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:BROADCOM SPECIFIC AMBA DRIVER (BCMA)"
- <linux-wireless@vger.kernel.org>,
- "open list:BROADCOM STB NAND FLASH DRIVER"
- <bcm-kernel-feedback-list@broadcom.com>
-References: <20211223002225.3738385-1-f.fainelli@gmail.com>
- <20211223002225.3738385-6-f.fainelli@gmail.com>
- <CAHp75VeLAuGbeh+DJ=Oox5o8vdt=iLxr80sS3RrZbdJ9smh4OA@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <CAHp75VeLAuGbeh+DJ=Oox5o8vdt=iLxr80sS3RrZbdJ9smh4OA@mail.gmail.com>
+In-Reply-To: <509065063.197038.1640293568550.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211227_090602_356793_E6794526 
-X-CRM114-Status: GOOD (  14.29  )
+X-CRM114-CacheID: sfid-20211227_234824_454021_F413AB26 
+X-CRM114-Status: UNSURE (   8.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,43 +72,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 12/25/2021 9:45 AM, Andy Shevchenko wrote:
-> On Sat, Dec 25, 2021 at 1:41 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->> The BCMA devices include the brcmnand controller but they do not wire up
->> any interrupt line, allow the main interrupt to be optional and update
->> the completion path to also check for the lack of an interrupt line.
->>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
->> -       unsigned int            irq;
->> +       int                     irq;
-> 
-> instead.,,
-> 
->> +       ctrl->irq = platform_get_irq_optional(pdev, 0);
->> +       if (ctrl->irq >= 0) {
-> 
-> ret = ...
-> if (ret > 0) {
-> 
-> And drop 0 from the equation, OF never uses 0 as valid vIRQ.
-
-OK but the point of this patch series is to allow the use of the 
-brcmnand driver in a configuration without OF. I don't really see the 
-point in continuing to use unsigned int instead of just letting 
-request_irq() play through and tell us if the interrupt descriptor was 
-valid later on.
--- 
-Florian
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+5ZyoIDIwMjEvMTIvMjQgNTowNiwgUmljaGFyZCBXZWluYmVyZ2VyIOWGmemBkzoKPiAtLS0tLSBV
+cnNwcsO8bmdsaWNoZSBNYWlsIC0tLS0tCgoKPj4+IHViaV9nZXRfZGV2aWNlIGlzIHVzZWQgdG8g
+cHJldmVudCBkZXZpY2VzIGZyb20gYmVpbmcgZGVsZXRlZCBkdXJpbmcKPj4+IHN5c2ZzIGV4ZWN1
+dGlvbi4gSG93ZXZlciwgbm93IGtlcm5mcyBlbnN1cmVzIHRoYXQgZGV2aWNlcyB3aWxsIG5vdAo+
+Pj4gYmUgZGVsZXRlZCBiZWZvcmUgYWxsIHJlZmVyZW5jZSBjb3VudGluZyBhcmUgcmVsZWFzZWQu
+Cj4+PiBUaGUga2V5IHByb2Nlc3MgaXMgc2hvd24gaW4gdGhlIGZvbGxvd2luZyBzdGFjay4KPiAK
+PiB1YmlfZ2V0X2RldmljZSgpIGluIGRldl9hdHRyaWJ1dGVfc2hvdygpIGlzIHVzZWQgdG8gZGV0
+ZWN0IHdoZXRoZXIKPiB0aGUgdWJpIGRldmljZSBnb3QgZGV0YWNoZWQgd2hpbGUgdGhlIHN5c2Zz
+IGZpbGUgaXMgb3Blbi4KPiAKPiBIbW0uIEkgdGhvdWdodCBmb3Igc3lzZnMgdGhpcyBpcyBub3Qg
+dGhlIGNhc2Ugc2luY2Ugc3lzZnMgZG9lcyBub3QgaW1wbGVtZW50Cj4gYSByZWxlYXNlKCkgbWV0
+aG9kLiBTbyBrZXJuZnNfZHJhaW5fb3Blbl9maWxlcygpIHdpbGwgcmV0dXJuIGVhcmx5Lgo+IEJ1
+dCB0aGVyZSBpcyBhIGdvb2QgY2hhbmNlIHRoYXQgSSBkb24ndCBnb3QgYWxsIGtlcm5mcy9zeXNm
+cyBkZXRhaWxzLgo+IAoKa2VybmZzX2RyYWluKCkgd2lsbCB3YWl0ICdyb290LT5kZWFjdGl2YXRl
+X3dhaXRxJyBpZiAKYXRvbWljX3JlYWQoJmtuLT5hY3RpdmUpIG5vdCBlcXVhbHMgdG8gS05fREVB
+Q1RJVkFURURfQklBUy4KClRoZSBVQkkgc2VxX3Nob3cgY2FsbGJhY2sgaXMgaW52b2tlZCB3aXRo
+IGF2dGl2ZSBjbnQgdGFrZW46CnZmc19yZWFkCiAgIGtlcm5mc19mb3BfcmVhZF9pdGVyCiAgICAg
+c2VxX3JlYWRfaXRlcgogICAgICAgbS0+b3AtPnN0YXJ0IChrZXJuZnNfc2VxX3N0YXJ0KSAgIC8v
+IGtlcm5mc19nZXRfYWN0aXZlKG9mLT5rbikKICAgICAgIGtlcm5mc19zZXFfc2hvdwogICAgICAg
+ICBkZXZfYXR0cmlidXRlX3Nob3cgW3ViaV0KICAgICAgIG0tPm9wLT5zdG9wIChrZXJuZnNfc2Vx
+X3N0b3ApICAgICAvLyBrZXJuZnNfcHV0X2FjdGl2ZShvZi0+a24pCgpUaGUga2VybmZzX2RyYWlu
+KCkgaXMgc3R1Y2sgYXQgd2FpdF9ldmVudCgpIHVudGlsIHN5c2ZzIHJlYWRpbmcgCmZpbmlzaGVk
+LCBpbiBteSBsb2NhbCB0ZXN0LgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
