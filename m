@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14046C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Dec 2021 14:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70D72C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Dec 2021 14:30:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BfPKxqq6COZVHKbGXO/UmsuJDDiBQMvzFBM1ctYjN3Y=; b=ZHF5YKRKxItjCi
-	tEQP72AnC8iRoduT7/X2UmkyxsYDjXYjEs7LeUwYt301Y/jN1SSOwpDd+R9LzOmbYIZm9BQGT2un8
-	YHmHGwSYQ0jS8ag/16mGZyh8l9zolu2H78NDSTNc7xIFeNrxEOFB2fUhgADMr4cKUsOd+AmkePltA
-	5x+EV4KpaNGyBgzu/5Er4Fn3kz5WrolhZDOIqV9FDZmt1GQHZLbFgqdWBjbdZ71uqWipwPOokLJop
-	chVekB/8Y6aBfS0NjPNXoBpX7DaMbPziUImqPYQXGuVnj2za/vhVyvDjepcDozs+j0xIbG64CNahu
-	xMBmPbnLuZQBwwwx3LBQ==;
+	List-Owner; bh=Akw3nNvE33A+oI0GNOLFKZVmh0gZvPbRmKWoR1cZsEg=; b=SP5MGp/1NcmoNH
+	Tn52y40n74vYqGPchTUbEqf1CghAAPp4D+NAgCFRtth2BCQgPM6ek9kSB62jG8kHblPnoFtPPJn6E
+	P5HOaQAPFclhnQVMNTlPqdgvEd4eUn+9P+EiJYOlV6Q7Go3p6wDVlsZXP5Vvdl+cJ3Ih67R+Cqlpf
+	GGRRfn5tX0nw8E6Cop0DNj8pkJAoU/6LCIXVM8MdtDFph68oQ1WnNYsxDJTQlRTeI8MO6NIsIB9Gc
+	aGER0hkpj3PlwJPHtHbaDJk3P87NAwd/jBL7jMh20iZIBbyRTY1dg3uZJSyeYIoFW4ngnZA7wKbAA
+	fRhKpUlzlXz6I4y4fKEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n2DT3-0017w9-Lo; Tue, 28 Dec 2021 14:28:45 +0000
+	id 1n2DTy-0018J3-Le; Tue, 28 Dec 2021 14:29:42 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n2DQi-0016yS-0w; Tue, 28 Dec 2021 14:26:23 +0000
+ id 1n2DQl-00170H-2q; Tue, 28 Dec 2021 14:26:25 +0000
 Received: from mwalle01.kontron.local. (unknown
  [IPv6:2a02:810b:4340:43bf:fa59:71ff:fe9b:b851])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id CF426223EF;
- Tue, 28 Dec 2021 15:26:15 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id DF2472241C;
+ Tue, 28 Dec 2021 15:26:18 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1640701576;
+ s=mail2016061301; t=1640701579;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=96bwBhhJsvemv3hprG899e7VbbSGnJ9a5fsV1NHuLZ8=;
- b=cjPDNl9CsWho/cNnNcIx7E66u4GGGpiOA8DmWZga6NSVOIrebZv636wTVtLBKrxnMDx8+Z
- dIvQ/2a10IhDjdDBUL1YjtYI4pN+ObSGuhfKMD2UaCSx5mxZqYmNKnDx3luDNlgm2eH60G
- wfOlxMPDRjealS2isRjs5RmlA+Z7tqo=
+ bh=OrseTTWvtyVFTxdghVtaPYrtFfiTNlPYeSkoXqXNEbs=;
+ b=v3r4VrsvSgI43d+5gtBBGUJ2w97Ail9pvJhQUqDDsJtnimXD3TjZLbsLiEQz9zoXX5K9JG
+ dDSUjHPcLxkhM3FW8e6kkASPi+XJDQ9xybP3mOfLRVPRgfsz0eHpTaCgaakD+XdEvkfM10
+ 8/7qTFv/0fAPHL1LsYi+112of85UHMg=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -54,16 +54,16 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
  Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
  Michael Walle <michael@walle.cc>
-Subject: [PATCH 3/8] nvmem: core: add an index parameter to the cell
-Date: Tue, 28 Dec 2021 15:25:44 +0100
-Message-Id: <20211228142549.1275412-4-michael@walle.cc>
+Subject: [PATCH 7/8] arm64: dts: ls1028a: sl28: get MAC addresses from VPD
+Date: Tue, 28 Dec 2021 15:25:48 +0100
+Message-Id: <20211228142549.1275412-8-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211228142549.1275412-1-michael@walle.cc>
 References: <20211228142549.1275412-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211228_062620_419313_DD02A2E7 
-X-CRM114-Status: GOOD (  20.56  )
+X-CRM114-CacheID: sfid-20211228_062623_490004_968DDA51 
+X-CRM114-Status: GOOD (  11.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,184 +80,160 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Sometimes a cell can represend multiple values. For example, a base
-ethernet address stored in the NVMEM can be expanded into multiple
-discreet ones by adding an offset.
+Now that it is finally possible to get the MAC addresses from the OTP
+memory, use it to set the addresses of the network devices.
 
-For this use case, introduce an index parameter which is then used to
-distiguish between values. This parameter will then be passed to the
-post process hook which can then use it to create different values
-during reading.
+There are 8 reserved MAC addresses in total per board. Distribute them
+as follows:
 
-At the moment, there is only support for the device tree path. You can
-add the index to the phandle, e.g.
++----------+------+------+------+------+------+
+|          | var1 | var2 | var3 | var4 | kbox |
++----------+------+------+------+------+------+
+| enetc #0 |   +0 |      |      |   +0 |   +0 |
+| enetc #1 |      |      |   +0 |   +1 |   +1 |
+| enetc #2 | rand | rand | rand | rand | rand |
+| enetc #3 |      |      |      |      |      |
+| felix p0 |      |   +0 |      |      |   +4 |
+| felix p1 |      |   +1 |      |      |   +5 |
+| felix p2 |      |      |      |      |   +6 |
+| felix p3 |      |      |      |      |   +7 |
+| felix p4 |      |      |      |      |      |
+| felix p5 |      |      |      |      |      |
++----------+------+------+------+------+------+
 
-  &net {
-          nvmem-cells = <&base_mac_address 2>;
-          nvmem-cell-names = "mac-address";
-  };
-
-  &nvmem_provider {
-          base_mac_address: base-mac-address@0 {
-                  #nvmem-cell-cells = <1>;
-                  reg = <0 6>;
-          };
-  };
+An empty cell means, the port is not available and thus doesn't need an
+ethernet address.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/nvmem/core.c           | 37 ++++++++++++++++++++++++----------
- drivers/nvmem/imx-ocotp.c      |  4 ++--
- include/linux/nvmem-provider.h |  4 ++--
- 3 files changed, 30 insertions(+), 15 deletions(-)
+ .../fsl-ls1028a-kontron-kbox-a-230-ls.dts       |  8 ++++++++
+ .../freescale/fsl-ls1028a-kontron-sl28-var1.dts |  2 ++
+ .../freescale/fsl-ls1028a-kontron-sl28-var2.dts |  4 ++++
+ .../freescale/fsl-ls1028a-kontron-sl28-var4.dts |  2 ++
+ .../dts/freescale/fsl-ls1028a-kontron-sl28.dts  | 17 +++++++++++++++++
+ 5 files changed, 33 insertions(+)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 23a38dcf0fc4..31d77c51dbe3 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -60,6 +60,7 @@ struct nvmem_cell_entry {
- struct nvmem_cell {
- 	struct nvmem_cell_entry *entry;
- 	const char		*id;
-+	int			index;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
+index 0bcf97772995..6f08d3442309 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
+@@ -76,6 +76,8 @@ &mscc_felix_port0 {
+ 	managed = "in-band-status";
+ 	phy-handle = <&qsgmii_phy0>;
+ 	phy-mode = "qsgmii";
++	nvmem-cells = <&base_mac_address 4>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
  };
  
- static DEFINE_MUTEX(nvmem_mutex);
-@@ -1148,7 +1149,8 @@ struct nvmem_device *devm_nvmem_device_get(struct device *dev, const char *id)
- }
- EXPORT_SYMBOL_GPL(devm_nvmem_device_get);
+@@ -84,6 +86,8 @@ &mscc_felix_port1 {
+ 	managed = "in-band-status";
+ 	phy-handle = <&qsgmii_phy1>;
+ 	phy-mode = "qsgmii";
++	nvmem-cells = <&base_mac_address 5>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
  
--static struct nvmem_cell *nvmem_create_cell(struct nvmem_cell_entry *entry, const char *id)
-+static struct nvmem_cell *nvmem_create_cell(struct nvmem_cell_entry *entry,
-+					    const char *id, int index)
- {
- 	struct nvmem_cell *cell;
- 	const char *name = NULL;
-@@ -1167,6 +1169,7 @@ static struct nvmem_cell *nvmem_create_cell(struct nvmem_cell_entry *entry, cons
+@@ -92,6 +96,8 @@ &mscc_felix_port2 {
+ 	managed = "in-band-status";
+ 	phy-handle = <&qsgmii_phy2>;
+ 	phy-mode = "qsgmii";
++	nvmem-cells = <&base_mac_address 6>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
  
- 	cell->id = name;
- 	cell->entry = entry;
-+	cell->index = index;
+@@ -100,6 +106,8 @@ &mscc_felix_port3 {
+ 	managed = "in-band-status";
+ 	phy-handle = <&qsgmii_phy3>;
+ 	phy-mode = "qsgmii";
++	nvmem-cells = <&base_mac_address 7>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
  
- 	return cell;
- }
-@@ -1205,7 +1208,7 @@ nvmem_cell_get_from_lookup(struct device *dev, const char *con_id)
- 				__nvmem_device_put(nvmem);
- 				cell = ERR_PTR(-ENOENT);
- 			} else {
--				cell = nvmem_create_cell(cell_entry, con_id);
-+				cell = nvmem_create_cell(cell_entry, con_id, 0);
- 				if (IS_ERR(cell))
- 					__nvmem_device_put(nvmem);
- 			}
-@@ -1253,15 +1256,27 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_node *np, const char *id)
- 	struct nvmem_device *nvmem;
- 	struct nvmem_cell_entry *cell_entry;
- 	struct nvmem_cell *cell;
-+	struct of_phandle_args cell_spec;
- 	int index = 0;
-+	int cell_index = 0;
-+	int ret;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+index 7cd29ab970d9..1f34c7553459 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var1.dts
+@@ -55,5 +55,7 @@ &enetc_port0 {
+ &enetc_port1 {
+ 	phy-handle = <&phy0>;
+ 	phy-mode = "rgmii-id";
++	nvmem-cells = <&base_mac_address 0>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts
+index 330e34f933a3..0ed0d2545922 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dts
+@@ -48,6 +48,8 @@ &mscc_felix_port0 {
+ 	managed = "in-band-status";
+ 	phy-handle = <&phy0>;
+ 	phy-mode = "sgmii";
++	nvmem-cells = <&base_mac_address 0>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
  
- 	/* if cell name exists, find index to the name */
- 	if (id)
- 		index = of_property_match_string(np, "nvmem-cell-names", id);
+@@ -56,6 +58,8 @@ &mscc_felix_port1 {
+ 	managed = "in-band-status";
+ 	phy-handle = <&phy1>;
+ 	phy-mode = "sgmii";
++	nvmem-cells = <&base_mac_address 1>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
  
--	cell_np = of_parse_phandle(np, "nvmem-cells", index);
--	if (!cell_np)
--		return ERR_PTR(-ENOENT);
-+	ret = of_parse_phandle_with_optional_args(np, "nvmem-cells",
-+						  "#nvmem-cell-cells",
-+						  index, &cell_spec);
-+	if (ret)
-+		return ERR_PTR(ret);
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
+index 9b5e92fb753e..a4421db3784e 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts
+@@ -43,5 +43,7 @@ vddh: vddh-regulator {
+ &enetc_port1 {
+ 	phy-handle = <&phy1>;
+ 	phy-mode = "rgmii-id";
++	nvmem-cells = <&base_mac_address 1>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
+index 63e005dd5aae..81b5f735d22e 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts
+@@ -108,6 +108,8 @@ &enetc_port0 {
+ 	phy-handle = <&phy0>;
+ 	phy-mode = "sgmii";
+ 	managed = "in-band-status";
++	nvmem-cells = <&base_mac_address 0>;
++	nvmem-cell-names = "mac-address";
+ 	status = "okay";
+ };
+ 
+@@ -170,6 +172,21 @@ partition@3e0000 {
+ 				label = "bootloader environment";
+ 			};
+ 		};
 +
-+	if (cell_spec.args_count > 1)
-+		return ERR_PTR(-EINVAL);
++		otp-1 {
++			compatible = "kontron,sl28-vpd", "user-otp";
++			#address-cells = <1>;
++			#size-cells = <1>;
 +
-+	cell_np = cell_spec.np;
-+	if (cell_spec.args_count)
-+		cell_index = cell_spec.args[0];
++			serial@2 {
++				reg = <2 15>;
++			};
++
++			base_mac_address: base-mac-address@17 {
++				#nvmem-cell-cells = <1>;
++				reg = <17 6>;
++			};
++		};
+ 	};
+ };
  
- 	nvmem_np = of_get_next_parent(cell_np);
- 	if (!nvmem_np)
-@@ -1278,7 +1293,7 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_node *np, const char *id)
- 		return ERR_PTR(-ENOENT);
- 	}
- 
--	cell = nvmem_create_cell(cell_entry, id);
-+	cell = nvmem_create_cell(cell_entry, id, cell_index);
- 	if (IS_ERR(cell))
- 		__nvmem_device_put(nvmem);
- 
-@@ -1431,8 +1446,8 @@ static void nvmem_shift_read_buffer_in_place(struct nvmem_cell_entry *cell, void
- }
- 
- static int __nvmem_cell_read(struct nvmem_device *nvmem,
--		      struct nvmem_cell_entry *cell,
--		      void *buf, size_t *len, const char *id)
-+			     struct nvmem_cell_entry *cell,
-+			     void *buf, size_t *len, const char *id, int index)
- {
- 	int rc;
- 
-@@ -1446,7 +1461,7 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
- 		nvmem_shift_read_buffer_in_place(cell, buf);
- 
- 	if (nvmem->cell_post_process) {
--		rc = nvmem->cell_post_process(nvmem->priv, id,
-+		rc = nvmem->cell_post_process(nvmem->priv, id, index,
- 					      cell->offset, buf, cell->bytes);
- 		if (rc)
- 			return rc;
-@@ -1481,7 +1496,7 @@ void *nvmem_cell_read(struct nvmem_cell *cell, size_t *len)
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
--	rc = __nvmem_cell_read(nvmem, cell->entry, buf, len, cell->id);
-+	rc = __nvmem_cell_read(nvmem, cell->entry, buf, len, cell->id, cell->index);
- 	if (rc) {
- 		kfree(buf);
- 		return ERR_PTR(rc);
-@@ -1794,7 +1809,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
- 	if (rc)
- 		return rc;
- 
--	rc = __nvmem_cell_read(nvmem, &cell, buf, &len, NULL);
-+	rc = __nvmem_cell_read(nvmem, &cell, buf, &len, NULL, 0);
- 	if (rc)
- 		return rc;
- 
-diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
-index 14284e866f26..e9b52ecb3f72 100644
---- a/drivers/nvmem/imx-ocotp.c
-+++ b/drivers/nvmem/imx-ocotp.c
-@@ -222,8 +222,8 @@ static int imx_ocotp_read(void *context, unsigned int offset,
- 	return ret;
- }
- 
--static int imx_ocotp_cell_pp(void *context, const char *id, unsigned int offset,
--			     void *data, size_t bytes)
-+static int imx_ocotp_cell_pp(void *context, const char *id, int index,
-+			     unsigned int offset, void *data, size_t bytes)
- {
- 	struct ocotp_priv *priv = context;
- 
-diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
-index 98efb7b5660d..8cf8593c8ae7 100644
---- a/include/linux/nvmem-provider.h
-+++ b/include/linux/nvmem-provider.h
-@@ -20,8 +20,8 @@ typedef int (*nvmem_reg_read_t)(void *priv, unsigned int offset,
- typedef int (*nvmem_reg_write_t)(void *priv, unsigned int offset,
- 				 void *val, size_t bytes);
- /* used for vendor specific post processing of cell data */
--typedef int (*nvmem_cell_post_process_t)(void *priv, const char *id, unsigned int offset,
--					  void *buf, size_t bytes);
-+typedef int (*nvmem_cell_post_process_t)(void *priv, const char *id, int index,
-+					 unsigned int offset, void *buf, size_t bytes);
- 
- enum nvmem_type {
- 	NVMEM_TYPE_UNKNOWN = 0,
 -- 
 2.30.2
 
