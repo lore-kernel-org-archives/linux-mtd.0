@@ -4,66 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8642C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Dec 2021 14:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16AAEC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Dec 2021 08:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nmncVp7rhJXm3NFDKhoQr+Dk5w0htKoM17OXwPzzCws=; b=bekuU4YhE8Qggt
-	MiB+ox18LqhV8t6fZn7TMPrpxF3ynldltYQrUsXyepLP+cZqxrBksfXNgQoLWdmoDxoZJLV4ePo2v
-	ivDZL6C8DwVu/QuvA0M/pkEg3/kPPKGTBrmhVVCzG41TFnkpa4kksOSMSrXWOTfi6ZfS86IeFwkYP
-	DpbHB/TflHmIfNgNsT/21ubWRvo5dOYUH0Rr0jvpzZxMt3qcoCk2LYuxQywcSguBh8iUkw6mW9OoG
-	tD6RGkmJhF2dMG/P0dL88DU47CYRZyLwsunCJeMF9+jL/MNP+/J7zN4Sc3GHOh26Wth+Pj10Tip0y
-	AT0/aFXff4UtfHEOo6eQ==;
+	List-Owner; bh=6vRxcwMczgU+CWA9XPXhKQj67tkUCTevz2ruvQ7ySHQ=; b=nekON1JwmvkWvx
+	cxji/bzzGhmhjU3KkTJF2NMsDJY9595a7Dmal6cxAAGS0RafPSiI6Te+2dI7fwxz6yNsn2/doGVH6
+	I1Uld4y7d6ENvOX/8sv0zFLl8HCuzCTtKxlsjaI/EYlEnyAlMrTRQ1UL0/TfvY6a1M3Esz0M7T+Qn
+	C7lngIMfMeGArVPDYMZQkutgD5unZnBgAR8GkbgbvNwNCzVK8hjXMEWkgm1XLlyG0+Jss3+EnLEQF
+	PrYjCXaFu6+KtKbDKeg9hYP7FjNf2pr8JQ+zQq40qo9zShEc/dVkD2FSIb7/Afg8apROE5h8M9cmL
+	egawxz/FI3y/XIizOTjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n2Dbi-001Anr-VC; Tue, 28 Dec 2021 14:37:43 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1n2UJG-002SxY-S3; Wed, 29 Dec 2021 08:27:46 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n2DQn-00170K-G7; Tue, 28 Dec 2021 14:26:28 +0000
-Received: from mwalle01.kontron.local. (unknown
- [IPv6:2a02:810b:4340:43bf:fa59:71ff:fe9b:b851])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 4FBF3223F6;
- Tue, 28 Dec 2021 15:26:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1640701577;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=DvU9qr8AVDqwLiuTpAxXwhFvaaqgNiy89x8GquK/9Ww=;
- b=FrhGUJb9CsrE8BDVdbOUK1k1a21Gt2cjj+pkWleFEwpBSX5l+i5yX+WjELwD2uOPEMlL+z
- hWFPxMUeDxcnTe5ax+kaqTtpKZaMip88/BZdlMwmIqRk8Zz6VUXBAX/vbWQs6v7EAgcn4s
- i5vOOtgxg9roeJO3TufPptsun+fo3YI=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- netdev@vger.kernel.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- Frank Rowand <frowand.list@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
- Michael Walle <michael@walle.cc>
-Subject: [PATCH 5/8] net: add helper eth_addr_add()
-Date: Tue, 28 Dec 2021 15:25:46 +0100
-Message-Id: <20211228142549.1275412-6-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211228142549.1275412-1-michael@walle.cc>
-References: <20211228142549.1275412-1-michael@walle.cc>
+ id 1n2UJA-002Swk-7i
+ for linux-mtd@lists.infradead.org; Wed, 29 Dec 2021 08:27:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1640766460; x=1672302460;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=dk65/TNZb+6FwOTLi3tG/ia/WxkE3ieWpYa+bJxvILk=;
+ b=wvTIaN+baefes40pc5iS0EdVBjz1zTp5sR/X7E3e3lGXQYxiylhKa5BJ
+ Uop8f7nV7ZaY9s/qYCH3cvIZ39+W3c1KlvCZvrss7boZwHeSBvUCazW7+
+ z4mBbRa1itnaqbisfAejoI70/6h6nTp1FKbRMoSVVqxlkLm1Sa8JY4G7X
+ MlweV6pn8jGaPiNJRlgeuIBhCwO5rRoKjPdSf6tRFJhuxkXkjjDhAn/tl
+ IS6YVufM6QIWFwHvZRqx8nyUXg6NbF4eGoaX6AHjWQEjm+I/4l8PpGmIg
+ he4FvO4PCs6aK794w/HKr5ojav7B0vtZHMIr4yPRBVLAxBghIFpr8Y/FQ w==;
+IronPort-SDR: LXWq6CAI2IOvWTkQXpJMKWP1KJeD/SNEnbVRwuG/QSRD4CsIBeagQlpjP5hMQDoqqHa4devtVe
+ uPTu2y3Q5SPFLrjsa+6s7oQI6C63Xbragmlz6iJzC1K/OT+N82eOjZNsIdDbHC5Z5ThhbMdOOj
+ PetKMb8YWV/jWFw5br0B3GTJ8byLxHE62n9mNLOP6VcLv3vfSLaeLPuO26pRGN2Rqk/5GGUl32
+ ACxiaV2zhoT421FIGDugNoO/vdlFc/vKXEF3PBn2q2xy4UQK/Hj54Y5/brqJVH4iuo8C9VUhe8
+ WNULk2bLgaoccMjc7wnww0Fg
+X-IronPort-AV: E=Sophos;i="5.88,244,1635231600"; d="scan'208";a="143787647"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 29 Dec 2021 01:27:38 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Wed, 29 Dec 2021 01:27:37 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Wed, 29 Dec 2021 01:27:33 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, <zhuohao@chromium.org>,
+ <richard@nod.at>, <miquel.raynal@bootlin.com>, <p.yadav@ti.com>,
+ <vigneshr@ti.com>, <michael@walle.cc>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: (subset) [PATCH 0/2] mtd: core: Remove partid and partname
+ debugfs files
+Date: Wed, 29 Dec 2021 10:27:31 +0200
+Message-ID: <164076623215.10805.7001463971424800594.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211217122636.474976-1-tudor.ambarus@microchip.com>
+References: <20211217122636.474976-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211228_062625_755508_BFE9C23A 
-X-CRM114-Status: GOOD (  10.23  )
+X-CRM114-CacheID: sfid-20211229_002740_407312_19116037 
+X-CRM114-Status: UNSURE (   9.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,42 +87,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a helper to add an offset to a ethernet address. This comes in handy
-if you have a base ethernet address for multiple interfaces.
+On Fri, 17 Dec 2021 14:26:34 +0200, Tudor Ambarus wrote:
+> SPI NOR has equivalent sysfs device attributes, thus let's remove the
+> duplicated debugfs entries. There's no one else using partid and partname
+> debugfs files, thus remove them from the mtd core as well.
+> 
+> If you find the idea acceptable, I would like to queue these through
+> spi-nor/next, I'll have some other patches that will depend on these.
+> 
+> [...]
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- include/linux/etherdevice.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Applied to spi-nor/next, thanks!
 
-diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
-index 2ad71cc90b37..9d621dc85290 100644
---- a/include/linux/etherdevice.h
-+++ b/include/linux/etherdevice.h
-@@ -486,6 +486,20 @@ static inline void eth_addr_inc(u8 *addr)
- 	u64_to_ether_addr(u, addr);
- }
- 
-+/**
-+ * eth_addr_add() - Add (or subtract) and offset to/from the given MAC address.
-+ *
-+ * @offset: Offset to add.
-+ * @addr: Pointer to a six-byte array containing Ethernet address to increment.
-+ */
-+static inline void eth_addr_add(u8 *addr, long offset)
-+{
-+	u64 u = ether_addr_to_u64(addr);
-+
-+	u += offset;
-+	u64_to_ether_addr(u, addr);
-+}
-+
- /**
-  * is_etherdev_addr - Tell if given Ethernet address belongs to the device.
-  * @dev: Pointer to a device structure
+[1/2] mtd: spi-nor: Remove debugfs entries that duplicate sysfs entries
+      https://git.kernel.org/mtd/c/5f340402bbfc
+
+Best regards,
 -- 
-2.30.2
-
+Tudor Ambarus <tudor.ambarus@microchip.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
