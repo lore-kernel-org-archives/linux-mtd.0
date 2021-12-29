@@ -4,167 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB8FDC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Dec 2021 14:09:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BAA5C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Dec 2021 14:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=glek3+Qp1FTzepsCfk/KykZ+2ap9PsS1i46EQO4PlKk=; b=knNvfrUr1x9F+O
-	X/MxZVf1Dthb5Lq7Fj6tMhU/nL/1e7jwpDThEBdsMBI+L6+kjIiVfn0KiBkOerwSAGHYyF2PnjRMp
-	rvZKu4wpmj38dWk3dgusLNtnL7F4Xe61rRKJMGImQ3j9ExdVMbv2UUkXuD2kNIndufl/5xSIlzul1
-	kJTJ5ZSlLVnB3YUeywia9I1QHzKZqVZHTw02yAKe+dTZs1JPl5iQKDEGZeW8WSPs5eGu8qoIEM8tS
-	fF841030PM0xs78zRTHnS9SeSKZ/2zW8trAlPGsIakRkloyb3QEbLzYzq5Wi1Gf3fYa011j6MNd+t
-	y6olOy9ZeeHRPDJ3/8Nw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aybzs5tvkqptt1AXv3/zUQa8a+uIW9t/2nul7HdHPag=; b=juvc5wVEePEeYf
+	EmPPJD+pRiqCty51/FjwwIkelsk+8LruxuM/Hmn8f40EPzAHJ/O/EECeJHqbR0FlFU0txAUcN+deV
+	IoNC6lxR7JHrjVUA5va+/kYPBY8kGxlRIlcj43pI6YAejRh/keAsYA1ZtXnnKZRUQxcUQAn4xGDep
+	qUfM2InflmYIkjpZ4NmkWZVssOCVVbplr0E57732EQNUf/Q7xgQmLT3TbINF75fWdhHv4v+Lf2xpp
+	iTG0cCI3ADgvBUIBJY9V755xahzocJ1XM8XYEwxLLBw8cYAzr+c8VNRQ6n4OE+mvRRq2J22MVTEmU
+	bi8ECKIuwkj/9i6JD2+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n2ZdR-002uCo-OQ; Wed, 29 Dec 2021 14:08:57 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1n2a1h-002xht-QV; Wed, 29 Dec 2021 14:34:01 +0000
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n2ZdO-002uCM-EE
- for linux-mtd@lists.infradead.org; Wed, 29 Dec 2021 14:08:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1640786934; x=1672322934;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=I1JqoPfo0j8g/+IHu04hX2j09YlWmc1yJjuevpLKUkM=;
- b=nv4KqG+fm9vPuajkt3JM63je0SwbmE1F0YwMAV5cx4dhcHhf2ZjE64Sb
- ZEhBOP1My5ll/nL5yyS4+w4zlRH5SrO3MsMyAHO3QDYrzft5dx+xle3yK
- Tn/5IdqqpBWMuqJN6FHOKG8kL32N28yYgagmroshZ1D2vLo64JYsiNTpG
- C57ZytIvaAuhC50tVVoXDrWtU4Na2r0HJ53KI/FZqWvz989Zr3Udwv9rx
- N2sFKJV5+SZYMX8Znlx5lj4mMTpuWw+5z6LmxBwVMWS4i1c1LqycnaLSg
- z4N+JJziqXKnC5tWhXqFTwzvg8jTucmaj18+kGEjpFYW9KJ5OyjYL9TAe A==;
-IronPort-SDR: WwnbdhJwwm5lYbcDhqjW51EoRN0FE+H72r0krNUWyxHZsinWSsG9Cy+y2Yfv85u2YxhbF8Nv2t
- ZjY4lzZmCewmEfP9yhXDZdYVmzOQpRBzwpUdJMLjnHruTFjl5AaV0ZY7qBAJIM77KTp/vBEREK
- MauN34iFGOuvxBFl1mphpoz81+WdAMSai9QTToV4fkfQ4jAzMn78YSlSAgtI3po0wyyVU40ZAU
- v4AV+uAUME5/yhF2CKOfiZmh0mRoK04tMXXA96nRgC7WsV4QEe1nq9VuwYCnOspYd7cfELC8v7
- y4n+CK/y4//wCSBOD0mFkCN8
-X-IronPort-AV: E=Sophos;i="5.88,245,1635231600"; d="scan'208";a="80923091"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 29 Dec 2021 07:08:52 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 29 Dec 2021 07:08:52 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17 via Frontend Transport; Wed, 29 Dec 2021 07:08:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JC4ESC9pmKsHd9AZjcv1qt+CMWTM3aARLqPJCz5yWUkiZ26LbvNPNPho4OcdHZYh5CaCOQiaL4Z9OaRmpIm3P6q3FtEmztI8NzlDFhKhAGVh+Pqiq4H1k5fRoaLvhCdIPwPJ6jjG6nwuF7aZ0q5UdjyjovLBVZyaXixFL0pLyr6b6fnrws9jNyJHrK96Kv6jFECRyBPYagVPjPxuY17N+vI4bN68uBDCTueqSLlZSnfM1HXYHyj44Jdf9Eienmda1zC00hFbS4V45v1NESDpXFNutKCPbCRz3I4jguwQ1qBf3vgwoa9FAsbikW69fRkIyq9dTAxhkAi3xs941P82Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I1JqoPfo0j8g/+IHu04hX2j09YlWmc1yJjuevpLKUkM=;
- b=mCorrjxyDaJrlfxX2b4cKRfBAqkzPzjwC5kR3uMPZAhr+OVRLSuz2kSgvrIj/rsosFAAsZrTm5RRZBYRaqqkZ9GdaLO4kv3QUN+GxyD9oRrg9UoUFgYVNmvjJKTvUyHoHdqNH6aa70498LXKrhS9dxMeqYibcyPCVx6hRbT1AWCMtBkK7M5o6lx3IMbAJkl3bNnZ4Xsj/xrwSeeY7CZvw5mMoskDmVBy5+DoXjujV7XzyaXZpxflCrayI7YyLyCkMAtw5LEdgmSOgZTp+iMJS2fbKOMcvUuVTdeyfM7BfXL3/4yYUZU3Xannwmo8fNAUHG8n0Jpxv6ybGBamj4ia7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I1JqoPfo0j8g/+IHu04hX2j09YlWmc1yJjuevpLKUkM=;
- b=PcfZ4q0mu9F+I0+opdT71bwvUmBhS6H7bbRqlCNWqwnIxnvf7yCj5vAW4hOZWW32y8mNHoUDY6w/UgKoBFd+cQsJF4XZafu4DRE64u0qOjYltrouMQeOYw1SzbLb6aDM2WDQeGn5uTBK7FHPFAofNk3hl+IRF3m4AFPTRY2SdCY=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SN6PR11MB3054.namprd11.prod.outlook.com (2603:10b6:805:ce::13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.19; Wed, 29 Dec
- 2021 14:08:47 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::5c96:23c3:4407:d3b1]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::5c96:23c3:4407:d3b1%9]) with mapi id 15.20.4823.023; Wed, 29 Dec 2021
- 14:08:47 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <vincent@systemli.org>, <linux-mtd@lists.infradead.org>
-CC: <mail@david-bauer.net>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: disable 16-bit-sr for macronix
-Thread-Topic: [PATCH 2/2] mtd: spi-nor: disable 16-bit-sr for macronix
-Thread-Index: AQHX/L2YjpMNwBho4EiOQA8V0LMd8A==
-Date: Wed, 29 Dec 2021 14:08:47 +0000
-Message-ID: <0db13110-ee6f-2e02-abf9-d5b9eecafcb4@microchip.com>
-References: <20211227091638.177917-1-vincent@systemli.org>
- <20211227091638.177917-2-vincent@systemli.org>
-In-Reply-To: <20211227091638.177917-2-vincent@systemli.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fb7bcd9c-6cc4-4fec-4bf1-08d9cad4bb23
-x-ms-traffictypediagnostic: SN6PR11MB3054:EE_
-x-microsoft-antispam-prvs: <SN6PR11MB3054981D4CF65047B1F7FD44F0449@SN6PR11MB3054.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1824;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bcGQdjzRtRgrjPI9Ha0dNcsT6//UX9j4mYNDqXLxLxulkmTDDUc5KtrHUp8scWgoAJIO5/BQwpZC2dji9eD3PvqHKFpOUDqe20igNFKJvz+eqXSbrm27JSHiJpDlmXoOAKtFjmEGzkHKK8nkD6OvzaGrZGJ3KPBmI6X8IwpDKsuilwQoSafn44SrxvkGmz5tvjLhvoSu6kibajL2HFtQCLDlSFcuyo9uyb+j+5hp963pNbFAoEU9ph6es3D+6Fb3f4TiAXFMX9tSn9QuAypqKyTJpGgqI65/7mBhIj+5OdMdzs6xMsGrA8SVd6q+KOkJPXa76ITI8uKelwnNIyulLYxHwyEQJNitdshb+r1q8Xa9wEF6FfZcWtlJ3eHriYbQmeTKQc5DfF+u36vjW6u6+QvBFM30/k3194p8zwCP778E0uyog+rjtg1QWILMdnfXfTdGyfxszCD3qNC8NIDs5BLQnblxBNpDLUFxmv+LrSN64XriP9/UhOZjD8gVinQ6m24NcXIr+7PvKAfnb2I+p6L3JT457ppclZUJC/wx7NtOoN2EYDT0k2mzyBl6U3cgbXJelYcR/aGaxsTHhUH4uOl+E4iym1X8KEeHC1ZxJIO9ZDWb3tgpTI6an+2nU7To909CIT6yWyDuxVRPlF4yMPRcsY1eRl/pWx4kFIAV126jgqa1JtY6xEx2QL6/vvZcrthvWejzzv+NMclVYP6IJssy89MsuKirCb/nwhvIaOZwWEo0EO2+AK7FEp4JlCTM39qbLw4SFoR+gfHj6DjuFiJ0omGN2B14lMPY6MfnIGQgfJKQE6cVjt98Frlv2HH1LwdkLOKSfC9EZgc28llVLcPKqlXP5DFIkqQYbmSW+0c=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(66946007)(53546011)(66476007)(64756008)(83380400001)(186003)(36756003)(6486002)(66556008)(38100700002)(5660300002)(91956017)(26005)(31686004)(86362001)(122000001)(38070700005)(508600001)(76116006)(31696002)(316002)(2906002)(8676002)(6512007)(966005)(6506007)(8936002)(66446008)(4326008)(71200400001)(2616005)(110136005)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R3F2WG9JQUNQNWN6NGU3NGZUYnkzNFVFazIza2daMEdodkp5N1BRNlN6cUtm?=
- =?utf-8?B?VXlZUERkVlhBQ3BBUVFBWFN4eWZOK2wwVmhiUTdlYUVHMnZsQnpwbmVzQ1pn?=
- =?utf-8?B?bW1iUlRVOVR1czFHbktvU2o4KzFyZTN6QlJHMTh2MmtnUlFLdnBlM2V0RW9H?=
- =?utf-8?B?OUpvaE94Wi9mOTBqdGw5Nlc0aGFrY0NodEpRK1R5NVlkWXc0eEw4TGZsb2o2?=
- =?utf-8?B?eGE1eHpsSFRJTWpGYjU0dzVTcjN1cHJPT1VvTVdTZk8wcGVnSkJYVEhNN0ZN?=
- =?utf-8?B?L2FsbjNyMWQ0YUY2dUxiYXI0OG5ZMVN6NXNlRC9wTTFzbmJwOG5VVXY2eEhp?=
- =?utf-8?B?QkU4N1NIUmlzQzhOZjhDb0JmcnNUN2NneG40REc2RUFYSm0vcUgvQUs4d0lU?=
- =?utf-8?B?ZGFnT1ZYVWxsT2pSSzd1cXhsNzBiM0xWbWYySWFIbWJTbVVQZ2VBYllvZFZL?=
- =?utf-8?B?Y1V6b1VwQ3NTeG4yRzVJcXFXa3AxY2pYYTdhdFR5MnYzQTRXWlBXclZrUzRW?=
- =?utf-8?B?S1Y5N2FPdTFhdHk1NjF6bkZWeTFYeTFnak1mb3hpRFBHbXlNdkhYajlQS2JI?=
- =?utf-8?B?V1ZuQVAwOEJ0dXJ4bUFvS2NiMUljWUVPK1lVcyt4Wm9pdWJpQ1E5NFA3ZndD?=
- =?utf-8?B?TnI4VnpObnlyT3E2SnhpbkRuNm9UNmJISGUvQTNkVnEzTmF1Q3plUzdxTHI5?=
- =?utf-8?B?cy8rVUJ3WlpoZHB0WGVsYUt4Q2pjNHdLd0w5ZnUzd01GM2UvMER2QjF5eUhZ?=
- =?utf-8?B?S3E3c2dGWWtFRmlMUHVBL1RRRG9OU3ppUlNycDJEN0xGMDZnWElzRHJTQkZp?=
- =?utf-8?B?VXpJSVFFemN1dUV6cUpKaFRqWnluQSt6bkI4VDVuNC9nNlJsNElVT2gzT1lP?=
- =?utf-8?B?RHhJaVZ4QnI2UGY4YlJiZWJacDlCa2N0dVIyUThJWHRQZ3JZNWJ4UnZzdjAz?=
- =?utf-8?B?YnpzOW9GRDdJZmNoejRvZ284YTBmeUx2OEZqeEZ5RGw2RDZ6Y0U5YXpBb2RN?=
- =?utf-8?B?QTA4WWp2QzdDSTQrTzlZY0xWUElVNGhBWVJPNkFhTldJV0NyRWtJazNXeDQr?=
- =?utf-8?B?dFc3b2lzeDF6TFhyTmNlSnEzTEUvRzhQQ2d2ajFwSjJXWXlNN1VlM1hFUzIr?=
- =?utf-8?B?c1gwQlNzemVXaVVXeUpYZExtUWlpc0F0YXh2Z3NXV3NWcHNKc3BCTkxRbjV4?=
- =?utf-8?B?R0N3ZGxONkgwOC8wNnlIbkNtYW1CalplWFJITm90bkJCOFlNQjd0bk1XbUM4?=
- =?utf-8?B?ekpaK1E1Vk5xUW8xcVcreUN1SC9IeGZGRU9naVZYaUhKeVFyekdONjdodjJJ?=
- =?utf-8?B?TkdrTGxzTVJ0SnUzdGloRUVjZkd1NGpwVkcycjhaUEpNZ3FkSnlITDZzZGFj?=
- =?utf-8?B?dFBTM1NsSklocnBOWk4venZXYnd6SCtwVUZGOFk1MDVmekFzSUMzRjl5T2ZY?=
- =?utf-8?B?VUlnRml2enFMek11WDVuclpMam1VUTdodDJaaFd3Tzk3aWRLNmltSlE0OVJM?=
- =?utf-8?B?Z0JvZmJ2R1R6U3N5YXh0OXZOOGRRK2tvcGFhb3hsUmNIaXhHZE45UXdhSzdk?=
- =?utf-8?B?QVpObXo0eFE2eVhVQklhaFhKeHZWdFlvRzd6WCtsN1RkZ0lUaTc2K0Uwb0Jl?=
- =?utf-8?B?MDVpZ1FzMTRubmJ5RHFUVGh0aEhLVFdIUDhraWRtUERpOC9jOEZXaHlVQk0y?=
- =?utf-8?B?akRhSHBJT1N0dlM2bUhlbHlRVWFLdy90TEo5b0I0MXUvVHZPdzAxamNva0w5?=
- =?utf-8?B?a1B3RWJ3dCtKNHNYTEZaUG5ONytXclRrdTErSGRlS1diQmdXKzJDOUVSVWdo?=
- =?utf-8?B?SUZteldnSG5FWTBuYkU3aCtZZnRnQTl6S05xL1NFUGVkZTI3bmdleGQrWi8y?=
- =?utf-8?B?alNGekNaa3FFb3FpeThkak9vTDN5L0FxSWlFWXRYRnk3TzJ1S2c2YWsyam1p?=
- =?utf-8?B?bGc3blROU1RiMTk4ODRaQm43VFRFbE9ET3dtNFo0bk1YSzMxaE5RanN3S3dp?=
- =?utf-8?B?NUFjdmFxT09ZaHg5NTNlWElWTXA0OGhMcVdIc29xeXBqL2NYc2lLdHU0cS9s?=
- =?utf-8?B?dUZzRktOWTkyUGdsc1NyRmZveTE5SXJubjdJWW1DdkhERlpKUUlxSVFtQWp6?=
- =?utf-8?B?TVNsZy9ub3ZsaG0raXU4WlhaVEVYZm52VEExNUtLR2F3MFdrRXMwL3hpS1V6?=
- =?utf-8?B?ZXhyU0U3bVhRaHFzSzJTc0FuNHJqcXl5UlJZWXhkVjJiS2ljazJoL1BBUy9E?=
- =?utf-8?B?VHVKQ05mRWZsSzdsNGpoNjVLelVRPT0=?=
-Content-ID: <78705C5B40FF464B81EA7AD316BAA5F9@namprd11.prod.outlook.com>
+ id 1n2a1V-002xgc-Eq; Wed, 29 Dec 2021 14:33:51 +0000
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailnew.west.internal (Postfix) with ESMTP id DAA342B0009C;
+ Wed, 29 Dec 2021 09:33:40 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute1.internal (MEProxy); Wed, 29 Dec 2021 09:33:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=
+ from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm3; bh=EHjpGtshIGgIZ7uZEVdFJh9MDO
+ ucPBHcIEoU2Ex0JjI=; b=u1uYJPYLLbM0vrsBqQ0P1MpsVLDFreUpgrFFa6pGuD
+ 3na44+jcWJJnA1EjEcLFB8AqwY4pYZthRcbmdGXXoxlgn2OSNDfua/2CHFbe6AiR
+ VNWJgPUFyEgl38nb9bbKU9r7N/2eaet+o+xA3iwd1hVgGJU/eSCSrEpq55XdC67j
+ BZ9gKc6atHp9+i1VzVVaT1N0LSiZ4Yw3/kR/aqSoMeFJ1ACNeb7Py4e+6mbckE7t
+ VOfIelvutzgvwxL74arTQTrN+vy3NO4uQemR2op8XhvEoyxBkKYtq+b8ir8gS10m
+ 2AFMUjZY1UzCq8eTvqDgq+xoZkjCL2xR9gqMSgtJKbJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EHjpGtshIGgIZ7uZE
+ VdFJh9MDOucPBHcIEoU2Ex0JjI=; b=H8vf7lCrVtO1ZAkyK8EjURMYAFQpLx2Wg
+ YY2tk6owmyenJRatyZNykOHFUeGVl/38fZk533jSWBnZeMtqN/3XY0aqkFh+EhXI
+ G/aAPgXJul7rzrrx7XggG8FmBQoZ6TJQ8KH61C8vhf6gego5dA7hOt6b8nae47lU
+ iVMZeMV1jv2gVVhvxJJKZFjhPtwLB7Fu4SOxV74/IKENGLB9+2mEBvzKS2sTCOqL
+ 6WU24xU3cNkAt75vGgo23hvZcOWqHV6Tf/XjXvjal+F/G1NpVCkmPqk+Ltfo0wuG
+ e1PJ3NlXOVWQTLry3F3fP77pNrYoWF1LVgKf9zpSlkt3R7TzXWuDA==
+X-ME-Sender: <xms:w3HMYa9TzpFFU_t7blDTwhbvIGrcwbFYm_12VPHfXl1elFo601nu-Q>
+ <xme:w3HMYav3UqPVp6MmeWDi52uAzz6gGHOB76gIFt9Z6GMCTUnnkJhGt03NfSlqFXErQ
+ fFpuqXxi72436dTf44>
+X-ME-Received: <xmr:w3HMYQBu26dnGil1Z0YwSXGp3XHkoAi440OA-J0uMpWZYLKfc9PSeAiEI-T0hVrQ97Ddb30x7w24LMQrPw00GM8EZ5BklLyL9iQ3AQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddvuddgieejucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ gfrhhlucfvnfffucdljedtmdenucfjughrpefhvffufffkofgggfestdekredtredttden
+ ucfhrhhomheprfgrthhrihgtkhcuhghilhhlihgrmhhsuceophgrthhrihgtkhesshhtfi
+ gtgidrgiihiieqnecuggftrfgrthhtvghrnheptdeludegheejteelheduudegkeehleet
+ feekiedtfefgleeifeelhefgveejhfffnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+ hrrghmpehmrghilhhfrhhomhepphgrthhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:w3HMYSdCJUpjxy3XzmEa16coIpp63dscgZTcBXj4H2DiAHkj9hrKug>
+ <xmx:w3HMYfP4gxXspuQ4DMrBuHf-_bY3nS7oJpGIe61Bsye9_6JplhcwmQ>
+ <xmx:w3HMYcntxXV9wMlAlLg8Z1wbnm1BxhQ3kMwo7Yt0JSkHEOL1beLlVQ>
+ <xmx:xHHMYTkjIFOxyexfq-LnrNz_ups8-ct2K6Xc81bOGUmYmGa_FdnqL0JIX00>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 29 Dec 2021 09:33:38 -0500 (EST)
+From: Patrick Williams <patrick@stwcx.xyz>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Cc: Potin Lai <potin.lai@quantatw.com>, Patrick Williams <patrick@stwcx.xyz>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: aspeed-smc: improve probe resilience
+Date: Wed, 29 Dec 2021 08:33:33 -0600
+Message-Id: <20211229143334.297305-1-patrick@stwcx.xyz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb7bcd9c-6cc4-4fec-4bf1-08d9cad4bb23
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2021 14:08:47.0917 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zv2ugsGdRpcLoy+r6M0IsEUmcJIazj621tjssZ/b2v1yVTWuoUfYTmCf7dIPVIwtRmQSMuHgKcIwEBnsHMMMOOFvffHzdTXb5rkUUfAlkqk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3054
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211229_060854_633124_DB8443FB 
-X-CRM114-Status: GOOD (  20.24  )
+X-CRM114-CacheID: sfid-20211229_063349_550538_CDD0765F 
+X-CRM114-Status: GOOD (  18.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -181,58 +99,103 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/27/21 11:16 AM, vincent@systemli.org wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> From: Nick Hainke <vincent@systemli.org>
-> 
-> Macronix flash chips seem to consist of only one status register.
-> These chips will not work with the "16-bit Write Status (01h) Command".
-> Disable SNOR_F_HAS_16BIT_SR for all Macronix chips.
+The aspeed-smc can have multiple SPI devices attached to it in the
+device tree.  If one of the devices is missing or failing the entire
+probe will fail and all MTD devices under the controller will be
+removed.  On OpenBMC this results in a kernel panic due to missing
+rootfs:
 
-Hi, Vincent!
+[    0.538774] aspeed-smc 1e620000.spi: Using 50 MHz SPI frequency
+[    0.540471] aspeed-smc 1e620000.spi: w25q01jv-iq (131072 Kbytes)
+[    0.540750] aspeed-smc 1e620000.spi: CE0 window [ 0x20000000 - 0x28000000 ] 128MB
+[    0.540943] aspeed-smc 1e620000.spi: CE1 window [ 0x28000000 - 0x2c000000 ] 64MB
+[    0.541143] aspeed-smc 1e620000.spi: read control register: 203b0041
+[    0.581442] 5 fixed-partitions partitions found on MTD device bmc
+[    0.581625] Creating 5 MTD partitions on "bmc":
+[    0.581854] 0x000000000000-0x0000000e0000 : "u-boot"
+[    0.584472] 0x0000000e0000-0x000000100000 : "u-boot-env"
+[    0.586468] 0x000000100000-0x000000a00000 : "kernel"
+[    0.588465] 0x000000a00000-0x000006000000 : "rofs"
+[    0.590552] 0x000006000000-0x000008000000 : "rwfs"
+[    0.592605] aspeed-smc 1e620000.spi: Using 50 MHz SPI frequency
+[    0.592801] aspeed-smc 1e620000.spi: unrecognized JEDEC id bytes: 00 00 00 00 00 00
+[    0.593039] Deleting MTD partitions on "bmc":
+[    0.593175] Deleting u-boot MTD partition
+[    0.637929] Deleting u-boot-env MTD partition
+[    0.829527] Deleting kernel MTD partition
+[    0.856902] Freeing initrd memory: 1032K
+[    0.866428] Deleting rofs MTD partition
+[    0.906264] Deleting rwfs MTD partition
+[    0.986628] aspeed-smc 1e620000.spi: Aspeed SMC probe failed -2
+[    0.986929] aspeed-smc: probe of 1e620000.spi failed with error -2
+...
+[    2.936719] /dev/mtdblock: Can't open blockdev
+mount: mounting /dev/mtdblock on run/initramfs/ro failed: No such file or directory
+[    2.963030] MTD: Couldn't look up '/dev/mtdblock': -2
+mount: mounting /dev/mtdblock on run/initramfs/rw failed: No such file or directory
 
-Have you checked all the existing macronix flash_info entries and determined
-that neither of them support SNOR_F_HAS_16BIT_SR? Per manufacturer settings
-are a bit sensible because we can't predict what manufacturers are doing with
-new flash designs and whether they'll respect their "legacy" flash settings or
-not. Thus I'm a bit reluctant in adding per manufacturer settings.
+Mounting read-write /dev/mtdblock filesystem failed.  Please fix and run
+	mount /dev/mtdblock run/initramfs/rw -t jffs2 -o rw
+or perform a factory reset with the clean-rwfs-filesystem option.
+Fatal error, triggering kernel panic!
+[    3.013047] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000100
 
-Cheers,
-ta
+Many BMC designs have two flash chips so that they can handle a hardware
+failure of one of them.  If one chip failed, it doesn't do any good to
+have redundancy if they all get removed anyhow.
 
-> 
-> Tested with MX25L6405D.
-> 
-> Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on
-> lock()/unlock()")
-> 
-> Signed-off-by: David Bauer <mail@david-bauer.net>
-> Signed-off-by: Nick Hainke <vincent@systemli.org>
-> ---
->  drivers/mtd/spi-nor/macronix.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> index f07b59a4120a..d530ab0b3b13 100644
-> --- a/drivers/mtd/spi-nor/macronix.c
-> +++ b/drivers/mtd/spi-nor/macronix.c
-> @@ -94,6 +94,7 @@ static void macronix_default_init(struct spi_nor *nor)
->  {
->         nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
->         nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
-> +       nor->flags &= ~SNOR_F_HAS_16BIT_SR;
->  }
-> 
->  static const struct spi_nor_fixups macronix_fixups = {
-> --
-> 2.34.1
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Improve the resilience of the probe function to handle one of the
+children being missing or failed.  Only in the case where all children
+fail to probe should the controller be failed out.
+
+Signed-off-by: Patrick Williams <patrick@stwcx.xyz>
+---
+ drivers/mtd/spi-nor/controllers/aspeed-smc.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/controllers/aspeed-smc.c b/drivers/mtd/spi-nor/controllers/aspeed-smc.c
+index 7225870e8b18..acfe010f9dd7 100644
+--- a/drivers/mtd/spi-nor/controllers/aspeed-smc.c
++++ b/drivers/mtd/spi-nor/controllers/aspeed-smc.c
+@@ -769,6 +769,7 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
+ 	struct device_node *child;
+ 	unsigned int cs;
+ 	int ret = -ENODEV;
++	bool found_one = false;
+ 
+ 	for_each_available_child_of_node(np, child) {
+ 		struct aspeed_smc_chip *chip;
+@@ -827,8 +828,17 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
+ 		 * by of property.
+ 		 */
+ 		ret = spi_nor_scan(nor, NULL, &hwcaps);
+-		if (ret)
+-			break;
++		/*
++		 * If we fail to scan the device it might not be present or
++		 * broken.  Don't fail the whole controller if others work.
++		 */
++		if (ret) {
++			if (found_one)
++				ret = 0;
++
++			devm_kfree(controller->dev, chip);
++			continue;
++		}
+ 
+ 		ret = aspeed_smc_chip_setup_finish(chip);
+ 		if (ret)
+@@ -839,6 +849,7 @@ static int aspeed_smc_setup_flash(struct aspeed_smc_controller *controller,
+ 			break;
+ 
+ 		controller->chips[cs] = chip;
++		found_one = true;
+ 	}
+ 
+ 	if (ret) {
+-- 
+2.32.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
