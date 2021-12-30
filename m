@@ -4,53 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1179BC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Dec 2021 06:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D364C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Dec 2021 08:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NdoRysec8g0fmokOGCLE3118FMy5lWxJVQeyS7IlrDw=; b=Ua6RgXJ0CFdzBl
-	31Yys4E34KBEdqR/pUjwW3HOL5BdLvwGj0SZuL9/uxjeoPZnliJywYXO9u8yRYoAPiHLvjDmWlBxo
-	HgbNnvvCBf5F2ehND3XmjXahQjTQxldXEyyl7qhqU+URIGZDNqoR8tyrIlbzsm4sQ4vEbmFU7n/h1
-	lEXgfwJk+lt1rWADj5ag3hc08grD/tL3oEl4nmY1EJ5U8Uw6miU0xBg+BHaETzh4q+lJNrTfKKynR
-	BgnnOXs5Q6Dhk6F9w1z0E1tSFa9ljBqmNL1a7LJnrQnbI65mx7RzIju/uxQ5SS9Avj/rxWWdsmcqB
-	BcKD8G5PyPOwkpUlj+fA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wMYIeqYoALwBakCTGWJBDC/1SX8lIAXDisMxmxUQmH8=; b=ktNyvNqLwvsq3u
+	kxbkYeN5WV64QrK7HKxO7rcAYh5/OiJuHuxktNz1GDrEXBtsgN1vUY+rEzaMdFT365YN0ACbxIMu9
+	SRjA9KSX0b4lDYbdN5oJqQWxGi3HzdwfkneaaE5BvBheICjmRBo9hTZxq0SofiiCsbzItsd+DOGjL
+	opJRYY3kK0vTZ+egZxA+ryE8R4Byc67PAQCs3F4g89GQJmS8O3BsvwmiPb6dWgknX0l8Ig8M+c2ad
+	Ohg8fPLqrosYN3vsT3A8FALm5vx/6YDoZOxeZIjShExm9L1giH6ru7C8BmEc72DXrUmG+SElLwN0e
+	B1hPenBnIvmWwCheBRRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n2p7v-003hRL-KD; Thu, 30 Dec 2021 06:41:27 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1n2qO9-003yOP-Sm; Thu, 30 Dec 2021 08:02:18 +0000
+Received: from mail-pg1-x529.google.com ([2607:f8b0:4864:20::529])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n2p7W-003hNi-PK
- for linux-mtd@lists.infradead.org; Thu, 30 Dec 2021 06:41:04 +0000
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.53])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JPdtM20rwz9rwC;
- Thu, 30 Dec 2021 14:39:55 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 30 Dec
- 2021 14:40:51 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <richard@nod.at>, <dwmw2@infradead.org>, <lizhe67@huawei.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <libaokun1@huawei.com>, <yukuai3@huawei.com>, <stable@vger.kernel.org>
-Subject: [PATCH -next 1/2] jffs2: fix memory leak in jffs2_do_mount_fs
-Date: Thu, 30 Dec 2021 14:52:14 +0800
-Message-ID: <20211230065215.3747576-2-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211230065215.3747576-1-libaokun1@huawei.com>
-References: <20211230065215.3747576-1-libaokun1@huawei.com>
-MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+ id 1n2pr0-003mRR-U1
+ for linux-mtd@lists.infradead.org; Thu, 30 Dec 2021 07:28:04 +0000
+Received: by mail-pg1-x529.google.com with SMTP id i8so12274916pgt.13
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Dec 2021 23:27:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id;
+ bh=RKI4ET+iCqJlA6R62xSNDJorzIrtHu2cmC4OCM8LiWw=;
+ b=NDpX5ELcjr1P9wcmuoV6GhzJFItimAOMX1lisYxg3e34EwvBr2khPJ3CMxYU0/ZfH7
+ d4qv0WfoUlfwjamMLZY29u9rUrkkibqm8NmO6geAFZ7aWw5FPD9CoSy2ck9tUOh0Tsz/
+ iS/FdJS/2U7/8IfDI4fn0SnCh8feZM/yzSsPAs+QQqJ+nHWmr8uIC/14IpGKczPHoJ8k
+ C4Zjn1MTPygXKHVbUbYdVmRwl5t2Gq6tRspTtxITsVZO11p5DdEjexK+5Ww+WdcMaOiR
+ oViQYxxNY2ISYHIYKR53+oaytrGGlBt7k8/BTjJFDfXzb/J1Nxvh2Vd2CZe4uTRH9hX7
+ hubw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=RKI4ET+iCqJlA6R62xSNDJorzIrtHu2cmC4OCM8LiWw=;
+ b=oq4HXmLLRwX7sGGRV5XMOBxfmtRWvSqZgBLRFSvk+8kXkIEbbgflcvNnOJO4sjqwF6
+ vW9CetkYIbYMNOuuPcglYyKzH6bBOnuTsIstLQqTn0SgUVwLgj3WGstVSbJc8uo/qNFB
+ NI26rNw5cnnJxOJHJSwD53CKXVYHxBeysB1186RffMW73dt5ORuA0v/OAw74rMPq6HMw
+ Y93tQDyvSbZQlsiaHpY49hOXShwo5EWtciW6000ljBOE+F5q1sNS51QRwekKqbQdUXE0
+ PG4jXJKhgr8ZQ7UU3qpdIbXsC1WmfRdohkU+kllX+KshFugRRR5JEJNUESkRUp2k/qnF
+ B18g==
+X-Gm-Message-State: AOAM533sou2GZRvX5h4p7DIM0o1h74D3eEs1/rivGqBIsHcXJYeoLW8S
+ 0uyaXVzXjd7n59Tfo5xklz0=
+X-Google-Smtp-Source: ABdhPJxbUBHp+gZYhLfCCG6ZTBRD2ffqyoCqNOtymjfmXL2VINZ0mDSsUZgwsx1JYKCNkmbZGl8EkQ==
+X-Received: by 2002:a63:330a:: with SMTP id z10mr4950887pgz.350.1640849276683; 
+ Wed, 29 Dec 2021 23:27:56 -0800 (PST)
+Received: from localhost.localdomain ([159.226.95.43])
+ by smtp.googlemail.com with ESMTPSA id e24sm27176161pjt.45.2021.12.29.23.27.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 29 Dec 2021 23:27:56 -0800 (PST)
+From: Miaoqian Lin <linmq006@gmail.com>
+To: 
+Cc: linmq006@gmail.com, Paul Cercueil <paul@crapouillou.net>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: ingenic: Fix missing put_device in
+ ingenic_ecc_get
+Date: Thu, 30 Dec 2021 07:27:51 +0000
+Message-Id: <20211230072751.21622-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211229_224103_012718_22C6D5DA 
-X-CRM114-Status: UNSURE (   8.21  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20211229_232803_010390_8107F857 
+X-CRM114-Status: GOOD (  11.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,75 +82,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If jffs2_build_filesystem() in jffs2_do_mount_fs() returns an error,
-we can observe the following kmemleak report:
+If of_find_device_by_node() succeeds, ingenic_ecc_get() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling.
 
---------------------------------------------
-unreferenced object 0xffff88811b25a640 (size 64):
-  comm "mount", pid 691, jiffies 4294957728 (age 71.952s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffffa493be24>] kmem_cache_alloc_trace+0x584/0x880
-    [<ffffffffa5423a06>] jffs2_sum_init+0x86/0x130
-    [<ffffffffa5400e58>] jffs2_do_mount_fs+0x798/0xac0
-    [<ffffffffa540acf3>] jffs2_do_fill_super+0x383/0xc30
-    [<ffffffffa540c00a>] jffs2_fill_super+0x2ea/0x4c0
-    [...]
-unreferenced object 0xffff88812c760000 (size 65536):
-  comm "mount", pid 691, jiffies 4294957728 (age 71.952s)
-  hex dump (first 32 bytes):
-    bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-    bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-  backtrace:
-    [<ffffffffa493a449>] __kmalloc+0x6b9/0x910
-    [<ffffffffa5423a57>] jffs2_sum_init+0xd7/0x130
-    [<ffffffffa5400e58>] jffs2_do_mount_fs+0x798/0xac0
-    [<ffffffffa540acf3>] jffs2_do_fill_super+0x383/0xc30
-    [<ffffffffa540c00a>] jffs2_fill_super+0x2ea/0x4c0
-    [...]
---------------------------------------------
-
-This is because the resources allocated in jffs2_sum_init() are not
-released. Call jffs2_sum_exit() to release these resources to solve
-the problem.
-
-Fixes: e631ddba5887 ("[JFFS2] Add erase block summary support (mount time improvement)")
-Cc: stable@vger.kernel.org
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Fixes: 15de8c6 ("mtd: rawnand: ingenic: Separate top-level and SoC specific code")
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
 ---
- fs/jffs2/build.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
-index b288c8ae1236..837cd55fd4c5 100644
---- a/fs/jffs2/build.c
-+++ b/fs/jffs2/build.c
-@@ -415,13 +415,15 @@ int jffs2_do_mount_fs(struct jffs2_sb_info *c)
- 		jffs2_free_ino_caches(c);
- 		jffs2_free_raw_node_refs(c);
- 		ret = -EIO;
--		goto out_free;
-+		goto out_sum_exit;
- 	}
+diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+index efe0ffe4f1ab..9054559e52dd 100644
+--- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
++++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+@@ -68,9 +68,14 @@ static struct ingenic_ecc *ingenic_ecc_get(struct device_node *np)
+ 	struct ingenic_ecc *ecc;
  
- 	jffs2_calc_trigger_levels(c);
+ 	pdev = of_find_device_by_node(np);
+-	if (!pdev || !platform_get_drvdata(pdev))
++	if (!pdev)
+ 		return ERR_PTR(-EPROBE_DEFER);
  
- 	return 0;
- 
-+ out_sum_exit:
-+	jffs2_sum_exit(c);
-  out_free:
- 	kvfree(c->blocks);
++	if (!platform_get_drvdata(pdev)) {
++		put_device(&pdev->dev);
++		return ERR_PTR(-EPROBE_DEFER);
++	}
++
+ 	ecc = platform_get_drvdata(pdev);
+ 	clk_prepare_enable(ecc->clk);
  
 -- 
-2.31.1
+2.17.1
 
 
 ______________________________________________________
