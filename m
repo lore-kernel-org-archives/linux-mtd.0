@@ -4,73 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D364C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Dec 2021 08:03:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 974ABC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Dec 2021 08:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wMYIeqYoALwBakCTGWJBDC/1SX8lIAXDisMxmxUQmH8=; b=ktNyvNqLwvsq3u
-	kxbkYeN5WV64QrK7HKxO7rcAYh5/OiJuHuxktNz1GDrEXBtsgN1vUY+rEzaMdFT365YN0ACbxIMu9
-	SRjA9KSX0b4lDYbdN5oJqQWxGi3HzdwfkneaaE5BvBheICjmRBo9hTZxq0SofiiCsbzItsd+DOGjL
-	opJRYY3kK0vTZ+egZxA+ryE8R4Byc67PAQCs3F4g89GQJmS8O3BsvwmiPb6dWgknX0l8Ig8M+c2ad
-	Ohg8fPLqrosYN3vsT3A8FALm5vx/6YDoZOxeZIjShExm9L1giH6ru7C8BmEc72DXrUmG+SElLwN0e
-	B1hPenBnIvmWwCheBRRw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wkg6+ro4x5E/Dg2qEmMvVi/b2ehztjWjwZmaE2V7llo=; b=Z5tiufL0BaspIb
+	jISzvgjG9HwkfY/NvWZRMXAPJT6w5UV4JqxsFs0/jfcrQ1WWz0SQTBrn7dyWYw6wIUeqlhdfoy4AE
+	Rgv1exXCX72qftKC8bbZPn7wxdBERfr79mSMQwi6kxnACljaNQWsh8ys77CY9t+CzuzpX5wNSRrZV
+	1KswXcbat64gVCAIww61ml+93wK6g/7MSm0gEScOgKnz1GSK4wayqihHzhbjaP9ypWilUgbj+yop/
+	zaNs0aubdHFrGSLmCR0cnzmhD8ojUGn7wTmj8T9WKT38+kUXr+d0C7ZFG/ocrnpCQWUpMhO4CD613
+	MI2lDJS/TKiAwgk+D3UA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n2qO9-003yOP-Sm; Thu, 30 Dec 2021 08:02:18 +0000
-Received: from mail-pg1-x529.google.com ([2607:f8b0:4864:20::529])
+	id 1n2r94-0043f1-0T; Thu, 30 Dec 2021 08:50:46 +0000
+Received: from mail.portyid.pl ([192.36.61.58])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n2pr0-003mRR-U1
- for linux-mtd@lists.infradead.org; Thu, 30 Dec 2021 07:28:04 +0000
-Received: by mail-pg1-x529.google.com with SMTP id i8so12274916pgt.13
- for <linux-mtd@lists.infradead.org>; Wed, 29 Dec 2021 23:27:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id;
- bh=RKI4ET+iCqJlA6R62xSNDJorzIrtHu2cmC4OCM8LiWw=;
- b=NDpX5ELcjr1P9wcmuoV6GhzJFItimAOMX1lisYxg3e34EwvBr2khPJ3CMxYU0/ZfH7
- d4qv0WfoUlfwjamMLZY29u9rUrkkibqm8NmO6geAFZ7aWw5FPD9CoSy2ck9tUOh0Tsz/
- iS/FdJS/2U7/8IfDI4fn0SnCh8feZM/yzSsPAs+QQqJ+nHWmr8uIC/14IpGKczPHoJ8k
- C4Zjn1MTPygXKHVbUbYdVmRwl5t2Gq6tRspTtxITsVZO11p5DdEjexK+5Ww+WdcMaOiR
- oViQYxxNY2ISYHIYKR53+oaytrGGlBt7k8/BTjJFDfXzb/J1Nxvh2Vd2CZe4uTRH9hX7
- hubw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=RKI4ET+iCqJlA6R62xSNDJorzIrtHu2cmC4OCM8LiWw=;
- b=oq4HXmLLRwX7sGGRV5XMOBxfmtRWvSqZgBLRFSvk+8kXkIEbbgflcvNnOJO4sjqwF6
- vW9CetkYIbYMNOuuPcglYyKzH6bBOnuTsIstLQqTn0SgUVwLgj3WGstVSbJc8uo/qNFB
- NI26rNw5cnnJxOJHJSwD53CKXVYHxBeysB1186RffMW73dt5ORuA0v/OAw74rMPq6HMw
- Y93tQDyvSbZQlsiaHpY49hOXShwo5EWtciW6000ljBOE+F5q1sNS51QRwekKqbQdUXE0
- PG4jXJKhgr8ZQ7UU3qpdIbXsC1WmfRdohkU+kllX+KshFugRRR5JEJNUESkRUp2k/qnF
- B18g==
-X-Gm-Message-State: AOAM533sou2GZRvX5h4p7DIM0o1h74D3eEs1/rivGqBIsHcXJYeoLW8S
- 0uyaXVzXjd7n59Tfo5xklz0=
-X-Google-Smtp-Source: ABdhPJxbUBHp+gZYhLfCCG6ZTBRD2ffqyoCqNOtymjfmXL2VINZ0mDSsUZgwsx1JYKCNkmbZGl8EkQ==
-X-Received: by 2002:a63:330a:: with SMTP id z10mr4950887pgz.350.1640849276683; 
- Wed, 29 Dec 2021 23:27:56 -0800 (PST)
-Received: from localhost.localdomain ([159.226.95.43])
- by smtp.googlemail.com with ESMTPSA id e24sm27176161pjt.45.2021.12.29.23.27.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Dec 2021 23:27:56 -0800 (PST)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: 
-Cc: linmq006@gmail.com, Paul Cercueil <paul@crapouillou.net>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: ingenic: Fix missing put_device in
- ingenic_ecc_get
-Date: Thu, 30 Dec 2021 07:27:51 +0000
-Message-Id: <20211230072751.21622-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1n2r8y-0043MW-Jm
+ for linux-mtd@lists.infradead.org; Thu, 30 Dec 2021 08:50:42 +0000
+Received: by mail.portyid.pl (Postfix, from userid 1001)
+ id DC353412E0; Thu, 30 Dec 2021 09:50:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=portyid.pl; s=mail;
+ t=1640854212; bh=RZjfFpT9KGSFHXuIOzTjcb+Gwkun4EXriv7y2I0PG0A=;
+ h=Date:From:To:Subject:From;
+ b=pnnOEstV5qzwflkyUEaT7lw8DCQy1I0s+sdHcZQGPqfP4ztF6InISMkmiCi2xLBQF
+ D9NNGdQb5qXICDg2u9il1MA3/AFNWkGL0lrvhBai26+zE+ZJlrsC7umb7UxbIp6xqY
+ xoHsNCBuV47IT6zYIQYkaWWXdTWmtJ2j609ZEyyxhZdt2RqNH1i4xp+USHIdyY2NnF
+ oObMIHH5SHzWM/4vly1m2XUgMhQHd7gc+J39Nx0PcxuecY4/Q2d/BKXTyjFaxBJfaX
+ zcGrjHopcHXov+M6ADCdDOeObfeTWyjHFtsAln0fpiUgS15tO/ztT1J7We/H/ZhkrU
+ 4g3W8yHTQgB6Q==
+Received: by mail.portyid.pl for <linux-mtd@lists.infradead.org>;
+ Thu, 30 Dec 2021 08:50:12 GMT
+Message-ID: <20211230084500-0.1.x.30hc.0.4tdvgudao0@portyid.pl>
+Date: Thu, 30 Dec 2021 08:50:12 GMT
+From: =?UTF-8?Q?"Pawe=C5=82_Jasi=C5=84ski"?= <pawel.jasinski@portyid.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.portyid.pl
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211229_232803_010390_8107F857 
-X-CRM114-Status: GOOD (  11.11  )
+X-CRM114-CacheID: sfid-20211230_005040_843956_2D08A351 
+X-CRM114-Status: UNSURE (   1.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,46 +60,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If of_find_device_by_node() succeeds, ingenic_ecc_get() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling.
-
-Fixes: 15de8c6 ("mtd: rawnand: ingenic: Separate top-level and SoC specific code")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
- drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-index efe0ffe4f1ab..9054559e52dd 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
-@@ -68,9 +68,14 @@ static struct ingenic_ecc *ingenic_ecc_get(struct device_node *np)
- 	struct ingenic_ecc *ecc;
- 
- 	pdev = of_find_device_by_node(np);
--	if (!pdev || !platform_get_drvdata(pdev))
-+	if (!pdev)
- 		return ERR_PTR(-EPROBE_DEFER);
- 
-+	if (!platform_get_drvdata(pdev)) {
-+		put_device(&pdev->dev);
-+		return ERR_PTR(-EPROBE_DEFER);
-+	}
-+
- 	ecc = platform_get_drvdata(pdev);
- 	clk_prepare_enable(ecc->clk);
- 
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKZG9zdHJ6ZWdhbSBtb8W8bGl3b8WbxIcgd3Nww7PFgnByYWN5IHogUGHF
+hHN0d2EgZmlybcSFLgoKxZp3aWFkY3p5bXkga29tcGxla3Nvd8SFIG9ic8WCdWfEmSBpbndlc3R5
+Y2ppIHcgZm90b3dvbHRhaWvEmSwga3TDs3JhIG9ibmnFvGEga29zenR5IGVuZXJnaWkgZWxla3Ry
+eWN6bmVqIG5hd2V0IG8gOTAlLgoKQ3p5IHPEhSBQYcWEc3R3byB6YWludGVyZXNvd2FuaSB3ZXJ5
+ZmlrYWNqxIUgd3N0xJlwbnljaCBwcm9wb3p5Y2ppPwoKClBvemRyYXdpYW0KUGF3ZcWCIEphc2nF
+hHNraQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
