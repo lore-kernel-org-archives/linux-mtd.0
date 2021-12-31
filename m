@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BFCDC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 31 Dec 2021 09:11:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DE95C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 31 Dec 2021 09:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=U2FZDu/8h70LLB7hsWdxOyth6mA5o2szp2iwJSkaiHY=; b=Abpzcu5LMlC8ng
-	WBbefDpFLiPtw/A4NAMT6ZJ+1/uqDTX3zdycAbWBPE1+nusUPCNZnPvsD8lw3ryoXYR9ewJHuaPpR
-	GteC5HpLQYgufqj0WhKZIuKtzB9pxRjg4qTHi1pSPKf9pwXOUr/b/xdflvpdbWToIIEr9O+sfgDhl
-	MA4YA+ugKwVFAuRdVnDNhe9FB5nKJzsMwDiKFhO098x4EqdfBckHiml46imacwI9kVvkv8pexu6vl
-	MrlLyXGtFdcTOW/HEEhPtLKXSTvHzA8EUVmxeksRHYxyEMOxHqPpQch5SFh31ONbAoS0VTkkn20Rc
-	/FniM1t/APZzXMJt9Zkg==;
+	List-Unsubscribe:List-Id:In-Reply-To:References:To:Subject:From:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MMCUkLnStA1qe9EiNG+BKjrF2UpviHmu5MoQkPrm8uM=; b=Q+mZgviCW8+3wJgsQBOnxDHzDN
+	7sz67n52R2zn3b+Bw/ArMJyPxTQwXx2yYHc8KVOX1V6+TCvyW2kgSV4RAHsBVw6Emxge+/+tDAzyl
+	euCESM32ZzO8JWGNJIeJTMqCUT3FMkgdCi1bXADVkRBz+lBLO3/XCfmDa44ay2CWaLSoi4xTmC9KP
+	6JR+tiJnqmYNJRyqC7tvLQ2XYflppy5y5jPC2Rfuj8YHFnJIjeLX+3OvvDIOHOR+Ew/WjMfz0I+6g
+	Afq/B9rvq+n8C1rg/rYc9C2xm50mXZfoCsmQe8ieWCf437wnkKjIxHHyhqG0KJsmwn1RiWcrS4yO/
+	IbP9XfIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n3Dvz-005qPc-FM; Fri, 31 Dec 2021 09:10:47 +0000
+	id 1n3EYN-005sAR-LE; Fri, 31 Dec 2021 09:50:27 +0000
 Received: from mail1.systemli.org ([2a00:c38:11e:ffff::a032])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n3Dvt-005qPD-Kg
- for linux-mtd@lists.infradead.org; Fri, 31 Dec 2021 09:10:44 +0000
-Message-ID: <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
+ id 1n3EYK-005sA1-US
+ for linux-mtd@lists.infradead.org; Fri, 31 Dec 2021 09:50:27 +0000
+Message-ID: <bdbce8d6-9917-0a91-f0ba-b16d6967c8ad@systemli.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
- s=default; t=1640941835;
- bh=gMbPY8Oe5zSNU6NKbJbod9q1W9E388K2kul6vGwPF7c=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=ZCSniXkZm14+f4KZJVE3eKyoUIagvGmvd5nBNjFK1gVYei1kLWOEXmPlhu69f5iB8
- ddrYAGCb+bBw7fwtAZY2jUla5blZW5GubIsgOMJ/zbhNH7MCQFHtfLQUZh64U5UWid
- mpT1f4CHmN302dz8tfvE6Xx5redtnq0956d9J4LIGy17FEMmav+7u38JDQ3Q8596PA
- hZKG9g9yY1zKvLrCbhjobs74MlNF0Lk9mWnFpxObRpceap4Jx+hmelr2y+GAQtOkNc
- q/tuA8cNkFQWPdUqY4cZVaMEKzUNZPqhZFDgABl/UMZRf4tjhZmVGmPpFs3FKxL68w
- ZxPgmVEXwLrgA==
-Date: Fri, 31 Dec 2021 10:10:33 +0100
+ s=default; t=1640944223;
+ bh=TAUoONgr17F0OsZarYb5MPgwMTdHHDLc44xlct7++N0=;
+ h=Date:From:Subject:To:References:In-Reply-To:From;
+ b=aKVXbx9YYPppBsGJVTLpBOYx41PEPI35vQONh+52ZJb4EAJWaZYi6F/JPgeNcpzzI
+ vU63nRnqtaongWn1oTIV+plmqb+MpfhZ71JkBNaA9zquY837K29avZWY/pzOc4F1f6
+ UF/Dx56RP1CSoe310lNXLooeemAdBr7Uq0su2NY5//wOVmw/nU/HpsjAn/tA0SW8Kt
+ JwkjWGgoOP0/rxz74e4Z7O5eU3A+hyJ70RRI1d6tSw9CtSoZUwcjQk/FuidXWJoQHp
+ XB6m8323Ao1zPeo5+jO+3LpOm0yLLKBGe2sPlOu5xr2dEHS8hqhWYKJ9sRPr3Mh0SD
+ byP5a1tB0glbg==
+Date: Fri, 31 Dec 2021 10:50:22 +0100
 MIME-Version: 1.0
+From: Nick <vincent@systemli.org>
 Subject: Re: [PATCH 2/2] mtd: spi-nor: disable 16-bit-sr for macronix
-Content-Language: en-US
-To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
-Cc: mail@david-bauer.net
+To: linux-mtd@lists.infradead.org
 References: <20211227091638.177917-1-vincent@systemli.org>
  <20211227091638.177917-2-vincent@systemli.org>
  <0db13110-ee6f-2e02-abf9-d5b9eecafcb4@microchip.com>
-From: Nick <vincent@systemli.org>
-In-Reply-To: <0db13110-ee6f-2e02-abf9-d5b9eecafcb4@microchip.com>
+ <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
+Content-Language: en-US
+In-Reply-To: <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20211231_011042_056121_500A0DD7 
-X-CRM114-Status: GOOD (  17.18  )
+X-CRM114-CacheID: sfid-20211231_015025_168993_20EA7F6E 
+X-CRM114-Status: GOOD (  16.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,154 +61,119 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I looked now through all datasheets I found and the sizes of the status 
-register. However, I did not find any datasheet for the "mx66l1g55g".
-However, I am not sure if I maybe miss something to see if 
-"SNOR_F_HAS_16BIT_SR" is supported. I only looked at the status register 
-size.
-
-It is also now merged in OpenWrt, so maybe we wait some time and see if 
-someone complains?
-https://github.com/openwrt/openwrt/commit/83b5fbddf28e943e8c90b4099a1e36d158f5995c
-
-Otherwise, I documented my findings:
-mx25l512e: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7398/MX25L512E,%203V,%20512Kb,%20v1.4.pdf 
-(slide 13)
-mx25l2005a: 8bit 
-https://www.macrogroup.ru/sites/default/files/uploads/mx25l2005_3v_2mb_v1.9.pdf 
-(slide 12)
-mx25l4005a: 8bit 
-https://pdf1.alldatasheet.com/datasheet-pdf/view/267913/MCNIX/MX25L4005A.html 
-(slide 11)
-mx25l8005: 8bit 
-https://pdf1.alldatasheet.com/datasheet-pdf/view/267915/MCNIX/MX25L8005.html 
-(slide 11)
-mx25l1606e: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7465/MX25L1606E,%203V,%2016Mb,%20v1.9.pdf 
-(slide 18)
-mx25l3205d: 8bit 
-https://pdf1.alldatasheet.com/datasheet-pdf/view/267908/MCNIX/MX25L3205D.html 
-(slide 19)
-mx25l3255e: 8bit 
-https://www.application-datasheet.com/pdf/macronix/mx25l3255em2i-10g.pdf 
-(slide 22)
-mx25l6405d: 8bit 
-https://datasheet.octopart.com/MX25L6405DZNI-12G-Macronix-datasheet-8325093.pdf 
-(slide 19)
-mx25u2033e: 8bit 
-https://datasheetspdf.com/pdf-file/792587/MACRONIX/MX25U2033E/1 (slide 21)
-mx25u3235f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7438/MX25U3235F,%201.8V,%2032Mb,%20v1.6.pdf 
-(slide 31)
-mx25u4035: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7295/MX25U4035,%201.8V,%204Mb,%20v1.4.pdf 
-(slide 19)
-mx25u8035: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7295/MX25U4035,%201.8V,%204Mb,%20v1.4.pdf 
-(slide 19)
-mx25u6435f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7411/MX25U6435F,%201.8V,%2064Mb,%20v1.5.pdf 
-(slide 31)
-mx25l12805d: 8bit 
-https://www.mxic.com.tw/Lists/Datasheet/Attachments/7321/MX25L12805D,%203V,%20128Mb,%20v1.2.pdf 
-(slide 13)
-mx25l12855e: 8bit 
-https://datasheetspdf.com/pdf-file/653682/MacronixInternational/MX25L12855E/1 
-(slide 17)
-mx25r1635f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7595/MX25R1635F,%20Wide%20Range,%2016Mb,%20v1.6.pdf 
-(slide 30)
-mx25r3235f: 8bit 
-https://www.digikey.de/en/datasheets/macronix/macronixmx25r3235f20wide20range2032mb20v16 
-(slide 31)
-mx25u12835f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7656/MX25U12835F,%201.8V,%20128Mb,%20v1.9.pdf 
-(slide 31)
-mx25l25635e: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7331/MX25L25635E,%203V,%20256Mb,%20v1.3.pdf 
-(slide 18)
-mx25u25635f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7410/MX25U25635F,%201.8V,%20256Mb,%20v1.5.pdf 
-(slide 33)
-mx25u51245g: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7874/MX25U51245G,%201.8V,%20512Mb,%20v1.3.pdf 
-(slide 27)
-mx25v8035f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7432/MX25V8035F,%202.5V,%208Mb,%20v1.4.pdf 
-(slide 29)
-mx25l25655e: 8bit 
-https://datasheetspdf.com/pdf-file/843325/MACRONIX/MX25L25655E/1 (slide 18)
-mx66l51235f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7401/MX66L51235F,%203V,%20512Mb,%20v1.1.pdf 
-(slide 34)
-mx66u51235f: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7674/MX66U51235F,%201.8V,%20512Mb,%20v1.1.pdf 
-(slide 34)
-mx66l1g45g: 8bit 
-https://www.macronix.com/Lists/Datasheet/Attachments/7857/MX66L1G45G,%203V,%201Gb,%20v1.5.pdf 
-(slide 37)
-mx66u2g45g: 
-https://www.macronix.com/Lists/Datasheet/Attachments/7884/MX66U2G45G,%201.8V,%202Gb,%20v1.1.pdf 
-(slide 27)
-
-On 12/29/21 15:08, Tudor.Ambarus@microchip.com wrote:
-> On 12/27/21 11:16 AM, vincent@systemli.org wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> From: Nick Hainke <vincent@systemli.org>
->>
->> Macronix flash chips seem to consist of only one status register.
->> These chips will not work with the "16-bit Write Status (01h) Command".
->> Disable SNOR_F_HAS_16BIT_SR for all Macronix chips.
-> Hi, Vincent!
->
-> Have you checked all the existing macronix flash_info entries and determined
-> that neither of them support SNOR_F_HAS_16BIT_SR? Per manufacturer settings
-> are a bit sensible because we can't predict what manufacturers are doing with
-> new flash designs and whether they'll respect their "legacy" flash settings or
-> not. Thus I'm a bit reluctant in adding per manufacturer settings.
->
-> Cheers,
-> ta
->
->> Tested with MX25L6405D.
->>
->> Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on
->> lock()/unlock()")
->>
->> Signed-off-by: David Bauer <mail@david-bauer.net>
->> Signed-off-by: Nick Hainke <vincent@systemli.org>
->> ---
->>   drivers/mtd/spi-nor/macronix.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
->> index f07b59a4120a..d530ab0b3b13 100644
->> --- a/drivers/mtd/spi-nor/macronix.c
->> +++ b/drivers/mtd/spi-nor/macronix.c
->> @@ -94,6 +94,7 @@ static void macronix_default_init(struct spi_nor *nor)
->>   {
->>          nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
->>          nor->params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
->> +       nor->flags &= ~SNOR_F_HAS_16BIT_SR;
->>   }
->>
->>   static const struct spi_nor_fixups macronix_fixups = {
->> --
->> 2.34.1
->>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+TWVhbndoaWxlIEkgYWxzbyB0ZXN0ZWQgb246Ci0gbXgyNWwxMjgwNWQgKExpdGViZWFtIEFDIEdl
+bjIpCgpPbiAxMi8zMS8yMSAxMDoxMCwgTmljayB3cm90ZToKPiBJIGxvb2tlZCBub3cgdGhyb3Vn
+aCBhbGwgZGF0YXNoZWV0cyBJIGZvdW5kIGFuZCB0aGUgc2l6ZXMgb2YgdGhlIAo+IHN0YXR1cyBy
+ZWdpc3Rlci4gSG93ZXZlciwgSSBkaWQgbm90IGZpbmQgYW55IGRhdGFzaGVldCBmb3IgdGhlIAo+
+ICJteDY2bDFnNTVnIi4KPiBIb3dldmVyLCBJIGFtIG5vdCBzdXJlIGlmIEkgbWF5YmUgbWlzcyBz
+b21ldGhpbmcgdG8gc2VlIGlmIAo+ICJTTk9SX0ZfSEFTXzE2QklUX1NSIiBpcyBzdXBwb3J0ZWQu
+IEkgb25seSBsb29rZWQgYXQgdGhlIHN0YXR1cyAKPiByZWdpc3RlciBzaXplLgo+Cj4gSXQgaXMg
+YWxzbyBub3cgbWVyZ2VkIGluIE9wZW5XcnQsIHNvIG1heWJlIHdlIHdhaXQgc29tZSB0aW1lIGFu
+ZCBzZWUgCj4gaWYgc29tZW9uZSBjb21wbGFpbnM/Cj4gaHR0cHM6Ly9naXRodWIuY29tL29wZW53
+cnQvb3BlbndydC9jb21taXQvODNiNWZiZGRmMjhlOTQzZThjOTBiNDA5OWExZTM2ZDE1OGY1OTk1
+YyAKPgo+Cj4gT3RoZXJ3aXNlLCBJIGRvY3VtZW50ZWQgbXkgZmluZGluZ3M6Cj4gbXgyNWw1MTJl
+OiA4Yml0IAo+IGh0dHBzOi8vd3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNo
+bWVudHMvNzM5OC9NWDI1TDUxMkUsJTIwM1YsJTIwNTEyS2IsJTIwdjEuNC5wZGYgCj4gKHNsaWRl
+IDEzKQo+IG14MjVsMjAwNWE6IDhiaXQgCj4gaHR0cHM6Ly93d3cubWFjcm9ncm91cC5ydS9zaXRl
+cy9kZWZhdWx0L2ZpbGVzL3VwbG9hZHMvbXgyNWwyMDA1XzN2XzJtYl92MS45LnBkZiAKPiAoc2xp
+ZGUgMTIpCj4gbXgyNWw0MDA1YTogOGJpdCAKPiBodHRwczovL3BkZjEuYWxsZGF0YXNoZWV0LmNv
+bS9kYXRhc2hlZXQtcGRmL3ZpZXcvMjY3OTEzL01DTklYL01YMjVMNDAwNUEuaHRtbCAKPiAoc2xp
+ZGUgMTEpCj4gbXgyNWw4MDA1OiA4Yml0IAo+IGh0dHBzOi8vcGRmMS5hbGxkYXRhc2hlZXQuY29t
+L2RhdGFzaGVldC1wZGYvdmlldy8yNjc5MTUvTUNOSVgvTVgyNUw4MDA1Lmh0bWwgCj4gKHNsaWRl
+IDExKQo+IG14MjVsMTYwNmU6IDhiaXQgCj4gaHR0cHM6Ly93d3cubWFjcm9uaXguY29tL0xpc3Rz
+L0RhdGFzaGVldC9BdHRhY2htZW50cy83NDY1L01YMjVMMTYwNkUsJTIwM1YsJTIwMTZNYiwlMjB2
+MS45LnBkZiAKPiAoc2xpZGUgMTgpCj4gbXgyNWwzMjA1ZDogOGJpdCAKPiBodHRwczovL3BkZjEu
+YWxsZGF0YXNoZWV0LmNvbS9kYXRhc2hlZXQtcGRmL3ZpZXcvMjY3OTA4L01DTklYL01YMjVMMzIw
+NUQuaHRtbCAKPiAoc2xpZGUgMTkpCj4gbXgyNWwzMjU1ZTogOGJpdCAKPiBodHRwczovL3d3dy5h
+cHBsaWNhdGlvbi1kYXRhc2hlZXQuY29tL3BkZi9tYWNyb25peC9teDI1bDMyNTVlbTJpLTEwZy5w
+ZGYgCj4gKHNsaWRlIDIyKQo+IG14MjVsNjQwNWQ6IDhiaXQgCj4gaHR0cHM6Ly9kYXRhc2hlZXQu
+b2N0b3BhcnQuY29tL01YMjVMNjQwNURaTkktMTJHLU1hY3Jvbml4LWRhdGFzaGVldC04MzI1MDkz
+LnBkZiAKPiAoc2xpZGUgMTkpCj4gbXgyNXUyMDMzZTogOGJpdCAKPiBodHRwczovL2RhdGFzaGVl
+dHNwZGYuY29tL3BkZi1maWxlLzc5MjU4Ny9NQUNST05JWC9NWDI1VTIwMzNFLzEgKHNsaWRlIAo+
+IDIxKQo+IG14MjV1MzIzNWY6IDhiaXQgCj4gaHR0cHM6Ly93d3cubWFjcm9uaXguY29tL0xpc3Rz
+L0RhdGFzaGVldC9BdHRhY2htZW50cy83NDM4L01YMjVVMzIzNUYsJTIwMS44ViwlMjAzMk1iLCUy
+MHYxLjYucGRmIAo+IChzbGlkZSAzMSkKPiBteDI1dTQwMzU6IDhiaXQgCj4gaHR0cHM6Ly93d3cu
+bWFjcm9uaXguY29tL0xpc3RzL0RhdGFzaGVldC9BdHRhY2htZW50cy83Mjk1L01YMjVVNDAzNSwl
+MjAxLjhWLCUyMDRNYiwlMjB2MS40LnBkZiAKPiAoc2xpZGUgMTkpCj4gbXgyNXU4MDM1OiA4Yml0
+IAo+IGh0dHBzOi8vd3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVudHMv
+NzI5NS9NWDI1VTQwMzUsJTIwMS44ViwlMjA0TWIsJTIwdjEuNC5wZGYgCj4gKHNsaWRlIDE5KQo+
+IG14MjV1NjQzNWY6IDhiaXQgCj4gaHR0cHM6Ly93d3cubWFjcm9uaXguY29tL0xpc3RzL0RhdGFz
+aGVldC9BdHRhY2htZW50cy83NDExL01YMjVVNjQzNUYsJTIwMS44ViwlMjA2NE1iLCUyMHYxLjUu
+cGRmIAo+IChzbGlkZSAzMSkKPiBteDI1bDEyODA1ZDogOGJpdCAKPiBodHRwczovL3d3dy5teGlj
+LmNvbS50dy9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVudHMvNzMyMS9NWDI1TDEyODA1RCwlMjAz
+ViwlMjAxMjhNYiwlMjB2MS4yLnBkZiAKPiAoc2xpZGUgMTMpCj4gbXgyNWwxMjg1NWU6IDhiaXQg
+Cj4gaHR0cHM6Ly9kYXRhc2hlZXRzcGRmLmNvbS9wZGYtZmlsZS82NTM2ODIvTWFjcm9uaXhJbnRl
+cm5hdGlvbmFsL01YMjVMMTI4NTVFLzEgCj4gKHNsaWRlIDE3KQo+IG14MjVyMTYzNWY6IDhiaXQg
+Cj4gaHR0cHM6Ly93d3cubWFjcm9uaXguY29tL0xpc3RzL0RhdGFzaGVldC9BdHRhY2htZW50cy83
+NTk1L01YMjVSMTYzNUYsJTIwV2lkZSUyMFJhbmdlLCUyMDE2TWIsJTIwdjEuNi5wZGYgCj4gKHNs
+aWRlIDMwKQo+IG14MjVyMzIzNWY6IDhiaXQgCj4gaHR0cHM6Ly93d3cuZGlnaWtleS5kZS9lbi9k
+YXRhc2hlZXRzL21hY3Jvbml4L21hY3Jvbml4bXgyNXIzMjM1ZjIwd2lkZTIwcmFuZ2UyMDMybWIy
+MHYxNiAKPiAoc2xpZGUgMzEpCj4gbXgyNXUxMjgzNWY6IDhiaXQgCj4gaHR0cHM6Ly93d3cubWFj
+cm9uaXguY29tL0xpc3RzL0RhdGFzaGVldC9BdHRhY2htZW50cy83NjU2L01YMjVVMTI4MzVGLCUy
+MDEuOFYsJTIwMTI4TWIsJTIwdjEuOS5wZGYgCj4gKHNsaWRlIDMxKQo+IG14MjVsMjU2MzVlOiA4
+Yml0IAo+IGh0dHBzOi8vd3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVu
+dHMvNzMzMS9NWDI1TDI1NjM1RSwlMjAzViwlMjAyNTZNYiwlMjB2MS4zLnBkZiAKPiAoc2xpZGUg
+MTgpCj4gbXgyNXUyNTYzNWY6IDhiaXQgCj4gaHR0cHM6Ly93d3cubWFjcm9uaXguY29tL0xpc3Rz
+L0RhdGFzaGVldC9BdHRhY2htZW50cy83NDEwL01YMjVVMjU2MzVGLCUyMDEuOFYsJTIwMjU2TWIs
+JTIwdjEuNS5wZGYgCj4gKHNsaWRlIDMzKQo+IG14MjV1NTEyNDVnOiA4Yml0IAo+IGh0dHBzOi8v
+d3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVudHMvNzg3NC9NWDI1VTUx
+MjQ1RywlMjAxLjhWLCUyMDUxMk1iLCUyMHYxLjMucGRmIAo+IChzbGlkZSAyNykKPiBteDI1djgw
+MzVmOiA4Yml0IAo+IGh0dHBzOi8vd3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0
+YWNobWVudHMvNzQzMi9NWDI1VjgwMzVGLCUyMDIuNVYsJTIwOE1iLCUyMHYxLjQucGRmIAo+IChz
+bGlkZSAyOSkKPiBteDI1bDI1NjU1ZTogOGJpdCAKPiBodHRwczovL2RhdGFzaGVldHNwZGYuY29t
+L3BkZi1maWxlLzg0MzMyNS9NQUNST05JWC9NWDI1TDI1NjU1RS8xIAo+IChzbGlkZSAxOCkKPiBt
+eDY2bDUxMjM1ZjogOGJpdCAKPiBodHRwczovL3d3dy5tYWNyb25peC5jb20vTGlzdHMvRGF0YXNo
+ZWV0L0F0dGFjaG1lbnRzLzc0MDEvTVg2Nkw1MTIzNUYsJTIwM1YsJTIwNTEyTWIsJTIwdjEuMS5w
+ZGYgCj4gKHNsaWRlIDM0KQo+IG14NjZ1NTEyMzVmOiA4Yml0IAo+IGh0dHBzOi8vd3d3Lm1hY3Jv
+bml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVudHMvNzY3NC9NWDY2VTUxMjM1RiwlMjAx
+LjhWLCUyMDUxMk1iLCUyMHYxLjEucGRmIAo+IChzbGlkZSAzNCkKPiBteDY2bDFnNDVnOiA4Yml0
+IAo+IGh0dHBzOi8vd3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVudHMv
+Nzg1Ny9NWDY2TDFHNDVHLCUyMDNWLCUyMDFHYiwlMjB2MS41LnBkZiAKPiAoc2xpZGUgMzcpCj4g
+bXg2NnUyZzQ1ZzogCj4gaHR0cHM6Ly93d3cubWFjcm9uaXguY29tL0xpc3RzL0RhdGFzaGVldC9B
+dHRhY2htZW50cy83ODg0L01YNjZVMkc0NUcsJTIwMS44ViwlMjAyR2IsJTIwdjEuMS5wZGYgCj4g
+KHNsaWRlIDI3KQo+Cj4gT24gMTIvMjkvMjEgMTU6MDgsIFR1ZG9yLkFtYmFydXNAbWljcm9jaGlw
+LmNvbSB3cm90ZToKPj4gT24gMTIvMjcvMjEgMTE6MTYgQU0sIHZpbmNlbnRAc3lzdGVtbGkub3Jn
+IHdyb3RlOgo+Pj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0
+dGFjaG1lbnRzIHVubGVzcyB5b3UgCj4+PiBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUKPj4+Cj4+
+PiBGcm9tOiBOaWNrIEhhaW5rZSA8dmluY2VudEBzeXN0ZW1saS5vcmc+Cj4+Pgo+Pj4gTWFjcm9u
+aXggZmxhc2ggY2hpcHMgc2VlbSB0byBjb25zaXN0IG9mIG9ubHkgb25lIHN0YXR1cyByZWdpc3Rl
+ci4KPj4+IFRoZXNlIGNoaXBzIHdpbGwgbm90IHdvcmsgd2l0aCB0aGUgIjE2LWJpdCBXcml0ZSBT
+dGF0dXMgKDAxaCkgQ29tbWFuZCIuCj4+PiBEaXNhYmxlIFNOT1JfRl9IQVNfMTZCSVRfU1IgZm9y
+IGFsbCBNYWNyb25peCBjaGlwcy4KPj4gSGksIFZpbmNlbnQhCj4+Cj4+IEhhdmUgeW91IGNoZWNr
+ZWQgYWxsIHRoZSBleGlzdGluZyBtYWNyb25peCBmbGFzaF9pbmZvIGVudHJpZXMgYW5kIAo+PiBk
+ZXRlcm1pbmVkCj4+IHRoYXQgbmVpdGhlciBvZiB0aGVtIHN1cHBvcnQgU05PUl9GX0hBU18xNkJJ
+VF9TUj8gUGVyIG1hbnVmYWN0dXJlciAKPj4gc2V0dGluZ3MKPj4gYXJlIGEgYml0IHNlbnNpYmxl
+IGJlY2F1c2Ugd2UgY2FuJ3QgcHJlZGljdCB3aGF0IG1hbnVmYWN0dXJlcnMgYXJlIAo+PiBkb2lu
+ZyB3aXRoCj4+IG5ldyBmbGFzaCBkZXNpZ25zIGFuZCB3aGV0aGVyIHRoZXknbGwgcmVzcGVjdCB0
+aGVpciAibGVnYWN5IiBmbGFzaCAKPj4gc2V0dGluZ3Mgb3IKPj4gbm90LiBUaHVzIEknbSBhIGJp
+dCByZWx1Y3RhbnQgaW4gYWRkaW5nIHBlciBtYW51ZmFjdHVyZXIgc2V0dGluZ3MuCj4+Cj4+IENo
+ZWVycywKPj4gdGEKPj4KPj4+IFRlc3RlZCB3aXRoIE1YMjVMNjQwNUQuCj4+Pgo+Pj4gRml4ZXM6
+IDM5ZDFlMzM0MGM3MyAoIm10ZDogc3BpLW5vcjogRml4IGNsZWFyaW5nIG9mIFFFIGJpdCBvbgo+
+Pj4gbG9jaygpL3VubG9jaygpIikKPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBCYXVlciA8
+bWFpbEBkYXZpZC1iYXVlci5uZXQ+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBOaWNrIEhhaW5rZSA8dmlu
+Y2VudEBzeXN0ZW1saS5vcmc+Cj4+PiAtLS0KPj4+IMKgIGRyaXZlcnMvbXRkL3NwaS1ub3IvbWFj
+cm9uaXguYyB8IDEgKwo+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCj4+Pgo+
+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYyAKPj4+IGIvZHJp
+dmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jCj4+PiBpbmRleCBmMDdiNTlhNDEyMGEuLmQ1MzBh
+YjBiM2IxMyAxMDA2NDQKPj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYwo+
+Pj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jCj4+PiBAQCAtOTQsNiArOTQs
+NyBAQCBzdGF0aWMgdm9pZCBtYWNyb25peF9kZWZhdWx0X2luaXQoc3RydWN0IHNwaV9ub3IgCj4+
+PiAqbm9yKQo+Pj4gwqAgewo+Pj4gwqDCoMKgwqDCoMKgwqDCoCBub3ItPnBhcmFtcy0+cXVhZF9l
+bmFibGUgPSBzcGlfbm9yX3NyMV9iaXQ2X3F1YWRfZW5hYmxlOwo+Pj4gwqDCoMKgwqDCoMKgwqDC
+oCBub3ItPnBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9kZSA9IAo+Pj4gc3BpX25vcl9zZXRfNGJ5
+dGVfYWRkcl9tb2RlOwo+Pj4gK8KgwqDCoMKgwqDCoCBub3ItPmZsYWdzICY9IH5TTk9SX0ZfSEFT
+XzE2QklUX1NSOwo+Pj4gwqAgfQo+Pj4KPj4+IMKgIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpX25v
+cl9maXh1cHMgbWFjcm9uaXhfZml4dXBzID0gewo+Pj4gLS0gCj4+PiAyLjM0LjEKPj4+Cj4+Pgo+
+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4+PiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKPj4+IGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo+Pj4KPgo+IF9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
