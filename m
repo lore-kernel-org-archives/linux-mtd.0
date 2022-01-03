@@ -4,56 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB6E1C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jan 2022 08:39:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E9C6C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jan 2022 09:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lv3Sck3fkZdRWjqGmbWHX/faxPZEZ5txQEo0GCxksho=; b=EOck2ookn5p3Od
-	GTD4fWRuyEbPaHNg5XJQZfR88APQrc0bulvEYqPaMp38FgEgzYDIa+GSfJqO/DAUq9jEE21mDOUsO
-	GuSBJd47uWzDXNDZVwU/BGGJn/MguxGew6b7ey/qaMjyemWYqzmuLA7o58Y1uO0B/giPgqJgprUTL
-	cpxAFnDTm+vof2W57qhISxFOqP6d32Izkaz2Flv0wbaBdfjTD+PcGschF7pnsM+r1jEEqtMTUcBFB
-	LeVUcgMepDL/eBeBXlPM1txktIVLg8EvHw1J8g7Y1P8Nz77jN96p+mUryZoTtgcfbTSW4rfrROyjA
-	YeIWb4ZFGxg58uNL77KA==;
+	List-Owner; bh=LIR4p+2/kYMEE5OmcSEXqi3RqMaMVC0Wn8ei/iMZbOY=; b=0g/WSpv/h6B+Ui
+	m4IoPipObuPv9fArBWy5meEzjuYNT0OGykF6XTn4VkIQ7Zup6sTAQy0SbBrXj3FeMQ+u8nfzkcC4u
+	TomuoZ6Ra12EeHO1oBeUXdNiLeU3dKQwQHHgwnYb9KESvA7VJKN2Yt0TszOFqqJk6U+LpWGkrp9B0
+	DrhcDae37ufoG9JNWxsdOgufRHZry9kBaiwwgsSCciQUhIFsOMq/nR9cCP1Hkvi939XWNwLNpf1t3
+	l7cwctmI8fN5kGk2XlMaYQ0REmZiCKyGYc7h3hmIn/dH3GJAIsdaqCmWer64uOXIWVD042XHfjW0I
+	Jc0YpgF0rsdFQzwYd/KA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4IrS-008at0-Us; Mon, 03 Jan 2022 08:38:35 +0000
-Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
+	id 1n4JTw-008eoP-B6; Mon, 03 Jan 2022 09:18:20 +0000
+Received: from relay1-d.mail.gandi.net ([217.70.183.193])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4IrP-008asb-Hg
- for linux-mtd@lists.infradead.org; Mon, 03 Jan 2022 08:38:33 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 701B41F41E6D;
- Mon,  3 Jan 2022 08:38:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1641199103;
- bh=/+2NvOoPgYjCW/sZCqGrcDcloFV0Na4KRVsqw1zqQG0=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=W9iDVYgZnbsZsbn8sOIrz20O+ere6mcnp2ebd1U65HKPc3VV34/fGN/jAoxg7Td2S
- OgQWNMj3RagAc/cjho/Gb3w5Va8f28ruOxbLXCKU+pVF4/F0XpG1hC5lQ7Q0wd2o/L
- 6IDoGE4FsKP0+K0/Vc5owI0NOqvju53isdS2D867iDc1GumHxbdM6jCiBInCJp16ei
- u7T3qsjxQNyrErcxSukX2mj+WmUtk+DcIdwKzWGwfgzDmbcFLXULdmqKWjgqYTGc5f
- fV2Jnp+Wll1Cpse8813YtZ5taUTiyzOJxy5KbMwtgY2olXOgItI07eKzw1N+KiagjW
- 9pcaK8MllGfeA==
-Date: Mon, 3 Jan 2022 09:38:19 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown
- <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
- <Tudor.Ambarus@microchip.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Julien Su <juliensu@mxic.com.tw>, Jaime
- Liao <jaimeliao@mxic.com.tw>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
+ id 1n4JTt-008eo0-B2
+ for linux-mtd@lists.infradead.org; Mon, 03 Jan 2022 09:18:18 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id AF29C24000D;
+ Mon,  3 Jan 2022 09:18:07 +0000 (UTC)
+Date: Mon, 3 Jan 2022 10:18:06 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Pratyush Yadav <p.yadav@ti.com>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Julien
+ Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>
 Subject: Re: [PATCH v7 04/14] spi: cadence: Provide a capability structure
-Message-ID: <20220103093819.080e60fb@collabora.com>
-In-Reply-To: <20211221120458.4l7expkdznnw6u3u@ti.com>
+Message-ID: <20220103101806.581d1a4f@xps13>
+In-Reply-To: <20220103093819.080e60fb@collabora.com>
 References: <20211217161654.367782-1-miquel.raynal@bootlin.com>
  <20211217161654.367782-5-miquel.raynal@bootlin.com>
  <20211220185515.wujhgn66mnwns7bw@ti.com>
@@ -61,12 +47,13 @@ References: <20211217161654.367782-1-miquel.raynal@bootlin.com>
  <20211221104108.t563gg2hulfqt2uh@ti.com>
  <20211221121947.5c779bfd@xps13>
  <20211221120458.4l7expkdznnw6u3u@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+ <20220103093819.080e60fb@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220103_003831_817978_8FFC4AC5 
-X-CRM114-Status: GOOD (  14.52  )
+X-CRM114-CacheID: sfid-20220103_011817_561876_7BA88CF5 
+X-CRM114-Status: GOOD (  17.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,30 +65,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 21 Dec 2021 17:35:00 +0530
-Pratyush Yadav <p.yadav@ti.com> wrote:
-
-> > 
-> > Anyway, do you mind if we move forward first? Not that I don't think
-> > that this choice should be discussed further, but I think this can
-> > easily be changed in the near future if there is a desire to
-> > reorganize spi-mem objects. In fact, these capabilities are accessed
-> > through a helper so that hypothetic change would be almost transparent.  
-> 
-> Okay. I would still like to hear other opinions on this, but fine by me 
-> if you want to take this in as-is.
-
-I think we discussed that with Miquel, and I remember complaining about
-mixing function pointers and actual data in the spi_mem_ops struct, but
-honestly, it's just cosmetic concern, and I don't think it matters much
-in practice. So I'm fine either way, make it a field of spi_controller
-or spi_mem_ops, spi_mem is definitely not the right place though.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpib3Jpcy5icmV6aWxsb25AY29sbGFib3JhLmNvbSB3cm90ZSBvbiBNb24sIDMgSmFu
+IDIwMjIgMDk6Mzg6MTkgKzAxMDA6Cgo+IE9uIFR1ZSwgMjEgRGVjIDIwMjEgMTc6MzU6MDAgKzA1
+MzAKPiBQcmF0eXVzaCBZYWRhdiA8cC55YWRhdkB0aS5jb20+IHdyb3RlOgo+IAo+ID4gPiAKPiA+
+ID4gQW55d2F5LCBkbyB5b3UgbWluZCBpZiB3ZSBtb3ZlIGZvcndhcmQgZmlyc3Q/IE5vdCB0aGF0
+IEkgZG9uJ3QgdGhpbmsKPiA+ID4gdGhhdCB0aGlzIGNob2ljZSBzaG91bGQgYmUgZGlzY3Vzc2Vk
+IGZ1cnRoZXIsIGJ1dCBJIHRoaW5rIHRoaXMgY2FuCj4gPiA+IGVhc2lseSBiZSBjaGFuZ2VkIGlu
+IHRoZSBuZWFyIGZ1dHVyZSBpZiB0aGVyZSBpcyBhIGRlc2lyZSB0bwo+ID4gPiByZW9yZ2FuaXpl
+IHNwaS1tZW0gb2JqZWN0cy4gSW4gZmFjdCwgdGhlc2UgY2FwYWJpbGl0aWVzIGFyZSBhY2Nlc3Nl
+ZAo+ID4gPiB0aHJvdWdoIGEgaGVscGVyIHNvIHRoYXQgaHlwb3RoZXRpYyBjaGFuZ2Ugd291bGQg
+YmUgYWxtb3N0IHRyYW5zcGFyZW50LiAgICAKPiA+IAo+ID4gT2theS4gSSB3b3VsZCBzdGlsbCBs
+aWtlIHRvIGhlYXIgb3RoZXIgb3BpbmlvbnMgb24gdGhpcywgYnV0IGZpbmUgYnkgbWUgCj4gPiBp
+ZiB5b3Ugd2FudCB0byB0YWtlIHRoaXMgaW4gYXMtaXMuICAKPiAKPiBJIHRoaW5rIHdlIGRpc2N1
+c3NlZCB0aGF0IHdpdGggTWlxdWVsLCBhbmQgSSByZW1lbWJlciBjb21wbGFpbmluZyBhYm91dAo+
+IG1peGluZyBmdW5jdGlvbiBwb2ludGVycyBhbmQgYWN0dWFsIGRhdGEgaW4gdGhlIHNwaV9tZW1f
+b3BzIHN0cnVjdCwgYnV0Cj4gaG9uZXN0bHksIGl0J3MganVzdCBjb3NtZXRpYyBjb25jZXJuLCBh
+bmQgSSBkb24ndCB0aGluayBpdCBtYXR0ZXJzIG11Y2gKPiBpbiBwcmFjdGljZS4gU28gSSdtIGZp
+bmUgZWl0aGVyIHdheSwgbWFrZSBpdCBhIGZpZWxkIG9mIHNwaV9jb250cm9sbGVyCj4gb3Igc3Bp
+X21lbV9vcHMsIHNwaV9tZW0gaXMgZGVmaW5pdGVseSBub3QgdGhlIHJpZ2h0IHBsYWNlIHRob3Vn
+aC4KClllYWgsIEkgZG9uJ3QgbGlrZSB0aGUgaWRlYSBvZiBsZWFraW5nIHNwaS1tZW0gaW5mb3Jt
+YXRpb24gaW50byB0aGUgc3BpCmNvbnRyb2xsZXIgc3RydWN0dXJlLCB3aGlsZSB0aGVyZSBpcyBh
+IHN0cnVjdHVyZSAoc28gZmFyIG9ubHkKY29udGFpbmluZyBob29rcykgdGhhdCBpcyBkZWRpY2F0
+ZWQgdG8gc3BpLW1lbSBvcGVyYXRpb25zLiBFeHRlbmRpbmcKdGhpcyBzdHJ1Y3R1cmUgdG8gY29u
+dGFpbiBjYXBhYmlsaXRpZXMgYXBwZWFyZWQgdGhlIHJpZ2h0IGNob2ljZSB0byBtZS4KQnV0IG9u
+IHRoZSBvdGhlciBoYW5kIHRoaXMgaXMgYSBjb250cm9sbGVyIGluZm9ybWF0aW9uIGFueXdheSBz
+byBpZiB5b3UKYm90aCBwcmVmZXIgbW92aW5nIHRoaXMgZGF0YSBpbnRvIHRoZSBTUEkgY29udHJv
+bGxlciBzdHJ1Y3R1cmUgSSdsbCBmaW5kCmEgd2F5IHRvIGRvIGl0LgoKVGhhbmtzLApNaXF1w6hs
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
