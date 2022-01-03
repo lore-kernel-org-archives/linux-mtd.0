@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F46EC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jan 2022 10:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79E5AC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jan 2022 10:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f1lAFZbdvKMOXr3uR4+W32GujMcUEqQwQ0f8NdVJBBM=; b=yHudAOXVVljWU8
-	HsmHXy53Bt8nyt+GYrpgg89IVAnBsLhyr4/YT6IPIufgX2ZDHWp2VgikJEtgGZjUKjQ6CAc/73XHj
-	UMQwRvI95Japo4W02VH9UuBuNHpKOZltAyIn0IXvqGwxhtjrLIG7BjIMvi8BbGnknPiTfiCBiRtgn
-	8KbMNgD5et676jMGw1uQZSNS80o+nFuq5kYEC5OY+lzc2QjvEN4pvJfadG0tJEwhHcSpxgrJ1E+xn
-	VDv3VlPbNIW+KLPCW/Dh3p1JVgsEJTBUZSXlgRDH1VCsK/nJAGz+RBP1ffAR1h5NMJ6gm3ITIeo17
-	Le9Xch+L1xOiobyGqGrQ==;
+	List-Owner; bh=dxkoXn+IUMQt4Djhvc77qK3jMSL07oiJ8fox5bMDvKo=; b=ixY31GD/ROiOpJ
+	g25OBM+4J6SIblP+db4eOGkU4cuM6fQW9mqGVjhhphJ/BTylsbxmDTLn/nbUSgg8dCd60KTqgjGyM
+	a+GrmIxQV+tfEWLIFe7sagcR+WgmDfF1DYlnAIlTgQnjUUSPMHIu9y05cdcKtp5/NrXHaHYH7cqSj
+	QPq6RPCkG5V8GYo1ViQ4JYBk79wfwnAe7UJQaKyYoELdNrCyfk5vFaEEfAbbZiPkgtn8FChL7E4AL
+	12NaLz6jd2ZZdRTalaR3TViZ2wRRrEJUmmL0rVyLL7UWRMVUH54qtmNXdmBCrwjI/wb0RnFdDSlCn
+	2WBmnfInEuy5NQaMbUTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4KYb-008n0a-QL; Mon, 03 Jan 2022 10:27:13 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1n4Khs-008oNl-VH; Mon, 03 Jan 2022 10:36:49 +0000
+Received: from bhuna.collabora.co.uk ([2a00:1098:0:82:1000:25:2eeb:e3e3])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4KYY-008mzp-Oy
- for linux-mtd@lists.infradead.org; Mon, 03 Jan 2022 10:27:12 +0000
+ id 1n4Khq-008oNQ-Pg
+ for linux-mtd@lists.infradead.org; Mon, 03 Jan 2022 10:36:48 +0000
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
  (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B56911F41E43;
- Mon,  3 Jan 2022 10:27:08 +0000 (GMT)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0A5631F41F71;
+ Mon,  3 Jan 2022 10:36:45 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1641205629;
- bh=H68nuZ/N2vdplhQxlo9BuZ7az5CyApk7/FnMc7YI5gE=;
+ s=mail; t=1641206205;
+ bh=7vrzXz0wxw0kDWHD24+zdSJOw16tOJ0SRxitDlg9cUg=;
  h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=NA3qLUUuy65gMCeI8yM8y82ZuLycuKCi1Y14FHpnu82hL1GkXyl9yOWBxJRNa9POc
- CMLiCDjF22RLv2fPWP3RjOzYnQLE0q1WY1cfMMZg2g6E7UDTRRRHHFvJGdsPpX2oXI
- BZi7onjsBZVXnnOfdu03lmXqSjj6hvoGCJq3tBJXzUqTQDY9+IW7xQNYqrcCrbnhdt
- 39+VqawxIMUwvUxIrc+ft5Ak1vqC4I3zNATExEQqFgzx7ez3dVmwxPKbbcA+6GFYi1
- /lh7Gvk11aMdwgTOWY8j4rLgh5k0Ghq2+9u6me2RPfQSydvKU7WW3zdi7q/vLXJ7Xl
- qKMK02jsZEWCQ==
-Date: Mon, 3 Jan 2022 11:27:05 +0100
+ b=ko2VXqiqKs95AVrJCp3fe/PjDKZ4DFCIhDPPvpr/VsQa/0IGKmIkJBFDxzbo0w08i
+ JMi+qLAREwLOraWbJZ7+3sNf/w2xYkhrn2WU04kQVVNOLUZ53Bsu7ABpXDL6lTAsm0
+ DRD4gq+L1ZnmbPtZs2sd3mFsk4vZ2MP/5gq4O8AGcC191GPOTy1OS99ZwxTfbvwLP8
+ 2IAMx6s5TL14qB/DTwp1Z9G8FAlysqRchVAWztazBgsKp80Xqi8KtZ8S59pp9oW34x
+ 9aWSBrojeqfKrj+ppFogioY4W2Hf6p0ZFY1P1+QjoL2ojVmi8WG4JwYIFfOYcnaR10
+ 6F3fF67nawYZg==
+Date: Mon, 3 Jan 2022 11:36:41 +0100
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Apurva Nandan <a-nandan@ti.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
@@ -51,18 +51,20 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <daniel@0x0f.com>, Alexander Lobakin <alobakin@pm.me>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <linux-spi@vger.kernel.org>, <p.yadav@ti.com>
-Subject: Re: [PATCH v3 15/17] mtd: spianand: winbond: Add change_mode()
- manufacturer_ops
-Message-ID: <20220103112705.718c580c@collabora.com>
-In-Reply-To: <20220101074250.14443-16-a-nandan@ti.com>
+Subject: Re: [PATCH v3 05/17] mtd: spinand: Define ctrl_ops for non-page
+ read/write op templates
+Message-ID: <20220103113641.03160d95@collabora.com>
+In-Reply-To: <20220103110107.45594e78@collabora.com>
 References: <20220101074250.14443-1-a-nandan@ti.com>
- <20220101074250.14443-16-a-nandan@ti.com>
+ <20220101074250.14443-6-a-nandan@ti.com>
+ <20220103110107.45594e78@collabora.com>
 Organization: Collabora
 X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220103_022710_979896_D5E5336B 
-X-CRM114-Status: GOOD (  18.89  )
+X-CRM114-CacheID: sfid-20220103_023647_001835_E9E1B8CE 
+X-CRM114-Status: UNSURE (   9.61  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,71 +81,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, 1 Jan 2022 13:12:48 +0530
-Apurva Nandan <a-nandan@ti.com> wrote:
+On Mon, 3 Jan 2022 11:01:07 +0100
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-> Add implementation of change_mode() for Winbond's manufacturer_ops,
-> that executes octal_dtr_enable() and octal_dtr_disable() according
-> to requested protocol.
+
+> struct spinand_device {
+> 	...
+> 	enum spinand_protocol protocol;
+> 	const struct spinand_op_templates *op_templates[SPINAND_NUM_PROTOCOLS];
+
+My bad, it should be:
+
+	struct spinand_op_templates op_templates[SPINAND_NUM_PROTOCOLS];
+
+since those templates get populated dynamically at probe time based on
+what the flash and the controller support.
+
+> 	...
+> };
 > 
-> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  drivers/mtd/nand/spi/winbond.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-> index c7478faf6cee..d8eccb40c80f 100644
-> --- a/drivers/mtd/nand/spi/winbond.c
-> +++ b/drivers/mtd/nand/spi/winbond.c
-> @@ -242,8 +242,33 @@ static int winbond_spinand_octal_dtr_disable(struct spinand_device *spinand)
->  	return 0;
->  }
->  
-> +static int winbond_change_spi_mode(struct spinand_device *spinand,
-> +				   const enum spinand_protocol protocol)
-> +{
-> +	if (spinand->protocol == protocol)
-> +		return 0;
-> +
-> +	switch (spinand->protocol) {
-> +	case SPINAND_1S_1S_1S:
-> +		if (protocol == SPINAND_8D_8D_8D)
-> +			return winbond_spinand_octal_dtr_enable(spinand);
-> +		break;
-> +
-> +	case SPINAND_8D_8D_8D:
-> +		if (protocol == SPINAND_1S_1S_1S)
-> +			return winbond_spinand_octal_dtr_disable(spinand);
-> +		break;
-> +
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return -EOPNOTSUPP;
-
-This version is slightly more concise:
-
-	if (spinand->protocol == protocol)
-		return 0;
-	else if (spinand->protocol == SPINAND_1S && protocol ==	SPINAND_8D)
-		return winbond_spinand_octal_dtr_enable(spinand);
-	else if (spinand->protocol == SPINAND_8D && protocol ==	SPINAND_1S)
-		return winbond_spinand_octal_dtr_disable(spinand);
-
-	return -EOPNOTSUPP;
-
-> +}
-> +
->  static const struct spinand_manufacturer_ops winbond_spinand_manuf_ops = {
->  	.init = winbond_spinand_init,
-> +	.change_mode = winbond_change_spi_mode,
->  };
->  
->  const struct spinand_manufacturer winbond_spinand_manufacturer = {
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
