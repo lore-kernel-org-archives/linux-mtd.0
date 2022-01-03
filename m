@@ -4,73 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E241C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6802C433F5
 	for <linux-mtd@archiver.kernel.org>; Mon,  3 Jan 2022 18:22:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PQNYBn2Y/M0tVr+rRF72T304Q3AvpPK7TyCpFcDWMuI=; b=hZVJKbMXNfzyFF
-	OjjJ8S8is2a0H4iXzd6G1FqNuvSxCavwOF+6cGVk6gPoMQY4GSnqii6eDslOLm8E4smVnzeEU0BJZ
-	+86CihjHT9DUeanHRpc1Df1Nxo6LwgkYBCC1JzPCyOcbZQV/J2MeqhoPKrZC+YvaqrXuuq1Wel93O
-	mvVF4GeiElERkQJLiPC0FynqJDUwW3538UyfIpXUpH181dhj9r8+UG1N13qHeZeRFGgxjRSumjTH4
-	OW6CT+epUlcwzqcTht7ZrB8uEvh08fYchugGRzioQwhKHWyWIXb1d/zdndFkX1+8Dth4s9+0HjxVD
-	7fXrwbiAzbmByRHb44dA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=3MCnry6DyQHUQXKtPoZdJ0o0pW+EXLKmaj96GFdAZZ8=; b=mXJ2AaSV6J0OLq
+	JZ9R+5vRogWeLsw11YbRi2RhRMwlQT+3/hGvZjWioTTtRY9F7adulBuuuZoILDdok8tL4ozEbbteG
+	lVBp90htiQdoHJ5zgps2MVUkVlIw38g8dkaYuBHEBf5x40L9i9rRw3TPr1BSM7JIvPP5R1goJvWuk
+	P02e4DUezDBNoNlf2yl9fSZ8bwO7xDpf/At+tPeoblps8P6nFg43mGD1FJZkYYz00fpFXVOiPZpiS
+	FDcvExQ+e7GMVFu3unTVAnNCLFxTx2UFXxVgEYOhMqp3dbnptvctf6lAuZteDHUy5qfZ3XmekmFAt
+	4aKPUNmqzRqXDxn5w3zQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4Rxr-009oGL-DW; Mon, 03 Jan 2022 18:21:47 +0000
+	id 1n4Rxd-009oDt-GF; Mon, 03 Jan 2022 18:21:33 +0000
 Received: from drummond.us ([74.95.14.229] helo=talisker.home.drummond.us)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4Rxn-009oFK-DG
- for linux-mtd@lists.infradead.org; Mon, 03 Jan 2022 18:21:45 +0000
+ id 1n4RxZ-009oCX-4Z
+ for linux-mtd@lists.infradead.org; Mon, 03 Jan 2022 18:21:32 +0000
 Received: from talisker.home.drummond.us (localhost [127.0.0.1])
  by talisker.home.drummond.us (8.15.2/8.15.2/Debian-20) with ESMTP id
- 203IKUrZ983478; Mon, 3 Jan 2022 10:20:30 -0800
+ 203IKZSZ983534; Mon, 3 Jan 2022 10:20:35 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=home.drummond.us;
- s=default; t=1641234030;
- bh=E5fnl6UDJWZKDRpYiS+tfaqNC1+q8ROkLPZx/9dIiQE=;
- h=From:To:Cc:Subject:Date:From;
- b=zXbbImMEGQ9pUpv1DxfY2XmQttregvHgLm+qsl9EG8U8kPMhSbyKD5DQ25UYOdRzo
- BfoL/P72aybwUNV/dOsh0KUrU+F+6X19Cgfu7MENmFok86fj7YBUHIKHTe6B3r/2l0
- iFHFBcYB/awOvzTkhHjnaPiTR52hfe6PHcBRzY7m0xTugBKuJxGGgsr0nguKo8yqGW
- 0VW8sn37JwEbBrD9p0qZEb9YsC8UbN/YcXTbNbKSZNHo8cvcUPBLwqbV6LWX9tWvlN
- QEeMhR0gHOFTcJtLQUs5HTxDDyu0MNDZscXnTgsu1kqViQK/ikejaInqcv0AX04Too
- CMrZIYqUTCwPQ==
+ s=default; t=1641234035;
+ bh=1S4aZEe8E5gnTI2K70dnsEWUGccc1BInmbt849S/duM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=WyQCq7DasK4r7khY1NLSZ2054ipNjjssFr3IyHOfjRw5AwqYZ2h1rMu3x89S23nM3
+ Ijrf2PSNrKMtHbvM1QVI0uQzA9fHwSQnaNVo9c695mnTtZ5QkdJOh8dsfSfVr/vxdb
+ JGzGBT4ajjhJjmYk3jiziZi3ZT/9Lr6ojWfoe4avw5LmxSc9jiAfQs6VbMmEehFDSS
+ 8LTfFzcx4UeVso+E9qMwpmobvxkvHR/4mx9ZLg2awfdMp7VC6a97ArXtTqHOHQZ3jw
+ h5U7DJULvrNd5I4BNEH6jJj88fnGmh+esyJd+r02P1ve4B/RMSGezj7mpD+bfbX1ah
+ SqWcHVc1YVwQA==
 Received: (from walt@localhost)
- by talisker.home.drummond.us (8.15.2/8.15.2/Submit) id 203IKMj7983477;
- Mon, 3 Jan 2022 10:20:22 -0800
+ by talisker.home.drummond.us (8.15.2/8.15.2/Submit) id 203IKZXV983533;
+ Mon, 3 Jan 2022 10:20:35 -0800
 From: Walt Drummond <walt@drummond.us>
-To: aacraid@microsemi.com, viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, 
- arnd@arndb.de, bsegall@google.com, bp@alien8.de,
- chuck.lever@oracle.com, bristot@redhat.com,
- dave.hansen@linux.intel.com, dwmw2@infradead.org,
- dietmar.eggemann@arm.com, dinguyen@kernel.org, geert@linux-m68k.org,
- gregkh@linuxfoundation.org, hpa@zytor.com, idryomov@gmail.com,
- mingo@redhat.com, yzaikin@google.com, ink@jurassic.park.msu.ru,
- jejb@linux.ibm.com, jmorris@namei.org, bfields@fieldses.org,
- jlayton@kernel.org, jirislaby@kernel.org, john.johansen@canonical.com,
- juri.lelli@redhat.com, keescook@chromium.org, mcgrof@kernel.org,
- martin.petersen@oracle.com, mattst88@gmail.com, mgorman@suse.de,
- oleg@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
- rth@twiddle.net, richard@nod.at, serge@hallyn.com, rostedt@goodmis.org,
- tglx@linutronix.de, trond.myklebust@hammerspace.com,
- vincent.guittot@linaro.org, x86@kernel.org
+To: Richard Henderson <rth@twiddle.net>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jeff Layton <jlayton@kernel.org>, Ilya Dryomov <idryomov@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ "J. Bruce Fields" <bfields@fieldses.org>,
+ Chuck Lever <chuck.lever@oracle.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Oleg Nesterov <oleg@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: linux-kernel@vger.kernel.org, Walt Drummond <walt@drummond.us>,
- ceph-devel@vger.kernel.org, kvm@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-m68k@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-m68k@vger.kernel.org,
+ linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [RFC PATCH 0/8] signals: Support more than 64 signals
-Date: Mon,  3 Jan 2022 10:19:48 -0800
-Message-Id: <20220103181956.983342-1-walt@drummond.us>
+ linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [RFC PATCH 4/8] signals: Remove sigmask() macro
+Date: Mon,  3 Jan 2022 10:19:52 -0800
+Message-Id: <20220103181956.983342-5-walt@drummond.us>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220103181956.983342-1-walt@drummond.us>
+References: <20220103181956.983342-1-walt@drummond.us>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220103_102143_502155_62153C4C 
-X-CRM114-Status: GOOD (  30.74  )
+X-CRM114-CacheID: sfid-20220103_102129_241887_C16327DA 
+X-CRM114-Status: GOOD (  21.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,155 +88,898 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-VGhpcyBwYXRjaCBzZXQgZXhwYW5kcyB0aGUgbnVtYmVyIG9mIHNpZ25hbHMgaW4gTGludXggYmV5
-b25kIHRoZQpjdXJyZW50IGNhcCBvZiA2NC4gIEl0IHNldHMgYSBuZXcgY2FwIGF0IHRoZSBzb21l
-d2hhdCBhcmJpdHJhcnkgbGltaXQKb2YgMTAyNCBzaWduYWxzLCBib3RoIGJlY2F1c2UgaXTigJlz
-IHdoYXQgR0xpYmMgYW5kIE1VU0wgc3VwcG9ydCBhbmQKYmVjYXVzZSBtYW55IGFyY2hpdGVjdHVy
-ZXMgcGFkIHNpZ3NldF90IG9yIHVjb250ZXh0X3QgaW4gdGhlIGtlcm5lbCB0bwp0aGlzIGNhcC4g
-IFRoaXMgbGltaXQgaXMgbm90IGZpeGVkIGFuZCBjYW4gYmUgZnVydGhlciBleHBhbmRlZCB3aXRo
-aW4KcmVhc29uLgoKRGVzcGl0ZSBiZXN0IGVmZm9ydHMsIHRoZXJlIGlzIHNvbWUgbm9uLXplcm8g
-cG90ZW50aWFsIHRoYXQgdGhpcyBjb3VsZApicmVhayB1c2VyIHNwYWNlOyBJJ2QgYXBwcmVjaWF0
-ZSBhbnkgY29tbWVudHMsIHJldmlldyBhbmQvb3IgcG9pbnRlcnMKdG8gYXJlYXMgb2YgY29uY2Vy
-bi4KCkJhc2ljYWxseSwgdGhlc2UgY2hhbmdlcyBlbnRhaWw6CgogLSBNYWtlIGFsbCBzeXN0ZW0g
-Y2FsbHMgdGhhdCBhY2NlcHQgc2lnc2V0X3QgaG9ub3IgdGhlIGV4aXN0aW5nCiAgIHNpZ3NldHNp
-emUgcGFyYW1ldGVyIGZvciB2YWx1ZXMgYmV0d2VlbiA4IGFuZCAxMjgsIGFuZCB0byByZXR1cm4K
-ICAgc2lnc2V0c2l6ZSBieXRlcyB0byB1c2VyIHNwYWNlLgoKIC0gQWRkIEFUX1NJR1NFVF9TWiB0
-byB0aGUgYXV4IHZlY3RvciB0byBzaWduYWwgdG8gdXNlciBzcGFjZSB0aGUKICAgbWF4aW11bSBz
-aXplIHNpZ3NldF90IHRoZSBrZXJuZWwgY2FuIGFjY2VwdC4KCiAtIFJlbW92ZSB0aGUgc2lnbWFz
-aygpIG1hY3JvIGV4Y2VwdCBpbiBjb21wYXRpYmlsaXR5IGNhc2VzLCBjaGFuZ2UKICAgdGhlIHNp
-Z2FkZHNldCgpL3NpZ2RlbHNldCgpL2V0Yy4gdG8gYWNjZXB0IGEgY29tbWEgc2VwYXJhdGVkIGxp
-c3QKICAgb2Ygc2lnbmFsIG51bWJlcnMuCgogLSBDaGFuZ2UgdGhlIF9OU0lHX1dPUkRTIGNhbGN1
-bGF0aW9uIHRvIHJvdW5kIHVwIHdoZW4gbmVlZGVkIG9uCiAgIGdlbmVyaWMgYW5kIHg4Ni4KCiAt
-IFBsYWNlIHRoZSBjb21wbGV0ZSBzaWdtYXNrIGluIHRoZSByZWFsIHRpbWUgc2lnbmFsIGZyYW1l
-ICh4ODZfNjQsCiAgIHgzMiBhbmQgaWEzMikuCgogLSBWYXJpb3VzIGZpeGVzIHdoZXJlIHNpZ3Nl
-dF90IHNpemUgaXMgYXNzdW1lZC4KCiAtIEFkZCBCU0QgU0lHSU5GTyAoYW5kIFZTVEFUVVMpIGFz
-IGEgdGVzdC4KClRoZSBjaGFuZ2VzIHRoYXQgaGF2ZSB0aGUgbW9zdCByaXNrIG9mIGJyZWFraW5n
-IHVzZXIgc3BhY2UgYXJlIHRoZQpvbmVzIHRoYXQgcHV0IG1vcmUgdGhhbiA4IGJ5dGVzIG9mIHNp
-Z3NldF90IGluIHRoZSByZWFsIHRpbWUgc2lnbmFsCnN0YWNrIGZyYW1lIChQYXRjaGVzIDIgJiA2
-KSwgYW5kIEkgc2hvdWxkIG5vdGUgdGhhdCBhbiBlYXJsaWVyIGFuZAppbmNvbXBsZXRlIHZlcnNp
-b24gb2YgcGF0Y2ggMiB3YXMgTkFL4oCZZWQgYnkgQWwgaW4KaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
-cmcvbGttbC8yMDIwMTExOTIyMTEzMi4xNTE1Njk2LTEtd2FsdEBkcnVtbW9uZC51cy8uCgpBcyBm
-YXIgYXMgSSBoYXZlIGJlZW4gYWJsZSB0byBkZXRlcm1pbmUgdGhpcyBwYXRjaHNldCwgYW5kCnNw
-ZWNpZmljYWxseSBjaGFuZ2luZyB0aGUgc2l6ZSBvZiBzaWdzZXRfdCwgZG9lcyBub3QgYnJlYWsg
-dXNlciBzcGFjZS4KClRoZSB0d28gdXNlcyBvZiBzaWdzZXRfdCB0aGF0IHBvc2UgdGhlIG1vc3Qg
-dXNlciBzcGFjZSByaXNrIGFyZSAxKSBhcwphIG1lbWJlciBvZiB1Y29udGV4dF90IHBhc3NlZCBh
-cyBhIHBhcmFtZXRlciB0byB0aGUgc2lnbmFsIGhhbmRsZXIgYW5kCjIpIHdoZW4gdXNlciBzcGFj
-ZSBwZXJmb3JtcyBtYW51YWwgaW5zcGVjdGlvbiBvZiB0aGUgcmVhbC10aW1lIHNpZ25hbApzdGFj
-ayBmcmFtZS4KCkluIGNhc2UgKDEpLCB1c2VyIHNwYWNlIGhhcyBkZWZpbml0aW9ucyBvZiBib3Ro
-IHNpZ2V0X3QgYW5kIHVjb250ZXh0X3QKdGhhdCBhcmUgaW5kZXBlbmRlbnQgb2YsIGFuZCBtYXkg
-ZGlmZmVyIGZyb20sIHRoZSBrZXJuZWwgKGVnLCBzaWdzZXRfdAppbiB1Y2xpYmMtbmcgaXMgMTYg
-Ynl0ZXMsIG11c2wgaXMgMTI4IGJ5dGVzLCBnbGliYyBpcyAxMjggYnl0ZXMgb24gYWxsCmFyY2hp
-dGVjdHVyZXMgZXhjZXB0IEFyYywgZXRjLikuICBVc2VyIHNwYWNlIHdpbGwgaW50ZXJwcmV0IHRo
-ZSBkYXRhCm9uIHRoZSBzaWduYWwgc3RhY2sgdGhyb3VnaCB0aGVzZSBkZWZpbml0aW9ucywgYW5k
-IGV4dGVuc2lvbnMgdG8Kc2lnc2V0X3Qgd2lsbCBiZSBvcGFxdWUuICBPdGhlciBub24tQyBydW50
-aW1lcyBhcmUgc2ltaWxhcmx5CmluZGVwZW5kZW50IGZyb20ga2VybmVsIHNpZ3NldF90IGFuZCB1
-Y29udGV4dF90IGFuZCBkZXJpdmUgdGhlaXIKZGVmaW5pdGlvbiBvZiBzaWdzZXRfdCBmcm9tIGxp
-YmMgZWl0aGVyIGRpcmVjdGx5IG9yIGluZGlyZWN0bHksIGFuZCBkbwpub3QgbWFudWFsbHkgaW5z
-cGVjdCB0aGUgc2lnbmFsIHN0YWNrIChzcGVjaWZpY2FsbHkgT3BlbkpESywgR29sYW5nLApQeXRo
-b24zLCBSdXN0IGFuZCBQZXJsKS4KClRoZSBvbmx5IGluc3RhbmNlcyBJIGZvdW5kIG9mIGNhc2Ug
-KDIpLCBtYW51YWxseSBpbnNwZWN0aW5nIHRoZSBzaWduYWwKc3RhY2sgZnJhbWUsIGFyZSBpbiBz
-dGFjayB1bndpbmRlcnMvYmFja3RyYWNlcnMgKEdEQiwgR0NDLCBsaWJ1bndpbmQpCmFuZCBpbiBH
-REIgd2hlbiByZWNvcmRpbmcgcHJvZ3JhbSBleGVjdXRpb24sIGFuZCBvbmx5IG9uIHRoZSBpMzg2
-LAp4ODZfNjQsIHMzOTAgYW5kIHBvd2VycGMgYXJjaGl0ZWN0dXJlcy4gIFRoZSBHREIsIEdDQyBh
-bmQgbGlidW53aW5kCmJlaGF2ZSBjb25zaXN0ZW50bHkgd2l0aCBhbmQgd2l0aG91dCB0aGlzIHBh
-dGNoc2V0LgoKR0RCJ3MgZXhlY3V0aW9uIHJlY29yZGluZyBpcyBzb21ld2hhdCBtb3JlIGNvbXBs
-aWNhdGVkLiAgSXQgdXNlcwppbnRlcm5hbGx5IGRlZmluZWQgYXJjaGl0ZWN0dXJlIHNwZWNpZmlj
-IGNvbnN0YW50cyB0byByZXByZXNlbnQgdGhlCnRvdGFsIHNpemUgb2YgdGhlIHNpZ25hbCBmcmFt
-ZSwgYW5kIHdpbGwgc2F2ZSB0aGF0IGVudGlyZSBmcmFtZSBmb3IKbGF0ZXIgdXNlLiAgSSBjYW5u
-b3QgY29uZmlybSB0aGF0IHRoZSB2YWx1ZXMgZm9yIHBvd2VycGMgYW5kIHMzOTAgYXJlCmNvcnJl
-Y3QsIGJ1dCBmb3IgdGhpcyBwdXJwb3NlIGl0IGRvZXNuJ3QgbWF0dGVyIGFzIHRoZXNlIGFyY2hp
-dGVjdHVyZXMKZXhwbGljaXRseSBwYWQgZm9yIGFuIGV4cGFuZGVkIHVjX3NpZ21hc2suICBJIGNh
-biwgaG93ZXZlciwgY29uZmlybQp0aGF0IHRoZSB2YWx1ZXMgZm9yIGkzODYgYW5kIHg4Nl82NCBh
-cmUgbm90IGNvcnJlY3QsIGFuZCB0aGF0IEdEQiBpcwpyZWNvcmRpbmcgYW4gaW5jb3JyZWN0IGFt
-b3VudCBvZiBzdGFjayBkYXRhLiAgVGhpcyBkb2VzbuKAmXQgYXBwZWFyIHRvCmJlIGFuIGlzc3Vl
-OyB3aGlsZSBJIGNhbm5vdCBidWlsZCBhIHRlc3QgY2FzZSBvbiB4ODZfNjQgZHVlIHRvIGEga25v
-d24KYnVnWzFdLCBhIGJhc2ljIHRlc3Qgb24gaTM4NiBzaG93cyB0aGF0IHRoZSBzdGFjayBpcyBj
-b3JyZWN0bHkgYmVpbmcKcmVjb3JkZWQsIGFuZCBmb3J3YXJkIGFuZCByZXZlcnNlIHJlcGxheSBz
-ZWVtcyB0byB3b3JrIGp1c3QgZmluZQphY3Jvc3Mgc2lnbmFsIGhhbmRsZXJzLgoKVGhlcmUgYXJl
-IG90aGVyIGNhc2VzIHRvIGNvbnNpZGVyIGlmIHRoZSBudW1iZXIgb2Ygc2lnbmFscyBhbmQKdGhl
-cmVmb3JlIHRoZSBzaXplIG9mIHNpZ3NldF90IGNoYW5nZXM6CgpJbXBhY3Qgb24gc3RydWN0IHJ0
-X3NpZ2ZyYW1lIG1lbWJlciBlbGVtZW50cwoKICBUaGUgcGxhY2VtZW50IG9mIHVjb250ZXh0X3Qg
-aW4gc3RydWN0IHJ0X3NpZ2ZyYW1lIGhhcyB0aGUgcG90ZW50aWFsCiAgdG8gbW92ZSBmb2xsb3dp
-bmcgbWVtYmVyIGVsZW1lbnRzIGluIHdheXMgdGhhdCBjb3VsZCBicmVhayB1c2VyCiAgc3BhY2Ug
-aWYgdXNlciBzcGFjZSByZWxpZWQgb24gdGhlIG9mZnNldHMgb2YgdGhlc2UgZWxlbWVudHMuCiAg
-SG93ZXZlciBhIHJldmlldyBzaG93cyB0aGF0IGFueSBlbGVtZW50cyBpbiBydF9zaWdmcmFtZSBh
-ZnRlcgogIHVjb250ZXh0X3QudWNfc2lnbWFzayBhcmUgZWl0aGVyICgxKSB1bnVzZWQgb3Igb25s
-eSB1c2VkIGJ5IHRoZQogIGtlcm5lbCBvciAoMikgZmFsbCBpbnRvIHRoZSB4ODZfNjQvaTM4NiBm
-bG9hdGluZyBwb2ludCBzdGF0ZSBjYXNlCiAgYWJvdmUuCgpLZXJuZWwgaGFzIG5ldyBzaWduYWxz
-LCB1c2VyIHNwYWNlIGRvZXMgbm90CgogIEFueSBuZXcgYml0cyBpbiB1Y29udGV4dC51Y19zaWdt
-YXNrIHBsYWNlZCBvbiB0aGUgc2lnbmFsIHN0YWNrIGFyZQogIG9wYXF1ZSB0byB1c2VyIHNwYWNl
-IChleGNlcHQgaW4gY2FzZXMgd2hlcmUgdXNlciBzcGFjZSBhbHJlYWR5IGhhcyBhCiAgbGFyZ2Vy
-IHNpZ3NldF90LCBhcyBpbiBnbGliYykuCgogIFRoZXJlIGFyZSBubyBjaGFuZ2VzIHRvIHRoZSBy
-ZWFsLXRpbWUgc2lnbmFscyBzeXN0ZW0gY2FsbCBzZW1hbnRpY3MsCiAgYXMgdGhlIGtlcm5lbCB3
-aWxsIGhvbm9yIHRoZSBoYXJkLWNvZGVkIHNpZ3NldHNpemUgdmFsdWUgb2YgOCBpbgogIGxpYmMg
-YW5kIGJlaGF2ZSBhcyBpdCBoYXMgYmVmb3JlIHRoZXNlIGNoYW5nZXMuCgogIFNpZ25hbCBudW1i
-ZXJzIGxhcmdlciB0aGFuIDY0IGNhbm5vdCBiZSBibG9ja2VkIG9yIGNhdWdodCB1bnRpbCB1c2Vy
-CiAgc3BhY2UgaXMgdXBkYXRlZCwgaG93ZXZlciB0aGVpciBkZWZhdWx0IGFjdGlvbiB3aWxsIHdv
-cmsgYXMKICBleHBlY3RlZC4gIFRoaXMgY2FuIGNhdXNlIG9uZSBwcm9ibGVtOiBhIHBhcmVudCBw
-cm9jZXNzIHRoYXQgdXNlcwogIHRoZSBzaWduYWwgbnVtYmVyIGEgY2hpbGQgZXhpdGVkIHdpdGgg
-YXMgYW4gaW5kZXggaW50byBhbiBhcnJheQogIHdpdGhvdXQgYm91bmRzIGNoZWNraW5nIGNhbiBj
-YXVzZSBhIGNyYXNoLiAgSeKAmXZlIHNlZW4gZXhhY3RseSBvbmUKICBpbnN0YW5jZSBvZiB0aGlz
-IGluIHRjc2gsIGFuZCBpcywgSSB0aGluaywgYSBidWcgaW4gdGNzaC4KClVzZXIgc3BhY2UgaGFz
-IG5ldyBzaWduYWxzLCBrZXJuZWwgZG9lcyBub3QKCiAgVXNlciBzcGFjZSBhdHRlbXB0aW5nIHRv
-IHVzZSBhIHNpZ25hbCBudW1iZXIgbm90IHN1cHBvcnRlZCBieSB0aGUKICBrZXJuZWwgaW4gc3lz
-dGVtIGNhbGxzIChlZywgc2lnYWN0aW9uKCkpIG9yIG90aGVyIGxpYmMgZnVuY3Rpb25zIChlZywK
-ICBzaWdhZGRzZXQoKSkgd2lsbCByZXN1bHQgaW4gRUlOVkFMLCBhcyBleHBlY3RlZC4KCiAgVXNl
-ciBzcGFjZSBuZWVkcyB0byBrbm93IGhvdyB0byBzZXQgdGhlIHNpZ3NldHNpemUgcGFyYW1ldGVy
-IHRvIHRoZQogIHJlYWwgdGltZSBzaWduYWwgc3lzdGVtIGNhbGxzIGFuZCBpdCBjYW4gdXNlIGdl
-dGF1eHZhbChBVF9TSUdTRVRfU1opCiAgdG8gZGV0ZXJtaW5lIHRoaXMuICBJZiBpdCByZXR1cm5z
-IHplcm8gdGhlIHNpZ3NldHNpemUgbXVzdCBiZSA4LAogIG90aGVyd2lzZSB0aGUga2VybmVsIHdp
-bGwgYWNjZXB0IHNpZ3NldHNpemUgYmV0d2VlbiA4IGFuZCB0aGUgcmV0dXJuCiAgdmFsdWUuCgpb
-MV0gaHR0cHM6Ly9zb3VyY2V3YXJlLm9yZy9idWd6aWxsYS9zaG93X2J1Zy5jZ2k/aWQ9MjMxODgK
-CldhbHQgRHJ1bW1vbmQgKDgpOgogIHNpZ25hbHM6IE1ha2UgdGhlIHJlYWwtdGltZSBzaWduYWwg
-c3lzdGVtIGNhbGxzIGFjY2VwdCBkaWZmZXJlbnQgc2l6ZWQKICAgIHNpZ3NldF90IGZyb20gdXNl
-ciBzcGFjZS4KICBzaWduYWxzOiBQdXQgdGhlIGZ1bGwgc2lnbmFsIG1hc2sgb24gdGhlIHNpZ25h
-bCBzdGFjayBmb3IgeDg2XzY0LCBYMzIKICAgIGFuZCBpYTMyIGNvbXBhdGliaWxpdHkgbW9kZQog
-IHNpZ25hbHM6IFVzZSBhIGhlbHBlciBmdW5jdGlvbiB0byB0ZXN0IGlmIGEgc2lnbmFsIGlzIGEg
-cmVhbC10aW1lCiAgICBzaWduYWwuCiAgc2lnbmFsczogUmVtb3ZlIHNpZ21hc2soKSBtYWNybwog
-IHNpZ25hbHM6IEJldHRlciBzdXBwb3J0IGNhc2VzIHdoZXJlIF9OU0lHX1dPUkRTIGlzIGdyZWF0
-ZXIgdGhhbiAyCiAgc2lnbmFsczogUm91bmQgdXAgX05TSUdfV09SRFMKICBzaWduYWxzOiBBZGQg
-c2lnbmFsIGRlYnVnZ2luZwogIHNpZ25hbHM6IFN1cHBvcnQgQlNEIFZTVEFUVVMsIEtFUk5JTkZP
-IGFuZCBTSUdJTkZPCgogYXJjaC9hbHBoYS9rZXJuZWwvc2lnbmFsLmMgICAgICAgICAgfCAgIDQg
-Ky0KIGFyY2gvbTY4ay9pbmNsdWRlL2FzbS9zaWduYWwuaCAgICAgIHwgICA2ICstCiBhcmNoL25p
-b3MyL2tlcm5lbC9zaWduYWwuYyAgICAgICAgICB8ICAgMiAtCiBhcmNoL3g4Ni9pYTMyL2lhMzJf
-c2lnbmFsLmMgICAgICAgICB8ICAgNSArLQogYXJjaC94ODYvaW5jbHVkZS9hc20vc2lnaGFuZGxp
-bmcuaCAgfCAgMzQgKysrCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9zaWduYWwuaCAgICAgICB8ICAx
-MCArLQogYXJjaC94ODYvaW5jbHVkZS91YXBpL2FzbS9zaWduYWwuaCAgfCAgIDQgKy0KIGFyY2gv
-eDg2L2tlcm5lbC9zaWduYWwuYyAgICAgICAgICAgIHwgIDExICstCiBkcml2ZXJzL3Njc2kvZHB0
-aS5oICAgICAgICAgICAgICAgICB8ICAgMiAtCiBkcml2ZXJzL3R0eS9NYWtlZmlsZSAgICAgICAg
-ICAgICAgICB8ICAgMiArLQogZHJpdmVycy90dHkvbl90dHkuYyAgICAgICAgICAgICAgICAgfCAg
-MjEgKysKIGRyaXZlcnMvdHR5L3R0eV9pby5jICAgICAgICAgICAgICAgIHwgIDEwICstCiBkcml2
-ZXJzL3R0eS90dHlfaW9jdGwuYyAgICAgICAgICAgICB8ICAgNCArCiBkcml2ZXJzL3R0eS90dHlf
-c3RhdHVzLmMgICAgICAgICAgICB8IDEzNSArKysrKysrKysrCiBmcy9iaW5mbXRfZWxmLmMgICAg
-ICAgICAgICAgICAgICAgICB8ICAgMSArCiBmcy9iaW5mbXRfZWxmX2ZkcGljLmMgICAgICAgICAg
-ICAgICB8ICAgMSArCiBmcy9jZXBoL2FkZHIuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgMiAr
-LQogZnMvamZmczIvYmFja2dyb3VuZC5jICAgICAgICAgICAgICAgfCAgIDIgKy0KIGZzL2xvY2tk
-L3N2Yy5jICAgICAgICAgICAgICAgICAgICAgIHwgICAxIC0KIGZzL3Byb2MvYXJyYXkuYyAgICAg
-ICAgICAgICAgICAgICAgIHwgIDMyICstLQogZnMvcHJvYy9iYXNlLmMgICAgICAgICAgICAgICAg
-ICAgICAgfCAgNDggKysrKwogZnMvc2lnbmFsZmQuYyAgICAgICAgICAgICAgICAgICAgICAgfCAg
-MjYgKy0KIGluY2x1ZGUvYXNtLWdlbmVyaWMvdGVybWlvcy5oICAgICAgIHwgICA0ICstCiBpbmNs
-dWRlL2xpbnV4L2NvbXBhdC5oICAgICAgICAgICAgICB8ICA5OCArKysrKystCiBpbmNsdWRlL2xp
-bnV4L3NjaGVkLmggICAgICAgICAgICAgICB8ICA1MiArKystCiBpbmNsdWRlL2xpbnV4L3NpZ25h
-bC5oICAgICAgICAgICAgICB8IDM4OSArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tCiBpbmNs
-dWRlL2xpbnV4L3R0eS5oICAgICAgICAgICAgICAgICB8ICAgOCArCiBpbmNsdWRlL3VhcGkvYXNt
-LWdlbmVyaWMvaW9jdGxzLmggICB8ICAgMiArCiBpbmNsdWRlL3VhcGkvYXNtLWdlbmVyaWMvc2ln
-bmFsLmggICB8ICAgOCArLQogaW5jbHVkZS91YXBpL2FzbS1nZW5lcmljL3Rlcm1iaXRzLmggfCAg
-MzQgKy0tCiBpbmNsdWRlL3VhcGkvbGludXgvYXV4dmVjLmggICAgICAgICB8ICAgMSArCiBrZXJu
-ZWwvY29tcGF0LmMgICAgICAgICAgICAgICAgICAgICB8ICAzMCArLS0KIGtlcm5lbC9mb3JrLmMg
-ICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstCiBrZXJuZWwvcHRyYWNlLmMgICAgICAgICAg
-ICAgICAgICAgICB8ICAxOCArLQoga2VybmVsL3NpZ25hbC5jICAgICAgICAgICAgICAgICAgICAg
-fCAyODggKysrKysrKysrKy0tLS0tLS0tLS0KIGtlcm5lbC9zeXNjdGwuYyAgICAgICAgICAgICAg
-ICAgICAgIHwgIDQxICsrKwoga2VybmVsL3RpbWUvcG9zaXgtdGltZXJzLmMgICAgICAgICAgfCAg
-IDMgKy0KIGxpYi9LY29uZmlnLmRlYnVnICAgICAgICAgICAgICAgICAgIHwgIDEwICsKIHNlY3Vy
-aXR5L2FwcGFybW9yL2lwYy5jICAgICAgICAgICAgIHwgICA0ICstCiB2aXJ0L2t2bS9rdm1fbWFp
-bi5jICAgICAgICAgICAgICAgICB8ICAxOCArLQogNDAgZmlsZXMgY2hhbmdlZCwgOTc0IGluc2Vy
-dGlvbnMoKyksIDM5OSBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3R0
-eS90dHlfc3RhdHVzLmMKCi0tIAoyLjMwLjIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+The sigmask() macro can't support signals numbers larger than 64.
+
+Remove the general usage of sigmask() and bit masks as input into the
+functions that manipulate or accept sigset_t, with the exceptions of
+compatibility cases. Use a comma-separated list of signal numbers as
+input to sigaddset()/sigdelset()/... instead.
+
+Signed-off-by: Walt Drummond <walt@drummond.us>
+---
+ arch/alpha/kernel/signal.c     |   4 +-
+ arch/m68k/include/asm/signal.h |   6 +-
+ arch/nios2/kernel/signal.c     |   2 -
+ arch/x86/include/asm/signal.h  |   6 +-
+ drivers/scsi/dpti.h            |   2 -
+ fs/ceph/addr.c                 |   2 +-
+ fs/jffs2/background.c          |   2 +-
+ fs/lockd/svc.c                 |   1 -
+ fs/signalfd.c                  |   2 +-
+ include/linux/signal.h         | 254 +++++++++++++++++++++------------
+ kernel/compat.c                |   6 +-
+ kernel/fork.c                  |   2 +-
+ kernel/ptrace.c                |   2 +-
+ kernel/signal.c                | 115 +++++++--------
+ virt/kvm/kvm_main.c            |   2 +-
+ 15 files changed, 238 insertions(+), 170 deletions(-)
+
+diff --git a/arch/alpha/kernel/signal.c b/arch/alpha/kernel/signal.c
+index bc077babafab..cae533594248 100644
+--- a/arch/alpha/kernel/signal.c
++++ b/arch/alpha/kernel/signal.c
+@@ -33,7 +33,7 @@
+ 
+ #define DEBUG_SIG 0
+ 
+-#define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
++#define _BLOCKABLE (~(compat_sigmask(SIGKILL) | compat_sigmask(SIGSTOP)))
+ 
+ asmlinkage void ret_from_sys_call(void);
+ 
+@@ -47,7 +47,7 @@ SYSCALL_DEFINE2(osf_sigprocmask, int, how, unsigned long, newmask)
+ 	sigset_t mask;
+ 	unsigned long res;
+ 
+-	siginitset(&mask, newmask & _BLOCKABLE);
++	compat_siginitset(&mask, newmask & _BLOCKABLE);
+ 	res = sigprocmask(how, &mask, &oldmask);
+ 	if (!res) {
+ 		force_successful_syscall_return();
+diff --git a/arch/m68k/include/asm/signal.h b/arch/m68k/include/asm/signal.h
+index 8af85c38d377..464ff863c958 100644
+--- a/arch/m68k/include/asm/signal.h
++++ b/arch/m68k/include/asm/signal.h
+@@ -24,7 +24,7 @@ typedef struct {
+ #ifndef CONFIG_CPU_HAS_NO_BITFIELDS
+ #define __HAVE_ARCH_SIG_BITOPS
+ 
+-static inline void sigaddset(sigset_t *set, int _sig)
++static inline void sigset_add(sigset_t *set, int _sig)
+ {
+ 	asm ("bfset %0{%1,#1}"
+ 		: "+o" (*set)
+@@ -32,7 +32,7 @@ static inline void sigaddset(sigset_t *set, int _sig)
+ 		: "cc");
+ }
+ 
+-static inline void sigdelset(sigset_t *set, int _sig)
++static inline void sigset_del(sigset_t *set, int _sig)
+ {
+ 	asm ("bfclr %0{%1,#1}"
+ 		: "+o" (*set)
+@@ -56,7 +56,7 @@ static inline int __gen_sigismember(sigset_t *set, int _sig)
+ 	return ret;
+ }
+ 
+-#define sigismember(set,sig)			\
++#define sigset_ismember(set, sig)		\
+ 	(__builtin_constant_p(sig) ?		\
+ 	 __const_sigismember(set,sig) :		\
+ 	 __gen_sigismember(set,sig))
+diff --git a/arch/nios2/kernel/signal.c b/arch/nios2/kernel/signal.c
+index 2009ae2d3c3b..c9db511a6989 100644
+--- a/arch/nios2/kernel/signal.c
++++ b/arch/nios2/kernel/signal.c
+@@ -20,8 +20,6 @@
+ #include <asm/ucontext.h>
+ #include <asm/cacheflush.h>
+ 
+-#define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
+-
+ /*
+  * Do a signal return; undo the signal stack.
+  *
+diff --git a/arch/x86/include/asm/signal.h b/arch/x86/include/asm/signal.h
+index 2dfb5fea13af..9bac7c6e524c 100644
+--- a/arch/x86/include/asm/signal.h
++++ b/arch/x86/include/asm/signal.h
+@@ -46,7 +46,7 @@ typedef sigset_t compat_sigset_t;
+ 
+ #define __HAVE_ARCH_SIG_BITOPS
+ 
+-#define sigaddset(set,sig)		    \
++#define sigset_add(set, sig)		    \
+ 	(__builtin_constant_p(sig)	    \
+ 	 ? __const_sigaddset((set), (sig))  \
+ 	 : __gen_sigaddset((set), (sig)))
+@@ -62,7 +62,7 @@ static inline void __const_sigaddset(sigset_t *set, int _sig)
+ 	set->sig[sig / _NSIG_BPW] |= 1 << (sig % _NSIG_BPW);
+ }
+ 
+-#define sigdelset(set, sig)		    \
++#define sigset_del(set, sig)		    \
+ 	(__builtin_constant_p(sig)	    \
+ 	 ? __const_sigdelset((set), (sig))  \
+ 	 : __gen_sigdelset((set), (sig)))
+@@ -93,7 +93,7 @@ static inline int __gen_sigismember(sigset_t *set, int _sig)
+ 	return ret;
+ }
+ 
+-#define sigismember(set, sig)			\
++#define sigset_ismember(set, sig)		\
+ 	(__builtin_constant_p(sig)		\
+ 	 ? __const_sigismember((set), (sig))	\
+ 	 : __gen_sigismember((set), (sig)))
+diff --git a/drivers/scsi/dpti.h b/drivers/scsi/dpti.h
+index 8a079e8d7f65..cfcbb7d98fc0 100644
+--- a/drivers/scsi/dpti.h
++++ b/drivers/scsi/dpti.h
+@@ -96,8 +96,6 @@ static int adpt_device_reset(struct scsi_cmnd* cmd);
+ #define PINFO(fmt, args...) printk(KERN_INFO fmt, ##args)
+ #define PCRIT(fmt, args...) printk(KERN_CRIT fmt, ##args)
+ 
+-#define SHUTDOWN_SIGS	(sigmask(SIGKILL)|sigmask(SIGINT)|sigmask(SIGTERM))
+-
+ // Command timeouts
+ #define FOREVER			(0)
+ #define TMOUT_INQUIRY 		(20)
+diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+index 99b80b5c7a93..238b5ce5ef64 100644
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -1333,7 +1333,7 @@ const struct address_space_operations ceph_aops = {
+ static void ceph_block_sigs(sigset_t *oldset)
+ {
+ 	sigset_t mask;
+-	siginitsetinv(&mask, sigmask(SIGKILL));
++	siginitsetinv(&mask, SIGKILL);
+ 	sigprocmask(SIG_BLOCK, &mask, oldset);
+ }
+ 
+diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+index 2b4d5013dc5d..bb84a8b2373c 100644
+--- a/fs/jffs2/background.c
++++ b/fs/jffs2/background.c
+@@ -77,7 +77,7 @@ static int jffs2_garbage_collect_thread(void *_c)
+ 	struct jffs2_sb_info *c = _c;
+ 	sigset_t hupmask;
+ 
+-	siginitset(&hupmask, sigmask(SIGHUP));
++	siginitset(&hupmask, SIGHUP);
+ 	allow_signal(SIGKILL);
+ 	allow_signal(SIGSTOP);
+ 	allow_signal(SIGHUP);
+diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
+index b632be3ad57b..3c8b56c094d0 100644
+--- a/fs/lockd/svc.c
++++ b/fs/lockd/svc.c
+@@ -45,7 +45,6 @@
+ 
+ #define NLMDBG_FACILITY		NLMDBG_SVC
+ #define LOCKD_BUFSIZE		(1024 + NLMSVC_XDRSIZE)
+-#define ALLOWED_SIGS		(sigmask(SIGKILL))
+ 
+ static struct svc_program	nlmsvc_program;
+ 
+diff --git a/fs/signalfd.c b/fs/signalfd.c
+index 12fdc282e299..ed024d5aad2a 100644
+--- a/fs/signalfd.c
++++ b/fs/signalfd.c
+@@ -270,7 +270,7 @@ static int do_signalfd4(int ufd, sigset_t *mask, int flags)
+ 	if (flags & ~(SFD_CLOEXEC | SFD_NONBLOCK))
+ 		return -EINVAL;
+ 
+-	sigdelsetmask(mask, sigmask(SIGKILL) | sigmask(SIGSTOP));
++	sigdelset(mask, SIGKILL, SIGSTOP);
+ 	signotset(mask);
+ 
+ 	if (ufd == -1) {
+diff --git a/include/linux/signal.h b/include/linux/signal.h
+index a730f3d4615e..eaf7991fffee 100644
+--- a/include/linux/signal.h
++++ b/include/linux/signal.h
+@@ -53,6 +53,12 @@ enum siginfo_layout {
+ 
+ enum siginfo_layout siginfo_layout(unsigned sig, int si_code);
+ 
++/* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
++static inline int valid_signal(unsigned long sig)
++{
++	return sig <= _NSIG ? 1 : 0;
++}
++
+ /* Test if 'sig' is a realtime signal.  Use this instead of testing
+  * SIGRTMIN/SIGRTMAX directly.
+  */
+@@ -62,15 +68,20 @@ static inline int realtime_signal(unsigned long sig)
+ }
+ 
+ /*
+- * Define some primitives to manipulate sigset_t.
++ * Define some primitives to manipulate individual bits in sigset_t.
++ * Don't use these directly.  Architectures can define their own
++ * versions (see arch/x86/include/signal.h)
+  */
+ 
+ #ifndef __HAVE_ARCH_SIG_BITOPS
+-#include <linux/bitops.h>
++#define sigset_add(set, sig)       __sigset_add(set, sig)
++#define sigset_del(set, sig)       __sigset_del(set, sig)
++#define sigset_ismember(set, sig)  __sigset_ismember(set, sig)
++#endif
+ 
+ /* We don't use <linux/bitops.h> for these because there is no need to
+    be atomic.  */
+-static inline void sigaddset(sigset_t *set, int _sig)
++static inline void __sigset_add(sigset_t *set, int _sig)
+ {
+ 	unsigned long sig = _sig - 1;
+ 	if (_NSIG_WORDS == 1)
+@@ -79,7 +90,7 @@ static inline void sigaddset(sigset_t *set, int _sig)
+ 		set->sig[sig / _NSIG_BPW] |= 1UL << (sig % _NSIG_BPW);
+ }
+ 
+-static inline void sigdelset(sigset_t *set, int _sig)
++static inline void __sigset_del(sigset_t *set, int _sig)
+ {
+ 	unsigned long sig = _sig - 1;
+ 	if (_NSIG_WORDS == 1)
+@@ -88,33 +99,72 @@ static inline void sigdelset(sigset_t *set, int _sig)
+ 		set->sig[sig / _NSIG_BPW] &= ~(1UL << (sig % _NSIG_BPW));
+ }
+ 
+-static inline int sigismember(sigset_t *set, int _sig)
++static inline int __sigset_ismember(sigset_t *set, int _sig)
+ {
+ 	unsigned long sig = _sig - 1;
+ 	if (_NSIG_WORDS == 1)
+-		return 1 & (set->sig[0] >> sig);
++		return 1UL & (set->sig[0] >> sig);
+ 	else
+-		return 1 & (set->sig[sig / _NSIG_BPW] >> (sig % _NSIG_BPW));
++		return 1UL & (set->sig[sig / _NSIG_BPW] >> (sig % _NSIG_BPW));
+ }
+ 
+-#endif /* __HAVE_ARCH_SIG_BITOPS */
++/* Some primitives for setting/deleting signals from sigset_t.  Use these. */
+ 
+-static inline int sigisemptyset(sigset_t *set)
++#define NUM_INTARGS(...) (sizeof((int[]){__VA_ARGS__})/sizeof(int))
++
++#define sigdelset(x, ...) __sigdelset((x), NUM_INTARGS(__VA_ARGS__),	\
++				      __VA_ARGS__)
++static inline void __sigdelset(sigset_t *set, int count, ...)
+ {
+-	switch (_NSIG_WORDS) {
+-	case 4:
+-		return (set->sig[3] | set->sig[2] |
+-			set->sig[1] | set->sig[0]) == 0;
+-	case 2:
+-		return (set->sig[1] | set->sig[0]) == 0;
+-	case 1:
+-		return set->sig[0] == 0;
+-	default:
+-		BUILD_BUG();
+-		return 0;
++	va_list ap;
++	int sig;
++
++	va_start(ap, count);
++	while (count > 0) {
++		sig = va_arg(ap, int);
++		if (valid_signal(sig) && sig != 0)
++			sigset_del(set, sig);
++		count--;
+ 	}
++	va_end(ap);
++}
++
++#define sigaddset(x, ...) __sigaddset((x), NUM_INTARGS(__VA_ARGS__),	\
++				      __VA_ARGS__)
++static inline void __sigaddset(sigset_t *set, int count, ...)
++{
++	va_list ap;
++	int sig;
++
++	va_start(ap, count);
++	while (count > 0) {
++		sig = va_arg(ap, int);
++		if (valid_signal(sig) && sig != 0)
++			sigset_add(set, sig);
++		count--;
++	}
++	va_end(ap);
++}
++
++static inline int sigismember(sigset_t *set, int sig)
++{
++	if (!valid_signal(sig) || sig == 0)
++		return 0;
++	return sigset_ismember(set, sig);
+ }
+ 
++#define siginitset(set, ...)			\
++do {						\
++	sigemptyset((set));			\
++	sigaddset((set), __VA_ARGS__);		\
++} while (0)
++
++#define siginitsetinv(set, ...)			\
++do {					        \
++	sigfillset((set));			\
++	sigdelset((set), __VA_ARGS__);		\
++} while (0)
++
+ static inline int sigequalsets(const sigset_t *set1, const sigset_t *set2)
+ {
+ 	switch (_NSIG_WORDS) {
+@@ -128,11 +178,18 @@ static inline int sigequalsets(const sigset_t *set1, const sigset_t *set2)
+ 			(set1->sig[0] == set2->sig[0]);
+ 	case 1:
+ 		return	set1->sig[0] == set2->sig[0];
++	default:
++		return memcmp(set1, set2, sizeof(sigset_t)) == 0;
+ 	}
+ 	return 0;
+ }
+ 
+-#define sigmask(sig)	(1UL << ((sig) - 1))
++static inline int sigisemptyset(sigset_t *set)
++{
++	sigset_t empty = {0};
++
++	return sigequalsets(set, &empty);
++}
+ 
+ #ifndef __HAVE_ARCH_SIG_SETOPS
+ #include <linux/string.h>
+@@ -141,6 +198,7 @@ static inline int sigequalsets(const sigset_t *set1, const sigset_t *set2)
+ static inline void name(sigset_t *r, const sigset_t *a, const sigset_t *b) \
+ {									\
+ 	unsigned long a0, a1, a2, a3, b0, b1, b2, b3;			\
++	int i;								\
+ 									\
+ 	switch (_NSIG_WORDS) {						\
+ 	case 4:								\
+@@ -158,7 +216,9 @@ static inline void name(sigset_t *r, const sigset_t *a, const sigset_t *b) \
+ 		r->sig[0] = op(a0, b0);					\
+ 		break;							\
+ 	default:							\
+-		BUILD_BUG();						\
++		for (i = 0; i < _NSIG_WORDS; i++)			\
++			r->sig[i] = op(a->sig[i], b->sig[i]);		\
++		break;							\
+ 	}								\
+ }
+ 
+@@ -179,6 +239,8 @@ _SIG_SET_BINOP(sigandnsets, _sig_andn)
+ #define _SIG_SET_OP(name, op)						\
+ static inline void name(sigset_t *set)					\
+ {									\
++	int i;								\
++									\
+ 	switch (_NSIG_WORDS) {						\
+ 	case 4:	set->sig[3] = op(set->sig[3]);				\
+ 		set->sig[2] = op(set->sig[2]);				\
+@@ -188,7 +250,9 @@ static inline void name(sigset_t *set)					\
+ 	case 1:	set->sig[0] = op(set->sig[0]);				\
+ 		    break;						\
+ 	default:							\
+-		BUILD_BUG();						\
++		for (i = 0; i < _NSIG_WORDS; i++)			\
++			set->sig[i] = op(set->sig[i]);			\
++		break;							\
+ 	}								\
+ }
+ 
+@@ -224,24 +288,13 @@ static inline void sigfillset(sigset_t *set)
+ 	}
+ }
+ 
+-/* Some extensions for manipulating the low 32 signals in particular.  */
++#endif /* __HAVE_ARCH_SIG_SETOPS */
+ 
+-static inline void sigaddsetmask(sigset_t *set, unsigned long mask)
+-{
+-	set->sig[0] |= mask;
+-}
++/* Primitives for handing the compat (first long) sigset_t */
+ 
+-static inline void sigdelsetmask(sigset_t *set, unsigned long mask)
+-{
+-	set->sig[0] &= ~mask;
+-}
++#define compat_sigmask(sig)       (1UL << ((sig) - 1))
+ 
+-static inline int sigtestsetmask(sigset_t *set, unsigned long mask)
+-{
+-	return (set->sig[0] & mask) != 0;
+-}
+-
+-static inline void siginitset(sigset_t *set, unsigned long mask)
++static inline void compat_siginitset(sigset_t *set, unsigned long mask)
+ {
+ 	set->sig[0] = mask;
+ 	switch (_NSIG_WORDS) {
+@@ -254,7 +307,7 @@ static inline void siginitset(sigset_t *set, unsigned long mask)
+ 	}
+ }
+ 
+-static inline void siginitsetinv(sigset_t *set, unsigned long mask)
++static inline void compat_siginitsetinv(sigset_t *set, unsigned long mask)
+ {
+ 	set->sig[0] = ~mask;
+ 	switch (_NSIG_WORDS) {
+@@ -267,7 +320,21 @@ static inline void siginitsetinv(sigset_t *set, unsigned long mask)
+ 	}
+ }
+ 
+-#endif /* __HAVE_ARCH_SIG_SETOPS */
++static inline void compat_sigaddsetmask(sigset_t *set, unsigned long mask)
++{
++	set->sig[0] |= mask;
++}
++
++static inline void compat_sigdelsetmask(sigset_t *set, unsigned long mask)
++{
++	set->sig[0] &= ~mask;
++}
++
++static inline int compat_sigtestsetmask(sigset_t *set, unsigned long mask)
++{
++	return (set->sig[0] & mask) != 0;
++}
++
+ 
+ /* Safely copy a sigset_t from user space handling any differences in
+  * size between user space and kernel sigset_t.  We don't use
+@@ -338,12 +405,6 @@ static inline void init_sigpending(struct sigpending *sig)
+ 
+ extern void flush_sigqueue(struct sigpending *queue);
+ 
+-/* Test if 'sig' is valid signal. Use this instead of testing _NSIG directly */
+-static inline int valid_signal(unsigned long sig)
+-{
+-	return sig <= _NSIG ? 1 : 0;
+-}
+-
+ struct timespec;
+ struct pt_regs;
+ enum pid_type;
+@@ -470,55 +531,72 @@ extern bool unhandled_signal(struct task_struct *tsk, int sig);
+  * default action of stopping the process may happen later or never.
+  */
+ 
++static inline int sig_kernel_stop(unsigned long sig)
++{
++	return	sig == SIGSTOP ||
++		sig == SIGTSTP ||
++		sig == SIGTTIN ||
++		sig == SIGTTOU;
++}
++
++static inline int sig_kernel_ignore(unsigned long sig)
++{
++	return	sig == SIGCONT	||
++		sig == SIGCHLD	||
++		sig == SIGWINCH ||
++		sig == SIGURG;
++}
++
++static inline int sig_kernel_only(unsigned long sig)
++{
++	return	sig == SIGKILL ||
++		sig == SIGSTOP;
++}
++
++static inline int sig_kernel_coredump(unsigned long sig)
++{
++	return	sig == SIGQUIT ||
++		sig == SIGILL  ||
++		sig == SIGTRAP ||
++		sig == SIGABRT ||
++		sig == SIGFPE  ||
++		sig == SIGSEGV ||
++		sig == SIGBUS  ||
++		sig == SIGSYS  ||
++		sig == SIGXCPU ||
+ #ifdef SIGEMT
+-#define SIGEMT_MASK	rt_sigmask(SIGEMT)
+-#else
+-#define SIGEMT_MASK	0
++		sig == SIGEMT  ||
+ #endif
++		sig == SIGXFSZ;
++}
+ 
+-#if SIGRTMIN > BITS_PER_LONG
+-#define rt_sigmask(sig)	(1ULL << ((sig)-1))
+-#else
+-#define rt_sigmask(sig)	sigmask(sig)
++static inline int sig_specific_sicodes(unsigned long sig)
++{
++	return	sig == SIGILL  ||
++		sig == SIGFPE  ||
++		sig == SIGSEGV ||
++		sig == SIGBUS  ||
++		sig == SIGTRAP ||
++		sig == SIGCHLD ||
++		sig == SIGPOLL ||
++#ifdef SIGEMT
++		sig == SIGEMT  ||
+ #endif
++		sig == SIGSYS;
++}
+ 
+-#define siginmask(sig, mask) \
+-	((sig) > 0 && (sig) < SIGRTMIN && (rt_sigmask(sig) & (mask)))
+-
+-#define SIG_KERNEL_ONLY_MASK (\
+-	rt_sigmask(SIGKILL)   |  rt_sigmask(SIGSTOP))
+-
+-#define SIG_KERNEL_STOP_MASK (\
+-	rt_sigmask(SIGSTOP)   |  rt_sigmask(SIGTSTP)   | \
+-	rt_sigmask(SIGTTIN)   |  rt_sigmask(SIGTTOU)   )
+-
+-#define SIG_KERNEL_COREDUMP_MASK (\
+-        rt_sigmask(SIGQUIT)   |  rt_sigmask(SIGILL)    | \
+-	rt_sigmask(SIGTRAP)   |  rt_sigmask(SIGABRT)   | \
+-        rt_sigmask(SIGFPE)    |  rt_sigmask(SIGSEGV)   | \
+-	rt_sigmask(SIGBUS)    |  rt_sigmask(SIGSYS)    | \
+-        rt_sigmask(SIGXCPU)   |  rt_sigmask(SIGXFSZ)   | \
+-	SIGEMT_MASK				       )
+-
+-#define SIG_KERNEL_IGNORE_MASK (\
+-        rt_sigmask(SIGCONT)   |  rt_sigmask(SIGCHLD)   | \
+-	rt_sigmask(SIGWINCH)  |  rt_sigmask(SIGURG)    )
+-
+-#define SIG_SPECIFIC_SICODES_MASK (\
+-	rt_sigmask(SIGILL)    |  rt_sigmask(SIGFPE)    | \
+-	rt_sigmask(SIGSEGV)   |  rt_sigmask(SIGBUS)    | \
+-	rt_sigmask(SIGTRAP)   |  rt_sigmask(SIGCHLD)   | \
+-	rt_sigmask(SIGPOLL)   |  rt_sigmask(SIGSYS)    | \
+-	SIGEMT_MASK                                    )
+-
+-#define sig_kernel_only(sig)		siginmask(sig, SIG_KERNEL_ONLY_MASK)
+-#define sig_kernel_coredump(sig)	siginmask(sig, SIG_KERNEL_COREDUMP_MASK)
+-#define sig_kernel_ignore(sig)		siginmask(sig, SIG_KERNEL_IGNORE_MASK)
+-#define sig_kernel_stop(sig)		siginmask(sig, SIG_KERNEL_STOP_MASK)
+-#define sig_specific_sicodes(sig)	siginmask(sig, SIG_SPECIFIC_SICODES_MASK)
++static inline int synchronous_signal(unsigned long sig)
++{
++	return	sig == SIGSEGV ||
++		sig == SIGBUS  ||
++		sig == SIGILL  ||
++		sig == SIGTRAP ||
++		sig == SIGFPE  ||
++		sig == SIGSYS;
++}
+ 
+ #define sig_fatal(t, signr) \
+-	(!siginmask(signr, SIG_KERNEL_IGNORE_MASK|SIG_KERNEL_STOP_MASK) && \
++	(!(sig_kernel_ignore(signr) ||	sig_kernel_stop(signr)) &&	\
+ 	 (t)->sighand->action[(signr)-1].sa.sa_handler == SIG_DFL)
+ 
+ void signals_init(void);
+diff --git a/kernel/compat.c b/kernel/compat.c
+index cc2438f4070c..26ffd271444c 100644
+--- a/kernel/compat.c
++++ b/kernel/compat.c
+@@ -49,16 +49,16 @@ COMPAT_SYSCALL_DEFINE3(sigprocmask, int, how,
+ 	if (nset) {
+ 		if (get_user(new_set, nset))
+ 			return -EFAULT;
+-		new_set &= ~(sigmask(SIGKILL) | sigmask(SIGSTOP));
++		new_set &= ~(compat_sigmask(SIGKILL) | compat_sigmask(SIGSTOP));
+ 
+ 		new_blocked = current->blocked;
+ 
+ 		switch (how) {
+ 		case SIG_BLOCK:
+-			sigaddsetmask(&new_blocked, new_set);
++			compat_sigaddsetmask(&new_blocked, new_set);
+ 			break;
+ 		case SIG_UNBLOCK:
+-			sigdelsetmask(&new_blocked, new_set);
++			compat_sigdelsetmask(&new_blocked, new_set);
+ 			break;
+ 		case SIG_SETMASK:
+ 			compat_sig_setmask(&new_blocked, new_set);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 38681ad44c76..8b07f0090b82 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2032,7 +2032,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 		 * fatal or STOP
+ 		 */
+ 		p->flags |= PF_IO_WORKER;
+-		siginitsetinv(&p->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
++		siginitsetinv(&p->blocked, SIGKILL, SIGSTOP);
+ 	}
+ 
+ 	/*
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 2f7ee345a629..200b99d39878 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -1102,7 +1102,7 @@ int ptrace_request(struct task_struct *child, long request,
+ 		if (ret)
+ 			break;
+ 
+-		sigdelsetmask(&new_set, sigmask(SIGKILL)|sigmask(SIGSTOP));
++		sigdelset(&new_set, SIGKILL, SIGSTOP);
+ 
+ 		/*
+ 		 * Every thread does recalc_sigpending() after resume, so
+diff --git a/kernel/signal.c b/kernel/signal.c
+index a2f0e38ba934..9421f1112b20 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -64,6 +64,9 @@ static struct kmem_cache *sigqueue_cachep;
+ 
+ int print_fatal_signals __read_mostly;
+ 
++sigset_t signal_stop_mask;
++sigset_t signal_synchronous_mask;
++
+ static void __user *sig_handler(struct task_struct *t, int sig)
+ {
+ 	return t->sighand->action[sig - 1].sa.sa_handler;
+@@ -199,55 +202,26 @@ void calculate_sigpending(void)
+ }
+ 
+ /* Given the mask, find the first available signal that should be serviced. */
+-
+-#define SYNCHRONOUS_MASK \
+-	(sigmask(SIGSEGV) | sigmask(SIGBUS) | sigmask(SIGILL) | \
+-	 sigmask(SIGTRAP) | sigmask(SIGFPE) | sigmask(SIGSYS))
+-
+ int next_signal(struct sigpending *pending, sigset_t *mask)
+ {
+-	unsigned long i, *s, *m, x;
+-	int sig = 0;
++	int i, sig;
++	sigset_t pend, s;
+ 
+-	s = pending->signal.sig;
+-	m = mask->sig;
++	sigandnsets(&pend, &pending->signal, mask);
+ 
+-	/*
+-	 * Handle the first word specially: it contains the
+-	 * synchronous signals that need to be dequeued first.
+-	 */
+-	x = *s &~ *m;
+-	if (x) {
+-		if (x & SYNCHRONOUS_MASK)
+-			x &= SYNCHRONOUS_MASK;
+-		sig = ffz(~x) + 1;
+-		return sig;
+-	}
++	/* Handle synchronous signals first */
++	sigandsets(&s, &pend, &signal_synchronous_mask);
++	if (!sigisemptyset(&s))
++		pend = s;
+ 
+-	switch (_NSIG_WORDS) {
+-	default:
+-		for (i = 1; i < _NSIG_WORDS; ++i) {
+-			x = *++s &~ *++m;
+-			if (!x)
+-				continue;
+-			sig = ffz(~x) + i*_NSIG_BPW + 1;
+-			break;
++	for (i = 0; i < _NSIG_WORDS; i++) {
++		if (pend.sig[i] != 0) {
++			sig = ffz(~pend.sig[i]) + i*_NSIG_BPW + 1;
++			return sig;
+ 		}
+-		break;
+-
+-	case 2:
+-		x = s[1] &~ m[1];
+-		if (!x)
+-			break;
+-		sig = ffz(~x) + _NSIG_BPW + 1;
+-		break;
+-
+-	case 1:
+-		/* Nothing to do */
+-		break;
+ 	}
+ 
+-	return sig;
++	return 0;
+ }
+ 
+ static inline void print_dropped_signal(int sig)
+@@ -709,11 +683,14 @@ static int dequeue_synchronous_signal(kernel_siginfo_t *info)
+ 	struct task_struct *tsk = current;
+ 	struct sigpending *pending = &tsk->pending;
+ 	struct sigqueue *q, *sync = NULL;
++	sigset_t s;
+ 
+ 	/*
+ 	 * Might a synchronous signal be in the queue?
+ 	 */
+-	if (!((pending->signal.sig[0] & ~tsk->blocked.sig[0]) & SYNCHRONOUS_MASK))
++	sigandnsets(&s, &pending->signal, &tsk->blocked);
++	sigandsets(&s, &s, &signal_synchronous_mask);
++	if (sigisemptyset(&s))
+ 		return 0;
+ 
+ 	/*
+@@ -722,7 +699,7 @@ static int dequeue_synchronous_signal(kernel_siginfo_t *info)
+ 	list_for_each_entry(q, &pending->list, list) {
+ 		/* Synchronous signals have a positive si_code */
+ 		if ((q->info.si_code > SI_USER) &&
+-		    (sigmask(q->info.si_signo) & SYNCHRONOUS_MASK)) {
++		    synchronous_signal(q->info.si_signo)) {
+ 			sync = q;
+ 			goto next;
+ 		}
+@@ -795,6 +772,25 @@ static void flush_sigqueue_mask(sigset_t *mask, struct sigpending *s)
+ 	}
+ }
+ 
++#define flush_sigqueue_sig(x, ...) __flush_sigqueue_sig((x),		\
++					NUM_INTARGS(__VA_ARGS__), __VA_ARGS__)
++static void __flush_sigqueue_sig(struct sigpending *s, int count, ...)
++{
++	va_list ap;
++	sigset_t mask;
++	int sig;
++
++	sigemptyset(&mask);
++	va_start(ap, count);
++	while (count > 0) {
++		sig = va_arg(ap, int);
++		if (valid_signal(sig) && sig != 0)
++			sigset_add(&mask, sig);
++		count--;
++	}
++	flush_sigqueue_mask(&mask, s);
++}
++
+ static inline int is_si_special(const struct kernel_siginfo *info)
+ {
+ 	return info <= SEND_SIG_PRIV;
+@@ -913,8 +909,7 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
+ 		/*
+ 		 * This is a stop signal.  Remove SIGCONT from all queues.
+ 		 */
+-		siginitset(&flush, sigmask(SIGCONT));
+-		flush_sigqueue_mask(&flush, &signal->shared_pending);
++		flush_sigqueue_sig(&signal->shared_pending, SIGCONT);
+ 		for_each_thread(p, t)
+ 			flush_sigqueue_mask(&flush, &t->pending);
+ 	} else if (sig == SIGCONT) {
+@@ -922,10 +917,9 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
+ 		/*
+ 		 * Remove all stop signals from all queues, wake all threads.
+ 		 */
+-		siginitset(&flush, SIG_KERNEL_STOP_MASK);
+-		flush_sigqueue_mask(&flush, &signal->shared_pending);
++		flush_sigqueue_mask(&signal_stop_mask, &signal->shared_pending);
+ 		for_each_thread(p, t) {
+-			flush_sigqueue_mask(&flush, &t->pending);
++			flush_sigqueue_mask(&signal_stop_mask, &t->pending);
+ 			task_clear_jobctl_pending(t, JOBCTL_STOP_PENDING);
+ 			if (likely(!(t->ptrace & PT_SEIZED)))
+ 				wake_up_state(t, __TASK_STOPPED);
+@@ -1172,7 +1166,7 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
+ 			sigset_t *signal = &delayed->signal;
+ 			/* Can't queue both a stop and a continue signal */
+ 			if (sig == SIGCONT)
+-				sigdelsetmask(signal, SIG_KERNEL_STOP_MASK);
++				sigandnsets(signal, signal, &signal_stop_mask);
+ 			else if (sig_kernel_stop(sig))
+ 				sigdelset(signal, SIGCONT);
+ 			sigaddset(signal, sig);
+@@ -3023,7 +3017,7 @@ static void __set_task_blocked(struct task_struct *tsk, const sigset_t *newset)
+  */
+ void set_current_blocked(sigset_t *newset)
+ {
+-	sigdelsetmask(newset, sigmask(SIGKILL) | sigmask(SIGSTOP));
++	sigdelset(newset, SIGKILL, SIGSTOP);
+ 	__set_current_blocked(newset);
+ }
+ 
+@@ -3150,7 +3144,7 @@ SYSCALL_DEFINE4(rt_sigprocmask, int, how, sigset_t __user *, nset,
+ 	if (nset) {
+ 		if (copy_sigset_from_user(&new_set, nset, sigsetsize))
+ 			return -EFAULT;
+-		sigdelsetmask(&new_set, sigmask(SIGKILL)|sigmask(SIGSTOP));
++		sigdelset(&new_set, SIGKILL, SIGSTOP);
+ 
+ 		error = sigprocmask(how, &new_set, NULL);
+ 		if (error)
+@@ -3180,7 +3174,7 @@ COMPAT_SYSCALL_DEFINE4(rt_sigprocmask, int, how, compat_sigset_t __user *, nset,
+ 	if (nset) {
+ 		if (copy_compat_sigset_from_user(&new_set, nset, sigsetsize))
+ 			return -EFAULT;
+-		sigdelsetmask(&new_set, sigmask(SIGKILL)|sigmask(SIGSTOP));
++		sigdelset(&new_set, SIGKILL, SIGSTOP);
+ 
+ 		error = sigprocmask(how, &new_set, NULL);
+ 		if (error)
+@@ -3586,7 +3580,7 @@ static int do_sigtimedwait(const sigset_t *which, kernel_siginfo_t *info,
+ 	/*
+ 	 * Invert the set of allowed signals to get those we want to block.
+ 	 */
+-	sigdelsetmask(&mask, sigmask(SIGKILL) | sigmask(SIGSTOP));
++	sigdelset(&mask, SIGKILL, SIGSTOP);
+ 	signotset(&mask);
+ 
+ 	spin_lock_irq(&tsk->sighand->siglock);
+@@ -4111,8 +4105,7 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
+ 	sigaction_compat_abi(act, oact);
+ 
+ 	if (act) {
+-		sigdelsetmask(&act->sa.sa_mask,
+-			      sigmask(SIGKILL) | sigmask(SIGSTOP));
++		sigdelset(&act->sa.sa_mask, SIGKILL, SIGSTOP);
+ 		*k = *act;
+ 		/*
+ 		 * POSIX 3.3.1.3:
+@@ -4126,9 +4119,7 @@ int do_sigaction(int sig, struct k_sigaction *act, struct k_sigaction *oact)
+ 		 *   be discarded, whether or not it is blocked"
+ 		 */
+ 		if (sig_handler_ignored(sig_handler(p, sig), sig)) {
+-			sigemptyset(&mask);
+-			sigaddset(&mask, sig);
+-			flush_sigqueue_mask(&mask, &p->signal->shared_pending);
++			flush_sigqueue_sig(&p->signal->shared_pending, sig);
+ 			for_each_thread(p, t)
+ 				flush_sigqueue_mask(&mask, &t->pending);
+ 		}
+@@ -4332,10 +4323,10 @@ SYSCALL_DEFINE3(sigprocmask, int, how, old_sigset_t __user *, nset,
+ 
+ 		switch (how) {
+ 		case SIG_BLOCK:
+-			sigaddsetmask(&new_blocked, new_set);
++			compat_sigaddsetmask(&new_blocked, new_set);
+ 			break;
+ 		case SIG_UNBLOCK:
+-			sigdelsetmask(&new_blocked, new_set);
++			compat_sigdelsetmask(&new_blocked, new_set);
+ 			break;
+ 		case SIG_SETMASK:
+ 			new_blocked.sig[0] = new_set;
+@@ -4724,6 +4715,10 @@ void __init signals_init(void)
+ {
+ 	siginfo_buildtime_checks();
+ 
++	sigaddset(&signal_stop_mask, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU);
++	sigaddset(&signal_synchronous_mask, SIGSEGV, SIGBUS, SIGILL, SIGTRAP,
++		 SIGFPE, SIGSYS);
++
+ 	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC | SLAB_ACCOUNT);
+ }
+ 
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index c8b3645c9a7d..ab6ba4ec661b 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3684,7 +3684,7 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
+ static int kvm_vcpu_ioctl_set_sigmask(struct kvm_vcpu *vcpu, sigset_t *sigset)
+ {
+ 	if (sigset) {
+-		sigdelsetmask(sigset, sigmask(SIGKILL)|sigmask(SIGSTOP));
++		sigdelset(sigset, SIGKILL, SIGSTOP);
+ 		vcpu->sigset_active = 1;
+ 		vcpu->sigset = *sigset;
+ 	} else
+-- 
+2.30.2
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
