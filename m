@@ -4,57 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FF64C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 18:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 063A4C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 20:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=csxdVTqyykQYBmYZenT+O/ITyU78Txn8+qgqkWMGupo=; b=Cn+Lkoi6VY4YjP
-	NAkrd6K6nZiEquF5RDZ2j5QyuqnvIyAlubrlv7rdUhpZmr9A38kjeNctXbCIftUV+WYu/TrfKo7FE
-	VOESTwHT2nE+yAeWVQ2P0jFfs63ZQTh9+Yek9/liNiOJE1jC2KP7zBTibx4/M4s+JyjU8aIoxfTh1
-	CM0YlH09DIxQ6ir5atoxcxxjmRm0IbgSy9sIlBrFa4IQTwdGYcWWuSK2hOTvYBZxkUp+m9o6MIVYu
-	G7jDp5MeMuiM8kfH0tWLCP9Ip4fDJ2JnED3HEQAQY0lKAMS0jq9RUTu/mlwPRZlzHEt2XS1gs17RF
-	GxRlNe5DK+Gyj+NmFR6Q==;
+	List-Owner; bh=m2NrFmA8DlRPUr2Z+X+nYPKIbPXMaWd3rDZTY3oIGFs=; b=N2jVZ6o3JbmQ1f
+	2JV3QXSO+R5G6jrSYMPq2SkdRej+pDGQ+aDZk9fwpPv1cA6jD9HYTfeefjEw9FISg+o87yqv1J1ER
+	wzr54SQZykDRZds9g+hFTpE+JkAJoiU2gebOzSZIja3gFwz6NuFKWBHZb1oby0Wa91jTANG7uwD0J
+	+2hjN9rBXZJ3smMIPAlt7oOjJJBDn9crLz0LnIIcXnDTWKZZy62YhzKR0Knd210YZZsfnNEN7Pg2h
+	NlekMH6O+Rou59tlNTDMo7TM1ncts9FRxIIt0N0qEQSUfTY+8y9r/XxFEi4pujq8b2mFFm9Mh0fpM
+	uF/fk9Ygibq8CCTagwNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4ogu-00CWqL-8q; Tue, 04 Jan 2022 18:37:48 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1n4qp3-00CrnL-U8; Tue, 04 Jan 2022 20:54:21 +0000
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11] helo=outgoing.mit.edu)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4ogp-00CWos-W6
- for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 18:37:46 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 5BA126000B;
- Tue,  4 Jan 2022 18:37:37 +0000 (UTC)
-Date: Tue, 4 Jan 2022 19:37:36 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Cai
- Huoqing <caihuoqing@baidu.com>, Colin Ian King <colin.king@intel.com>, open
- list <linux-kernel@vger.kernel.org>, "open list:BROADCOM SPECIFIC AMBA
- DRIVER (BCMA)" <linux-wireless@vger.kernel.org>, "open list:BROADCOM STB
- NAND FLASH DRIVER" <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: [PATCH 1/9] mtd: rawnand: brcmnand: Allow SoC to provide I/O
- operations
-Message-ID: <20220104193736.7eb6a445@xps13>
-In-Reply-To: <9e4c0120-e088-fca0-0194-c45fcf9181cb@gmail.com>
-References: <20211223002225.3738385-1-f.fainelli@gmail.com>
- <20211223002225.3738385-2-f.fainelli@gmail.com>
- <20220103174953.40d7fa52@xps13>
- <299bf6ed-80e6-ad15-8dc7-5ededaca15c5@gmail.com>
- <20220104093221.6414aab9@xps13> <20220104095755.46858287@xps13>
- <9e4c0120-e088-fca0-0194-c45fcf9181cb@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1n4qp1-00Crmz-5n
+ for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 20:54:21 +0000
+Received: from cwcc.thunk.org (pool-108-7-220-252.bstnma.fios.verizon.net
+ [108.7.220.252]) (authenticated bits=0)
+ (User authenticated as tytso@ATHENA.MIT.EDU)
+ by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 204KqTfp016358
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 4 Jan 2022 15:52:30 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+ id EDA7015C00E1; Tue,  4 Jan 2022 15:52:28 -0500 (EST)
+Date: Tue, 4 Jan 2022 15:52:28 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Walt Drummond <walt@drummond.us>, aacraid@microsemi.com,
+ viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, arnd@arndb.de,
+ bsegall@google.com, bp@alien8.de, chuck.lever@oracle.com,
+ bristot@redhat.com, dave.hansen@linux.intel.com, dwmw2@infradead.org,
+ dietmar.eggemann@arm.com, dinguyen@kernel.org, geert@linux-m68k.org,
+ gregkh@linuxfoundation.org, hpa@zytor.com, idryomov@gmail.com,
+ mingo@redhat.com, yzaikin@google.com, ink@jurassic.park.msu.ru,
+ jejb@linux.ibm.com, jmorris@namei.org, bfields@fieldses.org,
+ jlayton@kernel.org, jirislaby@kernel.org, john.johansen@canonical.com,
+ juri.lelli@redhat.com, keescook@chromium.org, mcgrof@kernel.org,
+ martin.petersen@oracle.com, mattst88@gmail.com, mgorman@suse.de,
+ oleg@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
+ rth@twiddle.net, richard@nod.at, serge@hallyn.com, rostedt@goodmis.org,
+ tglx@linutronix.de, trond.myklebust@hammerspace.com,
+ vincent.guittot@linaro.org, x86@kernel.org,
+ linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
+ kvm@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-m68k@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-nfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] signals: Support more than 64 signals
+Message-ID: <YdSzjPbVDVGKT4km@mit.edu>
+References: <20220103181956.983342-1-walt@drummond.us>
+ <87iluzidod.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87iluzidod.fsf@email.froward.int.ebiederm.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220104_103744_341493_E05C17DA 
-X-CRM114-Status: GOOD (  31.86  )
+X-CRM114-CacheID: sfid-20220104_125419_408264_66F1B2E9 
+X-CRM114-Status: GOOD (  29.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,119 +78,131 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRmxvcmlhbiwKCmYuZmFpbmVsbGlAZ21haWwuY29tIHdyb3RlIG9uIFR1ZSwgNCBKYW4gMjAy
-MiAxMDozNDozNSAtMDgwMDoKCj4gT24gMS80LzIyIDEyOjU3IEFNLCBNaXF1ZWwgUmF5bmFsIHdy
-b3RlOgo+ID4gSGkgTWlxdWVsLAo+ID4gCj4gPiBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tIHdy
-b3RlIG9uIFR1ZSwgNCBKYW4gMjAyMiAwOTozMjoyMSArMDEwMDoKPiA+ICAgCj4gPj4gSGkgRmxv
-cmlhbiwKPiA+Pgo+ID4+IGYuZmFpbmVsbGlAZ21haWwuY29tIHdyb3RlIG9uIE1vbiwgMyBKYW4g
-MjAyMiAwOToyNDoyNiAtMDgwMDoKPiA+PiAgCj4gPj4+IE9uIDEvMy8yMDIyIDg6NDkgQU0sIE1p
-cXVlbCBSYXluYWwgd3JvdGU6ICAgIAo+ID4+Pj4gSGkgRmxvcmlhbiwKPiA+Pj4+Cj4gPj4+PiBm
-LmZhaW5lbGxpQGdtYWlsLmNvbSB3cm90ZSBvbiBXZWQsIDIyIERlYyAyMDIxIDE2OjIyOjE3IC0w
-ODAwOgo+ID4+Pj4gICAgICAgCj4gPj4+Pj4gQWxsb3cgYSBicmNtbmFuZF9zb2MgaW5zdGFuY2Ug
-dG8gcHJvdmlkZSBhIGN1c3RvbSBzZXQgb2YgSS9PIG9wZXJhdGlvbnMKPiA+Pj4+PiB3aGljaCB3
-ZSB3aWxsIHJlcXVpcmUgd2hlbiB1c2luZyB0aGlzIGRyaXZlciBvbiBhIEJDTUEgYnVzIHdoaWNo
-IGlzIG5vdAo+ID4+Pj4+IGRpcmVjdGx5IG1lbW9yeSBtYXBwZWQgSS9PLiBVcGRhdGUgdGhlIG5h
-bmRfe3JlYWQsd3JpdGV9X3JlZyBhY2NvcmRpbmdseQo+ID4+Pj4+IHRvIHVzZSB0aGUgU29DIG9w
-ZXJhdGlvbnMgaWYgcHJvdmlkZWQuCj4gPj4+Pj4KPiA+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBGbG9y
-aWFuIEZhaW5lbGxpIDxmLmZhaW5lbGxpQGdtYWlsLmNvbT4KPiA+Pj4+PiAtLS0KPiA+Pj4+PiAg
-IGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgfCAxNCArKysrKysrKysr
-KystLQo+ID4+Pj4+ICAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuaCB8
-IDIzICsrKysrKysrKysrKysrKysrKysrKysrCj4gPj4+Pj4gICAyIGZpbGVzIGNoYW5nZWQsIDM1
-IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gPj4+Pj4KPiA+Pj4+PiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyBiL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMKPiA+Pj4+PiBpbmRleCBmNzU5Mjk3ODNiOTQu
-LjdhMTY3M2IxYjFhZiAxMDA2NDQKPiA+Pj4+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9i
-cmNtbmFuZC9icmNtbmFuZC5jCj4gPj4+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJj
-bW5hbmQvYnJjbW5hbmQuYwo+ID4+Pj4+IEBAIC01OTQsMTMgKzU5NCwxOCBAQCBlbnVtIHsgICAg
-ICAKPiA+Pj4+PiAgID4+ICAgc3RhdGljIGlubGluZSB1MzIgbmFuZF9yZWFkcmVnKHN0cnVjdCBi
-cmNtbmFuZF9jb250cm9sbGVyICpjdHJsLCB1MzIgb2ZmcykgICAgICAKPiA+Pj4+PiAgIHsKPiA+
-Pj4+PiArCWlmIChicmNtbmFuZF9zb2NfaGFzX29wcyhjdHJsLT5zb2MpKQo+ID4+Pj4+ICsJCXJl
-dHVybiBicmNtbmFuZF9zb2NfcmVhZChjdHJsLT5zb2MsIG9mZnMpOwo+ID4+Pj4+ICAgCXJldHVy
-biBicmNtbmFuZF9yZWFkbChjdHJsLT5uYW5kX2Jhc2UgKyBvZmZzKTsKPiA+Pj4+PiAgIH0gICAg
-ICAKPiA+Pj4+PiAgID4+ICAgc3RhdGljIGlubGluZSB2b2lkIG5hbmRfd3JpdGVyZWcoc3RydWN0
-IGJyY21uYW5kX2NvbnRyb2xsZXIgKmN0cmwsIHUzMiBvZmZzLCAgICAgIAo+ID4+Pj4+ICAgCQkJ
-CSB1MzIgdmFsKQo+ID4+Pj4+ICAgewo+ID4+Pj4+IC0JYnJjbW5hbmRfd3JpdGVsKHZhbCwgY3Ry
-bC0+bmFuZF9iYXNlICsgb2Zmcyk7Cj4gPj4+Pj4gKwlpZiAoYnJjbW5hbmRfc29jX2hhc19vcHMo
-Y3RybC0+c29jKSkKPiA+Pj4+PiArCQlicmNtbmFuZF9zb2Nfd3JpdGUoY3RybC0+c29jLCB2YWws
-IG9mZnMpOwo+ID4+Pj4+ICsJZWxzZQo+ID4+Pj4+ICsJCWJyY21uYW5kX3dyaXRlbCh2YWwsIGN0
-cmwtPm5hbmRfYmFzZSArIG9mZnMpOwo+ID4+Pj4+ICAgfSAgICAgIAo+ID4+Pj4+ICAgPj4gICBz
-dGF0aWMgaW50IGJyY21uYW5kX3JldmlzaW9uX2luaXQoc3RydWN0IGJyY21uYW5kX2NvbnRyb2xs
-ZXIgKmN0cmwpICAgICAgCj4gPj4+Pj4gQEAgLTc2NiwxMyArNzcxLDE4IEBAIHN0YXRpYyBpbmxp
-bmUgdm9pZCBicmNtbmFuZF9ybXdfcmVnKHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJs
-LCAgICAgIAo+ID4+Pj4+ICAgPj4gICBzdGF0aWMgaW5saW5lIHUzMiBicmNtbmFuZF9yZWFkX2Zj
-KHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsLCBpbnQgd29yZCkgICAgICAKPiA+Pj4+
-PiAgIHsKPiA+Pj4+PiArCWlmIChicmNtbmFuZF9zb2NfaGFzX29wcyhjdHJsLT5zb2MpKQo+ID4+
-Pj4+ICsJCXJldHVybiBicmNtbmFuZF9zb2NfcmVhZChjdHJsLT5zb2MsIH4wKTsKPiA+Pj4+PiAg
-IAlyZXR1cm4gX19yYXdfcmVhZGwoY3RybC0+bmFuZF9mYyArIHdvcmQgKiA0KTsKPiA+Pj4+PiAg
-IH0gICAgICAKPiA+Pj4+PiAgID4+ICAgc3RhdGljIGlubGluZSB2b2lkIGJyY21uYW5kX3dyaXRl
-X2ZjKHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsLCAgICAgIAo+ID4+Pj4+ICAgCQkJ
-CSAgICAgaW50IHdvcmQsIHUzMiB2YWwpCj4gPj4+Pj4gICB7Cj4gPj4+Pj4gLQlfX3Jhd193cml0
-ZWwodmFsLCBjdHJsLT5uYW5kX2ZjICsgd29yZCAqIDQpOwo+ID4+Pj4+ICsJaWYgKGJyY21uYW5k
-X3NvY19oYXNfb3BzKGN0cmwtPnNvYykpCj4gPj4+Pj4gKwkJYnJjbW5hbmRfc29jX3dyaXRlKGN0
-cmwtPnNvYywgdmFsLCB+MCk7Cj4gPj4+Pj4gKwllbHNlCj4gPj4+Pj4gKwkJX19yYXdfd3JpdGVs
-KHZhbCwgY3RybC0+bmFuZF9mYyArIHdvcmQgKiA0KTsKPiA+Pj4+PiAgIH0gICAgICAKPiA+Pj4+
-PiAgID4+ICAgc3RhdGljIGlubGluZSB2b2lkIGVkdV93cml0ZWwoc3RydWN0IGJyY21uYW5kX2Nv
-bnRyb2xsZXIgKmN0cmwsICAgICAgCj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmggYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9icmNtbmFu
-ZC9icmNtbmFuZC5oCj4gPj4+Pj4gaW5kZXggZWI0OThmYmU1MDVlLi5hM2YyYWQ1ZjY1NzIgMTAw
-NjQ0Cj4gPj4+Pj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQu
-aAo+ID4+Pj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmgK
-PiA+Pj4+PiBAQCAtMTEsMTIgKzExLDE5IEBAICAgICAgCj4gPj4+Pj4gICA+PiAgIHN0cnVjdCBw
-bGF0Zm9ybV9kZXZpY2U7ICAgICAgCj4gPj4+Pj4gICBzdHJ1Y3QgZGV2X3BtX29wczsKPiA+Pj4+
-PiArc3RydWN0IGJyY21uYW5kX2lvX29wczsgICAgICAKPiA+Pj4+PiAgID4+ICAgc3RydWN0IGJy
-Y21uYW5kX3NvYyB7ICAgICAgCj4gPj4+Pj4gICAJYm9vbCAoKmN0bHJkeV9hY2spKHN0cnVjdCBi
-cmNtbmFuZF9zb2MgKnNvYyk7Cj4gPj4+Pj4gICAJdm9pZCAoKmN0bHJkeV9zZXRfZW5hYmxlZCko
-c3RydWN0IGJyY21uYW5kX3NvYyAqc29jLCBib29sIGVuKTsKPiA+Pj4+PiAgIAl2b2lkICgqcHJl
-cGFyZV9kYXRhX2J1cykoc3RydWN0IGJyY21uYW5kX3NvYyAqc29jLCBib29sIHByZXBhcmUsCj4g
-Pj4+Pj4gICAJCQkJIGJvb2wgaXNfcGFyYW0pOwo+ID4+Pj4+ICsJY29uc3Qgc3RydWN0IGJyY21u
-YW5kX2lvX29wcyAqb3BzOwo+ID4+Pj4+ICt9Owo+ID4+Pj4+ICsKPiA+Pj4+PiArc3RydWN0IGJy
-Y21uYW5kX2lvX29wcyB7Cj4gPj4+Pj4gKwl1MzIgKCpyZWFkX3JlZykoc3RydWN0IGJyY21uYW5k
-X3NvYyAqc29jLCB1MzIgb2Zmc2V0KTsKPiA+Pj4+PiArCXZvaWQgKCp3cml0ZV9yZWcpKHN0cnVj
-dCBicmNtbmFuZF9zb2MgKnNvYywgdTMyIHZhbCwgdTMyIG9mZnNldCk7Cj4gPj4+Pj4gICB9OyAg
-ICAgIAo+ID4+Pj4+ICAgPj4gICBzdGF0aWMgaW5saW5lIHZvaWQgYnJjbW5hbmRfc29jX2RhdGFf
-YnVzX3ByZXBhcmUoc3RydWN0IGJyY21uYW5kX3NvYyAqc29jLCAgICAgIAo+ID4+Pj4+IEBAIC01
-OCw2ICs2NSwyMiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgYnJjbW5hbmRfd3JpdGVsKHUzMiB2YWws
-IHZvaWQgX19pb21lbSAqYWRkcikKPiA+Pj4+PiAgIAkJd3JpdGVsX3JlbGF4ZWQodmFsLCBhZGRy
-KTsKPiA+Pj4+PiAgIH0gICAgICAKPiA+Pj4+PiAgID4+ICtzdGF0aWMgaW5saW5lIGJvb2wgYnJj
-bW5hbmRfc29jX2hhc19vcHMoc3RydWN0IGJyY21uYW5kX3NvYyAqc29jKSAgICAgIAo+ID4+Pj4+
-ICt7Cj4gPj4+Pj4gKwlyZXR1cm4gc29jICYmIHNvYy0+b3BzICYmIHNvYy0+b3BzLT5yZWFkX3Jl
-ZyAmJiBzb2MtPm9wcy0+d3JpdGVfcmVnOwo+ID4+Pj4+ICt9Cj4gPj4+Pj4gKwo+ID4+Pj4+ICtz
-dGF0aWMgaW5saW5lIHUzMiBicmNtbmFuZF9zb2NfcmVhZChzdHJ1Y3QgYnJjbW5hbmRfc29jICpz
-b2MsIHUzMiBvZmZzZXQpCj4gPj4+Pj4gK3sKPiA+Pj4+PiArCXJldHVybiBzb2MtPm9wcy0+cmVh
-ZF9yZWcoc29jLCBvZmZzZXQpOwo+ID4+Pj4+ICt9Cj4gPj4+Pj4gKwo+ID4+Pj4+ICtzdGF0aWMg
-aW5saW5lIHZvaWQgYnJjbW5hbmRfc29jX3dyaXRlKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYywg
-dTMyIHZhbCwKPiA+Pj4+PiArCQkJCSAgICAgIHUzMiBvZmZzZXQpCj4gPj4+Pj4gK3sKPiA+Pj4+
-PiArCXNvYy0+b3BzLT53cml0ZV9yZWcoc29jLCB2YWwsIG9mZnNldCk7Cj4gPj4+Pj4gK30KPiA+
-Pj4+PiArICAgICAgCj4gPj4+Pgo+ID4+Pj4gSXQgbWlnaHQgYmUgd29ydGggbG9va2luZyBpbnRv
-IG1vcmUgb3B0aW1pemVkIHdheXMgdG8gZG8gdGhlc2UgY2hlY2tzLAo+ID4+Pj4gaW4gcGFydGlj
-dWxhciB0aGUgcmVhZC93cml0ZV9yZWcgb25lcyBiZWNhdXNlIHlvdSdyZSBjaGVja2luZyBhZ2Fp
-bnN0Cj4gPj4+PiBzb21lIHN0YXRpYyBkYXRhIHdoaWNoIGNhbm5vdCBiZSBvcHRpbWl6ZWQgb3V0
-IGJ5IHRoZSBjb21waWxlciBidXQKPiA+Pj4+IHdvbid0IGNoYW5nZSBpbiB0aGUgbGlmZXRpbWUg
-b2YgdGhlIGtlcm5lbC4gICAgICAKPiA+Pj4KPiA+Pj4gSSBzdXBwb3NlIEkgY291bGQgYWRkIGFu
-IGFkZGl0aW9uIGlmIElTX0VOQUJMRUQoQ09ORklHX01URF9OQU5EX0JSQ01OQU5EX0JDTUEpIGF0
-IHRoZSBmcm9udCBvZiBicmNtbmFuZF9zb2NfaGFzX29wcygpLCB3b3VsZCB0aGF0IGFkZHJlc3Mg
-eW91ciBjb25jZXJuIG9yIHlvdSBoYXZlIHNvbWV0aGluZyBlbHNlIGluIG1pbmQ/ICAgIAo+ID4+
-Cj4gPj4gSSBkb24ndCBsaWtlIG11Y2ggdGhlICNpZmRlZiBzb2x1dGlvbiwgaW5zdGVhZCB5b3Ug
-bWlnaHQgdGhpbmsgb2YKPiA+PiBzdGF0aWMga2V5cywgb3IgZXZlbiBiZXR0ZXIgdXNpbmcgYSBy
-ZWdtYXAuIFJlZ21hcCBpbXBsZW1lbnRhdGlvbiBpcwo+ID4+IGZyZWUsIHlvdSBjYW4gdXNlIGVp
-dGhlciBvbmUgd2F5IG9yIHRoZSBvdGhlciBhbmQgZm9yIGFsbW9zdCBubwo+ID4+IG92ZXJoZWFk
-IGNvbXBhcmVkIHRvIHRoZSBidW5jaCBvZiBmdW5jdGlvbnMgeW91IGhhdmUgaGVyZS4gIAo+ID4g
-Cj4gPiBNYXliZSByZWdtYXBzIHdpbGwgYWN0dWFsbHkgYmUgc2xvd2VyIHRoYW4gdGhlc2UgcmVn
-dWxhciBpZidzLiBQZXJoYXBzCj4gPiBzdGF0aWMga2V5cyBhcmUgdGhlIGJlc3Qgb3B0aW9uPyAg
-Cj4gCj4gT0sgc3RhdGljIGtleXMgd291bGQgcHJvYmFibHkgd29yay4gSSBhbSBub3Qgc3VyZSB0
-aGF0IHRoZSBhZGRpdGlvbmFsCj4gYnJhbmNoZXMgZm9yIGVhY2ggcmVnaXN0ZXIgYWNjZXNzIHdv
-dWxkIGFjdHVhbGx5IGJlIGNhdXNpbmcgYSBub3RpY2VhYmxlCj4gcGVyZm9ybWFuY2UgaW1wYWN0
-LiBQcmV0dHkgbXVjaCBhbnkgY2hpcCB3aGVyZSB0aGlzIGNvbnRyb2xsZXIgaXMgdXNlZAo+IGhh
-cyBhIERNQSBpbnRlcmZhY2UgdGhhdCB5b3UgcHJvZ3JhbSBhbmQga2ljaywgdGhlIFBJTyBpcyBh
-bHJlYWR5Cj4gYXNzdW1lZCB0byBiZSBzbG93LCBhbmQgZWFjaCByZWdpc3RlciBhY2Nlc3MgaXMg
-YWJvdXQgMjAwbnMgb24gU1RCIGNoaXBzCj4gYXQgbGVhc3QuCgpJIHNlZS4gSSdsbCBsZXQgeW91
-IGRlY2lkZSB3aGF0IHlvdSBwcmVmZXIsIEkgd29uJ3QgYmxvY2sgaWYgeW91IHN0aWNrCnRvIHRo
-ZSByZWd1bGFyIGlmL2Vsc2UgaW1wbGVtZW50YXRpb24uCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Tue, Jan 04, 2022 at 12:00:34PM -0600, Eric W. Biederman wrote:
+> I dug through the previous conversations and there is a little debate
+> about what makes sense for SIGPWR to do by default.  Alan Cox remembered
+> SIGPWR was sent when the power was restored, so ignoring SIGPWR by
+> default made sense.  Ted Tso pointed out a different scenario where it
+> was reasonable for SIGPWR to be a terminating signal.
+> 
+> So far no one has actually found any applications that will regress if
+> SIGPWR becomes ignored by default.  Furthermore on linux SIGPWR is only
+> defined to be sent to init, and init ignores all signals by default so
+> in practice SIGPWR is ignored by the only process that receives it
+> currently.
+
+As it turns out, systemd does *not* ignore SIGPWR.  Instead, it will
+initiate the sigpwr target.  From the systemd.special man page:
+
+       sigpwr.target
+           A special target that is started when systemd receives the
+           SIGPWR process signal, which is normally sent by the kernel
+           or UPS daemons when power fails.
+
+And child processes of systemd are not ignoring SIGPWR.  Instead, they
+are getting terminated.
+
+<tytso@cwcc>
+41% /bin/sleep 50 &
+[1] 180671
+<tytso@cwcc>
+42% kill -PWR 180671
+[1]+  Power failure           /bin/sleep 50
+
+> Where I saw the last conversation falter was in making a persuasive
+> case of why SIGINFO was interesting to add.  Given a world of ssh
+> connections I expect a persuasive case can be made.  Especially if there
+> are a handful of utilities where it is already implemented that just
+> need to be built with SIGINFO defined.
+
+One thing that's perhaps worth disentangling is the value of
+supporting VSTATUS --- which is a control character much like VINTR
+(^C) or VQUIT (control backslash) which is set via the c_cc[] array in
+termios structure.  Quoting from the termios man page:
+
+       VSTATUS
+              (not in POSIX; not supported under Linux; status
+              request: 024, DC4, Ctrl-T).  Status character (STATUS).
+              Display status information at terminal, including state
+              of foreground process and amount of CPU time it has
+              consumed.  Also sends a SIGINFO signal (not supported on
+              Linux) to the foreground process group.
+
+The basic idea is that when you type C-t, you can find out information
+about the currently running process.  This is a feature that
+originally comes from TOPS-10's TENEX operating system, and it is
+supported today on FreeBSD and Mac OS.  For example, it might display
+something like this:
+
+load: 2.39  cmd: ping 5374 running 0.00u 0.00s
+
+The reason why SIGINFO is sent to the foreground process group is that
+it gives the process an opportunity print application specific
+information about currently running process.  For example, maybe the C
+compiler could print something like "parsing 2042 of 5000 header
+files", or some such.  :-)
+
+There are people who wish that Linux supported Control-T / VSTATUS,
+for example, just last week, on TUHS, the Unix greybeards list, there
+were two such heartfelt wishes for Control-T support from two such
+greybeards:
+
+    "It's my biggest annoyance with Linux that it doesn't [support
+    control-t]
+    - https://minnie.tuhs.org/pipermail/tuhs/2021-December/024849.html
+
+    "I personally can't stand using Linux, even casually for a very
+     short sys-admin task, because of this missing feature"
+    - https://minnie.tuhs.org/pipermail/tuhs/2021-December/024898.html
+
+I claim, though, that we could implement VSTATUS without implenting
+the SIGINFO part of the feature.  Previous few applications *ever*
+implemented SIGINFO signal handlers so they could give status
+information, it's the hard one, since we don't have any spare signals
+left.  If we were to repurpose some lesser used signal, whether it be
+SIGPWR, SIGLOST, or SIGSTKFLT, the danger is that there might be some
+userspace program (such as a UPS monitoring program which wants to
+trigger power fail handling, or a userspace NFSv4 process that wants
+to signal that it was unable to recover a file's file lock after a
+server reboot), and if we try to take over the signal assignment, it's
+possible that we might get surprised.  Furthermore, all of the
+possibly unused signals that we might try to reclaim terminate the
+process by default, and SIGINFO *has* to have a default signal
+handling action of Ignore, since otherwise typing Control-T will end
+up killing the current foreground application.
+
+Personally, I don't care all that much about VSTATUS support --- I
+used it when I was in university, but honestly, I've never missed it.
+But if there is someone who wants to try to implement VSTATUS, and
+make some Unix greybeards happy, and maybe even switch from FreeBSD to
+Linux as a result, go wild.  I'm not convinced, though, that adding
+the SIGINFO part of the support is worth the effort.
+
+Not only do almost no programs implement SIGINFO support, a lot of CPU
+bound programs where this might be actually useful, end up running a
+large number of processes in parallel.  Take the "parsing 2042 of 5000
+header files" example I gave above.  Consider what would happen if gcc
+implemented support for SIGINFO, but the user was running a "make -j
+16" and typed Control-T.   The result would be chaos!
+
+So if you really miss Control-T, and it's the only thing holding back
+a few FreeBSD users from Linux, I don't see the problem with
+implementing that part of the feature.  Why not just do the easy part
+of the feature which is perhaps 5% of the work, and might provide 99%
+of the benefit (at least for those people who care).
+
+> Without seeing the persuasive case for more signals I have to say that
+> adding more signals to the kernel sounds like a bad idea.
+
+Concur, 100%.
+
+						- Ted
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
