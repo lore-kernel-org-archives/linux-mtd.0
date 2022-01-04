@@ -4,56 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E10BC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 09:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB8E9C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 09:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JQJoVFhNhTteOUewGSEJTWvemkcFio6b40ZeBDmQaPY=; b=aUhB8Q+5rSM/2m
-	hENYhO1yp6LmUXozJJxT2LFn3M1vwqcQTDBHkHbhl8xVsgu8S5VU5sH6t035/kMQKiqiTSvpxEe1z
-	tno/9fLb9q4Uhvfnne4c4IUf6imZyFzlazaX4Da9aFfnCEO7pjNoOCYZ/Oj2HmqxZPUvGqkm4c1rQ
-	/HOqBX58FwVRQeSmMb4dP8r60OSzSnNwOazvCcbn7UsdmZzJabzJ5GZo0MHdAIJ/TUmLXluvNq+xB
-	K/WX4NE7/FV1JnrYjzOuG7LlQp6VOI3XUJT3hs6/Z+cUHHZHO5UsvLL958QcJTxzxycU/Ow3L+Mra
-	BWkNK2UcJyi0OuFKiHhA==;
+	List-Owner; bh=yTS3D6GHPqZAUaKqVa8vYWYYlYcOgBGnSZtLhjCUKus=; b=Zx8e4CsQRDT/Gz
+	rkr3RLRI6WPrA7tWxBMKQJIl7rHibK5T2Uj8ebWGKVObsmByINHWMckSAnwnmMyWNvfzburdsc1rT
+	nfB00GBbwp7URZH6nh4tmRt62GagroYSVeG7nxCBriwv+xN0XtqiugqkaOyFfKC6/Shmk9mp2c9tP
+	pJqORKHb7JTk4/xemoFyk/HBqK8jHGhRPAlYolmyxKUTJOiptaROi217wD460JiwDlAXgpGZ1SVGg
+	0+T63K7WMrXDe2oYt0dSvvE7/r7cvZCPNdvhnjSYKJaRIbk248ax/mmn1VXlpCLeVNKu1coS5Byck
+	RlL3An2KzRfZnzULdWhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4fiQ-00Arou-7G; Tue, 04 Jan 2022 09:02:46 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1n4fmQ-00At16-AC; Tue, 04 Jan 2022 09:06:54 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4fdo-00AqX9-Ut
- for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 08:58:03 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 22E05E000C;
- Tue,  4 Jan 2022 08:57:57 +0000 (UTC)
-Date: Tue, 4 Jan 2022 09:57:55 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Cai
- Huoqing <caihuoqing@baidu.com>, Colin Ian King <colin.king@intel.com>, open
- list <linux-kernel@vger.kernel.org>, "open list:BROADCOM SPECIFIC AMBA
- DRIVER (BCMA)" <linux-wireless@vger.kernel.org>, "open list:BROADCOM STB
- NAND FLASH DRIVER" <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: [PATCH 1/9] mtd: rawnand: brcmnand: Allow SoC to provide I/O
- operations
-Message-ID: <20220104095755.46858287@xps13>
-In-Reply-To: <20220104093221.6414aab9@xps13>
-References: <20211223002225.3738385-1-f.fainelli@gmail.com>
- <20211223002225.3738385-2-f.fainelli@gmail.com>
- <20220103174953.40d7fa52@xps13>
- <299bf6ed-80e6-ad15-8dc7-5ededaca15c5@gmail.com>
- <20220104093221.6414aab9@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1n4fiH-00Arl5-R0
+ for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 09:02:39 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 543CF1F42CDE;
+ Tue,  4 Jan 2022 09:02:34 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1641286954;
+ bh=EjiF8JgzQOmIC33Yr7BZyniqqcCirXbHs/l6SFY7XGo=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=ku5qmKYa/6QHQmB+iMoW92b5cMwjVzeo4qC1EYXYWBRPstW3keRmsE9PQJNVLf4w+
+ Jas2+42Wal0jdisrhFDjUZSUTj9nmtHRHDTZ2jlsxmKaw4Xr/nsXB+jrTGmq/EYyP4
+ l8LjElwAvcXKP7cG4GmXEoCq8AdKQ2A387wD4+2Xzdqw9z1wZofJeSG/nBQ+Ptofgt
+ 70hpPMUWk1ABtaO+qt+kxzk01hDPAFY4GORE7tFRSh9ThXdgb9xEPi0ge3UzoZobKF
+ DUFME8v9yJc7TxUKLvG//wrz+0zDsPnCgxE+sOgqlccxxo9LLGYbdeHTGuOLDlLIZ/
+ CGoOcKwsj2RjQ==
+Date: Tue, 4 Jan 2022 10:02:30 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
+ <jaimeliao@mxic.com.tw>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v9 06/13] spi: spi-mem: Add an ecc parameter to the
+ spi_mem_op structure
+Message-ID: <20220104100230.1076beed@collabora.com>
+In-Reply-To: <20220104083631.40776-7-miquel.raynal@bootlin.com>
+References: <20220104083631.40776-1-miquel.raynal@bootlin.com>
+ <20220104083631.40776-7-miquel.raynal@bootlin.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220104_005801_314421_80EDC98D 
-X-CRM114-Status: GOOD (  31.13  )
+X-CRM114-CacheID: sfid-20220104_010238_089538_06A73981 
+X-CRM114-Status: GOOD (  23.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,105 +74,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKbWlxdWVsLnJheW5hbEBib290bGluLmNvbSB3cm90ZSBvbiBUdWUsIDQgSmFu
-IDIwMjIgMDk6MzI6MjEgKzAxMDA6Cgo+IEhpIEZsb3JpYW4sCj4gCj4gZi5mYWluZWxsaUBnbWFp
-bC5jb20gd3JvdGUgb24gTW9uLCAzIEphbiAyMDIyIDA5OjI0OjI2IC0wODAwOgo+IAo+ID4gT24g
-MS8zLzIwMjIgODo0OSBBTSwgTWlxdWVsIFJheW5hbCB3cm90ZTogIAo+ID4gPiBIaSBGbG9yaWFu
-LAo+ID4gPiAKPiA+ID4gZi5mYWluZWxsaUBnbWFpbC5jb20gd3JvdGUgb24gV2VkLCAyMiBEZWMg
-MjAyMSAxNjoyMjoxNyAtMDgwMDoKPiA+ID4gICAgIAo+ID4gPj4gQWxsb3cgYSBicmNtbmFuZF9z
-b2MgaW5zdGFuY2UgdG8gcHJvdmlkZSBhIGN1c3RvbSBzZXQgb2YgSS9PIG9wZXJhdGlvbnMKPiA+
-ID4+IHdoaWNoIHdlIHdpbGwgcmVxdWlyZSB3aGVuIHVzaW5nIHRoaXMgZHJpdmVyIG9uIGEgQkNN
-QSBidXMgd2hpY2ggaXMgbm90Cj4gPiA+PiBkaXJlY3RseSBtZW1vcnkgbWFwcGVkIEkvTy4gVXBk
-YXRlIHRoZSBuYW5kX3tyZWFkLHdyaXRlfV9yZWcgYWNjb3JkaW5nbHkKPiA+ID4+IHRvIHVzZSB0
-aGUgU29DIG9wZXJhdGlvbnMgaWYgcHJvdmlkZWQuCj4gPiA+Pgo+ID4gPj4gU2lnbmVkLW9mZi1i
-eTogRmxvcmlhbiBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+Cj4gPiA+PiAtLS0KPiA+
-ID4+ICAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyB8IDE0ICsrKysr
-KysrKysrKy0tCj4gPiA+PiAgIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5k
-LmggfCAyMyArKysrKysrKysrKysrKysrKysrKysrKwo+ID4gPj4gICAyIGZpbGVzIGNoYW5nZWQs
-IDM1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gPiA+Pgo+ID4gPj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgYi9kcml2ZXJzL210
-ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gPiA+PiBpbmRleCBmNzU5Mjk3ODNiOTQu
-LjdhMTY3M2IxYjFhZiAxMDA2NDQKPiA+ID4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Jy
-Y21uYW5kL2JyY21uYW5kLmMKPiA+ID4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21u
-YW5kL2JyY21uYW5kLmMKPiA+ID4+IEBAIC01OTQsMTMgKzU5NCwxOCBAQCBlbnVtIHsgICAgCj4g
-PiA+PiAgID4+ICAgc3RhdGljIGlubGluZSB1MzIgbmFuZF9yZWFkcmVnKHN0cnVjdCBicmNtbmFu
-ZF9jb250cm9sbGVyICpjdHJsLCB1MzIgb2ZmcykgICAgCj4gPiA+PiAgIHsKPiA+ID4+ICsJaWYg
-KGJyY21uYW5kX3NvY19oYXNfb3BzKGN0cmwtPnNvYykpCj4gPiA+PiArCQlyZXR1cm4gYnJjbW5h
-bmRfc29jX3JlYWQoY3RybC0+c29jLCBvZmZzKTsKPiA+ID4+ICAgCXJldHVybiBicmNtbmFuZF9y
-ZWFkbChjdHJsLT5uYW5kX2Jhc2UgKyBvZmZzKTsKPiA+ID4+ICAgfSAgICAKPiA+ID4+ICAgPj4g
-ICBzdGF0aWMgaW5saW5lIHZvaWQgbmFuZF93cml0ZXJlZyhzdHJ1Y3QgYnJjbW5hbmRfY29udHJv
-bGxlciAqY3RybCwgdTMyIG9mZnMsICAgIAo+ID4gPj4gICAJCQkJIHUzMiB2YWwpCj4gPiA+PiAg
-IHsKPiA+ID4+IC0JYnJjbW5hbmRfd3JpdGVsKHZhbCwgY3RybC0+bmFuZF9iYXNlICsgb2Zmcyk7
-Cj4gPiA+PiArCWlmIChicmNtbmFuZF9zb2NfaGFzX29wcyhjdHJsLT5zb2MpKQo+ID4gPj4gKwkJ
-YnJjbW5hbmRfc29jX3dyaXRlKGN0cmwtPnNvYywgdmFsLCBvZmZzKTsKPiA+ID4+ICsJZWxzZQo+
-ID4gPj4gKwkJYnJjbW5hbmRfd3JpdGVsKHZhbCwgY3RybC0+bmFuZF9iYXNlICsgb2Zmcyk7Cj4g
-PiA+PiAgIH0gICAgCj4gPiA+PiAgID4+ICAgc3RhdGljIGludCBicmNtbmFuZF9yZXZpc2lvbl9p
-bml0KHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsKSAgICAKPiA+ID4+IEBAIC03NjYs
-MTMgKzc3MSwxOCBAQCBzdGF0aWMgaW5saW5lIHZvaWQgYnJjbW5hbmRfcm13X3JlZyhzdHJ1Y3Qg
-YnJjbW5hbmRfY29udHJvbGxlciAqY3RybCwgICAgCj4gPiA+PiAgID4+ICAgc3RhdGljIGlubGlu
-ZSB1MzIgYnJjbW5hbmRfcmVhZF9mYyhzdHJ1Y3QgYnJjbW5hbmRfY29udHJvbGxlciAqY3RybCwg
-aW50IHdvcmQpICAgIAo+ID4gPj4gICB7Cj4gPiA+PiArCWlmIChicmNtbmFuZF9zb2NfaGFzX29w
-cyhjdHJsLT5zb2MpKQo+ID4gPj4gKwkJcmV0dXJuIGJyY21uYW5kX3NvY19yZWFkKGN0cmwtPnNv
-YywgfjApOwo+ID4gPj4gICAJcmV0dXJuIF9fcmF3X3JlYWRsKGN0cmwtPm5hbmRfZmMgKyB3b3Jk
-ICogNCk7Cj4gPiA+PiAgIH0gICAgCj4gPiA+PiAgID4+ICAgc3RhdGljIGlubGluZSB2b2lkIGJy
-Y21uYW5kX3dyaXRlX2ZjKHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsLCAgICAKPiA+
-ID4+ICAgCQkJCSAgICAgaW50IHdvcmQsIHUzMiB2YWwpCj4gPiA+PiAgIHsKPiA+ID4+IC0JX19y
-YXdfd3JpdGVsKHZhbCwgY3RybC0+bmFuZF9mYyArIHdvcmQgKiA0KTsKPiA+ID4+ICsJaWYgKGJy
-Y21uYW5kX3NvY19oYXNfb3BzKGN0cmwtPnNvYykpCj4gPiA+PiArCQlicmNtbmFuZF9zb2Nfd3Jp
-dGUoY3RybC0+c29jLCB2YWwsIH4wKTsKPiA+ID4+ICsJZWxzZQo+ID4gPj4gKwkJX19yYXdfd3Jp
-dGVsKHZhbCwgY3RybC0+bmFuZF9mYyArIHdvcmQgKiA0KTsKPiA+ID4+ICAgfSAgICAKPiA+ID4+
-ICAgPj4gICBzdGF0aWMgaW5saW5lIHZvaWQgZWR1X3dyaXRlbChzdHJ1Y3QgYnJjbW5hbmRfY29u
-dHJvbGxlciAqY3RybCwgICAgCj4gPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9y
-YXcvYnJjbW5hbmQvYnJjbW5hbmQuaCBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2Jy
-Y21uYW5kLmgKPiA+ID4+IGluZGV4IGViNDk4ZmJlNTA1ZS4uYTNmMmFkNWY2NTcyIDEwMDY0NAo+
-ID4gPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuaAo+ID4g
-Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuaAo+ID4gPj4g
-QEAgLTExLDEyICsxMSwxOSBAQCAgICAKPiA+ID4+ICAgPj4gICBzdHJ1Y3QgcGxhdGZvcm1fZGV2
-aWNlOyAgICAKPiA+ID4+ICAgc3RydWN0IGRldl9wbV9vcHM7Cj4gPiA+PiArc3RydWN0IGJyY21u
-YW5kX2lvX29wczsgICAgCj4gPiA+PiAgID4+ICAgc3RydWN0IGJyY21uYW5kX3NvYyB7ICAgIAo+
-ID4gPj4gICAJYm9vbCAoKmN0bHJkeV9hY2spKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYyk7Cj4g
-PiA+PiAgIAl2b2lkICgqY3RscmR5X3NldF9lbmFibGVkKShzdHJ1Y3QgYnJjbW5hbmRfc29jICpz
-b2MsIGJvb2wgZW4pOwo+ID4gPj4gICAJdm9pZCAoKnByZXBhcmVfZGF0YV9idXMpKHN0cnVjdCBi
-cmNtbmFuZF9zb2MgKnNvYywgYm9vbCBwcmVwYXJlLAo+ID4gPj4gICAJCQkJIGJvb2wgaXNfcGFy
-YW0pOwo+ID4gPj4gKwljb25zdCBzdHJ1Y3QgYnJjbW5hbmRfaW9fb3BzICpvcHM7Cj4gPiA+PiAr
-fTsKPiA+ID4+ICsKPiA+ID4+ICtzdHJ1Y3QgYnJjbW5hbmRfaW9fb3BzIHsKPiA+ID4+ICsJdTMy
-ICgqcmVhZF9yZWcpKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYywgdTMyIG9mZnNldCk7Cj4gPiA+
-PiArCXZvaWQgKCp3cml0ZV9yZWcpKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYywgdTMyIHZhbCwg
-dTMyIG9mZnNldCk7Cj4gPiA+PiAgIH07ICAgIAo+ID4gPj4gICA+PiAgIHN0YXRpYyBpbmxpbmUg
-dm9pZCBicmNtbmFuZF9zb2NfZGF0YV9idXNfcHJlcGFyZShzdHJ1Y3QgYnJjbW5hbmRfc29jICpz
-b2MsICAgIAo+ID4gPj4gQEAgLTU4LDYgKzY1LDIyIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBicmNt
-bmFuZF93cml0ZWwodTMyIHZhbCwgdm9pZCBfX2lvbWVtICphZGRyKQo+ID4gPj4gICAJCXdyaXRl
-bF9yZWxheGVkKHZhbCwgYWRkcik7Cj4gPiA+PiAgIH0gICAgCj4gPiA+PiAgID4+ICtzdGF0aWMg
-aW5saW5lIGJvb2wgYnJjbW5hbmRfc29jX2hhc19vcHMoc3RydWN0IGJyY21uYW5kX3NvYyAqc29j
-KSAgICAKPiA+ID4+ICt7Cj4gPiA+PiArCXJldHVybiBzb2MgJiYgc29jLT5vcHMgJiYgc29jLT5v
-cHMtPnJlYWRfcmVnICYmIHNvYy0+b3BzLT53cml0ZV9yZWc7Cj4gPiA+PiArfQo+ID4gPj4gKwo+
-ID4gPj4gK3N0YXRpYyBpbmxpbmUgdTMyIGJyY21uYW5kX3NvY19yZWFkKHN0cnVjdCBicmNtbmFu
-ZF9zb2MgKnNvYywgdTMyIG9mZnNldCkKPiA+ID4+ICt7Cj4gPiA+PiArCXJldHVybiBzb2MtPm9w
-cy0+cmVhZF9yZWcoc29jLCBvZmZzZXQpOwo+ID4gPj4gK30KPiA+ID4+ICsKPiA+ID4+ICtzdGF0
-aWMgaW5saW5lIHZvaWQgYnJjbW5hbmRfc29jX3dyaXRlKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNv
-YywgdTMyIHZhbCwKPiA+ID4+ICsJCQkJICAgICAgdTMyIG9mZnNldCkKPiA+ID4+ICt7Cj4gPiA+
-PiArCXNvYy0+b3BzLT53cml0ZV9yZWcoc29jLCB2YWwsIG9mZnNldCk7Cj4gPiA+PiArfQo+ID4g
-Pj4gKyAgICAKPiA+ID4gCj4gPiA+IEl0IG1pZ2h0IGJlIHdvcnRoIGxvb2tpbmcgaW50byBtb3Jl
-IG9wdGltaXplZCB3YXlzIHRvIGRvIHRoZXNlIGNoZWNrcywKPiA+ID4gaW4gcGFydGljdWxhciB0
-aGUgcmVhZC93cml0ZV9yZWcgb25lcyBiZWNhdXNlIHlvdSdyZSBjaGVja2luZyBhZ2FpbnN0Cj4g
-PiA+IHNvbWUgc3RhdGljIGRhdGEgd2hpY2ggY2Fubm90IGJlIG9wdGltaXplZCBvdXQgYnkgdGhl
-IGNvbXBpbGVyIGJ1dAo+ID4gPiB3b24ndCBjaGFuZ2UgaW4gdGhlIGxpZmV0aW1lIG9mIHRoZSBr
-ZXJuZWwuICAgIAo+ID4gCj4gPiBJIHN1cHBvc2UgSSBjb3VsZCBhZGQgYW4gYWRkaXRpb24gaWYg
-SVNfRU5BQkxFRChDT05GSUdfTVREX05BTkRfQlJDTU5BTkRfQkNNQSkgYXQgdGhlIGZyb250IG9m
-IGJyY21uYW5kX3NvY19oYXNfb3BzKCksIHdvdWxkIHRoYXQgYWRkcmVzcyB5b3VyIGNvbmNlcm4g
-b3IgeW91IGhhdmUgc29tZXRoaW5nIGVsc2UgaW4gbWluZD8gIAo+IAo+IEkgZG9uJ3QgbGlrZSBt
-dWNoIHRoZSAjaWZkZWYgc29sdXRpb24sIGluc3RlYWQgeW91IG1pZ2h0IHRoaW5rIG9mCj4gc3Rh
-dGljIGtleXMsIG9yIGV2ZW4gYmV0dGVyIHVzaW5nIGEgcmVnbWFwLiBSZWdtYXAgaW1wbGVtZW50
-YXRpb24gaXMKPiBmcmVlLCB5b3UgY2FuIHVzZSBlaXRoZXIgb25lIHdheSBvciB0aGUgb3RoZXIg
-YW5kIGZvciBhbG1vc3Qgbm8KPiBvdmVyaGVhZCBjb21wYXJlZCB0byB0aGUgYnVuY2ggb2YgZnVu
-Y3Rpb25zIHlvdSBoYXZlIGhlcmUuCgpNYXliZSByZWdtYXBzIHdpbGwgYWN0dWFsbHkgYmUgc2xv
-d2VyIHRoYW4gdGhlc2UgcmVndWxhciBpZidzLiBQZXJoYXBzCnN0YXRpYyBrZXlzIGFyZSB0aGUg
-YmVzdCBvcHRpb24/CgpDaGVlcnMsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On Tue,  4 Jan 2022 09:36:24 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Soon the SPI-NAND core will need a way to request a SPI controller to
+> enable ECC support for a given operation. This is because of the
+> pipelined integration of certain ECC engines, which are directly managed
+> by the SPI controller itself.
+> 
+> Introduce a spi_mem_op additional field for this purpose: ecc.
+> 
+> So far this field is left unset and checked to be false by all
+> the SPI controller drivers in their ->supports_op() hook, as they all
+> call spi_mem_default_supports_op().
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Acked-by: Pratyush Yadav <p.yadav@ti.com>
+> ---
+>  drivers/spi/spi-mem.c       | 5 +++++
+>  include/linux/spi/spi-mem.h | 5 +++++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index ed966d8129eb..f38ac31961c9 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -178,6 +178,11 @@ bool spi_mem_default_supports_op(struct spi_mem *mem,
+>  			return false;
+>  	}
+>  
+> +	if (op->data.ecc) {
+> +		if (!spi_mem_controller_is_capable(ctlr, ecc))
+> +			return false;
+> +	}
+
+Nit:
+
+	if (op->data.ecc &&
+	    !spi_mem_controller_is_capable(ctlr, ecc))
+		return false;
+
+> +
+>  	return spi_mem_check_buswidth(mem, op);
+>  }
+>  EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> index 4a1bfe689872..051050b40309 100644
+> --- a/include/linux/spi/spi-mem.h
+> +++ b/include/linux/spi/spi-mem.h
+> @@ -89,6 +89,7 @@ enum spi_mem_data_dir {
+>   * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or not
+>   * @data.buswidth: number of IO lanes used to send/receive the data
+>   * @data.dtr: whether the data should be sent in DTR mode or not
+> + * @data.ecc: whether error correction is required or not
+>   * @data.dir: direction of the transfer
+>   * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+>   *		 operation does not involve transferring data
+> @@ -119,6 +120,7 @@ struct spi_mem_op {
+>  	struct {
+>  		u8 buswidth;
+>  		u8 dtr : 1;
+> +		u8 ecc : 1;
+>  		enum spi_mem_data_dir dir;
+>  		unsigned int nbytes;
+>  		union {
+> @@ -126,6 +128,7 @@ struct spi_mem_op {
+>  			const void *out;
+>  		} buf;
+>  	} data;
+> +
+>  };
+>  
+>  #define SPI_MEM_OP(__cmd, __addr, __dummy, __data)		\
+> @@ -288,9 +291,11 @@ struct spi_controller_mem_ops {
+>  /**
+>   * struct spi_controller_mem_caps - SPI memory controller capabilities
+>   * @dtr: Supports DTR operations
+> + * @ecc: Supports operations with error correction
+>   */
+>  struct spi_controller_mem_caps {
+>  	bool dtr;
+> +	bool ecc;
+>  };
+>  
+>  #define spi_mem_controller_is_capable(ctlr, cap)	\
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
