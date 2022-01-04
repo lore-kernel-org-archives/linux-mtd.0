@@ -4,51 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8A2FC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 08:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E10BC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 09:03:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DyjxQEsPsASK7Fv2StvLGe/VoooUjwCpAj/CCocXMJ4=; b=nJ/kJvK1YESPXc
-	74Z/90r1StAT41LjmhuiG+e4cZv5ZQs1CuFH+RlzOolQVBJ+7ALAZlrWaz1YJTfQ7Omxdtqz7h2wV
-	euvv9AdAxx+R2MFBo2sptcM9yHHUyV2P7gxSLrtZXug5PgrC1AdjU0MlDSviBcqhVOqEoM7DJKWg7
-	9BGEkdgsXVpKOwt/i4dX888tgqKGCCFxvXvtOcWetnU3qQE6KIp3b6czhSLeqCrCq/Z+6QHNmZ7xN
-	CdAv72Awm7jkrmVy9XuQkP3rY+bNOznpH/ImjYl2WBlNuRO3ZcvczK/XyZrbZumL0wD6bYbtZhtlS
-	IaZVgqOuKCgNw/jn3HCA==;
+	List-Owner; bh=JQJoVFhNhTteOUewGSEJTWvemkcFio6b40ZeBDmQaPY=; b=aUhB8Q+5rSM/2m
+	hENYhO1yp6LmUXozJJxT2LFn3M1vwqcQTDBHkHbhl8xVsgu8S5VU5sH6t035/kMQKiqiTSvpxEe1z
+	tno/9fLb9q4Uhvfnne4c4IUf6imZyFzlazaX4Da9aFfnCEO7pjNoOCYZ/Oj2HmqxZPUvGqkm4c1rQ
+	/HOqBX58FwVRQeSmMb4dP8r60OSzSnNwOazvCcbn7UsdmZzJabzJ5GZo0MHdAIJ/TUmLXluvNq+xB
+	K/WX4NE7/FV1JnrYjzOuG7LlQp6VOI3XUJT3hs6/Z+cUHHZHO5UsvLL958QcJTxzxycU/Ow3L+Mra
+	BWkNK2UcJyi0OuFKiHhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4fTI-00Andx-Hw; Tue, 04 Jan 2022 08:47:08 +0000
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
+	id 1n4fiQ-00Arou-7G; Tue, 04 Jan 2022 09:02:46 +0000
+Received: from relay4-d.mail.gandi.net ([217.70.183.196])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4fJT-00Akmd-E7
- for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 08:37:01 +0000
+ id 1n4fdo-00AqX9-Ut
+ for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 08:58:03 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 891A91C0006;
- Tue,  4 Jan 2022 08:36:56 +0000 (UTC)
+ by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 22E05E000C;
+ Tue,  4 Jan 2022 08:57:57 +0000 (UTC)
+Date: Tue, 4 Jan 2022 09:57:55 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
- <linux-spi@vger.kernel.org>
-Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v9 13/13] spi: mxic: Add support for pipelined ECC operations
-Date: Tue,  4 Jan 2022 09:36:31 +0100
-Message-Id: <20220104083631.40776-14-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220104083631.40776-1-miquel.raynal@bootlin.com>
-References: <20220104083631.40776-1-miquel.raynal@bootlin.com>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Cai
+ Huoqing <caihuoqing@baidu.com>, Colin Ian King <colin.king@intel.com>, open
+ list <linux-kernel@vger.kernel.org>, "open list:BROADCOM SPECIFIC AMBA
+ DRIVER (BCMA)" <linux-wireless@vger.kernel.org>, "open list:BROADCOM STB
+ NAND FLASH DRIVER" <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: [PATCH 1/9] mtd: rawnand: brcmnand: Allow SoC to provide I/O
+ operations
+Message-ID: <20220104095755.46858287@xps13>
+In-Reply-To: <20220104093221.6414aab9@xps13>
+References: <20211223002225.3738385-1-f.fainelli@gmail.com>
+ <20211223002225.3738385-2-f.fainelli@gmail.com>
+ <20220103174953.40d7fa52@xps13>
+ <299bf6ed-80e6-ad15-8dc7-5ededaca15c5@gmail.com>
+ <20220104093221.6414aab9@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220104_003659_780801_F2B14B3A 
-X-CRM114-Status: GOOD (  18.91  )
+X-CRM114-CacheID: sfid-20220104_005801_314421_80EDC98D 
+X-CRM114-Status: GOOD (  31.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,238 +65,105 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some SPI-NAND chips do not have a proper on-die ECC engine providing
-error correction/detection. This is particularly an issue on embedded
-devices with limited resources because all the computations must
-happen in software, unless an external hardware engine is provided.
-
-These external engines are new and can be of two categories: external
-or pipelined. Macronix is providing both, the former being already
-supported. The second, however, is very SoC implementation dependent
-and must be instantiated by the SPI host controller directly.
-
-An entire subsystem has been contributed to support these engines which
-makes the insertion into another subsystem such as SPI quite
-straightforward without the need for a lot of specific functions.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Mark Brown <broonie@kernel.org>
----
- drivers/spi/Kconfig    |   2 +-
- drivers/spi/spi-mxic.c | 113 ++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 112 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 83e352b0c8f9..bff75629e872 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -856,7 +856,7 @@ config SPI_SYNQUACER
- 
- config SPI_MXIC
- 	tristate "Macronix MX25F0A SPI controller"
--	depends on SPI_MASTER
-+	depends on SPI_MASTER && MTD_NAND_ECC
- 	help
- 	  This selects the Macronix MX25F0A SPI controller driver.
- 
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index 0d3390964c6f..55c092069301 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -12,6 +12,8 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/nand-ecc-mxic.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/spi/spi.h>
-@@ -167,6 +169,7 @@
- #define HW_TEST(x)		(0xe0 + ((x) * 4))
- 
- struct mxic_spi {
-+	struct device *dev;
- 	struct clk *ps_clk;
- 	struct clk *send_clk;
- 	struct clk *send_dly_clk;
-@@ -177,6 +180,12 @@ struct mxic_spi {
- 		dma_addr_t dma;
- 		size_t size;
- 	} linear;
-+
-+	struct {
-+		bool use_pipelined_conf;
-+		struct nand_ecc_engine *pipelined_engine;
-+		void *ctx;
-+	} ecc;
- };
- 
- static int mxic_spi_clk_enable(struct mxic_spi *mxic)
-@@ -400,7 +409,15 @@ static ssize_t mxic_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
- 	       LMODE_EN,
- 	       mxic->regs + LRD_CTRL);
- 
--	memcpy_fromio(buf, mxic->linear.map, len);
-+	if (mxic->ecc.use_pipelined_conf && desc->info.op_tmpl.data.ecc) {
-+		ret = mxic_ecc_process_data_pipelined(mxic->ecc.pipelined_engine,
-+						      NAND_PAGE_READ,
-+						      mxic->linear.dma + offs);
-+		if (ret)
-+			return ret;
-+	} else {
-+		memcpy_fromio(buf, mxic->linear.map, len);
-+	}
- 
- 	writel(INT_LRD_DIS, mxic->regs + INT_STS);
- 	writel(0, mxic->regs + LRD_CTRL);
-@@ -436,7 +453,15 @@ static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
- 	       LMODE_EN,
- 	       mxic->regs + LWR_CTRL);
- 
--	memcpy_toio(mxic->linear.map, buf, len);
-+	if (mxic->ecc.use_pipelined_conf && desc->info.op_tmpl.data.ecc) {
-+		ret = mxic_ecc_process_data_pipelined(mxic->ecc.pipelined_engine,
-+						      NAND_PAGE_WRITE,
-+						      mxic->linear.dma + offs);
-+		if (ret)
-+			return ret;
-+	} else {
-+		memcpy_toio(mxic->linear.map, buf, len);
-+	}
- 
- 	writel(INT_LWR_DIS, mxic->regs + INT_STS);
- 	writel(0, mxic->regs + LWR_CTRL);
-@@ -547,6 +572,7 @@ static const struct spi_controller_mem_ops mxic_spi_mem_ops = {
- 
- static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
- 	.dtr = true,
-+	.ecc = true,
- };
- 
- static void mxic_spi_set_cs(struct spi_device *spi, bool lvl)
-@@ -611,6 +637,80 @@ static int mxic_spi_transfer_one(struct spi_master *master,
- 	return 0;
- }
- 
-+/* ECC wrapper */
-+static int mxic_spi_mem_ecc_init_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+	struct mxic_spi *mxic = nand->ecc.engine->priv;
-+
-+	mxic->ecc.use_pipelined_conf = true;
-+
-+	return ops->init_ctx(nand);
-+}
-+
-+static void mxic_spi_mem_ecc_cleanup_ctx(struct nand_device *nand)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+	struct mxic_spi *mxic = nand->ecc.engine->priv;
-+
-+	mxic->ecc.use_pipelined_conf = false;
-+
-+	ops->cleanup_ctx(nand);
-+}
-+
-+static int mxic_spi_mem_ecc_prepare_io_req(struct nand_device *nand,
-+					   struct nand_page_io_req *req)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+
-+	return ops->prepare_io_req(nand, req);
-+}
-+
-+static int mxic_spi_mem_ecc_finish_io_req(struct nand_device *nand,
-+					  struct nand_page_io_req *req)
-+{
-+	struct nand_ecc_engine_ops *ops = mxic_ecc_get_pipelined_ops();
-+
-+	return ops->finish_io_req(nand, req);
-+}
-+
-+static struct nand_ecc_engine_ops mxic_spi_mem_ecc_engine_pipelined_ops = {
-+	.init_ctx = mxic_spi_mem_ecc_init_ctx,
-+	.cleanup_ctx = mxic_spi_mem_ecc_cleanup_ctx,
-+	.prepare_io_req = mxic_spi_mem_ecc_prepare_io_req,
-+	.finish_io_req = mxic_spi_mem_ecc_finish_io_req,
-+};
-+
-+static void mxic_spi_mem_ecc_remove(struct mxic_spi *mxic)
-+{
-+	if (mxic->ecc.pipelined_engine) {
-+		mxic_ecc_put_pipelined_engine(mxic->ecc.pipelined_engine);
-+		nand_ecc_unregister_on_host_hw_engine(mxic->ecc.pipelined_engine);
-+	}
-+}
-+
-+static int mxic_spi_mem_ecc_probe(struct platform_device *pdev,
-+				  struct mxic_spi *mxic)
-+{
-+	struct nand_ecc_engine *eng;
-+
-+	if (!mxic_ecc_get_pipelined_ops())
-+		return -EOPNOTSUPP;
-+
-+	eng = mxic_ecc_get_pipelined_engine(pdev);
-+	if (IS_ERR(eng))
-+		return PTR_ERR(eng);
-+
-+	eng->dev = &pdev->dev;
-+	eng->integration = NAND_ECC_ENGINE_INTEGRATION_PIPELINED;
-+	eng->ops = &mxic_spi_mem_ecc_engine_pipelined_ops;
-+	eng->priv = mxic;
-+	mxic->ecc.pipelined_engine = eng;
-+	nand_ecc_register_on_host_hw_engine(eng);
-+
-+	return 0;
-+}
-+
- static int __maybe_unused mxic_spi_runtime_suspend(struct device *dev)
- {
- 	struct spi_master *master = dev_get_drvdata(dev);
-@@ -656,6 +756,7 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, master);
- 
- 	mxic = spi_master_get_devdata(master);
-+	mxic->dev = &pdev->dev;
- 
- 	master->dev.of_node = pdev->dev.of_node;
- 
-@@ -702,6 +803,12 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 
- 	mxic_spi_hw_init(mxic);
- 
-+	ret = mxic_spi_mem_ecc_probe(pdev, mxic);
-+	if (ret == -EPROBE_DEFER) {
-+		pm_runtime_disable(&pdev->dev);
-+		return ret;
-+	}
-+
- 	ret = spi_register_master(master);
- 	if (ret) {
- 		dev_err(&pdev->dev, "spi_register_master failed\n");
-@@ -714,8 +821,10 @@ static int mxic_spi_probe(struct platform_device *pdev)
- static int mxic_spi_remove(struct platform_device *pdev)
- {
- 	struct spi_master *master = platform_get_drvdata(pdev);
-+	struct mxic_spi *mxic = spi_master_get_devdata(master);
- 
- 	pm_runtime_disable(&pdev->dev);
-+	mxic_spi_mem_ecc_remove(mxic);
- 	spi_unregister_master(master);
- 
- 	return 0;
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKbWlxdWVsLnJheW5hbEBib290bGluLmNvbSB3cm90ZSBvbiBUdWUsIDQgSmFu
+IDIwMjIgMDk6MzI6MjEgKzAxMDA6Cgo+IEhpIEZsb3JpYW4sCj4gCj4gZi5mYWluZWxsaUBnbWFp
+bC5jb20gd3JvdGUgb24gTW9uLCAzIEphbiAyMDIyIDA5OjI0OjI2IC0wODAwOgo+IAo+ID4gT24g
+MS8zLzIwMjIgODo0OSBBTSwgTWlxdWVsIFJheW5hbCB3cm90ZTogIAo+ID4gPiBIaSBGbG9yaWFu
+LAo+ID4gPiAKPiA+ID4gZi5mYWluZWxsaUBnbWFpbC5jb20gd3JvdGUgb24gV2VkLCAyMiBEZWMg
+MjAyMSAxNjoyMjoxNyAtMDgwMDoKPiA+ID4gICAgIAo+ID4gPj4gQWxsb3cgYSBicmNtbmFuZF9z
+b2MgaW5zdGFuY2UgdG8gcHJvdmlkZSBhIGN1c3RvbSBzZXQgb2YgSS9PIG9wZXJhdGlvbnMKPiA+
+ID4+IHdoaWNoIHdlIHdpbGwgcmVxdWlyZSB3aGVuIHVzaW5nIHRoaXMgZHJpdmVyIG9uIGEgQkNN
+QSBidXMgd2hpY2ggaXMgbm90Cj4gPiA+PiBkaXJlY3RseSBtZW1vcnkgbWFwcGVkIEkvTy4gVXBk
+YXRlIHRoZSBuYW5kX3tyZWFkLHdyaXRlfV9yZWcgYWNjb3JkaW5nbHkKPiA+ID4+IHRvIHVzZSB0
+aGUgU29DIG9wZXJhdGlvbnMgaWYgcHJvdmlkZWQuCj4gPiA+Pgo+ID4gPj4gU2lnbmVkLW9mZi1i
+eTogRmxvcmlhbiBGYWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+Cj4gPiA+PiAtLS0KPiA+
+ID4+ICAgZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuYyB8IDE0ICsrKysr
+KysrKysrKy0tCj4gPiA+PiAgIGRyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5k
+LmggfCAyMyArKysrKysrKysrKysrKysrKysrKysrKwo+ID4gPj4gICAyIGZpbGVzIGNoYW5nZWQs
+IDM1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gPiA+Pgo+ID4gPj4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2JyY21uYW5kLmMgYi9kcml2ZXJzL210
+ZC9uYW5kL3Jhdy9icmNtbmFuZC9icmNtbmFuZC5jCj4gPiA+PiBpbmRleCBmNzU5Mjk3ODNiOTQu
+LjdhMTY3M2IxYjFhZiAxMDA2NDQKPiA+ID4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Jy
+Y21uYW5kL2JyY21uYW5kLmMKPiA+ID4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21u
+YW5kL2JyY21uYW5kLmMKPiA+ID4+IEBAIC01OTQsMTMgKzU5NCwxOCBAQCBlbnVtIHsgICAgCj4g
+PiA+PiAgID4+ICAgc3RhdGljIGlubGluZSB1MzIgbmFuZF9yZWFkcmVnKHN0cnVjdCBicmNtbmFu
+ZF9jb250cm9sbGVyICpjdHJsLCB1MzIgb2ZmcykgICAgCj4gPiA+PiAgIHsKPiA+ID4+ICsJaWYg
+KGJyY21uYW5kX3NvY19oYXNfb3BzKGN0cmwtPnNvYykpCj4gPiA+PiArCQlyZXR1cm4gYnJjbW5h
+bmRfc29jX3JlYWQoY3RybC0+c29jLCBvZmZzKTsKPiA+ID4+ICAgCXJldHVybiBicmNtbmFuZF9y
+ZWFkbChjdHJsLT5uYW5kX2Jhc2UgKyBvZmZzKTsKPiA+ID4+ICAgfSAgICAKPiA+ID4+ICAgPj4g
+ICBzdGF0aWMgaW5saW5lIHZvaWQgbmFuZF93cml0ZXJlZyhzdHJ1Y3QgYnJjbW5hbmRfY29udHJv
+bGxlciAqY3RybCwgdTMyIG9mZnMsICAgIAo+ID4gPj4gICAJCQkJIHUzMiB2YWwpCj4gPiA+PiAg
+IHsKPiA+ID4+IC0JYnJjbW5hbmRfd3JpdGVsKHZhbCwgY3RybC0+bmFuZF9iYXNlICsgb2Zmcyk7
+Cj4gPiA+PiArCWlmIChicmNtbmFuZF9zb2NfaGFzX29wcyhjdHJsLT5zb2MpKQo+ID4gPj4gKwkJ
+YnJjbW5hbmRfc29jX3dyaXRlKGN0cmwtPnNvYywgdmFsLCBvZmZzKTsKPiA+ID4+ICsJZWxzZQo+
+ID4gPj4gKwkJYnJjbW5hbmRfd3JpdGVsKHZhbCwgY3RybC0+bmFuZF9iYXNlICsgb2Zmcyk7Cj4g
+PiA+PiAgIH0gICAgCj4gPiA+PiAgID4+ICAgc3RhdGljIGludCBicmNtbmFuZF9yZXZpc2lvbl9p
+bml0KHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsKSAgICAKPiA+ID4+IEBAIC03NjYs
+MTMgKzc3MSwxOCBAQCBzdGF0aWMgaW5saW5lIHZvaWQgYnJjbW5hbmRfcm13X3JlZyhzdHJ1Y3Qg
+YnJjbW5hbmRfY29udHJvbGxlciAqY3RybCwgICAgCj4gPiA+PiAgID4+ICAgc3RhdGljIGlubGlu
+ZSB1MzIgYnJjbW5hbmRfcmVhZF9mYyhzdHJ1Y3QgYnJjbW5hbmRfY29udHJvbGxlciAqY3RybCwg
+aW50IHdvcmQpICAgIAo+ID4gPj4gICB7Cj4gPiA+PiArCWlmIChicmNtbmFuZF9zb2NfaGFzX29w
+cyhjdHJsLT5zb2MpKQo+ID4gPj4gKwkJcmV0dXJuIGJyY21uYW5kX3NvY19yZWFkKGN0cmwtPnNv
+YywgfjApOwo+ID4gPj4gICAJcmV0dXJuIF9fcmF3X3JlYWRsKGN0cmwtPm5hbmRfZmMgKyB3b3Jk
+ICogNCk7Cj4gPiA+PiAgIH0gICAgCj4gPiA+PiAgID4+ICAgc3RhdGljIGlubGluZSB2b2lkIGJy
+Y21uYW5kX3dyaXRlX2ZjKHN0cnVjdCBicmNtbmFuZF9jb250cm9sbGVyICpjdHJsLCAgICAKPiA+
+ID4+ICAgCQkJCSAgICAgaW50IHdvcmQsIHUzMiB2YWwpCj4gPiA+PiAgIHsKPiA+ID4+IC0JX19y
+YXdfd3JpdGVsKHZhbCwgY3RybC0+bmFuZF9mYyArIHdvcmQgKiA0KTsKPiA+ID4+ICsJaWYgKGJy
+Y21uYW5kX3NvY19oYXNfb3BzKGN0cmwtPnNvYykpCj4gPiA+PiArCQlicmNtbmFuZF9zb2Nfd3Jp
+dGUoY3RybC0+c29jLCB2YWwsIH4wKTsKPiA+ID4+ICsJZWxzZQo+ID4gPj4gKwkJX19yYXdfd3Jp
+dGVsKHZhbCwgY3RybC0+bmFuZF9mYyArIHdvcmQgKiA0KTsKPiA+ID4+ICAgfSAgICAKPiA+ID4+
+ICAgPj4gICBzdGF0aWMgaW5saW5lIHZvaWQgZWR1X3dyaXRlbChzdHJ1Y3QgYnJjbW5hbmRfY29u
+dHJvbGxlciAqY3RybCwgICAgCj4gPiA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYnJjbW5hbmQvYnJjbW5hbmQuaCBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2JyY21uYW5kL2Jy
+Y21uYW5kLmgKPiA+ID4+IGluZGV4IGViNDk4ZmJlNTA1ZS4uYTNmMmFkNWY2NTcyIDEwMDY0NAo+
+ID4gPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuaAo+ID4g
+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvYnJjbW5hbmQvYnJjbW5hbmQuaAo+ID4gPj4g
+QEAgLTExLDEyICsxMSwxOSBAQCAgICAKPiA+ID4+ICAgPj4gICBzdHJ1Y3QgcGxhdGZvcm1fZGV2
+aWNlOyAgICAKPiA+ID4+ICAgc3RydWN0IGRldl9wbV9vcHM7Cj4gPiA+PiArc3RydWN0IGJyY21u
+YW5kX2lvX29wczsgICAgCj4gPiA+PiAgID4+ICAgc3RydWN0IGJyY21uYW5kX3NvYyB7ICAgIAo+
+ID4gPj4gICAJYm9vbCAoKmN0bHJkeV9hY2spKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYyk7Cj4g
+PiA+PiAgIAl2b2lkICgqY3RscmR5X3NldF9lbmFibGVkKShzdHJ1Y3QgYnJjbW5hbmRfc29jICpz
+b2MsIGJvb2wgZW4pOwo+ID4gPj4gICAJdm9pZCAoKnByZXBhcmVfZGF0YV9idXMpKHN0cnVjdCBi
+cmNtbmFuZF9zb2MgKnNvYywgYm9vbCBwcmVwYXJlLAo+ID4gPj4gICAJCQkJIGJvb2wgaXNfcGFy
+YW0pOwo+ID4gPj4gKwljb25zdCBzdHJ1Y3QgYnJjbW5hbmRfaW9fb3BzICpvcHM7Cj4gPiA+PiAr
+fTsKPiA+ID4+ICsKPiA+ID4+ICtzdHJ1Y3QgYnJjbW5hbmRfaW9fb3BzIHsKPiA+ID4+ICsJdTMy
+ICgqcmVhZF9yZWcpKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYywgdTMyIG9mZnNldCk7Cj4gPiA+
+PiArCXZvaWQgKCp3cml0ZV9yZWcpKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNvYywgdTMyIHZhbCwg
+dTMyIG9mZnNldCk7Cj4gPiA+PiAgIH07ICAgIAo+ID4gPj4gICA+PiAgIHN0YXRpYyBpbmxpbmUg
+dm9pZCBicmNtbmFuZF9zb2NfZGF0YV9idXNfcHJlcGFyZShzdHJ1Y3QgYnJjbW5hbmRfc29jICpz
+b2MsICAgIAo+ID4gPj4gQEAgLTU4LDYgKzY1LDIyIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBicmNt
+bmFuZF93cml0ZWwodTMyIHZhbCwgdm9pZCBfX2lvbWVtICphZGRyKQo+ID4gPj4gICAJCXdyaXRl
+bF9yZWxheGVkKHZhbCwgYWRkcik7Cj4gPiA+PiAgIH0gICAgCj4gPiA+PiAgID4+ICtzdGF0aWMg
+aW5saW5lIGJvb2wgYnJjbW5hbmRfc29jX2hhc19vcHMoc3RydWN0IGJyY21uYW5kX3NvYyAqc29j
+KSAgICAKPiA+ID4+ICt7Cj4gPiA+PiArCXJldHVybiBzb2MgJiYgc29jLT5vcHMgJiYgc29jLT5v
+cHMtPnJlYWRfcmVnICYmIHNvYy0+b3BzLT53cml0ZV9yZWc7Cj4gPiA+PiArfQo+ID4gPj4gKwo+
+ID4gPj4gK3N0YXRpYyBpbmxpbmUgdTMyIGJyY21uYW5kX3NvY19yZWFkKHN0cnVjdCBicmNtbmFu
+ZF9zb2MgKnNvYywgdTMyIG9mZnNldCkKPiA+ID4+ICt7Cj4gPiA+PiArCXJldHVybiBzb2MtPm9w
+cy0+cmVhZF9yZWcoc29jLCBvZmZzZXQpOwo+ID4gPj4gK30KPiA+ID4+ICsKPiA+ID4+ICtzdGF0
+aWMgaW5saW5lIHZvaWQgYnJjbW5hbmRfc29jX3dyaXRlKHN0cnVjdCBicmNtbmFuZF9zb2MgKnNv
+YywgdTMyIHZhbCwKPiA+ID4+ICsJCQkJICAgICAgdTMyIG9mZnNldCkKPiA+ID4+ICt7Cj4gPiA+
+PiArCXNvYy0+b3BzLT53cml0ZV9yZWcoc29jLCB2YWwsIG9mZnNldCk7Cj4gPiA+PiArfQo+ID4g
+Pj4gKyAgICAKPiA+ID4gCj4gPiA+IEl0IG1pZ2h0IGJlIHdvcnRoIGxvb2tpbmcgaW50byBtb3Jl
+IG9wdGltaXplZCB3YXlzIHRvIGRvIHRoZXNlIGNoZWNrcywKPiA+ID4gaW4gcGFydGljdWxhciB0
+aGUgcmVhZC93cml0ZV9yZWcgb25lcyBiZWNhdXNlIHlvdSdyZSBjaGVja2luZyBhZ2FpbnN0Cj4g
+PiA+IHNvbWUgc3RhdGljIGRhdGEgd2hpY2ggY2Fubm90IGJlIG9wdGltaXplZCBvdXQgYnkgdGhl
+IGNvbXBpbGVyIGJ1dAo+ID4gPiB3b24ndCBjaGFuZ2UgaW4gdGhlIGxpZmV0aW1lIG9mIHRoZSBr
+ZXJuZWwuICAgIAo+ID4gCj4gPiBJIHN1cHBvc2UgSSBjb3VsZCBhZGQgYW4gYWRkaXRpb24gaWYg
+SVNfRU5BQkxFRChDT05GSUdfTVREX05BTkRfQlJDTU5BTkRfQkNNQSkgYXQgdGhlIGZyb250IG9m
+IGJyY21uYW5kX3NvY19oYXNfb3BzKCksIHdvdWxkIHRoYXQgYWRkcmVzcyB5b3VyIGNvbmNlcm4g
+b3IgeW91IGhhdmUgc29tZXRoaW5nIGVsc2UgaW4gbWluZD8gIAo+IAo+IEkgZG9uJ3QgbGlrZSBt
+dWNoIHRoZSAjaWZkZWYgc29sdXRpb24sIGluc3RlYWQgeW91IG1pZ2h0IHRoaW5rIG9mCj4gc3Rh
+dGljIGtleXMsIG9yIGV2ZW4gYmV0dGVyIHVzaW5nIGEgcmVnbWFwLiBSZWdtYXAgaW1wbGVtZW50
+YXRpb24gaXMKPiBmcmVlLCB5b3UgY2FuIHVzZSBlaXRoZXIgb25lIHdheSBvciB0aGUgb3RoZXIg
+YW5kIGZvciBhbG1vc3Qgbm8KPiBvdmVyaGVhZCBjb21wYXJlZCB0byB0aGUgYnVuY2ggb2YgZnVu
+Y3Rpb25zIHlvdSBoYXZlIGhlcmUuCgpNYXliZSByZWdtYXBzIHdpbGwgYWN0dWFsbHkgYmUgc2xv
+d2VyIHRoYW4gdGhlc2UgcmVndWxhciBpZidzLiBQZXJoYXBzCnN0YXRpYyBrZXlzIGFyZSB0aGUg
+YmVzdCBvcHRpb24/CgpDaGVlcnMsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
