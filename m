@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F725C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 08:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3595CC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 08:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vEYTn7O4nvwm9lJ+5qFxQ/3I5uVP/SYhWJju/eJPe+c=; b=NTIkxHCdxftKBx
-	pq59QNeov8Qseb6fprXgjuObdwx/QtB2eEol0qWSRpGjoUIlf6J7H2NQUJWHgZg9nfTcWCpqxiUEG
-	cRvTDMgb5O5rUV7vuJ8SlOxaV3iHcye9xv6j9hgLMZhoIe2Uyr91qy8CY9uB1vkj5x1HQeel7eMJu
-	nFzD9TJumFnL24mCHuQWSkJS8KRTnGIgNb47KPo1VbQvDZTvADtaqcMqQi93e+xckjXWnIQmeB0pL
-	lB6vD/RRUqXhA1phVFfzIesnbkdruWNewxEqbkMcwcloChJgsIsOV1eF8PQrZ2PI7Onk4NdYlbvDo
-	sHK2JOUbntp/It6s8rng==;
+	List-Owner; bh=XmtMxDAAO+8P3WhYC6guV1ukg7FnE+BH50OaR6fqcx4=; b=jFpBZ1K5iBgZrD
+	96FBtWtHoKpYDMrW7Mdi+M/2d5RdfNb9CVfOGBvDP3COShTSI7ECnLZw/3XC6ZQlXoxJHgkh24vsn
+	WRDn+O9+Fc9dA1wb40nE3KNcJheJpsozoo3b6MW+5UPVEsD0xPiqYhj2ZCpq0Rr+uc5aJm1Gxp71E
+	C/xBcvWHianFkRumXxLcEazHYIQov/AV3+xmyysRDa3oAd28YWCeCCB46lzqIJz4e3T7305AM0/ml
+	X6F+yqNkspf3hXZshbGSZzCvSWecplda3U94Wgeacqr0xWywtQ3QSmWYMWPyTppfpSpc2VEHRw/K6
+	oo4a60U55PyOMGgbSCAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4fJE-00AkgM-Qw; Tue, 04 Jan 2022 08:36:44 +0000
+	id 1n4fJW-00Ako8-8S; Tue, 04 Jan 2022 08:37:02 +0000
 Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4fJ9-00Akez-W8
+ id 1n4fJ8-00AkeG-DU
  for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 08:36:43 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 3B90C1C0008;
- Tue,  4 Jan 2022 08:36:37 +0000 (UTC)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 852B21C0004;
+ Tue,  4 Jan 2022 08:36:35 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -39,16 +39,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
  Boris Brezillon <boris.brezillon@collabora.com>,
  Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v9 02/13] spi: spi-mem: Check the controller extra capabilities
-Date: Tue,  4 Jan 2022 09:36:20 +0100
-Message-Id: <20220104083631.40776-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v9 01/13] spi: spi-mem: Introduce a capability structure
+Date: Tue,  4 Jan 2022 09:36:19 +0100
+Message-Id: <20220104083631.40776-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20220104083631.40776-1-miquel.raynal@bootlin.com>
 References: <20220104083631.40776-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220104_003640_190150_F1F736C7 
-X-CRM114-Status: GOOD (  10.23  )
+X-CRM114-CacheID: sfid-20220104_003638_633647_06A22DCE 
+X-CRM114-Status: GOOD (  14.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,49 +65,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Controllers can now provide a spi-mem capabilities structure. Let's make
-use of it in spi_mem_controller_default_supports_op(). As we want to
-check for DTR operations as well as normal operations in a single
-helper, let's pull the necessary checks from spi_mem_dtr_supports_op()
-for now.
+Create a spi_controller_mem_caps structure and put it within the
+spi_controller structure close to the spi_controller_mem_ops
+strucure. So far the only field in this structure is the support for dtr
+operations, but soon we will add another parameter.
 
-However, because no controller provide these extra capabilities, this
-change has no effect so far.
+Also create a helper to parse the capabilities and check if the
+requested capability has been set or not.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/spi/spi-mem.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ include/linux/spi/spi-mem.h | 11 +++++++++++
+ include/linux/spi/spi.h     |  3 +++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 37f4443ce9a0..86e6597bc3dc 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -173,11 +173,20 @@ EXPORT_SYMBOL_GPL(spi_mem_dtr_supports_op);
- bool spi_mem_default_supports_op(struct spi_mem *mem,
- 				 const struct spi_mem_op *op)
- {
--	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
--		return false;
-+	struct spi_controller *ctlr = mem->spi->controller;
-+	bool op_is_dtr =
-+		op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr;
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 85e2ff7b840d..38e5d45c9842 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -285,6 +285,17 @@ struct spi_controller_mem_ops {
+ 			   unsigned long timeout_ms);
+ };
  
--	if (op->cmd.nbytes != 1)
--		return false;
-+	if (op_is_dtr) {
-+		if (!spi_mem_controller_is_capable(ctlr, dtr))
-+			return false;
++/**
++ * struct spi_controller_mem_caps - SPI memory controller capabilities
++ * @dtr: Supports DTR operations
++ */
++struct spi_controller_mem_caps {
++	bool dtr;
++};
 +
-+		if (op->cmd.nbytes != 2)
-+			return false;
-+	} else {
-+		if (op->cmd.nbytes != 1)
-+			return false;
-+	}
++#define spi_mem_controller_is_capable(ctlr, cap)	\
++	((ctlr)->mem_caps && (ctlr)->mem_caps->cap)
++
+ /**
+  * struct spi_mem_driver - SPI memory driver
+  * @spidrv: inherit from a SPI driver
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 8371bca13729..7ec6450142e0 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -23,6 +23,7 @@ struct software_node;
+ struct spi_controller;
+ struct spi_transfer;
+ struct spi_controller_mem_ops;
++struct spi_controller_mem_caps;
  
- 	return spi_mem_check_buswidth(mem, op);
- }
+ /*
+  * INTERFACES between SPI master-side drivers and SPI slave protocol handlers,
+@@ -419,6 +420,7 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
+  * @mem_ops: optimized/dedicated operations for interactions with SPI memory.
+  *	     This field is optional and should only be implemented if the
+  *	     controller has native support for memory like operations.
++ * @mem_caps: controller capabilities for the handling of memory operations.
+  * @unprepare_message: undo any work done by prepare_message().
+  * @slave_abort: abort the ongoing transfer request on an SPI slave controller
+  * @cs_gpios: LEGACY: array of GPIO descs to use as chip select lines; one per
+@@ -640,6 +642,7 @@ struct spi_controller {
+ 
+ 	/* Optimized handlers for SPI memory-like operations. */
+ 	const struct spi_controller_mem_ops *mem_ops;
++	const struct spi_controller_mem_caps *mem_caps;
+ 
+ 	/* gpio chip select */
+ 	int			*cs_gpios;
 -- 
 2.27.0
 
