@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B173AC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 01:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A17D6C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  4 Jan 2022 01:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RkET5NMim2lEn/usqM6LC7jxfXMGmiPs5y/IpIsdOXY=; b=O1AuFwmwl5QtQ2
-	rNdEHAEzug5MdUpLH4jCWxhI/QwUTzvfyPNAR7Vl8pw1oJZVrIgtCH5yBUeWUlgd2ruFrsK2jtFe2
-	FQuoJQD57nHxymtcIEidoc9KRUwn2PNFDtdC9b8aC8teaG93YaJTmkyRnf2Fj2Kxj6hSbXpsTOt0y
-	irqzQGmJTXDtO0waFHsK+pt0vgvyQQH8bUwzwBIYXTFcwHqnNm+brdsGcc+ou4HJYS09KVirKvLhb
-	FekvFLxnnx6BNWydWkLpb+RCnOy8REuN3lQ/rXsUd+aHE4Jf4Nls4DJR2s3HYWL/dcEvhftOgDc4Y
-	PqSWPobfTcJw36INw2gg==;
+	List-Owner; bh=D+xPTtc29mZrxyX+3eUmc+RvIXfUOmWg/kwwTZHjpj0=; b=YKjyC4HoyyAZxA
+	dJ0HZAB64pnBmcLJarWfDj4S3AVfKJvs38qzb3i9G2jn8r8v3WGGchUHiOA+OFUvqHonB/YLCbwWg
+	hYxAWvh/wKdFEjudkb84EpFqEIVUyUAejP/74yX60DNweECAFSIBz3fGeAsgIj79EcYikpwkNo0aW
+	f9HL9k3ZbzAM7rD2zL+2guC98kpr3GJxqDtjGJo9/G7sdDvhq6XZkM+nYAwCHO5QjRgkAM0CkHkea
+	jPQnR9vfRweDXJfRALp2FwLXQojGQ9YketyED3ndtdAzwD5u0KEReZMUNhoYcBbPncRIeq/joD5Xd
+	CIplnfPJQAoHi+ysmxRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n4YRu-00AB8s-HB; Tue, 04 Jan 2022 01:17:14 +0000
+	id 1n4Yyb-00ACSu-Pc; Tue, 04 Jan 2022 01:51:01 +0000
 Received: from zeniv-ca.linux.org.uk ([2607:5300:60:148a::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n4YRr-00AB8R-57
- for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 01:17:12 +0000
+ id 1n4YyZ-00ACS4-Ps
+ for linux-mtd@lists.infradead.org; Tue, 04 Jan 2022 01:51:00 +0000
 Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1n4YQz-00H3Ux-V0; Tue, 04 Jan 2022 01:16:18 +0000
-Date: Tue, 4 Jan 2022 01:16:17 +0000
+ Hat Linux)) id 1n4YxK-00H3st-Q5; Tue, 04 Jan 2022 01:49:42 +0000
+Date: Tue, 4 Jan 2022 01:49:42 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: Walt Drummond <walt@drummond.us>
 Cc: aacraid@microsemi.com, anna.schumaker@netapp.com, arnd@arndb.de,
@@ -52,16 +52,17 @@ Cc: aacraid@microsemi.com, anna.schumaker@netapp.com, arnd@arndb.de,
  linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
 Subject: Re: [RFC PATCH 0/8] signals: Support more than 64 signals
-Message-ID: <YdOf4WBwR1H93GAt@zeniv-ca.linux.org.uk>
+Message-ID: <YdOntksAAhc/oaU1@zeniv-ca.linux.org.uk>
 References: <20220103181956.983342-1-walt@drummond.us>
  <YdNE6UXRT02135Pd@zeniv-ca.linux.org.uk>
  <CADCN6nx4VWtR79TBDTENRExjsa=KAGuUpyz06iu2EGmSTPyc+Q@mail.gmail.com>
+ <YdOf4WBwR1H93GAt@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CADCN6nx4VWtR79TBDTENRExjsa=KAGuUpyz06iu2EGmSTPyc+Q@mail.gmail.com>
+In-Reply-To: <YdOf4WBwR1H93GAt@zeniv-ca.linux.org.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220103_171711_225628_A62E7891 
-X-CRM114-Status: UNSURE (   6.26  )
+X-CRM114-CacheID: sfid-20220103_175059_857440_EC3E9CC4 
+X-CRM114-Status: UNSURE (   9.14  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,10 +80,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 03, 2022 at 05:00:58PM -0800, Walt Drummond wrote:
-> I simply wanted SIGINFO and VSTATUS, and that necessitated this.
+On Tue, Jan 04, 2022 at 01:16:17AM +0000, Al Viro wrote:
+> On Mon, Jan 03, 2022 at 05:00:58PM -0800, Walt Drummond wrote:
+> > I simply wanted SIGINFO and VSTATUS, and that necessitated this.
+> 
+> Elaborate, please.  What exactly requires more than 32 rt signals?
 
-Elaborate, please.  What exactly requires more than 32 rt signals?
+More to the point, which system had SIGINFO >= SIGRTMIN?  Or signals
+with numbers greater than SIGRTMAX, for that matter?
+
+I really don't get it...
 
 ______________________________________________________
 Linux MTD discussion mailing list
