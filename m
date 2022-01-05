@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D3DBC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jan 2022 08:26:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C0BFC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  5 Jan 2022 09:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RI1IVHEnxtsjZJxODOzn782csYZ9K/ac9F7XUzTG65U=; b=w1da1ZVph9kPabjumfNuQtL1eZ
-	DtbOO9BPGrGFMRYKahBoLTSPxWQz0XeKA05YlVkDZY64F+hCI/3Q+bnwtNJgEQvm04NEe+MpVxkLB
-	MqVdMhY/pSakozf1tElISx0K+qtBI7AN5RnqfhVXwVqFbVwXZHy5q/m7l25EfJu+DtwdLzsdkJO2b
-	oWizuq1nkk1awFWzgLfqCT3ZFHaf6zL5DkERAupwXPTunwso0cIG8WYo08TzA0Dv9Vh0C8GG1sU9S
-	zyKLggzFZhQulR3fbgtw1p0XRugAQNc6AcHqJM9fHZSEFyXUdkc5+tVZp5AjcxbYwQDC8RmYDNScX
-	/nKCfCag==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=O2S7YzWdZfAKpwKyFk/lQJOm0FOPfZoT+RXg18eWuOk=; b=H2A0Kvh71j7E9B
+	1y/uU5KTACQ/UhjlB+cSwb5a1Jr6bmVBaowVK8fPfSKbr/rXKgZucYiUmKVz/66eXa1potCPFeiy5
+	w8Fq5sG8h/vtUQ0RI+gQxBfy9Xbq1vwiCXEqv12/vBaKUc0VKOF06UQbIluAugBW1aXibnD7NR+SY
+	c0yPbuSm8PTCFiRXepsXpNx1P9eUFbWFouzElnmcEUjxkdiWxm426UvMhqo8ZBrT8Ow3CgMkvhWi9
+	NBvjZSsp2j5cXgw+dM5jQ7MnVhT5l1pYIU6dMjL2Ws1bbvloOMBoaManqP9n6m1q/YOyf8s/+1VH+
+	vcSmg9eQH+qY7T57qKsg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n51cJ-00EDLI-VD; Wed, 05 Jan 2022 08:25:56 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1n52xm-00EPrr-FX; Wed, 05 Jan 2022 09:52:10 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n51c5-00EDFk-Oh; Wed, 05 Jan 2022 08:25:43 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 757D0223EA;
- Wed,  5 Jan 2022 09:25:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1641371133;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=fedfQgsr6x9sO3yER1l6Ln3QpkNkKoaDU8cBMzFGN+Q=;
- b=sY7Ujav2tztK21oJXfBxaCMq+iQ5cXCzRUQAp0RpDAoO7/iKxJbuM12oT/IIq0js0jcnSM
- YchXyLgsb8/IjCbvNI7vboWmRX0aF1VVMVk6aGYTftIYnObjbnxWI7754yVlDccBYZ70kW
- wgck4SYQ2XLf90IPCA+qGcF5BVvLUfs=
+ id 1n52xj-00EPqq-Hr
+ for linux-mtd@lists.infradead.org; Wed, 05 Jan 2022 09:52:09 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1FCD01F44273;
+ Wed,  5 Jan 2022 09:52:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1641376324;
+ bh=YOlZt4wlWDPgzl3ELAotsQoHSGbdiyMS1ERP5Zojv2w=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=HKDb9+W/5fgRZqr8su3iW5HhgJtmgHqUTGr2z6th03Wq99Z81PfsYztZKiC0UCzzM
+ yGdjoUci7xc/pKwwMIsdaViofCFzkWbnxFIyADfjvfT9LrbtFr2Nu6qVhXOZmZVNE4
+ YyT2XDAf8DHrBkJnZXT+7cuSIHkBFkYLx3ae37VAGU2WWBR5Ki3C/AdjpgN19QS0E8
+ U68T+FyE1dDVvhbCpCNJpEIGs9IFitVgdNNDFYcHaGiw2Lw3ogWtRqBgbSY4S/f9pO
+ YqONNzVL31SyK+F8G3c37n7t/zwpLhF4MvQN5cZEpABKc1XgmZLOhduvTGbdT1PwZM
+ uonWeT/drGRGg==
+Date: Wed, 5 Jan 2022 10:52:00 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Apurva Nandan <a-nandan@ti.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Mark Brown
+ <broonie@kernel.org>, Patrice Chotard <patrice.chotard@foss.st.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>, Daniel Palmer
+ <daniel@0x0f.com>, Alexander Lobakin <alobakin@pm.me>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <p.yadav@ti.com>
+Subject: Re: [PATCH v3 09/17] mtd: spinand: Add change_mode() in
+ manufacturer_ops
+Message-ID: <20220105105200.67037833@collabora.com>
+In-Reply-To: <20220101074250.14443-10-a-nandan@ti.com>
+References: <20220101074250.14443-1-a-nandan@ti.com>
+ <20220101074250.14443-10-a-nandan@ti.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Date: Wed, 05 Jan 2022 09:25:29 +0100
-From: Michael Walle <michael@walle.cc>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- netdev@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Srinivas
- Kandagatla <srinivas.kandagatla@linaro.org>, Shawn Guo
- <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, Frank Rowand
- <frowand.list@gmail.com>, "David S . Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>
-Subject: Re: [PATCH 2/8] dt-bindings: nvmem: add transformation bindings
-In-Reply-To: <YdRh2lp5Ca08gHtR@robh.at.kernel.org>
-References: <20211228142549.1275412-1-michael@walle.cc>
- <20211228142549.1275412-3-michael@walle.cc>
- <YdRh2lp5Ca08gHtR@robh.at.kernel.org>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <084b306b7c49ce8085dd867663945d29@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220105_002542_062039_63F11F63 
-X-CRM114-Status: GOOD (  19.94  )
+X-CRM114-CacheID: sfid-20220105_015207_781771_0F37D2C7 
+X-CRM114-Status: GOOD (  21.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,100 +74,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-01-04 16:03, schrieb Rob Herring:
-> On Tue, Dec 28, 2021 at 03:25:43PM +0100, Michael Walle wrote:
->> Just add a simple list of the supported devices which need a nvmem
->> transformations.
->> 
->> Also, since the compatible string is prepended to the actual nvmem
->> compatible string, we need to match using "contains" instead of an 
->> exact
->> match.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  .../devicetree/bindings/mtd/mtd.yaml          |  7 +--
->>  .../bindings/nvmem/nvmem-transformations.yaml | 46 
->> +++++++++++++++++++
->>  2 files changed, 50 insertions(+), 3 deletions(-)
->>  create mode 100644 
->> Documentation/devicetree/bindings/nvmem/nvmem-transformations.yaml
->> 
->> diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml 
->> b/Documentation/devicetree/bindings/mtd/mtd.yaml
->> index 376b679cfc70..0291e439b6a6 100644
->> --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
->> +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
->> @@ -33,9 +33,10 @@ patternProperties:
->> 
->>      properties:
->>        compatible:
->> -        enum:
->> -          - user-otp
->> -          - factory-otp
->> +        contains:
->> +          enum:
->> +            - user-otp
->> +            - factory-otp
+On Sat, 1 Jan 2022 13:12:42 +0530
+Apurva Nandan <a-nandan@ti.com> wrote:
+
+> Introduce change_mode() manufacturer_op to let the vendor provide the
+> implementation of switching of SPI IO modes.
 > 
-> If the addition is only compatible strings, then I would just add them
-> here. Otherwise this needs to be structured a bit differently. More on
-> that below.
-
-I wanted to avoid having these compatible strings "cluttered" all around
-the various files. Esp. having a specific compatible string in a generic
-mtd.yaml. But if everyone is fine with that, I'll just move it here.
-
->> 
->>      required:
->>        - compatible
->> diff --git 
->> a/Documentation/devicetree/bindings/nvmem/nvmem-transformations.yaml 
->> b/Documentation/devicetree/bindings/nvmem/nvmem-transformations.yaml
->> new file mode 100644
->> index 000000000000..8c8d85fd6d27
->> --- /dev/null
->> +++ 
->> b/Documentation/devicetree/bindings/nvmem/nvmem-transformations.yaml
->> @@ -0,0 +1,46 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/nvmem/nvmem-transformations.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: NVMEM transformations Device Tree Bindings
->> +
->> +maintainers:
->> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> +
->> +description: |
->> +  This is a list NVMEM devices which need transformations.
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +        - enum:
->> +          - kontron,sl28-vpd
->> +        - const: user-otp
->> +      - const: user-otp
+> The method to switch to different SPI IO mode may vary across
+> manufacturers. For example, for Winbond, Octal DTR is enabled by
+> writing values to the volatile configuration register. So, let the
+> manufacturer's code have their own implementation for switching to
+> any given SPI IO mode. Manufacturer's code need to take care, if
+> the requested protocol change is allowed/needed and how to apply
+> it.
 > 
-> This will be applied to any node containing 'user-otp'. You need a
-> custom 'select' to avoid that.
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> ---
+>  include/linux/mtd/spinand.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 5dae0649f2fb..ad924271a248 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -298,6 +298,7 @@ struct spinand_devid {
+>  /**
+>   * struct manufacurer_ops - SPI NAND manufacturer specific operations
+>   * @init: initialize a SPI NAND device
+> + * @change_mode: switch the SPI NAND flash to a specific SPI protocol
+>   * @cleanup: cleanup a SPI NAND device
+>   *
+>   * Each SPI NAND manufacturer driver should implement this interface so that
+> @@ -305,6 +306,8 @@ struct spinand_devid {
+>   */
+>  struct spinand_manufacturer_ops {
+>  	int (*init)(struct spinand_device *spinand);
+> +	int (*change_mode)(struct spinand_device *spinand,
+> +			   const enum spinand_protocol protocol);
 
-Out of curiosity, you mean something like:
+Protocol or mode? Pick one and stick to it. Given you already use
+protocol elsewhere, maybe s/select_mode/select_protocol/.
 
-select:
-   compatible:
-     contains:
-       enum:
-         - kontron,sl28-vpd
+>  	void (*cleanup)(struct spinand_device *spinand);
+>  };
+>  
 
 
 ______________________________________________________
