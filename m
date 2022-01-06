@@ -4,70 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AD31C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jan 2022 08:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7F80C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jan 2022 08:13:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=05n38GQl/6vyyr/YOa0/bsaMqv+afDfc+MeiBK3MKqg=; b=Jj8TaYveeLGzdG
-	I79k0wPbMzRZ4qSHz+xwi4DJn0IPjmXDWk4yuE710FnzwzGfeBgjYPMHSPCazpOOb1s1Mr/5dIKzA
-	eyHQ/MSoyBFn8/8bKHVbnSDLZzofPCrovBGN8Lmi/hl7eAdTC55/WF258UPOZdywOEvy9u7VrzYlu
-	IkgzMm15ecWkYEr0tNMl+egjO7WjHQ2fS8fwD8KaKMYV3gXdvGft5jf0weWeAQxrUkx2jPaT/MNQB
-	ldE6eOMD7Xk8GkeLX47r2Ces0ZCu2dg4mF+KMoSVPw6E9AbV2v3WWLM4NnVZzrFUjSv6+ZIxeyKw1
-	eiU6q6RWQAEb+Sd8wsHw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=sBohi0XW1sA0MtFSkH3EZwasq81zZzhoNIUOGK8GmwU=; b=kEGNrmC+LBDcnh
+	ONM55CqnC7CxvankhqaVMAS47/u52c5/oARCMyeURAHapP2utRbHI4anl5zyPNsnX/sVQkS/6zOWE
+	9QtUYrO3VzXUOQKoifc/0IFuBLTM7EyZ+koOQDd6VWzSXfcwOdR2Tv0fCigIiL/KG78k3wUpjCcct
+	TfJK/5QqNpwp2F9u2qtA5U6OXJMioXpu2DBkE9ueFotcdyhIlDWEASBIAQ5i64/WOji2M3LnUyOIu
+	vUHxdQENYeKAsV2vOZY+C/szJVAorupApfLUfAcjU7Hy+AxzjF9cYCbJ5EMl88CQ7SwCP5q5YBrll
+	ImtJrmsDogjRmRROFxRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n5NrK-00GyFY-1T; Thu, 06 Jan 2022 08:10:54 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1n5Nsx-00Gyz0-Qr; Thu, 06 Jan 2022 08:12:35 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n5NrG-00GyDt-I1
- for linux-mtd@lists.infradead.org; Thu, 06 Jan 2022 08:10:52 +0000
-Received: by mail-pl1-x631.google.com with SMTP id h1so1973743pls.11
- for <linux-mtd@lists.infradead.org>; Thu, 06 Jan 2022 00:10:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id;
- bh=zfeGovTDvd51bnK3uaST+KcnIFCf9TyLQm16m2/g9uQ=;
- b=U/86GXi+uhsyy5ekzRtEp8lZJcntxNKUFCKDQi2noFKWRzrvun8ZASpuy2Ah9MN09b
- e9V47Dvtu6NMtntdcujVY0B0PAZ0tgsKLS/U4rU2My+yXhT2G+qYpdbbY13lkmtsowhE
- zSlZUU+BWAyHdzzqhKzOyz+LiH+ctCYP9DPQooAfl3dlk3GMScR27fWnjAePQspRnfmD
- JCMaWUK1qZlGXcCvH6Ix//rMiTthgA359zDs74tHZyjWUt4f0BF/EkK7FH8fBxcGGZPl
- no871HEB1/vnCclj9+pqRS3gOlmiWzvF4RH4pX3p1DXdUtJuwUblfdLTfYmpAtMKPwTt
- sKwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id;
- bh=zfeGovTDvd51bnK3uaST+KcnIFCf9TyLQm16m2/g9uQ=;
- b=5Xqlx4uqTOHTHe6Qu4nWOLfE8L6x0m0kg6O7Tiqc4P0ZTHerDQug63gnaeRLuD+ZhK
- bbSF93/1/ubYbnWhJTgOrnZn5aV/BLWxZnGtMZgLZPtTuaoVelOaSR50KrgZQkuWwxsm
- C7E8Cz4VdRfFau0vuLH98h0WqpjpEmqIkWEOGLSWfHCNe6lFdahUZ3GydRFr3bieN4l+
- bvEsOUq1OT13gGBmDifbosSXSKk3VvTzTW6Q1iYOLtDPb0aJzrs7YwDlxO5+NFTaAxUc
- BQ9tWdb2jlB88DsMMgz0IGpSYPNLorg8C6c98wzfNhxYO1VPwKx3ltPbeGO2CuuPy0Qw
- uFCw==
-X-Gm-Message-State: AOAM530oLaLr3lOM6YpyoIdAA9FqmoHeGwOZad01ldlftaq8B7VI01f2
- Me/c5H/YO6LAtadsJFQSQm28ReJHzw0=
-X-Google-Smtp-Source: ABdhPJwwW9gtEzoJhUwhwVq7Y9PXThk0EXgZKxrvDsjDiXGS2r08nmr7iIeIHU5Pq6MnBdOs7Ioi4A==
-X-Received: by 2002:a17:90a:ac0f:: with SMTP id
- o15mr3280187pjq.145.1641456648925; 
- Thu, 06 Jan 2022 00:10:48 -0800 (PST)
-Received: from localhost.localdomain ([123.51.145.88])
- by smtp.gmail.com with ESMTPSA id f22sm1504937pfc.183.2022.01.06.00.10.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Jan 2022 00:10:48 -0800 (PST)
-From: JaimeLiao <jaimeliao.tw@gmail.com>
-To: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com
-Cc: zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw,
- JaimeLiao <jaimeliao.tw@gmail.com>
-Subject: [PATCH] mtd: rawnand: cache read suquential
-Date: Thu,  6 Jan 2022 16:10:43 +0800
-Message-Id: <20220106081043.17275-1-jaimeliao.tw@gmail.com>
-X-Mailer: git-send-email 2.17.1
+ id 1n5Nsf-00Gypd-Fq; Thu, 06 Jan 2022 08:12:19 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id ED0021C0009;
+ Thu,  6 Jan 2022 08:12:10 +0000 (UTC)
+Date: Thu, 6 Jan 2022 09:12:09 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+ <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>,
+ YongHui Yu <yonghui.yu@amlogic.com>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: nand: meson: fix controller clock
+Message-ID: <20220106091209.6b97cf3c@xps13>
+In-Reply-To: <20220106033130.37623-1-liang.yang@amlogic.com>
+References: <20220106033130.37623-1-liang.yang@amlogic.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220106_001050_641198_7A0C07F7 
-X-CRM114-Status: GOOD (  22.59  )
+X-CRM114-CacheID: sfid-20220106_001217_706016_259DB902 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,199 +62,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For reducing time of read sequence which address are continuous.
-Adding cache read suquential features in raw nand existing architecture.
-Creating nand_exec_continue_read_page_op function for read command extend.
-Adding command select in nand_lp_exec_read_page_op and taking readlen to
-judge the last page for read.
-Command of read cache sequential can be separate 3 parts.
-First part is 00-30-31, it means read cache sequential enabled and next
-page data can be prepare while cache data reading.
-Second part is 31-3F, means flash will prepare next page data for reducing
-time cost.
-Last part is 3F, means the last cache read and flash don't need to prepare
-next page data.
-
-Signed-off-by: JaimeLiao <jaimeliao.tw@gmail.com>
----
- drivers/mtd/nand/raw/nand_base.c | 95 ++++++++++++++++++++++++++++++--
- include/linux/mtd/rawnand.h      |  5 ++
- 2 files changed, 95 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..ddaba40b58a7 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1176,6 +1176,39 @@ static int nand_lp_exec_read_page_op(struct nand_chip *chip, unsigned int page,
- 	const struct nand_interface_config *conf =
- 		nand_get_interface_config(chip);
- 	u8 addrs[5];
-+
-+	/* Command sequence select to 00-30-31 when read cache sequential is enabled */
-+	if (chip->ops.conti_read_require) {
-+		struct nand_op_instr instrs[] = {
-+			NAND_OP_CMD(NAND_CMD_READ0, 0),
-+			NAND_OP_ADDR(4, addrs, 0),
-+			NAND_OP_CMD(NAND_CMD_READSTART, NAND_COMMON_TIMING_NS(conf, tWB_max)),
-+			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tR_max), 0),
-+			NAND_OP_CMD(NAND_CMD_READCONTI, NAND_COMMON_TIMING_NS(conf, tWB_max)),
-+			NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tR_max),
-+					 NAND_COMMON_TIMING_NS(conf, tRR_min)),
-+			NAND_OP_DATA_IN(len, buf, 0),
-+		};
-+		struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
-+		int ret;
-+
-+		if (!len)
-+			op.ninstrs--;
-+
-+		ret = nand_fill_column_cycles(chip, addrs, offset_in_page);
-+		if (ret < 0)
-+			return ret;
-+
-+		addrs[2] = page;
-+		addrs[3] = page >> 8;
-+
-+		if (chip->options & NAND_ROW_ADDR_3) {
-+			addrs[4] = page >> 16;
-+			instrs[1].ctx.addr.naddrs++;
-+		}
-+
-+		return nand_exec_op(chip, &op);
-+	}
- 	struct nand_op_instr instrs[] = {
- 		NAND_OP_CMD(NAND_CMD_READ0, 0),
- 		NAND_OP_ADDR(4, addrs, 0),
-@@ -1206,6 +1239,31 @@ static int nand_lp_exec_read_page_op(struct nand_chip *chip, unsigned int page,
- 	return nand_exec_op(chip, &op);
- }
- 
-+static int nand_exec_continue_read_page_op(struct nand_chip *chip,
-+					    void *buf, unsigned int len)
-+{
-+	bool conti_read_last = false;
-+	const struct nand_interface_config *conf =
-+		nand_get_interface_config(chip);
-+	/* Set conti_read_last true before the last aligned page reading */
-+	if (chip->ops.conti_readlen >= len && chip->ops.conti_readlen < 2*len)
-+		conti_read_last = true;
-+	struct nand_op_instr instrs[] = {
-+		NAND_OP_CMD(conti_read_last?NAND_CMD_READLAST:NAND_CMD_READCONTI,
-+					    NAND_COMMON_TIMING_NS(conf, tWB_max)),
-+		NAND_OP_WAIT_RDY(NAND_COMMON_TIMING_MS(conf, tR_max),
-+				 NAND_COMMON_TIMING_NS(conf, tRR_min)),
-+		NAND_OP_DATA_IN(len, buf, 0),
-+	};
-+	struct nand_operation op = NAND_OPERATION(chip->cur_cs, instrs);
-+
-+	/* Drop the DATA_IN instruction if len is set to 0. */
-+	if (!len)
-+		op.ninstrs--;
-+
-+	return nand_exec_op(chip, &op);
-+}
-+
- /**
-  * nand_read_page_op - Do a READ PAGE operation
-  * @chip: The NAND chip
-@@ -1231,10 +1289,15 @@ int nand_read_page_op(struct nand_chip *chip, unsigned int page,
- 		return -EINVAL;
- 
- 	if (nand_has_exec_op(chip)) {
--		if (mtd->writesize > 512)
--			return nand_lp_exec_read_page_op(chip, page,
--							 offset_in_page, buf,
--							 len);
-+		if (mtd->writesize > 512) {
-+			/* Selecting read command sequence  */
-+			if (!chip->ops.conti_read_first_page && chip->ops.conti_read_require)
-+				return nand_exec_continue_read_page_op(chip, buf, mtd->writesize);
-+			else
-+				return nand_lp_exec_read_page_op(chip, page,
-+								 offset_in_page, buf,
-+								 len);
-+		}
- 
- 		return nand_sp_exec_read_page_op(chip, page, offset_in_page,
- 						 buf, len);
-@@ -3362,7 +3425,6 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 
- 		bytes = min(mtd->writesize - col, readlen);
- 		aligned = (bytes == mtd->writesize);
--
- 		if (!aligned)
- 			use_bounce_buf = 1;
- 		else if (chip->options & NAND_USES_DMA)
-@@ -3381,6 +3443,25 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 						 __func__, buf);
- 
- read_retry:
-+			/*
-+			 * Read cache sequential command can be separate 3 parts.
-+			 * For distinguishing that flash driver set value to
-+			 * conti_read_first_page for checking whether the first page
-+			 * and set conti_read_require to select command sequence.
-+			 * And take readlen to conti_readlen for checking whether the
-+			 * last page or not.
-+			 */
-+			if (!col && readlen >= (2*mtd->writesize)) {
-+				if (chip->ops.conti_read_require == 0)
-+					chip->ops.conti_read_first_page = 1;
-+				else
-+					chip->ops.conti_read_first_page = 0;
-+				chip->ops.conti_read_require = 1;
-+				chip->ops.conti_readlen = readlen;
-+			} else if (chip->ops.conti_read_require) {
-+				chip->ops.conti_read_first_page = 0;
-+				chip->ops.conti_readlen = readlen;
-+			}
- 			/*
- 			 * Now read the page into the buffer.  Absent an error,
- 			 * the read methods return max bitflips per ecc step.
-@@ -3468,6 +3549,10 @@ static int nand_do_read_ops(struct nand_chip *chip, loff_t from,
- 			retry_mode = 0;
- 		}
- 
-+		/* set conti_read_require 0 when finish the last aligned page read */
-+		if (readlen < mtd->writesize)
-+			chip->ops.conti_read_require = 0;
-+
- 		if (!readlen)
- 			break;
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..a5dccccdf65e 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -67,6 +67,8 @@ struct gpio_desc;
- 
- /* Extended commands for large page devices */
- #define NAND_CMD_READSTART	0x30
-+#define NAND_CMD_READCONTI     0x31
-+#define NAND_CMD_READLAST      0x3f
- #define NAND_CMD_RNDOUTSTART	0xE0
- #define NAND_CMD_CACHEDPROG	0x15
- 
-@@ -1173,6 +1175,9 @@ struct nand_chip_ops {
- 	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
- 	int (*choose_interface_config)(struct nand_chip *chip,
- 				       struct nand_interface_config *iface);
-+	bool conti_read_require;
-+	bool conti_read_first_page;
-+	int conti_readlen;
- };
- 
- /**
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpsaWFuZy55YW5nQGFtbG9naWMuY29tIHdyb3RlIG9uIFRodSwgNiBKYW4gMjAyMiAx
+MTozMTozMCArMDgwMDoKClRoaXMgcGF0Y2ggc2hvdWxkIGJlIGluIGEgc2VyaWVzIHdpdGggIm10
+ZDogcmF3bmFuZDogbWVzb246IGZpeCB0aGUKY2xvY2sgYWZ0ZXIgZGlzY2FyZGluZyBzZF9lbW1j
+X2NfY2xrIiBhbmQgcG9zc2libHkgY29tZSBmaXJzdC4KCllvdSBtaXNzIGEgY29tbWl0IG1lc3Nh
+Z2Ugd2hpY2ggaXMgX3ZlcnlfIGltcG9ydGFudCBnaXZlbiB0aGUgdHlwZSBvZgpjaGFuZ2UgeW91
+IHByb3Bvc2UuCiAKPiBDaGFuZ2UtSWQ6IEkxNDI1YjQ5MWQ4Yjk1MDYxZTFjZTM1OGVmMzMxNDM0
+MzNmYzk0ZDI0CgpDaGFuZ2UgSURzIGhhdmUgbm90aGluZyB0byBkbyBoZXJlLgoKSG93ZXZlciBh
+IEZpeGVzIGFuZCBhIFNpZ25lZC1vZmYtYnkgYXJlIHdlbGNvbWUuCgpZb3UnbGwgYWxzbyBuZWVk
+IHRvIENjOiBSb2IgSC4gaW4geW91ciB2Mi4KCj4gLS0tCj4gIC4uLi9iaW5kaW5ncy9tdGQvYW1s
+b2dpYyxtZXNvbi1uYW5kLnR4dCAgICAgICAgfCAxOCArKystLS0tLS0tLS0tLS0tLS0KPiAgMSBm
+aWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAt
+LWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxtZXNv
+bi1uYW5kLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dp
+YyxtZXNvbi1uYW5kLnR4dAo+IGluZGV4IDU3OTRhYjExNDdjMS4uMzdmMTZmZTRmZTY2IDEwMDY0
+NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYW1sb2dpYyxt
+ZXNvbi1uYW5kLnR4dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+dGQvYW1sb2dpYyxtZXNvbi1uYW5kLnR4dAo+IEBAIC0xNCwxMSArMTQsNiBAQCBSZXF1aXJlZCBw
+cm9wZXJ0aWVzOgo+ICAtIGNsb2NrLW5hbWVzOiBTaG91bGQgY29udGFpbiB0aGUgZm9sbG93aW5n
+Ogo+ICAJImNvcmUiIC0gTkZDIG1vZHVsZSBnYXRlIGNsb2NrCj4gIAkiZGV2aWNlIiAtIGRldmlj
+ZSBjbG9jayBmcm9tIGVNTUMgc3ViIGNsb2NrIGNvbnRyb2xsZXIKPiAtCSJyeCIgLSByeCBjbG9j
+ayBwaGFzZQo+IC0JInR4IiAtIHR4IGNsb2NrIHBoYXNlCj4gLQo+IC0tIGFtbG9naWMsbW1jLXN5
+c2Nvbgk6IFJlcXVpcmVkIGZvciBOQU5EIGNsb2NrcywgaXQncyBzaGFyZWQgd2l0aCBTRC9lTU1D
+Cj4gLQkJCQljb250cm9sbGVyIHBvcnQgQwo+ICAKPiAgT3B0aW9uYWwgY2hpbGRyZW4gbm9kZXM6
+Cj4gIENoaWxkcmVuIG5vZGVzIHJlcHJlc2VudCB0aGUgYXZhaWxhYmxlIG5hbmQgY2hpcHMuCj4g
+QEAgLTI4LDExICsyMyw2IEBAIHNlZSBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bXRkL25hbmQtY29udHJvbGxlci55YW1sIGZvciBnZW5lcmljIGJpbmRpCj4gIAo+ICBFeGFtcGxl
+IGRlbW9uc3RyYXRlIG9uIEFYRyBTb0M6Cj4gIAo+IC0Jc2RfZW1tY19jX2Nsa2M6IG1tY0A3MDAw
+IHsKPiAtCQljb21wYXRpYmxlID0gImFtbG9naWMsbWVzb24tYXhnLW1tYy1jbGtjIiwgInN5c2Nv
+biI7Cj4gLQkJcmVnID0gPDB4MCAweDcwMDAgMHgwIDB4ODAwPjsKPiAtCX07Cj4gLQo+ICAJbmFu
+ZC1jb250cm9sbGVyQDc4MDAgewo+ICAJCWNvbXBhdGlibGUgPSAiYW1sb2dpYyxtZXNvbi1heGct
+bmZjIjsKPiAgCQlyZWcgPSA8MHgwIDB4NzgwMCAweDAgMHgxMDA+Owo+IEBAIC00MSwxMSArMzEs
+OSBAQCBFeGFtcGxlIGRlbW9uc3RyYXRlIG9uIEFYRyBTb0M6Cj4gIAkJaW50ZXJydXB0cyA9IDxH
+SUNfU1BJIDM0IElSUV9UWVBFX0VER0VfUklTSU5HPjsKPiAgCj4gIAkJY2xvY2tzID0gPCZjbGtj
+IENMS0lEX1NEX0VNTUNfQz4sCj4gLQkJCTwmc2RfZW1tY19jX2Nsa2MgQ0xLSURfTU1DX0RJVj4s
+Cj4gLQkJCTwmc2RfZW1tY19jX2Nsa2MgQ0xLSURfTU1DX1BIQVNFX1JYPiwKPiAtCQkJPCZzZF9l
+bW1jX2NfY2xrYyBDTEtJRF9NTUNfUEhBU0VfVFg+Owo+IC0JCWNsb2NrLW5hbWVzID0gImNvcmUi
+LCAiZGV2aWNlIiwgInJ4IiwgInR4IjsKPiAtCQlhbWxvZ2ljLG1tYy1zeXNjb24gPSA8JnNkX2Vt
+bWNfY19jbGtjPjsKPiArCQkJPCZjbGtjIENMS0lEX0ZDTEtfRElWMj47Cj4gKwkJY2xvY2stbmFt
+ZXMgPSAiY29yZSIsICJkZXZpY2UiOwo+ICsJCXNkX2VtbWNfY19jbGtjID0gPDB4ZmZlMDcwMDA+
+Owo+ICAKPiAgCQlwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOwo+ICAJCXBpbmN0cmwtMCA9IDwm
+bmFuZF9waW5zPjsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
