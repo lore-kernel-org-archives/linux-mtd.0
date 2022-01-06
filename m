@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7861C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBF29C433FE
 	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jan 2022 13:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=rkxS34FF+acwvqz6uJaiurjU8Zggq838nA1/iOIVoqI=; b=UFVI9VOoSS4lvL
-	mLCucEaMty+0sjjH9xRJ8KKoNyF1lQGH0B+pQCnQIpjEsA+UkjQ9d+GCvuDuA+twTtkZj8+hMn9/u
-	NFhXkdC/hWfoGLP8oa0j22OXS4veEUJj5FPHG6cON4+5TcyTBE4qa6GepzyRLd7/W3s1txue9XgJf
-	EnoUn6Iu1C3v7IyERP7INnZRG733gM9vyHIaM+ykgvflIvSwzRM2g1s3zpQzEy4qAObviJ7y3ygM1
-	iaEAkPpeRLYIX5VUwvn/VyGuKI+fGsZ3BfLt2iacVkER31CPIT5mLI9APni3YGhBq6lJhTU8t/Bhw
-	lU+LJ8RyLJzthfJyS9Xg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=RByloyOVzuLyX20s3d3YdA/d7Ag1W/aPW4bkFUJJiIU=; b=S7QmKimKNGj7iz
+	tF/met0OgY+Z6gcVyaVpiS7J2Qc01EfILOwMOYvvkuHuYb3MTfzxyg0n4/Uc2VkcO3KBZizst/FUI
+	55OMT1YwFRZZkNwtLhRzw0Imc7wVWqjZEcJgfdH9wB8Z2aiShvoeqxn/NEl0CL1Vc4YSX907Xjiy/
+	RTgEIc2rB2IO7fvW9e86awnD/hOdCbtUh7sRpgWmsZChbzbeXIrUxhKeVaqfQF+rPB2d0paGhRZhP
+	NMAjussudGs6ztbPbYthzVNc8yi3e+78GLlRaTdcPVtHYteNU7loe+ZF6ehnj1QZqMpMa1W7U+9cJ
+	/zvkWZ+osv6UYiC7egYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n5Scz-0008N3-ER; Thu, 06 Jan 2022 13:16:25 +0000
+	id 1n5SdC-0008P5-Lg; Thu, 06 Jan 2022 13:16:38 +0000
 Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n5Scu-0008Ky-N5
- for linux-mtd@lists.infradead.org; Thu, 06 Jan 2022 13:16:23 +0000
+ id 1n5Scx-0008Lx-9m
+ for linux-mtd@lists.infradead.org; Thu, 06 Jan 2022 13:16:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1641474980; x=1673010980;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=IYrdrJWcfkX8IFQj3tKNNLyxg7v2rQIq/226C5qZ1EQ=;
- b=gyKturBP9LYYq9IdW6b5Fg5FVMpbcTe6V7Y/anN9ftDwbLR3uRUiEYGh
- BYVP001A8s4yAyJykLwnhbyPpy1hKMtPp6QzkEljRRnVRQ+byTJeiAnk9
- jcc6wPXXnDtna0niqxIvAe8rLlbgpQISWOcsWXjlypUEuO+fYOpChIbFP
- OujYobpEx0QrkBBFefaMwKmPwvZoJ/zzme8Big0iOe/6wqMU3AX8ibEyV
- nlRq4ix2ExC7FrdfDKoaP17Ts5SKvXz2m6SDNTkaX88oIy0lFpovl0j2f
- ZOWiVGoneX5w7M9I4TGIc00kNvUOHqdsWJ5XPwUwh3J9nt0V5C+Lho3iU g==;
-IronPort-SDR: UpvhNephNHdpHHP+cmFVmdv6qEVcaOTmb9LFOitOUHJj0DVTf09mxyqJUBJgReKreZewIWnJ0J
- w/5JZSjK5+NjQz+ybTMR69PmCExf3Ri1Q445Ii1YDZ2UE4UQ8vqWS2uZjN254IkSY2wTmjcwmn
- Kn6zMbjjwjVi+9A9B0tDq/W/+1x/5cmRNPhKd71lr/D6b2573vYHRQfCmOwghPynMDFRWqwDe2
- ZRV4o9QqN4zXUhwwLW/8uMU6PtLdkBsJtnyxmHSzUNQNf5EnzKXDzQHaXLYq0jwv7Bs+1gBfjV
- +wpWWhs2CKEAxpaGKAmuSsey
-X-IronPort-AV: E=Sophos;i="5.88,267,1635231600"; d="scan'208";a="149326896"
+ t=1641474983; x=1673010983;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=BXPzbPZ/ssF/48ZYAhIwqGMu3Se1bRG4usRlYmMMhRg=;
+ b=xQCnnkfihKfTLiVkUdpB5FpYVhT1i4CI31RBbmGIQXsAwNdxY//v7rBH
+ R8z8ljBIUzko07l4KZp80CM70YyA6rkoy9N7/QGOsdeLD4HVt4NGGpDEj
+ etLCITi5aFXdVX7PrqAQLs4lSIkWaBm/G8KQ2blMw0laGaO9/nPJH3ai1
+ QVDTHeMqxPPOZhVQ9YpBrpJgWCh9BAO+lpqmNj3qqFO+2eweZUq2Ysdqs
+ i0FnfWdktMADMKwj66nYbNMYXQ8+io2GbnE5MzwEv0f5jl5XHxXqv++iq
+ napqUBPM7osySaQH/RzF2MBUCcdA41+10evJK1Uo7i1m3NmS2vbz0trGo g==;
+IronPort-SDR: zo+Z4pvVkCG8YGhrKky4RA9DFgsIEvjH0c7Mtuu0ls5+9fXtcY343jHhwjabI/2S1jsXyy99U/
+ /PwRDB6PtrWJSxy79+4OoNF27k1OhwyhkxRrqtFKnmiUlMGeUgk/fHsoAJO4rXbbw5zIStrroN
+ /7CwbteL5cJqT4nmCVaGAEwv8aAIJ+s1AoOZN132xwUgyT9nZNGImpt776A7NV+HlvhRo6be62
+ 8HfWU1JfRDlRLOeR0gMXvNUZYCS5Cao9SewKtpUtgvO7eGEvbZEZEtgqiujKxXx5U+n+g9SBvJ
+ gZHYfeTE4hFuUtMVxOhq9PZw
+X-IronPort-AV: E=Sophos;i="5.88,267,1635231600"; d="scan'208";a="148757598"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 06 Jan 2022 06:16:18 -0700
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 06 Jan 2022 06:16:23 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Thu, 6 Jan 2022 06:16:17 -0700
+ 15.1.2375.17; Thu, 6 Jan 2022 06:16:22 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Thu, 6 Jan 2022 06:16:16 -0700
+ 15.1.2375.17 via Frontend Transport; Thu, 6 Jan 2022 06:16:20 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <miquel.raynal@bootlin.com>
 CC: <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 1/2] mtd: rawnand: Remove of_get_nand_on_flash_bbt() wrapper
-Date: Thu, 6 Jan 2022 15:16:09 +0200
-Message-ID: <20220106131610.225661-1-tudor.ambarus@microchip.com>
+Subject: [PATCH 2/2] mtd: rawnand: Rework of_get_nand_bus_width()
+Date: Thu, 6 Jan 2022 15:16:10 +0200
+Message-ID: <20220106131610.225661-2-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220106131610.225661-1-tudor.ambarus@microchip.com>
+References: <20220106131610.225661-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220106_051620_788548_3C8D3359 
-X-CRM114-Status: UNSURE (   8.40  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220106_051623_386168_097A24AD 
+X-CRM114-Status: GOOD (  13.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,39 +84,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Remove the wrapper as it hides for no reason what we really want: find an
-of_property. Removing the wrapper makes the code easier to read.
+of_get_nand_bus_width() had a wrong behavior because:
+1/ it ignored the -ENODATA and -EOVERFLOW return values of
+   of_property_read_u32(). "nand-bus-width" without value was tolerated
+   while it shouldn't have been according to the devicetree bindings.
+2/ returned -EIO when the nand-bus-width was neither 8 nor 16, when it
+   should have returned -EINVAL instead.
+3/ returned the 8 or 16 bus-width integer, but it was never used it its
+   caller. A simply return 0 on success is enough.
+Rework of_get_nand_bus_width() and address all the above. The execution
+is now stopped in case of errors.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 113a2e9f43b1..b8e7f1aae032 100644
+index b8e7f1aae032..54153d7aa671 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5287,11 +5287,6 @@ static int of_get_nand_bus_width(struct device_node *np)
- 	}
+@@ -5271,20 +5271,24 @@ static void of_get_nand_ecc_legacy_user_config(struct nand_chip *chip)
+ 		user_conf->placement = of_get_rawnand_ecc_placement_legacy(dn);
  }
  
--static bool of_get_nand_on_flash_bbt(struct device_node *np)
--{
--	return of_property_read_bool(np, "nand-on-flash-bbt");
--}
--
- static int of_get_nand_secure_regions(struct nand_chip *chip)
+-static int of_get_nand_bus_width(struct device_node *np)
++static int of_get_nand_bus_width(struct nand_chip *chip)
  {
++	struct device_node *dn = nand_get_flash_node(chip);
+ 	u32 val;
++	int ret;
+ 
+-	if (of_property_read_u32(np, "nand-bus-width", &val))
+-		return 8;
++	ret = of_property_read_u32(dn, "nand-bus-width", &val);
++	if (ret == -EINVAL)
++		/* Buswidth defaults to 8 if the property does not exist .*/
++		return 0;
++	else if (ret)
++		return ret;
+ 
+-	switch (val) {
+-	case 8:
+-	case 16:
+-		return val;
+-	default:
+-		return -EIO;
+-	}
++	if (val == 16)
++		chip->options |= NAND_BUSWIDTH_16;
++	else if (val != 8)
++		return -EINVAL;
++	return 0;
+ }
+ 
+ static int of_get_nand_secure_regions(struct nand_chip *chip)
+@@ -5360,12 +5364,14 @@ static int rawnand_dt_init(struct nand_chip *chip)
+ {
+ 	struct nand_device *nand = mtd_to_nanddev(nand_to_mtd(chip));
  	struct device_node *dn = nand_get_flash_node(chip);
-@@ -5375,7 +5370,7 @@ static int rawnand_dt_init(struct nand_chip *chip)
++	int ret;
+ 
+ 	if (!dn)
+ 		return 0;
+ 
+-	if (of_get_nand_bus_width(dn) == 16)
+-		chip->options |= NAND_BUSWIDTH_16;
++	ret = of_get_nand_bus_width(chip);
++	if (ret)
++		return ret;
+ 
  	if (of_property_read_bool(dn, "nand-is-boot-medium"))
  		chip->options |= NAND_IS_BOOT_MEDIUM;
- 
--	if (of_get_nand_on_flash_bbt(dn))
-+	if (of_property_read_bool(dn, "nand-on-flash-bbt"))
- 		chip->bbt_options |= NAND_BBT_USE_FLASH;
- 
- 	of_get_nand_ecc_user_config(nand);
 -- 
 2.25.1
 
