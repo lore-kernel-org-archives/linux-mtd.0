@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 367FFC433FE
-	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jan 2022 00:14:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CB2C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jan 2022 00:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=m2ZudHeOQVPbuuYdBpHrW57ejcEFU5aC/BBvGskSGcw=; b=bnlS2y2bxpebov
-	EzlyJRYmluWhGC3JaTTK/WhLAqwLBeQ4byAeLYKxZOXc7DMdBJvB1GOIGM4oCXIJVU/NyZqwT3q/G
-	2CLtIeZbo8KF3ZjIGv2W2KTfpdUEM6UbnD3ff2CTV9t8NH3cW6AJIlMnUvG4uYli49jOA8TEqDsWy
-	kVQSZkhYRdCH/vRZG7zOblfPjNKoxm1XD3YwY35nfdVzzuUO+PDr/enZf+C/MxOKl4mH7e392QsX8
-	KpAODusJ4zYfy6pM5GhCgzoMZ5EjejBN7XPNXBdxtvCPfY40pMtCxuP17Mcgp57FJCa55HNePfdo7
-	V7haG0jcNqwHKZiIue1Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/LsBwXEo1uNG343JDVVJliV4sMQltBjzd3jBXWuCJCc=; b=UqPdHVAcuTKbeQ
+	/xBu5v2I7OYux/yAKAkOrcyT+/eOdPbChVv+e1NkDD7FKTsiozWiYLHQ8/5kptOMtlhrpOff1YFe5
+	NQ+T8Yqum8OW/1OQ1170uYcNFhmeSEAZMx01Zvw4BlmF9+5gtgcP6WSdGgiWFsBCPAZxXHiMTLxL2
+	q3qutvaiCDRSZJiKGfZYXnV9mTtNz/meGA/iojjXWOvekCpg2ZT9mxc7giOzeKHrXGpuHrRkszEHn
+	2YBaZHLJGk5iFWT8BzpghKQYEvg+30SmWF/vK1EWfXN3TwsG/8ovik3qxnAqbUf8Ep/z21cJjt1gv
+	H/jjy25s5T3pYLtnTIog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n5ctR-001d6G-Kj; Fri, 07 Jan 2022 00:14:05 +0000
-Received: from mail-pj1-x102a.google.com ([2607:f8b0:4864:20::102a])
+	id 1n5ctr-001dFx-2P; Fri, 07 Jan 2022 00:14:31 +0000
+Received: from mail-pg1-x52f.google.com ([2607:f8b0:4864:20::52f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n5ctO-001d4s-Tq
- for linux-mtd@lists.infradead.org; Fri, 07 Jan 2022 00:14:04 +0000
-Received: by mail-pj1-x102a.google.com with SMTP id
- 59-20020a17090a09c100b001b34a13745eso2978852pjo.5
- for <linux-mtd@lists.infradead.org>; Thu, 06 Jan 2022 16:14:02 -0800 (PST)
+ id 1n5ctS-001d6O-Ax
+ for linux-mtd@lists.infradead.org; Fri, 07 Jan 2022 00:14:08 +0000
+Received: by mail-pg1-x52f.google.com with SMTP id v25so3996712pge.2
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Jan 2022 16:14:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bHp8KHmssnLYTaOK1agSupyvSqkjwpt0DTwhR+0qxuQ=;
- b=OXC+WfjOI7Dw/780ZlSKKOJzpuyxzgwPvAn3vd5y6IIL5/USBcS/+EaFEydk/P9fQW
- I8seI4B9zA0/MGxPODSkOM9ZDZRH+cO8KQ6b0oDrQXmRtDE/44L5wYuaL8ZxDwXL1G3K
- b3XBMgo5lMG9hXK0h5wObvGX5v+4NIBh7krq4ad1ieKoJ4O1jP44XxoEhjGH9jcwJwhz
- ty6BtKXTF2hpc/1tgHTjkmdSf8x0jYj8LiAj69jCG2AOoYo1Q2ZvMX496O7PmOjiBO3d
- CXkf7I9yF7IPB7Qo40feEfYj8pP6Qk3Qido+AHnwlFaM4t/7xP77Vr+tN10CWwrCcs2S
- m5Ag==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=rCIfzKgE4qJZwLWVi+wYkpGX0QTT3iPMxkFstpoGxDk=;
+ b=TKzbHnJb6DTEAJ8lLBsC9+fFDeouNU26qG1XtCueUBDAeLtl0gdremzCEdkDCQS4Jk
+ Tt8kcmGlqujPTWNTxF5nvn6uyqmP6YkYWhJgTGjPTAqHIG3nMGwpXpNQDM50AK7QBzYd
+ ISCAGGCD3xfnrC9ax+fgL8YoLOK78pqK5b1Il27Sa4wAq+zf1Pc6uY6ZytR25cpXgNU3
+ 89TMciv0FBV3PaY15T2TlSy386fuesF2PABEiO7MWijg37KvxFWm0DZ88elWPu0dBUFx
+ +brrD47D+b7VVj4nYIpUB6rfHi8wNE3CEOLLFD8tVxniqNYYs+IW3mmQxANmZwpvoACp
+ qIBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bHp8KHmssnLYTaOK1agSupyvSqkjwpt0DTwhR+0qxuQ=;
- b=iP2rfM7ah+25OIIwBbTMtbpNXkMkVe5Rg+Pgr2ex8TRfWegLdmvCrOHMooDJX0bZvX
- 3VWw+7n6+VMXfIXj7lQmKjKASjJAXv86Ci1InSfYmdknyYlwh3XMmgZc1+cRitiaQNmy
- IkuuteZU6dQddxzhvkMwd3X0lHTRz6iq89/0E77k+ySkgQTL4gHOtB+v3qEDmwrtmEIz
- 7WDAMvxzF07d2dFxdyC/XHlJRSdHx7f4jp8e2M1yPEi2Sp+9i7OFHasOCzWKy4jo9tG2
- 0J2LxVEXczl2OV0XX1NnE3ufp8e/Q7x7ZPk4bryp9ilKfU7ZrguBPdy5ZSxrw+shr9wb
- s9uQ==
-X-Gm-Message-State: AOAM53195xp4j0S460OtU7esFcBQ1X29rcvJD+l/xdv6UmztkpY/lHL9
- fxSNoyGhnV0FSBDA1/fLzEd2ldq4cOo=
-X-Google-Smtp-Source: ABdhPJxs5ngIS8diKlG5kij1EnlAAnRL98ICjCAo5rn2ZWpvA4FWNRG7fhGUSWexig/0VqQWjrMFHQ==
-X-Received: by 2002:a17:903:300b:b0:149:f48b:e8b8 with SMTP id
- o11-20020a170903300b00b00149f48be8b8mr4420991pla.108.1641514441399; 
- Thu, 06 Jan 2022 16:14:01 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=rCIfzKgE4qJZwLWVi+wYkpGX0QTT3iPMxkFstpoGxDk=;
+ b=WwqcNMESCrFIH44MBVzmJrqWTk3rXTywvMzh+MCKrDm9fojjUHgGf41Vi7gAV5lDaJ
+ 58h771TTD1NtK5I1JO/1Yr+EZeJgnncrMTYhZeOkWOYxYamJv6BjuMhNgm1gDYQSUAPC
+ vAuhwxY6ecZPJmYvk8PRfRtz0+RW3XHhnOhnqJrquCmZxkJ6JMkH0defWrizyeHD1WfN
+ JAPF4iT1YeMiUZzcwJRo2aHiKGEBcZUtlKJeEsK0GoJ7I+IT7cvYgamEhsybVUZogkAS
+ djwCBZn8NVf7fNNPqV2iFvuCc5Rf/KqESVWHFttIZHs7qKeohdPi7/FeeYlqCtYLKGKW
+ jidQ==
+X-Gm-Message-State: AOAM5325c+/GueXA3MeEaKKDJhqu7b6Rs/CsjYhpqd9oSSRQtFM3WbJ9
+ qjer1eNfyqLK8nkb3vCtspM2yDJkuEo=
+X-Google-Smtp-Source: ABdhPJzYlUyiAsqMiAv9ClrDXHMNZueh7frDd9keoH8jwHgYCstpkMinx9N91VuQMKvxMOUdjKnmVw==
+X-Received: by 2002:a65:6aa7:: with SMTP id x7mr16752617pgu.273.1641514444759; 
+ Thu, 06 Jan 2022 16:14:04 -0800 (PST)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
- by smtp.gmail.com with ESMTPSA id y3sm3301906pju.37.2022.01.06.16.13.59
+ by smtp.gmail.com with ESMTPSA id y3sm3301906pju.37.2022.01.06.16.14.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 06 Jan 2022 16:14:00 -0800 (PST)
+ Thu, 06 Jan 2022 16:14:04 -0800 (PST)
 From: Florian Fainelli <f.fainelli@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Florian Fainelli <f.fainelli@gmail.com>,
@@ -73,14 +71,17 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
  (BCMA)), 
  bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
  DRIVER)
-Subject: [PATCH v2 0/9] BCMA support for brcmnand
-Date: Thu,  6 Jan 2022 16:13:19 -0800
-Message-Id: <20220107001328.2233896-1-f.fainelli@gmail.com>
+Subject: [PATCH v2 2/9] mtd: rawnand: brcmnand: Allow SoC to provide I/O
+ operations
+Date: Thu,  6 Jan 2022 16:13:21 -0800
+Message-Id: <20220107001328.2233896-3-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220107001328.2233896-1-f.fainelli@gmail.com>
+References: <20220107001328.2233896-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220106_161402_987293_C3F6F4EB 
-X-CRM114-Status: GOOD (  20.14  )
+X-CRM114-CacheID: sfid-20220106_161406_424966_83687331 
+X-CRM114-Status: GOOD (  20.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,68 +98,164 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi all,
+Allow a brcmnand_soc instance to provide a custom set of I/O operations
+which we will require when using this driver on a BCMA bus which is not
+directly memory mapped I/O. Update the nand_{read,write}_reg accordingly
+to use the SoC operations if provided.
 
-This patch series adds support for the BRCMNAND controller revision 3.4
-embedded in MIPS-based SoCs such as 5357, typically found in the Netgear
-WNR3500L v2 and other kinds of Wi-Fi routers. The upstream platform that
-uses this controller is under arch/mips/bcm47xx/ and does not use Device
-Tree (and probably never will by now). BCMA (Broadcom AMBA) is a special
-kind of discoverable memory mapped interface which requires the use of
-special accessors to read from/write to the hardware block.
+To minimize the penalty on other SoCs which do support standard MMIO
+accesses, we use a static key which is disabled by default and gets
+enabled if a soc implementation does provide I/O operations.
 
-The integration of brcmnand into that SoC is a bit quirky in that every
-register offering byte level data about the flash (OOB, device ID, etc.)
-requires byte swapping. The command shift should also have been 24, but
-is in fact 0, took me a while to understand why no reads were actually
-working because of that.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 30 ++++++++++++++++++++++--
+ drivers/mtd/nand/raw/brcmnand/brcmnand.h | 29 +++++++++++++++++++++++
+ 2 files changed, 57 insertions(+), 2 deletions(-)
 
-This has been tested with Linux 5.10.82 and Linus' master with OpenWrt
-and confirmed that the squashfs + jffs2 overlay that OpenWrt creates is
-entirely functional and that written data is made persistent.
-
-Changes in v2:
-
-- re-ordered the patch such that the soc variable is initialized as
-  early as possible
-- corrected bug in the conversion of brcmnand_init_cs() which
-  incorrectly used the wrong device_node variable (parent instead of
-  child)
-- took Andy's feedback to make the test for a valid interrupt to be > 0
-  while calling platform_get_irq_optional()
-- utilized static branch (disabled by default) and conditional
-  compilation and confirm with disassembly that the generated code is
-  as efficient as before if not enabling the BCMA shim and as efficient
-  as possible if enabling BCMA shim
-- updated BCMA shim driver descriptor, author and added helper function
-  to encapsulate the container_of usage
-- added comment to explain why a slightly different platform device name
-  is used for the 5357-style NAND controller
-
-Florian Fainelli (9):
-  mtd: rawnand: brcmnand: Assign soc as early as possible
-  mtd: rawnand: brcmnand: Allow SoC to provide I/O operations
-  mtd: rawnand: brcmnand: Avoid pdev in brcmnand_init_cs()
-  mtd: rawnand: brcmnand: Move OF operations out of brcmnand_init_cs()
-  mtd: rawnand: brcmnand: Allow working without interrupts
-  mtd: rawnand: brcmnand: Add platform data structure for BCMA
-  mtd: rawnand: brcmnand: Allow platform data instantation
-  mtd: rawnand: brcmnand: BCMA controller uses command shift of 0
-  mtd: rawnand: brcmnand: Add BCMA shim
-
- MAINTAINERS                                 |   1 +
- drivers/bcma/driver_chipcommon_nflash.c     |  20 ++-
- drivers/mtd/nand/raw/Kconfig                |  13 ++
- drivers/mtd/nand/raw/brcmnand/Makefile      |   2 +
- drivers/mtd/nand/raw/brcmnand/bcma_nand.c   | 132 ++++++++++++++++
- drivers/mtd/nand/raw/brcmnand/brcmnand.c    | 160 +++++++++++++-------
- drivers/mtd/nand/raw/brcmnand/brcmnand.h    |  29 ++++
- include/linux/bcma/bcma_driver_chipcommon.h |   5 +
- include/linux/platform_data/brcmnand.h      |  12 ++
- 9 files changed, 321 insertions(+), 53 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/brcmnand/bcma_nand.c
- create mode 100644 include/linux/platform_data/brcmnand.h
-
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 63080ae3aef1..9c3909c34dc2 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -25,6 +25,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/slab.h>
++#include <linux/static_key.h>
+ #include <linux/list.h>
+ #include <linux/log2.h>
+ 
+@@ -207,6 +208,8 @@ enum {
+ 
+ struct brcmnand_host;
+ 
++static DEFINE_STATIC_KEY_FALSE(brcmnand_soc_has_ops_key);
++
+ struct brcmnand_controller {
+ 	struct device		*dev;
+ 	struct nand_controller	controller;
+@@ -592,15 +595,25 @@ enum {
+ 	INTFC_CTLR_READY		= BIT(31),
+ };
+ 
++static inline bool brcmnand_non_mmio_ops(struct brcmnand_controller *ctrl)
++{
++	return static_branch_unlikely(&brcmnand_soc_has_ops_key);
++}
++
+ static inline u32 nand_readreg(struct brcmnand_controller *ctrl, u32 offs)
+ {
++	if (brcmnand_non_mmio_ops(ctrl))
++		return brcmnand_soc_read(ctrl->soc, offs);
+ 	return brcmnand_readl(ctrl->nand_base + offs);
+ }
+ 
+ static inline void nand_writereg(struct brcmnand_controller *ctrl, u32 offs,
+ 				 u32 val)
+ {
+-	brcmnand_writel(val, ctrl->nand_base + offs);
++	if (brcmnand_non_mmio_ops(ctrl))
++		brcmnand_soc_write(ctrl->soc, val, offs);
++	else
++		brcmnand_writel(val, ctrl->nand_base + offs);
+ }
+ 
+ static int brcmnand_revision_init(struct brcmnand_controller *ctrl)
+@@ -766,13 +779,18 @@ static inline void brcmnand_rmw_reg(struct brcmnand_controller *ctrl,
+ 
+ static inline u32 brcmnand_read_fc(struct brcmnand_controller *ctrl, int word)
+ {
++	if (brcmnand_non_mmio_ops(ctrl))
++		return brcmnand_soc_read(ctrl->soc, BRCMNAND_NON_MMIO_FC_ADDR);
+ 	return __raw_readl(ctrl->nand_fc + word * 4);
+ }
+ 
+ static inline void brcmnand_write_fc(struct brcmnand_controller *ctrl,
+ 				     int word, u32 val)
+ {
+-	__raw_writel(val, ctrl->nand_fc + word * 4);
++	if (brcmnand_non_mmio_ops(ctrl))
++		brcmnand_soc_write(ctrl->soc, val, BRCMNAND_NON_MMIO_FC_ADDR);
++	else
++		__raw_writel(val, ctrl->nand_fc + word * 4);
+ }
+ 
+ static inline void edu_writel(struct brcmnand_controller *ctrl,
+@@ -3000,6 +3018,12 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	ctrl->dev = dev;
+ 	ctrl->soc = soc;
+ 
++	/* Enable the static key if the soc provides I/O operations indicating
++	 * that a non-memory mapped IO access path must be used
++	 */
++	if (brcmnand_soc_has_ops(ctrl->soc))
++		static_branch_enable(&brcmnand_soc_has_ops_key);
++
+ 	init_completion(&ctrl->done);
+ 	init_completion(&ctrl->dma_done);
+ 	init_completion(&ctrl->edu_done);
+@@ -3145,6 +3169,8 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 		/* Enable interrupt */
+ 		ctrl->soc->ctlrdy_ack(ctrl->soc);
+ 		ctrl->soc->ctlrdy_set_enabled(ctrl->soc, true);
++		if (brcmnand_soc_has_ops(soc))
++			static_branch_enable(&brcmnand_soc_has_ops_key);
+ 	} else {
+ 		/* Use standard interrupt infrastructure */
+ 		ret = devm_request_irq(dev, ctrl->irq, brcmnand_ctlrdy_irq, 0,
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.h b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
+index eb498fbe505e..f1f93d85f50d 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.h
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.h
+@@ -11,12 +11,25 @@
+ 
+ struct platform_device;
+ struct dev_pm_ops;
++struct brcmnand_io_ops;
++
++/* Special register offset constant to intercept a non-MMIO access
++ * to the flash cache register space. This is intentionally large
++ * not to overlap with an existing offset.
++ */
++#define BRCMNAND_NON_MMIO_FC_ADDR	0xffffffff
+ 
+ struct brcmnand_soc {
+ 	bool (*ctlrdy_ack)(struct brcmnand_soc *soc);
+ 	void (*ctlrdy_set_enabled)(struct brcmnand_soc *soc, bool en);
+ 	void (*prepare_data_bus)(struct brcmnand_soc *soc, bool prepare,
+ 				 bool is_param);
++	const struct brcmnand_io_ops *ops;
++};
++
++struct brcmnand_io_ops {
++	u32 (*read_reg)(struct brcmnand_soc *soc, u32 offset);
++	void (*write_reg)(struct brcmnand_soc *soc, u32 val, u32 offset);
+ };
+ 
+ static inline void brcmnand_soc_data_bus_prepare(struct brcmnand_soc *soc,
+@@ -58,6 +71,22 @@ static inline void brcmnand_writel(u32 val, void __iomem *addr)
+ 		writel_relaxed(val, addr);
+ }
+ 
++static inline bool brcmnand_soc_has_ops(struct brcmnand_soc *soc)
++{
++	return soc && soc->ops && soc->ops->read_reg && soc->ops->write_reg;
++}
++
++static inline u32 brcmnand_soc_read(struct brcmnand_soc *soc, u32 offset)
++{
++	return soc->ops->read_reg(soc, offset);
++}
++
++static inline void brcmnand_soc_write(struct brcmnand_soc *soc, u32 val,
++				      u32 offset)
++{
++	soc->ops->write_reg(soc, val, offset);
++}
++
+ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc);
+ int brcmnand_remove(struct platform_device *pdev);
+ 
 -- 
 2.25.1
 
