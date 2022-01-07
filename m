@@ -4,72 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50D37C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  6 Jan 2022 21:22:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27123C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  7 Jan 2022 00:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Kzo4P7LqKk0GfNEHC5h6KpxjhJTEYM17h4qmCFoZIZo=; b=x8aR1WJkmWQmzC
-	6MbLTbkGKTSnrJw5ZVBPEQO7p5ZLoj30IWML5MHNk5dTHmE/2LlWEAuU3sts7soKU10GzbBurSV+E
-	tE90H+0ZpkQv8sKJrWGTZ4PFRhnplti0Y/4IXtKmC4kneuWMNv1+pGdu9/UXjsxp8/H6nYMzzA2l3
-	vgLoSx3bFbdwEpLnjDLpzPJCh91xhnIGbnNj0OtYQv1W3yYRNgYNiC0KaeVHQi9RIU+tOqEE+e+N3
-	iCyyotOjitKPQtu/b2JvKaCH0Ua/RjYHbDkcLlYTGhJzhA6iZkui2vfj9Z5KDWSd+XRccSoNt9TGY
-	qc606adObB7tjiHyoP/w==;
+	List-Owner; bh=RYk9WCh4Vlqu8YM6z0qRHNRB1sH+U5mpkH2quqWxIco=; b=cdppdiwpLNxIek
+	QHlCbVpwj7c2042aEHWGSrAZjHkcE5PSWvImUqGlXig2OR86so9EYOXDvrZpYfElt7jEiclmBsRYz
+	t1LJ/21Y2l/wG6YbDAGagkp1m7NShR6+o7XcbQUK1+xPAVYtMYpdBDoRNuFpyKboWMmTBKiZbWkvc
+	TMUEMGT2+ipCeEBcSWUlJ06xqScXsrpw9Yv1koYIeNKc4EcuxZC8x0QRNy7F2KARXbmnUeul/utJK
+	HCT8wYaCgzOPdcKouoGmwz5PxAk2YpXc6Xy2AVGoIWvymMOU9rs6Ykb3/3S3w/QhZwKWZgJ3QkRYf
+	mKHRxLgbpSbRAQulX+SA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n5aCb-001Oeq-Rr; Thu, 06 Jan 2022 21:21:41 +0000
-Received: from mga09.intel.com ([134.134.136.24])
+	id 1n5cte-001dCj-N0; Fri, 07 Jan 2022 00:14:18 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n5aCZ-001OeF-Gz
- for linux-mtd@lists.infradead.org; Thu, 06 Jan 2022 21:21:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641504099; x=1673040099;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=WsRvHTzmFoZ0lh24gUliSwEMS0Yrmf1aS8DVg4F1m4g=;
- b=ath2kgVUNwUMv1PsMD1zkRtcj43jcJP/7WVk/Q/e0GpZ5LrdLAwEv0EE
- pg4jOO2StIh4iHiURtB5NkUinP7MxMuyjae31xaNGC9W9U+vk4kowpGNf
- AHSY7QSY3UArzNuZUDebVi99suw43fkXApqao9p1yWpKwnMjJvCiJ5JZ5
- 96VzA/L//i1yhvvmzja2xlWVvDtZB622EtF5VmJReakEwUV8A0RGgWEb7
- /PLj0dPGIjZrns377Ne2CfP57+NXx+Y4ni+i5yifnmWXJntUq7TKgPxZ8
- VVOmPwQyfpwrjIKbdMLthF23VYjnDLUVF5BHX/jX3rp/VcmDLOdKjR2L9 A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="242531515"
-X-IronPort-AV: E=Sophos;i="5.88,267,1635231600"; d="scan'208";a="242531515"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jan 2022 13:21:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,267,1635231600"; d="scan'208";a="689548828"
-Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
- by orsmga005.jf.intel.com with ESMTP; 06 Jan 2022 13:21:30 -0800
-Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1n5aCQ-000HzB-6o; Thu, 06 Jan 2022 21:21:30 +0000
-Date: Fri, 7 Jan 2022 05:21:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Liang Yang <liang.yang@amlogic.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: kbuild-all@lists.01.org, Liang Yang <liang.yang@amlogic.com>,
- Richard Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
- Victor Wan <victor.wan@amlogic.com>
-Subject: Re: [PATCH] mtd: rawnand: meson: fix the clock after discarding
- sd_emmc_c_clkc
-Message-ID: <202201070543.goUXCEdh-lkp@intel.com>
-References: <20220106032504.23310-1-liang.yang@amlogic.com>
+ id 1n5ctQ-001d5C-GP
+ for linux-mtd@lists.infradead.org; Fri, 07 Jan 2022 00:14:05 +0000
+Received: by mail-pg1-x535.google.com with SMTP id i30so4023746pgl.0
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Jan 2022 16:14:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=HAeEFO2qvIKP8NId8vfdtckbt5Y7Yjs9xWcmvkhoZSI=;
+ b=mdWAqTR9fyhSi8Df7gWYtdt7BHU2fsxRj+WXjvkMximiEO56VSnNXZa7g8cw7sTj8v
+ 6cArDCX5bwiLMqs9LzNjVITJyqHY+8LYvBdtnKQ5bSzHS9hI0/Gw9Tvga5smTjlJi8Ed
+ f7r8lfJgtqBrr90aEeH7F3vhT/iFihgzY2X/0zzfWwexuKJwGCnbtKR1LnLuwP/gfw0g
+ ZTyOvLaEXJxZPFgAh2b/iX0v769jenBmV+cpIjmDo1zWX31/E8CNoZMizEbghMXH5cp3
+ L8mH7aiPI5Wc1qLDVqiYgaMLHo91C862JzSO3d3dy5IuYGc/YHbPpaEdLaeF96aEdYpG
+ 8CRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=HAeEFO2qvIKP8NId8vfdtckbt5Y7Yjs9xWcmvkhoZSI=;
+ b=ZUv9JM3Z6eKzyk4DhPxuuZPfsqtKkW0jd1eRc2KgXzTTLedc2qXP+T8T6MrIUL/ed8
+ LPKKQ+aF0XHIVioqEjCC++RQGeaBfyZqVzbJwUyjT6ByP116KVvKynMvzHXimpEFDinK
+ BpkQgIzHJhzacBv0A1fWG/jisGW1cP5+0twTDWogOFBoRM4c/qjOSLs2iJ/mZonRi5Fh
+ ENzz0lp9nrXJsP91l7ipjc4f1vkkp9QmliCmsc431WkniTkKCYV9lLXuh8WqZmycsK81
+ rrUs74ozUsvZDRgEKOtZ3NAhZBzUAZvwiDo//frZK8Jy0IOaTmDisHQRLYyTta1N2HKH
+ u9xw==
+X-Gm-Message-State: AOAM533++BlbxQ6Gvc3g4xRR1h//oHHznPxOVorI3oAix+7F6KkkviSS
+ BqTypyxVyqG/ibI8oPowCJ715J20y3M=
+X-Google-Smtp-Source: ABdhPJy5ireaJcIcq1W271fVNEhILDI0b0GWowJLlF8ZFeWfAlMMJ10PGn35Xapr3uV6erfEEaIAvA==
+X-Received: by 2002:a05:6a00:130a:b0:4bd:118:8071 with SMTP id
+ j10-20020a056a00130a00b004bd01188071mr1376710pfu.28.1641514443085; 
+ Thu, 06 Jan 2022 16:14:03 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+ by smtp.gmail.com with ESMTPSA id y3sm3301906pju.37.2022.01.06.16.14.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 06 Jan 2022 16:14:02 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Cai Huoqing <caihuoqing@baidu.com>, Colin Ian King <colin.king@intel.com>,
+ linux-kernel@vger.kernel.org (open list),
+ linux-wireless@vger.kernel.org (open list:BROADCOM SPECIFIC AMBA DRIVER
+ (BCMA)), 
+ bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
+ DRIVER)
+Subject: [PATCH v2 1/9] mtd: rawnand: brcmnand: Assign soc as early as possible
+Date: Thu,  6 Jan 2022 16:13:20 -0800
+Message-Id: <20220107001328.2233896-2-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220107001328.2233896-1-f.fainelli@gmail.com>
+References: <20220107001328.2233896-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220106032504.23310-1-liang.yang@amlogic.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220106_132139_668753_CD573896 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20220106_161404_576927_1721797B 
+X-CRM114-Status: GOOD (  11.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,45 +98,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Liang,
+In order to key off the brcmnand_probe() code in subsequent changes
+depending upon ctlr->soc, assign that variable as early as possible,
+instead of much later when we have checked that it is non-NULL.
 
-I love your patch! Yet something to improve:
-
-[auto build test ERROR on mtd/nand/next]
-[also build test ERROR on v5.16-rc8 next-20220106]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Liang-Yang/mtd-rawnand-meson-fix-the-clock-after-discarding-sd_emmc_c_clkc/20220106-114103
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-config: ia64-randconfig-r035-20220106 (https://download.01.org/0day-ci/archive/20220107/202201070543.goUXCEdh-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/a7e02cbd62a38e6fcbdcafe806b129bb287e7cf6
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Liang-Yang/mtd-rawnand-meson-fix-the-clock-after-discarding-sd_emmc_c_clkc/20220106-114103
-        git checkout a7e02cbd62a38e6fcbdcafe806b129bb287e7cf6
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=ia64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   ia64-linux-ld: drivers/mtd/nand/raw/meson_nand.o: in function `meson_nfc_probe':
-   meson_nand.c:(.text+0x3410): undefined reference to `clk_divider_ops'
->> ia64-linux-ld: meson_nand.c:(.text+0x3430): undefined reference to `clk_divider_ops'
->> ia64-linux-ld: meson_nand.c:(.text+0x3442): undefined reference to `__clk_get_name'
->> ia64-linux-ld: meson_nand.c:(.text+0x34d2): undefined reference to `devm_clk_register'
-
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index f75929783b94..63080ae3aef1 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -2998,6 +2998,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 
+ 	dev_set_drvdata(dev, ctrl);
+ 	ctrl->dev = dev;
++	ctrl->soc = soc;
+ 
+ 	init_completion(&ctrl->done);
+ 	init_completion(&ctrl->dma_done);
+@@ -3138,8 +3139,6 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+ 	 * interesting ways
+ 	 */
+ 	if (soc) {
+-		ctrl->soc = soc;
+-
+ 		ret = devm_request_irq(dev, ctrl->irq, brcmnand_irq, 0,
+ 				       DRV_NAME, ctrl);
+ 
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
