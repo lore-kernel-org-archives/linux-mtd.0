@@ -4,73 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8036C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jan 2022 13:16:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA2B0C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jan 2022 14:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X4VYaj97v3j20mTD37/pbFS1Zxm3JySKpGOwxe2el7U=; b=x3ZrSjeS3UVs7T
-	LsMq+tDOEpHHNdWuB4rF3RkzFTJjGN5FUvYa+3Qv2fgr2bAN+W575jV9FcdJNno3Ge9Jb5pocbpEw
-	e9f11w+XgvuQCF181CE6P6Ttq/L4J1kDaOlsywz78JgaRBJJyr8c//h3ZZJHSagIoYIWX5bjVN0Ea
-	bUgHxvOxAXj1/spXGd3D4HA3AOun1wQoW+7UPEY7BVkTqqZhJgrhBz/vaQtg5tVng0GWeNMxxzbwJ
-	4a+j4t5u2Fvjt9V6a/9pdwE+Arf8hAYDpO73hLGsxBiBEE1zpg0QqNieNfBBmR05FD+FwqgB7A2yX
-	8EMUNx+NmhfDGJpzzMDQ==;
+	List-Owner; bh=bySh/DWnZt+PPIAcy2cWs6qWQnq2a2N71iXygdYTAa0=; b=lTgedww+YsnwxQ
+	cHawdGugdaVsi+x7Ar7LGrnmEqiNfA4Ikls7wGFPk8EZ4GUTYgtAKDSQzU7ziqDMtv5rSibO1cy7t
+	1jLUrrW8mUtbhCGxY666/qFXkfeDWQm2sgIsgfJ90F98p2LFJSpDk1pnRkDL36ifyE7oPv1t56YBB
+	MF9mujKnmJl4wSkFQB9e8T/nIMmAhXaAsMIFxDItUFFj/kYiUNMUSY6zARHseX022x8Nvc1sCLXgp
+	SCwYzj+quzuR6RJW5CO27sTViEo+pTYk9Cl9hk4wVhyeOkxay8pO+IpaynQpmwZulbE2i3u8sgKUo
+	psqq014ouMUVIk6b/gcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n6uWW-00BVE5-6k; Mon, 10 Jan 2022 13:15:44 +0000
-Received: from mail-ua1-f44.google.com ([209.85.222.44])
+	id 1n6vrI-00Brbh-RC; Mon, 10 Jan 2022 14:41:16 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n6uWT-00BVDC-3T
- for linux-mtd@lists.infradead.org; Mon, 10 Jan 2022 13:15:42 +0000
-Received: by mail-ua1-f44.google.com with SMTP id y4so23363018uad.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Jan 2022 05:15:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=LCLij+M4QbVKhJoSmDxvaDdqsjBqOrzTtN9IFLbiL0I=;
- b=0c2LmNnow7vPbMBXDG+83vQIptmdUSrPJngsGjtPk9uXAXBT7Nyh6XlGmB2v1VViQQ
- KWz6JJ9DNK+FM1vpF3vH4i7EcpLG2LS0CoIicL6hZq/WOzGt9tnyqlLw8CLTaLK4WYB4
- V81PAUxjpEzXHQqEfq4VfKgpLzNmPMCPqApCSpYMV3YAPWMW6RDeb9xF73M4j/VGLqTq
- Fwpaqz5kzjyAGyjHR0MKRR8anCF3ojs6t32vMTLv3JW9q8HUt0LRpF8V4n1fF4njrh0p
- bjDHJSUFJ0UJp9x3LcMMa4xUUaqibF/N9cxd0mFsyE+cQkskT5dEQdiNMTb9UCu1aWB2
- ULIg==
-X-Gm-Message-State: AOAM532mCMnvr/ED9wHni7WBGVUV0QRAzRgsOOS9vCyzPFb2zaJEhbRV
- r2fuoyJFGNSe5OsFZMYEuK9bNQpzuW8lvg==
-X-Google-Smtp-Source: ABdhPJz+Mvdg3Z7ErjreI2j0nWKsXc24mJy0xnHXkSUrWsCDO/YlIMYY4ehwqhcNumxJ4xDJdM1irQ==
-X-Received: by 2002:ab0:698c:: with SMTP id t12mr26741757uaq.142.1641820539180; 
- Mon, 10 Jan 2022 05:15:39 -0800 (PST)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com.
- [209.85.222.46])
- by smtp.gmail.com with ESMTPSA id g43sm3834726uae.2.2022.01.10.05.15.38
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 10 Jan 2022 05:15:38 -0800 (PST)
-Received: by mail-ua1-f46.google.com with SMTP id m15so8944609uap.6
- for <linux-mtd@lists.infradead.org>; Mon, 10 Jan 2022 05:15:38 -0800 (PST)
-X-Received: by 2002:a67:c81c:: with SMTP id u28mr24708091vsk.38.1641820538248; 
- Mon, 10 Jan 2022 05:15:38 -0800 (PST)
-MIME-Version: 1.0
+ id 1n6vrF-00BraN-Vs
+ for linux-mtd@lists.infradead.org; Mon, 10 Jan 2022 14:41:16 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 20EA51C000D;
+ Mon, 10 Jan 2022 14:41:09 +0000 (UTC)
+Date: Mon, 10 Jan 2022 15:41:07 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
+ Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] mtd: Introduce an expert mode for forensics and
+ debugging purposes
+Message-ID: <20220110154107.1744c5ea@xps13>
+In-Reply-To: <CAMuHMdVnOdvEbiiQcdZHdVkz1YAj-kgZp_nw4jqb6Z5=KeM=uw@mail.gmail.com>
 References: <20211118114659.1282855-1-miquel.raynal@bootlin.com>
-In-Reply-To: <20211118114659.1282855-1-miquel.raynal@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 10 Jan 2022 14:15:27 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVnOdvEbiiQcdZHdVkz1YAj-kgZp_nw4jqb6Z5=KeM=uw@mail.gmail.com>
-Message-ID: <CAMuHMdVnOdvEbiiQcdZHdVkz1YAj-kgZp_nw4jqb6Z5=KeM=uw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: Introduce an expert mode for forensics and debugging
- purposes
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>,
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ <CAMuHMdVnOdvEbiiQcdZHdVkz1YAj-kgZp_nw4jqb6Z5=KeM=uw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220110_051541_174279_87F92D79 
-X-CRM114-Status: GOOD (  31.48  )
+X-CRM114-CacheID: sfid-20220110_064114_335069_0C6B171C 
+X-CRM114-Status: GOOD (  30.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,113 +59,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On Thu, Nov 18, 2021 at 12:47 PM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> When developping NAND controller drivers or when debugging filesystem
-> corruptions, it is quite common to need hacking locally into the
-> MTD/NAND core in order to get access to the content of the bad
-> blocks. Instead of having multiple implementations out there let's
-> provide a simple yet effective specific MTD-wide debugfs entry to fully
-> disable these checks on purpose.
->
-> A warning is added to inform the user when this mode gets enabled.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Thanks for your patch, which is now commit 67b967ddd93d0ed5 ("mtd:
-Introduce an expert mode for forensics and debugging purposes")
-in mtd/next.
-
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -2365,6 +2365,14 @@ static struct backing_dev_info * __init mtd_bdi_init(const char *name)
->         return ret ? ERR_PTR(ret) : bdi;
->  }
->
-> +char *mtd_expert_analysis_warning =
-
-const
-
-> +       "Bad block checks have been entirely disabled.\n"
-> +       "This is only reserved for post-mortem forensics and debug purposes.\n"
-> +       "Never enable this mode if you do not know what you are doing!\n";
-> +EXPORT_SYMBOL_GPL(mtd_expert_analysis_warning);
-
-Shouldn't this depend on CONFIG_DEBUG_FS?
-
-> +bool mtd_expert_analysis_mode;
-> +EXPORT_SYMBOL_GPL(mtd_expert_analysis_mode);
-
-Do you really need to export these two symbols?
-
-> +
->  static struct proc_dir_entry *proc_mtd;
->
->  static int __init init_mtd(void)
-=
-> --- a/drivers/mtd/nand/core.c
-> +++ b/drivers/mtd/nand/core.c
-> @@ -21,6 +21,9 @@
->   */
->  bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
->  {
-> +       if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-> +               return 0;
-> +
->         if (nanddev_bbt_is_initialized(nand)) {
->                 unsigned int entry;
->                 int status;
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 3d6c6e880520..b3a9bc08b4bb 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -321,6 +321,9 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
->         if (nand_region_is_secured(chip, ofs, mtd->erasesize))
->                 return -EIO;
->
-> +       if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-> +               return 0;
-> +
->         if (chip->legacy.block_bad)
->                 return chip->legacy.block_bad(chip, ofs);
->
-> diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-> index b7ad030225f8..ab630af3a309 100644
-> --- a/drivers/mtd/nand/raw/nand_bbt.c
-> +++ b/drivers/mtd/nand/raw/nand_bbt.c
-> @@ -1455,6 +1455,9 @@ int nand_isbad_bbt(struct nand_chip *this, loff_t offs, int allowbbt)
->         pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
->                  (unsigned int)offs, block, res);
->
-> +       if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-> +               return 0;
-> +
-
-These are all the same.
-
-What about letting drivers/mtd/mtdcore.c export a simple function
-mtd_check_expert_analysis_mode() that calls the WARN_ONCE(...) if
-CONFIG_DEBUG_FS=y, else providing a dummy?
-The backtrace will identify the caller anyway.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR2VlcnQsCgpnZWVydEBsaW51eC1tNjhrLm9yZyB3cm90ZSBvbiBNb24sIDEwIEphbiAyMDIy
+IDE0OjE1OjI3ICswMTAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24gVGh1LCBOb3YgMTgsIDIwMjEg
+YXQgMTI6NDcgUE0gTWlxdWVsIFJheW5hbAo+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3
+cm90ZToKPiA+IFdoZW4gZGV2ZWxvcHBpbmcgTkFORCBjb250cm9sbGVyIGRyaXZlcnMgb3Igd2hl
+biBkZWJ1Z2dpbmcgZmlsZXN5c3RlbQo+ID4gY29ycnVwdGlvbnMsIGl0IGlzIHF1aXRlIGNvbW1v
+biB0byBuZWVkIGhhY2tpbmcgbG9jYWxseSBpbnRvIHRoZQo+ID4gTVREL05BTkQgY29yZSBpbiBv
+cmRlciB0byBnZXQgYWNjZXNzIHRvIHRoZSBjb250ZW50IG9mIHRoZSBiYWQKPiA+IGJsb2Nrcy4g
+SW5zdGVhZCBvZiBoYXZpbmcgbXVsdGlwbGUgaW1wbGVtZW50YXRpb25zIG91dCB0aGVyZSBsZXQn
+cwo+ID4gcHJvdmlkZSBhIHNpbXBsZSB5ZXQgZWZmZWN0aXZlIHNwZWNpZmljIE1URC13aWRlIGRl
+YnVnZnMgZW50cnkgdG8gZnVsbHkKPiA+IGRpc2FibGUgdGhlc2UgY2hlY2tzIG9uIHB1cnBvc2Uu
+Cj4gPgo+ID4gQSB3YXJuaW5nIGlzIGFkZGVkIHRvIGluZm9ybSB0aGUgdXNlciB3aGVuIHRoaXMg
+bW9kZSBnZXRzIGVuYWJsZWQuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVsIFJheW5hbCA8
+bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gIAo+IAo+IFRoYW5rcyBmb3IgeW91ciBwYXRjaCwg
+d2hpY2ggaXMgbm93IGNvbW1pdCA2N2I5NjdkZGQ5M2QwZWQ1ICgibXRkOgo+IEludHJvZHVjZSBh
+biBleHBlcnQgbW9kZSBmb3IgZm9yZW5zaWNzIGFuZCBkZWJ1Z2dpbmcgcHVycG9zZXMiKQo+IGlu
+IG10ZC9uZXh0LgoKVGhhbmtzIGZvciByZXZpZXdpbmchIFVuZm9ydHVuYXRlbHkgSSd2ZSBzZW50
+IHRoZSBNVEQgcHVsbC1yZXF1ZXN0IHRvCkxpbnVzIHRoaXMgbW9ybmluZyBzbyBJJ2xsIGhhdmUg
+dG8gYWRkcmVzcyB0aGlzIGluIHN1YnNlcXVlbnQKY29tbWl0cy4KCj4gPiAtLS0gYS9kcml2ZXJz
+L210ZC9tdGRjb3JlLmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwo+ID4gQEAgLTIz
+NjUsNiArMjM2NSwxNCBAQCBzdGF0aWMgc3RydWN0IGJhY2tpbmdfZGV2X2luZm8gKiBfX2luaXQg
+bXRkX2JkaV9pbml0KGNvbnN0IGNoYXIgKm5hbWUpCj4gPiAgICAgICAgIHJldHVybiByZXQgPyBF
+UlJfUFRSKHJldCkgOiBiZGk7Cj4gPiAgfQo+ID4KPiA+ICtjaGFyICptdGRfZXhwZXJ0X2FuYWx5
+c2lzX3dhcm5pbmcgPSAgCj4gCj4gY29uc3QKCldpdGggdGhlIGZ1bmN0aW9uIHlvdSBwcm9wb3Nl
+LCBJJ2xsIGV2ZW4gaGF2ZSB0byB0dXJuIGl0IHN0YXRpYy4KCj4gPiArICAgICAgICJCYWQgYmxv
+Y2sgY2hlY2tzIGhhdmUgYmVlbiBlbnRpcmVseSBkaXNhYmxlZC5cbiIKPiA+ICsgICAgICAgIlRo
+aXMgaXMgb25seSByZXNlcnZlZCBmb3IgcG9zdC1tb3J0ZW0gZm9yZW5zaWNzIGFuZCBkZWJ1ZyBw
+dXJwb3Nlcy5cbiIKPiA+ICsgICAgICAgIk5ldmVyIGVuYWJsZSB0aGlzIG1vZGUgaWYgeW91IGRv
+IG5vdCBrbm93IHdoYXQgeW91IGFyZSBkb2luZyFcbiI7Cj4gPiArRVhQT1JUX1NZTUJPTF9HUEwo
+bXRkX2V4cGVydF9hbmFseXNpc193YXJuaW5nKTsgIAo+IAo+IFNob3VsZG4ndCB0aGlzIGRlcGVu
+ZCBvbiBDT05GSUdfREVCVUdfRlM/CgpJIGhhdmVuJ3QgcmVjZWl2ZWQgYW55IHJvYm90IHdhcm5p
+bmdzIGFib3V0IHRoaXMgKGdlbmVyYWxseSBzcGVha2luZwpyYW5kb20gY29uZmlncyBhcmUgcXVp
+dGUgZWZmaWNpZW50IHRvIHRyaWdnZXIgdGhvc2UgZXJyb3JzKSBzbyBJCmJlbGlldmUgaXQgaXMg
+c2FmZT8gQnV0IEknbGwgZG91YmxlIGNoZWNrLgoKPiA+ICtib29sIG10ZF9leHBlcnRfYW5hbHlz
+aXNfbW9kZTsKPiA+ICtFWFBPUlRfU1lNQk9MX0dQTChtdGRfZXhwZXJ0X2FuYWx5c2lzX21vZGUp
+OyAgCj4gCj4gRG8geW91IHJlYWxseSBuZWVkIHRvIGV4cG9ydCB0aGVzZSB0d28gc3ltYm9scz8K
+PiAKPiA+ICsKPiA+ICBzdGF0aWMgc3RydWN0IHByb2NfZGlyX2VudHJ5ICpwcm9jX210ZDsKPiA+
+Cj4gPiAgc3RhdGljIGludCBfX2luaXQgaW5pdF9tdGQodm9pZCkgIAo+ID0KPiA+IC0tLSBhL2Ry
+aXZlcnMvbXRkL25hbmQvY29yZS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL2NvcmUuYwo+
+ID4gQEAgLTIxLDYgKzIxLDkgQEAKPiA+ICAgKi8KPiA+ICBib29sIG5hbmRkZXZfaXNiYWQoc3Ry
+dWN0IG5hbmRfZGV2aWNlICpuYW5kLCBjb25zdCBzdHJ1Y3QgbmFuZF9wb3MgKnBvcykKPiA+ICB7
+Cj4gPiArICAgICAgIGlmIChXQVJOX09OQ0UobXRkX2V4cGVydF9hbmFseXNpc19tb2RlLCBtdGRf
+ZXhwZXJ0X2FuYWx5c2lzX3dhcm5pbmcpKQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAwOwo+
+ID4gKwo+ID4gICAgICAgICBpZiAobmFuZGRldl9iYnRfaXNfaW5pdGlhbGl6ZWQobmFuZCkpIHsK
+PiA+ICAgICAgICAgICAgICAgICB1bnNpZ25lZCBpbnQgZW50cnk7Cj4gPiAgICAgICAgICAgICAg
+ICAgaW50IHN0YXR1czsKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
+X2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jCj4gPiBpbmRleCAzZDZj
+NmU4ODA1MjAuLmIzYTliYzA4YjRiYiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRfYmFzZS5jCj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2Uu
+Ywo+ID4gQEAgLTMyMSw2ICszMjEsOSBAQCBzdGF0aWMgaW50IG5hbmRfaXNiYWRfYmJtKHN0cnVj
+dCBuYW5kX2NoaXAgKmNoaXAsIGxvZmZfdCBvZnMpCj4gPiAgICAgICAgIGlmIChuYW5kX3JlZ2lv
+bl9pc19zZWN1cmVkKGNoaXAsIG9mcywgbXRkLT5lcmFzZXNpemUpKQo+ID4gICAgICAgICAgICAg
+ICAgIHJldHVybiAtRUlPOwo+ID4KPiA+ICsgICAgICAgaWYgKFdBUk5fT05DRShtdGRfZXhwZXJ0
+X2FuYWx5c2lzX21vZGUsIG10ZF9leHBlcnRfYW5hbHlzaXNfd2FybmluZykpCj4gPiArICAgICAg
+ICAgICAgICAgcmV0dXJuIDA7Cj4gPiArCj4gPiAgICAgICAgIGlmIChjaGlwLT5sZWdhY3kuYmxv
+Y2tfYmFkKQo+ID4gICAgICAgICAgICAgICAgIHJldHVybiBjaGlwLT5sZWdhY3kuYmxvY2tfYmFk
+KGNoaXAsIG9mcyk7Cj4gPgo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25h
+bmRfYmJ0LmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2JidC5jCj4gPiBpbmRleCBiN2Fk
+MDMwMjI1ZjguLmFiNjMwYWYzYTMwOSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
+cmF3L25hbmRfYmJ0LmMKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfYmJ0LmMK
+PiA+IEBAIC0xNDU1LDYgKzE0NTUsOSBAQCBpbnQgbmFuZF9pc2JhZF9iYnQoc3RydWN0IG5hbmRf
+Y2hpcCAqdGhpcywgbG9mZl90IG9mZnMsIGludCBhbGxvd2JidCkKPiA+ICAgICAgICAgcHJfZGVi
+dWcoIm5hbmRfaXNiYWRfYmJ0KCk6IGJidCBpbmZvIGZvciBvZmZzIDB4JTA4eDogKGJsb2NrICVk
+KSAweCUwMnhcbiIsCj4gPiAgICAgICAgICAgICAgICAgICh1bnNpZ25lZCBpbnQpb2ZmcywgYmxv
+Y2ssIHJlcyk7Cj4gPgo+ID4gKyAgICAgICBpZiAoV0FSTl9PTkNFKG10ZF9leHBlcnRfYW5hbHlz
+aXNfbW9kZSwgbXRkX2V4cGVydF9hbmFseXNpc193YXJuaW5nKSkKPiA+ICsgICAgICAgICAgICAg
+ICByZXR1cm4gMDsKPiA+ICsgIAo+IAo+IFRoZXNlIGFyZSBhbGwgdGhlIHNhbWUuCj4gCj4gV2hh
+dCBhYm91dCBsZXR0aW5nIGRyaXZlcnMvbXRkL210ZGNvcmUuYyBleHBvcnQgYSBzaW1wbGUgZnVu
+Y3Rpb24KPiBtdGRfY2hlY2tfZXhwZXJ0X2FuYWx5c2lzX21vZGUoKSB0aGF0IGNhbGxzIHRoZSBX
+QVJOX09OQ0UoLi4uKSBpZgo+IENPTkZJR19ERUJVR19GUz15LCBlbHNlIHByb3ZpZGluZyBhIGR1
+bW15Pwo+IFRoZSBiYWNrdHJhY2Ugd2lsbCBpZGVudGlmeSB0aGUgY2FsbGVyIGFueXdheS4KClll
+cCB0aGF0J3MgYSBnb29kIGlkZWEuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
+biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCg==
