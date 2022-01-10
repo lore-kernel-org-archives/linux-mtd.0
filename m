@@ -4,70 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4186BC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jan 2022 05:08:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70F4AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jan 2022 08:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bHQLaxsKCzDDq7Np4GgvSBBkhPk/C15VIJ6DpB8IHt0=; b=mdDzTyinoBZ/jQ
-	sf4+rQ7dwiFmFRJKycN1bzPkzZjWD6pNHxoN8pPACoy8vRDP2t1xzddaKtRiiJbAq4jEZKy84wEAr
-	mq7w9v+BJx8UQTs0OafZYirZdEN0q7wVK5qB87O0u+o+UqA/p+48bV1jjV2YWgdMPk++nYmLsRSJy
-	w/iqPO2jPofnhhlRk/28E1U+DFSK8Ktj8WJwOo8s2d3y5qUH1UHFsaaqb8zdsFOrhvBZnurGhFWsS
-	5vpJ0+6spgu7p4/Cs8dyTN3mJSSc/L+iCGKWax0a+5ceA0Jl8U56bwTnXgVHG1op2h6Lv+ZNKBCEa
-	VIUvyHukIW0K0u8vrmXQ==;
+	List-Owner; bh=QbpQyTOVx3/OEs1wE1RjZFIAToZSymHJPU2MIbRwEiY=; b=Abs/VQJbh+J++T
+	cnt6ZHF3F9M4+d3BEcEEZhYak9YjqHObv8quntHJA6zaVK8tunX90AePqXO+zzdfSQkGqAgX1XsGD
+	yChDFGCmV+NP/9lKCX6bS4cOJhhodl5rmML/821e1K6iAdOAd92J93vrtZQo23AdRQdFR3gpI9cbY
+	W4PuatJ2WRNZO6DYHN5yjjO8u6gMxyxPF7LbW9N4a5WCdMAQD+F5FAlBqQL0OZTkkmzMxodRWROxt
+	daVpaXjwEUdVoyeHF9IDtUGvQGlqOXOqHmadSvfeMIQk1YhSgZEJ14/Mg7zUpStSDsDdm0N9Mw8Sa
+	6WfNGX2qGd/emRjFfvfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n6muI-009HbK-DK; Mon, 10 Jan 2022 05:07:46 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1n6pmi-009nGs-1x; Mon, 10 Jan 2022 08:12:08 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n6muC-009HaW-TZ
- for linux-mtd@lists.infradead.org; Mon, 10 Jan 2022 05:07:42 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20A57YP1070432;
- Sun, 9 Jan 2022 23:07:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1641791254;
- bh=SINVtEXoW1UxY2lLaP88MbTLRi1LPbuXnc7mbNpv21M=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=l1XLrCu8BQJECBy9wsqRM6hqhCH2t9KfQagrxEio9IPP60TcAnY8KulySIXL1rqUF
- ok+O2oh1KGtbgJyhQeY9WLQlsGxK23Thg4+lEUKma9zPysWD484J95KEEPtuE2zphy
- Tz2cX5WpFps+a/zAeGsnLrKLwLgE4f6t4oImRIeI=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20A57Ytb006515
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Sun, 9 Jan 2022 23:07:34 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sun, 9
- Jan 2022 23:07:33 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Sun, 9 Jan 2022 23:07:34 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20A57W95001634;
- Sun, 9 Jan 2022 23:07:33 -0600
-Date: Mon, 10 Jan 2022 10:37:32 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Dhananjay Phadke <dphadke@linux.microsoft.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for w25q512jvm
-Message-ID: <20220110050730.ga34eztvhs4bd3sb@ti.com>
-References: <20220109044418.4657-1-dphadke@linux.microsoft.com>
+ id 1n6pme-009nFC-KZ
+ for linux-mtd@lists.infradead.org; Mon, 10 Jan 2022 08:12:06 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id CEEFE60004;
+ Mon, 10 Jan 2022 08:11:58 +0000 (UTC)
+Date: Mon, 10 Jan 2022 09:11:57 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Mika Westerberg
+ <mika.westerberg@linux.intel.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Andreas Noever
+ <andreas.noever@gmail.com>, Michael Jamet <michael.jamet@intel.com>,
+ Yehezkel Bernat <YehezkelShB@gmail.com>, Alexander Usyskin
+ <alexander.usyskin@intel.com>
+Subject: Re: [PATCH v1 4/5] mtd: core: Drop duplicate NULL checks around
+ nvmem_unregister()
+Message-ID: <20220110091157.6396569e@xps13>
+In-Reply-To: <20220104133843.44272-4-andriy.shevchenko@linux.intel.com>
+References: <20220104133843.44272-1-andriy.shevchenko@linux.intel.com>
+ <20220104133843.44272-4-andriy.shevchenko@linux.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220109044418.4657-1-dphadke@linux.microsoft.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220109_210741_106230_3C13CD5E 
-X-CRM114-Status: GOOD (  16.20  )
+X-CRM114-CacheID: sfid-20220110_001204_882952_3E15EBF1 
+X-CRM114-Status: GOOD (  14.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,52 +62,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Dhananjay,
-
-On 08/01/22 08:44PM, Dhananjay Phadke wrote:
-> Add support for Winbond 64MB W25Q512JV-DTR NOR flash.
-> Use PARSE_SFDP flag to init parameters during SFDP parsing.
-> 
-> Signed-off-by: Dhananjay Phadke <dphadke@linux.microsoft.com>
-> ---
-
-You need to show the dumps of the SFDP and other flash parameters. See 
-[0] for an example.
-
-The patch looks fine to me otherwise.
-
-[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20211209190436.401946-2-tudor.ambarus@microchip.com/
-
->  drivers/mtd/spi-nor/winbond.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index 675f32c136b3..ebc826e21f76 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -118,6 +118,8 @@ static const struct flash_info winbond_parts[] = {
->  		.fixups = &w25q256_fixups },
->  	{ "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512)
->  		PARSE_SFDP },
-> +	{ "w25q512jvm", INFO(0xef7020, 0, 64 * 1024, 1024),
-> +		PARSE_SFDP },
->  	{ "w25q256jw", INFO(0xef6019, 0, 64 * 1024, 512)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> -- 
-> 2.25.1
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQW5keSwKCmFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbSB3cm90ZSBvbiBUdWUs
+ICA0IEphbiAyMDIyIDE1OjM4OjQyCiswMjAwOgoKPiBTaW5jZSBudm1lbV91bnJlZ2lzdGVyKCkg
+Y2hlY2tzIGZvciBOVUxMLCBubyBuZWVkIHRvIHJlcGVhdCBpbgo+IHRoZSBjYWxsZXIuIERyb3Ag
+ZHVwbGljYXRlIE5VTEwgY2hlY2tzLgoKQWNrZWQtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVlbC5y
+YXluYWxAYm9vdGxpbi5jb20+Cgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8
+YW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgo+IC0tLQo+ICBkcml2ZXJzL210ZC9t
+dGRjb3JlLmMgfCAxMyArKysrLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlv
+bnMoKyksIDkgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL210ZGNv
+cmUuYyBiL2RyaXZlcnMvbXRkL210ZGNvcmUuYwo+IGluZGV4IDcwZjQ5MmRjZTE1OC4uMDEwZmZj
+MzQ1MzJhIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL210ZGNvcmUuYwo+ICsrKyBiL2RyaXZl
+cnMvbXRkL210ZGNvcmUuYwo+IEBAIC03NDIsOCArNzQyLDcgQEAgaW50IGRlbF9tdGRfZGV2aWNl
+KHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ICAJCWRlYnVnZnNfcmVtb3ZlX3JlY3Vyc2l2ZShtdGQt
+PmRiZy5kZnNfZGlyKTsKPiAgCj4gIAkJLyogVHJ5IHRvIHJlbW92ZSB0aGUgTlZNRU0gcHJvdmlk
+ZXIgKi8KPiAtCQlpZiAobXRkLT5udm1lbSkKPiAtCQkJbnZtZW1fdW5yZWdpc3RlcihtdGQtPm52
+bWVtKTsKPiArCQludm1lbV91bnJlZ2lzdGVyKG10ZC0+bnZtZW0pOwo+ICAKPiAgCQlkZXZpY2Vf
+dW5yZWdpc3RlcigmbXRkLT5kZXYpOwo+ICAKPiBAQCAtOTIxLDggKzkyMCw3IEBAIHN0YXRpYyBp
+bnQgbXRkX290cF9udm1lbV9hZGQoc3RydWN0IG10ZF9pbmZvICptdGQpCj4gIAlyZXR1cm4gMDsK
+PiAgCj4gIGVycjoKPiAtCWlmIChtdGQtPm90cF91c2VyX252bWVtKQo+IC0JCW52bWVtX3VucmVn
+aXN0ZXIobXRkLT5vdHBfdXNlcl9udm1lbSk7Cj4gKwludm1lbV91bnJlZ2lzdGVyKG10ZC0+b3Rw
+X3VzZXJfbnZtZW0pOwo+ICAJcmV0dXJuIGVycjsKPiAgfQo+ICAKPiBAQCAtMTAyNiwxMSArMTAy
+NCw4IEBAIGludCBtdGRfZGV2aWNlX3VucmVnaXN0ZXIoc3RydWN0IG10ZF9pbmZvICptYXN0ZXIp
+Cj4gIAkJbWVtc2V0KCZtYXN0ZXItPnJlYm9vdF9ub3RpZmllciwgMCwgc2l6ZW9mKG1hc3Rlci0+
+cmVib290X25vdGlmaWVyKSk7Cj4gIAl9Cj4gIAo+IC0JaWYgKG1hc3Rlci0+b3RwX3VzZXJfbnZt
+ZW0pCj4gLQkJbnZtZW1fdW5yZWdpc3RlcihtYXN0ZXItPm90cF91c2VyX252bWVtKTsKPiAtCj4g
+LQlpZiAobWFzdGVyLT5vdHBfZmFjdG9yeV9udm1lbSkKPiAtCQludm1lbV91bnJlZ2lzdGVyKG1h
+c3Rlci0+b3RwX2ZhY3RvcnlfbnZtZW0pOwo+ICsJbnZtZW1fdW5yZWdpc3RlcihtYXN0ZXItPm90
+cF91c2VyX252bWVtKTsKPiArCW52bWVtX3VucmVnaXN0ZXIobWFzdGVyLT5vdHBfZmFjdG9yeV9u
+dm1lbSk7Cj4gIAo+ICAJZXJyID0gZGVsX210ZF9wYXJ0aXRpb25zKG1hc3Rlcik7Cj4gIAlpZiAo
+ZXJyKQoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
