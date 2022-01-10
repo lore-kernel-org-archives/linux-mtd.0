@@ -4,53 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6C64C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jan 2022 08:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C98EEC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 10 Jan 2022 09:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=38rsopbcYvVWGgHOvipK6TBQWoM1s+daYbWIvTS1G5I=; b=K8w+M0JJAQao5f
-	s6voDPUE3scSmKjYQywQsiXDKYnIcTk3WfbI5fXhiLSHszZWJ2oIVI6acMCM8GznJcFecHE4d9PtM
-	Vlk0ujHYkG96lEOB4VHogzlkU9JjhYn6GCKgNK+NEEf0BxwM3m8bP9Jfets06z/g76ni57uhDc0aS
-	+9mcpmAgbVe8Cq373aQU0Euj1btWgWWf2XpDJTB0dn+atwCtzOFXTXdxIURxXFZsLsHWnsFqzZ3q7
-	TwhqxZs0ulujelb6kjg2RL4mugZcszgowOmHi/rQIfHe9ByCC2/c06lCHzckdoAU2X5qfaeqTLXtr
-	ImyHxV/0aVwRTvAtTdHw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UZ2/Aa6PFuog9q3ZAM3eppPYcMMOlghtHYkbmulEUNE=; b=2NXB4N9t+1riA1EjjHa34yL2lL
+	7JmsbKe8Wwt453UmulNaaCW6AUhpyV1g2ZSAbWiA4O33/Mmj4A+5bJgeTdBK3bAvq98ueWqZ7/qI1
+	QaMVgUEa7v2yjIznSPsSK5m6B3+aY1O4Wfv+MqQ63tm2CIhdo3IYsP+0hB7WXZ1fXQc+ubz/b3+6z
+	yPfaCcOQKpAsWv4Qzh4PB0ZR8fs4ES4YBa+3KGc6IYoIbu1qYMBZ/nhFWRDo746e/1QoOfKlu97wY
+	PJKW6tIBVahWxIxt6dpPUGbt80hAWjl6G9hmNvwCFHkcj4UuyP7wEP5YQ7/vaeQnleWFk8UqlAR/a
+	yWVTju9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n6q5b-009t2j-9C; Mon, 10 Jan 2022 08:31:39 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1n6r9Y-00AUK8-Kd; Mon, 10 Jan 2022 09:39:48 +0000
+Received: from szxga08-in.huawei.com ([45.249.212.255])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n6q5X-009t0B-B7
- for linux-mtd@lists.infradead.org; Mon, 10 Jan 2022 08:31:37 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id D2AF7200010;
- Mon, 10 Jan 2022 08:31:29 +0000 (UTC)
-Date: Mon, 10 Jan 2022 09:31:28 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
- Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, devicetree@vger.kernel.org, Mark
- Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] spi: dt-bindings: Describe stacked/parallel
- memories modes
-Message-ID: <20220110093128.2777152e@xps13>
-In-Reply-To: <20211216160226.4fac5ccc@xps13>
-References: <20211210201039.729961-1-miquel.raynal@bootlin.com>
- <20211210201039.729961-3-miquel.raynal@bootlin.com>
- <YbjVSNAC8M5Y1nHp@robh.at.kernel.org>
- <20211216160226.4fac5ccc@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1n6r53-00ARNn-6N
+ for linux-mtd@lists.infradead.org; Mon, 10 Jan 2022 09:35:13 +0000
+Received: from kwepemi500009.china.huawei.com (unknown [172.30.72.53])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JXT9G5s6Vz1FCWs;
+ Mon, 10 Jan 2022 17:31:30 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ kwepemi500009.china.huawei.com (7.221.188.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 10 Jan 2022 17:35:04 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 10 Jan 2022 17:35:03 +0800
+Subject: Re: [PATCH v6 05/15] ubifs: Rename whiteout atomically
+To: Richard Weinberger <richard@nod.at>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
+ <vigneshr@ti.com>, mcoquelin stm32 <mcoquelin.stm32@gmail.com>, "kirill
+ shutemov" <kirill.shutemov@linux.intel.com>, Sascha Hauer
+ <s.hauer@pengutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+References: <20211227032246.2886878-1-chengzhihao1@huawei.com>
+ <20211227032246.2886878-6-chengzhihao1@huawei.com>
+ <1985807262.244880.1641762859448.JavaMail.zimbra@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <0477fadd-dfb5-c581-ee6a-ed6df9a966a3@huawei.com>
+Date: Mon, 10 Jan 2022 17:35:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <1985807262.244880.1641762859448.JavaMail.zimbra@nod.at>
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220110_003135_691680_2285138B 
-X-CRM114-Status: GOOD (  37.24  )
+X-CRM114-CacheID: sfid-20220110_013509_479903_F2534951 
+X-CRM114-Status: UNSURE (   9.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,95 +72,44 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9iLAoKbWlxdWVsLnJheW5hbEBib290bGluLmNvbSB3cm90ZSBvbiBUaHUsIDE2IERlYyAy
-MDIxIDE2OjAyOjI2ICswMTAwOgoKPiBIaSBSb2IsCj4gCj4gcm9iaEBrZXJuZWwub3JnIHdyb3Rl
-IG9uIFR1ZSwgMTQgRGVjIDIwMjEgMTE6MzI6NTYgLTA2MDA6Cj4gCj4gPiBPbiBGcmksIERlYyAx
-MCwgMjAyMSBhdCAwOToxMDozOFBNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOiAgCj4gPiA+
-IERlc2NyaWJlIHR3byBuZXcgbWVtb3JpZXMgbW9kZXM6Cj4gPiA+IC0gQSBzdGFja2VkIG1vZGUg
-d2hlbiB0aGUgYnVzIGlzIGNvbW1vbiBidXQgdGhlIGFkZHJlc3Mgc3BhY2UgZXh0ZW5kZWQKPiA+
-ID4gICB3aXRoIGFuIGFkZGl0aW5hbHMgd2lyZXMuCj4gPiA+IC0gQSBwYXJhbGxlbCBtb2RlIHdp
-dGggcGFyYWxsZWwgYnVzc2VzIGFjY2Vzc2luZyBwYXJhbGxlbCBmbGFzaGVzIHdoZXJlCj4gPiA+
-ICAgdGhlIGRhdGEgaXMgc3ByZWFkLgo+ID4gPiAKPiA+ID4gU2lnbmVkLW9mZi1ieTogTWlxdWVs
-IFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4KPiA+ID4gLS0tCj4gPiA+ICAuLi4v
-YmluZGluZ3Mvc3BpL3NwaS1wZXJpcGhlcmFsLXByb3BzLnlhbWwgICAgfCAyOSArKysrKysrKysr
-KysrKysrKysrCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMjkgaW5zZXJ0aW9ucygrKQo+ID4gPiAK
-PiA+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkv
-c3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9zcGkvc3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbAo+ID4gPiBpbmRleCA1ZGQyMDkyMDZl
-ODguLjQxOTRmZWU4ZjU1NiAxMDA2NDQKPiA+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NwaS9zcGktcGVyaXBoZXJhbC1wcm9wcy55YW1sCj4gPiA+ICsrKyBiL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLXBlcmlwaGVyYWwtcHJvcHMu
-eWFtbAo+ID4gPiBAQCAtODIsNiArODIsMzUgQEAgcHJvcGVydGllczoKPiA+ID4gICAgICBkZXNj
-cmlwdGlvbjoKPiA+ID4gICAgICAgIERlbGF5LCBpbiBtaWNyb3NlY29uZHMsIGFmdGVyIGEgd3Jp
-dGUgdHJhbnNmZXIuCj4gPiA+ICAKPiA+ID4gKyAgc3RhY2tlZC1tZW1vcmllczoKPiA+ID4gKyAg
-ICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50NjQtbWF0cml4ICAg
-IAo+ID4gCj4gPiBtYXRyaXggb3IuLi4KPiA+ICAgCj4gPiA+ICsgICAgZGVzY3JpcHRpb246IFNl
-dmVyYWwgU1BJIG1lbW9yaWVzIGNhbiBiZSB3aXJlZCBpbiBzdGFja2VkIG1vZGUuCj4gPiA+ICsg
-ICAgICBUaGlzIGJhc2ljYWxseSBtZWFucyB0aGF0IGVpdGhlciBhIGRldmljZSBmZWF0dXJlcyBz
-ZXZlcmFsIGNoaXAKPiA+ID4gKyAgICAgIHNlbGVjdHMsIG9yIHRoYXQgZGlmZmVyZW50IGRldmlj
-ZXMgbXVzdCBiZSBzZWVuIGFzIGEgc2luZ2xlCj4gPiA+ICsgICAgICBiaWdnZXIgY2hpcC4gVGhp
-cyBiYXNpY2FsbHkgZG91YmxlcyAob3IgbW9yZSkgdGhlIHRvdGFsIGFkZHJlc3MKPiA+ID4gKyAg
-ICAgIHNwYWNlIHdpdGggb25seSBhIHNpbmdsZSBhZGRpdGlvbmFsIHdpcmUsIHdoaWxlIHN0aWxs
-IG5lZWRpbmcKPiA+ID4gKyAgICAgIHRvIHJlcGVhdCB0aGUgY29tbWFuZHMgd2hlbiBjcm9zc2lu
-ZyBhIGNoaXAgYm91bmRhcnkuIFRoZSBzaXplIG9mCj4gPiA+ICsgICAgICBlYWNoIGNoaXAgc2hv
-dWxkIGJlIHByb3ZpZGVkIGFzIG1lbWJlcnMgb2YgdGhlIGFycmF5LiAgICAKPiA+IAo+ID4gYXJy
-YXk/Cj4gPiAKPiA+IFNvdW5kcyBsaWtlIGFuIGFycmF5IGZyb20gdGhlIGRlc2NyaXB0aW9uIGFz
-IHRoZXJlIGlzIG9ubHkgMSBlbGVtZW50LCAKPiA+IHRoZSBzaXplLiAgCj4gCj4gV2VsbCwgd2hh
-dCBJIGV4cGVjdGVkIHRvIGhhdmUgd2FzIHNvbWV0aGluZyBsaWtlOgo+IAo+IGR0OgkJPHByb3Bl
-cnR5PiA9IDx1aW50NjQ+LCA8dWludDY0PjsKPiAKPiBJdCBzZWVtZWQgbGlrZSB0aGUgb25seSBw
-b3NzaWJsZSB3YXkgKHRoYXQgdGhlIHRvb2xpbmcgd291bGQgdmFsaWRhdGUpCj4gd2FzIHRvIHVz
-ZToKPiAKPiBiaW5kaW5nczoJJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMv
-dWludDY0LW1hdHJpeAo+IAo+IFNvIEkgYXNzdW1lZCBJIHdhcyBkZWZpbmluZyBhIG1hdHJpeCBv
-ZiBBeEIgZWxlbWVudHMsIHdoZXJlIEEgaXMgdGhlCj4gbnVtYmVyIG9mIGRldmljZXMgSSB3YW50
-IHRvICJzdGFjayIgYW5kIEIgaXMgdGhlIG51bWJlciBvZiB2YWx1ZXMKPiBuZWVkZWQgdG8gZGVz
-Y3JpYmUgaXRzIHNpemUsIHNvIDEuCj4gCj4gSSByZWFsaXplZCB0aGF0IHRoZSBmb2xsb3dpbmcg
-ZXhhbXBsZSwgd2hpY2ggSSB3YXMgZXhwZWN0aW5nIHRvIHdvcmssCj4gd2FzIGZhaWxpbmc6Cj4g
-Cj4gYmluZGluZ3M6CSRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQ2
-NC1hcnJheQo+IGR0OgkJPHByb3BlcnR5PiA9IDx1aW50NjQ+LCA8dWludDY0PjsKPiAKPiBJbmRl
-ZWQsIGFzIHlvdSBwcm9wb3NlLCB0aGlzIGFjdHVhbGx5IHdvcmtzIGJ1dCBkZXNjcmliZXMgdHdv
-IHZhbHVlcwo+ICh0aWVkIHNvbWVob3cpIGludG8gYSBzaW5nbGUgZWxlbWVudCwgd2hpY2ggaXMg
-bm90IGV4YWN0bHkgd2hhdCBJCj4gd2FudGVkOgo+IAo+IGJpbmRpbmdzOiAJJHJlZjogL3NjaGVt
-YXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDY0LWFycmF5Cj4gZHQ6CQk8cHJvcGVydHk+
-ID0gPHVpbnQ2NCB1aW50NjQ+Owo+IAo+IEJ1dCBtb3JlIGRpc3R1cmJpbmcsIGFsbCB0aGUgZm9s
-bG93aW5nIGNvbnN0cnVjdGlvbnMgd29ya2VkLCB3aGVuIHVzaW5nCj4gMzItYml0cyB2YWx1ZXMg
-aW5zdGVhZDoKPiAKPiBiaW5kaW5nczogCSRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmlu
-aXRpb25zL3VpbnQzMi1hcnJheQo+IGR0OgkJPHByb3BlcnR5PiA9IDx1aW50MzIgdWludDMyPjsK
-PiAKPiBiaW5kaW5nczogCSRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3Vp
-bnQzMi1hcnJheQo+IGR0OgkJPHByb3BlcnR5PiA9IDx1aW50MzI+LCA8dWludDMyPjsKPiAKPiBi
-aW5kaW5nczogCSRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMi1t
-YXRyaXgKPiBkdDoJCTxwcm9wZXJ0eT4gPSA8dWludDMyIHVpbnQzMj47Cj4gCj4gYmluZGluZ3M6
-IAkkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzItbWF0cml4Cj4g
-ZHQ6CQk8cHJvcGVydHk+ID0gPHVpbnQzMj4sIDx1aW50MzI+Owo+IAo+IEkgYW0gZmluZSB3YWl0
-aW5nIGEgYml0IGlmIHlvdSB0aGluayB0aGVyZSBpcyBhIG5lZWQgZm9yIHNvbWUgdG9vbGluZwo+
-IHVwZGF0ZSBvbiB5b3VyIHNpZGUuIE90aGVyd2lzZSwgZG8geW91IHJlYWxseSB0aGluayB0aGF0
-IHRoaXMgc29sdXRpb24KPiBpcyB0aGUgb25lIHdlIHNob3VsZCByZWFsbHkgdXNlPwo+IAo+IGJp
-bmRpbmdzOiAJJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDY0LWFy
-cmF5Cj4gZHQ6CQk8cHJvcGVydHk+ID0gPHVpbnQ2NCB1aW50NjQ+Owo+IAo+IEJlY2F1c2UgZnJv
-bSBteSBwb2ludCBvZiB2aWV3IGl0IGRvZXMgbm90IG1hdGNoIHdoYXQgd2UgdXN1YWxseSBkbyBm
-b3IKPiBvdGhlciAidHlwZXMiIG9mIGVsZW1lbnRzLCBzdWNoIGFzOgo+IAo+IGR0OgkJPHByb3Bl
-cnR5PiA9IDxwaGFuZGxlMSBpbmRleDE+LCA8cGhhbmRsZTIgaW5kZXgyPjsKPiAKPiBvcgo+IAo+
-IGR0OgkJPHByb3BlcnR5PiA9IDxzbWFsbC12YWwxPiwgPHNtYWxsLXZhbDI+OwoKU29ycnkgZm9y
-IGJvdGhlcmluZyB5b3UsIGlzIHRoaXMgc29tZXRoaW5nIHlvdSBzdGlsbCBoYXZlIGluIG1pbmQ/
-IEl0CnNlZW1zIHRoYXQgdGhlIHRvb2xpbmcgaXMgdGhlIGN1bHByaXQgaGVyZSBhbmQgSSB3b3Vs
-ZCBoaWdobHkKYXBwcmVjaWF0ZSB5b3VyIGhlbHAgb24gdGhhdCBwb2ludC4KClRoYW5rcywKTWlx
-dcOobAoKPiAKPiA+ICAgCj4gPiA+ICsgICAgbWluSXRlbXM6IDIKPiA+ID4gKyAgICBtYXhJdGVt
-czogMgo+ID4gPiArICAgIGl0ZW1zOgo+ID4gPiArICAgICAgbWF4SXRlbXM6IDEgICAgCj4gPiAK
-PiA+IFRoaXMgc2F5cyB5b3UgY2FuIG9ubHkgaGF2ZSAyIDY0LWJpdCBlbnRyaWVzLiBQcm9iYWJs
-eSBub3Qgd2hhdCB5b3UgCj4gPiB3YW50LiBUaGlzIGxvb2tzIGxpa2UgYSBjYXNlIGZvciBhIG1h
-eEl0ZW1zICdzaG91bGQgYmUgZW5vdWdoIGZvciBub3cnIAo+ID4gdHlwZSBvZiB2YWx1ZS4gIAo+
-IAo+IFllcywgdGhhdCBpcyB3aGF0IEkgd2FudGVkIHRvIGRlc2NyaWJlLgo+IAo+IEluIG15IHJl
-Y2VudCBjb250cmlidXRpb25zIHlvdSBhbHdheXMgcHJlZmVycmVkIHRvIGJvdW5kIHRoaW5ncyBh
-cyBtdWNoCj4gYXMgcG9zc2libGUsIGV2ZW4gdGhvdWdoIGxhdGVyIGl0IG1pZ2h0IGJlY29tZSBu
-ZWNlc3NhcnkgdG8gbG9vc2VuIHRoZQo+IGNvbnN0cmFpbnQuIFJpZ2h0IG5vdyBJIHNlZSB0aGUg
-dXNlIG9mIHRoZXNlIHByb3BlcnRpZXMgZm9yIDIgZGV2aWNlcywKPiBidXQgaW4gdGhlb3J5IHRo
-ZXJlIGlzIG5vIGxpbWl0Lgo+IAo+IE9mIGNvdXJzZSBpZiB3ZSBzd2l0Y2ggdG8gdGhlIGFycmF5
-IHJlcHJlc2VudGF0aW9uIEkgc3VwcG9zZSBJIHNob3VsZAo+IHN0aWNrIHRvOgo+IAo+ICsgICAg
-bWluSXRlbXM6IDIKPiArICAgIG1heEl0ZW1zOiAyCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+Hi, Richard
+> 
+> How do you make sure the the whiteout is never written to disk (by writeback) before ubifs_jnl_rename() linked
+> it? That's the reason why other filesystems use the tmpfile mechanism for whiteouts too.
+> 
+
+The whiteout inode is clean after creation from create_whiteout(), and 
+it can't be marked dirty until ubifs_jnl_rename() finished. So, I think 
+there is no chance for whiteout being written on disk. Then, 
+'ubifs_assert(c, !whiteout_ui->dirty)' never fails in ubifs_jnl_rename() 
+during my local stress tests. You may add some delay executions after 
+whiteout creation to make sure that whiteout won't be written back 
+before ubifs_jnl_rename().
+
+BTW, I considered plan B(Binding whiteout to a negative dentry), but we 
+cannot get parent dir's entry in do_rename(), so I abandoned it.
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1334,7 +1335,8 @@ static int do_rename(struct inode *old_dir, struct 
+dentry *old_dentry,
+                         goto out_release;
+                 }
+
+-               err = do_tmpfile(old_dir, old_dentry, S_IFCHR | 
+WHITEOUT_MODE, &whiteout);
++               // tmp_dentry = d_alloc(old_dir_dentry, &slash_name); 
+// refer to vfs_tmpfile
++               err = do_tmpfile(old_dir, tmp_dentry, S_IFCHR | 
+WHITEOUT_MODE, &whiteout);
+                 if (err) {
+                         kfree(dev);
+                         goto out_release;
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
