@@ -4,75 +4,138 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F40C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jan 2022 13:57:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCF23C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jan 2022 15:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=kNvWHqtdf8cKUeSMKZ2/0j5IhQ1K3v6fI9FRcdADrkc=; b=hAivff+TwS1mfyGV9+MxUoHrog
-	7AbFB/wPzXjRgn9QaQW+rKxHz+jF3FZ99zIJ50ly3+z/6cdGgSPYoWFzvrYYRzZvUUUk29JkIZzak
-	PihYe3nrd/W6Bkjao+qhSUMnQNvFlRxd3hDL3MOo2kQk9Kc/i7KvRaJcxVBAC5RoEj+QnrnRtKvbd
-	nY1QOuhYmFirSDkqTR8Ans67oAu46pRZsYdV57VWWOvGxP3EvMqYLNxkg5t9179jRT6vorEydqw1k
-	KeC8AgCQsPU73HYvJhYNzKMQnD9pIGLtRC6xp3m1NDrvYkc5ManYBEEFEtDdeDsGk8Zj+UQqYt1Rm
-	c6G8HfPw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:To:From:
+	References:Cc:Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=HL4SK1HsthkOkr2Ps+5GvYN0Ddkq3woRtcwtlmh4OdQ=; b=0YQ3mIgSLmbHIu
+	cu+T4MJ0ldVmfQ/xoBsbTWBxQgpySBTjzjYlNaF6XdZcm3yM+EKlcR77DiEh1pgUQnWXvkIQlrpjb
+	sf6BEJwXDOvO45MaaeD5K+IJboxUvmXEIYQeRPwymx2hLat/3h4tx+q086B8oKxV2RlogjHSjcJo0
+	qZASvwklcXavEra0tT00ixzT/FRbLdYlnObVGcYLdQYD9eGm4l4N6OjlIGmoQTnqSfv3zcLMrkSEZ
+	SvRYzsve0R8vwHVZ/x2Gezxzt3z4vGae2SxeAENya5OaYyFOrisxwSILqh7hXduSInkC5KjYIik1f
+	io89NTsnWp7MG11FoPvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n7HdX-00GWQb-6o; Tue, 11 Jan 2022 13:56:31 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1n7J9Z-00GkE5-DX; Tue, 11 Jan 2022 15:33:41 +0000
+Received: from mail-db8eur05on2103.outbound.protection.outlook.com
+ ([40.107.20.103] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7HdU-00GWPU-7J
- for linux-mtd@lists.infradead.org; Tue, 11 Jan 2022 13:56:30 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 74D6962DA5E2;
- Tue, 11 Jan 2022 14:56:24 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id YLrS9tLm1LzN; Tue, 11 Jan 2022 14:56:23 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 2400C62DA609;
- Tue, 11 Jan 2022 14:56:23 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id xPuhK_heLKGY; Tue, 11 Jan 2022 14:56:23 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id EC97562DA5E2;
- Tue, 11 Jan 2022 14:56:22 +0100 (CET)
-Date: Tue, 11 Jan 2022 14:56:22 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: chengzhihao1 <chengzhihao1@huawei.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, 
- mcoquelin stm32 <mcoquelin.stm32@gmail.com>, 
- kirill shutemov <kirill.shutemov@linux.intel.com>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- linux-mtd <linux-mtd@lists.infradead.org>, 
- linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1492514284.249466.1641909382867.JavaMail.zimbra@nod.at>
-In-Reply-To: <0a7a5cce-1ee1-70b6-d368-615dfa0a617a@huawei.com>
-References: <20211227032246.2886878-1-chengzhihao1@huawei.com>
- <20211227032246.2886878-13-chengzhihao1@huawei.com>
- <361758697.248157.1641857025490.JavaMail.zimbra@nod.at>
- <6f7df7ba-9557-58a3-7978-e5d14a72f234@huawei.com>
- <244238061.248369.1641886066066.JavaMail.zimbra@nod.at>
- <420c7567-8926-2e8b-4da0-a9bfc8379642@huawei.com>
- <11976804.249069.1641902225370.JavaMail.zimbra@nod.at>
- <0a7a5cce-1ee1-70b6-d368-615dfa0a617a@huawei.com>
-Subject: Re: [PATCH v6 12/15] ubi: fastmap: Add all fastmap pebs into
- 'ai->fastmap' when fm->used_blocks>=2
+ id 1n7J9V-00GkDL-Us
+ for linux-mtd@lists.infradead.org; Tue, 11 Jan 2022 15:33:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lmhw5JqIeVtm7TcCw/NFFTqwjqTNQrh6THgSBnKOSzmnuPN55gaFpOjdd7H6OlxhDaQIyWc4ExOP6wUATZxvZcm+Qn0rFxmQDFt/9O+YV/7TXOBRo7D/m7gpPfhgxEjUUWXvxCEEmDJIBKlXVTwSmFjES2fcLP72ODgC3rhERZAcXvhdsXduKFkzo2pyBv84iCzuIz2qkQolTw6k3MtDIPB/tG6Gt7sARCxMuJgpSRSMbsbmm7Va4XuOvxN3P97dgF+mlcwZ4OToJ7pvoYPy1EGHvS+sJeMNIStPIuSEf/Kxhst91IO7fp2Ag8bAahDkPbi4d+yEnerPq8DOjUY12A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r/sdxbBLIh5lDw2dJWXc6zgqfsHLrwQJr75XU1gFZak=;
+ b=E9M4bev6FEKk4iqLAmkB7kQE5XK6l1xp5q1K3M0r8bfeDUPpC4nBWOpN8esLSlypANM0XnwRM7Xnk0UEwu774axm1zUb/rRjUF8Ts06eaFCCLJiZBp6Y/x/xwKaEpf8vjNk8AEUsNKTypP03ZNCtQZ1oLhTZcvYMmvEoSYzLlZ8cyLMERo6XHMx21W1xbXVXxTKGYJpSCDmtt6IFJ88xx1XmIwtbn5Nc+In80PmO5/GdXscQ5cLjiG8FBDoLpTjpcO0uVvJiOpUlb7Uohe6/ipdFnQLU3hGgbSan+CsRJzRBBiRAWKIoCS7BiI5tP+iAUp6/0c/3DkBMAtK1lCgIUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com; 
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r/sdxbBLIh5lDw2dJWXc6zgqfsHLrwQJr75XU1gFZak=;
+ b=AIwtV4zSFRrUTr37zuusqN+Mx1iu0dNlwM3W+Z79M+tsq7HvvmIvVIdzgK6I6oFftlmld0f2Wgc+LZfyKE7OJB0bkC4yPNnp27Bz3xYL5zsJcLmQA7BttVNhrv/Vr35x1Wz58PnL4fzJP8LUJiIHU+/IQiawEWJ/p15VcfDrzAs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM4PR1001MB1441.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:200:96::13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.11; Tue, 11 Jan
+ 2022 15:33:28 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::b85e:6bff:84d3:e825]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::b85e:6bff:84d3:e825%6]) with mapi id 15.20.4867.012; Tue, 11 Jan 2022
+ 15:33:28 +0000
+Message-ID: <9af5a4ae-e919-a545-809d-451217cf40f5@kontron.de>
+Date: Tue, 11 Jan 2022 16:33:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH v2 1/2] Fix corner case in bad block table handling.
+Content-Language: en-US
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ vigneshr@ti.com, miquel.raynal@bootlin.com,
+ Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>, richard@nod.at,
+ Stoll Eberhard <Eberhard.Stoll@kontron.de>
+References: <cover.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
+ <774a92693f311e7de01e5935e720a179fb1b2468.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+To: "stable@vger.kernel.org" <stable@vger.kernel.org>
+In-Reply-To: <774a92693f311e7de01e5935e720a179fb1b2468.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
+X-ClientProxiedBy: AS8PR04CA0072.eurprd04.prod.outlook.com
+ (2603:10a6:20b:313::17) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF95 (Linux)/8.8.12_GA_3809)
-Thread-Topic: fastmap: Add all fastmap pebs into 'ai->fastmap' when
- fm->used_blocks>=2
-Thread-Index: 86Vvr6wU5AK+5c62IIyzK5YFzlh8mg==
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 88b16c98-db3c-43ad-0f58-08d9d517b738
+X-MS-TrafficTypeDiagnostic: AM4PR1001MB1441:EE_
+X-Microsoft-Antispam-PRVS: <AM4PR1001MB1441641C6F7033062200DF48E9519@AM4PR1001MB1441.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wnJgHNvJaAOOvaNPLzaQwEN9+NesV0MFQ7WzhrVY4cICcMnM/8AQzS440rtkn36Lt/fqdSqFUlLdgZRt0gsRVxNJeXyPDpEk4WSzV+JcaeL0vft65/8jgD7rDadajWdmCdcwWW+tc2uSER6yXV4LfXbFK6045zsv0fDwfPg3vePnN5f9PuZAFc/+n/GSSjJdpVWaL3pBYA630YnLThJyu0ZKM9vkJcp/TGLwd712GcDyVnXOFjp3VpXjVt1OG5U8oSt3MdeXIvW8yB/fKWXPysGgcCyQ7eCDrtB3hPqrtQplECRZeHUW+7Rivp5lkZtnZ0W+PiC9YXvmYdjIEtNJiQ0sqR4ZxEjIMgdsykAi+FNKCD8iUtCwGrSEegGMh0Hn8yzlTJ3LRxbZJMufghCAvsl0bpcAcm4Gy8Sf1kZwDGzSPlyVHFGvkwDoYJEbfcH2PY95pZh87xIRv9Fd0JPznpWk5rlIMuUNZiVWTtZMDRJ590iw5wz/nxtZYsa8bNz3eIfqU05+pI1NiW8rh42/BsHkpntiAFcNngHLF2LWszl/bgD4zMAwpHD7AZl0m3emYty+Nygs7xR3qrwUc1IWTEpnwZV6k3+P2ESFxMii18z5kR9wLw1CFYySCI+zkwou2LTZ3j4/vP0rAB2CcV2VbpTSwxNeHz3LaRuaLmfKan9g3M+s8SBIJAC7K35LBHROAlG7LiU2NdsnioL+Xu5WGmQr8K6rSFnB9uJxC/B5HBI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(6486002)(86362001)(8676002)(5660300002)(2616005)(107886003)(38100700002)(31696002)(53546011)(6506007)(4326008)(8936002)(44832011)(83380400001)(508600001)(26005)(6916009)(186003)(6512007)(31686004)(2906002)(66556008)(54906003)(66946007)(66476007)(36756003)(316002)(45980500001)(43740500002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V2VoeURWTXd6c3l4N0MwUCt1NkZRV283aGVzY0hSc1BWeEdSS3FHTTRWQ095?=
+ =?utf-8?B?WjdiMDA0MkpKTndDMEhGOFdhRHh3c1NGQXJ3REJxL2NGOXFJUjJtUHliR0hB?=
+ =?utf-8?B?YzhqRFpFcXNHL0U3dTErOGRER0NqWmgwVTR2Q1V2Y3MzRnkyTGVHcHBwSTJN?=
+ =?utf-8?B?anlHNEk3aDhmREk2R1RaT0tOVE9MaEZLWS9janZNY0pEVzJ4ZXJXZk9RTVVJ?=
+ =?utf-8?B?WTVrbXdIWWdQaGVwdkJhREVuZ2ZlRHdLWUhZMDNUSGRzMDg3S1o5S1BBTXVN?=
+ =?utf-8?B?dW1xaSszQTgxOWFzcDYvYmxmWXhWK3g1SXFTazBURXVucE4wcjJmZUFGenJP?=
+ =?utf-8?B?TGkwVTNqaTNlMUQ2QUlBNklYWkxsckpTM09odW13dk5CdWEycHMzL25NUk5o?=
+ =?utf-8?B?NWR2b2g3Q1FPS0tVMGZVMEFNQlcwSDJiZzhrOWwzSVZnWk5aUC9JWGZPUkY1?=
+ =?utf-8?B?bnZGNERmRkJBZHZ0Yk9wZzZRYXQwR3dWUGp4bjhQRGZsR0hXdEJXRUlSSVhT?=
+ =?utf-8?B?L1dGR1ZHN0l3dWxrVWdwblliQU85QkFsOTd3ZUY4c1k4dzRuYitKUTFYRUcx?=
+ =?utf-8?B?TmVLay9DQ3dkcTl1cFQ1SGFuS2RxbFQycCtnYVh0cGYrNSsydis3WVNIU2tW?=
+ =?utf-8?B?dW5jUFNjcDVJdVFDSjFRMlZnai8zL0F4elZHenFRM0FxbGlyWGRWRXRmN2lu?=
+ =?utf-8?B?cnA5Z3hIZFhYUWlWa2NyY3JZLzlucERmeFVSMFUvYWlaQ2hRbDFObVlYZzl6?=
+ =?utf-8?B?cmZiTkRZRXNvaWNTT2dLWitBOUZMY2R2Y2xNTTQ1SFF6VFVEa1QrNkp4aEU1?=
+ =?utf-8?B?MzJ5bERHdUNLVE1YamRwWTJCN05ESUlLVnRSNllUbEhMYmxTOTVpTFZyekhh?=
+ =?utf-8?B?MVZJMG1iMXRXUTZKWERWYlU2MjdVZTl6OEQyZWJnaU82c3VBOWZvY0d5citI?=
+ =?utf-8?B?djJWS0hhWWJLcE52dE54b2g4Y1QxeTJRL2IzekErV3F4MFA5NFQvMDVMaFI1?=
+ =?utf-8?B?SXdGNW0wSjJGWmRNUGs4NHdXSHQ4L1l2T0daQzZ1Tk13VHZjTHVUS09rTHNS?=
+ =?utf-8?B?ZjVBT09OTXBrU1VGdHdQZUl1Y1ViL1F5R3FBeUZIdUF6dU5kbWhReHpPUFJB?=
+ =?utf-8?B?TlRpOFh2bm1EK0hiMjRsek1FTTR6SmJ0N0EwR2FwWktXQXUyZmpFdGFNdGc4?=
+ =?utf-8?B?dHNmTHB3SkZkelhLaVBDVWhMWnRTdHg5VmV6TjRJTFhYMG5XS1hSQVpWeWhG?=
+ =?utf-8?B?WlM3bFR1dGNGbnZ0ckV5MThOZlBPTm83S3J3Tkt3MVZGUElKNnhzSk13Y0Zh?=
+ =?utf-8?B?ZlVhcHlkNTQ4cVByQU1HL0VnM1p3MUNFdklVK2JqR3FEZW0zelVTb1Fwb0lN?=
+ =?utf-8?B?RUdIQ3BDRms4enN6TTVURVUxZHdqV1RiODhTWXRJU0hwT29JbnMwY0tQYmJq?=
+ =?utf-8?B?K2MwQ1FoUlpzRUw3WmFuVzNiNlllWThGWS9EeVFuT0hWeUxzOHJ1L3ZpU1l2?=
+ =?utf-8?B?dngyMGxLZ1ZLYVpZMTlweGZURG1XV1FOMVVPaTVFMHIyTytXMHhTc2ovUHli?=
+ =?utf-8?B?cURGUnRDRHJ3M0hWM2taVXY5TzNWTDNKYStMOWpmaVFEcndlZjZDZmo0NXlt?=
+ =?utf-8?B?eTZieStYaGRwT2ZHT3ZxNnBnQkxDU1RHbjVybWpnWGdVc013WjVrcDkrQ0NU?=
+ =?utf-8?B?dHk4WHEzMllDUGh5MzdDQ2ZwYTQ1R2NnYjdyUmt4bHpUbW81M3IzZWFiWlNU?=
+ =?utf-8?B?Y0hMeEF3VmVxZVR3RGJEQlB2SXlPNTFmRi9EM2lMVDloY2VVYVBKYWZBNnZo?=
+ =?utf-8?B?TjJySUttTzBRbGNMaUNPZG12TzJ6aVE3NHhpVWViczVQRmx2dzA4cCtqbFZN?=
+ =?utf-8?B?KzZ1L2ZSdy8wdjE1R0hVQVBNQnRaVkxQQ0w1N05HS0g4cmxhVTZJaDdRNDBn?=
+ =?utf-8?B?QWk3aHpYVTdjNzh6bTZCR0NROS85b3ZHbGFJTy9DcnU0SlpPVkp2MWhNZGVW?=
+ =?utf-8?B?TTlxMTVrbEgvMG5ySVkvVTF5K2g1azgvWE40OVh1RWYvTVBPa2x4UE8zanFZ?=
+ =?utf-8?B?N2djd1VocWhZbDVJZ2FnS0VLNG9EdFJ6MFExZmhoL1Vsd3NiWkRrTzIycktH?=
+ =?utf-8?B?ZCtJUUhqMmhtMGdTRHEzZm0wRDF2em80VjNNeElIUi90cDRiZWVoQkxjd0Jm?=
+ =?utf-8?B?UnpUQUNBN21MQ2NSQURSUTRhU3pTenh3bUU5TUlkZ2hXQkFzczlxQ3p6QWVj?=
+ =?utf-8?B?ODBjRDZ1aldlTlp3WUFMWXZzTmxnPT0=?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88b16c98-db3c-43ad-0f58-08d9d517b738
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2022 15:33:28.5598 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3emPSmfpTqsGVxnqwW/XWlYHiwz8PxROv/+MVaRKOisYpVrxOaCM95ujFg1ZVo/oYK44/JEDVzCpPjeOmWGgsfDgdvX7OSyKbEzawhEU4uU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR1001MB1441
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220111_055628_594520_E4E7CF4A 
-X-CRM114-Status: UNSURE (   4.96  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220111_073338_109769_AC1EF3E7 
+X-CRM114-Status: GOOD (  16.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,43 +147,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
-ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+
-IENDOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAiVmlnbmVz
-aCBSYWdoYXZlbmRyYSIgPHZpZ25lc2hyQHRpLmNvbT4sICJtY29xdWVsaW4gc3RtMzIiCj4gPG1j
-b3F1ZWxpbi5zdG0zMkBnbWFpbC5jb20+LCAia2lyaWxsIHNodXRlbW92IiA8a2lyaWxsLnNodXRl
-bW92QGxpbnV4LmludGVsLmNvbT4sICJTYXNjaGEgSGF1ZXIiCj4gPHMuaGF1ZXJAcGVuZ3V0cm9u
-aXguZGU+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+LCAibGlu
-dXgta2VybmVsIiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4KPiBHZXNlbmRldDogRGll
-bnN0YWcsIDExLiBKYW51YXIgMjAyMiAxNDoyMzo1Mgo+IEJldHJlZmY6IFJlOiBbUEFUQ0ggdjYg
-MTIvMTVdIHViaTogZmFzdG1hcDogQWRkIGFsbCBmYXN0bWFwIHBlYnMgaW50byAnYWktPmZhc3Rt
-YXAnIHdoZW4gZm0tPnVzZWRfYmxvY2tzPj0yCgo+IOWcqCAyMDIyLzEvMTEgMTk6NTcsIFJpY2hh
-cmQgV2VpbmJlcmdlciDlhpnpgZM6Cj4+IHViaV93bF9pbml0KCkgaXMgY2FsbGVkIGluIGJvdGgg
-Y2FzZXMsIHdpdGggYW5kIHdpdGhvdXQgZmFzdG1hcC4KPiBJIGFncmVlLgo+IAo+PiBBbmQgYWkt
-PmZhc3RtYXAgY29udGFpbnMgYWxsIGFuY2hvciBQRUJzIHRoYXQgc2Nhbl9mYXN0KCkgZm91bmQu
-Cj4+IFRoaXMgY2FuIGJlIHRoZSBtb3N0IHJlY2VudCBidXQgYWxzbyBvdXRkYXRlZCBhbmNob3Ig
-UEVCcy4KPiBJcyBpdCBleGlzdHMgYSBjYXNlIHRoYXQgb3V0ZGF0ZWQgZmFzdG1hcCBQRUJzIGFy
-ZSBuZWl0aGVyIGNvdW50ZWQgaW50bwo+ICdmbWhkci0+ZXJhc2VfcGViX2NvdW50JyBub3Igc2Nh
-bm5lZCBpbnRvICdhaS0+ZmFzdG1hcCcgYWZ0ZXIgYXR0YWNoaW5nCj4gYnkgZmFzdG1hcC4KPiAK
-ClsuLi5dCiAKPiBJIHRoaW5rIFVCSSBhdHRhY2hlcyBmYWlsZWQgYnkgZmFzdG1hcCBpZiBrZXJu
-ZWwgZ29lcyBoZXJlLgo+IDE4NzAgICAgICAgICAgICAgICAgICAgICAgICAgZXJyID0gZXJhc2Vf
-YWViKHViaSwgYWViLCBzeW5jKTsKCkhtbSwgSSB0aGluayB0aGUgcGFyYW5vaWEgY2hlY2sgaW4g
-ZmFzdG1hcC5jIGlzIHRvbyBzdHJpY3QgdGhlc2UgZGF5cy4KICAgICAgICBpZiAoV0FSTl9PTihj
-b3VudF9mYXN0bWFwX3BlYnMoYWkpICE9IHViaS0+cGViX2NvdW50IC0KICAgICAgICAgICAgICAg
-ICAgICBhaS0+YmFkX3BlYl9jb3VudCAtIGZtLT51c2VkX2Jsb2NrcykpCiAgICAgICAgICAgICAg
-ICBnb3RvIGZhaWxfYmFkOwoKSXQgZG9lcyBub3QgYWNjb3VudCBhaS0+ZmFzdG1hcC4gU28gaWYg
-YWktPmZhc3RtYXAgY29udGFpbnMgb2xkIGFuY2hvciBQRUJzCnRoaXMgY2hlY2sgd2lsbCB0cmln
-Z2VyIGFuZCBmb3JjZSBmYWxsaW5nIGJhY2sgdG8gc2Nhbm5pbmcgbW9kZS4KV2l0aCB0aGlzIGNo
-ZWNrIGZpeGVkLCB1Ymlfd2xfaW5pdCgpIHdpbGwgZXJhc2UgYWxsIG9sZCBQRUJzIGZyb20gYWkt
-PmZhc3RtYXAuCgpTbyBJIGFncmVlIHRoYXQgdGhpcyBjb2RlIHBhdGggaXMgd29ua3kgYW5kIGNh
-biBiZSBjbGVhbmVkIHVwLiBCdXQgcGxlYXNlIGJlCmV4dHJlbWVseSBjYXJlZnVsIGFuZCBnaXZl
-IGFsbCB5b3VyIGNoYW5nZXMgZXhjZXNzaXZlIHRlc3Rpbmcgd2l0aCByZWFsIHdvcmtsb2FkCmFu
-ZCBwb3dlci1jdXRzLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
-aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
-eC1tdGQvCg==
+Hi stable maintainers,
+
+On 06.04.21 03:47, Yoshio Furuyama wrote:
+> From: "Doyle, Patrick" <pdoyle@irobot.com>
+> 
+> In the unlikely event that both blocks 10 and 11 are marked as bad (on a
+> 32 bit machine), then the process of marking block 10 as bad stomps on
+> cached entry for block 11.  There are (of course) other examples.
+> 
+> Signed-off-by: Patrick Doyle <pdoyle@irobot.com>
+> Reviewed-by: Richard Weinberger <richard@nod.at>
+
+We have systems on which this patch fixes real failures. Could you
+please add the upstream patch fd0d8d85f723 ("mtd: nand: bbt: Fix corner
+case in bad block table handling") to the stable queues for 4.19, 5.4, 5.10?
+
+Thanks!
+
+Cc: stable@vger.kernel.org
+Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with
+NAND devices")
+
+> ---
+>  drivers/mtd/nand/bbt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
+> index 044adf913854..64af6898131d 100644
+> --- a/drivers/mtd/nand/bbt.c
+> +++ b/drivers/mtd/nand/bbt.c
+> @@ -123,7 +123,7 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
+>  		unsigned int rbits = bits_per_block + offs - BITS_PER_LONG;
+>  
+>  		pos[1] &= ~GENMASK(rbits - 1, 0);
+> -		pos[1] |= val >> rbits;
+> +		pos[1] |= val >> (bits_per_block - rbits);
+>  	}
+>  
+>  	return 0;
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
