@@ -4,63 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BC65C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jan 2022 02:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91192C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jan 2022 05:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wbAs3GaF15uFVj0keXUjJShQqp2SlcagNmEqFvhjThM=; b=zak/mLcO58YJRlaMJ8/IuoHYvF
-	GYPwlj4yj6vs7B1EcfLVYnyHeyGlhAu7Qs0rmOjZDbXwtUQ4vLlpp+4fqa6uQYU8N4ugF3o0xQRDG
-	3DXAzIgY2FZnEZQR7U7vlWDnygRWcB38I0R7NkeFx/FKkx8mbNA/ODAQGixGvAHHC9xsS/eMEIBC3
-	Mrqzz4KKrii/NABbRebYl4fH5WdD+YtAAcTreVgIZ0vR1ImHkEaC4/xUsY2KE3wwvlvKo37IDP06/
-	pk7DxsSiLhVpm76cO60/4J8S9PczvAGlJPQsz2DNzRDy43vnYBQjF6J3tpM3g5JEkAwazVDHqxOQl
-	zgVA6PcA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nS+rMZALbSmylqFRwJFl4SjgLeV7hGU9o8lmZ0BfN1c=; b=4R8YCdzLo0vnkH
+	8C0f/eaHyB5U0RKw35/2F/dxSSqNO66VKn0o78AnqqMzoE5/3E8DAmddlQWdEVrMWrBNzQ3SfuMjZ
+	KWUhBXS2Qi4+mHpMjL6ZHkL4IAH5Mio6iFDOk+XQxs0neUdKuZ6OIMbUxdm0jA2CPOjQbW/JGQsB1
+	+S9v/1y53oY74XhVlFrCGXbueYQilLARRvOA4MsSYAyvtjIRFf7QSKfsiWsw8Nk+EEy9h4Hr5hAk9
+	n8dDp1/SAy1kTjLTPT+QdLPKHT5sNIUe/A37tut42p/sCxSlBy2L7AWaF74l0jlXQz96D90SdbIQ9
+	xGigxzhw07005io1UC5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n77D8-00EL1Y-K1; Tue, 11 Jan 2022 02:48:34 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1n7A44-00EofC-9v; Tue, 11 Jan 2022 05:51:24 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n77D5-00EL08-1O
- for linux-mtd@lists.infradead.org; Tue, 11 Jan 2022 02:48:33 +0000
-Received: from kwepemi100001.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JXw8R2d0hz9s5k;
- Tue, 11 Jan 2022 10:47:19 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- kwepemi100001.china.huawei.com (7.221.188.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 11 Jan 2022 10:48:26 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 11 Jan 2022 10:48:25 +0800
-Subject: Re: [PATCH v6 12/15] ubi: fastmap: Add all fastmap pebs into
- 'ai->fastmap' when fm->used_blocks>=2
-To: Richard Weinberger <richard@nod.at>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, mcoquelin stm32 <mcoquelin.stm32@gmail.com>, "kirill
- shutemov" <kirill.shutemov@linux.intel.com>, Sascha Hauer
- <s.hauer@pengutronix.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-References: <20211227032246.2886878-1-chengzhihao1@huawei.com>
- <20211227032246.2886878-13-chengzhihao1@huawei.com>
- <361758697.248157.1641857025490.JavaMail.zimbra@nod.at>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <6f7df7ba-9557-58a3-7978-e5d14a72f234@huawei.com>
-Date: Tue, 11 Jan 2022 10:48:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ id 1n7A3z-00Eods-Os
+ for linux-mtd@lists.infradead.org; Tue, 11 Jan 2022 05:51:21 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20B5pBaX063299;
+ Mon, 10 Jan 2022 23:51:11 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1641880271;
+ bh=0fW3jwGVa1LJO5zm4tAXz+1RoUDB7y7Tbg485ljzd0o=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=GO9UWxkhjJ6wmPJymjJpVUcqStfcgmEEzMKLxPkVyXPBliACbLT6eoAt9ZX+qIcDo
+ /4HbkNHhN+VZrPfB8rqhKWbXzix+mvemVgU0ezcQf8LuAqcuyIADz9zPmal3v7z18i
+ xYSydtfeg/lZr+9cbG3oU+3JAmwroXqvWk7ySPpw=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20B5pB57042791
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 10 Jan 2022 23:51:11 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 10
+ Jan 2022 23:51:11 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 10 Jan 2022 23:51:11 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20B5pApM023051;
+ Mon, 10 Jan 2022 23:51:11 -0600
+Date: Tue, 11 Jan 2022 11:21:09 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Dhananjay Phadke <dphadke@linux.microsoft.com>
+CC: Michael Walle <michael@walle.cc>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for w25q512jvm
+Message-ID: <20220111055107.tevqpnt32mzjodok@ti.com>
+References: <20220109044418.4657-1-dphadke@linux.microsoft.com>
+ <262a03e185c29583450180e3dc8c4e6c@walle.cc>
+ <57513f5f-1e66-3758-a56b-1eced486a4df@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <361758697.248157.1641857025490.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <57513f5f-1e66-3758-a56b-1eced486a4df@linux.microsoft.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220110_184831_309640_F35C6661 
-X-CRM114-Status: GOOD (  10.36  )
+X-CRM114-CacheID: sfid-20220110_215120_002877_86D7C1FD 
+X-CRM114-Status: GOOD (  18.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,68 +82,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Richard,
-> scan_ai->fastmap may contain also old fastmap PEBs.
-> In the area < UBI_FM_MAX_START you can find outdated fastmap PEBs.
-> e.g. after power-cut.
-> That's why scan_ai->fastmap is copied into ai->fastmap.
-> Later in ubi_wl_init() these outdated PEBs will get erased.
-> So, you cannot remove this code.
-I thought old fastmap PEBs(async erase works in ubi_update_fastmap()) 
-will be counted into erase PEBs in the next attaching process, because I 
-saw following code snippet in ubi_write_fastmap():
-1260         list_for_each_entry(ubi_wrk, &ubi->works, list) { 
+On 10/01/22 03:12PM, Dhananjay Phadke wrote:
+> On 1/10/2022 7:10 AM, Michael Walle wrote:
+> > =
 
-1261                 if (ubi_is_erase_work(ubi_wrk)) { 
+> > > +=A0=A0=A0 { "w25q512jvm", INFO(0xef7020, 0, 64 * 1024, 1024),
+> > =
 
-1262                         wl_e = ubi_wrk->e; 
+> > OTP_INFO(256, 3, 0x1000, 0x1000)
+> > =
 
-1263                         ubi_assert(wl_e); 
+> > should enable OTP support, could you please test this using the
+> > flash_otp_{dump,info,erase,write} tools and add that line?
+> =
 
-1264 
+> The board I've has HW filter between controller and NOR and doesn't seem =
+to
+> allow security reg access opcodes (read to be specific).
+> =
 
-1265                         fec = (struct ubi_fm_ec *)(fm_raw + 
-fm_pos);
-1266 
+> So long as adding this doesn't affect probe, I can add it. Otherwise, will
+> have to leave it for later when that's fixed.
 
-1267                         fec->pnum = cpu_to_be32(wl_e->pnum); 
+Please don't it if you can't test it. In that case let's just leave it =
 
-1268                         set_seen(ubi, wl_e->pnum, seen_pebs); 
+for someone else to add later.
 
-1269                         fec->ec = cpu_to_be32(wl_e->ec); 
+> =
 
-1270 
+> =
 
-1271                         erase_peb_count++; 
+> On 1/9/2022 9:07 PM, Pratyush Yadav wrote:
+> > =
 
-1272                         fm_pos += sizeof(*fec); 
+> > You need to show the dumps of the SFDP and other flash parameters. See
+> > [0] for an example.
+> > =
 
-1273                         ubi_assert(fm_pos <= ubi->fm_size); 
+> > The patch looks fine to me otherwise.
+> > =
 
-1274                 } 
+> =
 
-1275         } 
+> Lemme collect SFDP dump and include it in v2.
+> I ended up sending stale patch that has extra comma between INFO()
+> PARSE_SFDP macros, so need to re-spin anyway.
+> =
 
-1276         fmh->erase_peb_count = cpu_to_be32(erase_peb_count);
-Half-writing on fastmap will be recognized in scanning, and UBI 
-fallbacks full scanning, So, I come up with two situations:
-1. power-cut before new fastmap written, the old fastmap is completely 
-saved until next attaching, and some free PEBs are written with new 
-fastmap data. Luckly, fastmap anchor PEB's vid header is written first 
-of all, bad fastmap will be returned by ubi_attach_fastmap() in next 
-attaching.
-2. power-cut after new fastmap written, the old fastmap PEBs will be 
-added into 'ai->erase' list in next attaching.
-Did I miss other possible circumstances?
-> 
-> But I fully agree with you that the fm->used_blocks > 1 case is not correct.
-> I fear if scan_ai->fastmap contains old fastmap PEBs and fm->used_blocks is > 1
-> we need to fall back to scanning mode while attaching.
+> Thanks,
+> Dhananjay
+
+-- =
+
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
