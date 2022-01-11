@@ -4,138 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCF23C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jan 2022 15:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5EE7C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 11 Jan 2022 20:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:To:From:
-	References:Cc:Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HL4SK1HsthkOkr2Ps+5GvYN0Ddkq3woRtcwtlmh4OdQ=; b=0YQ3mIgSLmbHIu
-	cu+T4MJ0ldVmfQ/xoBsbTWBxQgpySBTjzjYlNaF6XdZcm3yM+EKlcR77DiEh1pgUQnWXvkIQlrpjb
-	sf6BEJwXDOvO45MaaeD5K+IJboxUvmXEIYQeRPwymx2hLat/3h4tx+q086B8oKxV2RlogjHSjcJo0
-	qZASvwklcXavEra0tT00ixzT/FRbLdYlnObVGcYLdQYD9eGm4l4N6OjlIGmoQTnqSfv3zcLMrkSEZ
-	SvRYzsve0R8vwHVZ/x2Gezxzt3z4vGae2SxeAENya5OaYyFOrisxwSILqh7hXduSInkC5KjYIik1f
-	io89NTsnWp7MG11FoPvQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vbySaq9Nx14C4T9gkIHr+YEgNH3RdL8illMNZckmh04=; b=jh4G7Oc8XJWT6p
+	iJf7LwlMr41Zy44KIGOG0zJK2l+zvk6hmXCOV9jXAT07pY3akI/J7OtRgGyy0/Svv31Xv5fg5Focb
+	QOlBg5Z+ZueJzoma6FyMeaMgC4T+vQC9K3MHSyR2JmqO3XnsJMZXE7wT2M91Ss3LZy9Mm44GLx+D+
+	tVV44Ahzjw5Jq+UCqAkik2+rdNkapf9UO7GvrMTapoLuLEAitugVD7q/psBlWQDRokJWeVIxIMNou
+	XkBOTMC81ZAOP90JXlwsY+KOehPAJxqfxlgOFYQYa33WEJtdcezZP59MzyxOs2zpdVAxsrjAtGUY6
+	2+UQc4uhx6RwSx8fb/JA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n7J9Z-00GkE5-DX; Tue, 11 Jan 2022 15:33:41 +0000
-Received: from mail-db8eur05on2103.outbound.protection.outlook.com
- ([40.107.20.103] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
+	id 1n7O8b-0009OQ-MF; Tue, 11 Jan 2022 20:53:01 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7J9V-00GkDL-Us
- for linux-mtd@lists.infradead.org; Tue, 11 Jan 2022 15:33:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lmhw5JqIeVtm7TcCw/NFFTqwjqTNQrh6THgSBnKOSzmnuPN55gaFpOjdd7H6OlxhDaQIyWc4ExOP6wUATZxvZcm+Qn0rFxmQDFt/9O+YV/7TXOBRo7D/m7gpPfhgxEjUUWXvxCEEmDJIBKlXVTwSmFjES2fcLP72ODgC3rhERZAcXvhdsXduKFkzo2pyBv84iCzuIz2qkQolTw6k3MtDIPB/tG6Gt7sARCxMuJgpSRSMbsbmm7Va4XuOvxN3P97dgF+mlcwZ4OToJ7pvoYPy1EGHvS+sJeMNIStPIuSEf/Kxhst91IO7fp2Ag8bAahDkPbi4d+yEnerPq8DOjUY12A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r/sdxbBLIh5lDw2dJWXc6zgqfsHLrwQJr75XU1gFZak=;
- b=E9M4bev6FEKk4iqLAmkB7kQE5XK6l1xp5q1K3M0r8bfeDUPpC4nBWOpN8esLSlypANM0XnwRM7Xnk0UEwu774axm1zUb/rRjUF8Ts06eaFCCLJiZBp6Y/x/xwKaEpf8vjNk8AEUsNKTypP03ZNCtQZ1oLhTZcvYMmvEoSYzLlZ8cyLMERo6XHMx21W1xbXVXxTKGYJpSCDmtt6IFJ88xx1XmIwtbn5Nc+In80PmO5/GdXscQ5cLjiG8FBDoLpTjpcO0uVvJiOpUlb7Uohe6/ipdFnQLU3hGgbSan+CsRJzRBBiRAWKIoCS7BiI5tP+iAUp6/0c/3DkBMAtK1lCgIUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com; 
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r/sdxbBLIh5lDw2dJWXc6zgqfsHLrwQJr75XU1gFZak=;
- b=AIwtV4zSFRrUTr37zuusqN+Mx1iu0dNlwM3W+Z79M+tsq7HvvmIvVIdzgK6I6oFftlmld0f2Wgc+LZfyKE7OJB0bkC4yPNnp27Bz3xYL5zsJcLmQA7BttVNhrv/Vr35x1Wz58PnL4fzJP8LUJiIHU+/IQiawEWJ/p15VcfDrzAs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
- by AM4PR1001MB1441.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:200:96::13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.11; Tue, 11 Jan
- 2022 15:33:28 +0000
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::b85e:6bff:84d3:e825]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::b85e:6bff:84d3:e825%6]) with mapi id 15.20.4867.012; Tue, 11 Jan 2022
- 15:33:28 +0000
-Message-ID: <9af5a4ae-e919-a545-809d-451217cf40f5@kontron.de>
-Date: Tue, 11 Jan 2022 16:33:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH v2 1/2] Fix corner case in bad block table handling.
-Content-Language: en-US
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- vigneshr@ti.com, miquel.raynal@bootlin.com,
- Yoshio Furuyama <ytc-mb-yfuruyama7@kioxia.com>, richard@nod.at,
- Stoll Eberhard <Eberhard.Stoll@kontron.de>
-References: <cover.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
- <774a92693f311e7de01e5935e720a179fb1b2468.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
-From: Frieder Schrempf <frieder.schrempf@kontron.de>
-To: "stable@vger.kernel.org" <stable@vger.kernel.org>
-In-Reply-To: <774a92693f311e7de01e5935e720a179fb1b2468.1616635406.git.ytc-mb-yfuruyama7@kioxia.com>
-X-ClientProxiedBy: AS8PR04CA0072.eurprd04.prod.outlook.com
- (2603:10a6:20b:313::17) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:157::14)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 88b16c98-db3c-43ad-0f58-08d9d517b738
-X-MS-TrafficTypeDiagnostic: AM4PR1001MB1441:EE_
-X-Microsoft-Antispam-PRVS: <AM4PR1001MB1441641C6F7033062200DF48E9519@AM4PR1001MB1441.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wnJgHNvJaAOOvaNPLzaQwEN9+NesV0MFQ7WzhrVY4cICcMnM/8AQzS440rtkn36Lt/fqdSqFUlLdgZRt0gsRVxNJeXyPDpEk4WSzV+JcaeL0vft65/8jgD7rDadajWdmCdcwWW+tc2uSER6yXV4LfXbFK6045zsv0fDwfPg3vePnN5f9PuZAFc/+n/GSSjJdpVWaL3pBYA630YnLThJyu0ZKM9vkJcp/TGLwd712GcDyVnXOFjp3VpXjVt1OG5U8oSt3MdeXIvW8yB/fKWXPysGgcCyQ7eCDrtB3hPqrtQplECRZeHUW+7Rivp5lkZtnZ0W+PiC9YXvmYdjIEtNJiQ0sqR4ZxEjIMgdsykAi+FNKCD8iUtCwGrSEegGMh0Hn8yzlTJ3LRxbZJMufghCAvsl0bpcAcm4Gy8Sf1kZwDGzSPlyVHFGvkwDoYJEbfcH2PY95pZh87xIRv9Fd0JPznpWk5rlIMuUNZiVWTtZMDRJ590iw5wz/nxtZYsa8bNz3eIfqU05+pI1NiW8rh42/BsHkpntiAFcNngHLF2LWszl/bgD4zMAwpHD7AZl0m3emYty+Nygs7xR3qrwUc1IWTEpnwZV6k3+P2ESFxMii18z5kR9wLw1CFYySCI+zkwou2LTZ3j4/vP0rAB2CcV2VbpTSwxNeHz3LaRuaLmfKan9g3M+s8SBIJAC7K35LBHROAlG7LiU2NdsnioL+Xu5WGmQr8K6rSFnB9uJxC/B5HBI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(6486002)(86362001)(8676002)(5660300002)(2616005)(107886003)(38100700002)(31696002)(53546011)(6506007)(4326008)(8936002)(44832011)(83380400001)(508600001)(26005)(6916009)(186003)(6512007)(31686004)(2906002)(66556008)(54906003)(66946007)(66476007)(36756003)(316002)(45980500001)(43740500002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V2VoeURWTXd6c3l4N0MwUCt1NkZRV283aGVzY0hSc1BWeEdSS3FHTTRWQ095?=
- =?utf-8?B?WjdiMDA0MkpKTndDMEhGOFdhRHh3c1NGQXJ3REJxL2NGOXFJUjJtUHliR0hB?=
- =?utf-8?B?YzhqRFpFcXNHL0U3dTErOGRER0NqWmgwVTR2Q1V2Y3MzRnkyTGVHcHBwSTJN?=
- =?utf-8?B?anlHNEk3aDhmREk2R1RaT0tOVE9MaEZLWS9janZNY0pEVzJ4ZXJXZk9RTVVJ?=
- =?utf-8?B?WTVrbXdIWWdQaGVwdkJhREVuZ2ZlRHdLWUhZMDNUSGRzMDg3S1o5S1BBTXVN?=
- =?utf-8?B?dW1xaSszQTgxOWFzcDYvYmxmWXhWK3g1SXFTazBURXVucE4wcjJmZUFGenJP?=
- =?utf-8?B?TGkwVTNqaTNlMUQ2QUlBNklYWkxsckpTM09odW13dk5CdWEycHMzL25NUk5o?=
- =?utf-8?B?NWR2b2g3Q1FPS0tVMGZVMEFNQlcwSDJiZzhrOWwzSVZnWk5aUC9JWGZPUkY1?=
- =?utf-8?B?bnZGNERmRkJBZHZ0Yk9wZzZRYXQwR3dWUGp4bjhQRGZsR0hXdEJXRUlSSVhT?=
- =?utf-8?B?L1dGR1ZHN0l3dWxrVWdwblliQU85QkFsOTd3ZUY4c1k4dzRuYitKUTFYRUcx?=
- =?utf-8?B?TmVLay9DQ3dkcTl1cFQ1SGFuS2RxbFQycCtnYVh0cGYrNSsydis3WVNIU2tW?=
- =?utf-8?B?dW5jUFNjcDVJdVFDSjFRMlZnai8zL0F4elZHenFRM0FxbGlyWGRWRXRmN2lu?=
- =?utf-8?B?cnA5Z3hIZFhYUWlWa2NyY3JZLzlucERmeFVSMFUvYWlaQ2hRbDFObVlYZzl6?=
- =?utf-8?B?cmZiTkRZRXNvaWNTT2dLWitBOUZMY2R2Y2xNTTQ1SFF6VFVEa1QrNkp4aEU1?=
- =?utf-8?B?MzJ5bERHdUNLVE1YamRwWTJCN05ESUlLVnRSNllUbEhMYmxTOTVpTFZyekhh?=
- =?utf-8?B?MVZJMG1iMXRXUTZKWERWYlU2MjdVZTl6OEQyZWJnaU82c3VBOWZvY0d5citI?=
- =?utf-8?B?djJWS0hhWWJLcE52dE54b2g4Y1QxeTJRL2IzekErV3F4MFA5NFQvMDVMaFI1?=
- =?utf-8?B?SXdGNW0wSjJGWmRNUGs4NHdXSHQ4L1l2T0daQzZ1Tk13VHZjTHVUS09rTHNS?=
- =?utf-8?B?ZjVBT09OTXBrU1VGdHdQZUl1Y1ViL1F5R3FBeUZIdUF6dU5kbWhReHpPUFJB?=
- =?utf-8?B?TlRpOFh2bm1EK0hiMjRsek1FTTR6SmJ0N0EwR2FwWktXQXUyZmpFdGFNdGc4?=
- =?utf-8?B?dHNmTHB3SkZkelhLaVBDVWhMWnRTdHg5VmV6TjRJTFhYMG5XS1hSQVpWeWhG?=
- =?utf-8?B?WlM3bFR1dGNGbnZ0ckV5MThOZlBPTm83S3J3Tkt3MVZGUElKNnhzSk13Y0Zh?=
- =?utf-8?B?ZlVhcHlkNTQ4cVByQU1HL0VnM1p3MUNFdklVK2JqR3FEZW0zelVTb1Fwb0lN?=
- =?utf-8?B?RUdIQ3BDRms4enN6TTVURVUxZHdqV1RiODhTWXRJU0hwT29JbnMwY0tQYmJq?=
- =?utf-8?B?K2MwQ1FoUlpzRUw3WmFuVzNiNlllWThGWS9EeVFuT0hWeUxzOHJ1L3ZpU1l2?=
- =?utf-8?B?dngyMGxLZ1ZLYVpZMTlweGZURG1XV1FOMVVPaTVFMHIyTytXMHhTc2ovUHli?=
- =?utf-8?B?cURGUnRDRHJ3M0hWM2taVXY5TzNWTDNKYStMOWpmaVFEcndlZjZDZmo0NXlt?=
- =?utf-8?B?eTZieStYaGRwT2ZHT3ZxNnBnQkxDU1RHbjVybWpnWGdVc013WjVrcDkrQ0NU?=
- =?utf-8?B?dHk4WHEzMllDUGh5MzdDQ2ZwYTQ1R2NnYjdyUmt4bHpUbW81M3IzZWFiWlNU?=
- =?utf-8?B?Y0hMeEF3VmVxZVR3RGJEQlB2SXlPNTFmRi9EM2lMVDloY2VVYVBKYWZBNnZo?=
- =?utf-8?B?TjJySUttTzBRbGNMaUNPZG12TzJ6aVE3NHhpVWViczVQRmx2dzA4cCtqbFZN?=
- =?utf-8?B?KzZ1L2ZSdy8wdjE1R0hVQVBNQnRaVkxQQ0w1N05HS0g4cmxhVTZJaDdRNDBn?=
- =?utf-8?B?QWk3aHpYVTdjNzh6bTZCR0NROS85b3ZHbGFJTy9DcnU0SlpPVkp2MWhNZGVW?=
- =?utf-8?B?TTlxMTVrbEgvMG5ySVkvVTF5K2g1azgvWE40OVh1RWYvTVBPa2x4UE8zanFZ?=
- =?utf-8?B?N2djd1VocWhZbDVJZ2FnS0VLNG9EdFJ6MFExZmhoL1Vsd3NiWkRrTzIycktH?=
- =?utf-8?B?ZCtJUUhqMmhtMGdTRHEzZm0wRDF2em80VjNNeElIUi90cDRiZWVoQkxjd0Jm?=
- =?utf-8?B?UnpUQUNBN21MQ2NSQURSUTRhU3pTenh3bUU5TUlkZ2hXQkFzczlxQ3p6QWVj?=
- =?utf-8?B?ODBjRDZ1aldlTlp3WUFMWXZzTmxnPT0=?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88b16c98-db3c-43ad-0f58-08d9d517b738
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2022 15:33:28.5598 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3emPSmfpTqsGVxnqwW/XWlYHiwz8PxROv/+MVaRKOisYpVrxOaCM95ujFg1ZVo/oYK44/JEDVzCpPjeOmWGgsfDgdvX7OSyKbEzawhEU4uU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR1001MB1441
+ id 1n7O8Y-0009N8-O2
+ for linux-mtd@lists.infradead.org; Tue, 11 Jan 2022 20:53:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DDC8EB81D52;
+ Tue, 11 Jan 2022 20:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9E4FDC36AE3;
+ Tue, 11 Jan 2022 20:52:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1641934375;
+ bh=cqmzXGmY26fCpJfBCR+5KtLFaAz7mhvvVOAShvyie6k=;
+ h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+ b=pOqKeuc020waXr7mjS+l+HcyLEVMNmTFzjOktA9kEZLR+E5nD8+w6Tm8pYJ11PoMO
+ 6xobLCfjmScMNF62PvfhvCpaCMsQPjzCloGidID5KbDuyFQkziMEy3y6iDolAzWqsU
+ Vzn/12MWevbhYYCg6SZeg8+WN+8cawrOS09k70GQaMXBzxmMdJD0XONfKDGP1IBw1n
+ Zgyd70kZcgf9TuFiPcyYp++slVYgj3SKKoeoyv/sxHiI9od2XHX3ziux6Oo48wFQIv
+ Mkk3rE5UbSe8csNCuDOc1fxWuxzSXhzPkJ8aaRklA4JI+Pz9AL4ceTwLFgHABpLs5J
+ QjrvVuYTEQO5A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
+ (localhost.localdomain [127.0.0.1])
+ by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
+ 8CC58F6078C; Tue, 11 Jan 2022 20:52:55 +0000 (UTC)
+Subject: Re: [GIT PULL] mtd: Changes for 5.17
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20220110114003.7f297088@xps13>
+References: <20220110114003.7f297088@xps13>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list
+ <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20220110114003.7f297088@xps13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.17
+X-PR-Tracked-Commit-Id: 9ce47e43a0f088653aa25ca465836a84114e0940
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c01d85c2190bf694ccd041e7d19c36eacf005840
+Message-Id: <164193437556.11435.13753019786939678299.pr-tracker-bot@kernel.org>
+Date: Tue, 11 Jan 2022 20:52:55 +0000
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220111_073338_109769_AC1EF3E7 
-X-CRM114-Status: GOOD (  16.29  )
+X-CRM114-CacheID: sfid-20220111_125258_999380_C4D8393F 
+X-CRM114-Status: UNSURE (   6.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,50 +83,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi stable maintainers,
+The pull request you sent on Mon, 10 Jan 2022 11:40:03 +0100:
 
-On 06.04.21 03:47, Yoshio Furuyama wrote:
-> From: "Doyle, Patrick" <pdoyle@irobot.com>
-> 
-> In the unlikely event that both blocks 10 and 11 are marked as bad (on a
-> 32 bit machine), then the process of marking block 10 as bad stomps on
-> cached entry for block 11.  There are (of course) other examples.
-> 
-> Signed-off-by: Patrick Doyle <pdoyle@irobot.com>
-> Reviewed-by: Richard Weinberger <richard@nod.at>
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.17
 
-We have systems on which this patch fixes real failures. Could you
-please add the upstream patch fd0d8d85f723 ("mtd: nand: bbt: Fix corner
-case in bad block table handling") to the stable queues for 4.19, 5.4, 5.10?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c01d85c2190bf694ccd041e7d19c36eacf005840
 
-Thanks!
+Thank you!
 
-Cc: stable@vger.kernel.org
-Fixes: 9c3736a3de21 ("mtd: nand: Add core infrastructure to deal with
-NAND devices")
-
-> ---
->  drivers/mtd/nand/bbt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/bbt.c b/drivers/mtd/nand/bbt.c
-> index 044adf913854..64af6898131d 100644
-> --- a/drivers/mtd/nand/bbt.c
-> +++ b/drivers/mtd/nand/bbt.c
-> @@ -123,7 +123,7 @@ int nanddev_bbt_set_block_status(struct nand_device *nand, unsigned int entry,
->  		unsigned int rbits = bits_per_block + offs - BITS_PER_LONG;
->  
->  		pos[1] &= ~GENMASK(rbits - 1, 0);
-> -		pos[1] |= val >> rbits;
-> +		pos[1] |= val >> (bits_per_block - rbits);
->  	}
->  
->  	return 0;
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 ______________________________________________________
 Linux MTD discussion mailing list
