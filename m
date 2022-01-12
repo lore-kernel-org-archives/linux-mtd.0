@@ -4,55 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A94C7C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jan 2022 12:30:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9C5BC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jan 2022 13:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/dc/5Te1JOtbfpJgJCUX8uGJQ/jzEkxcIUxdbzzln7U=; b=ZuDpX3QacYklFw
-	jjTIp7s6S1DNwZEiHoy0vq2KqfMnY3VlAXHLG7PtGtxOQh0EAeQto+bIPHwkatIRajX1/1bU+On98
-	3w7jhsmHjmCM8Dx/gFOU/5/FAFi2PMSpdhy9EOyk4Hyl7f2mn8NXbrokHb0AJMRCapmpuJjhQzYie
-	k3GdJksIsWEQitJloYnB/RaRpXrh7HenPZws9OwA0UyQj4kbiM0R0tjAiV4TDMCgIdawUBkbxjDqE
-	s2QPlGKUyKw4wqeiF1UEiIFd+Giavlp6Br11eSoZHBOi6k3er4PAIcqrz6bCqRcRteTwENLRkngi3
-	hQnbCZNTFw/Ku0vcXI9Q==;
+	List-Owner; bh=jIz+aJBvWRkyrk7IDDdvY873aI2B58jshWbZmZq7swU=; b=u6rYhyvjYcYsT6
+	ryZ0lKuQYMb9gz6CH1I9a+YmrwqZZLEVl/epcCcNz2av5IsjdkK7ELnFPVGIQ5ri+qUKW2YSseEEj
+	PFBfTC8b5rHW/uuBvUh39WgmBfeaNKuUlpoDU/xIb7PWZ0D+T8kCddDASogfDl5HP3cxjYz+sibdp
+	euiCwg+MJHytIUTNBdq5Yoc07kxFVOSWamx71u8HhY0v2OVwZ6T3T3B+1aUpAE4fBoL/kqSzzr1m1
+	T2CsUEouqmdaTIp5K7Ve20K63LKa4ehD0q7c0InxdFgyyR8fljCHTAYuHYowHSEkZVpaStZJiMjbz
+	I/08V7czLgaskcOzEXRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n7cl0-002UHH-R9; Wed, 12 Jan 2022 12:29:38 +0000
-Received: from mga06.intel.com ([134.134.136.31])
+	id 1n7drK-002bnX-L1; Wed, 12 Jan 2022 13:40:14 +0000
+Received: from vps0.lunn.ch ([185.16.172.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7ckw-002UGQ-72; Wed, 12 Jan 2022 12:29:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1641990574; x=1673526574;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:content-transfer-encoding:in-reply-to;
- bh=7u2c/+u/7900R51hbSn1pNSHHzU5y3Q///2YVkNposY=;
- b=j3c7xL3T2Cx1Zsd+ppfFG6/CLjSSvIJEAw4QTVLA6tB2AraYJYhd2MhQ
- ZzwteHKVxIL0j09G0CGrLjs+Yro29FNWzMSWriqRlEDzj0tuAV+6MAFce
- FxTZzPfLKL4DYBDV/MG/fFU2d3uqphYsKxOsBZpYCZm676LIkOEOk1zA9
- GHKd9J8xpYg0QAEoK5ZNSMQlG6vUCblq0FvaR7feDvp7FDMvq+JraGwJw
- W9CyF2x/uvu0S31lIiDY42CwPpi3G+glyavjQR2Zi03QCWHNKWIQ/lEsp
- eSrSqKHqfOgdBq6Q9asQ14gg6ZzaY/nwB0wugaZ2F5mzvSs3JUVVIJWL4 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10224"; a="304460712"
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="304460712"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2022 04:29:31 -0800
-X-IronPort-AV: E=Sophos;i="5.88,282,1635231600"; d="scan'208";a="691367097"
-Received: from smile.fi.intel.com ([10.237.72.61])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2022 04:29:15 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1n7cjO-009gDi-VM; Wed, 12 Jan 2022 14:27:58 +0200
-Date: Wed, 12 Jan 2022 14:27:58 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ id 1n7drH-002bmu-U9; Wed, 12 Jan 2022 13:40:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+ s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+ Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+ bh=S/pA7bUX6e4VB1GHe3hlypsDdeFRt4oGL0831NNCTJM=; b=REJii9uMw/mNDMEDkaB6nMl41t
+ HVia+zgOKIfzuMj09o6jQ+IaM7PowDfcCzSXN02NEw/KiBFCm/WUr1uWHbYcv6vi03Q5vZQPWTCZw
+ kZaHOnCDnZ4glu9pEOOBCeugcwmvyPmDFDeJp1Ck0ttEnrICihUcMQo96DS7dmh4ziSA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+ (envelope-from <andrew@lunn.ch>)
+ id 1n7dpl-001CDK-PQ; Wed, 12 Jan 2022 14:38:37 +0100
+Date: Wed, 12 Jan 2022 14:38:37 +0100
+From: Andrew Lunn <andrew@lunn.ch>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
  Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
@@ -89,6 +76,7 @@ Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
  Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>,
  Eric Auger <eric.auger@redhat.com>, Takashi Iwai <tiwai@suse.com>,
  Jaroslav Kysela <perex@perex.cz>, openipmi-developer@lists.sourceforge.net,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Benson Leung <bleung@chromium.org>,
  Pengutronix Kernel Team <kernel@pengutronix.de>,
  Linux ARM <linux-arm-kernel@lists.infradead.org>,
@@ -108,7 +96,7 @@ Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
  linux-mediatek@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>, netdev@vger.kernel.org
 Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
-Message-ID: <Yd7JTvfblG0Ge4AN@smile.fi.intel.com>
+Message-ID: <Yd7Z3Qwevb/lEwQZ@lunn.ch>
 References: <20220110195449.12448-1-s.shtylyov@omp.ru>
  <20220110195449.12448-2-s.shtylyov@omp.ru>
  <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
@@ -119,10 +107,9 @@ References: <20220110195449.12448-1-s.shtylyov@omp.ru>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220112_042934_351989_812E4B1A 
-X-CRM114-Status: GOOD (  39.13  )
+X-CRM114-CacheID: sfid-20220112_054012_007446_149338EB 
+X-CRM114-Status: GOOD (  25.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,70 +121,10 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
-
-On Wed, Jan 12, 2022 at 11:27:02AM +0100, Geert Uytterhoeven wrote:
-> On Wed, Jan 12, 2022 at 9:51 AM Uwe Kleine-K=F6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
-> > On Wed, Jan 12, 2022 at 09:33:48AM +0100, Geert Uytterhoeven wrote:
-> > > On Mon, Jan 10, 2022 at 10:20 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> > > > On Mon, Jan 10, 2022 at 09:10:14PM +0100, Uwe Kleine-K=F6nig wrote:
-> > > > > On Mon, Jan 10, 2022 at 10:54:48PM +0300, Sergey Shtylyov wrote:
-> > > > > > This patch is based on the former Andy Shevchenko's patch:
-> > > > > >
-> > > > > > https://lore.kernel.org/lkml/20210331144526.19439-1-andriy.shev=
-chenko@linux.intel.com/
-> > > > > >
-> > > > > > Currently platform_get_irq_optional() returns an error code eve=
-n if IRQ
-> > > > > > resource simply has not been found. It prevents the callers fro=
-m being
-> > > > > > error code agnostic in their error handling:
-> > > > > >
-> > > > > >     ret =3D platform_get_irq_optional(...);
-> > > > > >     if (ret < 0 && ret !=3D -ENXIO)
-> > > > > >             return ret; // respect deferred probe
-> > > > > >     if (ret > 0)
-> > > > > >             ...we get an IRQ...
-> > > > > >
-> > > > > > All other *_optional() APIs seem to return 0 or NULL in case an=
- optional
-> > > > > > resource is not available. Let's follow this good example, so t=
-hat the
-> > > > > > callers would look like:
-> > > > > >
-> > > > > >     ret =3D platform_get_irq_optional(...);
-> > > > > >     if (ret < 0)
-> > > > > >             return ret;
-> > > > > >     if (ret > 0)
-> > > > > >             ...we get an IRQ...
-> > > > >
-> > > > > The difference to gpiod_get_optional (and most other *_optional) =
-is that
-> > > > > you can use the NULL value as if it were a valid GPIO.
-> > > > >
-> > > > > As this isn't given with for irqs, I don't think changing the ret=
-urn
-> > > > > value has much sense.
-> > > >
-> > > > We actually want platform_get_irq_optional() to look different to a=
-ll
-> > > > the other _optional() methods because it is not equivalent. If it
-> > > > looks the same, developers will assume it is the same, and get
-> > > > themselves into trouble.
-> > >
-> > > Developers already assume it is the same, and thus forget they have
-> > > to check against -ENXIO instead of zero.
-> >
-> > Is this an ack for renaming platform_get_irq_optional() to
-> > platform_get_irq_silent()?
-> =
-
-> No it isn't ;-)
-> =
 
 > If an optional IRQ is not present, drivers either just ignore it (e.g.
 > for devices that can have multiple interrupts or a single muxed IRQ),
@@ -211,14 +138,39 @@ ll
 > to care about the actual error code was the main reason behind the
 > introduction of the *_optional() APIs.
 
-For the record, I'm on the same page with Geert.
+The *_optional() functions return an error code if there has been a
+real error which should be reported up the call stack. This excludes
+whatever error code indicates the requested resource does not exist,
+which can be -ENODEV etc. If the device does not exist, a magic cookie
+is returned which appears to be a valid resources but in fact is
+not. So the users of these functions just need to check for an error
+code, and fail the probe if present.
 
--- =
+You seems to be suggesting in binary return value: non-zero
+(available) or zero (not available)
 
-With Best Regards,
-Andy Shevchenko
+This discards the error code when something goes wrong. That is useful
+information to have, so we should not be discarding it.
 
+IRQ don't currently have a magic cookie value. One option would be to
+add such a magic cookie to the subsystem. Otherwise, since 0 is
+invalid, return 0 to indicate the IRQ does not exist.
 
+The request for a script checking this then makes sense. However, i
+don't know how well coccinelle/sparse can track values across function
+calls. They probably can check for:
+
+   ret = irq_get_optional()
+   if (ret < 0)
+      return ret;
+
+A missing if < 0 statement somewhere later is very likely to be an
+error. A comparison of <= 0 is also likely to be an error. A check for
+> 0 before calling any other IRQ functions would be good. I'm
+surprised such a check does not already existing in the IRQ API, but
+there are probably historical reasons for that.
+
+      Andrew
 
 ______________________________________________________
 Linux MTD discussion mailing list
