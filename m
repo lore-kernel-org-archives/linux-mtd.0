@@ -4,44 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78685C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jan 2022 21:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11AB7C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 12 Jan 2022 21:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JlUGaaTmGo49Wk3AN2g3CFf4Cdkap+N5IwN0UmpKXmg=; b=LVItO2jhNBaOKDoRsHfu7xj/Nd
-	PFqgagqXebWrWg3vD47zsG+rLK8yYvPITAc96WztnVROe4mhFhd5yh/TYqIKzvqI9w1iAPDNqvv2p
-	ryjFaOOvFgySsgvYmTPdwj97OWGKzCjqXGO+IK7qUzMckz0og2FkLghD2YgoN4hAtuDltn9B/FLG6
-	9h39IbMH0uc3oojoQnYF1Uhvyu55wqlp6c+ZOBszEDocJf2ZdBUAUYGkXa6ByPsVeQTvjM8NDgFDF
-	KCQgp7HlJUxWxwPTQoHabkkvgDO9R75N0dHMHJnfzQvj3FMO90F2/OJiQM1zdHHE3emR/HFRUu3Yz
-	97XIaNqA==;
+	bh=3/3sClynnEqLnseUTCehAjeWBuAUrty7aG2Bytg50OU=; b=oxdgdQy6KwA4xEEFENZxVfmcJK
+	bmLN2nJ3yIsk74fBkscB925PNq3/z5pOf24/IDmUkuwRmvcHnABCW5mRlbJevqIePw13ri6FY4eM0
+	y4M10bAfFFw4u2kpwS7uieyNTPYpZJY1Vj/6IDxB5UTqXOugj6CFBPpnt7g2QmXhVSxw96de2HVqh
+	1dtg3cewiCu1DKUCUGNHQwG8eAkyRRN6UH2Icme1TH8TxWuklxYuYmYEqpL2WBOB/pIybV7oE0uaI
+	NfFJA6RSKr0vdOxhVcqmpKdaJZuYu32688Ky6CGHYxui9f+Z7MnLS1dUJTxRgUNPUgYE0QOllOrTD
+	G70YOtrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n7lF5-003rMX-Pb; Wed, 12 Jan 2022 21:33:15 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1n7lRG-003sMe-Nv; Wed, 12 Jan 2022 21:45:50 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7lF2-003rLe-RE
- for linux-mtd@lists.infradead.org; Wed, 12 Jan 2022 21:33:14 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1n7lDU-0003cg-GC; Wed, 12 Jan 2022 22:31:36 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1n7lDG-009xGd-W3; Wed, 12 Jan 2022 22:31:22 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1n7lDF-0004hw-SN; Wed, 12 Jan 2022 22:31:21 +0100
-Date: Wed, 12 Jan 2022 22:31:21 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ id 1n7lRC-003sLD-I5; Wed, 12 Jan 2022 21:45:48 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 83260B820E0;
+ Wed, 12 Jan 2022 21:45:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6540C36AE5;
+ Wed, 12 Jan 2022 21:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1642023943;
+ bh=Rl4cYWMV8h1J8XxpmCmzqZfaoBMwLhpNARBfd20DoT4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Khszb13U1jmu+m7bsIzdnnnT1iCYGXg5GGE42/oJuMQsK9Yn6UuauPQmmihxCed8g
+ I1F6FNxWdahiv8HObXLZ1MgG9aNbNh1vuWd5lPBPEE8jOf+os+a0Eg3ZNc61OeDpAd
+ oG1pZPxuhBAj0VIDmNNIk5GiF3ZYFM98qq+jWT/t93oYg9ih3f230JowrUn42Y60WL
+ bkt6CNPh+5WsNOS7M+9MpTJWTFF/zRWDIyY+MuNMqob1T2eWMhLpwtYRPlw8g7cffu
+ gO+N6rZqa7cTguyMABuPC7x4dDwKst9lAVidnA7ik+1nWq+j4fbnhftwUHOLMDmzq6
+ MQ+g/36gi+i7A==
+Date: Wed, 12 Jan 2022 21:45:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
  Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
@@ -77,8 +81,7 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Mark Gross <markgross@kernel.org>,
  "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
  Alex Williamson <alex.williamson@redhat.com>,
- Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>,
- Sebastian Reichel <sre@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Sebastian Reichel <sre@kernel.org>,
  Matthias Brugger <matthias.bgg@gmail.com>,
  Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org,
  Benson Leung <bleung@chromium.org>,
@@ -96,12 +99,12 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  James Morse <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>,
  Pengutronix Kernel Team <kernel@pengutronix.de>,
  Richard Weinberger <richard@nod.at>,
- Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
  linux-mediatek@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  "David S. Miller" <davem@davemloft.net>
 Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
-Message-ID: <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+Message-ID: <Yd9L9SZ+g13iyKab@sirena.org.uk>
 References: <20220110195449.12448-1-s.shtylyov@omp.ru>
  <20220110195449.12448-2-s.shtylyov@omp.ru>
  <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
@@ -109,16 +112,13 @@ References: <20220110195449.12448-1-s.shtylyov@omp.ru>
  <CAMuHMdWK3RKVXRzMASN4HaYfLckdS7rBvSopafq+iPADtGEUzA@mail.gmail.com>
  <20220112085009.dbasceh3obfok5dc@pengutronix.de>
  <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+In-Reply-To: <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+X-Cookie: Bridge ahead.  Pay troll.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220112_133313_060050_988E36FF 
-X-CRM114-Status: GOOD (  51.37  )
+X-CRM114-CacheID: sfid-20220112_134546_925507_E5DF53F5 
+X-CRM114-Status: GOOD (  25.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,158 +130,72 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6450215506678169151=="
+Content-Type: multipart/mixed; boundary="===============6229183058836070087=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============6450215506678169151==
+--===============6229183058836070087==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c63mbqxqltqrb5xh"
+	protocol="application/pgp-signature"; boundary="bKSGz4pQDpFpvPus"
 Content-Disposition: inline
 
 
---c63mbqxqltqrb5xh
+--bKSGz4pQDpFpvPus
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 12, 2022 at 11:27:02AM +0100, Geert Uytterhoeven wrote:
-> Hi Uwe,
->=20
-> On Wed, Jan 12, 2022 at 9:51 AM Uwe Kleine-K=F6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
-> > On Wed, Jan 12, 2022 at 09:33:48AM +0100, Geert Uytterhoeven wrote:
-> > > On Mon, Jan 10, 2022 at 10:20 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> > > > On Mon, Jan 10, 2022 at 09:10:14PM +0100, Uwe Kleine-K=F6nig wrote:
-> > > > > On Mon, Jan 10, 2022 at 10:54:48PM +0300, Sergey Shtylyov wrote:
-> > > > > > This patch is based on the former Andy Shevchenko's patch:
-> > > > > >
-> > > > > > https://lore.kernel.org/lkml/20210331144526.19439-1-andriy.shev=
-chenko@linux.intel.com/
-> > > > > >
-> > > > > > Currently platform_get_irq_optional() returns an error code eve=
-n if IRQ
-> > > > > > resource simply has not been found. It prevents the callers fro=
-m being
-> > > > > > error code agnostic in their error handling:
-> > > > > >
-> > > > > >     ret =3D platform_get_irq_optional(...);
-> > > > > >     if (ret < 0 && ret !=3D -ENXIO)
-> > > > > >             return ret; // respect deferred probe
-> > > > > >     if (ret > 0)
-> > > > > >             ...we get an IRQ...
-> > > > > >
-> > > > > > All other *_optional() APIs seem to return 0 or NULL in case an=
- optional
-> > > > > > resource is not available. Let's follow this good example, so t=
-hat the
-> > > > > > callers would look like:
-> > > > > >
-> > > > > >     ret =3D platform_get_irq_optional(...);
-> > > > > >     if (ret < 0)
-> > > > > >             return ret;
-> > > > > >     if (ret > 0)
-> > > > > >             ...we get an IRQ...
-> > > > >
-> > > > > The difference to gpiod_get_optional (and most other *_optional) =
-is that
-> > > > > you can use the NULL value as if it were a valid GPIO.
-> > > > >
-> > > > > As this isn't given with for irqs, I don't think changing the ret=
-urn
-> > > > > value has much sense.
-> > > >
-> > > > We actually want platform_get_irq_optional() to look different to a=
-ll
-> > > > the other _optional() methods because it is not equivalent. If it
-> > > > looks the same, developers will assume it is the same, and get
-> > > > themselves into trouble.
-> > >
-> > > Developers already assume it is the same, and thus forget they have
-> > > to check against -ENXIO instead of zero.
+On Wed, Jan 12, 2022 at 10:31:21PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Wed, Jan 12, 2022 at 11:27:02AM +0100, Geert Uytterhoeven wrote:
 
-I agree that -ENXIO is unfortunate and -ENOENT would be more in line
-with other functions. I assume it's insane to want to change that.
+(Do we really need *all* the CCs here?)
 
-> > Is this an ack for renaming platform_get_irq_optional() to
-> > platform_get_irq_silent()?
->=20
-> No it isn't ;-)
->=20
-> If an optional IRQ is not present, drivers either just ignore it (e.g.
-> for devices that can have multiple interrupts or a single muxed IRQ),
-> or they have to resort to polling. For the latter, fall-back handling
-> is needed elsewhere in the driver.
+> That convinces me, that platform_get_irq_optional() is a bad name. The
+> only difference to platform_get_irq is that it's silent. And returning
+> a dummy irq value (which would make it aligned with the other _optional
+> functions) isn't possible.
 
-I think irq are not suitable for such a dummy handling. For clocks or
-GPIOs there are cases where just doing nothing in the absence of a
-certain optional clock or GPIO is fine.
+There is regulator_get_optional() which is I believe the earliest of
+these APIs, it doesn't return a dummy either (and is silent too) - this
+is because regulator_get() does return a dummy since it's the vastly
+common case that regulators must be physically present and them not
+being found is due to there being an error in the system description.
+It's unfortunate that we've ended up with these two different senses for
+_optional(), people frequently get tripped up by it.
 
-I checked a few users of platform_get_irq_optional() and I didn't find a
-single one that doesn't need to differentiate the irq and the no-irq
-case later. Do you know one? If you do, isn't that so exceptional that
-it doesn't justify the idea of a dummy irq value? So until proven
-otherwise I think platform_get_irq_optional() just isn't in the spirit
-of clk_get_optional() and gpiod_get_optional() because there are no use
-cases where a dummy value would be good enough. (Even if request_irq
-would be a noop for a dummy irq value.)
+> > To me it sounds much more logical for the driver to check if an
+> > optional irq is non-zero (available) or zero (not available), than to
+> > sprinkle around checks for -ENXIO. In addition, you have to remember
+> > that this one returns -ENXIO, while other APIs use -ENOENT or -ENOSYS
+> > (or some other error code) to indicate absence. I thought not having
+> > to care about the actual error code was the main reason behind the
+> > introduction of the *_optional() APIs.
 
-The motivation why platform_get_irq_optional() was introduced was just
-that platform_get_irq() started to emit an error message (in commit
-7723f4c5ecdb8d832f049f8483beb0d1081cedf6) and the (proportional) few
-drivers where the error message was bad needed a variant that doesn't
-emit the error message. Look at
-31a8d8fa84c51d3ab00bf059158d5de6178cf890, the motivation to use
-platform_get_irq_optional() wasn't that it simplifies handling in the
-driver, but that it doesn't emit an error message. Or
-8f5783ad9eb83747471f61f94dbe209fb9fb8a7d, or
-2fd276c3ee4bd42eb034f8954964a5ae74187c6b, or
-55cc33fab5ac9f7e2a97aa7c564e8b35355886d5. Just look at the output of git
-log -Splatform_get_irq_optional to find some more.
+> No, the main benefit of gpiod_get_optional() (and clk_get_optional()) is
+> that you can handle an absent GPIO (or clk) as if it were available.
 
-That convinces me, that platform_get_irq_optional() is a bad name. The
-only difference to platform_get_irq is that it's silent. And returning
-a dummy irq value (which would make it aligned with the other _optional
-functions) isn't possible.
+Similarly for the regulator API, kind of.
 
-> To me it sounds much more logical for the driver to check if an
-> optional irq is non-zero (available) or zero (not available), than to
-> sprinkle around checks for -ENXIO. In addition, you have to remember
-> that this one returns -ENXIO, while other APIs use -ENOENT or -ENOSYS
-> (or some other error code) to indicate absence. I thought not having
-> to care about the actual error code was the main reason behind the
-> introduction of the *_optional() APIs.
-
-No, the main benefit of gpiod_get_optional() (and clk_get_optional()) is
-that you can handle an absent GPIO (or clk) as if it were available.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---c63mbqxqltqrb5xh
+--bKSGz4pQDpFpvPus
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHfSKAACgkQwfwUeK3K
-7AlLYgf/TzHojP4Z3A1x+jOxObpLjnDBfLk/J2fJ3fPc7MQFDJwGCubx9/Taculx
-9FL859wRU0HEqwefh3A61whyx3wDxBePJWJBBvU1jVZE12XHbvfARqHXYlZH3/rs
-+NUE/+WdKRh5YlDkOacjJ2x0lj7zudpEqvRquEuCaHNFX1bshPpw723FFZSyVLV3
-8sZFHYevwi62q3h1gUPq6tUZib+WVnmCnladf6UYgGxgJQLu/YdvCm5+lp6N6H8u
-orUVG5PWROmD0F2c504T2qCD7O0hwj+667BfsU5JBAODQJm8dB47BGxjdoU52a2F
-mMckMccinC+jzqqzaJB4DTX2lMD57Q==
-=ndjr
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHfS/QACgkQJNaLcl1U
+h9BO/wf/X52fQIYQFCYJDsHS4pHQDXMDv8aCyyoEen4dO7d7t6fuflAYrOGj/MXP
+UkHWhHmjH5EJrD5XQQmsOLQV5qXKD/mmvAuXQzNA/aUITdBah/r9xt3Y2nYb4+zR
+Nm3ZzFmvTZVLATEdRt39LZxBwD/gCkwQpEd1tSBKsiNsq2k9eyGs6zff3Aj5xUzC
++9zfg/GCQOESdU+jRATqvdl69QGdA5N6dPgzgIQEtecGNmx02jn8bEqmaN0SX1NZ
+zQXn1ChOAI4lWDhW4uAEnD4aF8hUN//xR2DiHIjNuGFgb7vTKdJgbI0iG2iH30Nm
+zgsgo5YMgTHurpX6yL8pMaJC54r/Pg==
+=MHmO
 -----END PGP SIGNATURE-----
 
---c63mbqxqltqrb5xh--
+--bKSGz4pQDpFpvPus--
 
 
---===============6450215506678169151==
+--===============6229183058836070087==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -291,5 +205,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============6450215506678169151==--
+--===============6229183058836070087==--
 
