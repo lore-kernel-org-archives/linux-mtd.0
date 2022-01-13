@@ -4,51 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49BC8C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jan 2022 07:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27295C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jan 2022 11:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ApyCKIswp8A28ypfbiosWkkDiIrq4BGgnL5tuVkxCc8=; b=mz8luyvMV770iB
-	e1hLWDcVmtjYCYdk8kcPr4y3H8IaKqWHkBXksOwNymHh59+3/SRWSGbIORgs3oIp1vzyH0jD7iz9g
-	JlVn+aDDxQ5UmNLbQ23UUcf7TJjo6DWnZ/9wlYJjxAwIPjE9HRM66iWdbu6EeVlrIDX0RhZ4pzCWF
-	neEvYxKE+hqUZZfBF1iawZr/BjCFOpF2HygXBEqkAgnATQWjOZu0JVXGRrh/Tv80oWZfXZso1M57e
-	4ILdyKL6eejiR2FacJoeYj/N+5sO3mMNEnxRsnEsbAt+ZxhM0ymFOJ0nDqYm7Zy1Uiq9I8gtiTQ9c
-	c8Q6PJq4Bu/ykcU02Pfg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=YpdpfEsRWjt2tt/6LZKT+9IGU+8bMqXoduODFj0aSKg=; b=GJd0kKtLjwUkrmyYtP2R5q1yNI
+	DKJSjaffM59j2HsBiqXE4o6bo0IBnFhIMoZP6rSqMvKEpQX4R3K2X/17o8OXKUyHFhIRdTktNLmFR
+	JNgqMHSVh8F//6E51cXfegl91n16p+lcVD/evdnjAks358L7/9gZH1QVoraWTCqOZQj4SrcrwvM8S
+	uSxk5zVrt5sVzTLPny7wB2ehSmHTsaXKAo7Jbv8mDItfmiI41LAY5sZ128ZJoTYVYdoVq2uS+x529
+	eR0Ha2nD+/VkyfZUoDQXyfiKv+wDN9M0Kt+tsTv7CPDt84q8vSu67U8z5TSXaKC5/8qKNZ6u3SSeq
+	sWQQx8zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n7ugR-004zm5-9A; Thu, 13 Jan 2022 07:38:07 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1n7y06-005Zxh-58; Thu, 13 Jan 2022 11:10:38 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n7ugC-004ziL-BA
- for linux-mtd@lists.infradead.org; Thu, 13 Jan 2022 07:37:53 +0000
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JZGQP0lTMzZdyW;
- Thu, 13 Jan 2022 15:34:05 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 13 Jan
- 2022 15:37:42 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <richard@nod.at>, <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, 
- <linux-kernel@vger.kernel.org>
-CC: <libaokun1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH -next v2 0/2] jffs2: fix two memory leak when mount jffs2
-Date: Thu, 13 Jan 2022 15:48:46 +0800
-Message-ID: <20220113074848.1308414-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+ id 1n7y00-005Zvs-U8
+ for linux-mtd@lists.infradead.org; Thu, 13 Jan 2022 11:10:34 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n7xyF-0006Q7-HJ; Thu, 13 Jan 2022 12:08:43 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n7xy5-00A3Hi-BT; Thu, 13 Jan 2022 12:08:32 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n7xy3-0005lb-Nu; Thu, 13 Jan 2022 12:08:31 +0100
+Date: Thu, 13 Jan 2022 12:08:31 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Jaroslav Kysela <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-phy@lists.infradead.org, Jiri Slaby <jirislaby@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Khuong Dinh <khuong@os.amperecomputing.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Zhang Rui <rui.zhang@intel.com>, platform-driver-x86@vger.kernel.org,
+ Linux PWM List <linux-pwm@vger.kernel.org>,
+ Robert Richter <rric@kernel.org>, Saravanan Sekar <sravanhome@gmail.com>,
+ Corey Minyard <minyard@acm.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ John Garry <john.garry@huawei.com>, Takashi Iwai <tiwai@suse.com>,
+ Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Borislav Petkov <bp@alien8.de>,
+ Eric Auger <eric.auger@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ openipmi-developer@lists.sourceforge.net,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Benson Leung <bleung@chromium.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+ Richard Weinberger <richard@nod.at>, Mun Yew Tham <mun.yew.tham@intel.com>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ netdev@vger.kernel.org,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, James Morse <james.morse@arm.com>,
+ Zha Qipeng <qipeng.zha@intel.com>, Sebastian Reichel <sre@kernel.org>,
+ Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ linux-mediatek@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
+Message-ID: <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
+References: <20220110195449.12448-1-s.shtylyov@omp.ru>
+ <20220110195449.12448-2-s.shtylyov@omp.ru>
+ <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
+ <YdyilpjC6rtz6toJ@lunn.ch>
+ <CAMuHMdWK3RKVXRzMASN4HaYfLckdS7rBvSopafq+iPADtGEUzA@mail.gmail.com>
+ <20220112085009.dbasceh3obfok5dc@pengutronix.de>
+ <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+In-Reply-To: <Yd9L9SZ+g13iyKab@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220112_233752_579615_B2DC7420 
-X-CRM114-Status: UNSURE (   5.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220113_031033_190344_14F76540 
+X-CRM114-Status: GOOD (  27.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,30 +131,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1283820216120786784=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-V1->V2:
-	In jffs2_scan_medium,
-	if s = kzalloc(sizeof(struct jffs2_summary), GFP_KERNEL);
-	returns error, go to "out" to do clear. Null pointer dereference
-	occurs when if (s->sum_list_head) is executed in "out".
+
+--===============1283820216120786784==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zcdy7nemyxfoojub"
+Content-Disposition: inline
 
 
-Baokun Li (2):
-  jffs2: fix memory leak in jffs2_do_mount_fs
-  jffs2: fix memory leak in jffs2_scan_medium
+--zcdy7nemyxfoojub
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- fs/jffs2/build.c | 4 +++-
- fs/jffs2/scan.c  | 2 ++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+On Wed, Jan 12, 2022 at 09:45:25PM +0000, Mark Brown wrote:
+> On Wed, Jan 12, 2022 at 10:31:21PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Wed, Jan 12, 2022 at 11:27:02AM +0100, Geert Uytterhoeven wrote:
+>=20
+> (Do we really need *all* the CCs here?)
 
--- 
-2.31.1
+It's probably counteractive to finding an agreement because there are
+too many opinions on that matter. But I didn't dare to strip it down,
+too :-)
 
+> > That convinces me, that platform_get_irq_optional() is a bad name. The
+> > only difference to platform_get_irq is that it's silent. And returning
+> > a dummy irq value (which would make it aligned with the other _optional
+> > functions) isn't possible.
+>=20
+> There is regulator_get_optional() which is I believe the earliest of
+> these APIs, it doesn't return a dummy either (and is silent too) - this
+> is because regulator_get() does return a dummy since it's the vastly
+> common case that regulators must be physically present and them not
+> being found is due to there being an error in the system description.
+> It's unfortunate that we've ended up with these two different senses for
+> _optional(), people frequently get tripped up by it.
+
+Yeah, I tripped over that one already, too. And according to my counting
+this results in three different senses now :-\ :
+
+ a) regulator
+    regulator_get returns a dummy, regulator_get_optional returns ERR_PTR(-=
+ENODEV)
+ b) clk + gpiod
+    ..._get returns ERR_PTR(-ENODEV), ..._get_optional returns a dummy
+ c) platform_get_irq()
+    platform_get_irq_optional() is just a silent variant of
+    platform_get_irq(); the return values are identical.
+   =20
+This is all very unfortunate. In my eyes b) is the most sensible
+sense, but the past showed that we don't agree here. (The most annoying
+part of regulator_get is the warning that is emitted that regularily
+makes customers ask what happens here and if this is fixable.)
+
+I think at least c) is easy to resolve because
+platform_get_irq_optional() isn't that old yet and mechanically
+replacing it by platform_get_irq_silent() should be easy and safe.
+And this is orthogonal to the discussion if -ENOXIO is a sensible return
+value and if it's as easy as it could be to work with errors on irq
+lookups.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zcdy7nemyxfoojub
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHgCCsACgkQwfwUeK3K
+7AktbAf/UzNin6+fnXTmkdrTvXWaXCV8TB76EIUtIdNWwJEjmXxWes5jyBpp/jXj
+7gSmYT3gi4oK0wjB6dKmqF6jba5/RPL4cdS6/8iQDp32Xey0hzWymBPENLc/Nxt5
+Ge81cdot6EFxqSkuW1Zbe55wzmNUmEsez7+e+8gJAviPB6zQndDE/zAkwxczzb04
+GfD6Uixgm4a29NwXNIignwNm8pACez/px2A8cVhILZ8135X0rdwYM17BiQtfM5Uq
+s2hZsLfxWm9ZvdyxA7gGvsfefPmiPfS3k/HWagHMDB8nQq4vqnMmPTu01YJs34dM
++ycJZkglW3eJnCZ9Fr5sjnuP6uLExw==
+=5Hn7
+-----END PGP SIGNATURE-----
+
+--zcdy7nemyxfoojub--
+
+
+--===============1283820216120786784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1283820216120786784==--
+
