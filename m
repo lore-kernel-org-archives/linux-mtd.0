@@ -4,61 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 878BDC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jan 2022 18:10:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAB87C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 13 Jan 2022 18:45:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=nicSR3YMK1XTVOzuKWuldh5Kap84nA1g5uX+rR9L/XQ=; b=rtPVwjzxrhYxUt
-	nle9UdqHcOcc+xQcpHJeVOEFWaAR3m9WEWDSgv85+hDxTgqzKYEMJr/n8vR3KSvAvtO/e35Ee/Ja5
-	5s3o2PVu2msiUe0f17L+MjDPl1q9slRq0tVVnB4zi8VnLhZV+ae37y6C6qpRKU/MsPkAVHX4AX7tz
-	ivI7HOKkzVv8cHR9YMYtoSatAbYYPkoUuL+9+1mcXkAH8Z4jX4m8By5j5001VcSnoikBqHnoSlKd2
-	nxBx5fQZ2bzbDRIIwFxLwUGrKFmQoH+XMGrvgwE/hxG0Qzj0pTtl7oHIpIhgssl8VHg1vRp1Rv5Rt
-	fdj2C0Z4bpVg4c5yMurg==;
+	List-Owner; bh=8Kd+jcwsWQ1u49HAVJm3IOVY3RLlD/Vd2hZnzQrHmEc=; b=E5rHhEFHp+hwML
+	ITL6XYIZ7+BFBjD3p1HRXcnF0KsyFxDOZlUzpJibjuXR5JH3PoSi47QVy7RlnqKwpcrl9Oi44tHBv
+	eJ9Z/J5VWiel8FgfDfQtCP3zhSN7nw38qRwT95/XatflMRl+vNAipf9p89JiIiYH4G1bhiOS9EoeJ
+	m2UKmndz6UQzTStJdCxVnu62MgY1YkNQ1L0YTimynAtIhNi3tAKvUYy4rudim8w1dLrhAYbqUwzrx
+	ex7cK0GKRohPW3aIeb+f8BZk2TWmFuiG+74FqUtHEFny78ZV6WR38y4Cy3kDvJ3c+CqZOP7iCgcAE
+	edYqRYlXm0wDDPFpUjtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n84XE-006qMe-9u; Thu, 13 Jan 2022 18:09:16 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1n855i-006tCC-6c; Thu, 13 Jan 2022 18:44:54 +0000
+Received: from relay01.th.seeweb.it ([2001:4b7a:2000:18::162])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n84XC-006qM4-5d
- for linux-mtd@lists.infradead.org; Thu, 13 Jan 2022 18:09:15 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3A481B8233D;
- Thu, 13 Jan 2022 18:09:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6173BC36AEB;
- Thu, 13 Jan 2022 18:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1642097351;
- bh=gRt42SMj1lCizKzhlJnYu7AY+4d/+Mx8SK+T64O9Ob0=;
- h=From:To:Cc:Subject:Date:From;
- b=JUy/9Mx62mGlaxkgP6tNkMx9KBYlsQuCHg4mwdwjRu3eg37uFkqZyEPdEkk9vyMlP
- Z/CEC0E1EBB9f2Gn7Sf+9kY2e7QPrY/xiVlJLQqoIwOb7TnH41Ii1s1EmyclkfpB3J
- wyXvBX94rlq/BU31bwbRsbbgvO7+uyopf4O0yl8Y=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Richard Weinberger <richard@nod.at>, Stefan Schaeckeler <schaecsn@gmx.net>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: use default_groups in kobj_type
-Date: Thu, 13 Jan 2022 19:08:57 +0100
-Message-Id: <20220113180857.2158974-1-gregkh@linuxfoundation.org>
+ id 1n855e-006t7y-S1
+ for linux-mtd@lists.infradead.org; Thu, 13 Jan 2022 18:44:52 +0000
+Received: from localhost.localdomain (83.6.165.232.neoplus.adsl.tpnet.pl
+ [83.6.165.232])
+ by m-r1.th.seeweb.it (Postfix) with ESMTPA id 103461F5EB;
+ Thu, 13 Jan 2022 19:44:34 +0100 (CET)
+From: Konrad Dybcio <konrad.dybcio@somainline.org>
+To: ~postmarketos/upstreaming@lists.sr.ht
+Cc: martin.botka@somainline.org, angelogioacchino.delregno@somainline.org,
+ marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+ Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nand: raw: qcom_nandc: Don't clear_bam_transaction on
+ READID
+Date: Thu, 13 Jan 2022 19:44:26 +0100
+Message-Id: <20220113184427.2259509-1-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1298; h=from:subject;
- bh=gRt42SMj1lCizKzhlJnYu7AY+4d/+Mx8SK+T64O9Ob0=;
- b=owGbwMvMwCRo6H6F97bub03G02pJDIkPsrbtfpdY6byh4cWL3OdPK54u1V2/U15P32txOhf/IelX
- FSEvOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAiLjMY5pmENK7plCkpPGQW8vaKeH
- v2rmUbOBnmJ16NcYkQ8Nm7bMmboJQN5W9v1ZzsBAA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
- fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220113_100914_397044_E94BA26E 
-X-CRM114-Status: GOOD (  14.03  )
+X-CRM114-CacheID: sfid-20220113_104451_113049_85D54F2E 
+X-CRM114-Status: UNSURE (   9.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,42 +65,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are currently 2 ways to create a set of sysfs files for a
-kobj_type, through the default_attrs field, and the default_groups
-field.  Move the AMD mce sysfs code to use default_groups field which
-has been the preferred way since aa30f47cf666 ("kobject: Add support for
-default attribute groups to kobj_type") so that we can soon get rid of
-the obsolete default_attrs field.
+While I have absolutely 0 idea why and how, running clear_bam_transaction
+when READID is issued makes the DMA totally clog up and refuse to function
+at all on mdm9607. In fact, it is so bad that all the data gets garbled
+and after a short while in the nand probe flow, the CPU decides that
+sepuku is the only option.
 
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Stefan Schaeckeler <schaecsn@gmx.net>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Removing _READID from the if condition makes it work like a charm, I can
+read data and mount partitions without a problem.
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- fs/ubifs/sysfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This is totally just an observation which took me an inhumane amount of
+debug prints to find.. perhaps there's a better reason behind this, but
+I can't seem to find any answers.. Therefore, this is a BIG RFC!
 
-diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
-index 7acc5a74e5fa..06ad8fa1fcfb 100644
---- a/fs/ubifs/sysfs.c
-+++ b/fs/ubifs/sysfs.c
-@@ -42,6 +42,7 @@ static struct attribute *ubifs_attrs[] = {
- 	ATTR_LIST(errors_crc),
- 	NULL,
- };
-+ATTRIBUTE_GROUPS(ubifs);
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 04e6f7b26706..506006ccdf1a 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1459,8 +1459,7 @@ static void pre_command(struct qcom_nand_host *host, int command)
  
- static ssize_t ubifs_attr_show(struct kobject *kobj,
- 			       struct attribute *attr, char *buf)
-@@ -74,7 +75,7 @@ static const struct sysfs_ops ubifs_attr_ops = {
- };
+ 	clear_read_regs(nandc);
  
- static struct kobj_type ubifs_sb_ktype = {
--	.default_attrs	= ubifs_attrs,
-+	.default_groups	= ubifs_groups,
- 	.sysfs_ops	= &ubifs_attr_ops,
- 	.release	= ubifs_sb_release,
- };
+-	if (command == NAND_CMD_RESET || command == NAND_CMD_READID ||
+-	    command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
++	if (command == NAND_CMD_RESET || command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
+ 		clear_bam_transaction(nandc);
+ }
+ 
 -- 
 2.34.1
 
