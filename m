@@ -4,61 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47A1CC433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 10:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BAD3C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 11:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=bS5qGzS1xFShzXxQyGPnG3A+7lUaTIhVybeV1OR/T2Q=; b=nm6MM5lhoVpEhP
-	71AftbPn9pXzpx/FA/9jl+AFLctWZ0hfTIz62TrRq1psXf8/IpZz724UisddMJVnDczhiW8gyoSxu
-	GSiYDLaWDYexfkNPSosdD+VrG8EjB3NN1HilhLBJlDLeuCHmIrzkN9rkpov3vrfMBEz4HOWXPRjZR
-	/ps0ZQUJISgofA6tySSZW4YzsLstKaCK/Iqf+MV2HGhtsZ/qbZTgLfjdFJIGh32hHb6DYsLnBVrg/
-	2260PEqfPZ2BzwCUTaiepRRu9m48qm0pSm5bb5DP2RJKrQTBVrntjYBv6KLYcmwXTzhj6x5wMV8Qi
-	HBGp7YrYjaHost2uUjjg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:References:CC:To:From:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=anTa8x2Kjy3CVyRR47RqouXGVOMcVPSBi3/7oeoYzQg=; b=yq7kN3xTNLvM4PhtNHomzxlv1b
+	aEEy6yx1ZnmDT1pTYyuIu/7Gla8FVimQsLVFLpO84sntgQ1NqCtN+DWOS7+f99sSRyXpGaEW0/tJA
+	vaG4bsIu5nZpOhtKokoUAArkYQKD4gk1GJUpNYVXkSP3PEKU6fZ8CHtxke9sl/UJIdEGc8PRvoPas
+	GAuqxrzMvUjclqArayL8ZFwtdpSvIC0zkQwYstbmny40HsxoKxqyZvlX+iFmqSGKvqkbojtqRdTUH
+	7rG7eo5O3zykdQQ/NabEmn3bDrODb5ni/MaltVacqrPRMyJG+fd6k/N90K3quo4xNfvapCC3v8qEf
+	TJ3i4TGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n8K8F-008lxW-Gb; Fri, 14 Jan 2022 10:48:31 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1n8Kqq-008wkb-Sz; Fri, 14 Jan 2022 11:34:36 +0000
+Received: from mxout04.lancloud.ru ([45.84.86.114])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n8K8B-008lwL-PU
- for linux-mtd@lists.infradead.org; Fri, 14 Jan 2022 10:48:29 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C94CA61ECB;
- Fri, 14 Jan 2022 10:48:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF1C2C36AEA;
- Fri, 14 Jan 2022 10:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1642157306;
- bh=Juz0pY8LSJErwzrSSYzBtkgWGFYcSVutMWjyQ8i708I=;
- h=From:To:Cc:Subject:Date:From;
- b=NlrF9rbt2g1bnk+A1BHC2MomkZu1nzlePi6dqEs8gpIOPP185DvrNFuccbb46vE3+
- g+y+gDbtReNUt5/v3ovJeygmD8ymZnHcQkRIN5Kn0VfZpofddeWw7u2ubFVdBVfrTk
- Fw2NhvbOV/RJYqfgjssGiv3FBHWLDpmi6fRvKwW0=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Richard Weinberger <richard@nod.at>, Stefan Schaeckeler <schaecsn@gmx.net>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v2] ubifs: use default_groups in kobj_type
-Date: Fri, 14 Jan 2022 11:48:20 +0100
-Message-Id: <20220114104820.1340879-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.34.1
+ id 1n8Kqj-008wh3-Fe; Fri, 14 Jan 2022 11:34:31 +0000
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru F263B20CE313
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH] driver core: platform: Rename platform_get_irq_optional()
+ to platform_get_irq_silent()
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+To: Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
+ <u.kleine-koenig@pengutronix.de>
+CC: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, <linux-iio@vger.kernel.org>, "Linus
+ Walleij" <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>, "ALSA
+ Development Mailing List" <alsa-devel@alsa-project.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Guenter Roeck <groeck@chromium.org>, Thierry Reding
+ <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-phy@lists.infradead.org>, Jiri Slaby
+ <jirislaby@kernel.org>, <openipmi-developer@lists.sourceforge.net>, "David S.
+ Miller" <davem@davemloft.net>, Khuong Dinh <khuong@os.amperecomputing.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Matthias Schiffer
+ <matthias.schiffer@ew.tq-group.com>, Joakim Zhang <qiangqing.zhang@nxp.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Lee Jones <lee.jones@linaro.org>, "Bartosz
+ Golaszewski" <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, "open list:SERIAL DRIVERS"
+ <linux-serial@vger.kernel.org>, Yoshihiro Shimoda
+ <yoshihiro.shimoda.uh@renesas.com>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Zhang Rui <rui.zhang@intel.com>,
+ Linux PWM List <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>, 
+ Saravanan Sekar <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>,
+ Linux PM list <linux-pm@vger.kernel.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, John Garry
+ <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>, "William
+ Breathitt Gray" <vilhelm.gray@gmail.com>, Mark Gross <markgross@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Alex Williamson
+ <alex.williamson@redhat.com>, Tony Luck <tony.luck@intel.com>, "Borislav
+ Petkov" <bp@alien8.de>, Sebastian Reichel <sre@kernel.org>, Jakub Kicinski
+ <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai
+ <tiwai@suse.com>, <platform-driver-x86@vger.kernel.org>, Benson Leung
+ <bleung@chromium.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ <linux-edac@vger.kernel.org>, Mun Yew Tham <mun.yew.tham@intel.com>, "Eric
+ Auger" <eric.auger@redhat.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "open list:GPIO SUBSYSTEM"
+ <linux-gpio@vger.kernel.org>, Cornelia Huck <cohuck@redhat.com>, "Linux MMC
+ List" <linux-mmc@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Vinod Koul
+ <vkoul@kernel.org>, James Morse <james.morse@arm.com>, Zha Qipeng
+ <qipeng.zha@intel.com>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Richard Weinberger <richard@nod.at>, =?UTF-8?Q?Niklas_S=c3=b6derlund?=
+ <niklas.soderlund@ragnatech.se>, <linux-mediatek@lists.infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, <netdev@vger.kernel.org>
+References: <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
+ <YdyilpjC6rtz6toJ@lunn.ch>
+ <CAMuHMdWK3RKVXRzMASN4HaYfLckdS7rBvSopafq+iPADtGEUzA@mail.gmail.com>
+ <20220112085009.dbasceh3obfok5dc@pengutronix.de>
+ <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
+ <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
+ <YeA7CjOyJFkpuhz/@sirena.org.uk>
+ <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+ <YeCI47ltlWzjzjYy@sirena.org.uk>
+ <1df04d74-8aa2-11f1-54e9-34d0e8f4e58b@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <fba81d0d-c7e3-394d-5929-1706ac9ef5b7@omp.ru>
+Date: Fri, 14 Jan 2022 14:34:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1434; h=from:subject;
- bh=Juz0pY8LSJErwzrSSYzBtkgWGFYcSVutMWjyQ8i708I=;
- b=owGbwMvMwCRo6H6F97bub03G02pJDIkPQ95OvBMkcfb+JIEU/f81j06m3VRK1gmY4q9ltvW2/PrV
- lT9edsSyMAgyMciKKbJ82cZzdH/FIUUvQ9vTMHNYmUCGMHBxCsBEZhszzE+PPNTxKyR3wZpH+c8S+d
- ad2v3O/QzDglX14estS7KyHWKzzLvTlJ937W1pAgA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
- fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+In-Reply-To: <1df04d74-8aa2-11f1-54e9-34d0e8f4e58b@omp.ru>
+Content-Language: en-US
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220114_024827_890414_2F3E3C25 
-X-CRM114-Status: GOOD (  14.28  )
+X-CRM114-CacheID: sfid-20220114_033429_918155_462936F7 
+X-CRM114-Status: GOOD (  15.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,48 +122,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There are currently 2 ways to create a set of sysfs files for a
-kobj_type, through the default_attrs field, and the default_groups
-field.  Move the ubifs sysfs code to use default_groups field which has
-been the preferred way since aa30f47cf666 ("kobject: Add support for
-default attribute groups to kobj_type") so that we can soon get rid of
-the obsolete default_attrs field.
+On 1/13/22 11:57 PM, Sergey Shtylyov wrote:
 
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Stefan Schaeckeler <schaecsn@gmx.net>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: fix up the changelog text to properly refer to the ubifs code
-    instead of some other subsystem as pointed out by Michael Walle
+>>> The subsystems regulator, clk and gpio have the concept of a dummy
+>>> resource. For regulator, clk and gpio there is a semantic difference
+>>> between the regular _get() function and the _get_optional() variant.
+>>> (One might return the dummy resource, the other won't. Unfortunately
+>>> which one implements which isn't the same for these three.) The
+>>> difference between platform_get_irq() and platform_get_irq_optional() is
+>>> only that the former might emit an error message and the later won't.
+> 
+>    This is only a current difference but I'm still going to return 0 ISO
+> -ENXIO from latform_get_irq_optional(), no way I'd leave that -ENXIO there
 
- fs/ubifs/sysfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+   platform.
 
-diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
-index 7acc5a74e5fa..06ad8fa1fcfb 100644
---- a/fs/ubifs/sysfs.c
-+++ b/fs/ubifs/sysfs.c
-@@ -42,6 +42,7 @@ static struct attribute *ubifs_attrs[] = {
- 	ATTR_LIST(errors_crc),
- 	NULL,
- };
-+ATTRIBUTE_GROUPS(ubifs);
- 
- static ssize_t ubifs_attr_show(struct kobject *kobj,
- 			       struct attribute *attr, char *buf)
-@@ -74,7 +75,7 @@ static const struct sysfs_ops ubifs_attr_ops = {
- };
- 
- static struct kobj_type ubifs_sb_ktype = {
--	.default_attrs	= ubifs_attrs,
-+	.default_groups	= ubifs_groups,
- 	.sysfs_ops	= &ubifs_attr_ops,
- 	.release	= ubifs_sb_release,
- };
--- 
-2.34.1
+> alone... :-)
+> 
+>> Reviewed-by: Mark Brown <broonie@kernel.org>
+> 
+>    Hm... I'm seeing a tag bit not seeing the patch itself...
 
+   Grr, my mail server tossed it into the spam folder... :-(
+
+MBR, Sergey
 
 ______________________________________________________
 Linux MTD discussion mailing list
