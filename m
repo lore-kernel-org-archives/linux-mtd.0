@@ -4,116 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57582C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 13:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553D9C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 17:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rYE8D738SxwL5nLeIQDIFQ4NrAi/UkKpeXpyhrdrTmU=; b=CfnWxy30bNVh8R
-	/PLGS03KEw60VHVlFAi2t5katIu4WjhO1o1IbWV0HeLQz6qEPBDDi1iRVLemSqcpns8P8P9WS8YCn
-	M/GI4LV7qkT8E671Ko/Txqb7db2bqM288SuOsKx5CEDxVThUINRjBTB2sg4KlRNsjIvNDN8t6lIWf
-	zZ/odlVc1lpurVNTfcH0WNIRycCDVUpnhk3XWpTzURg64s6bgffSt2mVIthpq+EHh9skZ9QE5lWK5
-	AFuhqWUrm4+0Oo2zvz9rT/gEJfE6m0ckSPX2IK8jQL+veaBpTZvTEv/uAdf0VwSk3GWNT4RVoJzCi
-	e4SwqPX9U9mG7H4Gl2zQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=3PvecEEuGRUjffV6K/cnSwx+XIHLy5AxQGy5JEdCmFs=; b=r2FbvfXq0+uZaIjOYkbgZ1SUO8
+	kQYVMT60l/PhDwiRhREeqURqeilYA4wbGMjf2UWg/v6MTH8iWOKrp/xZIZ2ccBTLA00R9Qa4aAM9p
+	eOzln9zvDxFJ6qT42REppSoSXuDmhBWylpAnr+iY211YjZdCYK7hDaykbfCA7ypZhOpE7bPKcZsDI
+	SlanRsgudG5pxODyo24UsnONJehvDexxs9NV45E8QLIrWi03llfJe9JCeqP02TzMCUtM8Y2zL5tw9
+	o05bwQtHn8Z5JVGp4CbIYPDNqPQ6iQKWIIjUDcQ23sYivToG8TrJQ1EaoY1F/Ff6uqjvFw6SCKM+3
+	lqka2sUA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n8MHZ-0099Fb-Rc; Fri, 14 Jan 2022 13:06:17 +0000
-Received: from mga01.intel.com ([192.55.52.88])
+	id 1n8QnO-009yjX-3B; Fri, 14 Jan 2022 17:55:26 +0000
+Received: from mxout01.lancloud.ru ([45.84.86.81])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n8MHV-0099EE-6K; Fri, 14 Jan 2022 13:06:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642165573; x=1673701573;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:content-transfer-encoding:in-reply-to;
- bh=Eo7EfpdrH3wA8s8pzPgaa2QUgdkyHS+qVWfq0/cogWQ=;
- b=Q9/uY0gHtPSqmvIAilz0jJ9u/BOnyzhF4HoYODS5emwtH8HmPfA12pRN
- 0P8NGAZxFqYrVHl1VSJogwS2lp3A1HFdOQfIHPbvWrsbBUfxe82wpLHf0
- heHmH4UZciS0pMPGTFgpsZU+udRLymZ4E0kR8VTpLdjjT79kfDsg/NYW5
- 6r8PKA6etILniWgNazn6kOBSG87d/SVsjqa7fDd37WkLSMrRT7I2vFX0R
- jre5CE65Et0MJRfTYnaKWlU306P+vvS8MxtN2n7zgdxe9/yvqD7CkBA6r
- A7hSPNZlUi/L81EOpkwSl1y/W6j3VDy5QA+kIxmygvuNXVrchRV5bFOG2 w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10226"; a="268604020"
-X-IronPort-AV: E=Sophos;i="5.88,288,1635231600"; d="scan'208";a="268604020"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jan 2022 05:06:10 -0800
-X-IronPort-AV: E=Sophos;i="5.88,288,1635231600"; d="scan'208";a="530231083"
-Received: from smile.fi.intel.com ([10.237.72.61])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jan 2022 05:05:53 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1n8MFy-00AcJJ-9G; Fri, 14 Jan 2022 15:04:38 +0200
-Date: Fri, 14 Jan 2022 15:04:38 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Mark Brown <broonie@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Ulf Hansson <ulf.hansson@linaro.org>,
+ id 1n8QnI-009ycq-6h; Fri, 14 Jan 2022 17:55:22 +0000
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout01.lancloud.ru 07985205D68B
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH] driver core: platform: Rename platform_get_irq_optional()
+ to platform_get_irq_silent()
+To: Florian Fainelli <f.fainelli@gmail.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
+ <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>
+CC: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Jaroslav Kysela <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux I2C <linux-i2c@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-phy@lists.infradead.org, Jiri Slaby <jirislaby@kernel.org>,
- openipmi-developer@lists.sourceforge.net,
- "David S. Miller" <davem@davemloft.net>,
- Khuong Dinh <khuong@os.amperecomputing.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Joakim Zhang <qiangqing.zhang@nxp.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Kishon Vijay Abraham I <kishon@ti.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Zhang Rui <rui.zhang@intel.com>,
- Linux PWM List <linux-pwm@vger.kernel.org>,
- Robert Richter <rric@kernel.org>, Saravanan Sekar <sravanhome@gmail.com>,
- Corey Minyard <minyard@acm.org>, Linux PM list <linux-pm@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- John Garry <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>,
- William Breathitt Gray <vilhelm.gray@gmail.com>,
- Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
- Sebastian Reichel <sre@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org,
- Benson Leung <bleung@chromium.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-edac@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
- Mun Yew Tham <mun.yew.tham@intel.com>, Eric Auger <eric.auger@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Linux MMC List <linux-mmc@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Vinod Koul <vkoul@kernel.org>, James Morse <james.morse@arm.com>,
- Zha Qipeng <qipeng.zha@intel.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Richard Weinberger <richard@nod.at>,
- Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
- linux-mediatek@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH] driver core: platform: Rename
- platform_get_irq_optional() to platform_get_irq_silent()
-Message-ID: <YeF05vBOzkN+xYCq@smile.fi.intel.com>
-References: <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
- <YdyilpjC6rtz6toJ@lunn.ch>
+ "Rafael J. Wysocki" <rafael@kernel.org>, <linux-iio@vger.kernel.org>, "Linus
+ Walleij" <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>, "ALSA
+ Development Mailing List" <alsa-devel@alsa-project.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Guenter Roeck <groeck@chromium.org>, Thierry Reding
+ <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-phy@lists.infradead.org>, Jiri Slaby
+ <jirislaby@kernel.org>, <openipmi-developer@lists.sourceforge.net>, "David S.
+ Miller" <davem@davemloft.net>, Khuong Dinh <khuong@os.amperecomputing.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>, Joakim Zhang
+ <qiangqing.zhang@nxp.com>, Kamal Dasu <kdasu.kdev@gmail.com>, Lee Jones
+ <lee.jones@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Kishon Vijay Abraham I <kishon@ti.com>, "Geert
+ Uytterhoeven" <geert@linux-m68k.org>, "open list:SERIAL DRIVERS"
+ <linux-serial@vger.kernel.org>, Yoshihiro Shimoda
+ <yoshihiro.shimoda.uh@renesas.com>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Zhang Rui <rui.zhang@intel.com>,
+ Linux PWM List <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>, 
+ Saravanan Sekar <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>,
+ Linux PM list <linux-pm@vger.kernel.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, John Garry
+ <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>, "William
+ Breathitt Gray" <vilhelm.gray@gmail.com>, Mark Gross <markgross@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Alex Williamson
+ <alex.williamson@redhat.com>, Tony Luck <tony.luck@intel.com>, "Borislav
+ Petkov" <bp@alien8.de>, Sebastian Reichel <sre@kernel.org>, Jakub Kicinski
+ <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai
+ <tiwai@suse.com>, <platform-driver-x86@vger.kernel.org>, Benson Leung
+ <bleung@chromium.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ <linux-edac@vger.kernel.org>, Mun Yew Tham <mun.yew.tham@intel.com>, "Eric
+ Auger" <eric.auger@redhat.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "open list:GPIO SUBSYSTEM"
+ <linux-gpio@vger.kernel.org>, Cornelia Huck <cohuck@redhat.com>, "Linux MMC
+ List" <linux-mmc@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, linux-spi <linux-spi@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Vinod Koul
+ <vkoul@kernel.org>, James Morse <james.morse@arm.com>, Zha Qipeng
+ <qipeng.zha@intel.com>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Richard Weinberger <richard@nod.at>, =?UTF-8?Q?Niklas_S=c3=b6derlund?=
+ <niklas.soderlund@ragnatech.se>, <linux-mediatek@lists.infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, <netdev@vger.kernel.org>
+References: <20220110195449.12448-2-s.shtylyov@omp.ru>
+ <20220110201014.mtajyrfcfznfhyqm@pengutronix.de> <YdyilpjC6rtz6toJ@lunn.ch>
  <CAMuHMdWK3RKVXRzMASN4HaYfLckdS7rBvSopafq+iPADtGEUzA@mail.gmail.com>
  <20220112085009.dbasceh3obfok5dc@pengutronix.de>
  <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
@@ -122,13 +88,22 @@ References: <20220110201014.mtajyrfcfznfhyqm@pengutronix.de>
  <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
  <YeA7CjOyJFkpuhz/@sirena.org.uk>
  <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+ <745c601f-c782-0904-f786-c9bfced8f11c@gmail.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <cae0b73e-46df-a491-4a8e-415205038c2c@omp.ru>
+Date: Fri, 14 Jan 2022 20:55:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220113194358.xnnbhsoyetihterb@pengutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <745c601f-c782-0904-f786-c9bfced8f11c@gmail.com>
+Content-Language: en-US
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220114_050613_299649_979D8764 
-X-CRM114-Status: GOOD (  37.74  )
+X-CRM114-CacheID: sfid-20220114_095520_627251_B6CC7456 
+X-CRM114-Status: GOOD (  28.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,88 +115,66 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 13, 2022 at 08:43:58PM +0100, Uwe Kleine-K=F6nig wrote:
-> The subsystems regulator, clk and gpio have the concept of a dummy
-> resource. For regulator, clk and gpio there is a semantic difference
-> between the regular _get() function and the _get_optional() variant.
-> (One might return the dummy resource, the other won't. Unfortunately
-> which one implements which isn't the same for these three.) The
-> difference between platform_get_irq() and platform_get_irq_optional() is
-> only that the former might emit an error message and the later won't.
-> =
-
-> To prevent people's expectations that there is a semantic difference
-> between these too, rename platform_get_irq_optional() to
-> platform_get_irq_silent() to make the actual difference more obvious.
-> =
-
-> The #define for the old name can and should be removed once all patches
-> currently in flux still relying on platform_get_irq_optional() are
-> fixed.
-> =
-
-> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
-> =
-
-> On Thu, Jan 13, 2022 at 02:45:30PM +0000, Mark Brown wrote:
-> > On Thu, Jan 13, 2022 at 12:08:31PM +0100, Uwe Kleine-K=F6nig wrote:
-> > =
-
-> > > This is all very unfortunate. In my eyes b) is the most sensible
-> > > sense, but the past showed that we don't agree here. (The most annoyi=
-ng
-> > > part of regulator_get is the warning that is emitted that regularily
-> > > makes customers ask what happens here and if this is fixable.)
-> > =
-
-> > Fortunately it can be fixed, and it's safer to clearly specify things.
-> > The prints are there because when the description is wrong enough to
-> > cause things to blow up we can fail to boot or run messily and
-> > forgetting to describe some supplies (or typoing so they haven't done
-> > that) and people were having a hard time figuring out what might've
-> > happened.
-> =
-
-> Yes, that's right. I sent a patch for such a warning in 2019 and pinged
-> occationally. Still waiting for it to be merged :-\
-> (https://lore.kernel.org/r/20190625100412.11815-1-u.kleine-koenig@pengutr=
-onix.de)
-> =
-
-> > > I think at least c) is easy to resolve because
-> > > platform_get_irq_optional() isn't that old yet and mechanically
-> > > replacing it by platform_get_irq_silent() should be easy and safe.
-> > > And this is orthogonal to the discussion if -ENOXIO is a sensible ret=
-urn
-> > > value and if it's as easy as it could be to work with errors on irq
-> > > lookups.
-> > =
-
-> > It'd certainly be good to name anything that doesn't correspond to one
-> > of the existing semantics for the API (!) something different rather
-> > than adding yet another potentially overloaded meaning.
-> =
-
-> It seems we're (at least) three who agree about this. Here is a patch
-> fixing the name.
-
-
-And similar number of people are on the other side.
-
--- =
-
-With Best Regards,
-Andy Shevchenko
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMS8xNC8yMiAxMjo0MiBBTSwgRmxvcmlhbiBGYWluZWxsaSB3cm90ZToKCj4+IFRoZSBzdWJz
+eXN0ZW1zIHJlZ3VsYXRvciwgY2xrIGFuZCBncGlvIGhhdmUgdGhlIGNvbmNlcHQgb2YgYSBkdW1t
+eQo+PiByZXNvdXJjZS4gRm9yIHJlZ3VsYXRvciwgY2xrIGFuZCBncGlvIHRoZXJlIGlzIGEgc2Vt
+YW50aWMgZGlmZmVyZW5jZQo+PiBiZXR3ZWVuIHRoZSByZWd1bGFyIF9nZXQoKSBmdW5jdGlvbiBh
+bmQgdGhlIF9nZXRfb3B0aW9uYWwoKSB2YXJpYW50Lgo+PiAoT25lIG1pZ2h0IHJldHVybiB0aGUg
+ZHVtbXkgcmVzb3VyY2UsIHRoZSBvdGhlciB3b24ndC4gVW5mb3J0dW5hdGVseQo+PiB3aGljaCBv
+bmUgaW1wbGVtZW50cyB3aGljaCBpc24ndCB0aGUgc2FtZSBmb3IgdGhlc2UgdGhyZWUuKSBUaGUK
+Pj4gZGlmZmVyZW5jZSBiZXR3ZWVuIHBsYXRmb3JtX2dldF9pcnEoKSBhbmQgcGxhdGZvcm1fZ2V0
+X2lycV9vcHRpb25hbCgpIGlzCj4+IG9ubHkgdGhhdCB0aGUgZm9ybWVyIG1pZ2h0IGVtaXQgYW4g
+ZXJyb3IgbWVzc2FnZSBhbmQgdGhlIGxhdGVyIHdvbid0Lgo+Pgo+PiBUbyBwcmV2ZW50IHBlb3Bs
+ZSdzIGV4cGVjdGF0aW9ucyB0aGF0IHRoZXJlIGlzIGEgc2VtYW50aWMgZGlmZmVyZW5jZQo+PiBi
+ZXR3ZWVuIHRoZXNlIHRvbywgcmVuYW1lIHBsYXRmb3JtX2dldF9pcnFfb3B0aW9uYWwoKSB0bwo+
+PiBwbGF0Zm9ybV9nZXRfaXJxX3NpbGVudCgpIHRvIG1ha2UgdGhlIGFjdHVhbCBkaWZmZXJlbmNl
+IG1vcmUgb2J2aW91cy4KPj4KPj4gVGhlICNkZWZpbmUgZm9yIHRoZSBvbGQgbmFtZSBjYW4gYW5k
+IHNob3VsZCBiZSByZW1vdmVkIG9uY2UgYWxsIHBhdGNoZXMKPj4gY3VycmVudGx5IGluIGZsdXgg
+c3RpbGwgcmVseWluZyBvbiBwbGF0Zm9ybV9nZXRfaXJxX29wdGlvbmFsKCkgYXJlCj4+IGZpeGVk
+Lgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmln
+QHBlbmd1dHJvbml4LmRlPgpbLi4uXQo+Pj4+IEkgdGhpbmsgYXQgbGVhc3QgYykgaXMgZWFzeSB0
+byByZXNvbHZlIGJlY2F1c2UKPj4+PiBwbGF0Zm9ybV9nZXRfaXJxX29wdGlvbmFsKCkgaXNuJ3Qg
+dGhhdCBvbGQgeWV0IGFuZCBtZWNoYW5pY2FsbHkKPj4+PiByZXBsYWNpbmcgaXQgYnkgcGxhdGZv
+cm1fZ2V0X2lycV9zaWxlbnQoKSBzaG91bGQgYmUgZWFzeSBhbmQgc2FmZS4KPj4+PiBBbmQgdGhp
+cyBpcyBvcnRob2dvbmFsIHRvIHRoZSBkaXNjdXNzaW9uIGlmIC1FTk9YSU8gaXMgYSBzZW5zaWJs
+ZSByZXR1cm4KPj4+PiB2YWx1ZSBhbmQgaWYgaXQncyBhcyBlYXN5IGFzIGl0IGNvdWxkIGJlIHRv
+IHdvcmsgd2l0aCBlcnJvcnMgb24gaXJxCj4+Pj4gbG9va3Vwcy4KPj4+Cj4+PiBJdCdkIGNlcnRh
+aW5seSBiZSBnb29kIHRvIG5hbWUgYW55dGhpbmcgdGhhdCBkb2Vzbid0IGNvcnJlc3BvbmQgdG8g
+b25lCj4+PiBvZiB0aGUgZXhpc3Rpbmcgc2VtYW50aWNzIGZvciB0aGUgQVBJICghKSBzb21ldGhp
+bmcgZGlmZmVyZW50IHJhdGhlcgo+Pj4gdGhhbiBhZGRpbmcgeWV0IGFub3RoZXIgcG90ZW50aWFs
+bHkgb3ZlcmxvYWRlZCBtZWFuaW5nLgo+Pgo+PiBJdCBzZWVtcyB3ZSdyZSAoYXQgbGVhc3QpIHRo
+cmVlIHdobyBhZ3JlZSBhYm91dCB0aGlzLiBIZXJlIGlzIGEgcGF0Y2gKPj4gZml4aW5nIHRoZSBu
+YW1lLgo+IAo+IEZyb20gYW4gQVBJIG5hbWluZyBwZXJzcGVjdGl2ZSB0aGlzIGRvZXMgbm90IG1h
+a2UgbXVjaCBzZW5zZSBhbnltb3JlIHdpdGggdGhlIG5hbWUgY2hvc2VuLAo+IGl0IGlzIHVuZGVy
+c3Rvb2QgdGhhdCB3aGVudCBoZSBmdW5jdGlvbiBpcyBjYWxsZWQgcGxhdGZvcm1fZ2V0X2lycV9v
+cHRpb25hbCgpLCBvcHRpb25hbCBhcHBsaWVzCj4gdG8gdGhlIElSUS4gQW4gb3B0aW9uYWwgSVJR
+IGlzIHNvbWV0aGluZyBwZW9wbGUgY2FuIHJlYXNvbiBhYm91dCBiZWNhdXNlIGl0IG1ha2VzIHNl
+bnNlLgoKICAgUmlnaHQhIDotKQoKPiBXaGF0IGlzIGEgYSAic2lsZW50IiBJUlEgaG93ZXZlcj8g
+SXQgZG9lcyBub3QgYXBwbHkgdG8gdGhlIG9iamVjdCBpdCBpcyB0cnlpbmcgdG8gZmV0Y2ggdG8K
+PiBhbnltb3JlLCBidXQgdG8gdGhlIG1lc3NhZ2UgdGhhdCBtYXkgbm90IGJlIHByaW50ZWQgaW4g
+Y2FzZSB0aGUgcmVzb3VyY2UgZmFpbGVkIHRvIGJlIG9idGFpbmVkLAo+IGJlY2F1c2Ugc2FpZCBy
+ZXNvdXJjZSBpcyBvcHRpb25hbC4gV29haCwgdGhhdCdzIHF1aXRlIGEgc3RyZXRjaC4KCiAgIFJp
+Z2h0IGFnYWluISA6LSkKCj4gRm9sbG93aW5nIHRoZSBkaXNjdXNzaW9uIGFuZCBvcmlnaW5hbCAy
+IHBhdGNoZXMgc2V0IGZyb20gU2VyZ2V5LCBpdCBpcyBub3QgZW50aXJlbHkgY2xlYXIgdG8gbWUK
+PiBhbnltb3JlIHdoYXQgaXMgaXQgdGhhdCB3ZSBhcmUgdHJ5aW5nIHRvIGZpeC4KCiAgIEFuZHkg
+YW5kIG1lIHRyaWVkIHRvIGZpeCB0aGUgcGxhdGZvcm1fZ2V0X2lycVtfYnluYW1lXV9vcHRpb25h
+bCgpIHZhbHVlLCBjb3JyZXNwb25kaW5nIHRvCmEgbWlzc2luZyAob3B0aW9uYWwpIElSUSByZXNv
+dXJjZSBmcm9tIC1FTlhJTyB0byAwLCBpbiBvcmRlciB0byBrZWVwIHRoZSBjYWxsZXJzIGVycm9y
+IGNvZGUKYWdub3N0aWMuIFRoaXMgY2hhbmdlIGNvbXBsZXRlbHkgYWxpZ25zIGUuZy4gcGxhdGZv
+cm1fZ2V0X2lycV9vcHRpb25hbCgpIHdpdGggY2xrX2dldF9vcHRpb25hbCgpCmFuZCBncGlvZF9n
+ZXRfb3B0aW9uYWwoKS4uLgogICBVbmZvcnVuYXRlbHksIHdlIGNhbid0ICJmaXgiIHJlcXVlc3Rf
+aXJxKCkgYW5kIGNvbXBhbnkgdG8gdHJlYXQgMCBhcyBtaXNzaW5nIElSUSAtLSB0aGV5IGhhdmUK
+dG8ga2VlcCB0aGUgYWJpbGl0eSB0byBnZXQgY2FsbGVkIGZyb20gdGhlIGFyY2gvIGNvZGUgKHRo
+YXQgZG9lc24ndCB1c2UgcGxhdGZvcm1fZ2V0X2lycSgpLCBldGMuCgo+IEkgbmVhcmx5IGZvcmdv
+dCwgSSB3b3VsZCBwYWludCBpdCBibHVlLCBza3kgYmx1ZSwgbm90IG5hdnkgYmx1ZSwgbm90IGxp
+Z2h0IGJsdWUgOykKCiAgIDotKQoKUFM6IEZsb3JpYW4sIHNvbWV0aGluZyB3YXMgd3Jvbmcgd2l0
+aCB5b3VyIG1haWwgY2xpZW50IC0tIEkgaGFkIHRvIG1hbnVhbGx5IHdyYXAgeW91ciBxdW90ZXMs
+CmVsc2UgdGhlcmUgd2VyZSBzdXBlciBsb25nIHVuYnJva2VuIHBhcmFncmFwaHMuLi4KCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
