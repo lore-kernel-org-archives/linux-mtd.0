@@ -4,51 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAFB7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 10:19:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDEB5C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 10:19:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mkkcFB489rWxpk7Gv5y4qvQe+217hExFz5X6EkmesWs=; b=SMEs/esw1/Gfee
-	YGXnMPFqYmMKZMBkTD6U2HZHB9/C/VXOJPuVnzRkF+MDH975wndwvptpicQYZ5DRT3kRpIfUu4PU9
-	137uR0Zzc1hkwtd3xij1b4+n2Ux9fW+5nogci5hWQjnSlYCoV+aRSXD46emghcO/TCZr9EimIpmQX
-	V8LVn0Zt7BhkQ1Cgs+oRsKsNBX2mlfTG/2emeq3ETtqEWDHwA6Zx5ebMGj0fA+kOh9P8AEv9aAJGW
-	rKDAnRCJoMa4+BQit9wN5K+dnyT4q7SY2GasfxvPIv/joauXLMiI1sU5B54ugl+W9wHZwyomvZi5M
-	Npmjt5mpSaDuqYw70Gvg==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nIglH2UhB/OkMoRFIk9UAC09drFRv/1mg+6uDMu+P/w=; b=TWAAfIOJCG6A1D
+	75eeeqmTAo64cTz75BVXuPRHeIAQptaiIxmVw1cIVeRPRXyaxaYgeTSgQjJ7Xmw2cBt2/pY2ScJKE
+	dVhLngNABJIuvtruhUu63Da5Y9uHbiHJ3aK9FAEDpRKujQjI+Y/LaZtH1t14VGf5LcTCGp7o108/P
+	O1NbRIWOPM0qtNRE1zKdNnXcNZylmrgmTct+czWHerZMN2R60bhpWjwyV/l0K2Zg0H2wEyzZjpwZ6
+	JjV/g7P251U2nlylJ+xUBEVtHq1NSPXesQgt+364HV+UWTveZBLCgpf8ZM2i3+4BfZPBj5TWeC37I
+	RCJY2nGSR7+u8ivBym8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n8JfA-008feL-C6; Fri, 14 Jan 2022 10:18:28 +0000
-Received: from szxga03-in.huawei.com ([45.249.212.189])
+	id 1n8Jfp-008fyy-PN; Fri, 14 Jan 2022 10:19:09 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n8Jeg-008fR7-0p
- for linux-mtd@lists.infradead.org; Fri, 14 Jan 2022 10:18:00 +0000
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.57])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4JZxxj5YSZz8wP0;
- Fri, 14 Jan 2022 18:15:05 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 14 Jan
- 2022 18:17:50 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <richard@nod.at>, <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, 
- <linux-kernel@vger.kernel.org>
-CC: <libaokun1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH -next v3 0/2] jffs2: fix two memory leak when mount jffs2
-Date: Fri, 14 Jan 2022 18:28:52 +0800
-Message-ID: <20220114102854.3399585-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+ id 1n8Jfm-008fxF-5L
+ for linux-mtd@lists.infradead.org; Fri, 14 Jan 2022 10:19:07 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B132F61EBA;
+ Fri, 14 Jan 2022 10:19:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A8B3C36AE5;
+ Fri, 14 Jan 2022 10:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1642155545;
+ bh=ywTra5QTmRO6NirMTkZ9bdysfIiAFf7WRL5XaV6RSPQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=UKcm4rp0JCZ8uWVJIXYz/wHc5QdMaLxMaPm4iNSciRXxtTwGLY+giTlWAFmGY7Ta1
+ BCaXoK5eYaCB00GCJYuk+qgsS2EOQaY2PFXsYJDr8w3m8i0i+enhYt6YLedXrRAGsf
+ opnZN3h868dNKBzRiTJFLkIzxYVtNKeMDbJSG0EQ=
+Date: Fri, 14 Jan 2022 11:19:00 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michael Walle <michael@walle.cc>
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Stefan Schaeckeler <schaecsn@gmx.net>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] ubifs: use default_groups in kobj_type
+Message-ID: <YeFOFJ7W+bCq+A6o@kroah.com>
+References: <20220113180857.2158974-1-gregkh@linuxfoundation.org>
+ <bafc94269e6fa7632bc6ea458320b238@walle.cc>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Disposition: inline
+In-Reply-To: <bafc94269e6fa7632bc6ea458320b238@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220114_021758_249958_5A10EE14 
-X-CRM114-Status: UNSURE (   6.38  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220114_021906_288312_632881D6 
+X-CRM114-Status: GOOD (  11.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,30 +70,19 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-V1->V2:
-	In jffs2_scan_medium,
-	if s = kzalloc(sizeof(struct jffs2_summary), GFP_KERNEL);
-	returns error, go to "out" to do clear. Null pointer dereference
-	occurs when if (s->sum_list_head) is executed in "out".
+On Fri, Jan 14, 2022 at 11:08:03AM +0100, Michael Walle wrote:
+> Hi,
+> 
+> Am 2022-01-13 19:08, schrieb Greg Kroah-Hartman:
+> > There are currently 2 ways to create a set of sysfs files for a
+> > kobj_type, through the default_attrs field, and the default_groups
+> > field.  Move the AMD mce sysfs code to use default_groups field which
+> 
+> copy & paste mistake?
 
-V2->V3:
-	Sorry for the noise, but there seems to be a more elegant way to
-	fix the memory leak in jffs2_scan_medium. When memory allocation
-	fails or CONFIG_JFFS2_SUMMARY is N, s is NULL.For the former case,
-	add the new tag "out_buf" to avoid it.In the latter case,
-	jffs2_sum_reset_collected is also an empty function and does nothing.
+Ugh, yes, sorry, will go fix this up, thanks...
 
-Baokun Li (2):
-  jffs2: fix memory leak in jffs2_do_mount_fs
-  jffs2: fix memory leak in jffs2_scan_medium
-
- fs/jffs2/build.c | 4 +++-
- fs/jffs2/scan.c  | 6 ++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
--- 
-2.31.1
-
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
