@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28467C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72734C433EF
 	for <linux-mtd@archiver.kernel.org>; Fri, 14 Jan 2022 10:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,33 +12,33 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6f1GiXdbNyQO4zrYVyxlwPBuxnFb5BUBryFuzohZKGk=; b=dqiYgah7syDaeD
-	wviWRrjOVtDob9nxlTC5bRzU/UzMzzqIlReUgz5zU2cTazL9GWhfOLa6YYjkgQUTc+Ep/z6dLC85C
-	N/bWP0uBmQ3ehSngkgynoSxlyauvxZfVHsPe04EQ2s1BdBjKDevyYysoZs92l2W3AYCz5q02GTA6o
-	LjdHLpMMwSTFjaZgBfSkNXkqG7cGsiL790FZg7uS9Skc2jsMevdK+j5GdbdM7DVNTxOE7f7HQePEx
-	zMchC46DOwdOQDlG9IEqw4r1/snIfStUbhKLrRDxylVnpCx5vkrgyyGN18iXNF1yhyty+FMsO3SDN
-	L7lbQwQqvAxcTS8K372w==;
+	List-Owner; bh=NdoRysec8g0fmokOGCLE3118FMy5lWxJVQeyS7IlrDw=; b=WCwY7MmvJAIyrZ
+	Km4kF2zvyq0wterCJmG254Ocikqo+kZx10yGyHX3G+2/H96tNUdjvzXUjwQ7fYYkmDaWPQ9SXWzVS
+	UsXaYt7noL4kYxeorUsEBXVnPPAPgvnO0TrLadFmbpyqOVi5+U+M2HB5Ptqw/PBf5tx1JjgWssWCO
+	rA5UpMlEXxKGgj+Fbtlq/NEDMtD0vg6iqEpxx03kPgfpfW6OgnOxzTfyzB7Q3r5slKmt54TsiNy7i
+	Vo7SaDuPr5mP5ege0LA2Xb4yZmbiecsmtqUgdkFlzqQzxi9zeSdKx961ZM15TGLSvxqM3rlTctqSu
+	D4aTpHKMEwLU1hKVDjcg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n8Jev-008fYi-3r; Fri, 14 Jan 2022 10:18:13 +0000
+	id 1n8Jei-008fVO-P0; Fri, 14 Jan 2022 10:18:00 +0000
 Received: from szxga02-in.huawei.com ([45.249.212.188])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n8Jee-008fRh-VD
+ id 1n8Jee-008fR6-Rl
  for linux-mtd@lists.infradead.org; Fri, 14 Jan 2022 10:17:58 +0000
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JZxzb1tNWz9sFc;
- Fri, 14 Jan 2022 18:16:43 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JZy0649Wvzbk0t;
+ Fri, 14 Jan 2022 18:17:10 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
  (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 14 Jan
- 2022 18:17:52 +0800
+ 2022 18:17:51 +0800
 From: Baokun Li <libaokun1@huawei.com>
 To: <richard@nod.at>, <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, 
  <linux-kernel@vger.kernel.org>
 CC: <libaokun1@huawei.com>, <yukuai3@huawei.com>, <stable@vger.kernel.org>
-Subject: [PATCH -next v3 2/2] jffs2: fix memory leak in jffs2_scan_medium
-Date: Fri, 14 Jan 2022 18:28:54 +0800
-Message-ID: <20220114102854.3399585-3-libaokun1@huawei.com>
+Subject: [PATCH -next v3 1/2] jffs2: fix memory leak in jffs2_do_mount_fs
+Date: Fri, 14 Jan 2022 18:28:53 +0800
+Message-ID: <20220114102854.3399585-2-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220114102854.3399585-1-libaokun1@huawei.com>
 References: <20220114102854.3399585-1-libaokun1@huawei.com>
@@ -48,8 +48,8 @@ X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220114_021757_390333_FCC12479 
-X-CRM114-Status: UNSURE (   9.73  )
+X-CRM114-CacheID: sfid-20220114_021757_076423_B81860A9 
+X-CRM114-Status: UNSURE (   7.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -67,106 +67,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If an error is returned in jffs2_scan_eraseblock() and some memory
-has been added to the jffs2_summary *s, we can observe the following
-kmemleak report:
+If jffs2_build_filesystem() in jffs2_do_mount_fs() returns an error,
+we can observe the following kmemleak report:
 
 --------------------------------------------
-unreferenced object 0xffff88812b889c40 (size 64):
-  comm "mount", pid 692, jiffies 4294838325 (age 34.288s)
+unreferenced object 0xffff88811b25a640 (size 64):
+  comm "mount", pid 691, jiffies 4294957728 (age 71.952s)
   hex dump (first 32 bytes):
-    40 48 b5 14 81 88 ff ff 01 e0 31 00 00 00 50 00  @H........1...P.
-    00 00 01 00 00 00 01 00 00 00 02 00 00 00 09 08  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
   backtrace:
-    [<ffffffffae93a3a3>] __kmalloc+0x613/0x910
-    [<ffffffffaf423b9c>] jffs2_sum_add_dirent_mem+0x5c/0xa0
-    [<ffffffffb0f3afa8>] jffs2_scan_medium.cold+0x36e5/0x4794
-    [<ffffffffb0f3dbe1>] jffs2_do_mount_fs.cold+0xa7/0x2267
-    [<ffffffffaf40acf3>] jffs2_do_fill_super+0x383/0xc30
-    [<ffffffffaf40c00a>] jffs2_fill_super+0x2ea/0x4c0
-    [<ffffffffb0315d64>] mtd_get_sb+0x254/0x400
-    [<ffffffffb0315f5f>] mtd_get_sb_by_nr+0x4f/0xd0
-    [<ffffffffb0316478>] get_tree_mtd+0x498/0x840
-    [<ffffffffaf40bd15>] jffs2_get_tree+0x25/0x30
-    [<ffffffffae9f358d>] vfs_get_tree+0x8d/0x2e0
-    [<ffffffffaea7a98f>] path_mount+0x50f/0x1e50
-    [<ffffffffaea7c3d7>] do_mount+0x107/0x130
-    [<ffffffffaea7c5c5>] __se_sys_mount+0x1c5/0x2f0
-    [<ffffffffaea7c917>] __x64_sys_mount+0xc7/0x160
-    [<ffffffffb10142f5>] do_syscall_64+0x45/0x70
-unreferenced object 0xffff888114b54840 (size 32):
-  comm "mount", pid 692, jiffies 4294838325 (age 34.288s)
-  hex dump (first 32 bytes):
-    c0 75 b5 14 81 88 ff ff 02 e0 02 00 00 00 02 00  .u..............
-    00 00 84 00 00 00 44 00 00 00 6b 6b 6b 6b 6b a5  ......D...kkkkk.
-  backtrace:
-    [<ffffffffae93be24>] kmem_cache_alloc_trace+0x584/0x880
-    [<ffffffffaf423b04>] jffs2_sum_add_inode_mem+0x54/0x90
-    [<ffffffffb0f3bd44>] jffs2_scan_medium.cold+0x4481/0x4794
+    [<ffffffffa493be24>] kmem_cache_alloc_trace+0x584/0x880
+    [<ffffffffa5423a06>] jffs2_sum_init+0x86/0x130
+    [<ffffffffa5400e58>] jffs2_do_mount_fs+0x798/0xac0
+    [<ffffffffa540acf3>] jffs2_do_fill_super+0x383/0xc30
+    [<ffffffffa540c00a>] jffs2_fill_super+0x2ea/0x4c0
     [...]
-unreferenced object 0xffff888114b57280 (size 32):
-  comm "mount", pid 692, jiffies 4294838393 (age 34.357s)
+unreferenced object 0xffff88812c760000 (size 65536):
+  comm "mount", pid 691, jiffies 4294957728 (age 71.952s)
   hex dump (first 32 bytes):
-    10 d5 6c 11 81 88 ff ff 08 e0 05 00 00 00 01 00  ..l.............
-    00 00 38 02 00 00 28 00 00 00 6b 6b 6b 6b 6b a5  ..8...(...kkkkk.
+    bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+    bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
   backtrace:
-    [<ffffffffae93be24>] kmem_cache_alloc_trace+0x584/0x880
-    [<ffffffffaf423c34>] jffs2_sum_add_xattr_mem+0x54/0x90
-    [<ffffffffb0f3a24f>] jffs2_scan_medium.cold+0x298c/0x4794
-    [...]
-unreferenced object 0xffff8881116cd510 (size 16):
-  comm "mount", pid 692, jiffies 4294838395 (age 34.355s)
-  hex dump (first 16 bytes):
-    00 00 00 00 00 00 00 00 09 e0 60 02 00 00 6b a5  ..........`...k.
-  backtrace:
-    [<ffffffffae93be24>] kmem_cache_alloc_trace+0x584/0x880
-    [<ffffffffaf423cc4>] jffs2_sum_add_xref_mem+0x54/0x90
-    [<ffffffffb0f3b2e3>] jffs2_scan_medium.cold+0x3a20/0x4794
+    [<ffffffffa493a449>] __kmalloc+0x6b9/0x910
+    [<ffffffffa5423a57>] jffs2_sum_init+0xd7/0x130
+    [<ffffffffa5400e58>] jffs2_do_mount_fs+0x798/0xac0
+    [<ffffffffa540acf3>] jffs2_do_fill_super+0x383/0xc30
+    [<ffffffffa540c00a>] jffs2_fill_super+0x2ea/0x4c0
     [...]
 --------------------------------------------
 
-Therefore, we should call jffs2_sum_reset_collected(s) on exit to
-release the memory added in s. In addition, a new tag "out_buf" is
-added to prevent the NULL pointer reference caused by s being NULL.
-(thanks to Zhang Yi for this analysis)
+This is because the resources allocated in jffs2_sum_init() are not
+released. Call jffs2_sum_exit() to release these resources to solve
+the problem.
 
 Fixes: e631ddba5887 ("[JFFS2] Add erase block summary support (mount time improvement)")
 Cc: stable@vger.kernel.org
-Co-developed-with: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/jffs2/scan.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/jffs2/build.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index b676056826be..29671e33a171 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -136,7 +136,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
- 		if (!s) {
- 			JFFS2_WARNING("Can't allocate memory for summary\n");
- 			ret = -ENOMEM;
--			goto out;
-+			goto out_buf;
- 		}
+diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
+index b288c8ae1236..837cd55fd4c5 100644
+--- a/fs/jffs2/build.c
++++ b/fs/jffs2/build.c
+@@ -415,13 +415,15 @@ int jffs2_do_mount_fs(struct jffs2_sb_info *c)
+ 		jffs2_free_ino_caches(c);
+ 		jffs2_free_raw_node_refs(c);
+ 		ret = -EIO;
+-		goto out_free;
++		goto out_sum_exit;
  	}
  
-@@ -275,13 +275,15 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
- 	}
- 	ret = 0;
-  out:
-+	jffs2_sum_reset_collected(s);
-+	kfree(s);
-+ out_buf:
- 	if (buf_size)
- 		kfree(flashbuf);
- #ifndef __ECOS
- 	else
- 		mtd_unpoint(c->mtd, 0, c->mtd->size);
- #endif
--	kfree(s);
- 	return ret;
- }
+ 	jffs2_calc_trigger_levels(c);
+ 
+ 	return 0;
+ 
++ out_sum_exit:
++	jffs2_sum_exit(c);
+  out_free:
+ 	kvfree(c->blocks);
  
 -- 
 2.31.1
