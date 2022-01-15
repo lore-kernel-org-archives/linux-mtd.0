@@ -4,75 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9877DC433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jan 2022 10:02:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47227C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 15 Jan 2022 13:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=tbsvt/P6gKhMzHNYaMZApChhToh9K52sLVVb/I/tlNQ=; b=mqXDDbDNqPqWbmM7A5tDZ2AyPX
-	Jhft3pgv5pxVQ449ARyGoml20rxLB+dBAkk5lWFrW+1lNXZMZ8T6eb4Z41oLqh6KDFBvfTBuL14ki
-	+C9oBr0fqXQhFjZ339zSMHMzaEW06oZQrYMLbffRkVGKojV64TmTxR9w4NYOPsaddLKJTfNnQDiIy
-	7KnoQC9CJTa7ksDn5Ev2EvFMzTkRvpMiFgYnKyWvQKM+vsUBXnB+z0Bk40PLE4TxdEj95MQ7yXEP2
-	kGlu+s2VRTjWdVqAPcLWUruONtn9ep6IyCkZvFXjJ7E8gJ/PieGemTBkvyiQN4s3Hvq1c/BZEY6hS
-	B/LuxcMQ==;
+	bh=t9zQ/2p18LtnYz4Qb6oZjQ11m7w0oFB9wtMBtDseVT8=; b=scpP1ycwmuYhgn0rNKzC7ceP9P
+	1KV+amxp7V/2BXTu9/Mt8ZaTlRaErJGnueFAujuouU6wuvrJ9OljZrOhOqIHvwtRMSa79ffpjJdVQ
+	2jDrw1lCiIwCkX5Hm0+1tvL6ca8heCfwQGPMf7pFGa6tYwyO73KJxXTD9HT8mu3zW4qpzKmT0SnTB
+	iGVXyF6r6KYUpwnh9KjQBr+ZR7fxXtY2cbkazaL6HAFgL9eQXwl1wKyv+vqY9yL/vz+k0bFz4KqrE
+	5Xkq9QYloH7LMY2UVCjWtRISmkGcsE08Pa+s6z9AnAbR0vbBHCohwTyaZOGXD13oQKTipMCG40l4f
+	PiWFhNdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n8fsr-00AsTK-J8; Sat, 15 Jan 2022 10:02:05 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1n8io1-00B4am-Pu; Sat, 15 Jan 2022 13:09:17 +0000
+Received: from mxout04.lancloud.ru ([45.84.86.114])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n8fsn-00AsSD-GB
- for linux-mtd@lists.infradead.org; Sat, 15 Jan 2022 10:02:03 +0000
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id B9B6D614E2CD;
- Sat, 15 Jan 2022 11:01:53 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id P38YeyIdWJ2O; Sat, 15 Jan 2022 11:01:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by lithops.sigma-star.at (Postfix) with ESMTP id 8C229614E2D5;
- Sat, 15 Jan 2022 11:01:52 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
- by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id JOwiyE1gdgNZ; Sat, 15 Jan 2022 11:01:52 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
- by lithops.sigma-star.at (Postfix) with ESMTP id 62EB3614E2CD;
- Sat, 15 Jan 2022 11:01:52 +0100 (CET)
-Date: Sat, 15 Jan 2022 11:01:52 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: chengzhihao1 <chengzhihao1@huawei.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, 
- mcoquelin stm32 <mcoquelin.stm32@gmail.com>, 
- kirill shutemov <kirill.shutemov@linux.intel.com>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- linux-mtd <linux-mtd@lists.infradead.org>, 
- linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <626252388.262848.1642240912242.JavaMail.zimbra@nod.at>
-In-Reply-To: <face6dce-d860-a7e6-fe9c-39f59cef22c5@huawei.com>
-References: <20211227032246.2886878-1-chengzhihao1@huawei.com>
- <11976804.249069.1641902225370.JavaMail.zimbra@nod.at>
- <0a7a5cce-1ee1-70b6-d368-615dfa0a617a@huawei.com>
- <1492514284.249466.1641909382867.JavaMail.zimbra@nod.at>
- <6815e4af-9b5b-313f-5828-644722dd4d1f@huawei.com>
- <23886736.260777.1642185939371.JavaMail.zimbra@nod.at>
- <88df000c-97a6-ff3f-a1e2-10fa4da8c604@huawei.com>
- <face6dce-d860-a7e6-fe9c-39f59cef22c5@huawei.com>
-Subject: Re: [PATCH v6 12/15] ubi: fastmap: Add all fastmap pebs into
- 'ai->fastmap' when fm->used_blocks>=2
+ id 1n8int-00B4Ya-0p; Sat, 15 Jan 2022 13:09:12 +0000
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru C601F202F0F4
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH] driver core: platform: Rename platform_get_irq_optional()
+ to platform_get_irq_silent()
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+CC: Mark Brown <broonie@kernel.org>, Andrew Lunn <andrew@lunn.ch>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, KVM list
+ <kvm@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ <linux-iio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "Amit
+ Kucheria" <amitk@kernel.org>, ALSA Development Mailing List
+ <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>, "Guenter
+ Roeck" <groeck@chromium.org>, Thierry Reding <thierry.reding@gmail.com>, "MTD
+ Maling List" <linux-mtd@lists.infradead.org>, Linux I2C
+ <linux-i2c@vger.kernel.org>, "open list:GPIO SUBSYSTEM"
+ <linux-gpio@vger.kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ <linux-phy@lists.infradead.org>, <netdev@vger.kernel.org>, linux-spi
+ <linux-spi@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>, Khuong Dinh
+ <khuong@os.amperecomputing.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski
+ <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>, "Kishon Vijay
+ Abraham I" <kishon@ti.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "open
+ list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Zhang Rui <rui.zhang@intel.com>,
+ <platform-driver-x86@vger.kernel.org>, Linux PWM List
+ <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>, "Saravanan
+ Sekar" <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>, Linux PM list
+ <linux-pm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Mauro
+ Carvalho Chehab" <mchehab@kernel.org>, John Garry <john.garry@huawei.com>,
+ Takashi Iwai <tiwai@suse.com>, Peter Korsgaard <peter@korsgaard.com>,
+ "William Breathitt Gray" <vilhelm.gray@gmail.com>, Mark Gross
+ <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Alex Williamson
+ <alex.williamson@redhat.com>, Borislav Petkov <bp@alien8.de>, Jakub Kicinski
+ <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ <openipmi-developer@lists.sourceforge.net>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Benson Leung <bleung@chromium.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>, <linux-edac@vger.kernel.org>, "Tony
+ Luck" <tony.luck@intel.com>, Richard Weinberger <richard@nod.at>, Mun Yew
+ Tham <mun.yew.tham@intel.com>, Eric Auger <eric.auger@redhat.com>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>, Yoshihiro Shimoda
+ <yoshihiro.shimoda.uh@renesas.com>, Cornelia Huck <cohuck@redhat.com>, "Linux
+ MMC List" <linux-mmc@vger.kernel.org>, Joakim Zhang
+ <qiangqing.zhang@nxp.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux-Renesas
+ <linux-renesas-soc@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, "James
+ Morse" <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>, "Sebastian
+ Reichel" <sre@kernel.org>, =?UTF-8?Q?Niklas_S=c3=b6derlund?=
+ <niklas.soderlund@ragnatech.se>, <linux-mediatek@lists.infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>
+References: <YdyilpjC6rtz6toJ@lunn.ch>
+ <CAMuHMdWK3RKVXRzMASN4HaYfLckdS7rBvSopafq+iPADtGEUzA@mail.gmail.com>
+ <20220112085009.dbasceh3obfok5dc@pengutronix.de>
+ <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
+ <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
+ <YeA7CjOyJFkpuhz/@sirena.org.uk>
+ <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+ <386a7f56-38c8-229c-4fec-4b38a77c4121@omp.ru>
+ <20220114202939.5kq5ud5opfosjlyc@pengutronix.de>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <cd89d952-b7a6-cd37-9df3-f3565cb2f802@omp.ru>
+Date: Sat, 15 Jan 2022 16:08:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF96 (Linux)/8.8.12_GA_3809)
-Thread-Topic: fastmap: Add all fastmap pebs into 'ai->fastmap' when
- fm->used_blocks>=2
-Thread-Index: UBVQ5o9CerPStr2kIoVVEmrYehXG8Q==
+In-Reply-To: <20220114202939.5kq5ud5opfosjlyc@pengutronix.de>
+Content-Language: en-US
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220115_020201_870849_0FCD11B0 
-X-CRM114-Status: UNSURE (   9.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220115_050909_454325_2E3256F9 
+X-CRM114-Status: GOOD (  32.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,56 +116,131 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImNoZW5nemhpaGFvMSIgPGNo
-ZW5nemhpaGFvMUBodWF3ZWkuY29tPgo+IEFuOiAicmljaGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+
-IENDOiAiTWlxdWVsIFJheW5hbCIgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+LCAiVmlnbmVz
-aCBSYWdoYXZlbmRyYSIgPHZpZ25lc2hyQHRpLmNvbT4sICJtY29xdWVsaW4gc3RtMzIiCj4gPG1j
-b3F1ZWxpbi5zdG0zMkBnbWFpbC5jb20+LCAia2lyaWxsIHNodXRlbW92IiA8a2lyaWxsLnNodXRl
-bW92QGxpbnV4LmludGVsLmNvbT4sICJTYXNjaGEgSGF1ZXIiCj4gPHMuaGF1ZXJAcGVuZ3V0cm9u
-aXguZGU+LCAibGludXgtbXRkIiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc+LCAibGlu
-dXgta2VybmVsIiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4KPiBHZXNlbmRldDogU2Ft
-c3RhZywgMTUuIEphbnVhciAyMDIyIDA5OjQ2OjA3Cj4gQmV0cmVmZjogUmU6IFtQQVRDSCB2NiAx
-Mi8xNV0gdWJpOiBmYXN0bWFwOiBBZGQgYWxsIGZhc3RtYXAgcGVicyBpbnRvICdhaS0+ZmFzdG1h
-cCcgd2hlbiBmbS0+dXNlZF9ibG9ja3M+PTIKCj4+PiBZZXMuIEJ1dCBpZiB5b3UgbG9vayBpbnRv
-IHViaV93bF9pbml0KCkgeW91IHNlZSB0aGF0IGZhc3RtYXAgYW5jaG9yIFBFQnMKPj4+IGdldCBl
-cmFzZXMgc3luY2hyb25vdXNseSghKS4gVGhlIGNvbW1lbnQgYmVmb3JlIHRoZSBlcmFzdXJlIGV4
-cGxhaW5zIHdoeS4KPj4gQWJvdXQgZXJhc2luZyBmYXN0bWFwIGFuY2hvciBQRUIgc3luY2hyb25v
-dXNseSwgSSBhZG1pdCBjdXJyZXVudCBVQkkKPj4gaW1wbGVtZW50YXRpb24gY2Fubm90IHNhdGlz
-ZnkgaXQsIGV2ZW4gd2l0aCBteSBmaXggYXBwbGllZC4gV2FpdCwgaXQKPj4gc2VlbXMgdGhhdCBV
-QkkgaGFzIG5ldmVyIG1hZGUgaXQgc3VyZS4gT2xkIGZhc3RtYXAgUEVCcyBjb3VsZCBiZSBlcmFz
-ZWQKPj4gYXN5bmNocm9ub3VzbHksIHRoZXkgY291bGQgYmUgY291bnRlZCBpbnRvICdmbWgtPmVy
-YXNlX3BlYl9jb3VudCcgZXZlbgo+PiBpbiBlYXJseSBVQkkgaW1wbGVtZW50YXRpb24gY29kZSwg
-c28gb2xkIGZhc3RtYXAgYW5jaG9yIFBFQiB3aWxsIGJlCj4+IGFkZGVkIGludG8gJ2FpLT5lcmFz
-ZScgYW5kIGJlIGVyYXNlZCBhc3luY2hyb25vdXNseSBpbiBuZXh0IGF0dGFjaGluZy4KPiBJbiBu
-ZXh0IGF0dGFjaGluZyBvbGQgZmFzdG1hcCBQRUJzIHdpbGwgYmUgcHJvY2Vzc2VkIGFzIGZvbGxv
-d2luZzoKPiB1YmlfYXR0YWNoX2Zhc3RtYXAgLT4gYWRkX2FlYihhaSwgJmFpLT5lcmFzZS4uLikK
-PiB1Ymlfd2xfaW5pdAo+ICAgbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKGFlYiwgdG1wLCAmYWkt
-PmVyYXNlKQo+ICAgICBlcmFzZV9hZWIgICAgICAgLy8gZXJhc2UgYXN5bmNocm9ub3VzbHkKPiAg
-ICAgICB1YmktPmxvb2t1cHRibFtlLT5wbnVtXSA9IGUKPiAgIGxpc3RfZm9yX2VhY2hfZW50cnko
-YWViLCAmYWktPmZhc3RtYXAsIHUubGlzdCkKPiAgICAgZSA9IHViaV9maW5kX2ZtX2Jsb2NrKHVi
-aSwgYWViLT5wbnVtKQo+ICAgICBpZiAoZSkgewo+ICAgICAgICAuLi4KPiAgICAgfSBlbHNlIHsK
-PiAgICAgICBpZiAodWJpLT5sb29rdXB0YmxbYWViLT5wbnVtXSkgICAgIC8vIG9sZCBmYXN0bWFw
-IFBFQnMgYXJlCj4gYXNzaWduZWQgdG8gJ3ViaS0+bG9va3VwdGJsJwo+ICAgICAgICAgY29udGlu
-dWU7Cj4gICAgIH0KPj4gQnV0LCBJIGZlZWwgaXQgaXMgbm90IGEgcHJvYmxlbSwgZmluZF9mbV9h
-bmNob3IoKSBjYW4gaGVscCB1cyBmaW5kIG91dAo+ID4gdGhlIHJpZ2h0IGZhc3RtYXAgYW5jaG9y
-IFBFQiBhY2NvcmRpbmcgc2VxbnVtLgoKRllJLCBJIHRoaW5rIEkgdW5kZXJzdGFuZCBub3cgb3Vy
-IGRpc2FncmVlbWVudC4KWW91IGFzc3VtZSB0aGF0IG9sZCBGYXN0bWFwIFBFQnMgYXJlICpndWFy
-YW50ZWVkKiB0byBiZSBwYXJ0IG9mIEZhc3RtYXAncyBlcmFzZSBsaXN0LgpUaGF0J3Mgb2theSBh
-bmQgdGhpcyBpcyB3aGF0IExpbnV4IGFzIG9mIHRvZGF5IGRvZXMuCgpNeSBwb2ludCBpcyB0aGF0
-IHdlIG5lZWQgdG8gYmUgcGFyYW5vaWQgYW5kIGNoZWNrIGNhcmVmdWxseSBmb3Igb2xkIEZhc3Rt
-YXAgUEVCcwp3aGljaCBtaWdodCBiZSAqbm90KiBvbiB0aGUgZXJhc2UgbGlzdC4KSSBzYXcgc3Vj
-aCBpc3N1ZXMgaW4gdGhlIHdpbGQuIFRoZXNlIHdlcmUgY2F1c2VzIGJ5IG9sZCBhbmQvb3IgYnVn
-Z3kgRmFzdG1hcAppbXBsZW1lbnRhdGlvbnMuCktlZXAgaW4gbWluZCB0aGF0IExpbnV4IGlzIG5v
-dCB0aGUgb25seSBzeXN0ZW0gdGhhdCBpbXBsZW1lbnRzIFVCSSAoYW5kIGZhc3RtYXApLgoKU28g
-bGV0IG1lIGdpdmUgdGhlIHdob2xlIHNpdHVhdGlvbiBhbm90aGVyIHRob3VnaHQgb24gaG93IHRv
-IGltcHJvdmUgaXQuCkkgdG90YWxseSBhZ3JlZSB3aXRoIHlvdSB0aGF0IGN1cnJlbnRseSB0aGVy
-ZSBpcyBhIHByb2JsZW0gd2l0aCBmbS0+dXNlZF9ibG9ja3MgPiAxLgpJJ20ganVzdCBjYXJlZnVs
-IChtYXliZSB0b28gY2FyZWZ1bCkgYWJvdXQgY2hhbmdpbmcgRmFzdG1hcCBjb2RlLgoKVGhhbmtz
-LAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On 1/14/22 11:29 PM, Uwe Kleine-K=F6nig wrote:
+
+>>> The subsystems regulator, clk and gpio have the concept of a dummy
+>>> resource. For regulator, clk and gpio there is a semantic difference
+>>> between the regular _get() function and the _get_optional() variant.
+>>> (One might return the dummy resource, the other won't. Unfortunately
+>>> which one implements which isn't the same for these three.) The
+>>> difference between platform_get_irq() and platform_get_irq_optional() is
+>>> only that the former might emit an error message and the later won't.
+>>>
+>>> To prevent people's expectations that there is a semantic difference
+>>> between these too, rename platform_get_irq_optional() to
+>>> platform_get_irq_silent() to make the actual difference more obvious.
+>>>
+>>> The #define for the old name can and should be removed once all patches
+>>> currently in flux still relying on platform_get_irq_optional() are
+>>> fixed.
+>>
+>>    Hm... I'm afraid that with this #define they would never get fixed...=
+ :-)
+> =
+
+> I will care for it.
+
+  Ah! OK then. :-)
+
+>>> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+>>> ---
+>>> Hello,
+>>>
+>>> On Thu, Jan 13, 2022 at 02:45:30PM +0000, Mark Brown wrote:
+>>>> On Thu, Jan 13, 2022 at 12:08:31PM +0100, Uwe Kleine-K=F6nig wrote:
+>>>>
+>>>>> This is all very unfortunate. In my eyes b) is the most sensible
+>>>>> sense, but the past showed that we don't agree here. (The most annoyi=
+ng
+>>>>> part of regulator_get is the warning that is emitted that regularily
+>>>>> makes customers ask what happens here and if this is fixable.)
+>>>>
+>>>> Fortunately it can be fixed, and it's safer to clearly specify things.
+>>>> The prints are there because when the description is wrong enough to
+>>>> cause things to blow up we can fail to boot or run messily and
+>>>> forgetting to describe some supplies (or typoing so they haven't done
+>>>> that) and people were having a hard time figuring out what might've
+>>>> happened.
+>>>
+>>> Yes, that's right. I sent a patch for such a warning in 2019 and pinged
+>>> occationally. Still waiting for it to be merged :-\
+>>> (https://lore.kernel.org/r/20190625100412.11815-1-u.kleine-koenig@pengu=
+tronix.de)
+>>>
+>>>>> I think at least c) is easy to resolve because
+>>>>> platform_get_irq_optional() isn't that old yet and mechanically
+>>>>> replacing it by platform_get_irq_silent() should be easy and safe.
+>>>>> And this is orthogonal to the discussion if -ENOXIO is a sensible ret=
+urn
+>>>>> value and if it's as easy as it could be to work with errors on irq
+>>>>> lookups.
+>>>>
+>>>> It'd certainly be good to name anything that doesn't correspond to one
+>>>> of the existing semantics for the API (!) something different rather
+>>>> than adding yet another potentially overloaded meaning.
+>>>
+>>> It seems we're (at least) three who agree about this. Here is a patch
+>>> fixing the name.
+>>
+>>    I can't say I genrally agree with this patch...
+> =
+
+> Yes, I didn't count you to the three people signaling agreement.
+
+   :-D
+
+>> [...]
+>>> diff --git a/include/linux/platform_device.h b/include/linux/platform_d=
+evice.h
+>>> index 7c96f169d274..6d495f15f717 100644
+>>> --- a/include/linux/platform_device.h
+>>> +++ b/include/linux/platform_device.h
+>>> @@ -69,7 +69,14 @@ extern void __iomem *
+>>>  devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+>>>  				      const char *name);
+>>>  extern int platform_get_irq(struct platform_device *, unsigned int);
+>>> -extern int platform_get_irq_optional(struct platform_device *, unsigne=
+d int);
+>>> +extern int platform_get_irq_silent(struct platform_device *, unsigned =
+int);
+>>> +
+>>> +/*
+>>> + * platform_get_irq_optional was recently renamed to platform_get_irq_=
+silent.
+>>> + * Fixup users to not break patches that were created before the renam=
+e.
+>>> + */
+>>> +#define platform_get_irq_optional(pdev, index) platform_get_irq_silent=
+(pdev, index)
+>>> +
+>>
+>>    Yeah, why bother fixing if it compiles anyway?
+> =
+
+> The plan is to remove the define in one or two kernel releases. The idea
+> is only to not break patches that are currently in next.
+> =
+
+>>    I think an inline wrapper with an indication to gcc that the function=
+ is deprecated
+>> (I just forgot how it should look) would be better instead...
+> =
+
+> The deprecated function annotation is generally frowned upon. See
+> 771c035372a0.
+
+   Not sure I share the sentiment but good to know about that.
+
+> Best regards
+> Uwe
+
+MBR, Sergey
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
