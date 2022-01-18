@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C75C4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 09:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 276EBC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 09:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hg1ghBZ5W5xVAAfCvJqW6jUs678DLSbxB68mOGjacVY=; b=KOMEKm4lvDuaMi
-	fkTm4ol8SEblD6dW9ggpOBTHtK4GUVehb+5wwb+bISHotyvuQrqsLOaEwq5srEBcEbqPDeEwjbjoD
-	1ChT4Ox7PSrZIA/GKdf4huIaRxosk/JWP/U/UW745Zk9vonVfMvxkK3PwRx90pEC4yCDfe9nbCwmx
-	BBW1i+gUmTifmzmG4frSq/9LrNbl0VJ4MQuXdzb3PuADAvKQX6xaHD1e9jarqhyGnwtWvxBRpQ6k9
-	c+2cbNJ24QrqmIwFDyMGNtLoG/89FHoLHcjp2yLoxn2FvpR/tiy/BuNfohGb9lMKtE0ww6D5a8av7
-	oZLotk0OYC1adSXoNrxw==;
+	List-Owner; bh=7tKzdO53+nSV1WURkTTH2uX+VqBfA4M6QcU1VCZYTWE=; b=VBSX8Ja14my8r/
+	ORhqmY/YxzSDokyEt925uyFqnUDAuWpm+bApX00q8ooZx9YK0c2CVwiaiph7OPYYcDOfHKM6MIWiQ
+	WOTsi04tYMOaAlvlB0EZfmNLOuUEhL+au6I9Sc+LR56OzRLGhIxK+2/msgxUrxORlDKsdOq+GTZaN
+	SkAjz+WTS7/YBgE5XqvUEt3J6tzXojDRvzDOwSiRxkvrxcwQPQN1yfkrq5U/dZ4mTdOOUR8+QisBW
+	xYjjjjjU/k10Dc0qpdsfIpQ1o8a7EA38M3AMyIf+9ghCwBOOsPHGxjrOg+tHXcmN8iYKH18j0l7zD
+	DwdrKWt7uf10CajjfdCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9lDV-0010Oh-Py; Tue, 18 Jan 2022 09:55:53 +0000
-Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
+	id 1n9lDn-0010Us-2g; Tue, 18 Jan 2022 09:56:11 +0000
+Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9lCo-00109Q-OI
- for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 09:55:12 +0000
-Received: by mail-ed1-x530.google.com with SMTP id c71so76964229edf.6
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jan 2022 01:55:10 -0800 (PST)
+ id 1n9lCq-00109a-1I
+ for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 09:55:14 +0000
+Received: by mail-ed1-x531.google.com with SMTP id m4so76829666edb.10
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Jan 2022 01:55:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amarulasolutions.com; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=xehe2GRXgQYN/+dRP8wnpXRUBfEHFaQIKrZHmlK7Gkc=;
- b=NMnFrZh7b8z20cbVj3sAC5udzo0Oe3RiHbKJ4a7YROrEsX9NWwDvwnCQauIsX7znwX
- vfO8jWzwD6YjeImeo1BVOO6VmJcl/7gO8SyZKMwLtURaGByFHq4k1jzlGCGqkWaTP8qP
- 7BpUqTWIqmaj5zYmvIzm/tj+dQtEMK8YpLQqQ=
+ bh=kSvqY/5S0QFADP0pgb9XGlsw5TRpNqIg0fhRE44Mq5E=;
+ b=l6u/e5IOPb+4gYA90QO5gRDCDZXCQ2zmHpYzQdG9BtlyR/mS8/p+Xvg8CbMFf+/sgU
+ bu8oZhR30WEC8m3SitZUyZDQfTVKtg67sM29IKiiw+/9HtTqoF81wbsGI50rSPgMwkX1
+ nNI52OYRWktjsHsISt0frQEp4QwPn7i+hN5AI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=xehe2GRXgQYN/+dRP8wnpXRUBfEHFaQIKrZHmlK7Gkc=;
- b=CUbGyVyJt6HZKIDLfuCoPDS2mTl66mF3HVgweLl35vdDL7TTMTG84cvoY5K4gZh+dW
- q9ld7hr9pJ7kG/8Za7p2/i/aNsvZbO4v11bmhGj6yMy/3WMx4kV7BWaAw2EzuivxgQNF
- OK1W2w8xTkeRVnODgxk2F784kk+P6ugUl95WWwB9zg7dk4a6pe4EDYHDuuSgvDsn9veK
- cv4WrWqqDoe3z9J5m4X4TfPy3TB89z7PhpdHcJ37GoysZmgXkDO2QLePi47+XGX5fcJG
- /39es3BkTD/YLiix0UJgoVWKVxriqnJi12NyBAH4iHp587nu50c7g6iMR6Jbj/KoQ7uC
- sYVg==
-X-Gm-Message-State: AOAM531QrpIx/75IhR+ZMXU4TJcG8k+ti7S6RE3cLtWtBTtoQCQsw3lh
- NvHZlHRoScpcnAVXeH9vd7QguQ==
-X-Google-Smtp-Source: ABdhPJwWEKhNqf1JZzX3FA0R0DGU3cjYeegcCormXg5HGMlO+9TulADkuk8ct4HcDBxgzuptFuLYHg==
-X-Received: by 2002:a17:906:4983:: with SMTP id
- p3mr20017289eju.589.1642499709124; 
- Tue, 18 Jan 2022 01:55:09 -0800 (PST)
+ bh=kSvqY/5S0QFADP0pgb9XGlsw5TRpNqIg0fhRE44Mq5E=;
+ b=abdKwDkjCyupksm1PQKtcjdhSjzFFoOPNkfLRcQvCynJUSXCvHIXkjW5xzIotTxr8q
+ SLt6AT45lRvfbCg1y5oIHtwpdkprtdUg7wK6rp/YeEnxcxXj1rtMcEbowiv4z9PBjIfa
+ kKk3sedPgn3nGiwGXz5Z3gH4CaBG9titjuKyZC9foK3lnMKqEvXKoFw6tZ5ArXNwtNlf
+ FHmPkxCFeCP0miZ4qMeOyBHKx01K5myY/fpp/rWF2xeLclvvsx5mh2vfuvHJfaMZ3TyH
+ scgRtWFHfqEbhgtYlr/hQZQCwv5C+Sq15wabJZSSMaQRhaakWPSWeaHllRaWamL2ojWc
+ OmjA==
+X-Gm-Message-State: AOAM5316TCUk3301bdT9XpSMlbV2LWczxsIXoe1Vc+vCho9SsQCSJe4i
+ Md8fPQQQ5W5LUJwQnl2TdnEs3MhjQPgL+g==
+X-Google-Smtp-Source: ABdhPJwj0kpN9v1eErF/ySo+HicD0yhDGIvcY/CcHCimzle6yodFZvEqmagNXGojVGD7SSZ3TId/qg==
+X-Received: by 2002:a17:907:9809:: with SMTP id
+ ji9mr19842129ejc.142.1642499710202; 
+ Tue, 18 Jan 2022 01:55:10 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it
  (host-82-52-8-210.retail.telecomitalia.it. [82.52.8.210])
- by smtp.gmail.com with ESMTPSA id w3sm5173520eji.134.2022.01.18.01.55.08
+ by smtp.gmail.com with ESMTPSA id w3sm5173520eji.134.2022.01.18.01.55.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 18 Jan 2022 01:55:08 -0800 (PST)
+ Tue, 18 Jan 2022 01:55:09 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: Michael Trimarchi <michael@amarulasolutions.com>,
  Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Boris Brezillon <bbrezillon@kernel.org>, Han Xu <han.xu@nxp.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Han Xu <han.xu@nxp.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 2/4] mtd: rawnand: gpmi: fix controller timings setting
-Date: Tue, 18 Jan 2022 10:54:32 +0100
-Message-Id: <20220118095434.35081-3-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH 3/4] mtd: rawnand: gpmi: validate controller clock rate
+Date: Tue, 18 Jan 2022 10:54:33 +0100
+Message-Id: <20220118095434.35081-4-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220118095434.35081-1-dario.binacchi@amarulasolutions.com>
 References: <20220118095434.35081-1-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220118_015510_836986_AE3DDEB7 
-X-CRM114-Status: GOOD (  13.85  )
+X-CRM114-CacheID: sfid-20220118_015512_171580_BEB1C3AC 
+X-CRM114-Status: GOOD (  21.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,20 +91,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Set the controller registers according to the real clock rate. The
-controller registers configuration (setup, hold, timeout, ... cycles)
-depends on the clock rate of the GPMI. Using the real rate instead of
-the ideal one, avoids that this inaccuracy (required_rate - real_rate)
-affects the registers setting.
+What to do when the real rate of the gpmi clock is not equal to the
+required one? The solutions proposed in [1] did not lead to a conclusion
+on how to validate the clock rate, so, inspired by the document [2], I
+consider the rate correct only if not lower or equal to the rate of the
+previous edo mode. In fact, in chapter 4.16.2 (NV-DDR) of the document [2],
+it is written that "If the host selects timing mode n, then its clock
+period shall be faster than the clock period of timing mode n-1 and
+slower than or equal to the clock period of timing mode n.". I thought
+that it could therefore also be used in this case, without therefore
+having to define the valid rate ranges empirically.
 
-This patch has been tested on two custom boards with i.MX28 and i.MX6
-SOCs:
-- i.MX28:
-  required rate 100MHz, real rate 99.3MHz
-- i.MX6
-  required rate 100MHz, real rate 99MHz
+For example, suppose that gpmi_nfc_compute_timings() is called to set
+edo mode 5 (100MHz) but the rate returned by clk_round_rate() is 80MHz
+(edo mode 4). In this case gpmi_nfc_compute_timings() will return error,
+and will be called again to set edo mode 4, which this time will be
+successful.
 
-Fixes: b1206122069a ("mtd: rawnand: gpmi: use core timings instead of an empirical derivation")
+[1] https://lore.kernel.org/r/20210702065350.209646-5-ebiggers@kernel.org
+[2] http://www.onfi.org/-/media/client/onfi/specs/onfi_3_0_gold.pdf?la=en
+
 Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
@@ -113,29 +118,85 @@ Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
 Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
 
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 1b64c5a5140d..73c3bf59b55e 100644
+index 73c3bf59b55e..cf35f4206030 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -648,6 +648,7 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
- 				     const struct nand_sdr_timings *sdr)
+@@ -644,8 +644,8 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+  *         RDN_DELAY = -----------------------     {3}
+  *                           RP
+  */
+-static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
+-				     const struct nand_sdr_timings *sdr)
++static int gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
++				    const struct nand_sdr_timings *sdr)
  {
  	struct gpmi_nfc_hardware_timing *hw = &this->hw;
-+	struct resources *r = &this->resources;
- 	unsigned int dll_threshold_ps = this->devdata->max_chain_delay;
- 	unsigned int period_ps, reference_period_ps;
- 	unsigned int data_setup_cycles, data_hold_cycles, addr_setup_cycles;
-@@ -671,6 +672,8 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
+ 	struct resources *r = &this->resources;
+@@ -657,23 +657,33 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
+ 	int sample_delay_ps, sample_delay_factor;
+ 	u16 busy_timeout_cycles;
+ 	u8 wrn_dly_sel;
++	unsigned long clk_rate, min_rate;
+ 
+ 	if (sdr->tRC_min >= 30000) {
+ 		/* ONFI non-EDO modes [0-3] */
+ 		hw->clk_rate = 22000000;
++		min_rate = 0;
+ 		wrn_dly_sel = BV_GPMI_CTRL1_WRN_DLY_SEL_4_TO_8NS;
+ 	} else if (sdr->tRC_min >= 25000) {
+ 		/* ONFI EDO mode 4 */
+ 		hw->clk_rate = 80000000;
++		min_rate = 22000000;
+ 		wrn_dly_sel = BV_GPMI_CTRL1_WRN_DLY_SEL_NO_DELAY;
+ 	} else {
+ 		/* ONFI EDO mode 5 */
+ 		hw->clk_rate = 100000000;
++		min_rate = 80000000;
  		wrn_dly_sel = BV_GPMI_CTRL1_WRN_DLY_SEL_NO_DELAY;
  	}
  
-+	hw->clk_rate = clk_round_rate(r->clock[0], hw->clk_rate);
-+
+-	hw->clk_rate = clk_round_rate(r->clock[0], hw->clk_rate);
++	clk_rate = clk_round_rate(r->clock[0], hw->clk_rate);
++	if (clk_rate <= min_rate) {
++		dev_err(this->dev, "clock setting: expected %ld, got %ld\n",
++			hw->clk_rate, clk_rate);
++		return -ENOTSUPP;
++	}
+ 
++	hw->clk_rate = clk_rate;
  	/* SDR core timings are given in picoseconds */
  	period_ps = div_u64((u64)NSEC_PER_SEC * 1000, hw->clk_rate);
+ 
+@@ -714,6 +724,7 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
+ 		hw->ctrl1n |= BF_GPMI_CTRL1_RDN_DELAY(sample_delay_factor) |
+ 			      BM_GPMI_CTRL1_DLL_ENABLE |
+ 			      (use_half_period ? BM_GPMI_CTRL1_HALF_PERIOD : 0);
++	return 0;
+ }
+ 
+ static int gpmi_nfc_apply_timings(struct gpmi_nand_data *this)
+@@ -769,6 +780,7 @@ static int gpmi_setup_interface(struct nand_chip *chip, int chipnr,
+ {
+ 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
+ 	const struct nand_sdr_timings *sdr;
++	int ret;
+ 
+ 	/* Retrieve required NAND timings */
+ 	sdr = nand_get_sdr_timings(conf);
+@@ -784,7 +796,9 @@ static int gpmi_setup_interface(struct nand_chip *chip, int chipnr,
+ 		return 0;
+ 
+ 	/* Do the actual derivation of the controller timings */
+-	gpmi_nfc_compute_timings(this, sdr);
++	ret = gpmi_nfc_compute_timings(this, sdr);
++	if (ret)
++		return ret;
+ 
+ 	this->hw.must_apply_timings = true;
  
 -- 
 2.32.0
