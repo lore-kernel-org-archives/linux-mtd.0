@@ -4,81 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77206C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 09:55:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11C75C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 09:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=taaNYR092J5ZbxgmMV0eafkIKfvtADwS3GdUyAGZcX0=; b=iXgsSDWY3WngT7
-	FlxGfUuxIbo1o3BrTyA6WDJ0LvKr8k00h4BtOCTmDBCPXwwaY+E737d0iNaIktzm6UPN5SFDiE3B4
-	+KOZXeU1BXxw/G3GZwYQMbdlzWDmcapv6xrDFj6cPakNYU7RbsyXIjKuDwW+DzLCHwnGdVnJQ7tjE
-	QEAhwzmKqq9PHLfT+kkZwhWYGGyCZTjBjRG8lnwO1XFcQpCYdsPokAR2HxOyxpmDbRsfBUce3loB6
-	691s6O8s7m7Av6HJ5U1FUOYOE7UDP9vNw3ZRsUM6zA+WO6Drq7mLsa4y4zo7bUKz/fGPGfNlkItGI
-	s3l+aEnDkZV4s9RntXqA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Hg1ghBZ5W5xVAAfCvJqW6jUs678DLSbxB68mOGjacVY=; b=KOMEKm4lvDuaMi
+	fkTm4ol8SEblD6dW9ggpOBTHtK4GUVehb+5wwb+bISHotyvuQrqsLOaEwq5srEBcEbqPDeEwjbjoD
+	1ChT4Ox7PSrZIA/GKdf4huIaRxosk/JWP/U/UW745Zk9vonVfMvxkK3PwRx90pEC4yCDfe9nbCwmx
+	BBW1i+gUmTifmzmG4frSq/9LrNbl0VJ4MQuXdzb3PuADAvKQX6xaHD1e9jarqhyGnwtWvxBRpQ6k9
+	c+2cbNJ24QrqmIwFDyMGNtLoG/89FHoLHcjp2yLoxn2FvpR/tiy/BuNfohGb9lMKtE0ww6D5a8av7
+	oZLotk0OYC1adSXoNrxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9lD2-0010Fh-1q; Tue, 18 Jan 2022 09:55:24 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1n9lDV-0010Oh-Py; Tue, 18 Jan 2022 09:55:53 +0000
+Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9lCm-00108T-K6
- for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 09:55:10 +0000
-Received: by mail-ed1-x533.google.com with SMTP id q25so76974163edb.2
- for <linux-mtd@lists.infradead.org>; Tue, 18 Jan 2022 01:55:07 -0800 (PST)
+ id 1n9lCo-00109Q-OI
+ for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 09:55:12 +0000
+Received: by mail-ed1-x530.google.com with SMTP id c71so76964229edf.6
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Jan 2022 01:55:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amarulasolutions.com; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Mceqks5nzf+eeOlYMRRw9uStF9uGFlchw0VEVd71PNE=;
- b=gPYLtv4I3fkdCGWvfnnq5fZwtxkXwUSfcWEIelAqAAoqlMyHtS5+lMkxf4CFTrDKO2
- EEi1eSnV+84JN549IbLO7idLHZ3C3WRiQX4orsnch2n8XVYgGfg0PlY/jXEXVb+W6x3t
- Kl/TGleX6RXP9oV69e3gejA2FUp0UcV2m1dFI=
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=xehe2GRXgQYN/+dRP8wnpXRUBfEHFaQIKrZHmlK7Gkc=;
+ b=NMnFrZh7b8z20cbVj3sAC5udzo0Oe3RiHbKJ4a7YROrEsX9NWwDvwnCQauIsX7znwX
+ vfO8jWzwD6YjeImeo1BVOO6VmJcl/7gO8SyZKMwLtURaGByFHq4k1jzlGCGqkWaTP8qP
+ 7BpUqTWIqmaj5zYmvIzm/tj+dQtEMK8YpLQqQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Mceqks5nzf+eeOlYMRRw9uStF9uGFlchw0VEVd71PNE=;
- b=H1u3Dbx0G2tQPF1vL3v6NxSWjLeVr7v2MTjSGjUo1M5v0MHn7eREdQm/C/8qZ70f6a
- IVfc0tOHJCU/vV9PBZYMHLOvI5+bs9cLhWYrTEPDPSZzradEfEzz1Q7LuYhfL3Q39Q0L
- ep+p7lxF3aMDqpyFSD0YcLs88yJM2m7L2Mai10bXj6EShkjU+JxPhzb7aC7+YozGjqpI
- 8zCRHoaCxBGxO6EzCThf85XgQ6UMk8U8+iiSpBoybyM/PWteCv9SXAeIu6TQtzuVT/FD
- Gllxh7EfpM+CLEYTr8AWqMiRRQ5idyBK9qM3T24Saq0q+1aecZnYHN90VxbFD4X/a6Wj
- eY4g==
-X-Gm-Message-State: AOAM532Eq6P3tUwTMVpTVxIZCggKDoI0uRm9lk3rzFIVe14DJi0148v6
- L1u2aMIk7fCzqJXHiWaaz/5TGQ==
-X-Google-Smtp-Source: ABdhPJzj8gexQMhBbeU9RNli6B1Vexv4bSMZZ3vsSVZ884D8NY7eN6Rp1vUyRj0kGUSh+affuud+jA==
-X-Received: by 2002:a05:6402:2712:: with SMTP id
- y18mr10734301edd.26.1642499706803; 
- Tue, 18 Jan 2022 01:55:06 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=xehe2GRXgQYN/+dRP8wnpXRUBfEHFaQIKrZHmlK7Gkc=;
+ b=CUbGyVyJt6HZKIDLfuCoPDS2mTl66mF3HVgweLl35vdDL7TTMTG84cvoY5K4gZh+dW
+ q9ld7hr9pJ7kG/8Za7p2/i/aNsvZbO4v11bmhGj6yMy/3WMx4kV7BWaAw2EzuivxgQNF
+ OK1W2w8xTkeRVnODgxk2F784kk+P6ugUl95WWwB9zg7dk4a6pe4EDYHDuuSgvDsn9veK
+ cv4WrWqqDoe3z9J5m4X4TfPy3TB89z7PhpdHcJ37GoysZmgXkDO2QLePi47+XGX5fcJG
+ /39es3BkTD/YLiix0UJgoVWKVxriqnJi12NyBAH4iHp587nu50c7g6iMR6Jbj/KoQ7uC
+ sYVg==
+X-Gm-Message-State: AOAM531QrpIx/75IhR+ZMXU4TJcG8k+ti7S6RE3cLtWtBTtoQCQsw3lh
+ NvHZlHRoScpcnAVXeH9vd7QguQ==
+X-Google-Smtp-Source: ABdhPJwWEKhNqf1JZzX3FA0R0DGU3cjYeegcCormXg5HGMlO+9TulADkuk8ct4HcDBxgzuptFuLYHg==
+X-Received: by 2002:a17:906:4983:: with SMTP id
+ p3mr20017289eju.589.1642499709124; 
+ Tue, 18 Jan 2022 01:55:09 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it
  (host-82-52-8-210.retail.telecomitalia.it. [82.52.8.210])
- by smtp.gmail.com with ESMTPSA id w3sm5173520eji.134.2022.01.18.01.55.05
+ by smtp.gmail.com with ESMTPSA id w3sm5173520eji.134.2022.01.18.01.55.08
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 18 Jan 2022 01:55:06 -0800 (PST)
+ Tue, 18 Jan 2022 01:55:08 -0800 (PST)
 From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To: linux-kernel@vger.kernel.org
 Cc: Michael Trimarchi <michael@amarulasolutions.com>,
  Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- Boris Brezillon <bbrezillon@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Boris Brezillon <bbrezillon@kernel.org>, Han Xu <han.xu@nxp.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org
-Subject: [PATCH 0/4] Fix and improve gpmi nand on mx28
-Date: Tue, 18 Jan 2022 10:54:30 +0100
-Message-Id: <20220118095434.35081-1-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH 2/4] mtd: rawnand: gpmi: fix controller timings setting
+Date: Tue, 18 Jan 2022 10:54:32 +0100
+Message-Id: <20220118095434.35081-3-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220118095434.35081-1-dario.binacchi@amarulasolutions.com>
+References: <20220118095434.35081-1-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220118_015508_705933_33DDEEDF 
-X-CRM114-Status: GOOD (  11.88  )
+X-CRM114-CacheID: sfid-20220118_015510_836986_AE3DDEB7 
+X-CRM114-Status: GOOD (  13.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,28 +92,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Starting from [1], the series fixes the timings setting of the gpmi
-controller for the mx28 architecture, also adding support for fast
-edo mode timings. The whole series has been heavily tested with the
-mtd kernel test modules, and with repeated write cycles on nand.
+Set the controller registers according to the real clock rate. The
+controller registers configuration (setup, hold, timeout, ... cycles)
+depends on the clock rate of the GPMI. Using the real rate instead of
+the ideal one, avoids that this inaccuracy (required_rate - real_rate)
+affects the registers setting.
 
-The whole series has been tested and reviewed by Sascha Hauer <s.hauer@pengutronix.de>,
-so I removed the RFC prefix and re-submitted it as a regular patch
-set by adding the 'Tested-by' and 'Review-by' tags to every single patch.
+This patch has been tested on two custom boards with i.MX28 and i.MX6
+SOCs:
+- i.MX28:
+  required rate 100MHz, real rate 99.3MHz
+- i.MX6
+  required rate 100MHz, real rate 99MHz
 
-[1] https://lore.kernel.org/r/20210702065350.209646-5-ebiggers@kernel.org
+Fixes: b1206122069a ("mtd: rawnand: gpmi: use core timings instead of an empirical derivation")
+Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
 
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Dario Binacchi (4):
-  ARM: dts: imx28: reparent gpmi clock to ref_gpmi
-  mtd: rawnand: gpmi: fix controller timings setting
-  mtd: rawnand: gpmi: validate controller clock rate
-  mtd: rawnand: gpmi: support fast edo timings for mx28
-
- arch/arm/boot/dts/imx28.dtsi               |  2 ++
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 27 ++++++++++++++++++----
- 2 files changed, 24 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 1b64c5a5140d..73c3bf59b55e 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -648,6 +648,7 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
+ 				     const struct nand_sdr_timings *sdr)
+ {
+ 	struct gpmi_nfc_hardware_timing *hw = &this->hw;
++	struct resources *r = &this->resources;
+ 	unsigned int dll_threshold_ps = this->devdata->max_chain_delay;
+ 	unsigned int period_ps, reference_period_ps;
+ 	unsigned int data_setup_cycles, data_hold_cycles, addr_setup_cycles;
+@@ -671,6 +672,8 @@ static void gpmi_nfc_compute_timings(struct gpmi_nand_data *this,
+ 		wrn_dly_sel = BV_GPMI_CTRL1_WRN_DLY_SEL_NO_DELAY;
+ 	}
+ 
++	hw->clk_rate = clk_round_rate(r->clock[0], hw->clk_rate);
++
+ 	/* SDR core timings are given in picoseconds */
+ 	period_ps = div_u64((u64)NSEC_PER_SEC * 1000, hw->clk_rate);
+ 
 -- 
 2.32.0
 
