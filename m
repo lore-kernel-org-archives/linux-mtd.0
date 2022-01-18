@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83133C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 03:18:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3128C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 03:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8tBFo+mEYVO15arUC9H2gnQlCQxRA0kGuqo4DOO3eZE=; b=mCH5L2QhYjv9+Q
-	Z7zCTf9TvKYZ5fVB6Pt087tepTkHbGAXtzYF7xN70nJT+ztDS9UlHUt8crDU6q5hMCFaSmjdcx795
-	YFX03uslfrpOFermT1sU1zIo5E7UmxNnyFNXLS6Qe4oUkuLiuXU2W3ibaE1OSlhk/KM2BcWDEh4/T
-	TFDXillmN/QUuEYSUG/KX754DTmq/P0VI3NvXyKRvkAfQYeqPq3au3mdscBPbVVzISeCDxp8Z0hZI
-	QdVljM/mxqKWhyx1S9ME338aVaCocAXBvGsGKOWim4XUF7stLI415yCxzFdHbc/RmpuuUH/qfZ0rB
-	AFWpvWP0PpuUn920EGog==;
+	List-Owner; bh=xFgOyg75hKU1eLjD65Cs7z6NWuTeCENek1SXeagTcw4=; b=g7+d5Ut+qftx8r
+	vJDqBMpoMd+MA6TvM6JcD/GIrb4I7n3BSX+nm0xd33PYHsviwwyN5g0c7cn/kbdQg94rnlfqoWY2S
+	ABh3oVN96Y4jeN0jkLX6S+wVC4KeFomstH5y1fsyRxBb6W/Yoc+wJYzQTznu2di/pLfF1LVhLZGwD
+	rhmHXiB7YXU/KOcBAxjjCygcrD8WXClQLOrQZo4w9MdSagElHWpDtYwbg+Pqlp6WvT4JV1WZyCmKk
+	Rw5a9oP1VCQqqi1GHP4a8FfwrxC8HgY5kEZNNLaPgm1EEl9SUQRLIXHQFc3RnZmZZ6aTsoBIGlwMT
+	cIv4GboNGl/dHBKrA89w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9f0k-00HOFs-FI; Tue, 18 Jan 2022 03:18:18 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1n9f9X-00HSEd-PE; Tue, 18 Jan 2022 03:27:24 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9eTL-00H50d-L9
- for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 02:43:49 +0000
+ id 1n9eVx-00H6OZ-D2
+ for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 02:46:31 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3962B60C96;
- Tue, 18 Jan 2022 02:43:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C94F9C36AEB;
- Tue, 18 Jan 2022 02:43:45 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A3EF361324;
+ Tue, 18 Jan 2022 02:46:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51E15C36AEB;
+ Tue, 18 Jan 2022 02:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642473826;
- bh=9zqniQmnmRj2EP7QeluyIKIoG9IT21ZtY1hW7QzQH5Y=;
+ s=k20201202; t=1642473988;
+ bh=9RyE6ZLi77tUv4uCLRdOWWqq4WpjHFSm/tVZXOPXU14=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VXiD/bjU9zjXN71yNjv33HeIugBVZcXF39R32St/KsjJ5mzDgzoctVOmFchFHQd8T
- xLhzXkLGZXiw0K9YX1PbviwbOYKpH64yWE/JNfIuuMk70TSMbLzASvo6Z6aTD5BLAG
- /AJT+UBhKFbrbVEj9581nFJNN2vC4faR2y61QwCBHior024N4mRL2lA8JP+I7Q7Xvv
- qZLEo2LPXIw1MMRON23350X3W6NXfD4CMAWVvR2c7XGgB11d9FE2HfPr0yudU62XHF
- qoXg8QucyQmdVC3M49QgBSCayjRp4raykXm+uLvTz/OGgMZEmheRevWXf6BC8ORCA6
- 73PQ/lqDKBIvg==
+ b=dlxHW79xFNOxFIdj8MdRybxaC0gQMTZk+q7zZG66QbhbiXXTkQG97zkVUy9ew+GNO
+ Is2lNF+e1LL4v10pVewQ79TXI0ceRnn73ZR1a4jhFmKaiVULo3MUbhhaD59+e/J2NU
+ l6+I9LdKl8znwx4B8kd9ikVCapn1TmXl5p32cbLQ3nUFv5lZDfbj2EeOFlgN5YRal1
+ nKFyn+a1Lb/QvUPSyANmRg5itul6sgINIlZu+Xr70m4thKBR5BQp16wC6I3oRXIPwE
+ xpE3A+nZ88t5/UITFcGnU691xxt4tyTUMnwTGkU0YzEdFeBimZOwd2x9ikjlqHp/uV
+ IjCukhsv6SRaA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Kyeong Yoo <kyeong.yoo@alliedtelesis.co.nz>,
  Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>,
  dwmw2@infradead.org, joel@jms.id.au, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 089/116] jffs2: GC deadlock reading a page that
- is used in jffs2_write_begin()
-Date: Mon, 17 Jan 2022 21:39:40 -0500
-Message-Id: <20220118024007.1950576-89-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 53/73] jffs2: GC deadlock reading a page that is
+ used in jffs2_write_begin()
+Date: Mon, 17 Jan 2022 21:44:12 -0500
+Message-Id: <20220118024432.1952028-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118024007.1950576-1-sashal@kernel.org>
-References: <20220118024007.1950576-1-sashal@kernel.org>
+In-Reply-To: <20220118024432.1952028-1-sashal@kernel.org>
+References: <20220118024432.1952028-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220117_184347_837341_F41C156A 
+X-CRM114-CacheID: sfid-20220117_184629_592726_063A2260 
 X-CRM114-Status: GOOD (  20.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -107,10 +107,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 25 insertions(+), 15 deletions(-)
 
 diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 4fc8cd698d1a4..bd7d58d27bfc6 100644
+index f8fb89b10227c..34880a4c21732 100644
 --- a/fs/jffs2/file.c
 +++ b/fs/jffs2/file.c
-@@ -136,20 +136,15 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+@@ -135,20 +135,15 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
  	struct page *pg;
  	struct inode *inode = mapping->host;
  	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
@@ -132,7 +132,7 @@ index 4fc8cd698d1a4..bd7d58d27bfc6 100644
  		struct jffs2_raw_inode ri;
  		struct jffs2_full_dnode *fn;
  		uint32_t alloc_len;
-@@ -160,7 +155,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+@@ -159,7 +154,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
  		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
  					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
  		if (ret)
@@ -141,7 +141,7 @@ index 4fc8cd698d1a4..bd7d58d27bfc6 100644
  
  		mutex_lock(&f->sem);
  		memset(&ri, 0, sizeof(ri));
-@@ -190,7 +185,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+@@ -189,7 +184,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
  			ret = PTR_ERR(fn);
  			jffs2_complete_reservation(c);
  			mutex_unlock(&f->sem);
@@ -150,7 +150,7 @@ index 4fc8cd698d1a4..bd7d58d27bfc6 100644
  		}
  		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
  		if (f->metadata) {
-@@ -205,13 +200,26 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+@@ -204,13 +199,26 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
  			jffs2_free_full_dnode(fn);
  			jffs2_complete_reservation(c);
  			mutex_unlock(&f->sem);
@@ -178,7 +178,7 @@ index 4fc8cd698d1a4..bd7d58d27bfc6 100644
  	/*
  	 * Read in the page if it wasn't already present. Cannot optimize away
  	 * the whole page write case until jffs2_write_end can handle the
-@@ -221,15 +229,17 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+@@ -220,15 +228,17 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
  		mutex_lock(&f->sem);
  		ret = jffs2_do_readpage_nolock(inode, pg);
  		mutex_unlock(&f->sem);
