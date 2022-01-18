@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CC28C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 09:19:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9363C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 09:33:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VK30hP90Tmkhx1pPlfADLD6SPHj0XKW3w+P4LcEYrVw=; b=teptCtIsM/uZrWLwXgFKlTzoNZ
-	gPpCvMhJL3Gxv8cqs1kczNFIRAn9T36iaV5I51rX/CzZOaqSdxOq+nF04DxKAdVMoVaG1J2QyDNjS
-	vQ59orSaCg2ojfx4Gbf3DxzF3rhydGj2Ip1HVDYhECul18t4ENlqyIrQ68TwXY1mbq7aAOplxH3rQ
-	nzf8B3vWBJn8lcJtvCE+XEODlofjvnX3WbHdkhaRKkUSa9OGDRMc2KYBC0aN6GjorBL6m8YFG97zL
-	6ItvZz83AiRAkgOgnpjR3UP6OqWXVG7KsIRZPN29Z5VpVPG7oVkxzIXgnkfy4n1O08kADa5JJUcBK
-	ZXSQdITw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/uXk0pzn5j6c3uwr7ok+Yob65HDZqVsdZePbSVjEg/k=; b=aEPs1llxP2wa2m
+	I5t9tuOPGBb1q5sVt4/Z02TAWTUPjlKNkZacN4PcVi3SZEHLkkSBFWOFfNShWGyC6iJy3kVjNSDTr
+	I2LK1GiC4I/Dipc/Zo5DZHIukXgvc8TC8eP9OTgVKr415VfY7t5yWY8QWNeJzD1W7Xrsb7zHQ0ICb
+	IVrpnt1dsI79+QjvT9enu6SQRqK6BjvWBMdbLn7PXHpCs77LHau9YL9YFK4yqbrthzrtA5Y7qHAkI
+	PsB0ZC+bRE8PPiydBEfftvGt4GoNKMFcV16mSRcNurh+kGFbcavY0oEIw+lwEZ4q0CRr5XMxXmfQb
+	E+/7xyIqSYDMiReCFu1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9keF-000rj3-ES; Tue, 18 Jan 2022 09:19:27 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1n9krL-000uvC-Ju; Tue, 18 Jan 2022 09:32:59 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9keC-000rhS-Na
- for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 09:19:26 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1n9kdD-0006Nd-T3; Tue, 18 Jan 2022 10:18:23 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1n9kdA-00Ayd5-Tc; Tue, 18 Jan 2022 10:18:20 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1n9kd9-0003a7-SE; Tue, 18 Jan 2022 10:18:19 +0100
-Date: Tue, 18 Jan 2022 10:18:19 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ id 1n9krG-000utz-Q3; Tue, 18 Jan 2022 09:32:56 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F1F41611D6;
+ Tue, 18 Jan 2022 09:32:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76C83C00446;
+ Tue, 18 Jan 2022 09:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1642498373;
+ bh=DQsfwtJhv3xPa9stElQYzBQziBxi/lTSvFxbATxprog=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=IYXMJ0VPjFYSJY4NvlXmFWheHw/XkPbDg6jYdIXLJdD1zglfnvz6feJDneqRQF/Y7
+ Xd4h6nOb3hzFwTMGSfrGLMZs9cs+U1HvQaFyP49TIVznh2RAxc+V/DqmrD1t1xwr2a
+ 25A0Y8zcDbS1ew90c5vIYgg7oo/j34B2Guk1t+0Y=
+Date: Tue, 18 Jan 2022 10:32:50 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  Vignesh Raghavendra <vigneshr@ti.com>, kvm@vger.kernel.org,
  "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
@@ -85,27 +85,24 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
  linux-renesas-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
  James Morse <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>,
  Sebastian Reichel <sre@kernel.org>,
- Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
  linux-mediatek@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  "David S. Miller" <davem@davemloft.net>
 Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
  (summary)
-Message-ID: <20220118091819.zzxpffrxbckoxiys@pengutronix.de>
+Message-ID: <YeaJQnzxTqdarQ6T@kroah.com>
 References: <20220110195449.12448-1-s.shtylyov@omp.ru>
  <20220110195449.12448-2-s.shtylyov@omp.ru>
  <20220115183643.6zxalxqxrhkfgdfq@pengutronix.de>
  <YeQpWu2sUVOSaT9I@kroah.com>
+ <20220118091819.zzxpffrxbckoxiys@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YeQpWu2sUVOSaT9I@kroah.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+In-Reply-To: <20220118091819.zzxpffrxbckoxiys@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220118_011924_788405_697E0542 
-X-CRM114-Status: GOOD (  22.61  )
+X-CRM114-CacheID: sfid-20220118_013254_949056_89950E90 
+X-CRM114-Status: GOOD (  23.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,72 +114,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6057123120165751961=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On Tue, Jan 18, 2022 at 10:18:19AM +0100, Uwe Kleine-K=F6nig wrote:
+> On Sun, Jan 16, 2022 at 03:19:06PM +0100, Greg Kroah-Hartman wrote:
+> > On Sat, Jan 15, 2022 at 07:36:43PM +0100, Uwe Kleine-K=F6nig wrote:
+> > > A possible compromise: We can have both. We rename
+> > > platform_get_irq_optional() to platform_get_irq_silent() (or
+> > > platform_get_irq_silently() if this is preferred) and once all users =
+are
+> > > are changed (which can be done mechanically), we reintroduce a
+> > > platform_get_irq_optional() with Sergey's suggested semantic (i.e.
+> > > return 0 on not-found, no error message printking).
+> > =
 
---===============6057123120165751961==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4nmi7jsy4ulpuolr"
-Content-Disposition: inline
+> > Please do not do that as anyone trying to forward-port an old driver
+> > will miss the abi change of functionality and get confused.  Make
+> > build-breaking changes, if the way a function currently works is
+> > changed in order to give people a chance.
+> =
 
+> Fine for me. I assume this is a Nack for Sergey's patch?
 
---4nmi7jsy4ulpuolr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This set of patches is going nowhere as-is, sorry.  The thread is too
+confusing and people are not agreeing at all.
 
-On Sun, Jan 16, 2022 at 03:19:06PM +0100, Greg Kroah-Hartman wrote:
-> On Sat, Jan 15, 2022 at 07:36:43PM +0100, Uwe Kleine-K=F6nig wrote:
-> > A possible compromise: We can have both. We rename
-> > platform_get_irq_optional() to platform_get_irq_silent() (or
-> > platform_get_irq_silently() if this is preferred) and once all users are
-> > are changed (which can be done mechanically), we reintroduce a
-> > platform_get_irq_optional() with Sergey's suggested semantic (i.e.
-> > return 0 on not-found, no error message printking).
->=20
-> Please do not do that as anyone trying to forward-port an old driver
-> will miss the abi change of functionality and get confused.  Make
-> build-breaking changes, if the way a function currently works is
-> changed in order to give people a chance.
-
-Fine for me. I assume this is a Nack for Sergey's patch?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---4nmi7jsy4ulpuolr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHmhdgACgkQwfwUeK3K
-7AlOfwf/RajwcOGZOaXu4/Hu0uIDDH01Izth3e7+cbt0DvzofBxZhrwLi6+7R8Ii
-FDvio63jvvz41IZoKpB3Sp3cJe6N5nHxfoeVbVFx1oDC5ZSb3xpzIKBpz6usYWSK
-mpEzG1FLl/zHhNcFBvzOrkoJNhHOKKqTkCMQ9+SMFB2QpzY2GlhGyeloYsR5wRlS
-36dfdheA3MnzMe+YgqcykvdU78oW4Ajcnq+31xfkY4u4FtLXz44Pz4j32buAaqtw
-/Ryrr0NnSSAdwMkNMebBf3XX8emOhXd3w/ActLJA50YN3K1ePF1ViBaNwB6wIGGA
-DmnwP6lCav2JoRm3yOWVlcLDeltVJA==
-=IrhS
------END PGP SIGNATURE-----
-
---4nmi7jsy4ulpuolr--
-
-
---===============6057123120165751961==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+greg k-h
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6057123120165751961==--
-
