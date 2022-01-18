@@ -4,58 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3149DC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 12:50:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 905E2C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 14:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m8Dod8D59jqDMcrPTwz76WXGbtVU54cyL8L/pZtLAP0=; b=tDKuxc24rJt2Jb
-	wJfSCL1xcljIONSni4dsKAwHCCPG7oWahKZvO+28MN1hVpSDcjABR32Zt7rJgVYc2Qoj0YEWckPGT
-	4xuY7sKf6zwwoZ0DUOV++qOv4RQr++1hxsrQva0CCm9p4415ugIfjB0yzpsISmK0lBIfhuLFMJnR+
-	NTXSwcYfCFmutL4mghOcV3N1yAFyc/Zwm0twWUtwa1IxNAGK5GDJrzEYdnvTadrqa358TIoIaRten
-	i9nqDfYssu0ndaqXnKA/05+9gXWIDiL1D2wWX4/2ZMxVPEVJXlb0uqKC8JMPpR1gTeAPPXIRSE/LK
-	LJvSnYglnc6zlXeHdxtw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kKSTqmu8aC4PEdI6Jputu7BJxZvy8QlKsUpRwdZgHEU=; b=EdHtk8EQjrmOYsVxJrUi65AvtY
+	g+c4qmfyVxieB8dfnSsEB86cEM4hGjLqMqUQNoMpyVDu5Y++I9T9c2W7l+4Az/ArX/if7gQwSfmm3
+	JT4ETXBoVPSnofXKh2Snb8noRQdlTv29A0juUMt/iyPt3z3f2/9hRAGjdMxwq+vB0LJv9eQbCQcmk
+	85vyjVG7WZ1dZyXQeY8SL55VOmiS25UlFIAJFqB5Ezj+Nez9K+TJaUb7fOOUSwLlTbNdtBxggOqOj
+	eMIRNrcC6FT42vEjQsyJDfQ13kFZPl7L/VRNIs0CLFUml38cOAzGdwK5ZCwgv4IeLy5biv2rKlPq1
+	7Hj/d1iQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9nvb-001VrZ-Iv; Tue, 18 Jan 2022 12:49:35 +0000
-Received: from mail-vk1-f176.google.com ([209.85.221.176])
+	id 1n9pWM-001ra7-9H; Tue, 18 Jan 2022 14:31:38 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9nvY-001Vqg-36; Tue, 18 Jan 2022 12:49:33 +0000
-Received: by mail-vk1-f176.google.com with SMTP id d189so12373565vkg.3;
- Tue, 18 Jan 2022 04:49:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=iDNGF1VjVomGlE1aVlmhPbvwByegTECQGcsrxubfQG0=;
- b=k95W8pyJtobN5JeUKeMCN92Rn2VktHZ9AcJqr6vu5dWhesSuWjNjhKInzDV9SS5Ufz
- 5/Sqv8gtsX8LFQXMPFUYCgDn36sFE3YbLlU9SNn4uHRs04DzJD9zc3J7uXejl9OaydNj
- Eg4izd5sc+d/IgaXzWUuAWdSSHv3A8wgRLKtXJ9ZkPu7DHd3b2NUDBWSMY2zkbuKa5NX
- 7XUENXQK+3HfwGsSpsCTz18KGYvV1AXsxWYM+TVsFSxxrLCWZyglOmYeAvcEjrfwqt6B
- dNh4MAt5wlcROPsnRpDNv+j5xtAxM4AwPmXlVwxl597wgyciQ14puVt4m3Hzp952zIna
- zh5A==
-X-Gm-Message-State: AOAM533EqUxm1CMH8adrDnu6b2S0CG1Hd9dmw7YUy7RNRmq8Bwrm3mKI
- ++C3/9JC3T1S9ZXDZjr3J6yAr2hcY+TitdKL
-X-Google-Smtp-Source: ABdhPJz1c+WLuFnV57v3C2ZWbxVal2yKWRf8upoasYmUbY3aNjd4LZs/sA8AcG9lzuqTjnXVkWxUMA==
-X-Received: by 2002:a1f:aed3:: with SMTP id x202mr7076376vke.40.1642510169774; 
- Tue, 18 Jan 2022 04:49:29 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com.
- [209.85.222.48])
- by smtp.gmail.com with ESMTPSA id o12sm3648569uae.1.2022.01.18.04.49.27
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 18 Jan 2022 04:49:27 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id y4so36304744uad.1;
- Tue, 18 Jan 2022 04:49:27 -0800 (PST)
-X-Received: by 2002:a05:6102:3581:: with SMTP id
- h1mr9266907vsu.5.1642510166831; 
- Tue, 18 Jan 2022 04:49:26 -0800 (PST)
-MIME-Version: 1.0
-References: <c9026f17-2b3f-ee94-0ea3-5630f981fbc1@omp.ru>
- <CAMuHMdXVbRudGs69f9ZzaP1PXhteDNZiXA658eMFAwP4nr9r3w@mail.gmail.com>
- <20220117092444.opoedfcf5k5u6otq@pengutronix.de>
+ id 1n9pWH-001rZQ-Lk
+ for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 14:31:36 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n9pUj-0000wL-Of; Tue, 18 Jan 2022 15:29:57 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n9pUY-00B1DJ-N0; Tue, 18 Jan 2022 15:29:45 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1n9pUX-0003HD-OO; Tue, 18 Jan 2022 15:29:45 +0100
+Date: Tue, 18 Jan 2022 15:29:45 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Jaroslav Kysela <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-phy@lists.infradead.org,
+ linux-spi <linux-spi@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Khuong Dinh <khuong@os.amperecomputing.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ platform-driver-x86@vger.kernel.org,
+ Linux PWM List <linux-pwm@vger.kernel.org>,
+ Robert Richter <rric@kernel.org>, Saravanan Sekar <sravanhome@gmail.com>,
+ Corey Minyard <minyard@acm.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ John Garry <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ openipmi-developer@lists.sourceforge.net,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Benson Leung <bleung@chromium.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+ Richard Weinberger <richard@nod.at>, Mun Yew Tham <mun.yew.tham@intel.com>,
+ Eric Auger <eric.auger@redhat.com>, netdev <netdev@vger.kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Vinod Koul <vkoul@kernel.org>,
+ James Morse <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>,
+ Sebastian Reichel <sre@kernel.org>,
+ Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ linux-mediatek@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
+Message-ID: <20220118142945.6y3rmvzt44pjpr4z@pengutronix.de>
+References: <20220117092444.opoedfcf5k5u6otq@pengutronix.de>
  <CAMuHMdUgZUeraHadRAi2Z=DV+NuNBrKPkmAKsvFvir2MuquVoA@mail.gmail.com>
  <20220117114923.d5vajgitxneec7j7@pengutronix.de>
  <CAMuHMdWCKERO20R2iVHq8P=BaoauoBAtiampWzfMRYihi3Sb0g@mail.gmail.com>
@@ -64,71 +108,17 @@ References: <c9026f17-2b3f-ee94-0ea3-5630f981fbc1@omp.ru>
  <20220118090913.pjumkq4zf4iqtlha@pengutronix.de>
  <CAMuHMdUW8+Y_=uszD+JOZO3Lpa9oDayk+GO+cg276i2f2T285w@mail.gmail.com>
  <20220118120806.pbjsat4ulg3vnhsh@pengutronix.de>
-In-Reply-To: <20220118120806.pbjsat4ulg3vnhsh@pengutronix.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 18 Jan 2022 13:49:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWkwV9XE_R5FZ=jPtDwLpDbEngG6+X2JmiDJCZJZvUjYA@mail.gmail.com>
-Message-ID: <CAMuHMdWkwV9XE_R5FZ=jPtDwLpDbEngG6+X2JmiDJCZJZvUjYA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, 
- Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org, 
- Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>, 
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Jaroslav Kysela <perex@perex.cz>, 
- Guenter Roeck <groeck@chromium.org>, Thierry Reding <thierry.reding@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux I2C <linux-i2c@vger.kernel.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-phy@lists.infradead.org, 
- linux-spi <linux-spi@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>, 
- "David S. Miller" <davem@davemloft.net>,
- Khuong Dinh <khuong@os.amperecomputing.com>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Lee Jones <lee.jones@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>,
- Kishon Vijay Abraham I <kishon@ti.com>, 
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, 
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- Jakub Kicinski <kuba@kernel.org>, 
- Zhang Rui <rui.zhang@intel.com>, platform-driver-x86@vger.kernel.org, 
- Linux PWM List <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>, 
- Saravanan Sekar <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>, 
- Linux PM list <linux-pm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, John Garry <john.garry@huawei.com>,
- Peter Korsgaard <peter@korsgaard.com>,
- William Breathitt Gray <vilhelm.gray@gmail.com>, 
- Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>, 
- Alex Williamson <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>, 
- Borislav Petkov <bp@alien8.de>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, 
- openipmi-developer@lists.sourceforge.net, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Benson Leung <bleung@chromium.org>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, 
- linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>, 
- Richard Weinberger <richard@nod.at>, Mun Yew Tham <mun.yew.tham@intel.com>, 
- Eric Auger <eric.auger@redhat.com>, netdev <netdev@vger.kernel.org>, 
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Cornelia Huck <cohuck@redhat.com>, 
- Linux MMC List <linux-mmc@vger.kernel.org>,
- Joakim Zhang <qiangqing.zhang@nxp.com>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, 
- Vinod Koul <vkoul@kernel.org>, James Morse <james.morse@arm.com>, 
- Zha Qipeng <qipeng.zha@intel.com>, Sebastian Reichel <sre@kernel.org>, 
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>, 
- linux-mediatek@lists.infradead.org, 
- Brian Norris <computersforpeace@gmail.com>, 
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+ <CAMuHMdWkwV9XE_R5FZ=jPtDwLpDbEngG6+X2JmiDJCZJZvUjYA@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdWkwV9XE_R5FZ=jPtDwLpDbEngG6+X2JmiDJCZJZvUjYA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220118_044932_169027_E8D83638 
-X-CRM114-Status: GOOD (  47.33  )
+X-CRM114-CacheID: sfid-20220118_063134_912546_D567D558 
+X-CRM114-Status: GOOD (  49.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,79 +130,167 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5190227249065813694=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVXdlLAoKT24gVHVlLCBKYW4gMTgsIDIwMjIgYXQgMTowOCBQTSBVd2UgS2xlaW5lLUvDtm5p
-Zwo8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPiBPbiBUdWUsIEphbiAx
-OCwgMjAyMiBhdCAxMDozNzoyNUFNICswMTAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6Cj4g
-PiBPbiBUdWUsIEphbiAxOCwgMjAyMiBhdCAxMDowOSBBTSBVd2UgS2xlaW5lLUvDtm5pZwo+ID4g
-PHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6Cj4gPiA+IEZvciB0aGUgKGNs
-a3xncGlvZHxyZWd1bGF0b3IpX2dldF9vcHRpb25hbCgpIHlvdSBkb24ndCBoYXZlIHRvIGNoZWNr
-Cj4gPiA+IGFnYWluc3QgdGhlIG1hZ2ljIG5vdC1mb3VuZCB2YWx1ZSAoc28gbm8gaW1wbGVtZW50
-YXRpb24gZGV0YWlsIG1hZ2ljCj4gPiA+IGxlYWtzIGludG8gdGhlIGNhbGxlciBjb2RlKSBhbmQg
-anVzdCBwYXNzIGl0IHRvIHRoZSBuZXh0IEFQSSBmdW5jdGlvbi4KPiA+ID4gKEFuZCBteSBleHBl
-Y3RhdGlvbiB3b3VsZCBiZSB0aGF0IGlmIHlvdSBjaG9zZSB0byByZXByZXNlbnQgbm90LWZvdW5k
-IGJ5Cj4gPiA+ICh2b2lkICopNjYgaW5zdGVhZCBvZiBOVUxMLCB5b3Ugd29uJ3QgaGF2ZSB0byBh
-ZGFwdCBhbnkgdXNlciwganVzdCB0aGUKPiA+ID4gZnJhbWV3b3JrIGludGVybmFsIGNoZWNrcy4g
-VGhpcyBpcyBhIGdvb2QgdGhpbmchKQo+ID4KPiA+IEFoLCB0aGVyZSBpcyB0aGUgd3JvbmcgYXNz
-dW1wdGlvbjogZHJpdmVycyBzb21ldGltZXMgZG8gbmVlZCB0byBrbm93Cj4gPiBpZiB0aGUgcmVz
-b3VyY2Ugd2FzIGZvdW5kLCBhbmQgdGh1cyBkbyBuZWVkIHRvIGtub3cgYWJvdXQgKHZvaWQgKik2
-NiwKPiA+IC1FTk9ERVYsIG9yIC1FTlhJTy4gIEkgYWxyZWFkeSBnYXZlIGV4YW1wbGVzIGZvciBJ
-UlEgYW5kIGNsayBiZWZvcmUuCj4gPiBJIGNhbiBpbWFnaW5lIHRoZXNlIGV4aXN0IGZvciBncGlv
-ZCBhbmQgcmVndWxhdG9yLCB0b28sIGFzIHNvb24gYXMKPiA+IHlvdSBnbyBiZXlvbmQgdGhlIHRy
-aXZpYWwgImVuYWJsZSIgYW5kICJkaXNhYmxlIiB1c2UtY2FzZXMuCj4KPiBNeSBwcmVtaXNlIGlz
-IHRoYXQgZXZlcnkgdXNlciB3aG8gaGFzIHRvIGNoZWNrIGZvciAibm90IGZvdW5kIgo+IGV4cGxp
-Y2l0bHkgc2hvdWxkIG5vdCB1c2UgKGNsa3xncGlvZClfZ2V0X29wdGlvbmFsKCkgYnV0Cj4gKGNs
-a3xncGlvZClfZ2V0KCkgYW5kIGRvIHByb3BlciAoYW5kIGV4cGxpY2l0KSBlcnJvciBoYW5kbGlu
-ZyBmb3IKPiAtRU5PREVWLiAoY2xrfGdwaW9kKV9nZXRfb3B0aW9uYWwoKSBpcyBvbmx5IGZvciB0
-aGVzZSB0cml2aWFsIHVzZS1jYXNlcy4KPgo+ID4gQW5kIDAvTlVMTCB2cy4gPiAwIGlzIHRoZSBu
-YXR1cmFsIGNoZWNrIGhlcmU6IG1pc3NpbmcsIGJ1dCBub3QKPiA+IGFuIGVycm9yLgo+Cj4gRm9y
-IG1lIGl0IGl0IDEwMCUgaXJyZWxldmFudCBpZiAibm90IGZvdW5kIiBpcyBhbiBlcnJvciBmb3Ig
-dGhlIHF1ZXJ5Cj4gZnVuY3Rpb24gb3Igbm90LiBJIGp1c3QgaGF2ZSB0byBiZSBhYmxlIHRvIGNo
-ZWNrIGZvciAibm90IGZvdW5kIiBhbmQKPiByZWFjdCBhY2NvcmRpbmdseS4KPgo+IEFuZCBhZGRp
-bmcgYSBmdW5jdGlvbgo+Cj4gICAgICAgICBkZWYgcGxhdGZvcm1fZ2V0X2lycV9vcGlvbmFsKCk6
-Cj4gICAgICAgICAgICAgICAgIHJldCA9IHBsYXRmb3JtX2dldF9pcnEoKQo+ICAgICAgICAgICAg
-ICAgICBpZiByZXQgPT0gLUVOWElPOgo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAw
-Cj4gICAgICAgICAgICAgICAgIHJldHVybiByZXQKPgo+IGl0J3Mgbm90IGEgdXNlZnVsIGFkZGl0
-aW9uIHRvIHRoZSBBUEkgaWYgSSBjYW5ub3QgdXNlIDAgYXMgYSBkdW1teQo+IGJlY2F1c2UgaXQg
-ZG9lc24ndCBzaW1wbGlmeSB0aGUgY2FsbGVyIGVub3VnaCB0byBqdXN0aWZ5IHRoZSBhZGRpdGlv
-bmFsCj4gZnVuY3Rpb24uCj4KPiBUaGUgb25seSB0aGluZyBJIG5lZWQgdG8gYmUgYWJsZSBpcyB0
-byBkaXN0aW5ndWlzaCB0aGUgY2FzZXMgInRoZXJlIGlzCj4gYW4gaXJxIiwgInRoZXJlIGlzIG5v
-IGlycSIgYW5kIGFueXRoaW5nIGVsc2UgaXMgInRoZXJlIGlzIGEgcHJvYmxlbSBJCj4gY2Fubm90
-IGhhbmRsZSBhbmQgc28gZm9yd2FyZCBpdCB0byBteSBjYWxsZXIiLiBUaGUgc2VtYW50aWMgb2YK
-PiBwbGF0Zm9ybV9nZXRfaXJxKCkgaXMgYWJsZSB0byBzYXRpc2Z5IHRoaXMgcmVxdWlyZW1lbnRb
-MV0sIHNvIHdoeSBpbnRyb2R1Y2UKPiBwbGF0Zm9ybV9nZXRfaXJxX29waW9uYWwoKSBmb3IgdGhl
-IHNtYWxsIGFkdmFudGFnZSB0aGF0IEkgY2FuIGNoZWNrIGZvcgo+IG5vdC1mb3VuZCB1c2luZwo+
-Cj4gICAgICAgICBpZiAoIWlycSkKPgo+IGluc3RlYWQgb2YKPgo+ICAgICAgICAgaWYgKGlycSAh
-PSAtRU5YSU8pCj4KPiA/IFRoZSBzZW1hbnRpYyBvZiBwbGF0Zm9ybV9nZXRfaXJxKCkgaXMgZWFz
-aWVyICgiRWl0aGVyIGEgdXNhYmxlCj4gbm9uLW5lZ2F0aXZlIGlycSBudW1iZXIgb3IgYSBuZWdh
-dGl2ZSBlcnJvciBudW1iZXIiKSBjb21wYXJlZCB0bwo+IHBsYXRmb3JtX2dldF9pcnFfb3B0aW9u
-YWwoKSAoIkVpdGhlciBhIHVzYWJsZSBwb3NpdGl2ZSBpcnEgbnVtYmVyIG9yIGEKPiBuZWdhdGl2
-ZSBlcnJvciBudW1iZXIgb3IgMCBtZWFuaW5nIG5vdCBmb3VuZCIpLiBVc2FnZSBvZgo+IHBsYXRm
-b3JtX2dldF9pcnEoKSBpc24ndCBoYXJkZXIgb3IgbW9yZSBleHBlbnNpdmUgKG5laXRoZXIgZm9y
-IGEgaHVtYW4KPiByZWFkZXIgbm9yIGZvciBhIG1hY2hpbmcgcnVubmluZyB0aGUgcmVzdWx0aW5n
-IGNvbXBpbGVkIGNvZGUpLgo+IEZvciBhIGh1bWFuIHJlYWRlcgo+Cj4gICAgICAgICBpZiAoaXJx
-ICE9IC1FTlhJTykKPgo+IGlzIGV2ZW4gZWFzaWVyIHRvIHVuZGVyc3RhbmQgYmVjYXVzZSBmb3IK
-Pgo+ICAgICAgICAgaWYgKCFpcnEpCj4KPiB0aGV5IGhhdmUgdG8gY2hlY2sgd2hlcmUgdGhlIHZh
-bHVlIGNvbWVzIGZyb20sIHNlZSBpdCdzCj4gcGxhdGZvcm1fZ2V0X2lycV9vcHRpb25hbCgpIGFu
-ZCB1bmRlcnN0YW5kIHRoYXQgMCBtZWFucyBub3QtZm91bmQuCgoidklSUSB6ZXJvIGRvZXMgbm90
-IGV4aXN0LiIKCj4gVGhpcyBmdW5jdGlvbiBqdXN0IGFkZHMgb3ZlcmhlYWQgYmVjYXVzZSBhcyBh
-IGlycSBmcmFtZXdvcmsgdXNlciBJIGhhdmUKPiB0byB1bmRlcnN0YW5kIGFub3RoZXIgZnVuY3Rp
-b24uIEZvciBtZSB0aGUgYWRkZWQgYmVuZWZpdCBpcyB0b28gc21hbGwgdG8KPiBqdXN0aWZ5IHRo
-ZSBhZGRpdGlvbmFsIGZ1bmN0aW9uLiBBbmQgeW91IGJyZWFrIG91dC1vZi10cmVlIGRyaXZlcnMu
-Cj4gVGhlc2UgYXJlIGFsbCBubyBtYWpvciBjb3VudGVyIGFyZ3VtZW50cywgYnV0IGFzIHRoZSBh
-ZHZhbnRhZ2UgaXNuJ3QKPiBtYWpvciBlaXRoZXIsIHRoZXkgc3RpbGwgbWF0dGVyLgo+Cj4gQmVz
-dCByZWdhcmRzCj4gVXdlCj4KPiBbMV0gdGhlIG9ubHkgYW5ub3lpbmcgdGhpbmcgaXMgdGhlIGVy
-cm9yIG1lc3NhZ2UuCgpTbyB0aGVyZSdzIHN0aWxsIGEgbmVlZCBmb3IgdHdvIGZ1bmN0aW9ucy4K
-Ckdye29ldGplLGVldGluZ31zLAoKICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQKCi0tCkdl
-ZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0g
-Z2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNo
-bmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQKd2hlbiBJJ20gdGFsa2lu
-ZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlr
-ZSB0aGF0LgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRz
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+
+--===============5190227249065813694==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="daitmup5biyyqkwr"
+Content-Disposition: inline
+
+
+--daitmup5biyyqkwr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jan 18, 2022 at 01:49:15PM +0100, Geert Uytterhoeven wrote:
+> nst the magic not-found value (so no implementation detail magic
+> > > > leaks into the caller code) and just pass it to the next API functi=
+on=3D
+> .
+> > > > (And my expectation would be that if you chose to represent not-fou=
+nd=3D
+>  by
+> > > > (void *)66 instead of NULL, you won't have to adapt any user, just =
+th=3D
+> e
+> > > > framework internal checks. This is a good thing!)
+> > >
+> > > Ah, there is the wrong assumption: drivers sometimes do need to know
+> > > if the resource was found, and thus do need to know about (void *)66,
+> > > -ENODEV, or -ENXIO.  I already gave examples for IRQ and clk before.
+> > > I can imagine these exist for gpiod and regulator, too, as soon as
+> > > you go beyond the trivial "enable" and "disable" use-cases.
+> >
+> > My premise is that every user who has to check for "not found"
+> > explicitly should not use (clk|gpiod)_get_optional() but
+> > (clk|gpiod)_get() and do proper (and explicit) error handling for
+> > -ENODEV. (clk|gpiod)_get_optional() is only for these trivial use-cases.
+> >
+> > > And 0/NULL vs. > 0 is the natural check here: missing, but not
+> > > an error.
+> >
+> > For me it it 100% irrelevant if "not found" is an error for the query
+> > function or not. I just have to be able to check for "not found" and
+> > react accordingly.
+> >
+> > And adding a function
+> >
+> >         def platform_get_irq_opional():
+> >                 ret =3D3D platform_get_irq()
+> >                 if ret =3D3D=3D3D -ENXIO:
+> >                         return 0
+> >                 return ret
+> >
+> > it's not a useful addition to the API if I cannot use 0 as a dummy
+> > because it doesn't simplify the caller enough to justify the additional
+> > function.
+> >
+> > The only thing I need to be able is to distinguish the cases "there is
+> > an irq", "there is no irq" and anything else is "there is a problem I
+> > cannot handle and so forward it to my caller". The semantic of
+> > platform_get_irq() is able to satisfy this requirement[1], so why intro=
+du=3D
+> ce
+> > platform_get_irq_opional() for the small advantage that I can check for
+> > not-found using
+> >
+> >         if (!irq)
+> >
+> > instead of
+> >
+> >         if (irq !=3D3D -ENXIO)
+> >
+> > ? The semantic of platform_get_irq() is easier ("Either a usable
+> > non-negative irq number or a negative error number") compared to
+> > platform_get_irq_optional() ("Either a usable positive irq number or a
+> > negative error number or 0 meaning not found"). Usage of
+> > platform_get_irq() isn't harder or more expensive (neither for a human
+> > reader nor for a maching running the resulting compiled code).
+> > For a human reader
+> >
+> >         if (irq !=3D3D -ENXIO)
+> >
+> > is even easier to understand because for
+> >
+> >         if (!irq)
+> >
+> > they have to check where the value comes from, see it's
+> > platform_get_irq_optional() and understand that 0 means not-found.
+>=20
+> "vIRQ zero does not exist."
+
+With that statement in mind I would expect that a function that gives me
+an (v)irq number never returns 0.
+
+> > This function just adds overhead because as a irq framework user I have
+> > to understand another function. For me the added benefit is too small to
+> > justify the additional function. And you break out-of-tree drivers.
+> > These are all no major counter arguments, but as the advantage isn't
+> > major either, they still matter.
+> >
+> > Best regards
+> > Uwe
+> >
+> > [1] the only annoying thing is the error message.
+>=20
+> So there's still a need for two functions.
+
+Or a single function not emitting an error message together with the
+callers being responsible for calling dev_err().
+
+So the options in my preference order (first is best) are:
+
+ - Remove the printk from platform_get_irq() and remove
+   platform_get_irq_optional();
+
+ - Rename platform_get_irq_optional() to platform_get_irq_silently()
+
+ - Keep platform_get_irq_optional() as is
+
+ - Collect underpants
+
+ - ?
+
+ - Change semantic of platform_get_irq_optional()
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--daitmup5biyyqkwr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHmztAACgkQwfwUeK3K
+7AlRQAf6AhYDCHaOxGO6hZ2L8wLnlnF6sFrLHSkHS2GJOuagJzvJ418JJIk3zkkN
+JJX1REM8rmAXGwIKEat5Ea7goFSWiSw4fr7r3eq/xyxBos5XFH7REZd9Le7ac4e7
+BrLcQENmj/gFhEdGk+DOgvOWGWAvWnwp2yKMj33qTbKi72A831OIMsB3+kFwqMt9
+f4X3Ng5JNb59Tl0UXy4GhU/8JdsULov6t3SdBUSdZvjE5yXA5IdEctWoZTaW6Rf9
+NILpiVlIFQCBsJ9haLtjfp1/EXNVmkb4+5eTiJQndvnAZGDV6FBtRn4PPAYSc3L/
+bqjzqdfJVKCdlgfMrOrsPAv2a0DZGQ==
+=l/Sj
+-----END PGP SIGNATURE-----
+
+--daitmup5biyyqkwr--
+
+
+--===============5190227249065813694==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5190227249065813694==--
+
