@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 032D1C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 03:31:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE93C433FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 18 Jan 2022 03:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WegewtRoOEh9d9QfPd+2aUGpFqwdHGXcoGJkOnA3O7o=; b=BkM/bx2kdOBdJt
-	eXbE3zWrMzA/vWcb8aeIXByzIaC0qgxITJ5RM54LnAMZN4N8DY6J47+jhWFusHXp6npVyjh8vQoqA
-	iB8ewCYCF/C8PKF9Ly1FvcWJ0nR+nVGjXJ8pGsrvGNTRlzWXbi81LBrSVCOk6MRYV+cH7Pb/hk2+/
-	L1K27g44igQFil7xOru/mrZ/pNpnArFMzsob5DEgm8p3nHqMK9GGARch8PYN5UWogrKtUaZSj9TSw
-	tdYuTx0n7HF1pF4dch8xaxaUHLWOmuZPj1CntSVzwaxzDo8PsgifDwmfz4naLf4OtzyntTn3RtPMD
-	c0tpyp8atyNhYvKAIGAg==;
+	List-Owner; bh=lts/0t2Rxq/TJA58nZ37l+UYKmlJ/V6piJ8G7OieJMc=; b=ANA68NCkLY41Tb
+	Rq3xwNFOUPTZWlOyA7CDnG7JkIWclrvwhaK04QRZz9LV1b7kxz+oQzAn3WxcyGQ0utpnhdUOs9gEm
+	fCb6PEYwTU+e75+ht2TTVi7nXmHOIX892Jik6cZyss43HJL1VLG2ByA//cS8DnKclckxOgoU1VQEj
+	58IFUuI3cWsZxmdahmpcs/B+W72Tkgtd3OszYyp6ytzlXMQegoYngc6cQ0/DOS4mUO7+srZlmBKmh
+	6hKHOMZD76sUHM+G7xxWjYhfoL2beqXHFoNnCVdZTbagS8pnRkDYjX4nLy+XL1LLFM3HgdHuxn6vr
+	wTq3rFVvYGOIqLM/DMfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1n9fDK-00HTgH-IE; Tue, 18 Jan 2022 03:31:19 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1n9fHZ-00HVG6-WC; Tue, 18 Jan 2022 03:35:42 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1n9eY3-00H7fG-1k
- for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 02:48:41 +0000
+ id 1n9eaH-00H8hz-Cf
+ for linux-mtd@lists.infradead.org; Tue, 18 Jan 2022 02:50:59 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B5580B81229;
- Tue, 18 Jan 2022 02:48:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8552BC36AEB;
- Tue, 18 Jan 2022 02:48:36 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0BDC5B811CE;
+ Tue, 18 Jan 2022 02:50:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E81CFC36AEB;
+ Tue, 18 Jan 2022 02:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642474117;
- bh=M+C72fu1TYuBwspSurqtW2dRhsY/waKoaRw+xlfV8vU=;
+ s=k20201202; t=1642474254;
+ bh=NWZwtIg3tmBBM8P4IdY6qZLM6UCm8Zt9XReei62OV98=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=M3/qb5IHVO/yRhAR19SNh53qyAZ3YM1iDW5ATcmNDINi7DIh2NwHyg2L5CcWTCR1e
- 1MnyyGWGaWc9MH9ljhBjAwbh40ZgkP1Twlh8kERV9tc6ZU5cSK4syLewMh7trmMLq0
- YQNauqT4gX+0f0hnq5s5orP0lg2J9XtudNpslmCkE4y3p93Y0egy+SOvTYbc58Gddn
- St6I0y1fH1x4ezSGiTFAKnTIMqtWd8zt75SFvyEkKb6MgY0KKZUmkt0FHC0QXsN/Nd
- gexXz/p4kaTxFujVaaS7V5AQ5Q3Yo2sbO9TsfvUnaggk1f/LE0+C983NAmZUXgmLkn
- cQaMKv8k6F0KQ==
+ b=WBoKw9tbtXYkaQ33WPdS9KNyxVQc8rTJuW5PwMHjyPhbBEb6h77WROZAlgH4idqqL
+ 2h0mBxSlFQNNeGyaeUKkINBCtRkHQWR9+aYfdBGUCQzSnIS7Wl3Z+QOTn7jVJi2qim
+ atVUmqzBKcly3VYviSGiA8kCNWptbCozR04j7Ho96pkRqd6PcUnlPAVjDfsehLMDoQ
+ lyxmtt+ccyV2Wr8r9U4zmXYvMUNFUakQ/i4N340k2HE++1OA3FOnq1dvv0h6/qjdnl
+ G6b4naNYQmA4HaxQ8uutBE/8XcwrpxpMEVKbOnawxR8FiwBL6JE2p5ELfR4KB1XKdb
+ QTGKc7gZR/tSQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Kyeong Yoo <kyeong.yoo@alliedtelesis.co.nz>,
  Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>,
  dwmw2@infradead.org, joel@jms.id.au, linux-mtd@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 41/59] jffs2: GC deadlock reading a page that is
+Subject: [PATCH AUTOSEL 4.14 42/56] jffs2: GC deadlock reading a page that is
  used in jffs2_write_begin()
-Date: Mon, 17 Jan 2022 21:46:42 -0500
-Message-Id: <20220118024701.1952911-41-sashal@kernel.org>
+Date: Mon, 17 Jan 2022 21:48:54 -0500
+Message-Id: <20220118024908.1953673-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220118024701.1952911-1-sashal@kernel.org>
-References: <20220118024701.1952911-1-sashal@kernel.org>
+In-Reply-To: <20220118024908.1953673-1-sashal@kernel.org>
+References: <20220118024908.1953673-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220117_184839_410385_133E7E94 
-X-CRM114-Status: GOOD (  20.98  )
+X-CRM114-CacheID: sfid-20220117_185057_744469_A0A6BE8C 
+X-CRM114-Status: GOOD (  20.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,7 +107,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 25 insertions(+), 15 deletions(-)
 
 diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 7d8654a1472ef..3047872fdac9b 100644
+index bd0428bebe9b7..221eb2bd205e4 100644
 --- a/fs/jffs2/file.c
 +++ b/fs/jffs2/file.c
 @@ -135,20 +135,15 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
