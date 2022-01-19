@@ -4,60 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E61BC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jan 2022 15:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E28A3C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jan 2022 15:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VpEzBSZvutXGnyxkRk1Ztu07TSSbAJiKEcKgNY05MFQ=; b=Dx90n35IBZCrFYeMA/IvsWu+Bf
-	VQ3i/qdDKfoVo7Xp/4ebFVMY3CKbLNJ5sZwdqUeU0CA/Bo1TgHU8mGHI3c0q2JRHBvQrrpT92wmpy
-	AV66krkpyYoJ/wkLmjHTbx+ftY7vZd7ARsl8v614Ozg2SmBBqzHN9HCZOLjGDNcqCaEPHb+4CHJVc
-	X/3PcCiCh8rOrPhfPeZnza9kbSTfodWfC/0aN+6VjeDzTASDhfFVooIX6yZGJEkjANIIkIqpyh/Kt
-	p2+5c+bCD51MkBMjXRQL3g4GnjB5ezNFlG0pgKVJt+BkeBJStjajT+cqIsSZ8HoKsIz1BOMqfJ3ir
-	J/C/rZJg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=oD6wrnXCvgiNsgTAesj8Ex4aVvCbnAxMn4mlijOS7o4=; b=2L95bZRXoVlnuSf4pdsIKfr+rr
+	0MwQup+loa2lGxkI4j4S0a12sFcZjK89lkLWLSis0154Y2/SBy2NSkegdvi/ts2GWHuBabLYrNV1q
+	ZZxB0UIgLJM5vaxC+j2pBKP/6G2vK6ywvDcGi0uH3Too8s4TD7wyUvgFztlSXDYDN0N2PgHD5RWdu
+	43op/6g2bdgrxE907CtaYmDG3Om+j1Cg49A2kFhvsNz4MzX+y2QzuFRbqf1PsF7d4GD4qUhSLxc4Y
+	9CpgffD2DC+4HYZZgiRuvgqsYRO/EyPC0KJ5vTdUWh/0z2K/D3vbN5kpuBwaIT/RHNT/R4Nbipydj
+	waY02DYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nADDp-006DnP-PD; Wed, 19 Jan 2022 15:50:05 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nADE8-006DqO-VZ; Wed, 19 Jan 2022 15:50:25 +0000
+Received: from mxout02.lancloud.ru ([45.84.86.82])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nADDl-006Dly-CS
- for linux-mtd@lists.infradead.org; Wed, 19 Jan 2022 15:50:03 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id A2B9622175;
- Wed, 19 Jan 2022 16:49:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1642607397;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=dtcA+WKJs7irWegZONjEkZgZiCTTQaVTi+Rl5eLOVhk=;
- b=QhO0ki9ItUnj7BmgPIJE8Lp54kr9avDc35TohqsR1lIMIJC8IQvIEcWBXiIY8iPuKjGPI4
- Gt5dsN23oRbTwAzozcTn67jocOkOIU4kz9T1bAS9GdL077iyzSnShnCFpi6Tdc5u2wlyyo
- 7PEI0CvvoHg9Kve/HrM1jF2loV7QJYs=
+ id 1nADE3-006Dom-3h; Wed, 19 Jan 2022 15:50:21 +0000
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru D5BDB20C97D7
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Lunn
+ <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Jiri Slaby <jirislaby@kernel.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, <linux-iio@vger.kernel.org>, Linus Walleij
+ <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ <alsa-devel@alsa-project.org>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Sebastian Reichel <sre@kernel.org>,
+ <linux-phy@lists.infradead.org>, Thierry Reding <thierry.reding@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <linux-gpio@vger.kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Guenter Roeck <groeck@chromium.org>, Lee Jones <lee.jones@linaro.org>,
+ <openipmi-developer@lists.sourceforge.net>, Saravanan Sekar
+ <sravanhome@gmail.com>, Khuong Dinh <khuong@os.amperecomputing.com>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Matthias Schiffer
+ <matthias.schiffer@ew.tq-group.com>, <kvm@vger.kernel.org>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>, "Bartosz
+ Golaszewski" <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ <bcm-kernel-feedback-list@broadcom.com>, <linux-serial@vger.kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>, "Jaroslav
+ Kysela" <perex@perex.cz>, <platform-driver-x86@vger.kernel.org>,
+ <linux-pwm@vger.kernel.org>, John Garry <john.garry@huawei.com>, "Robert
+ Richter" <rric@kernel.org>, Zha Qipeng <qipeng.zha@intel.com>, Corey Minyard
+ <minyard@acm.org>, <linux-pm@vger.kernel.org>, Peter Korsgaard
+ <peter@korsgaard.com>, William Breathitt Gray <vilhelm.gray@gmail.com>, "Mark
+ Gross" <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>, "Alex
+ Williamson" <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>,
+ Borislav Petkov <bp@alien8.de>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Benson Leung <bleung@chromium.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-edac@vger.kernel.org>, Tony Luck <tony.luck@intel.com>, Mun Yew Tham
+ <mun.yew.tham@intel.com>, Eric Auger <eric.auger@redhat.com>,
+ <netdev@vger.kernel.org>, Yoshihiro Shimoda
+ <yoshihiro.shimoda.uh@renesas.com>, Cornelia Huck <cohuck@redhat.com>,
+ <linux-mmc@vger.kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>,
+ <linux-spi@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>, Vinod Koul
+ <vkoul@kernel.org>, James Morse <james.morse@arm.com>, "Pengutronix Kernel
+ Team" <kernel@pengutronix.de>, =?UTF-8?Q?Niklas_S=c3=b6derlund?=
+ <niklas.soderlund@ragnatech.se>, <linux-mediatek@lists.infradead.org>, "Brian
+ Norris" <computersforpeace@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>
+References: <20220110195449.12448-1-s.shtylyov@omp.ru>
+ <20220110195449.12448-2-s.shtylyov@omp.ru>
+ <770fb569-03c8-78f9-c174-94b31e866017@omp.ru>
+ <20220119150238.5sru3vtuwsswdnkx@pengutronix.de>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <f0470e8b-67af-6788-0bca-0be03bb5d0b3@omp.ru>
+Date: Wed, 19 Jan 2022 18:50:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Date: Wed, 19 Jan 2022 16:49:56 +0100
-From: Michael Walle <michael@walle.cc>
-To: Nick <vincent@systemli.org>
-Cc: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org,
- mail@david-bauer.net
-Subject: Re: [PATCH 2/2] mtd: spi-nor: disable 16-bit-sr for macronix
-In-Reply-To: <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
-References: <20211227091638.177917-1-vincent@systemli.org>
- <20211227091638.177917-2-vincent@systemli.org>
- <0db13110-ee6f-2e02-abf9-d5b9eecafcb4@microchip.com>
- <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <22bd791798d15d74060c44f65620921c@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <20220119150238.5sru3vtuwsswdnkx@pengutronix.de>
+Content-Language: en-US
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220119_075001_610348_A5B5399A 
-X-CRM114-Status: GOOD (  14.05  )
+X-CRM114-CacheID: sfid-20220119_075019_544623_4E4ECD57 
+X-CRM114-Status: GOOD (  31.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,34 +104,148 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gMjAyMS0xMi0zMSAxMDoxMCwgc2NocmllYiBOaWNrOgo+IEkgbG9va2VkIG5vdyB0aHJvdWdo
-IGFsbCBkYXRhc2hlZXRzIEkgZm91bmQgYW5kIHRoZSBzaXplcyBvZiB0aGUKPiBzdGF0dXMgcmVn
-aXN0ZXIuIEhvd2V2ZXIsIEkgZGlkIG5vdCBmaW5kIGFueSBkYXRhc2hlZXQgZm9yIHRoZQo+ICJt
-eDY2bDFnNTVnIi4KPiBIb3dldmVyLCBJIGFtIG5vdCBzdXJlIGlmIEkgbWF5YmUgbWlzcyBzb21l
-dGhpbmcgdG8gc2VlIGlmCj4gIlNOT1JfRl9IQVNfMTZCSVRfU1IiIGlzIHN1cHBvcnRlZC4gSSBv
-bmx5IGxvb2tlZCBhdCB0aGUgc3RhdHVzCj4gcmVnaXN0ZXIgc2l6ZS4KCkhvdyBkaWQgeW91IGNo
-ZWNrIHRoYXQ/CgpyYW5kb20gZXhhbXBsZToKPiBteDY2dTUxMjM1ZjogOGJpdAo+IGh0dHBzOi8v
-d3d3Lm1hY3Jvbml4LmNvbS9MaXN0cy9EYXRhc2hlZXQvQXR0YWNobWVudHMvNzY3NC9NWDY2VTUx
-MjM1RiwlMjAxLjhWLCUyMDUxMk1iLCUyMHYxLjEucGRmCj4gKHNsaWRlIDM0KQoKRmlndXJlIDIz
-OgpXUlNSIHRha2VzIGJvdGggc3RhdHVzIHJlZ2lzdGVyIGFuZCBjb25maWd1cmF0aW9uIHJlZ2lz
-dGVyLgoKVGhhdCBiZWluZyBzYWlkLiBJJ2QgcHJlZmVyIHRvIGhhdmUgYSBzYW5lIGRlZmF1bHQg
-Zm9yIHRoYXQKZmxhZyAtIHdoaWNoIGlzIHRvIF9ub3RfIHNldCBpdCBieSBkZWZhdWx0LiBGb3Ig
-bm93LCB3ZSBjYW4KanVzdCByZW1vdmUgdGhlIGZsYWcgZnJvbSBzcGlfbm9yX2luaXRfZGVmYXVs
-dF9wYXJhbXMoKSBhbmQKbW92ZSBpdCBpbnRvIHRoZSBtYW51ZmFjdHVyZXIgZGVmYXVsdCBpbml0
-LiBUaGVuIHdlIGNhbgpnbyB0aHJvdWdoIHRoZSBmbGFzaGVzIGFuZCByZW1vdmUgdGhlIGZsYWcg
-dGhlcmUuCgpUaGlzIGlzIG1haW5seSBiZWNhdXNlIGl0IHNlZW1zIHRvIGJlIGEgbGVnYWN5IGZl
-YXR1cmUuIFRvCnF1b3RlIHRoZSBkYXRhc2hlZXQgb2YgdGhlIFdpbmJvbmQgVzI1UTMyRlcgWzFd
-OgoKfCBUaGUgVzI1UTMyRlcgaXMgYWxzbyBiYWNrd2FyZCBjb21wYXRpYmxlIHRvIFdpbmJvbmTi
-gJlzIHByZXZpb3VzCnwgZ2VuZXJhdGlvbnMgb2Ygc2VyaWFsIGZsYXNoIG1lbW9yaWVzLCBpbiB3
-aGljaCB0aGUgU3RhdHVzCnwgUmVnaXN0ZXItMSYyIGNhbiBiZSB3cml0dGVuIHVzaW5nIGEgc2lu
-Z2xlIOKAnFdyaXRlIFN0YXR1cwp8IFJlZ2lzdGVyLTEgKDAxaCnigJ0gY29tbWFuZC4KCi1taWNo
-YWVsCgpbMV0gCmh0dHBzOi8vd3d3LndpbmJvbmQuY29tL3Jlc291cmNlLWZpbGVzL3cyNXEzMmZ3
-JTIwcmV2aiUyMDA0MjQyMDE4JTIwc2ZkcC5wZGYKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On 1/19/22 6:02 PM, Uwe Kleine-K=F6nig wrote:
+
+[...]
+>>> This patch is based on the former Andy Shevchenko's patch:
+>>>
+>>> https://lore.kernel.org/lkml/20210331144526.19439-1-andriy.shevchenko@l=
+inux.intel.com/
+>>>
+>>> Currently platform_get_irq_optional() returns an error code even if IRQ
+>>> resource simply has not been found. It prevents the callers from being
+>>> error code agnostic in their error handling:
+>>>
+>>> 	ret =3D platform_get_irq_optional(...);
+>>> 	if (ret < 0 && ret !=3D -ENXIO)
+>>> 		return ret; // respect deferred probe
+>>> 	if (ret > 0)
+>>> 		...we get an IRQ...
+>>>
+>>> All other *_optional() APIs seem to return 0 or NULL in case an optional
+>>> resource is not available. Let's follow this good example, so that the
+>>> callers would look like:
+>>>
+>>> 	ret =3D platform_get_irq_optional(...);
+>>> 	if (ret < 0)
+>>> 		return ret;
+>>> 	if (ret > 0)
+>>> 		...we get an IRQ...
+>>>
+>>> Reported-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+>>> Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+>> [...]
+>>
+>>    Please don't merge this as yet, I'm going thru this patch once again
+>> and have already found some sloppy code. :-/
+> =
+
+> Who would you expect to merge this? I would have expected Greg, but he
+
+   Me too, it's his area, the message was addressed to Greg KH...
+
+> seems to have given up this thread.
+
+   You instill too much uncertainty in him. :-)
+
+>>> diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
+>>> index 7450904e330a..fdc63bfa5be4 100644
+>>> --- a/drivers/char/ipmi/bt-bmc.c
+>>> +++ b/drivers/char/ipmi/bt-bmc.c
+>>> @@ -382,12 +382,14 @@ static int bt_bmc_config_irq(struct bt_bmc *bt_bm=
+c,
+>>>  	bt_bmc->irq =3D platform_get_irq_optional(pdev, 0);
+>>>  	if (bt_bmc->irq < 0)
+>>>  		return bt_bmc->irq;
+>>> +	if (!bt_bmc->irq)
+>>> +		return 0;
+>>
+>>    Hm, this is sloppy. Will recast and rebase to the -next branch.
+> =
+
+> I didn't think about what you mean with sloppy, but the code is
+> equivalent to
+> =
+
+> 	if (bt_bmc->irq <=3D 0)
+> 		return bt_bmc->irq;
+
+   Exactly.
+
+[...]
+>>> diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
+>>> index 2ccd1db5e98f..0d1bdd27cd78 100644
+>>> --- a/drivers/edac/xgene_edac.c
+>>> +++ b/drivers/edac/xgene_edac.c
+>>> @@ -1917,7 +1917,7 @@ static int xgene_edac_probe(struct platform_devic=
+e *pdev)
+>>>  =
+
+>>>  		for (i =3D 0; i < 3; i++) {
+>>>  			irq =3D platform_get_irq_optional(pdev, i);
+>>
+>>    Is *_optinal() even correct here?
+> =
+
+> _optinal isn't correct, _optional maybe is. :-)
+
+   No. :-)
+
+> Anyhow, look at e26124cd5f7099949109608845bba9e9bf96599c, the driver was
+> fixed not to print two error messages and the wrong option was picked.
+
+   I think this patch is wrong...
+
+>>> -			if (irq < 0) {
+>>> +			if (irq <=3D 0) {
+>>>  				dev_err(&pdev->dev, "No IRQ resource\n");
+
+   This is what needed to be thrown overboard... :-)
+
+>>>  				rc =3D -EINVAL;
+>>>  				goto out_err;
+> =
+
+> What's wrong here is that the return code is hardcoded ...
+
+  This is wrong as well -- kills the deferred probing. I have 2 separate pa=
+tches
+for this driver now... just need some time to get 'em ready...
+
+[...]
+>>> index bdf924b73e47..51289700a7ac 100644
+>>> --- a/drivers/power/supply/mp2629_charger.c
+>>> +++ b/drivers/power/supply/mp2629_charger.c
+>>> @@ -581,9 +581,9 @@ static int mp2629_charger_probe(struct platform_dev=
+ice *pdev)
+>>>  	platform_set_drvdata(pdev, charger);
+>>>  =
+
+>>>  	irq =3D platform_get_irq_optional(to_platform_device(dev->parent), 0);
+>>
+>>    Again, is *_optional() even correct here?
+>>
+>>> -	if (irq < 0) {
+>>> +	if (irq <=3D 0) {
+>>>  		dev_err(dev, "get irq fail: %d\n", irq);
+>>> -		return irq;
+>>> +		return irq < 0 ? irq : -ENXIO;
+> =
+
+> Ack, could be simplified by switching to platform_get_irq().
+
+   Have a draft patch...
+
+> Best regards
+> Uwe
+
+MBR, Sergey
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
