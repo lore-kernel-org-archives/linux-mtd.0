@@ -4,106 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3079C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jan 2022 19:50:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37479C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jan 2022 20:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=AzjQ7jSD5qHvRnuygcf85GXOdE9HqglCEVIhQH/TnRU=; b=jJguAkWdj/DiPqdQxdPJTaaAj2
-	VVtRE/xK+9+mfSFVIbrxdt4gAFijyrePOQI0q7F6b2UnC+Mw7PiZcUNCjgo8e/WuNpxPGOufrzAiF
-	A56vXkryZ4GnV1rqmITOt+Tp/zwYofmM2kksLqc3XGLu1iTjsgTbRnwG/bGs85zQQ2h3v31smYIne
-	KJrReAnFFLlEuY6RQQ42rlhZb8TY/zFlp5VAG2k3UtwwnmH1xXDk4y19CqoMICq1UNEHkaeVrZgeE
-	Esy8h+XzF695cOEyyUNkQbwxBnlmAOSOHo4JH0zYwLwiJKDwQ+UTzPJP/4dBhrXQ6aaKR+aJT5Pv/
-	0NntpAjw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=9gmrnclZxLrOp6ECw6q1JwZqb/Tutph2Vt2V77kxjN0=; b=ONdPV4dCDPvbIL
+	+eOqQDf/DMpA8foq8plCj3L8air58cN6N577p1B8wss47XS+17fdq6c+9yD3CBptlH8Hc/jXgBJp6
+	Rq44+KLx05b2CIjNIZMAG0bf9VL3Ku3Tkyr82T77Rq0fqaQjb/2oSOIFT9hSlflvyjsx7aq8oVuhv
+	Gm6QwP9n2z1wWu6jSs78rrx/Qmh2Jrwf0ZdhGXzg3deJG1Vp9fdaM0ejLkl9mTge95x/qHs6AUa2M
+	2JVC3Cox1I1xNMHAY2YLGuaqWYnRoilKXU65cKFdmfse3CHxY1tXYH/S13YeTTp8Xe0fluXagaEtQ
+	IU2IakCo6QcN4Vnvl8FQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAGyM-0078se-Pq; Wed, 19 Jan 2022 19:50:22 +0000
-Received: from mxout04.lancloud.ru ([45.84.86.114])
+	id 1nAHgf-007KVP-UH; Wed, 19 Jan 2022 20:36:09 +0000
+Received: from perseus.uberspace.de ([95.143.172.134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAGxz-0078jF-1r; Wed, 19 Jan 2022 19:50:01 +0000
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru 1999620B0896
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH 1/2] platform: make platform_get_irq_optional() optional
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-CC: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, <linux-iio@vger.kernel.org>, "Linus
- Walleij" <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>, "ALSA
- Development Mailing List" <alsa-devel@alsa-project.org>, Jaroslav Kysela
- <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>, Thierry Reding
- <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux I2C <linux-i2c@vger.kernel.org>, "open list:GPIO SUBSYSTEM"
- <linux-gpio@vger.kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- <linux-phy@lists.infradead.org>, <netdev@vger.kernel.org>, linux-spi
- <linux-spi@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>, Khuong Dinh
- <khuong@os.amperecomputing.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski
- <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>, "Kishon Vijay
- Abraham I" <kishon@ti.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "open
- list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, bcm-kernel-feedback-list
- <bcm-kernel-feedback-list@broadcom.com>, Zhang Rui <rui.zhang@intel.com>,
- <platform-driver-x86@vger.kernel.org>, Linux PWM List
- <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>, "Saravanan
- Sekar" <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>, Linux PM list
- <linux-pm@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Mauro
- Carvalho Chehab" <mchehab@kernel.org>, John Garry <john.garry@huawei.com>,
- Takashi Iwai <tiwai@suse.com>, Peter Korsgaard <peter@korsgaard.com>,
- "William Breathitt Gray" <vilhelm.gray@gmail.com>, Mark Gross
- <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Alex Williamson
- <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>, "Borislav
- Petkov" <bp@alien8.de>, Jakub Kicinski <kuba@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, <openipmi-developer@lists.sourceforge.net>, "Benson
- Leung" <bleung@chromium.org>, Pengutronix Kernel Team
- <kernel@pengutronix.de>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
- <linux-edac@vger.kernel.org>, Tony Luck <tony.luck@intel.com>, "Richard
- Weinberger" <richard@nod.at>, Mun Yew Tham <mun.yew.tham@intel.com>, "Eric
- Auger" <eric.auger@redhat.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Yoshihiro Shimoda
- <yoshihiro.shimoda.uh@renesas.com>, Cornelia Huck <cohuck@redhat.com>, "Linux
- MMC List" <linux-mmc@vger.kernel.org>, Joakim Zhang
- <qiangqing.zhang@nxp.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux-Renesas
- <linux-renesas-soc@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, "James
- Morse" <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>, "Sebastian
- Reichel" <sre@kernel.org>, =?UTF-8?Q?Niklas_S=c3=b6derlund?=
- <niklas.soderlund@ragnatech.se>, <linux-mediatek@lists.infradead.org>, "Brian
- Norris" <computersforpeace@gmail.com>, "David S. Miller"
- <davem@davemloft.net>
-References: <20220112085009.dbasceh3obfok5dc@pengutronix.de>
- <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
- <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
- <Yd9L9SZ+g13iyKab@sirena.org.uk>
- <29f0c65d-77f2-e5b2-f6cc-422add8a707d@omp.ru>
- <20220114092557.jrkfx7ihg26ekzci@pengutronix.de>
- <61b80939-357d-14f5-df99-b8d102a4e1a1@omp.ru>
- <20220114202226.ugzklxv4wzr6egwj@pengutronix.de>
- <57af1851-9341-985e-7b28-d2ba86770ecb@omp.ru>
- <20220117084732.cdy2sash5hxp4lwo@pengutronix.de>
- <YehfP23nMd4wn48K@smile.fi.intel.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <fabb8166-e3a9-c48e-073b-cdbbe8c62714@omp.ru>
-Date: Wed, 19 Jan 2022 22:49:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ id 1nAHga-007KUR-UH
+ for linux-mtd@lists.infradead.org; Wed, 19 Jan 2022 20:36:07 +0000
+Received: (qmail 15401 invoked by uid 988); 19 Jan 2022 20:36:02 -0000
+Authentication-Results: perseus.uberspace.de;
+	auth=pass (plain)
+Message-ID: <8d578f8e-9cfd-58a0-940f-b085074c5d30@david-bauer.net>
+Date: Wed, 19 Jan 2022 21:36:01 +0100
 MIME-Version: 1.0
-In-Reply-To: <YehfP23nMd4wn48K@smile.fi.intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH 2/2] mtd: spi-nor: disable 16-bit-sr for macronix
 Content-Language: en-US
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
- LFEX1907.lancloud.ru (fd00:f066::207)
+To: Michael Walle <michael@walle.cc>, Nick <vincent@systemli.org>
+Cc: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
+References: <20211227091638.177917-1-vincent@systemli.org>
+ <20211227091638.177917-2-vincent@systemli.org>
+ <0db13110-ee6f-2e02-abf9-d5b9eecafcb4@microchip.com>
+ <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
+ <22bd791798d15d74060c44f65620921c@walle.cc>
+From: David Bauer <mail@david-bauer.net>
+In-Reply-To: <22bd791798d15d74060c44f65620921c@walle.cc>
+X-Rspamd-Bar: /
+X-Rspamd-Report: BAYES_HAM(-0.688246) MIME_GOOD(-0.1)
+X-Rspamd-Score: -0.788246
+Received: from unknown (HELO unkown) (::1)
+ by perseus.uberspace.de (Haraka/2.8.28) with ESMTPSA;
+ Wed, 19 Jan 2022 21:36:01 +0100
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220119_114959_503237_F5B7FBEF 
-X-CRM114-Status: GOOD (  18.52  )
+X-CRM114-CacheID: sfid-20220119_123605_289082_254E9E72 
+X-CRM114-Status: GOOD (  21.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,63 +64,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/19/22 9:58 PM, Andy Shevchenko wrote:
-
-[...]
->> Because with your change we have:
->>
->>  - < 0 -> error
->>  - == 0 -> no irq
->>  - > 0 -> irq
->>
->> For my part I'd say this doesn't justify the change, but at least I
->> could better life with the reasoning. If you start at:
->>
->> 	irq = platform_get_irq_optional(...)
->> 	if (irq < 0 && irq != -ENXIO)
->> 		return irq
->> 	else if (irq > 0)
->> 		setup_irq(irq);
->> 	else
->> 		setup_polling()
->>
->> I'd change that to
->>
->> 	irq = platform_get_irq_optional(...)
->> 	if (irq > 0) /* or >= 0 ? */
->> 		setup_irq(irq)
->> 	else if (irq == -ENXIO)
->> 		setup_polling()
->> 	else
->> 		return irq
->>
->> This still has to mention -ENXIO, but this is ok and checking for 0 just
->> hardcodes a different return value.
-> 
-> It's what we are against of. The idea is to have
-> 
-> 	irq = platform_get_irq_optional(...)
-> 	if (irq < 0) // we do not care about special cookies here
-> 		return irq;
-> 
-> 	if (irq)
-> 		setup_irq(irq)
-> 	else
-> 		setup_polling()
-> 
-> See the difference? Your code is convoluted.
-
-   ... and it's longer when you look at the translated code! :-)
-
-[...]
-
-MBR, Sergey
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWljaGFlbCwKCk9uIDEvMTkvMjIgMTY6NDksIE1pY2hhZWwgV2FsbGUgd3JvdGU6Cj4gQW0g
+MjAyMS0xMi0zMSAxMDoxMCwgc2NocmllYiBOaWNrOgo+PiBJIGxvb2tlZCBub3cgdGhyb3VnaCBh
+bGwgZGF0YXNoZWV0cyBJIGZvdW5kIGFuZCB0aGUgc2l6ZXMgb2YgdGhlCj4+IHN0YXR1cyByZWdp
+c3Rlci4gSG93ZXZlciwgSSBkaWQgbm90IGZpbmQgYW55IGRhdGFzaGVldCBmb3IgdGhlCj4+ICJt
+eDY2bDFnNTVnIi4KPj4gSG93ZXZlciwgSSBhbSBub3Qgc3VyZSBpZiBJIG1heWJlIG1pc3Mgc29t
+ZXRoaW5nIHRvIHNlZSBpZgo+PiAiU05PUl9GX0hBU18xNkJJVF9TUiIgaXMgc3VwcG9ydGVkLiBJ
+IG9ubHkgbG9va2VkIGF0IHRoZSBzdGF0dXMKPj4gcmVnaXN0ZXIgc2l6ZS4KPiAKPiBIb3cgZGlk
+IHlvdSBjaGVjayB0aGF0Pwo+IAo+IHJhbmRvbSBleGFtcGxlOgo+PiBteDY2dTUxMjM1ZjogOGJp
+dAo+PiBodHRwczovL3d3dy5tYWNyb25peC5jb20vTGlzdHMvRGF0YXNoZWV0L0F0dGFjaG1lbnRz
+Lzc2NzQvTVg2NlU1MTIzNUYsJTIwMS44ViwlMjA1MTJNYiwlMjB2MS4xLnBkZgo+PiAoc2xpZGUg
+MzQpCj4gCj4gRmlndXJlIDIzOgo+IFdSU1IgdGFrZXMgYm90aCBzdGF0dXMgcmVnaXN0ZXIgYW5k
+IGNvbmZpZ3VyYXRpb24gcmVnaXN0ZXIuCj4gCj4gVGhhdCBiZWluZyBzYWlkLiBJJ2QgcHJlZmVy
+IHRvIGhhdmUgYSBzYW5lIGRlZmF1bHQgZm9yIHRoYXQKPiBmbGFnIC0gd2hpY2ggaXMgdG8gX25v
+dF8gc2V0IGl0IGJ5IGRlZmF1bHQuIEZvciBub3csIHdlIGNhbgo+IGp1c3QgcmVtb3ZlIHRoZSBm
+bGFnIGZyb20gc3BpX25vcl9pbml0X2RlZmF1bHRfcGFyYW1zKCkgYW5kCj4gbW92ZSBpdCBpbnRv
+IHRoZSBtYW51ZmFjdHVyZXIgZGVmYXVsdCBpbml0LiBUaGVuIHdlIGNhbgo+IGdvIHRocm91Z2gg
+dGhlIGZsYXNoZXMgYW5kIHJlbW92ZSB0aGUgZmxhZyB0aGVyZS4KCkkgd2FzIHdvcmtpbmcgb24g
+YSBzaW1pbGFyIHNlcmllcyBpbiBwYXJhbGxlbCAtIGFuZCBpIGp1c3Qgd2FudCB0bwpjb25maXJt
+IHRoaXMgYmVmb3JlIGkgc3VibWl0IGl0LiBbMF0KCllvdXIgdGFrZSB3b3VsZCBiZSB0byByZW1v
+dmUgdGhlIGZsYWcgZnJvbSBzcGlfbm9yX2luaXRfZGVmYXVsdF9wYXJhbXMKYW5kIHBsYWNlIGl0
+IGluIGFsbCB2ZW5kb3IgaW5pdC1jYWxscywgcmlnaHQ/CgpNeSBjdXJyZW50IHRha2Ugd291bGQg
+YmUgdG8gYWRkIGEgbmV3IGZsYWcgd2hpY2ggZGVub3RlcyBmbGFzaGVzIHRoYXQKb25seSBoYXZl
+IGEgc2luZ2xlIDgtYml0IFNSLCBubyBzZWNvbmQgU1IgLyBDUi4KClRoaXMgd291bGQgcmVxdWly
+ZSBtaW5pbWFsIGNoYW5nZXMsIGFsdGhvdWdoIGFmdGVyIHlvdXIgRS1NYWlsIGkgd291bGQKcmVu
+YW1lIGl0IHNvIGl0IGJlY29tZXMgY2xlYXIgaXQgaXMgcmF0aGVyIGZvciBkZW5vdGluZyBmbGFz
+aGVzIHdoaWNoCm9ubHkgc3VwcG9ydCB3cml0aW5nIGEgc2luZ2xlIDgtYml0IHJlZ2lzdGVyIHdp
+dGggYSBXUlNSIGNvbW1hbmQuCgpXaGF0IGRvIHlvdSB0aGluaz8KClswXSBodHRwczovL2dpdGh1
+Yi5jb20vYmxvY2t0cnJvbi9saW51eC9jb21taXRzL3NwaS1ub3QtOHNyLWZsYWcKCkJlc3QKRGF2
+aWQKCj4gCj4gVGhpcyBpcyBtYWlubHkgYmVjYXVzZSBpdCBzZWVtcyB0byBiZSBhIGxlZ2FjeSBm
+ZWF0dXJlLiBUbwo+IHF1b3RlIHRoZSBkYXRhc2hlZXQgb2YgdGhlIFdpbmJvbmQgVzI1UTMyRlcg
+WzFdOgo+IAo+IHwgVGhlIFcyNVEzMkZXIGlzIGFsc28gYmFja3dhcmQgY29tcGF0aWJsZSB0byBX
+aW5ib25k4oCZcyBwcmV2aW91cwo+IHwgZ2VuZXJhdGlvbnMgb2Ygc2VyaWFsIGZsYXNoIG1lbW9y
+aWVzLCBpbiB3aGljaCB0aGUgU3RhdHVzCj4gfCBSZWdpc3Rlci0xJjIgY2FuIGJlIHdyaXR0ZW4g
+dXNpbmcgYSBzaW5nbGUg4oCcV3JpdGUgU3RhdHVzCj4gfCBSZWdpc3Rlci0xICgwMWgp4oCdIGNv
+bW1hbmQuCj4gCj4gLW1pY2hhZWwKPiAKPiBbMV0gaHR0cHM6Ly93d3cud2luYm9uZC5jb20vcmVz
+b3VyY2UtZmlsZXMvdzI1cTMyZnclMjByZXZqJTIwMDQyNDIwMTglMjBzZmRwLnBkZgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
