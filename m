@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2D6FC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jan 2022 19:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE77EC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 19 Jan 2022 19:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vejpSy3cAojUOpPrVrN4VCFp7/LgagqlwWVUOApOwMM=; b=PdWpJAZSFswS/e
-	4LMDtBnrBbisl8d11YVMev1OgCkRyQljkSnPoHshmo7gP0SsmbxsvPZvVpiT+qSJIQsbFILB0xiBv
-	Su9EmTGm2bjLrJzbaDJU3/cmKKzEWnEePBQjQFVrbsfC6WSG7BBqk0neySnBOMBOoCoWsP9yGPn4O
-	+P8kruJMf1wo0SuIv5kZyHZbml94FkWwhQv/hQrYLMaToB2l3AHfBUXsCvNDBtao5DwD1Q7RcCciv
-	QnucXik0P8ofJZooiyeKLgCIiUt8rvotGPM4BkfpBtSW9T1jyUlIeE9gqxpNpXdaGT0wpjUqsPCkc
-	pfQwQJibqaNpcyFie4LQ==;
+	List-Owner; bh=Rkurn+tAp8BQg26AVSajuaxdPbh25QsLTd/tdbsB8aA=; b=mb0+zSgBaac5OU
+	OoreSmkGxuYKCxRG4rqRP7TMrw1qit1tidVGOgMgjnrIw8jUtGD+Gi30DhX1IxGG6fLw77z3XEc+k
+	nw4VkMxnxddNcTPKQUKtBvzh2cE2peDIUodYOMEWiCPAfIVGifpvxISgnzQh0mHotlFl+e09Wp7w5
+	cND1mJ7yLyGxGqTPwYmJZlN1c97y0WtLI2zurmciTgmubNYXraW/d1Ev9CCwEUs/rbuZkaW58pm3U
+	CMF2CJqCuRHdqUAf0ISNYDh6LXTsEW3rXC0946bYbXsxa32PwG0WN6p97G+hl3hO6Tfng05P13ILn
+	zKB/Uc2xocQsDHFOmecA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAGOL-006y7z-AO; Wed, 19 Jan 2022 19:13:09 +0000
-Received: from mga14.intel.com ([192.55.52.115])
+	id 1nAGQG-006yoS-46; Wed, 19 Jan 2022 19:15:08 +0000
+Received: from mga06.intel.com ([134.134.136.31])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAGOH-006y6d-Pm; Wed, 19 Jan 2022 19:13:07 +0000
+ id 1nAGQB-006ylP-S2; Wed, 19 Jan 2022 19:15:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1642619585; x=1674155585;
+ t=1642619703; x=1674155703;
  h=date:from:to:cc:subject:message-id:references:
  mime-version:content-transfer-encoding:in-reply-to;
- bh=UxCJC6eWdEdNah12KsCkH6nSMwzBaq9zmFaRweUROSw=;
- b=Lxzk2BvJ0IVG2u+AcyY7+ySvA5R4950+s07/e+mn+GSoBGuqgo3L/OMR
- FuN8iF4veuk00cXibyeWoMnQfNBJU2Y914uoZnaikjPrphX00cUGgeZ17
- 7bCoxoPd0Maicf1NSrA5wQ0+lmnUBkMzmPvMcn2wSIKdL/6NqBVJpHYnA
- cezWHWE3NmpUrOJ+75XcQJTs95vDE5A22ye7u2eCTrFH4cg/brPCeF8n7
- Ro688mLK/TH5O0t1lng9oNwArv+RHBlr4hsPZY5sda8JslZtvNIlFA9xF
- LM6Udl1mLyg3aqpauiPZwqBSWFVuo5C0EM6W5cm0EeH3K7x8m4ZdG+0Gk w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10231"; a="245360124"
-X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="245360124"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2022 10:38:30 -0800
-X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="518285423"
+ bh=pJ3GNueq7O6gH3lUcp2UWza1P3qxEpzR0oarM5vPP+c=;
+ b=AmehRtofJfWOU5JzCp4294jIWz4eih6fWtWYWRRC4JllRYP82cB9PG5n
+ pk6vttoejlbs6RBXnPMu1OHfTf8aLxVrqKz8O2wd+FjV4vowuHLrGQUcL
+ ST0i6M7OKJgHY66UFnVzt5iY1woZhG4attUKcpIIw6ircTGY6n/TQbSop
+ EovgAFWfG9ZFG6zmRFiNNNnomnHOcEpZ4Y4PfRRoBgZ++VHyn8iXy4gD0
+ EtOZMyPZ9K/qJUyNFsCjwgPhD22JqCeG1XpOEtUsCth3b8ea+TH48uDVK
+ NY9CtEBETtZrb3In0lKNYCQtOAyoPKL6a5sVVx3/qjqGB8RN930wZZOyp w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10231"; a="305894268"
+X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="305894268"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2022 10:41:48 -0800
+X-IronPort-AV: E=Sophos;i="5.88,300,1635231600"; d="scan'208";a="765040746"
 Received: from smile.fi.intel.com ([10.237.72.61])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2022 10:38:09 -0800
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2022 10:41:32 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.95)
  (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1nAFpH-00CDps-NH; Wed, 19 Jan 2022 20:36:55 +0200
-Date: Wed, 19 Jan 2022 20:36:55 +0200
+ id 1nAFsa-00CDtL-3g; Wed, 19 Jan 2022 20:40:20 +0200
+Date: Wed, 19 Jan 2022 20:40:19 +0200
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
 Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
@@ -111,7 +111,7 @@ Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
  "David S. Miller" <davem@davemloft.net>
 Subject: Re: [PATCH] driver core: platform: Rename
  platform_get_irq_optional() to platform_get_irq_silent()
-Message-ID: <YehaRwIe4LjymMhS@smile.fi.intel.com>
+Message-ID: <YehbE03fMBSuOleX@smile.fi.intel.com>
 References: <20220112085009.dbasceh3obfok5dc@pengutronix.de>
  <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
  <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
@@ -127,8 +127,8 @@ Content-Disposition: inline
 In-Reply-To: <20220115135550.dr4ngiz2c6rfs2rl@pengutronix.de>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220119_111305_891163_7DE0C2E3 
-X-CRM114-Status: GOOD (  16.70  )
+X-CRM114-CacheID: sfid-20220119_111504_003946_63EA0B29 
+X-CRM114-Status: GOOD (  15.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,21 +147,16 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On Sat, Jan 15, 2022 at 02:55:50PM +0100, Uwe Kleine-K=F6nig wrote:
 > On Fri, Jan 14, 2022 at 08:55:07PM +0300, Sergey Shtylyov wrote:
-> > On 1/14/22 12:42 AM, Florian Fainelli wrote:
 
-> So you oppose to the name chosen, but not the renaming as such.
+> Or do you think kmalloc should better be called
+> kmalloc_optional because it returns NULL if there is no more memory
+> available?
 
-I oppose the name change. The unneeded churn right now since it won't fix
-the issues with the underneath API (platform_get_irq() in this case) and
-will require one more iteration over callers again.
+Oh, do you know that kmalloc() may return NULL and small cookie value and
+actually one has to check for that (yes, either before or after against
+different variables)?
 
-The main issue that platform_get_irq*() returns magic error code while
-treating 0 in a very special way (issuing WARN() and considering it as
-a successful cookie) and this all is quite confusing.
-
-If you are going to fix the underlying issue, welcome! Now I see only
-the step to somewhere. I.o.w. this change _standalone_ makes no sense
-to me.
+kmalloc() is exactly an example that justifies the Sergey's patch.
 
 -- =
 
