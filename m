@@ -4,49 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73C73C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jan 2022 09:40:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99B0FC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jan 2022 09:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Sxh8bfma5L60uoCFkGl2iWZsxa4YhO2qRWYGZ2/JQ+4=; b=r5ANvUy146Rgp2
-	/srjdTPEYJSWI2HUBdhm4DvQzUwHjknypRkFSGiAeSqxjxP3DbOgbDQkSI53FQ9GgcGOieuAhln+S
-	xFF9KQXfggcZuEUgjdwTfY9+xRQ5Huq31+YqyIDtV2//n1gC/keocltHhXYNMFNG14YssPEi79N5x
-	is2NGkbqTQiH+OlaTNWnaKxYGaLb3M8XoW3oQtkXHXkjhxW5wsCqa+VwI0EfYFjk930C9Snz17T9u
-	DWL16tsMMZ73bpVmwKIJKgOpSMlJqEWT9m77OSlbShcBXcr2IF3aUneT7JYyhd49hcKkSMuzUycHw
-	XQw+KtPF5r+TjnLUJaEw==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=EwZsYt7FN93YC40D/21DLKVmeYVH/oyyA3ebcEOdQdQ=; b=krSl1sXylclsXS
+	SY1TzQ7jF0QdJgx/4a3Kt7gvhSRf+gefketJ6zNJZckOot0t8H2eaePpYodQM+oNa5JanxMnBGS2y
+	I0P6QO+zno20kUuF+sDizycsWH4qUtBApeGaUm2IlnoANh28LHPY1x2S17E+7BNIZmsDQKxEjJHCL
+	Fq1tTdsZMNXKHlq6bnk0ru1zWgGgL7/HJHxr6DERu2VILxLAzZyQJ75ojnHMotBW1naYfsoYGrU20
+	G8BE7Zm4URsK4obLJbiHjYGVy9GD7qZTuejerycsq/G1Qa4MSaVXsMJ2x9d9gRIJMCAjGBpAKEjqF
+	EC0g5Unyf0lrGrknE9Nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nATvC-00AJ8p-BW; Thu, 20 Jan 2022 09:39:58 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1nAUA8-00AOKM-ML; Thu, 20 Jan 2022 09:55:24 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nATv7-00AJ1l-Rb
- for linux-mtd@lists.infradead.org; Thu, 20 Jan 2022 09:39:56 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id D5543FF805;
- Thu, 20 Jan 2022 09:39:47 +0000 (UTC)
-Date: Thu, 20 Jan 2022 10:39:46 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc: Trevor Woerner <twoerner@gmail.com>, linux-mtd
- <linux-mtd@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH 0/3] mtdblock: Advertise about UBI and UBI block
-Message-ID: <20220120103946.3a18aee7@xps13>
-In-Reply-To: <CAAEAJfD0ctKon7onbj5cCgN9OUnXpQ-gxG=DF6hXD9hW+Pw83A@mail.gmail.com>
-References: <20210801234509.18774-1-ezequiel@collabora.com>
- <20211026150350.GA5136@localhost>
- <CAAEAJfD0ctKon7onbj5cCgN9OUnXpQ-gxG=DF6hXD9hW+Pw83A@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ id 1nAUA5-00AOGC-Pg
+ for linux-mtd@lists.infradead.org; Thu, 20 Jan 2022 09:55:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1642672522; x=1674208522;
+ h=from:to:cc:subject:date:message-id;
+ bh=nehZ2/Kj/bi/H40TUSBt5PDmvxHq+7M7Ek53ZM5zGgo=;
+ b=DgcAe5gmHei/riYq/Q0xE+gHLWQrlrGWQ3xiOwnBEKpMSxn8w0LEtbLh
+ 7pUHUJ4m2Z+PFSGb1zLjYkzUEzHk10MuymY7UpcSbjE6pYejraecrf/SO
+ t8QcrpLnMvzkCj7olj44jui+NonvrHuPYoAlXCzJYcyt4gowxHfPvqIEG c=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+ by alexa-out.qualcomm.com with ESMTP; 20 Jan 2022 01:55:18 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+ by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 20 Jan 2022 01:55:16 -0800
+X-QCInternal: smtphost
+Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
+ by ironmsg02-blr.qualcomm.com with ESMTP; 20 Jan 2022 15:24:55 +0530
+Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
+ id 64610566F; Thu, 20 Jan 2022 15:24:54 +0530 (IST)
+From: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+To: dianders@chromium.org, tudor.ambarus@microchip.com, michael@walle.cc,
+ p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: stummala@codeaurora.org, vbadigan@codeaurora.org,
+ quic_rampraka@quicinc.com, quic_pragalla@quicinc.com,
+ sartgarg@codeaurora.org, Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+Subject: [PATCH V4] mtd: spi-nor: winbond: Add support for winbond chip
+Date: Thu, 20 Jan 2022 15:24:51 +0530
+Message-Id: <1642672491-30067-1-git-send-email-quic_c_sbhanu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220120_013954_222467_4190A197 
-X-CRM114-Status: GOOD (  31.41  )
+X-CRM114-CacheID: sfid-20220120_015521_888691_823329EA 
+X-CRM114-Status: GOOD (  10.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -58,97 +69,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRXplcXVpZWwsCgplemVxdWllbEB2YW5ndWFyZGlhc3VyLmNvbS5hciB3cm90ZSBvbiBGcmks
-IDEyIE5vdiAyMDIxIDEwOjU0OjM2IC0wMzAwOgoKPiBIaSBUcmV2b3IsCj4gCj4gSSBhbSBub3Qg
-cmVhY2hhYmxlIGF0IGV6ZXF1aWVsIGF0IGNvbGxhYm9yYS5jb20sIHNvIEkgbWlzc2VkIHRoaXMK
-PiB0aHJlYWQuIFNvcnJ5IGFib3V0IHRoZSBkZWxheSwgcmVwbHlpbmcuCj4gCj4gT24gVHVlLCAy
-NiBPY3QgMjAyMSBhdCAxMjowNSwgVHJldm9yIFdvZXJuZXIgPHR3b2VybmVyQGdtYWlsLmNvbT4g
-d3JvdGU6Cj4gPgo+ID4gT24gU3VuIDIwMjEtMDgtMDEgQCAwODo0NTowMiBQTSwgRXplcXVpZWwg
-R2FyY2lhIHdyb3RlOiAgCj4gPiA+IEhpIFJpY2hhcmQsIGFuZCBldmVyeW9uZSBlbHNlOgo+ID4g
-Pgo+ID4gPiBCcm93c2luZyB0aGUgaW50ZXJuZXQgZm9yICJKRkZTMiBtdGQiIHJlc3VsdHMgaW4g
-dHV0b3JpYWxzLCBhcnRpY2xlcwo+ID4gPiBhbmQgZ2l0aHViLmdpc3RzMCB0aGF0IHBvaW50IHRv
-IG10ZGJsb2NrLgo+ID4gPgo+ID4gPiBJbiBmYWN0LCBldmVuIHRoZSBNVEQgd2lraSBtZW50aW9u
-cyB0aGF0IEpGRlMyCj4gPiA+IG5lZWRzIG10ZGJsb2NrIHRvIG1vdW50IGEgcm9vdGZzOgo+ID4g
-Pgo+ID4gPiAgIGh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZmFxL2pmZnMyLmh0
-bWwKPiA+ID4KPiA+ID4gTW9yZW92ZXIsIEkgc3VzcGVjdCB0aGVyZSBtYXkgYmUgbG90cyBvZiB1
-c2Vycwo+ID4gPiB0aGF0IHN0aWxsIGJlbGlldmUgbXRkYmxvY2sgaXMgc29tZWhvdyBuZWVkZWQg
-dG8KPiA+ID4gbW91bnQgU3F1YXNoRlMuCj4gPiA+Cj4gPiA+IEkndmUgdGFrZW4gYSB2ZXJib3Nl
-IHJvdXRlIGFuZCBhZGRlZCBhIHByX3dhcm4KPiA+ID4gd2FybmluZyBpZiB0aGUgZGV2aWNlcyBh
-cmUgTkFORC4gSSBkb24ndCB0aGluayB1c2luZwo+ID4gPiBOQU5EIHdpdGhvdXQgVUJJIGlzIHRv
-byB3aXNlLCBhbmQgZ2l2ZW4gdGhlIGFtb3VudAo+ID4gPiBvZiBvdXRkYXRlZCB0dXRvcmlhbHMg
-SSBiZWxpZXZlIHNvbWUgYWR2ZXJ0aXNpbmcKPiA+ID4gd2lsbCBoZWxwLiAgCj4gPgo+ID4gTm90
-IGFsbCBOQU5EIHBhcnRpdGlvbnMgb24gYSBkZXZpY2Ugd2lsbCBjb250YWluIGxpbnV4IHJvb3Qg
-ZmlsZXN5c3RlbXMuIEZvciBhCj4gPiBsaW51eCByb290IGZpbGVzeXN0ZW0gcGVyaGFwcyB1c2lu
-ZyBVQkkvVUJJRlMgaXMgcHJlZmVycmVkLCB5ZXQgdGhlc2UgbWVzc2FnZXMKPiA+IHByaW50IG91
-dCBmb3IgZWFjaCBhbmQgZXZlcnkgTkFORCBwYXJ0aXRpb246Cj4gPgo+ID4gICAgICAgICBbICAg
-IDAuOTAwODI3XSBDcmVhdGluZyA4IE1URCBwYXJ0aXRpb25zIG9uICJueHBfbHBjMzIyMF9zbGMi
-Ogo+ID4gICAgICAgICBbICAgIDAuOTA2NDMxXSAweDAwMDAwMDAwMDAwMC0weDAwMDAwMDAyMDAw
-MCA6ICJib290cm9tIgo+ID4gICAgICAgICBbICAgIDAuOTEzNTIzXSBtdGRibG9jazogTVREIGRl
-dmljZSAnYm9vdHJvbScgaXMgTkFORCwgcGxlYXNlIGNvbnNpZGVyIHVzaW5nIFVCSSBibG9jayBk
-ZXZpY2VzIGluc3RlYWQuCj4gPiAgICAgICAgIFsgICAgMC45MzMzMzRdIDB4MDAwMDAwMDIwMDAw
-LTB4MDAwMDAwMDgwMDAwIDogInVib290Igo+ID4gICAgICAgICBbICAgIDAuOTQwNDM5XSBtdGRi
-bG9jazogTVREIGRldmljZSAndWJvb3QnIGlzIE5BTkQsIHBsZWFzZSBjb25zaWRlciB1c2luZyBV
-QkkgYmxvY2sgZGV2aWNlcyBpbnN0ZWFkLgo+ID4gICAgICAgICBbICAgIDAuOTYzMzIyXSAweDAw
-MDAwMDA4MDAwMC0weDAwMDAwMDQ0MDAwMCA6ICJmYmtlcm5lbCIKPiA+ICAgICAgICAgWyAgICAw
-Ljk3MDY1NV0gbXRkYmxvY2s6IE1URCBkZXZpY2UgJ2Zia2VybmVsJyBpcyBOQU5ELCBwbGVhc2Ug
-Y29uc2lkZXIgdXNpbmcgVUJJIGJsb2NrIGRldmljZXMgaW5zdGVhZC4KPiA+ICAgICAgICAgWyAg
-ICAwLjk5MzM2MV0gMHgwMDAwMDA0NDAwMDAtMHgwMDAwMDA5MjAwMDAgOiAiZmJyb290ZnMiCj4g
-PiAgICAgICAgIFsgICAgMS4wMDA3MjVdIG10ZGJsb2NrOiBNVEQgZGV2aWNlICdmYnJvb3Rmcycg
-aXMgTkFORCwgcGxlYXNlIGNvbnNpZGVyIHVzaW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3RlYWQu
-Cj4gPiAgICAgICAgIFsgICAgMS4wMjMzMTVdIDB4MDAwMDAwOTIwMDAwLTB4MDAwMDAwY2UwMDAw
-IDogImNfa2VybmVsIgo+ID4gICAgICAgICBbICAgIDEuMDMwNzIyXSBtdGRibG9jazogTVREIGRl
-dmljZSAnY19rZXJuZWwnIGlzIE5BTkQsIHBsZWFzZSBjb25zaWRlciB1c2luZyBVQkkgYmxvY2sg
-ZGV2aWNlcyBpbnN0ZWFkLgo+ID4gICAgICAgICBbICAgIDEuMDUzNDQ0XSAweDAwMDAwMGNlMDAw
-MC0weDAwMDAwMGQwMDAwMCA6ICJjX19hdGFncyIKPiA+ICAgICAgICAgWyAgICAxLjA2MDc0Ml0g
-bXRkYmxvY2s6IE1URCBkZXZpY2UgJ2NfX2F0YWdzJyBpcyBOQU5ELCBwbGVhc2UgY29uc2lkZXIg
-dXNpbmcgVUJJIGJsb2NrIGRldmljZXMgaW5zdGVhZC4KPiA+ICAgICAgICAgWyAgICAxLjA4MzM0
-OV0gMHgwMDAwMDBkMDAwMDAtMHgwMDAwMDEwMDAwMDAgOiAiY19yb290ZnMiCj4gPiAgICAgICAg
-IFsgICAgMS4wOTA3MDJdIG10ZGJsb2NrOiBNVEQgZGV2aWNlICdjX3Jvb3RmcycgaXMgTkFORCwg
-cGxlYXNlIGNvbnNpZGVyIHVzaW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3RlYWQuCj4gPiAgICAg
-ICAgIFsgICAgMS4xMTMzMzVdIDB4MDAwMDAxMDAwMDAwLTB4MDAwMDIwMDAwMDAwIDogIm1lbmRl
-ciIKPiA+ICAgICAgICAgWyAgICAxLjEzMTYyN10gbXRkYmxvY2s6IE1URCBkZXZpY2UgJ21lbmRl
-cicgaXMgTkFORCwgcGxlYXNlIGNvbnNpZGVyIHVzaW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3Rl
-YWQuCj4gPgo+ID4gTkFORCB0ZW5kcyB0byBiZSBzb21ldGhpbmcgZm91bmQgb24gb2xkZXIgZGV2
-aWNlcywgdGhlIGZpcm13YXJlL2Jvb3Rsb2FkZXJzCj4gPiBvZiBvbGRlciBkZXZpY2VzIGNvdWxk
-bid0IHBvc3NpYmx5IHVuZGVyc3RhbmQgVUJJL1VCSUZTIHNvIG1hbnkgb2YgdGhlc2UKPiA+IHBh
-cnRpdGlvbnMgbmVlZCBiZSAicmF3IiBwYXJ0aXRpb25zLCBvciB1c2Ugc29tZXRoaW5nIHRoYXQg
-cHJlZGF0ZXMgVUJJLgo+ID4KPiA+IElyb25pY2FsbHkgbXkgIm1lbmRlciIgcGFydGl0aW9uIGNv
-bnRhaW5zIGEgVUJJICh3aXRoIG11bHRpcGxlIFVCSUZTZXMgaW5zaWRlKQo+ID4geWV0IEkgZ290
-IHRoZSBzYW1lICJwbGVhc2UgdXNlIFVCSSIgbWVzc2FnZSBhcyBhbGwgdGhlIG90aGVycyAobG9s
-KQo+ID4KPiA+IEknbSBzcGVjaWZ5aW5nIG15IHBhcnRpdGlvbnMgaW4gRFQgd2l0aDoKPiA+Cj4g
-PiBwYXJ0aXRpb25zIHsKPiA+ICAgICAgICAgY29tcGF0aWJsZSA9ICJmaXhlZC1wYXJ0aXRpb25z
-IjsKPiA+ICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiAgICAgICAgICNzaXplLWNl
-bGxzID0gPDE+Owo+ID4KPiA+ICAgICAgICAgbXRkMEAwICAgICAgIHsgbGFiZWwgPSAiYm9vdHJv
-bSI7ICAgcmVnID0gPDB4MDAwMDAwMDAgMHgwMDAyMDAwMD47IH07Cj4gPiAgICAgICAgIG10ZDFA
-MjAwMDAgICB7IGxhYmVsID0gInVib290IjsgICAgIHJlZyA9IDwweDAwMDIwMDAwIDB4MDAwNjAw
-MDA+OyB9Owo+ID4gICAgICAgICBtdGQyQDgwMDAwICAgeyBsYWJlbCA9ICJmYmtlcm5lbCI7ICBy
-ZWcgPSA8MHgwMDA4MDAwMCAweDAwM2MwMDAwPjsgfTsKPiA+ICAgICAgICAgbXRkM0A0NDAwMDAg
-IHsgbGFiZWwgPSAiZmJyb290ZnMiOyAgcmVnID0gPDB4MDA0NDAwMDAgMHgwMDRlMDAwMD47IH07
-Cj4gPiAgICAgICAgIG10ZDRAOTIwMDAwICB7IGxhYmVsID0gImNfa2VybmVsIjsgIHJlZyA9IDww
-eDAwOTIwMDAwIDB4MDAzYzAwMDA+OyB9Owo+ID4gICAgICAgICBtdGQ1QGNlMDAwMCAgeyBsYWJl
-bCA9ICJjX19hdGFncyI7ICByZWcgPSA8MHgwMGNlMDAwMCAweDAwMDIwMDAwPjsgfTsKPiA+ICAg
-ICAgICAgbXRkNkBkMDAwMDAgIHsgbGFiZWwgPSAiY19yb290ZnMiOyAgcmVnID0gPDB4MDBkMDAw
-MDAgMHgwMDMwMDAwMD47IH07Cj4gPiAgICAgICAgIG10ZDdAMTAwMDAwMCB7IGxhYmVsID0gIm1l
-bmRlciI7ICAgIHJlZyA9IDwweDAxMDAwMDAwIDB4MWYwMDAwMDA+OyB9Owo+ID4gfTsKPiA+Cj4g
-PiB3aGljaCBpcyB3aHksIEkgYXNzdW1lLCBJJ20gZ2V0dGluZyB0aGVzZSBtZXNzYWdlcy4gSXMg
-dGhlcmUgYSBVQkktZnJpZW5kbHkKPiA+IHdheSB0byBkZWZpbmUgdGhlbSB0byBhdm9pZCB0aGVz
-ZSBtZXNzYWdlcz8KPiA+ICAKPiAKPiBJIGZlZWwgdGhlIG1lc3NhZ2VzIGFyZSBhY3R1YWxseSBo
-ZWxwaW5nIHlvdS4gWW91IHNob3VsZCBub3QgaGF2ZSBtdGRibG9jawo+IG9uIGFueSBvZiB0aGVz
-ZSBNVEQgZGV2aWNlcywgaWYgSSB1bmRlcnN0b29kIGNvcnJlY3RseSwgc2luY2UgeW91IGFyZSBu
-b3QKPiBtb3VudGluZyBhIGZpbGVzeXN0ZW0gb24gYW55IG9mIHRoZW0uCj4gCj4gSnVzdCBkaXNh
-YmxlIE1UREJMT0NLIG9uIHlvdXIgYnVpbGQgYW5kIHlvdSB3aWxsIGJlIGdvb2QgdG8gZ28uCj4g
-Cj4gSSBhbSBpbmNsaW5lZCB0byBqdXN0IGxlYXZlIHRoZSB3YXJuaW5ncywgYWx0aG91Z2ggdGhl
-eSBsb29rIHNwYW1teSwKPiBwcmVjaXNlbHkgdG8gaGVscCBjYXRjaCB0aGlzIG1pcy1zZXR1cHMu
-CgpJIGtlZXAgZ2V0dGluZyBjb21wbGFpbnRzIGFib3V0IHRoZXNlIG1lc3NhZ2VzIGJlY2F1c2Ug
-dGhleSBhcmUKc3Bhd25lZCBzZXZlcmFsIHRpbWVzIGluIGEgYm9vdCAoZWFjaCBkZXZpY2Ugb3Ig
-cGFydGl0aW9uLCBJIGRvbid0CnJlY2FsbCkgd2hpbGUgbXRkYmxvY2sgaXMgbm90IGV2ZW4gdXNl
-ZC4gSSB1bmRlcnN0YW5kIGl0IHdvdWxkIGJlIGJlc3QKdG8gaGF2ZSBpdCBkaXNhYmxlZCBpbiB0
-aGlzIGNhc2UgYnV0IGNvdWxkIHdlIGZpbmQgYSB3YXkgdG8gYmUgbGVzcwppbnZhc2l2ZT8KClRo
-YW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Add support for winbond W25Q512NW-IM chip.
+
+Signed-off-by: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+Reviewed-by: Doug Anderson <dianders@chromium.org>
+---
+
+Changes since V1:
+	- Added space before name of the flash part as suggested by Doug.
+
+Changes since V2:
+	- Updated chip name as w25q512nwm as suggested by Doug.
+
+Changes since V3:
+	- Updated flash_info flags passing according to below patch
+	 https://lore.kernel.org/all/20211207140254.87681-7-tudor.ambarus@microchip.com/
+	 As suggested by Tudor Ambarus.
+---
+ drivers/mtd/spi-nor/winbond.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 675f32c..c4be225 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -124,6 +124,10 @@ static const struct flash_info winbond_parts[] = {
+ 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ |
+ 			      SPI_NOR_DUAL_READ) },
++	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024)
++		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ) },
+ 	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
