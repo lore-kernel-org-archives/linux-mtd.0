@@ -4,148 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C744FC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jan 2022 06:46:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 351E4C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jan 2022 08:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yhgf/CPSLVUvNpzKXPtSgxp7/lVxPcVR9ETBH0bGOug=; b=nVSsy/bfbV4xK2
-	Vy73TMFp5ldq4ugNBapQBCOqKcbeA/SXi3ZfGeqeUxJ3Kmhqis2ZmT8Fn7yjDPiL1cgPCAEqP3SN/
-	9ZjhIwgPiMGZX3h9KWvG89RWKVtmal67B2/RPz0uzh7RDPHgkkaONHpVvEytxmNWKpEPRta+9mwPC
-	yw7pxwY79rW0zrVNnQnK+CWo1hPi0uOit+noyZww+uaYPun9ppyd0iCvw79z2OoBROTfzL2GVYI7O
-	MhMoqGNZb4CjHxuemhuUBBJtHmR/jHZy5Ha7ie6sEQgEWCGO1Cxg7e1y7bYFK2Sda9Rw3f5uKGYE5
-	YcAEk3MU5jv7yVGPDLGQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=R+T+IFp/pOT/M7zDTwpnl4AeFGUvCHAftd04apuOsIY=; b=QxoMj4f5FCv8B3yOjMXHJgpIy/
+	p73pZhlZq/ytmoGlbmrJttd47HUXBl4YYS11TF1R4euXWzQeO7yAArufshyX5oxNio//ARwOEB8gY
+	81C1Ag5K8q7RXWOOX6ZYtNeixSKaAKCYtb+ZVTjI3B5NXOC8GpT27PyK9h+4BtBgjQjqVLNiGZ8T6
+	iFp5woCqGrWT+UfJeUazdEOeJrTgETJP/cuvTtdin5rB7a7PO7+Hd3PA6FEmh9nnUBbU4lR9qfycr
+	D4ilNFZv1qf5MV8zGYcO7sbu7zCNsGlGVjV7BCLw/3VMTDnbPm4NzTq3oOpngrx7sRf+ykZJmjwf2
+	ygFu2E4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nARC1-0095Ys-Tz; Thu, 20 Jan 2022 06:45:10 +0000
-Received: from esa.hc3962-90.iphmx.com ([216.71.140.77])
+	id 1nASSr-009b3s-Og; Thu, 20 Jan 2022 08:06:37 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nARBz-0095XI-0S
- for linux-mtd@lists.infradead.org; Thu, 20 Jan 2022 06:45:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qccesdkim1;
- t=1642661106; x=1643265906;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=esTke/buRky0QlqYuyzkjuIRPNVH7SJHk6d7WNj6fvY=;
- b=EFR8aFyHTJvRLUSQypsYVFMwuLAEEgAK92Y1NxEqcHPkcef0wCtz29AK
- rsYA4M53pbfsu3QN7QeuoNw/IppP6dbS9rKUWEf0WmYjkl+AZhWQAShbq
- Scio7Mc9rmaBpu9vQ9rlGKTf3ed5TFkRzG43RQ0dNrAovLid8VdBUvLSb Q=;
-Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO
- NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
- by ob1.hc3962-90.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2022 06:45:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YnbPeNig8awz7rMLg3y/HnzwesolIxAvitPNODawybFirwxzeWGaHP0t4sCFb6DjXXEDfuwNZ2mQL+NMSymEfPh3D5Ss20+aWdiicR8ZJO4dcn1jbv9widIiI9y6U5P8S/p8I3e03wQ1VKl+8Fs9mW5ByLBZT4/tgip6k8BZJGnEH+SYTxtQL913u4M/w9AJeWSEVaCYiMC0ApkT6Ey6GdurWm4Pu7sLhGyM/Hk8ZfswNEyHvuLP0ZRskE4uagzl2ZQL4nvdg3ST4eaVnwECTFR1l2xkOSSxcwslppmNXFz6+72tu5hXATZ+AuL0+PdtrLw1GMfG0BpDDXkkl1vHVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=esTke/buRky0QlqYuyzkjuIRPNVH7SJHk6d7WNj6fvY=;
- b=RbgOZ8bk5kaOChYVKJcD9KqeKhHuss5cVBYv+pSSGdB48qkVQFsmqraUHy1HBIuYQ+rtPz8XP0kKdpXERP0IStpAWjLyjDny3OkykpdKBc7FqD8HcqcOLWj13hBTZOucZeFrFrSU4ndG429inN8vmCeSFMZn5oyS5rUoyGW6x86756nAzY+4wyx3tvB0iM27BuAVS39mZjnzOGmRIBfeQzbHD5TwZVItnPOSLj00qK+Pt6GcemTJteTWvKLmwGP5L6Q0LRmqRtgyF8gZYMdeyq+gBharFkp6TgashRcKJOGLQMxolOE3dHIlXTRCJFpHFtwaJGlLbw2pWotZ9aouwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SJ0PR02MB8449.namprd02.prod.outlook.com (2603:10b6:a03:3f5::8)
- by SJ0PR02MB7534.namprd02.prod.outlook.com (2603:10b6:a03:320::21)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.8; Thu, 20 Jan
- 2022 06:45:01 +0000
-Received: from SJ0PR02MB8449.namprd02.prod.outlook.com
- ([fe80::481d:88c5:eab3:21c7]) by SJ0PR02MB8449.namprd02.prod.outlook.com
- ([fe80::481d:88c5:eab3:21c7%5]) with mapi id 15.20.4909.008; Thu, 20 Jan 2022
- 06:45:01 +0000
-From: "Sajida Bhanu (Temp) (QUIC)" <quic_c_sbhanu@quicinc.com>
-To: Michael Walle <michael@walle.cc>
-CC: "Tudor.Ambarus@microchip.com" <Tudor.Ambarus@microchip.com>, "Sajida Bhanu
- (Temp) (QUIC)" <quic_c_sbhanu@quicinc.com>, "dianders@chromium.org"
- <dianders@chromium.org>, "p.yadav@ti.com" <p.yadav@ti.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stummala@codeaurora.org" <stummala@codeaurora.org>,
- "vbadigan@codeaurora.org" <vbadigan@codeaurora.org>, "Ram Prakash Gupta
- (QUIC)" <quic_rampraka@quicinc.com>, "Pradeep Pragallapati (QUIC)"
- <quic_pragalla@quicinc.com>, "sartgarg@codeaurora.org"
- <sartgarg@codeaurora.org>
-Subject: RE: [PATCH V3] mtd: spi-nor: winbond: Add support for winbond chip
-Thread-Topic: [PATCH V3] mtd: spi-nor: winbond: Add support for winbond chip
-Thread-Index: AQHX8NO+WlpZqE5WH0ySDSUiuNAdtawx1mGAgDgzhrCAAK1jgIAA+YpA
-Date: Thu, 20 Jan 2022 06:45:01 +0000
-Message-ID: <SJ0PR02MB8449C8C63E8915A170B61E0DCD5A9@SJ0PR02MB8449.namprd02.prod.outlook.com>
-References: <1639476991-25676-1-git-send-email-quic_c_sbhanu@quicinc.com>
- <488aafc3-2fa9-198b-c448-d1ca7ef52f35@microchip.com>
- <PH0PR02MB84557EA76BD8DDD35A99B915CD599@PH0PR02MB8455.namprd02.prod.outlook.com>
- <b4aad212d86b2d4dd27602db6add82e3@walle.cc>
-In-Reply-To: <b4aad212d86b2d4dd27602db6add82e3@walle.cc>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=quicinc.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1bb60d1f-3a05-470c-f8e5-08d9dbe06223
-x-ms-traffictypediagnostic: SJ0PR02MB7534:EE_
-x-ld-processed: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d,ExtAddr
-x-microsoft-antispam-prvs: <SJ0PR02MB753400D93F1634E0FA9CAEEBB15A9@SJ0PR02MB7534.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Bdu4s5oPBmzVZZdgt4zK0Nsqj6mMUl7Y8iuqS66L6IaeZ15u0CoG+9cYuzPE6e55bkIQWQpiZhlz0AWQCXJz/V3nTsRyEXsl7sa/pX0xNNQfuNGVCU6XRqDCyuhKksnGfvVLFwpOXo5+JIM7LpbS1+zZjdi0D34YUFjULgwsDyfHLNfPAWs8oVhlDcP7risfaHnACX//T9jZeY4kA3/gscntvVpVjJoKaP4XCrX4cfT26dPaobRMCUc9EzL6Mf/OZErAO5x/EXHnQCfN2V8VR4kv3KW5sxmwr2+b2gGM5XXsLO6ezX+hkMT9I75Nx0V2Oiyo1niZP4yzTUv9lZG7ucVR3Ao9wHzPBz3Xv9gBQFlX4qZM1tunkjTEuaASJ7eaFKH8njp+wZKKpVb5GAvixeVKQnqqXIaGnpxGTPWxswrFOF9Z4oRYnMlBY1X9ahtj8/sA2FAAyIaL/OtR49oR1yBWUeN/uY+rLGDwqU3G4mF2e0HktJniDjI7aXpZ4ouvT2D67buVlPblG3YjjCtdTDwDto7h5uyT2mYVC029tq7kw4WO6LTxZ4+gCaeYfOu/ktTIGULiMwmVudUsCetdUoJFDy1EgA8EIXybMRxz1MzayqoakNzp1C4GCKFWmAiZuQ+xHJc0vQcgSgNkE9yo2Nl/SqmLe37d7hp8mVCGkroHrFvT3CzHc8kakeDip0QBas+tzhuxfMXqBEjuGi653w==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SJ0PR02MB8449.namprd02.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(366004)(66476007)(76116006)(66946007)(4744005)(6916009)(7416002)(508600001)(122000001)(33656002)(83380400001)(66556008)(66446008)(64756008)(86362001)(54906003)(26005)(38100700002)(6506007)(55016003)(71200400001)(53546011)(316002)(7696005)(2906002)(186003)(8676002)(9686003)(52536014)(4326008)(38070700005)(8936002)(5660300002);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?i1WBiBpTGQ91Mla7Qi8uSGLGBCv2T0bKYGPMy5+4swZM7ncHDboS+ygo9eM4?=
- =?us-ascii?Q?X7FoqmjQuG996lwZmjRU6pKL2A6MXJCYD4P1yK7TKE9pYISFnJqgzVo2Rw67?=
- =?us-ascii?Q?xpJc3ByxQipw0RZ6yfHksCsgIT2cCtlUESNanGp/jk8s7l+Lf+gXTJR9yjXS?=
- =?us-ascii?Q?/0DmzIKquoASTlHo5EDfSwBEeb50+RPzvh561AUo9Ek26375S9BsgkKjzp0b?=
- =?us-ascii?Q?Z10kLIYFhKoUELC2KDj8ldZLc0uuTu2/W1v9Mi2BQ3xAlcD3EBv3/Rntv4+2?=
- =?us-ascii?Q?oSMuDz2hEPNJ0mEG9MGoGky5Oq9flXEowbKS4Tm5w6fv80t3WE+iYUPjDX3v?=
- =?us-ascii?Q?K0BQMT0RSfDnRafhzw3c1V/EHO002OZpFDA8jQNeUeyLtzZzo5TUbkmeKD2e?=
- =?us-ascii?Q?rtr7q2eOPuWjkq1Ma0ZZvqQvaU3leYwa1+04e0AdEEugHJu6BGo6vV9DlGNm?=
- =?us-ascii?Q?X731127Y3NDb8jGnf410wReoCz4rER7WlWP/khUXrx+rdluRQBBnhKA/aQLF?=
- =?us-ascii?Q?nXYi12+x9vR8iqv/tdD4VYeJpw4yW8Q9atLAjqOQKMrFuvnB0uQ5KYBkKOOM?=
- =?us-ascii?Q?U82GrdNaojY/kK0SOouarkjQ/RL3fNzPSwPI4YPgamX8qLelW1y9UcvxWAra?=
- =?us-ascii?Q?hHrXaaUpxSAR5hR9dE2l581UKCg1qb3nUtiH9mKBmYAgZ02HPbK3zaAdSLW4?=
- =?us-ascii?Q?MKvce0byOPQCfweqqgdFtXOdFSNMHC4d9gGEMYk3qqvjpVgbbund1aJfFGsW?=
- =?us-ascii?Q?bVLOeB1+ss3QpirfbpfFN3seSSpAykS6tbXDczwhyKsEj4d2P5mtfZrSZ9BP?=
- =?us-ascii?Q?aVw0LE5Hzw68AdYEqrtTHQ67W2B62Lq0BLM/OlR0ADY6Zvv0SHyVtUkvFLe0?=
- =?us-ascii?Q?cM6PQfIAxgKRB26hY9WQZN2513khz/7e60Q129n9DaAVCfwf1V8bw176NHB6?=
- =?us-ascii?Q?9twOV3UgLDUggISKNftgq2tXGQCuC8peJ71A49Mc/7zXUBT7A6wQ2Dc7QhLE?=
- =?us-ascii?Q?IRTw6ZhbJWslBdouQQHfFmzCv5THmVeLyk5kQmEv1D7D3R/ssdg/SMgo+0RW?=
- =?us-ascii?Q?xXtHILPyYCB2Mh1VpEW13+XfDvYzzDGiDIAKeADQXGV+82Efyil1UFLmxLtn?=
- =?us-ascii?Q?brRfnFY143AaDPBTUKmoofRrb1hT6M8NK7ezp6Kf1k4bpxyOVi4P16BfdOx+?=
- =?us-ascii?Q?bh1N9KFTTGCieQq+g6hnkXw/TYsv9Rmo18hFDSuHvNsCMGbB4XptD2AIVPTk?=
- =?us-ascii?Q?2wk4ol8uHL3Bd+Um5W+nW6XuvUdCJiJl+yDi+deGshDH3YNZlGVsbdKsrpBa?=
- =?us-ascii?Q?N0Zh3/L6mkD2jomIyMXg9vGDqj84B7/qPMjC/waZ6CFErh5FXXzAAFO+6evo?=
- =?us-ascii?Q?YcvxxwPPqaaFYeus80dh0KDbxLYYYTWTR8ImJsxHJArNBAwnweJqJs+LgCvN?=
- =?us-ascii?Q?pNc1pIuWfcBpYhoHc3MY2ssNwdiFDN8CRpTdlgN7EFTGf4tDT+BFQow9vslz?=
- =?us-ascii?Q?smZaxovcouKD4SqrJBAU6rDtSw9gGPer8JsxZGotncdu/SHSqLf/75hWKmBq?=
- =?us-ascii?Q?oO55ENUOqdMY+kr9xlvrVQl8UaLn8jRokC26mNqShu/fXt4uYqe1IGYAxSFr?=
- =?us-ascii?Q?61qYyQHLgZCSOS3/dueTC/VG/d96BEAHbm6w+rq+UFQnD9P3KouTXgUfmvXT?=
- =?us-ascii?Q?HHSDVg=3D=3D?=
+ id 1nASLb-009WYv-H9
+ for linux-mtd@lists.infradead.org; Thu, 20 Jan 2022 07:59:10 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1nASK7-0002RI-3O; Thu, 20 Jan 2022 08:57:35 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1nASJu-00BJom-IA; Thu, 20 Jan 2022 08:57:21 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1nASJt-000Bvo-3V; Thu, 20 Jan 2022 08:57:21 +0100
+Date: Thu, 20 Jan 2022 08:57:18 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Jaroslav Kysela <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-phy@lists.infradead.org, Jiri Slaby <jirislaby@kernel.org>,
+ openipmi-developer@lists.sourceforge.net,
+ Khuong Dinh <khuong@os.amperecomputing.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+ Zhang Rui <rui.zhang@intel.com>,
+ Linux PWM List <linux-pwm@vger.kernel.org>,
+ Robert Richter <rric@kernel.org>, Saravanan Sekar <sravanhome@gmail.com>,
+ Corey Minyard <minyard@acm.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ John Garry <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>,
+ Mark Gross <markgross@kernel.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Sebastian Reichel <sre@kernel.org>, Eric Auger <eric.auger@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org,
+ Benson Leung <bleung@chromium.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+ Mun Yew Tham <mun.yew.tham@intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, netdev@vger.kernel.org,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi <linux-spi@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Vinod Koul <vkoul@kernel.org>,
+ James Morse <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Richard Weinberger <richard@nod.at>,
+ Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ linux-mediatek@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] driver core: platform: Rename
+ platform_get_irq_optional() to platform_get_irq_silent()
+Message-ID: <20220120075718.5qtrpc543kkykaow@pengutronix.de>
+References: <20220112085009.dbasceh3obfok5dc@pengutronix.de>
+ <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
+ <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
+ <YeA7CjOyJFkpuhz/@sirena.org.uk>
+ <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+ <YeF05vBOzkN+xYCq@smile.fi.intel.com>
+ <20220115154539.j3tsz5ioqexq2yuu@pengutronix.de>
+ <YehdsUPiOTwgZywq@smile.fi.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: quicinc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR02MB8449.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bb60d1f-3a05-470c-f8e5-08d9dbe06223
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2022 06:45:01.3286 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XPcbytWsAZ/pu3trglSJeLthihsNEu5zjOXFOJdi6Bc526sb+FtG1EnAuoADlMXZD7ez29U1T8cM+6xyCi5STala2U2/gOcXJpcrRv32qak=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7534
+In-Reply-To: <YehdsUPiOTwgZywq@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220119_224507_166724_D3131411 
-X-CRM114-Status: UNSURE (   8.11  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220119_235907_767322_70A2E3B0 
+X-CRM114-Status: GOOD (  44.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,32 +131,148 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6446894160537011680=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Sure thanks , will rebase on latest and post next  patch series.
 
-Thanks,
-Sajida
------Original Message-----
-From: Michael Walle <michael@walle.cc> 
-Sent: Wednesday, January 19, 2022 9:22 PM
-To: Sajida Bhanu (Temp) <c_sbhanu@qti.qualcomm.com>
-Cc: Tudor.Ambarus@microchip.com; Sajida Bhanu (Temp) (QUIC) <quic_c_sbhanu@quicinc.com>; dianders@chromium.org; p.yadav@ti.com; miquel.raynal@bootlin.com; richard@nod.at; vigneshr@ti.com; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; stummala@codeaurora.org; vbadigan@codeaurora.org; Ram Prakash Gupta (QUIC) <quic_rampraka@quicinc.com>; Pradeep Pragallapati (QUIC) <quic_pragalla@quicinc.com>; sartgarg@codeaurora.org
-Subject: Re: [PATCH V3] mtd: spi-nor: winbond: Add support for winbond chip
+--===============6446894160537011680==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vtmtr3soi3npiqhl"
+Content-Disposition: inline
 
-Hi,
 
-Am 2022-01-19 06:34, schrieb Sajida Bhanu (Temp):
-> Gentle Reminder.
+--vtmtr3soi3npiqhl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As Tudor mentioned, you'd need to rebase your patch to the latest next.
+On Wed, Jan 19, 2022 at 08:51:29PM +0200, Andy Shevchenko wrote:
+> On Sat, Jan 15, 2022 at 04:45:39PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Fri, Jan 14, 2022 at 03:04:38PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Jan 13, 2022 at 08:43:58PM +0100, Uwe Kleine-K=F6nig wrote:
+> > > > > It'd certainly be good to name anything that doesn't correspond t=
+o one
+> > > > > of the existing semantics for the API (!) something different rat=
+her
+> > > > > than adding yet another potentially overloaded meaning.
+> > > >=20
+> > > > It seems we're (at least) three who agree about this. Here is a pat=
+ch
+> > > > fixing the name.
+> > >=20
+> > > And similar number of people are on the other side.
+> >=20
+> > If someone already opposed to the renaming (and not only the name) I
+> > must have missed that.
+> >=20
+> > So you think it's a good idea to keep the name
+> > platform_get_irq_optional() despite the "not found" value returned by it
+> > isn't usable as if it were a normal irq number?
+>=20
+> I meant that on the other side people who are in favour of Sergey's patch.
+> Since that I commented already that I opposed the renaming being a standa=
+lone
+> change.
+>=20
+> Do you agree that we have several issues with platform_get_irq*() APIs?
+>=20
+> 1. The unfortunate naming
 
-Thanks,
--michael
+unfortunate naming for the currently implemented semantic, yes.
+
+> 2. The vIRQ0 handling: a) WARN() followed by b) returned value 0
+
+I'm happy with the vIRQ0 handling. Today platform_get_irq() and it's
+silent variant returns either a valid and usuable irq number or a
+negative error value. That's totally fine.
+
+> 3. The specific cookie for "IRQ not found, while no error happened" case
+
+Not sure what you mean here. I have no problem that a situation I can
+cope with is called an error for the query function. I just do error
+handling and continue happily. So the part "while no error happened" is
+irrelevant to me.
+
+Additionally I see the problems:
+
+4. The semantic as implemented in Sergey's patch isn't better than the
+current one. platform_get_irq*() is still considerably different from
+(clk|gpiod)_get* because the not-found value for the _optional variant
+isn't usuable for the irq case. For clk and gpio I get rid of a whole if
+branch, for irq I only change the if-condition. (And if that change is
+considered good or bad seems to be subjective.)
+
+For the idea to add a warning to platform_get_irq_optional for all but
+-ENXIO (and -EPROBE_DEFER), I see the problem:
+
+5. platform_get_irq*() issuing an error message is only correct most of
+the time and given proper error handling in the caller (which might be
+able to handle not only -ENXIO but maybe also -EINVAL[1]) the error message
+is irritating. Today platform_get_irq() emits an error message for all
+but -EPROBE_DEFER. As soon as we find a driver that handles -EINVAL we
+need a function platform_get_irq_variant1 to be silent for -EINVAL,
+-EPROBE_DEFER and -ENXIO (or platform_get_irq_variant2 that is only
+silent for -EINVAL and -EPROBE_DEFER?)
+
+IMHO a query function should always be silent and let the caller do the
+error handling. And if it's only because
+
+	mydev: IRQ index 0 not found
+
+is worse than
+
+	mydev: neither TX irq not a muxed RX/TX irq found
+
+=2E Also "index 0" is irritating for devices that are expected to have
+only a single irq (i.e. the majority of all devices).
+
+Yes, I admit, we can safe some code by pushing the error message in a
+query function. But that doesn't only have advantages.
+
+Best regards
+Uwe
+
+[1] Looking through the source I wonder: What are the errors that can happen
+    in platform_get_irq*()? (calling everything but a valid irq number
+    an error) Looking at many callers, they only seem to expect "not
+    found" and some "probe defer" (even platform_get_irq() interprets
+    everything but -EPROBE_DEFER as "IRQ index %u not found\n".)
+    IMHO before we should consider to introduce a platform_get_irq*()
+    variant with improved semantics, some cleanup in the internals of
+    the irq lookup are necessary.
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vtmtr3soi3npiqhl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHpFdoACgkQwfwUeK3K
+7AlpCwf8CIVWD1ztALs4saPfU+hCAXGdHPMYsVb4ZTfj+uT0g5uOPF3Vn08Dfosw
+tyqmKEnwGKIMZpavCJ+pScDwmT2FfANDq+R3xZzWj1hEcEvhjMFWB/IDU+s33/IB
+9pbnCAE8Oa/2PGjM3+FGf5OA6q8vCcuO8XHluolGQqPqvajsCulKZytLIFnnTc9t
+UXm+5HxATeIlvcxF5NHMcNFRt2ADkTGVGj0zrEOxinsiT3edhaWLDR5/vSnbXySV
+NKWnnkWO/T3Huohcr85IS2dVfqbqxuMmfU6RyQKdMat7ZUzOqtffi2I6KdXRRjog
+OHR+PLT7KSOdf6ODGMs+9P8AMEotwg==
+=El6G
+-----END PGP SIGNATURE-----
+
+--vtmtr3soi3npiqhl--
+
+
+--===============6446894160537011680==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============6446894160537011680==--
+
