@@ -4,122 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 351E4C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jan 2022 08:07:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E90AC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 20 Jan 2022 08:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=R+T+IFp/pOT/M7zDTwpnl4AeFGUvCHAftd04apuOsIY=; b=QxoMj4f5FCv8B3yOjMXHJgpIy/
-	p73pZhlZq/ytmoGlbmrJttd47HUXBl4YYS11TF1R4euXWzQeO7yAArufshyX5oxNio//ARwOEB8gY
-	81C1Ag5K8q7RXWOOX6ZYtNeixSKaAKCYtb+ZVTjI3B5NXOC8GpT27PyK9h+4BtBgjQjqVLNiGZ8T6
-	iFp5woCqGrWT+UfJeUazdEOeJrTgETJP/cuvTtdin5rB7a7PO7+Hd3PA6FEmh9nnUBbU4lR9qfycr
-	D4ilNFZv1qf5MV8zGYcO7sbu7zCNsGlGVjV7BCLw/3VMTDnbPm4NzTq3oOpngrx7sRf+ykZJmjwf2
-	ygFu2E4A==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BNtfD8KHl9iQCYr4Dw1juABNz9CAHqelkRjt81bjz/4=; b=MA6xpxdF6LPkSL7rMZPNUr2aU1
+	2P8fFAaYINlUNpvMt4wf6+e/ipWAma9gBKBPFXG2TQdJJl5NXM44gkYGKa7mt8OrV6g7xKexxncCB
+	cFI8u9JJxDEnTa28znpVALx6k44S2uxbADMIEG4CSAYdbFXIClewouPWagEHnyl82k/lE4lklip9F
+	a1PuIULRn7ghDUbdmeUgBYZGLCb2Yzm2CRumlXG6m6GyyHslL0TDzXMcshbN1o1orIMVViFhhl1v8
+	17fe7UPmSfHP4UxKJLyVPNPMk6T8zJTt2FOXsXgFK1G/lZcZ9Nz7sZmjih1JyPkgFyNNnqsxVlPAL
+	2+03+9Og==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nASSr-009b3s-Og; Thu, 20 Jan 2022 08:06:37 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1nASVW-009cyL-J5; Thu, 20 Jan 2022 08:09:22 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nASLb-009WYv-H9
- for linux-mtd@lists.infradead.org; Thu, 20 Jan 2022 07:59:10 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1nASK7-0002RI-3O; Thu, 20 Jan 2022 08:57:35 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nASJu-00BJom-IA; Thu, 20 Jan 2022 08:57:21 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nASJt-000Bvo-3V; Thu, 20 Jan 2022 08:57:21 +0100
-Date: Thu, 20 Jan 2022 08:57:18 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Jaroslav Kysela <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux I2C <linux-i2c@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-phy@lists.infradead.org, Jiri Slaby <jirislaby@kernel.org>,
- openipmi-developer@lists.sourceforge.net,
- Khuong Dinh <khuong@os.amperecomputing.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Joakim Zhang <qiangqing.zhang@nxp.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Lee Jones <lee.jones@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Kishon Vijay Abraham I <kishon@ti.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
- Zhang Rui <rui.zhang@intel.com>,
- Linux PWM List <linux-pwm@vger.kernel.org>,
- Robert Richter <rric@kernel.org>, Saravanan Sekar <sravanhome@gmail.com>,
- Corey Minyard <minyard@acm.org>, Linux PM list <linux-pm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- John Garry <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>,
- William Breathitt Gray <vilhelm.gray@gmail.com>,
- Mark Gross <markgross@kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Alex Williamson <alex.williamson@redhat.com>,
- Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>,
- Sebastian Reichel <sre@kernel.org>, Eric Auger <eric.auger@redhat.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org,
- Benson Leung <bleung@chromium.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
- Mun Yew Tham <mun.yew.tham@intel.com>,
- Hans de Goede <hdegoede@redhat.com>, netdev@vger.kernel.org,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Cornelia Huck <cohuck@redhat.com>,
- Linux MMC List <linux-mmc@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-spi <linux-spi@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Vinod Koul <vkoul@kernel.org>,
- James Morse <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Richard Weinberger <richard@nod.at>,
- Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- linux-mediatek@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] driver core: platform: Rename
- platform_get_irq_optional() to platform_get_irq_silent()
-Message-ID: <20220120075718.5qtrpc543kkykaow@pengutronix.de>
-References: <20220112085009.dbasceh3obfok5dc@pengutronix.de>
- <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
- <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
- <Yd9L9SZ+g13iyKab@sirena.org.uk>
- <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
- <YeA7CjOyJFkpuhz/@sirena.org.uk>
- <20220113194358.xnnbhsoyetihterb@pengutronix.de>
- <YeF05vBOzkN+xYCq@smile.fi.intel.com>
- <20220115154539.j3tsz5ioqexq2yuu@pengutronix.de>
- <YehdsUPiOTwgZywq@smile.fi.intel.com>
+ id 1nASUQ-009c7J-5v
+ for linux-mtd@lists.infradead.org; Thu, 20 Jan 2022 08:08:16 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id C636C22247;
+ Thu, 20 Jan 2022 09:08:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1642666091;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=/+vH3Wwc8Lp21zZdi/9twt8f8dnIqFnq/9eYnIq/2tc=;
+ b=PvuTcP77Zh3ny8IEhmFEjIKL4zc4XouUACJI/8VdOufptrwvQlLuK8l+0u6pH1tcnKURHE
+ pOpEJqGW2jm7F68o0qxkNYkIJRMa57XIIbkGtH3mJAAhOB6UOfPJgYw7SRhlvkKWDbINNW
+ 5GiNtvhGglzT/m369Nep53bFhfkMk3U=
 MIME-Version: 1.0
-In-Reply-To: <YehdsUPiOTwgZywq@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+Date: Thu, 20 Jan 2022 09:08:09 +0100
+From: Michael Walle <michael@walle.cc>
+To: David Bauer <mail@david-bauer.net>
+Cc: Nick <vincent@systemli.org>, Tudor.Ambarus@microchip.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] mtd: spi-nor: disable 16-bit-sr for macronix
+In-Reply-To: <8d578f8e-9cfd-58a0-940f-b085074c5d30@david-bauer.net>
+References: <20211227091638.177917-1-vincent@systemli.org>
+ <20211227091638.177917-2-vincent@systemli.org>
+ <0db13110-ee6f-2e02-abf9-d5b9eecafcb4@microchip.com>
+ <a187ec1b-3bae-659d-86c5-4e2b3403eca4@systemli.org>
+ <22bd791798d15d74060c44f65620921c@walle.cc>
+ <8d578f8e-9cfd-58a0-940f-b085074c5d30@david-bauer.net>
+User-Agent: Roundcube Webmail/1.4.12
+Message-ID: <3d2837220261f2ba51569bb54ef334c7@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220119_235907_767322_70A2E3B0 
-X-CRM114-Status: GOOD (  44.69  )
+X-CRM114-CacheID: sfid-20220120_000814_977967_62972A80 
+X-CRM114-Status: GOOD (  17.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,148 +71,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6446894160537011680=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi David,
 
---===============6446894160537011680==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vtmtr3soi3npiqhl"
-Content-Disposition: inline
+Am 2022-01-19 21:36, schrieb David Bauer:
+> On 1/19/22 16:49, Michael Walle wrote:
 
+>> That being said. I'd prefer to have a sane default for that
+>> flag - which is to _not_ set it by default. For now, we can
+>> just remove the flag from spi_nor_init_default_params() and
+>> move it into the manufacturer default init. Then we can
+>> go through the flashes and remove the flag there.
+> 
+> I was working on a similar series in parallel - and i just want to
+> confirm this before i submit it. [0]
+> 
+> Your take would be to remove the flag from spi_nor_init_default_params
+> and place it in all vendor init-calls, right?
 
---vtmtr3soi3npiqhl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+correct.
 
-On Wed, Jan 19, 2022 at 08:51:29PM +0200, Andy Shevchenko wrote:
-> On Sat, Jan 15, 2022 at 04:45:39PM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Fri, Jan 14, 2022 at 03:04:38PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Jan 13, 2022 at 08:43:58PM +0100, Uwe Kleine-K=F6nig wrote:
-> > > > > It'd certainly be good to name anything that doesn't correspond t=
-o one
-> > > > > of the existing semantics for the API (!) something different rat=
-her
-> > > > > than adding yet another potentially overloaded meaning.
-> > > >=20
-> > > > It seems we're (at least) three who agree about this. Here is a pat=
-ch
-> > > > fixing the name.
-> > >=20
-> > > And similar number of people are on the other side.
-> >=20
-> > If someone already opposed to the renaming (and not only the name) I
-> > must have missed that.
-> >=20
-> > So you think it's a good idea to keep the name
-> > platform_get_irq_optional() despite the "not found" value returned by it
-> > isn't usable as if it were a normal irq number?
->=20
-> I meant that on the other side people who are in favour of Sergey's patch.
-> Since that I commented already that I opposed the renaming being a standa=
-lone
-> change.
->=20
-> Do you agree that we have several issues with platform_get_irq*() APIs?
->=20
-> 1. The unfortunate naming
+> My current take would be to add a new flag which denotes flashes that
+> only have a single 8-bit SR, no second SR / CR.
 
-unfortunate naming for the currently implemented semantic, yes.
+but that new flag has the same meaning as the current one, no? In fact
+I see you are just clearing the 16bit flag if the 8bit one is set.
 
-> 2. The vIRQ0 handling: a) WARN() followed by b) returned value 0
+Therefore, you have to bits for just two states. We want to
+use less flags and IMHO this isn't good for readability.
 
-I'm happy with the vIRQ0 handling. Today platform_get_irq() and it's
-silent variant returns either a valid and usuable irq number or a
-negative error value. That's totally fine.
+Also it doesn't fix the bad default. I doubt anyone adding
+a new vendor/flash is aware that the default is a WRSR with
+16bit SR. Eg. I just had a quick look at gigadevice and it
+doesn't seem to support this neither. Now depending on the
+SFDP content the flag is overwritten anyways. But still.
+I'd really like to get rid of this and just identify the
+flashes that doesn't have an opcode to write the second
+status register/configuration register.
 
-> 3. The specific cookie for "IRQ not found, while no error happened" case
-
-Not sure what you mean here. I have no problem that a situation I can
-cope with is called an error for the query function. I just do error
-handling and continue happily. So the part "while no error happened" is
-irrelevant to me.
-
-Additionally I see the problems:
-
-4. The semantic as implemented in Sergey's patch isn't better than the
-current one. platform_get_irq*() is still considerably different from
-(clk|gpiod)_get* because the not-found value for the _optional variant
-isn't usuable for the irq case. For clk and gpio I get rid of a whole if
-branch, for irq I only change the if-condition. (And if that change is
-considered good or bad seems to be subjective.)
-
-For the idea to add a warning to platform_get_irq_optional for all but
--ENXIO (and -EPROBE_DEFER), I see the problem:
-
-5. platform_get_irq*() issuing an error message is only correct most of
-the time and given proper error handling in the caller (which might be
-able to handle not only -ENXIO but maybe also -EINVAL[1]) the error message
-is irritating. Today platform_get_irq() emits an error message for all
-but -EPROBE_DEFER. As soon as we find a driver that handles -EINVAL we
-need a function platform_get_irq_variant1 to be silent for -EINVAL,
--EPROBE_DEFER and -ENXIO (or platform_get_irq_variant2 that is only
-silent for -EINVAL and -EPROBE_DEFER?)
-
-IMHO a query function should always be silent and let the caller do the
-error handling. And if it's only because
-
-	mydev: IRQ index 0 not found
-
-is worse than
-
-	mydev: neither TX irq not a muxed RX/TX irq found
-
-=2E Also "index 0" is irritating for devices that are expected to have
-only a single irq (i.e. the majority of all devices).
-
-Yes, I admit, we can safe some code by pushing the error message in a
-query function. But that doesn't only have advantages.
-
-Best regards
-Uwe
-
-[1] Looking through the source I wonder: What are the errors that can happen
-    in platform_get_irq*()? (calling everything but a valid irq number
-    an error) Looking at many callers, they only seem to expect "not
-    found" and some "probe defer" (even platform_get_irq() interprets
-    everything but -EPROBE_DEFER as "IRQ index %u not found\n".)
-    IMHO before we should consider to introduce a platform_get_irq*()
-    variant with improved semantics, some cleanup in the internals of
-    the irq lookup are necessary.
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---vtmtr3soi3npiqhl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmHpFdoACgkQwfwUeK3K
-7AlpCwf8CIVWD1ztALs4saPfU+hCAXGdHPMYsVb4ZTfj+uT0g5uOPF3Vn08Dfosw
-tyqmKEnwGKIMZpavCJ+pScDwmT2FfANDq+R3xZzWj1hEcEvhjMFWB/IDU+s33/IB
-9pbnCAE8Oa/2PGjM3+FGf5OA6q8vCcuO8XHluolGQqPqvajsCulKZytLIFnnTc9t
-UXm+5HxATeIlvcxF5NHMcNFRt2ADkTGVGj0zrEOxinsiT3edhaWLDR5/vSnbXySV
-NKWnnkWO/T3Huohcr85IS2dVfqbqxuMmfU6RyQKdMat7ZUzOqtffi2I6KdXRRjog
-OHR+PLT7KSOdf6ODGMs+9P8AMEotwg==
-=El6G
------END PGP SIGNATURE-----
-
---vtmtr3soi3npiqhl--
-
-
---===============6446894160537011680==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============6446894160537011680==--
-
