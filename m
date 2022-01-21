@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76800C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jan 2022 15:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46FCFC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 21 Jan 2022 21:20:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WRSTFDTnD6SpVRUj8pd1lYcTnaFNh/0E1VB/DXiSD8E=; b=aWIzc2J41a8tUJ
-	kf9tMl4iPdpOX68YtfPDdbFdYtRQ/N+zzd8rOJgboVN3peuA6bb5YiUpmH59DqrJEwX2uRnmJkCw9
-	0ZyWUyxa4AymOpVi+HBlRGUB0sy75XJP2/0h+nemZ7/pua4h07+S/JQX/v1xstiyxxX/dtkTUblXX
-	VVTOkv1HJbjh7Sgj+IKaHrIUP5Y8SvS5JPijrljgqw5ROrVqV72j7VzlSnGoM3AVICVnnwMJ2UX78
-	SaSLq1ogg/fxeX1A/gAdy60DnBlPmsnAyfL6D8RbyzKVQLDRt0JA2sBx7gqLY574+zXGqU0RaoP0Z
-	FEma3ya7JIdWkJxbsZFw==;
+	List-Owner; bh=f+IWUdXjOGZjKU9sin3EsL74x1mXE5IlLZDaSilkMjA=; b=N++KDVXJ+U5cHM
+	1uwVCmHn3SG2IDbcyWoUL7Ew7eFWZ9SB0M/koAGp2emzLsdkUNUyiXHrR3BvmTI7x7kCGryb5wTAL
+	+kQuzLyYyYxRsmsM2q6Ewyn2wJwTVGVenr6zF3TDzIPBzT5BsXl5yMiIg+4YYaWY0aeqiRIb8N/Y5
+	1bOH6lD0AbyXLQZ+c8UP4eVOqi9wExz2oHlDV60N6hYUeUKshEsBEQrSJ4BFnvn2cHWxgSmPiu2wx
+	eZPDOSDoRu3GpQcoJo0SN4G0vCelGrWiaIABSU/AL6PFae0BjfJyoj8Un+OZxKF1GeX6f9K2vkC4L
+	P8aC5v/rGZT8nCskqfbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nAwFU-00FWJu-KW; Fri, 21 Jan 2022 15:54:48 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1nB1K0-00G7Kx-Fa; Fri, 21 Jan 2022 21:19:48 +0000
+Received: from mail-ot1-f44.google.com ([209.85.210.44])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nAwFR-00FWJb-2b
- for linux-mtd@lists.infradead.org; Fri, 21 Jan 2022 15:54:46 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 92049B81F67
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2022 15:54:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567AFC340E1
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2022 15:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1642780482;
- bh=W6JQ5Nrf5iKsKOcSh7js6ozGbm0zYldeWMnxl9nkzI4=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=Y9b/j8jCfnDEtWqXSjQixUIaaex2V8cVeBiGAxsVkEL5Cy+Ugx8hqKMYjAC0VyS8o
- 7mVe75ffmtuy6jFEZ37XCBgQkd1hzjN4mis8a8AKPwAPdSst+7RmbC2ECqjWFO8Wm7
- 0WfgjZ/COrfeRMJjf9Np6JkZcVYx5XUnCG+itUQODvSesjdFcqr7+kF0xx3Ihx2fu2
- uySDyGWXLeC10xG2zSX1CaOdubNq9Z/wKpWtckaiHjN4n7CDr/8mnmDJDP8FUK1djx
- Ed5ue6nhZg8nIxEAGdPl/wRTOgKjagQcEJ+quS8JpJEW2Tx3oprBNBz+xC6JBuSNx/
- 3x+R2emK+pUCQ==
-Received: by mail-ed1-f44.google.com with SMTP id c24so41327724edy.4
- for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2022 07:54:42 -0800 (PST)
-X-Gm-Message-State: AOAM532d6AU92+2ghVhnAugbd1mqQjPsaIMe7zuU5w1tLz8ferw3UeBd
- jidMMbvh/32pgvlx7J9WrKh5zZzBRUjXuwm3Cw==
-X-Google-Smtp-Source: ABdhPJzYJb7CGgIlw5eKMhAtTOQCT21R37klTn5qVypYYorVvi9kcdGhIlWutFCXWm9RH+msRAlMSDDN75krE4EHUY0=
-X-Received: by 2002:aa7:dc05:: with SMTP id b5mr4833806edu.46.1642780480572;
- Fri, 21 Jan 2022 07:54:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20211210201039.729961-1-miquel.raynal@bootlin.com>
- <20211210201039.729961-3-miquel.raynal@bootlin.com>
- <YbjVSNAC8M5Y1nHp@robh.at.kernel.org>
- <20211216160226.4fac5ccc@xps13>
-In-Reply-To: <20211216160226.4fac5ccc@xps13>
+ id 1nB1Jv-00G7Jv-Iw
+ for linux-mtd@lists.infradead.org; Fri, 21 Jan 2022 21:19:44 +0000
+Received: by mail-ot1-f44.google.com with SMTP id
+ l64-20020a9d1b46000000b005983a0a8aaaso13377359otl.3
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2022 13:19:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=Rwc9GxUTej2WnJMc0e3ALPik20sHOJTxdJgSjedRgYM=;
+ b=e0EYcNjNLkMnsuTGRr66Fvi3ocFbbstRXySzvDfVv9UTs7ZLvM3QBu0NaoUNJHlY9M
+ oCwf88qFtYTfv/O6qC+bs6gVC09LMpxfciwOZWQ9Mv3ut84884qPg7eJtIJhQLyRGKZl
+ rrTdtmzMwFql6pXM8ua7lVgbhm7Y1U6ephK3D4MogWk87EJag2QBn7Qat2vpMaGqkze4
+ Zg0c8uVzcXWC6szb9yF3o7pPtAppq0zU48HIskoKbU0KSs20RckMZ2pyrYvJ4yWyHwub
+ /J4j4uoDHu+jJS/STNY2U1r8NbTGMoN+6MlKqb4lhKfVTPJNB/j5qepJmZ8XDD4908Q7
+ jBmA==
+X-Gm-Message-State: AOAM532qgvslPqQNINdtAsR7oWTS0zDyc7IBbWwEbt0WkNikDa/FbCPe
+ DMWt29zVqkX5Ej9ODr7IbA==
+X-Google-Smtp-Source: ABdhPJzbNnH7DDBGJ2KNG4hBF2gFhO9Qk8NiQerrT9EGNcWyi7kzEHZbIoK+YEXVUQe0ZMgoi4p0gg==
+X-Received: by 2002:a9d:57ca:: with SMTP id q10mr4195836oti.180.1642799982173; 
+ Fri, 21 Jan 2022 13:19:42 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213])
+ by smtp.gmail.com with ESMTPSA id g2sm1614084oic.40.2022.01.21.13.19.41
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 21 Jan 2022 13:19:41 -0800 (PST)
+Received: (nullmailer pid 1602431 invoked by uid 1000);
+ Fri, 21 Jan 2022 21:19:40 -0000
+Date: Fri, 21 Jan 2022 15:19:40 -0600
 From: Rob Herring <robh@kernel.org>
-Date: Fri, 21 Jan 2022 09:54:29 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+1X1V8UUHgfKaSbhZLtche3bqnCj62jFRVWzQLEc3hng@mail.gmail.com>
-Message-ID: <CAL_Jsq+1X1V8UUHgfKaSbhZLtche3bqnCj62jFRVWzQLEc3hng@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] spi: dt-bindings: Describe stacked/parallel
- memories modes
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org, 
- Michal Simek <monstr@monstr.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org
+To: Christophe Kerello <christophe.kerello@foss.st.com>
+Cc: robh+dt@kernel.org, miquel.raynal@bootlin.com, vigneshr@ti.com,
+ richard@nod.at, chenshumin86@sina.com,
+ linux-stm32@st-md-mailman.stormreply.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ srinivas.kandagatla@linaro.org
+Subject: Re: [PATCH 1/3] dt-binding: mtd: nand: Document the wp-gpios property
+Message-ID: <YesjbOzh+B00dKIh@robh.at.kernel.org>
+References: <20220105135734.271313-1-christophe.kerello@foss.st.com>
+ <20220105135734.271313-2-christophe.kerello@foss.st.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220105135734.271313-2-christophe.kerello@foss.st.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220121_075445_420970_F1C24C4E 
-X-CRM114-Status: GOOD (  44.00  )
+X-CRM114-CacheID: sfid-20220121_131943_643986_F7B354DE 
+X-CRM114-Status: GOOD (  10.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,162 +85,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Dec 16, 2021 at 9:02 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Rob,
->
-> robh@kernel.org wrote on Tue, 14 Dec 2021 11:32:56 -0600:
->
-> > On Fri, Dec 10, 2021 at 09:10:38PM +0100, Miquel Raynal wrote:
-> > > Describe two new memories modes:
-> > > - A stacked mode when the bus is common but the address space extended
-> > >   with an additinals wires.
-> > > - A parallel mode with parallel busses accessing parallel flashes where
-> > >   the data is spread.
-> > >
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > ---
-> > >  .../bindings/spi/spi-peripheral-props.yaml    | 29 +++++++++++++++++++
-> > >  1 file changed, 29 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> > > index 5dd209206e88..4194fee8f556 100644
-> > > --- a/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> > > +++ b/Documentation/devicetree/bindings/spi/spi-peripheral-props.yaml
-> > > @@ -82,6 +82,35 @@ properties:
-> > >      description:
-> > >        Delay, in microseconds, after a write transfer.
-> > >
-> > > +  stacked-memories:
-> > > +    $ref: /schemas/types.yaml#/definitions/uint64-matrix
-> >
-> > matrix or...
-> >
-> > > +    description: Several SPI memories can be wired in stacked mode.
-> > > +      This basically means that either a device features several chip
-> > > +      selects, or that different devices must be seen as a single
-> > > +      bigger chip. This basically doubles (or more) the total address
-> > > +      space with only a single additional wire, while still needing
-> > > +      to repeat the commands when crossing a chip boundary. The size of
-> > > +      each chip should be provided as members of the array.
-> >
-> > array?
-> >
-> > Sounds like an array from the description as there is only 1 element,
-> > the size.
->
-> Well, what I expected to have was something like:
->
-> dt:             <property> = <uint64>, <uint64>;
+On Wed, 05 Jan 2022 14:57:32 +0100, Christophe Kerello wrote:
+> A few drivers use this property to describe the GPIO pin used to protect
+> the NAND during program/erase operations.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand-controller.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-The downside to this is you really need:
-
-property = /bits/ 64 <uint64>, /bits/ 64 <uint64>;
-
-And I just fixed some examples that had:
-
-property = /bits/ 64 <uint64>, <uint64>;
-
-The property length there is 12 bytes. That aspect of the syntax is
-really not obvious. I only realized that somewhat recently.
-
-You can even do:
-
-property = /bits/ 64 <uint64>, "a string", /bits/ 8 <uint8>;
-
-While dts syntax allows this, our sanity does not.
-
-> It seemed like the only possible way (that the tooling would validate)
-> was to use:
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint64-matrix
->
-> So I assumed I was defining a matrix of AxB elements, where A is the
-> number of devices I want to "stack" and B is the number of values
-> needed to describe its size, so 1.
-
-Yeah, that's well reasoned and I agree. The other array case is you
-have N values where each value represents different data rather than
-instances of the same data. The challenge is for the schema fixups to
-recognize which is which without saying the schema must look like
-exactly X or Y as there will be exceptions.
-
-> I realized that the following example, which I was expecting to work,
-> was failing:
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint64-array
-> dt:             <property> = <uint64>, <uint64>;
->
-> Indeed, as you propose, this actually works but describes two values
-> (tied somehow) into a single element, which is not exactly what I
-> wanted:
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint64-array
-> dt:             <property> = <uint64 uint64>;
->
-> But more disturbing, all the following constructions worked, when using
-> 32-bits values instead:
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint32-array
-> dt:             <property> = <uint32 uint32>;
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint32-array
-> dt:             <property> = <uint32>, <uint32>;
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> dt:             <property> = <uint32 uint32>;
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> dt:             <property> = <uint32>, <uint32>;
-
-That works because there's some really ugly code to transform the
-schema into both forms.
-
-> I am fine waiting a bit if you think there is a need for some tooling
-> update on your side. Otherwise, do you really think that this solution
-> is the one we should really use?
->
-> bindings:       $ref: /schemas/types.yaml#/definitions/uint64-array
-> dt:             <property> = <uint64 uint64>;
-
-Because of the /bits/ issue, yes.
-
-More importantly, the bracketing in dts files is not going to matter
-soon (from a validation perspective). I'm working on moving validation
-from using the yaml encoded DT (which depends on and preserves
-brackets) to using dtbs. This will use the schemas to decode the
-property values into the right format/type.
-
-
-> Because from my point of view it does not match what we usually do for
-> other "types" of elements, such as:
->
-> dt:             <property> = <phandle1 index1>, <phandle2 index2>;
->
-> or
->
-> dt:             <property> = <small-val1>, <small-val2>;
->
-> >
-> > > +    minItems: 2
-> > > +    maxItems: 2
-> > > +    items:
-> > > +      maxItems: 1
-> >
-> > This says you can only have 2 64-bit entries. Probably not what you
-> > want. This looks like a case for a maxItems 'should be enough for now'
-> > type of value.
->
-> Yes, that is what I wanted to describe.
->
-> In my recent contributions you always preferred to bound things as much
-> as possible, even though later it might become necessary to loosen the
-> constraint. Right now I see the use of these properties for 2 devices,
-> but in theory there is no limit.
-
-Ok, as long as we're not loosening it frequently.
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
