@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAACCC433EF
-	for <linux-mtd@archiver.kernel.org>; Sun, 23 Jan 2022 15:52:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1B39C433EF
+	for <linux-mtd@archiver.kernel.org>; Sun, 23 Jan 2022 15:54:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2GvCNg5zUWtMAsChqF7si/Rj7m0yzkBKHS4YCL7n9bg=; b=zoBOPn80HOGa18
-	fBMxhxd7WbS8C9Owiij4QtlUdCQRFQByHFre1SrkV9kyTQ+mPoGSIMRyCuynEoTx04moKSiQvktZL
-	ji9Er3KUnvvHWyk59OmI2RDGB8r+ODDrMw6PE2z7qjvyLY2R9ow/3+e1axuAsqubyXqNPyfvVDRg9
-	C0GmCCVE3EOt7RET0WykQTi5k8BOJMBJGwSRQZsVt+BMg/H9V5+HhZR7aJD4AVs4Oo2MnaWTDu3w3
-	XBZXtC5dAKajtmDUx5xFxb4+kokve29ro/yDY/dIDi2NcRN+0RXeVf/iF8XlVrwadnwQFFIpS+3pv
-	tJGV5yhr1dLZQUPSCP8w==;
+	List-Owner; bh=74KBQoAylMVxhn8pEflOuz1y6wH4shIG7SD3CoYMrS4=; b=rZEXcyZDIVOYdo
+	ecFvWGy3x7EI6xV7I62n03REm2Llx+1ArNlqiLBfeMxK3GSsfQAME6JqsX4S/uy6ISGkFyGvvyJDW
+	cR8q/Wp7C0I8tdNk2IhWCSuNswEvKM2H1rLGRB8ma85Y8X6V+j/ovLOg85n8LemIgPDELQmoxuVnm
+	MfLjzoz+i642IHsvPDUfT95F+tZc61GWTZgz3Ey+ysuZBRTTqEKXh4Q6SUKJjbS7SfUPJvine4s7x
+	lM6pNgM6rc0UxUAtMxz/Eyhba4eZ2U3jPSWyNeJSMuAyLRn8feJCTVLWi0xy+7XfUzsHqh9RLRF2b
+	zob5BDUeWB4GbRWd+/Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nBfAD-001CXj-Jk; Sun, 23 Jan 2022 15:52:22 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1nBfC7-001DDJ-Ps; Sun, 23 Jan 2022 15:54:19 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nBf1W-0019Px-GB
- for linux-mtd@lists.infradead.org; Sun, 23 Jan 2022 15:43:23 +0000
+ id 1nBf1y-0019YG-Vw
+ for linux-mtd@lists.infradead.org; Sun, 23 Jan 2022 15:43:52 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id EDAF1FF802;
- Sun, 23 Jan 2022 15:43:19 +0000 (UTC)
-Date: Sun, 23 Jan 2022 16:43:18 +0100
+ by mail.gandi.net (Postfix) with ESMTPSA id 9E36C100002;
+ Sun, 23 Jan 2022 15:43:45 +0000 (UTC)
+Date: Sun, 23 Jan 2022 16:43:44 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: rawnand: Remove of_get_nand_on_flash_bbt()
- wrapper
-Message-ID: <20220123164250.6ff0e49e@xps13>
-In-Reply-To: <20220106131610.225661-1-tudor.ambarus@microchip.com>
-References: <20220106131610.225661-1-tudor.ambarus@microchip.com>
+To: s921975628@gmail.com
+Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mtd: rawnand: nandsim: Replace overflow check with
+ kzalloc to single kcalloc
+Message-ID: <20220123164344.015f1447@xps13>
+In-Reply-To: <20211225100607.118932-1-s921975628@gmail.com>
+References: <20211225100607.118932-1-s921975628@gmail.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220123_074322_737683_19FE60FB 
-X-CRM114-Status: UNSURE (   6.41  )
+X-CRM114-CacheID: sfid-20220123_074351_205325_1FAA0288 
+X-CRM114-Status: UNSURE (   6.34  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -61,12 +61,13 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVHVkb3IsCgp0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20gd3JvdGUgb24gVGh1LCA2IEph
-biAyMDIyIDE1OjE2OjA5ICswMjAwOgoKPiBSZW1vdmUgdGhlIHdyYXBwZXIgYXMgaXQgaGlkZXMg
-Zm9yIG5vIHJlYXNvbiB3aGF0IHdlIHJlYWxseSB3YW50OiBmaW5kIGFuCj4gb2ZfcHJvcGVydHku
-IFJlbW92aW5nIHRoZSB3cmFwcGVyIG1ha2VzIHRoZSBjb2RlIGVhc2llciB0byByZWFkLgo+IAo+
-IFNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFydXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNv
-bT4KClNlcmllcyBhcHBsaWVzIHRvIG5hbmQvbmV4dC4KClRoYW5rcywKTWlxdcOobAoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+SGVsbG8sCgpzOTIxOTc1NjI4QGdtYWlsLmNvbSB3cm90ZSBvbiBTYXQsIDI1IERlYyAyMDIxIDE4
+OjA2OjA3ICswODAwOgoKPiBGcm9tOiBSaW5IaXpha3VyYSA8czkyMTk3NTYyOEBnbWFpbC5jb20+
+Cj4gCj4gSW5zdGVhZCBvZiBzZWxmLWNoZWNraW5nIG92ZXJmbG93IGFuZCBhbGxvY2F0aW5nIGFu
+IGFycmF5IG9mIHNwZWNpZmljIHNpemUKPiBieSBjb3VudGluZyB0aGUgdG90YWwgcmVxdWlyZWQg
+c3BhY2UgaGFuZHksIHdlIGFscmVhZHkgaGF2ZSBleGlzdGVkIGtlcm5lbAo+IEFQSSB3aGljaCBy
+ZXNwb25zZXMgZm9yIGFsbCB0aGVzZSB3b3Jrcy4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBSaW5IaXph
+a3VyYSA8czkyMTk3NTYyOEBnbWFpbC5jb20+CgpTZXJpZXMgYXBwbGllZCB0byBuYW5kL25leHQu
+CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
