@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34622C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jan 2022 18:27:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5B4AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jan 2022 19:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SLdrkVEqFCxny9B6IA2hs/RViuy/2hQi2u3iBkoXSXE=; b=ywZlcWXdeTr3Pe
-	/6/iCijVYrMSZi5yXdy9xcai6B1QVJNKCBHkO6BojMHR15Q9DHrpCrCD9jp3t7srpWrMpbJd0mEnh
-	yvzcT3i0nIvliBwmv+Nia3GN9j/geAriOERj+EMqxeIPliFKK21CC4ye0Fbp6gxCw6P/oYRMjyHhe
-	MFYf4Wyh/1b0hzGrb0tg6sbycVL+y3OUk6ECzMPQGDU72WfY2K0v301eud+mp6rNAMb5Ih0srq+ZI
-	qQHgMT7zb7eJG95ABW4KodZJO4o7trt8+hAm+8OUiZo59bKV5dipc3BTvP39gOnyaPvVtMmDgA/BA
-	Tvwb+D6BcVWBGvz2Amyw==;
+	List-Owner; bh=cA3w129KBm3ZKoC6Cd+3eAgVT8dXN5ukOMa3uFBALuQ=; b=v5LtPN1QRF7HSX
+	O5zXKFEdLQxJQU0GI4wbps0ENKhyylELnaSWrKgIHaD6Vth5+o5m5VsLCmSHEnp8s6WtsP46Y/qaU
+	oeau7nHAZTsIOlds3F4V+HrZu4W12ZFfSWPYQh27x5442VdomhetWN+5KAFwZzdf8xayAnqcnUvzD
+	qreBORHPZo4UHDq8Ea2mz7HKeRSEy3wEIRdNBih3d4up1OYi6Vajvy6VJyQfB0C1kyVpooqVCDwSz
+	xPH7pKz7hNbQbzVHfa/c5Zzinvj30qMIzb9p+GkApmHmw2KTD1EqucnJmY1LC9f4lSXd6918nnAJ4
+	Nd4w1m6By6WeW6wFA30Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nC43l-004VTL-Pa; Mon, 24 Jan 2022 18:27:22 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1nC4n9-004oMH-5a; Mon, 24 Jan 2022 19:14:15 +0000
+Received: from 10.mo548.mail-out.ovh.net ([46.105.77.235])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC3eB-004Kuw-Ti
- for linux-mtd@lists.infradead.org; Mon, 24 Jan 2022 18:00:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1643047255; x=1674583255;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Y8ZjakMo/mJ3Wq1rrQTj9HsDSrE7UOgOlZKX2oN9x20=;
- b=Tu35DCZePLJX7x9n2/dtNXueh6Lto/2Pg2jpHz5rNexBx8GZu7DCimUw
- HNGj3yoOF0xB8jK/EA+BPVJNS0vvoCRvIX28LCqb/eEZJZlCybBmE41eP
- 5fAzvtHrhFlPo0kIoZDWWL0dm/rSFj7YDUKwH+iJR1T2FDmOQpA2/XYsE
- IqqTLK/SaMHVhwsIkAWBDvQ+nyp1vPrtWJZ9wCaEdsg5AN29V5yJiyXsK
- G2iWoiUcfI7O4IoKJ+UlxunQkHBWfeuq12heF/kO+LqB9eq8tzvwuavzA
- tWTBcZQ0mJ6IVfqYvxCe4LPGaWAI4JroddftcxJSpMIMEQSZZbDm6eTaU g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="309428091"
-X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; d="scan'208";a="309428091"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2022 10:00:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; d="scan'208";a="695511924"
-Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga005.jf.intel.com with ESMTP; 24 Jan 2022 10:00:29 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 5D751B7; Mon, 24 Jan 2022 20:00:42 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Andreas Noever <andreas.noever@gmail.com>,
- Michael Jamet <michael.jamet@intel.com>,
- Yehezkel Bernat <YehezkelShB@gmail.com>
-Subject: [PATCH v2 2/5] nvmem: core: Use devm_add_action_or_reset()
-Date: Mon, 24 Jan 2022 20:00:37 +0200
-Message-Id: <20220124180040.50660-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220124180040.50660-1-andriy.shevchenko@linux.intel.com>
-References: <20220124180040.50660-1-andriy.shevchenko@linux.intel.com>
+ id 1nC4Ab-004Xjt-JJ
+ for linux-mtd@lists.infradead.org; Mon, 24 Jan 2022 18:34:29 +0000
+Received: from mxplan5.mail.ovh.net (unknown [10.108.1.237])
+ by mo548.mail-out.ovh.net (Postfix) with ESMTPS id B2D362073E;
+ Mon, 24 Jan 2022 18:34:20 +0000 (UTC)
+Received: from kaod.org (37.59.142.100) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Mon, 24 Jan
+ 2022 19:34:19 +0100
+Authentication-Results: garm.ovh; auth=pass
+ (GARM-100R00353a1b078-a404-4540-ae70-b2dabb8d92b1,
+ 8B4FF7E59EB7D736B5D3E090BD3F43F29F49559A) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 82.64.250.170
+Message-ID: <b222361a-288a-55b2-fc02-04c0b93b4220@kaod.org>
+Date: Mon, 24 Jan 2022 19:34:19 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] mtd: aspeed-smc: improve probe resilience
+Content-Language: en-US
+To: Pratyush Yadav <p.yadav@ti.com>
+CC: Patrick Williams <patrick@stwcx.xyz>, Vignesh Raghavendra
+ <vigneshr@ti.com>, <linux-aspeed@lists.ozlabs.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Richard Weinberger <richard@nod.at>, Potin Lai
+ <potin.lai@quantatw.com>, <linux-kernel@vger.kernel.org>, Michael Walle
+ <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-arm-kernel@lists.infradead.org>
+References: <20211229143334.297305-1-patrick@stwcx.xyz>
+ <20211229173411.l2bipmi4x3arqjoo@ti.com> <Yc3Qav+ULNdF5zRT@heinlein>
+ <20211231102623.izaqlzjvracbbgmp@ti.com> <20220103171721.46c8e697@xps13>
+ <YdSP6tKyQ2ZRUC+2@heinlein> <20220105063244.lno3xur64uepa7i5@ti.com>
+ <d4ba6413-57ce-14c1-ed48-d00db2f74bd3@kaod.org>
+ <20220124153644.m3iwlvq5ld5cpbyz@ti.com>
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+In-Reply-To: <20220124153644.m3iwlvq5ld5cpbyz@ti.com>
+X-Originating-IP: [37.59.142.100]
+X-ClientProxiedBy: DAG3EX1.mxp5.local (172.16.2.21) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 07b6c703-0c15-4072-babf-e7f8a66e6818
+X-Ovh-Tracer-Id: 17378265064938245112
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvvddrvdeigdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvfhfhjggtgfhisehtjeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepffdvgefguddthffhffehffdtteekhfegheegveelgfdugfeftdevhfekjeefgeejnecuffhomhgrihhnpehgihhthhhusgdrtghomhdpohiilhgrsghsrdhorhhgnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhg
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220124_100056_051176_AC991238 
-X-CRM114-Status: GOOD (  12.26  )
+X-CRM114-CacheID: sfid-20220124_103426_014133_97DCA646 
+X-CRM114-Status: GOOD (  24.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,67 +80,236 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Slightly simplify the devm_nvmem_register() by using the
-devm_add_action_or_reset().
+>> spimem needs an extension I think. Sorry I have not been able to
+>> push that forward. Lack of time and other tasks to address on the
+>> host side of the machine. This is really a software problem, we
+>> have the HW procedures ready. If a spimem expert could get involved
+>> to make a few proposals, I would be happy to help and do some testing.
+>> QEMU models are good enough for the software part. We can do the
+>> training validation on real HW when ready.
+> 
+> What information about the flash do you need for this training? 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: no changes
- drivers/nvmem/core.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+Last time I looked, we lacked some post_init handler to setup a slave:
+configure the registers defining the AHB windows for each flash
+slave and perform the read timing calibration. calibration should
+only be done once.
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 1a70b3bdb71d..68db7d3303ac 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -907,9 +907,9 @@ void nvmem_unregister(struct nvmem_device *nvmem)
- }
- EXPORT_SYMBOL_GPL(nvmem_unregister);
- 
--static void devm_nvmem_release(struct device *dev, void *res)
-+static void devm_nvmem_unregister(void *nvmem)
- {
--	nvmem_unregister(*(struct nvmem_device **)res);
-+	nvmem_unregister(nvmem);
- }
- 
- /**
-@@ -926,20 +926,16 @@ static void devm_nvmem_release(struct device *dev, void *res)
- struct nvmem_device *devm_nvmem_register(struct device *dev,
- 					 const struct nvmem_config *config)
- {
--	struct nvmem_device **ptr, *nvmem;
--
--	ptr = devres_alloc(devm_nvmem_release, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return ERR_PTR(-ENOMEM);
-+	struct nvmem_device *nvmem;
-+	int ret;
- 
- 	nvmem = nvmem_register(config);
-+	if (IS_ERR(nvmem))
-+		return nvmem;
- 
--	if (!IS_ERR(nvmem)) {
--		*ptr = nvmem;
--		devres_add(dev, ptr);
--	} else {
--		devres_free(ptr);
--	}
-+	ret = devm_add_action_or_reset(dev, devm_nvmem_unregister, nvmem);
-+	if (ret)
-+		return ERR_PTR(ret);
- 
- 	return nvmem;
- }
--- 
-2.34.1
+See how the aspeed_spi_flash_init() routine doing the calibration
+is hooked up under aspeed_spi_claim_bus() in the u-boot driver :
 
+   https://github.com/openbmc/u-boot/blob/v2019.04-aspeed-openbmc/drivers/spi/aspeed_spi.c
+
+Not good enough for upstream, Linux would be the same :/
+
+> I proposed a patch series [0] some time ago trying to implement training
+> for TI SoCs. It did not get merged but I do intend to respin it and get
+> it through. Would this API work for your tuning as well?
+
+I will take a look.
+  
+> Also, I am curious how your training works. What data do you read for
+> training delays? Where is it stored? 
+
+The driver reads the first 16K at slow speed (that's why we need a
+basic minimal setup of the slave) and checks if the buffer is valid
+enough for the calibration :
+
+   https://github.com/openbmc/linux/blob/dev-5.15/drivers/mtd/spi-nor/controllers/aspeed-smc.c#L998
+
+it then performs reads by changing the frequency and delays and
+compares results with the initial default buffer.
+
+if not, then the driver stays in a safe mode (slow).
+
+> In our case we need to flash a
+> known pattern at some location (which is passed in via DT). Do you need
+> to run it for every read transaction or just once after the flash is
+> initialized?
+
+Just once because it is a heavy process. See the debug outputs below.
+Once we have good read timings and frequency, there is no need to do
+it each time.
+
+> [0] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=233504&state=%2A&archive=both
+Thanks,
+
+C.
+
+
+
+There are 3 controllers, 1e620000/FMC is for the BMC. We keep
+safe settings for it and normally u-boot has done the training
+already . The other two controllers are for the SPI-NOR of the
+host and for these we push the frequency higher.
+
+
+AST2600 EVB:
+
+[    0.689662] aspeed-smc 1e620000.spi: Using 50 MHz SPI frequency
+[    0.696412] aspeed-smc 1e620000.spi: control register: 203b0641
+[    0.696426] aspeed-smc 1e620000.spi: control register changed to: 00000600
+[    0.696434] aspeed-smc 1e620000.spi: default control register: 00000600
+[    0.696616] aspeed-smc 1e620000.spi: w25q512jv (65536 Kbytes)
+[    0.703108] aspeed-smc 1e620000.spi: CE0 window [ 0x20000000 - 0x24000000 ] 64MB
+[    0.711445] aspeed-smc 1e620000.spi: CE1 window [ 0x24000000 - 0x2c000000 ] 128MB
+[    0.719864] aspeed-smc 1e620000.spi: write control register: 00120602
+[    0.719873] aspeed-smc 1e620000.spi: read control register: 203c0641
+[    0.727026] aspeed-smc 1e620000.spi: AHB frequency: 187 MHz
+[    0.739247] aspeed-smc 1e620000.spi: Trying HCLK/5 [203c0d41] ...
+[    0.767181] aspeed-smc 1e620000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    0.767196] aspeed-smc 1e620000.spi: Trying HCLK/4 [203c0641] ...
+[    0.791559] aspeed-smc 1e620000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    0.791571] aspeed-smc 1e620000.spi: Found good read timings at HCLK/4
+[    0.795729] 5 fixed-partitions partitions found on MTD device bmc
+[    0.802636] Creating 5 MTD partitions on "bmc":
+[    0.807739] 0x000000000000-0x0000000e0000 : "u-boot"
+[    0.814367] 0x0000000e0000-0x000000100000 : "u-boot-env"
+[    0.821306] 0x000000100000-0x000000a00000 : "kernel"
+[    0.827755] 0x000000a00000-0x000002a00000 : "rofs"
+[    0.834051] 0x000002a00000-0x000004000000 : "rwfs"
+[    0.844040] aspeed-smc 1e630000.spi: Using 100 MHz SPI frequency
+[    0.850912] aspeed-smc 1e630000.spi: control register: 00000400
+[    0.850927] aspeed-smc 1e630000.spi: default control register: 00000400
+[    0.851152] aspeed-smc 1e630000.spi: w25q256 (32768 Kbytes)
+[    0.857427] aspeed-smc 1e630000.spi: CE0 window [ 0x30000000 - 0x32000000 ] 32MB
+[    0.865792] aspeed-smc 1e630000.spi: CE1 window [ 0x32000000 - 0x32000000 ] 0MB (disabled)
+[    0.875129] aspeed-smc 1e630000.spi: write control register: 00120402
+[    0.875142] aspeed-smc 1e630000.spi: read control register: 203c0441
+[    0.882296] aspeed-smc 1e630000.spi: AHB frequency: 187 MHz
+[    0.894509] aspeed-smc 1e630000.spi: Trying HCLK/5 [203c0d41] ...
+[    0.922417] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    0.922432] aspeed-smc 1e630000.spi: Trying HCLK/4 [203c0641] ...
+[    0.946791] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    0.946803] aspeed-smc 1e630000.spi: Trying HCLK/3 [203c0e41] ...
+[    0.967644] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    0.967655] aspeed-smc 1e630000.spi: Trying HCLK/2 [203c0741] ...
+[    0.969325] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, DI delay none : FAIL
+[    0.971007] aspeed-smc 1e630000.spi:   * [00000008] 0 HCLK delay, DI delay 0.5ns : FAIL
+[    0.972679] aspeed-smc 1e630000.spi:   * [00000018] 0 HCLK delay, DI delay 1.5ns : FAIL
+[    0.974350] aspeed-smc 1e630000.spi:   * [00000028] 0 HCLK delay, DI delay 1.5ns : FAIL
+[    0.976021] aspeed-smc 1e630000.spi:   * [00000038] 0 HCLK delay, DI delay 2.5ns : FAIL
+[    0.977692] aspeed-smc 1e630000.spi:   * [00000048] 0 HCLK delay, DI delay 2.5ns : FAIL
+[    0.979363] aspeed-smc 1e630000.spi:   * [00000058] 0 HCLK delay, DI delay 3.5ns : FAIL
+[    0.981042] aspeed-smc 1e630000.spi:   * [00000068] 0 HCLK delay, DI delay 3.5ns : FAIL
+[    0.982714] aspeed-smc 1e630000.spi:   * [00000078] 0 HCLK delay, DI delay 4.5ns : FAIL
+[    0.984385] aspeed-smc 1e630000.spi:   * [00000088] 0 HCLK delay, DI delay 4.5ns : FAIL
+[    0.986056] aspeed-smc 1e630000.spi:   * [00000098] 0 HCLK delay, DI delay 5.5ns : FAIL
+[    0.987727] aspeed-smc 1e630000.spi:   * [000000a8] 0 HCLK delay, DI delay 5.5ns : FAIL
+[    0.989397] aspeed-smc 1e630000.spi:   * [000000b8] 0 HCLK delay, DI delay 6.5ns : FAIL
+[    0.991084] aspeed-smc 1e630000.spi:   * [000000c8] 0 HCLK delay, DI delay 6.5ns : FAIL
+[    0.992757] aspeed-smc 1e630000.spi:   * [000000d8] 0 HCLK delay, DI delay 7.5ns : FAIL
+[    0.994428] aspeed-smc 1e630000.spi:   * [000000e8] 0 HCLK delay, DI delay 7.5ns : FAIL
+[    0.996099] aspeed-smc 1e630000.spi:   * [000000f8] 0 HCLK delay, DI delay 8.5ns : FAIL
+[    1.013874] aspeed-smc 1e630000.spi:   * [000000f1] 1 HCLK delay, DI delay none : PASS
+[    1.013885] aspeed-smc 1e630000.spi: Found good read timings at HCLK/2
+[    1.021498] aspeed-smc 1e631000.spi: Using 100 MHz SPI frequency
+[    1.028291] aspeed-smc 1e631000.spi: control register: 00000400
+[    1.028302] aspeed-smc 1e631000.spi: default control register: 00000400
+[    1.028510] aspeed-smc 1e631000.spi: w25q256 (32768 Kbytes)
+[    1.034848] aspeed-smc 1e631000.spi: CE0 window [ 0x50000000 - 0x52000000 ] 32MB
+[    1.043197] aspeed-smc 1e631000.spi: CE1 window [ 0x52000000 - 0x52000000 ] 0MB (disabled)
+[    1.052518] aspeed-smc 1e631000.spi: write control register: 00120402
+[    1.052530] aspeed-smc 1e631000.spi: read control register: 203c0441
+[    1.059677] aspeed-smc 1e631000.spi: AHB frequency: 187 MHz
+[    1.071900] aspeed-smc 1e631000.spi: Trying HCLK/5 [203c0d41] ...
+[    1.099805] aspeed-smc 1e631000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    1.099817] aspeed-smc 1e631000.spi: Trying HCLK/4 [203c0641] ...
+[    1.124202] aspeed-smc 1e631000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    1.124219] aspeed-smc 1e631000.spi: Trying HCLK/3 [203c0e41] ...
+[    1.145070] aspeed-smc 1e631000.spi:   * [00000000] 0 HCLK delay, DI delay none : PASS
+[    1.145082] aspeed-smc 1e631000.spi: Trying HCLK/2 [203c0741] ...
+[    1.146752] aspeed-smc 1e631000.spi:   * [00000000] 0 HCLK delay, DI delay none : FAIL
+[    1.148422] aspeed-smc 1e631000.spi:   * [00000008] 0 HCLK delay, DI delay 0.5ns : FAIL
+[    1.150093] aspeed-smc 1e631000.spi:   * [00000018] 0 HCLK delay, DI delay 1.5ns : FAIL
+[    1.151778] aspeed-smc 1e631000.spi:   * [00000028] 0 HCLK delay, DI delay 1.5ns : FAIL
+[    1.153451] aspeed-smc 1e631000.spi:   * [00000038] 0 HCLK delay, DI delay 2.5ns : FAIL
+[    1.155122] aspeed-smc 1e631000.spi:   * [00000048] 0 HCLK delay, DI delay 2.5ns : FAIL
+[    1.156793] aspeed-smc 1e631000.spi:   * [00000058] 0 HCLK delay, DI delay 3.5ns : FAIL
+[    1.158464] aspeed-smc 1e631000.spi:   * [00000068] 0 HCLK delay, DI delay 3.5ns : FAIL
+[    1.160135] aspeed-smc 1e631000.spi:   * [00000078] 0 HCLK delay, DI delay 4.5ns : FAIL
+[    1.161818] aspeed-smc 1e631000.spi:   * [00000088] 0 HCLK delay, DI delay 4.5ns : FAIL
+[    1.163490] aspeed-smc 1e631000.spi:   * [00000098] 0 HCLK delay, DI delay 5.5ns : FAIL
+[    1.165161] aspeed-smc 1e631000.spi:   * [000000a8] 0 HCLK delay, DI delay 5.5ns : FAIL
+[    1.166833] aspeed-smc 1e631000.spi:   * [000000b8] 0 HCLK delay, DI delay 6.5ns : FAIL
+[    1.168504] aspeed-smc 1e631000.spi:   * [000000c8] 0 HCLK delay, DI delay 6.5ns : FAIL
+[    1.170175] aspeed-smc 1e631000.spi:   * [000000d8] 0 HCLK delay, DI delay 7.5ns : FAIL
+[    1.171863] aspeed-smc 1e631000.spi:   * [000000e8] 0 HCLK delay, DI delay 7.5ns : FAIL
+[    1.173536] aspeed-smc 1e631000.spi:   * [000000f8] 0 HCLK delay, DI delay 8.5ns : FAIL
+[    1.191318] aspeed-smc 1e631000.spi:   * [000000f1] 1 HCLK delay, DI delay none : PASS
+[    1.191330] aspeed-smc 1e631000.spi: Found good read timings at HCLK/2
+
+
+an ASTS2500 EVB :
+
+[    1.220804] aspeed-smc 1e620000.spi: Using 50 MHz SPI frequency
+[    1.226797] aspeed-smc 1e620000.spi: control register: 000b0641
+[    1.226836] aspeed-smc 1e620000.spi: control register changed to: 00000600
+[    1.226860] aspeed-smc 1e620000.spi: default control register: 00000600
+[    1.227092] aspeed-smc 1e620000.spi: w25q256 (32768 Kbytes)
+[    1.232806] aspeed-smc 1e620000.spi: CE0 window [ 0x20000000 - 0x22000000 ] 32MB
+[    1.240329] aspeed-smc 1e620000.spi: CE1 window [ 0x22000000 - 0x2a000000 ] 128MB
+[    1.247852] aspeed-smc 1e620000.spi: write control register: 00020602
+[    1.247882] aspeed-smc 1e620000.spi: read control register: 203b0641
+[    1.254315] aspeed-smc 1e620000.spi: AHB frequency: 198 MHz
+[    1.265406] aspeed-smc 1e620000.spi: Trying HCLK/5 [203b0d41] ...
+[    1.287111] aspeed-smc 1e620000.spi:   * [00080000] 0 HCLK delay, 4ns DI delay : PASS
+[    1.309048] aspeed-smc 1e620000.spi:   * [00000000] 0 HCLK delay, 0ns DI delay : PASS
+[    1.331223] aspeed-smc 1e620000.spi:   * [00090000] 1 HCLK delay, 4ns DI delay : PASS
+[    1.331278] aspeed-smc 1e620000.spi:  * -> good is pass 1 [0x00000000]
+[    1.331308] aspeed-smc 1e620000.spi: Trying HCLK/4 [203b0641] ...
+[    1.349958] aspeed-smc 1e620000.spi:   * [00008000] 0 HCLK delay, 4ns DI delay : PASS
+[    1.368473] aspeed-smc 1e620000.spi:   * [00000000] 0 HCLK delay, 0ns DI delay : PASS
+[    1.387341] aspeed-smc 1e620000.spi:   * [00009000] 1 HCLK delay, 4ns DI delay : PASS
+[    1.387397] aspeed-smc 1e620000.spi:  * -> good is pass 1 [0x00000000]
+[    1.387435] aspeed-smc 1e620000.spi: Found good read timings at HCLK/4
+[    1.858947] Freeing initrd memory: 1044K
+[    1.906913] 5 fixed-partitions partitions found on MTD device bmc
+[    1.913143] Creating 5 MTD partitions on "bmc":
+[    1.917724] 0x000000000000-0x000000060000 : "u-boot"
+[    1.925920] 0x000000060000-0x000000080000 : "u-boot-env"
+[    1.937262] 0x000000080000-0x0000004c0000 : "kernel"
+[    1.948189] 0x0000004c0000-0x000001c00000 : "rofs"
+[    1.959196] 0x000001c00000-0x000002000000 : "rwfs"
+[    1.971557] aspeed-smc 1e630000.spi: Using 100 MHz SPI frequency
+[    1.977632] aspeed-smc 1e630000.spi: control register: 00000200
+[    1.977669] aspeed-smc 1e630000.spi: default control register: 00000200
+[    1.977961] aspeed-smc 1e630000.spi: w25q256 (32768 Kbytes)
+[    1.983674] aspeed-smc 1e630000.spi: CE0 window [ 0x30000000 - 0x32000000 ] 32MB
+[    1.991183] aspeed-smc 1e630000.spi: CE1 window [ 0x32000000 - 0x38000000 ] 96MB
+[    1.998621] aspeed-smc 1e630000.spi: write control register: 00020202
+[    1.998652] aspeed-smc 1e630000.spi: read control register: 203b0241
+[    2.005086] aspeed-smc 1e630000.spi: AHB frequency: 198 MHz
+[    2.016174] aspeed-smc 1e630000.spi: Trying HCLK/5 [203b0d41] ...
+[    2.038011] aspeed-smc 1e630000.spi:   * [00080000] 0 HCLK delay, 4ns DI delay : PASS
+[    2.060035] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, 0ns DI delay : PASS
+[    2.082211] aspeed-smc 1e630000.spi:   * [00090000] 1 HCLK delay, 4ns DI delay : PASS
+[    2.082266] aspeed-smc 1e630000.spi:  * -> good is pass 1 [0x00000000]
+[    2.082295] aspeed-smc 1e630000.spi: Trying HCLK/4 [203b0641] ...
+[    2.100938] aspeed-smc 1e630000.spi:   * [00008000] 0 HCLK delay, 4ns DI delay : PASS
+[    2.119623] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, 0ns DI delay : PASS
+[    2.138440] aspeed-smc 1e630000.spi:   * [00009000] 1 HCLK delay, 4ns DI delay : PASS
+[    2.138491] aspeed-smc 1e630000.spi:  * -> good is pass 1 [0x00000000]
+[    2.138521] aspeed-smc 1e630000.spi: Trying HCLK/3 [203b0e41] ...
+[    2.139827] aspeed-smc 1e630000.spi:   * [00000800] 0 HCLK delay, 4ns DI delay : FAIL
+[    2.155093] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, 0ns DI delay : PASS
+[    2.170627] aspeed-smc 1e630000.spi:   * [00000900] 1 HCLK delay, 4ns DI delay : PASS
+[    2.186111] aspeed-smc 1e630000.spi:   * [00000100] 1 HCLK delay, 0ns DI delay : PASS
+[    2.186164] aspeed-smc 1e630000.spi:  * -> good is pass 2 [0x00000900]
+[    2.186195] aspeed-smc 1e630000.spi: Trying HCLK/2 [203b0741] ...
+[    2.187103] aspeed-smc 1e630000.spi:   * [00000080] 0 HCLK delay, 4ns DI delay : FAIL
+[    2.188010] aspeed-smc 1e630000.spi:   * [00000000] 0 HCLK delay, 0ns DI delay : FAIL
+[    2.200197] aspeed-smc 1e630000.spi:   * [00000090] 1 HCLK delay, 4ns DI delay : PASS
+[    2.212359] aspeed-smc 1e630000.spi:   * [00000010] 1 HCLK delay, 0ns DI delay : PASS
+[    2.224725] aspeed-smc 1e630000.spi:   * [000000a0] 2 HCLK delay, 4ns DI delay : PASS
+[    2.224777] aspeed-smc 1e630000.spi:  * -> good is pass 3 [0x00000010]
+[    2.224810] aspeed-smc 1e630000.spi: Found good read timings at HCLK/2
+[    2.244098] aspeed-smc 1e631000.spi: Aspeed SMC probe failed -19
 
 ______________________________________________________
 Linux MTD discussion mailing list
