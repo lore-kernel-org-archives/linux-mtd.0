@@ -4,79 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C1FEC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jan 2022 20:38:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 885E9C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jan 2022 21:03:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i+EJYgn1c4foRbCIlDoe+ya2Ec/7qra7RuY5eZcX6F8=; b=49M3Isj0SxzyDr
-	l2TeUxQkRUan/Id34I0SiDUygsAqMn2epZpCPouThHPuXjwcNtank44kTjM6un3I0guMisXZFmS1l
-	6rvvTwOwPtDyPNmvlk6NRpguRnBLA4V+tflWf6wuiLiBQs31a99adw3dd3e/rzPDTktbtfXc6fyRr
-	MkTUbCTyTdDYGrnp8NiefZlSN/LYrCWbyY8Fh3axJR+g7kpRWClj3Ta25glar7jGe2p1gLdHDOhEe
-	55lUnazYx1MDVbcVAkpYLJLBqge8+LfGuPE7nnpjbh4c4KlHCJmzzjLC1ck/Alj/AFlgSP1luuGOf
-	UMFffC3uEG54KnpmBxMQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
+	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=HDr5v7V5KDJ1eD45s/OesVOcqAgZHakYbSnPOVdwGdo=; b=zf6+a77J+hZmeumMt6vGoRaeom
+	9g8zgOlwNI4TK6net21yLH723sJ14h+/pClEhgJC1ISpeMHq+0r2XZXp8uX+ffbZeecvOE3Yp9Tpc
+	OAkshuyJTz6P8gXa+axhi1aC4zNFhfJGjfdrR2OFDfCxYtQwiRy2qlz7yiN+jJ8JS4cwmH+UKwJyJ
+	OX9Wu7qjKUhXvhfAn5DfSmupU2HRl77qMz3Kb4i8LZn5yWJprenHI9uybNDspUMEvRLR3rtdCeUVq
+	vCptoLTG4s4JSIiz7bm/gbLXiwAk88i1pgUXdJaMeEDU3yGU7xAKBS0H9mpVB3+YkRrPYL9itY9l6
+	UE5yywfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nC65n-005Ay6-6F; Mon, 24 Jan 2022 20:37:35 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1nC6Tz-005FX2-TU; Mon, 24 Jan 2022 21:02:35 +0000
+Received: from mxout03.lancloud.ru ([45.84.86.113])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC65a-005Avg-52; Mon, 24 Jan 2022 20:37:24 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20OKbA1c060580;
- Mon, 24 Jan 2022 14:37:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1643056630;
- bh=qUb5l1wvstsaPaKzYhWNVfh1pZulWuLaYHyPrA3IFH4=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=IAnVdVYHgM5sljUjoshj/J0HdPU633rqTFUiqrDA8m7vxFeLaXBPq2MMBBKdQ6I7R
- ZcIFj/lKutP8PmV5TPekteMR0vnp9qlzS93saVQz1QCZJMwl6ckmoSXru06LbK+/rt
- J5U9Lrob6JONeeLJw65qOzcccXg8pdhrQ5CMCxxw=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20OKbAJi026882
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 24 Jan 2022 14:37:10 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 24
- Jan 2022 14:37:09 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 24 Jan 2022 14:37:10 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20OKb9WV043785;
- Mon, 24 Jan 2022 14:37:09 -0600
-Date: Tue, 25 Jan 2022 02:07:08 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
-CC: Patrick Williams <patrick@stwcx.xyz>, Vignesh Raghavendra
- <vigneshr@ti.com>, <linux-aspeed@lists.ozlabs.org>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Richard Weinberger <richard@nod.at>,
- Potin Lai <potin.lai@quantatw.com>, <linux-kernel@vger.kernel.org>,
- Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] mtd: aspeed-smc: improve probe resilience
-Message-ID: <20220124203708.lm23sgsub234wlhq@ti.com>
-References: <20211229143334.297305-1-patrick@stwcx.xyz>
- <20211229173411.l2bipmi4x3arqjoo@ti.com>
- <Yc3Qav+ULNdF5zRT@heinlein>
- <20211231102623.izaqlzjvracbbgmp@ti.com>
- <20220103171721.46c8e697@xps13> <YdSP6tKyQ2ZRUC+2@heinlein>
- <20220105063244.lno3xur64uepa7i5@ti.com>
- <d4ba6413-57ce-14c1-ed48-d00db2f74bd3@kaod.org>
- <20220124153644.m3iwlvq5ld5cpbyz@ti.com>
- <b222361a-288a-55b2-fc02-04c0b93b4220@kaod.org>
+ id 1nC6Tu-005FVK-5Q; Mon, 24 Jan 2022 21:02:32 +0000
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru 81E05208CA4D
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH] driver core: platform: Rename platform_get_irq_optional()
+ to platform_get_irq_silent()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+CC: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, KVM list <kvm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, <linux-iio@vger.kernel.org>, "Linus
+ Walleij" <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>, "ALSA
+ Development Mailing List" <alsa-devel@alsa-project.org>, Jaroslav Kysela
+ <perex@perex.cz>, Guenter Roeck <groeck@chromium.org>, Thierry Reding
+ <thierry.reding@gmail.com>, MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-phy@lists.infradead.org>, Jiri Slaby
+ <jirislaby@kernel.org>, <openipmi-developer@lists.sourceforge.net>, "Khuong
+ Dinh" <khuong@os.amperecomputing.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Matthias Schiffer
+ <matthias.schiffer@ew.tq-group.com>, Joakim Zhang <qiangqing.zhang@nxp.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Lee Jones <lee.jones@linaro.org>, "Bartosz
+ Golaszewski" <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, "open list:SERIAL DRIVERS"
+ <linux-serial@vger.kernel.org>, bcm-kernel-feedback-list
+ <bcm-kernel-feedback-list@broadcom.com>, Zhang Rui <rui.zhang@intel.com>,
+ Linux PWM List <linux-pwm@vger.kernel.org>, Robert Richter <rric@kernel.org>, 
+ Saravanan Sekar <sravanhome@gmail.com>, Corey Minyard <minyard@acm.org>,
+ Linux PM list <linux-pm@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ John Garry <john.garry@huawei.com>, Peter Korsgaard <peter@korsgaard.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>, Mark Gross
+ <markgross@kernel.org>, "open list:GPIO SUBSYSTEM"
+ <linux-gpio@vger.kernel.org>, Alex Williamson <alex.williamson@redhat.com>,
+ Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>, "Sebastian
+ Reichel" <sre@kernel.org>, Eric Auger <eric.auger@redhat.com>, Jakub Kicinski
+ <kuba@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai
+ <tiwai@suse.com>, <platform-driver-x86@vger.kernel.org>, Benson Leung
+ <bleung@chromium.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ <linux-edac@vger.kernel.org>, Tony Luck <tony.luck@intel.com>, Mun Yew Tham
+ <mun.yew.tham@intel.com>, Hans de Goede <hdegoede@redhat.com>,
+ <netdev@vger.kernel.org>, Yoshihiro Shimoda
+ <yoshihiro.shimoda.uh@renesas.com>, Cornelia Huck <cohuck@redhat.com>, "Linux
+ MMC List" <linux-mmc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-spi <linux-spi@vger.kernel.org>, Linux-Renesas
+ <linux-renesas-soc@vger.kernel.org>, Vinod Koul <vkoul@kernel.org>, "James
+ Morse" <james.morse@arm.com>, Zha Qipeng <qipeng.zha@intel.com>, "Pengutronix
+ Kernel Team" <kernel@pengutronix.de>, Richard Weinberger <richard@nod.at>,
+ =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+ <linux-mediatek@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, "David S. Miller" <davem@davemloft.net>
+References: <CAMuHMdWsMGPiQaPS0-PJ_+Mc5VQ37YdLfbHr_aS40kB+SfW-aw@mail.gmail.com>
+ <20220112213121.5ruae5mxwj6t3qiy@pengutronix.de>
+ <Yd9L9SZ+g13iyKab@sirena.org.uk>
+ <20220113110831.wvwbm75hbfysbn2d@pengutronix.de>
+ <YeA7CjOyJFkpuhz/@sirena.org.uk>
+ <20220113194358.xnnbhsoyetihterb@pengutronix.de>
+ <YeF05vBOzkN+xYCq@smile.fi.intel.com>
+ <20220115154539.j3tsz5ioqexq2yuu@pengutronix.de>
+ <YehdsUPiOTwgZywq@smile.fi.intel.com>
+ <20220120075718.5qtrpc543kkykaow@pengutronix.de>
+ <Ye6/NgfxsZnpXE09@smile.fi.intel.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <15796e57-f7d4-9c66-3b53-0b026eaf31d8@omp.ru>
+Date: Tue, 25 Jan 2022 00:02:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <b222361a-288a-55b2-fc02-04c0b93b4220@kaod.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <Ye6/NgfxsZnpXE09@smile.fi.intel.com>
+Content-Language: en-US
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220124_123722_309563_A2618FAA 
-X-CRM114-Status: GOOD (  35.23  )
+X-CRM114-CacheID: sfid-20220124_130230_624080_B19F6292 
+X-CRM114-Status: GOOD (  30.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,112 +116,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 24/01/22 07:34PM, C=E9dric Le Goater wrote:
-> > > spimem needs an extension I think. Sorry I have not been able to
-> > > push that forward. Lack of time and other tasks to address on the
-> > > host side of the machine. This is really a software problem, we
-> > > have the HW procedures ready. If a spimem expert could get involved
-> > > to make a few proposals, I would be happy to help and do some testing.
-> > > QEMU models are good enough for the software part. We can do the
-> > > training validation on real HW when ready.
-> > =
+Hello!
 
-> > What information about the flash do you need for this training?
-> =
+On 1/24/22 6:01 PM, Andy Shevchenko wrote:
 
-> Last time I looked, we lacked some post_init handler to setup a slave:
-> configure the registers defining the AHB windows for each flash
-> slave and perform the read timing calibration. calibration should
-> only be done once.
-> =
+>>>>>>> It'd certainly be good to name anything that doesn't correspond to one
+>>>>>>> of the existing semantics for the API (!) something different rather
+>>>>>>> than adding yet another potentially overloaded meaning.
+>>>>>>
+>>>>>> It seems we're (at least) three who agree about this. Here is a patch
+>>>>>> fixing the name.
+>>>>>
+>>>>> And similar number of people are on the other side.
+>>>>
+>>>> If someone already opposed to the renaming (and not only the name) I
+>>>> must have missed that.
+>>>>
+>>>> So you think it's a good idea to keep the name
+>>>> platform_get_irq_optional() despite the "not found" value returned by it
+>>>> isn't usable as if it were a normal irq number?
+>>>
+>>> I meant that on the other side people who are in favour of Sergey's patch.
+>>> Since that I commented already that I opposed the renaming being a standalone
+>>> change.
+>>>
+>>> Do you agree that we have several issues with platform_get_irq*() APIs?
+[...]
+>>> 2. The vIRQ0 handling: a) WARN() followed by b) returned value 0
+>>
+>> I'm happy with the vIRQ0 handling. Today platform_get_irq() and it's
+>> silent variant returns either a valid and usuable irq number or a
+>> negative error value. That's totally fine.
+> 
+> It might return 0.
+> Actually it seems that the WARN() can only be issued in two cases:
+> - SPARC with vIRQ0 in one of the array member
+> - fallback to ACPI for GPIO IRQ resource with index 0
 
-> See how the aspeed_spi_flash_init() routine doing the calibration
-> is hooked up under aspeed_spi_claim_bus() in the u-boot driver :
+   You have probably missed the recent discovery that arch/sh/boards/board-aps4*.c
+causes IRQ0 to be passed as a direct IRQ resource?
 
-My patch series should provide a hook for doing the calibration _after_ =
+> But the latter is bogus, because it would mean a bug in the ACPI code.
 
-the flash is initialized.
+   Worth changing >= 0 to > 0 there, maybe?
 
-> =
+> The bottom line here is the SPARC case. Anybody familiar with the platform
+> can shed a light on this. If there is no such case, we may remove warning
+> along with ret = 0 case from platfrom_get_irq().
 
->   https://github.com/openbmc/u-boot/blob/v2019.04-aspeed-openbmc/drivers/=
-spi/aspeed_spi.c
-> =
+   I'm afraid you're too fast here... :-)
+   We'll have a really hard time if we continue to allow IRQ0 to be returned by
+platform_get_irq() -- we'll have oto fileter it out in the callers then...
 
-> Not good enough for upstream, Linux would be the same :/
-> =
+>>> 3. The specific cookie for "IRQ not found, while no error happened" case
+>>
+>> Not sure what you mean here. I have no problem that a situation I can
+>> cope with is called an error for the query function. I just do error
+>> handling and continue happily. So the part "while no error happened" is
+>> irrelevant to me.
+> 
+> I meant that instead of using special error code, 0 is very much good for
+> the cases when IRQ is not found. It allows to distinguish -ENXIO from the
+> low layer from -ENXIO with this magic meaning.
 
-> > I proposed a patch series [0] some time ago trying to implement training
-> > for TI SoCs. It did not get merged but I do intend to respin it and get
-> > it through. Would this API work for your tuning as well?
-> =
+   I don't see how -ENXIO can trickle from the lower layers, frankly...
 
-> I will take a look.
-> > Also, I am curious how your training works. What data do you read for
-> > training delays? Where is it stored?
-> =
+[...]
 
-> The driver reads the first 16K at slow speed (that's why we need a
-> basic minimal setup of the slave) and checks if the buffer is valid
-> enough for the calibration :
-> =
-
->   https://github.com/openbmc/linux/blob/dev-5.15/drivers/mtd/spi-nor/cont=
-rollers/aspeed-smc.c#L998
-> =
-
-> it then performs reads by changing the frequency and delays and
-> compares results with the initial default buffer.
-
-This seems similar to the tuning I implemented, except mine uses a =
-
-pre-defined pattern at a pre-defined location.
-
-> =
-
-> if not, then the driver stays in a safe mode (slow).
-
-Same for my patches.
-
-> =
-
-> > In our case we need to flash a
-> > known pattern at some location (which is passed in via DT). Do you need
-> > to run it for every read transaction or just once after the flash is
-> > initialized?
-> =
-
-> Just once because it is a heavy process. See the debug outputs below.
-> Once we have good read timings and frequency, there is no need to do
-> it each time.
-
-It looks very similar to the tuning I implemented in my patch series. =
-
-You should be able to use those APIs for your tuning as well. But it =
-
-should not block the SPI MEM port. The current upstream driver does not =
-
-seem to implement this tuning anyway.
-
-> =
-
-> > [0] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D23350=
-4&state=3D%2A&archive=3Dboth
-> Thanks,
-> =
-
-> C.
-
--- =
-
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+MBR, Sergey
 
 ______________________________________________________
 Linux MTD discussion mailing list
