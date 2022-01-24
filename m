@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F3CC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jan 2022 15:38:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02666C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 24 Jan 2022 18:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B0zunQFTDx2U5FF3Gm0aWQEzq9kVCoBB9TLFROczKzU=; b=05u+R1xtqsYymU
-	pfOHz1H2uhjG16bd/8iSvqWXHDQhsaMR8IucX9+8g3AAvy/4rWJgYf3dzm1NY0aJEUcs+E36thWTG
-	2s5LleiVBTknEDqxGPYaZetfO14Gc2EaebY0TXMqXybDrbEM5Hc484oALOrcv+5H7PzPLDRceYlKW
-	ve+eMw4FT7Rr462ZiEpntx29jbez8GiI1RoN1IlWHvhHLKxi2cThx54jGHhcRVZBu9dkUCjenQSwM
-	T4mCSEEjX6QFaY8s+YKU4zwzgGkgv6ysolc/e/B9c+jc2bLDhfN/10897a7HTCM/nWYMJEyQAVjPq
-	whA7F5Bptkqfbs7NvINA==;
+	List-Owner; bh=+NmP0LIFIGlqsjt0wlbH27GQaQF2abrRKsPjNZ6jCRE=; b=i1Y99eQ6YrcYzM
+	NRokOZ4NOlhhA3EzpAry0BiZvcBtysRldMS4PXZEP/+gy8NKoOxDsVvPdTCanKUV/iCnxumsqKdIW
+	QMvt3vKTKO/BPi17+2752Fxxhn5pubT28YwR60kYNGRzqfzIZVihdmH0JTuH77Y4EkWW86v3snqD7
+	Bm/vBalt/uWXl7Mhb4F/bCT9U71yMRyXjSq1DvOOq5cQgu484ajn40xCjuN3PC1onc6gKW7abZ/Lf
+	N1sv6k+fYgql2c7O5KO10Ize1AVUKA7MWDTx8eyBHJFNEpQUEhgjKoR5yPxYIOrzr3KC6++fbyF/Y
+	8c/TULKJOIkED4U4zt2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nC1PJ-003qQ8-Dn; Mon, 24 Jan 2022 15:37:25 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1nC3zT-004Tuh-Mh; Mon, 24 Jan 2022 18:22:55 +0000
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nC1P4-003qOm-L5; Mon, 24 Jan 2022 15:37:12 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20OFajLq114967;
- Mon, 24 Jan 2022 09:36:45 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1643038605;
- bh=JQ59ooByHFX9y5XTd/tJSN1GuEDWKpebJJU65HBNeBA=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=bZrTz87D9CVyTjjwWqE31ni4e0RQQmQHVHzz4fImkPqdRK/2JeGpqIq2MnPMaqF50
- piFl3zlbu0kJD8Pv2Fk+ZscwatRJXdGokLtwvZ0+FeOXI/2sJ64NMi4N132H/Wx7I0
- +UCP4YjnqHGj+RtTaSiLDhLYUtfRooBqiafu3I8Q=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20OFajBB072291
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 24 Jan 2022 09:36:45 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 24
- Jan 2022 09:36:45 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 24 Jan 2022 09:36:45 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20OFaiWw019720;
- Mon, 24 Jan 2022 09:36:44 -0600
-Date: Mon, 24 Jan 2022 21:06:44 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
-CC: Patrick Williams <patrick@stwcx.xyz>, Vignesh Raghavendra
- <vigneshr@ti.com>, <linux-aspeed@lists.ozlabs.org>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Richard Weinberger <richard@nod.at>,
- Potin Lai <potin.lai@quantatw.com>, <linux-kernel@vger.kernel.org>,
- Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] mtd: aspeed-smc: improve probe resilience
-Message-ID: <20220124153644.m3iwlvq5ld5cpbyz@ti.com>
-References: <20211229143334.297305-1-patrick@stwcx.xyz>
- <20211229173411.l2bipmi4x3arqjoo@ti.com>
- <Yc3Qav+ULNdF5zRT@heinlein>
- <20211231102623.izaqlzjvracbbgmp@ti.com>
- <20220103171721.46c8e697@xps13> <YdSP6tKyQ2ZRUC+2@heinlein>
- <20220105063244.lno3xur64uepa7i5@ti.com>
- <d4ba6413-57ce-14c1-ed48-d00db2f74bd3@kaod.org>
+ id 1nC3dp-004KmU-B9
+ for linux-mtd@lists.infradead.org; Mon, 24 Jan 2022 18:00:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1643047233; x=1674583233;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=GQ5E0i+zBiGPpozPgnHLAnkyvtSeafp3A0mHCHJieDY=;
+ b=g05Jfv3mdTPzbdzoF+Ia+dZ1AAet9SFb1krt6/qOh2MfBv1HCirC1/rL
+ IqvyBCh8Esn3FEzqbmVGzlUzV+AWjfDV3Hdci/nwzF2b1/+5nFfX2Sfdv
+ K2B7MtaSCMRD3UQKMM2TfwLRcjBd9i4D264Bf3ip2MqisdDwt1uQMTyek
+ Xx3Cfk1jBH7qdHutU/U6bIniNTu+8+jfkviwBSfaVUUe6ZmQXudT2VQFz
+ iV4svIz3ufZ3f5olUV2utkgXjwmIpg7drxKO7HcrzKpCDamBhVNznDUjl
+ /3DZULsJK8+q2giXWd5K5tLxaQ4gnqJSFc7RAi+yYjZKB1N0jzBbHCIs9 g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="246053314"
+X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; d="scan'208";a="246053314"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Jan 2022 10:00:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; d="scan'208";a="766479413"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by fmsmga006.fm.intel.com with ESMTP; 24 Jan 2022 10:00:29 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 8101BA51; Mon, 24 Jan 2022 20:00:42 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Andreas Noever <andreas.noever@gmail.com>,
+ Michael Jamet <michael.jamet@intel.com>,
+ Yehezkel Bernat <YehezkelShB@gmail.com>
+Subject: [PATCH v2 5/5] thunderbolt: Drop duplicate NULL checks around
+ nvmem_unregister()
+Date: Mon, 24 Jan 2022 20:00:40 +0200
+Message-Id: <20220124180040.50660-5-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220124180040.50660-1-andriy.shevchenko@linux.intel.com>
+References: <20220124180040.50660-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d4ba6413-57ce-14c1-ed48-d00db2f74bd3@kaod.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220124_073710_821773_40D17E9B 
-X-CRM114-Status: GOOD (  34.45  )
+X-CRM114-CacheID: sfid-20220124_100033_462797_EE0A81C7 
+X-CRM114-Status: UNSURE (   9.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,85 +83,41 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 23/01/22 11:44PM, C=E9dric Le Goater wrote:
-> > > I had an offline discussion with someone who knew more history on thi=
-s driver.
-> > > My understanding is that the linux-aspeed team is aware of this being=
- deprecated
-> > > but that there was some missing support for interface training that n=
-obody has
-> > > gotten around to write?  If that is the case this really isn't even a=
- "simple"
-> > > port to a new API at this point.
-> > =
+Since nvmem_unregister() checks for NULL, no need to repeat in
+the caller. Drop duplicate NULL checks.
 
-> > Unless the controller needs some unique feature (I don't think it does
-> > on a quick glance), the conversion should not be too difficult. For any
-> > experienced developer, even if they are unfamiliar with the SPI MEM API,
-> > I don't think it should take more than 2-3 days to do the conversion.
-> > The code to program the registers would stay the same, all that needs to
-> > change is the API through which it is accessed.
-> =
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+v2: added tag (Mika)
+ drivers/thunderbolt/nvm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> Writing a spimem driver is not a problem, I think people have done
-> that in house. Aspeed has one for AST2600. We have one for u-boot
-> I wrote sometime ago. I even have one for Linux but training comes
-> with ugly hacks to fit in the current stack.
-> =
+diff --git a/drivers/thunderbolt/nvm.c b/drivers/thunderbolt/nvm.c
+index 3a5336913cca..b3f310389378 100644
+--- a/drivers/thunderbolt/nvm.c
++++ b/drivers/thunderbolt/nvm.c
+@@ -154,10 +154,8 @@ int tb_nvm_add_non_active(struct tb_nvm *nvm, size_t size,
+ void tb_nvm_free(struct tb_nvm *nvm)
+ {
+ 	if (nvm) {
+-		if (nvm->non_active)
+-			nvmem_unregister(nvm->non_active);
+-		if (nvm->active)
+-			nvmem_unregister(nvm->active);
++		nvmem_unregister(nvm->non_active);
++		nvmem_unregister(nvm->active);
+ 		vfree(nvm->buf);
+ 		ida_simple_remove(&nvm_ida, nvm->id);
+ 	}
+-- 
+2.34.1
 
-> All Aspeed SoCs need training and that has been the problem for the
-> last 4 years or so because we can not do training without knowing
-> a minimum about the flash being trained :/ The previous framework
-> offered a way to do a first scan and tune the delay settings
-> afterwards. It worked pretty well on AST2400, AST2500 and AST2600
-> even if more complex.
-> =
-
-> One alternative was to include the setting in the DT but the flash
-> modules are not always soldered on the boards, at least on OpenPOWER
-> systems which have sockets for them. The board are large, the wires
-> long, the need is real, some chips freak out if not tuned correctly.
-> =
-
-> spimem needs an extension I think. Sorry I have not been able to
-> push that forward. Lack of time and other tasks to address on the
-> host side of the machine. This is really a software problem, we
-> have the HW procedures ready. If a spimem expert could get involved
-> to make a few proposals, I would be happy to help and do some testing.
-> QEMU models are good enough for the software part. We can do the
-> training validation on real HW when ready.
-
-What information about the flash do you need for this training? I =
-
-proposed a patch series [0] some time ago trying to implement training =
-
-for TI SoCs. It did not get merged but I do intend to respin it and get =
-
-it through. Would this API work for your tuning as well?
-
-Also, I am curious how your training works. What data do you read for =
-
-training delays? Where is it stored? In our case we need to flash a =
-
-known pattern at some location (which is passed in via DT). Do you need =
-
-to run it for every read transaction or just once after the flash is =
-
-initialized?
-
-[0] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D233504&st=
-ate=3D%2A&archive=3Dboth
-
--- =
-
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
