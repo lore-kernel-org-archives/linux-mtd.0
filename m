@@ -4,49 +4,141 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD651C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jan 2022 10:12:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1D99C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jan 2022 10:21:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oAO5hsnQHCBdr5Kgm2sHIZTKXxTus3mucK3FY6Ulrmo=; b=DD+D5oP5LkOM5W
-	g0nq25U9N40sdHkXGkDq4bheRcMcWD90xhBnt0FXXtWhdc7FA8ZuvQ5+NiWFED83JCAKQ5SGzEtc5
-	7IUz0uttzIcaC0s+yYY7X2n7hFjSw1qXrBRTb6MZTVl4q36NgbhRH4ZOp1rmdAfVXTi5TpJB4Vi57
-	xsU4hQkXzxk8Dd6yWHI8K0gWBsCdYhwnCQMPNAYYXil2CEcLnSaYnRlwIOB8/SgSoHf2K+kWen7By
-	TSD1X6mE9y+cu0ffjtKyamloZ6jzz+MD8MbPZzLCaKWJBky5mUcSjHNjA1UHZMHQK+hkwsVht2ygD
-	KP3EAl3WfPBtCEqWa6Mg==;
+	List-Owner; bh=YY8Y2Ok+jIz4/R8VMySxt6724VLwpsYH1XbLVKF/yws=; b=A0EIm8OjWTwKDa
+	qY7Wb4WAxVsh9iqcZVswf5iEb66ovcK/MU/aV6cQMjKu9uZk5dcMKO0IuGhp2PCZ00W4AdnzDFesH
+	75IoK91FhGyRt3GQMbeO5Of+mvMHR7F84eJAOVJiXshosmWIBsXyz3sdT+K8Vxi9yDy3kmeXYGSmJ
+	p3S41EWFjmPn7ewgRuSP6nE5N7X1mkJAAw+R3QiIBG3D+PfDn1zOMp/rA9KyXeausJ66t8M7fNyFQ
+	NMfq3FoinFyIY0ekI8ebglYxDqwhB8yqu73Z551GymZe0tP5tOwRVuZR106JVCIu7QKmRjXng6qPe
+	JosdTgfeuLl7kGPM22yQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCIo0-007Nl6-T0; Tue, 25 Jan 2022 10:12:05 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1nCIvv-007PL4-DX; Tue, 25 Jan 2022 10:20:15 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCInw-007Nji-Gf
- for linux-mtd@lists.infradead.org; Tue, 25 Jan 2022 10:12:02 +0000
+ id 1nCIvp-007PJ0-5d; Tue, 25 Jan 2022 10:20:11 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 7B2D6C000F;
- Tue, 25 Jan 2022 10:11:53 +0000 (UTC)
-Date: Tue, 25 Jan 2022 11:11:52 +0100
+ by mail.gandi.net (Postfix) with ESMTPSA id DC28B2000C;
+ Tue, 25 Jan 2022 10:19:29 +0000 (UTC)
+Date: Tue, 25 Jan 2022 11:19:28 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: <richard@nod.at>, <vigneshr@ti.com>, <robh+dt@kernel.org>,
- <srinivas.kandagatla@linaro.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <devicetree@vger.kernel.org>, <chenshumin86@sina.com>
-Subject: Re: [PATCH 3/3] nvmem: core: Fix a conflict between MTD and NVMEM
- on wp-gpios property
-Message-ID: <20220125111152.4fa65ee4@xps13>
-In-Reply-To: <20220105135734.271313-4-christophe.kerello@foss.st.com>
-References: <20220105135734.271313-1-christophe.kerello@foss.st.com>
- <20220105135734.271313-4-christophe.kerello@foss.st.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Mark Brown <broonie@kernel.org>, Marek =?UTF-8?B?QmVow7pu?=
+ <kabel@kernel.org>, Peter Huewe <peterhuewe@gmx.de>, Jarkko Sakkinen
+ <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Linus Walleij
+ <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Thierry
+ Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, David
+ Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Markuss Broks
+ <markuss.broks@gmail.com>, Emma Anholt <emma@anholt.net>, David Lechner
+ <david@lechnology.com>, Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
+ Noralf =?UTF-8?B?VHLDuG5uZXM=?= <noralf@tronnes.org>, Jean Delvare
+ <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Dan Robertson
+ <dan@dlrobertson.com>, Jonathan Cameron <jic23@kernel.org>, Lars-Peter
+ Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Marcus Folkesson
+ <marcus.folkesson@gmail.com>, Kent Gustavsson <kent@minoris.se>, Rui Miguel
+ Silva <rmfrfs@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Pavel Machek <pavel@ucw.cz>, Yasunari Takiguchi
+ <Yasunari.Takiguchi@sony.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Charles-Antoine Couret <charles-antoine.couret@nexvision.fr>, Antti
+ Palosaari <crope@iki.fi>, Lee Jones <lee.jones@linaro.org>, Support
+ Opensource <support.opensource@diasemi.com>, Charles Keepax
+ <ckeepax@opensource.cirrus.com>, Richard Fitzgerald
+ <rf@opensource.cirrus.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnd Bergmann
+ <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Eric Piel
+ <eric.piel@tremplin-utc.net>, Ulf Hansson <ulf.hansson@linaro.org>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde
+ <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Jakub
+ Kicinski <kuba@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>, Thomas
+ Kopp <thomas.kopp@microchip.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Vivien Didelot <vivien.didelot@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>, Woojung Huh
+ <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com, =?UTF-8?B?xYF1?=
+ =?UTF-8?B?a2Fzeg==?= Stelmach <l.stelmach@samsung.com>, Alexander Aring
+ <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Harry
+ Morris <h.morris@cascoda.com>, Varka Bhadram <varkabhadram@gmail.com>, Xue
+ Liu <liuxuenetmail@gmail.com>, Alan Ott <alan@signal11.us>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Christian
+ Lamparter <chunkeey@googlemail.com>, Kalle Valo <kvalo@kernel.org>, Ajay
+ Singh <ajay.kathat@microchip.com>, Claudiu Beznea
+ <claudiu.beznea@microchip.com>, Solomon Peachy <pizza@shaftnet.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, Mark Greer
+ <mgreer@animalcreek.com>, Benson Leung <bleung@chromium.org>, Hans de Goede
+ <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Alessandro Zummo
+ <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ =?UTF-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>, Jiri Slaby
+ <jirislaby@kernel.org>, Felipe Balbi <balbi@kernel.org>, Daniel Thompson
+ <daniel.thompson@linaro.org>, Jingoo Han <jingoohan1@gmail.com>, Helge
+ Deller <deller@gmx.de>, James Schulman <james.schulman@cirrus.com>, David
+ Rhodes <david.rhodes@cirrus.com>, Lucas Tanure
+ <tanureal@opensource.cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Thomas
+ Zimmermann <tzimmermann@suse.de>, Maxime Ripard <mripard@kernel.org>, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>, Stephan Gerhold
+ <stephan@gerhold.net>, Alexandru Ardelean <ardeleanalex@gmail.com>, Mike
+ Looijmans <mike.looijmans@topic.nl>, Gwendal Grignou
+ <gwendal@chromium.org>, Cai Huoqing <caihuoqing@baidu.com>, Minghao Chi
+ <chi.minghao@zte.com.cn>, Antoniu Miclaus <antoniu.miclaus@analog.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Ronald =?UTF-8?B?VHNjaGFsw6Ry?=
+ <ronald@innovation.ch>, Marco Felsch <m.felsch@pengutronix.de>, Jonathan
+ =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>, Emmanuel Gil Peyrot
+ <linkmauve@linkmauve.fr>, Jon Hunter <jonathanh@nvidia.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Heiko Schocher <hs@denx.de>, Fabio Estevam
+ <festevam@gmail.com>, Colin Ian King <colin.king@intel.com>, Dan Carpenter
+ <dan.carpenter@oracle.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Matt Kline <matt@bitbashing.io>, Torin Cooper-Bennun
+ <torin@maxiluxsystems.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+ Stefan =?UTF-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>, Frieder Schrempf
+ <frieder.schrempf@kontron.de>, Wei Yongjun <weiyongjun1@huawei.com>, Randy
+ Dunlap <rdunlap@infradead.org>, Nanyong Sun <sunnanyong@huawei.com>, Yang
+ Shen <shenyang39@huawei.com>, dingsenjie <dingsenjie@yulong.com>, Aditya
+ Srivastava <yashsri421@gmail.com>, Stefan Wahren <stefan.wahren@i2se.com>,
+ Peter Zijlstra <peterz@infradead.org>, Michael Walle <michael@walle.cc>,
+ Yang Li <yang.lee@linux.alibaba.com>, Geert Uytterhoeven
+ <geert+renesas@glider.be>, wengjianfeng <wengjianfeng@yulong.com>, Sidong
+ Yang <realwakka@gmail.com>, Paulo Miguel Almeida
+ <paulo.miguel.almeida.rodenas@gmail.com>, Zhang Qilong
+ <zhangqilong3@huawei.com>, Will Deacon <will@kernel.org>, Mark Tomlinson
+ <mark.tomlinson@alliedtelesis.co.nz>, Davidlohr Bueso <dbueso@suse.de>,
+ Claudius Heine <ch@denx.de>, Jiri Prchal <jiri.prchal@aksignal.cz>,
+ linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-wireless@vger.kernel.org, libertas-dev@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
+ kernel@pengutronix.de
+Subject: Re: [PATCH 5/5] spi: make remove callback a void function
+Message-ID: <20220125111928.781d0bb3@xps13>
+In-Reply-To: <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
+References: <20220123175201.34839-1-u.kleine-koenig@pengutronix.de>
+ <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220125_021200_766305_19C5FAE3 
-X-CRM114-Status: GOOD (  29.02  )
+X-CRM114-CacheID: sfid-20220125_022009_540650_20F58135 
+X-CRM114-Status: GOOD (  17.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,52 +155,24 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCmNocmlzdG9waGUua2VyZWxsb0Bmb3NzLnN0LmNvbSB3cm90ZSBvbiBX
-ZWQsIDUgSmFuIDIwMjIgMTQ6NTc6MzQgKzAxMDA6CgpTb3JyeSBmb3IgdGhlIHRpbWUgaXQgdG9v
-ayBtZSB0byByZXZpZXcgdGhpcyBwYXRjaHNldC4KCj4gV3AtZ3Bpb3MgcHJvcGVydHkgY2FuIGJl
-IHVzZWQgb24gTlZNRU4gbm9kZXMgYW5kIHRoZSBzYW1lIHByb3BlcnR5IGNhbgo+IGJlIGFsc28g
-dXNlZCBvbiBNVEQgTkFORCBub2Rlcy4gSW4gY2FzZSBvZiB0aGUgd3AtZ3Bpb3MgcHJvcGVydHkg
-aXMKPiBkZWZpbmVkIGF0IE5BTkQgbGV2ZWwgbm9kZSwgdGhlIEdQSU8gbWFuYWdlbWVudCBpcyBk
-b25lIGF0IE5BTkQgZHJpdmVyCj4gbGV2ZWwuIFdyaXRlIHByb3RlY3QgaXMgZGlzYWJsZWQgd2hl
-biB0aGUgZHJpdmVyIGlzIHByb2JlZCBvciByZXN1bWVkCj4gYW5kIGlzIGVuYWJsZWQgd2hlbiB0
-aGUgZHJpdmVyIGlzIHJlbGVhc2VkIG9yIHN1c3BlbmRlZC4KPiAKPiBXaGVuIG5vIHBhcnRpdGlv
-bnMgYXJlIGRlZmluZWQgaW4gdGhlIE5BTkQgRFQgbm9kZSwgdGhlbiB0aGUgTkFORCBEVCBub2Rl
-Cj4gd2lsbCBiZSBwYXNzZWQgdG8gTlZNRU0gZnJhbWV3b3JrLiBJZiB3cC1ncGlvcyBwcm9wZXJ0
-eSBpcyBkZWZpbmVkIGluCj4gdGhpcyBub2RlLCB0aGUgR1BJTyByZXNvdXJjZSBpcyB0YWtlbiB0
-d2ljZSBhbmQgdGhlIE5BTkQgY29udHJvbGxlcgo+IGRyaXZlciBmYWlscyB0byBwcm9iZS4KPiAK
-PiBJdCB3b3VsZCBiZSBwb3NzaWJsZSB0byBzZXQgY29uZmlnLT53cF9ncGlvIGF0IE1URCBsZXZl
-bCBiZWZvcmUgY2FsbGluZwo+IG52bWVtX3JlZ2lzdGVyIGZ1bmN0aW9uIGJ1dCBOVk1FTSBmcmFt
-ZXdvcmsgd2lsbCB0b2dnbGVkIHRoaXMgR1BJTyBvbgoKdG9nZ2xlCgo+IGVhY2ggd3JpdGUgd2hl
-biB0aGlzIEdQSU8gc2hvdWxkIG9ubHkgYmUgY29udHJvbGxlZCBhdCBOQU5EIGxldmVsIGRyaXZl
-cgo+IHRvIGVuc3VyZSB0aGF0IHRoZSBXcml0ZSBQcm90ZWN0IGhhcyBub3QgYmVlbiBlbmFibGVk
-Lgo+IAo+IEFzIE1URCBmcmFtZXdvcmsgaXMgb25seSB1c2luZyBOVk1FTiBmcmFtZXdvcmsgaW4g
-cmVhZCBvbmx5LCBhIHdheSB0byBmaXgKCk5WTUVNCgo+IHRoaXMgY29uZmxpY3QgaXMgdG8gZ2V0
-IHRoZSBHUElPIHJlc291cmNlIGF0IE5WTUVNIGxldmVsIG9ubHkgaWYgcmVnX3dyaXRlCj4gQVBJ
-IGlzIGRlZmluZWQuIFRoaXMgR1BJTyBpcyBvbmx5IHRvZ2dsZWQgaWYgcmVnX3dyaXRlIG9wcyBp
-cyBkZWZpbmVkLgoKVGhlIHNvbHV0aW9uIGxvb2tzIGEgYml0IGhhY2tpc2ggdG8gbWUuCgpUaGUg
-bnZtZW1fY29uZmlnIHN0cnVjdHVyZSBhbHJlYWR5IGNvbnRhaW5zIGEgZmllbGQgbmFtZWQgd3Bf
-Z3BpbyB3aGljaApzZWVtIHRvIGltcGx5IHRoYXQgY2FsbGVycyBjYW4gcHJvdmlkZSBhIHdwX2dw
-aW8gaGFuZGxlIHRoZXJlIGlmIHRoZXkKd2FudC4gQnV0IHlldCB0aGUgbnZtZW0gY29yZSBpZ25v
-cmVzIGlmIG5vIGdwaW8gd2FzIHByb3ZpZGVkIGFuZCB3aWxsCnRyeSB0byBnZXQgb25lIGFueXdh
-eS4gU2hvdWxkbid0IHRoaXMgYmVoYXZpb3IgYmUgY2hhbmdlZD8KClRoZXJlIGFyZSBhbHJlYWR5
-IGEgYmlnIG51bWJlciBvZiBjYWxsZXJzIGZvciBudm1lbV9yZWdpc3RlcigpIHNvIEkKdW5kZXJz
-dGFuZCBpdCBtaWdodCBiZSBhIGJpdCB0ZWRpb3VzIHRvIGp1c3QgZHJvcCB0aGUgZWxzZSBwYXJ0
-IG9mCnRoYXQgY29uZGl0aW9uLCBidXQgbWF5YmUgd2UgY2FuIHByb3ZpZGUgYSBkdW1teSBjb29r
-aWUgaW50byB0aGUKd3BfZ3BpbyBmaWVsZCB3aGljaCB3b3VsZCBiZSBpbnRlcnByZXRlZCBhczog
-ImRvbid0IG1lc3Mgd2l0aCBpdCIuIE9yCnBlcmhhcHMgYW4gYWRkaXRpb25hbCBmbGFnIHNvbWV3
-aGVyZSBlbHNlIGp1c3QgdG8gY2xlYXJseSBza2lwIHRoZQp3cF9ncGlvIHRoaW5nIGVudGlyZWx5
-PwoKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGhlIEtlcmVsbG8gPGNocmlzdG9waGUua2VyZWxs
-b0Bmb3NzLnN0LmNvbT4KPiAtLS0KPiAgZHJpdmVycy9udm1lbS9jb3JlLmMgfCAyICstCj4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+IAo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL252bWVtL2NvcmUuYyBiL2RyaXZlcnMvbnZtZW0vY29yZS5jCj4gaW5kZXgg
-ZTc2NWQzZDA1NDJlLi5lMTFjNzRkYjY0ZjkgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9udm1lbS9j
-b3JlLmMKPiArKysgYi9kcml2ZXJzL252bWVtL2NvcmUuYwo+IEBAIC03NjksNyArNzY5LDcgQEAg
-c3RydWN0IG52bWVtX2RldmljZSAqbnZtZW1fcmVnaXN0ZXIoY29uc3Qgc3RydWN0IG52bWVtX2Nv
-bmZpZyAqY29uZmlnKQo+ICAKPiAgCWlmIChjb25maWctPndwX2dwaW8pCj4gIAkJbnZtZW0tPndw
-X2dwaW8gPSBjb25maWctPndwX2dwaW87Cj4gLQllbHNlCj4gKwllbHNlIGlmIChjb25maWctPnJl
-Z193cml0ZSkKPiAgCQludm1lbS0+d3BfZ3BpbyA9IGdwaW9kX2dldF9vcHRpb25hbChjb25maWct
-PmRldiwgIndwIiwKPiAgCQkJCQkJICAgIEdQSU9EX09VVF9ISUdIKTsKPiAgCWlmIChJU19FUlIo
-bnZtZW0tPndwX2dwaW8pKSB7CgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC1tdGQvCg==
+SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIFN1biwgMjMg
+SmFuIDIwMjIgMTg6NTI6MDEgKzAxMDA6Cgo+IFRoZSB2YWx1ZSByZXR1cm5lZCBieSBhbiBzcGkg
+ZHJpdmVyJ3MgcmVtb3ZlIGZ1bmN0aW9uIGlzIG1vc3RseSBpZ25vcmVkLgo+IChPbmx5IGFuIGVy
+cm9yIG1lc3NhZ2UgaXMgcHJpbnRlZCBpZiB0aGUgdmFsdWUgaXMgbm9uLXplcm8gdGhhdCB0aGUK
+PiBlcnJvciBpcyBpZ25vcmVkLikKPiAKPiBTbyBjaGFuZ2UgdGhlIHByb3RvdHlwZSBvZiB0aGUg
+cmVtb3ZlIGZ1bmN0aW9uIHRvIHJldHVybiBubyB2YWx1ZS4gVGhpcwo+IHdheSBkcml2ZXIgYXV0
+aG9ycyBhcmUgbm90IHRlbXB0ZWQgdG8gYXNzdW1lIHRoYXQgcGFzc2luZyBhbiBlcnJvciB0bwo+
+IHRoZSB1cHBlciBsYXllciBpcyBhIGdvb2QgaWRlYS4gQWxsIGRyaXZlcnMgYXJlIGFkYXB0ZWQg
+YWNjb3JkaW5nbHkuCj4gVGhlcmUgaXMgbm8gaW50ZW5kZWQgY2hhbmdlIG9mIGJlaGF2aW91ciwg
+YWxsIGNhbGxiYWNrcyB3ZXJlIHByZXBhcmVkIHRvCj4gcmV0dXJuIDAgYmVmb3JlLgo+IAo+IFNp
+Z25lZC1vZmYtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9u
+aXguZGU+Cj4gLS0tCgpbLi4uXQoKPiAgZHJpdmVycy9tdGQvZGV2aWNlcy9tY2hwMjNrMjU2LmMg
+ICAgICAgICAgICAgICAgICAgICAgfCAgNCArLS0tCj4gIGRyaXZlcnMvbXRkL2RldmljZXMvbWNo
+cDQ4bDY0MC5jICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0tLQo+ICBkcml2ZXJzL210ZC9k
+ZXZpY2VzL210ZF9kYXRhZmxhc2guYyAgICAgICAgICAgICAgICAgICB8ICA0ICstLS0KPiAgZHJp
+dmVycy9tdGQvZGV2aWNlcy9zc3QyNWwuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCAr
+LS0tCgpGb3IgTVREIGRldmljZXM6CkFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
+bmFsQGJvb3RsaW4uY29tPgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
+bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtbXRkLwo=
