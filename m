@@ -4,141 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1D99C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jan 2022 10:21:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8006AC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jan 2022 10:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YY8Y2Ok+jIz4/R8VMySxt6724VLwpsYH1XbLVKF/yws=; b=A0EIm8OjWTwKDa
-	qY7Wb4WAxVsh9iqcZVswf5iEb66ovcK/MU/aV6cQMjKu9uZk5dcMKO0IuGhp2PCZ00W4AdnzDFesH
-	75IoK91FhGyRt3GQMbeO5Of+mvMHR7F84eJAOVJiXshosmWIBsXyz3sdT+K8Vxi9yDy3kmeXYGSmJ
-	p3S41EWFjmPn7ewgRuSP6nE5N7X1mkJAAw+R3QiIBG3D+PfDn1zOMp/rA9KyXeausJ66t8M7fNyFQ
-	NMfq3FoinFyIY0ekI8ebglYxDqwhB8yqu73Z551GymZe0tP5tOwRVuZR106JVCIu7QKmRjXng6qPe
-	JosdTgfeuLl7kGPM22yQ==;
+	List-Owner; bh=9IFWoUOb56x44xCULdcAFz5QQecsxVNbqyfCGKqsQBI=; b=Pl395+9aiioHY6
+	ScguXYu90ENJ/LhAZ4D5qyNKR1DXdpqarcF2lZwDX5XDtD7jpJ6bBdqRf8hqb8+7k/buCVNk7aWme
+	thxlXWv/2eEiFoEEQt2vefoPSEqNA7YfnuO7euf4LDEeZfc4IxSeTYFzNO1AMyzWzZTQ7LNTJ7j6o
+	CYWt33jn0KgTPYOguA5tWauGlIZ8fy29TIN14/CFzrPpzeWX+P1n4xViUy1VUTBpYdZW/626IdPVv
+	DrgF/eiejcLYxBl6sqONEAUomB5KzxSgvxXd8Cc/5ufkdZKAYmmLhweZDKNeaUNokfzpWuGI84gZY
+	HvDLXnEcsWzLscgn3oRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCIvv-007PL4-DX; Tue, 25 Jan 2022 10:20:15 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1nCJ0W-007R55-Uw; Tue, 25 Jan 2022 10:25:01 +0000
+Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCIvp-007PJ0-5d; Tue, 25 Jan 2022 10:20:11 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id DC28B2000C;
- Tue, 25 Jan 2022 10:19:29 +0000 (UTC)
-Date: Tue, 25 Jan 2022 11:19:28 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Mark Brown <broonie@kernel.org>, Marek =?UTF-8?B?QmVow7pu?=
- <kabel@kernel.org>, Peter Huewe <peterhuewe@gmx.de>, Jarkko Sakkinen
- <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Linus Walleij
- <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, Thierry
- Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, David
- Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>, Markuss Broks
- <markuss.broks@gmail.com>, Emma Anholt <emma@anholt.net>, David Lechner
- <david@lechnology.com>, Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
- Noralf =?UTF-8?B?VHLDuG5uZXM=?= <noralf@tronnes.org>, Jean Delvare
- <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, Dan Robertson
- <dan@dlrobertson.com>, Jonathan Cameron <jic23@kernel.org>, Lars-Peter
- Clausen <lars@metafoo.de>, Michael Hennerich
- <Michael.Hennerich@analog.com>, Marcus Folkesson
- <marcus.folkesson@gmail.com>, Kent Gustavsson <kent@minoris.se>, Rui Miguel
- Silva <rmfrfs@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Pavel Machek <pavel@ucw.cz>, Yasunari Takiguchi
- <Yasunari.Takiguchi@sony.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Charles-Antoine Couret <charles-antoine.couret@nexvision.fr>, Antti
- Palosaari <crope@iki.fi>, Lee Jones <lee.jones@linaro.org>, Support
- Opensource <support.opensource@diasemi.com>, Charles Keepax
- <ckeepax@opensource.cirrus.com>, Richard Fitzgerald
- <rf@opensource.cirrus.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, Arnd Bergmann
- <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Eric Piel
- <eric.piel@tremplin-utc.net>, Ulf Hansson <ulf.hansson@linaro.org>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Wolfgang Grandegger <wg@grandegger.com>, Marc Kleine-Budde
- <mkl@pengutronix.de>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>, Thomas
- Kopp <thomas.kopp@microchip.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Vivien Didelot <vivien.didelot@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, Woojung Huh
- <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com, =?UTF-8?B?xYF1?=
- =?UTF-8?B?a2Fzeg==?= Stelmach <l.stelmach@samsung.com>, Alexander Aring
- <alex.aring@gmail.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Harry
- Morris <h.morris@cascoda.com>, Varka Bhadram <varkabhadram@gmail.com>, Xue
- Liu <liuxuenetmail@gmail.com>, Alan Ott <alan@signal11.us>, Heiner Kallweit
- <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, Christian
- Lamparter <chunkeey@googlemail.com>, Kalle Valo <kvalo@kernel.org>, Ajay
- Singh <ajay.kathat@microchip.com>, Claudiu Beznea
- <claudiu.beznea@microchip.com>, Solomon Peachy <pizza@shaftnet.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, Mark Greer
- <mgreer@animalcreek.com>, Benson Leung <bleung@chromium.org>, Hans de Goede
- <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Alessandro Zummo
- <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
- =?UTF-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>, Jiri Slaby
- <jirislaby@kernel.org>, Felipe Balbi <balbi@kernel.org>, Daniel Thompson
- <daniel.thompson@linaro.org>, Jingoo Han <jingoohan1@gmail.com>, Helge
- Deller <deller@gmx.de>, James Schulman <james.schulman@cirrus.com>, David
- Rhodes <david.rhodes@cirrus.com>, Lucas Tanure
- <tanureal@opensource.cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Liam
- Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Thomas
- Zimmermann <tzimmermann@suse.de>, Maxime Ripard <mripard@kernel.org>, Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>, Stephan Gerhold
- <stephan@gerhold.net>, Alexandru Ardelean <ardeleanalex@gmail.com>, Mike
- Looijmans <mike.looijmans@topic.nl>, Gwendal Grignou
- <gwendal@chromium.org>, Cai Huoqing <caihuoqing@baidu.com>, Minghao Chi
- <chi.minghao@zte.com.cn>, Antoniu Miclaus <antoniu.miclaus@analog.com>,
- Julia Lawall <Julia.Lawall@inria.fr>, Ronald =?UTF-8?B?VHNjaGFsw6Ry?=
- <ronald@innovation.ch>, Marco Felsch <m.felsch@pengutronix.de>, Jonathan
- =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>, Emmanuel Gil Peyrot
- <linkmauve@linkmauve.fr>, Jon Hunter <jonathanh@nvidia.com>, Andrew Morton
- <akpm@linux-foundation.org>, Heiko Schocher <hs@denx.de>, Fabio Estevam
- <festevam@gmail.com>, Colin Ian King <colin.king@intel.com>, Dan Carpenter
- <dan.carpenter@oracle.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Matt Kline <matt@bitbashing.io>, Torin Cooper-Bennun
- <torin@maxiluxsystems.com>, Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
- Stefan =?UTF-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>, Frieder Schrempf
- <frieder.schrempf@kontron.de>, Wei Yongjun <weiyongjun1@huawei.com>, Randy
- Dunlap <rdunlap@infradead.org>, Nanyong Sun <sunnanyong@huawei.com>, Yang
- Shen <shenyang39@huawei.com>, dingsenjie <dingsenjie@yulong.com>, Aditya
- Srivastava <yashsri421@gmail.com>, Stefan Wahren <stefan.wahren@i2se.com>,
- Peter Zijlstra <peterz@infradead.org>, Michael Walle <michael@walle.cc>,
- Yang Li <yang.lee@linux.alibaba.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, wengjianfeng <wengjianfeng@yulong.com>, Sidong
- Yang <realwakka@gmail.com>, Paulo Miguel Almeida
- <paulo.miguel.almeida.rodenas@gmail.com>, Zhang Qilong
- <zhangqilong3@huawei.com>, Will Deacon <will@kernel.org>, Mark Tomlinson
- <mark.tomlinson@alliedtelesis.co.nz>, Davidlohr Bueso <dbueso@suse.de>,
- Claudius Heine <ch@denx.de>, Jiri Prchal <jiri.prchal@aksignal.cz>,
- linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-input@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-wireless@vger.kernel.org, libertas-dev@lists.infradead.org,
- platform-driver-x86@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
- kernel@pengutronix.de
-Subject: Re: [PATCH 5/5] spi: make remove callback a void function
-Message-ID: <20220125111928.781d0bb3@xps13>
-In-Reply-To: <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
-References: <20220123175201.34839-1-u.kleine-koenig@pengutronix.de>
- <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nCJ0U-007R37-1W; Tue, 25 Jan 2022 10:24:59 +0000
+Received: by mail-lf1-x12c.google.com with SMTP id z19so19117367lfq.13;
+ Tue, 25 Jan 2022 02:24:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:to:cc:references
+ :from:in-reply-to:content-transfer-encoding;
+ bh=9BG2GS4zinb7Ow72+Oc/dISNMPxbcJYV6aq+uT4bdK0=;
+ b=blXz03GfcmGHo8II4aBz3Obb+udMVXJzDsGHCznCs3ZCPSRdsakcLuHbROuo1SK4GA
+ SuXp367kkdb+yMu6eMKCScOGPafKSq7CceAdgCuWq4Z9277qMxceJIsKDWqdCnEeorOQ
+ 2H586I5mrrK0vzkFrABPRkeuSP05P/Mxk78zi4kU332uYNcRyimOmgvh3U8qZPuATc2u
+ wotd5ayJVrV4m4JwUXMBQmzghcPyxWohRchMtcyMFfqsbrqG5W8oyNdqChZaKL74vaJ4
+ R8Rq7IKtOJObQbMyc75nKQ7G8ifhQ7oRUW1+iDyp2F8m8XhDxejtXj7I4Ey8gwZNE2Zz
+ 8jow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :to:cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=9BG2GS4zinb7Ow72+Oc/dISNMPxbcJYV6aq+uT4bdK0=;
+ b=kHfLoCUtY12LsZisf4yxul7jJvCwasehWhXUzHZ3ijixX4KVnurKE+9PGHV1lZQ32m
+ VbYgL8VX93tkG3BvU8TyMB+Bz7UyvdmhTTh26HFAPfkJh9dEwJ9x96QpDB2yZmBmBNmO
+ r3kDbxta45JaUAAfKj6hee3NlCiqujKW25P1jCOyXJ7p1NwTawJY8I12O39w/JJZDiKP
+ 1QGqWHtNsD9irXXCk/IZiOSPyb+a/XQXy0HTcy+K7QzVUVbYeCUDRTIp3y9QHZ/5Xnap
+ IGlQKRVonDXKWzJ0oPDUtTLBXeIo79S0adNrvu1E+wQgcfvFgLhdUIrqIfRftdo1MV/C
+ 6dwg==
+X-Gm-Message-State: AOAM533i6KVgUQ4D9/ZpXX1Hho1vLLvN23bxma7UfL7QNj48qw6hyyq+
+ oYVESoItbYWrvGLRiil7O+o=
+X-Google-Smtp-Source: ABdhPJy/dzbGa69dT6Zgyw2xUBM0PDpzJjNBd9JiVGSa3Rrdvss02918Vl59SsYkbxguJc/zayyU1A==
+X-Received: by 2002:a05:6512:39c1:: with SMTP id
+ k1mr15660735lfu.207.1643106295329; 
+ Tue, 25 Jan 2022 02:24:55 -0800 (PST)
+Received: from [192.168.26.149]
+ (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+ by smtp.googlemail.com with ESMTPSA id k10sm451341lfv.258.2022.01.25.02.24.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 25 Jan 2022 02:24:54 -0800 (PST)
+Message-ID: <0d9a0ce5-ab34-cf05-158e-e25fc5595b4d@gmail.com>
+Date: Tue, 25 Jan 2022 11:24:52 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
+ Thunderbird/96.0
+Subject: Re: [PATCH 5/8] net: add helper eth_addr_add()
+To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+ Frank Rowand <frowand.list@gmail.com>, "David S . Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>
+References: <20211228142549.1275412-1-michael@walle.cc>
+ <20211228142549.1275412-6-michael@walle.cc>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <20211228142549.1275412-6-michael@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220125_022009_540650_20F58135 
-X-CRM114-Status: GOOD (  17.89  )
+X-CRM114-CacheID: sfid-20220125_022458_140049_12510CB8 
+X-CRM114-Status: GOOD (  18.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,29 +93,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIFN1biwgMjMg
-SmFuIDIwMjIgMTg6NTI6MDEgKzAxMDA6Cgo+IFRoZSB2YWx1ZSByZXR1cm5lZCBieSBhbiBzcGkg
-ZHJpdmVyJ3MgcmVtb3ZlIGZ1bmN0aW9uIGlzIG1vc3RseSBpZ25vcmVkLgo+IChPbmx5IGFuIGVy
-cm9yIG1lc3NhZ2UgaXMgcHJpbnRlZCBpZiB0aGUgdmFsdWUgaXMgbm9uLXplcm8gdGhhdCB0aGUK
-PiBlcnJvciBpcyBpZ25vcmVkLikKPiAKPiBTbyBjaGFuZ2UgdGhlIHByb3RvdHlwZSBvZiB0aGUg
-cmVtb3ZlIGZ1bmN0aW9uIHRvIHJldHVybiBubyB2YWx1ZS4gVGhpcwo+IHdheSBkcml2ZXIgYXV0
-aG9ycyBhcmUgbm90IHRlbXB0ZWQgdG8gYXNzdW1lIHRoYXQgcGFzc2luZyBhbiBlcnJvciB0bwo+
-IHRoZSB1cHBlciBsYXllciBpcyBhIGdvb2QgaWRlYS4gQWxsIGRyaXZlcnMgYXJlIGFkYXB0ZWQg
-YWNjb3JkaW5nbHkuCj4gVGhlcmUgaXMgbm8gaW50ZW5kZWQgY2hhbmdlIG9mIGJlaGF2aW91ciwg
-YWxsIGNhbGxiYWNrcyB3ZXJlIHByZXBhcmVkIHRvCj4gcmV0dXJuIDAgYmVmb3JlLgo+IAo+IFNp
-Z25lZC1vZmYtYnk6IFV3ZSBLbGVpbmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9u
-aXguZGU+Cj4gLS0tCgpbLi4uXQoKPiAgZHJpdmVycy9tdGQvZGV2aWNlcy9tY2hwMjNrMjU2LmMg
-ICAgICAgICAgICAgICAgICAgICAgfCAgNCArLS0tCj4gIGRyaXZlcnMvbXRkL2RldmljZXMvbWNo
-cDQ4bDY0MC5jICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0tLQo+ICBkcml2ZXJzL210ZC9k
-ZXZpY2VzL210ZF9kYXRhZmxhc2guYyAgICAgICAgICAgICAgICAgICB8ICA0ICstLS0KPiAgZHJp
-dmVycy9tdGQvZGV2aWNlcy9zc3QyNWwuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCAr
-LS0tCgpGb3IgTVREIGRldmljZXM6CkFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
-bmFsQGJvb3RsaW4uY29tPgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+On 28.12.2021 15:25, Michael Walle wrote:
+> Add a helper to add an offset to a ethernet address. This comes in handy
+> if you have a base ethernet address for multiple interfaces.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>   include/linux/etherdevice.h | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
+> diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+> index 2ad71cc90b37..9d621dc85290 100644
+> --- a/include/linux/etherdevice.h
+> +++ b/include/linux/etherdevice.h
+> @@ -486,6 +486,20 @@ static inline void eth_addr_inc(u8 *addr)
+>   	u64_to_ether_addr(u, addr);
+>   }
+>   
+> +/**
+> + * eth_addr_add() - Add (or subtract) and offset to/from the given MAC address.
+> + *
+> + * @offset: Offset to add.
+> + * @addr: Pointer to a six-byte array containing Ethernet address to increment.
+> + */
+> +static inline void eth_addr_add(u8 *addr, long offset)
+> +{
+> +	u64 u = ether_addr_to_u64(addr);
+> +
+> +	u += offset;
+> +	u64_to_ether_addr(u, addr);
+> +}
+
+Please check eth_hw_addr_gen() which contains identical code +
+eth_hw_addr_set().
+
+You should probably make eth_hw_addr_gen() use your new function as a
+helper.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
