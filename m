@@ -4,66 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B092C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jan 2022 15:00:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9EDDC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 25 Jan 2022 15:37:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+Evf8+Gj7IJGTO5GdxsPMMRPrGjA3cJe83TdVFoOBgc=; b=IQUq234CVPZoUZcYznTxVm7Dy2
-	8Spvvr5G80ZvqG5YiZCvaXI8JoxY7RlVunF+C8hLHSdH80/v/O57twuArO/WNim7MMNPSVgq/u1aw
-	H/JNhXSgMfItGTUeSHTvSTuCuNw3M1NIPkJY8MHOpMCM5fIl68oV945msoHwWLe6H47Pgc3EpjR+l
-	86bWYilf7rp6Vqy1cWOlyuiGowWna0pmkLNCQjeAICc1CKkJqNvtapn6Ia+lUkay40M7JUpIwTwKe
-	pNVmzwV/h+Yt/IbK6ECO5wvSi5PZvpVnZybjmqTLDD4QksX2dhL2p+KQFCVk0EqNmn97NbJzm/gv8
-	IJW2cJ6A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Pf82q6+M7muehrZkmUoTDISqc9flhsHnDu0no8q3hmI=; b=DPVVjVCXxBMmrB
+	iL2vYezZOpJ7ebPsbs5RbSGonRcVaM2BPH8T4ZAzZ6rnLJ9dxhtEbmJg48owpI/2PvEVqYyMlf208
+	WyK5qiT6TNcQJwijWK1l/RNlQkg5DlCh/MM13bqf7waVdQ1lkKeWVLsTWu+hR0bFHP0878P3+e6aJ
+	HKpVvw1wsjLVqHxsiC91JZ6MqHDdwI2MhHK+RGpE7d1o1UAwSapGjyugi29QhIma4QMECQWTKRHm4
+	qbc/76t25tHZ63vbbsDk9gyEE4EvYRK4V87n2ashQNSAzyvIevhWtjEJKADX7vYZ+ib5vg6Qt3+jc
+	lCg0b+WNPXr3wimF+wnw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCNIH-008EQ0-TG; Tue, 25 Jan 2022 14:59:37 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nCNsY-008Q2U-7B; Tue, 25 Jan 2022 15:37:07 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCNI5-008EOk-Jw; Tue, 25 Jan 2022 14:59:27 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 583C222246;
- Tue, 25 Jan 2022 15:59:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1643122748;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=sM8Q2KXy+Jfx3tOwipesCkOAKh8jg0scyT5GXZrZG50=;
- b=dr/FI8+r3AXWq6WCwokEUvanPYljOb5z/fA0yl0aK7v9LYN4nf+fcPyaUxATUtx7RR/GET
- 3tpiqqEVzBVYXRJfCzJNFdUfdhjFOyVwmP+JOSHOvEy8fyLYz4O0hwLuI3/9mJjuzxV2Q+
- 0HZug21gTPv5uo0nmXD8ng/4+Drmjmw=
+ id 1nCNlt-008OPL-R5
+ for linux-mtd@lists.infradead.org; Tue, 25 Jan 2022 15:30:15 +0000
+Received: by mail-pl1-x630.google.com with SMTP id d18so6944618plg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2022 07:30:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=GrAtAIlMK2rk7KAp7C2s7R2F2nNCdug8ASeh5+c9Xxw=;
+ b=hmA+4kWIT0VJkfsrIj3CAk+o2e5xm3EHa9OOGgMLC6V8kk3s6txEmtpOvHCwQCFu/z
+ f6Z1KLDIBThomje+wVZtC/avAyK1NYKshJzQbEKYVjuh+o+SiJevaxvP9ArK8rWsbreG
+ W0NdXjX/AzBkRxSlOjgUb2e5K+WqPzSqA/cXw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=GrAtAIlMK2rk7KAp7C2s7R2F2nNCdug8ASeh5+c9Xxw=;
+ b=jKjM3zhlqAQplQHrxqajBOWx02K6pTuHiRLHMse/6tp+c775pytfcOCOOmGVN+WW5A
+ HTz6vamo9hzQE4reLy2YtLKpfPM0KQ17SfOGwgfJUJooNrzoWzoExi47q0yMpM4ezxRJ
+ 0wMpPIT2hOKNzCrU3PvqlhLbDqCaxWhS+bbGNy9ZBA4jYZxj5G6g2BsZjSKkCNnCZyh2
+ Ik7TQMUFpWFJ7rrlbxunPT7bOiC7nSKx7nOF7NkBAQOeOyszzIBxYg9FRZIt3kKMhZDM
+ HyGHoW0609LUZh2aHf5qrXPfQwlDSL1RkUtqyTfBRaxHOpj++HaoW1Me0kxcHZPTiIr6
+ JCKA==
+X-Gm-Message-State: AOAM532E6jvdH+ZG/jyHZt4Q2mQ2GA/On59W9PXuExOVMtev8oO5uj+3
+ qzflFs9CGVuJYnwtRNZtV4Ga0w==
+X-Google-Smtp-Source: ABdhPJzd5aF6C+FAPgDlRwmXwFEc5etijNnVCwLbg8thUNE5rIwkeqTw25zE2c3dG5DyN9uNQ8t/ig==
+X-Received: by 2002:a17:902:7d81:b0:149:c926:7c2e with SMTP id
+ a1-20020a1709027d8100b00149c9267c2emr19600182plm.27.1643124612092; 
+ Tue, 25 Jan 2022 07:30:12 -0800 (PST)
+Received: from chentsungp920.tpe.corp.google.com
+ ([2401:fa00:1:10:b78b:8e2a:968c:d872])
+ by smtp.gmail.com with ESMTPSA id k5sm20989991pfc.85.2022.01.25.07.30.10
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 25 Jan 2022 07:30:11 -0800 (PST)
+From: Chen-Tsung Hsieh <chentsung@chromium.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Chen-Tsung Hsieh <chentsung@chromium.org>,
+ Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Pratyush Yadav <p.yadav@ti.com>,
+ Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: core: Check written SR value in
+ spi_nor_write_16bit_sr_and_check()
+Date: Tue, 25 Jan 2022 23:30:00 +0800
+Message-Id: <20220125153000.3263064-1-chentsung@chromium.org>
+X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
 MIME-Version: 1.0
-Date: Tue, 25 Jan 2022 15:59:07 +0100
-From: Michael Walle <michael@walle.cc>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- netdev@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob
- Herring <robh+dt@kernel.org>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang
- <leoyang.li@nxp.com>, Frank Rowand <frowand.list@gmail.com>, "David S .
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Ansuel
- Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH 6/8] nvmem: transformations: ethernet address offset
- support
-In-Reply-To: <455f4360-34fe-7fee-66d5-fd945fe1e086@gmail.com>
-References: <20211228142549.1275412-1-michael@walle.cc>
- <20211228142549.1275412-7-michael@walle.cc>
- <455f4360-34fe-7fee-66d5-fd945fe1e086@gmail.com>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <19d7206a42c7616d45733e44c9e52878@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220125_065926_017662_19280971 
-X-CRM114-Status: GOOD (  36.70  )
+X-CRM114-CacheID: sfid-20220125_073013_952236_CA2F9969 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,99 +84,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpBbSAyMDIyLTAxLTI1IDEzOjA4LCBzY2hyaWViIFJhZmHFgiBNacWCZWNraToKPiBPbiAy
-OC4xMi4yMDIxIDE1OjI1LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+PiBBbiBudm1lbSBjZWxsIG1p
-Z2h0IGp1c3QgY29udGFpbiBhIGJhc2UgTUFDIGFkZHJlc3MuIFRvIGdlbmVyYXRlIGEKPj4gYWRk
-cmVzcyBvZiBhIHNwZWNpZmljIGludGVyZmFjZSwgYWRkIGEgdHJhbnNmb3JtYXRpb24gdG8gYWRk
-IGFuIG9mZnNldAo+PiB0byB0aGlzIGJhc2UgYWRkcmVzcy4KPj4gCj4+IEFkZCBhIGdlbmVyaWMg
-aW1wbGVtZW50YXRpb24gYW5kIHRoZSBmaXJzdCB1c2VyIG9mIGl0LCBuYW1lbHkgdGhlIHNsMjgK
-Pj4gdnBkIHN0b3JhZ2UuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIFdhbGxlIDxtaWNo
-YWVsQHdhbGxlLmNjPgo+PiAtLS0KPj4gICBkcml2ZXJzL252bWVtL3RyYW5zZm9ybWF0aW9ucy5j
-IHwgNDUgCj4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+PiAgIDEgZmlsZSBj
-aGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9udm1l
-bS90cmFuc2Zvcm1hdGlvbnMuYyAKPj4gYi9kcml2ZXJzL252bWVtL3RyYW5zZm9ybWF0aW9ucy5j
-Cj4+IGluZGV4IDYxNjQyYTlmZWVmYi4uMTVjZDI2ZGExZjgzIDEwMDY0NAo+PiAtLS0gYS9kcml2
-ZXJzL252bWVtL3RyYW5zZm9ybWF0aW9ucy5jCj4+ICsrKyBiL2RyaXZlcnMvbnZtZW0vdHJhbnNm
-b3JtYXRpb25zLmMKPj4gQEAgLTEyLDcgKzEyLDUyIEBAIHN0cnVjdCBudm1lbV90cmFuc2Zvcm1h
-dGlvbnMgewo+PiAgIAludm1lbV9jZWxsX3Bvc3RfcHJvY2Vzc190IHBwOwo+PiAgIH07Cj4+ICAg
-Ky8qKgo+PiArICogbnZtZW1fdHJhbnNmb3JtX21hY19hZGRyZXNzX29mZnNldCgpIC0gQWRkIGFu
-IG9mZnNldCB0byBhIG1hYyAKPj4gYWRkcmVzcyBjZWxsCj4+ICsgKgo+PiArICogQSBzaW1wbGUg
-dHJhbnNmb3JtYXRpb24gd2hpY2ggdHJlYXRzIHRoZSBpbmRleCBhcmd1bWVudCBhcyBhbiAKPj4g
-b2Zmc2V0IGFuZCBhZGQKPj4gKyAqIGl0IHRvIGEgbWFjIGFkZHJlc3MuIFRoaXMgaXMgdXNlZnVs
-LCBpZiB0aGUgbnZtZW0gY2VsbCBzdG9yZXMgYSAKPj4gYmFzZQo+PiArICogZXRoZXJuZXQgYWRk
-cmVzcy4KPj4gKyAqCj4+ICsgKiBAaW5kZXg6IG52bWVtIGNlbGwgaW5kZXgKPj4gKyAqIEBkYXRh
-OiBudm1lbSBkYXRhCj4+ICsgKiBAYnl0ZXM6IGxlbmd0aCBvZiB0aGUgZGF0YQo+PiArICoKPj4g
-KyAqIFJldHVybjogMCBvciBuZWdhdGl2ZSBlcnJvciBjb2RlIG9uIGZhaWx1cmUuCj4+ICsgKi8K
-Pj4gK3N0YXRpYyBpbnQgbnZtZW1fdHJhbnNmb3JtX21hY19hZGRyZXNzX29mZnNldChpbnQgaW5k
-ZXgsIHVuc2lnbmVkIGludCAKPj4gb2Zmc2V0LAo+PiArCQkJCQkgICAgICB2b2lkICpkYXRhLCBz
-aXplX3QgYnl0ZXMpCj4+ICt7Cj4+ICsJaWYgKGJ5dGVzICE9IEVUSF9BTEVOKQo+PiArCQlyZXR1
-cm4gLUVJTlZBTDsKPj4gKwo+PiArCWlmIChpbmRleCA8IDApCj4+ICsJCXJldHVybiAtRUlOVkFM
-Owo+PiArCj4+ICsJaWYgKCFpc192YWxpZF9ldGhlcl9hZGRyKGRhdGEpKQo+PiArCQlyZXR1cm4g
-LUVJTlZBTDsKPj4gKwo+PiArCWV0aF9hZGRyX2FkZChkYXRhLCBpbmRleCk7Cj4+ICsKPj4gKwly
-ZXR1cm4gMDsKPj4gK30KPj4gKwo+PiArc3RhdGljIGludCBudm1lbV9rb250cm9uX3NsMjhfdnBk
-X3BwKHZvaWQgKnByaXYsIGNvbnN0IGNoYXIgKmlkLCBpbnQgCj4+IGluZGV4LAo+PiArCQkJCSAg
-ICAgdW5zaWduZWQgaW50IG9mZnNldCwgdm9pZCAqZGF0YSwKPj4gKwkJCQkgICAgIHNpemVfdCBi
-eXRlcykKPj4gK3sKPj4gKwlpZiAoIWlkKQo+PiArCQlyZXR1cm4gMDsKPj4gKwo+PiArCWlmICgh
-c3RyY21wKGlkLCAibWFjLWFkZHJlc3MiKSkKPj4gKwkJcmV0dXJuIG52bWVtX3RyYW5zZm9ybV9t
-YWNfYWRkcmVzc19vZmZzZXQoaW5kZXgsIG9mZnNldCwgZGF0YSwKPj4gKwkJCQkJCQkgIGJ5dGVz
-KTsKPj4gKwo+PiArCXJldHVybiAwOwo+PiArfQo+PiArCj4+ICAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBudm1lbV90cmFuc2Zvcm1hdGlvbnMgbnZtZW1fdHJhbnNmb3JtYXRpb25zW10gPSAKPj4gewo+
-PiArCXsgLmNvbXBhdGlibGUgPSAia29udHJvbixzbDI4LXZwZCIsIC5wcCA9IG52bWVtX2tvbnRy
-b25fc2wyOF92cGRfcHAgCj4+IH0sCj4+ICAgCXt9Cj4+ICAgfTsKPiAKPiBJIHRoaW5rIGl0J3Mg
-YSByYXRoZXIgYmFkIHNvbHV0aW9uIHRoYXQgd29uJ3Qgc2NhbGUgd2VsbCBhdCBhbGwuCj4gCj4g
-WW91J2xsIGVuZCB1cCB3aXRoIGEgbG90IG9mIE5WTUVNIGRldmljZSBzcGVjaWZpYyBzdHJpbmdz
-IGFuZCBjb2RlIGluIGEKPiBOVk1FTSBjb3JlLgoKVGhleSBtdXN0IG5vdCBiZSBpbiB0aGUgY29y
-ZSwgYnV0IHRoZXkgaGF2ZSB0byBiZSBzb21ld2hlcmUuIFRoYXQgaXMKYmVjYXVzZSBSb2IgaXNu
-J3QgZm9uZCBvZiBkZXNjcmliaW5nIHRoZSBhY3R1YWwgdHJhbnNmb3JtYXRpb24gaW4KdGhlIGRl
-dmljZSB0cmVlIGJ1dCB0byBoYXZlIGl0IGEgc3BlY2lmaWMgY29tcGF0aWJsZSBbMV0uIFRodXMg
-eW91IGhhdmUKdG8gaGF2ZSB0aGVzZSBzdHJpbmdzIHNvbWV3aGVyZSBpbiB0aGUgZHJpdmVyIGNv
-ZGUuCgo+IFlvdSdsbCBoYXZlIGEgbG90IG9mIGR1cGxpY2F0ZWQgY29kZSAobWFueSBkZXZpY2Ug
-c3BlY2lmaWMgZnVuY3Rpb25zCj4gY2FsbGluZyBlLmcuIG52bWVtX3RyYW5zZm9ybV9tYWNfYWRk
-cmVzc19vZmZzZXQoKSkuCgpJZiB0aGVyZSB3aWxsIGJlIG11bHRpcGxlIGZvcm1hdHMgdXNpbmcg
-dGhlIHNhbWUgdHJhbnNmb3JtYXRpb24gZm9yCmRpZmZlcmVudCBjb21wYXRpYmxlIHN0cmluZ3Ms
-IHlvdSBjb3VsZCBqdXN0IHVzZSB0aGUgc2FtZSBmdW5jdGlvbgpmb3IgYWxsIGNvbXBhdGlibGVz
-LgoKQnV0IHdlIGhhdmUgdG8gZmlyc3QgYWdyZWUgb24gdGhlIGRldmljZSB0cmVlIHJlcHJlc2Vu
-dGF0aW9uIGJlY2F1c2UKdGhhdCBpcyB0aGVuIGZpeGVkLiBUaGUgZHJpdmVyIGNvZGUgY2FuIGNo
-YW5nZSBvdmVyIHRpbWUuCgo+IEkgdGhpbmsgaXQgYWxzbyBpZ25vcmVzIGZhY3QgdGhhdCBvbmUg
-TlZNRU0gZGV2aWNlIGNhbiBiZSByZXVzZWQgaW4KPiBtdWx0aXBsZSBwbGF0Zm9ybXMgLyBkZXZp
-Y2UgbW9kZWxzIHVzaW5nIGRpZmZlcmVudCAoZS5nLiB2ZW5kb3IgLyAKPiBkZXZpY2UKPiBzcGVj
-aWZpYykgY2VsbHMuCj4gCj4gCj4gV2hhdCBpZiB3ZSBoYXZlOgo+IDEuIEZvbyBjb21wYW55IHVz
-aW5nICJrb250cm9uLHNsMjgtdnBkIiB3aXRoIE5WTUVNIGNlbGxzOgo+ICAgIGEuICJtYWMtYWRk
-cmVzcyIKPiAgICBiLiAibWFjLWFkZHJlc3MtMiIKPiAgICBjLiAibWFjLWFkZHJlc3MtMyIKPiAy
-LiBCYXIgY29tcGFueSB1c2luZyAia29udHJvbixzbDI4LXZwZCIgd2l0aCBOVk1FTSBjZWxsOgo+
-ICAgIGEuICJtYWMtYWRkcmVzcyIKPiAKPiBJbiB0aGUgZmlyc3QgY2FzZSB5b3UgZG9uJ3Qgd2Fu
-dCBhbnkgdHJhbnNmb3JtYXRpb24uCgpJIGNhbid0IGZvbGxvdyB5b3UgaGVyZS4gVGhlICJrb250
-cm9uLHNsMjgtdnBkIiBzcGVjaWZpZXMgb25lCnBhcnRpY3VsYXIgZm9ybWF0LCBuYW1lbHksIHRo
-YXQgdGhlcmUgaXMgYSBiYXNlIGFkZHJlc3MKcmF0aGVyIHRoYW4gaW5kaXZpZHVhbCBvbmVzLgoK
-PiBJZiB5b3UgY29uc2lkZXIgdXNpbmcgdHJhbnNmb3JtYXRpb25zIGZvciBBU0NJSSBmb3JtYXRz
-IHRvbyB0aGVuIGl0Cj4gY2F1c2VzIGFub3RoZXIgY29uZmxpY3QgaXNzdWUuIENvbnNpZGVyIHR3
-byBkZXZpY2VzOgo+IAo+IDEuIEZvbyBjb21wYW55IGRldmljZSB3aXRoIEJJTiBmb3JtYXQgb2Yg
-TUFDCj4gMi4gQmFyIGNvbXBhbnkgZGV2aWNlIHdpdGggQVNDSUkgZm9ybWF0IG9mIE1BQwo+IAo+
-IEJvdGggbWF5IHVzZSBleGFjdGx5IHRoZSBzYW1lIGJpbmRpbmc6Cj4gCj4gcGFydGl0aW9uQDAg
-ewo+ICAgICAgICAgY29tcGF0aWJsZSA9ICJudm1lbS1jZWxscyI7Cj4gICAgICAgICByZWcgPSA8
-MHgwIDB4MTAwMDAwPjsKPiAgICAgICAgIGxhYmVsID0gImJvb3Rsb2FkZXIiOwo+IAo+ICAgICAg
-ICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gICAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsKPiAK
-PiAgICAgICAgIG1hYy1hZGRyZXNzQDEwMCB7Cj4gICAgICAgICAgICAgICAgIHJlZyA9IDwweDEw
-MCAweDY+Owo+ICAgICAgICAgfTsKPiB9Owo+IAo+IGhvdyBhcmUgeW91IGdvaW5nIHRvIGhhbmRs
-ZSB0aGVtIHdpdGggcHJvcG9zZWQgaW1wbGVtZW50YXRpb24/IFlvdSAKPiBjYW4ndAo+IHN1cHBv
-cnQgYm90aCBpZiB5b3Ugc2hhcmUgIm52bWVtLWNlbGxzIiBjb21wYXRpYmxlIHN0cmluZy4KCk5v
-LCB5b3UnZCBuZWVkIHR3byBkaWZmZXJlbnQgY29tcGF0aWJsZSBzdHJpbmdzLiBBZ2FpbiwgdGhh
-dCBhbGwgYm9pbHMKZG93biB0byB3aGF0IHRoZSBkZXZpY2UgdHJlZSBzaG91bGQgZGVzY3JpYmUg
-YW5kIHdoYXQgbm90LgoKQnV0IGlmIHlvdSBoYXZlIHRoZSB1LWJvb3QgZW52aXJvbm1lbnQgYXMg
-YW4gbnZtZW0gcHJvdmlkZXIsIHlvdSBhbHJlYWR5Cmtub3cgdGhhdCB0aGUgbWFjIGFkZHJlc3Mg
-aXMgaW4gYXNjaWkgcmVwcmVzZW50YXRpb24gYW5kIHlvdSdkIG5lZWQKdG8gdHJhbnNmb3JtIGl0
-IHRvIHRoZSBrZXJuZWwgcmVwcmVzZW50YXRpb24uCgo+IEkgdGhpbmsgdGhhdCB3aGF0IGNhbiBz
-b2x2ZSB0aG9zZSBwcm9ibGVtcyBpcyBhc3NpbmcgImNvbXBhdGlibGUiIHRvCj4gTlZNRU0gY2Vs
-bHMuCj4gCj4gTGV0IG1lIHRoaW5rIGFib3V0IGRldGFpbHMgb2YgdGhhdCBwb3NzaWJsZSBzb2x1
-dGlvbi4KClNlZSBbMl0uCgotbWljaGFlbAoKWzFdIApodHRwczovL2xvcmUua2VybmVsLm9yZy9s
-aW51eC1kZXZpY2V0cmVlL1lhWjVKTkNGZUtjZElmdThAcm9iaC5hdC5rZXJuZWwub3JnLwpbMl0g
-Cmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWRldmljZXRyZWUvQ0FMX0pzcUw1NW1aSjZq
-VXlRQUNlcjJwS01ORFYwOC1GZ3dCUkVzSlZnaXRudUYxOENnQG1haWwuZ21haWwuY29tLwoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
-IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Read back Status Register 1 to ensure that the written byte match the
+received value and return -EIO if read back test failed.
+
+Without this patch, spi_nor_write_16bit_sr_and_check() only check the
+second half of the 16bit. It causes errors like spi_nor_sr_unlock()
+return success incorrectly when spi_nor_write_16bit_sr_and_check()
+doesn't write SR successfully.
+
+Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on lock()/unlock()")
+Signed-off-by: Chen-Tsung Hsieh <chentsung@chromium.org>
+---
+
+ drivers/mtd/spi-nor/core.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 04ea180118e3..426bfa9a65f4 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1007,6 +1007,15 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = spi_nor_read_sr(nor, sr_cr);
++	if (ret)
++		return ret;
++
++	if (sr1 != sr_cr[0]) {
++		dev_dbg(nor->dev, "SR: Read back test failed\n");
++		return -EIO;
++	}
++
+ 	if (nor->flags & SNOR_F_NO_READ_CR)
+ 		return 0;
+ 
+-- 
+2.35.0.rc0.227.g00780c9af4-goog
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
