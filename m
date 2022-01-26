@@ -4,75 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F01E6C5DF62
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 03:30:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB183C28CF5
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 07:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	MIME-Version:List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe
-	:List-Id:Message-Id:Date:Subject:References:In-Reply-To:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UnHl3lWQ38Alt5/xYFkB3RSQcoKbPQ/qaKcFfBdRz+w=; b=08vkWPRzc9tx01yMrQOJRK5xaO
-	uIPbai68CxY7fa3ny4ofMWIP0CphHOrhz7Y5/X+PSVIZzIBQj9hx6TFArzF422NLQd0b9MoWH7fJ9
-	5Qcy7pR0veCzpsXrzfZ4hlXRDcZayHW5n2oTv8NiHU92uMazCP3fFrl3IXORrRdjTVOW4JOhENjZn
-	/8stFWruZcj7//CmmXkSU/bsj9j2SNpVrkjHAmaKBe6frgulHjSLlJfsfoOCNlAf2y7rXoIRkKpVm
-	lwTZ1/qP3k/QLPYlIsD9IYy51p4QOHIfzLixkhQhx3dZ07UfHAqblngnMpYP1DhMLYQSSOMLzoQ1t
-	5hIP86rg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=41h83FdZwaDs3RRFfLxHpb2HnjYG+xoI/fNw/KXb+xc=; b=GlHdJUCk7OvdYE
+	BHtL7yPluZxAf4WBnX0KD51gRZoaoY1idTajsTdJj4Gn47Y3JkMVl2wJD9kbKkMaCntHiD+tGBp69
+	N4S7EJs4paep/Sa45bos5DdnlpsnPsit/3mXDMVhl9xxGr/Pe4hGhRJ3fezKo3H3AK88zz+LRMzHv
+	P2WrdeCZUQUJDQpGB3mkmsUUw14X3Z3qH9jKtwiHCJCVSCEN19KS5WtDe6NrvOzh5r7HwJN6+/Lb5
+	w/flBuX/czdatGLxfgUY0OCylnPMUDxKsx8/0Z+R6fu0fyMuoAr0+q0RXM+YbWMqxDuiV36AdfC0g
+	HD++q8v/yNiHGGklhIpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCZ0G-00A2b3-IJ; Wed, 26 Jan 2022 03:29:48 +0000
-Received: from mail-oi1-f169.google.com ([209.85.167.169])
+	id 1nCcPT-00APx6-2H; Wed, 26 Jan 2022 07:08:03 +0000
+Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCYzv-00A2V2-0c; Wed, 26 Jan 2022 03:29:28 +0000
-Received: by mail-oi1-f169.google.com with SMTP id w133so8270003oie.7;
- Tue, 25 Jan 2022 19:29:25 -0800 (PST)
+ id 1nCcPM-00APta-Vy; Wed, 26 Jan 2022 07:07:59 +0000
+Received: by mail-lf1-x12c.google.com with SMTP id u6so29525681lfm.10;
+ Tue, 25 Jan 2022 23:07:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=xQZEWLVjW3YrjRzePnAkpJ5fQMVb6UDAvzsIkL2SRjE=;
+ b=mfSQf867UF/OUBwanRxTRw5HO5INlp0P7eNgiEXHdYpfwaQd9QovmJTUnGByA+CLoY
+ ULmZSvg+0nWSRAuc0YlGjhyKq+i7ydEgOKqGlMo53hHvKMQ81VKuV2Dv7xIGjwHabE70
+ 0ctSI7hCFLbYDOkrdgPJbIycwV7erUloSJJGV/vq7qxR1f2cPx1ONbxeoUyyD1Lz9Ciy
+ +mRyYRGQbHOHd+sRGqeiCmZtxWJRodgiSzoe5XMNVnf5pzUim25Nnnnxcsa7wlP7veIP
+ vgSNycaudUJVCRuk/kJFCH1Eeyov3qvyt6DILBlDErhMzoSaT4nsrMENw3ivfDSpaPwK
+ tvoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=DWroU9v+B0oJUaHbfVpIph6/oG0k3TQn8iAd7iCA4ZI=;
- b=fwcyZIJsoYGtyh+BkaTxaPD3iYooIEgA7o2QiBibvn1vSTdzRzRBkd066YH6cCfP+k
- 0uCsnzFq7q0+x2mciG4HCf26p9NkEQscanKak+aEEDaBBUVf9xcUCgtjV7a/ZOR8Exfu
- I09gYnjxGt7T8FxNbIac3bScyPIYdXHhvHhHUhU3GAgumuFVwfpv602JYMPgnGLIqSsn
- bTaq/1P237asrBNkDGm4PH9LP7QZCQvzU2iYD6tfYppMutpcEhVE2rMJoByPbVH+ZS3D
- 1eBKOmbFikzo1qqCaqIsy5SIxFOVt5SJAMDWY1bjeZayn5+tSFQQohHWscigOWTdFrhu
- iN6w==
-X-Gm-Message-State: AOAM532T26fBFS7BPwme2eSwfY5bvxJHMW56+uvWP9xnJVsSKCdVWFvk
- MbCrhlOZAaIcgMKbfqnWvg==
-X-Google-Smtp-Source: ABdhPJz0v3qCcz93L/KdRR5wO7FXg9UY5oeER2ADrIk1PCOqzkwXMlAYT9z1NgvpSBjcJoKGffRl5w==
-X-Received: by 2002:a05:6808:150b:: with SMTP id
- u11mr536058oiw.211.1643167765208; 
- Tue, 25 Jan 2022 19:29:25 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
- [66.90.148.213])
- by smtp.gmail.com with ESMTPSA id w7sm6859202oou.13.2022.01.25.19.29.23
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=xQZEWLVjW3YrjRzePnAkpJ5fQMVb6UDAvzsIkL2SRjE=;
+ b=D1F5fh8q0TUgxa8vwXFG5U/LSjsQLJnzk0bFWrWHXV91tfAqiKg3fJVAMV7ipiJpPe
+ TsEcBqCO13WXGLpZkUC9+uKrsPDA5Lr4GkMjOVdrkzT5lFwTH/QlIBI6M8DBe+o1FsLU
+ b8V5KLqWpR466m12N+l8dlJp76EnqZeZY0w5eaw8AtNJrlqxXaRm7QLaSKr6kVdpx5YP
+ XXu6BEJXws6qTXb0z1a8/vTbPhJXf4SvvA0ByBAX6Rld/Pmrm3VRJQu9gamR0JvvyLTO
+ PlcypEPbZ100zHIz1MJJfSM1weiy2on4WM7aDxSQ4TBMTGMC9XuNWviXkAZcXr0I+NcA
+ RVbA==
+X-Gm-Message-State: AOAM530iERXoSHEymNojveMcG9WcTYKEQwaBs9zkcr1LQSw3D7zRtKBo
+ SBD2kEaEL2cUVHNFR6bumRE=
+X-Google-Smtp-Source: ABdhPJzYh58bTg1fZy7W1sPSSAvbXbjS9pFrKpgk3eoYCidLV9/Wf27XOE9qQ/2WZEzSq/MjTCvxyw==
+X-Received: by 2002:a19:5047:: with SMTP id z7mr6178840lfj.666.1643180875552; 
+ Tue, 25 Jan 2022 23:07:55 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl.
+ [194.187.74.233])
+ by smtp.gmail.com with ESMTPSA id b39sm1465764ljr.88.2022.01.25.23.07.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Jan 2022 19:29:24 -0800 (PST)
-Received: (nullmailer pid 3724358 invoked by uid 1000);
- Wed, 26 Jan 2022 03:29:18 -0000
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, Andrew Lunn <andrew@lunn.ch>,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
- Shawn Guo <shawnguo@kernel.org>, linux-mtd@lists.infradead.org,
- "David S . Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org,
- Michael Walle <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Frank Rowand <frowand.list@gmail.com>,
- =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Ansuel Smith <ansuelsmth@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
- Li Yang <leoyang.li@nxp.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220125180114.12286-3-zajec5@gmail.com>
+ Tue, 25 Jan 2022 23:07:55 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Michael Walle <michael@walle.cc>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ netdev@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH REBASED 2/2] dt-bindings: nvmem: cells: add MAC address cell
+Date: Wed, 26 Jan 2022 08:07:45 +0100
+Message-Id: <20220126070745.32305-2-zajec5@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220126070745.32305-1-zajec5@gmail.com>
 References: <20220125180114.12286-1-zajec5@gmail.com>
- <20220125180114.12286-3-zajec5@gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: nvmem: cells: add MAC address cell
-Date: Tue, 25 Jan 2022 21:29:18 -0600
-Message-Id: <1643167758.854851.3724357.nullmailer@robh.at.kernel.org>
+ <20220126070745.32305-1-zajec5@gmail.com>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220125_192927_107999_084AB2CC 
-X-CRM114-Status: GOOD (  15.36  )
+X-CRM114-CacheID: sfid-20220125_230757_428488_609E7E02 
+X-CRM114-Status: GOOD (  14.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,110 +93,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2452101856920066411=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
---===============2452101856920066411==
-Content-Type: text/plain
-
-On Tue, 25 Jan 2022 19:01:14 +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> This adds support for describing details of NVMEM cell containing MAC
-> address. Those are often device specific and could be nicely stored in
-> DT.
-> 
-> Initial documentation includes support for describing:
-> 1. Cell data format (e.g. Broadcom's NVRAM uses ASCII to store MAC)
-> 2. Reversed bytes flash (required for i.MX6/i.MX7 OCOTP support)
-> 3. Source for multiple addresses (very common in home routers)
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->  .../bindings/nvmem/cells/mac-address.yaml     | 94 +++++++++++++++++++
->  1 file changed, 94 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/cells/mac-address.yaml
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-schemas/nvmem/cells/cell.yaml: ignoring, error parsing file
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/nvmem/cells/mac-address.example.dt.yaml'
-schemas/nvmem/cells/cell.yaml: ignoring, error parsing file
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-validate", line 170, in <module>
-    sg.check_trees(filename, testtree)
-  File "/usr/local/bin/dt-validate", line 119, in check_trees
-    self.check_subtree(dt, subtree, False, "/", "/", filename)
-  File "/usr/local/bin/dt-validate", line 110, in check_subtree
-    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
-  File "/usr/local/bin/dt-validate", line 110, in check_subtree
-    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
-  File "/usr/local/bin/dt-validate", line 110, in check_subtree
-    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
-  [Previous line repeated 1 more time]
-  File "/usr/local/bin/dt-validate", line 105, in check_subtree
-    self.check_node(tree, subtree, disabled, nodename, fullname, filename)
-  File "/usr/local/bin/dt-validate", line 49, in check_node
-    errors = sorted(dtschema.DTValidator(schema).iter_errors(node), key=lambda e: e.linecol)
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 771, in iter_errors
-    for error in super().iter_errors(instance, _schema):
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/validators.py", line 229, in iter_errors
-    for error in errors:
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/_validators.py", line 362, in allOf
-    yield from validator.descend(instance, subschema, schema_path=index)
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/validators.py", line 245, in descend
-    for error in self.evolve(schema=schema).iter_errors(instance):
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 771, in iter_errors
-    for error in super().iter_errors(instance, _schema):
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/validators.py", line 229, in iter_errors
-    for error in errors:
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/_validators.py", line 298, in ref
-    yield from validator.descend(instance, resolved)
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/validators.py", line 245, in descend
-    for error in self.evolve(schema=schema).iter_errors(instance):
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 771, in iter_errors
-    for error in super().iter_errors(instance, _schema):
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/validators.py", line 219, in iter_errors
-    scope = id_of(_schema)
-  File "/usr/local/lib/python3.8/dist-packages/jsonschema/validators.py", line 96, in _id_of
-    return schema.get("$id", "")
-AttributeError: 'NoneType' object has no attribute 'get'
-make[1]: *** [scripts/Makefile.lib:378: Documentation/devicetree/bindings/nvmem/cells/mac-address.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1398: dt_binding_check] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1584227
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
-
-
---===============2452101856920066411==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============2452101856920066411==--
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVGhpcyBhZGRzIHN1cHBv
+cnQgZm9yIGRlc2NyaWJpbmcgZGV0YWlscyBvZiBOVk1FTSBjZWxsIGNvbnRhaW5pbmcgTUFDCmFk
+ZHJlc3MuIFRob3NlIGFyZSBvZnRlbiBkZXZpY2Ugc3BlY2lmaWMgYW5kIGNvdWxkIGJlIG5pY2Vs
+eSBzdG9yZWQgaW4KRFQuCgpJbml0aWFsIGRvY3VtZW50YXRpb24gaW5jbHVkZXMgc3VwcG9ydCBm
+b3IgZGVzY3JpYmluZzoKMS4gQ2VsbCBkYXRhIGZvcm1hdCAoZS5nLiBCcm9hZGNvbSdzIE5WUkFN
+IHVzZXMgQVNDSUkgdG8gc3RvcmUgTUFDKQoyLiBSZXZlcnNlZCBieXRlcyBmbGFzaCAocmVxdWly
+ZWQgZm9yIGkuTVg2L2kuTVg3IE9DT1RQIHN1cHBvcnQpCjMuIFNvdXJjZSBmb3IgbXVsdGlwbGUg
+YWRkcmVzc2VzICh2ZXJ5IGNvbW1vbiBpbiBob21lIHJvdXRlcnMpCgpTaWduZWQtb2ZmLWJ5OiBS
+YWZhxYIgTWnFgmVja2kgPHJhZmFsQG1pbGVja2kucGw+Ci0tLQogLi4uL2JpbmRpbmdzL252bWVt
+L2NlbGxzL21hYy1hZGRyZXNzLnlhbWwgICAgIHwgOTQgKysrKysrKysrKysrKysrKysrKwogMSBm
+aWxlIGNoYW5nZWQsIDk0IGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0vY2VsbHMvbWFjLWFkZHJlc3MueWFtbAoK
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9jZWxs
+cy9tYWMtYWRkcmVzcy55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252
+bWVtL2NlbGxzL21hYy1hZGRyZXNzLnlhbWwKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAw
+MDAwMDAwMDAwLi5mOGQxOWU4N2NkZjAKLS0tIC9kZXYvbnVsbAorKysgYi9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0vY2VsbHMvbWFjLWFkZHJlc3MueWFtbApAQCAtMCww
+ICsxLDk0IEBACisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNE
+LTItQ2xhdXNlCislWUFNTCAxLjIKKy0tLQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2No
+ZW1hcy9udm1lbS9jZWxscy9tYWMtYWRkcmVzcy55YW1sIworJHNjaGVtYTogaHR0cDovL2Rldmlj
+ZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjCisKK3RpdGxlOiBOVk1FTSBjZWxsIGNv
+bnRhaW5pbmcgYSBNQUMgYWRkcmVzcworCittYWludGFpbmVyczoKKyAgLSBSYWZhxYIgTWnFgmVj
+a2kgPHJhZmFsQG1pbGVja2kucGw+CisKK3Byb3BlcnRpZXM6CisgIGNvbXBhdGlibGU6CisgICAg
+Y29uc3Q6IG1hYy1hZGRyZXNzCisKKyAgZm9ybWF0OgorICAgIGRlc2NyaXB0aW9uOiB8CisgICAg
+ICBTb21lIE5WTUVNIGNlbGxzIGNvbnRhaW4gTUFDIGluIGEgbm9uLWJpbmFyeSBmb3JtYXQuCisK
+KyAgICAgIEFTQ0lJIHNob3VsZCBiZSBzcGVjaWZpZWQgaWYgTUFDIGlzIHN0cmluZyBmb3JtYXR0
+ZWQgbGlrZToKKyAgICAgIC0gIjAxOjIzOjQ1OjY3Ojg5OkFCIiAoMzAgMzEgM2EgMzIgMzMgM2Eg
+MzQgMzUgM2EgMzYgMzcgM2EgMzggMzkgM2EgNDEgNDIpCisgICAgICAtICIwMS0yMy00NS02Ny04
+OS1BQiIKKyAgICAgIC0gIjAxMjM0NTY3ODlBQiIKKyAgICBlbnVtOgorICAgICAgLSBhc2NpaQor
+CisgIHJldmVyc2VkLWJ5dGVzOgorICAgIHR5cGU6IGJvb2xlYW4KKyAgICBkZXNjcmlwdGlvbjog
+fAorICAgICAgTUFDIGlzIHN0b3JlZCBpbiByZXZlcnNlZCBieXRlcyBvcmRlci4gRXhhbXBsZToK
+KyAgICAgIFN0b3JlZCB2YWx1ZTogQUIgODkgNjcgNDUgMjMgMDEKKyAgICAgIEFjdHVhbCBNQUM6
+IDAxIDIzIDQ1IDY3IDg5IEFCCisKKyAgYmFzZS1hZGRyZXNzOgorICAgIHR5cGU6IGJvb2xlYW4K
+KyAgICBkZXNjcmlwdGlvbjogfAorICAgICAgTWFya3MgTlZNRU0gY2VsbCBhcyBwcm92aWRlciBv
+ZiBtdWx0aXBsZSBhZGRyZXNzZXMgdGhhdCBhcmUgcmVsYXRpdmUgdG8KKyAgICAgIHRoZSBvbmUg
+YWN0dWFsbHkgc3RvcmVkIHBoeXNpY2FsbHkuIFJlc3BlY3RpdmUgYWRkcmVzc2VzIGNhbiBiZSBy
+ZXF1ZXN0ZWQKKyAgICAgIGJ5IHNwZWNpZnlpbmcgY2VsbCBpbmRleCBvZiBOVk1FTSBjZWxsLgor
+CithbGxPZjoKKyAgLSAkcmVmOiBjZWxsLnlhbWwjCisgIC0gaWY6CisgICAgICByZXF1aXJlZDoK
+KyAgICAgICAgLSBiYXNlLWFkZHJlc3MKKyAgICB0aGVuOgorICAgICAgcHJvcGVydGllczoKKyAg
+ICAgICAgIiNudm1lbS1jZWxsLWNlbGxzIjoKKyAgICAgICAgICBjb25zdDogMQorICAgICAgcmVx
+dWlyZWQ6CisgICAgICAgIC0gIiNudm1lbS1jZWxsLWNlbGxzIgorCit1bmV2YWx1YXRlZFByb3Bl
+cnRpZXM6IGZhbHNlCisKK2V4YW1wbGVzOgorICAtIHwKKyAgICBwYXJ0aXRpb25zIHsKKyAgICAg
+ICAgY29tcGF0aWJsZSA9ICJmaXhlZC1wYXJ0aXRpb25zIjsKKyAgICAgICAgI2FkZHJlc3MtY2Vs
+bHMgPSA8MT47CisgICAgICAgICNzaXplLWNlbGxzID0gPDE+OworCisgICAgICAgIHBhcnRpdGlv
+bkBmMDAwMDAgeworICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJudm1lbS1jZWxscyI7CisgICAg
+ICAgICAgICBsYWJlbCA9ICJjYWxpYnJhdGlvbiI7CisgICAgICAgICAgICByZWcgPSA8MHhmMDAw
+MDAgMHgxMDAwMDA+OworICAgICAgICAgICAgcmFuZ2VzID0gPDAgMHhmMDAwMDAgMHgxMDAwMDA+
+OworICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47CisgICAgICAgICAgICAjc2l6ZS1j
+ZWxscyA9IDwxPjsKKworICAgICAgICAgICAgbWFjQDEwMCB7CisgICAgICAgICAgICAgICAgY29t
+cGF0aWJsZSA9ICJtYWMtYWRkcmVzcyI7CisgICAgICAgICAgICAgICAgcmVnID0gPDB4MTAwIDB4
+Nj47CisgICAgICAgICAgICB9OworCisgICAgICAgICAgICBtYWNAMjAwIHsKKyAgICAgICAgICAg
+ICAgICBjb21wYXRpYmxlID0gIm1hYy1hZGRyZXNzIjsKKyAgICAgICAgICAgICAgICByZWcgPSA8
+MHgyMDAgMHg2PjsKKyAgICAgICAgICAgICAgICByZXZlcnNlZC1ieXRlczsKKyAgICAgICAgICAg
+IH07CisKKyAgICAgICAgICAgIG1hY0AzMDAgeworICAgICAgICAgICAgICAgIGNvbXBhdGlibGUg
+PSAibWFjLWFkZHJlc3MiOworICAgICAgICAgICAgICAgIHJlZyA9IDwweDMwMCAweDExPjsKKyAg
+ICAgICAgICAgICAgICBmb3JtYXQgPSAiYXNjaWkiOworICAgICAgICAgICAgfTsKKworICAgICAg
+ICAgICAgbWFjQDQwMCB7CisgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtYWMtYWRkcmVz
+cyI7CisgICAgICAgICAgICAgICAgcmVnID0gPDB4NDAwIDB4Nj47CisgICAgICAgICAgICAgICAg
+YmFzZS1hZGRyZXNzOworICAgICAgICAgICAgICAgICNudm1lbS1jZWxsLWNlbGxzID0gPDE+Owor
+ICAgICAgICAgICAgfTsKKyAgICAgICAgfTsKKyAgICB9OwotLSAKMi4zMS4xCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBk
+aXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8K
