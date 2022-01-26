@@ -4,67 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DEC7C28CF5
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 11:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 354D0C63684
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 17:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YZj4FmDWSQIOf33up8yPpfFoUY6z/NBBBO8017wpJxs=; b=AZgQLUKGbEr6t2
-	Owf/utp+seWByLGTpLhTWh0zrJ01EYIxbEUTwY+q/2dWU3lBVtDYC2N5pdZZWl5nzNknGmAb+Fv2K
-	ooninQ/MZxHgnVRoSZsAtZoYC8N7Ha0yKWKxUc7yaV1PVFJ31iecW1aygcw5IgTkEtt27Ylh/bs35
-	M1hRCxT83bkmN7PMTgb9rCq5xCxvz2R+jK7x3P3JeQikXD0a1UHkHv1/sfpp8hSY2QegOE24JdEQk
-	mkC6zyqjtuBm9Ml/lAR6tUCGydu2tOowcMiZPWkserwRPgJdk1q4I6erSwlqMmv4Z92wJ4X00FQiy
-	EM1wUztUuI7uEMn7hX7A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MeGIKFIKTMUYY9z4HMPBgAayiTfmrqkvOo3MlWGlG8w=; b=Al/tvFEVW1eTw0dOAkjFEJIHT+
+	tbzHxE/96z4PnVXISARC3XLBZqvI5UQ3wBf0xk0+wVYBQD8UMx2WWeS0ex0LY7PDGCGLTbzGB8UTa
+	4kN0K0alxgN/8kXqddwxZCk606zjYCE6J6jBJMQIDgIQDO+r5+h999WStcgx2Luyv2Ob9wdAgHLnR
+	Nc7H52BRwLGghTObu6AGo1Sz8WIS78584WJBZquCMGrgKm/ApEBi5SFMu9MGb/ljVL7r0fRqKQldJ
+	OZ7Gn6JDeLFN0XqTv6RHO71xQ9r58W1hfUxD0eO9aL7FE0ECVko+siq3Y321C1gYEby8D7j5rMfaQ
+	r1hzBGbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCgbH-00BVpE-Ma; Wed, 26 Jan 2022 11:36:31 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1nClxS-00Cx4T-2r; Wed, 26 Jan 2022 17:19:46 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCgbD-00BVoM-2p
- for linux-mtd@lists.infradead.org; Wed, 26 Jan 2022 11:36:28 +0000
+ id 1nClGl-00Cfx9-3W
+ for linux-mtd@lists.infradead.org; Wed, 26 Jan 2022 16:35:40 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9480961920;
- Wed, 26 Jan 2022 11:36:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD8ACC340E3;
- Wed, 26 Jan 2022 11:36:21 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B2812B81EE5;
+ Wed, 26 Jan 2022 16:35:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB325C340E3;
+ Wed, 26 Jan 2022 16:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643196986;
- bh=GHeHlsvXCNKkFQP+IuCKOX43wwk37uoc7LzHlpZ8P2s=;
+ s=k20201202; t=1643214936;
+ bh=qdNhUTKmv7dhy+Vliq2xt78RN2xNkzXGQMBAMNKuq48=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=DxFgKLu9Ms4VLfvBqkUMjxJpdhebgHNZNqLKVZalbrrs9z4tg5ZpwQtq0Jbu0USu1
- bkLw3Xsaw/sTWCcyC+a+sNf4w71gpfLrTTu4tB+hXHiSPNgmjgpdCe+YiPJaQq2p/d
- Ysji4KTQgLYMFZqdnYXoHMJWGP4sKIoniX+F8drO9/Y6tu/tPL8A9sKMZpa+MZibI1
- 2lQAZHghHi5CEeBM/gqslCBrXZA88FRYdS5FV/YmN5twT/VfTp2W0om01xEDYFt3PA
- XNOhCBOfI3+Mw8IYju+6hsh4EHcVCgyvT9vy8vA5RBm2q33J1tA4i+aspv+NtvtXMx
- RSiOpqMfM2vrw==
-Date: Wed, 26 Jan 2022 17:06:18 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
+ b=mMIi8lcbC1GD6C36tGzn/uQ8yxBQa4JnxX6qFg4eq88tfVCYYCt0kksafXyCMKBtz
+ e0pjoHlMUdXRRt1FKouuQJMmUN4tnoA10iBkwW4zvndRZO4lWi1XWTzLu+nvDRibIG
+ O9S8kmlVuPS+RWSagH3JZSFD3BDBQW6J38yCjJW9fMcYScLVtt7sC9eqe5/X8w2Tyw
+ 9A5w5DuFR69DsvKS1C1o7THwCotDmMtgGA2ShJQ2SAr1DzcorK+xC8KWLOV3Avr7u0
+ gbaFj346JCa+bGUGoUTTxaiGyXgls6Q35fFb+Ceyu4QssW1UDTfrASMuX6uiGkJQa3
+ Z1frQtW/vbblg==
+Date: Wed, 26 Jan 2022 16:35:30 +0000
+From: Mark Brown <broonie@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Konrad Dybcio <konrad.dybcio@somainline.org>,
- ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
- angelogioacchino.delregno@somainline.org,
- marijn.suijten@somainline.org, jamipkettunen@somainline.org,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, mdalam@codeaurora.org,
- sricharan@codeaurora.org
-Subject: Re: [PATCH] mtd: nand: raw: qcom_nandc: Don't clear_bam_transaction
- on READID
-Message-ID: <20220126113618.GB212068@thinkpad>
-References: <20220113184427.2259509-1-konrad.dybcio@somainline.org>
- <20220114082718.32a2fc83@xps13> <20220126111613.3ab0021e@xps13>
- <20220126103316.GA212068@thinkpad> <20220126114200.4cc3c21b@xps13>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v9 01/13] spi: spi-mem: Introduce a capability structure
+Message-ID: <YfF4UhhVFu749ZYK@sirena.org.uk>
+References: <20220104083631.40776-2-miquel.raynal@bootlin.com>
+ <20220126105333.883267-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220126114200.4cc3c21b@xps13>
+In-Reply-To: <20220126105333.883267-1-miquel.raynal@bootlin.com>
+X-Cookie: Use only in a well-ventilated area.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220126_033627_244777_58B272A7 
-X-CRM114-Status: GOOD (  33.28  )
+X-CRM114-CacheID: sfid-20220126_083539_335062_EF87E18C 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,112 +74,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============5934374694376695567=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 26, 2022 at 11:42:00AM +0100, Miquel Raynal wrote:
-> Hi Mani,
-> =
 
-> mani@kernel.org wrote on Wed, 26 Jan 2022 16:03:16 +0530:
-> =
-
-> > On Wed, Jan 26, 2022 at 11:16:13AM +0100, Miquel Raynal wrote:
-> > > Hello,
-> > > =
-
-> > > miquel.raynal@bootlin.com wrote on Fri, 14 Jan 2022 08:27:18 +0100:
-> > >   =
-
-> > > > Hi Konrad,
-> > > > =
-
-> > > > konrad.dybcio@somainline.org wrote on Thu, 13 Jan 2022 19:44:26 +01=
-00:
-> > > >   =
-
-> > > > > While I have absolutely 0 idea why and how, running clear_bam_tra=
-nsaction
-> > > > > when READID is issued makes the DMA totally clog up and refuse to=
- function
-> > > > > at all on mdm9607. In fact, it is so bad that all the data gets g=
-arbled
-> > > > > and after a short while in the nand probe flow, the CPU decides t=
-hat
-> > > > > sepuku is the only option.
-> > > > > =
-
-> > > > > Removing _READID from the if condition makes it work like a charm=
-, I can
-> > > > > read data and mount partitions without a problem.
-> > > > > =
-
-> > > > > Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> > > > > ---
-> > > > > This is totally just an observation which took me an inhumane amo=
-unt of
-> > > > > debug prints to find.. perhaps there's a better reason behind thi=
-s, but
-> > > > > I can't seem to find any answers.. Therefore, this is a BIG RFC! =
-   =
-
-> > > > =
-
-> > > > I'm adding two people from codeaurora who worked a lot on this driv=
-er.
-> > > > Hopefully they will have an idea :)  =
-
-> > > =
-
-> > > Sadre, I've spent a significant amount of time reviewing your patches,
-> > > now it's your turn to not take a month to answer to your peers
-> > > proposals.
-> > > =
-
-> > > Please help reviewing this patch.
-> > >   =
-
-> > =
-
-> > Sorry. I was hoping that Qcom folks would chime in as I don't have any =
-idea
-> > about the mdm9607 platform. It could be that the mail server migration =
-from
-> > codeaurora to quicinc put a barrier here.
-> > =
-
-> > Let me ping them internally.
-> =
-
-> Oh, ok, I didn't know. Thanks!
-> =
+--===============5934374694376695567==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="b+o4Gqc76syJes4g"
+Content-Disposition: inline
 
 
-Pinged them.
+--b+o4Gqc76syJes4g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > > BTW why is this driver still using cmdfund? It should have been
-> > > migrated to ->exec_op() a long time ago.  =
+On Wed, Jan 26, 2022 at 11:53:33AM +0100, Miquel Raynal wrote:
 
-> > =
+> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-mem-ecc.
 
-> > I'll look into it.
-> =
+I was hoping to review this stuff?  I think I was expecting it to be
+rebased after the merge window...
 
-> That would be great, given the number of updates this driver has
-> received, it would be nice to tackle the legacy bits there.
-> =
+--b+o4Gqc76syJes4g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHxeFEACgkQJNaLcl1U
+h9DTgwf/by9jYrSchPqQd6Xm/Z49F9oWPnphXXukxjYLre0sloaW4eEm8kcEMiU5
++0imedDQtB4ywKl4ZXsQaswco8bThrUUD3oTPleY7muQs8/i4uWSMB1S5bzcoCAH
+gAuesxzlHcM5xvogHAT83OmsVHD2X9FdIx41diYTkoLrB5Fz2YFJRmLIvmBLXpjJ
+kimxdGxWzkg1o/sKwVNbIJ86buAZ8EIWfJORt/1G0CdJwShCIy0hb4ske652LYq9
+9OeTFLj4NfDs3EW9IWaUBbXW81vjwxQPhnOpnY8bBxgyn58Y54RR5TwOwLkCyn0s
+WGgO+1pj/euv3RQ6IQhxXa576gzf0Q==
+=Wwro
+-----END PGP SIGNATURE-----
+
+--b+o4Gqc76syJes4g--
 
 
-Sure! I've added this to my to-do list for the coming weeks.
-
-Thanks,
-Mani
-
-> Thanks,
-> Miqu=E8l
+--===============5934374694376695567==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5934374694376695567==--
+
