@@ -4,75 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5648C2BA4C
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 07:34:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F316C28CF5
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 08:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=42rfeD+hSeC4loPSDKv+WDr4RQYjA+VH4cnVX28fM0Q=; b=octwSlHRg8Hg8E
-	VxeXGvwbW6W/3Ynv8LkJGs4Cpnm2qikMRNg6SClSTe7sGt38Y9lYn8k7uWQEFtc4JTwZpVPGjTBbm
-	ZNBdUDRateN8v40CBys79p8ecob2tmdajWurJEewjOPod1ezGX1GXNmM+w3wWy01atnwjLmXgjsZO
-	wdvP3479vhSHfsGobitPHVrXtQ5CoXcIiHjZ55hJy4JiLAGGFggUxRU9d6fTG63y4vza2dgOL5DcK
-	E7XaX25kSGSf/9poEidAeJUgmvpe2b29mxQRRWWRD8Ea3rMdpujPLo39D9enfi008e9YpvCwCyui6
-	UWAGOBlj0JkR86mhnpcw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Mime-Version:
+	Message-Id:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=Yi+oheg4khiz4a7qFsyN3bm01X3tYKbUvky7WxwDi9w=; b=MHD
+	CfCwU7KvnPqHoT9mQEOj8q35oygOCrRevGdiyczV+UOEZaa3KFCBEXBGB9TqduSjpgdrLtbWFyrkW
+	a6rZ/eL9Q0D9Yqv/2MyK8YTj4ofzDvgJELz3vPeI98bKBJQq2ObS7h7dRsrIiG1KNqmDz1gpzYNpF
+	b7ko3kdIJLonqEiJTSiZfIMDDzzFco/o5PDrJVjDV6jFagYpQoU3FXIrmFw/9XLKnXuODLoodwsfs
+	tY9wizENLMe73ataINySFBLQiCmGoBlGIJArwVdC8JglBDNrqwVm8gGvJZ0nMXkrppphIVqIOj8R0
+	3dReT0gGi2R80Ma2AlZrQB+8BPDv3RQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCcoO-00AYyL-Uu; Wed, 26 Jan 2022 07:33:49 +0000
-Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
+	id 1nCe7c-00AotU-Ar; Wed, 26 Jan 2022 08:57:44 +0000
+Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCcoM-00AYx5-84
- for linux-mtd@lists.infradead.org; Wed, 26 Jan 2022 07:33:47 +0000
-Received: by mail-pj1-x102e.google.com with SMTP id
- h20-20020a17090adb9400b001b518bf99ffso3934853pjv.1
- for <linux-mtd@lists.infradead.org>; Tue, 25 Jan 2022 23:33:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Yoxv9TkwSWCw0FOtU6AluVOp0+jEM6CR8CmoyaRpUNM=;
- b=ZbEEe75gALbVnYqP5DJDIi4cJdA++eoSi+o3xHVPSH/HHHh+Gwm3shw1W7KQB1OoP+
- wCHUMQCTbdQDtxUBa3lYxaWV5sD96lgdpXNk4wggL7ntREEZu80K8MA7PqU4J0twLr2c
- UJtslw4cEo+4K/J1hfIINGJyIRy2yCHWgjER8=
+ id 1nCe7Z-00AosD-G8
+ for linux-mtd@lists.infradead.org; Wed, 26 Jan 2022 08:57:42 +0000
+Received: by mail-yb1-xb49.google.com with SMTP id
+ c7-20020a25a2c7000000b00613e4dbaf97so42914122ybn.13
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Jan 2022 00:57:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=date:message-id:mime-version:subject:from:to:cc;
+ bh=lwgxdYwkYYoV60lC8eOCPlgo4Kltdl+GrrvrUKoXqeE=;
+ b=GCHZoL2KMYN56Bb9bArQotAcUIaGcFRa4jJ0xMUOzCWB9X1/MdLNz/kq9Eud0X6jQR
+ OItIooe8ERGMPdHPWn3T2DvWBEBvVwttzLV9fJbfUp++vVxM2nsV9AQTeGPXR2vk/KP0
+ VpBiTkPR9Vplkpa4chZkwDEk6Lpe53fthwT9JbX2Kbi7rZyl4BLiF5B08Ww2wv8Z2X3y
+ XDx69Pt0QAjeonxrtPJu6R7M1Ca3PoSpoSK4+zQ4UPo4dIhDkdua0AkRIbIKQRq2NNAK
+ Wb3griZiPsq3QsJ1CFiYegt1R43GczSoObqOUZ3xh8PDwR95RF6uMioikK2bJ213wfFG
+ VVlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Yoxv9TkwSWCw0FOtU6AluVOp0+jEM6CR8CmoyaRpUNM=;
- b=P1yiP92YJAeZKFVeC11SsiwDirjEsJ6RZJWPXdxWCFDJZEJ0kV7WcOSSj+Em8oPSKJ
- ScuGs46T9oxb2xslVv/vO+/YluFuf3Pmt62CoEb6olElYOIS3Yprw3tybW26OrHZXBzD
- um9CsIaIPEHkXpN6jWpiFWokLXgv4K6obiDdctoz+127RJaC4N6cKOKl32YYU7lUENi1
- rJompRRqGTn/QHY1mVNZXbdxOL9Kyhi/vgBYjnEvhud/G1zoNEuqt/Jy+zBTsEJWVss/
- SsXqwvMLg22xoQZcrGByPp+4EjMx0GF8w0nTB9ronWeGDxEluVRQEhecLHMYA7iay2uc
- 5lYg==
-X-Gm-Message-State: AOAM533h25lPXyS3KWuvttodKzSmXSpIY9WyTjUnCkrVrYLo+nW6w/O5
- X+NZLLh6XtQzE39S4ms87cPe9A==
-X-Google-Smtp-Source: ABdhPJyDNLx2iPQQ5w5mvvbnDtjcrusu0DL1t2Cw+Bvkcd6IGCVe2Z7+w5seVe/xZzFq3vk4CzEZ5w==
-X-Received: by 2002:a17:902:c201:b0:14b:2c5f:b278 with SMTP id
- 1-20020a170902c20100b0014b2c5fb278mr18151198pll.13.1643182425468; 
- Tue, 25 Jan 2022 23:33:45 -0800 (PST)
-Received: from chentsungp920.tpe.corp.google.com
- ([2401:fa00:1:10:189e:b22e:a147:b5e1])
- by smtp.gmail.com with ESMTPSA id b14sm1183763pfm.17.2022.01.25.23.33.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Jan 2022 23:33:44 -0800 (PST)
-From: Chen-Tsung Hsieh <chentsung@chromium.org>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Chen-Tsung Hsieh <chentsung@chromium.org>
-Subject: [RESEND PATCH] mtd: spi-nor: core: Check written SR value in
- spi_nor_write_16bit_sr_and_check()
-Date: Wed, 26 Jan 2022 15:32:26 +0800
-Message-Id: <20220126073227.3401275-1-chentsung@chromium.org>
+ h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+ bh=lwgxdYwkYYoV60lC8eOCPlgo4Kltdl+GrrvrUKoXqeE=;
+ b=a+ClJxFDsk/Kc4r8ck57NAvFbC0mOeN5DPsIfmHWT9Mu8EOsN5tg+dLBns9LPAUdUR
+ 2R1Zt/KA5ab7bsOuYiwu9kQP21UuuJjR0IHdULwj+Rl81r+RFSe4PvP1YpJGILbH7Od+
+ FTKj51zCZz8rJeCV+s+0Go16InmQHvS61tHLyUk+7cqvM5mIpjXjABtNw1UUgmMJKiQf
+ pkvnC3LeJETMoWlJZH5urv1o6PbIc6SpdT0mTZs/3V6ZNO9lp4x4KdFpGZI34SWGsAed
+ W4E4k6N2pbwzWwWDbZuS59wl2YtXBvAcxW6JX7H+HclmomajiB0gpRu957KUBK0vDD3D
+ YprA==
+X-Gm-Message-State: AOAM533v6dzShiHza65KHkI41robzOBQB2TjUdzd8ygxMQJEI3abw6yg
+ PI2btugiswjSoqdatARzxW9xpylD/w==
+X-Google-Smtp-Source: ABdhPJxcNL7P3y0SVGcvCOiZCO4BPDNhBNML9s720/dkl9zginGY5V7+nVvKQmx6XPU7EOLpV8e748k2fQ==
+X-Received: from decot.svl.corp.google.com
+ ([2620:15c:2c5:11:bb79:635d:80b2:3c02])
+ (user=decot job=sendgmr) by 2002:a81:a89:0:b0:2ca:287c:6d32 with SMTP id
+ 00721157ae682-2ca287c6f7bmr6600087b3.471.1643187459021; Wed, 26 Jan 2022
+ 00:57:39 -0800 (PST)
+Date: Wed, 26 Jan 2022 00:57:35 -0800
+Message-Id: <20220126085735.575625-1-decot+git@google.com>
+Mime-Version: 1.0
 X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
-MIME-Version: 1.0
+Subject: [PATCH RFC v1 1/1] mtd_blkdevs: avoid soft lockups with some mtd/spi
+ devices
+From: David Decotigny <decot+git@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, 
+ David Decotigny <ddecotig@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220125_233346_319500_12EBB4D0 
-X-CRM114-Status: GOOD (  11.03  )
+X-CRM114-CacheID: sfid-20220126_005741_572940_680F0D95 
+X-CRM114-Status: GOOD (  10.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,44 +86,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Read back Status Register 1 to ensure that the written byte match the
-received value and return -EIO if read back test failed.
+From: David Decotigny <ddecotig@google.com>
 
-Without this patch, spi_nor_write_16bit_sr_and_check() only check the
-second half of the 16bit. It causes errors like spi_nor_sr_unlock()
-return success incorrectly when spi_nor_write_16bit_sr_and_check()
-doesn't write SR successfully.
+With some spi devices, the heavy cpu usage due to polling the spi
+registers may lead to netdev timeouts, RCU complaints, etc. This can
+be acute in the absence of CONFIG_PREEMPT. This patch allows to give
+enough breathing room to avoid those false positives.
 
-Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on lock()/unlock()")
-Signed-off-by: Chen-Tsung Hsieh <chentsung@chromium.org>
+Signed-off-by: David Decotigny <ddecotig@google.com>
 ---
 
- drivers/mtd/spi-nor/core.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I tested this on a 5.10 base (lockdep).
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 04ea180118e3..426bfa9a65f4 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1007,6 +1007,15 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
- 	if (ret)
- 		return ret;
+ drivers/mtd/mtd_blkdevs.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 243f28a3206b4..64d2b093f114b 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -158,6 +158,7 @@ static void mtd_blktrans_work(struct mtd_blktrans_dev *dev)
+ 		}
  
-+	ret = spi_nor_read_sr(nor, sr_cr);
-+	if (ret)
-+		return ret;
-+
-+	if (sr1 != sr_cr[0]) {
-+		dev_dbg(nor->dev, "SR: Read back test failed\n");
-+		return -EIO;
-+	}
-+
- 	if (nor->flags & SNOR_F_NO_READ_CR)
- 		return 0;
- 
+ 		background_done = 0;
++		cond_resched();
+ 		spin_lock_irq(&dev->queue_lock);
+ 	}
+ }
 -- 
 2.35.0.rc0.227.g00780c9af4-goog
-Resend patch to move maintainers from 'Cc' to 'To' list.
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
