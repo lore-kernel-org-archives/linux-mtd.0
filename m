@@ -4,30 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F7F0C28CF5
-	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 11:29:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3602FC2BA4C
+	for <linux-mtd@archiver.kernel.org>; Wed, 26 Jan 2022 11:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xxtVT6r5SovEsCWyt2qpC8WDSoHBiz00lxRlUoqc65Q=; b=mDAkrdB8QqVumu
-	BbfZrjvsjVH0WNuuhd7Fa5eMf+DZVVJ6fagN3KQur0mhm9qPaNjCJoGGtvTJiP6a0fff/wj8TT7QD
-	ywFX1MJ+/vS1nj4qB7fihPMT+xHPl1eeV4elzsSOVVmp8i03i+sG1cv462j9vbqqzi/oraxuD5xaZ
-	HrdsvkRsEpEFbyijlsqND7fhSvISHEY0KIwNzPrgohe2lt8P3qlieMSVO4ojHFYmWnIdXnUtOKPWY
-	eWt9Xp+DnPw9H9iiYzDAY2Ppv4q4bu/0nAiullyyvhCGoaUS7KBAQnCY7vybrz5Xa7BzwKUF3ys2d
-	jMSQ0AL8YiAaEf5a5Opg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=/pDJ1zGMDW78+os+vTrBsWp0js/2OqVMEfXL9JmXP5Y=; b=Kzhy6pIj+PZpOY
+	zyjWh3dUHX3RbXHpnTcZpFjkdBrk2hQnDkt0Gqf+AHwgW9/bY7+3qQr0P8R5Nrsl0xKh5zQkrHPFT
+	zCAFDrxX9sCeBqyxBZACHtS0ISz8s060RfiMDRUjIkDZu/Mv01cFXi1Z7hrmsqXxy8S8ITeQ4xjB5
+	EMiVg1xSearMc9dICqLYGfxscCGbb1gCkzMr67q7vo4V36VFpEqSNYbc6HD6zQN0m9tLlvquEIQGH
+	MSj267k1VSIw6ZI5JJrQmtqo6S0Bb5R6yLmQz8q9/gl0jPUYNS3Zd/u9y8Gd+B4FQ9pFFcU2oUJDJ
+	vlma9WIPRtMqcU1qXU3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nCgTl-00BTuI-RH; Wed, 26 Jan 2022 11:28:46 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1nCgVY-00BULV-GA; Wed, 26 Jan 2022 11:30:36 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nCgRI-00BTJj-CQ
- for linux-mtd@lists.infradead.org; Wed, 26 Jan 2022 11:26:14 +0000
+ id 1nCgRK-00BTKJ-1I
+ for linux-mtd@lists.infradead.org; Wed, 26 Jan 2022 11:26:15 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 7938960002;
- Wed, 26 Jan 2022 11:26:08 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id ACC126000D;
+ Wed, 26 Jan 2022 11:26:10 +0000 (UTC)
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
@@ -37,15 +37,17 @@ Cc: Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
  Michal Simek <monstr@monstr.eu>,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v6 0/3] Stacked/parallel memories bindings
-Date: Wed, 26 Jan 2022 12:26:04 +0100
-Message-Id: <20220126112608.955728-1-miquel.raynal@bootlin.com>
+ Miquel Raynal <miquel.raynal@bootlin.com>, Rob Herring <robh@kernel.org>
+Subject: [PATCH v6 1/3] dt-bindings: mtd: spi-nor: Allow two CS per device
+Date: Wed, 26 Jan 2022 12:26:05 +0100
+Message-Id: <20220126112608.955728-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220126112608.955728-1-miquel.raynal@bootlin.com>
+References: <20220126112608.955728-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220126_032612_617018_63A41994 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20220126_032614_283337_73B0B1C6 
+X-CRM114-Status: GOOD (  13.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -57,49 +59,55 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gUm9iLCBNYXJrLCBUdWRvciAmIFByYXR5dXNoLAoKSGVyZSBpcyBhIHNpeHRoIHZlcnNp
-b25zIGZvciB0aGVzZSBiaW5kaW5ncywgd2hpY2ggYXBwbGllcyBvbiB0b3Agb2YKdGhlIHY1LjE3
-LXJjMSBub3cgdGhhdCBQcmF0eXVzaCdzIHdvcmsgYXMgYmVlbiBtZXJnZWQuCihodHRwczovL2xv
-cmUua2VybmVsLm9yZy9hbGwvMjAyMTExMDkxODE5MTEuMjI1MS0xLXAueWFkYXZAdGkuY29tLykK
-CkNoZWVycywKTWlxdcOobAoKQ2hhbmdlcyBpbiB2NjoKKiBBZGRlZCBQcmF0eXVzaCdzIGFja3Mu
-CiogVGhlIHRvb2xpbmcgbm93IHZhbGlkYXRlcyB0aGUgYmluZGluZyAodXBkYXRpbmcgZHQtc2No
-ZW1hIGlzCiAgbmVjZXNhcnkpLgoqIFVwZGF0ZWQgdGhlIG1heEl0ZW1zIGZpZWxkIHRvIDQgYXMg
-YSAiYmlnIGVub3VnaCB2YWx1ZSIgYXMgZGlzY3Vzc2VkLgoKQ2hhbmdlcyBpbiB2NToKKiBVc2Vk
-IHRoZSB1aW50NjQtYXJyYXkgaW5zdGVhZCBvZiB0aGUgbWF0cml4IHR5cGUuCiogVXBkYXRlZCB0
-aGUgZXhhbXBsZSBhcyB3ZWxsIHRvIHVzZSBhIHNpbmdsZSAiL2JpdHMvIDY0IiBjYXN0IGJlY2F1
-c2UKICBkb2luZyBpdCB0d2ljZSwgZGVzcGl0ZSBiZWluZyBzdXBwb3J0ZWQgYnkgdGhlIGxhbmd1
-YWdlIGl0c2VsZiwgaXMgbm90CiAgeWV0IHNvbWV0aGluZyB0aGF0IHdlIGNhbiB1c2UgZm9yIGRl
-c2NyaWJpbmcgYmluZGluZ3MuCgpDaGFuZ2VzIGluIHY0OgoqIENoYW5nZWQgdGhlIHR5cGUgb2Yg
-cHJvcGVydGllcyB0byB1aW50NjQtYXJyYXlzIGluIG9yZGVyIHRvIGJlIGFibGUgdG8KICBkZXNj
-cmliZSB0aGUgc2l6ZSBvZiBlYWNoIGVsZW1lbnQgaW4gdGhlIGFycmF5LgoqIFVwZGF0ZWQgdGhl
-IGV4YW1wbGUgYWNjb3JkaW5nbHkuCgpDaGFuZ2VzIGluIHYzOgoqIFJlYmFzZWQgb24gdG9wIG9m
-IFByYXR5dXNoJ3MgcmVjZW50IGNoYW5nZXMuCiogRHJvcHBlZCB0aGUgY29tbWl0IGFsbG93aW5n
-IHRvIHByb3ZpZGUgdHdvIHJlZyBlbnRyaWVzIG9uIHRoZSBub2RlCiAgbmFtZS4KKiBEcm9wcGVk
-IHRoZSBjb21taXQgcmVmZXJlbmNpbmcgc3BpLWNvbnRyb2xsZXIueWFtbCBmcm9tCiAgamVkZWMs
-c3BpLW5vci55YW1sLCBub3cgcmVwbGFjZWQgYnkgc3BpLXBlcmlwaGVyYWwtcHJvcHMueWFtbCBh
-bmQKICBhbHJlYWR5IGRvbmUgaW4gUHJhdHl1c2gncyBzZXJpZXMuCiogQWRkZWQgUm9iJ3MgQWNr
-LgoqIEVuaGFuY2VkIGEgY29tbWl0IG1lc3NhZ2UuCiogTW92ZWQgdGhlIG5ldyBwcm9wZXJ0aWVz
-IHRvIHRoZSBuZXcgU1BJIHBlcmlwaGVyYWwgYmluZGluZyBmaWxlLgoKQ2hhbmdlcyBpbiB2MjoK
-KiBEcm9wcGVkIHRoZSBkdGMgY2hhbmdlcyBmb3Igbm93LgoqIE1vdmVkIHRoZSBwcm9wZXJ0aWVz
-IGluIHRoZSBkZXZpY2UncyBub2Rlcywgbm90IHRoZSBjb250cm9sbGVyJ3MuCiogRHJvcHBlZCB0
-aGUgdXNlbGVzcyAjYWRkcmVzcy1jZWxscyBjaGFuZ2UuCiogQWRkZWQgYSBtaXNzaW5nICJtaW5J
-dGVtcyIuCiogTW92ZWQgdGhlIG5ldyBwcm9wZXJ0aWVzIGluIHRoZSBzcGktY29udHJvbGxlci55
-YW1sIGZpbGUuCiogQWRkZWQgYW4gZXhhbXBsZSB1c2luZyB0d28gc3RhY2tlZCBtZW1vcmllcyBp
-biB0aGUKICBzcGktY29udHJvbGxlci55YW1sIGZpbGUuCiogUmVuYW1lZCB0aGUgcHJvcGVydGll
-cyB0byBkcm9wIHRoZSBYaWxpbnggcHJlZml4LgoqIEFkZGVkIGEgcGF0Y2ggdG8gZml4IHRoZSBz
-cGktbm9yIGplZGVjIHlhbWwgZmlsZS4KCk1pcXVlbCBSYXluYWwgKDMpOgogIGR0LWJpbmRpbmdz
-OiBtdGQ6IHNwaS1ub3I6IEFsbG93IHR3byBDUyBwZXIgZGV2aWNlCiAgc3BpOiBkdC1iaW5kaW5n
-czogRGVzY3JpYmUgc3RhY2tlZC9wYXJhbGxlbCBtZW1vcmllcyBtb2RlcwogIHNwaTogZHQtYmlu
-ZGluZ3M6IEFkZCBhbiBleGFtcGxlIHdpdGggdHdvIHN0YWNrZWQgZmxhc2hlcwoKIC4uLi9iaW5k
-aW5ncy9tdGQvamVkZWMsc3BpLW5vci55YW1sICAgICAgICAgICB8ICAzICsrLQogLi4uL2JpbmRp
-bmdzL3NwaS9zcGktY29udHJvbGxlci55YW1sICAgICAgICAgIHwgIDcgKysrKysrCiAuLi4vYmlu
-ZGluZ3Mvc3BpL3NwaS1wZXJpcGhlcmFsLXByb3BzLnlhbWwgICAgfCAyNSArKysrKysrKysrKysr
-KysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDM0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkK
-Ci0tIAoyLjI3LjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The Xilinx QSPI controller has two advanced modes which allow the
+controller to behave differently and consider two flashes as one single
+storage.
+
+One of these two modes is quite complex to support from a binding point
+of view and is the dual parallel memories. In this mode, each byte of
+data is stored in both devices: the even bits in one, the odd bits in
+the other. The split is automatically handled by the QSPI controller and
+is transparent for the user.
+
+The other mode is simpler to support, it is called dual stacked
+memories. The controller shares the same SPI bus but each of the devices
+contain half of the data. Once in this mode, the controller does not
+follow CS requests but instead internally wires the two CS levels with
+the value of the most significant address bit.
+
+Supporting these two modes will involve core changes which include the
+possibility of providing two CS for a single SPI device
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 39421f7233e4..4abfb4cfc157 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -47,7 +47,8 @@ properties:
+       identified by the JEDEC READ ID opcode (0x9F).
+ 
+   reg:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 2
+ 
+   spi-max-frequency: true
+   spi-rx-bus-width: true
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
