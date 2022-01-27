@@ -4,52 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF387C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 09:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07EEAC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 09:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hwEDpuST7h8rVdi1ZOZ/ebNfhhQkzr0MdVIan39olec=; b=MLVOqu14gk26gh
-	xi+MUS5JDCBfRueDElO1rEfT0o8degLjzmnEBLCggYRxclBWmfT0r718fa5GA0vflDEBUHspIuwOC
-	xYy7r9/FOe1g740et2ujL34srKmNYpmXN9xSBbH6VPOxRuMzBIDpj68SCRUcCp+vLBE2VZpGSnMcH
-	+nx0b+5fInYWVAYMaY7QYyzocrIbqA0O6S0SC9lJG2W8LBcDZv2dDZ6hulVLHz0Xq3kAIaFijWiLu
-	CLoIxCVcp+Ohc4zrVcZ258iOfwZkuPcIEyB2rjnMunZ8L2zTrXn0bq24cVrhMD+/J9b+ZArB3qa0l
-	KJ69/cMAVDLJ/w4Qfagw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FBLmg1j0as1LvyIScJKnk+46KZMSTvJCe0Ui4n/nBLE=; b=eQmkeK4qO+shwmwm4JadqLi93W
+	EzJEuhIHdGCoN8Hoq08iyv6N0mEYuVdbTsY3PVF5NvpmWj9QUCDyFJSYpClaRS8Wj385Rzp34jCQ8
+	ehVg4rhEDdQsM7ui8ATSnHki4NGWqSeL6+RhiHXWD/m3YmBE+kYF3gU/Q00Oa3W3yW+ug9HQ+gdEs
+	mmZjTJHWSW/qUMgaJORMDerNcrexVkSxpD9nUSrHAw/Y8L53fY4bBFty3+vKS/f5/Z1gn5YxSMdjW
+	yg6xml8EOr0nmFGmNEbRi1PVB20//hsZrZYwWwskNXRiWAI3mcR49NtRrd2HZHu4lNjJj2glqf/UM
+	W26WRoQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nD15z-00Eu2L-NQ; Thu, 27 Jan 2022 09:29:36 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1nD17W-00EuLq-LC; Thu, 27 Jan 2022 09:31:11 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nD0vK-00EqvA-NU
- for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 09:18:37 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id B418B100013;
- Thu, 27 Jan 2022 09:18:31 +0000 (UTC)
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>,
-	<linux-spi@vger.kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Zhengxun Li <zhengxunli@mxic.com.tw>
-Subject: [PATCH v10 12/13] spi: mxic: Add support for direct mapping
-Date: Thu, 27 Jan 2022 10:18:07 +0100
-Message-Id: <20220127091808.1043392-13-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220127091808.1043392-1-miquel.raynal@bootlin.com>
-References: <20220127091808.1043392-1-miquel.raynal@bootlin.com>
+ id 1nD0vM-00Eqvi-Dt
+ for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 09:18:39 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 3907B223E9;
+ Thu, 27 Jan 2022 10:18:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1643275114;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=aFL3RqGgxhLVfd0lm0lYMK9cSaSzp17SbNgy9wIf3yU=;
+ b=gRfP+MrvWC6BwihDv6A8kHJHjzdJOgUpqTp/kzzPjHXRyiK65HxVdNs80wV5x3jI3oL6Ck
+ qCSGPDpr4bH6E2pEnllxSr+qnb7P1mgQvpRnEskGVgm69XKM4jYpCvQMBSWUZ73sH09UGi
+ nFSze6eZA2CO7KGcpQn+rouNujQPKJY=
 MIME-Version: 1.0
+Date: Thu, 27 Jan 2022 10:18:32 +0100
+From: Michael Walle <michael@walle.cc>
+To: Chen-Tsung Hsieh <chentsung@chromium.org>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [RESEND PATCH] mtd: spi-nor: core: Check written SR value in
+ spi_nor_write_16bit_sr_and_check()
+In-Reply-To: <CAMu4cy5onQ2JNKhoLVmR4Nb7Cqv2L59SoE=2Q9CK8bhfPvvHTQ@mail.gmail.com>
+References: <20220126073227.3401275-1-chentsung@chromium.org>
+ <8625876c695685fc5409997403130194@walle.cc>
+ <CAMu4cy5onQ2JNKhoLVmR4Nb7Cqv2L59SoE=2Q9CK8bhfPvvHTQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.12
+Message-ID: <ea37e84c8c83350d089c6c9ed4474851@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220127_011835_099787_4D413214 
-X-CRM114-Status: GOOD (  16.25  )
+X-CRM114-CacheID: sfid-20220127_011836_682996_E2FA2F3D 
+X-CRM114-Status: GOOD (  10.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,198 +71,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement the ->dirmap_create() and ->dirmap_read/write() hooks to
-provide a fast path for read and write accesses.
+Am 2022-01-27 04:31, schrieb Chen-Tsung Hsieh:
+> On Thu, Jan 27, 2022 at 6:38 AM Michael Walle <michael@walle.cc> wrote:
+>> Out of curiosity, on what flash did you discover this?
+> 
+> It's Winbond W25Q64JWZPIM
+> https://www.winbond.com/hq/product/code-storage-flash-memory/serial-nor-flash/?__locale=en&partNo=W25Q64JW
+> 
+> We are verifying the write protection on W25Q64JWZPIM and run into an
+> issue that spi_nor_sr_unlock() always return success even if HW & SW
+> write protection are both enabled.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Zhengxun Li <zhengxunli@mxic.com.tw>
-Reviewed-by: Zhengxun Li <zhengxunli@mxic.com.tw>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/linux-mtd/20220104083631.40776-13-miquel.raynal@bootlin.com
----
- drivers/spi/spi-mxic.c | 112 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 109 insertions(+), 3 deletions(-)
+Ah that ring a bell... Anyway, could you dump the SFDP data please?
+See [1], you'll find the files in sysfs. I wonder why that flash is
+using the 16bit write at all.
 
-diff --git a/drivers/spi/spi-mxic.c b/drivers/spi/spi-mxic.c
-index ba9cda4bf161..0d3390964c6f 100644
---- a/drivers/spi/spi-mxic.c
-+++ b/drivers/spi/spi-mxic.c
-@@ -172,6 +172,11 @@ struct mxic_spi {
- 	struct clk *send_dly_clk;
- 	void __iomem *regs;
- 	u32 cur_speed_hz;
-+	struct {
-+		void __iomem *map;
-+		dma_addr_t dma;
-+		size_t size;
-+	} linear;
- };
- 
- static int mxic_spi_clk_enable(struct mxic_spi *mxic)
-@@ -296,7 +301,8 @@ static u32 mxic_spi_prep_hc_cfg(struct spi_device *spi, u32 flags)
- 	       HC_CFG_SLV_ACT(spi->chip_select) | HC_CFG_IDLE_SIO_LVL(1);
- }
- 
--static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op)
-+static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op,
-+				    unsigned int data_len)
- {
- 	u32 cfg = OP_CMD_BYTES(op->cmd.nbytes) |
- 		  OP_CMD_BUSW(fls(op->cmd.buswidth) - 1) |
-@@ -310,7 +316,8 @@ static u32 mxic_spi_mem_prep_op_cfg(const struct spi_mem_op *op)
- 	if (op->dummy.nbytes)
- 		cfg |= OP_DUMMY_CYC(op->dummy.nbytes);
- 
--	if (op->data.nbytes) {
-+	/* Direct mapping data.nbytes field is not populated */
-+	if (data_len) {
- 		cfg |= OP_DATA_BUSW(fls(op->data.buswidth) - 1) |
- 		       (op->data.dtr ? OP_DATA_DDR : 0);
- 		if (op->data.dir == SPI_MEM_DATA_IN) {
-@@ -371,6 +378,77 @@ static int mxic_spi_data_xfer(struct mxic_spi *mxic, const void *txbuf,
- 	return 0;
- }
- 
-+static ssize_t mxic_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
-+					u64 offs, size_t len, void *buf)
-+{
-+	struct mxic_spi *mxic = spi_master_get_devdata(desc->mem->spi->master);
-+	int ret;
-+	u32 sts;
-+
-+	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
-+		return -EINVAL;
-+
-+	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
-+
-+	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
-+	       mxic->regs + LRD_CFG);
-+	writel(desc->info.offset + offs, mxic->regs + LRD_ADDR);
-+	len = min_t(size_t, len, mxic->linear.size);
-+	writel(len, mxic->regs + LRD_RANGE);
-+	writel(LMODE_CMD0(desc->info.op_tmpl.cmd.opcode) |
-+	       LMODE_SLV_ACT(desc->mem->spi->chip_select) |
-+	       LMODE_EN,
-+	       mxic->regs + LRD_CTRL);
-+
-+	memcpy_fromio(buf, mxic->linear.map, len);
-+
-+	writel(INT_LRD_DIS, mxic->regs + INT_STS);
-+	writel(0, mxic->regs + LRD_CTRL);
-+
-+	ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+				 sts & INT_LRD_DIS, 0, USEC_PER_SEC);
-+	if (ret)
-+		return ret;
-+
-+	return len;
-+}
-+
-+static ssize_t mxic_spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
-+					 u64 offs, size_t len,
-+					 const void *buf)
-+{
-+	struct mxic_spi *mxic = spi_master_get_devdata(desc->mem->spi->master);
-+	u32 sts;
-+	int ret;
-+
-+	if (WARN_ON(offs + desc->info.offset + len > U32_MAX))
-+		return -EINVAL;
-+
-+	writel(mxic_spi_prep_hc_cfg(desc->mem->spi, 0), mxic->regs + HC_CFG);
-+
-+	writel(mxic_spi_mem_prep_op_cfg(&desc->info.op_tmpl, len),
-+	       mxic->regs + LWR_CFG);
-+	writel(desc->info.offset + offs, mxic->regs + LWR_ADDR);
-+	len = min_t(size_t, len, mxic->linear.size);
-+	writel(len, mxic->regs + LWR_RANGE);
-+	writel(LMODE_CMD0(desc->info.op_tmpl.cmd.opcode) |
-+	       LMODE_SLV_ACT(desc->mem->spi->chip_select) |
-+	       LMODE_EN,
-+	       mxic->regs + LWR_CTRL);
-+
-+	memcpy_toio(mxic->linear.map, buf, len);
-+
-+	writel(INT_LWR_DIS, mxic->regs + INT_STS);
-+	writel(0, mxic->regs + LWR_CTRL);
-+
-+	ret = readl_poll_timeout(mxic->regs + INT_STS, sts,
-+				 sts & INT_LWR_DIS, 0, USEC_PER_SEC);
-+	if (ret)
-+		return ret;
-+
-+	return len;
-+}
-+
- static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 				     const struct spi_mem_op *op)
- {
-@@ -388,6 +466,22 @@ static bool mxic_spi_mem_supports_op(struct spi_mem *mem,
- 	return spi_mem_default_supports_op(mem, op);
- }
- 
-+static int mxic_spi_mem_dirmap_create(struct spi_mem_dirmap_desc *desc)
-+{
-+	struct mxic_spi *mxic = spi_master_get_devdata(desc->mem->spi->master);
-+
-+	if (!mxic->linear.map)
-+		return -EINVAL;
-+
-+	if (desc->info.offset + desc->info.length > U32_MAX)
-+		return -EINVAL;
-+
-+	if (!mxic_spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
- static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
- {
-@@ -404,7 +498,7 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- 
- 	writel(HC_EN_BIT, mxic->regs + HC_EN);
- 
--	writel(mxic_spi_mem_prep_op_cfg(op),
-+	writel(mxic_spi_mem_prep_op_cfg(op, op->data.nbytes),
- 	       mxic->regs + SS_CTRL(mem->spi->chip_select));
- 
- 	writel(readl(mxic->regs + HC_CFG) | HC_CFG_MAN_CS_ASSERT,
-@@ -446,6 +540,9 @@ static int mxic_spi_mem_exec_op(struct spi_mem *mem,
- static const struct spi_controller_mem_ops mxic_spi_mem_ops = {
- 	.supports_op = mxic_spi_mem_supports_op,
- 	.exec_op = mxic_spi_mem_exec_op,
-+	.dirmap_create = mxic_spi_mem_dirmap_create,
-+	.dirmap_read = mxic_spi_mem_dirmap_read,
-+	.dirmap_write = mxic_spi_mem_dirmap_write,
- };
- 
- static const struct spi_controller_mem_caps mxic_spi_mem_caps = {
-@@ -579,6 +676,15 @@ static int mxic_spi_probe(struct platform_device *pdev)
- 	if (IS_ERR(mxic->regs))
- 		return PTR_ERR(mxic->regs);
- 
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
-+	mxic->linear.map = devm_ioremap_resource(&pdev->dev, res);
-+	if (!IS_ERR(mxic->linear.map)) {
-+		mxic->linear.dma = res->start;
-+		mxic->linear.size = resource_size(res);
-+	} else {
-+		mxic->linear.map = NULL;
-+	}
-+
- 	pm_runtime_enable(&pdev->dev);
- 	master->auto_runtime_pm = true;
- 
--- 
-2.27.0
+-michael
 
+[1] 
+https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.cc/
 
 ______________________________________________________
 Linux MTD discussion mailing list
