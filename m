@@ -4,63 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FF2FC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 11:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEC08C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 11:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=C1mqBntkpXHKtY+Gxt+laMSOwTb03p8bpOSc+kk9jHk=; b=NhlYIz3Ooxck1n
-	TG+qaZ4/W/daF9I1SBc2A5G+vguev85ThEDvdJ+Fz8fHxe3wJyBRc2rFgheR3eozGcrEBWJyxbvI4
-	NyhOZgY3/sNrKC1X4yE2Joz6DcBuM5e91QRWEJ18qwQlw36SIG8mnSIxqqTUocbe+4WGLVblEnyIX
-	81Hz2sm+0ZD39kKuj6f1f7DAJ/G8tswT9ByqP2nQ8qg/hO/YAVM++Ac5t3eLeNZB5weBAIIeyHLKf
-	kocCHGn0CUhL/DvJdq4YL7jQTUidKGo+lISs3+dB81t6roGyPkntoipznUA/iypDDvoCENxMCKNSc
-	kKQLb5h+FUIfyHcFL6oA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gc5kpFfsSrupIA+CpNVJOC8dRPvararoX+vj3XII7nU=; b=el1PNCbVgVAniT
+	/mho9vHg4dlhxNrkwSQ9kRiP32nu4/5iCbv5c5U9BoS/UlfP2j4VY2CqjXArDgZ4keMaEq46D9kyi
+	otkW0k/2jpoww8kG0s8610dBszc7O1b7v23c/ulowFj/fNpZMnaBqyXN08bdynjSh205BsBK74/iF
+	zLYjuaU452KB2/P8JU3TgWciwgK9fsMjLOx9JpdGDyMebK9ozSVF3/gAbo2756gny5LMqnzLWBDJj
+	ypguM4Ip9fQsrzBYMEPPe6eB6b9zxqn7Mul0kYNOEuBnZpgOHrtkJgwyLz+SgB35o3V8+Ec2w4EOb
+	UrdpYmxrqGW+e0IhlH4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nD2c2-00FJIY-Hv; Thu, 27 Jan 2022 11:06:46 +0000
-Received: from relay11.mail.gandi.net ([2001:4b98:dc4:8::231])
+	id 1nD2d3-00FJa9-52; Thu, 27 Jan 2022 11:07:49 +0000
+Received: from mail-ua1-f50.google.com ([209.85.222.50])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nD2by-00FJFl-AQ
- for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 11:06:44 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 4B6E410000A;
- Thu, 27 Jan 2022 11:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643281597;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=o6YD+Ih1mt4RuwmHj1v1mgQy/JSNiyy9nHBWcjIkOCY=;
- b=WYTSL6MH4iPna6WBXnVppEx/5mwR3rXS1eS3bx35CtevxkedqhhP+VOpaOaPmK7SSmvNUV
- ScnKze7rKmmW9skSOyudChHJNQDhJn+dwh/n4THZ/JztyRRn1MEOMz3b05+7V9QTTDB9Eu
- xObpFdRZ4dkdjLMzhPr9N6m1+BcIa72Sm+tZ97neqOpvFUwJ/9p3TbQZzuWCRZ8rT5aLdx
- ZrzwubMZr0TW4FHMsxEh4rZLvYsDuVeD3nXFKaAQD6OnaQEmJHPyaXrobXAFnz8Cwx16+C
- iIFEZ19goUNKLIgxbtHGNow1wU+JyWAO6R6tmDXcnJsXwsLg7WFvGTxspHpHpw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Paul Cercueil <paul@crapouillou.net>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Uwe Kleine-Konig <u.kleine-koenig@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- kernel test robot <lkp@intel.com>
-Subject: [PATCH] mtd: Fix misuses of of_match_ptr()
-Date: Thu, 27 Jan 2022 12:06:31 +0100
-Message-Id: <20220127110631.1064705-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+ id 1nD2cz-00FJYv-EN
+ for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 11:07:46 +0000
+Received: by mail-ua1-f50.google.com with SMTP id b37so3963964uad.12
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2022 03:07:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=s4FnC9f8le6cLCb61Ozfn4Eq0RvD8VFjvqbCAB5Qp/E=;
+ b=WYm+PeWwIzai+VRv4E4MQtU2RIYsP+mopCTeIv0vRucVIo87TD92FDT6H3krQwF90i
+ xPRjEfTk1uZqcNsx19MhP4Z/vxEINohRWrdpuVeP9s9ZS45IMJBsO7l40lpP+piZR21J
+ LtehOXAsougSbvk/Rd/Ysuo76IkKFoLlPnR+/91f8bavwygPa+u3KS+o0w9ND0AwC7q3
+ drsytpvMc5Bcqj8Xaqf5p6HMrUqI1j7K7OELUN+s6ZW6u2ZLDRgXwBZt+EwZFlRctgO2
+ YvhYGn9FCHy0ivfmUV6ZWn+vJRWFk0LNEsiDVQt3sMf280F+dGtiPiof3MRtYv0jIvJ2
+ P0UQ==
+X-Gm-Message-State: AOAM532Vpsp9iPufdDPiTn4fQbGBtsSxKAvBXfjTuYen4ISlb5rEaHjw
+ nYvEIdMIVtvYAUfYDpDXQ732jSRKiiK9uQ==
+X-Google-Smtp-Source: ABdhPJy7Smo2baOwijtfYgRvSVx8dS8j3Pua44T7H60o+/YX9G5vs80cbPwTy6jX7nHGTg3SdAjj6Q==
+X-Received: by 2002:a67:c885:: with SMTP id v5mr1321188vsk.39.1643281663835;
+ Thu, 27 Jan 2022 03:07:43 -0800 (PST)
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com.
+ [209.85.221.181])
+ by smtp.gmail.com with ESMTPSA id 128sm493319vsz.4.2022.01.27.03.07.43
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 27 Jan 2022 03:07:43 -0800 (PST)
+Received: by mail-vk1-f181.google.com with SMTP id l14so347907vko.12
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2022 03:07:43 -0800 (PST)
+X-Received: by 2002:a1f:5d84:: with SMTP id r126mr1179693vkb.33.1643281663036; 
+ Thu, 27 Jan 2022 03:07:43 -0800 (PST)
 MIME-Version: 1.0
+References: <20211118114659.1282855-1-miquel.raynal@bootlin.com>
+ <CAMuHMdVnOdvEbiiQcdZHdVkz1YAj-kgZp_nw4jqb6Z5=KeM=uw@mail.gmail.com>
+ <20220127114647.0ec44ced@xps13>
+In-Reply-To: <20220127114647.0ec44ced@xps13>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 27 Jan 2022 12:07:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW0hKqk8aGiNy1Pd50aTu_rb_ewdiV9GXTkPJOm=zA+HA@mail.gmail.com>
+Message-ID: <CAMuHMdW0hKqk8aGiNy1Pd50aTu_rb_ewdiV9GXTkPJOm=zA+HA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Introduce an expert mode for forensics and debugging
+ purposes
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
+ Michael Walle <michael@walle.cc>,
+ MTD Maling List <linux-mtd@lists.infradead.org>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220127_030642_750609_703017A3 
-X-CRM114-Status: GOOD (  15.53  )
+X-CRM114-CacheID: sfid-20220127_030745_516952_898B4B35 
+X-CRM114-Status: GOOD (  41.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,173 +89,120 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-of_match_ptr() either expands to NULL if !CONFIG_OF, or is transparent
-otherwise. There are several drivers using this macro which keep their
-of_device_id array enclosed within an #ifdef CONFIG_OF check, these are
-considered fine. However, When misused, the of_device_id array pointed
-by this macro will produce a warning because it is finally unused when
-compiled without OF support.
+Hi Miquel,
 
-A number of fixes are possible:
-- Always depend on CONFIG_OF, but this will not always work and may
-  break boards.
-- Enclose the compatible array by #ifdef's, this may save a bit of
-  memory but will reduce build coverage.
-- Tell the compiler the array may be unused, if this can be avoided,
-  let's not do this.
-- Just drop the macro, setting the of_device_id array for a non OF
-  enabled platform is not an issue, it will just be unused.
+On Thu, Jan 27, 2022 at 11:46 AM Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> geert@linux-m68k.org wrote on Mon, 10 Jan 2022 14:15:27 +0100:
+> > On Thu, Nov 18, 2021 at 12:47 PM Miquel Raynal
+> > <miquel.raynal@bootlin.com> wrote:
+> > > When developping NAND controller drivers or when debugging filesystem
+> > > corruptions, it is quite common to need hacking locally into the
+> > > MTD/NAND core in order to get access to the content of the bad
+> > > blocks. Instead of having multiple implementations out there let's
+> > > provide a simple yet effective specific MTD-wide debugfs entry to fully
+> > > disable these checks on purpose.
+> > >
+> > > A warning is added to inform the user when this mode gets enabled.
+> > >
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >
+> > Thanks for your patch, which is now commit 67b967ddd93d0ed5 ("mtd:
+> > Introduce an expert mode for forensics and debugging purposes")
+> > in mtd/next.
+> >
+> > > --- a/drivers/mtd/mtdcore.c
+> > > +++ b/drivers/mtd/mtdcore.c
+> > > @@ -2365,6 +2365,14 @@ static struct backing_dev_info * __init mtd_bdi_init(const char *name)
+> > >         return ret ? ERR_PTR(ret) : bdi;
+> > >  }
+> > >
+> > > +char *mtd_expert_analysis_warning =
+> >
+> > const
+> >
+> > > +       "Bad block checks have been entirely disabled.\n"
+> > > +       "This is only reserved for post-mortem forensics and debug purposes.\n"
+> > > +       "Never enable this mode if you do not know what you are doing!\n";
+> > > +EXPORT_SYMBOL_GPL(mtd_expert_analysis_warning);
+> >
+> > Shouldn't this depend on CONFIG_DEBUG_FS?
+> >
+> > > +bool mtd_expert_analysis_mode;
+> > > +EXPORT_SYMBOL_GPL(mtd_expert_analysis_mode);
+> >
+> > Do you really need to export these two symbols?
+> >
+> > > +
+> > >  static struct proc_dir_entry *proc_mtd;
+> > >
+> > >  static int __init init_mtd(void)
+> > =
+> > > --- a/drivers/mtd/nand/core.c
+> > > +++ b/drivers/mtd/nand/core.c
+> > > @@ -21,6 +21,9 @@
+> > >   */
+> > >  bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
+> > >  {
+> > > +       if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
+> > > +               return 0;
+> > > +
+> > >         if (nanddev_bbt_is_initialized(nand)) {
+> > >                 unsigned int entry;
+> > >                 int status;
+> > > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > > index 3d6c6e880520..b3a9bc08b4bb 100644
+> > > --- a/drivers/mtd/nand/raw/nand_base.c
+> > > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > > @@ -321,6 +321,9 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+> > >         if (nand_region_is_secured(chip, ofs, mtd->erasesize))
+> > >                 return -EIO;
+> > >
+> > > +       if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
+> > > +               return 0;
+> > > +
+> > >         if (chip->legacy.block_bad)
+> > >                 return chip->legacy.block_bad(chip, ofs);
+> > >
+> > > diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+> > > index b7ad030225f8..ab630af3a309 100644
+> > > --- a/drivers/mtd/nand/raw/nand_bbt.c
+> > > +++ b/drivers/mtd/nand/raw/nand_bbt.c
+> > > @@ -1455,6 +1455,9 @@ int nand_isbad_bbt(struct nand_chip *this, loff_t offs, int allowbbt)
+> > >         pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+> > >                  (unsigned int)offs, block, res);
+> > >
+> > > +       if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
+> > > +               return 0;
+> > > +
+> >
+> > These are all the same.
+> >
+> > What about letting drivers/mtd/mtdcore.c export a simple function
+> > mtd_check_expert_analysis_mode() that calls the WARN_ONCE(...) if
+> > CONFIG_DEBUG_FS=y, else providing a dummy?
+> > The backtrace will identify the caller anyway.
+>
+> I took the time to address your comments. You're right a single exported
+> function is better.
+>
+> However I don't see the need for a CONFIG_DEBUG_FS check here, if unset
+> the boolean will stay false forever, I believe we don't need to bother
+> with it.
 
-The latter solution seems the more appropriate, so let's use it.
+If CONFIG_DEBUG_FS=n, there is no need for the code or the export,
+so the check can become a dummy.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/devices/mchp23k256.c                | 2 +-
- drivers/mtd/devices/mchp48l640.c                | 2 +-
- drivers/mtd/nand/raw/atmel/nand-controller.c    | 2 +-
- drivers/mtd/nand/raw/atmel/pmecc.c              | 2 +-
- drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c | 2 +-
- drivers/mtd/nand/raw/ingenic/jz4780_bch.c       | 2 +-
- drivers/mtd/nand/raw/mtk_ecc.c                  | 2 +-
- drivers/mtd/nand/raw/omap2.c                    | 2 +-
- drivers/mtd/nand/raw/renesas-nand-controller.c  | 2 +-
- drivers/mtd/nand/raw/sh_flctl.c                 | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
-index a8b31bddf14b..bf51eebf052c 100644
---- a/drivers/mtd/devices/mchp23k256.c
-+++ b/drivers/mtd/devices/mchp23k256.c
-@@ -234,7 +234,7 @@ MODULE_DEVICE_TABLE(of, mchp23k256_of_table);
- static struct spi_driver mchp23k256_driver = {
- 	.driver = {
- 		.name	= "mchp23k256",
--		.of_match_table = of_match_ptr(mchp23k256_of_table),
-+		.of_match_table = mchp23k256_of_table,
- 	},
- 	.probe		= mchp23k256_probe,
- 	.remove		= mchp23k256_remove,
-diff --git a/drivers/mtd/devices/mchp48l640.c b/drivers/mtd/devices/mchp48l640.c
-index 231a10790196..4ec505b3f4a6 100644
---- a/drivers/mtd/devices/mchp48l640.c
-+++ b/drivers/mtd/devices/mchp48l640.c
-@@ -362,7 +362,7 @@ MODULE_DEVICE_TABLE(of, mchp48l640_of_table);
- static struct spi_driver mchp48l640_driver = {
- 	.driver = {
- 		.name	= "mchp48l640",
--		.of_match_table = of_match_ptr(mchp48l640_of_table),
-+		.of_match_table = mchp48l640_of_table,
- 	},
- 	.probe		= mchp48l640_probe,
- 	.remove		= mchp48l640_remove,
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index f3276ee9e4fe..4ecbaccf5526 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -2648,7 +2648,7 @@ static SIMPLE_DEV_PM_OPS(atmel_nand_controller_pm_ops, NULL,
- static struct platform_driver atmel_nand_controller_driver = {
- 	.driver = {
- 		.name = "atmel-nand-controller",
--		.of_match_table = of_match_ptr(atmel_nand_controller_of_ids),
-+		.of_match_table = atmel_nand_controller_of_ids,
- 		.pm = &atmel_nand_controller_pm_ops,
- 	},
- 	.probe = atmel_nand_controller_probe,
-diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
-index 498e41ccabbd..43ebd78816c0 100644
---- a/drivers/mtd/nand/raw/atmel/pmecc.c
-+++ b/drivers/mtd/nand/raw/atmel/pmecc.c
-@@ -1003,7 +1003,7 @@ static int atmel_pmecc_probe(struct platform_device *pdev)
- static struct platform_driver atmel_pmecc_driver = {
- 	.driver = {
- 		.name = "atmel-pmecc",
--		.of_match_table = of_match_ptr(atmel_pmecc_match),
-+		.of_match_table = atmel_pmecc_match,
- 	},
- 	.probe = atmel_pmecc_probe,
- };
-diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-index b18861bdcdc8..ff26c10f295d 100644
---- a/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-+++ b/drivers/mtd/nand/raw/ingenic/ingenic_nand_drv.c
-@@ -567,7 +567,7 @@ static struct platform_driver ingenic_nand_driver = {
- 	.remove		= ingenic_nand_remove,
- 	.driver	= {
- 		.name	= DRV_NAME,
--		.of_match_table = of_match_ptr(ingenic_nand_dt_match),
-+		.of_match_table = ingenic_nand_dt_match,
- 	},
- };
- module_platform_driver(ingenic_nand_driver);
-diff --git a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-index d67dbfff76cc..12b5b0484fe9 100644
---- a/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-+++ b/drivers/mtd/nand/raw/ingenic/jz4780_bch.c
-@@ -260,7 +260,7 @@ static struct platform_driver jz4780_bch_driver = {
- 	.probe		= jz4780_bch_probe,
- 	.driver	= {
- 		.name	= "jz4780-bch",
--		.of_match_table = of_match_ptr(jz4780_bch_dt_match),
-+		.of_match_table = jz4780_bch_dt_match,
- 	},
- };
- module_platform_driver(jz4780_bch_driver);
-diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
-index 1b47964cb6da..e7df3dac705e 100644
---- a/drivers/mtd/nand/raw/mtk_ecc.c
-+++ b/drivers/mtd/nand/raw/mtk_ecc.c
-@@ -579,7 +579,7 @@ static struct platform_driver mtk_ecc_driver = {
- 	.probe  = mtk_ecc_probe,
- 	.driver = {
- 		.name  = "mtk-ecc",
--		.of_match_table = of_match_ptr(mtk_ecc_dt_match),
-+		.of_match_table = mtk_ecc_dt_match,
- #ifdef CONFIG_PM_SLEEP
- 		.pm = &mtk_ecc_pm_ops,
- #endif
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index f0bbbe401e76..58c32a11792e 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -2298,7 +2298,7 @@ static struct platform_driver omap_nand_driver = {
- 	.remove		= omap_nand_remove,
- 	.driver		= {
- 		.name	= DRIVER_NAME,
--		.of_match_table = of_match_ptr(omap_nand_ids),
-+		.of_match_table = omap_nand_ids,
- 	},
- };
- 
-diff --git a/drivers/mtd/nand/raw/renesas-nand-controller.c b/drivers/mtd/nand/raw/renesas-nand-controller.c
-index 428e08362956..6db063b230a9 100644
---- a/drivers/mtd/nand/raw/renesas-nand-controller.c
-+++ b/drivers/mtd/nand/raw/renesas-nand-controller.c
-@@ -1412,7 +1412,7 @@ MODULE_DEVICE_TABLE(of, rnandc_id_table);
- static struct platform_driver rnandc_driver = {
- 	.driver = {
- 		.name = "renesas-nandc",
--		.of_match_table = of_match_ptr(rnandc_id_table),
-+		.of_match_table = rnandc_id_table,
- 	},
- 	.probe = rnandc_probe,
- 	.remove = rnandc_remove,
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index 13df4bdf792a..b85b9c6fcc42 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -1220,7 +1220,7 @@ static struct platform_driver flctl_driver = {
- 	.remove		= flctl_remove,
- 	.driver = {
- 		.name	= "sh_flctl",
--		.of_match_table = of_match_ptr(of_flctl_match),
-+		.of_match_table = of_flctl_match,
- 	},
- };
- 
--- 
-2.27.0
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
