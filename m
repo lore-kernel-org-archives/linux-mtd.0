@@ -4,73 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22349C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 18:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFD85C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 19:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=R4WmYXftcDXBQH1bN9YifKgB7v1qYoidp930bEWdKQ4=; b=WFKyk73WbLZ/g2
-	XvO3HAnOFNajDfM4nRTkneRtU34wbuOkZwOj6rjO9s1E5HHGsxr1DdpkVnJT9NgRtxQZWX9JIrqBA
-	Z8r9AnEyt9l5Z0qX8daGVU48VGon8jtkUCDMGIIvKvZvWRjuLAdHA5W0MtNM2eOIcnZqBz6lB12em
-	RG5aI4vHg8YLHF9hb/EpWXOouIqaWHWhTJRBad2SUZYKl9kSMs2ksumuXa3cqgIitrDS6NP/1h1UN
-	Qo77UTqLdlSA0dRafPdGo/R9+Zedf5LOB8BRsXMTeRBqghLXpSCLpMs52oRyAFSstDDd+G3ISNjTQ
-	UXefI2UFbnKxLJ3cAupg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=nHAo3Hx2vFbHDSBnfGV8qfPNp/DCrja5+BUbGCuRevs=; b=hYRvNKCBDoIIPsTaWkJ3ZtIAdm
+	CozDepfJVIQ15/RXpxsQJd23RJ4sDxPSbSuPQw3XDQ8nY5kUwpWwIMnVInz7/Tw6BEDgvTiqNZ/Qc
+	bPKothz1YhxrfY2wX4e7CLvzU7Fp+d9QU08BH9W6Nutq2dJjhp5XUfQ500w2onbYcromxGakZ2KbP
+	t+/zhTbvmupfTcQKcbCPc0SoAd0VMcXeekURc6HMP4Pa424yWTuT22Is8yRptOzMc49CWMR9dfI9w
+	xWEfg5a21VLjC1E5M27mtV91AhgHkX0CEsKw5iV5Ej7tr/1QBNb3aX7ulbJEP9WXC6BLIJmqpXDvp
+	HE8ZNY8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nD9Ue-00Gpp1-Up; Thu, 27 Jan 2022 18:27:37 +0000
-Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
+	id 1nDAt9-00GzTh-A9; Thu, 27 Jan 2022 19:56:59 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nD9Ub-00Gpnj-80
- for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 18:27:34 +0000
-Received: by mail-pg1-x530.google.com with SMTP id p125so2970730pga.2
- for <linux-mtd@lists.infradead.org>; Thu, 27 Jan 2022 10:27:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=MNivNvUnaKSgwbpns2UVVvnIdkdqtYkTnr6WB2iM4KA=;
- b=gllWnbpFTXspZZKWYL6D48c9RKSRla76rbNqeiKJIyMWso3urPfaXYf5mlKmhLEPv3
- jQwCpWjIxNGi0Z9FulEM0RO5iOavTe4RxwN54bCywkhSZWBTe/tb94ihD2e3PHT7TKUd
- heFlTy9zaEA+v/ID6Ehh6ShWwd1yysTdneZvQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=MNivNvUnaKSgwbpns2UVVvnIdkdqtYkTnr6WB2iM4KA=;
- b=hu5XfBAKbue4HwVGab0kiXHVvrc611K8dEZIOIFnrYJg4V8mBU8g5sg6xrwPbi2m6l
- jt6HzTqy9869+JWweJLOOzRLbX0xv5uj8CExxugBdE0JbZYhVFgh00dl3ocZjW88HB5x
- g859PS+KeI42YF+6ThS7fk17/fksNG1cODdJeNxAgx0gPuk+brFyWEQaywnRJLZeoj50
- zKbm+O83iPpsj4OD4gGYwoFefAZYsTmQECJnABoPlaBkjgps5QToryVdN9lzeCbMCa1N
- QRl+QxopaTPw6x9uwdwFIymUjG/zRF/siQyZWFCaGmvkK2Gp1LtIzy4mSyoy3M6C8hEV
- jtCA==
-X-Gm-Message-State: AOAM532JeQUv71njftUCq0sC2ejYZjro4h9sOkXSV0nbOY4SElkFiZo8
- 7ACHX0lS3OQwY+ujz1ZLefLq1oxc2nNKNYDcGxgrkAlpuQ7GMg==
-X-Google-Smtp-Source: ABdhPJyvr4XXBdjJYE2+bPzEi7tzwtlCduA2yyQMlSEcrrOWF+pcjcs4b1mo2C1oHfWzkn1FHwI3cX8JzQl+5Sbuxvs=
-X-Received: by 2002:a05:6a00:7ce:: with SMTP id
- n14mr4408175pfu.11.1643308048948; 
- Thu, 27 Jan 2022 10:27:28 -0800 (PST)
+ id 1nDAt7-00GzTB-3z
+ for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 19:56:58 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A412D6027A;
+ Thu, 27 Jan 2022 19:56:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95000C340EA;
+ Thu, 27 Jan 2022 19:56:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1643313416;
+ bh=fQvPrDPY3P7I2OY/crq01C16Uf3nbOd3geYbps0hn84=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cLm16VNvPFiWZIIoLf1FQDiiHOveToQmehB+BhVemDz1yS1kQ7IPSmszcNptPiH5z
+ NpjliAWaonia93XXetSQRsqz4mLOcUCjvWQM6OHDNeQ4yt1JYymALLHb9Z2ojNAcVd
+ US+TqURO+o6akXygcjN+RxVaMS5rcfuKNge/E/ovmRVB4VEyxMe92Vq54YAxJ/wwIO
+ dmX1dEXg0vSUPsherI3zMxFtTryd9akkUPDO/Z7vQB8ERGW3YgkrUJwqSyJAoIff96
+ h1WSuuKj7geSMMr/89CDihkTJNl6sstVUMKibEHTVBr4yqLC6UU5e+MUPnCqz0ChBs
+ lI63QNC61eXsA==
+Date: Thu, 27 Jan 2022 19:56:50 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-spi@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v10 00/13] External ECC engines & Macronix support
+Message-ID: <YfL5ApsG7c619+R0@sirena.org.uk>
+References: <20220127091808.1043392-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-References: <20220126073227.3401275-1-chentsung@chromium.org>
- <8625876c695685fc5409997403130194@walle.cc>
- <CAMu4cy5onQ2JNKhoLVmR4Nb7Cqv2L59SoE=2Q9CK8bhfPvvHTQ@mail.gmail.com>
- <ea37e84c8c83350d089c6c9ed4474851@walle.cc>
-In-Reply-To: <ea37e84c8c83350d089c6c9ed4474851@walle.cc>
-From: Chen-Tsung Hsieh <chentsung@chromium.org>
-Date: Fri, 28 Jan 2022 02:27:17 +0800
-Message-ID: <CAMu4cy5qkxuXnPnS5TsLYp3ME0jruaUWLt1QOSmZR78BzYVQzw@mail.gmail.com>
-Subject: Re: [RESEND PATCH] mtd: spi-nor: core: Check written SR value in
- spi_nor_write_16bit_sr_and_check()
-To: Michael Walle <michael@walle.cc>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org, 
- linux-mtd@lists.infradead.org
+In-Reply-To: <20220127091808.1043392-1-miquel.raynal@bootlin.com>
+X-Cookie: Stay on the trail.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220127_102733_319576_E43E1039 
-X-CRM114-Status: UNSURE (   9.85  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220127_115657_230183_5B475AAE 
+X-CRM114-Status: GOOD (  14.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,51 +73,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1605877214779303371=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 27, 2022 at 5:18 PM Michael Walle <michael@walle.cc> wrote:
-> Ah that ring a bell... Anyway, could you dump the SFDP data please?
-> See [1], you'll find the files in sysfs. I wonder why that flash is
-> using the 16bit write at all.
->
-> [1]
-> https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.cc/
 
-Dump SFDP data:
-# xxd -p /sys/class/mtd/mtd0/device/spi-nor/sfdp
-53464450060101ff00060110800000ff84000102d00000ffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffe520f9ffffffff0344eb086b083b42bbfeffffffffff
-0000ffff40eb0c200f5210d800003602a60082ea14c4e96376337a757a75
-f7bdd55c19f75dffe930f880ffffffffffffffffffffffffffffffff0000
-f0ffffffffff
-# md5sum /sys/class/mtd/mtd0/device/spi-nor/sfdp
-5294c4d4eb2b1c89c6fd8573d8ceaa2d  /sys/class/mtd/mtd0/device/spi-nor/sfdp
-# cat /sys/class/mtd/mtd0/device/spi-nor/jedec_id
-ef8017
-# cat /sys/class/mtd/mtd0/device/spi-nor/partname
-w25q64jwm
-# cat /sys/class/mtd/mtd0/device/spi-nor/manufacturer
-winbond
+--===============1605877214779303371==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Nk9jfp1SD/P4u818"
+Content-Disposition: inline
 
-"bfpt.dwords[BFPT_DWORD(15)]" is 0xff5df719, and flag
-SNOR_F_HAS_16BIT_SR is set here:
-        case BFPT_DWORD15_QER_SR2_BIT1:
-                /*
-                 * JESD216 rev B or later does not specify if writing only one
-                 * byte to the Status Register clears or not the Status
-                 * Register 2, so let's be cautious and keep the default
-                 * assumption of a 16-bit Write Status (01h) command.
-                 */
-                nor->flags |= SNOR_F_HAS_16BIT_SR;
-                params->quad_enable = spi_nor_sr2_bit1_quad_enable;
-                break;
+
+--Nk9jfp1SD/P4u818
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jan 27, 2022 at 10:17:55AM +0100, Miquel Raynal wrote:
+> Hello all,
+>=20
+> I've applied the beginning of the series (bindings + ECC part) in a
+> branch named spi-mem-ecc on the MTD korg repository. I already applied
+> this second halve on top of the spi-mem-ecc branch but there was a
+> misunderstanding and they ended up not being fully reviewed. Hence here
+> there are once again, there are no changes since v9 beside the rebase.
+
+This looks good, please send a pull request.
+
+In general for future reference if there's patches for one of my
+subsystems that I've not explicitly commented on I'm probably expecting
+to apply them.
+
+--Nk9jfp1SD/P4u818
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmHy+QEACgkQJNaLcl1U
+h9DEHQf/cWLgMk58qMhl3lNstMR2aWtfBWg68fuAosZWOfkMdKjQjcHst/p0dmB8
+8WrJ0Iuou6xjLyLLAn6n5TyMxUddrlezcjSX6FE7nXqEHruqDfFQ+XYL33uGBO6B
+gtfozdsxwUX1oHIo8EFCQOMkH8755bHuQNA8xDUDzkwSX2icjHM1cwfZqZTZVFuT
+27TnqvoEIYPJBoBuFYOeltr/S4r1adZaHjpyn/573khI5gx9R4f/QxrlxLVNShvs
+ZNWiSNn5r9Q8xNyEoQyyUa5AosUEQupoI/dYIjWB8N6a26H34fw0pJol8ZLs7m73
+muR6cqfrBirPiVtGZsZkWdJmwPUUWw==
+=J4gM
+-----END PGP SIGNATURE-----
+
+--Nk9jfp1SD/P4u818--
+
+
+--===============1605877214779303371==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1605877214779303371==--
+
