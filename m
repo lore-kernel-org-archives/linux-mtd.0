@@ -4,61 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4372C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 11:08:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFB2EC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 11:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=PfBltJKvS7WX77k0A94f2X+sEES2xnEtMweMQujVtc4=; b=uOXw3+olZcqzHz
-	Odb2wqphxhj38CiUXVdoYgdUpemEWlbcaZJlJkMFD4IjNfsRdvUw7L0RRGIrrYd1h3bJwkV5AEWmC
-	WVzHsNljBIdclUCbyf9DCsZs11Sf3QOiG3vTF/kAcWG67+XkLqnBQhXtByE7QOd11bxi12c9bh4EI
-	H6RtRGcYlgOO/OPS8Bqzg5jCZBJjxAS3hvP2ggUfgaHpbjizxlaNtAEHyJS/G7PtkMh3Fcuz05JbV
-	+QvZNJtoA/Qo8rJwbfVci02ugr5hI8ANk1g6Be0/w+M30tlUMdcrH8Bl1Og0mxc/RDOvwyy7fLCXf
-	fhlT0UXlDei2dLsSB/Rg==;
+	List-Owner; bh=ruVUAwt80t9KC9vWZIh4tSMvt/bGM/HWmbD05UKe/RA=; b=jldh0K93UOj5hw
+	/BpInNqkcemLCjtFEV/MKmLO0ObDtsha7HSS9zIBioMJN2HXSiaapjZvYJi2vtJN04KhoROGQRuVO
+	h/WFq319Y3JCKePyrW9uzum1zKxrXtCpnb2po5LRgxdM2tq5B28QBN6bTqa0fHZThcmJNz9tLMP5K
+	4CbrX5FaAWQBPCLWK5scIAkjQY2DvRttYP2hqAPpF87y8E8//fVJ7f3WExQ8m3T/BUO3cmk124yC7
+	z4fPRltOMvzdlwQMwY/2RaR4IA7ltOimjtHvepbo/Qlr6ZeOvLmcv6QUEOsmMrog0cXVpUxIEGXci
+	X0Js6wg7M2Tf3/PXs/Cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nD2dR-00FJih-G1; Thu, 27 Jan 2022 11:08:13 +0000
-Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
+	id 1nD2em-00FKFw-SQ; Thu, 27 Jan 2022 11:09:37 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nD2dO-00FJge-AV
- for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 11:08:12 +0000
+ id 1nD2dq-00FJr3-7C
+ for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 11:08:40 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 1D5C160004;
- Thu, 27 Jan 2022 11:08:03 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id CC2BEFF80B;
+ Thu, 27 Jan 2022 11:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643281687;
+ t=1643281714;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=K3bF25oTIJTDef2BiMF8aVdAYP/rtXQjl4bpjE4beY4=;
- b=QuMwRYoWZG8XZmpMzDwOEHJQuTGUgWYzoWZ92LwJXMXdLROdc4ndOm0zCaxGZKNdcGKsYS
- HqLTJO/FKwqFQHB6pRfr/eEEEUViK+hoHEAdUu7E8tKlvPIq/eNbahUOluxlY637UJ4NvC
- L0Mb5Q5Yh0LIR++E9X1t44HFiCvKA34Hq0+nVpph8WKGWmFcYGqnAC4fQsx0SzL2th5CaV
- /c5afRKPYEWHmB70J8Z+S61U43wtHBh/tGjd8Wa/NT5VJSn7wByu68z/YAJNVyV2TVzFw2
- dcAzDGZKOzUdKXC+u1aqpxLDwaRPxCC8cl8/wBnKCU5jWUwah4GrB3Au+dmgRQ==
+ bh=Ln1Kguuuzcqz2rq1NT2MAKP2loMpMc/GoDyrA3bHOg0=;
+ b=nWhAo6xgLlUvT8xfbW2xnl6SQniz0J00Cb3AOghukBzbYUCO0bY1DGR6y7yugqqSvI5Eox
+ bjAUuwRiSnfV8fC4MKpMECWE08gntrUt5ow7RIfryO2x24vLlgBbWVZHk/b5v6Pt2yVBcZ
+ UxP7Nh1PnRmVQYapKQrXCD3nB8STXOrgLyEQcKeZDRK7W6PsZd0mMIAR2/oG4k+6abJI4m
+ CTRgd+Jcx1kp1idzFWwLwvsSAYJvbIrnx7c0sfEMG73Yk76lELZxbYC++fFGVgAJeNUQaB
+ 3he/+Mb4owOaDOaXuD0ggRAFXJTWX7zE7mGEzKUPtyyteAA4N/hJTTjqGOpiow==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
  <linux-mtd@lists.infradead.org>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Uwe Kleine-Konig <u.kleine-koenig@pengutronix.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: rawnand: Fix misuses of of_match_node()
-Date: Thu, 27 Jan 2022 12:08:02 +0100
-Message-Id: <20220127110802.1064963-1-miquel.raynal@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mtd: Replace the expert mode symbols with a single helper
+Date: Thu, 27 Jan 2022 12:08:28 +0100
+Message-Id: <20220127110828.1065099-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220127_030810_684559_E0F63D30 
-X-CRM114-Status: GOOD (  11.63  )
+X-CRM114-CacheID: sfid-20220127_030838_601402_ACD7CC60 
+X-CRM114-Status: GOOD (  13.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,57 +70,122 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On non-OF enabled platforms (CONFIG_OF is not set), of_match_node() will
-expand to NULL. The of_device_id array pointed by the macro will then be
-left unused. Let's mark the array __maybe_unused in this case to prevent
-compiler warnings.
+Reduce the number of exported symbols by replacing:
+- mtd_expert_analysis_warning (the error string)
+- mtd_expert_analysis_mode (the boolean)
+with a single helper:
+- mtd_check_expert_analysis_mode
 
+Calling this helper will both check/return the content of the internal
+boolean -which is not exported anymore- and as well WARN_ONCE() the
+user.
+
+While on this function, make the error string local to the helper and
+set it const.
+
+Update all the consumers.
+
+Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 2 +-
- drivers/mtd/nand/raw/atmel/pmecc.c           | 2 +-
- drivers/mtd/nand/raw/brcmnand/brcmnand.c     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/mtdcore.c            | 21 +++++++++++++--------
+ drivers/mtd/nand/core.c          |  2 +-
+ drivers/mtd/nand/raw/nand_base.c |  2 +-
+ drivers/mtd/nand/raw/nand_bbt.c  |  2 +-
+ include/linux/mtd/mtd.h          |  3 +--
+ 5 files changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 4ecbaccf5526..0209f7462635 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1938,7 +1938,7 @@ static const struct atmel_smc_nand_ebi_csa_cfg sam9x60_ebi_csa = {
- 	.nfd0_on_d16 = AT91_SFR_CCFG_NFD0_ON_D16,
- };
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 70f492dce158..06bd05ef20d6 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -358,6 +358,19 @@ static int mtd_partname_debug_show(struct seq_file *s, void *p)
  
--static const struct of_device_id atmel_ebi_csa_regmap_of_ids[] = {
-+static const struct of_device_id __maybe_unused atmel_ebi_csa_regmap_of_ids[] = {
- 	{
- 		.compatible = "atmel,at91sam9260-matrix",
- 		.data = &at91sam9260_ebi_csa,
-diff --git a/drivers/mtd/nand/raw/atmel/pmecc.c b/drivers/mtd/nand/raw/atmel/pmecc.c
-index 43ebd78816c0..4d7dc8a9c373 100644
---- a/drivers/mtd/nand/raw/atmel/pmecc.c
-+++ b/drivers/mtd/nand/raw/atmel/pmecc.c
-@@ -920,7 +920,7 @@ static struct atmel_pmecc_caps sama5d2_caps = {
- 	.correct_erased_chunks = true,
- };
+ DEFINE_SHOW_ATTRIBUTE(mtd_partname_debug);
  
--static const struct of_device_id atmel_pmecc_legacy_match[] = {
-+static const struct of_device_id __maybe_unused atmel_pmecc_legacy_match[] = {
- 	{ .compatible = "atmel,sama5d4-nand", &sama5d4_caps },
- 	{ .compatible = "atmel,sama5d2-nand", &sama5d2_caps },
- 	{ /* sentinel */ }
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index f75929783b94..7c0f02069ea0 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -2914,7 +2914,7 @@ const struct dev_pm_ops brcmnand_pm_ops = {
- };
- EXPORT_SYMBOL_GPL(brcmnand_pm_ops);
++static bool mtd_expert_analysis_mode;
++
++bool mtd_check_expert_analysis_mode(void)
++{
++	const char *mtd_expert_analysis_warning =
++		"Bad block checks have been entirely disabled.\n"
++		"This is only reserved for post-mortem forensics and debug purposes.\n"
++		"Never enable this mode if you do not know what you are doing!\n";
++
++	return WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning);
++}
++EXPORT_SYMBOL_GPL(mtd_check_expert_analysis_mode);
++
+ static struct dentry *dfs_dir_mtd;
  
--static const struct of_device_id brcmnand_of_match[] = {
-+static const struct of_device_id __maybe_unused brcmnand_of_match[] = {
- 	{ .compatible = "brcm,brcmnand-v2.1" },
- 	{ .compatible = "brcm,brcmnand-v2.2" },
- 	{ .compatible = "brcm,brcmnand-v4.0" },
+ static void mtd_debugfs_populate(struct mtd_info *mtd)
+@@ -2370,14 +2383,6 @@ static struct backing_dev_info * __init mtd_bdi_init(const char *name)
+ 	return ret ? ERR_PTR(ret) : bdi;
+ }
+ 
+-char *mtd_expert_analysis_warning =
+-	"Bad block checks have been entirely disabled.\n"
+-	"This is only reserved for post-mortem forensics and debug purposes.\n"
+-	"Never enable this mode if you do not know what you are doing!\n";
+-EXPORT_SYMBOL_GPL(mtd_expert_analysis_warning);
+-bool mtd_expert_analysis_mode;
+-EXPORT_SYMBOL_GPL(mtd_expert_analysis_mode);
+-
+ static struct proc_dir_entry *proc_mtd;
+ 
+ static int __init init_mtd(void)
+diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
+index 416947f28b67..3ff99a42a63f 100644
+--- a/drivers/mtd/nand/core.c
++++ b/drivers/mtd/nand/core.c
+@@ -21,7 +21,7 @@
+  */
+ bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
+ {
+-	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
++	if (mtd_check_expert_analysis_mode())
+ 		return false;
+ 
+ 	if (nanddev_bbt_is_initialized(nand)) {
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index e7b2ba016d8c..068ecf979033 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -321,7 +321,7 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+ 	if (nand_region_is_secured(chip, ofs, mtd->erasesize))
+ 		return -EIO;
+ 
+-	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
++	if (mtd_check_expert_analysis_mode())
+ 		return 0;
+ 
+ 	if (chip->legacy.block_bad)
+diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
+index ab630af3a309..a3723da2e0a0 100644
+--- a/drivers/mtd/nand/raw/nand_bbt.c
++++ b/drivers/mtd/nand/raw/nand_bbt.c
+@@ -1455,7 +1455,7 @@ int nand_isbad_bbt(struct nand_chip *this, loff_t offs, int allowbbt)
+ 	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+ 		 (unsigned int)offs, block, res);
+ 
+-	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
++	if (mtd_check_expert_analysis_mode())
+ 		return 0;
+ 
+ 	switch (res) {
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 1ffa933121f6..5af096325b4d 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -711,7 +711,6 @@ static inline int mtd_is_bitflip_or_eccerr(int err) {
+ 
+ unsigned mtd_mmap_capabilities(struct mtd_info *mtd);
+ 
+-extern char *mtd_expert_analysis_warning;
+-extern bool mtd_expert_analysis_mode;
++bool mtd_check_expert_analysis_mode(void);
+ 
+ #endif /* __MTD_MTD_H__ */
 -- 
 2.27.0
 
