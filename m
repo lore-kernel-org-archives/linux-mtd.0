@@ -4,65 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17264C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 15:45:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 480A2C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 27 Jan 2022 16:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uQiRBhrGCySXFVgpBDe7UmX2wvHVeAqv1dh2oikPMM4=; b=O7W7GvS263kgCW
-	fgKmFBcYHthNTXqAZ5NiDDxPj6w9LNfSuCMjSMgMyZXohTAAl1rd7+pw71cQL6SzUF169DDAOFlOf
-	pHOg70VxznoUM76v0YMPmWL0Jz4phmHqa6L6Dx4gDqScUPSJtyVrXloJgUDWqLQyxj4FL0MPL8YKC
-	ZRMgzIWt2FB0ty6FiABTpiUAf4xFp8iXAAxj67fQyeIbNyjtUQi3e7xy+954SWEr01rWB4lDe+0gE
-	Q/0zgcWM1ouX7H472BtLm95R7QefucceEt0Iz4VxsluFBYb5ARSrw4qXejGXNSS2ofjCTaCq9oNUa
-	kCidGwRsTzTvpIGVB3JA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:Message-Id:Cc:To
+	:Subject:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=uBcY22qXzjJ//lBCGTSgKb3v86AHZsFDD6RFoRZSoOw=; b=cYWXbMxv+mGY8oEl/lV32an/it
+	S2mxGIujZrIjZAuFcZJ4j4TJ4eSQBJmn8QmLt8N6Augf/qnw/LXUxB9tZUWv59bgtiUN4CK7lxNwl
+	71gXcPZa9OtV67jDdZ+RR7ETVZ1J6OYyGFtVsZzJHOFhT88hiFbJGWGGl69BkrZOAqaa+PIX8fWxG
+	W0epP+3T6ybpqRGsIGKwdyxrep5YHUbpOtfGZKAIsus2IdK35z0tv18Q6bIa4t+hMuoTpYXqO+5hY
+	D/foX4jV/ayuqkg8++PJenraNYjxKGKMSPWDgWNurQs2ZkanityG8/Ly90g02bdJUH9oPzxYuKXFv
+	Oah3jESw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nD6wr-00GINj-Qb; Thu, 27 Jan 2022 15:44:33 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1nD7g7-00GWmE-Nn; Thu, 27 Jan 2022 16:31:19 +0000
+Received: from aposti.net ([89.234.176.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nD6wo-00GIMr-Re
- for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 15:44:33 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 6CE6AFF80A;
- Thu, 27 Jan 2022 15:44:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643298268;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=QjHeCUIB9qZywsC634sVRE1jUeIoCHv3u6O5I1+pY2M=;
- b=m2U6HQl/9z/IREhPfkoCLCFLB0d3zBVEcGTEMfpmnuyA+V4Gt9r18zUa57G7xf/SVcjPVD
- CT7MfpbYFuWFei+QCMxzkI3W7WaO1o08Oq8LI/WK8xSJlUb+N7LU1KPTjMjUT7Zh0ha0U8
- oAp6/498dTxaJkV63nK7pz1EoSJAJA9RF/35j/QbHarvnrJUK+EJfOX3ihvhRD3OH+mI1H
- sIAKBRNqDc8rVTImrM9w7x7av0KjneE4TACWB/NKj88w8fzF5I3Ga9jUT3KmkrDwQWo1fh
- +oK0Q9MHkankOMmkBOtfY0OfKtFheKA6NsyjFn7ln6z9xEhZIKrHxq3YAMGO6A==
-Date: Thu, 27 Jan 2022 16:44:25 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Paul Cercueil <paul@crapouillou.net>
+ id 1nD7fl-00GWXz-8r
+ for linux-mtd@lists.infradead.org; Thu, 27 Jan 2022 16:30:58 +0000
+Date: Thu, 27 Jan 2022 16:30:38 +0000
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] mtd: Fix misuses of of_match_ptr()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Richard Weinberger
  <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
- <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Michael
- Walle <michael@walle.cc>, linux-mtd@lists.infradead.org, Nicolas Ferre
+ <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Michael Walle
+ <michael@walle.cc>, linux-mtd@lists.infradead.org, Nicolas Ferre
  <nicolas.ferre@microchip.com>, Ludovic Desroches
  <ludovic.desroches@microchip.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
  Matthias Brugger <matthias.bgg@gmail.com>, Uwe Kleine-Konig
  <u.kleine-koenig@pengutronix.de>, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] mtd: Fix misuses of of_match_ptr()
-Message-ID: <20220127164425.755fe5cd@xps13>
-In-Reply-To: <SI9D6R.T149KFA13SNK2@crapouillou.net>
+Message-Id: <27ND6R.YH1CCXQUE2NI2@crapouillou.net>
+In-Reply-To: <20220127164425.755fe5cd@xps13>
 References: <20220127110631.1064705-1-miquel.raynal@bootlin.com>
  <RQ8D6R.EBO0P9DUGF812@crapouillou.net> <YfKCtYR7ZrPu+waQ@piout.net>
- <SI9D6R.T149KFA13SNK2@crapouillou.net>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <SI9D6R.T149KFA13SNK2@crapouillou.net> <20220127164425.755fe5cd@xps13>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220127_074431_396975_68987AF4 
-X-CRM114-Status: GOOD (  29.88  )
+X-CRM114-CacheID: sfid-20220127_083057_501567_91D9E575 
+X-CRM114-Status: GOOD (  22.42  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,60 +57,127 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUGF1bCwKCnBhdWxAY3JhcG91aWxsb3UubmV0IHdyb3RlIG9uIFRodSwgMjcgSmFuIDIwMjIg
-MTE6MzU6MTYgKzAwMDA6Cgo+IExlIGpldS4sIGphbnYuIDI3IDIwMjIgYXQgMTI6MzI6MDUgKzAx
-MDAsIEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbT4gYSDD
-qWNyaXQgOgo+ID4gT24gMjcvMDEvMjAyMiAxMToxODoyNyswMDAwLCBQYXVsIENlcmN1ZWlsIHdy
-b3RlOiAgCj4gPj4gIEhpIE1pcXVlbCwgIAo+ID4+ID4+ICBMZSBqZXUuLCBqYW52LiAyNyAyMDIy
-IGF0IDEyOjA2OjMxICswMTAwLCBNaXF1ZWwgUmF5bmFsICAKPiA+PiAgPG1pcXVlbC5yYXluYWxA
-Ym9vdGxpbi5jb20+IGEgw6ljcml0IDogIAo+ID4+ICA+IG9mX21hdGNoX3B0cigpIGVpdGhlciBl
-eHBhbmRzIHRvIE5VTEwgaWYgIUNPTkZJR19PRiwgb3IgaXMgPj4gdHJhbnNwYXJlbnQKPiA+PiAg
-PiBvdGhlcndpc2UuIFRoZXJlIGFyZSBzZXZlcmFsIGRyaXZlcnMgdXNpbmcgdGhpcyBtYWNybyB3
-aGljaCBrZWVwID4+IHRoZWlyCj4gPj4gID4gb2ZfZGV2aWNlX2lkIGFycmF5IGVuY2xvc2VkIHdp
-dGhpbiBhbiAjaWZkZWYgQ09ORklHX09GIGNoZWNrLCA+PiB0aGVzZSBhcmUKPiA+PiAgPiBjb25z
-aWRlcmVkIGZpbmUuIEhvd2V2ZXIsIFdoZW4gbWlzdXNlZCwgdGhlIG9mX2RldmljZV9pZCBhcnJh
-eSA+PiBwb2ludGVkCj4gPj4gID4gYnkgdGhpcyBtYWNybyB3aWxsIHByb2R1Y2UgYSB3YXJuaW5n
-IGJlY2F1c2UgaXQgaXMgZmluYWxseSB1bnVzZWQgPj4gd2hlbgo+ID4+ICA+IGNvbXBpbGVkIHdp
-dGhvdXQgT0Ygc3VwcG9ydC4KPiA+PiAgPgo+ID4+ICA+IEEgbnVtYmVyIG9mIGZpeGVzIGFyZSBw
-b3NzaWJsZToKPiA+PiAgPiAtIEFsd2F5cyBkZXBlbmQgb24gQ09ORklHX09GLCBidXQgdGhpcyB3
-aWxsIG5vdCBhbHdheXMgd29yayBhbmQgPj4gbWF5Cj4gPj4gID4gICBicmVhayBib2FyZHMuCj4g
-Pj4gID4gLSBFbmNsb3NlIHRoZSBjb21wYXRpYmxlIGFycmF5IGJ5ICNpZmRlZidzLCB0aGlzIG1h
-eSBzYXZlIGEgYml0IG9mCj4gPj4gID4gICBtZW1vcnkgYnV0IHdpbGwgcmVkdWNlIGJ1aWxkIGNv
-dmVyYWdlLgo+ID4+ICA+IC0gVGVsbCB0aGUgY29tcGlsZXIgdGhlIGFycmF5IG1heSBiZSB1bnVz
-ZWQsIGlmIHRoaXMgY2FuIGJlID4+IGF2b2lkZWQsCj4gPj4gID4gICBsZXQncyBub3QgZG8gdGhp
-cy4KPiA+PiAgPiAtIEp1c3QgZHJvcCB0aGUgbWFjcm8sIHNldHRpbmcgdGhlIG9mX2RldmljZV9p
-ZCBhcnJheSBmb3IgYSBub24gT0YKPiA+PiAgPiAgIGVuYWJsZWQgcGxhdGZvcm0gaXMgbm90IGFu
-IGlzc3VlLCBpdCB3aWxsIGp1c3QgYmUgdW51c2VkLgo+ID4+ICA+Cj4gPj4gID4gVGhlIGxhdHRl
-ciBzb2x1dGlvbiBzZWVtcyB0aGUgbW9yZSBhcHByb3ByaWF0ZSwgc28gbGV0J3MgdXNlIGl0LiAg
-Cj4gPj4gPj4gIEkgZGlzYWdyZWUuIFRoZSBwcm9wZXIgc29sdXRpb24gd291bGQgYmUgdG8gbm90
-IGhhdmUgb2ZfbWF0Y2hfcHRyKCkgIAo+ID4+ICBjb25kaXRpb25hbGx5IGRlZmluZWQuICAKPiA+
-PiA+ID4gSSBkaXNhZ3JlZS4uLiAgCj4gPiAgIAo+ID4+ICBSaWdodCBub3cgaXQncyBkZWZpbmVk
-IGJhc2ljYWxseSBsaWtlIHRoaXM6Cj4gPj4gICNpZmRlZiBDT05GSUdfT0YKPiA+PiAgI2RlZmlu
-ZSBvZl9tYXRjaF9wdHIoX3B0cikgKF9wdHIpCj4gPj4gICNlbHNlCj4gPj4gICNkZWZpbmUgb2Zf
-bWF0Y2hfcHRyKF9wdHIpIE5VTEwKPiA+PiAgI2VuZGlmICAKPiA+PiA+PiAgVGhpcyBpcyBiYWQs
-IGJlY2F1c2UgaW4gdGhlICFDT05GSUdfT0YgY2FzZSwgdGhlIHBvaW50ZXIgaXMgbmV2ZXIgIAo+
-ID4+ICByZWZlcmVuY2VkLCBhbmQgdGhlIGNvbXBpbGVyIGNvbXBsYWlucyBhYm91dCBpdCwgYXMg
-eW91IGNhbiBub3RpY2UuICAKPiA+PiA+PiAgSW5zdGVhZCwgaXQgc2hvdWxkIGJlIGRlZmluZWQg
-bGlrZSB0aGlzOiAgCj4gPj4gICNkZWZpbmUgb2ZfbWF0Y2hfcHRyKF9wdHIpIFBUUl9JRihJU19F
-TkFCTEVEKENPTkZJR19PRiksIChfcHRyKSkgIAo+ID4+ID4+ICBUaGVuIGluIHRoZSAhQ09ORklH
-X09GIGNhc2UgdGhlIGNvbXBpbGVyIHdpbGwgc2VlIHRoZSBhcnJheSBhcyA+PiBlZmZlY3RpdmVs
-eSAgCj4gPj4gIHVudXNlZCwgYW5kIGRyb3AgaXQgYXMgbmVlZGVkLiAgCj4gPj4gPj4gIFdlIGFy
-ZSBkb2luZyB0aGUgZXhhY3Qgc2FtZSB3b3JrIHdpdGggdGhlIFBNIGNhbGxiYWNrcywgd2l0aCB0
-aGUgbmV3ICAKPiA+PiAgcG1fcHRyKCkgbWFjcm8uICAKPiA+PiA+PiAgTm90ZSB0aGF0IEkgZG9u
-J3Qga25vdyB0aGUgYmVoYXZpb3VyIG9mIE1PRFVMRV9ERVZJQ0VfVEFCTEUob2YsID4+IC4uLiks
-IGl0ICAKPiA+PiAgbWlnaHQgYmUgYSBnb29kIGlkZWEgdG8gbWFrZSBpdCBhIE5PUCBpZiAhQ09O
-RklHX09GIHNvIHRoYXQgdGhlID4+IGFycmF5IGlzCj4gPj4gIHJlbW92ZWQgYnkgdGhlIGNvbXBp
-bGVyIGFzIGRlYWQgY29kZSAoaWYgaXQncyBub3QgdGhlIGNhc2UgYWxyZWFkeSkuICAKPiA+PiA+
-ID4gLi4uIGJlY2F1c2UgQUNQSSBwbGF0Zm9ybXMgY2FuIHVzZSB0aGUgT0YgdGFibGUgdG8gcHJv
-YmUgZHJpdmVycyBldmVuICAKPiA+IHdoZW4gdGhleSBkb24ndCBoYXZlIE9GIHN1cHBvcnQuICAK
-PiAKPiBGYWlyIGVub3VnaC4gSSBkaWRuJ3QgdGhpbmsgYWJvdXQgdGhpcyB1c2UtY2FzZS4KClNv
-IHNoYWxsIEkgZHJvcCBpdCBlbnRpcmVseSBpbiB0aGUgZW5kPyBPciBkbyBpdCBsaWtlIGluIHNl
-dmVyYWwgb3RoZXIKZHJpdmVyczogZW5jbG9zZSB0aGUgb2ZfZGV2aWNlX2lkIGFycmF5IGluIGEg
-I2lmZGVmPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Miquel,
+
+Le jeu., janv. 27 2022 at 16:44:25 +0100, Miquel Raynal =
+
+<miquel.raynal@bootlin.com> a =E9crit :
+> Hi Paul,
+> =
+
+> paul@crapouillou.net wrote on Thu, 27 Jan 2022 11:35:16 +0000:
+> =
+
+>>  Le jeu., janv. 27 2022 at 12:32:05 +0100, Alexandre Belloni =
+
+>> <alexandre.belloni@bootlin.com> a =E9crit :
+>>  > On 27/01/2022 11:18:27+0000, Paul Cercueil wrote:
+>>  >>  Hi Miquel,
+>>  >> >>  Le jeu., janv. 27 2022 at 12:06:31 +0100, Miquel Raynal
+>>  >>  <miquel.raynal@bootlin.com> a =E9crit :
+>>  >>  > of_match_ptr() either expands to NULL if !CONFIG_OF, or is >> =
+
+>> transparent
+>>  >>  > otherwise. There are several drivers using this macro which =
+
+>> keep >> their
+>>  >>  > of_device_id array enclosed within an #ifdef CONFIG_OF check, =
+
+>> >> these are
+>>  >>  > considered fine. However, When misused, the of_device_id =
+
+>> array >> pointed
+>>  >>  > by this macro will produce a warning because it is finally =
+
+>> unused >> when
+>>  >>  > compiled without OF support.
+>>  >>  >
+>>  >>  > A number of fixes are possible:
+>>  >>  > - Always depend on CONFIG_OF, but this will not always work =
+
+>> and >> may
+>>  >>  >   break boards.
+>>  >>  > - Enclose the compatible array by #ifdef's, this may save a =
+
+>> bit of
+>>  >>  >   memory but will reduce build coverage.
+>>  >>  > - Tell the compiler the array may be unused, if this can be =
+
+>> >> avoided,
+>>  >>  >   let's not do this.
+>>  >>  > - Just drop the macro, setting the of_device_id array for a =
+
+>> non OF
+>>  >>  >   enabled platform is not an issue, it will just be unused.
+>>  >>  >
+>>  >>  > The latter solution seems the more appropriate, so let's use =
+
+>> it.
+>>  >> >>  I disagree. The proper solution would be to not have =
+
+>> of_match_ptr()
+>>  >>  conditionally defined.
+>>  >> > > I disagree...
+>>  >
+>>  >>  Right now it's defined basically like this:
+>>  >>  #ifdef CONFIG_OF
+>>  >>  #define of_match_ptr(_ptr) (_ptr)
+>>  >>  #else
+>>  >>  #define of_match_ptr(_ptr) NULL
+>>  >>  #endif
+>>  >> >>  This is bad, because in the !CONFIG_OF case, the pointer is =
+
+>> never
+>>  >>  referenced, and the compiler complains about it, as you can =
+
+>> notice.
+>>  >> >>  Instead, it should be defined like this:
+>>  >>  #define of_match_ptr(_ptr) PTR_IF(IS_ENABLED(CONFIG_OF), (_ptr))
+>>  >> >>  Then in the !CONFIG_OF case the compiler will see the array =
+
+>> as >> effectively
+>>  >>  unused, and drop it as needed.
+>>  >> >>  We are doing the exact same work with the PM callbacks, with =
+
+>> the new
+>>  >>  pm_ptr() macro.
+>>  >> >>  Note that I don't know the behaviour of =
+
+>> MODULE_DEVICE_TABLE(of, >> ...), it
+>>  >>  might be a good idea to make it a NOP if !CONFIG_OF so that the =
+
+>> >> array is
+>>  >>  removed by the compiler as dead code (if it's not the case =
+
+>> already).
+>>  >> > > ... because ACPI platforms can use the OF table to probe =
+
+>> drivers even
+>>  > when they don't have OF support.
+>> =
+
+>>  Fair enough. I didn't think about this use-case.
+> =
+
+> So shall I drop it entirely in the end? Or do it like in several other
+> drivers: enclose the of_device_id array in a #ifdef?
+
+No, your patch is fine. It's not like wrapping them would save much =
+
+space anyway.
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
