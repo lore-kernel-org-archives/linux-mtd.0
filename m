@@ -4,57 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C06E6C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jan 2022 17:11:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8412C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jan 2022 17:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=GVIBztIFL3XKIiCvaqS2eqciNo5019/VGOOtAYmMbgk=; b=K0+DTV1kVRstyR
-	wVtVdIfrkPG6U7H7fp6ohYGGaC4EGKjhLxON9aYegVJJJ4MGZOIpFIEKTREIIvNBpO2yVD9VmXyOw
-	7AAXzPrENjlscoQrEYqTt/Jsp5OpwbATLS1T/LO5h0DVbHC2bKHXD2TKGhrIv+haKUZpWDLXp5G3M
-	XRy0ZgllmqBIPODkcPiiGt8oQGUs9oyyp7um+k51tOTVC1lY7/s9NxmyTXJ1Q1jKwHAQjNG2GrLDW
-	mwmf0/J/vZEmk9mY3kWxlLyQKm4yb406GFfW4KGWuO8My2b1nlHmhcYK7ST1ShkGWQGaTlYtt5tQW
-	nXzipJTDj8eQjxOw0j+w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
+	Cc:To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=c6tqwHmELZaZBtvzo+SgJ/wKnxFIRyc+gY4blcmTPBQ=; b=23+wakErPUmOBhMfjzdlEfwRWf
+	irEOMmizVc98tThfQLR7TliDbbUW60NUSZ6OEuTiKf5vIWsPAOLEvhG6LnRXQeva8tMznM4XwGggw
+	46HEV7ey1kGD2PzSQzsVKU3kytnKA1sw3Qlc9J9CVOG8/WjDnXxmg8ULKy7RP8P+e+9VdACjMNDmW
+	gEfQZpjdhWMwfVrV6OSm6Xt9flwuuSj6f25R2rV1iHaor08SLBrUW146Q5N/1RrxuFqdhDJ50VMzB
+	+u+uphSfN6NjUVpH7dToZSK/O1YoBB/Gu+TBdKePry6rqSec/foqXy8YCa5yMUSihyepTpdNUgGmw
+	syCYrgww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nDUlT-0039AR-9i; Fri, 28 Jan 2022 17:10:23 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1nDVO4-003FZ7-Td; Fri, 28 Jan 2022 17:50:16 +0000
+Received: from m43-7.mailgun.net ([69.72.43.7])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nDUlO-00398b-TF
- for linux-mtd@lists.infradead.org; Fri, 28 Jan 2022 17:10:21 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 72FBC200008;
- Fri, 28 Jan 2022 17:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643389816;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=g9sdPvoFDy+anFluQspXTL8m0UmP2RL0czNxbmlMrMg=;
- b=YXhyz22LcHHjnzMJ6LwIP8Fx7MsHQS5EitCYsIcw7DhW7RWA9S7R+yUTG8maCZMpvyW+KY
- pmUXeNE0vPRyDS4TiE9lx3zHzGK8XwVaJ9IgmmIIBDg9FD/nyOJUKxvKJb07OenfGfLAu3
- N47x0d4b+GisC3hMsEJI3gPsVX/tAzp6sNokEgB1BWn4gXYnA+VzMHF4fofValGwvb7LZ8
- w4Y+PZMSaA5AYOK8W4cvqEWtbO7Px3CPiDCgaZxk3MWWizMwvq3/4JDZikQ/btO7yn/X46
- F8foYYVla4pdJAhPpjZ+xMRh+VEV26LcgLZVcffNlkK7zJ79Y+2zU1uD00XzQQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>
-Cc: Mark Brown <broonie@kernel.org>, Julien Su <juliensu@mxic.com.tw>,
- Jaime Liao <jaimeliao@mxic.com.tw>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: nand: ecc: Rework Kconfig dependencies
-Date: Fri, 28 Jan 2022 18:10:13 +0100
-Message-Id: <20220128171013.1251796-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+ id 1nDVO2-003FYf-IS
+ for linux-mtd@lists.infradead.org; Fri, 28 Jan 2022 17:50:16 +0000
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1643392213; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=QwXJRec32Sfdr000R0mnPj2fV22XnG1mt0t4eMsdDmw=;
+ b=tTSv5Xq24NHOZxzPsaFeuH/XNt0S2YDaIUu1SZa9sFILuc9NtqPZKIZvYH+kErWukJTUHW/9
+ bgDLoElcho/XBuducauyuLmGOHXKL38lx8ZYWY4mQ2VC6z73RnMsHYv4lFlp1Vm2Pm+oCZ5A
+ ILrr5SjX8HtgZ9S6hDycQEH8D54=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyJkZDQ0ZiIsICJsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZyIsICJiZTllNGEiXQ==
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 61f42cd403f2a95dc2390cc3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 Jan 2022 17:50:12
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id 8CC68C4360C; Fri, 28 Jan 2022 17:50:12 +0000 (UTC)
+Received: from [192.168.0.104] (unknown [183.82.28.99])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: sricharan)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 7CC9BC4338F;
+ Fri, 28 Jan 2022 17:50:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7CC9BC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] mtd: nand: raw: qcom_nandc: Don't clear_bam_transaction
+ on READID
+From: Sricharan Ramabadhran <sricharan@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Manivannan Sadhasivam <mani@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@somainline.org>,
+ ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+ angelogioacchino.delregno@somainline.org, marijn.suijten@somainline.org,
+ jamipkettunen@somainline.org, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ mdalam@codeaurora.org
+References: <20220113184427.2259509-1-konrad.dybcio@somainline.org>
+ <20220114082718.32a2fc83@xps13> <20220126111613.3ab0021e@xps13>
+ <20220126103316.GA212068@thinkpad> <20220126114200.4cc3c21b@xps13>
+ <fc80a6e7-bd44-3b3e-fca2-1316a76d65f5@codeaurora.org>
+Message-ID: <a6fcc533-e7cd-7b55-4db0-cec80c07b46a@codeaurora.org>
+Date: Fri, 28 Jan 2022 23:20:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <fc80a6e7-bd44-3b3e-fca2-1316a76d65f5@codeaurora.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220128_091019_102882_9C192485 
-X-CRM114-Status: GOOD (  10.55  )
+X-CRM114-CacheID: sfid-20220128_095014_707948_911C2562 
+X-CRM114-Status: GOOD (  20.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,73 +90,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Unlike "depends on", "select" does not enforce any type (y or m), which
-can lead to the following situation:
-* SPI_MXIC=y expects the NAND symbols to be built statically
-* SPI_MXIC depends on MTD_NAND_ECC
-* MTD_NAND_ECC selects MTD_NAND_CORE
-In this case MTD_NAND_CORE=m is "valid" but will trigger link errors
-such as the one below.
-
-The cleanest way to handle the situation is to use a "depends on"
-between MTD_NAND_ECC and MTD_NAND_CORE to avoid such situations.
-
-While at modifying the MTD_NAND_ECC symbol, fix the spacing.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 8431292ff49d..1b5f5bac3e6e 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -12,13 +12,13 @@ source "drivers/mtd/nand/spi/Kconfig"
- menu "ECC engine support"
- 
- config MTD_NAND_ECC
--       bool
--       select MTD_NAND_CORE
-+	bool
-+	depends on MTD_NAND_CORE
- 
- config MTD_NAND_ECC_SW_HAMMING
- 	bool "Software Hamming ECC engine"
-+	depends on MTD_NAND_ECC
- 	default y if MTD_RAW_NAND
--	select MTD_NAND_ECC
- 	help
- 	  This enables support for software Hamming error
- 	  correction. This correction can correct up to 1 bit error
-@@ -37,8 +37,8 @@ config MTD_NAND_ECC_SW_HAMMING_SMC
- 
- config MTD_NAND_ECC_SW_BCH
- 	bool "Software BCH ECC engine"
-+	depends on MTD_NAND_ECC
- 	select BCH
--	select MTD_NAND_ECC
- 	default n
- 	help
- 	  This enables support for software BCH error correction. Binary BCH
-@@ -48,7 +48,7 @@ config MTD_NAND_ECC_SW_BCH
- 
- config MTD_NAND_ECC_MXIC
- 	bool "Macronix external hardware ECC engine"
--	select MTD_NAND_ECC
-+	depends on MTD_NAND_ECC
- 	help
- 	  This enables support for the hardware ECC engine from Macronix.
- 
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgS29ucmFkLAoKT24gMS8yOC8yMDIyIDk6NTUgQU0sIFNyaWNoYXJhbiBSYW1hYmFkaHJhbiB3
+cm90ZToKPiBIaSBNaXF1ZWwsCj4KPiBPbiAxLzI2LzIwMjIgNDoxMiBQTSwgTWlxdWVsIFJheW5h
+bCB3cm90ZToKPj4gSGkgTWFuaSwKPj4KPj4gbWFuaUBrZXJuZWwub3JnIHdyb3RlIG9uIFdlZCwg
+MjYgSmFuIDIwMjIgMTY6MDM6MTYgKzA1MzA6Cj4+Cj4+PiBPbiBXZWQsIEphbiAyNiwgMjAyMiBh
+dCAxMToxNjoxM0FNICswMTAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+Pj4+IEhlbGxvLAo+Pj4+
+Cj4+Pj4gbWlxdWVsLnJheW5hbEBib290bGluLmNvbSB3cm90ZSBvbiBGcmksIDE0IEphbiAyMDIy
+IDA4OjI3OjE4ICswMTAwOgo+Pj4+PiBIaSBLb25yYWQsCj4+Pj4+Cj4+Pj4+IGtvbnJhZC5keWJj
+aW9Ac29tYWlubGluZS5vcmcgd3JvdGUgb24gVGh1LCAxMyBKYW4gMjAyMiAxOTo0NDoyNiAKPj4+
+Pj4gKzAxMDA6Cj4+Pj4+PiBXaGlsZSBJIGhhdmUgYWJzb2x1dGVseSAwIGlkZWEgd2h5IGFuZCBo
+b3csIHJ1bm5pbmcgCj4+Pj4+PiBjbGVhcl9iYW1fdHJhbnNhY3Rpb24KPj4+Pj4+IHdoZW4gUkVB
+RElEIGlzIGlzc3VlZCBtYWtlcyB0aGUgRE1BIHRvdGFsbHkgY2xvZyB1cCBhbmQgcmVmdXNlIHRv
+IAo+Pj4+Pj4gZnVuY3Rpb24KPj4+Pj4+IGF0IGFsbCBvbiBtZG05NjA3LiBJbiBmYWN0LCBpdCBp
+cyBzbyBiYWQgdGhhdCBhbGwgdGhlIGRhdGEgZ2V0cyAKPj4+Pj4+IGdhcmJsZWQKPj4+Pj4+IGFu
+ZCBhZnRlciBhIHNob3J0IHdoaWxlIGluIHRoZSBuYW5kIHByb2JlIGZsb3csIHRoZSBDUFUgZGVj
+aWRlcyB0aGF0Cj4+Pj4+PiBzZXB1a3UgaXMgdGhlIG9ubHkgb3B0aW9uLgo+Pj4+Pj4KPj4+Pj4+
+IFJlbW92aW5nIF9SRUFESUQgZnJvbSB0aGUgaWYgY29uZGl0aW9uIG1ha2VzIGl0IHdvcmsgbGlr
+ZSBhIAo+Pj4+Pj4gY2hhcm0sIEkgY2FuCj4+Pj4+PiByZWFkIGRhdGEgYW5kIG1vdW50IHBhcnRp
+dGlvbnMgd2l0aG91dCBhIHByb2JsZW0uCj4+Pj4+Pgo+Pj4+Pj4gU2lnbmVkLW9mZi1ieTogS29u
+cmFkIER5YmNpbyA8a29ucmFkLmR5YmNpb0Bzb21haW5saW5lLm9yZz4KPj4+Pj4+IC0tLQo+Pj4+
+Pj4gVGhpcyBpcyB0b3RhbGx5IGp1c3QgYW4gb2JzZXJ2YXRpb24gd2hpY2ggdG9vayBtZSBhbiBp
+bmh1bWFuZSAKPj4+Pj4+IGFtb3VudCBvZgo+Pj4+Pj4gZGVidWcgcHJpbnRzIHRvIGZpbmQuLiBw
+ZXJoYXBzIHRoZXJlJ3MgYSBiZXR0ZXIgcmVhc29uIGJlaGluZCAKPj4+Pj4+IHRoaXMsIGJ1dAo+
+Pj4+Pj4gSSBjYW4ndCBzZWVtIHRvIGZpbmQgYW55IGFuc3dlcnMuLiBUaGVyZWZvcmUsIHRoaXMg
+aXMgYSBCSUcgUkZDIQo+Pj4+PiBJJ20gYWRkaW5nIHR3byBwZW9wbGUgZnJvbSBjb2RlYXVyb3Jh
+IHdobyB3b3JrZWQgYSBsb3Qgb24gdGhpcyAKPj4+Pj4gZHJpdmVyLgo+Pj4+PiBIb3BlZnVsbHkg
+dGhleSB3aWxsIGhhdmUgYW4gaWRlYSA6KQo+Pj4+IFNhZHJlLCBJJ3ZlIHNwZW50IGEgc2lnbmlm
+aWNhbnQgYW1vdW50IG9mIHRpbWUgcmV2aWV3aW5nIHlvdXIgcGF0Y2hlcywKPj4+PiBub3cgaXQn
+cyB5b3VyIHR1cm4gdG8gbm90IHRha2UgYSBtb250aCB0byBhbnN3ZXIgdG8geW91ciBwZWVycwo+
+Pj4+IHByb3Bvc2Fscy4KPj4+Pgo+Pj4+IFBsZWFzZSBoZWxwIHJldmlld2luZyB0aGlzIHBhdGNo
+Lgo+Pj4gU29ycnkuIEkgd2FzIGhvcGluZyB0aGF0IFFjb20gZm9sa3Mgd291bGQgY2hpbWUgaW4g
+YXMgSSBkb24ndCBoYXZlIAo+Pj4gYW55IGlkZWEKPj4+IGFib3V0IHRoZSBtZG05NjA3IHBsYXRm
+b3JtLiBJdCBjb3VsZCBiZSB0aGF0IHRoZSBtYWlsIHNlcnZlciAKPj4+IG1pZ3JhdGlvbiBmcm9t
+Cj4+PiBjb2RlYXVyb3JhIHRvIHF1aWNpbmMgcHV0IGEgYmFycmllciBoZXJlLgo+Pj4KPj4+IExl
+dCBtZSBwaW5nIHRoZW0gaW50ZXJuYWxseS4KPj4gT2gsIG9rLCBJIGRpZG4ndCBrbm93LiBUaGFu
+a3MhCj4KPiDCoMKgIFNvcnJ5IE1pcXVlbCwgc29tZWhvdyB3ZSBkaWQgbm90IGdldCB0aGlzIGVt
+YWlsIGluIG91ciBpbmJveC4KPiDCoMKgIFRoYW5rcyB0byBNYW5pIGZvciBwaW5naW5nIHVzLCB3
+ZSB3aWxsIHRlc3QgdGhpcyB1cCB0b2RheSBhbmQgZ2V0IAo+IGJhY2suCj4KIMKgIMKgIMKgIFdo
+aWxlIHdlIGNvdWxkIG5vdCByZXByb2R1Y2UgdGhpcyBpc3N1ZSBvbiBvdXIgaXBxIGJvYXJkcyAo
+ZG8gbm90IApoYXZlIGEgbWRtOTYwNyByaWdodCBub3cpIGFuZAogwqDCoMKgwqDCoMKgIGlzc3Vl
+IGRvZXMgbm90IGxvb2sgYW55IG9idmlvdXMuCiDCoCDCoCDCoCBjYW4geW91IHBsZWFzZSBnaXZl
+IHRoZSBkZWJ1ZyBsb2dzIHRoYXQgeW91IGRpZCBmb3IgdGhlIGFib3ZlIApzdGFnZSBieSBzdGFn
+ZSA/CgogwqAgUmVnYXJkcywKIMKgwqDCoMKgwqAgU3JpY2hhcmFuCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
+aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LW10ZC8K
