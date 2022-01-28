@@ -4,56 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F09C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jan 2022 11:35:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7637EC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 28 Jan 2022 11:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OFPRKf5XjfAM6fiXD0MkElYfEqAAkfC9Gqye+pVUHnc=; b=WpemIVuhbouFrl
-	Ef4InxMVe00sllkjnWlKhHmnWVVM6ayIMdMsGPUpTLChewXFm97L6NR2wrwlpQONjmXho+l0TLiZO
-	qV/6TCBYaPq3ErqOMbkMOdBrj3BxKLOiOv4RFeQ1pmexiQnu1QTrk37Wx+tT5pViI50z+8laxD2MF
-	O0Jxy2PtzqRfgwu+GYH+RKSSak9xfGegJS3Pv6anydtxuLs48H1xCjULEfBIgRfuhBHPFtM7lrlax
-	SfvHdCVdSYmiH1B0z4XnI3HpO9ZoZnZn0iX/zRrrg4EmF4WaFK6XaDHiypqlyQ78W87PySVTMRxSI
-	kOziyPuaDXlRhxiAd2kQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=xBFA20jG//Wsg3hJ8Z1Zx7ZgESUNg7cZpDJpAZh5rts=; b=kpUk2GlRBfORjV
+	ENyuQwy5v7k3SPh6gZ4/FUa/weKOTU0wtNqYM2VsAwkig4twVz5qYgdmMwrpsiRWA+/l4XGNmatdG
+	nmWiA/Ixp7Mw6q9wcsBqLoUIkwq6J5B0U1OP96TxVaEUe4ItJBsqPBpDFYrm8Ye+E8IFKuM+UgeUA
+	UOZJi0HvEy2owVJb+HCGId738d0fi8GvbrFGjqOjCogBgarv8YFhmLk/j+oL7UXKRmla54gj00hTP
+	YBKZ7KXp8PvVyfs8716lqE1k7SFcd0FfIxS8B+Jy2yiPAceRyhy8ks2WW8D1Sfjl7Y+abfutu6Jzd
+	faRXNS7FqSO043cMlu0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nDPWM-001iNb-KC; Fri, 28 Jan 2022 11:34:26 +0000
-Received: from relay12.mail.gandi.net ([2001:4b98:dc4:8::232])
+	id 1nDPcv-001kbw-II; Fri, 28 Jan 2022 11:41:13 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nDPWG-001iHz-Lg
- for linux-mtd@lists.infradead.org; Fri, 28 Jan 2022 11:34:23 +0000
+ id 1nDPcU-001kSd-FP; Fri, 28 Jan 2022 11:40:48 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 3D180200002;
- Fri, 28 Jan 2022 11:34:15 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id 17EA760008;
+ Fri, 28 Jan 2022 11:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643369656;
+ t=1643370040;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=1CEjWaGn442UpC5KUtYBdsKCK5vPUglxBwLzXt2NBLs=;
- b=MFO6e+xgfNta+KCB4CW9Up9yK5BCVeAdhZWko/joT9XGwNnm3r085LScaj0SS7ZaLEP5nu
- evfMJab0avwlCZwaY1U+Q7+mVFByjCajzSOnbkrKduH/7FvKj0jU2PfXBKLZtqxMe/yWvD
- poYaHCOWlY1q2JHymb/KvcAmp2Ro1MX2Bl1wVnd84ExMgKkVtrACMGWqrt+Lyay0FG3ogT
- mWONFg6xhJ2Sz5EtXCb2S4AFqITIrd4j+W0XZCBo0WBsFrRLzC2ek+krzTqCQN5ZgNiu8F
- ZshjnnCu8PHQRfzzf4ynGFUkIlzkQDefygrssrI6fPzLKdqCncjTQg77tm9eNA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=xQ1me8J/Zy0/NpDBsjxiNJCRMDYVYBgfgf4KXYlMBQE=;
+ b=mhkRrkTFQg/3TwqlXdkqBpBcXYqooijDEC2Kv+kedQOmu14iMZ3uqYYp7BiMJpKHPzO7iy
+ K64mkM4MAc2MJ7OVlGPAgcqvyNzthsTgD/NKZuOl7ELRyABV+8rc8HwoIbzZmAtRAuWGg+
+ fzwgwjlFGo6ML3GP5Mj3WTlewRxkK7vgDTYSnmuUQ8OA+C5eK0WJSiW0qjzuSdhgMtfPC0
+ 8FQsAx5DK5K0oJiMV2V1Tq1YhS+iDXdMMvRuwx48thJ7g0dGuFvVEItgQzpadG/4q3RABR
+ FvkCkJISCwUQzpok9OZsWFy77buG+yRQap9aK4cOeMt6MKRMAkLsFcmMpngpDg==
+Date: Fri, 28 Jan 2022 12:40:36 +0100
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] mtd: Replace the expert mode symbols with a single helper
-Date: Fri, 28 Jan 2022 12:34:14 +0100
-Message-Id: <20220128113414.1121924-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+ <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>,
+ YongHui Yu <yonghui.yu@amlogic.com>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: meson: discard the common MMC sub
+ clock framework
+Message-ID: <20220128124036.25fe0539@xps13>
+In-Reply-To: <20220128113237.39996-2-liang.yang@amlogic.com>
+References: <20220128113237.39996-1-liang.yang@amlogic.com>
+ <20220128113237.39996-2-liang.yang@amlogic.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220128_033421_230603_DD2D7795 
-X-CRM114-Status: GOOD (  14.92  )
+X-CRM114-CacheID: sfid-20220128_034046_857388_2D8D7355 
+X-CRM114-Status: GOOD (  19.14  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,145 +77,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Reduce the number of exported symbols by replacing:
-- mtd_expert_analysis_warning (the error string)
-- mtd_expert_analysis_mode (the boolean)
-with a single helper:
-- mtd_check_expert_analysis_mode
-
-Calling this helper will both check/return the content of the internal
-boolean -which is not exported anymore- and as well conditionally
-WARN_ONCE() the user, like it was done before.
-
-While on this function, make the error string local to the helper and
-set it const. Only export this helper when CONFIG_DEBUG_FS is defined to
-limit the growth of the Linux kernel size only for a debug feature on
-production kernels.
-
-Mechanically update all the consumers.
-
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-
-Changes in v2:
-* Enclose the definition of the function within an #ifdef as requested
-  by Geert.
-
- drivers/mtd/mtdcore.c            | 23 +++++++++++++++--------
- drivers/mtd/nand/core.c          |  2 +-
- drivers/mtd/nand/raw/nand_base.c |  2 +-
- drivers/mtd/nand/raw/nand_bbt.c  |  2 +-
- include/linux/mtd/mtd.h          |  8 ++++++--
- 5 files changed, 24 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 70f492dce158..1e7f3bbf847e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -358,6 +358,21 @@ static int mtd_partname_debug_show(struct seq_file *s, void *p)
- 
- DEFINE_SHOW_ATTRIBUTE(mtd_partname_debug);
- 
-+static bool mtd_expert_analysis_mode;
-+
-+#ifdef CONFIG_DEBUG_FS
-+bool mtd_check_expert_analysis_mode(void)
-+{
-+	const char *mtd_expert_analysis_warning =
-+		"Bad block checks have been entirely disabled.\n"
-+		"This is only reserved for post-mortem forensics and debug purposes.\n"
-+		"Never enable this mode if you do not know what you are doing!\n";
-+
-+	return WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning);
-+}
-+EXPORT_SYMBOL_GPL(mtd_check_expert_analysis_mode);
-+#endif
-+
- static struct dentry *dfs_dir_mtd;
- 
- static void mtd_debugfs_populate(struct mtd_info *mtd)
-@@ -2370,14 +2385,6 @@ static struct backing_dev_info * __init mtd_bdi_init(const char *name)
- 	return ret ? ERR_PTR(ret) : bdi;
- }
- 
--char *mtd_expert_analysis_warning =
--	"Bad block checks have been entirely disabled.\n"
--	"This is only reserved for post-mortem forensics and debug purposes.\n"
--	"Never enable this mode if you do not know what you are doing!\n";
--EXPORT_SYMBOL_GPL(mtd_expert_analysis_warning);
--bool mtd_expert_analysis_mode;
--EXPORT_SYMBOL_GPL(mtd_expert_analysis_mode);
--
- static struct proc_dir_entry *proc_mtd;
- 
- static int __init init_mtd(void)
-diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-index 416947f28b67..3ff99a42a63f 100644
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -21,7 +21,7 @@
-  */
- bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
- {
--	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-+	if (mtd_check_expert_analysis_mode())
- 		return false;
- 
- 	if (nanddev_bbt_is_initialized(nand)) {
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index e7b2ba016d8c..068ecf979033 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -321,7 +321,7 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
- 	if (nand_region_is_secured(chip, ofs, mtd->erasesize))
- 		return -EIO;
- 
--	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-+	if (mtd_check_expert_analysis_mode())
- 		return 0;
- 
- 	if (chip->legacy.block_bad)
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index ab630af3a309..a3723da2e0a0 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -1455,7 +1455,7 @@ int nand_isbad_bbt(struct nand_chip *this, loff_t offs, int allowbbt)
- 	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
- 		 (unsigned int)offs, block, res);
- 
--	if (WARN_ONCE(mtd_expert_analysis_mode, mtd_expert_analysis_warning))
-+	if (mtd_check_expert_analysis_mode())
- 		return 0;
- 
- 	switch (res) {
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 1ffa933121f6..1b3fc8c71ab3 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -711,7 +711,11 @@ static inline int mtd_is_bitflip_or_eccerr(int err) {
- 
- unsigned mtd_mmap_capabilities(struct mtd_info *mtd);
- 
--extern char *mtd_expert_analysis_warning;
--extern bool mtd_expert_analysis_mode;
-+#ifdef CONFIG_DEBUG_FS
-+bool mtd_check_expert_analysis_mode(void);
-+#else
-+static inline bool mtd_check_expert_analysis_mode(void) { return false; }
-+#endif
-+
- 
- #endif /* __MTD_MTD_H__ */
--- 
-2.27.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTGlhbmcsCgpsaWFuZy55YW5nQGFtbG9naWMuY29tIHdyb3RlIG9uIEZyaSwgMjggSmFuIDIw
+MjIgMTk6MzI6MzYgKzA4MDA6Cgo+IEVNTUMgYW5kIE5BTkQgaGFzIHRoZSBzYW1lIGNsb2NrIGNv
+bnRyb2wgcmVnaXN0ZXIgbmFtZWQgJ1NEX0VNTUNfQ0xPQ0snIHdoaWNoIGlzCgpoYXZlCgo+IGRl
+ZmluZWQgaW4gRU1NQyBwb3J0IGludGVybmFsbHkuIGJpdDB+NSBvZiAnU0RfRU1NQ19DTE9DSycg
+aXMgdGhlIGRpdmlkZXIgYW5kCj4gYml0Nn43IGlzIHRoZSBtdXggZm9yIGZpeCBwbGwgYW5kIHh0
+YWwuCgo+IFByZXZpb3VzbHkgYSBjb21tb24gTU1DIHN1YiBjbG9jayBmcmFtZXdvcmsgaXMgaW1w
+bGVtZW50ZWQgYW5kIHNoYXJlZCBieSBFTU1DIGFuZAoKSSBiZWxpZXZlIHlvdSBtZWFudCB0aGF0
+IHRoaXMgaGFzYSBhbHJlYWR5IGJlZW4gY29udHJpYnV0ZWQ/IEkgd291bGQKdGhlbiByZXBocmFz
+ZSB3aXRoOgoKQSBjb21tb24gTU1DIGFuZCBOQU5EIHN1Yi1jbG9jayBoYXMgYmVlbiBpbXBsZW1l
+bnRlZCBhbmQgY2FuIGJlIHVzZWQgYnkKdGhlIGVNTUMgYW5kIE5BTkQgY29udHJvbGxlciAod2hp
+Y2ggYXJlIG11dHVhbGx5IGV4Y2x1c2l2ZSBhbnl3YXkpLgoKTGV0J3MgdXNlIHRoaXMgbmV3IGNs
+b2NrLgoKPiBOQU5ELCBidXQgdGhhdCBpcyBjb3VwbGluZyB0aGUgRU1NQyBhbmQgTkFORCwgYWx0
+aG91Z2ggRU1NQyBhbmQgTkFORCBpcyBtdXR1YWxseQo+IGV4Y2x1c2l2ZS4KPiAKPiBDaGFuZ2Ut
+SWQ6IEliZWI0YzdmZjg4NmY1ODg2YWFjNGQ2YzY2NGQ3YmJkMWIxYmNiOTk3CgpObyBjaGFuZ2Ug
+SWRzLgoKPiBTaWduZWQtb2ZmLWJ5OiBMaWFuZyBZYW5nIDxsaWFuZy55YW5nQGFtbG9naWMuY29t
+Pgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tZXNvbl9uYW5kLmMgfCAxNjEgKysrKysr
+KysrKysrKysrKystLS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA4OSBpbnNlcnRpb25z
+KCspLCA3MiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9y
+YXcvbWVzb25fbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25fbmFuZC5jCj4gaW5k
+ZXggYWMzYmU5Mjg3MmQwLi5mNmEzZDVjMmVhMWMgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
+bmFuZC9yYXcvbWVzb25fbmFuZC5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWVzb25f
+bmFuZC5jCj4gQEAgLTIsNyArMiw3IEBACj4gIC8qCj4gICAqIEFtbG9naWMgTWVzb24gTmFuZCBG
+bGFzaCBDb250cm9sbGVyIERyaXZlcgo+ICAgKgo+IC0gKiBDb3B5cmlnaHQgKGMpIDIwMTggQW1s
+b2dpYywgaW5jLgo+ICsgKiBDb3B5cmlnaHQgKGMpIDIwMTgtMjAyMSBBbWxvZ2ljLCBpbmMuCgpQ
+bGVhc2UgZG9uJ3QuCgo+ICAgKiBBdXRob3I6IExpYW5nIFlhbmcgPGxpYW5nLnlhbmdAYW1sb2dp
+Yy5jb20+Cj4gICAqLwo+ICAKPiBAQCAtMTAsNiArMTAsNyBAQAo+ICAjaW5jbHVkZSA8bGludXgv
+ZG1hLW1hcHBpbmcuaD4KPiAgI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPgo+ICAjaW5jbHVk
+ZSA8bGludXgvY2xrLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9jbGstcHJvdmlkZXIuaD4KPiAgI2lu
+Y2x1ZGUgPGxpbnV4L210ZC9yYXduYW5kLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9tdGQvbXRkLmg+
+Cj4gICNpbmNsdWRlIDxsaW51eC9tZmQvc3lzY29uLmg+Cj4gQEAgLTE5LDYgKzIwLDcgQEAKPiAg
+I2luY2x1ZGUgPGxpbnV4L2lvcG9sbC5oPgo+ICAjaW5jbHVkZSA8bGludXgvb2YuaD4KPiAgI2lu
+Y2x1ZGUgPGxpbnV4L29mX2RldmljZS5oPgo+ICsjaW5jbHVkZSA8bGludXgvb2ZfYWRkcmVzcy5o
+Pgo+ICAjaW5jbHVkZSA8bGludXgvc2NoZWQvdGFza19zdGFjay5oPgo+ICAKPiAgI2RlZmluZSBO
+RkNfUkVHX0NNRAkJMHgwMAo+IEBAIC0xMDQsNiArMTA2LDkgQEAKPiAgCj4gICNkZWZpbmUgUEVS
+X0lORk9fQllURQkJOAo+ICAKPiArI2RlZmluZSBDTEtfRElWX1NISUZUCQkwCj4gKyNkZWZpbmUg
+Q0xLX0RJVl9XSURUSAkJNgo+ICsKPiAgc3RydWN0IG1lc29uX25mY19uYW5kX2NoaXAgewo+ICAJ
+c3RydWN0IGxpc3RfaGVhZCBub2RlOwo+ICAJc3RydWN0IG5hbmRfY2hpcCBuYW5kOwo+IEBAIC0x
+NTEsMTUgKzE1NiwxNyBAQCBzdHJ1Y3QgbWVzb25fbmZjIHsKPiAgCXN0cnVjdCBuYW5kX2NvbnRy
+b2xsZXIgY29udHJvbGxlcjsKPiAgCXN0cnVjdCBjbGsgKmNvcmVfY2xrOwo+ICAJc3RydWN0IGNs
+ayAqZGV2aWNlX2NsazsKPiAtCXN0cnVjdCBjbGsgKnBoYXNlX3R4Owo+IC0Jc3RydWN0IGNsayAq
+cGhhc2Vfcng7Cj4gKwlzdHJ1Y3QgY2xrICpuYW5kX2NsazsKPiArCXN0cnVjdCBjbGtfZGl2aWRl
+ciBuYW5kX2RpdmlkZXI7Cj4gIAo+ICAJdW5zaWduZWQgbG9uZyBjbGtfcmF0ZTsKPiAgCXUzMiBi
+dXNfdGltaW5nOwo+ICAKPiAgCXN0cnVjdCBkZXZpY2UgKmRldjsKPiAtCXZvaWQgX19pb21lbSAq
+cmVnX2Jhc2U7Cj4gLQlzdHJ1Y3QgcmVnbWFwICpyZWdfY2xrOwo+ICsJc3RydWN0IHsKPiArCQl2
+b2lkIF9faW9tZW0gKnJlZ19iYXNlOwo+ICsJCXZvaWQgX19pb21lbSAqc2RfZW1tY19jbG9jazsK
+PiArCX0gcmVzOwoKUGxlYXNlIHNwbGl0IHlvdXIgY29tbWl0OiBmaXJzdCB0aGUgbWVjaGFuaWNh
+bCBjaGFuZ2VzLCB0aGVuIHRoZSB1c2Ugb2YKdGhlIG5ldyBhcmVhIG9yIHNvbWV0aGluZyBsaWtl
+IHRoYXQuCgpPdGhlcndpc2UgdGhlcmUgYXJlIHRvbyBtYW55IGxpbmVzIGNoYW5nZWQsIEkgY2Fu
+J3Qgc3BvdCB3aGVyZSBpdCBpcwppbnRlcmVzdGluZy4KClRoYW5rcywKTWlxdcOobAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
