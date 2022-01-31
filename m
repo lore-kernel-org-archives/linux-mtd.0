@@ -4,61 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7237EC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 16:40:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EC6CC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 17:36:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=b9hdYj02QfxOYLttcxul7Ofs1ZsK+SIfP5Mx3J3Dkqo=; b=Ci62YF+4RRFmgR
-	/wQHaqikDTsSyR+a6TYlblopS26/6pGmFrv3wY3QB0v+4d7NeN5k+JBdLQZN/cdfjXy6qrZEa9e76
-	hVOAiiiC/fIJ8qYjGAsB0JzrDP8v/IOgAuqC3zuj9XaSflAmNmXG2D8P2pdLVikJUaU5T+CZBdGTc
-	FXfaO3mtkwgda0NNQ3mf5SQlkzoIcFB+xQBrIn1hKIWl8mkFI59GuineOjEg8lRjW17XlGmi1CJ3D
-	8K6Zg99EuqG9qxJkdtr0ru1Bvgw2dqW3S/uzQ6vLOxrbbsDLbrr2KEIbglPUcRp28KGsZjPdanrHa
-	euVgjMf4mfzjsXmV4ZeQ==;
+	List-Owner; bh=zmCGHRsaIhD+dPwEelJ+d5alHo6lPD+r7JR6s0JUfN0=; b=LQXlStJeCGMuvo
+	VClwM22eVFtwcXU+6cB8JdMYFIyNrXHAVQssJepyshME7HKC+Nf7lNg5iFKif6gu+mzSSofhizh2t
+	FOrleJqFlwaz0DWqehwNJsVel4OU7E6ejlB7iNkeWw1Q3S7UBczhXlW1NiYnb8pM/8cZ3MkAlB5q9
+	3sLiKiKAM8sSgmveI1w7BwmziF1F1kWfG9N8MYRcn3ax6TS16FOcM9kByiaEmBf+fP3WZa5AeoKDg
+	d3Cdp4Dk+PQ1FCYzDaA7KwYQCGD9MD2Me7bXjEkaO9Ks28Os4QzE1/rJqOhJmIQ89EGbrYgqRS3/K
+	ZoxObAnW6xKfQIyre+mw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nEZiS-009tk7-0g; Mon, 31 Jan 2022 16:39:44 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1nEaaj-00A9zV-9O; Mon, 31 Jan 2022 17:35:49 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nEZSF-009q44-J2
- for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 16:23:03 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 9284120010;
- Mon, 31 Jan 2022 16:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643646177;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=86IqAUCSeNJMWB8neOsxD9ttHYUs56oiSvgyAaM50O4=;
- b=oZFfSiYQvH+XvClmQm1xf3QSdzYsVVIctFIOq8j9lWNEXZyonYrJSeJHjBk7/xEvu/nkde
- 8QpnzWwkvteiqWJR174Ji3rAPcUGf7Tmd4FeOUz2KvcHH9/LLr3orLxljlg9y3xCrOviCE
- ohjy4O5JTBaQgRJPgxIcJpfkQwIrI0qr0anPEE5Xk/jzyGD4hQ16/nffKSdGx7k4aUtkOk
- YDvuUG2inVaP/JV6s6KZ8OR4EcBpMjkMoCSnE2hQLLS+Hp4MPtY50xOFFt1dfKG9oOBbPC
- +0RSLERLrg2yEqMeeUWHPQa+xdBLHC7+bekXhe59e9qqlJGk74Y/XrvPhvnKUw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: nand: ecc: Rework Kconfig dependencies
-Date: Mon, 31 Jan 2022 17:22:56 +0100
-Message-Id: <20220131162256.24430-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220131145032.17614-1-miquel.raynal@bootlin.com>
-References: 
+ id 1nEaL2-00A3z8-EB
+ for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 17:19:38 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20VHJVPF029858;
+ Mon, 31 Jan 2022 11:19:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1643649571;
+ bh=QeEtQGYhhkgtmo7vgTLQpZJwW10aDSc+Qga0JWAvFHI=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=YyO7w5JZcy0w+ZTgIIjZOUp7MTFqLivSBTUGHyvjt9Hv964RaHKjskkIIFts0g/J5
+ SjS6/UxTyQyBQ6v5fYHkgLI480iK4BWBZJhBhew9DVFqeilzfyiwcbltiREQOkrcTi
+ FjlYhosEShna5KEifL16GmagHlRssrVMWbwTECNg=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20VHJVnj051055
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 31 Jan 2022 11:19:31 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 31
+ Jan 2022 11:19:30 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 31 Jan 2022 11:19:30 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20VHJUJ4087859;
+ Mon, 31 Jan 2022 11:19:30 -0600
+Date: Mon, 31 Jan 2022 22:49:29 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Chen-Tsung Hsieh <chentsung@chromium.org>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
+ <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [RESEND PATCH] mtd: spi-nor: core: Check written SR value in
+ spi_nor_write_16bit_sr_and_check()
+Message-ID: <20220131171929.uk3z5sr453c3eefp@ti.com>
+References: <20220126073227.3401275-1-chentsung@chromium.org>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'319169b2a767b293984ae2c5e22268fecfb91864'
+Content-Disposition: inline
+In-Reply-To: <20220126073227.3401275-1-chentsung@chromium.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220131_082259_795476_7FE72410 
-X-CRM114-Status: UNSURE (   8.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220131_091936_585329_E7EDC489 
+X-CRM114-Status: GOOD (  10.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,26 +85,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2022-01-31 at 14:50:32 UTC, Miquel Raynal wrote:
-> Unlike "depends on", "select" does not enforce any type (y or m), which
-> can lead to the following situation:
-> * SPI_MXIC=y expects the NAND symbols to be built statically
-> * SPI_MXIC depends on MTD_NAND_ECC
-> * MTD_NAND_ECC selects MTD_NAND_CORE
-> In this case MTD_NAND_CORE=m is "valid" but will trigger 'undefined
-> reference' link errors.
+On 26/01/22 03:32PM, Chen-Tsung Hsieh wrote:
+> Read back Status Register 1 to ensure that the written byte match the
+> received value and return -EIO if read back test failed.
 > 
-> The cleanest way to handle the situation is to use a "depends on"
-> between MTD_NAND_ECC and MTD_NAND_CORE to avoid such situations.
+> Without this patch, spi_nor_write_16bit_sr_and_check() only check the
+> second half of the 16bit. It causes errors like spi_nor_sr_unlock()
+> return success incorrectly when spi_nor_write_16bit_sr_and_check()
+> doesn't write SR successfully.
 > 
-> While at modifying the MTD_NAND_ECC symbol, fix the spacing.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+> Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on lock()/unlock()")
+> Signed-off-by: Chen-Tsung Hsieh <chentsung@chromium.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-mem-ecc.
+I don't know much about this bit of code but this patch looks fine to me 
+from the surface. Would be nice to hear from Tudor about this too since 
+he added the function.
 
-Miquel
+Acked-by: Pratyush Yadav <p.yadav@ti.com>
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
