@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB43EC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 16:22:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 127CEC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 16:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=whMXn9Uc3oq9hKCU7Mkjafk75EjtjqytpFAV2Si4m3A=; b=uZ1b4OC8hxm5ys
-	IRMxzbtxMIa+Anre3EyWXLhZEv4Ysu5SKE1i/CSAmV+4lbRo76+6QKfxt2W9cgXRCSR8hob9HNqqh
-	PauxECyxH3jvnA09VIuVc5rUQUyKV9ZQI1NlFPdb3JFEgvsA1b0Rf2vtx7WRxvoBOazkw13JEXCX3
-	IbjS1rezeHxL43A+0NRSYoaJFh3ndA8CYDMsRbqnUoRz8GfirPCxfPU4N0o0Lda/SRkLP9u6gHVRl
-	f6kfT5MAiMHLkHS64yVUfAFjz8fztwj4KvnNmrRV37cXfT5QhxLlDsePI/jxRAaxRIyGAJYfzgYzC
-	9FPutC0980mTnUiRgYKQ==;
+	List-Owner; bh=75tT9mM8Slg7Gzj1YhskIGjwRbDpH6yJg88RWbVk2/s=; b=c2hUL1Zz5bh+Gd
+	FgMxw5lfJ0tzDqI8BknUJQnxaDUFTISPkYzPqDusyhuAzWshH7UiqLSLpf8Dp6kFqmLowqG2wGrKf
+	+r9W6aSFpIclnKcSlG9mTuDas3w+B5t2gUacly5v82/ywoDOlDp0tupybFpM4lnA/y/aXJPyb8VyP
+	UNenK7LOz9ZzdXMwOkhGx5YguZ0h5kBWCeDG5psdNUGdPT5nUe8rOFAm8T8jVk5xBxwquVsu0TjQA
+	guTdwfgxErClT9ybZnI2AyPV3lwEglgxZQb+15GhfPaxMfSrfgjjC3pBVnZnXa2UIsAbTcpLRS1Bd
+	XJnq++i3H9EdIelnDWow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nEZRC-009pjE-R6; Mon, 31 Jan 2022 16:21:54 +0000
-Received: from relay12.mail.gandi.net ([2001:4b98:dc4:8::232])
+	id 1nEZRY-009ppU-8x; Mon, 31 Jan 2022 16:22:16 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nEZR0-009pfP-Ia
- for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 16:21:44 +0000
+ id 1nEZR5-009phF-Pj
+ for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 16:21:49 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5B06C20000C;
- Mon, 31 Jan 2022 16:21:37 +0000 (UTC)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6FC32200006;
+ Mon, 31 Jan 2022 16:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643646100;
+ t=1643646106;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=D6/mh2SLSC51yWDrYwTkaaXjBX/hk5KFdYxvcOIXQLw=;
- b=hQcto7671zJ/KwspWLTo8ScfRzYs95xsjxAbeYMUKt54gVK5zqjE2WN20jJ5Hd9tL45iPD
- oDEO8m/0EOzFCNbfHhTxyJhjpdRV4QF38sAmh3qcdJC9w/KOzQ3W4TM1x4E71YPRy/fKOq
- YYVlQfWlPYWcimKd5atnVJVU6mrkql54lqSrGjhhr6luSSXKvhkHIc5JWyx8J+x8Tlj/P5
- e+Qf51cme8wnPHazT9Tow508KlpOkHz2TeiJDb8qwDmVVXh4UC4Ic+5zzhMFq5ycZQmVii
- nAFdFpSkW5PmIo/r4vZnYzozgbXFK0Mzx16motDh5vxbiUf9euZXcs3ayHbYSA==
+ bh=iTFcrH3RulTxp46/bvFVG5JUrGsELqmVK6LqBqmxDsU=;
+ b=XCPCTEVo/xqZuy6wj+9OlsR/6/OzZl/tkqFt6koe8Y7O/MVEnm/lc8QUzkyVzeGJNa9G+L
+ lXNqu3MsWpHo2m5izPvY/oEMNlgCgGXAQIllmFodnx1aE9h4mJiv/bDI/wpa0TxAPRjj8P
+ tE+JNfyODECieSQl8BLxVSRrhXOEo5y+RKQG8w4CZou015zSFscdZ1maFpiQMsYuMbaxGd
+ eTZ753NE8kHWUZrExpUwMETrbteJI/LjMDwWk+jKl4cYPHUCl99Ng1fEYdHLrqLxSGS2PK
+ Az1WM3B3x02RPkGQ5qLY5KvmKlDEU5s7CM+oLNA5HNkzV2ZQp7keWmKk/GP/qw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Paul Cercueil <paul@crapouillou.net>,
- Harvey Hunt <harveyhuntnexus@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Uwe Kleine-Konig <u.kleine-koenig@pengutronix.de>,
- kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] mtd: Fix misuses of of_match_ptr()
-Date: Mon, 31 Jan 2022 17:21:36 +0100
-Message-Id: <20220131162136.23514-1-miquel.raynal@bootlin.com>
+ linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Julien Su <juliensu@mxic.com.tw>, Jaime Liao <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v10 13/13] spi: mxic: Add support for pipelined ECC
+ operations
+Date: Mon, 31 Jan 2022 17:21:42 +0100
+Message-Id: <20220131162142.23580-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220127110631.1064705-1-miquel.raynal@bootlin.com>
+In-Reply-To: <20220127091808.1043392-14-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'3f26d1bf90ba9bf420e49ec9cdbe13d15c0df7cd'
+X-linux-mtd-patch-commit: b'6d0fadec1de4434fce145b374ef25c665357fa60'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220131_082142_792946_A95CB88C 
-X-CRM114-Status: GOOD (  14.21  )
+X-CRM114-CacheID: sfid-20220131_082147_996171_676DF34E 
+X-CRM114-Status: UNSURE (   8.53  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,33 +80,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2022-01-27 at 11:06:31 UTC, Miquel Raynal wrote:
-> of_match_ptr() either expands to NULL if !CONFIG_OF, or is transparent
-> otherwise. There are several drivers using this macro which keep their
-> of_device_id array enclosed within an #ifdef CONFIG_OF check, these are
-> considered fine. However, When misused, the of_device_id array pointed
-> by this macro will produce a warning because it is finally unused when
-> compiled without OF support.
+On Thu, 2022-01-27 at 09:18:08 UTC, Miquel Raynal wrote:
+> Some SPI-NAND chips do not have a proper on-die ECC engine providing
+> error correction/detection. This is particularly an issue on embedded
+> devices with limited resources because all the computations must
+> happen in software, unless an external hardware engine is provided.
 > 
-> A number of fixes are possible:
-> - Always depend on CONFIG_OF, but this will not always work and may
->   break boards.
-> - Enclose the compatible array by #ifdef's, this may save a bit of
->   memory but will reduce build coverage.
-> - Tell the compiler the array may be unused, if this can be avoided,
->   let's not do this.
-> - Just drop the macro, setting the of_device_id array for a non OF
->   enabled platform is not an issue, it will just be unused.
+> These external engines are new and can be of two categories: external
+> or pipelined. Macronix is providing both, the former being already
+> supported. The second, however, is very SoC implementation dependent
+> and must be instantiated by the SPI host controller directly.
 > 
-> The latter solution seems the more appropriate, so let's use it.
+> An entire subsystem has been contributed to support these engines which
+> makes the insertion into another subsystem such as SPI quite
+> straightforward without the need for a lot of specific functions.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
-> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Acked-by: Pratyush Yadav <p.yadav@ti.com>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Link: https://lore.kernel.org/linux-mtd/20220104083631.40776-14-miquel.raynal@bootlin.com
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-mem-ecc.
 
 Miquel
 
