@@ -4,70 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C216C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 10:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BBA3C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 11:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6E9CuTec5ADASn1fc0AUiVdhOgTUbM72m3Shmmp6250=; b=NL0wLtrWTf0iRm
-	SkmXg+civ4PMcBrUZn89LrT6ISnNpUkC4HYLq9LUVxm2AErSDCNc7fqiDkaq34g6F73SB3NdfG1qZ
-	jebbqfcepoeytszcsJW5/GZED2NGnVb00AlGyiwlEI4/4QofYyEDTN12up0lGBcl6SbQT0IyMrV6T
-	Ax2OANU50Kgb6zpqfLLXA8bBkr8hdR56eGBcDIdffNhc7bnWAXGJrTcVPrTwTY22e2sF/ZfhJQV6a
-	364sIpWxOMvFgjSDDpqJcZGS9RSwDHv9DQ9+fs9HaDhSFvz4Da+uYZdcS/Y0NhBtEWt2ZHrDWq4df
-	HKPGkGvjHcGccA/Astcw==;
+	List-Owner; bh=gcdL2YWX7XjN56jzbTFOPg+VYTuSVpwfGgBFvLBfZsg=; b=fxZ40DEj/pp5X/
+	yelMzUF1NBUo9KeY/OPvgHVl25V8Z+JXkw2RqjLj8vlW0F3/QaAxii6sWtlGu1g4F6cPj72orQ06y
+	VMsQrbfsYQQUIxULZWWMTLEofcknPrWPW1JOEy8XamF1Pn423yJ2eMd2JkSnZTy9/U7c55sufibi3
+	FLDVDGE4O3mPfxrslDgdR8JsUhQDj+Q1rsWy/14omBZm2Kzc8rWovJEalORCbvGc0F/Mjhpwob1GR
+	3nggNrbAfsgRlSW7q8mICXCRM7/PSwPK9g8UW/9c+ummsUnekepZoJcEGKZAqW+RHBO/HYc0Gw1MP
+	bQuCHWJBRFW+XNLyAwKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nEUNx-008yDg-BF; Mon, 31 Jan 2022 10:58:13 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1nEUQW-008zXQ-5r; Mon, 31 Jan 2022 11:00:52 +0000
+Received: from relay12.mail.gandi.net ([217.70.178.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nEUNu-008yBF-Bq
- for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 10:58:11 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 20VAvu2v068925;
- Mon, 31 Jan 2022 04:57:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1643626676;
- bh=T48kQu730yvIMgF0UxePEqGQ+81CSKNEVv/Pqrm3F5o=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=RvADuu0XS9afU/16cBzlMhgnAJBxHDDieThqP8sNWtyb5vJqUmMpRFbOiHqU6rFBK
- ROaPgz4mITRbWjukUPd9oVuoyTTi/J5G9yUEFVrJzKYcoX3hkP7YJ1Op9qoVVoE+CR
- 6NoXUwT7aHgFc46slqjMGFrISMHOr25Z+e4Y9+Kw=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 20VAvubw005900
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 31 Jan 2022 04:57:56 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 31
- Jan 2022 04:57:56 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 31 Jan 2022 04:57:55 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 20VAvsNq054646;
- Mon, 31 Jan 2022 04:57:55 -0600
-Date: Mon, 31 Jan 2022 16:27:54 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Mark Brown
+ id 1nEUQR-008zSg-IE
+ for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 11:00:49 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6DFB720001C;
+ Mon, 31 Jan 2022 11:00:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1643626845;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=+qpRm2aoCKVDJqwuvd8RI+w5uJK3oRuGvN3L6mkEPIE=;
+ b=aUf3OsTGT5vTZZRpsKC1lgW4VHTWAZNJmcFqSchfFXvqxBUnBumttGqbOZfgiQaOKCgxWo
+ y2z/M6x2A7FQ5AQhTFyhdImryvvYkiDF37PYc6Y2qI4dnVByjvyzsF1V0RT1+tnO93Vw8G
+ CFgG7EXK8yFcRTFNSRQKAWobP4SAk0J6e4Z0HjrQX9CBW6kpP5wV64UGF1n4lY94xNPwn2
+ h5ySKU9jVAB7C4LnOK9Mjctk56T6rqwxLRF2QJURSxVr+6r8wLpP+Yy6DvFwpmbx7jww8G
+ joVTAHn4k0qnvgtKjc6cY/RZkngv7wE2RhU9edn8+CD2GcXXbApUIYgqMlHkVw==
+Date: Mon, 31 Jan 2022 12:00:42 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Michael
+ Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>, Mark Brown
  <broonie@kernel.org>, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
  <jaimeliao@mxic.com.tw>
 Subject: Re: [PATCH] mtd: nand: ecc: Rework Kconfig dependencies
-Message-ID: <20220131105754.pwxkhjiuwpgj7kxg@ti.com>
+Message-ID: <20220131120042.0958f89c@xps13>
+In-Reply-To: <20220131105754.pwxkhjiuwpgj7kxg@ti.com>
 References: <20220128171013.1251796-1-miquel.raynal@bootlin.com>
+ <20220131105754.pwxkhjiuwpgj7kxg@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220128171013.1251796-1-miquel.raynal@bootlin.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220131_025810_534342_1FFD2BDB 
-X-CRM114-Status: GOOD (  11.01  )
+X-CRM114-CacheID: sfid-20220131_030047_793993_9ADF6773 
+X-CRM114-Status: GOOD (  12.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,37 +70,27 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 28/01/22 06:10PM, Miquel Raynal wrote:
-> Unlike "depends on", "select" does not enforce any type (y or m), which
-> can lead to the following situation:
-> * SPI_MXIC=y expects the NAND symbols to be built statically
-> * SPI_MXIC depends on MTD_NAND_ECC
-> * MTD_NAND_ECC selects MTD_NAND_CORE
-> In this case MTD_NAND_CORE=m is "valid" but will trigger link errors
-> such as the one below.
-
-Did you forget to paste the error log?
-
-> 
-> The cleanest way to handle the situation is to use a "depends on"
-> between MTD_NAND_ECC and MTD_NAND_CORE to avoid such situations.
-> 
-> While at modifying the MTD_NAND_ECC symbol, fix the spacing.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUHJhdHl1c2gsCgpwLnlhZGF2QHRpLmNvbSB3cm90ZSBvbiBNb24sIDMxIEphbiAyMDIyIDE2
+OjI3OjU0ICswNTMwOgoKPiBPbiAyOC8wMS8yMiAwNjoxMFBNLCBNaXF1ZWwgUmF5bmFsIHdyb3Rl
+Ogo+ID4gVW5saWtlICJkZXBlbmRzIG9uIiwgInNlbGVjdCIgZG9lcyBub3QgZW5mb3JjZSBhbnkg
+dHlwZSAoeSBvciBtKSwgd2hpY2gKPiA+IGNhbiBsZWFkIHRvIHRoZSBmb2xsb3dpbmcgc2l0dWF0
+aW9uOgo+ID4gKiBTUElfTVhJQz15IGV4cGVjdHMgdGhlIE5BTkQgc3ltYm9scyB0byBiZSBidWls
+dCBzdGF0aWNhbGx5Cj4gPiAqIFNQSV9NWElDIGRlcGVuZHMgb24gTVREX05BTkRfRUNDCj4gPiAq
+IE1URF9OQU5EX0VDQyBzZWxlY3RzIE1URF9OQU5EX0NPUkUKPiA+IEluIHRoaXMgY2FzZSBNVERf
+TkFORF9DT1JFPW0gaXMgInZhbGlkIiBidXQgd2lsbCB0cmlnZ2VyIGxpbmsgZXJyb3JzCj4gPiBz
+dWNoIGFzIHRoZSBvbmUgYmVsb3cuICAKPiAKPiBEaWQgeW91IGZvcmdldCB0byBwYXN0ZSB0aGUg
+ZXJyb3IgbG9nPwoKT29wcyEgSW5kZWVkLgoKPiA+IFRoZSBjbGVhbmVzdCB3YXkgdG8gaGFuZGxl
+IHRoZSBzaXR1YXRpb24gaXMgdG8gdXNlIGEgImRlcGVuZHMgb24iCj4gPiBiZXR3ZWVuIE1URF9O
+QU5EX0VDQyBhbmQgTVREX05BTkRfQ09SRSB0byBhdm9pZCBzdWNoIHNpdHVhdGlvbnMuCj4gPiAK
+PiA+IFdoaWxlIGF0IG1vZGlmeWluZyB0aGUgTVREX05BTkRfRUNDIHN5bWJvbCwgZml4IHRoZSBz
+cGFjaW5nLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
+bmFsQGJvb3RsaW4uY29tPiAgCj4gCj4gUmV2aWV3ZWQtYnk6IFByYXR5dXNoIFlhZGF2IDxwLnlh
+ZGF2QHRpLmNvbT4KClRoYW5rcyEKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
