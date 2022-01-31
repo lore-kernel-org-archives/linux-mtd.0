@@ -4,61 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D924C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 19:55:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABBD0C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 31 Jan 2022 21:52:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=n55FSfc0P6HGTUhfCg7i21LS7SiMv9EI1rampgb1iow=; b=kDjdELfcmeLc32
-	Gc9ToGsh4BGRLAvekHk0y/NKSBrovRyub2WbcYx/zgOVsCmYQ/wMZpgmWb7Rs45LAN9ltrwTcUppv
-	GFiOsMXwtwcfA7rYJbLDeQW7lF2ozT6zQYjZM52cF8WpVu7oPF7EmDQnQHrT41s/icS6XDVHIVR5d
-	3p092N01nxMrXqt92VIuIDlWvezdrSSYKPEq3dCegeW5Hs9v/2YnnKtJ7kHrj1AqrAO3eNpnUt3G9
-	0lectme7rhWrOITZoB3ANZFH5o96hV+jOoZDMadb7ys9WnZ66gVX7O9rYAf64EGQi9BKeecRKXrj4
-	vgYpnYjR5fSfHll1q+Vg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vWyQkFXqgCJAxBgggUhgiYmvzdLSPMdaGIxzw9/m1Uo=; b=hh7CswCBXDURhZ
+	f+7yHrPQLJiJU7kP/sChVO28+SrQL6T2pwaY41YztKZFaXKhhCOkfGyyaceb2Bx/1z+sAG+L9w5IP
+	e63lm6jOlDE6bTJ9kE6RDZrD+DDtE31QbGh1acjsfl51XwU+0oXipWSoVzkaPHfo2WnTP4yIypkvG
+	yM5VsRRaLc5DvJCXbEhqJDoHqWDgI+rg91kA5bxKfprJhdRJrVHP0weXLYcwU5vpRllpM/LlnEPZ4
+	XQh0+LkDvZAfHbZNpr/pMHUBZ6T6cgrsahRQeXGWjTAB3jnmwtbqWC2R+IJYkvPXmvNL2LU5yL15s
+	jj2kuW+mcq0xDwQdXeXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nEcko-00AXfG-EC; Mon, 31 Jan 2022 19:54:22 +0000
-Received: from m-r2.th.seeweb.it ([2001:4b7a:2000:18::171])
+	id 1nEeaX-00Ah1z-NS; Mon, 31 Jan 2022 21:51:53 +0000
+Received: from first.geanix.com ([116.203.34.67])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nEckj-00AXee-OQ
- for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 19:54:20 +0000
-Received: from [10.1.250.9] (riviera.nat.ds.pw.edu.pl [194.29.137.1])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 523D93F748;
- Mon, 31 Jan 2022 20:54:13 +0100 (CET)
-Message-ID: <12cad24a-fa2f-9a82-cf43-241a0a6fe4f6@somainline.org>
-Date: Mon, 31 Jan 2022 20:54:12 +0100
+ id 1nEeaT-00Ah0p-PS
+ for linux-mtd@lists.infradead.org; Mon, 31 Jan 2022 21:51:52 +0000
+Received: from zen.. (unknown [185.17.218.86])
+ by first.geanix.com (Postfix) with ESMTPSA id 63061126B7D;
+ Mon, 31 Jan 2022 21:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+ t=1643665904; bh=iIJNpft2xL+n2vE0wSgEc/ganWtCw9JUh/zcBq4c1so=;
+ h=From:To:Cc:Subject:Date;
+ b=BpCK9Qn/VAPuo+A4mc1RLxUpVtffpFFJElctH9OSnBdLu5FLSY4JqZPA0sqjMPszx
+ tdSv2KU5a+KkHjqA7zzV3h6LbZi8LvHqQBNm2Dywa3vRzAJM1Fxh4hEEEHAt/pXwHK
+ Zi3y9Mcyu6JN2PUzfSkCmzOjgnPg6Zuusz3qRJi75FGm/n5cB5yflRZ8lm9lVevJrV
+ El6kwrPipC9nFPgWrcBqmSpbzpj+ABfkqZnXxwZAa6hHFfD1Vl8X7svhfAEyZIB6Up
+ LuVYz8jppKoYpQgCqSC0LzT1gfTZUorAFwGqN9Q4RHsgq/nTYtG20d8/bzf5lxMaN9
+ +LqQzD5P+5AsQ==
+From: Sean Nyekjaer <sean@geanix.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Boris Brezillon <bbrezillon@kernel.org>
+Cc: Sean Nyekjaer <sean@geanix.com>, stable@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: rawnand: protect access to rawnand devices while in
+ suspend
+Date: Mon, 31 Jan 2022 22:51:38 +0100
+Message-Id: <20220131215138.2013649-1-sean@geanix.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: [PATCH] mtd: nand: raw: qcom_nandc: Don't clear_bam_transaction
- on READID
-To: Sricharan Ramabadhran <sricharan@codeaurora.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Manivannan Sadhasivam <mani@kernel.org>, pragalla@codeaurora.org
-Cc: ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
- angelogioacchino.delregno@somainline.org, marijn.suijten@somainline.org,
- jamipkettunen@somainline.org, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- mdalam@codeaurora.org
-References: <20220113184427.2259509-1-konrad.dybcio@somainline.org>
- <20220114082718.32a2fc83@xps13> <20220126111613.3ab0021e@xps13>
- <20220126103316.GA212068@thinkpad> <20220126114200.4cc3c21b@xps13>
- <fc80a6e7-bd44-3b3e-fca2-1316a76d65f5@codeaurora.org>
- <a6fcc533-e7cd-7b55-4db0-cec80c07b46a@codeaurora.org>
- <0a8d6550-aa19-0af1-abae-66bf34c91ea8@somainline.org>
- <be779ed9-bd80-8f01-fe7f-d3c07d3d85aa@codeaurora.org>
-From: Konrad Dybcio <konrad.dybcio@somainline.org>
-In-Reply-To: <be779ed9-bd80-8f01-fe7f-d3c07d3d85aa@codeaurora.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220131_115418_160093_D37592A0 
-X-CRM114-Status: GOOD (  31.20  )
+X-CRM114-CacheID: sfid-20220131_135150_237526_737F9EE8 
+X-CRM114-Status: GOOD (  18.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,109 +64,170 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIDMxLzAxLzIwMjIgMTU6MTMsIFNyaWNoYXJhbiBSYW1hYmFkaHJhbiB3cm90ZToKPiBIaSBL
-b25yYWQsCj4KPiBPbiAxLzMxLzIwMjIgMzozOSBQTSwgS29ucmFkIER5YmNpbyB3cm90ZToKPj4K
-Pj4gT24gMjgvMDEvMjAyMiAxODo1MCwgU3JpY2hhcmFuIFJhbWFiYWRocmFuIHdyb3RlOgo+Pj4g
-SGkgS29ucmFkLAo+Pj4KPj4+IE9uIDEvMjgvMjAyMiA5OjU1IEFNLCBTcmljaGFyYW4gUmFtYWJh
-ZGhyYW4gd3JvdGU6Cj4+Pj4gSGkgTWlxdWVsLAo+Pj4+Cj4+Pj4gT24gMS8yNi8yMDIyIDQ6MTIg
-UE0sIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+Pj4+IEhpIE1hbmksCj4+Pj4+Cj4+Pj4+IG1hbmlA
-a2VybmVsLm9yZyB3cm90ZSBvbiBXZWQsIDI2IEphbiAyMDIyIDE2OjAzOjE2ICswNTMwOgo+Pj4+
-Pgo+Pj4+Pj4gT24gV2VkLCBKYW4gMjYsIDIwMjIgYXQgMTE6MTY6MTNBTSArMDEwMCwgTWlxdWVs
-IFJheW5hbCB3cm90ZToKPj4+Pj4+PiBIZWxsbywKPj4+Pj4+Pgo+Pj4+Pj4+IG1pcXVlbC5yYXlu
-YWxAYm9vdGxpbi5jb20gd3JvdGUgb24gRnJpLCAxNCBKYW4gMjAyMiAwODoyNzoxOCArMDEwMDoK
-Pj4+Pj4+Pj4gSGkgS29ucmFkLAo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBrb25yYWQuZHliY2lvQHNvbWFp
-bmxpbmUub3JnIHdyb3RlIG9uIFRodSwgMTMgSmFuIDIwMjIgMTk6NDQ6MjYgCj4+Pj4+Pj4+ICsw
-MTAwOgo+Pj4+Pj4+Pj4gV2hpbGUgSSBoYXZlIGFic29sdXRlbHkgMCBpZGVhIHdoeSBhbmQgaG93
-LCBydW5uaW5nIAo+Pj4+Pj4+Pj4gY2xlYXJfYmFtX3RyYW5zYWN0aW9uCj4+Pj4+Pj4+PiB3aGVu
-IFJFQURJRCBpcyBpc3N1ZWQgbWFrZXMgdGhlIERNQSB0b3RhbGx5IGNsb2cgdXAgYW5kIHJlZnVz
-ZSAKPj4+Pj4+Pj4+IHRvIGZ1bmN0aW9uCj4+Pj4+Pj4+PiBhdCBhbGwgb24gbWRtOTYwNy4gSW4g
-ZmFjdCwgaXQgaXMgc28gYmFkIHRoYXQgYWxsIHRoZSBkYXRhIAo+Pj4+Pj4+Pj4gZ2V0cyBnYXJi
-bGVkCj4+Pj4+Pj4+PiBhbmQgYWZ0ZXIgYSBzaG9ydCB3aGlsZSBpbiB0aGUgbmFuZCBwcm9iZSBm
-bG93LCB0aGUgQ1BVIAo+Pj4+Pj4+Pj4gZGVjaWRlcyB0aGF0Cj4+Pj4+Pj4+PiBzZXB1a3UgaXMg
-dGhlIG9ubHkgb3B0aW9uLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IFJlbW92aW5nIF9SRUFESUQgZnJv
-bSB0aGUgaWYgY29uZGl0aW9uIG1ha2VzIGl0IHdvcmsgbGlrZSBhIAo+Pj4+Pj4+Pj4gY2hhcm0s
-IEkgY2FuCj4+Pj4+Pj4+PiByZWFkIGRhdGEgYW5kIG1vdW50IHBhcnRpdGlvbnMgd2l0aG91dCBh
-IHByb2JsZW0uCj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gU2lnbmVkLW9mZi1ieTogS29ucmFkIER5YmNp
-byA8a29ucmFkLmR5YmNpb0Bzb21haW5saW5lLm9yZz4KPj4+Pj4+Pj4+IC0tLQo+Pj4+Pj4+Pj4g
-VGhpcyBpcyB0b3RhbGx5IGp1c3QgYW4gb2JzZXJ2YXRpb24gd2hpY2ggdG9vayBtZSBhbiBpbmh1
-bWFuZSAKPj4+Pj4+Pj4+IGFtb3VudCBvZgo+Pj4+Pj4+Pj4gZGVidWcgcHJpbnRzIHRvIGZpbmQu
-LiBwZXJoYXBzIHRoZXJlJ3MgYSBiZXR0ZXIgcmVhc29uIGJlaGluZCAKPj4+Pj4+Pj4+IHRoaXMs
-IGJ1dAo+Pj4+Pj4+Pj4gSSBjYW4ndCBzZWVtIHRvIGZpbmQgYW55IGFuc3dlcnMuLiBUaGVyZWZv
-cmUsIHRoaXMgaXMgYSBCSUcgUkZDIQo+Pj4+Pj4+PiBJJ20gYWRkaW5nIHR3byBwZW9wbGUgZnJv
-bSBjb2RlYXVyb3JhIHdobyB3b3JrZWQgYSBsb3Qgb24gdGhpcyAKPj4+Pj4+Pj4gZHJpdmVyLgo+
-Pj4+Pj4+PiBIb3BlZnVsbHkgdGhleSB3aWxsIGhhdmUgYW4gaWRlYSA6KQo+Pj4+Pj4+IFNhZHJl
-LCBJJ3ZlIHNwZW50IGEgc2lnbmlmaWNhbnQgYW1vdW50IG9mIHRpbWUgcmV2aWV3aW5nIHlvdXIg
-Cj4+Pj4+Pj4gcGF0Y2hlcywKPj4+Pj4+PiBub3cgaXQncyB5b3VyIHR1cm4gdG8gbm90IHRha2Ug
-YSBtb250aCB0byBhbnN3ZXIgdG8geW91ciBwZWVycwo+Pj4+Pj4+IHByb3Bvc2Fscy4KPj4+Pj4+
-Pgo+Pj4+Pj4+IFBsZWFzZSBoZWxwIHJldmlld2luZyB0aGlzIHBhdGNoLgo+Pj4+Pj4gU29ycnku
-IEkgd2FzIGhvcGluZyB0aGF0IFFjb20gZm9sa3Mgd291bGQgY2hpbWUgaW4gYXMgSSBkb24ndCAK
-Pj4+Pj4+IGhhdmUgYW55IGlkZWEKPj4+Pj4+IGFib3V0IHRoZSBtZG05NjA3IHBsYXRmb3JtLiBJ
-dCBjb3VsZCBiZSB0aGF0IHRoZSBtYWlsIHNlcnZlciAKPj4+Pj4+IG1pZ3JhdGlvbiBmcm9tCj4+
-Pj4+PiBjb2RlYXVyb3JhIHRvIHF1aWNpbmMgcHV0IGEgYmFycmllciBoZXJlLgo+Pj4+Pj4KPj4+
-Pj4+IExldCBtZSBwaW5nIHRoZW0gaW50ZXJuYWxseS4KPj4+Pj4gT2gsIG9rLCBJIGRpZG4ndCBr
-bm93LiBUaGFua3MhCj4+Pj4KPj4+PiDCoMKgIFNvcnJ5IE1pcXVlbCwgc29tZWhvdyB3ZSBkaWQg
-bm90IGdldCB0aGlzIGVtYWlsIGluIG91ciBpbmJveC4KPj4+PiDCoMKgIFRoYW5rcyB0byBNYW5p
-IGZvciBwaW5naW5nIHVzLCB3ZSB3aWxsIHRlc3QgdGhpcyB1cCB0b2RheSBhbmQgCj4+Pj4gZ2V0
-IGJhY2suCj4+Pj4KPj4+IMKgIMKgIMKgIFdoaWxlIHdlIGNvdWxkIG5vdCByZXByb2R1Y2UgdGhp
-cyBpc3N1ZSBvbiBvdXIgaXBxIGJvYXJkcyAoZG8gCj4+PiBub3QgaGF2ZSBhIG1kbTk2MDcgcmln
-aHQgbm93KSBhbmQKPj4+IMKgwqDCoMKgwqDCoCBpc3N1ZSBkb2VzIG5vdCBsb29rIGFueSBvYnZp
-b3VzLgo+Pj4gwqAgwqAgwqAgY2FuIHlvdSBwbGVhc2UgZ2l2ZSB0aGUgZGVidWcgbG9ncyB0aGF0
-IHlvdSBkaWQgZm9yIHRoZSBhYm92ZSAKPj4+IHN0YWdlIGJ5IHN0YWdlID8KPj4KPj4gSSB3b24n
-dCBoYXZlIGFjY2VzcyB0byB0aGUgYm9hcmQgZm9yIGFib3V0IHR3byB3ZWVrcywgc29ycnkuCj4+
-Cj4+IFdoZW4gSSBnZXQgdG8gaXQsIEknbGwgc3VyZWx5IHRyeSB0byBzZW5kIHlvdSB0aGUgbG9n
-cywgdGhvdWdoIHRoZXJlCj4+Cj4+IHdhc24ndCBtdWNoIG1vcmUgdGhhbiBqdXN0IHNvbWV0aGlu
-ZyBqdW1waW5nIHRvIHdoby1rbm93cy13aGVyZQo+Pgo+PiBhZnRlciBjbGVhcl9iYW1fdHJhbnNh
-Y3Rpb24gd2FzIGNhbGxlZCwgcmVzdWx0aW5nIGluIHZhbHVlcyAKPj4gYXNzb2NpYXRlZCB3aXRo
-Cj4+Cj4+IHRoZSBOQU5EIGJlaW5nIGFsbCB6ZXJvZWQgb3V0IGluIHByX2Vyci9fZGVidWcvZXRj
-Lgo+Pgo+Pgo+IMKgwqDCoCBPayBzdXJlLiBTbyB3YXMgdGhlIFJFQURJRCBjb21tYW5kIGl0c2Vs
-ZiBmYWlsaW5nIChvcikgdGhlIAo+IHN1YnNlcXVlbnQgb25lID8KPiDCoMKgIFdlIGNhbiBjaGVj
-ayB3aGljaCBwYXJhbWV0ZXIgcmVzZXQgYnkgdGhlIGNsZWFyX2JhbV90cmFuc2FjdGlvbiBpcyAK
-PiBjYXVzaW5nIHRoZQo+IMKgwqAgZmFpbHVyZS7CoCBNZWFud2hpbGUsIGxvb3BpbmcgaW4gUHJh
-ZGVlcCB3aG8gaGFzIGFjY2VzcyB0byB0aGUgCj4gYm9hcmQsIHNvIGluIGEgYmV0dGVyCj4gwqDC
-oCBwb3NpdGlvbiB0byBkZWJ1Zy4KCkknbSBzb3JyeSBJIGhhdmUgc28gZmV3IGRldGFpbHMgb24g
-aGFuZCwgYW5kIG5vIGtlcm5lbCB0cmVlIChubyBhY2Nlc3MgCnRvIHRoYXQgbWFjaGluZSBlaXRo
-ZXIsIGZvciBub3cpLgoKCkkgd2lsbCB0cnkgdG8gZGVzY3JpYmUgdG8gdGhlIGJlc3Qgb2YgbXkg
-YWJpbGl0aWVzIHdoYXQgSSByZWNhbGwuCgoKTXkgbWV0aG9kb2xvZ3kgb2YgbWFraW5nIHN1cmUg
-dGhpbmdzIGRvbid0IGdvIGhheXdpcmUgd2FzIHRvIHByaW50IHRoZSAKb29iIHNpemUKCm9mIG91
-ciBOQU5EIGJhc2ljYWxseSBldmVyeSB0d28gbGluZXMgb2YgY29kZSAoeWVzLCBpIHdhcyB2ZXJ5
-IGRlc3BlcmF0ZSAKYXQgb25lIHBvaW50KSwKCmFzIHRoYXQgd2FzIHplcm9lZCBvdXQgd2hlbiAq
-dGhlIGJ1ZyogaGFwcGVuZWQsIGxlYWRpbmcgdG8gYSBrZXJuZWwgCmJ1Zy9wYW5pYy9zdGFsbAoK
-KGNhbid0IHJlY2FsbCB3aGF0IGV4YWN0bHkgaXQgd2FzLCBidXQgaXQgc2FpZCBzb21ldGhpbmcg
-YWxvbmcgdGhlIGxpbmVzIApvZiAibm8gc3VwcG9ydCBmb3IKCm9vYiBzaXplIDAiIGFuZCB0aGVu
-IGl0IGRpZG4ndCBmYWlsIGdyYWNldWxseSwgbGVhZGluZyB0byBzb21lIGJhZCBqdW1wcyAKYW5k
-IHVsdGltYXRlbHkKCmEgZGVhZCBwbGF0Zm9ybS4uKQoKCmFmdGVyIGhvdXJzIG9mIGRpZ2dpbmcs
-IEkgZm91bmQgb3V0IHRoYXQgZXZlcnl0aGluZyBnb2VzIGZpbmUgdW50aWwgCmNsZWFyX2JhbV90
-cmFuc2FjdGlvbiBpcyBjYWxsZWQsCgphZnRlciB0aGF0IGdldHMgZXhlY3V0ZWQgZXZlcnkgbmFu
-ZCBvcCBzdGFydHMgcmVhZGluZyBhbGwgemVyb2VzIChmb3IgCmV4YW1wbGUgaW4gSkVERUMgSUQg
-Y2hlY2spCgpzbyBJIGFkZGVkIHRoZSBjaGFuZ2VzIGZyb20gdGhpcyBwYXRjaCwgYW5kIHRoaW5n
-cyBtYWdpY2FsbHkgc3RhcnRlZCAKd29ya2luZy4uLiBNeSBzdXNwaWNpb24gaXMKCnRoYXQgdGhl
-IHVuZGVybHlpbmcgRklGTyBpc24ndCBmdWxseSBkcmFpbmVkIChpcyBpdCBhIEZJRk8gb24gOTYw
-Nz8gYmFoLCAKaSB3b3JrIG9uIHRvbyBtYW55IHNvY3MgYXQgb25jZSkKCmFuZCB0aGlzIGZ1bmN0
-aW9uIG9ubHkgbWFrZXMgTGludXggdGhpbmsgaXQgaXMsIHdpdGhvdXQgYWN0dWFsbHkgCmRyYWlu
-aW5nIGl0LCBhbmQgdGhlIGxlZnRvdmVyCgpjb21tYW5kcyBnZXQgZXhlY3V0ZWQgd2l0aCBzb21l
-IHBhcnRzIG9mIHRoZW0gZ2V0dGluZyBvdmVyd3JpdHRlbiwgCnJlc3VsdGluZyBpbiB0aGUKCmZh
-bW91cyBnYXJiYWdlIGluIC0gZ2FyYmFnZSBvdXQgc2l0dWF0aW9uLCBidXQgdGhhdCdzIG9ubHkg
-YSBndWVzc3RpbWF0ZS4uCgoKRG8gbm90ZSB0aGlzIHNvbWVob3cgd29ya2VkIGZpbmUgb24gNS4x
-MSBhbmQgdGhlbiBicm9rZSBvbiA1LjEyLzEzLiBJIAp3ZW50IGFzIGZhciBhcyByZXBsYWNpbmcg
-bW9zdAoKb2YgdGhlIGtlcm5lbCB3aXRoIHRoZSB1cGRhdGVkL2Rvd25ncmFkZWQgcGFydHMgdmlh
-IGdpdCBjaGVja291dCAoaSAKdHJpZWQgbWFueSBjb21iaW5hdGlvbnMpLAoKdG8gbm8gYXZhaWwu
-LiBJIGV2ZW4gdHJpZWQgZGlmZmVyZW50IGNvbXBpbGVycyBhbmQgb3B0aW1pemF0aW9uIGxldmVs
-cywgCnRoaW5raW5nIGl0IGNvdWxkIGhhdmUgYmVlbgoKYSBjb2RlZ2VuIGlzc3VlLCBidXQgbm8g
-bHVjayBlaXRoZXIuCgoKSS4uIGRvIHVuZGVyc3RhbmQgdGhpcyBlbWFpbCBpcyBhIHRvdGFsIG1l
-c3MgdG8gcmVhZCwgYXMgbXVjaCBhcyBpdCB3YXMgCnRvIHdyaXRlLCBidXQKCndpdGhvdXQgYWNj
-ZXNzIHRvIG15IGNvZGUgYW5kIHRoZSBtYWNoaW5lIGl0c2VsZiBJIGNhbid0IGdpdmUgeW91IHNv
-bGlkIApkZXRhaWxzLCBhbmQKCnRoZSBmYWN0IHRoaXMgc2l0dWF0aW9uIGlzIGZhciBmcm9tIG9y
-ZGluYXJ5IGRvZXNuJ3QgaGVscCBlaXRoZXIuLgoKClRoZSBsYXRlc3QgKGFuY2llbnQsIG5vdCBx
-dWl0ZSBwcmV0dHksIGJ1dCBwcm9iYWJseSB3b3JraW5nIGlmIG15IG1lbW9yeSAKaXMgY29ycmVj
-dCkgdmVyc2lvbiBvZiBteSBwYXRjaGVzCgpmb3IgdGhlIG1kbTk2MDcgaXMgYXZhaWxhYmxlIGF0
-IFsxXSwgSSB3aWxsIHB1c2ggdGhlIG5ldyByZXZpc2lvbiBhZnRlciAKSSBnZXQgYWNjZXNzIHRv
-IHRoZSB3b3Jrc3RhdGlvbi4KCgpLb25yYWQKCgpbMV0gaHR0cHM6Ly9naXRodWIuY29tL1NvTWFp
-bmxpbmUvbGludXgvY29tbWl0cy9rb25yYWQvcGluZW1vZGVtCgoKPgo+IFJlZ2FyZHMsCj4gwqDC
-oCBTcmljaGFyYW4KPgo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Prevent rawnend access while in a suspended state.
+
+Commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") allows the
+rawnand layer to return errors rather than waiting in a blocking wait.
+
+Tested on a iMX6ULL.
+
+Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+---
+Follow-up on discussion in:
+https://lkml.org/lkml/2021/10/4/41
+https://lkml.org/lkml/2021/10/11/435
+https://lkml.org/lkml/2021/10/20/184
+https://lkml.org/lkml/2021/10/25/288
+https://lkml.org/lkml/2021/10/26/55
+https://lkml.org/lkml/2021/11/2/352
+
+Changes since v1:
+ - fixed uninitialized return
+
+ drivers/mtd/nand/raw/nand_base.c | 44 +++++++++++++++-----------------
+ include/linux/mtd/rawnand.h      |  1 +
+ 2 files changed, 21 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index e7b2ba016d8c..8daaba96edb2 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -338,16 +338,19 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+  *
+  * Return: -EBUSY if the chip has been suspended, 0 otherwise
+  */
+-static int nand_get_device(struct nand_chip *chip)
++static void nand_get_device(struct nand_chip *chip)
+ {
+-	mutex_lock(&chip->lock);
+-	if (chip->suspended) {
++	/* Wait until the device is resumed. */
++	while (1) {
++		mutex_lock(&chip->lock);
++		if (!chip->suspended) {
++			mutex_lock(&chip->controller->lock);
++			return;
++		}
+ 		mutex_unlock(&chip->lock);
+-		return -EBUSY;
+-	}
+-	mutex_lock(&chip->controller->lock);
+ 
+-	return 0;
++		wait_event(chip->resume_wq, !chip->suspended);
++	}
+ }
+ 
+ /**
+@@ -576,9 +579,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
+ 		nand_erase_nand(chip, &einfo, 0);
+ 
+ 		/* Write bad block marker to OOB */
+-		ret = nand_get_device(chip);
+-		if (ret)
+-			return ret;
++		nand_get_device(chip);
+ 
+ 		ret = nand_markbad_bbm(chip, ofs);
+ 		nand_release_device(chip);
+@@ -3826,9 +3827,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 	    ops->mode != MTD_OPS_RAW)
+ 		return -ENOTSUPP;
+ 
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	if (!ops->datbuf)
+ 		ret = nand_do_read_oob(chip, from, ops);
+@@ -4415,13 +4414,11 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+ 			  struct mtd_oob_ops *ops)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int ret;
++	int ret = 0;
+ 
+ 	ops->retlen = 0;
+ 
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	switch (ops->mode) {
+ 	case MTD_OPS_PLACE_OOB:
+@@ -4481,9 +4478,7 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+ 		return -EIO;
+ 
+ 	/* Grab the lock and see if the device is available */
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	/* Shift to get first page */
+ 	page = (int)(instr->addr >> chip->page_shift);
+@@ -4570,7 +4565,7 @@ static void nand_sync(struct mtd_info *mtd)
+ 	pr_debug("%s: called\n", __func__);
+ 
+ 	/* Grab the lock and see if the device is available */
+-	WARN_ON(nand_get_device(chip));
++	nand_get_device(chip);
+ 	/* Release it and go back */
+ 	nand_release_device(chip);
+ }
+@@ -4587,9 +4582,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ 	int ret;
+ 
+ 	/* Select the NAND device */
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	nand_select_target(chip, chipnr);
+ 
+@@ -4660,6 +4653,8 @@ static void nand_resume(struct mtd_info *mtd)
+ 			__func__);
+ 	}
+ 	mutex_unlock(&chip->lock);
++
++	wake_up_all(&chip->resume_wq);
+ }
+ 
+ /**
+@@ -5437,6 +5432,7 @@ static int nand_scan_ident(struct nand_chip *chip, unsigned int maxchips,
+ 	chip->cur_cs = -1;
+ 
+ 	mutex_init(&chip->lock);
++	init_waitqueue_head(&chip->resume_wq);
+ 
+ 	/* Enforce the right timings for reset/detection */
+ 	chip->current_interface_config = nand_get_reset_interface_config();
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5b88cd51fadb..99d50a15a263 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1294,6 +1294,7 @@ struct nand_chip {
+ 	/* Internals */
+ 	struct mutex lock;
+ 	unsigned int suspended : 1;
++	wait_queue_head_t resume_wq;
+ 	int cur_cs;
+ 	int read_retries;
+ 	struct nand_secure_region *secure_regions;
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
