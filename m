@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52B30C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 14:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EF55C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 14:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Z2A4u2g4zUUcYbSObA2H8EUeB7rMpWr9ITEhsYbNxGw=; b=DumQO0p7AoXydv
-	Fq/M6Jxa+1P4WzlGyYPjEfBqYE+CMq7yy0QBQxvvJXa/YiBRYe+JlcC5nHe1rYfvoo25zOaFdEk2I
-	EJHz+BLHQ81sTLJQ7JHQex31WwcIZYy+Huntr5XYdXChKWjCGDF4mwLF2LPsnUBB69vvhZWmhi3GL
-	6PZaAP0Lp/Bj2lsddFy7HlC8f4ZqG7VlvgMANKSkEVvEdl+YNz1MeVwt44hRD8X9xBZnpUEC1WdTy
-	7RZUuFQl90FvVZCODvFghs/LTkUmf8OfE23/LQ+XgayDhMLgNFE9SDP7EKMIbBFCgbIuPSYhOuKme
-	sYN4zYIcyGgsU7pRWG1Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=A/vwq131czsInzkheHxKsDqw07RJUo4Hn4I9T3muGOI=; b=ow6i9I+yNsfWLA
+	LTwfzV1SANMy3o4s75STrGUmxhOGpBPT/KX4FnOgJCwTygHNAeEC0T+ugkqXYvoqgAwNJ+cl4dTKs
+	ZjIPUvETVEdvj3+O8we6eSNkCHPAUH4GwkebgCjQPuT9wJPFcdn7WW7zY5rQDdbWZQA8mfiGEK68q
+	4OYGrjrMtA5fGaeesNmSMyEidcnUabc4rrcuHM5FqVNcZnmNPFS2hhllVhWVvePohET9ERglQ/iaZ
+	MJXaeMbrVn2pY9rT4UpDTzryDGNc7s17PqnBI2ekgLuHAdg/mLNGw2GUK91g0NsAVOpqS4fd0avvS
+	jP8atYe7kq9AjjWEN5+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFGiR-00FjPx-Bo; Wed, 02 Feb 2022 14:34:35 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1nFGjB-00Fjpk-74; Wed, 02 Feb 2022 14:35:21 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFGiM-00FjNN-80
- for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 14:34:31 +0000
+ id 1nFGiN-00FjOA-Rd
+ for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 14:34:33 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 6861C61866;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B02CC618D5;
+ Wed,  2 Feb 2022 14:34:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7B3C340EF;
  Wed,  2 Feb 2022 14:34:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8769AC004E1;
- Wed,  2 Feb 2022 14:34:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1643812468;
- bh=tBSLmTgNltnp/arCgoQp01wQjzbT8MRLJMndYCPwJG8=;
- h=From:To:Cc:Subject:Date:From;
- b=mnYlRLgadawzS+FreJTw4FPeeXTxhtkLB7TLMrckbbgG+ilpwHzotIJ58fSHG9p+0
- 3wAYdJ/trB/LyR/klJgWZUAkwhswTJ61MmFlUOp+G0bsIzoMQXPYTkZZvpc6JvMNM5
- DPlpU4bgaLOje8szb7yOu1FILiXKj0zKvZntgogwNfFCqDnNEWrdj6R/dA8AqnF62U
- YJHdYuSwicGBkeqiWHc/zPwOA1uOrVhYQ6xtAkBnrwRPBHA5sQtsFLIIpD73OAyo7M
- Q6JnHEQAKIqj4aGNh5mtp/f5B11OH0ZpASIJX5wBzNpHDXSM+qNowBx9fwHmXE8uhZ
- YYOjVypNY3aqw==
+ s=k20201202; t=1643812470;
+ bh=36df6yLJszbsCLq5lCoN34Rw+Z+PE/HwwKmISQqlVAU=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=gXCCtz3OxCSjc69uRkfmpTbJk/6Gyt256b37BlX4RU4MJTJMRTZBhvPPBlMPsCetn
+ MQ7rqH7dcJAuQ0SG74d7i9wx7juWORN9Q7B1Z7Bwc9/T06WJp592tKfW7VIiYE7HkD
+ nvzU8t+I8Ss1wb8Vof9ylFqQ1EAl/VHt0lrG0WW67dOLjnphqWGrN+LYy/f4WhpqWB
+ OA6TN1EoTp8hi7rlnNBlLOFpO3i7a8zzpgDBm89vhgoPQcPBQaAPcdtJbS9zLqe5gR
+ tdCe31P11/dF4OoPf6BXY4O1vQnWqqjyvFRt82od55PKeby8P3MA7xgYtsqGJ+zH+y
+ I1HjIZSUzi2+A==
 From: Mark Brown <broonie@kernel.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 0/3] mtd: Ensure DT compatibles have SPI device IDs
-Date: Wed,  2 Feb 2022 14:34:01 +0000
-Message-Id: <20220202143404.16070-1-broonie@kernel.org>
+Subject: [PATCH v2 1/3] mtd: dataflash: Add SPI ID table
+Date: Wed,  2 Feb 2022 14:34:02 +0000
+Message-Id: <20220202143404.16070-2-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220202143404.16070-1-broonie@kernel.org>
+References: <20220202143404.16070-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=720; h=from:subject;
- bh=tBSLmTgNltnp/arCgoQp01wQjzbT8MRLJMndYCPwJG8=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+pZYXVIOhK/i6pcUsTZJvS1uJQHJLEF57alubMTj
- bi68Ue2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYfqWWAAKCRAk1otyXVSH0NHeB/
- 0e83+uTMB87EBVZ/I5rMM8wwH/dBX6gWlRFsrM314rgOg5ffanY59S3ACzdJT/nQrq5JSgEfrG9O/b
- q9CXpKOdhL1/jm07hPnTOPTEimsVuSO/obd97qj9tB5V+deN7ia+pLjg8rNSrGxgyrJy2gbq8RQTTG
- 64pECKVxMVUdYQdHUUuadGMqyhUB6EUV66D8wk1Rf0v8/6BDRn1KdzPb/eJNsZCs+t87Vy8CPXZrrP
- TOJMAz5xhkbsE3vAqPU5vNY1xwtR9xDziMUUaX0DXs7Y1zaE1pH0Q4NvXdGbwViesA65UuzGnTev4I
- YonN9e5P4kHmyYf2GcCgk0fWoILNZ/
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1386; h=from:subject;
+ bh=36df6yLJszbsCLq5lCoN34Rw+Z+PE/HwwKmISQqlVAU=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+pZZhJO6oLbdyw+BujbaYu/oF/CrJZiJ96A8tLNE
+ Gdk6q7mJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYfqWWQAKCRAk1otyXVSH0AbECA
+ CHA70VO2yoFDAVjdbf9sHQxFmIEPwv1vfsMvhocrhfZaeFQKAj5Eai6EuGdS2Nj4Kjl7W5dyQw7dl2
+ AwaIKbPc/lh31wq0mR/5odE/F0AvmK6b00ZikbLiI1nETnMne7O+nUJO7biquyxSUGbeMtLMUtPwDi
+ 2sdZCYtlCv53G68oWmPs4k2JXG8mYGIJTZY8EDoh93MYVLagwIZhC2F28b4HNkrSZC6whNkKwAp8xN
+ lsxam/oWuZYdcKSv0+bu1I84dpQvSOhgBhmrMDVTnOpACPch+QCoviblb9hucQr9NPsRApn3N/k9Zf
+ P8pp3fhY6glJZ2cfBJ+rF97US5iAYi
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220202_063430_372118_8EA5F2ED 
-X-CRM114-Status: UNSURE (   9.92  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220202_063432_027686_032AE91C 
+X-CRM114-Status: GOOD (  14.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,24 +86,42 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Currently autoloading for SPI devices does not use the DT ID table, it uses
 SPI modalises. Supporting OF modalises is going to be difficult if not
-impractical, an attempt was made but has been reverted, so this series
-adds SPI IDs where they aren't provided for a given modalias.
+impractical, an attempt was made but has been reverted, so ensure that
+module autoloading works for this driver by adding an id_table listing the
+SPI IDs for everything.
 
-v2:
- - Rebase onto v5.17-rc1
+Fixes: 96c8395e2166 ("spi: Revert modalias changes")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/mtd/devices/mtd_dataflash.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Mark Brown (3):
-  mtd: dataflash: Add SPI ID table
-  mtd: mchp23k256: Add SPI ID table
-  mtd: mchp48l640: Add SPI ID table
-
- drivers/mtd/devices/mchp23k256.c    | 14 ++++++++++++++
- drivers/mtd/devices/mchp48l640.c    | 10 ++++++++++
- drivers/mtd/devices/mtd_dataflash.c |  8 ++++++++
- 3 files changed, 32 insertions(+)
-
-
-base-commit: e783362eb54cd99b2cac8b3a9aeac942e6f6ac07
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 734878abaa23..3ae18cbf5cd1 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -112,6 +112,13 @@ static const struct of_device_id dataflash_dt_ids[] = {
+ MODULE_DEVICE_TABLE(of, dataflash_dt_ids);
+ #endif
+ 
++static const struct spi_device_id dataflash_spi_ids[] = {
++	{ .name = "at45", },
++	{ .name = "dataflash", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(spi, dataflash_spi_ids);
++
+ /* ......................................................................... */
+ 
+ /*
+@@ -938,6 +945,7 @@ static struct spi_driver dataflash_driver = {
+ 
+ 	.probe		= dataflash_probe,
+ 	.remove		= dataflash_remove,
++	.id_table	= dataflash_spi_ids,
+ 
+ 	/* FIXME:  investigate suspend and resume... */
+ };
 -- 
 2.30.2
 
