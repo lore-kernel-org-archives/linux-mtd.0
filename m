@@ -4,78 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05CC7C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 11:54:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52B30C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 14:35:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SxXlFRRLDFH9Qmo8EZK433dTTB7LOZp0TTOnKnakqjc=; b=DO7ddtUfPQeae0
-	XAT8c6kwOpj6h/Bemc+FhuYpU9N9TDA2OJYaAl5bgaE0Lyn4wTAv+TPPad0oofx46hbSLTqEqyCS8
-	J898sX9Tf4tlDOs3BTRy97VNXhBOD9Y+RVGI1jUuvYlOKLD/queYbrBQ3VCfEiGlYNfQvqz1C642r
-	muWxawE+mcXFr2lELxmPbFgcNAKloGhJigGU5rKVLhoCTNlYWsUUOj96859UJ74PTXJUlggAospMC
-	yxEyGU/6thGOkSr+xKjwItU7K1sJXeY+xym6bj6vzlZ+2ePxfITkhxrkWLS7lOd6twZDl16t+7ZeS
-	QVwjCJyUdEmlO6qRzQ/Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Z2A4u2g4zUUcYbSObA2H8EUeB7rMpWr9ITEhsYbNxGw=; b=DumQO0p7AoXydv
+	Fq/M6Jxa+1P4WzlGyYPjEfBqYE+CMq7yy0QBQxvvJXa/YiBRYe+JlcC5nHe1rYfvoo25zOaFdEk2I
+	EJHz+BLHQ81sTLJQ7JHQex31WwcIZYy+Huntr5XYdXChKWjCGDF4mwLF2LPsnUBB69vvhZWmhi3GL
+	6PZaAP0Lp/Bj2lsddFy7HlC8f4ZqG7VlvgMANKSkEVvEdl+YNz1MeVwt44hRD8X9xBZnpUEC1WdTy
+	7RZUuFQl90FvVZCODvFghs/LTkUmf8OfE23/LQ+XgayDhMLgNFE9SDP7EKMIbBFCgbIuPSYhOuKme
+	sYN4zYIcyGgsU7pRWG1Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFECw-00F63y-AE; Wed, 02 Feb 2022 11:53:54 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nFGiR-00FjPx-Bo; Wed, 02 Feb 2022 14:34:35 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFECs-00F630-Kj
- for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 11:53:53 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 212BrUQD124243;
- Wed, 2 Feb 2022 05:53:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1643802810;
- bh=ZCiOlYN6uGVwo49DCOPGVRgsHZSeZjio+2Askyn+jEU=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Oe8FV/lTfcLmVGZDXiBYYSuW6er4n7IOenQBNpF3uJA3Dliw3ACK1iPNIxt0N2QyQ
- jh+YwlBhPdJpCiwuMEwjWK5yOKR3O7ipo1ZObkANAFh4AR+GmNoNVyOvaIqyGhE3Wx
- O4O1XKiw/cpSgYNtNsnRfLK1U8nX9HHvKLsVAhTI=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 212BrU9N004577
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 2 Feb 2022 05:53:30 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 2
- Feb 2022 05:53:28 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 2 Feb 2022 05:53:28 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 212BrRl5023205;
- Wed, 2 Feb 2022 05:53:28 -0600
-Date: Wed, 2 Feb 2022 17:23:27 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Christophe Kerello <christophe.kerello@foss.st.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <robh+dt@kernel.org>,
- <srinivas.kandagatla@linaro.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <devicetree@vger.kernel.org>, <chenshumin86@sina.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Khouloud Touil <ktouil@baylibre.com>, Linus Walleij
- <linus.walleij@linaro.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 4/4] mtd: core: Fix a conflict between MTD and NVMEM
- on wp-gpios property
-Message-ID: <20220202115327.53oqg5n7tx6b6q7u@ti.com>
-References: <20220131095755.8981-1-christophe.kerello@foss.st.com>
- <20220131095755.8981-5-christophe.kerello@foss.st.com>
- <20220131144309.0ffe7cc8@xps13>
- <20220201104727.7xvcyexf3yucegcb@ti.com>
- <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
+ id 1nFGiM-00FjNN-80
+ for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 14:34:31 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6861C61866;
+ Wed,  2 Feb 2022 14:34:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8769AC004E1;
+ Wed,  2 Feb 2022 14:34:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1643812468;
+ bh=tBSLmTgNltnp/arCgoQp01wQjzbT8MRLJMndYCPwJG8=;
+ h=From:To:Cc:Subject:Date:From;
+ b=mnYlRLgadawzS+FreJTw4FPeeXTxhtkLB7TLMrckbbgG+ilpwHzotIJ58fSHG9p+0
+ 3wAYdJ/trB/LyR/klJgWZUAkwhswTJ61MmFlUOp+G0bsIzoMQXPYTkZZvpc6JvMNM5
+ DPlpU4bgaLOje8szb7yOu1FILiXKj0zKvZntgogwNfFCqDnNEWrdj6R/dA8AqnF62U
+ YJHdYuSwicGBkeqiWHc/zPwOA1uOrVhYQ6xtAkBnrwRPBHA5sQtsFLIIpD73OAyo7M
+ Q6JnHEQAKIqj4aGNh5mtp/f5B11OH0ZpASIJX5wBzNpHDXSM+qNowBx9fwHmXE8uhZ
+ YYOjVypNY3aqw==
+From: Mark Brown <broonie@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/3] mtd: Ensure DT compatibles have SPI device IDs
+Date: Wed,  2 Feb 2022 14:34:01 +0000
+Message-Id: <20220202143404.16070-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Developer-Signature: v=1; a=openpgp-sha256; l=720; h=from:subject;
+ bh=tBSLmTgNltnp/arCgoQp01wQjzbT8MRLJMndYCPwJG8=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBh+pZYXVIOhK/i6pcUsTZJvS1uJQHJLEF57alubMTj
+ bi68Ue2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYfqWWAAKCRAk1otyXVSH0NHeB/
+ 0e83+uTMB87EBVZ/I5rMM8wwH/dBX6gWlRFsrM314rgOg5ffanY59S3ACzdJT/nQrq5JSgEfrG9O/b
+ q9CXpKOdhL1/jm07hPnTOPTEimsVuSO/obd97qj9tB5V+deN7ia+pLjg8rNSrGxgyrJy2gbq8RQTTG
+ 64pECKVxMVUdYQdHUUuadGMqyhUB6EUV66D8wk1Rf0v8/6BDRn1KdzPb/eJNsZCs+t87Vy8CPXZrrP
+ TOJMAz5xhkbsE3vAqPU5vNY1xwtR9xDziMUUaX0DXs7Y1zaE1pH0Q4NvXdGbwViesA65UuzGnTev4I
+ YonN9e5P4kHmyYf2GcCgk0fWoILNZ/
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220202_035351_766340_21D69B3A 
-X-CRM114-Status: GOOD (  54.50  )
+X-CRM114-CacheID: sfid-20220202_063430_372118_8EA5F2ED 
+X-CRM114-Status: UNSURE (   9.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,143 +83,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-+ Khouloud, Linus, Bartosz
+Currently autoloading for SPI devices does not use the DT ID table, it uses
+SPI modalises. Supporting OF modalises is going to be difficult if not
+impractical, an attempt was made but has been reverted, so this series
+adds SPI IDs where they aren't provided for a given modalias.
 
-On 02/02/22 11:44AM, Christophe Kerello wrote:
-> Hi,
-> 
-> On 2/1/22 11:47, Pratyush Yadav wrote:
-> > On 31/01/22 02:43PM, Miquel Raynal wrote:
-> > > Hi Vignesh, Tudory, Pratyush,
-> > > 
-> > > + Tudor and Pratyush
-> > > 
-> > > christophe.kerello@foss.st.com wrote on Mon, 31 Jan 2022 10:57:55 +0100:
-> > > 
-> > > > Wp-gpios property can be used on NVMEM nodes and the same property can
-> > > > be also used on MTD NAND nodes. In case of the wp-gpios property is
-> > > > defined at NAND level node, the GPIO management is done at NAND driver
-> > > > level. Write protect is disabled when the driver is probed or resumed
-> > > > and is enabled when the driver is released or suspended.
-> > > > 
-> > > > When no partitions are defined in the NAND DT node, then the NAND DT node
-> > > > will be passed to NVMEM framework. If wp-gpios property is defined in
-> > > > this node, the GPIO resource is taken twice and the NAND controller
-> > > > driver fails to probe.
-> > > > 
-> > > > A new Boolean flag named skip_wp_gpio has been added in nvmem_config.
-> > > > In case skip_wp_gpio is set, it means that the GPIO is handled by the
-> > > > provider. Lets set this flag in MTD layer to avoid the conflict on
-> > > > wp_gpios property.
-> > > > 
-> > > > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> > > > ---
-> > > >   drivers/mtd/mtdcore.c | 2 ++
-> > > >   1 file changed, 2 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > > > index 70f492dce158..e6d251594def 100644
-> > > > --- a/drivers/mtd/mtdcore.c
-> > > > +++ b/drivers/mtd/mtdcore.c
-> > > > @@ -546,6 +546,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
-> > > >   	config.stride = 1;
-> > > >   	config.read_only = true;
-> > > >   	config.root_only = true;
-> > > > +	config.skip_wp_gpio = true;
-> > > >   	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
-> > > >   	config.priv = mtd;
-> > > > @@ -833,6 +834,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
-> > > >   	config.owner = THIS_MODULE;
-> > > >   	config.type = NVMEM_TYPE_OTP;
-> > > >   	config.root_only = true;
-> > > > +	config.skip_wp_gpio = true;
-> > > >   	config.reg_read = reg_read;
-> > > >   	config.size = size;
-> > > >   	config.of_node = np;
-> > > 
-> > > TLDR: There is a conflict between MTD and NVMEM, who should handle the
-> > > WP pin when there is one? At least for raw NAND devices, I don't want
-> > > the NVMEM core to handle the wp pin. So we've introduced this
-> > > skip_wp_gpio nvmem config option. But there are two places where this
-> > > boolean can be set and one of these is for otp regions (see above). In
-> > > this case, I don't know if it is safe or if CFI/SPI-NOR rely on the
-> > > nvmem protection. Please tell us if you think this is fine for you.
-> > 
-> > Why does NVMEM touch hardware write protection in the first place? The
-> > purpose of the framework is to provide a way to retrieve config stored
-> > in memory. It has no business dealing with details of the chip like the
-> > WP line. That should be MTD's job (which it should delegate to SPI NOR,
-> > SPI NAND, etc.). If you want to write protect a cell then do it in
-> > software. I don't see why NVMEM should be dealing with hardware directly
-> > at all.
-> > 
-> > That is my mental model of how things _should_ work. I have not spent
-> > much time digging into how things actually work currently.
-> > 
-> 
-> Wp-gpios property management was added in MVMEM framework in January 2020 =>
-> sha1: 2a127da461a9d8d97782d6e82b227041393eb4d2
-> "
->     nvmem: add support for the write-protect pin
-> 
->     The write-protect pin handling looks like a standard property that
->     could benefit other users if available in the core nvmem framework.
-> 
->     Instead of modifying all the memory drivers to check this pin, make
->     the NVMEM subsystem check if the write-protect GPIO being passed
->     through the nvmem_config or defined in the device tree and pull it
->     low whenever writing to the memory.
-> "
-> 
-> And this modification was done for EEPROMs flashes => sha1:
-> 1c89074bf85068d1b86f2e0f0c2110fdd9b83c9f
-> "
->     eeprom: at24: remove the write-protect pin support
-> 
->     NVMEM framework is an interface for the at24 EEPROMs as well as for
->     other drivers, instead of passing the wp-gpios over the different
->     drivers each time, it would be better to pass it over the NVMEM
->     subsystem once and for all.
-> 
->     Removing the support for the write-protect pin after adding it to
->     the NVMEM subsystem.
-> "
-> 
-> Current NVMEM framework implementation toggles the WP GPIO when reg_write
-> nvmem_config API is defined. In case of MTD framework, reg_write is not
-> defined in nvmem_config.
+v2:
+ - Rebase onto v5.17-rc1
 
-Thanks for digging these up. I think this was the wrong decision to 
-make. NVMEM should just provide the APIs for handling read/write, and 
-leave the rest to the drivers.
+Mark Brown (3):
+  mtd: dataflash: Add SPI ID table
+  mtd: mchp23k256: Add SPI ID table
+  mtd: mchp48l640: Add SPI ID table
 
-It might be convenient for some drivers to put the WP GPIO handling to 
-NVMEM core but I just don't think it is the job of the framework to deal 
-with this, and it just does not know enough about the device to deal 
-with correctly and completely anyway. For example, wp-gpio is only one 
-of the ways to write protect a chip. SPI NOR flashes have a WP# pin that 
-is often toggled via the SPI controller. There could also be registers 
-that do the write protection.
+ drivers/mtd/devices/mchp23k256.c    | 14 ++++++++++++++
+ drivers/mtd/devices/mchp48l640.c    | 10 ++++++++++
+ drivers/mtd/devices/mtd_dataflash.c |  8 ++++++++
+ 3 files changed, 32 insertions(+)
 
-One would have to make strong justifications for making nvmem directly 
-deal with hardware level details to convince me it is a good idea. IMHO 
-if AT24 EEPROM is the only driver relying on this as of now then we 
-should just revert the patches and not have to deal with the 
-skip_wp_gpio hackery.
 
-> 
-> Based on the comments made, it seems that we also agree that this write
-> protection should be handled by MTD subsystems or associated drivers and not
-> by MVMEN framework for MTD use cases.
-> 
-> The proposal implementation should solve this conflict for MTD framework
-> without breaking anything for others NVMEM users (EEPROMs flashes for
-> example).
-
+base-commit: e783362eb54cd99b2cac8b3a9aeac942e6f6ac07
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
