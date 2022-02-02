@@ -4,104 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6638AC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 18:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1578DC433FE
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 20:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C96k7w5X+iX4h/9KWektt3tPGvfhbLyzCjamctj/DHY=; b=qkp4jDWhawMl8w
-	+StHFpooIR/Wu/mTpicZnMSgf1EEX4cS5kjtshWX5V9KwELFdm3aPp1sglljHjkO1lykH8axWTXN0
-	jJBFXbANbZVC+5v0sho/LAW8M9JeI04Ecl3VdTlQ2lWta7VEC99bRoBmVSXqPWpZzDw3W2T7MudBp
-	o2JDTSU0MH5qRpxm8gg5wp+nRqlLqfKyH8C40FvyfaRldWs6KJc/Nu+SEqF2ygde6th3x3TyJjJ2L
-	XVzOHOYp+KqkXVWysquVXhDmGgNDbIGbSIvZRaRQMN9F9mgiv70tqxjBX0b4YBIDYtOV0jPa2BgnM
-	nakjwfcK7qH4Q9wZE9gQ==;
+	List-Owner; bh=ZMdq+7fUBMYQD0L44FwJ/l+nob+qqvsq0in1INgrt/U=; b=nVtDfJYW7pxMtO
+	K+gk+zHJ0jmFeMZaJzvV939OYp6fI+u3rPDe1sTo5551N+Q16k79hZFXFPG6Ki4G05DYVXgwnosst
+	VSXAlks+ojuXFITiTrjUYd9a18hAQC9A79A7HKMqWD8oL9Uk7yNq2r/q3sAk1LrXBQqFZ9w8Bt1ko
+	LLYS2uwYWtPNXk1Ga9FRJ3dbTybOn0lMXAI8BpOSnS9l+CbLztsIINF9l2FkAIaStuKpnvzZh674Y
+	Rw7cOFTke4FMnatKxRnn/lpZT9zTGX0hHDZHFB7n0Le7Q46T32LaeRp/RfZ4c+9Pbi0kcznsbg81L
+	DhECqQksrjuoAtwrWxkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFKOu-00GaVf-0Y; Wed, 02 Feb 2022 18:30:40 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1nFLue-00Glmw-0H; Wed, 02 Feb 2022 20:07:32 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFKOs-00GaUh-4L
- for linux-mtd@bombadil.infradead.org; Wed, 02 Feb 2022 18:30:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=kZVYY62i9OL1hbZ3eEDL0yWrteW7BHmWhRGp71SWILE=; b=VmxQGcuL6j1UNH3/kMANii5Ex0
- ChhxefUW3Gg+kfL8gu+NCIcdyjUev9qhs0OFl1J6O0cg5q1jkBvj8sjAZPfuKyzYKpI+JvxTP0eMq
- 2QDawKQVcO+20L+ALJ99BtGzVtVsA1FxtaZFzeamT6n7N60+BhjxHnTNAEf9IrbluuKrZK80Q2zMM
- HpZX9fdm8ciSn7v52GPdCLEjf58mNIpENCrfwA+af/LBNWmO1qgOdrkeKrQVMqZ1WD7sOxnVtKwAy
- NiLCQLc30wwVKUYIGp9mkcCgmtJtmY1ZxtuoVk16Lql/eJ8nfS1ms7eA6BJBboVtJ3AgXMMOynVlr
- oYDeyTKw==;
-Received: from mx1.smtp.larsendata.com ([91.221.196.215])
- by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFKOo-00Fbdl-Cq
- for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 18:30:36 +0000
-Received: from mail01.mxhotel.dk (mail01.mxhotel.dk [91.221.196.236])
- by mx1.smtp.larsendata.com (Halon) with ESMTPS
- id 12f30462-8454-11ec-b20b-0050568c148b;
- Wed, 02 Feb 2022 18:15:17 +0000 (UTC)
-Received: from ravnborg.org (80-162-45-141-cable.dk.customer.tdc.net
- [80.162.45.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- (Authenticated sender: sam@ravnborg.org)
- by mail01.mxhotel.dk (Postfix) with ESMTPSA id 67A6F194BFA;
- Wed,  2 Feb 2022 19:14:11 +0100 (CET)
-Date: Wed, 2 Feb 2022 19:14:08 +0100
-X-Report-Abuse-To: abuse@mxhotel.dk
-From: Sam Ravnborg <sam@ravnborg.org>
-To: nick.hawkins@hpe.com
-Cc: verdun@hpe.com, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Corey Minyard <minyard@acm.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ id 1nFLua-00Glm5-3k
+ for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 20:07:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1643832448; x=1675368448;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=zMJkYvzEHpoZwFlSsnpW0On9ckenM6sc8fP13ZFhxYs=;
+ b=BCOyLo8gdWYDDlQKyJv412sCRY9kam/2dMNJ9YyJsaz305Zzm3K+lclJ
+ vxtepdp/suf9Nx+kN+04SmMrHdSrEgd8KfXdPciaDGctH8MccyIiRH5J0
+ lnhQGzFYWrlfNaSe+x8mIQZNH1DMg0TBMPyX9rnViHfgGZzrLQq6ADPi4
+ RyFLsagrhrFkU/TwAQn+DVqFy2jBrNSkrBnDVzi7s6Ln7XFJSVxd01zKi
+ TGR5YzxfW3lNq51ezjg911ObZZDaTn+1nXDOi6wPzUQINtEA/OusjpqXA
+ AAtwWvDz/5pEynm2D+4IWdoO0fxzs9L2uoXltNQIGhznrNeuoJX6VZL2Y g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10246"; a="272499510"
+X-IronPort-AV: E=Sophos;i="5.88,337,1635231600"; d="scan'208";a="272499510"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Feb 2022 12:07:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,337,1635231600"; d="scan'208";a="480235593"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+ by orsmga003.jf.intel.com with ESMTP; 02 Feb 2022 12:07:23 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1nFLuU-000V40-JG; Wed, 02 Feb 2022 20:07:22 +0000
+Date: Thu, 3 Feb 2022 04:07:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, kbuild-all@lists.01.org,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Lee Jones <lee.jones@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Amit Kucheria <amitk@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Wim Van Sebroeck <wim@linux-watchdog.org>,
- Guenter Roeck <linux@roeck-us.net>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Olof Johansson <olof@lixom.net>, soc@kernel.org,
- Shawn Guo <shawnguo@kernel.org>,
- Stanislav Jakubek <stano.jakubek@gmail.com>,
- Hao Fang <fanghao11@huawei.com>,
- "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Wang Kefeng <wangkefeng.wang@huawei.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- Masahiro Yamada <masahiroy@kernel.org>,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-i2c@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] HPE BMC GXP SUPPORT
-Message-ID: <YfrJ8JWjyH9ptV4z@ravnborg.org>
-References: <nick.hawkins@hpe.com>
- <20220202165315.18282-1-nick.hawkins@hpe.com>
+ Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH v1 05/14] mtd: spi-nor: xilinx: rename vendor specific
+ functions and defines
+Message-ID: <202202030313.BlFmGeWH-lkp@intel.com>
+References: <20220202145853.4187726-6-michael@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220202165315.18282-1-nick.hawkins@hpe.com>
+In-Reply-To: <20220202145853.4187726-6-michael@walle.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220202_183034_532707_48D3987C 
-X-CRM114-Status: GOOD (  19.91  )
+X-CRM114-CacheID: sfid-20220202_120728_232959_1A7B3350 
+X-CRM114-Status: GOOD (  16.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,54 +85,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Nick,
+Hi Michael,
 
-good to see all this stuff coming mainline,
+I love your patch! Perhaps something to improve:
 
-On Wed, Feb 02, 2022 at 10:52:50AM -0600, nick.hawkins@hpe.com wrote:
-> From: Nick Hawkins <nick.hawkins@hpe.com>
-> 
-> GXP is the name of the HPE SoC.
-> This SoC is used to implement BMC features of HPE servers
-> (all ProLiant, Synergy, and many Apollo, and Superdome machines)
-> It does support many features including:
-> 	ARMv7 architecture, and it is based on a Cortex A9 core
-> 	Use an AXI bus to which
-> 		a memory controller is attached, as well as
->                  multiple SPI interfaces to connect boot flash,
->                  and ROM flash, a 10/100/1000 Mac engine which
->                  supports SGMII (2 ports) and RMII
-> 		Multiple I2C engines to drive connectivity with a host infrastructure
-> 		A video engine which support VGA and DP, as well as
->                  an hardware video encoder
-> 		Multiple PCIe ports
-> 		A PECI interface, and LPC eSPI
-> 		Multiple UART for debug purpose, and Virtual UART for host connectivity
-> 		A GPIO engine
-> This Patch Includes:
-> 	Documentation for device tree bindings
-> 	Device Tree Bindings
-> 	GXP Timer Support
-> 	GXP Architecture Support
-> 
-> Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
-> ---
->  .../bindings/display/hpe,gxp-thumbnail.txt    |  21 +
->  .../devicetree/bindings/gpio/hpe,gxp-gpio.txt |  16 +
-...
+[auto build test WARNING on mtd/spi-nor/next]
+[also build test WARNING on linux/master linus/master v5.17-rc2 next-20220202]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-All new bindings must be in the DT-schema format (yaml files).
-This enables a lot of syntax checks and validation.
+url:    https://github.com/0day-ci/linux/commits/Michael-Walle/mtd-spi-nor-move-vendor-specific-code-into-vendor-modules/20220202-230139
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
+config: riscv-randconfig-r042-20220131 (https://download.01.org/0day-ci/archive/20220203/202202030313.BlFmGeWH-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 6b1e844b69f15bb7dffaf9365cd2b355d2eb7579)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install riscv cross compiling tool for clang build
+        # apt-get install binutils-riscv64-linux-gnu
+        # https://github.com/0day-ci/linux/commit/6527d5f32d65d5695ddcc0bcf3ac31928e64a935
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Michael-Walle/mtd-spi-nor-move-vendor-specific-code-into-vendor-modules/20220202-230139
+        git checkout 6527d5f32d65d5695ddcc0bcf3ac31928e64a935
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash drivers/mtd/spi-nor/
 
-We are slowly migrating away from the .txt based bindings.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Also, for new bindings please follow the guide lines listed in
-Documentation/devicetree/bindings/submitting-patches.rst
+All warnings (new ones prefixed by >>):
 
-Consider including the bindings with the drivers using the bindings so
-things have a more natural split.
+>> drivers/mtd/spi-nor/xilinx.c:103: warning: expecting prototype for spi_nor_xsr_ready(). Prototype was for xilinx_sr_ready() instead
 
-	Sam
+
+vim +103 drivers/mtd/spi-nor/xilinx.c
+
+37ccf5a41e1528e Michael Walle 2022-02-02   94  
+37ccf5a41e1528e Michael Walle 2022-02-02   95  /**
+37ccf5a41e1528e Michael Walle 2022-02-02   96   * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
+37ccf5a41e1528e Michael Walle 2022-02-02   97   * the flash is ready for new commands.
+37ccf5a41e1528e Michael Walle 2022-02-02   98   * @nor:	pointer to 'struct spi_nor'.
+37ccf5a41e1528e Michael Walle 2022-02-02   99   *
+37ccf5a41e1528e Michael Walle 2022-02-02  100   * Return: 1 if ready, 0 if not ready, -errno on errors.
+37ccf5a41e1528e Michael Walle 2022-02-02  101   */
+6527d5f32d65d56 Michael Walle 2022-02-02  102  static int xilinx_sr_ready(struct spi_nor *nor)
+37ccf5a41e1528e Michael Walle 2022-02-02 @103  {
+37ccf5a41e1528e Michael Walle 2022-02-02  104  	int ret;
+37ccf5a41e1528e Michael Walle 2022-02-02  105  
+6527d5f32d65d56 Michael Walle 2022-02-02  106  	ret = xilinx_read_sr(nor, nor->bouncebuf);
+37ccf5a41e1528e Michael Walle 2022-02-02  107  	if (ret)
+37ccf5a41e1528e Michael Walle 2022-02-02  108  		return ret;
+37ccf5a41e1528e Michael Walle 2022-02-02  109  
+37ccf5a41e1528e Michael Walle 2022-02-02  110  	return !!(nor->bouncebuf[0] & XSR_RDY);
+37ccf5a41e1528e Michael Walle 2022-02-02  111  }
+37ccf5a41e1528e Michael Walle 2022-02-02  112  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
