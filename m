@@ -4,70 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 783DEC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 21:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80273C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 22:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q7fsPUtznPxQ1LMGre6hL4kVIjtmW4y81mPgvqKL+hY=; b=iYSPSvhxfk7uug
-	8+YfgxpwHKThbjaNMIVwQh4B93I12gN/b54KE4ocQmz13iIUWfDirNY4IZSAfVuYBC0Yagot65dbu
-	NRUMUa4d9pbaAfnZBL8tB8HkFu4iBAO313OvFNXQF0f70OOhcAJ0O8+I5uOMfm6pyX4X4+NnOPiOl
-	FrRSQo0Dtzmg39vWbZbbf0UVQuu+ENtEy6Uirh5wjwGpB41RjahvC4yR9W939lHtaIzJIRM/DyTnj
-	uUrex9OjYbUql7n69qAgAVXTNVdyRTuhkAPTLQoYazuJ8N8XebNtwToPmVSED99VT3TSrXgUE5tgZ
-	9+qpiVWgE53nGOArHGLw==;
+	List-Owner; bh=Pkaa761VNERB3ZO4kcaBM2ZBF9qIWkuQI0GIonf/u60=; b=fSFpfGYgmXijXF
+	ZQH/oycyVkf8MWw6wXt3Q3w7s6Zt7CHrrCDfmN3J/5fVYMkleFi+lCVf1wzy3eitWfe7aYpoXlALM
+	pw5CKY5cH8wo0xGzIpXOPxmxeDrGMYZJVaI+Jp5xx6RZBSNooM3fL0CS6eWwF+rofqQ8Qyxw2wJfa
+	pR9/zFAp3SzWwFsbIfSpqj+qTbCPu9shw7psNCwRnOGDA44617IMpSfG7R2bMohxiS97oNY2wKTOy
+	K6yio7y8OsC3TFyqORJUYMa74ng7qDJ+dglKxN8w5rVSEsqYm9YFd84rt1xtPzlelwAVWHv1CBVj4
+	RCk1c5A8EDiORwhfji2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFNVP-00GxhF-6B; Wed, 02 Feb 2022 21:49:35 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1nFNpP-00Gyxz-0s; Wed, 02 Feb 2022 22:10:15 +0000
+Received: from mail-qk1-x730.google.com ([2607:f8b0:4864:20::730])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFNVL-00Gxgi-R4
- for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 21:49:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1643838571; x=1675374571;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=wPkcJWxCJjFTfO/aC4FZRrAGxyrpHdV+HrMlVt033KM=;
- b=RJeMRojGazOXMK/LebMYxR6Ok2ZiuxC70cZQ2iQiGwSwpqPipznZp8ey
- UJksktMtgstm6NJkfGpkuuWemT1C0Wi6iuR7jJ95YX/eXq4ecuojmQsc0
- OMvYoeAZeThffl7r1EsznQQK+Z4hvwz7reW1eEPT9udmScrHRqgSa/MBl
- Blv7SNEcHWNgkW585vCHRx2D+SYymZSYUl+Fdim0C0ADP4YKVOtx1zNKq
- BaTJhfkf2rtv/tzmqKcZAh+zlM2PwnIw5rlKTAlRUyk0l1buH5dOjLt6x
- YodmQZYTPYwtUGIqw1Kjv+OFYqVVeVUaoYA6d1hR8QcpUh9Mt/bGMPdRP w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10246"; a="247979425"
-X-IronPort-AV: E=Sophos;i="5.88,337,1635231600"; d="scan'208";a="247979425"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2022 13:49:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,337,1635231600"; d="scan'208";a="480261715"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
- by orsmga003.jf.intel.com with ESMTP; 02 Feb 2022 13:49:28 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nFNVH-000VAS-Qv; Wed, 02 Feb 2022 21:49:27 +0000
-Date: Thu, 3 Feb 2022 05:48:47 +0800
-From: kernel test robot <lkp@intel.com>
-To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: kbuild-all@lists.01.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH v1 12/14] mtd: spi-nor: move all spansion specifics into
- spansion.c
-Message-ID: <202202030556.9u7o7D18-lkp@intel.com>
-References: <20220202145853.4187726-13-michael@walle.cc>
+ id 1nFNpK-00GywF-I9; Wed, 02 Feb 2022 22:10:12 +0000
+Received: by mail-qk1-x730.google.com with SMTP id g145so977976qke.3;
+ Wed, 02 Feb 2022 14:10:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=sender:date:from:to:cc:subject:message-id:reply-to:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to; bh=Rr5xR3phcMmOtciTLGMao2x+J3LzUpf33KP5PgsG6mw=;
+ b=fcP42zsjJKBRLsCCLNxeBAvGoAUH+RgY1jYrpOhhT8bMHr7+15EWYSucDQfP1oORdR
+ v8va2D+TIvGEUfFpYyk+KAAnpvrPj2Do2UURxQqDM2NZ0yrVKHV/Tmvmi8VnHPqEl5Sj
+ FzsjYO1CSUmsISBtPa5x3zIEsUBOu9RZDDuPyg2QqPpe+3i2ouYdl1b7XJc+7Yz287oe
+ n4Ll3sdxxGbRuNPqe8Va40e5cgmVlDZI5fIN6fBWjGY94knmRKOKljCldyrgDLu4eqFI
+ 61yZGnSZcmCnvpc5Ppek75k/hWgHufZ8NwnxWp4bgKiaLrzdRDurexHwqhp4Nqyni8AG
+ h/rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+ :reply-to:references:mime-version:content-disposition
+ :content-transfer-encoding:in-reply-to;
+ bh=Rr5xR3phcMmOtciTLGMao2x+J3LzUpf33KP5PgsG6mw=;
+ b=DHyrYY6R0MRmbv6zxl5LafCo+YORF8sGqDF8xqLZmlQsJDh4YGSMHfua2ID6qgsGS1
+ ASxEoDJ4INIxapqruIjD0v9PkH5azOfFDoBdzwKwgBHU/bLNkVuwb4ek8HYFGLe+doxP
+ rFGl9CC6SCW71bZxlsC5uTs1/XuQGS8hI7ve1GTYMV+bALicnDWu3ZdwqhXt4WmX4QIO
+ mZ4HGbyqS/SNUsfywT0yrfJitf8LiLLfWT5Ox/5f8lVdfHEf0pAzrd5Jb+WgXocgEwmz
+ sCcHEwcYZZPBuxz9cuSY1fe5OqeLGr3hluMy0CuQL0gEnJqxU6jtzZ4MeHL26pTHjr7y
+ Z7XA==
+X-Gm-Message-State: AOAM532HvEbStsy84wgZxiQVBbKnS3M6FZozi07GyXrxEWClfGjHpcz/
+ 75F3Y4XzEf5WVDJtpfJWhg==
+X-Google-Smtp-Source: ABdhPJwRpKyRhMilcGtomGensbv6thBpUXpxVK7cAkdNeBk0lqsREJF6QVbIyABhwvxgVYCy4DCMsQ==
+X-Received: by 2002:a37:4648:: with SMTP id t69mr21000172qka.702.1643839808031; 
+ Wed, 02 Feb 2022 14:10:08 -0800 (PST)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+ by smtp.gmail.com with ESMTPSA id o13sm7298868qtv.36.2022.02.02.14.10.07
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 02 Feb 2022 14:10:07 -0800 (PST)
+Received: from minyard.net (unknown
+ [IPv6:2001:470:b8f6:1b:c4e6:e49c:6958:ac58])
+ by serve.minyard.net (Postfix) with ESMTPSA id 68539181297;
+ Wed,  2 Feb 2022 22:10:06 +0000 (UTC)
+Date: Wed, 2 Feb 2022 16:10:05 -0600
+From: Corey Minyard <minyard@acm.org>
+To: "Verdun, Jean-Marie" <verdun@hpe.com>
+Cc: "Hawkins, Nick" <nick.hawkins@hpe.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Wang Kefeng <wangkefeng.wang@huawei.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Sam Ravnborg <sam@ravnborg.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, David Airlie <airlied@linux.ie>,
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Lee Jones <lee.jones@linaro.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Stanislav Jakubek <stano.jakubek@gmail.com>,
+ Hao Fang <fanghao11@huawei.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Richard Weinberger <richard@nod.at>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Russell King <linux@armlinux.org.uk>,
+ "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+ "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ "openipmi-developer@lists.sourceforge.net"
+ <openipmi-developer@lists.sourceforge.net>, 
+ Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+ Masahiro Yamada <masahiroy@kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+ "soc@kernel.org" <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ Marc Zyngier <maz@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>
+Subject: Re: [Openipmi-developer] [PATCH] HPE BMC GXP SUPPORT
+Message-ID: <20220202221005.GD2091156@minyard.net>
+References: <nick.hawkins@hpe.com>
+ <20220202165315.18282-1-nick.hawkins@hpe.com>
+ <20220202175635.GC2091156@minyard.net>
+ <3E9905F2-1576-4826-ADC2-85796DE0F4DB@hpe.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220202145853.4187726-13-michael@walle.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <3E9905F2-1576-4826-ADC2-85796DE0F4DB@hpe.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220202_134931_965595_15D8DE0D 
-X-CRM114-Status: GOOD (  13.22  )
+X-CRM114-CacheID: sfid-20220202_141010_634500_4104F651 
+X-CRM114-Status: GOOD (  28.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,49 +132,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Reply-To: minyard@acm.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on mtd/spi-nor/next]
-[also build test WARNING on linux/master linus/master v5.17-rc2 next-20220202]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Michael-Walle/mtd-spi-nor-move-vendor-specific-code-into-vendor-modules/20220202-230139
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
-config: x86_64-randconfig-s021 (https://download.01.org/0day-ci/archive/20220203/202202030556.9u7o7D18-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/01f9808a20c96553c43f929e10f3fb448cd8bd93
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Michael-Walle/mtd-spi-nor-move-vendor-specific-code-into-vendor-modules/20220202-230139
-        git checkout 01f9808a20c96553c43f929e10f3fb448cd8bd93
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/mtd/spi-nor/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/mtd/spi-nor/spansion.c:332:5: sparse: sparse: symbol 'spi_nor_sr_ready_and_clear' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCBGZWIgMDIsIDIwMjIgYXQgMDY6MTQ6NTdQTSArMDAwMCwgVmVyZHVuLCBKZWFuLU1h
+cmllIHdyb3RlOgo+ID4gVGhpcyBpcyBmYXIgdG9vIGJpZyBmb3IgYSBzaW5nbGUgcGF0Y2guICBJ
+dCBuZWVkcyB0byBiZSBicm9rZW4gaW50bwo+ID4gZnVuY3Rpb25hbCBjaHVua3MgdGhhdCBjYW4g
+YmUgcmV2aWV3ZWQgaW5kaXZpZHVhbGx5LiAgRWFjaCBkcml2ZXIgYW5kCj4gPiBlYWNoIGRldmlj
+ZSB0cmVlIGNoYW5nZSBhbG9uZyB3aXRoIGl0J3MgYWNjb21wYW55aW5nIGNvZGUgbmVlZCB0byBi
+ZQo+ID4gZG9uZSBpbiBpbmRpdmlkdWFsIHBhdGNoZXMuICBUaGUgd2F5IGl0IGlzIGl0IGNhbid0
+IGJlIHJldmlld2VkIGluIGFueQo+ID4gc2FuZSBtYW5uZXIuCj4gCj4gPiAtY29yZXkKPiAKPiBU
+aGFua3MgZm9yIHlvdXIgZmVlZGJhY2suIFdlIGFyZSBnZXR0aW5nIGEgbGl0dGxlIGJpdCBsb3N0
+IGhlcmUsIGFzIG91ciBwbGFuIHdhcyB0byBzdWJtaXQgaW5pdGlhbAo+IAo+IC0gYmluZGluZ3MK
+PiAtIGR0cyBmb3IgU29DIGFuZCAxIGJvYXJkCj4gLSBpbml0aWFsIHBsYXRmb3JtIGluaXQgY29k
+ZQo+IAo+IFRoZW4gZHJpdmVycyBjb2RlIGF2b2lkaW5nIHRvIHNlbmQgbWFueSBkdHMgdXBkYXRl
+cyB3aGljaCBtaWdodCBjb21wbGV4aWZ5IHRoZSByZXZpZXcuIFdlIHdhbnRlZCB0byBzZW5kIGFs
+bCBkcml2ZXJzIGNvZGUgdG8gcmVsZXZhbnQgcmV2aWV3ZXJzIGJ5IHRvbW9ycm93Lgo+IAo+IFNv
+LCB3aGF0IHlvdSBhcmUgYXNraW5nICggZG8gbm90IHdvcnJ5IEkgYW0gbm90IHRyeWluZyB0byBu
+ZWdvdGlhdGUsIEkganVzdCB3YW50IHRvIGF2b2lkIEVuZ2xpc2ggbWlzdW5kZXJzdGFuZGluZ3Mg
+YXMgSSBhbSBGcmVuY2gpIGlzIHRvIHNlbmQgcGVyIGRyaXZlcgo+IAo+IC0gYmluZGluZwo+IC0g
+ZHRzIHVwZGF0ZQo+IC0gZHJpdmVyIGNvZGUKPiAKPiBGb3IgZWFjaCBkcml2ZXIgdGhyb3VnaCBk
+aWZmZXJlbnQgc3VibWlzc2lvbiAod2l0aCBlYWNoIG9mIHRoZW0gY29udGFpbmluZyB0aGUgMyBh
+c3NvY2lhdGVkIHBhcnRzKSA/CgpBcm5kIGdhdmUgYW4gZXhjZWxsZW50IGV4cGxhaW5hdGlvbiBm
+b3IgdGhpcy4KClRvIGJlIGNsZWFyLCB5b3UgbmVlZCB0byBzcGxpdCBvdXQgY2hhbmdlcyB0byBp
+bmRpdmlkdWFsIHN1YnN5c3RlbXMgYW5kCnN1Ym1pdCB0aG9zZSB0byB0aGUgbWFpbnRhaW5lcnMg
+Zm9yIHRoYXQgc3Vic3lzdGVtIGFuZCBub3Qgc2VuZCB0aGVtIHRvCmV2ZXJ5b25lLiAgVGhhdCB3
+YXkgeW91IHJlZHVjZSBzZW5kaW5nIGVtYWlscyB0byBwZW9wbGUgd2hvIGRvbid0IG5lZWQKdG8g
+c2VlIHRoZW0uCgpPbmNlIHlvdSBoYXZlIGEgc2V0IG9mIHBhdGNoZXMgZm9yIGEgc3Vic3lzdGVt
+LCB5b3UgY2FuIHN1Ym1pdCB0aGVtIGFzIG9uZQpzZXQuICBUaGF0IGlzIGdlbmVyYWxseSBwcmVm
+ZXJyZWQuICBUaGUgImdpdCBzZW5kLWVtYWlsIiBvciAiZ2l0CmZvcm1hdC1wYXRjaCIgdG9vbHMg
+YXJlIGdlbmVyYWxseSB3aGF0IHdlIHVzZSwgdGhleSBsZXQgeW91IGNvbXBvc2UgYQpoZWFkZXIg
+bWVzc2FnZSB3aGVyZSB5b3UgY2FuIGdpdmUgYW4gb3ZlcmFsbCBleHBsYWluYXRpb24sIHRoZW4g
+aXQgc2VuZHMKdGhlIGluZGl2aWR1YWwgY2hhbmdlcyBhcyBmb2xsb3d1cCBtZXNzYWdlcyB0byB0
+aGUgaGVhZGVyIG1lc3NhZ2UuCgotY29yZXkKCj4gCj4gV2hhdCBzaGFsbCBiZSB0aGUgaW5pdGlh
+bCBvbmUgaW4gb3VyIGNhc2UgYXMgd2UgYXJlIGludHJvZHVjaW5nIGEgcGxhdGZvcm0gPyBBbiBl
+bXB0eSBkdHMgaW5mcmFzdHJ1Y3R1cmUgYW5kIHRoZW4gd2UgbWFrZSBpdCBncm93IG9uZSBzdGVw
+IGF0IGEgdGltZSA/Cj4gCj4gdmVqbWFyaWUKPiAKPiDvu78KPiAgCj4gCj4gCj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBPcGVuaXBtaS1kZXZlbG9w
+ZXIgbWFpbGluZyBsaXN0Cj4gT3BlbmlwbWktZGV2ZWxvcGVyQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL29wZW5pcG1p
+LWRldmVsb3BlcgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
