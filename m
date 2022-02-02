@@ -4,81 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19A90C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 10:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0125C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 10:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9WkwV93gCkHoC0cIYBOSYzBdKncSoDn5NMOeTby2ntg=; b=PBuK7crKtQrcdc
-	3Cgq3VQqRRFK62QjMll9pH9mdTAS1NR0U3mj/khvL56qtufR2WHP1MsBnNKatiVC33FJPL7B52ioX
-	n3DR8S02DF1fnjU8+IyBFPZzFZVsjfBlC+3XYqqqVFuTfQ4sr9mJxphKTyK/xHV1qBqEwExl3ANiI
-	PiAQCbzZWNWla6VN281OfiSpb0AawJcs0Ri5B3w3KNhcQdsRfC8ApeIb6BOz0P5NtWIIsVusXtOv+
-	LgM/8iWFvNzjFG4TUM3pKcWeoJnCDi9j9zkz9sWAtRM3ZEXxu2HeJIYRumO9zntY5jKBNMmKvSZU/
-	wKRELE9WdQsjH/oQ3d9Q==;
+	List-Owner; bh=LzPq4nAioG5JWDqwgHJOXcxrvMaCfMvVKXKAZiKoCcs=; b=zpzL02JauhL5VK
+	GYFzUjBusXQaVb4Sf/EIZUJ2MAJhXslnUWY9GJpkfngW3LM69S7fbLmsRphcIeHuMTAwdDYbubPgG
+	Ub2IZTN7810tfzQ+FWjjcNURk0tWcH67jjn8vagLOFs9j21oz+OOv+RzXWa4mRlg4PWTD1s95wxV3
+	jRtcAMmhcdtC4uFqwrDL/EVwDUqWfHfWaxRPkVMa9NckHXDWBjqwCf83XeyA/mHJ4DYURSXA4+G+L
+	VEgkzPH4GdwFG+OY/VUes6SOW2FQGl4pRsv2t9kqeRhKluGADiq8frw4L7w2nb2r4iMcMRNEuDlpT
+	HliXUpgvRjgbc+uqaQNg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFD83-00ExKG-PU; Wed, 02 Feb 2022 10:44:47 +0000
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+	id 1nFDJb-00Eycb-TZ; Wed, 02 Feb 2022 10:56:43 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFD80-00ExJP-EA
- for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 10:44:46 +0000
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2123Qan3020572;
- Wed, 2 Feb 2022 11:44:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Pr+oyaHcfqpMwRbyH1wMPUUz5wBqaWEV5O1Y7oxTiwo=;
- b=mOafBqFdJrltQ6Nxc3xfmzXumBTL/XpBQ82HXlDFJNy5AtlxijQny4nbmwxYR93QykGZ
- DPMU2xRL/jQLoW9j6Z2Wt8AJukLwYnoa5yMreoqyawtBcD4ne6fPX8stoZfUi8jaZtLA
- C5DVK6k77x3/jbuL7xTtGs162ODwa1p9H8ZJFdk3vSAuM0bjudkF4ROOdfgpVt8FtfrO
- zm3LH6UbHWcpbWx8MuEhaY3HT6fsN7U373VVAoMUhd28mNvgjrm1rRxRG/dSBDitx0wQ
- FDufzqditkdHot90rrKEPsAnec32bCTrdwsI4y7hUBJW0DPOlFccodhP/g+BTfh+t93t lw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3dy1xm5h7m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 02 Feb 2022 11:44:34 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4C90310002A;
- Wed,  2 Feb 2022 11:44:32 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 340AC2171D1;
- Wed,  2 Feb 2022 11:44:32 +0100 (CET)
-Received: from [10.48.0.175] (10.75.127.47) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Wed, 2 Feb
- 2022 11:44:31 +0100
-Message-ID: <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
-Date: Wed, 2 Feb 2022 11:44:31 +0100
+ id 1nFDJY-00EyQq-8q
+ for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 10:56:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1643799400; x=1675335400;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=iC9YgXytjVUAp+qoN5iGpU9fzC0i/z0Qc7tg1868z0o=;
+ b=QqFFzGopprXF6HD7HNKIBMrwE491OXNLvvTl6CXsn+keAkSls+RzSrw1
+ SjG4d7rolU+53ZZBaDE97sPTOEpgv75ekikfjCgsptTV15mAfoNt0VO4m
+ i36aIRzlxnrHZBUSwo74aMu4O2PC2/9lqjszT8lfLRjCbZtPqcEf+sRj5
+ anQOTp/B+yxZ/lljkNLH8C89WMFsJCQUJGA4jmnl424cmcXzukkrPO/YV
+ xpilGdeiikODhAWbLWmBC4HNgAEIlPFuyvzHS8mJ1aq5+9QS5t4c8WcXJ
+ cYLasuEwe9N7g8BOhNTlwF0yvt066s5hS2RZdMyRPSBa38MmcEAropIsi g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10245"; a="248111823"
+X-IronPort-AV: E=Sophos;i="5.88,336,1635231600"; d="scan'208";a="248111823"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Feb 2022 02:54:19 -0800
+X-IronPort-AV: E=Sophos;i="5.88,336,1635231600"; d="scan'208";a="630882825"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.162])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Feb 2022 02:54:13 -0800
+Received: by lahna (sSMTP sendmail emulation); Wed, 02 Feb 2022 12:54:11 +0200
+Date: Wed, 2 Feb 2022 12:54:11 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Tudor.Ambarus@microchip.com
+Cc: broonie@kernel.org, lee.jones@linaro.org, boris.brezillon@collabora.com,
+ michael@walle.cc, p.yadav@ti.com, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, corbet@lwn.net,
+ mauro.lima@eclypsium.com, alexander.sverdlin@nokia.com,
+ andriy.shevchenko@linux.intel.com, hans-gert.dahmen@immu.ne,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] mtd: spi-nor: intel-spi: Convert to SPI MEM
+Message-ID: <Yfpi04V7ZIDNpjoV@lahna>
+References: <20211220164625.9400-1-mika.westerberg@linux.intel.com>
+ <20211220164625.9400-3-mika.westerberg@linux.intel.com>
+ <ed2a0fe0-c78d-7f09-6f68-b378cb09931e@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v2 4/4] mtd: core: Fix a conflict between MTD and NVMEM on
- wp-gpios property
-Content-Language: en-US
-To: Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <richard@nod.at>, <vigneshr@ti.com>, <robh+dt@kernel.org>,
- <srinivas.kandagatla@linaro.org>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
- <devicetree@vger.kernel.org>, <chenshumin86@sina.com>, Tudor Ambarus
- <Tudor.Ambarus@microchip.com>
-References: <20220131095755.8981-1-christophe.kerello@foss.st.com>
- <20220131095755.8981-5-christophe.kerello@foss.st.com>
- <20220131144309.0ffe7cc8@xps13> <20220201104727.7xvcyexf3yucegcb@ti.com>
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-In-Reply-To: <20220201104727.7xvcyexf3yucegcb@ti.com>
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-02_04,2022-02-01_01,2021-12-02_01
+Content-Disposition: inline
+In-Reply-To: <ed2a0fe0-c78d-7f09-6f68-b378cb09931e@microchip.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220202_024445_379887_E14BA0E2 
-X-CRM114-Status: GOOD (  36.87  )
+X-CRM114-CacheID: sfid-20220202_025640_400182_5AF12637 
+X-CRM114-Status: GOOD (  35.89  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,127 +79,219 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi,
 
-On 2/1/22 11:47, Pratyush Yadav wrote:
-> On 31/01/22 02:43PM, Miquel Raynal wrote:
->> Hi Vignesh, Tudory, Pratyush,
->>
->> + Tudor and Pratyush
->>
->> christophe.kerello@foss.st.com wrote on Mon, 31 Jan 2022 10:57:55 +0100:
->>
->>> Wp-gpios property can be used on NVMEM nodes and the same property can
->>> be also used on MTD NAND nodes. In case of the wp-gpios property is
->>> defined at NAND level node, the GPIO management is done at NAND driver
->>> level. Write protect is disabled when the driver is probed or resumed
->>> and is enabled when the driver is released or suspended.
->>>
->>> When no partitions are defined in the NAND DT node, then the NAND DT node
->>> will be passed to NVMEM framework. If wp-gpios property is defined in
->>> this node, the GPIO resource is taken twice and the NAND controller
->>> driver fails to probe.
->>>
->>> A new Boolean flag named skip_wp_gpio has been added in nvmem_config.
->>> In case skip_wp_gpio is set, it means that the GPIO is handled by the
->>> provider. Lets set this flag in MTD layer to avoid the conflict on
->>> wp_gpios property.
->>>
->>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->>> ---
->>>   drivers/mtd/mtdcore.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->>> index 70f492dce158..e6d251594def 100644
->>> --- a/drivers/mtd/mtdcore.c
->>> +++ b/drivers/mtd/mtdcore.c
->>> @@ -546,6 +546,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
->>>   	config.stride = 1;
->>>   	config.read_only = true;
->>>   	config.root_only = true;
->>> +	config.skip_wp_gpio = true;
->>>   	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
->>>   	config.priv = mtd;
->>>   
->>> @@ -833,6 +834,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
->>>   	config.owner = THIS_MODULE;
->>>   	config.type = NVMEM_TYPE_OTP;
->>>   	config.root_only = true;
->>> +	config.skip_wp_gpio = true;
->>>   	config.reg_read = reg_read;
->>>   	config.size = size;
->>>   	config.of_node = np;
->>
->> TLDR: There is a conflict between MTD and NVMEM, who should handle the
->> WP pin when there is one? At least for raw NAND devices, I don't want
->> the NVMEM core to handle the wp pin. So we've introduced this
->> skip_wp_gpio nvmem config option. But there are two places where this
->> boolean can be set and one of these is for otp regions (see above). In
->> this case, I don't know if it is safe or if CFI/SPI-NOR rely on the
->> nvmem protection. Please tell us if you think this is fine for you.
+On Tue, Feb 01, 2022 at 03:24:58PM +0000, Tudor.Ambarus@microchip.com wrote:
 > 
-> Why does NVMEM touch hardware write protection in the first place? The
-> purpose of the framework is to provide a way to retrieve config stored
-> in memory. It has no business dealing with details of the chip like the
-> WP line. That should be MTD's job (which it should delegate to SPI NOR,
-> SPI NAND, etc.). If you want to write protect a cell then do it in
-> software. I don't see why NVMEM should be dealing with hardware directly
-> at all.
+> > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi.c b/drivers/spi/spi-intel.c
+> > similarity index 59%
+> > rename from drivers/mtd/spi-nor/controllers/intel-spi.c
+> > rename to drivers/spi/spi-intel.c
+> > index f35597cbea0c..3b126927419c 100644
+> > --- a/drivers/mtd/spi-nor/controllers/intel-spi.c
+> > +++ b/drivers/spi/spi-intel.c
 > 
-> That is my mental model of how things _should_ work. I have not spent
-> much time digging into how things actually work currently.
+> cut
 > 
+> > -static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
+> > +static int intel_spi_erase(struct intel_spi *ispi, const struct spi_mem_op *op)
+> >  {
+> > -       size_t erase_size, len = nor->mtd.erasesize;
+> > -       struct intel_spi *ispi = nor->priv;
+> > +       u8 opcode = op->cmd.opcode;
+> > +       u32 addr = op->addr.val;
+> >         u32 val, status, cmd;
+> >         int ret;
+> > 
+> > -       /* If the hardware can do 64k erase use that when possible */
+> > -       if (len >= SZ_64K && ispi->erase_64k) {
+> > +       switch (opcode) {
+> > +       case SPINOR_OP_SE:
+> 
+> Would it worth to extend the intel_spi_mem_op struct and introduce an
+> u32 replacement_op; member and use it directly here without doing the
+> switch, so that we don't mix SPI NOR code in the driver?
 
-Wp-gpios property management was added in MVMEM framework in January 
-2020 => sha1: 2a127da461a9d8d97782d6e82b227041393eb4d2
-"
-     nvmem: add support for the write-protect pin
+Sure.
 
-     The write-protect pin handling looks like a standard property that
-     could benefit other users if available in the core nvmem framework.
+> Also the cmd assignement can be done after if (ispi->swseq_erase), right?
+> 
+> >                 cmd = HSFSTS_CTL_FCYCLE_ERASE_64K;
+> > -               erase_size = SZ_64K;
+> > -       } else {
+> > +               break;
+> > +
+> > +       case SPINOR_OP_BE_4K:
+> >                 cmd = HSFSTS_CTL_FCYCLE_ERASE;
+> > -               erase_size = SZ_4K;
+> > +               break;
+> > +
+> > +       default:
+> > +               return -EINVAL;
+> 
+> you have a INTEL_SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BE_4K_4B, 1), ...) defined.
+> supported_op will return true, but you get an -EINVAL here.
 
-     Instead of modifying all the memory drivers to check this pin, make
-     the NVMEM subsystem check if the write-protect GPIO being passed
-     through the nvmem_config or defined in the device tree and pull it
-     low whenever writing to the memory.
-"
+Good catch. This will be dealt with the iop->replacement_op too (so the
+switch will be dropped completely) in v6.
 
-And this modification was done for EEPROMs flashes => sha1: 
-1c89074bf85068d1b86f2e0f0c2110fdd9b83c9f
-"
-     eeprom: at24: remove the write-protect pin support
+> >         }
+> > 
+> > -       if (ispi->swseq_erase) {
+> > -               while (len > 0) {
+> > -                       writel(offs, ispi->base + FADDR);
+> > +       writel(addr, ispi->base + FADDR);
+> > +
+> > +       if (ispi->swseq_erase)
+> > +               return intel_spi_sw_cycle(ispi, opcode, 0,
+> > +                                         OPTYPE_WRITE_WITH_ADDR);
+> > +
+> > +       /* Not needed with HW sequencer erase, make sure it is cleared */
+> > +       ispi->atomic_preopcode = 0;
+> > +
+> > +       val = readl(ispi->base + HSFSTS_CTL);
+> > +       val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
+> > +       val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+> > +       val |= HSFSTS_CTL_FGO;
+> > +       val |= cmd;
+> > +       writel(val, ispi->base + HSFSTS_CTL);
+> > +
+> > +       ret = intel_spi_wait_hw_busy(ispi);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       status = readl(ispi->base + HSFSTS_CTL);
+> > +       if (status & HSFSTS_CTL_FCERR)
+> > +               return -EIO;
+> > +       if (status & HSFSTS_CTL_AEL)
+> > +               return -EACCES;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> 
+> cut
+> 
+> > +static int intel_spi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> > +{
+> > +       struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
+> > +       const struct intel_spi_mem_op *iop;
+> > 
+> > -               val = readl(ispi->base + HSFSTS_CTL);
+> > -               val &= ~(HSFSTS_CTL_FDBC_MASK | HSFSTS_CTL_FCYCLE_MASK);
+> > -               val |= HSFSTS_CTL_AEL | HSFSTS_CTL_FCERR | HSFSTS_CTL_FDONE;
+> > -               val |= cmd;
+> > -               val |= HSFSTS_CTL_FGO;
+> > -               writel(val, ispi->base + HSFSTS_CTL);
+> > +       iop = intel_spi_match_mem_op(ispi, op);
+> > +       if (!iop)
+> > +               return -EINVAL;
+> 
+> return -EOPNOTSUPP?
 
-     NVMEM framework is an interface for the at24 EEPROMs as well as for
-     other drivers, instead of passing the wp-gpios over the different
-     drivers each time, it would be better to pass it over the NVMEM
-     subsystem once and for all.
+OK
 
-     Removing the support for the write-protect pin after adding it to
-     the NVMEM subsystem.
-"
+> > 
+> > -               ret = intel_spi_wait_hw_busy(ispi);
+> > -               if (ret)
+> > -                       return ret;
+> > +       return iop->exec_op(ispi, op);
+> > +}
+> > 
+> > -               status = readl(ispi->base + HSFSTS_CTL);
+> > -               if (status & HSFSTS_CTL_FCERR)
+> > -                       return -EIO;
+> > -               else if (status & HSFSTS_CTL_AEL)
+> > -                       return -EACCES;
+> > +static const char *intel_spi_get_name(struct spi_mem *mem)
+> > +{
+> > +       const struct intel_spi *ispi = spi_master_get_devdata(mem->spi->master);
+> > +
+> > +       /*
+> > +        * Return name of the flash controller device to be compatible
+> > +        * with the MTD version.
+> > +        */
+> > +       return dev_name(ispi->dev);
+> > +}
+> > +
+> > +static const struct spi_controller_mem_ops intel_spi_mem_ops = {
+> > +       .supports_op = intel_spi_supports_mem_op,
+> > +       .exec_op = intel_spi_exec_mem_op,
+> > +       .get_name = intel_spi_get_name,
+> > +};
+> > +
+> > +#define INTEL_SPI_OP_ADDR(__nbytes)                                    \
+> > +       {                                                               \
+> > +               .nbytes = __nbytes,                                     \
+> > +       }
+> > +
+> > +#define INTEL_SPI_OP_NO_DATA                                           \
+> > +       {                                                               \
+> > +               .dir = SPI_MEM_NO_DATA,                                 \
+> > +       }
+> > +
+> > +#define INTEL_SPI_OP_DATA_IN(__buswidth)                               \
+> > +       {                                                               \
+> > +               .dir = SPI_MEM_DATA_IN,                                 \
+> > +               .buswidth = __buswidth,                                 \
+> > +       }
+> > +
+> > +#define INTEL_SPI_OP_DATA_OUT(__buswidth)                              \
+> > +       {                                                               \
+> > +               .dir = SPI_MEM_DATA_OUT,                                \
+> > +               .buswidth = __buswidth,                                 \
+> > +       }
+> > +
+> > +#define INTEL_SPI_MEM_OP(__cmd, __addr, __data, __exec_op)             \
+> > +       {                                                               \
+> > +               .mem_op = {                                             \
+> > +                       .cmd = __cmd,                                   \
+> > +                       .addr = __addr,                                 \
+> > +                       .data = __data,                                 \
+> > +               },                                                      \
+> > +               .exec_op = __exec_op,                                   \
+> > +       }
+> > +
+> > +/*
+> > + * The controller handles pretty much everything internally based on the
+> > + * SFDP data but we want to make sure we only support the operations
+> > + * actually possible. Only check buswidth and transfer direction, the
+> > + * core validates data.
+> > + */
+> > +#define INTEL_SPI_GENERIC_OPS
+> 
+> checkpatch --strict complains:
+> ERROR: Macros with complex values should be enclosed in parentheses
+> #955: FILE: drivers/spi/spi-intel.c:826:
+> +#define INTEL_SPI_GENERIC_OPS
 
-Current NVMEM framework implementation toggles the WP GPIO when 
-reg_write nvmem_config API is defined. In case of MTD framework, 
-reg_write is not defined in nvmem_config.
+I saw that too but to be honest, I have no idea how this could be
+applied to the macros here. Therefore I chose to ignore this one.
 
-Based on the comments made, it seems that we also agree that this write 
-protection should be handled by MTD subsystems or associated drivers and 
-not by MVMEN framework for MTD use cases.
+>                                           \
+> > +       /* Status register operations */                                \
+> > +       INTEL_SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),             \
+> > +                        SPI_MEM_OP_NO_ADDR,                            \
+> > +                        INTEL_SPI_OP_DATA_IN(1),                       \
+> > +                        intel_spi_read_reg),                           \
+> 
+> I like the idea	with the array of ops. Maybe you'd like to order the ops and
+> put the ops that are highly used as the first elements in the array, so that
+> you speed up a bit the op selection at run-time. No hard requirement.
 
-The proposal implementation should solve this conflict for MTD framework 
-without breaking anything for others NVMEM users (EEPROMs flashes for 
-example).
+I think for better maintainability ordering them by type is better. I
+will be adding dirmap support in subsequent patches which should then
+use cached ->exec_op for read/write so there is no need to look up the
+op more than once.
 
-Regards,
-Christophe Kerello.
+> Neat work. Thanks for the patience.
 
-
+Thanks for the review! :)
 
 ______________________________________________________
 Linux MTD discussion mailing list
