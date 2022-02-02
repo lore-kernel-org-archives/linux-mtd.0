@@ -4,65 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A4F8C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 10:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05CC7C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Feb 2022 11:54:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=B8KW8d/hwkthv6evZqVY2tkjwKH/ukRjsiy7ivS8Uc4=; b=a+lM8bsyb+V8kh
-	DJNv4mtlJ6ftPd8z6uqwO0/XNjy0IsqDtmraJFtmNsTX3cTir6OZMOkVZiKnD7j8Rp6RHCVYoq0zL
-	7sU/NjhF3/i2lUoTabpshKmkPu8K/RKAMv2QzHcmm26TDShREJWlS14kgDeQ2XhMYu0h2F7Ln66Ky
-	KP4cxh+bLseOXjEpjKR2r7gxrNHshVQGaDorjPY6YXHGy4iIztWCGV5GJuLlH0TdXDn/Kh4BmFa5h
-	FlkHj884dNaU3ROhIBpj1Q0PUMVe00qSQdCUl8jd2QnQATxfS1Zi/5VAcPQ8uENd2dBrTN2KLTjQb
-	u8l7q498nhRLRMRyLvXA==;
+	List-Owner; bh=SxXlFRRLDFH9Qmo8EZK433dTTB7LOZp0TTOnKnakqjc=; b=DO7ddtUfPQeae0
+	XAT8c6kwOpj6h/Bemc+FhuYpU9N9TDA2OJYaAl5bgaE0Lyn4wTAv+TPPad0oofx46hbSLTqEqyCS8
+	J898sX9Tf4tlDOs3BTRy97VNXhBOD9Y+RVGI1jUuvYlOKLD/queYbrBQ3VCfEiGlYNfQvqz1C642r
+	muWxawE+mcXFr2lELxmPbFgcNAKloGhJigGU5rKVLhoCTNlYWsUUOj96859UJ74PTXJUlggAospMC
+	yxEyGU/6thGOkSr+xKjwItU7K1sJXeY+xym6bj6vzlZ+2ePxfITkhxrkWLS7lOd6twZDl16t+7ZeS
+	QVwjCJyUdEmlO6qRzQ/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFDKN-00Eyjw-I7; Wed, 02 Feb 2022 10:57:31 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1nFECw-00F63y-AE; Wed, 02 Feb 2022 11:53:54 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFDKK-00EyiM-C0
- for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 10:57:30 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 3B0A0C0009;
- Wed,  2 Feb 2022 10:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1643799444;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=JA/sZXpu8XHNvzUk8TEDPhep6Z0mt6Duy6phBKTReYU=;
- b=TX5doXrF/JBQ54Tc79wsM5qT3CZrwggUxoF/xgbHc9hJEhDSdCns/YfQ8HiExBZNVEFESV
- SKeuvCG/acR14pAlV7SyBD1ARPkCO28KgmjdqRbAvkdfezkKtb43pPajsogLUXqdWvLvnJ
- biW4noF3zmpE+YGVm7Nmidp/v/fEq4gZqdIPQncBzX3LQpvJdsZiruGQRNXrJ9gWJAEaiC
- 6MbuxMj/j8XoI5vDv1Elpn1lWS8olUBTYJxlszPQL8OzhugfJLkGDWNRCV2iSfFHPqVKq1
- g/VPHDrWPa8w2QVlsOWK7U+W1LpFnhOAJxeArbCUA2d+OuqnMprDQJ/z5J6cCA==
-Date: Wed, 2 Feb 2022 11:57:20 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1nFECs-00F630-Kj
+ for linux-mtd@lists.infradead.org; Wed, 02 Feb 2022 11:53:53 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 212BrUQD124243;
+ Wed, 2 Feb 2022 05:53:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1643802810;
+ bh=ZCiOlYN6uGVwo49DCOPGVRgsHZSeZjio+2Askyn+jEU=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=Oe8FV/lTfcLmVGZDXiBYYSuW6er4n7IOenQBNpF3uJA3Dliw3ACK1iPNIxt0N2QyQ
+ jh+YwlBhPdJpCiwuMEwjWK5yOKR3O7ipo1ZObkANAFh4AR+GmNoNVyOvaIqyGhE3Wx
+ O4O1XKiw/cpSgYNtNsnRfLK1U8nX9HHvKLsVAhTI=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 212BrU9N004577
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 2 Feb 2022 05:53:30 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 2
+ Feb 2022 05:53:28 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 2 Feb 2022 05:53:28 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 212BrRl5023205;
+ Wed, 2 Feb 2022 05:53:28 -0600
+Date: Wed, 2 Feb 2022 17:23:27 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
 To: Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: Pratyush Yadav <p.yadav@ti.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <robh+dt@kernel.org>, <srinivas.kandagatla@linaro.org>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>, <devicetree@vger.kernel.org>,
- <chenshumin86@sina.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <robh+dt@kernel.org>,
+ <srinivas.kandagatla@linaro.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ <devicetree@vger.kernel.org>, <chenshumin86@sina.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Khouloud Touil <ktouil@baylibre.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Subject: Re: [PATCH v2 4/4] mtd: core: Fix a conflict between MTD and NVMEM
  on wp-gpios property
-Message-ID: <20220202115720.741a0139@xps13>
-In-Reply-To: <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
+Message-ID: <20220202115327.53oqg5n7tx6b6q7u@ti.com>
 References: <20220131095755.8981-1-christophe.kerello@foss.st.com>
  <20220131095755.8981-5-christophe.kerello@foss.st.com>
  <20220131144309.0ffe7cc8@xps13>
  <20220201104727.7xvcyexf3yucegcb@ti.com>
  <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220202_025728_694502_97857E59 
-X-CRM114-Status: GOOD (  45.31  )
+X-CRM114-CacheID: sfid-20220202_035351_766340_21D69B3A 
+X-CRM114-Status: GOOD (  54.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,107 +87,149 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQ2hyaXN0b3BoZSwKCmNocmlzdG9waGUua2VyZWxsb0Bmb3NzLnN0LmNvbSB3cm90ZSBvbiBX
-ZWQsIDIgRmViIDIwMjIgMTE6NDQ6MzEgKzAxMDA6Cgo+IEhpLAo+IAo+IE9uIDIvMS8yMiAxMTo0
-NywgUHJhdHl1c2ggWWFkYXYgd3JvdGU6Cj4gPiBPbiAzMS8wMS8yMiAwMjo0M1BNLCBNaXF1ZWwg
-UmF5bmFsIHdyb3RlOiAgCj4gPj4gSGkgVmlnbmVzaCwgVHVkb3J5LCBQcmF0eXVzaCwKPiA+Pgo+
-ID4+ICsgVHVkb3IgYW5kIFByYXR5dXNoCj4gPj4KPiA+PiBjaHJpc3RvcGhlLmtlcmVsbG9AZm9z
-cy5zdC5jb20gd3JvdGUgb24gTW9uLCAzMSBKYW4gMjAyMiAxMDo1Nzo1NSArMDEwMDoKPiA+PiAg
-Cj4gPj4+IFdwLWdwaW9zIHByb3BlcnR5IGNhbiBiZSB1c2VkIG9uIE5WTUVNIG5vZGVzIGFuZCB0
-aGUgc2FtZSBwcm9wZXJ0eSBjYW4KPiA+Pj4gYmUgYWxzbyB1c2VkIG9uIE1URCBOQU5EIG5vZGVz
-LiBJbiBjYXNlIG9mIHRoZSB3cC1ncGlvcyBwcm9wZXJ0eSBpcwo+ID4+PiBkZWZpbmVkIGF0IE5B
-TkQgbGV2ZWwgbm9kZSwgdGhlIEdQSU8gbWFuYWdlbWVudCBpcyBkb25lIGF0IE5BTkQgZHJpdmVy
-Cj4gPj4+IGxldmVsLiBXcml0ZSBwcm90ZWN0IGlzIGRpc2FibGVkIHdoZW4gdGhlIGRyaXZlciBp
-cyBwcm9iZWQgb3IgcmVzdW1lZAo+ID4+PiBhbmQgaXMgZW5hYmxlZCB3aGVuIHRoZSBkcml2ZXIg
-aXMgcmVsZWFzZWQgb3Igc3VzcGVuZGVkLgo+ID4+Pgo+ID4+PiBXaGVuIG5vIHBhcnRpdGlvbnMg
-YXJlIGRlZmluZWQgaW4gdGhlIE5BTkQgRFQgbm9kZSwgdGhlbiB0aGUgTkFORCBEVCBub2RlCj4g
-Pj4+IHdpbGwgYmUgcGFzc2VkIHRvIE5WTUVNIGZyYW1ld29yay4gSWYgd3AtZ3Bpb3MgcHJvcGVy
-dHkgaXMgZGVmaW5lZCBpbgo+ID4+PiB0aGlzIG5vZGUsIHRoZSBHUElPIHJlc291cmNlIGlzIHRh
-a2VuIHR3aWNlIGFuZCB0aGUgTkFORCBjb250cm9sbGVyCj4gPj4+IGRyaXZlciBmYWlscyB0byBw
-cm9iZS4KPiA+Pj4KPiA+Pj4gQSBuZXcgQm9vbGVhbiBmbGFnIG5hbWVkIHNraXBfd3BfZ3BpbyBo
-YXMgYmVlbiBhZGRlZCBpbiBudm1lbV9jb25maWcuCj4gPj4+IEluIGNhc2Ugc2tpcF93cF9ncGlv
-IGlzIHNldCwgaXQgbWVhbnMgdGhhdCB0aGUgR1BJTyBpcyBoYW5kbGVkIGJ5IHRoZQo+ID4+PiBw
-cm92aWRlci4gTGV0cyBzZXQgdGhpcyBmbGFnIGluIE1URCBsYXllciB0byBhdm9pZCB0aGUgY29u
-ZmxpY3Qgb24KPiA+Pj4gd3BfZ3Bpb3MgcHJvcGVydHkuCj4gPj4+Cj4gPj4+IFNpZ25lZC1vZmYt
-Ynk6IENocmlzdG9waGUgS2VyZWxsbyA8Y2hyaXN0b3BoZS5rZXJlbGxvQGZvc3Muc3QuY29tPgo+
-ID4+PiAtLS0KPiA+Pj4gICBkcml2ZXJzL210ZC9tdGRjb3JlLmMgfCAyICsrCj4gPj4+ICAgMSBm
-aWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+ID4+Pgo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvbXRkY29yZS5jIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCj4gPj4+IGluZGV4IDcw
-ZjQ5MmRjZTE1OC4uZTZkMjUxNTk0ZGVmIDEwMDY0NAo+ID4+PiAtLS0gYS9kcml2ZXJzL210ZC9t
-dGRjb3JlLmMKPiA+Pj4gKysrIGIvZHJpdmVycy9tdGQvbXRkY29yZS5jCj4gPj4+IEBAIC01NDYs
-NiArNTQ2LDcgQEAgc3RhdGljIGludCBtdGRfbnZtZW1fYWRkKHN0cnVjdCBtdGRfaW5mbyAqbXRk
-KQo+ID4+PiAgIAljb25maWcuc3RyaWRlID0gMTsKPiA+Pj4gICAJY29uZmlnLnJlYWRfb25seSA9
-IHRydWU7Cj4gPj4+ICAgCWNvbmZpZy5yb290X29ubHkgPSB0cnVlOwo+ID4+PiArCWNvbmZpZy5z
-a2lwX3dwX2dwaW8gPSB0cnVlOwo+ID4+PiAgIAljb25maWcubm9fb2Zfbm9kZSA9ICFvZl9kZXZp
-Y2VfaXNfY29tcGF0aWJsZShub2RlLCAibnZtZW0tY2VsbHMiKTsKPiA+Pj4gICAJY29uZmlnLnBy
-aXYgPSBtdGQ7ICAKPiA+Pj4gICA+Pj4gQEAgLTgzMyw2ICs4MzQsNyBAQCBzdGF0aWMgc3RydWN0
-IG52bWVtX2RldmljZSAqbXRkX290cF9udm1lbV9yZWdpc3RlcihzdHJ1Y3QgbXRkX2luZm8gKm10
-ZCwgIAo+ID4+PiAgIAljb25maWcub3duZXIgPSBUSElTX01PRFVMRTsKPiA+Pj4gICAJY29uZmln
-LnR5cGUgPSBOVk1FTV9UWVBFX09UUDsKPiA+Pj4gICAJY29uZmlnLnJvb3Rfb25seSA9IHRydWU7
-Cj4gPj4+ICsJY29uZmlnLnNraXBfd3BfZ3BpbyA9IHRydWU7Cj4gPj4+ICAgCWNvbmZpZy5yZWdf
-cmVhZCA9IHJlZ19yZWFkOwo+ID4+PiAgIAljb25maWcuc2l6ZSA9IHNpemU7Cj4gPj4+ICAgCWNv
-bmZpZy5vZl9ub2RlID0gbnA7ICAKPiA+Pgo+ID4+IFRMRFI6IFRoZXJlIGlzIGEgY29uZmxpY3Qg
-YmV0d2VlbiBNVEQgYW5kIE5WTUVNLCB3aG8gc2hvdWxkIGhhbmRsZSB0aGUKPiA+PiBXUCBwaW4g
-d2hlbiB0aGVyZSBpcyBvbmU/IEF0IGxlYXN0IGZvciByYXcgTkFORCBkZXZpY2VzLCBJIGRvbid0
-IHdhbnQKPiA+PiB0aGUgTlZNRU0gY29yZSB0byBoYW5kbGUgdGhlIHdwIHBpbi4gU28gd2UndmUg
-aW50cm9kdWNlZCB0aGlzCj4gPj4gc2tpcF93cF9ncGlvIG52bWVtIGNvbmZpZyBvcHRpb24uIEJ1
-dCB0aGVyZSBhcmUgdHdvIHBsYWNlcyB3aGVyZSB0aGlzCj4gPj4gYm9vbGVhbiBjYW4gYmUgc2V0
-IGFuZCBvbmUgb2YgdGhlc2UgaXMgZm9yIG90cCByZWdpb25zIChzZWUgYWJvdmUpLiBJbgo+ID4+
-IHRoaXMgY2FzZSwgSSBkb24ndCBrbm93IGlmIGl0IGlzIHNhZmUgb3IgaWYgQ0ZJL1NQSS1OT1Ig
-cmVseSBvbiB0aGUKPiA+PiBudm1lbSBwcm90ZWN0aW9uLiBQbGVhc2UgdGVsbCB1cyBpZiB5b3Ug
-dGhpbmsgdGhpcyBpcyBmaW5lIGZvciB5b3UuICAKPiA+IAo+ID4gV2h5IGRvZXMgTlZNRU0gdG91
-Y2ggaGFyZHdhcmUgd3JpdGUgcHJvdGVjdGlvbiBpbiB0aGUgZmlyc3QgcGxhY2U/IFRoZQo+ID4g
-cHVycG9zZSBvZiB0aGUgZnJhbWV3b3JrIGlzIHRvIHByb3ZpZGUgYSB3YXkgdG8gcmV0cmlldmUg
-Y29uZmlnIHN0b3JlZAo+ID4gaW4gbWVtb3J5LiBJdCBoYXMgbm8gYnVzaW5lc3MgZGVhbGluZyB3
-aXRoIGRldGFpbHMgb2YgdGhlIGNoaXAgbGlrZSB0aGUKPiA+IFdQIGxpbmUuIFRoYXQgc2hvdWxk
-IGJlIE1URCdzIGpvYiAod2hpY2ggaXQgc2hvdWxkIGRlbGVnYXRlIHRvIFNQSSBOT1IsCj4gPiBT
-UEkgTkFORCwgZXRjLikuIElmIHlvdSB3YW50IHRvIHdyaXRlIHByb3RlY3QgYSBjZWxsIHRoZW4g
-ZG8gaXQgaW4KPiA+IHNvZnR3YXJlLiBJIGRvbid0IHNlZSB3aHkgTlZNRU0gc2hvdWxkIGJlIGRl
-YWxpbmcgd2l0aCBoYXJkd2FyZSBkaXJlY3RseQo+ID4gYXQgYWxsLgo+ID4gCj4gPiBUaGF0IGlz
-IG15IG1lbnRhbCBtb2RlbCBvZiBob3cgdGhpbmdzIF9zaG91bGRfIHdvcmsuIEkgaGF2ZSBub3Qg
-c3BlbnQKPiA+IG11Y2ggdGltZSBkaWdnaW5nIGludG8gaG93IHRoaW5ncyBhY3R1YWxseSB3b3Jr
-IGN1cnJlbnRseS4KPiA+ICAgCj4gCj4gV3AtZ3Bpb3MgcHJvcGVydHkgbWFuYWdlbWVudCB3YXMg
-YWRkZWQgaW4gTVZNRU0gZnJhbWV3b3JrIGluIEphbnVhcnkgMjAyMCA9PiBzaGExOiAyYTEyN2Rh
-NDYxYTlkOGQ5Nzc4MmQ2ZTgyYjIyNzA0MTM5M2ViNGQyCj4gIgo+ICAgICAgbnZtZW06IGFkZCBz
-dXBwb3J0IGZvciB0aGUgd3JpdGUtcHJvdGVjdCBwaW4KClBlcmhhcHMgdGhpcyBjb3VsZCBiZSBw
-b2ludGVkIGFzIHBhcnQgb2YgYSBGaXhlcyB0YWcsIGJlY2F1c2UgdGhpcwptaWdodCBhY3R1YWxs
-eSBicmVhayBvdGhlciB1c2VycyB3aGljaCB3ZSBoYXZlbid0IG5vdGljZWQgeWV0LgoKPiAKPiAg
-ICAgIFRoZSB3cml0ZS1wcm90ZWN0IHBpbiBoYW5kbGluZyBsb29rcyBsaWtlIGEgc3RhbmRhcmQg
-cHJvcGVydHkgdGhhdAo+ICAgICAgY291bGQgYmVuZWZpdCBvdGhlciB1c2VycyBpZiBhdmFpbGFi
-bGUgaW4gdGhlIGNvcmUgbnZtZW0gZnJhbWV3b3JrLgo+IAo+ICAgICAgSW5zdGVhZCBvZiBtb2Rp
-ZnlpbmcgYWxsIHRoZSBtZW1vcnkgZHJpdmVycyB0byBjaGVjayB0aGlzIHBpbiwgbWFrZQo+ICAg
-ICAgdGhlIE5WTUVNIHN1YnN5c3RlbSBjaGVjayBpZiB0aGUgd3JpdGUtcHJvdGVjdCBHUElPIGJl
-aW5nIHBhc3NlZAo+ICAgICAgdGhyb3VnaCB0aGUgbnZtZW1fY29uZmlnIG9yIGRlZmluZWQgaW4g
-dGhlIGRldmljZSB0cmVlIGFuZCBwdWxsIGl0Cj4gICAgICBsb3cgd2hlbmV2ZXIgd3JpdGluZyB0
-byB0aGUgbWVtb3J5Lgo+ICIKPiAKPiBBbmQgdGhpcyBtb2RpZmljYXRpb24gd2FzIGRvbmUgZm9y
-IEVFUFJPTXMgZmxhc2hlcyA9PiBzaGExOiAxYzg5MDc0YmY4NTA2OGQxYjg2ZjJlMGYwYzIxMTBm
-ZGQ5YjgzYzlmCj4gIgo+ICAgICAgZWVwcm9tOiBhdDI0OiByZW1vdmUgdGhlIHdyaXRlLXByb3Rl
-Y3QgcGluIHN1cHBvcnQKPiAKPiAgICAgIE5WTUVNIGZyYW1ld29yayBpcyBhbiBpbnRlcmZhY2Ug
-Zm9yIHRoZSBhdDI0IEVFUFJPTXMgYXMgd2VsbCBhcyBmb3IKPiAgICAgIG90aGVyIGRyaXZlcnMs
-IGluc3RlYWQgb2YgcGFzc2luZyB0aGUgd3AtZ3Bpb3Mgb3ZlciB0aGUgZGlmZmVyZW50Cj4gICAg
-ICBkcml2ZXJzIGVhY2ggdGltZSwgaXQgd291bGQgYmUgYmV0dGVyIHRvIHBhc3MgaXQgb3ZlciB0
-aGUgTlZNRU0KPiAgICAgIHN1YnN5c3RlbSBvbmNlIGFuZCBmb3IgYWxsLgo+IAo+ICAgICAgUmVt
-b3ZpbmcgdGhlIHN1cHBvcnQgZm9yIHRoZSB3cml0ZS1wcm90ZWN0IHBpbiBhZnRlciBhZGRpbmcg
-aXQgdG8KPiAgICAgIHRoZSBOVk1FTSBzdWJzeXN0ZW0uCj4gIgo+IAo+IEN1cnJlbnQgTlZNRU0g
-ZnJhbWV3b3JrIGltcGxlbWVudGF0aW9uIHRvZ2dsZXMgdGhlIFdQIEdQSU8gd2hlbiByZWdfd3Jp
-dGUgbnZtZW1fY29uZmlnIEFQSSBpcyBkZWZpbmVkLiBJbiBjYXNlIG9mIE1URCBmcmFtZXdvcmss
-IHJlZ193cml0ZSBpcyBub3QgZGVmaW5lZCBpbiBudm1lbV9jb25maWcuCj4gCj4gQmFzZWQgb24g
-dGhlIGNvbW1lbnRzIG1hZGUsIGl0IHNlZW1zIHRoYXQgd2UgYWxzbyBhZ3JlZSB0aGF0IHRoaXMg
-d3JpdGUgcHJvdGVjdGlvbiBzaG91bGQgYmUgaGFuZGxlZCBieSBNVEQgc3Vic3lzdGVtcyBvciBh
-c3NvY2lhdGVkIGRyaXZlcnMgYW5kIG5vdCBieSBNVk1FTiBmcmFtZXdvcmsgZm9yIE1URCB1c2Ug
-Y2FzZXMuCj4gCj4gVGhlIHByb3Bvc2FsIGltcGxlbWVudGF0aW9uIHNob3VsZCBzb2x2ZSB0aGlz
-IGNvbmZsaWN0IGZvciBNVEQgZnJhbWV3b3JrIHdpdGhvdXQgYnJlYWtpbmcgYW55dGhpbmcgZm9y
-IG90aGVycyBOVk1FTSB1c2VycyAoRUVQUk9NcyBmbGFzaGVzIGZvciBleGFtcGxlKS4KCkknbSBu
-b3Qgc3VyZSBuZWl0aGVyIHdoeSBFRVBST00gZmxhc2hlcyBkZWNpZGVkIHRvIGRlbGVnYXRlIHRo
-ZQp3cCBoYW5kbGluZyB0byBOVk1FTSwgYnV0IGluIGFueSBjYXNlIHdlIGRvbid0IHdhbnQgaXQg
-dG8gYmUKaGFuZGxlZCBhdCBOVk1FTSBsZXZlbCBpbiB0aGUgY2FzZSBvZiBNVEQsIHNvIHlvdXIg
-c2VyaWVzIGxvb2tzIGZpbmUgdG8KbWUuCgo+IAo+IFJlZ2FyZHMsCj4gQ2hyaXN0b3BoZSBLZXJl
-bGxvLgo+IAo+IAoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
-bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8K
++ Khouloud, Linus, Bartosz
+
+On 02/02/22 11:44AM, Christophe Kerello wrote:
+> Hi,
+> 
+> On 2/1/22 11:47, Pratyush Yadav wrote:
+> > On 31/01/22 02:43PM, Miquel Raynal wrote:
+> > > Hi Vignesh, Tudory, Pratyush,
+> > > 
+> > > + Tudor and Pratyush
+> > > 
+> > > christophe.kerello@foss.st.com wrote on Mon, 31 Jan 2022 10:57:55 +0100:
+> > > 
+> > > > Wp-gpios property can be used on NVMEM nodes and the same property can
+> > > > be also used on MTD NAND nodes. In case of the wp-gpios property is
+> > > > defined at NAND level node, the GPIO management is done at NAND driver
+> > > > level. Write protect is disabled when the driver is probed or resumed
+> > > > and is enabled when the driver is released or suspended.
+> > > > 
+> > > > When no partitions are defined in the NAND DT node, then the NAND DT node
+> > > > will be passed to NVMEM framework. If wp-gpios property is defined in
+> > > > this node, the GPIO resource is taken twice and the NAND controller
+> > > > driver fails to probe.
+> > > > 
+> > > > A new Boolean flag named skip_wp_gpio has been added in nvmem_config.
+> > > > In case skip_wp_gpio is set, it means that the GPIO is handled by the
+> > > > provider. Lets set this flag in MTD layer to avoid the conflict on
+> > > > wp_gpios property.
+> > > > 
+> > > > Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> > > > ---
+> > > >   drivers/mtd/mtdcore.c | 2 ++
+> > > >   1 file changed, 2 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > > > index 70f492dce158..e6d251594def 100644
+> > > > --- a/drivers/mtd/mtdcore.c
+> > > > +++ b/drivers/mtd/mtdcore.c
+> > > > @@ -546,6 +546,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+> > > >   	config.stride = 1;
+> > > >   	config.read_only = true;
+> > > >   	config.root_only = true;
+> > > > +	config.skip_wp_gpio = true;
+> > > >   	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+> > > >   	config.priv = mtd;
+> > > > @@ -833,6 +834,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+> > > >   	config.owner = THIS_MODULE;
+> > > >   	config.type = NVMEM_TYPE_OTP;
+> > > >   	config.root_only = true;
+> > > > +	config.skip_wp_gpio = true;
+> > > >   	config.reg_read = reg_read;
+> > > >   	config.size = size;
+> > > >   	config.of_node = np;
+> > > 
+> > > TLDR: There is a conflict between MTD and NVMEM, who should handle the
+> > > WP pin when there is one? At least for raw NAND devices, I don't want
+> > > the NVMEM core to handle the wp pin. So we've introduced this
+> > > skip_wp_gpio nvmem config option. But there are two places where this
+> > > boolean can be set and one of these is for otp regions (see above). In
+> > > this case, I don't know if it is safe or if CFI/SPI-NOR rely on the
+> > > nvmem protection. Please tell us if you think this is fine for you.
+> > 
+> > Why does NVMEM touch hardware write protection in the first place? The
+> > purpose of the framework is to provide a way to retrieve config stored
+> > in memory. It has no business dealing with details of the chip like the
+> > WP line. That should be MTD's job (which it should delegate to SPI NOR,
+> > SPI NAND, etc.). If you want to write protect a cell then do it in
+> > software. I don't see why NVMEM should be dealing with hardware directly
+> > at all.
+> > 
+> > That is my mental model of how things _should_ work. I have not spent
+> > much time digging into how things actually work currently.
+> > 
+> 
+> Wp-gpios property management was added in MVMEM framework in January 2020 =>
+> sha1: 2a127da461a9d8d97782d6e82b227041393eb4d2
+> "
+>     nvmem: add support for the write-protect pin
+> 
+>     The write-protect pin handling looks like a standard property that
+>     could benefit other users if available in the core nvmem framework.
+> 
+>     Instead of modifying all the memory drivers to check this pin, make
+>     the NVMEM subsystem check if the write-protect GPIO being passed
+>     through the nvmem_config or defined in the device tree and pull it
+>     low whenever writing to the memory.
+> "
+> 
+> And this modification was done for EEPROMs flashes => sha1:
+> 1c89074bf85068d1b86f2e0f0c2110fdd9b83c9f
+> "
+>     eeprom: at24: remove the write-protect pin support
+> 
+>     NVMEM framework is an interface for the at24 EEPROMs as well as for
+>     other drivers, instead of passing the wp-gpios over the different
+>     drivers each time, it would be better to pass it over the NVMEM
+>     subsystem once and for all.
+> 
+>     Removing the support for the write-protect pin after adding it to
+>     the NVMEM subsystem.
+> "
+> 
+> Current NVMEM framework implementation toggles the WP GPIO when reg_write
+> nvmem_config API is defined. In case of MTD framework, reg_write is not
+> defined in nvmem_config.
+
+Thanks for digging these up. I think this was the wrong decision to 
+make. NVMEM should just provide the APIs for handling read/write, and 
+leave the rest to the drivers.
+
+It might be convenient for some drivers to put the WP GPIO handling to 
+NVMEM core but I just don't think it is the job of the framework to deal 
+with this, and it just does not know enough about the device to deal 
+with correctly and completely anyway. For example, wp-gpio is only one 
+of the ways to write protect a chip. SPI NOR flashes have a WP# pin that 
+is often toggled via the SPI controller. There could also be registers 
+that do the write protection.
+
+One would have to make strong justifications for making nvmem directly 
+deal with hardware level details to convince me it is a good idea. IMHO 
+if AT24 EEPROM is the only driver relying on this as of now then we 
+should just revert the patches and not have to deal with the 
+skip_wp_gpio hackery.
+
+> 
+> Based on the comments made, it seems that we also agree that this write
+> protection should be handled by MTD subsystems or associated drivers and not
+> by MVMEN framework for MTD use cases.
+> 
+> The proposal implementation should solve this conflict for MTD framework
+> without breaking anything for others NVMEM users (EEPROMs flashes for
+> example).
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
