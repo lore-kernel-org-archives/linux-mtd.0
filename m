@@ -4,60 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92C07C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Feb 2022 12:02:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 855F8C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Feb 2022 13:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NAaCFgT/6XKotEX/lhdcLRq/ANBTWZX9ZTcWxm6budY=; b=BjoK/QBLTzVs8GkLyYsIVuoFw7
-	oHV/4zx6pwLO0s+aWJQiBojYIVI7xS8lWnP+npH25IkdVm9C9QJTTk4IwLJQwK21z0p0EyVRJvbZb
-	pHsOD3bx+CXGSX1cp+A+SOYGkDvX1YOQ2LBC1VLHKOWYOfIpNXf0cfKqM1xFMtAtFPxSyYw3pF4tH
-	ujUMT3jxG+Q6RsKJAKWlGgqEhCextsjkuAIOQV5XaBgWvExxxWSc537dryB88PDlbDHh04KJaec06
-	2X9KLewpBN0aqK6CWpmWT0rRK8tEvExIunWCPLa50ZEAsg80fn44nDWDV5xpZ7vPd2zZdezZjz2g/
-	ie2ZJQng==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=pgdtSJzz5kD2XHvgNlk7Uplp4fOyPkJSPeCfSy6ymE8=; b=D7m5YS4zcczykr
+	kkWJYHHXPjpk9k/56VeDiH1CWSMko1YqdqN97DkPSMswojGdVJlsom9IsaXDiTl4nPPXHk/tnXIsd
+	xk4zHyNeNsRECiT0tYjsWfD2juBLniHW8YTOMWJW3t/JaXkdXKo0ph81o7zBBaayh1HVSOTUuf09p
+	tTOnn7Jrp+xIVwomGDm3/THIIi0Lwz6/NDJ7yISLK8ozEmIPNJBoJuyx+IcaSAirR0UCtJt7tqs4z
+	HhNviJlaghZJqKTNwoStP/NGElSjMDfyATXlK7mUqhbC7hRfIvTMRIHGdOzaDuYixGsa0d7AYfLUD
+	XYwStFM1NafLPiC4tTLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFaoT-00168e-Gr; Thu, 03 Feb 2022 12:02:09 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nFc3L-001P6M-HL; Thu, 03 Feb 2022 13:21:35 +0000
+Received: from mail-bn7nam10on2065.outbound.protection.outlook.com
+ ([40.107.92.65] helo=NAM10-BN7-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFaoP-001673-OD
- for linux-mtd@lists.infradead.org; Thu, 03 Feb 2022 12:02:08 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 79D392222E;
- Thu,  3 Feb 2022 13:02:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1643889723;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=NTKbcBpoiYDkOsEDeKtcGrOMlbvfpxDBPFpxqLdDLUk=;
- b=Gm32dI471/sgaP/AKInSH3IndMBaEUWcOSdGNPjN/nREMDvXC9KGysXp/JPTbVIR8KDNx7
- gHEkgEoi14WBzENrhzmRoFyr6JM7EFZ2rQ9tQIsHIaPTPMnZ8NlfRuUW9sHTtXh1tU7IcE
- 6n1eov/X/yMVu7o/RCnemWAlfoHSdPE=
+ id 1nFc3I-001P5Q-Fs
+ for linux-mtd@lists.infradead.org; Thu, 03 Feb 2022 13:21:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EHjh2CQGvC6EbpywAa4sUSg8tuPYFvsjytUngW9RDp6XPbSsHDPMjw6U9s934k/fEgiAnumuh4LGGOPzdxMffcY2hA7pt6M8bwgHaQj0iBA/H8dBhvAzPG/5xoylLYvL8n0AL4o6KpoIE9wQiaQATInvhCOK6c6b2YCh0uZaXe7ikrOMOalOAweXJglJ7JWTsMAsowBpovoaM/BUPsgL2b4TE6O+lP1Cd05iXiedsALRZ6A6EWdWYVNgfuTOIiBEPhFICOgkl398qXYHdLyrtD2pPe4stLMp1fASlO7wkEzB6hzlAQkSHKWljzAvtw6Iopztj/In1Kvtlv6Xop7ZNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DUInhKcED0K1hqwNBeq8MsvASFjArpcbrnoYbYtvtpU=;
+ b=WZrE6uILPhTmw+abqmQe/AInBgY9Yxb4KIio8CzNupA3bKLna4zi1JfgqnsPD88ZZLj0oXuB8IUTZdI4hZQU0qM2CSkNMkwIgpKE6ZroWIVq8TpLIiJtcKSbrMmp1sF6dO73p86qhkN29gJGHGebMihWw0a1DALj3r314d0DNvDCK9XafX/4d/yQKhGb4o0ENqSl5XFJAiyvv35dy0Gf4XqRjYN1t1sEbkTPV5zXe0l3Q4lN3u7V4gEGT+ZtwAyTFM5senqontVNsoADr/ET4xrT1c0svJb9/Qk0gkPpQfikY4YNI97Oie8XsSY2nuSn7wXZEt1ZtMe05qjllmnHrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=bootlin.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DUInhKcED0K1hqwNBeq8MsvASFjArpcbrnoYbYtvtpU=;
+ b=tG0e/BmzLOTcYWrLo7eXQqvMvYOCnjAJj9pdC9OGjqWP89KulmDkpNCIyBHDDrhbOIJoi1HWdEmore/PAnR0CWBm2So1/r/0k+SRdBt+BtCguauoqstJTKvEE3fvVjEy0ztjBjY8A9jgXbiV/3/Sb1QW982QjCaawaDqqguFTb8=
+Received: from DS7PR03CA0173.namprd03.prod.outlook.com (2603:10b6:5:3b2::28)
+ by SA1PR02MB8559.namprd02.prod.outlook.com (2603:10b6:806:1fa::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Thu, 3 Feb
+ 2022 13:21:28 +0000
+Received: from DM3NAM02FT004.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:3b2:cafe::82) by DS7PR03CA0173.outlook.office365.com
+ (2603:10b6:5:3b2::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12 via Frontend
+ Transport; Thu, 3 Feb 2022 13:21:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT004.mail.protection.outlook.com (10.13.5.122) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4951.12 via Frontend Transport; Thu, 3 Feb 2022 13:21:28 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 3 Feb 2022 05:21:22 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 3 Feb 2022 05:21:22 -0800
+Received: from [10.140.6.18] (port=53848 helo=xhdlakshmis40.xilinx.com)
+ by smtp.xilinx.com with esmtp (Exim 4.90)
+ (envelope-from <amit.kumar-mahapatra@xilinx.com>)
+ id 1nFc37-0006TT-QJ; Thu, 03 Feb 2022 05:21:22 -0800
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <git@xilinx.com>
+Subject: [RFC PATCH] mtd: tests: Fix eraseblock read speed miscalculation for
+ lower partition sizes
+Date: Thu, 3 Feb 2022 18:51:19 +0530
+Message-ID: <20220203132119.25684-1-amit.kumar-mahapatra@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Date: Thu, 03 Feb 2022 13:02:02 +0100
-From: Michael Walle <michael@walle.cc>
-To: Carl Richard Theodor Schneider <dev.linux@crtified.me>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- microcaicai@gmail.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Init xtx flash xt25f32b, xt25f128b
-In-Reply-To: <20220201002535.2186484-1-dev.linux@crtified.me>
-References: <20220201002535.2186484-1-dev.linux@crtified.me>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <28b2114224604fcc673b000e15a9e3cd@walle.cc>
-X-Sender: michael@walle.cc
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd001a19-096c-4623-d1f3-08d9e71815d4
+X-MS-TrafficTypeDiagnostic: SA1PR02MB8559:EE_
+X-Microsoft-Antispam-PRVS: <SA1PR02MB85592CFBF79C243746B3AF1ABA289@SA1PR02MB8559.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bdV09Tn/1FP2fbWymu2SUIqbscoZVYK9vAH64u6OiC7s32YlQQ2koM264/Z8JmVm/FLz8U5DAwasZPAdYpljlD1B5B3r11uHWLMy75bl6Ei3wAWqUwh4BzstkxB8i66IIcwJCA11m9NG1kE2PXlvpX9gH8p55O4xGnvuCY0QBSvkDb3tMJoOqwQMpdKntPkqDTm5Xgk8Uluhml8SgsCOd/ZNRiPv9EvZ+G9EyqPv7gaMz7/IfnhCo7djXBJIC5bSya6RP34+1qdJMHUJ4aXop3MDKE8CScekl499vzrbqHLo3R/g6CPEm6L2kk5SiJEyneu7F0IPKNc1NL9v7RQac2DWBCQhp5IT/jGbv2sUXCfHqy8lQdKDX3bKt9rup6lnjJPSKszzDqRL1v7dPdhmQfMXOgdsAhyRCC18O8aIfOENqEgqKRC93t7PjBF4GtcvQ2IjKDZmeBBKGrYND+ISPHzx264y6LIq/ed8WP2NNNEXBYiuqL2pF3fJqOKzFlEOkm9jq1Dpogne1s68IWIHFzpCVZabinBlm1V7sH9IqZjvS+tXpxeIUhZk3ValxnZ3n10qCM/oQOp8xmLLHVKJMGmeWJbXB2sjwOb8P8JCRuPaFgpi3SSLxz7BXryOdIwu8SKAmB0WkCAnllvq4FGCdmheu+s++3AfQC5ddAl2iBrWQJoKBPfUhURB4s0D5rb1vRNSbUnJDTn9I0nT0ZcKZQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:xsj-pvapexch01.xlnx.xilinx.com;
+ PTR:unknown-62-198.xilinx.com; CAT:NONE;
+ SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(36756003)(7696005)(8936002)(40460700003)(2906002)(1076003)(5660300002)(47076005)(83380400001)(186003)(26005)(36860700001)(426003)(336012)(70586007)(7636003)(2616005)(107886003)(54906003)(110136005)(70206006)(316002)(508600001)(4326008)(356005)(82310400004)(9786002)(8676002)(6666004)(102446001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2022 13:21:28.0198 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd001a19-096c-4623-d1f3-08d9e71815d4
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c; Ip=[149.199.62.198];
+ Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT004.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR02MB8559
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220203_040206_144203_311CF8BE 
-X-CRM114-Status: GOOD (  25.96  )
+X-CRM114-CacheID: sfid-20220203_052132_579775_4B646707 
+X-CRM114-Status: GOOD (  17.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,134 +123,79 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+While calculating speed during  mtd_speedtest, the time interval
+(i.e., start - finish) is rounded off to the nearest milliseconds by
+ignoring the fractional part. This leads to miscalculation of speed.
+The miscalculation is more visible while running speed test on small
+partition sizes(i.e., when partition size is equal to eraseblock size or
+twice the eraseblock size) at higher spi frequencies.
 
-Am 2022-02-01 01:25, schrieb Carl Richard Theodor Schneider:
-> Add the JEDEC identifiers for xt25f32b and xt25f128b.
-> Based on the referenced previous patch from microcai.
-> 
-> Only xt25f32b was verified in hardware (On both Radxa RockPi 4A and 
-> 4C),
-> but the ID of the xt25f128b can also be found in u-boot patches from
-> Armbian.
+For e.g., while calculating eraseblock read speed for a mtd partition with
+size equal to the eraseblock size(i.e., 64KiB) the eraseblock read time
+interval comes out to be 966490 nanosecond. This is then converted to
+millisecond(i.e., 0.966 msec.). The integer part (i.e., 0 msec) of the
+value is considered and the fractional part (i.e., 0.966) is ignored,for
+calculating the eraseblock read speed. So the reported eraseblock read
+speed is 0 KiB/s, which is incorrect.
 
-We require SFDP dumps of new flashes. Therefore, you can only add
-flashes which you actually have (and have tested). See [1] how to
-provide such a dump.
+There are two approaches to fix this issue.
 
-> Link:
-> https://lore.kernel.org/lkml/CAMgqO2y9MYDj6antOaWLBRKU8vGEwqCB-Y1TkXTSWsmsed+W6A@mail.gmail.com/
-> Link:
-> https://datasheet.lcsc.com/szlcsc/2005251035_XTX-XT25F32BSOIGU-S_C558851.pdf
-> Link:
-> https://datasheet.lcsc.com/szlcsc/2005251034_XTX-XT25F128BSSIGT_C558844.pdf
-> Link:
-> https://github.com/armbian/build/blob/master/patch/u-boot/u-boot-rockchip64/general-add-xtx-spi-nor-chips.patch
-> 
-> Signed-off-by: Carl Richard Theodor Schneider <dev.linux@crtified.me>
-> ---
->  drivers/mtd/spi-nor/Makefile |  1 +
->  drivers/mtd/spi-nor/core.c   |  1 +
->  drivers/mtd/spi-nor/core.h   |  1 +
->  drivers/mtd/spi-nor/xtx.c    | 25 +++++++++++++++++++++++++
->  4 files changed, 28 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/xtx.c
-> 
-> diff --git a/drivers/mtd/spi-nor/Makefile 
-> b/drivers/mtd/spi-nor/Makefile
-> index 6b904e439372..e344077e3054 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
->  spi-nor-objs			+= winbond.o
->  spi-nor-objs			+= xilinx.o
->  spi-nor-objs			+= xmc.o
-> +spi-nor-objs			+= xtx.o
->  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
-> 
->  obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 04ea180118e3..44017ab54726 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1846,6 +1846,7 @@ static const struct spi_nor_manufacturer
-> *manufacturers[] = {
->  	&spi_nor_winbond,
->  	&spi_nor_xilinx,
->  	&spi_nor_xmc,
-> +	&spi_nor_xtx,
->  };
-> 
->  static const struct flash_info *
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 2afb610853a9..8adac5da6851 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -536,6 +536,7 @@ extern const struct spi_nor_manufacturer 
-> spi_nor_sst;
->  extern const struct spi_nor_manufacturer spi_nor_winbond;
->  extern const struct spi_nor_manufacturer spi_nor_xilinx;
->  extern const struct spi_nor_manufacturer spi_nor_xmc;
-> +extern const struct spi_nor_manufacturer spi_nor_xtx;
-> 
->  extern const struct attribute_group *spi_nor_sysfs_groups[];
-> 
-> diff --git a/drivers/mtd/spi-nor/xtx.c b/drivers/mtd/spi-nor/xtx.c
-> new file mode 100644
-> index 000000000000..2c9028e5d719
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/xtx.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2005, Intec Automation Inc.
-> + * Copyright (C) 2014, Freescale Semiconductor, Inc.
-> + */
+First approach will be to keep the time interval in millisecond. and round
+up the integer value, with this approach the 0.966msec time interval in the
+above example will be rounded up to 1msec and this value is used for
+calculating the speed. Downside of this approach is that the reported speed
+is still not accurate.
 
-Can this be dropped? I don't think there is any of the
-original code left here. no?
+Second approach will be to convert the time interval to microseconds
+instead of milliseconds, with this approach the 966490 nanosecond time
+interval in the above example will be converted t0 966.490usec and this
+value is used for calculating the speed. As compared to the current
+implementation and the suggested First approach, this approach will report
+a more accurate speed. Downside of this approach is that, in future if the
+mtd size is too large then the u64 variable, that holds the number of
+bytes, might overflow.
 
-> +
-> +#include <linux/mtd/spi-nor.h>
-> +
-> +#include "core.h"
-> +
-> +static const struct flash_info xtx_parts[] = {
-> +	/* XTX (Shenzhen Xin Tian Xia Tech) */
-> +	{ "xt25f32b", INFO(0x0b4016, 0, 64 * 1024, 64)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			SPI_NOR_QUAD_READ) },
+In this patch we have gone with the second approach as this reports a more
+accurate speed. With this approach the eraseblock read speed in the above
+example comes out to be 132505 KiB/s when the spi clock is configured at
+150Mhz.
 
-You'd either need to specify SPI_NOR_SKIP_SFDP or PARSE_SFDP
-and drop the NO_SFDP_FLAGS if there is SFDP support.
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+---
+ drivers/mtd/tests/speedtest.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-But more importantly, xtx is missing the continuation bytes
-and is probably reusing the manufacturer id from another
-vendor. So, this would have to be rebased on Tudors id
-collision patchset [2]. There is already support for the
-xt25f128b btw.
-
-> +	{ "xt25f128b", INFO(0x0b4018, 0, 64 * 1024, 256)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			SPI_NOR_QUAD_READ) },
-> +};
-> +
-> +const struct spi_nor_manufacturer spi_nor_xtx = {
-> +	.name = "xtx",
-> +	.parts = xtx_parts,
-> +	.nparts = ARRAY_SIZE(xtx_parts),
-> +};
-
-[1] 
-https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.cc/
-[2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=270725
+diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
+index 93e76648f676..2b76e7750c68 100644
+--- a/drivers/mtd/tests/speedtest.c
++++ b/drivers/mtd/tests/speedtest.c
+@@ -161,13 +161,13 @@ static inline void stop_timing(void)
+ static long calc_speed(void)
+ {
+ 	uint64_t k;
+-	long ms;
++	long us;
+ 
+-	ms = ktime_ms_delta(finish, start);
+-	if (ms == 0)
++	us = ktime_us_delta(finish, start);
++	if (us == 0)
+ 		return 0;
+-	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000;
+-	do_div(k, ms);
++	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000000;
++	do_div(k, us);
+ 	return k;
+ }
+ 
 -- 
--michael
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
