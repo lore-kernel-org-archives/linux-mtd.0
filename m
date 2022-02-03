@@ -4,114 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE370C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  3 Feb 2022 13:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F86CC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  3 Feb 2022 14:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5eO8m0RsiDo7pxY8ycJku4N1Bw8g8GM3O1uhP5/yE8M=; b=qhuPztNfyAEfgf
-	HFLhqTMEK7lYixVYwh0JQe8RNFdSueqP8UEKGnnCVKCp8k0tb6NYm8+HgH4gbvcD5fBJq8emwJoKm
-	fjHj+Cp04F2RHWEBonCq7mTevzol6deeubVgMvOsy4AHLFMmmAeZCopyIG/i7KQje8PLsAMOzGYRm
-	Sx5SCNHoqjH9XGivwx2QpeQRTkpKTdyU19kn9bSHZrIcY2i6JKBRcN0VQ3s689ANThNPBo2oh8WYZ
-	4/+iR0GSeEaXTSO0t9WqCxqGxy6YGGAZurvufWaLx870gU59LXmLZNlx4/ppsB79E/L0eJ5Xco+nR
-	aW1FplAYrHo+/CGR2jiA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ciWm+lspqTSyxuDs+1HzotKsxDX5d4MawwzKDAlBh0A=; b=DhZdoyuRWXeUNk
+	HFpfJOFox7DzzOgkdddJdXDElt3BRDcZJwmDE1/p0/MPiQgF3KAAaWGi0ba2VTck+D8jYYvm/IwWm
+	FwWJaAHNw/BnBoGrMa+J3Htew4t0mcMMBXKIO/YfRcOmiONx77l9/ULvu+xziLWNrjXo6QjdJId7N
+	IJ6mfZxCy77GE506MlJ+IHwYVIcbu7liLFzfe5k8MJ9WAOlxXstbQSLJB4sX4SOqTbX/jXl77kd4A
+	C7/rggi8F3DE1FtB6zS3ucc1SNwZJxLb3ZPmb0YKylF+eNk3x7nS+4rx7jqdXVW7VNZIw/sF/eUkI
+	rtXROw50cP2xmNO+PkIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nFc6e-001Plg-Ru; Thu, 03 Feb 2022 13:25:00 +0000
-Received: from mail-dm6nam12on2073.outbound.protection.outlook.com
- ([40.107.243.73] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
+	id 1nFd7d-001bkr-Cn; Thu, 03 Feb 2022 14:30:05 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nFc6b-001Pkr-EL
- for linux-mtd@lists.infradead.org; Thu, 03 Feb 2022 13:24:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RGb9f8r1PPTvyXprBiNx4JwlizA5s7O6MPGiEHA7NB0OHeEZxZ4mIAhsBtNIL3Fs/MQQT8g2Ovkzk4unazZyLuuVx5qp+oWFtw3yUljtMXTaVgyXK/Ain5sylVNI5C+UcjQ9vOXcV8jxfBaO/6kTlJo0VYRjnmz1FRGfWsMA630IOTARr/09MuGXe6Ii3TNnKhKV3LwgQwG6b6V9xlkFaoIytH5hDeK22MlGTcGTRb8rE6ocO8oc2bT0HZ8Bu0wNEvs1xv7qu7Vqy/uvQhgBX10wDFbLPyj2apePHjzFaiDowA3fWInx6ay0DPgqb6QHNQLsERzSM69y/vW9arFkJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hh/Bl6mv7SPKvuzzxd+jIVrnqsyQBo3bwkcYhte1I7c=;
- b=e65oHU3CIlYQWn4N/8trF6QDC16F0RJ8cQHP52fze8N0GeoeMqBAFK2YzJwxAs7dr2AAkAzZWgzuOzc3BWmI2KOp3VxvqF/9SYPBKzbh0MnxEEBs4uNP6PJJtRKf+xp6SEVkuJRv7NdwLkUahQzAm4XR5XTvj1qejo1XaWhvEaGi5yQBGTGwuT/y0IFjTTmZGjewo8ryUJNrVw3Do2vWbnOG+gSM+FA2tiqhgPLc6J+x/heimheBUV4SqRuyX+7P1Rp35oXjhuMfQMcO5b1mAh3Bb8Cf7uRknpPJYh5+RcmgI7vKJ7v2r8DwgOTkWvKt1feWTvREqbrCiaiBUOzlbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=bootlin.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hh/Bl6mv7SPKvuzzxd+jIVrnqsyQBo3bwkcYhte1I7c=;
- b=alzM+L2Ok6i9+8Ttmg0j8AfEcT28CLnX7JEGMqqpmSRTQb6JxBx8zlN75dwN6K7t8I97r77ea3mHWokBrwL0vO/Kh3DA83GbePRdsoRRKkzGlHAWC+ANEM6TlulUmezUihYMaQuRlRRLHbGK09D+u5tL254OCNsJdxDrvyG9BqQ=
-Received: from DS7PR03CA0133.namprd03.prod.outlook.com (2603:10b6:5:3b4::18)
- by BL3PR02MB8050.namprd02.prod.outlook.com (2603:10b6:208:359::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Thu, 3 Feb
- 2022 13:24:45 +0000
-Received: from DM3NAM02FT008.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:3b4:cafe::ca) by DS7PR03CA0133.outlook.office365.com
- (2603:10b6:5:3b4::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12 via Frontend
- Transport; Thu, 3 Feb 2022 13:24:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT008.mail.protection.outlook.com (10.13.5.14) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4951.12 via Frontend Transport; Thu, 3 Feb 2022 13:24:45 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 3 Feb 2022 05:24:43 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 3 Feb 2022 05:24:43 -0800
-Received: from [10.140.6.18] (port=53850 helo=xhdlakshmis40.xilinx.com)
- by smtp.xilinx.com with esmtp (Exim 4.90)
- (envelope-from <amit.kumar-mahapatra@xilinx.com>)
- id 1nFc6M-0007ZG-P6; Thu, 03 Feb 2022 05:24:43 -0800
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <git@xilinx.com>, Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Subject: [RFC PATCH] mtd: tests: Fix eraseblock read speed miscalculation for
- lower partition sizes
-Date: Thu, 3 Feb 2022 18:54:34 +0530
-Message-ID: <20220203132434.25769-1-amit.kumar-mahapatra@xilinx.com>
-X-Mailer: git-send-email 2.17.1
+ id 1nFd7W-001bio-Dc; Thu, 03 Feb 2022 14:30:02 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 252CE61986;
+ Thu,  3 Feb 2022 14:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34670C340F9;
+ Thu,  3 Feb 2022 14:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1643898596;
+ bh=5mRt1SaiP1Wjnc/EtyBH/TqPg5vXikmvyR5riccrZT0=;
+ h=References:In-Reply-To:From:Date:Subject:To:List-Id:Cc:From;
+ b=GsZmpHuA7J6KBW6iMkXYA1czjT/2N5d66+nfNI97j1/ZkUNv8BQ0UH39Gteb5xExs
+ KJfeQg9YSnloRcKTpFQd2sJP9n216+V6Ooz8AgH50i419TXzPtZHZWcSwqh1sJBnTK
+ 78rbmYgisEAioGm1bb/nF/vYyDpiRk+DlUvWPd+1+rPoEMeAK+u6DhPdWEIfJ/r6DG
+ Taak/ee2A9kxxViEA264+NMhvBok6kgLdstuSmNwt+yObMrvomjqasPGfECXK+AfCU
+ 2iHUZbtSbzcj4RBqI+MJlX++7dGeGn+un61EgyGs9s+LxHioVnHsdj1M0JcJfyKTXI
+ cThafSZB7nDDA==
+Received: by mail-ej1-f46.google.com with SMTP id k25so9363893ejp.5;
+ Thu, 03 Feb 2022 06:29:56 -0800 (PST)
+X-Gm-Message-State: AOAM530OqwVNagzAUgUsfKaEvA23L8O0fIP1/z1MkDmXC83Szixt4hRx
+ QEqAdFKf+NADEHkQNvy74QIZEYa5g11fCqVovQ==
+X-Google-Smtp-Source: ABdhPJymwYM9buOfY4EJdQqpJJxckrzFs4v+2o8RenvFywsV6AadtVL7aX7paD6KdXbLYlzw3dGG4qTQ5RacWWSEufQ=
+X-Received: by 2002:a17:907:7f1a:: with SMTP id
+ qf26mr23658276ejc.20.1643898583127; 
+ Thu, 03 Feb 2022 06:29:43 -0800 (PST)
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8f096885-3f95-4ed8-fb73-08d9e7188b48
-X-MS-TrafficTypeDiagnostic: BL3PR02MB8050:EE_
-X-Microsoft-Antispam-PRVS: <BL3PR02MB805015ED1478A35B50BBB78EBA289@BL3PR02MB8050.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XP/N0vE+AsPTAg9JetRejWB4iL8zR6Z60NzGQtNI2aaaJqJxb8o2ptqTI8oljIkgy4uMV4OBX0sPpYvlq9NI0+mRJINzfp2s0+jWJXYoyiA9bT21WtDz7r2w2OIuOGWd1zg9EEvofCXfGHx854rqG4eanp2qiyz5E5CICQBa+o8LXNO3CX3aE8F+LwJziybL4LXM2iJKIWqGwCW9UHCN2g4MqDxS3ep7hBdObE1xgZaaTBhWCyEgZQXT/na6LDUopN9LVEFALSvdMFq1gXm3ICADB9O8yjxVMh2agpC8F4f55AzcmMHRci6bGnK0q1QYcwnBLetyDTrj5IiJD5Fu+tb4xjuNnLLti2/3WKmLpscFuBlKTz28QqLxKv2PqEbWqNKJ/IoXYWw484zoesyium8ZrH+bgkAK/JYZfxuo07DknXh1zTw0Pc1WGltMido5FCZNYaAJ/nE1ShPaN5JkJc6Lab2Wk/d1uIAZp9vf14bilgkFeTSIR2P7fxVbm1szdIyGuqaJP3qe1zjfpoqGjQ+k8WfpYU4/5FDhXmT7rFYK1DccT/oVfWEnfd4xyDCQ5av9ZjpbpTNkNptyTrrFs/iMnWcQjIVSrJxL0ufWKNpnD8vLL8lArINkUbnOOLMmChMKfm8SZeYe7vzJCMLCHxgOzzv53RLJnvaW77ONnr0DIeMBr6a1YUtCrJg/YvQ1oHpoicLW73W10XRaXfCGOg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:xsj-pvapexch02.xlnx.xilinx.com;
- PTR:unknown-62-198.xilinx.com; CAT:NONE;
- SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(82310400004)(8676002)(7696005)(316002)(6666004)(54906003)(110136005)(5660300002)(508600001)(7636003)(356005)(9786002)(4326008)(8936002)(70586007)(70206006)(336012)(426003)(83380400001)(40460700003)(36756003)(47076005)(36860700001)(1076003)(186003)(26005)(2906002)(2616005)(107886003)(102446001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2022 13:24:45.0745 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f096885-3f95-4ed8-fb73-08d9e7188b48
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c; Ip=[149.199.62.198];
- Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT008.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR02MB8050
+References: <nick.hawkins@hpe.com>
+ <20220202165315.18282-1-nick.hawkins@hpe.com>
+In-Reply-To: <20220202165315.18282-1-nick.hawkins@hpe.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Thu, 3 Feb 2022 08:29:31 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+K2t5WYE056so1iZgZr7CBKvDEjAwnJVTyUFQcK-VFSA@mail.gmail.com>
+Message-ID: <CAL_Jsq+K2t5WYE056so1iZgZr7CBKvDEjAwnJVTyUFQcK-VFSA@mail.gmail.com>
+Subject: Re: [PATCH] HPE BMC GXP SUPPORT
+To: nick.hawkins@hpe.com
+Cc: verdun@hpe.com, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, 
+ Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+ Corey Minyard <minyard@acm.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Lee Jones <lee.jones@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Mark Brown <broonie@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Amit Kucheria <amitk@kernel.org>, 
+ Zhang Rui <rui.zhang@intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
+ Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, 
+ Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Olof Johansson <olof@lixom.net>, 
+ SoC Team <soc@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Stanislav Jakubek <stano.jakubek@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Hao Fang <fanghao11@huawei.com>,
+ "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
+ Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, 
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Wang Kefeng <wangkefeng.wang@huawei.com>, 
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, devicetree@vger.kernel.org, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ Linux I2C <linux-i2c@vger.kernel.org>, 
+ openipmi-developer@lists.sourceforge.net, 
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ netdev <netdev@vger.kernel.org>, 
+ Linux PWM List <linux-pwm@vger.kernel.org>, 
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, 
+ "open list:THERMAL" <linux-pm@vger.kernel.org>,
+ Linux USB List <linux-usb@vger.kernel.org>, 
+ LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>, 
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220203_052457_504620_759B18B6 
-X-CRM114-Status: GOOD (  17.52  )
+X-CRM114-CacheID: sfid-20220203_062958_669921_EC78C895 
+X-CRM114-Status: GOOD (  36.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,76 +119,1106 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While calculating speed during  mtd_speedtest, the time interval
-(i.e., start - finish) is rounded off to the nearest milliseconds by
-ignoring the fractional part. This leads to miscalculation of speed.
-The miscalculation is more visible while running speed test on small
-partition sizes(i.e., when partition size is equal to eraseblock size or
-twice the eraseblock size) at higher spi frequencies.
+On Wed, Feb 2, 2022 at 10:55 AM <nick.hawkins@hpe.com> wrote:
+>
+> From: Nick Hawkins <nick.hawkins@hpe.com>
+>
+> GXP is the name of the HPE SoC.
+> This SoC is used to implement BMC features of HPE servers
+> (all ProLiant, Synergy, and many Apollo, and Superdome machines)
+> It does support many features including:
+>         ARMv7 architecture, and it is based on a Cortex A9 core
+>         Use an AXI bus to which
+>                 a memory controller is attached, as well as
+>                  multiple SPI interfaces to connect boot flash,
+>                  and ROM flash, a 10/100/1000 Mac engine which
+>                  supports SGMII (2 ports) and RMII
+>                 Multiple I2C engines to drive connectivity with a host infrastructure
+>                 A video engine which support VGA and DP, as well as
+>                  an hardware video encoder
+>                 Multiple PCIe ports
+>                 A PECI interface, and LPC eSPI
+>                 Multiple UART for debug purpose, and Virtual UART for host connectivity
+>                 A GPIO engine
+> This Patch Includes:
+>         Documentation for device tree bindings
+>         Device Tree Bindings
+>         GXP Timer Support
+>         GXP Architecture Support
+>
+> Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
+> ---
+>  .../bindings/display/hpe,gxp-thumbnail.txt    |  21 +
+>  .../devicetree/bindings/gpio/hpe,gxp-gpio.txt |  16 +
+>  .../devicetree/bindings/i2c/hpe,gxp-i2c.txt   |  19 +
+>  .../bindings/ipmi/hpegxp-kcs-bmc-cfg.txt      |  13 +
+>  .../bindings/ipmi/hpegxp-kcs-bmc.txt          |  21 +
+>  .../memory-controllers/hpe,gxp-srom.txt       |  13 +
+>  .../devicetree/bindings/mtd/hpe,gxp.txt       |  16 +
+>  .../bindings/net/hpe,gxp-umac-mdio.txt        |  21 +
+>  .../devicetree/bindings/net/hpe,gxp-umac.txt  |  20 +
+>  .../devicetree/bindings/pwm/hpe,gxp-fan.txt   |  15 +
+>  .../bindings/serial/hpe,gxp-vuart-cfg.txt     |  17 +
+>  .../bindings/serial/hpe,gxp-vuart.txt         |  23 +
+>  .../bindings/soc/hpe/hpe,gxp-chif.txt         |  16 +
+>  .../bindings/soc/hpe/hpe,gxp-csm.txt          |  14 +
+>  .../bindings/soc/hpe/hpe,gxp-dbg.txt          |  18 +
+>  .../bindings/soc/hpe/hpe,gxp-fn2.txt          |  20 +
+>  .../bindings/soc/hpe/hpe,gxp-xreg.txt         |  19 +
+>  .../devicetree/bindings/spi/hpe,gxp-spifi.txt |  76 +++
+>  .../bindings/thermal/hpe,gxp-coretemp.txt     |  14 +
+>  .../bindings/timer/hpe,gxp-timer.txt          |  18 +
+>  .../devicetree/bindings/usb/hpe,gxp-udc.txt   |  21 +
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   4 +-
+>  .../bindings/watchdog/hpe,gxp-wdt.txt         |  11 +
 
-For e.g., while calculating eraseblock read speed for a mtd partition with
-size equal to the eraseblock size(i.e., 64KiB) the eraseblock read time
-interval comes out to be 966490 nanosecond. This is then converted to
-millisecond(i.e., 0.966 msec.). The integer part (i.e., 0 msec) of the
-value is considered and the fractional part (i.e., 0.966) is ignored,for
-calculating the eraseblock read speed. So the reported eraseblock read
-speed is 0 KiB/s, which is incorrect.
+All these must be in DT schema format (yaml json-schema). See
+Documentation/devicetree/bindings/submitting-patches.rst and
+Documentation/devicetree/bindings/writing-schema.rst.
 
-There are two approaches to fix this issue.
+>  MAINTAINERS                                   |  14 +
+>  arch/arm/Kconfig                              |   2 +
+>  arch/arm/boot/dts/Makefile                    |   2 +
+>  arch/arm/boot/dts/hpe-bmc-dl360gen10.dts      | 207 +++++++
+>  arch/arm/boot/dts/hpe-gxp.dtsi                | 555 ++++++++++++++++++
 
-First approach will be to keep the time interval in millisecond. and round
-up the integer value, with this approach the 0.966msec time interval in the
-above example will be rounded up to 1msec and this value is used for
-calculating the speed. Downside of this approach is that the reported speed
-is still not accurate.
+Once the schemas are in place, run 'make W=1 dtbs_check' and fix the warnings.
 
-Second approach will be to convert the time interval to microseconds
-instead of milliseconds, with this approach the 966490 nanosecond time
-interval in the above example will be converted t0 966.490usec and this
-value is used for calculating the speed. As compared to the current
-implementation and the suggested First approach, this approach will report
-a more accurate speed. Downside of this approach is that, in future if the
-mtd size is too large then the u64 variable, that holds the number of
-bytes, might overflow.
+>  arch/arm/configs/gxp_defconfig                | 243 ++++++++
+>  arch/arm/mach-hpe/Kconfig                     |  21 +
+>  arch/arm/mach-hpe/Makefile                    |   1 +
+>  arch/arm/mach-hpe/gxp.c                       |  62 ++
+>  drivers/clocksource/Kconfig                   |   8 +
+>  drivers/clocksource/Makefile                  |   1 +
+>  drivers/clocksource/gxp_timer.c               | 158 +++++
+>  35 files changed, 1719 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/hpe,gxp-thumbnail.txt
+>  create mode 100644 Documentation/devicetree/bindings/gpio/hpe,gxp-gpio.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/hpe,gxp-i2c.txt
+>  create mode 100644 Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc-cfg.txt
+>  create mode 100644 Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/hpe,gxp-srom.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/hpe,gxp.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/hpe,gxp-fan.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/hpe,gxp-vuart-cfg.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/hpe,gxp-vuart.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/hpe/hpe,gxp-chif.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/hpe/hpe,gxp-csm.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/hpe/hpe,gxp-dbg.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/hpe/hpe,gxp-fn2.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/hpe/hpe,gxp-xreg.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/hpe,gxp-spifi.txt
+>  create mode 100644 Documentation/devicetree/bindings/thermal/hpe,gxp-coretemp.txt
+>  create mode 100644 Documentation/devicetree/bindings/timer/hpe,gxp-timer.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/hpe,gxp-udc.txt
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/hpe,gxp-wdt.txt
+>  create mode 100644 arch/arm/boot/dts/hpe-bmc-dl360gen10.dts
+>  create mode 100644 arch/arm/boot/dts/hpe-gxp.dtsi
+>  create mode 100644 arch/arm/configs/gxp_defconfig
+>  create mode 100644 arch/arm/mach-hpe/Kconfig
+>  create mode 100644 arch/arm/mach-hpe/Makefile
+>  create mode 100644 arch/arm/mach-hpe/gxp.c
+>  create mode 100644 drivers/clocksource/gxp_timer.c
+>
+> diff --git a/Documentation/devicetree/bindings/display/hpe,gxp-thumbnail.txt b/Documentation/devicetree/bindings/display/hpe,gxp-thumbnail.txt
+> new file mode 100644
+> index 000000000000..e6d37ecce72b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/hpe,gxp-thumbnail.txt
+> @@ -0,0 +1,21 @@
+> +* GXP HPE VIDEO THUMBNAIL DRIVER
+> +
+> +Required properties:
+> +- compatible: Must be "hpe,gxp-thumbnail".
 
-In this patch we have gone with the second approach as this reports a more
-accurate speed. With this approach the eraseblock read speed in the above
-example comes out to be 132505 KiB/s when the spi clock is configured at
-150Mhz.
+What does thumbnail mean?
 
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
----
-BRANCH: mtd/next
----
- drivers/mtd/tests/speedtest.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> +- reg       : Physical base address and length of the controller's registers.
+> +- clocks    : phandle + clock specifier pair of the FB reference clock.
 
-diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-index 93e76648f676..2b76e7750c68 100644
---- a/drivers/mtd/tests/speedtest.c
-+++ b/drivers/mtd/tests/speedtest.c
-@@ -161,13 +161,13 @@ static inline void stop_timing(void)
- static long calc_speed(void)
- {
- 	uint64_t k;
--	long ms;
-+	long us;
- 
--	ms = ktime_ms_delta(finish, start);
--	if (ms == 0)
-+	us = ktime_us_delta(finish, start);
-+	if (us == 0)
- 		return 0;
--	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000;
--	do_div(k, ms);
-+	k = (uint64_t)goodebcnt * (mtd->erasesize / 1024) * 1000000;
-+	do_div(k, us);
- 	return k;
- }
- 
--- 
-2.17.1
+> +- bits-per-pixel: Bits per pixel, must be 32.
+> +- width: Width in pixels, must be 800.
+> +- height: Height in pixels, must be 600.
+> +
+> +Optional properties:
+> +- lcd-supply: Regulator for LCD supply voltage.
 
+These are all properties of a LCD panel and therefore belong in a panel binding.
+
+> +
+> +Example:
+> +       thumbnail: thumbnail@c0000500 {
+> +               compatible = "hpe,gxp-thumbnail";
+> +               reg = <0xc0000500 0x20>;
+> +               bits-per-pixel = <32>;
+> +               width = <800>;
+> +               height = <600>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/gpio/hpe,gxp-gpio.txt b/Documentation/devicetree/bindings/gpio/hpe,gxp-gpio.txt
+> new file mode 100644
+> index 000000000000..568d26d785d2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/hpe,gxp-gpio.txt
+> @@ -0,0 +1,16 @@
+> +*HPE GXP GPIO INTERFACE
+> +
+> +Required properties:
+> +- compatible: Must be "hpe,gxp-gpio".
+> +- #gpio-cells: The number of cells to describe a GPIO, this should be 2.
+
+> +- csm: Phandle to the GXP PCI CSM Controller.
+> +- vuch0_handle:        Phandle to the Virtual USB Hub Controller (VUHC).
+
+These need a vendor prefix and drop the '_handle'.
+
+However, this should probably be a child of the CSM node instead of
+using phandle.
+
+> +
+> +Example of gpio-controller nodes for a MPC8347 SoC:
+
+Freescale MPC8347?
+
+> +
+> +       gpio: gpio {
+> +               compatible = "hpe,gxp-gpio";
+> +               #gpio-cells = <2>;
+> +               csm_handle = <&csm>;
+> +               vuhc0_handle = <&vuhc0>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/i2c/hpe,gxp-i2c.txt b/Documentation/devicetree/bindings/i2c/hpe,gxp-i2c.txt
+> new file mode 100644
+> index 000000000000..cdca203f8c3b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/hpe,gxp-i2c.txt
+> @@ -0,0 +1,19 @@
+> +* HPE GXP I2C Interface
+> +
+> +Required Properties:
+> +
+> +  - compatible: Must be "hpe,gxp-i2c"
+> +  - reg: The I2C address of the device.
+
+Not an I2C address here.
+
+> +  - interrupts: The interrupt number.
+> +  - interrupt-parent: Interrupt controller to which the I2C bus is reporting
+
+interrupt-parent is never required. It could be specified in the
+parent node for example.
+
+> +  - i2cg-handle: I2C Global interrupt status register handler
+
+Vendor prefix and drop '-handle'.
+
+> +
+> +Example:
+> +
+> +       i2c0: i2c@c0002000 {
+> +               compatible = "hpe,gxp-i2c";
+> +               reg = <0xc0002000 0x70>;
+> +               interrupts = <9>;
+> +               interrupt-parent = <&vic0>;
+> +               i2cg-handle = <&i2cg>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc-cfg.txt b/Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc-cfg.txt
+> new file mode 100644
+> index 000000000000..20deef7a6be2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc-cfg.txt
+> @@ -0,0 +1,13 @@
+> +* HPE GXP KCS IPMI DRIVER
+
+Bindings are for h/w devices, not drivers.
+
+> +
+> +Required properties:
+> +- compatible : Must contain "hpe,gxp-kcs-bmc-cfg", "simple-mfd", "syscon".
+> +- reg : Specifies base physical address and size of the configuration registers.
+> +
+> +Example:
+> +
+> +       kcs_conf: kcs_conf@80fc0430 {
+> +                       compatible = "hpe,gxp-kcs-bmc-cfg", "simple-mfd", "syscon";
+
+No child nodes, how is this a simple-mfd?
+
+> +                       reg = <0x80fc0430 0x100>;
+> +       };
+> +
+> diff --git a/Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc.txt b/Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc.txt
+> new file mode 100644
+> index 000000000000..137411243f3f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ipmi/hpegxp-kcs-bmc.txt
+> @@ -0,0 +1,21 @@
+> +* HPE GXP KCS IPMI DRIVER
+> +
+> +Required properties:
+> +- compatible : Must contain "hpe,gxp-kcs-bmc".
+> +- interrupts : The interrupt number.
+> +- reg : Specifies base physical address and size of the control registers.
+> +- kcs_chan : The KCS channel number in the controller.
+> +- status: The status signal from the controller.
+> +- kcs-bmc-cfg = Phandle to the KCS Configuration registers.
+> +
+> +Example:
+> +
+> +       kcs_reg: kcs_reg@80fd0400 {
+> +               compatible = "hpe,gxp-kcs-bmc";
+> +               reg = <0x80fd0400 0x8>;
+> +               interrupts = <6>;
+> +               interrupt-parent = <&vic1>;
+> +               kcs_chan = <1>;
+> +               status = "okay";
+
+Don't show status in examples.
+
+> +               kcs-bmc-cfg = <&kcs_conf>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/hpe,gxp-srom.txt b/Documentation/devicetree/bindings/memory-controllers/hpe,gxp-srom.txt
+> new file mode 100644
+> index 000000000000..027cb6fbc93c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/hpe,gxp-srom.txt
+> @@ -0,0 +1,13 @@
+> +* HPE GXP SROM CONTROLLER
+> +
+> +Required properties:
+> +
+> +- compatible: Must be one of "hpe,gxp-srom", "simple-mfd", "syscon".
+
+How is this a simple-mfd or syscon?
+
+Should be using nvmem binding?
+
+> +- reg: Specifies base physical address and size of the control registers.
+> +
+> +Example:
+> +
+> +       srom@80fc0000 {
+> +               compatible = "hpe,gxp-srom", "simple-mfd", "syscon";
+> +               reg = <0x80fc0000 0x100>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/mtd/hpe,gxp.txt b/Documentation/devicetree/bindings/mtd/hpe,gxp.txt
+> new file mode 100644
+> index 000000000000..8c6f54af0260
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/hpe,gxp.txt
+> @@ -0,0 +1,16 @@
+> +
+> +* HPE GXP BMC
+> +
+> +HPE GXP SoC definition
+
+Wrong location for this. bindings/arm/
+
+> +
+> +Required properties:
+> +  - compatible : Must contain: "HPE,GXP"
+> +
+> +Example:
+> +/ {
+> +       model = "Hewlett Packard Enterprise GXP BMC";
+> +       compatible = "HPE,GXP";
+> +       #address-cells = <1>;
+> +       #size-cells = <1>;
+> +
+> +}
+> diff --git a/Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.txt b/Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.txt
+> new file mode 100644
+> index 000000000000..fa48ecb22c92
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.txt
+> @@ -0,0 +1,21 @@
+> +* HPE GXP UMAC MDIO Interface Controller
+> +
+> +Required properties:
+> +- compatible: Must contain "hpe,gxp-umac-mdio".
+> +- reg:  Specifies base physical address and size of the registers.
+> +- interrupts: The interrupt number.
+> +- Cells which are configuring the external phy interfaces. Numbered through relative addressing each phy is compatible with a standard ethernet-phy-ieee802.3 phy.
+
+Wrap lines at 80 chars.
+
+> +
+> +Example:
+> +
+> +       mdio0: mdio@c0004080 {
+> +               compatible = "hpe,gxp-umac-mdio";
+> +               reg = <0xc0004080 0x10>;
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               ext_phy0: ethernt-phy@0 {
+> +                       compatible = "ethernet-phy-ieee802.3-c22";
+> +                       phy-mode = "sgmii";
+> +                       reg = <0>;
+> +               };
+> +       };
+> diff --git a/Documentation/devicetree/bindings/net/hpe,gxp-umac.txt b/Documentation/devicetree/bindings/net/hpe,gxp-umac.txt
+> new file mode 100644
+> index 000000000000..3a620b4ad999
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/hpe,gxp-umac.txt
+> @@ -0,0 +1,20 @@
+> +* HPE GXP UMAC Controller
+> +
+> +Required properties:
+> +- compatible: Must contain "hpe,gxp-umac".
+> +- reg:  Specifies base physical address and size of the registers.
+> +- interrupts: The interrupt number.
+> +- interrupt-parent: specify main interrupt controller handler
+
+Drop
+
+> +- phy-handle: Phandle to a PHY on the MDIO bus.
+> +- int-phy-handle: Phandle to PHY interrupt handler.
+
+This is odd? Should be internal PHY?
+
+> +
+> +Example:
+> +
+> +       umac0: umac@c0004000 {
+
+ethernet@...
+
+> +               compatible = "hpe,gxp-umac";
+> +               reg = <0xc0004000 0x80>;
+> +               interrupts = <10>;
+> +               interrupt-parent = <&vic0>;
+> +               phy-handle = <&ext_phy0>;
+> +               int-phy-handle = <&int_phy0>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/pwm/hpe,gxp-fan.txt b/Documentation/devicetree/bindings/pwm/hpe,gxp-fan.txt
+> new file mode 100644
+> index 000000000000..21446b7cafd9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/hpe,gxp-fan.txt
+> @@ -0,0 +1,15 @@
+> +* HPE GXP Fan Controller
+> +
+> +Required properties:
+> +- compatible: Must contain "hpe,gxp-fan-ctrl".
+> +- reg: Physical base address and length of the controller's registers.
+> +- xreg_handle: Phandle to the xregister controller for fan control.
+> +- fn2_handle: Phandle to the FN2 interface.
+> +
+> +Example:
+> +       fanctrl: fanctrl@c1000c00 {
+> +                       compatible = "hpe,gxp-fan-ctrl";
+> +                       reg = <0xc1000c00 0x200>;
+> +                       xreg_handle = <&xreg>;
+> +                       fn2_handle = <&fn2>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/serial/hpe,gxp-vuart-cfg.txt b/Documentation/devicetree/bindings/serial/hpe,gxp-vuart-cfg.txt
+> new file mode 100644
+> index 000000000000..8bad8c39d044
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/hpe,gxp-vuart-cfg.txt
+> @@ -0,0 +1,17 @@
+> +*HPE Virtual UART Controller CONFIGURATION
+> +
+> +This controller is used to forward host serial to BMC chip
+> +
+> +Required properties:
+> +
+> +- compatible : Must contain "hpe,gxp-vuarta_cfg", "simple-mfd", "syscon".
+
+Again, how is this a simple-mfd and syscon?
+
+> +- reg : Specifies base physical address and size of the configuration register.
+> +- reg-io-width: io register width in bytes, must be 1.
+> +
+> +Example:
+> +
+> +       vuart_a_cfg: vuarta_cfg@80fc0230 {
+> +               compatible = "hpe,gxp-vuarta_cfg", "simple-mfd", "syscon";
+> +               reg = <0x80fc0230 0x100>;
+> +               reg-io-width = <1>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/serial/hpe,gxp-vuart.txt b/Documentation/devicetree/bindings/serial/hpe,gxp-vuart.txt
+> new file mode 100644
+> index 000000000000..9c5cc14d9474
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/hpe,gxp-vuart.txt
+> @@ -0,0 +1,23 @@
+> +*HPE VUART Controller port
+> +
+> +Required properties:
+> +
+> +- compatible :  Must contain "hpe,gxp-vuart".
+> +- reg        :  Specifies base physical address and size of the registers.
+> +- interrupts :  The interrupt number.
+> +- clock-frequency: The frequency of the clock input to the UART in Hz.
+> +- status: The status signal from the controller.
+> +
+> +Example:
+> +
+> +       vuart_a: vuart_a@80fd0200 {
+
+serial@...
+
+> +               compatible = "hpe,gxp-vuart";
+> +               reg = <0x80fd0200 0x100>;
+> +               interrupts = <2>;
+> +               interrupt-parent = <&vic1>;
+> +               clock-frequency = <1846153>;
+> +               reg-shift = <0>;
+> +               status = "okay";
+> +               serial-line = <3>;
+> +               vuart_cfg = <&vuart_a_cfg>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-chif.txt b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-chif.txt
+> new file mode 100644
+> index 000000000000..9d5a8763ca22
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-chif.txt
+> @@ -0,0 +1,16 @@
+> +* HPE GXP CHIF INTERFACE
+> +
+> +Define the basic CHannel InterFace (CHIF) communication path between BMC and Host through PCI.
+> +Interrupts are handled through PCI function 2
+> +
+> +Required parent device properties:
+> +- compatible : Should be "hpe,gxp-chif".
+> +- interrupts : The interrupt number.
+> +
+> +Example:
+> +
+> +       chif {
+> +                       compatible = "hpe,gxp-chif";
+> +                       interrupts = <12>;
+
+This h/w has an interrupt and no other way to interact with it?
+
+> +               };
+> +       };
+> diff --git a/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-csm.txt b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-csm.txt
+> new file mode 100644
+> index 000000000000..8d28fd1ec46a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-csm.txt
+> @@ -0,0 +1,14 @@
+> +* HPE GXP PCI CSM INTERFACE
+> +
+> +Required parent device properties:
+> +- compatible : Should be "hpe,gxp-csm", "simple-mfd", "syscon".
+> +- reg : Specifies base physical address and size of control registers.
+> +
+> +Example:
+> +
+> +       csm: csm@8000005c {
+> +               compatible = "hpe,gxp-csm", "simple-mfd", "syscon";
+> +               reg = <0x8000005c 0x2>, <0x800000de 0x1>, <0x800000e7 0x1>;
+
+Need to define what each entry is.
+
+> +       };
+> +
+> +
+> diff --git a/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-dbg.txt b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-dbg.txt
+> new file mode 100644
+> index 000000000000..39e3ed68a34d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-dbg.txt
+> @@ -0,0 +1,18 @@
+> +* HPE GXP DBG INTERFACE
+> +
+> +Specify host debug interface. Used presently to report ROM POST code during host initialization phases
+> +
+> +Required parent device properties:
+> +- compatible : Should be "hpe,gxp-dbg".
+> +- reg : Specifies base physical address and size of the control/data registers.
+> +- interrupts: The interrupt number.
+> +- interrupt-parent: The interrupt controller to which the interface is wired to
+> +
+> +Example:
+> +
+> +       post@800000a0 {
+> +               compatible = "hpe,gxp-dbg";
+> +               reg = <0x800000a0 0x20>;
+> +               interrupts = <10>;
+> +               interrupt-parent = <&vic1>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-fn2.txt b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-fn2.txt
+> new file mode 100644
+> index 000000000000..eb8328f59eda
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-fn2.txt
+> @@ -0,0 +1,20 @@
+> +* HPE GXP PCI FN2 INTERFACE CONTROLLER
+> +
+> +Required parent device properties:
+> +- compatible : Should be "hpe,gxp-fn2", "simple-mfd", "syscon".
+> +- reg : Specifies base physical address and size of the control/data/memory mapped registers.
+> +- xreg_handle : Phandle to the xregister controller interface.
+> +- #gpio-cells : The number of cells to describe a GPIO, this should be 2.
+> +- interrupts : interrupt number to which PCI FN2 is connected to
+> +- interrupt-parets : interrupt controller to which PCI FN2 is connected to
+> +
+> +Example:
+> +
+> +       fn2: fn2@80200000 {
+> +               compatible = "hpe,gxp-fn2", "simple-mfd", "syscon";
+> +               reg = <0x80200000 0x100000>;
+> +               xreg_handle = <&xreg>;
+> +               interrupts = <0>;
+> +               interrupt-parent = <&vic1>;
+> +               #gpio-cells = <2>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-xreg.txt b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-xreg.txt
+> new file mode 100644
+> index 000000000000..3ec86a478302
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/hpe/hpe,gxp-xreg.txt
+> @@ -0,0 +1,19 @@
+> +* HPE GXP XREG INTERFACE
+> +
+> +Required parent device properties:
+> +- compatible : Should be "hpe,gxp-fn2", "simple-mfd", "syscon".
+> +- reg : Specifies base physical address and size of the control registers.
+> +- interrupts: The interrupt number.
+> +- interrupt-parent: main interrupt controller to which xreg is connected to
+> +- #gpio-cells : The number of cells to describe a GPIO, this should be 2.
+> +
+> +Example:
+> +
+> +       xreg: xreg@d1000300 {
+> +               compatible = "hpe,gxp-xreg", "simple-mfd", "syscon";
+> +               reg = <0xd1000300 0xFF>;
+> +               interrupts = <26>;
+> +               interrupt-parent = <&vic0>;
+> +               #gpio-cells = <2>;
+> +       };
+> +
+> diff --git a/Documentation/devicetree/bindings/spi/hpe,gxp-spifi.txt b/Documentation/devicetree/bindings/spi/hpe,gxp-spifi.txt
+> new file mode 100644
+> index 000000000000..78eac0ac82f4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/hpe,gxp-spifi.txt
+> @@ -0,0 +1,76 @@
+> +* HPE GXP SPI FLASH INTERFACE
+> +
+> +Required properties:
+> +  - compatible : Must contain: "hpe,gxp-spifi"
+> +  - reg : the first contains the control register location and length,
+> +          the second contains the memory window mapping address and length,
+> +                 the third contains the configuration register location and length
+> +  - interrupts: The interrupt number.
+> +  - #address-cells : must be 1 corresponding to chip select child binding
+> +  - #size-cells : must be 0 corresponding to chip select child binding
+> +
+> +The child nodes are the SPI flash modules which must have a compatible
+> +property as specified in bindings/mtd/jedec,spi-nor.txt
+> +
+> +Example:
+> +       spifi0: spifi@c0000200 {
+
+spi@...
+
+> +               compatible = "hpe,gxp-spifi";
+> +               reg = <0xc0000200 0x80>, <0xc000c000 0x100>, <0xf8000000 0x8000000>;
+> +               interrupts = <20>;
+> +               interrupt-parent = <&vic0>;
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +
+> +               flash@0 {
+> +                       compatible = "jedec,spi-nor";
+> +                       reg = <0>;
+> +                       partitions {
+> +                               compatible = "fixed-partitions";
+> +                               #address-cells = <1>;
+> +                               #size-cells = <1>;
+> +
+> +                               u-boot@0 {
+> +                                       label = "u-boot";
+> +                                       reg = <0x0 0x60000>;
+> +                               };
+> +                               u-boot-env@60000 {
+> +                                       label = "u-boot-env";
+> +                                       reg = <0x60000 0x20000>;
+> +                               };
+> +                               kernel@80000 {
+> +                                       label = "kernel";
+> +                                       reg = <0x80000 0x4c0000>;
+> +                               };
+> +                               rofs@540000 {
+> +                                       label = "rofs";
+> +                                       reg = <0x540000 0x1740000>;
+> +                               };
+> +                               rwfs@1c80000 {
+> +                                       label = "rwfs";
+> +                                       reg = <0x1c80000 0x250000>;
+> +                               };
+> +                               section@1edf000{
+> +                                       label = "section";
+> +                                       reg = <0x1ed0000 0x130000>;
+> +                               };
+> +                       };
+> +               };
+> +
+> +               flash@1 {
+> +                       compatible = "jedec,spi-nor";
+> +                       reg = <1>;
+> +                       partitions {
+> +                               compatible = "fixed-partitions";
+> +                               #address-cells = <1>;
+> +                               #size-cells = <1>;
+> +                               host-prime@0 {
+> +                                       label = "host-prime";
+> +                                       reg = <0x0 0x02000000>;
+> +                               };
+> +                               host-second@2000000 {
+> +                                       label = "host-second";
+> +                                       reg = <0x02000000 0x02000000>;
+> +                               };
+> +                       };
+> +               };
+> +       };
+> diff --git a/Documentation/devicetree/bindings/thermal/hpe,gxp-coretemp.txt b/Documentation/devicetree/bindings/thermal/hpe,gxp-coretemp.txt
+> new file mode 100644
+> index 000000000000..bc83db03166a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/hpe,gxp-coretemp.txt
+> @@ -0,0 +1,14 @@
+> +* HPE GXP CORETEMP INTERFACE
+> +
+> +Required parent device properties:
+> +- compatible : Should be "hpe,gxp-coretemp".
+> +- reg : Specifies base physical address and size of the control register.
+> +
+> +Example:
+> +
+> +       coretemp: coretemp@c0000130 {
+> +               compatible = "hpe,gxp-coretemp";
+> +               reg = <0xc0000130 0x8>;
+
+A couple of registers at a un-aligned address. This appears to be part
+of some larger block. It should be a child node of that block. Same
+thing applies elsewhere.
+
+> +       };
+> +
+> +
+> diff --git a/Documentation/devicetree/bindings/timer/hpe,gxp-timer.txt b/Documentation/devicetree/bindings/timer/hpe,gxp-timer.txt
+> new file mode 100644
+> index 000000000000..3e491b8ea740
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/hpe,gxp-timer.txt
+> @@ -0,0 +1,18 @@
+> +*HPE GXP TIMER
+> +
+> +Required properties:
+> +
+> +- compatible : Must be "hpe,gxp-timer"
+> +- reg : The GXP Timer Control Registers (Addresses + size) tuples list.
+> +- interrupts : The interrupt number.
+> +- clock-frequency : The frequency of the clock that drives the counter, in Hz.
+> +
+> +Example:
+> +
+> +       timer0: timer@c0000080 {
+> +               compatible = "hpe,gxp-timer";
+> +               reg = <0xc0000080 0x1>, <0xc0000094 0x01>, <0xc0000088 0x08>;
+> +               interrupts = <0>;
+> +               interrupt-parent = <&vic0>;
+> +               clock-frequency = <400000000>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/usb/hpe,gxp-udc.txt b/Documentation/devicetree/bindings/usb/hpe,gxp-udc.txt
+> new file mode 100644
+> index 000000000000..ed764d64a169
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/hpe,gxp-udc.txt
+> @@ -0,0 +1,21 @@
+> +* HPE USB Device Port Controller
+> +
+> +Required properties:
+> +- compatible: Must be "hpe,gxp-udc".
+> +- reg: Specifies base physical address and size of the registers.
+> +- interrupts: The interrupt number.
+> +- vdevnum: The particular usb device controller port.
+> +- fepnum: The particular usb device controller options.
+> +- udcg-handle: The usb device controller hub.
+> +
+> +Example:
+> +
+> +       udc0: udc@80401000 {
+> +               compatible = "hpe,gxp-udc";
+> +               reg = <0x80401000 0x1000>;
+> +               interrupts = <13>;
+> +               interrupt-parent = <&vic1>;
+> +               vdevnum = <0>;
+> +               fepnum = <7>;
+> +               udcg-handle = <&udcg>;
+> +       };
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 294093d45a23..913f722a6b8d 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -514,7 +514,9 @@ patternProperties:
+>    "^hoperun,.*":
+>      description: Jiangsu HopeRun Software Co., Ltd.
+>    "^hp,.*":
+> -    description: Hewlett Packard
+> +    description: Hewlett Packard Inc.
+
+Why are you changing this one?
+
+> +  "^hpe,.*":
+
+You used HPE elsewhere... Lowercase is preferred.
+
+> +    description: Hewlett Packard Enterprise
+>    "^hsg,.*":
+>      description: HannStar Display Co.
+>    "^holtek,.*":
+> diff --git a/Documentation/devicetree/bindings/watchdog/hpe,gxp-wdt.txt b/Documentation/devicetree/bindings/watchdog/hpe,gxp-wdt.txt
+> new file mode 100644
+> index 000000000000..3f17c1a00a5c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/hpe,gxp-wdt.txt
+> @@ -0,0 +1,11 @@
+> +* HPE GXP Controlled Watchdog
+> +
+> +Required Properties:
+> +- compatible: Should contain "hpe,gxp-wdt".
+> +- reg: The GXP Watchdog Control Registers (Addresses + size) tuples list.
+> +
+> +Example:
+> +       watchdog: watchdog@c0000090 {
+> +               compatible = "hpe,gxp-wdt";
+> +               reg = <0xc0000090 0x02>, <0xc0000096 0x01>;
+> +       };
+
+[...]
+
+> index 000000000000..cc63f2be6c9c
+> --- /dev/null
+> +++ b/arch/arm/mach-hpe/Kconfig
+> @@ -0,0 +1,21 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +menuconfig ARCH_HPE
+> +       bool "HPE SoC support"
+> +       help
+> +         This enables support for HPE ARM based SoC chips
+> +if ARCH_HPE
+> +
+> +config ARCH_HPE_GXP
+> +       bool "HPE GXP SoC"
+> +       select ARM_VIC
+> +       select PINCTRL
+> +       select IRQ_DOMAIN
+> +       select GENERIC_IRQ_CHIP
+
+The irq chip that uses this should select it.
+
+> +       select MULTI_IRQ_HANDLER
+> +       select SPARSE_IRQ
+> +       select CLKSRC_MMIO
+
+Same here.
+
+> +       depends on ARCH_MULTI_V7
+> +       help
+> +         Support for GXP SoCs
+> +
+> +endif
+> diff --git a/arch/arm/mach-hpe/Makefile b/arch/arm/mach-hpe/Makefile
+> new file mode 100644
+> index 000000000000..8b0a91234df4
+> --- /dev/null
+> +++ b/arch/arm/mach-hpe/Makefile
+> @@ -0,0 +1 @@
+> +obj-$(CONFIG_ARCH_HPE_GXP) += gxp.o
+> diff --git a/arch/arm/mach-hpe/gxp.c b/arch/arm/mach-hpe/gxp.c
+> new file mode 100644
+> index 000000000000..a37838247948
+> --- /dev/null
+> +++ b/arch/arm/mach-hpe/gxp.c
+> @@ -0,0 +1,62 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) 2022 Hewlett-Packard Enterprise Development Company, L.P.
+> + *
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +
+> +#include <linux/init.h>
+> +#include <asm/mach/arch.h>
+> +#include <asm/mach/map.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/clocksource.h>
+> +
+> +#define IOP_REGS_PHYS_BASE 0xc0000000
+> +#define IOP_REGS_VIRT_BASE 0xf0000000
+> +#define IOP_REGS_SIZE (240*SZ_1M)
+
+You just mapped 240M into lowmem of which there is only about 700M.
+Depending on your RAM size, you won't have much vmalloc space.
+
+In any case, don't create static mappings unless you need the mapping
+before ioremap is available. That doesn't appear to be the case here.
+
+> +
+> +#define IOP_EHCI_USBCMD 0x0efe0010
+> +
+> +static struct map_desc gxp_io_desc[] __initdata = {
+> +       {
+> +       .virtual        = (unsigned long)IOP_REGS_VIRT_BASE,
+> +       .pfn            = __phys_to_pfn(IOP_REGS_PHYS_BASE),
+> +       .length         = IOP_REGS_SIZE,
+> +       .type           = MT_DEVICE,
+> +       },
+> +};
+> +
+> +void __init gxp_map_io(void)
+> +{
+> +       iotable_init(gxp_io_desc, ARRAY_SIZE(gxp_io_desc));
+> +}
+> +
+> +static void __init gxp_dt_init(void)
+> +{
+> +       /*reset EHCI host controller for clear start*/
+> +       __raw_writel(0x00080002,
+> +               (void __iomem *)(IOP_REGS_VIRT_BASE + IOP_EHCI_USBCMD));
+
+Maybe you should use the reset controller binding and subsystem. Or
+make the bootloader do this.
+
+> +       of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+
+You don't need to call this, the core code already does.
+
+> +}
+> +
+> +static void gxp_restart(enum reboot_mode mode, const char *cmd)
+> +{
+> +       __raw_writel(1, (void __iomem *) IOP_REGS_VIRT_BASE);
+> +}
+> +
+> +static const char * const gxp_board_dt_compat[] = {
+> +       "HPE,GXP",
+> +       NULL,
+> +};
+> +
+> +DT_MACHINE_START(GXP_DT, "HPE GXP")
+> +       .init_machine   = gxp_dt_init,
+> +       .map_io         = gxp_map_io,
+> +       .restart        = gxp_restart,
+> +       .dt_compat      = gxp_board_dt_compat,
+> +MACHINE_END
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index cfb8ea0df3b1..5916dade7608 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -617,6 +617,14 @@ config CLKSRC_ST_LPC
+>           Enable this option to use the Low Power controller timer
+>           as clocksource.
+>
+> +config GXP_TIMER
+> +       bool "GXP timer driver"
+> +       depends on ARCH_HPE
+
+|| COMPILE_TEST
+
+(And check !arm builds)
+
+> +       default y
+> +       help
+> +         Provides a driver for the timer control found on HPE
+> +         GXP SOCs. This is required for all GXP SOCs.
+> +
+>  config ATCPIT100_TIMER
+>         bool "ATCPIT100 timer driver"
+>         depends on NDS32 || COMPILE_TEST
+> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+> index fa5f624eadb6..ffca09ec34de 100644
+> --- a/drivers/clocksource/Makefile
+> +++ b/drivers/clocksource/Makefile
+> @@ -89,3 +89,4 @@ obj-$(CONFIG_GX6605S_TIMER)           += timer-gx6605s.o
+>  obj-$(CONFIG_HYPERV_TIMER)             += hyperv_timer.o
+>  obj-$(CONFIG_MICROCHIP_PIT64B)         += timer-microchip-pit64b.o
+>  obj-$(CONFIG_MSC313E_TIMER)            += timer-msc313e.o
+> +obj-$(CONFIG_GXP_TIMER)                        += gxp_timer.o
+> diff --git a/drivers/clocksource/gxp_timer.c b/drivers/clocksource/gxp_timer.c
+> new file mode 100644
+> index 000000000000..e3c617036e0d
+> --- /dev/null
+> +++ b/drivers/clocksource/gxp_timer.c
+> @@ -0,0 +1,158 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) 2022 Hewlett-Packard Enterprise Development Company, L.P.
+> + *
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/clockchips.h>
+> +#include <linux/clocksource.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irqreturn.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/slab.h>
+> +#include <linux/string.h>
+> +#include <linux/sched_clock.h>
+> +
+> +#include <asm/irq.h>
+
+Using 'asm' includes is often wrong.
+
+> +
+> +#define TIMER0_FREQ 1000000
+> +#define TIMER1_FREQ 1000000
+> +
+> +#define MASK_TCS_ENABLE                0x01
+> +#define MASK_TCS_PERIOD                0x02
+> +#define MASK_TCS_RELOAD                0x04
+> +#define MASK_TCS_TC            0x80
+> +
+> +struct gxp_timer {
+> +       void __iomem *counter;
+> +       void __iomem *control;
+> +       struct clock_event_device evt;
+> +};
+> +
+> +static void __iomem *system_clock __read_mostly;
+> +
+> +static u64 notrace gxp_sched_read(void)
+> +{
+> +       return readl_relaxed(system_clock);
+> +}
+> +
+> +static int gxp_time_set_next_event(unsigned long event,
+> +                                       struct clock_event_device *evt_dev)
+> +{
+> +       struct gxp_timer *timer = container_of(evt_dev, struct gxp_timer, evt);
+> +       /*clear TC by write 1 and disable timer int and counting*/
+> +       writeb_relaxed(MASK_TCS_TC, timer->control);
+> +       /*update counter value*/
+> +       writel_relaxed(event, timer->counter);
+> +       /*enable timer counting and int*/
+> +       writeb_relaxed(MASK_TCS_TC|MASK_TCS_ENABLE, timer->control);
+> +
+> +       return 0;
+> +}
+> +
+> +static irqreturn_t gxp_time_interrupt(int irq, void *dev_id)
+> +{
+> +       struct gxp_timer *timer = dev_id;
+> +       void (*event_handler)(struct clock_event_device *timer);
+> +
+> +
+> +       if (readb_relaxed(timer->control) & MASK_TCS_TC) {
+> +               writeb_relaxed(MASK_TCS_TC, timer->control);
+> +
+> +               event_handler = READ_ONCE(timer->evt.event_handler);
+> +               if (event_handler)
+> +                       event_handler(&timer->evt);
+> +               return IRQ_HANDLED;
+> +       } else {
+> +               return IRQ_NONE;
+> +       }
+> +}
+> +
+> +static int __init gxp_timer_init(struct device_node *node)
+> +{
+> +       void __iomem *base_counter;
+> +       void __iomem *base_control;
+> +       u32 freq;
+> +       int ret, irq;
+> +       struct gxp_timer *gxp_timer;
+> +
+> +       base_counter = of_iomap(node, 0);
+> +       if (!base_counter) {
+> +               pr_err("Can't remap counter registers");
+> +               return -ENXIO;
+> +       }
+> +
+> +       base_control = of_iomap(node, 1);
+> +       if (!base_control) {
+> +               pr_err("Can't remap control registers");
+> +               return -ENXIO;
+> +       }
+> +
+> +       system_clock = of_iomap(node, 2);
+> +       if (!system_clock) {
+> +               pr_err("Can't remap control registers");
+> +               return -ENXIO;
+> +       }
+> +
+> +       if (of_property_read_u32(node, "clock-frequency", &freq)) {
+> +               pr_err("Can't read clock-frequency\n");
+> +               goto err_iounmap;
+> +       }
+> +
+> +       sched_clock_register(gxp_sched_read, 32, freq);
+> +       clocksource_mmio_init(system_clock, node->name, freq,
+> +                               300, 32, clocksource_mmio_readl_up);
+> +
+> +       irq = irq_of_parse_and_map(node, 0);
+> +       if (irq <= 0) {
+> +               ret = -EINVAL;
+> +               pr_err("GXP Timer Can't parse IRQ %d", irq);
+> +               goto err_iounmap;
+> +       }
+> +
+> +       gxp_timer = kzalloc(sizeof(*gxp_timer), GFP_KERNEL);
+> +       if (!gxp_timer) {
+> +               ret = -ENOMEM;
+> +               goto err_iounmap;
+> +       }
+> +
+> +       gxp_timer->counter = base_counter;
+> +       gxp_timer->control = base_control;
+> +       gxp_timer->evt.name = node->name;
+> +       gxp_timer->evt.rating = 300;
+> +       gxp_timer->evt.features = CLOCK_EVT_FEAT_ONESHOT;
+> +       gxp_timer->evt.set_next_event = gxp_time_set_next_event;
+> +       gxp_timer->evt.cpumask = cpumask_of(0);
+> +
+> +       if (request_irq(irq, gxp_time_interrupt, IRQF_TIMER | IRQF_SHARED,
+> +               node->name, gxp_timer)) {
+> +               pr_err("%s: request_irq() failed\n", "GXP Timer Tick");
+> +               goto err_timer_free;
+> +       }
+> +
+> +       clockevents_config_and_register(&gxp_timer->evt, TIMER0_FREQ,
+> +                                       0xf, 0xffffffff);
+> +
+> +       pr_info("gxp: system timer (irq = %d)\n", irq);
+> +       return 0;
+> +
+> +
+> +err_timer_free:
+> +       kfree(gxp_timer);
+> +
+> +err_iounmap:
+> +       iounmap(system_clock);
+> +       iounmap(base_control);
+> +       iounmap(base_counter);
+> +       return ret;
+> +}
+> +
+> +TIMER_OF_DECLARE(gxp, "hpe,gxp-timer", gxp_timer_init);
+> --
+> 2.17.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
