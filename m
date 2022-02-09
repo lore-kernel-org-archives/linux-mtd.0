@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 810CEC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Feb 2022 08:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19445C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Feb 2022 08:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gcJ1gWt36gqeSyYF9outfffd4AYfMqfltkD4Q7Ue4jA=; b=LzJofwm2/sBwg8g35MScANTSnZ
-	Oxn+F7SzWyB/mlhp2SdbK/Np4RzkIjQwwzAK4Ckn1eQMuyQCcTjTBD09at0rB+fQDm2YuBdxjvSNZ
-	wHXHMrLyvVCiOoJljSb31lkCRq6kRYhvfodxZJvSBGpvH8igAvKmX0Myvssjzw/GIpREeuXFb/Km0
-	6msJuGuHFKoBTfBtxJEHDyhtLlV3MknbaXkAaaiUBZNLc2BZpmwfoQM0joOTcm5Z17HoHQyuIgoen
-	oF5q+EpqT8ppj7VEnNh+mMyjWFNs1WrG3WtTOjljjvgbLhe7H4rHex615cwXCx1Pw6MLh3XVb68f4
-	NumqWpVg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bRnYrp2hM5Ks3wjimRnztXdPwMdpO6nPljrMP+m4tLs=; b=UWuGbtJsUmwQZI
+	X5nq2OuTZao7rQVMePzCX5BmRU4Eju+hTXEzJv6DL2F1xo3ZNv3knnq1DsytM6AAvKPn/b0+54be2
+	s4t7ZvXHHhPLsqZl0vWry9C2RWJmVOy3b+k5oTdsAFE/0we+YKiMWQyzwvzmuRr3gt3PjcXd44BHR
+	5nh2p2Isni6YCnmSVZ9xm0krB1lj1di0cGeASYee1hRTbDgepGaOjJlc9PfO24MbNkGFnWVXGZnCn
+	EGw5a5GDwpc+lLKnk/qTApqE7ZK1v72qn+g5imvCNFvCsUCll0bzhUEAwJn3NDvHfrNxxR9fg9TUQ
+	q5e23hzqLVoKf+UAcLiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nHiNQ-00Gd14-3i; Wed, 09 Feb 2022 08:31:00 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nHiOC-00GdG6-Hd; Wed, 09 Feb 2022 08:31:48 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nHiNL-00Gcyd-PM
- for linux-mtd@lists.infradead.org; Wed, 09 Feb 2022 08:30:57 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2DAC22222E;
- Wed,  9 Feb 2022 09:30:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1644395449;
+ id 1nHiO8-00GdE0-Fe
+ for linux-mtd@lists.infradead.org; Wed, 09 Feb 2022 08:31:46 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id C2BB6C000B;
+ Wed,  9 Feb 2022 08:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1644395501;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=nWdm67gA7+zk9jlgZ1z7LIqczKn6nqGWLdX4mNABBpA=;
- b=sP8DEhoFsO/Gw8L9NMTquKBIGMi4HfGOmKl4/RoNlpvasb36cbmzpgbbcMKSzRGGnXRs7F
- 4T2Gv9z5PofDXo/oGkKVpezhvSITuiuw2kwd6bfPmVYOpTGCap8GmsCsZ26EYGVZQiBXap
- UWw/8CnCw8deWcukGJjEclQup+DoJmY=
+ bh=yn/tDzsvR67+hM5dhzHnFqmkUv46YSHjaLURannh73M=;
+ b=FFM4bbu7zjLpioUf4sgYhH0feSKroqMddbwES59Cisxhrz0HVINB0uo61wvlbEntoL1fAv
+ ThQ3oxeJfm3wLHvj2sj3Vfei6jWTHvpl7YhGeRA3PQ1cmz7B8BkusoYFpHsruNLXdZeYPi
+ BD9u0h+IlvLHyQ2bNT9ZL3jn4MeYfxarLDO4NLEvc7rElndZJeibGD6ndrXy2MZh8Mo7PY
+ 5NiTTFntZBtfsC9R9ecmh7oBVWvFzhBZ+IofbDj187bkHYaNzSzEYCaPucut0ksMIeVP7g
+ /zaFKi2rzeOV563L65rzt/9Ds+R8TLOwwagbpN98b3RB+N9m9QSowZh/v3S6rw==
+Date: Wed, 9 Feb 2022 09:31:38 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sean Nyekjaer <sean@geanix.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Boris Brezillon <bbrezillon@kernel.org>
+Cc: stable@vger.kernel.org, Boris Brezillon <boris.brezillon@collabora.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: protect access to rawnand devices
+ while in suspend
+Message-ID: <20220209093138.4104a874@xps13>
+In-Reply-To: <20220207153940.710464-1-miquel.raynal@bootlin.com>
+References: <20220131215138.2013649-1-sean@geanix.com>
+ <20220207153940.710464-1-miquel.raynal@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Date: Wed, 09 Feb 2022 09:30:46 +0100
-From: Michael Walle <michael@walle.cc>
-To: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
-Cc: dianders@chromium.org, tudor.ambarus@microchip.com, p.yadav@ti.com,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- quic_stummala@quicinc.com, quic_vbadigan@quicinc.com,
- quic_rampraka@quicinc.com, quic_pragalla@quicinc.com,
- quic_sartgarg@quicinc.com
-Subject: Re: [PATCH V5] mtd: spi-nor: winbond: Add support for winbond chip
-In-Reply-To: <1644350330-8809-1-git-send-email-quic_c_sbhanu@quicinc.com>
-References: <1644350330-8809-1-git-send-email-quic_c_sbhanu@quicinc.com>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <d343f7172f179ac2da96f80f54cc500d@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220209_003056_021559_63E6CACA 
-X-CRM114-Status: GOOD (  16.50  )
+X-CRM114-CacheID: sfid-20220209_003144_705173_3242849A 
+X-CRM114-Status: UNSURE (   9.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,72 +71,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-Am 2022-02-08 20:58, schrieb Shaik Sajida Bhanu:
-> Add support for winbond W25Q512NW-IM chip.
-
-Also please include that in the subject. Eg.
-
-mtd: spi-nor: winbond: add support for W25Q512NW-IM
-
-> 
-> Signed-off-by: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
-> Reviewed-by: Doug Anderson <dianders@chromium.org>
-> ---
-> Changes since V1:
-> 	- Added space before name of the flash part as suggested by Doug.
-> 
-> Changes since V2:
-> 	- Updated chip name as w25q512nwm as suggested by Doug.
-> 
-> Changes since V3:
-> 	- Updated flash_info flags passing according to below patch.
-> 
-> Changes since V4:
-> 	- Added OTP support for SPI card as suggested by Michael Walle.
-> 	- Updated SFDP flags passing as suggested by Pratyush Yadav.
-> ---
->  drivers/mtd/spi-nor/winbond.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/winbond.c 
-> b/drivers/mtd/spi-nor/winbond.c
-> index 675f32c..315b9f6 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -124,6 +124,10 @@ static const struct flash_info winbond_parts[] = {
->  	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ |
->  			      SPI_NOR_DUAL_READ) },
-> +	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024)
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-> +		PARSE_SFDP
-
-This usually goes first, eg.
-
-PARSE_SFDP
-FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-OTP_INFO(256, 3, 0x1000, 0x1000)
-
-> +		OTP_INFO(256, 3, 0x1000, 0x1000) },
->  	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-
-Otherwise the SFDP dump is still missing as requested in my
-comment in v4. Please make sure you put it in the comment
-section of the patch, that is under the "---" line.
-
-Then I think, this patch is good.
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tIHdyb3RlIG9uIE1vbiwgIDcgRmViIDIw
+MjIgMTY6Mzk6NDAgKzAxMDA6Cgo+IE9uIE1vbiwgMjAyMi0wMS0zMSBhdCAyMTo1MTozOCBVVEMs
+IFNlYW4gTnlla2phZXIgd3JvdGU6Cj4gPiBQcmV2ZW50IHJhd25lbmQgYWNjZXNzIHdoaWxlIGlu
+IGEgc3VzcGVuZGVkIHN0YXRlLgo+ID4gCj4gPiBDb21taXQgMDEzZTYyOTJhYWY1ICgibXRkOiBy
+YXduYW5kOiBTaW1wbGlmeSB0aGUgbG9ja2luZyIpIGFsbG93cyB0aGUKPiA+IHJhd25hbmQgbGF5
+ZXIgdG8gcmV0dXJuIGVycm9ycyByYXRoZXIgdGhhbiB3YWl0aW5nIGluIGEgYmxvY2tpbmcgd2Fp
+dC4KPiA+IAo+ID4gVGVzdGVkIG9uIGEgaU1YNlVMTC4KPiA+IAo+ID4gRml4ZXM6IDAxM2U2Mjky
+YWFmNSAoIm10ZDogcmF3bmFuZDogU2ltcGxpZnkgdGhlIGxvY2tpbmciKQo+ID4gU2lnbmVkLW9m
+Zi1ieTogU2VhbiBOeWVramFlciA8c2VhbkBnZWFuaXguY29tPgo+ID4gUmV2aWV3ZWQtYnk6IEJv
+cmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGNvbGxhYm9yYS5jb20+ICAKPiAKPiBBcHBs
+aWVkIHRvIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210
+ZC9saW51eC5naXQgbmFuZC9uZXh0LCB0aGFua3MuCgpEcm9wcGVkIGJlY2F1c2Ugb2YgdGhlIGtk
+b2Mgd2FybmluZy9zdGFibGUgc3R5bGUgaXNzdWVzLiBJIHdpbGwgc29vbgphcHBseSB0aGUgdjQg
+aW5zdGVhZC4KClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlz
+dApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
