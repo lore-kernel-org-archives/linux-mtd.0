@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06754C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Feb 2022 03:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB013C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 10 Feb 2022 03:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=25G6ehmqLpkLjH/JYVeWW3g6c+l/VThdIUuVt6h4LpA=; b=09KgNuRuUXR3xQ
-	VqG+J+Y3tvBJ433HR4B5EHQJKuJyENO/2mTP0UHa0V61Bzy4MjDYT9ZOiE94Ten0DVKwymZCYsxjX
-	KFzV1sER9HxCORtqToB+/jW/TQSfzzxhFLIPStK0+jX/tttc5rmFE1f4KD7DmapTF710UljTodAFq
-	cTP+1yOtoe3D6TEoH81s+2bx/5UoX8GlPCQSlMyZgL5EtWSkZqKmfDzzSpDkFOT+epyvlnn0O9/qu
-	8hKwQ04xQsiFKpUT55sIK5KCHUEbdvCI883uXZXQnK2AjK6x3JrEIsJq4gNiuHQQCFsvGNAVZHnKS
-	t1+48GeObnKZEJUvURoQ==;
+	List-Owner; bh=qSk9TQkn7b29797RFacMQtDT/owjbnCyhFhRwMkmlqo=; b=FD8+7VMG/Xxr4E
+	1l7EmTjIgBgFLdC3Dj7voYGOGwa1vHpGbe3eAdyTP0ddj7UAxpW47U1b/JLV0clnnIAaW9yjxdIVK
+	U4mHfjFVRFeWM9d/ROkMwAUcwR/OE/d4BCFmiW57JXmNV/HAraPKjf2Ng+KKekPqid171Tvy4iaaj
+	0TpWGAzyJuFzVY/pp7dK9EwbwV/0J+X2dOgZkqXE7U7FQFNHpgh9QV+B/Z0KoU7yCls0zL3L04HW3
+	RAZ5Hr4n5nRmuNG11h8GoB2MLNM7SOJr8tdQvahXxD24MdwFevxfPNQNOn8CblHzMq1UyP6Z00Wym
+	sKwFhINUWLTx0fRgOPzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nI0J0-002SB8-62; Thu, 10 Feb 2022 03:39:38 +0000
+	id 1nI0Ld-002SZt-FS; Thu, 10 Feb 2022 03:42:22 +0000
 Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nI0Hi-002Rzu-AI
- for linux-mtd@lists.infradead.org; Thu, 10 Feb 2022 03:38:19 +0000
+ id 1nI0LX-002SYi-Jf
+ for linux-mtd@lists.infradead.org; Thu, 10 Feb 2022 03:42:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1644464299; x=1676000299;
+ t=1644464536; x=1676000536;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=AbwHyNzTg4AUsNQr4eAHNsvyC62vuvKiGyluKXAK8Xc=;
- b=v0cCldj/AOmXaHmEkAk/RLZGpni4kfqK82aJ7xWfprPvlyrzDG2jTPlL
- 2lZM2kgMAvBIquy1Bcos9plpYMaSok3kNBKXWy6dKl/eKFGP5b1RgOcQI
- mLUkzm0JRmQMzqhK+GrH3Mzld5GgR+vIJpLaSeRglOlIz0/7xi1kR4Huv
- VhYjJpRtNRol4ISQ4eppINJ7FsvEImtsTuGxSkHxj1DognGxvkHud+GxS
- X0F5TFnz/DDG65r284XlAvkdGhO5D1FnbO54EI8wsn+mDEn64YXuBRXQa
- QRfErZpxcO95yhfMPo8FGzdAU6VrOjO3K+odb0ZvpLpBQkYG0Bb22qqqW w==;
-IronPort-SDR: nNHJ/8kzKcWldsx36gjhCOTQLDIYjGQpInH3LUEKpYqqAcNDwLJ86nbIFDZ8AJVGdfys9NwxuL
- kVCs0fdt2hnP3lxVnkrCVmqjDi9Ul9w1pUXsrcAJk6nKyJd98NZwotXYWXIj8/JAYfHDCrCRnx
- zcPryNvWcQEf0rVRZniVMm21O0IhUnxsem1WtqL5ZZqmU/moSR50mcWNM8PMBKh19s4V/XgKsU
- h4M1V9bQxAWp18CICNzuumD4XSMQtYM+DGcatONBGNKpMon/YGeqW2tfJaV97F8qFHQz5RI8n6
- rjAptrKVgcnEx1SvfqQ55Xnj
-X-IronPort-AV: E=Sophos;i="5.88,357,1635231600"; d="scan'208";a="152558490"
+ bh=CLh2nwABYCoaqgmSyxPjwCVOJ3R00ywAg2jvwnbtDbQ=;
+ b=088jns98+w9YIZ5Wm/vyDo3tvqVKba3u0CCpfBvfpN9rCoN7tKZeW9Ug
+ xKj7dKUGaqQtLNE6TQTLKBViFLT6hVMQKscirX66wLGY5qXJBm+zCH+8H
+ j5a1q8RrRq5iTCLpEsh5LjTXhDHqio+6YdAVbF1vSXL37Bdg1yONlrpkg
+ qrPCi9bWR/WKXdoJQQ5xo7oYZF3SRfAdZauCpJTJ3OChcMxOMnir8xBHZ
+ NmanCgNtJNEXu9BUzQCjpI6F89qNbVlJBZGYakhuhwZ7S46LRBaCNEUiw
+ q+z++06HMb66AWYByhq4zueLVmr2wGdQk8OA0MQGP+57hbCg2zITz05x3 g==;
+IronPort-SDR: pkdtVoSco96sdQ1u20k1npon+jq+NRgHmCq0noKR//ePIgJgDPkGUvzAl3+huf61QBBAf8t2NC
+ k041YgbRpQ+3yt9BecjJqGaQOdL1mStfT9okcp1N0a/4TqpkC4yp5yZ32W8gZexRLkeX5wUBlY
+ vNBY2qLjNK5COG7jLDP6ss3l72Zok/zSMN0eO9N5IfKkllFzc8wCHHghwbnhE3/7datukbEmPP
+ vbVGY36gogncyx5JcL+9QVK9PlrgfrdBwCfgMq/oZPDhBJPCWB8LYfa5WAri0nPYd4kZNBffMd
+ ESyqPOVMK7h4nCxA9UvTgWcH
+X-IronPort-AV: E=Sophos;i="5.88,357,1635231600"; d="scan'208";a="152558655"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 09 Feb 2022 20:38:18 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ 09 Feb 2022 20:42:16 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 9 Feb 2022 20:38:17 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ 15.1.2375.17; Wed, 9 Feb 2022 20:42:14 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17 via Frontend Transport; Wed, 9 Feb 2022 20:38:16 -0700
+ 15.1.2375.17 via Frontend Transport; Wed, 9 Feb 2022 20:42:14 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OrckpZ3Tde/ad0pVW26yd/XzjeNOi0txVH39rMCwb087Z1Lp45vqKxggOx4+hAs8M4aM6DShcq/sK35UvZpWp1lJEcvJhOE6a28RH7LDDdDEyfA35jh8GfLNVk18s3viOFVs/dAyWOBZqkwd2U/MY4OaUico4cG+YCGOCc7xPc+AilxUv5Q05AZ+9XIe3Da7qc41XDPJ8Bj2Ba+s3IAWTpQBRVmmEQGWh3duMt/DlTJ7wkksjrhHYTi3WFXmhHh5ypkbB++xlVL3qvl4YRK1nOma2mQtvBqEt6fuRtcSWeNk7oeRRSnHu9OHRUOUQzMVluT4Yqye87jZN59NO9XWrw==
+ b=IfNSoYZ5Tyr662StsZEkppCeS1hrr4foxjkBqIdlBUkVCgI5XsrWGUl6aZJO7FMEzOT4ehXokyBKGJDX++WhlhqHHDfvv5eTPl2KGGemKwTBSMlQU5CP0IrCrrXj7jjQux36/hfZXNPrXv3mwVFiwYyO1XCqhIwfGkAHoC+MgEo4NEF8EpJgQS3uRJApFMkK8+3iKMQRd7vN2oC65SYXhSKVtnojcEGVg3xxkFJnBrbr6AFfkXDp5+/Iy0J6OqtNQge1cmqrWWwQ+iXn5bLuBPuci41+37Atw3XM/FouNIa8QZIfDKEwQYOUwd/+4/z3o/sCLpmzKqhih5OMU3E4XA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AbwHyNzTg4AUsNQr4eAHNsvyC62vuvKiGyluKXAK8Xc=;
- b=E4Z65BMPcwHVnBsji0ULDOG/ZsZlMoZsLpItdFUh+YYSVEn6zfuqZ7qCnQ1qXWsqtMd+cjdgvFrpDU7WsA5PAZkivmKpPJnl0rlUeQmHJ0gZhuq9u8wmydvT7ndf6iOMzzbtcg9IVgeOSaplI5e5LRUBfsSWIeSkishvPyGP5C4IDgr+a2j/RZJgqs07gFUv0Iy4piv5PMJu235mZGEjwmmiPNmKd5pkJf/ZeSR1ReHrKr1EGPfQlwVeluUO280/Rt/Mkg8KiWTpNpQnHA1ch/DfDyz08YSMJQcCSDD5LhBIX0bPFyZs6WYIB8KBaMvaWDHjCnysZF5zh5zLFqYpZg==
+ bh=CLh2nwABYCoaqgmSyxPjwCVOJ3R00ywAg2jvwnbtDbQ=;
+ b=CXgRvqtflEvvKVWI4CO/4OA95q080J2/fn1chpHvmlGuvxDscW29lmKeilC4yMno1whxY2CHObhZUl9/Ex1tnP/lCCytfNfjh7XlgaCL9LII6R81E5kdajsW7C/rWv279dP2Nb/lwlHCe8HWFFqlwXboaEk5EDYpOThUx7SGiRyhSOu92X1sRqEE1eexyZ0cqRB18wAa46N2LNmbPRTyhYEuTb8UT+hx7go01glhlZp1S56iCE1IPzNyxHtePd1IVR7S9+PHhoKFPwMIfjLim2KLDHRQmJIVcNc6XDAkxRaZinc8I9lVZbReDDVevktBreEdEVu0yGWV0eJcji8n5g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AbwHyNzTg4AUsNQr4eAHNsvyC62vuvKiGyluKXAK8Xc=;
- b=YQfsKjdHlo5HB59xoxxC92IQGM6VAsI+q90PZ7wcAK0DqkGAND1FBTTvdnEbXE8ZhSxXzhGfJ5bpwP+o33lTuwm++rZdSKw6NNK25bcgdenmiAD+UBbd0b9AvMqdezhgUtbQG5kvafp0DHOUMflLZdYHip5Wz2lSgSF7d27CjFQ=
+ bh=CLh2nwABYCoaqgmSyxPjwCVOJ3R00ywAg2jvwnbtDbQ=;
+ b=TV2O7iT4bQCu6GzdlyVi9GdiGTi4rbftOujDDSQJg8Xpp6kIOGqQGQJorcgtMOuDdDX5K8T7KNsY0PxbewiQ8DhLFKeqyPxXJjcZKtUL8sssWrMKdb7mNAhvuTqRfI1H/S9fmXEaDzIKFGYjB5BNA/7EGjEGNEjxoC2thbyULZo=
 Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
  by MN2PR11MB3824.namprd11.prod.outlook.com (2603:10b6:208:f4::18)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Thu, 10 Feb
- 2022 03:38:15 +0000
+ 2022 03:42:08 +0000
 Received: from SA2PR11MB4874.namprd11.prod.outlook.com
  ([fe80::49cd:dd25:384:e918]) by SA2PR11MB4874.namprd11.prod.outlook.com
  ([fe80::49cd:dd25:384:e918%5]) with mapi id 15.20.4975.011; Thu, 10 Feb 2022
- 03:38:15 +0000
+ 03:42:08 +0000
 From: <Tudor.Ambarus@microchip.com>
 To: <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>
 CC: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <vigneshr@ti.com>
-Subject: Re: [PATCH v1 14/14] mtd: spi-nor: renumber flags
-Thread-Topic: [PATCH v1 14/14] mtd: spi-nor: renumber flags
-Thread-Index: AQHYHi+iSxDQuaVTREqygK85YTdBcA==
-Date: Thu, 10 Feb 2022 03:38:15 +0000
-Message-ID: <9e116cc3-fc36-f7c0-54c7-71fc726668c5@microchip.com>
+Subject: Re: [PATCH v1 00/14] mtd: spi-nor: move vendor specific code into
+ vendor modules
+Thread-Topic: [PATCH v1 00/14] mtd: spi-nor: move vendor specific code into
+ vendor modules
+Thread-Index: AQHYHjAuRn0sp/gsuUe9nTLTR7wB3w==
+Date: Thu, 10 Feb 2022 03:42:08 +0000
+Message-ID: <0c10e1cc-8f38-2e53-e24a-92e40d1473a6@microchip.com>
 References: <20220202145853.4187726-1-michael@walle.cc>
- <20220202145853.4187726-15-michael@walle.cc>
-In-Reply-To: <20220202145853.4187726-15-michael@walle.cc>
+In-Reply-To: <20220202145853.4187726-1-michael@walle.cc>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -101,71 +102,71 @@ user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microchip.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 505db9e1-f3b8-490a-efe1-08d9ec46c589
+x-ms-office365-filtering-correlation-id: 8af20a9f-9c01-40ed-c2ff-08d9ec47509d
 x-ms-traffictypediagnostic: MN2PR11MB3824:EE_
-x-microsoft-antispam-prvs: <MN2PR11MB3824317A471BBC5C3BEB9C43F02F9@MN2PR11MB3824.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:156;
+x-microsoft-antispam-prvs: <MN2PR11MB3824AE7B43508A8831FA9BD6F02F9@MN2PR11MB3824.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PPcumsiy2eBNQS7yedx/DalAzayeoc1ceqmIu6t0KbQ/AS6QbbVNfVftjsjSyWAbiMTds1JTdfH5Hy+4fcCUfEa63ATwisTHjdfIEseQI6rpQxo5wEEg2/do6m1RK493zY4KvcnWsjCXX2ezDK+JkVpRyAteNLhdzAUuQx2Giv1Wns7GCSt/5WDUi/FTzLtmaylxDnpZjGXz9Xbchker2AXucZFtmkTJDMt6PuUZIx1OfBnzH4D7nqTGue4Yixb1CtGGQT96sxllz3D0YMpZQBSOpCSMvLWReiIfGeABC8s22dNQVpElhmHKmtXr1MD7tKH8dU8dvU6PEIhgkiZ/pK+4SdiQfYAB8QKAL+8ExPGXMz8BcBo837ZfzfDcHwXXxqPfEyb2AG7NKiY5OMFIPitSo+cuBMQ8Yg6B9p8GK8XKLM4YsmAktzN30ffZiydFvwz5Ph4QKILq0cSBRtSEJ2uRNlad5s1h8OdHuIVAhDVu7mTKlabTbJu8fKPXhz/Q0dBXgo3N9sxfx5mxM6CoATupi/ihYjbhaAxtG1ygV65gc/qXFGbnxxNCJZftz5kgwRLszRDXs6vSGnaqvj7RcNkuyGavubpOLpK21gkW9guBqsesmtvoh3AkTa0CqZV3Z4kFPvUclVfsmdWYKcrIMqQi4hZrX79w33t8IXjsa4El3HBfwHLtMcPNR9VM/jbN3OWzh2cBZF7I7DJvIKhXcIVrZVhWImw8E9YQxGIBfJQpncTXUbfKKaArDjzwCUq7Q0ikwK5PwwIai5TAy8qw8g==
+x-microsoft-antispam-message-info: Vubc3IeBHHLchWHgkMhHOy4KN2SVLjFvs7DTyWKG243lqAyIAZie8DtzddjxS0CTxALdIjO7FH+XYM1PHz96qhdHb5Snd0K4afw5oVBeERmXMzIu1+vOsdaDiyunMmoAVtLiGUYsIem31I+I45ZCOF41NdyahdDwx0rM6lMicplDtsZmFoq0bwPr2NoP7a4QRXWiIr5T6OlCVho/cA/kl06IUHGMunsV9AvI0F1AoxX8srOgpHHbFhFS4rPZWy6u8/rFHDHZH7Lx/V97fT6OW5lC8OF4KNIC2OfIotm/Zwpu6+MCuDgC++HU8BYxRDOTaw1bP7JsaXv3Jry2mQSMD4zM72Z/fyEcLUsOVJiseCH0NSaFHHUltKS4gvfeGEeUaSxiNEr4CqaynQmmnyWXFmGcSWruDkBBXF0P4oQCJQJG4HUxuSXKPWJfyqq+408EwhchZH1oww31cMLJWTSzsq7lJrkTzcWAoQm1wGRzZjNBLV9RDqedrOIL3SnwkmuBknDLky+oA0Vey2haZrveCB1befKiMA6WI4zje0ial6sm/PUDBYUpZImHJ6SN6oEsyIqy6dABnR4N8TLzjS5wQc08S10P8LxfTXZqVWo1I09qFbKuoJodHg7xZ0vMFPCP7XK5RHVenut28qT0Kqi+iqPNjhOwn2ISihFlNaH32u/8LYaZWEKIq+DAAwBNaXPtx4Hqnqiopjyf1B57E7J3ay9CLoHkwj4QY7cWf/BXqppITj9tWNOF5Zxdnla86oXGRfecswIUkut33Zl7L1V+Lw==
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
  SFS:(13230001)(366004)(4326008)(64756008)(66446008)(66476007)(66556008)(8676002)(26005)(6486002)(66946007)(508600001)(76116006)(91956017)(316002)(54906003)(110136005)(6512007)(36756003)(2906002)(2616005)(83380400001)(31686004)(186003)(53546011)(6506007)(38100700002)(38070700005)(86362001)(31696002)(71200400001)(5660300002)(8936002)(122000001)(43740500002)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZVhhWmlpYW5xZ0ZQZTJxbGxxWFBNYUs5elR1SVFyNXhRTDIrNlN5REVWdElF?=
- =?utf-8?B?cU9oaW9PWXRnZ2h5ZnU3RG10M3Vab0hNR2NsY0tnYVpQUEJ0dUJOdkZEUjB0?=
- =?utf-8?B?alZvcDdIVlF0b1JNWno4anArK240Y09IQ2ErN0U1alhmd2o5QWE1bitVcDlY?=
- =?utf-8?B?MGpLbW4wQitiWGpzVnNRaFlKZEo4Qjk2eGpIU3IwWUIvRGFJczJENmd5bHNM?=
- =?utf-8?B?dDRMenRZOWdaaVB4ZlpYbUdIOW5BcnFoeU45U0hwOXNPdVErOENuUWpvSnRm?=
- =?utf-8?B?cEpVTVRzR3kxV0kyOXBvQlp3YVlDbTJMS0NUYTBZNXdOYkd4S2NNWktWbkRT?=
- =?utf-8?B?Q1d4WWp0L3BZN3FXT2E3WUlybklZR0ZuRitNbWFuaVBqL2F1OUFZR3BkdUMr?=
- =?utf-8?B?VTBkaldIZmdpQ0NEL2d4Z0Rnc3Z4cEJEclVjZm53Z29icWVQdG5DVlJ0UU5y?=
- =?utf-8?B?M1ZVd0JTTmZxeVkrL0U5NkhzcDQyL0JNaHVyNDZsMkNOTVUyYS95UEVDek9i?=
- =?utf-8?B?ejI0NU5OdGF4czRHQThmbUJESGRsalJvaGJMYy9jMTZHcEQ5QW9PSG92Tlkx?=
- =?utf-8?B?QmZ2YUtFNnZqVkJXU2g5YmxnZEcwSTYwQU94YjJnSVBraTh6ZzRVcVNZUnFp?=
- =?utf-8?B?a05OSy9IZnBMb3N1SERyQjlaamhJKzViYi9YQ2YyRWtGZ01EUEdBb2U1enFY?=
- =?utf-8?B?TDdmUkhCN3czd0xmTXRvb1dWWEN6NFhGNTNYSFZ2WVhhNlNOczJlZS9lSTh4?=
- =?utf-8?B?WXpHQzRvMEhFM2Q0czRLRlk4MWwzUVN2bFUvdkpNa05KMEttaVNqT3lpenAr?=
- =?utf-8?B?OE5oYnRHSm9zb2pFSnYvZ3pEUmxjL2E0RWNIcS9mQ0pRc1dlSUgwNGI3bU1h?=
- =?utf-8?B?T1I2MzRUdnR1VG5GSkZ5Mnhkc3hIOFFtQS9zSndCdC9hLzA3TUplOUY5cHI0?=
- =?utf-8?B?Rkt5ek1pYm9MaTlwQm5YYTk0d2FhdUFKZldWK3pCUFdKb2FvUEF2QVpMaFpG?=
- =?utf-8?B?N1lHZ2xnM201cWRQcEovYi9TR2YydU1scHZ0dkIvZ25hbXBVdUlyNTZWSUNG?=
- =?utf-8?B?cXNiMXg5UXFQZUxjQUJPbHpTbzdKV2ZCZmtxdGptT1JzSkQwbmdSNU13RXVN?=
- =?utf-8?B?UGtrT2I3ajlxYi9CTHdxb3BhQ3NaU3RqemIrZGRZUWVyNDJQZVVhOUhqQU9m?=
- =?utf-8?B?bTliVGVHWnFzdUVCcHlWYmdlUWVEZzVjZGU1U3JNRStpQk5YUjZ4OGp5a0Mr?=
- =?utf-8?B?Wk5DRW5tK0MvMVA1dGZlNytFS1AyTnhZVmdkUWpVTzhDSzRJRmhEUTNCcFBT?=
- =?utf-8?B?TlZSR3V0RGlVazdFYmgwTWJaUnV0R0ZHeTRjOU50bTk3czY5aEJYaTFBUmhD?=
- =?utf-8?B?NnNoWEIvdzhkVjl5aWJOZCtJOGIwS0o3ZitmTE4ybUdESXhEaW4vY0hnOENl?=
- =?utf-8?B?QWFNZXBKNjdndGs4enZtTE9UeVNlQnRzR3VEYjcxS0Nmc21GdlFXdm9YRnB3?=
- =?utf-8?B?ZkNCT1pzOUlSQ0xjMkxJL0hTaUJiS2V5QnNuNlJDa3A2Y29sbW9KTEhIZmpr?=
- =?utf-8?B?cC9jUitnRHNVZHVyMUZ2Sk9FS091ZUV1NlZxYm1obmlLbFkyQ1Q0Ym05SXhk?=
- =?utf-8?B?eEY2UFBGUDRXVlpiajFIV0hJRlNmNm80T0g0bnlCckorZEw2ak01REFLTXZ3?=
- =?utf-8?B?bmR6eThmb3JIWkpEb3gvTkJ2SDhQYjdNaFo5TllTZWQzNkJETHl0aStaUE10?=
- =?utf-8?B?NTVmcDFWRXdWME5nbXBnblY2VDczeHhmZFVmNENBc3hyY3FKbm91V1ppUVNq?=
- =?utf-8?B?dmJUY0ljLzhwcndiQ29iZXZSWUhpbURzYUZ2YytCbkZxRkF5c2ZhdjV5Skp6?=
- =?utf-8?B?MXhBTW5FZ00xQjQ5a1NvL2tvYU02Q2lyODVBaEE1T3h5c3c3d2o0d2wzbUF1?=
- =?utf-8?B?aFU4WDJ2QWpveEtzZVF4UmJrL1Jhd0ZlbmVZYVpnUitBRUozR0ZCeFpXSXBL?=
- =?utf-8?B?S2R1U1NLbmg0emZ6VGhVYitpUldPNTl4YWgvZHVOM2M4SExuaWxHK0NMTk9l?=
- =?utf-8?B?bklDTXBFOGZhR3dvcDNnWUJ5dHFXUG5GN2NwQXJVanhqbGJadFh6U2xYbjBQ?=
- =?utf-8?B?MHRxeW9PY093RVRFUk9pcmw3WGtmUW84UktUV0lKR3NTYldVN0JWRXdqclB5?=
- =?utf-8?B?VjVIaUJWaTBCMzJtMjluVkFtLyt5WENaRStyS2F3clBxUSswVVJlUW43Ynhu?=
- =?utf-8?B?emsydHpDaHJWaUVuUktpRG54cnh3PT0=?=
-Content-ID: <BC514A7A074E8847A62AF5369AD211CA@namprd11.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VnFJK0NrcTdYbGQ5djQzMm1JUEI3Z2ZueXYwVjJxSXQ3Tm5xcDRoOGFERXdS?=
+ =?utf-8?B?MGZGT2dSVCtqUWV5cFBhN0NZR3BlOU4zZysvWkRTYzNoeVZuNTd5dDBwQUV2?=
+ =?utf-8?B?N3ErbVltenhtVWZwUi83dmY1NExWbG9ZcGRQRGhJMnJJSWVpYSs2VGI0SUlU?=
+ =?utf-8?B?cGl2NWhFK3kxYk9IRHBUOVZoVlJVNUhvUm1iajdUN1h3cFUzVWdqTDlxT2xx?=
+ =?utf-8?B?N1pFNjlmcmNSNm1BOVFQdVcyNTY5N1FDTi9KdFNvcU1zWmdQRng4dHYzZGVm?=
+ =?utf-8?B?Q3pQSXNXOUVONDFqRHd4a1NxWXN6N1VyeDl5UWw2REdYNkFtQnVpYXpCTFBL?=
+ =?utf-8?B?d2JGQmRCeEI3V01oelhSVWV3U3JJdkR3V0xtT0JPZGFDVm5jQ1djZlNHRCtu?=
+ =?utf-8?B?SGRHNFFLc3FLSTNEam5hV3VmWXBQTVlVOFhxZlI5bHRrYTgzOE9lYkVXNDJz?=
+ =?utf-8?B?YjRsSlozNlo1b3Y1bTlpbHJoN01pUUhYRkFmMXdzUHY5blBuRER2QVJOZFds?=
+ =?utf-8?B?MkUvN1Uzc0QrYkhOdldsaDVuODBxZ3FFTmZFMFd3eWFybXFQdWV6YWhpU29N?=
+ =?utf-8?B?dDZrSElYZlFWbk10WWZNZGgrZmpaNTAvcCtYNEVtbE8rNko1MlJ4V0ZmZVRH?=
+ =?utf-8?B?YmJ3ZEtxMUx0aWthOVU3djZNMU9sRDhXbDRYWkhmU0RNcHgxT0lJM0ZHZ1dE?=
+ =?utf-8?B?alBhQVNpWnZpVzJNOGJiMndMQmh4a1kxQVF6bmNnM0VqTk5GTUoxeTRlT01n?=
+ =?utf-8?B?STdMZGYvRGxScHVVejE3RHRMalgzdWc3VEtvSkNaQ3VqcHpLd2hLVUZwWTZG?=
+ =?utf-8?B?cVdQMGI0OHp5bjZiT0lubmZ0bUQvUVNsVlY1RXh2Ti9ONnFjMm1hdUFuQm9q?=
+ =?utf-8?B?Rlh3cW5sMHBuYytsWXV3SkxKbUlvdVpXWGM5Y0szblkvdFF5TGdhVmg0ZXYw?=
+ =?utf-8?B?Mmx5Qm5OVEJPVlFYSDhwdjlvWWtraE41bXRhOTN2YWk1am56NysvY0dmZ0d5?=
+ =?utf-8?B?dEVZeVFRQWUzYVlISUx0QUw5V3NyaHNOc2NlV1pMNTh6MkdyNFBXTEdTRkRF?=
+ =?utf-8?B?L3ArZlBTMUJHS0VUeUhkT0tqS2Q4UFo3dnMzM1pIaHRuakdVb1grWjh4TWZq?=
+ =?utf-8?B?ZXl6RWFoNHpGajBmUkJmNnBuWGtUMkZZV2pPWlVPMjd0WGV6bzUvUGkyV1d6?=
+ =?utf-8?B?d1dFcWEyOFFEdkQ0MnN0NUM5Ry9XVlhNR3ZUSFhPT0dTYW1FN1FRS25nRGNK?=
+ =?utf-8?B?NnZ2bkZHR3JNYWdUYTdxL0hDSmRkV3djZk12bkV5NmJ2SlV2R2xETTg1SURn?=
+ =?utf-8?B?QjVBbEQ5NWN3WkxHTVN2amNtRVpYUzRPVm11WWh4SjkyTFd5SzBvQmNuNWJz?=
+ =?utf-8?B?a1FDMWp1Zk42dXkvVHVxVGVKbXRDelhRdysyOWtUaGRNR1V1OGZ5N0ZQdHhY?=
+ =?utf-8?B?NzZDb0hzTFNqTzVIKzNPU005MU0wL25zK1FFTGdTSDJBWGFxZy9oekdjK0xU?=
+ =?utf-8?B?NXlaYWE4NUNiU3lDcjdRb3UrdUZ4NTNkb3p3ZmNRMkVEdGdYdkszTVQzVGth?=
+ =?utf-8?B?SHFrcGliLzdKSGtNWHdielRrTWFPK09BRHNlNVBiRThrbm1vK3FYbmNKTXp5?=
+ =?utf-8?B?eURnYTM2Si9KeUZ5RWN1d0RtSS9aZjd0TDdmWDJNY1dOTm9XUWQ5MzV1RnY3?=
+ =?utf-8?B?cmxmWlVqaHpINjFVTXVjcjVJbVZXUWthSmhQL2JwM2RUZGdKblhDMStFWHdh?=
+ =?utf-8?B?ZWlHanlKOWc5N0JuQ29VWTdHVDcvNlNhMnFLR3RVVS8yYjhrZXk3c01MOUZs?=
+ =?utf-8?B?VENCdUF0SHFpQXdWUzdONktjZ2drM0tabjExejFHU0hJYm9ldkpXNkluWkNa?=
+ =?utf-8?B?SDdwWmRJVDhJMVNrSXpCaVV1RWZPNVExV0w3QjNvZy96bC9MeW5ycVBzZE1m?=
+ =?utf-8?B?U1JsZEQ1b3RkQXIxd2ZtNlZ3TUh4cVlldlB0OWxWUHMyeExyQVRFYzhnOC9D?=
+ =?utf-8?B?QXk5Z1dxK2lKUzF5SlhxMmtncllUbGQ2ZlUyNlRiM01NeVhmNTNCUUJpRUxQ?=
+ =?utf-8?B?dHJPaEFDT2VCM0pYZ0llZEkvWFRXUFl4R1BMbEZzbWlNVjdvOEMxTUhZVzYv?=
+ =?utf-8?B?b09hQjlWc3E2U21VWHpTWVYvNWEzK3h2bUlSSGlSVUVjTFN1Q29zK01NdHpv?=
+ =?utf-8?B?L3dXRGxjNm0rdWNoOVoxYzRzb05QSk5xUko4cnZQdXFDeXlJSXQrVWhibkU2?=
+ =?utf-8?B?Tk94YStCWW9iQUpIUE5ibGpoVDRnPT0=?=
+Content-ID: <04BE5A74C8310F488E52A50EC656721A@namprd11.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 505db9e1-f3b8-490a-efe1-08d9ec46c589
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 03:38:15.4715 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8af20a9f-9c01-40ed-c2ff-08d9ec47509d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 03:42:08.8360 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YyKcufb+mdhHK2d2FqEt41hKi0LliglvycfhMyUQIjzeuo0d1vecbzbW4fnmJfF8LCrC1eQAguXFlSJ7wVbItRfLZWf5lQvVZHsN9tNDEiQ=
+X-MS-Exchange-CrossTenant-userprincipalname: +3mIg3sYe8RA06jZXaN6yAlBT2xQDZmKN7sEdxcguHdfusaCCCElZvWlb/FQiLEu9qqmwZNBiJp6CY1OI7+h3QvjoYlenhPLAVjsa9VtROQ=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3824
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220209_193818_412840_D388D66F 
-X-CRM114-Status: GOOD (  15.11  )
+X-CRM114-CacheID: sfid-20220209_194215_711878_4278ED54 
+X-CRM114-Status: GOOD (  21.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -185,59 +186,52 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 On 2/2/22 16:58, Michael Walle wrote:
 > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> As we have deleted some flag, lets renumber them so there are no holes.
+> It turns out that most of the special status register handling is
+> specific for a particular vendor. I.e. Xilinx has some different
+> opcodes for the status register read, Micron has an additional FSR
+> register and Spansion has these flags integrated into the SR.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-> ---
->  drivers/mtd/spi-nor/core.h | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
+> Create a callback to ready() where a flash chip can register its
+> own function. This will let us move all the vendor specific stuff
+> out of the core into the vendor modules.
 > 
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 2130a96e2044..b7fd760e3b47 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -12,20 +12,20 @@
->  #define SPI_NOR_MAX_ID_LEN     6
+> Please note that this is only compile-time tested.
 > 
->  enum spi_nor_option_flags {
-> -       SNOR_F_HAS_SR_TB        = BIT(1),
-> -       SNOR_F_NO_OP_CHIP_ERASE = BIT(2),
-> -       SNOR_F_BROKEN_RESET     = BIT(5),
-> -       SNOR_F_4B_OPCODES       = BIT(6),
-> -       SNOR_F_HAS_4BAIT        = BIT(7),
-> -       SNOR_F_HAS_LOCK         = BIT(8),
-> -       SNOR_F_HAS_16BIT_SR     = BIT(9),
-> -       SNOR_F_NO_READ_CR       = BIT(10),
-> -       SNOR_F_HAS_SR_TB_BIT6   = BIT(11),
-> -       SNOR_F_HAS_4BIT_BP      = BIT(12),
-> -       SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
-> -       SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
-> -       SNOR_F_SOFT_RESET       = BIT(15),
-> -       SNOR_F_SWP_IS_VOLATILE  = BIT(16),
-> +       SNOR_F_HAS_SR_TB        = BIT(0),
-> +       SNOR_F_NO_OP_CHIP_ERASE = BIT(1),
-> +       SNOR_F_BROKEN_RESET     = BIT(2),
-> +       SNOR_F_4B_OPCODES       = BIT(3),
-> +       SNOR_F_HAS_4BAIT        = BIT(4),
-> +       SNOR_F_HAS_LOCK         = BIT(5),
-> +       SNOR_F_HAS_16BIT_SR     = BIT(6),
-> +       SNOR_F_NO_READ_CR       = BIT(7),
-> +       SNOR_F_HAS_SR_TB_BIT6   = BIT(8),
-> +       SNOR_F_HAS_4BIT_BP      = BIT(9),
-> +       SNOR_F_HAS_SR_BP3_BIT6  = BIT(10),
-> +       SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
-> +       SNOR_F_SOFT_RESET       = BIT(12),
-> +       SNOR_F_SWP_IS_VOLATILE  = BIT(13),
->  };
+> For sake of consistency and better readability of the code flow,
+> I also converted the setup() callback to be optional.
 > 
->  struct spi_nor_read_command {
-> --
-> 2.30.2
+> Michael Walle (14):
+>   mtd: spi-nor: export more function to be used in vendor modules
+>   mtd: spi-nor: slightly refactor the spi_nor_setup()
+>   mtd: spi-nor: allow a flash to define its own ready() function
+>   mtd: spi-nor: move all xilinx specifics into xilinx.c
+>   mtd: spi-nor: xilinx: rename vendor specific functions and defines
+>   mtd: spi-nor: xilinx: correct the debug message
+>   mtd: spi-nor: move all micron-st specifics into micron-st.c
+>   mtd: spi-nor: micron-st: convert USE_FSR to a manufacturer flag
+>   mtd: spi-nor: micron-st: fix micron_st prefix
+>   mtd: spi-nor: micron-st: rename vendor specific functions and defines
+>   mtd: spi-nor: spansion: slightly rework control flow in late_init()
+>   mtd: spi-nor: move all spansion specifics into spansion.c
+>   mtd: spi-nor: spansion: convert USE_CLSR to a manufacturer flag
+>   mtd: spi-nor: renumber flags
+> 
+>  drivers/mtd/spi-nor/core.c      | 265 ++------------------------------
+>  drivers/mtd/spi-nor/core.h      |  70 ++++-----
+>  drivers/mtd/spi-nor/micron-st.c | 225 ++++++++++++++++++++++-----
+>  drivers/mtd/spi-nor/spansion.c  | 133 ++++++++++++----
+>  drivers/mtd/spi-nor/xilinx.c    |  79 +++++++++-
+>  include/linux/mtd/spi-nor.h     |  18 ---
+>  6 files changed, 417 insertions(+), 373 deletions(-)
 > 
 
+Good job, Michael! I added R-b to some patches to inform you that they
+look fine to me. You don't need to add the tags on the next version, as
+I'll be the one that will apply them. I think I have a micron and a spansion
+flash somewhere, will try to test your series once v2 is out.
+
+Cheers,
+ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
