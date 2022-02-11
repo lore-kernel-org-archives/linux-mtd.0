@@ -4,47 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A19C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Feb 2022 20:43:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C71E3C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Feb 2022 03:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=14KIyfRU9+Wc+sHwwLM1c8y0ToGvSQ5UE1/8Vqty2cU=; b=T80+fSb1jjzEVq
-	MIMsAqmvpxdC5pu4aZSi5OP/1nGAk5CFaZwRfoef1vU+QzIbbDWUwYbD7xpi93bV+g9+/6DN6fCnn
-	nPiG32ejH4L9fEALgJ1vuA/qPD11GWeeeQmFgfzG2zrNG7U2FlLmajPS7Pdw7zcivqKUnhGLrWgSB
-	eGqHb7h6R+5u+rlcQT1pqNA9WScGAhbW4Oezppfo4DB1/KXfIr/3VEJsi68H8wR1k/eQPsj8PHAbU
-	UoVqH0neQot6BAkSp3esXLV+j0RXOWI6lLJLD3hSr/lRQ2eqZNBRPjW2eiLENUQaoB9jSKnyOXkOi
-	0XFZr63USaZiyVxdSucw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=oRiYmP0VXu8TZdLFT30THOD0LIZAvJTQJdrcqnycoT0=; b=l0VElH7prUEE8w
+	clfa4mlH8ORDN3rT6uWdDuWveWGRAW3q3k5qacFXGcHNfUgkl4QNjucdHe+aJwPL9D2pBnwcyRAn6
+	kcQC1+JYi94PHDiS6SwGdVA8wR6Nn9B4PMzs6VQrqZ8mgkaBYMT/Dea7RbAZi3AT9QgzeyEaUcud9
+	1FatTuE3VMwvc62ZLcJ3OkBUNUexRnB0GniyYw458DxAwTgw6FJoDpCOR+4BsyUJPaLPSzQ/0TBzg
+	WPIw4UzXWbn4jb2/LjVGEhIKoVLJlfjAYaGSEGeSpscX42SwP6i82Rj1PPKXsEc6rQVDG7w8N1bjp
+	D34DOlP6wrVbvqwfImbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nIGHH-004slR-Qa; Thu, 10 Feb 2022 20:42:55 +0000
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+	id 1nIMTE-005Zom-TW; Fri, 11 Feb 2022 03:19:40 +0000
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nIGH3-004scM-IT
- for linux-mtd@lists.infradead.org; Thu, 10 Feb 2022 20:42:43 +0000
-X-IronPort-AV: E=Sophos;i="5.88,359,1635199200"; 
-   d="scan'208";a="5603090"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
- by mail3-relais-sop.national.inria.fr with
- ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2022 21:42:33 +0100
-From: Julia Lawall <Julia.Lawall@inria.fr>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: kernel-janitors@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH 7/9] mtd: spear_smi: use GFP_KERNEL
-Date: Thu, 10 Feb 2022 21:42:21 +0100
-Message-Id: <20220210204223.104181-8-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220210204223.104181-1-Julia.Lawall@inria.fr>
-References: <20220210204223.104181-1-Julia.Lawall@inria.fr>
+ id 1nIMT8-005ZoF-Gc
+ for linux-mtd@lists.infradead.org; Fri, 11 Feb 2022 03:19:36 +0000
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R701e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04400; MF=hongnan.li@linux.alibaba.com;
+ NM=1; PH=DS; RN=3; SR=0; TI=SMTPD_---0V46e-4F_1644549568; 
+Received: from localhost(mailfrom:hongnan.li@linux.alibaba.com
+ fp:SMTPD_---0V46e-4F_1644549568) by smtp.aliyun-inc.com(127.0.0.1);
+ Fri, 11 Feb 2022 11:19:28 +0800
+From: Hongnan Li <hongnan.li@linux.alibaba.com>
+To: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org,
+	richard@nod.at
+Subject: [PATCH] fs/jffs2: fix comments mentioning i_mutex
+Date: Fri, 11 Feb 2022 11:19:28 +0800
+Message-Id: <20220211031928.113693-1-hongnan.li@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220210_124241_920373_09328DC7 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20220210_191934_769929_01268A72 
+X-CRM114-Status: UNSURE (   9.47  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,30 +60,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Platform_driver probe functions aren't called with locks held
-and thus don't need GFP_ATOMIC. Use GFP_KERNEL instead.
+From: hongnanli <hongnan.li@linux.alibaba.com>
 
-Problem found with Coccinelle.
+inode->i_mutex has been replaced with inode->i_rwsem long ago. Fix
+comments still mentioning i_mutex.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-
+Signed-off-by: hongnanli <hongnan.li@linux.alibaba.com>
 ---
- drivers/mtd/devices/spear_smi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jffs2/jffs2_fs_i.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 2e00862389dd..24073518587f 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -969,7 +969,7 @@ static int spear_smi_probe(struct platform_device *pdev)
- 		goto err;
- 	}
+diff --git a/fs/jffs2/jffs2_fs_i.h b/fs/jffs2/jffs2_fs_i.h
+index 2e4a86763c07..93a2951538ce 100644
+--- a/fs/jffs2/jffs2_fs_i.h
++++ b/fs/jffs2/jffs2_fs_i.h
+@@ -18,11 +18,11 @@
+ #include <linux/mutex.h>
  
--	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_ATOMIC);
-+	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
- 	if (!dev) {
- 		ret = -ENOMEM;
- 		goto err;
+ struct jffs2_inode_info {
+-	/* We need an internal mutex similar to inode->i_mutex.
++	/* We need an internal mutex similar to inode->i_rwsem.
+ 	   Unfortunately, we can't used the existing one, because
+ 	   either the GC would deadlock, or we'd have to release it
+ 	   before letting GC proceed. Or we'd have to put ugliness
+-	   into the GC code so it didn't attempt to obtain the i_mutex
++	   into the GC code so it didn't attempt to obtain the i_rwsem
+ 	   for the inode(s) which are already locked */
+ 	struct mutex sem;
+ 
+-- 
+2.19.1.6.gb485710b
 
 
 ______________________________________________________
