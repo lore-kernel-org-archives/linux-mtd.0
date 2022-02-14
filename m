@@ -4,109 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E7D8C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Feb 2022 08:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA68EC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Feb 2022 09:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dmX7mbn7nb8Yqc5XQD/SA8SL4BhEr1Dhih5+4b2uKik=; b=JA/1Nm5u84SgrV
-	boozEFRFWwWGCLpbnvthkqU//Jy9cyv+n+r/zam8GpnRTWoUcnscNqWFPwX+Z1yEuC5HmMfEm0u/K
-	Fiki6EQ/GDCGJe1z7YbDtxuChUmQOkJDeQTl/9Gf70U6N/jZJS33dzQHBRuzSaIYh+voo9TcLbKXP
-	oYMki61ffMbUl5gTKklU67HOqLDAfOt+zXFhu0azCuElGnPn0GZV8JudjO90WLPEjxCfi8F0O5olR
-	RooLY8/cSC0BgRgK3hwQKnRjVLmgWJzle+vbVCXBrz8D9EsfxGhInQHLDuuqRMa/bJQvC9I7aqcRo
-	9pvR7hpM8rLpGvMf6Z2w==;
+	List-Owner; bh=jdlaPq6hbANSTkmQLQiVMkJSitsUNtUhRYdr+J1hC5o=; b=qjqMTlRJIKMpvk
+	yV7P9SUy/iRQLfH47/6hIrQd9mNZfndEuqHcgEvLW+5uUYiOndDjsYY5d8x56Wx7Xjok3UVSieNOA
+	9Eqme8ZW3s8S2huwB5vVfV+VQNwt6DbbVqX5nM9l6h4Z+YQI10X0VK+mWVlcHU8zPHJY2qOhZ5Rpp
+	xIQv7ZjmBvJ4Vq1v7OAYLU6mJQmIeGz6C4DVRZ74o+t4SpiK2a0Bs7mZkJ71kpsRH7b0783g8nKyb
+	pMwPl0/sR0UG/EpM8bwuNYYu8jwENbgNffJU+1x+c65eaeoqa7r7Pbmt48ysm9gudKIpXIURTX94E
+	OuUgdfXTNyQy0Kd0ZB+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nJX8A-00E6GO-2r; Mon, 14 Feb 2022 08:54:46 +0000
+	id 1nJXEj-00E8fX-19; Mon, 14 Feb 2022 09:01:33 +0000
 Received: from mail-ua1-f48.google.com ([209.85.222.48])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nJX81-00E6CE-Vb; Mon, 14 Feb 2022 08:54:40 +0000
-Received: by mail-ua1-f48.google.com with SMTP id u77so7755390uau.6;
- Mon, 14 Feb 2022 00:54:37 -0800 (PST)
+ id 1nJXEf-00E8dn-64; Mon, 14 Feb 2022 09:01:30 +0000
+Received: by mail-ua1-f48.google.com with SMTP id 60so7784190uae.1;
+ Mon, 14 Feb 2022 01:01:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=PlmHX1HHokXQyxG79YUgUTlDvUDqxBtLYhszaegEBgU=;
- b=vaRsIdk6s1r80bslaYtvFMtTsP0u4po6IG2Nc50S67aimgo8oHyoWCLZb+qgj+msI/
- +ntGOK01ysNAVwt6UEb/pUPBywz0m1k2DmY8nDJJJEeaVefx1suKjiJ74EQVHfTQpyoW
- SM/6WggE2cJQ9d1h1IqR+UAZtemRWVCjFMCxXERfud94KBZLIiJlf1nBH8AZMJto6FJL
- UfHKjfPrZSdOK5crEJSvZqTf8ru7agPOiAEJvLqw6q3UIo0yTANmbwqFVvOTsrGNr+hb
- EFsp2NEMFdsApPDP4q6IyTTabPfTJoAEXafoTdyEPPcQjz72O3QhozxodvWUTlJtjLli
- EKoA==
-X-Gm-Message-State: AOAM533sRq+jXH0bkvyCToR2Y5iydsxvQ8OsVqO6GB0AzkkY1PaWRVcw
- 5XKYP2ZP0ODP3N16tOHo5JP3LMtSQohPvvqI
-X-Google-Smtp-Source: ABdhPJzuNIuJHJhW2XDrO3f9EzWfznTAZjeigP5FzzpNQCncmdHzyNcXA0vt5gqqW2hBs9QhTr948g==
-X-Received: by 2002:ab0:6056:: with SMTP id o22mr1070368ual.114.1644828876900; 
- Mon, 14 Feb 2022 00:54:36 -0800 (PST)
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com.
- [209.85.221.171])
- by smtp.gmail.com with ESMTPSA id l5sm678419vsj.17.2022.02.14.00.54.36
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=3zUaM8opKL0LG20PPLjLO0sGhx6OMEFs8RjHjfjsiY4=;
+ b=L5Q4exEnyP7l/yiFsDaBkuBL/oLhjcFKmzWM3PuGRSsUoe6VZO/dCyanpgD84I6JRb
+ Kl8WjpuZ+oafVoBIkm9QsfRuP0SBJZXTxF5iyO3DQTyzRMaPAKFh/vpjnw6QOmTwXRBM
+ iCMqAnnY8r5ePsvqkI/4QCf9tf1gtCKdpdvODiNUbtn5kFL9oow7wmeTaoLBn7hOS87c
+ NzZvWq3ldf6VO6xX/snB9EyjBd5Aub3qmJcf4COB6Lrwm0IWOMUU3Iohi9rRlbOZChTw
+ L8kz6HpUxPZX1Xt7eiLcI0tKR3pkYeHVVmquz3Y9/ID72ikQm/gZBtzUkpVXGRgiYb+z
+ Q0yg==
+X-Gm-Message-State: AOAM531IS9LqKJVJCJ4OfXlf1XJJNvUeekslIzZYFqc/Nb4Z3IKy5Yia
+ YsuIDp3AhU3vr39VzK6ID6A58sJQXdiWSF8t
+X-Google-Smtp-Source: ABdhPJzCs2qkJdOcxG1gMStIJspYDHMrPojq7IeeMAumBW8NieXB+ESECJaaAgiQOb8FSVM+PZnkxA==
+X-Received: by 2002:ab0:254a:: with SMTP id l10mr3395603uan.131.1644829288196; 
+ Mon, 14 Feb 2022 01:01:28 -0800 (PST)
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com.
+ [209.85.221.181])
+ by smtp.gmail.com with ESMTPSA id p196sm67285vke.27.2022.02.14.01.01.26
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 14 Feb 2022 00:54:36 -0800 (PST)
-Received: by mail-vk1-f171.google.com with SMTP id n14so8572043vkk.6;
- Mon, 14 Feb 2022 00:54:36 -0800 (PST)
-X-Received: by 2002:a05:6122:c8f:: with SMTP id
- ba15mr3731293vkb.39.1644828865522; 
- Mon, 14 Feb 2022 00:54:25 -0800 (PST)
+ Mon, 14 Feb 2022 01:01:27 -0800 (PST)
+Received: by mail-vk1-f181.google.com with SMTP id a6so8379958vkc.3;
+ Mon, 14 Feb 2022 01:01:26 -0800 (PST)
+X-Received: by 2002:a1f:7307:: with SMTP id o7mr818150vkc.0.1644829286141;
+ Mon, 14 Feb 2022 01:01:26 -0800 (PST)
 MIME-Version: 1.0
 References: <20220212201631.12648-1-s.shtylyov@omp.ru>
  <20220212201631.12648-2-s.shtylyov@omp.ru>
-In-Reply-To: <20220212201631.12648-2-s.shtylyov@omp.ru>
+ <20220214071351.pcvstrzkwqyrg536@pengutronix.de>
+In-Reply-To: <20220214071351.pcvstrzkwqyrg536@pengutronix.de>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 14 Feb 2022 09:54:14 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUPxX7Tja6BCjEb4KDobNFPMcM66Fk7Z+VsO7pgb8JnjA@mail.gmail.com>
-Message-ID: <CAMuHMdUPxX7Tja6BCjEb4KDobNFPMcM66Fk7Z+VsO7pgb8JnjA@mail.gmail.com>
+Date: Mon, 14 Feb 2022 10:01:14 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWi8gno_FBbc=AwsdRtDJik8_bANjQrrRtUOOBRjFN=KA@mail.gmail.com>
+Message-ID: <CAMuHMdWi8gno_FBbc=AwsdRtDJik8_bANjQrrRtUOOBRjFN=KA@mail.gmail.com>
 Subject: Re: [PATCH v2 1/2] platform: make platform_get_irq_optional() optional
-To: Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Corey Minyard <minyard@acm.org>, Oleksij Rempel <linux@rempel-privat.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- William Breathitt Gray <vilhelm.gray@gmail.com>,
- Mun Yew Tham <mun.yew.tham@intel.com>, 
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Lee Jones <lee.jones@linaro.org>, Kamal Dasu <kdasu.kdev@gmail.com>, 
- Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com,
- Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>, 
- Ulf Hansson <ulf.hansson@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Joakim Zhang <qiangqing.zhang@nxp.com>, 
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Kishon Vijay Abraham I <kishon@ti.com>, 
- Vinod Koul <vkoul@kernel.org>, Benson Leung <bleung@chromium.org>, 
- Guenter Roeck <groeck@chromium.org>, Zha Qipeng <qipeng.zha@intel.com>, 
- Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, 
- John Garry <john.garry@huawei.com>, Mark Brown <broonie@kernel.org>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, Amit Kucheria <amitk@kernel.org>, 
- Zhang Rui <rui.zhang@intel.com>, Jiri Slaby <jirislaby@kernel.org>, 
- Eric Auger <eric.auger@redhat.com>,
- Alex Williamson <alex.williamson@redhat.com>, 
- Cornelia Huck <cohuck@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- openipmi-developer@lists.sourceforge.net, linux-iio@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, 
- netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
- linux-phy@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
- linux-spi@vger.kernel.org, linux-mediatek@lists.infradead.org, 
- linux-pm@vger.kernel.org, linux-serial@vger.kernel.org, kvm@vger.kernel.org, 
+ Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Jiri Slaby <jirislaby@kernel.org>,
+ linux-iio@vger.kernel.org, 
+ Linus Walleij <linus.walleij@linaro.org>, Amit Kucheria <amitk@kernel.org>,
  alsa-devel@alsa-project.org, 
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+ Liam Girdwood <lgirdwood@gmail.com>, linux-phy@lists.infradead.org, 
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org, 
+ linux-i2c@vger.kernel.org, linux-gpio@vger.kernel.org, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, Guenter Roeck <groeck@chromium.org>,
+ linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>, 
+ openipmi-developer@lists.sourceforge.net, 
+ Peter Korsgaard <peter@korsgaard.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>, kvm@vger.kernel.org, 
+ Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Kishon Vijay Abraham I <kishon@ti.com>, bcm-kernel-feedback-list@broadcom.com, 
+ linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, 
+ Zhang Rui <rui.zhang@intel.com>, Jaroslav Kysela <perex@perex.cz>, 
+ platform-driver-x86@vger.kernel.org, linux-pwm@vger.kernel.org, 
+ Zha Qipeng <qipeng.zha@intel.com>, Corey Minyard <minyard@acm.org>,
+ linux-pm@vger.kernel.org, John Garry <john.garry@huawei.com>,
+ William Breathitt Gray <vilhelm.gray@gmail.com>, 
+ Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>, 
+ Alex Williamson <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>, 
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, 
+ Takashi Iwai <tiwai@suse.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ Benson Leung <bleung@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+ Mun Yew Tham <mun.yew.tham@intel.com>, Eric Auger <eric.auger@redhat.com>,
+ netdev@vger.kernel.org, 
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Cornelia Huck <cohuck@redhat.com>, 
+ linux-mmc@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>, 
+ Oleksij Rempel <linux@rempel-privat.de>, linux-renesas-soc@vger.kernel.org, 
+ Vinod Koul <vkoul@kernel.org>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>, 
+ Brian Norris <computersforpeace@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220214_005438_058122_CD42B4AA 
-X-CRM114-Status: GOOD (  38.48  )
+X-CRM114-CacheID: sfid-20220214_010129_255941_62492CC3 
+X-CRM114-Status: GOOD (  32.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,182 +117,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Sergey,
-
-On Sat, Feb 12, 2022 at 9:17 PM Sergey Shtylyov <s.shtylyov@omp.ru> wrote:
-> This patch is based on the former Andy Shevchenko's patch:
->
-> https://lore.kernel.org/lkml/20210331144526.19439-1-andriy.shevchenko@linux.intel.com/
->
-> Currently platform_get_irq_optional() returns an error code even if IRQ
-> resource simply has not been found.  It prevents the callers from being
-> error code agnostic in their error handling:
->
->         ret = platform_get_irq_optional(...);
->         if (ret < 0 && ret != -ENXIO)
->                 return ret; // respect deferred probe
->         if (ret > 0)
->                 ...we get an IRQ...
->
-> All other *_optional() APIs seem to return 0 or NULL in case an optional
-> resource is not available.  Let's follow this good example, so that the
-> callers would look like:
->
->         ret = platform_get_irq_optional(...);
->         if (ret < 0)
->                 return ret;
->         if (ret > 0)
->                 ...we get an IRQ...
->
-> Reported-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> ---
-> Changes in version 2:
-
-Thanks for the update!
-
->  drivers/base/platform.c                  | 60 +++++++++++++++---------
-
-The core change LGTM.
-
-I'm only looking at Renesas drivers below...
-
-> --- a/drivers/mmc/host/sh_mmcif.c
-> +++ b/drivers/mmc/host/sh_mmcif.c
-> @@ -1465,14 +1465,14 @@ static int sh_mmcif_probe(struct platform_device *pdev)
->         sh_mmcif_sync_reset(host);
->         sh_mmcif_writel(host->addr, MMCIF_CE_INT_MASK, MASK_ALL);
->
-> -       name = irq[1] < 0 ? dev_name(dev) : "sh_mmc:error";
-> +       name = irq[1] <= 0 ? dev_name(dev) : "sh_mmc:error";
-
-"== 0" should be sufficient here, if the code above would bail out
-on errors returned by platform_get_irq_optional(), which it currently
-doesn't do.
-As this adds missing error handling, this is to be fixed by a separate
-patch later?
-
->         ret = devm_request_threaded_irq(dev, irq[0], sh_mmcif_intr,
->                                         sh_mmcif_irqt, 0, name, host);
->         if (ret) {
->                 dev_err(dev, "request_irq error (%s)\n", name);
->                 goto err_clk;
->         }
-> -       if (irq[1] >= 0) {
-> +       if (irq[1] > 0) {
-
-OK.
-
->                 ret = devm_request_threaded_irq(dev, irq[1],
->                                                 sh_mmcif_intr, sh_mmcif_irqt,
->                                                 0, "sh_mmc:int", host);
-
-> --- a/drivers/phy/renesas/phy-rcar-gen3-usb2.c
-> +++ b/drivers/phy/renesas/phy-rcar-gen3-usb2.c
-> @@ -439,7 +439,7 @@ static int rcar_gen3_phy_usb2_init(struct phy *p)
->         u32 val;
->         int ret;
->
-> -       if (!rcar_gen3_is_any_rphy_initialized(channel) && channel->irq >= 0) {
-> +       if (!rcar_gen3_is_any_rphy_initialized(channel) && channel->irq > 0) {
->                 INIT_WORK(&channel->work, rcar_gen3_phy_usb2_work);
->                 ret = request_irq(channel->irq, rcar_gen3_phy_usb2_irq,
->                                   IRQF_SHARED, dev_name(channel->dev), channel);
-> @@ -486,7 +486,7 @@ static int rcar_gen3_phy_usb2_exit(struct phy *p)
->                 val &= ~USB2_INT_ENABLE_UCOM_INTEN;
->         writel(val, usb2_base + USB2_INT_ENABLE);
->
-> -       if (channel->irq >= 0 && !rcar_gen3_is_any_rphy_initialized(channel))
-> +       if (channel->irq > 0 && !rcar_gen3_is_any_rphy_initialized(channel))
->                 free_irq(channel->irq, channel);
->
->         return 0;
-
-LGTM, but note that all errors returned by platform_get_irq_optional()
-are currently ignored, even real errors, which should be propagated
-up.
-As this adds missing error handling, this is to be fixed by a separate
-patch later?
-
-> --- a/drivers/thermal/rcar_gen3_thermal.c
-> +++ b/drivers/thermal/rcar_gen3_thermal.c
-> @@ -432,6 +432,8 @@ static int rcar_gen3_thermal_request_irqs(struct rcar_gen3_thermal_priv *priv,
->                 irq = platform_get_irq_optional(pdev, i);
->                 if (irq < 0)
->                         return irq;
-> +               if (!irq)
-> +                       return -ENXIO;
-
-While correct, and preserving existing behavior, this looks strange
-to me.  Probably this should return zero instead (i.e. the check
-above should be changed to "<= 0"), and the caller should start caring
-about and propagating up real errors.
-As this adds missing error handling, this is to be fixed by a separate
-patch later?
-
->
->                 irqname = devm_kasprintf(dev, GFP_KERNEL, "%s:ch%d",
->                                          dev_name(dev), i);
-> diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
-> index fb65dc601b23..328ab074fd89 100644
-
-> --- a/drivers/tty/serial/sh-sci.c
-> +++ b/drivers/tty/serial/sh-sci.c
-
-I think you missed
-
-    #define SCIx_IRQ_IS_MUXED(port)                 \
-            ((port)->irqs[SCIx_ERI_IRQ] ==  \
-             (port)->irqs[SCIx_RXI_IRQ]) || \
-            ((port)->irqs[SCIx_ERI_IRQ] &&  \
-             ((port)->irqs[SCIx_RXI_IRQ] < 0))
-
-above? The last condition should become "<= 0".
-
-> @@ -1915,7 +1915,7 @@ static int sci_request_irq(struct sci_port *port)
->                          * Certain port types won't support all of the
->                          * available interrupt sources.
->                          */
-> -                       if (unlikely(irq < 0))
-> +                       if (unlikely(irq <= 0))
->                                 continue;
->                 }
->
-> @@ -1963,7 +1963,7 @@ static void sci_free_irq(struct sci_port *port)
->                  * Certain port types won't support all of the available
->                  * interrupt sources.
->                  */
-> -               if (unlikely(irq < 0))
-> +               if (unlikely(irq <= 0))
->                         continue;
->
->                 /* Check if already freed (irq was muxed) */
-> @@ -2875,7 +2875,7 @@ static int sci_init_single(struct platform_device *dev,
->         if (sci_port->irqs[0] < 0)
->                 return -ENXIO;
->
-> -       if (sci_port->irqs[1] < 0)
-> +       if (sci_port->irqs[1] <= 0)
->                 for (i = 1; i < ARRAY_SIZE(sci_port->irqs); i++)
->                         sci_port->irqs[i] = sci_port->irqs[0];
->
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVXdlLAoKT24gTW9uLCBGZWIgMTQsIDIwMjIgYXQgODoyOSBBTSBVd2UgS2xlaW5lLUvDtm5p
+Zwo8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPiBPbiBTYXQsIEZlYiAx
+MiwgMjAyMiBhdCAxMToxNjozMFBNICswMzAwLCBTZXJnZXkgU2h0eWx5b3Ygd3JvdGU6Cj4gPiBU
+aGlzIHBhdGNoIGlzIGJhc2VkIG9uIHRoZSBmb3JtZXIgQW5keSBTaGV2Y2hlbmtvJ3MgcGF0Y2g6
+Cj4gPgo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIxMDMzMTE0NDUyNi4xOTQz
+OS0xLWFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbS8KPiA+Cj4gPiBDdXJyZW50bHkg
+cGxhdGZvcm1fZ2V0X2lycV9vcHRpb25hbCgpIHJldHVybnMgYW4gZXJyb3IgY29kZSBldmVuIGlm
+IElSUQo+ID4gcmVzb3VyY2Ugc2ltcGx5IGhhcyBub3QgYmVlbiBmb3VuZC4gIEl0IHByZXZlbnRz
+IHRoZSBjYWxsZXJzIGZyb20gYmVpbmcKPiA+IGVycm9yIGNvZGUgYWdub3N0aWMgaW4gdGhlaXIg
+ZXJyb3IgaGFuZGxpbmc6Cj4gPgo+ID4gICAgICAgcmV0ID0gcGxhdGZvcm1fZ2V0X2lycV9vcHRp
+b25hbCguLi4pOwo+ID4gICAgICAgaWYgKHJldCA8IDAgJiYgcmV0ICE9IC1FTlhJTykKPiA+ICAg
+ICAgICAgICAgICAgcmV0dXJuIHJldDsgLy8gcmVzcGVjdCBkZWZlcnJlZCBwcm9iZQo+ID4gICAg
+ICAgaWYgKHJldCA+IDApCj4gPiAgICAgICAgICAgICAgIC4uLndlIGdldCBhbiBJUlEuLi4KPiA+
+Cj4gPiBBbGwgb3RoZXIgKl9vcHRpb25hbCgpIEFQSXMgc2VlbSB0byByZXR1cm4gMCBvciBOVUxM
+IGluIGNhc2UgYW4gb3B0aW9uYWwKPiA+IHJlc291cmNlIGlzIG5vdCBhdmFpbGFibGUuICBMZXQn
+cyBmb2xsb3cgdGhpcyBnb29kIGV4YW1wbGUsIHNvIHRoYXQgdGhlCj4gPiBjYWxsZXJzIHdvdWxk
+IGxvb2sgbGlrZToKPiA+Cj4gPiAgICAgICByZXQgPSBwbGF0Zm9ybV9nZXRfaXJxX29wdGlvbmFs
+KC4uLik7Cj4gPiAgICAgICBpZiAocmV0IDwgMCkKPiA+ICAgICAgICAgICAgICAgcmV0dXJuIHJl
+dDsKPiA+ICAgICAgIGlmIChyZXQgPiAwKQo+ID4gICAgICAgICAgICAgICAuLi53ZSBnZXQgYW4g
+SVJRLi4uCj4gPgo+ID4gUmVwb3J0ZWQtYnk6IE1hdHRoaWFzIFNjaGlmZmVyIDxtYXR0aGlhcy5z
+Y2hpZmZlckBldy50cS1ncm91cC5jb20+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBTZXJnZXkgU2h0eWx5
+b3YgPHMuc2h0eWx5b3ZAb21wLnJ1Pgo+Cj4gV2hpbGUgdGhpcyBwYXRjaCBpcyBiZXR0ZXIgdGhh
+biB2MSwgSSBzdGlsbCBkb24ndCBsaWtlIGl0IGZvciB0aGUKPiByZWFzb25zIGRpc2N1c3NlZCBm
+b3IgdjEuIChpLmUuIDAgaXNuJ3QgdXNhYmxlIGFzIGEgZHVtbXkgdmFsdWUgd2hpY2ggSQo+IGNv
+bnNpZGVyIHRoZSByZWFsIGFkdmFudGFnZSBmb3IgdGhlIG90aGVyIF9nZXRfb3B0aW9uYWwoKSBm
+dW5jdGlvbnMuKQoKSU1ITyB0aGUgcmVhbCBhZHZhbnRhZ2UgaXMgdGhlIHNpbXBsaWZpZWQgZXJy
+b3IgaGFuZGxpbmcsIHdoaWNoIGlzIHRoZQphcmVhIHdoZXJlIG1vc3Qgb2YgdGhlIGN1cnJlbnQg
+YnVncyBhcmUuIFNvIEkgYXBwbGF1ZCB0aGUgY29yZSBjaGFuZ2UuCgpBbHNvIElNSE8sIHRoZSBk
+dW1teSB2YWx1ZSBoYW5kbGluZyBpcyBhIHJlZCBoZXJyaW5nLiAgQ29udHJhcnkgdG8Kb3B0aW9u
+YWwgY2xvY2tzIGFuZCByZXNldHMsIGEgbWlzc2luZyBvcHRpb25hbCBpbnRlcnJ1cHQgZG9lcyBu
+b3QKYWx3YXlzIG1lYW4gdGhlcmUgaXMgbm90aGluZyB0byBkbzogaW4gY2FzZSBvZiBwb2xsaW5n
+LCBzb21ldGhpbmcKZWxzZSBtdXN0IGRlZmluaXRlbHkgYmUgZG9uZS4gIFNvIGV2ZW4gaWYgcmVx
+dWVzdF9pcnEoKSB3b3VsZCBhY2NlcHQKYSBkdW1teSBpbnRlcnJ1cHQgemVybyBhbmQganVzdCBk
+byBub3RoaW5nLCBpdCB3b3VsZCBnaXZlIHRoZSBmYWxzZQppbXByZXNzaW9uIHRoYXQgdGhhdCBp
+cyBhbGwgdGhlcmUgaXMgdG8gZG8sIHdoaWxlIGFuIGFjdHVhbCBjaGVjawpmb3IgemVybyB3aXRo
+IHBvbGxpbmcgY29kZSBoYW5kbGluZyBtYXkgc3RpbGwgbmVlZCB0byBiZSBwcmVzZW50LAp0aHVz
+IGxlYWRpbmcgdG8gbW9yZSBub3QgbGVzcyBidWdzLgoKPiBBcGFydCBmcm9tIHRoYXQsIEkgdGhp
+bmsgdGhlIHN1YmplY3QgaXMgYmFkbHkgY2hvc2VuLiBXaXRoICJNYWtlCj4gc29tZWZ1bmMoKSBv
+cHRpb25hbCIgSSB3b3VsZCBleHBlY3QgdGhhdCB5b3UgaW50cm9kdWNlIGEgS2NvbmZpZyBzeW1i
+b2wKPiB0aGF0IHJlc3VsdHMgaW4gdGhlIGZ1bmN0aW9uIG5vdCBiZWluZyBhdmFpbGFibGUgd2hl
+biBkaXNhYmxlZC4KCkFncmVlZC4KCkdye29ldGplLGVldGluZ31zLAoKICAgICAgICAgICAgICAg
+ICAgICAgICAgR2VlcnQKCi0tCkdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2Yg
+TGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcKCkluIHBlcnNvbmFsIGNv
+bnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2Vy
+LiBCdXQKd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFt
+bWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0LgogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIC0tIExpbnVzIFRvcnZhbGRzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
