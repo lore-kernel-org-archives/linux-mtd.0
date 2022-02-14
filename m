@@ -4,101 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ECE0C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Feb 2022 14:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B50B0C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Feb 2022 16:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YBfwubnY50ZXllGfcDyTAiUOcQ+Tv5C6IoF8Z0I4kBQ=; b=hXvRoIOlYW2OJSB46fnzhDzCpS
-	JFTxvCRiDve3YqejauKwytzS37RYChloMlFKN1kFkWf7NeQ+GwGlOlYYp2pJVxrVc7Wfk+q9DTn+Z
-	B6+kmW0qdL8bCXkLyXp293zLNnG2/WRWOXqL5n8YPJJGte8p91+poMMmIHQv9jQWvxXgEo4QacYie
-	fdW2jGaC00RW5LEoY6AH4E4vExn25egBR+Zee5ZCU5VLe9HWs6skRrX2sb5yJdzyGX2p83fdhXaDC
-	BXreq8zkruMDWvv0Uv/GV0DnxZa7f/2aunNEZrpICh7iLmBVqt/aO7u3YbRP09CuTneXq7wZwDvBQ
-	nMQw8fJQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KfwqEF2pnE6gjTZfbxJl3CI6GP3xFyoKx6myRKs5hnw=; b=LP1dtHojg+UjGb
+	xIuYFTaIlx9ZwqIKzP4HaoW39yzLzhTpYNyfrsjTPdv4CT0+l/niojwwJksV2bFVPG0O31KHfwHXn
+	KPesMVkATmxUasPxhL6MnyApr9bexHTyKjEUArVbeIEj+T55NZEDmuDlBCPhxfOfzXovpZo95vaN9
+	P5yu6GsVzviW/Wesk2XkKCiJzDHxWzK+csWvaQQvXxQKH5kQ1yYSHZ2vel4KlQvufZ714eLE0tjOM
+	YRyS5LuaPKgl+p4LSNkPBRcCpfRGNWJj18iJ3qyba8sD8j8CsokhlEAA5KLW7sV/17Jm46H/fT4i+
+	L17lkiqFXlV1ZPJnNbxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nJbuc-00FXwM-5k; Mon, 14 Feb 2022 14:01:06 +0000
+	id 1nJe7n-00FzJC-Ow; Mon, 14 Feb 2022 16:22:51 +0000
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nJbuW-00FXuf-4N
- for linux-mtd@lists.infradead.org; Mon, 14 Feb 2022 14:01:02 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1nJbu2-0007Aw-Jd; Mon, 14 Feb 2022 15:00:30 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nJbu1-00GYgZ-R1; Mon, 14 Feb 2022 15:00:29 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nJbu0-0038OM-4h; Mon, 14 Feb 2022 15:00:28 +0100
-Date: Mon, 14 Feb 2022 15:00:27 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, kvm@vger.kernel.org,
- "Rafael J. Wysocki" <rafael@kernel.org>, linux-iio@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>,
- Amit Kucheria <amitk@kernel.org>, alsa-devel@alsa-project.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Guenter Roeck <groeck@chromium.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-phy@lists.infradead.org,
- Oleksij Rempel <linux@rempel-privat.de>, Lee Jones <lee.jones@linaro.org>,
- "David S. Miller" <davem@davemloft.net>,
- Peter Korsgaard <peter@korsgaard.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
- Joakim Zhang <qiangqing.zhang@nxp.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Jiri Slaby <jirislaby@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Kishon Vijay Abraham I <kishon@ti.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-serial@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- platform-driver-x86@vger.kernel.org, linux-pwm@vger.kernel.org,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Corey Minyard <minyard@acm.org>, linux-pm@vger.kernel.org,
- John Garry <john.garry@huawei.com>,
- William Breathitt Gray <vilhelm.gray@gmail.com>,
- Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
- Alex Williamson <alex.williamson@redhat.com>,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- Eric Auger <eric.auger@redhat.com>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- openipmi-developer@lists.sourceforge.net, Jaroslav Kysela <perex@perex.cz>,
- Benson Leung <bleung@chromium.org>, linux-arm-kernel@lists.infradead.org,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Mun Yew Tham <mun.yew.tham@intel.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- Zha Qipeng <qipeng.zha@intel.com>, Richard Weinberger <richard@nod.at>,
- Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- Brian Norris <computersforpeace@gmail.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] platform: make platform_get_irq_optional() optional
-Message-ID: <20220214140027.npw6ddrxklarb6wp@pengutronix.de>
-References: <20220212201631.12648-1-s.shtylyov@omp.ru>
- <20220212201631.12648-2-s.shtylyov@omp.ru>
- <20220214071351.pcvstrzkwqyrg536@pengutronix.de>
- <CAMuHMdWi8gno_FBbc=AwsdRtDJik8_bANjQrrRtUOOBRjFN=KA@mail.gmail.com>
+ id 1nJe7i-00FzG1-So
+ for linux-mtd@lists.infradead.org; Mon, 14 Feb 2022 16:22:50 +0000
+Received: from gallifrey.ext.pengutronix.de
+ ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+ by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <a.fatoum@pengutronix.de>)
+ id 1nJe7f-0008Lp-1r; Mon, 14 Feb 2022 17:22:43 +0100
+Message-ID: <579eab10-594c-d6b2-0ddb-ea6ab8e02856@pengutronix.de>
+Date: Mon, 14 Feb 2022 17:22:34 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWi8gno_FBbc=AwsdRtDJik8_bANjQrrRtUOOBRjFN=KA@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [BUG] mtd: cfi_cmdset_0002: write regression since v4.17-rc1
+Content-Language: en-US
+To: Tokunori Ikegami <ikegami.t@gmail.com>,
+ Thorsten Leemhuis <regressions@leemhuis.info>,
+ linux-mtd@lists.infradead.org, Joakim.Tjernlund@infinera.com,
+ miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linuxppc-dev@lists.ozlabs.org
+References: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
+ <dff2abcc-5813-2f2c-35ba-f03cd1f35ac3@leemhuis.info>
+ <e11b76dc-5539-fb7e-da1c-a5005713d6b0@gmail.com>
+ <3dbbcee5-81fc-cdf5-9f8b-b6ccb95beddc@pengutronix.de>
+ <0f2cfcac-83ca-51a9-f92c-ff6495dca1d7@gmail.com>
+ <b231b498-c8d2-28af-ce66-db8c168047f7@pengutronix.de>
+ <66ee55d9-4f20-6722-6097-e53c2108ea07@gmail.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <66ee55d9-4f20-6722-6097-e53c2108ea07@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220214_060100_199955_95CB0D52 
-X-CRM114-Status: GOOD (  19.15  )
+X-CRM114-CacheID: sfid-20220214_082246_998168_CF5B0DEA 
+X-CRM114-Status: GOOD (  24.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,75 +77,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5804750476206090014=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hello Tokunori-san,
 
---===============5804750476206090014==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="mxy3a336cmbyaspi"
-Content-Disposition: inline
+On 13.02.22 17:47, Tokunori Ikegami wrote:
+> Hi Ahmad-san,
+> 
+> Thanks for your confirmations. Sorry for late to reply.
 
+No worries. I appreciate you taking the time.
 
---mxy3a336cmbyaspi
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Could you please try the patch attached to disable the chip_good() change as before?
+> I think this should work for S29GL964N since the chip_ready() is used and works as mentioned.
 
-Hello Geert,
+yes, this resolves my issue:
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-On Mon, Feb 14, 2022 at 10:01:14AM +0100, Geert Uytterhoeven wrote:
-> Also IMHO, the dummy value handling is a red herring.  Contrary to
-> optional clocks and resets, a missing optional interrupt does not
-> always mean there is nothing to do: in case of polling, something
-> else must definitely be done.=20
+>>>> Doesn't seem to be a buffered write issue here though as the writes
+>>>> did work fine before dfeae1073583. Any other ideas?
+>>> At first I thought the issue is possible to be resolved by using the word write instead of the buffered writes.
+>>> Now I am thinking to disable the changes dfeae1073583 partially with any condition if possible.
+>> What seems to work for me is checking if chip_good or chip_ready
+>> and map_word is equal to 0xFF. I can't justify why this is ok though.
+>> (Worst case bus is floating at this point of time and Hi-Z is read
+>> as 0xff on CPU data lines...)
+> 
+> Sorry I am not sure about this.
+> I thought the chip_ready() itself is correct as implemented as the data sheet in the past.
+> But it did not work correctly so changed to use chip_good() instead as it is also correct.
 
-Note this is exactly why I don't like this change. I'd even go so far
-and claim that "a missing optional interrupt hardly ever means there is
-nothing to do".
+What exactly in the datasheet makes you believe chip_good is not appropriate?
 
-> So even if request_irq() would accept a dummy interrupt zero and just
-> do nothing, it would give the false impression that that is all there
-> is to do, while an actual check for zero with polling code handling
-> may still need to be present, thus leading to more not less bugs.
-
-Yes, a dummy irq value will just not be possible.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---mxy3a336cmbyaspi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmIKYHgACgkQwfwUeK3K
-7AkfUwf+PjHT71nPQKjE5hOrUJs08gV3dPyFE+Lky6h3jHjtzp+VwX3waHB3n4Iy
-r1fdR+06wiK9BWaTD2PdT8FdEYo9n0yQlTx+03PQXtLFnutK7QSb0fBMQs7sVAfa
-nxp4CK8a1wlf0mzj1zSaeiGm6BYTsoJxoblrZ8hWbpbiVfhF6Eo5zXr0toHMI0WF
-QOhqgWNpQjHlpU+2paIvbOnBpNxJaXj3cycd6036NHAFQvZN5xrDdqHa+By0jeU0
-bm8NmjRjwHCqvhBpRYUglt+KhyRYWWTC/83WFKviLwnPV7tnkh5ZhJE50aUUp1Lr
-hyNbZjQKG8NIOTLNKMgY4nM0uni8jg==
-=vr2/
------END PGP SIGNATURE-----
-
---mxy3a336cmbyaspi--
+Cheers,
+Ahmad
 
 
---===============5804750476206090014==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5804750476206090014==--
-
