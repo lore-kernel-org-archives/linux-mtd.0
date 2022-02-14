@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B50B0C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Feb 2022 16:23:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 807E0C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Feb 2022 18:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KfwqEF2pnE6gjTZfbxJl3CI6GP3xFyoKx6myRKs5hnw=; b=LP1dtHojg+UjGb
-	xIuYFTaIlx9ZwqIKzP4HaoW39yzLzhTpYNyfrsjTPdv4CT0+l/niojwwJksV2bFVPG0O31KHfwHXn
-	KPesMVkATmxUasPxhL6MnyApr9bexHTyKjEUArVbeIEj+T55NZEDmuDlBCPhxfOfzXovpZo95vaN9
-	P5yu6GsVzviW/Wesk2XkKCiJzDHxWzK+csWvaQQvXxQKH5kQ1yYSHZ2vel4KlQvufZ714eLE0tjOM
-	YRyS5LuaPKgl+p4LSNkPBRcCpfRGNWJj18iJ3qyba8sD8j8CsokhlEAA5KLW7sV/17Jm46H/fT4i+
-	L17lkiqFXlV1ZPJnNbxA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zHw1mhZsjBMFqgfBCoFRLhnb+6lqtnh8Yx0oqAGE9eA=; b=V6bXnAjUk+tG5U
+	WDIUwA1mWq/aLd1jpkZe9Ch/yyGLc+hjCpgppupaLX4McMewPEveCNSOjXsD7WhUZtrSf/5oFuqlr
+	XXNpZw4oP4dexKGogeKR9A6QYmaKrd8btiVuU79zvmS/pHlihh4CtfAnNPpyEfjCoViMNbtsHS4Qa
+	NaAFUsY17Ui1w+TeezuRvVUDbARj8+/KX8dFN1xXDw9XcBMR8eEdqKzQh2bSozswrzijxN/bL30UQ
+	b7pwJdRTPOE3m5g/pKn8Re2rffdtrD4myZ4f3jRAmChuT6yVQ/nn5gZ9zHnJ91NOSK1+D9JfZSmWZ
+	zodOIKrh6s8ag9rB0SzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nJe7n-00FzJC-Ow; Mon, 14 Feb 2022 16:22:51 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1nJfyU-00GVA4-RO; Mon, 14 Feb 2022 18:21:22 +0000
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nJe7i-00FzG1-So
- for linux-mtd@lists.infradead.org; Mon, 14 Feb 2022 16:22:50 +0000
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
- by metis.ext.pengutronix.de with esmtp (Exim 4.92)
- (envelope-from <a.fatoum@pengutronix.de>)
- id 1nJe7f-0008Lp-1r; Mon, 14 Feb 2022 17:22:43 +0100
-Message-ID: <579eab10-594c-d6b2-0ddb-ea6ab8e02856@pengutronix.de>
-Date: Mon, 14 Feb 2022 17:22:34 +0100
+ id 1nJfyR-00GV9P-N2
+ for linux-mtd@lists.infradead.org; Mon, 14 Feb 2022 18:21:21 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id
+ t4-20020a17090a510400b001b8c4a6cd5dso16623590pjh.5
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Feb 2022 10:21:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=tgYmFq+95uC7Wn8/JNQ2cfhyWLRlrdB88XuOoPl7UX8=;
+ b=f0T/87WqAIOoeQF29/PUeX/8lthD2hpG9ioMEs6a81uTCNCq6/QVxUJRdBNGXfW9Ya
+ O2HOcl8CS4KvNaldd0YjdMeRnKlvZVS79ui3XUzkithYfKeIp4xxJkBYmsBdor0FkALb
+ CgcmQNOYX1RyRbHja8amCx/58jzPsgXi3iKpF+vg7RvFe0ob3725iRgNFa3w9/Mw+8Zb
+ 79Qj/s0+p/x3XIQBRkqDYczDfRwrfYTJp0uERV6p+cgU57hi9QE6zFSGIPp1TpovP38y
+ yR5/GyIWjmKco6G4vRaR+lZd+Ru8xrR/oe8vslEWJsQ3moJDFn0WFQx7u8hy7YIW4Wlh
+ yAUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=tgYmFq+95uC7Wn8/JNQ2cfhyWLRlrdB88XuOoPl7UX8=;
+ b=D/q22oyCIfjGh4ZO4C6rEmBNb2rwiDk1vnftkbSSXS+0fPViLdi7DToNYXY+w/68GJ
+ UcxqGVyvNEavqQkIKZhAL0G8XkWkwN864SmvWNN1t7lyQN+e+6xCWUByAYXhQxKUcRVK
+ rouT7aatR1DeCHIK9I8XJBRJ+RalyDryfpH3Mi6yToQJBIjCUT1PF/IC1CJfPm4VffpT
+ 8SWkmcbXC9Jc5MBK47xR0Y66mZw6cxE8tdV03vdyBbFnWnRch9ra2MJdOq6774/wPwyL
+ tm2cQQVPyoPTF5TNzWmW9o37yeFH4rpM0IV5vWStQh7YensL4FXITO1U2XiWk7aQPzhx
+ ieUg==
+X-Gm-Message-State: AOAM531g8ROu7zf4rrNBLivq8pidDqtC+FATvMD8w9TsFP1Sbz+4oQHQ
+ k9qUYSeRfiV8ehyjrjOmokUvzB/oFI8=
+X-Google-Smtp-Source: ABdhPJxHNzkWJDX3z3nzhXgOMw+cbZLSOR9Urkz5t1C04CcPgX6fkC8D63oUEw4Wa5+bM+5BEvUOBQ==
+X-Received: by 2002:a17:90a:8804:: with SMTP id
+ s4mr1022298pjn.129.1644862878264; 
+ Mon, 14 Feb 2022 10:21:18 -0800 (PST)
+Received: from tokunori-desktop.flets-east.jp
+ ([240b:10:2720:5500:406b:fe3e:f13:1bb6])
+ by smtp.gmail.com with ESMTPSA id q17sm242239pgh.58.2022.02.14.10.21.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 14 Feb 2022 10:21:17 -0800 (PST)
+From: Tokunori Ikegami <ikegami.t@gmail.com>
+To: vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org, Tokunori Ikegami <ikegami.t@gmail.com>,
+ Ahmad Fatoum <a.fatoum@pengutronix.de>, stable@vger.kernel.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: Use chip_ready() for write on S29GL064N
+Date: Tue, 15 Feb 2022 03:20:11 +0900
+Message-Id: <20220214182011.8493-1-ikegami.t@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [BUG] mtd: cfi_cmdset_0002: write regression since v4.17-rc1
-Content-Language: en-US
-To: Tokunori Ikegami <ikegami.t@gmail.com>,
- Thorsten Leemhuis <regressions@leemhuis.info>,
- linux-mtd@lists.infradead.org, Joakim.Tjernlund@infinera.com,
- miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- linuxppc-dev@lists.ozlabs.org
-References: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
- <dff2abcc-5813-2f2c-35ba-f03cd1f35ac3@leemhuis.info>
- <e11b76dc-5539-fb7e-da1c-a5005713d6b0@gmail.com>
- <3dbbcee5-81fc-cdf5-9f8b-b6ccb95beddc@pengutronix.de>
- <0f2cfcac-83ca-51a9-f92c-ff6495dca1d7@gmail.com>
- <b231b498-c8d2-28af-ce66-db8c168047f7@pengutronix.de>
- <66ee55d9-4f20-6722-6097-e53c2108ea07@gmail.com>
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <66ee55d9-4f20-6722-6097-e53c2108ea07@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220214_082246_998168_CF5B0DEA 
-X-CRM114-Status: GOOD (  24.34  )
+X-CRM114-CacheID: sfid-20220214_102119_783987_9804349C 
+X-CRM114-Status: GOOD (  22.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,45 +88,224 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Tokunori-san,
+The regression issue has been caused on S29GL064N and reported it.
+Also the change mentioned is to use chip_good() for buffered write.
+So disable the change on S29GL064N and use chip_ready() as before.
 
-On 13.02.22 17:47, Tokunori Ikegami wrote:
-> Hi Ahmad-san,
-> 
-> Thanks for your confirmations. Sorry for late to reply.
-
-No worries. I appreciate you taking the time.
-
-> Could you please try the patch attached to disable the chip_good() change as before?
-> I think this should work for S29GL964N since the chip_ready() is used and works as mentioned.
-
-yes, this resolves my issue:
+Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
 Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 105 ++++++++++++++++------------
+ 1 file changed, 59 insertions(+), 46 deletions(-)
 
->>>> Doesn't seem to be a buffered write issue here though as the writes
->>>> did work fine before dfeae1073583. Any other ideas?
->>> At first I thought the issue is possible to be resolved by using the word write instead of the buffered writes.
->>> Now I am thinking to disable the changes dfeae1073583 partially with any condition if possible.
->> What seems to work for me is checking if chip_good or chip_ready
->> and map_word is equal to 0xFF. I can't justify why this is ok though.
->> (Worst case bus is floating at this point of time and Hi-Z is read
->> as 0xff on CPU data lines...)
-> 
-> Sorry I am not sure about this.
-> I thought the chip_ready() itself is correct as implemented as the data sheet in the past.
-> But it did not work correctly so changed to use chip_good() instead as it is also correct.
-
-What exactly in the datasheet makes you believe chip_good is not appropriate?
-
-Cheers,
-Ahmad
-
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a761134fd3be..a0dfc8ace899 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -48,6 +48,7 @@
+ #define SST49LF040B		0x0050
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
++#define S29GL064N_MN12		0x0c01
+ 
+ /*
+  * Status Register bit description. Used by flash devices that don't
+@@ -109,6 +110,8 @@ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
+ 	.module		= THIS_MODULE
+ };
+ 
++static bool use_chip_good_for_write;
++
+ /*
+  * Use status register to poll for Erase/write completion when DQ is not
+  * supported. This is indicated by Bit[1:0] of SoftwareFeatures field in
+@@ -283,6 +286,17 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
+ }
+ #endif /* !FORCE_WORD_WRITE */
+ 
++static void fixup_use_chip_good_for_write(struct mtd_info *mtd)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++
++	if (cfi->mfr == CFI_MFR_AMD && cfi->id == S29GL064N_MN12)
++		return;
++
++	use_chip_good_for_write = true;
++}
++
+ /* Atmel chips don't use the same PRI format as AMD chips */
+ static void fixup_convert_atmel_pri(struct mtd_info *mtd)
+ {
+@@ -462,7 +476,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_AMD, 0x0056, fixup_use_secsi },
+ 	{ CFI_MFR_AMD, 0x005C, fixup_use_secsi },
+ 	{ CFI_MFR_AMD, 0x005F, fixup_use_secsi },
+-	{ CFI_MFR_AMD, 0x0c01, fixup_s29gl064n_sectors },
++	{ CFI_MFR_AMD, S29GL064N_MN12, fixup_s29gl064n_sectors },
+ 	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors },
+ 	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors },
+ 	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors },
+@@ -474,6 +488,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ #if !FORCE_WORD_WRITE
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers },
+ #endif
++	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_chip_good_for_write },
+ 	{ 0, 0, NULL }
+ };
+ static struct cfi_fixup jedec_fixup_table[] = {
+@@ -801,42 +816,61 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 	return NULL;
+ }
+ 
+-/*
+- * Return true if the chip is ready.
+- *
+- * Ready is one of: read mode, query mode, erase-suspend-read mode (in any
+- * non-suspended sector) and is indicated by no toggle bits toggling.
+- *
+- * Note that anything more complicated than checking if no bits are toggling
+- * (including checking DQ5 for an error status) is tricky to get working
+- * correctly and is therefore not done	(particularly with interleaved chips
+- * as each chip must be checked independently of the others).
+- */
+-static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
+-			       unsigned long addr)
++static int __xipram chip_check(struct map_info *map, struct flchip *chip,
++			       unsigned long addr, map_word *expected)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	map_word d, t;
++	map_word oldd, curd;
++	int ret;
+ 
+ 	if (cfi_use_status_reg(cfi)) {
+ 		map_word ready = CMD(CFI_SR_DRB);
++
+ 		/*
+ 		 * For chips that support status register, check device
+ 		 * ready bit
+ 		 */
+ 		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
+ 				 cfi->device_type, NULL);
+-		d = map_read(map, addr);
++		curd = map_read(map, addr);
+ 
+-		return map_word_andequal(map, d, ready, ready);
++		return map_word_andequal(map, curd, ready, ready);
+ 	}
+ 
+-	d = map_read(map, addr);
+-	t = map_read(map, addr);
++	oldd = map_read(map, addr);
++	curd = map_read(map, addr);
++
++	ret = map_word_equal(map, oldd, curd);
++
++	if (!ret || !expected)
++		return ret;
++
++	return map_word_equal(map, curd, *expected);
++}
++
++static int __xipram chip_good_for_write(struct map_info *map,
++					struct flchip *chip, unsigned long addr,
++					map_word expected)
++{
++	if (use_chip_good_for_write)
++		return chip_check(map, chip, addr, &expected);
+ 
+-	return map_word_equal(map, d, t);
++	return chip_check(map, chip, addr, NULL);
+ }
+ 
++/*
++ * Return true if the chip is ready.
++ *
++ * Ready is one of: read mode, query mode, erase-suspend-read mode (in any
++ * non-suspended sector) and is indicated by no toggle bits toggling.
++ *
++ * Note that anything more complicated than checking if no bits are toggling
++ * (including checking DQ5 for an error status) is tricky to get working
++ * correctly and is therefore not done	(particularly with interleaved chips
++ * as each chip must be checked independently of the others).
++ */
++#define chip_ready(map, chip, addr) chip_check(map, chip, addr, NULL)
++
+ /*
+  * Return true if the chip is ready and has the correct value.
+  *
+@@ -855,28 +889,7 @@ static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
+ static int __xipram chip_good(struct map_info *map, struct flchip *chip,
+ 			      unsigned long addr, map_word expected)
+ {
+-	struct cfi_private *cfi = map->fldrv_priv;
+-	map_word oldd, curd;
+-
+-	if (cfi_use_status_reg(cfi)) {
+-		map_word ready = CMD(CFI_SR_DRB);
+-
+-		/*
+-		 * For chips that support status register, check device
+-		 * ready bit
+-		 */
+-		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
+-				 cfi->device_type, NULL);
+-		curd = map_read(map, addr);
+-
+-		return map_word_andequal(map, curd, ready, ready);
+-	}
+-
+-	oldd = map_read(map, addr);
+-	curd = map_read(map, addr);
+-
+-	return	map_word_equal(map, oldd, curd) &&
+-		map_word_equal(map, curd, expected);
++	return chip_check(map, chip, addr, &expected);
+ }
+ 
+ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
+@@ -1699,7 +1712,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
+ 		 * "chip_good" to avoid the failure due to scheduling.
+ 		 */
+ 		if (time_after(jiffies, timeo) &&
+-		    !chip_good(map, chip, adr, datum)) {
++		    !chip_good_for_write(map, chip, adr, datum)) {
+ 			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
+ 			xip_disable(map, chip, adr);
+@@ -1707,7 +1720,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
+ 			break;
+ 		}
+ 
+-		if (chip_good(map, chip, adr, datum)) {
++		if (chip_good_for_write(map, chip, adr, datum)) {
+ 			if (cfi_check_err_status(map, chip, adr))
+ 				ret = -EIO;
+ 			break;
+@@ -1979,14 +1992,14 @@ static int __xipram do_write_buffer_wait(struct map_info *map,
+ 		 * "chip_good" to avoid the failure due to scheduling.
+ 		 */
+ 		if (time_after(jiffies, timeo) &&
+-		    !chip_good(map, chip, adr, datum)) {
++		    !chip_good_for_write(map, chip, adr, datum)) {
+ 			pr_err("MTD %s(): software timeout, address:0x%.8lx.\n",
+ 			       __func__, adr);
+ 			ret = -EIO;
+ 			break;
+ 		}
+ 
+-		if (chip_good(map, chip, adr, datum)) {
++		if (chip_good_for_write(map, chip, adr, datum)) {
+ 			if (cfi_check_err_status(map, chip, adr))
+ 				ret = -EIO;
+ 			break;
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.32.0
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
