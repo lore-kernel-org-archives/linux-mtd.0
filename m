@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43F21C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Feb 2022 21:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7E34C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Feb 2022 07:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WvMVle7BP2k1rHMTNPNxclTCh4cAA0hF51nN/9K8qcI=; b=J4ypNK0HV7JtSt
-	vjLgSHJL1LDdc0q8esamioe7x+PF/T165Bz3w1cs4GLyQWhB1DjkfhI3HFovSDrPQ0fMDfusB+Xhj
-	S9NDrWi+Teof1/6vLZIHgWftVT5T1UYSmrKRmrkxyEaquuPVZQo/MgZiOaETEOUDe+5fhszZe/Y60
-	pSkIjK1yZ1fuFwUHL9pqRBxu/b0d9jEBKArHyWUy98qIDjOgtkQytiSSL1SmJryiLsGckuQtpvlPk
-	3GxplrSYHmSKcV6G0ESxUXkx7mOVcD6v2f0ml7VYTP2wzgO6vWwJPe4fPJRzEv+/rKuHGXvMHIXjP
-	qXwe5LoZczw/7S6uj8LA==;
+	List-Owner; bh=Ey3BIzY2GrREZpvOoNABtikt8nfjzDT4Ob2D5086gFc=; b=DmS54Z9DIvykC3
+	5KTQU2VJaTjdd995BFTkgqPopNzNqdKXJe76JULLkq9p/HDatjooqlVY+bBjCVSwJfAbMZXXklH/e
+	4FqvZFVbEscG3V4q24pcMvN8mNKgB0Rm3ThP28xohfKiYoo2tFb2uXsJMuL73LgouGUM4YADYepkl
+	0nu11F9N6ggngL3zzTpZOaxtAMTAn+YLniPUWRxBSUa5G2dJzxJJGISAeDnfZ6Mc8dvHVA9H0tIG5
+	mSBgs9v7XygIifFgMMWD/avOZuGavwiXpIPWXrgA92/e7d+ylcukQDn4QSIF+s8zNp93UzhuxC/C9
+	TdeOz0Rr+GwHVlWsdIMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nK52D-004duP-VZ; Tue, 15 Feb 2022 21:06:54 +0000
-Received: from mail-il1-f176.google.com ([209.85.166.176])
+	id 1nKEKS-005n8a-8l; Wed, 16 Feb 2022 07:02:20 +0000
+Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nK529-004dsh-Pl; Tue, 15 Feb 2022 21:06:51 +0000
-Received: by mail-il1-f176.google.com with SMTP id p11so15846296ils.1;
- Tue, 15 Feb 2022 13:06:49 -0800 (PST)
+ id 1nKEKP-005n86-QC; Wed, 16 Feb 2022 07:02:19 +0000
+Received: by mail-qt1-x831.google.com with SMTP id r9so1294321qta.1;
+ Tue, 15 Feb 2022 23:02:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jms.id.au; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=tQsez3rBBuWL5P/PS1iF/3TVpjfzLMW/EONt+f9CiMQ=;
+ b=DEQtO8Rec0/pciyxC16dz5iaxsu3WmlWt3NyB5nPzDtrs1WiDLQmd6+hlVBLEnqVpu
+ 1mebox8SJRxbZTV/O6jAS12dOueg+4F90FldQTblOj89+hrNeAHr+LIeLNdAliI56beR
+ pJC3N2/CeNgNv8Gka5T210xTzD/ClYHwqrGc4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=B1+ZJcMtyBX3FqM5G6Lma2k2jOm6NmZZ5jVlCb7Pess=;
- b=ihh5mujFLArJmZlnK2qluyCvw2hqvyY1lpJO+q8iWLer7de/TdUGZ94fT/xeLKv+DT
- sA4uWQV+lJyT3xbUIlwUezKTDcDvyVQETWXSNarVwFd7d+X8jaybd0qrRekp5mxn3FzT
- ofzRaZa07DbNhLo0ruZfgiltfL7Oz9e+NPCnUV/lmtVT7P3LB0ZOTMG23xuyuA7+N8vD
- UvijjN8yRCSe9D5ZBg51OmyV7a2sKJBcrwCZl/0siNsYVBDPE/k+WDUOjpx25X19OmQS
- W/G4H4pleIcvdpNEk8KEAlIHXJL13CLAqf/2c7ZkIe5qltF2xMgUE2YN4fEJ+ZXQg0fy
- Wd7g==
-X-Gm-Message-State: AOAM5301jcUiHSRiHZWllEHfWopSHxWVDy1avEa2o1kv+fj70wGweY/e
- srR6SAcKJi/v0NzuioN+hg==
-X-Google-Smtp-Source: ABdhPJx/uzMzNSMXMusiikoo4Gc24MlhELBj8Wua6sRn0ptpOYyIhLnne+CKrcXbcNur4Z/7s9dxng==
-X-Received: by 2002:a05:6e02:20c6:: with SMTP id
- 6mr569254ilq.242.1644959208389; 
- Tue, 15 Feb 2022 13:06:48 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.250])
- by smtp.gmail.com with ESMTPSA id y29sm3877610iox.46.2022.02.15.13.06.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Feb 2022 13:06:47 -0800 (PST)
-Received: (nullmailer pid 3921594 invoked by uid 1000);
- Tue, 15 Feb 2022 21:06:45 -0000
-Date: Tue, 15 Feb 2022 15:06:45 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- Mark Brown <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-aspeed@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@aj.id.au>, Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] dt-bindings: spi: Add Aspeed SMC controllers
- device tree binding
-Message-ID: <YgwV5ZGCbrNhlk0s@robh.at.kernel.org>
-References: <20220214094231.3753686-1-clg@kaod.org>
- <20220214094231.3753686-3-clg@kaod.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=tQsez3rBBuWL5P/PS1iF/3TVpjfzLMW/EONt+f9CiMQ=;
+ b=6V7RnuCy8Q/crwuV1NXmz8GQToFgSam5l5tOtego5o7gLtFkclVffe/PPf5vDaTvvY
+ Q8oEm8j+hMcm7ioW+oDp7aIsLoYM131Iy/z7ilswvb9X7gL0bLyeKG+OtOiywrtjGFAE
+ Jj7HIxhdbBzcLG1o0N7NtG3z76rw+VJf7+oPnK3SQ+hCh9kbf5PKRiSPfkCylwB9fRep
+ ReTMUbs9tUwWdKH9NgyQesYq+WsCasYClfMlKsoAZqOSNOzuA8xmQbIpe3Dy5v3tBiPx
+ wC0PZzo4K2MLigziBC0ZDk495HsKH/wHjDZbC+H4jaV9vYLBzWpXdgPgHNnWVmvKAMlb
+ OQ+Q==
+X-Gm-Message-State: AOAM533G+XiB9rYY8JuUVQ7u2CUH5IO0P5DQg5g3oBi3Z4e+Jrp9Tr42
+ Vd8GdlkdJpQdkc13N4azEahT8HnG8/AflBzZ/Nw=
+X-Google-Smtp-Source: ABdhPJxUrxTCwzi7Yj2+ExwwwoGmToAHQYb+adCONcmAx/DnApNmNJjP3jevLGycqiKtwihstXuDC7FCB3cmNTkPoqU=
+X-Received: by 2002:a05:622a:116:b0:2cd:5be1:3838 with SMTP id
+ u22-20020a05622a011600b002cd5be13838mr1054529qtw.494.1644994936320; Tue, 15
+ Feb 2022 23:02:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220214094231.3753686-3-clg@kaod.org>
+References: <20220214094231.3753686-1-clg@kaod.org>
+ <20220214094231.3753686-11-clg@kaod.org>
+In-Reply-To: <20220214094231.3753686-11-clg@kaod.org>
+From: Joel Stanley <joel@jms.id.au>
+Date: Wed, 16 Feb 2022 07:02:04 +0000
+Message-ID: <CACPK8XdvczyZ1QHtFm7JJAC7AY+QmWSx0MarUwLjUyOtC9DnSQ@mail.gmail.com>
+Subject: Re: [PATCH 10/10] spi: aspeed: Activate new spi-mem driver
+To: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
+Cc: linux-spi@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>, 
+ Mark Brown <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, 
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ linux-aspeed <linux-aspeed@lists.ozlabs.org>, Andrew Jeffery <andrew@aj.id.au>,
+ Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
+ devicetree <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220215_130649_864840_9D81770D 
-X-CRM114-Status: GOOD (  18.11  )
+X-CRM114-CacheID: sfid-20220215_230217_870427_2868E5F6 
+X-CRM114-Status: GOOD (  18.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,138 +82,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 14, 2022 at 10:42:23AM +0100, C=E9dric Le Goater wrote:
-> The "interrupt" property is optional because it is only necessary for
-> controllers supporting DMAs (Not implemented yet in the new driver).
-> =
-
-> Cc: Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> Signed-off-by: C=E9dric Le Goater <clg@kaod.org>
-> ---
->  .../bindings/spi/aspeed,ast2600-fmc.yaml      | 92 +++++++++++++++++++
->  1 file changed, 92 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/aspeed,ast2600-=
-fmc.yaml
-> =
-
-> diff --git a/Documentation/devicetree/bindings/spi/aspeed,ast2600-fmc.yam=
-l b/Documentation/devicetree/bindings/spi/aspeed,ast2600-fmc.yaml
-> new file mode 100644
-> index 000000000000..ed71c4d86930
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/aspeed,ast2600-fmc.yaml
-> @@ -0,0 +1,92 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/aspeed,ast2600-fmc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aspeed SMC controllers bindings
-> +
-> +maintainers:
-> +  - Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-> +  - C=E9dric Le Goater <clg@kaod.org>
-> +
-> +description: |
-> +  This binding describes the Aspeed Static Memory Controllers (FMC and
-> +  SPI) of the AST2400, AST2500 and AST2600 SOCs.
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aspeed,ast2600-fmc
-> +      - aspeed,ast2600-spi
-> +      - aspeed,ast2500-fmc
-> +      - aspeed,ast2500-spi
-> +      - aspeed,ast2400-fmc
-> +      - aspeed,ast2400-spi
-> +
-> +  reg:
-> +    items:
-> +      - description: registers
-> +      - description: memory mapping
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  "@[0-9a-f]+":
-> +    type: object
-> +
-> +    properties:
-> +      spi-rx-bus-width:
-> +        enum: [1, 2, 4]
-> +
-> +    required:
-> +      - reg
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +
-> +    spi@1e620000 {
-> +        reg =3D < 0x1e620000 0xc4
-> +                0x20000000 0x10000000 >;
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +        compatible =3D "aspeed,ast2600-fmc";
-> +        clocks =3D <&syscon ASPEED_CLK_AHB>;
-> +        status =3D "disabled";
-
-Why is your example disabled? Drop 'status'.
-
-> +        interrupts =3D <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
-> +        flash@0 {
-> +                reg =3D < 0 >;
-> +                compatible =3D "jedec,spi-nor";
-> +                spi-max-frequency =3D <50000000>;
-> +                status =3D "disabled";
-
-Ditto.
-
-> +        };
-> +        flash@1 {
-> +                reg =3D < 1 >;
-> +                compatible =3D "jedec,spi-nor";
-> +                spi-max-frequency =3D <50000000>;
-> +                status =3D "disabled";
-> +        };
-> +        flash@2 {
-> +                reg =3D < 2 >;
-> +                compatible =3D "jedec,spi-nor";
-> +                spi-max-frequency =3D <50000000>;
-> +                status =3D "disabled";
-> +        };
-> +    };
-> -- =
-
-> 2.34.1
-> =
-
-> =
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAxNCBGZWIgMjAyMiBhdCAwOTo0MywgQ8OpZHJpYyBMZSBHb2F0ZXIgPGNsZ0BrYW9k
+Lm9yZz4gd3JvdGU6Cj4KPiBUaGUgcHJldmlvdXMgZHJpdmVyIHVzaW5nIHRoZSBNVEQgU1BJIE5P
+UiBpbnRlcmZhY2UgaXMga2VwdCBpbiBjYXNlIHdlCj4gZmluZCBzb21lIGlzc3VlcyBidXQgd2Ug
+c2hvdWxkIHJlbW92ZSBpdCBxdWlja2x5IG9uY2UgdGhlIG5ldyBkcml2ZXIKPiB1c2luZyB0aGUg
+c3BpLW1lbSBpbnRlcmZhY2UgaGFzIGJlZW4gc3VmZmljaWVudGx5IGV4cG9zZWQuCj4KPiBTaWdu
+ZWQtb2ZmLWJ5OiBDw6lkcmljIExlIEdvYXRlciA8Y2xnQGthb2Qub3JnPgoKSSBzdWdnZXN0IHdl
+IGRyb3AgdGhlIGRlZmNvbmZpZyBjaGFuZ2VzIGZyb20gYm90aCB0aGlzIHBhdGNoIGFuZCB0aGUK
+Zmlyc3QuIFRoaXMgd2F5IHdlJ2xsIGFsd2F5cyBoYXZlIHRoZSBuZXcgZHJpdmVyIGJlaW5nIGJ1
+aWx0LCB3aXRoCmxlc3MgY2h1cm4uCgpJZiB5b3Ugc3Ryb25nbHkgcHJlZmVyIHRoZSB3YXkgeW91
+J3ZlIGRvbmUgaXQgdGhlbiB0aGF0J3MgZmluZSB0b28uCgo+IC0tLQo+ICBhcmNoL2FybS9jb25m
+aWdzL2FzcGVlZF9nNF9kZWZjb25maWcgfCAyICstCj4gIGFyY2gvYXJtL2NvbmZpZ3MvYXNwZWVk
+X2c1X2RlZmNvbmZpZyB8IDIgKy0KPiAgYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25m
+aWcgIHwgMiArLQo+ICBhcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNvbmZpZyAgfCAyICst
+Cj4gIDQgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4g
+ZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZyBiL2FyY2gv
+YXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZwo+IGluZGV4IDk2NDUzNjQ0NGNkNy4uYjRh
+MWIyZWQxYTE3IDEwMDY0NAo+IC0tLSBhL2FyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNv
+bmZpZwo+ICsrKyBiL2FyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZwo+IEBAIC02
+NCw3ICs2NCw3IEBAIENPTkZJR19NVERfQkxPQ0s9eQo+ICBDT05GSUdfTVREX1BBUlRJVElPTkVE
+X01BU1RFUj15Cj4gIENPTkZJR19NVERfU1BJX05PUj15Cj4gICMgQ09ORklHX01URF9TUElfTk9S
+X1VTRV80S19TRUNUT1JTIGlzIG5vdCBzZXQKPiAtQ09ORklHX1NQSV9BU1BFRURfU01DX01URF9T
+UElfTk9SPXkKPiArQ09ORklHX1NQSV9BU1BFRURfU01DPXkKPiAgQ09ORklHX01URF9VQkk9eQo+
+ICBDT05GSUdfTVREX1VCSV9GQVNUTUFQPXkKPiAgQ09ORklHX01URF9VQklfQkxPQ0s9eQo+IGRp
+ZmYgLS1naXQgYS9hcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9kZWZjb25maWcgYi9hcmNoL2Fy
+bS9jb25maWdzL2FzcGVlZF9nNV9kZWZjb25maWcKPiBpbmRleCBlODA5MjM2Y2E4OGIuLmNjYzQy
+NDBlZTRiNSAxMDA2NDQKPiAtLS0gYS9hcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9kZWZjb25m
+aWcKPiArKysgYi9hcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9kZWZjb25maWcKPiBAQCAtMTAz
+LDcgKzEwMyw3IEBAIENPTkZJR19NVERfQkxPQ0s9eQo+ICBDT05GSUdfTVREX1BBUlRJVElPTkVE
+X01BU1RFUj15Cj4gIENPTkZJR19NVERfU1BJX05PUj15Cj4gICMgQ09ORklHX01URF9TUElfTk9S
+X1VTRV80S19TRUNUT1JTIGlzIG5vdCBzZXQKPiAtQ09ORklHX1NQSV9BU1BFRURfU01DX01URF9T
+UElfTk9SPXkKPiArQ09ORklHX1NQSV9BU1BFRURfU01DPXkKPiAgQ09ORklHX01URF9VQkk9eQo+
+ICBDT05GSUdfTVREX1VCSV9GQVNUTUFQPXkKPiAgQ09ORklHX01URF9VQklfQkxPQ0s9eQo+IGRp
+ZmYgLS1naXQgYS9hcmNoL2FybS9jb25maWdzL211bHRpX3Y1X2RlZmNvbmZpZyBiL2FyY2gvYXJt
+L2NvbmZpZ3MvbXVsdGlfdjVfZGVmY29uZmlnCj4gaW5kZXggNDkwODNlZjA1ZmIwLi44MGEzYWUw
+MmQ3NTkgMTAwNjQ0Cj4gLS0tIGEvYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25maWcK
+PiArKysgYi9hcmNoL2FybS9jb25maWdzL211bHRpX3Y1X2RlZmNvbmZpZwo+IEBAIC0xMDMsNyAr
+MTAzLDcgQEAgQ09ORklHX01URF9SQVdfTkFORD15Cj4gIENPTkZJR19NVERfTkFORF9BVE1FTD15
+Cj4gIENPTkZJR19NVERfTkFORF9PUklPTj15Cj4gIENPTkZJR19NVERfU1BJX05PUj15Cj4gLUNP
+TkZJR19TUElfQVNQRUVEX1NNQ19NVERfU1BJX05PUj15Cj4gK0NPTkZJR19TUElfQVNQRUVEX1NN
+Qz15Cj4gIENPTkZJR19NVERfVUJJPXkKPiAgQ09ORklHX0JMS19ERVZfTE9PUD15Cj4gIENPTkZJ
+R19BVE1FTF9TU0M9bQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2Rl
+ZmNvbmZpZyBiL2FyY2gvYXJtL2NvbmZpZ3MvbXVsdGlfdjdfZGVmY29uZmlnCj4gaW5kZXggZmMx
+YjY5MjU2YjY0Li4zMzU3Mjk5OGRiYmUgMTAwNjQ0Cj4gLS0tIGEvYXJjaC9hcm0vY29uZmlncy9t
+dWx0aV92N19kZWZjb25maWcKPiArKysgYi9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNv
+bmZpZwo+IEBAIC0yMTcsNyArMjE3LDcgQEAgQ09ORklHX01URF9OQU5EX0RBVklOQ0k9eQo+ICBD
+T05GSUdfTVREX05BTkRfU1RNMzJfRk1DMj15Cj4gIENPTkZJR19NVERfTkFORF9QTDM1WD15Cj4g
+IENPTkZJR19NVERfU1BJX05PUj15Cj4gLUNPTkZJR19TUElfQVNQRUVEX1NNQ19NVERfU1BJX05P
+Uj1tCj4gK0NPTkZJR19TUElfQVNQRUVEX1NNQz1tCj4gIENPTkZJR19NVERfVUJJPXkKPiAgQ09O
+RklHX0JMS19ERVZfTE9PUD15Cj4gIENPTkZJR19CTEtfREVWX1JBTT15Cj4gLS0KPiAyLjM0LjEK
+PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
