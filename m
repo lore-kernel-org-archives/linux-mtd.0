@@ -4,82 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B466C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Feb 2022 08:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 635DBC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Feb 2022 08:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FbN6h1xE1wOyr/LTaa5wYJEkXlWffEnX51UwJM6lpT0=; b=cirBfYhozUFQH2
-	eJRa7ItNpvcgCI0Sk8hQu/yviC3ieRKHSXHLyjw790asqRMmxEOhPgJtWcdf9h3G4gInY2BggBwqM
-	FeEmWCr9yd0v2Wx5Nw99BeZaP5KDSBZHdsmRFA0Hc6giO8oGsHUI0HRZ94CfVBGTNAvY3fufsP9cv
-	aFxwQ8aa6eAaW9JkoDOZZGaboHX7JV6PSp2iKGuwcbeCMMKdz0+lkjzkOnZtoLb5gqbxkPJkJL/YX
-	KJv8/TqWcqAFA6oGPWapzAhoW1S29hsr6/Jl/OTu1zDA1O9JeiiZkg0YshfYTx9NU0/1//0iakIGE
-	qwfIaCcqDsyGIlfISqjg==;
+	List-Owner; bh=icYiMFkqQJzBAszGkL7i1Y2c85V0+0UHUw/Xk/0dDL4=; b=v4wvUlDQJTM329
+	y7Y7z3nAoupnpYitRCH4pdTTNgHZgBgbToQ1DYxuji+lRW/4wm6U07ACPeIiwc07kWTL0UK2XHn2D
+	LGF0wDMcx/Gy4U4YAUd8AXuQtDAwUmFz6ITP/1oRbJQTjdiF9hxOEYiyIhNjH5qB6YZJb/D7pMY3K
+	DvvvzCEBDaEg1Y3phKuvzngusSgCP4PHiSWSkul4rEcJoPKngm/2Fnw3bL5rlR1IWXxAfL/NOj8OD
+	OSXr94UNbOZtz3aWE22hEMNvyuDBiQkkdxoc6m0StnU9w1oyRW906L0PKNO9KGNhzhxfODU+xVT/3
+	5kVORFTYVqLl97uvd2LQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nKFLG-0060ij-2G; Wed, 16 Feb 2022 08:07:14 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1nKFS4-0063f1-TI; Wed, 16 Feb 2022 08:14:17 +0000
+Received: from 10.mo552.mail-out.ovh.net ([87.98.187.244])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nKFJz-0060GH-NS
- for linux-mtd@lists.infradead.org; Wed, 16 Feb 2022 08:06:01 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id g1so1553066pfv.1
- for <linux-mtd@lists.infradead.org>; Wed, 16 Feb 2022 00:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=NRGxouRlBjrCBbS/tacf0vowbGm1adp5dIYL1iDtezw=;
- b=cJdgJj8tgN36IC1RgO+JGWm+SNnca2/zHxR6fe2SN+U2QSlo7xZApgd/9TCYIJeCOy
- g3/ShQXf+zGgPF/GCE4f2P2TZy9m2oKhetPr/wnvX1ZXkYihxIU1UMGzXcW+2XdanN04
- R7UmuFf5ucoEtX6AJTrikIurCNCwWPa/mqJt8edyT/UsgnW3WpmyOW5v3ItGvAsRxObw
- ItubOnFbIE6WhyBguAol2nMbppPHh0jkDQLLLxBb3GVZOxE97mP5vjJUlZg5R21Gr7wa
- tYAJoz+CW2q5Z+vgIOJKcf/zwx1/Om7h+W6j4kiGYUT0ThTmwuOAQ0dUtJp60URspKoK
- /4+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=NRGxouRlBjrCBbS/tacf0vowbGm1adp5dIYL1iDtezw=;
- b=GWsErzDZfODGxhYKH5tSurvu0GNekMjimqxiFEPAmTUvxbZCnPWIoHb7rGz5huU23L
- eY2Giva/JYpkUN0AkXuGnxkn4LDgKvo7+0Oikukl8jTBPgfBUVvV1Bvv/TDOKPoSX41u
- RmAUKenTmxB4vx1JZewehOOcj5VQKdC0AsZ6B93fma3adaHN1CAz4I1EZ534cld/wpK0
- tn5Sy9eh0BWTfzBkP7fevXxAVClhyvEGHNz5I3ozqexXXDkoDPFImbsSLLwJzlRPwQdu
- ZKquzzZ7I5zhMWlxzPOxYWbNGvclL1TAyccoY8b4HTbLzSnkPFPBmDUwPBYk2G+9aVK9
- KEog==
-X-Gm-Message-State: AOAM5335mHjHYSrhgIpRa5Tq2HkoPHkkdc4aFwmfMXsFQKOQea1beMXv
- vUvBSud6N1ZmwaTe1snPSGV/V+0fRNg=
-X-Google-Smtp-Source: ABdhPJzAPS0TPvaAbwUlRlahyDT6AwTZdkOZ0+IcwjhfAPv5Nib1zbbD5vQ1jx18Xb/hCr9FZZwB4Q==
-X-Received: by 2002:a63:584d:0:b0:370:14d9:8238 with SMTP id
- i13-20020a63584d000000b0037014d98238mr1328841pgm.166.1644998753413; 
- Wed, 16 Feb 2022 00:05:53 -0800 (PST)
-Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
- by smtp.gmail.com with ESMTPSA id
- 8sm6850123pfl.164.2022.02.16.00.05.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 16 Feb 2022 00:05:52 -0800 (PST)
-Message-ID: <5be075b9-0a8b-548b-0a63-fb13bc47e336@gmail.com>
-Date: Wed, 16 Feb 2022 17:05:49 +0900
+ id 1nKFQt-0063A4-Rg
+ for linux-mtd@lists.infradead.org; Wed, 16 Feb 2022 08:13:06 +0000
+Received: from mxplan5.mail.ovh.net (unknown [10.109.156.219])
+ by mo552.mail-out.ovh.net (Postfix) with ESMTPS id 3D56D24B44;
+ Wed, 16 Feb 2022 08:12:56 +0000 (UTC)
+Received: from kaod.org (37.59.142.96) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Wed, 16 Feb
+ 2022 09:12:54 +0100
+Authentication-Results: garm.ovh; auth=pass
+ (GARM-96R0010590fb10-4626-4deb-8236-9a8be91dbf44,
+ CB3E44AF90526EF3DA3218D7163352937EBBBEE5) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 82.64.250.170
+Message-ID: <d517d453-ddd5-8c9e-7b1f-56f5f83d2f1e@kaod.org>
+Date: Wed, 16 Feb 2022 09:12:48 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: [PATCH v7 2/3] mtd: spi-nor: spansion: Add support for volatile
- QE bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH 10/10] spi: aspeed: Activate new spi-mem driver
 Content-Language: en-US
-To: Pratyush Yadav <p.yadav@ti.com>, Tudor.Ambarus@microchip.com
-Cc: linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at, 
- vigneshr@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
-References: <cover.1626677855.git.Takahiro.Kuwano@infineon.com>
- <26f6a4d7e1d3c4dfdf7bf161a72f140c3364a3da.1626677855.git.Takahiro.Kuwano@infineon.com>
- <67f7901b-a3a3-ae4e-78f1-ef54de3ff1b7@microchip.com>
- <20220128163817.mxu2pkbyuf27gdy6@ti.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <20220128163817.mxu2pkbyuf27gdy6@ti.com>
+To: Joel Stanley <joel@jms.id.au>
+CC: <linux-spi@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Mark Brown <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, 
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-aspeed <linux-aspeed@lists.ozlabs.org>, Andrew Jeffery
+ <andrew@aj.id.au>, Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>, devicetree
+ <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+References: <20220214094231.3753686-1-clg@kaod.org>
+ <20220214094231.3753686-11-clg@kaod.org>
+ <CACPK8XdvczyZ1QHtFm7JJAC7AY+QmWSx0MarUwLjUyOtC9DnSQ@mail.gmail.com>
+From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+In-Reply-To: <CACPK8XdvczyZ1QHtFm7JJAC7AY+QmWSx0MarUwLjUyOtC9DnSQ@mail.gmail.com>
+X-Originating-IP: [37.59.142.96]
+X-ClientProxiedBy: DAG3EX1.mxp5.local (172.16.2.21) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 365dd3b7-2a44-4f14-8514-26cf6445fd31
+X-Ovh-Tracer-Id: 12828503540660800388
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvvddrjeehgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvfhfhjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepieegvdffkeegfeetuddttddtveduiefhgeduffekiedtkeekteekhfffleevleelnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrdelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220216_000555_870062_6A7B452A 
-X-CRM114-Status: GOOD (  19.75  )
+X-CRM114-CacheID: sfid-20220216_001304_242572_FBD9C50A 
+X-CRM114-Status: GOOD (  19.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,96 +80,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 1/29/2022 1:38 AM, Pratyush Yadav wrote:
-> On 28/01/22 10:12AM, Tudor.Ambarus@microchip.com wrote:
->> On 7/19/21 11:03, tkuw584924@gmail.com wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>
->>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>
->>> Some of Spansion/Cypress chips support volatile version of configuration
->>> registers and it is recommended to update volatile registers in the field
->>> application due to a risk of the non-volatile registers corruption by
->>> power interrupt.
->>>
->>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>> ---
->>> Changes in v7:
->>>   - Add missing macro definitions in v6
->>>
->>> Changes in v6:
->>>   - Remove multi die package support
->>>
->>> Changes in v5:
->>>   - No change
->>>
->>> Changes in v4:
->>>   - No change
->>>
->>> Changes in v3:
->>>   - Add multi-die package parts support
->>>
->>>  drivers/mtd/spi-nor/spansion.c | 59 ++++++++++++++++++++++++++++++++++
->>>  1 file changed, 59 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
->>> index 5e7e62704e11..ca50e77b4220 100644
->>> --- a/drivers/mtd/spi-nor/spansion.c
->>> +++ b/drivers/mtd/spi-nor/spansion.c
->>> @@ -10,6 +10,8 @@
->>>
->>>  #define SPINOR_OP_RD_ANY_REG                   0x65    /* Read any register */
->>>  #define SPINOR_OP_WR_ANY_REG                   0x71    /* Write any register */
->>> +#define SPINOR_REG_CYPRESS_CFR1V               0x00800002
->>> +#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN       BIT(1)  /* Quad Enable */
-> 
-> I have the Cypress S28 flash and this bit is marked as "reserved" there. 
-> Maybe we should have a flash family specific name? Dunno. But I guess it 
-> does not matter so much since it will be very localised anyway.
-> 
->>>  #define SPINOR_REG_CYPRESS_CFR2V               0x00800003
->>>  #define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24  0xb
->>>  #define SPINOR_REG_CYPRESS_CFR3V               0x00800004
->>> @@ -161,6 +163,63 @@ static int spansion_write_any_reg(struct spi_nor *nor, u32 reg_addr,
->>>                                             reg_val);
->>>  }
->>>
->>> +/**
->>> + * spansion_quad_enable_volatile() - enable Quad I/O mode in volatile register.
->>> + * @nor:       pointer to a 'struct spi_nor'
->>> + * @reg_dummy: number of dummy cycles for register read
->>> + *
->>> + * It is recommended to update volatile registers in the field application due
->>> + * to a risk of the non-volatile registers corruption by power interrupt. This
->>> + * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
->>> + * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
->>> + * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
->>> + * also set during Flash power-up. This function supports multi-die package
->>
->> Why do you duplicate the setting of QE bit in CFR1V if QE bit is already set in
->> CFR1NV? Does the Volatile Register has a higher priority than the Non-Volatile one?
->> What happens when QE is zero in CFR1NV and QE is one in CFR1V?
-> 
-> I have the Cypress S28 flash family, and on there I see that the 
-> volatile bit takes precedence over non-volatile bit*. At powerup data in 
-> NV bits is transferred to V bits to set their default state.
-> 
-> What I am more worried about is if quad mode is enabled in a 
-> non-volatile register (which should NEVER be done by Linux), will we be 
-> able to properly detect and initialize the flash? We certainly can't do 
-> it for 8D-8D-8D mode flashes.
-> 
-If quad mode is enabled, 1S-1S-4S/1S-4S-4S/1S-4D-4D ops are supported.
-The 1S-1S-1S ops like read ID and registers used for initializationare still available.
-
-Thanks,
-Takahiro
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMi8xNi8yMiAwODowMiwgSm9lbCBTdGFubGV5IHdyb3RlOgo+IE9uIE1vbiwgMTQgRmViIDIw
+MjIgYXQgMDk6NDMsIEPDqWRyaWMgTGUgR29hdGVyIDxjbGdAa2FvZC5vcmc+IHdyb3RlOgo+Pgo+
+PiBUaGUgcHJldmlvdXMgZHJpdmVyIHVzaW5nIHRoZSBNVEQgU1BJIE5PUiBpbnRlcmZhY2UgaXMg
+a2VwdCBpbiBjYXNlIHdlCj4+IGZpbmQgc29tZSBpc3N1ZXMgYnV0IHdlIHNob3VsZCByZW1vdmUg
+aXQgcXVpY2tseSBvbmNlIHRoZSBuZXcgZHJpdmVyCj4+IHVzaW5nIHRoZSBzcGktbWVtIGludGVy
+ZmFjZSBoYXMgYmVlbiBzdWZmaWNpZW50bHkgZXhwb3NlZC4KPj4KPj4gU2lnbmVkLW9mZi1ieTog
+Q8OpZHJpYyBMZSBHb2F0ZXIgPGNsZ0BrYW9kLm9yZz4KPiAKPiBJIHN1Z2dlc3Qgd2UgZHJvcCB0
+aGUgZGVmY29uZmlnIGNoYW5nZXMgZnJvbSBib3RoIHRoaXMgcGF0Y2ggYW5kIHRoZQo+IGZpcnN0
+LiBUaGlzIHdheSB3ZSdsbCBhbHdheXMgaGF2ZSB0aGUgbmV3IGRyaXZlciBiZWluZyBidWlsdCwg
+d2l0aAo+IGxlc3MgY2h1cm4uCj4gCj4gSWYgeW91IHN0cm9uZ2x5IHByZWZlciB0aGUgd2F5IHlv
+dSd2ZSBkb25lIGl0IHRoZW4gdGhhdCdzIGZpbmUgdG9vLgoKSSBhbSBmaW5lIHdpdGggdGhhdCwg
+YnV0LCB3aXRoIG9ubHkgcGF0Y2ggMSwgdGhlIGRlZmNvbmZpZyBmaWxlcyB3b3VsZApiZSByZWZl
+cmVuY2luZyBhbiBub24tZXhpc3RpbmcgQ09ORklHLiBJcyB0aGF0IG9rID8KClRoYW5rcywKCkMu
+CgoKCj4gCj4+IC0tLQo+PiAgIGFyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZyB8
+IDIgKy0KPj4gICBhcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9kZWZjb25maWcgfCAyICstCj4+
+ICAgYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25maWcgIHwgMiArLQo+PiAgIGFyY2gv
+YXJtL2NvbmZpZ3MvbXVsdGlfdjdfZGVmY29uZmlnICB8IDIgKy0KPj4gICA0IGZpbGVzIGNoYW5n
+ZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2Fy
+Y2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZyBiL2FyY2gvYXJtL2NvbmZpZ3MvYXNw
+ZWVkX2c0X2RlZmNvbmZpZwo+PiBpbmRleCA5NjQ1MzY0NDRjZDcuLmI0YTFiMmVkMWExNyAxMDA2
+NDQKPj4gLS0tIGEvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzRfZGVmY29uZmlnCj4+ICsrKyBi
+L2FyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZwo+PiBAQCAtNjQsNyArNjQsNyBA
+QCBDT05GSUdfTVREX0JMT0NLPXkKPj4gICBDT05GSUdfTVREX1BBUlRJVElPTkVEX01BU1RFUj15
+Cj4+ICAgQ09ORklHX01URF9TUElfTk9SPXkKPj4gICAjIENPTkZJR19NVERfU1BJX05PUl9VU0Vf
+NEtfU0VDVE9SUyBpcyBub3Qgc2V0Cj4+IC1DT05GSUdfU1BJX0FTUEVFRF9TTUNfTVREX1NQSV9O
+T1I9eQo+PiArQ09ORklHX1NQSV9BU1BFRURfU01DPXkKPj4gICBDT05GSUdfTVREX1VCST15Cj4+
+ICAgQ09ORklHX01URF9VQklfRkFTVE1BUD15Cj4+ICAgQ09ORklHX01URF9VQklfQkxPQ0s9eQo+
+PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnIGIvYXJj
+aC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnCj4+IGluZGV4IGU4MDkyMzZjYTg4Yi4u
+Y2NjNDI0MGVlNGI1IDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9k
+ZWZjb25maWcKPj4gKysrIGIvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnCj4+
+IEBAIC0xMDMsNyArMTAzLDcgQEAgQ09ORklHX01URF9CTE9DSz15Cj4+ICAgQ09ORklHX01URF9Q
+QVJUSVRJT05FRF9NQVNURVI9eQo+PiAgIENPTkZJR19NVERfU1BJX05PUj15Cj4+ICAgIyBDT05G
+SUdfTVREX1NQSV9OT1JfVVNFXzRLX1NFQ1RPUlMgaXMgbm90IHNldAo+PiAtQ09ORklHX1NQSV9B
+U1BFRURfU01DX01URF9TUElfTk9SPXkKPj4gK0NPTkZJR19TUElfQVNQRUVEX1NNQz15Cj4+ICAg
+Q09ORklHX01URF9VQkk9eQo+PiAgIENPTkZJR19NVERfVUJJX0ZBU1RNQVA9eQo+PiAgIENPTkZJ
+R19NVERfVUJJX0JMT0NLPXkKPj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2NvbmZpZ3MvbXVsdGlf
+djVfZGVmY29uZmlnIGIvYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25maWcKPj4gaW5k
+ZXggNDkwODNlZjA1ZmIwLi44MGEzYWUwMmQ3NTkgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gvYXJtL2Nv
+bmZpZ3MvbXVsdGlfdjVfZGVmY29uZmlnCj4+ICsrKyBiL2FyY2gvYXJtL2NvbmZpZ3MvbXVsdGlf
+djVfZGVmY29uZmlnCj4+IEBAIC0xMDMsNyArMTAzLDcgQEAgQ09ORklHX01URF9SQVdfTkFORD15
+Cj4+ICAgQ09ORklHX01URF9OQU5EX0FUTUVMPXkKPj4gICBDT05GSUdfTVREX05BTkRfT1JJT049
+eQo+PiAgIENPTkZJR19NVERfU1BJX05PUj15Cj4+IC1DT05GSUdfU1BJX0FTUEVFRF9TTUNfTVRE
+X1NQSV9OT1I9eQo+PiArQ09ORklHX1NQSV9BU1BFRURfU01DPXkKPj4gICBDT05GSUdfTVREX1VC
+ST15Cj4+ICAgQ09ORklHX0JMS19ERVZfTE9PUD15Cj4+ICAgQ09ORklHX0FUTUVMX1NTQz1tCj4+
+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNvbmZpZyBiL2FyY2gv
+YXJtL2NvbmZpZ3MvbXVsdGlfdjdfZGVmY29uZmlnCj4+IGluZGV4IGZjMWI2OTI1NmI2NC4uMzM1
+NzI5OThkYmJlIDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNv
+bmZpZwo+PiArKysgYi9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNvbmZpZwo+PiBAQCAt
+MjE3LDcgKzIxNyw3IEBAIENPTkZJR19NVERfTkFORF9EQVZJTkNJPXkKPj4gICBDT05GSUdfTVRE
+X05BTkRfU1RNMzJfRk1DMj15Cj4+ICAgQ09ORklHX01URF9OQU5EX1BMMzVYPXkKPj4gICBDT05G
+SUdfTVREX1NQSV9OT1I9eQo+PiAtQ09ORklHX1NQSV9BU1BFRURfU01DX01URF9TUElfTk9SPW0K
+Pj4gK0NPTkZJR19TUElfQVNQRUVEX1NNQz1tCj4+ICAgQ09ORklHX01URF9VQkk9eQo+PiAgIENP
+TkZJR19CTEtfREVWX0xPT1A9eQo+PiAgIENPTkZJR19CTEtfREVWX1JBTT15Cj4+IC0tCj4+IDIu
+MzQuMQo+PgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
