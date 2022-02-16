@@ -4,71 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 635DBC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Feb 2022 08:14:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1F13C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Feb 2022 08:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=icYiMFkqQJzBAszGkL7i1Y2c85V0+0UHUw/Xk/0dDL4=; b=v4wvUlDQJTM329
-	y7Y7z3nAoupnpYitRCH4pdTTNgHZgBgbToQ1DYxuji+lRW/4wm6U07ACPeIiwc07kWTL0UK2XHn2D
-	LGF0wDMcx/Gy4U4YAUd8AXuQtDAwUmFz6ITP/1oRbJQTjdiF9hxOEYiyIhNjH5qB6YZJb/D7pMY3K
-	DvvvzCEBDaEg1Y3phKuvzngusSgCP4PHiSWSkul4rEcJoPKngm/2Fnw3bL5rlR1IWXxAfL/NOj8OD
-	OSXr94UNbOZtz3aWE22hEMNvyuDBiQkkdxoc6m0StnU9w1oyRW906L0PKNO9KGNhzhxfODU+xVT/3
-	5kVORFTYVqLl97uvd2LQ==;
+	List-Owner; bh=t4EvP3XozDopAzHZfgvgZU/nWyd6zafFDaLs22xwiGY=; b=Rl/VeDGPzZTr75
+	kBhVsPHNRkNcXLKJbARp5MGjzTaz6411tMIaeDOmPrsX+R9w2M2vlup624TFmA14QmAcwRlApyrVo
+	kZQTHevk6sMdxCtrXNBbTf1ylysbJjotZYetngGd0OrOzXseWeu39zdiDSya/Au0/L26+Cr4flzVW
+	WphjwUicQzvjq19D7FRRSKCFUXedHz7JZrD4jaQmwvhKFlWIwNk/vpCgsZ47UchoHgfpUgII7Eknw
+	Cf/xEPzM8ClDY6z2JKYRBEYRaNfS3Cr6Bnc52MEGWXL6xOIo6TB4fe+KFk+7dsHgMkWRj4fF1IkFX
+	7Kxq4nrruQQDlrHkpUXA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nKFS4-0063f1-TI; Wed, 16 Feb 2022 08:14:17 +0000
-Received: from 10.mo552.mail-out.ovh.net ([87.98.187.244])
+	id 1nKFxO-006AKy-GY; Wed, 16 Feb 2022 08:46:38 +0000
+Received: from mx07-00178001.pphosted.com ([185.132.182.106])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nKFQt-0063A4-Rg
- for linux-mtd@lists.infradead.org; Wed, 16 Feb 2022 08:13:06 +0000
-Received: from mxplan5.mail.ovh.net (unknown [10.109.156.219])
- by mo552.mail-out.ovh.net (Postfix) with ESMTPS id 3D56D24B44;
- Wed, 16 Feb 2022 08:12:56 +0000 (UTC)
-Received: from kaod.org (37.59.142.96) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Wed, 16 Feb
- 2022 09:12:54 +0100
-Authentication-Results: garm.ovh; auth=pass
- (GARM-96R0010590fb10-4626-4deb-8236-9a8be91dbf44,
- CB3E44AF90526EF3DA3218D7163352937EBBBEE5) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 82.64.250.170
-Message-ID: <d517d453-ddd5-8c9e-7b1f-56f5f83d2f1e@kaod.org>
-Date: Wed, 16 Feb 2022 09:12:48 +0100
+ id 1nKFxI-006AJu-MM
+ for linux-mtd@lists.infradead.org; Wed, 16 Feb 2022 08:46:34 +0000
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21G8Sqeo005841;
+ Wed, 16 Feb 2022 09:46:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=/7nixD/n01nc+BoZwZ9R1YyOe5pCnVpSW4p/rLQTcvM=;
+ b=GMjvUOyE3cbd/56o+dFiFWF7O5Dm4Rd9Pir1K8KbyGzxeOhZS+kKeAp2+CVxHrOPXhow
+ s1L0wvso3CwX7ORZHpr5SoFOOCnkXCDs7f3u6ycQJ8wPfxeDoxGYfSRS3wdTTSIp9Awl
+ etgH2OJcCoc5/2rG9AadjREsVrSnbNhaxPL4hKZ5A6k21hEs2EtaLWeCouCx5h+iWiV/
+ CntlODSuAyrHnEWJivUGlX1NwVWKjsPuxVnu9agPoFWTd5Rda9JFftkyv3u6grT4SD8K
+ xFzcR0j56TDlOof8MdfxnVv5mazGJ6x72UtoXBw03aDYWC/zLlvX7gTbb2cCnZeTrZdE gA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3e8n20tega-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Feb 2022 09:46:20 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 82FD110002A;
+ Wed, 16 Feb 2022 09:46:18 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6C9E8214D3B;
+ Wed, 16 Feb 2022 09:46:18 +0100 (CET)
+Received: from [10.48.0.175] (10.75.127.46) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Wed, 16 Feb
+ 2022 09:46:17 +0100
+Message-ID: <f6687807-607c-f672-2394-ad463735d597@foss.st.com>
+Date: Wed, 16 Feb 2022 09:46:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH 10/10] spi: aspeed: Activate new spi-mem driver
+Subject: Re: [PATCH v2 4/4] mtd: core: Fix a conflict between MTD and NVMEM on
+ wp-gpios property
 Content-Language: en-US
-To: Joel Stanley <joel@jms.id.au>
-CC: <linux-spi@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- Mark Brown <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, 
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-aspeed <linux-aspeed@lists.ozlabs.org>, Andrew Jeffery
- <andrew@aj.id.au>, Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>, devicetree
- <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-References: <20220214094231.3753686-1-clg@kaod.org>
- <20220214094231.3753686-11-clg@kaod.org>
- <CACPK8XdvczyZ1QHtFm7JJAC7AY+QmWSx0MarUwLjUyOtC9DnSQ@mail.gmail.com>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-In-Reply-To: <CACPK8XdvczyZ1QHtFm7JJAC7AY+QmWSx0MarUwLjUyOtC9DnSQ@mail.gmail.com>
-X-Originating-IP: [37.59.142.96]
-X-ClientProxiedBy: DAG3EX1.mxp5.local (172.16.2.21) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 365dd3b7-2a44-4f14-8514-26cf6445fd31
-X-Ovh-Tracer-Id: 12828503540660800388
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvvddrjeehgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvfhfhjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepieegvdffkeegfeetuddttddtveduiefhgeduffekiedtkeekteekhfffleevleelnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrdelieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+To: Pratyush Yadav <p.yadav@ti.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <robh+dt@kernel.org>,
+ <srinivas.kandagatla@linaro.org>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+ <devicetree@vger.kernel.org>, <chenshumin86@sina.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Khouloud Touil <ktouil@baylibre.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20220131095755.8981-1-christophe.kerello@foss.st.com>
+ <20220131095755.8981-5-christophe.kerello@foss.st.com>
+ <20220131144309.0ffe7cc8@xps13> <20220201104727.7xvcyexf3yucegcb@ti.com>
+ <eebfa629-ead2-d63f-9cfb-4cafc1534678@foss.st.com>
+ <20220202115327.53oqg5n7tx6b6q7u@ti.com>
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+In-Reply-To: <20220202115327.53oqg5n7tx6b6q7u@ti.com>
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-16_04,2022-02-14_04,2021-12-02_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220216_001304_242572_FBD9C50A 
-X-CRM114-Status: GOOD (  19.08  )
+X-CRM114-CacheID: sfid-20220216_004633_103478_43FB98A7 
+X-CRM114-Status: GOOD (  45.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,65 +95,164 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMi8xNi8yMiAwODowMiwgSm9lbCBTdGFubGV5IHdyb3RlOgo+IE9uIE1vbiwgMTQgRmViIDIw
-MjIgYXQgMDk6NDMsIEPDqWRyaWMgTGUgR29hdGVyIDxjbGdAa2FvZC5vcmc+IHdyb3RlOgo+Pgo+
-PiBUaGUgcHJldmlvdXMgZHJpdmVyIHVzaW5nIHRoZSBNVEQgU1BJIE5PUiBpbnRlcmZhY2UgaXMg
-a2VwdCBpbiBjYXNlIHdlCj4+IGZpbmQgc29tZSBpc3N1ZXMgYnV0IHdlIHNob3VsZCByZW1vdmUg
-aXQgcXVpY2tseSBvbmNlIHRoZSBuZXcgZHJpdmVyCj4+IHVzaW5nIHRoZSBzcGktbWVtIGludGVy
-ZmFjZSBoYXMgYmVlbiBzdWZmaWNpZW50bHkgZXhwb3NlZC4KPj4KPj4gU2lnbmVkLW9mZi1ieTog
-Q8OpZHJpYyBMZSBHb2F0ZXIgPGNsZ0BrYW9kLm9yZz4KPiAKPiBJIHN1Z2dlc3Qgd2UgZHJvcCB0
-aGUgZGVmY29uZmlnIGNoYW5nZXMgZnJvbSBib3RoIHRoaXMgcGF0Y2ggYW5kIHRoZQo+IGZpcnN0
-LiBUaGlzIHdheSB3ZSdsbCBhbHdheXMgaGF2ZSB0aGUgbmV3IGRyaXZlciBiZWluZyBidWlsdCwg
-d2l0aAo+IGxlc3MgY2h1cm4uCj4gCj4gSWYgeW91IHN0cm9uZ2x5IHByZWZlciB0aGUgd2F5IHlv
-dSd2ZSBkb25lIGl0IHRoZW4gdGhhdCdzIGZpbmUgdG9vLgoKSSBhbSBmaW5lIHdpdGggdGhhdCwg
-YnV0LCB3aXRoIG9ubHkgcGF0Y2ggMSwgdGhlIGRlZmNvbmZpZyBmaWxlcyB3b3VsZApiZSByZWZl
-cmVuY2luZyBhbiBub24tZXhpc3RpbmcgQ09ORklHLiBJcyB0aGF0IG9rID8KClRoYW5rcywKCkMu
-CgoKCj4gCj4+IC0tLQo+PiAgIGFyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZyB8
-IDIgKy0KPj4gICBhcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9kZWZjb25maWcgfCAyICstCj4+
-ICAgYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25maWcgIHwgMiArLQo+PiAgIGFyY2gv
-YXJtL2NvbmZpZ3MvbXVsdGlfdjdfZGVmY29uZmlnICB8IDIgKy0KPj4gICA0IGZpbGVzIGNoYW5n
-ZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2Fy
-Y2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZyBiL2FyY2gvYXJtL2NvbmZpZ3MvYXNw
-ZWVkX2c0X2RlZmNvbmZpZwo+PiBpbmRleCA5NjQ1MzY0NDRjZDcuLmI0YTFiMmVkMWExNyAxMDA2
-NDQKPj4gLS0tIGEvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzRfZGVmY29uZmlnCj4+ICsrKyBi
-L2FyY2gvYXJtL2NvbmZpZ3MvYXNwZWVkX2c0X2RlZmNvbmZpZwo+PiBAQCAtNjQsNyArNjQsNyBA
-QCBDT05GSUdfTVREX0JMT0NLPXkKPj4gICBDT05GSUdfTVREX1BBUlRJVElPTkVEX01BU1RFUj15
-Cj4+ICAgQ09ORklHX01URF9TUElfTk9SPXkKPj4gICAjIENPTkZJR19NVERfU1BJX05PUl9VU0Vf
-NEtfU0VDVE9SUyBpcyBub3Qgc2V0Cj4+IC1DT05GSUdfU1BJX0FTUEVFRF9TTUNfTVREX1NQSV9O
-T1I9eQo+PiArQ09ORklHX1NQSV9BU1BFRURfU01DPXkKPj4gICBDT05GSUdfTVREX1VCST15Cj4+
-ICAgQ09ORklHX01URF9VQklfRkFTVE1BUD15Cj4+ICAgQ09ORklHX01URF9VQklfQkxPQ0s9eQo+
-PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnIGIvYXJj
-aC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnCj4+IGluZGV4IGU4MDkyMzZjYTg4Yi4u
-Y2NjNDI0MGVlNGI1IDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybS9jb25maWdzL2FzcGVlZF9nNV9k
-ZWZjb25maWcKPj4gKysrIGIvYXJjaC9hcm0vY29uZmlncy9hc3BlZWRfZzVfZGVmY29uZmlnCj4+
-IEBAIC0xMDMsNyArMTAzLDcgQEAgQ09ORklHX01URF9CTE9DSz15Cj4+ICAgQ09ORklHX01URF9Q
-QVJUSVRJT05FRF9NQVNURVI9eQo+PiAgIENPTkZJR19NVERfU1BJX05PUj15Cj4+ICAgIyBDT05G
-SUdfTVREX1NQSV9OT1JfVVNFXzRLX1NFQ1RPUlMgaXMgbm90IHNldAo+PiAtQ09ORklHX1NQSV9B
-U1BFRURfU01DX01URF9TUElfTk9SPXkKPj4gK0NPTkZJR19TUElfQVNQRUVEX1NNQz15Cj4+ICAg
-Q09ORklHX01URF9VQkk9eQo+PiAgIENPTkZJR19NVERfVUJJX0ZBU1RNQVA9eQo+PiAgIENPTkZJ
-R19NVERfVUJJX0JMT0NLPXkKPj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2NvbmZpZ3MvbXVsdGlf
-djVfZGVmY29uZmlnIGIvYXJjaC9hcm0vY29uZmlncy9tdWx0aV92NV9kZWZjb25maWcKPj4gaW5k
-ZXggNDkwODNlZjA1ZmIwLi44MGEzYWUwMmQ3NTkgMTAwNjQ0Cj4+IC0tLSBhL2FyY2gvYXJtL2Nv
-bmZpZ3MvbXVsdGlfdjVfZGVmY29uZmlnCj4+ICsrKyBiL2FyY2gvYXJtL2NvbmZpZ3MvbXVsdGlf
-djVfZGVmY29uZmlnCj4+IEBAIC0xMDMsNyArMTAzLDcgQEAgQ09ORklHX01URF9SQVdfTkFORD15
-Cj4+ICAgQ09ORklHX01URF9OQU5EX0FUTUVMPXkKPj4gICBDT05GSUdfTVREX05BTkRfT1JJT049
-eQo+PiAgIENPTkZJR19NVERfU1BJX05PUj15Cj4+IC1DT05GSUdfU1BJX0FTUEVFRF9TTUNfTVRE
-X1NQSV9OT1I9eQo+PiArQ09ORklHX1NQSV9BU1BFRURfU01DPXkKPj4gICBDT05GSUdfTVREX1VC
-ST15Cj4+ICAgQ09ORklHX0JMS19ERVZfTE9PUD15Cj4+ICAgQ09ORklHX0FUTUVMX1NTQz1tCj4+
-IGRpZmYgLS1naXQgYS9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNvbmZpZyBiL2FyY2gv
-YXJtL2NvbmZpZ3MvbXVsdGlfdjdfZGVmY29uZmlnCj4+IGluZGV4IGZjMWI2OTI1NmI2NC4uMzM1
-NzI5OThkYmJlIDEwMDY0NAo+PiAtLS0gYS9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNv
-bmZpZwo+PiArKysgYi9hcmNoL2FybS9jb25maWdzL211bHRpX3Y3X2RlZmNvbmZpZwo+PiBAQCAt
-MjE3LDcgKzIxNyw3IEBAIENPTkZJR19NVERfTkFORF9EQVZJTkNJPXkKPj4gICBDT05GSUdfTVRE
-X05BTkRfU1RNMzJfRk1DMj15Cj4+ICAgQ09ORklHX01URF9OQU5EX1BMMzVYPXkKPj4gICBDT05G
-SUdfTVREX1NQSV9OT1I9eQo+PiAtQ09ORklHX1NQSV9BU1BFRURfU01DX01URF9TUElfTk9SPW0K
-Pj4gK0NPTkZJR19TUElfQVNQRUVEX1NNQz1tCj4+ICAgQ09ORklHX01URF9VQkk9eQo+PiAgIENP
-TkZJR19CTEtfREVWX0xPT1A9eQo+PiAgIENPTkZJR19CTEtfREVWX1JBTT15Cj4+IC0tCj4+IDIu
-MzQuMQo+PgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Hi Miquel, Pratyush, Srinivas,
+
+On 2/2/22 12:53, Pratyush Yadav wrote:
+> + Khouloud, Linus, Bartosz
+> 
+> On 02/02/22 11:44AM, Christophe Kerello wrote:
+>> Hi,
+>>
+>> On 2/1/22 11:47, Pratyush Yadav wrote:
+>>> On 31/01/22 02:43PM, Miquel Raynal wrote:
+>>>> Hi Vignesh, Tudory, Pratyush,
+>>>>
+>>>> + Tudor and Pratyush
+>>>>
+>>>> christophe.kerello@foss.st.com wrote on Mon, 31 Jan 2022 10:57:55 +0100:
+>>>>
+>>>>> Wp-gpios property can be used on NVMEM nodes and the same property can
+>>>>> be also used on MTD NAND nodes. In case of the wp-gpios property is
+>>>>> defined at NAND level node, the GPIO management is done at NAND driver
+>>>>> level. Write protect is disabled when the driver is probed or resumed
+>>>>> and is enabled when the driver is released or suspended.
+>>>>>
+>>>>> When no partitions are defined in the NAND DT node, then the NAND DT node
+>>>>> will be passed to NVMEM framework. If wp-gpios property is defined in
+>>>>> this node, the GPIO resource is taken twice and the NAND controller
+>>>>> driver fails to probe.
+>>>>>
+>>>>> A new Boolean flag named skip_wp_gpio has been added in nvmem_config.
+>>>>> In case skip_wp_gpio is set, it means that the GPIO is handled by the
+>>>>> provider. Lets set this flag in MTD layer to avoid the conflict on
+>>>>> wp_gpios property.
+>>>>>
+>>>>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+>>>>> ---
+>>>>>    drivers/mtd/mtdcore.c | 2 ++
+>>>>>    1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>>>>> index 70f492dce158..e6d251594def 100644
+>>>>> --- a/drivers/mtd/mtdcore.c
+>>>>> +++ b/drivers/mtd/mtdcore.c
+>>>>> @@ -546,6 +546,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+>>>>>    	config.stride = 1;
+>>>>>    	config.read_only = true;
+>>>>>    	config.root_only = true;
+>>>>> +	config.skip_wp_gpio = true;
+>>>>>    	config.no_of_node = !of_device_is_compatible(node, "nvmem-cells");
+>>>>>    	config.priv = mtd;
+>>>>> @@ -833,6 +834,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+>>>>>    	config.owner = THIS_MODULE;
+>>>>>    	config.type = NVMEM_TYPE_OTP;
+>>>>>    	config.root_only = true;
+>>>>> +	config.skip_wp_gpio = true;
+>>>>>    	config.reg_read = reg_read;
+>>>>>    	config.size = size;
+>>>>>    	config.of_node = np;
+>>>>
+>>>> TLDR: There is a conflict between MTD and NVMEM, who should handle the
+>>>> WP pin when there is one? At least for raw NAND devices, I don't want
+>>>> the NVMEM core to handle the wp pin. So we've introduced this
+>>>> skip_wp_gpio nvmem config option. But there are two places where this
+>>>> boolean can be set and one of these is for otp regions (see above). In
+>>>> this case, I don't know if it is safe or if CFI/SPI-NOR rely on the
+>>>> nvmem protection. Please tell us if you think this is fine for you.
+>>>
+>>> Why does NVMEM touch hardware write protection in the first place? The
+>>> purpose of the framework is to provide a way to retrieve config stored
+>>> in memory. It has no business dealing with details of the chip like the
+>>> WP line. That should be MTD's job (which it should delegate to SPI NOR,
+>>> SPI NAND, etc.). If you want to write protect a cell then do it in
+>>> software. I don't see why NVMEM should be dealing with hardware directly
+>>> at all.
+>>>
+>>> That is my mental model of how things _should_ work. I have not spent
+>>> much time digging into how things actually work currently.
+>>>
+>>
+>> Wp-gpios property management was added in MVMEM framework in January 2020 =>
+>> sha1: 2a127da461a9d8d97782d6e82b227041393eb4d2
+>> "
+>>      nvmem: add support for the write-protect pin
+>>
+>>      The write-protect pin handling looks like a standard property that
+>>      could benefit other users if available in the core nvmem framework.
+>>
+>>      Instead of modifying all the memory drivers to check this pin, make
+>>      the NVMEM subsystem check if the write-protect GPIO being passed
+>>      through the nvmem_config or defined in the device tree and pull it
+>>      low whenever writing to the memory.
+>> "
+>>
+>> And this modification was done for EEPROMs flashes => sha1:
+>> 1c89074bf85068d1b86f2e0f0c2110fdd9b83c9f
+>> "
+>>      eeprom: at24: remove the write-protect pin support
+>>
+>>      NVMEM framework is an interface for the at24 EEPROMs as well as for
+>>      other drivers, instead of passing the wp-gpios over the different
+>>      drivers each time, it would be better to pass it over the NVMEM
+>>      subsystem once and for all.
+>>
+>>      Removing the support for the write-protect pin after adding it to
+>>      the NVMEM subsystem.
+>> "
+>>
+>> Current NVMEM framework implementation toggles the WP GPIO when reg_write
+>> nvmem_config API is defined. In case of MTD framework, reg_write is not
+>> defined in nvmem_config.
+> 
+> Thanks for digging these up. I think this was the wrong decision to
+> make. NVMEM should just provide the APIs for handling read/write, and
+> leave the rest to the drivers.
+> 
+> It might be convenient for some drivers to put the WP GPIO handling to
+> NVMEM core but I just don't think it is the job of the framework to deal
+> with this, and it just does not know enough about the device to deal
+> with correctly and completely anyway. For example, wp-gpio is only one
+> of the ways to write protect a chip. SPI NOR flashes have a WP# pin that
+> is often toggled via the SPI controller. There could also be registers
+> that do the write protection.
+> 
+> One would have to make strong justifications for making nvmem directly
+> deal with hardware level details to convince me it is a good idea. IMHO
+> if AT24 EEPROM is the only driver relying on this as of now then we
+> should just revert the patches and not have to deal with the
+> skip_wp_gpio hackery.
+> 
+
+Based on the  bindings documentation, AT24 EEPROM driver is not the only
+driver relying on this implementation. At least, AT25 EEPROM driver will
+have to be modified to handle the Write Protect management, and there is
+probably others drivers relying on this implementation.
+
+So, should we keep the legacy and apply the proposal patch to fix this
+conflict (I can send a V3 with a fixes tag on patch 3 and 4 as
+recommended by Miquel)?
+Or should we revert the Write Protect management in NVMEM framework
+but in this case I will not be able to handle such modifications (I am
+not able to test those drivers).
+
+Regards,
+Christophe Kerello.
+
+>>
+>> Based on the comments made, it seems that we also agree that this write
+>> protection should be handled by MTD subsystems or associated drivers and not
+>> by MVMEN framework for MTD use cases.
+>>
+>> The proposal implementation should solve this conflict for MTD framework
+>> without breaking anything for others NVMEM users (EEPROMs flashes for
+>> example).
+> 
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
