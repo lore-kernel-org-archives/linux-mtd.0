@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDDE7C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FAD1C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Vc6AXs+8h0hcqUa6boGJ/D30Mw8lX4u+soKHKRgVH+Q=; b=UWRvm96L0KrL8b
-	Ti8twvCF5CZrFPCyDjp+NlwgWiZbSDHuD7Wt3+rxHbzt+8+rjEUeZz0Q7cP0yJDFB6TxnvI3qFIn0
-	MxNX/urfJMyAIbPP91P4DwjDJp58X6dcI2zp4BpIE4dlnG35bBckSdMPlx/g0jlssWPbrjsiI+uIy
-	HYM2P3Ut8g+ywF3seoVNCTrjYwMa2rOQvGlPvpMB7m27RAWfin4oRRwzdKb68we/N+GJxjezMq8WE
-	LYuDnh55l6Gpkhqwud+XxvNMwKvLIUAaHo64uNyLzAl1EoMLroOi3kauJvUVCOuonlLWsdlxuAHLP
-	mpNhGyT8wAQK54Q7dedQ==;
+	List-Owner; bh=ptGu5B5dT6xTuaKj+XoM+IXK+rGjM5zvhUHpGhoYju0=; b=VqV9xQrelrZ3DZ
+	dGaYNBpxHt3MKWMwMwh+fVVgGXRfhXyq0+ApVd8LQcqeFE+B0dhIF73ztyUyyVkYk2fG0TXnOlMzo
+	1q5NreUwuSnyTZ7ffm0CEmiEdcOqgn9WsVSTfU5ZDlNIbgiEO5i5tceEnOivrWKzAvdfjyOGwL7WV
+	hUXPHLTTu/BzNG1UF9zd7s3s5aYW30JMO8jxfkM0wWoF1ohSFW4LXQUvgf9GXBoLuwlVLg1snVWYg
+	8H+pcDEpanhGYQ2H13dzO9eMBz0gyX0bdqkrSWTP/McDKGaHaOfH0zdfhOOBwVCB0ItOnOtup7AeO
+	X+veRKztfeIJbj1K7VWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL1rc-00E6Wy-LE; Fri, 18 Feb 2022 11:55:53 +0000
+	id 1nL1tv-00E6z0-Ov; Fri, 18 Feb 2022 11:58:16 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Yq-00E1RS-DZ
+ id 1nL1Yo-00E1Q5-V5
  for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:31 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id C2E5E22481;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 2618822487;
  Fri, 18 Feb 2022 12:36:20 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1645184180;
@@ -37,10 +37,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=F1qkSskWvLmQEwC2wGrqzOG2oXtmYsBZ+OhFkXYPiXE=;
- b=XSz4LNMbooEbXcRQOseQgXnotQJAnFwsndRLU+lCPy6C4JE4ii9/k2xvT8PDEuhZM98Nyo
- 5mRBSlX58/b1EAos/8XFaMo4seIBFDzxiElRWPRFavoN27PrD81OVBgD4U1aPZ3jp7qXlP
- SiqwW7VAM00pT+JyY2pezsLkp1it4es=
+ bh=hXOPL5cPITB5pX8C9uT9seIIQT64+6BMqwNdfPuDNQU=;
+ b=vQIL3TFBgAUQ1mTY1NpPnE1LshWtHA/3VSe6zJKjA+kATSUtxTCE6i3y37k91WfZNicyoY
+ 9dsmt/KaXcKancfpLWu9FmGrsPb0AnWKPC4F6ErIuJwSHSinP4NFBvvjX7kIZKAvcTBA/K
+ znOQdED8bQdIUZDxBA4MS3s4GfGod7M=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,17 +48,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 20/32] mtd: spi-nor: guard _page_size parameter in
- S3AN_INFO()
-Date: Fri, 18 Feb 2022 12:35:55 +0100
-Message-Id: <20220218113607.1360020-21-michael@walle.cc>
+Subject: [PATCH v2 18/32] mtd: spi-nor: allow a flash to define its own
+ ready() function
+Date: Fri, 18 Feb 2022 12:35:53 +0100
+Message-Id: <20220218113607.1360020-19-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
 References: <20220218113607.1360020-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033628_647354_92D021D2 
-X-CRM114-Status: GOOD (  10.06  )
+X-CRM114-CacheID: sfid-20220218_033627_245787_75459644 
+X-CRM114-Status: GOOD (  13.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,30 +75,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The _page_size marco parameter was missing parentheses around it. Add
-them.
+Xilinx and Micron flashes have their own implementation of the
+spi_nor_ready() function. At the moment, the core will figure out
+which one to call according to some flags. Lay the foundation to
+make it possible that a flash can register its own ready()
+function.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/spi-nor/core.c | 4 ++++
+ drivers/mtd/spi-nor/core.h | 4 ++++
+ 2 files changed, 8 insertions(+)
 
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4d2036cdce42..390a9ab413b7 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -794,6 +794,10 @@ static int spi_nor_ready(struct spi_nor *nor)
+ {
+ 	int sr, fsr;
+ 
++	/* Flashes might override the standard routine. */
++	if (nor->params->ready)
++		return nor->params->ready(nor);
++
+ 	if (nor->flags & SNOR_F_READY_XSR_RDY)
+ 		sr = spi_nor_xsr_ready(nor);
+ 	else
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 446218b0e017..3c37b46d60d5 100644
+index 4fe16b5aa3f5..fdc8c0f31f5c 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -469,9 +469,9 @@ struct flash_info {
- 			(_jedec_id) & 0xff				\
- 			},						\
- 		.id_len = 3,						\
--		.sector_size = (8*_page_size),				\
-+		.sector_size = (8 * (_page_size)),			\
- 		.n_sectors = (_n_sectors),				\
--		.page_size = _page_size,				\
-+		.page_size = (_page_size),				\
- 		.addr_width = 3,					\
- 		.flags = SPI_NOR_NO_FR | SPI_NOR_XSR_RDY,
+@@ -261,6 +261,9 @@ struct spi_nor_otp {
+  *			SPI NOR flashes that have peculiarities to the SPI NOR
+  *			standard e.g. different opcodes, specific address
+  *			calculation, page size, etc.
++ * @ready:		(optional) flashes might use a different mechanism
++ *			than reading the status register to indicate they
++ *			are ready for a new command
+  * @locking_ops:	SPI NOR locking methods.
+  */
+ struct spi_nor_flash_parameter {
+@@ -282,6 +285,7 @@ struct spi_nor_flash_parameter {
+ 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+ 	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+ 	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
++	int (*ready)(struct spi_nor *nor);
  
+ 	const struct spi_nor_locking_ops *locking_ops;
+ };
 -- 
 2.30.2
 
