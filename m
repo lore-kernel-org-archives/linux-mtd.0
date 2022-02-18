@@ -4,61 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A0DFC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 12:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99B7BC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 12:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZKgGiAnD9m2TJNkod1ggNmHDOr6PEWJ4bo4xLrg3qOE=; b=yCRUfORqIDJ61/
-	+ursvkkqZCYGgOjJ+UQkHEDLAVAJad/rOPHRE507TfGHaZwGimObdMfFEg/1CdZop2K95Ltfv+gfq
-	nLO3ra3ufUQ+rSeyIZ5dslbZQ1WabQbFFRPfPJrZ7JPB+PyE1S/3QRWR4+LVwH46pzImnhLETlBsY
-	pJqAlbcSYuBdYagJ8Z5b62K86Zhe8XoXbrrwYxK0tTg28H/ZNX4MtYEH4Q+D2aLbJWdqriObrIAH0
-	yUMGTDY6NoySuxN/QxxDo/8Apk57kwYuG7vOIABJtXZctdjMlpQLIioB5dMzuuxeaBt7AzDX4fSsP
-	DwwYuKokrIexzLGhWz9A==;
+	List-Owner; bh=D7ZgyIiuqLPhhswz6P2HTecmwCvKDuaG9RolXuaY4mg=; b=wMg0RYepA1NM3l
+	cRY/AJB+LxRFqwd54C6+CFfu4qUhyai36nfH+U6Xpy4S4d4+83j27Qo0a2o3BL/f8tAQxKnfCuQ/D
+	FWNvC2Yya2eNh4vR9kw/dI5844CYnHG+I57KKukaD/5+T6z602NCVPCzE/GBy9qgGosqrmMUrK0x6
+	VjolXaIxrQtnSNPJk1SlCUX1ggh7lejMy8sBM7H8fk4JtYYGNicBXHxETqRFCW6CBlBgjkKmGoxlg
+	Gum1g4gli9alPiGjMT+sU2XY7dt30LtW30t2e1nendxiF5Prr+qZ/6+2pCkwE8QDIfnhJDnsVSmwC
+	OsefBUlPu0yjKyzZSX5w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL2JZ-00EClq-T2; Fri, 18 Feb 2022 12:24:46 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nL2hb-00EJDO-VU; Fri, 18 Feb 2022 12:49:36 +0000
+Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Ys-00E1TZ-Pq
- for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:38 +0000
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 74854223F7;
- Fri, 18 Feb 2022 12:36:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645184183;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FtKn1Ihp9t6RnjfWlSzFiBTXbyszZe5R09mnBy88O24=;
- b=YeL82QF74DbiffbQh2U81DFlcZoSPAoPVsq05xTcJF/JUpK3qIMI2KRahcqeB43sq4eDO8
- zKzh3QfcVI0qYxFdRG8Dt79bdJXS/Y4ZGs7rHwNTZ07aveCPld3czr58dJ3YNQCzI8Jav+
- EUZhujb01QTxjutBTY16yaSY8XjBYoQ=
-From: Michael Walle <michael@walle.cc>
-To: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 29/32] mtd: spi-nor: spansion: convert USE_CLSR to a
- manufacturer flag
-Date: Fri, 18 Feb 2022 12:36:04 +0100
-Message-Id: <20220218113607.1360020-30-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
-References: <20220218113607.1360020-1-michael@walle.cc>
+ id 1nL1pd-00E67r-0D
+ for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:53:50 +0000
+Received: by mail-ej1-x633.google.com with SMTP id qk11so14497836ejb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Feb 2022 03:53:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=monstr-eu.20210112.gappssmtp.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=PAFU6gayxYycFAjsYYdsBH4fb14B+9k5K1rC1fr5ibU=;
+ b=y1ApFGs2wBKqI6YmqGjiKRoomFaWQn9GJ+esuDqvq1CBp+bPpXaaNWJxFaT95S6sQO
+ nbB6NlB9oE/XYNfZ5GZGqFa1ulYJLqfN/+qUK4VZFEi8JQSmztrhJ5+iMlIvi6yW+JPj
+ 4fPTTTqHCCrzKTkp/QUn9I5U+wD1oSPiY08DcdkkFp5QNxU2ATqMGhNflB2g8QK1Mpi3
+ zrM+ocM6Hvet65ejBI8tO8ffQ5j6KWZPkiPfFtTCywS5Kup/tbAlm2BHDqnGEZHS6HwZ
+ DORXagahzNdE99rrzWxALDbyqxmTh/UcgIXyD24Lg2PYuGbeYTy037/J+Oq5S0w06VJK
+ mj4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=PAFU6gayxYycFAjsYYdsBH4fb14B+9k5K1rC1fr5ibU=;
+ b=LDqXyspuSvQHsuMw948uIA3x+7ZTCTo7Ve3XBTGDUdZH6ZTALwo4eWUGSVYoRjogRR
+ GqsbQ5RgXo+dSJhDrCIv0+DyTxftL1YC23FeN07PWvEw7Rkq72m25VX8a5mlAY4dG1kT
+ V9tIx1+bcDQlSNijl2al+jk7jiOJrolM0ORf0rNFNIRZn57SbKsd9vCGkdUWmpZqjxbD
+ BetHa0RV1lY//H43eW/qxWkd5ho30WT1wwQbqmFZvrjft4ZEkgF2YXiQe+E2xJoTx03b
+ 0H0c1M+mLWsGFpeiTqUfgdVoSAQhDb8X/95XsuPY0DySGHhpTp2kG153ceEN6LUUTQPu
+ 8ptg==
+X-Gm-Message-State: AOAM532YlSbFP12te7eBIXnXtAi1fb78qJIwRkRRR1ZZWbTU0BO4UK1Z
+ SMRNpImIQOWkbdq+JxywFCe3Tw==
+X-Google-Smtp-Source: ABdhPJzz58mhC9gqhYwFYu4oy6FCTDMQGTy6UF4AuD1gK4uU6HBfQlrpYujnCiE43A0uNYbiJHFm/A==
+X-Received: by 2002:a17:906:5a6e:b0:6d0:afaa:6ce9 with SMTP id
+ my46-20020a1709065a6e00b006d0afaa6ce9mr1219253ejc.72.1645185226330; 
+ Fri, 18 Feb 2022 03:53:46 -0800 (PST)
+Received: from ?IPV6:2a02:768:2307:40d6::f9e? ([2a02:768:2307:40d6::f9e])
+ by smtp.gmail.com with ESMTPSA id m7sm2203683ejq.10.2022.02.18.03.53.45
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 18 Feb 2022 03:53:45 -0800 (PST)
+Message-ID: <41049c30-aaf1-30e5-2d11-14df0b468411@monstr.eu>
+Date: Fri, 18 Feb 2022 12:53:44 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v6 0/3] Stacked/parallel memories bindings
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+References: <20220126112608.955728-1-miquel.raynal@bootlin.com>
+From: Michal Simek <monstr@monstr.eu>
+In-Reply-To: <20220126112608.955728-1-miquel.raynal@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033631_232133_D28FD1E5 
-X-CRM114-Status: GOOD (  15.92  )
+X-CRM114-CacheID: sfid-20220218_035349_132782_946F8164 
+X-CRM114-Status: GOOD (  22.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,166 +92,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that all functions using that flag are local to the spansion module,
-we can convert the flag to a manufacturer one.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/core.c     |  3 --
- drivers/mtd/spi-nor/core.h     |  3 --
- drivers/mtd/spi-nor/spansion.c | 55 +++++++++++++++++++++-------------
- 3 files changed, 34 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e2b8b0a438ce..f5a2f37d140e 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2447,9 +2447,6 @@ static void spi_nor_init_flags(struct spi_nor *nor)
- 
- 	if (flags & NO_CHIP_ERASE)
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
--
--	if (flags & USE_CLSR)
--		nor->flags |= SNOR_F_USE_CLSR;
- }
- 
- /**
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index a02bf54289fb..2130a96e2044 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -14,7 +14,6 @@
- enum spi_nor_option_flags {
- 	SNOR_F_HAS_SR_TB	= BIT(1),
- 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
--	SNOR_F_USE_CLSR		= BIT(4),
- 	SNOR_F_BROKEN_RESET	= BIT(5),
- 	SNOR_F_4B_OPCODES	= BIT(6),
- 	SNOR_F_HAS_4BAIT	= BIT(7),
-@@ -347,7 +346,6 @@ struct spi_nor_fixups {
-  *   SPI_NOR_NO_ERASE:        no erase command needed.
-  *   NO_CHIP_ERASE:           chip does not support chip erase.
-  *   SPI_NOR_NO_FR:           can't do fastread.
-- *   USE_CLSR:                use CLSR command.
-  *
-  * @no_sfdp_flags:  flags that indicate support that can be discovered via SFDP.
-  *                  Used when SFDP tables are not defined in the flash. These
-@@ -398,7 +396,6 @@ struct flash_info {
- #define SPI_NOR_NO_ERASE		BIT(6)
- #define NO_CHIP_ERASE			BIT(7)
- #define SPI_NOR_NO_FR			BIT(8)
--#define USE_CLSR			BIT(9)
- 
- 	u8 no_sfdp_flags;
- #define SPI_NOR_SKIP_SFDP		BIT(0)
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index f7d781194850..061357790dde 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -8,6 +8,9 @@
- 
- #include "core.h"
- 
-+/* flash_info mfr_flag. Used to clear sticky prorietary SR bits. */
-+#define USE_CLSR	BIT(0)
-+
- #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
- #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
- #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-@@ -212,43 +215,53 @@ static const struct flash_info spansion_nor_parts[] = {
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128)
- 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25fl128s0", INFO6(0x012018, 0x4d0080, 256 * 1024, 64)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fl128s1", INFO6(0x012018, 0x4d0180, 64 * 1024, 256)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fl256s0", INFO6(0x010219, 0x4d0080, 256 * 1024, 128)
--		FLAGS(USE_CLSR)
- 		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fl256s1", INFO6(0x010219, 0x4d0180, 64 * 1024, 512)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256)
--		FLAGS(SPI_NOR_HAS_LOCK | USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		FLAGS(SPI_NOR_HAS_LOCK)
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fs128s1", INFO6(0x012018, 0x4d0181, 64 * 1024, 256)
--		FLAGS(USE_CLSR)
- 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
- 		.fixups = &s25fs_s_fixups, },
- 	{ "s25fs256s0", INFO6(0x010219, 0x4d0081, 256 * 1024, 128)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256)
--		FLAGS(USE_CLSR)
- 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
- 		.fixups = &s25fs_s_fixups, },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256) },
- 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256)
--		FLAGS(USE_CLSR)
--		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_CLSR)
-+	},
- 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8) },
- 	{ "s25sl008a",  INFO(0x010213,      0,  64 * 1024,  16) },
- 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32) },
-@@ -370,7 +383,7 @@ static void spansion_nor_late_init(struct spi_nor *nor)
- 		nor->mtd.erasesize = nor->info->sector_size;
- 	}
- 
--	if (nor->flags & SNOR_F_USE_CLSR)
-+	if (nor->info->mfr_flags & USE_CLSR)
- 		nor->params->ready = spi_nor_sr_ready_and_clear;
- }
- 
--- 
-2.30.2
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFyawoKT24gMS8yNi8yMiAxMjoyNiwgTWlxdWVsIFJheW5hbCB3cm90ZToKPiBIZWxsbyBS
+b2IsIE1hcmssIFR1ZG9yICYgUHJhdHl1c2gsCj4gCj4gSGVyZSBpcyBhIHNpeHRoIHZlcnNpb25z
+IGZvciB0aGVzZSBiaW5kaW5ncywgd2hpY2ggYXBwbGllcyBvbiB0b3Agb2YKPiB0aGUgdjUuMTct
+cmMxIG5vdyB0aGF0IFByYXR5dXNoJ3Mgd29yayBhcyBiZWVuIG1lcmdlZC4KPiAoaHR0cHM6Ly9s
+b3JlLmtlcm5lbC5vcmcvYWxsLzIwMjExMTA5MTgxOTExLjIyNTEtMS1wLnlhZGF2QHRpLmNvbS8p
+Cj4gCj4gQ2hlZXJzLAo+IE1pcXXDqGwKPiAKPiBDaGFuZ2VzIGluIHY2Ogo+ICogQWRkZWQgUHJh
+dHl1c2gncyBhY2tzLgo+ICogVGhlIHRvb2xpbmcgbm93IHZhbGlkYXRlcyB0aGUgYmluZGluZyAo
+dXBkYXRpbmcgZHQtc2NoZW1hIGlzCj4gICAgbmVjZXNhcnkpLgo+ICogVXBkYXRlZCB0aGUgbWF4
+SXRlbXMgZmllbGQgdG8gNCBhcyBhICJiaWcgZW5vdWdoIHZhbHVlIiBhcyBkaXNjdXNzZWQuCj4g
+Cj4gQ2hhbmdlcyBpbiB2NToKPiAqIFVzZWQgdGhlIHVpbnQ2NC1hcnJheSBpbnN0ZWFkIG9mIHRo
+ZSBtYXRyaXggdHlwZS4KPiAqIFVwZGF0ZWQgdGhlIGV4YW1wbGUgYXMgd2VsbCB0byB1c2UgYSBz
+aW5nbGUgIi9iaXRzLyA2NCIgY2FzdCBiZWNhdXNlCj4gICAgZG9pbmcgaXQgdHdpY2UsIGRlc3Bp
+dGUgYmVpbmcgc3VwcG9ydGVkIGJ5IHRoZSBsYW5ndWFnZSBpdHNlbGYsIGlzIG5vdAo+ICAgIHll
+dCBzb21ldGhpbmcgdGhhdCB3ZSBjYW4gdXNlIGZvciBkZXNjcmliaW5nIGJpbmRpbmdzLgo+IAo+
+IENoYW5nZXMgaW4gdjQ6Cj4gKiBDaGFuZ2VkIHRoZSB0eXBlIG9mIHByb3BlcnRpZXMgdG8gdWlu
+dDY0LWFycmF5cyBpbiBvcmRlciB0byBiZSBhYmxlIHRvCj4gICAgZGVzY3JpYmUgdGhlIHNpemUg
+b2YgZWFjaCBlbGVtZW50IGluIHRoZSBhcnJheS4KPiAqIFVwZGF0ZWQgdGhlIGV4YW1wbGUgYWNj
+b3JkaW5nbHkuCj4gCj4gQ2hhbmdlcyBpbiB2MzoKPiAqIFJlYmFzZWQgb24gdG9wIG9mIFByYXR5
+dXNoJ3MgcmVjZW50IGNoYW5nZXMuCj4gKiBEcm9wcGVkIHRoZSBjb21taXQgYWxsb3dpbmcgdG8g
+cHJvdmlkZSB0d28gcmVnIGVudHJpZXMgb24gdGhlIG5vZGUKPiAgICBuYW1lLgo+ICogRHJvcHBl
+ZCB0aGUgY29tbWl0IHJlZmVyZW5jaW5nIHNwaS1jb250cm9sbGVyLnlhbWwgZnJvbQo+ICAgIGpl
+ZGVjLHNwaS1ub3IueWFtbCwgbm93IHJlcGxhY2VkIGJ5IHNwaS1wZXJpcGhlcmFsLXByb3BzLnlh
+bWwgYW5kCj4gICAgYWxyZWFkeSBkb25lIGluIFByYXR5dXNoJ3Mgc2VyaWVzLgo+ICogQWRkZWQg
+Um9iJ3MgQWNrLgo+ICogRW5oYW5jZWQgYSBjb21taXQgbWVzc2FnZS4KPiAqIE1vdmVkIHRoZSBu
+ZXcgcHJvcGVydGllcyB0byB0aGUgbmV3IFNQSSBwZXJpcGhlcmFsIGJpbmRpbmcgZmlsZS4KPiAK
+PiBDaGFuZ2VzIGluIHYyOgo+ICogRHJvcHBlZCB0aGUgZHRjIGNoYW5nZXMgZm9yIG5vdy4KPiAq
+IE1vdmVkIHRoZSBwcm9wZXJ0aWVzIGluIHRoZSBkZXZpY2UncyBub2Rlcywgbm90IHRoZSBjb250
+cm9sbGVyJ3MuCj4gKiBEcm9wcGVkIHRoZSB1c2VsZXNzICNhZGRyZXNzLWNlbGxzIGNoYW5nZS4K
+PiAqIEFkZGVkIGEgbWlzc2luZyAibWluSXRlbXMiLgo+ICogTW92ZWQgdGhlIG5ldyBwcm9wZXJ0
+aWVzIGluIHRoZSBzcGktY29udHJvbGxlci55YW1sIGZpbGUuCj4gKiBBZGRlZCBhbiBleGFtcGxl
+IHVzaW5nIHR3byBzdGFja2VkIG1lbW9yaWVzIGluIHRoZQo+ICAgIHNwaS1jb250cm9sbGVyLnlh
+bWwgZmlsZS4KPiAqIFJlbmFtZWQgdGhlIHByb3BlcnRpZXMgdG8gZHJvcCB0aGUgWGlsaW54IHBy
+ZWZpeC4KPiAqIEFkZGVkIGEgcGF0Y2ggdG8gZml4IHRoZSBzcGktbm9yIGplZGVjIHlhbWwgZmls
+ZS4KPiAKPiBNaXF1ZWwgUmF5bmFsICgzKToKPiAgICBkdC1iaW5kaW5nczogbXRkOiBzcGktbm9y
+OiBBbGxvdyB0d28gQ1MgcGVyIGRldmljZQo+ICAgIHNwaTogZHQtYmluZGluZ3M6IERlc2NyaWJl
+IHN0YWNrZWQvcGFyYWxsZWwgbWVtb3JpZXMgbW9kZXMKPiAgICBzcGk6IGR0LWJpbmRpbmdzOiBB
+ZGQgYW4gZXhhbXBsZSB3aXRoIHR3byBzdGFja2VkIGZsYXNoZXMKPiAKPiAgIC4uLi9iaW5kaW5n
+cy9tdGQvamVkZWMsc3BpLW5vci55YW1sICAgICAgICAgICB8ICAzICsrLQo+ICAgLi4uL2JpbmRp
+bmdzL3NwaS9zcGktY29udHJvbGxlci55YW1sICAgICAgICAgIHwgIDcgKysrKysrCj4gICAuLi4v
+YmluZGluZ3Mvc3BpL3NwaS1wZXJpcGhlcmFsLXByb3BzLnlhbWwgICAgfCAyNSArKysrKysrKysr
+KysrKysrKysrCj4gICAzIGZpbGVzIGNoYW5nZWQsIDM0IGluc2VydGlvbnMoKyksIDEgZGVsZXRp
+b24oLSkKPiAKCkNhbiB5b3UgcGxlYXNlIHBpY2sgdXAgdGhpcyBzZXJpZXM/CgpUaGFua3MsCk1p
+Y2hhbAoKLS0gCk1pY2hhbCBTaW1laywgSW5nLiAoTS5FbmcpLCBPcGVuUEdQIC0+IEtleUlEOiBG
+RTNEMUY5MQp3OiB3d3cubW9uc3RyLmV1IHA6ICs0Mi0wLTcyMTg0Mjg1NApNYWludGFpbmVyIG9m
+IExpbnV4IGtlcm5lbCAtIFhpbGlueCBNaWNyb2JsYXplCk1haW50YWluZXIgb2YgTGludXgga2Vy
+bmVsIC0gWGlsaW54IFp5bnEgQVJNIGFuZCBaeW5xTVAgQVJNNjQgU29DcwpVLUJvb3QgY3VzdG9k
+aWFuIC0gWGlsaW54IE1pY3JvYmxhemUvWnlucS9aeW5xTVAvVmVyc2FsIFNvQ3MKCgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
