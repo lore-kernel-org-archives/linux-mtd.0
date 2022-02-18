@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8057EC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:48:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EC4FC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:49:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vA26BHcyN8uHDbVHXjdscsf1JpbUhPObV4FcUwwqnQ0=; b=4X4W4R8Y5007hw
-	C8sfIyqblBeX2b/bP63/LdSr9SyJfVAgHIuUwnR+s9busFjA/epNqT5O3KDEhgjSjcaTlHYhvwN4q
-	20t7Zqf0zrNdYWoKVJzLFBaTJuHpYMPJgk4F31DBXRhegOm/KfkrLCeGZVLg/Lg7MmjAM4dl6uK6p
-	WGailz4wk5JHw+Wr7M0Xr3pBoRTEiPBcmNhAzpL2T/HXDoc9koHy1u/QlqIYoRUIAsDPFeTQFNJuL
-	BL7JEL0jmW2tOKh26iam/h3KwEi+atEmaADuYXvGuZ+qlZWAT0qFp28EVGwtK52FavEp+ciNnW6CG
-	z1lDqGLP/XF1Ny7A0S7Q==;
+	List-Owner; bh=zo7hMmr1TXvcm3/ghQvJAos20ft6b+WJ2Bem93hjtV0=; b=LjEBS1yFMf4gPL
+	tjul/V/qIEhUyB/F91tlRcxmVAx3M3G+b4nKCF3mRdB1MlbKQrj2p6yIolSUuaxEETUUW1lelvZdQ
+	s4awPoUKgjK5/jN6xgOO8Bfw5bwFi8iHxJ6/Umt9Wp0kRBxTxtXKCG1jmZ2lQHEkAiBsstAMSu4gk
+	CO/xerQM+cVsnXrzmrMyDbvC5+oy2U9V2Y1WbrgIiWG/Ssi+1FPNRune+gYmzHRBI0bc7hZwJhPdT
+	H6vMw8TCOxp0bT9vukOWmw4HuBnAJdO4xDz7nCyM+3jLOzmYI6sOCpGST8WqtT2ACfczzbKws4qej
+	mxv1taQ0T5uP8oTXzyNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL1jW-00E4us-3i; Fri, 18 Feb 2022 11:47:30 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nL1lF-00E5Ek-H4; Fri, 18 Feb 2022 11:49:17 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Ym-00E1NZ-TE
- for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:29 +0000
+ id 1nL1Ym-00E1NM-Sf
+ for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:30 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 69D7022456;
- Fri, 18 Feb 2022 12:36:18 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 6869922452;
+ Fri, 18 Feb 2022 12:36:17 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645184178;
+ s=mail2016061301; t=1645184177;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Wwdz4ZqLZzwMbbOuFl8qfVobOJC0DCzhISRyc0ex6gI=;
- b=E/qT1sWAIUfmRcLrru+mcYRGgbpFE8Fj4IuLQtL/nx9rqQPFM+RWKrVaJWR3xEieEqVMd6
- 9LAL8O+hC8gtcpTIGPikxo7ygxxQUt+AoIe5MA4o7Y1S/LF+UU7moEB7xvzQURVpsOwiMd
- eciY9/atDQlkEFLrNdd9kl5Z1B/bICo=
+ bh=CyQD7v0TOOw56IqLXg5ckuhKii03Kxz51MOI5ERrL9I=;
+ b=uhET8Im/cU5TRTYOhwQn/pH5tIdDmFpNDpP7LUa4AoCQ2fj6m4+jq14Nagoa64OMYGvlL9
+ hfCUxZtdbWYeFKgs/hMZ5x0mkdj8tlGRMz4WyPsxZixw/sPQF/Sb7xWStyjHcwfIlgy/6Q
+ I7iCC+lE17bjcMV9mvYjfgOmMoqT2u8=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 14/32] mtd: spi-nor: winbond: unify function names
-Date: Fri, 18 Feb 2022 12:35:49 +0100
-Message-Id: <20220218113607.1360020-15-michael@walle.cc>
+Subject: [PATCH v2 11/32] mtd: spi-nor: micron-st: unify function names
+Date: Fri, 18 Feb 2022 12:35:46 +0100
+Message-Id: <20220218113607.1360020-12-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
 References: <20220218113607.1360020-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033625_131658_6D7F48D5 
-X-CRM114-Status: GOOD (  12.11  )
+X-CRM114-CacheID: sfid-20220218_033625_256584_EC9B73CD 
+X-CRM114-Status: GOOD (  12.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,75 +84,106 @@ There are no functional changes.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/winbond.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/mtd/spi-nor/micron-st.c | 34 ++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 3d91888882e4..8314266c2fec 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -32,7 +32,7 @@ static const struct spi_nor_fixups w25q256_fixups = {
- 	.post_bfpt = w25q256_post_bfpt_fixups,
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index bb95b1aabf74..7a68f2ad3ea1 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -17,7 +17,7 @@
+ #define SPINOR_MT_OCT_DTR	0xe7	/* Enable Octal DTR. */
+ #define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
+ 
+-static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
++static int micron_st_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+ {
+ 	struct spi_mem_op op;
+ 	u8 *buf = nor->bouncebuf;
+@@ -102,7 +102,7 @@ static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
+ 
+ static void mt35xu512aba_default_init(struct spi_nor *nor)
+ {
+-	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
++	nor->params->octal_dtr_enable = micron_st_nor_octal_dtr_enable;
+ }
+ 
+ static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
+@@ -130,7 +130,7 @@ static const struct spi_nor_fixups mt35xu512aba_fixups = {
+ 	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
  };
  
--static const struct flash_info winbond_parts[] = {
-+static const struct flash_info winbond_nor_parts[] = {
- 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
- 	{ "w25x05", INFO(0xef3010, 0, 64 * 1024,  1)
- 		NO_SFDP_FLAGS(SECT_4K) },
-@@ -138,7 +138,7 @@ static const struct flash_info winbond_parts[] = {
+-static const struct flash_info micron_parts[] = {
++static const struct flash_info micron_nor_parts[] = {
+ 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512)
+ 		FLAGS(USE_FSR)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ |
+@@ -143,7 +143,7 @@ static const struct flash_info micron_parts[] = {
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
+ };
+ 
+-static const struct flash_info st_parts[] = {
++static const struct flash_info st_nor_parts[] = {
+ 	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
+ 	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64)
+@@ -250,15 +250,15 @@ static const struct flash_info st_parts[] = {
+ };
+ 
+ /**
+- * st_micron_set_4byte_addr_mode() - Set 4-byte address mode for ST and Micron
+- * flashes.
++ * micron_st_nor_set_4byte_addr_mode() - Set 4-byte address mode for ST and
++ * Micron flashes.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+  *		address mode.
   *
   * Return: 0 on success, -errno otherwise.
   */
--static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+-static int st_micron_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
++static int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
  {
  	int ret;
  
-@@ -162,7 +162,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+@@ -273,28 +273,28 @@ static int st_micron_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
  	return spi_nor_write_disable(nor);
  }
  
--static const struct spi_nor_otp_ops winbond_otp_ops = {
-+static const struct spi_nor_otp_ops winbond_nor_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
- 	.erase = spi_nor_otp_erase_secr,
-@@ -170,25 +170,25 @@ static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
- 
--static void winbond_default_init(struct spi_nor *nor)
-+static void winbond_nor_default_init(struct spi_nor *nor)
+-static void micron_st_default_init(struct spi_nor *nor)
++static void micron_st_nor_default_init(struct spi_nor *nor)
  {
--	nor->params->set_4byte_addr_mode = winbond_set_4byte_addr_mode;
-+	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
+ 	nor->flags |= SNOR_F_HAS_LOCK;
+ 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+ 	nor->params->quad_enable = NULL;
+-	nor->params->set_4byte_addr_mode = st_micron_set_4byte_addr_mode;
++	nor->params->set_4byte_addr_mode = micron_st_nor_set_4byte_addr_mode;
  }
  
--static void winbond_late_init(struct spi_nor *nor)
-+static void winbond_nor_late_init(struct spi_nor *nor)
- {
- 	if (nor->params->otp.org->n_regions)
--		nor->params->otp.ops = &winbond_otp_ops;
-+		nor->params->otp.ops = &winbond_nor_otp_ops;
- }
- 
--static const struct spi_nor_fixups winbond_fixups = {
--	.default_init = winbond_default_init,
--	.late_init = winbond_late_init,
-+static const struct spi_nor_fixups winbond_nor_fixups = {
-+	.default_init = winbond_nor_default_init,
-+	.late_init = winbond_nor_late_init,
+-static const struct spi_nor_fixups micron_st_fixups = {
+-	.default_init = micron_st_default_init,
++static const struct spi_nor_fixups micron_st_nor_fixups = {
++	.default_init = micron_st_nor_default_init,
  };
  
- const struct spi_nor_manufacturer spi_nor_winbond = {
- 	.name = "winbond",
--	.parts = winbond_parts,
--	.nparts = ARRAY_SIZE(winbond_parts),
--	.fixups = &winbond_fixups,
-+	.parts = winbond_nor_parts,
-+	.nparts = ARRAY_SIZE(winbond_nor_parts),
-+	.fixups = &winbond_nor_fixups,
+ const struct spi_nor_manufacturer spi_nor_micron = {
+ 	.name = "micron",
+-	.parts = micron_parts,
+-	.nparts = ARRAY_SIZE(micron_parts),
+-	.fixups = &micron_st_fixups,
++	.parts = micron_nor_parts,
++	.nparts = ARRAY_SIZE(micron_nor_parts),
++	.fixups = &micron_st_nor_fixups,
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_st = {
+ 	.name = "st",
+-	.parts = st_parts,
+-	.nparts = ARRAY_SIZE(st_parts),
+-	.fixups = &micron_st_fixups,
++	.parts = st_nor_parts,
++	.nparts = ARRAY_SIZE(st_nor_parts),
++	.fixups = &micron_st_nor_fixups,
  };
 -- 
 2.30.2
