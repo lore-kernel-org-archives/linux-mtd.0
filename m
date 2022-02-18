@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9B64C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63D73C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:40:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JqA5MBx4tO3rpxR6fuTDQCU8t8S7QWMTVliFfdf6Wxg=; b=r8EXQe+ubOhkIJ
-	eN5+2uZBmlUhR+mQW9bCiglG5QGuW/tGWkdQYkbmtgdZpYI/Yf8Bw0MDnpmOJvAzA6PmoTdI+cA3r
-	Vg14xiZh/LasbRf5jbRE4LbMcddXQNGfORwIQCQkDDHkmxSeMVLRdTCvqoHc9ySAOlDw8qn6qQGt/
-	3qOew67VeyXazcFFQNui2+gNFoG0tWE5siPuHr8pRTR7UscgyiHZIc9GhGaJDArBufrdwFslbjhTc
-	kPbIcz7V93ZFnZzgs+3bnakavozWsEe4DsUehSBgZJmivYve3i04kIiTKseZY7pqjcyaQ70HMGS4C
-	uQR2x2PL2kY8liU6xV5A==;
+	List-Owner; bh=azfvjwUkEhVNx1DBxQPZF+xgOFNcPknaDaZCa4Kkxpc=; b=U2sSerxPudHPZN
+	ExZihIlDskiiryFBMm8sMkkaaem29nICZZV/b1E3XARYQ3qMCJBAFzCQ+EjiL9eBMG42qwaXC4dxb
+	iEqfKtrxnUNQtooA/Px8MnyhX1FxRJBTn2Gs77SiKywBD30K2T2WWXxqSeHN/hlCm54UD9fqq91U1
+	Be9R+3VtPfi+SzV4+jfEqXpfBpGMY9ao48SNPp7a3Pjb7CY6qZixJPmMGHbmiu0QmJDUGcJC50RLe
+	JCm2bVK5iQwUV5jMDEuvSysnTh254UkfZo2u3TLozC3XNOetzO321AdILpPgVAulUvKuopfWHRQuG
+	DLNpsR4EzXDZHPWPZbbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL1bh-00E2pN-JO; Fri, 18 Feb 2022 11:39:25 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nL1cX-00E36C-6E; Fri, 18 Feb 2022 11:40:17 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Ym-00E1NJ-3C
+ id 1nL1Ym-00E1N3-89
  for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:27 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id DFFF62244F;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 1CD6822438;
  Fri, 18 Feb 2022 12:36:16 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645184177;
+ s=mail2016061301; t=1645184176;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=usr8xYhL0OkkvyVpz03FFLuCa1SjXG6k7g15Vf3dWH4=;
- b=XTYzoJHBLBXKEqd2f9usCrt/CVFuMS+TmnVSE36vh1EtEs27NDKzWxrwleBwHPoDiWCV8j
- 4PHO0kk3jwR/lQVF3TW76g8aKAkuerejObuC7oH8SsEmNeZvVi2viHEImeAm3zR+uieCwq
- t7F/C+zApEMUwd3ywTuNZEd1LEkCrJ0=
+ bh=dtG66nP664HjdKC0+87lNjjaUhGXO0bMlmKnlKGD5d0=;
+ b=GMd3bir1YRH6VWLE9FpodmsL22ZQtAUK/r4tep2ko9iZGLRJgFO+B7IcdhTMEjL9+n/e5K
+ 6KMV5AjTOXovy/D2mNdViy+WE6z2uQlJ5Ca4+iB3GmZW97XEgWdLb0cQslpZQrGi+5gIKr
+ xq03KG5EZd1aH5pOt0R2x/v3wu7ymWE=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 09/32] mtd: spi-nor: issi: unify function names
-Date: Fri, 18 Feb 2022 12:35:44 +0100
-Message-Id: <20220218113607.1360020-10-michael@walle.cc>
+Subject: [PATCH v2 06/32] mtd: spi-nor: fujitsu: unify function names
+Date: Fri, 18 Feb 2022 12:35:41 +0100
+Message-Id: <20220218113607.1360020-7-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
 References: <20220218113607.1360020-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033624_333957_250C92AB 
-X-CRM114-Status: GOOD (  12.81  )
+X-CRM114-CacheID: sfid-20220218_033624_515317_F2362F5B 
+X-CRM114-Status: GOOD (  12.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,44 +84,30 @@ There are no functional changes.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/issi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/spi-nor/fujitsu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index 23629b919ade..c012bc2486e1 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -29,7 +29,7 @@ static const struct spi_nor_fixups is25lp256_fixups = {
- 	.post_bfpt = is25lp256_post_bfpt_fixups,
- };
+diff --git a/drivers/mtd/spi-nor/fujitsu.c b/drivers/mtd/spi-nor/fujitsu.c
+index 5fa8f04f2e35..69cffc5c73ef 100644
+--- a/drivers/mtd/spi-nor/fujitsu.c
++++ b/drivers/mtd/spi-nor/fujitsu.c
+@@ -8,7 +8,7 @@
  
--static const struct flash_info issi_parts[] = {
-+static const struct flash_info issi_nor_parts[] = {
- 	/* ISSI */
- 	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2)
- 		NO_SFDP_FLAGS(SECT_4K) },
-@@ -69,18 +69,18 @@ static const struct flash_info issi_parts[] = {
- 		NO_SFDP_FLAGS(SECT_4K) },
- };
+ #include "core.h"
  
--static void issi_default_init(struct spi_nor *nor)
-+static void issi_nor_default_init(struct spi_nor *nor)
- {
- 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
- }
+-static const struct flash_info fujitsu_parts[] = {
++static const struct flash_info fujitsu_nor_parts[] = {
+ 	/* Fujitsu */
+ 	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1)
+ 		FLAGS(SPI_NOR_NO_ERASE) },
+@@ -16,6 +16,6 @@ static const struct flash_info fujitsu_parts[] = {
  
- static const struct spi_nor_fixups issi_fixups = {
--	.default_init = issi_default_init,
-+	.default_init = issi_nor_default_init,
- };
- 
- const struct spi_nor_manufacturer spi_nor_issi = {
- 	.name = "issi",
--	.parts = issi_parts,
--	.nparts = ARRAY_SIZE(issi_parts),
-+	.parts = issi_nor_parts,
-+	.nparts = ARRAY_SIZE(issi_nor_parts),
- 	.fixups = &issi_fixups,
+ const struct spi_nor_manufacturer spi_nor_fujitsu = {
+ 	.name = "fujitsu",
+-	.parts = fujitsu_parts,
+-	.nparts = ARRAY_SIZE(fujitsu_parts),
++	.parts = fujitsu_nor_parts,
++	.nparts = ARRAY_SIZE(fujitsu_nor_parts),
  };
 -- 
 2.30.2
