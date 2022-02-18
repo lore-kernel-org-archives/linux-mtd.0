@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C7B9C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 12:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5249FC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 12:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VpmhDRomkJ7v552f6CMrISndSt4NEJfwYJSCym8OdzI=; b=x5tX5p0bdb6WJZ
-	4rpWvkVvOdL+R4aJV9J6zjWaknfljw9m2aC8bFcofhhYjeY20T3iwsl+SITV4JWgulqyIvcvLymE+
-	9I/8033p8moYDj/Aes40LJKGWlkiebfw6YD3JMYxRyW7jp9PjEyUfGZlJtJaID1ROVYFcfjG5z/et
-	acLoJ3MTkapyEXIu6O2qefNqPDZUZdnlBwliPJH5dchPJTqtXeCeV31xBZLlzR7TrKQX5DfZtKX6e
-	ALL3hBG5J9372+nh6rXk/FYZijOZXCj7aXZfRsQ3ee7PaoDUjdujzzJ3Qh6n5q+DlRms5biOixuoK
-	TwC/N4xfUBRg6O64Alpw==;
+	List-Owner; bh=EN/g9RnMhcxZ1CcUjj3GZN/q0seELw3hkg0uTx9yHkg=; b=dvBJ6njXJNaQSW
+	KNv7KPBiWOwcuV4re1Z8mBKgiuelrtmCopsfqLAeD0ffeTfvpVHRrHWltEqPblmHSdQZcHLAlYjB6
+	CO0JoAKSY367F02ZeTr5h5ZjL3ED6UOFngoF3nGOI0aR6eEAqZyBf8UvK/qGDYlP53Tw9j8edZ7n8
+	XUJtvnH9ZBC8Ij3kB6RmCzZ6uCjEk7VaHV/t8kG1hHBPfFDrccw+j/4iwxXqDVfKC2tLHDkAgYS79
+	KJHGl6nNviE8ALCWoq2IFHOcdbbXgrwzMLbA7LqmTI5XowM/RBghVhxEFeO3qMOjIb0+3dQ6LJl8i
+	UrXlOx9OTvZdDaNu+uMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL2E1-00EBOo-W2; Fri, 18 Feb 2022 12:19:02 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nL2Fp-00EBrs-8c; Fri, 18 Feb 2022 12:20:53 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Ys-00E1TY-OS
+ id 1nL1Ys-00E1Tc-Rw
  for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:36 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id C7977223F6;
- Fri, 18 Feb 2022 12:36:23 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 87BE822499;
+ Fri, 18 Feb 2022 12:36:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645184183;
+ s=mail2016061301; t=1645184184;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xdcZIpvWBK1SBtBZMLbCaAdxmBv2TOoluOo5rcRL+5U=;
- b=FO8FboQqslYP8X3SyHJNWUYRaDNirmrkkFSgU7B5kIwUmqb8/dXGL/yKrCrYb6a8X6WVwm
- Q6u0I/hUOXPqtf8A+pfu1iFLFOIXy3YresEGkpL7nibp5Mwpxiq+hUUozwebgmSP47xADV
- J3/SAiyyA3DU0lN+E37CH/NrYBKkqvw=
+ bh=BUHjRq3B/3JjsHlcHc+UiOV+3YaaqpA1vvTF3QO9238=;
+ b=lpT1iVQhPXm3vUE9TXeOpRJhoSe99674SILS92fQum4IZi7clBskLLUojHyhI1D5w0S7FO
+ VgGpd9X+eq6kk/UHB1BpjMomIhMwCiKxdm/bw4/ZAHYWoN+iE7f1SD1VrABFvVw0KEyFS9
+ VrRziIwddC01kSe99qXPEaUDpTNAS5E=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,17 +48,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 30/32] mtd: spi-nor: spansion: rename vendor specific
- functions and defines
-Date: Fri, 18 Feb 2022 12:36:05 +0100
-Message-Id: <20220218113607.1360020-31-michael@walle.cc>
+Subject: [PATCH v2 32/32] mtd: spi-nor: renumber flags
+Date: Fri, 18 Feb 2022 12:36:07 +0100
+Message-Id: <20220218113607.1360020-33-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
 References: <20220218113607.1360020-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033631_001426_E2B1CE03 
-X-CRM114-Status: GOOD (  12.53  )
+X-CRM114-CacheID: sfid-20220218_033631_110522_613CFF2B 
+X-CRM114-Status: UNSURE (   8.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,65 +75,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop the generic spi_nor prefix for all the spansion functions.
+As we have deleted some flag, lets renumber them so there are no holes.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/spansion.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mtd/spi-nor/core.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 061357790dde..ea695db5a4c4 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -309,10 +309,10 @@ static const struct flash_info spansion_nor_parts[] = {
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 2130a96e2044..b7fd760e3b47 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -12,20 +12,20 @@
+ #define SPI_NOR_MAX_ID_LEN	6
+ 
+ enum spi_nor_option_flags {
+-	SNOR_F_HAS_SR_TB	= BIT(1),
+-	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+-	SNOR_F_BROKEN_RESET	= BIT(5),
+-	SNOR_F_4B_OPCODES	= BIT(6),
+-	SNOR_F_HAS_4BAIT	= BIT(7),
+-	SNOR_F_HAS_LOCK		= BIT(8),
+-	SNOR_F_HAS_16BIT_SR	= BIT(9),
+-	SNOR_F_NO_READ_CR	= BIT(10),
+-	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
+-	SNOR_F_HAS_4BIT_BP      = BIT(12),
+-	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
+-	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
+-	SNOR_F_SOFT_RESET	= BIT(15),
+-	SNOR_F_SWP_IS_VOLATILE	= BIT(16),
++	SNOR_F_HAS_SR_TB	= BIT(0),
++	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
++	SNOR_F_BROKEN_RESET	= BIT(2),
++	SNOR_F_4B_OPCODES	= BIT(3),
++	SNOR_F_HAS_4BAIT	= BIT(4),
++	SNOR_F_HAS_LOCK		= BIT(5),
++	SNOR_F_HAS_16BIT_SR	= BIT(6),
++	SNOR_F_NO_READ_CR	= BIT(7),
++	SNOR_F_HAS_SR_TB_BIT6	= BIT(8),
++	SNOR_F_HAS_4BIT_BP      = BIT(9),
++	SNOR_F_HAS_SR_BP3_BIT6  = BIT(10),
++	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
++	SNOR_F_SOFT_RESET	= BIT(12),
++	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
  };
  
- /**
-- * spi_nor_clear_sr() - Clear the Status Register.
-+ * spansion_nor_clear_sr() - Clear the Status Register.
-  * @nor:	pointer to 'struct spi_nor'.
-  */
--static void spi_nor_clear_sr(struct spi_nor *nor)
-+static void spansion_nor_clear_sr(struct spi_nor *nor)
- {
- 	int ret;
- 
-@@ -336,13 +336,13 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
- }
- 
- /**
-- * spi_nor_sr_ready_and_clear() - Query the Status Register to see if the flash
-- * is ready for new commands and clear it.
-+ * spansion_nor_sr_ready_and_clear() - Query the Status Register to see if the
-+ * flash is ready for new commands and clear it.
-  * @nor:	pointer to 'struct spi_nor'.
-  *
-  * Return: 1 if ready, 0 if not ready, -errno on errors.
-  */
--static int spi_nor_sr_ready_and_clear(struct spi_nor *nor)
-+static int spansion_nor_sr_ready_and_clear(struct spi_nor *nor)
- {
- 	int ret;
- 
-@@ -356,7 +356,7 @@ static int spi_nor_sr_ready_and_clear(struct spi_nor *nor)
- 		else
- 			dev_err(nor->dev, "Programming Error occurred\n");
- 
--		spi_nor_clear_sr(nor);
-+		spansion_nor_clear_sr(nor);
- 
- 		/*
- 		 * WEL bit remains set to one when an erase or page program
-@@ -384,7 +384,7 @@ static void spansion_nor_late_init(struct spi_nor *nor)
- 	}
- 
- 	if (nor->info->mfr_flags & USE_CLSR)
--		nor->params->ready = spi_nor_sr_ready_and_clear;
-+		nor->params->ready = spansion_nor_sr_ready_and_clear;
- }
- 
- static const struct spi_nor_fixups spansion_nor_fixups = {
+ struct spi_nor_read_command {
 -- 
 2.30.2
 
