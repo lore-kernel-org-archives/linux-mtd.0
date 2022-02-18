@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1208C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D402AC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 11:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a5S4OL6TXDRk3eMLXM4UOb+D7C8pDN8jH+hYD6sTo7A=; b=TDt5VXQ0bNh/Aw
-	jLP2hdSZl78AbSXI78NAguoIj6xHLYvzRXytbwy1V1sh3JqH9B5EqpqP9D40j/pjbC/KnZcxk7+kb
-	CtsOOYVaZXnYP4Q+aFM5M2AJHVpwt7UpGUdPat58ardCHvy/7UXn/qeAe9z7txJdejTLLXdKnUm8Z
-	i58CPu27pTqmdA1i/9brS7LfKTJmzCnlQckpb7T/S47EASQM5BC3L8CJr+wvUlSPNbUYXRflbXnu9
-	JBHf2dsH0G4B0faj3XpuzcFlh9DMm1quntxW/ybZV5ulzIbAFyJ/IdzHm5H8bPyvPqfIzY2/ocFCe
-	lAxNzY5hajassXNI4LVQ==;
+	List-Owner; bh=BeXJNwCQjh4mtOQVlqIHdmyNFO7ywGbGjg2CPh5wE0k=; b=fEuy0lCRIJrB0g
+	PvU0Lju2XFljGzCnmwNcs5Y+mwGx16r3vgCZRSAPsKj/3HAQkbw41D8VqOVlXUFYRDm38mDDFDx8Y
+	DaXm42JKsyJ6Hjyg2asKv5vEPYipv3oFVARku8UqRR+mVoBwn3DIy83LYMDxq9O8P6CZbwx1Cuj6r
+	fGGtZhc3QoxVazTDCHvDNtKFM1bt+9p4BvIa0FDPyMUZWUvZguT8CvMf8IoEFLRLf4PCMzAJwV2RA
+	eIGLXp9/xfIlDBEoSNWpQno5/dfyJ7UWDaFFhTVAQ+EP0qukLCASpdWLhcdiiaEXUL6GoY+R1aP2F
+	BprE7YUbQdNN39Jmq1JQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL1nG-00E5ik-3Q; Fri, 18 Feb 2022 11:51:22 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nL1pL-00E64H-Vv; Fri, 18 Feb 2022 11:53:32 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Yo-00E1Q4-Nw
- for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:30 +0000
+ id 1nL1Yo-00E1Q6-UF
+ for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:31 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id B1BD92245A;
- Fri, 18 Feb 2022 12:36:18 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id A336F22464;
+ Fri, 18 Feb 2022 12:36:19 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645184178;
+ s=mail2016061301; t=1645184179;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cY/ubQNSRnKpIjV+ZU1mBaI6kn7JLs7xpJYX2NPaQ14=;
- b=EDMP+B6kLIA6o3qzkaAv8TKo21QrGPpWDz/fd+73647aOBaYe50W84cGFesHPplzPFqBTN
- jO+OqwrhnztlN1qK9Vy7ej+MbnCie5GTnzs/ecsVWd0d6DhUYWRKucQqrr6tfjAhlptlCi
- GIk24bn+teNrLrc4rpgtDI90DEKQ8k8=
+ bh=FPwyUqw9bIye7MTeMw3+l2+GgFM/jhis7VAg9kKcJLA=;
+ b=NdIFY1SGhV7/QHm0YYYlEYKStd9HQqm5kPFHGSqFeHrHITc1FJbs36XKePRZFgz7/N0b0W
+ y4jsjfaahFhT7QeEeVNEc25YzWt/s0IYNqjThwRAD9LczXh/LMPQgEW4sBLttwp1uNgq7v
+ lKv+esYpPk9oUsP5l+yb3PkJTTq2GMI=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 15/32] mtd: spi-nor: xilinx: unify function names
-Date: Fri, 18 Feb 2022 12:35:50 +0100
-Message-Id: <20220218113607.1360020-16-michael@walle.cc>
+Subject: [PATCH v2 17/32] mtd: spi-nor: slightly refactor the spi_nor_setup()
+Date: Fri, 18 Feb 2022 12:35:52 +0100
+Message-Id: <20220218113607.1360020-18-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
 References: <20220218113607.1360020-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033626_991357_D8DB2569 
-X-CRM114-Status: GOOD (  11.28  )
+X-CRM114-CacheID: sfid-20220218_033627_178983_50D45AE5 
+X-CRM114-Status: GOOD (  15.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,57 +74,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To avoid name clashes unify all the function and static object names and
-use one of the following prefixes which should be sufficiently unique:
- - <vendor>_nor_
- - <flash_family>_
- - <flash_part>_
+Instead of always using a function pointer (and initializing it to our
+default), just call the default function if the flash didn't set its own
+one. That will make the call flow easier to follow.
 
-There are no functional changes.
+Also mark the parameter as optional now.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/xilinx.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/mtd/spi-nor/core.c | 10 +++++-----
+ drivers/mtd/spi-nor/core.h |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 580562bc1e45..42ecdc6fc625 100644
---- a/drivers/mtd/spi-nor/xilinx.c
-+++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -8,7 +8,7 @@
- 
- #include "core.h"
- 
--static const struct flash_info xilinx_parts[] = {
-+static const struct flash_info xilinx_nor_parts[] = {
- 	/* Xilinx S3AN Internal Flash */
- 	{ "3S50AN", S3AN_INFO(0x1f2200, 64, 264) },
- 	{ "3S200AN", S3AN_INFO(0x1f2400, 256, 264) },
-@@ -80,18 +80,18 @@ static int xilinx_nor_setup(struct spi_nor *nor,
- 	return 0;
- }
- 
--static void xilinx_late_init(struct spi_nor *nor)
-+static void xilinx_nor_late_init(struct spi_nor *nor)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 04ea180118e3..4d2036cdce42 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2532,11 +2532,12 @@ static int spi_nor_setup(struct spi_nor *nor,
  {
- 	nor->params->setup = xilinx_nor_setup;
+ 	int ret;
+ 
+-	if (nor->params->setup) {
++	if (nor->params->setup)
+ 		ret = nor->params->setup(nor, hwcaps);
+-		if (ret)
+-			return ret;
+-	}
++	else
++		ret = spi_nor_default_setup(nor, hwcaps);
++	if (ret)
++		return ret;
+ 
+ 	return spi_nor_set_addr_width(nor);
  }
+@@ -2786,7 +2787,6 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
  
--static const struct spi_nor_fixups xilinx_fixups = {
--	.late_init = xilinx_late_init,
-+static const struct spi_nor_fixups xilinx_nor_fixups = {
-+	.late_init = xilinx_nor_late_init,
- };
+ 	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+ 	params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+-	params->setup = spi_nor_default_setup;
+ 	params->otp.org = &info->otp_org;
  
- const struct spi_nor_manufacturer spi_nor_xilinx = {
- 	.name = "xilinx",
--	.parts = xilinx_parts,
--	.nparts = ARRAY_SIZE(xilinx_parts),
--	.fixups = &xilinx_fixups,
-+	.parts = xilinx_nor_parts,
-+	.nparts = ARRAY_SIZE(xilinx_nor_parts),
-+	.fixups = &xilinx_nor_fixups,
- };
+ 	/* Default to 16-bit Write Status (01h) Command */
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 2afb610853a9..4fe16b5aa3f5 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -257,10 +257,10 @@ struct spi_nor_otp {
+  * @convert_addr:	converts an absolute address into something the flash
+  *                      will understand. Particularly useful when pagesize is
+  *                      not a power-of-2.
+- * @setup:              configures the SPI NOR memory. Useful for SPI NOR
+- *                      flashes that have peculiarities to the SPI NOR standard
+- *                      e.g. different opcodes, specific address calculation,
+- *                      page size, etc.
++ * @setup:		(optional) configures the SPI NOR memory. Useful for
++ *			SPI NOR flashes that have peculiarities to the SPI NOR
++ *			standard e.g. different opcodes, specific address
++ *			calculation, page size, etc.
+  * @locking_ops:	SPI NOR locking methods.
+  */
+ struct spi_nor_flash_parameter {
 -- 
 2.30.2
 
