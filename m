@@ -4,57 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3CA8C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 14:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17BF2C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 14:33:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tO7neiBkvMiw6BslCqAn47QyEVAIaM5cCUmrQ1MAtwQ=; b=YX6J0D6Owwdmtn
-	XlCLcFPGQeIUBeuBRJo9mhsm3NmI4Dx8SiZ1mF6QU00vHomTBkVNOYlegjN8oQLfb9sKyK3oQGTBu
-	qIrZSLGBV1zOXZ1lP8ME2pY57ntn/ybX08Wd4D6UMiL4DjyxLvpVBSFv2bZwJRf+VsRXVxKwxXQAG
-	MrHt1/v3EtOSYPY5NxLHyNAHuyb3IrzkiFSZ+v5TGeavc3FJUgy8hKpQSfOdUVu9VhEATnwvhqqET
-	rzxgQ2L8UqNNfcJZvU0wBTRx8jzuCAmAisyxmm2A9WNBDVXKZw59ogfCKhVj4MtIVzA5e/lzPbrE9
-	Qhsq6tD+9Ya177QBOJxQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=17gvgqBWriHoBpVoxNBJOXTFPGnrvzdAIsol1n44kUg=; b=tjdlEfDfIQ7tq2
+	Qdnt/LjC1SlbHSkX9XFLhWpb9V98T5wGfUQNpPVbZbSd4cmUFyTUqPI4F1raazrUGIhDOmlff5jj2
+	m3pNQi5hpV/cbXqGa5p9L2MspLBUZqWObgTHJeXRg0zzsCpW7UdzsIWC1yDtfhdf+pxdEt2tpmcpY
+	fMohqN79cF1WLx3uxY7GayNy0Vgq9Gq2mTqsnA014f1APp2uVzrdKYDN313ltkLJInC2Qq+WQi8CI
+	0qnf3+EQL9gg8AYsx89xjwIU7tpchN29ofnUCDlqc2amXX5uFqX63ysbaDOjuTP52QuCxKf8qGW0N
+	EL6NmgWiRw2kWflPkzpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL3yE-00EkUo-68; Fri, 18 Feb 2022 14:10:50 +0000
-Received: from relay7-d.mail.gandi.net ([2001:4b98:dc4:8::227])
+	id 1nL4Ja-00Eml4-6A; Fri, 18 Feb 2022 14:32:54 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL3yA-00EkTg-Qd
- for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 14:10:49 +0000
+ id 1nL4JW-00Emj0-8E
+ for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 14:32:51 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 34D672001A;
- Fri, 18 Feb 2022 14:10:43 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id E6FF96000C;
+ Fri, 18 Feb 2022 14:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1645193444;
+ t=1645194766;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=mI/XiwDXECsFaDoObAE8vWmYY15ZcyitEJ8Rz7zoe20=;
- b=g5h+KeK6KNwKUMWtVb7F9PC7MWeFcItnJBcblNTilsogE1ASpIzw9HO3Vtkx0bSVUtZc1f
- kyzzqoMhegtNHDww92TkCjWV7cRfoncNlRL2TWx2NTgKxS3K1DCe7+iINNTYxS4h9sQDUD
- nWJfKp8OVKsOHI/PynVDihmkUYY/lU1JDV9HxDrl0i4Cbxgvay19lS5qIsCAlL7nMc1YDR
- 11wZMsxbooW9D9mysze6Si1DwIfgnuZrU8hcTQrnetEtFPZGDI6Trz5XKN8DXr7nzbK54j
- +v8BVAI8IepflsvP8UaX1TaMCN7DVdkjtPe7+IpoiQKV6aPfxuID3tYRZv3pig==
-Date: Fri, 18 Feb 2022 15:10:41 +0100
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XqG26Ms+nCyJQFkDdv7qdOPbNCR+/tuROMVYtpDW7X4=;
+ b=D9LPwQKnluzG9sWIJTQvS/yM99Bi7XXgV4WtxL32zDgenwVACaov8tBREYwdK044wrla7n
+ 7dfuUePlqtvliEq7+wYmRHVa0UXDs3LfvM/OPKOMLgKuZrKyL5F+lZdKpmSTESgcfb6gyZ
+ MI7Y/U9VeopddbrHwJvoC/mI947YsRKxZ7B6fh2exVYph+0ZQjwcupmw1bfOm02c6o9TLA
+ gZ8C+h4ZOwP6NNFo02P9OmquhuDzbQaRClzOGm2Xv4ssHJl0PiuSbIZGJO9j0x8pt2d1bX
+ cW43r+5UnHEUQ6ERpNZxO7swdmxu48HFEGAPSvRR3zIwM8cEmy0XKXnQSh6eCQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Vignesh Raghavendra
- <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
- Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [GIT PULL] : spi-mem/ecc changes for 5.18
-Message-ID: <20220218151041.76f8a72b@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: INAGAKI Hiroshi <musashino.open@gmail.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com
+Cc: rafal@milecki.pl, baruch@tkos.co.il, hauke@hauke-m.de,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: parsers: trx: allow to use on MediaTek MIPS SoCs
+Date: Fri, 18 Feb 2022 15:32:44 +0100
+Message-Id: <20220218143244.321862-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220213064045.1781-1-musashino.open@gmail.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'2365f91c861cbfeef7141c69842848c7b2d3c2db'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_061047_367991_A5F42409 
-X-CRM114-Status: GOOD (  18.22  )
+X-CRM114-CacheID: sfid-20220218_063250_464730_E331FFFD 
+X-CRM114-Status: UNSURE (   5.82  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,133 +69,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyaywKCkhlcmUgYXJlIHRoZSBjaGFuZ2VzIHRoYXQgSSd2ZSBwaWxlZCB1cCBpbiB0aGUg
-TVREIHNwaS1tZW0tZWNjIGJyYW5jaC4gSQp3aWxsIG1lcmdlIHRoaXMgYnJhbmNoIGludG8gbXRk
-L25leHQgdmVyeSBzb29uIGJ1dCBoZXJlIGlzIGEgUFIgZm9yIHlvdQphcyB3ZWxsIGlmIG5lZWRl
-ZC4KClRoYW5rcywgTWlxdcOobAoKVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCBl
-NzgzMzYyZWI1NGNkOTliMmNhYzhiM2E5YWVhYzk0MmU2ZjZhYzA3OgoKICBMaW51eCA1LjE3LXJj
-MSAoMjAyMi0wMS0yMyAxMDoxMjo1MyArMDIwMCkKCmFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdCBy
-ZXBvc2l0b3J5IGF0OgoKICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
-bC9naXQvbXRkL2xpbnV4LmdpdCB0YWdzL210ZC9zcGktbWVtLWVjYy1mb3ItNS4xOAoKZm9yIHlv
-dSB0byBmZXRjaCBjaGFuZ2VzIHVwIHRvIDAwMzYwZWJhZTQ4M2U2MDNkNTVlYzlhNzIzMWI3ODdj
-YjgwZmZlMTM6CgogIHNwaTogbXhpYzogQWRkIHN1cHBvcnQgZm9yIHBpcGVsaW5lZCBFQ0Mgb3Bl
-cmF0aW9ucyAoMjAyMi0wMi0xMCAwOTozMjozMCArMDEwMCkKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVG9waWMgYnJhbmNo
-IGJyaW5naW5nLWluIGNoYW5nZXMgcmVsYXRlZCB0byB0aGUgc3VwcG9ydCBvZiBFQ0MgZW5naW5l
-cwp0aGF0IGNhbiBiZSB1c2VkIGJ5IFNQSSBjb250cm9sbGVycyB0byBtYW5hZ2UgU1BJIE5BTkRz
-IGFzIHdlbGwgYXMKcG9zc2libHkgYnkgcGFyYWxsZWwgTkFORCBjb250cm9sbGVycy4gSW4gcGFy
-dGljdWxhciwgaXQgYnJpbmdzIHN1cHBvcnQKZm9yIE1hY3Jvbml4IEVDQyBlbmdpbmUgdGhhdCBj
-YW4gYmUgdXNlZCB3aXRoIE1hY3Jvbml4IFNQSSBjb250cm9sbGVyLgoKVGhlIGNoYW5nZXMgdG91
-Y2ggdGhlIE5BTkQgY29yZSwgdGhlIE5BTkQgRUNDIGNvcmUsIHRoZSBzcGktbWVtIGxheWVyLCBh
-ClNQSSBjb250cm9sbGVyIGRyaXZlciBhbmQgYWRkIGEgbmV3IE5BTkQgRUNDIGRyaXZlciwgYXMg
-d2VsbCBhcyBhIG51bWJlcgpvZiBiaW5kaW5nIHVwZGF0ZXMuCgpCaW5kaW5nIGNoYW5nZXM6Ciog
-VmVuZG9yIHByZWZpeGVzOiBDbGFyaWZ5IE1hY3Jvbml4IHByZWZpeAoqIFNQSSBOQU5EOiBDb252
-ZXJ0IHNwaS1uYW5kIGRlc2NyaXB0aW9uIGZpbGUgdG8geWFtbAoqIFJhdyBOQU5EIGNoaXA6IENy
-ZWF0ZSBhIE5BTkQgY2hpcCBkZXNjcmlwdGlvbgoqIFJhdyBOQU5EIGNvbnRyb2xsZXI6CiAgLSBI
-YXJtb25pemUgdGhlIHByb3BlcnR5IHR5cGVzCiAgLSBGaXggYSBjb21tZW50IGluIHRoZSBleGFt
-cGxlcwogIC0gRml4IHRoZSByZWcgcHJvcGVydHkgZGVzY3JpcHRpb24KKiBEZXNjcmliZSBNYWNy
-b25peCBOQU5EIEVDQyBlbmdpbmUKKiBNYWNyb25peCBTUEkgY29udHJvbGxlcjoKICAtIERvY3Vt
-ZW50IHRoZSBuYW5kLWVjYy1lbmdpbmUgcHJvcGVydHkKICAtIENvbnZlcnQgdG8geWFtbAogIC0g
-VGhlIGludGVycnVwdCBwcm9wZXJ0eSBpcyBub3QgbWFuZGF0b3J5CgpOQU5EIGNvcmUgY2hhbmdl
-czoKKiBFQ0M6CiAgLSBBZGQgaW5mcmFzdHJ1Y3R1cmUgdG8gc3VwcG9ydCBoYXJkd2FyZSBlbmdp
-bmVzCiAgLSBBZGQgYSBuZXcgaGVscGVyIHRvIHJldHJpZXZlIHRoZSBFQ0MgY29udGV4dAogIC0g
-UHJvdmlkZSBhIGhlbHBlciB0byByZXRyaWV2ZSBhIHBpbGVsaW5lZCBlbmdpbmUgZGV2aWNlCgpO
-QU5ELUVDQyBjaGFuZ2VzOgoqIE1hY3Jvbml4IEVDQyBlbmdpbmU6CiAgLSBBZGQgTWFjcm9uaXgg
-ZXh0ZXJuYWwgRUNDIGVuZ2luZSBzdXBwb3J0CiAgLSBTdXBwb3J0IFNQSSBwaXBlbGluZWQgbW9k
-ZQoKU1BJLU5BTkQgY29yZSBjaGFuZ2VzOgoqIERlbGF5IGEgbGl0dGxlIGJpdCB0aGUgZGlybWFw
-IGNyZWF0aW9uCiogQ3JlYXRlIGRpcmVjdCBtYXBwaW5nIGRlc2NyaXB0b3JzIGZvciBFQ0Mgb3Bl
-cmF0aW9ucwoKU1BJLU5BTkQgZHJpdmVyIGNoYW5nZXM6CiogbWFjcm9uaXg6IFVzZSByYW5kb20g
-cHJvZ3JhbSBsb2FkCgpTUEkgY2hhbmdlczoKKiBNYWNyb25peCBTUEkgY29udHJvbGxlcjoKICAt
-IEZpeCB0aGUgdHJhbnNtaXQgcGF0aAogIC0gQ3JlYXRlIGEgaGVscGVyIHRvIGNvbmZpZ3VyZSB0
-aGUgY29udHJvbGxlciBiZWZvcmUgYW4gb3BlcmF0aW9uCiAgLSBDcmVhdGUgYSBoZWxwZXIgdG8g
-ZWFzZSB0aGUgc3RhcnQgb2YgYW4gb3BlcmF0aW9uCiAgLSBBZGQgc3VwcG9ydCBmb3IgZGlyZWN0
-IG1hcHBpbmcKICAtIEFkZCBzdXBwb3J0IGZvciBwaXBlbGluZWQgRUNDIG9wZXJhdGlvbnMKKiBz
-cGktbWVtOgogIC0gSW50cm9kdWNlIGEgY2FwYWJpbGl0eSBzdHJ1Y3R1cmUKICAtIENoZWNrIHRo
-ZSBjb250cm9sbGVyIGV4dHJhIGNhcGFiaWxpdGllcwogIC0gY2FkZW5jZS1xdWFkc3BpL214aWM6
-IFByb3ZpZGUgY2FwYWJpbGl0eSBzdHJ1Y3R1cmVzCiAgLSBLaWxsIHRoZSBzcGlfbWVtX2R0cl9z
-dXBwb3J0c19vcCgpIGhlbHBlcgogIC0gQWRkIGFuIGVjYyBwYXJhbWV0ZXIgdG8gdGhlIHNwaV9t
-ZW1fb3Agc3RydWN0dXJlCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1hc29uIFlhbmcgKDEpOgogICAgICBtdGQ6IHNwaW5h
-bmQ6IG1hY3Jvbml4OiBVc2UgcmFuZG9tIHByb2dyYW0gbG9hZAoKTWlxdWVsIFJheW5hbCAoMjgp
-OgogICAgICBkdC1iaW5kaW5nczogbXRkOiBuYW5kLWNvbnRyb2xsZXI6IEZpeCB0aGUgcmVnIHBy
-b3BlcnR5IGRlc2NyaXB0aW9uCiAgICAgIGR0LWJpbmRpbmdzOiBtdGQ6IG5hbmQtY29udHJvbGxl
-cjogRml4IGEgY29tbWVudCBpbiB0aGUgZXhhbXBsZXMKICAgICAgZHQtYmluZGluZ3M6IG10ZDog
-bmFuZC1jb250cm9sbGVyOiBIYXJtb25pemUgdGhlIHByb3BlcnR5IHR5cGVzCiAgICAgIGR0LWJp
-bmRpbmdzOiBtdGQ6IG5hbmQtY2hpcDogQ3JlYXRlIGEgTkFORCBjaGlwIGRlc2NyaXB0aW9uCiAg
-ICAgIGR0LWJpbmRpbmdzOiBtdGQ6IHNwaS1uYW5kOiBDb252ZXJ0IHNwaS1uYW5kIGRlc2NyaXB0
-aW9uIGZpbGUgdG8geWFtbAogICAgICBkdC1iaW5kaW5nczogdmVuZG9yLXByZWZpeGVzOiBDbGFy
-aWZ5IE1hY3Jvbml4IHByZWZpeAogICAgICBkdC1iaW5kaW5nczogc3BpOiBteGljOiBUaGUgaW50
-ZXJydXB0IHByb3BlcnR5IGlzIG5vdCBtYW5kYXRvcnkKICAgICAgZHQtYmluZGluZ3M6IHNwaTog
-bXhpYzogQ29udmVydCB0byB5YW1sCiAgICAgIGR0LWJpbmRpbmdzOiBzcGk6IG14aWM6IERvY3Vt
-ZW50IHRoZSBuYW5kLWVjYy1lbmdpbmUgcHJvcGVydHkKICAgICAgZHQtYmluZGluZ3M6IG10ZDog
-RGVzY3JpYmUgTWFjcm9uaXggTkFORCBFQ0MgZW5naW5lCiAgICAgIG10ZDogbmFuZDogZWNjOiBB
-ZGQgaW5mcmFzdHJ1Y3R1cmUgdG8gc3VwcG9ydCBoYXJkd2FyZSBlbmdpbmVzCiAgICAgIG10ZDog
-bmFuZDogQWRkIGEgbmV3IGhlbHBlciB0byByZXRyaWV2ZSB0aGUgRUNDIGNvbnRleHQKICAgICAg
-bXRkOiBuYW5kOiBteGljLWVjYzogQWRkIE1hY3Jvbml4IGV4dGVybmFsIEVDQyBlbmdpbmUgc3Vw
-cG9ydAogICAgICBtdGQ6IG5hbmQ6IGVjYzogUHJvdmlkZSBhIGhlbHBlciB0byByZXRyaWV2ZSBh
-IHBpbGVsaW5lZCBlbmdpbmUgZGV2aWNlCiAgICAgIG10ZDogbmFuZDogbXhpYy1lY2M6IFN1cHBv
-cnQgU1BJIHBpcGVsaW5lZCBtb2RlCiAgICAgIHNwaTogc3BpLW1lbTogSW50cm9kdWNlIGEgY2Fw
-YWJpbGl0eSBzdHJ1Y3R1cmUKICAgICAgc3BpOiBzcGktbWVtOiBDaGVjayB0aGUgY29udHJvbGxl
-ciBleHRyYSBjYXBhYmlsaXRpZXMKICAgICAgc3BpOiBjYWRlbmNlLXF1YWRzcGk6IFByb3ZpZGUg
-YSBjYXBhYmlsaXR5IHN0cnVjdHVyZQogICAgICBzcGk6IG14aWM6IFByb3ZpZGUgYSBjYXBhYmls
-aXR5IHN0cnVjdHVyZQogICAgICBzcGk6IHNwaS1tZW06IEtpbGwgdGhlIHNwaV9tZW1fZHRyX3N1
-cHBvcnRzX29wKCkgaGVscGVyCiAgICAgIHNwaTogc3BpLW1lbTogQWRkIGFuIGVjYyBwYXJhbWV0
-ZXIgdG8gdGhlIHNwaV9tZW1fb3Agc3RydWN0dXJlCiAgICAgIG10ZDogc3BpbmFuZDogRGVsYXkg
-YSBsaXR0bGUgYml0IHRoZSBkaXJtYXAgY3JlYXRpb24KICAgICAgbXRkOiBzcGluYW5kOiBDcmVh
-dGUgZGlyZWN0IG1hcHBpbmcgZGVzY3JpcHRvcnMgZm9yIEVDQyBvcGVyYXRpb25zCiAgICAgIHNw
-aTogbXhpYzogRml4IHRoZSB0cmFuc21pdCBwYXRoCiAgICAgIHNwaTogbXhpYzogQ3JlYXRlIGEg
-aGVscGVyIHRvIGNvbmZpZ3VyZSB0aGUgY29udHJvbGxlciBiZWZvcmUgYW4gb3BlcmF0aW9uCiAg
-ICAgIHNwaTogbXhpYzogQ3JlYXRlIGEgaGVscGVyIHRvIGVhc2UgdGhlIHN0YXJ0IG9mIGFuIG9w
-ZXJhdGlvbgogICAgICBzcGk6IG14aWM6IEFkZCBzdXBwb3J0IGZvciBkaXJlY3QgbWFwcGluZwog
-ICAgICBzcGk6IG14aWM6IEFkZCBzdXBwb3J0IGZvciBwaXBlbGluZWQgRUNDIG9wZXJhdGlvbnMK
-CiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL214aWN5LG5hbmQtZWNjLWVu
-Z2luZS55YW1sIHwgIDc3ICsrKwogRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
-ZC9uYW5kLWNoaXAueWFtbCAgICAgICAgICAgICB8ICA3MCArKysKIERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tdGQvbmFuZC1jb250cm9sbGVyLnlhbWwgICAgICAgfCAgNzIgKy0t
-CiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3NwaS1uYW5kLnR4dCAgICAg
-ICAgICAgICAgIHwgICA1IC0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
-c3BpLW5hbmQueWFtbCAgICAgICAgICAgICAgfCAgMjcgKwogRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NwaS9teGljeSxteDI1ZjBhLXNwaS55YW1sICAgICB8ICA2NSArKysKIERv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLW14aWMudHh0ICAgICAgICAg
-ICAgICAgfCAgMzQgLS0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy92ZW5kb3It
-cHJlZml4ZXMueWFtbCAgICAgICAgICAgfCAgIDMgKwogZHJpdmVycy9tdGQvbmFuZC9LY29uZmln
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNiArCiBkcml2ZXJz
-L210ZC9uYW5kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICAxICsKIGRyaXZlcnMvbXRkL25hbmQvY29yZS5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgfCAgMTAgKy0KIGRyaXZlcnMvbXRkL25hbmQvZWNjLW14aWMuYyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCA4NzkgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysKIGRyaXZlcnMvbXRkL25hbmQvZWNjLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMTkgKysrKysKIGRyaXZlcnMvbXRkL25hbmQv
-c3BpL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNTEgKy0K
-IGRyaXZlcnMvbXRkL25hbmQvc3BpL21hY3Jvbml4LmMgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgIDIgKy0KIGRyaXZlcnMvc3BpL0tjb25maWcgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwogZHJpdmVycy9zcGkvc3BpLWNhZGVu
-Y2UtcXVhZHNwaS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArLQogZHJp
-dmVycy9zcGkvc3BpLW1lbS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAzMiArLQogZHJpdmVycy9zcGkvc3BpLW14aWMuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB8IDM0MCArKysrKysrKystLS0KIGluY2x1ZGUvbGludXgv
-bXRkL25hbmQtZWNjLW14aWMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNDkg
-KysKIGluY2x1ZGUvbGludXgvbXRkL25hbmQuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgNDkgKysKIGluY2x1ZGUvbGludXgvbXRkL3NwaW5hbmQuaCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKwogaW5jbHVkZS9saW51eC9zcGkv
-c3BpLW1lbS5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyNiArLQog
-aW5jbHVkZS9saW51eC9zcGkvc3BpLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgMyArCiAyNCBmaWxlcyBjaGFuZ2VkLCAxNzMxIGluc2VydGlvbnMoKyksIDIw
-MiBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRy
-ZWUvYmluZGluZ3MvbXRkL214aWN5LG5hbmQtZWNjLWVuZ2luZS55YW1sCiBjcmVhdGUgbW9kZSAx
-MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLWNoaXAueWFt
-bAogZGVsZXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
-dGQvc3BpLW5hbmQudHh0CiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL210ZC9zcGktbmFuZC55YW1sCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9teGljeSxteDI1ZjBhLXNwaS55YW1sCiBk
-ZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9z
-cGktbXhpYy50eHQKIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL2VjYy1teGlj
-LmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLWVjYy1teGljLmgK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Sun, 2022-02-13 at 06:40:44 UTC, INAGAKI Hiroshi wrote:
+> Buffalo sells some router devices which have trx-formatted firmware,
+> based on MediaTek MIPS SoCs. To use parser_trx on those devices, add
+> "RALINK" to dependency and allow to compile for MediaTek MIPS SoCs.
+> 
+> examples:
+> 
+> - WCR-1166DS  (MT7628)
+> - WSR-1166DHP (MT7621)
+> - WSR-2533DHP (MT7621)
+> 
+> Signed-off-by: INAGAKI Hiroshi <musashino.open@gmail.com>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
