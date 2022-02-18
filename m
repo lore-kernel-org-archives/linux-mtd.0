@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85DAFC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 12:03:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48FC8C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Feb 2022 12:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E965+KupkfSKrimPQ7YvMWzKIt66UU2YR0WN8PEwCpg=; b=BSf3JPUfhdy9zK
-	rXv7y2EntCIW3sC9K5vVVWJhF/yoZ7CmvPv/qOmabj8Fzvsk5BUJW5nw/RNWL3YPxs8EK4loJbSO1
-	DIt2/4K3197h1S+X1lmt6SsC619fc0Hvvn5DLRNnSpCYsM8wTQ4/8CFTWZ+PSorfm63dw/hVRW1zj
-	14Lx5zN5TBKsUivhUeS/nFVl+fD+4a37h4zLGrSo93PZJZApjpgUo08STF5YbI/EC1o7Qk7YYBtbp
-	zBq3Wm2XcVJHnpqNEd6O2bdPk5rnrW+CSEymAr8iEAcFfKAiQJPUn3aS0SajmQRjzRQDDA+Svn2pb
-	XuFsAcUZki4V+yy0ZzJw==;
+	List-Owner; bh=hH/91EyYHe9OQQ0ufjhNsZwBGv5s8ERcRje+U7m5qWg=; b=IIPphM7kdd/zP4
+	auQuGYRYY7O6tqZO+jhB0d/p8bOUMc6d4CaSkWQS3CoFfotPVpYLBMXRCQSw5Vz448XJFicJNUpp4
+	1Ay8FwF6E0Xf3vhZye+TQF20UInV4r8NDisIYyWGO9sanpxPEUDjtk3aQXk5uHZ1CzIkK8laHjTQG
+	EbGxRblhTxMSwz2/KPeqXP3FMCttpyooUbe2onrcsC5HGoNQby3VFNRPIAfP7m9geOzZzzNIrPh6Z
+	WSblsf5q3f8QBxqvyEscnY/Fu8scVpBXk6LkZSIh1HoX6QUGN6lZtwNlvBH3aE+cuS2lTL2gnGjHE
+	fdcjRi+W9dXneWL67Hog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nL1xt-00E7mT-3k; Fri, 18 Feb 2022 12:02:21 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nL1zw-00E8D8-P0; Fri, 18 Feb 2022 12:04:29 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nL1Yq-00E1Rc-KZ
- for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:32 +0000
+ id 1nL1Yq-00E1Rf-Pz
+ for linux-mtd@lists.infradead.org; Fri, 18 Feb 2022 11:36:33 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 814D62248E;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id C0ECD22495;
  Fri, 18 Feb 2022 12:36:21 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1645184181;
@@ -37,10 +37,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=TVr3ei/zYQMSUzZaFUQ8S5hh2hTqvyLfZwC1r+crQ0A=;
- b=TVc6c1XYX8fNeZlkL2XA9GSV4kWaXLg+qE9i2Clh7tcYWpG8cvHw0fm6+pj0Eh3rCay4cC
- 4AXoQgxxwbC9NQEVA/Sw0VoIoQURysczutWcWZtUJbRTLmc7XwI0tchv4a8VDcUfGUkV39
- 0i3/SLq3KrwADr4wSmH8NxYm+5Pep00=
+ bh=vndLg1/tmA+xUIohe+oUi4f1BSBLl5gr6bazRy9aWpE=;
+ b=EiF8GPxXxmc87fQZfUFyHVjlGyR0glWUxqQm9YfOimiE6mykrxPHSjQ1jSJhhm6mWGMjbh
+ TW7xIWRS9PKLzcvY1YRe2pxALIYKyRnGst2HD/3PrJGDfR2TfxPmQG9NlUjkqtbWsQNN1j
+ vvva8N2n29Re+HW9C7f00D3mbRCslto=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,17 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 22/32] mtd: spi-nor: xilinx: rename vendor specific
- functions and defines
-Date: Fri, 18 Feb 2022 12:35:57 +0100
-Message-Id: <20220218113607.1360020-23-michael@walle.cc>
+Subject: [PATCH v2 23/32] mtd: spi-nor: xilinx: correct the debug message
+Date: Fri, 18 Feb 2022 12:35:58 +0100
+Message-Id: <20220218113607.1360020-24-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220218113607.1360020-1-michael@walle.cc>
 References: <20220218113607.1360020-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220218_033628_884486_4D8FDC52 
-X-CRM114-Status: GOOD (  14.17  )
+X-CRM114-CacheID: sfid-20220218_033629_058696_DED2F6CD 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,110 +74,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Drop the generic spi_nor prefix for all the xilinx functions.
+XRDSR is a combination of xilinx and the RDSR opcode, but the register
+is just the status register. Correct the debug message.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/xilinx.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/mtd/spi-nor/xilinx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 2140d6b2bb02..c098c50379b4 100644
+index c098c50379b4..6a8b86861ce2 100644
 --- a/drivers/mtd/spi-nor/xilinx.c
 +++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -8,9 +8,9 @@
- 
- #include "core.h"
- 
--#define SPINOR_OP_XSE		0x50	/* Sector erase */
--#define SPINOR_OP_XPP		0x82	/* Page program */
--#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
-+#define XILINX_OP_SE		0x50	/* Sector erase */
-+#define XILINX_OP_PP		0x82	/* Page program */
-+#define XILINX_OP_RDSR		0xd7	/* Read status register */
- 
- #define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
- #define XSR_RDY			BIT(7)	/* Ready */
-@@ -60,20 +60,20 @@ static u32 s3an_convert_addr(struct spi_nor *nor, u32 addr)
- }
- 
- /**
-- * spi_nor_xread_sr() - Read the Status Register on S3AN flashes.
-+ * xilinx_nor_read_sr() - Read the Status Register on S3AN flashes.
-  * @nor:	pointer to 'struct spi_nor'.
-  * @sr:		pointer to a DMA-able buffer where the value of the
-  *              Status Register will be written.
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
-+static int xilinx_nor_read_sr(struct spi_nor *nor, u8 *sr)
- {
- 	int ret;
- 
- 	if (nor->spimem) {
- 		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_XRDSR, 0),
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),
- 				   SPI_MEM_OP_NO_ADDR,
- 				   SPI_MEM_OP_NO_DUMMY,
- 				   SPI_MEM_OP_DATA_IN(1, sr, 0));
-@@ -82,7 +82,7 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
--		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_XRDSR, sr,
-+		ret = spi_nor_controller_ops_read_reg(nor, XILINX_OP_RDSR, sr,
- 						      1);
+@@ -87,7 +87,7 @@ static int xilinx_nor_read_sr(struct spi_nor *nor, u8 *sr)
  	}
  
-@@ -93,17 +93,17 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
- }
- 
- /**
-- * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
-- * the flash is ready for new commands.
-+ * xilinx_nor_sr_ready() - Query the Status Register of the S3AN flash to see
-+ * if the flash is ready for new commands.
-  * @nor:	pointer to 'struct spi_nor'.
-  *
-  * Return: 1 if ready, 0 if not ready, -errno on errors.
-  */
--static int spi_nor_xsr_ready(struct spi_nor *nor)
-+static int xilinx_nor_sr_ready(struct spi_nor *nor)
- {
- 	int ret;
- 
--	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
-+	ret = xilinx_nor_read_sr(nor, nor->bouncebuf);
  	if (ret)
- 		return ret;
+-		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
++		dev_dbg(nor->dev, "error %d reading SR\n", ret);
  
-@@ -116,12 +116,12 @@ static int xilinx_nor_setup(struct spi_nor *nor,
- 	u32 page_size;
- 	int ret;
- 
--	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
-+	ret = xilinx_nor_read_sr(nor, nor->bouncebuf);
- 	if (ret)
- 		return ret;
- 
--	nor->erase_opcode = SPINOR_OP_XSE;
--	nor->program_opcode = SPINOR_OP_XPP;
-+	nor->erase_opcode = XILINX_OP_SE;
-+	nor->program_opcode = XILINX_OP_PP;
- 	nor->read_opcode = SPINOR_OP_READ;
- 	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
- 
-@@ -155,7 +155,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
- static void xilinx_nor_late_init(struct spi_nor *nor)
- {
- 	nor->params->setup = xilinx_nor_setup;
--	nor->params->ready = spi_nor_xsr_ready;
-+	nor->params->ready = xilinx_nor_sr_ready;
+ 	return ret;
  }
- 
- static const struct spi_nor_fixups xilinx_nor_fixups = {
 -- 
 2.30.2
 
