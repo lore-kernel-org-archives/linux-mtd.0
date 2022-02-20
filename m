@@ -4,78 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC3BEC433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 20 Feb 2022 17:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 281C2C433EF
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Feb 2022 19:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Cd8A1XcvAK/iv3X1roVYCC6f8cccrjuUXxJkmr+7I0I=; b=mtdxApmEqCebo4
-	UPVzMt3FAameC1T0gNUCCwxfp4l/8QCxcH8SlatcIwIfdQvnTj6qaPK9Vrp4b0bgIFAQB44lXvBFP
-	P1IjewTGLWrgLA9dIrGgjxGeKbMgN1YZbpGFDLzuNZ8PUyj/9Ac44cBdK8G+9N1NqiA8PEiHE2f7f
-	+BTetDIu83PZQuNj+WZr00b/3pEyy9CZRrxAoNw32tb68kG1nVaCJpgmQnScjAlclDvEXNEC1i9qx
-	KwS7trOfxnlyK3D8u+W6xIQA+XVBsVi8aQ2sD6VITaxjct0WlEMDyxS4iPhXRWPAJgM2Dky4v3yXW
-	l66F2KiHz0mvucgYBIbQ==;
+	List-Owner; bh=OJmKQGSkm0urmoYIKDZadXL9pd15rAnuVbZjtN+b4UU=; b=esO1ZFhUq9ieTO
+	LBcdoh+e8iz7Gu3NGCm8Z9W0ZmC45Km89dFmWk25QR+yE70mFlM/LYDUwysxJbniG+wpEsw/8Bu64
+	+m6xONSAvN9szesXz+GKxhPrFP8jKMOQS77vg5JvHOR1r6DK4tz3wnqxJYrEWI0osnNAzvtr6z1YT
+	jmmuHMgwU8Z16FMM+XRHlu5yG9wTLeTPb/KyCsjHQzJL+kaj6yWkWnc3V0w0wg+tFWtqMQSOV9G2t
+	7bUDObKxYkGfu6iESKrsAlPhC25Dw0kkNHXb8Tksod71DN51ABeV0MV874tUc9wkfnKosYrF6Ak1V
+	EZjS68ZjMcdKo/TgiKCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nLqBs-00202m-Tk; Sun, 20 Feb 2022 17:40:08 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1nLrYp-0028TL-9Y; Sun, 20 Feb 2022 19:07:55 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nLqBS-001ztF-V6
- for linux-mtd@lists.infradead.org; Sun, 20 Feb 2022 17:39:45 +0000
-Received: by mail-ed1-x531.google.com with SMTP id z22so24844483edd.1
- for <linux-mtd@lists.infradead.org>; Sun, 20 Feb 2022 09:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:subject:date:message-id:in-reply-to:references:mime-version
- :content-transfer-encoding;
- bh=GWlVA6bqW04iyoIdnqOqg4FogTrKkslVGuWpN+mp7C4=;
- b=ZXPrnn5JakCpGzz+pLKO/QmYkH5Yq5OFtJpqO6BeL+Q4kbvp/64UYovG1W52RYi4fn
- eDpCk4TLyfZNORnwDqQKy2G7iB9t9veUMYYzGxfVJko/3liND8EHG36bWIADM63Tg+Cr
- 4YjcguJ9Sq00cEQaKOZRfukTM/eMF8O0WeBxdWNvXT/zN8nRqWSQMV7u3IYCk1mzaH4e
- g6R4+frRdiJh9VHcL3jZrVAXCTkInUWEAupqN1nNdKrBRr+f43X3AmmXSijGYLQ7dO1b
- 5t6+1dYcTWN+V4bZS1RTIvqVln13kAhW2VHiGKuBVD4W+BZgc+EBGOvT0z5SFA0BqR2m
- PCzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=GWlVA6bqW04iyoIdnqOqg4FogTrKkslVGuWpN+mp7C4=;
- b=3P1J6+VKP9zhv2zknW9CHoJI+IDAFNkk8LcORDyzPjGiYsLUmpHEmHR8sdk2mMcSvg
- ptNrQC7ZsQNta+wsuK9RxR6Rco89J1w5gyq/yjiFORhQs0fWGh3Jbyo//+3gPzvUBc+Q
- mJCfO5UeIrisK25lK7PjYeqwe+6GYxa5E7zYOeH+pV6gyueQwQNYWdQCBb5rqzurm3TH
- 5JjKr8C0DOx0HOSOx7M6vEWrdj9TLGcKpWHtTQIq0knGZpsWaJVXQfc/XFakoNTmeTnh
- AO5JINPhTdaxn7nBrW62bzbkTPgvwPL3XLAZHmqclIA8ZOmR5VydgU2yHj85Ophho5Ci
- yAuw==
-X-Gm-Message-State: AOAM533sY7Ysl5rrsJGu4HkINZk69jpxpkMEbnao3S+XTTejkRw8bNBi
- ws+sraJD1MiOBCvNO75HNZE=
-X-Google-Smtp-Source: ABdhPJzToGjW+8krUy2PN6oNNb9xwnTzztrk8RzYmAacrb6WIpKb8jN+PL3FBq9ejq7tL7A2N2dtoQ==
-X-Received: by 2002:a50:e187:0:b0:406:fb92:80ce with SMTP id
- k7-20020a50e187000000b00406fb9280cemr17539249edl.164.1645378781006; 
- Sun, 20 Feb 2022 09:39:41 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it.
- [93.42.71.246])
- by smtp.googlemail.com with ESMTPSA id i5sm4416721ejo.188.2022.02.20.09.39.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 20 Feb 2022 09:39:40 -0800 (PST)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, Ansuel Smith <ansuelsmth@gmail.com>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ id 1nLrYm-0028SG-2U
+ for linux-mtd@lists.infradead.org; Sun, 20 Feb 2022 19:07:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1645384072; x=1676920072;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=auI5Fq22qc3D50WuT2ArLDDWErR8+vHT2yG2YDFqlE4=;
+ b=NIrKbNRV0Fl2KiDgWNEJ4s/Dns5D/rJRdQivdhkQR2igAFu/qx5DvO7Y
+ fsermXza/26GIA/FzYH3JLg1lo8kstP+jV4QMQUfevBA3XOnXFy4MUUgv
+ mzmUgRzYb+pQMHXFrFrkvhmBO6gywNH/GGxRinrg7Id1DjefBUTpk6r6Z
+ okYiCByhT3LykDqtoAaIA96vQ/biaTmuccSFaVfxwxDhZNbpQyXUhswbc
+ E2s26NbbYrXffr/HtIGB3jEyufBN7MJhmziLp76wH2SEWqxUyJ/prVbBN
+ V0NagmnoRpF/A6OBX/QLBEvpky4YifSvpkR9i4ZIPjppX+PfSCDuQQeSW Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="250215035"
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; d="scan'208";a="250215035"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Feb 2022 11:07:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; d="scan'208";a="606181950"
+Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
+ by fmsmga004.fm.intel.com with ESMTP; 20 Feb 2022 11:07:47 -0800
+Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
+ (envelope-from <lkp@intel.com>)
+ id 1nLrYh-0000cR-3x; Sun, 20 Feb 2022 19:07:47 +0000
+Date: Mon, 21 Feb 2022 03:07:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: [RFC RFT PATCH v2 2/2] mtd: core: introduce of support for dynamic
- partitions
-Date: Sun, 20 Feb 2022 18:39:05 +0100
-Message-Id: <20220220173905.14165-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220220173905.14165-1-ansuelsmth@gmail.com>
-References: <20220220173905.14165-1-ansuelsmth@gmail.com>
+Cc: kbuild-all@lists.01.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, yaliang.wang@windriver.com,
+ Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH v2 14/32] mtd: spi-nor: winbond: unify function names
+Message-ID: <202202210301.BeYSA7Ny-lkp@intel.com>
+References: <20220218113607.1360020-15-michael@walle.cc>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220218113607.1360020-15-michael@walle.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220220_093943_028333_B4900605 
-X-CRM114-Status: GOOD (  17.72  )
+X-CRM114-CacheID: sfid-20220220_110752_166561_1A2C9342 
+X-CRM114-Status: GOOD (  14.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,94 +84,78 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-We have many parser that register mtd partitions at runtime. One example
-is the cmdlinepart or the smem-part parser where the compatible is defined
-in the dts and the partitions gets detected and registered by the
-parser. This is problematic for the NVMEM subsystem that requires an OF node
-to detect NVMEM cells.
+Hi Michael,
 
-To fix this problem, introduce an additional logic that will try to
-assign an OF node to the MTD if declared.
+I love your patch! Perhaps something to improve:
 
-On MTD addition, it will be checked if the MTD has an OF node and if
-not declared will check if a partition with the same name / label is
-declared in DTS. If an exact match is found, the partition dynamically
-allocated by the parser will have a connected OF node.
+[auto build test WARNING on mtd/spi-nor/next]
+[also build test WARNING on tip/master linux/master linus/master v5.17-rc4 next-20220217]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-The NVMEM subsystem will detect the OF node and register any NVMEM cells
-declared statically in the DTS.
+url:    https://github.com/0day-ci/linux/commits/Michael-Walle/mtd-spi-nor-move-vendor-specific-code-into-vendor-modules/20220220-192832
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
+config: alpha-randconfig-r034-20220220 (https://download.01.org/0day-ci/archive/20220221/202202210301.BeYSA7Ny-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/c09cbfe090ed6015773211aad1bd2387dd958b7a
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Michael-Walle/mtd-spi-nor-move-vendor-specific-code-into-vendor-modules/20220220-192832
+        git checkout c09cbfe090ed6015773211aad1bd2387dd958b7a
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=alpha SHELL=/bin/bash drivers/mtd/spi-nor/
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/mtd/spi-nor/winbond.c:141: warning: expecting prototype for winbond_set_4byte_addr_mode(). Prototype was for winbond_nor_set_4byte_addr_mode() instead
+
+
+vim +141 drivers/mtd/spi-nor/winbond.c
+
+7b8b22010af95f Boris Brezillon 2020-03-13  131  
+7b8b22010af95f Boris Brezillon 2020-03-13  132  /**
+7b8b22010af95f Boris Brezillon 2020-03-13  133   * winbond_set_4byte_addr_mode() - Set 4-byte address mode for Winbond flashes.
+7b8b22010af95f Boris Brezillon 2020-03-13  134   * @nor:	pointer to 'struct spi_nor'.
+7b8b22010af95f Boris Brezillon 2020-03-13  135   * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
+7b8b22010af95f Boris Brezillon 2020-03-13  136   *		address mode.
+7b8b22010af95f Boris Brezillon 2020-03-13  137   *
+7b8b22010af95f Boris Brezillon 2020-03-13  138   * Return: 0 on success, -errno otherwise.
+7b8b22010af95f Boris Brezillon 2020-03-13  139   */
+c09cbfe090ed60 Michael Walle   2022-02-18  140  static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+7b8b22010af95f Boris Brezillon 2020-03-13 @141  {
+7b8b22010af95f Boris Brezillon 2020-03-13  142  	int ret;
+7b8b22010af95f Boris Brezillon 2020-03-13  143  
+7b8b22010af95f Boris Brezillon 2020-03-13  144  	ret = spi_nor_set_4byte_addr_mode(nor, enable);
+7b8b22010af95f Boris Brezillon 2020-03-13  145  	if (ret || enable)
+7b8b22010af95f Boris Brezillon 2020-03-13  146  		return ret;
+7b8b22010af95f Boris Brezillon 2020-03-13  147  
+7b8b22010af95f Boris Brezillon 2020-03-13  148  	/*
+7b8b22010af95f Boris Brezillon 2020-03-13  149  	 * On Winbond W25Q256FV, leaving 4byte mode causes the Extended Address
+7b8b22010af95f Boris Brezillon 2020-03-13  150  	 * Register to be set to 1, so all 3-byte-address reads come from the
+7b8b22010af95f Boris Brezillon 2020-03-13  151  	 * second 16M. We must clear the register to enable normal behavior.
+7b8b22010af95f Boris Brezillon 2020-03-13  152  	 */
+7b8b22010af95f Boris Brezillon 2020-03-13  153  	ret = spi_nor_write_enable(nor);
+7b8b22010af95f Boris Brezillon 2020-03-13  154  	if (ret)
+7b8b22010af95f Boris Brezillon 2020-03-13  155  		return ret;
+7b8b22010af95f Boris Brezillon 2020-03-13  156  
+7b8b22010af95f Boris Brezillon 2020-03-13  157  	ret = spi_nor_write_ear(nor, 0);
+7b8b22010af95f Boris Brezillon 2020-03-13  158  	if (ret)
+7b8b22010af95f Boris Brezillon 2020-03-13  159  		return ret;
+7b8b22010af95f Boris Brezillon 2020-03-13  160  
+7b8b22010af95f Boris Brezillon 2020-03-13  161  	return spi_nor_write_disable(nor);
+7b8b22010af95f Boris Brezillon 2020-03-13  162  }
+7b8b22010af95f Boris Brezillon 2020-03-13  163  
+
 ---
- drivers/mtd/mtdcore.c | 45 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 9186268d361b..636b0a02f6cf 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -563,6 +563,50 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	return 0;
- }
- 
-+void mtd_check_of_node(struct mtd_info *mtd)
-+{
-+	struct device_node *partitions, *parent_dn, *mtd_dn = NULL;
-+	struct mtd_info *parent;
-+	const char *mtd_name;
-+	bool found = false;
-+	int plen;
-+
-+	/* Check if MTD already has a device node */
-+	if (dev_of_node(&mtd->dev))
-+		return;
-+
-+	/* Check if a partitions node exist */
-+	parent = mtd->parent;
-+	parent_dn = dev_of_node(&parent->dev);
-+	if (!parent_dn)
-+		return;
-+
-+	partitions = of_get_compatible_child(parent_dn, "partitions");
-+	if (!partitions)
-+		goto exit_parent;
-+
-+	/* Search if a partition is defined with the same name */
-+	for_each_child_of_node(partitions, mtd_dn) {
-+		mtd_name = of_get_property(mtd_dn, "label", &plen);
-+		if (!strncmp(mtd->name, mtd_name, plen)) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	if (!found)
-+		goto exit_partitions;
-+
-+	/* Set of_node only for nvmem */
-+	if (of_device_is_compatible(mtd_dn, "nvmem-cells"))
-+		mtd_set_of_node(mtd, mtd_dn);
-+
-+exit_partitions:
-+	of_node_put(partitions);
-+exit_parent:
-+	of_node_put(parent_dn);
-+}
-+
- /**
-  *	add_mtd_device - register an MTD device
-  *	@mtd: pointer to new MTD device info structure
-@@ -668,6 +712,7 @@ int add_mtd_device(struct mtd_info *mtd)
- 	mtd->dev.devt = MTD_DEVT(i);
- 	dev_set_name(&mtd->dev, "mtd%d", i);
- 	dev_set_drvdata(&mtd->dev, mtd);
-+	mtd_check_of_node(mtd);
- 	of_node_get(mtd_get_of_node(mtd));
- 	error = device_register(&mtd->dev);
- 	if (error)
--- 
-2.34.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 ______________________________________________________
 Linux MTD discussion mailing list
