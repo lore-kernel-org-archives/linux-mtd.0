@@ -4,80 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7472CC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 15:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0271C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 19:01:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bmfoHCiX7ZEc+xPo0r30pierVB9OZ4U8xvYRwfK0Lwg=; b=wcap0gGn9c5dP7
-	sosnr+Pfq8bERYhPM/pbQEzcpwGaY/8Gu05akeD0dXFzAJJS6o+qh+cUAxmMOTBcm7gIbSLzj29vY
-	ia6iikhNEyatDyFaheVS9gkmct16f9ufBu4o1+6gzOreePbFwXFhqxRPm46kM6+lB9VvTG7dAPVem
-	Ww/b0MYK39Az/ghjaWwi9Y1Bb2CY5pTa40vcHk6gi4uxOkYk8HUpa9GkvOj4n9lxcR/q2JzwRhL5F
-	p0k9twk0FnCu97471SooV7SpxnGR7K0oQCRXVCWKqZWltNq3sCQsQsP0IGdvVlmQ1cVRZJKNL7bb4
-	4qbkQXRrH1SNs4C0oqWw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-ID:Subject:Cc
+	:From:To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=AE8tPHSvS+xHOz6+58zXYpI8EaXoBmtwVKYdOlw9xeI=; b=EUG6Qk0SgcffXU
+	uvpQpM0fFMbew4kvKvg/YxiT0uLSYmPVEb7QIC1pTfezELwgRUKuk3KpJ2Ys2bhVWVgBWkNoU8smi
+	xzarVTxTKcNFDBzLDHYKcbvOBGDEcwqONVHfqHvqvk/5q6EX+p0tfmh+bKu+satTmNA8Gk+zNWj5H
+	oj+IIeaGtIetrxzRW+av6f3Od3b+ub4blE179P5KyMt40OIrY5BLuhkmGeV2EyYMHmbf+nOYahAGQ
+	O23i+RE/0CxyO1z1Ncds1cbhkQclR+oMihhRtFp3C5naKYY2UY613KSZvtLgIxfcEwjKeYhJuZRvM
+	R9plNMyITtt75NxxKi0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMB4R-006XKi-Kl; Mon, 21 Feb 2022 15:57:51 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1nMDvb-007285-AG; Mon, 21 Feb 2022 19:00:55 +0000
+Received: from mx1.emlix.com ([136.243.223.33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMB4K-006XIu-Ur
- for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 15:57:46 +0000
-Received: by mail-ed1-x534.google.com with SMTP id s24so23904174edr.5
- for <linux-mtd@lists.infradead.org>; Mon, 21 Feb 2022 07:57:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=NSVr0UaSWz2MJOjywj5QL59VZ16irz/Lajj782o4eJQ=;
- b=QQZwNVp1wf19mb1jBrCGmpNT/MUdKH6CEmcsv1lEj7qJMquOydefa08uMW7DuSVfrS
- dz7JhF1Inicn+AXa23+7UTcsMYOpvstKP3RitiDVaG/OyrYCjzld40l111xu3q6GMtkI
- yco6LkSwURf3voNuaeOFsEOm152vxeFFv2KKbib73fUD/UmeO5lu64+hHZVmTAE16leZ
- TnDg1VGIGZs2CkOT54V0KaYPhOTb+kv7EQC9jCTgGMQGi9NgMog+yMU8pKA+JHqskulp
- Nuzqm0/H3xQon+GaiM+mG6n69SpyGVfurmuc9BlYflpro/fD6ajgQl63LkvR+0llEGL/
- Mz9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=NSVr0UaSWz2MJOjywj5QL59VZ16irz/Lajj782o4eJQ=;
- b=hfHHLx1XRWYrcdq2aag44P6/EAfTxxi06dVIS+gqlbTqW5E1Vp9r6XwXgbwTZurWYl
- gPwWRgpn6K2k3RhICs7yXqydu9ikw6FffUnxDlLG+2aV42P/UkpU4WzUepuasvp7cEY9
- XUZmKCwj+QOafKV23AL8QU/c4wUbBPKLg4zVu1ZBVauAJOJbjiqp/n4JNUTDhzK8Hyfe
- pjFEcfx9Ayj0Y/RsgtcDGjcQ5Cry71LjrgT6JDG48QQ2JYpCmvO0qJpZGZ2MSmPlVYHX
- Xpd3cN/XsLOPx4LbpQrjzZHrYujRFuJryl1xyhGzqsVvfRYuGSRt+DoByFpp92vs90QL
- W9qw==
-X-Gm-Message-State: AOAM532zSeAni8TIIalTL/GKGaXbQX+CrWkI3UoMARkmz+E7hJkmtSHz
- wrEtuKTTu9elXGf83AWzlyc=
-X-Google-Smtp-Source: ABdhPJxCIp0Ja49K3sb0ldfgLY3BkK8GAlDyfezaFbQJadNkmK+XUL0RetdGTC52oRPAhnbC5WJJ0g==
-X-Received: by 2002:a50:8750:0:b0:410:f1b7:86af with SMTP id
- 16-20020a508750000000b00410f1b786afmr21936676edv.11.1645459062824; 
- Mon, 21 Feb 2022 07:57:42 -0800 (PST)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it.
- [93.42.71.246])
- by smtp.gmail.com with ESMTPSA id t4sm2944659edd.7.2022.02.21.07.57.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Feb 2022 07:57:42 -0800 (PST)
-Date: Mon, 21 Feb 2022 16:57:40 +0100
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC RFT PATCH v2 1/2] dt-bindings: mtd: partitions: Document
- new partition-dynamic nodes
-Message-ID: <YhO2dK0eNP9fOeOZ@Ansuel-xps.localdomain>
-References: <20220220173905.14165-1-ansuelsmth@gmail.com>
- <20220220173905.14165-2-ansuelsmth@gmail.com>
- <1645410969.414517.2041550.nullmailer@robh.at.kernel.org>
+ id 1nMDvX-00726y-LI
+ for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 19:00:53 +0000
+Received: from mailer.emlix.com (unknown [81.20.119.6])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mx1.emlix.com (Postfix) with ESMTPS id 3E0685F8F3;
+ Mon, 21 Feb 2022 20:00:47 +0100 (CET)
+To: linux-mtd@lists.infradead.org
+From: =?UTF-8?Q?Daniel_Gl=c3=b6ckner?= <dg@emlix.com>
+Cc: =?UTF-8?Q?Lothar_Wa=c3=9fmann?= <LW@KARO-electronics.de>,
+ Brian Norris <computersforpeace@gmail.com>, Han Xu <han.xu@nxp.com>
+Subject: Make NAND_BBT_NO_OOB_BBM configurable or let the gpmi driver decide?
+Message-ID: <79beb2ef-7336-f067-5418-3fe62aa928d2@emlix.com>
+Date: Mon, 21 Feb 2022 20:00:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1645410969.414517.2041550.nullmailer@robh.at.kernel.org>
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_075745_038159_DB7C9CDF 
-X-CRM114-Status: GOOD (  23.21  )
+X-CRM114-CacheID: sfid-20220221_110051_894468_A4356093 
+X-CRM114-Status: GOOD (  12.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,57 +60,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, Feb 20, 2022 at 08:36:09PM -0600, Rob Herring wrote:
-> On Sun, 20 Feb 2022 18:39:04 +0100, Ansuel Smith wrote:
-> > Document new partition-dynamic nodes used to provide an OF node for
-> > partition registred at runtime by parsers. This is required for nvmem
-> > system to declare and detect nvmem-cells.
-> > 
-> > With these special partitions, only the label is required as the parser
-> > will provide reg and offset of the mtd. NVMEM will use the data from the
-> > parser and provide the NVMEM cells declared in the DTS, "connecting" the
-> > dynamic partition with a static declaration of cells in them.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  .../mtd/partitions/partition-dynamic.yaml     | 54 +++++++++++++++++++
-> >  1 file changed, 54 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.yaml
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.example.dt.yaml: partitions: '#address-cells', '#size-cells', 'art' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/patch/1595230
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
+Hi,
 
-Considering the idea of this partition-dynamic, should these warning be
-ignored or the smem-part should include the ref of these new partitions?
+we are using UBI on a NAND flash with BBT and have recently observed
+bad blocks where nand_markbad_bbm returns an error. Since that error is
+returned by nand_block_markbad_lowlevel even when marking the block in
+the BBT succeeds, UBI goes into read-only mode. We would therefore like
+to set NAND_BBT_NO_OOB_BBM.
 
-Or should I remove the example?
-(or should I add the example to smem-part instead of partition-dynamic)
+Unfortunately there is no device tree property for this flag. Also we
+internally disagree if this should be configurable on our platform at
+all. We are using an i.MX6 that needs to relocate the bad block marker
+to a different byte within the page because of its ECC layout.
 
--- 
-	Ansuel
+In 2014 Lothar already submitted a patch to add a nand-no-oob-bbm device
+tree property that got rejected:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/1402579245-13377-5-git-send-email-LW@KARO-electronics.de/
+Brian suggested back then to tie this behavior to the non-standard
+fsl,no-blockmark-swap property because the marker becomes completely
+useless when it stays at the same position as data bytes in good blocks.
+
+So which solution would have the highest chance of being accepted as a
+patch? Introducing a device tree property for NAND_BBT_NO_OOB_BBM, using
+fsl,no-blockmark-swap, or setting NAND_BBT_NO_OOB_BBM for all boards
+inside the i.MX gpmi driver when there is a BBT? Or maybe renaming
+fsl,no-blockmark-swap to nand-no-oob-bbm (with a transition phase)?
+
+Best regards,
+
+  Daniel
 
 ______________________________________________________
 Linux MTD discussion mailing list
