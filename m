@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DE3BC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F301EC4332F
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:09:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T/XCcUUbovsSyWNGsI9Q8SWADbebxHpjMFE7A92qcWs=; b=ar218dWCLJCiMi
-	oYkURWq2RKjLJ/Alt1tA9KZqCUam+Cli2wI4tQGXapFxi4GIF+iOkM+ZT4/E04yBY6k+obx7llip8
-	6NaAukp7k4Gko/m192yHc7knFm8DL6tEe5v/PcH9OVu5MN74CKqQ6xS5oMF6kmT1uyWSIHsSykv3H
-	n+HnPD47MnGuIGwP+2sbybYjODLwWxRmQUqIvUrXtc1Vt2HTEOVXQdMRz6W6CE0fzRZM9Eu1YhWN9
-	l/oySAz88AIdLlOSf7rjXP/ll2ecdN56HvbxbqTNyeM7Vcgj+jCoh/QHnd/2rb6ulRa1U4S4Eg5e6
-	7BDsLBZgMUaTJZquhxYQ==;
+	List-Owner; bh=oaZOrCNdxI4llEiDCxlAroEXIxPS5lmK6MzubYa2NQY=; b=rDM2MUZ0QLXT3m
+	9cIJhfl/ScdNhqE56RAkDaPG+czcjI49u4GgX4MJ/RBxSEMceDLPBKexrLqXH4k4jhdWvagxC4kO0
+	p0b4PN1otGsObiNVV0etquYqpXWyLQhFXc5eEM6ZcjrMKA2Yvb/J03lWlHVc4iGs8mbSy92l3OJOG
+	HXfnauXTusUoWe5Gj4byILTlndq/epB9CXHhbotV0B3vdq+5KqlmS6HC5aI65Y3Mlgt6Maa70V1H7
+	CYy8Ki+oKEAp33ribV8cg9tpBf52dXBMH+HqiznwWoNW0LMhwy/I5+pEB+Lr7E7fmjbe+9m9vomgB
+	27iDjZJgArAOV77+uC+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM7Uk-005Y7M-Ad; Mon, 21 Feb 2022 12:08:46 +0000
+	id 1nM7UR-005XtW-1c; Mon, 21 Feb 2022 12:08:27 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM7UM-005XrU-T5
+ id 1nM7UN-005XrY-66
  for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 12:08:26 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 701E6223ED;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id AC1DC223EF;
  Mon, 21 Feb 2022 13:08:21 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1645445301;
@@ -37,10 +37,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+M6UwjGFgGoOTMo2mov0gAB3NTo1luIHUwJ/R+oMONc=;
- b=n55xlfXK/y1z+0sKZCXywyoXLUfmdvAoEUai32HEu1DumIcFu88WVUxZCexVcMT2GmQwhJ
- qyZ99Hnf2TUj28S6IPJgFDGYPSqxlu2jKvHKoEmbayUvq7CeRljyMqHz7bSCXkZ1nJ4kDm
- 8LQkLl0f7yJooPY4EFLMMuf29Q9fEpA=
+ bh=VH1+ZLr+3aCUvAokLgGLfn7yiFo+DMUkRJCzELQD4KI=;
+ b=sxjb8NnIk3Db1wO3fWxTDq1UY/8uaDTLR9II3NTXW37gHOZhg6cLW7nZhWv7zg7uOnE2/v
+ P7aopT26ORkDSJfjzL5LesxBgcRGIfv52TemoH+e3122xxrSd6VebpkqXdo1v+76yoUoLT
+ O/Muk5TGfUaL4jz93uvV1E5gHUrKYuo=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 02/32] mtd: spi-nor: catalyst: unify function names
-Date: Mon, 21 Feb 2022 13:07:39 +0100
-Message-Id: <20220221120809.1531502-3-michael@walle.cc>
+Subject: [PATCH v4 03/32] mtd: spi-nor: eon: unify function names
+Date: Mon, 21 Feb 2022 13:07:40 +0100
+Message-Id: <20220221120809.1531502-4-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220221120809.1531502-1-michael@walle.cc>
 References: <20220221120809.1531502-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_040823_115747_656CC22A 
-X-CRM114-Status: GOOD (  12.45  )
+X-CRM114-CacheID: sfid-20220221_040823_394395_DDCD8E58 
+X-CRM114-Status: GOOD (  13.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,30 +84,30 @@ There are no functional changes.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/catalyst.c | 6 +++---
+ drivers/mtd/spi-nor/eon.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/catalyst.c b/drivers/mtd/spi-nor/catalyst.c
-index ae4d67e01bb3..6d310815fb12 100644
---- a/drivers/mtd/spi-nor/catalyst.c
-+++ b/drivers/mtd/spi-nor/catalyst.c
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index 4f3ee6331f37..8c1c57530281 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
 @@ -8,7 +8,7 @@
  
  #include "core.h"
  
--static const struct flash_info catalyst_parts[] = {
-+static const struct flash_info catalyst_nor_parts[] = {
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
- 	{ "cat25c11", CAT25_INFO(16, 8, 16, 1) },
- 	{ "cat25c03", CAT25_INFO(32, 8, 16, 2) },
-@@ -19,6 +19,6 @@ static const struct flash_info catalyst_parts[] = {
+-static const struct flash_info eon_parts[] = {
++static const struct flash_info eon_nor_parts[] = {
+ 	/* EON -- en25xxx */
+ 	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+@@ -32,6 +32,6 @@ static const struct flash_info eon_parts[] = {
  
- const struct spi_nor_manufacturer spi_nor_catalyst = {
- 	.name = "catalyst",
--	.parts = catalyst_parts,
--	.nparts = ARRAY_SIZE(catalyst_parts),
-+	.parts = catalyst_nor_parts,
-+	.nparts = ARRAY_SIZE(catalyst_nor_parts),
+ const struct spi_nor_manufacturer spi_nor_eon = {
+ 	.name = "eon",
+-	.parts = eon_parts,
+-	.nparts = ARRAY_SIZE(eon_parts),
++	.parts = eon_nor_parts,
++	.nparts = ARRAY_SIZE(eon_nor_parts),
  };
 -- 
 2.30.2
