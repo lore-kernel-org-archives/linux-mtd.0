@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52ED7C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 09:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5649C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 09:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yl7sGgy7ndYrFTj9MH5EDNveL3SHUx7Zq3gV4zCpJgA=; b=mnra/LPbwRDzZE
-	7usMP/WWBmmNVh9Wd5SXEMiUi/i+Rjw+bRMHl0bfa2SANnsG1L2z/uadBZGaFzcdunEbbDXC/tbdf
-	PgLLKb3NrZLiyAt++rnsZY70JK6o8mqIDotfTv7nhwIfWM3hOMqPxIRsMDILKsx5VF8H3Fm7yKGNm
-	1nQFCIlKQ07S7QKE7h2yIXehNCvzkRdjHkNoa2HcFvI7UWfeZ5Lx2GX501xuQ4WYddghqjv1R1u/F
-	7iBN9Xmv6+6R37BH2dyKkWIhSvBwBXON5igQeKiNX20FffCQDQa8Cohp0f/i49Up1UaSzgzDsunpw
-	zjNzdFnuocMTXqo/Q4bA==;
+	List-Owner; bh=F0inPC5PO2nRjYxRdGavlZL91hCEFFoDqwxEC1UnDR8=; b=u/pxVwRQ2e6AF6
+	YwON4SCyZCmYmNalkSB+5F1/j/aiqp/BAzBSPckTHnftOHPOT0J9GBOVUUGXL4AwJOxa4CPjSelQS
+	iqdAJ71emHfohtCXCmWSwdlKpaV0fujcrzGZC1rtJZym35r/C+XRhkE8s20ykhaZPso/cNP8Ktj3R
+	Tq8lmwUB3Q5Ap7X3f9u8Zc2CwZroffdVU5ZGEN2mrgXGBmZwJV8uVU/35KukgBpaQnXBmRMuQ7uSD
+	e3wrPnK9bNfMD0zZ8nyQP4Y3DFavHq7RJBuT8vzATDF4bsw3K8s4vnFaUTYh5JQnS/FFqEwUSecmG
+	9yFofD4twbVsRb4UwOYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM4ev-004W7n-UA; Mon, 21 Feb 2022 09:07:06 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nM4gK-004WXX-Nw; Mon, 21 Feb 2022 09:08:32 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM4RE-004Qij-PJ
+ id 1nM4RE-004Qio-Tj
  for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 08:52:59 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 172AF223ED;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id DCE782223E;
  Mon, 21 Feb 2022 09:52:54 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645433574;
+ s=mail2016061301; t=1645433575;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=h7zaNDx+xivNa+dXA2W3QIZqvaWPcNR2U/9NPZ5jG3k=;
- b=vqqTMFH5AZAg1wiZgzAJ4OJFiTdXyK5plDkR87y8N7eSF2iNNGG1A+p0iMUOIad1bOBzo7
- oE/LT0js6kw2EDerZ2inJJdUuYqFDijvHA6ijNkcV1n64jpxdMbFovwFtkgKh51EPhYS/A
- ywD/XOexW7/Nt+oZQzJ+7RQEfgSredo=
+ bh=toZmYMnm+du58DgEiyl/+z7EezURQIhbZ+ekj4hpZoY=;
+ b=UIjXh6hWGf2mj76YNrJF0/rPPaBOMLzKNkNGbuFN0xduc7W0zJ3aVOGhdtRO6vPyofD1Hc
+ auLKLH1o+h4lcs3JJAHd9GXcDFp8JFPe+GOFFoRJ+7fQGrEM1eL4Cadn/T8/uJbKo3+P7O
+ 1myddysAp6A7qo2Ltm50GNH0+yFvt5Y=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v3 12/32] mtd: spi-nor: spansion: unify function names
-Date: Mon, 21 Feb 2022 09:52:16 +0100
-Message-Id: <20220221085236.1452024-13-michael@walle.cc>
+Subject: [PATCH v3 13/32] mtd: spi-nor: sst: unify function names
+Date: Mon, 21 Feb 2022 09:52:17 +0100
+Message-Id: <20220221085236.1452024-14-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220221085236.1452024-1-michael@walle.cc>
 References: <20220221085236.1452024-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_005257_018975_3161C947 
-X-CRM114-Status: GOOD (  13.45  )
+X-CRM114-CacheID: sfid-20220221_005257_167646_E7F3D644 
+X-CRM114-Status: GOOD (  14.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,95 +84,107 @@ There are no functional changes.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/spansion.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/mtd/spi-nor/sst.c | 44 +++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 534196b1d3e7..dea021a8c9e4 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -20,7 +20,7 @@
- #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
+index 30183e9189b9..63bcc97bf978 100644
+--- a/drivers/mtd/spi-nor/sst.c
++++ b/drivers/mtd/spi-nor/sst.c
+@@ -13,12 +13,12 @@
  
- /**
-- * spi_nor_cypress_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-+ * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-  * @enable:              whether to enable or disable Octal DTR
-  *
-@@ -29,7 +29,7 @@
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+static int cypress_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
- {
- 	struct spi_mem_op op;
- 	u8 *buf = nor->bouncebuf;
-@@ -116,7 +116,7 @@ static int spi_nor_cypress_octal_dtr_enable(struct spi_nor *nor, bool enable)
+ #define SST26VF_CR_BPNV		BIT(3)
  
- static void s28hs512t_default_init(struct spi_nor *nor)
+-static int sst26vf_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int sst26vf_nor_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
  {
--	nor->params->octal_dtr_enable = spi_nor_cypress_octal_dtr_enable;
-+	nor->params->octal_dtr_enable = cypress_nor_octal_dtr_enable;
- 	nor->params->writesize = 16;
+ 	return -EOPNOTSUPP;
  }
  
-@@ -183,9 +183,9 @@ static const struct spi_nor_fixups s28hs512t_fixups = {
- };
- 
- static int
--s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
--			 const struct sfdp_parameter_header *bfpt_header,
--			 const struct sfdp_bfpt *bfpt)
-+s25fs_s_nor_post_bfpt_fixups(struct spi_nor *nor,
-+			     const struct sfdp_parameter_header *bfpt_header,
-+			     const struct sfdp_bfpt *bfpt)
+-static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int sst26vf_nor_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
  {
- 	/*
- 	 * The S25FS-S chip family reports 512-byte pages in BFPT but
-@@ -198,11 +198,11 @@ s25fs_s_post_bfpt_fixups(struct spi_nor *nor,
- 	return 0;
+ 	int ret;
+ 
+@@ -38,27 +38,27 @@ static int sst26vf_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
+ 	return spi_nor_global_block_unlock(nor);
  }
  
--static const struct spi_nor_fixups s25fs_s_fixups = {
--	.post_bfpt = s25fs_s_post_bfpt_fixups,
-+static const struct spi_nor_fixups s25fs_s_nor_fixups = {
-+	.post_bfpt = s25fs_s_nor_post_bfpt_fixups,
- };
- 
--static const struct flash_info spansion_parts[] = {
-+static const struct flash_info spansion_nor_parts[] = {
- 	/* Spansion/Cypress -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
-@@ -294,7 +294,7 @@ static const struct flash_info spansion_parts[] = {
- 	},
- };
- 
--static void spansion_late_init(struct spi_nor *nor)
-+static void spansion_nor_late_init(struct spi_nor *nor)
+-static int sst26vf_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
++static int sst26vf_nor_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
  {
- 	if (nor->params->size <= SZ_16M)
- 		return;
-@@ -305,13 +305,13 @@ static void spansion_late_init(struct spi_nor *nor)
- 	nor->mtd.erasesize = nor->info->sector_size;
+ 	return -EOPNOTSUPP;
  }
  
--static const struct spi_nor_fixups spansion_fixups = {
--	.late_init = spansion_late_init,
-+static const struct spi_nor_fixups spansion_nor_fixups = {
-+	.late_init = spansion_nor_late_init,
+-static const struct spi_nor_locking_ops sst26vf_locking_ops = {
+-	.lock = sst26vf_lock,
+-	.unlock = sst26vf_unlock,
+-	.is_locked = sst26vf_is_locked,
++static const struct spi_nor_locking_ops sst26vf_nor_locking_ops = {
++	.lock = sst26vf_nor_lock,
++	.unlock = sst26vf_nor_unlock,
++	.is_locked = sst26vf_nor_is_locked,
  };
  
- const struct spi_nor_manufacturer spi_nor_spansion = {
- 	.name = "spansion",
--	.parts = spansion_parts,
--	.nparts = ARRAY_SIZE(spansion_parts),
--	.fixups = &spansion_fixups,
-+	.parts = spansion_nor_parts,
-+	.nparts = ARRAY_SIZE(spansion_nor_parts),
-+	.fixups = &spansion_nor_fixups,
+-static void sst26vf_late_init(struct spi_nor *nor)
++static void sst26vf_nor_late_init(struct spi_nor *nor)
+ {
+-	nor->params->locking_ops = &sst26vf_locking_ops;
++	nor->params->locking_ops = &sst26vf_nor_locking_ops;
+ }
+ 
+-static const struct spi_nor_fixups sst26vf_fixups = {
+-	.late_init = sst26vf_late_init,
++static const struct spi_nor_fixups sst26vf_nor_fixups = {
++	.late_init = sst26vf_nor_late_init,
+ };
+ 
+-static const struct flash_info sst_parts[] = {
++static const struct flash_info sst_nor_parts[] = {
+ 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+ 	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+@@ -114,11 +114,11 @@ static const struct flash_info sst_parts[] = {
+ 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		.fixups = &sst26vf_fixups },
++		.fixups = &sst26vf_nor_fixups },
+ };
+ 
+-static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+-		     size_t *retlen, const u_char *buf)
++static int sst_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
++			 size_t *retlen, const u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+ 	size_t actual = 0;
+@@ -203,19 +203,19 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	return ret;
+ }
+ 
+-static void sst_late_init(struct spi_nor *nor)
++static void sst_nor_late_init(struct spi_nor *nor)
+ {
+ 	if (nor->info->mfr_flags & SST_WRITE)
+-		nor->mtd._write = sst_write;
++		nor->mtd._write = sst_nor_write;
+ }
+ 
+-static const struct spi_nor_fixups sst_fixups = {
+-	.late_init = sst_late_init,
++static const struct spi_nor_fixups sst_nor_fixups = {
++	.late_init = sst_nor_late_init,
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_sst = {
+ 	.name = "sst",
+-	.parts = sst_parts,
+-	.nparts = ARRAY_SIZE(sst_parts),
+-	.fixups = &sst_fixups,
++	.parts = sst_nor_parts,
++	.nparts = ARRAY_SIZE(sst_nor_parts),
++	.fixups = &sst_nor_fixups,
  };
 -- 
 2.30.2
