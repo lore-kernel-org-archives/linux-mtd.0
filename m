@@ -4,43 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9371C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F5CC433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5RffhVn+8tvl0R5jrCmiHhK6OcPzfEom3oAMOpC9RnQ=; b=cCeiS9ZQT2Uqrg
-	u35vtob9V4s/bWkPtXGW0GZfy9Pbs6/cC5RbCeTxKA2osH68S4bBBar1OpGx21E/FJ6aSR0vBRi+1
-	3MsBIaqFEcv88tq7EF+u8IbI20HuvFdFLxTheV5D7H/JkktDhG8lED9R8xVDQ9QYhsjvtDBw/0zUA
-	F1liEN74C4DieRIWwHqMbE5SUyFN0yhNYZpSYi57pR1/GdkA2RKoIvBSqPvFsVTRnynLvkdarx8Ag
-	X8QuJ4MhaoCFB6MlI2Lo6hSS6fgOdAPB7ZKO7+TMC3rpXjlliHYg2sxqiKtXVnCBFvk8mNgC3lS3q
-	0ArxSQqaGrgQupVLvasQ==;
+	List-Owner; bh=2tC7LRdgDc695+ndzp99H6GbFjaVF1Ty80/j/6mzEeU=; b=NtdjRWhU6CTZKR
+	4UccEg8yigP2Xf0No/GauACPrQQsrwxHqWeo3FylP6W2V8U3YGUDhSFfLcvwLV5iqLJcYSRBb+ICT
+	t3QXS6xu/XTia+sUp/zYmoK9T3NQv0+F5NZb0N6lNupK/EinHb4JpADuQbyOPyUXVZPNgDsjjltdY
+	LXJPfMYAxvuMDr/rxjBsOTMeGMVP/T8yiuJ/Ve2tgQYafTx9k/l4g6GHbaT8bA5IinTZ+1Kz9t31Y
+	ATvzeHnfDWcClNkrtJydlX24sRDDqeDeHvFQEk+PUT2cqftgBzoVJzdPDKntA1Ozlenx3CIr3mWS9
+	9L4YN6Pth31TLmJ/mroA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM81U-005i74-EC; Mon, 21 Feb 2022 12:42:36 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nM83j-005ih8-DL; Mon, 21 Feb 2022 12:44:56 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM7UX-005Xzs-Dn
- for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 12:08:39 +0000
+ id 1nM7Ue-005Y3g-1P
+ for linux-mtd@bombadil.infradead.org; Mon, 21 Feb 2022 12:08:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+ :References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=3zsnrIhLoM0lShucyLsd9YgNoCMcFbg27IxCcc/idRc=; b=PB0YvM73c0bU3KKdnqSXak/7l2
+ qW7UtGwQmWQc5V1AWlNlvFCfHcYCWZn/bwgystFl4qPSM3Qz1xIlhXjhUlPHHyTSzsLgwjD0K5RTQ
+ U8agK5iISDX3+l/Wn9xNzuKdwbdZ59DaFXoHgIbNxbCIG08LG7iYfwUmPpbwpnwU7RSyPp7HT8Ruu
+ 6EAEW9AiWQe4TW42FVdL09haS8S6TpgoF9vT1UTq+CSukqT4H3kbeCgqRdkicyDZt+sLj4ufdgX48
+ hBGdHQ6uFeeVgxvVV80ZbMFuxSL2LmgHVpioGtfqFC2DMMW0P2XYydPG9rWajQiiNNSD1L0kMvDfK
+ YwzXT04w==;
+Received: from ssl.serverraum.org ([176.9.125.105])
+ by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nM7Ua-00BdAy-7q
+ for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 12:08:38 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 9ABC02247C;
- Mon, 21 Feb 2022 13:08:29 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 5A9A8223F6;
+ Mon, 21 Feb 2022 13:08:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645445309;
+ s=mail2016061301; t=1645445310;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=CHaJ1Kn9aqC7sMskqgvZF6XdFCXYYKaOSB+d24RXhTQ=;
- b=asgYEsGn40VsutVgM7g5KqJTNW+7Vv+GdkQYG+YLkKFmpAcEKn0v+JoNrCI0Bb6doa5rR6
- cgHyiA1BRY4Xno8cTSx92k3I/overFY5S0Hdq/dhPSjvUgHKkHl1t7o9KfnBrnb55Gg/Dx
- zidYenizFsL+ml7llhUMH+VCdjtvDWY=
+ bh=3zsnrIhLoM0lShucyLsd9YgNoCMcFbg27IxCcc/idRc=;
+ b=Hefqen4x6zIfPjTbqB3a1XsbApVYtZBxP9QmWGdmeOVg/jFjcS0StKeTVjclXhmJt6vyuT
+ CV1/vvymuRNEVWQbiOvNARdlyGzIr8wJkKgi5xFdt9D5P8cUVTqDk9XgKFf/nO/Y7t92Fw
+ LvVMvMUCP6ie21+sWcRditPsTl9o+Y4=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,17 +62,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 25/32] mtd: spi-nor: micron-st: convert USE_FSR to a
- manufacturer flag
-Date: Mon, 21 Feb 2022 13:08:02 +0100
-Message-Id: <20220221120809.1531502-26-michael@walle.cc>
+Subject: [PATCH v4 27/32] mtd: spi-nor: spansion: slightly rework control flow
+ in late_init()
+Date: Mon, 21 Feb 2022 13:08:04 +0100
+Message-Id: <20220221120809.1531502-28-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220221120809.1531502-1-michael@walle.cc>
 References: <20220221120809.1531502-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_040833_813939_52F624F5 
-X-CRM114-Status: GOOD (  15.63  )
+X-CRM114-CacheID: sfid-20220221_120836_429964_5EC261A4 
+X-CRM114-Status: GOOD (  13.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,213 +89,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Now that all functions using that flag are local to the micron module,
-we can convert the flag to a manufacturer one.
+Don't return early when the flash is smaller than or equal to 16MiB. We
+need to be able to register hooks for all sizes of flashes. This also has
+the benefit that it increases the readability of the code because the
+action, i.e. registering the fixups, is connected to the condition, i.e.
+flashes larger than 16MiB.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c      |  3 --
- drivers/mtd/spi-nor/core.h      |  3 --
- drivers/mtd/spi-nor/micron-st.c | 93 +++++++++++++++++++++------------
- 3 files changed, 60 insertions(+), 39 deletions(-)
+ drivers/mtd/spi-nor/spansion.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 5b56d718692b..ac0faedebafe 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2499,9 +2499,6 @@ static void spi_nor_init_flags(struct spi_nor *nor)
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 5affa8ae43a7..1a0e7214d9e5 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -296,13 +296,12 @@ static const struct flash_info spansion_nor_parts[] = {
  
- 	if (flags & USE_CLSR)
- 		nor->flags |= SNOR_F_USE_CLSR;
--
--	if (flags & USE_FSR)
--		nor->flags |= SNOR_F_USE_FSR;
- }
- 
- /**
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index fabc01ae9a81..a02bf54289fb 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -12,7 +12,6 @@
- #define SPI_NOR_MAX_ID_LEN	6
- 
- enum spi_nor_option_flags {
--	SNOR_F_USE_FSR		= BIT(0),
- 	SNOR_F_HAS_SR_TB	= BIT(1),
- 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
- 	SNOR_F_USE_CLSR		= BIT(4),
-@@ -349,7 +348,6 @@ struct spi_nor_fixups {
-  *   NO_CHIP_ERASE:           chip does not support chip erase.
-  *   SPI_NOR_NO_FR:           can't do fastread.
-  *   USE_CLSR:                use CLSR command.
-- *   USE_FSR:                 use flag status register
-  *
-  * @no_sfdp_flags:  flags that indicate support that can be discovered via SFDP.
-  *                  Used when SFDP tables are not defined in the flash. These
-@@ -401,7 +399,6 @@ struct flash_info {
- #define NO_CHIP_ERASE			BIT(7)
- #define SPI_NOR_NO_FR			BIT(8)
- #define USE_CLSR			BIT(9)
--#define USE_FSR				BIT(10)
- 
- 	u8 no_sfdp_flags;
- #define SPI_NOR_SKIP_SFDP		BIT(0)
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 8877b122cf42..f693f8720541 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -8,6 +8,9 @@
- 
- #include "core.h"
- 
-+/* flash_info mfr_flag. Used to read proprietary FSR register. */
-+#define USE_FSR		BIT(0)
-+
- #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
- #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
- #define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
-@@ -140,15 +143,17 @@ static const struct spi_nor_fixups mt35xu512aba_fixups = {
- 
- static const struct flash_info micron_nor_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ |
- 			   SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE)
--		.fixups = &mt35xu512aba_fixups},
-+		MFR_FLAGS(USE_FSR)
-+		.fixups = &mt35xu512aba_fixups
-+	},
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_OCTAL_READ)
--		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-+		MFR_FLAGS(USE_FSR)
-+	},
- };
- 
- static const struct flash_info st_nor_parts[] = {
-@@ -164,57 +169,79 @@ static const struct flash_info st_nor_parts[] = {
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
- 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
--		      SPI_NOR_BP3_SR_BIT6 | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		      SPI_NOR_BP3_SR_BIT6)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
--		      SPI_NOR_BP3_SR_BIT6 | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		      SPI_NOR_BP3_SR_BIT6)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "mt25ql256a",  INFO6(0x20ba19, 0x104400, 64 * 1024,  512)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "mt25qu256a",  INFO6(0x20bb19, 0x104400, 64 * 1024,  512)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512)
--		FLAGS(USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "mt25ql512a",  INFO6(0x20ba20, 0x104400, 64 * 1024, 1024)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
--		      SPI_NOR_BP3_SR_BIT6 | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		      SPI_NOR_BP3_SR_BIT6)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024)
--		FLAGS(USE_FSR)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
--		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
--		      SPI_NOR_BP3_SR_BIT6 | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		      SPI_NOR_BP3_SR_BIT6)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP |
--		      SPI_NOR_BP3_SR_BIT6 | NO_CHIP_ERASE | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		      SPI_NOR_BP3_SR_BIT6 | NO_CHIP_ERASE)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048)
--		FLAGS(NO_CHIP_ERASE | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		FLAGS(NO_CHIP_ERASE)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096)
--		FLAGS(NO_CHIP_ERASE | USE_FSR)
--		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+		FLAGS(NO_CHIP_ERASE)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096)
--		FLAGS(NO_CHIP_ERASE | USE_FSR)
-+		FLAGS(NO_CHIP_ERASE)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
--			      SPI_NOR_QUAD_READ) },
-+			      SPI_NOR_QUAD_READ)
-+		MFR_FLAGS(USE_FSR)
-+	},
- 
- 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2) },
- 	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4) },
-@@ -409,7 +436,7 @@ static void micron_st_nor_default_init(struct spi_nor *nor)
- 
- static void micron_st_nor_late_init(struct spi_nor *nor)
+ static void spansion_nor_late_init(struct spi_nor *nor)
  {
--	if (nor->flags & SNOR_F_USE_FSR)
-+	if (nor->info->mfr_flags & USE_FSR)
- 		nor->params->ready = spi_nor_fsr_ready;
+-	if (nor->params->size <= SZ_16M)
+-		return;
+-
+-	nor->flags |= SNOR_F_4B_OPCODES;
+-	/* No small sector erase for 4-byte command set */
+-	nor->erase_opcode = SPINOR_OP_SE;
+-	nor->mtd.erasesize = nor->info->sector_size;
++	if (nor->params->size > SZ_16M) {
++		nor->flags |= SNOR_F_4B_OPCODES;
++		/* No small sector erase for 4-byte command set */
++		nor->erase_opcode = SPINOR_OP_SE;
++		nor->mtd.erasesize = nor->info->sector_size;
++	}
  }
  
+ static const struct spi_nor_fixups spansion_nor_fixups = {
 -- 
 2.30.2
 
