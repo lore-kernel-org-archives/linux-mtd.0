@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EBA7C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 07:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE8C9C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 08:54:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gT8aq3nU//KK9BuwiUKcXwusUmGH1HPaPf59YzxgG4s=; b=YkDDa/gBqDamH2NpEQ33mziofa
-	76LOwi7/rBnJfrCMMEfL0CAICScihy2Wm/6zkbkNOzzZbVOkqaPIxoXadbDnQ8dE2u6bGAZebodKb
-	IhaCIkS6U/C/P6g/gkPj2UGKQuLsMYmEAfhNen4/eznnGthfsEptxq57RdfX/Czlvf0Vpb53zqA4b
-	9uW3j8W5BbpD6weDnW374Rj/pROso7D1NjBJTTjZMY1WZagnzTQ/B3rsbVeXTU1ttvzZ//fHQdM9p
-	tnNRuLPbcuja2ENEZP2Gs7fPJHlfrtAzNa12wkxbJqbReEamVd9ddDDFuwTB19A+JKaysIUxdj4QO
-	/bqw4J9w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=lcIfzoSavneZ+UtmoVzsFexXRrN9eex5YnXe+bcSVmU=; b=p+KFHxQKUUhmAr
+	rprZSWg1EbpYIYIZq5f9WgZs3UZmyyYOgh3ZQxPFT4hdRnerSnK04Oxa2RkZj4vZrBOSetu04okNf
+	4+wYCD3eEHudur+cQGkjK4A61zQemK6Qt8cxKXPBn2fdR84uELkKDdwpP17H+F2L2PsWVLfnebYHY
+	l2jt1+m/A/QYMlzDmdcgs3pMsMuJQaUQOxemJGKb30/Tu1BD1NhFz4M2kVjkCFbhw9Ws8O4q/Bcbp
+	K1ZdHyXFZPvk5r9X/7F3iDmbNKSJstHn7b/dtQOI8km3VyIh/CU71J+sUaW2MFt6GNMJ21rCxroPD
+	6YFElzVTipWuf10eoOug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM3NC-0044uc-Ae; Mon, 21 Feb 2022 07:44:42 +0000
+	id 1nM4SC-004RFk-Si; Mon, 21 Feb 2022 08:53:57 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM3N7-0044sf-FF
- for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 07:44:39 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id BA42C2223A;
- Mon, 21 Feb 2022 08:44:35 +0100 (CET)
+ id 1nM4R7-004Qdp-Ki
+ for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 08:52:52 +0000
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 8DF76223E9;
+ Mon, 21 Feb 2022 09:52:43 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645429475;
+ s=mail2016061301; t=1645433565;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CYxJg6RXHwuQQPHgm7btkpehETiBp1YmrUpCpg1PZHg=;
- b=SmDq0SK53YoVS9qM7butDx4U4t9guXFj6hquSPFA6/Q7Cd9xxqpQT8lxQcQhwMawAvCoKO
- yB4iq/kf6bsLDi1j/XEvL1wtdzpM/ajbmDRu37+xBVtrar6+9P93R/JXKT/JCDRAwXSNz6
- 1oEpPYgWdDnKfVwT4qgTtvZbNDybl7E=
-MIME-Version: 1.0
-Date: Mon, 21 Feb 2022 08:44:35 +0100
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vhXcIyrYYOOhtTLar2qt08o1kFLd8n5VCrCCKuuqYdg=;
+ b=kEcjqtpRny+mV6S0WqzV2adQV+CoG8z2MbrIHVId4XF2SmF11oMU8O/UP13AoNY48BnaHL
+ pJasnkluLLVpQeGUgcf+e6tEjfEHDNz54xOvzq9KYvc9PB9VWNi18FX6CNY2LkZnzT7/1J
+ 4UmmuDAmDM9LL67Y7yv4EupkWa2Dx84=
 From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: p.yadav@ti.com, broonie@kernel.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- nicolas.ferre@microchip.com, zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw
-Subject: Re: [PATCH 0/4] spi-mem: Allow specifying the byte order in DTR mode
-In-Reply-To: <20220218145900.1440045-1-tudor.ambarus@microchip.com>
-References: <20220218145900.1440045-1-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <44f655d027b49b87065915f6ba2744d2@walle.cc>
-X-Sender: michael@walle.cc
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
+Subject: [PATCH v3 00/32] mtd: spi-nor: move vendor specific code into vendor
+ modules
+Date: Mon, 21 Feb 2022 09:52:04 +0100
+Message-Id: <20220221085236.1452024-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220220_234437_748364_C64B8DC7 
-X-CRM114-Status: UNSURE (   8.86  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220221_005249_929035_59CE4C1A 
+X-CRM114-Status: GOOD (  14.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,21 +67,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-02-18 15:58, schrieb Tudor Ambarus:
-> Fortunately there are controllers
-> that can swap back the bytes at runtime, fixing the endiannesses. 
-> Provide
-> a way for the upper layers to specify the byte order in DTR mode.
+It turns out that most of the special status register handling is
+specific for a particular vendor. I.e. Xilinx has some different
+opcodes for the status register read, Micron has an additional FSR
+register and Spansion has these flags integrated into the SR.
 
-Are there any patches for the atmel-quadspi yet? What happens if
-the controller doesn't support it? Will there be a software fallback?
+Create a callback to ready() where a flash chip can register its
+own function. This will let us move all the vendor specific stuff
+out of the core into the vendor modules.
 
--michael
+As a preparation step, unify all function and object names in the
+vendor modules. For the sake of consistency and better readability
+of the code flow, I also converted the setup() callback to be
+optional.
+
+Please note that this is only compile-time tested.
+
+Changes since v2:
+ - use family_nor_ instead of just family_ prefix
+ - fix function doc
+
+Changes since v1:
+ - rename/unify function names inside the vendor modules.
+ - make local functions static
+ - fix function doc typo
+ - use late_init hook to set fsr_ready op
+ - Use uppercase and period in comments
+ - Add comments for the vendor flags
+ - move coding style change in spi_nor_sr_ready() into own patch
+ - new patch to add missing parenthesis in S3AN_INFO()
+ - add missing function prefix rename patch for the spansion module
+
+Michael Walle (32):
+  mtd: spi-nor: atmel: unify function names
+  mtd: spi-nor: catalyst: unify function names
+  mtd: spi-nor: eon: unify function names
+  mtd: spi-nor: esmt: unify function names
+  mtd: spi-nor: everspin: unify function names
+  mtd: spi-nor: fujitsu: unify function names
+  mtd: spi-nor: gigadevice: unify function names
+  mtd: spi-nor: intel: unify function names
+  mtd: spi-nor: issi: unify function names
+  mtd: spi-nor: macronix: unify function names
+  mtd: spi-nor: micron-st: unify function names
+  mtd: spi-nor: spansion: unify function names
+  mtd: spi-nor: sst: unify function names
+  mtd: spi-nor: winbond: unify function names
+  mtd: spi-nor: xilinx: unify function names
+  mtd: spi-nor: xmc: unify function names
+  mtd: spi-nor: slightly refactor the spi_nor_setup()
+  mtd: spi-nor: allow a flash to define its own ready() function
+  mtd: spi-nor: export more function to be used in vendor modules
+  mtd: spi-nor: guard _page_size parameter in S3AN_INFO()
+  mtd: spi-nor: move all xilinx specifics into xilinx.c
+  mtd: spi-nor: xilinx: rename vendor specific functions and defines
+  mtd: spi-nor: xilinx: correct the debug message
+  mtd: spi-nor: move all micron-st specifics into micron-st.c
+  mtd: spi-nor: micron-st: convert USE_FSR to a manufacturer flag
+  mtd: spi-nor: micron-st: rename vendor specific functions and defines
+  mtd: spi-nor: spansion: slightly rework control flow in late_init()
+  mtd: spi-nor: move all spansion specifics into spansion.c
+  mtd: spi-nor: spansion: convert USE_CLSR to a manufacturer flag
+  mtd: spi-nor: spansion: rename vendor specific functions and defines
+  mtd: spi-nor: slightly change code style in spi_nor_sr_ready()
+  mtd: spi-nor: renumber flags
+
+ drivers/mtd/spi-nor/atmel.c      |  81 +++++-----
+ drivers/mtd/spi-nor/catalyst.c   |   6 +-
+ drivers/mtd/spi-nor/core.c       | 265 ++-----------------------------
+ drivers/mtd/spi-nor/core.h       |  70 ++++----
+ drivers/mtd/spi-nor/eon.c        |   6 +-
+ drivers/mtd/spi-nor/esmt.c       |   6 +-
+ drivers/mtd/spi-nor/everspin.c   |   6 +-
+ drivers/mtd/spi-nor/fujitsu.c    |   6 +-
+ drivers/mtd/spi-nor/gigadevice.c |   6 +-
+ drivers/mtd/spi-nor/intel.c      |   6 +-
+ drivers/mtd/spi-nor/issi.c       |  10 +-
+ drivers/mtd/spi-nor/macronix.c   |  14 +-
+ drivers/mtd/spi-nor/micron-st.c  | 258 ++++++++++++++++++++++++------
+ drivers/mtd/spi-nor/spansion.c   | 164 ++++++++++++++-----
+ drivers/mtd/spi-nor/sst.c        |  44 ++---
+ drivers/mtd/spi-nor/winbond.c    |  29 ++--
+ drivers/mtd/spi-nor/xilinx.c     |  97 +++++++++--
+ drivers/mtd/spi-nor/xmc.c        |   6 +-
+ include/linux/mtd/spi-nor.h      |  18 ---
+ 19 files changed, 576 insertions(+), 522 deletions(-)
+
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
