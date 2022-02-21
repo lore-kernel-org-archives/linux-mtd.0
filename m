@@ -4,84 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2ED8C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 07:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB4D2C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 07:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=50TNgOVm37gje146VcrUNkJLWx9zO20AGwd40AeVPB8=; b=u1O7AsPhFppy5D
-	LU9UPhueTvA3VH0KD9TH0AhCLIoYpgiDKnCdzOoKh44UX+ftbQjTRv4OB7up0/8gPOaunvTJxYAlb
-	8EG3c4bP97BG9h9Sj1vBJFtAJ3F6H8f1qjWn0U3rM/l2mP5Wu5hg+3rlqd9uyY67Ggy7MLGn34kBk
-	X2/WHASLVtpaqPbUOA8m3bD/Oi+mFah80sXzw+wzySyZA+f0B/b+cUAJpb3bet8yCPLneCvmm4SPd
-	dMc+DSSzGcf09h+WTy0ZeQ0yacbbruiQApvePVn0lJCZxDPLjQPChsHzyzf6vnSBVzOKPkIbpHTgk
-	C+Y3mlzvWt9rfOOFGL/Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=e8nIdfjyBVy82w2Zl1uo9qvhOroO9DFq75qJB0yzV1I=; b=ovaulqN0w/LfbdMeSXRXw4fSgr
+	cQf5zvKxipKcjOv8TuBSJWhf+uGOovwCfChir4Fv+HHl0teyyUMo9QH7srnBgWBLlUC8CwwiY5MU5
+	KLvevIIuXMEQCvI//1UaV8qB+Zv7K4YlZg+8qH5RkQKRJP1RwgdScGeVf2jeAMk7N7I6PTc3eNT7m
+	gz3ItmEOZlM/JPrdC4RHENgjnKgIWVNJujeaIBkZrbgNScesrxUDCPWFIgF0GkclhT2Uk4xkpgRK0
+	D9wGeHXQeNQEGlNQsAGHHEwNi/JR7upoZw17AXlA/MVkYcG8vmVuMkJl6JLdgf7ORrbzhjvG4yyPI
+	yCcAKjbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM3Jj-0043bR-Gh; Mon, 21 Feb 2022 07:41:07 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1nM3Ki-004410-A9; Mon, 21 Feb 2022 07:42:08 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM3Je-0043Z9-Sv
- for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 07:41:04 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id
- q11-20020a17090a304b00b001b94d25eaecso14788568pjl.4
- for <linux-mtd@lists.infradead.org>; Sun, 20 Feb 2022 23:41:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=lH8QqqX3ozBsd2B7qQFlTmT4R+1hyoS0GxD0+GxHAm4=;
- b=DPg1FWrVg0L7+dmIhjoxzH5eB5GIwwhIfLT6bdDujNnFXEG22E51P6/iKJN3GQj/Jh
- 5klRdTyo5twDSFCq9ATU3iEVpibaxvDvxypyq8RGSv0AgYUW5bhvP2U+6dJAUXeJyn64
- SwPT1kV2/jPzEqSjVbbacPeG39aw/u5hu3IjeiSd8nsV6gOUbX75oH5MJwWH0+ZEerLX
- C2hRmZfxR4/W+ITPp7ieAJDfSWUBGvpvuIXpE/u6qexOUYvEK0IL0JtD0aPcXw5obZM/
- el/L9hExsNDQlaBbtA/nMUrRFd4EylmKhkXQk7+RorH3Lq5EBFZBgCJCN4cwRiLNTErI
- KQFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=lH8QqqX3ozBsd2B7qQFlTmT4R+1hyoS0GxD0+GxHAm4=;
- b=R/6fsthcnVyMdJw6UOInmQ3Y8mgoNeob1BKY3q9BKWKSI6Mhx0dkKnB13eSO5jGi1c
- HsaOOAiKWfMEiA9aYlWGz3VTvE7bOJMvCgM/cMzooMQbhs3ry6nm9cNzjlmJwJTWzlHC
- pBae74uJpyWbUJlTwEB/WwcRAQVXwFENqxFGCgPllfOFKrQ+R/8IWPSPyLeq8rZKerq6
- cnEWxgr7kfohjRvUFxD5w6b/bjlh25SeDEPNzLWNxldms3O2OEbvBpqJj+/hCHk6fx/K
- B8KZPKB7xWVvbE1OaezBMwJtYB/1HbAlFjiWg5CCVk/3Ux/zM+5Fc6iOCCDOf5QkGjXG
- UkOw==
-X-Gm-Message-State: AOAM533h2HyCS1u9//NnfCh4xnOgPXjjxccA+Rct6bCSszBcyieZXojG
- qz+Wi071IUOkC5WgD9KQysm2lPw0+2s=
-X-Google-Smtp-Source: ABdhPJwH9UhaiDtcbbxPsD83urvWYcqr9ZvfqfYpuFwIkn/WQ+xa7qCHm35KAYgnborVR7uWDwX6/Q==
-X-Received: by 2002:a17:902:e845:b0:14f:9de8:8b43 with SMTP id
- t5-20020a170902e84500b0014f9de88b43mr7293268plg.39.1645429261393; 
- Sun, 20 Feb 2022 23:41:01 -0800 (PST)
-Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
- by smtp.gmail.com with ESMTPSA id
- bo5-20020a17090b090500b001b9dc0e399dsm6690493pjb.9.2022.02.20.23.40.58
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 20 Feb 2022 23:41:00 -0800 (PST)
-Message-ID: <2e40f311-d04a-899b-acef-a8194006d8cf@gmail.com>
-Date: Mon, 21 Feb 2022 16:40:56 +0900
+ id 1nM3Kc-0043yt-GK
+ for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 07:42:04 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id DFEAD2223A;
+ Mon, 21 Feb 2022 08:41:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1645429320;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=PNyPUPlg2sD5m6/vUiOjIJFOgcgNo3fxUw6jJlZsrWw=;
+ b=XZr2EMNdXSgxh1QoOI58hFDyj7wwKCjs6EG6mkG+ypuMak04iI9DXeZ81g/mzy1VsnlXNP
+ T1f0g1gBOeLHAlD2JQyVk/gnmADU2U6Nf7DAVPfmarZsr1eF64SvkN9a2DtWNBa6G7QtOG
+ tP9M3cJN5jH/izduyqoBWnIMqs1Bkp0=
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH 1/3] mtd: spi-nor: core: Add helpers to read/write any
- register
-Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, p.yadav@ti.com,
- michael@walle.cc, Takahiro.Kuwano@infineon.com
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- nicolas.ferre@microchip.com, zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw,
- Bacem.Daassi@infineon.com
-References: <20220210023334.408926-1-tudor.ambarus@microchip.com>
- <20220210023334.408926-2-tudor.ambarus@microchip.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <20220210023334.408926-2-tudor.ambarus@microchip.com>
+Date: Mon, 21 Feb 2022 08:41:59 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: p.yadav@ti.com, broonie@kernel.org, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ nicolas.ferre@microchip.com, zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw
+Subject: Re: [PATCH 4/4] mtd: spi-nor: core: Introduce SPI_NOR_DTR_BSWAP16
+ no_sfdp_flag
+In-Reply-To: <20220218145900.1440045-5-tudor.ambarus@microchip.com>
+References: <20220218145900.1440045-1-tudor.ambarus@microchip.com>
+ <20220218145900.1440045-5-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.12
+Message-ID: <95b0cc336da1d7b867f62a3e6b09436d@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220220_234102_977616_465461C8 
-X-CRM114-Status: GOOD (  16.92  )
+X-CRM114-CacheID: sfid-20220220_234202_769084_AB552CBF 
+X-CRM114-Status: GOOD (  20.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,100 +70,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 2/10/2022 11:33 AM, Tudor Ambarus wrote:
-> There are manufacturers that use registers indexed by address. Some of
-> them support "read/write any register" opcodes. Provide core methods that
-> can be used by all manufacturers. SPI NOR controller ops are intentionally
-> not supported as we intend to move all the SPI NOR controller drivers
-> under the SPI subsystem.
+Am 2022-02-18 15:59, schrieb Tudor Ambarus:
+> Introduce SPI_NOR_DTR_BSWAP16 flag for flashes that don't define the
+> mandatory BFPT table. When set it indicates that the byte order of 
+> 16-bit
+> words is swapped when read in 8D-8D-8D mode compared to 1-1-1 mode.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > ---
->  drivers/mtd/spi-nor/core.c | 41 ++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/spi-nor/core.h |  4 ++++
->  2 files changed, 45 insertions(+)
+>  drivers/mtd/spi-nor/core.c | 5 ++++-
+>  drivers/mtd/spi-nor/core.h | 5 ++++-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 7d5e3acb0ae7..d394179689e6 100644
+> index 453d8c54d062..c3128a8e1544 100644
 > --- a/drivers/mtd/spi-nor/core.c
 > +++ b/drivers/mtd/spi-nor/core.c
-> @@ -307,6 +307,47 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
->  	return nor->controller_ops->write(nor, to, len, buf);
->  }
->  
-> +/**
-> + * spi_nor_read_reg() - read register to flash memory
-> + * @nor:        pointer to 'struct spi_nor'.
-> + * @op:		SPI memory operation. op->data.buf must be DMA-able.
-> + * @proto:	SPI protocol to use for the register operation.
-> + *
-> + * Return: zero on success, -errno otherwise
-> + */
-> +int spi_nor_read_reg(struct spi_nor *nor, struct spi_mem_op *op,
-> +		     enum spi_nor_protocol proto)
-> +{
-> +	if (!nor->spimem)
-> +		return -EOPNOTSUPP;
+> @@ -2572,7 +2572,7 @@ static void spi_nor_no_sfdp_init_params(struct
+> spi_nor *nor)
+>  {
+>  	struct spi_nor_flash_parameter *params = nor->params;
+>  	struct spi_nor_erase_map *map = &params->erase_map;
+> -	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
+> +	const u16 no_sfdp_flags = nor->info->no_sfdp_flags;
+>  	u8 i, erase_mask;
+> 
+>  	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
+> @@ -2613,6 +2613,9 @@ static void spi_nor_no_sfdp_init_params(struct
+> spi_nor *nor)
+>  					SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
+>  	}
+> 
+> +	if (no_sfdp_flags & SPI_NOR_DTR_BSWAP16)
+> +		nor->flags |= SNOR_F_DTR_BSWAP16;
 > +
-> +	spi_nor_spimem_setup_op(nor, op, proto);
-> +	return spi_nor_spimem_exec_op(nor, op);
-> +}
-> +
-> +/**
-> + * spi_nor_write_reg() - write register to flash memory
-> + * @nor:        pointer to 'struct spi_nor'
-> + * @op:		SPI memory operation. op->data.buf must be DMA-able.
-> + * @proto:	SPI protocol to use for the register operation.
-> + *
-> + * Return: zero on success, -errno otherwise
-> + */
-> +int spi_nor_write_reg(struct spi_nor *nor, struct spi_mem_op *op,
-> +		      enum spi_nor_protocol proto)
-> +{
-> +	int ret;
-> +
-> +	if (!nor->spimem)
-> +		return -EOPNOTSUPP;
-> +
-> +	ret = spi_nor_write_enable(nor);
-> +	if (ret)
-> +		return ret;
-> +	spi_nor_spimem_setup_op(nor, op, proto);
-> +	return spi_nor_spimem_exec_op(nor, op);
-> +}
-> +
->  /**
->   * spi_nor_write_enable() - Set write enable latch with Write Enable command.
->   * @nor:	pointer to 'struct spi_nor'.
+>  	/*
+>  	 * Sector Erase settings. Sort Erase Types in ascending order, with 
+> the
+>  	 * smallest erase size starting at BIT(0).
 > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index cbfb4fa7647f..c728454b5424 100644
+> index 7c077d41c335..1cb887437193 100644
 > --- a/drivers/mtd/spi-nor/core.h
 > +++ b/drivers/mtd/spi-nor/core.h
-> @@ -578,6 +578,10 @@ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
->  			  u8 *buf);
->  ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
->  			   const u8 *buf);
-> +int spi_nor_read_reg(struct spi_nor *nor, struct spi_mem_op *op,
-> +		     enum spi_nor_protocol proto);
-> +int spi_nor_write_reg(struct spi_nor *nor, struct spi_mem_op *op,
-> +		      enum spi_nor_protocol proto);
->  int spi_nor_erase_sector(struct spi_nor *nor, u32 addr);
->  
->  int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+> @@ -362,6 +362,8 @@ struct spi_nor_fixups {
+>   *   SPI_NOR_OCTAL_READ:      flash supports Octal Read.
+>   *   SPI_NOR_OCTAL_DTR_READ:  flash supports octal DTR Read.
+>   *   SPI_NOR_OCTAL_DTR_PP:    flash supports Octal DTR Page Program.
+> + *   SPI_NOR_DTR_BSWAP16:     the byte order of 16-bit words is 
+> swapped when
+> + *			      read or written in DTR mode compared to STR mode.
+>   *
+>   * @fixup_flags:    flags that indicate support that can be discovered 
+> via SFDP
+>   *                  ideally, but can not be discovered for this
+> particular flash
+> @@ -404,7 +406,7 @@ struct flash_info {
+>  #define USE_FSR				BIT(10)
+>  #define SPI_NOR_XSR_RDY			BIT(11)
+> 
+> -	u8 no_sfdp_flags;
+> +	u16 no_sfdp_flags;
+>  #define SPI_NOR_SKIP_SFDP		BIT(0)
+>  #define SECT_4K				BIT(1)
+>  #define SECT_4K_PMC			BIT(2)
+> @@ -413,6 +415,7 @@ struct flash_info {
+>  #define SPI_NOR_OCTAL_READ		BIT(5)
+>  #define SPI_NOR_OCTAL_DTR_READ		BIT(6)
+>  #define SPI_NOR_OCTAL_DTR_PP		BIT(7)
+> +#define SPI_NOR_DTR_BSWAP16		BIT(8)
+> 
+>  	u8 fixup_flags;
+>  #define SPI_NOR_4B_OPCODES		BIT(0)
 
-Thank you for introducing these helpers.
-I revised my S25HL/HS-T series on top of this and confirmed that is
-working correctly.
+Reviewed-by: Michael Walle <michael@walle.cc>
 
-Tested-By: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-
-Best Regards,
-Takahiro
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
