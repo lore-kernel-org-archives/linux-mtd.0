@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC48BC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EC31C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=BS/YTjg+qfZcNuXAAzfoqWnHzAIx7dTkLoWpjtR+v8w=; b=ejg+XriVwSQyfH
-	YDnorF4eBwDwSOYdE4p8VGe22SnZ32jsOe00Z/Br3L6DLuXNOVpHMhpeu+4xkuO1oJbYXDA2NRptM
-	fz9ri8b92tbxCf9+P7YBNm3ZOyD1MNO9rp8W4ON2z8Tj/GmqVXoq6q/c9q0nfZ/CDFjd786lghF4U
-	WayyzxYXUMFXNRRXTtUu3rJCaYDBocRxSWV7Z9htjnYSh7zUK6e042Rcig3sQFT1PtwYAAzDN5IWp
-	9yJWackH4dxAXodYTHXYnaXS48+4jzIgjqmhUyM5hcM2XaEiih6QOx2Y36ZPWsuy6haB1axnlBoCa
-	mmQcHhbeG0IKAFat+hxA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MAKY1zbqqYCEnpJy7N2aVDGi6sggXcM1kegym6v/xCc=; b=4qzmME78UeobB4
+	0aKojzzUHi6iNYEwVSjIQFez4ds+f4Qleo34TpPh7xOWxj7oK1HrPKj3k8fxQPNCN6GquUdZyWz0Q
+	WzFwPef2kf0n4OHfnC3i9/C6j3DWymrabFVtmrX5vDByoRwSDgJlntRVRFWvmbQAZGzO2jW85S/p3
+	Cb3x7hdF2aiDAxyiJ76rBmVlejUe8ZVSZTdf6nGd90GzgH3R5zllbKxSArd5cb8hpAWuZQi3IJQRU
+	bxDTLfYoWrggsAkoEZ2fHQ3o50K4Ewh7oUwYPng7g+UXTwaTnShhBpcQVg4DlMll+rxCrkrhLe9Dx
+	ayrwpZ0g9l+ZmGpnMCzw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM7Uy-005YDj-A3; Mon, 21 Feb 2022 12:09:00 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nM7VI-005YP7-W8; Mon, 21 Feb 2022 12:09:21 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM7UM-005Xr3-RM
- for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 12:08:26 +0000
+ id 1nM7UO-005Xrc-1j
+ for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 12:08:27 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 0E84622175;
- Mon, 21 Feb 2022 13:08:20 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id E9C9A223F0;
+ Mon, 21 Feb 2022 13:08:21 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645445300;
+ s=mail2016061301; t=1645445302;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=kDZecnFpvJUn7GdYa3/jLktDDxiEIEndxgKV+PElY/A=;
- b=MHLP8OP2TVJh871sv3ypV0XbQIdY7v8cN9VvvDUWi4uXmoZ1DNnPgMwyHtCzE3HE9AlDiY
- f438QK7zkwEuOBdgwe1HRVLfUrc8SzG56t/JyTcG6QXIBLQKYYgPLkrDj8F4NeJVU3wPvV
- HAUGQfKPH/2My8J/AIdmn1SLm4ZnE58=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Hmo81Sb3vYtqKwqBd4CJg7BRHgMci0G5Rym0Baoee0U=;
+ b=lXH2hOdm5fkQicN/tDa2Gv5WWmPNMysP/mYvapWUd0Gc59dZLXLljbCAJSy6z5EGFH0Qvj
+ gI+9TcOS0BDaiJ2KdFX1b82SdOSN3D1TGslKt45JlwsJSlea+LXmCg3UzssHsoHaWE71+9
+ aT4i/VCn/Bzd3Df906hlaH9d4phIJ0M=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -47,15 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v4 00/32] mtd: spi-nor: move vendor specific code into vendor
- modules
-Date: Mon, 21 Feb 2022 13:07:37 +0100
-Message-Id: <20220221120809.1531502-1-michael@walle.cc>
+Subject: [PATCH v4 04/32] mtd: spi-nor: esmt: unify function names
+Date: Mon, 21 Feb 2022 13:07:41 +0100
+Message-Id: <20220221120809.1531502-5-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220221120809.1531502-1-michael@walle.cc>
+References: <20220221120809.1531502-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_040823_055033_FA592075 
-X-CRM114-Status: GOOD (  14.81  )
+X-CRM114-CacheID: sfid-20220221_040824_263304_36DD9159 
+X-CRM114-Status: GOOD (  12.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,96 +74,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It turns out that most of the special status register handling is
-specific for a particular vendor. I.e. Xilinx has some different
-opcodes for the status register read, Micron has an additional FSR
-register and Spansion has these flags integrated into the SR.
+To avoid name clashes unify all the function and static object names and
+use one of the following prefixes which should be sufficiently unique:
+ - <vendor>_nor_
+ - <flash_family>_nor_
+ - <flash_part>_
 
-Create a callback to ready() where a flash chip can register its
-own function. This will let us move all the vendor specific stuff
-out of the core into the vendor modules.
+There are no functional changes.
 
-As a preparation step, unify all function and object names in the
-vendor modules. For the sake of consistency and better readability
-of the code flow, I also converted the setup() callback to be
-optional.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ drivers/mtd/spi-nor/esmt.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Please note that this is only compile-time tested.
-
-Changes since v3:
- - fix spansion.c compilation, messed up the patch export. Sorry
-   for the noise
-
-Changes since v2:
- - use family_nor_ instead of just family_ prefix
- - fix function doc
-
-Changes since v1:
- - rename/unify function names inside the vendor modules.
- - make local functions static
- - fix function doc typo
- - use late_init hook to set fsr_ready op
- - Use uppercase and period in comments
- - Add comments for the vendor flags
- - move coding style change in spi_nor_sr_ready() into own patch
- - new patch to add missing parenthesis in S3AN_INFO()
- - add missing function prefix rename patch for the spansion module
-
-Michael Walle (32):
-  mtd: spi-nor: atmel: unify function names
-  mtd: spi-nor: catalyst: unify function names
-  mtd: spi-nor: eon: unify function names
-  mtd: spi-nor: esmt: unify function names
-  mtd: spi-nor: everspin: unify function names
-  mtd: spi-nor: fujitsu: unify function names
-  mtd: spi-nor: gigadevice: unify function names
-  mtd: spi-nor: intel: unify function names
-  mtd: spi-nor: issi: unify function names
-  mtd: spi-nor: macronix: unify function names
-  mtd: spi-nor: micron-st: unify function names
-  mtd: spi-nor: spansion: unify function names
-  mtd: spi-nor: sst: unify function names
-  mtd: spi-nor: winbond: unify function names
-  mtd: spi-nor: xilinx: unify function names
-  mtd: spi-nor: xmc: unify function names
-  mtd: spi-nor: slightly refactor the spi_nor_setup()
-  mtd: spi-nor: allow a flash to define its own ready() function
-  mtd: spi-nor: export more function to be used in vendor modules
-  mtd: spi-nor: guard _page_size parameter in S3AN_INFO()
-  mtd: spi-nor: move all xilinx specifics into xilinx.c
-  mtd: spi-nor: xilinx: rename vendor specific functions and defines
-  mtd: spi-nor: xilinx: correct the debug message
-  mtd: spi-nor: move all micron-st specifics into micron-st.c
-  mtd: spi-nor: micron-st: convert USE_FSR to a manufacturer flag
-  mtd: spi-nor: micron-st: rename vendor specific functions and defines
-  mtd: spi-nor: spansion: slightly rework control flow in late_init()
-  mtd: spi-nor: move all spansion specifics into spansion.c
-  mtd: spi-nor: spansion: convert USE_CLSR to a manufacturer flag
-  mtd: spi-nor: spansion: rename vendor specific functions and defines
-  mtd: spi-nor: slightly change code style in spi_nor_sr_ready()
-  mtd: spi-nor: renumber flags
-
- drivers/mtd/spi-nor/atmel.c      |  81 +++++-----
- drivers/mtd/spi-nor/catalyst.c   |   6 +-
- drivers/mtd/spi-nor/core.c       | 265 ++-----------------------------
- drivers/mtd/spi-nor/core.h       |  70 ++++----
- drivers/mtd/spi-nor/eon.c        |   6 +-
- drivers/mtd/spi-nor/esmt.c       |   6 +-
- drivers/mtd/spi-nor/everspin.c   |   6 +-
- drivers/mtd/spi-nor/fujitsu.c    |   6 +-
- drivers/mtd/spi-nor/gigadevice.c |   6 +-
- drivers/mtd/spi-nor/intel.c      |   6 +-
- drivers/mtd/spi-nor/issi.c       |  10 +-
- drivers/mtd/spi-nor/macronix.c   |  14 +-
- drivers/mtd/spi-nor/micron-st.c  | 258 ++++++++++++++++++++++++------
- drivers/mtd/spi-nor/spansion.c   | 168 +++++++++++++++-----
- drivers/mtd/spi-nor/sst.c        |  44 ++---
- drivers/mtd/spi-nor/winbond.c    |  29 ++--
- drivers/mtd/spi-nor/xilinx.c     |  97 +++++++++--
- drivers/mtd/spi-nor/xmc.c        |   6 +-
- include/linux/mtd/spi-nor.h      |  18 ---
- 19 files changed, 578 insertions(+), 524 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
+index ace1da221566..79e2408f4998 100644
+--- a/drivers/mtd/spi-nor/esmt.c
++++ b/drivers/mtd/spi-nor/esmt.c
+@@ -8,7 +8,7 @@
+ 
+ #include "core.h"
+ 
+-static const struct flash_info esmt_parts[] = {
++static const struct flash_info esmt_nor_parts[] = {
+ 	/* ESMT */
+ 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
+@@ -23,6 +23,6 @@ static const struct flash_info esmt_parts[] = {
+ 
+ const struct spi_nor_manufacturer spi_nor_esmt = {
+ 	.name = "esmt",
+-	.parts = esmt_parts,
+-	.nparts = ARRAY_SIZE(esmt_parts),
++	.parts = esmt_nor_parts,
++	.nparts = ARRAY_SIZE(esmt_nor_parts),
+ };
 -- 
 2.30.2
 
