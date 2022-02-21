@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A93DC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 09:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DE3BC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Feb 2022 12:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EN/g9RnMhcxZ1CcUjj3GZN/q0seELw3hkg0uTx9yHkg=; b=C5UFVmUev1u/9V
-	vnfQ1i4ZQQYBrIPcRiyspI88XcBQILqWC/CjCJLFTSbhpyhThMnhE0uu9MNcEVq0i1nlskrzAgf/O
-	I8WeMuCyaSNTmDBZZ9Adj1F44qvH+gG7e99pz5ZYoty/tk14ReAJgEUdMLVBeasD6LabfJau5A9QY
-	nDpuGGXCmMr+F3Aqxp1gsXcZs+o+7tcxRFsWBIo72QH5w+64dIpbE/kQZpErGHLe/YF3p3a0bsE+T
-	oPhofgzU3tEBvzGedU8u3HH2JbOhdL2qQ1z6tu/IBTp3HDRN7sua6v64uJS+EKZAEuJytUs2BvQls
-	k2VM6w3fHXvrkI5n4SPw==;
+	List-Owner; bh=T/XCcUUbovsSyWNGsI9Q8SWADbebxHpjMFE7A92qcWs=; b=ar218dWCLJCiMi
+	oYkURWq2RKjLJ/Alt1tA9KZqCUam+Cli2wI4tQGXapFxi4GIF+iOkM+ZT4/E04yBY6k+obx7llip8
+	6NaAukp7k4Gko/m192yHc7knFm8DL6tEe5v/PcH9OVu5MN74CKqQ6xS5oMF6kmT1uyWSIHsSykv3H
+	n+HnPD47MnGuIGwP+2sbybYjODLwWxRmQUqIvUrXtc1Vt2HTEOVXQdMRz6W6CE0fzRZM9Eu1YhWN9
+	l/oySAz88AIdLlOSf7rjXP/ll2ecdN56HvbxbqTNyeM7Vcgj+jCoh/QHnd/2rb6ulRa1U4S4Eg5e6
+	7BDsLBZgMUaTJZquhxYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nM5Lw-004ga4-Vi; Mon, 21 Feb 2022 09:51:33 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nM7Uk-005Y7M-Ad; Mon, 21 Feb 2022 12:08:46 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nM4RP-004QrX-8J
- for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 08:53:16 +0000
+ id 1nM7UM-005XrU-T5
+ for linux-mtd@lists.infradead.org; Mon, 21 Feb 2022 12:08:26 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id D92182244E;
- Mon, 21 Feb 2022 09:53:04 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 701E6223ED;
+ Mon, 21 Feb 2022 13:08:21 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645433585;
+ s=mail2016061301; t=1645445301;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=BUHjRq3B/3JjsHlcHc+UiOV+3YaaqpA1vvTF3QO9238=;
- b=vdfH/OvhQyTtwC7He9ScJnyd+hVKg502zpZwWK34kxIcgMP0SxIGP8BhTIgvCVWWLJCHHe
- oQUV7aizVde26VPe6G697TxbT5s7W70idQTy+ege+PTyAYPzNPiobRAUdNvLGnVgqp1cV1
- 1rbI8OCpMMoPn1Y5g62uo7PChgcULbg=
+ bh=+M6UwjGFgGoOTMo2mov0gAB3NTo1luIHUwJ/R+oMONc=;
+ b=n55xlfXK/y1z+0sKZCXywyoXLUfmdvAoEUai32HEu1DumIcFu88WVUxZCexVcMT2GmQwhJ
+ qyZ99Hnf2TUj28S6IPJgFDGYPSqxlu2jKvHKoEmbayUvq7CeRljyMqHz7bSCXkZ1nJ4kDm
+ 8LQkLl0f7yJooPY4EFLMMuf29Q9fEpA=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,17 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v3 32/32] mtd: spi-nor: renumber flags
-Date: Mon, 21 Feb 2022 09:52:36 +0100
-Message-Id: <20220221085236.1452024-33-michael@walle.cc>
+Subject: [PATCH v4 02/32] mtd: spi-nor: catalyst: unify function names
+Date: Mon, 21 Feb 2022 13:07:39 +0100
+Message-Id: <20220221120809.1531502-3-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220221085236.1452024-1-michael@walle.cc>
-References: <20220221085236.1452024-1-michael@walle.cc>
+In-Reply-To: <20220221120809.1531502-1-michael@walle.cc>
+References: <20220221120809.1531502-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_005307_553045_281ACD01 
-X-CRM114-Status: UNSURE (   8.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220221_040823_115747_656CC22A 
+X-CRM114-Status: GOOD (  12.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,54 +74,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As we have deleted some flag, lets renumber them so there are no holes.
+To avoid name clashes unify all the function and static object names and
+use one of the following prefixes which should be sufficiently unique:
+ - <vendor>_nor_
+ - <flash_family>_nor_
+ - <flash_part>_
+
+There are no functional changes.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.h | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/catalyst.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 2130a96e2044..b7fd760e3b47 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -12,20 +12,20 @@
- #define SPI_NOR_MAX_ID_LEN	6
+diff --git a/drivers/mtd/spi-nor/catalyst.c b/drivers/mtd/spi-nor/catalyst.c
+index ae4d67e01bb3..6d310815fb12 100644
+--- a/drivers/mtd/spi-nor/catalyst.c
++++ b/drivers/mtd/spi-nor/catalyst.c
+@@ -8,7 +8,7 @@
  
- enum spi_nor_option_flags {
--	SNOR_F_HAS_SR_TB	= BIT(1),
--	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
--	SNOR_F_BROKEN_RESET	= BIT(5),
--	SNOR_F_4B_OPCODES	= BIT(6),
--	SNOR_F_HAS_4BAIT	= BIT(7),
--	SNOR_F_HAS_LOCK		= BIT(8),
--	SNOR_F_HAS_16BIT_SR	= BIT(9),
--	SNOR_F_NO_READ_CR	= BIT(10),
--	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
--	SNOR_F_HAS_4BIT_BP      = BIT(12),
--	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
--	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
--	SNOR_F_SOFT_RESET	= BIT(15),
--	SNOR_F_SWP_IS_VOLATILE	= BIT(16),
-+	SNOR_F_HAS_SR_TB	= BIT(0),
-+	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
-+	SNOR_F_BROKEN_RESET	= BIT(2),
-+	SNOR_F_4B_OPCODES	= BIT(3),
-+	SNOR_F_HAS_4BAIT	= BIT(4),
-+	SNOR_F_HAS_LOCK		= BIT(5),
-+	SNOR_F_HAS_16BIT_SR	= BIT(6),
-+	SNOR_F_NO_READ_CR	= BIT(7),
-+	SNOR_F_HAS_SR_TB_BIT6	= BIT(8),
-+	SNOR_F_HAS_4BIT_BP      = BIT(9),
-+	SNOR_F_HAS_SR_BP3_BIT6  = BIT(10),
-+	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
-+	SNOR_F_SOFT_RESET	= BIT(12),
-+	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
+ #include "core.h"
+ 
+-static const struct flash_info catalyst_parts[] = {
++static const struct flash_info catalyst_nor_parts[] = {
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+ 	{ "cat25c11", CAT25_INFO(16, 8, 16, 1) },
+ 	{ "cat25c03", CAT25_INFO(32, 8, 16, 2) },
+@@ -19,6 +19,6 @@ static const struct flash_info catalyst_parts[] = {
+ 
+ const struct spi_nor_manufacturer spi_nor_catalyst = {
+ 	.name = "catalyst",
+-	.parts = catalyst_parts,
+-	.nparts = ARRAY_SIZE(catalyst_parts),
++	.parts = catalyst_nor_parts,
++	.nparts = ARRAY_SIZE(catalyst_nor_parts),
  };
- 
- struct spi_nor_read_command {
 -- 
 2.30.2
 
