@@ -4,61 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6FB3C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Feb 2022 07:26:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFD66C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Feb 2022 07:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=afcM/DPew3mKArpmWeGbWn3xwOQvBezkjdNBbF02Jy0=; b=q5iyA0T5UzKR6pWtaKEY+RCTSW
-	meO2y4uBbmd2LW9L0tEZq2VlInS0lEJtGbArDA7gAKUqQH8E53enly28UXdaM8/57BLh5NeH0ovDU
-	tyrr3MNiEw4I97znhfD1Nw8WuQKkGo9ZppGjAx2bxS10Tx2UTybj816dfiF3fVhLvGvqUPPmXmf9V
-	ZcdIRbD3hTOjTGIRASUkv+taGt2iPw8DpsO/FnppWZDzn7SXrp2XEHvahM1QCkPSaiUDSv9S3YV/w
-	fwDs2QpOt3bqtcNdzQ6ClDZJOiriL4go0RbU3XmXkIiB9QFQp2uxreL3ndTYk12mCopbsUJ3yUgeN
-	nJ23JVQA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=BF4IHVSfjGWjbT0AnJHT7WAgLMkkCI7X4BpRYJCHHi4=; b=mO1kuAsvUwS5Aq
+	MDt/NCJN+nIkXbf0VUCiVRKiIfzgQbOJzw9k2uOGR0/jesPw9llPY1sBF3nuQy4v4CgK8Ydn60Nr2
+	CuYv3djj/IswflxGsMpfQm8I5YYYggRadlcFn5IWgvgUwjBJsqapygfUGjTtPG7iokn2vihc9mYOs
+	D4BuqHmi8gI84r7oDHFIvMFKtKaMuLdiVt8SS64FEVOYYGmp09yc36gic+qdYast2EyopcHtUFR1Q
+	kSMTGh95r1s3b1hlUetJK8KbssHaJs46+r1C8fMnDj5VbbXBvZrgBNlOidNQLVRuuMWHbZcGZFpkG
+	hhf11Z9ixMK/C03O2xcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMPYz-008Juf-7e; Tue, 22 Feb 2022 07:26:21 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nMPZM-008K2b-9w; Tue, 22 Feb 2022 07:26:44 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMPYw-008JtO-2c
- for linux-mtd@lists.infradead.org; Tue, 22 Feb 2022 07:26:19 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 8FEE422175;
- Tue, 22 Feb 2022 08:26:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645514776;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=WUE5F/B9ycxc5hgcNoeXQ3HZv9EjcmdgJCeELwpIrnQ=;
- b=o0JP7nlcZRESyarpSG4EVGLYl0hEnE63QsIFXcUonf4FAjldBidIvh7ylCHbYMREhBE9RO
- siCLgIivV/wflU87Zlr8KX7ttfx9veiKymz5w2Px1dZnUNtt1WKzD3gRlDjKycwDzyYuxX
- PHMoZ/qwRgdpayj1AeoyrdfX3D67M9s=
-MIME-Version: 1.0
-Date: Tue, 22 Feb 2022 08:26:15 +0100
-From: Michael Walle <michael@walle.cc>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Tudor
+ id 1nMPZJ-008K1c-QO
+ for linux-mtd@lists.infradead.org; Tue, 22 Feb 2022 07:26:43 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21M7Qdjl075627;
+ Tue, 22 Feb 2022 01:26:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1645514799;
+ bh=uAOMj38P8pOjPlUuS5NAg+a49yXN4bjvpjUmnN1uPTY=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=ekM+Fe1r10UotETHis3nL+oUkuyFHAXInllfE07xfy4S6B59IbMnLifyk+SwKxnNR
+ 5nd/Pcu1Xdl3kYFH8MVE5Woe/2xGn5ACPWfO3EUpabZ6M5uOYqU4FtrMRr6PtvLRCo
+ oe3bApgmrcYmdcpchdi/BqEE7CdZoeh55gBikHA4=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21M7Qcgc060983
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 22 Feb 2022 01:26:38 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 22
+ Feb 2022 01:26:38 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 22 Feb 2022 01:26:38 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21M7QbrY013590;
+ Tue, 22 Feb 2022 01:26:38 -0600
+Date: Tue, 22 Feb 2022 12:56:37 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Michael Walle <michael@walle.cc>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Tudor
  Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, yaliang.wang@windriver.com
-Subject: Re: [PATCH v4 01/32] mtd: spi-nor: atmel: unify function names
-In-Reply-To: <20220222072314.tk4bw5sngwnk6zwr@ti.com>
+ Raghavendra <vigneshr@ti.com>, <yaliang.wang@windriver.com>
+Subject: Re: [PATCH v4 20/32] mtd: spi-nor: guard _page_size parameter in
+ S3AN_INFO()
+Message-ID: <20220222072637.pvw5elyucrq5ndfl@ti.com>
 References: <20220221120809.1531502-1-michael@walle.cc>
- <20220221120809.1531502-2-michael@walle.cc>
- <20220222072314.tk4bw5sngwnk6zwr@ti.com>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <338bfd692a372450d1210a333994c31e@walle.cc>
-X-Sender: michael@walle.cc
+ <20220221120809.1531502-21-michael@walle.cc>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220221120809.1531502-21-michael@walle.cc>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220221_232618_305937_776E7841 
-X-CRM114-Status: UNSURE (   7.59  )
+X-CRM114-CacheID: sfid-20220221_232641_982483_FCDC2506 
+X-CRM114-Status: UNSURE (   6.11  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -71,26 +81,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-02-22 08:23, schrieb Pratyush Yadav:
-> On 21/02/22 01:07PM, Michael Walle wrote:
->> To avoid name clashes unify all the function and static object names 
->> and
->> use one of the following prefixes which should be sufficiently unique:
->>  - <vendor>_nor_
->>  - <flash_family>_nor_
->>  - <flash_part>_
+On 21/02/22 01:07PM, Michael Walle wrote:
+> The _page_size marco parameter was missing parentheses around it. Add
+> them.
 > 
-> Shouldn't this be "<flash_part>_nor_"?
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-No, a part name is already unique and its the same "style" as spi nand
-is doing it.
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
--michael
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
