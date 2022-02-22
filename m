@@ -4,60 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD63EC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Feb 2022 08:57:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF62C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Feb 2022 08:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8cUk3uZ7vcGbdzfx+DOdNkdPm1oKZpm72RjZuOJv/Vw=; b=Ysgt3ms55zmptk1WtkNjG3hcqO
-	p7jKOxf52q8FUFDPUcxmeOVrLqd8j5JNjFwQDq/k6KHrpjgh1VWD/sU6uQhnuz0DOHSfTX6HJq41/
-	y5GxK/nzqX69yqI6Glgv/AoOhPnauWtEQ1Iv4nNRa8SU/kz4G+Zz8N5kFnVI0uD4wtO0ADFaKvXID
-	sXkBBQDClhyQo5DFb1F3ZZknzeCcpPiAk8e9Ywc2lnVRSxsYCFtE8r0/ybQfcphFzCVZzPEPvlPJ7
-	Ql5p69LxU8idmOtG64QB3Otx9YO08VpxJXGhqLPi5HmbbEEhi3r/p4xlQYJ1/QBPAwQalh6Nm8j5v
-	SkECdW4w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=SrgV0HxrjmZYx6dhk31ZpppLeJABeE49D6KIB6Zsq/s=; b=l1zs9s5s8TP4j7
+	iIVTcheoHusl75G+GSd21A68SMW841SxOec/qyju5HYqQ1OQFwpAVfKrFlp4cKFxANj1EuAmz6kMs
+	c7cf+gSzeI9iFln9bYZ13/HtynCT/Dn+Mu/2HKBLZnzDGx7MEca7CHB1xF9fXUB5m29irWRyzSOZF
+	DoUqwmcC+0REdBW+mcm38oaDXkKxGzNHWKVtAnGzCsBDUw10qgh2HBXgCSDOJyjIHHjF9xqt7z8li
+	1gV+tG6t25NvDOpKLCDH32E5Fr6AP1aX7/K3FoteCV4mUF+pofyF0l8ro8kK4wU/CRr12YuAp2aTb
+	akKYJYZiDYpcxEIAQ24g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMQyO-008cux-PX; Tue, 22 Feb 2022 08:56:40 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nMR15-008dgf-Hy; Tue, 22 Feb 2022 08:59:28 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMQyK-008cst-LO
- for linux-mtd@lists.infradead.org; Tue, 22 Feb 2022 08:56:39 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2E3202223B;
- Tue, 22 Feb 2022 09:56:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645520193;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Q6zJLwKD8mteSJCqw/Hgoapillakx5pXLYT/IbB3NP0=;
- b=snHDnfUH33ZLMCcGSlZri5MaeRT9i6WesHez28YmECSpKlhb1D+Z3v1TGJ9r8y61867uog
- 8yr4aGx2PcvFg6kquA0zBQjRInUMYvc2RLOfpePf4AcMVnAnZKbj5RFqxmyZNl5YWPJBd+
- +p7BtofPhZ3fVN6ivcxGd4AacPXd0Go=
+ id 1nMR11-008dez-Ue
+ for linux-mtd@lists.infradead.org; Tue, 22 Feb 2022 08:59:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1645520363; x=1677056363;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=WNiXvmV6R5OrlI+QR79gEsViipzyGFC2dAmHRocqMTs=;
+ b=oop/5VIoD9y9SIzQVpTfE2lvw92p1sTpfVtPnNajl3z81W5VhpAMRSzx
+ 0+RIN+IwxKWn8hj6eGIm98EG3CpQPJGEDHwydOSz/zOclIkNh2diqxldL
+ +IO3v2GNO7OAS3wy8fZ9eIRUh9R/D3RodZx2D87qYyvJwOr8MVe2Yp1cE
+ hjd/+mfPlCyka8X97c8gb9gTKpBMynokujz2u6rCBVW3SKVQM2i7aMWQH
+ giDh3MwxQas7joDnLxpPynYelSjkCiGcncYHaf3ooyi+JdGRB4ZcEbA2Q
+ LfS58b8bB4s+JNGUR1IxPXDiHGHlMaighIPwd8F8TdmrUM15dp0TG68F9 Q==;
+X-IronPort-AV: E=Sophos;i="5.88,387,1635231600"; d="scan'208";a="153904334"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 22 Feb 2022 01:59:15 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Tue, 22 Feb 2022 01:59:15 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17 via Frontend
+ Transport; Tue, 22 Feb 2022 01:59:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BfKQd64VMgIinX1Ld6EEappifeDv/U4DxY/dLXd3vZ5TegjVAn2UQa0jK0mIj8vvC8SiMF3TziFaU3ROzLauLLNisKL+T67QdfmpFY5ZILZkrevJG+DIVtP/2ECAI2Vw64LDi2LnoStSPXR44L1XqOzQJop+EgQHe/nE5Y0uEfJ8WFqD6KBR2TZs/vwdFRK3jWTmlBCTIik02MczUNqfOwrA+UvGkVXe/MF9dgwQx9vlpPoWcTY7jFCkhbE2Q7mJVWoHBtS8EyPSfGWYQUltdkZXWnAd26hFQQ6ofo84J9EKPUj/QO5IUjUYTfRBC7dJqzw2xpSoHnEv8D4gQqRt6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WNiXvmV6R5OrlI+QR79gEsViipzyGFC2dAmHRocqMTs=;
+ b=Amxlbd6amsFTLU1Zulhsfw8yoMbVYD8JV8rgAT5MBR+PuQb5CuTrO5gl0Cnpw+wmZlJr4SE/AIlSmBfEPeOfGi3zdOO4XMHrnnCI3Ja7jSRDpQdKysv+gND26pqDgq/4wwr4y5BSr06xhOOEc4H0m0C3yS9OcQM2APhxxliVvjdWbIAYs9LCM0B0yiEeO4PZm1Qc4+BK+Zx0NDkr91TKWCJxtrrmon/smIzZQx42dGVQb/rV3hHMtzm2X1mhzhE3hXhWczcgnGoEWm1Gnallt/bUUKVpKDvQPSH5g6g5R82ocwUUwtXPQvImFGhOz1KZgsmEUIJbKIk4llo2b9mSLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WNiXvmV6R5OrlI+QR79gEsViipzyGFC2dAmHRocqMTs=;
+ b=aW94bR/T5AxgBGchfW3bE/ldCBP8P8IXyLTBh2U/Aw7WyHdlTXENWBL5VVyP/PDL3uX7LeadLFHbjVMxvwDrTIwhbWP6MRu8AUx/iq+QwTm8VHh3tKU7dVxGJgrScJQWQ4JGz2vXvNqGB5HMoH44Oz7Nhf699rMdy3GVQVZWdY4=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by SN6PR11MB2992.namprd11.prod.outlook.com (2603:10b6:805:d4::11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.24; Tue, 22 Feb
+ 2022 08:59:14 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::49cd:dd25:384:e918]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::49cd:dd25:384:e918%4]) with mapi id 15.20.4995.027; Tue, 22 Feb 2022
+ 08:59:14 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+CC: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <yaliang.wang@windriver.com>
+Subject: Re: [PATCH v4 00/32] mtd: spi-nor: move vendor specific code into
+ vendor modules
+Thread-Topic: [PATCH v4 00/32] mtd: spi-nor: move vendor specific code into
+ vendor modules
+Thread-Index: AQHYJ8p3vLgo0aRp4k6ReJ+SNq1PMQ==
+Date: Tue, 22 Feb 2022 08:59:14 +0000
+Message-ID: <d45daacc-8372-9b2d-019e-5d383db4fa57@microchip.com>
+References: <20220221120809.1531502-1-michael@walle.cc>
+In-Reply-To: <20220221120809.1531502-1-michael@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff23a078-6eb2-452c-1c5f-08d9f5e1998a
+x-ms-traffictypediagnostic: SN6PR11MB2992:EE_
+x-microsoft-antispam-prvs: <SN6PR11MB2992EBEAEEF34E55EFED47AFF03B9@SN6PR11MB2992.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DtPQ2lGswbZN834NBAx5Qyr5N4wHYSlPEj8dOi+wr0YblL/FsdRu1flgSxM5QLSSDeq6x60B0VMh9tDS/P16AqCt+9A4NVrwrS0uZZUb8DVqNVzwrb52u6Y8pCzp9WY1YEiUP0FwKacpmYtYBS5E50AkUJPI7bfhhe04Szyps2nbHRQl461tvT7Kng+276qRKRhYoELsEl3qZTVXe7BjThfEZSgIhw1AvxDTIg/AdI0DcUFBJG/7SzRTkdMigeFRLRVWuVN2R4U5n3Dpy3eiwxREDoi+HgGzxB09SFw1QkAEar/sSJYR4H5HzBdpKhBW0/H8SSa9KekiW1WRmhTvuqbUxEgTGY8Fzi6SoOUWsd/Ieo/MR5oNc3L2BaPPA4AXYcjkHBgzqaZgtwu/OLkbj0wKOwwkjDstEvaU3DrpSUfWuwYm3XDXlIw1jsaXtNNViFVJSeOp12i3TlzxfqQyCwDTGcY0ZLiRYdgE3Qgunc3VjPTLydQ1hcj8FkYMt4S2OL9U8/O001Bjlm6csVXI75VISrw7sceLV/uMs2At0gtX8yPGeIqu2HltknLIAH7FrgjboDcMTNndOaVO5oZxmbzew7sOd/5jcWx5jux/jdFEZJ80nS4FAKGT4YJa1xyWipkekE42l40Js+VjE6866+8u1EoZLJzfvu9kcob12dujdcGC8NqDlhp17lz+h3qZ+e7CkqTPIxPMkNAFatBry+6sngcwe77818I1qRAC8b9tg6kJIBuyYhmKf51kS/hYnIhVb2lxOGpvPD2s5hm9TQ==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230001)(366004)(38070700005)(4326008)(76116006)(122000001)(66476007)(66556008)(64756008)(66446008)(91956017)(186003)(8676002)(2616005)(6486002)(66946007)(316002)(26005)(508600001)(6512007)(38100700002)(71200400001)(86362001)(31696002)(2906002)(5660300002)(558084003)(8936002)(31686004)(36756003)(110136005)(6506007)(54906003)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dm9NSmFsZ3dlbUhReFEwZ0lMWm56Z2xyNnV6Z0EwVzM0NWJoMUlYTW1iMmNl?=
+ =?utf-8?B?UEhXcU5XbW5yTXJyWU9BanJvSW1KYm1QeVhMVVhiSjhnSEMyV3NWcm94S0hr?=
+ =?utf-8?B?U2hrb21TR2c2QXdZUFA5RVBYMEdrTk1oTDlCcWlVZDQwZ01QV0paV0Z0QWgw?=
+ =?utf-8?B?dTJMam1FcitxUGdOL3FhYmFCdHN0WXh3OThqQkx1bnJyVEZCYVFQUWRNQjRa?=
+ =?utf-8?B?Z0lzSEY1VisveDNRcEhnMEZmcHA0TkNJZlRwb0Z0OE5vY3VJU2lhY01jd0po?=
+ =?utf-8?B?SkNMMG1pY3ZTTWtZSDU1SnNvcnd6QUZpQm9NV0VneDE0Tys0V2p5SVJmUmZ3?=
+ =?utf-8?B?UGI2czRuTVlUWGMyTTRxN25RR2tNTUZlOUl3TWlGQXB4RmdEWmVQaTNXcENa?=
+ =?utf-8?B?SXh4T1QvMDM0dlVDQU16WSt5TDlQK0RUYThNblNEZWdlQXVzNTJGTm4yUHFy?=
+ =?utf-8?B?Y3VQaEFqanRtTTV1S3RNOUFFaHA3YnJteFhuSXB1WkRFR3g2Tk9VMlVhdjFp?=
+ =?utf-8?B?MkJDWDIxMkJ4N1p4eC9hTlZWYmkraVY5VGRjZ2M3VUxFSFlTSk1YcEMzVTdQ?=
+ =?utf-8?B?ekpDRlNXbVdpdEs3Z1VPczFsZEFjMGpsaVVzbjBTTFNWd2MycjAyR1RQU1dP?=
+ =?utf-8?B?NkRKZ3VLVzI2dVVSenZ4ZlFhQlJmZkloRk1VSkhnK0UycFF5YUFzd0RqU0dC?=
+ =?utf-8?B?TDhlR3Q2RENqWVdiNzdQZVdsb3pDbWYxVHBsbUt1NXltVTRrM0Zrang4Smlj?=
+ =?utf-8?B?emhQM0ZHUThuWXMzdkl2U0lRUVZnKzR1MWdHZDAwZXhhWG5iNVN1aVRTNkxu?=
+ =?utf-8?B?L3ZveDc3MkdrekxBUFdpenAvU0lMQ1JZQVJYSlVCeTJRazlZRXRXUER3ZkFK?=
+ =?utf-8?B?eno4Y082TEdseHB3dm5NY2ZUNXIvR1YwUlNMYVh2Ym1jQUZsK3hMb0RsSDBF?=
+ =?utf-8?B?UXNQMTdwelNBeFY5bFFLSXQ2WDV2MDZvc1lFL1YxNFZuUVZoY1c1ZkJ3Vjh1?=
+ =?utf-8?B?c0JLVnpZRWtWWk45SDdMK0ZNdTJsTXFkVGpTam91TWhtTFFyelV6ZFd0YVZD?=
+ =?utf-8?B?MUxTY1hQRHdTVUlmOFpmZTVWU2pqWGxKUUhZTmRvZDFyMUF3Nmw3R3VDV0pO?=
+ =?utf-8?B?ZFBhWlRXd0hQTURWNVN1eko5SENzRHc0RCt2ZjI4aktmckxydFErdXBMS3hx?=
+ =?utf-8?B?emRJQ1A3aThhbnlhK1VUZXBvd1NHQ1p5SzZTT2tUYUJEZHJSY3BlRndzU3dz?=
+ =?utf-8?B?cEVjL3pXUHcrU2NDbXNxbVJFT2dEeStDRWM1SExqQzVzVVZTbUxiWDJWZUlO?=
+ =?utf-8?B?VW9Ebkd6N09TbU4yeEZoTHRwcFZ0SHBKdnlxU0hLRHFscEtTVFZjaHNlNHor?=
+ =?utf-8?B?b0JNTVN3QzVTNlM3K1h6eG5tSUpaK3BuWFQyQnJ0U0JqVllKTGFEV2xiZ3pS?=
+ =?utf-8?B?bFVkTXUrYXNycjQ3Ti84YXAwSVkxamppbm5GOHg5eTFLb2FMbkh0TlBFaFgw?=
+ =?utf-8?B?TnhpNDVidEhMSGNWQSs5c3VURXAwK1FKVGtrYjBTRGhYS2JRb2MrQWRqRzlG?=
+ =?utf-8?B?U2FMTmdrYlV0aStwVHlkRDJaU0lXdXFTbzJLL2hhcEQ0ckdkeW4yaUpnRGNS?=
+ =?utf-8?B?Q2xyQXc0dFh0cmxRYUZ0dlc3aTdEV2pFZ2V1RUZOU3c1MnRpbFA0Nm5zRDhI?=
+ =?utf-8?B?NENtYjE0RGFsSXpVNUVsczk1WTR6K2lQcDlZeGNmcTVnZGJabS9tVkVqUm5o?=
+ =?utf-8?B?QXp3aEtQMjY0cG5VZmtnOUlCRWRKOVh5NU5NSSs1bzNSMHBZS1ZtejJOcW9z?=
+ =?utf-8?B?Z0grcmV2R0dIR3p6cGdGMFJhNE1QVkhibk1ZY1dLT0w4Z09rVjBHSTNLWVd5?=
+ =?utf-8?B?WlJwb0hDV1lSMEs4TmJZZzE4NE5EQVJ2bVZIYWE2RllYdHo1bC9xZ2MzSTd4?=
+ =?utf-8?B?NGg3Wm94KzFVOUFOTVl1aVF1TExjb3NHYjZ0MTlFb3JXNndINGdWQXFIR3dH?=
+ =?utf-8?B?eDQ3RzFxZ1ZiUU1adkJaaUQySm5EcUIvbXpraUpEYW9vckY0UGJJMjdLbmFO?=
+ =?utf-8?B?N0UyRlMwRTQ1YnZEaHpESDRDS1FoV0tHZDZBaVBUQWtBNG1OTmh1aWNxazZY?=
+ =?utf-8?B?dUJHTVNUakdIN2YrYkJWU2FaY2JPT3BTN0ZCbERtanpuMXhpMC9OUFV4UnVz?=
+ =?utf-8?B?cUZJTHU2RmdCMXVOQnFhc1hLT1EwYWM1UlQyUm1oU0ZsSWVObThkakNaU045?=
+ =?utf-8?B?cEhRUXFTWDJPWmJ1bzdwWHFBZWdRPT0=?=
+Content-ID: <8FB44DF75D33194A9A4E36FAEDBB3150@namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Date: Tue, 22 Feb 2022 09:56:32 +0100
-From: Michael Walle <michael@walle.cc>
-To: Potin Lai <potin.lai@quantatw.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Patrick
- Williams <patrick@stwcx.xyz>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] mtd: spi-nor: winbond: Add support for w25q01jv-iq
-In-Reply-To: <20220222085148.21594-1-potin.lai@quantatw.com>
-References: <20220222085148.21594-1-potin.lai@quantatw.com>
-User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <3acadcc73688086c5ed204c058f28de7@walle.cc>
-X-Sender: michael@walle.cc
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff23a078-6eb2-452c-1c5f-08d9f5e1998a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2022 08:59:14.1579 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h98nwBgENa3kineqt4sRBzpqd9GgcY9RZJnOlutdOY2IP/XgDgJGgYqLrhZ8+Oh1eaPScoIfxQQ8+EmmbAxHjdgpVQnmm316xiC/AbrEF/0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2992
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220222_005636_890210_E4B1242A 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20220222_005924_069472_20D02FC7 
+X-CRM114-Status: UNSURE (   7.95  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,86 +175,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-02-22 09:51, schrieb Potin Lai:
-> Add support for winbond w25q01jv-iq chip
-> 
-> Signed-off-by: Potin Lai <potin.lai@quantatw.com>
-> 
-> ---
-> 
-> v2: 
-> https://lore.kernel.org/all/20220222064227.16724-1-potin.lai@quantatw.com/
-> v1: 
-> https://lore.kernel.org/all/20211224104522.24615-1-potin.lai@quantatw.com/
-> 
-> Changes v2 --> v3:
-> - move spi-nor flash information to comment area
-> root@bletchley:~# cat
-> /sys/devices/platform/ahb/1e620000.spi/spi_master/spi0/spi0.0/spi-nor/jedec_id
-> ef4021
-> root@bletchley:~# cat
-> /sys/devices/platform/ahb/1e620000.spi/spi_master/spi0/spi0.0/spi-nor/manufacturer
-> winbond
-> root@bletchley:~# cat
-> /sys/devices/platform/ahb/1e620000.spi/spi_master/spi0/spi0.0/spi-nor/partname
-> w25q01jv-iq
-> root@bletchley:~# md5sum
-> /sys/devices/platform/ahb/1e620000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
-> a7b9dbf76e99a33db99e557b6676588a
-> /sys/devices/platform/ahb/1e620000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
-> root@bletchley:~# hexdump -C
-> /sys/devices/platform/ahb/1e620000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
-> 00000000 53 46 44 50 06 01 01 ff 00 06 01 10 80 00 00 ff 
-> |SFDP............|
-> 00000010 84 00 01 02 d0 00 00 ff 03 00 01 02 f0 00 00 ff 
-> |................|
-> 00000020 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-> |................|
-> *
-> 00000080 e5 20 fb ff ff ff ff 3f 44 eb 08 6b 08 3b 42 bb |. 
-> .....?D..k.;B.|
-> 00000090 fe ff ff ff ff ff 00 00 ff ff 40 eb 0c 20 0f 52 |..........@.. 
-> .R|
-> 000000a0 10 d8 00 00 36 02 a6 00 82 ea 14 e2 e9 63 76 33 
-> |....6........cv3|
-> 000000b0 7a 75 7a 75 f7 a2 d5 5c 19 f7 4d ff e9 70 f9 a5 
-> |zuzu...\..M..p..|
-> 000000c0 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-> |................|
-> 000000d0 ff 0a f0 ff 21 ff dc ff |....!...|
-> 000000d8
-> 
-> Changes v1 --> v2:
-> - rework patch to work with new flags
-> 
-> ---
->  drivers/mtd/spi-nor/winbond.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/winbond.c 
-> b/drivers/mtd/spi-nor/winbond.c
-> index 59d53b4c39c8..4c088250fe96 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -131,6 +131,8 @@ static const struct flash_info winbond_parts[] = {
->  	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> +	{ "w25q01jv-iq", INFO(0xef4021, 0, 64 * 1024, 2048)
-> +		PARSE_SFDP },
+I would like some tested-by tags if possible. At least with a micron and a spansion flash.
+I think I have a micron and a spansion somewhere, I'll try to do a short test too.
 
-You've seemed to miss my comment in v2 here. name should be w25q01jvq.
-
-With that you can already add:
-Reviewed-by: Michael Walle <michael@walle.cc>
-
--michael
-
+Cheers,
+ta
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
