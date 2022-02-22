@@ -4,81 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E545C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Feb 2022 10:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2697C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Feb 2022 10:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BDpCULA7RRPxzXRlQv4uaPsNaDFRlE1wfY9UNYN6pbY=; b=3hb245gVA+KYbj
-	H+jK0CbUlISG0UbAZRtzjhvpo2/IMZpa3ex9u7rbDo1xQChF2LOiO5inaPpZovKi1pBC4C43pH5KQ
-	vUXj4BuktvF17wRzcd903msHO7ZlyyUt7xYjKSy4qfR/asf6exW+0K2VJ2vj82VBPDKfuJ72o6hMF
-	a14cvcEvvQLwjgD2qDNv8gBdq2/FnAMSSiY2OPGdTu3aglTt7BzT4PTj5OPRUodRyzB7yYphhDMhY
-	S3rfPEQcJE1WSydTDKquLPBxZ32zW2H82TonUh4feNpVcJwJLD1ccCl3dfwabeCdM0VIwBp/E416z
-	3uQ1FkEVP1ENxWxzTjng==;
+	List-Owner; bh=pun6IPLcQTrRLd/RzgbVT6cg/PHlvkJshJbS3H+nnHc=; b=enVsdCbRP0FCG2
+	KsUMUpORlPXuPw+ZyHIpaVQMhbgZqAjBNokF9gtJi3+1qgJ1iLfsGrBtSi6VOgwLMcZp9aEEyKSUy
+	WNxxVQCX/mEmXI43OAEJUOtezHVE+yzo23BZudausp1ErPnL8KHX26LaeSA1FkTBlKMdz0JRXCGOH
+	0RQ53SV1vXU0pgLQQaic0yiIWgBW9yJtx4lXmUdBEnBoIhC4xPAdesUFKgUrxeqszok6JR+upmdTX
+	d2PoKwz6cb9hpbQMH92zko2bNXNOs2z6yFu5JeiUuf1h9dYq55s8cd35YJ4VGYuJ2vs4Sl+6EXJwE
+	XJlKawH5BoFCa0dqFwhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMSaG-0097mM-I7; Tue, 22 Feb 2022 10:39:52 +0000
-Received: from mail-vk1-f169.google.com ([209.85.221.169])
+	id 1nMScU-0098bk-21; Tue, 22 Feb 2022 10:42:10 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMSaC-0097j6-Ig
- for linux-mtd@lists.infradead.org; Tue, 22 Feb 2022 10:39:50 +0000
-Received: by mail-vk1-f169.google.com with SMTP id k9so3534967vki.4
- for <linux-mtd@lists.infradead.org>; Tue, 22 Feb 2022 02:39:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=qyGyBDnJ7ed79Jt+fCdZ4lhHfeabojxBlr+Z2wBlxFo=;
- b=mQEwlCPD/nDEmrooZckdZBAODRr46UaLxYl2zFhGBr2TE1XHWNqP8QTjwKb+eaCLTn
- cUSwVVK6cyJqyT2KtaXhNdZDdit9y1XjdtEIairGExUErb2p/s+tD1pgDJNViHx2O0sK
- 5PZQkIpLBIemCjaEdynI5aeynyFUdwH6I7TAMCn4nIliLzXJB0j0dZMgUFQuUQznh1DP
- PhKduqlMnjzKn4cSdM9ox84oONFIrCx9BTmgmyfhPHX3/SEvQjdQMQyPapK01MGrSb+m
- 2y6LQd4ZBTx6Vn/o/S3AhB4nQSFZvHXOr4UN9QvGmuQ9q8HQuTTVS4XN1RRs18KchsxP
- CK2w==
-X-Gm-Message-State: AOAM531f9iAS/JChaSx8ztQ9QRnUmGtYPvvlqjBDs+Wz7HYN4dlHXzLH
- MgQkwA3tjdXcWOVCQ2l1ELbEfCOXXfCnVQ==
-X-Google-Smtp-Source: ABdhPJx3X9Oz8pUdSFo1ZrzkIH58NY0fbeMmbBAVOSkRevsYA/jZ+7GAz2p7qnFIDaNs8AOV5cdmeQ==
-X-Received: by 2002:a1f:6ec5:0:b0:31e:30a7:5518 with SMTP id
- j188-20020a1f6ec5000000b0031e30a75518mr9911758vkc.15.1645526385966; 
- Tue, 22 Feb 2022 02:39:45 -0800 (PST)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com.
- [209.85.221.177])
- by smtp.gmail.com with ESMTPSA id l187sm9208581vke.6.2022.02.22.02.39.45
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 22 Feb 2022 02:39:45 -0800 (PST)
-Received: by mail-vk1-f177.google.com with SMTP id n142so10130633vkf.5
- for <linux-mtd@lists.infradead.org>; Tue, 22 Feb 2022 02:39:45 -0800 (PST)
-X-Received: by 2002:a05:6122:8c7:b0:32d:7e3:96c8 with SMTP id
- 7-20020a05612208c700b0032d07e396c8mr10270146vkg.7.1645526385162; Tue, 22 Feb
- 2022 02:39:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20211216111654.238086-1-miquel.raynal@bootlin.com>
- <20211216111654.238086-15-miquel.raynal@bootlin.com>
-In-Reply-To: <20211216111654.238086-15-miquel.raynal@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 22 Feb 2022 11:39:34 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXJHAx4HptRRqfhe74mkfm+-oKp0qtd9Ns7Moh5omWehg@mail.gmail.com>
-Message-ID: <CAMuHMdXJHAx4HptRRqfhe74mkfm+-oKp0qtd9Ns7Moh5omWehg@mail.gmail.com>
+ id 1nMScO-0098YO-U2
+ for linux-mtd@lists.infradead.org; Tue, 22 Feb 2022 10:42:08 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id E7D8620005;
+ Tue, 22 Feb 2022 10:41:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1645526519;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=kZ42NyxEmt0CuMFV9FTwX0iyn7TfTnG5TAcnR3dovOY=;
+ b=UD0NyR3PvT/bfnygLpBlca2nq1ckk2Wl1M3RnfRasEc4I3tRtT0FG6zCl1mwz2V7F7FpLh
+ rEznwqyLyNLhlXUh3OUVGS5pAGKQNxJscyrwy00RenzINt32cedmGINxVVnVW+v+PxzisF
+ R/laSIk6r89x/dCSnrOS6eHJIJoy0j7sd6f0ibrVZa2NNWnhv7UygOlw2f//LGRfhvAZ47
+ jk6YRJygS+WRA72swsPDiSQJzgsiEeUizoC1xkgIfxgFV0tISZiQPoOFc6d9pK53virVhM
+ uT6fakSBrtHTmnPhKzps9xKJdLo1w8oKLR6+c62aAe21uo03HiYFKDgJmByu7Q==
+Date: Tue, 22 Feb 2022 11:41:53 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, "open
+ list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Julien Su <juliensu@mxic.com.tw>, Jaime Liao
+ <jaimeliao@mxic.com.tw>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Subject: Re: [PATCH v6 14/28] mtd: nand: mxic-ecc: Add Macronix external ECC
  engine support
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>,
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Julien Su <juliensu@mxic.com.tw>, 
- Jaime Liao <jaimeliao@mxic.com.tw>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Message-ID: <20220222114153.4dfaf0b8@xps13>
+In-Reply-To: <CAMuHMdXJHAx4HptRRqfhe74mkfm+-oKp0qtd9Ns7Moh5omWehg@mail.gmail.com>
+References: <20211216111654.238086-1-miquel.raynal@bootlin.com>
+ <20211216111654.238086-15-miquel.raynal@bootlin.com>
+ <CAMuHMdXJHAx4HptRRqfhe74mkfm+-oKp0qtd9Ns7Moh5omWehg@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220222_023948_651674_ABE60DEC 
-X-CRM114-Status: GOOD (  25.11  )
+X-CRM114-CacheID: sfid-20220222_024205_119314_164A348E 
+X-CRM114-Status: GOOD (  19.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,62 +75,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On Thu, Dec 16, 2021 at 12:48 PM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> Some SPI-NAND chips do not support on-die ECC. For these chips,
-> correction must apply on the SPI controller end. In order to avoid
-> doing all the calculations by software, Macronix provides a specific
-> engine that can offload the intensive work.
->
-> Add Macronix ECC engine support, this engine can work in conjunction
-> with a SPI controller and a raw NAND controller, it can be pipelined
-> or external and supports linear and syndrome layouts.
->
-> Right now the simplest configuration is supported: SPI controller
-> external and linear ECC engine.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Thanks for your patch!
-
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -46,6 +46,12 @@ config MTD_NAND_ECC_SW_BCH
->           ECC codes. They are used with NAND devices requiring more than 1 bit
->           of error correction.
->
-> +config MTD_NAND_ECC_MXIC
-> +       bool "Macronix external hardware ECC engine"
-> +       select MTD_NAND_ECC
-> +       help
-> +         This enables support for the hardware ECC engine from Macronix.
-
-I guess this is a licensable IP core, which can appear anywhere, so
-we don't have a proper platform dependency to add here?
-
-> +
->  endmenu
->
->  endmenu
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgR2VlcnQsCgpnZWVydEBsaW51eC1tNjhrLm9yZyB3cm90ZSBvbiBUdWUsIDIyIEZlYiAyMDIy
+IDExOjM5OjM0ICswMTAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gT24gVGh1LCBEZWMgMTYsIDIwMjEg
+YXQgMTI6NDggUE0gTWlxdWVsIFJheW5hbAo+IDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3
+cm90ZToKPiA+IFNvbWUgU1BJLU5BTkQgY2hpcHMgZG8gbm90IHN1cHBvcnQgb24tZGllIEVDQy4g
+Rm9yIHRoZXNlIGNoaXBzLAo+ID4gY29ycmVjdGlvbiBtdXN0IGFwcGx5IG9uIHRoZSBTUEkgY29u
+dHJvbGxlciBlbmQuIEluIG9yZGVyIHRvIGF2b2lkCj4gPiBkb2luZyBhbGwgdGhlIGNhbGN1bGF0
+aW9ucyBieSBzb2Z0d2FyZSwgTWFjcm9uaXggcHJvdmlkZXMgYSBzcGVjaWZpYwo+ID4gZW5naW5l
+IHRoYXQgY2FuIG9mZmxvYWQgdGhlIGludGVuc2l2ZSB3b3JrLgo+ID4KPiA+IEFkZCBNYWNyb25p
+eCBFQ0MgZW5naW5lIHN1cHBvcnQsIHRoaXMgZW5naW5lIGNhbiB3b3JrIGluIGNvbmp1bmN0aW9u
+Cj4gPiB3aXRoIGEgU1BJIGNvbnRyb2xsZXIgYW5kIGEgcmF3IE5BTkQgY29udHJvbGxlciwgaXQg
+Y2FuIGJlIHBpcGVsaW5lZAo+ID4gb3IgZXh0ZXJuYWwgYW5kIHN1cHBvcnRzIGxpbmVhciBhbmQg
+c3luZHJvbWUgbGF5b3V0cy4KPiA+Cj4gPiBSaWdodCBub3cgdGhlIHNpbXBsZXN0IGNvbmZpZ3Vy
+YXRpb24gaXMgc3VwcG9ydGVkOiBTUEkgY29udHJvbGxlcgo+ID4gZXh0ZXJuYWwgYW5kIGxpbmVh
+ciBFQ0MgZW5naW5lLgo+ID4KPiA+IFNpZ25lZC1vZmYtYnk6IE1pcXVlbCBSYXluYWwgPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+ICAKPiAKPiBUaGFua3MgZm9yIHlvdXIgcGF0Y2ghCj4gCj4g
+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL0tjb25maWcKPiA+ICsrKyBiL2RyaXZlcnMvbXRkL25h
+bmQvS2NvbmZpZwo+ID4gQEAgLTQ2LDYgKzQ2LDEyIEBAIGNvbmZpZyBNVERfTkFORF9FQ0NfU1df
+QkNICj4gPiAgICAgICAgICAgRUNDIGNvZGVzLiBUaGV5IGFyZSB1c2VkIHdpdGggTkFORCBkZXZp
+Y2VzIHJlcXVpcmluZyBtb3JlIHRoYW4gMSBiaXQKPiA+ICAgICAgICAgICBvZiBlcnJvciBjb3Jy
+ZWN0aW9uLgo+ID4KPiA+ICtjb25maWcgTVREX05BTkRfRUNDX01YSUMKPiA+ICsgICAgICAgYm9v
+bCAiTWFjcm9uaXggZXh0ZXJuYWwgaGFyZHdhcmUgRUNDIGVuZ2luZSIKPiA+ICsgICAgICAgc2Vs
+ZWN0IE1URF9OQU5EX0VDQwo+ID4gKyAgICAgICBoZWxwCj4gPiArICAgICAgICAgVGhpcyBlbmFi
+bGVzIHN1cHBvcnQgZm9yIHRoZSBoYXJkd2FyZSBFQ0MgZW5naW5lIGZyb20gTWFjcm9uaXguICAK
+PiAKPiBJIGd1ZXNzIHRoaXMgaXMgYSBsaWNlbnNhYmxlIElQIGNvcmUsIHdoaWNoIGNhbiBhcHBl
+YXIgYW55d2hlcmUsIHNvCj4gd2UgZG9uJ3QgaGF2ZSBhIHByb3BlciBwbGF0Zm9ybSBkZXBlbmRl
+bmN5IHRvIGFkZCBoZXJlPwoKWWVzLCBJIGFtIG5vdCBhd2FyZSBvZiBhbnkgbGltaXRhdGlvbiBv
+biB0aGF0IHNpZGUuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
