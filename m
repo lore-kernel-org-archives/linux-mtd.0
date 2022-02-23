@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 517DAC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 12:34:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D56AC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 12:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kPMECyHV0lElOaoB/5+ftNIO4+TIPgLhnZ7w0VHZKm0=; b=hmDeaY4S1Kb7KV
-	mc5OF83VoPsbN5kH+yaLyOn767TCeek5oOjGsS+TWcJ5nOv12Ym7wCpKUYn4u8PQEAy/Xc7ToW7kJ
-	mw8j+ay7yy1/HYx17Q1kE19PY8KB2/zJJZPLIYxztwk6XYttLQj5SC0jxoH0xsQqe9oVA4E0qJgHb
-	UwxHXtXkK9Iem3egQtKmcH4dvatiyh3NpSWGNUEgFj8ZvJ5UNOZ7Ax4UXJ0lrVRH2QeCyo74YzmOk
-	Q7PGZ5E9fwXzMvoTkcD2ww/yazxPjbe8fQVoET0UC3gCYXjPyTZ9ApBa20E/eDGTr+0Ds5huU+E4o
-	UcWeNn05kR2uV4G/cwAA==;
+	List-Owner; bh=ceE3u+iTjUcOv6fufNReJSssYX7pOV2il5hhyp5qB4M=; b=NFBQXkQs5EUmr7
+	7L5yVFzoP6oQeZkL2GB7UABgC1qqnyM5h+jiQmt8UsKWd5Vcvf7CJIc6fgxtluxZRB6nLIhCzF3Ci
+	z4kp1iucQEzAi1TfTceuSt3pkG1RbNawYzEt8LLP2ZY4DwImg1LvkeCSfVLEeRlSPuR3N7+XTAdSV
+	2WwzDiS6CEimTYm5TRi3XKh1m+dvwgUHzr3Uha9/2GwLlfd7SJxvmZz0/H9w599PWnEeELpzSRfQd
+	LPTJVPozEnzku9mJrk7BXHkHOTjiLvJHZdx/A4ri00SkvUdC0uYdO9VvZ6+JfK8L2GXSYrVSLhGFN
+	7RiyKKp06w1wbTs6T/EQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMqq0-00EBrv-Gl; Wed, 23 Feb 2022 12:33:44 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1nMr2z-00EF3t-OE; Wed, 23 Feb 2022 12:47:10 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMqEJ-00E0a5-W9
- for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 11:54:49 +0000
+ id 1nMqIs-00E22m-A2
+ for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 11:59:32 +0000
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21NBsjx6125254;
- Wed, 23 Feb 2022 05:54:45 -0600
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21NBxSQF028094;
+ Wed, 23 Feb 2022 05:59:28 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1645617285;
- bh=nZ7gTtsnYSWT0640cyi2p07HuKh9WWN1Sd0k1wHT2yc=;
+ s=ti-com-17Q1; t=1645617568;
+ bh=y0CTifx/SII+A7nZ6Kxf8q8vy5DnXtlySIBCjwQtU1w=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=N7igpGNDbVhg91kQ8YcJjBMl0kBQ8zR6r5Oa4FwkGAMRga8lLAuH/FNuK4NOyrmui
- Zgoh6wARohWyrnNRVKxtiVnQTTBEi9QcnuTYotnuI2sFmRGFjlWjNB+4L6RtFZ0VNP
- xjZCYiF/wlN5523EHjm1YC67ljOE/N9e2sZrtJ/g=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21NBsjU0020751
+ b=W+2sa+0+1y/Ia6DVpQBe4lW2nSAduGBmmCBqUhQT4ZpTFFzTBPwSwuW65A2GgykUL
+ Yq90GVuSYrH6TAFq9fOg5CbAUcX0o/Mk7JlttNrpcRKzU9DGC66LC/790wO4BPjXXB
+ rKQrnCUxIfmN5QyGOAj1FxSb8lze1fAnt6SnaeNA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21NBxRZe027398
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 23 Feb 2022 05:54:45 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 23 Feb 2022 05:59:27 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 23
- Feb 2022 05:54:45 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2022 05:59:24 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 23 Feb 2022 05:54:45 -0600
+ Frontend Transport; Wed, 23 Feb 2022 05:59:24 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21NBsiFB046499;
- Wed, 23 Feb 2022 05:54:45 -0600
-Date: Wed, 23 Feb 2022 17:24:44 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21NBxNAj114579;
+ Wed, 23 Feb 2022 05:59:24 -0600
+Date: Wed, 23 Feb 2022 17:29:23 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Michael Walle <michael@walle.cc>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Tudor
  Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, <yaliang.wang@windriver.com>
-Subject: Re: [PATCH v4 26/32] mtd: spi-nor: micron-st: rename vendor specific
- functions and defines
-Message-ID: <20220223115444.wj24a2vvtjc2zexv@ti.com>
+Subject: Re: [PATCH v4 28/32] mtd: spi-nor: move all spansion specifics into
+ spansion.c
+Message-ID: <20220223115923.rxvpuuaj4dkdrxdl@ti.com>
 References: <20220221120809.1531502-1-michael@walle.cc>
- <20220221120809.1531502-27-michael@walle.cc>
+ <20220221120809.1531502-29-michael@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220221120809.1531502-27-michael@walle.cc>
+In-Reply-To: <20220221120809.1531502-29-michael@walle.cc>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_035448_152414_0B56AE04 
-X-CRM114-Status: GOOD (  19.90  )
+X-CRM114-CacheID: sfid-20220223_035930_478030_F3A99EDC 
+X-CRM114-Status: GOOD (  26.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,70 +86,134 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 21/02/22 01:08PM, Michael Walle wrote:
-> Drop the generic spi_nor prefix for all the micron-st functions.
+> The clear status register flags is only available on spansion flashes.
+> Move all the functions around that into the spanion module.
 > 
 > Signed-off-by: Michael Walle <michael@walle.cc>
 > ---
->  drivers/mtd/spi-nor/micron-st.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+>  drivers/mtd/spi-nor/core.c     | 49 ------------------------
+>  drivers/mtd/spi-nor/spansion.c | 70 ++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h    |  1 -
+>  3 files changed, 70 insertions(+), 50 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-> index f693f8720541..de450495e1ab 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -309,7 +309,7 @@ static int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
->  }
+[...]
+> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+> index 1a0e7214d9e5..38eeb0913ab2 100644
+> --- a/drivers/mtd/spi-nor/spansion.c
+> +++ b/drivers/mtd/spi-nor/spansion.c
+> @@ -8,6 +8,7 @@
 >  
->  /**
-> - * spi_nor_read_fsr() - Read the Flag Status Register.
-> + * micron_st_nor_read_fsr() - Read the Flag Status Register.
->   * @nor:	pointer to 'struct spi_nor'
->   * @fsr:	pointer to a DMA-able buffer where the value of the
->   *              Flag Status Register will be written. Should be at least 2
-> @@ -317,7 +317,7 @@ static int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
->   *
->   * Return: 0 on success, -errno otherwise.
->   */
-> -static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
-> +static int micron_st_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
->  {
->  	int ret;
+>  #include "core.h"
 >  
-> @@ -353,10 +353,10 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
->  }
+> +#define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+>  #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+>  #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
+>  #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
+> @@ -294,6 +295,72 @@ static const struct flash_info spansion_nor_parts[] = {
+>  	},
+>  };
 >  
->  /**
-> - * spi_nor_clear_fsr() - Clear the Flag Status Register.
-> + * micron_st_nor_clear_fsr() - Clear the Flag Status Register.
->   * @nor:	pointer to 'struct spi_nor'.
->   */
-> -static void spi_nor_clear_fsr(struct spi_nor *nor)
-> +static void micron_st_nor_clear_fsr(struct spi_nor *nor)
->  {
->  	int ret;
->  
-> @@ -380,13 +380,13 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
->  }
->  
->  /**
-> - * spi_nor_fsr_ready() - Query the Flag Status Register to see if the flash is
-> - * ready for new commands.
-> + * micron_st_nor_fsr_ready() - Query the Flag Status Register to see if the
-> + * flash is ready for new commands.
+> +/**
+> + * spi_nor_clear_sr() - Clear the Status Register.
+> + * @nor:	pointer to 'struct spi_nor'.
+> + */
+> +static void spi_nor_clear_sr(struct spi_nor *nor)
+> +{
+> +	int ret;
+> +
+> +	if (nor->spimem) {
+> +		struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),
+> +				   SPI_MEM_OP_NO_ADDR,
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_NO_DATA);
+> +
+> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> +
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +	} else {
+> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
+> +						       NULL, 0);
+> +	}
+> +
+> +	if (ret)
+> +		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
+> +}
+> +
+> +/**
+> + * spi_nor_sr_ready_and_clear() - Query the Status Register to see if the flash
+> + * is ready for new commands and clear it.
 
-This is misleading. This function doesn't only query the FSR, but the SR 
-as well. I think this should be renamed to micron_st_nor_ready(), and 
-documentation updated to reflect that it checks for SR, and then FSR as 
-well if the flag is specified.
+Nitpick: "... and clear it if there are any errors."
 
->   * @nor:	pointer to 'struct spi_nor'.
->   *
->   * Return: 1 if ready, 0 if not ready, -errno on errors.
->   */
-> -static int spi_nor_fsr_ready(struct spi_nor *nor)
-> +static int micron_st_nor_fsr_ready(struct spi_nor *nor)
+Looks good otherwise.
+
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+
+> + * @nor:	pointer to 'struct spi_nor'.
+> + *
+> + * Return: 1 if ready, 0 if not ready, -errno on errors.
+> + */
+> +static int spi_nor_sr_ready_and_clear(struct spi_nor *nor)
+> +{
+> +	int ret;
+> +
+> +	ret = spi_nor_read_sr(nor, nor->bouncebuf);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (nor->bouncebuf[0] & (SR_E_ERR | SR_P_ERR)) {
+> +		if (nor->bouncebuf[0] & SR_E_ERR)
+> +			dev_err(nor->dev, "Erase Error occurred\n");
+> +		else
+> +			dev_err(nor->dev, "Programming Error occurred\n");
+> +
+> +		spi_nor_clear_sr(nor);
+> +
+> +		/*
+> +		 * WEL bit remains set to one when an erase or page program
+> +		 * error occurs. Issue a Write Disable command to protect
+> +		 * against inadvertent writes that can possibly corrupt the
+> +		 * contents of the memory.
+> +		 */
+> +		ret = spi_nor_write_disable(nor);
+> +		if (ret)
+> +			return ret;
+> +
+> +		return -EIO;
+> +	}
+> +
+> +	return !(nor->bouncebuf[0] & SR_WIP);
+> +}
+> +
+>  static void spansion_nor_late_init(struct spi_nor *nor)
 >  {
->  	int sr_ready, ret;
+>  	if (nor->params->size > SZ_16M) {
+> @@ -302,6 +369,9 @@ static void spansion_nor_late_init(struct spi_nor *nor)
+>  		nor->erase_opcode = SPINOR_OP_SE;
+>  		nor->mtd.erasesize = nor->info->sector_size;
+>  	}
+> +
+> +	if (nor->flags & SNOR_F_USE_CLSR)
+> +		nor->params->ready = spi_nor_sr_ready_and_clear;
+>  }
+>  
+>  static const struct spi_nor_fixups spansion_nor_fixups = {
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 4622251a79ff..5e25a7b75ae2 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -90,7 +90,6 @@
+>  
+>  /* Used for Spansion flashes only. */
+>  #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+> -#define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+>  
+>  /* Used for Micron flashes only. */
+>  #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
+> -- 
+> 2.30.2
+> 
 
 -- 
 Regards,
