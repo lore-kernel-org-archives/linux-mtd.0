@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8F5CC433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 17:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C23E8C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 17:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qbpxnop2Boa441cKLD2JcY0yRYz2ENZIi3U1hHNV+wU=; b=0ncWQwzXYs5QW8
-	YVf37PbO59SDKRCnwuLdAOKrh/VMBz+F021s4UCDesyqczISBN7k5Vhj9+XACg0lHI7U0pIDDCZwR
-	Nd6H62kiVxVYWs9lgwXA6cwmSQ0FYojbhE9uSPeoyKS2zIr+46fq71VUuOy0lraZDuIyft4tDK7Gk
-	JGqzQzlTNzoEMi+5zY44UwOzAp38CkVhF+eDzMrXdh6Wdb6XOm1dEQH1KtP3z78FcqjBMcZW2wnWu
-	Gd9Z24A+cM8QJg0O/qapY+p3GwNTmL38mi16yCcm28ytx4lhpCVPLxEa9/mekPAQYNn/VNaxbCNE7
-	c8BruYczpLCeKmX6RX+w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=EW6qcEue7XPKa/WyF0rMv56jByqhkeGRv72XFVulTtA=; b=nFv1JQ8773lr8E
+	yXzSB9QfB+9dea5DQY14LHEez+Jj9oHaoZUsfNHihaVs51m2ZiNoTtIeXSXJDGNOdfpfJW1LuQ6re
+	LLRH28px4O5EfI/qP3fTvt/onGu1XEh7J+M6pqIyV+cJtSCj7D6c2EsWi9LXFZoXTCKaDBUPg3IU2
+	jnhwONu2hs6bToa3Mwqm8vPmMd7npNnoQ7fEtFTz/3yjvyWz50vcCVj4LumOg3OXd3a6grD7TkLsF
+	V+gOpZqg1QE3P/n8aNNB+HriJr7i16zqQdXhVD5In4aao0yvd0yjQuR1FJ4pesx64ahiaBdZzaLCt
+	Vv07w4PcpCpW42j6im0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMvhC-00FYXj-IW; Wed, 23 Feb 2022 17:44:58 +0000
-Received: from mail-pg1-x52a.google.com ([2607:f8b0:4864:20::52a])
+	id 1nMvh0-00FYUV-NR; Wed, 23 Feb 2022 17:44:46 +0000
+Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMvgx-00FYS1-LY
+ id 1nMvgx-00FYR0-Cw
  for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 17:44:45 +0000
-Received: by mail-pg1-x52a.google.com with SMTP id 195so20763832pgc.6
- for <linux-mtd@lists.infradead.org>; Wed, 23 Feb 2022 09:44:41 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id v4so3414700pjh.2
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Feb 2022 09:44:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Bo6oFnHJAbU/j6h7MDnhNKM3GTAQUQeHdOFA1uJIsUk=;
- b=oJYZzP6GFPUp82PEMrpkxE2tpMjjHkYXVbYRnSdJyRdfqmTK7/EQNIaR8w3NIZmHya
- sZ+/6BvzTAs1hlT+RxW8gsRDZHFwuNf+NUp7MamT38U+XeQpUnmZ0Rp8QJ7JiUMbSB7H
- m2vqzA1DSdnjIcea62DI3tEfPfX/RCGDNuhE4H5nLSFyZPRl1SCSZePw7WmJQoLO4J4z
- xaQRgYyVRuEI3+YwXjVHfCCQ5CZy8L/fMU8i0fNfvhFswvYPgwGqAWaniAJjWfiTdgvx
- cW49KB6pZGJbSRy4w0F1lf8DatWYynCabPXB25oNKzl2fiOo9aI5M66wBLlmmRsnk2bY
- BW8Q==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=RfVO0n5bxGhQlU0yKBog2OCZbfoJHnMeC+GhXjg5mv4=;
+ b=FB50oQpMVTkvBsoC0KbxLE+VZpLrQTlWwFsy7EK9J9qAReHSUwWc6dczvqjrhoXiWW
+ hRNu28Fraan9kItEcBg/5xGB6GQMTjssUgAERodNsNe0Fc/JSRSxRlxh8oidw7118F9A
+ wz5l+ieHkRQ1Qi7tJoBgVGsUJ3pfayiCr4kPXHyiCh8CzaSR2wkpDlC4G6pze8nfFjY3
+ dzt44Pezz2s5tYfy1LgTQmBTYUf9chzIq0x58I2RnqWrkwY6maeZDCvdS3WRdkfuFyeW
+ DKXgPhGGph+LUKqLlCJzoHRSfpxKF2I4U8oCJARAbamrTt6bgKhRI0J+xK/DDKUlcZwQ
+ aGPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Bo6oFnHJAbU/j6h7MDnhNKM3GTAQUQeHdOFA1uJIsUk=;
- b=kH+jDzOr1G4XXL4PlvkjbNj5rFKQpHWmGg2g71hqdb5XHvQ91fEIbpw/FYf3FQWKmV
- 41CiPNXkcJJ1XU/YXZzInTdghePpfKTde98DAVwMOHIRKKZmo3q41s0GE9hAXh4YRd2B
- xr1g8gXW/E9D93BQGE7Kotyjx21pnfobceOZhkdHy4agCZonUJs6/NEzOlFHGB/MOI9t
- Q6FTb7l9m/8Awi3kddMN0LwiHgkCvTQALuGvafuvRPiB3lmSrVPAPox70LfjJ1zI/oA8
- NHyxgQpHTBHsPfm4Fg2t9yoyv6SNcmAILKpkSO5W6pjNYzITinYoCmfkf+4e6zMF4fy+
- Ki2A==
-X-Gm-Message-State: AOAM532/aAE/vUPQebJ+jEjFTZL8p0bIGSTxmn9Ec5qJF7WyH+xZrPY7
- Fi+tBpZgww/u+k3Xg2SrWWE=
-X-Google-Smtp-Source: ABdhPJwidJmEBQ9VvU3IKY6i4jO680dMGmsqMd6R3lsYnIOGnmZ99c2ZGxqVEhmgxaqFlAPkCPl3yw==
-X-Received: by 2002:a63:1145:0:b0:373:7f7c:4a22 with SMTP id
- 5-20020a631145000000b003737f7c4a22mr566726pgr.208.1645638280986; 
- Wed, 23 Feb 2022 09:44:40 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=RfVO0n5bxGhQlU0yKBog2OCZbfoJHnMeC+GhXjg5mv4=;
+ b=EnUZH6pmtWo9UI2F5kfjNBXVY1fKok9Aj/5k0D+TMVF2HB7me/GaLt1wTkIRWTEHLR
+ vlB6SJrhC3CXq0oh14zH7vzc22ZmyQG9xsb+0WyQekMIJLnyufw6dWaIyHTWljEgbJ0p
+ 7++NLO+Kh+9MD/jcdVAnceVkcSh16sAK3Gcpj+7PgRenDM7yy2tWueAP2a0VvgDseSdI
+ pvh4TJYPB4KstvKyOxlZbk+4/E5uv06MWTXg18vG9akotwKSskiDdlsY3NzGtHNs1NUH
+ nZIr8N/JfCrCwu8O70KlBvK8ooxHyzH4FkPKGiSEjtcE07NASaXinAXrnG5W61DGsg0l
+ PCvA==
+X-Gm-Message-State: AOAM533tAwYgrarbM/5uMad9TXXoS/wiCYsEv6mQvOtKoEZU/DDd/vMZ
+ HSKzK4U/U9NT7jODhBfr88M=
+X-Google-Smtp-Source: ABdhPJw2uax1PBCZviYrUXWX3Z3VY8N34gBZnt0PjeFXJifAOgXxCBirlhQDkTPeK64MbaURo4wz8g==
+X-Received: by 2002:a17:90a:7788:b0:1bc:6d1:a095 with SMTP id
+ v8-20020a17090a778800b001bc06d1a095mr477839pjk.122.1645638277652; 
+ Wed, 23 Feb 2022 09:44:37 -0800 (PST)
 Received: from 7YHHR73.igp.broadcom.net (ip72-194-116-95.oc.oc.cox.net.
  [72.194.116.95])
- by smtp.gmail.com with ESMTPSA id g18sm127422pfc.108.2022.02.23.09.44.39
+ by smtp.gmail.com with ESMTPSA id g18sm127422pfc.108.2022.02.23.09.44.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Feb 2022 09:44:40 -0800 (PST)
+ Wed, 23 Feb 2022 09:44:36 -0800 (PST)
 From: Florian Fainelli <f.fainelli@gmail.com>
 To: stable@vger.kernel.org
 Cc: gregkh@linuxfoundation.org, sashal@kernel.org,
  david regan <dregan@mail.com>, Florian Fainelli <f.fainelli@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM),
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH RESEND stable 4.14] mtd: rawnand: brcmnand: Fixed incorrect
+ Kamal Dasu <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org (open list:BROADCOM STB NAND FLASH DRIVER),
+ bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM STB NAND FLASH
+ DRIVER), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH RESEND stable 4.19] mtd: rawnand: brcmnand: Fixed incorrect
  sub-page ECC status
-Date: Wed, 23 Feb 2022 09:44:30 -0800
-Message-Id: <20220223174431.1083-2-f.fainelli@gmail.com>
+Date: Wed, 23 Feb 2022 09:44:29 -0800
+Message-Id: <20220223174431.1083-1-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220223174431.1083-1-f.fainelli@gmail.com>
-References: <20220223174431.1083-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_094443_746938_F0F72971 
-X-CRM114-Status: GOOD (  17.01  )
+X-CRM114-CacheID: sfid-20220223_094443_463952_B357AAF4 
+X-CRM114-Status: GOOD (  17.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,16 +117,16 @@ Signed-off-by: david regan <dregan@mail.com>
 Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Link: https://lore.kernel.org/linux-mtd/trinity-478e0c09-9134-40e8-8f8c-31c371225eda-1643237024774@3c-app-mailcom-lxa02
-[florian: make patch apply to 4.14, file was renamed]
+[florian: make patch apply to 4.19]
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/brcmnand/brcmnand.c b/drivers/mtd/nand/brcmnand/brcmnand.c
-index c65724d0c725..0138c0c6a4b9 100644
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index 774ffa9e23f3..2b02f558b5e1 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 @@ -1637,7 +1637,7 @@ static int brcmnand_read_by_pio(struct mtd_info *mtd, struct nand_chip *chip,
  					mtd->oobsize / trans,
  					host->hwcfg.sector_size_1k);
