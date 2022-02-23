@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0CCCC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 13:44:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B109C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 13:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7f95jBanAzXeoPeDUlixkUMFYvYrPTo0pGNfE9HOqA8=; b=vKCH3tTgsMnVCx
-	vyFj1ruUiy/Ju9fFamQyFHeTCxOB3K6NRa4MFGHputg9f/2CEgb+IMUzjXN2inuUgGnVkiel7JXK/
-	+QhvJ0RsCGutiEB8l7GIsZnY/rVEaKn2ENBY6zPYGP+SjhRXC+ESjciQYM/JGiGo+OcumESGLfYaL
-	qmL5dcJ+dYlQ6pSh6UeCGFJ4TWWzD5XDWYkzPUH5A9MFiOiHPDUVOSt2MpQgccce0ydWaFJCstvQI
-	W0J91g3qEipBl6fRsrdA+FdpLs3eHLJP8ZxWpYDV6Zc2YXXQBm5tRZBa+Cyn+KFocSAO+o/YZq8Pk
-	gWccceLLubRp7PPiy6ag==;
+	List-Owner; bh=bLc+FJS5ycFCd88Rk0lHIQ9pYnIrntunnG1S9H1mv1Y=; b=xbN36Ho3qYhkNJ
+	pCthPQlqLmlJ+rkBWnn+UzXVXfpVft23nQNKLpuxGAfM9u1o3Om5CIk8soB3Evy3OzhWzhV/zn1ZG
+	32wlO2Ms3MdLfrl81WdiOoxoTIfGQ9w8mXDjLehTd9dpBWjBr/Y1OPyWlbEYDcuc7j9fynHF/rFf5
+	yCCtLte6WARTaZWWCLre9iOVmKKEMdiTbTy9nDnwVHMXC4UrOlS9pbFx/0BkqK7F2I03lShTdIH7L
+	OyINUaK2zHXGwN+0hi25BMSsqGb9CNk+MoA0rYCGaicqpOMp8L5kSFAPCWlG0qBYPfCtgcVpuw5DO
+	hPMJqIeFu5OHboky8qDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMrwD-00EZRq-5u; Wed, 23 Feb 2022 13:44:13 +0000
+	id 1nMrwh-00EZiN-Na; Wed, 23 Feb 2022 13:44:43 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMrwA-00EZPb-3w
- for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:12 +0000
+ id 1nMrwA-00EZPY-Ue
+ for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:13 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 1D374223F0;
- Wed, 23 Feb 2022 14:44:06 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id C703A223EF;
+ Wed, 23 Feb 2022 14:44:05 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645623846;
+ s=mail2016061301; t=1645623845;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=012orf1gW76hymkl0C3TlOpBllNWtHPFjOMTZe1Ouug=;
- b=BcY9r8jZGx0J9qCscmqZ+oViqpmbwFn3tpf0h/jD29aw5s0Hj+gM8CS7+AiqTv9Hxldh8J
- QclrqqsIo6BADNH8X7/UiP9RyU7JSvVrw33RWlmTouv3l84bW2UzfcK1CAtrCdzyCFCP4V
- SkmRJOZef9oAiGFG4qPiQ8sbn4rc0O4=
+ bh=v8kj4z85YfDGYN2RrUp3+LkianQys9bzXdTacdc1Pnc=;
+ b=AxsuG8vXO9+h5o+EyNbLQvDDVbifVrpxYWBmO4JuUcu83pLI42vriNP8abeqE1Ih7Up2Pk
+ VPrqFnxR5JE6nI7Y+agHg8dLtKbuoCS45CKYW+Aadd4naEBNO+kqMFuTcvljxu86ic6XNz
+ TgzQXAMaMYAdElA6IixeV0FFloAMM+I=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v5 04/32] mtd: spi-nor: esmt: unify function names
-Date: Wed, 23 Feb 2022 14:43:30 +0100
-Message-Id: <20220223134358.1914798-5-michael@walle.cc>
+Subject: [PATCH v5 03/32] mtd: spi-nor: eon: unify function names
+Date: Wed, 23 Feb 2022 14:43:29 +0100
+Message-Id: <20220223134358.1914798-4-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220223134358.1914798-1-michael@walle.cc>
 References: <20220223134358.1914798-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_054410_343462_2119FCC7 
-X-CRM114-Status: GOOD (  12.61  )
+X-CRM114-CacheID: sfid-20220223_054411_577888_2DD701EC 
+X-CRM114-Status: GOOD (  12.95  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,30 +85,30 @@ There are no functional changes.
 Signed-off-by: Michael Walle <michael@walle.cc>
 Acked-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/esmt.c | 6 +++---
+ drivers/mtd/spi-nor/eon.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/esmt.c b/drivers/mtd/spi-nor/esmt.c
-index ace1da221566..79e2408f4998 100644
---- a/drivers/mtd/spi-nor/esmt.c
-+++ b/drivers/mtd/spi-nor/esmt.c
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index 4f3ee6331f37..8c1c57530281 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
 @@ -8,7 +8,7 @@
  
  #include "core.h"
  
--static const struct flash_info esmt_parts[] = {
-+static const struct flash_info esmt_nor_parts[] = {
- 	/* ESMT */
- 	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE)
-@@ -23,6 +23,6 @@ static const struct flash_info esmt_parts[] = {
+-static const struct flash_info eon_parts[] = {
++static const struct flash_info eon_nor_parts[] = {
+ 	/* EON -- en25xxx */
+ 	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+@@ -32,6 +32,6 @@ static const struct flash_info eon_parts[] = {
  
- const struct spi_nor_manufacturer spi_nor_esmt = {
- 	.name = "esmt",
--	.parts = esmt_parts,
--	.nparts = ARRAY_SIZE(esmt_parts),
-+	.parts = esmt_nor_parts,
-+	.nparts = ARRAY_SIZE(esmt_nor_parts),
+ const struct spi_nor_manufacturer spi_nor_eon = {
+ 	.name = "eon",
+-	.parts = eon_parts,
+-	.nparts = ARRAY_SIZE(eon_parts),
++	.parts = eon_nor_parts,
++	.nparts = ARRAY_SIZE(eon_nor_parts),
  };
 -- 
 2.30.2
