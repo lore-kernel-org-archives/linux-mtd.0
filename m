@@ -4,57 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E7F8C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 14:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C886FC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 14:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EN/g9RnMhcxZ1CcUjj3GZN/q0seELw3hkg0uTx9yHkg=; b=GYm3SBchMqMLNa
-	tjKzsNi1GWN4XIbWZ559OOOdD4pmahNSuMz/YQz7y+8BNE/p1uKGN4BNF8sh15TNnvkpI/42Dv8iH
-	MzT4XHC9D671t5IYU2VLnFrI8fPvJrQwXK8aM6Xff7wZjqujAbMUpEikFP+bxBc0kkM7zsbr7c65V
-	eAPKPKA47DEMdDWxQqGkbTiyLO8OA+Cq42sI3Ry0GMrHPoykM3nB7TFw08JXVM5mJYo+N+lUVU41Z
-	w1CIvMWpRFMPPsPTousLmfbm3fjHAzBWCFfA+QQw50afruFvAOKUuEsz9OXTzaM7+8bWUJ0ZothBk
-	BKn+eXA5V5SNK6iu+N9Q==;
+	List-Owner; bh=AFNr13u0NW6Hp+gmhxI8TLQSvfYTDHoeNlcYEnp9Jyc=; b=h6YmMVGxdRnYYX
+	63gfeGDpzne2zN2IFTV87x62Rc20Ly6WskWEiDTF20Pu6oDWwio3XuwPpYnj/Se2cTN22Q0llgmpb
+	k/MjgR9bE/t+111wPhRnDKMhRII7EZIAi7bm9jxEpaKNqEHR4S1PlA0eu7AXxl0eCsYrKzyL5i64G
+	xNjYU7riGw57PW8/+bAjXpMPhHMotTUNdmpEW0mfVSkUXe3/p1Lw9cDgLtxIoN0PARqHzR5p5CWR8
+	zJzutgrfvHYU7qXnsV3HWKbs1SZ8guxW81VArrF421CxGdSmpX2S6NcVA3Y2x9OxstG3HfS2z/+bd
+	FpncTls4ZQwFbEh6QqNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMsbm-00EjjF-Jh; Wed, 23 Feb 2022 14:27:11 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1nMsdv-00Ek9c-40; Wed, 23 Feb 2022 14:29:23 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMrwR-00EZbr-0e
- for linux-mtd@bombadil.infradead.org; Wed, 23 Feb 2022 13:44:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
- :References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-Type:Content-ID:Content-Description;
- bh=BUHjRq3B/3JjsHlcHc+UiOV+3YaaqpA1vvTF3QO9238=; b=DERVhLdyQZmFRqxE2kXexOPyCX
- vhCOe9fNJ6rkiYfEsy18JiEsuzoYaiJJfX3RVzDk1dGBdL26pXwVStMa49rQS9zeBMM77tBHIEcTn
- VQL5gDcS/Xq4DI4lDKZMnMrU4o6DKEYqhHxVylKHFx9Wt5etB/M6wpDV4OgbskaWSnIvU9ZP9LtdS
- QdbDphpiAKhIpH8w3h6nn41qcLuTMqEVNg+HNjbKR3LutJJR1W3JIupONKwRbygIYkAn9aCrMbqx8
- 5RiEd/iymuURs5+4Xs2ZL4YoKqR3clu1Hec7ApmtfxjLZhHDSUBlVG6tu5GnKwuGFBAcZtMPbvhtQ
- bBWdX6Ww==;
-Received: from ssl.serverraum.org ([176.9.125.105])
- by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMrwL-00CH7U-79
- for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:25 +0000
+ id 1nMrwH-00EZV5-MQ
+ for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:26 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 1E3AB2244F;
- Wed, 23 Feb 2022 14:44:18 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 2689822247;
+ Wed, 23 Feb 2022 14:44:14 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645623858;
+ s=mail2016061301; t=1645623854;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=BUHjRq3B/3JjsHlcHc+UiOV+3YaaqpA1vvTF3QO9238=;
- b=bXuicVX0rflHWdGKwarIkjI7YKGuzPnD7dB6J08XHkeAXhjmkejR/EMsHRv2PfYOpFgVOv
- QKjD7eC+ZgjKthxFJSPJffNH3w2987D47kO9HQBHC3skrTUbh70b9U5rGSaM/AGNIdxz6b
- XhdkQTqJnir0q3XeGYCgB1IgZEf/+uU=
+ bh=IYl3MKifzSCwZWqS6/ku6kfSrHMIJbi0hdEtx6Zps4Q=;
+ b=f4uQw8k2do7sbYOn3ZVI0bhMOfRKBUnSrIsgaiHyYYAAOj6cL9VKOY4/3KFx/PcdhrrezF
+ mTf8ya9Yr5uPLNe/jUbpqUuQV4Z5YsVXcQbprNdpfZPiWyD6luiRM8ijSX8HthWTXjX4A0
+ DNC5h/WAjC+RBWeZVQJzXWPbaC18sc4=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -62,17 +48,17 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v5 32/32] mtd: spi-nor: renumber flags
-Date: Wed, 23 Feb 2022 14:43:58 +0100
-Message-Id: <20220223134358.1914798-33-michael@walle.cc>
+Subject: [PATCH v5 22/32] mtd: spi-nor: xilinx: rename vendor specific
+ functions and defines
+Date: Wed, 23 Feb 2022 14:43:48 +0100
+Message-Id: <20220223134358.1914798-23-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220223134358.1914798-1-michael@walle.cc>
 References: <20220223134358.1914798-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_134421_932550_F6FA6CF7 
-X-CRM114-Status: UNSURE (   8.57  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220223_054417_977039_661EC5E1 
+X-CRM114-Status: GOOD (  14.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,54 +75,111 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As we have deleted some flag, lets renumber them so there are no holes.
+Drop the generic spi_nor prefix for all the xilinx functions.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.h | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/xilinx.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 2130a96e2044..b7fd760e3b47 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -12,20 +12,20 @@
- #define SPI_NOR_MAX_ID_LEN	6
+diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+index 05c7fe843a7d..ffd5579d45cb 100644
+--- a/drivers/mtd/spi-nor/xilinx.c
++++ b/drivers/mtd/spi-nor/xilinx.c
+@@ -8,9 +8,9 @@
  
- enum spi_nor_option_flags {
--	SNOR_F_HAS_SR_TB	= BIT(1),
--	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
--	SNOR_F_BROKEN_RESET	= BIT(5),
--	SNOR_F_4B_OPCODES	= BIT(6),
--	SNOR_F_HAS_4BAIT	= BIT(7),
--	SNOR_F_HAS_LOCK		= BIT(8),
--	SNOR_F_HAS_16BIT_SR	= BIT(9),
--	SNOR_F_NO_READ_CR	= BIT(10),
--	SNOR_F_HAS_SR_TB_BIT6	= BIT(11),
--	SNOR_F_HAS_4BIT_BP      = BIT(12),
--	SNOR_F_HAS_SR_BP3_BIT6  = BIT(13),
--	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
--	SNOR_F_SOFT_RESET	= BIT(15),
--	SNOR_F_SWP_IS_VOLATILE	= BIT(16),
-+	SNOR_F_HAS_SR_TB	= BIT(0),
-+	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
-+	SNOR_F_BROKEN_RESET	= BIT(2),
-+	SNOR_F_4B_OPCODES	= BIT(3),
-+	SNOR_F_HAS_4BAIT	= BIT(4),
-+	SNOR_F_HAS_LOCK		= BIT(5),
-+	SNOR_F_HAS_16BIT_SR	= BIT(6),
-+	SNOR_F_NO_READ_CR	= BIT(7),
-+	SNOR_F_HAS_SR_TB_BIT6	= BIT(8),
-+	SNOR_F_HAS_4BIT_BP      = BIT(9),
-+	SNOR_F_HAS_SR_BP3_BIT6  = BIT(10),
-+	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
-+	SNOR_F_SOFT_RESET	= BIT(12),
-+	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
- };
+ #include "core.h"
  
- struct spi_nor_read_command {
+-#define SPINOR_OP_XSE		0x50	/* Sector erase */
+-#define SPINOR_OP_XPP		0x82	/* Page program */
+-#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
++#define XILINX_OP_SE		0x50	/* Sector erase */
++#define XILINX_OP_PP		0x82	/* Page program */
++#define XILINX_OP_RDSR		0xd7	/* Read status register */
+ 
+ #define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
+ #define XSR_RDY			BIT(7)	/* Ready */
+@@ -60,20 +60,20 @@ static u32 s3an_nor_convert_addr(struct spi_nor *nor, u32 addr)
+ }
+ 
+ /**
+- * spi_nor_xread_sr() - Read the Status Register on S3AN flashes.
++ * xilinx_nor_read_sr() - Read the Status Register on S3AN flashes.
+  * @nor:	pointer to 'struct spi_nor'.
+  * @sr:		pointer to a DMA-able buffer where the value of the
+  *              Status Register will be written.
+  *
+  * Return: 0 on success, -errno otherwise.
+  */
+-static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
++static int xilinx_nor_read_sr(struct spi_nor *nor, u8 *sr)
+ {
+ 	int ret;
+ 
+ 	if (nor->spimem) {
+ 		struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_XRDSR, 0),
++			SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),
+ 				   SPI_MEM_OP_NO_ADDR,
+ 				   SPI_MEM_OP_NO_DUMMY,
+ 				   SPI_MEM_OP_DATA_IN(1, sr, 0));
+@@ -82,7 +82,7 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_XRDSR, sr,
++		ret = spi_nor_controller_ops_read_reg(nor, XILINX_OP_RDSR, sr,
+ 						      1);
+ 	}
+ 
+@@ -93,17 +93,17 @@ static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+ }
+ 
+ /**
+- * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
+- * the flash is ready for new commands.
++ * xilinx_nor_sr_ready() - Query the Status Register of the S3AN flash to see
++ * if the flash is ready for new commands.
+  * @nor:	pointer to 'struct spi_nor'.
+  *
+  * Return: 1 if ready, 0 if not ready, -errno on errors.
+  */
+-static int spi_nor_xsr_ready(struct spi_nor *nor)
++static int xilinx_nor_sr_ready(struct spi_nor *nor)
+ {
+ 	int ret;
+ 
+-	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
++	ret = xilinx_nor_read_sr(nor, nor->bouncebuf);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -116,12 +116,12 @@ static int xilinx_nor_setup(struct spi_nor *nor,
+ 	u32 page_size;
+ 	int ret;
+ 
+-	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
++	ret = xilinx_nor_read_sr(nor, nor->bouncebuf);
+ 	if (ret)
+ 		return ret;
+ 
+-	nor->erase_opcode = SPINOR_OP_XSE;
+-	nor->program_opcode = SPINOR_OP_XPP;
++	nor->erase_opcode = XILINX_OP_SE;
++	nor->program_opcode = XILINX_OP_PP;
+ 	nor->read_opcode = SPINOR_OP_READ;
+ 	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+ 
+@@ -155,7 +155,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
+ static void xilinx_nor_late_init(struct spi_nor *nor)
+ {
+ 	nor->params->setup = xilinx_nor_setup;
+-	nor->params->ready = spi_nor_xsr_ready;
++	nor->params->ready = xilinx_nor_sr_ready;
+ }
+ 
+ static const struct spi_nor_fixups xilinx_nor_fixups = {
 -- 
 2.30.2
 
