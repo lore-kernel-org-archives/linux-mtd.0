@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B11DC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 13:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5689C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 13:48:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I1xTfpPAqSzgWbBUoEAFiL84ZPSEuEAeBNGggD5ekuw=; b=zgsnRFZEZ3eSqz
-	+x74Rxi2q3TflWxjBT6OGiPq6bT8ROlzl6p+nQV0MTdZpfHTE4NCr6lwdnaiY6YdRsFW6ezJZly0/
-	DbweTQnHBlD4PueBqjvsG6JQ/uhfL0c1CE2HO+DdJNyhIokAaUjF5eP+FS83nNayGR46Vw3E78xwC
-	cWruvxnyv7RuLHO6Hc+PfuawqmMi43791zfIB80TmoLBF+dy2BEerfSe4M8qbY+vh7bHGjSGH0JFP
-	cuJ0WqI0TKCRwyDjJEnTKB57FZWh2sZ049qRkMbpmYI4s3jP8C5P5OuPQnsLg6N2zwMK0Bw1aM0fi
-	2EVIq3lozRCEQsidP1hA==;
+	List-Owner; bh=J4hj3zjPbIbHZjHsPMISviP/igiSG0wNJEq5Hh+deVk=; b=EFZovda8SoxRQz
+	If2JMEudi4QODcLQ8f384AbYoHx7UEbJL73DRig6T6+nmNRrI7cvjvWDVlwqxPitLqt2SBjzuXiTr
+	+bH134SmakxYLRxI2YbGLVLX4FuEvyoas76OBEftlZX3AhvucqbJKkTShceVMJotsBlPpLwv0Ybu0
+	FLlTreoAc/DKfSdsU0PiB1JR5+Xjm7R6oIl4ht5KWHJviSZzclCVdxisLMKhdKfH3bli4K9i8CBqT
+	L3o+TCmp2VxORo6/Gk3Demi2Aw72jS7RY6/9Lshzv/W94BfoWP6MJU0e5F3uBco3Kk4rJKG3rvU1h
+	tw3ZCWbaSpjI3+g6qD6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMrzU-00Eaoa-6g; Wed, 23 Feb 2022 13:47:36 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nMs0Q-00Eb5I-CG; Wed, 23 Feb 2022 13:48:34 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMrwD-00EZRn-Oq
+ id 1nMrwE-00EZRo-52
  for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:16 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 473172241C;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 881DD22438;
  Wed, 23 Feb 2022 14:44:07 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1645623847;
@@ -37,10 +37,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5NdLJVXZ/dtLRMdfMSUr7KgGIAvU7mDPEd3rJRjy/cI=;
- b=kmHW1+5HTs27hYVZp79Sw7eVqXWAmxsYCwghxG13VU7SZKN55Nwnl2Ejo+zU8MmABgswDz
- TrfAu4Ug2ZvuTuZhi3EBH5NnD1PWkRZTQxmXCOMCECFweIlDWA44NNg8RSOX1VyRPOezzc
- qiXleGVKps89JgZUdFj/LO+hjR37EZM=
+ bh=9H1QgT0l/ROJ6PbNq9W4bHH9dAqSu2ls1W1SdcFcyg0=;
+ b=ZfXzB2FziwAZcTTzMMdqvYGJ1L5DpfuxO2THZ8BbyFI7tBMfx2H2aXRKDw8auFI0C1d2sg
+ AX7Zs8qcFjJMITlBv12splfBlCH1MVRlxBCtZvdoa/JgNa1/yTWncfdZMhLQPqpdf8xsyC
+ 6M3jc013RfJbTN975IV3Y2x2TD9GVsI=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v5 07/32] mtd: spi-nor: gigadevice: unify function names
-Date: Wed, 23 Feb 2022 14:43:33 +0100
-Message-Id: <20220223134358.1914798-8-michael@walle.cc>
+Subject: [PATCH v5 08/32] mtd: spi-nor: intel: unify function names
+Date: Wed, 23 Feb 2022 14:43:34 +0100
+Message-Id: <20220223134358.1914798-9-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220223134358.1914798-1-michael@walle.cc>
 References: <20220223134358.1914798-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_054414_020722_99DE66FF 
-X-CRM114-Status: GOOD (  12.34  )
+X-CRM114-CacheID: sfid-20220223_054414_405106_EE23F0FB 
+X-CRM114-Status: GOOD (  12.81  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,30 +85,30 @@ There are no functional changes.
 Signed-off-by: Michael Walle <michael@walle.cc>
 Acked-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/gigadevice.c | 6 +++---
+ drivers/mtd/spi-nor/intel.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/gigadevice.c b/drivers/mtd/spi-nor/gigadevice.c
-index 0807d0263808..119b38e6fc2a 100644
---- a/drivers/mtd/spi-nor/gigadevice.c
-+++ b/drivers/mtd/spi-nor/gigadevice.c
-@@ -23,7 +23,7 @@ static const struct spi_nor_fixups gd25q256_fixups = {
- 	.default_init = gd25q256_default_init,
- };
+diff --git a/drivers/mtd/spi-nor/intel.c b/drivers/mtd/spi-nor/intel.c
+index d64e114e9fb4..9179f2d09cba 100644
+--- a/drivers/mtd/spi-nor/intel.c
++++ b/drivers/mtd/spi-nor/intel.c
+@@ -8,7 +8,7 @@
  
--static const struct flash_info gigadevice_parts[] = {
-+static const struct flash_info gigadevice_nor_parts[] = {
- 	{ "gd25q16", INFO(0xc84015, 0, 64 * 1024,  32)
- 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-@@ -61,6 +61,6 @@ static const struct flash_info gigadevice_parts[] = {
+ #include "core.h"
  
- const struct spi_nor_manufacturer spi_nor_gigadevice = {
- 	.name = "gigadevice",
--	.parts = gigadevice_parts,
--	.nparts = ARRAY_SIZE(gigadevice_parts),
-+	.parts = gigadevice_nor_parts,
-+	.nparts = ARRAY_SIZE(gigadevice_nor_parts),
+-static const struct flash_info intel_parts[] = {
++static const struct flash_info intel_nor_parts[] = {
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_SWP_IS_VOLATILE) },
+@@ -20,6 +20,6 @@ static const struct flash_info intel_parts[] = {
+ 
+ const struct spi_nor_manufacturer spi_nor_intel = {
+ 	.name = "intel",
+-	.parts = intel_parts,
+-	.nparts = ARRAY_SIZE(intel_parts),
++	.parts = intel_nor_parts,
++	.nparts = ARRAY_SIZE(intel_nor_parts),
  };
 -- 
 2.30.2
