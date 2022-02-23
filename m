@@ -4,85 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C4EBC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 18:30:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DEF3C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 18:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JFd34zyNY0p8q3AP8ybn1nZ+s+1GmJP79oXARM9Q/gk=; b=pSIE8LD2evI7ni
-	+6xjt5zADgJu6jzZWfvVOs7wcaINeVtJKUoc2PsaJ4VOFgCzmSIczk/EChX7j1pGGCjLzDEFO9UAz
-	1DaAYqZGUMPYKKD3FHUW1OKwllVtct544QgDNqYTkIp3Ou7eykXu2Pa2GWq3fW9qlmpNlLN2tuOFg
-	MxcXgVMofDftzTUEu9hwin3lgJ4sa+vJJop4UheG2WxZ9Fi136t7e5takPkmhO8GKpnxDz8WtuYqW
-	uIxrBf7HDF8ZhydpWL/m/+eEQ7dMnAeN8H86xrib02HgsjX52ir3EvS5BzTtCWFNFi+j9Zpm7+lFD
-	XfxMg77OP9+8Fp7/4zRg==;
+	List-Owner; bh=dSzMeRsIZUxYA7HGDvyfmIRlna+sPT4O57UxUmeLAdc=; b=YJeHJrTjOXgku1
+	bzp+T9EETGOBWGVa0aAZkRq6oADXg6/KLE/fkMNhMpSkD1cDianCIZXVCo/Cb40OcQFpxT6z19/cj
+	AAFCAyAZb8I+6+ow5QUc4hX2+O3iigFFxEAsUzet3QzSg/la0iPRvzK6OKq1ErEE5v0PnyBbrRlkH
+	zwcXVxK0rFLBr+Hgb0yyWBm087KrUNPnJParVRA5E9XBrfQoGNeS0ugcdyVSpTVYlFLLSxF3lKK5V
+	xqT4zL99f4/dgHL2KAAO47pP1GaIJxlfk3H4BTfkoOEyM0rv34k07iZ2uwp0lmkjXE0vOIAhTn1r+
+	VevED8WHfPwtSs41FIvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMwOo-00Fj0H-Oq; Wed, 23 Feb 2022 18:30:02 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	id 1nMwXV-00FkVN-7U; Wed, 23 Feb 2022 18:39:01 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMwOl-00Fiz3-4C
- for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 18:30:00 +0000
-Received: by mail-pf1-x433.google.com with SMTP id z16so16197357pfh.3
- for <linux-mtd@lists.infradead.org>; Wed, 23 Feb 2022 10:29:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=SkZuVNW5EhwJqSpZnaByyGJdLCPW7Ju2zPYGUOXsjqM=;
- b=dC5HMCo5K4kF82jU3P9MGgHYmjD3SgZHQBVNL8r+3dcbwmwSC9FQKBkqvwUDKNSIp1
- MEJXGQh9ZvlPZlPWjKdxsCvDCNJ9CF/6kZTPmNfEU9zMdR7ip8su2U1QLXEkj+uZ0Jdl
- 2LIt4R6GhXnT6bo77+ag2StqHl6/Wc/CKcePtMk8lgWmY7INuVg1XBlwFI7py58WhosU
- T3ETmSugjcBdc7g0NTMlrTOu/e5m1qXcbYXgJT1VCavksgHjRjqvKYyV01YZMLj1l5Ej
- lSsJ6sPdEzh1zrKnvYQa1ctRd5vPshfZS06bFcoNE1QEIpXoq3z7Fpw8j5DCOmo+IYPs
- 3+vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=SkZuVNW5EhwJqSpZnaByyGJdLCPW7Ju2zPYGUOXsjqM=;
- b=IyG0sTccOHLhM/sSloRTer6MudTZCApJTmZCwYXxcTgKAIJUU6DTDE7P0PDX4Wzd+V
- 3buY4oBzY8r225eKaOdSpnM3zVaLMr1080j4DTz5yKOT8YO/Wim6w2q1aj9m4AO/rBRs
- RwRS8QyTo0RRoInEAshXrPMvG4RC/uKbaeEyDP3V/MJ/aXir8dOadzugIGVl01SyLAbk
- 0+2GZuQS6Ia5pp9bhMRoXHFmcvM4m6cX68JAN+AfcF7PQ5uZlTSuRjbmHNMd5VQXj9s2
- LmW6F175sBKFDWt+isJW3Fp670HYzG6JbzPuRQM68jYzPVW8Piad/6g+HgthCvwijGPu
- KY5w==
-X-Gm-Message-State: AOAM531n/ScQS7hxzV9u7iweyh9exHir0QOvzShrq8XadJPkWk1xig1O
- +jVU9Jz4eHojprWHm7wwIFQ=
-X-Google-Smtp-Source: ABdhPJw/aMkWYOkacTh9GK6zrN6Pxp+9MvTli2gOQggpOzRKne7hPDI4EZw1xVpdukjvOB118IG5Lg==
-X-Received: by 2002:a05:6a00:198f:b0:4e1:abfd:43cc with SMTP id
- d15-20020a056a00198f00b004e1abfd43ccmr1069614pfl.20.1645640998104; 
- Wed, 23 Feb 2022 10:29:58 -0800 (PST)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
- by smtp.gmail.com with ESMTPSA id
- u25sm224039pfh.46.2022.02.23.10.29.56
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 23 Feb 2022 10:29:57 -0800 (PST)
-Message-ID: <0a1d6269-62b2-ebd4-f302-efe14ffa4b66@gmail.com>
-Date: Wed, 23 Feb 2022 10:29:55 -0800
+ id 1nMwXR-00FkTp-J7
+ for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 18:38:59 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21NIcp5C012312;
+ Wed, 23 Feb 2022 12:38:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1645641531;
+ bh=VlmLvNgPCe5L7g2q46zh3SU4EKwQf3NcvwX8kmi+hUA=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=xKURzZxvW+WP32Fpl1fCWJ3EEqsRpzEMUb/t94kLSXojbDmZkQY40tDTRrLPsy3Ys
+ px4LKDr3kAHZKAL36DRdY80IxrkvrMLIolj5woEvWL7Cn9bvGT8eaQGrwxL93v4Y8P
+ wUeSKqdkX3cQHB33RXSXLTu4V/qcTuLjiFt5T+NE=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21NIcpQO112522
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 23 Feb 2022 12:38:51 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 23
+ Feb 2022 12:38:50 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 23 Feb 2022 12:38:50 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21NIcoo4017359;
+ Wed, 23 Feb 2022 12:38:50 -0600
+Date: Thu, 24 Feb 2022 00:08:49 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <broonie@kernel.org>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <Nicolas.Ferre@microchip.com>, <zhengxunli@mxic.com.tw>,
+ <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH 0/4] spi-mem: Allow specifying the byte order in DTR mode
+Message-ID: <20220223183849.xcwciv2ybnkdnauk@ti.com>
+References: <20220218145900.1440045-1-tudor.ambarus@microchip.com>
+ <44f655d027b49b87065915f6ba2744d2@walle.cc>
+ <81d7c569-d6c2-9167-e007-eda72f34842b@microchip.com>
+ <23fbbf2dde387e3832b4ca23d46816c0@walle.cc>
+ <7cd74ef3-5a7d-4e65-3436-ee3399ca56a3@microchip.com>
+ <e39d06684b8f3a63103f40f0e99e030e@walle.cc>
+ <3cd510ad-a6ab-d4a0-92e3-9156a0c7ddbf@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH RESEND stable 4.9] mtd: rawnand: brcmnand: Fixed incorrect
- sub-page ECC status
-Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, sashal@kernel.org, david regan <dregan@mail.com>, 
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "open list:NAND FLASH SUBSYSTEM" <linux-mtd@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20220223174431.1083-1-f.fainelli@gmail.com>
- <20220223174431.1083-3-f.fainelli@gmail.com> <YhZ0vZxlp1VTgNG8@kroah.com>
- <325bb69b-691b-3c61-9578-d42ec33277b8@gmail.com> <YhZ70pTGdGoPEMUb@kroah.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <YhZ70pTGdGoPEMUb@kroah.com>
+Content-Disposition: inline
+In-Reply-To: <3cd510ad-a6ab-d4a0-92e3-9156a0c7ddbf@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_102959_230523_AA9AE9AD 
-X-CRM114-Status: GOOD (  20.61  )
+X-CRM114-CacheID: sfid-20220223_103857_735520_FDE1EE95 
+X-CRM114-Status: GOOD (  27.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,63 +85,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Tudor,
 
-
-On 2/23/2022 10:24 AM, Greg KH wrote:
-> On Wed, Feb 23, 2022 at 09:54:59AM -0800, Florian Fainelli wrote:
->>
->>
->> On 2/23/2022 9:54 AM, Greg KH wrote:
->>> On Wed, Feb 23, 2022 at 09:44:31AM -0800, Florian Fainelli wrote:
->>>> From: david regan <dregan@mail.com>
->>>>
->>>> commit 36415a7964711822e63695ea67fede63979054d9 upstream
->>>>
->>>> The brcmnand driver contains a bug in which if a page (example 2k byte)
->>>> is read from the parallel/ONFI NAND and within that page a subpage (512
->>>> byte) has correctable errors which is followed by a subpage with
->>>> uncorrectable errors, the page read will return the wrong status of
->>>> correctable (as opposed to the actual status of uncorrectable.)
->>>>
->>>> The bug is in function brcmnand_read_by_pio where there is a check for
->>>> uncorrectable bits which will be preempted if a previous status for
->>>> correctable bits is detected.
->>>>
->>>> The fix is to stop checking for bad bits only if we already have a bad
->>>> bits status.
->>>>
->>>> Fixes: 27c5b17cd1b1 ("mtd: nand: add NAND driver "library" for Broadcom STB NAND controller")
->>>> Signed-off-by: david regan <dregan@mail.com>
->>>> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
->>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>>> Link: https://lore.kernel.org/linux-mtd/trinity-478e0c09-9134-40e8-8f8c-31c371225eda-1643237024774@3c-app-mailcom-lxa02
->>>> [florian: make patch apply to 4.14, file was renamed]
->>>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
->>>> ---
->>>>    drivers/mtd/nand/brcmnand/brcmnand.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> Why is this a RESEND?  What happened with the first set?
->>
->> I forgot to copy stable and you and Sasha, wanted to make it clear to the
->> MTD folks why this is being resent.
+On 22/02/22 02:43PM, Tudor.Ambarus@microchip.com wrote:
+> On 2/22/22 16:27, Michael Walle wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Am 2022-02-22 15:23, schrieb Tudor.Ambarus@microchip.com:
+> >> On 2/22/22 16:13, Michael Walle wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+> >>> the content is safe
+> >>>
+> >>> Am 2022-02-22 14:54, schrieb Tudor.Ambarus@microchip.com:
+> >>>> On 2/21/22 09:44, Michael Walle wrote:
+> >>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> >>>>> know
+> >>>>> the content is safe
+> >>>>>
+> >>>>> Am 2022-02-18 15:58, schrieb Tudor Ambarus:
+> >>>>>> Fortunately there are controllers
+> >>>>>> that can swap back the bytes at runtime, fixing the endiannesses.
+> >>>>>> Provide
+> >>>>>> a way for the upper layers to specify the byte order in DTR mode.
+> >>>>>
+> >>>>> Are there any patches for the atmel-quadspi yet? What happens if
+> >>>>
+> >>>> not public, but will publish them these days.
+> >>>>
+> >>>>> the controller doesn't support it? Will there be a software
+> >>>>> fallback?
+> >>>>
+> >>>> no need for a fallback, the controller can ignore
+> >>>> op->data.dtr_bswap16
+> >>>> if
+> >>>> it can't swap bytes.
+> >>>
+> >>> I don't understand. If the controller doesn't swap the 16bit values,
+> >>> you will read the wrong content, no?
+> >>>
+> >>
+> >> In linux no, because macronix swaps bytes on a 2 byte boundary both on
+> >> reads and on page program. The problem is when you mix 8D-8D-8D mode
+> >> and
+> >> 1-1-1 mode along the boot stages. Let's assume you write all boot
+> >> binaries
+> >> in 1-1-1 mode. When reaching u-boot if you enable 8D-8D-8D mode, when
+> >> u-boot
+> >> will try to get the kernel it will fail, as the flash swaps the bytes
+> >> compared
+> >> to what was written with 1-1-1 mode. You write D0 D1 D2 D3 in 1-1-1
+> >> mode and
+> >> when reaching u-boot you will read D1 D0 D3 D2 and it will mess the
+> >> kernel image.
+> > 
+> > But you have to consider also 3rd parties, like an external programmer
+> > or
 > 
-> But this commit is already in the 4.14.268 and 4.19.231 release, why do
-> we need to add it again?
+> Why? If you use the same mode when reading and writing, everything is fine.
+> I'm not sure what's your suggestion here.
 
-We don't, sorry I got an email that the patch failed to apply and forgot 
-to check 4.19 and 4.14 thinking they would not be there.
+So our stance here is that we don't care about external programs?
 
->  > For 4.9 we need the backport, I'll take that one...
+If that is the case then why bother with all this anyway? Since the swap 
+happens at both page program and read, what you write is what you read 
+back. Who cares the order stored in the actual flash memory as long as 
+the data read is correct?
 
-Thanks!
+If we do care about external programs, then what would happen if the
+external program writes data in 8D-8D-8D mode _without_ swapping the 
+bytes? This would also cause data corruption. You can't control what 
+they mode they use, and you can't detect it later either.
+
+I think there is no winning here. You just have to say that external 
+programs should write in 8D-8D-8D mode or it won't boot.
+
+> 
+> > another OS. So, there has to be *one correct* way of writing/reading
+> > these
+> > bytes.
+> > 
+> 
+> 
+
 -- 
-Florian
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
