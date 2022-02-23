@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C43C9C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 11:51:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A13AC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 11:52:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RbutmvelHblQZ+/TYxqFvYrUqNj76KXzg0WfOnyP20w=; b=ilIm7H1XCCPLje
-	62zmtZiA3J1cy7DKii0ExXBci06tB8ozh8/zCM8t0yGkQtI7pbLX+upRwtBrp8YDIClQ8dhIeMtS6
-	aYK6mEJyeOEnF4va5rZFCQibrF97vzw5m0WVfjX2uMhvlxQ6EOmOWYLHBjZa2Zv9dU0mH0TYtFRWT
-	tJdJKtCnG9uH14CaN+mmL4LFTqNNSSlW7i8jSdfEI8pWu5UXyhG64BptE8tElduOf+0EcknclzDwm
-	PBLzzH1fJ+J8yQZft/cBYaRuhmcvEi3aAKT5bLqLHJDNFAHZwTMmrrK5dej8UYhyGTDKjOltSEb2w
-	O0hPneZCDZFOUNTB6xqw==;
+	List-Owner; bh=RbutmvelHblQZ+/TYxqFvYrUqNj76KXzg0WfOnyP20w=; b=hiA4aF7uWspS5I
+	CS4Sjd/s4OOThm+zk3PeamYSyRR8QfN8IFtA0fsTjjT8QLLjJyeNEQXsAAjhQezcVuZBPRoLz7g/j
+	1ydQ6l501tZb/aL5puCYNAiLSuC2u+pQWi+1NP5DYCsAHNhWZ7zxntQHzLLBxO3hnLduA29xa4pHd
+	3rLZt6jCoe9NHK4WEjlpviS5jTxW38l9Cb898De+FQhmUuosGgQKMkOPeNpeFaFqsMpA9DHaIw468
+	raJ5CE7nhxB7kCwN8d5Ye6YhgwsYrFxcGtLKFeMvo5QBL52z1R2p4ddafz/+1DQe5nvvq1WcgrHQj
+	K7nAUl1K5hnl9WkJ0U6Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMqAA-00DzJM-Oy; Wed, 23 Feb 2022 11:50:31 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1nMqBm-00DzpV-FC; Wed, 23 Feb 2022 11:52:10 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMpvc-00Du1c-CK
- for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 11:35:30 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21NBZQui121000;
- Wed, 23 Feb 2022 05:35:26 -0600
+ id 1nMpw2-00DuAp-SX
+ for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 11:35:56 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21NBZrEO023225;
+ Wed, 23 Feb 2022 05:35:53 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1645616126;
+ s=ti-com-17Q1; t=1645616153;
  bh=2LkD5YBwfGax8FSb4kF5KhkTV5+/YMmcx2pkuCKsJLo=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=yDmEvtvhQ1fXTZJd43JYgV7UPHm0BF1rNdCbukARHa338MaaQvqjAl5E+HkpVk9Ig
- CfRvHZV6+/y0d47eJ9VeeQZvqgLe783N0a/p6d9rBNKGXrS3HwfPpTZ6K2uwkSL9vh
- 6N1d37rfqhTvtMK2JbySbVgR0WzIYm3NMEPnPz7A=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21NBZQvd017609
+ b=dOaUk9NSo0VdIIe7QgrZ3+GOz/WPoj5lwUsbxw5yGCV0hJhaFv04FpYiIgGzDNgw5
+ YTbpMn6xI9/OLnjA4GinR1ID2ifXNrinXc932Yv6Z8+7mKfzrLv97wDN5WqVRQAz8P
+ qYZkUHO5lj+36sG2MYCXT07jriw95K+eozbUhgI0=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21NBZqsn068512
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 23 Feb 2022 05:35:26 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 23 Feb 2022 05:35:53 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 23
- Feb 2022 05:35:26 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2022 05:35:52 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 23 Feb 2022 05:35:26 -0600
+ Frontend Transport; Wed, 23 Feb 2022 05:35:52 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21NBZPHC051689;
- Wed, 23 Feb 2022 05:35:25 -0600
-Date: Wed, 23 Feb 2022 17:05:24 +0530
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21NBZpRM026833;
+ Wed, 23 Feb 2022 05:35:52 -0600
+Date: Wed, 23 Feb 2022 17:05:51 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Michael Walle <michael@walle.cc>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Tudor
  Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, <yaliang.wang@windriver.com>
-Subject: Re: [PATCH v4 07/32] mtd: spi-nor: gigadevice: unify function names
-Message-ID: <20220223113524.ct27vofqjk2u34h2@ti.com>
+Subject: Re: [PATCH v4 08/32] mtd: spi-nor: intel: unify function names
+Message-ID: <20220223113551.hibzeyvcov3chulx@ti.com>
 References: <20220221120809.1531502-1-michael@walle.cc>
- <20220221120809.1531502-8-michael@walle.cc>
+ <20220221120809.1531502-9-michael@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220221120809.1531502-8-michael@walle.cc>
+In-Reply-To: <20220221120809.1531502-9-michael@walle.cc>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_033528_529062_60A0E826 
+X-CRM114-CacheID: sfid-20220223_033555_027613_A1934B8C 
 X-CRM114-Status: UNSURE (   9.02  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
