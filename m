@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC40FC433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 14:07:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D17DC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Feb 2022 14:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bE7IsLqePClEDv5DaeSEeHA8t+TfrqBcpdT+epL4X00=; b=jyFXezejUcZP6B
-	O3gWWxkfqcAAn+MQOS7nkH58NaZgQn+TTrm0nyDe/eGiK6q2czjRtk28nbyawIEyMq24iPjCBLABN
-	xDYgA4ISTdHSnwo875LsOX48VlGAYRoKfW2st3kiMKdheyZMgHjSX+ow+FRqIO0bVQM1TUf/AgvJF
-	TxcU6AeqjjKHB2ccVZ//Qg5a2kWUbw7E+d2TmvSXC0Wwuu/W66SGe/937lX++wb+jR0JmUTMzgtQH
-	kdXKOaloSiYCEkHNQuTlgVswveDApMrgdJ7BgwgZ2qlyNRsWuuINVXm8i0iEMKecju63kQWAObqP+
-	pxg08Mf1EiDaJ2Vi6PZQ==;
+	List-Owner; bh=zYMroOidVwTWdNhSG6He+KtYc6PbqIhFC/AK5lQAP/U=; b=lSfGAOF5SRe8UL
+	1PR3b1MS2ektW9bjT78Vr8bPl7m1G4sqsrUhawemHhqK5edHoQuHxsq35EkIxO335HZvvDrF5Spub
+	xqzNSouUGrli1Vo/Q6mOTqVEcfsoZVwtY1u5ZK8dCcI7MI5dT8XmmMLNy06qzFnyuAe2WBMUzihQp
+	2ko+XeFfco4cYCx08afheT49vnAN22OiVZjDM9xTh/UJ3zahWhAwoxK0Vv//cmVHGdLC2LDtunDp0
+	OHfL56HQx3GipL4yuSxHqP69e9qcsP1rosr1s8PzduSTaYewBYyD1urUzEfuh1/GyNN2Fvji2spaJ
+	KvmwlajQHkq56TzCXeXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nMsIT-00EfTc-Du; Wed, 23 Feb 2022 14:07:13 +0000
+	id 1nMsKy-00Eg0O-Ao; Wed, 23 Feb 2022 14:09:48 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nMrwF-00EZTI-It
- for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:22 +0000
+ id 1nMrwH-00EZV6-Vj
+ for linux-mtd@lists.infradead.org; Wed, 23 Feb 2022 13:44:23 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 7BFAF22452;
- Wed, 23 Feb 2022 14:44:10 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 6B96722464;
+ Wed, 23 Feb 2022 14:44:13 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1645623850;
+ s=mail2016061301; t=1645623853;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5l3T+A753bm/ht5hBDi25g4VPQ8SXpBTWIZCLIDWjuQ=;
- b=Y//ncJA62WYbQoKdltkAgN/XG3MDUwmtbmak3OcCnnbIY3UGe+jFdlHBLIKuWs+HVDjVq1
- P003yA8JiFdUfr8MirIxe9mpVDMySqLnNjVhJ4LzkGLZqSWAbli7XNqqXPy53+tnN8DQP2
- LgxtO5+32ocVbaL7BAuHBz5LALRM1Ys=
+ bh=P5dcEej3Ax5+Qxcv48nsSiUuMGpOh3SbGy2WIrEVylY=;
+ b=U4Lun24lNHcTi1yejESuLULpvhWMmUF6I6a+TgvSiVc6x8ZEuVnFU4xaaX2oYegiytN0+R
+ yX91o1ARD3Ae+dAjAu8vxD3+O/aOVMc1MlNeXM1eBMvqq/ftLmqwYs5eMxM0C1MVNo36Fe
+ HJ4JhFOJKleUDR40jpklt7kB6S14v2o=
 From: Michael Walle <michael@walle.cc>
 To: linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
@@ -48,16 +48,16 @@ Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  yaliang.wang@windriver.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v5 14/32] mtd: spi-nor: winbond: unify function names
-Date: Wed, 23 Feb 2022 14:43:40 +0100
-Message-Id: <20220223134358.1914798-15-michael@walle.cc>
+Subject: [PATCH v5 21/32] mtd: spi-nor: move all xilinx specifics into xilinx.c
+Date: Wed, 23 Feb 2022 14:43:47 +0100
+Message-Id: <20220223134358.1914798-22-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220223134358.1914798-1-michael@walle.cc>
 References: <20220223134358.1914798-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220223_054415_851683_B481C5BC 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20220223_054418_438654_F153B549 
+X-CRM114-Status: GOOD (  22.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,96 +74,284 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-To avoid name clashes unify all the function and static object names and
-use one of the following prefixes which should be sufficiently unique:
- - <vendor>_nor_
- - <flash_family>_nor_
- - <flash_part>_
+Mechanically move all the xilinx functions to its own module.
 
-There are no functional changes.
+Then register the new flash specific ready() function.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
-Acked-by: Pratyush Yadav <p.yadav@ti.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/winbond.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/core.c   | 64 +------------------------------
+ drivers/mtd/spi-nor/core.h   | 18 ---------
+ drivers/mtd/spi-nor/xilinx.c | 73 ++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h  |  9 -----
+ 4 files changed, 74 insertions(+), 90 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 3d91888882e4..1e8fb571680b 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -32,7 +32,7 @@ static const struct spi_nor_fixups w25q256_fixups = {
- 	.post_bfpt = w25q256_post_bfpt_fixups,
- };
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 8481272533a3..ae1560250c48 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -598,57 +598,6 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+ 	return ret;
+ }
  
--static const struct flash_info winbond_parts[] = {
-+static const struct flash_info winbond_nor_parts[] = {
- 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
- 	{ "w25x05", INFO(0xef3010, 0, 64 * 1024,  1)
- 		NO_SFDP_FLAGS(SECT_4K) },
-@@ -131,14 +131,15 @@ static const struct flash_info winbond_parts[] = {
- };
+-/**
+- * spi_nor_xread_sr() - Read the Status Register on S3AN flashes.
+- * @nor:	pointer to 'struct spi_nor'.
+- * @sr:		pointer to a DMA-able buffer where the value of the
+- *              Status Register will be written.
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+-{
+-	int ret;
+-
+-	if (nor->spimem) {
+-		struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_XRDSR, 0),
+-				   SPI_MEM_OP_NO_ADDR,
+-				   SPI_MEM_OP_NO_DUMMY,
+-				   SPI_MEM_OP_DATA_IN(1, sr, 0));
+-
+-		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+-
+-		ret = spi_mem_exec_op(nor->spimem, &op);
+-	} else {
+-		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_XRDSR, sr,
+-						      1);
+-	}
+-
+-	if (ret)
+-		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
+-
+-	return ret;
+-}
+-
+-/**
+- * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
+- * the flash is ready for new commands.
+- * @nor:	pointer to 'struct spi_nor'.
+- *
+- * Return: 1 if ready, 0 if not ready, -errno on errors.
+- */
+-static int spi_nor_xsr_ready(struct spi_nor *nor)
+-{
+-	int ret;
+-
+-	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
+-	if (ret)
+-		return ret;
+-
+-	return !!(nor->bouncebuf[0] & XSR_RDY);
+-}
+-
+ /**
+  * spi_nor_clear_sr() - Clear the Status Register.
+  * @nor:	pointer to 'struct spi_nor'.
+@@ -798,10 +747,7 @@ static int spi_nor_ready(struct spi_nor *nor)
+ 	if (nor->params->ready)
+ 		return nor->params->ready(nor);
+ 
+-	if (nor->flags & SNOR_F_READY_XSR_RDY)
+-		sr = spi_nor_xsr_ready(nor);
+-	else
+-		sr = spi_nor_sr_ready(nor);
++	sr = spi_nor_sr_ready(nor);
+ 	if (sr < 0)
+ 		return sr;
+ 	fsr = nor->flags & SNOR_F_USE_FSR ? spi_nor_fsr_ready(nor) : 1;
+@@ -2677,14 +2623,6 @@ static void spi_nor_init_flags(struct spi_nor *nor)
+ 
+ 	if (flags & USE_FSR)
+ 		nor->flags |= SNOR_F_USE_FSR;
+-
+-	/*
+-	 * Make sure the XSR_RDY flag is set before calling
+-	 * spi_nor_wait_till_ready(). Xilinx S3AN share MFR
+-	 * with Atmel SPI NOR.
+-	 */
+-	if (flags & SPI_NOR_XSR_RDY)
+-		nor->flags |=  SNOR_F_READY_XSR_RDY;
+ }
  
  /**
-- * winbond_set_4byte_addr_mode() - Set 4-byte address mode for Winbond flashes.
-+ * winbond_nor_set_4byte_addr_mode() - Set 4-byte address mode for Winbond
-+ * flashes.
-  * @nor:	pointer to 'struct spi_nor'.
-  * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-  *		address mode.
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 3c37b46d60d5..fabc01ae9a81 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -15,7 +15,6 @@ enum spi_nor_option_flags {
+ 	SNOR_F_USE_FSR		= BIT(0),
+ 	SNOR_F_HAS_SR_TB	= BIT(1),
+ 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(2),
+-	SNOR_F_READY_XSR_RDY	= BIT(3),
+ 	SNOR_F_USE_CLSR		= BIT(4),
+ 	SNOR_F_BROKEN_RESET	= BIT(5),
+ 	SNOR_F_4B_OPCODES	= BIT(6),
+@@ -351,8 +350,6 @@ struct spi_nor_fixups {
+  *   SPI_NOR_NO_FR:           can't do fastread.
+  *   USE_CLSR:                use CLSR command.
+  *   USE_FSR:                 use flag status register
+- *   SPI_NOR_XSR_RDY:         S3AN flashes have specific opcode to read the
+- *                            status register.
   *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- {
- 	int ret;
+  * @no_sfdp_flags:  flags that indicate support that can be discovered via SFDP.
+  *                  Used when SFDP tables are not defined in the flash. These
+@@ -405,7 +402,6 @@ struct flash_info {
+ #define SPI_NOR_NO_FR			BIT(8)
+ #define USE_CLSR			BIT(9)
+ #define USE_FSR				BIT(10)
+-#define SPI_NOR_XSR_RDY			BIT(11)
  
-@@ -162,7 +163,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	return spi_nor_write_disable(nor);
+ 	u8 no_sfdp_flags;
+ #define SPI_NOR_SKIP_SFDP		BIT(0)
+@@ -462,19 +458,6 @@ struct flash_info {
+ 		.addr_width = (_addr_width),				\
+ 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+ 
+-#define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
+-		.id = {							\
+-			((_jedec_id) >> 16) & 0xff,			\
+-			((_jedec_id) >> 8) & 0xff,			\
+-			(_jedec_id) & 0xff				\
+-			},						\
+-		.id_len = 3,						\
+-		.sector_size = (8 * (_page_size)),			\
+-		.n_sectors = (_n_sectors),				\
+-		.page_size = (_page_size),				\
+-		.addr_width = 3,					\
+-		.flags = SPI_NOR_NO_FR | SPI_NOR_XSR_RDY,
+-
+ #define OTP_INFO(_len, _n_regions, _base, _offset)			\
+ 		.otp_org = {						\
+ 			.len = (_len),					\
+@@ -564,7 +547,6 @@ int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len);
+ int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
+ int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr);
+ 
+-int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
+ ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+ 			  u8 *buf);
+ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+index 07dd11788df5..05c7fe843a7d 100644
+--- a/drivers/mtd/spi-nor/xilinx.c
++++ b/drivers/mtd/spi-nor/xilinx.c
+@@ -8,6 +8,27 @@
+ 
+ #include "core.h"
+ 
++#define SPINOR_OP_XSE		0x50	/* Sector erase */
++#define SPINOR_OP_XPP		0x82	/* Page program */
++#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
++
++#define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
++#define XSR_RDY			BIT(7)	/* Ready */
++
++#define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
++		.id = {							\
++			((_jedec_id) >> 16) & 0xff,			\
++			((_jedec_id) >> 8) & 0xff,			\
++			(_jedec_id) & 0xff				\
++			},						\
++		.id_len = 3,						\
++		.sector_size = (8 * (_page_size)),			\
++		.n_sectors = (_n_sectors),				\
++		.page_size = (_page_size),				\
++		.addr_width = 3,					\
++		.flags = SPI_NOR_NO_FR
++
++/* Xilinx S3AN share MFR with Atmel SPI NOR */
+ static const struct flash_info xilinx_nor_parts[] = {
+ 	/* Xilinx S3AN Internal Flash */
+ 	{ "3S50AN", S3AN_INFO(0x1f2200, 64, 264) },
+@@ -38,6 +59,57 @@ static u32 s3an_nor_convert_addr(struct spi_nor *nor, u32 addr)
+ 	return page | offset;
  }
  
--static const struct spi_nor_otp_ops winbond_otp_ops = {
-+static const struct spi_nor_otp_ops winbond_nor_otp_ops = {
- 	.read = spi_nor_otp_read_secr,
- 	.write = spi_nor_otp_write_secr,
- 	.erase = spi_nor_otp_erase_secr,
-@@ -170,25 +171,25 @@ static const struct spi_nor_otp_ops winbond_otp_ops = {
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
- 
--static void winbond_default_init(struct spi_nor *nor)
-+static void winbond_nor_default_init(struct spi_nor *nor)
++/**
++ * spi_nor_xread_sr() - Read the Status Register on S3AN flashes.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @sr:		pointer to a DMA-able buffer where the value of the
++ *              Status Register will be written.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
++{
++	int ret;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_XRDSR, 0),
++				   SPI_MEM_OP_NO_ADDR,
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_IN(1, sr, 0));
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = spi_nor_controller_ops_read_reg(nor, SPINOR_OP_XRDSR, sr,
++						      1);
++	}
++
++	if (ret)
++		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
++
++	return ret;
++}
++
++/**
++ * spi_nor_xsr_ready() - Query the Status Register of the S3AN flash to see if
++ * the flash is ready for new commands.
++ * @nor:	pointer to 'struct spi_nor'.
++ *
++ * Return: 1 if ready, 0 if not ready, -errno on errors.
++ */
++static int spi_nor_xsr_ready(struct spi_nor *nor)
++{
++	int ret;
++
++	ret = spi_nor_xread_sr(nor, nor->bouncebuf);
++	if (ret)
++		return ret;
++
++	return !!(nor->bouncebuf[0] & XSR_RDY);
++}
++
+ static int xilinx_nor_setup(struct spi_nor *nor,
+ 			    const struct spi_nor_hwcaps *hwcaps)
  {
--	nor->params->set_4byte_addr_mode = winbond_set_4byte_addr_mode;
-+	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
+@@ -83,6 +155,7 @@ static int xilinx_nor_setup(struct spi_nor *nor,
+ static void xilinx_nor_late_init(struct spi_nor *nor)
+ {
+ 	nor->params->setup = xilinx_nor_setup;
++	nor->params->ready = spi_nor_xsr_ready;
  }
  
--static void winbond_late_init(struct spi_nor *nor)
-+static void winbond_nor_late_init(struct spi_nor *nor)
- {
- 	if (nor->params->otp.org->n_regions)
--		nor->params->otp.ops = &winbond_otp_ops;
-+		nor->params->otp.ops = &winbond_nor_otp_ops;
- }
+ static const struct spi_nor_fixups xilinx_nor_fixups = {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index fc90fce26e33..b44b05a6f934 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -86,15 +86,6 @@
+ #define SPINOR_OP_BP		0x02	/* Byte program */
+ #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
  
--static const struct spi_nor_fixups winbond_fixups = {
--	.default_init = winbond_default_init,
--	.late_init = winbond_late_init,
-+static const struct spi_nor_fixups winbond_nor_fixups = {
-+	.default_init = winbond_nor_default_init,
-+	.late_init = winbond_nor_late_init,
- };
- 
- const struct spi_nor_manufacturer spi_nor_winbond = {
- 	.name = "winbond",
--	.parts = winbond_parts,
--	.nparts = ARRAY_SIZE(winbond_parts),
--	.fixups = &winbond_fixups,
-+	.parts = winbond_nor_parts,
-+	.nparts = ARRAY_SIZE(winbond_nor_parts),
-+	.fixups = &winbond_nor_fixups,
- };
+-/* Used for S3AN flashes only */
+-#define SPINOR_OP_XSE		0x50	/* Sector erase */
+-#define SPINOR_OP_XPP		0x82	/* Page program */
+-#define SPINOR_OP_XRDSR		0xd7	/* Read status register */
+-
+-#define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
+-#define XSR_RDY			BIT(7)	/* Ready */
+-
+-
+ /* Used for Macronix and Winbond flashes. */
+ #define SPINOR_OP_EN4B		0xb7	/* Enter 4-byte mode */
+ #define SPINOR_OP_EX4B		0xe9	/* Exit 4-byte mode */
 -- 
 2.30.2
 
