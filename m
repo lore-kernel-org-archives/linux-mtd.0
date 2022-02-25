@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F153C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 14:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C36BAC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 14:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:Message-ID:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=EFDaSmeA7+b4aB2hOUiOoS3+EAYCvVR0yGIYmlaVfzc=; b=CJdKdY37VeZtWwNh+/7Ro764Z8
-	xkSiwhWLHbe5t3leg2/Zw9x5eMZ7qVwZwquo8Dkgm1J7+6Ak2xZ63b+5lM/z8K9hAyJSdTmxZobAA
-	FFytmgSrHSww7V4VVYS0WhwaGEqc0A9xxeK2e9uZlfGQ0/VrJk1ZWeH1G7hd5LYc1DPOrSl7YFsri
-	rdMMbbuKrGRonYkz8zHT9ZiLiAF7RNtG14J7tGoWO39ChPCUDG9ff9wLwWZvsPY1M//b2A9XTQ5ze
-	7zWPzs4/M9p4ayfaYLtWW9HmzuIi+SSHtOqwUPsR7TFQniDgJsAjmHDilix2PZl7ldZ+8pjAsNSMm
-	//6cETNA==;
+	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=020XyvlbqAH5niR7TBkX63+ftQFlSH/INdSMmYncuTY=; b=v0bBmJJUM3jQlK
+	+u87j2I3BZ4xjr3HTBbW9VoBsoAzusVlwMUHUBPuWsfY9OdxBmf7EYyeue9deOLWkyHsz79V/xOBJ
+	xlIPgraEV5p3oJnLzuSNfGD5cVlBerEEmZAD8L0DZstuo9kG2b6YLN6jzdzJKZm3YrilcibRgH/KY
+	lYKq+/XMqU8yUAcmCLxDBAPU27v8DniHBJEwjVpmjTOGLTEgn8QL0Eldga/zryLDCAh1r8ponxKp3
+	G5D55wQYOdMZAIeXvb9uJhiRIcrXnQO9QDa/IqiczV+RdHMSNvLwFETPtVN2WTBQgol4lNEW+ifvD
+	8QJHL+rZyv44XPh/Q+/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNbPQ-005MYt-7K; Fri, 25 Feb 2022 14:17:24 +0000
-Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
+	id 1nNbXW-005OOz-P9; Fri, 25 Feb 2022 14:25:46 +0000
+Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNbPL-005MX3-PP
- for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 14:17:21 +0000
-Received: by mail-lf1-x136.google.com with SMTP id w27so9705680lfa.5
- for <linux-mtd@lists.infradead.org>; Fri, 25 Feb 2022 06:17:19 -0800 (PST)
+ id 1nNbXT-005ONu-16
+ for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 14:25:44 +0000
+Received: by mail-lj1-x22b.google.com with SMTP id f11so7605716ljq.11
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Feb 2022 06:25:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:to:cc:from:subject
- :content-transfer-encoding;
- bh=rJ92aLNU9wPv3t6R7fBex7IEFcF5Iz2GGNs181fIDJ8=;
- b=poQKUZ/gwvpRquf/bgVD5PGUouiiRJ7wHBt7eIk8mZmGujIQuzfaUNOQN4zmTDrsga
- xG7qLRGroHpRM2nKdlc1lh5HWBtnhwJCerLLHBL9uutempmmsiMoqubwmZkUZ0bX1OYf
- WvSwEhsf0s9WISG8pqtQyLUjbBYtZciGEsF1qa/++hxvrdgx/hbkkPeOKOGVLd8aqfHd
- E0S9tKq4LgR+RgdQVFZdVCWLDTVUOFqKgT0pZq0HSIUSjMCdYlI5+fPnTOInyriO7n0h
- tlv/r2iolf1D9iXsT1CLc60eQHBoluNQnMDZ05ApVI2YuvWbACg8xL4tfcxTCweA4h81
- Q8aw==
+ h=message-id:date:mime-version:user-agent:subject:from:to:cc
+ :references:in-reply-to:content-transfer-encoding;
+ bh=R1A2OSQSeW4oMLIYgzlGVxkdwG6vwFpDTzyraNQNfpo=;
+ b=MXHKF8kC54w6ziv75OaMK1Y7uZkdjnd7A24+L0XlNRId/ENywDFGMUUnf+9dbJv/3Q
+ HGOdfVr8U6202+IjcnUYR2g74f1KeRcyelgmn463dShp5/FEhpaijxErrWQRj8BoJT7B
+ mh7ocPDtm/Vwk+EQLTmZ/tJ1yYoSrkx2beXZvknp7WDJVR8zZXzKu3HO4fz8aDmz9Hum
+ 7/es1F/+71iUHTt+YBRKHjukFVisxO5N49X1Z1SBj2N6BUwn4MzwRaIy19Qp/OL/mSmw
+ pqh9AK77HGkzQQEYd0FEo6CPfFVZ7YwkWBdXVRqpEuVxFLuEoS76GE7mNf+/VpdbYKY0
+ +qeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:to:cc
- :from:subject:content-transfer-encoding;
- bh=rJ92aLNU9wPv3t6R7fBex7IEFcF5Iz2GGNs181fIDJ8=;
- b=QzXuzVWm4wJ7FJoI7QQVvKheAHPfl0XpUHngWw7OMtSB21gM0Jv4RR41Y9oSFmHF1R
- nMhPf3KidQ1LgWzX6kJF9k7VX4JbhtD/rrun2Jr0fIlZW3J7gL4zT/fC/lnPNNeg1F6o
- eDM+EAU/8LAuoCC7B43JVX1xraViyXTA6qski5nTOLDbmQhX1WfHUjmcTDwUxTuqb3dM
- sFwVypS0EdN+Hiy1gdTNY/6uHTlQCsGny1qkskLYdpcLCKnwOirdytLAP9NIHkKlJIf6
- Z/cwKABNnjpsEOUDTmcVR+vkjBaCaNoROKlVYUoNlkdo6EHR9ed49B2XNKl3W8VjP5pK
- zzJw==
-X-Gm-Message-State: AOAM530K9Jg2guY3EP7DXcjhTH1c1/gvzVlpq5kw9C5ZprakSW9JAqoF
- ZxWGD8Mrs7di6D0YCayBGR+RnM315tU=
-X-Google-Smtp-Source: ABdhPJy81crmg+fOh13iafRjcyh2INnj6EQtlCHk/JUpjO4RellPVy4Kc7ixCabFvvKXuuYCseBnBg==
-X-Received: by 2002:a05:6512:1155:b0:445:8430:57d1 with SMTP id
- m21-20020a056512115500b00445843057d1mr1423721lfg.393.1645798638265; 
- Fri, 25 Feb 2022 06:17:18 -0800 (PST)
-Received: from [192.168.26.149] ([194.187.74.233])
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :from:to:cc:references:in-reply-to:content-transfer-encoding;
+ bh=R1A2OSQSeW4oMLIYgzlGVxkdwG6vwFpDTzyraNQNfpo=;
+ b=Ofbs2L5C/l6Yhmnba6wVj+dpcwBpgvkD4GIMQjN0hFpLzEKHYlnUoHWzt5FQqFJaRe
+ RM0vimBeFtAbmR0DIznmKJxZd3HEc2e3140m0EFFxdcD7rKz5GpLcmbDAOKM1C7Q4t6+
+ vvUUw3ceAgdjWgQFQBBg9DSqy+6xiWVDiBUFsR5VJmuxrjuKNp8XhpxaqI7uKZ/FAsBm
+ eZu/PDfFvNZCEKvAYM0+Bxuu4ET5BE19lLtvBxdnyFji5BSE5PCBxinLR9p/AyQX293+
+ mL2VYIlNst9aodSo52qBTCVqIUsVyAK1sSQ4krJstmZbC8mWZhY5d7JSmYPnwuYXiDOq
+ UwNQ==
+X-Gm-Message-State: AOAM533p/g+HnxaYT/lNjvCGci1yAZ5eL37s7JIReNR64FmlykjbTtYW
+ dY3tt4WtxVbCpebJK9OQWDk=
+X-Google-Smtp-Source: ABdhPJzkCNG7MC/n5cnHDaMTjKAlplA0LroUgUFfScY9ZA8qaOLrOlV2szVCReFgHnfaLRryI8Brvw==
+X-Received: by 2002:a05:651c:329:b0:23d:30aa:1670 with SMTP id
+ b9-20020a05651c032900b0023d30aa1670mr5489985ljp.370.1645799141444; 
+ Fri, 25 Feb 2022 06:25:41 -0800 (PST)
+Received: from [192.168.26.149]
+ (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
  by smtp.googlemail.com with ESMTPSA id
- j10-20020a056512344a00b004430ccafa60sm213037lfr.253.2022.02.25.06.17.17
+ x33-20020a0565123fa100b00443d3cffd89sm216225lfa.210.2022.02.25.06.25.40
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 25 Feb 2022 06:17:17 -0800 (PST)
-Message-ID: <7bc0ee19-2943-3503-046e-130de73a2cdf@gmail.com>
-Date: Fri, 25 Feb 2022 15:17:14 +0100
+ Fri, 25 Feb 2022 06:25:41 -0800 (PST)
+Message-ID: <a03b8735-685f-d488-a3fb-81d017358808@gmail.com>
+Date: Fri, 25 Feb 2022 15:25:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
  Thunderbird/96.0
+Subject: Re: ubifs: handling dirty data (writing back) + power cuts
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 To: Richard Weinberger <richard@nod.at>,
  MTD Maling List <linux-mtd@lists.infradead.org>
 Cc: "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: ubifs: handling dirty data (writing back) + power cuts
+References: <7bc0ee19-2943-3503-046e-130de73a2cdf@gmail.com>
+In-Reply-To: <7bc0ee19-2943-3503-046e-130de73a2cdf@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220225_061719_874680_6424678D 
-X-CRM114-Status: GOOD (  10.33  )
+X-CRM114-CacheID: sfid-20220225_062543_122394_5CFA3081 
+X-CRM114-Status: UNSURE (   9.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,48 +87,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-
-my system is setup as follows:
-
-# mount | grep ubifs
-/dev/ubi0_1 on /mount/ubifs type ubifs (rw,noatime,assert=read-only,ubi=0,vol=1)
-
-# cat /proc/sys/vm/dirty_writeback_centisecs
-500
-# cat /proc/sys/vm/dirty_expire_centisecs
-3000
-
-(5 s and 30 s respectively) and I'm currently debugging some data issues
-related to power cuts.
-
-
-My actual problem is related to ubifs behaviour for power cuts happening
-between 5 and 35 seconds after saving a file:
-date > /mount/ubifs/test.txt && sleep 15 && echo CUT POWER *NOW*
-
-On the next boot test.txt exists but it's EMPTY (file size 0).
-
-For newly created files above behaviour is not the worst one - however
-I'd expect such file to not exist at all.
-
-The biggest problem is when dealing with existing files. In such case
-power cut means loosing it completely. I don't get *old* content nor
-*new* content.
-
-
-I noticed this behaviour with kernel 5.10 and also reproduced it with
-5.4, 4.14 and 4.4.
-
-Is this a bug or some quirky feature? Can I do anything to avoid such
-situations except modifying all user space to call fsync() when needed?
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gMjUuMDIuMjAyMiAxNToxNywgUmFmYcWCIE1pxYJlY2tpIHdyb3RlOgo+IE15IGFjdHVhbCBw
+cm9ibGVtIGlzIHJlbGF0ZWQgdG8gdWJpZnMgYmVoYXZpb3VyIGZvciBwb3dlciBjdXRzIGhhcHBl
+bmluZwo+IGJldHdlZW4gNSBhbmQgMzUgc2Vjb25kcyBhZnRlciBzYXZpbmcgYSBmaWxlOgo+IGRh
+dGUgPiAvbW91bnQvdWJpZnMvdGVzdC50eHQgJiYgc2xlZXAgMTUgJiYgZWNobyBDVVQgUE9XRVIg
+Kk5PVyoKPiAKPiBPbiB0aGUgbmV4dCBib290IHRlc3QudHh0IGV4aXN0cyBidXQgaXQncyBFTVBU
+WSAoZmlsZSBzaXplIDApLgoKRldJVyBJIGdldCBhY2NlcHRhYmxlIHViaWZzIGJlaGF2aW91ciBp
+ZiBwb3dlciBjdXQgaGFwcGVucyBpbiBsZXNzIHRoYW4KNSBzZWNvbmRzIGFmdGVyIHNhdmluZyBh
+IGZpbGUuIEZvciBleGFtcGxlOgpkYXRlID4gL21vdW50L3ViaWZzL2Zvby50eHQgJiYgc2xlZXAg
+NCAmJiBlY2hvIENVVCBQT1dFUiAqTk9XKgoKT24gdGhlIG5leHQgYm9vdCBmb28udHh0IHNpbXBs
+eSBkb2Vzbid0IGV4aXN0LgoKCkV2ZXJ5dGhpbmcgd29ya3MgZmluZSBmb3IgcG93ZXIgY3V0cyBo
+YXBwZW5pbmcgYWZ0ZXIgMzAgKyA1IHNlY29uZHM6CmRhdGUgPiAvbW91bnQvdWJpZnMvYmFyLnR4
+dCAmJiBzbGVlcCAzNSAmJiBlY2hvIENVVCBQT1dFUiAqTk9XKgoKT24gdGhlIG5leHQgYm9vdCBi
+YXIudHh0IGV4aXN0cyBhbmQgaXQgY29udGFpbnMgYSBkYXRlLgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
