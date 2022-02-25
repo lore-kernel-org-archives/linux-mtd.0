@@ -4,166 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11BDDC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 14:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F153C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 14:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
-	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UzIlHl99HuCZDCs4m7yJPTo9xWsHIFh0XFeCG6M0VZ4=; b=WBcynKvYjUIBLU
-	JAw8WmKlVRHMdmQFcpFNmx3e5sdDdM1j8uq7m/iNqOjZQxDHEIoP3WaH1OkyPcC9V6QCmikvt8YIz
-	RpaRjgO1oWS9k/djZzyGOrGZoDFdpVB1x6gBQTns5jIXQL6I+7oSGD+Vqy3IE0aJ1e6+B5lrY0pnD
-	4nyDG68YYT9mUvyZ3biC7VIwqe98gbLBqaPI4YpLRAtYZt0k25Y3zfX8UiyNgv51l0TWoNJr6rjsu
-	u5GOJg5nBHvuK4pOeWM+Sc3r3Lh1rNVQ+CkhWwetdWAiQ05ss5zriH97l0QKC9FlrWr6lsrah2X6H
-	MH2ZfEBZYLcZPoFWXyhA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:Message-ID:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=EFDaSmeA7+b4aB2hOUiOoS3+EAYCvVR0yGIYmlaVfzc=; b=CJdKdY37VeZtWwNh+/7Ro764Z8
+	xkSiwhWLHbe5t3leg2/Zw9x5eMZ7qVwZwquo8Dkgm1J7+6Ak2xZ63b+5lM/z8K9hAyJSdTmxZobAA
+	FFytmgSrHSww7V4VVYS0WhwaGEqc0A9xxeK2e9uZlfGQ0/VrJk1ZWeH1G7hd5LYc1DPOrSl7YFsri
+	rdMMbbuKrGRonYkz8zHT9ZiLiAF7RNtG14J7tGoWO39ChPCUDG9ff9wLwWZvsPY1M//b2A9XTQ5ze
+	7zWPzs4/M9p4ayfaYLtWW9HmzuIi+SSHtOqwUPsR7TFQniDgJsAjmHDilix2PZl7ldZ+8pjAsNSMm
+	//6cETNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNbHH-005KtB-HS; Fri, 25 Feb 2022 14:09:00 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1nNbPQ-005MYt-7K; Fri, 25 Feb 2022 14:17:24 +0000
+Received: from mail-lf1-x136.google.com ([2a00:1450:4864:20::136])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNbHD-005KsK-Ho
- for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 14:08:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1645798136; x=1677334136;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=raChaZbnh0Q8IMAD8/RwT+IKIKVz8EVF4L4Wv0B4KtQ=;
- b=0csGQabeMvJz3jv+XKvIyi+E8hiTKp03Ofm+fmiRC/2Ap1y7p1HHv5J7
- 51oIUXMBWAZHRcl6e/4hg6ohjOh4OW5nZkrwTQnIF3x4u/LWmoUgfBs0e
- 2efak3ygaEtfZBVwyo3HPg5C0jq/ip60zA9cR5WbNeBtrGcvWAZs7kEcP
- phLHu9QPXp0kefqVWW/rxokLbcS4hx/sfVTdZGA3sRJXhCbRXkBei14Fu
- PCHTbi3Jx17ltSBQlAjwySi/tdSbRWSWTHgtHCGNJkxiIOxE/EG/p9rfa
- VE9RrnKCuxE9lWdXmewwzhQVa5E46IaeN9RZJ/XVGNcITxrsa3phFqd89 w==;
-X-IronPort-AV: E=Sophos;i="5.90,136,1643698800"; d="scan'208";a="147288136"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 25 Feb 2022 07:08:55 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Fri, 25 Feb 2022 07:08:54 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17 via Frontend
- Transport; Fri, 25 Feb 2022 07:08:54 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gal7/poxo1tCNswYXEyrfNjCCOeCLb3WIrUopZ4fG7nO07jS4s6tYmQar9z/qBY0maV7UZBver0HuFpefRgbFogV0WCRa2vfSg6dfLt/RLkI7ZXSrgYTrjLQryT8HzKF3e9BGkg3vZvdf3j5ApRPwfbFUqg9dhDlEhu+gEqvVFPb6dnZXQ7y+fJkiBYQga+TZUaUs7AdIvQpdVrexpsv//wEQ0fQLxSpVe9ejiQcpDGVG6RUyVhu+eZcqUHyxoLKHR0r3ykfM8JVO49tw7DcfWnUy25Lq2GFz/Slc5VY9XcTyU2OXhCU4RATKsB2AEpVcAXsfWnAE/GKo6+pgm8+mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=raChaZbnh0Q8IMAD8/RwT+IKIKVz8EVF4L4Wv0B4KtQ=;
- b=UN+Xn7XYRdh46qhQ7iX447Te7oCt3C7WJ2zD8o2nUwvv2CSOU8OLqg2ibNUhGg81HaMzd4QCxiiN2M4L0IzCaruHhNcuM1RURuTRG7S/QvhEeb4h7VU5lK9n9RxThSpvCiFmq5QBY9ZvNQvmYPcU6z6VU1vipZ9XG7SXFPWHfdCjHWviPiJFsnNJiZ1Xb9R61p1Zn8lXkCea5LWdrSkt59y8AXKJfhIznlxRSP5xjvRnBSr0ZbLF7TOdNaiHV08WyciWaS1yZ8JOR63IimfD2rj8yhUvdDszJ1IOLgUsuqiqyAdu6D3hcxohx3TSKgacB3sz34c4QzIpwiPkY2aKrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=raChaZbnh0Q8IMAD8/RwT+IKIKVz8EVF4L4Wv0B4KtQ=;
- b=D/+GzGiU/KoWkfAP4/pzzL32AFPrpGuQync3vKS5b1eMPmOp80z3npVvW4iRuzLGchWNmRCCNOj3pbRtsOXbF/ZdtF7bbPmnTSSkegSxdwvW51FyiKo3mjJjuJp0AxCx7IqZAV2ASClkAZMwDT2NQ7DQz+gWbhwUElFs+GQM4qQ=
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by SA0PR11MB4766.namprd11.prod.outlook.com (2603:10b6:806:92::20)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.23; Fri, 25 Feb
- 2022 14:08:41 +0000
-Received: from SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::dc94:3c7c:8ef8:21b9]) by SA2PR11MB4874.namprd11.prod.outlook.com
- ([fe80::dc94:3c7c:8ef8:21b9%5]) with mapi id 15.20.5017.026; Fri, 25 Feb 2022
- 14:08:41 +0000
-From: <Tudor.Ambarus@microchip.com>
-To: <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-CC: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <yaliang.wang@windriver.com>
-Subject: Re: [PATCH v5 31/32] mtd: spi-nor: slightly change code style in
- spi_nor_sr_ready()
-Thread-Topic: [PATCH v5 31/32] mtd: spi-nor: slightly change code style in
- spi_nor_sr_ready()
-Thread-Index: AQHYKlExHTVlrazkrEq7AA+E3sXd8Q==
-Date: Fri, 25 Feb 2022 14:08:41 +0000
-Message-ID: <61aa4b62-1524-719a-2fe4-0c8661aadcf2@microchip.com>
-References: <20220223134358.1914798-1-michael@walle.cc>
- <20220223134358.1914798-32-michael@walle.cc>
-In-Reply-To: <20220223134358.1914798-32-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0848434d-784a-4b1e-66a8-08d9f868539c
-x-ms-traffictypediagnostic: SA0PR11MB4766:EE_
-x-microsoft-antispam-prvs: <SA0PR11MB4766BFC547CD120637641031F03E9@SA0PR11MB4766.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M631sOmHJG0CQ4hS7DlBFlicsM0NDyDfp1wEP0uoEhWyDPWJfJeILFTA4Jfxc0fdBohD6MoG5v0OLdAFMnH6UdAXfIAtWi3n094sbMzo0SRe7ehaZlfBVmVjsHrdZ5VeRluRp8GI8Xb59OPrdB7QX3T1Tzx6OdTlkBHnT1aL3AfpJc4Ypzx2/Mws2+2gPGrg9jFLjUQ5/ZQE0FYmugcIIZhd9EXxE339vyKK1svqyvfmeOifYQXemQUl56RE8co7a7wee29w78rizCFJNgqOfV6lbggDg5YWk1/9cX72TBdi+t9Euf+RhZQI/+rmwAl9XEoDjAY3Lb/UP2EgbfmQ+/Umuq5O/Y1UJO9U49JRojPR9okTPuzFX8m46v44M6wVcwUHIGUjDqYdHHeWqjrVa2QacnrpWuFRBAwUiBpR9W9iHgeT3ofIC528mYqpt4Wan44xp7/JEh+fu956qboZUw1agid/y16XmGyXJkqDpDCbDrKj1gBnKlxHZmlEa0eWf9mz2IowoITeIQfP7m2rnCjt53ky+xmlWr9PQj7boV2WcYZG1c0eMjnzeFNIF/k9Urs3rRwGO6ukkMvnTKDNhKyZ+ccN3drIEc2/7dQBL3Z6D8ogzAteX7v99eM6ItGr2lifed0EkHJB03bJvghdfh4ThyACDBPMRUZH4VhMtfduXGEyfzhJOxhtmpYwR9TnV/HKhMRK2lFIB4GpE8KXD6YSP2JPXF+IUhJlgflPiYg/rY7eVFy4c4KceePvAzwFNYUgsRsvw7cOFFfIBZm38g==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(366004)(4326008)(8676002)(2616005)(66446008)(66476007)(66556008)(66946007)(91956017)(76116006)(64756008)(6506007)(2906002)(508600001)(53546011)(86362001)(38070700005)(4744005)(8936002)(71200400001)(5660300002)(31696002)(38100700002)(122000001)(6512007)(6486002)(54906003)(110136005)(26005)(31686004)(186003)(316002)(36756003)(83380400001)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a3k2VThKY0ZsaU5nYkIxQ3hkaVVGS0RUWGtoK2kxNlJjcTJkMENhZ2kwK0d0?=
- =?utf-8?B?c0xpY21FaWRSQmNHUlNHL0Qra0xKNkNoZEdRa1dYQUd5NXA5eEhLNXI2eE1X?=
- =?utf-8?B?NW1Yb2tKQlNHeEx1cGJZYkZscGhzYXVVRjVDSG5aSCs3a1FaVHF6SlJFaXF3?=
- =?utf-8?B?Y0c4R05CeDFjMmRMTFo1STJ6eFRpaVhYOURremNQMkFEV25URktxd04wTzdw?=
- =?utf-8?B?Yy9Vakp6S084TUJHOG0vdjFLRVBrcTRlNjhNeVZXTStMcTUrV3l0RERMSUtS?=
- =?utf-8?B?aEpscUthRUt4NEM4UUgzYUFFanUxRkF1T0g0dzJZYmF6VjdMbis4NFY4UEFI?=
- =?utf-8?B?ZG1VUzcyL2NWbkV3VFBMdTI3TjE5U2FBZzB1YmZ3d3EvZEgvdTg3U0xoUXhW?=
- =?utf-8?B?WEtwTHRRaXhhaDhEc3ZTSnBFZVVkWFQzNjJCNWtXTFlKZVFRWGVyN1pEdDlO?=
- =?utf-8?B?UDlPbUlqUXFLUkZ5aEhxODlNeEZpbHZKdGxyRmpITXo5T1RudU5JQ2pNNUtO?=
- =?utf-8?B?eXJXb3pSaTFWSXBMaHRLcmFjajhmUnVTQ0lGWnhXYVhPUFhyVU1raEFFaXpr?=
- =?utf-8?B?WEZJcUt5WmVLWWwyMk5lcndKQ1VScDFVY3YvNlJrWjh2QUVsNjhkYnBYRnBC?=
- =?utf-8?B?NE9NU0dzSm5Mak5yRCs2SkEvTEFsTllBNjB1bHJnKzk3NmR6TFZkb1F6RW1M?=
- =?utf-8?B?M1h5bk5kVGZFTnVoeG1YODQzQ0hFazZoQWV1V1lpNkV6Z3JwcUQyeGRjdFcv?=
- =?utf-8?B?QjdZazdxcnh1YXZVaURJZ2FtU2N5RUFpQlp4dmJZamFGcENjZmdab1BEampl?=
- =?utf-8?B?TTk2Mm03UktUQlNpZ3BmMjdVOXZzR3NwRElZUHJnbzZxT3NRSHhiWi9jUXFJ?=
- =?utf-8?B?VlZDZDM2REF3SVRmOW40NitnZGR6RjZzWHRGUXF4NFNPMURKenRFQjVhYUlK?=
- =?utf-8?B?TG9xSXluOFhmMWxDeFVXZGxBbzJLaXBYdUF5MzVyRFVwY2tqdnB1OC9xNko3?=
- =?utf-8?B?cFZWQXJUU1YvREFzajRaSUs2U3d5VXRxWGhiMW5nd25hVjRiVUhKbW56NTRP?=
- =?utf-8?B?L1YyeHZwWEY4ZmtjQmJEeXhZOEJGRVVNSGU3UE5sSFNVMGlQUW5sSjMwbXJF?=
- =?utf-8?B?bUJxZ3dLSjdVOEFKdXlJNnY3d3EyejFnRDc3ejJtbmVJSVArK3FzTXZqejdZ?=
- =?utf-8?B?YzNUSkx4UHBEemcvcFgwS3BKWFFyQlhiV2w0OUkzQ1ZVbnMyKzlwUkRLZUV0?=
- =?utf-8?B?cXFpN3RCaDlDZzR2bjBSMVVoRkp6SmlyaVM2L2VnQllReUc0dGdES3lOY3oz?=
- =?utf-8?B?clFpa3dpRlVLdlE2VFcxc1hIOXZHU09odXJXVzkxalhiTnUvR2V4OWxXZjZi?=
- =?utf-8?B?TVQ4bXR0Tkl1ckNRaEg4T0xYcU9NdDMwbzhQK2pQU2F5M2pxSlJ0WStacEpH?=
- =?utf-8?B?QVFKTG1GWWhGenI0TWdiL2I1ZVdWTEFDc3huNFlCbFhjamRBcjVHWFF5RjFz?=
- =?utf-8?B?VDc4QkJXRjNxRmR4ZWxDd1BYY1B6K0NVQm5YbjhvYVorUURNdzBvMTZTL1g2?=
- =?utf-8?B?b1pFVkNrODdDaENHb0JJc0pBVUIwaVJHemluMXM3SUVCSXBEQlVPcjg0a3Jw?=
- =?utf-8?B?UmdzTVU1TVozeHU0NTEzUWQyRUJCd0xsbEtCa3MxWDZyQlBhMWlicEFaQk9Z?=
- =?utf-8?B?Y3BKR1M2SEl1NTBvdGFqODEycXdFNkZYT1Z6K1ZUVE0zK1BhQkt1TW9IZHlO?=
- =?utf-8?B?N1Q1M01HVGhvVklvWkxTaGF1Q0VMWEdXUjNoTGNtMzVBTEIweVpxdmFpRW1r?=
- =?utf-8?B?YzM5djJGeG42SzNqTjNIQnhCcElCK1B1Z2FzNXFsSHM2UmFIbGtWOTRqaFdS?=
- =?utf-8?B?eS9VbDZFRXJZVzluOG8wcTFVVlhrb1h6RFVGaE5TWXFDUWlGR2k2dVdxUFRh?=
- =?utf-8?B?REtMOGt2OVR2bDhYUitvVEI2U05wUUdmbjlQQUttd2p6dzZwWlJHcjRrSXlw?=
- =?utf-8?B?dUNvYStUMlVDOUtvUmhrRUdwOHBOWUVPOU9YVVdnaUtUTWs0VHVZMm9TQUw4?=
- =?utf-8?B?ZHdQRFFzU25EZEdGeU15L0dodmlnRmlROEZBZzhWN2hQOW9NK0M2Q09NcDN0?=
- =?utf-8?B?U0F1c1RZOFFqOG5UUElnZW9aMDkrZHYvTm5RVHA2KytKZnpBL3NUYTN2RnYw?=
- =?utf-8?B?MmQ3QWdGYWh3WVZIdS8zZW5INERIYS9TT0E0V0FTbjhCN2cyVzhzK09tY2F4?=
- =?utf-8?B?TVZTVTN1LzZ4Z3hmS3J5eFB3b2pBPT0=?=
-Content-ID: <0F260AF77AE28446A4724B269062733A@namprd11.prod.outlook.com>
+ id 1nNbPL-005MX3-PP
+ for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 14:17:21 +0000
+Received: by mail-lf1-x136.google.com with SMTP id w27so9705680lfa.5
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Feb 2022 06:17:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:to:cc:from:subject
+ :content-transfer-encoding;
+ bh=rJ92aLNU9wPv3t6R7fBex7IEFcF5Iz2GGNs181fIDJ8=;
+ b=poQKUZ/gwvpRquf/bgVD5PGUouiiRJ7wHBt7eIk8mZmGujIQuzfaUNOQN4zmTDrsga
+ xG7qLRGroHpRM2nKdlc1lh5HWBtnhwJCerLLHBL9uutempmmsiMoqubwmZkUZ0bX1OYf
+ WvSwEhsf0s9WISG8pqtQyLUjbBYtZciGEsF1qa/++hxvrdgx/hbkkPeOKOGVLd8aqfHd
+ E0S9tKq4LgR+RgdQVFZdVCWLDTVUOFqKgT0pZq0HSIUSjMCdYlI5+fPnTOInyriO7n0h
+ tlv/r2iolf1D9iXsT1CLc60eQHBoluNQnMDZ05ApVI2YuvWbACg8xL4tfcxTCweA4h81
+ Q8aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:to:cc
+ :from:subject:content-transfer-encoding;
+ bh=rJ92aLNU9wPv3t6R7fBex7IEFcF5Iz2GGNs181fIDJ8=;
+ b=QzXuzVWm4wJ7FJoI7QQVvKheAHPfl0XpUHngWw7OMtSB21gM0Jv4RR41Y9oSFmHF1R
+ nMhPf3KidQ1LgWzX6kJF9k7VX4JbhtD/rrun2Jr0fIlZW3J7gL4zT/fC/lnPNNeg1F6o
+ eDM+EAU/8LAuoCC7B43JVX1xraViyXTA6qski5nTOLDbmQhX1WfHUjmcTDwUxTuqb3dM
+ sFwVypS0EdN+Hiy1gdTNY/6uHTlQCsGny1qkskLYdpcLCKnwOirdytLAP9NIHkKlJIf6
+ Z/cwKABNnjpsEOUDTmcVR+vkjBaCaNoROKlVYUoNlkdo6EHR9ed49B2XNKl3W8VjP5pK
+ zzJw==
+X-Gm-Message-State: AOAM530K9Jg2guY3EP7DXcjhTH1c1/gvzVlpq5kw9C5ZprakSW9JAqoF
+ ZxWGD8Mrs7di6D0YCayBGR+RnM315tU=
+X-Google-Smtp-Source: ABdhPJy81crmg+fOh13iafRjcyh2INnj6EQtlCHk/JUpjO4RellPVy4Kc7ixCabFvvKXuuYCseBnBg==
+X-Received: by 2002:a05:6512:1155:b0:445:8430:57d1 with SMTP id
+ m21-20020a056512115500b00445843057d1mr1423721lfg.393.1645798638265; 
+ Fri, 25 Feb 2022 06:17:18 -0800 (PST)
+Received: from [192.168.26.149] ([194.187.74.233])
+ by smtp.googlemail.com with ESMTPSA id
+ j10-20020a056512344a00b004430ccafa60sm213037lfr.253.2022.02.25.06.17.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 25 Feb 2022 06:17:17 -0800 (PST)
+Message-ID: <7bc0ee19-2943-3503-046e-130de73a2cdf@gmail.com>
+Date: Fri, 25 Feb 2022 15:17:14 +0100
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0848434d-784a-4b1e-66a8-08d9f868539c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Feb 2022 14:08:41.2057 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MFs5+6vLlrQ4JMsDApl5SU4O9n4tbe+KqbYxHKyPPJBhbFZmIx1jTNJcspuEWIIpSqhWYIJ+pi9A8+KhD/9UJrzATKfFMCUWPPMukFH8Tus=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4766
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
+ Thunderbird/96.0
+To: Richard Weinberger <richard@nod.at>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: ubifs: handling dirty data (writing back) + power cuts
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220225_060855_829596_69606038 
-X-CRM114-Status: GOOD (  16.74  )
+X-CRM114-CacheID: sfid-20220225_061719_874680_6424678D 
+X-CRM114-Status: GOOD (  10.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -175,44 +83,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-the subject should be mtd: spi-nor: core:
+Hi,
 
-On 2/23/22 15:43, Michael Walle wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> Now that there is almost no special case code left in
-> spi_nor_sr_ready(), the return check looks odd. Move the function call
-> closer to the return code checking.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index f5a2f37d140e..9014008e60b3 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -563,8 +563,9 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
->   */
->  int spi_nor_sr_ready(struct spi_nor *nor)
->  {
-> -       int ret = spi_nor_read_sr(nor, nor->bouncebuf);
-> +       int ret;
-> 
-> +       ret = spi_nor_read_sr(nor, nor->bouncebuf);
->         if (ret)
->                 return ret;
-> 
-> --
-> 2.30.2
-> 
+
+my system is setup as follows:
+
+# mount | grep ubifs
+/dev/ubi0_1 on /mount/ubifs type ubifs (rw,noatime,assert=read-only,ubi=0,vol=1)
+
+# cat /proc/sys/vm/dirty_writeback_centisecs
+500
+# cat /proc/sys/vm/dirty_expire_centisecs
+3000
+
+(5 s and 30 s respectively) and I'm currently debugging some data issues
+related to power cuts.
+
+
+My actual problem is related to ubifs behaviour for power cuts happening
+between 5 and 35 seconds after saving a file:
+date > /mount/ubifs/test.txt && sleep 15 && echo CUT POWER *NOW*
+
+On the next boot test.txt exists but it's EMPTY (file size 0).
+
+For newly created files above behaviour is not the worst one - however
+I'd expect such file to not exist at all.
+
+The biggest problem is when dealing with existing files. In such case
+power cut means loosing it completely. I don't get *old* content nor
+*new* content.
+
+
+I noticed this behaviour with kernel 5.10 and also reproduced it with
+5.4, 4.14 and 4.4.
+
+Is this a bug or some quirky feature? Can I do anything to avoid such
+situations except modifying all user space to call fsync() when needed?
 
 ______________________________________________________
 Linux MTD discussion mailing list
