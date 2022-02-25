@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A38C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 16:20:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8894C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 16:28:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6kFUncVl4tueeehnkqxiL/HENqnvJRU4u7Zl4ksroEY=; b=T7gT+MJVMqY8iY
-	c79tmnwmUQgN2yavHFcRvRc2ZHtKTpHvbDTeUCoKgn2jJnqSTkTtYPoMztEEI2EEwD4Q0wcxkGjtR
-	RwZSeulWpPD1cI0zCFdwN8dVkQs0JwrHo8ZMSlNbrWfxVHZNuWXuTQLoD8P9ZjEZ4wcJ0Kk3jafVh
-	TkZ8a6QXqm2nQfRjiQ3cf/iiJ3j05Wc15fFnJftB7qnZGzifLKeB7B+8++eB5uxlrTBcweDezEfrC
-	aejz01ru7xcAhPBM0WD/Iwr9NeUtpvKrKjXZGu2LnjBHtnNsvZ8S73sz2B+dGMCtQ5c/NLNLUFGhg
-	qdKe9kfKRblwyXKT2k7g==;
+	List-Owner; bh=KnDjmfxYsQbf2gqYvlE7gHjndajy8u2RdopwLO7kSEU=; b=ZobafTeqwzrdOS
+	VQR/KMoGWPQl6Hzjoaccfmg/Ix1+LAh3BgMCVmH8taNfT96RClN31NG3t1B472CoxN4ajfULhxJZS
+	K1l4PkaPblxGvbD/oRiIhZmUJW40dLsUQEvXtw6iXs3nd230hVT6fZFrl22cyLg7gCfFWjvcpl0Qm
+	ypyMDak1CJG+jAKFCQ5Pt0+CyUOy9MjKqg6CplK+YP3Q3PZjxTFovN29C9aOT/iNQ/Erx557CzU4u
+	TKQOqS+X5fatE5TpWYCsGpGhftQW89fv6MzmevJRr1MOIbFHS1JpA0P/XnWEqV64cGFiPBXXWeBog
+	iFcg8YoYh5H46C5tj5Yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNdJU-005sGA-Jk; Fri, 25 Feb 2022 16:19:24 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1nNdRW-005uhx-1m; Fri, 25 Feb 2022 16:27:42 +0000
+Received: from mail-oi1-f175.google.com ([209.85.167.175])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNdJN-005sDb-O1
- for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 16:19:23 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1645805957; x=1677341957;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Y+Ao6ZDvcSXXoQKTG3/aiSYOVpdfvQHBUSUKS2imXG4=;
- b=fY3STW0Ammyhc5OnR7ey22QuQzLMDUFin0kH8gcvI2iML+7l+Ma7078u
- EceRjeOF23Y65yJ1CiiX+IoNsp7lgkPag/KO9bnDFe9wj3Mt5fey0Cz67
- WHSFZZ8Rl6u8YnziSqcxUwQ0sbYzSwQGPr+zObuYyMUy/Ydj5la8TUEh2
- CarPVz2jxiU0l7fqQXr7ppSI8rEH46u2dbSwiBvlXOEdcophyUM6MiC3u
- Xhi9sK3uvDbxMVayhUSTFEZ0IYs8LAIfG6V2hMv4fmUO1AQRWpukwZNEf
- hv1k101bsK/4+qRj+3TpovjiZxA4y9Jtv1rPAByIbiALfXTkPn/sQXcTo A==;
-X-IronPort-AV: E=Sophos;i="5.90,136,1643698800"; d="scan'208";a="163663043"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 25 Feb 2022 09:19:15 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Fri, 25 Feb 2022 09:19:03 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Fri, 25 Feb 2022 09:19:00 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, "Pratyush
- Yadav" <p.yadav@ti.com>, Richard Weinberger <richard@nod.at>,
- <yaliang.wang@windriver.com>
-Subject: Re: [PATCH v5 00/32] mtd: spi-nor: move vendor specific code into
- vendor modules
-Date: Fri, 25 Feb 2022 18:18:59 +0200
-Message-ID: <164580568515.679764.14013316693179143722.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220223134358.1914798-1-michael@walle.cc>
-References: <20220223134358.1914798-1-michael@walle.cc>
+ id 1nNdRT-005ugs-5b
+ for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 16:27:40 +0000
+Received: by mail-oi1-f175.google.com with SMTP id z7so7980940oid.4
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Feb 2022 08:27:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=b6mqfRniL+r9ZpfUJSShReJE7UNxaIRMnvl0KB1bI/8=;
+ b=7P9t4k0HD2FoLYxrXF3L41SBQpK27ZjJetQCHqcotEFG3h1ZgdIEJjXy3nReafWy4t
+ h6dfey0wKAhZedo9VqzPIoUoAOVsWYYLco67kqQzoFFOrrcrUHdpABUNK48MeJJB8Xer
+ hdG++sNYm8A0SKNJA86vdRpSR/FZx8I39+p9jt44ZZ1ofu/Nhg9QOlDLBiXB8967vFcU
+ 3Ro8uVm5gQCSBwuVtfJsSDkdxXxUOtQJqcfs/7T75ZyjU8mPSmhYJmVcmL0M/iw64hAo
+ aTdfSN5BdkpoFaV4Nj4TqmoFNyhz2FAyVQA6SJoFV7hhzaPz+4S2tdPaAWWPZoNanL36
+ FdDg==
+X-Gm-Message-State: AOAM533u7J4Jk41mk44Yuol/X0p2Sc1Nl592ONwaAvDNuSDRS/N85OnJ
+ tRZmiLFKn0W/UuqsY8y2Og==
+X-Google-Smtp-Source: ABdhPJxYB88wiXpqrYy/re0vBGeWP38Ml9w47xUbbgBDbaP3bcnxEAiC4IXzF8XzZuh29hI+Zbp2wg==
+X-Received: by 2002:a05:6808:202a:b0:2d4:df36:68a4 with SMTP id
+ q42-20020a056808202a00b002d4df3668a4mr2012574oiw.16.1645806457796; 
+ Fri, 25 Feb 2022 08:27:37 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net.
+ [66.90.148.213]) by smtp.gmail.com with ESMTPSA id
+ x12-20020a056830244c00b005ad233e0ba3sm1304298otr.48.2022.02.25.08.27.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 25 Feb 2022 08:27:37 -0800 (PST)
+Received: (nullmailer pid 1040968 invoked by uid 1000);
+ Fri, 25 Feb 2022 16:27:35 -0000
+Date: Fri, 25 Feb 2022 10:27:35 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: mtd: partitions: convert BCM47xx to the
+ json-schema
+Message-ID: <YhkDd2CF3VhTkn9W@robh.at.kernel.org>
+References: <20220216104135.31307-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220216104135.31307-1-zajec5@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220225_081917_839224_D3D80B77 
-X-CRM114-Status: GOOD (  10.80  )
+X-CRM114-CacheID: sfid-20220225_082739_233808_E883AB29 
+X-CRM114-Status: UNSURE (   9.62  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,94 +83,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 23 Feb 2022 14:43:26 +0100, Michael Walle wrote:
-> It turns out that most of the special status register handling is
-> specific for a particular vendor. I.e. Xilinx has some different
-> opcodes for the status register read, Micron has an additional FSR
-> register and Spansion has these flags integrated into the SR.
-> 
-> Create a callback to ready() where a flash chip can register its
-> own function. This will let us move all the vendor specific stuff
-> out of the core into the vendor modules.
-> 
-> [...]
-
-Applied to spi-nor/next, thanks!
-
-[01/32] mtd: spi-nor: atmel: unify function names
-        https://git.kernel.org/mtd/c/2394770bd6bb
-[02/32] mtd: spi-nor: catalyst: unify function names
-        https://git.kernel.org/mtd/c/9eb916e2523e
-[03/32] mtd: spi-nor: eon: unify function names
-        https://git.kernel.org/mtd/c/f5e7bd2768d7
-[04/32] mtd: spi-nor: esmt: unify function names
-        https://git.kernel.org/mtd/c/a7a3f09024b6
-[05/32] mtd: spi-nor: everspin: unify function names
-        https://git.kernel.org/mtd/c/09ae8354c31d
-[06/32] mtd: spi-nor: fujitsu: unify function names
-        https://git.kernel.org/mtd/c/5410151931fa
-[07/32] mtd: spi-nor: gigadevice: unify function names
-        https://git.kernel.org/mtd/c/0ab828613c5a
-[08/32] mtd: spi-nor: intel: unify function names
-        https://git.kernel.org/mtd/c/536437aabb7a
-[09/32] mtd: spi-nor: issi: unify function names
-        https://git.kernel.org/mtd/c/cc5af02f6008
-[10/32] mtd: spi-nor: macronix: unify function names
-        https://git.kernel.org/mtd/c/0757201a1daa
-[11/32] mtd: spi-nor: micron-st: unify function names
-        https://git.kernel.org/mtd/c/c9d5cdf4bf9c
-[12/32] mtd: spi-nor: spansion: unify function names
-        https://git.kernel.org/mtd/c/fedd0cbf3e93
-[13/32] mtd: spi-nor: sst: unify function names
-        https://git.kernel.org/mtd/c/7e5b38ae4f23
-[14/32] mtd: spi-nor: winbond: unify function names
-        https://git.kernel.org/mtd/c/a7a0466f582f
-[15/32] mtd: spi-nor: xilinx: unify function names
-        https://git.kernel.org/mtd/c/45acce2099c5
-[16/32] mtd: spi-nor: xmc: unify function names
-        https://git.kernel.org/mtd/c/232e2830f525
-[17/32] mtd: spi-nor: slightly refactor the spi_nor_setup()
-        https://git.kernel.org/mtd/c/b44aa9ac6bb4
-[18/32] mtd: spi-nor: allow a flash to define its own ready() function
-        https://git.kernel.org/mtd/c/4cf1c7bdc55c
-[19/32] mtd: spi-nor: export more function to be used in vendor modules
-        https://git.kernel.org/mtd/c/66cf87c60014
-[20/32] mtd: spi-nor: guard _page_size parameter in S3AN_INFO()
-        https://git.kernel.org/mtd/c/9fb4beb1b051
-[21/32] mtd: spi-nor: move all xilinx specifics into xilinx.c
-        https://git.kernel.org/mtd/c/8b4195cd6dc3
-[22/32] mtd: spi-nor: xilinx: rename vendor specific functions and defines
-        https://git.kernel.org/mtd/c/8b7a2e00d117
-[23/32] mtd: spi-nor: xilinx: correct the debug message
-        https://git.kernel.org/mtd/c/56b852e8635b
-[24/32] mtd: spi-nor: move all micron-st specifics into micron-st.c
-        https://git.kernel.org/mtd/c/c770abe52d81
-[25/32] mtd: spi-nor: micron-st: convert USE_FSR to a manufacturer flag
-        https://git.kernel.org/mtd/c/8f938262a6f3
-[26/32] mtd: spi-nor: micron-st: rename vendor specific functions and defines
-        https://git.kernel.org/mtd/c/2b18a18ea7f8
-[27/32] mtd: spi-nor: spansion: slightly rework control flow in late_init()
-        https://git.kernel.org/mtd/c/6235ff040c13
-[28/32] mtd: spi-nor: move all spansion specifics into spansion.c
-        https://git.kernel.org/mtd/c/837d5181beef
-[29/32] mtd: spi-nor: spansion: convert USE_CLSR to a manufacturer flag
-        https://git.kernel.org/mtd/c/51c55506a7b1
-[30/32] mtd: spi-nor: spansion: rename vendor specific functions and defines
-        https://git.kernel.org/mtd/c/e8fd3b4b266b
-[31/32] mtd: spi-nor: slightly change code style in spi_nor_sr_ready()
-        https://git.kernel.org/mtd/c/e9d663a2a019
-[32/32] mtd: spi-nor: renumber flags
-        https://git.kernel.org/mtd/c/3c552889e431
-
-Best regards,
--- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCAxNiBGZWIgMjAyMiAxMTo0MTozNSArMDEwMCwgUmFmYcWCIE1pxYJlY2tpIHdyb3Rl
+Ogo+IEZyb206IFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPiAKPiBUaGlzIGhl
+bHBzIHZhbGlkYXRpbmcgRFRTIGZpbGVzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IFJhZmHFgiBNacWC
+ZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KPiAtLS0KPiAgLi4uL2JyY20sYmNtOTQ3eHgtY2ZlLXBh
+cnRpdGlvbnMudHh0ICAgICAgICAgIHwgNDIgLS0tLS0tLS0tLS0tLS0tLQo+ICAuLi4vYnJjbSxi
+Y205NDd4eC1jZmUtcGFydGl0aW9ucy55YW1sICAgICAgICAgfCA0OCArKysrKysrKysrKysrKysr
+KysrCj4gIDIgZmlsZXMgY2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKSwgNDIgZGVsZXRpb25zKC0p
+Cj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bXRkL3BhcnRpdGlvbnMvYnJjbSxiY205NDd4eC1jZmUtcGFydGl0aW9ucy50eHQKPiAgY3JlYXRl
+IG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0
+aW9ucy9icmNtLGJjbTk0N3h4LWNmZS1wYXJ0aXRpb25zLnlhbWwKPiAKClJldmlld2VkLWJ5OiBS
+b2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3JnPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8K
