@@ -4,73 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42A10C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 09:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1089C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Feb 2022 11:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=feewYn6xjUCOVY7azLdu5cYifQdxybHI2zuxKYJpEd0=; b=J62YVFqpAnR8wS
-	C8o+XuNqtTdelNMu/WhFinAvoViwO4/htbmfbDPIQcJ/6ZfR/1NWDnac7xHKoiUSiu4BagPBFNF2k
-	VTyLaPAHP8yyBR+C3OI1wXGagUOnWlyYJBAP9FR9YnjyuAnjen6JuP0nF8zKYloF6KYmzhTQfgivj
-	NqEF9og7Q0AXQO+LlNU4rLs+9UMSfQybP9Bmv/0mIMznXevZ1njWb+axhLiOEzE8cDjozTAeMiN5L
-	9cu//GjWDSscGOcO5M7e5pSjqzwVsm2FWB1XMhOdH686cls0xunXw2liRzglQRUd2KYOgkmWfy6Pw
-	oxd/G1XuWCAmipfiDQZg==;
+	List-Owner; bh=KJuxxrku/sx16fcpXGu97B6L7eaDODa52daTDKr148Y=; b=KBIGvQDTqUn9Kw
+	P48d/E8UImlSQ1ic714LW/cRUJQtfIfTFjKho3ScivwWscn/YTb/U9fKDpFoO+JyfC+yG4RJKm+vz
+	K/m+T2Im3XylR0eX7S3W37YzVV/R62iE1A7KjOlgnlDV7sLpLZE01699TmXwFSGmOCxR/ZIOEZN5c
+	cIPBm5vliR9rA+5hwqR0O87wjx46ebKiKY0N+S+fv7RmGnhZH7ymfAMMroB6jxVwnea/rFne23miZ
+	mBywLPDWheXRHmembLMtaBN3vQMqn6BgFuQ/fiHC4aCiQF415X4+g5hOnQ/jhpSir2wd7ODlFphfG
+	kdEbku6LLk8w0gvqk7Gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nNWkh-00479r-Az; Fri, 25 Feb 2022 09:19:03 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1nNYZB-004eAG-4v; Fri, 25 Feb 2022 11:15:17 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nNWkF-004745-0p; Fri, 25 Feb 2022 09:18:36 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21P9IBjF017495;
- Fri, 25 Feb 2022 03:18:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1645780691;
- bh=rvWbhCJfnEIOUkIutnw+J3DZO5DRfhnDxkBwC3aC8fE=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Dii+kV0O8lo7+yx9O7UyWiW3gSP6WIDtP/4eZgE9Ho3Cw26ca86US8X/AxQnfks1G
- nASL/KcwxckCgSbhpmVeBT9xnbVkTil2IopvLPhBkrOnoL+iOuszuj3r/4TahYOuuD
- xnFsC8AoW1vpbjkbo3nNFSOHCla7+eB+KnEynj/M=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21P9IB0H081229
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 25 Feb 2022 03:18:11 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 25
- Feb 2022 03:18:10 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 25 Feb 2022 03:18:10 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21P9IAlO009024;
- Fri, 25 Feb 2022 03:18:10 -0600
-Date: Fri, 25 Feb 2022 14:48:09 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
-CC: <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Mark Brown
- <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, <linux-aspeed@lists.ozlabs.org>,
- Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
- Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
- <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 08/10] spi: aspeed: Calibrate read timings
-Message-ID: <20220225091809.gvup3mcst45szi6x@ti.com>
-References: <20220214094231.3753686-1-clg@kaod.org>
- <20220214094231.3753686-9-clg@kaod.org>
+ id 1nNYZ1-004e7C-Hc
+ for linux-mtd@lists.infradead.org; Fri, 25 Feb 2022 11:15:15 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id C4006C000A;
+ Fri, 25 Feb 2022 11:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1645787704;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=s7d1/5MJwyJAgWC/q9iG3LwqQNqmMpQwEOsY7A8M4lE=;
+ b=IyRdrHehUts03izUFa6y1cmECbhYSKoHw+G3I/YNJRt0klaM6cbaJmMNqEiPIaDssUm4Qn
+ G5B2oHDBFws3A/4Ydi4s5hKLZrmCzI92yMfBBjZNvq45BlmQuWgg0vky7gaEjzSzB6HaA0
+ xTRkvPdxjEdtKfa7LncpXTZUBvrejz41blBCMTqxTNBZtYiw+VCRJEu8oJvIAKB88ObFUY
+ Cvnftzf+jyVB3OrwX0LZrDic7hEYok8Z1+imm6XnOjxdaFfmyIK7znRsyg31U1cewlF+cL
+ IjZsPGtoQOafPncyNwyviiMuWv7Fr9REeMfmmvRRzHWYuyBHxCS5PuGKYcRpQg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Roger Quadros <rogerq@kernel.org>, miquel.raynal@bootlin.com,
+ krzysztof.kozlowski@canonical.com
+Cc: vigneshr@ti.com, nm@ti.com, linux@roeck-us.net,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: omap2: Actually prevent invalid
+ configuration and build error
+Date: Fri, 25 Feb 2022 12:15:00 +0100
+Message-Id: <20220225111500.497281-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220219193600.24892-1-rogerq@kernel.org>
+References: 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220214094231.3753686-9-clg@kaod.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'7cf1de957a980d96d8b9c9e481c8bb1ad53fd99b'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220225_011835_184291_FDDCB0AC 
-X-CRM114-Status: GOOD (  13.52  )
+X-CRM114-CacheID: sfid-20220225_031507_941976_E1F7173C 
+X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,56 +70,25 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 14/02/22 10:42AM, C=E9dric Le Goater wrote:
-> To accommodate the different response time of SPI transfers on different
-> boards and different SPI NOR devices, the Aspeed controllers provide a
-> set of Read Timing Compensation registers to tune the timing delays
-> depending on the frequency being used. The AST2600 SoC has one of
-> these registers per device. On the AST2500 and AST2400 SoCs, the
-> timing register is shared by all devices which is a bit problematic to
-> get good results other than for one device.
-> =
+On Sat, 2022-02-19 at 19:36:00 UTC, Roger Quadros wrote:
+> The root of the problem is that we are selecting symbols that have
+> dependencies. This can cause random configurations that can fail.
+> The cleanest solution is to avoid using select.
+> 
+> This driver uses interfaces from the OMAP_GPMC driver so we have to
+> depend on it instead.
+> 
+> Fixes: 4cd335dae3cf ("mtd: rawnand: omap2: Prevent invalid configuration and build error")
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-> The algorithm first reads a golden buffer at low speed and then performs
-> reads with different clocks and delay cycle settings to find a breaking
-> point. This selects a default good frequency for the CEx control register.
-> The current settings are bit optimistic as we pick the first delay giving
-> good results. A safer approach would be to determine an interval and
-> choose the middle value.
-> =
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
-> Due to the lack of API, calibration is performed when the direct mapping
-> for reads is created.
-
-The dirmap_create mapping says nothing about _when_ it should be called. =
-
-So there is no guarantee that it will only be called after the flash is =
-
-fully initialized. I suggest you either make this a requirement of the =
-
-API, or create a new API that guarantees it will only be called after =
-
-the flash is initialized, like [0].
-
-[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210311191216.736=
-3-2-p.yadav@ti.com/
-
-> =
-
-> Cc: Pratyush Yadav <p.yadav@ti.com>
-> Signed-off-by: C=E9dric Le Goater <clg@kaod.org>
-> ---
-
--- =
-
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
