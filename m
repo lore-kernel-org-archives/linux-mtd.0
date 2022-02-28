@@ -4,77 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9A8DC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Feb 2022 13:37:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FE78C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Feb 2022 13:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WUaTV3fs6qLQZjDHkHH+SCERJC91g8FVfxQ3mksBJQ8=; b=YFRY9+cEX5WdYw
-	rkAM2TEniACJrLV1M6qgtqBp4OWDjLkQl1WE5HTFvRXVn+rTx+gzh89fCZS7bdehPdRosm+16yFNW
-	QmfbdpG0u29L8H1JhR/1KSb/WMR5g+HCZBPJgsdydohq/MKMg1wqs5T6T2/l87V75YiLiWlWljwdh
-	pMJc6BFElweEmoQdmn7Hhl24RfwteC1kvF/uL26Z++sZitYRnAgGMP2T795o65Tbhg7YNAs/eQn4N
-	IIl+7WNGS1XlV8BYMzHckRFPdAbWGbPKW/PJosEVCY9vM7JTpyt8vL+4McbcVifYoS17xNajp0o8P
-	na2vTxWjWXOTzZg8dEvg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cHkiU2RFZMVuX57xEU0dhtQ+T7XusfjK7SU7Li8Uw+Y=; b=HPaP38ieXUimnl
+	Fr+wHlDDU60MuzrgvIWA8GY5mzursJP9q1q3vW5ZVOwC50yBrJgiLcE+5gORfNpypuGVsIXeY3KLA
+	JQD09CpnriAkemj5K/tUouDvlGUMCEsR2WRBQoJmRLBSkCvoqze4L16SbGWBa5E5CpxWwxeP2/hSj
+	gjNclToaQtRhgfhs5P03XeWYCesHeC2+yHYbUYcnK1VKXp4ITix3G4fjT1nZy/PQVAoqt99s+CP7x
+	c8nnlsqfczcuW09u4P+JGIiUiWbx33+Sm/mjpOuCA4yn0u+UFGRLLuHU25VHdvOova+97C5GQYtVk
+	fP4xByclL/y9RzeoSlgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nOgCd-00CcVK-Oo; Mon, 28 Feb 2022 13:36:39 +0000
-Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
+	id 1nOgKy-00CeaW-Ay; Mon, 28 Feb 2022 13:45:16 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nOgCM-00CcPx-Go
- for linux-mtd@lists.infradead.org; Mon, 28 Feb 2022 13:36:24 +0000
-Received: by mail-lf1-x12a.google.com with SMTP id bu29so21513675lfb.0
- for <linux-mtd@lists.infradead.org>; Mon, 28 Feb 2022 05:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:from:to:cc
- :references:in-reply-to:content-transfer-encoding;
- bh=b+imPXxCddpXZIFpYZ77xpkCvuWyABWzWMv3fmpu73w=;
- b=i2ODa45E86m0zct+b7Cy3RbujcYZb0BrNbJF+ghdHJQnkZTRnmKCaD4e+Xt5wjqzXn
- pG602CUIKebB9WyYTFy5ab+OVBN9jzSQ1wz3fNtJ/1/KUzDNCQrkVd97NkSVg5SQJDdh
- naMpHiC252/vwJNvvRnr+bj2tUZbKl4gG1a2posuim1AJXbS0bMvL/UHCZjvpVmRwVnR
- /8JO0lQffDTJ39FBSWlPX8yyS8bOh6b8+h6VwPlwSh2ry+L4Lj3890M/ozM5lYFcoLzS
- GdUJ06EaqFS7rE1cCmDq2QarejH1S/wcstCXPLVD/v+b4KjB9E61FRCdeuICeOs9Kzg0
- NXZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :from:to:cc:references:in-reply-to:content-transfer-encoding;
- bh=b+imPXxCddpXZIFpYZ77xpkCvuWyABWzWMv3fmpu73w=;
- b=lX+ma8LnDN/A6d0VkPkhHfaku7HzYwMCT2iQRD1sKny1EDZjpmDD8+TpT1pFYgVckr
- OhzauoXqlsuCXNDpSTUpSSyrSpOoU460zc2IXQDs6evgYF+uBHvJw2XowEn3I42JYB/9
- NxPYfXu1W31Wf5/oSkagYyueh/7A13Zr3vxBc2j4vn4OV54KHii2iWHzguaLEkbQ0Gz8
- f1Hqw4FSE3YpSDrqDxW2i5EeHs8ueFFIGri7dcZdszjiC27I1H4lG1RTSB2qT4SLi8vj
- HPTzpZTOh9J+ef+uA0StcgaU2pZlsq9qlmfddmwkPyuJFae2ge34UgCL0gagFr75GEmd
- vxvA==
-X-Gm-Message-State: AOAM533cGN6PjdiJw3IFr8B60yQ5H82CwJiwCFBNcziS4L6foOG/4ugz
- /m9q5D/54cpTyeWC4Z0p4qbg6pEzlCI=
-X-Google-Smtp-Source: ABdhPJz5gNZZpIWkgW6tFOrkAEuRU1PSvMr+wOEy2TI9fmv8j9tb9xH0iVeUZ/3WItQylyKyePni0w==
-X-Received: by 2002:a19:7b17:0:b0:443:e48d:509a with SMTP id
- w23-20020a197b17000000b00443e48d509amr12467673lfc.83.1646055380556; 
- Mon, 28 Feb 2022 05:36:20 -0800 (PST)
-Received: from [192.168.26.149]
- (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
- by smtp.googlemail.com with ESMTPSA id
- m4-20020a0565120a8400b004457562b26csm965355lfu.193.2022.02.28.05.36.19
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 28 Feb 2022 05:36:20 -0800 (PST)
-Message-ID: <fe4444d1-3513-d869-01f2-85add2b8c78a@gmail.com>
-Date: Mon, 28 Feb 2022 14:36:19 +0100
+ id 1nOgKv-00Cea3-PF; Mon, 28 Feb 2022 13:45:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1646055913; x=1677591913;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=EtFiFcCF/Pmo5CHCOR90IWGS6JiiaZ3DPkFG0COOhBY=;
+ b=S/G0KLlppKqSX2fJy6qCRBieB6bkRGXogN2D/FhdCeeVZ6o/iWjoVodb
+ JiKZHqoPGYcbYOR1CFecnEZVcFnuTgLdCuPKNEUMESYnMMAjq/LL1g6PV
+ OqnO131f/CDkeCek7TSMXg8JohdS8kXgZ+VBZ1/sKC/m7nUQG7fiGdyJi
+ 3+VYXeBZYSpM4rMPptr3cYy07fjMdsek+XmQnCt+pq0/yJ8IlxJ0woU4g
+ 9nwEpAcAulV8gixkhzv9uI0Zj1m+BR5DS5F/HGRGM7otX3knzKQDVgiyV
+ V9HG2lvTWFdvNcizyp45pItvxSCiy/S1A/eooSbGwUeLWM3SWBJOR6OCE g==;
+X-IronPort-AV: E=Sophos;i="5.90,142,1643698800"; d="scan'208";a="163872923"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 Feb 2022 06:45:12 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Mon, 28 Feb 2022 06:45:11 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Mon, 28 Feb 2022 06:45:07 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <p.yadav@ti.com>, <michael@walle.cc>, <figgyc@figgyc.uk>,
+ <mail@david-bauer.net>, <esben@geanix.com>, <heiko.thiery@gmail.com>,
+ <macromorgan@hotmail.com>
+CC: <vigneshr@ti.com>, <linux@rasmusvillemoes.dk>, <knaerzche@gmail.com>,
+ <code@reto-schneider.ch>, <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>,
+ <sr@denx.de>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH v4 0/6] mtd: spi-nor: Handle ID collisions
+Date: Mon, 28 Feb 2022 15:44:59 +0200
+Message-ID: <20220228134505.203270-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
- Thunderbird/96.0
-Subject: Re: ubifs: handling dirty data (writing back) + power cuts
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Richard Weinberger <richard@nod.at>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Cc: "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>
-References: <7bc0ee19-2943-3503-046e-130de73a2cdf@gmail.com>
-In-Reply-To: <7bc0ee19-2943-3503-046e-130de73a2cdf@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220228_053622_603686_26338E82 
-X-CRM114-Status: GOOD (  11.10  )
+X-CRM114-CacheID: sfid-20220228_054513_876243_CED6680B 
+X-CRM114-Status: UNSURE (   7.83  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,28 +77,49 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMjUuMDIuMjAyMiAxNToxNywgUmFmYcWCIE1pxYJlY2tpIHdyb3RlOgo+IE15IGFjdHVhbCBw
-cm9ibGVtIGlzIHJlbGF0ZWQgdG8gdWJpZnMgYmVoYXZpb3VyIGZvciBwb3dlciBjdXRzIGhhcHBl
-bmluZwo+IGJldHdlZW4gNSBhbmQgMzUgc2Vjb25kcyBhZnRlciBzYXZpbmcgYSBmaWxlOgo+IGRh
-dGUgPiAvbW91bnQvdWJpZnMvdGVzdC50eHQgJiYgc2xlZXAgMTUgJiYgZWNobyBDVVQgUE9XRVIg
-Kk5PVyoKPiAKPiBPbiB0aGUgbmV4dCBib290IHRlc3QudHh0IGV4aXN0cyBidXQgaXQncyBFTVBU
-WSAoZmlsZSBzaXplIDApLgo+IAo+IEZvciBuZXdseSBjcmVhdGVkIGZpbGVzIGFib3ZlIGJlaGF2
-aW91ciBpcyBub3QgdGhlIHdvcnN0IG9uZSAtIGhvd2V2ZXIKPiBJJ2QgZXhwZWN0IHN1Y2ggZmls
-ZSB0byBub3QgZXhpc3QgYXQgYWxsLgo+IAo+IFRoZSBiaWdnZXN0IHByb2JsZW0gaXMgd2hlbiBk
-ZWFsaW5nIHdpdGggZXhpc3RpbmcgZmlsZXMuIEluIHN1Y2ggY2FzZQo+IHBvd2VyIGN1dCBtZWFu
-cyBsb29zaW5nIGl0IGNvbXBsZXRlbHkuIEkgZG9uJ3QgZ2V0ICpvbGQqIGNvbnRlbnQgbm9yCj4g
-Km5ldyogY29udGVudC4KClRvIG1ha2UgaXQgY2xlYXIgd2hhdCBJIG1lYW50IGJ5IGRlYWxpbmcg
-d2l0aCBleGlzdGluZyBmaWxlczoKCgpbZmlzdCBib290XQoKIyBlY2hvIGZvbyA+IC9tb3VudC91
-Ymlmcy90ZXN0LnR4dAojIHN5bmMKIyBjYXQgL21vdW50L3ViaWZzL3Rlc3QudHh0CmZvbwojIGJ1
-c3lib3ggc2VkIC1pICdzL2Zvby9iYXIvJyAvbW91bnQvdWJpZnMvdGVzdC50eHQgJiYgc2xlZXAg
-MTAgJiYgZWNobyBDVVQgUE9XRVIgTk9XCkNVVCBQT1dFUiBOT1cKCgpbbmV4dCBib290XQoKIyBs
-cyAtbCAvbW91bnQvdWJpZnMvdGVzdC50eHQKLXJ3LS0tLS0tLSAgICAxIHJvb3QgICAgIHJvb3Qg
-ICAgICAgICAgICAgMCBGZWIgMjggMDI6MjYgL21vdW50L3ViaWZzL3Rlc3QudHh0CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
-IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Tested with MX25L3233F. I need sysfs dumps where there aren't.
+
+v4:
+- adapt core to handle collisions between SFDP and non-SFDP flashes
+- rebase on latest spi-nor/next
+
+v3:
+- report correct manufacturer name in ID collisions driver
+- use fixup name of the first flash, not of the one that collide
+- use xxd to dump sfdp (where I had the flash)
+- drop locking support on xt25f128b
+- constify flash_info fixups hook
+
+Tudor Ambarus (6):
+  mtd: spi-nor: core: Report correct name in case of ID collisions
+  mtd: spi-nor: core: Handle ID collisions between SFDP & non-SFDP
+    flashes
+  mtd: spi-nor: macronix: Handle ID collision b/w MX25L3233F and
+    MX25L3205D
+  mtd: spi-nor: macronix: Handle ID collision b/w MX25L12805D and
+    MX25L12835F
+  mtd: spi-nor: Introduce Manufacturer ID collisions driver
+  mtd: spi-nor: manuf-id-collisions: Add support for xt25f128b
+
+ drivers/mtd/spi-nor/Makefile              |  1 +
+ drivers/mtd/spi-nor/core.c                | 21 +++++++++--
+ drivers/mtd/spi-nor/core.h                |  1 +
+ drivers/mtd/spi-nor/macronix.c            | 46 ++++++++++++++++++++++-
+ drivers/mtd/spi-nor/manuf-id-collisions.c | 46 +++++++++++++++++++++++
+ drivers/mtd/spi-nor/sysfs.c               |  4 +-
+ include/linux/mtd/spi-nor.h               |  6 +++
+ 7 files changed, 118 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/manuf-id-collisions.c
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
