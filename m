@@ -4,71 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34B56C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Feb 2022 13:51:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4AE8C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Feb 2022 13:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VYUBZ5f81+m4QezDqOTuoRFwgJLoJCpuG0jJlqG2AZA=; b=sszJ1+Xa0PYROr
-	MwoT+dnFllg/od7j7s8jUh7kp03ot5ocTYlUmpm2/CtFb8cepNKuF8mAcqpMwTFHH6rBpK54k1twz
-	WbcY+Bz+lK8nAh+u4uk3ZXF3SlpAWiwXoAYhhInmZQUGuAxA2Knw+wPvg3MTUJH8+PGBAee6FuDex
-	6tVN/yK39V6lLw63HaYWCWA3ktW2TbA2G6G/2EJ2gqMuKSJuU0PpMnQxWB6yUXRHxJK1RLfcttWrd
-	cYcAB+0nLLMq0EPaldhonay9FPifX2SSd3upPNihgh+3KzCA5ijsAhVkMjBLcHb8OvkyLs3q/3Ksv
-	GNe005VuBJ8aZW7kBv7A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
+	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CcUQoTklHzdQSmi31oWODqAtD0/jF84x8y/u4XtVKFk=; b=pwcFuRQnxh3w/Splvu7BrtCsIa
+	4Rb+YSHPwv0zKptm/OdCG7MlJszIJq7Wxj6dm3n7UWXjth9jOeoMt4V1g32uE+qIL1/UGR4qyZLSW
+	ZGtu2yLHPH6kjBRlzxKEaU+VV4q6bhXmxC5C9yqhcLzLq/1jQjTb316kDfZTED+mTMXf6K7sHWilC
+	yINmm2HKzKySMwue6dtd7QNxZcObj0gFHQR5YItHRUvSN+HIJRdGsCqJbUmuFrOXRJjTEVVhzdR/+
+	8ywT/KZZPxczo1nsrlrncvzgYioKyUpJ3Yjca4Z3MRJJ8cG1ll0arhqYOiZ3ci94jtgHGQzPPk9tP
+	n8eNpVpQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nOgQf-00CglU-5U; Mon, 28 Feb 2022 13:51:09 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1nOgX5-00Cixg-8g; Mon, 28 Feb 2022 13:57:48 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nOgLN-00Cefj-LQ; Mon, 28 Feb 2022 13:45:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1646055941; x=1677591941;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=+uh6n1H0rQZDj/XVLiHcHjDe8r47+9/28l+o2v37pSs=;
- b=0sDhWAIdXo89bwor00Ai1NHZdKKUi00L3kiSnLqBRVtvpKh6mhdblzhg
- 0W2yKk+SJedjrMhcFTqsZOe2sCaWm1luHNNDKb8F6zA5yfay2JSKryoTF
- rXwRw4GjISLQW6Sk8hMrJikfDwqZN7BLXYMJ8VNs3yMzQmUSMBTF/MWPD
- WY7OFWAuJ+H4XUi97bKCWvpZ9qCLBHUgfwG2bgj9uzFj9cFD/Oehgfois
- RbxgAPuXCNpTRvBNRvanCIlX983rSL7QbweMqbeoCCwnCV+50PViz/yP6
- ULCX5zyHQS+FiLDUaaqIKntZQ080xNHhudsVVJuIXGebKM7z+VVa1iRBB w==;
-X-IronPort-AV: E=Sophos;i="5.90,142,1643698800"; d="scan'208";a="147499224"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 28 Feb 2022 06:45:39 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 28 Feb 2022 06:45:38 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 28 Feb 2022 06:45:34 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <p.yadav@ti.com>, <michael@walle.cc>, <figgyc@figgyc.uk>,
- <mail@david-bauer.net>, <esben@geanix.com>, <heiko.thiery@gmail.com>,
- <macromorgan@hotmail.com>
-CC: <vigneshr@ti.com>, <linux@rasmusvillemoes.dk>, <knaerzche@gmail.com>,
- <code@reto-schneider.ch>, <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>,
- <sr@denx.de>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v4 6/6] mtd: spi-nor: manuf-id-collisions: Add support for
- xt25f128b
-Date: Mon, 28 Feb 2022 15:45:05 +0200
-Message-ID: <20220228134505.203270-7-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+ id 1nOgUy-00Ci9D-EA; Mon, 28 Feb 2022 13:55:38 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 45B772223A;
+ Mon, 28 Feb 2022 14:55:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1646056534;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=xYY15JhHG1Pd6Pptft58rg+kWLeEOSKxEiUdTaG6k5A=;
+ b=gcmPAkF7xXCCVEW/EfPNBOtnEWIcHUtQwo5ssWqoollq/tkPzgCt9c4XkcJ8TcDRKkZmpn
+ MSPyAJUJeCj/UlCI3YWiKfo+ITlkmvJu17KwyFke9hxRGbeeakmBeSueLJA0MKqaL1Nt9K
+ kT6/ls4nTsQP8KUyhOZsYNK2YQkaKAc=
+MIME-Version: 1.0
+Date: Mon, 28 Feb 2022 14:55:32 +0100
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v4 0/6] mtd: spi-nor: Handle ID collisions
 In-Reply-To: <20220228134505.203270-1-tudor.ambarus@microchip.com>
 References: <20220228134505.203270-1-tudor.ambarus@microchip.com>
-MIME-Version: 1.0
+User-Agent: Roundcube Webmail/1.4.12
+Message-ID: <fead645197b0cb6534c04a665938a8d5@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220228_054541_831076_B7D95D5F 
-X-CRM114-Status: UNSURE (   9.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220228_055536_695563_21F038E1 
+X-CRM114-Status: GOOD (  12.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,63 +63,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Cc: sr@denx.de, vigneshr@ti.com, jaimeliao@mxic.com.tw, richard@nod.at,
+ esben@geanix.com, linux@rasmusvillemoes.dk, knaerzche@gmail.com,
+ nicolas.ferre@microchip.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, macromorgan@hotmail.com,
+ miquel.raynal@bootlin.com, heiko.thiery@gmail.com, zhengxunli@mxic.com.tw,
+ p.yadav@ti.com, mail@david-bauer.net, code@reto-schneider.ch
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Flash does not support continuation codes and may collide with a flash
-of other manufacturer, Intersil being an example. Add support for
-xt25f128b.
+Am 2022-02-28 14:44, schrieb Tudor Ambarus:
+> Tested with MX25L3233F. I need sysfs dumps where there aren't.
+> 
+> v4:
+> - adapt core to handle collisions between SFDP and non-SFDP flashes
+> - rebase on latest spi-nor/next
+> 
+> v3:
+> - report correct manufacturer name in ID collisions driver
+> - use fixup name of the first flash, not of the one that collide
+> - use xxd to dump sfdp (where I had the flash)
+> - drop locking support on xt25f128b
+> - constify flash_info fixups hook
+> 
+> Tudor Ambarus (6):
+>   mtd: spi-nor: core: Report correct name in case of ID collisions
+>   mtd: spi-nor: core: Handle ID collisions between SFDP & non-SFDP
+>     flashes
+>   mtd: spi-nor: macronix: Handle ID collision b/w MX25L3233F and
+>     MX25L3205D
+>   mtd: spi-nor: macronix: Handle ID collision b/w MX25L12805D and
+>     MX25L12835F
+>   mtd: spi-nor: Introduce Manufacturer ID collisions driver
+>   mtd: spi-nor: manuf-id-collisions: Add support for xt25f128b
+> 
+>  drivers/mtd/spi-nor/Makefile              |  1 +
+>  drivers/mtd/spi-nor/core.c                | 21 +++++++++--
+>  drivers/mtd/spi-nor/core.h                |  1 +
+>  drivers/mtd/spi-nor/macronix.c            | 46 ++++++++++++++++++++++-
+>  drivers/mtd/spi-nor/manuf-id-collisions.c | 46 +++++++++++++++++++++++
+>  drivers/mtd/spi-nor/sysfs.c               |  4 +-
+>  include/linux/mtd/spi-nor.h               |  6 +++
+>  7 files changed, 118 insertions(+), 7 deletions(-)
+>  create mode 100644 drivers/mtd/spi-nor/manuf-id-collisions.c
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
-0000000 4653 5044 0100 ff01 0000 0901 0030 ff00
-0000010 000b 0301 0060 ff00 ffff ffff ffff ffff
-0000020 ffff ffff ffff ffff ffff ffff ffff ffff
-0000030 20e5 fff1 ffff 07ff eb44 6b08 3b08 bb42
-0000040 ffee ffff ffff ff00 ffff ff00 200c 520f
-0000050 d810 ff00 ffff ffff ffff ffff ffff ffff
-0000060 3600 2700 f99f 6477 e8d9 ffff
+drivers/mtd/spi-nor/xmc.c should probably be moved into
+manuf-id-collisions as it actually reusing the micron/st
+vendor id (?!).
 
- drivers/mtd/spi-nor/manuf-id-collisions.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/manuf-id-collisions.c b/drivers/mtd/spi-nor/manuf-id-collisions.c
-index 75c5ad6480ee..0447e245f4b1 100644
---- a/drivers/mtd/spi-nor/manuf-id-collisions.c
-+++ b/drivers/mtd/spi-nor/manuf-id-collisions.c
-@@ -17,6 +17,15 @@ static const struct spi_nor_fixups boya_nor_fixups = {
- 	.late_init = boya_nor_late_init,
- };
- 
-+static void xtx_nor_late_init(struct spi_nor *nor)
-+{
-+	nor->manufacturer_name = "xtx";
-+}
-+
-+static const struct spi_nor_fixups xtx_nor_fixups = {
-+	.late_init = xtx_nor_late_init,
-+};
-+
- static const struct flash_info id_collision_parts[] = {
- 	/* Boya */
- 	{ "by25q128as", INFO(0x684018, 0, 64 * 1024, 256)
-@@ -24,6 +33,11 @@ static const struct flash_info id_collision_parts[] = {
- 		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ)
- 		.fixups = &boya_nor_fixups },
-+
-+	/* XTX (XTX Technology Limited) */
-+	{ "xt25f128b", INFO(0x0b4018, 0, 64 * 1024, 256)
-+		PARSE_SFDP
-+		.fixups = &xtx_nor_fixups },
- };
- 
- const struct spi_nor_manufacturer spi_nor_manuf_id_collisions = {
--- 
-2.25.1
-
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
