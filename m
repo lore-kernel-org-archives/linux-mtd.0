@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC008C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 28 Feb 2022 15:36:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF71CC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 28 Feb 2022 15:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i+Hki6Gvk9doeG5bTJC5JSGFRfNFpFoFjejZWV8qhUA=; b=lJdcRHeXmF2C62
-	B/SS6eEZnVhgMw15NWDnjE0+4KbmQ8f0NpBsMWd2Qu4KTtGse3PnxooVm5UumOge0f0xFej8owfWn
-	9xusTJJniSTxHqec2Wyd0yRpVi7S1Fd4JyRrf++SGZ2McZxM39pqaltGacfzf2mwg7HCpxg6xpDyh
-	tQ2IEigF7rE/f1Wa00cGw6UZeFFxVHR8SegOg1Zt3ax9RtH+/lmwOOdr0wAj2F69eUrruJSlqWlX4
-	v4lzeDX+MGUHoZ0aNq9WRx8ya4VEs9aBRv3wREeGBrj1//GUyagW0a6Y6p8UqwWr6+D8HnM8bquY6
-	+zLt2XhNnh/pbm1aPMUg==;
+	List-Owner; bh=tH2D7p73oHA82PQIQ1SSqzNLJvqC4yCtCHwSrKLRmc8=; b=jKSuyN4c42uT/j
+	DWtmahjf/R+EkhHE2Kk4GZ1SxrIUcDxdf8CqvJRHFvHBTiF53w7UmJoctSBeSXnEqGN9ynL2yeXK1
+	I4hkgvW0FPetgPtszt0nUXxQWwNQMy+N6E21mK8reC8bs/l/fI4+IHrL3PISWkJypaWMAgwnrQR5a
+	tuVXx4SHSCkCiZI8c9AdAm1XutXy3iTuwGx83oz2o0wN6QNvQtqfUQQyzxOio3LSJmvavtMgS/0un
+	tXx3Zq02Tr9EjLHBAqXwJR+9TEDSe8bN0ZOvmZ5FJoBggKTIH6IBdbH/iDjqMKPxvuVaDWSWCjY9t
+	eww5iBKFyncenFCDtOUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nOi3g-00DAcU-Sh; Mon, 28 Feb 2022 15:35:32 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nOi7a-00DBGl-L0; Mon, 28 Feb 2022 15:39:34 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nOi3c-00DAc3-Si
- for linux-mtd@lists.infradead.org; Mon, 28 Feb 2022 15:35:30 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 21SFZOO4073276;
- Mon, 28 Feb 2022 09:35:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1646062524;
- bh=jBRTdblN1RAmc+4Nczn8RlsQ7gDEaz21mwBipojhJ7Q=;
- h=Date:Subject:To:CC:References:From:In-Reply-To;
- b=PS/cMYq5au6dzgrnCq4DJyWTyJw0LRODiYXFnuyk1tSoObC4V/P4PknzYuJYjaYCt
- qgwOUJwLCRRl800D+sUMXZchtSlSsAkG081dqAhA54J0f5RYU0011rSwskFCCuWISo
- 9GTTgNw9KYtPQW38wpDqPfaReXzqGTRl+plHLaOQ=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 21SFZOPm081253
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 28 Feb 2022 09:35:24 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 28
- Feb 2022 09:35:23 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 28 Feb 2022 09:35:23 -0600
-Received: from [10.250.233.1] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 21SFZLxK077386;
- Mon, 28 Feb 2022 09:35:22 -0600
-Message-ID: <e9cb486d-b775-896c-93b5-3a1154bd9f3e@ti.com>
-Date: Mon, 28 Feb 2022 21:04:52 +0530
+ id 1nOi7W-00DBFU-UT
+ for linux-mtd@lists.infradead.org; Mon, 28 Feb 2022 15:39:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1646062770; x=1677598770;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=yQcOpYi3/hD8IEZBHYqUvgPMwoCny9+QNjaItq/xudo=;
+ b=CDxRyj2Dh2qDACdhB7BqlQy5ShGkBJsOqotKOzfa1peTx4WHlT1SeGel
+ oUBPr6QRLdiMnYJcpE062HPkphN3IQdSCObcZilyR6IBD+kGPNFRl+cgd
+ lQEWjDj3uBFVMIZK5V+vFNyvSphhTwwmyek74WA3qTxN9xsfG8z6Ysqxq
+ gVYEuNxMjJE2jKzcZxmqhcC3eEfgXlx3OEnRjBa5afm+HoLC5/EClwxUq
+ CKvlnaFpUUQdkC2Hm4CkdVeukIIhXhlOOSQy+NpawveZ1oT384Pp0oISR
+ 1/U08dkX/8D6LG30EprFvbSNmnjBaxG59D81WzsEtlnRqAIy95WI8OCjq Q==;
+X-IronPort-AV: E=Sophos;i="5.90,142,1643698800"; d="scan'208";a="150249761"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 28 Feb 2022 08:39:25 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Mon, 28 Feb 2022 08:39:24 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Mon, 28 Feb 2022 08:39:22 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <michael@walle.cc>, <p.yadav@ti.com>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] mtd: spi-nor: Move XMC to manufacturer ID collisions driver
+Date: Mon, 28 Feb 2022 17:39:21 +0200
+Message-ID: <20220228153921.219668-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <fead645197b0cb6534c04a665938a8d5@walle.cc>
+References: <fead645197b0cb6534c04a665938a8d5@walle.cc>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Use chip_ready() for write on
- S29GL064N
-Content-Language: en-US
-To: Tokunori Ikegami <ikegami.t@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, Ahmad Fatoum <a.fatoum@pengutronix.de>,
- <stable@vger.kernel.org>
-References: <20220214182011.8493-1-ikegami.t@gmail.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20220214182011.8493-1-ikegami.t@gmail.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220228_073529_052482_7495C3E2 
-X-CRM114-Status: GOOD (  32.75  )
+X-CRM114-CacheID: sfid-20220228_073931_097262_D11F5635 
+X-CRM114-Status: GOOD (  13.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,241 +80,102 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+XMC manufacturer ID is defined in bank 10 of JEP106 standard. The XMC
+flashes that are currently supported do not define the continuation codes
+and will collide with flashes using the same manufacturer IDs,
+STMicroelectronics being an example (defined in bank one without
+continuation codes). Move XMC to manufacturer ID collisions driver as it
+doesn't respect the JEP106 standard and collides with other manufacturers.
 
-On 14/02/22 11:50 pm, Tokunori Ikegami wrote:
-> The regression issue has been caused on S29GL064N and reported it.
-> Also the change mentioned is to use chip_good() for buffered write.
-> So disable the change on S29GL064N and use chip_ready() as before.
-> 
-> Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
-> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: stable@vger.kernel.org
-> ---
-Thanks for working on the fix.
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+depends on: https://lore.kernel.org/linux-mtd/20220228134505.203270-1-tudor.ambarus@microchip.com/
 
-Please CC maintainers from
+ drivers/mtd/spi-nor/core.c                |  1 -
+ drivers/mtd/spi-nor/core.h                |  1 -
+ drivers/mtd/spi-nor/manuf-id-collisions.c |  8 ++++++++
+ drivers/mtd/spi-nor/xmc.c                 | 25 -----------------------
+ 4 files changed, 8 insertions(+), 27 deletions(-)
+ delete mode 100644 drivers/mtd/spi-nor/xmc.c
 
-./scripts/get_maintainer.pl -f drivers/mtd/chips/cfi_cmdset_0002.c
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 80d6ce41122a..e2b388d12c6c 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1627,7 +1627,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_sst,
+ 	&spi_nor_winbond,
+ 	&spi_nor_xilinx,
+-	&spi_nor_xmc,
+ };
+ 
+ static const struct flash_info *
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index f727e632c0ee..db042c40853f 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -517,7 +517,6 @@ extern const struct spi_nor_manufacturer spi_nor_spansion;
+ extern const struct spi_nor_manufacturer spi_nor_sst;
+ extern const struct spi_nor_manufacturer spi_nor_winbond;
+ extern const struct spi_nor_manufacturer spi_nor_xilinx;
+-extern const struct spi_nor_manufacturer spi_nor_xmc;
+ 
+ extern const struct attribute_group *spi_nor_sysfs_groups[];
+ 
+diff --git a/drivers/mtd/spi-nor/manuf-id-collisions.c b/drivers/mtd/spi-nor/manuf-id-collisions.c
+index 0447e245f4b1..33a7d475b1cd 100644
+--- a/drivers/mtd/spi-nor/manuf-id-collisions.c
++++ b/drivers/mtd/spi-nor/manuf-id-collisions.c
+@@ -27,6 +27,14 @@ static const struct spi_nor_fixups xtx_nor_fixups = {
+ };
+ 
+ static const struct flash_info id_collision_parts[] = {
++	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
++	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ) },
++	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
++			      SPI_NOR_QUAD_READ) },
++
+ 	/* Boya */
+ 	{ "by25q128as", INFO(0x684018, 0, 64 * 1024, 256)
+ 		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+deleted file mode 100644
+index 051411e86339..000000000000
+--- a/drivers/mtd/spi-nor/xmc.c
++++ /dev/null
+@@ -1,25 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * Copyright (C) 2005, Intec Automation Inc.
+- * Copyright (C) 2014, Freescale Semiconductor, Inc.
+- */
+-
+-#include <linux/mtd/spi-nor.h>
+-
+-#include "core.h"
+-
+-static const struct flash_info xmc_nor_parts[] = {
+-	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
+-	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ) },
+-};
+-
+-const struct spi_nor_manufacturer spi_nor_xmc = {
+-	.name = "xmc",
+-	.parts = xmc_nor_parts,
+-	.nparts = ARRAY_SIZE(xmc_nor_parts),
+-};
+-- 
+2.25.1
 
-Else, patch would not get attention in time.
-
->  drivers/mtd/chips/cfi_cmdset_0002.c | 105 ++++++++++++++++------------
->  1 file changed, 59 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index a761134fd3be..a0dfc8ace899 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -48,6 +48,7 @@
->  #define SST49LF040B		0x0050
->  #define SST49LF008A		0x005a
->  #define AT49BV6416		0x00d6
-> +#define S29GL064N_MN12		0x0c01
->  
->  /*
->   * Status Register bit description. Used by flash devices that don't
-> @@ -109,6 +110,8 @@ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
->  	.module		= THIS_MODULE
->  };
->  
-> +static bool use_chip_good_for_write;
-> +
-
-Can we use per device private flag? Else this wont work on systems with
-multiple CFI flashes with one of them being S29GL064N_MN12.
-
->  /*
->   * Use status register to poll for Erase/write completion when DQ is not
->   * supported. This is indicated by Bit[1:0] of SoftwareFeatures field in
-> @@ -283,6 +286,17 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
->  }
->  #endif /* !FORCE_WORD_WRITE */
->  
-> +static void fixup_use_chip_good_for_write(struct mtd_info *mtd)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	struct cfi_private *cfi = map->fldrv_priv;
-> +
-> +	if (cfi->mfr == CFI_MFR_AMD && cfi->id == S29GL064N_MN12)
-> +		return;
-> +
-> +	use_chip_good_for_write = true;
-> +}
-> +
->  /* Atmel chips don't use the same PRI format as AMD chips */
->  static void fixup_convert_atmel_pri(struct mtd_info *mtd)
->  {
-> @@ -462,7 +476,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
->  	{ CFI_MFR_AMD, 0x0056, fixup_use_secsi },
->  	{ CFI_MFR_AMD, 0x005C, fixup_use_secsi },
->  	{ CFI_MFR_AMD, 0x005F, fixup_use_secsi },
-> -	{ CFI_MFR_AMD, 0x0c01, fixup_s29gl064n_sectors },
-> +	{ CFI_MFR_AMD, S29GL064N_MN12, fixup_s29gl064n_sectors },
->  	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors },
->  	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors },
->  	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors },
-> @@ -474,6 +488,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
->  #if !FORCE_WORD_WRITE
->  	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers },
->  #endif
-> +	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_chip_good_for_write },
->  	{ 0, 0, NULL }
->  };
->  static struct cfi_fixup jedec_fixup_table[] = {
-> @@ -801,42 +816,61 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
->  	return NULL;
->  }
->  
-> -/*
-> - * Return true if the chip is ready.
-> - *
-> - * Ready is one of: read mode, query mode, erase-suspend-read mode (in any
-> - * non-suspended sector) and is indicated by no toggle bits toggling.
-> - *
-> - * Note that anything more complicated than checking if no bits are toggling
-> - * (including checking DQ5 for an error status) is tricky to get working
-> - * correctly and is therefore not done	(particularly with interleaved chips
-> - * as each chip must be checked independently of the others).
-> - */
-> -static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
-> -			       unsigned long addr)
-> +static int __xipram chip_check(struct map_info *map, struct flchip *chip,
-> +			       unsigned long addr, map_word *expected)
->  {
->  	struct cfi_private *cfi = map->fldrv_priv;
-> -	map_word d, t;
-> +	map_word oldd, curd;
-> +	int ret;
->  
->  	if (cfi_use_status_reg(cfi)) {
->  		map_word ready = CMD(CFI_SR_DRB);
-> +
-Unrelated change?
-
->  		/*
->  		 * For chips that support status register, check device
->  		 * ready bit
->  		 */
->  		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
->  				 cfi->device_type, NULL);
-> -		d = map_read(map, addr);
-> +		curd = map_read(map, addr);
->  
-> -		return map_word_andequal(map, d, ready, ready);
-> +		return map_word_andequal(map, curd, ready, ready);
->  	}
->  
-> -	d = map_read(map, addr);
-> -	t = map_read(map, addr);
-> +	oldd = map_read(map, addr);
-> +	curd = map_read(map, addr);
-> +
-> +	ret = map_word_equal(map, oldd, curd);
-> +
-> +	if (!ret || !expected)
-> +		return ret;
-
-Why even read oldd and curd if !expected ?
-
-> +
-> +	return map_word_equal(map, curd, *expected);
-> +}
-> +
-> +static int __xipram chip_good_for_write(struct map_info *map,
-> +					struct flchip *chip, unsigned long addr,
-> +					map_word expected)
-> +{
-> +	if (use_chip_good_for_write)
-> +		return chip_check(map, chip, addr, &expected);
->  
-> -	return map_word_equal(map, d, t);
-> +	return chip_check(map, chip, addr, NULL);
->  }
->  
-> +/*
-> + * Return true if the chip is ready.
-> + *
-> + * Ready is one of: read mode, query mode, erase-suspend-read mode (in any
-> + * non-suspended sector) and is indicated by no toggle bits toggling.
-> + *
-> + * Note that anything more complicated than checking if no bits are toggling
-> + * (including checking DQ5 for an error status) is tricky to get working
-> + * correctly and is therefore not done	(particularly with interleaved chips
-> + * as each chip must be checked independently of the others).
-> + */
-> +#define chip_ready(map, chip, addr) chip_check(map, chip, addr, NULL)
-> +
->  /*
->   * Return true if the chip is ready and has the correct value.
->   *
-> @@ -855,28 +889,7 @@ static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
->  static int __xipram chip_good(struct map_info *map, struct flchip *chip,
->  			      unsigned long addr, map_word expected)
->  {
-> -	struct cfi_private *cfi = map->fldrv_priv;
-> -	map_word oldd, curd;
-> -
-> -	if (cfi_use_status_reg(cfi)) {
-> -		map_word ready = CMD(CFI_SR_DRB);
-> -
-> -		/*
-> -		 * For chips that support status register, check device
-> -		 * ready bit
-> -		 */
-> -		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
-> -				 cfi->device_type, NULL);
-> -		curd = map_read(map, addr);
-> -
-> -		return map_word_andequal(map, curd, ready, ready);
-> -	}
-> -
-> -	oldd = map_read(map, addr);
-> -	curd = map_read(map, addr);
-> -
-> -	return	map_word_equal(map, oldd, curd) &&
-> -		map_word_equal(map, curd, expected);
-> +	return chip_check(map, chip, addr, &expected);
->  }
->  
->  static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
-> @@ -1699,7 +1712,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
->  		 * "chip_good" to avoid the failure due to scheduling.
->  		 */
->  		if (time_after(jiffies, timeo) &&
-> -		    !chip_good(map, chip, adr, datum)) {
-> +		    !chip_good_for_write(map, chip, adr, datum)) {
->  			xip_enable(map, chip, adr);
->  			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
->  			xip_disable(map, chip, adr);
-> @@ -1707,7 +1720,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
->  			break;
->  		}
->  
-> -		if (chip_good(map, chip, adr, datum)) {
-> +		if (chip_good_for_write(map, chip, adr, datum)) {
->  			if (cfi_check_err_status(map, chip, adr))
->  				ret = -EIO;
->  			break;
-> @@ -1979,14 +1992,14 @@ static int __xipram do_write_buffer_wait(struct map_info *map,
->  		 * "chip_good" to avoid the failure due to scheduling.
->  		 */
->  		if (time_after(jiffies, timeo) &&
-> -		    !chip_good(map, chip, adr, datum)) {
-> +		    !chip_good_for_write(map, chip, adr, datum)) {
->  			pr_err("MTD %s(): software timeout, address:0x%.8lx.\n",
->  			       __func__, adr);
->  			ret = -EIO;
->  			break;
->  		}
->  
-> -		if (chip_good(map, chip, adr, datum)) {
-> +		if (chip_good_for_write(map, chip, adr, datum)) {
->  			if (cfi_check_err_status(map, chip, adr))
->  				ret = -EIO;
->  			break;
 
 ______________________________________________________
 Linux MTD discussion mailing list
