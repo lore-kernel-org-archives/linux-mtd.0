@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF4DDC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Mar 2022 21:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64BAAC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Mar 2022 21:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=v4AoQDldkNXfAXvYJlWBBeKNIwnt5N9qUnrgPcgQxsw=; b=F5Euu/gxx4ouemuzTvBvdgV3AF
-	foW669psg69sOSlntoHWlHHQXUv2W9V+yWHyZkRfyTpysghHj3OLL34vY5XmDH3nmBZqinwhLlomd
-	oxVT2nFBOiO7H9uwiaetvu023bSlFMmQ67s6zFR6OhJ8/Y2vwcGudXa4AUw/qCfz59+HL21fgnnEo
-	GCFJC186EZWXTyYV3illo3JxXZ+5fwmBf8rpm/3VzvrY1k+L+BT0xwgva/OHNqaVG6YipaEVI+Ho6
-	u/uCC8qJa/Vi2SX+aUJagyp54lhOpAMYU2o3EUgHvqrV0O2OnfsIbd4SBgBHmP+6Obt04UPBlL9xn
-	NtmXwp2A==;
+	bh=mSCKpySL3LVdxZQOU3lyMz3RvJBssEeuopaPl1XOjTo=; b=lfh1IMjfQOiFJDAwgKPU/6rxK2
+	UP0wBHQFnBFxhcwQ6gHpPCK6riD76l9oQB1uUxxz+zHXxdaSujiJ69uiS6czWXWGAWaf3HhUkDTFF
+	GhQTd78CHg/oJuWp2ep8vo7FgYy6zVNQa7j3Wb0mSkNYeKaI7lHMKRusQXPslUo0xVQh/o9fO8hbd
+	iQyBvCo9/SbrR08b1By/RWRWOz34GnuGhdrblD4yyWnXG7Y4vOm4M5iWBNy2/UbUn3CRhGhIifdfB
+	aK9rC6ueDsn75DGf6byapCCVNRc4U38lK2Ks7SMCfZsJP8vpgECRpreB//EZ9AbL9lQA4/UF2SMJ4
+	UPp7ECRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nPAQZ-000gp0-LH; Tue, 01 Mar 2022 21:53:03 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nPAUm-000hck-Ny; Tue, 01 Mar 2022 21:57:24 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nPAQO-000go4-2L; Tue, 01 Mar 2022 21:52:53 +0000
+ id 1nPAUa-000haW-40; Tue, 01 Mar 2022 21:57:13 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id F3E4022239;
- Tue,  1 Mar 2022 22:52:45 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 491D322239;
+ Tue,  1 Mar 2022 22:57:10 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1646171570;
+ s=mail2016061301; t=1646171830;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=hlUSUME+O97a/40JzOs9K3N4ZZr9txK48/y6AXqQWwg=;
- b=ja3B4yFKmh1aB8ENpPJ+Wwd7rt1r+PAgAVvpwc43E5LNb54Hzy+At340ObFW9EJtUn47Hx
- 3K5ASav9d9T08zq+T1CKjez/YbeLr6LTUj9VOYa3482D5HZnGbF9TNiNsH4msBEYSH/7ar
- y7Cd5vDf0JyN3M5f0sYodY9OssOgLsM=
+ bh=/fRigi8y5w+yR/9xpIUm4pHiTi8KF2lWeh6zWkolfhU=;
+ b=l46o8QDiW6mpCEEnUX03TjUoYWd+UybpYnZPN54Spt80AHR5oAGHvQVn9bvgMrIrcWreqn
+ ZAXUJtWm4n32M4g7BjGoTL5ApGvoUGZmQrKuO+IhmtsOqGBa/EyIiwfLS8Q4npwA1Mdedq
+ 0hnxgHSfohYK8KtF/dQ/QVFg/jeoA3s=
 MIME-Version: 1.0
-Date: Tue, 01 Mar 2022 22:52:45 +0100
+Date: Tue, 01 Mar 2022 22:57:10 +0100
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v4 2/6] mtd: spi-nor: core: Handle ID collisions between
- SFDP & non-SFDP flashes
-In-Reply-To: <20220228134505.203270-3-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v4 3/6] mtd: spi-nor: macronix: Handle ID collision b/w
+ MX25L3233F and MX25L3205D
+In-Reply-To: <20220228134505.203270-4-tudor.ambarus@microchip.com>
 References: <20220228134505.203270-1-tudor.ambarus@microchip.com>
- <20220228134505.203270-3-tudor.ambarus@microchip.com>
+ <20220228134505.203270-4-tudor.ambarus@microchip.com>
 User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <328762851786f1158505f9159ba3e5bc@walle.cc>
+Message-ID: <67810d13180a2718ad7ccc28815d2894@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220301_135252_322969_CE03E6B6 
-X-CRM114-Status: GOOD (  22.02  )
+X-CRM114-CacheID: sfid-20220301_135712_351501_809CD10E 
+X-CRM114-Status: GOOD (  23.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,58 +77,104 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2022-02-28 14:45, schrieb Tudor Ambarus:
-> A typical differentiator between flashes whose ID collide is whether 
-> they
-> support SFDP or not. For such a collision there will be a single
-> flash_info entry where the developer should specify:
-> 1/ PARSE_SFDP - so that the flash that supports SFDP to initialize its
->    parameters by parsing the SFDP tables
-> 2/ any of the no_sfdp_flags less SPI_NOR_SKIP_SFDP, to initialize the
->    flash parameters via the static no_sfdp_flags for the flash that
->    doesn't support SFDP.
-> Use the logic the above to handle ID collisions between SFDP & non-SFDP
-> flashes.
+> Macronix has a bad habbit of reusing flash IDs. While MX25L3233F 
+> supports
+> RDSFDP opcode, MX25L3205D does not support it and does not recommend
+> issuing opcodes that are not supported ("It is not recommended to adopt
+> any other code not in the command definition table, which will 
+> potentially
+> enter the hidden mode.").
+> 
+> We tested the RDSFDP on the MX25L3205D and the conclusion is that the
+> flash didn't reply anything. Given that it is unlikely that RDSFDP will
+> cause any problems for the old MX25L3205D, differentiate between the 
+> two
+> flashes by parsing SFDP.
+> 
+> Tested MX25L3233F. Generated a 256 Kbyte random data and did an erase,
+> write, read back and compare test. The flash uses for reads
+> SPINOR_OP_READ_1_4_4 0xeb, for erases SPINOR_OP_BE_4K 0x20, and for 
+> writes
+> SPINOR_OP_PP 0x02.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Acked-by: Pratyush Yadav <p.yadav@ti.com>
 > ---
->  drivers/mtd/spi-nor/core.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
+> #  cat
+> /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
+> c22016
+> # cat
+> /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
+> macronix
+> # cat
+> /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/partname
+> mx25l3233f
+> # cat
+> /sys/devices/platform/ahb/ahb:apb/f0020000.spi/spi_master/spi1/spi1.0/spi-nor/sfdp
+> > mx25l3233f-sfdp
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index fbf3278ba29a..aef00151c116 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2639,8 +2639,17 @@ static int spi_nor_init_params(struct spi_nor 
-> *nor)
->  	if (nor->info->parse_sfdp) {
->  		ret = spi_nor_parse_sfdp(nor);
+> 
+> # xxd -p mx25l3233f-sfdp
+> 53464450000101ff00000109300000ffc2000104600000ffffffffffffff
+> ffffffffffffffffffffffffffffffffffffe520f1ffffffff0144eb086b
+> 083b04bbeeffffffffff00ffffff00ff0c200f5210d800ffffffffffffff
+> ffffffffffff003650269cf97764fecfffffffffffff
 
-Can we return -ENOENT here if sfdp isn't supported, so we
-can differentiate between "no sfdp present" and other errors?
+Is quad enable working or has this the same problem as
+the macronix flash in patch 4? Judging by the length of the SFDP
+this also lacks the required information to select an
+appropriate enable method. I haven't had closer look though.
 
->  		if (ret) {
-> -			dev_err(nor->dev, "BFPT parsing failed. Please consider using
-> SPI_NOR_SKIP_SFDP when declaring the flash\n");
-> -			return ret;
-> +			/*
-> +			 * Handle ID collisions between flashes that support
-> +			 * SFDP and flashes that don't. Initialize parameters
-> +			 * for the flash that doesn't support SFDP.
-> +			 */
-> +			if (nor->info->no_sfdp_flags & ~SPI_NOR_SKIP_SFDP) {
-
-Shouldn't this be
-if (!(nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP))
-
-> +				spi_nor_no_sfdp_init_params(nor);
-> +			} else {
-> +				dev_err(nor->dev, "BFPT parsing failed. Please consider using
-> SPI_NOR_SKIP_SFDP when declaring the flash\n");
-> +				return ret;
-> +			}
->  		}
->  	} else if (nor->info->no_sfdp_flags & SPI_NOR_SKIP_SFDP) {
->  		spi_nor_no_sfdp_init_params(nor);
+> 
+> # sha1sum mx25l3233f-sfdp
+> 1b6e0f75b4a6d08d570082992455affa72b2dc81  mx25l3233f-sfdp
+> 
+>  drivers/mtd/spi-nor/macronix.c | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/macronix.c 
+> b/drivers/mtd/spi-nor/macronix.c
+> index d81a4cb2812b..2754bbef3d2e 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -8,6 +8,24 @@
+> 
+>  #include "core.h"
+> 
+> +static int mx25l3205d_post_bfpt_fixups(struct spi_nor *nor,
+> +				const struct sfdp_parameter_header *bfpt_header,
+> +				const struct sfdp_bfpt *bfpt)
+> +{
+> +	/*
+> +	 * Macronix has a bad habit of reusing flash IDs: MX25L3233F collides
+> +	 * with MX25L3205D. MX25L3233F defines SFDP tables, while the older
+> +	 * variant does not.
+> +	 */
+> +	nor->name = "mx25l3233f";
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct spi_nor_fixups mx25l3205d_fixups = {
+> +	.post_bfpt = mx25l3205d_post_bfpt_fixups,
+> +};
+> +
+>  static int
+>  mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
+>  			    const struct sfdp_parameter_header *bfpt_header,
+> @@ -44,7 +62,10 @@ static const struct flash_info macronix_nor_parts[] 
+> = {
+>  	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32)
+>  		NO_SFDP_FLAGS(SECT_4K) },
+>  	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64)
+> -		NO_SFDP_FLAGS(SECT_4K) },
+> +		/* ID collision with mx25l3233f. */
+> +		PARSE_SFDP
+> +		NO_SFDP_FLAGS(SECT_4K)
+> +		.fixups = &mx25l3205d_fixups },
+>  	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64)
+>  		NO_SFDP_FLAGS(SECT_4K) },
+>  	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128)
 
 -michael
 
