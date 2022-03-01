@@ -4,72 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFAE3C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Mar 2022 08:19:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89837C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Mar 2022 08:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q3k3VTVxIBpzcGyEkqZy4h/zeyhgT50f0z7/HzdKTb4=; b=rwek0LRa4YOiqS
-	mu2EMYuFIhmIl1lPEnwXur888ev0qfpWA6teIu54oRewizE+7KA42O1cDLxm48Vm4hd1Y3ukcTFOT
-	uQwHo5QL9i183F8XnY8edZjaU63YMbXs4lPoEaltdqymhYVZvC24AV7Q9Bzz9Cm8KzVdkt55XcN2w
-	cUm0meq46PLS4KJ3GIdWc0I44U1em28qV81U1pnaPdnkUOuqzchzhYDr5G2F6/wziWTZVP6UgJQfJ
-	5nkm7TXrPq+tYnV3Glc1+YbokuMgBBp16FwYNcx1kVATYYAD6lIIcUfzwZHpWov1c+fSieb4yYOtO
-	xTcYuytVQfVLewNM01Yw==;
+	List-Owner; bh=v5pEeYllAadR0g2l0xIQQmQiXaGkM4h9KXxsi9gpeOU=; b=BFX1Z0Yq20Iyv+
+	/tMtLpVY0nuv2VV/HEf7p+KnPvUMZK6McmokgXR7P1DkMWTt/mrRecM3CGy5Nytkd1wX0g8Ygc8Z/
+	ybu1SpdY3xkP0DevSEb1gtt86K0vW+2Yj3vPM5IXTB40jHMlPD01K5O1qhpSlPIAjPG/OV9i9zdwI
+	sBLGnOtifEtk9ecpmJw9ePV8kFmzAlFm5H/JX1YH4EUoTmneVHGNHOOnWuSF3vvLCSSE1yNklbBeZ
+	O5bOWIAOC6EGVIY8X0Byf5iPdP7NeyN8bEfUzvcAt7HDnVBIx/3hIrbWlRmA0pwEYAYDf8Sl7EwU0
+	U7b60Oo5TUdE/IYjBDCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nOxiv-00FYZP-5t; Tue, 01 Mar 2022 08:19:09 +0000
-Received: from perceval.ideasonboard.com ([213.167.242.64])
+	id 1nOyE2-00FhIW-K2; Tue, 01 Mar 2022 08:51:18 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nOxig-00FYQR-Sn; Tue, 01 Mar 2022 08:18:56 +0000
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi
- [62.78.145.57])
- by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6776A478;
- Tue,  1 Mar 2022 09:18:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
- s=mail; t=1646122732;
- bh=GUeID2Un8vVSdeuDNIEpa8RZjMMEHoy9L8wSmXbuUy8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=miR5YmRNNJOlmDq2Yqs9dB5x+/XGsPj5xCWEd5d4QNz5EOGQpnsdmFZxXhyD4MKIk
- rbf5ayN8604es0VCCAiQRs20sEQGYm4i485kkz8RqNa01HdgUMWxmhGcc7qoMO3hEb
- q2nC3FtfDQ133CVtcapt7269jyXQ9M8016CxGHSY=
-Date: Tue, 1 Mar 2022 10:18:42 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Pavel Machek <pavel@ucw.cz>, Lee Jones <lee.jones@linaro.org>,
- Guenter Roeck <groeck@chromium.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Kishon Vijay Abraham I <kishon@ti.com>,
- Vinod Koul <vkoul@kernel.org>, Sebastian Reichel <sre@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Mark Brown <broonie@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-mtd@lists.infradead.org,
- netdev@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
- linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Another pass removing cases of 'allOf'
- containing a '$ref'
-Message-ID: <Yh3W4r7rNSI60rVT@pendragon.ideasonboard.com>
-References: <20220228213802.1639658-1-robh@kernel.org>
+ id 1nOyDX-00Fh1r-S6; Tue, 01 Mar 2022 08:50:49 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AA7871F43F9D;
+ Tue,  1 Mar 2022 08:50:43 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1646124644;
+ bh=0ZrsARjiH24wsElmcwQCEqvABOocHSYJJ1IUet5VHj0=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=VkssrVfGYwFWa86K5JP4dvVJi6C+6lIuwJgIlWE43OPqM0Jkp6M9+FhyeHzetVEl+
+ GHv/S5dgJcAckf4Rz8kTvMI3l2e5f8DT3pWg6E9FH0/dMdwYbVh3DloQHKlmplgNrl
+ /OS4LXT69IGzmAt7ExHejLoZJgKgThPU/lkUtaI3B1X8gsNlxdIrX/2m3NQApgnQ9s
+ O7VmwhqHFJ0gpWAB6+nSGvaOOTp/YOQwllykSHbIkN/HgNEHhmUQyObYJGUj+vP1Ua
+ w61pUvqu9bVvZlIXtQ7a3Nw/3CJkFwNzfWJj0KB7IwvU14dF5AExlse8rU/ajiY6Zm
+ YPGpFHL9UWlOQ==
+Date: Tue, 1 Mar 2022 09:50:37 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Xin Xiong <xiongx18@fudan.edu.cn>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
+ <claudiu.beznea@microchip.com>, Boris Brezillon <bbrezillon@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn, Xiyu Yang
+ <xiyuyang19@fudan.edu.cn>, Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH v2] mtd: rawnand: atmel: fix refcount issue in
+ atmel_nand_controller_init
+Message-ID: <20220301095037.1763e051@collabora.com>
+In-Reply-To: <20220301044556.36162-1-xiongx18@fudan.edu.cn>
+References: <20220301044556.36162-1-xiongx18@fudan.edu.cn>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220228213802.1639658-1-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220301_001855_159338_B9DAF9F3 
-X-CRM114-Status: GOOD (  17.52  )
+X-CRM114-CacheID: sfid-20220301_005048_170085_DEC0C360 
+X-CRM114-Status: GOOD (  20.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,83 +78,83 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Rob,
+On Tue,  1 Mar 2022 12:45:56 +0800
+Xin Xiong <xiongx18@fudan.edu.cn> wrote:
 
-Thank you for the patch.
-
-On Mon, Feb 28, 2022 at 03:38:02PM -0600, Rob Herring wrote:
-> Another pass at removing unnecessary use of 'allOf' with a '$ref'.
+> The reference counting issue happens in several error handling paths
+> on a refcounted object "nc->dmac". In these paths, the function simply
+> returns the error code, forgetting to balance the reference count of
+> "nc->dmac", increased earlier by dma_request_channel(), which may
+> cause refcount leaks.
 > 
-> json-schema versions draft7 and earlier have a weird behavior in that
-> any keywords combined with a '$ref' are ignored (silently). The correct
-> form was to put a '$ref' under an 'allOf'. This behavior is now changed
-> in the 2019-09 json-schema spec and '$ref' can be mixed with other
-> keywords.
+> Fix it by decrementing the refcount of specific object in those error
+> paths.
 > 
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-phy@lists.infradead.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Co-developed-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Co-developed-by: Xin Tan <tanxin.ctf@gmail.com>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
 > ---
->  .../bindings/connector/usb-connector.yaml         |  3 +--
->  .../bindings/display/brcm,bcm2711-hdmi.yaml       |  3 +--
->  .../bindings/display/bridge/adi,adv7511.yaml      |  5 ++---
->  .../bindings/display/bridge/synopsys,dw-hdmi.yaml |  5 ++---
->  .../bindings/display/panel/display-timings.yaml   |  3 +--
->  .../devicetree/bindings/display/ste,mcde.yaml     |  4 ++--
->  .../devicetree/bindings/input/adc-joystick.yaml   |  9 ++++-----
->  .../bindings/leds/cznic,turris-omnia-leds.yaml    |  3 +--
->  .../devicetree/bindings/leds/leds-lp50xx.yaml     |  3 +--
->  .../devicetree/bindings/mfd/google,cros-ec.yaml   | 12 ++++--------
->  .../devicetree/bindings/mtd/nand-controller.yaml  |  8 +++-----
->  .../bindings/mtd/rockchip,nand-controller.yaml    |  3 +--
->  .../devicetree/bindings/net/ti,cpsw-switch.yaml   |  3 +--
->  .../bindings/phy/phy-stm32-usbphyc.yaml           |  3 +--
->  .../bindings/power/supply/sbs,sbs-manager.yaml    |  4 +---
->  .../bindings/remoteproc/ti,k3-r5f-rproc.yaml      |  3 +--
->  .../devicetree/bindings/soc/ti/ti,pruss.yaml      | 15 +++------------
->  .../devicetree/bindings/sound/st,stm32-sai.yaml   |  3 +--
->  .../devicetree/bindings/sound/tlv320adcx140.yaml  | 13 ++++++-------
->  .../devicetree/bindings/spi/spi-controller.yaml   |  4 +---
->  .../devicetree/bindings/usb/st,stusb160x.yaml     |  4 +---
->  21 files changed, 39 insertions(+), 74 deletions(-)
+> V1 -> V2: Rewrited the error handling block
+> ---
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> index f3276ee9e4fe..0efeb5d77be0 100644
+> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> @@ -2060,13 +2060,15 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+>  	nc->mck = of_clk_get(dev->parent->of_node, 0);
+>  	if (IS_ERR(nc->mck)) {
+>  		dev_err(dev, "Failed to retrieve MCK clk\n");
+> -		return PTR_ERR(nc->mck);
+> +		ret = PTR_ERR(nc->mck);
+> +		goto out_release_dma;
+>  	}
+>  
+>  	np = of_parse_phandle(dev->parent->of_node, "atmel,smc", 0);
+>  	if (!np) {
+>  		dev_err(dev, "Missing or invalid atmel,smc property\n");
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto out_release_dma;
+>  	}
+>  
+>  	nc->smc = syscon_node_to_regmap(np);
+> @@ -2074,10 +2076,20 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+>  	if (IS_ERR(nc->smc)) {
+>  		ret = PTR_ERR(nc->smc);
+>  		dev_err(dev, "Could not get SMC regmap (err = %d)\n", ret);
+> -		return ret;
+> +		goto out_release_dma;
+>  	}
+>  
+>  	return 0;
+> +
+> +out_release_dma:
+> +	if (nc->caps->has_dma && !atmel_nand_avoid_dma) {
+> +		if (nc->dmac) {
+> +			dma_release_channel(nc->dmac);
+> +			nc->dmac = NULL;
+> +		}
+> +	}
 
--- 
-Regards,
+Nit:
 
-Laurent Pinchart
+	if (nc->dmac)
+		dma_release_channel(nc->dmac);
+
+should work just fine.
+
+> +
+> +	return ret;
+>  }
+>  
+>  static int
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
