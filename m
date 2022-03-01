@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9068FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  1 Mar 2022 05:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 211DCC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  1 Mar 2022 05:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=A+raCKRAVp8tMSDvzPFS+Vpk/+uuQvrUo/DGG+Q8ghI=; b=m47ARGi2aCocpz
-	k0iA/p+SxQf0Q2tFJDiO/hs18W8l/02+S6DSZKvzoAmQnqF7MGSV83C6s6ZMSdxp/8Rdxhee0VYAi
-	83TMwEKYIHCZvreoCeAg3PfClssn7GM3NqMfNF0YZdXKJeIBVoZf9hFdZCcQftVHZzrWulBdq88sR
-	ywPTLGBUiVAhsLsm9W1qbERLFfCfJaSPYmfCFmTbh7uUypMEkpDCgaLC9hTSQ5ZztsIIBSEMUFzk5
-	Voplm1UpsbdClpzVHMiCAwd8V3G55LvEY8socAX4K+fQZ2l2Bi5KtxtVcTgOrGgy6ehzVBO4FT/lM
-	oSGf3czVlezX+duejllg==;
+	List-Owner; bh=GGlQLoOoFwTxGGTTvhyL2xZvamTha6BrMztGCYyAgSY=; b=Zq1MFF7DjuxbJg
+	A/PyctY+hBwWcVvCZzoTKDJOtdEuldjKjlMIRAQNk1I7fFqtbuC1G01Rfxqid355lFR7Zz11oiBy2
+	ZfEAO2OsJJT5S23alUABo+HPP7HyRjYAzRiA6GjQZxAInlbLffg+HMQChWW1hJcmNOULzmQznZEB4
+	UqLeIYpLxjCtUvx9mlAuaLjyr5R6QvytmED5/r2R+7IVAonAPPfAzjLTMvIPFXLTl3oslT8kNW3s/
+	WeFpFlRZ4BW/UcshmvHa+mFYVaIPIoLHk36pIH0YqL6ukGl+dqJt4JU6dla3w7kf8DYR75PesgfQ8
+	wHC73Y8sU7wBC0+qcWAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nOuy8-00EyX8-B3; Tue, 01 Mar 2022 05:22:40 +0000
-Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
+	id 1nOuyJ-00EyXi-14; Tue, 01 Mar 2022 05:22:51 +0000
+Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nOuxv-00EyUA-G6
- for linux-mtd@lists.infradead.org; Tue, 01 Mar 2022 05:22:29 +0000
-Received: by mail-pg1-x52e.google.com with SMTP id c1so13478773pgk.11
- for <linux-mtd@lists.infradead.org>; Mon, 28 Feb 2022 21:22:26 -0800 (PST)
+ id 1nOuxy-00EyUg-1M
+ for linux-mtd@lists.infradead.org; Tue, 01 Mar 2022 05:22:31 +0000
+Received: by mail-pj1-x1029.google.com with SMTP id
+ v5-20020a17090ac90500b001bc40b548f9so1159009pjt.0
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Feb 2022 21:22:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=FDy7qIGdFlTeRg2l+WTK+X0KhSsHav50gOkgVrtS4x4=;
- b=j/gxOf3ohdeaDPEx0mfULMf4QrFhC3966GRsVxYtkMOKR7pSuVaN/aMc9vCq0G5k1k
- 1e8GAQoDWKQnQ9d6wc7EOUkI0VHHjXEsuDt9kB07vztcPFs4i9EsnV2a4lOXu0bdjw+t
- lRvwFfoJ/Z3cSPmMgzPYUBfNNe6VfpmkNzcpUk1u4MUO+R5iTTJKLmtWf3xYwCKKx6wc
- gnwzuCp+NPqL6NLHfLanaTHwuAo8Vcjl0wMxz2Kc7ewRx0nowq3dvr5CoYMiiwkBnnCC
- LsErwHPaZn09gIZr90xTJy4uy7mvK+Fvtyv4Ryp4FoD3OKbfjQY6N3frJE9je1YnuiXL
- ZsEQ==
+ bh=FY2HM0KbbfXH+G7dSMt9VX6sZGZpySbCyLPTYA5ZFk0=;
+ b=bElTtF/WXeNh84kpZNhV8S9y2CY8EUdHAmCjWaEgAA7nx7+pkE1gxppp4umzCXoTX0
+ IN6k0cS2pHfp0xsipIy5rWjdaa43L2aZZtj9LwTNOda4EQEc6iPeWl1LEHB0WYwwX0di
+ iFR9vughy/LCw36tQPFDOrAO/uCHscGvNPSMsIUBuqpa+P37yjZTYolfPevwSBB/jj5r
+ 70INsa/bVvgvyzlBb5p1OCtewP65b5vwPmvfft4w302jrVi93+fPFJ/BFbA1fe/tqT0t
+ qXrDFkXGn1gAd8n15KuOPSfXwKG7JRxrtLF3ECcAd2AKtgUOqf2nUei2B8LBela23ioL
+ aCuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=FDy7qIGdFlTeRg2l+WTK+X0KhSsHav50gOkgVrtS4x4=;
- b=Q67kq1P34ksGN+PXtcL078imiJ0ovZ5eLkjzLZW2OlPOkP5w3R4b1Wo+dCdmKkXsZS
- bP4aku+gYd/781U7moKhdAuyfdPFJgl3VL0ADORweMofkm+KhCKMmKrH2hOo69w/QBaG
- iASHX0Frd4EyENEZTLtGbkhluKul/4wuQRN7RrgImE9fkGS2As9mLYbyDw+6A86OX9/t
- EReqM6jru+lxDOTZUbZwyORehhWubP7fFV3O7yFu0E8jTLoHP0/wdJbNwc7Foybjwd+S
- cFmyFZu7slYH6Cc1fAdB0KdbuwhtLPv1+8U7cnTTWjPTUmL9wQ+IrPYbinb29Uzm9BzL
- UyTw==
-X-Gm-Message-State: AOAM533OByIcb45tXb5/rSOzxcaOxXamfBA520iUx+hXSx1BNnbSMREx
- ns8Yw4eIqVYh+Ym59vng7LTiwjXHtZw=
-X-Google-Smtp-Source: ABdhPJxOSIog9RiyPad1qwfZTLg84ZFGCrMNhb7P3Eo6I/xrRk0gXR70dB0xx4GdWLNboyQCUUdW4A==
-X-Received: by 2002:aa7:94a3:0:b0:4e0:1c98:1e3b with SMTP id
- a3-20020aa794a3000000b004e01c981e3bmr25525688pfl.72.1646112146444; 
- Mon, 28 Feb 2022 21:22:26 -0800 (PST)
+ bh=FY2HM0KbbfXH+G7dSMt9VX6sZGZpySbCyLPTYA5ZFk0=;
+ b=lKge7u9tSEQGKaFokA8L77ufiK4J+VO6uOtLhcUSw5MZHzVmydWgWqyvGyg7KhE7bS
+ Tf/4R26wXdGxImnDkc55CT0IxgdX7dPc3YMb4DdqfAZGWbiBovlzuen+rKXM94Ou0MU6
+ fijgucampSWHGAPkQ19xqfoa1z9Ld2JU3ce7N/9ij3lTH8+k6FPfwAi96EeXhTRfcoEk
+ hEuRUxk/DFeAulR0KeDHKqGztAshX2zLy6nDdU/FIG2y8wNICDuCduyndeltLmCF9zCZ
+ zdle6DkhrCD1HCcUryayBnFs59OTIW+QSq+TQS2gRKTfeXQKrDskLIr7nXBHZWT770hc
+ vI6g==
+X-Gm-Message-State: AOAM533Mq3jMFhflXc5OPLFWseUrSVowdPvzgWnkCf+Qd7LKpst1D3FA
+ wvoGsJhkpIzYyQXKY3Nx8gPmh4WQ39Y=
+X-Google-Smtp-Source: ABdhPJyj4J/iHw02gNTQYRt4FEukKc/EvU9jhipoSSeWM2HIgVaNeOc9ZQLXKXtYWB9qZvFtRbk7Qw==
+X-Received: by 2002:a17:902:f254:b0:151:5e24:960 with SMTP id
+ j20-20020a170902f25400b001515e240960mr10629475plc.79.1646112148952; 
+ Mon, 28 Feb 2022 21:22:28 -0800 (PST)
 Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
  [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- 63-20020a630942000000b00372a99c1821sm11433111pgj.21.2022.02.28.21.22.24
+ 63-20020a630942000000b00372a99c1821sm11433111pgj.21.2022.02.28.21.22.26
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 28 Feb 2022 21:22:26 -0800 (PST)
+ Mon, 28 Feb 2022 21:22:28 -0800 (PST)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v9 1/3] mtd: spi-nor: spansion: Add support for Read Any
- Register
-Date: Tue,  1 Mar 2022 14:21:53 +0900
-Message-Id: <066371acaad87cb90b5c1e598f608132fc94ef1a.1646109817.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v9 2/3] mtd: spi-nor: spansion: Add support for volatile QE bit
+Date: Tue,  1 Mar 2022 14:21:54 +0900
+Message-Id: <e3b9a819eb93db6114c220bdf3a08fc53d74b3d9.1646109817.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1646109817.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1646109817.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220228_212227_562799_7548ADAE 
-X-CRM114-Status: GOOD (  13.12  )
+X-CRM114-CacheID: sfid-20220228_212230_112879_E2199E85 
+X-CRM114-Status: GOOD (  17.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,60 +94,118 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-The Read Any Register instruction (65h) is followed by register address
-and dummy cycles, then the selected register byte is returned. This patch
-adds a spi_mem_op template for that.
+Some of Infineon chips support volatile version of configuration registers
+and it is recommended to update volatile registers in the field application
+due to a risk of the non-volatile registers corruption by power interrupt.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 ---
-Change in v9:
-  - Rename macro per mwalle's series
-  - Rely on https://patchwork.ozlabs.org/project/linux-mtd/patch/20220228111712.111737-7-tudor.ambarus@microchip.com/
-
+Changes in v9:
+  - Rename function per mwalle's series
+  
 Changes in v8:
-  - Remove controller_ops
-  - Remove spansion_read/write_any_reg()
-  - Add spi_mem_op macro for Read Any Register
+  - Use spi_nor_read/write_reg() functions
+  - Use nor->bouncebuf instead of a variable on stack
   
 Changes in v7:
-  - No change
-
+  - Add missing macro definitions in v6
+  
 Changes in v6:
-  - Add helper functions for controller_ops
-  - Add 'reg_addr_width' parameter to spansion_read/write_any_reg()
-  - Remove spi_nor_write_enable() from spansion_write_any_reg() and modified
-    function header comment
+  - Remove multi die package support
 
 Changes in v5:
-  - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
-
+  - No change
+  
 Changes in v4:
-  - Fix dummy cycle calculation in spansion_read_any_reg()
-  - Modify comment for spansion_write_any_reg()
+  - No change
   
 Changes in v3:
-  - Cleanup implementation
+  - Add multi-die package parts support
 
- drivers/mtd/spi-nor/spansion.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/spi-nor/spansion.c | 62 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 34ca3538a0f9..ba0f79bfe859 100644
+index ba0f79bfe859..db027cb92cf5 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -24,6 +24,11 @@
- #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+@@ -14,6 +14,8 @@
+ #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+ #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+ #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
++#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
++#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
+ #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
+ #define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
+ #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
+@@ -106,6 +108,66 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
+ 	return 0;
+ }
  
- /* Cypress SPI NOR flash operations. */
-+#define CYPRESS_NOR_RD_ANY_REG_OP(naddr, addr, ndummy, ndata, buf)	\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),		\
-+		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
-+		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
-+		   SPI_MEM_OP_DATA_IN(ndata, buf, 0))
- #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),		\
- 		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
++/**
++ * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
++ *                                      register.
++ * @nor:	pointer to a 'struct spi_nor'
++ * @reg_dummy:	number of dummy bytes for register read
++ *
++ * It is recommended to update volatile registers in the field application due
++ * to a risk of the non-volatile registers corruption by power interrupt. This
++ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
++ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
++ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
++ * also set during Flash power-up. This function supports multi-die package
++ * parts that require to set the Quad Enable bit in each die.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int cypress_nor_quad_enable_volatile(struct spi_nor *nor, u8 reg_dummy)
++{
++	struct spi_mem_op op;
++	u32 reg_addr = SPINOR_REG_CYPRESS_CFR1V;
++	u8 cfr1v_written;
++	int ret;
++
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_RD_ANY_REG_OP(nor->addr_width, reg_addr, reg_dummy,
++					  1, nor->bouncebuf);
++	ret = spi_nor_read_reg(nor, &op, SNOR_PROTO_1_1_1);
++	if (ret)
++		return ret;
++
++	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
++		return 0;
++
++	/* Update the Quad Enable bit. */
++	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_WR_ANY_REG_OP(nor->addr_width, reg_addr, 1,
++					  nor->bouncebuf);
++	ret = spi_nor_write_reg(nor, &op, SNOR_PROTO_1_1_1);
++	if (ret)
++		return ret;
++
++	cfr1v_written = nor->bouncebuf[0];
++
++	/* Read back and check it. */
++	op = (struct spi_mem_op)
++		CYPRESS_NOR_RD_ANY_REG_OP(nor->addr_width, reg_addr, reg_dummy,
++					  1, nor->bouncebuf);
++	ret = spi_nor_read_reg(nor, &op, SNOR_PROTO_1_1_1);
++	if (ret)
++		return ret;
++
++	if (nor->bouncebuf[0] != cfr1v_written) {
++		dev_err(nor->dev, "CFR1: Read back test failed\n");
++		return -EIO;
++	}
++
++	return 0;
++}
++
+ /**
+  * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+  * @nor:		pointer to a 'struct spi_nor'
 -- 
 2.25.1
 
