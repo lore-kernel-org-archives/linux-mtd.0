@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD011C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Mar 2022 10:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7CA8C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Mar 2022 11:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zp2UU03kc01/JuGdxD4UHQzjcH6xV9UxfAC3x8uXuV4=; b=1eu7RetsRXkeFi
-	ly2kY1OibztcUyIGimY1kWkFCWfnbOKoIGqwpaVJTCfPCjzIrkAsxjRa11ghZ1/qHU6JQQXNikZfu
-	ox15QCeYRlNpfiRkCBmMM8vDEvTpasW9C/UcQD/h6vXhEkpWPZmyS0JmXc/II9vvyOJIb/EmgqAr5
-	dbLMuw3f4qG1kupqBCZy3LUD9Uj6WMgRFBYDFBWGCVacOMuN4gb60mklvRJpha5qibeCyniciUjEk
-	8RBIcfmMT3a8vuska39B+NUKsz0LLbJmsz2E/OMJoz5tFrQ60Yml7kltCb/QPwH9C4hgFa+u0LREb
-	xcIibSaj3yBTRF8Ngong==;
+	List-Owner; bh=YwO2dpgqmTUTPuBsYykXnCDDeWQXYcsuNrPcOBbJyXo=; b=BKEgp03phqtpuI
+	KFTON1kOXYS163po+a1WOJqnNFbXjEeMLEPR/cR2DZCNncobCK5AgZzG5YXGR0FqfV/jFNGnvrh/e
+	POyFODn6v/AUXl7kRCvsHTNUPk9NEPIxgr89HDMKcWUhEcO/pbSHeKOmyb53qhSjSS/yfpF9KB5lV
+	51Kp76dvsmJRwis+Z5XQVomJB5hg+MYbNe0IiGsQxgz53rOM/0o6bVqjwmuyR2+KP7Hp0QNDncuL/
+	9B+gySyBVti+NfAoWe2hW4D+jmOMwocmGfd4eWndZAq3ggGhTYMJyamv9//9czyBFZ0dOez2kAGpT
+	z6hz2D22/Vaukz/X3Jdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nPLp5-002Csi-SM; Wed, 02 Mar 2022 10:03:07 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1nPNG8-002UpB-OY; Wed, 02 Mar 2022 11:35:08 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nPLp2-002CrY-12
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2022 10:03:06 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 222A2vmS063787;
- Wed, 2 Mar 2022 04:02:57 -0600
+ id 1nPNG4-002UnX-OG
+ for linux-mtd@lists.infradead.org; Wed, 02 Mar 2022 11:35:07 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 222BYpZp131003;
+ Wed, 2 Mar 2022 05:34:51 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1646215377;
- bh=kzmAL4ny+b45rxh4hmDCUUkeFdO+HSD8mHyPXmdqx28=;
+ s=ti-com-17Q1; t=1646220891;
+ bh=E9j0NK/VmfnFkMOV8pLbTLOgsBJtiJoVuBixHrWCTRU=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=jP/E/dCOqyWe+EM99Tf5536jGnNFwZFtO+EukKIujh7KfhMoZiOWoPWxWUucTveM5
- 0o44PJtBJsGIO4nsSo/rRHL+ESqLTr0DIgX8M2MeWsSsEfJS8woKhzJwUm154fNRic
- 8em28FYVPjiu1Xil631fwUzWDzrBjhXfvghoVeew=
+ b=p1+Unx+uM4aeD3lYRLhxLrdTQCBvdRZigt0piDuZIW1fW96P/R6hqt0BYY2uXDmk3
+ uNTDVzRPnrE3lFi3rT4rd/Y/V8YIJ/3rea1oQUjjKyRp2lI2ewqClsit1EWLeIS5Xo
+ bMfs05JBkBJrjfEcDs40u4v6KvY+OP6byTlUQxsI=
 Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 222A2vJD092066
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 222BYpDq009159
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 2 Mar 2022 04:02:57 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ Wed, 2 Mar 2022 05:34:51 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
  (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 2
- Mar 2022 04:02:57 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2022 05:34:50 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 2 Mar 2022 04:02:56 -0600
+ Frontend Transport; Wed, 2 Mar 2022 05:34:50 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 222A2uoV112376;
- Wed, 2 Mar 2022 04:02:56 -0600
-Date: Wed, 2 Mar 2022 15:32:55 +0530
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 222BYnwD101160;
+ Wed, 2 Mar 2022 05:34:50 -0600
+Date: Wed, 2 Mar 2022 17:04:49 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
 CC: <michael@walle.cc>, <broonie@kernel.org>, <miquel.raynal@bootlin.com>,
@@ -58,18 +58,18 @@ CC: <michael@walle.cc>, <broonie@kernel.org>, <miquel.raynal@bootlin.com>,
  <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
  <nicolas.ferre@microchip.com>, <zhengxunli@mxic.com.tw>,
  <jaimeliao@mxic.com.tw>
-Subject: Re: [PATCH 1/4] spi: spi-mem: Allow specifying the byte order in DTR
- mode
-Message-ID: <20220302100255.gseqjbdyxrgmt3zf@ti.com>
+Subject: Re: [PATCH 2/4] mtd: spi-nor: core: Allow specifying the byte order
+ in DTR mode
+Message-ID: <20220302113449.tc2iipvwtaxavfec@ti.com>
 References: <20220218145900.1440045-1-tudor.ambarus@microchip.com>
- <20220218145900.1440045-2-tudor.ambarus@microchip.com>
+ <20220218145900.1440045-3-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220218145900.1440045-2-tudor.ambarus@microchip.com>
+In-Reply-To: <20220218145900.1440045-3-tudor.ambarus@microchip.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220302_020304_225835_341F81CC 
-X-CRM114-Status: GOOD (  24.76  )
+X-CRM114-CacheID: sfid-20220302_033505_790603_05A6D11C 
+X-CRM114-Status: GOOD (  39.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,58 +88,190 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Hi Tudor,
 
-I'm reviewing the code here. I still have not thought through the 
-discussion about Kconfig option yet.
-
 On 18/02/22 04:58PM, Tudor Ambarus wrote:
-> There are NOR flashes (Macronix) that swap the bytes on a 16-bit boundary
-> when configured in DTR mode. The byte order of 16-bit words is swapped
-
-s/DTR mode/ Octal DTR mode/
-
-I don't think this would apply to a 4D-4D-4D flash since it would only 
-transmit one byte per clock cycle.
-
-> when read or written in Double Transfer Rate (DTR) mode compared to
-> Single Transfer Rate (STR) mode. If one writes D0 D1 D2 D3 bytes using
-> 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it will read back
-> D1 D0 D3 D2. Swapping the bytes is a bad design decision because this may
-> introduce some endianness problems. It can affect the boot sequence if the
-> entire boot sequence is not handled in either 8D-8D-8D mode or 1-1-1 mode.
-> Fortunately there are controllers that can swap back the bytes at runtime,
-> fixing the endiannesses. Provide a way for the upper layers to specify the
-> byte order in DTR mode.
+> Macronix swaps bytes on a 16-bit boundary when configured in Octal DTR.
+> The byte order of 16-bit words is swapped when read or write written in
+> 8D-8D-8D mode compared to STR modes. Swapping the bytes is a bad design
+> decision because this may affect the boot sequence if the entire boot
+> sequence is not handled in either 8D-8D-8D mode or 1-1-1 mode. Allow
+> operations to specify the byte order in DTR mode, so that controllers can
+> swap the bytes back at run-time to fix the endianness, if they are capable.
+> 
+> The byte order in 8D-8D-8D mode can be retrieved at run-time by checking
+> BFPT[DWORD(18)] BIT(31). When set to one, the "Byte order of 16-bit words
+> is swapped when read in 8D-8D-8D mode compared to 1-1-1 mode.". It doesn't
+> specify if this applies to both register and data operations. Macronix is
+> the single user of this byte swap and it doesn't have clear rules, as it
+> contains register operations that require data swap (RDPASS, WRPASS,
+> PASSULK, RDSFDP) and register operations that don't require data swap
+> (WRFBR). All these are not common and can be handled in 1-1-1 mode, so we
+> can ignore them for now. All the other register operations are done on one
+> byte length. The read register operations are actually in 8D-8D-8S mode,
+> as they send the data value twice, on each half of the clock cycle. In case
+> of a register write of one byte, the memory supports receiving the register
+> value only on the first byte, thus it discards the value of the byte on the
+> second half of the clock cycle. Swapping the bytes for one byte register
+> writes is not required, and for one byte register reads it doesn't matter.
+> Thus swap the bytes only for read or page program operations.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > ---
->  include/linux/spi/spi-mem.h | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/mtd/spi-nor/core.c  | 31 +++++++++++++++++++++++++------
+>  drivers/mtd/spi-nor/core.h  |  1 +
+>  include/linux/mtd/spi-nor.h | 17 +++++++++++++++++
+>  3 files changed, 43 insertions(+), 6 deletions(-)
 > 
-> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> index 85e2ff7b840d..e1878417420c 100644
-> --- a/include/linux/spi/spi-mem.h
-> +++ b/include/linux/spi/spi-mem.h
-> @@ -89,6 +89,8 @@ enum spi_mem_data_dir {
->   * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or not
->   * @data.buswidth: number of IO lanes used to send/receive the data
->   * @data.dtr: whether the data should be sent in DTR mode or not
-> + * @data.dtr_bswap16: whether the byte order of 16-bit words is swapped when
-> + *		      read or written in DTR mode compared to STR mode.
->   * @data.dir: direction of the transfer
->   * @data.nbytes: number of data bytes to send/receive. Can be zero if the
->   *		 operation does not involve transferring data
-> @@ -119,6 +121,7 @@ struct spi_mem_op {
->  	struct {
->  		u8 buswidth;
->  		u8 dtr : 1;
-> +		u8 dtr_bswap16 : 1;
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 04ea180118e3..453d8c54d062 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -106,6 +106,9 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>  		op->dummy.dtr = true;
+>  		op->data.dtr = true;
+>  
+> +		if (spi_nor_protocol_is_dtr_bswap16(proto))
+> +			op->data.dtr_bswap16 = true;
+> +
+>  		/* 2 bytes per clock cycle in DTR mode. */
+>  		op->dummy.nbytes *= 2;
+>  
+> @@ -388,7 +391,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_DATA_IN(1, sr, 0));
+>  
+> -		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
+> +		if (spi_nor_protocol_is_octal_dtr(nor->reg_proto)) {
+>  			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+>  			op.dummy.nbytes = nor->params->rdsr_dummy;
+>  			/*
+> @@ -432,7 +435,7 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+>  				   SPI_MEM_OP_NO_DUMMY,
+>  				   SPI_MEM_OP_DATA_IN(1, fsr, 0));
+>  
+> -		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
+> +		if (spi_nor_protocol_is_octal_dtr(nor->reg_proto)) {
+>  			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+>  			op.dummy.nbytes = nor->params->rdsr_dummy;
+>  			/*
+> @@ -2488,7 +2491,7 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
+>  {
+>  	if (nor->addr_width) {
+>  		/* already configured from SFDP */
+> -	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+> +	} else if (spi_nor_protocol_is_octal_dtr(nor->read_proto)) {
+>  		/*
+>  		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
+>  		 * in this protocol an odd address width cannot be used because
+> @@ -2701,6 +2704,19 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
+>  		nor->flags |= SNOR_F_IO_MODE_EN_VOLATILE;
+>  }
+>  
+> +static void spi_nor_set_dtr_bswap16_ops(struct spi_nor *nor)
+> +{
+> +	struct spi_nor_flash_parameter *params = nor->params;
+> +	u32 mask = SNOR_HWCAPS_READ_8_8_8_DTR | SNOR_HWCAPS_PP_8_8_8_DTR;
+> +
+> +	if ((params->hwcaps.mask & mask) == mask) {
+> +		params->reads[SNOR_CMD_READ_8_8_8_DTR].proto |=
+> +			SNOR_PROTO_IS_DTR_BSWAP16;
+> +		params->page_programs[SNOR_CMD_PP_8_8_8_DTR].proto |=
+> +			SNOR_PROTO_IS_DTR_BSWAP16;
+> +	}
+> +}
+> +
+>  /**
+>   * spi_nor_late_init_params() - Late initialization of default flash parameters.
+>   * @nor:	pointer to a 'struct spi_nor'
+> @@ -2721,6 +2737,9 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+>  	spi_nor_init_flags(nor);
+>  	spi_nor_init_fixup_flags(nor);
+>  
+> +	if (nor->flags & SNOR_F_DTR_BSWAP16)
+> +		spi_nor_set_dtr_bswap16_ops(nor);
+> +
+>  	/*
+>  	 * NOR protection support. When locking_ops are not provided, we pick
+>  	 * the default ones.
+> @@ -2899,8 +2918,8 @@ static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
+>  	if (!nor->params->octal_dtr_enable)
+>  		return 0;
+>  
+> -	if (!(nor->read_proto == SNOR_PROTO_8_8_8_DTR &&
+> -	      nor->write_proto == SNOR_PROTO_8_8_8_DTR))
+> +	if (!(spi_nor_protocol_is_octal_dtr(nor->read_proto) &&
+> +	      spi_nor_protocol_is_octal_dtr(nor->write_proto)))
+>  		return 0;
+>  
+>  	if (!(nor->flags & SNOR_F_IO_MODE_EN_VOLATILE))
+> @@ -2968,7 +2987,7 @@ static int spi_nor_init(struct spi_nor *nor)
+>  		spi_nor_try_unlock_all(nor);
+>  
+>  	if (nor->addr_width == 4 &&
+> -	    nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
+> +	    !spi_nor_protocol_is_octal_dtr(nor->read_proto) &&
+>  	    !(nor->flags & SNOR_F_4B_OPCODES)) {
+>  		/*
+>  		 * If the RESET# pin isn't hooked up properly, or the system
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 2afb610853a9..7c077d41c335 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -29,6 +29,7 @@ enum spi_nor_option_flags {
+>  	SNOR_F_IO_MODE_EN_VOLATILE = BIT(14),
+>  	SNOR_F_SOFT_RESET	= BIT(15),
+>  	SNOR_F_SWP_IS_VOLATILE	= BIT(16),
+> +	SNOR_F_DTR_BSWAP16	= BIT(17),
+>  };
+>  
+>  struct spi_nor_read_command {
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index fc90fce26e33..6e9660475c5b 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -168,6 +168,11 @@
+>  	 SNOR_PROTO_DATA_MASK)
+>  
+>  #define SNOR_PROTO_IS_DTR	BIT(24)	/* Double Transfer Rate */
+> +/*
+> + * Byte order of 16-bit words is swapped when read or written in DTR mode
+> + * compared to STR mode.
+> + */
+> +#define SNOR_PROTO_IS_DTR_BSWAP16	BIT(25)
 
-You also need to add this capability to spi_controller_mem_caps and 
-update spi_mem_default_supports_op() to check for it.
+I am not so sure if the protocol is the best place to encode this. The 
+protocol stays the same regardless of the data organisation. Maybe all 
+we need to do is add something like
 
->  		enum spi_mem_data_dir dir;
->  		unsigned int nbytes;
->  		union {
+static inline bool
+spi_nor_needs_bswap16(struct spi_nor *nor, enum spi_nor_protocol proto)
+{
+	return (proto == SNOR_PROTO_8_8_8_DTR) && (nor->flags & SNOR_F_DTR_BSWAP16);
+}
+
+And then call it from spi_nor_spimem_setup_op(). Thoughts?
+
+>  
+>  #define SNOR_PROTO_STR(_inst_nbits, _addr_nbits, _data_nbits)	\
+>  	(SNOR_PROTO_INST(_inst_nbits) |				\
+> @@ -201,6 +206,18 @@ static inline bool spi_nor_protocol_is_dtr(enum spi_nor_protocol proto)
+>  	return !!(proto & SNOR_PROTO_IS_DTR);
+>  }
+>  
+> +static inline bool spi_nor_protocol_is_octal_dtr(enum spi_nor_protocol proto)
+> +{
+> +	return ((proto & SNOR_PROTO_8_8_8_DTR) == SNOR_PROTO_8_8_8_DTR);
+> +}
+> +
+> +static inline bool spi_nor_protocol_is_dtr_bswap16(enum spi_nor_protocol proto)
+> +{
+> +	u32 mask = SNOR_PROTO_IS_DTR | SNOR_PROTO_IS_DTR_BSWAP16;
+> +
+> +	return ((proto & mask) == mask);
+> +}
+> +
+>  static inline u8 spi_nor_get_protocol_inst_nbits(enum spi_nor_protocol proto)
+>  {
+>  	return ((unsigned long)(proto & SNOR_PROTO_INST_MASK)) >>
 > -- 
 > 2.25.1
 > 
