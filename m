@@ -4,60 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFB4EC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Mar 2022 05:20:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B65CC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Mar 2022 07:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8BCCUc2ffkyz3MeUA2QOUugzZgf4jlMf8o2VjcTa1rc=; b=3zRiGjKW+x0rWL
-	FfFnYkIeiP7DFXrxL2ZKWVedYWypYoAtsOvZYdD17Pg2yFfpQ1beLQZeKg+DcxTXR+HLwZAHB5lhr
-	UZDRHzRwuohQaRkmiYhrHjjwICEAVR+D8AgdShMfFQ+JZBSeOr5Hi4apgwscZbWq8a51/4K0OYFrx
-	Nv8pAh14VZulW+8K8mjv3LJa6ZX3ZOQL9BB+T5YIxYfUSlBTQ1VmZTP5Jxr/ft9q7PUOwID3EvhcP
-	TSLpJsGQqKPhq+bUdMsrINA2e5zN2P6DpIx25kd4BuALe7C/NfwtvOi/2Ukp0RE3oGzs53kDnifle
-	EBQXokPlC07naVz5DfMQ==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Ux2aAYlTujttHTWZ1fTCcyaEwf/WajxVFSMMUV+VtLU=; b=y2ZYCXWc9ncQH11Hkz9IJikumd
+	Fhr4adYdR561WHFXQKOxBtc9pkwtj9gp5l+ceEdg3b/4LOhH72TIj+P0qYgEIKRdPbXCUnjvTA7HN
+	xT0jlxrnh0QjPv5MCB1va5qRI4zmWXk+bt9EvLJ8lmf8l+RJAzC/SI5+iQt85btxl7TCSqkHcqwSk
+	fOrWwDOa2+lWrnKdMYzzFBy+2o13o+MOUgVM6vWhMdejbqaaXY7+y9FqfYmUS35uBB5puqrMAqD6d
+	5rp4+yPFtJYlpxWFVNqJcO7eX6+MJOKGmbusJM38N7ytR6VVy2Z5rP6vTS+cjBMeCghm+DAwwAUpZ
+	R8+RaD0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nPHOl-001UYL-K6; Wed, 02 Mar 2022 05:19:39 +0000
-Received: from mail-sz.amlogic.com ([211.162.65.117])
+	id 1nPJRN-001joC-Uf; Wed, 02 Mar 2022 07:30:30 +0000
+Received: from jabberwock.ucw.cz ([46.255.230.98])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nPHOY-001UXQ-Jt; Wed, 02 Mar 2022 05:19:28 +0000
-Received: from [192.168.1.103] (223.212.120.136) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 2 Mar 2022
- 13:19:16 +0800
-Message-ID: <4741f36a-e17a-75c3-124f-447e4426c436@amlogic.com>
-Date: Wed, 2 Mar 2022 13:19:16 +0800
+ id 1nPJRI-001jla-Ub; Wed, 02 Mar 2022 07:30:26 +0000
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+ id B8E6F1C0B81; Wed,  2 Mar 2022 08:30:18 +0100 (CET)
+Date: Wed, 2 Mar 2022 08:30:16 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Mark Brown <broonie@kernel.org>,
+ Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+ Peter Huewe <peterhuewe@gmx.de>,
+ Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, Markuss Broks <markuss.broks@gmail.com>,
+ Emma Anholt <emma@anholt.net>, David Lechner <david@lechnology.com>,
+ Kamlesh Gurudasani <kamlesh.gurudasani@gmail.com>,
+ Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Dan Robertson <dan@dlrobertson.com>, Jonathan Cameron <jic23@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Marcus Folkesson <marcus.folkesson@gmail.com>,
+ Kent Gustavsson <kent@minoris.se>, Rui Miguel Silva <rmfrfs@gmail.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Charles-Antoine Couret <charles-antoine.couret@nexvision.fr>,
+ Antti Palosaari <crope@iki.fi>, Lee Jones <lee.jones@linaro.org>,
+ Support Opensource <support.opensource@diasemi.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Eric Piel <eric.piel@tremplin-utc.net>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Thomas Kopp <thomas.kopp@microchip.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+ Vivien Didelot <vivien.didelot@gmail.com>,
+ Vladimir Oltean <olteanv@gmail.com>,
+ Woojung Huh <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com,
+ =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+ Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>,
+ Harry Morris <h.morris@cascoda.com>,
+ Varka Bhadram <varkabhadram@gmail.com>,
+ Xue Liu <liuxuenetmail@gmail.com>, Alan Ott <alan@signal11.us>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>,
+ Christian Lamparter <chunkeey@googlemail.com>,
+ Kalle Valo <kvalo@kernel.org>, Ajay Singh <ajay.kathat@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Solomon Peachy <pizza@shaftnet.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Mark Greer <mgreer@animalcreek.com>, Benson Leung <bleung@chromium.org>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>,
+ Jiri Slaby <jirislaby@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Maxime Ripard <mripard@kernel.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Stephan Gerhold <stephan@gerhold.net>,
+ Alexandru Ardelean <ardeleanalex@gmail.com>,
+ Mike Looijmans <mike.looijmans@topic.nl>,
+ Gwendal Grignou <gwendal@chromium.org>, Cai Huoqing <caihuoqing@baidu.com>,
+ Minghao Chi <chi.minghao@zte.com.cn>,
+ Antoniu Miclaus <antoniu.miclaus@analog.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>,
+ Ronald =?iso-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>,
+ Marco Felsch <m.felsch@pengutronix.de>,
+ Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+ Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+ Jon Hunter <jonathanh@nvidia.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Heiko Schocher <hs@denx.de>, Fabio Estevam <festevam@gmail.com>,
+ Colin Ian King <colin.king@intel.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Matt Kline <matt@bitbashing.io>,
+ Torin Cooper-Bennun <torin@maxiluxsystems.com>,
+ Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+ Stefan =?iso-8859-1?Q?M=E4tje?= <stefan.maetje@esd.eu>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Wei Yongjun <weiyongjun1@huawei.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Nanyong Sun <sunnanyong@huawei.com>, Yang Shen <shenyang39@huawei.com>,
+ dingsenjie <dingsenjie@yulong.com>,
+ Aditya Srivastava <yashsri421@gmail.com>,
+ Stefan Wahren <stefan.wahren@i2se.com>,
+ Peter Zijlstra <peterz@infradead.org>, Michael Walle <michael@walle.cc>,
+ Yang Li <yang.lee@linux.alibaba.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ wengjianfeng <wengjianfeng@yulong.com>, Sidong Yang <realwakka@gmail.com>,
+ Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>,
+ Zhang Qilong <zhangqilong3@huawei.com>, Will Deacon <will@kernel.org>,
+ Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+ Davidlohr Bueso <dbueso@suse.de>, Claudius Heine <ch@denx.de>,
+ Jiri Prchal <jiri.prchal@aksignal.cz>, linux-kernel@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-media@vger.kernel.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-wireless@vger.kernel.org, libertas-dev@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
+ kernel@pengutronix.de
+Subject: Re: [PATCH 5/5] spi: make remove callback a void function
+Message-ID: <20220302073016.GB32222@amd>
+References: <20220123175201.34839-1-u.kleine-koenig@pengutronix.de>
+ <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH RESEND v2 2/2] dt-bindings: nand: meson: refine Amlogic
- NAND controller driver
-Content-Language: en-US
-To: Jerome Brunet <jbrunet@baylibre.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
-CC: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
- Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
- <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui
- Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
- <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20220217063346.21691-1-liang.yang@amlogic.com>
- <20220217063346.21691-3-liang.yang@amlogic.com>
- <1jv8wzw78r.fsf@starbuckisacylon.baylibre.com>
-From: Liang.Yang <liang.yang@amlogic.com>
-In-Reply-To: <1jv8wzw78r.fsf@starbuckisacylon.baylibre.com>
-X-Originating-IP: [223.212.120.136]
-X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
- (10.28.11.5)
+In-Reply-To: <20220123175201.34839-6-u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220301_211926_717337_907FE670 
-X-CRM114-Status: GOOD (  15.74  )
+X-CRM114-CacheID: sfid-20220301_233025_320340_78592CEA 
+X-CRM114-Status: GOOD (  19.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,185 +175,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============2222688525629615989=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jerome,
 
-On 2022/2/28 19:36, Jerome Brunet wrote:
-> [ EXTERNAL EMAIL ]
-> 
-> 
-> On Thu 17 Feb 2022 at 14:33, Liang Yang <liang.yang@amlogic.com> wrote:
-> 
->> convert txt to yaml and refine the meson NFC clock document.
->>
->> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
->> ---
->>   .../bindings/mtd/amlogic,meson-nand.txt       | 60 ----------------
->>   .../bindings/mtd/amlogic,meson-nand.yaml      | 70 +++++++++++++++++++
->>   2 files changed, 70 insertions(+), 60 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->>   create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->> deleted file mode 100644
->> index 5794ab1147c1..000000000000
->> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->> +++ /dev/null
->> @@ -1,60 +0,0 @@
->> -Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
->> -
->> -This file documents the properties in addition to those available in
->> -the MTD NAND bindings.
->> -
->> -Required properties:
->> -- compatible : contains one of:
->> -  - "amlogic,meson-gxl-nfc"
->> -  - "amlogic,meson-axg-nfc"
->> -- clocks     :
->> -	A list of phandle + clock-specifier pairs for the clocks listed
->> -	in clock-names.
->> -
->> -- clock-names: Should contain the following:
->> -	"core" - NFC module gate clock
->> -	"device" - device clock from eMMC sub clock controller
->> -	"rx" - rx clock phase
->> -	"tx" - tx clock phase
->> -
->> -- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
->> -				controller port C
->> -
->> -Optional children nodes:
->> -Children nodes represent the available nand chips.
->> -
->> -Other properties:
->> -see Documentation/devicetree/bindings/mtd/nand-controller.yaml for generic bindings.
->> -
->> -Example demonstrate on AXG SoC:
->> -
->> -	sd_emmc_c_clkc: mmc@7000 {
->> -		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
->> -		reg = <0x0 0x7000 0x0 0x800>;
->> -	};
->> -
->> -	nand-controller@7800 {
->> -		compatible = "amlogic,meson-axg-nfc";
->> -		reg = <0x0 0x7800 0x0 0x100>;
->> -		#address-cells = <1>;
->> -		#size-cells = <0>;
->> -		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
->> -
->> -		clocks = <&clkc CLKID_SD_EMMC_C>,
->> -			<&sd_emmc_c_clkc CLKID_MMC_DIV>,
->> -			<&sd_emmc_c_clkc CLKID_MMC_PHASE_RX>,
->> -			<&sd_emmc_c_clkc CLKID_MMC_PHASE_TX>;
->> -		clock-names = "core", "device", "rx", "tx";
->> -		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
->> -
->> -		pinctrl-names = "default";
->> -		pinctrl-0 = <&nand_pins>;
->> -
->> -		nand@0 {
->> -			reg = <0>;
->> -			#address-cells = <1>;
->> -			#size-cells = <1>;
->> -
->> -			nand-on-flash-bbt;
->> -		};
->> -	};
->> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
->> new file mode 100644
->> index 000000000000..671f0a8fdc7c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
->> @@ -0,0 +1,70 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/amlogic,mmc-clkc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
->> +
->> +maintainers:
->> +  - liang.yang@amlogic.com
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - "amlogic,meson-gxl-nfc"
->> +      - "amlogic,meson-axg-nfc"
->> +
->> +  reg:
->> +    maxItems: 2
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 2
->> +
->> +  clock-names:
->> +    items:
->> +      - const: "core", "device"
->> +
->> +  "#clock-cells":
->> +    const: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - clock-names
->> +  - "#clock-cells"
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    nand-controller@7800 {
->> +	compatible = "amlogic,meson-axg-nfc";
->> +	reg = <0x0 0x7800 0x0 0x100>,
->> +	      <0x0 0x7000 0x0 0x1>;
-> 
-> Please name the register ressources instead of relying on the order
-ok
-> 
-> Also, use the actual size of region, not the size you are using in the
-> driver. AFAIK, the size of the 2nd region is not 0x1
-yes, it should be 0x4 here, i will fix it.
-we only need to use a 32bits SDEMMC_CLOCK register.
-thanks.
-> 
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +	interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
->> +
->> +	clocks = <&clkc CLKID_SD_EMMC_C>,
->> +		<&clkc CLKID_FCLK_DIV2>;
->> +	clock-names = "core", "device";
->> +
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&nand_pins>;
->> +
->> +	nand@0 {
->> +		reg = <0>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +
->> +		nand-on-flash-bbt;
->> +	};
->> +     };
->> +
->> +...
->> \ No newline at end of file
-> 
-> .
+--===============2222688525629615989==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xXmbgvnjoT4axfJE"
+Content-Disposition: inline
+
+
+--xXmbgvnjoT4axfJE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> The value returned by an spi driver's remove function is mostly ignored.
+> (Only an error message is printed if the value is non-zero that the
+> error is ignored.)
+>=20
+> So change the prototype of the remove function to return no value. This
+> way driver authors are not tempted to assume that passing an error to
+> the upper layer is a good idea. All drivers are adapted accordingly.
+> There is no intended change of behaviour, all callbacks were prepared to
+> return 0 before.
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--xXmbgvnjoT4axfJE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmIfHQgACgkQMOfwapXb+vLxcgCghFIMSLkgbmU4bCcL4+4sOBXY
+b1QAoKETSRxn6hbtUUF5RsaX43sun2ct
+=6C0C
+-----END PGP SIGNATURE-----
+
+--xXmbgvnjoT4axfJE--
+
+
+--===============2222688525629615989==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2222688525629615989==--
+
