@@ -4,78 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6206C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  2 Mar 2022 09:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA74C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  2 Mar 2022 09:59:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:References:CC:To:Subject:From:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0VFXW5JX46fD8xTrdpT1x+6i8bMKNDmDrVdDEIRSfeM=; b=42f0mUWlcbTNJ6
-	zuhQIIXLvYwHsWHQjQgo4OrIKfnPOPl0nSoPmrRzjQcaVwKeDiHGHg6vliZh3d4mdh/19Q9+0aRPV
-	l8yRKZsedXRZM8zJCH9uGfrEIoKHO4J9GaQr1NjP2durcFbCuTXe6in6uZ5v7S5xhbe2vfkZKnX5J
-	CLnN+Y/v/gdDIVHl09goyGgxCke5hVKfZ2FwjjAJDWCVgmCXfMuf7zjBJ7XLwAIBFezlVLFScGuDN
-	x9G/rsB5JyDGVNZ1lzMca3FZJTp3ZdBACaOw0J2Go93DTppnVYlz43UEEwULpYlU4xX0agnolk6Su
-	xkBSj+B2Zh+H4ymDiDJA==;
+	List-Owner; bh=p6WWCY1aqFJbzo6SH3NW+ckKxentCOLPzPHrxuIWf1M=; b=Gb7KO0NVMSHE9I
+	HKschMcplTCew4YR0UVRAZQvqxNlTEB3+hDtL4kRznWZrirfjrT/EOmYLoSN4ldxzd0tpotA5dnA6
+	fxzHBuPNI/aeqUDXCWmm46Rkwf9g1FtobTJEF7wBmNC18aNHCurnkmCNzTCBaL55rnexaUzjZtCSi
+	6ZGZuTI4Jt2so9z94qV+I3ZWEwfb0Nz2czty15Jc1xG7cFwRS+v5OadOLKcLJb3lfZtHeuQFWzmgV
+	e3ZnF7Kzws9Tfj0MmS5o8LglSiLtwA/O+bCvu5Lj6RnpSqXgVosRKIC5ZL6Wbphgv6/Tz5QHMzupx
+	cT0zHPLPnFBs8fx5EqeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nPLDa-0022Qr-Hz; Wed, 02 Mar 2022 09:24:22 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1nPLka-002BNc-Vd; Wed, 02 Mar 2022 09:58:29 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nPLDV-0022Pi-MA
- for linux-mtd@lists.infradead.org; Wed, 02 Mar 2022 09:24:19 +0000
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 696FD1F39D;
- Wed,  2 Mar 2022 09:24:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1646213056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=clM0yYlLqEX7Y5ui9U1ErugOMUrW/ceVhGC6xR2tAew=;
- b=GxV9t9jA8UzFp10mgfTYqscDn3mqAyjQkUDkNOZ6WudDgkD7fZ24C2xIm1J1lwjPWv5Hqx
- KAwG4h+6/IKc3x4mcMJTcacF5wckqSBifZjASvkwxdtNedohTlXsBSH6VACa8L07DZFfwg
- JNMv0pJ3iN3bsv52RjAy+hn8LSMzPpg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1646213056;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=clM0yYlLqEX7Y5ui9U1ErugOMUrW/ceVhGC6xR2tAew=;
- b=//kv8L4NT9j55yEeAww5drvSB7x88AZTHCxd6ugQ9HVtKzCBWy2rLFVIP1Y5dDzFAPITnN
- yxItsAQPEssSgTCg==
-Received: from quack3.suse.cz (unknown [10.100.200.198])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by relay2.suse.de (Postfix) with ESMTPS id 48383A3B87;
- Wed,  2 Mar 2022 09:24:16 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
- id EBD45A0608; Wed,  2 Mar 2022 10:24:15 +0100 (CET)
-Date: Wed, 2 Mar 2022 10:24:15 +0100
-From: Jan Kara <jack@suse.cz>
-To: Richard Weinberger <richard@nod.at>
-Cc: Jan Kara <jack@suse.cz>, wuchi zero <wuchi.zero@gmail.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- tj <tj@kernel.org>, mszeredi <mszeredi@redhat.com>,
- sedat dilek <sedat.dilek@gmail.com>, axboe <axboe@fb.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- torvalds <torvalds@linux-foundation.org>, linux-mm <linux-mm@kvack.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Different writeback timing since v5.14
-Message-ID: <20220302092415.4sikhzup7sorhxgy@quack3.lan>
-References: <2104629126.100059.1646129517209.JavaMail.zimbra@nod.at>
- <20220301103218.ulbmakdy4gbw2fso@quack3.lan>
- <719960584.100772.1646147154879.JavaMail.zimbra@nod.at>
+ id 1nPLkL-002BHM-J8; Wed, 02 Mar 2022 09:58:15 +0000
+Received: from [10.18.88.203] (10.18.88.203) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server id 15.1.2176.2; Wed, 2 Mar 2022
+ 17:58:07 +0800
+Message-ID: <2d396290-2c7f-1c9e-2ba0-0a029e51fd45@amlogic.com>
+Date: Wed, 2 Mar 2022 17:57:58 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <719960584.100772.1646147154879.JavaMail.zimbra@nod.at>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+From: Liang.Yang <liang.yang@amlogic.com>
+Subject: Re: [PATCH RESEND v2 2/2] dt-bindings: nand: meson: refine Amlogic
+ NAND controller driver
+To: Jerome Brunet <jbrunet@baylibre.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+ <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui
+ Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20220217063346.21691-1-liang.yang@amlogic.com>
+ <20220217063346.21691-3-liang.yang@amlogic.com>
+ <1jv8wzw78r.fsf@starbuckisacylon.baylibre.com>
+ <4741f36a-e17a-75c3-124f-447e4426c436@amlogic.com>
+ <1jczj47ne5.fsf@starbuckisacylon.baylibre.com>
+Content-Language: en-US
+In-Reply-To: <1jczj47ne5.fsf@starbuckisacylon.baylibre.com>
+X-Originating-IP: [10.18.88.203]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220302_012417_890528_100FE50D 
-X-CRM114-Status: GOOD (  18.97  )
+X-CRM114-CacheID: sfid-20220302_015813_689146_61B9A6B5 
+X-CRM114-Status: GOOD (  17.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,65 +68,198 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue 01-03-22 16:05:54, Richard Weinberger wrote:
-> Jan,
-> =
+Hi Jerome,
 
-> ----- Urspr=FCngliche Mail -----
-> > Von: "Jan Kara" <jack@suse.cz>
-> >> Is this expected?
-> >> Just want to make sure that the said commit didn't uncover an UBIFS is=
-sue.
-> > =
+On 2022/3/2 16:42, Jerome Brunet wrote:
+> [ EXTERNAL EMAIL ]
+> 
+> 
+> On Wed 02 Mar 2022 at 13:19, Liang.Yang <liang.yang@amlogic.com> wrote:
+> 
+>> Hi Jerome,
+>>
+>> On 2022/2/28 19:36, Jerome Brunet wrote:
+>>> [ EXTERNAL EMAIL ]
+>>>
+>>> On Thu 17 Feb 2022 at 14:33, Liang Yang <liang.yang@amlogic.com> wrote:
+>>>
+>>>> convert txt to yaml and refine the meson NFC clock document.
+>>>>
+>>>> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+>>>> ---
+>>>>    .../bindings/mtd/amlogic,meson-nand.txt       | 60 ----------------
+>>>>    .../bindings/mtd/amlogic,meson-nand.yaml      | 70 +++++++++++++++++++
+>>>>    2 files changed, 70 insertions(+), 60 deletions(-)
+>>>>    delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>>>>    create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>>>> deleted file mode 100644
+>>>> index 5794ab1147c1..000000000000
+>>>> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>>>> +++ /dev/null
+>>>> @@ -1,60 +0,0 @@
+>>>> -Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+>>>> -
+>>>> -This file documents the properties in addition to those available in
+>>>> -the MTD NAND bindings.
+>>>> -
+>>>> -Required properties:
+>>>> -- compatible : contains one of:
+>>>> -  - "amlogic,meson-gxl-nfc"
+>>>> -  - "amlogic,meson-axg-nfc"
+>>>> -- clocks     :
+>>>> -	A list of phandle + clock-specifier pairs for the clocks listed
+>>>> -	in clock-names.
+>>>> -
+>>>> -- clock-names: Should contain the following:
+>>>> -	"core" - NFC module gate clock
+>>>> -	"device" - device clock from eMMC sub clock controller
+>>>> -	"rx" - rx clock phase
+>>>> -	"tx" - tx clock phase
+>>>> -
+>>>> -- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
+>>>> -				controller port C
+>>>> -
+>>>> -Optional children nodes:
+>>>> -Children nodes represent the available nand chips.
+>>>> -
+>>>> -Other properties:
+>>>> -see Documentation/devicetree/bindings/mtd/nand-controller.yaml for generic bindings.
+>>>> -
+>>>> -Example demonstrate on AXG SoC:
+>>>> -
+>>>> -	sd_emmc_c_clkc: mmc@7000 {
+>>>> -		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
+>>>> -		reg = <0x0 0x7000 0x0 0x800>;
+>>>> -	};
+>>>> -
+>>>> -	nand-controller@7800 {
+>>>> -		compatible = "amlogic,meson-axg-nfc";
+>>>> -		reg = <0x0 0x7800 0x0 0x100>;
+>>>> -		#address-cells = <1>;
+>>>> -		#size-cells = <0>;
+>>>> -		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
+>>>> -
+>>>> -		clocks = <&clkc CLKID_SD_EMMC_C>,
+>>>> -			<&sd_emmc_c_clkc CLKID_MMC_DIV>,
+>>>> -			<&sd_emmc_c_clkc CLKID_MMC_PHASE_RX>,
+>>>> -			<&sd_emmc_c_clkc CLKID_MMC_PHASE_TX>;
+>>>> -		clock-names = "core", "device", "rx", "tx";
+>>>> -		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
+>>>> -
+>>>> -		pinctrl-names = "default";
+>>>> -		pinctrl-0 = <&nand_pins>;
+>>>> -
+>>>> -		nand@0 {
+>>>> -			reg = <0>;
+>>>> -			#address-cells = <1>;
+>>>> -			#size-cells = <1>;
+>>>> -
+>>>> -			nand-on-flash-bbt;
+>>>> -		};
+>>>> -	};
+>>>> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>>>> new file mode 100644
+>>>> index 000000000000..671f0a8fdc7c
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>>>> @@ -0,0 +1,70 @@
+>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>> +%YAML 1.2
+>>>> +---
+>>>> +$id: http://devicetree.org/schemas/clock/amlogic,mmc-clkc.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>> +title: Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+>>>> +
+>>>> +maintainers:
+>>>> +  - liang.yang@amlogic.com
+>>>> +
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    enum:
+>>>> +      - "amlogic,meson-gxl-nfc"
+>>>> +      - "amlogic,meson-axg-nfc"
+>>>> +
+>>>> +  reg:
+>>>> +    maxItems: 2
+>>>> +
+>>>> +  interrupts:
+>>>> +    maxItems: 1
+>>>> +
+>>>> +  clocks:
+>>>> +    maxItems: 2
+>>>> +
+>>>> +  clock-names:
+>>>> +    items:
+>>>> +      - const: "core", "device"
+>>>> +
+>>>> +  "#clock-cells":
+>>>> +    const: 1
+>>>> +
+>>>> +required:
+>>>> +  - compatible
+>>>> +  - reg
+>>>> +  - interrupts
+>>>> +  - clocks
+>>>> +  - clock-names
+>>>> +  - "#clock-cells"
+>>>> +
+>>>> +additionalProperties: false
+>>>> +
+>>>> +examples:
+>>>> +  - |
+>>>> +    nand-controller@7800 {
+>>>> +	compatible = "amlogic,meson-axg-nfc";
+>>>> +	reg = <0x0 0x7800 0x0 0x100>,
+>>>> +	      <0x0 0x7000 0x0 0x1>;
+>>> Please name the register ressources instead of relying on the order
+>> ok
+>>> Also, use the actual size of region, not the size you are using in the
+>>> driver. AFAIK, the size of the 2nd region is not 0x1
+>> yes, it should be 0x4 here, i will fix it.
+>> we only need to use a 32bits SDEMMC_CLOCK register.
+>> thanks.
+> 
+> No, it is not the point.
+> What register you need in the driver is not relevant.
+> What is relevant is the actual size of the memory region - so it not 0x1
+> or 0x4 ... more likely 0x800 from what I see in the AXG dts.
 
-> > Yes, I think it is expected. Likely the background threshold for UBIFS =
-bdi
-> > is very small (probably UBIFS is not used much for writeback compared to
-> > other filesystems). Previously, we just used wb_stat() which returned 0
-> > (PCP counter inexact value) and so background writeback didn't trigger.=
- Now
-> > we use wb_stat_sum() when threshold is small, get exact value of dirty
-> > pages and decide to start background writeback.
-> =
-
-> Thanks for the prompt reply!
-> =
-
-> > The only thing is, whether it is really expected that the threshold for
-> > UBIFS bdi is so small. You can check the values in
-> > /sys/kernel/debug/bdi/<bdi>/stats.
-> =
-
-> BdiDirtyThresh is indeed 0.
-> =
-
-> BdiWriteback:                0 kB
-> BdiReclaimable:              0 kB
-> BdiDirtyThresh:              0 kB
-> DirtyThresh:            772620 kB
-> BackgroundThresh:       385836 kB
-> BdiDirtied:                  0 kB
-> BdiWritten:                  0 kB
-> BdiWriteBandwidth:      102400 kBps
-> b_dirty:                     0
-> b_io:                        0
-> b_more_io:                   0
-> b_dirty_time:                0
-> bdi_list:                    1
-> state:                       1
-
-Yes, so this looks expected given the BDI wasn't active yet at all...
-
-								Honza
--- =
-
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ok, i will fix it. thanks.
+> 
+>>>
+>>>> +	#address-cells = <1>;
+>>>> +	#size-cells = <0>;
+>>>> +	interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
+>>>> +
+>>>> +	clocks = <&clkc CLKID_SD_EMMC_C>,
+>>>> +		<&clkc CLKID_FCLK_DIV2>;
+>>>> +	clock-names = "core", "device";
+>>>> +
+>>>> +	pinctrl-names = "default";
+>>>> +	pinctrl-0 = <&nand_pins>;
+>>>> +
+>>>> +	nand@0 {
+>>>> +		reg = <0>;
+>>>> +		#address-cells = <1>;
+>>>> +		#size-cells = <1>;
+>>>> +
+>>>> +		nand-on-flash-bbt;
+>>>> +	};
+>>>> +     };
+>>>> +
+>>>> +...
+>>>> \ No newline at end of file
+>>> .
+> 
+> .
 
 ______________________________________________________
 Linux MTD discussion mailing list
