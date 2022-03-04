@@ -4,64 +4,162 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68641C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 09:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C06CC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 09:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YHIji8zOll7w1LAd8d7frdvxCEVUw6i+DfS9pbmN41I=; b=wv4NbsCmlFuhtZ
-	5n1jXCZqWIYXf2dItkqFdeznLBvJfchJ2fmOEvdOMXDxApKGLFMbQlPwDBrOiLktnK6CCbusbD/7k
-	FY8U75XauZKlaiBzPqUsUGDfvIEBwUpcBceCaHpPfH2e2rjEA+uiuIxo71OLgMWxc17Mx5VGn5aqT
-	vc5CQBXTY6j7BK3fkj+50vDEMELIi5UoOWm+6eBvcLuFJfL3DeHP8DCYLm4L77saiOuuPpWrNK4+U
-	gWWImYKcZDYAeNEcc8Q5y2iDJw+QypT31soLC/EbNSNPfsxZwbJ3eZPl3u+OZ5DsGs/3k0u7hXx19
-	0IW196f5NclthTSd29dg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=GYCIFL0VfTECTfBTnDdG8kE16LTEorhjWzqnWXMCsdg=; b=ehM+KT9YwMhS47
+	N+GxQdTQl/ugo5Q9lJFMWXzWC6UjHSIQnHR7hYAasUMSAlvp9IP9eZyRWHu8cTsNQFHGHDBuqDzhk
+	i4A7Eh+HE17ULCEMsf63hNZQhEbqTycA38RbBVe/xQkuWVowE8QH41Pq2sdonAA8i0lvQPQBfpz3U
+	5Hbus2Li8Sc5y0Bs7AuR7/zxpsgleII9NRbiIcXv7fMwVtZyE7ZqP4XN4pLWQ63wCkSxJfe1YTl3o
+	CekLWN2A7khOAwix+aoYp505MxPqGu9a+pwOhqMkmxVA5xFrQ62BZPSkYGBSfE0aqzfmtMVty33Bj
+	aGWciIKHecaz9Gsx0vIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nQ4Vc-009NRk-CA; Fri, 04 Mar 2022 09:46:00 +0000
+	id 1nQ4Xx-009O8i-MS; Fri, 04 Mar 2022 09:48:28 +0000
 Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nQ4GS-009IEo-Qj; Fri, 04 Mar 2022 09:30:23 +0000
+ id 1nQ4Kw-009Jd6-28; Fri, 04 Mar 2022 09:34:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1646386220; x=1677922220;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=zR9Gf3K+fhn59fB0pIm62DtVPuJvTrK3bMz1P6Qdq3g=;
- b=sGNtp83FrZYHNiO9Ry0Q08r9Crvwt98iHDvBdTZjoHGTS6ePwdTzMAu2
- im8kAqIhi9DRlh69UPThFeULdp9PmDh/y5cN1y0LyOmi5Fzwz2emdrXnk
- drp0inZM1K7xiRf/AQ3uiP19/X95qlB/QUtDK4sEJ/HhJApfA4f9R16Tk
- zpFG/te6M/7MRwm49SEUMSNlQVBGUAhbLwv2qky/BuKqkfThp4qcxjFHj
- a95hMezD04SUsnKN0L67pImbKNZ/GKdBcgbKMRpp/0Yi3dfDIa73oT6nZ
- 8qA4pChFAQzr0TG3VaGqvKlk1FmoI3EjdvWxOdcfpeS78LA1qpZBePAZn Q==;
-X-IronPort-AV: E=Sophos;i="5.90,154,1643698800"; d="scan'208";a="155250152"
+ t=1646386497; x=1677922497;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=ok/AZauEfQUxiYX4qHYBlIGQ0+QwAb17AIUQ8qTKo0E=;
+ b=oEWOos/OhFjWUIdSAXBJ3tBsPDGxA9eKA5RdHH6WlFdOBKpCtybiMSYD
+ cj3VIOnt41H2EjwcaSG/H+Xp0RnwsU2Fx+9L4NHNgOCiIOIBVctMQkE0Y
+ BND4P+T9PAKrXmFHYH/SlSz0kLihadquCNvBey9LIu8+aqOG/qSJWXaDb
+ vN4lMjijCBpTgoWWwz9zdQlO5NEUK3gnqhrGSv7Tqhiw+9VeElbq/Ovm6
+ wQAM/tPmhfN4zmjNz7W6K1Q74SCeSJi0sHeBKr1Y5nlhrOZqIeWI4n4JU
+ gVHom1xBZhY5tzRTtOcZt2J7excx1uDPkpJG/R+F5e4YRdDYeWcZXGjW6 w==;
+X-IronPort-AV: E=Sophos;i="5.90,154,1643698800"; d="scan'208";a="155708299"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 04 Mar 2022 02:30:18 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 04 Mar 2022 02:34:56 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Fri, 4 Mar 2022 02:30:17 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Fri, 4 Mar 2022 02:30:15 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+ 15.1.2375.17; Fri, 4 Mar 2022 02:34:56 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17 via Frontend Transport; Fri, 4 Mar 2022 02:34:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fnOOMltY9jVLaJ31H6EQ1VNxYGMhkPFBjvbQScnZGXle4pHpDf2YHEe3XZHrVbjJ02Bh4awqw1yDWDjSqGykTcPEDxKHeIibK55XakQMIYPC/qREcFyuOe3sEqds+EW7D9I1dJiZyaoYW1eczmDklo7EoxNZYtnKQefGU7Trqt2kmKRMnwY2a7n0mNqETtumvJjeGCa7diNX9XEnakxirLxzQ9oFXgbpqtI57bGjX16IOKP4Pyjk9rDVFv/FYbW/wjgAO8nNWejCpZjW4R5Gjas6k4nmE0Vtr9qqo+nK4ENoUqOi5ybZ0Twc1p6BYx1r9RYgaO2goOxG/SmejCAIOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ok/AZauEfQUxiYX4qHYBlIGQ0+QwAb17AIUQ8qTKo0E=;
+ b=L0MMscSN5XQUW2xUvTBiLwhhmdllPf4rXxysIpYOhl8+7DS4tY4H2tyEGoDCOwh2/Fr2D4BAUJGfMUS9YBP5C0/pH6qgi4dt1QBmsuNFtzS6lBYpmFyxNsXs7LEVEH1tmFiPWdRfSrjhW4f4atna3nxlDhjzAJytlMVFnLIuBSCbgExRs+4LTgJzF/syYxTWVpExoza8lzWVTrmJyHzwaulFwN1ohgm+1dVGFsngncxZA0lqPEhlSBufvOIikZa++ri5gPwaDxeZVpreZ9mxGGXQjasmhSQC8cb39OAp9hO0iT63X9eW8sXDNUU0QZovQjRs046YIwqY7RpozgD/FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ok/AZauEfQUxiYX4qHYBlIGQ0+QwAb17AIUQ8qTKo0E=;
+ b=UmCBjC9geKYL95DLuu5G9f0KNxc2kCKrkWaS6aEpFN9fo+m+ckA7Os/2oCBT2pgYlIqWwfrRjJOeR4ZsEIbm5c+s5jxjT1ATKpOCk8smhbRAp+9Wi2bQsML4+fcZ0SqB8LT7rVO4tyNQOsC3dSaRu+mHwM5qUTR790wyLf9P+zo=
+Received: from CO1PR11MB4865.namprd11.prod.outlook.com (2603:10b6:303:9c::9)
+ by DM5PR11MB1868.namprd11.prod.outlook.com (2603:10b6:3:114::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.15; Fri, 4 Mar
+ 2022 09:34:49 +0000
+Received: from CO1PR11MB4865.namprd11.prod.outlook.com
+ ([fe80::4cec:634:7163:c4c7]) by CO1PR11MB4865.namprd11.prod.outlook.com
+ ([fe80::4cec:634:7163:c4c7%5]) with mapi id 15.20.5038.017; Fri, 4 Mar 2022
+ 09:34:49 +0000
+From: <Tudor.Ambarus@microchip.com>
 To: <p.yadav@ti.com>, <michael@walle.cc>
 CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <michal.simek@xilinx.com>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
- <Nicolas.Ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH] mtd: spi-nor: Introduce templates for SPI NOR operations
-Date: Fri, 4 Mar 2022 11:30:11 +0200
-Message-ID: <20220304093011.198173-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+ <Nicolas.Ferre@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: Introduce templates for SPI NOR operations
+Thread-Topic: [PATCH] mtd: spi-nor: Introduce templates for SPI NOR operations
+Thread-Index: AQHYL6sXY/7kSmK8TkCTUnmKCS036g==
+Date: Fri, 4 Mar 2022 09:34:49 +0000
+Message-ID: <c4d0846f-2592-1a4f-bf33-dcb3f846ffaa@microchip.com>
+References: <20220304093011.198173-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20220304093011.198173-1-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c08b97d9-ee98-4b6e-8621-08d9fdc23a6b
+x-ms-traffictypediagnostic: DM5PR11MB1868:EE_
+x-microsoft-antispam-prvs: <DM5PR11MB1868EBEA77A20E9D4A6E46FEF0059@DM5PR11MB1868.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: d5Rr/16LDrtyyltykdMIcrvQtpR3arYUe6QKQ6nQCDVMSsy9QJT31vhUbBHiX4z1Wug7/i0GLKC4TM1cGRcKNpzssjc874tk9UZiBELBgU2B+r9srOdYt12d7GB/IsefOqZTPo6b1v1TQ/VA1fHOZjFvuTHlsS5fRs8EEvTPD/rwDPQWqS7BSnqWOhAa1aMgWbyzpEI49QdmZJp330p3xU11kgqsugP3ygeVGaTU+dieV7SHfbIReb80FfF7uMn4sy64dIyRCf0tR1SzIg4m9sFetBGIhvn5+v47vXWak81VT7SKuwesArsOoj4Js38kwrP8hvdTB9/43u0kEm8FU2yomketF88LWaJAm/OC+qmXbMokqTN2/3u2ribtPuZjjw3JoBbfgfCLlm5le1Sp1mydDho6EGBQf3KsS7Oo1RDeLXNeHiyOhBhgCcBn0qJu45hsepLy70naetBUDOJy6OTgcsAkwkXQ2wy7kFYzG1jTU9slK6ZcHVn+nPK4ceBMOaMvUmRps8/VhkbT4CvpBWMHnfPtYgzEY1VSQNSyIEoW5Gj9zRRD994QxBkehcq9/bFPD6YF2u+e3T4WaePk/GNdaZoZg7Nu6swLT7krD/i2fQlwUvB7I3kZ8ohUaScyZ2x1k6IQPtjn59HIOpBuHddZPBda2bmsgCq0nPjxO3aVEB7pCLPkLiI7qDRUmL8W0A/DXs1/PxrsX+QLQhzF07buov43h8NyYxfYOAsAIFpeaUfq78aOMQkPa7Mu/pCeuWqqb3WWLVQBJZcpuw9qceUjifV7v3JBlbKQqXe7rHUgI5Tnc95ul3QGz394Z/VeQsQLZ6ah76/3pySBMrI8UJk+0sr00Kr0iiaFdHAC3YM=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CO1PR11MB4865.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230001)(366004)(53546011)(76116006)(966005)(316002)(4326008)(8676002)(6486002)(2616005)(64756008)(38070700005)(66946007)(91956017)(66556008)(66476007)(508600001)(6512007)(66446008)(71200400001)(86362001)(31696002)(6506007)(54906003)(110136005)(107886003)(26005)(186003)(122000001)(83380400001)(4744005)(2906002)(31686004)(8936002)(5660300002)(38100700002)(36756003)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SlhFS2llQVg0U0p3ZXZ5U1JwN0Jta0RZRUhjL1BnblRsa29XSlNhbnAyZ3NH?=
+ =?utf-8?B?Q2NYOWc0UE1NTGYySjJzNzBwdVg1b0dzUXBBZEF3MU0rUWlvdFREMU9GbmFx?=
+ =?utf-8?B?YVlZWXFHbENCVzB6OFgwRHRqbk5nbTQrUVNaMGExOFJFTzZha2RvZzNTaDVu?=
+ =?utf-8?B?alhackdTS0prUERKRThBRjYwb0xYRW1TVG55VnJaMEN0YnUrcDEvUkE0V1d3?=
+ =?utf-8?B?cDZMbHNSanBrM0kxSGdhaWdsWjdGbzNRTGpuTkw3R2c0dHJLNTNiS3BqU1Jr?=
+ =?utf-8?B?UDN3M3Z6bUFEWlppdWZvTVNSdUNEMWxMbjVVR2VsK3ROcG8xNS92SFRPRmFv?=
+ =?utf-8?B?eTZMU0NHT2s3YkR0U1dHTlhZRG15dmsxaTQyNU5MVXFkYjRrMnNpKytXWm9j?=
+ =?utf-8?B?emFIbWExSHphQ1JQTVNzWmVVcHpUdTA0cU9vZVk4OWI0OHpJSGJmZk9IYmVK?=
+ =?utf-8?B?NVN1cnlQSzdGbHdVL3VwZXo4T1czRnpQdElBU3NnSFFNVkV2elhoaXhkbmVo?=
+ =?utf-8?B?bTc5QWpYd2JvK0RRNmdRWjVZWGk5ampZc3NyMWZLN0lHMENWak9NNnR0amRE?=
+ =?utf-8?B?UTFnZWxRWGl1VWZNTUswd1ZZMzdzdmZHYnpQOWRVb0NUVy8vTTErQkRYQ0xX?=
+ =?utf-8?B?WS9SQXpHOHpVMzk5RUgydGR3QUZOWUJ4NVBVSTI2NVM5a3RtWTF1bTk1b0F5?=
+ =?utf-8?B?VmZBZDJ5UXJtQW9zbU9BR0FhMVRGQW1WL1orNDRDcFNUeDJaUkNsUmhlaFZu?=
+ =?utf-8?B?OS9oSHBDazdTaDRpallpdmQ0MU85NXkzZkRQemxEQlNZUVhnY0ZzMmhOK3d4?=
+ =?utf-8?B?ZW90NnIvVTVsM3JJV1ZTZVVTajZjUnlZUDB2Nis5dmI3WFhESGo1SUhqUkZU?=
+ =?utf-8?B?azJMTzVGb3Y4YzUrcHhLNENveVpkSitWVk00clU2YjFZYkM4TTZ3b21IQ3E2?=
+ =?utf-8?B?cHlBcTNHdTIzY08xTjA2T2FwUzN5MEx1RGwyUFZmTW9FNU1WYVU2SnY0M2Mw?=
+ =?utf-8?B?L0RybVRadnptVm15L0ZlM2lIUG1KcWFkdFUzdjdscWY5ZnlKdndqTTZoZWxK?=
+ =?utf-8?B?clZDWWE0Y2M1UitrSzJ2SUFCOWNEek0vUzVYY1l2K0hUOXV1ekJzSnpJb05U?=
+ =?utf-8?B?Rkl5Mkd5Um5JMUpTdloycjBZbG5Ya01RMWxaRndWVVN2akNONkpPWnRFamZy?=
+ =?utf-8?B?T1Fyd05QR25DbzhPUi9UM0YvYnFWWUsvR1RuSHlvdDhlaTdGL0RUamZ0TXdQ?=
+ =?utf-8?B?KzNkaUNlUmFBSktwcHNVWDhONU5tOFFOeE1DTW1XL05nZHlkWVlhWm5HbkN6?=
+ =?utf-8?B?K2hCUml1ekQwYmdaTzZVN2l3SXJvS0g5M0RFMGJTQ2w3b3R3Rm5JUGJWSUlC?=
+ =?utf-8?B?TEhFNURmeDJlMU5XSmdhNE9oY2QvTVhIZDBDckY5Rnl6TVRrR0FHVTBlYTBQ?=
+ =?utf-8?B?VTc1eHRWd3JWUU11dVRSRVVhRkphKzhsZERjYUVHL1BTbzJuYTJZT3pKWmtq?=
+ =?utf-8?B?c0phMUgvRTV0K3RvdERVaHJ1OWowT3V5WTVnRG5DWW9Pd2xvbVVEVzR4dml2?=
+ =?utf-8?B?NkNSa0YrdVliWnRpSDBaak9OSTBkN29EZHlkTVA5c1BCNW5CdGNpdkRvQzlw?=
+ =?utf-8?B?RGd0OVhibU9IWHZoMFQwbnFOcG1NaXRCMmN4eEhXaE9oNjhpM3JXb083UTMr?=
+ =?utf-8?B?bmFQbjN1Q3ZRMmVuZ0FhZTM4SHZLbzIyUTNlVWhja1pNUFk0bmF6UWtiTUZS?=
+ =?utf-8?B?enplVXpHTjY4Zm82aGdiTnlINGtRQ01JWnVqOWNKeDRpT25EaXJKMXdhU2xY?=
+ =?utf-8?B?ei9ZejdZVnlXWDVSSmdvODJVK1lsUmRDQzVJb2d5ODd5UHdxdnNVR2J1b2pw?=
+ =?utf-8?B?Y09qUzFxdzNFSDk5OEhSYUppcDVhN1JwVGowSFRmbWhlVUk2K0FJR2hSdWZB?=
+ =?utf-8?B?bnpGcHB4MDdoNGtuZDJXMEpMcEFGUVVXaUVrUklsbEVMOWdwUTRIWlpEc3Jr?=
+ =?utf-8?B?RkROQnhCN0p2eTZ6a1pNc2M3WndDY2ZiZlpkRHJ0d2Jqc1VacTR1d0g0U1Vw?=
+ =?utf-8?B?YnFBYm9iVXBrakJjaHZKZDRDSndpRWNaVm1vM25aMGJEeHNydjkvT1gvWG9u?=
+ =?utf-8?B?dG94NnFjbkdjcjN0RkhyaDByZFVkODc1TmRXOXZaVVpRYzJtV2o4aVNSQmJh?=
+ =?utf-8?B?MUtRYUg2azFEaTdtNHptSzRVRGkzSXU1UmZPYy9SYm51d1NMQ05weU1zakFJ?=
+ =?utf-8?B?UzBJTGExN25RRkw1ZVpVRHNVREZRPT0=?=
+Content-ID: <5182FFF0BAFB1D42A7169F32B1278B80@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4865.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c08b97d9-ee98-4b6e-8621-08d9fdc23a6b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2022 09:34:49.4462 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OOTJxupYW1XwJai/3J/msCUL7+IUgSs1+Wc74d+s5dTN5OSismJwtJGe3h9PnE8ckAJIQL+roShJ232xeWpe4fiGClUptXbkVQp/YnKDQwo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1868
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220304_013020_973592_1B178517 
-X-CRM114-Status: GOOD (  11.11  )
+X-CRM114-CacheID: sfid-20220304_013458_197545_F7C585D2 
+X-CRM114-Status: GOOD (  12.59  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,491 +176,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Clean the op declaration and hide the details of each op. With this it
-results a cleanner, easier to read code. No functional change expected.
-
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/core.c      | 101 ++++++-------------------------
- drivers/mtd/spi-nor/core.h      | 102 ++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/micron-st.c |  24 ++++----
- drivers/mtd/spi-nor/spansion.c  |  26 +++++---
- drivers/mtd/spi-nor/xilinx.c    |  12 ++--
- 5 files changed, 158 insertions(+), 107 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 14c6cdc74235..d6eecf691859 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -359,11 +359,7 @@ int spi_nor_write_enable(struct spi_nor *nor)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = SPI_NOR_WREN_OP;
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -390,11 +386,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = SPI_NOR_WRDI_OP;
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -458,11 +450,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_IN(1, sr, 0));
-+		struct spi_mem_op op = SPI_NOR_RDSR_OP(sr);
- 
- 		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
- 			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
-@@ -502,11 +490,7 @@ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_IN(1, cr, 0));
-+		struct spi_mem_op op = SPI_NOR_RDCR_OP(cr);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -535,14 +519,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(enable ?
--						  SPINOR_OP_EN4B :
--						  SPINOR_OP_EX4B,
--						  0),
--				  SPI_MEM_OP_NO_ADDR,
--				  SPI_MEM_OP_NO_DUMMY,
--				  SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = SPI_NOR_EN4B_EX4B_OP(enable);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -576,11 +553,7 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	nor->bouncebuf[0] = enable << 7;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BRWR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
-+		struct spi_mem_op op = SPI_NOR_BRWR_OP(nor->bouncebuf);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -610,11 +583,7 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
- 	nor->bouncebuf[0] = ear;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
-+		struct spi_mem_op op = SPI_NOR_WREAR_OP(nor->bouncebuf);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -725,11 +694,7 @@ int spi_nor_global_block_unlock(struct spi_nor *nor)
- 		return ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = SPI_NOR_GBULK_OP;
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -764,11 +729,7 @@ int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
- 		return ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_OUT(len, sr, 0));
-+		struct spi_mem_op op = SPI_NOR_WRSR_OP(sr, len);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -970,11 +931,7 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
- 		return ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR2, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_OUT(1, sr2, 0));
-+		struct spi_mem_op op = SPI_NOR_WRSR2_OP(sr2);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -1006,11 +963,7 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR2, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_IN(1, sr2, 0));
-+		struct spi_mem_op op = SPI_NOR_RDSR2_OP(sr2);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -1039,11 +992,7 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
- 	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd.size >> 10));
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CHIP_ERASE, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = SPI_NOR_CHIP_ERASE_OP;
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
- 
-@@ -1185,10 +1134,8 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 
- 	if (nor->spimem) {
- 		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->erase_opcode, 0),
--				   SPI_MEM_OP_ADDR(nor->addr_width, addr, 0),
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
-+						nor->addr_width, addr);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
- 
-@@ -1996,10 +1943,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
- static int spi_nor_spimem_check_readop(struct spi_nor *nor,
- 				       const struct spi_nor_read_command *read)
- {
--	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(read->opcode, 0),
--					  SPI_MEM_OP_ADDR(3, 0, 0),
--					  SPI_MEM_OP_DUMMY(1, 0),
--					  SPI_MEM_OP_DATA_IN(2, NULL, 0));
-+	struct spi_mem_op op = SPI_NOR_READ_OP(read->opcode);
- 
- 	spi_nor_spimem_setup_op(nor, &op, read->proto);
- 
-@@ -2022,10 +1966,7 @@ static int spi_nor_spimem_check_readop(struct spi_nor *nor,
- static int spi_nor_spimem_check_pp(struct spi_nor *nor,
- 				   const struct spi_nor_pp_command *pp)
- {
--	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(pp->opcode, 0),
--					  SPI_MEM_OP_ADDR(3, 0, 0),
--					  SPI_MEM_OP_NO_DUMMY,
--					  SPI_MEM_OP_DATA_OUT(2, NULL, 0));
-+	struct spi_mem_op op = SPI_NOR_PP_OP(pp->opcode);
- 
- 	spi_nor_spimem_setup_op(nor, &op, pp->proto);
- 
-@@ -2863,10 +2804,7 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
- 	struct spi_mem_op op;
- 	int ret;
- 
--	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 0),
--			SPI_MEM_OP_NO_DUMMY,
--			SPI_MEM_OP_NO_ADDR,
--			SPI_MEM_OP_NO_DATA);
-+	op = (struct spi_mem_op)SPINOR_SRSTEN_OP;
- 
- 	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-@@ -2876,10 +2814,7 @@ static void spi_nor_soft_reset(struct spi_nor *nor)
- 		return;
- 	}
- 
--	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 0),
--			SPI_MEM_OP_NO_DUMMY,
--			SPI_MEM_OP_NO_ADDR,
--			SPI_MEM_OP_NO_DATA);
-+	op = (struct spi_mem_op)SPINOR_SRST_OP;
- 
- 	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 1d15e46f3d33..83d2158169b3 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -18,6 +18,108 @@
- 		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
- 		   SPI_MEM_OP_DATA_IN(len, buf, 0))
- 
-+#define SPI_NOR_WREN_OP							\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPI_NOR_WRDI_OP							\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPI_NOR_RDSR_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_IN(1, buf, 0))
-+
-+#define SPI_NOR_WRSR_OP(buf, len)					\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(len, buf, 0))
-+
-+#define SPI_NOR_RDSR2_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR2, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
-+
-+#define SPI_NOR_WRSR2_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR2, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
-+
-+#define SPI_NOR_RDCR_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_IN(1, buf, 0))
-+
-+#define SPI_NOR_EN4B_EX4B_OP(enable)					\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B, 0),	\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPI_NOR_BRWR_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BRWR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
-+
-+#define SPI_NOR_WREAR_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
-+
-+#define SPI_NOR_GBULK_OP						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPI_NOR_CHIP_ERASE_OP						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CHIP_ERASE, 0),		\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPI_NOR_SECTOR_ERASE_OP(opcode, addr_width, addr)		\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
-+		   SPI_MEM_OP_ADDR(addr_width, addr, 0),		\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPI_NOR_READ_OP(opcode)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
-+		   SPI_MEM_OP_ADDR(3, 0, 0),				\
-+		   SPI_MEM_OP_DUMMY(1, 0),				\
-+		   SPI_MEM_OP_DATA_IN(2, NULL, 0))
-+
-+#define SPI_NOR_PP_OP(opcode)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
-+		   SPI_MEM_OP_ADDR(3, 0, 0),				\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(2, NULL, 0))
-+
-+#define SPINOR_SRSTEN_OP						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 0),			\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
-+#define SPINOR_SRST_OP							\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 0),			\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
- enum spi_nor_option_flags {
- 	SNOR_F_HAS_SR_TB	= BIT(0),
- 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 12ec3660fd6f..dcdf461e2b53 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -35,6 +35,18 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
- 
-+#define MICRON_ST_RDFSR_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDFSR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_IN(1, buf, 0))
-+
-+#define MICRON_ST_CLFSR_OP						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLFSR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
- static int micron_st_nor_octal_dtr_en(struct spi_nor *nor)
- {
- 	struct spi_mem_op op;
-@@ -320,11 +332,7 @@ static int micron_st_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDFSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_IN(1, fsr, 0));
-+		struct spi_mem_op op = MICRON_ST_RDFSR_OP(fsr);
- 
- 		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
- 			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
-@@ -359,11 +367,7 @@ static void micron_st_nor_clear_fsr(struct spi_nor *nor)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLFSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = MICRON_ST_CLFSR_OP;
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 34ca3538a0f9..852b287e71c4 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -30,6 +30,18 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
- 
-+#define CYPRESS_NOR_RD_ANY_REG_OP(naddr, addr, buf)			\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),		\
-+		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_IN(1, buf, 0))
-+
-+#define SPANSION_CLSR_OP						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_NO_DATA)
-+
- static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
- {
- 	struct spi_mem_op op;
-@@ -161,12 +173,12 @@ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
- 	 * CFR3V[4] and set the correct size.
- 	 */
- 	struct spi_mem_op op =
--		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
--			   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR3V, 1),
--			   SPI_MEM_OP_NO_DUMMY,
--			   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
-+		CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR3V,
-+					  nor->bouncebuf);
- 	int ret;
- 
-+	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+
- 	ret = spi_mem_exec_op(nor->spimem, &op);
- 	if (ret)
- 		return ret;
-@@ -316,11 +328,7 @@ static void spansion_nor_clear_sr(struct spi_nor *nor)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_NO_DATA);
-+		struct spi_mem_op op = SPANSION_CLSR_OP;
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
-diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 9459ac2609dc..1d2f5db047bd 100644
---- a/drivers/mtd/spi-nor/xilinx.c
-+++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -15,6 +15,12 @@
- #define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
- #define XSR_RDY			BIT(7)	/* Ready */
- 
-+#define XILINX_RDSR_OP(buf)						\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),			\
-+		   SPI_MEM_OP_NO_ADDR,					\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_IN(1, buf, 0))
-+
- #define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
- 		.id = {							\
- 			((_jedec_id) >> 16) & 0xff,			\
-@@ -72,11 +78,7 @@ static int xilinx_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 	int ret;
- 
- 	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_IN(1, sr, 0));
-+		struct spi_mem_op op = XILINX_RDSR_OP(sr);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
--- 
-2.25.1
-
-
+On 3/4/22 11:30, Tudor Ambarus wrote:
+> Clean the op declaration and hide the details of each op. With this it
+> results a cleanner, easier to read code. No functional change expected.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.c      | 101 ++++++-------------------------
+>  drivers/mtd/spi-nor/core.h      | 102 ++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/micron-st.c |  24 ++++----
+>  drivers/mtd/spi-nor/spansion.c  |  26 +++++---
+>  drivers/mtd/spi-nor/xilinx.c    |  12 ++--
+>  5 files changed, 158 insertions(+), 107 deletions(-)
+> The patch is written on top of:
+https://lore.kernel.org/lkml/20220228111712.111737-1-tudor.ambarus@microchip.com/
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
