@@ -4,88 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C6EAC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 07:59:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31E1EC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 08:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qdlb8Vl64OZWJOAvvYwH2nMWP5pYxQwkdUvQ1Vey6YI=; b=gttUBx8Go3fb3j
-	X23FiAlHsyy7857UaNn/dEYToqbYhxHc0HQ9/S1eclXOrWoQyyU62Mav7/H/gYmWogDroJXqCAl7r
-	KE/CtXe8775zDfx/S4tvx6kCL82TaLQb53Bn+nO8w2wd+N3s7wJWg1DXulpPvM2/HuaH6NAiVZ9rd
-	XMeyxydNWlvyqFE0uJc2YV7sd6aJ8a1HkG0EHJPEha/H8h6AqhENFo38YyUNn0ylX0FmLHuuLjYH+
-	wgB7IdSUzaGO32cC5MDXa0HGGy/QmIEoXyRkHEIEBy6SJKu2SSj6u2jnEDxutnvUjNZ7B55RGwXfk
-	f5Wp14AfZxEVaJQHLY+w==;
+	List-Owner; bh=oeJL3WO8L9hfYHbWnQixN76119381UqKH2URDdZi2PU=; b=bBqtKmE0/QFEYC
+	QpPXqLk2R+v0ULXbXxvMdAPHdRcU76iy+dyd5vOADZC/0MnfmmMxRk1hjsXuw7RlI+gPczCpbSPvJ
+	NblY18cH9/w8ujMJoWgvWQkv9B0U9HAIma483kfx0BYQ9I4G/km6h59Ca1e8gR1ovZBZz2lCMph+x
+	67Y7WOBWKeM9TXos7Wj6PxSqi6qzD5exCVdpo+OJ8HBAlZ+4hkDdfuzWQuP4p5jEaY8eGCO5aNDCd
+	1dOyy5Uau0R1ZTkgtxS/21gqFz8K5ZkXTJFwkawn5eU+VpkWp7Fq+s6B7h2iCJTRMT2hnWiz073sa
+	GjKZ9T8aLkjjkYdPpGHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nQ2p4-008sVZ-Sv; Fri, 04 Mar 2022 07:57:59 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1nQ3Rk-00949w-3O; Fri, 04 Mar 2022 08:37:56 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nQ2p1-008sUY-8W; Fri, 04 Mar 2022 07:57:56 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id
- p3-20020a17090a680300b001bbfb9d760eso9997190pjj.2; 
- Thu, 03 Mar 2022 23:57:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=b5JJahJbPSg5PuTw+HrbCqpeRRIjKIFlWzoeU01rKTU=;
- b=DY4pRigayZTq/5rjtD2bjuRYX10CoBCJokMk8l+MP82c190ULI8mFEuacqaLNPAXPD
- g19dQFm0zMVhGKiOsNUY9WJgsc90AJDeeLgEAB5cpBbXEMt6heWnf2gMNbOruuNvF17k
- tXwKAv2lg7nTWKjS4zTcwxp73K/Vbt1z1Gar1VAgmd5Ag6hG/VXjy+dML3IARlgqC2B6
- cGI/FVM8Zba/wkYhqCgAMgtvHPZVw74vWCg4uHmsYZyJaQoCdjis0QGRG8L1OWv6BWMe
- j0uwGPD8wkT83IJ+e+RJJqDuugr6zMJGNHLqy9gJLwrC/UgMPBBtoo1bFd9Z8PQlBUsR
- KiUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=b5JJahJbPSg5PuTw+HrbCqpeRRIjKIFlWzoeU01rKTU=;
- b=GdtNqaKs4QMGCmoDeggrlWICydjtWQ9Yd2ew0GeEnrrNZtFsBd7V5+86d4CPrKXHYj
- Guf0mRDCHx7DK5It5R94ZNtGL3RuXJ1AGNjeL7lp5KSTUHYDONzMt+C3oVC9tngqesVK
- 84H8akzKpXr2tFa9vj/TpKmHtsnilTsedBfbmc0SXfnse/F494+ceuGo/psmr5TV/yuO
- LUEd1G43JpldlnA4N+ho7EEyWmSW9zH/TkOYchtCNFOMG03w6QqZWEO+wLzYyacNRSV6
- 6GXpDxwE+4CV/Y8BoGDRTAhKnyt95NtSVyn33ldakWnBs6i5NX3ZTiVKuNR04afrqqHu
- RFGA==
-X-Gm-Message-State: AOAM533UKY8TgYcnQxSLyzLDVodPqD8/sa4abCNyMzkrDatUFc9VeLIH
- RZOiK22p3uFv6Z1BauSFgiY=
-X-Google-Smtp-Source: ABdhPJxvuPW+GS4d0R4GqvhhYiQKHdTrokQg6qHNRrkq/DtJ47Gkay/NlA31+zVRMc3ZiLuUSflWGA==
-X-Received: by 2002:a17:90a:4286:b0:1b8:8ba1:730c with SMTP id
- p6-20020a17090a428600b001b88ba1730cmr9376289pjg.181.1646380673939; 
- Thu, 03 Mar 2022 23:57:53 -0800 (PST)
-Received: from taoren-fedora-PC23YAB4 ([98.47.137.113])
- by smtp.gmail.com with ESMTPSA id
- q7-20020a056a0002a700b004f357e3e42fsm4936341pfs.36.2022.03.03.23.57.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 03 Mar 2022 23:57:53 -0800 (PST)
-Date: Thu, 3 Mar 2022 23:57:50 -0800
-From: Tao Ren <rentao.bupt@gmail.com>
-To: Joel Stanley <joel@jms.id.au>
-Cc: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
- John Wang <wangzq.jn@gmail.com>, linux-spi@vger.kernel.org,
- linux-mtd <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
+ id 1nQ3RF-00940s-R6; Fri, 04 Mar 2022 08:37:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+ :MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=eknyCz+vkIplenIzRfKdiRkNd4pFCmbvog6xalQKlf4=; b=C5vFq0mLBlGe/rehWkuWLZpLNX
+ Xd91p9hRvAFkoN5d/jkQnijyoQ5cv5Dyc3eQEsog6qi3Y6Syg1S+rKWKhDKDXb9N2o+M+edJP6bSU
+ DAW/EKxixjrjvJaA7uI+ND8FxCRlkFQ4eA06hlA3vfTuwcpj+JjArH2Y3XVi7yD7swGiu/2knejUJ
+ 536TrH4rTnWXzNJXIZgUER/MIlmoaqnHXh77rdSjcN0e+/9KcXDGE2ePVDm73RehzLpVgC6FXa+b/
+ hbJO0YST+GcWC2XsIfejoWK3fC3kWczby9SJBOK+pkXr1omxa41R23x67DJBRVptHF3mp9/aOvpA6
+ jJuezs/g==;
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+ by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nQ3RA-00F9Bl-DT; Fri, 04 Mar 2022 08:37:22 +0000
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2246Y8v4028009; 
+ Fri, 4 Mar 2022 08:36:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3ek9y65g14-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 04 Mar 2022 08:36:56 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+ by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2248autx014835;
+ Fri, 4 Mar 2022 08:36:56 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com
+ [169.51.49.98])
+ by mx0a-001b2d01.pphosted.com with ESMTP id 3ek9y65g0m-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 04 Mar 2022 08:36:56 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+ by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2248X4vh013605;
+ Fri, 4 Mar 2022 08:36:53 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com
+ (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+ by ppma03ams.nl.ibm.com with ESMTP id 3ek4k417h3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 04 Mar 2022 08:36:53 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com
+ [9.149.105.58])
+ by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP
+ id 2248apq434013686
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Fri, 4 Mar 2022 08:36:51 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 2E51C4C044;
+ Fri,  4 Mar 2022 08:36:51 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 8033B4C040;
+ Fri,  4 Mar 2022 08:36:50 +0000 (GMT)
+Received: from smtp.tlslab.ibm.com (unknown [9.101.4.1])
+ by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+ Fri,  4 Mar 2022 08:36:50 +0000 (GMT)
+Received: from yukon.home (unknown [9.171.91.16])
+ by smtp.tlslab.ibm.com (Postfix) with ESMTP id DA99A2200FD;
+ Fri,  4 Mar 2022 09:36:48 +0100 (CET)
+From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+To: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>,
  Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-aspeed <linux-aspeed@lists.ozlabs.org>,
- Andrew Jeffery <andrew@aj.id.au>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-aspeed@lists.ozlabs.org,
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
  Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
- devicetree <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 00/10] spi: spi-mem: Add driver for Aspeed SMC
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+ Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH v3 02/11] ARM: dts: aspeed: Adjust "reg" property of FMC/SPI
  controllers
-Message-ID: <YiHGfh/4xZRim6Ka@taoren-fedora-PC23YAB4>
-References: <20220302173114.927476-1-clg@kaod.org>
- <CACPK8Xdo=krCNVVs5=jiSnmyiPkNPd9Dxxyx0Tv8eUHKR5J3cQ@mail.gmail.com>
+Date: Fri,  4 Mar 2022 09:36:34 +0100
+Message-Id: <20220304083643.1079142-3-clg@kaod.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220304083643.1079142-1-clg@kaod.org>
+References: <20220304083643.1079142-1-clg@kaod.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CACPK8Xdo=krCNVVs5=jiSnmyiPkNPd9Dxxyx0Tv8eUHKR5J3cQ@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qC6AbQvSAZX2MND-QXwovoy0MMzaMKbm
+X-Proofpoint-GUID: VYweexoNYkTGZZVQarP9WR1cUQcJ-xzF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-04_02,2022-02-26_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=650 adultscore=0 malwarescore=0 bulkscore=0 spamscore=0
+ clxscore=1034 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203040044
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220303_235755_329464_5E18664C 
-X-CRM114-Status: GOOD (  18.55  )
+X-CRM114-CacheID: sfid-20220304_083720_890778_C1553C2B 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,51 +125,67 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Mar 03, 2022 at 10:01:20AM +0000, Joel Stanley wrote:
-> On Wed, 2 Mar 2022 at 17:31, C=E9dric Le Goater <clg@kaod.org> wrote:
-> >
-> > Hi,
-> >
-> > This series adds a new SPI driver using the spi-mem interface for the
-> > Aspeed static memory controllers of the AST2600, AST2500 and AST2400
-> > SoCs.
-> >
-> >  * AST2600 Firmware SPI Memory Controller (FMC)
-> >  * AST2600 SPI Flash Controller (SPI1 and SPI2)
-> =
-
-> I've performed read and write tests on the 2600 controllers, and the
-> driver seems stable at the settings you have in the device tree.
-> =
-
-> Tested-by: Joel Stanley <joel@jms.id.au>
-> =
-
-> I've added Tao and John to cc as they have tested the 2400 and 2500,
-> and I'm sure will be able to provide some Tested-by.
-> =
-
-> Cheers,
-> =
-
-> Joel
-
-I've tested the patch series on ast2400 (wedge100) and ast2500 (cmm) by
-reading/writing FMC flash0 and flash1 for several times, and no issues
-observed so far.
-
-Tested-by: Tao Ren <rentao.bupt@gmail.com>
-
-
-Cheers,
-
-Tao
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhpcyBpcyBjb21wYXRpYmxlIHdpdGggdGhlIGN1cnJlbnQgZHJpdmVyIGFuZCBhZGRyZXNzZXMg
+aXNzdWVzIHdoZW4KcnVubmluZyAnbWFrZSBkdF9iaW5kaW5nX2NoZWNrJy4KCkNjOiBDaGluLVRp
+bmcgS3VvIDxjaGluLXRpbmdfa3VvQGFzcGVlZHRlY2guY29tPgpUZXN0ZWQtYnk6IEpvZWwgU3Rh
+bmxleSA8am9lbEBqbXMuaWQuYXU+ClRlc3RlZC1ieTogVGFvIFJlbiA8cmVudGFvLmJ1cHRAZ21h
+aWwuY29tPgpTaWduZWQtb2ZmLWJ5OiBDw6lkcmljIExlIEdvYXRlciA8Y2xnQGthb2Qub3JnPgot
+LS0KIGFyY2gvYXJtL2Jvb3QvZHRzL2FzcGVlZC1nNC5kdHNpIHwgNiArKy0tLS0KIGFyY2gvYXJt
+L2Jvb3QvZHRzL2FzcGVlZC1nNS5kdHNpIHwgOSArKystLS0tLS0KIGFyY2gvYXJtL2Jvb3QvZHRz
+L2FzcGVlZC1nNi5kdHNpIHwgOSArKystLS0tLS0KIDMgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRp
+b25zKCspLCAxNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9h
+c3BlZWQtZzQuZHRzaSBiL2FyY2gvYXJtL2Jvb3QvZHRzL2FzcGVlZC1nNC5kdHNpCmluZGV4IGYx
+NGRhY2UzNGM1YS4uOWFlNjdlODNjZjYwIDEwMDY0NAotLS0gYS9hcmNoL2FybS9ib290L2R0cy9h
+c3BlZWQtZzQuZHRzaQorKysgYi9hcmNoL2FybS9ib290L2R0cy9hc3BlZWQtZzQuZHRzaQpAQCAt
+NTQsOCArNTQsNyBAQCBhaGIgewogCQlyYW5nZXM7CiAKIAkJZm1jOiBzcGlAMWU2MjAwMDAgewot
+CQkJcmVnID0gPCAweDFlNjIwMDAwIDB4OTQKLQkJCQkweDIwMDAwMDAwIDB4MTAwMDAwMDAgPjsK
+KwkJCXJlZyA9IDwweDFlNjIwMDAwIDB4OTQ+LCA8MHgyMDAwMDAwMCAweDEwMDAwMDAwPjsKIAkJ
+CSNhZGRyZXNzLWNlbGxzID0gPDE+OwogCQkJI3NpemUtY2VsbHMgPSA8MD47CiAJCQljb21wYXRp
+YmxlID0gImFzcGVlZCxhc3QyNDAwLWZtYyI7CkBAIC05MSw4ICs5MCw3IEBAIGZsYXNoQDQgewog
+CQl9OwogCiAJCXNwaTogc3BpQDFlNjMwMDAwIHsKLQkJCXJlZyA9IDwgMHgxZTYzMDAwMCAweDE4
+Ci0JCQkJMHgzMDAwMDAwMCAweDEwMDAwMDAwID47CisJCQlyZWcgPSA8MHgxZTYzMDAwMCAweDE4
+PiwgPDB4MzAwMDAwMDAgMHgxMDAwMDAwMD47CiAJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsKIAkJ
+CSNzaXplLWNlbGxzID0gPDA+OwogCQkJY29tcGF0aWJsZSA9ICJhc3BlZWQsYXN0MjQwMC1zcGki
+OwpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvYXNwZWVkLWc1LmR0c2kgYi9hcmNoL2Fy
+bS9ib290L2R0cy9hc3BlZWQtZzUuZHRzaQppbmRleCA3NDk1ZjkzYzUwNjkuLmMzZTBhOGUxM2M4
+YSAxMDA2NDQKLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvYXNwZWVkLWc1LmR0c2kKKysrIGIvYXJj
+aC9hcm0vYm9vdC9kdHMvYXNwZWVkLWc1LmR0c2kKQEAgLTU1LDggKzU1LDcgQEAgYWhiIHsKIAkJ
+cmFuZ2VzOwogCiAJCWZtYzogc3BpQDFlNjIwMDAwIHsKLQkJCXJlZyA9IDwgMHgxZTYyMDAwMCAw
+eGM0Ci0JCQkJMHgyMDAwMDAwMCAweDEwMDAwMDAwID47CisJCQlyZWcgPSA8MHgxZTYyMDAwMCAw
+eGM0PiwgPDB4MjAwMDAwMDAgMHgxMDAwMDAwMD47CiAJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsK
+IAkJCSNzaXplLWNlbGxzID0gPDA+OwogCQkJY29tcGF0aWJsZSA9ICJhc3BlZWQsYXN0MjUwMC1m
+bWMiOwpAQCAtODQsOCArODMsNyBAQCBmbGFzaEAyIHsKIAkJfTsKIAogCQlzcGkxOiBzcGlAMWU2
+MzAwMDAgewotCQkJcmVnID0gPCAweDFlNjMwMDAwIDB4YzQKLQkJCQkweDMwMDAwMDAwIDB4MDgw
+MDAwMDAgPjsKKwkJCXJlZyA9IDwweDFlNjMwMDAwIDB4YzQ+LCA8MHgzMDAwMDAwMCAweDA4MDAw
+MDAwPjsKIAkJCSNhZGRyZXNzLWNlbGxzID0gPDE+OwogCQkJI3NpemUtY2VsbHMgPSA8MD47CiAJ
+CQljb21wYXRpYmxlID0gImFzcGVlZCxhc3QyNTAwLXNwaSI7CkBAIC0xMDYsOCArMTA0LDcgQEAg
+Zmxhc2hAMSB7CiAJCX07CiAKIAkJc3BpMjogc3BpQDFlNjMxMDAwIHsKLQkJCXJlZyA9IDwgMHgx
+ZTYzMTAwMCAweGM0Ci0JCQkJMHgzODAwMDAwMCAweDA4MDAwMDAwID47CisJCQlyZWcgPSA8MHgx
+ZTYzMTAwMCAweGM0PiwgPDB4MzgwMDAwMDAgMHgwODAwMDAwMD47CiAJCQkjYWRkcmVzcy1jZWxs
+cyA9IDwxPjsKIAkJCSNzaXplLWNlbGxzID0gPDA+OwogCQkJY29tcGF0aWJsZSA9ICJhc3BlZWQs
+YXN0MjUwMC1zcGkiOwpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvYXNwZWVkLWc2LmR0
+c2kgYi9hcmNoL2FybS9ib290L2R0cy9hc3BlZWQtZzYuZHRzaQppbmRleCBjMzJlODdmYWQ0ZGMu
+LjFhZDA1ZGRlMTlkMiAxMDA2NDQKLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvYXNwZWVkLWc2LmR0
+c2kKKysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvYXNwZWVkLWc2LmR0c2kKQEAgLTk1LDggKzk1LDcg
+QEAgZ2ljOiBpbnRlcnJ1cHQtY29udHJvbGxlckA0MDQ2MTAwMCB7CiAJCQl9OwogCiAJCWZtYzog
+c3BpQDFlNjIwMDAwIHsKLQkJCXJlZyA9IDwgMHgxZTYyMDAwMCAweGM0Ci0JCQkJMHgyMDAwMDAw
+MCAweDEwMDAwMDAwID47CisJCQlyZWcgPSA8MHgxZTYyMDAwMCAweGM0PiwgPDB4MjAwMDAwMDAg
+MHgxMDAwMDAwMD47CiAJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsKIAkJCSNzaXplLWNlbGxzID0g
+PDA+OwogCQkJY29tcGF0aWJsZSA9ICJhc3BlZWQsYXN0MjYwMC1mbWMiOwpAQCAtMTI0LDggKzEy
+Myw3IEBAIGZsYXNoQDIgewogCQl9OwogCiAJCXNwaTE6IHNwaUAxZTYzMDAwMCB7Ci0JCQlyZWcg
+PSA8IDB4MWU2MzAwMDAgMHhjNAotCQkJCTB4MzAwMDAwMDAgMHgxMDAwMDAwMCA+OworCQkJcmVn
+ID0gPDB4MWU2MzAwMDAgMHhjND4sIDwweDMwMDAwMDAwIDB4MTAwMDAwMDA+OwogCQkJI2FkZHJl
+c3MtY2VsbHMgPSA8MT47CiAJCQkjc2l6ZS1jZWxscyA9IDwwPjsKIAkJCWNvbXBhdGlibGUgPSAi
+YXNwZWVkLGFzdDI2MDAtc3BpIjsKQEAgLTE0Niw4ICsxNDQsNyBAQCBmbGFzaEAxIHsKIAkJfTsK
+IAogCQlzcGkyOiBzcGlAMWU2MzEwMDAgewotCQkJcmVnID0gPCAweDFlNjMxMDAwIDB4YzQKLQkJ
+CQkweDUwMDAwMDAwIDB4MTAwMDAwMDAgPjsKKwkJCXJlZyA9IDwweDFlNjMxMDAwIDB4YzQ+LCA8
+MHg1MDAwMDAwMCAweDEwMDAwMDAwPjsKIAkJCSNhZGRyZXNzLWNlbGxzID0gPDE+OwogCQkJI3Np
+emUtY2VsbHMgPSA8MD47CiAJCQljb21wYXRpYmxlID0gImFzcGVlZCxhc3QyNjAwLXNwaSI7Ci0t
+IAoyLjM0LjEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
