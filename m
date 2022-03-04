@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2706FC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 14:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB25CC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 14:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:Cc:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:To:From:
 	Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4nDx7fdpNQEJ99vdLDwkS3bRBqFozHwoH28hCw/WQd0=; b=kFDEk48H/VTHbwBT3aXnLcaWME
-	ZsNcIRq2IRWEM77LjL4t9gqSg3Ak+kOsI8G1e+ike6VfRxO4o2IYPIaq8v7qXEm6Ni7GQGYqjf3p3
-	pFhzFSkvhVI4oMBgLXDCPyBq+TMWtPOoXzfFmfUtV0gH3dVpZk+5ym+/rfCLkxBcSOd8uFhYEZebl
-	cQSCUyjxcoDMNdauLGM14Nm06l4wzZ0nESWVoEcLnHXu0j9Fud/ABRWuYamUtWemO8VyV0O1eSMWP
-	OJDRej5zIsAZ513haVgjYuELJlVY3+3AQueF3eFKFjoPjVJ8ZdRpr+rYxTl2+e6KUO7gsjZJPATvM
-	kdh5KBFQ==;
+	bh=l1FyKSq8SHmIHTFsvmusBOSeTD+LzyvPzfUWkAYH7tU=; b=HVWqVUFDOGmvGjr4KeiEKJhP+C
+	XRmFTQiRMEHkTaAkUUJoXT3Wv/o9/iAXpWLViaqNIXPKx1b+gTngvbvCixQKArtZXaB9ucgojeGJU
+	+b62g0r38ZdLzOyfH4NUm1JiiZ7HMhhft3BQjgF7ZY2abV5U4YLGP4LyLPgEghZ24L50L7MpmbO4H
+	If3bC4xv6IkfeFm9kqYj/Xnj/zXKYHeCTekVnp9T9ZhmTYTqYOSdQxaTFAFs7aF5k9k3cil3A7sb0
+	zg87ndmk+m/Y0XTBu3HURZfSRhOTqif9Ncimc4kXwhHJoKj3PgivXHFAEHkYTrKAH9cgOzT7GtfCh
+	Bm/Bx7xA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nQ8e5-00APzk-Rh; Fri, 04 Mar 2022 14:11:01 +0000
+	id 1nQ92i-00AWnx-B5; Fri, 04 Mar 2022 14:36:28 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nQ8dq-00APuR-Hm; Fri, 04 Mar 2022 14:10:48 +0000
+ id 1nQ92J-00AWdk-QO; Fri, 04 Mar 2022 14:36:05 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 5CD1B22175;
- Fri,  4 Mar 2022 15:10:40 +0100 (CET)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 001A722175;
+ Fri,  4 Mar 2022 15:36:00 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1646403042;
+ s=mail2016061301; t=1646404562;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=g+WNNxfFkDV1cN4at3foeQarYLwQhrB2SJ2nQbQV2WY=;
- b=MNFZ8XTuvrUBK0QA4qpQPk+5C3rj/CVspd4ojmvC0JgdgMM5hye/28W2H4D9o29acmxJA3
- hbnBlYzT4xeZC9IvtC1hPxtdGPEpbc9dFJkB7Aq19lq6Txqh8JrCmbaV2B9Fz3ojpCJZ8d
- kNsmQ9rbVZIm0mDPxSC6rWG3ppMjrhY=
+ bh=09h/2Lej8vf+lNermPmvkPu3QY6K/xr74IsvdE6XV3g=;
+ b=sLwk7pRN4yjlbUJILZxngDaYPdwHji+G+sv0y5uuI+Bz7Hmn/MbtXvWsNH686S8b6ZgQEH
+ JGiytyMcrVGltA2SRPQdr2nkuQYGWqJMc3Hmgaz9+XJiQCEV2T8iCdQ2xjH37w4SQqM99h
+ YrgCIrzcB+caTECwCfsAtbwyIhOePsc=
 MIME-Version: 1.0
-Date: Fri, 04 Mar 2022 15:10:40 +0100
+Date: Fri, 04 Mar 2022 15:36:00 +0100
 From: Michael Walle <michael@walle.cc>
 To: Tudor.Ambarus@microchip.com
-Subject: Re: [PATCH v4 5/6] mtd: spi-nor: Introduce Manufacturer ID collisions
- driver
-In-Reply-To: <1f736b73-2b2c-f29f-b73f-41fb6ee2ad0f@microchip.com>
+Subject: Re: [PATCH v4 3/6] mtd: spi-nor: macronix: Handle ID collision b/w
+ MX25L3233F and MX25L3205D
+In-Reply-To: <58af5b61-83a6-38bf-05d1-f1ded5299f30@microchip.com>
 References: <20220228134505.203270-1-tudor.ambarus@microchip.com>
- <20220228134505.203270-6-tudor.ambarus@microchip.com>
- <0edfa6e267995a127181173496b471ea@walle.cc>
- <f1e8d9d1-04a3-fb8e-5f16-7121b4d368a1@microchip.com>
- <0e89e5f9e09bec1d0e9ff870610863df@walle.cc>
- <1f736b73-2b2c-f29f-b73f-41fb6ee2ad0f@microchip.com>
+ <20220228134505.203270-4-tudor.ambarus@microchip.com>
+ <67810d13180a2718ad7ccc28815d2894@walle.cc>
+ <d6e3dae6-fc46-1697-e496-33ab11469807@microchip.com>
+ <6bb1aafe7e156db8dfcf77f04a9d100e@walle.cc>
+ <CAEyMn7aN+wJnYkTJU_nWA9bPzF1sezA9_=E5YG5rnPBLMAmabA@mail.gmail.com>
+ <b533feb1c69ddae69dd88a44a902eb47@walle.cc>
+ <58af5b61-83a6-38bf-05d1-f1ded5299f30@microchip.com>
 User-Agent: Roundcube Webmail/1.4.12
-Message-ID: <09487aee8ee43415ae3e8b0e225ba76c@walle.cc>
+Message-ID: <546a7f0f728b01e2283bab53989e5a69@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220304_061046_939838_67BDD930 
-X-CRM114-Status: GOOD (  42.12  )
+X-CRM114-CacheID: sfid-20220304_063604_220104_93F4A28E 
+X-CRM114-Status: GOOD (  24.00  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,153 +77,104 @@ Cc: sr@denx.de, vigneshr@ti.com, jaimeliao@mxic.com.tw, richard@nod.at,
  linux-arm-kernel@lists.infradead.org, macromorgan@hotmail.com,
  miquel.raynal@bootlin.com, heiko.thiery@gmail.com, zhengxunli@mxic.com.tw,
  p.yadav@ti.com, mail@david-bauer.net, code@reto-schneider.ch
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QW0gMjAyMi0wMy0wNCAwODowNywgc2NocmllYiBUdWRvci5BbWJhcnVzQG1pY3JvY2hpcC5jb206
-Cj4gT24gMy8zLzIyIDIzOjM4LCBNaWNoYWVsIFdhbGxlIHdyb3RlOgo+PiBFWFRFUk5BTCBFTUFJ
-TDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93
-IAo+PiB0aGUgY29udGVudCBpcyBzYWZlCj4+IAo+PiBBbSAyMDIyLTAzLTAzIDE3OjEyLCBzY2hy
-aWViIFR1ZG9yLkFtYmFydXNAbWljcm9jaGlwLmNvbToKPj4+IE9uIDMvMi8yMiAwMDoxOSwgTWlj
-aGFlbCBXYWxsZSB3cm90ZToKPj4+PiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNrIGxpbmtz
-IG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSAKPj4+PiBrbm93Cj4+Pj4gdGhlIGNvbnRl
-bnQgaXMgc2FmZQo+Pj4+IAo+Pj4+IEFtIDIwMjItMDItMjggMTQ6NDUsIHNjaHJpZWIgVHVkb3Ig
-QW1iYXJ1czoKPj4+Pj4gU29tZSBtYW51ZmFjdHVyZXJzIGNvbXBsZXRlbHkgaWdub3JlIHRoZSBt
-YW51ZmFjdHVyZXIncwo+Pj4+PiBpZGVudGlmaWNhdGlvbgo+Pj4+PiBjb2RlCj4+Pj4+IHN0YW5k
-YXJkIChKRVAxMDYpIGFuZCBkbyBub3QgZGVmaW5lIHRoZSBtYW51ZmFjdHVyZXIgSUQgCj4+Pj4+
-IGNvbnRpbnVhdGlvbgo+Pj4+PiBzY2hlbWUuIFRoaXMgd2lsbCByZXN1bHQgaW4gbWFudWZhY3R1
-cmVyIElEIGNvbGxpc2lvbnMuCj4+Pj4+IAo+Pj4+PiBBbiBhbiBleGFtcGxlLCBKRVAxMDZCQSBy
-ZXF1aXJlcyBCb3lhIHRoYXQgaXQncyBtYW51ZmFjdHVyZXIgSUQgdG8gCj4+Pj4+IGJlCj4+Pj4+
-IHByZWNlZGVkIGJ5IDggY29udGludWF0aW9uIGNvZGVzLiBCb3lhJ3MgaWRlbnRpZmljYXRpb24g
-Y29kZSBtdXN0IAo+Pj4+PiBiZToKPj4+Pj4gMHg3ZiwgMHg3ZiwgMHg3ZiwgMHg3ZiwgMHg3Ziwg
-MHg3ZiwgMHg3ZiwgMHg3ZiwgMHg2OC4gQnV0IEJveWEKPj4+Pj4gaWdub3Jlcwo+Pj4+PiB0aGUK
-Pj4+Pj4gY29udGludWF0aW9uIHNjaGVtZSBhbmQgaXRzIElEIGNvbGxpZGVzIHdpdGggdGhlIG1h
-bnVmYWN0dXJlciAKPj4+Pj4gZGVmaW5lZAo+Pj4+PiBpbgo+Pj4+PiBiYW5rIG9uZTogQ29udmV4
-IENvbXB1dGVyLgo+Pj4+PiAKPj4+Pj4gSW50cm9kdWNlIHRoZSBtYW51Zi1pZC1jb2xsaXNpb25z
-IGRyaXZlciBpbiBvcmRlciB0byBhZGRyZXNzIElECj4+Pj4+IGNvbGxpc2lvbnMKPj4+Pj4gYmV0
-d2VlbiBtYW51ZmFjdHVyZXJzLiBmbGFzaF9pbmZvIGVudHJpZXMgd2lsbCBiZSBhZGRlZCBpbiBh
-IGZpcnN0Cj4+Pj4+IGNvbWUsCj4+Pj4+IGZpcnN0IHNlcnZlZCBtYW5uZXIuIERpZmZlcmVudGlh
-dGlvbiBiZXR3ZWVuIGZsYXNoZXMgd2lsbCBiZSBkb25lIAo+Pj4+PiBhdAo+Pj4+PiBydW50aW1l
-IGlmIHBvc3NpYmxlLiBXaGVyZSBydW50aW1lIGRpZmZlcmVudGlhdGlvbiBpcyBub3QgcG9zc2li
-bGUsCj4+Pj4+IG5ldwo+Pj4+PiBjb21wYXRpYmxlcyB3aWxsIGJlIGludHJvZHVjZWQsIGJ1dCB0
-aGlzIHdpbGwgYmUgZG9uZSBhcyBhIGxhc3QKPj4+Pj4gcmVzb3J0Lgo+Pj4+PiBFdmVyeSBuZXcg
-Zmxhc2ggYWRkaXRpb24gdGhhdCBkZWZpbmUgdGhlIFNGRFAgdGFibGVzLCBzaG91bGQgZHVtcCAK
-Pj4+Pj4gaXRzCj4+Pj4+IFNGRFAKPj4+Pj4gdGFibGVzIGluIHRoZSBwYXRjaCdzIGNvbW1lbnQg
-c2VjdGlvbiBiZWxvdyB0aGUgLS0tIGxpbmUsIHNvIHRoYXQgCj4+Pj4+IHdlCj4+Pj4+IGNhbgo+
-Pj4+PiByZWZlcmVuY2UgaXQgaW4gY2FzZSBvZiBjb2xsaXNpb25zLgo+Pj4+PiAKPj4+Pj4gU2ln
-bmVkLW9mZi1ieTogVHVkb3IgQW1iYXJ1cyA8dHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tPgo+
-Pj4+PiAtLS0KPj4+Pj4gwqBkcml2ZXJzL210ZC9zcGktbm9yL01ha2VmaWxlwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfMKgIDEgKwo+Pj4+PiDCoGRyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5j
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAzICsrKwo+Pj4+PiDCoGRyaXZlcnMv
-bXRkL3NwaS1ub3IvY29yZS5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAxICsK
-Pj4+Pj4gwqBkcml2ZXJzL210ZC9zcGktbm9yL21hbnVmLWlkLWNvbGxpc2lvbnMuYyB8IDMyCj4+
-Pj4+ICsrKysrKysrKysrKysrKysrKysrKysrCj4+Pj4+IMKgZHJpdmVycy9tdGQvc3BpLW5vci9z
-eXNmcy5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMiArLQo+Pj4+PiDCoGluY2x1
-ZGUvbGludXgvbXRkL3NwaS1ub3IuaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDYg
-KysrKy0KPj4+Pj4gwqA2IGZpbGVzIGNoYW5nZWQsIDQzIGluc2VydGlvbnMoKyksIDIgZGVsZXRp
-b25zKC0pCj4+Pj4+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL3NwaS1ub3IvbWFu
-dWYtaWQtY29sbGlzaW9ucy5jCj4+Pj4+IAo+Pj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
-c3BpLW5vci9NYWtlZmlsZQo+Pj4+PiBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvTWFrZWZpbGUKPj4+
-Pj4gaW5kZXggNmI5MDRlNDM5MzcyLi40ODc2M2QxMGRhYWQgMTAwNjQ0Cj4+Pj4+IC0tLSBhL2Ry
-aXZlcnMvbXRkL3NwaS1ub3IvTWFrZWZpbGUKPj4+Pj4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
-ci9NYWtlZmlsZQo+Pj4+PiBAQCAtMSw2ICsxLDcgQEAKPj4+Pj4gwqAjIFNQRFgtTGljZW5zZS1J
-ZGVudGlmaWVyOiBHUEwtMi4wCj4+Pj4+IAo+Pj4+PiDCoHNwaS1ub3Itb2Jqc8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDo9IGNvcmUubyBzZmRwLm8gc3dwLm8gb3RwLm8gc3lzZnMu
-bwo+Pj4+PiArc3BpLW5vci1vYmpzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKz0g
-bWFudWYtaWQtY29sbGlzaW9ucy5vCj4+Pj4+IMKgc3BpLW5vci1vYmpzwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgKz0gYXRtZWwubwo+Pj4+PiDCoHNwaS1ub3Itb2Jqc8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICs9IGNhdGFseXN0Lm8KPj4+Pj4gwqBzcGktbm9yLW9i
-anPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCArPSBlb24ubwo+Pj4+PiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMgCj4+Pj4+IGIvZHJpdmVycy9tdGQvc3Bp
-LW5vci9jb3JlLmMKPj4+Pj4gaW5kZXggYWVmMDAxNTFjMTE2Li44MGQ2Y2U0MTEyMmEgMTAwNjQ0
-Cj4+Pj4+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCj4+Pj4+ICsrKyBiL2RyaXZl
-cnMvbXRkL3NwaS1ub3IvY29yZS5jCj4+Pj4+IEBAIC0xNjEwLDYgKzE2MTAsNyBAQCBpbnQgc3Bp
-X25vcl9zcjJfYml0N19xdWFkX2VuYWJsZShzdHJ1Y3QgCj4+Pj4+IHNwaV9ub3IKPj4+Pj4gKm5v
-cikKPj4+Pj4gwqB9Cj4+Pj4+IAo+Pj4+PiDCoHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpX25vcl9t
-YW51ZmFjdHVyZXIgKm1hbnVmYWN0dXJlcnNbXSA9IHsKPj4+Pj4gK8KgwqDCoMKgICZzcGlfbm9y
-X21hbnVmX2lkX2NvbGxpc2lvbnMsCj4+Pj4gCj4+Pj4gSSdtIHN0aWxsIG5vdCBjb252aW5jZWQg
-aXQgc2hvdWxkIGJlIHRoZSBmaXJzdCBlbnRyeSBoZXJlLiBXZSB3aWxsCj4+Pj4gcHV0IG90aGVy
-IHZlbmRvcnMgYXQgYSBkaXNhZHZhbnRhZ2Ugd2hvIHBsYXkgZmFpci4gSSBkb3VidCB3ZSB3aWxs
-Cj4+Pj4gYWx3YXlzIGNoZWNraW5nIGFueSBuZXcgSURzIGZvciBkdXBsaWNhdGlvbnMgLSBvciBz
-b21lIG1pZ2h0IHNsaXAKPj4+PiB0aHJvdWdoLiBQdXR0aW5nIGl0IGFzIHRoZSBsYXN0IGVudHJ5
-IHdpbGwgbWFrZSBzdXJlLCBsZWdpdGltYXRlCj4+Pj4gdXNlcnMgd2lsbCBhbHdheXMgY29tZSBm
-aXJzdC4KPj4+PiAKPj4+PiBFc3AuIGJlY2F1c2UgeG1jIHJldXNlcyB2ZW5kb3IgaWQgd2hvc2Ug
-Zmxhc2hlcyB3ZSBhbHNvIHN1cHBvcnQKPj4+PiBtYWtpbmcgYSBjb2xsaXNpb24gdmVyeSBsaWtl
-bHkuIFVubGlrZSBib3lhIHdobyByZXVzZXMgImNvbnZleAo+Pj4+IGNvbXB1dGVycyIgd2hlcmUg
-d2Ugd2lsbCBwcm9iYWJseSBuZXZlciBzZWUgYW4gU1BJIGZsYXNoIGZyb20uCj4+PiAKPj4+IFll
-cywgYmVpbmcgdGhlIGZpcnN0IHdhcyBpbnRlbnRpb25hbC4gVGhlIHJhdGlvbmFsZSBpcyB0aGF0
-IGlmIAo+Pj4gc29tZW9uZQo+Pj4gYWRkcyBhIG1pY3JvbiBhbmQgc2VlcyBhbiBYTUMgbmFtZSBp
-dCdzIGNsZWFyIHRoYXQgaXQncyBhIGNvbGxpc2lvbiwKPj4+IHNvIHdlIGdldCB0aGUgY2hhbmNl
-IHRvIGZpeCBpdCBmcm9tIHRoZSBmaXJzdCBkYXkuIEJldHRlciB0ZXN0Cj4+PiBjb3ZlcmFnZSwK
-Pj4+IGVhc2llciB0byBpZGVudGlmeSB0aGUgY29sbGlzaW9ucywgdGh1cyBlYXNpZXIgd29yayBm
-b3IgbWFpbnRhaW5lcnMuCj4+PiBCdXQgYXQgdGhlIHNhbWUgdGltZSBJRCBjb2xsaXNpb25zIGZv
-ciBuZXcgZmxhc2ggYWRkaXRpb25zIGNhbiBiZQo+Pj4gaWRlbnRpZmllZCBieSBhIHNpbXBsZSBn
-cmVwLCBzbyBJIHdpbGwgbm90IGluc2lzdCBoZXJlIGdpdmVuIHRoYXQgaXQgCj4+PiBpcwo+Pj4g
-dGhlIHNlY29uZCB0aW1lIHlvdSBtZW50aW9uIHB1dHRpbmcgdGhlIGNvbGxpc2lvbnMgZHJpdmVy
-IHRoZSBsYXN0IGluCj4+PiB0aGUKPj4+IGFycmF5Lgo+Pj4gCj4+Pj4gCj4+Pj4gVGhhdCBiZWlu
-ZyBzYWlkLiBJJ2QgYWxzbyBzdWdnZXN0IHRvIG9ubHkgYWxsb3cgZmxhc2hlcyB3aXRoCj4+Pj4g
-U0ZEUCBoZXJlLCBzbyB3ZSBoYXZlIGF0IGxlYXN0IHNvbWUgY2x1ZSB0byBkaWZmZXJlbnRpYXRl
-Cj4+Pj4gYmV0d2VlbiBmbGFzaGVzLiBJZiB0aGVyZSB3aWxsIGV2ZXIgYmUgYSBmbGFzaCB3aXRo
-b3V0IFNGRFAKPj4+PiBhbmQgd2hpY2ggaXMgdXNpbmcgYSBub24tbGVnaXRpbWF0ZSB2ZW5kb3Ig
-aWQsIHRoZW4gd2UnbGwKPj4+PiBuZWVkIHRvIGVpdGhlciBkZW55IHN1cHBvcnQgZm9yIGl0IG9y
-IHNwZWNpZnkgaXQgYnkgYSBuYW1lCj4+PiAKPj4+IHdlIGNhbid0IGRlbnkgc3VwcG9ydCBmb3Ig
-dGhpcyByZWFzb24sIHdlJ2xsIGJlIGZvcmNlZCB0byB1c2UgZHQgdG8gCj4+PiBnZXQKPj4+IHRo
-ZSBmbGFzaCBuYW1lLgo+Pj4gCj4+Pj4gKGkuZS4gZGV2aWNlIHRyZWUgY29tcGF0aWJsZSBvciBz
-aW1pbGFyKS4gQnV0IHRoZXNlIHNob3VsZAo+Pj4+IGdvIGludG8gYSBzZXBlcmF0ZSBsaXN0IHRo
-ZW4uCj4+Pj4gCj4+PiBIb3cgeW91IHdpbGwgZGlmZmVyZW50aWF0ZSBiZXR3ZWVuIHR3byBmbGFz
-aGVzIG9mIGRpZmZlcmVudAo+Pj4gbWFudWZhY3R1cmVycyB0aGF0Cj4+PiBjb2xsaWRlLCBvbmUg
-dGhhdCBzdXBwb3J0cyBTRkRQIGFuZCBvbmUgdGhhdCBkb2Vzbid0PyBZb3UnbGwgaGF2ZSB0bwo+
-Pj4gaGF2ZSBhCj4+PiBzaW5nbGUgZmxhc2ggZW50cnkgaW4gb25lIG9mIHRoZSBkcml2ZXJzLCB3
-aGVyZSB3aWxsIHlvdSBwdXQgaXQ/Cj4+IAo+PiBIbSwgSSBzZWUuIEJ1dCBpdCBkb2Vzbid0IGVu
-ZCB0aGVyZS4gSW1hZ2luZSBvbmUgd291bGQgbmVlZAo+PiBmdW5jdGlvbiBmcm9tIGEgZGlmZmVy
-ZW50ICh2ZW5kb3IpIG1vZHVsZS4gU28gd2UgaGF2ZSB0byBleHBvcnQgaXQKPj4gYWdhaW4gd2hp
-Y2ggZm9ybWVybHkgd2FzIGp1c3QgcHJpdmF0ZSB0byB0aGlzIG1vZHVsZS4KPj4gCj4+IEFsbCBv
-ZiB0aGlzIG1ha2VzIG1lIHdvbmRlciBpZiB3ZSBjYW4ndCBqdXN0IGFkZCBvbmUgZGV2aWNlIGlk
-Cj4+IG11bHRpcGxlIHRpbWVzIGluIG91ciBsaXN0cyBpbiBkaWZmZXJlbnQgdmVuZG9yIG1vZHVs
-ZXMuIFRvCj4+IGRpc3Rpbmd1aXNoIGJldHdlZW4gZW50cmllcyB3aXRoIHRoZSBzYW1lIGlkLCB3
-ZSBwcm92aWRlIGFub3RoZXIKPj4gY2FsbGJhY2s6Cj4+IMKgIGJvb2wgaXNfbWF0Y2gobm9yLCBz
-ZmRwLCAuLikKPj4gCj4+IFRoYXQgd291bGQgc29sdmUgdGhlIGZvbGxvd2luZzoKPj4gKDEpIHdl
-IGNhbiBoYXZlIHRoZSBwcm9wZXIgZmxhZ3MgcGVyIGZsYXNoIGluc3RlYWQgb2YgaGF2aW5nCj4+
-IMKgwqDCoCB0byBjaGFuZ2UgdGhlbSBpbiBmaXh1cHMgbGF0ZXIKPj4gKDIpIHZlbmRvciBmdW5j
-dGlvbnMgY2FuIGJlIGxlZnQgcHJpdmF0ZSBpbiB0aGUgY29ycmVzcG9uZGluZwo+PiDCoMKgwqAg
-bW9kdWxlLCBiZWNhdXNlIGFsbCBlbnRyaWVzIHdpbGwgYmUgaGVsZCBpbiBhIHBlciB2ZW5kb3Ig
-bGlzdAo+PiAoMykgd2UgY2FuIHByb3ZpZGUgc29tZSBzYW5pdHkgY2hlY2tzIChlbmFibGVkIGJ5
-IGEgS2NvbmZpZykKPj4gwqDCoMKgIHRvIHdhbGsgdGhlIGxpc3QgYW5kIHdhdGNoIGZvciBpbnZh
-bGlkIGR1cGxpY2F0ZSBlbnRyaWVzLgo+PiDCoMKgwqAgU2VlIG1vcmUgYmVsb3cuCj4gCj4gd2Ug
-YWxyZWFkeSBoYXZlIHRvIGdvIHRocm91Z2ggdGhlIGVudGlyZSBsaXN0IG9mIGZsYXNoIGluZm8g
-ZW50cmllcwo+IHRvIGNoZWNrIGZvciBjb2xsaXNpb25zLCB3ZSBjYW4ganVzdCBhZGQgYSBkZXZf
-aW5mbyBvciBkZXZfd2FybiBmb3IKPiBpbnZhbGlkIGR1cGxpY2F0ZSBlbnRyaWVzLiBObyBuZWVk
-IGZvciBhIGtjb25maWcuCgpJdCdzIHNvbWUga2luZCBvZiBzZWxmdGVzdC4gSSdtIG5vdCBqdXN0
-IHRhbGtpbmcgYWJvdXQgdGhlIGN1cnJlbnQKZmxhc2ggYmVpbmcgcHJvYmVkLiBCdXQgYWx3YXlz
-IGl0ZXJhdGUgb3ZlciBhbnkgZmxhc2hlcyBhbmQgbG9vawpkdXBsaWNhdGVzLCBzbyB0aGUgbmFp
-dmUgaW1wbGVtZW50YXRpb24gd291bGQgYmUgTyhOXjIpLiBXaGljaCBpcyBhCnJ1bnRpbWUgb3Zl
-cmhlYWQgYW5kIG9ubHkgcmVhbGx5IG5lZWRlZCBieSBvdXJzZWx2ZXMgd2hlbiB3ZSBhZGQKYSBu
-ZXcgZmxhc2guIEl0IGRvZXNuJ3QgYnJpbmcgYW55IGdvb2Qgb3RoZXJ3aXNlLCBzbyBpdCBzaG91
-bGQgYmUKb2ZmLgoKPj4gKDQpIHNhbmUgZmFsbGJhY2suIEkuZS4gaWYgdGhlcmUgaXMgYSBkdXBs
-aWNhdGUgaW4gdGhlIGZ1dHVyZSwKPj4gwqDCoMKgIHdlIGp1c3QgaGF2ZSB0byBhZGQgYSBuZXcg
-ZW50cnkgd2l0aCBhIGlzX21hdGNoKCkuIElmIGl0Cj4+IMKgwqDCoCBkb2Vzbid0IG1hdGNoLCB3
-ZSBqdXN0IGNvbnRpbnVlIGFuZCB3aWxsIGZpbmFsbHkgZmFsbCBiYWNrCj4+IMKgwqDCoCB0byB0
-aGUgb3JpZ2luYWwgZW50cnkuCj4+ICg1KSBpZiBuZWNlc3NhcnksIGNvbXBhdGlibGUgc3RyaW5n
-cyBtYXRjaGVzIHNob3VsZCBiZSBlYXN5IHRvCj4+IMKgwqDCoCBhZGQuIFRoaW5rIG9mIHNvbWV0
-aGluZyBsaWtlOgo+PiDCoMKgwqDCoCBib29sIGlzX21hdGNoKG5vciwgc2ZkcCkgewo+PiDCoMKg
-wqDCoMKgwqDCoCByZXR1cm4gb2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUobm9yLCAibWFjcm9uaXgs
-bXguLiIpOwo+PiDCoMKgwqDCoCB9Cj4+IAo+PiBpc19tYXRjaCgpIGlzIG9wdGlvbmFsLCBidXQg
-aWYgZ2l2ZW4sIGJvdGggdGhlIGZsYXNoIGlkIGhhcyB0bwo+PiBtYXRjaCBhcyB3ZWxsIGFzIGlz
-X21hdGNoKCkgaGFzIHRvIHJldHVybiB0cnVlLgo+PiAKPj4gSS5lLiBvbmUgc2FuaXR5IGNvdWxk
-IGJlOiB3YWxrIHRoZSBsaXN0IGFuZCBzZWUgaWYgdGhlcmUgYXJlCj4+IHR3byBlbnRyaWVzIHdp
-dGggdGhlIHNhbWUgaWQsIGJ1dCBib3RoIHdpdGhvdXQgYW4gaXNfbWF0Y2goKQo+PiBmdW5jdGlv
-bi4gVGhpcyB3b3VsZCBtZWFuIGFuIGludmFsaWQgZHVwbGljYXRlIGVudHJ5Lgo+PiAKPj4gV2hh
-dCBkbyB5b3UgdGhpbms/Cj4gCj4gSSBmaW5kIHRoZSBpZGVhIGdvb2QgYW5kIHdvdWxkIGxpa2Ug
-dG8gZ2l2ZSBpdCBhIHRyeS4gVGhlIGRvd25zaWRlIHRoYXQKPiBJIHNlZSBpcyB0aGF0IHdlJ2xs
-IGFsd2F5cyBoYXZlIHRvIGdvIHRocm91Z2ggdGhlIGVudGlyZSBsaXN0IG9mCj4gZmxhc2hfaW5m
-byBlbnRyaWVzIHRvIGRldGVybWluZSB0aGUgY29sbGlzaW9ucyBhbmQgdG8gaGFuZGxlIHRoZW0g
-YWxsLCAKPiBzbyBhCj4gbGl0dGxlIGRlbGF5IGluIGZpbmRpbmcgdGhlIGZsYXNoLCBidXQgSSB0
-aGluayB3ZSBjYW4gbGl2ZSB3aXRoIHRoaXMuCgpJZiB0aGUgZmxhc2ggaXMgdGhlIGxhc3Qgb25l
-IGluIHRoZSBsaXN0IHlvdSBoYXZlIHRoZSBzYW1lIGRlbGF5IDspCgo+IENhbiBJIGltcGxlbWVu
-dCB5b3VyIHN1Z2dlc3Rpb24gYW5kIGFkZCBTdWdnZXN0aW9uLWJ5IHRhZ3MsIG9yIGRvIHlvdSAK
-PiB3YW50Cj4gdG8gaGFuZGxlIGl0IHlvdXJzZWxmPwoKU3VyZSwgZ28gYWhlYWQhCgotbWljaGFl
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Am 2022-03-04 01:36, schrieb Tudor.Ambarus@microchip.com:
+> On 3/3/22 18:45, Michael Walle wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
+>> the content is safe
+>> 
+>> Am 2022-03-03 17:31, schrieb Heiko Thiery:
+>> ..
+>> 
+>>>>>>> # xxd -p mx25l3233f-sfdp
+>>>>>>> 53464450000101ff00000109300000ffc2000104600000ffffffffffffff
+>>>>>>> ffffffffffffffffffffffffffffffffffffe520f1ffffffff0144eb086b
+>>>>>>> 083b04bbeeffffffffff00ffffff00ff0c200f5210d800ffffffffffffff
+>>>>>>> ffffffffffff003650269cf97764fecfffffffffffff
+>>>>>> 
+>>>>>> Is quad enable working or has this the same problem as
+>>>>>> the macronix flash in patch 4? Judging by the length of the SFDP
+>>>>>> this also lacks the required information to select an
+>>>>>> appropriate enable method. I haven't had closer look though.
+>>>>> 
+>>>>> it worked, yes. As I specified in the commit message, I tested it
+>>>> and
+>>>>> it used
+>>>>> SPINOR_OP_READ_1_4_4 0xeb opcode for reads.
+>>>> 
+>>>> I'm confused, why is Heiko reporting that the CR/SR writing isn't
+>>>> working because a wrong quad_enable method is chosen, but here it
+>>>> will work. What am I missing?
+>>> 
+>>> I suppose that the flash that supports the RSSFDP is JEDES216B
+>>> compatible including DWORD[15]. The flash that I have is only 
+>>> JEDES216
+>>> compatible and has not the DWORD[15] defined.
+>> 
+>> That was why I wrote "Judging by the length of the SFDP". I've
+>> converted both the mx25l12835f and mx25l3233f to binary and both
+>> are 112 bytes long. Both seem to have the short BFPT table, ie.
+>> no DWORD(15). Both seem to have a second table at offset 60h.
+>> 
+> 
+> I've just redone the test, I see:
+> root@sama5d2-xplained:~# mtd_debug read /dev/mtd1 0 65536 read
+> atmel_qspi f0020000.spi: op->cmd.opcode = 00eb, so
+> SPINOR_OP_READ_1_4_4 as I said.
+> 
+> Michael, you have the eyes of an eagle, only the first 9 BFPT dwords
+> are defined:
+> spi-nor spi1.0: bfpt_header->length = 9
+> spi-nor spi1.0: BFPT[DWORD(1)] = fff120e5
+> spi-nor spi1.0: BFPT[DWORD(2)] = 01ffffff
+> spi-nor spi1.0: BFPT[DWORD(3)] = 6b08eb44
+> spi-nor spi1.0: BFPT[DWORD(4)] = bb043b08
+> spi-nor spi1.0: BFPT[DWORD(5)] = ffffffee
+> spi-nor spi1.0: BFPT[DWORD(6)] = ff00ffff
+> spi-nor spi1.0: BFPT[DWORD(7)] = ff00ffff
+> spi-nor spi1.0: BFPT[DWORD(8)] = 520f200c
+> spi-nor spi1.0: BFPT[DWORD(9)] = ff00d810
+> 
+> What happens is that the QE bit is non volatile and it's already set.
+> 
+> spi-nor spi1.0: spi_nor_quad_enable
+> spi-nor spi1.0: spi_nor_sr2_bit1_quad_enable
+> atmel_qspi f0020000.spi: op->cmd.opcode = 0035
+> spi-nor spi1.0: spi_nor_sr2_bit1_quad_enable cr = ff
+> atmel_qspi f0020000.spi: op->cmd.opcode = 0005
+> spi-nor spi1.0: sr = 40
+> 
+> spi_nor_sr2_bit1_quad_enable is called, RDCR is ignored so 0xff,
+> but I did a read of the SR and surprise, it's value is 0x40, so QE set.
+> This is a new kind of bug :). So yes, this patch has the same problem
+> as Heiko's, I will update it. Thanks for the heads up!
+
+I've given this a little bit more thought. I'm pretty sure
+the QE bit is non-volatile on most flashes which share IO2
+IO3 with hold#/reset#/wp#. Why is the QE bit needed in the
+first place? Because it will determine the function of the
+pins. For example, all our products will have WP# pin enabled
+and pulled low to make sure (parts of) the flash is
+write-protected. Needless to say, we cannot use quad mode.
+
+There might be edge cases where we accidentally disable the
+write protection pin. I'm not saying it is likely, though.
+E.g. on our boards we have a jumper to disable the write
+protection, now if linux decides for whatever reason to fiddle
+with the QE bit and set it to 1 that jumper might very well
+be useless after you booted linux once. Now that does ring a
+bell with "linux will just disable the write protection for
+no good reason on any flash", if you still remember ;)
+
+Anyways, just to let you know. I don't have any better
+idea.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
