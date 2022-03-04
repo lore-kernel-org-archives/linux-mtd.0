@@ -4,85 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 301ECC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 20:05:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC0EC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 21:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:To:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g6WmZZHKNf0HnBIS/qkk8fu6DgfR7/S85Z6FfBkZph8=; b=MMB9RWslcIvYrQ
-	H/y0rHG6SX8fH5nMA7kUiUrdGJLxF55ABfERGVDhGGWJ0fXrOI2wM2eaPaJkMoSXNR+c8SAySKhx/
-	bJXZg81SdMjfKMjPA1zrDll3QKjpkam8APSHJ4SOwxLXCxNyde0XGWcxKxE915m5zGkU0RUGjqZZZ
-	ZzxJlYGy5ykt4k6guKSFfybiB9y/cWaDCnLhryYoIToa83VqKKlmMgvm6HRBH98rIIb8Y/rh77XHU
-	zIZAumoCfRxAhrhWoiPDMDqTxl/o0fyQrdudFYSl45HZWKlgkHe6BckVkrIo/bmYq3OZCP3MWPypd
-	M6oFcF1y2DfL8XPhmxeg==;
+	List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:
+	To:From:References:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jCK0meO+S0u5wr6b8XGHklWyrF51R+lcEtP86qct1UY=; b=VVs9IPZ4PAtMKSDeNNJNVdlCYq
+	dPntn61zfCiZAUOplPn4vPgCoYmFXmQeb1BxKEWu2ygNehQ+Z5nrGn2vASMPBa47qQroEIPVHfKmL
+	eyHmpt/csGSvOShlILIgS15yrZFRAzOHPWeh3tB6LBCX17Emk/3kM7ZUSTvV2o8oTiaJXrI8bt3zY
+	+t5R007VxXqBeUFrM4/it6/O7Qy3RN47mKY4cEnjTJWdW9q+iaIyGdJSbK8V3Ul52Asg5GgwhhFrt
+	okEUh2eGjKSyQgqGsgyHyv5y0bk6MwadGyjmYPF2gvDuIq4IEBQdKTlHbOUzdeV8Seb+RNTGewLT9
+	MKQKSKYA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nQEAA-00BrC4-Vb; Fri, 04 Mar 2022 20:04:31 +0000
-Received: from mail-ot1-x32c.google.com ([2607:f8b0:4864:20::32c])
+	id 1nQFO5-00C6v9-L5; Fri, 04 Mar 2022 21:22:57 +0000
+Received: from mail.figgyc.uk ([2607:f130:0:ea::135c:f1b7])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nQEA7-00BrAu-Da
- for linux-mtd@lists.infradead.org; Fri, 04 Mar 2022 20:04:29 +0000
-Received: by mail-ot1-x32c.google.com with SMTP id
- 40-20020a9d032b000000b005b02923e2e6so8301841otv.1
- for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2022 12:04:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=sender:message-id:date:mime-version:user-agent:content-language:to
- :cc:references:from:subject:in-reply-to:content-transfer-encoding;
- bh=7J5xZolceiL495PA4LrptiYb01qKHBDWhuLdkam6bj8=;
- b=UQRxHd9yjv5NrGtZb3wTkZO/S0f+DyyHvqEsmvjMk1Oqg2H+t5Sd6EeC817WdlDGFF
- XBu43L6pggqUtK+nLbo2lWpai+HHZx0LJJxLDXQrNBkiJWRGPkTWBTTh8skHtUcPrfH5
- ISCe+OeKtoGySHbXyENb+bEbJsExQQZBEBn4pTEECbf7gqa6JJwGXVcXXnN7wwB0/2nL
- HV6XFHFiRGObYfxH040xH/AbI41TUzsPFwGXV4esGyDmuVLxYuWUVVibQ/RuFpizrvdM
- 5A86kdABWi+aTNgBrC62Meg9ld6ypQ0RXIipwphoZnxcLeU79EPRf3CkY/Pk57hrXTDJ
- WEZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
- :content-language:to:cc:references:from:subject:in-reply-to
- :content-transfer-encoding;
- bh=7J5xZolceiL495PA4LrptiYb01qKHBDWhuLdkam6bj8=;
- b=47GskD0UpyY/rDPnOcLXZrdG6VAPV0uqKUaaEq5bDojAgGCwUL8wfJe5JBv2p9NQOY
- UhQLVzxRVfCEJCz+N4eLChGlU6Qq83dfTRSkvSQUXtSW4iQ+dVAdOOaDZ0FGc4/XOGJj
- FX/9r+9BMbm9DbBg/oX6V2gZsTk5+c6errVeVHLAisZdcWbE2dcskekFLpGI9ba83a7l
- pL2rVxnnmybtfcXguJOgm6bRT1QFGcv6dtS1WTyq6C5V4tuybIMmOF1IpgVDwV38sddC
- /Ns7JONtqZtm/KzpTOHz8rUdCXdO8oRt8d9PzahnL5gPHPZJht2auaimA8Gw0k0h5bUl
- aWGg==
-X-Gm-Message-State: AOAM533MYbNtOvy/KGzIGHz9tHpm8PUkEiz1khZSwzm/c3UGcRrbFnkU
- g2x7wHiGOfNVJaP9ZNa8thY=
-X-Google-Smtp-Source: ABdhPJxfegI64M6j8rtErGH0VoGb2dwzS4/4bmu63bVt8mFLR2+HcBhmQZ9Kb8OYw4J0dH0VBJfEHg==
-X-Received: by 2002:a9d:6e09:0:b0:5ad:1fcd:bfd0 with SMTP id
- e9-20020a9d6e09000000b005ad1fcdbfd0mr181791otr.312.1646424264609; 
- Fri, 04 Mar 2022 12:04:24 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c?
- ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id
- v7-20020a4aa507000000b0031c01a4ef37sm2652822ook.32.2022.03.04.12.04.22
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 04 Mar 2022 12:04:23 -0800 (PST)
-Message-ID: <fc6d94ff-4c06-8dcb-b53c-2ba7cd64ef7b@roeck-us.net>
-Date: Fri, 4 Mar 2022 12:04:21 -0800
+ id 1nQFNt-00C6sl-8d; Fri, 04 Mar 2022 21:22:47 +0000
+References: <20220228134505.203270-1-tudor.ambarus@microchip.com>
+ <20220228134505.203270-6-tudor.ambarus@microchip.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=figgyc.uk; s=mail;
+ t=1646428962; bh=JMVVkaX9DS1cWSexwzyGeyKwh/srG7McVGVH1yrmb3U=;
+ h=References:From:To:Cc:Subject:Date:In-reply-to;
+ b=SMVj5TrRE10Dvw/w8Vx8IbocsILdR+k4HjZrh8FsUe4q+q4/MAH9IL49CHn04w2EG
+ ZMSOzzKRPGaLgEEA8L5wS6stGy+aUqD/vyH9sgwUyXGO0A9RagmL1D5JCdAHW8bb1g
+ TmWCPLK84b8hhgERsbJECdSdD5vlidkhIRiJ0AW0=
+From: George Brooke <figgyc@figgyc.uk>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: p.yadav@ti.com, michael@walle.cc, mail@david-bauer.net,
+ esben@geanix.com, heiko.thiery@gmail.com, macromorgan@hotmail.com,
+ vigneshr@ti.com, linux@rasmusvillemoes.dk, knaerzche@gmail.com,
+ code@reto-schneider.ch, zhengxunli@mxic.com.tw, jaimeliao@mxic.com.tw,
+ sr@denx.de, miquel.raynal@bootlin.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ nicolas.ferre@microchip.com
+Subject: Re: [PATCH v4 5/6] mtd: spi-nor: Introduce Manufacturer ID
+ collisions driver
+Date: Fri, 04 Mar 2022 21:20:04 +0000
+In-reply-to: <20220228134505.203270-6-tudor.ambarus@microchip.com>
+Message-ID: <86o82lct0l.fsf@figgyc.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Randy Dunlap <rdunlap@infradead.org>
-Cc: Roger Quadros <rogerq@kernel.org>, krzysztof.kozlowski@canonical.com,
- vigneshr@ti.com, nm@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20220220004415.GA1519274@roeck-us.net>
- <4bbe337e-8cd8-a4d6-303d-d5aa21bee2e0@infradead.org>
- <20220304165451.0129012e@xps13>
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] mtd: rawnand: omap2: Actually prevent invalid
- configuration and build error
-In-Reply-To: <20220304165451.0129012e@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220304_120427_475535_5B69969A 
-X-CRM114-Status: GOOD (  23.07  )
+X-CRM114-CacheID: sfid-20220304_132245_356208_DEA35874 
+X-CRM114-Status: GOOD (  37.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,77 +66,253 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 3/4/22 07:54, Miquel Raynal wrote:
-> Hi Guenter, Roger,
-> 
-> rdunlap@infradead.org wrote on Sat, 26 Feb 2022 22:55:28 -0800:
-> 
->> On 2/19/22 16:44, Guenter Roeck wrote:
->>> On Sat, Feb 19, 2022 at 09:36:00PM +0200, Roger Quadros wrote:
->>>> The root of the problem is that we are selecting symbols that have
->>>> dependencies. This can cause random configurations that can fail.
->>>> The cleanest solution is to avoid using select.
->>>>
->>>> This driver uses interfaces from the OMAP_GPMC driver so we have to
->>>> depend on it instead.
->>>>
->>>> Fixes: 4cd335dae3cf ("mtd: rawnand: omap2: Prevent invalid configuration and build error")
->>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>
->>> Tested-by: Guenter Roeck <linux@roeck-us.net>
->>
->> Tested-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Sorry for noticing that just now, but there is still a problem with
-> this patch: we now always compile-in the OMAP_GPMC driver whenever we
-> need the NAND controller, even though it is not needed. This grows the
-> kernel for no reason.
-> 
 
-Sorry, you lost me.
+Hi Tudor,
 
-> In fact, Roger once said:
-> 
-> 	"We will figure out how to enable OMAP_GPMC for K3 architecture
-> 	some other way."
-> 
-> It turns out this is not what was finally proposed. Could we try yet
-> another solution?
-> 
->>
->> Thanks.
->>
->>>    
->>>> ---
->>>>   drivers/mtd/nand/raw/Kconfig | 3 +--
->>>>   1 file changed, 1 insertion(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
->>>> index 36e697456ec4..9b078e78f3fa 100644
->>>> --- a/drivers/mtd/nand/raw/Kconfig
->>>> +++ b/drivers/mtd/nand/raw/Kconfig
->>>> @@ -42,8 +42,7 @@ config MTD_NAND_OMAP2
->>>>   	tristate "OMAP2, OMAP3, OMAP4 and Keystone NAND controller"
->>>>   	depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || ARCH_K3 || COMPILE_TEST
->>>>   	depends on HAS_IOMEM
->>>> -	select MEMORY
->>>> -	select OMAP_GPMC
->>>> +	depends on OMAP_GPMC
+Tudor Ambarus <tudor.ambarus@microchip.com> writes:
 
-No matter if select or depend, both result in OMAP_GPMC enabled
-if MTD_NAND_OMAP2={m,y}, and both suggest that OMAP_GPMC is
-needed for MTD_NAND_OMAP2. That conflicts with
+> Some manufacturers completely ignore the manufacturer's 
+> identification code
+> standard (JEP106) and do not define the manufacturer ID 
+> continuation
+> scheme. This will result in manufacturer ID collisions.
+>
+> An an example, JEP106BA requires Boya that it's manufacturer ID 
+> to be
+> preceded by 8 continuation codes. Boya's identification code 
+> must be:
+> 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x68. But Boya 
+> ignores the
+> continuation scheme and its ID collides with the manufacturer 
+> defined in
+> bank one: Convex Computer.
+>
+> Introduce the manuf-id-collisions driver in order to address ID 
+> collisions
+> between manufacturers. flash_info entries will be added in a 
+> first come,
+> first served manner. Differentiation between flashes will be 
+> done at
+> runtime if possible. Where runtime differentiation is not 
+> possible, new
+> compatibles will be introduced, but this will be done as a last 
+> resort.
+> Every new flash addition that define the SFDP tables, should 
+> dump its SFDP
+> tables in the patch's comment section below the --- line, so 
+> that we can
+> reference it in case of collisions.
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/Makefile              |  1 +
+>  drivers/mtd/spi-nor/core.c                |  3 +++
+>  drivers/mtd/spi-nor/core.h                |  1 +
+>  drivers/mtd/spi-nor/manuf-id-collisions.c | 32 
+>  +++++++++++++++++++++++
+>  drivers/mtd/spi-nor/sysfs.c               |  2 +-
+>  include/linux/mtd/spi-nor.h               |  6 ++++-
+>  6 files changed, 43 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/mtd/spi-nor/manuf-id-collisions.c
+>
+> diff --git a/drivers/mtd/spi-nor/Makefile 
+> b/drivers/mtd/spi-nor/Makefile
+> index 6b904e439372..48763d10daad 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>
+>  spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
+> +spi-nor-objs			+= manuf-id-collisions.o
+>  spi-nor-objs			+= atmel.o
+>  spi-nor-objs			+= catalyst.o
+>  spi-nor-objs			+= eon.o
+> diff --git a/drivers/mtd/spi-nor/core.c 
+> b/drivers/mtd/spi-nor/core.c
+> index aef00151c116..80d6ce41122a 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1610,6 +1610,7 @@ int spi_nor_sr2_bit7_quad_enable(struct 
+> spi_nor *nor)
+>  }
+>
+>  static const struct spi_nor_manufacturer *manufacturers[] = {
+> +	&spi_nor_manuf_id_collisions,
+>   &spi_nor_atmel,
+>   &spi_nor_catalyst,
+>   &spi_nor_eon,
+> @@ -3037,6 +3038,8 @@ int spi_nor_scan(struct spi_nor *nor, 
+> const char *name,
+>
+>   if (!nor->name)
+>       nor->name = info->name;
+> +	if (!nor->manufacturer_name)
+> +		nor->manufacturer_name = nor->manufacturer->name;
+>
+>   dev_info(dev, "%s (%lld Kbytes)\n", nor->name,
+>           (long long)mtd->size >> 10);
+> diff --git a/drivers/mtd/spi-nor/core.h 
+> b/drivers/mtd/spi-nor/core.h
+> index b7fd760e3b47..f727e632c0ee 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -500,6 +500,7 @@ struct sfdp {
+>  };
+>
+>  /* Manufacturer drivers. */
+> +extern const struct spi_nor_manufacturer 
+> spi_nor_manuf_id_collisions;
+>  extern const struct spi_nor_manufacturer spi_nor_atmel;
+>  extern const struct spi_nor_manufacturer spi_nor_catalyst;
+>  extern const struct spi_nor_manufacturer spi_nor_eon;
+> diff --git a/drivers/mtd/spi-nor/manuf-id-collisions.c 
+> b/drivers/mtd/spi-nor/manuf-id-collisions.c
+> new file mode 100644
+> index 000000000000..75c5ad6480ee
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/manuf-id-collisions.c
+> @@ -0,0 +1,32 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Used to handle collisions between manufacturers, where 
+> manufacturers are
+> + * ignorant enough to not implement the ID continuation scheme 
+> described in the
+> + * JEP106 JEDEC standard.
+> + */
+> +
+> +#include <linux/mtd/spi-nor.h>
+> +#include "core.h"
+> +
+> +static void boya_nor_late_init(struct spi_nor *nor)
+> +{
+> +	nor->manufacturer_name = "boya";
+> +}
+> +
+> +static const struct spi_nor_fixups boya_nor_fixups = {
+> +	.late_init = boya_nor_late_init,
+> +};
+> +
+> +static const struct flash_info id_collision_parts[] = {
+> +	/* Boya */
+> +	{ "by25q128as", INFO(0x684018, 0, 64 * 1024, 256)
+> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SECT_4K | 
+> SPI_NOR_DUAL_READ |
+> +               SPI_NOR_QUAD_READ)
+> +		.fixups = &boya_nor_fixups },
+> +};
+> +
+Finally got around to testing v4, and it looks good to me.
+Sorry for the delay, I was struggling a bit with device tree
+overlays because I lost my old one for this Raspberry Pi.
+For v5+ I should be able to test a lot quicker if needed. Thanks
+for working on this again.
 
-  we now always compile-in the OMAP_GPMC driver whenever we
-  need the NAND controller, even though it is not needed
-                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Tested-by: George Brooke <figgyc@figgyc.uk>
 
-If it isn't needed, why the dependency in the first place ?
-Also, commit 4cd335dae3cf2 states "this driver depends on OMAP_GPMC
-driver and uses symbols from there". Are you saying that this is not
-correct ?
+# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+684018
+# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+boya
+# cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+by25q128as
+# xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+xxd: /sys/bus/spi/devices/spi0.0/spi-nor/sfdp: No such file or 
+directory
 
-Guenter
+# dd bs=1M count=6 if=/dev/urandom of=./nor_test
+6+0 records in
+6+0 records out
+6291456 bytes (6.3 MB, 6.0 MiB) copied, 0.158377 s, 39.7 MB/s
+
+# time mtd_debug erase /dev/mtd0 0 6291456
+Erased 6291456 bytes from address 0x00000000 in flash
+
+real	1m25.420s
+user	0m0.000s
+sys	0m56.700s
+
+# time mtd_debug read /dev/mtd0 0 6291456 nor_read
+Copied 6291456 bytes from address 0x00000000 in flash to nor_read
+
+real	0m2.472s
+user	0m0.001s
+sys	0m0.050s
+
+# hexdump nor_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+
+# time mtd_debug write /dev/mtd0 0 6291456 nor_test
+Copied 6291456 bytes from nor_test to address 0x00000000 in flash
+
+real	0m14.151s
+user	0m0.001s
+sys	0m7.880s
+
+# time mtd_debug read /dev/mtd0 0 6291456 nor_read
+Copied 6291456 bytes from address 0x00000000 in flash to nor_read
+
+real	0m2.580s
+user	0m0.001s
+sys	0m0.059s
+
+# sha1sum nor_test nor_read
+6a4ecd64a21335ade4dd8e329718df6666a8c2e8  nor_test
+6a4ecd64a21335ade4dd8e329718df6666a8c2e8  nor_read
+
+> +const struct spi_nor_manufacturer spi_nor_manuf_id_collisions = 
+> {
+> +	.parts = id_collision_parts,
+> +	.nparts = ARRAY_SIZE(id_collision_parts),
+> +};
+> diff --git a/drivers/mtd/spi-nor/sysfs.c 
+> b/drivers/mtd/spi-nor/sysfs.c
+> index 017119768f32..fa0cf1a96797 100644
+> --- a/drivers/mtd/spi-nor/sysfs.c
+> +++ b/drivers/mtd/spi-nor/sysfs.c
+> @@ -14,7 +14,7 @@ static ssize_t manufacturer_show(struct device 
+> *dev,
+>   struct spi_mem *spimem = spi_get_drvdata(spi);
+>   struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+>
+> -	return sysfs_emit(buf, "%s\n", nor->manufacturer->name);
+> +	return sysfs_emit(buf, "%s\n", nor->manufacturer_name);
+>  }
+>  static DEVICE_ATTR_RO(manufacturer);
+>
+> diff --git a/include/linux/mtd/spi-nor.h 
+> b/include/linux/mtd/spi-nor.h
+> index 449496b57acb..3087589d01ac 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -351,7 +351,10 @@ struct spi_nor_flash_parameter;
+>   * @bouncebuf:		bounce buffer used when the buffer passed 
+>   by the MTD
+>   *                      layer is not DMA-able
+>   * @bouncebuf_size:	size of the bounce buffer
+> - * @name:		used to point to correct name in case of ID 
+> collisions.
+> + * @name:		used to point to correct flash name in case of 
+> ID
+> + *                      collisions.
+> + * @manufacturer_name:	used to point to correct manufacturer 
+> name in case of
+> + *                      ID collisions.
+>   * @info:		SPI NOR part JEDEC MFR ID and other info
+>   * @manufacturer:	SPI NOR manufacturer
+>   * @addr_width:		number of address bytes
+> @@ -382,6 +385,7 @@ struct spi_nor {
+>   u8			*bouncebuf;
+>   size_t			bouncebuf_size;
+>   const char *name;
+> +	const char *manufacturer_name;
+>   const struct flash_info	*info;
+>   const struct spi_nor_manufacturer *manufacturer;
+>   u8			addr_width;
 
 ______________________________________________________
 Linux MTD discussion mailing list
