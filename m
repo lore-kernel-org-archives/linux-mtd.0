@@ -4,56 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DDB7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 18:52:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 301ECC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  4 Mar 2022 20:05:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=cchj+kW0TmE04LeTVY7SpzQJ+2F+4Iaq+pfe7NdKlDc=; b=C/BJxPG8KdDxdd
-	EKNTb3/1b5DAVK3+stVCfBu8guEv1yO+9YBqm00zDBRV4KI+OuMkeKVS7bh2aT6NkqnqOnTp6trG9
-	SRN1PVSeNAeU7qwZxam/YSsFm4ugJJnE6KCs9CXeTiQZd+fzgaDb7hc8BqHT/RN2DbqnH3HAQuF2D
-	Ke97WQQcoiYgzKBGHR0IGxGKm1TUGZCA9RyswGcuvaHkf5bg7qyDKmm0MxKYbZTmiud+eXb+HfzlG
-	j+PbGDwmjZOrGXgDxUMUUEU7GqYADDnjYon5LPHfCFygaArNYOnkUhPCR8iw/JPDav8X8yTaxwB8Z
-	xlHwsXYcu849fQlO7QHw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:To:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=g6WmZZHKNf0HnBIS/qkk8fu6DgfR7/S85Z6FfBkZph8=; b=MMB9RWslcIvYrQ
+	H/y0rHG6SX8fH5nMA7kUiUrdGJLxF55ABfERGVDhGGWJ0fXrOI2wM2eaPaJkMoSXNR+c8SAySKhx/
+	bJXZg81SdMjfKMjPA1zrDll3QKjpkam8APSHJ4SOwxLXCxNyde0XGWcxKxE915m5zGkU0RUGjqZZZ
+	ZzxJlYGy5ykt4k6guKSFfybiB9y/cWaDCnLhryYoIToa83VqKKlmMgvm6HRBH98rIIb8Y/rh77XHU
+	zIZAumoCfRxAhrhWoiPDMDqTxl/o0fyQrdudFYSl45HZWKlgkHe6BckVkrIo/bmYq3OZCP3MWPypd
+	M6oFcF1y2DfL8XPhmxeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nQD1v-00BgqT-Qe; Fri, 04 Mar 2022 18:51:55 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nQEAA-00BrC4-Vb; Fri, 04 Mar 2022 20:04:31 +0000
+Received: from mail-ot1-x32c.google.com ([2607:f8b0:4864:20::32c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nQD1s-00BgpR-GW
- for linux-mtd@lists.infradead.org; Fri, 04 Mar 2022 18:51:54 +0000
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 1D1E722175;
- Fri,  4 Mar 2022 19:51:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1646419909;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=U/LuT+rONVQX6VgKjgRIoVDXdEdfsqzHnymPhpyq4D4=;
- b=p0ydG4ZHJrTNCFyMchvneiY8zMwWkmVxx/Crv8uDPltk8wA868yjn3+C+ogMxsPWIqyZlX
- 3WGQ5xnDiiHt6H6+nYQVbXNm6V6n/J9FEb8/fnnusNo32FOXZdXZF8SH/aWKi4MJLQeFi3
- oou8fMQmz8o7w/t8FNtIYMTAGlzP2sc=
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- heiko.thiery@gmail.com, Michael Walle <michael@walle.cc>
-Subject: [PATCH v1] mtd: spi-nor: unset quad_enable if SFDP doesn't specify it
-Date: Fri,  4 Mar 2022 19:51:37 +0100
-Message-Id: <20220304185137.3376011-1-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
+ id 1nQEA7-00BrAu-Da
+ for linux-mtd@lists.infradead.org; Fri, 04 Mar 2022 20:04:29 +0000
+Received: by mail-ot1-x32c.google.com with SMTP id
+ 40-20020a9d032b000000b005b02923e2e6so8301841otv.1
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Mar 2022 12:04:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=sender:message-id:date:mime-version:user-agent:content-language:to
+ :cc:references:from:subject:in-reply-to:content-transfer-encoding;
+ bh=7J5xZolceiL495PA4LrptiYb01qKHBDWhuLdkam6bj8=;
+ b=UQRxHd9yjv5NrGtZb3wTkZO/S0f+DyyHvqEsmvjMk1Oqg2H+t5Sd6EeC817WdlDGFF
+ XBu43L6pggqUtK+nLbo2lWpai+HHZx0LJJxLDXQrNBkiJWRGPkTWBTTh8skHtUcPrfH5
+ ISCe+OeKtoGySHbXyENb+bEbJsExQQZBEBn4pTEECbf7gqa6JJwGXVcXXnN7wwB0/2nL
+ HV6XFHFiRGObYfxH040xH/AbI41TUzsPFwGXV4esGyDmuVLxYuWUVVibQ/RuFpizrvdM
+ 5A86kdABWi+aTNgBrC62Meg9ld6ypQ0RXIipwphoZnxcLeU79EPRf3CkY/Pk57hrXTDJ
+ WEZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+ :content-language:to:cc:references:from:subject:in-reply-to
+ :content-transfer-encoding;
+ bh=7J5xZolceiL495PA4LrptiYb01qKHBDWhuLdkam6bj8=;
+ b=47GskD0UpyY/rDPnOcLXZrdG6VAPV0uqKUaaEq5bDojAgGCwUL8wfJe5JBv2p9NQOY
+ UhQLVzxRVfCEJCz+N4eLChGlU6Qq83dfTRSkvSQUXtSW4iQ+dVAdOOaDZ0FGc4/XOGJj
+ FX/9r+9BMbm9DbBg/oX6V2gZsTk5+c6errVeVHLAisZdcWbE2dcskekFLpGI9ba83a7l
+ pL2rVxnnmybtfcXguJOgm6bRT1QFGcv6dtS1WTyq6C5V4tuybIMmOF1IpgVDwV38sddC
+ /Ns7JONtqZtm/KzpTOHz8rUdCXdO8oRt8d9PzahnL5gPHPZJht2auaimA8Gw0k0h5bUl
+ aWGg==
+X-Gm-Message-State: AOAM533MYbNtOvy/KGzIGHz9tHpm8PUkEiz1khZSwzm/c3UGcRrbFnkU
+ g2x7wHiGOfNVJaP9ZNa8thY=
+X-Google-Smtp-Source: ABdhPJxfegI64M6j8rtErGH0VoGb2dwzS4/4bmu63bVt8mFLR2+HcBhmQZ9Kb8OYw4J0dH0VBJfEHg==
+X-Received: by 2002:a9d:6e09:0:b0:5ad:1fcd:bfd0 with SMTP id
+ e9-20020a9d6e09000000b005ad1fcdbfd0mr181791otr.312.1646424264609; 
+ Fri, 04 Mar 2022 12:04:24 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c?
+ ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id
+ v7-20020a4aa507000000b0031c01a4ef37sm2652822ook.32.2022.03.04.12.04.22
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 04 Mar 2022 12:04:23 -0800 (PST)
+Message-ID: <fc6d94ff-4c06-8dcb-b53c-2ba7cd64ef7b@roeck-us.net>
+Date: Fri, 4 Mar 2022 12:04:21 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: Roger Quadros <rogerq@kernel.org>, krzysztof.kozlowski@canonical.com,
+ vigneshr@ti.com, nm@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20220220004415.GA1519274@roeck-us.net>
+ <4bbe337e-8cd8-a4d6-303d-d5aa21bee2e0@infradead.org>
+ <20220304165451.0129012e@xps13>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] mtd: rawnand: omap2: Actually prevent invalid
+ configuration and build error
+In-Reply-To: <20220304165451.0129012e@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220304_105152_731053_89BEDC53 
-X-CRM114-Status: GOOD (  17.91  )
+X-CRM114-CacheID: sfid-20220304_120427_475535_5B69969A 
+X-CRM114-Status: GOOD (  23.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,73 +94,82 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While the first version of JESD216 specify the opcode for 4 bit I/O
-accesses, it lacks information on how to actually enable this mode.
+On 3/4/22 07:54, Miquel Raynal wrote:
+> Hi Guenter, Roger,
+> 
+> rdunlap@infradead.org wrote on Sat, 26 Feb 2022 22:55:28 -0800:
+> 
+>> On 2/19/22 16:44, Guenter Roeck wrote:
+>>> On Sat, Feb 19, 2022 at 09:36:00PM +0200, Roger Quadros wrote:
+>>>> The root of the problem is that we are selecting symbols that have
+>>>> dependencies. This can cause random configurations that can fail.
+>>>> The cleanest solution is to avoid using select.
+>>>>
+>>>> This driver uses interfaces from the OMAP_GPMC driver so we have to
+>>>> depend on it instead.
+>>>>
+>>>> Fixes: 4cd335dae3cf ("mtd: rawnand: omap2: Prevent invalid configuration and build error")
+>>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>>
+>>> Tested-by: Guenter Roeck <linux@roeck-us.net>
+>>
+>> Tested-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Sorry for noticing that just now, but there is still a problem with
+> this patch: we now always compile-in the OMAP_GPMC driver whenever we
+> need the NAND controller, even though it is not needed. This grows the
+> kernel for no reason.
+> 
 
-For now, the one set in spi_nor_init_default_params() will be used.
-But this one is likely wrong for some flashes, in particular the
-Macronix MX25L12835F. Thus we need to clear the enable method when
-parsing the SFDP. Flashes with such an SFDP revision will have to use a
-flash (and SFDP revision) specific fixup.
+Sorry, you lost me.
 
-This might break quad I/O for some flashes which relied on the
-spi_nor_sr2_bit1_quad_enable() that was formerly set. If your bisect
-turns up this commit, you'll probably have to set the proper
-quad_enable method in a post_bfpt() fixup for your flash.
+> In fact, Roger once said:
+> 
+> 	"We will figure out how to enable OMAP_GPMC for K3 architecture
+> 	some other way."
+> 
+> It turns out this is not what was finally proposed. Could we try yet
+> another solution?
+> 
+>>
+>> Thanks.
+>>
+>>>    
+>>>> ---
+>>>>   drivers/mtd/nand/raw/Kconfig | 3 +--
+>>>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+>>>> index 36e697456ec4..9b078e78f3fa 100644
+>>>> --- a/drivers/mtd/nand/raw/Kconfig
+>>>> +++ b/drivers/mtd/nand/raw/Kconfig
+>>>> @@ -42,8 +42,7 @@ config MTD_NAND_OMAP2
+>>>>   	tristate "OMAP2, OMAP3, OMAP4 and Keystone NAND controller"
+>>>>   	depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || ARCH_K3 || COMPILE_TEST
+>>>>   	depends on HAS_IOMEM
+>>>> -	select MEMORY
+>>>> -	select OMAP_GPMC
+>>>> +	depends on OMAP_GPMC
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
----
-changes since RFC:
- - reworded commit message
- - added comment about post_bfpt hook
+No matter if select or depend, both result in OMAP_GPMC enabled
+if MTD_NAND_OMAP2={m,y}, and both suggest that OMAP_GPMC is
+needed for MTD_NAND_OMAP2. That conflicts with
 
-Tudor, I'm not sure what you meant with
-  Maybe you can update the commit message and explain why would some
-  flashes fail to enable quad mode, similar to what I did.
+  we now always compile-in the OMAP_GPMC driver whenever we
+  need the NAND controller, even though it is not needed
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It doesn't work because the wrong method is chosen? ;)
+If it isn't needed, why the dependency in the first place ?
+Also, commit 4cd335dae3cf2 states "this driver depends on OMAP_GPMC
+driver and uses symbols from there". Are you saying that this is not
+correct ?
 
- drivers/mtd/spi-nor/sfdp.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index a5211543d30d..6bba9b601846 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -549,6 +549,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	map->uniform_erase_type = map->uniform_region.offset &
- 				  SNOR_ERASE_TYPE_MASK;
- 
-+	/*
-+	 * The first JESD216 revision doesn't specify a method to enable
-+	 * quad mode. spi_nor_init_default_params() will set a legacy
-+	 * default method to enable quad mode. We have to disable it
-+	 * again.
-+	 * Flashes with this JESD216 revision need to set the quad_enable
-+	 * method in their post_bfpt() fixup if they want to use quad I/O.
-+	 */
-+	params->quad_enable = NULL;
-+
- 	/* Stop here if not JESD216 rev A or later. */
- 	if (bfpt_header->length == BFPT_DWORD_MAX_JESD216)
- 		return spi_nor_post_bfpt_fixups(nor, bfpt_header, &bfpt);
-@@ -562,7 +572,6 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	/* Quad Enable Requirements. */
- 	switch (bfpt.dwords[BFPT_DWORD(15)] & BFPT_DWORD15_QER_MASK) {
- 	case BFPT_DWORD15_QER_NONE:
--		params->quad_enable = NULL;
- 		break;
- 
- 	case BFPT_DWORD15_QER_SR2_BIT1_BUGGY:
--- 
-2.30.2
-
+Guenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
