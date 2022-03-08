@@ -4,66 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6355FC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  8 Mar 2022 09:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5C39C43217
+	for <linux-mtd@archiver.kernel.org>; Tue,  8 Mar 2022 09:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+4I294Gho08iUdUOXCug2prvC8Nda1ppM8aPs92O4JY=; b=2SGjY2dH+zUBT9
-	bIlCCVV5Id0ETC2BxEhA/4j90210VWKHTwxjdY48AN3X2qHxUJkNfP90hog/JrKmKPQa4JkkrG6uQ
-	DloQkwHXzIrkEQJtopEsvcXk29blzBA413aX6AhCTPFfPpiEmM+F4FFPb/TmeEaExaT5Q3se9bt/M
-	iM3OvG4/TA/Jw8DxnxGGghfMICgqbSQkLHRoLJ5sGtBCd1sImmoVrJxv1HtO1fH1W+WrlCr72Bbtt
-	P+Jp2/ZbwFysbL5c4ce+HkTJuL7igCobH2NQD4mfiCfuSlhlyFUUsbHrzTArxNwGhjeF8Qg9h0QST
-	yUPJ+ump87fZbxvGsFOw==;
+	List-Owner; bh=u915J8vIzS/ijfZ8rUNS0upwC9l3AD840lIr2gXgl1U=; b=EV5TMgaJmY97uE
+	wOKsELIEgrWtfQCmZl88H2sTS6cInLHpiRhYKsxuN+siBI38C65e5oEwXdwrvENGsUYUtaPMsAvnh
+	SceI4DZM2WPGzxXjcFFOCp4qwVEaar0dwBFkJ2TgTIbz5CJrBCEeYSYxs6JLDVi88oKRea/CVhlkq
+	bAk4CAlNq5bpYePh+xR7wBpPyILxsPvqMp8vv4+sNi8wiQjX5v8VPiQJ/OFRKdG3rv3ECH0RciXDR
+	x8kNK7szfZc/XVn4geynbot/0CEgI4Zqlu/KvBDQFp0RmwuaCuicEy9TV4p4JqT2I9+YmYTczNeyQ
+	w4g2QBXo3/FPOPsAPL7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nRW6w-003Sd2-8p; Tue, 08 Mar 2022 09:26:30 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1nRWSi-003c2u-P6; Tue, 08 Mar 2022 09:49:01 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRW6s-003Sal-Lo
- for linux-mtd@lists.infradead.org; Tue, 08 Mar 2022 09:26:28 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 4995820000E;
- Tue,  8 Mar 2022 09:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1646731582;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ryvVPl4TdU3ql0jktEpltI3IgYRpF014rqv2eBbmRuo=;
- b=RGMBEHafTdFE5z8Q02y/oKvOkNSNMavbHDBaHc+A88k/zngM/PyEQ08OcKpcUW6AjPpIwF
- 9zECMjVGhBrxRLedidriyL7nlf92YV2z0rX44pWUayCb0eSC/QviS2JlrEKC0BY3KNKKMe
- WDrYPpeuU4BdpFhtCooL6EIV4nzS8vBgg6CC43MS3SPF+k+8+oSreBEYKB0yp4laJxYPzU
- nytb45OgBDB5t1POL+8EoXkbkcSvryYjOpLQ/tzwkt+q+foAH49zjNp4rJiErG2qkPud1+
- X1ahPZXJDKw3TE2lSLcgKLlIEEPi3UmcYt1qFtKKkYR3Yzr88P2MyUr01398YA==
-Date: Tue, 8 Mar 2022 10:26:19 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Guenter Roeck
- <linux@roeck-us.net>, krzysztof.kozlowski@canonical.com, vigneshr@ti.com,
- nm@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: omap2: Actually prevent invalid
- configuration and build error
-Message-ID: <20220308102619.71aa9e4e@xps13>
-In-Reply-To: <c91edeac-817c-d30d-ae45-f216670b9e69@kernel.org>
-References: <20220220004415.GA1519274@roeck-us.net>
- <4bbe337e-8cd8-a4d6-303d-d5aa21bee2e0@infradead.org>
- <20220304165451.0129012e@xps13>
- <6c09de15-1ab2-5ca8-7003-69ff3f7c4dc5@kernel.org>
- <20220307110357.20d50176@xps13>
- <c39d64f0-deef-4cae-fab7-555a48e31811@kernel.org>
- <20220307151249.7e5b7210@xps13>
- <c91edeac-817c-d30d-ae45-f216670b9e69@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nRWOJ-003Zx2-Qy
+ for linux-mtd@lists.infradead.org; Tue, 08 Mar 2022 09:44:29 +0000
+Received: from gallifrey.ext.pengutronix.de
+ ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+ by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+ (envelope-from <a.fatoum@pengutronix.de>)
+ id 1nRWOF-0004l1-EX; Tue, 08 Mar 2022 10:44:23 +0100
+Message-ID: <b23e4089-6431-de26-8666-bae4c3c8df88@pengutronix.de>
+Date: Tue, 8 Mar 2022 10:44:14 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [BUG] mtd: cfi_cmdset_0002: write regression since v4.17-rc1
+Content-Language: en-US
+To: Tokunori Ikegami <ikegami.t@gmail.com>,
+ Thorsten Leemhuis <regressions@leemhuis.info>,
+ linux-mtd@lists.infradead.org, Joakim.Tjernlund@infinera.com,
+ miquel.raynal@bootlin.com, vigneshr@ti.com, richard@nod.at,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linuxppc-dev@lists.ozlabs.org
+References: <b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de>
+ <dff2abcc-5813-2f2c-35ba-f03cd1f35ac3@leemhuis.info>
+ <e11b76dc-5539-fb7e-da1c-a5005713d6b0@gmail.com>
+ <3dbbcee5-81fc-cdf5-9f8b-b6ccb95beddc@pengutronix.de>
+ <0f2cfcac-83ca-51a9-f92c-ff6495dca1d7@gmail.com>
+ <b231b498-c8d2-28af-ce66-db8c168047f7@pengutronix.de>
+ <66ee55d9-4f20-6722-6097-e53c2108ea07@gmail.com>
+ <579eab10-594c-d6b2-0ddb-ea6ab8e02856@pengutronix.de>
+ <cedb1604-e024-2738-5b33-15703a653803@gmail.com>
+ <117facba-ba33-349d-1085-25315cc1ae92@gmail.com>
+ <f9e46b61-37e5-a280-edb0-27f8e81a8680@pengutronix.de>
+ <9621c512-06f2-17b2-5c68-943b1f0981eb@gmail.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <9621c512-06f2-17b2-5c68-943b1f0981eb@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220308_012627_093222_468E8B86 
-X-CRM114-Status: GOOD (  39.39  )
+X-CRM114-CacheID: sfid-20220308_014427_949471_C9BAC788 
+X-CRM114-Status: GOOD (  30.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,94 +82,90 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUm9nZXIsCgpyb2dlcnFAa2VybmVsLm9yZyB3cm90ZSBvbiBNb24sIDcgTWFyIDIwMjIgMjM6
-MDU6NDcgKzAyMDA6Cgo+IEhpIE1pcXVlbCwKPiAKPiBPbiAwNy8wMy8yMDIyIDE2OjEyLCBNaXF1
-ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgUm9nZXIsCj4gPiAKPiA+IHJvZ2VycUBrZXJuZWwub3Jn
-IHdyb3RlIG9uIE1vbiwgNyBNYXIgMjAyMiAxNDoyNTo0OCArMDIwMDoKPiA+ICAgCj4gPj4gSGkg
-TWlxdWVsLAo+ID4+Cj4gPj4gT24gMDcvMDMvMjAyMiAxMjowMywgTWlxdWVsIFJheW5hbCB3cm90
-ZTogIAo+ID4+PiBIaSBSb2dlciwKPiA+Pj4KPiA+Pj4gcm9nZXJxQGtlcm5lbC5vcmcgd3JvdGUg
-b24gU2F0LCA1IE1hciAyMDIyIDAwOjUwOjE0ICswMjAwOgo+ID4+PiAgICAgCj4gPj4+PiBIaSBN
-aXF1ZWwsCj4gPj4+Pgo+ID4+Pj4gT24gMDQvMDMvMjAyMiAxNzo1NCwgTWlxdWVsIFJheW5hbCB3
-cm90ZTogICAgCj4gPj4+Pj4gSGkgR3VlbnRlciwgUm9nZXIsCj4gPj4+Pj4KPiA+Pj4+PiByZHVu
-bGFwQGluZnJhZGVhZC5vcmcgd3JvdGUgb24gU2F0LCAyNiBGZWIgMjAyMiAyMjo1NToyOCAtMDgw
-MDoKPiA+Pj4+PiAgICAgICAKPiA+Pj4+Pj4gT24gMi8xOS8yMiAxNjo0NCwgR3VlbnRlciBSb2Vj
-ayB3cm90ZTogICAgICAKPiA+Pj4+Pj4+IE9uIFNhdCwgRmViIDE5LCAyMDIyIGF0IDA5OjM2OjAw
-UE0gKzAyMDAsIFJvZ2VyIFF1YWRyb3Mgd3JvdGU6ICAgICAgICAKPiA+Pj4+Pj4+PiBUaGUgcm9v
-dCBvZiB0aGUgcHJvYmxlbSBpcyB0aGF0IHdlIGFyZSBzZWxlY3Rpbmcgc3ltYm9scyB0aGF0IGhh
-dmUKPiA+Pj4+Pj4+PiBkZXBlbmRlbmNpZXMuIFRoaXMgY2FuIGNhdXNlIHJhbmRvbSBjb25maWd1
-cmF0aW9ucyB0aGF0IGNhbiBmYWlsLgo+ID4+Pj4+Pj4+IFRoZSBjbGVhbmVzdCBzb2x1dGlvbiBp
-cyB0byBhdm9pZCB1c2luZyBzZWxlY3QuCj4gPj4+Pj4+Pj4KPiA+Pj4+Pj4+PiBUaGlzIGRyaXZl
-ciB1c2VzIGludGVyZmFjZXMgZnJvbSB0aGUgT01BUF9HUE1DIGRyaXZlciBzbyB3ZSBoYXZlIHRv
-Cj4gPj4+Pj4+Pj4gZGVwZW5kIG9uIGl0IGluc3RlYWQuCj4gPj4+Pj4+Pj4KPiA+Pj4+Pj4+PiBG
-aXhlczogNGNkMzM1ZGFlM2NmICgibXRkOiByYXduYW5kOiBvbWFwMjogUHJldmVudCBpbnZhbGlk
-IGNvbmZpZ3VyYXRpb24gYW5kIGJ1aWxkIGVycm9yIikKPiA+Pj4+Pj4+PiBTaWduZWQtb2ZmLWJ5
-OiBSb2dlciBRdWFkcm9zIDxyb2dlcnFAa2VybmVsLm9yZz4gICAgICAgIAo+ID4+Pj4+Pj4KPiA+
-Pj4+Pj4+IFRlc3RlZC1ieTogR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stdXMubmV0PiAgICAg
-ICAgCj4gPj4+Pj4+Cj4gPj4+Pj4+IFRlc3RlZC1ieTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGlu
-ZnJhZGVhZC5vcmc+ICAgICAgCj4gPj4+Pj4KPiA+Pj4+PiBTb3JyeSBmb3Igbm90aWNpbmcgdGhh
-dCBqdXN0IG5vdywgYnV0IHRoZXJlIGlzIHN0aWxsIGEgcHJvYmxlbSB3aXRoCj4gPj4+Pj4gdGhp
-cyBwYXRjaDogd2Ugbm93IGFsd2F5cyBjb21waWxlLWluIHRoZSBPTUFQX0dQTUMgZHJpdmVyIHdo
-ZW5ldmVyIHdlCj4gPj4+Pj4gbmVlZCB0aGUgTkFORCBjb250cm9sbGVyLCBldmVuIHRob3VnaCBp
-dCBpcyBub3QgbmVlZGVkLiBUaGlzIGdyb3dzIHRoZQo+ID4+Pj4+IGtlcm5lbCBmb3Igbm8gcmVh
-c29uLiAgICAgIAo+ID4+Pj4KPiA+Pj4+IFNvcnJ5LCBJIGRpZCBub3QgdW5kZXJzdGFuZCB3aGF0
-IHlvdSBtZWFudC4KPiA+Pj4+Cj4gPj4+PiBXZSBubyBsb25nZXIgZXhwbGljaXRseSBlbmFibGUg
-T01BUF9HUE1DIHNpbmNlIHdlIGRyb3BwZWQgdGhlICJzZWxlY3QiLgo+ID4+Pj4gVGhpcyBmaXhl
-cyBhbGwgYnVpbGQgaXNzdWVzIHRoYXQgd2VyZSByZXBvcnRlZCByZWNlbnRseS4KPiA+Pj4+Cj4g
-Pj4+PiBNVERfTkFORF9PTUFQMiB3aWxsIG5vdCBiZSBlbmFibGVkIGlmIE9NQVBfR1BNQyBpcyBu
-b3Qgc2luY2Ugd2UgYWRkZWQKPiA+Pj4+IHRoZSAiZGVwZW5kcyBvbiIuIFRoaXMgZml4ZXMgdGhl
-IG9yaWdpbmFsIGJ1aWxkIGlzc3VlIHRoYXQgd2Ugc3RhcnRlZCB0bwo+ID4+Pj4gZml4IHdpdGgg
-c2VsZWN0IGluaXRpYWxseS4gICAgCj4gPj4+Cj4gPj4+IFllcywgdGhpcyBzaWRlIGlzIGZpbmUu
-Cj4gPj4+Cj4gPj4+IEluIHRoZSBpbml0aWFsIGNvbW1pdCwgeW91IHByb3Bvc2VkOgo+ID4+Pgo+
-ID4+PiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCj4gPj4+ICsrKyBiL2RyaXZl
-cnMvbXRkL25hbmQvcmF3L0tjb25maWcKPiA+Pj4gQEAgLTQyLDcgKzQyLDggQEAgY29uZmlnIE1U
-RF9OQU5EX09NQVAyCj4gPj4+ICAgICAgICAgdHJpc3RhdGUgIk9NQVAyLCBPTUFQMywgT01BUDQg
-YW5kIEtleXN0b25lIE5BTkQgY29udHJvbGxlciIKPiA+Pj4gICAgICAgICBkZXBlbmRzIG9uIEFS
-Q0hfT01BUDJQTFVTIHx8IEFSQ0hfS0VZU1RPTkUgfHwgQVJDSF9LMyB8fCBDT01QSUxFX1RFU1QK
-PiA+Pj4gICAgICAgICBkZXBlbmRzIG9uIEhBU19JT01FTQo+ID4+PiArICAgICAgIHNlbGVjdCBP
-TUFQX0dQTUMgaWYgQVJDSF9LMwo+ID4+Pgo+ID4+PiBXaGljaCBjcmVhdGVzIGEgZGVwZW5kZW5j
-eSBvdmVyIE9NQVBfR1BNQyBvbmx5IGZvciBhIHNpbmdsZQo+ID4+PiBhcmNoaXRlY3R1cmUuIFdo
-aWNoIG1lYW5zIHRoYXQgb3RoZXIgT01BUCBwbGF0Zm9ybXMgZG8gbm90IG5lY2Vzc2FyaWx5Cj4g
-Pj4+IG5lZWQgT01BUF9HUE1DIGZvciB0aGUgTkFORCBjb250cm9sbGVyIHRvIHdvcmsuIE5vdywg
-eW91IHByb3Bvc2U6ICAgIAo+ID4+Cj4gPj4gTm8gdGhhdCBpcyBub3QgdHJ1ZS4gT3RoZXIgcGxh
-dGZvcm1zIHRoYXQgbmVlZCBNVERfTkFORF9PTUFQMiBhcmUKPiA+PiBleHBsaWNpdGx5IHNlbGVj
-dGluZyBPTUFQX0dQTUMKPiA+PiBpLmUuIGluIGFyY2gvYXJtL21hY2gtb21hcDIvS2NvbmZpZyAg
-Cj4gPiAKPiA+IE9rYXksIGluIHRoaXMgY2FzZSB0aGUgZml4IGlzIGZpbmUgYnV0IHdlIHdpbGwg
-bmVlZCB0byBjbGVhbiB0aGlzIHVwIGluCj4gPiBhIHNlY29uZCB0aW1lLiAgCj4gCj4gV2hhdCBj
-bGVhbiB1cCBhcmUgeW91IGltcGx5aW5nIGhlcmU/IFRob3NlIGxlZ2FjeSBwbGF0Zm9ybSBtaWdo
-dCBuZWVkCj4gT01BUF9HUE1DIGZvciBib290aW5nIHNvIHRoZXkgc2VsZWN0IGl0LiBUaGVyZSBp
-cyBub3RoaW5nIG11Y2ggd2UgY2FuIGRvIHRoZXJlLgoKSWYgYWxsIHRoZSBib2FyZCB0aGF0IG5l
-ZWQgdGhlIE9NQVBfR1BNQyBzZWxlY3QgaXQsIHRoZW4gd2Ugc2hvdWxkIGp1c3QKdGFrZSBjYXJl
-IHRoYXQgdGhlIEszIGFyY2hpdGVjdHVyZSBkb2VzIG5vdCBiZWhhdmUgZGlmZmVyZW50bHkgdW5s
-ZXNzCnRoZXJlIGlzIGEgZ29vZCByZWFzb24gdG8gZG8gaXQgZGlmZmVyZW50bHkuIEFGQUlSIHlv
-dSB0b2xkIG1lIHRoaXMKYXJjaGl0ZWN0dXJlIGRpZCBub3Qgc2VsZWN0IE9NQVBfR1BNQyB5ZXQu
-Cgo+IFdoYXQgaXMgbGVmdCB0byBkbyBub3cgaXMgbWFrZSB1c2VyL2RlZmNvbmZpZyBmaWxlcyB0
-byBlbmFibGUgT01BUF9HUE1DIGRyaXZlcgo+IHNvIG90aGVyIHBsYXRmb3JtcyB0aGF0IGRvbid0
-IG5lZWQgT01BUF9HUE1DIGZvciBiYXNpYyBvcGVyYXRpb24gY2FuIHN0aWxsCj4gZW5hYmxlIHRo
-ZW0gbGF0ZXIgdmlhIGRlZmNvbmZpZyBvciBtYW51YWxseSBieSB1c2VyLgoKQW5kIHllcywgdGhh
-dCBpcyBhbHNvIHdoYXQgSSBtZWFudCB0byBiZSAiY2xlYW5lZCB1cCIgOikKCj4gPj4+IC0tLSBh
-L2RyaXZlcnMvbXRkL25hbmQvcmF3L0tjb25maWcKPiA+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvS2NvbmZpZwo+ID4+PiBAQCAtNDIsOCArNDIsNyBAQCBjb25maWcgTVREX05BTkRfT01B
-UDIKPiA+Pj4gIAl0cmlzdGF0ZSAiT01BUDIsIE9NQVAzLCBPTUFQNCBhbmQgS2V5c3RvbmUgTkFO
-RCBjb250cm9sbGVyIgo+ID4+PiAgCWRlcGVuZHMgb24gQVJDSF9PTUFQMlBMVVMgfHwgQVJDSF9L
-RVlTVE9ORSB8fCBBUkNIX0szIHx8IENPTVBJTEVfVEVTVAo+ID4+PiAgCWRlcGVuZHMgb24gSEFT
-X0lPTUVNCj4gPj4+IAlkZXBlbmRzIG9uIE9NQVBfR1BNQwo+ID4+Pgo+ID4+PiBUaGlzIG1lYW5z
-IGFueSBvZiB0aGUgb3RoZXIgT01BUCBhcmNoaXRlY3R1cmVzIHdpbGwgY29tcGlsZSB0aGUgR1BN
-Qwo+ID4+PiBkcml2ZXIgZXZlbiB0aG91Z2ggdGhleSBtaWdodCBub3QgbmVlZCBpdCwgd2hpY2gg
-d291bGQgdW5uZWNlc3NhcmlseQo+ID4+PiBpbmNyZWFzZSB0aGUga2VybmVsIHNpemUuCj4gPj4+
-Cj4gPj4+IEFtIEkgbWlzc2luZyBzb21ldGhpbmc/ICAgIAo+ID4+Cj4gPj4gTVREX05BTkRfT01B
-UDIgTkFORCBjb250cm9sbGVyIGlzIGEgc3VibW9kdWxlIG9mIHRoZSBPTUFQIEdQTUMgSVAuIFNv
-IGl0Cj4gPj4gY2Fubm90IHdvcmsgd2l0aG91dCBPTUFQX0dQTUMgZHJpdmVyLiAgCj4gPiAKPiA+
-IEkgZGlkbid0IHJlbWVtYmVyIGV4YWN0bHkgYnV0IGluIHRoYXQgY2FzZSBpdCdzIG9rYXksIEkg
-d2FzIGp1c3QKPiA+IHN1cnByaXNlZCBieSB0aGUgInNlbGVjdCBHUE1DIGlmIEFSQ0hfSzMiIGJ1
-dCBpbmRlZWQgd2l0aCB0aGlzCj4gPiBleHBsYW5hdGlvbiBpdCBtYWtlcyBtb3JlIHNlbnNlLgo+
-ID4gICAKPiA+PiBIb3BlIHRoaXMgY2xhcmlmaWVzIHRoZSBkb3VidHMuICAKPiA+IAo+ID4gWWVz
-LCB0aGFua3MuIEkgd2lsbCBzZW5kIHRoZSBmaXggdG8gTGludXMgdGhlbi4KPiA+IAo+ID4gQ2hl
-ZXJzLAo+ID4gTWlxdcOobCAgCj4gCj4gY2hlZXJzLAo+IC1yb2dlcgoKClRoYW5rcywKTWlxdcOo
-bAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Hello Tokunori,
+
+On 06.03.22 16:49, Tokunori Ikegami wrote:
+> Hi,
+> 
+> On 2022/03/04 20:11, Ahmad Fatoum wrote:
+>> Hello Tokunori-san,
+>>
+>> On 20.02.22 13:22, Tokunori Ikegami wrote:
+>>> Hi Ahmad-san,
+>>>
+>>> Could you please try the version 2 patch attached for the error case?
+>>> This version is to check the DQ true data 0xFF by chip_good().
+>> I had a similar patch locally as well at first. I just tested yours
+>> and I can't reproduce the issue.
+> Thanks for your support.
+> Sorry if possible could you please retest the attached the patch again since this fixed the version 1 patch maintainer review comments?
+
+Works good.
+
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+
+>>> But I am not sure if this works or not since the error is possible to be caused by Hi-Z 0xff on floating bus or etc.
+>> That it works for me could be because of Hi-Z 0xff, which is why
+>> decided against it.
+> I see.
+>>
+>>>>>>> What seems to work for me is checking if chip_good or chip_ready
+>>>>>>> and map_word is equal to 0xFF. I can't justify why this is ok though.
+>>>>>>> (Worst case bus is floating at this point of time and Hi-Z is read
+>>>>>>> as 0xff on CPU data lines...)
+>>>>>> Sorry I am not sure about this.
+>>>>>> I thought the chip_ready() itself is correct as implemented as the data sheet in the past.
+>>>>>> But it did not work correctly so changed to use chip_good() instead as it is also correct.
+>>>>> What exactly in the datasheet makes you believe chip_good is not appropriate?
+>>>> I just mentioned about the actual issue behaviors as not worked chip_good() on S29GL964N and not worked chip_ready() on MX29GL512FHT2I-11G before etc.
+>>>> Anyway let me recheck the data sheet details as just checked it again quickly but needed more investigation to understand.
+>>> As far as I checked still both chip_good() and chip_ready() seem correct but still the root cause is unknown.
+>>> If as you mentioned the issue was cased by the DQ true data 0xFF I am not sure why the read work without any error after the write operation.
+>>> Also if the error was caused by the Hi-Z 0xff on floating bus as mentioned I am not sure why the read work without any error after the write operation with chip_ready().
+>>> Sorry anyway the root cause is also unknown when the write operation was changed to use chip_good() instead of chip_ready().
+>> I've be ok with v1 then. Restores working behavior for me and shouldn't break others.
+> 
+> Noted but still I am thinking the version 2 patch to check 0xff seems better than to use chip_ready() so let me consider this again later.
+
+The original version has less room for surprise as it restores previously
+working behavior. Assuming 0xFF to be good without backing from documentation
+is more risky IMO.
+
+Thanks for your continued support,
+Ahmad
+
+> 
+> Regards,
+> Ikegami
+> 
+>>
+>> Cheers and thanks again,
+>> Ahmad
+>>
+>>> Regards,
+>>> Ikegami
+>>>
+>>>> Regards,
+>>>> Ikegami
+>>>>
+>>>>> Cheers,
+>>>>> Ahmad
+>>>>>
+>>>>>
+>>
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
