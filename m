@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D6B8C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  9 Mar 2022 14:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C0EEC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  9 Mar 2022 14:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=i4W4EDfTEL+caSXAHKU694hoOPkI1xQBwZZFzFtU6Hg=; b=UynQz1a1m3dZHU
-	AP7sbuccfxElLLzWWX7VDLyhhoEFel4IVH7pFDSXisARKlJRFBVFz7POlf3UOHx4rZCTPclhsM+1J
-	Lo591Iysutr8lfBxr89+/IZJTEJxBhZz9iXvRfSFvfC9XOBAN6/Z801pX01kalQ+eIKIUIclaOBJG
-	rZ/CYH0VvaH5//qNhZcSG6BcqTUVrnKzTcvucwUkFCRTAji5OufV8cJbb04RHv6OlKbxtC5fbSMpd
-	rrq+gaRsOIeGbdkWMxneWBriyb/iNu0A2GryYDYfmB4d2TsFMhJLAn4I76OllFKsAy5NwJtUZCV0A
-	kPkm6B+zoFcd5DUKW+oQ==;
+	List-Owner; bh=z4nGqJ5wxTbhmaicalnvJBCTIH3+OygE2sTAWJ+iDNk=; b=rSwSTay4BjB6IL
+	LKJKyl4gcXhk0pKsAN4rmPQOQY9toL+8EPU1maNLF5wuoGZSUJo66zAEwBk95xKewXR3mqprScSIa
+	2OIFBETBggzbYoTnGYEPp62xx1X74UYj43WSVu/1fTru7UMtrxzfuXuiZsK/s7sH5Gx34JmNRKVqn
+	iw238mhK+riDn1Qi0xldYjnXiYA68V4AxPTEIkmVk44cehHVFK8y869WhrV6snfbuHahWkVR6eJN/
+	v3c772LQxwdJY4BmQ5pp0dmi6LoRNxvbruhfegd5vYKd7X03rl3Wa7AZMBCsNQATsJqWlFp/YKUuJ
+	TJ7V/ZlR/PlsuZg2jaCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nRxX5-0092I7-Su; Wed, 09 Mar 2022 14:43:19 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1nRxXy-0092ex-Tz; Wed, 09 Mar 2022 14:44:15 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nRxWM-00920X-5K
- for linux-mtd@lists.infradead.org; Wed, 09 Mar 2022 14:42:35 +0000
+ id 1nRxWi-00929F-QK
+ for linux-mtd@lists.infradead.org; Wed, 09 Mar 2022 14:42:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1646836953; x=1678372953;
+ t=1646836976; x=1678372976;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=eA5JNvIl723INxo1Ek/ymL6Ifubo4QpgyLcZrgcY5wg=;
- b=yJCJFvjtm51bzsHaAHihVahPv7KQiMuOtmxp1uzbCNYUlB0flDUVH4Y5
- /OaC1J2mhvq/NkJ4r+As2fF1MP8TzxODGU8PNJYbZuWGlY949TjqaWji2
- 6M6OVm0vVNRGYRgRVsRQKPi09QXrNg//dd+sZ0AdxiczPuwhkoOdlcGar
- G1PN5y6fR8c1O3EIsIBf69aaMT30ftfSfIUoblYecwlHNyec/QhXfuMdY
- TefqHRvk0Y6NCTrzzNDDPx1Ry3xFuxaPEZIMe7qLCpxql6+sA6DC58+An
- bIXHCT+Lg9427vDIgqNhEoL1u4Kc5fV1onHbwQwedfx3WC8wjvb27Q4oe g==;
-X-IronPort-AV: E=Sophos;i="5.90,167,1643698800"; d="scan'208";a="151414626"
+ bh=hVJ7AHr7Hy8X1n0xm5+ndnJwyGTqp6qNp+EnQciPRFI=;
+ b=VUKBfb6RfLnoCaha4vTBYE3QG/14aAJGzLQPdMplGtN6i4ci7zn+r8rk
+ 1on+xNE/TeBrWvgn03Ratb6cA/jOFRvLXr4olkYn2V0ltZ0tAG5IEduNT
+ 2qOSnogDOdEiJiyq99RVhUFDeJDI8KxqQ4t6/Jjqv6FSoiW536ZkA5GwK
+ eEGm0cQVFSMsuVwqobt2Skpe38UPoZyIOvI1+92L2ITt2XmmbyROr76O1
+ 0Cn3CRmSYYO4hJw0oD8ExROvPPe/hzAumzy3kH6o4xd50EzRmoRki7wol
+ G+elvgN2JIIgNws4JCic4xZ00fgRg+k+MjceV4qKY2eMgFti2DQZjQG5K A==;
+X-IronPort-AV: E=Sophos;i="5.90,167,1643698800"; d="scan'208";a="156269540"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 09 Mar 2022 07:42:33 -0700
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 09 Mar 2022 07:42:56 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 9 Mar 2022 07:42:32 -0700
+ 15.1.2375.17; Wed, 9 Mar 2022 07:42:27 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Wed, 9 Mar 2022 07:42:30 -0700
+ 15.1.2375.17 via Frontend Transport; Wed, 9 Mar 2022 07:42:25 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <p.yadav@ti.com>, <michael@walle.cc>
 CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 4/4] mtd: spi-nor: sfdp: Keep SFDP definitions private
-Date: Wed, 9 Mar 2022 16:42:15 +0200
-Message-ID: <20220309144215.179449-5-tudor.ambarus@microchip.com>
+Subject: [PATCH v2 2/4] mtd: spi-nor: Update name and description of the
+ set_4byte_addr_mode BFPT methods
+Date: Wed, 9 Mar 2022 16:42:13 +0200
+Message-ID: <20220309144215.179449-3-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220309144215.179449-1-tudor.ambarus@microchip.com>
 References: <20220309144215.179449-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220309_064234_303352_0BD72846 
-X-CRM114-Status: GOOD (  14.10  )
+X-CRM114-CacheID: sfid-20220309_064256_890586_9F534FBB 
+X-CRM114-Status: GOOD (  13.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,158 +76,134 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Keep the SFDP definitions private and expose just the definitions that are
-required by the core and manufacturer drivers.
-
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/sfdp.c | 52 +++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/sfdp.h | 53 --------------------------------------
- 2 files changed, 52 insertions(+), 53 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 01e35354db3e..f5432cbd3daf 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -494,6 +494,50 @@ int spi_nor_set_4byte_addr_mode_wren_en4b_ex4b(struct spi_nor *nor, bool enable)
- 	return spi_nor_write_disable(nor);
- }
- 
-+/* 11th DWORD. */
-+#define BFPT_DWORD11_PAGE_SIZE_SHIFT		4
-+#define BFPT_DWORD11_PAGE_SIZE_MASK		GENMASK(7, 4)
-+
-+/* 15th DWORD. */
-+/*
-+ * (from JESD216 rev B)
-+ * Quad Enable Requirements (QER):
-+ * - 000b: Device does not have a QE bit. Device detects 1-1-4 and 1-4-4
-+ *         reads based on instruction. DQ3/HOLD# functions are hold during
-+ *         instruction phase.
-+ * - 001b: QE is bit 1 of status register 2. It is set via Write Status with
-+ *         two data bytes where bit 1 of the second byte is one.
-+ *         [...]
-+ *         Writing only one byte to the status register has the side-effect of
-+ *         clearing status register 2, including the QE bit. The 100b code is
-+ *         used if writing one byte to the status register does not modify
-+ *         status register 2.
-+ * - 010b: QE is bit 6 of status register 1. It is set via Write Status with
-+ *         one data byte where bit 6 is one.
-+ *         [...]
-+ * - 011b: QE is bit 7 of status register 2. It is set via Write status
-+ *         register 2 instruction 3Eh with one data byte where bit 7 is one.
-+ *         [...]
-+ *         The status register 2 is read using instruction 3Fh.
-+ * - 100b: QE is bit 1 of status register 2. It is set via Write Status with
-+ *         two data bytes where bit 1 of the second byte is one.
-+ *         [...]
-+ *         In contrast to the 001b code, writing one byte to the status
-+ *         register does not modify status register 2.
-+ * - 101b: QE is bit 1 of status register 2. Status register 1 is read using
-+ *         Read Status instruction 05h. Status register2 is read using
-+ *         instruction 35h. QE is set via Write Status instruction 01h with
-+ *         two data bytes where bit 1 of the second byte is one.
-+ *         [...]
-+ */
-+#define BFPT_DWORD15_QER_MASK			GENMASK(22, 20)
-+#define BFPT_DWORD15_QER_NONE			(0x0UL << 20) /* Micron */
-+#define BFPT_DWORD15_QER_SR2_BIT1_BUGGY		(0x1UL << 20)
-+#define BFPT_DWORD15_QER_SR1_BIT6		(0x2UL << 20) /* Macronix */
-+#define BFPT_DWORD15_QER_SR2_BIT7		(0x3UL << 20)
-+#define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
-+#define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
-+
- #define BFPT_DWORD16_EN4B_MASK			GENMASK(31, 24)
- #define BFPT_DWORD16_EN4B_ALWAYS_4B		BIT(30)
- #define BFPT_DWORD16_EN4B_4B_OPCODES		BIT(29)
-@@ -528,6 +572,14 @@ int spi_nor_set_4byte_addr_mode_wren_en4b_ex4b(struct spi_nor *nor, bool enable)
- #define BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B		\
- 	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
- 
-+#define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
-+
-+#define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
-+#define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
-+#define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
-+#define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
-+#define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
-+
- /**
-  * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
-  * @nor:		pointer to a 'struct spi_nor'
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index da2d7ec2e0aa..fd7e3c935960 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -45,59 +45,6 @@ struct sfdp_bfpt {
- #define BFPT_DWORD5_FAST_READ_2_2_2		BIT(0)
- #define BFPT_DWORD5_FAST_READ_4_4_4		BIT(4)
- 
--/* 11th DWORD. */
--#define BFPT_DWORD11_PAGE_SIZE_SHIFT		4
--#define BFPT_DWORD11_PAGE_SIZE_MASK		GENMASK(7, 4)
--
--/* 15th DWORD. */
--
--/*
-- * (from JESD216 rev B)
-- * Quad Enable Requirements (QER):
-- * - 000b: Device does not have a QE bit. Device detects 1-1-4 and 1-4-4
-- *         reads based on instruction. DQ3/HOLD# functions are hold during
-- *         instruction phase.
-- * - 001b: QE is bit 1 of status register 2. It is set via Write Status with
-- *         two data bytes where bit 1 of the second byte is one.
-- *         [...]
-- *         Writing only one byte to the status register has the side-effect of
-- *         clearing status register 2, including the QE bit. The 100b code is
-- *         used if writing one byte to the status register does not modify
-- *         status register 2.
-- * - 010b: QE is bit 6 of status register 1. It is set via Write Status with
-- *         one data byte where bit 6 is one.
-- *         [...]
-- * - 011b: QE is bit 7 of status register 2. It is set via Write status
-- *         register 2 instruction 3Eh with one data byte where bit 7 is one.
-- *         [...]
-- *         The status register 2 is read using instruction 3Fh.
-- * - 100b: QE is bit 1 of status register 2. It is set via Write Status with
-- *         two data bytes where bit 1 of the second byte is one.
-- *         [...]
-- *         In contrast to the 001b code, writing one byte to the status
-- *         register does not modify status register 2.
-- * - 101b: QE is bit 1 of status register 2. Status register 1 is read using
-- *         Read Status instruction 05h. Status register2 is read using
-- *         instruction 35h. QE is set via Write Status instruction 01h with
-- *         two data bytes where bit 1 of the second byte is one.
-- *         [...]
-- */
--#define BFPT_DWORD15_QER_MASK			GENMASK(22, 20)
--#define BFPT_DWORD15_QER_NONE			(0x0UL << 20) /* Micron */
--#define BFPT_DWORD15_QER_SR2_BIT1_BUGGY		(0x1UL << 20)
--#define BFPT_DWORD15_QER_SR1_BIT6		(0x2UL << 20) /* Macronix */
--#define BFPT_DWORD15_QER_SR2_BIT7		(0x3UL << 20)
--#define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
--#define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
--
--#define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
--
--#define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
--#define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
--#define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
--#define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
--#define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
--
- struct sfdp_parameter_header {
- 	u8		id_lsb;
- 	u8		minor;
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QkZQVCBkZWZpbmVzIHNvbWUgc3RhbmRhcmQgbWV0aG9kcyB0byBlbnRlciBhbmQgZXhpdCB0aGUg
+NC1CeXRlIEFkZHJlc3MKTW9kZS4gVXNlIGdlbmVyaWMgbmFtZXMgZm9yIHRoZXNlIG1ldGhvZHMg
+YW5kIHVwZGF0ZSB0aGVpciBkZXNjcmlwdGlvbi4KClNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFy
+dXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9zcGktbm9y
+L2NvcmUuYyAgICAgIHwgIDIgKy0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYyAgfCAg
+MyArKy0KIGRyaXZlcnMvbXRkL3NwaS1ub3IvbWljcm9uLXN0LmMgfCAgMyArKy0KIGRyaXZlcnMv
+bXRkL3NwaS1ub3Ivc2ZkcC5jICAgICAgfCAzMiArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0t
+LS0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmggICAgICB8ICA3ICsrKystLS0KIGRyaXZl
+cnMvbXRkL3NwaS1ub3Ivd2luYm9uZC5jICAgfCAgMiArLQogNiBmaWxlcyBjaGFuZ2VkLCAzMCBp
+bnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9z
+cGktbm9yL2NvcmUuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jCmluZGV4IDQ1MmQwZjkx
+YThkZi4uOTFkMzc1NGJhYTU5IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUu
+YworKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwpAQCAtMjQ5Miw3ICsyNDkyLDcgQEAg
+c3RhdGljIHZvaWQgc3BpX25vcl9pbml0X2RlZmF1bHRfcGFyYW1zKHN0cnVjdCBzcGlfbm9yICpu
+b3IpCiAJc3RydWN0IGRldmljZV9ub2RlICpucCA9IHNwaV9ub3JfZ2V0X2ZsYXNoX25vZGUobm9y
+KTsKIAogCXBhcmFtcy0+cXVhZF9lbmFibGUgPSBzcGlfbm9yX3NyMl9iaXQxX3F1YWRfZW5hYmxl
+OwotCXBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9kZSA9IHNwYW5zaW9uX3NldF80Ynl0ZV9hZGRy
+X21vZGU7CisJcGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0gc3BpX25vcl9zZXRfNGJ5dGVf
+YWRkcl9tb2RlX2Jyd3I7CiAJcGFyYW1zLT5vdHAub3JnID0gJmluZm8tPm90cF9vcmc7CiAKIAkv
+KiBEZWZhdWx0IHRvIDE2LWJpdCBXcml0ZSBTdGF0dXMgKDAxaCkgQ29tbWFuZCAqLwpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9tYWNyb25peC5jCmluZGV4IGQ4MWE0Y2IyODEyYi4uODVlODY1NWQzNjJjIDEwMDY0NAotLS0g
+YS9kcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5v
+ci9tYWNyb25peC5jCkBAIC0xMDUsNyArMTA1LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBmbGFz
+aF9pbmZvIG1hY3Jvbml4X25vcl9wYXJ0c1tdID0gewogc3RhdGljIHZvaWQgbWFjcm9uaXhfbm9y
+X2RlZmF1bHRfaW5pdChzdHJ1Y3Qgc3BpX25vciAqbm9yKQogewogCW5vci0+cGFyYW1zLT5xdWFk
+X2VuYWJsZSA9IHNwaV9ub3Jfc3IxX2JpdDZfcXVhZF9lbmFibGU7Ci0Jbm9yLT5wYXJhbXMtPnNl
+dF80Ynl0ZV9hZGRyX21vZGUgPSBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGU7CisJbm9yLT5w
+YXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPQorCQlzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21v
+ZGVfZW40Yl9leDRiOwogfQogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNwaV9ub3JfZml4dXBzIG1h
+Y3Jvbml4X25vcl9maXh1cHMgPSB7CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL21p
+Y3Jvbi1zdC5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9taWNyb24tc3QuYwppbmRleCBjMzQ4NDE5
+ZDI0YTAuLjRiYWE5ZGNlMDRmOSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9taWNy
+b24tc3QuYworKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jCkBAIC00MTAsNyAr
+NDEwLDggQEAgc3RhdGljIHZvaWQgbWljcm9uX3N0X25vcl9kZWZhdWx0X2luaXQoc3RydWN0IHNw
+aV9ub3IgKm5vcikKIAlub3ItPmZsYWdzIHw9IFNOT1JfRl9IQVNfTE9DSzsKIAlub3ItPmZsYWdz
+ICY9IH5TTk9SX0ZfSEFTXzE2QklUX1NSOwogCW5vci0+cGFyYW1zLT5xdWFkX2VuYWJsZSA9IE5V
+TEw7Ci0Jbm9yLT5wYXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPSBtaWNyb25fc3Rfbm9yX3Nl
+dF80Ynl0ZV9hZGRyX21vZGU7CisJbm9yLT5wYXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPQor
+CQlzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfd3Jlbl9lbjRiX2V4NGI7CiB9CiAKIHN0YXRp
+YyB2b2lkIG1pY3Jvbl9zdF9ub3JfbGF0ZV9pbml0KHN0cnVjdCBzcGlfbm9yICpub3IpCmRpZmYg
+LS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+c2ZkcC5jCmluZGV4IDEwOGE3NGNlMzhlMC4uMDFlMzUzNTRkYjNlIDEwMDY0NAotLS0gYS9kcml2
+ZXJzL210ZC9zcGktbm9yL3NmZHAuYworKysgYi9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuYwpA
+QCAtNDAyLDE1ICs0MDIsMjAgQEAgc3RhdGljIHZvaWQgc3BpX25vcl9yZWdpb25zX3NvcnRfZXJh
+c2VfdHlwZXMoc3RydWN0IHNwaV9ub3JfZXJhc2VfbWFwICptYXApCiB9CiAKIC8qKgotICogc3Bh
+bnNpb25fc2V0XzRieXRlX2FkZHJfbW9kZSgpIC0gU2V0IDQtYnl0ZSBhZGRyZXNzIG1vZGUgZm9y
+IFNwYW5zaW9uCi0gKiBmbGFzaGVzLgorICogc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2Jy
+d3IoKSAtIFNldCA0LWJ5dGUgYWRkcmVzcyBtb2RlIHVzaW5nCisgKiBTUElOT1JfT1BfQlJXUi4K
+ICAqIEBub3I6CXBvaW50ZXIgdG8gJ3N0cnVjdCBzcGlfbm9yJy4KICAqIEBlbmFibGU6CXRydWUg
+dG8gZW50ZXIgdGhlIDQtYnl0ZSBhZGRyZXNzIG1vZGUsIGZhbHNlIHRvIGV4aXQgdGhlIDQtYnl0
+ZQogICoJCWFkZHJlc3MgbW9kZS4KICAqCisgKiA4LWJpdCB2b2xhdGlsZSBiYW5rIHJlZ2lzdGVy
+IHVzZWQgdG8gZGVmaW5lIEFbMzA6QTI0XSBiaXRzLiBNU0IgKGJpdFs3XSkgaXMKKyAqIHVzZWQg
+dG8gZW5hYmxlL2Rpc2FibGUgNC1ieXRlIGFkZHJlc3MgbW9kZS4gV2hlbiBNU0IgaXMgc2V0IHRv
+IOKAmDHigJksIDQtYnl0ZQorICogYWRkcmVzcyBtb2RlIGlzIGFjdGl2ZSBhbmQgQVszMDoyNF0g
+Yml0cyBhcmUgZG9u4oCZdCBjYXJlLiBXcml0ZSBpbnN0cnVjdGlvbiBpcworICogU1BJTk9SX09Q
+X0JSV1IoMTdoKSB3aXRoIDEgYnl0ZSBvZiBkYXRhLgorICoKICAqIFJldHVybjogMCBvbiBzdWNj
+ZXNzLCAtZXJybm8gb3RoZXJ3aXNlLgogICovCi1pbnQgc3BhbnNpb25fc2V0XzRieXRlX2FkZHJf
+bW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkKK2ludCBzcGlfbm9yX3NldF80
+Ynl0ZV9hZGRyX21vZGVfYnJ3cihzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkKIHsK
+IAlpbnQgcmV0OwogCkBAIC00MzQsMTQgKzQzOSwxNSBAQCBpbnQgc3BhbnNpb25fc2V0XzRieXRl
+X2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkKIH0KIAogLyoqCi0g
+KiBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoKSAtIEVudGVyL0V4aXQgNC1ieXRlIGFkZHJl
+c3MgbW9kZS4KKyAqIHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZV9lbjRiX2V4NGIoKSAtIEVu
+dGVyL0V4aXQgNC1ieXRlIGFkZHJlc3MgbW9kZQorICogdXNpbmcgU1BJTk9SX09QX0VONEIvU1BJ
+Tk9SX09QX0VYNEIuCiAgKiBAbm9yOglwb2ludGVyIHRvICdzdHJ1Y3Qgc3BpX25vcicuCiAgKiBA
+ZW5hYmxlOgl0cnVlIHRvIGVudGVyIHRoZSA0LWJ5dGUgYWRkcmVzcyBtb2RlLCBmYWxzZSB0byBl
+eGl0IHRoZSA0LWJ5dGUKICAqCQlhZGRyZXNzIG1vZGUuCiAgKgogICogUmV0dXJuOiAwIG9uIHN1
+Y2Nlc3MsIC1lcnJubyBvdGhlcndpc2UuCiAgKi8KLWludCBzcGlfbm9yX3NldF80Ynl0ZV9hZGRy
+X21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCitpbnQgc3BpX25vcl9zZXRf
+NGJ5dGVfYWRkcl9tb2RlX2VuNGJfZXg0YihzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJs
+ZSkKIHsKIAlpbnQgcmV0OwogCkBAIC00NjUsMTUgKzQ3MSwxNSBAQCBpbnQgc3BpX25vcl9zZXRf
+NGJ5dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKQogfQogCiAv
+KioKLSAqIG1pY3Jvbl9zdF9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZSgpIC0gU2V0IDQtYnl0ZSBh
+ZGRyZXNzIG1vZGUgZm9yIFNUIGFuZAotICogTWljcm9uIGZsYXNoZXMuCisgKiBzcGlfbm9yX3Nl
+dF80Ynl0ZV9hZGRyX21vZGVfd3Jlbl9lbjRiX2V4NGIoKSAtIFNldCA0LWJ5dGUgYWRkcmVzcyBt
+b2RlIHVzaW5nZgorICogU1BJTk9SX09QX1dSRU4gZm9sbG93ZWQgYnkgU1BJTk9SX09QX0VONEIg
+b3IgU1BJTk9SX09QX0VYNEIuCiAgKiBAbm9yOglwb2ludGVyIHRvICdzdHJ1Y3Qgc3BpX25vcicu
+CiAgKiBAZW5hYmxlOgl0cnVlIHRvIGVudGVyIHRoZSA0LWJ5dGUgYWRkcmVzcyBtb2RlLCBmYWxz
+ZSB0byBleGl0IHRoZSA0LWJ5dGUKICAqCQlhZGRyZXNzIG1vZGUuCiAgKgogICogUmV0dXJuOiAw
+IG9uIHN1Y2Nlc3MsIC1lcnJubyBvdGhlcndpc2UuCiAgKi8KLWludCBtaWNyb25fc3Rfbm9yX3Nl
+dF80Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCitpbnQg
+c3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX3dyZW5fZW40Yl9leDRiKHN0cnVjdCBzcGlfbm9y
+ICpub3IsIGJvb2wgZW5hYmxlKQogewogCWludCByZXQ7CiAKQEAgLTQ4MSw3ICs0ODcsNyBAQCBp
+bnQgbWljcm9uX3N0X25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3Is
+IGJvb2wgZW5hYmxlKQogCWlmIChyZXQpCiAJCXJldHVybiByZXQ7CiAKLQlyZXQgPSBzcGlfbm9y
+X3NldF80Ynl0ZV9hZGRyX21vZGUobm9yLCBlbmFibGUpOworCXJldCA9IHNwaV9ub3Jfc2V0XzRi
+eXRlX2FkZHJfbW9kZV9lbjRiX2V4NGIobm9yLCBlbmFibGUpOwogCWlmIChyZXQpCiAJCXJldHVy
+biByZXQ7CiAKQEAgLTcyOSwxNSArNzM1LDE3IEBAIHN0YXRpYyBpbnQgc3BpX25vcl9wYXJzZV9i
+ZnB0KHN0cnVjdCBzcGlfbm9yICpub3IsCiAKIAlzd2l0Y2ggKGJmcHQuZHdvcmRzW0JGUFRfRFdP
+UkQoMTYpXSAmIEJGUFRfRFdPUkQxNl80Ql9BRERSX01PREVfTUFTSykgewogCWNhc2UgQkZQVF9E
+V09SRDE2XzRCX0FERFJfTU9ERV9CUldSOgotCQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUg
+PSBzcGFuc2lvbl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRy
+X21vZGUgPSBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfYnJ3cjsKIAkJYnJlYWs7CiAKIAlj
+YXNlIEJGUFRfRFdPUkQxNl80Ql9BRERSX01PREVfV1JFTl9FTjRCX0VYNEI6Ci0JCXBhcmFtcy0+
+c2V0XzRieXRlX2FkZHJfbW9kZSA9IG1pY3Jvbl9zdF9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZTsK
+KwkJcGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0KKwkJCXNwaV9ub3Jfc2V0XzRieXRlX2Fk
+ZHJfbW9kZV93cmVuX2VuNGJfZXg0YjsKIAkJYnJlYWs7CiAKIAljYXNlIEJGUFRfRFdPUkQxNl80
+Ql9BRERSX01PREVfRU40Ql9FWDRCOgotCQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPSBz
+cGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGU7CisJCXBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9k
+ZSA9CisJCQlzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiOwogCQlicmVhazsK
+IAogCWRlZmF1bHQ6CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuaCBiL2Ry
+aXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oCmluZGV4IGI1Njg0OTA3OWFlYS4uZGEyZDdlYzJlMGFh
+IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuaAorKysgYi9kcml2ZXJzL210
+ZC9zcGktbm9yL3NmZHAuaApAQCAtMTA3LDkgKzEwNywxMCBAQCBzdHJ1Y3Qgc2ZkcF9wYXJhbWV0
+ZXJfaGVhZGVyIHsKIAl1OAkJaWRfbXNiOwogfTsKIAotaW50IHNwYW5zaW9uX3NldF80Ynl0ZV9h
+ZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpOwotaW50IHNwaV9ub3Jf
+c2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSk7Ci1p
+bnQgbWljcm9uX3N0X25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3Is
+IGJvb2wgZW5hYmxlKTsKK2ludCBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfYnJ3cihzdHJ1
+Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSk7CitpbnQgc3BpX25vcl9zZXRfNGJ5dGVfYWRk
+cl9tb2RlX2VuNGJfZXg0YihzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSk7CitpbnQg
+c3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX3dyZW5fZW40Yl9leDRiKHN0cnVjdCBzcGlfbm9y
+ICpub3IsCisJCQkJCSAgICAgICBib29sIGVuYWJsZSk7CiBpbnQgc3BpX25vcl9wYXJzZV9zZmRw
+KHN0cnVjdCBzcGlfbm9yICpub3IpOwogCiAjZW5kaWYgLyogX19MSU5VWF9NVERfU0ZEUF9IICov
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYyBiL2RyaXZlcnMvbXRk
+L3NwaS1ub3Ivd2luYm9uZC5jCmluZGV4IDM3NGJhODJiZmY0OS4uNTkwZTRkMmM5OWQ3IDEwMDY0
+NAotLS0gYS9kcml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYworKysgYi9kcml2ZXJzL210ZC9z
+cGktbm9yL3dpbmJvbmQuYwpAQCAtMTQyLDcgKzE0Miw3IEBAIHN0YXRpYyBpbnQgd2luYm9uZF9u
+b3Jfc2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkK
+IHsKIAlpbnQgcmV0OwogCi0JcmV0ID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKG5vciwg
+ZW5hYmxlKTsKKwlyZXQgPSBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiKG5v
+ciwgZW5hYmxlKTsKIAlpZiAocmV0IHx8IGVuYWJsZSkKIAkJcmV0dXJuIHJldDsKIAotLSAKMi4y
+NS4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
