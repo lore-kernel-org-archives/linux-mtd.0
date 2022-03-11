@@ -4,55 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BAEDC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Mar 2022 16:54:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1098C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Mar 2022 17:48:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=tR/FSGHnPlb0KCZdEDzJFZIwNK1+tdcbYGEIJytyXN4=; b=jGHYkK74bDGvDL
-	W/wDXqDNzCwT6GQxeiAgguAGH5K64fyl+JmtEyznneHD9bMx+fQnX5lKLb8Knhr+9WTUVe1Dk+AIp
-	/4H/ChBhu2GIPdaht44PG07T0t0B007Z71ZzTMtCW9D0SNdDWXiI+XRKRtySHtiSABtX6uw5SrCw0
-	CdSvqIYyHJc5OlRCc3GfouAZIm12I05Sbf9T8JXRCkY6jeZUkvFUA0MuX3yKxP1qO4++nXVns0ZNy
-	iDFBzkM9PPi8Un7Q1dooF3UIvIV43xklnU5SmBlrt/miYWFJpqijMK3IUlr3/pWfEekCTyq3f3XrT
-	MVwiqeUoDOTlkdG6I1jA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Whu8nNhyytClIVQ2Oc+EHP19ezzrPJRrFvhVZbN5aOk=; b=aEh1ZK3TQmRMtK
+	LVzCsckeMpko9L3pT8TVKX9FkqlNPaoU+rn25opwZKJQq/DHadTqujbIgUi4pbt4V/LUQdafVvLp+
+	5Uy/KBcmWRjfRDbphgoy3cMVVwl9x6Zzd7yDNStZxQpux0xHDORNUrsuBpnKgy3B4RGagzJ40FWgL
+	AqzTLkyBlQlw8U6jX3BiGtuL+ahi6IoCmgEYX5ACmbbfHoyJ08X87A8VcLOZqu/KGzHKcjWEk1oAX
+	73gjUFABq0Qe+piKs33GnV6CDXVfkPbKC3B6h1y+8+oegPWbd1yt/2/jsjt7/Y0txEH8gntTA5vvW
+	RC31DRbM7wBbGE50kYfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nSiWW-00HOjY-70; Fri, 11 Mar 2022 16:53:52 +0000
-Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
+	id 1nSjML-00HXLU-IJ; Fri, 11 Mar 2022 17:47:25 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSiWS-00HOiN-67
- for linux-mtd@lists.infradead.org; Fri, 11 Mar 2022 16:53:50 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:a0a6:d8d9:ef56:e074])
- by albert.telenet-ops.be with bizsmtp
- id 54te270051w1Cbs064tedd; Fri, 11 Mar 2022 17:53:40 +0100
-Received: from rox.of.borg ([192.168.97.57])
- by ramsan.of.borg with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1nSiWH-003aRp-Oc; Fri, 11 Mar 2022 17:53:37 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1nSiWH-009rYw-2i; Fri, 11 Mar 2022 17:53:37 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Sergey Shtylyov <s.shtylyov@omp.ru>, Lad@rox.of.borg,
- Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH RFC] memory: renesas-rpc-if: Fix HF/OSPI data transfer in
- Manual mode
-Date: Fri, 11 Mar 2022 17:53:32 +0100
-Message-Id: <27107f2d578b198078df841ee2e4d7b71b183898.1647017136.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+ id 1nSjMG-00HXKw-Tn
+ for linux-mtd@lists.infradead.org; Fri, 11 Mar 2022 17:47:23 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22BHlDXT021105;
+ Fri, 11 Mar 2022 11:47:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1647020833;
+ bh=pdP+i9m2lw1qpqeGFBrxp+l79uJC+mKNJuBzp+PYH+8=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=aRiuC3tc34x7CtK/Tz9/INvJh3X3MRMjZrXxbp1LrtQPZs1uQq52SBK5vlOIOsq2d
+ aP+PwInlCWjivPgYud86F5xtAeSGGy5rVswtp4YJWBMVxIofOh74yOcJHW9C+VzPKe
+ KI1eyO+dAQwGRUNwI+9ywSNIshSEa27vjd14vW1w=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22BHlDtl116195
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 11 Mar 2022 11:47:13 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 11
+ Mar 2022 11:47:12 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 11 Mar 2022 11:47:12 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22BHlBZx049523;
+ Fri, 11 Mar 2022 11:47:12 -0600
+Date: Fri, 11 Mar 2022 23:17:11 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <broonie@kernel.org>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <Nicolas.Ferre@microchip.com>, <zhengxunli@mxic.com.tw>,
+ <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH 1/4] spi: spi-mem: Allow specifying the byte order in DTR
+ mode
+Message-ID: <20220311174711.wexljqvqx6cgmeub@ti.com>
+References: <20220218145900.1440045-1-tudor.ambarus@microchip.com>
+ <20220218145900.1440045-2-tudor.ambarus@microchip.com>
+ <20220302100255.gseqjbdyxrgmt3zf@ti.com>
+ <f0501c29-ae70-185d-8f40-4a249e49575e@microchip.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <f0501c29-ae70-185d-8f40-4a249e49575e@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220311_085348_410536_07908ED7 
-X-CRM114-Status: GOOD (  12.98  )
+X-CRM114-CacheID: sfid-20220311_094721_246518_1208D2A3 
+X-CRM114-Status: GOOD (  35.31  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,117 +88,110 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-HyperFlash devices fail to probe:
+On 10/03/22 05:31AM, Tudor.Ambarus@microchip.com wrote:
+> On 3/2/22 12:02, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > Hi Tudor,
+> 
+> Hi, Pratyush,
+> 
+> > 
+> > I'm reviewing the code here. I still have not thought through the
+> > discussion about Kconfig option yet.
+> > 
+> > On 18/02/22 04:58PM, Tudor Ambarus wrote:
+> >> There are NOR flashes (Macronix) that swap the bytes on a 16-bit boundary
+> >> when configured in DTR mode. The byte order of 16-bit words is swapped
+> > 
+> > s/DTR mode/ Octal DTR mode/
+> > 
+> > I don't think this would apply to a 4D-4D-4D flash since it would only
+> > transmit one byte per clock cycle.
+> 
+> From what I see, flashes that claim "QPI DTR support" they actually support
+> 4S-4D-4D. JESD251-1 talks about 4S-4D-4D too. So data is latched on both rising
+> and falling edges of the clock. But I'm ok with your proposal because we don't
+> have any proof if there are any QPI DTR flashes that swap bytes in DTR.
 
-    rpc-if-hyperflash rpc-if-hyperflash: probing of hyperbus device failed
+I think this problem fundamentally applies to Octal DTR and above (if 
+there is ever 16-line DTR (hexadecimal DTR?) in the future). In your 4D 
+data phase, you can only send _one_ byte per cycle. So the byte order 
+inter-cycle does not matter as it does in 8D mode. Similarly, for a 
+16-line STR this would also apply, since that has 2 bytes per cycle. For 
+a 16-line DTR there are now 4 bytes per cycle and so on.
 
-In HyperFLASH or Octal-SPI Flash mode, the Transfer Data Enable bits
-(SPIDE) in the Manual Mode Enable Setting Register (SMENR) are derived
-from half of the transfer size, cfr. the rpcif_bits_set() helper
-function.
+And the BFPT bit that you use to enable this swap also says "Byte order 
+in 8D-8D-8D mode". So I really don't think it makes sense for QPI DTR.
 
-Hence when converting back from Transfer Data Enable bits to transfer
-size, the bus width must be taken into account, and all Manual Mode Data
-Register access sizes must be doubled when communicating with a
-HyperFLASH or Octal-SPI Flash device.
+> 
+> > 
+> >> when read or written in Double Transfer Rate (DTR) mode compared to
+> >> Single Transfer Rate (STR) mode. If one writes D0 D1 D2 D3 bytes using
+> >> 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it will read back
+> >> D1 D0 D3 D2. Swapping the bytes is a bad design decision because this may
+> >> introduce some endianness problems. It can affect the boot sequence if the
+> >> entire boot sequence is not handled in either 8D-8D-8D mode or 1-1-1 mode.
+> >> Fortunately there are controllers that can swap back the bytes at runtime,
+> >> fixing the endiannesses. Provide a way for the upper layers to specify the
+> >> byte order in DTR mode.
+> >>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >> ---
+> >>  include/linux/spi/spi-mem.h | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+> >> index 85e2ff7b840d..e1878417420c 100644
+> >> --- a/include/linux/spi/spi-mem.h
+> >> +++ b/include/linux/spi/spi-mem.h
+> >> @@ -89,6 +89,8 @@ enum spi_mem_data_dir {
+> >>   * @dummy.dtr: whether the dummy bytes should be sent in DTR mode or not
+> >>   * @data.buswidth: number of IO lanes used to send/receive the data
+> >>   * @data.dtr: whether the data should be sent in DTR mode or not
+> >> + * @data.dtr_bswap16: whether the byte order of 16-bit words is swapped when
+> >> + *                 read or written in DTR mode compared to STR mode.
+> >>   * @data.dir: direction of the transfer
+> >>   * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+> >>   *            operation does not involve transferring data
+> >> @@ -119,6 +121,7 @@ struct spi_mem_op {
+> >>       struct {
+> >>               u8 buswidth;
+> >>               u8 dtr : 1;
+> >> +             u8 dtr_bswap16 : 1;
+> 
+> but I would keep this name here as it is, without prepending octal.
 
-Fixes: fff53a551db50f5e ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual mode")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Marked RFC, a (1) we should avoid the back-and-forth conversion between
-transfer size and Transfer Data Enable bits, and (2) actual HyperFlash
-data reads (which follows a completely different code path) still return
-all zeros.
+I won't nitpick much on the member name as long as the comment 
+describing its role is clear enough.
 
-On Salvator-XS with unlocked HyperFlash, the HyperFlash is now detected
-again, cfr. (with DEBUG_CFI enabled):
+> 
+> > 
+> > You also need to add this capability to spi_controller_mem_caps and
+> > update spi_mem_default_supports_op() to check for it.
+> 
+> sure, will do.
+> 
+> Thanks!
+> ta
+> > 
+> >>               enum spi_mem_data_dir dir;
+> >>               unsigned int nbytes;
+> >>               union {
+> >> --
+> >> 2.25.1
+> >>
+> > 
+> > --
+> > Regards,
+> > Pratyush Yadav
+> > Texas Instruments Inc.
+> 
 
-    Number of erase regions: 1
-    Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
-    Primary Algorithm Table at 0040
-    Alternative Vendor Command Set: 0000 (None)
-    No Alternate Algorithm Table
-    Vcc Minimum:  1.7 V
-    Vcc Maximum:  1.9 V
-    No Vpp line
-    Typical byte/word write timeout: 512 \xc2\xb5s
-    Maximum byte/word write timeout: 2048 \xc2\xb5s
-    Typical full buffer write timeout: 512 \xc2\xb5s
-    Maximum full buffer write timeout: 2048 \xc2\xb5s
-    Typical block erase timeout: 1024 ms
-    Maximum block erase timeout: 4096 ms
-    Typical chip erase timeout: 262144 ms
-    Maximum chip erase timeout: 1048576 ms
-    Device size: 0x4000000 bytes (64 MiB)
-    Flash Device Interface description: 0x0000
-      - x8-only asynchronous interface
-    Max. bytes in buffer write: 0x200
-    Number of Erase Block Regions: 1
-      Erase Region #0: BlockSize 0x40000 bytes, 256 blocks
-    rpc-if-hyperflash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 0x000001 Chip ID 0x007000
-    Amd/Fujitsu Extended Query Table at 0x0040
-      Amd/Fujitsu Extended Query version 1.5.
-    rpc-if-hyperflash: CFI contains unrecognised boot bank location (0). Assuming bottom.
-    number of CFI chips: 1
-
-At first, the failure looked like an endianness-issue, as reading two
-bytes resulted in e.g. 0x51 0x00 instead of 0x00 0x51.  But it turned
-out to be reading a single 8-bit value of 0x51 instead of a 16-bit value
-of 0x5100.
-
-Note that commit 0d37f69cacb33435 ("memory: renesas-rpc-if: Correct QSPI
-data transfer in Manual mode") in the BSP does not suffer from this bug,
-as it bases its decision on the real number of bytes to transfer, not on
-the SMENR.SPIDE register bits.
----
- drivers/memory/renesas-rpc-if.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 3fbdd2bb8bfdb6ec..9bf880f843437dc2 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -175,10 +175,16 @@ static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
- 		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
- 
- 		if (spide == 0x8) {
--			*val = readb(rpc->base + reg);
-+			if (rpc->bus_size == 2)
-+				*val = readw(rpc->base + reg);
-+			else
-+				*val = readb(rpc->base + reg);
- 			return 0;
- 		} else if (spide == 0xC) {
--			*val = readw(rpc->base + reg);
-+			if (rpc->bus_size == 2)
-+				*val = readl(rpc->base + reg);
-+			else
-+				*val = readw(rpc->base + reg);
- 			return 0;
- 		} else if (spide != 0xF) {
- 			return -EILSEQ;
-@@ -198,10 +204,16 @@ static int rpcif_reg_write(void *context, unsigned int reg, unsigned int val)
- 		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
- 
- 		if (spide == 0x8) {
--			writeb(val, rpc->base + reg);
-+			if (rpc->bus_size == 2)
-+				writew(val, rpc->base + reg);
-+			else
-+				writeb(val, rpc->base + reg);
- 			return 0;
- 		} else if (spide == 0xC) {
--			writew(val, rpc->base + reg);
-+			if (rpc->bus_size == 2)
-+				writel(val, rpc->base + reg);
-+			else
-+				writew(val, rpc->base + reg);
- 			return 0;
- 		} else if (spide != 0xF) {
- 			return -EILSEQ;
 -- 
-2.25.1
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
