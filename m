@@ -4,71 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30A05C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 10 Mar 2022 20:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 257B7C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Mar 2022 08:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VqqXDpV+LM1KFJ47bY2ZgkeDhNseFB+KYih6nIPr64M=; b=jR1xSc3ZJHktx7
-	SomajV3zjQXfyVnBH+NO44TtpFLI+f6/6q2/4MUTu1t+18my5/mhhm6X7wpT00Je4W7Yyc0AleCfn
-	B8ITpXuGY7UXrxDt+0GL0L17DjkMrjKXy/CJS2ME9JvCdH2mr+WVMArzMk5SGxuTrnx23amzU0GEm
-	jfPVYRv9sprOLYe7QObz03AwTZxPE4Ew//lTfyb4+igy/+4nERPhwdZe4IUQYJWSmVgMphXOSZ/UA
-	Ph1Arw96pyfLCXAE9qJtbt8k0Q1fsae0AQObHuz0qA1tSn4hVpwnBOq6kzxr2Pzwt8o+NQtzC7S5x
-	iz1WWjxdNb9y1i9KjvvA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=SIUrPWURp3eNs0EK8ID/o67bwCtUGb5ST7HPlq7cNHk=; b=0EWpnNTSFt6wJO
+	p2mrWDhDW42NxQWQP27keWOQw8cD06YZKGqLwLthUbv+pIbpJLt5J5Tgno6KIuL+tA1vh1HGPVHNo
+	5sdth8vYOK+deT4dEzz1Va3hY/agpy8Z5Wc/0h5CFD5VHK9OqPrcbvuApwPK9f2CaV/qJMt2yAIYn
+	m5tOsbBFO1VX3cAXzLm/QydXogwSWcHPdlOyLXzuAca+Q/jItfmbVEeAl8f0t+YDSnA0k8YSVddl+
+	hKjRpVY75ThigDzdK3r1/e1X8cC/UplS3L0QOyQ7nNLY/BG8dly4t2Ip4NjvLzdiQRufnpSVVhTEf
+	x0LbZhd5KxzlpSdq5HDg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nSPsI-00E1A6-1q; Thu, 10 Mar 2022 20:59:06 +0000
-Received: from mail-ot1-f53.google.com ([209.85.210.53])
+	id 1nSaDo-00FRNV-1i; Fri, 11 Mar 2022 08:02:00 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSPsD-00E19d-D4
- for linux-mtd@lists.infradead.org; Thu, 10 Mar 2022 20:59:02 +0000
-Received: by mail-ot1-f53.google.com with SMTP id
- g6-20020a9d6486000000b005acf9a0b644so4889882otl.12
- for <linux-mtd@lists.infradead.org>; Thu, 10 Mar 2022 12:59:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=KY8vboNBmqrfG0d73imgH39eTc9TfJDXwkAlFPUH9vc=;
- b=MUCvHxWO16UtP0bUkneMXWFe0117kFK9jUnGFF2+OlHuvCfhOW03xGc0TkpHNcm9aV
- 2BchK2p0HFKE8JcoSGCCCCcEpZu/kKrq9IRP7qLJrFu23W/dwbRnkYy5rDXpG12ivlyi
- BI+c+Mh9Vnk//Rk/9Y4kgC5WJA7GQDwKzosDLny2rqUuXnvBgl/oHbArpIxSTaS0AIfI
- TGUnldlHGJ3ttJOwGL2IDrNOrv3dD/Wy9D8ZP7PIqNGjv113BLzT2hcke10+GCcvO27t
- mzDI2EUxaRkuH9+GCL2IJZ7RbI3oxb2dDJ3mKxpZYoHAa1gMqvX3mwFuB6emfkcr8Txh
- +yaw==
-X-Gm-Message-State: AOAM530V8LMEEfXQGdNNGThTehrytWaHukeO7OJvP/0/+L/7u8TXuRUt
- YYOpAYQFgwY3koRSjKOj7w==
-X-Google-Smtp-Source: ABdhPJweLHgVJP/ACLxeR6y+GKz1ica7nyWcDw6WwkEkwllJY8ExbXdnGbaAQa1EOxVBGQr9EAhM2g==
-X-Received: by 2002:a9d:2ce:0:b0:5b2:1513:4997 with SMTP id
- 72-20020a9d02ce000000b005b215134997mr3460310otl.278.1646945940049; 
- Thu, 10 Mar 2022 12:59:00 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- q189-20020acaf2c6000000b002da32f2035fsm2768709oih.2.2022.03.10.12.58.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 10 Mar 2022 12:58:59 -0800 (PST)
-Received: (nullmailer pid 2058933 invoked by uid 1000);
- Thu, 10 Mar 2022 20:58:58 -0000
-Date: Thu, 10 Mar 2022 14:58:58 -0600
-From: Rob Herring <robh@kernel.org>
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: vigneshr@ti.com, richard@nod.at, miquel.raynal@bootlin.com,
- joern@lazybastard.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- frowand.list@gmail.com, krzysztof.kozlowski@canonical.com
-Subject: Re: [PATCH 2/4] dt-bindings: reserved-memory: Add phram
-Message-ID: <YipmkgOuLZGVqH7S@robh.at.kernel.org>
-References: <20220307141549.2732179-1-vincent.whitchurch@axis.com>
- <20220307141549.2732179-3-vincent.whitchurch@axis.com>
+ id 1nSaDk-00FRLN-9l
+ for linux-mtd@lists.infradead.org; Fri, 11 Mar 2022 08:01:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1646985716; x=1678521716;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=AzZqXsvGH16lWupXaADkIIwRJDwU6rAZUXxnYSi/l0A=;
+ b=w66vlynnQA0v0YrLF44tza9IZkVB9k1okAJ6PXHSFrvmC8MdKhVq5S7J
+ wLoq7Tw58TRDpwwI4XpdGbWoPWExrmS6x7U5iv2R/x8nv0U6YipJVNDLJ
+ w5lvHn7NwrPsTtlx/URztSmNh/NqvBYleEB1uifk+rNIvEUCMPqanzsb5
+ dJaE4iF8FUPsdyuXpvOms0zEkwc7Y8mUQUxwUOgru1lel1Yx64IH/2eCV
+ 3dLq7UrluUO75Vo9vkfc1HNFAfkjtZOF4VvF1slqfs3lVEIbFdpgJypf8
+ DU/N02WqSIbvS40SZPXsfWa1ZIEXjpAHWj33E2zYcBHMZ837SheEWMtZd Q==;
+X-IronPort-AV: E=Sophos;i="5.90,173,1643698800"; d="scan'208";a="148864908"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 11 Mar 2022 01:01:54 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Fri, 11 Mar 2022 01:01:53 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Fri, 11 Mar 2022 01:01:50 -0700
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <p.yadav@ti.com>, <michael@walle.cc>, <broonie@kernel.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-spi@vger.kernel.org>, <nicolas.ferre@microchip.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+Subject: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR mode
+Date: Fri, 11 Mar 2022 10:01:41 +0200
+Message-ID: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220307141549.2732179-3-vincent.whitchurch@axis.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220310_125901_467594_E6FB9A1E 
-X-CRM114-Status: GOOD (  19.32  )
+X-CRM114-CacheID: sfid-20220311_000156_489455_F715491F 
+X-CRM114-Status: GOOD (  13.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,83 +79,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Mar 07, 2022 at 03:15:47PM +0100, Vincent Whitchurch wrote:
-> Add bindings to allow MTD/block devices to be created in reserved-memory
-> regions using the "phram" driver.
+There are NOR flashes (Macronix) that swap the bytes on a 16-bit boundary
+when configured in Octal DTR mode. The byte order of 16-bit words is
+swapped when read or written in Octal Double Transfer Rate (DTR) mode
+compared to Single Transfer Rate (STR) modes. If one writes D0 D1 D2 D3
+bytes using 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it will
+read back D1 D0 D3 D2. Swapping the bytes is a bad design decision because
+it may introduce some endianness problems. It can affect the boot sequence
+if the entire boot sequence is not handled in either 8D-8D-8D mode or 1-1-1
+mode. So we must swap the bytes back to have the same byte order as in STR
+modes. Fortunately there are controllers that can swap the bytes back at
+runtime, addressing the flash's endiannesses requirements.
+If the controllers are not capable of swapping the bytes, the protocol is
+downgraded via spi_nor_spimem_adjust_hwcaps(). When available, the swapping
+of the bytes is always done regardless if it's a data or register access,
+so that we comply with the JESD216 requirements: "Byte order of 16-bit
+words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
 
-What does 'ph' mean? Please define somewhere for the binding.
+Tested with atmel-quadspi driver, both in 8D-8D-8D mode and 1-1-1 mode
+(via the protocol downgrade).
 
-> 
-> This allows things like partitioning to be specified via the existing
-> devicetree bindings.
-> 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
->  .../bindings/reserved-memory/phram.yaml       | 45 +++++++++++++++++++
->  1 file changed, 45 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reserved-memory/phram.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/phram.yaml b/Documentation/devicetree/bindings/reserved-memory/phram.yaml
-> new file mode 100644
-> index 000000000000..92e7a80ee87a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reserved-memory/phram.yaml
-> @@ -0,0 +1,45 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/reserved-memory/phram.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MTD/block device in RAM
-> +
-> +description: |
-> +  Use the reserved memory region as an MTD or block device.
-> +
-> +  If no-map is not set, cached mappings will be used for the memory region.
-> +
-> +maintainers:
-> +  - Vincent Whitchurch <vincent.whitchurch@axis.com>
-> +
-> +allOf:
-> +  - $ref: "reserved-memory.yaml"
-> +  - $ref: "../mtd/mtd.yaml"
+This patch set depends on the SPI MEM changes from linux-mtd/mtd/next and
+also on some SPI NOR patches that are waiting for R-b tags. You can find
+a branch if you want to test it at:
 
-/schemas/mtd/mtd.yaml
+To github.com:ambarus/linux-0day.git
+ * [new branch]                spi-nor/next-mx-byte-swap-v2 -> spi-nor/next-mx-byte-swap-v2
 
-> +
-> +properties:
-> +  compatible:
-> +    const: phram
-> +
-> +  reg:
-> +    description: region of memory that contains the MTD/block device
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    reserved-memory {
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        phram: flash@12340000 {
-> +            compatible = "phram";
-> +            label = "rootfs";
+v2:
+- all: s/bswap16/swab16 to comply with linux naming scheme
+- SPI MEM: add dtr_swab16 cap to spi_controller_mem_caps and update
+  spi_mem_default_supports_op() to check for it.
+- SPI NOR: do not encode swab16 info in the SPI NOR protocol, use a helper
+  instead
+- SPI NOR: downgrade the SPI NOR protocol in case the SPI Controller does
+  not support swab16
+- add SPI_NOR_SOFT_RESET and support for mx66lm1g45g
 
-That's an odd example...
+Tudor Ambarus (6):
+  spi: spi-mem: Allow specifying the byte order in DTR mode
+  mtd: spi-nor: core: Allow specifying the byte order in DTR mode
+  mtd: spi-nor: sfdp: Get the 8D-8D-8D byte order from BFPT
+  mtd: spi-nor: core: Introduce SPI_NOR_DTR_BSWAP16 no_sfdp_flag
+  mtd: spi-nor: core: Introduce SPI_NOR_SOFT_RESET flash_info fixup_flag
+  mtd: spi-nor: macronix: Add support for mx66lm1g45g
 
-> +            reg = <0x12340000 0x00800000>;
-> +        };
-> +    };
-> -- 
-> 2.34.1
-> 
-> 
+ drivers/mtd/spi-nor/core.c     |  16 +++-
+ drivers/mtd/spi-nor/core.h     |  10 ++-
+ drivers/mtd/spi-nor/macronix.c | 130 +++++++++++++++++++++++++++++++++
+ drivers/mtd/spi-nor/sfdp.c     |   4 +
+ drivers/spi/spi-mem.c          |   4 +
+ include/linux/spi/spi-mem.h    |   6 ++
+ 6 files changed, 168 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
