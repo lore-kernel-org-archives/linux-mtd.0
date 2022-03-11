@@ -4,67 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D3EC43217
-	for <linux-mtd@archiver.kernel.org>; Fri, 11 Mar 2022 08:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36DB4C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 11 Mar 2022 08:29:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=c94CZC/F3TAB+v5yeZrCMqWEIFBWaGynv3Ka6v0U4to=; b=pJa6nsS/jP52t/
-	Ezn2oBU2K4AZN0PrsU+3e1JE7k92gUENt10lTzmQCSLNsZUa2PMmAE7lwyvpFtNNNuUAZ/AJGuQM1
-	JFi1Gh9382/mhvMtZfzb/BkEg1WJtZSLV0PEJqIdY6N4z3q14Ry9JJ2CNru1Kht4JukXUBBe7WlsU
-	t2rONJIY3e17/fT//8Dx7Sl8sjC9H+CeTNY+Cvg6yRIkAqZrCaAXchFnWYvfg76SxppyEtMubzULY
-	hhKts3CtfqUCGWtRIWqNPI2d4XH2G+73FyZ5gkEGuisHkEhBS0ekEGhxLqrYmz0aZGsJMxWTKNK6a
-	qdRZEJjCJNPrBlcNT6nQ==;
+	List-Owner; bh=bRYnE1H9LUkpc+llX5AxGi8EWscoNQzgoZO6NvG5HT4=; b=gpC5esnHAcwO4U
+	RzPX2zYfgwtQ3cQSrvO2Zvh/CW8mehrsQFSJD67XcQqMNNGzZJLegjeR9iqWgYQP+2/ilqHxIFvLN
+	b/cCHESrUXFv5rdVXSLsahmc7DiRKTV//jhK5w8NB36i5EO3ZcMRlKpAXlAajM/qMfYRW+IviJxmS
+	DT/Q5YtdIghB4lSdVChbhDq57VZbs8aZJEr9tq8YuHlu8VEvcF71HYD7OPNflRZnAXjlLQ6OWLKxx
+	8GnCMNUCNnRN/yKWO2vqX/F2k2QrI+qMsVs8oII2Ph1Z7B6J0CC7EicjmBAi/nvp/1tDGP2gGLMAs
+	D4WVg24GOppvb8CdxrJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nSaHD-00FST2-TK; Fri, 11 Mar 2022 08:05:32 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1nSads-00FY4R-OE; Fri, 11 Mar 2022 08:28:56 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nSaE0-00FRSS-K7
- for linux-mtd@lists.infradead.org; Fri, 11 Mar 2022 08:02:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1646985733; x=1678521733;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=IhsW26KDVAuX2rqNqzl4LM5mRu0w+edNUhiiIx7cWkg=;
- b=nE+jafGcmHUcfkLsV87p5m7JW1s2ZdCXTT0+87NTlG0r6+ihH0qfImfA
- lz8GtEjcquE9PT4OUZ2Z1FObS3TExRaBrhK8mMn501k4HwUdHbdPE50gm
- zujnan+9nVp03jLGG2IzVXNoM+cgJ3SFuwBeyWUkq0kGEcyKnup9mWext
- GZl2GNr/zX2fyFOufD16qcvqHvYGrKcAKL7J8j8qZnRuCpVndIeYXDIHo
- hAri9ylU+7xe6NYHlE40IO+W8our8+LgA8qOWsYATImAakrIpxVynTCsB
- nzJzt8x2GebOEJ1osAKczNZ9078chl8Z/01ougP58st/cn9U0qNHKZR6D Q==;
-X-IronPort-AV: E=Sophos;i="5.90,173,1643698800"; d="scan'208";a="148864968"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 11 Mar 2022 01:02:12 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Fri, 11 Mar 2022 01:02:11 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Fri, 11 Mar 2022 01:02:09 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <p.yadav@ti.com>, <michael@walle.cc>, <broonie@kernel.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <nicolas.ferre@microchip.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 6/6] mtd: spi-nor: macronix: Add support for mx66lm1g45g
-Date: Fri, 11 Mar 2022 10:01:47 +0200
-Message-ID: <20220311080147.453483-7-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220311080147.453483-1-tudor.ambarus@microchip.com>
-References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+ id 1nSadZ-00FXxv-PS; Fri, 11 Mar 2022 08:28:39 +0000
+Received: from [10.28.39.106] (10.28.39.106) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 11 Mar
+ 2022 16:28:32 +0800
+Message-ID: <54a87a83-c631-0cec-08a8-cf95f6090ead@amlogic.com>
+Date: Fri, 11 Mar 2022 16:28:32 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Subject: Re: [PATCH RESEND v2 1/2] mtd: rawnand: meson: discard the common MMC
+ sub clock framework
+Content-Language: en-US
+To: Jerome Brunet <jbrunet@baylibre.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+ <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui
+ Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+References: <20220217063346.21691-1-liang.yang@amlogic.com>
+ <20220217063346.21691-2-liang.yang@amlogic.com>
+ <1jzgmbw7d8.fsf@starbuckisacylon.baylibre.com>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <1jzgmbw7d8.fsf@starbuckisacylon.baylibre.com>
+X-Originating-IP: [10.28.39.106]
+X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
+ (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220311_000212_803454_9C4D04C2 
-X-CRM114-Status: GOOD (  23.10  )
+X-CRM114-CacheID: sfid-20220311_002838_074592_5C896549 
+X-CRM114-Status: GOOD (  26.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,176 +70,256 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-mx66lm1g45g supports just 1-1-1, 8-8-8 and 8D-8D-8D modes. There are
-versions of mx66lm1g45g which do not support SFDP, thus use
-SPI_NOR_SKIP_SFDP. The RDID command issued through the octal peripheral
-interface outputs data always in STR mode for whatever reason. Since
-8D-8D-8S is not common, avoid reading the ID when enabling the octal dtr
-mode. Instead, read back the CR2 to check if the switch was successful.
-Tested in 1-1-1 and 8d-8d-8d modes using sama7g5 QSPI IP.
+Hello Jerome,
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20220209133656.374903-8-tudor.ambarus@microchip.com
----
- drivers/mtd/spi-nor/macronix.c | 130 +++++++++++++++++++++++++++++++++
- 1 file changed, 130 insertions(+)
+On 2022/2/28 19:28, Jerome Brunet wrote:
+> [ EXTERNAL EMAIL ]
+> 
+> 
+> On Thu 17 Feb 2022 at 14:33, Liang Yang <liang.yang@amlogic.com> wrote:
+> 
+>> EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK' which is
+>> defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is the divider and
+>> bit6~7 is the mux for fix pll and xtal.A common MMC and NAND sub-clock has been
+>> implemented and can be used by the eMMC and NAND controller (which are mutually
+>> exclusive anyway). Let's use this new clock.
+>>
+>> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+>> ---
+>>   drivers/mtd/nand/raw/meson_nand.c | 107 +++++++++++++++++-------------
+>>   1 file changed, 61 insertions(+), 46 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+>> index ac3be92872d0..c5b892d38ea0 100644
+>> --- a/drivers/mtd/nand/raw/meson_nand.c
+>> +++ b/drivers/mtd/nand/raw/meson_nand.c
+>> @@ -10,6 +10,7 @@
+>>   #include <linux/dma-mapping.h>
+>>   #include <linux/interrupt.h>
+>>   #include <linux/clk.h>
+>> +#include <linux/clk-provider.h>
+>>   #include <linux/mtd/rawnand.h>
+>>   #include <linux/mtd/mtd.h>
+>>   #include <linux/mfd/syscon.h>
+>> @@ -19,6 +20,7 @@
+>>   #include <linux/iopoll.h>
+>>   #include <linux/of.h>
+>>   #include <linux/of_device.h>
+>> +#include <linux/of_address.h>
+>>   #include <linux/sched/task_stack.h>
+>>   
+>>   #define NFC_REG_CMD		0x00
+>> @@ -104,6 +106,9 @@
+>>   
+>>   #define PER_INFO_BYTE		8
+>>   
+>> +#define CLK_DIV_SHIFT		0
+>> +#define CLK_DIV_WIDTH		6
+>> +
+>>   struct meson_nfc_nand_chip {
+>>   	struct list_head node;
+>>   	struct nand_chip nand;
+>> @@ -151,15 +156,15 @@ struct meson_nfc {
+>>   	struct nand_controller controller;
+>>   	struct clk *core_clk;
+>>   	struct clk *device_clk;
+>> -	struct clk *phase_tx;
+>> -	struct clk *phase_rx;
+>> +	struct clk *nand_clk;
+>> +	struct clk_divider nand_divider;
+>>   
+>>   	unsigned long clk_rate;
+>>   	u32 bus_timing;
+>>   
+>>   	struct device *dev;
+>>   	void __iomem *reg_base;
+>> -	struct regmap *reg_clk;
+>> +	void __iomem *sd_emmc_clock;
+>>   	struct completion completion;
+>>   	struct list_head chips;
+>>   	const struct meson_nfc_data *data;
+>> @@ -988,6 +993,8 @@ static const struct mtd_ooblayout_ops meson_ooblayout_ops = {
+>>   static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>>   {
+>>   	int ret;
+>> +	struct clk_init_data init = {0};
+>> +	struct clk_parent_data nfc_divider_parent_data[1];
+>>   
+>>   	/* request core clock */
+>>   	nfc->core_clk = devm_clk_get(nfc->dev, "core");
+>> @@ -1002,21 +1009,26 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>>   		return PTR_ERR(nfc->device_clk);
+>>   	}
+>>   
+>> -	nfc->phase_tx = devm_clk_get(nfc->dev, "tx");
+>> -	if (IS_ERR(nfc->phase_tx)) {
+>> -		dev_err(nfc->dev, "failed to get TX clk\n");
+>> -		return PTR_ERR(nfc->phase_tx);
+>> -	}
+>> -
+>> -	nfc->phase_rx = devm_clk_get(nfc->dev, "rx");
+>> -	if (IS_ERR(nfc->phase_rx)) {
+>> -		dev_err(nfc->dev, "failed to get RX clk\n");
+>> -		return PTR_ERR(nfc->phase_rx);
+>> -	}
+>> +	init.name = devm_kstrdup(nfc->dev, "nfc#div", GFP_KERNEL);
+>> +	init.ops = &clk_divider_ops;
+>> +	nfc_divider_parent_data[0].fw_name = __clk_get_name(nfc->device_clk);
+> 
+> This is broken.
+> __clk_get_name() gives the actual global name of the clock
+> "fw_name" is the DT name which allows to find the index on the clock
+> 
+>>From the DT doc, the fw_name is either 'core' or 'device'
+> 
+> I don't think any clock would have such a name so I don't think this can
+> actually work. Did you actually test this ?
+> Indeed, it can't work. i have tried it.
+so let us get solved by nfc_divider_parent_data[0].fw_name = "device" or 
+previous parent_names? thanks.
 
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index c267cbcc7f1d..c9b9536f93f2 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -8,6 +8,128 @@
- 
- #include "core.h"
- 
-+#define MACRONIX_NOR_OP_WRITE_CR2		0x72	/* Write Configuration Register 2 */
-+#define MACRONIX_NOR_OP_DTR_RD			0xee	/* Octa DTR Read Opcode */
-+
-+#define MACRONIX_NOR_REG_CR2_MODE_ADDR		0	/* Address of Mode Enable in CR2 */
-+#define MACRONIX_NOR_REG_CR2_DTR_OPI_ENABLE	BIT(1)	/* DTR OPI Enable */
-+#define MACRONIX_NOR_REG_CR2_SPI		0	/* SPI Enable */
-+
-+/* Macronix SPI NOR flash operations. */
-+#define MACRONIX_NOR_WRITE_CR2_OP(addr, buf, ndata)			\
-+	SPI_MEM_OP(SPI_MEM_OP_CMD(MACRONIX_NOR_OP_WRITE_CR2, 0),	\
-+		   SPI_MEM_OP_ADDR(4, addr, 0),				\
-+		   SPI_MEM_OP_NO_DUMMY,					\
-+		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
-+
-+static int macronix_nor_write_cr2(struct spi_nor *nor, u64 addr, u8 val)
-+{
-+	u8 *buf = nor->bouncebuf;
-+	struct spi_mem_op op;
-+	unsigned int nbytes;
-+	int ret;
-+
-+	if (spi_nor_protocol_is_dtr(nor->reg_proto)) {
-+		/*
-+		 * When the flash is configured in 8D-8D-8D mode, halfwords are
-+		 * send/received instead of bytes. One byte transactions are not
-+		 * allowed in 8D-8D-8D mode, so we're going to send two bytes to
-+		 * the flash to pass the 8D-8D-8D sanity checks. Macronix
-+		 * ignores the second byte value in case of a one byte register
-+		 * writes, we don't care of the value of the second byte.
-+		 * When in 8D-8D-8D mode endianness must be configured according
-+		 * to the flash requirements. Macronix swaps data bytes on a
-+		 * 16-bit boundary, so the SPI NOR subsystem instructs the SPI
-+		 * controllers to swap the bytes back to keep compatibility with
-+		 * the STR modes. The swap back is always done regardless if
-+		 * it's a register or data access. Since Macronix ignores the
-+		 * second byte value on register writes and the SPI controllers
-+		 * will swap the bytes, we actually have to set the value on the
-+		 * second byte and ignore the first.
-+		 */
-+		buf[1] = val;
-+		nbytes = 2;
-+
-+	} else {
-+		buf[0] = val;
-+		nbytes = 1;
-+	}
-+
-+	op = (struct spi_mem_op)MACRONIX_NOR_WRITE_CR2_OP(addr, buf, nbytes);
-+	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+	return spi_mem_exec_op(nor->spimem, &op);
-+}
-+
-+static int macronix_nor_octal_dtr_en(struct spi_nor *nor)
-+{
-+	u8 *buf = nor->bouncebuf;
-+	int i, ret;
-+
-+	ret = macronix_nor_write_cr2(nor, MACRONIX_NOR_REG_CR2_MODE_ADDR,
-+				     MACRONIX_NOR_REG_CR2_DTR_OPI_ENABLE);
-+	if (ret)
-+		return ret;
-+
-+	/* Read flash ID to make sure the switch was successful. */
-+	ret = spi_nor_read_id(nor, 4, 4, buf, SNOR_PROTO_8_8_8_DTR);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < nor->info->id_len; i++)
-+		if (buf[i * 2] != nor->info->id[i])
-+			return -EINVAL;
-+	return 0;
-+}
-+
-+static int macronix_nor_octal_dtr_dis(struct spi_nor *nor)
-+{
-+	u8 *buf = nor->bouncebuf;
-+	int ret;
-+
-+	ret = macronix_nor_write_cr2(nor, MACRONIX_NOR_REG_CR2_MODE_ADDR,
-+				     MACRONIX_NOR_REG_CR2_SPI);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
-+	if (ret)
-+		return ret;
-+
-+	if (memcmp(buf, nor->info->id, nor->info->id_len)) {
-+		dev_dbg(nor->dev, "Failed to disable 8D-8D-8D mode.\n");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int macronix_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	return enable ? macronix_nor_octal_dtr_en(nor) :
-+			macronix_nor_octal_dtr_dis(nor);
-+}
-+
-+static void mx66lm1g45g_late_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = macronix_nor_octal_dtr_enable;
-+
-+	/* Set the Fast Read settings. */
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, 20, MACRONIX_NOR_OP_DTR_RD,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+	nor->cmd_ext_type = SPI_NOR_EXT_INVERT;
-+	nor->params->rdsr_dummy = 4;
-+	nor->params->rdsr_addr_nbytes = 4;
-+}
-+
-+static struct spi_nor_fixups mx66lm1g45g_fixups = {
-+	.late_init = mx66lm1g45g_late_init,
-+};
-+
- static int
- mx25l25635_post_bfpt_fixups(struct spi_nor *nor,
- 			    const struct sfdp_parameter_header *bfpt_header,
-@@ -100,6 +222,14 @@ static const struct flash_info macronix_nor_parts[] = {
- 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "mx66lm1g45g", INFO(0xc2853b, 0, 64 * 1024, 2048)
-+		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SECT_4K |
-+			      SPI_NOR_OCTAL_DTR_READ | SPI_NOR_OCTAL_DTR_PP |
-+			      SPI_NOR_DTR_SWAB16)
-+		FIXUP_FLAGS(SPI_NOR_4B_OPCODES | SPI_NOR_IO_MODE_EN_VOLATILE |
-+			    SPI_NOR_SOFT_RESET)
-+		.fixups = &mx66lm1g45g_fixups,
-+	},
- };
- 
- static void macronix_nor_default_init(struct spi_nor *nor)
--- 
-2.25.1
-
+> 
+>> +	init.parent_data = nfc_divider_parent_data;
+>> +	init.num_parents = 1;
+>> +	nfc->nand_divider.reg = nfc->sd_emmc_clock;
+>> +	nfc->nand_divider.shift = CLK_DIV_SHIFT;
+>> +	nfc->nand_divider.width = CLK_DIV_WIDTH;
+>> +	nfc->nand_divider.hw.init = &init;
+>> +	nfc->nand_divider.flags = CLK_DIVIDER_ONE_BASED |
+>> +				  CLK_DIVIDER_ROUND_CLOSEST |
+>> +				  CLK_DIVIDER_ALLOW_ZERO;
+>> +
+>> +	nfc->nand_clk = devm_clk_register(nfc->dev, &nfc->nand_divider.hw);
+>> +	if (IS_ERR(nfc->nand_clk))
+>> +		return PTR_ERR(nfc->nand_clk);
+>>   
+>>   	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
+>> -	regmap_update_bits(nfc->reg_clk,
+>> -			   0, CLK_SELECT_NAND, CLK_SELECT_NAND);
+>> +	writel(CLK_SELECT_NAND | readl(nfc->sd_emmc_clock),
+>> +	       nfc->sd_emmc_clock);
+>>   
+>>   	ret = clk_prepare_enable(nfc->core_clk);
+>>   	if (ret) {
+>> @@ -1030,29 +1042,21 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>>   		goto err_device_clk;
+>>   	}
+>>   
+>> -	ret = clk_prepare_enable(nfc->phase_tx);
+>> -	if (ret) {
+>> -		dev_err(nfc->dev, "failed to enable TX clock\n");
+>> -		goto err_phase_tx;
+>> -	}
+>> -
+>> -	ret = clk_prepare_enable(nfc->phase_rx);
+>> +	ret = clk_prepare_enable(nfc->nand_clk);
+>>   	if (ret) {
+>> -		dev_err(nfc->dev, "failed to enable RX clock\n");
+>> -		goto err_phase_rx;
+>> +		dev_err(nfc->dev, "pre enable NFC divider fail\n");
+>> +		goto err_nand_clk;
+>>   	}
+>>   
+>>   	ret = clk_set_rate(nfc->device_clk, 24000000);
+>>   	if (ret)
+>> -		goto err_disable_rx;
+>> +		goto err_disable_clk;
+>>   
+>>   	return 0;
+>>   
+>> -err_disable_rx:
+>> -	clk_disable_unprepare(nfc->phase_rx);
+>> -err_phase_rx:
+>> -	clk_disable_unprepare(nfc->phase_tx);
+>> -err_phase_tx:
+>> +err_disable_clk:
+>> +	clk_disable_unprepare(nfc->nand_clk);
+>> +err_nand_clk:
+>>   	clk_disable_unprepare(nfc->device_clk);
+>>   err_device_clk:
+>>   	clk_disable_unprepare(nfc->core_clk);
+>> @@ -1061,8 +1065,7 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>>   
+>>   static void meson_nfc_disable_clk(struct meson_nfc *nfc)
+>>   {
+>> -	clk_disable_unprepare(nfc->phase_rx);
+>> -	clk_disable_unprepare(nfc->phase_tx);
+>> +	clk_disable_unprepare(nfc->nand_clk);
+>>   	clk_disable_unprepare(nfc->device_clk);
+>>   	clk_disable_unprepare(nfc->core_clk);
+>>   }
+>> @@ -1370,11 +1373,31 @@ static const struct of_device_id meson_nfc_id_table[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(of, meson_nfc_id_table);
+>>   
+>> +static int meson_nfc_reg_resource(struct device *dev, struct meson_nfc *nfc)
+>> +{
+>> +	struct resource res;
+>> +	void __iomem *base[2];
+>> +	struct device_node *node = dev->of_node;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < 2; i++) {
+>> +		if (of_address_to_resource(node, i, &res))
+>> +			return -ENOENT;
+>> +
+>> +		base[i] = devm_ioremap_resource(dev, &res);
+>> +		if (IS_ERR(base))
+>> +			return PTR_ERR(base);
+>> +	}
+>> +	nfc->reg_base = base[0];
+>> +	nfc->sd_emmc_clock = base[1];
+>> +
+> 
+> There is no reason to make a separate function for this.
+> 
+> Please name your ressource and claim them properly instead of interating
+> on them.
+> 
+> 
+>> +	return 0;
+>> +}
+>> +
+>>   static int meson_nfc_probe(struct platform_device *pdev)
+>>   {
+>>   	struct device *dev = &pdev->dev;
+>>   	struct meson_nfc *nfc;
+>> -	struct resource *res;
+>>   	int ret, irq;
+>>   
+>>   	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
+>> @@ -1388,20 +1411,12 @@ static int meson_nfc_probe(struct platform_device *pdev)
+>>   	nand_controller_init(&nfc->controller);
+>>   	INIT_LIST_HEAD(&nfc->chips);
+>>   	init_completion(&nfc->completion);
+>> -
+>>   	nfc->dev = dev;
+>>   
+>> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> -	nfc->reg_base = devm_ioremap_resource(dev, res);
+>> -	if (IS_ERR(nfc->reg_base))
+>> -		return PTR_ERR(nfc->reg_base);
+>> -
+>> -	nfc->reg_clk =
+>> -		syscon_regmap_lookup_by_phandle(dev->of_node,
+>> -						"amlogic,mmc-syscon");
+>> -	if (IS_ERR(nfc->reg_clk)) {
+>> -		dev_err(dev, "Failed to lookup clock base\n");
+>> -		return PTR_ERR(nfc->reg_clk);
+>> +	ret = meson_nfc_reg_resource(dev, nfc);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to get reg resource\n");
+>> +		return ret;
+>>   	}
+>>   
+>>   	irq = platform_get_irq(pdev, 0);
+> 
+> .
 
 ______________________________________________________
 Linux MTD discussion mailing list
