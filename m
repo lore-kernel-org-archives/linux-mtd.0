@@ -4,66 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99074C433FE
-	for <linux-mtd@archiver.kernel.org>; Mon, 14 Mar 2022 16:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A555C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 14 Mar 2022 16:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GnE0UBmGYzdXbu8QHSIcBb9EbwFTcT3LWciRIMSgydQ=; b=cy4Q6RwdpKuHQs
-	vSvctvh+nHF97qQkp7BjOcL3uzwNtbs0j7Ugb3Joa99ksBVz3YwrvQOuBCcTlM1hLcdpQ9rPSD1Nj
-	I3Bw42AWRiVNreCcyJsDFBg+71URaySLJwbwozF5yQePzqKJxAAtRkrarTphJtUYRtSA4yn979TxK
-	HipJa5MELdpNsmTTwyYS4RlgpDmLIjotrTdX9au105E3/n/d55uLQHxFMdytP/HV+JGYT7W3FhLAu
-	3dWcupCPU9+c3BvRM52MWzpoMPnZt/53YoaKRPQQZchmsailZT3PvInxrrno1Mw2pgK0fRubS+htr
-	j3dxHJLyL2uy2ZMrIXdQ==;
+	List-Owner; bh=xREEZZryK7D3wTGzTW25eOUlz8c9kOGt4sSCXccGy4I=; b=de4TDlB/HL8Or7
+	i0P86JkrTT83qv5/2wv1PLRYkakepMEXzHRp+MWyjccjpyL+yjVU6Nfh8WuVAoEDINFBMfB5VJXah
+	tBgDIpjJ9eRh/vnX2NWIBUMUTGb1K0kTcCAuU/s3xMzgoeurm+8fjpzxYXmC2mRRBzsMWns1phiaR
+	mh2HI57DTJzIuIR6Fk/G4uk875OwjOvoBEKczYnO/viumKEaCyQDFVKAWuFbesffkQ5CdT2SiZW9X
+	g0JQc1c2Ns9bZUgcJZg7Oz3qOGahw59Y/7I/YN0ayv0B2T7S658IyKSXvGx4aNfW7m9yN4ALPTUcC
+	mc6K+dumpHyZUkc1tKoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nTn8a-005uvJ-05; Mon, 14 Mar 2022 16:01:36 +0000
-Received: from relay12.mail.gandi.net ([2001:4b98:dc4:8::232])
+	id 1nTn9y-005vVe-0p; Mon, 14 Mar 2022 16:03:02 +0000
+Received: from relay3-d.mail.gandi.net ([217.70.183.195])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nTn7D-005uML-M5; Mon, 14 Mar 2022 16:00:13 +0000
+ id 1nTn7L-005uQL-5Q; Mon, 14 Mar 2022 16:00:20 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 1C66E200007;
- Mon, 14 Mar 2022 16:00:00 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id DC40A60009;
+ Mon, 14 Mar 2022 16:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1647273609;
+ t=1647273617;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RcTeCSqjA30WWQNMW0gHvtlkhVvj5befvu9dAIyBttU=;
- b=B3nDZWQVGuyP1Y3ap+c4EWjrDmdWvX8VY3+6+D+TakX+BJqXi+ruTobaxoPh89pSmzaNH0
- HRhifMCrSb86dmLoektCYPhJ4Dm3i4NxrjRTtCMhs9zXjIMk9vM4ewaUyU1kAAvxj0au5M
- 5rbUeel2PKMPi4nYXEWbdDg6yXQjmrPzsZxN5MGGFwKsldw08gg7azlJqupljA3dFTiLuD
- ryvwCRz4cxxzg5ipzsfitngFji5p1b9ilNDjmsMhf9AjLsTFKRM+0rSYCpwSUTtVo3/13h
- dfdOOE9Y8ps4LSPsSnB+AwFR7/1ejT/q8S4LmQwEU2xATS+nCGBSgg9BGIDczg==
+ bh=U7JMJ3IGrvjpk6NF5wRwGwuqyAr6wjfBK4Y8SNwWwXY=;
+ b=DHj+dTmQDZXD4QdZsrsie1/2jyNYv6uXwCE/A5sF5WClrZlXCJsPtU1NgPjUhlgVk6IFyr
+ yrBXdaSwOXEzs/fENNwDsWfKvb3cF3AU8idiJzKMulujWreUcz/HdAhzNOXtG4rE7d5VWY
+ Tc29ck41TBlCjB48lRRd7iyVL6gO2qDxXTBfDVPY+x1wQ/mK5jzCDKh+TYQLhbEbxitsX3
+ ZuxtuKv6/16INB3Ow6iKZq2TgTD2NdiEaCB13p84Cj+wX0y3o7bHSJkZFcm7Ejyi60rYIi
+ MvkTBF+aJ2cz99UCUrd6CTEH3HZzaRFXTrzli4EDBA/QNG80MhN7RfDlsHguuw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Xin Xiong <xiongx18@fudan.edu.cn>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Yihao Han <hanyihao@vivo.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
- Boris Brezillon <bbrezillon@kernel.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
- Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH v4] mtd: rawnand: atmel: fix refcount issue in
- atmel_nand_controller_init
-Date: Mon, 14 Mar 2022 17:00:00 +0100
-Message-Id: <20220314160000.77465-1-miquel.raynal@bootlin.com>
+ Heiko Stuebner <heiko@sntech.de>, Zou Wei <zou_wei@huawei.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: kernel@vivo.com
+Subject: Re: [PATCH] mtd: rawnand: rockchip: fix platform_get_irq.cocci warning
+Date: Mon, 14 Mar 2022 17:00:13 +0100
+Message-Id: <20220314160013.77534-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220304085330.3610-1-xiongx18@fudan.edu.cn>
+In-Reply-To: <20220303123431.3170-1-hanyihao@vivo.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'fecbd4a317c95d73c849648c406bcf1b6a0ec1cf'
+X-linux-mtd-patch-commit: b'fba6eb4fc4e6819d9684d378ace339c4212d5ce1'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220314_090011_910637_5E6AE064 
-X-CRM114-Status: UNSURE (   6.60  )
+X-CRM114-CacheID: sfid-20220314_090019_393411_3F2CE4CE 
+X-CRM114-Status: UNSURE (   4.95  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,23 +75,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2022-03-04 at 08:53:32 UTC, Xin Xiong wrote:
-> The reference counting issue happens in several error handling paths
-> on a refcounted object "nc->dmac". In these paths, the function simply
-> returns the error code, forgetting to balance the reference count of
-> "nc->dmac", increased earlier by dma_request_channel(), which may
-> cause refcount leaks.
+On Thu, 2022-03-03 at 12:34:27 UTC, Yihao Han wrote:
+> Remove dev_err() messages after platform_get_irq*() failures.
+> platform_get_irq() already prints an error.
 > 
-> Fix it by decrementing the refcount of specific object in those error
-> paths.
+> Generated by: scripts/coccinelle/api/platform_get_irq.cocci
 > 
-> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-> Co-developed-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Co-developed-by: Xin Tan <tanxin.ctf@gmail.com>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-> Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Signed-off-by: Yihao Han <hanyihao@vivo.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
