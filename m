@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CD2C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Mar 2022 06:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47810C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Mar 2022 06:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wgqiy8rcMw2D0pmrl8Cl0Cmf/7RY2sn3FiubNrSrvCY=; b=mXT9AiSqLKfl5O
-	9nRWuxkmKL3BuP4CNaXBmbmSJMDnNlGGhU3UkOtLw5icr3Q7sNI+RRShMGyMeL2rFn94fZ5We8Qgx
-	aPx9mrXU7upfDx32Thyv0/iqqSsfT2500MvXLaZmBUhEhbgo4awJx2ySXrRkpSbsx+fXCCWHaeic6
-	2MNcyrrJU6v0+eZXBvjDdhWehSh+StPaBV3Jzz94LsMylkI29fsTECDB/cO3sdDff1/In8TyuJYvJ
-	GsPi1KZd42Nc1W9C6nzaxqHV6iR0mdyVsoJe0l0IVwn98SHmOQzz32XWluuSnLKk2qNBmp0U9XNHh
-	nZiKGuDxG+1RG8As0ZkA==;
+	List-Owner; bh=uEJLSRYj9pazFEUnKW9FyfnJekWAvsmnTjPVPFC1myo=; b=pXIPOJARDCe3Mv
+	Vf78t/pBoP+OgW8IOtli6u/QUfKo1zW/MCJgJEpF6iWRR0hZ7Mx5r9zBfoygH40ihsk05t3a8A3rf
+	Sf5Jz+NCp+5RY8M+TeNb5iqVI8fptQJBYCTfy3nSxNCWnWYkB4DYH335j8YJWSLxh9fnx2vBR07L6
+	21K7EU798jpVbkmQEdW/YcDzcH73bv1qFPog4Q7zBTktdXx8dmss4acpmJG23cVx+QeBqJyCLAKcU
+	RC0PEMUDbi5BC6GrluWvM4EotzRodku0HvZOpzzjmy6Gb0+UjZTbXR8wvEGp5szbLDF0cyDGLwODM
+	eGJ1mB+XxridyrM743Pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nU0ML-007uMX-7z; Tue, 15 Mar 2022 06:08:41 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1nU0R5-007w4H-LO; Tue, 15 Mar 2022 06:13:35 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nU0MI-007uLr-7o
- for linux-mtd@lists.infradead.org; Tue, 15 Mar 2022 06:08:39 +0000
+ id 1nU0PY-007v9J-EQ
+ for linux-mtd@lists.infradead.org; Tue, 15 Mar 2022 06:12:02 +0000
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22F68UNE064099;
- Tue, 15 Mar 2022 01:08:30 -0500
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22F6BtLv065584;
+ Tue, 15 Mar 2022 01:11:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1647324510;
- bh=KhJEik26ig4l/aiiiZMzVlQcZMJB/lBkAUrj1j5c54E=;
+ s=ti-com-17Q1; t=1647324715;
+ bh=0wTMRubLXBAHb26iPo5psEb82ebqhC7CR8jtGqFDA/M=;
  h=Date:Subject:To:CC:References:From:In-Reply-To;
- b=xXN8+hY4zEhvPTHAiJRkb2LFJ3k/rrMkkyt7JUru7JN86bHGGEXaBeCrmW93aypBF
- b2AQnmt6bUgm0xC39aK30CMLRUqB7PONKao71Gy5dwO0tRKyx9lP/OYSUTTqNJfmIC
- Yiyn2L+aOJPNJYzeOMNvqOC7ie/3hjyVGRpVQIwQ=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22F68UrV060441
+ b=PWTt7yFcUuFrwo0BTVs5vJo0YRUSxqZwu0Gat2HWNPopca3QuOoqoIqbwiLs8LrSV
+ CHxWTYpVQQGtWEdkFWr/Up8NQOTcYimWxXVz6mgw+8UeS1vu+iEagGeWLmHW08lWK9
+ FZDhdUIMNuF5cPR5X2TiEobhdqN6khHPe8C5xme0=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22F6Bt7c064821
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 15 Mar 2022 01:08:30 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 15 Mar 2022 01:11:55 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 15
- Mar 2022 01:08:29 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2022 01:11:55 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 15 Mar 2022 01:08:29 -0500
+ Frontend Transport; Tue, 15 Mar 2022 01:11:55 -0500
 Received: from [10.250.234.22] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22F68QJD059587;
- Tue, 15 Mar 2022 01:08:26 -0500
-Message-ID: <76eb13b6-9263-975f-3196-312259634301@ti.com>
-Date: Tue, 15 Mar 2022 11:38:25 +0530
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22F6BqS0060265;
+ Tue, 15 Mar 2022 01:11:54 -0500
+Message-ID: <983a44fb-2f79-57b5-c161-2684feb2a0dc@ti.com>
+Date: Tue, 15 Mar 2022 11:41:52 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
- mode
+Subject: Re: [PATCH v2] mtd: cfi_cmdset_0002: Use chip_ready() for write on
+ S29GL064N
 Content-Language: en-US
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, <p.yadav@ti.com>,
- <michael@walle.cc>, <broonie@kernel.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <nicolas.ferre@microchip.com>
-References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+To: Tokunori Ikegami <ikegami.t@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+References: <20220306153213.411425-1-ikegami.t@gmail.com>
 From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20220306153213.411425-1-ikegami.t@gmail.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220314_230838_423772_F8AE4363 
-X-CRM114-Status: GOOD (  22.55  )
+X-CRM114-CacheID: sfid-20220314_231200_585076_3E715088 
+X-CRM114-Status: UNSURE (   9.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,100 +85,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Miquel,
 
-On 11/03/22 1:31 pm, Tudor Ambarus wrote:
-> There are NOR flashes (Macronix) that swap the bytes on a 16-bit boundary
-> when configured in Octal DTR mode. The byte order of 16-bit words is
-> swapped when read or written in Octal Double Transfer Rate (DTR) mode
-> compared to Single Transfer Rate (STR) modes. If one writes D0 D1 D2 D3
-> bytes using 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it will
-> read back D1 D0 D3 D2. Swapping the bytes is a bad design decision because
-> it may introduce some endianness problems. It can affect the boot sequence
-> if the entire boot sequence is not handled in either 8D-8D-8D mode or 1-1-1
-> mode. So we must swap the bytes back to have the same byte order as in STR
-> modes. Fortunately there are controllers that can swap the bytes back at
-> runtime, addressing the flash's endiannesses requirements.
-> If the controllers are not capable of swapping the bytes, the protocol is
-> downgraded via spi_nor_spimem_adjust_hwcaps(). When available, the swapping
-> of the bytes is always done regardless if it's a data or register access,
-> so that we comply with the JESD216 requirements: "Byte order of 16-bit
-> words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
+On 06/03/22 9:02 pm, Tokunori Ikegami wrote:
+> The regression issue has been caused on S29GL064N and reported it.
+> Also the change mentioned is to use chip_good() for buffered write.
+> So disable the change on S29GL064N and use chip_ready() as before.
 > 
+> Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
 
-Sorry, bit late to the thread. But, dropping 8D-8D-8D mode support is
-quite restrictive IMO.
+Could you please pull this in for v5.18-rc1 as this is a regression
+being tracked for a while?
 
-AFAIK, SFDP standard does not dictate how data should be stored in flash
-or how SW should interpret after reading data from flash. It merely
-indicates endian-ness compared to 1-1-1 mode.
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-So, its up to various system SWs like bootloader/Linux to work according
-to pre-aligned layout as there is no rule that data needs to be stored
-in byte order.
-
-We have two types of controllers:
-
-1. SPI controllers supporting swapping endian-ness on the fly:
--> For such flashes, better choice is to have SWAP option always
-enabled. So that data written in 8D-8D-8D mode can be read correctly in
-1-1-1 mode and vice-versa.
-( I am assuming SWAP option of controller is only effective in 8D-8D-8D
-mode and is NOP in 1-1-1 or other modes)
-
-But, its possible that "ROM" or other non-upgradable SWs may choose not
-make to use of this SWAP option of HW to keep things simple in which
-case, they cannot boot from 8D-8D-8D mode with above setting. Such SW
-don't always have knowledge of flash and cannot be forced to have a
-constraint to enable byte swap on read.
-
-So, IMO, its best left to system integrators to specify whether or not
-SWAP option needs to be enabled (perhaps via DT as its per flash
-specific property?)
-
-2.  SPI controllers don't support endian-ness SWAP on the fly:
-It is still possible to reliably read and write data as long as its
-written and read back in same mode.
-
-De-rating speeds because of absence of this support would mean reduction
-of speed by **16 times** (maybe even higher as 8D mode tends to support
-higher bus freqs). Swapping bytes in Linux before writing or after
-reading is not an option either as it negatively impacts performance.
-
-Asking ROM/bootloaders to swap bytes based on SFDP indication is
-restrictive too as it involves boot time penalty and most systems with
-OSPI flashes are using them to achieve super fast boot times.
-
-One more case to consider is flashes that dont have SFDP table to
-indicate byte order but follow Macronix's convention. In such cases, its
-better for SPI NOR layer to be as dumb as possible and not really do any
-byte swapping, leaving it up to user space to handle/interpret data
-appropriately.
-
-Also, Macronix is probably in violation of xSPI spec (JESD251A 6.9.5.2
-8D-8D-8D Profile 1.0) where diagrams clearly show data output should be
-D0 D1 D2 D3... So ROMs following xSPI spec (which is the only spec
-providing flash agnostic way of switching to 8D mode and reading data in
-8D mode) would not care about SFDP bit indicating byteorder and its up
-to flasher programs to take care of the same
-
-IMO, kernel device drivers should just provide access to underlying HW
-and not have too much intelligence to interpret data/take decisions
-
-So, simpler constraint to put is:
-Flasher programs should program data in the same mode in which
-ROM/bootloder/Linux is expected to read the data on that system.
-
-For Macronix like flashes, if one has a ROM/bootloader that only
-supports 1-1-1 mode and flashing data in 8D-8D-8D mode with Linux, then
-please generate a byte-swapped image offline and flash it. Don't impose
-penalty on systems that do best to handle this messy situation.
-I see this as the only option with least performance penalty.
+[...]
 
 Regards
 Vignesh
 
-[...]
 
 ______________________________________________________
 Linux MTD discussion mailing list
