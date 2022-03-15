@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68BF5C433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91D52C433FE
 	for <linux-mtd@archiver.kernel.org>; Tue, 15 Mar 2022 16:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=vctFg9rJxaJAfF2AXRPZzc09yzTrt21OUktSx6vhYd4=; b=QU2i72VsNEXgv0
-	He1hIRePVlemry1VEL1xaCucXpkPkQ7dlc6OlagTbM0NlH3Ka2Dkmwnv1IaPVN9Uu7QBOAGaSHJLs
-	zPYp+D7MNeaRG9tcQI67LeCfa8J5NFVsPp+63MfS+SFPgC6WzAkMLH8s0GzbbjrhU5wnJ15j/Okll
-	hT25Q0KFrGAHJR7q+QBd1LhrsCbXoMk++ay5w3XHYLGHrLzqCVD994u/F3LTTd0c9CrvPopqH3jVI
-	curMeldokdTp77F80eQrD5Gr7w7rcBxW4DHqOxVOGE+yNnHfJ0SAQhCzAP6MPDN4lz/IncU+fp0zr
-	rmeeEPFO0ho9uHJoyvDQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=MArye83ojW5HxHVHtqigdE/8DnnKQVapxw7Nw5DoMp8=; b=386/CIQ8qiFoN6
+	JvrbxDFQ5aBs85WdoTdNrR1yqwiN+AhR242hMBvDtJ3yZ75bgBHZnB3Aalc79lDmixY/AFCVleOyP
+	3/S6dcqux6byWgS1r7382SjsR8doIfxAj+jN3fpnBy7k0ogb6o+/8OxalTSGR4eJNt4iYYsdrOTmm
+	fORAUrMktvdWoRigO0vi3mLNO9faYvPyy6SE91O7U3UCFB1uJDKsHKE9tcCTpW2wepr0+bRUAdzuZ
+	dJPe8X3d+xsC7u/iwf7rc6zYPzFchFvWjqb6rRWoGPReyEbHeqX2MiaxULxK58B97Xi7JnkG8mYkg
+	A7BNFeRCNr60WyRANaVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUATd-009wdD-JQ; Tue, 15 Mar 2022 16:56:53 +0000
-Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
+	id 1nUATp-009weS-CY; Tue, 15 Mar 2022 16:57:05 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUATZ-009wcJ-U7
- for linux-mtd@lists.infradead.org; Tue, 15 Mar 2022 16:56:51 +0000
-Received: by mail-pf1-x42c.google.com with SMTP id u17so18503259pfk.11
- for <linux-mtd@lists.infradead.org>; Tue, 15 Mar 2022 09:56:47 -0700 (PDT)
+ id 1nUATk-009wdV-Ss
+ for linux-mtd@lists.infradead.org; Tue, 15 Mar 2022 16:57:02 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id
+ z12-20020a17090ad78c00b001bf022b69d6so2997694pju.2
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Mar 2022 09:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=YJkWk99bLZw++rSGr2/IK3Rs1XoNvFcnuxKFkD7iXfQ=;
- b=HfWVhu5hvd7qeRccFco3HtFVm5PsbpepnDOYIuIcWqwjwJbBPhUkjW0jJTU9bJsw9s
- n65j2LUPAhuKGNqx8VCNX+hsswJHY4gf25DJnor6UcEqGhYoA5MzoRBB94LJSXYDAIqk
- t0ztzrf9wWcAnzUKsATm0nRUYGBryW2OSolE2h4SwPsT9eNJaVid55ceUQif5RZHQ+iT
- 5jEPEdFRZ+n6VEx/ef8nzAaEkLox0b9WR5IKE8eGsGzBlrzx+rVUsgSANk123LtWIcW5
- X9rQ0J8ES8mSdxMNeFcUwoX2eg3BLcaiamF49HL/DrtPtDyJv3NvrsBt7PdyE7Dhv9Ec
- 8l5g==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=rXOXtOWMXdx6V3PaH7y2j67k69HdpGi6JYNx/duExm4=;
+ b=jo/ob+3BCrGYRqUTxnl3CJQ2mgP2SWS+gmmrOH08Ij2fdFckrjmp/jFlWMa6AtR8CZ
+ TvGSCw1ztXMnpV7pTQlpL9160MosuLUh4xqQILqI/SA4A0+vCYNL6A6S1O4a5AtYULaq
+ 7blpfvviLeMTSutVML0bJHQYdnmvx3GOH5/Mh4fSpbXix4de1QdTKTx99vyR3XlW/Iq8
+ Zd/ehUC8F30CiqRdkRvr37xFOJ99n0uvDtdp3G3mJaovBvJBf6/bPVyqSL6NIjV1SSlG
+ T2GO5NEQ7bcX0LArKPrdMyNZu/tHXJt6l2QpVx3QdZmItLbOuJHv6bi9fyXviUi3rClG
+ 7Vwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=YJkWk99bLZw++rSGr2/IK3Rs1XoNvFcnuxKFkD7iXfQ=;
- b=lx6sFPcTQlsY3yqjMUiXWnTZNkteEPImxIzgj0wL7dt0XkdBqN+n4GCYlMbXbEqOjH
- 0nd3N7+68FH+Bs0/eyIGZ6dTfgSvvqCU+wHh+hhqLxw+Vmk+hq4IVyIxdRG82j+9ZyR4
- MtPfjiR2T2PAZpdZgO5C9+8iyIIM7VwVxHLGFGc9Rb8BNvrmX37+A1XT5qOVQI3RmDBq
- jn2FFs/WiD5o3sKUiDZWlMN6qMoq78P6k787I7Iy7jhHsnyywisbTswSPN61AxwwMLnS
- D9okp8Z93cjtwMl/io3FhPvyyEVBTCsLrGNnoR/WkoEi+kyd0wqnKNr2jMgwVYspCGVt
- Mxag==
-X-Gm-Message-State: AOAM5316w7V6pN++rR3OBQuvB/75sgJatS5KaxktqB4g/TZ4hAAVaRTg
- PZLxya3yumOCbSiz/WPz4EY=
-X-Google-Smtp-Source: ABdhPJxHFbqVOmNHUuxR+neKszGPBNtKnYs0I9jRD3t+e3mY0TR4WuxOLTPugKbYcs1pvwkwR2BWgQ==
-X-Received: by 2002:a63:4e4d:0:b0:381:640e:a373 with SMTP id
- o13-20020a634e4d000000b00381640ea373mr3905684pgl.379.1647363407195; 
- Tue, 15 Mar 2022 09:56:47 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=rXOXtOWMXdx6V3PaH7y2j67k69HdpGi6JYNx/duExm4=;
+ b=ruiHdRgc06RZNE8GSp3Wn7K5ZZjuk4WGDwabV4Daf+q2A7d/mFy/kcMg750zmMxiLZ
+ 7AQhUnFZ0yDVe5EuADwqI/Mjl0o0v1dYyIV++lM7KulHok0WRxNboEYt7NoR+HsGzhsS
+ vQu1xZwg7RmDV4rxc3ml1FbSGo08ALAgxCLgPwmV9+2Gmf825mwTpu9/Eey7kIQPwsS+
+ jOfRMcFbz7hTi0Xg+YefoKyO45p26iN0oLfQAhGCX2+eY4HLGoORJoUnmz4w0t66BFFr
+ dlkxWJPK27BgHZ4vswLob2olmQKJfdEas5RTMjOMCkEvOIizcYeRgeDzlRE9ofRUS2Mo
+ OLgw==
+X-Gm-Message-State: AOAM533Wp22wcwJbDn+cjGCQCs4VWgoXrAabF97AcTmEuTWT+XCWtxyG
+ 6lbuwlwUhErvhuCR7FsYJWM=
+X-Google-Smtp-Source: ABdhPJz4pIEbU4bzv2Y+E2tWGNys+OdN0xbyigN5nAao78yGfAcm97XbkBGKJh+pNXll+r5gUNZ2HA==
+X-Received: by 2002:a17:90a:4890:b0:1bf:654e:e1a0 with SMTP id
+ b16-20020a17090a489000b001bf654ee1a0mr5646825pjh.113.1647363417941; 
+ Tue, 15 Mar 2022 09:56:57 -0700 (PDT)
 Received: from tokunori-desktop.flets-east.jp
  ([240b:10:2720:5500:3e36:8008:b94b:774d])
  by smtp.gmail.com with ESMTPSA id
- l10-20020a056a00140a00b004c55d0dcbd1sm24835809pfu.120.2022.03.15.09.56.44
+ l10-20020a056a00140a00b004c55d0dcbd1sm24835809pfu.120.2022.03.15.09.56.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Mar 2022 09:56:46 -0700 (PDT)
+ Tue, 15 Mar 2022 09:56:57 -0700 (PDT)
 From: Tokunori Ikegami <ikegami.t@gmail.com>
 To: miquel.raynal@bootlin.com
 Cc: linux-mtd@lists.infradead.org, Tokunori Ikegami <ikegami.t@gmail.com>,
- Ahmad Fatoum <a.fatoum@pengutronix.de>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- stable@vger.kernel.org
-Subject: [PATCH v3 0/3] mtd: cfi_cmdset_0002: Use chip_ready() for write on
- S29GL064N
-Date: Wed, 16 Mar 2022 01:56:04 +0900
-Message-Id: <20220315165607.390070-1-ikegami.t@gmail.com>
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v3 1/3] mtd: cfi_cmdset_0002: Add S29GL064N ID definition
+Date: Wed, 16 Mar 2022 01:56:05 +0900
+Message-Id: <20220315165607.390070-2-ikegami.t@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220315165607.390070-1-ikegami.t@gmail.com>
+References: <20220315165607.390070-1-ikegami.t@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220315_095649_994432_0F8E56BD 
-X-CRM114-Status: UNSURE (   9.77  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220315_095700_958793_EC744CA4 
+X-CRM114-Status: GOOD (  13.07  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,31 +91,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-As pointed out by this bug report [1], the buffered write is now broken on
-S29GL064N. The reason is that changed the buffered write to use chip_good
-instead of chip_ready. One way to solve the issue is to revert the change
-partially to use chip_ready for S29GL064N since the way of least surprise.
+It is for the model number 01, 02, V1 and V2.
 
-[1] https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
-
-Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
 Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-mtd@lists.infradead.org
-Cc: stable@vger.kernel.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Tokunori Ikegami (3):
-  mtd: cfi_cmdset_0002: Add S29GL064N ID definition
-  mtd: cfi_cmdset_0002: Move and rename
-    chip_check/chip_ready/chip_good_for_write
-  mtd: cfi_cmdset_0002: Use chip_ready() for write on S29GL064N
-
- drivers/mtd/chips/cfi_cmdset_0002.c | 89 +++++++++++++++--------------
- 1 file changed, 47 insertions(+), 42 deletions(-)
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a761134fd3be..0125658a1d30 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -48,6 +48,7 @@
+ #define SST49LF040B		0x0050
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
++#define S29GL064N_MN12		0x0c01
+ 
+ /*
+  * Status Register bit description. Used by flash devices that don't
+@@ -462,7 +463,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_AMD, 0x0056, fixup_use_secsi },
+ 	{ CFI_MFR_AMD, 0x005C, fixup_use_secsi },
+ 	{ CFI_MFR_AMD, 0x005F, fixup_use_secsi },
+-	{ CFI_MFR_AMD, 0x0c01, fixup_s29gl064n_sectors },
++	{ CFI_MFR_AMD, S29GL064N_MN12, fixup_s29gl064n_sectors },
+ 	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors },
+ 	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors },
+ 	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors },
 -- 
 2.32.0
 
