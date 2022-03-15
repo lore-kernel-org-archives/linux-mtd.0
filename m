@@ -4,55 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEF9DC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 15 Mar 2022 07:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D64F8C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 15 Mar 2022 07:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ujxjLOrEQ/nhg6XXhpaBkPbNjTT6yDkunVtrFvIKkZM=; b=kfQ477J1Fi/gw+
-	ALY9BhVE3gFzkGnyc8dZBBMUZHHmEX3IkfNr566XbywblZ4ht7nh2RyUEAJ0EfoYqGlVUhFdi3lnk
-	zpdBf+qVvnyUtFAckIC6dYotxNy+PYUsdCr2iqz+3w6p+bz6DqtmIWjE1rebLarVDnrfeyYvnfvIE
-	4jZESexuR8VEZEoYOjoCLB8tmck4694BrKJbPVbGd+pCLNirlRfqPv4hgT7Thkc+Gd0fgG/QttUHB
-	/HgdjG6i0OyX8ZM8M8pAq8+Q0yjCjk7oNe4lsbuL/3I+dQCP+FDB3FsD6zeg/2Q1oLKJvwqasYe79
-	xdBbwFJ8fOrRh91nJL4Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+gOlEgcNxfHC4ufToIo5w2ZwRpiHtdRiIAJXzcRcyZk=; b=zsPZxQR4UWE49FYxzLSqkh8iFa
+	PLYZD9dKnKLjFpTgEwqdHUDEn6HmqbXLTcNO0PRKp9mmlwQFASq0HkFUFh1XMAWXKAAUrVX8L5/ow
+	QTGYlXxWL0T8LJ/wWt4qHwHXuErLcQhI/bvEMxx0EaUUAPq2/JItlWmv3kS8HoK+OwFmSWdlCbju5
+	GGLq5vbJ2F6QEoqDnH9z6UFU7bZ+1m1ZzMnep24D2Fn/EE4E3+qsZAvkSUbrahPxjQ1jg8za7/Bdb
+	pqIRmReqh9e5xayERD/NdgonLKvdk0gvX1dQ44Alg+r4ynJFVk/c5YJXIdeKl89nxfdQivMukepzy
+	JATyXMzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nU1G1-0083UT-Qm; Tue, 15 Mar 2022 07:06:13 +0000
-Received: from smtprelay08.ispgateway.de ([134.119.228.98])
+	id 1nU1T4-0084no-65; Tue, 15 Mar 2022 07:19:42 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nU1Fy-0083Td-Ge
- for linux-mtd@lists.infradead.org; Tue, 15 Mar 2022 07:06:12 +0000
-Received: from [89.1.81.74] (helo=ipc1.ka-ro)
- by smtprelay08.ispgateway.de with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <LW@KARO-electronics.de>)
- id 1nU1Fn-0003X7-SU; Tue, 15 Mar 2022 08:05:59 +0100
-Date: Tue, 15 Mar 2022 08:06:02 +0100
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Daniel =?UTF-8?B?R2zDtmNrbmVy?= <dg@emlix.com>, Han Xu <han.xu@nxp.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: Make NAND_BBT_NO_OOB_BBM configurable or let the gpmi driver
- decide?
-Message-ID: <20220315080602.7a2e250d@ipc1.ka-ro>
-In-Reply-To: <20220314164505.3affb1c8@xps13>
-References: <79beb2ef-7336-f067-5418-3fe62aa928d2@emlix.com>
- <20220222220235.pyvhaiieimf7uv74@umbrella>
- <3b9d1eb5-1fd7-7aab-b2b9-7cbfda8831b8@emlix.com>
- <20220224162958.184079e4@xps13>
- <0a5497bf-7716-e8c8-7e79-7df6602d5104@emlix.com>
- <20220224170357.1f99a77a@xps13>
- <6ba60b49-1e12-01a3-842f-4f6c96998a04@emlix.com>
- <20220314164505.3affb1c8@xps13>
-Organization: Ka-Ro electronics GmbH
+ id 1nU1T0-0084nA-LO
+ for linux-mtd@lists.infradead.org; Tue, 15 Mar 2022 07:19:40 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 0109222175;
+ Tue, 15 Mar 2022 08:19:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1647328776;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eBp22b+Jf/VqXBJB307d4HjUSjGIjGcSWocwZ6Hmf48=;
+ b=kINYpHq2nAD2bX0tyg7qbYH3c59HX1k35ZOz1OoAlj7OYTcG+UW5FIRb7k+wQMlmYVFX/N
+ A9E2uBHKmMhCdQUy38S86IZ1Jx6NO9CH45Rqu7UaknRARLbxLueBPonKcm1Rp0Q71Zu2/P
+ V7IPRAPLGILtt57NcelOQEank/D0GcM=
 MIME-Version: 1.0
-X-Df-Sender: bHdAa2Fyby1lbGVjdHJvbmljcy5kb21haW5mYWN0b3J5LWt1bmRlLmRl
+Date: Tue, 15 Mar 2022 08:19:35 +0100
+From: Michael Walle <michael@walle.cc>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, p.yadav@ti.com,
+ broonie@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, nicolas.ferre@microchip.com
+Subject: Re: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
+ mode
+In-Reply-To: <76eb13b6-9263-975f-3196-312259634301@ti.com>
+References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+ <76eb13b6-9263-975f-3196-312259634301@ti.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <b60064231d33581c20279172cf8f765e@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220315_000610_580698_6E81F92C 
-X-CRM114-Status: GOOD (  30.87  )
+X-CRM114-CacheID: sfid-20220315_001939_056761_6F9BC85E 
+X-CRM114-Status: GOOD (  44.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,70 +70,163 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-TWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cgo+IEhpIERh
-bmllbCwKPiAKPiBTb3JyeSBmb3IgdGhlIGRlbGF5Lgo+IAo+IGRnQGVtbGl4LmNvbSB3cm90ZSBv
-biBUaHUsIDI0IEZlYiAyMDIyIDE5OjE3OjQzICswMTAwOgo+IAo+ID4gSGkgTWlxdWVsLAo+ID4g
-Cj4gPiBBbSAyNC4wMi4yMiB1bSAxNzowMyBzY2hyaWViIE1pcXVlbCBSYXluYWw6ICAKPiA+ID4g
-ZGdAZW1saXguY29tIHdyb3RlIG9uIFRodSwgMjQgRmViIDIwMjIgMTY6NTU6MjcgKzAxMDA6ICAg
-IAo+ID4gPj4gQW0gMjQuMDIuMjIgdW0gMTY6Mjkgc2NocmllYiBNaXF1ZWwgUmF5bmFsOiAgICAK
-PiA+ID4+PiBkZ0BlbWxpeC5jb20gd3JvdGUgb24gV2VkLCAyMyBGZWIgMjAyMiAxMTo1OTowMiAr
-MDEwMDogICAgICAKPiA+ID4+Pj4gQW0gMjIuMDIuMjIgdW0gMjM6MDIgc2NocmllYiBIYW4gWHU6
-Pj4+IENvdWxkIHlvdSBwbGVhc2UKPiA+ID4+Pj4gZGVzY3JpYmUgbW9yZSBkZXRhaWxzIGFib3V0
-IHdoYXQga2luZCBvZiBlcnJvciwgaG93IHRvICAgICAgCj4gPiA+Pj4+PiByZXByb2R1Y2UgaXQg
-YW5kIG9uIHdoaWNoIGtlcm5lbCB2ZXJzaW9uPyAgICAgICAgCj4gPiA+Pj4+Cj4gPiA+Pj4+IFlv
-dSBuZWVkIGEgZmxhc2ggdGhhdCBoYXMgb25lIGJhZCBibG9jayB3aGVyZSBwcm9ncmFtbWluZyB0
-aGUKPiA+ID4+Pj4gQkJNIHNldHMgTkFORF9TVEFUVVNfRkFJTCBpbiBpdHMgc3RhdHVzIHJlZ2lz
-dGVyLiBUaGUgbGF0ZXN0Cj4gPiA+Pj4+IGtlcm5lbHMgc2hvdWxkIHN0aWxsIGhhdmUgcHJvYmxl
-bXMgd2hlbiB0aGlzIGhhcHBlbnMgaW4gYQo+ID4gPj4+PiBVQkkuICAgICAgCj4gPiA+Pj4KPiA+
-ID4+PiBJIGJlbGlldmUgd2Ugc2hvdWxkIHRyeSB0byB0YWNrbGUgIndoeSIgdGhpcyBoYXBwZW5z
-IG1vcmUgdGhhbgo+ID4gPj4+IHRyeSB0byB3b3JrYXJvdW5kIGl0cyBjb25zZXF1ZW5jZXMuIENh
-biB5b3UgZ2l2ZSBtb3JlIGRldGFpbHMKPiA+ID4+PiBhYm91dCB3aHkgd2UgZ2V0IHRoaXMgc3Rh
-dHVzPyAgICAgIAo+ID4gPj4KPiA+ID4+IFVobSwgdGhlIGJsb2NrIGlzIGJhZCwgYnJva2VuLiBJ
-dCBzaG93cyB0aGUgc2FtZSBiZWhhdmlvciBldmVuCj4gPiA+PiBhZnRlciBwb3dlciBjeWNsaW5n
-LiBUaGUgb3RoZXIgYmxvY2tzIGFyZSBvay4gSSBkb24ndCB0aGluayBpdAo+ID4gPj4gaXMgb3Vy
-IGZhdWx0IHRoYXQgaXQgZGllZCBzbyBlYXJseS4gICAgCj4gPiA+IAo+ID4gPiBCdXQgd2h5IGFm
-dGVyIGEgcG93ZXIgY3ljbGUgYXJlIHdlIHRyeWluZyB0byB3cml0ZSB0aGUgQkJNPyAgICAKPiA+
-IAo+ID4gSSBkaWQgbm90IHdhbnQgdG8gaW1wbHkgdGhhdCBMaW51eCB0cmllcyB0byB3cml0ZSB0
-aGUgYmxvY2sgYWZ0ZXIKPiA+IGV2ZXJ5IHBvd2VyIGN5Y2xlLiBVQkkgbm90aWNlcyB0aGF0IHRo
-ZSBibG9jayBpcyBicm9rZW4gb25jZSBhbmQKPiA+IG1hbmFnZXMgdG8gbWFyayBpdCBhcyBiYWQg
-aW4gdGhlIEJCVCwgc28gYWZ0ZXIgcG93ZXIgY3ljbGUgaXQgd2lsbAo+ID4gbm90IHRyeSB0byB3
-cml0ZSB0byB0aGF0IGJsb2NrIGFnYWluLiBXaGF0IEkgd2FudGVkIHRvIHNheSBpcyB0aGF0Cj4g
-PiBtYW51YWwgdGVzdGluZyBvZiB0aGUgYmxvY2sgYWZ0ZXIgcG93ZXIgY3ljbGluZyBzaG93cyB0
-aGF0IHRoZQo+ID4gYmxvY2sgcmVtYWlucyB1bnVzYWJsZS4KPiA+IAo+ID4gVGhlIHByb2JsZW0g
-aXMgdGhhdCBVQkkgc3dpdGNoZXMgdG8gcmVhZC1vbmx5IG1vZGUgYWZ0ZXIgaXQgbWFya2VkCj4g
-PiB0aGUgYmxvY2sgYXMgYmFkIGluIHRoZSBCQlQgYmVjYXVzZSB0aGUgcmVkdW5kYW50IEJCTSBp
-biB0aGUgT09CIG9mCj4gPiB0aGUgYmxvY2sgY291bGQgbm90IGJlIHdyaXR0ZW4uICAKPiAKPiBJ
-IHRoaW5rIEkgdW5kZXJzdGFuZCBiZXR0ZXIgeW91ciBzaXR1YXRpb24gbm93Lgo+IAo+IFNvIGhl
-cmUgaXMgb3VyIHByb2JsZW0gOiB3aHkgY2FuJ3Qgd2Ugd3JpdGUgdGhlIE9PQj8gSWYgdGhlcmUg
-aXMgYQo+IGdvb2QgcmVhc29uIHRoaXMgY2Fubm90IGhhcHBlbiwgdGhlbiB3ZSBjYW4gcHJvdmlk
-ZSB0aGUKPiBOQU5EX0JCVF9OT19PT0JfQkJNIGZsYWcuIE90aGVyd2lzZSB3ZSBzaG91bGQgZmlu
-ZCB0aGUgcm9vdCBjYXVzZS4KPiAKPiA+IEFuZCB3ZSBkb24ndCB3YW50IHRvIGdldCBpbnRvIGEg
-c2l0dWF0aW9uCj4gPiB3aGVyZSB3ZSBoYXZlIHRvIHJlYm9vdCB0aGUgc3lzdGVtLCBlc3BlY2lh
-bGx5IGlmIGl0IGlzIGJlY2F1c2Ugb2YKPiA+IHNvbWV0aGluZyB3ZSBkb24ndCBuZWVkLgo+ID4g
-Cj4gPiBXZSBjb3VsZCBjaGFuZ2UgbmFuZF9ibG9ja19tYXJrYmFkX2xvd2xldmVsIHRvIHJldHVy
-biBzdWNjZXNzIGFzCj4gPiBsb25nIGFzIHVwZGF0aW5nIHRoZSBCQlQgc3VjY2VlZHMsIGlmIHlv
-dSB0aGluayB0aGF0IHRoaXMgaXMgdGhlCj4gPiBjb3JyZWN0IGFwcHJvYWNoLiAgCj4gCj4gVGhh
-dCBpcyBub3QgYSBjb3JyZWN0IGFwcHJvYWNoIGlmIHdlIGRpZCBub3QgYXNrZWQgdG8gYnlwYXNz
-IHdyaXRpbmcKPiBCQk1zIGV4cGxpY2l0bHkuCj4KVGhlIEJCTSBpbiB0aGUgT09CIGFyZWEgaXMg
-YSAiRmFjdG9yeSBCYWQgQmxvY2sgTWFya2VyIiB3aGVyZSB0aGUKbWFudWZhY3R1cmVyIG1hcmtz
-IGluaXRpYWxseSBiYWQgYmxvY2tzLiBUaGVyZSBpcyBubyBndWFyYW50ZWUgdGhhdCB0aGUKQkJN
-IGNhbiBiZSB3cml0dGVuIG9uIGEgYmxvY2sgdGhhdCB0dXJuZWQgYmFkIGxhdGVyb24uCklmIGEg
-YmxvY2sgdHVybmVkIEJBRCBkdXJpbmcgdXNlIGl0IGlzIGNvbXBsZXRlbHkgdXNlbGVzcyB0byB0
-cnkgd3JpdGluZwphbnl0aGluZyB0byBpdC4gRGVwZW5kaW5nIG9uIHRoZSBuYXR1cmUgb2YgdGhl
-IE5BTkQgZXJyb3IgdGhhdCB0dXJuZWQKdGhlIGJsb2NrIGJhZCwgdHJ5aW5nIHRvIHdyaXRlIHRo
-YXQgYmxvY2sgbWF5IGFsc28gYWZmZWN0IHJhbmRvbSBvdGhlcgpibG9ja3MuCgoKTG90aGFyIFdh
-w59tYW5uCi0tIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwoKS2EtUm8gZWxlY3Ryb25pY3MgR21iSCB8IFBhc2NhbHN0cmHDn2UgMjIg
-fCBEIC0gNTIwNzYgQWFjaGVuClBob25lOiArNDkgMjQwOCAxNDAyLTAgfCBGYXg6ICs0OSAyNDA4
-IDE0MDItMTAKR2VzY2jDpGZ0c2bDvGhyZXI6IE1hdHRoaWFzIEthdXNzZW4KSGFuZGVsc3JlZ2lz
-dGVyZWludHJhZzogQW10c2dlcmljaHQgQWFjaGVuLCBIUkIgNDk5NgoKd3d3Lmthcm8tZWxlY3Ry
-b25pY3MuZGUgfCBpbmZvQGthcm8tZWxlY3Ryb25pY3MuZGUKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+Hi,
+
+Am 2022-03-15 07:08, schrieb Vignesh Raghavendra:
+> On 11/03/22 1:31 pm, Tudor Ambarus wrote:
+>> There are NOR flashes (Macronix) that swap the bytes on a 16-bit 
+>> boundary
+>> when configured in Octal DTR mode. The byte order of 16-bit words is
+>> swapped when read or written in Octal Double Transfer Rate (DTR) mode
+>> compared to Single Transfer Rate (STR) modes. If one writes D0 D1 D2 
+>> D3
+>> bytes using 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it 
+>> will
+>> read back D1 D0 D3 D2. Swapping the bytes is a bad design decision 
+>> because
+>> it may introduce some endianness problems. It can affect the boot 
+>> sequence
+>> if the entire boot sequence is not handled in either 8D-8D-8D mode or 
+>> 1-1-1
+>> mode. So we must swap the bytes back to have the same byte order as in 
+>> STR
+>> modes. Fortunately there are controllers that can swap the bytes back 
+>> at
+>> runtime, addressing the flash's endiannesses requirements.
+>> If the controllers are not capable of swapping the bytes, the protocol 
+>> is
+>> downgraded via spi_nor_spimem_adjust_hwcaps(). When available, the 
+>> swapping
+>> of the bytes is always done regardless if it's a data or register 
+>> access,
+>> so that we comply with the JESD216 requirements: "Byte order of 16-bit
+>> words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
+>> 
+> 
+> Sorry, bit late to the thread. But, dropping 8D-8D-8D mode support is
+> quite restrictive IMO.
+> 
+> AFAIK, SFDP standard does not dictate how data should be stored in 
+> flash
+> or how SW should interpret after reading data from flash. It merely
+> indicates endian-ness compared to 1-1-1 mode.
+
+Mh, but below you are saying that Micronix is violating the standard
+and is swapping the bytes. So, the standard is actually specifying the
+byte order.
+
+> So, its up to various system SWs like bootloader/Linux to work 
+> according
+> to pre-aligned layout as there is no rule that data needs to be stored
+> in byte order.
+> 
+> We have two types of controllers:
+> 
+> 1. SPI controllers supporting swapping endian-ness on the fly:
+> -> For such flashes, better choice is to have SWAP option always
+> enabled. So that data written in 8D-8D-8D mode can be read correctly in
+> 1-1-1 mode and vice-versa.
+> ( I am assuming SWAP option of controller is only effective in 8D-8D-8D
+> mode and is NOP in 1-1-1 or other modes)
+
+Why should it be always enabled? You can also say it should always
+be disabled. It doesn't matter if the byte order isn't important.
+
+But I say the byte order *is* important. We need one reference.
+
+> But, its possible that "ROM" or other non-upgradable SWs may choose not
+> make to use of this SWAP option of HW to keep things simple in which
+> case, they cannot boot from 8D-8D-8D mode with above setting. Such SW
+> don't always have knowledge of flash and cannot be forced to have a
+> constraint to enable byte swap on read.
+> 
+> So, IMO, its best left to system integrators to specify whether or not
+> SWAP option needs to be enabled (perhaps via DT as its per flash
+> specific property?)
+
+Agreed, but I don't think we have to do it now. If someone cares,
+he can make a patch. Also we have to consider non-DT platforms.
+
+> 2.  SPI controllers don't support endian-ness SWAP on the fly:
+> It is still possible to reliably read and write data as long as its
+> written and read back in same mode.
+> 
+> De-rating speeds because of absence of this support would mean 
+> reduction
+> of speed by **16 times** (maybe even higher as 8D mode tends to support
+> higher bus freqs).
+
+You can also fall back to a quad mode. Again, can be implemented if
+someone cares.
+
+> Swapping bytes in Linux before writing or after
+> reading is not an option either as it negatively impacts performance.
+> 
+> Asking ROM/bootloaders to swap bytes based on SFDP indication is
+> restrictive too as it involves boot time penalty and most systems with
+> OSPI flashes are using them to achieve super fast boot times.
+
+No we are talking about what? ms? to read the sfdp? If that is really
+a use case, the the bootloader can hardcode it there.
+
+> One more case to consider is flashes that dont have SFDP table to
+> indicate byte order but follow Macronix's convention. In such cases, 
+> its
+> better for SPI NOR layer to be as dumb as possible and not really do 
+> any
+> byte swapping, leaving it up to user space to handle/interpret data
+> appropriately.
+> 
+> Also, Macronix is probably in violation of xSPI spec (JESD251A 6.9.5.2
+> 8D-8D-8D Profile 1.0) where diagrams clearly show data output should be
+> D0 D1 D2 D3... So ROMs following xSPI spec (which is the only spec
+> providing flash agnostic way of switching to 8D mode and reading data 
+> in
+> 8D mode) would not care about SFDP bit indicating byteorder and its up
+> to flasher programs to take care of the same
+> 
+> IMO, kernel device drivers should just provide access to underlying HW
+> and not have too much intelligence to interpret data/take decisions
+
+I strongly disagree here. The kernel should provide a consistent
+view of the flash content, regardless if its read in 1-1-1 or 8d-8d-8d.
+Imagine you are forced to switch away from 8d-8d-8d mode (for whatever
+reason) after some time. How would you know how to read the contents?
+
+JESD216 is a standard, too. There is a reason this bit ended up in
+there. If I had to guess, someone messed up the byte order in 8d-8d-8d
+but it was too late. And now the standard is giving you a hint that
+you are using a flash with that messed up byte ordering.
+
+I want to avoid having flash contents where the byte are swapped.
+The sooner we care about that, the better. You cannot undo that
+later on.
+
+> So, simpler constraint to put is:
+> Flasher programs should program data in the same mode in which
+> ROM/bootloder/Linux is expected to read the data on that system.
+
+So what if your flasher only has 1 pin? With this you are just
+shifting the problem elsewhere.
+
+> For Macronix like flashes, if one has a ROM/bootloader that only
+> supports 1-1-1 mode and flashing data in 8D-8D-8D mode with Linux, then
+> please generate a byte-swapped image offline and flash it. Don't impose
+> penalty on systems that do best to handle this messy situation.
+> I see this as the only option with least performance penalty.
+
+I certainly have nothing against an option to turn this all off
+to improve speed. But the swapping (if asked to do so) and the
+degradation should be an *opt-out*. Not an opt-in. Nobody will
+do the opt-in and we end up with 'corrupted' flash contents.
+
+-michael
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
