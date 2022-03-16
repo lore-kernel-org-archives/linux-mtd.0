@@ -4,58 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1725C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Mar 2022 17:27:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 004C2C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Mar 2022 19:08:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mfPkIL+ACIYH7V5X1lGg9Luh4qo7D3y1kDBeHYH98rY=; b=DL401fO5lXmZUb
-	Ak4eB2jCdlUkZ/49uKkwGbNLC5bgOuyV/jL4RsPzNtf80zP6Bx3t+1I8Fu2I7cXezLdcURcslViEw
-	T+yC+wW2vTAqZRQkjT18FjNJce74rTlyojyxbuWWIYnoIfGLtMJYVhFZQCqWz5iUeQeArM3cRw5ik
-	1d9+Q0I95mdOly+Y5jlBIWg0F3Dfgg4wohy4YuGs1V+OfDSicOpWSUmFuJZNXQAuzY+nUHlNizO4n
-	200A1nhDnbXOUaA+kNRG3QS75/HT4kQjr4F3aiufWtVo5Z3u2dWWeC7Ljz+zLz5sDjRZsw6+he7kM
-	1ijnggE8psocOzonPyFg==;
+	List-Owner; bh=dseDSH44JQcp5S7KjEdItHXIXetmo6tquHE79o1dBcc=; b=qRnZ42+9euH5nb
+	/am1qgI1mGcL9mv0k/gd+aoMy6oVUREmxxAJeDkwIrvid7894bOWrtMKOpG1ITodicDW5sMX6EVsn
+	0hiTgYdhRzYuWrtwSKumIfpKY+ROa41Lr3ghPXLhKlj5Xqpbq2EqT8CBfn/0mpWQv1BJADCgK4BEU
+	fageB3hMCa3AyUi3/Jo0+ef8+JzYLWQw7f0eGU4/GIBDma4VLywcvjirv0lJvIlF8L930psUg0TFm
+	DDCD2MKq0htUOCAbtDpSfIX3xLV2dcMdZe+bhZjSk9bDj4XGxedIr5PuQN3E3NHyYiWWrSb1LqcJ0
+	bKdpqvjf8g1gYiQw4wow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUXQW-00Dxt5-3o; Wed, 16 Mar 2022 17:27:12 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1nUYzp-00EA06-IR; Wed, 16 Mar 2022 19:07:45 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUXQS-00Dxr4-Kq
- for linux-mtd@lists.infradead.org; Wed, 16 Mar 2022 17:27:10 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 9CD80200010;
- Wed, 16 Mar 2022 17:27:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1647451627;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=scq8Zb1lfOk6h+QLgGzlnO+0bMXFS+z430N4mkT6XOs=;
- b=Q6e5qnx21aoq6asNXsmEuw6WTpfSFBnbcPLQ66ACIOXZzqRraC/xSQjzSAypvcsn+ImRk4
- jewrm9HYbNcwvVxa4D6+xYbq3Xfj1FsCCO6NjHo8kCXXkOpKxM9rXt7m+AqKycpZSHXJn9
- ICIzZZ8K77OeAr9dNnCbLuXjxVPJYbFgogdc71T7+eaxE91ymetoqcsQKjCq5TzjqZotyI
- LH73vk6xr0hS7ZFZW+moHlbYlsmCB8QMoM6W2oIcTXFPavcHAImX1mJN9z2vT319Kv4Al7
- 3xy28vM2GmVJpYmxb2kDsWmol80f+6mmeHg9Y3UP5RxRaDK46if+yc6jTl+OvA==
-Date: Wed, 16 Mar 2022 18:27:05 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tokunori Ikegami <ikegami.t@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
- stable@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mtd: cfi_cmdset_0002: Use chip_ready() for write
- on S29GL064N
-Message-ID: <20220316182705.7b38828b@xps13>
-In-Reply-To: <20220316155455.162362-1-ikegami.t@gmail.com>
-References: <20220316155455.162362-1-ikegami.t@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nUYzm-00E9zk-0Z
+ for linux-mtd@lists.infradead.org; Wed, 16 Mar 2022 19:07:43 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22GJ7aGd092762;
+ Wed, 16 Mar 2022 14:07:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1647457656;
+ bh=N5ylJZ1K6pH9Ewh0ti3NqYFgD8V839oLAeuagKadsz0=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=tOLYc0HrapKS2LqxUYFvFPZxuhZMSXLeiTl4X04fbvFvU+PYH0+yuhlFcZH+bImF6
+ yU1IjkFy4/rqTLmdohg8lxxk2k4P0LFqfDWr21mGoFH9d3p/WbTEKBK+pRiH1dtyB7
+ urPpUSLuldowfha+2A3EUeJqzJeOdZ97ggWCniOE=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22GJ7ak6050129
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 16 Mar 2022 14:07:36 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 16
+ Mar 2022 14:07:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Wed, 16 Mar 2022 14:07:36 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22GJ7Y5o027198;
+ Wed, 16 Mar 2022 14:07:35 -0500
+Date: Thu, 17 Mar 2022 00:37:34 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <heiko.thiery@gmail.com>
+Subject: Re: [PATCH v1] mtd: spi-nor: unset quad_enable if SFDP doesn't
+ specify it
+Message-ID: <20220316190734.ft2fnesptnyk2cdg@ti.com>
+References: <20220304185137.3376011-1-michael@walle.cc>
+ <7f339d0c-5ca9-261c-a545-d4ebf3bda140@microchip.com>
+ <92cde38c-d398-44f4-26f8-ef4919f5944e@microchip.com>
+ <7f947928e7189f98eb950828990b3920@walle.cc>
+ <91393780-1521-09b7-8dea-14c65e18b37e@microchip.com>
+ <0cf8dbbf4ad005abd3db825fb257dedd@walle.cc>
+ <33464af7-b445-6229-a02d-703a5ce6b5ef@microchip.com>
+ <77c2c64f362b08cbbdab517bbaa49101@walle.cc>
+ <683b7df7-cd34-c87b-9918-fd63d09df2f3@microchip.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <683b7df7-cd34-c87b-9918-fd63d09df2f3@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220316_102708_865590_36FC64EE 
-X-CRM114-Status: GOOD (  13.97  )
+X-CRM114-CacheID: sfid-20220316_120742_195149_5DC9BF64 
+X-CRM114-Status: GOOD (  52.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,39 +86,194 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgVG9rdW5vcmksCgppa2VnYW1pLnRAZ21haWwuY29tIHdyb3RlIG9uIFRodSwgMTcgTWFyIDIw
-MjIgMDA6NTQ6NTIgKzA5MDA6Cgo+IEFzIHBvaW50ZWQgb3V0IGJ5IHRoaXMgYnVnIHJlcG9ydCBb
-MV0sIGJ1ZmZlcmVkIHdyaXRlcyBhcmUgbm93IGJyb2tlbiBvbgo+IFMyOUdMMDY0Ti4gVGhpcyBp
-c3N1ZSBjb21lcyBmcm9tIGEgcmV3b3JrIHdoaWNoIHN3aXRjaGVkIGZyb20gdXNpbmcgY2hpcF9n
-b29kKCkKPiB0byBjaGlwX3JlYWR5KCksIGJlY2F1c2UgRFEgdHJ1ZSBkYXRhIDB4RkYgaXMgcmVh
-ZCBvbiBTMjlHTDA2NE4gYW5kIGFuIGVycm9yCj4gcmV0dXJuZWQgYnkgY2hpcF9nb29kKCkuIE9u
-ZSB3YXkgdG8gc29sdmUgdGhlIGlzc3VlIGlzIHRvIHJldmVydCB0aGUgY2hhbmdlCj4gcGFydGlh
-bGx5IHRvIHVzZSBjaGlwX3JlYWR5IGZvciBTMjlHTDA2NE4uCgpUaGFua3MgZm9yIHlvdXIgcXVp
-Y2sgaXRlcmF0aW9ucyBidXQgb3ZlcmFsbCBJIHNlcmlvdXNseSBkb24ndCBmZWVsCnRoaXMgc2Vy
-aWVzIGlzIHJlYWR5LiBBdCBsZWFzdCByaWdodCBub3cgSSBhbSBzdGlsbCBub3Qgc2F0aXNmaWVk
-IGJ5Cml0cyBzaGFwZS4KCj4gCj4gWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvYjY4N2My
-NTktNjQxMy0yNmM5LWQ0YzktYjNhZmE2OWVhMTI0QHBlbmd1dHJvbml4LmRlLwo+IAo+IEZpeGVz
-OiBkZmVhZTEwNzM1ODMoIm10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2Ugd3JpdGUgYnVmZmVy
-IHRvIGNoZWNrIGNvcnJlY3QgdmFsdWUiKQoKLi4uIGFuZCB0aGlzIEZpeGVzIHRhZyBwb2ludHMg
-dG8gYSB2NC4xOCBrZXJuZWwsIHNvIGlmIHRoaXMgaXMgdHJ1ZSwgd2UKc2hvdWxkIGhhdmUgYSBi
-YWNrcG9ydC1hYmxlIHBhdGNoLiBUaGlzIGFsc28gbWVhbnMgdGhhdCB0aGlzIGlzIG5vdCBhcwpj
-cml0aWNhbCB0aGFuIEkgdGhvdWdodCBpZiBwZW9wbGUgYWxyZWFkeSBsaXZlZCA0IHllYXJzIHdp
-dGggdGhlIGJ1Zy4KClZpZ25lc2gsIEkgbGV0IHlvdSBjb250aW51ZSBpdGVyYXRpbmcgd2l0aCBU
-b2t1bm9yaSBhbmQgYWNrIHRoZSBzZXJpZXMKd2hlbiB5b3UgZmVlbCBpdCdzIHJlYWR5LgoKPiBT
-aWduZWQtb2ZmLWJ5OiBUb2t1bm9yaSBJa2VnYW1pIDxpa2VnYW1pLnRAZ21haWwuY29tPgo+IFRl
-c3RlZC1ieTogQWhtYWQgRmF0b3VtIDxhLmZhdG91bUBwZW5ndXRyb25peC5kZT4KPiBDYzogc3Rh
-YmxlQHZnZXIua2VybmVsLm9yZwo+IAo+IFRva3Vub3JpIElrZWdhbWkgKDMpOgo+ICAgbXRkOiBj
-ZmlfY21kc2V0XzAwMDI6IE1vdmUgYW5kIHJlbmFtZQo+ICAgICBjaGlwX2NoZWNrL2NoaXBfcmVh
-ZHkvY2hpcF9nb29kX2Zvcl93cml0ZQo+ICAgbXRkOiBjZmlfY21kc2V0XzAwMDI6IFVzZSBjaGlw
-X3JlYWR5KCkgZm9yIHdyaXRlIG9uIFMyOUdMMDY0Tgo+ICAgbXRkOiBjZmlfY21kc2V0XzAwMDI6
-IEFkZCBTMjlHTDA2NE4gSUQgZGVmaW5pdGlvbgo+IAo+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlf
-Y21kc2V0XzAwMDIuYyB8IDkzICsrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tCj4gIDEgZmls
-ZSBjaGFuZ2VkLCA0OSBpbnNlcnRpb25zKCspLCA0NCBkZWxldGlvbnMoLSkKPiAKClRoYW5rcywK
-TWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On 15/03/22 07:47AM, Tudor.Ambarus@microchip.com wrote:
+> On 3/15/22 09:24, Michael Walle wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the content is safe
+> > =
+
+> > Am 2022-03-15 06:55, schrieb Tudor.Ambarus@microchip.com:
+> >> On 3/14/22 22:42, Michael Walle wrote:
+> >>> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+> >>> the content is safe
+> >>>
+> >>> Am 2022-03-09 05:49, schrieb Tudor.Ambarus@microchip.com:
+> >>>> On 3/7/22 20:56, Michael Walle wrote:
+> >>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> >>>>> know
+> >>>>> the content is safe
+> >>>>>
+> >>>>> Am 2022-03-07 10:23, schrieb Tudor.Ambarus@microchip.com:
+> >>>>>> On 3/7/22 09:12, Tudor.Ambarus@microchip.com wrote:
+> >>>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> >>>>>>> know
+> >>>>>>> the content is safe
+> >>>>>>>
+> >>>>>>> On 3/4/22 20:51, Michael Walle wrote:
+> >>>>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> >>>>>>>> know the content is safe
+> >>>>>>>>
+> >>>>>>>> While the first version of JESD216 specify the opcode for 4 bit
+> >>>>>>>> I/O
+> >>>>>>>> accesses, it lacks information on how to actually enable this
+> >>>>>>>> mode.
+> >>>>>>>>
+> >>>>>>>> For now, the one set in spi_nor_init_default_params() will be
+> >>>>>>>> used.
+> >>>>>>>> But this one is likely wrong for some flashes, in particular the
+> >>>>>>>> Macronix MX25L12835F. Thus we need to clear the enable method
+> >>>>>>>> when
+> >>>>>>>> parsing the SFDP. Flashes with such an SFDP revision will have to
+> >>>>>>>> use
+> >>>>>>>> a
+> >>>>>>>> flash (and SFDP revision) specific fixup.
+> >>>>>>>>
+> >>>>>>>> This might break quad I/O for some flashes which relied on the
+> >>>>>>>> spi_nor_sr2_bit1_quad_enable() that was formerly set. If your
+> >>>>>>>> bisect
+> >>>>>>>> turns up this commit, you'll probably have to set the proper
+> >>>>>>>> quad_enable method in a post_bfpt() fixup for your flash.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Right, I meant adding a paragraph such as the one from above.
+> >>>>>>>
+> >>>>>>>> Signed-off-by: Michael Walle <michael@walle.cc>
+> >>>>>>>> Tested-by: Heiko Thiery <heiko.thiery@gmail.com>
+> >>>>>>>> ---
+> >>>>>>>> changes since RFC:
+> >>>>>>>> =A0- reworded commit message
+> >>>>>>>> =A0- added comment about post_bfpt hook
+> >>>>>>>>
+> >>>>>>>> Tudor, I'm not sure what you meant with
+> >>>>>>>> =A0 Maybe you can update the commit message and explain why would
+> >>>>>>>> some
+> >>>>>>>> =A0 flashes fail to enable quad mode, similar to what I did.
+> >>>>>>>>
+> >>>>>>>> It doesn't work because the wrong method is chosen? ;)
+> >>>>>>>>
+> >>>>>>>> =A0drivers/mtd/spi-nor/sfdp.c | 11 ++++++++++-
+> >>>>>>>> =A01 file changed, 10 insertions(+), 1 deletion(-)
+> >>>>>>>>
+> >>>>>>>> diff --git a/drivers/mtd/spi-nor/sfdp.c
+> >>>>>>>> b/drivers/mtd/spi-nor/sfdp.c
+> >>>>>>>> index a5211543d30d..6bba9b601846 100644
+> >>>>>>>> --- a/drivers/mtd/spi-nor/sfdp.c
+> >>>>>>>> +++ b/drivers/mtd/spi-nor/sfdp.c
+> >>>>>>>> @@ -549,6 +549,16 @@ static int spi_nor_parse_bfpt(struct spi_nor
+> >>>>>>>> *nor,
+> >>>>>>>> =A0=A0=A0=A0=A0=A0=A0 map->uniform_erase_type =3D map->uniform_r=
+egion.offset &
+> >>>>>>>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SNOR_ERASE_TYPE_MASK;
+> >>>>>>>>
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0 /*
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 * The first JESD216 revision doesn't spec=
+ify a method to
+> >>>>>>>> enable
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 * quad mode. spi_nor_init_default_params(=
+) will set a
+> >>>>>>>> legacy
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 * default method to enable quad mode. We =
+have to disable
+> >>>>>>>> it
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 * again.
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 * Flashes with this JESD216 revision need=
+ to set the
+> >>>>>>>> quad_enable
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 * method in their post_bfpt() fixup if th=
+ey want to use
+> >>>>>>>> quad
+> >>>>>>>> I/O.
+> >>>>>>>> +=A0=A0=A0=A0=A0=A0=A0 */
+> >>>>>>>
+> >>>>>>> Great. Looks good to me. I'll change the subject to "mtd: spi-nor:
+> >>>>>>> sfdp:"
+> >>>>>>> when applying.
+> >>>>>>
+> >>>>>> As we talked on the meeting, we can instead move the default quad
+> >>>>>> mode
+> >>>>>> init
+> >>>>>> to the deprecated way of initializing the params, or/and to where
+> >>>>>> SKIP_SFDP
+> >>>>>> is used. This way you'll no longer need to clear it here.
+> >>>>>
+> >>>>> Mh, I just had a look and I'm not sure it will work there,
+> >>>>> because in the deprecated way, the SFDP is still parsed and
+> >>>>> thus we might still have the wrong enable method for flashes
+> >>>>> which don't have PARSE_SFDP set.
+> >>>>
+> >>>> Moving the default quad_enable method to
+> >>>> spi_nor_no_sfdp_init_params(),
+> >>>> thus also for spi_nor_init_params_deprecated() because it calls
+> >>>> spi_nor_no_sfdp_init_params(), will not change the behavior for the
+> >>>> deprecated way of initializing the params, isn't it?
+> >>>
+> >>> What do you mean? The behavior is not changed and the bug is not
+> >>> fixed for the flashes which use the deprecated way. It will get
+> >>> overwritten by the spi_nor_parse_sfdp call in
+> >>> spi_nor_sfdp_init_params_deprecated().
+> >>
+> >> right, it will not change the logic for the deprecated way of
+> >> initializing
+> >> the params.
+> >>
+> >>>
+> >>>> A more reason
+> >>>> to use PARSE_SFDP/SKIP_SFDP, we'll get rid of the deprecated params
+> >>>> init at some point.
+> >>>>
+> >>>> No new fixes for spi_nor_init_params_deprecated().
+> >>>
+> >>> Hm, so we deliberately won't fix known bugs there? I'm not sure
+> >>> I'd agree here. Esp. because it is hard to debug and might even
+> >>> depend on non-volatile state of the flash.
+> >>>
+> >>
+> >> even more a reason to switch to the recommended way of initializing
+> >> the flash. We'll get rid of the deprecated code anyway, no?
+> > =
+
+> > I get your point. But I disagree with you on that point :) Features?
+> > sure we can say this shouldn't go to any deprectated code flow and
+> > might poke users to post a patch. But bug fixes? I don't think
+> > we should hold these back.
+> =
+
+> Why to fix something that never worked in a deprecated code path? It's
+> equivalent to adding new support, no?
+
+I have not followed this discussion very closely but this argument makes =
+
+sense to me. If something never worked in the deprecated path then we =
+
+have don't have to fix it.
+
+> =
+
+> > Correct me if I'm wrong, but we can get rid of the deprecated way
+> > only if all the flashes are converted to PARSE_SFDP or SKIP_SFDP,
+> > right? And I don't see this happening anytime soon.
+> =
+
+> Right. I vote to don't queue any new patches for deprecated code paths,
+> new support or fixes. But I'm not completely against it, I don't see
+> the point, that's all. Let's sync with Pratyush and Vignesh too.
+
+I agree with no new features for deprecated path. But I think we should =
+
+still take in bug fixes.
+
+-- =
+
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
