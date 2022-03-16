@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AEF0C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Mar 2022 07:48:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E8A9C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Mar 2022 07:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
 	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yZxdLIk9lqWMA1/m8Hbu+eCBpU2eHgBOtVan4sGF+38=; b=DgO/0AYjsMQjUd
-	uhiVCgds5X5IRH8eEX9fEPY4u9JKjkOPffiT2cW4ZneYjQC3z6bJiM55S0iH8R/MhIhw1Ub6lNGRP
-	n/t1vBN6W4gO57CyK8Jj6/+wWQBb+hCDax65rlILFlrbpAHArK80WXwrOQ3wuKRpONEJP4TUcr/w7
-	0IIxXy2wdfJbTRXBQyc7LE8NALN8/rJyzkliUe2IlUqSEA8a61yM9GSEKJE+hqTuTNngeQUlpnnjs
-	kZgYTYa/qGWTYsVZeanG3j3K4zc4PMcEtnr2iNxM9nB3F4SyDznWkvDZdfRxktX+twExbrWKUhp1H
-	taZibicq3gn7QAy5GKxw==;
+	List-Owner; bh=ocncVPa27GhrXsFdiCpAdazkbXxyHV2FJFlsMHJJTOw=; b=iHIlXXOUgOr0k4
+	LKTNofh+lx5XBJum6ToZ9aWcbFh78RFS6bk4VzVoyFRT7C5uOK1NhSJQzQoOZQnfXdMHfE++vqLPj
+	VJCLFWi1v4rxmZI9NsXgTUd8Ig0KnseIWje6xrMUuPvznul75bF69yga9tnl+ucz9cesxk0pin+CE
+	XIHqIsQeKRIylCPRAuCJurSwwtBgkJCIMeySCAtpQEaj3CJlGAsG5gqweOf065XP/EHlDNDN1Gz0/
+	OkEH+iMeCiphAxShHy9HDILUHl5JCNkK/ZsjZxY1YRXEg0Ox/d+rZlSOiVv4eB+9DsOSsfKzLWkRb
+	v+RNRiY+T66DYAvnoAUQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUONs-00C0UQ-P3; Wed, 16 Mar 2022 07:47:52 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1nUOWv-00C2qj-4A; Wed, 16 Mar 2022 07:57:13 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUONp-00C0Sr-Bk
- for linux-mtd@lists.infradead.org; Wed, 16 Mar 2022 07:47:51 +0000
+ id 1nUOWq-00C2pP-LV
+ for linux-mtd@lists.infradead.org; Wed, 16 Mar 2022 07:57:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1647416869; x=1678952869;
+ t=1647417428; x=1678953428;
  h=from:to:cc:subject:date:message-id:references:
  in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=1sCLpyC6a6fsxn19cvhK/sZpvKemstT65YqGTWDYZLU=;
- b=bsNTbhlTzqJH5HkWQPnJiwC/irHhMo5VyDUh3bYBRLwTPURUzwfT9RZZ
- vR/YmIoUOpf5S+G/8TEuj3FFUiKGjvUhaErf9e/mcK5W6seP2vQrjSI4k
- qeK7ro6Hvt0mDBgyCO0BR6eSmu4+P0PhAjnpB8s+Vk0FebZ1cri+PXk3X
- axYIOakIGDYV/Z2c2xEXsqMu0x6UWh18bydVqAavmTgvV01V1IQWxuKr/
- yq1XR0LMYSzFwqIwbPTxEjNb00zM2CJNZRtsJqTUWT6p5XsYTcO90OCHO
- hRx8FmXeZRe7qvUVZlqaXmNtDRZ8H4IPFTOvp9c5re8/J3LWKt8JQJC+Z A==;
-X-IronPort-AV: E=Sophos;i="5.90,186,1643698800"; d="scan'208";a="89087735"
+ bh=+2gLRpiWCq0obQTi79yd71Ew2xuXMEqGKPwj0FOYWAY=;
+ b=PcYzwHCvmP8A2j+RNWIuM5S7EgnY9qLI8onjJh8obdrYhr3erLRrsn8y
+ a1GbJO4AcrJGF1OZe4Kq53kh+AO4ILqLl/graMIWgMZgp6cqeNbcSDkL9
+ pNgbbg9KIi5fCJXjcLBQShimr/A/FDxpWQR3fxvSR6bEPCy/Hg6img13H
+ u7pX8+43ivm09OgC1WBcitXrXvCpzUMV/zdj2kK0x6aM9ilVHR93x30QC
+ ljbOwYF0PqLkfNVWwLOFq1Tdz8uploYQmuedqROjODrZu//dwCP6rVjIq
+ WleZbH6RZ1/mfUPWTtXZt8Zgj4Q/I/sZ66NbXpMqWasSueC5GWrQT7lmz Q==;
+X-IronPort-AV: E=Sophos;i="5.90,186,1643698800"; d="scan'208";a="156609150"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 16 Mar 2022 00:47:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 16 Mar 2022 00:57:07 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 16 Mar 2022 00:47:45 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17 via Frontend Transport; Wed, 16 Mar 2022 00:47:45 -0700
+ 15.1.2375.17; Wed, 16 Mar 2022 00:57:07 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17 via Frontend
+ Transport; Wed, 16 Mar 2022 00:57:07 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W5PmZYsK8eWBTkSsgDB29lqLFXyjPOHYBmBRQj5LlIzbVdavTuNkql3zCIQoQ7yv0G6HtiOMJWq9aMfZm2hblN+0i6qvWws2wNzWtilv4ilU7a2qFDWHyegnCVy4VMlrmlLDdf4mnD50RFCufMIAtyXL9SEkN7gir4ilYbCrFRXKB28aiqvOCZUS8whFXtOnkDw/or8993PRZubHBXfEhg78ahbu3LKdXVr5FiKioTw/gpQuF/jqJZjGiLoww2cGeJ5uXzipyn4KyVsXjMUZEJOHFm+JBh+2P/UJxerxcb0uzJdfL9O85dEBaE4X5t6oUYSwcVFVdkQ5EonQ/flJcg==
+ b=nq752Qw1zMh0QMjeyiM7sRMmjGJjK0MJBTQQ+Vcch7vVxNJ9IPgOniyM/rq7lvCop5ckVNzN8CQpTSDXK5uUBggxIfWzsxLS8GIh1HyeyoSjb7DY8MkudubaQ4tSK1SP4WzjdImTC1N5YiSp7jG8k0aOwDkqiKOjnmyQaZKdF6JnG0YNTUtFJ4+o76vB/AE1Qwx3n84QY+fLWfGizjf3wv2/cJWbiVGMPNGeC4JIxtIImMFG+eGzVgXhDpqvLS5dZZMZ7D4khCTg7Ps0q3EfrcMJ27V9tbSBaesPFV0FKXYAsg9FDdjhsR8pw+eYWYUKQhbLbkTPWYrQ6AroCUj6Lw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1sCLpyC6a6fsxn19cvhK/sZpvKemstT65YqGTWDYZLU=;
- b=FSdCk6DWkPplrGkiycyDit4udTohKX59TesTNEgqZvaUPgUslL2irNcYSphg1ZuQwHQ3opSx1Az9IYRpcAwKfKXk1/U4UiulXCHqteGli6xyP2sIucG4QQ6mJMY2E5ePKwr34ctu/8M4mZg8HHAhcKA9CrkrtY3j9wfx2ka9gGDDdmZ88j9MVc+HJMTjXJw96RILzZOs/KefLfRvr8SYc3pLBP6aofgEjJPvYjytiszxsbDMcudbu23RPiIK3Cydjj1EP5YYQe4iPDCAs1xEugDpX2Y6NehauNn6L2vGYKnMYaKoT87N7N+EtkILEytRAqk91ErKSh83hknoU6SVWw==
+ bh=+2gLRpiWCq0obQTi79yd71Ew2xuXMEqGKPwj0FOYWAY=;
+ b=R9JfFdRRDR3OCf47/U0D6La3B1l0ZgX0c3Jk+9SenWCqUO7/qST3RsFuyBqzc0sxdo4rOQy6xHyYGh3vIdykPpXq91quZscyFBbpg1Eakzf2yMET40uRnHjF2szPr4+oGlAK+RLIqKt+DcSIkUOZ+ccADKgCuSQT1yWD8Obq5bEgwXbgn0zQgadxzDSy5LL9qMgVei9Kjs8vypsHQwwkO2iZJv81tpzEsk9wgmurNympW+y7KTxv0iWP1DohabxW4ztIgwcWc1e3tYT/6hUBGGKy+eqhnZolg6rznwV7yQ7aQYa9FHJvyemzzU8lOSRUtOuZonKNHVoBMAKTrYQyGQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microchip.com; dmarc=pass action=none
  header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
@@ -64,30 +65,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=microchiptechnology.onmicrosoft.com;
  s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1sCLpyC6a6fsxn19cvhK/sZpvKemstT65YqGTWDYZLU=;
- b=ihpl+XkyR5iAL4m5LxiwlVw9vq2mx88qEUSJSYKR0gM63/bRjCaDRNcN27pfwYqe7NfpFHuzR7U4nhKGL6GUJU9J6r+ScOH21ovuwiQUp/PgKI8Iue6RMU2gLgj5ZfzsuogpDe1gefwA2ENNTXRC5aNDDQqsF4rqctK2w1PjFhw=
+ bh=+2gLRpiWCq0obQTi79yd71Ew2xuXMEqGKPwj0FOYWAY=;
+ b=FXFI5HAOythlekBeEeXMhH5E+NHQKGqZmGjiRWvgv58VMRTla0VDAuMctNj5eILgy5ddoy3HavhWiTjfRe5dsRLBNTxd1YhXaP1ky26WCkUVmlhBPrkf93lR6WSHdTo8oaRQDGThon54kdFu1P8SQhlG0xeWfj8QSSlPXQQnvMA=
 Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
- by BL0PR11MB3155.namprd11.prod.outlook.com (2603:10b6:208:68::10)
+ by MN2PR11MB3743.namprd11.prod.outlook.com (2603:10b6:208:f4::14)
  with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5081.14; Wed, 16 Mar
- 2022 07:47:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.25; Wed, 16 Mar
+ 2022 07:57:02 +0000
 Received: from SA2PR11MB4874.namprd11.prod.outlook.com
  ([fe80::dc94:3c7c:8ef8:21b9]) by SA2PR11MB4874.namprd11.prod.outlook.com
  ([fe80::dc94:3c7c:8ef8:21b9%5]) with mapi id 15.20.5061.028; Wed, 16 Mar 2022
- 07:47:40 +0000
+ 07:57:01 +0000
 From: <Tudor.Ambarus@microchip.com>
-To: <Alexander.Stein@tq-group.com>, <linux-mtd@lists.infradead.org>
-CC: <michael@walle.cc>, <p.yadav@ti.com>, <vigneshr@ti.com>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Topic: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
-Thread-Index: AQHYOQodYTda3weuU0+yf380GWE6EQ==
-Date: Wed, 16 Mar 2022 07:47:40 +0000
-Message-ID: <b8d01f36-663a-928a-6dbe-64952b5bd8d0@microchip.com>
-References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
- <20211106075616.95401-2-tudor.ambarus@microchip.com>
- <5550605.DvuYhMxLoT@steina-w>
-In-Reply-To: <5550605.DvuYhMxLoT@steina-w>
+To: <vigneshr@ti.com>, <michael@walle.cc>
+CC: <p.yadav@ti.com>, <broonie@kernel.org>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+ <Nicolas.Ferre@microchip.com>
+Subject: Re: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
+ mode
+Thread-Topic: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
+ mode
+Thread-Index: AQHYOQtqoecUsXbOo0Oqo0422amT1Q==
+Date: Wed, 16 Mar 2022 07:57:01 +0000
+Message-ID: <555e9fe4-54c7-3fa1-159b-2f71f1ac9fd8@microchip.com>
+References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+ <76eb13b6-9263-975f-3196-312259634301@ti.com>
+ <b60064231d33581c20279172cf8f765e@walle.cc>
+ <0f271365-354b-82e2-02a2-9d69a6ac85b1@ti.com>
+In-Reply-To: <0f271365-354b-82e2-02a2-9d69a6ac85b1@ti.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -97,66 +103,66 @@ user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microchip.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 71e7b21a-2b15-4626-5887-08da07213f98
-x-ms-traffictypediagnostic: BL0PR11MB3155:EE_
-x-microsoft-antispam-prvs: <BL0PR11MB315570D75A268FF33BFA9997F0119@BL0PR11MB3155.namprd11.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 1a8267a1-6e2e-42a7-851a-08da07228e0e
+x-ms-traffictypediagnostic: MN2PR11MB3743:EE_
+x-microsoft-antispam-prvs: <MN2PR11MB37432C3DC6236A51D3AF7437F0119@MN2PR11MB3743.namprd11.prod.outlook.com>
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4II6D7W0QAm4y1TQICSwl6z+4PxAjTtw6ZYyxYYJHKFiqQsnyzAvHDAilvtmPlh6kre13uTz3+YDvxTSS0mCpZjYH/vcIW2jal2QsBrtyRjDmguhdBeYoFgfoa0Rb9kH2FnsIW24rdZpsEklox0sJMp6jQTPMBUHFO0EgEUKnwZYU/TmpwFkcB7SX2pvyJBRBoMfS9lgFEufbqWQ/fDoNz4rGvGdgwl1JtRI43L9evPVxXmRAiVkC9xxEWbqdhnlrAkBlIc0J1qDChkK9xr6459TZEqXopWzhgh+d/4Z5rRdGxryLB+OIaAq4KRhHJQKOjUaEgwaGq+RSKLxFbNbj4xdBEM4tek7sRj+PopYJ5UO6moRR44DOeUYZh2Cjs4aZYTDoWA7NOkk5rdUq/8LsPPyTlEzSXtKZotYUpIQ7sTrJvXOEabeWOO3CnNHcJWsj04mdi6p1tht9z+Co6hJpUNgV8FuD3/VMYFAL8CVzcqLR1Fq9z8OkDPRUHhsgMlojRnSZbN+u8v4B9lIEprjFXQJBdJO5Q4HYL+PMjmAyrDk4djMNPor65TC7JyT2CDNH0UOWRlh8PkbQJr9St1HvK0lXiG5mWaiXdO3d3iLCMmAYL6JfIZSSZoeEfNHivywiaK4AiF20Xo52wvan2rUgfbNbb66a1oUuxzGPMTCRf5uguCed7gBdIYQASVSdUT4qsAfB7xKYSF33zzU+kOEz67tI5xFbewlIFzzi29254JKJC+/h/Vwejd8OyQFdRn9ybFsQIuMbn6Z3UNman4qAGfG3e5kMyW6wvxdV6VlXdNFsMzoFlZVOAxrxjYzkA5r
+x-microsoft-antispam-message-info: qj8zi7EYVtyxrXPBKA55jZIOBvdsnh7E5JpXOVIT4IobcB4WoOKxnHrqzLIbpPD8f0cBvPyGJpaP88DA2kaGJmKiVUYNkia2P4R45Wq95IJNjfIWwP54lXhyFI859dEQNmllqfAVig3ff49nMOXVK4iy1Ms+Qhy+KXWnfMj5pSR4UV0UyNQQzShGDnhPQwgpLx8KQvBWRKodR8c7Y6/SlOq+qeGuzg2141o9JXxuBvJ/uAiT7fw0u6ViMe+Wv2UCevwS9sVncKoVm26WnyueyreMmCbOVhxBI+0P0M392kMQKH4YnF1RoMHve0zx9C9oh7TSlgziF8LvH3HWiVWgVBSIrDzHipr3zthOlLYcOwqaMJM7oFKd8oIcLQP3Ye9aQteZUESV7SinP3l4OL5AlZUKgyzrUUZlvjq2MW01lWw1pYpmcMlcav/yWSNqF6ECohgr0el4Qn9vu2u/iH9uTMOPSNqrZ8O7PR7Qa4Wt4IJqG9cf9DUcOFzfwtptcgUgVPEfrIggMKaMHxhi+1Xsjma5SuYJ3hS2CBcdWoYwNohpkASBYVW32rvIIW9sml/ztCtjpbVu11z21BwVXHy3mWlhRtOxJb/7ATYZl32DFVIBifdWK1wG0H8VDUCSxF9quiIvjP5lvZ5RrX+l5MxzL3/ymlzA/QL4ijJR+T3zGKb5dltKI4tuCX7JtgSrozI5t1qGDoGY6EWLmwa1eQ2n2fhUuQBMgnCGBrhhDTwhS4ZB48fa6apmgHrKAmGwS9gjD+BTL1Ppe3vZYeuv0Q+l9Q==
 x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(366004)(86362001)(6506007)(6512007)(53546011)(66476007)(66556008)(66446008)(8676002)(66946007)(316002)(54906003)(110136005)(76116006)(64756008)(4326008)(91956017)(122000001)(71200400001)(38100700002)(2616005)(186003)(8936002)(31696002)(5660300002)(26005)(83380400001)(2906002)(38070700005)(508600001)(31686004)(966005)(6486002)(36756003)(43740500002)(45980500001)(10090945011);
+ SFS:(13230001)(366004)(186003)(26005)(5660300002)(6506007)(38070700005)(31696002)(71200400001)(86362001)(8936002)(83380400001)(54906003)(110136005)(31686004)(36756003)(6486002)(66476007)(316002)(2906002)(508600001)(38100700002)(2616005)(107886003)(53546011)(122000001)(76116006)(66946007)(66556008)(91956017)(6512007)(66446008)(8676002)(4326008)(64756008)(43740500002)(45980500001);
  DIR:OUT; SFP:1101; 
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RmNONzlPTHpwdDBVMEU4MmZwNzBYNGR5VXRkODFiT2lVT1Y1anp5ZnB2Unhj?=
- =?utf-8?B?MnVCTlZjK1BZV1FWUEcybnQrUkk1YURGZzVCWnM3by9Vbm94VWowY2dnT3dp?=
- =?utf-8?B?KzcrbzZRTFhtbGo4UHlrQ0tEMTVJYVZRRFl6RytyZUw0OVE1WVpBUnc1V2hE?=
- =?utf-8?B?OUdzQXBiQlNJQmlVc3ZSSWRQZlN3Vzc0UmQ2S05wcWdBZEdmSmlLMTJnMVgz?=
- =?utf-8?B?WUI0T1FlR1pYM2RWajhCNDBSclVoTEptQUNOeHhNbWFXQ3lKWk4yYmNJWGdJ?=
- =?utf-8?B?ZFV1VTBPRDVURFZIL1JvOThIWjgxa25LbmQwaVlHOE9pY1MwNDhYSlpuWnpa?=
- =?utf-8?B?L0gzWFBqTjFELytzUHk1MHN0YXNCTEUyQWJIYTRMc2VmV1hhdTROYTBqL3hR?=
- =?utf-8?B?NkpkRnBNQkl0cldkM1pkNUI4cGdGNjVJOU1GdlJLdnc3Q0tSTkJpaHdOcnZr?=
- =?utf-8?B?Ti9ydHlVTUFYVkFXWW5zcmNMSEZjOXVhK0xPRjM4OVJZZmxGeWVJbWNuZE5Z?=
- =?utf-8?B?UFp2aWZXeGo2MFZ2RnNCazlqNWdtWkFkTWtxNCtWdDNZRmF1aERvRjQ1VS9k?=
- =?utf-8?B?dFVSc2g0SElwbk1xQTQ0MkdYdDFJTW5uTnk2OUd1Z0gxTEVPM3YvSFpMWjlX?=
- =?utf-8?B?cVZtV3BSa2pZcjhrUGxRak9KSHRENXZETXFkMmFpYnB1Q2Ewc3FBdDMvTWhV?=
- =?utf-8?B?dU90dDFZOVppbVhFNE1LZGdQN0xNeTBhYkxaS1REemQ3cHN3QmYzN1V3VVMx?=
- =?utf-8?B?RlhCNG1CWkNSMHM4Z3BZNjR4YXZoNE9LRHVDbnRtVEtNa3I5WDBCblZjMFVo?=
- =?utf-8?B?d0ZYN2c5R0VGaU16VmpUQXdXcVlYMUpZT0NOSGRYRkp2bkpmS05BK0hlbVNO?=
- =?utf-8?B?OW1WREpoVGV6b1lWaHNWSmY0cU1mTHZhUjJ6ZVlqc2lvVTY3L2NmTWZKNzlT?=
- =?utf-8?B?OENTTjlKNlMvMnpWcXNOWVFwaFEybjY0WWpEMFFqOW4xeW43NFIxdEcwZjF1?=
- =?utf-8?B?VitUS3VpVEZEeEduRDQrQXNOODJBL3RiVVY5TFdGN2k4YmtNNzdBVTBIc29I?=
- =?utf-8?B?WUJGRm9JL0UvU3NNZ1JWcUZmblhNOU9XbWJiNWlOWjlrK3lKeEVOOHNnVjlG?=
- =?utf-8?B?OU9JSDZaZ1B1VjZoMXFRV2RiMVhBUkxTamNmeTJOQ3hLUURhVkVnVG1QbzNM?=
- =?utf-8?B?eFhtaVk2Si9RVHo5emRTaVF2czJ5TEFYNzB1RjV6SU5QYmdjNkp3dzRBaDZu?=
- =?utf-8?B?MkwwVnR4L042NERSQTViWDhiY3ozZlpQbUxhbk5nZEFBT0VEbWM3eTdiM1Iy?=
- =?utf-8?B?WDk1cng3SHhFUExBckZPQmJaTDlOMFFlVzdHODVna2ZaVlZzd3NjUzRESUpm?=
- =?utf-8?B?WEZnelNxQlA2R29heTRuN3NXZWZtZFhvYWxtaGgrazNqSERheWFBWlNGN0R2?=
- =?utf-8?B?ZENEandsa1paeEJoTWN1akVVbTNmOE9NL3RsSzhYaXppUnRjYVVTRHpoT1BZ?=
- =?utf-8?B?cnllakVvM1JYaUxYekVFZ29La1NkSlczUDRvZk1PUlpQVmZ0MExMcUw0VDZR?=
- =?utf-8?B?QVNCaWY3WmtBSzJ3UGUvZm5KZnoyVzMvclIxSDl5LzhOd0tvLzlpL0dCVmtQ?=
- =?utf-8?B?bDNod0pDVnRxUmlQbVRIYVprYjQ3WGZ6aEZETFk2ek5wN2NVVHNlU2ZVWjl5?=
- =?utf-8?B?anhTVmV6VFR6L2JtQXJtMjdhOEtLY3Q4c3lYdjgwZFphSEQ3clQ0VGJFOFF2?=
- =?utf-8?B?L0xBTTI4c215aDQ4V0U1dGFycFFnNTR4cVI4Z251NGFDOStsTnRHTU9ST1lX?=
- =?utf-8?B?aXdQc0xpdjQ5b3UwL1drRHh5YVErSnJTbGZ0dms4VFpTbXdSTmVodnl2UjA2?=
- =?utf-8?B?UDV1LzJpUWJhSklxaWRmK24zc0RsWUNQelBBaEQwUTNNNXFuOGFMVUxzREZw?=
- =?utf-8?B?RlBFZGYyZDQ0VGRQcEp3Vk9QQjlKbUorYVhFVlRrSDVZNG9lb1lCRXdKL1BI?=
- =?utf-8?B?WCtxTk9UYXhnPT0=?=
-Content-ID: <E316F2577CC8074D937D3BDFCD324884@namprd11.prod.outlook.com>
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eU1rY0FiVW1TKy9yOGNZVXVUUzR1bzlRUnd0SkxLaXNNU2pRQWdFWm11OXQz?=
+ =?utf-8?B?a2VGYUxOVUVqU010STE0M1EvYVQwNENqT05aSWZKclhCZUl3SmlPWTc2NjNS?=
+ =?utf-8?B?THFVVy9OTTJDKzlnM1dFQmZtNmJJejFOZzFwbjNnM0xydEN2ZTNpQ1JHZGoy?=
+ =?utf-8?B?c1BCc0hjejM3R2NZWkNGMXlnYk1lQkxlc2ZUVCtqWm9pQ0pockljSkhqb3gv?=
+ =?utf-8?B?bk1HSWxWWkR5aGE2Umg5c2Z5Qm5wN0pjbGRiODBzZGtVbEpXbjNhYnU1ZFFZ?=
+ =?utf-8?B?U1BwbDg4anVtQ0JrcnN6bW9SVlBOWmQ3RnNDS1BkT1d4MFc1cmdvRnlJejVh?=
+ =?utf-8?B?d3N5QWhKU1VXV01mLzV5TGcwc2oxcUZiQVREVCs4ZHROSVR5c3JjV0xTdzJF?=
+ =?utf-8?B?dnlFOEJxM3dtYm9iblV2MENwa2lDQ1NRTWFWaXlyTGVPaDJWVDE0SkRsQ3dC?=
+ =?utf-8?B?ZjI0S2FOR1ROelhBNlF4eCswQUdUUUtMcHFJeEZJSmdkdDRBWTZ2Qmw5Nlhv?=
+ =?utf-8?B?M0FVWElQVGMyaVhRUUhveVhQWGZ3bzJwOU9WQXc0bHNJZTZIeU5MTVJZUkc2?=
+ =?utf-8?B?aHAzV3pnZ1QyTmQvV0xucFI4UDNZbXZiNFh5dnRCbjV1b1JDb2lYMUJHUmJy?=
+ =?utf-8?B?QWdldk54c21zRHB1Sy8vankzSFArWFh5VDRtL251SGNIeGZMMW9RWnM2OGNZ?=
+ =?utf-8?B?NnVlR1l5NFpUaThoMW5TTitPMnhNVXNrY2ZjWmZBb0ZMblVUUytqbXFLRmZO?=
+ =?utf-8?B?SEZ3RDdNY2x6ZWF2RmM2K2pxYlBWNDVldFpGalVST3NvcmxVY1RXME1tMjBY?=
+ =?utf-8?B?ZGdHU280S203a0wwT3phdHBpcVR2MWV5U3hwdXJsR1lkeTgrOWE3Y0dOZmlI?=
+ =?utf-8?B?Zi85aGJUaDhrZVZUclNYL2xjQ0gzTWtLUE1RNitpR1BUVnd5ODRHdDlWR0dV?=
+ =?utf-8?B?ZEZwWHl3WEF6UnYwSDRDZnZmSUw1NmdGeGpjN05UaHJhV1V2TjVMdzVGeFIx?=
+ =?utf-8?B?TzMzSFJhTDZaTGRlK2NYbGhydlZJQmdMbVE5amloY1UzS1BhcXZTUWk5dlUx?=
+ =?utf-8?B?TzBieFcwZnY0MTZIOXBkeEc2QjEvek8zUUFNdWp3emMvbWxaa1pUbUJrZ1pX?=
+ =?utf-8?B?Y25hUWxLblNYOGo2eENvand1QXlaR1dPNDcwRWMzWU5IK0VMd0JlR2JEUm55?=
+ =?utf-8?B?RVdBb0dHdkdtdCt1blFYb3c0ZDFsY3BTSE1yNnp6aVNqWi9udDJ0SlpOWHp1?=
+ =?utf-8?B?bWpmNHRZd294Tm5vTXIyMno5ZWlsRDNOZGRSejhoYzdtWUYvZzVNMmNnTlFa?=
+ =?utf-8?B?Y2pBSUVNRnpLQ1Ewbi9RZDRWMENlL0x4eVd0SkJ1UEIzbHJ3S3ZKSGxqVzZR?=
+ =?utf-8?B?U2ozZjdKcktzOG4wWFJPc0FIbmZQZTUvOVM5TmFvVnRTWjBTSFRDbWk0a3Jp?=
+ =?utf-8?B?N0lyYmprZ2tTWFRDcC84TU9IZ1FaZk9pcFBUSDNXWHUzWm05UGM4alYzY3Vt?=
+ =?utf-8?B?MTFxejdHU2wvbWtva2JGcmVYTUJkYTFZRWpvU3hKL01aMDh5Sm9WdlJBUUdB?=
+ =?utf-8?B?VTlBMk50bjJ6MVM5V09WektFZUIvZzQ4OHp0ekVDNlNRbk1hYkJReG1mS0li?=
+ =?utf-8?B?bzU5eHhBUXd4QkhJaVNsa3I3K0N0c1ZJbk5nQldsV3dScWJHcW1GUGFJeDcw?=
+ =?utf-8?B?ckFqR3J2L1lYdkY1TWpaMXl2ZDZkdENaZW9Dc1UybXBlUEhDU1dYbW9rU2Vk?=
+ =?utf-8?B?UEw1K0c2MGpObDI3dGt5eEo3WFdDQ3VWbDlSL3JBUjlzOHl1TlE2T0htU1Zy?=
+ =?utf-8?B?V3ZIYWUyMnlCSUpMYjFEQ2hhRVpuNnI2eFFSRG0zODAyZmlOVmdOTXpyQU02?=
+ =?utf-8?B?YmpueGhDN0tsOXVaTktWcFVSK2tTRXNKVUNJSEo4NkF5cCt1ZUhaUEFNSWV1?=
+ =?utf-8?B?Y3BRVWttY3l6eHJrci9jQ3I3Y0JzNVI3Sy96Nk9yLzNiRjdXanU4TG9PNS8r?=
+ =?utf-8?B?T3JKbWFGeEF3PT0=?=
+Content-ID: <633D6A9B166C2C4D933671AA0EAECFC7@namprd11.prod.outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71e7b21a-2b15-4626-5887-08da07213f98
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2022 07:47:40.7829 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a8267a1-6e2e-42a7-851a-08da07228e0e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2022 07:57:01.9164 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DHqGbf8+smFIWTnBAbAz/CGjjxwAiJVz6+ZfApQPL+tIpy9ep2XTFhJlqzLgdLYw/XSOI5eFen6Z53TSVleHkqFvifoNR+ICFhwhkJbXw8Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR11MB3155
+X-MS-Exchange-CrossTenant-userprincipalname: 8XJuoELmqAC+NpCC7vo6KTDF3h5BFAsFKDjX/ElId6WfsSk9RXs9GJ2X0AIXiN4oKurE4Qve5zVnnEe0lkNzYnJ4QC7tSna1jh9Rgotv3Ic=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3743
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220316_004749_583214_87A2B76F 
-X-CRM114-Status: GOOD (  19.96  )
+X-CRM114-CacheID: sfid-20220316_005708_753622_C16DD2E8 
+X-CRM114-Status: GOOD (  27.91  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -173,60 +179,215 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 3/16/22 09:39, Alexander Stein wrote:
-> [You don't often get email from alexander.stein@tq-group.com. Learn why this is important at http://aka.ms/LearnAboutSenderIdentification.]
-> 
+On 3/16/22 09:05, Vignesh Raghavendra wrote:
 > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> Hello,
+> Hi Michael,
+> 
+> On 15/03/22 12:49 pm, Michael Walle wrote:
+>> Hi,
+>>
+>> Am 2022-03-15 07:08, schrieb Vignesh Raghavendra:
+>>> On 11/03/22 1:31 pm, Tudor Ambarus wrote:
+>>>> There are NOR flashes (Macronix) that swap the bytes on a 16-bit
+>>>> boundary
+>>>> when configured in Octal DTR mode. The byte order of 16-bit words is
+>>>> swapped when read or written in Octal Double Transfer Rate (DTR) mode
+>>>> compared to Single Transfer Rate (STR) modes. If one writes D0 D1 D2 D3
+>>>> bytes using 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it will
+>>>> read back D1 D0 D3 D2. Swapping the bytes is a bad design decision
+>>>> because
+>>>> it may introduce some endianness problems. It can affect the boot
+>>>> sequence
+>>>> if the entire boot sequence is not handled in either 8D-8D-8D mode or
+>>>> 1-1-1
+>>>> mode. So we must swap the bytes back to have the same byte order as
+>>>> in STR
+>>>> modes. Fortunately there are controllers that can swap the bytes back at
+>>>> runtime, addressing the flash's endiannesses requirements.
+>>>> If the controllers are not capable of swapping the bytes, the
+>>>> protocol is
+>>>> downgraded via spi_nor_spimem_adjust_hwcaps(). When available, the
+>>>> swapping
+>>>> of the bytes is always done regardless if it's a data or register
+>>>> access,
+>>>> so that we comply with the JESD216 requirements: "Byte order of 16-bit
+>>>> words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
+>>>>
+>>>
+>>> Sorry, bit late to the thread. But, dropping 8D-8D-8D mode support is
+>>> quite restrictive IMO.
+>>>
+>>> AFAIK, SFDP standard does not dictate how data should be stored in flash
+>>> or how SW should interpret after reading data from flash. It merely
+>>> indicates endian-ness compared to 1-1-1 mode.
+>>
+>> Mh, but below you are saying that Micronix is violating the standard
+>> and is swapping the bytes. So, the standard is actually specifying the
+>> byte order.
+>>
+> 
+> As I understand, SFDP spec(JESD216) is way of describing flash details,
+> it does not enforce any rules on how flash should "behave". It just
+> provides info for drivers to discover flash parameters at runtime.
+> OTOH, xSPI spec (JESD251) lays down guidelines for SW interface,
+> electrical, and mechanical interfaces. Macronix flash deviates from xSPI
+> spec but no SFDP per say (unless it claims xSPI compliance elsewhere in
+> SFDP tables).
+> 
+>>> So, its up to various system SWs like bootloader/Linux to work according
+>>> to pre-aligned layout as there is no rule that data needs to be stored
+>>> in byte order.
+>>>
+>>> We have two types of controllers:
+>>>
+>>> 1. SPI controllers supporting swapping endian-ness on the fly:
+>>> -> For such flashes, better choice is to have SWAP option always
+>>> enabled. So that data written in 8D-8D-8D mode can be read correctly in
+>>> 1-1-1 mode and vice-versa.
+>>> ( I am assuming SWAP option of controller is only effective in 8D-8D-8D
+>>> mode and is NOP in 1-1-1 or other modes)
+>>
+>> Why should it be always enabled? You can also say it should always
+>> be disabled. It doesn't matter if the byte order isn't important.
+>>
+>> But I say the byte order *is* important. We need one reference.
+>>
+>>> But, its possible that "ROM" or other non-upgradable SWs may choose not
+>>> make to use of this SWAP option of HW to keep things simple in which
+>>> case, they cannot boot from 8D-8D-8D mode with above setting. Such SW
+>>> don't always have knowledge of flash and cannot be forced to have a
+>>> constraint to enable byte swap on read.
+>>>
+>>> So, IMO, its best left to system integrators to specify whether or not
+>>> SWAP option needs to be enabled (perhaps via DT as its per flash
+>>> specific property?)
+>>
+>> Agreed, but I don't think we have to do it now. If someone cares,
+> 
+> I am fine with that, but I want to make sure we are not saying
+> controllers w/o ability to swap byte order can never support Macronix
+> like flash in 8D-8D-8D mode.
+> 
+>> he can make a patch. Also we have to consider non-DT platforms.
+>>
+> 
+> non DT platforms also have a way to pass HW related data
+> 
+>>> 2.  SPI controllers don't support endian-ness SWAP on the fly:
+>>> It is still possible to reliably read and write data as long as its
+>>> written and read back in same mode.
+>>>
+>>> De-rating speeds because of absence of this support would mean reduction
+>>> of speed by **16 times** (maybe even higher as 8D mode tends to support
+>>> higher bus freqs).
+>>
+>> You can also fall back to a quad mode. Again, can be implemented if
+>> someone cares.
+> 
+> Actually I have not come across OSPI flash that also supports quad mode.
+> So, fallback is 1-1-1 for majority of these flashes
 
-hi,
+8-8-8 is typically supported where 8d-8d-8d is supported. But downgrading to
+8-8-8 still comes with a performance penalty.
 
 > 
-> Am Samstag, 6. November 2021, 08:56:15 CET schrieb Tudor Ambarus:
->> When paring SFDP we may choose to mask out an erase type, passing
->> an erase size of zero to spi_nor_set_erase_type().
->> Fix shift-out-of-bounds and just clear the erase params when
->> passing zero for erase size.
->> While here avoid a superfluous dereference and use 'size' directly.
 >>
->> UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
->> shift exponent 4294967295 is too large for 32-bit type 'int'
+>>> Swapping bytes in Linux before writing or after
+>>> reading is not an option either as it negatively impacts performance.
+>>>
+>>> Asking ROM/bootloaders to swap bytes based on SFDP indication is
+>>> restrictive too as it involves boot time penalty and most systems with
+>>> OSPI flashes are using them to achieve super fast boot times.
 >>
->> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR
->> flash memories") Reported-by: Alexander Stein
->> <Alexander.Stein@tq-group.com>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->> ---
->>  drivers/mtd/spi-nor/core.c | 9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
+>> No we are talking about what? ms? to read the sfdp? If that is really
+>> a use case, the the bootloader can hardcode it there.
 >>
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 3d97c189c332..a1b5d5432f41 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -2230,8 +2230,13 @@ void spi_nor_set_erase_type(struct spi_nor_erase_type
->> *erase, u32 size, erase->size = size;
->>       erase->opcode = opcode;
->>       /* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
->> -     erase->size_shift = ffs(erase->size) - 1;
->> -     erase->size_mask = (1 << erase->size_shift) - 1;
->> +     if (size) {
->> +             erase->size_shift = ffs(size) - 1;
->> +             erase->size_mask = (1 << erase->size_shift) - 1;
->> +     } else {
->> +             erase->size_shift = 0;
->> +             erase->size_mask = 0;
->> +     }
->>  }
->>
->>  /**
 > 
-> What is the status of this patch? It is not applied up until now, no? Has it
-> been superseeded?
+> Reading SFDP is not the issue but swapping entire image is the problem.
+> Takes several tens of ms depending on boot image size which is not
+> acceptable to systems looking at < 100 - 200msms start up times for
+> quick bootup usecases involving early Display / CAN output etc
+> 
+>>> One more case to consider is flashes that dont have SFDP table to
+>>> indicate byte order but follow Macronix's convention. In such cases, its
+>>> better for SPI NOR layer to be as dumb as possible and not really do any
+>>> byte swapping, leaving it up to user space to handle/interpret data
+>>> appropriately.
+>>>
+>>> Also, Macronix is probably in violation of xSPI spec (JESD251A 6.9.5.2
+>>> 8D-8D-8D Profile 1.0) where diagrams clearly show data output should be
+>>> D0 D1 D2 D3... So ROMs following xSPI spec (which is the only spec
+>>> providing flash agnostic way of switching to 8D mode and reading data in
+>>> 8D mode) would not care about SFDP bit indicating byteorder and its up
+>>> to flasher programs to take care of the same
+>>>
+>>> IMO, kernel device drivers should just provide access to underlying HW
+>>> and not have too much intelligence to interpret data/take decisions
+>>
+>> I strongly disagree here. The kernel should provide a consistent
+>> view of the flash content, regardless if its read in 1-1-1 or 8d-8d-8d.
+>> Imagine you are forced to switch away from 8d-8d-8d mode (for whatever
+>> reason) after some time. How would you know how to read the contents?
+>>
+> 
+> Agree with need for consistent view, although if we need to fall back to
+> 1-1-1 mode for a while and switch back to 8D-8D-8D mode then there is
+> something fundamentally broken.
+> 
+>> JESD216 is a standard, too. There is a reason this bit ended up in
+>> there. If I had to guess, someone messed up the byte order in 8d-8d-8d
+>> but it was too late. And now the standard is giving you a hint that
+>> you are using a flash with that messed up byte ordering.
+>>
+> 
+> Yes, but note JESD216 is all about giving hint to softwares  on how
+> flash behaves, it does not dictate what softwares need to do with it.
+> So another OS is free to leave these Macronix flashes using native byte
+> ordering and not swapping on read / write
+> 
+>> I want to avoid having flash contents where the byte are swapped.
+>> The sooner we care about that, the better. You cannot undo that
+>> later on.
+>>
+>>> So, simpler constraint to put is:
+>>> Flasher programs should program data in the same mode in which
+>>> ROM/bootloder/Linux is expected to read the data on that system.
+>>
+>> So what if your flasher only has 1 pin? With this you are just
+>> shifting the problem elsewhere.
+>>
+> 
+> flasher program would have to use byte swapped image if read is expected
+> to be in 8D-8D mode
+
+:) 
+
+> 
+>>> For Macronix like flashes, if one has a ROM/bootloader that only
+>>> supports 1-1-1 mode and flashing data in 8D-8D-8D mode with Linux, then
+>>> please generate a byte-swapped image offline and flash it. Don't impose
+>>> penalty on systems that do best to handle this messy situation.
+>>> I see this as the only option with least performance penalty.
+>>
+>> I certainly have nothing against an option to turn this all off
+>> to improve speed. But the swapping (if asked to do so) and the
+>> degradation should be an *opt-out*. Not an opt-in. Nobody will
+>> do the opt-in and we end up with 'corrupted' flash contents.
+>>
+> 
+> Sounds good to me. We should note this in commit message disabling
+> 8D-8D-8D mode for these flashes.
 > 
 
-I think it's marked with "changes requested". I'm going to send a v2.
+I like Michael's *opt-out* idea too. But I'm not convinced with a dt property
+used to configure when to swap the bytes and when not. DT should be used to
+describe the hardware, not to configure it. So we can add a "dtr-swab16"
+property but IMO it should specify just that the bytes are swapped in 8D-8D-8D
+mode, just as SFDP does, and not to configure the logic to swab16 or not. And
+if it just describes the hardware and not configuring it, then the entire dt
+idea diminishes because it is equivalent with setting a SNOR_F flag either
+by a flash-info flag or at the SFDP parsing time.
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
