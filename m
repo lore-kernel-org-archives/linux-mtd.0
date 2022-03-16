@@ -4,76 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DD7DC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 16 Mar 2022 07:23:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41915C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 16 Mar 2022 07:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ufREh7bTBdsHNDMI8fZ+zTpyVcBbnVDFqieEpkF7UkE=; b=nGi6PGjKqU2g7w
-	k+yIZ6cnh5bkDXeZi2b/eIKy2VF3YZEmDK/Hsx2IaIHWbzDECvuARv4AczZI9UnHoZppQMWkPK4OJ
-	X2PFTs0Kev4b4C8Fbfrm3NIrniJ2nwY4Gacu3nxEXpVS/fdV1qh3Sfksq1C3TYVDXGvRxQUQRYWgE
-	D9uo5G7KSS48ybM4egAFS7MB51Bc4sfTu5ygg8bzccQ9fauZscba5jC1A7PG+zMEnwvaWzjDZpj1N
-	3wTtAiv9F3PuuvNt3SP86gk3Lg9r1771qtIZxjoCe9DYJJu/1Dy1vbR56oVpQO4f5Qm+v18JxKV1E
-	uflZiizNd8MRLbDNHfUg==;
+	List-Owner; bh=/0djmDntHuG0QMawmfr7O0k5i/qTzGqTlXpF/m30Pjw=; b=xef1hrv6Rs0P2k
+	1uQsWGyNI8piXyOkKUMKFadB5EFy6HCjSimbvbfwU8KTq22rT5qmwIyVSoo15BBuK3VuvEjvrR/9H
+	gPJFIZGo66hFz/dWbMuNHYDy4GRgv7ErKdaSxbe7hsNGoI+OchYN4ebYZZpFcVV472o2d3HhTjFJr
+	9FZ6UXapcVacfoJVtz3clRaDH+z8K8GvqAXbeY1WIOcC574j44hj/V9m+0DWTSlRd58UUelTkBXIa
+	nyBmb82Q1BGJU2GFRsMSsixi1JDtpFykz+tofplPKrt5tsUHfJlFWTNLbaI/xaSdVHuiOFRzkmNf3
+	UcTBE4OCuTK0gqVbVajQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUO06-00Buu5-9D; Wed, 16 Mar 2022 07:23:18 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nUOG0-00ByRF-Ii; Wed, 16 Mar 2022 07:39:44 +0000
+Received: from mx1.tq-group.com ([93.104.207.81])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUNlb-00BnqE-C9
- for linux-mtd@lists.infradead.org; Wed, 16 Mar 2022 07:08:21 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22G78DA9021129;
- Wed, 16 Mar 2022 02:08:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1647414493;
- bh=GXRBNb0KChHbT2vJ7oonxrINUF2VVKqcqQru4kA3DNM=;
- h=Date:Subject:To:CC:References:From:In-Reply-To;
- b=elAV7nA/smOxkfx9V+ZHh4w3uK0VKBzMIFmS5dtXRWrbKbBDtVyxbIIf1f1KKqf0O
- PVHc1tyBQVoFZQz4y4Bd3GZa9oWvKYtv1FdV1JGIr22pWfhalOlu1/NvYbzOw3zyhX
- xogwzZkmBbAt89hQPYISYgv3uxmvMRF5Gh7Lav70=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22G78DRB033457
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 16 Mar 2022 02:08:13 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 16
- Mar 2022 02:08:13 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 16 Mar 2022 02:08:13 -0500
-Received: from [10.250.234.22] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22G787lY032732;
- Wed, 16 Mar 2022 02:08:09 -0500
-Message-ID: <8e6e3dcb-0771-560f-4eb8-d49e7cf1f1df@ti.com>
-Date: Wed, 16 Mar 2022 12:38:07 +0530
+ id 1nUOFx-00ByPF-Vu
+ for linux-mtd@lists.infradead.org; Wed, 16 Mar 2022 07:39:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+ t=1647416382; x=1678952382;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=HmhzW1Qp4+U0VPSr1IDp2ch0J2gmIREwX+GllKQnkvs=;
+ b=e3Avq0xYDMGQD0XK+2McM/oWMIQ5eOIyo677QgGEpWFb8sqR9BoRC8W4
+ 9fwdVoMfvMU3VnP5gy+DZMoW5CcV6hD+cT6L7sOsgiKLMxTEmns5BasTi
+ eq1IFgAkwpv9Mef4+HKoFwVvdtyi7bRtRkIxvwo0bxtQzcr44WV5XUu0C
+ OfNLIlbloTNgt3BjtSJd1m+DaPMiQAShLrmXkR6fQGjhQ0bGqtwJhmn8H
+ oucbFD9J2RgGHwPO22//g5VGkHHxZSy3L8NWYd3lvTiPl0XMp+WHJjMUv
+ y2bFVJM6pbnn4sBo5tF2f7IQ4bC7q6wG147B38rCP+Al6XYQbL1u0G5g/ Q==;
+X-IronPort-AV: E=Sophos;i="5.90,186,1643670000"; d="scan'208";a="22692323"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+ by mx1-pgp.tq-group.com with ESMTP; 16 Mar 2022 08:39:36 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+ by tq-pgp-pr1.tq-net.de (PGP Universal service);
+ Wed, 16 Mar 2022 08:39:36 +0100
+X-PGP-Universal: processed;
+ by tq-pgp-pr1.tq-net.de on Wed, 16 Mar 2022 08:39:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+ t=1647416376; x=1678952376;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=HmhzW1Qp4+U0VPSr1IDp2ch0J2gmIREwX+GllKQnkvs=;
+ b=dfpML5EA0TZp7DHALlrFIRQxsLOHs23j4cCeiV3g8EE+PPI/S/Mp3mwx
+ 2Kq3zz9gQ322dSEojJCcnFm+QX9ttd+Xdy8rjPDE6mwBs0arukF/DSr2i
+ hMSQE2agPKTaYpGzmMDpwDHliRP6BWq86A0Bh2L+rLfTTN/5tSzUV3QjL
+ f7joTc6ON+wD/Xr7j8aEEkkc4yQQ6/Fd6njFF87fqYeX0pH3Oj1CsdlnM
+ JVYImrvn72FGZ062wUz6naBl/+txKcadojcSH7inVSOu0Ys39h/A4kenr
+ AjFgxa4aBL+0thn7N56oK6w9rwNVejCiI7bJEsI5X8Xsjt4ctxiNv6Reb A==;
+X-IronPort-AV: E=Sophos;i="5.90,186,1643670000"; d="scan'208";a="22692322"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+ by mx1.tq-group.com with ESMTP; 16 Mar 2022 08:39:36 +0100
+Received: from steina-w.localnet (unknown [10.123.49.12])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 2F44F280065;
+ Wed, 16 Mar 2022 08:39:36 +0100 (CET)
+From: Alexander Stein <Alexander.Stein@tq-group.com>
+To: linux-mtd@lists.infradead.org
+Cc: michael@walle.cc, p.yadav@ti.com, vigneshr@ti.com,
+ Tudor Ambarus <tudor.ambarus@microchip.com>, linux-kernel@vger.kernel.org,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: Fix shift-out-of-bounds
+Date: Wed, 16 Mar 2022 08:39:33 +0100
+Message-ID: <5550605.DvuYhMxLoT@steina-w>
+Organization: TQ Systems GmbH
+In-Reply-To: <20211106075616.95401-2-tudor.ambarus@microchip.com>
+References: <20211106075616.95401-1-tudor.ambarus@microchip.com>
+ <20211106075616.95401-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
- mode
-Content-Language: en-US
-To: <Tudor.Ambarus@microchip.com>, <p.yadav@ti.com>, <michael@walle.cc>,
- <broonie@kernel.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <Nicolas.Ferre@microchip.com>,
- <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>,
- <andreasilvagni@macronix.com>
-References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
- <76eb13b6-9263-975f-3196-312259634301@ti.com>
- <9e0b6bde-838d-b8a4-9fe7-75c4f916fb27@microchip.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <9e0b6bde-838d-b8a4-9fe7-75c4f916fb27@microchip.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220316_000819_579359_E69C1E71 
-X-CRM114-Status: GOOD (  39.76  )
+X-CRM114-CacheID: sfid-20220316_003942_448630_47737D25 
+X-CRM114-Status: GOOD (  19.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,165 +97,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hello,
 
-
-On 15/03/22 12:28 pm, Tudor.Ambarus@microchip.com wrote:
-> On 3/15/22 08:08, Vignesh Raghavendra wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi,
+Am Samstag, 6. November 2021, 08:56:15 CET schrieb Tudor Ambarus:
+> When paring SFDP we may choose to mask out an erase type, passing
+> an erase size of zero to spi_nor_set_erase_type().
+> Fix shift-out-of-bounds and just clear the erase params when
+> passing zero for erase size.
+> While here avoid a superfluous dereference and use 'size' directly.
 > 
-> Hi,
+> UBSAN: shift-out-of-bounds in drivers/mtd/spi-nor/core.c:2237:24
+> shift exponent 4294967295 is too large for 32-bit type 'int'
 > 
->>
->> On 11/03/22 1:31 pm, Tudor Ambarus wrote:
->>> There are NOR flashes (Macronix) that swap the bytes on a 16-bit boundary
->>> when configured in Octal DTR mode. The byte order of 16-bit words is
->>> swapped when read or written in Octal Double Transfer Rate (DTR) mode
->>> compared to Single Transfer Rate (STR) modes. If one writes D0 D1 D2 D3
->>> bytes using 1-1-1 mode, and uses 8D-8D-8D SPI mode for reading, it will
->>> read back D1 D0 D3 D2. Swapping the bytes is a bad design decision because
->>> it may introduce some endianness problems. It can affect the boot sequence
->>> if the entire boot sequence is not handled in either 8D-8D-8D mode or 1-1-1
->>> mode. So we must swap the bytes back to have the same byte order as in STR
->>> modes. Fortunately there are controllers that can swap the bytes back at
->>> runtime, addressing the flash's endiannesses requirements.
->>> If the controllers are not capable of swapping the bytes, the protocol is
->>> downgraded via spi_nor_spimem_adjust_hwcaps(). When available, the swapping
->>> of the bytes is always done regardless if it's a data or register access,
->>> so that we comply with the JESD216 requirements: "Byte order of 16-bit
->>> words is swapped when read in 8D-8D-8D mode compared to 1-1-1".
->>>
->>
->> Sorry, bit late to the thread. But, dropping 8D-8D-8D mode support is
+> Fixes: 5390a8df769e ("mtd: spi-nor: add support to non-uniform SFDP SPI NOR
+> flash memories") Reported-by: Alexander Stein
+> <Alexander.Stein@tq-group.com>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> no worries
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 3d97c189c332..a1b5d5432f41 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2230,8 +2230,13 @@ void spi_nor_set_erase_type(struct spi_nor_erase_type
+> *erase, u32 size, erase->size = size;
+>  	erase->opcode = opcode;
+>  	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+> -	erase->size_shift = ffs(erase->size) - 1;
+> -	erase->size_mask = (1 << erase->size_shift) - 1;
+> +	if (size) {
+> +		erase->size_shift = ffs(size) - 1;
+> +		erase->size_mask = (1 << erase->size_shift) - 1;
+> +	} else {
+> +		erase->size_shift = 0;
+> +		erase->size_mask = 0;
+> +	}
+>  }
 > 
->> quite restrictive IMO.
->>
->> AFAIK, SFDP standard does not dictate how data should be stored in flash
->> or how SW should interpret after reading data from flash. It merely
->> indicates endian-ness compared to 1-1-1 mode.
->>
->> So, its up to various system SWs like bootloader/Linux to work according
->> to pre-aligned layout as there is no rule that data needs to be stored
->> in byte order.
->>
->> We have two types of controllers:
->>
->> 1. SPI controllers supporting swapping endian-ness on the fly:
->> -> For such flashes, better choice is to have SWAP option always
->> enabled. So that data written in 8D-8D-8D mode can be read correctly in
->> 1-1-1 mode and vice-versa.
->> ( I am assuming SWAP option of controller is only effective in 8D-8D-8D
->> mode and is NOP in 1-1-1 or other modes)
->>
->> But, its possible that "ROM" or other non-upgradable SWs may choose not
->> make to use of this SWAP option of HW to keep things simple in which
->> case, they cannot boot from 8D-8D-8D mode with above setting. Such SW
->> don't always have knowledge of flash and cannot be forced to have a
->> constraint to enable byte swap on read.
->>
->> So, IMO, its best left to system integrators to specify whether or not
->> SWAP option needs to be enabled (perhaps via DT as its per flash
->> specific property?)
-> 
-> we can't use DT for configuration, maybe a Kconfig instead. Are there any
-> other options?
-> 
+>  /**
 
-Problem with Kconfig is that it cannot be used when there are multiple
-flash instances on the board and both behave differently.
+What is the status of this patch? It is not applied up until now, no? Has it 
+been superseeded?
 
-This is similar to big-endian vs little-endian property used by CFI
-physmap driver and other places in kernel[1]
-
->>
->> 2.  SPI controllers don't support endian-ness SWAP on the fly:
->> It is still possible to reliably read and write data as long as its
->> written and read back in same mode.
->>
->> De-rating speeds because of absence of this support would mean reduction
->> of speed by **16 times** (maybe even higher as 8D mode tends to support
->> higher bus freqs). Swapping bytes in Linux before writing or after
->> reading is not an option either as it negatively impacts performance.
->>
->> Asking ROM/bootloaders to swap bytes based on SFDP indication is
->> restrictive too as it involves boot time penalty and most systems with
->> OSPI flashes are using them to achieve super fast boot times.
->>
->> One more case to consider is flashes that dont have SFDP table to
->> indicate byte order but follow Macronix's convention. In such cases, its
->> better for SPI NOR layer to be as dumb as possible and not really do any
->> byte swapping, leaving it up to user space to handle/interpret data
->> appropriately.
->>
->> Also, Macronix is probably in violation of xSPI spec (JESD251A 6.9.5.2
->> 8D-8D-8D Profile 1.0) where diagrams clearly show data output should be
->> D0 D1 D2 D3... So ROMs following xSPI spec (which is the only spec
->> providing flash agnostic way of switching to 8D mode and reading data in
->> 8D mode) would not care about SFDP bit indicating byteorder and its up
->> to flasher programs to take care of the same
-> 
-> This is a bit in contradiction, because if the ROMs follow xSPI, thus little
-> endian byte order, they should swap the bytes.
-> 
-
-As I indicated below xSPI (JESD251) spec seems to align on little endian
-order. So, don't really need to swap the bytes on read. Anyways impact
-on performance prohibits such support and thus most ROM designs will
-expect flashing program to take care of it (especially in case where
-controller does not support on the fly swapping).
-
->>
->> IMO, kernel device drivers should just provide access to underlying HW
->> and not have too much intelligence to interpret data/take decisions
->>
->> So, simpler constraint to put is:
->> Flasher programs should program data in the same mode in which
->> ROM/bootloder/Linux is expected to read the data on that system.
-> 
-> No, this constraint doesn't cover all possible cases: take a 1-1-1 ROMcode,
-> 8D-8D-8D for other bootloaders and kernel. You need to dynamically change modes
-> in the flasher program in order to address this use case, which is a no go.
-> 
-
-Flash programmer need not change the mode, but needs to generate a byte
-swapped image and write it knowing that image is being flashed in
-8D-8D-8D mode and read in 1-1-1 mode or vice versa.
-
->>
->> For Macronix like flashes, if one has a ROM/bootloader that only
->> supports 1-1-1 mode and flashing data in 8D-8D-8D mode with Linux, then
->> please generate a byte-swapped image offline and flash it. Don't impose
-> 
-> we can't do that, see the example from above.
-> 
-
-See above, no need to change mode dynamically.
-
->> penalty on systems that do best to handle this messy situation.
->> I see this as the only option with least performance penalty.
->>
-> 
-> I take from this that we should let the byte swap be user-configurable,
-> thus a Kconfig. Which I'm not against it, but it will give users
-> headaches to sync all the software components. Making such a decision
-> implies that users know SPI NOR internal details, which also is a bit
-> stretched. Let's sync so that we move forward with this. Opinions? 
-> 
-
-I am fine with things being configurable
-
-Only issues with Kconfig: it does not help systems with multiple OSPIs
-with different endian-ness.
+Regards,
+Alexander
 
 
-[1] Documentation/devicetree/bindings/mtd/mtd-physmap.yaml
 
-
-Regards
-Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
