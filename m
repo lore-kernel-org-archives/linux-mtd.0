@@ -4,57 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAC10C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Mar 2022 10:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 710A6C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Mar 2022 11:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xlB9clFNwU6vzxS4Djk2HgjAhWBayZzca3g8FLaCEpc=; b=nHRZi+TN3hnlbR
-	AEkfil0AS/aOYUJ6iY7LzLBXOwbh54C1uftsuyVUKTVOjYrALjXJy8G7D+U9XXie3z4f+WEynNVDl
-	iwUGTOqk/IIUBr54LNb5jJTR01s+ncOc8grIeXinBnd80tHKHzAPng+FuQxoD6T3O5v0uC06Y+DeL
-	aCq2OrSBRKtGmx9pnHMpVNbhHt+pL9DnEckZjI9Xdu5QWLq2Fb9oqMQZXU7elD362tdC27LCe/Q04
-	xd+515ZDzfu2OBG/cG88RLhBQf/uuw6GlmRDl2QsR/iRkowOf7TS9UbE0PpQ5h5FmKNGNRjMJmYAY
-	X9SXZsv15XxMVALeE4nQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=b4Jf2dKo2VRuX/zTuqXQ9q7FIhevJsB6amkNI6uqWLk=; b=Z5ZnG4EjDeDLT7
+	idL/3DmkjpTR0zxvdFhQ+et3K2x7b2UKDnqchReme+Q+fvR8Oy16b6Plud8rG395ATOeNLFx1Aohj
+	fuy/c27WTxkWSRjAJU18EEdbbyXyiRO2GbjJ/wisB39uLMVVSpwLiPDSLUiWhE/y6NCr998+YfyTm
+	xlKJqDW4ivN2ZYF7xqRHxO7UllFgnTr1eb7Xhs0izaC4X717nTxxMReaywx1rlGy7eOMUlBSQUkL1
+	JjKtgiQENocIfhNFjHFEppO2QtxSwlUrWasp2Mgsnx4Jb6GIde1R0I6sQlLqB/TdAeUQgnzzrwtht
+	QTv9tPtiyzz0rXbXAWKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUnSL-00FjcJ-7U; Thu, 17 Mar 2022 10:34:09 +0000
-Received: from michel.telenet-ops.be ([2a02:1800:110:4::f00:18])
+	id 1nUo1V-00Fmn3-2e; Thu, 17 Mar 2022 11:10:29 +0000
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUnSF-00FjZa-Uy
- for linux-mtd@lists.infradead.org; Thu, 17 Mar 2022 10:34:07 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f500:58f9:d953:424b])
- by michel.telenet-ops.be with bizsmtp
- id 7NZw2700P0M4NNo06NZwKe; Thu, 17 Mar 2022 11:33:58 +0100
-Received: from rox.of.borg ([192.168.97.57] helo=rox)
- by ramsan.of.borg with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1nUnS7-004wS8-P1; Thu, 17 Mar 2022 11:33:55 +0100
-Received: from geert by rox with local (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1nUnS7-005Bf1-9H; Thu, 17 Mar 2022 11:33:55 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
- Dung Nguyen <dung.nguyen.zy@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] memory: renesas-rpc-if: Fix HF/OSPI data transfer in
- Manual mode
-Date: Thu, 17 Mar 2022 11:33:52 +0100
-Message-Id: <b409ea3fae4a6778fd6b44815ad17c9e8e10df87.1647512831.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+ id 1nUo1S-00Fmlk-CU
+ for linux-mtd@lists.infradead.org; Thu, 17 Mar 2022 11:10:28 +0000
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-255-MiCiRbVUN16QRgYdqh5Xig-1; Thu, 17 Mar 2022 11:10:22 +0000
+X-MC-Unique: MiCiRbVUN16QRgYdqh5Xig-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.32; Thu, 17 Mar 2022 11:10:21 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.033; Thu, 17 Mar 2022 11:10:21 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Vignesh Raghavendra' <vigneshr@ti.com>, 'Michael Walle' <michael@walle.cc>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, "p.yadav@ti.com"
+ <p.yadav@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "nicolas.ferre@microchip.com"
+ <nicolas.ferre@microchip.com>
+Subject: RE: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
+ mode
+Thread-Topic: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
+ mode
+Thread-Index: AQHYOQSPIX1seC7nAUuKrYcK6uPoWazCAVMggAFSn4CAAATp8IAABzYAgAAFzgA=
+Date: Thu, 17 Mar 2022 11:10:21 +0000
+Message-ID: <fcae2d955b3f43af8d64f1aa50fbc685@AcuMS.aculab.com>
+References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+ <76eb13b6-9263-975f-3196-312259634301@ti.com>
+ <b60064231d33581c20279172cf8f765e@walle.cc>
+ <0f271365-354b-82e2-02a2-9d69a6ac85b1@ti.com>
+ <9bc530d1fdaf4490a00fee150f963ac7@AcuMS.aculab.com>
+ <bc2083a8903fdabc65083f7e5232ca2d@walle.cc>
+ <8b765d24cb9a422bb383aad07251b65f@AcuMS.aculab.com>
+ <c17fe9c6-0757-dbb6-6efb-69d05d7ff589@ti.com>
+In-Reply-To: <c17fe9c6-0757-dbb6-6efb-69d05d7ff589@ti.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220317_033404_189960_3887845C 
-X-CRM114-Status: GOOD (  15.89  )
+X-CRM114-CacheID: sfid-20220317_041026_719788_B3D615E7 
+X-CRM114-Status: GOOD (  10.25  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,197 +92,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-HyperFlash devices fail to probe:
+From: Vignesh Raghavendra
+> Sent: 17 March 2022 10:24
+...
+> Modern OSPI/QSPI flash controllers provide MMIO interface to read from
+> flash where DMA can pull data as if though you are reading from On chip RAM
 
-    rpc-if-hyperflash rpc-if-hyperflash: probing of hyperbus device failed
+So the cpu does an MMIO read cycle to the controller which doesn't
+complete until (for the nibble-mode spi device I have):
+1) Chipselect is asserted.
+2) The 8-bit command has been clocked out.
+3) The 32bit address have been clocked out (8 clocks in nibbles).
+4) A few (probably 4) extra delay clocks are added.
+5) The data is read - 8 clocks for 32bits in nibble mode.
+6) Chipselect is removed.
 
-In HyperFLASH or Octal-SPI Flash mode, the Transfer Data Enable bits
-(SPIDE) in the Manual Mode Enable Setting Register (SMENR) are derived
-from half of the transfer size, cfr. the rpcif_bits_set() helper
-function.  However, rpcif_reg_{read,write}() does not take the bus size
-into account, and does not double all Manual Mode Data Register access
-sizes when communicating with a HyperFLASH or Octal-SPI Flash device.
+Now you can do long sequential reads without all the red tape.
+But a random read in nibble mode is about 30 clocks.
+16 bit mode saves 6 clocks for the data and maybe 6 for the address?
 
-Fix this, and avoid the back-and-forth conversion between transfer size
-and Transfer Data Enable bits, by explicitly storing the transfer size
-in struct rpcif, and using that value to determine access size in
-rpcif_reg_{read,write}().
+The controller could do 'clever stuff' for sequential reads.
+At a cost of slowing down random reads.
 
-Enforce that the "high" Manual Mode Read/Write Data Registers
-(SM[RW]DR1) are only used for 8-byte data accesses.
-While at it, forbid writing to the Manual Mode Read Data Registers,
-as they are read-only.
+So even at 400MHz it isn't that fast.
 
-Fixes: fff53a551db50f5e ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual mode")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Lightly (read-only) tested on:
-  - Salvator-XS with R-Car M3-W ES1.0 with HyperFLASH,
-  - Falcon with R-Car V3U ES1.0 with QSPI.
+If the MMIO interface to the flash controller is PCIe you can
+add in a load of extra latency for the cpu read itself.
 
-v2:
-  - Use rpc->xfer_size instead of SPIDE register reads and
-    rpc->bus_size.
-      Note: Alternatively, rpcif_manual_xfer() could bypass regmap and
-      use {read,write}[bwl]() directly, cfr. commit 0d37f69cacb33435
-      ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual
-      mode") in the BSP.
-  - HF dirmap reads are confirmed to work on R-Car M3-W,
-  - Drop RFC.
+While PCIe allows multiple read requests to be outstanding,
+the Intel cpu I've looked at serialise the reads from each
+cpu core (each cpu always uses the same TLP tag).
 
-On Salvator-XS with unlocked HyperFlash, the HyperFlash is now detected
-again, cfr. (with DEBUG_CFI enabled):
+Now longer read TLP help a lot (IIRC max is 256 bytes).
+But the x86 cpu will only generate read TLP for register reads.
+You need to use AVX512 registers (or cache line fetches) to
+get better throughput!
 
-    Number of erase regions: 1
-    Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
-    Primary Algorithm Table at 0040
-    Alternative Vendor Command Set: 0000 (None)
-    No Alternate Algorithm Table
-    Vcc Minimum:  1.7 V
-    Vcc Maximum:  1.9 V
-    No Vpp line
-    Typical byte/word write timeout: 512 \xc2\xb5s
-    Maximum byte/word write timeout: 2048 \xc2\xb5s
-    Typical full buffer write timeout: 512 \xc2\xb5s
-    Maximum full buffer write timeout: 2048 \xc2\xb5s
-    Typical block erase timeout: 1024 ms
-    Maximum block erase timeout: 4096 ms
-    Typical chip erase timeout: 262144 ms
-    Maximum chip erase timeout: 1048576 ms
-    Device size: 0x4000000 bytes (64 MiB)
-    Flash Device Interface description: 0x0000
-      - x8-only asynchronous interface
-    Max. bytes in buffer write: 0x200
-    Number of Erase Block Regions: 1
-      Erase Region #0: BlockSize 0x40000 bytes, 256 blocks
-    rpc-if-hyperflash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 0x000001 Chip ID 0x007000
-    Amd/Fujitsu Extended Query Table at 0x0040
-      Amd/Fujitsu Extended Query version 1.5.
-    rpc-if-hyperflash: CFI contains unrecognised boot bank location (0). Assuming bottom.
-    number of CFI chips: 1
+The alternative is getting the flash controller to issue
+the read/write TLP for memory transfers.
 
-v1: https://lore.kernel.org/r/27107f2d578b198078df841ee2e4d7b71b183898.1647017136.git.geert+renesas@glider.be/
----
- drivers/memory/renesas-rpc-if.c | 56 ++++++++++++++++++++++++++-------
- include/memory/renesas-rpc-if.h |  1 +
- 2 files changed, 45 insertions(+), 12 deletions(-)
+	David
 
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index e4cc64f560196d55..a8c7abe1cf00be65 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -171,18 +171,32 @@ static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
- {
- 	struct rpcif *rpc = context;
- 
--	if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
--		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
 -
--		if (spide == 0x8) {
-+	switch (reg) {
-+	case RPCIF_SMRDR0:
-+	case RPCIF_SMWDR0:
-+		switch (rpc->xfer_size) {
-+		case 1:
- 			*val = readb(rpc->base + reg);
- 			return 0;
--		} else if (spide == 0xC) {
-+
-+		case 2:
- 			*val = readw(rpc->base + reg);
- 			return 0;
--		} else if (spide != 0xF) {
-+
-+		case 4:
-+		case 8:
-+			break;
-+
-+		default:
- 			return -EILSEQ;
- 		}
-+		break;
-+
-+	case RPCIF_SMRDR1:
-+	case RPCIF_SMWDR1:
-+		if (rpc->xfer_size != 8)
-+			return -EILSEQ;
-+		break;
- 	}
- 
- 	*val = readl(rpc->base + reg);
-@@ -193,18 +207,34 @@ static int rpcif_reg_write(void *context, unsigned int reg, unsigned int val)
- {
- 	struct rpcif *rpc = context;
- 
--	if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
--		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
--
--		if (spide == 0x8) {
-+	switch (reg) {
-+	case RPCIF_SMWDR0:
-+		switch (rpc->xfer_size) {
-+		case 1:
- 			writeb(val, rpc->base + reg);
- 			return 0;
--		} else if (spide == 0xC) {
-+
-+		case 2:
- 			writew(val, rpc->base + reg);
- 			return 0;
--		} else if (spide != 0xF) {
-+
-+		case 4:
-+		case 8:
-+			break;
-+
-+		default:
- 			return -EILSEQ;
- 		}
-+		break;
-+
-+	case RPCIF_SMWDR1:
-+		if (rpc->xfer_size != 8)
-+			return -EILSEQ;
-+		break;
-+
-+	case RPCIF_SMRDR0:
-+	case RPCIF_SMRDR1:
-+		return -EPERM;
- 	}
- 
- 	writel(val, rpc->base + reg);
-@@ -469,6 +499,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 
- 			smenr |= RPCIF_SMENR_SPIDE(rpcif_bits_set(rpc, nbytes));
- 			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
-+			rpc->xfer_size = nbytes;
- 
- 			memcpy(data, rpc->buffer + pos, nbytes);
- 			if (nbytes == 8) {
-@@ -533,6 +564,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
- 			regmap_write(rpc->regmap, RPCIF_SMCR,
- 				     rpc->smcr | RPCIF_SMCR_SPIE);
-+			rpc->xfer_size = nbytes;
- 			ret = wait_msg_xfer_end(rpc);
- 			if (ret)
- 				goto err_out;
-diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
-index 7c93f5177532f187..9c0ad64b8d292d49 100644
---- a/include/memory/renesas-rpc-if.h
-+++ b/include/memory/renesas-rpc-if.h
-@@ -72,6 +72,7 @@ struct rpcif {
- 	enum rpcif_type type;
- 	enum rpcif_data_dir dir;
- 	u8 bus_size;
-+	u8 xfer_size;
- 	void *buffer;
- 	u32 xferlen;
- 	u32 smcr;
--- 
-2.25.1
-
-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
