@@ -4,65 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FC30C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Mar 2022 09:40:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DFF3C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Mar 2022 10:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NUGRIq8TY3FVR6zz3vCWtuSDDjfVc6huwx8zG3Ixwxo=; b=kAkm36iKh1h4bTsTOdTTX/7ZF3
-	cVSUSD6fVjorBQa5hP93PpspPOy1NCcgUzWI/C6e1O6p1e4vGEtcvu99ctykjomLjlVg6qZGBO4xG
-	sHFRhqX+MECS3k78Bd8aMXhxSIYIP4ePxaUKE3hKMYGeuPl83zIf0CY74BFOgUg4Hm/8ORj4NoikG
-	wJrIdjGJmed6x3fzogteclD3N4cs4yVSrRdLGOJ3pvthmafbPBxT5ekmnLkXJ1R0T6uPbssbI0Fyz
-	3qh9nJMEb3g+upunNFEMxKMvbfW41eyL8JEyaYtFK4NnWNEqEEDfP7Cx/fm72hLUYfVO6iVUUbg67
-	f4h4cQJQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=oAiPkA5HypvQ7yqAQzjgpZq2+xQUBuUHERPhuNR2Opc=; b=s+1rYGd/U1nCPa
+	Kj2eRVC/8ABDmlL0xSozTwb2gbn0rpdtogn2mofniTYocNeiDy9ClTKbgHak3EyjW3tBQJPoa1UhT
+	otG7AwYMM5fRi82pfWByOHDnuc89tWqrAiFGIn4qHGNxpavkIMmMOtTMMMSLxTy2Ocj/Fcl+ss7As
+	MWgjVpKJWNIJpgV+qP46Vu6jHeDuggAV9pAHZSm/qXWLy48NrPwdqx7Hd4I/TKahvhRKJ57KVFl6o
+	XEEyW1Z24y8aUadAC0jU2zxmmTn852HGB4pbtzNicHJli+Fw2h47y4H08JTw02jq/AiJs9ILCDbP5
+	O2ifdKc0H9r0h4E9jHNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUmcI-00FYc8-Gb; Thu, 17 Mar 2022 09:40:22 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nUmwW-00Fbav-SM; Thu, 17 Mar 2022 10:01:16 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUmcF-00FYaB-BC
- for linux-mtd@lists.infradead.org; Thu, 17 Mar 2022 09:40:21 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id B90C922205;
- Thu, 17 Mar 2022 10:40:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1647510012;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=3YY8iZyql6fnlwbWAZYCthFDHvjrUsi7DJn+/6RWY3U=;
- b=H3UJKxZUkmQV66/WBe2+l30zDYM408fqT/zyOQz7dqX1nFTWMvyn2sgi4jkhi7gSYqEidP
- /hgLJkpKsJQjDMWZdMEyEd9453jaJsq1Cy/cN7Qh9TgNJ+H92fjv/el6jPps+C/HvnTz3z
- 2qdnxQeW40yNLFEKKP7sTFETWbpRqbE=
+ id 1nUmwT-00FbZe-Pt
+ for linux-mtd@lists.infradead.org; Thu, 17 Mar 2022 10:01:15 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22HA17D3012110;
+ Thu, 17 Mar 2022 05:01:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1647511267;
+ bh=Pyx1gIv+JI704o72I6w4zCNmHpZz4LEk6x5A6OzlhWM=;
+ h=Date:Subject:To:CC:References:From:In-Reply-To;
+ b=VLKNuD7GEoW9Gb2m+X1QilMDotoZJw3ASoh/IkGf5o8igy9tx5SsIEwFNzv9AQDH1
+ MVAXV4gQ7gaqfQFBhCx8PptO8HPlxhoU8AD4EdNE8lLd7MWkAzdXMX73oEETCXTlts
+ 7K6RnNFr6Zx2hOcJmuVr3Lu5ajzmxd3K9xk90sc4=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22HA17XD026689
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 17 Mar 2022 05:01:07 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 17
+ Mar 2022 05:01:06 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 17 Mar 2022 05:01:06 -0500
+Received: from [10.250.234.22] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22HA14Jg034230;
+ Thu, 17 Mar 2022 05:01:05 -0500
+Message-ID: <01fed0aa-8844-1db9-f167-e7e7944bc092@ti.com>
+Date: Thu, 17 Mar 2022 15:31:04 +0530
 MIME-Version: 1.0
-Date: Thu, 17 Mar 2022 10:40:09 +0100
-From: Michael Walle <michael@walle.cc>
-To: David Laight <David.Laight@aculab.com>
-Cc: 'Vignesh Raghavendra' <vigneshr@ti.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, p.yadav@ti.com, broonie@kernel.org,
- miquel.raynal@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- nicolas.ferre@microchip.com
-Subject: Re: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
- mode
-In-Reply-To: <9bc530d1fdaf4490a00fee150f963ac7@AcuMS.aculab.com>
-References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
- <76eb13b6-9263-975f-3196-312259634301@ti.com>
- <b60064231d33581c20279172cf8f765e@walle.cc>
- <0f271365-354b-82e2-02a2-9d69a6ac85b1@ti.com>
- <9bc530d1fdaf4490a00fee150f963ac7@AcuMS.aculab.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <bc2083a8903fdabc65083f7e5232ca2d@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v4 2/3] mtd: cfi_cmdset_0002: Use chip_ready() for write
+ on S29GL064N
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Tokunori Ikegami
+ <ikegami.t@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+ <stable@vger.kernel.org>
+References: <20220316155455.162362-1-ikegami.t@gmail.com>
+ <20220316155455.162362-3-ikegami.t@gmail.com> <20220316182100.6e2e5876@xps13>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20220316182100.6e2e5876@xps13>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220317_024019_557203_671F6572 
-X-CRM114-Status: GOOD (  22.82  )
+X-CRM114-CacheID: sfid-20220317_030113_987753_3FC792D1 
+X-CRM114-Status: GOOD (  21.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,59 +81,89 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-Am 2022-03-16 14:55, schrieb David Laight:
-> Thought...
 
-Thank you for your proposal.
-
-> Can you read the device in STR mode until you get a suitable
-> non-palindromic value, then read it in DTR mode and dynamically
-> determine the byte order?
+On 16/03/22 10:51 pm, Miquel Raynal wrote:
+> Hi Tokunori,
 > 
-> Clearly this won't work if the device is erased to all 0xff.
-> But a check could be done on/after the first write.
+> ikegami.t@gmail.com wrote on Thu, 17 Mar 2022 00:54:54 +0900:
 > 
-> I suspect write times are actually dominated by the time spent
-> waiting for the write to complete?
-> (Never mind the earlier block erase time.)
-> So always writing in STR mode probably makes little difference?
-> Writes really ought to be uncommon as well.
+>> As pointed out by this bug report [1], buffered writes are now broken on
+>> S29GL064N. This issue comes from a rework which switched from using chip_good()
+>> to chip_ready(), because DQ true data 0xFF is read on S29GL064N and an error
+>> returned by chip_good().
 > 
-> Speeding up reads is a different matter - and probably useful.
+> Vignesh, I believe you understand this issue better than I do, can you
+> propose an improved commit log?
+
+How about:
+
+Since commit dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to
+check correct value") buffered writes fail on S29GL064N. This is
+because, on S29GL064N, reads return 0xFF at the end of DQ polling for
+write completion, where as, chip_good() check expects actual data
+written to the last location to be returned post DQ polling completion.
+Fix is to revert to using chip_good() for S29GL064N which only checks
+for DQ lines to settle down to determine write completion.
+
 > 
-> Of course, if you've got hardware reading the spi memory in DTR
-> mode for config data you might need to byteswap it (compared
-> to the STR writes) - but that is probably a 2nd order problem.
+>> One way to solve the issue is to revert the change
+>> partially to use chip_ready for S29GL064N.
+>>
+>> [1] https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
+>>
+>> Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+>> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
+>> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> Cc: stable@vger.kernel.org
+>> ---
+>>  drivers/mtd/chips/cfi_cmdset_0002.c | 25 +++++++++++++++++++++----
+>>  1 file changed, 21 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+>> index e68ddf0f7fc0..6c57f85e1b8e 100644
+>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+>> @@ -866,6 +866,23 @@ static int __xipram chip_check(struct map_info *map, struct flchip *chip,
+>>  		chip_check(map, chip, addr, &datum); \
+>>  	})
+>>  
+>> +static bool __xipram cfi_use_chip_ready_for_write(struct map_info *map)
 > 
-> I've got some bespoke logic on an PCIe fpga for accessing spi memory.
-> Uses address bits for the control signals and converts a 32bit
-> read/write into 8 nibble transfers to the chip.
-> (uses byte enables - don't an odd number of clocks.)
-> mmapp()ed to userspace for updating the 6MB fpga image.
+> At the very least I would call this function:
+> cfi_use_chip_ready_for_writes()
+> 
+> Yet, I still don't fully get what chip_ready is versus chip_good.
+> 
+>> +{
+>> +	struct cfi_private *cfi = map->fldrv_priv;
+>> +
+>> +	return cfi->mfr == CFI_MFR_AMD && cfi->id == 0x0c01;
+>> +}
+>> +
+>> +static int __xipram chip_good_for_write(struct map_info *map,
+>> +					struct flchip *chip, unsigned long addr,
+>> +					map_word expected)
+>> +{
+>> +	if (cfi_use_chip_ready_for_write(map))
+>> +		return chip_ready(map, chip, addr);
+> 
+> If possible and not too invasive I would definitely add a "quirks" flag
+> somewhere instead of this cfi_use_chip_ready_for_write() check.
+> 
+> Anyway, I would move this to the chip_good() implementation directly so
+> we partially hide the quirks complexity from the core.
 
-Our problem is not how to detect that we have to swap it, but
-rather what we do when we have to do it.
+Yeah, unfortunately this driver does not use quirk flags and tends to
+hide quirks behind bool functions like above
 
-If we have a controller which can swap the bytes for us on the
-fly, we are lucky and can enable swapping if we need it. We are
-also lucky when we don't have to swap the flash contents, obviously.
-
-But what do we do when we need to swap it and the controller
-doesn't support it. We could do it in software which will slow
-things down. So depending on the use case this might or might not
-work. We can degrade it to a speed which doesn't have this issue;
-which might be 1-1-1 in the worst case. We could also do just
-nothing special; but this will lead to inconsistencies between
-reading in 1-1-1 and 8d-8d-8d.
-
--michael
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
