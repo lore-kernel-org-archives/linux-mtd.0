@@ -4,57 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCE2AC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 17 Mar 2022 14:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBCA2C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 17 Mar 2022 16:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rQf7Arug5szuwxK8U3qP7yu/EfrVVNwfV6yL9CR5+gk=; b=bAwBLEdnwem6LW
-	F45dD/27sJIltXJEJrauuXYfJ01j4LqLCC8M8OM7hTO6oy0Dp67jzhnITQMheNq8AvMJ2F/FNEtdP
-	JGdvsM0C8uvJ4tynmFPwhnHEjbE4wE6NE8/XgqibS7qnk9sbp8JUxNNyaI7i7kYaTRrookIDMep/H
-	t4Ivw9aKnutIewydtZSxH9FbUm7Y/2VztuCSoCq1RAuaesdSvyf62Ul7GhSxQlX33n3PY1QLe0Zjx
-	s89N9+3fJpiTlAxdeC+8GtYamXVlBm+SBZIQc3YSvpiqWRejoL2RDTZMEZfcGLFOmiGuOtNpbynXm
-	UEtCD4QNC7unqIFaKxSg==;
+	List-Owner; bh=81b7ULctIU8V6UiQtDXeigVuSV67cg8CjDmKMXzXkhE=; b=fX4AWU/jTXwCWB
+	JFY5j/En+BoAVMOODEgaaJSvE1lFP+nnXGFg/GRn1hCnnKrasRi5jCKeVR8CzG1iVzX7BTaoS0cAf
+	gSzLgVZhV+/3Rbn2dtf49/VfPFVIHh8pmdkJfdA5hzqj9t2qr60LGrfgxQyjxJa2r4BFo8BkRpw7i
+	ssG4/dHAb7VUnLPjxnfBnL522w5hDQSKXsA1F3lW3yLpO3hWuvGEkaFwxdL1P9aL/SfWqK7uNUNzQ
+	5YMbGCPxHyOVmsra2RtphkA3+sQtxN/IBUE9LJIZgGedVJHlbeiebatAQI/mi33gWYjcCV4bXqSPE
+	gQbRqoGmtVmIAtpAw39w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nUqvV-00GOlz-6e; Thu, 17 Mar 2022 14:16:29 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1nUtJn-00GqfU-5p; Thu, 17 Mar 2022 16:49:43 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nUqvS-00GOl8-Lg
- for linux-mtd@lists.infradead.org; Thu, 17 Mar 2022 14:16:28 +0000
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
- by metis.ext.pengutronix.de with esmtp (Exim 4.92)
- (envelope-from <a.fatoum@pengutronix.de>)
- id 1nUqvK-0007yR-L5; Thu, 17 Mar 2022 15:16:18 +0100
-Message-ID: <201907b1-c43a-8c45-7ab1-4a4606591bef@pengutronix.de>
-Date: Thu, 17 Mar 2022 15:16:17 +0100
+ id 1nUtJk-00Gqf6-2B
+ for linux-mtd@lists.infradead.org; Thu, 17 Mar 2022 16:49:41 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22HGnV6B012906;
+ Thu, 17 Mar 2022 11:49:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1647535771;
+ bh=+aNB9KHNL1PTMNUTpdQe7rMub1NeQ/aOpyqSHiNlDt4=;
+ h=Date:Subject:To:CC:References:From:In-Reply-To;
+ b=WAzERI4+ZGn+2aQoq1WNPad9nvnMv9/ma9CauR3UQ9K2RC4j5KzbicgEchYsr/23Y
+ nxSryQLyTxxzfxez4mspNAdP1DmUS3hENsebv3bjM/Fujn7FVP4sWlQ/4MQn1LlNTt
+ llZfIqRapCAnKp4ZrkBpICUqJmjJDqXZBpB2G9zI=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22HGnVHP072116
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 17 Mar 2022 11:49:31 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 17
+ Mar 2022 11:49:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 17 Mar 2022 11:49:31 -0500
+Received: from [10.250.234.22] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22HGnQdg028012;
+ Thu, 17 Mar 2022 11:49:27 -0500
+Message-ID: <d755a917-7763-764e-7030-3afd5154053c@ti.com>
+Date: Thu, 17 Mar 2022 22:19:25 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH v4 2/3] mtd: cfi_cmdset_0002: Use chip_ready() for write
- on S29GL064N
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2 0/6] spi-mem: Allow specifying the byte order in DTR
+ mode
 Content-Language: en-US
-To: Vignesh Raghavendra <vigneshr@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Tokunori Ikegami <ikegami.t@gmail.com>
-Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
-References: <20220316155455.162362-1-ikegami.t@gmail.com>
- <20220316155455.162362-3-ikegami.t@gmail.com> <20220316182100.6e2e5876@xps13>
- <01fed0aa-8844-1db9-f167-e7e7944bc092@ti.com>
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <01fed0aa-8844-1db9-f167-e7e7944bc092@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+To: David Laight <David.Laight@ACULAB.COM>,
+ "'Michael Walle'" <michael@walle.cc>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, "p.yadav@ti.com"
+ <p.yadav@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "nicolas.ferre@microchip.com"
+ <nicolas.ferre@microchip.com>
+References: <20220311080147.453483-1-tudor.ambarus@microchip.com>
+ <76eb13b6-9263-975f-3196-312259634301@ti.com>
+ <b60064231d33581c20279172cf8f765e@walle.cc>
+ <0f271365-354b-82e2-02a2-9d69a6ac85b1@ti.com>
+ <9bc530d1fdaf4490a00fee150f963ac7@AcuMS.aculab.com>
+ <bc2083a8903fdabc65083f7e5232ca2d@walle.cc>
+ <8b765d24cb9a422bb383aad07251b65f@AcuMS.aculab.com>
+ <c17fe9c6-0757-dbb6-6efb-69d05d7ff589@ti.com>
+ <fcae2d955b3f43af8d64f1aa50fbc685@AcuMS.aculab.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <fcae2d955b3f43af8d64f1aa50fbc685@AcuMS.aculab.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220317_071626_749604_D27FC0F5 
-X-CRM114-Status: GOOD (  27.39  )
+X-CRM114-CacheID: sfid-20220317_094940_226060_CD6A4D4B 
+X-CRM114-Status: GOOD (  19.13  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,108 +99,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Vignesh,
-
-On 17.03.22 11:01, Vignesh Raghavendra wrote:
-> 
-> 
-> On 16/03/22 10:51 pm, Miquel Raynal wrote:
->> Hi Tokunori,
->>
->> ikegami.t@gmail.com wrote on Thu, 17 Mar 2022 00:54:54 +0900:
->>
->>> As pointed out by this bug report [1], buffered writes are now broken on
->>> S29GL064N. This issue comes from a rework which switched from using chip_good()
->>> to chip_ready(), because DQ true data 0xFF is read on S29GL064N and an error
->>> returned by chip_good().
->>
->> Vignesh, I believe you understand this issue better than I do, can you
->> propose an improved commit log?
-> 
-> How about:
-> 
-> Since commit dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to
-> check correct value") buffered writes fail on S29GL064N. This is
-> because, on S29GL064N, reads return 0xFF at the end of DQ polling for
-> write completion, where as, chip_good() check expects actual data
-> written to the last location to be returned post DQ polling completion.
-> Fix is to revert to using chip_good() for S29GL064N which only checks
-> for DQ lines to settle down to determine write completion.
-
-Message sounds good to me with one remark: The issue is independent of
-whether buffered writes are used or not. It's just because buffered writes
-are the default, that it was broken by dfeae1073583 ("mtd: cfi_cmdset_0002:
-Change write buffer to check correct value"). The word write case was broken
-by 37c673ade35c ("mtd: cfi_cmdset_0002: Use chip_good() to retry in
-do_write_oneword()"), so the commit message should probably reference
-both. as this commit indeed fixes both FORCE_WORD_WRITE == 0 and == 1.
-
-Thanks,
-Ahmad
 
 
+On 17/03/22 4:40 pm, David Laight wrote:
+> From: Vignesh Raghavendra
+>> Sent: 17 March 2022 10:24
+> ...
+>> Modern OSPI/QSPI flash controllers provide MMIO interface to read from
+>> flash where DMA can pull data as if though you are reading from On chip RAM
 > 
->>
->>> One way to solve the issue is to revert the change
->>> partially to use chip_ready for S29GL064N.
->>>
->>> [1] https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
->>>
->>> Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
->>> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
->>> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->>> Cc: stable@vger.kernel.org
->>> ---
->>>  drivers/mtd/chips/cfi_cmdset_0002.c | 25 +++++++++++++++++++++----
->>>  1 file changed, 21 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
->>> index e68ddf0f7fc0..6c57f85e1b8e 100644
->>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
->>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
->>> @@ -866,6 +866,23 @@ static int __xipram chip_check(struct map_info *map, struct flchip *chip,
->>>  		chip_check(map, chip, addr, &datum); \
->>>  	})
->>>  
->>> +static bool __xipram cfi_use_chip_ready_for_write(struct map_info *map)
->>
->> At the very least I would call this function:
->> cfi_use_chip_ready_for_writes()
->>
->> Yet, I still don't fully get what chip_ready is versus chip_good.
->>
->>> +{
->>> +	struct cfi_private *cfi = map->fldrv_priv;
->>> +
->>> +	return cfi->mfr == CFI_MFR_AMD && cfi->id == 0x0c01;
->>> +}
->>> +
->>> +static int __xipram chip_good_for_write(struct map_info *map,
->>> +					struct flchip *chip, unsigned long addr,
->>> +					map_word expected)
->>> +{
->>> +	if (cfi_use_chip_ready_for_write(map))
->>> +		return chip_ready(map, chip, addr);
->>
->> If possible and not too invasive I would definitely add a "quirks" flag
->> somewhere instead of this cfi_use_chip_ready_for_write() check.
->>
->> Anyway, I would move this to the chip_good() implementation directly so
->> we partially hide the quirks complexity from the core.
+> So the cpu does an MMIO read cycle to the controller which doesn't
+> complete until (for the nibble-mode spi device I have):
+> 1) Chipselect is asserted.
+> 2) The 8-bit command has been clocked out.
+> 3) The 32bit address have been clocked out (8 clocks in nibbles).
+> 4) A few (probably 4) extra delay clocks are added.
+> 5) The data is read - 8 clocks for 32bits in nibble mode.
+> 6) Chipselect is removed.
 > 
-> Yeah, unfortunately this driver does not use quirk flags and tends to
-> hide quirks behind bool functions like above
+> Now you can do long sequential reads without all the red tape.
+> But a random read in nibble mode is about 30 clocks.
+> 16 bit mode saves 6 clocks for the data and maybe 6 for the address?
 > 
-> Regards
-> Vignesh
+> The controller could do 'clever stuff' for sequential reads.
+> At a cost of slowing down random reads.
+> 
+> So even at 400MHz it isn't that fast.
+
+Random CPU reads would be inherently slow, its just how HW is.
+
+But, there are cases like image load from flash and Filesystem over
+flash which would use DMA to maximize performance, such cases would be
+greatly affected if we do SW byte swap
+
+> 
+> If the MMIO interface to the flash controller is PCIe you can
+> add in a load of extra latency for the cpu read itself.
+> 
+> While PCIe allows multiple read requests to be outstanding,
+> the Intel cpu I've looked at serialise the reads from each
+> cpu core (each cpu always uses the same TLP tag).
+> 
+> Now longer read TLP help a lot (IIRC max is 256 bytes).
+> But the x86 cpu will only generate read TLP for register reads.
+> You need to use AVX512 registers (or cache line fetches) to
+> get better throughput!
 > 
 
+Direct CPU fetch from SPI would not be able to make use of full
+Bandwidth for high speed flashes and its not the only usecase.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Regards
+Vignesh
 
 ______________________________________________________
 Linux MTD discussion mailing list
