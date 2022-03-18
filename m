@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACE3CC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 18 Mar 2022 14:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D35FC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 18 Mar 2022 14:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w/GojgCHJJ4o6CF9w8a2nXhRBus9ow44Db1whEPXI0g=; b=zdPuXAEsK8b8oJ
-	ehMdFVMblSzRE3N64o+tK4cqVjjyX3nAUFa8QIYSBi8c5cWaB8HXwHhj0YYkg+JqnpOB2219SBuhW
-	/Ih1WzFLln1WFGG7aCTP04PpAnGnqzaZfdxLRiECjmGCuTltE+86ElimLO5L1BlgzhVpxda+o9Kib
-	gDMLYVHw3AnB85+7MGZWcW6Zhngv08Z+j+zl7vTEnqRX6d2GDVeU85UNSt6HXjhPm+K8iu9n2Yrvd
-	UoIqy7GpC4keq18fec4nX2Z47H6YTwmaGtjDxGM8+q0TqXbC7YQ2ZtJr1W8IYlme6tooFop5WaWbt
-	OrFUtahILnpIuaEj+VWw==;
+	List-Owner; bh=MT0s27T2W424/Rdo/7/5iwaivLZG7y+qQPbYCS5Krx4=; b=xqKox1U3/o/VuP
+	e2gzitZrUpy3pM6KpjjKGLFiHWvnc15A3z6fg4yFTY7iG0p2eRx8NF0EBBU5z1PcVFTYV914O5r+x
+	pr1YihUkqAY4pXWh1YyrOXz6FlK/PXw69VsE7ikN1uL6xyewLD2Ni1bu77EVI+UPKiNu68EUKJXvT
+	GvKzDqTDJNCO7/2lTtO6HdayMlqVP59mIahKqTZ/vnmRPxyMBHRG8v1HWPG7q8LqvtzAvoYadHqjM
+	O//0qDW/F6yxcfZanBRmo08slnCpGl3LhMjBqeXvqfydMRh8P/mMrE2XdkiBalyNzd6zsKw4l9dFq
+	YhZWkURb6eU+gbzl+b0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nVD8g-001nkH-F1; Fri, 18 Mar 2022 13:59:34 +0000
-Received: from mail-wm1-x336.google.com ([2a00:1450:4864:20::336])
+	id 1nVDBs-001ocL-Bo; Fri, 18 Mar 2022 14:02:52 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nVD8a-001nis-0P
- for linux-mtd@lists.infradead.org; Fri, 18 Mar 2022 13:59:30 +0000
-Received: by mail-wm1-x336.google.com with SMTP id
- o7-20020a05600c4fc700b0038c87edc21eso946749wmq.0
- for <linux-mtd@lists.infradead.org>; Fri, 18 Mar 2022 06:59:27 -0700 (PDT)
+ id 1nVDBc-001oXc-E7
+ for linux-mtd@lists.infradead.org; Fri, 18 Mar 2022 14:02:38 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id x15so11847823wru.13
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Mar 2022 07:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20210112.gappssmtp.com; s=20210112;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:organization:in-reply-to
  :content-transfer-encoding;
- bh=ogHnGGfhi1fcZKMMElkxQ/5rub6U97iyaUhzrHWOyys=;
- b=QTYoNw0JJzHKOlIm/fF/5jmID6xRRwM5hSl5oAZ/1WduaW//xSWvxlqs6D7wrc4Ecr
- +iNZ+TfCoyAIxYBswF2A+siArIFrITuKN2M4kWbd3Uc99T5U2n+729wtt/cT8u3ZA64q
- TJX64giUWy+dzyBEaF5xVsB/qoxCmd72/dqK8rBjV7i+ib22hFwgLWKfR3/wmfU4MKZU
- XduWJqoMvitOQrRLQC8BfcQ2jHGQ9B/TaOutLlSY7UyDvpz11QcB5jWG1CEAWdqOxLwU
- 5VT70JopfPrAekKA5aHrwhb42/DmgI6zKWdUmcYbc02dtahVy+QmJ90ivFtA6PP5rQvd
- j/ww==
+ bh=MSfe0oNqlxTc3hvFVxCHI7kIYgD3mVI4QDSibjDlGsU=;
+ b=nMhlwQ7fYXVSj9Kxm6vqRqlZnpDQarVv0lQR0Hg11heP3FNNsF4h5gZiEb3MvyQTej
+ jYSBWp7kxj44YE3MPxa0GbgcOrOWm4RJobVSYibpGv90gL07vkwEQ0qYbgtRD16tFpFv
+ X7Yz+1T7u4QyHZSdgEvEoShJRmYU9LXuD8ASt44rcjYN05lFuk+D5/nwJNOOGBZHfkQn
+ +XEkjSzN+Slwothm8OyrVqyCklqXtF2Pmgg7ENPkMN/zr3PtOO7Kt7L5G7HpxoIXKHPm
+ iqCvEQM7YjfUDPlTsmQlulYSBe741JioYea2Oo9Ns/zYMioEac1mSRL62d8Aqy27Y7Lj
+ XxGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:organization:in-reply-to
  :content-transfer-encoding;
- bh=ogHnGGfhi1fcZKMMElkxQ/5rub6U97iyaUhzrHWOyys=;
- b=UVtlNFW0Bh2koXV0IhcRLbkBzOtgkTANbe72DlE7hoh5ilLYGh1px13CU2Hr9d72pi
- oXZYfYabTjNeElUV+5kGxMRrn57r4d/IMzrOCMfvejdCvpvNQ0I0Zefsp/uYUtC/zwTW
- orAt7OqZnjYPWO3LsVo2hKs9r4odxPQtSh9uxVJ4nYTU4Zir3aQQG9+JNp5jUZvKlb7W
- VpWTY2Rrmo1vLq6vYXsEkmjADvPbEm0GbgnJ21TN9VF/sX02hRy9wRIB5qVZdI1uaXig
- qFfPufoLchZWwhBOu5Z9BmXK/zGcSFUaWma/OsgFmJIl1UFUTOB2cQB/wErEij6fiBBF
- apZA==
-X-Gm-Message-State: AOAM532nPX1ZAUj7rN+N3Xl/77x+C0zl46N+wDt3Sg0ACW7VoJRihRXj
- plh0Psva/NfL5fA3492Z8P9UwQ==
-X-Google-Smtp-Source: ABdhPJxGf457WOptsZ0h44spLE63BITfdwRP7Nj7ap1ftMgM1BF40eRcmCNECryD8/akC48m6o3TLg==
-X-Received: by 2002:a05:600c:2f8f:b0:38c:889b:b211 with SMTP id
- t15-20020a05600c2f8f00b0038c889bb211mr3026527wmn.151.1647611966479; 
- Fri, 18 Mar 2022 06:59:26 -0700 (PDT)
+ bh=MSfe0oNqlxTc3hvFVxCHI7kIYgD3mVI4QDSibjDlGsU=;
+ b=4vG7UZpBNi3YD1U2FlsI/G1rejg6oNnKTHwepyDRhLnnz/qxWCbRqlyCsO9uVJSzqt
+ 76sQSPHmpSYeCjMbf74XgJ4MdEkxKADaoad3Aycm3cCErvwqo3myfvhXpSrCvwIfR/0X
+ WVQ3RTSiZt7/6iYyQbQJb8uBgW/nzuRJWywUx1XL4qhoXTuXA80zEOhb1FGEs4aIYDUp
+ ZwFQuu/k6OU3KUi2MSFCrGzlVW+mluHSsWY0GgwdG4T9Qs14bv59PEY5RJYDlhlFHk4w
+ lk4algotkLHJ7dghciS5DdpK3UJufUy2lv0wRHeyBhjTvyHgvPtZo/eJ+XxkJ9qaI4ay
+ yXxw==
+X-Gm-Message-State: AOAM533o+nw5f4PxXmj8oIYGsSjyhL+rtTvLZtg+MfDovQ05sq57Wphg
+ Ojm89RYof88Bye059DjWV1VvAA==
+X-Google-Smtp-Source: ABdhPJzlx1nTpb3i5pgvyJajDxSfqFs4eVc0qGGx7Z0lDoyM6Sev+Wxrf/asoUJYby5Nx1ty10WW8w==
+X-Received: by 2002:a5d:4609:0:b0:203:e792:3add with SMTP id
+ t9-20020a5d4609000000b00203e7923addmr7416026wrq.657.1647612154903; 
+ Fri, 18 Mar 2022 07:02:34 -0700 (PDT)
 Received: from [192.168.1.10]
  (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
  by smtp.gmail.com with ESMTPSA id
- n7-20020a05600c3b8700b00389a6241669sm11067093wms.33.2022.03.18.06.59.25
+ c12-20020a05600c0a4c00b00381141f4967sm8613506wmq.35.2022.03.18.07.02.33
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 18 Mar 2022 06:59:26 -0700 (PDT)
-Message-ID: <0813d4a1-8430-f089-65ea-4e305cfda545@baylibre.com>
-Date: Fri, 18 Mar 2022 14:59:24 +0100
+ Fri, 18 Mar 2022 07:02:34 -0700 (PDT)
+Message-ID: <afeff479-624c-73c8-3a1a-7d21f85ac09b@baylibre.com>
+Date: Fri, 18 Mar 2022 15:02:33 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH v3 2/2] dt-bindings: nand: meson: refine Amlogic NAND
- controller driver
+Subject: Re: [PATCH v3 1/2] mtd: rawnand: meson: discard the common MMC sub
+ clock framework
 Content-Language: en-US
 To: Liang Yang <liang.yang@amlogic.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
@@ -82,15 +81,16 @@ Cc: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
  <xianwei.zhao@amlogic.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>,
  BiChao Zheng <bichao.zheng@amlogic.com>, YongHui Yu
  <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
 References: <20220318124121.26117-1-liang.yang@amlogic.com>
- <20220318124121.26117-3-liang.yang@amlogic.com>
+ <20220318124121.26117-2-liang.yang@amlogic.com>
 From: Neil Armstrong <narmstrong@baylibre.com>
 Organization: Baylibre
-In-Reply-To: <20220318124121.26117-3-liang.yang@amlogic.com>
+In-Reply-To: <20220318124121.26117-2-liang.yang@amlogic.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220318_065928_139558_7E01F2C8 
-X-CRM114-Status: GOOD (  21.73  )
+X-CRM114-CacheID: sfid-20220318_070236_523159_ABF011B5 
+X-CRM114-Status: GOOD (  28.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,185 +110,237 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Hi,
 
 On 18/03/2022 13:41, Liang Yang wrote:
-> convert txt to yaml and refine the meson NFC clock document.
+> EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK' which is
+> defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is the divider and
+> bit6~7 is the mux for fix pll and xtal.A common MMC and NAND sub-clock has been
+> implemented and can be used by the eMMC and NAND controller (which are mutually
+> exclusive anyway). Let's use this new clock.
 > 
 > Signed-off-by: Liang Yang <liang.yang@amlogic.com>
 > ---
->   .../bindings/mtd/amlogic,meson-nand.txt       | 60 ----------------
->   .../bindings/mtd/amlogic,meson-nand.yaml      | 71 +++++++++++++++++++
->   2 files changed, 71 insertions(+), 60 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->   create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>   drivers/mtd/nand/raw/meson_nand.c | 101 ++++++++++++++++--------------
+>   1 file changed, 53 insertions(+), 48 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> deleted file mode 100644
-> index 5794ab1147c1..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> +++ /dev/null
-> @@ -1,60 +0,0 @@
-> -Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> -
-> -This file documents the properties in addition to those available in
-> -the MTD NAND bindings.
-> -
-> -Required properties:
-> -- compatible : contains one of:
-> -  - "amlogic,meson-gxl-nfc"
-> -  - "amlogic,meson-axg-nfc"
-> -- clocks     :
-> -	A list of phandle + clock-specifier pairs for the clocks listed
-> -	in clock-names.
-> -
-> -- clock-names: Should contain the following:
-> -	"core" - NFC module gate clock
-> -	"device" - device clock from eMMC sub clock controller
-> -	"rx" - rx clock phase
-> -	"tx" - tx clock phase
-> -
-> -- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
-> -				controller port C
-> -
-> -Optional children nodes:
-> -Children nodes represent the available nand chips.
-> -
-> -Other properties:
-> -see Documentation/devicetree/bindings/mtd/nand-controller.yaml for generic bindings.
-> -
-> -Example demonstrate on AXG SoC:
-> -
-> -	sd_emmc_c_clkc: mmc@7000 {
-> -		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
-> -		reg = <0x0 0x7000 0x0 0x800>;
-> -	};
-> -
-> -	nand-controller@7800 {
-> -		compatible = "amlogic,meson-axg-nfc";
-> -		reg = <0x0 0x7800 0x0 0x100>;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> -
-> -		clocks = <&clkc CLKID_SD_EMMC_C>,
-> -			<&sd_emmc_c_clkc CLKID_MMC_DIV>,
-> -			<&sd_emmc_c_clkc CLKID_MMC_PHASE_RX>,
-> -			<&sd_emmc_c_clkc CLKID_MMC_PHASE_TX>;
-> -		clock-names = "core", "device", "rx", "tx";
-> -		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
-> -
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&nand_pins>;
-> -
-> -		nand@0 {
-> -			reg = <0>;
-> -			#address-cells = <1>;
-> -			#size-cells = <1>;
-> -
-> -			nand-on-flash-bbt;
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> new file mode 100644
-> index 000000000000..4de4962a40b7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/amlogic,mmc-clkc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> index ac3be92872d0..257ffc8a41ab 100644
+> --- a/drivers/mtd/nand/raw/meson_nand.c
+> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/dma-mapping.h>
+>   #include <linux/interrupt.h>
+>   #include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+>   #include <linux/mtd/rawnand.h>
+>   #include <linux/mtd/mtd.h>
+>   #include <linux/mfd/syscon.h>
+> @@ -19,6 +20,7 @@
+>   #include <linux/iopoll.h>
+>   #include <linux/of.h>
+>   #include <linux/of_device.h>
+> +#include <linux/of_address.h>
+>   #include <linux/sched/task_stack.h>
+>   
+>   #define NFC_REG_CMD		0x00
+> @@ -104,6 +106,9 @@
+>   
+>   #define PER_INFO_BYTE		8
+>   
+> +#define CLK_DIV_SHIFT		0
+> +#define CLK_DIV_WIDTH		6
 > +
-> +title: Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+>   struct meson_nfc_nand_chip {
+>   	struct list_head node;
+>   	struct nand_chip nand;
+> @@ -151,15 +156,15 @@ struct meson_nfc {
+>   	struct nand_controller controller;
+>   	struct clk *core_clk;
+>   	struct clk *device_clk;
+> -	struct clk *phase_tx;
+> -	struct clk *phase_rx;
+> +	struct clk *nand_clk;
+> +	struct clk_divider nand_divider;
+>   
+>   	unsigned long clk_rate;
+>   	u32 bus_timing;
+>   
+>   	struct device *dev;
+>   	void __iomem *reg_base;
+> -	struct regmap *reg_clk;
+> +	void __iomem *sd_emmc_clock;
+>   	struct completion completion;
+>   	struct list_head chips;
+>   	const struct meson_nfc_data *data;
+> @@ -235,7 +240,7 @@ static void meson_nfc_select_chip(struct nand_chip *nand, int chip)
+>   	nfc->timing.tbers_max = meson_chip->tbers_max;
+>   
+>   	if (nfc->clk_rate != meson_chip->clk_rate) {
+> -		ret = clk_set_rate(nfc->device_clk, meson_chip->clk_rate);
+> +		ret = clk_set_rate(nfc->nand_clk, meson_chip->clk_rate);
+>   		if (ret) {
+>   			dev_err(nfc->dev, "failed to set clock rate\n");
+>   			return;
+> @@ -406,7 +411,6 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
+>   	cmd = NFC_CMD_RB | NFC_CMD_RB_INT
+>   		| nfc->param.chip_select | nfc->timing.tbers_max;
+>   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+> -
+>   	ret = wait_for_completion_timeout(&nfc->completion,
+>   					  msecs_to_jiffies(timeout_ms));
+>   	if (ret == 0)
+> @@ -985,9 +989,11 @@ static const struct mtd_ooblayout_ops meson_ooblayout_ops = {
+>   	.free = meson_ooblayout_free,
+>   };
+>   
+> +struct clk_parent_data nfc_divider_parent_data[1];
+>   static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   {
+>   	int ret;
+> +	struct clk_init_data init = {0};
+>   
+>   	/* request core clock */
+>   	nfc->core_clk = devm_clk_get(nfc->dev, "core");
+> @@ -1002,21 +1008,26 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   		return PTR_ERR(nfc->device_clk);
+>   	}
+>   
+> -	nfc->phase_tx = devm_clk_get(nfc->dev, "tx");
+> -	if (IS_ERR(nfc->phase_tx)) {
+> -		dev_err(nfc->dev, "failed to get TX clk\n");
+> -		return PTR_ERR(nfc->phase_tx);
+> -	}
+> -
+> -	nfc->phase_rx = devm_clk_get(nfc->dev, "rx");
+> -	if (IS_ERR(nfc->phase_rx)) {
+> -		dev_err(nfc->dev, "failed to get RX clk\n");
+> -		return PTR_ERR(nfc->phase_rx);
+> -	}
+> +	init.name = devm_kstrdup(nfc->dev, "nfc#div", GFP_KERNEL);
+> +	init.ops = &clk_divider_ops;
+> +	nfc_divider_parent_data[0].fw_name = "device";
+> +	init.parent_data = nfc_divider_parent_data;
+> +	init.num_parents = 1;
+> +	nfc->nand_divider.reg = nfc->sd_emmc_clock;
+> +	nfc->nand_divider.shift = CLK_DIV_SHIFT;
+> +	nfc->nand_divider.width = CLK_DIV_WIDTH;
+> +	nfc->nand_divider.hw.init = &init;
+> +	nfc->nand_divider.flags = CLK_DIVIDER_ONE_BASED |
+> +				  CLK_DIVIDER_ROUND_CLOSEST |
+> +				  CLK_DIVIDER_ALLOW_ZERO;
 > +
-> +maintainers:
-> +  - liang.yang@amlogic.com
+> +	nfc->nand_clk = devm_clk_register(nfc->dev, &nfc->nand_divider.hw);
+> +	if (IS_ERR(nfc->nand_clk))
+> +		return PTR_ERR(nfc->nand_clk);
+>   
+>   	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
+> -	regmap_update_bits(nfc->reg_clk,
+> -			   0, CLK_SELECT_NAND, CLK_SELECT_NAND);
+> +	writel(CLK_SELECT_NAND | readl(nfc->sd_emmc_clock),
+> +	       nfc->sd_emmc_clock);
+>   
+>   	ret = clk_prepare_enable(nfc->core_clk);
+>   	if (ret) {
+> @@ -1030,29 +1041,21 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   		goto err_device_clk;
+>   	}
+>   
+> -	ret = clk_prepare_enable(nfc->phase_tx);
+> -	if (ret) {
+> -		dev_err(nfc->dev, "failed to enable TX clock\n");
+> -		goto err_phase_tx;
+> -	}
+> -
+> -	ret = clk_prepare_enable(nfc->phase_rx);
+> +	ret = clk_prepare_enable(nfc->nand_clk);
+>   	if (ret) {
+> -		dev_err(nfc->dev, "failed to enable RX clock\n");
+> -		goto err_phase_rx;
+> +		dev_err(nfc->dev, "pre enable NFC divider fail\n");
+> +		goto err_nand_clk;
+>   	}
+>   
+> -	ret = clk_set_rate(nfc->device_clk, 24000000);
+> +	ret = clk_set_rate(nfc->nand_clk, 24000000);
+>   	if (ret)
+> -		goto err_disable_rx;
+> +		goto err_disable_clk;
+>   
+>   	return 0;
+>   
+> -err_disable_rx:
+> -	clk_disable_unprepare(nfc->phase_rx);
+> -err_phase_rx:
+> -	clk_disable_unprepare(nfc->phase_tx);
+> -err_phase_tx:
+> +err_disable_clk:
+> +	clk_disable_unprepare(nfc->nand_clk);
+> +err_nand_clk:
+>   	clk_disable_unprepare(nfc->device_clk);
+>   err_device_clk:
+>   	clk_disable_unprepare(nfc->core_clk);
+> @@ -1061,8 +1064,7 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   
+>   static void meson_nfc_disable_clk(struct meson_nfc *nfc)
+>   {
+> -	clk_disable_unprepare(nfc->phase_rx);
+> -	clk_disable_unprepare(nfc->phase_tx);
+> +	clk_disable_unprepare(nfc->nand_clk);
+>   	clk_disable_unprepare(nfc->device_clk);
+>   	clk_disable_unprepare(nfc->core_clk);
+>   }
+> @@ -1373,9 +1375,10 @@ MODULE_DEVICE_TABLE(of, meson_nfc_id_table);
+>   static int meson_nfc_probe(struct platform_device *pdev)
+>   {
+>   	struct device *dev = &pdev->dev;
+> +	struct device_node *node = dev->of_node;
+>   	struct meson_nfc *nfc;
+> -	struct resource *res;
+> -	int ret, irq;
+> +	struct resource res;
+> +	int ret, irq, i;
+>   
+>   	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
+>   	if (!nfc)
+> @@ -1388,21 +1391,23 @@ static int meson_nfc_probe(struct platform_device *pdev)
+>   	nand_controller_init(&nfc->controller);
+>   	INIT_LIST_HEAD(&nfc->chips);
+>   	init_completion(&nfc->completion);
+> -
+>   	nfc->dev = dev;
+>   
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	nfc->reg_base = devm_ioremap_resource(dev, res);
+> +	i = of_property_match_string(node, "reg-names", "nfc");
+> +	if (of_address_to_resource(node, i, &res))
+> +		return -ENOENT;
 > +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - "amlogic,meson-gxl-nfc"
-> +      - "amlogic,meson-axg-nfc"
-> +
-> +  reg:
-> +    maxItems: 2
+> +	nfc->reg_base = devm_ioremap_resource(dev, &res);
+>   	if (IS_ERR(nfc->reg_base))
+>   		return PTR_ERR(nfc->reg_base);
 
-   reg-names:
-     items:
-       - const: nfc
-       - const: mmc
+You can use devm_platform_ioremap_resource_byname() here which is musch simpler,
+and permits dropping platform_get_resource() at the same time.
 
-Is missing to conform to the example
+>   
+> -	nfc->reg_clk =
+> -		syscon_regmap_lookup_by_phandle(dev->of_node,
+> -						"amlogic,mmc-syscon");
+> -	if (IS_ERR(nfc->reg_clk)) {
+> -		dev_err(dev, "Failed to lookup clock base\n");
+> -		return PTR_ERR(nfc->reg_clk);
+> -	}
+> +	i = of_property_match_string(node, "reg-names", "emmc");
+> +	if (of_address_to_resource(node, i, &res))
+> +		return -ENOENT;
+> +
+> +	nfc->sd_emmc_clock = devm_ioremap_resource(dev, &res);
+> +	if (IS_ERR(nfc->sd_emmc_clock))
+> +		return PTR_ERR(nfc->sd_emmc_clock);
 
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: "core", "device"
+Same here.
 
-This should be:
-   clock-names:
-     items:
-       - const: core
-       - const: device
-
-> +
-> +  "#clock-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-
-+ reg-names
-
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - "#clock-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    nand-controller@7800 {
-> +	compatible = "amlogic,meson-axg-nfc";
-> +	reg = <0x0 0x7800 0x0 0x100>,
-> +	      <0x0 0x7000 0x0 0x800>;
-> +        reg-names = "nfc", "emmc";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> +
-> +	clocks = <&clkc CLKID_SD_EMMC_C>,
-> +		<&clkc CLKID_FCLK_DIV2>;
-> +	clock-names = "core", "device";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&nand_pins>;
-> +
-> +	nand@0 {
-> +		reg = <0>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		nand-on-flash-bbt;
-> +	};
-> +     };
-> +
-> +...
-
-Don't forgot to run :
-make ARCH=-arm64 dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-
-after installing the DT schema validator:
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master
-
-as documented at https://www.kernel.org/doc/html/v5.9/devicetree/writing-schema.html
+>   
+>   	irq = platform_get_irq(pdev, 0);
+>   	if (irq < 0)
 
 Thanks !
 Neil
