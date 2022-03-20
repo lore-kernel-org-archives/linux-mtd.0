@@ -4,78 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28043C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 19 Mar 2022 08:34:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436AAC433EF
+	for <linux-mtd@archiver.kernel.org>; Sun, 20 Mar 2022 09:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=uFMMNafQ2uvFgsrQZvH7cOr4bJ7AdNKXt5o7Ma3iIM4=; b=i/x2gLoxCpp1Pg
-	LAdwNblKOc43mdv2kB9I/IHKqcWDNzuByN54IItQ4HsObWaIkxHjbohuZLibFyd3I98me/Ljxc/Kr
-	i84atzM8NjnrD9Tkn90s0M79qraucgu7TOqsrQK9A87PhzKDHhn7K7MZN6rPunMRrpmAPyjfQdMBT
-	c7H5bFSdJtYC7Kj8mPNRz5unjKKk78hlaFkF5n8aTb/h6PBFtcvEygx68ggDY2lZcq5IXAc4sTLNL
-	3Zx4w6mGKAsb61z9dyawD+6ehQchX8TQkSxki3Hf11CiEvj5ootOZVcNuGqIpxi3wd5TUdCX7S2KL
-	8DBBJGtlB87J2/xWf9UA==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=q26GhjcqISZh6UF0/CO5yrJvwFpx4CeX3WIeNvxUiy8=; b=NNsOagbpJdqsoj
+	zIZJMBXWfsA80pWe5ZSykRgdKpSs+c9aFAkfAv651kxpXNfJDDRfx/TsCna2TcG/CYqCuWAfzTHkk
+	M2nJAUU2FYt9ETSLFoFsbbeCCutC3izqdwgG98hboYBC+Hm+ni5e8C3aLGk5pAIoEO4o1NxkBa17X
+	Wo7/Uu4CkqpMUBW3D1K0UkuuXNvpET4pyQgV5ZOmg9Tw5N/aaVTvQpNX87Xz53OHMTyWBT3uJ6taP
+	idptpiCMML8DZs4n/k3Wf7Bx6JtDbZLPnt2jgAZkn5zb9li612JzetDyJB+sVzhkaC9S6pwxwq7gm
+	altcmiLc2nb5r2W7QKTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nVUXC-003SpL-S5; Sat, 19 Mar 2022 08:34:02 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1nVrir-004yEA-4D; Sun, 20 Mar 2022 09:19:37 +0000
+Received: from mail-io1-xd2f.google.com ([2607:f8b0:4864:20::d2f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nVUX9-003Sp2-Rs
- for linux-mtd@lists.infradead.org; Sat, 19 Mar 2022 08:34:01 +0000
-Received: by mail-pf1-x432.google.com with SMTP id a5so11502128pfv.2
- for <linux-mtd@lists.infradead.org>; Sat, 19 Mar 2022 01:33:58 -0700 (PDT)
+ id 1nVril-004yDs-ME
+ for linux-mtd@lists.infradead.org; Sun, 20 Mar 2022 09:19:32 +0000
+Received: by mail-io1-xd2f.google.com with SMTP id l18so13854821ioj.2
+ for <linux-mtd@lists.infradead.org>; Sun, 20 Mar 2022 02:19:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=s8PQKlbtuifCe2sia50BJ6lrE2M1PS4ubrNMMi1Ne9c=;
- b=bfFtFMpcAxaVfh3gkrWqlEq0PnXL0euWimLa+T3aBEH5mwxqjgsrpuZQjag+zmNZLz
- +r8BsOn5CLKF7WlQql1FpniVjZnEnzbOj8WKfgv9XJMrzLj7BVwCFeFYXU29rl0vai7B
- G0uNXAs47kqh7QQ2ymECriz8uuTlKYvvPhXJs+MihE+fctEbHMeqj/d233lTwGu2GFcY
- WhFVtpdLAzrBs2YZvpw5VYM78bJbDBa2XM5wdOUNYAXzAgmmZ+uGHyQIGLipGOOKmWpJ
- q4uYjkABJtjIF3OrBRGqqR75nz5P2wvIsFlxjQ6G5CKL/BlfJluaUO4ZiTfDFVOKuJDG
- ourQ==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=gSgE6yqkno7KzD+jL8KRzD/isTc5hJCWP4hnpiIR8X0=;
+ b=CsH4edHw8WSKA94Lkc0rOnB7epUJgnoD9Z8QTIYRO+a7K5/9ktJb4FXPKuKdspVABe
+ yO0B/EVW1+xR5TwBuBHBxQLHZVzQA0TtjFk3FeuKxKNnJbSMzPL3PF6amOdMsFRZ5FJf
+ 8+ULmopFYRwJzxXyZwFBXiB39pkcHq/ySbCSubyQ8wTiNHWUd+bDswhEjebmqkMkoZF2
+ JN+MyQEDLTZuREXBzgl/oI1/ro9up2bOsQZE0fbod8i0DseBXBPEjm2J+qwIBlHztvWc
+ VnVUJdbWnTWIgbCTeMflxK0zEbDn4BHzZ1gNX7sOddt7rMJzg+IMupiLUULkBl4Rm/El
+ 6H4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=s8PQKlbtuifCe2sia50BJ6lrE2M1PS4ubrNMMi1Ne9c=;
- b=b8t6vR3sdvNLYSO/Wb4CxX/4rLFGYwHetCLRZ9AaVL43A3lpF7EOfjeLY+g5Ss+sWE
- tMSGtYodprONPunjAq88KNeCdPnZkKAKBYVJpVueHlJzydiWTVXeBhKjEU3xCqjWvB/v
- Ht1WNNX/sky48VbIyrpSEY/qStzBn7ZkOCXTn4aA1HtPjh2D79MfWPqq5cNVBD3VZcVt
- xmW9EVTXo/iCqNFnMAwBg4NTtNlg5/jKvU6GIqUeCFq7gREfR0/98ej40nJCxmrRaTsG
- +nyL9ZhzTkJi+e3AglelV1cG1RMqTU3uEiQQXkIIQ2efyvt5Bixra3V9A5FDftgEvfYL
- wmXQ==
-X-Gm-Message-State: AOAM532GE97y0MYEl5qyKslvJg7OgksC277l8LBbbQLTOFWjX8s0PwGM
- qqRUzA/lzZX9x/loT7X3sK/kLwAe8oNfylsw
-X-Google-Smtp-Source: ABdhPJzvPQ5s00j8GuhEw13G6sxP+1nGQ5JUwL/1FT1v3OxYPjLFLpwRxafPNSKIggDmdANj4AkwbQ==
-X-Received: by 2002:a63:f94d:0:b0:381:5104:c3d9 with SMTP id
- q13-20020a63f94d000000b003815104c3d9mr11094175pgk.600.1647678838142; 
- Sat, 19 Mar 2022 01:33:58 -0700 (PDT)
-Received: from guoguo-omen.lan ([2001:250:3000:7000:7978:d40d:86ff:591d])
- by smtp.gmail.com with ESMTPSA id
- g2-20020a056a000b8200b004fa23c8b522sm12306880pfj.156.2022.03.19.01.33.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 19 Mar 2022 01:33:57 -0700 (PDT)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Chuanhong Guo <gch981213@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Stefan Roese <sr@denx.de>,
- Reto Schneider <reto.schneider@husqvarnagroup.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mtd: spinand: gigadevice: fix Quad IO for GD5F1GQ5UExxG
-Date: Sat, 19 Mar 2022 16:32:59 +0800
-Message-Id: <20220319083301.87400-1-gch981213@gmail.com>
-X-Mailer: git-send-email 2.35.1
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gSgE6yqkno7KzD+jL8KRzD/isTc5hJCWP4hnpiIR8X0=;
+ b=YK26QYHaEC0h2gNr3EQJCEYKoMWj8D3kHum+AbGvEcA5sAB3eJJFCcFgJN+l8X7xbB
+ ZfmLso0BdMwlZN3FbN4NIioLkIXlvCRKt7oYi/mxtg0SaOr3rpyLdIm7BfkK2gjKafXB
+ uM9/NU1if1obYF8xYHKH13P6azn7eEYK/19xnGi8oG6hqCggxf0xpOFuYvs6xDT93Xwp
+ cqNoHpMEGImw1tZz6TnUXyyEiAr4N1YB2a5mLb5Wd7rTwaFl3dkJOyVjSOViGMl1CudU
+ IEXGYaQloOyrbpioyn8wggubAmdYFs4WkLVCNlHWkuo98rf9Sk5bu/YJu+jgx1dfQ/ot
+ Xi7Q==
+X-Gm-Message-State: AOAM5338m5znNkRT/if5OK0r0BX2C2lpePfDaSjYFSn/L3nwyPV6gcnM
+ DxGj0tq2DWPuuGTs6T54DWhaj+Kh5LABQYYHXCcnN24xIBo=
+X-Google-Smtp-Source: ABdhPJwx5w7JImU6Tkv500kqsx5RX2SPwULSRkx+D7lzBJknKujzkeLLzikMQyYbCqkLa86AF4+AVAEjSZatRWHJpJk=
+X-Received: by 2002:a05:6638:531:b0:317:af7d:d934 with SMTP id
+ j17-20020a056638053100b00317af7dd934mr7797245jar.307.1647767969638; Sun, 20
+ Mar 2022 02:19:29 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220319083301.87400-1-gch981213@gmail.com>
+In-Reply-To: <20220319083301.87400-1-gch981213@gmail.com>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Sun, 20 Mar 2022 17:19:18 +0800
+Message-ID: <CAJsYDVLORFCt75Nv1+3wNd2=mMhHQm6Hb_iQ_HGO=Qgg6iV0eQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spinand: gigadevice: fix Quad IO for GD5F1GQ5UExxG
+To: linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Stefan Roese <sr@denx.de>, 
+ Reto Schneider <reto.schneider@husqvarnagroup.com>, 
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ open list <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220319_013359_934757_19D2845E 
-X-CRM114-Status: UNSURE (   8.83  )
+X-CRM114-CacheID: sfid-20220320_021931_775438_21C599C0 
+X-CRM114-Status: UNSURE (   9.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -93,48 +87,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Read From Cache Quad IO (EBH) uses 2 dummy bytes on this chip according
-to page 23 of the datasheet[0].
+Hi!
 
-[0]: https://www.gigadevice.com/datasheet/gd5f1gq5xexxg/
+On Sat, Mar 19, 2022 at 4:33 PM Chuanhong Guo <gch981213@gmail.com> wrote:
+> [...]
+> --- a/drivers/mtd/nand/spi/gigadevice.c
+> +++ b/drivers/mtd/nand/spi/gigadevice.c
+> @@ -39,6 +39,14 @@ static SPINAND_OP_VARIANTS(read_cache_variants_f,
+>                 SPINAND_PAGE_READ_FROM_CACHE_OP_3A(true, 0, 1, NULL, 0),
+>                 SPINAND_PAGE_READ_FROM_CACHE_OP_3A(false, 0, 0, NULL, 0));
+>
+> +static SPINAND_OP_VARIANTS(read_cache_variants_q5,
+> +               SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
 
-Fixes: 469b99248985 ("mtd: spinand: gigadevice: Support GD5F1GQ5UExxG")
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
- drivers/mtd/nand/spi/gigadevice.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+I just noticed that only GD5F1GQ5 has 2 dummy bytes. GD5F2GQ5 and
+GD5F4GQ6 have 4 dummy bytes instead.
+I'll rename this variant to 1gq5 and submit a new version of this with
+a series of
+patches for other GD SPI NANDs.
 
-diff --git a/drivers/mtd/nand/spi/gigadevice.c b/drivers/mtd/nand/spi/gigadevice.c
-index 1dd1c5898093..f765a394a2d2 100644
---- a/drivers/mtd/nand/spi/gigadevice.c
-+++ b/drivers/mtd/nand/spi/gigadevice.c
-@@ -39,6 +39,14 @@ static SPINAND_OP_VARIANTS(read_cache_variants_f,
- 		SPINAND_PAGE_READ_FROM_CACHE_OP_3A(true, 0, 1, NULL, 0),
- 		SPINAND_PAGE_READ_FROM_CACHE_OP_3A(false, 0, 0, NULL, 0));
- 
-+static SPINAND_OP_VARIANTS(read_cache_variants_q5,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
- static SPINAND_OP_VARIANTS(write_cache_variants,
- 		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
- 		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-@@ -339,7 +347,7 @@ static const struct spinand_info gigadevice_spinand_table[] = {
- 		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x51),
- 		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
- 		     NAND_ECCREQ(4, 512),
--		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_q5,
- 					      &write_cache_variants,
- 					      &update_cache_variants),
- 		     SPINAND_HAS_QE_BIT,
 -- 
-2.35.1
-
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
