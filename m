@@ -4,59 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C5A3C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 15:16:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E74EC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 17:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2Yadd1PQ3HD+VimcHowt0lJqWZ2hDJ/FuIQ8Add/FUQ=; b=P3tZzi56zqIKzS
-	bg10obgs16ivdfQFk/02kCpQ1by5bXILA6rUfTkX26i9zEI3q8T+4Cd++Pg/O9R18IfjtQVXFjY5p
-	TU76fZqOEyJiVen/m3fn60Cj2YDxvC3vNPmy86OjXNBTDe/pgUBwv79nVjYJDaBYGFgbZMImuqh3q
-	2UwLQt3rF0KIwPQeZ4LIEr3jX6xP+cooSpSXkRX5Z25eoCKoES57Qfqp96FtpLGekltYWeTRRZtZw
-	Z1CaaAChaFI8+0CRTRKrss5yCa9n0mr33JJsWjoYY1fj3kcCYEGJkUZfzZAN3MriY6PV1W4yPm6IT
-	w8x7smgjHBm9eIXvo+1g==;
+	List-Owner; bh=utq2qtB/YauFPwpfOUZtidpado71hJ2Ha9x2KfHR0Mc=; b=LVTEqoWf+B0+7T
+	hVWxOx37k6Rp/hFsypADaYaYDaNT+K+S9JcbH5vnqJCh5TXl/Kxt8pIj+OzOR0iAE+N/TK5kwlbv2
+	2SNorGxKKqlh1XV0rnh2d9hhJZaKsXOW+1HRd+OMR3B9nU1AYn0/jLTTHV3+y6BMBNfzV9nSItZ0c
+	oQj7ydh8Qv6GsN6w+nPRmXhKYQMXLx25omtQWujhpGdoFZJN4r+AExYxzc8mdxS+9g84aAnmkGgMI
+	ulSWvwfROPkieuG3QaScYCicGIAlTFDieZWZ/OGsCiP0yDbNdMh1FGuSXBvDdGdazTCTSM1rpg5zX
+	P9epV3sSxttgAdn2AIhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWJle-0088W6-C6; Mon, 21 Mar 2022 15:16:22 +0000
-Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
+	id 1nWM0U-008eC4-9A; Mon, 21 Mar 2022 17:39:50 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWJla-0088VA-8y
- for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 15:16:20 +0000
-Received: from ip4d144895.dynamic.kabel-deutschland.de ([77.20.72.149]
- helo=[192.168.66.200]); authenticated
- by wp530.webpack.hosteurope.de running ExIM with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
- id 1nWJlY-00084F-Q1; Mon, 21 Mar 2022 16:16:16 +0100
-Message-ID: <09be42ec-9eee-8237-83e9-054956381aab@leemhuis.info>
-Date: Mon, 21 Mar 2022 16:16:16 +0100
+ id 1nWM0R-008eB6-JW
+ for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 17:39:49 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22LHdiUE096754;
+ Mon, 21 Mar 2022 12:39:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1647884384;
+ bh=/YXfRFfs6htYVgXPCWhHaE5x8G3CaPDSx/tt44tkktU=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=uB/LM152GxbUxqerSs3cagmGgK0R44kBQIFko1GV7uxoK8VDiA+km0udbgfnhHXr/
+ RkeDlhocBY6QUmpT1K2/N4tSSrLVBVnmPYn8cjp3YF0AmBbasaoN+7a8WavfRCHicE
+ s/6kmJFs/HEWLRKI9nXdCVnroxb8xlVa1JnZXnQ8=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22LHdhDQ023551
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 21 Mar 2022 12:39:43 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 21
+ Mar 2022 12:39:09 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 21 Mar 2022 12:39:09 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22LHd86g002139;
+ Mon, 21 Mar 2022 12:39:08 -0500
+Date: Mon, 21 Mar 2022 23:09:08 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>
+Subject: Re: [PATCH v2 4/8] mtd: spi-nor: core: Introduce method for RDID op
+Message-ID: <20220321173908.tcqx3ygo6qd62ukg@ti.com>
+References: <20220228111712.111737-1-tudor.ambarus@microchip.com>
+ <20220228111712.111737-5-tudor.ambarus@microchip.com>
+ <20220321122149.dvqyml4riqkr3gqi@ti.com>
+ <32b3449a-66db-3ed1-da96-47e124800500@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v4 2/3] mtd: cfi_cmdset_0002: Use chip_ready() for write
- on S29GL064N
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Tokunori Ikegami <ikegami.t@gmail.com>, linux-mtd@lists.infradead.org,
- Ahmad Fatoum <a.fatoum@pengutronix.de>, stable@vger.kernel.org
-References: <20220316155455.162362-1-ikegami.t@gmail.com>
- <20220316155455.162362-3-ikegami.t@gmail.com>
- <db755852-effe-c4ca-726c-200d28b0b8a5@leemhuis.info>
- <20220321133529.2d3addaf@xps13>
- <f950bfe4-9c8d-199d-120f-cc8c1ecca8e3@leemhuis.info>
- <20220321144134.3076a2ba@xps13>
- <3ed10e7e-1c73-6464-b1df-6c6e086fa162@leemhuis.info>
- <20220321155618.7bfa214e@xps13>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20220321155618.7bfa214e@xps13>
-X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1647875778;
- be2e6bd2; 
-X-HE-SMSGID: 1nWJlY-00084F-Q1
+Content-Disposition: inline
+In-Reply-To: <32b3449a-66db-3ed1-da96-47e124800500@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_081618_504531_AABB0CEE 
-X-CRM114-Status: GOOD (  26.07  )
+X-CRM114-CacheID: sfid-20220321_103947_761365_C49F474E 
+X-CRM114-Status: GOOD (  36.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,111 +85,145 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21.03.22 15:56, Miquel Raynal wrote:
-> regressions@leemhuis.info wrote on Mon, 21 Mar 2022 15:17:50 +0100:
->> On 21.03.22 14:41, Miquel Raynal wrote:
->>> regressions@leemhuis.info wrote on Mon, 21 Mar 2022 13:51:10 +0100:  
->>>> On 21.03.22 13:35, Miquel Raynal wrote:  
->>>>> regressions@leemhuis.info wrote on Mon, 21 Mar 2022 12:48:11 +0100:
->>>>>  
->>>>>> On 16.03.22 16:54, Tokunori Ikegami wrote:  
->>>>>>> As pointed out by this bug report [1], buffered writes are now broken on
->>>>>>> S29GL064N. This issue comes from a rework which switched from using chip_good()
->>>>>>> to chip_ready(), because DQ true data 0xFF is read on S29GL064N and an error
->>>>>>> returned by chip_good(). One way to solve the issue is to revert the change
->>>>>>> partially to use chip_ready for S29GL064N.
->>>>>>>
->>>>>>> [1] https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/    
->>>>>>
->>>>>> Why did you switch from the documented format for links you added on my
->>>>>> request (see
->>>>>> https://lore.kernel.org/stable/f1b44e87-e457-7783-d46e-0d577cea3b72@leemhuis.info/
->>>>>>
->>>>>> ) to v2 to something else that is not recognized by tools and scripts
->>>>>> that rely on proper link tags? You are making my and maybe other peoples
->>>>>> life unnecessary hard. :-((
->>>>>>
->>>>>> FWIW, the proper style should support footnote style like this:
->>>>>>
->>>>>> Link:
->>>>>> https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
->>>>>>  [1]
->>>>>>
->>>>>> Ciao, Thorsten
->>>>>>
->>>>>> #regzbot ^backmonitor:
->>>>>> https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
->>>>>>  
->>>>>
->>>>> Because today's requirement from maintainers is to provide a Link
->>>>> tag that points to the mail discussion of the patch being applied.  
->>>>
->>>> That can be an additional Link tag, that is done all the time.
->>>>  
->>>>> I
->>>>> then asked to use the above form instead to point to the bug report
->>>>> because I don't see the point of having a "Link" tag for it?  
->>>
->>> Perhaps I should emphasize that I don't remember your initial request
->>> regarding the use of a Link tag  
->>
->> Happen, no worries.
->>
->>> and my original idea was to help this
->>> contributor, not kill your tools which I actually know very little
->>> about.  
->>>>> But it's not your own project, we are all working with thousands of  
->>>> people together on this project on various different fronts. That needs
->>>> coordination, as some things otherwise become hard or impossible. That's
->>>> why we have documentation that explains how to do some things. Not
->>>> following it just because you don't like it is not helpful and in this
->>>> case makes my life as a volunteer a lot harder.  
->>>
->>> Let's be honest, you are referring to a Documentation patch that *you*
->>> wrote  
->>
->> Correct, but in case of submitting-patches it was just a clarification
->> how to place links; why the whole aspect was missing in the other is
->> kinda odd and likely lost in history...
->>
->>> and was merged into Linus' tree mid January. How often do you
->>> think people used to the contribution workflow monitor these files?  
->>
->> Not often, that's why I have no problem pointing it out, even if that's
->> slightly annoying. But you can imagine that it felt kinda odd on my side
->> when asking someone to set the links (with references to the docs
->> explaining how to set them) and seeing them added then in v2, just so
->> see they vanished again in v3 of the same patch. :-/
+On 21/03/22 01:18PM, Tudor.Ambarus@microchip.com wrote:
+> On 3/21/22 14:21, Pratyush Yadav wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 28/02/22 01:17PM, Tudor Ambarus wrote:
+> >> RDID is used in the core to auto detect the flash, but also by some
+> >> manufacturer drivers that contain flashes that support Octal DTR mode,
+> >> so that they can read the flash ID after the switch to Octal DTR was made
+> >> to test if the switch was successful. Introduce a core method for RDID op
+> >> to avoid code duplication.
+> >>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >> ---
+> >>  drivers/mtd/spi-nor/core.c | 58 ++++++++++++++++++++++++++------------
+> >>  drivers/mtd/spi-nor/core.h |  9 ++++++
+> >>  2 files changed, 49 insertions(+), 18 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> index b1d6fa65417d..281e3d25f74c 100644
+> >> --- a/drivers/mtd/spi-nor/core.c
+> >> +++ b/drivers/mtd/spi-nor/core.c
+> >> @@ -369,6 +369,41 @@ int spi_nor_write_disable(struct spi_nor *nor)
+> >>       return ret;
+> >>  }
+> >>
+> >> +/**
+> >> + * spi_nor_read_id() - Read the JEDEC ID.
+> >> + * @nor:     pointer to 'struct spi_nor'.
+> >> + * @naddr:   number of address bytes to send. Can be zero if the operation
+> >> + *           does not need to send an address.
+> >> + * @ndummy:  number of dummy bytes to send after an opcode or address. Can
+> >> + *           be zero if the operation does not require dummy bytes.
+> >> + * @id:              pointer to a DMA-able buffer where the value of the JEDEC ID
+> >> + *           will be written.
+> >> + * @reg_proto:       the SPI protocol for register operation.
+> >> + *
+> >> + * Return: 0 on success, -errno otherwise.
+> >> + */
+> >> +int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
+> >> +                 enum spi_nor_protocol reg_proto)
+> > 
+> > Nitpick: Could just call it 'proto'.
 > 
-> I fully understand. I actually learned that these tags had to be used
-> for this purpose, so I will actually enforce their use in my next
-> reviews.
+> sure, will update
 > 
-> Just a side question, should the Documentation also mention how
-> to refer to links for people not used to it? Something like
-> [5.Posting.rst]:
+> > 
+> >> +{
+> >> +     int ret;
+> >> +
+> >> +     if (nor->spimem) {
+> >> +             struct spi_mem_op op =
+> >> +                     SPI_NOR_READID_OP(naddr, ndummy, id, SPI_NOR_MAX_ID_LEN);
+> >> +
+> >> +             spi_nor_spimem_setup_op(nor, &op, reg_proto);
+> >> +             ret = spi_mem_exec_op(nor->spimem, &op);
+> >> +     } else {
+> >> +             ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
+> >> +                                                 SPI_NOR_MAX_ID_LEN);
+> >> +     }
+> >> +
+> >> +     if (ret)
+> >> +             dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
+> > 
+> > I think this message should be in spi_nor_detect(). Let octal DTR enable
 > 
-> 	"Link: <link> [1]
-> 	 Link: <link> [2]"
+> As of now every SPI NOR operation that return an error also prints a dbg
+> message. I like this because it offers a smaller granularity on the error
+> cause.
 
-Maybe. But I think the better approach would be: introduce more specify
-tags like "Reported:" (and maybe drop "Reported-by" at the same time?)
-or "BugLink" (some people use that already!) would be better -- and then
-maybe "Posted:", "Reviewposting", or something like that for the link to
-the patch that is being applied; and leave "Link" for the rest. I
-proposed that a while ago, but that didn't get any traction.
+Yes, but I think this message would be misleading. If someone sees 
+"error reading JEDEC ID", they would think flash detection itself has 
+failed, not that we failed to switch to Octal DTR mode.
 
-> My original point was that maintainers would almost always add
-> a Link tag at the end, containing the mailing-list thread about the
-> patch being applied. Just saying in the commit log "see the link below"
-> then becomes misleading.
+> 
+> > methods print their own, more specific error messages.
+> 
+> How about duplicating the error in the octal dtr enable methods if you
+> feel it is worth it?
 
-Maybe, but OTOH that link is normally at the end, which kinda makes it
-obvious.
+They should at the very least explain that reading ID failed _after_ 
+attempting to switch to Octal DTR. But I think it would just be simpler 
+if this is not printed here and the caller has the flexibility to 
+explain the error.
 
-> [...]
+> 
+> > 
+> >> +
+> >> +     return ret;
+> >> +}
+> >> +
+> >>  /**
+> >>   * spi_nor_read_sr() - Read the Status Register.
+> >>   * @nor:     pointer to 'struct spi_nor'.
+> >> @@ -1649,28 +1684,15 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
+> >>       return NULL;
+> >>  }
+> >>
+> >> -static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+> >> +static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
+> >>  {
+> >>       const struct flash_info *info;
+> >>       u8 *id = nor->bouncebuf;
+> >>       int ret;
+> >>
+> >> -     if (nor->spimem) {
+> >> -             struct spi_mem_op op =
+> >> -                     SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+> >> -                                SPI_MEM_OP_NO_ADDR,
+> >> -                                SPI_MEM_OP_NO_DUMMY,
+> >> -                                SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
+> >> -
+> >> -             ret = spi_mem_exec_op(nor->spimem, &op);
+> >> -     } else {
+> >> -             ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
+> >> -                                                 SPI_NOR_MAX_ID_LEN);
+> >> -     }
+> >> -     if (ret) {
+> >> -             dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
+> >> +     ret = spi_nor_read_id(nor, 0, 0, id, nor->reg_proto);
+> > 
+> > Hmm, I wonder if it is better to explicitly use SNOR_PROTO_1_1_1 so
+> > clearly signify that this is intended to use 1S-1S-1S only. What do you
+> > think?
+> 
+> I would keep it as it is for now, because it offers flexibility.
+> If we ever gonna determine the protocol at runtime this will come in handy
+> because it will work without touching the code. JESD216 suggests an algorithm
+> that tries to determine the mode depending on the SFDP signature.
 
-Ciao, Thorsten
+I was thinking exactly this but came to the opposite conclusion ;-). I 
+think this would imply that other protocols can be used to detect the 
+flash which is not true.
+
+But I have no strong preferences here. Either is fine by me.
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
