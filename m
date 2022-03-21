@@ -4,79 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27C45C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 05:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25EE4C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 10:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q0Pg4E0lXneDPR9EbFPurXX+3WcLdkw2hhbxpaxszT4=; b=lwd2QK3HBIU15H
-	FkJ6xGk9af3gmSSLuvaWHHykL0oud+oN/mKNxKRqoQks2dftjCGfuyz27dWNpFPm0nF2z+IvnO/Z5
-	xngN3sd4IpgoBRvwTVK+OguG6cHTpSO+a6nsZ8pxNiRFf+m+4a0VfD4/eiObtx+1OCPNErQx1AvuG
-	2rnzRnu9vobnfCVUl/12SpXVvixcsCpuhaGBbf1c6Mk5RNM4U7FNxsUdssRFL6fO66RQ39gbLjF1z
-	jwUpi4FYCx17JqOHqNKGY9oWxiaBf+VPSW+EGUxYlcewikeKbZrjJE9Vc9Cki7eSPAkIcSk/rJzHZ
-	1pZFCGHyC15eGS37DkcQ==;
+	List-Owner; bh=cyAmY3r4cZ1MAgxkXqPzLNFKJLtC6WBB/1zEgNrHW0Q=; b=DJ6WTlxaAAxBY1
+	ZaqWU1axgrJBGswSFj1eL+xoPm9bu5ZLi3XAJnxpbUW71yX5Ji2QFrBCT7EFD+zkr9a1qJ+ipA8MH
+	SnfRPNwV8EzZ73566kESypPh06aNuXWokLDwfnh4M7duKP+JlOIx5AEo/JA14AeMkZLwggCqN2YdX
+	HTY7lWT3fOESwnHbTSywLtudyRslyHTMT4nRG8trBxT3vCGJ4ciPVM3TA7o/gM71EDULRANO5jljS
+	Aac1h34MU+i3QclfV0k90wbf5YNeoob7UOaDQs+PsTwMNTCnt2ZY88HKbVDryVrMqgnyp0m+rGC9b
+	I+UTcBBWujrfLOS33DvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWAOs-006YZw-0f; Mon, 21 Mar 2022 05:16:14 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1nWFDZ-007KW8-Q2; Mon, 21 Mar 2022 10:24:53 +0000
+Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWAOl-006YUY-U6; Mon, 21 Mar 2022 05:16:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1647839767; x=1679375767;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=ZSklBNTsSIb9u8Zs+cghnGiUg/0nwYn/5hxrTKgdUw0=;
- b=jl9iTZUe+3kcFgm8dNNOPxBroOPhOJEN6DCZa5FS+GHKa0zjRbOusQnm
- SSngKC5zOF5K8/QI8O83xLAItcbnseY+yfkmUWHCjjT84bkTT/feT/Gzj
- R4amunVD0Fz84Fl0wD+mTmYdsq1azSxhIZhCDQ1f67y/bgStU5WnOzcI/
- Io/q8ncc/AzUFVwCK9MSmnvny4hadXrFKmfXQGbNTCCbtrP0CBX241iZb
- UZj7YaaYCVLddZAIE1ay3JhM0olkVDeEh0J28TBUU2BvhTnU1piCkDUmU
- hp6527A01v7+DOfYnxA6vwugHFgVrUe+wi5PIbXFFm/V2xCpC972Fx5eO g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10292"; a="244942593"
-X-IronPort-AV: E=Sophos;i="5.90,197,1643702400"; d="scan'208";a="244942593"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2022 22:16:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,197,1643702400"; d="scan'208";a="692058812"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
- by fmsmga001.fm.intel.com with ESMTP; 20 Mar 2022 22:16:00 -0700
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
- (envelope-from <lkp@intel.com>)
- id 1nWAOd-000HVG-PW; Mon, 21 Mar 2022 05:15:59 +0000
-Date: Mon, 21 Mar 2022 13:15:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Liang Yang <liang.yang@amlogic.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: kbuild-all@lists.01.org, Liang Yang <liang.yang@amlogic.com>,
- Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
- Victor Wan <victor.wan@amlogic.com>,
- XianWei Zhao <xianwei.zhao@amlogic.com>,
- Kelvin Zhang <kelvin.zhang@amlogic.com>,
- BiChao Zheng <bichao.zheng@amlogic.com>,
- YongHui Yu <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] mtd: rawnand: meson: discard the common MMC sub
- clock framework
-Message-ID: <202203211339.6SuyU3aA-lkp@intel.com>
-References: <20220318124121.26117-2-liang.yang@amlogic.com>
+ id 1nWFDU-007KVo-At
+ for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 10:24:50 +0000
+Received: by mail-yb1-xb36.google.com with SMTP id v130so27075539ybe.13
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2022 03:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=rcSdYfrZipf0SiXPcMUPLDzYkml4NkmAOteqrH8oRIU=;
+ b=pdGPCE9rMxprzcwHkfgN1nZRLdf1NVd8snc47dTsJiwNi0TAVOnfNlrtRmAJiKTw9z
+ KkZVbX2+FhFm8QCI0jEFc+bbahlOpAsMFbWkigBhi4+ZcmWbD5WKRjbKKrFDYnNWusGY
+ 4MH8MO+ZCdpjh79X62oxbm6BEU4nGo7Tl3W2Sy7Sp4Xn/8hBv/Bhxdv8v2A2QbU0fJq4
+ ibbehPBecwauFe2rmIuXvlm2y7N0uMS23kIoWIDzw5kU7W2JYCfM05yHaajBc8Y/gi7Y
+ mkC0EkW8QKehgePWpZwRi+ez/s5nwz3kU47Us8j8eyqiYNPen+/5Z1aaoOXv/OxlazSa
+ RTGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=rcSdYfrZipf0SiXPcMUPLDzYkml4NkmAOteqrH8oRIU=;
+ b=INaCcAY4CA+0NmKZvTtck6NG00LHBBo4U7OLlkxb2iUOGtc7vZ9HNWxEMkxUA/AWfS
+ enTmQnzfabtG2mByug/x3ERTfgcB1n7jSiWMNPOSeMkjK8r1Y3LSi60/aeC8asKfTWlM
+ 3RnjQtBJ9mMZUL+OJ/6J0/z81s9tK2vp4keJoRrpkqgku0JtjQRuZlD1oXM/iZ+2+n61
+ YAkcgnVyJN2WNXihmL4NWwkXsaHpTnv+m4AZxopZ9twcLInwt8t03gJpPQ9TfCCSgSk3
+ zuzNJUEcPx9e5nV6kcGmPZy8rlRnulcdoaD+vag+0d2dLwK2wJZH8KJzlpCEuV0JaqOW
+ d4gw==
+X-Gm-Message-State: AOAM532LaYHUlUCchTXcXpsI8eBESN4kRXGsMN0PzsZlvip8rwp0Xnq5
+ utn6AFIis+QYx6Ec4+p3/DrGSHeWTn5NJetKeDFdG/Y8c46DRg==
+X-Google-Smtp-Source: ABdhPJxgUBIURe7xfrXiN5/KftAEruWBQao0JAX7qRWDX0d/XbLm4sIsVuBKGVndPZOm5/Z+rPZHmanGbS0I/vZt2vM=
+X-Received: by 2002:a25:8289:0:b0:623:dc4d:28e5 with SMTP id
+ r9-20020a258289000000b00623dc4d28e5mr20763276ybk.182.1647858286512; Mon, 21
+ Mar 2022 03:24:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220318124121.26117-2-liang.yang@amlogic.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <b409ea3fae4a6778fd6b44815ad17c9e8e10df87.1647512831.git.geert+renesas@glider.be>
+In-Reply-To: <b409ea3fae4a6778fd6b44815ad17c9e8e10df87.1647512831.git.geert+renesas@glider.be>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Mon, 21 Mar 2022 10:24:20 +0000
+Message-ID: <CA+V-a8uXR=doVFr-yAFQphpqa175jD=1ncRbhDr5xzh6e=LAKQ@mail.gmail.com>
+Subject: Re: [PATCH v2] memory: renesas-rpc-if: Fix HF/OSPI data transfer in
+ Manual mode
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, 
+ Dung Nguyen <dung.nguyen.zy@renesas.com>, 
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>, Mark Brown <broonie@kernel.org>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220320_221608_062238_4EB5FBF0 
-X-CRM114-Status: GOOD (  14.39  )
+X-CRM114-CacheID: sfid-20220321_032448_442716_9F1E0AF6 
+X-CRM114-Status: GOOD (  30.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,43 +89,213 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Liang,
+Hi Geert,
 
-I love your patch! Yet something to improve:
+Thank you for the patch.
 
-[auto build test ERROR on mtd/nand/next]
-[also build test ERROR on mtd/mtd/next mtd/mtd/fixes robh/for-next v5.17 next-20220318]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+On Thu, Mar 17, 2022 at 12:54 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> HyperFlash devices fail to probe:
+>
+>     rpc-if-hyperflash rpc-if-hyperflash: probing of hyperbus device failed
+>
+> In HyperFLASH or Octal-SPI Flash mode, the Transfer Data Enable bits
+> (SPIDE) in the Manual Mode Enable Setting Register (SMENR) are derived
+> from half of the transfer size, cfr. the rpcif_bits_set() helper
+> function.  However, rpcif_reg_{read,write}() does not take the bus size
+> into account, and does not double all Manual Mode Data Register access
+> sizes when communicating with a HyperFLASH or Octal-SPI Flash device.
+>
+> Fix this, and avoid the back-and-forth conversion between transfer size
+> and Transfer Data Enable bits, by explicitly storing the transfer size
+> in struct rpcif, and using that value to determine access size in
+> rpcif_reg_{read,write}().
+>
+> Enforce that the "high" Manual Mode Read/Write Data Registers
+> (SM[RW]DR1) are only used for 8-byte data accesses.
+> While at it, forbid writing to the Manual Mode Read Data Registers,
+> as they are read-only.
+>
+> Fixes: fff53a551db50f5e ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual mode")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Lightly (read-only) tested on:
+>   - Salvator-XS with R-Car M3-W ES1.0 with HyperFLASH,
+>   - Falcon with R-Car V3U ES1.0 with QSPI.
+>
+> v2:
+>   - Use rpc->xfer_size instead of SPIDE register reads and
+>     rpc->bus_size.
+>       Note: Alternatively, rpcif_manual_xfer() could bypass regmap and
+>       use {read,write}[bwl]() directly, cfr. commit 0d37f69cacb33435
+>       ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual
+>       mode") in the BSP.
+>   - HF dirmap reads are confirmed to work on R-Car M3-W,
+>   - Drop RFC.
+>
+> On Salvator-XS with unlocked HyperFlash, the HyperFlash is now detected
+> again, cfr. (with DEBUG_CFI enabled):
+>
+>     Number of erase regions: 1
+>     Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
+>     Primary Algorithm Table at 0040
+>     Alternative Vendor Command Set: 0000 (None)
+>     No Alternate Algorithm Table
+>     Vcc Minimum:  1.7 V
+>     Vcc Maximum:  1.9 V
+>     No Vpp line
+>     Typical byte/word write timeout: 512 \xc2\xb5s
+>     Maximum byte/word write timeout: 2048 \xc2\xb5s
+>     Typical full buffer write timeout: 512 \xc2\xb5s
+>     Maximum full buffer write timeout: 2048 \xc2\xb5s
+>     Typical block erase timeout: 1024 ms
+>     Maximum block erase timeout: 4096 ms
+>     Typical chip erase timeout: 262144 ms
+>     Maximum chip erase timeout: 1048576 ms
+>     Device size: 0x4000000 bytes (64 MiB)
+>     Flash Device Interface description: 0x0000
+>       - x8-only asynchronous interface
+>     Max. bytes in buffer write: 0x200
+>     Number of Erase Block Regions: 1
+>       Erase Region #0: BlockSize 0x40000 bytes, 256 blocks
+>     rpc-if-hyperflash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 0x000001 Chip ID 0x007000
+>     Amd/Fujitsu Extended Query Table at 0x0040
+>       Amd/Fujitsu Extended Query version 1.5.
+>     rpc-if-hyperflash: CFI contains unrecognised boot bank location (0). Assuming bottom.
+>     number of CFI chips: 1
+>
+> v1: https://lore.kernel.org/r/27107f2d578b198078df841ee2e4d7b71b183898.1647017136.git.geert+renesas@glider.be/
+> ---
+>  drivers/memory/renesas-rpc-if.c | 56 ++++++++++++++++++++++++++-------
+>  include/memory/renesas-rpc-if.h |  1 +
+>  2 files changed, 45 insertions(+), 12 deletions(-)
+>
+I did some testing on RZ/G2L SMARC EVK. My read/write test case is
+passing [0] for QSPI flash.
 
-url:    https://github.com/0day-ci/linux/commits/Liang-Yang/refine-the-NFC-clock-framework/20220318-204307
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-config: m68k-randconfig-r015-20220320 (https://download.01.org/0day-ci/archive/20220321/202203211339.6SuyU3aA-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/8722c778a1a81891f7362662caf9d166442d5990
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Liang-Yang/refine-the-NFC-clock-framework/20220318-204307
-        git checkout 8722c778a1a81891f7362662caf9d166442d5990
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+[0] https://paste.debian.net/1235083/
 
-All errors (new ones prefixed by >>):
+Cheers,
+Prabhakar
 
-   m68k-linux-ld: drivers/mtd/nand/raw/meson_nand.o: in function `meson_nfc_probe':
->> meson_nand.c:(.text+0xaae): undefined reference to `clk_divider_ops'
->> m68k-linux-ld: meson_nand.c:(.text+0xaf0): undefined reference to `devm_clk_register'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+> diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+> index e4cc64f560196d55..a8c7abe1cf00be65 100644
+> --- a/drivers/memory/renesas-rpc-if.c
+> +++ b/drivers/memory/renesas-rpc-if.c
+> @@ -171,18 +171,32 @@ static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
+>  {
+>         struct rpcif *rpc = context;
+>
+> -       if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
+> -               u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
+> -
+> -               if (spide == 0x8) {
+> +       switch (reg) {
+> +       case RPCIF_SMRDR0:
+> +       case RPCIF_SMWDR0:
+> +               switch (rpc->xfer_size) {
+> +               case 1:
+>                         *val = readb(rpc->base + reg);
+>                         return 0;
+> -               } else if (spide == 0xC) {
+> +
+> +               case 2:
+>                         *val = readw(rpc->base + reg);
+>                         return 0;
+> -               } else if (spide != 0xF) {
+> +
+> +               case 4:
+> +               case 8:
+> +                       break;
+> +
+> +               default:
+>                         return -EILSEQ;
+>                 }
+> +               break;
+> +
+> +       case RPCIF_SMRDR1:
+> +       case RPCIF_SMWDR1:
+> +               if (rpc->xfer_size != 8)
+> +                       return -EILSEQ;
+> +               break;
+>         }
+>
+>         *val = readl(rpc->base + reg);
+> @@ -193,18 +207,34 @@ static int rpcif_reg_write(void *context, unsigned int reg, unsigned int val)
+>  {
+>         struct rpcif *rpc = context;
+>
+> -       if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
+> -               u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
+> -
+> -               if (spide == 0x8) {
+> +       switch (reg) {
+> +       case RPCIF_SMWDR0:
+> +               switch (rpc->xfer_size) {
+> +               case 1:
+>                         writeb(val, rpc->base + reg);
+>                         return 0;
+> -               } else if (spide == 0xC) {
+> +
+> +               case 2:
+>                         writew(val, rpc->base + reg);
+>                         return 0;
+> -               } else if (spide != 0xF) {
+> +
+> +               case 4:
+> +               case 8:
+> +                       break;
+> +
+> +               default:
+>                         return -EILSEQ;
+>                 }
+> +               break;
+> +
+> +       case RPCIF_SMWDR1:
+> +               if (rpc->xfer_size != 8)
+> +                       return -EILSEQ;
+> +               break;
+> +
+> +       case RPCIF_SMRDR0:
+> +       case RPCIF_SMRDR1:
+> +               return -EPERM;
+>         }
+>
+>         writel(val, rpc->base + reg);
+> @@ -469,6 +499,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+>
+>                         smenr |= RPCIF_SMENR_SPIDE(rpcif_bits_set(rpc, nbytes));
+>                         regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
+> +                       rpc->xfer_size = nbytes;
+>
+>                         memcpy(data, rpc->buffer + pos, nbytes);
+>                         if (nbytes == 8) {
+> @@ -533,6 +564,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+>                         regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
+>                         regmap_write(rpc->regmap, RPCIF_SMCR,
+>                                      rpc->smcr | RPCIF_SMCR_SPIE);
+> +                       rpc->xfer_size = nbytes;
+>                         ret = wait_msg_xfer_end(rpc);
+>                         if (ret)
+>                                 goto err_out;
+> diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
+> index 7c93f5177532f187..9c0ad64b8d292d49 100644
+> --- a/include/memory/renesas-rpc-if.h
+> +++ b/include/memory/renesas-rpc-if.h
+> @@ -72,6 +72,7 @@ struct rpcif {
+>         enum rpcif_type type;
+>         enum rpcif_data_dir dir;
+>         u8 bus_size;
+> +       u8 xfer_size;
+>         void *buffer;
+>         u32 xferlen;
+>         u32 smcr;
+> --
+> 2.25.1
+>
 
 ______________________________________________________
 Linux MTD discussion mailing list
