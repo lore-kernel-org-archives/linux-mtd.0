@@ -4,53 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B959BC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 11:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E97C3C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 11:54:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kUFbKrhY+SgYcS8FtfCJu8yqXNxUnHfTk//xGHCDXHA=; b=F/XhqYgIa+m6zB
-	Ee3gmewqmjIiSuBdLc2S7pWmnqj3m3Gr9eYldVm1DQhCjpqIoZRYWGgB+OFrkTd86cnWYLdpknE//
-	3oOIKewurSqOlfLISUUZSKWg8XTqhu8P5MIEhpXtWmVr2OjiyYp8E9EZhvPw6G+zk/NGAE/sgxStq
-	x7mKpt2bwZucq5MNnq1tijuWukAf6zgqh2WGqrJGA7JeNBBXW4dQvNqcQH7ArQuyCCIRYJHn/tkvd
-	9OoxWg1tVySRIhGk6QYAlCZryq92ubAhmSF7tcqh4h45rDbJWajU1ySzNbN07d0UdcsFxFa0YY6KN
-	ZJMcMg86TVvokoKaxXvQ==;
+	List-Owner; bh=a7a14OkKXjgUAY6jf1HKYqku8R7kslv5lykarAhVD5c=; b=mtDwvhAss4XEsC
+	aJfm4SmHh479Q7h2KuTK0poN/CQiutxya6asJYwYjqbPhxIiGVgOI8AAPqTJWRQazTkhdktg5SNo6
+	nTaGmxS4p9tFNBwQbfOUBZMiec7s7AWnbxK+G4tTQ01zcbF8F3S38uKOKXyJIOYRLj9ckigp/sG6y
+	bFuMZSxwN9HQHmgFAW4SwFUkVY1ckt3diEnRSNuC1HyTcQ7t4RGGmLCDwOcOe1RhutgrMoxAwKJX1
+	XcSCpj4+xZAuIDo5S0Rta23ZnbRN/8pqYcIcuPyM4AAST66RwUMu7+WDSG05aRKTo5YNoVzlrEJhi
+	ooT3iyJKu3oVvRW59dIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWGWI-007TiN-Vy; Mon, 21 Mar 2022 11:48:19 +0000
-Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
+	id 1nWGbn-007Vu5-3D; Mon, 21 Mar 2022 11:53:59 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWGWF-007ThV-Qy
- for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 11:48:17 +0000
-Received: from ip4d144895.dynamic.kabel-deutschland.de ([77.20.72.149]
- helo=[192.168.66.200]); authenticated
- by wp530.webpack.hosteurope.de running ExIM with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
- id 1nWGWB-00063R-M4; Mon, 21 Mar 2022 12:48:11 +0100
-Message-ID: <db755852-effe-c4ca-726c-200d28b0b8a5@leemhuis.info>
-Date: Mon, 21 Mar 2022 12:48:11 +0100
+ id 1nWGbk-007Vqq-27
+ for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 11:53:57 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22LBrpxs129379;
+ Mon, 21 Mar 2022 06:53:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1647863631;
+ bh=d88Otb0kIMljIcclrz/rDFMAepVS3BcWvi6rOXAC88g=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=LOKrhhypuM3dMGW8PzlITIn1Z/LVh9YAZa8pji9EVqAry7yENrQxtCjbY2QKGHRo8
+ iLKNjjKohh9Bd58a/z/QfnTOeE8+eNrTrsblsAgAeEoI5xWi3agTqKseXjJgo0vzJv
+ UEHeOYxYNtp5MDM2LDEi9Ji0h7xR9titnaSQc9Ag=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22LBrp8k022885
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 21 Mar 2022 06:53:51 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 21
+ Mar 2022 06:53:51 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 21 Mar 2022 06:53:51 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22LBroj5024841;
+ Mon, 21 Mar 2022 06:53:50 -0500
+Date: Mon, 21 Mar 2022 17:23:49 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
+ <zhengxunli@mxic.com.tw>, <jaimeliao@mxic.com.tw>
+Subject: Re: [PATCH v6 1/7] mtd: spi-nor: Rename method,
+ s/spi_nor_match_id/spi_nor_match_name
+Message-ID: <20220321115349.vffvanluf5b2wzhh@ti.com>
+References: <20220209133656.374903-1-tudor.ambarus@microchip.com>
+ <20220209133656.374903-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v4 2/3] mtd: cfi_cmdset_0002: Use chip_ready() for write
- on S29GL064N
-Content-Language: en-US
-To: Tokunori Ikegami <ikegami.t@gmail.com>, miquel.raynal@bootlin.com
-Cc: linux-mtd@lists.infradead.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
- stable@vger.kernel.org
-References: <20220316155455.162362-1-ikegami.t@gmail.com>
- <20220316155455.162362-3-ikegami.t@gmail.com>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20220316155455.162362-3-ikegami.t@gmail.com>
-X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1647863295;
- aafd6725; 
-X-HE-SMSGID: 1nWGWB-00063R-M4
+Content-Disposition: inline
+In-Reply-To: <20220209133656.374903-2-tudor.ambarus@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_044816_068784_27DD07A4 
-X-CRM114-Status: UNSURE (   9.75  )
+X-CRM114-CacheID: sfid-20220321_045356_252060_EFEFE546 
+X-CRM114-Status: UNSURE (   6.60  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,37 +86,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 16.03.22 16:54, Tokunori Ikegami wrote:
-> As pointed out by this bug report [1], buffered writes are now broken on
-> S29GL064N. This issue comes from a rework which switched from using chip_good()
-> to chip_ready(), because DQ true data 0xFF is read on S29GL064N and an error
-> returned by chip_good(). One way to solve the issue is to revert the change
-> partially to use chip_ready for S29GL064N.
+On 09/02/22 03:36PM, Tudor Ambarus wrote:
+> The method is matching a flash_info entry by searching by name. Rename
+> the method for better clarity.
 > 
-> [1] https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-Why did you switch from the documented format for links you added on my
-request (see
-https://lore.kernel.org/stable/f1b44e87-e457-7783-d46e-0d577cea3b72@leemhuis.info/
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
-) to v2 to something else that is not recognized by tools and scripts
-that rely on proper link tags? You are making my and maybe other peoples
-life unnecessary hard. :-((
-
-FWIW, the proper style should support footnote style like this:
-
-Link:
-https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
- [1]
-
-Ciao, Thorsten
-
-#regzbot ^backmonitor:
-https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
-
-
-
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
