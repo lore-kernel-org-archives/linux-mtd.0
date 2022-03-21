@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 590A2C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 12:22:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35C4CC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 12:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AAayXu0iDMUcy5RoZY3xl0i/iUvrt3j9E8t7l3QJ2b4=; b=Er4ewh+bnhqqzj
-	/EQQsmjcVhfS2DlAdIVn8vL7v1Q0k8TY340wieGse2uWG/aRsybBAHhpYPZvHNrlwHBoLomrHeuSa
-	keOBJOEPmLRyTG2ZLhFUiLDz/clKv6vQlvuYejVt8V7fc4iSdRUQ/Y6d+F+7sL5nuUz7QW3Gs6xnq
-	LmkRwFtw9mkZfFHnbZSr0OBRgGFQUgObzsU35AgqUHfgZbcDb92e1ORq3KTnwQ6cX7tiQ35/8x0DQ
-	GCdlNcr1tm5eZKBZ5NBjrLC3ZcC73jmWM7o2gxJ2/vnslQuR799X5TVoUGxqZ8+hCKpsHGIfRquSD
-	hBhzLmNQv/wCLI990nfw==;
+	List-Owner; bh=ByCrDp2KUGugPyVWHwO7bB+3YXmXDQjcRmDbSvKsx5g=; b=dgQdLyvQqnyVIv
+	/xS/OmcIEN28NeZQ6X9IeeAW7LfsunbcAn8pgGxipLB/DNZ9N4GKyvvhP0HeOo+Y6FeSpD8mhBlnU
+	IuVGaD2O9/mXj58Oy6Dw/RheO9Qca4m/AXST0BT1RbF12/ImVLzdGDkudXXLFLQ0I2sp5O+a+l9Gv
+	ORkdTlV8PIJAwinEWaZ9Pk7h4nQy2C3DKwbJ89Bhn76W3xiSTx9Av/FQ6FEH+/5Hy1SDoqZbdC08T
+	di38DuLXgJeyD/i08m/xvebb1BOU537srWAEm8kwaGL+T2QQMx2OXf2B/OrPdIZErCf8mseNLiQ4N
+	uXD9O1iE88lhvRqGfxTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWH2p-007gOm-O0; Mon, 21 Mar 2022 12:21:55 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1nWH8N-007hDi-Ts; Mon, 21 Mar 2022 12:27:39 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWH2n-007gNi-6L
- for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 12:21:54 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22LCLpq3033322;
- Mon, 21 Mar 2022 07:21:51 -0500
+ id 1nWH8K-007hD0-Nz
+ for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 12:27:39 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22LCRYil046641;
+ Mon, 21 Mar 2022 07:27:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1647865311;
- bh=ozhqVcGuJggsiVb90dN40qSrmfyXmyscj783uxBzNPI=;
+ s=ti-com-17Q1; t=1647865654;
+ bh=FAd5GKdyIw3ZiXx8nIs8f0v/D9Hi8ggK92xb4uS0ISM=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=OUO3/V4aYlEolsV2r+VZlw2vLg/YVhemvPGppsYFPlcTfNa6RDCTSPKoX6TKlTDhU
- WIsglmjuky/qVNYOnTxScoJFHWf5fWE5CNAX4Q92noJfRGS/mf9oI10Z5jFQP86Jcq
- uDQfEqoDBNpb8dzQD6DHRrrfllw2GB8l8Q8pSbZ4=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22LCLoLV015284
+ b=uP+/4YmsFXWNPZp5R2KmFFevGstjg1SZIrNE3Qiajv6GB2Iir7Vj1/iD81A2tcoXA
+ xhEvq4OmPdpk2hEvxh97aydsSByPEwlxQOQnuC715zb323G2ISWEFneJ6fXqQ/W/9i
+ jCpx3ddRpjdMW9Fhw+2GNvCZKKBIwdElNoYuVQZ8=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22LCRYod125824
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 21 Mar 2022 07:21:51 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 21 Mar 2022 07:27:34 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 21
- Mar 2022 07:21:50 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2022 07:27:33 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 21 Mar 2022 07:21:50 -0500
+ Frontend Transport; Mon, 21 Mar 2022 07:27:33 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22LCLnIL015615;
- Mon, 21 Mar 2022 07:21:50 -0500
-Date: Mon, 21 Mar 2022 17:51:49 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22LCRW2s025738;
+ Mon, 21 Mar 2022 07:27:32 -0500
+Date: Mon, 21 Mar 2022 17:57:31 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
 CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH v2 4/8] mtd: spi-nor: core: Introduce method for RDID op
-Message-ID: <20220321122149.dvqyml4riqkr3gqi@ti.com>
+Subject: Re: [PATCH v2 5/8] mtd: spi-nor: manufacturers: Use
+ spi_nor_read_id() core method
+Message-ID: <20220321122731.m6wp6weydczlyv7i@ti.com>
 References: <20220228111712.111737-1-tudor.ambarus@microchip.com>
- <20220228111712.111737-5-tudor.ambarus@microchip.com>
+ <20220228111712.111737-6-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220228111712.111737-5-tudor.ambarus@microchip.com>
+In-Reply-To: <20220228111712.111737-6-tudor.ambarus@microchip.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_052153_347195_F53E211B 
-X-CRM114-Status: GOOD (  28.91  )
+X-CRM114-CacheID: sfid-20220321_052736_887677_B3DE316A 
+X-CRM114-Status: UNSURE (   7.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,153 +86,14 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 On 28/02/22 01:17PM, Tudor Ambarus wrote:
-> RDID is used in the core to auto detect the flash, but also by some
-> manufacturer drivers that contain flashes that support Octal DTR mode,
-> so that they can read the flash ID after the switch to Octal DTR was made
-> to test if the switch was successful. Introduce a core method for RDID op
-> to avoid code duplication.
+> Use spi_nor_read_id() core method to avoid duplication of code. Now the ID
+> is read on the full SPI_NOR_MAX_ID_LEN instead of
+> round_up(nor->info->id_len, 2), but it doesn't harm to read more ID bytes,
+> so the change comes with no secondary effects.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 58 ++++++++++++++++++++++++++------------
->  drivers/mtd/spi-nor/core.h |  9 ++++++
->  2 files changed, 49 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index b1d6fa65417d..281e3d25f74c 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -369,6 +369,41 @@ int spi_nor_write_disable(struct spi_nor *nor)
->  	return ret;
->  }
->  
-> +/**
-> + * spi_nor_read_id() - Read the JEDEC ID.
-> + * @nor:	pointer to 'struct spi_nor'.
-> + * @naddr:	number of address bytes to send. Can be zero if the operation
-> + *		does not need to send an address.
-> + * @ndummy:	number of dummy bytes to send after an opcode or address. Can
-> + *		be zero if the operation does not require dummy bytes.
-> + * @id:		pointer to a DMA-able buffer where the value of the JEDEC ID
-> + *		will be written.
-> + * @reg_proto:	the SPI protocol for register operation.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-> +		    enum spi_nor_protocol reg_proto)
 
-Nitpick: Could just call it 'proto'.
-
-> +{
-> +	int ret;
-> +
-> +	if (nor->spimem) {
-> +		struct spi_mem_op op =
-> +			SPI_NOR_READID_OP(naddr, ndummy, id, SPI_NOR_MAX_ID_LEN);
-> +
-> +		spi_nor_spimem_setup_op(nor, &op, reg_proto);
-> +		ret = spi_mem_exec_op(nor->spimem, &op);
-> +	} else {
-> +		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-> +						    SPI_NOR_MAX_ID_LEN);
-> +	}
-> +
-> +	if (ret)
-> +		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
-
-I think this message should be in spi_nor_detect(). Let octal DTR enable 
-methods print their own, more specific error messages.
-
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * spi_nor_read_sr() - Read the Status Register.
->   * @nor:	pointer to 'struct spi_nor'.
-> @@ -1649,28 +1684,15 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
->  	return NULL;
->  }
->  
-> -static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
-> +static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
->  {
->  	const struct flash_info *info;
->  	u8 *id = nor->bouncebuf;
->  	int ret;
->  
-> -	if (nor->spimem) {
-> -		struct spi_mem_op op =
-> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
-> -				   SPI_MEM_OP_NO_ADDR,
-> -				   SPI_MEM_OP_NO_DUMMY,
-> -				   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
-> -
-> -		ret = spi_mem_exec_op(nor->spimem, &op);
-> -	} else {
-> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-> -						    SPI_NOR_MAX_ID_LEN);
-> -	}
-> -	if (ret) {
-> -		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
-> +	ret = spi_nor_read_id(nor, 0, 0, id, nor->reg_proto);
-
-Hmm, I wonder if it is better to explicitly use SNOR_PROTO_1_1_1 so 
-clearly signify that this is intended to use 1S-1S-1S only. What do you 
-think?
-
-> +	if (ret)
->  		return ERR_PTR(ret);
-> -	}
->  
->  	info = spi_nor_match_id(nor, id);
->  	if (!info) {
-> @@ -2900,7 +2922,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
->  		info = spi_nor_match_name(nor, name);
->  	/* Try to auto-detect if chip name wasn't specified or not found */
->  	if (!info) {
-> -		detected_info = spi_nor_read_id(nor);
-> +		detected_info = spi_nor_detect(nor);
->  		info = detected_info;
->  	}
->  	if (IS_ERR_OR_NULL(info))
-> @@ -2913,7 +2935,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
->  	if (name && !detected_info && info->id_len) {
->  		const struct flash_info *jinfo;
->  
-> -		jinfo = spi_nor_read_id(nor);
-> +		jinfo = spi_nor_detect(nor);
->  		if (IS_ERR(jinfo)) {
->  			return jinfo;
->  		} else if (jinfo != info) {
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index b7fd760e3b47..f952061d5c24 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -11,6 +11,13 @@
->  
->  #define SPI_NOR_MAX_ID_LEN	6
->  
-> +/* Standard SPI NOR flash operations. */
-> +#define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
-> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 0),			\
-> +		   SPI_MEM_OP_ADDR(naddr, 0, 0),			\
-> +		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
-> +		   SPI_MEM_OP_DATA_IN(len, buf, 0))
-> +
->  enum spi_nor_option_flags {
->  	SNOR_F_HAS_SR_TB	= BIT(0),
->  	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
-> @@ -534,6 +541,8 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
->  int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
->  int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
->  int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
-> +int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-> +		    enum spi_nor_protocol reg_proto);
->  int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
->  int spi_nor_sr_ready(struct spi_nor *nor);
->  int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
 -- 
 Regards,
