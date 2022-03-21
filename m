@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E74EC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 17:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E541FC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 21 Mar 2022 17:43:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=utq2qtB/YauFPwpfOUZtidpado71hJ2Ha9x2KfHR0Mc=; b=LVTEqoWf+B0+7T
-	hVWxOx37k6Rp/hFsypADaYaYDaNT+K+S9JcbH5vnqJCh5TXl/Kxt8pIj+OzOR0iAE+N/TK5kwlbv2
-	2SNorGxKKqlh1XV0rnh2d9hhJZaKsXOW+1HRd+OMR3B9nU1AYn0/jLTTHV3+y6BMBNfzV9nSItZ0c
-	oQj7ydh8Qv6GsN6w+nPRmXhKYQMXLx25omtQWujhpGdoFZJN4r+AExYxzc8mdxS+9g84aAnmkGgMI
-	ulSWvwfROPkieuG3QaScYCicGIAlTFDieZWZ/OGsCiP0yDbNdMh1FGuSXBvDdGdazTCTSM1rpg5zX
-	P9epV3sSxttgAdn2AIhg==;
+	List-Owner; bh=urFvXsUzvfQRpAGgCh0YXarFsS339c8X5gx7VQGIT4s=; b=Ck/8sG/8Kg9pHj
+	IqnU+TXBkjl7KU+yiQALHVI/xlZIkO5VrwPSpSPB2OgN3+z/nAohZzX4W3Er/lWA7aRPE9OHgsyJS
+	VMHpuqPMi8r8U74XoZmtJ6WzlBjNpZ6rOpH+IJ0b4ACYqe2MBZrcCSqP5i1sr8o+2x/hb/ZS0J1fP
+	txMwk2Fzp/sRBTMcC4i8yuh9G2f6/Ac2PPdu21QThHuMCyQZjGH5LOyZfgGQu8C6xj4Rj0WJpCuBX
+	GSeBh4rsL3fj73R15E49b/u9hWxN8uPGyD/S+xcBHPwTC2tWRhPmcbHNTeZ5d+uJc1nhkrF9d9JFL
+	Aw6gikIOZeGAsD2Ywj8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWM0U-008eC4-9A; Mon, 21 Mar 2022 17:39:50 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nWM3X-008ead-4q; Mon, 21 Mar 2022 17:42:59 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWM0R-008eB6-JW
- for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 17:39:49 +0000
+ id 1nWM3T-008ea4-L8
+ for linux-mtd@lists.infradead.org; Mon, 21 Mar 2022 17:42:57 +0000
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22LHdiUE096754;
- Mon, 21 Mar 2022 12:39:44 -0500
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22LHgqcv000374;
+ Mon, 21 Mar 2022 12:42:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1647884384;
- bh=/YXfRFfs6htYVgXPCWhHaE5x8G3CaPDSx/tt44tkktU=;
+ s=ti-com-17Q1; t=1647884572;
+ bh=w1nssn3aZv3EvnBbeSHoVlZA7OBBWbfhVwK6ZRd350A=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=uB/LM152GxbUxqerSs3cagmGgK0R44kBQIFko1GV7uxoK8VDiA+km0udbgfnhHXr/
- RkeDlhocBY6QUmpT1K2/N4tSSrLVBVnmPYn8cjp3YF0AmBbasaoN+7a8WavfRCHicE
- s/6kmJFs/HEWLRKI9nXdCVnroxb8xlVa1JnZXnQ8=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22LHdhDQ023551
+ b=nC62Q8oW8++CQMPC1p4CAkSWBrjQdp6p80If1ZrYwtWvySL+YxejaOM9VhYr/Atdd
+ vMOLTmbWtA6A0TltvdlCHYnj2RV41Pb/Bywd+KgUOVxuab4liQTZpbIHFgcpxeKvYr
+ oRYFYjCzxVRxsBqx8hbzHp73HEYp8edhuQ7mdkL4=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22LHgqJk027761
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 21 Mar 2022 12:39:43 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 21 Mar 2022 12:42:52 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 21
- Mar 2022 12:39:09 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2022 12:42:52 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 21 Mar 2022 12:39:09 -0500
+ Frontend Transport; Mon, 21 Mar 2022 12:42:52 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22LHd86g002139;
- Mon, 21 Mar 2022 12:39:08 -0500
-Date: Mon, 21 Mar 2022 23:09:08 +0530
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22LHgpei021588;
+ Mon, 21 Mar 2022 12:42:52 -0500
+Date: Mon, 21 Mar 2022 23:12:51 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: <Tudor.Ambarus@microchip.com>
 CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
  <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>
-Subject: Re: [PATCH v2 4/8] mtd: spi-nor: core: Introduce method for RDID op
-Message-ID: <20220321173908.tcqx3ygo6qd62ukg@ti.com>
+Subject: Re: [PATCH v2 3/8] mtd: spi-nor: core: Use auto-detection only once
+Message-ID: <20220321174251.ehhobu26tgoxrbps@ti.com>
 References: <20220228111712.111737-1-tudor.ambarus@microchip.com>
- <20220228111712.111737-5-tudor.ambarus@microchip.com>
- <20220321122149.dvqyml4riqkr3gqi@ti.com>
- <32b3449a-66db-3ed1-da96-47e124800500@microchip.com>
+ <20220228111712.111737-4-tudor.ambarus@microchip.com>
+ <20220321121455.bpql7x4ebhq7s36l@ti.com>
+ <b4e8c044-f16a-a72d-6047-c42cdcc253f1@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <32b3449a-66db-3ed1-da96-47e124800500@microchip.com>
+In-Reply-To: <b4e8c044-f16a-a72d-6047-c42cdcc253f1@microchip.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_103947_761365_C49F474E 
-X-CRM114-Status: GOOD (  36.34  )
+X-CRM114-CacheID: sfid-20220321_104255_798731_48EC190A 
+X-CRM114-Status: GOOD (  25.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,140 +85,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/03/22 01:18PM, Tudor.Ambarus@microchip.com wrote:
-> On 3/21/22 14:21, Pratyush Yadav wrote:
+On 21/03/22 12:50PM, Tudor.Ambarus@microchip.com wrote:
+> On 3/21/22 14:14, Pratyush Yadav wrote:
 > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > > 
 > > On 28/02/22 01:17PM, Tudor Ambarus wrote:
-> >> RDID is used in the core to auto detect the flash, but also by some
-> >> manufacturer drivers that contain flashes that support Octal DTR mode,
-> >> so that they can read the flash ID after the switch to Octal DTR was made
-> >> to test if the switch was successful. Introduce a core method for RDID op
-> >> to avoid code duplication.
+> >> In case spi_nor_match_name() returned NULL, the auto detection was
+> >> issued twice. There's no reason to try to detect the same chip twice,
+> >> do the auto detection only once.
 > >>
 > >> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > >> ---
-> >>  drivers/mtd/spi-nor/core.c | 58 ++++++++++++++++++++++++++------------
-> >>  drivers/mtd/spi-nor/core.h |  9 ++++++
-> >>  2 files changed, 49 insertions(+), 18 deletions(-)
+> >>  drivers/mtd/spi-nor/core.c | 10 ++++++----
+> >>  1 file changed, 6 insertions(+), 4 deletions(-)
 > >>
 > >> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> >> index b1d6fa65417d..281e3d25f74c 100644
+> >> index f87cb7d3daab..b1d6fa65417d 100644
 > >> --- a/drivers/mtd/spi-nor/core.c
 > >> +++ b/drivers/mtd/spi-nor/core.c
-> >> @@ -369,6 +369,41 @@ int spi_nor_write_disable(struct spi_nor *nor)
-> >>       return ret;
-> >>  }
-> >>
-> >> +/**
-> >> + * spi_nor_read_id() - Read the JEDEC ID.
-> >> + * @nor:     pointer to 'struct spi_nor'.
-> >> + * @naddr:   number of address bytes to send. Can be zero if the operation
-> >> + *           does not need to send an address.
-> >> + * @ndummy:  number of dummy bytes to send after an opcode or address. Can
-> >> + *           be zero if the operation does not require dummy bytes.
-> >> + * @id:              pointer to a DMA-able buffer where the value of the JEDEC ID
-> >> + *           will be written.
-> >> + * @reg_proto:       the SPI protocol for register operation.
-> >> + *
-> >> + * Return: 0 on success, -errno otherwise.
-> >> + */
-> >> +int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-> >> +                 enum spi_nor_protocol reg_proto)
-> > 
-> > Nitpick: Could just call it 'proto'.
-> 
-> sure, will update
-> 
-> > 
-> >> +{
-> >> +     int ret;
-> >> +
-> >> +     if (nor->spimem) {
-> >> +             struct spi_mem_op op =
-> >> +                     SPI_NOR_READID_OP(naddr, ndummy, id, SPI_NOR_MAX_ID_LEN);
-> >> +
-> >> +             spi_nor_spimem_setup_op(nor, &op, reg_proto);
-> >> +             ret = spi_mem_exec_op(nor->spimem, &op);
-> >> +     } else {
-> >> +             ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-> >> +                                                 SPI_NOR_MAX_ID_LEN);
-> >> +     }
-> >> +
-> >> +     if (ret)
-> >> +             dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
-> > 
-> > I think this message should be in spi_nor_detect(). Let octal DTR enable
-> 
-> As of now every SPI NOR operation that return an error also prints a dbg
-> message. I like this because it offers a smaller granularity on the error
-> cause.
-
-Yes, but I think this message would be misleading. If someone sees 
-"error reading JEDEC ID", they would think flash detection itself has 
-failed, not that we failed to switch to Octal DTR mode.
-
-> 
-> > methods print their own, more specific error messages.
-> 
-> How about duplicating the error in the octal dtr enable methods if you
-> feel it is worth it?
-
-They should at the very least explain that reading ID failed _after_ 
-attempting to switch to Octal DTR. But I think it would just be simpler 
-if this is not printed here and the caller has the flexibility to 
-explain the error.
-
-> 
-> > 
-> >> +
-> >> +     return ret;
-> >> +}
-> >> +
-> >>  /**
-> >>   * spi_nor_read_sr() - Read the Status Register.
-> >>   * @nor:     pointer to 'struct spi_nor'.
-> >> @@ -1649,28 +1684,15 @@ static const struct flash_info *spi_nor_match_id(struct spi_nor *nor,
-> >>       return NULL;
-> >>  }
-> >>
-> >> -static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
-> >> +static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
+> >> @@ -2894,13 +2894,15 @@ static const struct flash_info *spi_nor_match_name(struct spi_nor *nor,
+> >>  static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+> >>                                                      const char *name)
 > >>  {
-> >>       const struct flash_info *info;
-> >>       u8 *id = nor->bouncebuf;
-> >>       int ret;
+> >> -     const struct flash_info *info = NULL;
+> >> +     const struct flash_info *info = NULL, *detected_info = NULL;
 > >>
-> >> -     if (nor->spimem) {
-> >> -             struct spi_mem_op op =
-> >> -                     SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
-> >> -                                SPI_MEM_OP_NO_ADDR,
-> >> -                                SPI_MEM_OP_NO_DUMMY,
-> >> -                                SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
-> >> -
-> >> -             ret = spi_mem_exec_op(nor->spimem, &op);
-> >> -     } else {
-> >> -             ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-> >> -                                                 SPI_NOR_MAX_ID_LEN);
-> >> -     }
-> >> -     if (ret) {
-> >> -             dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
-> >> +     ret = spi_nor_read_id(nor, 0, 0, id, nor->reg_proto);
+> >>       if (name)
+> >>               info = spi_nor_match_name(nor, name);
+> >>       /* Try to auto-detect if chip name wasn't specified or not found */
+> >> -     if (!info)
+> >> -             info = spi_nor_read_id(nor);
+> >> +     if (!info) {
+> >> +             detected_info = spi_nor_read_id(nor);
+> >> +             info = detected_info;
+> >> +     }
+> >>       if (IS_ERR_OR_NULL(info))
+> >>               return ERR_PTR(-ENOENT);
+> >>
+> >> @@ -2908,7 +2910,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+> >>        * If caller has specified name of flash model that can normally be
+> >>        * detected using JEDEC, let's verify it.
+> >>        */
+> >> -     if (name && info->id_len) {
+> >> +     if (name && !detected_info && info->id_len) {
+> >>               const struct flash_info *jinfo;
+> >>
+> >>               jinfo = spi_nor_read_id(nor);
 > > 
-> > Hmm, I wonder if it is better to explicitly use SNOR_PROTO_1_1_1 so
-> > clearly signify that this is intended to use 1S-1S-1S only. What do you
-> > think?
+> > I think the flow can be a little bit better. How about:
+> > 
+> >         if (name)
+> >                 info = spi_nor_match_name();
+> > 
+> >         if (!info) {
+> >                 info = spi_nor_read_id();
+> >                 if (IS_ERR_OR_NULL(info))
+> >                         return ERR_PTR(-ENOENT);
+> > 
+> >                 return info;
+> >         }
 > 
-> I would keep it as it is for now, because it offers flexibility.
-> If we ever gonna determine the protocol at runtime this will come in handy
-> because it will work without touching the code. JESD216 suggests an algorithm
-> that tries to determine the mode depending on the SFDP signature.
+> Here we miss the IS_ERR check in case info is retrieved with spi_nor_match_name().
+> Do you expect spi_nor_match_name() to ever return an error? As it is now it doesn't.
+> I'm fine either way. In case you want me to follow your suggestion, give me a sign
+> and I'll make a dedicated patch to move the IS_ERR_OR_NULL check. Will add your
+> Suggested-by tag.
 
-I was thinking exactly this but came to the opposite conclusion ;-). I 
-think this would imply that other protocols can be used to detect the 
-flash which is not true.
-
-But I have no strong preferences here. Either is fine by me.
+I think it should be safe to assume it won't ever return an error since 
+all it does is iterate over an array that is always present. I don't see 
+that changing in the foreseeable future either. So I think not having 
+the IS_ERR check is fine.
 
 -- 
 Regards,
