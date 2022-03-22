@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D180C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 02:40:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADBA6C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 02:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uQurJQSeiTtEnNEVveGglo/aJgjtUSxkcT14Uaq7TkI=; b=GB30wI9zYvnJuu
-	C+ueBMH7lWsAUe99iZFQXbeHdiK7mBTf+MdCWPskqzBs4WjA5PtfPR2tTcDZPFhiLBwrN0o4xxoA5
-	Sh3R9P+jmWjT0nnKyR2572GWalGXNbJo062u7hP53FbZnA4gVQbl37gM2atwCroFJWrwFzKrtJ8CD
-	ZKIl59gV/eyf3R3DQV8n4NBeIckg+y0COD3LVcXIMs1e5/rQreWcX+lek0reDngxP8YrFH8u3mmpe
-	I+J5LIWcuPujK26pbQ9jofm1E2hEYXRjF1oBVL3RReNQs7SRZilYMIM8nnPCF1FkDjbdJw7nYrko6
-	SyJk/xXAH4jQ+6lLfZnQ==;
+	List-Owner; bh=jecoZsUctnlcDoW1+2fqkGhd4kL61MuiF2ptegOlQyg=; b=ZkUgZdacQm/vWf
+	rqPc7B48uXCnn62XaKQtvjZQR1fZ7L0Hd/3+8KIoE45ztuioEM7EP2r05AYIIDhUQ17NR/x9iPhTr
+	dF7DgHB534dodf8f9SC9rJD4n0Tv5x7GWlUnIXqGQ+5gzbkz+F6XzdftMmfQEUlsvp2kFbMpP71TS
+	eEGPjgU6rzCfclrQElZMyRsFsU1kpWIClibKNbvl4HDgJhDtqSBfLMIL7ZOuB0a+Y5x/9tLqwe1zH
+	/oHF/6UDCXHnZufwKAd1GbFAlM+D2kEQKUcMZjLsfYV16dgfp+gsCEPX7xRXIPfAB6d6oFiTemWKk
+	zXEv6gV9R5fLwXSEUXyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWURD-009kNF-39; Tue, 22 Mar 2022 02:39:59 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1nWUU0-009l0Y-T9; Tue, 22 Mar 2022 02:42:53 +0000
+Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWUR8-009kLw-Ud
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 02:39:57 +0000
-Received: by mail-pf1-x432.google.com with SMTP id t2so17035760pfj.10
- for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2022 19:39:54 -0700 (PDT)
+ id 1nWUTx-009kzo-L1
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 02:42:52 +0000
+Received: by mail-pj1-x1036.google.com with SMTP id
+ mr5-20020a17090b238500b001c67366ae93so1170334pjb.4
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2022 19:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=4zT38W/g3Nlr5yWulzhtGBybnz/7yz2x7YGjZPuQI/k=;
- b=hLL+roDqm7W+xRi4+GuFdSbzPUWo+gNAt1Gqr4yhI0t7jOMmtUqkePjf7KzLpBk0pL
- Idc2bZIftCtqRbxz6i/KxPJ1R2oyrpdtnb9ajbPnCYYTfZIoR74Vf4lNNIz0lb7+HxAB
- G6T3QSVPfLtOds39XblzMmg/lTluBuIZO4gp9463lekRxwUD8b8g8WMZFV8dG1fR6Dlt
- 56Kt7EPUmQsE3/+FTjcTW5csMTIxKAknKjRr2nu5ZgK8VgJk22Umli8+k7+RpKdWhX9D
- GIeHCb9mKIG2e7szp8ySUJl2NwPp4IJ270xru5dL3/1LDMLcSuq+9fnpkWHTopxgtyrg
- RFMQ==
+ bh=rEY/h+4Sphr0hAcylYNk2Yi0tkyfCG6fY8IoqjvLISs=;
+ b=pMq1IK2/MsNaini+cWJAPY8v6lDfRGOCPp9vZ4pYUlMd4ORcdU2ETbsu3Wc4b2mn6P
+ KDuFqPCqsEeHi/5lTzJh9HARLqlGPGCP9uV96une4gIf+/TILqUPI4YpoKGS1/GM76Ih
+ dAMheLYvGTEJLsE+S0R0Q3gcOMWELyry349XMGnYm9zpvLY8T+dpB1JloHW3YXSQvSD9
+ GblRvhsRI1DiHf4+5wx8OjxbPkh5r44In8LhSb/fMV9ah0t1kcvqVs346bAeWFX28vfn
+ BAxk57QM+wLNFErgB2R18gkfzW7q1yoOqtzgQPujgkPPhPQFj18LOORqV6RqExo9JjOt
+ 5Izw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=4zT38W/g3Nlr5yWulzhtGBybnz/7yz2x7YGjZPuQI/k=;
- b=T7zIaQVvqSNoNqGHzhNBXy8+Q4gM4/ehZosQMiSvj9boNapYG2oRmESfyqD2Hew68Y
- IQm0MHE/wAb6FXHxD6Z6crEDsf+kYcs05Y3mvqLBQczr9SqXmr2NIYn/lGt5Hp1QQuau
- lVtF3XwlcBqInUj/2Uvz+oOMh3pi9WWTdrdgttSfteBxkUTP72lIWhJXZgAbpCvCCpaO
- hj854eQqmpfZpoS1Ssfziy/H5M2nQoUPIC3eFqX0MmxovRNvbkEHIxINrW2dZ3EkyLYJ
- 63dX5hYJtAJ8aXUSbhVB4L9qF070nESCMDBO2LOx0P8PqHeC9qOpoi1/FcsXHoH6hPkI
- qt8Q==
-X-Gm-Message-State: AOAM532KV0tT1omDQh/HUI5HawdFUJD4kvnsIuWmyO5s5dmtlsHBnAPV
- 0zEez+qdHo0xVwiPtgQAZaBY9JDP47U=
-X-Google-Smtp-Source: ABdhPJxiSHJ1ylSMabnIDO7zYp4X5PXuw9twxYJKtZru9KM23TEAqcwhkyxFsXToYcYvra1MASeZqQ==
-X-Received: by 2002:a05:6a00:781:b0:4f4:2a:2d89 with SMTP id
- g1-20020a056a00078100b004f4002a2d89mr26694381pfu.13.1647916793925; 
- Mon, 21 Mar 2022 19:39:53 -0700 (PDT)
+ bh=rEY/h+4Sphr0hAcylYNk2Yi0tkyfCG6fY8IoqjvLISs=;
+ b=NbEUgQJ4V5qQnq6tAnNo99XYwS0SiaPSkDNHhGTf1ikgERCiP62ZMYr/pF14Zrefdk
+ IHhAvn7l0vked0w5WKIc1DnLqz9c7efVbor47Q3dwWuoW2XNzGjE08077GIwt/vQ9pUk
+ svtoV/yiZmWrIn0AbZhzfI9JMuIQC7d4ZPm2Wv6F2m40mLPA9iM4CbyyJ31kbNX7WIcl
+ NBTsJ8r2Rl1eNHas0yxM//UtSqqg+yjfoHH3YmLbAvC/IKMxOIb2tQ4PM8rUgqkeYVrZ
+ 4eQMBpcO1vuyc2bvjls2ppewtAGTDKVh6zvPeS6v/5sbEm/1XrUElbFpWAUkFNU04FX6
+ F6Vg==
+X-Gm-Message-State: AOAM5313j3tJe0H/F3JiYbsmlkBQSx8iF200j80Lrk0EqlDevmSKs1Qy
+ 7WJNwQEDT29hpFQrTxyyt0vlSYk/qPo=
+X-Google-Smtp-Source: ABdhPJydaDcy3GFhYZJU5jDclfHGMnQOlokHTjIv8xDMjZUzOLN5KBHfD5tarxsdTdmZ1lU4X296XQ==
+X-Received: by 2002:a17:902:ce90:b0:154:3029:97e6 with SMTP id
+ f16-20020a170902ce9000b00154302997e6mr13983574plg.111.1647916968584; 
+ Mon, 21 Mar 2022 19:42:48 -0700 (PDT)
 Received: from [192.168.122.100] (133-175-21-116.tokyo.ap.gmo-isp.jp.
  [133.175.21.116]) by smtp.gmail.com with ESMTPSA id
- gb5-20020a17090b060500b001c6d46f7e75sm752580pjb.30.2022.03.21.19.39.51
+ i7-20020a628707000000b004fa6eb33b02sm13144543pfe.49.2022.03.21.19.42.45
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 21 Mar 2022 19:39:53 -0700 (PDT)
-Message-ID: <faae174c-bb3f-e4e2-dc6c-b79186d9804c@gmail.com>
-Date: Tue, 22 Mar 2022 11:39:50 +0900
+ Mon, 21 Mar 2022 19:42:48 -0700 (PDT)
+Message-ID: <8a193154-e840-6c15-13bf-42267ab72807@gmail.com>
+Date: Tue, 22 Mar 2022 11:42:44 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
 Subject: Re: [PATCH v4 2/3] mtd: cfi_cmdset_0002: Use chip_ready() for write
  on S29GL064N
 Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: linux-mtd@lists.infradead.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
  stable@vger.kernel.org
 References: <20220316155455.162362-1-ikegami.t@gmail.com>
  <20220316155455.162362-3-ikegami.t@gmail.com> <20220316182100.6e2e5876@xps13>
+ <01fed0aa-8844-1db9-f167-e7e7944bc092@ti.com>
 From: Tokunori Ikegami <ikegami.t@gmail.com>
-In-Reply-To: <20220316182100.6e2e5876@xps13>
+In-Reply-To: <01fed0aa-8844-1db9-f167-e7e7944bc092@ti.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_193955_018748_E77559A1 
-X-CRM114-Status: GOOD (  20.83  )
+X-CRM114-CacheID: sfid-20220321_194249_747862_3AD26CBA 
+X-CRM114-Status: GOOD (  19.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,84 +92,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdcOobC1zYW4sCgpPbiAyMDIyLzAzLzE3IDI6MjEsIE1pcXVlbCBSYXluYWwgd3JvdGU6
-Cj4gSGkgVG9rdW5vcmksCj4KPiBpa2VnYW1pLnRAZ21haWwuY29tIHdyb3RlIG9uIFRodSwgMTcg
-TWFyIDIwMjIgMDA6NTQ6NTQgKzA5MDA6Cj4KPj4gQXMgcG9pbnRlZCBvdXQgYnkgdGhpcyBidWcg
-cmVwb3J0IFsxXSwgYnVmZmVyZWQgd3JpdGVzIGFyZSBub3cgYnJva2VuIG9uCj4+IFMyOUdMMDY0
-Ti4gVGhpcyBpc3N1ZSBjb21lcyBmcm9tIGEgcmV3b3JrIHdoaWNoIHN3aXRjaGVkIGZyb20gdXNp
-bmcgY2hpcF9nb29kKCkKPj4gdG8gY2hpcF9yZWFkeSgpLCBiZWNhdXNlIERRIHRydWUgZGF0YSAw
-eEZGIGlzIHJlYWQgb24gUzI5R0wwNjROIGFuZCBhbiBlcnJvcgo+PiByZXR1cm5lZCBieSBjaGlw
-X2dvb2QoKS4KPiBWaWduZXNoLCBJIGJlbGlldmUgeW91IHVuZGVyc3RhbmQgdGhpcyBpc3N1ZSBi
-ZXR0ZXIgdGhhbiBJIGRvLCBjYW4geW91Cj4gcHJvcG9zZSBhbiBpbXByb3ZlZCBjb21taXQgbG9n
-Pwo+Cj4+IE9uZSB3YXkgdG8gc29sdmUgdGhlIGlzc3VlIGlzIHRvIHJldmVydCB0aGUgY2hhbmdl
-Cj4+IHBhcnRpYWxseSB0byB1c2UgY2hpcF9yZWFkeSBmb3IgUzI5R0wwNjROLgo+Pgo+PiBbMV0g
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci9iNjg3YzI1OS02NDEzLTI2YzktZDRjOS1iM2FmYTY5
-ZWExMjRAcGVuZ3V0cm9uaXguZGUvCj4+Cj4+IEZpeGVzOiBkZmVhZTEwNzM1ODMoIm10ZDogY2Zp
-X2NtZHNldF8wMDAyOiBDaGFuZ2Ugd3JpdGUgYnVmZmVyIHRvIGNoZWNrIGNvcnJlY3QgdmFsdWUi
-KQo+PiBTaWduZWQtb2ZmLWJ5OiBUb2t1bm9yaSBJa2VnYW1pIDxpa2VnYW1pLnRAZ21haWwuY29t
-Pgo+PiBUZXN0ZWQtYnk6IEFobWFkIEZhdG91bSA8YS5mYXRvdW1AcGVuZ3V0cm9uaXguZGU+Cj4+
-IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnCj4+IC0tLQo+PiAgIGRyaXZlcnMvbXRkL2NoaXBz
-L2NmaV9jbWRzZXRfMDAwMi5jIHwgMjUgKysrKysrKysrKysrKysrKysrKysrLS0tLQo+PiAgIDEg
-ZmlsZSBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210
-ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+PiBpbmRleCBlNjhkZGYwZjdmYzAuLjZjNTdmODVl
-MWI4ZSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMK
-Pj4gKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKPj4gQEAgLTg2Niw2
-ICs4NjYsMjMgQEAgc3RhdGljIGludCBfX3hpcHJhbSBjaGlwX2NoZWNrKHN0cnVjdCBtYXBfaW5m
-byAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAo+PiAgIAkJY2hpcF9jaGVjayhtYXAsIGNoaXAs
-IGFkZHIsICZkYXR1bSk7IFwKPj4gICAJfSkKPj4gICAKPj4gK3N0YXRpYyBib29sIF9feGlwcmFt
-IGNmaV91c2VfY2hpcF9yZWFkeV9mb3Jfd3JpdGUoc3RydWN0IG1hcF9pbmZvICptYXApCj4gQXQg
-dGhlIHZlcnkgbGVhc3QgSSB3b3VsZCBjYWxsIHRoaXMgZnVuY3Rpb246Cj4gY2ZpX3VzZV9jaGlw
-X3JlYWR5X2Zvcl93cml0ZXMoKQo+Cj4gWWV0LCBJIHN0aWxsIGRvbid0IGZ1bGx5IGdldCB3aGF0
-IGNoaXBfcmVhZHkgaXMgdmVyc3VzIGNoaXBfZ29vZC4KVGhpcyB3YXMgZGVsZXRlZCBhcyB0byB1
-c2UgdGhlIHF1aXJrcyBmbGFnIGluc3RlYWQuCj4KPj4gK3sKPj4gKwlzdHJ1Y3QgY2ZpX3ByaXZh
-dGUgKmNmaSA9IG1hcC0+ZmxkcnZfcHJpdjsKPj4gKwo+PiArCXJldHVybiBjZmktPm1mciA9PSBD
-RklfTUZSX0FNRCAmJiBjZmktPmlkID09IDB4MGMwMTsKPj4gK30KPj4gKwo+PiArc3RhdGljIGlu
-dCBfX3hpcHJhbSBjaGlwX2dvb2RfZm9yX3dyaXRlKHN0cnVjdCBtYXBfaW5mbyAqbWFwLAo+PiAr
-CQkJCQlzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkZHIsCj4+ICsJCQkJCW1h
-cF93b3JkIGV4cGVjdGVkKQo+PiArewo+PiArCWlmIChjZmlfdXNlX2NoaXBfcmVhZHlfZm9yX3dy
-aXRlKG1hcCkpCj4+ICsJCXJldHVybiBjaGlwX3JlYWR5KG1hcCwgY2hpcCwgYWRkcik7Cj4gSWYg
-cG9zc2libGUgYW5kIG5vdCB0b28gaW52YXNpdmUgSSB3b3VsZCBkZWZpbml0ZWx5IGFkZCBhICJx
-dWlya3MiIGZsYWcKPiBzb21ld2hlcmUgaW5zdGVhZCBvZiB0aGlzIGNmaV91c2VfY2hpcF9yZWFk
-eV9mb3Jfd3JpdGUoKSBjaGVjay4KQWRkZWQgdGhlIHF1aXJrcyBmbGFnIGJ5IHRoZSB2ZXJzaW9u
-IDUgcGF0Y2guCj4KPiBBbnl3YXksIEkgd291bGQgbW92ZSB0aGlzIHRvIHRoZSBjaGlwX2dvb2Qo
-KSBpbXBsZW1lbnRhdGlvbiBkaXJlY3RseSBzbwo+IHdlIHBhcnRpYWxseSBoaWRlIHRoZSBxdWly
-a3MgY29tcGxleGl0eSBmcm9tIHRoZSBjb3JlLgoKWWVzIGFsc28gYWRkZWQgdGhlIGNoaXBfZ29v
-ZCB0byBjaGVjayB0aGUgcXVpcmtzIGZsYWcuCgpSZWdhcmRzLApJa2VnYW1pCgo+Cj4+ICsKPj4g
-KwlyZXR1cm4gY2hpcF9nb29kKG1hcCwgY2hpcCwgYWRkciwgZXhwZWN0ZWQpOwo+PiArfQo+PiAr
-Cj4+ICAgc3RhdGljIGludCBnZXRfY2hpcChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgc3RydWN0IGZs
-Y2hpcCAqY2hpcCwgdW5zaWduZWQgbG9uZyBhZHIsIGludCBtb2RlKQo+PiAgIHsKPj4gICAJREVD
-TEFSRV9XQUlUUVVFVUUod2FpdCwgY3VycmVudCk7Cj4+IEBAIC0xNjg2LDcgKzE3MDMsNyBAQCBz
-dGF0aWMgaW50IF9feGlwcmFtIGRvX3dyaXRlX29uZXdvcmRfb25jZShzdHJ1Y3QgbWFwX2luZm8g
-Km1hcCwKPj4gICAJCSAqICJjaGlwX2dvb2QiIHRvIGF2b2lkIHRoZSBmYWlsdXJlIGR1ZSB0byBz
-Y2hlZHVsaW5nLgo+PiAgIAkJICovCj4+ICAgCQlpZiAodGltZV9hZnRlcihqaWZmaWVzLCB0aW1l
-bykgJiYKPj4gLQkJICAgICFjaGlwX2dvb2QobWFwLCBjaGlwLCBhZHIsIGRhdHVtKSkgewo+PiAr
-CQkgICAgIWNoaXBfZ29vZF9mb3Jfd3JpdGUobWFwLCBjaGlwLCBhZHIsIGRhdHVtKSkgewo+PiAg
-IAkJCXhpcF9lbmFibGUobWFwLCBjaGlwLCBhZHIpOwo+PiAgIAkJCXByaW50ayhLRVJOX1dBUk5J
-TkcgIk1URCAlcygpOiBzb2Z0d2FyZSB0aW1lb3V0XG4iLCBfX2Z1bmNfXyk7Cj4+ICAgCQkJeGlw
-X2Rpc2FibGUobWFwLCBjaGlwLCBhZHIpOwo+PiBAQCAtMTY5NCw3ICsxNzExLDcgQEAgc3RhdGlj
-IGludCBfX3hpcHJhbSBkb193cml0ZV9vbmV3b3JkX29uY2Uoc3RydWN0IG1hcF9pbmZvICptYXAs
-Cj4+ICAgCQkJYnJlYWs7Cj4+ICAgCQl9Cj4+ICAgCj4+IC0JCWlmIChjaGlwX2dvb2QobWFwLCBj
-aGlwLCBhZHIsIGRhdHVtKSkgewo+PiArCQlpZiAoY2hpcF9nb29kX2Zvcl93cml0ZShtYXAsIGNo
-aXAsIGFkciwgZGF0dW0pKSB7Cj4+ICAgCQkJaWYgKGNmaV9jaGVja19lcnJfc3RhdHVzKG1hcCwg
-Y2hpcCwgYWRyKSkKPj4gICAJCQkJcmV0ID0gLUVJTzsKPj4gICAJCQlicmVhazsKPj4gQEAgLTE5
-NjYsMTQgKzE5ODMsMTQgQEAgc3RhdGljIGludCBfX3hpcHJhbSBkb193cml0ZV9idWZmZXJfd2Fp
-dChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwKPj4gICAJCSAqICJjaGlwX2dvb2QiIHRvIGF2b2lkIHRo
-ZSBmYWlsdXJlIGR1ZSB0byBzY2hlZHVsaW5nLgo+PiAgIAkJICovCj4+ICAgCQlpZiAodGltZV9h
-ZnRlcihqaWZmaWVzLCB0aW1lbykgJiYKPj4gLQkJICAgICFjaGlwX2dvb2QobWFwLCBjaGlwLCBh
-ZHIsIGRhdHVtKSkgewo+PiArCQkgICAgIWNoaXBfZ29vZF9mb3Jfd3JpdGUobWFwLCBjaGlwLCBh
-ZHIsIGRhdHVtKSkgewo+PiAgIAkJCXByX2VycigiTVREICVzKCk6IHNvZnR3YXJlIHRpbWVvdXQs
-IGFkZHJlc3M6MHglLjhseC5cbiIsCj4+ICAgCQkJICAgICAgIF9fZnVuY19fLCBhZHIpOwo+PiAg
-IAkJCXJldCA9IC1FSU87Cj4+ICAgCQkJYnJlYWs7Cj4+ICAgCQl9Cj4+ICAgCj4+IC0JCWlmIChj
-aGlwX2dvb2QobWFwLCBjaGlwLCBhZHIsIGRhdHVtKSkgewo+PiArCQlpZiAoY2hpcF9nb29kX2Zv
-cl93cml0ZShtYXAsIGNoaXAsIGFkciwgZGF0dW0pKSB7Cj4+ICAgCQkJaWYgKGNmaV9jaGVja19l
-cnJfc3RhdHVzKG1hcCwgY2hpcCwgYWRyKSkKPj4gICAJCQkJcmV0ID0gLUVJTzsKPj4gICAJCQli
-cmVhazsKPgo+IFRoYW5rcywKPiBNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
-aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
-Lwo=
+Hi,
+
+On 2022/03/17 19:01, Vignesh Raghavendra wrote:
+>
+> On 16/03/22 10:51 pm, Miquel Raynal wrote:
+>> Hi Tokunori,
+>>
+>> ikegami.t@gmail.com wrote on Thu, 17 Mar 2022 00:54:54 +0900:
+>>
+>>> As pointed out by this bug report [1], buffered writes are now broken on
+>>> S29GL064N. This issue comes from a rework which switched from using chip_good()
+>>> to chip_ready(), because DQ true data 0xFF is read on S29GL064N and an error
+>>> returned by chip_good().
+>> Vignesh, I believe you understand this issue better than I do, can you
+>> propose an improved commit log?
+> How about:
+>
+> Since commit dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to
+> check correct value") buffered writes fail on S29GL064N. This is
+> because, on S29GL064N, reads return 0xFF at the end of DQ polling for
+> write completion, where as, chip_good() check expects actual data
+> written to the last location to be returned post DQ polling completion.
+> Fix is to revert to using chip_good() for S29GL064N which only checks
+> for DQ lines to settle down to determine write completion.
+
+Fixed the commit message as suggested by the version 5 patch.
+
+>>> One way to solve the issue is to revert the change
+>>> partially to use chip_ready for S29GL064N.
+>>>
+>>> [1] https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
+>>>
+>>> Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+>>> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
+>>> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>>> Cc: stable@vger.kernel.org
+>>> ---
+>>>   drivers/mtd/chips/cfi_cmdset_0002.c | 25 +++++++++++++++++++++----
+>>>   1 file changed, 21 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> index e68ddf0f7fc0..6c57f85e1b8e 100644
+>>> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+>>> @@ -866,6 +866,23 @@ static int __xipram chip_check(struct map_info *map, struct flchip *chip,
+>>>   		chip_check(map, chip, addr, &datum); \
+>>>   	})
+>>>   
+>>> +static bool __xipram cfi_use_chip_ready_for_write(struct map_info *map)
+>> At the very least I would call this function:
+>> cfi_use_chip_ready_for_writes()
+>>
+>> Yet, I still don't fully get what chip_ready is versus chip_good.
+>>
+>>> +{
+>>> +	struct cfi_private *cfi = map->fldrv_priv;
+>>> +
+>>> +	return cfi->mfr == CFI_MFR_AMD && cfi->id == 0x0c01;
+>>> +}
+>>> +
+>>> +static int __xipram chip_good_for_write(struct map_info *map,
+>>> +					struct flchip *chip, unsigned long addr,
+>>> +					map_word expected)
+>>> +{
+>>> +	if (cfi_use_chip_ready_for_write(map))
+>>> +		return chip_ready(map, chip, addr);
+>> If possible and not too invasive I would definitely add a "quirks" flag
+>> somewhere instead of this cfi_use_chip_ready_for_write() check.
+>>
+>> Anyway, I would move this to the chip_good() implementation directly so
+>> we partially hide the quirks complexity from the core.
+> Yeah, unfortunately this driver does not use quirk flags and tends to
+> hide quirks behind bool functions like above
+
+Added the quirks flag as mentioned.
+
+Regards,
+Ikegami
+
+>
+> Regards
+> Vignesh
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
