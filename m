@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C882BC4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 02:14:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B84CC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 02:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v/b2XpDI1Ixo/dYUdnv1wEuyGV516bbCtJd9zy07aDw=; b=Y8b7ID5di6dNbV
-	MvyDhu43lIh3tNIsDgKKjHGrKFxfAHHu6O8chQihhOEZzIc0++cYdBndTaRpQscFhGttnNXvYU3LV
-	AOvgqRiPZdPhGNNTfnJM6pwc9d+YCQ7G9MQztGMOmRbjBeqnSUATWpp9J3loQ7uMAJfy+QEDj9Gbk
-	USesSCXBka2MgOAhmqSlyLTSoAJAoCvGLtdWnpdH5aFuudsKiskqi2my9C783UHNGoH14BLFA8yc7
-	Nk7ACXtnmFOxahaCs/ePj8cmh8450hocilc4kKeggCwy4rGyutksMS0RxNYyIiY1MHFr9K9u4wR+3
-	ZdBJG9960j8r4PR9QQMQ==;
+	List-Owner; bh=/zrtvNc/h5hBm1xpYH3No7V7JX8hwJFklS9NUONzKyQ=; b=T6R7kmzVMjbAsB
+	vb9+Ih/JmEulOEiqQbX5AKkY7Bl6KczRFLglNbxb8SIzpV319p7vTV5OjaJXo7pic7M4NVnUz6sBk
+	PJmWFU6U4gO9EWHnk/ijpQz0UpZexk7CRAJtKaWLsf8tKDn21zt+gQFepsjEbsL0ooCh61yi3obbo
+	dpnNxHiHE0XZHlWNntLUVZjOfUUrowXQb9KoSXgZQWNFY/KCJfAN/Q5SeCKCfSIacKnuyukiQc+fC
+	78rvUn5u7LzebPdr4QAgaGb0is7JTPJKfbUY9FKicryxfb+cuIqR37Dmcm0ctxyTGMzBtCmTSwqmn
+	CJ9ECZa7WYDtw+q/8G3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWTz0-009g4P-48; Tue, 22 Mar 2022 02:10:50 +0000
-Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
+	id 1nWUN1-009jkZ-JB; Tue, 22 Mar 2022 02:35:39 +0000
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWTym-009g33-FE
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 02:10:42 +0000
-Received: by mail-pg1-x535.google.com with SMTP id i184so790392pgc.1
- for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2022 19:10:36 -0700 (PDT)
+ id 1nWUMx-009jim-1j
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 02:35:37 +0000
+Received: by mail-pf1-x436.google.com with SMTP id d19so17042385pfv.7
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2022 19:35:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=/nPaaSxMF+oMbJ1b8ycGXIGlnF01X/wLsUX+PxH/BTQ=;
- b=XU1lEQ7TZLgF3nAZHks7VkUw8lAS7RgclLJMf3fwfXGGL9f7zjPOD7qDZyj0cJRZLj
- xuzzALFw4aeGiI2R2aW09yAystRB/T9CX9Fn6y0W86/kaTp2d34dT41tY+i6ghD/7lEs
- 4TM306WmvGQS3gMsBaViF3AKwFwtnAa5Tkbo4ybUl5zOQRuhwDT7yJMBVu5lz37mA52e
- 6mGjCdYefVSsUB76KkCNtIRWTB+d7pVRjr1MuzF7VNx+7RlqWyQsq6cVmBrvos+LIepC
- hxbtIKwFA/dj9PWJqEa+Gzm5KkM6RKN4tLTsZkjwywHCLfxr3mMeNe1Lcu92y5TGU5Ek
- apIg==
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=S6Jgc7aBpf/768ixumeVgNXvWvNNM1HOkw4ChK7eyOU=;
+ b=cWSkwhuYJYaUCVyPKabZS1UmBl8TGIAsCdJTxM9L/Dwa6n5dXcdNP8fPJFKAywOD0y
+ pJtxfqHE3uPeZk/6FMlZpo4ElzCqfpZTvqZfzGoSJq8od4d0WvILtx46rZZwn8yDMCs6
+ O0a7dw/ZEsJKjH0cKiWPAJxtnzOxV4ibCrM9Z7O8+08/RlBQabarw/PB34I1Iyt+7+U1
+ bGbScdeOCtsWZEUDKPSLdH2bG6eo9TYBoZzrlCKQmLjfXoG1ChnvQ+TntVHOWW50dYnW
+ G8xSEBjPSmiK6A3NPDLVVc9vex/uGlZHxbN4IpN9li0X3AqMnZxp1HE6BItQznA0egxa
+ 3VWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=/nPaaSxMF+oMbJ1b8ycGXIGlnF01X/wLsUX+PxH/BTQ=;
- b=44GLDV1nGzThMqWn69DxuuNLP61Xa5RgD65eaoFNt5yajk3g/q+zReRXGEnx6/5l5I
- g+bUmCEBqi+TY2LvCMqnFlS6LSZqkExYydBNvQn6vhy+W3xvVMPEZgrjvaixGO33Fjpi
- T4t6xT+UQVGNaiLzPXNsbN+nIMmJhvaHY4L/cgTGkJLG+sowDqwSlhwnzB7boFXfSN74
- GJbpuOLJkfwDfzv7Ssmb/Me3qpyUxuty1q/xHZV5zrShhkmY1Gmd+fPBsR4lpcji8zXS
- Yntv2jMOYHB+khVskTmD/oLRxZFVuMyNmC/VdFpfl3/Ne7XLXfK73f8UerKO3sZztBZQ
- sC7g==
-X-Gm-Message-State: AOAM531sORVx1niHLOKpmP2+Op3llMTAZMw98pijT5KLblqMWpSf94Tc
- DlXOqt5OHIF0CaPwlIzYpXk=
-X-Google-Smtp-Source: ABdhPJxPY/12O1oqJ9jx+qVTe4LKuDuwHTSVMP4zvZ2k1dzoQhEGszwCPqTUAZGs0gWkDODnZg9xZA==
-X-Received: by 2002:a05:6a00:174d:b0:4f6:67e3:965 with SMTP id
- j13-20020a056a00174d00b004f667e30965mr26481777pfc.39.1647915035388; 
- Mon, 21 Mar 2022 19:10:35 -0700 (PDT)
-Received: from tokunori-desktop.flets-east.jp
- ([240b:10:2720:5500:1847:b4dd:1227:a1f6])
- by smtp.gmail.com with ESMTPSA id
- o5-20020a655bc5000000b00372f7ecfcecsm15673579pgr.37.2022.03.21.19.10.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Mar 2022 19:10:34 -0700 (PDT)
-From: Tokunori Ikegami <ikegami.t@gmail.com>
-To: miquel.raynal@bootlin.com
-Cc: linux-mtd@lists.infradead.org, Tokunori Ikegami <ikegami.t@gmail.com>,
- stable@vger.kernel.org
-Subject: [PATCH v5 1/3] mtd: cfi_cmdset_0002: Move and rename
- chip_check/chip_ready/chip_good_for_write
-Date: Tue, 22 Mar 2022 11:09:59 +0900
-Message-Id: <20220322021001.138206-2-ikegami.t@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220322021001.138206-1-ikegami.t@gmail.com>
-References: <20220322021001.138206-1-ikegami.t@gmail.com>
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=S6Jgc7aBpf/768ixumeVgNXvWvNNM1HOkw4ChK7eyOU=;
+ b=ZgP33z+7o1IuIjFb0xlzDhyYcehrCbxDDOvpsBmZ5iYMiPB6vweR0m4jagYA4u0ZkN
+ HZKbB0uGRHoqvpXW3dmpzsHr/p1Kxzr3vFDyc+ZXQiIWP1Qxrt6VkQDCsumyWhl0TdT/
+ mdp121uRsAp6P2eLi1laeQGlBNiNmSxoNzUGWqlRg8rIT66F+t9l1ujwtYjzTcEnyNla
+ pKgzwsFvkdT/xch8vkBF6M6YmAc91bt9aAov9NjSaHz97BrPExjFV2cx0xrlmvFco9/5
+ j5cTHuvmWtkJUywxw1Wv6GYVd56dmKiAnjbE2hBy+V1gWc3o0H75WzRcbm4Jwz/xqgA1
+ /SWA==
+X-Gm-Message-State: AOAM531M69iFaGs2HEenThf9od54eq0ezzESlWWI7witmIb/YKflHbeC
+ vsTFtnT/UKJB/cLZxXHUJ6Q=
+X-Google-Smtp-Source: ABdhPJw08jv8M3tj1bPH9+gUQguR+QaoKHdufedTGDoWJ5e0ZuZNBBLGgC0iD0Bx3PXqtJttuw2yoA==
+X-Received: by 2002:a63:520c:0:b0:382:2953:a338 with SMTP id
+ g12-20020a63520c000000b003822953a338mr15311991pgb.610.1647916533793; 
+ Mon, 21 Mar 2022 19:35:33 -0700 (PDT)
+Received: from [192.168.122.100] (133-175-21-116.tokyo.ap.gmo-isp.jp.
+ [133.175.21.116]) by smtp.gmail.com with ESMTPSA id
+ my18-20020a17090b4c9200b001c75aeac7fdsm337258pjb.27.2022.03.21.19.35.31
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 21 Mar 2022 19:35:33 -0700 (PDT)
+Message-ID: <22f5c9f7-2fbd-902b-ca9b-c14d92a9b045@gmail.com>
+Date: Tue, 22 Mar 2022 11:35:30 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v4 1/3] mtd: cfi_cmdset_0002: Move and rename
+ chip_check/chip_ready/chip_good_for_write
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
+References: <20220316155455.162362-1-ikegami.t@gmail.com>
+ <20220316155455.162362-2-ikegami.t@gmail.com> <20220316181519.0ec5bc97@xps13>
+From: Tokunori Ikegami <ikegami.t@gmail.com>
+In-Reply-To: <20220316181519.0ec5bc97@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220321_191036_614557_51F1BACC 
-X-CRM114-Status: GOOD (  21.76  )
+X-CRM114-CacheID: sfid-20220321_193535_134655_77733F9C 
+X-CRM114-Status: GOOD (  26.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,273 +88,104 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This is a preparation patch for the S29GL064N buffer writes fix. There
-is no functional change.
-
-Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
-Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 95 ++++++++++-------------------
- 1 file changed, 32 insertions(+), 63 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index a761134fd3be..9ccde90dc180 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -802,21 +802,25 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
- }
- 
- /*
-- * Return true if the chip is ready.
-+ * Return true if the chip is ready and has the correct value.
-  *
-  * Ready is one of: read mode, query mode, erase-suspend-read mode (in any
-  * non-suspended sector) and is indicated by no toggle bits toggling.
-  *
-+ * Error are indicated by toggling bits or bits held with the wrong value,
-+ * or with bits toggling.
-+ *
-  * Note that anything more complicated than checking if no bits are toggling
-  * (including checking DQ5 for an error status) is tricky to get working
-  * correctly and is therefore not done	(particularly with interleaved chips
-  * as each chip must be checked independently of the others).
-  */
- static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
--			       unsigned long addr)
-+			       unsigned long addr, map_word *expected)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word d, t;
-+	int ret;
- 
- 	if (cfi_use_status_reg(cfi)) {
- 		map_word ready = CMD(CFI_SR_DRB);
-@@ -826,57 +830,20 @@ static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
- 		 */
- 		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
- 				 cfi->device_type, NULL);
--		d = map_read(map, addr);
-+		t = map_read(map, addr);
- 
--		return map_word_andequal(map, d, ready, ready);
-+		return map_word_andequal(map, t, ready, ready);
- 	}
- 
- 	d = map_read(map, addr);
- 	t = map_read(map, addr);
- 
--	return map_word_equal(map, d, t);
--}
--
--/*
-- * Return true if the chip is ready and has the correct value.
-- *
-- * Ready is one of: read mode, query mode, erase-suspend-read mode (in any
-- * non-suspended sector) and it is indicated by no bits toggling.
-- *
-- * Error are indicated by toggling bits or bits held with the wrong value,
-- * or with bits toggling.
-- *
-- * Note that anything more complicated than checking if no bits are toggling
-- * (including checking DQ5 for an error status) is tricky to get working
-- * correctly and is therefore not done	(particularly with interleaved chips
-- * as each chip must be checked independently of the others).
-- *
-- */
--static int __xipram chip_good(struct map_info *map, struct flchip *chip,
--			      unsigned long addr, map_word expected)
--{
--	struct cfi_private *cfi = map->fldrv_priv;
--	map_word oldd, curd;
--
--	if (cfi_use_status_reg(cfi)) {
--		map_word ready = CMD(CFI_SR_DRB);
--
--		/*
--		 * For chips that support status register, check device
--		 * ready bit
--		 */
--		cfi_send_gen_cmd(0x70, cfi->addr_unlock1, chip->start, map, cfi,
--				 cfi->device_type, NULL);
--		curd = map_read(map, addr);
--
--		return map_word_andequal(map, curd, ready, ready);
--	}
-+	ret = map_word_equal(map, d, t);
- 
--	oldd = map_read(map, addr);
--	curd = map_read(map, addr);
-+	if (!ret || !expected)
-+		return ret;
- 
--	return	map_word_equal(map, oldd, curd) &&
--		map_word_equal(map, curd, expected);
-+	return map_word_equal(map, t, *expected);
- }
- 
- static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
-@@ -893,7 +860,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
- 
- 	case FL_STATUS:
- 		for (;;) {
--			if (chip_ready(map, chip, adr))
-+			if (chip_ready(map, chip, adr, NULL))
- 				break;
- 
- 			if (time_after(jiffies, timeo)) {
-@@ -932,7 +899,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
- 		chip->state = FL_ERASE_SUSPENDING;
- 		chip->erase_suspended = 1;
- 		for (;;) {
--			if (chip_ready(map, chip, adr))
-+			if (chip_ready(map, chip, adr, NULL))
- 				break;
- 
- 			if (time_after(jiffies, timeo)) {
-@@ -1463,7 +1430,7 @@ static int do_otp_lock(struct map_info *map, struct flchip *chip, loff_t adr,
- 	/* wait for chip to become ready */
- 	timeo = jiffies + msecs_to_jiffies(2);
- 	for (;;) {
--		if (chip_ready(map, chip, adr))
-+		if (chip_ready(map, chip, adr, NULL))
- 			break;
- 
- 		if (time_after(jiffies, timeo)) {
-@@ -1695,11 +1662,11 @@ static int __xipram do_write_oneword_once(struct map_info *map,
- 		}
- 
- 		/*
--		 * We check "time_after" and "!chip_good" before checking
--		 * "chip_good" to avoid the failure due to scheduling.
-+		 * We check "time_after" and "!chip_ready" before checking
-+		 * "chip_ready" to avoid the failure due to scheduling.
- 		 */
- 		if (time_after(jiffies, timeo) &&
--		    !chip_good(map, chip, adr, datum)) {
-+		    !chip_ready(map, chip, adr, &datum)) {
- 			xip_enable(map, chip, adr);
- 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
- 			xip_disable(map, chip, adr);
-@@ -1707,7 +1674,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
- 			break;
- 		}
- 
--		if (chip_good(map, chip, adr, datum)) {
-+		if (chip_ready(map, chip, adr, &datum)) {
- 			if (cfi_check_err_status(map, chip, adr))
- 				ret = -EIO;
- 			break;
-@@ -1975,18 +1942,18 @@ static int __xipram do_write_buffer_wait(struct map_info *map,
- 		}
- 
- 		/*
--		 * We check "time_after" and "!chip_good" before checking
--		 * "chip_good" to avoid the failure due to scheduling.
-+		 * We check "time_after" and "!chip_ready" before checking
-+		 * "chip_ready" to avoid the failure due to scheduling.
- 		 */
- 		if (time_after(jiffies, timeo) &&
--		    !chip_good(map, chip, adr, datum)) {
-+		    !chip_ready(map, chip, adr, &datum)) {
- 			pr_err("MTD %s(): software timeout, address:0x%.8lx.\n",
- 			       __func__, adr);
- 			ret = -EIO;
- 			break;
- 		}
- 
--		if (chip_good(map, chip, adr, datum)) {
-+		if (chip_ready(map, chip, adr, &datum)) {
- 			if (cfi_check_err_status(map, chip, adr))
- 				ret = -EIO;
- 			break;
-@@ -2195,7 +2162,7 @@ static int cfi_amdstd_panic_wait(struct map_info *map, struct flchip *chip,
- 	 * If the driver thinks the chip is idle, and no toggle bits
- 	 * are changing, then the chip is actually idle for sure.
- 	 */
--	if (chip->state == FL_READY && chip_ready(map, chip, adr))
-+	if (chip->state == FL_READY && chip_ready(map, chip, adr, NULL))
- 		return 0;
- 
- 	/*
-@@ -2212,7 +2179,7 @@ static int cfi_amdstd_panic_wait(struct map_info *map, struct flchip *chip,
- 
- 		/* wait for the chip to become ready */
- 		for (i = 0; i < jiffies_to_usecs(timeo); i++) {
--			if (chip_ready(map, chip, adr))
-+			if (chip_ready(map, chip, adr, NULL))
- 				return 0;
- 
- 			udelay(1);
-@@ -2276,13 +2243,13 @@ static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
- 	map_write(map, datum, adr);
- 
- 	for (i = 0; i < jiffies_to_usecs(uWriteTimeout); i++) {
--		if (chip_ready(map, chip, adr))
-+		if (chip_ready(map, chip, adr, NULL))
- 			break;
- 
- 		udelay(1);
- 	}
- 
--	if (!chip_good(map, chip, adr, datum) ||
-+	if (!chip_ready(map, chip, adr, &datum) ||
- 	    cfi_check_err_status(map, chip, adr)) {
- 		/* reset on all failures. */
- 		map_write(map, CMD(0xF0), chip->start);
-@@ -2424,6 +2391,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret;
- 	int retry_cnt = 0;
-+	map_word datum = map_word_ff(map);
- 
- 	adr = cfi->addr_unlock1;
- 
-@@ -2478,7 +2446,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 			chip->erase_suspended = 0;
- 		}
- 
--		if (chip_good(map, chip, adr, map_word_ff(map))) {
-+		if (chip_ready(map, chip, adr, &datum)) {
- 			if (cfi_check_err_status(map, chip, adr))
- 				ret = -EIO;
- 			break;
-@@ -2523,6 +2491,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret;
- 	int retry_cnt = 0;
-+	map_word datum = map_word_ff(map);
- 
- 	adr += chip->start;
- 
-@@ -2577,7 +2546,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 			chip->erase_suspended = 0;
- 		}
- 
--		if (chip_good(map, chip, adr, map_word_ff(map))) {
-+		if (chip_ready(map, chip, adr, &datum)) {
- 			if (cfi_check_err_status(map, chip, adr))
- 				ret = -EIO;
- 			break;
-@@ -2771,7 +2740,7 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
- 	 */
- 	timeo = jiffies + msecs_to_jiffies(2000);	/* 2s max (un)locking */
- 	for (;;) {
--		if (chip_ready(map, chip, adr))
-+		if (chip_ready(map, chip, adr, NULL))
- 			break;
- 
- 		if (time_after(jiffies, timeo)) {
--- 
-2.32.0
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdcOobC1zYW4sCgpPbiAyMDIyLzAzLzE3IDI6MTUsIE1pcXVlbCBSYXluYWwgd3JvdGU6
+Cj4gSGkgVG9rdW5vcmksCj4KPiBpa2VnYW1pLnRAZ21haWwuY29tIHdyb3RlIG9uIFRodSwgMTcg
+TWFyIDIwMjIgMDA6NTQ6NTMgKzA5MDA6Cj4KPj4gVGhpcyBpcyBhIHByZXBhcmF0aW9uIHBhdGNo
+IGZvciB0aGUgZnVuY3Rpb25hbCBjaGFuZ2UgaW4gcHJlcGFyYXRpb24gdG8gYSBjaGFuZ2UKPj4g
+ZXhwZWN0ZWQgdG8gZml4IHRoZSBidWZmZXJlZCB3cml0ZXMgb24gUzI5R0wwNjROLgo+IFRoaXMg
+aXMgYSBwcmVwYXJhdGlvbiBwYXRjaCBmb3IgdGhlIFMyOUdMMDY0TiBidWZmZXIgd3JpdGVzIGZp
+eC4gVGhlcmUKPiBpcyBubyBmdW5jdGlvbmFsIGNoYW5nZS4KRml4ZWQgdGhpcyBieSB0aGUgdmVy
+c2lvbiA1IHBhdGNoLgo+Cj4+IEZpeGVzOiBkZmVhZTEwNzM1ODMoIm10ZDogY2ZpX2NtZHNldF8w
+MDAyOiBDaGFuZ2Ugd3JpdGUgYnVmZmVyIHRvIGNoZWNrIGNvcnJlY3QgdmFsdWUiKQo+PiBTaWdu
+ZWQtb2ZmLWJ5OiBUb2t1bm9yaSBJa2VnYW1pIDxpa2VnYW1pLnRAZ21haWwuY29tPgo+PiBDYzog
+c3RhYmxlQHZnZXIua2VybmVsLm9yZwo+PiAtLS0KPj4gICBkcml2ZXJzL210ZC9jaGlwcy9jZmlf
+Y21kc2V0XzAwMDIuYyB8IDc3ICsrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tCj4+ICAgMSBm
+aWxlIGNoYW5nZWQsIDMyIGluc2VydGlvbnMoKyksIDQ1IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210
+ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+PiBpbmRleCBhNzYxMTM0ZmQzYmUuLmU2OGRkZjBm
+N2ZjMCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMK
+Pj4gKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKPj4gQEAgLTgwMSwy
+MiArODAxLDEyIEBAIHN0YXRpYyBzdHJ1Y3QgbXRkX2luZm8gKmNmaV9hbWRzdGRfc2V0dXAoc3Ry
+dWN0IG10ZF9pbmZvICptdGQpCj4+ICAgCXJldHVybiBOVUxMOwo+PiAgIH0KPj4gICAKPj4gLS8q
+Cj4+IC0gKiBSZXR1cm4gdHJ1ZSBpZiB0aGUgY2hpcCBpcyByZWFkeS4KPj4gLSAqCj4+IC0gKiBS
+ZWFkeSBpcyBvbmUgb2Y6IHJlYWQgbW9kZSwgcXVlcnkgbW9kZSwgZXJhc2Utc3VzcGVuZC1yZWFk
+IG1vZGUgKGluIGFueQo+PiAtICogbm9uLXN1c3BlbmRlZCBzZWN0b3IpIGFuZCBpcyBpbmRpY2F0
+ZWQgYnkgbm8gdG9nZ2xlIGJpdHMgdG9nZ2xpbmcuCj4+IC0gKgo+PiAtICogTm90ZSB0aGF0IGFu
+eXRoaW5nIG1vcmUgY29tcGxpY2F0ZWQgdGhhbiBjaGVja2luZyBpZiBubyBiaXRzIGFyZSB0b2dn
+bGluZwo+PiAtICogKGluY2x1ZGluZyBjaGVja2luZyBEUTUgZm9yIGFuIGVycm9yIHN0YXR1cykg
+aXMgdHJpY2t5IHRvIGdldCB3b3JraW5nCj4+IC0gKiBjb3JyZWN0bHkgYW5kIGlzIHRoZXJlZm9y
+ZSBub3QgZG9uZQkocGFydGljdWxhcmx5IHdpdGggaW50ZXJsZWF2ZWQgY2hpcHMKPj4gLSAqIGFz
+IGVhY2ggY2hpcCBtdXN0IGJlIGNoZWNrZWQgaW5kZXBlbmRlbnRseSBvZiB0aGUgb3RoZXJzKS4K
+Pj4gLSAqLwo+PiAtc3RhdGljIGludCBfX3hpcHJhbSBjaGlwX3JlYWR5KHN0cnVjdCBtYXBfaW5m
+byAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAo+PiAtCQkJICAgICAgIHVuc2lnbmVkIGxvbmcg
+YWRkcikKPj4gK3N0YXRpYyBpbnQgX194aXByYW0gY2hpcF9jaGVjayhzdHJ1Y3QgbWFwX2luZm8g
+Km1hcCwgc3RydWN0IGZsY2hpcCAqY2hpcCwKPj4gKwkJCSAgICAgICB1bnNpZ25lZCBsb25nIGFk
+ZHIsIG1hcF93b3JkICpleHBlY3RlZCkKPj4gICB7Cj4+ICAgCXN0cnVjdCBjZmlfcHJpdmF0ZSAq
+Y2ZpID0gbWFwLT5mbGRydl9wcml2Owo+PiAtCW1hcF93b3JkIGQsIHQ7Cj4+ICsJbWFwX3dvcmQg
+b2xkZCwgY3VyZDsKPj4gKwlpbnQgcmV0Owo+PiAgIAo+PiAgIAlpZiAoY2ZpX3VzZV9zdGF0dXNf
+cmVnKGNmaSkpIHsKPj4gICAJCW1hcF93b3JkIHJlYWR5ID0gQ01EKENGSV9TUl9EUkIpOwo+PiBA
+QCAtODI2LDE3ICs4MTYsMzUgQEAgc3RhdGljIGludCBfX3hpcHJhbSBjaGlwX3JlYWR5KHN0cnVj
+dCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAo+PiAgIAkJICovCj4+ICAgCQlj
+Zmlfc2VuZF9nZW5fY21kKDB4NzAsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFydCwgbWFw
+LCBjZmksCj4+ICAgCQkJCSBjZmktPmRldmljZV90eXBlLCBOVUxMKTsKPj4gLQkJZCA9IG1hcF9y
+ZWFkKG1hcCwgYWRkcik7Cj4+ICsJCWN1cmQgPSBtYXBfcmVhZChtYXAsIGFkZHIpOwo+PiAgIAo+
+PiAtCQlyZXR1cm4gbWFwX3dvcmRfYW5kZXF1YWwobWFwLCBkLCByZWFkeSwgcmVhZHkpOwo+PiAr
+CQlyZXR1cm4gbWFwX3dvcmRfYW5kZXF1YWwobWFwLCBjdXJkLCByZWFkeSwgcmVhZHkpOwo+IEEg
+bG90IG9mIHRoZSBkaWZmIGlzIGp1c3QgYSByZW5hbWUuIEkgYW0gbm90IGFnYWluc3QgYSByZW5h
+bWUgaWYgeW91Cj4gZmVlbCBpdCdzIGJldHRlciwgYnV0IGluIHRoaXMgb3JkZXI6Cj4gMTogcHJl
+cGFyZSB0aGUgZml4Cj4gMjogZml4Cj4gMzogcmVuYW1lL2RlZmluZSBpZCdzLCB3aGF0ZXZlcgpU
+aGlzIGlzIGFsc28gZml4ZWQgYXMgc2FtZS4KPgo+PiAgIAl9Cj4+ICAgCj4+IC0JZCA9IG1hcF9y
+ZWFkKG1hcCwgYWRkcik7Cj4+IC0JdCA9IG1hcF9yZWFkKG1hcCwgYWRkcik7Cj4+ICsJb2xkZCA9
+IG1hcF9yZWFkKG1hcCwgYWRkcik7Cj4+ICsJY3VyZCA9IG1hcF9yZWFkKG1hcCwgYWRkcik7Cj4+
+ICsKPj4gKwlyZXQgPSBtYXBfd29yZF9lcXVhbChtYXAsIG9sZGQsIGN1cmQpOwo+PiAgIAo+PiAt
+CXJldHVybiBtYXBfd29yZF9lcXVhbChtYXAsIGQsIHQpOwo+PiArCWlmICghcmV0IHx8ICFleHBl
+Y3RlZCkKPj4gKwkJcmV0dXJuIHJldDsKPj4gKwo+PiArCXJldHVybiBtYXBfd29yZF9lcXVhbCht
+YXAsIGN1cmQsICpleHBlY3RlZCk7Cj4+ICAgfQo+PiAgIAo+PiArLyoKPj4gKyAqIFJldHVybiB0
+cnVlIGlmIHRoZSBjaGlwIGlzIHJlYWR5Lgo+PiArICoKPj4gKyAqIFJlYWR5IGlzIG9uZSBvZjog
+cmVhZCBtb2RlLCBxdWVyeSBtb2RlLCBlcmFzZS1zdXNwZW5kLXJlYWQgbW9kZSAoaW4gYW55Cj4+
+ICsgKiBub24tc3VzcGVuZGVkIHNlY3RvcikgYW5kIGlzIGluZGljYXRlZCBieSBubyB0b2dnbGUg
+Yml0cyB0b2dnbGluZy4KPj4gKyAqCj4+ICsgKiBOb3RlIHRoYXQgYW55dGhpbmcgbW9yZSBjb21w
+bGljYXRlZCB0aGFuIGNoZWNraW5nIGlmIG5vIGJpdHMgYXJlIHRvZ2dsaW5nCj4+ICsgKiAoaW5j
+bHVkaW5nIGNoZWNraW5nIERRNSBmb3IgYW4gZXJyb3Igc3RhdHVzKSBpcyB0cmlja3kgdG8gZ2V0
+IHdvcmtpbmcKPj4gKyAqIGNvcnJlY3RseSBhbmQgaXMgdGhlcmVmb3JlIG5vdCBkb25lCShwYXJ0
+aWN1bGFybHkgd2l0aCBpbnRlcmxlYXZlZCBjaGlwcwo+PiArICogYXMgZWFjaCBjaGlwIG11c3Qg
+YmUgY2hlY2tlZCBpbmRlcGVuZGVudGx5IG9mIHRoZSBvdGhlcnMpLgo+PiArICovCj4+ICsjZGVm
+aW5lIGNoaXBfcmVhZHkobWFwLCBjaGlwLCBhZGRyKSBjaGlwX2NoZWNrKG1hcCwgY2hpcCwgYWRk
+ciwgTlVMTCkKPiBJIGRvbid0IHNlZSB0aGUgcG9pbnQgb2Ygc3VjaCBhIGRlZmluZS4gSnVzdCBn
+ZXQgcmlkIG9mIGl0LgpZZXMgZGVsZXRlZCB0aGUgbWFjcm8gYXMgY2hhbmdlZCB0aGUgbmFtZSBj
+aGlwX2NoZWNrIHRvIGNoaXBfcmVhZHkgYW5kIAp0byB1c2Ugb25seSBjaGlwX3JlYWR5IHdpdGhv
+dXQgdGhlIG1hY3JvLgo+Cj4+ICsKPj4gICAvKgo+PiAgICAqIFJldHVybiB0cnVlIGlmIHRoZSBj
+aGlwIGlzIHJlYWR5IGFuZCBoYXMgdGhlIGNvcnJlY3QgdmFsdWUuCj4+ICAgICoKPj4gQEAgLTg1
+MiwzMiArODYwLDExIEBAIHN0YXRpYyBpbnQgX194aXByYW0gY2hpcF9yZWFkeShzdHJ1Y3QgbWFw
+X2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcCAqY2hpcCwKPj4gICAgKiBhcyBlYWNoIGNoaXAgbXVz
+dCBiZSBjaGVja2VkIGluZGVwZW5kZW50bHkgb2YgdGhlIG90aGVycykuCj4+ICAgICoKPj4gICAg
+Ki8KPj4gLXN0YXRpYyBpbnQgX194aXByYW0gY2hpcF9nb29kKHN0cnVjdCBtYXBfaW5mbyAqbWFw
+LCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAo+PiAtCQkJICAgICAgdW5zaWduZWQgbG9uZyBhZGRyLCBt
+YXBfd29yZCBleHBlY3RlZCkKPj4gLXsKPj4gLQlzdHJ1Y3QgY2ZpX3ByaXZhdGUgKmNmaSA9IG1h
+cC0+ZmxkcnZfcHJpdjsKPj4gLQltYXBfd29yZCBvbGRkLCBjdXJkOwo+PiAtCj4+IC0JaWYgKGNm
+aV91c2Vfc3RhdHVzX3JlZyhjZmkpKSB7Cj4+IC0JCW1hcF93b3JkIHJlYWR5ID0gQ01EKENGSV9T
+Ul9EUkIpOwo+PiAtCj4+IC0JCS8qCj4+IC0JCSAqIEZvciBjaGlwcyB0aGF0IHN1cHBvcnQgc3Rh
+dHVzIHJlZ2lzdGVyLCBjaGVjayBkZXZpY2UKPj4gLQkJICogcmVhZHkgYml0Cj4+IC0JCSAqLwo+
+PiAtCQljZmlfc2VuZF9nZW5fY21kKDB4NzAsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFy
+dCwgbWFwLCBjZmksCj4+IC0JCQkJIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOwo+PiAtCQljdXJk
+ID0gbWFwX3JlYWQobWFwLCBhZGRyKTsKPj4gLQo+PiAtCQlyZXR1cm4gbWFwX3dvcmRfYW5kZXF1
+YWwobWFwLCBjdXJkLCByZWFkeSwgcmVhZHkpOwo+PiAtCX0KPj4gLQo+PiAtCW9sZGQgPSBtYXBf
+cmVhZChtYXAsIGFkZHIpOwo+PiAtCWN1cmQgPSBtYXBfcmVhZChtYXAsIGFkZHIpOwo+PiAtCj4+
+IC0JcmV0dXJuCW1hcF93b3JkX2VxdWFsKG1hcCwgb2xkZCwgY3VyZCkgJiYKPj4gLQkJbWFwX3dv
+cmRfZXF1YWwobWFwLCBjdXJkLCBleHBlY3RlZCk7Cj4+IC19Cj4+ICsjZGVmaW5lIGNoaXBfZ29v
+ZChtYXAsIGNoaXAsIGFkZHIsIGV4cGVjdGVkKSBcCj4+ICsJKHsgXAo+PiArCQltYXBfd29yZCBk
+YXR1bSA9IGV4cGVjdGVkOyBcCj4+ICsJCWNoaXBfY2hlY2sobWFwLCBjaGlwLCBhZGRyLCAmZGF0
+dW0pOyBcCj4+ICsJfSkKPiBXaGF0IGlzIHRoaXMgZm9yPyBTYW1lIGhlcmUsIEkgZG9uJ3Qgc2Vl
+IHRoZSBwb2ludC4gUGxlYXNlIGdldCByaWQgb2YKPiBhbGwgdGhlc2UgdW5uZWNlc3NhcnkgaGVs
+cGVycyB3aGljaCBkbyBub3RoaW5nLCBiZXNpZGVzIGNvbXBsaWNhdGluZwo+IHVzZXIncyBsaWZl
+LgoKRml4ZWQgYXMgc2FtZS4KClJlZ2FyZHMsCklrZWdhbWkKCj4KPj4gICBzdGF0aWMgaW50IGdl
+dF9jaGlwKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25l
+ZCBsb25nIGFkciwgaW50IG1vZGUpCj4+ICAgewo+Cj4gVGhhbmtzLAo+IE1pcXXDqGwKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
+VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
