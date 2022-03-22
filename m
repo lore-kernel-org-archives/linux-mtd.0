@@ -4,54 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAB2EC433FE
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 08:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A90C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 10:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7pKsuFVPq/+KzVPM7SC8DHi+0qx3F2FquZO4cie87kA=; b=OsBp7J49WJs+kY
-	uJWkoXrzv8TwicGnYweRUeN34mUgu8ogPo6fQWQj43wwnNOYbOYSLwFI1C2s9PZlQZpYEEzUV8y8d
-	ym1gzf62APPZAxSVCrCr8OE9V51YEK0JfOTvJYbVrSI0IX/9HqARjCg4fkloErc10hzSIL9+YIsfm
-	qBnly1FhSiubT9pSUyM+GO0nanJ3GWUjoRV4/PVsFuZFgtNbC5/kfuoMFj6XaPEv0JnNrdSCP54Br
-	arZdx2ywu0j2Kgs+gWSN/19/hG61nrtv4Z8R+tebyL4MJCixzIM1jr4ja+CtFTIVgg5hVYX06JHeD
-	kE5gqtJZ6BUNdGWPLx2g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=EN5w/NiejisgyieoyoNMr6T+5hqswgNvYh7N16VdCW0=; b=uTCbZ5hoL8aTim
+	OoFE6KqdTQEHpAwREcNr18mbkz+y6m+eXI25eMBsmGK3S1P7ovPmxwhkel2uxsTQSl0v15BjjO+GP
+	7HXhANl4fl6uIIEPpFNsxftqNzziTfWUEdGu9wowxjtdcSGlJSIh/EtpJwUVlTG5kNeQg4lmMuy23
+	qRxTbNitjSwy/TNroe7i2zubaRplhm9LWfACPlq5EEVLbvIG7Z0GIVIpDud2xm3myljYFVa2DzymR
+	Q1qFV1gs1IApbxE9uUDD/6cfTTmbA8bZZ/xczD4ZyqoHt32yqWd5IB7I8HjNXabYo6z7i3qdivVJO
+	TAxAWvAr4tCsjj+WGIPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWaB7-00ATiU-CJ; Tue, 22 Mar 2022 08:47:45 +0000
-Received: from first.geanix.com ([116.203.34.67])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWaB1-00ATey-30
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 08:47:43 +0000
-Received: from skn-laptop.hadsten (_gateway [172.25.0.1])
- by first.geanix.com (Postfix) with ESMTPSA id F3229E44825;
- Tue, 22 Mar 2022 08:47:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
- t=1647938853; bh=iPPnFxlC9oSUFGhsR1kHV0zD+GTZbBI5UKS8frFrZZE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To;
- b=Cv1oAncaq8IqsdAs9yCLUtTda1zIsNYqhzEylKzwSdS478qo3UHXd7I0um/wNbNVl
- aXMZnAldFBJwKgfSxcqtvDPwFuVxkrgfGHg/jvLZDWIByOFai9ei5hREBv00NoCkez
- FHu9pmL4tZ+w3EfDwfjO0CUzeWPxufKlROZh8GK1AUaGG1fg1Gg++5tHfvSlUF7Vb9
- cchfvcq11keiWVy0xD6tGLL+ef5iuPULW2r9tlDq8J+slZ8OCP4KADVV1iBCRHBfVm
- fx+S/sluSFNZnDaYhz38LYplcsCV2Zsvsei/MXofAQHjCaA76/SPm68N478wvNfui6
- V2b46t6j+3LNg==
-Date: Tue, 22 Mar 2022 09:47:32 +0100
-From: Sean Nyekjaer <sean@geanix.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: sbabic@denx.de, frieder.schrempf@kontron.de, festevam@gmail.com,
- ye.li@nxp.com, peng.fan@nxp.com, u-boot@lists.denx.de,
- miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org, uboot-imx@nxp.com
-Subject: Re: [PATCH] mtd: gpmi: fix the gpmi bch setting unalignment issue
-Message-ID: <20220322084732.u6bfvjqcclmq6pyi@skn-laptop.hadsten>
-References: <20220321201834.28546-1-han.xu@nxp.com>
+	id 1nWbbp-00AhAM-3n; Tue, 22 Mar 2022 10:19:25 +0000
+Received: from edge01.meizu.com ([14.29.68.187] helo=mail.meizu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nWbbm-00Ah9s-8p
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 10:19:23 +0000
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail04.meizu.com
+ (172.16.1.16) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 22 Mar
+ 2022 18:13:10 +0800
+Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Tue, 22 Mar
+ 2022 18:13:06 +0800
+From: Haowen Bai <baihaowen@meizu.com>
+To: <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Haowen
+ Bai" <baihaowen@meizu.com>
+Subject: [PATCH] fs: ubifs: use NULL instead of using plain integer as pointer
+Date: Tue, 22 Mar 2022 18:13:04 +0800
+Message-ID: <1647943984-1646-1-git-send-email-baihaowen@meizu.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220321201834.28546-1-han.xu@nxp.com>
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220322_014739_464704_C91DAD2E 
-X-CRM114-Status: UNSURE (   9.38  )
+X-CRM114-CacheID: sfid-20220322_031922_635327_EC5752F6 
+X-CRM114-Status: UNSURE (   8.98  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,29 +64,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Han,
+This fixes the following sparse warnings:
+fs/ubifs/xattr.c:680:58: warning: Using plain integer as NULL pointer
 
-On Mon, Mar 21, 2022 at 03:18:34PM -0500, Han Xu wrote:
-> The code change fixed the kernel gpmi bch setting not aligned with
-> u-boot settings issue. It still uses the legacy bch geometry as the
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+---
+ fs/ubifs/xattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-AFAIK there is no merged changes in the kernel regarding this.
-The breaking change was done in u-boot.
+diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+index e4f193e..e4c4761 100644
+--- a/fs/ubifs/xattr.c
++++ b/fs/ubifs/xattr.c
+@@ -677,7 +677,7 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+ 	int err;
+ 
+ 	err = security_inode_init_security(inode, dentry, qstr,
+-					   &init_xattrs, 0);
++					   &init_xattrs, NULL);
+ 	if (err) {
+ 		struct ubifs_info *c = dentry->i_sb->s_fs_info;
+ 		ubifs_err(c, "cannot initialize security for inode %lu, error %d",
+-- 
+2.7.4
 
-> default option. If users need to choose the minimum ecc strength that
-> NAND chips required, it can be enabled by either adding DT flag
-> "fsl,use-minimum-ecc" or CONFIG_NAND_MXS_USE_MINIMUM_ECC in configs.
-
-Cool, then remember to remove the non used "fsl,legacy-bch-geometry"
-option.
-
-> 
-> Fixes: 51cdf83eea mtd: gpmi: provide the option to use legacy bch geometry
-> Signed-off-by: Han Xu <han.xu@nxp.com>
-
-I will have time to test this on thursday...
-
-/Sean
 
 ______________________________________________________
 Linux MTD discussion mailing list
