@@ -4,70 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8799DC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 07:33:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7D6EC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 22 Mar 2022 08:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sVnisDvn4Hgl+6wt63cjJkGgaK2KlO0oBASdMAcaP10=; b=3d6sXx7Pbiys/s
-	tCKj6IKW+a4QR4rMfFG38qjK9g/5cC/FzNt8B/aEgZHQsjAgjeYdwU5c195LWaLcsNf7GAMmKPa+d
-	fmQscJeFFxNsQjtwEyqvUBZVkuEDEyWMX+qihp6UvVKTPqYU4C9luLxIdBM1EI5Sbw7m3BIygPUA7
-	pxrlc5msVcQspyDDxQ53kQTQ4Ao6JKm1L5y8KWhqR8hH6NqHPxOCic0BSXlJ39VPc4gqn6nhOHQTJ
-	ggDu6L3fk5zA1rVKA2n8CXSn081hxIVkLcK7yMJZjkcP6mSWLSAIiXrkKSVfm8peNZ01Yl42zK+HY
-	yQB7YyQeG0fXvxbeSg7A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=vJDC8jNhH9IvbDPp2jgwRBy7qITzGCz5xj08mMNZUGo=; b=1hXPmSXkoqsUu+A64XilStSC+S
+	LYwOAuGobWk7lDQtEUWJ+WZGz0tAzE0ZBhLpWMmopM8hs7mSQMWn7mTEsXPAIOvQmREMDhxER7ThB
+	VIad2iXkBeA84V9WBpu2B15f7LDRqWoaYcp0t1Pq7dNk+0aVY7y5Rm90gqYwYsYom15tC/iIybESC
+	tcDrlfRi52+HcIk17YpZ2JNsqXv1jEfV+N7ReBjsdUZszWPI4cG5XAvndVLRMz7JQybVSh/OhLdqS
+	IW94vcEdcuV8Mysaadm4dvbmEbyhX8Mie8CcL2XWL+54QTmTqc3E3DpOuSxoKtPP61KYo4UgJh/1h
+	FpuRC1DA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nWZ06-00AHJC-4c; Tue, 22 Mar 2022 07:32:18 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nWZkC-00AMWb-JO; Tue, 22 Mar 2022 08:19:56 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nWZ02-00AHIj-PP
- for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 07:32:16 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22M7WBb2071859;
- Tue, 22 Mar 2022 02:32:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1647934331;
- bh=JRlgwQNcHIvUegKc8BpIBbPxG9WUaR3kB8dj7pMCOgs=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=ffbZOrVJS20wCouUKcklHHTF806Jh/BYhOrrG81p1RQNRi9pDuxDMYwuud9qMb1UZ
- W0s2YU8kPwaAm2IO1t0sNgcNuGAY0xsDtaZhMPGmQWAzx6DeIALDuhlyr310fRoazc
- OTQsXayAbGMveuqoxbaiGdyghCakYvkvzCuwso6k=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22M7WBIl001498
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 22 Mar 2022 02:32:11 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 22
- Mar 2022 02:32:11 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 22 Mar 2022 02:32:10 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22M7WAHg051389;
- Tue, 22 Mar 2022 02:32:10 -0500
-Date: Tue, 22 Mar 2022 13:02:09 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Michael Walle <michael@walle.cc>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>, 
- <richard@nod.at>, <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>
+ id 1nWZk9-00AMVH-Bt
+ for linux-mtd@lists.infradead.org; Tue, 22 Mar 2022 08:19:55 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id B891922246;
+ Tue, 22 Mar 2022 09:19:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1647937190;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=zL5MkQsCXafBeEg4aKfiJNR+gU4ZjIQei5uI3xDhyqM=;
+ b=IcLe4Q6SWVwEb14ZFt+QiDGekYS+efuPr2YDmu0dM1dZ26WDIPzNzE9jAHEXvVKU/V6qZx
+ ufRb3R3h4W9k/w+Q6jiCINPqdzMinTlIoBk7rPpsDg4fF0AK+HKvXKBgRR/2F2G+B1WaL+
+ 5zBm+Ky2Cu4ry60CQme34joM8k+T830=
+MIME-Version: 1.0
+Date: Tue, 22 Mar 2022 09:19:49 +0100
+From: Michael Walle <michael@walle.cc>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
 Subject: Re: [PATCH v2 4/8] mtd: spi-nor: core: Introduce method for RDID op
-Message-ID: <20220322073209.26m2udmftiaxxtcq@ti.com>
+In-Reply-To: <20220322073209.26m2udmftiaxxtcq@ti.com>
 References: <20220228111712.111737-1-tudor.ambarus@microchip.com>
  <20220228111712.111737-5-tudor.ambarus@microchip.com>
  <0bdbe6ad8f39996df6345bb249e4a2e8@walle.cc>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <0bdbe6ad8f39996df6345bb249e4a2e8@walle.cc>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ <20220322073209.26m2udmftiaxxtcq@ti.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <eca7100c7e6dacd9cb9e18b5bee3e2ab@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220322_003214_942326_9BBCFC00 
-X-CRM114-Status: GOOD (  34.72  )
+X-CRM114-CacheID: sfid-20220322_011953_593027_D43FF6D3 
+X-CRM114-Status: GOOD (  17.77  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,182 +70,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 21/03/22 11:56PM, Michael Walle wrote:
-> Am 2022-02-28 12:17, schrieb Tudor Ambarus:
-> > RDID is used in the core to auto detect the flash, but also by some
-> > manufacturer drivers that contain flashes that support Octal DTR mode,
-> > so that they can read the flash ID after the switch to Octal DTR was
-> > made
-> > to test if the switch was successful. Introduce a core method for RDID
-> > op
-> > to avoid code duplication.
+Am 2022-03-22 08:32, schrieb Pratyush Yadav:
+> On 21/03/22 11:56PM, Michael Walle wrote:
+>> Am 2022-02-28 12:17, schrieb Tudor Ambarus:
+>> > RDID is used in the core to auto detect the flash, but also by some
+>> > manufacturer drivers that contain flashes that support Octal DTR mode,
+>> > so that they can read the flash ID after the switch to Octal DTR was
+>> > made
+>> > to test if the switch was successful. Introduce a core method for RDID
+>> > op
+>> > to avoid code duplication.
+>> 
+>> Some or all? Is that specific to the flash or can we just check that
+>> readid works in spi_nor_octal_dtr_enable()? That way we could also
+>> just get rid of the proto parameter for the read_id because it can
+>> be called after we set the reg_proto.
 > 
-> Some or all? Is that specific to the flash or can we just check that
-> readid works in spi_nor_octal_dtr_enable()? That way we could also
-> just get rid of the proto parameter for the read_id because it can
-> be called after we set the reg_proto.
-
-It is specific to the flash. Not all flashes support RDID in 8D mode. 
-And the RDID command is also different in 8D mode for various flashes. 
-For example, Micron MT35XU512ABA flash expects 8 dummy cycles and 0 
-address cycles. Cypress S28HS512T expects 4 address cycles and 3 dummy 
-cycles.
-
-The octal_dtr_enable hook would know what parameters to use but it is 
-harder for the core to know since this information is not discoverable 
-via SFDP.
-
+> It is specific to the flash. Not all flashes support RDID in 8D mode.
+> And the RDID command is also different in 8D mode for various flashes.
+> For example, Micron MT35XU512ABA flash expects 8 dummy cycles and 0
+> address cycles. Cypress S28HS512T expects 4 address cycles and 3 dummy
+> cycles.
 > 
-> -michael
-> 
-> > 
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 58 ++++++++++++++++++++++++++------------
-> >  drivers/mtd/spi-nor/core.h |  9 ++++++
-> >  2 files changed, 49 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index b1d6fa65417d..281e3d25f74c 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -369,6 +369,41 @@ int spi_nor_write_disable(struct spi_nor *nor)
-> >  	return ret;
-> >  }
-> > 
-> > +/**
-> > + * spi_nor_read_id() - Read the JEDEC ID.
-> > + * @nor:	pointer to 'struct spi_nor'.
-> > + * @naddr:	number of address bytes to send. Can be zero if the
-> > operation
-> > + *		does not need to send an address.
-> > + * @ndummy:	number of dummy bytes to send after an opcode or address.
-> > Can
-> > + *		be zero if the operation does not require dummy bytes.
-> > + * @id:		pointer to a DMA-able buffer where the value of the JEDEC ID
-> > + *		will be written.
-> > + * @reg_proto:	the SPI protocol for register operation.
-> > + *
-> > + * Return: 0 on success, -errno otherwise.
-> > + */
-> > +int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-> > +		    enum spi_nor_protocol reg_proto)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (nor->spimem) {
-> > +		struct spi_mem_op op =
-> > +			SPI_NOR_READID_OP(naddr, ndummy, id, SPI_NOR_MAX_ID_LEN);
-> > +
-> > +		spi_nor_spimem_setup_op(nor, &op, reg_proto);
-> > +		ret = spi_mem_exec_op(nor->spimem, &op);
-> > +	} else {
-> > +		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-> > +						    SPI_NOR_MAX_ID_LEN);
-> > +	}
-> > +
-> > +	if (ret)
-> > +		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  /**
-> >   * spi_nor_read_sr() - Read the Status Register.
-> >   * @nor:	pointer to 'struct spi_nor'.
-> > @@ -1649,28 +1684,15 @@ static const struct flash_info
-> > *spi_nor_match_id(struct spi_nor *nor,
-> >  	return NULL;
-> >  }
-> > 
-> > -static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
-> > +static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
-> >  {
-> >  	const struct flash_info *info;
-> >  	u8 *id = nor->bouncebuf;
-> >  	int ret;
-> > 
-> > -	if (nor->spimem) {
-> > -		struct spi_mem_op op =
-> > -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
-> > -				   SPI_MEM_OP_NO_ADDR,
-> > -				   SPI_MEM_OP_NO_DUMMY,
-> > -				   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
-> > -
-> > -		ret = spi_mem_exec_op(nor->spimem, &op);
-> > -	} else {
-> > -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
-> > -						    SPI_NOR_MAX_ID_LEN);
-> > -	}
-> > -	if (ret) {
-> > -		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
-> > +	ret = spi_nor_read_id(nor, 0, 0, id, nor->reg_proto);
-> > +	if (ret)
-> >  		return ERR_PTR(ret);
-> > -	}
-> > 
-> >  	info = spi_nor_match_id(nor, id);
-> >  	if (!info) {
-> > @@ -2900,7 +2922,7 @@ static const struct flash_info
-> > *spi_nor_get_flash_info(struct spi_nor *nor,
-> >  		info = spi_nor_match_name(nor, name);
-> >  	/* Try to auto-detect if chip name wasn't specified or not found */
-> >  	if (!info) {
-> > -		detected_info = spi_nor_read_id(nor);
-> > +		detected_info = spi_nor_detect(nor);
-> >  		info = detected_info;
-> >  	}
-> >  	if (IS_ERR_OR_NULL(info))
-> > @@ -2913,7 +2935,7 @@ static const struct flash_info
-> > *spi_nor_get_flash_info(struct spi_nor *nor,
-> >  	if (name && !detected_info && info->id_len) {
-> >  		const struct flash_info *jinfo;
-> > 
-> > -		jinfo = spi_nor_read_id(nor);
-> > +		jinfo = spi_nor_detect(nor);
-> >  		if (IS_ERR(jinfo)) {
-> >  			return jinfo;
-> >  		} else if (jinfo != info) {
-> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> > index b7fd760e3b47..f952061d5c24 100644
-> > --- a/drivers/mtd/spi-nor/core.h
-> > +++ b/drivers/mtd/spi-nor/core.h
-> > @@ -11,6 +11,13 @@
-> > 
-> >  #define SPI_NOR_MAX_ID_LEN	6
-> > 
-> > +/* Standard SPI NOR flash operations. */
-> > +#define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
-> > +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 0),			\
-> > +		   SPI_MEM_OP_ADDR(naddr, 0, 0),			\
-> > +		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
-> > +		   SPI_MEM_OP_DATA_IN(len, buf, 0))
-> > +
-> >  enum spi_nor_option_flags {
-> >  	SNOR_F_HAS_SR_TB	= BIT(0),
-> >  	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
-> > @@ -534,6 +541,8 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
-> >  int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
-> >  int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
-> >  int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
-> > +int spi_nor_read_id(struct spi_nor *nor, u8 naddr, u8 ndummy, u8 *id,
-> > +		    enum spi_nor_protocol reg_proto);
-> >  int spi_nor_read_sr(struct spi_nor *nor, u8 *sr);
-> >  int spi_nor_sr_ready(struct spi_nor *nor);
-> >  int spi_nor_read_cr(struct spi_nor *nor, u8 *cr);
-> 
-> -- 
-> -michael
+> The octal_dtr_enable hook would know what parameters to use but it is
+> harder for the core to know since this information is not discoverable
+> via SFDP.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Ah, I see, thanks for clarification.
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
