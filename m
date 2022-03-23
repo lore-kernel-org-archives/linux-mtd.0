@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A3EAC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 23 Mar 2022 17:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EE3FC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 23 Mar 2022 17:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CBsUCxDirI4MyjIfdPVIsjdpiRrgxGR9stCFKKP6Efc=; b=EKpvAegjFfcLaD
-	gVlVLHMa0OKY7RgQEEfdRk76usduOb91a4W3REQ54EiJBJcX8gOuVW+bCkG+w0B8RoRLrPyjrVLjQ
-	VHR7KP9qKK20PHvThOyoel0I1YDn6A8wdfc3+XBKHqsi966sJriJ6hq+4AVExntcj9HQ44Np5u3TH
-	JeG7WsoV12Z+6eGzR3W43gUvdJfQsTltp3jVm2SWS8np6chjGpHH5XHGFxNKpjWW6HAuS59dbOSY+
-	VubvtYcHYIdL225bAx5me1xNsbl0xo2b9HXLF9e2LTZUpnPswsVeMS/fm3med6LNorWhcAJl5Odrl
-	dqZVNw9KdRAqPRWW0OiQ==;
+	List-Owner; bh=9okSJXL285A0FoAmDc2qNCDS1gxzfsYAQPQg3GfOcRg=; b=OU8kjEnZte389e
+	f2fzeWa8sa3+un2DkWuFCpqvHp3NYwkjpXrbUYuBJKS8ya1gIeWkxR+5XfHdjHwItQvY9f4KQWpIA
+	CDv6VXFealYZxxLOkwHzuAs7GJB8TCqHVzC17NJxw+gT2BVJnv2OQS35y/EqcwdlMAKr9vn35ZwHN
+	wy/JX6t1Y9JXDRm8R0LHar/q1IGLeQwqJmZ+7NzjG1XdLjWfepUCts4nHpTM7oobXGixh8xQSHEm3
+	SCUmwD/VXpJNG0nqxZXoStHsETgvSmf+nLdUsuR9BjytwFZaGxgVkuz6vDCRSHRmRovMp1li5JQIC
+	LxUQvANjjzfxqLWdavgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nX4Qm-00EM2P-2S; Wed, 23 Mar 2022 17:05:56 +0000
-Received: from mail-pj1-x1031.google.com ([2607:f8b0:4864:20::1031])
+	id 1nX4Qz-00EM6g-0p; Wed, 23 Mar 2022 17:06:09 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nX4Qd-00ELzw-0O
- for linux-mtd@lists.infradead.org; Wed, 23 Mar 2022 17:05:48 +0000
-Received: by mail-pj1-x1031.google.com with SMTP id
- mm17-20020a17090b359100b001c6da62a559so7001733pjb.3
- for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2022 10:05:46 -0700 (PDT)
+ id 1nX4Qj-00EM1Q-Ep
+ for linux-mtd@lists.infradead.org; Wed, 23 Mar 2022 17:05:54 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id t2so1942965pfj.10
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2022 10:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=j0NQxKjly0nqK+Zg1+EsccxDdb8ufucNliJsJwxIFJ0=;
- b=prws8a++CfCYy+SRJHWEh7Ymp9w/qToH2cGB0zjYf+gjd0sPurARKG27xeVAgJQgoC
- vrYPyqK5byJ3tK0Z3gN2r+VjccvJ+qldi/XpiF33yhJCJnLQ64it2WG9Z6tP49QcnjDI
- XR61y1GssqluEuH7alFu+kS1wmI9j0O6ACd7+VKfWyA0Orn2f5FSIZbnOLBGE4vPcqhg
- dDkE6Jx8SFGPLzJThfxxL+4gpSof+9bfGBkfVUHKk8a4Y013y7FNIkyOzr+rWgiyjHjO
- Hr9p9WJui8rmF4JFn5tjWZfB9DovGJ/hwxKNiKJu2Zq1QqEmJW9OFs/NcS+UUf/3yLJ7
- TtkA==
+ bh=GO6zjHowx42SMC6U+DIqwzUrunU8CwJJVzSOH2Jqjd0=;
+ b=lRcnbRusZjgOiJbhrZHfujb/U/pUZgu9oOIgxYi1AYglBYUbJDgHvbemsxkdEo1QJr
+ mQ+3RH1tWFydciSIskeKBDHubnAlKqG+Xz90e1mKpuInE8a+oFdNd5ZABhRd4o2xZWwu
+ wYq0KVBU73dIzxTQsjAQIWnveeBqSj+sO0pH+2jwaklZDX3MSW+uocp/3RYkiZYnBQMj
+ Ixz8VTGbhCjEWbxdjcUmk/t/7rpk4M4c75NTprSJIBYcDOk7qo6U6FGlviUI1QS+BoZi
+ 1nDgP5OhOIOWuTnilT5JsBb5+TEYFAIBmEPQGj9DUacAntL8xYawVfp3H8tEGJDXA93a
+ xS3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=j0NQxKjly0nqK+Zg1+EsccxDdb8ufucNliJsJwxIFJ0=;
- b=RX2X+7iQdKSoROIz/ln8ztwG6KzEjsiB0RswjoJTVKXzw6+haHR6IYSLUqhVxHJ2Rv
- uICXHgLrzlunYyvOoIXekUCOFu5tBDcN+Swv7zCoSF+jfI9NI9kJ0GpFWNDhFJnOBvcz
- 6zyzcDUDpOTbqAVLaPxzaetXLXuV7evdbpcRlAnBmz/+OzVTfVwS/QzTlbqB0vmSu9FZ
- WFq4MW52aVqoMZTio+UYxtE91C9P5lYcF1KAx7kghUiTiig8lZHkn2gp1K6meIwwrv15
- e6AI9jMhSR9X08M0XaXUtQmmJDLzDZRjO+kbsMNexOM77HL8jQmOV3Zty9LXjx+fSFFv
- XI2A==
-X-Gm-Message-State: AOAM533R99YAlF8wOxZhoGuBQ6XJaOoJR3fUkfj4BdyjnLOfklUaYAdV
- t39nQFvO3ZKzYFlI6iRC0V0=
-X-Google-Smtp-Source: ABdhPJyavhOhc68vPOjSQmiLvRTHEJ1YnjP/qDs3N0mllAfz/6eqUktOdN4Fl77ubfOyVDpi+miT0A==
-X-Received: by 2002:a17:90b:38c7:b0:1c7:6afb:fac6 with SMTP id
- nn7-20020a17090b38c700b001c76afbfac6mr734455pjb.198.1648055145760; 
- Wed, 23 Mar 2022 10:05:45 -0700 (PDT)
+ bh=GO6zjHowx42SMC6U+DIqwzUrunU8CwJJVzSOH2Jqjd0=;
+ b=yeb9gSOFv2WlBRI3SXl8xM9yrdeQBCczZcH4OfJ6Ds057AhqGuFQwm+y0hmAtHhRCU
+ SqzEcEQXsTnPKj6U172PrEtkt0JMy3pT0yaW0QJIR3oocycxMCqDvvGJUE6D1TLY6lv0
+ f7dJcI9G58zDtpvXkbjsdux0eRwy6wF1k2UF4kXhk7yOpuWxtjMkqB9pn0bsXgLMJvfG
+ RwtD1SUHaL14tr2gV73XRSusHW35+rKB+yKYQjuuX+6PJu4mveA6D48euPq73bN2AJuz
+ oOSa21RE3OzXYtZRp5RUgF49s0hkoVNR91ZTgtF9QjJVEWHSjsWLt2AoHv+fXYFbxmHY
+ Z9bg==
+X-Gm-Message-State: AOAM532DgqqPlrYmB9kU7E29DS1FqJePxPTb1jwaC8T+cgB6apBvt8oM
+ +cOPAJcGZkYABKhRUOhOQrk=
+X-Google-Smtp-Source: ABdhPJwlmYAKoRJ7Hi5vjXFDYxWaDAgibyXE9EvEG3JBPjXz8AKLY3E5mLUrrFcvFE8oyiIwzeVdrQ==
+X-Received: by 2002:a65:5247:0:b0:382:9715:44fe with SMTP id
+ q7-20020a655247000000b00382971544femr646234pgp.577.1648055152246; 
+ Wed, 23 Mar 2022 10:05:52 -0700 (PDT)
 Received: from tokunori-desktop.flets-east.jp
  ([240b:10:2720:5500:98c:eff5:b721:5f7b])
  by smtp.gmail.com with ESMTPSA id
- u12-20020a17090a890c00b001b8efcf8e48sm6649709pjn.14.2022.03.23.10.05.44
+ u12-20020a17090a890c00b001b8efcf8e48sm6649709pjn.14.2022.03.23.10.05.50
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Mar 2022 10:05:45 -0700 (PDT)
+ Wed, 23 Mar 2022 10:05:51 -0700 (PDT)
 From: Tokunori Ikegami <ikegami.t@gmail.com>
 To: miquel.raynal@bootlin.com
 Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- Tokunori Ikegami <ikegami.t@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH v7 2/4] mtd: cfi_cmdset_0002: Use chip_ready() for write on
- S29GL064N
-Date: Thu, 24 Mar 2022 02:04:56 +0900
-Message-Id: <20220323170458.5608-3-ikegami.t@gmail.com>
+ Tokunori Ikegami <ikegami.t@gmail.com>
+Subject: [PATCH v7 3/4] mtd: cfi_cmdset_0002: Add S29GL064N ID definition
+Date: Thu, 24 Mar 2022 02:04:57 +0900
+Message-Id: <20220323170458.5608-4-ikegami.t@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220323170458.5608-1-ikegami.t@gmail.com>
 References: <20220323170458.5608-1-ikegami.t@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220323_100547_084751_B606873B 
-X-CRM114-Status: GOOD (  20.48  )
+X-CRM114-CacheID: sfid-20220323_100553_531540_93690BA6 
+X-CRM114-Status: GOOD (  13.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,140 +90,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Since commit dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to
-check correct value") buffered writes fail on S29GL064N. This is
-because, on S29GL064N, reads return 0xFF at the end of DQ polling for
-write completion, where as, chip_good() check expects actual data
-written to the last location to be returned post DQ polling completion.
-Fix is to revert to using chip_good() for S29GL064N which only checks
-for DQ lines to settle down to determine write completion.
+It is for the model number 01, 02, V1 and V2.
 
-Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
 Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 42 +++++++++++++++++++++++------
- include/linux/mtd/cfi.h             |  1 +
- 2 files changed, 35 insertions(+), 8 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 9ccde90dc180..59334530dd46 100644
+index 59334530dd46..b31439e44435 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -59,6 +59,10 @@
- #define CFI_SR_WBASB		BIT(3)
- #define CFI_SR_SLSB		BIT(1)
+@@ -48,6 +48,7 @@
+ #define SST49LF040B		0x0050
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
++#define S29GL064N_MN12		0x0c01
  
-+enum cfi_quirks {
-+	CFI_QUIRK_DQ_TRUE_DATA = BIT(0),
-+};
-+
- static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
- #if !FORCE_WORD_WRITE
-@@ -436,6 +440,15 @@ static void fixup_s29ns512p_sectors(struct mtd_info *mtd)
- 		mtd->name);
+ /*
+  * Status Register bit description. Used by flash devices that don't
+@@ -445,7 +446,7 @@ static void fixup_quirks(struct mtd_info *mtd)
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 
+-	if (cfi->mfr == CFI_MFR_AMD && cfi->id == 0x0c01)
++	if (cfi->mfr == CFI_MFR_AMD && cfi->id == S29GL064N_MN12)
+ 		cfi->quirks |= CFI_QUIRK_DQ_TRUE_DATA;
  }
  
-+static void fixup_quirks(struct mtd_info *mtd)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+
-+	if (cfi->mfr == CFI_MFR_AMD && cfi->id == 0x0c01)
-+		cfi->quirks |= CFI_QUIRK_DQ_TRUE_DATA;
-+}
-+
- /* Used to fix CFI-Tables of chips without Extended Query Tables */
- static struct cfi_fixup cfi_nopri_fixup_table[] = {
- 	{ CFI_MFR_SST, 0x234a, fixup_sst39vf }, /* SST39VF1602 */
-@@ -474,6 +487,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
- #if !FORCE_WORD_WRITE
- 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers },
- #endif
-+	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_quirks },
- 	{ 0, 0, NULL }
- };
- static struct cfi_fixup jedec_fixup_table[] = {
-@@ -846,6 +860,18 @@ static int __xipram chip_ready(struct map_info *map, struct flchip *chip,
- 	return map_word_equal(map, t, *expected);
- }
- 
-+static int __xipram chip_good(struct map_info *map, struct flchip *chip,
-+			      unsigned long addr, map_word *expected)
-+{
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	map_word *datum = expected;
-+
-+	if (cfi->quirks & CFI_QUIRK_DQ_TRUE_DATA)
-+		datum = NULL;
-+
-+	return chip_ready(map, chip, addr, datum);
-+}
-+
- static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
- {
- 	DECLARE_WAITQUEUE(wait, current);
-@@ -1662,11 +1688,11 @@ static int __xipram do_write_oneword_once(struct map_info *map,
- 		}
- 
- 		/*
--		 * We check "time_after" and "!chip_ready" before checking
--		 * "chip_ready" to avoid the failure due to scheduling.
-+		 * We check "time_after" and "!chip_good" before checking
-+		 * "chip_good" to avoid the failure due to scheduling.
- 		 */
- 		if (time_after(jiffies, timeo) &&
--		    !chip_ready(map, chip, adr, &datum)) {
-+		    !chip_good(map, chip, adr, &datum)) {
- 			xip_enable(map, chip, adr);
- 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
- 			xip_disable(map, chip, adr);
-@@ -1674,7 +1700,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
- 			break;
- 		}
- 
--		if (chip_ready(map, chip, adr, &datum)) {
-+		if (chip_good(map, chip, adr, &datum)) {
- 			if (cfi_check_err_status(map, chip, adr))
- 				ret = -EIO;
- 			break;
-@@ -1942,18 +1968,18 @@ static int __xipram do_write_buffer_wait(struct map_info *map,
- 		}
- 
- 		/*
--		 * We check "time_after" and "!chip_ready" before checking
--		 * "chip_ready" to avoid the failure due to scheduling.
-+		 * We check "time_after" and "!chip_good" before checking
-+		 * "chip_good" to avoid the failure due to scheduling.
- 		 */
- 		if (time_after(jiffies, timeo) &&
--		    !chip_ready(map, chip, adr, &datum)) {
-+		    !chip_good(map, chip, adr, &datum)) {
- 			pr_err("MTD %s(): software timeout, address:0x%.8lx.\n",
- 			       __func__, adr);
- 			ret = -EIO;
- 			break;
- 		}
- 
--		if (chip_ready(map, chip, adr, &datum)) {
-+		if (chip_good(map, chip, adr, &datum)) {
- 			if (cfi_check_err_status(map, chip, adr))
- 				ret = -EIO;
- 			break;
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index fd1ecb821106..d88bb56c18e2 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -286,6 +286,7 @@ struct cfi_private {
- 	map_word sector_erase_cmd;
- 	unsigned long chipshift; /* Because they're of the same type */
- 	const char *im_name;	 /* inter_module name for cmdset_setup */
-+	unsigned long quirks;
- 	struct flchip chips[];  /* per-chip data structure for each chip */
- };
- 
+@@ -475,7 +476,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_AMD, 0x0056, fixup_use_secsi },
+ 	{ CFI_MFR_AMD, 0x005C, fixup_use_secsi },
+ 	{ CFI_MFR_AMD, 0x005F, fixup_use_secsi },
+-	{ CFI_MFR_AMD, 0x0c01, fixup_s29gl064n_sectors },
++	{ CFI_MFR_AMD, S29GL064N_MN12, fixup_s29gl064n_sectors },
+ 	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors },
+ 	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors },
+ 	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors },
 -- 
 2.32.0
 
