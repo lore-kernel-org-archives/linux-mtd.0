@@ -4,59 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD43FC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 25 Mar 2022 12:37:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E211DC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 25 Mar 2022 16:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=czuMcKMS6llGEknVGvZ0i7kY6DWEKC7I/k3VLMGUw2s=; b=qA0yWZpPcgZLer
-	g53mNBzbg4xYE8PKE2qpmDsaTEayfwkXtJvQyRFfuQwIZTY1hRJPufsKbuU+1c8YBxsoQrEpFVKo8
-	hSR3b6lBYpoOPAwGlz4Vi8wEt6Bfvw31e12eX6NH19fU+vtxJqA/ptlVQ9/XwGk/Np5S/ABVPAxTE
-	xV8QW446nQJOiqgJKOcO3C1MzI5aR0kM4y+8E9sMk3ZkOiygF8eEg8aIDGpDKXqqonloN0SEkFTHK
-	D41+QYiLYlwxtnjSYYSXRvUhxYrH1FxHjQWePLczOJqitOnnzMxk+kK7VCMXo3EHhoX9Mvd/CahW4
-	MCuWdLFntCQXXP4Q5D8A==;
+	List-Owner; bh=y3pkmtQgnCEWNEuGnQXjETQENy/jrIO8xrkN7F3Ofbk=; b=26/5ZFqXFdi5+e
+	VFmJGv12Xhi4Yg7FT1/z4aQw+X/QxQP0UBRGbEEY7xoDlDFJ70rtR18U0L5ZieOUvNxWmco99h5mz
+	0d9znArJUtgAz7ucuDqIymkUFaidW25e+oc0mtGcSmmT+andQhJvG72KQbQt2AVkBOsyTSrzCT8V0
+	O1IzATkM8ANXPegnUQQBIHJN9yA+VbywrTTE39y5XsgAS3v8sM8SHe7ZgbA/VphtT/zrAOAihTlNo
+	DveAkhMsdPUpaVq+L20oi/i43qDJrD2hcogtQSBN6jFjBGu0lfg3a1H1NRH+w+/SxTfTFSUxEOu/l
+	uIm4VhV2Xi1tdz4rzMFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nXjCM-00255y-Ee; Fri, 25 Mar 2022 12:37:46 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1nXmUh-002ZuS-Hh; Fri, 25 Mar 2022 16:08:55 +0000
+Received: from mail-oi1-f178.google.com ([209.85.167.178])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nXjC1-0024zx-L9
- for linux-mtd@lists.infradead.org; Fri, 25 Mar 2022 12:37:26 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 553E0B8282C;
- Fri, 25 Mar 2022 12:37:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AE87C340E9;
- Fri, 25 Mar 2022 12:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648211843;
- bh=aXm+/EMiPGTBOXkMG0o+LiBNARi0puGc3dM/fhCENmI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=digXl3nsnjDGSqWj6NnS6B8sWVQiVorkAFfMwLaFKXPKcBs19SILZwcL0i0h7NyXq
- dCunTb1FW5T2O+CUmcu8k9FQV7MB3XRrBR70oZL7jh85KVGSzgoEpKpDeQdPZ10R25
- HRoMUyyVY1kHTOjllhdaQNwOuBbSxnZLzsAz7QcMN/X5zC8vXqx76Y3RZ39eWKgLUh
- Y6swYLzPaIAPRCor7Gt67B9WgOpo3X9ypIvpw3mqSZdCcDa4WIGR73OSWzBgQThFx4
- cJP8gVwYdQw6Myso0T1AJn7VFak2kTUqXM7kllG77CxMgMpRtQP5g78Hus+OdJQTY2
- pjtEwI4jbDjGA==
-From: Roger Quadros <rogerq@kernel.org>
-To: miquel.raynal@bootlin.com,
-	robh+dt@kernel.org
-Cc: richard@nod.at, krzk@kernel.org, vigneshr@ti.com, kishon@ti.com, nm@ti.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v2 3/3] mtd: rawnand: omap_elm: Add compatible for AM64 ELM
-Date: Fri, 25 Mar 2022 14:37:07 +0200
-Message-Id: <20220325123707.22020-4-rogerq@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220325123707.22020-1-rogerq@kernel.org>
+ id 1nXmUe-002Zt3-AE
+ for linux-mtd@lists.infradead.org; Fri, 25 Mar 2022 16:08:53 +0000
+Received: by mail-oi1-f178.google.com with SMTP id t21so3738157oie.11
+ for <linux-mtd@lists.infradead.org>; Fri, 25 Mar 2022 09:08:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=9sA/f970KDSavuw4PIMPXAbVVLqXCkGAUp+7iPzZPx0=;
+ b=OjUktx4oOUbvVtFkjqA+sX7+gJHLinxfBl8gC+LqbWb9679uCzRHhyd/5NDVzCDQH1
+ pXlr6jV9H0C4secWUcODFsFMAwZD3to2zHZngmgdyDu6fcOg4UYhAd2gzIci1wUcNxjL
+ w2NgB5JZWE7G7p8QryXjHMggIHLb85qD0R0yQJafXGL+RcXrJVlE3bQbCUvjXoNorIaE
+ ZOVqCdTNdpjk7HAJfshy8lw7NvbUSiWKBhYO1PNqOsDcbjUuUgiVx67NrWWIsUtqBKGC
+ 6TlGAFhsVScMk2BWcWs8aDPbNkJsIdLmmFJNFiX+mWLWsAPmnzQBdYkJkGR+G6Tk4BQ6
+ QuSQ==
+X-Gm-Message-State: AOAM530tdL0/wEfaxMyFcz79fXCQOmFJ7R4AkjZTm8f/RGH6T8QYFU40
+ 26C9zOmbkWOp/qcnyoJvoA==
+X-Google-Smtp-Source: ABdhPJxF6ALjCXenejf52MCPlMm6FTUtmu7/0p4pfXpY9ef8Mc8C2iFjA8uk8ED3BfuODZKpfzHamQ==
+X-Received: by 2002:a05:6808:1592:b0:2d9:fd1a:1a69 with SMTP id
+ t18-20020a056808159200b002d9fd1a1a69mr10415399oiw.110.1648224530868; 
+ Fri, 25 Mar 2022 09:08:50 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ y3-20020a056870e50300b000d9be6436f1sm2708398oag.29.2022.03.25.09.08.49
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 25 Mar 2022 09:08:50 -0700 (PDT)
+Received: (nullmailer pid 4188975 invoked by uid 1000);
+ Fri, 25 Mar 2022 16:08:48 -0000
+From: Rob Herring <robh@kernel.org>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: nm@ti.com, vigneshr@ti.com, miquel.raynal@bootlin.com, kishon@ti.com,
+ krzk@kernel.org, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, devicetree@vger.kernel.org, richard@nod.at
+In-Reply-To: <20220325123707.22020-2-rogerq@kernel.org>
 References: <20220325123707.22020-1-rogerq@kernel.org>
+ <20220325123707.22020-2-rogerq@kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: ti,elm: Convert to yaml
+Date: Fri, 25 Mar 2022 11:08:48 -0500
+Message-Id: <1648224528.979879.4188974.nullmailer@robh.at.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220325_053725_864147_74CED643 
-X-CRM114-Status: GOOD (  10.37  )
+X-CRM114-CacheID: sfid-20220325_090852_374548_ECF92CAF 
+X-CRM114-Status: GOOD (  11.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,27 +82,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The AM64 SoC has the Error Locator Module. Add compatible id for it.
+On Fri, 25 Mar 2022 14:37:05 +0200, Roger Quadros wrote:
+> Convert elm.txt to ti,elm.yaml.
+> 
+> hwmod framework use is deprecated for new platforms
+> so mark it so.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/mtd/elm.txt | 16 -------
+>  .../devicetree/bindings/mtd/ti,elm.yaml       | 47 +++++++++++++++++++
+>  2 files changed, 47 insertions(+), 16 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/elm.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,elm.yaml
+> 
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- drivers/mtd/nand/raw/omap_elm.c | 1 +
- 1 file changed, 1 insertion(+)
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-diff --git a/drivers/mtd/nand/raw/omap_elm.c b/drivers/mtd/nand/raw/omap_elm.c
-index db105d9b560c..aa7f49c3f372 100644
---- a/drivers/mtd/nand/raw/omap_elm.c
-+++ b/drivers/mtd/nand/raw/omap_elm.c
-@@ -550,6 +550,7 @@ static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
- #ifdef CONFIG_OF
- static const struct of_device_id elm_of_match[] = {
- 	{ .compatible = "ti,am3352-elm" },
-+	{ .compatible = "ti,am64-elm" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, elm_of_match);
--- 
-2.17.1
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
+
+Full log is available here: https://patchwork.ozlabs.org/patch/1609419
+
+
+elm@0: 'clock-names', 'clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm/boot/dts/am437x-cm-t43.dt.yaml
+	arch/arm/boot/dts/am437x-gp-evm.dt.yaml
+	arch/arm/boot/dts/am437x-idk-evm.dt.yaml
+	arch/arm/boot/dts/am437x-sbc-t43.dt.yaml
+	arch/arm/boot/dts/am437x-sk-evm.dt.yaml
+	arch/arm/boot/dts/am43x-epos-evm.dt.yaml
 
 
 ______________________________________________________
