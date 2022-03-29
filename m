@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84CC5C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Mar 2022 14:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE14C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Mar 2022 14:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LoOSu0t/i/iOpDDVCY5R90ipBx4AongZp4SyzF0Yq/o=; b=CGB+ID4EMqG72f
-	xfv/6oGfMSLl6LO2uNYmLkDh/JdPyBL71PDOOJJYo2ALBAtlP5ErheeIZy2nZFZLaFh/Uo3AlWjka
-	OzBX/v7WiNx26zhCZ0JfxAGdSx02jXaPNEmqr6xEuL8Ej1a1av9/aqmWOhzqWi2RGxZed8t9qk8qP
-	un2vCRA0hI8H0I28K8bgs+WD5f8/mFdZul4eZMLwlKGS5vX1o5Jr+uoSguDyDDrsGIacyPQ6Xb9Qv
-	y1c+bJ3CuyG3Rbv62F5LgzpMJkM98RZ4MePgwaJqrmSkZhAlbNrgV1nVpz1VUSeV0TEMtEecPWSKl
-	BtOLCdDYXXbBp3gENRNw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7MnAKWH0/z5w0hgx8wx9R8qbw1ZhRMQllHEJ9U3RkdY=; b=Tq8aziSY3KvTAK
+	U7fqj2ndZsUfuXYprGEUfu4iB3EyW6YsafvDr6OpUt96K93NPno10Z6lEXNxw+ehUlXe1Q5L74KQ3
+	wXliWVppInhSl3X+qyJA5C0pu4ury1Md/P8tKUg3eCgltAalBkfk47XZ/ksMPekrE5YOSXyh6C2Pf
+	gkB3oozOKrZi+dtTVlNBjipb1rVm15/Lh2o+RXxhqGFAzeHrlfdH47+6GvWki2nwhBUu1e/BDbF2G
+	+g9r9r77Hu8i1eHmkfkp16f1FdYWJ1FeCfigQ+kFko5mhzjC+KmTaPNjQG2CX/jMGqovXoFZDylDD
+	6MQYOhzlqerNGKQyECQg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nZCP7-00CRRg-Eq; Tue, 29 Mar 2022 14:01:04 +0000
+	id 1nZCOy-00CRPo-NV; Tue, 29 Mar 2022 14:00:52 +0000
 Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nZCOv-00CRPA-Ea
+ id 1nZCOv-00CRP9-Ea
  for linux-mtd@lists.infradead.org; Tue, 29 Mar 2022 14:00:50 +0000
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d553:ff0a:6830:6bde])
  by baptiste.telenet-ops.be with bizsmtp
- id CE0h2701F49QC4401E0is4; Tue, 29 Mar 2022 16:00:44 +0200
+ id CE0i2700M49QC4401E0is9; Tue, 29 Mar 2022 16:00:44 +0200
 Received: from rox.of.borg ([192.168.97.57])
  by ramsan.of.borg with esmtps (TLS1.3) tls
  TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1nZCOn-007HIU-Ab; Tue, 29 Mar 2022 16:00:41 +0200
+ id 1nZCOn-007HIT-Rx; Tue, 29 Mar 2022 16:00:41 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
  (envelope-from <geert@linux-m68k.org>)
- id 1nZCOm-00CLAZ-Qe; Tue, 29 Mar 2022 16:00:40 +0200
+ id 1nZCOm-00CLAV-PA; Tue, 29 Mar 2022 16:00:40 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Vignesh Raghavendra <vigneshr@ti.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -46,16 +46,15 @@ To: Vignesh Raghavendra <vigneshr@ti.com>,
 Cc: Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
  linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
  Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 2/2] spi: rpc-if: Fix RPM imbalance in probe error path
-Date: Tue, 29 Mar 2022 16:00:39 +0200
-Message-Id: <1c78a1f447d019bb66b6e7787f520ae78821e2ae.1648562287.git.geert+renesas@glider.be>
+Subject: [PATCH 1/2] mtd: hyperbus: rpc-if: Fix RPM imbalance in probe error
+ path
+Date: Tue, 29 Mar 2022 16:00:38 +0200
+Message-Id: <d196bb5849843993557a9b10f3bd28a752e5e8e0.1648562287.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <d196bb5849843993557a9b10f3bd28a752e5e8e0.1648562287.git.geert+renesas@glider.be>
-References: <d196bb5849843993557a9b10f3bd28a752e5e8e0.1648562287.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220329_070049_689835_95273A17 
-X-CRM114-Status: GOOD (  11.71  )
+X-CRM114-CacheID: sfid-20220329_070049_692007_081C9EB5 
+X-CRM114-Status: GOOD (  11.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,33 +76,35 @@ If rpcif_hw_init() fails, Runtime PM is left enabled.
 Fixes: b04cc0d912eb80d3 ("memory: renesas-rpc-if: Add support for RZ/G2L")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-For the spi tree.
+For the mtd tree.
 
- drivers/spi/spi-rpc-if.c | 8 ++++++--
+ drivers/mtd/hyperbus/rpc-if.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-rpc-if.c b/drivers/spi/spi-rpc-if.c
-index fe82f3575df4f386..24ec1c83f379ceec 100644
---- a/drivers/spi/spi-rpc-if.c
-+++ b/drivers/spi/spi-rpc-if.c
-@@ -158,14 +158,18 @@ static int rpcif_spi_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
+index 6e08ec1d4f098c80..b70d259e48a7c728 100644
+--- a/drivers/mtd/hyperbus/rpc-if.c
++++ b/drivers/mtd/hyperbus/rpc-if.c
+@@ -134,7 +134,7 @@ static int rpcif_hb_probe(struct platform_device *pdev)
  
- 	error = rpcif_hw_init(rpc, false);
+ 	error = rpcif_hw_init(&hyperbus->rpc, true);
  	if (error)
 -		return error;
 +		goto out_disable_rpm;
  
- 	error = spi_register_controller(ctlr);
- 	if (error) {
- 		dev_err(&pdev->dev, "spi_register_controller failed\n");
--		rpcif_disable_rpm(rpc);
+ 	hyperbus->hbdev.map.size = hyperbus->rpc.size;
+ 	hyperbus->hbdev.map.virt = hyperbus->rpc.dirmap;
+@@ -145,8 +145,12 @@ static int rpcif_hb_probe(struct platform_device *pdev)
+ 	hyperbus->hbdev.np = of_get_next_child(pdev->dev.parent->of_node, NULL);
+ 	error = hyperbus_register_device(&hyperbus->hbdev);
+ 	if (error)
+-		rpcif_disable_rpm(&hyperbus->rpc);
 +		goto out_disable_rpm;
- 	}
- 
-+	return 0;
 +
++	return 0;
+ 
 +out_disable_rpm:
-+	rpcif_disable_rpm(rpc);
++	rpcif_disable_rpm(&hyperbus->rpc);
  	return error;
  }
  
