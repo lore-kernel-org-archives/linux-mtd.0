@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E49C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Mar 2022 09:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DB31C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Mar 2022 10:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
 	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
 	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
 	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YBiTQEacCvpYV+oSAqcF0fRRunAPkknxzu9O10akgTg=; b=Gnin/7q7m13iEGm4kgoJSSRc1p
-	crmqup4YDddoqYW58nJC2/lYuzDO1m544Euk9cJT0yspt8gIPTbFoMIuETPuP4qBUjE7GGI6c36kw
-	DBtUJRPtU7q9AQkgKFFYI2GfPYelNxdxkBPvGbQU7IbfCZkbjT1KkMhh0Q0JNJoTEN8GRMHka79TF
-	iV3BzvxrE2f163v8uM5Nv+JizdZC2ReaTYQ6fSUGrtwFh4X61E1VmECqhawfPUK22Cokt86u1uyLY
-	uT5dBo1CoWm3/Tzqe3oWGix4XtbEAGOL5lBlDnOVLWcMJVE6dWyUQIw4cFWp2SqY/+SZXjHUXHq3f
-	xwqahnMQ==;
+	bh=mHMKZTzB6f1mGUZUt6aCiZUOcuWz73bMre9rDxmvtUs=; b=4DzAqVmvY9SujZxJhirKHK9mP3
+	sk8sBeO2dsDWwJCJ53k2rxJQDUSlgdZJ3mqphdBlQOZ9+aTNiy+M4yDtLOJm/RIFaSthOJTMbr5ff
+	iyRnQtiBU+RoytZ5Uwj/hxr+2Y5ANbycFQtfBC/Ympu9SKR5VQRB2gSwkgGDrsNzP5Q+Peyq+knhh
+	oWa50EpLCi6wxQvATMRLtugCkGM92zqI8p1aBo7H6ax6Y8uBiFAFOpuP51XCKTa5tM/N+ZnqvPsp+
+	jOSCI0icuKrB+5qfqAYi3f23Nv8++qWYb/6JcJfXQk3vPxUOYm53LbS5O9NAU3ahKz64hH2eHt1Nf
+	tF3PazcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nZ8ac-00Bjjd-3i; Tue, 29 Mar 2022 09:56:38 +0000
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+	id 1nZ9Qc-00Brd9-DH; Tue, 29 Mar 2022 10:50:22 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nZ8aX-00Bjhc-Nh
- for linux-mtd@lists.infradead.org; Tue, 29 Mar 2022 09:56:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=k1; bh=pJFbieYuMliDkorM/V/PDbhfFVJI
- 4OfwO+V1QhjgIjI=; b=FTCfDTMel3Y0xfBFes0gT9fT1cbL485/LVqU1dPzzEIX
- 21iJL573t/oUpScLaRVSknihh7GZNAUreCGodX9U1P44S6Qv/CS4JWKX20C+Gsyr
- cdLnHadYSxGaOn6NzDhGY9/0wjy+kn567cy+XHOcT/rhhfoeHF8gsADLM6wPIVc=
-Received: (qmail 1736111 invoked from network); 29 Mar 2022 11:56:26 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
- authenticated); 29 Mar 2022 11:56:26 +0200
-X-UD-Smtp-Session: l3s3148p1@yf0ycVjbXKggAQnoAFHmAKNSQL+AeJes
-Date: Tue, 29 Mar 2022 11:56:26 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>,
- Dung Nguyen <dung.nguyen.zy@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] memory: renesas-rpc-if: Fix HF/OSPI data transfer in
- Manual mode
-Message-ID: <YkLXyoHnB3EucLnA@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>,
- Dung Nguyen <dung.nguyen.zy@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <ad6ef2af754c8163f825d3a199d64f910d63f802.1648545212.git.geert+renesas@glider.be>
+ id 1nZ9QQ-00BraL-9t; Tue, 29 Mar 2022 10:50:11 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4D4A7B81658;
+ Tue, 29 Mar 2022 10:50:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AD4AC340ED;
+ Tue, 29 Mar 2022 10:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1648551007;
+ bh=7ZLP9DUzWPlUi8XNl+MiJfBY6TO+lDRFlb4OqkVbP+o=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=j3aeKPgOMMv9OvqAvV0Tx3Svpt82Xxq7kEcPvCZSQvN1s7c/lQicWX0ulWamF8MDn
+ hGmkAdAvKgtMpMFH5K6USnmsvd2tV7Kd/aMSHZd+88jYs34/0qCvzIfLOVg5U/EcSI
+ BJHwezlJaJlV4mTAUrbwXsp40opfssrcKg+62P0EgDvTOnwbbXUDHA6LA7I6/4KPwY
+ tR0O7OQMMSRJ5m5woe+SN0OC5DVAde2jx1fVbHje9R41yQFuQl7u9INjsOIngIljr2
+ tEuklk0aJAio8HtBAGJ+K75SZbLllUV7sw8IrUU+A/Ypvz8Vmfws1Z0k0BqM8+0+8i
+ sR/3Ps4ukJ5fQ==
+Date: Tue, 29 Mar 2022 11:49:59 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
+Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-aspeed@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@aj.id.au>,
+ Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Tao Ren <rentao.bupt@gmail.com>
+Subject: Re: [PATCH v4 03/11] spi: spi-mem: Convert Aspeed SMC driver to
+ spi-mem
+Message-ID: <YkLkV2mvHJ/EyVMn@sirena.org.uk>
+References: <db2f4ec0-dffb-805b-ec5a-24bf724e8ab5@kaod.org>
 MIME-Version: 1.0
-In-Reply-To: <ad6ef2af754c8163f825d3a199d64f910d63f802.1648545212.git.geert+renesas@glider.be>
+In-Reply-To: <db2f4ec0-dffb-805b-ec5a-24bf724e8ab5@kaod.org>
+X-Cookie: Available while quantities last.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220329_025634_089718_A13CE60C 
-X-CRM114-Status: UNSURE (   9.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220329_035010_533248_A6B82FF3 
+X-CRM114-Status: GOOD (  12.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,67 +75,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7379446056164762089=="
+Content-Type: multipart/mixed; boundary="===============1290795299237558829=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 
---===============7379446056164762089==
+--===============1290795299237558829==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1HwUNj8StJmyV25U"
+	protocol="application/pgp-signature"; boundary="1574B9/rboLu0+nG"
 Content-Disposition: inline
 
 
---1HwUNj8StJmyV25U
-Content-Type: text/plain; charset=us-ascii
+--1574B9/rboLu0+nG
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+On Tue, Mar 29, 2022 at 10:56:49AM +0200, C=E9dric Le Goater wrote:
 
-thank you for this update!
+> This patchset was sent a bit early and commit 7f852ec58af6 ("mtd: aspeed-=
+smc:
+> improve probe resilience") was applied after which conflicts with the rem=
+oval
+> of the aspeed-smc.c file.
 
->   - Update comments to match changed code,
->   - Add explicit {read,write}l() for the 4/8 byte case, to increase
->     readability,
->   - Remove redundant break statements,
+> Would you prefer a rebase and resend ? on -rc2 when the tree is stabilize=
+d ?
 
-I really like these changes and have nothing more to add:
+A rebase on -rc1 (assuming the change makes it in there) would be good.
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-I also tested writing on R-Car V3U and V3M, so:
-
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-Happy hacking,
-
-   Wolfram
-
-
---1HwUNj8StJmyV25U
+--1574B9/rboLu0+nG
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmJC18YACgkQFA3kzBSg
-KbZIQRAAkuzVjLW2JAhysnb/w5LhrCW28JB4+nAMveqOktOY8nICtFIKcYMBzKPz
-8YPcWrsZw5vxhoO9U/QJLHGvqu1m2jcgVB5sQmHZK82PhBgHAWDH3bv01NCpau+C
-6FQdyfi9UO1BJmsezDi/gBpLwSuQDGdWSdVZ8C6NCUUxjsZwqCmzahupWSCgzgHN
-ZqI821Tl3L5P7ynMtgZ0C66ATZ62tmtLlG/Iby21e6VeEnIvrdu15G1v9GeqFScY
-MQg89w38h15ZkU/nKOIuULw4ZwGqdKpFrTFG/GsUaiG8/qkRpqE99IMouIqO2svQ
-aGqGDT8JCx1NE92uB357nAkgjywo2q3cZqFEH2brG7GREVUfhzrP2d4eJqnYDWbB
-lrjiYPMgaMtDLjlW0RqcbETFQGQDVlVqHgU3dGBmSGzHm2R1hanTAuoxwyNUTtVv
-3WxwDo91OP4RjS5QyY/6M2VE9nSyOSEY2XVB8pjw92OUoovU7CONwfIVgLm5FOcZ
-m0RBpwRWXgdU9P/+11OfvDJmVaREcMK/hi0OVvvi52Ynebq35JfHtsNUAkynCwM4
-1/81dieewJoPzABVqtuqzbSIktbaXFGCT1+kmaj+aRn1ywhoWKldmMGIm8lXKuvm
-rZCYovg8BEKzTx2oQjxn25byetZGGRCIcbSWu1i3CEB65piiFFU=
-=USGZ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJC5FcACgkQJNaLcl1U
+h9Brfwf/YGBbo7xm4jOlh2sAz+nAtFT+tL8ytILbSbuzuigt3u7EYOz51lPBDNM4
+fy5qaOoAnw1rZHWxKoqrBRO1thIoQ444umt+kmR6QJXMNBhWFXrTiD6qbGPJY7KX
+4eQi0MsHi4WLsXPdI91sHJuuWhgpvFe1adUqPKffqwTyMwCE+eTq7WB1pcbETEyP
+OOj2HsPanXwIwW2hHf6IoohKlWRzb/zMCFxX/xxYYGMyHM0iW3Cy4O39xId4v47I
+IKoe57VdcZwxv8kZs2Eivxz4JhXgwxBv9rVmECYMWnIPSDd39eVhRpPXnf4dIWRL
+qqD5BVycLj+WHh0Cfwo8129wxzde/g==
+=zub3
 -----END PGP SIGNATURE-----
 
---1HwUNj8StJmyV25U--
+--1574B9/rboLu0+nG--
 
 
---===============7379446056164762089==
+--===============1290795299237558829==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -145,5 +132,5 @@ ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
---===============7379446056164762089==--
+--===============1290795299237558829==--
 
