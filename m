@@ -4,66 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DB31C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 29 Mar 2022 10:51:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C9F9C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 29 Mar 2022 11:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mHMKZTzB6f1mGUZUt6aCiZUOcuWz73bMre9rDxmvtUs=; b=4DzAqVmvY9SujZxJhirKHK9mP3
-	sk8sBeO2dsDWwJCJ53k2rxJQDUSlgdZJ3mqphdBlQOZ9+aTNiy+M4yDtLOJm/RIFaSthOJTMbr5ff
-	iyRnQtiBU+RoytZ5Uwj/hxr+2Y5ANbycFQtfBC/Ympu9SKR5VQRB2gSwkgGDrsNzP5Q+Peyq+knhh
-	oWa50EpLCi6wxQvATMRLtugCkGM92zqI8p1aBo7H6ax6Y8uBiFAFOpuP51XCKTa5tM/N+ZnqvPsp+
-	jOSCI0icuKrB+5qfqAYi3f23Nv8++qWYb/6JcJfXQk3vPxUOYm53LbS5O9NAU3ahKz64hH2eHt1Nf
-	tF3PazcA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=rYUUEFlMzokkynbYuQjFdE6rTH4Qp0Pk0SrYijXMWBE=; b=2E3eKTGDSROYi6
+	sdxofmwzwxElxmE6VSUywUA7vgDsQbrC3v/VYikYMv5M5/JTWpUDbaIQYaCqWIynxTqsblWm2DVNi
+	oL5FexpnHnsJ/GWeEjWeVAe8O7bjaCVjm+6XwOlszgYT2NDYRWxkkTjeYbDCYMOlCzKkv6BCLDuxX
+	4IcT7i8xWdS1MCMwzPPiKei/bCOAjLfNOX9fiarkV6+xZIQxhn7MMOPNPc7rNribgxwrZARdXRdPT
+	hRPXfl0nIi2G6wPDKRc4aDAO9yipBHHPIXckmXeVuiWEow/7TgOH76N3yxa/frmpvvLxma5UGUcQX
+	AlOZzxP6udrD5I73xcgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nZ9Qc-00Brd9-DH; Tue, 29 Mar 2022 10:50:22 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1nZABe-00C0VR-Ct; Tue, 29 Mar 2022 11:38:58 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nZ9QQ-00BraL-9t; Tue, 29 Mar 2022 10:50:11 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4D4A7B81658;
- Tue, 29 Mar 2022 10:50:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AD4AC340ED;
- Tue, 29 Mar 2022 10:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648551007;
- bh=7ZLP9DUzWPlUi8XNl+MiJfBY6TO+lDRFlb4OqkVbP+o=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=j3aeKPgOMMv9OvqAvV0Tx3Svpt82Xxq7kEcPvCZSQvN1s7c/lQicWX0ulWamF8MDn
- hGmkAdAvKgtMpMFH5K6USnmsvd2tV7Kd/aMSHZd+88jYs34/0qCvzIfLOVg5U/EcSI
- BJHwezlJaJlV4mTAUrbwXsp40opfssrcKg+62P0EgDvTOnwbbXUDHA6LA7I6/4KPwY
- tR0O7OQMMSRJ5m5woe+SN0OC5DVAde2jx1fVbHje9R41yQFuQl7u9INjsOIngIljr2
- tEuklk0aJAio8HtBAGJ+K75SZbLllUV7sw8IrUU+A/Ypvz8Vmfws1Z0k0BqM8+0+8i
- sR/3Ps4ukJ5fQ==
-Date: Tue, 29 Mar 2022 11:49:59 +0100
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
-Cc: linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-aspeed@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@aj.id.au>,
- Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Tao Ren <rentao.bupt@gmail.com>
-Subject: Re: [PATCH v4 03/11] spi: spi-mem: Convert Aspeed SMC driver to
- spi-mem
-Message-ID: <YkLkV2mvHJ/EyVMn@sirena.org.uk>
-References: <db2f4ec0-dffb-805b-ec5a-24bf724e8ab5@kaod.org>
+ id 1nZABa-00C0TT-MT; Tue, 29 Mar 2022 11:38:56 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22TBciHg083594;
+ Tue, 29 Mar 2022 06:38:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1648553925;
+ bh=CdYAIN7XqvtYBdmOgn+vkwITmsTrcIGAWqJUkyEBR7Q=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=ytRO/G113p9ql61f/Y/RfElo9oNxC2sqM9KBhDR+NJs9dN1l4W7UF7H2xg4/bVPpZ
+ YbhELC4A0W6j84wa4LC69pR+k9IZzuYyidi1KCb/35B7agKsSK/O+CznkBmxUfxgob
+ bDc6xMZyiDuVICQ0g80U61dIP1yAOzxNb6shmbfM=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22TBci8E094771
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 29 Mar 2022 06:38:44 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 29
+ Mar 2022 06:38:44 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 29 Mar 2022 06:38:44 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22TBchVA051849;
+ Tue, 29 Mar 2022 06:38:44 -0500
+Date: Tue, 29 Mar 2022 17:08:43 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Vignesh Raghavendra <vigneshr@ti.com>
+CC: Julia Lawall <julia.lawall@inria.fr>, <kbuild-all@lists.01.org>,
+ <linux-arm-kernel@lists.infradead.org>, Amit Kumar Mahapatra
+ <amit.kumar-mahapatra@xilinx.com>, Michal Simek <monstr@monstr.eu>, Tudor
+ Ambarus <tudor.ambarus@microchip.com>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: fix minmax.cocci warnings
+Message-ID: <20220329113843.nngzktxoa6c5vxcw@ti.com>
+References: <alpine.DEB.2.22.394.2203260929310.3141@hadrien>
+ <9a20ed24-be9d-bbec-19da-56c0ff68cbda@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <db2f4ec0-dffb-805b-ec5a-24bf724e8ab5@kaod.org>
-X-Cookie: Available while quantities last.
+Content-Disposition: inline
+In-Reply-To: <9a20ed24-be9d-bbec-19da-56c0ff68cbda@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220329_035010_533248_A6B82FF3 
-X-CRM114-Status: GOOD (  12.35  )
+X-CRM114-CacheID: sfid-20220329_043854_880430_7C95AE02 
+X-CRM114-Status: GOOD (  17.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,62 +81,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1290795299237558829=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 28/03/22 11:28AM, Vignesh Raghavendra wrote:
+> Hi.
+> 
+> On 26/03/22 2:00 pm, Julia Lawall wrote:
+> > From: kernel test robot <lkp@intel.com>
+> > 
+> > Use min to simplify the code.
+> > 
+> > Generated by: scripts/coccinelle/misc/minmax.cocci
+> > 
+> > Fixes: 2747bc2106aa ("mtd: spi-nor: Add dual parallel and stacked mode support")
+> > CC: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> > ---
+> > 
+> > tree:   https://github.com/Xilinx/linux-xlnx xlnx_rebase_v5.15_LTS
+> > head:   1870e0fa79a9d58c6748c34550f3ccea0b515933
+> > commit: 2747bc2106aa429773d9a932c799aa6229595148 [840/1029] mtd: spi-nor: Add dual parallel and stacked mode support
+> > :::::: branch date: 34 hours ago
+> > :::::: commit date: 8 weeks ago
+> > 
+> >  drivers/mtd/spi-nor/core.c |    5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > 
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -2034,10 +2034,7 @@ static int spi_nor_read(struct mtd_info
+> >  						(offset << nor->shift);
+> >  			}
+> >  		}
+> > -		if (len < rem_bank_len)
+> > -			read_len = len;
+> > -		else
+> > -			read_len = rem_bank_len;
+> > +		read_len = min(len, rem_bank_len);
+> 
+> This chunk does not exist in mainline. Seems like xlnx local changes.
 
---===============1290795299237558829==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1574B9/rboLu0+nG"
-Content-Disposition: inline
+Yes. I was very confused for a bit until I realized. It would be nice if 
+upstream maintainers and mailing lists were not Cced if the patch does 
+not target the mainline branch.
 
-
---1574B9/rboLu0+nG
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 29, 2022 at 10:56:49AM +0200, C=E9dric Le Goater wrote:
-
-> This patchset was sent a bit early and commit 7f852ec58af6 ("mtd: aspeed-=
-smc:
-> improve probe resilience") was applied after which conflicts with the rem=
-oval
-> of the aspeed-smc.c file.
-
-> Would you prefer a rebase and resend ? on -rc2 when the tree is stabilize=
-d ?
-
-A rebase on -rc1 (assuming the change makes it in there) would be good.
-
---1574B9/rboLu0+nG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJC5FcACgkQJNaLcl1U
-h9Brfwf/YGBbo7xm4jOlh2sAz+nAtFT+tL8ytILbSbuzuigt3u7EYOz51lPBDNM4
-fy5qaOoAnw1rZHWxKoqrBRO1thIoQ444umt+kmR6QJXMNBhWFXrTiD6qbGPJY7KX
-4eQi0MsHi4WLsXPdI91sHJuuWhgpvFe1adUqPKffqwTyMwCE+eTq7WB1pcbETEyP
-OOj2HsPanXwIwW2hHf6IoohKlWRzb/zMCFxX/xxYYGMyHM0iW3Cy4O39xId4v47I
-IKoe57VdcZwxv8kZs2Eivxz4JhXgwxBv9rVmECYMWnIPSDd39eVhRpPXnf4dIWRL
-qqD5BVycLj+WHh0Cfwo8129wxzde/g==
-=zub3
------END PGP SIGNATURE-----
-
---1574B9/rboLu0+nG--
-
-
---===============1290795299237558829==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1290795299237558829==--
-
