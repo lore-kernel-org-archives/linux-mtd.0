@@ -4,75 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22A1DC4332F
-	for <linux-mtd@archiver.kernel.org>; Wed, 30 Mar 2022 19:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FFB7C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 30 Mar 2022 20:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=A9X+kSPuLgz4bv/NK7g7SJN/yOHdNFx8SP5s7FxoFTA=; b=yEXRHSiZ2ldehj
-	J433igHml0RuXFbqu3OgiyxTzzT7ErRPibrUA/ZYzaUNhlciTsXStHDVztu0jHKthXunsH+zQjU6D
-	WH5OeOj9wt0qCg9y//Jwx99PhUinLwjvaNwxO1UCeINmue7Xlgq+u2vb1fvs9xVc3lrfQgvlKsGDZ
-	aALRie23/OSOXjjvkseD6QmoiAKLgn0oqIfJHU4lnHZRjtycm5xjj85LtNMms3N42CMUuKGSR9xL6
-	K7fELPMYhPVAivPpjKrdj5zlP1Z4AumhWHDOZ5ETdTCkqSAOyj71HV/2UrKOJXVSSeXoVmkj3lm9b
-	VFDEhZL6+9gOGveX+m/g==;
+	List-Owner; bh=lHLIP3vwQBIEnUDrK6QN6E5LqF/rKecAtDt3+1JiKio=; b=KXbGWhopDUcYXl
+	UKAOZ1/8g+Pb9h26AEGfOWrnxHy3OnPb56aTANq8crcEmN1AqxNWaEwJiQoo+cGsGvin4TWKT6cuv
+	Fq6BYm0Uvbb5yNJGGg4rnxntnTemhnHf9JtlF9lJyIpYP6tUOx1IbKDyFS5nl1K6EbQLjoBlypHH5
+	Ay+AvImqI3b0daxoae7o+dP+t4w2OWQGiOMwaMqhxqj2EviumAGod2x5Wy5WqyZOx81TkjGm7+D+D
+	PQ+jOZkmC4FR8cQUBt+EErh4ZkpUOBZVhhIFcCg6xmycmwjEOISezSuCASxugi1FQYIu4yA0ISpE3
+	wC5vdnkCVu07Xj54i/Aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nZeK5-00HMw6-LT; Wed, 30 Mar 2022 19:49:41 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1nZeTo-00HOE6-Rc; Wed, 30 Mar 2022 19:59:44 +0000
+Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nZeK2-00HMvU-IK; Wed, 30 Mar 2022 19:49:40 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22UJnIgw086057;
- Wed, 30 Mar 2022 14:49:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1648669758;
- bh=Wxy1IwTpIUIfVJGOAq2NOfEI+2cbw3VlSeZRH56rW8M=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=UoJPVuBNI8m/ixKDfQugawBpaOyrVQYZLFWOFD03gjpDJlBPH8cKwO37t+M19l5Yl
- Gmw6vNhEwLZqW4oe0dd9YnxdBahdOAzLBgLXZP/Xak8DUjosIBS0Nskfe3kmxhzSgx
- E7banJMetcx2zpdREZKEf30l5/Vzffhy9CIelmNE=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22UJnIw9062750
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 30 Mar 2022 14:49:18 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 30
- Mar 2022 14:49:18 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 30 Mar 2022 14:49:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22UJnHrB010599;
- Wed, 30 Mar 2022 14:49:17 -0500
-Date: Thu, 31 Mar 2022 01:19:16 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
-CC: <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Mark Brown
- <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, <linux-aspeed@lists.ozlabs.org>,
- Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
- Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
- <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- Potin Lai <potin.lai@quantatw.com>
-Subject: Re: [PATCH v4 11/11] mtd: spi-nor: aspeed: set the decoding size to
- at least 2MB for AST2600
-Message-ID: <20220330194916.olffkctxjhfqksvf@ti.com>
-References: <20220325100849.2019209-1-clg@kaod.org>
- <20220325100849.2019209-12-clg@kaod.org>
+ id 1nZeTh-00HOBb-Aw
+ for linux-mtd@lists.infradead.org; Wed, 30 Mar 2022 19:59:38 +0000
+Received: by mail-io1-xd30.google.com with SMTP id p21so12145352ioj.4
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Mar 2022 12:59:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=gC0uk57Ku0uf244iRsCcqiEQThdW6a3NXZ/6v4Rmslw=;
+ b=ma04PNC7uu8gYiv38NUXP7EYl5caBKgorkoA48dW8JgXzkLJX7Vfuf2XgflqVpTpxs
+ 6RRV6XZrHp8mCE+PKM68b/yfYdg+FM2YLRxqB7BWpB7oHFqJDOGLBSJgFWYusBcqyuNq
+ D78z7z+felPE8JjEegH+BTHnm6foOC0JbcVLmTTsqAQCRCQqaz9aLq1Qr6etLCCPNrFP
+ TxADqRha/MBQ/ueTTRPc/qBuqv5mq9AQHzspNn1tfTJt2YoLTXVuCUOJS9T1qCY0Pxa8
+ qmxejgtkTnXfy1GbjYzQJDLWmrnFDEaXl4bEam+GSqiWv5jLjeFXuSopWpCgZ9lOk96w
+ ulCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gC0uk57Ku0uf244iRsCcqiEQThdW6a3NXZ/6v4Rmslw=;
+ b=uURHdZSdsfozthWuV4IXWaJlyoP/i2jIn4znJ4J4DSnhlEZidkbYqNsjcUpNloYkgs
+ 0PVV+7Reo5kEcINOPVOEdCkDclnURYv0tw6Y9J1HusZ+YqTqtD4WYFA2C3qAHMTghscJ
+ 1UrbauHojtExh0b/yWiLMvdY9L/+iuAXbso0hVVgASYHcz0INx+hQPZmi02lKGqM6Wo7
+ kq9sgs2A76zoIbj84s6wEFfTFQmEwHJcMSRB1Wm/vjnsKnVi5BOR3oINVm5j+ZnCb5rV
+ 8EAYQWDlxwqnFNUPD06jLg4DurdkET64Kf7zyLOn9tCfcOcNVEsJ+01JdbharpzhTvf2
+ 7Omw==
+X-Gm-Message-State: AOAM531cyx/IsOnaXO4r2dW1NAbu6Dw/BzLWBUOyz4bZ6my3s1xjbsIy
+ pFkdY6oEH48OM8Q4qHlrsJ7DFkCJwfmcJFdK69O6uQ==
+X-Google-Smtp-Source: ABdhPJwUv2J6SmfQenhMgf3tkXJDaqsUVYxZOa3k+udE9+yPKzytM1W9PNBunHZXT6YsxYz87vKM4BGt3ZmgsQAF0xM=
+X-Received: by 2002:a5d:9c0f:0:b0:645:bc04:fd5 with SMTP id
+ 15-20020a5d9c0f000000b00645bc040fd5mr12651956ioe.28.1648670372176; Wed, 30
+ Mar 2022 12:59:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220325100849.2019209-12-clg@kaod.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20220207163409.19c3bc4c@xps13>
+ <20220330182816.1177341-1-jmeurin@google.com>
+In-Reply-To: <20220330182816.1177341-1-jmeurin@google.com>
+From: Jean-Marc Eurin <jmeurin@google.com>
+Date: Wed, 30 Mar 2022 12:59:21 -0700
+Message-ID: <CAL3wywXEdgL=NepfinTx_WdbKpDPowuDjuTEGSYPc6hRTLJTiw@mail.gmail.com>
+Subject: Re: [PATCH] Fix the size of the header read buffer.
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220330_124938_725625_F64B4E6E 
-X-CRM114-Status: GOOD (  22.50  )
+X-CRM114-CacheID: sfid-20220330_125937_408004_AAE26251 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,96 +78,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-> Subject: [PATCH v4 11/11] mtd: spi-nor: aspeed: set the decoding size to =
-at least 2MB for AST2600
-
-Nitpick: s/mtd: spi-nor: aspeed:/spi: aspeed:/
-
-On 25/03/22 11:08AM, C=E9dric Le Goater wrote:
-> From: Potin Lai <potin.lai@quantatw.com>
-> =
-
-> In AST2600, the unit of SPI CEx decoding range register is 1MB, and end
-> address offset is set to the acctual offset - 1MB. If the flash only has
-> 1MB, the end address will has same value as start address, which will
-> causing unexpected errors.
-> =
-
-> This patch set the decoding size to at least 2MB to avoid decoding errors.
-> =
-
-> Tested:
-> root@bletchley:~# dmesg | grep "aspeed-smc 1e631000.spi: CE0 window"
-> [   59.328134] aspeed-smc 1e631000.spi: CE0 window resized to 2MB (AST260=
-0 Decoding)
-> [   59.343001] aspeed-smc 1e631000.spi: CE0 window [ 0x50000000 - 0x50200=
-000 ] 2MB
-> root@bletchley:~# devmem 0x1e631030
-> 0x00100000
-> =
-
-> Signed-off-by: Potin Lai <potin.lai@quantatw.com>
-> [ clg : Ported on new spi-mem driver ]
-> Signed-off-by: C=E9dric Le Goater <clg@kaod.org>
+On Wed, Mar 30, 2022 at 11:28 AM Jean-Marc Eurin <jmeurin@google.com> wrote:
+>
+> The read buffer size depends on the MTDOOPS_HEADER_SIZE.
+>
+> Tested: Changed the header size, it doesn't panic, header is still
+> read/written correctly.
+>
+> Signed-off-by: Jean-Marc Eurin <jmeurin@google.com>
 > ---
->  drivers/spi/spi-aspeed-smc.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> =
+>  drivers/mtd/mtdoops.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> index 227df24387df..09a26747f490 100644
+> --- a/drivers/mtd/mtdoops.c
+> +++ b/drivers/mtd/mtdoops.c
+> @@ -223,7 +223,7 @@ static void find_next_position(struct mtdoops_context *cxt)
+>  {
+>         struct mtd_info *mtd = cxt->mtd;
+>         int ret, page, maxpos = 0;
+> -       u32 count[2], maxcount = 0xffffffff;
+> +       u32 count[MTDOOPS_HEADER_SIZE/sizeof(u32)], maxcount = 0xffffffff;
+>         size_t retlen;
+>
+>         for (page = 0; page < cxt->oops_pages; page++) {
+> --
+> 2.35.0.rc2.247.g8bbb082509-goog
+>
 
-> diff --git a/drivers/spi/spi-aspeed-smc.c b/drivers/spi/spi-aspeed-smc.c
-> index 660451667a39..227797e13997 100644
-> --- a/drivers/spi/spi-aspeed-smc.c
-> +++ b/drivers/spi/spi-aspeed-smc.c
-> @@ -466,6 +466,8 @@ static int aspeed_spi_set_window(struct aspeed_spi *a=
-spi,
->   *   is correct.
->   */
->  static const struct aspeed_spi_data ast2500_spi_data;
-> +static const struct aspeed_spi_data ast2600_spi_data;
-> +static const struct aspeed_spi_data ast2600_fmc_data;
->  =
+Sorry, please ignore this duplicate patch/email.
 
->  static int aspeed_spi_chip_adjust_window(struct aspeed_spi_chip *chip,
->  					 u32 local_offset, u32 size)
-> @@ -489,6 +491,17 @@ static int aspeed_spi_chip_adjust_window(struct aspe=
-ed_spi_chip *chip,
->  			 chip->cs, size >> 20);
->  	}
->  =
-
-> +	/*
-> +	 * The decoding size of AST2600 SPI controller should set at
-> +	 * least 2MB.
-> +	 */
-> +	if ((aspi->data =3D=3D &ast2600_spi_data || aspi->data =3D=3D &ast2600_=
-fmc_data) &&
-> +	    size < SZ_2M) {
-> +		size =3D SZ_2M;
-> +		dev_info(aspi->dev, "CE%d window resized to %dMB (AST2600 Decoding)",
-> +			 chip->cs, size >> 20);
-> +	}
-> +
->  	aspeed_spi_get_windows(aspi, windows);
->  =
-
->  	/* Adjust this chip window */
-> -- =
-
-> 2.34.1
-> =
-
-
--- =
-
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Jean-Marc
 
 ______________________________________________________
 Linux MTD discussion mailing list
