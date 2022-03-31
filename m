@@ -4,70 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE6EC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Mar 2022 19:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C4FBC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 31 Mar 2022 21:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mUqz6aSakbIq1TaQ52tuYT1hCQusI9+a9DApf5s2U6Y=; b=xiyBQcBVaFsXOf
-	TC0KIDRK4HE4cimvv7N44d4S4emnhxwcAssXPChAPS9YHAnoEI4rO/flzpshToON2QPlRqabyWeGp
-	jnGqmGIV94r1WC/u8oqfNAVTdW1UU8sGdMVjFpb4UoFo06y/ApWrmdOlTSFr9V2AJayCOIujSw9aP
-	6Vl1CZwweRL+uNwcWTXlXGO9OmZkucBKGJsMgEMGBDQzzqMFj5aFn1QREsCFAIXysNclZb72tL5v1
-	fXKnK0dn/SKpiwCHae6S1lSl62gFNQ+78K4Q+ICdI9zjtrS7C4CsgnP/hmSazdPutPQiLxQ5AJtTt
-	kNzthunurCp+raTjxfmw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=R80qKOHfKE6oZmShHjVZLb9OeCZnQwo8cxS0s+EXFTI=; b=HZzI4m0qSpKOJo
+	gjfSbnbEyRtkdRvgg8lgDOSYulCi0+buReOubkLpP31jFlLBb9pD6lTvZl0TMzysZZ5fEECdhv7q4
+	2ubG6FXI1SC229vUCT5IZ9fEkAWr58upRcQZYpy4ZuaqYA25n1zv0axt1zaNDAS7li5urlxs5fbci
+	U8+ba6j2XS6m7VfVNLOOp2W6Boal3v6cn94ZVm0gsOo8X76KHjCmh0OvBfcMTMbsKABdqhsI/cxCi
+	bBPp+nqbGpfPmc2NfpJ4gSMWm5KjeKDKOn9w0oIZAn6rEtz+/7RAVr4/Kkp71yF1gwfeXmfkRg6nt
+	h2qDJ2fynDxvLjkl8/0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1na05k-003LKM-4R; Thu, 31 Mar 2022 19:04:20 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1na1xx-003foK-FD; Thu, 31 Mar 2022 21:04:25 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1na05h-003LHa-BK
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2022 19:04:19 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 22VJ43vQ052621;
- Thu, 31 Mar 2022 14:04:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1648753443;
- bh=+hpF99iyhgx9s0BuD1Wq5B4/4uDMpeBTQsdIdUEE4kw=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=k1J6EQ50PcU6vL9yQfcQhkBZdSo4gVUwsNjxnmjDNfJWsQjOSxxFBPDQurmYJtCsY
- 0DWBXQF6lkgRXelDczKoheFUVZu4wShsapT5v4Qz+emadhb6gMPTLeQxXkyzZhkzwt
- DCnsbaaUkOb5U4RsLDlkQ5OmHCMtW8yDZN0ig/0Y=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 22VJ43KC093434
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 31 Mar 2022 14:04:03 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 31
- Mar 2022 14:04:03 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 31 Mar 2022 14:04:03 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 22VJ422p126927;
- Thu, 31 Mar 2022 14:04:03 -0500
-Date: Fri, 1 Apr 2022 00:34:02 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Nathan Rossi <nathan@nathanrossi.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Nathan
- Rossi <nathan.rossi@digi.com>, Tudor Ambarus <tudor.ambarus@microchip.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] mtd: spi-nor: core: Fix 16bit write sr_and_check status
- check
-Message-ID: <20220331190402.d3fymx3msnzyycef@ti.com>
-References: <20220324070004.225738-1-nathan@nathanrossi.com>
+ id 1na1xt-003fnO-TJ
+ for linux-mtd@lists.infradead.org; Thu, 31 Mar 2022 21:04:23 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id B2D1E609B3CB;
+ Thu, 31 Mar 2022 23:04:20 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id KXq5bdCwI6eH; Thu, 31 Mar 2022 23:04:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 4380A614E2F4;
+ Thu, 31 Mar 2022 23:04:20 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id qpofYdCL9ADw; Thu, 31 Mar 2022 23:04:20 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 2A640609B3CB;
+ Thu, 31 Mar 2022 23:04:20 +0200 (CEST)
+Date: Thu, 31 Mar 2022 23:04:20 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <678407645.204324.1648760660133.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] JFFS2, UBI and UBIFS fixes for 5.18
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220324070004.225738-1-nathan@nathanrossi.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Index: dHWwhMT9Bg43NSBogJ+HKHdWxxbsHQ==
+Thread-Topic: JFFS2, UBI and UBIFS fixes for 5.18
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220331_120417_502860_AB08C0AA 
-X-CRM114-Status: GOOD (  22.78  )
+X-CRM114-CacheID: sfid-20220331_140422_285043_FF44A82B 
+X-CRM114-Status: UNSURE (   7.35  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,58 +72,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Nathan,
+Linus,
 
-On 24/03/22 07:00AM, Nathan Rossi wrote:
-> From: Nathan Rossi <nathan.rossi@digi.com>
-> 
-> The spi_nor_write_16bit_sr_and_check function description describes that
-> the function compares the value of the status and config registers after
-> the write. However the function does not implement the status register
-> compare only the config register check.
-> 
-> This causes the function to differ in behaviour to the equivalent
-> spi_nor_write_sr1_and_check for non-16bit writes to the status register.
-> This is important as other functions rely on the return code of
-> spi_nor_write_sr_and_check. For example spi_nor_sr_unlock returns the
-> result directly, which is returned to userspace such that failing to
-> unlock the spi-nor device was resulting in a return code of 0 instead of
-> the expected non-zero indicating the failure.
-> 
-> Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
-> ---
->  drivers/mtd/spi-nor/core.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 04ea180118..d75d4f8a45 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1007,6 +1007,15 @@ static int spi_nor_write_16bit_sr_and_check(struct spi_nor *nor, u8 sr1)
->  	if (ret)
->  		return ret;
->  
-> +	ret = spi_nor_read_sr(nor, sr_cr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (sr1 != sr_cr[0]) {
-> +		dev_dbg(nor->dev, "SR: read back test failed\n");
-> +		return -EIO;
-> +	}
-> +
->  	if (nor->flags & SNOR_F_NO_READ_CR)
->  		return 0;
+The following changes since commit aa39cc675799bc92da153af9a13d6f969c348e82:
 
-This patch seems exactly like [0]. I will pick that one if it applies on 
-the current tree since it already has one Reviewed-by.
+  jffs2: GC deadlock reading a page that is used in jffs2_write_begin() (2021-12-23 22:33:41 +0100)
 
-[0] https://lore.kernel.org/linux-mtd/20220126073227.3401275-1-chentsung@chromium.org/
+are available in the Git repository at:
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.18-rc1
+
+for you to fetch changes up to 705757274599e2e064dd3054aabc74e8af31a095:
+
+  ubifs: rename_whiteout: correct old_dir size computing (2022-03-17 23:34:07 +0100)
+
+
+Please note that there is a minor merge conflict with the folio tree tree
+between commits
+3b67db8a6ca8 ("ubifs: Fix to add refcount once page is set private")
+and
+c337f2f4f746 ("ubifs: Convert from invalidatepage to invalidate_folio").
+
+I'll happily review your merge resolution.
+
+----------------------------------------------------------------
+This pull request contains fixes for JFFS2, UBI and UBIFS
+
+JFFS2:
+        - Fixes for various memory issues
+
+UBI:
+        - Fix for a race condition in cdev ioctl handler
+
+UBIFS:
+	- Fixes for O_TMPFILE and whiteout handling
+	- Fixes for various memory issues
+
+----------------------------------------------------------------
+Baokun Li (5):
+      ubi: Fix race condition between ctrl_cdev_ioctl and ubi_cdev_ioctl
+      jffs2: fix use-after-free in jffs2_clear_xattr_subsystem
+      jffs2: fix memory leak in jffs2_do_mount_fs
+      jffs2: fix memory leak in jffs2_scan_medium
+      ubifs: rename_whiteout: correct old_dir size computing
+
+Zhihao Cheng (11):
+      ubifs: rename_whiteout: Fix double free for whiteout_ui->data
+      ubifs: Fix deadlock in concurrent rename whiteout and inode writeback
+      ubifs: Fix wrong number of inodes locked by ui_mutex in ubifs_inode comment
+      ubifs: Add missing iput if do_tmpfile() failed in rename whiteout
+      ubifs: Rename whiteout atomically
+      ubifs: Fix 'ui->dirty' race between do_tmpfile() and writeback work
+      ubifs: Rectify space amount budget for mkdir/tmpfile operations
+      ubifs: setflags: Make dirtied_ino_d 8 bytes aligned
+      ubifs: Fix read out-of-bounds in ubifs_wbuf_write_nolock()
+      ubifs: Fix to add refcount once page is set private
+      ubi: fastmap: Return error code if memory allocation fails in add_aeb()
+
+hongnanli (1):
+      fs/jffs2: fix comments mentioning i_mutex
+
+ drivers/mtd/ubi/build.c   |   9 +-
+ drivers/mtd/ubi/fastmap.c |  28 ++++--
+ drivers/mtd/ubi/vmt.c     |   8 +-
+ fs/jffs2/build.c          |   4 +-
+ fs/jffs2/fs.c             |   2 +-
+ fs/jffs2/jffs2_fs_i.h     |   4 +-
+ fs/jffs2/scan.c           |   6 +-
+ fs/ubifs/dir.c            | 238 ++++++++++++++++++++++++++++------------------
+ fs/ubifs/file.c           |  14 +--
+ fs/ubifs/io.c             |  34 ++++++-
+ fs/ubifs/ioctl.c          |   2 +-
+ fs/ubifs/journal.c        |  52 ++++++++--
+ fs/ubifs/ubifs.h          |   2 +-
+ 13 files changed, 259 insertions(+), 144 deletions(-)
 
 ______________________________________________________
 Linux MTD discussion mailing list
