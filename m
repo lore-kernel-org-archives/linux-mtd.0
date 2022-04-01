@@ -4,69 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C93BC433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 31 Mar 2022 23:23:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9F2CC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Apr 2022 07:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ipYnHu8eAeqnR8AEi065+GQQf3JlIPsrbHRhhWhjQIg=; b=EeDhQ3CVYrHJNM
-	Ou/FsOf/vz+cOTxmchbhNQRvWUe0VYOpRgOBi9lAhLvmeM6WJcnJMxnqAoX0e8YE91vAWSdmuoCRD
-	rXWoq2IBpJ/rnUV9PIG54dlVi27ofudIwexXUDRGgCNYbZtp1PB24rCsUHAXsvMTjh34hXqDQ6sk2
-	P2Dz0X4+skANJb0gKyIYA9ywuz8DQbNxJBfUOd2gPlDeqYDOyLDys/znCgj6uVexUgX6v1twRwfID
-	mFM/aIdfOPys7NePWNq3Vn3h+WGq4UmO1oCuOqTFM4J+S2vmD5gSuqE7zl1ucR85aR2LJjzUnJ5Uv
-	BuIfDgn3/TYXAjYVaegw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=BMsxhLZohTmBMTwt53nIOB3k68W4qmkB3mCskTyRG7M=; b=XoAAQOYjSE6cG6
+	XYzOUFOCs3s8/ZNirZDpWZTlYP9crvQCzsqqLUuQrYeJlEm911ot0crRWdbFed8C9LNJdrVoa+Top
+	sL6tnXn29zu2tip+q8f0U51liOJfuht3pXV73YlPMn7qLBmSyvmVcMg6O9q4joYIzIOsHhmDYLYc5
+	tE156EweMpEghXZ/AGEUPn45B7H5E1mWF7y7iuiYleNUHUf/dZd1UZB5FpzdZ91D8FZF8gPllEBMP
+	dOiZMRYhoO/Jr482V5sZf5rD2BQ+1IrOKQ2AQkdq1mGjCWvXD2tQkrtuNGSNRoI3jslBYwLi9u+C9
+	60I7V3fiTRTApqyRC4YQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1na486-003wml-6o; Thu, 31 Mar 2022 23:23:02 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1na482-003wkt-BG
- for linux-mtd@lists.infradead.org; Thu, 31 Mar 2022 23:23:00 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E298E6171A;
- Thu, 31 Mar 2022 23:22:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D23A5C340ED;
- Thu, 31 Mar 2022 23:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1648768976;
- bh=p9c6mAkztJWuLmDG7umbW8w15HYGZoRSvxkQNVEeU1o=;
- h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
- b=JC6gcklF/sQihUQZq5DNWo5QhGHPsmr9/iNF/x/QiDwJlfXewhFft4n2E8jGlu/O/
- vSIva8jtebnBrupCXTHZtT3231b8wFTUq/HG38Kr1hoJrdzpniU1mu6/pXUpQJ14n9
- x8PfKRm8QlT5FkJFUjTAex5W6vFdOw7vYlstjgd/MoJ3PUgA+Nc0MF0RZb3SupXiAj
- aKk4FusGageTG02F/7JBHBdFnelCZtdZS/Sok3kG8q89BgZHk4Yah2YWdkqvr889r/
- aLo6NVWgr0ZyIrN3c1loTTdok4a5uZfrAc55PFifk0Xx3m7x/wfs8B6oadAAaKNuZ+
- sXTR9U6vfWyTw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
- (localhost.localdomain [127.0.0.1])
- by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
- C09A7E7BB0B; Thu, 31 Mar 2022 23:22:56 +0000 (UTC)
-Subject: Re: [GIT PULL] JFFS2, UBI and UBIFS fixes for 5.18
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <678407645.204324.1648760660133.JavaMail.zimbra@nod.at>
-References: <678407645.204324.1648760660133.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <678407645.204324.1648760660133.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git
- tags/for-linus-5.18-rc1
-X-PR-Tracked-Commit-Id: 705757274599e2e064dd3054aabc74e8af31a095
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a87a08e3bf2decaed29c4dfde3916676f9b966a8
-Message-Id: <164876897678.28012.16351343936896890210.pr-tracker-bot@kernel.org>
-Date: Thu, 31 Mar 2022 23:22:56 +0000
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
+	id 1naBdQ-004mhf-Th; Fri, 01 Apr 2022 07:23:52 +0000
+Received: from edge05.meizu.com ([157.122.146.251] helo=mail.meizu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1naBdN-004meV-AZ
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2022 07:23:51 +0000
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail12.meizu.com
+ (172.16.1.108) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 1 Apr
+ 2022 15:23:34 +0800
+Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Fri, 1 Apr
+ 2022 15:23:32 +0800
+From: Haowen Bai <baihaowen@meizu.com>
+To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+CC: Haowen Bai <baihaowen@meizu.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH] fs/jffs2: Fix potential NULL dereference in
+ jffs2_add_frag_to_fragtree()
+Date: Fri, 1 Apr 2022 15:23:30 +0800
+Message-ID: <1648797810-27042-1-git-send-email-baihaowen@meizu.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-124.meizu.com (172.16.1.124) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220331_162258_477393_0ECE9881 
-X-CRM114-Status: UNSURE (   5.46  )
+X-CRM114-CacheID: sfid-20220401_002349_582595_69DFF224 
+X-CRM114-Status: UNSURE (   9.83  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -79,24 +60,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Thu, 31 Mar 2022 23:04:20 +0200 (CEST):
+this could be null, so we need to checking null before dereference
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.18-rc1
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+---
+ fs/jffs2/nodelist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a87a08e3bf2decaed29c4dfde3916676f9b966a8
-
-Thank you!
-
+diff --git a/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
+index b86c78d178c6..ed3b3b25bfab 100644
+--- a/fs/jffs2/nodelist.c
++++ b/fs/jffs2/nodelist.c
+@@ -246,7 +246,7 @@ static int jffs2_add_frag_to_fragtree(struct jffs2_sb_info *c, struct rb_root *r
+ 		return no_overlapping_node(c, root, newfrag, this, lastend);
+ 	}
+ 
+-	if (this->node)
++	if (this && this->node)
+ 		dbg_fragtree2("dealing with frag %u-%u, phys %#08x(%d).\n",
+ 		this->ofs, this->ofs + this->size,
+ 		ref_offset(this->node->raw), ref_flags(this->node->raw));
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.7.4
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
