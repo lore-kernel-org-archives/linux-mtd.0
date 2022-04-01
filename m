@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7982FC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  1 Apr 2022 20:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D86C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri,  1 Apr 2022 20:06:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Dm6HQiFAC83lM6FpZvbSEGTFELGg37ecjqJe5kUic9Q=; b=goibgXsWZWY727
-	hIq4fHmJLLi8QUeUrwGVOFBByvTBxYy8GNuxXlAc57PXkh1qBM+JPFmOHZyDi3uwSiUYivXqChUD/
-	DOs5TFjauCNSmPCn7RR3be9MYQIwnN1NdoTwQppfv/3iFb5R2wAs5u5jVcYFXfmVC3veVjnKmpyZM
-	UO+HmfXSIYR1ruyvV2yQQ2FgPVqFNOWKl/T+4i4b/dyLdNJB7yciqm4OgNjiTg5cnBGFfIXCa+r2Q
-	6t4xmxXXkgQblnkHyh76UIdIB6F3mQTARQP8BnBVBC6AaM5kzAdcC9de7fhvGtGk54gz5z7PqO5GP
-	QgVJlwNf62APJX39g9dA==;
+	List-Owner; bh=K5zVZzRy7KP2SH6KE9GFnCLIe1ki+dim/M/KWNpB4qU=; b=ZxsVoeATaINCdj
+	9ofvJWkVHFLfCyaXarC+J3kuZt0SiplELyFPPzfoW0kdtvlmCIC/4Yx9xFjG3+ryAHrGILX4J8a1W
+	uUOEoi8z1mxkfFzSiUd/mbtCuSyrOOMI03ZsvUxnFvoabcuecaMeEYCw9WPkaAgBj0EyN8Ze+sF82
+	6DsN5i4R8mtpYomDWVxTpgi12jhmGZ9jEQmqHTTj0d7zWKCoaf76XNVMwaEN/68fTRyK3pGza0NR9
+	b3fRjpc29e/QsgkbLPPWmO+nxQYO99MGlYNGD+1uu3pM2qNjDWPKMloikRIZhcYgjD2X8FJNbZkLk
+	3SmcoefhRHfvwCJAgwEA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1naNSn-0072AO-O3; Fri, 01 Apr 2022 20:01:41 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1naNX4-0072hI-MJ; Fri, 01 Apr 2022 20:06:06 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1naNSk-0072A2-2E
- for linux-mtd@lists.infradead.org; Fri, 01 Apr 2022 20:01:39 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 231K1ZUa081154;
- Fri, 1 Apr 2022 15:01:35 -0500
+ id 1naNX1-0072gA-Ur
+ for linux-mtd@lists.infradead.org; Fri, 01 Apr 2022 20:06:05 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 231K5wGL060226;
+ Fri, 1 Apr 2022 15:05:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1648843295;
- bh=n2jW5V3wpsVqOzq/hH44jtk4+X6+OebV2enCxLcHRrA=;
+ s=ti-com-17Q1; t=1648843558;
+ bh=/Fa41M7WpEnzzkUG/Dcr3RaYCMlEH4p6C+CVR6sjCcw=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=I5f+q+leEnBth17Bpf/h1hFKHKvQbINu+p+c7rj0W+N2S6idsh62VfpBINJlUMl7z
- n3lEQAKNv7iQHx7xN5PHKu9u3zXIInXih6FvuH7R6DbU2lYaDieoxrLBIcVrvIzaOI
- jeDnn74KJH0sODuXKtcBsee4A/X3cWHctAktcBHI=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 231K1Z1q027376
+ b=VZNgr+tMOy10A9z0lsvbaF5WM/Yiemppa3ydri0lXiu0jRzEWkijc9JkXqQylqu1t
+ 8XncyDuG0Bidp2aWGYTPiwgW9Y6hc1o9uRSF18+GCAhlPEk8uaZXplElKYsKCZv85p
+ PDYcyUEGLhGlwGIkTc2aYy2tqF1Zcl+Dk71DhTEA=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 231K5wSj050036
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 1 Apr 2022 15:01:35 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 1 Apr 2022 15:05:58 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 1
- Apr 2022 15:01:34 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2022 15:05:57 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 1 Apr 2022 15:01:34 -0500
+ Frontend Transport; Fri, 1 Apr 2022 15:05:57 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 231K1XEc002171;
- Fri, 1 Apr 2022 15:01:34 -0500
-Date: Sat, 2 Apr 2022 01:31:33 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 231K5uiQ001449;
+ Fri, 1 Apr 2022 15:05:57 -0500
+Date: Sat, 2 Apr 2022 01:35:56 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
 CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH v2 4/4] mtd: spi-nor: sfdp: Keep SFDP definitions private
-Message-ID: <20220401200133.gyyvoe7xdbsww7cv@ti.com>
-References: <20220309144215.179449-1-tudor.ambarus@microchip.com>
- <20220309144215.179449-5-tudor.ambarus@microchip.com>
+ <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: core: Skip setting erase types when
+ SPI_NOR_NO_ERASE is set
+Message-ID: <20220401200556.d6amfxdvyf66npyj@ti.com>
+References: <20220308091135.88615-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220309144215.179449-5-tudor.ambarus@microchip.com>
+In-Reply-To: <20220308091135.88615-1-tudor.ambarus@microchip.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220401_130138_230248_515EEA68 
-X-CRM114-Status: GOOD (  25.31  )
+X-CRM114-CacheID: sfid-20220401_130604_117351_D3374E37 
+X-CRM114-Status: GOOD (  17.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,157 +83,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/03/22 04:42PM, Tudor Ambarus wrote:
-> Keep the SFDP definitions private and expose just the definitions that are
-> required by the core and manufacturer drivers.
+On 08/03/22 11:11AM, Tudor Ambarus wrote:
+> Even if SPI_NOR_NO_ERASE was specified at flash declaration, the erase
+> type of size nor->info->sector_size was incorrectly set as supported.
+> Don't set erase types when SPI_NOR_NO_ERASE is set.
 
-I am not so sure about this. Since the post_bfpt hook passes in the bfpt 
-table to flash drivers, they might end up wanting to use these for some 
-checks like issi.c does for DWORD 1. They would have to move them back 
-to sfdp.h for that, which just causes extra churn, and also puts some 
-BFPT related defines in sfdp.h and some in sfdp.c.
+Does this have any practical implications? Since we set MTD_NO_ERASE, 
+erase should never be called for this flash anyway, right?
 
 > 
+> Fixes: b199489d37b2 ("mtd: spi-nor: add the framework for SPI NOR")
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Cc: stable@vger.kernel.org
 > ---
->  drivers/mtd/spi-nor/sfdp.c | 52 +++++++++++++++++++++++++++++++++++++
->  drivers/mtd/spi-nor/sfdp.h | 53 --------------------------------------
->  2 files changed, 52 insertions(+), 53 deletions(-)
+> v2:
+> - add comment, update commit message, split change in individual commit
+> - add fixes tag and cc to stable.
 > 
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index 01e35354db3e..f5432cbd3daf 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -494,6 +494,50 @@ int spi_nor_set_4byte_addr_mode_wren_en4b_ex4b(struct spi_nor *nor, bool enable)
->  	return spi_nor_write_disable(nor);
->  }
+>  drivers/mtd/spi-nor/core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index b4f141ad9c9c..64cf7b9df621 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2392,6 +2392,10 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+>  					SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
+>  	}
 >  
-> +/* 11th DWORD. */
-> +#define BFPT_DWORD11_PAGE_SIZE_SHIFT		4
-> +#define BFPT_DWORD11_PAGE_SIZE_MASK		GENMASK(7, 4)
+> +	/* Skip setting erase types when SPI_NOR_NO_ERASE is set. */
+> +	if (nor->info->flags & SPI_NOR_NO_ERASE)
+> +		return;
 > +
-> +/* 15th DWORD. */
-> +/*
-> + * (from JESD216 rev B)
-> + * Quad Enable Requirements (QER):
-> + * - 000b: Device does not have a QE bit. Device detects 1-1-4 and 1-4-4
-> + *         reads based on instruction. DQ3/HOLD# functions are hold during
-> + *         instruction phase.
-> + * - 001b: QE is bit 1 of status register 2. It is set via Write Status with
-> + *         two data bytes where bit 1 of the second byte is one.
-> + *         [...]
-> + *         Writing only one byte to the status register has the side-effect of
-> + *         clearing status register 2, including the QE bit. The 100b code is
-> + *         used if writing one byte to the status register does not modify
-> + *         status register 2.
-> + * - 010b: QE is bit 6 of status register 1. It is set via Write Status with
-> + *         one data byte where bit 6 is one.
-> + *         [...]
-> + * - 011b: QE is bit 7 of status register 2. It is set via Write status
-> + *         register 2 instruction 3Eh with one data byte where bit 7 is one.
-> + *         [...]
-> + *         The status register 2 is read using instruction 3Fh.
-> + * - 100b: QE is bit 1 of status register 2. It is set via Write Status with
-> + *         two data bytes where bit 1 of the second byte is one.
-> + *         [...]
-> + *         In contrast to the 001b code, writing one byte to the status
-> + *         register does not modify status register 2.
-> + * - 101b: QE is bit 1 of status register 2. Status register 1 is read using
-> + *         Read Status instruction 05h. Status register2 is read using
-> + *         instruction 35h. QE is set via Write Status instruction 01h with
-> + *         two data bytes where bit 1 of the second byte is one.
-> + *         [...]
-> + */
-> +#define BFPT_DWORD15_QER_MASK			GENMASK(22, 20)
-> +#define BFPT_DWORD15_QER_NONE			(0x0UL << 20) /* Micron */
-> +#define BFPT_DWORD15_QER_SR2_BIT1_BUGGY		(0x1UL << 20)
-> +#define BFPT_DWORD15_QER_SR1_BIT6		(0x2UL << 20) /* Macronix */
-> +#define BFPT_DWORD15_QER_SR2_BIT7		(0x3UL << 20)
-> +#define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
-> +#define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
-> +
->  #define BFPT_DWORD16_EN4B_MASK			GENMASK(31, 24)
->  #define BFPT_DWORD16_EN4B_ALWAYS_4B		BIT(30)
->  #define BFPT_DWORD16_EN4B_4B_OPCODES		BIT(29)
-> @@ -528,6 +572,14 @@ int spi_nor_set_4byte_addr_mode_wren_en4b_ex4b(struct spi_nor *nor, bool enable)
->  #define BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B		\
->  	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
->  
-> +#define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
-> +
-> +#define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
-> +#define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
-> +#define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
-> +#define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
-> +#define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
-> +
->  /**
->   * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
->   * @nor:		pointer to a 'struct spi_nor'
-> diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-> index da2d7ec2e0aa..fd7e3c935960 100644
-> --- a/drivers/mtd/spi-nor/sfdp.h
-> +++ b/drivers/mtd/spi-nor/sfdp.h
-> @@ -45,59 +45,6 @@ struct sfdp_bfpt {
->  #define BFPT_DWORD5_FAST_READ_2_2_2		BIT(0)
->  #define BFPT_DWORD5_FAST_READ_4_4_4		BIT(4)
->  
-> -/* 11th DWORD. */
-> -#define BFPT_DWORD11_PAGE_SIZE_SHIFT		4
-> -#define BFPT_DWORD11_PAGE_SIZE_MASK		GENMASK(7, 4)
-> -
-> -/* 15th DWORD. */
-> -
-> -/*
-> - * (from JESD216 rev B)
-> - * Quad Enable Requirements (QER):
-> - * - 000b: Device does not have a QE bit. Device detects 1-1-4 and 1-4-4
-> - *         reads based on instruction. DQ3/HOLD# functions are hold during
-> - *         instruction phase.
-> - * - 001b: QE is bit 1 of status register 2. It is set via Write Status with
-> - *         two data bytes where bit 1 of the second byte is one.
-> - *         [...]
-> - *         Writing only one byte to the status register has the side-effect of
-> - *         clearing status register 2, including the QE bit. The 100b code is
-> - *         used if writing one byte to the status register does not modify
-> - *         status register 2.
-> - * - 010b: QE is bit 6 of status register 1. It is set via Write Status with
-> - *         one data byte where bit 6 is one.
-> - *         [...]
-> - * - 011b: QE is bit 7 of status register 2. It is set via Write status
-> - *         register 2 instruction 3Eh with one data byte where bit 7 is one.
-> - *         [...]
-> - *         The status register 2 is read using instruction 3Fh.
-> - * - 100b: QE is bit 1 of status register 2. It is set via Write Status with
-> - *         two data bytes where bit 1 of the second byte is one.
-> - *         [...]
-> - *         In contrast to the 001b code, writing one byte to the status
-> - *         register does not modify status register 2.
-> - * - 101b: QE is bit 1 of status register 2. Status register 1 is read using
-> - *         Read Status instruction 05h. Status register2 is read using
-> - *         instruction 35h. QE is set via Write Status instruction 01h with
-> - *         two data bytes where bit 1 of the second byte is one.
-> - *         [...]
-> - */
-> -#define BFPT_DWORD15_QER_MASK			GENMASK(22, 20)
-> -#define BFPT_DWORD15_QER_NONE			(0x0UL << 20) /* Micron */
-> -#define BFPT_DWORD15_QER_SR2_BIT1_BUGGY		(0x1UL << 20)
-> -#define BFPT_DWORD15_QER_SR1_BIT6		(0x2UL << 20) /* Macronix */
-> -#define BFPT_DWORD15_QER_SR2_BIT7		(0x3UL << 20)
-> -#define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
-> -#define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
-> -
-> -#define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
-> -
-> -#define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
-> -#define BFPT_DWORD18_CMD_EXT_REP		(0x0UL << 29) /* Repeat */
-> -#define BFPT_DWORD18_CMD_EXT_INV		(0x1UL << 29) /* Invert */
-> -#define BFPT_DWORD18_CMD_EXT_RES		(0x2UL << 29) /* Reserved */
-> -#define BFPT_DWORD18_CMD_EXT_16B		(0x3UL << 29) /* 16-bit opcode */
-> -
->  struct sfdp_parameter_header {
->  	u8		id_lsb;
->  	u8		minor;
+>  	/*
+>  	 * Sector Erase settings. Sort Erase Types in ascending order, with the
+>  	 * smallest erase size starting at BIT(0).
 > -- 
 > 2.25.1
 > 
