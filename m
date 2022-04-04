@@ -4,85 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A332C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 10:55:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD95BC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 12:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=agcJMIjqsvGPkUxTUPrLEAmET+sYc9oKJMYuVkNGUmE=; b=A/K+91pvcfjNUH
-	5jgYyXnb8qRyBkFp44Tdpl3K7LiCpni8PgQNQ05qc1P0nIjrx3qmqqpGZtnNLkfcA7KufeIXKjYDd
-	CcweIueF4weeo93IxokVO9Q8mlSuFQK4RRs8ckU8tBFnpcqBYZaiCA++sJ9rXVgWepIXY0KgV0qwD
-	rclL6RQtqvVuwAMLhKXHgfdFfwpsCUx2NwiNb4ZEKZ3CJX/3+lK1EekSohnCoaJvys/3HJ3n+n8MI
-	ZYU0aApf0ryoQcLMFAI8CZgElvxp6a5gnIfeT/KQRnWbyTHo+HJ5rG2vuHirUgNd0AmWaVgL6BWw3
-	i/ir2spKvJLd4PiGYlKA==;
+	List-Owner; bh=0Ar4UUCtOgd8/yGuc+UuV5LjXxTRSKdSvDEfRAN/B80=; b=nCGJgAfvT2bF3C
+	g+0OytLaVr/3g28pIwgylYJPtpZYg5n7mbpyQkV6i6aA54tYhpsFYzCKijQZqiHMJOFcdB6P6Z283
+	FM0YXdGb0HWchWW6S+cqvm+onhXivm1M1vtD6QoS+BYQG6cbaQ7avLuA2nQLqQUYFxQNea3inUm3G
+	a2ZwZX8ExXwTwdTcvad9PLNHhnKBsqPXiECElxgMXEBlraVkGXazsS+6RCUTGzLYy4PUhq1hKUlkM
+	eEjqRcFBxV8pSGWeN1tqso7BB8Jg0AAPDAfWbDmhc0jG/SU7/UlwfEx6PyUQ7I61/yQfsgXnL5/wL
+	EjGKtEtSKBABudMY/XgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbKMG-00Ed1i-SY; Mon, 04 Apr 2022 10:54:52 +0000
-Received: from mail-io1-xd30.google.com ([2607:f8b0:4864:20::d30])
+	id 1nbM0H-00EuUv-2z; Mon, 04 Apr 2022 12:40:17 +0000
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbKLw-00Ecna-Am; Mon, 04 Apr 2022 10:54:33 +0000
-Received: by mail-io1-xd30.google.com with SMTP id g21so10652114iom.13;
- Mon, 04 Apr 2022 03:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=6rE17aokLscUeZldWdcl+4+hAX8YeB4QD9pUd4GrjIM=;
- b=TtY+/cMcXBcL8IdYOINrQltPY2JNCPfd2Awm3ZptGepcymCrJ3HbII3+X/9Ys3fHuv
- 4iCZx4zOnwwrvLnGrZ3sSBV5UeUQRXeGFGiaYmn9YqpxCGlzhG1eRkzW0TxfS5Jm/hM4
- zINrPwRZM7x3FcLUgaHacw3Oz4YJWellZsVpIAyIq8BUnJbGlyraFuEymXpU7UfYdD7r
- +ZDMMIurR+tpkRsVxx2Vac/rQeWxgpYJJTomab6ShmerwgPvcH57JqOw+IjympgRYdgr
- eUsU/pdzW9runBz+psuMNZO6RCjSu8ygZaeOOqn/wggHyW8mamGNKvJKczPXMDuKt85v
- 5+PA==
+ id 1nbM0C-00EuSy-P6
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2022 12:40:15 +0000
+Received: by mail-wm1-x329.google.com with SMTP id n35so5812645wms.5
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2022 05:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:organization:in-reply-to
+ :content-transfer-encoding;
+ bh=ZeotdEyuaTGdsdLJ4Jmy4Ks/jM3YHCk6KKZJjilIqN8=;
+ b=d2ACJ4FMKOj+ZM4t31aUYUvlo+gq5OXoKso3xQjGB0BTJw3j0494Vvff+SqZczkhmH
+ 48/p0IUyMek7zMIvV0edVPA15DEb3kduZ0HwkUeKioDT9+GARrqJ35+uy+fMQEUrJlXu
+ 21ELX9Sur5wPriXnF6/OdKMfYvFhmccQVe7WOKEjnf6Ad3os32/r2Zo2Z+cIOiCxxZl5
+ tH+1gy3y8tnbRN+10wgkIO5LcQESPxqcRCWbzI3Pt4pAWgbsp1LQwDLPL9l1iz85ttdr
+ XlQRuhDPoYmIafzzxonjT1E5KAwIdKOmHY2zbltzxk7qW/MfCA/I0ItDkpnFnGTtki3y
+ f5ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=6rE17aokLscUeZldWdcl+4+hAX8YeB4QD9pUd4GrjIM=;
- b=1+0gxegzxfif13VqzID8z8FAwxO7GmISfc6ZSEPobySMDHuVi5jB7vkeg3zqdbcq+L
- V3iHNcr3hyiuzCJF3AxOPY/w0NqpEl7kjmYp/SfvLOHhSChCyWoFtSyZ0kuKhxPhg6Vy
- 3jG0KOCqTuHHFIC2WNxhWcdPLl/KpT0eUE11EVehPH7z9x79I/u6wyL/QX1gmLF0QrUU
- KUiAHtqIeFmxxVpPFNSkoOMpcLVwOC3xcyUr26Y0TV8wqj5VK6Y6nh0g2o5QF4rk2HdX
- XbTWELS7tGPI7vdtzzffH/U5v0GiK2aQfy4xctdGnrUAQXQ+dydYGW/gPfOdu8P9s12B
- I9YA==
-X-Gm-Message-State: AOAM532t0tH0YDqFwFNBu3dxjPB7+gJKssccTJ9HSuM8hodIEJbMkD1Q
- sR/SQGg0J9wlnlCRKL0AXCsJDcX+dg3Ctmbi1ig=
-X-Google-Smtp-Source: ABdhPJy6dWkX7SvStDXsR6rYoheGmMRXvU/7VnD9jCFC5zDIQw6Mmc9tyZgib54eWMjb5UYf/h7INW0fl0bt4WedkxE=
-X-Received: by 2002:a05:6638:d16:b0:323:63cd:c144 with SMTP id
- q22-20020a0566380d1600b0032363cdc144mr11635735jaj.76.1649069668361; Mon, 04
- Apr 2022 03:54:28 -0700 (PDT)
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:organization:in-reply-to
+ :content-transfer-encoding;
+ bh=ZeotdEyuaTGdsdLJ4Jmy4Ks/jM3YHCk6KKZJjilIqN8=;
+ b=3F3h3HDD1y/4oO1j1C792YewJ9kDlMuD8U/pCfk5GYd41xGIxgpJpKT/1cyrLbV0/P
+ uAjhZqGytLiF9XwIySP9Cog4ps7am796BWXWZC1bGILrnU/NysCv6h3nzkOMFDATZJwl
+ IDf7xkS/1x8EQl9RX9NQffgF1t7tg2EMyRgioz/pIEjyHH3Z0It28QutijR/dFl+3eLo
+ IPGT1M9O963IEqSPJfPWjmKkOV8qbjkoMMXBa3aUUTv41rTvpp6vzsAM1MW6JOwyECSq
+ gczkPPlTv+kCHr3S4p23RqvAmJvxKd3jA40+kX790OT6NTUTDzkjtr/ORkr4vF4NN3RL
+ dsQA==
+X-Gm-Message-State: AOAM530zk4gMmhX3cLWlTaTPT2ofBVHCa59ud92cBfQQim9oEVZcasJF
+ XlaE18nuGXldvz1DCHpT2qzMAw==
+X-Google-Smtp-Source: ABdhPJzuy3b3TtMxOWHYxOYY54z4mIT4gXGcVATO1XYdj1uwDkn7Dkq4yjzBf0nohbQq8Q4aC57KwQ==
+X-Received: by 2002:a7b:c382:0:b0:388:2e76:49ed with SMTP id
+ s2-20020a7bc382000000b003882e7649edmr19337941wmj.195.1649076009796; 
+ Mon, 04 Apr 2022 05:40:09 -0700 (PDT)
+Received: from ?IPV6:2001:861:44c0:66c0:1add:1b28:2457:eb46?
+ ([2001:861:44c0:66c0:1add:1b28:2457:eb46])
+ by smtp.gmail.com with ESMTPSA id
+ l28-20020a05600c1d1c00b0038e72a95ec4sm2849603wms.13.2022.04.04.05.40.08
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 04 Apr 2022 05:40:09 -0700 (PDT)
+Message-ID: <d30b32fe-e1d4-0684-a1fa-710c1da3faea@baylibre.com>
+Date: Mon, 4 Apr 2022 14:40:07 +0200
 MIME-Version: 1.0
-References: <20220404040153.1509966-1-gch981213@gmail.com>
- <20220404040153.1509966-3-gch981213@gmail.com>
- <20220404095937.20089db7@xps13>
- <CAJsYDVK6ya7FR90CtAjbpbF-_+c0GVnsKsN=1wYaoBFx=ysUtQ@mail.gmail.com>
- <20220404122824.63a1c857@xps13>
-In-Reply-To: <20220404122824.63a1c857@xps13>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Mon, 4 Apr 2022 18:54:17 +0800
-Message-ID: <CAJsYDVJXH0MUB2wPydzqFgF8Y82HsUY7FLu1duCOCyVO-oXZqw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] spi: add driver for MTK SPI NAND Flash Interface
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Matthias Brugger <matthias.bgg@gmail.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Cai Huoqing <cai.huoqing@linux.dev>, 
- Florian Fainelli <f.fainelli@gmail.com>, Colin Ian King <colin.king@intel.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Paul Cercueil <paul@crapouillou.net>, 
- Pratyush Yadav <p.yadav@ti.com>, Yu Kuai <yukuai3@huawei.com>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, "moderated list:ARM/Mediatek SoC support"
- <linux-arm-kernel@lists.infradead.org>, 
- "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>, 
- "open list:NAND FLASH SUBSYSTEM" <linux-mtd@lists.infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v4 1/2] mtd: rawnand: meson: discard the common MMC sub
+ clock framework
+Content-Language: en-US
+To: Liang Yang <liang.yang@amlogic.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
+ Victor Wan <victor.wan@amlogic.com>, XianWei Zhao
+ <xianwei.zhao@amlogic.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>,
+ BiChao Zheng <bichao.zheng@amlogic.com>, YongHui Yu
+ <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20220402074921.13316-1-liang.yang@amlogic.com>
+ <20220402074921.13316-2-liang.yang@amlogic.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+In-Reply-To: <20220402074921.13316-2-liang.yang@amlogic.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220404_035432_393852_357DDE5C 
-X-CRM114-Status: GOOD (  36.95  )
+X-CRM114-CacheID: sfid-20220404_054013_102222_B07EC627 
+X-CRM114-Status: GOOD (  29.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,93 +102,239 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+Hi,
 
-On Mon, Apr 4, 2022 at 6:28 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> [...]
-> > > > +
-> > > > +     // This driver ignores any ECC capability configured by user or
-> > > > +     // requested by the nand chip because the BootROM and MTK bootloader
-> > > > +     // expects the page format to be the exact one as calculated in
-> > > > +     // setup_pagefmt.
-> > >
-> > > I don't like this :)
-> > >
-> > > I understand that the boot partition might have specific constraints,
-> > > but other partitions (or if we don't use the NAND to boot?) should
-> > > probably be usable with other ECC schemes.
-> >
-> > In this controller, the ECC step size is fixed and it can only change
-> > ECC strength.
->
-> That's fine.
->
-> > The calculated ECC correction capability is the max
-> > possible one supported by the controller.
-> > I still want the default behavior to match the boot partition
-> > requirement,
->
-> That is okay, but that does not mean you can only support this one.
->
-> > because we can't just tell end-users to customize
-> > their dts by taking apart their device and figure out which flash
-> > is used.
->
-> They don't have to do so. In theory they should not request anything,
-> the core would take care of all of that. But they can request specific
-> values by using the DT and you must follow them in the driver.
->
-> On his side the core is responsible of telling you which strength
-> should be used otherwise and the driver is expected to use it.
+On 02/04/2022 09:49, Liang Yang wrote:
+> EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK' which is
+> defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is the divider and
+> bit6~7 is the mux for fix pll and xtal.A common MMC and NAND sub-clock has been
+> implemented and can be used by the eMMC and NAND controller (which are mutually
+> exclusive anyway). Let's use this new clock.
+> 
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> ---
+>   drivers/mtd/nand/raw/meson_nand.c | 89 +++++++++++++++----------------
+>   1 file changed, 42 insertions(+), 47 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> index ac3be92872d0..1b1a9407fb2f 100644
+> --- a/drivers/mtd/nand/raw/meson_nand.c
+> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/dma-mapping.h>
+>   #include <linux/interrupt.h>
+>   #include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+>   #include <linux/mtd/rawnand.h>
+>   #include <linux/mtd/mtd.h>
+>   #include <linux/mfd/syscon.h>
+> @@ -19,6 +20,7 @@
+>   #include <linux/iopoll.h>
+>   #include <linux/of.h>
+>   #include <linux/of_device.h>
+> +#include <linux/of_address.h>
+>   #include <linux/sched/task_stack.h>
+>   
+>   #define NFC_REG_CMD		0x00
+> @@ -104,6 +106,9 @@
+>   
+>   #define PER_INFO_BYTE		8
+>   
+> +#define CLK_DIV_SHIFT		0
+> +#define CLK_DIV_WIDTH		6
+> +
+>   struct meson_nfc_nand_chip {
+>   	struct list_head node;
+>   	struct nand_chip nand;
+> @@ -151,15 +156,15 @@ struct meson_nfc {
+>   	struct nand_controller controller;
+>   	struct clk *core_clk;
+>   	struct clk *device_clk;
+> -	struct clk *phase_tx;
+> -	struct clk *phase_rx;
+> +	struct clk *nand_clk;
+> +	struct clk_divider nand_divider;
+>   
+>   	unsigned long clk_rate;
+>   	u32 bus_timing;
+>   
+>   	struct device *dev;
+>   	void __iomem *reg_base;
+> -	struct regmap *reg_clk;
+> +	void __iomem *sd_emmc_clock;
 
-The core provided ecc strength may be smaller than the
-calculated one. e.g. A nand chip may only have a requirement
-of 8/512bits ECC. But if it has a 2k+128 pagesize, this
-controller can do 12/512bits ECC and the bootrom expects the
-latter.
+The name could still be reg_clk, even if not a regmap anymore.
 
-> You should take the user requirements first. If there are no
-> user inputs, you should in theory look at the device's requirements.
+>   	struct completion completion;
+>   	struct list_head chips;
+>   	const struct meson_nfc_data *data;
+> @@ -235,7 +240,7 @@ static void meson_nfc_select_chip(struct nand_chip *nand, int chip)
+>   	nfc->timing.tbers_max = meson_chip->tbers_max;
+>   
+>   	if (nfc->clk_rate != meson_chip->clk_rate) {
+> -		ret = clk_set_rate(nfc->device_clk, meson_chip->clk_rate);
+> +		ret = clk_set_rate(nfc->nand_clk, meson_chip->clk_rate);
+>   		if (ret) {
+>   			dev_err(nfc->dev, "failed to set clock rate\n");
+>   			return;
+> @@ -406,7 +411,6 @@ static int meson_nfc_queue_rb(struct meson_nfc *nfc, int timeout_ms)
+>   	cmd = NFC_CMD_RB | NFC_CMD_RB_INT
+>   		| nfc->param.chip_select | nfc->timing.tbers_max;
+>   	writel(cmd, nfc->reg_base + NFC_REG_CMD);
+> -
+>   	ret = wait_for_completion_timeout(&nfc->completion,
+>   					  msecs_to_jiffies(timeout_ms));
+>   	if (ret == 0)
+> @@ -985,9 +989,11 @@ static const struct mtd_ooblayout_ops meson_ooblayout_ops = {
+>   	.free = meson_ooblayout_free,
+>   };
+>   
+> +struct clk_parent_data nfc_divider_parent_data[1];
 
-I'll take the user requirements if there is one. If there isn't, I'll
-follow the calculated strength instead of the device requirement
-so that user doesn't have to specify a custom strength in dt.
+This should be in the meson_nfc_clk_init() function, not global
 
-> [...]
-> > > > +static struct nand_ecc_engine_ops mtk_snfi_ecc_engine_ops = {
-> > > > +     .init_ctx = mtk_snand_ecc_init_ctx,
-> > > > +     .prepare_io_req = mtk_snand_ecc_prepare_io_req,
-> > > > +     .finish_io_req = mtk_snand_ecc_finish_io_req,
-> > >
-> > > I believe you need to take care of the bounce buffer in the exit path?
-> >
-> > No. The buffer should be left there for non-ecc spi-mem operations.
->
-> AFAIR you initialize the buffer in the ECC part, so if it must be used
-> without ECC you should probably allocate it for the SPI controller.
+>   static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   {
+>   	int ret;
+> +	struct clk_init_data init = {0};
+>   
+>   	/* request core clock */
+>   	nfc->core_clk = devm_clk_get(nfc->dev, "core");
+> @@ -1002,21 +1008,26 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   		return PTR_ERR(nfc->device_clk);
+>   	}
+>   
+> -	nfc->phase_tx = devm_clk_get(nfc->dev, "tx");
+> -	if (IS_ERR(nfc->phase_tx)) {
+> -		dev_err(nfc->dev, "failed to get TX clk\n");
+> -		return PTR_ERR(nfc->phase_tx);
+> -	}
+> -
+> -	nfc->phase_rx = devm_clk_get(nfc->dev, "rx");
+> -	if (IS_ERR(nfc->phase_rx)) {
+> -		dev_err(nfc->dev, "failed to get RX clk\n");
+> -		return PTR_ERR(nfc->phase_rx);
+> -	}
+> +	init.name = devm_kstrdup(nfc->dev, "nfc#div", GFP_KERNEL);
 
-I did. the setup_pagefmt is called once with the minimal page+oob size
-in probe.
+name = devm_kasprintf(nfc->dev, GFP_KERNEL, "%s#div", dev_name(dev));
 
-> In
-> any way, you need to free that memory at some point (when removing the
-> driver).
+would be better.
 
-I was using the devm api for this allocation so kernel should take
-care of that.
+> +	init.ops = &clk_divider_ops;
+> +	nfc_divider_parent_data[0].fw_name = "device";
+> +	init.parent_data = nfc_divider_parent_data;
+> +	init.num_parents = 1;
+> +	nfc->nand_divider.reg = nfc->sd_emmc_clock;
+> +	nfc->nand_divider.shift = CLK_DIV_SHIFT;
+> +	nfc->nand_divider.width = CLK_DIV_WIDTH;
+> +	nfc->nand_divider.hw.init = &init;
+> +	nfc->nand_divider.flags = CLK_DIVIDER_ONE_BASED |
+> +				  CLK_DIVIDER_ROUND_CLOSEST |
+> +				  CLK_DIVIDER_ALLOW_ZERO;
+> +
+> +	nfc->nand_clk = devm_clk_register(nfc->dev, &nfc->nand_divider.hw);
+> +	if (IS_ERR(nfc->nand_clk))
+> +		return PTR_ERR(nfc->nand_clk);
+>   
+>   	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
+> -	regmap_update_bits(nfc->reg_clk,
+> -			   0, CLK_SELECT_NAND, CLK_SELECT_NAND);
+> +	writel(CLK_SELECT_NAND | readl(nfc->sd_emmc_clock),
+> +	       nfc->sd_emmc_clock);
+>   
+>   	ret = clk_prepare_enable(nfc->core_clk);
+>   	if (ret) {
+> @@ -1030,29 +1041,21 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   		goto err_device_clk;
+>   	}
+>   
+> -	ret = clk_prepare_enable(nfc->phase_tx);
+> +	ret = clk_prepare_enable(nfc->nand_clk);
+>   	if (ret) {
+> -		dev_err(nfc->dev, "failed to enable TX clock\n");
+> -		goto err_phase_tx;
+> +		dev_err(nfc->dev, "pre enable NFC divider fail\n");
+> +		goto err_nand_clk;
+>   	}
+>   
+> -	ret = clk_prepare_enable(nfc->phase_rx);
+> -	if (ret) {
+> -		dev_err(nfc->dev, "failed to enable RX clock\n");
+> -		goto err_phase_rx;
+> -	}
+> -
+> -	ret = clk_set_rate(nfc->device_clk, 24000000);
+> +	ret = clk_set_rate(nfc->nand_clk, 24000000);
+>   	if (ret)
+> -		goto err_disable_rx;
+> +		goto err_disable_clk;
+>   
+>   	return 0;
+>   
+> -err_disable_rx:
+> -	clk_disable_unprepare(nfc->phase_rx);
+> -err_phase_rx:
+> -	clk_disable_unprepare(nfc->phase_tx);
+> -err_phase_tx:
+> +err_disable_clk:
+> +	clk_disable_unprepare(nfc->nand_clk);
+> +err_nand_clk:
+>   	clk_disable_unprepare(nfc->device_clk);
+>   err_device_clk:
+>   	clk_disable_unprepare(nfc->core_clk);
+> @@ -1061,8 +1064,7 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+>   
+>   static void meson_nfc_disable_clk(struct meson_nfc *nfc)
+>   {
+> -	clk_disable_unprepare(nfc->phase_rx);
+> -	clk_disable_unprepare(nfc->phase_tx);
+> +	clk_disable_unprepare(nfc->nand_clk);
+>   	clk_disable_unprepare(nfc->device_clk);
+>   	clk_disable_unprepare(nfc->core_clk);
+>   }
+> @@ -1374,7 +1376,6 @@ static int meson_nfc_probe(struct platform_device *pdev)
+>   {
+>   	struct device *dev = &pdev->dev;
+>   	struct meson_nfc *nfc;
+> -	struct resource *res;
+>   	int ret, irq;
+>   
+>   	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
+> @@ -1388,21 +1389,15 @@ static int meson_nfc_probe(struct platform_device *pdev)
+>   	nand_controller_init(&nfc->controller);
+>   	INIT_LIST_HEAD(&nfc->chips);
+>   	init_completion(&nfc->completion);
+> -
+>   	nfc->dev = dev;
+>   
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	nfc->reg_base = devm_ioremap_resource(dev, res);
+> +	nfc->reg_base = devm_platform_ioremap_resource_byname(pdev, "nfc");
+>   	if (IS_ERR(nfc->reg_base))
+>   		return PTR_ERR(nfc->reg_base);
+>   
+> -	nfc->reg_clk =
+> -		syscon_regmap_lookup_by_phandle(dev->of_node,
+> -						"amlogic,mmc-syscon");
+> -	if (IS_ERR(nfc->reg_clk)) {
+> -		dev_err(dev, "Failed to lookup clock base\n");
+> -		return PTR_ERR(nfc->reg_clk);
+> -	}
+> +	nfc->sd_emmc_clock = devm_platform_ioremap_resource_byname(pdev, "emmc");
+> +	if (IS_ERR(nfc->sd_emmc_clock))
+> +		return PTR_ERR(nfc->sd_emmc_clock);
+>   
+>   	irq = platform_get_irq(pdev, 0);
+>   	if (irq < 0)
 
-I'll change the DMA to use streamed API in the next version to avoid
-an extra memory copy in reading, and the allocated buffer will be
-freed in remove().
-
--- 
-Regards,
-Chuanhong Guo
+Thanks,
+Neil
 
 ______________________________________________________
 Linux MTD discussion mailing list
