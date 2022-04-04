@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8301CC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 13:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3BBAC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 13:52:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EpRNNS4wwD9nu3UDxgnpBzBzbnu8i5VVRSATWocKOrc=; b=B22ESb3nDbjrVk
-	jbXa9mUEJWU7LYuKiWZDyU5DWT05cXQV6KUTz7C7vtIArGxxkdIJ9NnF05zZJfUkFnEy8n1MUJIjN
-	mzJyQE/+SYpAa0//EzkNrWH4QCbtOQI6TXb1ccaQxz+QxSflaxAxyCYZglqOESnRcS4b4Ip7IV1xw
-	URuUtKOx/qaOrHWMLxFUl4UI4ybfsTyWRBGVrnjZVBgvAoA8EQO3w/P31cfWCr9Z6KAGqKcDNiXG+
-	oJ6h6MO2SF/SlXMFe9dh6zydtU3+xdygEfoMycTd/KdKWOgd3d0WUbd+WUDGcwRqHPLjFO2FDfjLy
-	crzU+v93RP4UzU2ArbqA==;
+	List-Owner; bh=VmvB8qBeLh3vOlT1WLqyopP22R7agmBH3Ckg4ZW2bbc=; b=aQP357cqHaoOO/
+	qadGgvpVK1myBkRSaUm6clR343pYn5EGw0x99IcSq6wOpUl4JM0uj+amITfa6OWmJcJWnl4/0R7yG
+	wiQKkbP/fnCoOUv+wgmO5Fvhdcl9EYBmPWLwpLzhU6+bjHhVTWCk8qtnmVqJo5VPpPRE1I9C2O9b1
+	IKMmZaAvIaUg5yupH2vifbyQtaSq7wbihD6cLlW13L7rYj0IjUOZdIp52O2O321KZzYV4yMulCW0K
+	QcDYSg89XZiwDSty+q6fpYd65DZi6Yv6dM+ymHo7C5VarC0hP7jWEEdW9Zv28Gt20Z1z9Rc2NTxd3
+	cKKzNxIxbTd1QS9KIe3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbN7X-00FCWR-9u; Mon, 04 Apr 2022 13:51:51 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1nbN8Q-00FD2H-Le; Mon, 04 Apr 2022 13:52:47 +0000
+Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbN5i-00FBat-Uv
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2022 13:50:02 +0000
-Received: by mail-wm1-x332.google.com with SMTP id
- v64-20020a1cac43000000b0038cfd1b3a6dso7757085wme.5
- for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2022 06:49:56 -0700 (PDT)
+ id 1nbN82-00FCp1-RN
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2022 13:52:24 +0000
+Received: by mail-wm1-x333.google.com with SMTP id q20so5987632wmq.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2022 06:52:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=d8lIwh8tiIkMFx11fFktp0oGVk3nbpQUUWnZgWL5Jnc=;
- b=W+UEgv5UP7GXJYs7QCG6QtMn7aXfPo+PDkNKW5aMvKgZsee9uyRmczhK/6PCLslrKm
- tSzbF8FkOxo4jSezbxKMnPAHm/lARrn+xP0kN/gp6snbd9diecPFDLZmy5bU1lqRS+cQ
- iOFJp0xD4OiAfjWsb3KoT0vqhIyIwBq+QcdJjrIMveCI7SKroJ0jKwEXOFnLozRJWrf9
- 7VVizkFvRzvR5UF/2b0g42XataFHeKD0pzFn+5W44xkDBWHaiOmNwtMW+K0/yjeAdZpZ
- 8/J///8nE3oojWSxI1Kon5NFJP6beXJd57Zd8RrkepeKE/GgEdQaBrSmx3aDRP2wzM/X
- xKyA==
+ bh=orXe1JLKj3eWkUs/vG6CQ9PlkRdOEKGc+GDPsHVwVSQ=;
+ b=WyC0hsymaV9UJHv9CIIXVy5p7WAbo4Q2u4e/nQE8HTIvyVX+5wdSM80i3/YtDNM3dA
+ nFxLwmjCRR4j+YdelKwwidGUkes+I7rlhDtqLa3IKaZNsVPlTlDq/QO0BQ6qVP0je9OT
+ 1KQWXQYyhRucsEQVJGeqI/1oag6jR6qJ+cpdIBQP61sV6fJrMSJdJNDvAWu7ipDaovrk
+ jaFOfrKqq+R7VrCp0uRUIN43Uty6xJJp+LO/trJziABkk5vpAwDRXNfUNDUkNiYdTG4w
+ fMycIQYXPOwR68torwpWP58A1znnlOrwUM69KoiR6aDC7bxjiCIH4ZcT3MZx21MsXAXX
+ uvUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=d8lIwh8tiIkMFx11fFktp0oGVk3nbpQUUWnZgWL5Jnc=;
- b=VEbv5meZAWM4bOF4u0TdejH7SAfKhVqJzv1tD4Kgm7o8VHOd4SEhdrbNr/ZggevNCj
- pirV2B3AnFCW6vdhrIuOn/Da1n40xnNB1oKDwTOmDWI7dZA97cSnBkGiVNnPaU8qv5td
- VYH+6Kha4LvNnuQc7jnP/EUBw2JDCDTjfms4pa4xaSlXW2rabtwnXWQ+HH3qGEqpa3mL
- Kyja3YlpyOAOBQcF+5IAPnBFH6aSj6WDKfYTUYqTM0vlZNChbmGYmDNPrdBO/6/QNQgJ
- U+CkU5C5zBXVQLvuLtAbxj8EU8YC6aUsrNAqKCvBRPUFTRubcEVNDupw+8KQ23W/QH5a
- 50Dg==
-X-Gm-Message-State: AOAM530t8YPpfnW3mukD4aSFQ/+HebYE2HNatqzhfeozMYebiuPieUbJ
- 2KIf5YrGRGdVIZQ61iAtOysD2A==
-X-Google-Smtp-Source: ABdhPJx1C13/G0jo9mcTjjBok/lghKbqEZJvW3uyonaeOQWgDSX154xlSCC+Ip2L56ywjoSX1G9fSw==
-X-Received: by 2002:a1c:7715:0:b0:380:ed9b:debd with SMTP id
- t21-20020a1c7715000000b00380ed9bdebdmr19498320wmi.54.1649080195394; 
- Mon, 04 Apr 2022 06:49:55 -0700 (PDT)
+ bh=orXe1JLKj3eWkUs/vG6CQ9PlkRdOEKGc+GDPsHVwVSQ=;
+ b=acqUg8pW6H+tdHm4gO9JpoGM6K/ORvmG3juUB/KNpF/ar7pVjjWBOBHBvOi+DyjTZS
+ 5HvebFpH0Z4snd1USMGgTNeakjWRcGxngRwa55xzre2ahtq8Qcvo7Crs0ICKXkv8Tuw2
+ 6/uFkt06WmI6hLg8sbC73QZToSISj+3L6jRezuAhPcedJDvXZa+4ue4LRPTm245scpp1
+ 6e8dP8QPzvqvFo1nfc7ElwtIKkPgkx8v+oHUSdJan4pujuuctwDgVYmRJXjpepprLAfO
+ XkN4Nf5Nugq7p5WFS9jFxWIJwBHmvJHU2P4DySj2zj1lf4JE3FjOb6PqYu1rmRMNbOZE
+ G3CQ==
+X-Gm-Message-State: AOAM531dnOyNdBx+ZeDntnnDuGwxJvV5GGItI3C9y15qUeyIU5R2v1Lc
+ NYV6DcKg4eLiF56vVA3+zkwSjQ==
+X-Google-Smtp-Source: ABdhPJw89vFXoJ5SBTppIPxaGW7RRNdgP5jNO3Xa+1KintPNh7R1vx4e+9D+kd9JBLe3HI5yTVSsVQ==
+X-Received: by 2002:a1c:e908:0:b0:38c:782c:2a62 with SMTP id
+ q8-20020a1ce908000000b0038c782c2a62mr19502739wmc.135.1649080340874; 
+ Mon, 04 Apr 2022 06:52:20 -0700 (PDT)
 Received: from [192.168.0.176] (xdsl-188-155-201-27.adslplus.ch.
  [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
- f18-20020a5d6652000000b001e669ebd528sm9306837wrw.91.2022.04.04.06.49.54
+ p125-20020a1c2983000000b0038e5ca446bcsm8269468wmp.5.2022.04.04.06.52.19
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 04 Apr 2022 06:49:54 -0700 (PDT)
-Message-ID: <f86a0be9-ab40-9878-82f0-d892e674d165@linaro.org>
-Date: Mon, 4 Apr 2022 15:49:53 +0200
+ Mon, 04 Apr 2022 06:52:20 -0700 (PDT)
+Message-ID: <14c921b5-4240-a026-252a-d5fb60836b34@linaro.org>
+Date: Mon, 4 Apr 2022 15:52:19 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCH v2 4/5] dt-bindings: spi: add binding doc for spi-mtk-snfi
+Subject: Re: [PATCH v3 4/5] dt-bindings: spi: add binding doc for spi-mtk-snfi
 Content-Language: en-US
 To: Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
@@ -88,13 +87,13 @@ Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
  <linux-mediatek@lists.infradead.org>,
  open list <linux-kernel@vger.kernel.org>,
  "open list:NAND FLASH SUBSYSTEM" <linux-mtd@lists.infradead.org>
-References: <20220404040153.1509966-1-gch981213@gmail.com>
- <20220404040153.1509966-5-gch981213@gmail.com>
+References: <20220404131818.1817794-1-gch981213@gmail.com>
+ <20220404131818.1817794-5-gch981213@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220404040153.1509966-5-gch981213@gmail.com>
+In-Reply-To: <20220404131818.1817794-5-gch981213@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220404_064959_052222_ED84397A 
-X-CRM114-Status: GOOD (  19.69  )
+X-CRM114-CacheID: sfid-20220404_065223_006421_695F246D 
+X-CRM114-Status: GOOD (  19.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,16 +110,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 04/04/2022 06:01, Chuanhong Guo wrote:
+On 04/04/2022 15:18, Chuanhong Guo wrote:
 > Add device-tree binding documentation for Mediatek SPI-NAND Flash
 > Interface.
 > 
 > Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
 > ---
-> 
 > Changes since v1:
 >   1. add a blank line between properties in dt binding doc
 >   2. rename ecc-engine to nand-ecc-engine for the generic properties
+> 
+> Change since v2: none
 > 
 >  .../bindings/spi/mediatek,spi-mtk-snfi.yaml   | 88 +++++++++++++++++++
 >  1 file changed, 88 insertions(+)
@@ -191,7 +191,10 @@ On 04/04/2022 06:01, Chuanhong Guo wrote:
 > +  - clock-names
 > +  - ecc-engine
 
-Wrong name.
+Slightly slow down resends (max 1 per day). You sent v3 without giving a
+chance to review this.
+
+Wrong name here.
 
 
 Best regards,
