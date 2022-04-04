@@ -4,91 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D31FC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 13:23:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30C94C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 13:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FGZ1lOWl/ycgC74DdtTMuM15McS2KL8AaVdN4J9i3Co=; b=LWpYl3xBl9r3rm
-	a1oeCrIYgl39yPA0cZQp+Cxso3P9VBQReTxXE7fy8p+ldouvKZAvn+xGe3UbdCIFcYGAiwEnCtlbC
-	YRgjUEXdQEkw3qJPMNbWCJfAnTJguy2GFxL2nGEisi/P2fmpzALhiKNWztgWHqVrLJpyIeZ7XBZNy
-	rbfPXyW7VbxvKzl1uu2caf+UclMpV0SDvXIJwpGKlNrfcThhDWITU/BAhMzRFLAJk9p8HwOGyESg2
-	ETlAqEP081z1ZdcZtND4aw604qAH+b1p49jY1Zx6RBVvpcllJsw/uey+YrldLGaOi+MyU7FQ1X2hR
-	JCeC/ZlBGOSN7PLclueA==;
+	List-Owner; bh=RMT2ooXwHCjQ9xqKsqMWf3yIfjHE1QnnB0dhAy3MF9o=; b=ekaogsmIZJw0KU
+	hypxwWyn7kbdWWcdGTd3nxx1bd4guEL6hjDfzejtCr82F8FEjSxMLoQlBfZV3T3LjlalcfiKXVAuX
+	Eq5rWyxvJC8Zr8ngvSRBKeI/UewR0hCZPHxi6ZLZCLZJjd5UboB27DEnDCfu23Chgabh/N+AZt5fu
+	8uRKTk3jAWJ3f8VDEPZNdH3cweTERSzL/AlQlLi9GsGvuM1lENmPFq3RSU3jZnrPIv16DOf+zSPxp
+	0Tgw66LN9GkC8Rn7U+E7UMMH7IUxVndH6KWEZuT/ZKey0ouOxZEorcuosgQYAF1+BEqVqbnh+7urY
+	S43xek/i/TS0qMLd6yeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbMfs-00F5Cd-3W; Mon, 04 Apr 2022 13:23:16 +0000
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+	id 1nbMqw-00F8fp-GV; Mon, 04 Apr 2022 13:34:42 +0000
+Received: from mail-yb1-xb30.google.com ([2607:f8b0:4864:20::b30])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbMc4-00F3Pu-VF; Mon, 04 Apr 2022 13:19:22 +0000
-Received: by mail-pf1-x436.google.com with SMTP id h24so4605431pfo.6;
- Mon, 04 Apr 2022 06:19:17 -0700 (PDT)
+ id 1nbMqt-00F8eO-2C
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2022 13:34:40 +0000
+Received: by mail-yb1-xb30.google.com with SMTP id g9so17656774ybf.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Apr 2022 06:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=tS+NAQ+2D7agIki50tkRPL+/ag2LxAizn5hQjD0npls=;
- b=PET9hD0TOOlxzcMYMOfT1jjstVzlrGrI95uhZTqi8ziGnO+Kvzo8GzeLdfN9KuJXb5
- dEsJUm8Ddlf7AwD3XMS/Xr8vEud0/HcAkCM0vpQqVUIo8JjWdELmuNe66OFwFOZYoQjD
- 7GozIrPEnrDgYaGmcuESoUq0X2y19O4CebzlfArPMfAixrP6qVfjH1ahPxV5u78/OZUQ
- LXgDU3mxfbtjB0Rbo89eQDw/bsgR9ZE2pOXv96OiS5d2B8UFWtP156ujm7OwzrM5GT+b
- w/fHjp/86V7nVlbqjbBrRuQvdbxRVNf3ERNvNnvZf1XyiKXXL0bQ29RgW/qP0Lbej6Uh
- Oayg==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=YaTxLCUntWttTrySEX5v0WWGqUyOjlg+VT/NTYbEi1k=;
+ b=XhW31WQQOkGD/WqzKYUh6DrLwiPMTC47Zm3P6AnIsAE4hVYbBQtmt0AzmS+qNT8x4f
+ qzYoraXVz01ewciISt+1ftpiwzYFEgcVUEQDf+45O5ouJPNVC00wd/00bVh6GPsndgj/
+ AzphLzXni/vxQleqvUQLfnBV7uc42FBqQ2Y3SAlwRNP7BQgNz9MBLtN9fjv059fWlS+f
+ h2OxbFYZHvTKk+xPRW+HxVoN5vP5UQUBwT7XABsoYBTPr6C+r36nW+TFb7yIm8zSVnfS
+ cz3NljZzji6hoFpTU7I7FSYNNX/c/ktjSGKWm47e50EUlnBUr3yWOy8kA5wiM+u8RDtK
+ iNPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=tS+NAQ+2D7agIki50tkRPL+/ag2LxAizn5hQjD0npls=;
- b=joKmJXLqy3lRQ0HUVn6p+4k+lmGob75VPUt7A3zUQs5LnUqj79/4q7hBYK39a32Sol
- l0EcvWmwyJMJ9VSkJzAtdXXb7dcdjuBhxnAriEkj/DH7gGNAyuici83GaL0c6pbXChk9
- t1sWcR2ewIEoyXaTNC4We/938TWwpGfZzhspmY+De8RDU/73Yh63eOHkyZ4WgrDMn5cJ
- a2XHy/UVfl57x4TuuRmWprp0TCp6GxiLP5JEOpa2nJSgB/djzIXMcVpuuzya/xPPKr6C
- IDhFE8UxO/gJIkix66YEfBmXeQQfUwhHyCpbQ5RNFYwhUmV3824THFUDqJqPXnJzzK2a
- lUYA==
-X-Gm-Message-State: AOAM530tXFW+KvhsDGs0fJTUeT2jcPZ1Lm4L6zhoqIyL/jcnBt1H9vJv
- UuMHPSMOWkPeHtAD4gWoidI=
-X-Google-Smtp-Source: ABdhPJzLAMviS73DnsYXW0jI9f5cwwNFWa83DUwdZUIbuOqsebhBjg6JkDgNrUtBEulaxOE4IIAkYw==
-X-Received: by 2002:a05:6a00:182a:b0:4fd:dee2:6371 with SMTP id
- y42-20020a056a00182a00b004fddee26371mr12945796pfa.8.1649078357014; 
- Mon, 04 Apr 2022 06:19:17 -0700 (PDT)
-Received: from guoguo-omen.lan ([2401:c080:1400:4da2:b701:47d5:9291:4cf9])
- by smtp.gmail.com with ESMTPSA id
- q13-20020a056a00088d00b004e1bea9c582sm12475705pfj.43.2022.04.04.06.19.09
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 04 Apr 2022 06:19:16 -0700 (PDT)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-spi@vger.kernel.org
-Cc: Chuanhong Guo <gch981213@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Roger Quadros <rogerq@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Cai Huoqing <cai.huoqing@linux.dev>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Colin Ian King <colin.king@intel.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Paul Cercueil <paul@crapouillou.net>, Pratyush Yadav <p.yadav@ti.com>,
- Yu Kuai <yukuai3@huawei.com>,
- devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS), 
- linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC support),
- linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC support), 
- linux-kernel@vger.kernel.org (open list),
- linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
-Subject: [PATCH v3 5/5] arm64: dts: mediatek: add mtk-snfi for mt7622
-Date: Mon,  4 Apr 2022 21:18:18 +0800
-Message-Id: <20220404131818.1817794-6-gch981213@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220404131818.1817794-1-gch981213@gmail.com>
-References: <20220404131818.1817794-1-gch981213@gmail.com>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=YaTxLCUntWttTrySEX5v0WWGqUyOjlg+VT/NTYbEi1k=;
+ b=QVpPy+EAUqRft/6gCzcJIQ7X2qTdd66QwGPCscA1oOnQkV331QDA404OI5oZY3Jg9k
+ 6vHa83yGBAT7avfJ0G5WMPteiOlpyITMAMXX6NOqF2YfzdIh/3Y8eZhdwtV9AU9zSQxG
+ c82hlmIroBJ2N1DOO8gpz9v/c7atd4Ueh13S2g7go4HWpaNOqYREzKreTKQYPq9wSEqP
+ Egn5BBs5No/nt8m2CHmPSN+5gNX5MY4k3chedRhFMwfadzl9Wt1HV/YkRwuUdNaFhTCE
+ vBP8tLeczKSZoS+NHe1m39FCJfAX99hiHwhVT+QbG9ThhdsUs3+BXvGMP3rkeU1/hb9D
+ 2YIQ==
+X-Gm-Message-State: AOAM530iyNq+qjiXnwMN13/EZW1rMAi0w28rcmp7tsSJqn8qBxo5KDPt
+ xWnBewyvDfMQn1ZYX49lXb5HfQzsq6qFCsfSj4vhGDYGvTqN2/qF
+X-Google-Smtp-Source: ABdhPJxKtp10ufyLemxrLYs1Do/IZNZpDWiRF3iXVcHDtm+e+UdCgHS55mIXAUc3/LdnzK4WupgU7fiKHMOuZIjbuOU=
+X-Received: by 2002:a25:374d:0:b0:63d:84a2:237d with SMTP id
+ e74-20020a25374d000000b0063d84a2237dmr12786814yba.417.1649079276152; Mon, 04
+ Apr 2022 06:34:36 -0700 (PDT)
 MIME-Version: 1.0
+References: <d196bb5849843993557a9b10f3bd28a752e5e8e0.1648562287.git.geert+renesas@glider.be>
+In-Reply-To: <d196bb5849843993557a9b10f3bd28a752e5e8e0.1648562287.git.geert+renesas@glider.be>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Mon, 4 Apr 2022 14:34:10 +0100
+Message-ID: <CA+V-a8uiP8TX2MJs2cvMdxJCt5cSmvYTm3biQYmAg+TH=yw7ng@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: hyperbus: rpc-if: Fix RPM imbalance in probe
+ error path
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Richard Weinberger <richard@nod.at>, Biju Das <biju.das.jz@bp.renesas.com>, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, 
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Mark Brown <broonie@kernel.org>, 
+ linux-mtd@lists.infradead.org, linux-spi <linux-spi@vger.kernel.org>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220404_061921_026590_F92E5361 
-X-CRM114-Status: GOOD (  10.54  )
+X-CRM114-CacheID: sfid-20220404_063439_173140_1DD91B12 
+X-CRM114-Status: GOOD (  13.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,44 +90,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch adds a device-tree node for the MTK SPI-NAND Flash Interface
-for MT7622 device tree.
+On Tue, Mar 29, 2022 at 3:09 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> If rpcif_hw_init() fails, Runtime PM is left enabled.
+>
+> Fixes: b04cc0d912eb80d3 ("memory: renesas-rpc-if: Add support for RZ/G2L")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> For the mtd tree.
+>
+>  drivers/mtd/hyperbus/rpc-if.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
-Changes since v1:
-  1. use the newly introduced nand-ecc-engine instead
-  2. reword commit message
-Change since v2: None
- arch/arm64/boot/dts/mediatek/mt7622.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-index 6f8cb3ad1e84..4b8f7dc1ec23 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-@@ -545,6 +545,18 @@ nandc: nfi@1100d000 {
- 		status = "disabled";
- 	};
- 
-+	snfi: spi@1100d000 {
-+		compatible = "mediatek,mt7622-snand";
-+		reg = <0 0x1100d000 0 0x1000>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
-+		clocks = <&pericfg CLK_PERI_NFI_PD>, <&pericfg CLK_PERI_SNFI_PD>;
-+		clock-names = "nfi_clk", "pad_clk";
-+		nand-ecc-engine = <&bch>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		status = "disabled";
-+	};
-+
- 	bch: ecc@1100e000 {
- 		compatible = "mediatek,mt7622-ecc";
- 		reg = <0 0x1100e000 0 0x1000>;
--- 
-2.35.1
-
+Cheers,
+Prabhakar
 
 ______________________________________________________
 Linux MTD discussion mailing list
