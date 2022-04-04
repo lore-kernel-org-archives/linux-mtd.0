@@ -4,61 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4137C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 08:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37221C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  4 Apr 2022 08:47:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IevoVfWBcdydh5U7xrI6jaw6KD1NN6Yq132+lMKp6fw=; b=XuW0g1+V48ctfk
-	Csc+bdjspesPNu4N9kGEEINKC9M5rx4RIuLLyucQhg098TEBmRj4AEPyPv4NUu0cP8KwwnwBjM8PH
-	zwSIBkbDS0vNnMZ4d3bdTsuEoTL/hvDUgBavZJBPTFxelNpBf5s3irEuSn4Hb8UOPzcmJ0f36IqcT
-	dYdU6pAzXZDO7qr22e6fKKn89WtpdJebx8AovWrgPFg7u75hqg5/ZHIE9EeveMmNSpxl4f+6VzrVD
-	+9Q5tqAUwCB51tmadRh8ZPC+pp1z1e5IkIKvB8XJVQ7Sq1ywu1k0LCBYv36ny6msFLNodu0STODCf
-	I8h7fNyzvcDf7CaDSQsg==;
+	List-Owner; bh=QAbgpri+Z90HzvaVj8F7SQTCEbM+2wpWCZVBkYxpbf8=; b=vbEnOyJ6C7kknx
+	ZBqEiRyqh83aiR4AR+eWcNNW8eZQ8vQ94YrmdrhpW7VZI/Kr01PufLVyTZfDmu9unHTPMgHl3D/zu
+	BP1gVvlUzX5ZB2cJD2I+mttAu5SoEuLZBnSP14uwWT8OAjuEyCXvOYdF+TbykxLrmN5kR9o27el+d
+	OVIbl5akmKJocJ+FT0shNM6D4ReqUm9NVYrUOdBq2pIK90+N0LI70Egz2c3eQ33A/5ZLHS7YcVu4f
+	W26z3O0SP14DI8v8Ykiq7E7tiry4R+JSvuEGEwS4Ya357vzOGT0MWI9N39ciHZPh/yMokaQc4NIRy
+	gp4pvc05LFi07UFwX3AA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbIMf-00Duc8-VC; Mon, 04 Apr 2022 08:47:10 +0000
-Received: from relay4-d.mail.gandi.net ([217.70.183.196])
+	id 1nbIMq-00Dujq-7j; Mon, 04 Apr 2022 08:47:20 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbIMc-00Duag-O2
- for linux-mtd@lists.infradead.org; Mon, 04 Apr 2022 08:47:08 +0000
+ id 1nbIMk-00DucJ-GL
+ for linux-mtd@lists.infradead.org; Mon, 04 Apr 2022 08:47:16 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id B742DE0008;
- Mon,  4 Apr 2022 08:47:03 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id 1FF51C000B;
+ Mon,  4 Apr 2022 08:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1649062024;
+ t=1649062030;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p0OPYJTGf+Dm5K2y8xd2O8sDEyOgtNhDfv6cC7unOvs=;
- b=prbj1OGvO94djS0icwz28PMFioDs07B4VJDBXeFqPWMn2JJdRaVIeH5WPvzl6pmbb564qW
- wdq7CB4EHTkv36uz6A0ZrhELIjzgG9rfrtjG2QKSgQMifzZE4JDJ6zwxsPTz0lmzEGAOv1
- b5Nz88iLeM1OWrzTjT/rhqM5nK6MaxpBn4AKIEAUTVFhddM++m4YijVPfTgbYsZEOPp3xZ
- 03iZbft66aF8X5auL1Ac3N4ldyzC7UKrjsQmlv+C7l9L3F8N1KNC6xuKuBr/f+HQ3sRcDp
- ap/bpYuVQ6/MtE1e6kVakSxd6M7oS0zL785uHWx1ElPfZlz6eECbh1GOoJJvpQ==
+ bh=fYj0xUbR/390/lWkvin+TtsUFeDx/rVngOIwhFcGEg4=;
+ b=UasxRTe509xU/K1YhL3DoCA7n6MSOjOI+4FkVLF/VrLLyNZ7VRZHMl/s1oSzm2LSwwCMmM
+ uPFqVnYH4jDMGh/rTQLZjljXYDc2nljmbR1HlKPpGkhd9Y2H/bIkoeUK0pOxvcV+xVLqN9
+ 2HSe4gQrCW4v1XevCkzIOpQoxoDEmJgYgT6FYDke80GDjvlO8hL6SnS71xoNvMMFmDa6WA
+ 3wwFZx6gk7ebSpfbAWrHsI5nIVc2Amp4Uz/55vLdejIRhkMuTntLrJwB4uBCg2d04vK03K
+ XRdQvU8JSN6TuCCyuTf1JTeJsmt1WViu06QTo9tvW3a0F+ent829GrZ3mqO+xw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
- =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: rawnand: print offset instead of page number for bad
- blocks
-Date: Mon,  4 Apr 2022 10:47:03 +0200
-Message-Id: <20220404084703.1202181-1-miquel.raynal@bootlin.com>
+To: Chuanhong Guo <gch981213@gmail.com>,
+	linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Reto Schneider <reto.schneider@husqvarnagroup.com>,
+ Frieder Schrempf <frieder.schrempf@kontron.de>, Stefan Roese <sr@denx.de>,
+ linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 5/5] mtd: spinand: gigadevice: add support for
+ GD5FxGM7xExxG
+Date: Mon,  4 Apr 2022 10:47:07 +0200
+Message-Id: <20220404084707.1202272-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220326163304.30806-1-zajec5@gmail.com>
+In-Reply-To: <20220320100001.247905-6-gch981213@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'f7c48bccf1a0262a763f7e39f28c5c6798f2d6c3'
+X-linux-mtd-patch-commit: b'54647cd003c08b714474a5b599a147ec6a160486'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220404_014706_960407_6568A11D 
-X-CRM114-Status: UNSURE (   6.00  )
+X-CRM114-CacheID: sfid-20220404_014714_743999_68D8DEEC 
+X-CRM114-Status: UNSURE (   8.30  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -71,20 +73,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU2F0LCAyMDIyLTAzLTI2IGF0IDE2OjMzOjA0IFVUQywgPT91dGYtOD9iP1VtRm1ZY1dDSUUx
-cHhZSmxZMnRwPz0gd3JvdGU6Cj4gRnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tp
-LnBsPgo+IAo+IFRoaXMgbWFrZXMgcHJpbnRlZCBpbmZvIGNvbnNpc3RlbnQgd2l0aCBvdGhlciBr
-ZXJuZWwgbWVzc2FnZXMuIEFmdGVyCj4gc2Nhbm5pbmcgTkFORCBCQlQgY3JlYXRlX2JidCgpIHBy
-aW50cyBvZmZzZXQgb2YgZWFjaCBiYWQgYmxvY2suIFRoaXMKPiBjaGFuZ2UgbWFrZXMgaXMgZWFz
-eSB0byB2ZXJpZnkgbmFuZF9lcmFzZV9uYW5kKCkgZmFpbHVyZSByZWFzb24uCj4gCj4gU2lnbmVk
-LW9mZi1ieTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKQXBwbGllZCB0byBo
-dHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tdGQvbGludXgu
-Z2l0IG5hbmQvbmV4dCwgdGhhbmtzLgoKTWlxdWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-bXRkLwo=
+On Sun, 2022-03-20 at 10:00:01 UTC, Chuanhong Guo wrote:
+> Add support for:
+>  GD5F{1,2}GM7{U,R}ExxG
+>  GD5F4GM8{U,R}ExxG
+> 
+> These are new 27nm counterparts for the GD5FxGQ4 chips from GigaDevice
+> with 8b/512b on-die ECC capability.
+> These chips (and currently supported GD5FxGQ5 chips) have QIO DTR
+> instruction for reading page cache. It isn't added in this patch because
+> I don't have a DTR spi controller for testing.
+> 
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
