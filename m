@@ -4,71 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49E0FC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Apr 2022 19:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BA26C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Apr 2022 19:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	Content-Transfer-Encoding:Content-Type:Cc:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mJBy9rnoOxHx7Ro2qKl2MAzz14pmw+RXXSpWnkyMG7I=; b=Zven85KuYmKm0d
-	njPL5jekg2pF95s/wIgQibRuMH2SSmCqJ8dphoITrESnyJJXqGnZUn9J5459JrfPb1wUikhhE+o0f
-	PX0LoEVGpHPoc1Z0kQMw5BZNtIZyLzGFCVh2XNWEV+7M8xSCY0EGIflkys+oUg6dEZ4G/zNKIgfIy
-	N8/CNdCbsjDgOSpJtv5BGKJMgDnedwx22DOIorR8VmwyRmHZDv/G/0Qlc18dVondCZalEbbAeIp68
-	HJokvf8MFQT7W2HBPpPzhV33ZwKukF+Iph0SiYaByJ8mGpI04QUXqLmf7WcZM2ondmYdXHFHMqAMO
-	lEkXsNZcnA8NzQVY5jmw==;
+	List-Owner; bh=iqhiSrqeazswBF4mZagnT7oMxX3Sdvirwf6VnKVdbSk=; b=M1if6ybS/AdLig
+	TB0ZCvhnlMw7NRiD8xlCWJwPJczYaPcgoRXI0Tfn9NPfPmi7rotX6OpNNXKr8mXV3QCWc1mNR9yjl
+	VINyMHUusRThY+xKxl9fjbb7ZlD0OKW6QHjsihkPNqR+G+qiaUpI1Q68M+V7Fb1RnhdXqQrzQRmMM
+	E5bvqOC0PpKbTj6C4kGbz0YACMTrxZYw8vPt7hcSoRuJ2ZxxAfo79VqljxmnC21bAvLYBiLY5WAMe
+	grlMsqVoEJW7o8RzfmOFOKXQRgi0iqD0TGzZeY5szfs2zdndY/jWkdOasPItiiRkfnxbXPpqO4Heb
+	nIbLMIS/F6EIc5guCC1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbotb-002NIT-DW; Tue, 05 Apr 2022 19:31:19 +0000
+	id 1nbp4H-002Peb-MY; Tue, 05 Apr 2022 19:42:21 +0000
 Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbotY-002NH0-Jl
- for linux-mtd@lists.infradead.org; Tue, 05 Apr 2022 19:31:18 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 235JVDpB035657;
- Tue, 5 Apr 2022 14:31:13 -0500
+ id 1nbp4D-002PdL-V1; Tue, 05 Apr 2022 19:42:19 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 235Jfnr0038682;
+ Tue, 5 Apr 2022 14:41:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1649187074;
- bh=6S4oBgr084pJY5AjWt0SE218ar7kVDqYu4XZa5mwyyo=;
+ s=ti-com-17Q1; t=1649187709;
+ bh=TvXISmEqDdYXBaHQb6lUN0/p5oi+ZGlmqEVvUhJzKQ8=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Ae8KIXXmxWXu6l+Go3Ow0EnTuWC2CugQgQ/jRblMkKcYe5EyR5cRLo7T9ve2wHmYv
- Oxv5TSP/pMblriRFbArE5tBDInYMSRBzAiFxWVNTUtMdg4cqw0T2oYSEPtjPQNuhnv
- lfEnRKFQnRiGXoVi7CRNdgTjRgPRl1Pv2rMQOFqk=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 235JVDOl031228
+ b=ciDzolTNYNXyKmdBtu2ebtPgnOex2/jSsKSVu4LMPaRU4F7W2WBW69tI4cWh7IsXA
+ gyXyEijFykg77PYCet6/RITpWWzNxggduTpNmgDPpdAm6u7SyYdpl9kntuI4SAK5D9
+ WBrAXfTkx3pq1k+HIM+rAiP2UPZ6M92KGEEt36co=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 235Jfn6o027095
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 5 Apr 2022 14:31:13 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Tue, 5 Apr 2022 14:41:49 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 5
- Apr 2022 14:31:12 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2022 14:41:49 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 5 Apr 2022 14:31:12 -0500
+ Frontend Transport; Tue, 5 Apr 2022 14:41:49 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 235JVBE2105678;
- Tue, 5 Apr 2022 14:31:12 -0500
-Date: Wed, 6 Apr 2022 01:01:11 +0530
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 235Jfl49045078;
+ Tue, 5 Apr 2022 14:41:47 -0500
+Date: Wed, 6 Apr 2022 01:11:46 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
-To: <Tudor.Ambarus@microchip.com>
-CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>
-Subject: Re: [PATCH v2 4/4] mtd: spi-nor: sfdp: Keep SFDP definitions private
-Message-ID: <20220405193111.pnekaivbsj7hronp@ti.com>
-References: <20220309144215.179449-1-tudor.ambarus@microchip.com>
- <20220309144215.179449-5-tudor.ambarus@microchip.com>
- <20220401200133.gyyvoe7xdbsww7cv@ti.com>
- <ed093fa5-b514-b0a6-166f-ecf117582b0b@microchip.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v4 1/6] mtd: spi-nor: core: Report correct name in case
+ of ID collisions
+Message-ID: <20220405194146.wymxqhksjmqepv6q@ti.com>
+References: <20220228134505.203270-1-tudor.ambarus@microchip.com>
+ <20220228134505.203270-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ed093fa5-b514-b0a6-166f-ecf117582b0b@microchip.com>
+In-Reply-To: <20220228134505.203270-2-tudor.ambarus@microchip.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220405_123116_792468_8A7EF1E0 
-X-CRM114-Status: GOOD (  16.81  )
+X-CRM114-CacheID: sfid-20220405_124218_103193_53451560 
+X-CRM114-Status: UNSURE (   8.14  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,35 +76,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Cc: sr@denx.de, vigneshr@ti.com, jaimeliao@mxic.com.tw, richard@nod.at,
+ esben@geanix.com, linux@rasmusvillemoes.dk, knaerzche@gmail.com,
+ nicolas.ferre@microchip.com, michael@walle.cc, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, macromorgan@hotmail.com,
+ miquel.raynal@bootlin.com, heiko.thiery@gmail.com, zhengxunli@mxic.com.tw,
+ mail@david-bauer.net, code@reto-schneider.ch
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 04/04/22 06:19AM, Tudor.Ambarus@microchip.com wrote:
-> On 4/1/22 23:01, Pratyush Yadav wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > 
-> > On 09/03/22 04:42PM, Tudor Ambarus wrote:
-> >> Keep the SFDP definitions private and expose just the definitions that are
-> >> required by the core and manufacturer drivers.
-> > 
-> > I am not so sure about this. Since the post_bfpt hook passes in the bfpt
-> > table to flash drivers, they might end up wanting to use these for some
-> > checks like issi.c does for DWORD 1. They would have to move them back
-> > to sfdp.h for that, which just causes extra churn, and also puts some
-> > BFPT related defines in sfdp.h and some in sfdp.c.
-> > 
+On 28/02/22 03:45PM, Tudor Ambarus wrote:
+> Provide a way to report the correct flash name in case of ID collisions.
+> There will be a single flash_info entry when flash IDs collide, and the
+> differentiation between the flash types will be made at runtime
+> if possible.
 > 
-> That's correct, but I think exposing just the public defines in sfdp.h is
-> the path to follow. We should keep private all the definitions that we can
-> private in sfdp.c and expose publicly in sfdp.h just the ones that are shared.
-> Flash collisions, and implicitly the need of public SFDP definitions, should be
-> an exception, so I expect sfdp.h to be short in size.
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-I disagree. I think we should keep everything in the same place. And 
-since we need to expose this to manufacturer drivers, that place is 
-sfdp.h. Who is going to cast the tiebreaking vote here? ;-)
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
 -- 
 Regards,
