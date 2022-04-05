@@ -4,56 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CAE3C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Apr 2022 01:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 419C1C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Apr 2022 02:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qZHE31VmhN6mtZnC2xjJXeBUFH9r7dwaVx6KWLI5eLg=; b=tKaGA0TTgRCFRp
-	2i29zp3/1nqjO5NTfvxOomjggMxUhGvlStDM4kAvwq+kQhd7H3ovMWafAtUKRSAEmoDuuUXsHVRPF
-	0nEelyy5GRYiJcO5Urlcdl2MoPpNyvZu82XRBs5RzzAeWG1pJWNeSN4kGG2QOCo/OQY4Zn3StlhzP
-	G/4wMlf+pbRsltqw1dgVlgLJMdo0Sl7lRoepd6LzqDLBXJJTI/MxZjb0NooQELe/0aJNw2N9kOb3n
-	rrjczTUEi3tuaCwJJp+KVW3XjOEKcz2JfnRZMcopKVzp4GSEIJvCp85IFUz7A+ZATIOEZgd5AKuxK
-	AC0VD64J6vkP09TxvB/A==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lBjGRyxNk4JVcmltaQ3K+tCgiQckiRrIYDglcCJDgrA=; b=y8eMHNJMDnVA41
+	rC5VPSo+MplnRhE26mg+sxhe5fKrXim1GEw6+EjKnARfEsbub/tvhHIlN2JuW8ILFwjzkSVggkns7
+	Lcx/bpiL6GpAhcVfD2MJL9IVpNJ7Ke4TcaFaDHpRl1NQkG9kqL41gtptNUN4YfWw4ow/fgC5TgtGN
+	qO1IstTZOcLfFfpcAvNBygH1SY5ypFR8yTbzdQmSzP1jqSGNJJ0FrrfuszH1RIoUuUPqhqspabQil
+	6dRHFQ6oAv3+nbijSLES0Six7oLojmnP4wWvjsyhXIkD6lnzzqe2rXuBdHm9ELY1QxgnRJ0t1HZjV
+	aewy1lRUYMWUhugM1gJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbXil-00GmfB-P9; Tue, 05 Apr 2022 01:10:59 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1nbZMe-00GxM2-Do; Tue, 05 Apr 2022 02:56:16 +0000
+Received: from mail-io1-xd35.google.com ([2607:f8b0:4864:20::d35])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbXig-00GmeW-RL
- for linux-mtd@lists.infradead.org; Tue, 05 Apr 2022 01:10:56 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 6DC35CE172D;
- Tue,  5 Apr 2022 01:10:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5985C2BBE4;
- Tue,  5 Apr 2022 01:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649121043;
- bh=/wQGv+a5YNqAzNePjyG4n29JhJYDL+Zyw5nRut7cPrc=;
- h=From:To:Cc:Subject:Date:From;
- b=q8VfEa/oASHdKAkWs2vcgyr8IFyfZpgeO+2YxRec8fu1S5I/16C+2g1X8fOEDJ/dB
- 64eOp+fLrNCiX4pmDDz89Fvaz28wO5peHW1tvH8Q+ANFh8+b3JSAnWgTGSQNUnuMfY
- GvDS3RbRdDy3f0v35lJ6CsuXQxnlXMq+uHCcECfkLY8apdfr3xbR7Nrm4TC6erTq1u
- x8aKSIeDPdXmMZqU0KAZEKjtNJN/2enPWNfDMlHiU3yzn+DlIZORiMljEtv48rXNZN
- +xS+ZQcGnl+E3Z37rSp9+BvQxGB7G7gIziWS54dIpEFGfYRYNpyU3TlXt9kBNrnKtT
- rjU1AZVFsuHyQ==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-fscrypt@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-mtd@lists.infradead.org, ceph-devel@vger.kernel.org
-Subject: [PATCH] fscrypt: split up FS_CRYPTO_BLOCK_SIZE
-Date: Mon,  4 Apr 2022 18:09:14 -0700
-Message-Id: <20220405010914.18519-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.35.1
+ id 1nbZMS-00GxKJ-AI; Tue, 05 Apr 2022 02:56:05 +0000
+Received: by mail-io1-xd35.google.com with SMTP id z6so13728259iot.0;
+ Mon, 04 Apr 2022 19:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=p3yv5M0ISj3OX+DOMKzeUfYigLUei4YvBEe35BUC17o=;
+ b=Iby+H9vRR0KxP8wmPtDjQoteNOmv+p844+8qA1h05FUmIW6offZ4WiuaCgWKkD5786
+ 2K4vaN0cJBuUjjSWl4P0i7kOAFoRFmzBZi5iSeXJNLZhQJ3vSph+J4pah8CZ+AOrTlkH
+ K6D3s7I0Pct4kOQo8T4buUuUp2vy2MPMFLRUC809BtNucg4JQdP/qpNuzDgELI0QAjLu
+ W16Lj6UvH+BhREZ+6vlIy+yeM6/n3URXWQHaPOxA99v5Ly9x09pe/og6JFll6Anhcefo
+ hTxxzRcRxVlPUKvgeIw9jynwNv3OaL0dT6bLAoipXA2R/wXCgPjSBtEJHg3OtHVO3jGS
+ AcpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=p3yv5M0ISj3OX+DOMKzeUfYigLUei4YvBEe35BUC17o=;
+ b=4y53qO+nKUJ3CryMdNO1HungUabgxEOZANfjqkzct6V5pkdPOfxFtcrISbvtIYHTp7
+ 0FI4EGbreGl45GmdNYMLIr9bb+54pjy0TLSwpBDyrE1TCTRia4XWHkxJ1S49Xt9PsWyc
+ fKvqMgHyEFaPWNvVSxxR8xYyW1JVNZrz1xfKAI14tf3IfPmOZV4AjxGB76sHhqnBRnMX
+ QF7iQzSMoUAFoHMyStkJqUk3F8wVFmzxvN3bqNT8A+jE1d6FoGf5LZFtK/3VjtjrmFM9
+ 9tvSjDtIsyCfupAsnCSZ1ZdJ2cmimJ6fm6YNhBQWTr0vAAuXjXO9oxafH9T0mLD6cNbn
+ A0qQ==
+X-Gm-Message-State: AOAM531JhoMhxfv8pfmRMNhiqCy4cEW/UXsW/q3C+t7eq+WkGSJw8zz3
+ aoi+D3eloU2EoGhCSz+KB2aCUOhUKUGHpfCF18s=
+X-Google-Smtp-Source: ABdhPJw5IPJXC5+wEEp+ZE5Rd8BQ1UNxzVXfXqR1Eu2OFd1PaDiIVCwKZaHIurGuhLQhMFWhAJtYSP96dKLBe+/HEWo=
+X-Received: by 2002:a05:6638:d16:b0:323:63cd:c144 with SMTP id
+ q22-20020a0566380d1600b0032363cdc144mr841464jaj.76.1649127362523; Mon, 04 Apr
+ 2022 19:56:02 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220404131818.1817794-1-gch981213@gmail.com>
+ <20220404131818.1817794-5-gch981213@gmail.com>
+ <1649088538.050456.1436949.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1649088538.050456.1436949.nullmailer@robh.at.kernel.org>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Tue, 5 Apr 2022 10:55:51 +0800
+Message-ID: <CAJsYDVLaXAoL=TcPun6rckcA_cdUS-zFy_7M6uCpfzX+jbQEag@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] dt-bindings: spi: add binding doc for spi-mtk-snfi
+To: Rob Herring <robh@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, linux-spi@vger.kernel.org, 
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ Pratyush Yadav <p.yadav@ti.com>, 
+ linux-arm-kernel@lists.infradead.org, Cai Huoqing <cai.huoqing@linux.dev>, 
+ Roger Quadros <rogerq@kernel.org>, Yu Kuai <yukuai3@huawei.com>, 
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mediatek@lists.infradead.org, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, devicetree@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, 
+ Paul Cercueil <paul@crapouillou.net>, Florian Fainelli <f.fainelli@gmail.com>, 
+ Colin Ian King <colin.king@intel.com>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220404_181055_286737_C10A7ADB 
-X-CRM114-Status: GOOD (  19.96  )
+X-CRM114-CacheID: sfid-20220404_195604_434228_1AB2A5C7 
+X-CRM114-Status: GOOD (  11.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,138 +94,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi Rob!
 
-FS_CRYPTO_BLOCK_SIZE is neither the filesystem block size nor the
-granularity of encryption.  Rather, it defines two logically separate
-constraints that both arise from the block size of the AES cipher:
+On Tue, Apr 5, 2022 at 12:09 AM Rob Herring <robh@kernel.org> wrote:
+> [...]
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.example.dt.yaml: spi@1100d000: 'ecc-engine' is a required property
+>         From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.yaml
+> Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.example.dt.yaml:0:0: /example-0/soc/spi@1100d000/flash@0: failed to match any schema with compatible: ['spi-nand']
 
-- The alignment required for the lengths of file contents blocks
-- The minimum input/output length for the filenames encryption modes
+I ran the tests myself and it's only complaining about the ecc-engine name:
 
-Since there are way too many things called the "block size", and the
-connection with the AES block size is not easily understood, split
-FS_CRYPTO_BLOCK_SIZE into two constants FSCRYPT_CONTENTS_ALIGNMENT and
-FSCRYPT_FNAME_MIN_MSG_LEN that more clearly describe what they are.
+/home/user/src/kernels/linux/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.example.dtb:
+spi@1100d000: 'ecc-engine' is a required property
+From schema: /home/user/src/kernels/linux/Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.yaml
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/crypto.c      | 10 +++++-----
- fs/crypto/fname.c       | 11 +++++++++--
- fs/ubifs/ubifs.h        |  2 +-
- include/linux/fscrypt.h | 12 +++++++++++-
- 4 files changed, 26 insertions(+), 9 deletions(-)
-
-diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
-index 526a4c1bed994..e78be66bbf015 100644
---- a/fs/crypto/crypto.c
-+++ b/fs/crypto/crypto.c
-@@ -113,7 +113,7 @@ int fscrypt_crypt_block(const struct inode *inode, fscrypt_direction_t rw,
- 
- 	if (WARN_ON_ONCE(len <= 0))
- 		return -EINVAL;
--	if (WARN_ON_ONCE(len % FS_CRYPTO_BLOCK_SIZE != 0))
-+	if (WARN_ON_ONCE(len % FSCRYPT_CONTENTS_ALIGNMENT != 0))
- 		return -EINVAL;
- 
- 	fscrypt_generate_iv(&iv, lblk_num, ci);
-@@ -213,8 +213,8 @@ EXPORT_SYMBOL(fscrypt_encrypt_pagecache_blocks);
-  * fscrypt_encrypt_block_inplace() - Encrypt a filesystem block in-place
-  * @inode:     The inode to which this block belongs
-  * @page:      The page containing the block to encrypt
-- * @len:       Size of block to encrypt.  Doesn't need to be a multiple of the
-- *		fs block size, but must be a multiple of FS_CRYPTO_BLOCK_SIZE.
-+ * @len:       Size of block to encrypt.  This must be a multiple of
-+ *		FSCRYPT_CONTENTS_ALIGNMENT.
-  * @offs:      Byte offset within @page at which the block to encrypt begins
-  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
-  *		number of the block within the file
-@@ -283,8 +283,8 @@ EXPORT_SYMBOL(fscrypt_decrypt_pagecache_blocks);
-  * fscrypt_decrypt_block_inplace() - Decrypt a filesystem block in-place
-  * @inode:     The inode to which this block belongs
-  * @page:      The page containing the block to decrypt
-- * @len:       Size of block to decrypt.  Doesn't need to be a multiple of the
-- *		fs block size, but must be a multiple of FS_CRYPTO_BLOCK_SIZE.
-+ * @len:       Size of block to decrypt.  This must be a multiple of
-+ *		FSCRYPT_CONTENTS_ALIGNMENT.
-  * @offs:      Byte offset within @page at which the block to decrypt begins
-  * @lblk_num:  Filesystem logical block number of the block, i.e. the 0-based
-  *		number of the block within the file
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index a9be4bc74a94a..14e0ef5e9a20a 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -18,6 +18,13 @@
- #include <crypto/skcipher.h>
- #include "fscrypt_private.h"
- 
-+/*
-+ * The minimum message length (input and output length), in bytes, for all
-+ * filenames encryption modes.  Filenames shorter than this will be zero-padded
-+ * before being encrypted.
-+ */
-+#define FSCRYPT_FNAME_MIN_MSG_LEN 16
-+
- /*
-  * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-  *
-@@ -267,7 +274,7 @@ bool fscrypt_fname_encrypted_size(const union fscrypt_policy *policy,
- 
- 	if (orig_len > max_len)
- 		return false;
--	encrypted_len = max(orig_len, (u32)FS_CRYPTO_BLOCK_SIZE);
-+	encrypted_len = max_t(u32, orig_len, FSCRYPT_FNAME_MIN_MSG_LEN);
- 	encrypted_len = round_up(encrypted_len, padding);
- 	*encrypted_len_ret = min(encrypted_len, max_len);
- 	return true;
-@@ -350,7 +357,7 @@ int fscrypt_fname_disk_to_usr(const struct inode *inode,
- 		return 0;
- 	}
- 
--	if (iname->len < FS_CRYPTO_BLOCK_SIZE)
-+	if (iname->len < FSCRYPT_FNAME_MIN_MSG_LEN)
- 		return -EUCLEAN;
- 
- 	if (fscrypt_has_encryption_key(inode))
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 008fa46ef61e7..7d6d2f152e039 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -132,7 +132,7 @@
- #define WORST_COMPR_FACTOR 2
- 
- #ifdef CONFIG_FS_ENCRYPTION
--#define UBIFS_CIPHER_BLOCK_SIZE FS_CRYPTO_BLOCK_SIZE
-+#define UBIFS_CIPHER_BLOCK_SIZE FSCRYPT_CONTENTS_ALIGNMENT
- #else
- #define UBIFS_CIPHER_BLOCK_SIZE 0
- #endif
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 50d92d805bd8c..efc7f96e5e26b 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -18,7 +18,17 @@
- #include <linux/slab.h>
- #include <uapi/linux/fscrypt.h>
- 
--#define FS_CRYPTO_BLOCK_SIZE		16
-+/*
-+ * The lengths of all file contents blocks must be divisible by this value.
-+ * This is needed to ensure that all contents encryption modes will work, as
-+ * some of the supported modes don't support arbitrarily byte-aligned messages.
-+ *
-+ * Since the needed alignment is 16 bytes, most filesystems will meet this
-+ * requirement naturally, as typical block sizes are powers of 2.  However, if a
-+ * filesystem can generate arbitrarily byte-aligned block lengths (e.g., via
-+ * compression), then it will need to pad to this alignment before encryption.
-+ */
-+#define FSCRYPT_CONTENTS_ALIGNMENT 16
- 
- union fscrypt_policy;
- struct fscrypt_info;
+It says nothing about the spi-nand part.
+I'd like to keep the flash@0 node in the example to demonstrate the
+nand-ecc-engine usage. What should I do?
 -- 
-2.35.1
-
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
