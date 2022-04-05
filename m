@@ -4,82 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D958FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Apr 2022 16:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98890C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Apr 2022 19:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UGp/uQs586IC9YUxduE91UTx/9d9LnMtr2QZzG/dfVU=; b=GldOuP1fKTEIem
-	TqhykQx5q0YihmcgFqMN2Tn8ZCToekhBPZrsOLPC/W4CvT2RFRwi5YJuEk7f0HO0ZWzMiOw1ftnqT
-	4xiE3fzwkobzJcHAdF57KV+ol5jIRwb+ST20bqfJJdgIA2uPVEOp6PILb9mxzi2GdSS0pqAqxDbAk
-	/KE91xcX7BP5ddrMyqGUiC57lW8+R2c/YHR03Ls6YafRfMrvsPw4e6FT5v6ZJxy5ANJlIOKqLiGHW
-	J7PTWwtKe5tyiSBxIEI6TXagiHTS9q8/yLZuiaNR4+Tk9mUoqEudj+K1NfHvE4cVJ6H4fJF/j2F+z
-	GYH5VzZG8LEY4ZZ8afxA==;
+	List-Owner; bh=pc7NF3uKzdz7z2EsHFAuY2NrbYUy9JE3ukJ7O8ZmEfg=; b=FhZU1AFY/U/sA8
+	giTzimCm0ldP+/aHeLLVgRVWi+CoqTmnsCyXK8aE9uXxyn0hOnze0B5qkDT+QyYCS36HG+n7ujXAZ
+	O8CiTHYhjdP0t2aNfir7W0gYcmXGqlSTrnkncllaF65ZVBIjbUDskBu5oCHCwEuOMRSkSqVyMVom3
+	pPBj2hx2PFaTi7R1rWn2+tJ87DrSwtsFJrMDXDJFgNcfAcJ0AxpFHtpro5cm+VJ4tJzBSCxzPPH0X
+	fwi1BnGBDoKecbE1mdj2G+bePQIPwr8vRvY98HX9dHQUD1t6ILzLc72i5P6F+kuMP7n2C73By7R1m
+	NOD0dFyjg8qtGm5OV/9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nbljY-001pmu-3n; Tue, 05 Apr 2022 16:08:44 +0000
-Received: from mail-il1-x132.google.com ([2607:f8b0:4864:20::132])
+	id 1nbolr-002L5b-Jz; Tue, 05 Apr 2022 19:23:19 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nbljH-001ph8-BL; Tue, 05 Apr 2022 16:08:28 +0000
-Received: by mail-il1-x132.google.com with SMTP id x9so9550751ilc.3;
- Tue, 05 Apr 2022 09:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=hW77YXphKvERuG5H+iUJ9uDZUjTyhWglFK1sbd/bTfk=;
- b=fUC31B96e41c6xmeoqpvrYUa+mUJ1GYiAW7u8dnTGZSOQ7OWqfyoSDvmCBT+eQyqiM
- UNdcfy7aDYv4YEBK6yTK4m94iqB4mpunTxsY35VKeoiyjYBvjZlArvV/DuQ1TafofBsN
- B8jnMYbhZHuAtG0EsMlbVVyM5/HNlK6BRp6Hl4XkThnT78hLnj3HpF4llnx3+OYAEU5U
- x3+rpPlMUisFFcYPr6dB1CgV3FqngwVsHqBKUAIg5DreEgngpLsbr+alvkf5CRYW+Tcu
- pxzT1+QZCWMKPsEZ8VNqb0XAtv+y2b5SWNMcGsIME24NejuAZ2pboYge6GEjQcCKTQBQ
- O4Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=hW77YXphKvERuG5H+iUJ9uDZUjTyhWglFK1sbd/bTfk=;
- b=s/sSwTlCGW5ZW+SKUxWNwsP1ddR5c92axFVatNL3uVbIfSVzh5+EHgZswdACXgfBfS
- fVuR3xr+y7ArUmSxqxxNgA+vuNWO2/DVRYZ79n/qipr8ydUrQXJgxhfIpCp1blSBz5Q8
- aBBBRASlaXh3curNnjQoCS7RhgcYKMOA7gpx29KVu3wa67EqMSNzELVHaOE5BBgHhm67
- WXqhBvIbp5toy4PIuywa0+7mfJGSTPS+SwU7oi4vCE5O/f1XrkXWiqxsCvJADM8BUebh
- Xxp635rijkX/dP8Xro5iPNOqwj8o5ahyeJEaIqb3fr4DfCQILGXjI1EEeX1Miiv4CAIN
- oEig==
-X-Gm-Message-State: AOAM5333728Gf+Jt9lRE6TwY+HKDjzRzdEHg/HQQbSuo4ioY5+GqLOxY
- taT+XhQoyGEYC7O+NFJ2jCz3zSp/fv7QEmihXqGLb8y5LtMa6prRz0E=
-X-Google-Smtp-Source: ABdhPJz0ff0WGn+zTKCeGfDo2EgfINMJ8I4npVJmeR2s6MXHr0OMaXaR8zU6qWKRN7KTFA46Gm77KGlaYFiEhbvOSdU=
-X-Received: by 2002:a92:7f11:0:b0:2ca:50f9:63d6 with SMTP id
- a17-20020a927f11000000b002ca50f963d6mr2222344ild.150.1649174906221; Tue, 05
- Apr 2022 09:08:26 -0700 (PDT)
+ id 1nboln-002L3X-Rm; Tue, 05 Apr 2022 19:23:17 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 235JMjDv005917;
+ Tue, 5 Apr 2022 14:22:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1649186565;
+ bh=gyTjrVE6XZL0s0mFe2hpv610AmkYDUb5iT13rkgmKRc=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=PKBKT8masPEuR2LOHeC3RosC3UfwVAOBbmci39ci03yRnQIY7L693HlQISqV5EhBi
+ Pf851tANHiSV/1GhVdsERrDoEtTUvfdEe//BrbqWiTHGsHPqvSkgPqqMtwCcOjlfxA
+ b+oHaewX2Mtkj8jRegPfopO8NDUb3Ee1k9Dei77w=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 235JMjtb023636
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 5 Apr 2022 14:22:45 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 5
+ Apr 2022 14:22:45 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 5 Apr 2022 14:22:45 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 235JMiEb104214;
+ Tue, 5 Apr 2022 14:22:45 -0500
+Date: Wed, 6 Apr 2022 00:52:43 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
+CC: <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Mark Brown
+ <broonie@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, <linux-aspeed@lists.ozlabs.org>,
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+ Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
+ <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Tao Ren <rentao.bupt@gmail.com>
+Subject: Re: [PATCH v4 08/11] spi: aspeed: Calibrate read timings
+Message-ID: <20220405192243.7ilibbsyomg42uwg@ti.com>
+References: <20220325100849.2019209-1-clg@kaod.org>
+ <20220325100849.2019209-9-clg@kaod.org>
+ <20220331164115.w5q3wxlmwcg3w4ns@ti.com>
+ <8c88e726-0ddb-e2ba-35df-676cfc3d0475@kaod.org>
 MIME-Version: 1.0
-References: <20220404131818.1817794-1-gch981213@gmail.com>
- <20220404131818.1817794-5-gch981213@gmail.com>
- <1649088538.050456.1436949.nullmailer@robh.at.kernel.org>
- <CAJsYDVLaXAoL=TcPun6rckcA_cdUS-zFy_7M6uCpfzX+jbQEag@mail.gmail.com>
- <20220405092024.25d97c33@xps13> <YkxlsU+P33ip2oWH@robh.at.kernel.org>
-In-Reply-To: <YkxlsU+P33ip2oWH@robh.at.kernel.org>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Wed, 6 Apr 2022 00:08:15 +0800
-Message-ID: <CAJsYDVL_-dkxRsU24NmWA4KuHTVSJwjbr_9kcVcLao=LYSz+Jw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] dt-bindings: spi: add binding doc for spi-mtk-snfi
-To: Rob Herring <robh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-spi@vger.kernel.org, 
- Matthias Brugger <matthias.bgg@gmail.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- Pratyush Yadav <p.yadav@ti.com>, 
- linux-arm-kernel@lists.infradead.org, Cai Huoqing <cai.huoqing@linux.dev>, 
- Roger Quadros <rogerq@kernel.org>, Yu Kuai <yukuai3@huawei.com>, 
- linux-mediatek@lists.infradead.org, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, devicetree@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, 
- Paul Cercueil <paul@crapouillou.net>, Florian Fainelli <f.fainelli@gmail.com>, 
- Colin Ian King <colin.king@intel.com>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- linux-mtd@lists.infradead.org
+Content-Disposition: inline
+In-Reply-To: <8c88e726-0ddb-e2ba-35df-676cfc3d0475@kaod.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220405_090827_427705_DE2FA510 
-X-CRM114-Status: GOOD (  13.50  )
+X-CRM114-CacheID: sfid-20220405_122316_020443_83E8083A 
+X-CRM114-Status: GOOD (  36.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,31 +85,135 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+On 04/04/22 09:30AM, C=E9dric Le Goater wrote:
+> On 3/31/22 18:41, Pratyush Yadav wrote:
+> > Hi,
+> > =
 
-On Tue, Apr 5, 2022 at 11:52 PM Rob Herring <robh@kernel.org> wrote:
-> > You can try including spi-nand.yaml (like you do with
-> > spi-controller.yaml). You should no longer need to define
-> > nand-ecc-engine then as it is already described there?
->
-> Including spi-nand.yaml is wrong. If that just landed, then this may
-> have run before the base moved to v5.18-rc1.
+> > On 25/03/22 11:08AM, C=E9dric Le Goater wrote:
+> > > To accommodate the different response time of SPI transfers on differ=
+ent
+> > > boards and different SPI NOR devices, the Aspeed controllers provide a
+> > > set of Read Timing Compensation registers to tune the timing delays
+> > > depending on the frequency being used. The AST2600 SoC has one of the=
+se
+> > > registers per device. On the AST2500 and AST2400 SoCs, the timing
+> > > register is shared by all devices which is problematic to get good
+> > > results other than for one device.
+> > > =
 
-spi-nand.yaml is in v5.18 only and I'm able to reproduce the
-spi-nand complaint by cherry-picking the commit to v5.17 and
-running the check.
-This means I don't need to do anything with the spi-nand error
-then.
-Thanks for the hint.
+> > > The algorithm first reads a golden buffer at low speed and then perfo=
+rms
+> > > reads with different clocks and delay cycle settings to find a breaki=
+ng
+> > > point. This selects a default good frequency for the CEx control regi=
+ster.
+> > > The current settings are a bit optimistic as we pick the first delay =
+giving
+> > > good results. A safer approach would be to determine an interval and
+> > > choose the middle value.
+> > > =
 
--- 
+> > > Calibration is performed when the direct mapping for reads is created.
+> > > Since the underlying spi-nor object needs to be initialized to create
+> > > the spi_mem operation for direct mapping, we should be fine. Having a
+> > > specific API would clarify the requirements though.
+> > > =
+
+> > > Cc: Pratyush Yadav <p.yadav@ti.com>
+> > > Reviewed-by: Joel Stanley <joel@jms.id.au>
+> > > Tested-by: Joel Stanley <joel@jms.id.au>
+> > > Tested-by: Tao Ren <rentao.bupt@gmail.com>
+> > > Signed-off-by: C=E9dric Le Goater <clg@kaod.org>
+> > > ---
+> > >   drivers/spi/spi-aspeed-smc.c | 281 ++++++++++++++++++++++++++++++++=
++++
+> > >   1 file changed, 281 insertions(+)
+> > > =
+
+> > [...]
+> > > @@ -517,6 +527,8 @@ static int aspeed_spi_chip_adjust_window(struct a=
+speed_spi_chip *chip,
+> > >   	return 0;
+> > >   }
+> > > +static int aspeed_spi_do_calibration(struct aspeed_spi_chip *chip);
+> > > +
+> > >   static int aspeed_spi_dirmap_create(struct spi_mem_dirmap_desc *des=
+c)
+> > >   {
+> > >   	struct aspeed_spi *aspi =3D spi_controller_get_devdata(desc->mem->=
+spi->master);
+> > > @@ -565,6 +577,8 @@ static int aspeed_spi_dirmap_create(struct spi_me=
+m_dirmap_desc *desc)
+> > >   	chip->ctl_val[ASPEED_SPI_READ] =3D ctl_val;
+> > >   	writel(chip->ctl_val[ASPEED_SPI_READ], chip->ctl);
+> > > +	ret =3D aspeed_spi_do_calibration(chip);
+> > > +
+> > =
+
+> > I am still not convinced this is a good idea. The API does not say
+> > anywhere what dirmap_create must be called after the flash is completely
+> > initialized, though that is what is done currently in practice.
+> =
+
+> Yes because we wouldn't have a correct 'spi_mem_dirmap_info' if it wasn't
+> the case. May be change the documentation ?
+
+SPI NOR knows what protocol and opcodes it would use before it actually =
+
+puts the flash in that mode. So in theory it could call dirmap_create() =
+
+before it has put the flash in say 8D-8D-8D mode. I don't see much =
+
+reason to do so in practice, but who knows, that might change. This is =
+
+why I would like to hear what other people think.
+
+> =
+
+> > I think
+> > an explicit API to mark flash as "ready for calibration" would be a
+> > better idea.
+> =
+
+> OK. Since the above is a oneliner, it should not be a problem to move
+> it under a new handler if needed.
+> =
+
+> The dirmap_create() handler expects the spi-mem descriptor and the field
+> 'desc->info.op_tmpl' to be correctly initialized in order to compute the
+> control register value, which is a requirement for dirmap_read(). The
+> calibration sequence simply comes after.
+> =
+
+> AFAICT, there is nothing incorrect today.
+
+In practice, no there is nothing incorrect. But as I explained above, it =
+
+is certainly possible to call dirmap_create() before the flash is ready.
+
+> =
+
+> > Tudor/Mark/Miquel, what do you think?
+> =
+
+> =
+
+> Thanks,
+> =
+
+> C.
+
+-- =
+
 Regards,
-Chuanhong Guo
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
