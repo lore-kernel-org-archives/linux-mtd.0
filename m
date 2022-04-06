@@ -4,55 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 504EDC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  6 Apr 2022 16:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4ADBCC43217
+	for <linux-mtd@archiver.kernel.org>; Wed,  6 Apr 2022 17:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oeK8zZB693aXvcW5xf4FeIJW63aLFQAbTkEFQpXV2ZI=; b=vramWu+fjmPg1c
-	5r2E2Es7eKrHzYocoxLRLF49OreB3R3iWB2jTpZhL5UCI5Df7pji28AQSOVKQTii57EvUSm5MjdAd
-	NGx0z3BdJIIyKNUINu/RiQPAYcHwSlQV8aIUhcen8lxu+tyne8lc0s6SNIWLHiPE8YBfMb8h+vaOt
-	bbDIG2qOQ3Ter21q0GAZfplPloL1ojdByCkXMgew9zzjP7Vv+XQz7dvotGXdSJokHSz9aT4L5z2Qr
-	MQNM2L/rEF720cNK238dnMjiX05qAHISONyVhBQ5VNFJP3jcLmDg34jc0ODdbXWGWA35FwHUjTC1t
-	32ujSWXhTlT8hdYQj/gg==;
+	List-Owner; bh=DcxquJyPwnb7SDo8wdswmgSqdagvlt6zNmHb4u28ZgE=; b=QzuSxdsy4y9JnK
+	vrlimr42dso4svszstWzsF5KnTVBFL7pWc01o+wvxr5bzg33sB1JXbn5YSrW7ApujyXOrPYlQ9e14
+	kl3n7VDB6Ng5PwA7t3BKsuAUUZolhFeVJ+eJcdu2UGWd3tlPy2AZPpl+lrt2pm6JZZUDIXswWeoCN
+	ixAT9Ho+BRbk1epBxLkGfey77LPAfRYwCVMoA+Vevk0ORGguEKTnCSOFtFoq+6DZQXto9233csxeP
+	rAlIlEFoTYzQNhGCI4+Nkq5u2HqYy5zS+yzF2+lIRXdNAPSA2IsQY4ShAx4LPh075kENsIzYKwNu0
+	nskcaCv01sufqCYyJAIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nc8KZ-00795i-Fe; Wed, 06 Apr 2022 16:16:27 +0000
-Received: from mail.fmat.eu ([2a03:4000:21:70a:b8c2:1eff:fea5:fc02])
+	id 1nc9SO-007N4s-8L; Wed, 06 Apr 2022 17:28:36 +0000
+Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nc8KU-00792T-DQ
- for linux-mtd@lists.infradead.org; Wed, 06 Apr 2022 16:16:25 +0000
-Received: from authenticated-user (mail.fmat.eu [94.16.121.4])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.fmat.eu (Postfix) with ESMTPSA id A2843E00FE;
- Wed,  6 Apr 2022 18:16:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=matouschek.org;
- s=mail; t=1649261776;
- bh=NFkLe8wUwx7Fts3gPE0oC0Vmw4db7vqZzndlmpcQOyo=;
- h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
- b=LBTHuhBeh7kJRivdr1hGwNCYzEMVD5+gRNSP9HVL2eHL9AGiZQc+Hz52iddGz8Rqa
- 2TGRsGG5csTfeLBibmEGqRF/0M3oV3XVjVJk6Rq+/9gPEeKumdDj/EE+LMpEN2Z4iO
- F3m5LY8LU2LPVtdcSxJe9wN2OJbmEAyJdcmmLT1c715lT1tdpdwZDXCPToHk2UaIkL
- H+Yi8+G+h3ZWBsRj4ISZ79YkDb0LYWz0dGkxDeL7Ebq+VjhiM5/4qGTbJq8Yh/d43C
- pSQLc5c8MbnxV1Gz7Mjt2YHh6WrcmtnWlIEq9XjfjoSMjanOQBa9vZyJIhOpkePGmM
- vGZFQsecEWXaw==
-Message-ID: <c1387c1949a8ec705116f5ee8a73fa35979aa196.camel@matouschek.org>
-Subject: Re: [PATCH] mtd: spinand: Add support for XTX XT26G0xA
-From: Felix Matouschek <felix@matouschek.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org
-Date: Wed, 06 Apr 2022 18:16:16 +0200
-In-Reply-To: <20220404104141.7b7b79d5@xps13>
-References: <20220401212951.1133780-1-felix@matouschek.org>
- <20220404104141.7b7b79d5@xps13>
+ id 1nc9SK-007N2p-OO; Wed, 06 Apr 2022 17:28:34 +0000
+Received: by mail-lf1-x12c.google.com with SMTP id p10so5242768lfa.12;
+ Wed, 06 Apr 2022 10:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=WJLYFFwKJzu0AzBejzceyC93Fh4AhvIk3A/MNZXzKIU=;
+ b=nHoFYmIVcbUdYBuRBczLdRhO5AcYZ6GHHFtKpS9G1n5vNIpBGLipmKmQ40hQnwfBEK
+ 9YcCx5HGe8T4NG1UPywpqZKblDsiU8Uam6EvTYaei53mUEV7gX/X6QEIMPDVNdTe1RsC
+ lSqUADllCjDlRJ3aqfDHj4gGsZ5WvTndElsOvm3ukXbURNWbOjm9tS3FKy9TW5JIte+s
+ iqchodtdlLO+0839AsHapTHL+am4rmkQFqKuweIuQiuTq0iA/dxkHoEkiJl793SmXbAL
+ d6FIVbXVTWtg6j4nPkHK8I7vb1+rBuBMN5T4ZVmgoa+qulAgS9/S0AV92hnwAdWJS/in
+ gNUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=WJLYFFwKJzu0AzBejzceyC93Fh4AhvIk3A/MNZXzKIU=;
+ b=flp6CJ2rztCnGAY8e72/RRZbmp6zg/XjL9vhv6wvN4Ds8lkTpvaXAhgPhY0CcJVoTw
+ NLtUVlXkKMOF+QnS3m43je+5Cmh9uDewwLG9uBJzCW3PEprItk4PVREC70/MqYDmfRVz
+ bGJkwAuk2admWMbIHfL7FcwdAOfcnvR2ec/6Jkp7rCyd8f9wWWutRdDgQ4DLvjUM+cRz
+ vb2AufI3hQqx7WoAf7DlfbRcrX+ptB0CXtyVsN3H1roaqyBqp8opzdFgNfid3tmGPo+S
+ JZyItDRzX/95cvEML9HwaT8Ljp3lAXQDqMWzCSrZhNhLbWipOR/053todwV3dqGSpC/w
+ racg==
+X-Gm-Message-State: AOAM530rW6rFE2RKhrDuhIUqH6eC9j2xKZyyvB7z3xUJEHM2oLNuQ8Uv
+ qVhvPTTPqSGxs7EU1G5kkiqvAFExy4avjHlWQ0c=
+X-Google-Smtp-Source: ABdhPJxvT7YhfWN8QbCVz4oydCsKwT/zbXQ5089WXaSZlqzdjbFflulVc086iBmKtewP4KtbC66vp+jW8qrWjcRFTmg=
+X-Received: by 2002:ac2:5f4d:0:b0:43e:da3e:4529 with SMTP id
+ 13-20020ac25f4d000000b0043eda3e4529mr6768924lfz.627.1649266108188; Wed, 06
+ Apr 2022 10:28:28 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220406060516.409838-1-hch@lst.de>
+ <20220406060516.409838-24-hch@lst.de>
+In-Reply-To: <20220406060516.409838-24-hch@lst.de>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Thu, 7 Apr 2022 02:28:15 +0900
+Message-ID: <CAKFNMokGOma3pvHdEsnsjuKgW+jpYX9zx8fWwJWyeKuCpKz-YQ@mail.gmail.com>
+Subject: Re: [PATCH 23/27] block: add a bdev_max_discard_sectors helper
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andreas Gruenbacher <agruenba@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
+ device-mapper development <dm-devel@redhat.com>, linux-xfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org, 
+ linux-block@vger.kernel.org, drbd-dev@lists.linbit.com, nbd@other.debian.org, 
+ ceph-devel@vger.kernel.org, virtualization@lists.linux-foundation.org, 
+ xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, 
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, 
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+ cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net, 
+ linux-nilfs <linux-nilfs@vger.kernel.org>, ntfs3@lists.linux.dev, 
+ ocfs2-devel@oss.oracle.com, Linux MM <linux-mm@kvack.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220406_091623_013594_5068B2E4 
-X-CRM114-Status: GOOD (  17.28  )
+X-CRM114-CacheID: sfid-20220406_102832_828134_860CAD03 
+X-CRM114-Status: GOOD (  19.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,43 +89,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKdGhhbmsgeW91IGZvciB5b3VyIHJldmlldy4KCkFtIE1vbnRhZywgZGVtIDA0
-LjA0LjIwMjIgdW0gMTA6NDEgKzAyMDAgc2NocmllYiBNaXF1ZWwgUmF5bmFsOgoKPiA+ICtzdGF0
-aWMgaW50IHh0MjZnMHhhX29vYmxheW91dF9lY2Moc3RydWN0IG10ZF9pbmZvICptdGQsIGludAo+
-ID4gc2VjdGlvbiwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IG10ZF9vb2JfcmVnaW9uICpyZWdpb24p
-Cj4gPiArewo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKHNlY3Rpb24pCj4gPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FUkFOR0U7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKg
-wqByZWdpb24tPm9mZnNldCA9IDg7Cj4gPiArwqDCoMKgwqDCoMKgwqByZWdpb24tPmxlbmd0aCA9
-IDQwOwo+IAo+IE9ubHkgNDggT09CIGJ5dGVzPwo+IAo+IE1heWJlIHdlIGNhbiBiZSBtb3JlIGZ1
-dHVyZSBwcm9vZiBieSBhc3N1bWluZyB0aGF0IEVDQyBieXRlcyB3aWxsCj4gYWx3YXlzIGJlIGF0
-IHRoZSBlbmQgKG9yIGF0IGEgc3BlY2lmaWMgb2Zmc2V0KSBhbmQgd2hhdCB3aWxsIGNoYW5nZQo+
-IGlzCj4gdGhlIGFtb3VudCBvZiBieXRlcyB1c2VkIGZvciBzdG9yaW5nIHRoZSBFQ0MgaW5mb3Jt
-YXRpb24gaWYsIGxldCdzCj4gc2F5LAo+IHRoZSBjb21wYW55IGRlY2lkZXMgdG8gaW5jcmVhc2Ug
-dGhlIHN0cmVuZ3RoLgo+IAo+IFNhbWUgYmVsb3cuCgpJJ20gbm90IHF1aXRlIHN1cmUgaWYgSSBp
-bnRlcnByZXRlZCB0aGF0IGRhdGEtc2hlZXQgY29ycmVjdGx5LiAKVGhlIHNlY3Rpb24gZGVzY3Jp
-YmluZyB0aGUgYXJyYXkgb3JnYW5pemF0aW9uIChwYWdlIDcpIHNheXMgdGhhdCB0aGVyZQphcmUg
-MmsgKyA2NCBieXRlcyBwZXIgcGFnZS4gVGhlIHNlY3Rpb24gZGVzY3JpYmluZyB0aGUgRUNDIHBy
-b3RlY3Rpb24KKHBhZ2UgNDEpIHNheXMgdGhhdCBvbmx5IG9mZnNldHMgODA4SCB0byA4MkZIIGNh
-biBiZSB1c2VkIGZvciB1c2VyIGRhdGEKYW5kIGFyZSBjb3ZlcmVkIGJ5IEVDQy4KCj4gPiArc3Rh
-dGljIGludCB4dDI2ZzB4YV9vb2JsYXlvdXRfZnJlZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50
-Cj4gPiBzZWN0aW9uLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgbXRkX29vYl9yZWdpb24gKnJlZ2lv
-bikKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoc2VjdGlvbikKPiA+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVSQU5HRTsKPiA+ICsKPiA+ICvCoMKgwqDCoMKg
-wqDCoHJlZ2lvbi0+b2Zmc2V0ID0gMTsKPiA+ICvCoMKgwqDCoMKgwqDCoHJlZ2lvbi0+bGVuZ3Ro
-ID0gNzsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+ID4gK30KClRoZSBkYXRh
-LXNoZWV0IHNheXMgdGhhdCBvbmx5IG9mZnNldHMgODAxSCB0byA4MDdIIGNhbiBiZSB1c2VkIGZv
-ciB1c2VyCmRhdGEgYW5kIGFyZSBub3QgY292ZXJlZCBieSBFQ0MgKG9mZnNldCA4MDBIIGlzIHJl
-c2VydmVkIGZvciB0aGUgYmFkCmJsb2NrIG1hcmspLgoKVGhlIHJlbWFpbmluZyAxNiBieXRlcyBm
-cm9tIG9mZnNldCA4MzBIIHRvIDgzRkggYXJlIHJlYWQtb25seSB3aGVuIEVDQwppcyBlbmFibGVk
-LCBzbyB0aGV5IGFyZSBvZiBubyB1c2U/IENhbiB5b3UgcGxlYXNlIGFkdmlzZSBpZiB0aGVyZSBp
-cwpzb21ldGhpbmcgSSBjYW4gY2hhbmdlPwoKVGhhbmsgeW91LApGZWxpeAoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+On Wed, Apr 6, 2022 at 11:05 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Add a helper to query the number of sectors support per each discard bio
+> based on the block device and use this helper to stop various places from
+> poking into the request_queue to see if discard is supported and if so how
+> much.  This mirrors what is done e.g. for write zeroes as well.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+...
+> diff --git a/drivers/target/target_core_device.c b/drivers/target/target_core_device.c
+> index 16e775bcf4a7c..7d510e4231713 100644
+> --- a/drivers/target/target_core_device.c
+> +++ b/drivers/target/target_core_device.c
+> @@ -829,9 +829,7 @@ struct se_device *target_alloc_device(struct se_hba *hba, const char *name)
+>  }
+>
+>  /*
+> - * Check if the underlying struct block_device request_queue supports
+> - * the QUEUE_FLAG_DISCARD bit for UNMAP/WRITE_SAME in SCSI + TRIM
+> - * in ATA and we need to set TPE=1
+
+> + * Check if the underlying struct block_device request_queue supports disard.
+>   */
+
+Here was a typo:
+
+ s/disard/discard/
+
+On Thu, Apr 7, 2022 at 12:19 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> If I'm misreading things, could you please document that
+> bdev_max_discard_sectors() != 0 implies that discard is supported?
+
+I got the same impression.   Checking the discard support with
+bdev_max_discard_sectors() != 0 seems a bit unclear than before.
+
+Thanks,
+Ryusuke Konishi
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
