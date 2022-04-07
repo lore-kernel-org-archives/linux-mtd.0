@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACD35C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 16:01:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF62CC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 16:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tsph2sJqDQlApVxOklB9Z0hqb5lc/mJcmHKfUiNe3g0=; b=OgAzfO8auXcV6h
-	7IaB3lCv8dBcSiU3YVT2fSM+0/8LW5ZalCdWCRQHCOHcJ6f2QJPyrCyZ89TLZn17dfNQCnkWZoliu
-	bicEmFLD69Ke8NPEZcjfmDJIFYd2sFwUPk7Fd6w6hd/0FVn1G/5XixA16HBnkwH9kuLP4Tg3+9Dm+
-	ep3viVCIw4mPcQUfRJoaCon0fA0W579llxYfSoUZH4iB5IqCetc0jglfLdBFhbluTBviz5cj9Z3xS
-	nEUaztvQHPvfIosfIAJ7oKhof19H5ivu4+YV9GATZE+3G/EVFeha2G3eKUy2p0VgMAvHCHzKxGL8r
-	5+cCNNB3p7+MesVVcEGw==;
+	List-Owner; bh=Z1Pz5LUwgPiaAq4bh9mysbLSCJsP0K+NgfiKWUS3KU8=; b=FOlhUTtbfUDodv
+	7Kt9VzHgE5y4Humg8N6EKxPR1mAsakTFg0Udni4CdudntttHnRBKizyosyf2gD7xdd+XLrZieMBtd
+	q2sP9FhOLjpV2jdoWADzIneQPgbkCBvxP/ZwZtY7AJ+dAFR9+eiPoQujJKgloTWztajsJJPS96hI7
+	jk31Fc8KzyneES4IHdArIp/0WleIgZ59kMQcXJ3pl8zLoD3jAaqg23BHDUMvcXn5I5ZUaYiTOiiQ3
+	3y4BFRB1eCYLuIxtZQrYZNS8Zq2nRl0HbKbMKQPEAFNxyHfoPF79nnuqhxMO0IK3YUxfHsKJc2vpn
+	PgiJ3vt+avZvwYscGPfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncUYK-00CtX6-PJ; Thu, 07 Apr 2022 16:00:10 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1ncUZT-00Cu9R-Hx; Thu, 07 Apr 2022 16:01:19 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncU5m-00ChxK-AT; Thu, 07 Apr 2022 15:30:40 +0000
+ id 1ncU68-00Ci5P-VT; Thu, 07 Apr 2022 15:31:02 +0000
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id E56341F85A;
- Thu,  7 Apr 2022 15:30:36 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 34AC9215FE;
+ Thu,  7 Apr 2022 15:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1649345436;
+ t=1649345459;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zPq01JLA6dLoXnFchjjFxJhIcKHBhEdkrZLnR4TbLUY=;
- b=arXCGHubFNDMJivA50IVAh5E18SENgaJ+8psB29O+dYSp9GznJDHN9eBNpNqVEEypC+xPt
- YsOhdRjVTg1mFsMpWqZ4oNaVAGZnjLyClojrRdjsUuitokjLJy7oqe8RxGnlNpP0HUVyi6
- 8uSBZYdSoqUowgEJK8P6YGm7aUVWSbo=
+ bh=VK52HHYwZ5mydc6ONgZ3weVRrNtBzOOpSIr7pOvXQbs=;
+ b=WySqupirn7YZPnIWLV0GfVAqxihpYRle8XEAkyNVF3WBqDMBwi92kUG3G7Geq80fpEpqDG
+ ac7ABA9wFAVhQVApAGDNJmbt/DMKsm4fE53BT+WEDXzbauuxegcpY8cjYEPD+30zCAK/0V
+ /KcfIrKcEqFeLeaqKdylieoJrRuFiL8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1649345436;
+ s=susede2_ed25519; t=1649345459;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=zPq01JLA6dLoXnFchjjFxJhIcKHBhEdkrZLnR4TbLUY=;
- b=+RoHDuxhi8eXdx1m79jW3LC9fhbmevwd72sFBk44Osas+gmEsPN5qSbgbwIpqCBgrNluyA
- EXeawVVGeX85rgBw==
+ bh=VK52HHYwZ5mydc6ONgZ3weVRrNtBzOOpSIr7pOvXQbs=;
+ b=dPYi+hdX0iWuGGA7k7dxuydFXSe1+2WyOjXtxXeAslnPVSFPemFb/xuBKsBNhRAOcY4W1X
+ dBEDeLvzeSqw+rCw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
- by relay2.suse.de (Postfix) with ESMTP id AE7A3A3B94;
- Thu,  7 Apr 2022 15:30:36 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 19364A3B83;
+ Thu,  7 Apr 2022 15:30:59 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
- id 5C928DA80E; Thu,  7 Apr 2022 17:26:34 +0200 (CEST)
-Date: Thu, 7 Apr 2022 17:26:34 +0200
+ id A6C86DA80E; Thu,  7 Apr 2022 17:26:56 +0200 (CEST)
+Date: Thu, 7 Apr 2022 17:26:56 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
@@ -66,8 +66,9 @@ Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
  linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
-Subject: Re: [PATCH 24/27] block: add a bdev_discard_granularity helper
-Message-ID: <20220407152634.GL15609@twin.jikos.cz>
+Subject: Re: [PATCH 26/27] block: uncouple REQ_OP_SECURE_ERASE from
+ REQ_OP_DISCARD
+Message-ID: <20220407152656.GM15609@twin.jikos.cz>
 Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -85,15 +86,14 @@ Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
 References: <20220406060516.409838-1-hch@lst.de>
- <20220406060516.409838-25-hch@lst.de>
+ <20220406060516.409838-27-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220406060516.409838-25-hch@lst.de>
+In-Reply-To: <20220406060516.409838-27-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_083038_598990_6DF9A4D5 
-X-CRM114-Status: UNSURE (   9.50  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220407_083101_236665_3F73F197 
+X-CRM114-Status: GOOD (  11.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,21 +111,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 06, 2022 at 08:05:13AM +0200, Christoph Hellwig wrote:
-> Abstract away implementation details from file systems by providing a
-> block_device based helper to retreive the discard granularity.
+On Wed, Apr 06, 2022 at 08:05:15AM +0200, Christoph Hellwig wrote:
+> Secure erase is a very different operation from discard in that it is
+> a data integrity operation vs hint.  Fully split the limits and helper
+> infrastructure to make the separation more clear.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  block/blk-lib.c                     |  5 ++---
->  drivers/block/drbd/drbd_nl.c        |  9 +++++----
->  drivers/block/drbd/drbd_receiver.c  |  3 +--
->  drivers/block/loop.c                |  2 +-
->  drivers/target/target_core_device.c |  3 +--
+>  block/blk-core.c                    |  2 +-
+>  block/blk-lib.c                     | 64 ++++++++++++++++++++---------
+>  block/blk-mq-debugfs.c              |  1 -
+>  block/blk-settings.c                | 16 +++++++-
+>  block/fops.c                        |  2 +-
+>  block/ioctl.c                       | 43 +++++++++++++++----
+>  drivers/block/drbd/drbd_receiver.c  |  5 ++-
+>  drivers/block/rnbd/rnbd-clt.c       |  4 +-
+>  drivers/block/rnbd/rnbd-srv-dev.h   |  2 +-
+>  drivers/block/xen-blkback/blkback.c | 15 +++----
+>  drivers/block/xen-blkback/xenbus.c  |  5 +--
+>  drivers/block/xen-blkfront.c        |  5 ++-
+>  drivers/md/bcache/alloc.c           |  2 +-
+>  drivers/md/dm-table.c               |  8 ++--
+>  drivers/md/dm-thin.c                |  4 +-
+>  drivers/md/md.c                     |  2 +-
+>  drivers/md/raid5-cache.c            |  6 +--
+>  drivers/mmc/core/queue.c            |  2 +-
+>  drivers/nvme/target/io-cmd-bdev.c   |  2 +-
+>  drivers/target/target_core_file.c   |  2 +-
+>  drivers/target/target_core_iblock.c |  2 +-
 
 For
 
->  fs/btrfs/ioctl.c                    | 12 ++++--------
+>  fs/btrfs/extent-tree.c              |  4 +-
 
 Acked-by: David Sterba <dsterba@suse.com>
 
