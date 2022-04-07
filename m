@@ -4,69 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37289C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 07:10:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A564C433FE
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 07:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Dj/UTSuHH/UXWeuU3hb5US+JHWKzs1veQ1jNimE79kY=; b=kyQ+ocMw0YNfJz
-	NUyhA/cxiKKbRCcn0Aa1c05g/MfoejaCn6rrE059+pbi8TGQaoNmE7C2mgIm3sI1BJJkAY7DXX+mx
-	YOgwpjW9N/1jnwlI5oVlf0RikwOo0WKhbkVAZ7+K5m90loBXycCglFDWT0x2YTqftZemLKwrl3fSn
-	Oqfh8k9Df4leQwa4cAT+UEKVH4ypVz7Ww+pF6bkpLmFceEl9tS9ZYGse4S6dJ9evEU0aDJt7Kgdji
-	C1JCvVN9xc3nyqMOHOxQiSih2ZJXlNtRi70Q2Y6caJdNuqwoDFY+BdbGaPFzHFImPmEkR/BXiko2p
-	hErBoB8EznSP1BxfzRRA==;
+	List-Owner; bh=Hjb58jatqFgG9FoCodmdLrDxnulj9lb+UbkmrdPQRRA=; b=2UrO6Lmcwu3mtz
+	pCPQwmhhCLiScHUCx3qh4WqEz31PU5BoVgqJ00iOR3XJX9D+2GdZaXxP2nSj9M12HG8vJwQUA0Fuv
+	7cxe8rL6TtxN5HCHKQyJceFB9BD6i5/fuilGGg5JSJ0MSd+/7C2BePFpCI5J3IW6jQPhm5d5OZdT3
+	fnnC1dIS++fwzRpmIpkd98g7dWMLaDg8McDVsuJpaejuWnQfGnXI5QoYZCOF/mDEP1O6ylK+0ZVnj
+	YOKiJv8503ViscOdHKObKBaq1dJYZsAbPysTPJjnI6+dnOR3FuxN0RC3Du735Km91+91RhB52cOla
+	RRjg17DjGLLiTD9vLRjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncMHI-009pkB-80; Thu, 07 Apr 2022 07:10:00 +0000
-Received: from mail-io1-xd29.google.com ([2607:f8b0:4864:20::d29])
+	id 1ncMtD-00A6pf-No; Thu, 07 Apr 2022 07:49:11 +0000
+Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncMHE-009php-2x
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 07:09:58 +0000
-Received: by mail-io1-xd29.google.com with SMTP id z7so5792378iom.1
- for <linux-mtd@lists.infradead.org>; Thu, 07 Apr 2022 00:09:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=WzhpkLkAxKKTCeGwHVglx3WTSFCKzXoafTwEHEU4NcU=;
- b=L0cqgrWN4QLbqNJfHMzilsPy92mJ5fiKFCmTiOfI4o6WDlFXtCOJQQkh7yZemHeoY0
- 89eMjyr6XXpj3FHS51jv3zYtFELyrtr1+vZpwpzI9IASl2L8la4l1qrL/52gOgbSlHaD
- xeWldQEZhCLkwaMI0xb29b3feJxATFglNRtX0jfGg+ejs4CFDreo61bCqs7x+Z0c2gtE
- jZ4FOJWKFWAthaiKNnv7MDk/V6wXABH4KhyAHIccTuiElQPWbSQ3nNhiADoZuIRwSjr2
- cdixvKn4j321WH1MrUvEdJNEZ8PGTdHXYyGhDD1mVMNG9DblLDJaEqXSGk/vTWikhfsv
- La1Q==
+ id 1ncMsv-00A6ev-80
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 07:48:54 +0000
+Received: by mail-ed1-x534.google.com with SMTP id b15so5418079edn.4
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Apr 2022 00:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=7eOOLrAKkfSspaBOmVeWY/1P1p3w24BPhUI3ADFJBCI=;
+ b=sogAdtsAFC5HCuOZDlP9hCKRUcFarSAAFtArxcpakHbjtI+H6rlxyAdZEWFLiv3Ew0
+ ZiX/ecvjddUhTtCRabR7BgUoqBDDKxzxu5kKlGDuxPv1RYCalrkCJ7aDGWwQ0oKQG+H+
+ wWrk8gsx7JZHJSziIF4YYk+huAMheAeS92FXTkdOAdHYrU1ZfJCa41bjAIpJY8/gBI5x
+ Z13miNyaXnegSrvQi6qzse8DCg5Q1LotTJtkFOgzarqJI5gapKutHVVGlw2tnrrBMbrE
+ rQnYTR14EEKGq61ygs7BSzBZejgH0+DC+46oXgFRHZQWkpr53Q08n05BcMKaE7MQPMb6
+ HtQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=WzhpkLkAxKKTCeGwHVglx3WTSFCKzXoafTwEHEU4NcU=;
- b=7ihezLDXBDJ2uBtk5WCUxmoJtZev+HESe1uXXTCXMhvzoPCsJSqF5U3nXrhWYSj4aY
- elQWs0n3PfNQl2rP/yeQhhsFuxgJxJ1YThm2rS03F6QH4wLShOMyQngdW54HqUJfchOY
- ZY8hvPDJdVyLDp5Hev7uJncCW0DYshEdTnIS0WttHMBd3sjlnxw0ZJ5aq6t6bpGXcpvl
- RBMGTlZ7Xke7K27PSj12Y/TGvrYe33q5tqVX54+71aQ6iMZ7rxs69hlfZ7qxQ4iwkaEr
- /b0hEZhyklMCEe7XKE2WYjAnluZ0I+kpmUXzEqb1Gk1ejf6Chf6iZK5yJ6oX+8EcYvAd
- 4ERQ==
-X-Gm-Message-State: AOAM530vwR3LYRVzQwk2/3UIE8j16g54/p+M4SPOOZaxBNW8x16INHdi
- cMYIFVsEmfb5vCXKWeUnJv6N0GoOGYBmKcfktT4=
-X-Google-Smtp-Source: ABdhPJw3u2VTJOB+BHTGPqMrdtLHZ0bF2EInqEZ2HkmYernVaoBUJ+DNCALbXH9eQyhVaiUDMh0d/xR0z/2dDnWi9AY=
-X-Received: by 2002:a05:6638:d16:b0:323:63cd:c144 with SMTP id
- q22-20020a0566380d1600b0032363cdc144mr6615800jaj.76.1649315394661; Thu, 07
- Apr 2022 00:09:54 -0700 (PDT)
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=7eOOLrAKkfSspaBOmVeWY/1P1p3w24BPhUI3ADFJBCI=;
+ b=NA1fpeKufdC2LgGF/7Bz3DOIUzwYAazlGm0VAx54yc+aZ7k43BV2P8n5TmYaJMcIcO
+ RA79FUx/tZf7zmP1vxaJYFz2rtgePgR5VbAtrUrXwMShVzxT8w7Y7H41KYRB9scjEoOB
+ 4Hj2kI9G2b6SXPvGuZVWnrRN7KOWFwZk5IK8pWlOYhUifno/GexktnnA6+NxKHf/V/cL
+ HUDIz4gFQ6c77XgwrEGIANkyL64pJVMcygHHiJd5QWa5eBfUiYs8KzCvnfwdDZxy9VYH
+ Yii+wLEtTbs78UE/zoU1JM/4DPssitYbhrPij6vrvADLlbUp3h/r46sXb0XFhEaa7Aix
+ X1gw==
+X-Gm-Message-State: AOAM5320pFtUGPx8/xbUzee6+IF7mJ7Ya7HS7HYEU/aQpLN29p0Qwaak
+ yhr8Y9Jq1dLajy5c+EJyi9XhjA==
+X-Google-Smtp-Source: ABdhPJzKpXrgUntAlAYZkvnH4zfUSRM5PQ4E+Cc2yBNkZba/USPxqi82SB3TMQkqjHPHvGE7GCEhtg==
+X-Received: by 2002:a05:6402:26d0:b0:419:75eb:b3a with SMTP id
+ x16-20020a05640226d000b0041975eb0b3amr13084176edd.0.1649317731392; 
+ Thu, 07 Apr 2022 00:48:51 -0700 (PDT)
+Received: from [192.168.0.185] (xdsl-188-155-201-27.adslplus.ch.
+ [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
+ n25-20020aa7db59000000b00415965e9727sm8747258edt.18.2022.04.07.00.48.50
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 07 Apr 2022 00:48:50 -0700 (PDT)
+Message-ID: <8d0d8b27-35ff-3693-cf80-897b80c26b4e@linaro.org>
+Date: Thu, 7 Apr 2022 09:48:49 +0200
 MIME-Version: 1.0
-References: <20220401212951.1133780-1-felix@matouschek.org>
- <20220404104141.7b7b79d5@xps13>
- <c1387c1949a8ec705116f5ee8a73fa35979aa196.camel@matouschek.org>
-In-Reply-To: <c1387c1949a8ec705116f5ee8a73fa35979aa196.camel@matouschek.org>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Thu, 7 Apr 2022 15:09:43 +0800
-Message-ID: <CAJsYDVJ7e4zagG9Yvu5r8dQn++ta9TpetC6YHzq4S-GBFEBABQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spinand: Add support for XTX XT26G0xA
-To: Felix Matouschek <felix@matouschek.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: partitions: Add binding for
+ Sercomm parser
+Content-Language: en-US
+To: Mikhail Zhilkin <csharper2005@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>
+Cc: NOGUCHI Hiroshi <drvlabo@gmail.com>, Karim <Karimdplay@gmail.com>,
+ M <x1@disroot.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20220406195557.1956-1-csharper2005@gmail.com>
+ <20220406195946.2019-1-csharper2005@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220406195946.2019-1-csharper2005@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_000956_169783_93902994 
-X-CRM114-Status: GOOD (  11.36  )
+X-CRM114-CacheID: sfid-20220407_004853_356879_D4B4D4AB 
+X-CRM114-Status: GOOD (  11.44  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,36 +98,50 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+On 06/04/2022 21:59, Mikhail Zhilkin wrote:
+> Add YAML binding for Sercomm partition parser.
+> 
+> Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
+> ---
+>  .../mtd/partitions/sercomm,sc-partitions.yaml | 70 +++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/sercomm,sc-partitions.yaml
+> 
 
-On Thu, Apr 7, 2022 at 12:20 AM Felix Matouschek <felix@matouschek.org> wrote:
-> The data-sheet says that only offsets 801H to 807H can be used for user
-> data and are not covered by ECC (offset 800H is reserved for the bad
-> block mark).
->
-> The remaining 16 bytes from offset 830H to 83FH are read-only when ECC
-> is enabled, so they are of no use? Can you please advise if there is
-> something I can change?
+(...)
 
-According to page 30 of the datasheet[0], the 64Byte OOB layout is:
-8 bytes: OOB not protected by ECC
-40 bytes: OOB protected by ECC
-16 bytes: ECC parity data
 
-so your OOB layout should be:
-ECC:
-region->offset = 48;
-region->length = 16;
+> +
+> +properties:
+> +  compatible:
+> +    const: sercomm,sc-partitions
+> +
+> +  scpart-id:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Partition id in Sercomm partition map
 
-Free:
-/* Reserve 1 byte for the BBM. */
-region->offset = 1;
-region->length = 47;
+Do you really need it? The reg should define the order, unless you
+expect some incomplete partition list?
 
-[0]: https://pese.oss-cn-shenzhen.aliyuncs.com/pdfs/2005251034_XTX-XT26G01AWSEGA_C558841.pdf
--- 
-Regards,
-Chuanhong Guo
+In any case this requires vendor prefix.
+
+> +
+> +required:
+> +  - compatible
+
+Missing reg.
+
+> +  - scpart-id
+> +
+> +additionalProperties: false
+
+Are you sure that you tested your bindings? You miss here address/size
+cells and children, so you should have big fat warning.
+
+Plus your DTS example has error and does not compile...
+
+Best regards,
+Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
