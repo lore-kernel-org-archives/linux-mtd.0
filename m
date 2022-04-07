@@ -4,84 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A564C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 07:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04D96C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 07:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Hjb58jatqFgG9FoCodmdLrDxnulj9lb+UbkmrdPQRRA=; b=2UrO6Lmcwu3mtz
-	pCPQwmhhCLiScHUCx3qh4WqEz31PU5BoVgqJ00iOR3XJX9D+2GdZaXxP2nSj9M12HG8vJwQUA0Fuv
-	7cxe8rL6TtxN5HCHKQyJceFB9BD6i5/fuilGGg5JSJ0MSd+/7C2BePFpCI5J3IW6jQPhm5d5OZdT3
-	fnnC1dIS++fwzRpmIpkd98g7dWMLaDg8McDVsuJpaejuWnQfGnXI5QoYZCOF/mDEP1O6ylK+0ZVnj
-	YOKiJv8503ViscOdHKObKBaq1dJYZsAbPysTPJjnI6+dnOR3FuxN0RC3Du735Km91+91RhB52cOla
-	RRjg17DjGLLiTD9vLRjA==;
+	List-Owner; bh=gDZBzM2JuG01FrivAQaY89LtnEitQI4+CnLPXhRpYcY=; b=3aeyAnOxVeZqC8
+	+f9SB+CqD163Yf/Ja+V5hT1CD2BocF3ArHPrDMiV80liNOuUXhAUSBx0hF+hdaNm3OQyXao0pW6+t
+	iHFJr82rHrQ7ZoHboXsC+GKAulXnCfxRQMM1Grn5dpl5UOsbYmMQFnwwJ4d1AB9CS9JGP2OXcHE8h
+	IDUnyu1Gb72ybEHvvzJ2yRg1/XxnWTbrxZhMUUJODDRiCP8cLOmpsHEINmBporSdz8yTdbXZ+yWQB
+	0StdpjqdlCxQnrS7B4669Oaf+RVVuc29PVtiK08qiAqpfV1pTAzyclyP9ldpEPVhkwKPgQoJ8obd9
+	AtB3zsajhHeOBvFR9TdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncMtD-00A6pf-No; Thu, 07 Apr 2022 07:49:11 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1ncMum-00A7YK-IQ; Thu, 07 Apr 2022 07:50:49 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncMsv-00A6ev-80
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 07:48:54 +0000
-Received: by mail-ed1-x534.google.com with SMTP id b15so5418079edn.4
- for <linux-mtd@lists.infradead.org>; Thu, 07 Apr 2022 00:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=7eOOLrAKkfSspaBOmVeWY/1P1p3w24BPhUI3ADFJBCI=;
- b=sogAdtsAFC5HCuOZDlP9hCKRUcFarSAAFtArxcpakHbjtI+H6rlxyAdZEWFLiv3Ew0
- ZiX/ecvjddUhTtCRabR7BgUoqBDDKxzxu5kKlGDuxPv1RYCalrkCJ7aDGWwQ0oKQG+H+
- wWrk8gsx7JZHJSziIF4YYk+huAMheAeS92FXTkdOAdHYrU1ZfJCa41bjAIpJY8/gBI5x
- Z13miNyaXnegSrvQi6qzse8DCg5Q1LotTJtkFOgzarqJI5gapKutHVVGlw2tnrrBMbrE
- rQnYTR14EEKGq61ygs7BSzBZejgH0+DC+46oXgFRHZQWkpr53Q08n05BcMKaE7MQPMb6
- HtQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=7eOOLrAKkfSspaBOmVeWY/1P1p3w24BPhUI3ADFJBCI=;
- b=NA1fpeKufdC2LgGF/7Bz3DOIUzwYAazlGm0VAx54yc+aZ7k43BV2P8n5TmYaJMcIcO
- RA79FUx/tZf7zmP1vxaJYFz2rtgePgR5VbAtrUrXwMShVzxT8w7Y7H41KYRB9scjEoOB
- 4Hj2kI9G2b6SXPvGuZVWnrRN7KOWFwZk5IK8pWlOYhUifno/GexktnnA6+NxKHf/V/cL
- HUDIz4gFQ6c77XgwrEGIANkyL64pJVMcygHHiJd5QWa5eBfUiYs8KzCvnfwdDZxy9VYH
- Yii+wLEtTbs78UE/zoU1JM/4DPssitYbhrPij6vrvADLlbUp3h/r46sXb0XFhEaa7Aix
- X1gw==
-X-Gm-Message-State: AOAM5320pFtUGPx8/xbUzee6+IF7mJ7Ya7HS7HYEU/aQpLN29p0Qwaak
- yhr8Y9Jq1dLajy5c+EJyi9XhjA==
-X-Google-Smtp-Source: ABdhPJzKpXrgUntAlAYZkvnH4zfUSRM5PQ4E+Cc2yBNkZba/USPxqi82SB3TMQkqjHPHvGE7GCEhtg==
-X-Received: by 2002:a05:6402:26d0:b0:419:75eb:b3a with SMTP id
- x16-20020a05640226d000b0041975eb0b3amr13084176edd.0.1649317731392; 
- Thu, 07 Apr 2022 00:48:51 -0700 (PDT)
-Received: from [192.168.0.185] (xdsl-188-155-201-27.adslplus.ch.
- [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
- n25-20020aa7db59000000b00415965e9727sm8747258edt.18.2022.04.07.00.48.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 07 Apr 2022 00:48:50 -0700 (PDT)
-Message-ID: <8d0d8b27-35ff-3693-cf80-897b80c26b4e@linaro.org>
-Date: Thu, 7 Apr 2022 09:48:49 +0200
+ id 1ncMuf-00A7UJ-Kq
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 07:50:44 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id 6978B1BF211;
+ Thu,  7 Apr 2022 07:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1649317836;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=U3OKhDZjreANiVSmqGGydRlnuMvAyPh4lgkQf8qUzg0=;
+ b=lbtPsVZh6pq8voIez1V3yyAVlwyeVvrW5AZPImqzhrKXA0Fs1VZdJSAC20WEn07jN+p5qs
+ fqjG2u8aD9ecWbRdUFoWRPUuPqtQ1VatzY31Yb+osfn1aVFg9fMWTxSaLayz9rKyUWsu0L
+ 07RgQ3oWzMyWW+h4fQ6yXIDb/tgVbMVxEsLtOKPd/ZwggE9xivqh1FiEHBuexygaAOLBmJ
+ chGkOGe2VjEyCbMV+jijOFQwMpY8RnEaY1ozfPH8GwdeCrliiiIvBpAWzjizzgJK/L0HQ2
+ tqv7nzFtRgfCaDh5+PKEYNQ1haC1PFbZI3wks5CkvlNr01MgIL69UuA3G6hFsg==
+Date: Thu, 7 Apr 2022 09:50:34 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chuanhong Guo <gch981213@gmail.com>
+Cc: Felix Matouschek <felix@matouschek.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spinand: Add support for XTX XT26G0xA
+Message-ID: <20220407095034.2f0e623f@xps13>
+In-Reply-To: <CAJsYDVJ7e4zagG9Yvu5r8dQn++ta9TpetC6YHzq4S-GBFEBABQ@mail.gmail.com>
+References: <20220401212951.1133780-1-felix@matouschek.org>
+ <20220404104141.7b7b79d5@xps13>
+ <c1387c1949a8ec705116f5ee8a73fa35979aa196.camel@matouschek.org>
+ <CAJsYDVJ7e4zagG9Yvu5r8dQn++ta9TpetC6YHzq4S-GBFEBABQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: partitions: Add binding for
- Sercomm parser
-Content-Language: en-US
-To: Mikhail Zhilkin <csharper2005@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: NOGUCHI Hiroshi <drvlabo@gmail.com>, Karim <Karimdplay@gmail.com>,
- M <x1@disroot.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20220406195557.1956-1-csharper2005@gmail.com>
- <20220406195946.2019-1-csharper2005@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220406195946.2019-1-csharper2005@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_004853_356879_D4B4D4AB 
-X-CRM114-Status: GOOD (  11.44  )
+X-CRM114-CacheID: sfid-20220407_005042_109305_4DFC6426 
+X-CRM114-Status: GOOD (  13.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,56 +68,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 06/04/2022 21:59, Mikhail Zhilkin wrote:
-> Add YAML binding for Sercomm partition parser.
-> 
-> Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
-> ---
->  .../mtd/partitions/sercomm,sc-partitions.yaml | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/sercomm,sc-partitions.yaml
-> 
-
-(...)
-
-
-> +
-> +properties:
-> +  compatible:
-> +    const: sercomm,sc-partitions
-> +
-> +  scpart-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Partition id in Sercomm partition map
-
-Do you really need it? The reg should define the order, unless you
-expect some incomplete partition list?
-
-In any case this requires vendor prefix.
-
-> +
-> +required:
-> +  - compatible
-
-Missing reg.
-
-> +  - scpart-id
-> +
-> +additionalProperties: false
-
-Are you sure that you tested your bindings? You miss here address/size
-cells and children, so you should have big fat warning.
-
-Plus your DTS example has error and does not compile...
-
-Best regards,
-Krzysztof
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+CmdjaDk4MTIxM0BnbWFpbC5jb20gd3JvdGUgb24gVGh1LCA3IEFwciAyMDIyIDE1OjA5OjQzICsw
+ODAwOgoKPiBIaSEKPiAKPiBPbiBUaHUsIEFwciA3LCAyMDIyIGF0IDEyOjIwIEFNIEZlbGl4IE1h
+dG91c2NoZWsgPGZlbGl4QG1hdG91c2NoZWsub3JnPiB3cm90ZToKPiA+IFRoZSBkYXRhLXNoZWV0
+IHNheXMgdGhhdCBvbmx5IG9mZnNldHMgODAxSCB0byA4MDdIIGNhbiBiZSB1c2VkIGZvciB1c2Vy
+Cj4gPiBkYXRhIGFuZCBhcmUgbm90IGNvdmVyZWQgYnkgRUNDIChvZmZzZXQgODAwSCBpcyByZXNl
+cnZlZCBmb3IgdGhlIGJhZAo+ID4gYmxvY2sgbWFyaykuCj4gPgo+ID4gVGhlIHJlbWFpbmluZyAx
+NiBieXRlcyBmcm9tIG9mZnNldCA4MzBIIHRvIDgzRkggYXJlIHJlYWQtb25seSB3aGVuIEVDQwo+
+ID4gaXMgZW5hYmxlZCwgc28gdGhleSBhcmUgb2Ygbm8gdXNlPyBDYW4geW91IHBsZWFzZSBhZHZp
+c2UgaWYgdGhlcmUgaXMKPiA+IHNvbWV0aGluZyBJIGNhbiBjaGFuZ2U/ICAKPiAKPiBBY2NvcmRp
+bmcgdG8gcGFnZSAzMCBvZiB0aGUgZGF0YXNoZWV0WzBdLCB0aGUgNjRCeXRlIE9PQiBsYXlvdXQg
+aXM6Cj4gOCBieXRlczogT09CIG5vdCBwcm90ZWN0ZWQgYnkgRUNDCj4gNDAgYnl0ZXM6IE9PQiBw
+cm90ZWN0ZWQgYnkgRUNDCj4gMTYgYnl0ZXM6IEVDQyBwYXJpdHkgZGF0YQo+IAo+IHNvIHlvdXIg
+T09CIGxheW91dCBzaG91bGQgYmU6Cj4gRUNDOgo+IHJlZ2lvbi0+b2Zmc2V0ID0gNDg7Cj4gcmVn
+aW9uLT5sZW5ndGggPSAxNjsKPiAKPiBGcmVlOgo+IC8qIFJlc2VydmUgMSBieXRlIGZvciB0aGUg
+QkJNLiAqLwo+IHJlZ2lvbi0+b2Zmc2V0ID0gMTsKPiByZWdpb24tPmxlbmd0aCA9IDQ3Owo+IAo+
+IFswXTogaHR0cHM6Ly9wZXNlLm9zcy1jbi1zaGVuemhlbi5hbGl5dW5jcy5jb20vcGRmcy8yMDA1
+MjUxMDM0X1hUWC1YVDI2RzAxQVdTRUdBX0M1NTg4NDEucGRmCgpBZ3JlZWQhCgpUaGFua3MsCk1p
+cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
