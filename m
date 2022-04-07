@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 716BEC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 18:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94FDCC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 18:21:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fe0yfDb2/Z7c+J9UT25vRH1FlbjLCe42dg2/tBphWVc=; b=klb+MdygbrCwpQ
-	Ogk+CvNvvLBWJ/3Z45hZjG852CXw4e5oglYuEYxbEjsKSt0oGMpHst4Ad0E3Lnuc6Zfq6eVzaxtW9
-	HPDL8JeYooeufyLzos4DrJaT9ZzOelxgK/Lqv3ilvQWxPa3SqFn8qtAZmU3Fvd4ISQ7LV/nTmWjYu
-	aDT3b66+9ODf0LzW17MgjK8om37GQ44jG/ARJNzhjo7yB/Ev/FBNswnTR9v7Ki+Mc3Zb6LWsJIgb8
-	MpkbRfJer8SyX2URYRf5YN73HanB5NCrOK66T4ZiQSkkC1X09OrFsVrDKl9w7917nLhlCeXlDY5kf
-	xaJU5jJBU4Pfhmsiup4w==;
+	List-Owner; bh=Qvv8SkPnDHkgs8bXRReEQWjqw2p8wKurK2MqSc6LnUs=; b=ECEn4foBzHLsy3
+	kJHVBlPg0GLFRRqcMTFEqQiu9LymSNAsxlWV1tIORDvEwMW0QQ4PMMhbbm74q0wnJkYrAETRI4tlV
+	16VTDULEBZYWk1Do6qft/H7hrUyBprqIsts45F5sXRoSADczWUjGohfDritodgrn4Ot/lKroxllD4
+	Uu/InVSICPuU7gPKmeQtf6Ik2Ax4DE4lEV0CmVX3YDbvD7HunXIiabNqEVIxLQyRbRtV8FDaB4eTR
+	Yq0+6+fTU/aQfswlYtqpCaYQ6eACZRARPkFgMt98uEE5qhMpKXfEl0d28TnVYZDpbgQDncDH1kduR
+	YxG2epvOKtuD9Mj8l98w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncWZb-00DUiz-Ty; Thu, 07 Apr 2022 18:09:35 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1ncWl8-00DWwJ-Hs; Thu, 07 Apr 2022 18:21:30 +0000
+Received: from mail-oi1-f178.google.com ([209.85.167.178])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncWZZ-00DUhf-4H
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 18:09:34 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 237I9HxA086717;
- Thu, 7 Apr 2022 13:09:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1649354957;
- bh=ROjjpxK8BAdaQhzZKm7fS9sSF97YsYdJqBc7SXBiyXQ=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=aG6bRaKBLjPYE8/aaIUpzqTnq47aQCUNoupStawPJB/AS5R6BlZU3rynoPt1Afzuf
- m0kgyP9KM9Tq079oVNRCjkjNA5mS5GKigobsLLOv1ADPcDbJS8J2TmvD3rkxJiT5Zi
- 1hojg9At0W74tI6iEle50pIoHSaMoqDa+FYMMP3Y=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 237I9HKm104001
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 7 Apr 2022 13:09:17 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 7
- Apr 2022 13:09:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 7 Apr 2022 13:09:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 237I9Gxo087536;
- Thu, 7 Apr 2022 13:09:16 -0500
-Date: Thu, 7 Apr 2022 23:39:16 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
+ id 1ncWl6-00DWvl-Bo
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 18:21:29 +0000
+Received: by mail-oi1-f178.google.com with SMTP id k10so6547930oia.0
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Apr 2022 11:21:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=ZUuPSTjprXcNKfHzz7Qs6snhyaATcmWPUoU1Mkt9TqE=;
+ b=r0G4zg8erXfSBt1a3l+NZY79PUYMJdhBTXgXCdSvC60sV4zcFu8z3bVwVA3XOoahID
+ VEUllXGZEgutiLIzSowL6eER8rGjPe18u4I3++vLpDTvTqaHi1KYE0zSeQido8jpazqV
+ U0nOq85/53+Qm5ez9BNCHHTMgRQhGGfxug7JT5JejtFLrPDE4w2TKq9a4SlhtxE7Ipm0
+ V5ewtPTW5OikFb4I7hm2Sg6APSjAbhZTCJrHlUbe9uk05pDTYDr2ANQ+erxeRpk27vJU
+ ISD6xkAqFZ2F6Kj3JAHUmc2gKTwsiMfUzfO+caQFYC4tB3wbMMO4lMDSMozSXhEObON2
+ uSMg==
+X-Gm-Message-State: AOAM533Oe7YooQhUZTFtv9Yp//ScurEoLqWDzxxh/aOmOspTnCOM18Kq
+ x1uiYTVG42Rks/vX9NovcQ==
+X-Google-Smtp-Source: ABdhPJzQ3QKekxOUT9F9yPRhqnVy0KNHkDXdjNZeiEbzCTGOSGHeI4SuJc+WaERnqIJopniAaB0DrA==
+X-Received: by 2002:a05:6808:1202:b0:2f9:c7b4:fd56 with SMTP id
+ a2-20020a056808120200b002f9c7b4fd56mr351609oil.55.1649355686314; 
+ Thu, 07 Apr 2022 11:21:26 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ u22-20020a4ae696000000b0032158ab4ce9sm7507715oot.26.2022.04.07.11.21.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 07 Apr 2022 11:21:26 -0700 (PDT)
+Received: (nullmailer pid 1732024 invoked by uid 1000);
+ Thu, 07 Apr 2022 18:21:25 -0000
+Date: Thu, 7 Apr 2022 13:21:25 -0500
+From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] dt-bindings: mtd: jedec,spi-nor: remove unneeded
  properties
-Message-ID: <20220407180916.a6b2z7iqqoefsn7m@ti.com>
+Message-ID: <Yk8rpUXmfmULMVjr@robh.at.kernel.org>
 References: <20220407142004.292782-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20220407142004.292782-1-krzysztof.kozlowski@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_110933_313526_E47E058E 
-X-CRM114-Status: UNSURE (   6.21  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220407_112128_440324_756821D1 
+X-CRM114-Status: GOOD (  15.39  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,19 +87,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 07/04/22 04:20PM, Krzysztof Kozlowski wrote:
+On Thu, Apr 07, 2022 at 04:20:04PM +0200, Krzysztof Kozlowski wrote:
 > After conversion the jedec,spi-nor DT schema to reference other schemas
 > (SPI and MTD) and use unevaluatedProperties, several properties are
 > redundant.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/mtd/jedec,spi-nor.yaml        | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> index 4abfb4cfc157..708e7f88fd92 100644
+> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+> @@ -50,10 +50,6 @@ properties:
+>      minItems: 1
+>      maxItems: 2
+>  
+> -  spi-max-frequency: true
+> -  spi-rx-bus-width: true
+> -  spi-tx-bus-width: true
+> -
+>    m25p,fast-read:
+>      type: boolean
+>      description:
+> @@ -74,14 +70,9 @@ properties:
+>        be used on such systems, to denote the absence of a reliable reset
+>        mechanism.
+>  
+> -  label: true
+> -
+>    partitions:
+>      type: object
+>  
+> -  '#address-cells': true
+> -  '#size-cells': true
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+These are needed for 'partition' nodes.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+> -
+>  patternProperties:
+>    # Note: use 'partitions' node for new users
+>    '^partition@':
+> @@ -99,8 +90,6 @@ examples:
+>          #size-cells = <0>;
+>  
+>          flash@0 {
+> -            #address-cells = <1>;
+> -            #size-cells = <1>;
+>              compatible = "spansion,m25p80", "jedec,spi-nor";
+>              reg = <0>;
+>              spi-max-frequency = <40000000>;
+> -- 
+> 2.32.0
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
