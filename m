@@ -4,32 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85FC0C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 15:36:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACD35C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 16:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:To:From:Date:Reply-To:Cc:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=U8da9PO8j3maJ0uko1WPJjc4jpaEWws/wXKhQYQMJnE=; b=TPHiy19Ucd/H4p
-	RzcTlpNsElYJZHRi7DptDwI237JB9etDiRIp6C0TfLWwXqG3R36SM9FPoncwb27Y5cAz2f5dU8sjF
-	AO1NmjIBx8K5rGROx5Avka6bFZP3k3k+4Q+3IOVd+iqK6yqk9BJ3mSJ9MEUpz51hBsks01sWop89N
-	pgdN1NetXMcUm36QdwsjuQkPGQpUc0mxPZP637uwLWygX9VmIUFplpFSzp3WR/sxX4UgAQnp7hWIE
-	PE2wLzGQc3JqVxgt8ZKpmQsy22YmsrJvosw6n0m1h/WbDGGq3So2L+O9F1x+CiYVlFU67sFArsedZ
-	/RWJMdWv5ioi4bXm5WQw==;
+	List-Owner; bh=tsph2sJqDQlApVxOklB9Z0hqb5lc/mJcmHKfUiNe3g0=; b=OgAzfO8auXcV6h
+	7IaB3lCv8dBcSiU3YVT2fSM+0/8LW5ZalCdWCRQHCOHcJ6f2QJPyrCyZ89TLZn17dfNQCnkWZoliu
+	bicEmFLD69Ke8NPEZcjfmDJIFYd2sFwUPk7Fd6w6hd/0FVn1G/5XixA16HBnkwH9kuLP4Tg3+9Dm+
+	ep3viVCIw4mPcQUfRJoaCon0fA0W579llxYfSoUZH4iB5IqCetc0jglfLdBFhbluTBviz5cj9Z3xS
+	nEUaztvQHPvfIosfIAJ7oKhof19H5ivu4+YV9GATZE+3G/EVFeha2G3eKUy2p0VgMAvHCHzKxGL8r
+	5+cCNNB3p7+MesVVcEGw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncUAr-00CjuX-Al; Thu, 07 Apr 2022 15:35:53 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1ncUYK-00CtX6-PJ; Thu, 07 Apr 2022 16:00:10 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncU2P-00CgVA-U0; Thu, 07 Apr 2022 15:27:13 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
- id AE08468AFE; Thu,  7 Apr 2022 17:26:59 +0200 (CEST)
-Date: Thu, 7 Apr 2022 17:26:59 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
+ id 1ncU5m-00ChxK-AT; Thu, 07 Apr 2022 15:30:40 +0000
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id E56341F85A;
+ Thu,  7 Apr 2022 15:30:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+ t=1649345436;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zPq01JLA6dLoXnFchjjFxJhIcKHBhEdkrZLnR4TbLUY=;
+ b=arXCGHubFNDMJivA50IVAh5E18SENgaJ+8psB29O+dYSp9GznJDHN9eBNpNqVEEypC+xPt
+ YsOhdRjVTg1mFsMpWqZ4oNaVAGZnjLyClojrRdjsUuitokjLJy7oqe8RxGnlNpP0HUVyi6
+ 8uSBZYdSoqUowgEJK8P6YGm7aUVWSbo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+ s=susede2_ed25519; t=1649345436;
+ h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+ cc:cc:mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zPq01JLA6dLoXnFchjjFxJhIcKHBhEdkrZLnR4TbLUY=;
+ b=+RoHDuxhi8eXdx1m79jW3LC9fhbmevwd72sFBk44Osas+gmEsPN5qSbgbwIpqCBgrNluyA
+ EXeawVVGeX85rgBw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+ by relay2.suse.de (Postfix) with ESMTP id AE7A3A3B94;
+ Thu,  7 Apr 2022 15:30:36 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+ id 5C928DA80E; Thu,  7 Apr 2022 17:26:34 +0200 (CEST)
+Date: Thu, 7 Apr 2022 17:26:34 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-um@lists.infradead.org, linux-block@vger.kernel.org,
  drbd-dev@lists.linbit.com, nbd@other.debian.org,
@@ -43,18 +66,34 @@ To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
  linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
-Subject: Re: [PATCH 07/27] btrfs: use bdev_max_active_zones instead of open
- coding it
-Message-ID: <20220407152659.GA15200@lst.de>
+Subject: Re: [PATCH 24/27] block: add a bdev_discard_granularity helper
+Message-ID: <20220407152634.GL15609@twin.jikos.cz>
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+ Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-block@vger.kernel.org,
+ drbd-dev@lists.linbit.com, nbd@other.debian.org,
+ ceph-devel@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+ linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+ ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
 References: <20220406060516.409838-1-hch@lst.de>
- <20220406060516.409838-8-hch@lst.de> <20220407152049.GH15609@twin.jikos.cz>
+ <20220406060516.409838-25-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220407152049.GH15609@twin.jikos.cz>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20220406060516.409838-25-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_082710_204606_234F2C2F 
-X-CRM114-Status: GOOD (  11.87  )
+X-CRM114-CacheID: sfid-20220407_083038_598990_6DF9A4D5 
+X-CRM114-Status: UNSURE (   9.50  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,21 +105,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Reply-To: dsterba@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 07, 2022 at 05:20:49PM +0200, David Sterba wrote:
-> On Wed, Apr 06, 2022 at 08:04:56AM +0200, Christoph Hellwig wrote:
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Wed, Apr 06, 2022 at 08:05:13AM +0200, Christoph Hellwig wrote:
+> Abstract away implementation details from file systems by providing a
+> block_device based helper to retreive the discard granularity.
 > 
-> As it's a standalone patch I can take it (possibly with other similar
-> prep btrfs patches) in current development cycle to relieve the
-> inter-tree dependencies.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/blk-lib.c                     |  5 ++---
+>  drivers/block/drbd/drbd_nl.c        |  9 +++++----
+>  drivers/block/drbd/drbd_receiver.c  |  3 +--
+>  drivers/block/loop.c                |  2 +-
+>  drivers/target/target_core_device.c |  3 +--
 
-Unless there's a conflict in other btrfs patches it would probably be
-easiest to merge everything through the block tree.
+For
+
+>  fs/btrfs/ioctl.c                    | 12 ++++--------
+
+Acked-by: David Sterba <dsterba@suse.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
