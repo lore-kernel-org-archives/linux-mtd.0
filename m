@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D57DC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 14:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFC0CC43219
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Apr 2022 14:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ab4rEoSzsk3SYs+PvVtPY3mvYw5yGCyNMtTCdDIgKyE=; b=0dMshD9AjTbesq
-	UvkLk+gu7aRzQrKbwptRlN6FY+3Q5fL88BiaPRGOPen3NdDEJW21XdrLk2BZxBAon9G3DXs9eOhm5
-	wGac3pT221QxEHJU18+Y34FRp3mULlNwxPKcD80w68By9cWxteuGkOQO/w+GBDjeIS/uGkuuUC2/k
-	FRtJvQZxJZ+MXiXZgvBlz2Pr+pogvwn+Y2mac3M+uy0GhYT/N8VtDLV0MVG94rfCrwZGai4mxhI6e
-	mBceGFrvnp1U9q0S9juzqv0z52zip++akzLZUeo9LGw+ph9UBhLcKd8jxOnI90m0STA2GeohxtkmB
-	Z8HRDvl5ZeDeonUrYihw==;
+	List-Owner; bh=8RZMwZ4NXsbhxSas6MpjHcaKNctckR1S6AdWFlbvSC8=; b=MoL9eZgTua3bdF
+	EQmd4/j38DIhQckbJf2lttwDmWfdYpinnTndblIcmbpTEBo4Vzv6rpx5tnWpAzXXzWHwLoBkcQrS2
+	XxMVVjFUYMTbvbkq20VhJbec6YtnpqFkuS6Gjn3pkL2eS6JprX8uZD6BussWxwpxDsiZmEiosdV2z
+	ooRRBwBohUNW12kn8478Xht5kRz4s/nKDnmXUu2AUAZyo7bov0yyzEmTo2bv8GfKKgB25KIybE6Ok
+	IrhNe2zO4q+bFkZ/sC+h92DZw71WBQ16Wzqi08m9Skj1Zw8g7RW4lpu+h0zGuzMjRukzA1AMQmTHH
+	vQHzz8Hp4jqxgkgTNZng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ncSzf-00CKSL-UP; Thu, 07 Apr 2022 14:20:15 +0000
-Received: from mail-ed1-x52d.google.com ([2a00:1450:4864:20::52d])
+	id 1ncTFh-00CQP1-Pi; Thu, 07 Apr 2022 14:36:50 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncSzb-00CKQf-Fg
- for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 14:20:13 +0000
-Received: by mail-ed1-x52d.google.com with SMTP id x20so6558374edi.12
- for <linux-mtd@lists.infradead.org>; Thu, 07 Apr 2022 07:20:08 -0700 (PDT)
+ id 1ncTDA-00CP8s-9M
+ for linux-mtd@lists.infradead.org; Thu, 07 Apr 2022 14:34:13 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id a6so11382706ejk.0
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Apr 2022 07:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=8yiAtg3rQQsYQrz3HB5ABJGFof1KEIaqkT/i4ea96+g=;
- b=i+7pZ9/Nair/2xYhlI9bGgpJiP5BqE3ziFD/WqnsIpu2jvt84iP1oK+U2wYZqW1n70
- HjumBvZnYJ/Wm4eDrzj4CqPltjkoCmt5D2d44nl+l0Nrpj7tbIJbWXWi5DRbOqSyuBtd
- 5B9ycEYP05uCBB2bHC/MRChDklzSw+81GkmmnKj9vkS6tnL5DeftHBkyDc8ZCynVgii2
- emGWXqGiNnT/5K8HSpLui38zySkSZ/SqAQUjZVGg+O6jZW6weetXZ/wi/FTtQfULiSbx
- bPk9oFmxDOuw8cbt6h/kKflta3iwlniNkPOV9ib8J7uaVlDq8S648DouwLwtl+F4lhsG
- 5RZQ==
+ bh=ZMc3AfG5H7Eoze1riLsoKQySy0boPTnHcGifTlbw67U=;
+ b=ACt2wLpnHluTK801WClxUNjv0T9X0tOd4oKiCIIrZ9eNjavRSu/0d5x723ScrD6OQJ
+ 4ycrRvTpZwenEIWc5szrw7Xy7HZlT+y1tGmDJX1OMZr31b6onPuNIXxnElG8KwNEHG8v
+ 7cO8koLd+3k74YrxsfvbF4gSaFYQmeSEhO1sAvwcmL/frMNgxZdh5zphOLrEI0Sir9er
+ DC9hAsYxXq9WhYZGMdDJ0rR2BpvJwQH5Utv5DyHXDBxGVwcgUk5UG0UAy1cblo+jn8md
+ HomLK/kqgRoT+SxkiPmU1UQqoCsxtMxO6f0uP0EAexdHFKupYpNvhem6YnmogCUO6aYv
+ /jyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=8yiAtg3rQQsYQrz3HB5ABJGFof1KEIaqkT/i4ea96+g=;
- b=rzlKUEb7cD8/ofdomqFKoD3rQtuf5Z3+9Vu5orw0HHQfrUyflz5Ni/9bLLs6J6Q9km
- k6v5MgnsJ+60JDKLYcvzNFMNjGEddHl536Gcq7tzRKxhkbMemz3ZydH3GRSpQKNQDKJq
- 5GiObVt4e/DT3F/8CZwwahwTO1L9rFzXpz+QH2COb1/sB7M8xV+liUx/GwsoOrd+3hp+
- Bc5m5eBNHt81TIgq2RMEp66BikCrSWReAd1psqPZ4xlVBAx5s6biF8f0TlnFiXBMRESX
- GJE+niLtXFPA3YpE40NS+u+eSaJj59zIG6+E9aMzfVzWqi0dSHlmHI3mrMjOuIo31/DM
- YXdA==
-X-Gm-Message-State: AOAM533/3PYGgRmUG9g7OWB1UuJMmHCSGSWDWJP6dFOtYl1OwFDAL/cl
- zfTljrIYiC8MGw3UMkKo9BdcuQ==
-X-Google-Smtp-Source: ABdhPJzyaOBLTEXENkXIMPbhz9LkdnGmd3J+mXWjFUZRe447oVTT7rG0hn9KUNzp9DqfPtB4nY3OSw==
-X-Received: by 2002:a05:6402:368d:b0:419:31c4:4db8 with SMTP id
- ej13-20020a056402368d00b0041931c44db8mr14563757edb.93.1649341207567; 
- Thu, 07 Apr 2022 07:20:07 -0700 (PDT)
+ bh=ZMc3AfG5H7Eoze1riLsoKQySy0boPTnHcGifTlbw67U=;
+ b=7Kl2S253OBgpJa+1ItXUdvh/EkKmHSTWrYa9GbDeNMFjwVMaJVUqk7822dGWw47X93
+ 6DJWBvxaK0YxHXnfOxB+BsG1Bct474MXDXm/iyCug/Jxxg/Y4cvJYcAqQ7yKs+1gdyZv
+ yORGsTD00G59u+BrhVsvUEwJUm+tHsKAViXRGJBncFTqbGnIvx3kiMoF6JypbyO9NE/o
+ OrqLqR8a5rg9t9h6lvFwz5Os56UeeJNarM04kT6+kKBXSfpbdgUYXSPaIwyzUC/bqwu7
+ njVo++BBHSPgGfNgLIHOLVzgL3tbWOZYbs2xcRhq062SQ5llpWm2TlCXlEnVNmaWm6nP
+ Qr/g==
+X-Gm-Message-State: AOAM530drSh5mAgBSjJTsev9gelW8eena+CsxMuSaK1V+CoK8IOQBwYa
+ I+791ufHhu0s99xlqsY6YBnlAQ==
+X-Google-Smtp-Source: ABdhPJwXyL4FeMCVoeo0dwl9+9FIwF5PtSlfyv2y65g/77g1GH8eFdummy9lPfT8/0+oXckSp7xQIw==
+X-Received: by 2002:a17:906:9c8e:b0:6df:f6bf:7902 with SMTP id
+ fj14-20020a1709069c8e00b006dff6bf7902mr13552991ejc.191.1649342050635; 
+ Thu, 07 Apr 2022 07:34:10 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-201-27.adslplus.ch.
  [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
- c1-20020a50cf01000000b0041cb7e02a5csm7416182edk.87.2022.04.07.07.20.06
+ r18-20020a05640251d200b0041d1600ab09sm107835edd.54.2022.04.07.07.34.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 Apr 2022 07:20:07 -0700 (PDT)
+ Thu, 07 Apr 2022 07:34:10 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
  linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: mtd: jedec,spi-nor: remove unneeded properties
-Date: Thu,  7 Apr 2022 16:20:04 +0200
-Message-Id: <20220407142004.292782-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] dt-bindings: align SPI NOR node name with dtschema
+Date: Thu,  7 Apr 2022 16:34:05 +0200
+Message-Id: <20220407143405.295907-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220407_072011_621351_014FDBEB 
-X-CRM114-Status: UNSURE (   8.78  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220407_073412_409836_CD76D24A 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,54 +93,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-After conversion the jedec,spi-nor DT schema to reference other schemas
-(SPI and MTD) and use unevaluatedProperties, several properties are
-redundant.
+The node names should be generic and SPI NOR dtschema expects "flash".
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../devicetree/bindings/mtd/jedec,spi-nor.yaml        | 11 -----------
- 1 file changed, 11 deletions(-)
+ Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt | 2 +-
+ Documentation/devicetree/bindings/spi/spi-davinci.txt           | 2 +-
+ Documentation/devicetree/bindings/spi/spi-pl022.yaml            | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-index 4abfb4cfc157..708e7f88fd92 100644
---- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-+++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-@@ -50,10 +50,6 @@ properties:
-     minItems: 1
-     maxItems: 2
+diff --git a/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt b/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
+index 74981520d6dd..a99de13c7ccd 100644
+--- a/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
++++ b/Documentation/devicetree/bindings/mtd/hisilicon,fmc-spi-nor.txt
+@@ -17,7 +17,7 @@ spi-nor-controller@10000000 {
+ 	reg = <0x10000000 0x1000>, <0x14000000 0x1000000>;
+ 	reg-names = "control", "memory";
+ 	clocks = <&clock HI3519_FMC_CLK>;
+-	spi-nor@0 {
++	flash@0 {
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
+ 	};
+diff --git a/Documentation/devicetree/bindings/spi/spi-davinci.txt b/Documentation/devicetree/bindings/spi/spi-davinci.txt
+index 200c7fc7b089..f012888656ec 100644
+--- a/Documentation/devicetree/bindings/spi/spi-davinci.txt
++++ b/Documentation/devicetree/bindings/spi/spi-davinci.txt
+@@ -78,7 +78,7 @@ spi0:spi@20bf0000 {
+ 	interrupts			= <338>;
+ 	clocks				= <&clkspi>;
  
--  spi-max-frequency: true
--  spi-rx-bus-width: true
--  spi-tx-bus-width: true
--
-   m25p,fast-read:
-     type: boolean
-     description:
-@@ -74,14 +70,9 @@ properties:
-       be used on such systems, to denote the absence of a reliable reset
-       mechanism.
+-	flash: n25q032@0 {
++	flash: flash@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		compatible = "st,m25p32";
+diff --git a/Documentation/devicetree/bindings/spi/spi-pl022.yaml b/Documentation/devicetree/bindings/spi/spi-pl022.yaml
+index bda45ff3d294..0e382119c64f 100644
+--- a/Documentation/devicetree/bindings/spi/spi-pl022.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-pl022.yaml
+@@ -143,7 +143,7 @@ examples:
+         <&dma_controller 24 0>;
+       dma-names = "rx", "tx";
  
--  label: true
--
-   partitions:
-     type: object
- 
--  '#address-cells': true
--  '#size-cells': true
--
- patternProperties:
-   # Note: use 'partitions' node for new users
-   '^partition@':
-@@ -99,8 +90,6 @@ examples:
-         #size-cells = <0>;
- 
-         flash@0 {
--            #address-cells = <1>;
--            #size-cells = <1>;
-             compatible = "spansion,m25p80", "jedec,spi-nor";
-             reg = <0>;
-             spi-max-frequency = <40000000>;
+-      m25p80@1 {
++      flash@1 {
+         compatible = "st,m25p80";
+         reg = <1>;
+         spi-max-frequency = <12000000>;
 -- 
 2.32.0
 
