@@ -4,92 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEBA9C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 08:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DFDFC433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 08:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QTtkBMir6534+HfHl9Bxsa18L9nckA6vencGDrEU6Ts=; b=uHAFYrbujjZHo+
-	nxx6V4/N1NsOEaIm3R8cysGPvL8l3GmEh/FM1EVj1ZIfns+AXi23h2rB7d2BtCdw1qONmv2bqJ6CV
-	Asrjv8t4xfrBsxbxw0finxSxrry3Y8cEACGe1tvneOByjSEGYi8BXIsuRhejI51+9PtiXJob0WwO9
-	bHLHn3qVspmnrls8OB0GsaqgGME7bRF1oWkJQlmpDucbiwXrvKBTpTVj2ulRFYiyYxu1TnRCaCuLF
-	I9sCXb65CpLdTfBK1HapxFJhfR39QLSKO+YBA8RHvpQRs9GhUPuFMkU3+MC1OFL1A1UxkZwD3Jvaj
-	5gPnS4q4eGtubJsiy19Q==;
+	List-Owner; bh=aImn8gupjhq7gmy1tqvO2elqdeqzMGuDQ7K465rhvLI=; b=shUP+5bTPbTsvk
+	+rYc4acJQ/KHvy2DXezz2Ef72UGFG/k9WqEzOdqlIZtM19Vzs9HFJwF7y2ATOTqcoNJc2QdFLF9gl
+	S5PYSY9x7mbqPN5hZ4aiY/1TUPTGLITY7OVj0myjqUnIFadFew2NdNbYX0Vk/n0kU6SqIyAViA+QI
+	mBWXhd+R0yxIygFYFsbj+MZ/9XiC5dpeEQL6XFOUGbIm60k5J84oR0KquC0+hSks76eSWGA0syFsl
+	zegCWSH5lsDVv5Vwc+pJVxxP9wNExktUlNUsxaLRXo1wtKA8WimStElxC3Qyup1Umuq3Dkw49Rc3n
+	ml4N/blGo9wP0dlBgFIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nd6HO-002ZeQ-5x; Sat, 09 Apr 2022 08:17:10 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1nd6Q6-002b2t-CK; Sat, 09 Apr 2022 08:26:10 +0000
+Received: from mga04.intel.com ([192.55.52.120])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd6HH-002Zab-5W
- for linux-mtd@lists.infradead.org; Sat, 09 Apr 2022 08:17:05 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id k23so16037868wrd.8
- for <linux-mtd@lists.infradead.org>; Sat, 09 Apr 2022 01:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=linbit-com.20210112.gappssmtp.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=Ga61vN/TMGQoWv5pdVva9yHEVEk7JvDu8SvkqTkiHOU=;
- b=16VWXfTcecI6vKD89hlxEi4M1sM+lDWraPFKcdJek4zYvKgcUI+UTTfswq4WTG3pUA
- DwGdvejVPHmGbB6WxyxpG5RxCDgxrI8ELqeSKx9xnWZSuDqFsfTR7C0q23UBJ4NTUUke
- 9rs/lGq9PScZMcSAS9SHkk+s8lIoFrVgzxTJ9NRLUES2XsBvbZXGJskPHSy0jdzHruaB
- iGqoe9YksSt5XleGcAhaVmv2OHki/8AO1/zdgDuyMqAmL6dyveVZDyPGB/rY+7+4UaaK
- b7o7nIN/SrEk1fy76OtZuySau99YX+Sryl6fYO8t+jUUvribl7KiF9nqytVWelfdH+Mk
- O4fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=Ga61vN/TMGQoWv5pdVva9yHEVEk7JvDu8SvkqTkiHOU=;
- b=V8sQLkEkIdn6Rye6hFVwkZwKjHdsdD6DmPRbUljNB4qgM662Aoic2OeWE0GnpgrWLv
- iIGm1GJuTZIGYjUpc+VfEz9WeKNrFPiyUzPaFUMdlssLzi7gJ5tXDAwU0JC5/ti5xv5Y
- 9A45MJk6Nragawt1S8KRE/HtPBa5V6By+109/FABJbR67d/8NdG31wXoxOjr/ErqVQpS
- +Y9uY2JI3+C72n/mrlhsCBOi4xgKCF7dzQek8tNxNsQ6SxBextpDIDSi6EY76hgQKb6d
- mphfekk3ysgFiaoijobtSevANkMtMoBVEDwsv//09rfD++lt0ghKN8IzdtcFrOY0ZrRR
- OzGA==
-X-Gm-Message-State: AOAM532FCMrUN792VotZxZfDT55Yqx1DD/ISdmABClP5KVckIjiu/7ln
- RHEFPHN5sz8IPNzzGKXdCk0yoQ==
-X-Google-Smtp-Source: ABdhPJyMl7hUdRWB67QUv24ZWK8mJRwBaxhnGq09ejE28bU5zjvkHivlidIC/JIf/EdWqVvIZNI6nA==
-X-Received: by 2002:adf:9581:0:b0:1ed:c341:4ed1 with SMTP id
- p1-20020adf9581000000b001edc3414ed1mr16998132wrp.299.1649492221449; 
- Sat, 09 Apr 2022 01:17:01 -0700 (PDT)
-Received: from [192.168.169.127] (178.115.52.210.wireless.dyn.drei.com.
- [178.115.52.210]) by smtp.gmail.com with ESMTPSA id
- r14-20020a05600c35ce00b0038c9f469979sm12169802wmq.40.2022.04.09.01.16.59
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 09 Apr 2022 01:17:01 -0700 (PDT)
-Message-ID: <5a26cdb1-b63b-8d35-640b-bc0e0f78a181@linbit.com>
-Date: Sat, 9 Apr 2022 10:16:58 +0200
+ id 1nd6Q0-002b17-DF
+ for linux-mtd@lists.infradead.org; Sat, 09 Apr 2022 08:26:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1649492764; x=1681028764;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=Z89rAS6nK8vPE6PqwXyApxLr8DEMMn6pGUFoYLv0L8I=;
+ b=X1yvVpveYHeOELYP1clJnm32VyOucDO/PVJZIv62ci4RGTOzQekhXQwO
+ 0mh5Bk1NmwXEfo9HvtU4VubrNdIyV4Hbc8AUJ1aZM4kwYYiuIZ+jk+NCa
+ ZMkkY2CK9scjaH9u/SvyBpKbhnzTl+dWoLuCeuQTpJsQD7kyFqxpkJsuE
+ eBC4AkZC4TZN+x0Aiv+W9H+BpPT6jZshO/maHTtJLPe457NXZIL7E5Qn1
+ 4/L7CfuXaGkXbLXDnZtuYwpZur7PVsqt0wJ+VTTBN+qw9Aqk7mhyaHELh
+ BdBZlJ13v8N98KSoJ6ghDkJO8KdLSVH2R0NED1J8eF8PZ4Bl6siWqlDYe w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10311"; a="260621696"
+X-IronPort-AV: E=Sophos;i="5.90,247,1643702400"; d="scan'208";a="260621696"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2022 01:26:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,247,1643702400"; d="scan'208";a="622019793"
+Received: from lkp-server02.sh.intel.com (HELO 7e80bc2a00a0) ([10.239.97.151])
+ by fmsmga004.fm.intel.com with ESMTP; 09 Apr 2022 01:25:59 -0700
+Received: from kbuild by 7e80bc2a00a0 with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1nd6Pv-00010d-9g;
+ Sat, 09 Apr 2022 08:25:59 +0000
+Date: Sat, 9 Apr 2022 16:25:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org
+Cc: kbuild-all@lists.01.org, Chuanhong Guo <gch981213@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: separate ecc-mxic from nandcore
+Message-ID: <202204091647.rave7jtW-lkp@intel.com>
+References: <20220409052148.2159196-1-gch981213@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
-Subject: Re: [Drbd-dev] [PATCH 04/27] drbd: remove assign_p_sizes_qlim
-Content-Language: en-US
-To: Christoph Hellwig <hch@lst.de>
-Cc: jfs-discussion@lists.sourceforge.net, linux-nvme@lists.infradead.org,
- virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
- dm-devel@redhat.com, target-devel@vger.kernel.org,
- linux-mtd@lists.infradead.org, drbd-dev@lists.linbit.com,
- linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-scsi@vger.kernel.org, cluster-devel@redhat.com,
- xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
- linux-um@lists.infradead.org, nbd@other.debian.org,
- linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
- ceph-devel@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-xfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
- linux-fsdevel@vger.kernel.org, ntfs3@lists.linux.dev,
- linux-btrfs@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-References: <20220409045043.23593-1-hch@lst.de>
- <20220409045043.23593-5-hch@lst.de>
-From: =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= <christoph.boehmwalder@linbit.com>
-In-Reply-To: <20220409045043.23593-5-hch@lst.de>
+Content-Disposition: inline
+In-Reply-To: <20220409052148.2159196-1-gch981213@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220409_011703_234412_7D363AE7 
-X-CRM114-Status: GOOD (  16.51  )
+X-CRM114-CacheID: sfid-20220409_012604_536745_A7FEC4F4 
+X-CRM114-Status: GOOD (  13.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,69 +77,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDkuMDQuMjIgMDY6NTAsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOgo+IEZvbGQgZWFjaCBi
-cmFuY2ggaW50byBpdHMgb25seSBjYWxsZXIuCj4gCj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3Bo
-IEhlbGx3aWcgPGhjaEBsc3QuZGU+Cj4gLS0tCj4gICBkcml2ZXJzL2Jsb2NrL2RyYmQvZHJiZF9t
-YWluLmMgfCA0NyArKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tCj4gICAxIGZpbGUg
-Y2hhbmdlZCwgMjAgaW5zZXJ0aW9ucygrKSwgMjcgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvYmxvY2svZHJiZC9kcmJkX21haW4uYyBiL2RyaXZlcnMvYmxvY2svZHJiZC9k
-cmJkX21haW4uYwo+IGluZGV4IDk2NzZhMWQyMTRiYzUuLjEyNjJmZTFjMzM2MTggMTAwNjQ0Cj4g
-LS0tIGEvZHJpdmVycy9ibG9jay9kcmJkL2RyYmRfbWFpbi5jCj4gKysrIGIvZHJpdmVycy9ibG9j
-ay9kcmJkL2RyYmRfbWFpbi5jCj4gQEAgLTkwMywzMSArOTAzLDYgQEAgdm9pZCBkcmJkX2dlbl9h
-bmRfc2VuZF9zeW5jX3V1aWQoc3RydWN0IGRyYmRfcGVlcl9kZXZpY2UgKnBlZXJfZGV2aWNlKQo+
-ICAgCX0KPiAgIH0KPiAgIAo+IC0vKiBjb21tdW5pY2F0ZWQgaWYgKGFncmVlZF9mZWF0dXJlcyAm
-IERSQkRfRkZfV1NBTUUpICovCj4gLXN0YXRpYyB2b2lkCj4gLWFzc2lnbl9wX3NpemVzX3FsaW0o
-c3RydWN0IGRyYmRfZGV2aWNlICpkZXZpY2UsIHN0cnVjdCBwX3NpemVzICpwLAo+IC0JCQkJCXN0
-cnVjdCByZXF1ZXN0X3F1ZXVlICpxKQo+IC17Cj4gLQlpZiAocSkgewo+IC0JCXAtPnFsaW0tPnBo
-eXNpY2FsX2Jsb2NrX3NpemUgPSBjcHVfdG9fYmUzMihxdWV1ZV9waHlzaWNhbF9ibG9ja19zaXpl
-KHEpKTsKPiAtCQlwLT5xbGltLT5sb2dpY2FsX2Jsb2NrX3NpemUgPSBjcHVfdG9fYmUzMihxdWV1
-ZV9sb2dpY2FsX2Jsb2NrX3NpemUocSkpOwo+IC0JCXAtPnFsaW0tPmFsaWdubWVudF9vZmZzZXQg
-PSBjcHVfdG9fYmUzMihxdWV1ZV9hbGlnbm1lbnRfb2Zmc2V0KHEpKTsKPiAtCQlwLT5xbGltLT5p
-b19taW4gPSBjcHVfdG9fYmUzMihxdWV1ZV9pb19taW4ocSkpOwo+IC0JCXAtPnFsaW0tPmlvX29w
-dCA9IGNwdV90b19iZTMyKHF1ZXVlX2lvX29wdChxKSk7Cj4gLQkJcC0+cWxpbS0+ZGlzY2FyZF9l
-bmFibGVkID0gYmxrX3F1ZXVlX2Rpc2NhcmQocSk7Cj4gLQkJcC0+cWxpbS0+d3JpdGVfc2FtZV9j
-YXBhYmxlID0gMDsKPiAtCX0gZWxzZSB7Cj4gLQkJcSA9IGRldmljZS0+cnFfcXVldWU7Cj4gLQkJ
-cC0+cWxpbS0+cGh5c2ljYWxfYmxvY2tfc2l6ZSA9IGNwdV90b19iZTMyKHF1ZXVlX3BoeXNpY2Fs
-X2Jsb2NrX3NpemUocSkpOwo+IC0JCXAtPnFsaW0tPmxvZ2ljYWxfYmxvY2tfc2l6ZSA9IGNwdV90
-b19iZTMyKHF1ZXVlX2xvZ2ljYWxfYmxvY2tfc2l6ZShxKSk7Cj4gLQkJcC0+cWxpbS0+YWxpZ25t
-ZW50X29mZnNldCA9IDA7Cj4gLQkJcC0+cWxpbS0+aW9fbWluID0gY3B1X3RvX2JlMzIocXVldWVf
-aW9fbWluKHEpKTsKPiAtCQlwLT5xbGltLT5pb19vcHQgPSBjcHVfdG9fYmUzMihxdWV1ZV9pb19v
-cHQocSkpOwo+IC0JCXAtPnFsaW0tPmRpc2NhcmRfZW5hYmxlZCA9IDA7Cj4gLQkJcC0+cWxpbS0+
-d3JpdGVfc2FtZV9jYXBhYmxlID0gMDsKPiAtCX0KPiAtfQo+IC0KPiAgIGludCBkcmJkX3NlbmRf
-c2l6ZXMoc3RydWN0IGRyYmRfcGVlcl9kZXZpY2UgKnBlZXJfZGV2aWNlLCBpbnQgdHJpZ2dlcl9y
-ZXBseSwgZW51bSBkZHNfZmxhZ3MgZmxhZ3MpCj4gICB7Cj4gICAJc3RydWN0IGRyYmRfZGV2aWNl
-ICpkZXZpY2UgPSBwZWVyX2RldmljZS0+ZGV2aWNlOwo+IEBAIC05NTcsMTQgKzkzMiwzMiBAQCBp
-bnQgZHJiZF9zZW5kX3NpemVzKHN0cnVjdCBkcmJkX3BlZXJfZGV2aWNlICpwZWVyX2RldmljZSwg
-aW50IHRyaWdnZXJfcmVwbHksIGVudQo+ICAgCQlxX29yZGVyX3R5cGUgPSBkcmJkX3F1ZXVlX29y
-ZGVyX3R5cGUoZGV2aWNlKTsKPiAgIAkJbWF4X2Jpb19zaXplID0gcXVldWVfbWF4X2h3X3NlY3Rv
-cnMocSkgPDwgOTsKPiAgIAkJbWF4X2Jpb19zaXplID0gbWluKG1heF9iaW9fc2l6ZSwgRFJCRF9N
-QVhfQklPX1NJWkUpOwo+IC0JCWFzc2lnbl9wX3NpemVzX3FsaW0oZGV2aWNlLCBwLCBxKTsKPiAr
-CQlwLT5xbGltLT5waHlzaWNhbF9ibG9ja19zaXplID0KPiArCQkJY3B1X3RvX2JlMzIocXVldWVf
-cGh5c2ljYWxfYmxvY2tfc2l6ZShxKSk7Cj4gKwkJcC0+cWxpbS0+bG9naWNhbF9ibG9ja19zaXpl
-ID0KPiArCQkJY3B1X3RvX2JlMzIocXVldWVfbG9naWNhbF9ibG9ja19zaXplKHEpKTsKPiArCQlw
-LT5xbGltLT5hbGlnbm1lbnRfb2Zmc2V0ID0KPiArCQkJY3B1X3RvX2JlMzIocXVldWVfYWxpZ25t
-ZW50X29mZnNldChxKSk7Cj4gKwkJcC0+cWxpbS0+aW9fbWluID0gY3B1X3RvX2JlMzIocXVldWVf
-aW9fbWluKHEpKTsKPiArCQlwLT5xbGltLT5pb19vcHQgPSBjcHVfdG9fYmUzMihxdWV1ZV9pb19v
-cHQocSkpOwo+ICsJCXAtPnFsaW0tPmRpc2NhcmRfZW5hYmxlZCA9IGJsa19xdWV1ZV9kaXNjYXJk
-KHEpOwo+ICAgCQlwdXRfbGRldihkZXZpY2UpOwo+ICAgCX0gZWxzZSB7Cj4gKwkJc3RydWN0IHJl
-cXVlc3RfcXVldWUgKnEgPSBkZXZpY2UtPnJxX3F1ZXVlOwo+ICsKPiArCQlwLT5xbGltLT5waHlz
-aWNhbF9ibG9ja19zaXplID0KPiArCQkJY3B1X3RvX2JlMzIocXVldWVfcGh5c2ljYWxfYmxvY2tf
-c2l6ZShxKSk7Cj4gKwkJcC0+cWxpbS0+bG9naWNhbF9ibG9ja19zaXplID0KPiArCQkJY3B1X3Rv
-X2JlMzIocXVldWVfbG9naWNhbF9ibG9ja19zaXplKHEpKTsKPiArCQlwLT5xbGltLT5hbGlnbm1l
-bnRfb2Zmc2V0ID0gMDsKPiArCQlwLT5xbGltLT5pb19taW4gPSBjcHVfdG9fYmUzMihxdWV1ZV9p
-b19taW4ocSkpOwo+ICsJCXAtPnFsaW0tPmlvX29wdCA9IGNwdV90b19iZTMyKHF1ZXVlX2lvX29w
-dChxKSk7Cj4gKwkJcC0+cWxpbS0+ZGlzY2FyZF9lbmFibGVkID0gMDsKPiArCj4gICAJCWRfc2l6
-ZSA9IDA7Cj4gICAJCXVfc2l6ZSA9IDA7Cj4gICAJCXFfb3JkZXJfdHlwZSA9IFFVRVVFX09SREVS
-RURfTk9ORTsKPiAgIAkJbWF4X2Jpb19zaXplID0gRFJCRF9NQVhfQklPX1NJWkU7IC8qIC4uLiBt
-dWx0aXBsZSBCSU9zIHBlciBwZWVyX3JlcXVlc3QgKi8KPiAtCQlhc3NpZ25fcF9zaXplc19xbGlt
-KGRldmljZSwgcCwgTlVMTCk7Cj4gICAJfQo+ICAgCj4gICAJaWYgKHBlZXJfZGV2aWNlLT5jb25u
-ZWN0aW9uLT5hZ3JlZWRfcHJvX3ZlcnNpb24gPD0gOTQpCgpMR1RNIG5vdywgdGhhbmtzLgoKQWNr
-ZWQtYnk6IENocmlzdG9waCBCw7ZobXdhbGRlciA8Y2hyaXN0b3BoLmJvZWhtd2FsZGVyQGxpbmJp
-dC5jb20+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Chuanhong,
+
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on mtd/nand/next]
+[also build test ERROR on v5.18-rc1 next-20220408]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Chuanhong-Guo/mtd-nand-separate-ecc-mxic-from-nandcore/20220409-132331
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+config: sh-randconfig-r013-20220408 (https://download.01.org/0day-ci/archive/20220409/202204091647.rave7jtW-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/a96780fbe6f7bc76d07fd5a4ccc390e7fedcc8b5
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Chuanhong-Guo/mtd-nand-separate-ecc-mxic-from-nandcore/20220409-132331
+        git checkout a96780fbe6f7bc76d07fd5a4ccc390e7fedcc8b5
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sh SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "mxic_ecc_process_data_pipelined" [drivers/spi/spi-mxic.ko] undefined!
+>> ERROR: modpost: "mxic_ecc_get_pipelined_engine" [drivers/spi/spi-mxic.ko] undefined!
+>> ERROR: modpost: "mxic_ecc_get_pipelined_ops" [drivers/spi/spi-mxic.ko] undefined!
+>> ERROR: modpost: "mxic_ecc_put_pipelined_engine" [drivers/spi/spi-mxic.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
