@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7363C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 05:06:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08445C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 05:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=49FrMt1bJITWcfoA4eRQv6fYMX6o1OkVQygWhjTxcO8=; b=uefBGS4+YDz46F
-	TXa6flV98Vz3eGv0TW1BLJf0dyw2h7pgi3vvC+YsGD8oUkYLVG/4FhCkScfrfAVEvDbAJak/S/QIo
-	nknJl3pdhCJLmTuxljqxdW00DTseUMf/3I0yoe3WdyBULyUOmUXaWrPL8hCguCm7XgXmUIehO1n17
-	Cemn8t5rhP9zdfEf36fYEDAwQUNYIVe4rgN1K2v7/YUweDuaNXKOC7P4gW+qdy9xgb2kHJMUtjwKY
-	PH0PbIq+s0GbpOMXbeb4wawBgmd6U2UljiTbhvn/nYk/cwrv97AJEvZWvu8N13UAwBnraMAqWKi33
-	3/P13mlsSPjUJH1FA0rA==;
+	List-Owner; bh=lqcrHmJNuNPzf2ZJ1UIRijy2o2liA13sJ5ydOkjNpbA=; b=XJFBnWVq7WOdcZ
+	2MsDdL1ICM8LhrH8K8VIoAWVlaSCwOd3Kjh+n+f58n5Bq401QLuHSgK9eny5JsNbfmeb4pJAsx8Bz
+	31ce4inWBOX+Dy6RIxR+OZVpxlpogCRTRW1uSPVaLuNrqJndBC/7wvlnI3uIyDUn3iyKntsZR3Sgg
+	mt8LQbjg8HW/qejzyM2iupBD1Vb4e+a7VZ+m3otudVFDZziUecajpKSpy1LVBW3VieBP6nPtVgLYA
+	ylKaUkw931JTon3EJrcFeRHliKXrcgCki5no7J2Vm47evoE6oQ0xNQvmdh0n9wHi7AVDvQMvIjXYW
+	ntzQo203J0xYHtKehAaA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nd3IB-0028nE-H7; Sat, 09 Apr 2022 05:05:47 +0000
+	id 1nd3JE-0029JJ-JZ; Sat, 09 Apr 2022 05:06:52 +0000
 Received: from 213-147-167-116.nat.highway.webapn.at ([213.147.167.116]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd34Q-0020zD-BL; Sat, 09 Apr 2022 04:51:34 +0000
+ id 1nd34U-00213P-4I; Sat, 09 Apr 2022 04:51:38 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
@@ -40,10 +40,12 @@ Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
  jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
  ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
- "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 14/27] block: add a bdev_stable_writes helper
-Date: Sat,  9 Apr 2022 06:50:30 +0200
-Message-Id: <20220409045043.23593-15-hch@lst.de>
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 15/27] block: add a bdev_max_zone_append_sectors helper
+Date: Sat,  9 Apr 2022 06:50:31 +0200
+Message-Id: <20220409045043.23593-16-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220409045043.23593-1-hch@lst.de>
 References: <20220409045043.23593-1-hch@lst.de>
@@ -64,76 +66,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a helper to check the stable writes flag based on the block_device
-instead of having to poke into the block layer internal request_queue.
+Add a helper to check the max supported sectors for zone append based on
+the block_device instead of having to poke into the block layer internal
+request_queue.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/md/dm-table.c  | 4 +---
- fs/super.c             | 2 +-
- include/linux/blkdev.h | 6 ++++++
- mm/swapfile.c          | 2 +-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/nvme/target/zns.c | 3 +--
+ fs/zonefs/super.c         | 3 +--
+ include/linux/blkdev.h    | 6 ++++++
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 5e38d0dd009d5..d46839faa0ca5 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1950,9 +1950,7 @@ static int device_requires_stable_pages(struct dm_target *ti,
- 					struct dm_dev *dev, sector_t start,
- 					sector_t len, void *data)
+diff --git a/drivers/nvme/target/zns.c b/drivers/nvme/target/zns.c
+index e34718b095504..82b61acf7a72b 100644
+--- a/drivers/nvme/target/zns.c
++++ b/drivers/nvme/target/zns.c
+@@ -34,8 +34,7 @@ static int validate_conv_zones_cb(struct blk_zone *z,
+ 
+ bool nvmet_bdev_zns_enable(struct nvmet_ns *ns)
  {
--	struct request_queue *q = bdev_get_queue(dev->bdev);
--
--	return blk_queue_stable_writes(q);
-+	return bdev_stable_writes(dev->bdev);
- }
+-	struct request_queue *q = ns->bdev->bd_disk->queue;
+-	u8 zasl = nvmet_zasl(queue_max_zone_append_sectors(q));
++	u8 zasl = nvmet_zasl(bdev_max_zone_append_sectors(ns->bdev));
+ 	struct gendisk *bd_disk = ns->bdev->bd_disk;
+ 	int ret;
  
- int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
-diff --git a/fs/super.c b/fs/super.c
-index f1d4a193602d6..60f57c7bc0a69 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1204,7 +1204,7 @@ static int set_bdev_super(struct super_block *s, void *data)
- 	s->s_dev = s->s_bdev->bd_dev;
- 	s->s_bdi = bdi_get(s->s_bdev->bd_disk->bdi);
+diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+index 3614c7834007d..7a63807b736c4 100644
+--- a/fs/zonefs/super.c
++++ b/fs/zonefs/super.c
+@@ -678,13 +678,12 @@ static ssize_t zonefs_file_dio_append(struct kiocb *iocb, struct iov_iter *from)
+ 	struct inode *inode = file_inode(iocb->ki_filp);
+ 	struct zonefs_inode_info *zi = ZONEFS_I(inode);
+ 	struct block_device *bdev = inode->i_sb->s_bdev;
+-	unsigned int max;
++	unsigned int max = bdev_max_zone_append_sectors(bdev);
+ 	struct bio *bio;
+ 	ssize_t size;
+ 	int nr_pages;
+ 	ssize_t ret;
  
--	if (blk_queue_stable_writes(s->s_bdev->bd_disk->queue))
-+	if (bdev_stable_writes(s->s_bdev))
- 		s->s_iflags |= SB_I_STABLE_WRITES;
- 	return 0;
- }
+-	max = queue_max_zone_append_sectors(bdev_get_queue(bdev));
+ 	max = ALIGN_DOWN(max << SECTOR_SHIFT, inode->i_sb->s_blocksize);
+ 	iov_iter_truncate(from, max);
+ 
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 075b16d4560e7..a433798c3343e 100644
+index a433798c3343e..f8c50b77543eb 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -1330,6 +1330,12 @@ static inline bool bdev_nonrot(struct block_device *bdev)
- 	return blk_queue_nonrot(bdev_get_queue(bdev));
+@@ -1188,6 +1188,12 @@ static inline unsigned int queue_max_zone_append_sectors(const struct request_qu
+ 	return min(l->max_zone_append_sectors, l->max_sectors);
  }
  
-+static inline bool bdev_stable_writes(struct block_device *bdev)
++static inline unsigned int
++bdev_max_zone_append_sectors(struct block_device *bdev)
 +{
-+	return test_bit(QUEUE_FLAG_STABLE_WRITES,
-+			&bdev_get_queue(bdev)->queue_flags);
++	return queue_max_zone_append_sectors(bdev_get_queue(bdev));
 +}
 +
- static inline bool bdev_write_cache(struct block_device *bdev)
+ static inline unsigned queue_logical_block_size(const struct request_queue *q)
  {
- 	return test_bit(QUEUE_FLAG_WC, &bdev_get_queue(bdev)->queue_flags);
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index d5ab7ec4d92ca..4069f17a82c8e 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3065,7 +3065,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 		goto bad_swap_unlock_inode;
- 	}
- 
--	if (p->bdev && blk_queue_stable_writes(p->bdev->bd_disk->queue))
-+	if (p->bdev && bdev_stable_writes(p->bdev))
- 		p->flags |= SWP_STABLE_WRITES;
- 
- 	if (p->bdev && p->bdev->bd_disk->fops->rw_page)
+ 	int retval = 512;
 -- 
 2.30.2
 
