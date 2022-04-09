@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B36EC433EF
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 04:59:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A19A5C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 05:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eh/tPb/x3juGxLrb7/8jxpsdluAs0JwrQQs9Wy7vCEo=; b=pcNliExLQoFRIH
-	R6k0Mvk5ujaXkKLGABcQKQCw78jonpozOzKGrCNSwOiLCfhiSYNVoJ62UpAbgEOc2I/ZM6Q6/Iuc8
-	T/56CFbShnfreH78uKeua7sMHwWzPQ4UbU7ISdFAPXVvvyVcElJHQaKaMdc3Q9hlEnzhN8kB+rAsp
-	w32ScZu376FCR3hbwwqcRYf95Rl64MtBitz6JcFpqN4qVwYC4PhDbi7iqL8ZO+Vrvc8iZNrDaY+DL
-	2tvMUYkxHPkxVUmnSguPVROuU58jol6iZtTV39bI2DDVb89kL8tQnS+YVmlhO/Hc/sGUbBzGLTHFR
-	07qy7+i/i49WZLy1+BIQ==;
+	List-Owner; bh=8gy9i8AmLe08LYM8mCrhFmtpES1WU/pTGJ7Xv0a7SYY=; b=YnTwMrvpU2rD30
+	jG/IgztZxb5d4Y+dO/z7t+dhH1gCWG9m2Ov3D9D1+auqqTredadoN2cC7/t0FJ+W8ftGjpj2ai42c
+	rzwVD3BOngNtNZzdbCTwrj75mrC05Fk4Ma4g4hcJh8uJijnu0dmv19T9NYyjioAJt4CufOv5qYDv8
+	HkrgN2W6k3p+/fEXyn3EG2NV/o95zh/r0hstB16yV8UyIuS9ka4ySjfhSp+vXXu6xuGsKMBZBzB81
+	O9pFF8fPPzEs/rxHL2fXkQjm+XxX3c/1Cnaathb1frUh/2eUsr+NFkf8KgedkB+OGieolDUhueP8q
+	A4rZuF298O/3CVOKZI8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nd3B7-0025UE-NO; Sat, 09 Apr 2022 04:58:29 +0000
+	id 1nd3Cc-0026Ab-Hr; Sat, 09 Apr 2022 05:00:02 +0000
 Received: from 213-147-167-116.nat.highway.webapn.at ([213.147.167.116]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd348-0020i9-Di; Sat, 09 Apr 2022 04:51:16 +0000
+ id 1nd34C-0020kv-0d; Sat, 09 Apr 2022 04:51:20 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
@@ -39,12 +39,10 @@ Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
  linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
  jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
- ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 09/27] ntfs3: use bdev_logical_block_size instead of open
- coding it
-Date: Sat,  9 Apr 2022 06:50:25 +0200
-Message-Id: <20220409045043.23593-10-hch@lst.de>
+ ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+Subject: [PATCH 10/27] mm: use bdev_is_zoned in claim_swapfile
+Date: Sat,  9 Apr 2022 06:50:26 +0200
+Message-Id: <20220409045043.23593-11-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220409045043.23593-1-hch@lst.de>
 References: <20220409045043.23593-1-hch@lst.de>
@@ -65,25 +63,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Use the bdev based helper instead of poking into the queue.
+
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/ntfs3/super.c | 2 +-
+ mm/swapfile.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 278dcf5024102..cd30e81abbce0 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -920,7 +920,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	}
- 
- 	/* Parse boot. */
--	err = ntfs_init_from_boot(sb, rq ? queue_logical_block_size(rq) : 512,
-+	err = ntfs_init_from_boot(sb, bdev_logical_block_size(bdev),
- 				  bdev_nr_bytes(bdev));
- 	if (err)
- 		goto out;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 63c61f8b26118..4c7537162af5e 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2761,7 +2761,7 @@ static int claim_swapfile(struct swap_info_struct *p, struct inode *inode)
+ 		 * write only restriction.  Hence zoned block devices are not
+ 		 * suitable for swapping.  Disallow them here.
+ 		 */
+-		if (blk_queue_is_zoned(p->bdev->bd_disk->queue))
++		if (bdev_is_zoned(p->bdev))
+ 			return -EINVAL;
+ 		p->flags |= SWP_BLKDEV;
+ 	} else if (S_ISREG(inode->i_mode)) {
 -- 
 2.30.2
 
