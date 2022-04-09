@@ -4,86 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E668C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 12:50:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCAB7C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 14:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bSa3gYTIUfkiqGt28GuzTKH/5hrYffzkpCR6epNdArk=; b=TAaPRS/4kEvJUR
-	RfCkeMHnexvAHwx239lTiK3A6Whm9UUU3Lqrp7IUH/zmKUNDxcWJxHL9oSKAGyjfeKB1Nk4Qze8fG
-	Imj1BxPqeUE1H+BeeM7jW7wwPbXBIlW7pwdX4QqQzEzpax5bwIfHUCwOngPOs6Dhh5BuDe8IM76da
-	XiXO4OZ2nPlPuJc3Ia/BZU6ZoKTuhTZMaqsGPIMzVXvhKxucLjpMW7bwsfAZtGDCs6KU+H0KLCG0B
-	vIHguMuTnkmSBd6IjLF/qh6xsK16W0XSD4jVY6hM4NgQ6iTo9FT1LPbPIes5hjAsWA6eiKwrAvM0M
-	ixnavAoOUJJnlW+zMI5Q==;
+	List-Owner; bh=3z642qGMBzxCyHU3DWQY6xgBrHC9JDZ8CrVb80r57YI=; b=upOJRKN04vm7rJ
+	aOkLXtKrT3zy7zXxS5VHrDwtjaXxcvVu9gYrhGm62lIMEk5b3IO0d4SEhZjKuyHsEAOPVg7v+aIzO
+	RvldQjPtL+6R8PIIxHg9bqSnL44dw57KNMaha3JxhbfVbP3GLpuKNs1q6sqCVu4Ga9N7EOWPKeAsl
+	iMt3u2QFhd7yYs6GCKNLl47asJhQT4Yeo+i54h++70p/7xizk2rdxZPjO5nYpQmOtZU4JGoQ8oM3B
+	HR6O18Q32k60xJCSmoSdD5qVLdmVxlKZFdjsZJ2ExOByxLP8z5K6jCQyiGZ8qMaCymFEVbrqnzDXg
+	x8Tacf+TPpPNDI2S1d0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndAXV-0037xx-8n; Sat, 09 Apr 2022 12:50:05 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1ndC9J-003LPe-Pn; Sat, 09 Apr 2022 14:33:14 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndAXS-0037x0-3J
- for linux-mtd@lists.infradead.org; Sat, 09 Apr 2022 12:50:03 +0000
-Received: by mail-ej1-x632.google.com with SMTP id u15so3545441ejf.11
- for <linux-mtd@lists.infradead.org>; Sat, 09 Apr 2022 05:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=mZ2Ei9Pw71xChRYUdbzHz+g7cxbDuw0G+n2AKi4cwrM=;
- b=fbcRIrQpcbSQPL7/+1JHVXWGoEk4lhGwvpVASn7a9/Tfpu6VnXHYOeVBe4fK8hw3+J
- dxJ9ExO4khrVA0HvVPr+MGAMC/YfMuL5KRfEHRhjtHynycN+4Ahg2P6t2Ds3sGE/CHnC
- HukO24gnPUXM7EKqn4VV22kUJzB2M0UH6oA67FiNT7XpntuTq5MhwVzKLRu2ae8EdLO3
- wcCZnv1xkRJyPFBLlWMQ+QR2EQ0eo7clJ4I/TILzXHBxFFpMrRS2kUTAQYccaRWqGal8
- CPh8ELTgIrg7IXQwsCtYGpzTJzBTtpNVgnKpeN+j+uXXNTE+qo565XQk8XqrI083m8lF
- HRYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=mZ2Ei9Pw71xChRYUdbzHz+g7cxbDuw0G+n2AKi4cwrM=;
- b=j7j+AZPwsxYLeHDPPUT6y3oEwY9pwx0JQ5A2PkgDUf6ShcQK0eJcnGuRrj+ffT70Kv
- cOkiN8osZAd/p93jhew8FjQsWb06IaqCSRFIacKmHz4sdjTgzgWACBl/GbBlINF8pIUH
- xz9E37cSr4TzkKZq2wWqkbeb+EtOiElx4+wGzIrftSo44OAj1T75EdVlfUuypYL/8biz
- qiuMSzC36bccoEVGsu0vudFauG+4lY7MtIHPyEz7fM+0DtIe+CeqimuAJbFXsg/6TVfF
- bOU72hkSSYUNCKEDnEcKsVMBUWE0fsZrE0ZtPTrRu7ZxeSlDFukGqoSXfXCrEwjnlYFc
- flLg==
-X-Gm-Message-State: AOAM530lyHAEKHySTvaZwcCdLP+t106D/uprZbKADPAsJOwqoyOQwGNJ
- /aNff0IOC6RbzeIlSRvd7jwT1Q==
-X-Google-Smtp-Source: ABdhPJxMQS6Xs91cG5pLCViSOliYY8Gc+cfaZTEhqJevdonVPQzdQaHXnqHvQ+kKOZbJ4dSdVCca/A==
-X-Received: by 2002:a17:907:9724:b0:6e8:4421:c760 with SMTP id
- jg36-20020a170907972400b006e84421c760mr9397722ejc.658.1649508599735; 
- Sat, 09 Apr 2022 05:49:59 -0700 (PDT)
-Received: from [192.168.0.188] (xdsl-188-155-201-27.adslplus.ch.
- [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
- s10-20020a50daca000000b0041cc361b1c9sm8822949edj.68.2022.04.09.05.49.58
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 09 Apr 2022 05:49:59 -0700 (PDT)
-Message-ID: <aea5e032-5cd0-7480-13c1-2af924237532@linaro.org>
-Date: Sat, 9 Apr 2022 14:49:58 +0200
+ id 1ndC9H-003LOb-E8; Sat, 09 Apr 2022 14:33:12 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 207A11F864;
+ Sat,  9 Apr 2022 14:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1649514786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BmOfl4NqddautzOtQrZ0dLuhiQSp1fB0SDxF8v7gYBA=;
+ b=SJlQufjnXjTQtqgkhM6MsOUPDPwOMZ6xGLQ76UNS6RR1cEGIg2CW/GZ7A0Nq9xE2LKzjCQ
+ zm4gbJFRwGS5ZR58/OOlzltxzH57NlfDQ1MS9kgXiNk7elM8N3NSClk0AEwvrheO6NCJzw
+ l51uuNG8cURr+Q1l6/il4XbIWcEO2Fg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1649514786;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BmOfl4NqddautzOtQrZ0dLuhiQSp1fB0SDxF8v7gYBA=;
+ b=yiH+qx8I6hbeCP31rtrhbZE5qxMo8OqYiXG+UWOpJ9wghAOQqadl62X34RS7V0fnDyonaX
+ HzX10h1d2uotqQBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F41913AA1;
+ Sat,  9 Apr 2022 14:32:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id m2GpARiZUWLHIgAAMHmgww
+ (envelope-from <colyli@suse.de>); Sat, 09 Apr 2022 14:32:56 +0000
+Message-ID: <f01ac878-9b0d-972b-70dc-6f3f61b9947b@suse.de>
+Date: Sat, 9 Apr 2022 22:32:52 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: partitions: Add binding for
- Sercomm parser
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.7.0
+Subject: Re: [PATCH 26/27] block: decouple REQ_OP_SECURE_ERASE from
+ REQ_OP_DISCARD
 Content-Language: en-US
-To: Mikhail Zhilkin <csharper2005@gmail.com>, Rob Herring <robh@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Karim <Karimdplay@gmail.com>, NOGUCHI Hiroshi <drvlabo@gmail.com>,
- linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- M <x1@disroot.org>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20220406195557.1956-1-csharper2005@gmail.com>
- <20220406195946.2019-1-csharper2005@gmail.com>
- <1649339427.653492.795407.nullmailer@robh.at.kernel.org>
- <9cf4e596-83d7-00cc-afcc-585309cb4852@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <9cf4e596-83d7-00cc-afcc-585309cb4852@gmail.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+ nbd@other.debian.org, ceph-devel@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
+ Jens Axboe <axboe@kernel.dk>, linux-bcache@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+ linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+ ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ =?UTF-8?Q?Christoph_B=c3=b6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>, David Sterba <dsterba@suse.com>
+References: <20220409045043.23593-1-hch@lst.de>
+ <20220409045043.23593-27-hch@lst.de>
+From: Coly Li <colyli@suse.de>
+In-Reply-To: <20220409045043.23593-27-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220409_055002_282268_C6003A53 
-X-CRM114-Status: GOOD (  14.53  )
+X-CRM114-CacheID: sfid-20220409_073311_655251_6DFF252C 
+X-CRM114-Status: UNSURE (   8.80  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,39 +102,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 09/04/2022 14:35, Mikhail Zhilkin wrote:
-> Hello Rob,
-> 
-> On 4/7/2022 4:50 PM, Rob Herring wrote:
->> If you already ran 'make dt_binding_check' and didn't see the above
->> error(s), then make sure 'yamllint' is installed and dt-schema is up to
->> date:
->>
->> pip3 install dtschema --upgrade
->>
->> Please check and re-submit.
-> 
-> Thanks for your great explanation how to test! I found and fixed a mistake.
-
-One? Apart of broken compilation, there were other mistakes. When you
-run the tests, you will see all of them.
-
-> How I have only one WARNING: 
-> "added, moved or deleted file(s), does MAINTAINERS need updating?"
-> 
-> I hope it doesn't require additional change. What do you think?
-
-This is not related to dt_binding_check. if you ask about checkpatch,
-then no, this does not require fixing.
-
-Best regards,
-Krzysztof
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gNC85LzIyIDEyOjUwIFBNLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToKPiBTZWN1cmUgZXJh
+c2UgaXMgYSB2ZXJ5IGRpZmZlcmVudCBvcGVyYXRpb24gZnJvbSBkaXNjYXJkIGluIHRoYXQgaXQg
+aXMKPiBhIGRhdGEgaW50ZWdyaXR5IG9wZXJhdGlvbiB2cyBoaW50LiAgRnVsbHkgc3BsaXQgdGhl
+IGxpbWl0cyBhbmQgaGVscGVyCj4gaW5mcmFzdHJ1Y3R1cmUgdG8gbWFrZSB0aGUgc2VwYXJhdGlv
+biBtb3JlIGNsZWFyLgo+Cj4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBs
+c3QuZGU+Cj4gUmV2aWV3ZWQtYnk6IE1hcnRpbiBLLiBQZXRlcnNlbiA8bWFydGluLnBldGVyc2Vu
+QG9yYWNsZS5jb20+Cj4gQWNrZWQtYnk6IENocmlzdG9waCBCw7ZobXdhbGRlciA8Y2hyaXN0b3Bo
+LmJvZWhtd2FsZGVyQGxpbmJpdC5jb20+IFtkcmJkXQo+IEFja2VkLWJ5OiBSeXVzdWtlIEtvbmlz
+aGkgPGtvbmlzaGkucnl1c3VrZUBnbWFpbC5jb20+IFtuaWZzMl0KPiBBY2tlZC1ieTogQ29seSBM
+aSA8Y29seWxpQHN1c2UuZGU+IFtkcmJkXQoKSGkgQ2hyaXN0b3BoLAoKTXkgQUNLIGlzIGZvciBi
+Y2FjaGUsIG5vdCBkcmJkIGhlcmUuCgpUaGFua3MuCgoKQ29seSBMaQoKCgo+IEFja2VkLWJ5OiBE
+YXZpZCBTdGVyYmEgPGRzdGVyYmFAc3VzZS5jb20+IFtidHJmc10KCgoKCgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
+dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2xpbnV4LW10ZC8K
