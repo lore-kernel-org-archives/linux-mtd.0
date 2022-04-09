@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 820EAC433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 12:44:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E668C433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 12:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=LWSKRBL4ep658YMASR4F0oVfztVCT8RrUBs2BW/vvbk=; b=QRfogoD5wWnqwm
-	6/c4tUrBT7jmDzjBHQlKxxv0CBk7vICuBDs2YWgZfjh5zWiBNfPKw8JM3u4CFN+sVGGGcauqVb98u
-	E4XfxVGM7SlzOmtr99V1PHNPgj9dqR+Z2dEvgNd1ygpLJvjbnX5/Ky7YgkVqZ675FE9U5v82x7NoM
-	KSrD09+q9RJ1Z9OlhlrmY1WssXFzW9ryQk4y0Gg7YpDBIt2R729G95qSsbqxWcIGpeXU0jQf8upQ/
-	HexI4DhFlfDvtONxVVornkMK2nYjq21c8VtfhzBGsGybMDzcctkwJ1jEuScfm116+W0sj/UA9D45z
-	5FjXydF4ClVd97EgYyEw==;
+	List-Owner; bh=bSa3gYTIUfkiqGt28GuzTKH/5hrYffzkpCR6epNdArk=; b=TAaPRS/4kEvJUR
+	RfCkeMHnexvAHwx239lTiK3A6Whm9UUU3Lqrp7IUH/zmKUNDxcWJxHL9oSKAGyjfeKB1Nk4Qze8fG
+	Imj1BxPqeUE1H+BeeM7jW7wwPbXBIlW7pwdX4QqQzEzpax5bwIfHUCwOngPOs6Dhh5BuDe8IM76da
+	XiXO4OZ2nPlPuJc3Ia/BZU6ZoKTuhTZMaqsGPIMzVXvhKxucLjpMW7bwsfAZtGDCs6KU+H0KLCG0B
+	vIHguMuTnkmSBd6IjLF/qh6xsK16W0XSD4jVY6hM4NgQ6iTo9FT1LPbPIes5hjAsWA6eiKwrAvM0M
+	ixnavAoOUJJnlW+zMI5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndARe-0037Qa-TA; Sat, 09 Apr 2022 12:44:02 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1ndAXV-0037xx-8n; Sat, 09 Apr 2022 12:50:05 +0000
+Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndARb-0037Q0-HT
- for linux-mtd@lists.infradead.org; Sat, 09 Apr 2022 12:44:00 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id bh17so22149649ejb.8
- for <linux-mtd@lists.infradead.org>; Sat, 09 Apr 2022 05:43:58 -0700 (PDT)
+ id 1ndAXS-0037x0-3J
+ for linux-mtd@lists.infradead.org; Sat, 09 Apr 2022 12:50:03 +0000
+Received: by mail-ej1-x632.google.com with SMTP id u15so3545441ejf.11
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Apr 2022 05:50:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=qFqeqNjaO9GxDFF6ku8GcKf8eCW7YzW8WlCYcuIhXtw=;
- b=k7qgK3YBC2ZfwWfBq974Auw9JESCchzvmVpnSkvd2Wh/jNBRtf2QzUXjuM6QDOC9WM
- MPpiekFZ4AAUK19lFab93vvPSScrJmv0YP9biKIdieYfTpNX6o8XQlOObgooo/n/zi/M
- Y3xoONQc85T07imeYdn+5hF3rp17wTf91pj7Q0YnA+wCbthgDElRQKF4HlvLNMGBmPSI
- EuyBB6bigXaIU+2XGPRL2IRoPpCw80QfF8g/Pf5lCM8CrVVt9vSrW3g/VFmwiimTbKRr
- 60cZtoPeTk/UD1k+YWNHEth0bfD5Ng8rbGhMK7LSYif8uQrFASWeiTokQkEQpZ4ODFhA
- MXcQ==
+ bh=mZ2Ei9Pw71xChRYUdbzHz+g7cxbDuw0G+n2AKi4cwrM=;
+ b=fbcRIrQpcbSQPL7/+1JHVXWGoEk4lhGwvpVASn7a9/Tfpu6VnXHYOeVBe4fK8hw3+J
+ dxJ9ExO4khrVA0HvVPr+MGAMC/YfMuL5KRfEHRhjtHynycN+4Ahg2P6t2Ds3sGE/CHnC
+ HukO24gnPUXM7EKqn4VV22kUJzB2M0UH6oA67FiNT7XpntuTq5MhwVzKLRu2ae8EdLO3
+ wcCZnv1xkRJyPFBLlWMQ+QR2EQ0eo7clJ4I/TILzXHBxFFpMrRS2kUTAQYccaRWqGal8
+ CPh8ELTgIrg7IXQwsCtYGpzTJzBTtpNVgnKpeN+j+uXXNTE+qo565XQk8XqrI083m8lF
+ HRYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=qFqeqNjaO9GxDFF6ku8GcKf8eCW7YzW8WlCYcuIhXtw=;
- b=fToeU+1Fo2gUk3N+rk4X15XrGxAOiJ1yxOXUKRH34btSMEvFohdoq9ZzPSCqtedJK8
- 6S7iNabIGyADiE0Zg/dfbHQADaZJBgh/aVVIdAL1PxtIuZ3ArCDnhi68Ou1VbNPiVy2W
- YHEoNf+bsdMEWVTn2jw0uuslyMn27kZv3rvdQCDqn8SSlgGG76CFkg5JotTTfCqmWmFw
- MNpMycfaFnlni8xBLD33U+E7DOeJvoPRwcia7UsVjPJgdYJHpiqRiRpSdiIfUF6nh5YN
- K/K67BCakzH1eIBzawLPNQUPW9BWUwUCLuqYBtx+aodtJ1tbmOsOlTKMJbbHMWXTZWFn
- aGGA==
-X-Gm-Message-State: AOAM530RspD3D7zkGlg0U5aWy9sr2dm+M8ws4KV+mECNsdCJ3a+JFoWZ
- vEcU4WQNPZXLBwAdPl+cHYEWfw==
-X-Google-Smtp-Source: ABdhPJwLYMPowNdTkLJ34QzaeN9tFdTwYfvdX4sZzVVl0Iw2FtIgFVDuXXt10tP1iVV/54OpJmp2hw==
-X-Received: by 2002:a17:906:469a:b0:6e8:76c2:1d58 with SMTP id
- a26-20020a170906469a00b006e876c21d58mr1213716ejr.371.1649508236783; 
- Sat, 09 Apr 2022 05:43:56 -0700 (PDT)
+ bh=mZ2Ei9Pw71xChRYUdbzHz+g7cxbDuw0G+n2AKi4cwrM=;
+ b=j7j+AZPwsxYLeHDPPUT6y3oEwY9pwx0JQ5A2PkgDUf6ShcQK0eJcnGuRrj+ffT70Kv
+ cOkiN8osZAd/p93jhew8FjQsWb06IaqCSRFIacKmHz4sdjTgzgWACBl/GbBlINF8pIUH
+ xz9E37cSr4TzkKZq2wWqkbeb+EtOiElx4+wGzIrftSo44OAj1T75EdVlfUuypYL/8biz
+ qiuMSzC36bccoEVGsu0vudFauG+4lY7MtIHPyEz7fM+0DtIe+CeqimuAJbFXsg/6TVfF
+ bOU72hkSSYUNCKEDnEcKsVMBUWE0fsZrE0ZtPTrRu7ZxeSlDFukGqoSXfXCrEwjnlYFc
+ flLg==
+X-Gm-Message-State: AOAM530lyHAEKHySTvaZwcCdLP+t106D/uprZbKADPAsJOwqoyOQwGNJ
+ /aNff0IOC6RbzeIlSRvd7jwT1Q==
+X-Google-Smtp-Source: ABdhPJxMQS6Xs91cG5pLCViSOliYY8Gc+cfaZTEhqJevdonVPQzdQaHXnqHvQ+kKOZbJ4dSdVCca/A==
+X-Received: by 2002:a17:907:9724:b0:6e8:4421:c760 with SMTP id
+ jg36-20020a170907972400b006e84421c760mr9397722ejc.658.1649508599735; 
+ Sat, 09 Apr 2022 05:49:59 -0700 (PDT)
 Received: from [192.168.0.188] (xdsl-188-155-201-27.adslplus.ch.
  [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
- gv9-20020a170906f10900b006d7128b2e6fsm9749886ejb.162.2022.04.09.05.43.55
+ s10-20020a50daca000000b0041cc361b1c9sm8822949edj.68.2022.04.09.05.49.58
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 09 Apr 2022 05:43:56 -0700 (PDT)
-Message-ID: <29cfa017-bbaf-3aba-fe1d-06771957dbaa@linaro.org>
-Date: Sat, 9 Apr 2022 14:43:55 +0200
+ Sat, 09 Apr 2022 05:49:59 -0700 (PDT)
+Message-ID: <aea5e032-5cd0-7480-13c1-2af924237532@linaro.org>
+Date: Sat, 9 Apr 2022 14:49:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
 Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: partitions: Add binding for
  Sercomm parser
 Content-Language: en-US
-To: Mikhail Zhilkin <csharper2005@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: NOGUCHI Hiroshi <drvlabo@gmail.com>, Karim <Karimdplay@gmail.com>,
+To: Mikhail Zhilkin <csharper2005@gmail.com>, Rob Herring <robh@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Karim <Karimdplay@gmail.com>, NOGUCHI Hiroshi <drvlabo@gmail.com>,
+ linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
  M <x1@disroot.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+ Miquel Raynal <miquel.raynal@bootlin.com>
 References: <20220406195557.1956-1-csharper2005@gmail.com>
  <20220406195946.2019-1-csharper2005@gmail.com>
- <8d0d8b27-35ff-3693-cf80-897b80c26b4e@linaro.org>
- <57bebf2f-af4c-b2d9-10e5-19e5104946fb@gmail.com>
+ <1649339427.653492.795407.nullmailer@robh.at.kernel.org>
+ <9cf4e596-83d7-00cc-afcc-585309cb4852@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <57bebf2f-af4c-b2d9-10e5-19e5104946fb@gmail.com>
+In-Reply-To: <9cf4e596-83d7-00cc-afcc-585309cb4852@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220409_054359_643673_FFF073D7 
-X-CRM114-Status: GOOD (  22.11  )
+X-CRM114-CacheID: sfid-20220409_055002_282268_C6003A53 
+X-CRM114-Status: GOOD (  14.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,50 +95,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDkvMDQvMjAyMiAxNDoyNiwgTWlraGFpbCBaaGlsa2luIHdyb3RlOgo+Pgo+PiBJbiBhbnkg
-Y2FzZSB0aGlzIHJlcXVpcmVzIHZlbmRvciBwcmVmaXguCj4gCj4gSSdtIG5vdCBzdXJlIHRoYXQg
-InNjcGFydC1pZCIgaXMgbmVjZXNzYXJ5IGhlcmUuICJzZXJjb21tLHNjLXBhcnRpdGlvbnMiCj4g
-aXMgbmVjZXNzYXJ5LiBJJ20gZ29pbmcgdG8gYWRkIHZlbmRvciBwcmVmaXggaW4gYSBzZXBhcmF0
-ZSBwYXRjaC4gSXMgdGhpcwo+IG9rPwoKWWVzLgoKPiAKPiAtLS0KPiDCoERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy92ZW5kb3ItcHJlZml4ZXMueWFtbCB8IDIgKysKPiDCoDEgZmls
-ZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykKPiAKPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy55YW1sCj4gYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnlhbWwKPiBpbmRleCAwMTQz
-MDk3M2VjZWMuLjY1ZmYyMjM2NGZiMyAxMDA2NDQKPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnlhbWwKPiArKysgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnlhbWwKPiBAQCAtMTA4Miw2ICsx
-MDgyLDggQEAgcGF0dGVyblByb3BlcnRpZXM6Cj4gwqDCoMKgwqAgZGVzY3JpcHRpb246IFNlbnNp
-cmlvbiBBRwo+IMKgwqAgIl5zZW5zb3J0ZWssLioiOgo+IMKgwqDCoMKgIGRlc2NyaXB0aW9uOiBT
-ZW5zb3J0ZWsgVGVjaG5vbG9neSBDb3Jwb3JhdGlvbgo+ICvCoCAiXnNlcmNvbW0sLioiOgo+ICvC
-oMKgwqAgZGVzY3JpcHRpb246IFNlcmNvbW0gKFN1emhvdSkgQ29ycG9yYXRpb24KPiDCoMKgICJe
-c2ZmLC4qIjoKPiDCoMKgwqDCoCBkZXNjcmlwdGlvbjogU21hbGwgRm9ybSBGYWN0b3IgQ29tbWl0
-dGVlCj4gwqDCoCAiXnNnZCwuKiI6Cj4gLS0KPiAKPj4+ICsKPj4+ICtyZXF1aXJlZDoKPj4+ICsg
-IC0gY29tcGF0aWJsZQo+PiBNaXNzaW5nIHJlZy4KPiAKPiByZWcgaXNuJ3QgcmVxdWlyZWQuIFBh
-cnNlciBjYW4gcmVhZCBwYXJ0aXRpb24gb2Zmc2V0cyBhbmQgc2l6ZXMgZnJvbQo+IFNDIFBBUlQg
-TUFQIHRhYmxlLiBPciBkbyB5b3UgbWVhbiBzb21ldGhpbmcgZWxzZT/CoCBBbGwgaXMgb2sKPiB3
-aXRob3V0IHJlZyBkZWZpbml0aW9uIGluICJFeGFtcGxlIiAoZXhjZXB0IHRoZSB3YXJucyB0aGF0
-IHJlZyBwcm9wZXJ0eQo+IGlzIG1pc3NpbmcpLgoKcmVnIG1pZ2h0IG5vdCBiZSByZXF1aXJlZCBm
-b3IgY3VycmVudCBpbXBsZW1lbnRhdGlvbiBidXQgaXQgaXMgcmVxdWlyZWQKYnkgZGV2aWNldHJl
-ZSBmb3IgZXZlcnkgbm9kZSB3aXRoIHVuaXQgYWRkcmVzcy4gRG8geW91IGV4cGVjdCBoZXJlIG5v
-ZGVzCndpdGhvdXQgdW5pdCBhZGRyZXNzZXM/Cgo+PiBBcmUgeW91IHN1cmUgdGhhdCB5b3UgdGVz
-dGVkIHlvdXIgYmluZGluZ3M/IFlvdSBtaXNzIGhlcmUgYWRkcmVzcy9zaXplCj4+IGNlbGxzIGFu
-ZCBjaGlsZHJlbiwgc28geW91IHNob3VsZCBoYXZlIGJpZyBmYXQgd2FybmluZy4KPj4KPj4gUGx1
-cyB5b3VyIERUUyBleGFtcGxlIGhhcyBlcnJvciBhbmQgZG9lcyBub3QgY29tcGlsZS4uLgo+IAo+
-IFdob2xlIGR0cywgZm9yIHRoZSByZWFsIGRldmljZSAobm90IGZvciBleGFtcGxlKSwgd2FzIHRl
-c3RlZCBtYW55IHRpbWVzLgoKWWVhaCwgSSBkaWQgbm90IHNwZWFrIGFib3V0IHdob2xlIERUUywg
-YnV0IGJpbmRpbmdzIGFuZCBleGFtcGxlIGluIHRoZQpiaW5kaW5ncy4KCj4gVGhhbmsgeW91IGZv
-ciB5b3VyIGZlZWRiYWNrISBJIGNoZWNrZWQgdGhlIGFub3RoZXIgZXhhbXBsZXMgYW5kIHRoZXJl
-Cj4gYXJlIG5vIGFueSB3YXJuaW5ncyBub3cuIEJ1dCBJJ20gbm90IHlldCBzdXJlIHRoYXQgInBy
-b3BlcnRpZXMiIGFuZAo+ICJyZXF1aXJlZCIgYXJlIGNvcnJlY3QuCj4gV2hhdCBkbyB5b3UgdGhp
-bmsgKG9yIHdoYXQgZWxzZSBJIGhhdmUgdG8gcmVhZCAvIGNoZWNrKT8KClRoZXJlIGlzIG5vIHdh
-eSB5b3UgdGVzdGVkIHRoZSBiaW5kaW5ncy4gVGhlcmUgYXJlIGZvciBzdXJlIHdhcm5pbmdzCmJl
-Y2F1c2UgaXQgc2ltcGx5IGNhbm5vdCBiZSBldmVuIGNvbXBpbGVkLiBUaGUgd3JpdGluZy1zY2hl
-bWEucnN0CmRlc2NyaWJlcyBob3cgdG8gdGVzdCBpdC4KCkJlc3QgcmVnYXJkcywKS3J6eXN6dG9m
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 09/04/2022 14:35, Mikhail Zhilkin wrote:
+> Hello Rob,
+> 
+> On 4/7/2022 4:50 PM, Rob Herring wrote:
+>> If you already ran 'make dt_binding_check' and didn't see the above
+>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+>> date:
+>>
+>> pip3 install dtschema --upgrade
+>>
+>> Please check and re-submit.
+> 
+> Thanks for your great explanation how to test! I found and fixed a mistake.
+
+One? Apart of broken compilation, there were other mistakes. When you
+run the tests, you will see all of them.
+
+> How I have only one WARNING: 
+> "added, moved or deleted file(s), does MAINTAINERS need updating?"
+> 
+> I hope it doesn't require additional change. What do you think?
+
+This is not related to dt_binding_check. if you ask about checkpatch,
+then no, this does not require fixing.
+
+Best regards,
+Krzysztof
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
