@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE7EC433EF
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 04:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B36EC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 04:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=a388UH16NVJAxIqmhkAIRHBIiKxyE0SrqA/oXxuwY8I=; b=bT9BHNIEbl3FJ8
-	x8ZGfdNLLiCneN64N7vRIY6HAPhvQEecVlcGf1FRUtaDGG0iZKQT8wIGLbxuY+1/HTrcvY3/iwwLk
-	olZszxBxRsiju0eFMX5uGG+a8X2zHpaSc9JLwCy5+yShoPFR779a+ZR8OjSMgllxTaF1oysv6ehu1
-	fHGCTue4uunpW46Z1xvEXJOC27hwiBJblC7MW33RodwTVOyQhrrgaewMFTvNBTUJNJP1RRQVBuzMB
-	mOYvLNIiHgC6dA4n0qK2fcriV5EpDnX5G63FaimxT6jhpctQazPv9XsCBm5Y+kEu5yHZr57iIO20X
-	fPfUnVQ8mOBPRzF2+3TA==;
+	List-Owner; bh=eh/tPb/x3juGxLrb7/8jxpsdluAs0JwrQQs9Wy7vCEo=; b=pcNliExLQoFRIH
+	R6k0Mvk5ujaXkKLGABcQKQCw78jonpozOzKGrCNSwOiLCfhiSYNVoJ62UpAbgEOc2I/ZM6Q6/Iuc8
+	T/56CFbShnfreH78uKeua7sMHwWzPQ4UbU7ISdFAPXVvvyVcElJHQaKaMdc3Q9hlEnzhN8kB+rAsp
+	w32ScZu376FCR3hbwwqcRYf95Rl64MtBitz6JcFpqN4qVwYC4PhDbi7iqL8ZO+Vrvc8iZNrDaY+DL
+	2tvMUYkxHPkxVUmnSguPVROuU58jol6iZtTV39bI2DDVb89kL8tQnS+YVmlhO/Hc/sGUbBzGLTHFR
+	07qy7+i/i49WZLy1+BIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nd39w-0024th-27; Sat, 09 Apr 2022 04:57:16 +0000
+	id 1nd3B7-0025UE-NO; Sat, 09 Apr 2022 04:58:29 +0000
 Received: from 213-147-167-116.nat.highway.webapn.at ([213.147.167.116]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd345-0020fc-8h; Sat, 09 Apr 2022 04:51:13 +0000
+ id 1nd348-0020i9-Di; Sat, 09 Apr 2022 04:51:16 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
@@ -41,10 +41,10 @@ Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
  jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
  ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
  Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 08/27] btrfs: use bdev_max_active_zones instead of open coding
- it
-Date: Sat,  9 Apr 2022 06:50:24 +0200
-Message-Id: <20220409045043.23593-9-hch@lst.de>
+Subject: [PATCH 09/27] ntfs3: use bdev_logical_block_size instead of open
+ coding it
+Date: Sat,  9 Apr 2022 06:50:25 +0200
+Message-Id: <20220409045043.23593-10-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220409045043.23593-1-hch@lst.de>
 References: <20220409045043.23593-1-hch@lst.de>
@@ -68,30 +68,22 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/zoned.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ntfs3/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 1b1b310c3c510..f72cad7391a11 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -350,7 +350,6 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
- 	struct btrfs_fs_info *fs_info = device->fs_info;
- 	struct btrfs_zoned_device_info *zone_info = NULL;
- 	struct block_device *bdev = device->bdev;
--	struct request_queue *queue = bdev_get_queue(bdev);
- 	unsigned int max_active_zones;
- 	unsigned int nactive;
- 	sector_t nr_sectors;
-@@ -410,7 +409,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
- 	if (!IS_ALIGNED(nr_sectors, zone_sectors))
- 		zone_info->nr_zones++;
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 278dcf5024102..cd30e81abbce0 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -920,7 +920,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	}
  
--	max_active_zones = queue_max_active_zones(queue);
-+	max_active_zones = bdev_max_active_zones(bdev);
- 	if (max_active_zones && max_active_zones < BTRFS_MIN_ACTIVE_ZONES) {
- 		btrfs_err_in_rcu(fs_info,
- "zoned: %s: max active zones %u is too small, need at least %u active zones",
+ 	/* Parse boot. */
+-	err = ntfs_init_from_boot(sb, rq ? queue_logical_block_size(rq) : 512,
++	err = ntfs_init_from_boot(sb, bdev_logical_block_size(bdev),
+ 				  bdev_nr_bytes(bdev));
+ 	if (err)
+ 		goto out;
 -- 
 2.30.2
 
