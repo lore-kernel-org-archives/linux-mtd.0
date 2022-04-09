@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D555C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 04:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2F69C433FE
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 04:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oAwGX7y2qdFUVPKlpmS56JhVota6iT/h/Ye4Sl4nDxc=; b=K8W0bcEDjmsgUp
-	xQRUyzylFLCCJ6xPUIp7qd2f0lbxIfM1pg3G0H4t484j9ynIXqvREz1qsVepGqVfKu/X8+DV0XEvC
-	3bmalMBPyiI0Sa3XBY28exrEthhB0tnySQUVzt67vj998ZJcPX4vSoff0LxWuiP+eJk8JJpW72JqB
-	JE+8Bik46kd+mZOgaggfCsWmG0+7rmXTl27XlTVJ/AVzgLSAJGFCwEgvd5pTouu0wWtXDBVB0eADY
-	l3LfznRtz85zQVb24mcKX8JBmg6JJEiUvf/vvCZx8YzCoMZBZMnGJ78GCvAY/XXkhm9LYfaR186zY
-	1DTCZ7R/ExQ8WFYWeQIg==;
+	List-Owner; bh=Wt1V3zblGgGqp+nThIynU/kI6MiLJNeYrF3mjP8smAw=; b=4Y3CN1IIIfXDsL
+	KmGHIUn4Igh7fQLlwoZFVYXm07g7s7sW6edhjyE0/d/pluznfzBh0Lejo7EktTWNXW/6YvejWS2R4
+	DFphOyThnTvu6gb4gxvhCUgN2lYgGXqXzSNJT+SbnW8yqouWhzHl6Ax+y+42PNOfXnIWINW6Ye+WX
+	aIMi8dP6EHsUqWkjYKD8KgK643C1H42RkO62er4bOw8FCd6nj+yAghk5y0Ub6GP4SoTJk1vLnxPtb
+	SjvWV1d0kBCyMlVCGVj+nt1ZnBZpKJ1mItjgJICWbEd1rLSrdrMC4rf9oQ52QbtVbQNQN2Uzb805V
+	yhTj/7w/1lPTMsmMRUQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nd35k-0022Jk-9o; Sat, 09 Apr 2022 04:52:56 +0000
+	id 1nd36C-0022aW-Cz; Sat, 09 Apr 2022 04:53:24 +0000
 Received: from 213-147-167-116.nat.highway.webapn.at ([213.147.167.116]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd33p-0020Uf-5Z; Sat, 09 Apr 2022 04:50:57 +0000
+ id 1nd33s-0020WM-ET; Sat, 09 Apr 2022 04:51:01 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
@@ -39,11 +39,10 @@ Cc: dm-devel@redhat.com, linux-xfs@vger.kernel.org,
  linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
  jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
- ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
- "Martin K . Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 03/27] target: fix discard alignment on partitions
-Date: Sat,  9 Apr 2022 06:50:19 +0200
-Message-Id: <20220409045043.23593-4-hch@lst.de>
+ ntfs3@lists.linux.dev, ocfs2-devel@oss.oracle.com, linux-mm@kvack.org
+Subject: [PATCH 04/27] drbd: remove assign_p_sizes_qlim
+Date: Sat,  9 Apr 2022 06:50:20 +0200
+Message-Id: <20220409045043.23593-5-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220409045043.23593-1-hch@lst.de>
 References: <20220409045043.23593-1-hch@lst.de>
@@ -64,31 +63,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use the proper bdev_discard_alignment helper that accounts for partition
-offsets.
+Fold each branch into its only caller.
 
-Fixes: c66ac9db8d4a ("[SCSI] target: Add LIO target core v4.0.0-rc6")
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 ---
- drivers/target/target_core_device.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/drbd/drbd_main.c | 47 +++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/target/target_core_device.c b/drivers/target/target_core_device.c
-index 3a1ec705cd80b..16e775bcf4a7c 100644
---- a/drivers/target/target_core_device.c
-+++ b/drivers/target/target_core_device.c
-@@ -849,8 +849,8 @@ bool target_configure_unmap_from_queue(struct se_dev_attrib *attrib,
- 	 */
- 	attrib->max_unmap_block_desc_count = 1;
- 	attrib->unmap_granularity = q->limits.discard_granularity / block_size;
--	attrib->unmap_granularity_alignment = q->limits.discard_alignment /
--								block_size;
-+	attrib->unmap_granularity_alignment =
-+		bdev_discard_alignment(bdev) / block_size;
- 	return true;
+diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+index 9676a1d214bc5..1262fe1c33618 100644
+--- a/drivers/block/drbd/drbd_main.c
++++ b/drivers/block/drbd/drbd_main.c
+@@ -903,31 +903,6 @@ void drbd_gen_and_send_sync_uuid(struct drbd_peer_device *peer_device)
+ 	}
  }
- EXPORT_SYMBOL(target_configure_unmap_from_queue);
+ 
+-/* communicated if (agreed_features & DRBD_FF_WSAME) */
+-static void
+-assign_p_sizes_qlim(struct drbd_device *device, struct p_sizes *p,
+-					struct request_queue *q)
+-{
+-	if (q) {
+-		p->qlim->physical_block_size = cpu_to_be32(queue_physical_block_size(q));
+-		p->qlim->logical_block_size = cpu_to_be32(queue_logical_block_size(q));
+-		p->qlim->alignment_offset = cpu_to_be32(queue_alignment_offset(q));
+-		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
+-		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
+-		p->qlim->discard_enabled = blk_queue_discard(q);
+-		p->qlim->write_same_capable = 0;
+-	} else {
+-		q = device->rq_queue;
+-		p->qlim->physical_block_size = cpu_to_be32(queue_physical_block_size(q));
+-		p->qlim->logical_block_size = cpu_to_be32(queue_logical_block_size(q));
+-		p->qlim->alignment_offset = 0;
+-		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
+-		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
+-		p->qlim->discard_enabled = 0;
+-		p->qlim->write_same_capable = 0;
+-	}
+-}
+-
+ int drbd_send_sizes(struct drbd_peer_device *peer_device, int trigger_reply, enum dds_flags flags)
+ {
+ 	struct drbd_device *device = peer_device->device;
+@@ -957,14 +932,32 @@ int drbd_send_sizes(struct drbd_peer_device *peer_device, int trigger_reply, enu
+ 		q_order_type = drbd_queue_order_type(device);
+ 		max_bio_size = queue_max_hw_sectors(q) << 9;
+ 		max_bio_size = min(max_bio_size, DRBD_MAX_BIO_SIZE);
+-		assign_p_sizes_qlim(device, p, q);
++		p->qlim->physical_block_size =
++			cpu_to_be32(queue_physical_block_size(q));
++		p->qlim->logical_block_size =
++			cpu_to_be32(queue_logical_block_size(q));
++		p->qlim->alignment_offset =
++			cpu_to_be32(queue_alignment_offset(q));
++		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
++		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
++		p->qlim->discard_enabled = blk_queue_discard(q);
+ 		put_ldev(device);
+ 	} else {
++		struct request_queue *q = device->rq_queue;
++
++		p->qlim->physical_block_size =
++			cpu_to_be32(queue_physical_block_size(q));
++		p->qlim->logical_block_size =
++			cpu_to_be32(queue_logical_block_size(q));
++		p->qlim->alignment_offset = 0;
++		p->qlim->io_min = cpu_to_be32(queue_io_min(q));
++		p->qlim->io_opt = cpu_to_be32(queue_io_opt(q));
++		p->qlim->discard_enabled = 0;
++
+ 		d_size = 0;
+ 		u_size = 0;
+ 		q_order_type = QUEUE_ORDERED_NONE;
+ 		max_bio_size = DRBD_MAX_BIO_SIZE; /* ... multiple BIOs per peer_request */
+-		assign_p_sizes_qlim(device, p, NULL);
+ 	}
+ 
+ 	if (peer_device->connection->agreed_pro_version <= 94)
 -- 
 2.30.2
 
