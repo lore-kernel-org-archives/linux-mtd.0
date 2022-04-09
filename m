@@ -4,68 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DFDFC433F5
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 08:26:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2923AC433F5
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Apr 2022 11:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aImn8gupjhq7gmy1tqvO2elqdeqzMGuDQ7K465rhvLI=; b=shUP+5bTPbTsvk
-	+rYc4acJQ/KHvy2DXezz2Ef72UGFG/k9WqEzOdqlIZtM19Vzs9HFJwF7y2ATOTqcoNJc2QdFLF9gl
-	S5PYSY9x7mbqPN5hZ4aiY/1TUPTGLITY7OVj0myjqUnIFadFew2NdNbYX0Vk/n0kU6SqIyAViA+QI
-	mBWXhd+R0yxIygFYFsbj+MZ/9XiC5dpeEQL6XFOUGbIm60k5J84oR0KquC0+hSks76eSWGA0syFsl
-	zegCWSH5lsDVv5Vwc+pJVxxP9wNExktUlNUsxaLRXo1wtKA8WimStElxC3Qyup1Umuq3Dkw49Rc3n
-	ml4N/blGo9wP0dlBgFIA==;
+	List-Owner; bh=DWtpwTZr4eQKwJGYf2QpMBlvHc+gLLJEqnv7T+VZa1Y=; b=4wikqzUaPuRPcd
+	vd83SIvkvgsSM7cYkEkbPZY6d2OvkXcRyZlJv+lhVU9cUAD7ohThDO3huNGrhb/fiz63UB7N6yWDA
+	SQY0JlShBbmLflyJqeR82EUilQiGMkGfaHBd401Su6wZsyO6i84P2/Nt0P3njAGxwnm2QSMDBskGO
+	x/iQwCxiwa2phICcmYF0eOuK5tassQtDabc/0hSSLh3nkEOQ9blExuf3GXn3qevSsWmBzBFfnoJ5A
+	cXXiFcuv8tEk9lnu2APWCYlQF9LFWBYIoPPyjcwqgU61/5Ys0TWinGR9TTis42WGLxqoBuemPeeTA
+	xUWpJqpn39xQl66WtL3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nd6Q6-002b2t-CK; Sat, 09 Apr 2022 08:26:10 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1nd8y4-002tyE-Bh; Sat, 09 Apr 2022 11:09:24 +0000
+Received: from mail-io1-xd2f.google.com ([2607:f8b0:4864:20::d2f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd6Q0-002b17-DF
- for linux-mtd@lists.infradead.org; Sat, 09 Apr 2022 08:26:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649492764; x=1681028764;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=Z89rAS6nK8vPE6PqwXyApxLr8DEMMn6pGUFoYLv0L8I=;
- b=X1yvVpveYHeOELYP1clJnm32VyOucDO/PVJZIv62ci4RGTOzQekhXQwO
- 0mh5Bk1NmwXEfo9HvtU4VubrNdIyV4Hbc8AUJ1aZM4kwYYiuIZ+jk+NCa
- ZMkkY2CK9scjaH9u/SvyBpKbhnzTl+dWoLuCeuQTpJsQD7kyFqxpkJsuE
- eBC4AkZC4TZN+x0Aiv+W9H+BpPT6jZshO/maHTtJLPe457NXZIL7E5Qn1
- 4/L7CfuXaGkXbLXDnZtuYwpZur7PVsqt0wJ+VTTBN+qw9Aqk7mhyaHELh
- BdBZlJ13v8N98KSoJ6ghDkJO8KdLSVH2R0NED1J8eF8PZ4Bl6siWqlDYe w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10311"; a="260621696"
-X-IronPort-AV: E=Sophos;i="5.90,247,1643702400"; d="scan'208";a="260621696"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2022 01:26:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,247,1643702400"; d="scan'208";a="622019793"
-Received: from lkp-server02.sh.intel.com (HELO 7e80bc2a00a0) ([10.239.97.151])
- by fmsmga004.fm.intel.com with ESMTP; 09 Apr 2022 01:25:59 -0700
-Received: from kbuild by 7e80bc2a00a0 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1nd6Pv-00010d-9g;
- Sat, 09 Apr 2022 08:25:59 +0000
-Date: Sat, 9 Apr 2022 16:25:15 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org
-Cc: kbuild-all@lists.01.org, Chuanhong Guo <gch981213@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: separate ecc-mxic from nandcore
-Message-ID: <202204091647.rave7jtW-lkp@intel.com>
-References: <20220409052148.2159196-1-gch981213@gmail.com>
+ id 1nd8xq-002tsc-Qr; Sat, 09 Apr 2022 11:09:12 +0000
+Received: by mail-io1-xd2f.google.com with SMTP id g21so13381229iom.13;
+ Sat, 09 Apr 2022 04:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=mXOsPOedrWh9JPnGJrDbvXsPmuz7lk7F3CL0nw828sw=;
+ b=m2A7ZRg72dgIz2UJq8zLcB7VoF7QMuODyG1+HBaIOvauTFlbyi2qMpic9j414OaSqq
+ l0da5dQ/6dzIz4qBihIVT/q06S/Z6vUgJOm8RbRA1jApzaTLAShm1ClXHrabBRa77pBK
+ T9ss6qJ+01+7LYQyeev7QBA6S6w8vDAX9REGCejPL/0kmbPbQiawi78wnlyScM4sMGxM
+ 5jo3Ctm0UeJ+YUlrnk7YixcrMobzbf1LAHyHO+/wMtF9gf8AggEKWlrKVfIKApWICZJD
+ L5db3ItCqChBzmhrNzgv2LKDqjT87kvzLRS4DEWX3bKd3aBFX0Wz4rxT8PYo32Hp9Yao
+ bfZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=mXOsPOedrWh9JPnGJrDbvXsPmuz7lk7F3CL0nw828sw=;
+ b=UWxc4OaIGfjc8quLeqHCnzw/o1/Rq0nfvnyy32EG0mJAlQxVwWpd28zib0eKp4eqTV
+ WEEZHySd+zwaGnoxK1gNdq3W5Q3xlszKh2fExLHJVEIjuujrP4pjWpE3hjLlOjIyAZ5A
+ Gw7WQ27+cDCs+BIHLUEVc3JZ+RtK9yXkUUAO5tTPOggLdnbhUrJ5tdaiQj2kwdYWb4zU
+ HNHzVBSL9a4QtGMmIB0XeN0xiiQoUArOFua6Rfe+HJrlgrYZYXtZk2QrUeZ8qPcPWFih
+ YXBo08lQnbbNiR2P1/pVutRHTjrLpYg4Geg7MJYAsWQTl3luXGS2J3QsuC9JwDFshWVi
+ XZNw==
+X-Gm-Message-State: AOAM530qaUuy4IgP6p2PGLYzt6Xq9NKOr5VmVnKkxBtMd8v8UW67Pwh+
+ eRrMhCwdxpdISc8glr4rmd22TQS74f0UYE4el+A=
+X-Google-Smtp-Source: ABdhPJxaa0UopXfyxt0OHpLxN+9t8AjQXM2kRDcQzKG1MDoxOn+mEm/HNLg+P44PI8GuE2tZuhFkwUz4vdqaMPODdP0=
+X-Received: by 2002:a02:8585:0:b0:321:440c:5e11 with SMTP id
+ d5-20020a028585000000b00321440c5e11mr4532439jai.35.1649502548216; Sat, 09 Apr
+ 2022 04:09:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220409052148.2159196-1-gch981213@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20220407150652.21885-1-gch981213@gmail.com>
+ <20220407150652.21885-2-gch981213@gmail.com>
+ <20220408083214.1473e88a@xps13> <YlAqSQ5w3y39aOy+@sirena.org.uk>
+In-Reply-To: <YlAqSQ5w3y39aOy+@sirena.org.uk>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Sat, 9 Apr 2022 19:08:57 +0800
+Message-ID: <CAJsYDV+SkL0yCroidGz4yzKbdj5Yx37a0DW9RLftKsceSFGnnw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] mtd: nand: make mtk_ecc.c a separated module
+To: Mark Brown <broonie@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-spi@vger.kernel.org, 
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Cai Huoqing <cai.huoqing@linux.dev>, 
+ Florian Fainelli <f.fainelli@gmail.com>, Colin Ian King <colin.king@intel.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Paul Cercueil <paul@crapouillou.net>, 
+ Pratyush Yadav <p.yadav@ti.com>, Yu Kuai <yukuai3@huawei.com>, 
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>, 
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>, 
+ "open list:NAND FLASH SUBSYSTEM" <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220409_012604_536745_A7FEC4F4 
-X-CRM114-Status: GOOD (  13.22  )
+X-CRM114-CacheID: sfid-20220409_040910_903107_4D1CD85F 
+X-CRM114-Status: GOOD (  10.20  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,44 +97,24 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Chuanhong,
+Hi Mark!
 
-Thank you for the patch! Yet something to improve:
+On Fri, Apr 8, 2022 at 8:28 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Fri, Apr 08, 2022 at 08:32:14AM +0200, Miquel Raynal wrote:
+>
+> > Otherwise on the MTD side the series looks good (besides the two
+> > comments you already received).
+>
+> What's the plan for merging then?
 
-[auto build test ERROR on mtd/nand/next]
-[also build test ERROR on v5.18-rc1 next-20220408]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Chuanhong-Guo/mtd-nand-separate-ecc-mxic-from-nandcore/20220409-132331
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-config: sh-randconfig-r013-20220408 (https://download.01.org/0day-ci/archive/20220409/202204091647.rave7jtW-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/a96780fbe6f7bc76d07fd5a4ccc390e7fedcc8b5
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Chuanhong-Guo/mtd-nand-separate-ecc-mxic-from-nandcore/20220409-132331
-        git checkout a96780fbe6f7bc76d07fd5a4ccc390e7fedcc8b5
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sh SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "mxic_ecc_process_data_pipelined" [drivers/spi/spi-mxic.ko] undefined!
->> ERROR: modpost: "mxic_ecc_get_pipelined_engine" [drivers/spi/spi-mxic.ko] undefined!
->> ERROR: modpost: "mxic_ecc_get_pipelined_ops" [drivers/spi/spi-mxic.ko] undefined!
->> ERROR: modpost: "mxic_ecc_put_pipelined_engine" [drivers/spi/spi-mxic.ko] undefined!
+I just tested this driver on a different chip and found out it's buggy
+there. I'm still debugging.
+Please wait for v5 of this series. Sorry.
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
