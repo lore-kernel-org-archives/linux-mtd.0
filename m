@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFA03C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 17:29:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 672C6C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 17:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hW2maeOnVO0vc70FQf/4UXBixSAJTS9lytKq4kbACPU=; b=ue/pWLnZUZUVE3
-	Mij8WE2mQGyPvTfY1HKw6MIfiTjkaNQgG9In9LtPVJ/z2d3IBqIAAi48GYDYVkWiON52866q5MEne
-	27JghRiIebGdgsTn4ynklH681+YbMCscxOtWE+J5M50jxjlYzg9GTDNxTb8wFY9jwtKQ9g7Hk0a3m
-	ANB9bG1YgEFUEMdCuASCAaVHNl5w5vw2i+v9aEE7sVb4MMn6DlFpmE4Zd8kQ+vy1TFMU3vV6WO3I+
-	/U1euSdW0ZdgbWhsfEHeD8Xvkzwv08QsCvLfK79UOb34RnGFfppyQ5D+UuNEZfVvdBri8259OVxSF
-	r7G3BCT63UGS2sjtxSkg==;
+	List-Owner; bh=wTJXjWD6NUuF5drD81Q7SIiBnE0wkypMomVwwITYpxM=; b=1KGHdi4XmxC8Lr
+	swW/LD8KYyLiJ6Ga4cDq1N4kin/pJT4svhecYQl5XfrAHntR+LSQT8AZlNrHBBp18OwRUyuIIVJFE
+	qLHsICSmxj6nfv2iLKeKKVobfL7hSdITSV6hauZti++5Fg/wTAifLevNGocTSjTQftJfIDA/rGVHl
+	mxw80n/xEAbYjBkPW4fv+/vpa5DPmiMdNeLiNqggFuNLxWwmx5xIiWP/w3NF6MxyJsDeUzg4nNtjB
+	Inj27HfZ584xnXsKHX2j7ewuaNUwMwTF2rmW+2wDKIilaNszhVONd8TfdLO3m3UJkjITW/jKVdrGT
+	IjAVDvGIf892li2ukMTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndxq3-009swD-PT; Mon, 11 Apr 2022 17:28:31 +0000
+	id 1ndxrq-009tz8-Nk; Mon, 11 Apr 2022 17:30:22 +0000
 Received: from smtp-out2.suse.de ([195.135.220.29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndxq1-009sum-3i; Mon, 11 Apr 2022 17:28:30 +0000
+ id 1ndxrC-009tY8-4b; Mon, 11 Apr 2022 17:29:43 +0000
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id ABD701F7AD;
- Mon, 11 Apr 2022 17:28:26 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id CB2971F38D;
+ Mon, 11 Apr 2022 17:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1649698106;
+ t=1649698180;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0RiNf7uoJjg1rRFObzVZQSCMAd1nof/h0vLpUgMcwvY=;
- b=tfXHkMaj5kpUcLtvBYnwRGxDxcXmodIyKTVNxARm8whPlAkOVHL3pBXy48YlCR99uput93
- ek64inXcfBYSt9NuV9MWohA/Liu5eXfW+58ujnwevThluScwhFajBAp+/PR+hCYJW8ogrY
- iu/7/TOOXGQ1NMcWDFWaoeOCSwaX7H0=
+ bh=y9/RDfYGC6K6KRC0KdrprIVWfIX/zpdTiz9ROrz551U=;
+ b=I9nwx9hrwiLBwY8Cn2rQGBPnpBriJmDMs1b8oNISqOpk754k7ib2Xve0iYAZqqPcSD2SgP
+ oZEA90HfyQ7ya+rehSXEh9k5AQbwstldp6HDVnl/WGBpQS17mVXtCGXXbsCypPUDUyaMdU
+ y+Peaf55gboQyV27R4kCRTuYgY7wFX4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1649698106;
+ s=susede2_ed25519; t=1649698180;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=0RiNf7uoJjg1rRFObzVZQSCMAd1nof/h0vLpUgMcwvY=;
- b=y/QeT70zXSjm5PP3weiVBlhCkwkEL69tQO+HTTi+7j+oI3RtiZJDs5egZuujl2LcaWZ24F
- apjvnh1HQMyDZeAA==
+ bh=y9/RDfYGC6K6KRC0KdrprIVWfIX/zpdTiz9ROrz551U=;
+ b=AzkdKu96rYkAsjhpJavWNTiZGL3Agdt16W1llO8/BhnjKgsTeGvgPw66Q+CklEVPEpPHBk
+ JsD+WnrQfAy3whCQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
- by relay2.suse.de (Postfix) with ESMTP id 775CCA3B82;
- Mon, 11 Apr 2022 17:28:26 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id B0827A3B87;
+ Mon, 11 Apr 2022 17:29:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
- id 0F66CDA7F7; Mon, 11 Apr 2022 19:24:22 +0200 (CEST)
-Date: Mon, 11 Apr 2022 19:24:21 +0200
+ id 47973DA7F7; Mon, 11 Apr 2022 19:25:36 +0200 (CEST)
+Date: Mon, 11 Apr 2022 19:25:36 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
@@ -70,9 +70,10 @@ Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
  "Martin K . Petersen" <martin.petersen@oracle.com>,
  Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Coly Li <colyli@suse.de>
-Subject: Re: [PATCH 24/27] block: remove QUEUE_FLAG_DISCARD
-Message-ID: <20220411172421.GU15609@twin.jikos.cz>
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+ David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 25/27] block: add a bdev_discard_granularity helper
+Message-ID: <20220411172536.GV15609@twin.jikos.cz>
 Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -91,16 +92,18 @@ Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
  "Martin K . Petersen" <martin.petersen@oracle.com>,
  Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Coly Li <colyli@suse.de>
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+ David Sterba <dsterba@suse.com>
 References: <20220409045043.23593-1-hch@lst.de>
- <20220409045043.23593-25-hch@lst.de>
+ <20220409045043.23593-26-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220409045043.23593-25-hch@lst.de>
+In-Reply-To: <20220409045043.23593-26-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_102829_380626_BA3172E6 
-X-CRM114-Status: GOOD (  14.64  )
+X-CRM114-CacheID: sfid-20220411_102942_376546_29F6410C 
+X-CRM114-Status: UNSURE (   9.59  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,69 +121,20 @@ Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Apr 09, 2022 at 06:50:40AM +0200, Christoph Hellwig wrote:
-> Just use a non-zero max_discard_sectors as an indicator for discard
-> support, similar to what is done for write zeroes.
-> =
-
-> The only places where needs special attention is the RAID5 driver,
-> which must clear discard support for security reasons by default,
-> even if the default stacking rules would allow for it.
+On Sat, Apr 09, 2022 at 06:50:41AM +0200, Christoph Hellwig wrote:
+> Abstract away implementation details from file systems by providing a
+> block_device based helper to retrieve the discard granularity.
 > =
 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 > Acked-by: Christoph B=F6hmwalder <christoph.boehmwalder@linbit.com> [btrf=
 s]
-> Acked-by: Coly Li <colyli@suse.de> [bcache]
-> ---
->  arch/um/drivers/ubd_kern.c          |  2 --
->  block/blk-core.c                    |  2 +-
->  block/blk-lib.c                     |  2 +-
->  block/blk-mq-debugfs.c              |  1 -
->  block/ioctl.c                       |  3 +--
->  drivers/block/drbd/drbd_main.c      |  2 +-
->  drivers/block/drbd/drbd_nl.c        | 19 ++-----------------
->  drivers/block/drbd/drbd_receiver.c  |  3 +--
->  drivers/block/loop.c                | 11 +++--------
->  drivers/block/nbd.c                 |  5 +----
->  drivers/block/null_blk/main.c       |  1 -
->  drivers/block/rbd.c                 |  1 -
->  drivers/block/rnbd/rnbd-clt.c       |  2 --
->  drivers/block/rnbd/rnbd-srv-dev.h   |  3 ---
->  drivers/block/virtio_blk.c          |  2 --
->  drivers/block/xen-blkback/xenbus.c  |  2 +-
->  drivers/block/xen-blkfront.c        |  2 --
->  drivers/block/zram/zram_drv.c       |  1 -
->  drivers/md/bcache/request.c         |  4 ++--
->  drivers/md/bcache/super.c           |  3 +--
->  drivers/md/bcache/sysfs.c           |  2 +-
->  drivers/md/dm-cache-target.c        |  9 +--------
->  drivers/md/dm-clone-target.c        |  9 +--------
->  drivers/md/dm-log-writes.c          |  3 +--
->  drivers/md/dm-raid.c                |  9 ++-------
->  drivers/md/dm-table.c               |  9 ++-------
->  drivers/md/dm-thin.c                | 11 +----------
->  drivers/md/dm.c                     |  3 +--
->  drivers/md/md-linear.c              | 11 +----------
->  drivers/md/raid0.c                  |  7 -------
->  drivers/md/raid1.c                  | 16 +---------------
->  drivers/md/raid10.c                 | 18 ++----------------
->  drivers/md/raid5-cache.c            |  2 +-
->  drivers/md/raid5.c                  | 12 ++++--------
->  drivers/mmc/core/queue.c            |  1 -
->  drivers/mtd/mtd_blkdevs.c           |  1 -
->  drivers/nvme/host/core.c            |  6 ++----
->  drivers/s390/block/dasd_fba.c       |  1 -
->  drivers/scsi/sd.c                   |  2 --
->  drivers/target/target_core_device.c |  2 +-
 
-For
+This ^^^^ is for drbd
 
->  fs/btrfs/extent-tree.c              |  4 ++--
->  fs/btrfs/ioctl.c                    |  2 +-
-
-Acked-by: David Sterba <dsterba@suse.com>
+> Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> Acked-by: David Sterba <dsterba@suse.com> [btrfs]
 
 ______________________________________________________
 Linux MTD discussion mailing list
