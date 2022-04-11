@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E27C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 11:24:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C704AC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 11:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4/u0TQ6Vdtmx/fw/VoHKlK6wtq51YyDxeYJkTB2Sbg4=; b=H4AuFKO+karTQu
-	ODruPjUUY657pHDuZiN5/Zs+QIjCUY1rqpKIIeLPfCVVx53kJ4z6hmkSUf5bIZwNou6mdS4a9S3oQ
-	8UCfMcgqWY1VNqznfQtwva6Hu2+2UtVrZR0PLRTUmr6dGRFyHK1xjZbFi6P/kAxHFuqrVTSaeQWTP
-	hNRB0lGg9EPu6lW9SfBv+faRnkQgdvXCVUWKd/pzARTKT4wi9T8ANZidm4+/16x0tucdfsze4Wy0m
-	5qh5IhcWySJK90MQGRrlVYJ8jCQO6sxhbxHqMX7tmTpMLr5areEKgjKCW1msG3XDcCDzENqsQyNk3
-	ymw1F/jB6nO4ln/JEhQw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mBRpTkgUlhWrOQqPvn+kKxNMRy/HnLvVwBM+BizgSDQ=; b=lHvDv1sLjIbAYx
+	cAQJv1/LhkUo8psX/KH/pLonczqwCSB+3ZS4n0i6omDJmQrveRS5ceNpz5zQAuy8GHtl4K0+GHMFm
+	okCZHtWO4HN6TD7cZO0+N5LgJJoFBXcklEwphPPAO6XpEGufqDBtIzz+CPn2BI+7j4xQc0e4eyWFf
+	cdJf/TIS92K76fMoRsTIx0tB70porj46/7ksZIxtc3fagYSKeksqjR7KAkPefnv+TqzwfcEq6uM9t
+	lAsEDlYBN1BYA/1tWupzqw9seuw9zAYaH01mXctVMY9dpIcPzq5ILWtaGkbzIpT1kZNetJpWSjHC5
+	RmKxK9/lZ51vJJ5w7Qpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nds9d-008fCi-RX; Mon, 11 Apr 2022 11:24:22 +0000
-Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
+	id 1ndsHE-008iKZ-Cv; Mon, 11 Apr 2022 11:32:12 +0000
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nds8f-008eaq-Oq
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 11:23:23 +0000
-Received: by mail-pf1-x42c.google.com with SMTP id p8so14315238pfh.8
- for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2022 04:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=jLhdyx9SwFrbnM2p4JRIefCX4L9OXfhTOuUBWrvzHFY=;
- b=PMDpL7NeORJqEjVqbuLPqkMKb3G1lCabNtIimOppXj/xL0yehJks172PsFaJ933VCK
- usmqhMzGSewyE+XH0DUxZOLLkauDpL7S2Q1/HDPHcqSVQGDBMGqHzUJq1nNxxqv8XlDX
- 5CzX6fNgbr0KPB/Vq5T3+8M3mSDk+S0o4IqO7y0Aa4ePxvojqI/gk4ZzhrhILHH8xj0U
- NQvhlMKyGszX9OnlouDpkb+pSO+148cSqUfNSvLOC2hTYtFkn5sIB8KrkbYrEeUZb0OM
- VkrUgp/n6aiPgGz0wyWQDOdwtczTyQH8VdIfkjQFNSqdz2pT2dSg/AUqS25MIN6jQKmZ
- hyoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=jLhdyx9SwFrbnM2p4JRIefCX4L9OXfhTOuUBWrvzHFY=;
- b=Lkgvr/Fs9pIbPtdd5ag0o0IYZDt0+nE7AQH9LrsM2AkbZXxIAPwhcx4gXc+tvHddLD
- uvOiCHWmuadbOYpn71KMx+BL0Z6YoqeXxk7rAcFYXf4IevFNvC41w4fLE+ccSfxQ8I+0
- vnlANNXcMa9TCRgEFP32p7XEtgTYUQ2JDLlDO6PS9G6u2dJYwCnX3APjexZy8uJm8urU
- xE5K5VJUyLecwZ3UgpOZm/Bw57Cy1QTH+yLqmRKTIs1tt3356Y9zlR3u9R6OFpCKqIUh
- Z60/gmy583zoojv0t5CBrH4DyZLFJI1fJUXNwXs0OXVQ1XvA/ySAT0v3fwc8pB/i5enY
- aqNw==
-X-Gm-Message-State: AOAM532D3BMZLxb1HPnzg8+fHcB539TyQJz/7yUIKnBfCqKs8KCBDFFs
- mXfxhCLXAQTr8bUjcDxoua1+Vuj/NWG/UlEKfA==
-X-Google-Smtp-Source: ABdhPJz7ply/vDvBKcwd3G2CJe3l8EYagqvloodWDAgbrda+wNFc971QiTJszHRFh6DxWRkxsVXlwQdifg7ah2Sg8xs=
-X-Received: by 2002:a05:6a02:182:b0:374:5a57:cbf9 with SMTP id
- bj2-20020a056a02018200b003745a57cbf9mr25492959pgb.616.1649676198343; Mon, 11
- Apr 2022 04:23:18 -0700 (PDT)
+ id 1ndsH6-008iEo-ND
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 11:32:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1649676724; x=1681212724;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=+tDJ2OKrRtfXTUVjXpUksDaCFN9DSpKkw2XjLuA95J0=;
+ b=JKjGaZrC/mnPDO5QGl+m5H3S96O5+afR0b0LUPDUK4ow4m5YKqUjieVR
+ rin0nNK3Y9P3NfItjIf2ZM8oOSqEstawcJyBMzW7q3vziKYiCJMxkYNow
+ L25fAO5lw25m9lAHp4bt36N9KqFVXcXxx9kPKjHQx7cYD3UYxr//zf+Ri
+ 084NPnxsXwJ0p5SeUhs99FcBnaB5xEG8bZ5APoLU34YcPERnmu/NhB2KA
+ 9/TsbJsWxaJS6s4osbOY1sFC5glBbZbQCt+9kTx6k1niLeeh1iE6QBMkT
+ waATmVtw/9i8ZV/0gYLXPCd/jj7JJ/MUjkrGigXR59NAXSoMfCZ3q2hLp Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10313"; a="287101259"
+X-IronPort-AV: E=Sophos;i="5.90,251,1643702400"; d="scan'208";a="287101259"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 11 Apr 2022 04:32:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,251,1643702400"; d="scan'208";a="507073731"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga003.jf.intel.com with ESMTP; 11 Apr 2022 04:31:58 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+ id 7891618E; Mon, 11 Apr 2022 14:31:58 +0300 (EEST)
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ Hongli Li <hongli.li@intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] spi: intel: Fix typo in kernel-doc of intel_spi_probe()
+Date: Mon, 11 Apr 2022 14:31:57 +0300
+Message-Id: <20220411113158.2037-1-mika.westerberg@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <CAMhUBjn40pO7A=icudFKOoiMrckcH_o7mdi-uCmgCFHi6Ueuzw@mail.gmail.com>
- <20220411093715.4cecc280@xps13>
-In-Reply-To: <20220411093715.4cecc280@xps13>
-From: Zheyu Ma <zheyuma97@gmail.com>
-Date: Mon, 11 Apr 2022 19:23:07 +0800
-Message-ID: <CAMhUBj=HxPBg1GWF1z3E4zikZ-v9na_8_jCgtJ4d00rL-v8LfA@mail.gmail.com>
-Subject: Re: [BUG] mtd: rawnand: denali_pci: page fault when probing fails
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_042321_851153_A289A53B 
-X-CRM114-Status: GOOD (  16.97  )
+X-CRM114-CacheID: sfid-20220411_043204_826244_B30E50A2 
+X-CRM114-Status: GOOD (  13.16  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,47 +80,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Apr 11, 2022 at 3:37 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Hi Zheyu,
->
-> zheyuma97@gmail.com wrote on Sun, 10 Apr 2022 22:17:35 +0800:
->
-> > Hello,
-> >
-> > I found a bug in the denali_pci module.
-> > When the driver fails to probe, we will get the following splat:
-> >
-> > [    4.472703] denali-nand-pci 0000:00:05.0: timeout while waiting for
-> > irq 0x1000
-> > [    4.474071] denali-nand-pci: probe of 0000:00:05.0 failed with error -5
-> > [    4.473538] nand: No NAND device found
-> > [    4.474068] BUG: unable to handle page fault for address:
-> > ffffc90005000410
-> > [    4.475169] #PF: supervisor write access in kernel mode
-> > [    4.475579] #PF: error_code(0x0002) - not-present page
-> > [    4.478362] RIP: 0010:iowrite32+0x9/0x50
-> > [    4.486068] Call Trace:
-> > [    4.486269]  <IRQ>
-> > [    4.486443]  denali_isr+0x15b/0x300 [denali]
-> > [    4.486788]  ? denali_direct_write+0x50/0x50 [denali]
-> > [    4.487189]  __handle_irq_event_percpu+0x161/0x3b0
-> > [    4.487571]  handle_irq_event+0x7d/0x1b0
-> > [    4.487884]  handle_fasteoi_irq+0x2b0/0x770
-> > [    4.488219]  __common_interrupt+0xc8/0x1b0
-> > [    4.488549]  common_interrupt+0x9a/0xc0
-> >
-> > It seems that the driver unmap the memory region before disabling the irq.
->
-> Thanks for the report! The mapping is done with devm_ helpers and so is
-> the IRQ registration, so it's slightly more complicated that just
-> moving a function call in the remove path, apparently. Would you mind
-> investigating and proposing a patch?
+Should be 'specific' not 'spefific'. Fix this.
 
-I have proposed a patch for this issue, please correct me if I am wrong.
+Reported-by: Hongli Li <hongli.li@intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+---
+ drivers/spi/spi-intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Zheyu Ma
+diff --git a/drivers/spi/spi-intel.c b/drivers/spi/spi-intel.c
+index e937cfe85559..1bdb227e0ca2 100644
+--- a/drivers/spi/spi-intel.c
++++ b/drivers/spi/spi-intel.c
+@@ -1205,7 +1205,7 @@ static int intel_spi_populate_chip(struct intel_spi *ispi)
+  * intel_spi_probe() - Probe the Intel SPI flash controller
+  * @dev: Pointer to the parent device
+  * @mem: MMIO resource
+- * @info: Platform spefific information
++ * @info: Platform specific information
+  *
+  * Probes Intel SPI flash controller and creates the flash chip device.
+  * Returns %0 on success and negative errno in case of failure.
+-- 
+2.35.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
