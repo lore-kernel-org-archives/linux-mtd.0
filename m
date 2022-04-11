@@ -4,78 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D74AC433EF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B088DC433F5
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 05:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=beGvSDTmrB6E5AyWhqShJmpfndJjPLdzBeSzxXpvAW4=; b=jYidhdVbyPvt3t
-	ER+QBo9VsOteqhbqcJr2dUp/HkztkzswKeUddL6C8k0kOIzdpXZXEF2xxIMHfS5WzX2zefmIC3v0e
-	XIkrPgOZJi9UpgoJdI0YVvQTE36DPUSrRHKk8WKB0zoYPpAjSubMcwcAyumVybUzruuiThWsYScAm
-	UESjMnnk+MzJEPWx6cy6AZLusK6VEu/zIwpRTJMvR7c8VbklX6RpRnsHo6vn7+vDffw4ANaA0xcpe
-	4UN7AtsOjaVmt5qgWZH+rtnJrZYx4Oto2mfz2b2pmEv/laCq9TMnw3VXe13fFpObBm3ABQAwucSBv
-	9Smzu5jmRtsJTkjKDeKg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0s3ndPJ9CpB5duCNLoaDAA57Vak8NPjCs5MLaGNotpg=; b=Uofsb7SKSXk1Y6
+	/HOWyvsJvjFxYv3POW+2PWIy36kJKM/npZWH69D7NiQ1fIzNJ8PT3+4vgtf8plhF3ZdfN+dCuMRod
+	qZR0u6+Ps+13ffWIcBV93VIf6i2lW1h55NZ8JQyLh5iM9Sp9jxSjb7YjTJ9HZ3wtydjPazVXPcsV8
+	+6Gsi2Pmi4Brt0sAFx1ydB8uabHJmLcH3kbfU8BUW8hu2Bg7Us1BI1mG/8CKrmBUD5qcu3wYRl/CO
+	CHtyXozPPlokuY1VQY2I6Pkxknbh8qudhlLVZDEmCrq/NNR8fQG8Aa7ygzNiZpKXBVQRThh9fVfWB
+	B1wMB9lJs9J6xRU8dvoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndmXC-006jww-PC; Mon, 11 Apr 2022 05:24:18 +0000
-Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
+	id 1ndmX4-006jtY-1T; Mon, 11 Apr 2022 05:24:10 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndmX5-006jrr-NE
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 05:24:13 +0000
-Received: by mail-pg1-x535.google.com with SMTP id 32so11090941pgl.4
- for <linux-mtd@lists.infradead.org>; Sun, 10 Apr 2022 22:24:07 -0700 (PDT)
+ id 1ndmX1-006jrM-9o
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 05:24:09 +0000
+Received: by mail-pl1-x633.google.com with SMTP id t12so545840pll.7
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Apr 2022 22:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=r2AuvAtEZGA7Yu3Lbbc0IGmSlm45XDlOn4kuKKbnx7M=;
- b=M3yf1AK9vjEi0+2JU08n49f2q5xlsr6JsU34rSd5Ojge1dHmuJQseU6eV0voaAimyD
- jpYEJT7n0f1L7mJgsERekR6LshdPLO0cHM9UTtlm/3iQh57TV4baMQqkJnVWgvK7f/GC
- grpTBfHz6qpqsupwcHAuT3VP0v/LpzcA4BLxmoTnM3C788krtHbEMMWiX5n/b/6Pe5z3
- ZharKIsJsdwtNqLtCEJTW8pBrkfec/JDPQE5h8upe+Hjkc6a87iSWOLEUCLh4c/VK/8p
- leyi7uz5D8gPifq8hLLzUrPSzZRxNiXT5lGif/2rfNg9OZS74v74kyV9YH+iKWygPngQ
- Gmtw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=UXcmFSBcRGZHTIAYi31Q+6PIVBc1QtrDyZcQlFBbgVE=;
+ b=SZ0meAYjn8SGmz4pSDwV1QYyONdIAQT7uFAXXrVHkkraToUAv7MHfmPgsMt0YjABvf
+ R4hYFOUm2uwEpXNgaqBD7CP/t9PsxCC34h51v1B53ffgZaG8Zo1RvEN9yfcpmxPzXnwt
+ VX4PM8BEsWzsEgqhew/xYq+JCsNN9LJn/7hjaEazXXL7aZf6nVGeBNhhI9bcVfgiK5V7
+ WNCg6TECDuC5Yh21r6/7jRrJfmndxW3QLvjDpxe/Av7mAfpDWKzv5U6+LUtlilQAijOQ
+ aPhq7+nMc07r8INkELehIJ7QJIVpy2gI5tK6QWoQxq1b8XEqD050JTxuUhZ29nMxQ/Kh
+ 0dJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=r2AuvAtEZGA7Yu3Lbbc0IGmSlm45XDlOn4kuKKbnx7M=;
- b=20P5MI4MfTplJ8wsoRBqNPBBBFJcji2eeqNTQo74liDA1NRor7Tw9txXPmSUuTD920
- mIiUfywiJYjEGQ+dhBIqDy3H/NlmxS9AlScrb6BU8Pwa7535B5wGPRWbLCUf8ySsx/7j
- k9G89oLyvdSUbWQysbtJPdS6/q0WJd6hChPrc9Fdw1iibKoWUPP3tPzG11gcDB8aHnfR
- VQGDyrIEWQCO2I9urdyGL+sDQJfC1r7LxolKow3E4lFn/p03i2hh/R9rQ5L22aRn6Lma
- pDDgFARD52G20ETM7B28lj7T2ODFXqGUkuTyu1DkEG9q9BOcbcoamnBYzfqa4ZjE3g3W
- +LTg==
-X-Gm-Message-State: AOAM5314pgtIQigLtjkiA6ULrHWJk/TqWj8nOGhJP8bS4c5t/43wBkh2
- 1lPtXvyjnXNkZMmh/Z7UyscHUPx12iU=
-X-Google-Smtp-Source: ABdhPJyhrq+vLXeeCpgjClLpCuBBEKljNZehyXVfpHEeQDE7p9tPlk+xZSttN95NilIbmosU4vZFKw==
-X-Received: by 2002:a05:6a00:248e:b0:505:a69c:f890 with SMTP id
- c14-20020a056a00248e00b00505a69cf890mr7833792pfv.10.1649654647351; 
- Sun, 10 Apr 2022 22:24:07 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=UXcmFSBcRGZHTIAYi31Q+6PIVBc1QtrDyZcQlFBbgVE=;
+ b=ywKTCFyStgYS3hArRJYpURS3fMSYNH7Qt5tplQzWBGgsmCzBCtf8JmYdBS/1utxNQ3
+ /OpdG04aPKOiyzewCdOgIOoImHfgmCzSQADjMpzmhyPW9ijjk/h8evZWITMyKTrslw2O
+ y0DOv/YonxTx96OLE/COP8kpvUwt0oXBhi4sUSFynvfjWQtlhC+tsQBwwNUFhC52HKol
+ EhRANK4yMrCJvu6B+b9l3U+IE41yX2Joz1zAfUcSFpLxbDfdEOyXuyeTiQtu2sQbcM4V
+ GJ5tFWllZmWUPZK5X1t3bCl9qUaWQBa04TIwYbfc1+lBv+4LtLIzxnCGckZ6JvfqN0mq
+ +vBQ==
+X-Gm-Message-State: AOAM533Mrvc/oPLx1jwITOSEEAOLp1iu5PMng5DqeexQf7JWBYDEmIWV
+ TuqDcEwkPXs9S7xRZogIiim8ON/B/uI=
+X-Google-Smtp-Source: ABdhPJyZNyJsK8MM02AGNhZKJKpA0zQwltmI6SNE15KI80ueLFPtH+L7J/Ut+OKRgQCpoVNH6QRBsQ==
+X-Received: by 2002:a17:902:7409:b0:158:3a78:3e43 with SMTP id
+ g9-20020a170902740900b001583a783e43mr9101800pll.145.1649654644825; 
+ Sun, 10 Apr 2022 22:24:04 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
  [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- ne24-20020a17090b375800b001cb62235013sm6064261pjb.5.2022.04.10.22.24.05
+ ne24-20020a17090b375800b001cb62235013sm6064261pjb.5.2022.04.10.22.24.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 10 Apr 2022 22:24:06 -0700 (PDT)
+ Sun, 10 Apr 2022 22:24:04 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v10 1/4] mtd: spi-nor: sfdp: Use nor->info->addr_width as
- address width for SMPT parse
-Date: Mon, 11 Apr 2022 14:23:22 +0900
-Message-Id: <9a2d323b2c18485d13f271e3bb213b96fea0e7e1.1649641729.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v10 0/4] mtd: spi-nor: Add support for Infineon s25hl-t/s25hs-t
+Date: Mon, 11 Apr 2022 14:23:21 +0900
+Message-Id: <cover.1649641729.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1649641729.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1649641729.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220410_222411_799130_9B77D66A 
-X-CRM114-Status: GOOD (  11.68  )
+X-CRM114-CacheID: sfid-20220410_222407_412733_54E43D3E 
+X-CRM114-Status: GOOD (  12.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,37 +91,199 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-At the point spi_nor_smpt_addr_width() is called, nor->addr_width is set
-to 4 while the S25HS/HL-T boots with 3 byte addressing by default and SMPT
-parse cannot be done correctly. To solve this, use nor->info->addr_width
-as default and current address width.
+The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
 
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+The datasheets can be found in the following link.
+https://www.infineon.com/dgdl/Infineon-S25HS256T_S25HS512T_S25HS01GT_S25HL256T_S25HL512T_S25HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Quad_SPI-DataSheet-v02_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee674b86ee3&da=t
+
+Device ID and SFDP dumps:
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hl512t
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342a1a0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe3
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff703f8ff0200f1ff0000ff0400ff
+f8ffff03
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+8a0aa90112e154ae3a797df2c211ef61  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hl01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342a1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hs512t
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b1a0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b91e8ffe3
+ec031c608a857a75f766805c84d6ddfff938f8a100000000000080000000
+0000f7f5ffff7b920ffe20ffffd80000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000ee72fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
+0100fe0104fff1ff0100f8ff0200f8fff703f8ff0200f1ff0100ff0400ff
+f8ffff03
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+f17d9e784602187a0933edec3688e30f  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hs01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+------------------------------------------------------------
+
+
 ---
-This is an alternative way to fix
-https://patchwork.ozlabs.org/project/linux-mtd/patch/20201212115817.5122-1-vigneshr@ti.com/
+Changes in v10:
+  - Rebase to v5.18-rc1
+  - Remove dependencies on other series
+  - Use nor->info->addr_width for SMPT parse
+  - Add a local function for page size discovery
+  - Clean up volatile QE function
+  
+Changes in v9:
+  - Rebase to v5.17-rc6
+  - Rename function and macro per mwalle's series
+  - Fix some issues in ID table and fixup hook
 
- drivers/mtd/spi-nor/sfdp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Changes in v8:
+  - Rebase to v5.17-rc4
+  - Use spi_nor_read_reg and spi_nor_write_reg()
+  
+Changes in v7:
+  - Some changes were missing in v6 patch. Fix it
 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index a5211543d30d..9f8897e7fd7c 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -652,6 +652,13 @@ static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
- 	case SMPT_CMD_ADDRESS_LEN_4:
- 		return 4;
- 	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
-+		/*
-+		 * Let's assume 'nor->info->addr_width' has the default address
-+		 * width and it is currently in use, if available.
-+		 */
-+		if (nor->info->addr_width)
-+			return nor->info->addr_width;
-+		fallthrough;
- 	default:
- 		return nor->addr_width;
- 	}
+Changes in v6:
+  - Remove 2Gb dual die package parts and related changes to split mulit
+    die package support into another series of patches  
+
+Changes in v5:
+  - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
+  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
+
+Changes in v4:
+  - Reword 'legacy' to 'default'
+  - Rename spi_nor_read() to spi_nor_default_ready()
+  - Fix dummy cycle calculation in spansion_read_any_reg()
+  - Modify comment for spansion_write_any_reg()
+  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+
+Changes in v3:
+  - Split into multiple patches
+  - Remove S25HL256T and S25HS256T
+  - Add S25HL02GT and S25HS02GT 
+  - Add support for multi-die package parts support
+  - Cleanup Read/Write Any Register implementation
+  - Remove erase_map fix for top/split sector layout
+  - Set ECC data unit size (16B) to writesize 
+
+Changes in v2:
+  - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
+  - Check CFR3V[4] to determine page_size instead of force 512B
+  - Depend on the patchset below to support non-uniform sector layout
+    https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/
+
+Takahiro Kuwano (4):
+  mtd: spi-nor: sfdp: Use nor->info->addr_width as address width for
+    SMPT parse
+  mtd: spi-nor: spansion: Add support for volatile QE bit
+  mtd: spi-nor: spansion: Add local function to discover page size
+  mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
+
+ drivers/mtd/spi-nor/sfdp.c     |   7 ++
+ drivers/mtd/spi-nor/spansion.c | 179 +++++++++++++++++++++++++++++----
+ 2 files changed, 164 insertions(+), 22 deletions(-)
+
 -- 
 2.25.1
 
