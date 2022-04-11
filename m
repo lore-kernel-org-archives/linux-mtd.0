@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87127C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 825EDC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:54:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+hzx53nUmC7CF7SbShGDyYLXTlSrtPDzxDxIld86Idc=; b=jdnSytndHlUiHe
-	FF9PpfYNaFFXMfDhyEhf8+/dORpfWhMic9mIt3pzGYstJlKmI+ALZR8Q1SMIoAmeJmMUQn+mhzAa2
-	QkUejAIFI6zNSY1Z6YsYCUF8MUD/DQQDncysKHd3todq14RPESIyrKUDx4GMiHxXOMISHqIjOHSDK
-	B2p62hA5Vxe+gyaBVlbBw2x/BOUUfqRdnGeDGM5UbV2VdYaLHAhFGhrHyPaf0WZ7nsjtP7Az/eCqK
-	QIhk2+JYe8hY0aFy0krRvba6lS2jftajjkdFEHJADKIBdLEwxWqxIuZkysSMrR5EqqKN190yq8Mgj
-	iiGXFFQjaiUkiA0M9jjQ==;
+	List-Owner; bh=eC/doJaeUnEc9aAYUnF0EX2PdsnmW+sMDICNpBV2mKg=; b=sDJmotDGNXByhA
+	59BWzsZEoI0lHKILgAhEj0L7ktzrfW0TDLAnfumcXh1v26iQKDE25gW1ErPKjO6d4kRZAFYUCeO2x
+	f7Ty3yICgpi5jHK5Vm8Ma6YuwaRW55BokU41JM622D2n1lCDdGc+bID90GwkiPJ6H2Wk/lXuVA52e
+	iflF65Zr3FpGX5o09uoLvIRnvlaFQLm1ux4AenMTnOkplV4w5E/GOqMgh+GyDcxQwY9qasHcxx3Le
+	7pW/g+CU8Ax3NS0NzdZXsiuBFGpxWTRR9AnD/gk3AsHefwNdfuFTv7mVVar3jYSAjgLocGK99EvlO
+	d4cwH6zuOZQhnA9QIDCg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndtYc-0092jq-Jv; Mon, 11 Apr 2022 12:54:14 +0000
+	id 1ndtYm-0092pn-O6; Mon, 11 Apr 2022 12:54:24 +0000
 Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndtYM-0092Yy-P9
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:54:01 +0000
+ id 1ndtYN-0092Zy-T6
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:54:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
  t=1649681639; x=1681217639;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=06+0IGi/qVCaEzVy2orxTRzRoyFh8SISzaLVMzQyQHQ=;
- b=Tu1zKdRs8PIxOybuFmsI8ShOB6PxiaE3Ro7DqUJ5IvuUHibGo3zqQpwI
- 8X5i6bpHnRrR8ci6QtkZcl2Yg+02wlcFrWgU14n1h3TF1GsQ79/NLntCU
- OVRy5lpKTIQgOIVrT3HTENNWZaPCod9FdHPkt3FlmRSAy6UU9DKQML0pi
- sLGOva2rjAb2oziSggrjLVzyf5C10bpfV9RoB1VS1pcrlepa/xh8DcXWa
- uDmTEMmjvjo7glARxWTGSuJjpEWkD0puWJ0V5mV7LcgHktcYESzAMSxl+
- pGgMiFE6prIZpixeI57i4gZJTENvNWJPutYMVJDmv7C/BsuDov6GDs/Go w==;
-X-IronPort-AV: E=Sophos;i="5.90,251,1643698800"; d="scan'208";a="152228217"
+ bh=TSw59bFX+PePbwORebeZ9+oAAG98COq920SoMVZze4g=;
+ b=QJHT9sY0+/sZAnM8Ej31ot3mwvjBhGuoPsOJCwXY47xdKDfin3EgfKYF
+ +5uxOPHNaS5npA2VkbkpvVAnC/yMg41COiVhMbLonVP6XYvZxWUvTYydL
+ rSnbQY19K6d6xpRtgyZTJMcTVd/8tN67rK7WUgacnLOK89fvsQywI1EOW
+ Pj8xvHVI20l0lWI/RajMmLNTe/r56sx/j93PH4oU6QeaiObUV4OhwOED5
+ vOzZx3z5la5IbpL0TTzzGZQdjrgP08+Hnr6l4rHKSExbdLh8FT400BWZw
+ w7bvVWN6yeBJwFqPbL5IMdNwKMvwUl2wo1Hv3bkwW4r4uEnIWueKntXYw Q==;
+X-IronPort-AV: E=Sophos;i="5.90,251,1643698800"; d="scan'208";a="155133690"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 11 Apr 2022 05:53:57 -0700
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 11 Apr 2022 05:53:58 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 11 Apr 2022 05:53:56 -0700
+ 15.1.2375.17; Mon, 11 Apr 2022 05:53:58 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 11 Apr 2022 05:53:53 -0700
+ 15.1.2375.17 via Frontend Transport; Mon, 11 Apr 2022 05:53:56 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <p.yadav@ti.com>, <michael@walle.cc>
 CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v3 2/3] mtd: spi-nor: Update name and description of the
- set_4byte_addr_mode BFPT methods
-Date: Mon, 11 Apr 2022 15:53:45 +0300
-Message-ID: <20220411125346.118274-3-tudor.ambarus@microchip.com>
+Subject: [PATCH v3 3/3] mtd: spi-nor: Favor the BFPT-parsed
+ set_4byte_addr_mode method
+Date: Mon, 11 Apr 2022 15:53:46 +0300
+Message-ID: <20220411125346.118274-4-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220411125346.118274-1-tudor.ambarus@microchip.com>
 References: <20220411125346.118274-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_055358_932504_C9F79FA6 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20220411_055400_071151_0CAFFAA2 
+X-CRM114-Status: GOOD (  12.21  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,135 +76,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-QkZQVCBkZWZpbmVzIHNvbWUgc3RhbmRhcmQgbWV0aG9kcyB0byBlbnRlciBhbmQgZXhpdCB0aGUg
-NC1CeXRlIEFkZHJlc3MKTW9kZS4gVXNlIGdlbmVyaWMgbmFtZXMgZm9yIHRoZXNlIG1ldGhvZHMg
-YW5kIHVwZGF0ZSB0aGVpciBkZXNjcmlwdGlvbi4KClNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFy
-dXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KUmV2aWV3ZWQtYnk6IFByYXR5dXNoIFlh
-ZGF2IDxwLnlhZGF2QHRpLmNvbT4KLS0tCnYzOiBubyBjaGFuZ2VzCgogZHJpdmVycy9tdGQvc3Bp
-LW5vci9jb3JlLmMgICAgICB8ICAyICstCiBkcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMg
-IHwgIDMgKystCiBkcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jIHwgIDMgKystCiBkcml2
-ZXJzL210ZC9zcGktbm9yL3NmZHAuYyAgICAgIHwgMzIgKysrKysrKysrKysrKysrKysrKystLS0t
-LS0tLS0tLS0KIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oICAgICAgfCAgNyArKysrLS0tCiBk
-cml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYyAgIHwgIDIgKy0KIDYgZmlsZXMgY2hhbmdlZCwg
-MzAgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvc3BpLW5vci9jb3JlLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwppbmRleCAyYjI2
-YThjZWYwYzMuLjRkNDVjZGE0ZjlkMyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9j
-b3JlLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKQEAgLTI0OTAsNyArMjQ5MCw3
-IEBAIHN0YXRpYyB2b2lkIHNwaV9ub3JfaW5pdF9kZWZhdWx0X3BhcmFtcyhzdHJ1Y3Qgc3BpX25v
-ciAqbm9yKQogCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBzcGlfbm9yX2dldF9mbGFzaF9ub2Rl
-KG5vcik7CiAKIAlwYXJhbXMtPnF1YWRfZW5hYmxlID0gc3BpX25vcl9zcjJfYml0MV9xdWFkX2Vu
-YWJsZTsKLQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPSBzcGFuc2lvbl9zZXRfNGJ5dGVf
-YWRkcl9tb2RlOworCXBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9kZSA9IHNwaV9ub3Jfc2V0XzRi
-eXRlX2FkZHJfbW9kZV9icndyOwogCXBhcmFtcy0+b3RwLm9yZyA9ICZpbmZvLT5vdHBfb3JnOwog
-CiAJLyogRGVmYXVsdCB0byAxNi1iaXQgV3JpdGUgU3RhdHVzICgwMWgpIENvbW1hbmQgKi8KZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYyBiL2RyaXZlcnMvbXRkL3Nw
-aS1ub3IvbWFjcm9uaXguYwppbmRleCBkODFhNGNiMjgxMmIuLjg1ZTg2NTVkMzYyYyAxMDA2NDQK
-LS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jCisrKyBiL2RyaXZlcnMvbXRkL3Nw
-aS1ub3IvbWFjcm9uaXguYwpAQCAtMTA1LDcgKzEwNSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-Zmxhc2hfaW5mbyBtYWNyb25peF9ub3JfcGFydHNbXSA9IHsKIHN0YXRpYyB2b2lkIG1hY3Jvbml4
-X25vcl9kZWZhdWx0X2luaXQoc3RydWN0IHNwaV9ub3IgKm5vcikKIHsKIAlub3ItPnBhcmFtcy0+
-cXVhZF9lbmFibGUgPSBzcGlfbm9yX3NyMV9iaXQ2X3F1YWRfZW5hYmxlOwotCW5vci0+cGFyYW1z
-LT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCW5v
-ci0+cGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0KKwkJc3BpX25vcl9zZXRfNGJ5dGVfYWRk
-cl9tb2RlX2VuNGJfZXg0YjsKIH0KIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfbm9yX2ZpeHVw
-cyBtYWNyb25peF9ub3JfZml4dXBzID0gewpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5v
-ci9taWNyb24tc3QuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWljcm9uLXN0LmMKaW5kZXggZDI5
-MDNjNWI1Yjg3Li4yZDFjYmIxZjM3YzggMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-bWljcm9uLXN0LmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9taWNyb24tc3QuYwpAQCAtNDE0
-LDcgKzQxNCw4IEBAIHN0YXRpYyB2b2lkIG1pY3Jvbl9zdF9ub3JfZGVmYXVsdF9pbml0KHN0cnVj
-dCBzcGlfbm9yICpub3IpCiAJbm9yLT5mbGFncyB8PSBTTk9SX0ZfSEFTX0xPQ0s7CiAJbm9yLT5m
-bGFncyAmPSB+U05PUl9GX0hBU18xNkJJVF9TUjsKIAlub3ItPnBhcmFtcy0+cXVhZF9lbmFibGUg
-PSBOVUxMOwotCW5vci0+cGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0gbWljcm9uX3N0X25v
-cl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCW5vci0+cGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2Rl
-ID0KKwkJc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX3dyZW5fZW40Yl9leDRiOwogfQogCiBz
-dGF0aWMgdm9pZCBtaWNyb25fc3Rfbm9yX2xhdGVfaW5pdChzdHJ1Y3Qgc3BpX25vciAqbm9yKQpk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMgYi9kcml2ZXJzL210ZC9zcGkt
-bm9yL3NmZHAuYwppbmRleCAyZTQwZWJhMzc0NGQuLmM1ZGQ3OWVmNzVjOCAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRw
-LmMKQEAgLTQwMiwxNSArNDAyLDIwIEBAIHN0YXRpYyB2b2lkIHNwaV9ub3JfcmVnaW9uc19zb3J0
-X2VyYXNlX3R5cGVzKHN0cnVjdCBzcGlfbm9yX2VyYXNlX21hcCAqbWFwKQogfQogCiAvKioKLSAq
-IHNwYW5zaW9uX3NldF80Ynl0ZV9hZGRyX21vZGUoKSAtIFNldCA0LWJ5dGUgYWRkcmVzcyBtb2Rl
-IGZvciBTcGFuc2lvbgotICogZmxhc2hlcy4KKyAqIHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9k
-ZV9icndyKCkgLSBTZXQgNC1ieXRlIGFkZHJlc3MgbW9kZSB1c2luZworICogU1BJTk9SX09QX0JS
-V1IuCiAgKiBAbm9yOglwb2ludGVyIHRvICdzdHJ1Y3Qgc3BpX25vcicuCiAgKiBAZW5hYmxlOgl0
-cnVlIHRvIGVudGVyIHRoZSA0LWJ5dGUgYWRkcmVzcyBtb2RlLCBmYWxzZSB0byBleGl0IHRoZSA0
-LWJ5dGUKICAqCQlhZGRyZXNzIG1vZGUuCiAgKgorICogOC1iaXQgdm9sYXRpbGUgYmFuayByZWdp
-c3RlciB1c2VkIHRvIGRlZmluZSBBWzMwOkEyNF0gYml0cy4gTVNCIChiaXRbN10pIGlzCisgKiB1
-c2VkIHRvIGVuYWJsZS9kaXNhYmxlIDQtYnl0ZSBhZGRyZXNzIG1vZGUuIFdoZW4gTVNCIGlzIHNl
-dCB0byDigJgx4oCZLCA0LWJ5dGUKKyAqIGFkZHJlc3MgbW9kZSBpcyBhY3RpdmUgYW5kIEFbMzA6
-MjRdIGJpdHMgYXJlIGRvbuKAmXQgY2FyZS4gV3JpdGUgaW5zdHJ1Y3Rpb24gaXMKKyAqIFNQSU5P
-Ul9PUF9CUldSKDE3aCkgd2l0aCAxIGJ5dGUgb2YgZGF0YS4KKyAqCiAgKiBSZXR1cm46IDAgb24g
-c3VjY2VzcywgLWVycm5vIG90aGVyd2lzZS4KICAqLwotaW50IHNwYW5zaW9uX3NldF80Ynl0ZV9h
-ZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCitpbnQgc3BpX25vcl9z
-ZXRfNGJ5dGVfYWRkcl9tb2RlX2Jyd3Ioc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUp
-CiB7CiAJaW50IHJldDsKIApAQCAtNDM0LDE0ICs0MzksMTUgQEAgaW50IHNwYW5zaW9uX3NldF80
-Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCiB9CiAKIC8q
-KgotICogc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKCkgLSBFbnRlci9FeGl0IDQtYnl0ZSBh
-ZGRyZXNzIG1vZGUuCisgKiBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiKCkg
-LSBFbnRlci9FeGl0IDQtYnl0ZSBhZGRyZXNzIG1vZGUKKyAqIHVzaW5nIFNQSU5PUl9PUF9FTjRC
-L1NQSU5PUl9PUF9FWDRCLgogICogQG5vcjoJcG9pbnRlciB0byAnc3RydWN0IHNwaV9ub3InLgog
-ICogQGVuYWJsZToJdHJ1ZSB0byBlbnRlciB0aGUgNC1ieXRlIGFkZHJlc3MgbW9kZSwgZmFsc2Ug
-dG8gZXhpdCB0aGUgNC1ieXRlCiAgKgkJYWRkcmVzcyBtb2RlLgogICoKICAqIFJldHVybjogMCBv
-biBzdWNjZXNzLCAtZXJybm8gb3RoZXJ3aXNlLgogICovCi1pbnQgc3BpX25vcl9zZXRfNGJ5dGVf
-YWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKQoraW50IHNwaV9ub3Jf
-c2V0XzRieXRlX2FkZHJfbW9kZV9lbjRiX2V4NGIoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBl
-bmFibGUpCiB7CiAJaW50IHJldDsKIApAQCAtNDY1LDE1ICs0NzEsMTUgQEAgaW50IHNwaV9ub3Jf
-c2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkKIH0K
-IAogLyoqCi0gKiBtaWNyb25fc3Rfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoKSAtIFNldCA0LWJ5
-dGUgYWRkcmVzcyBtb2RlIGZvciBTVCBhbmQKLSAqIE1pY3JvbiBmbGFzaGVzLgorICogc3BpX25v
-cl9zZXRfNGJ5dGVfYWRkcl9tb2RlX3dyZW5fZW40Yl9leDRiKCkgLSBTZXQgNC1ieXRlIGFkZHJl
-c3MgbW9kZSB1c2luZ2YKKyAqIFNQSU5PUl9PUF9XUkVOIGZvbGxvd2VkIGJ5IFNQSU5PUl9PUF9F
-TjRCIG9yIFNQSU5PUl9PUF9FWDRCLgogICogQG5vcjoJcG9pbnRlciB0byAnc3RydWN0IHNwaV9u
-b3InLgogICogQGVuYWJsZToJdHJ1ZSB0byBlbnRlciB0aGUgNC1ieXRlIGFkZHJlc3MgbW9kZSwg
-ZmFsc2UgdG8gZXhpdCB0aGUgNC1ieXRlCiAgKgkJYWRkcmVzcyBtb2RlLgogICoKICAqIFJldHVy
-bjogMCBvbiBzdWNjZXNzLCAtZXJybm8gb3RoZXJ3aXNlLgogICovCi1pbnQgbWljcm9uX3N0X25v
-cl9zZXRfNGJ5dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKQor
-aW50IHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZV93cmVuX2VuNGJfZXg0YihzdHJ1Y3Qgc3Bp
-X25vciAqbm9yLCBib29sIGVuYWJsZSkKIHsKIAlpbnQgcmV0OwogCkBAIC00ODEsNyArNDg3LDcg
-QEAgaW50IG1pY3Jvbl9zdF9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAq
-bm9yLCBib29sIGVuYWJsZSkKIAlpZiAocmV0KQogCQlyZXR1cm4gcmV0OwogCi0JcmV0ID0gc3Bp
-X25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKG5vciwgZW5hYmxlKTsKKwlyZXQgPSBzcGlfbm9yX3Nl
-dF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiKG5vciwgZW5hYmxlKTsKIAlpZiAocmV0KQogCQly
-ZXR1cm4gcmV0OwogCkBAIC02OTUsMTUgKzcwMSwxNyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFy
-c2VfYmZwdChzdHJ1Y3Qgc3BpX25vciAqbm9yLAogCiAJc3dpdGNoIChiZnB0LmR3b3Jkc1tCRlBU
-X0RXT1JEKDE2KV0gJiBCRlBUX0RXT1JEMTZfNEJfQUREUl9NT0RFX01BU0spIHsKIAljYXNlIEJG
-UFRfRFdPUkQxNl80Ql9BRERSX01PREVfQlJXUjoKLQkJcGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9t
-b2RlID0gc3BhbnNpb25fc2V0XzRieXRlX2FkZHJfbW9kZTsKKwkJcGFyYW1zLT5zZXRfNGJ5dGVf
-YWRkcl9tb2RlID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2Jyd3I7CiAJCWJyZWFrOwog
-CiAJY2FzZSBCRlBUX0RXT1JEMTZfNEJfQUREUl9NT0RFX1dSRU5fRU40Ql9FWDRCOgotCQlwYXJh
-bXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPSBtaWNyb25fc3Rfbm9yX3NldF80Ynl0ZV9hZGRyX21v
-ZGU7CisJCXBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9kZSA9CisJCQlzcGlfbm9yX3NldF80Ynl0
-ZV9hZGRyX21vZGVfd3Jlbl9lbjRiX2V4NGI7CiAJCWJyZWFrOwogCiAJY2FzZSBCRlBUX0RXT1JE
-MTZfNEJfQUREUl9NT0RFX0VONEJfRVg0QjoKLQkJcGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2Rl
-ID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRy
-X21vZGUgPQorCQkJc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2VuNGJfZXg0YjsKIAkJYnJl
-YWs7CiAKIAlkZWZhdWx0OgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmgg
-Yi9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuaAppbmRleCAzYTM3NDRkYTc4YmEuLjk2MDY2MTA1
-NjllMCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmgKKysrIGIvZHJpdmVy
-cy9tdGQvc3BpLW5vci9zZmRwLmgKQEAgLTEzMyw5ICsxMzMsMTAgQEAgc3RydWN0IHNmZHBfcGFy
-YW1ldGVyX2hlYWRlciB7CiAJdTgJCWlkX21zYjsKIH07CiAKLWludCBzcGFuc2lvbl9zZXRfNGJ5
-dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKTsKLWludCBzcGlf
-bm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUp
-OwotaW50IG1pY3Jvbl9zdF9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAq
-bm9yLCBib29sIGVuYWJsZSk7CitpbnQgc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2Jyd3Io
-c3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpOworaW50IHNwaV9ub3Jfc2V0XzRieXRl
-X2FkZHJfbW9kZV9lbjRiX2V4NGIoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpOwor
-aW50IHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZV93cmVuX2VuNGJfZXg0YihzdHJ1Y3Qgc3Bp
-X25vciAqbm9yLAorCQkJCQkgICAgICAgYm9vbCBlbmFibGUpOwogaW50IHNwaV9ub3JfcGFyc2Vf
-c2ZkcChzdHJ1Y3Qgc3BpX25vciAqbm9yKTsKIAogI2VuZGlmIC8qIF9fTElOVVhfTVREX1NGRFBf
-SCAqLwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMgYi9kcml2ZXJz
-L210ZC9zcGktbm9yL3dpbmJvbmQuYwppbmRleCAzNzRiYTgyYmZmNDkuLjU5MGU0ZDJjOTlkNyAx
-MDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMKKysrIGIvZHJpdmVycy9t
-dGQvc3BpLW5vci93aW5ib25kLmMKQEAgLTE0Miw3ICsxNDIsNyBAQCBzdGF0aWMgaW50IHdpbmJv
-bmRfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFi
-bGUpCiB7CiAJaW50IHJldDsKIAotCXJldCA9IHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZShu
-b3IsIGVuYWJsZSk7CisJcmV0ID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2VuNGJfZXg0
-Yihub3IsIGVuYWJsZSk7CiAJaWYgKHJldCB8fCBlbmFibGUpCiAJCXJldHVybiByZXQ7CiAKLS0g
-CjIuMjUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+JESD216 SFDP defines in the BFPT standard methods to enter and exit the
+4-Byte Address Mode. The flash parameters and settings that are retrieved
+from SFDP have higher precedence than the static initialized ones, because
+they should be more accurate and less error prone than those initialized
+statically. Favor the BFPT-parsed set_4byte_addr_mode method and use the
+generic core methods where possible.
+This patch may introduce regressions in case BFPT contains wrong data. The
+fix is to introduce a post_bfpt() fixup hook and update the wrong BFPT
+data.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+---
+v3: no changes
+
+ drivers/mtd/spi-nor/core.c      |  7 ++++++-
+ drivers/mtd/spi-nor/macronix.c  | 10 ++++++++--
+ drivers/mtd/spi-nor/micron-st.c |  9 ++++++---
+ 3 files changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 4d45cda4f9d3..888516d98884 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2416,6 +2416,8 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
+  */
+ static void spi_nor_late_init_params(struct spi_nor *nor)
+ {
++	struct spi_nor_flash_parameter *params = nor->params;
++
+ 	if (nor->manufacturer && nor->manufacturer->fixups &&
+ 	    nor->manufacturer->fixups->late_init)
+ 		nor->manufacturer->fixups->late_init(nor);
+@@ -2423,6 +2425,10 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
+ 	if (nor->info->fixups && nor->info->fixups->late_init)
+ 		nor->info->fixups->late_init(nor);
+ 
++	/* Default method kept for backward compatibility. */
++	if (!params->set_4byte_addr_mode)
++		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
++
+ 	spi_nor_init_flags(nor);
+ 	spi_nor_init_fixup_flags(nor);
+ 
+@@ -2490,7 +2496,6 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+ 	struct device_node *np = spi_nor_get_flash_node(nor);
+ 
+ 	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
+-	params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
+ 	params->otp.org = &info->otp_org;
+ 
+ 	/* Default to 16-bit Write Status (01h) Command */
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index 85e8655d362c..c267cbcc7f1d 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -105,12 +105,18 @@ static const struct flash_info macronix_nor_parts[] = {
+ static void macronix_nor_default_init(struct spi_nor *nor)
+ {
+ 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
+-	nor->params->set_4byte_addr_mode =
+-		spi_nor_set_4byte_addr_mode_en4b_ex4b;
++}
++
++static void macronix_nor_late_init(struct spi_nor *nor)
++{
++	if (!nor->params->set_4byte_addr_mode)
++		nor->params->set_4byte_addr_mode =
++			spi_nor_set_4byte_addr_mode_en4b_ex4b;
+ }
+ 
+ static const struct spi_nor_fixups macronix_nor_fixups = {
+ 	.default_init = macronix_nor_default_init,
++	.late_init = macronix_nor_late_init,
+ };
+ 
+ const struct spi_nor_manufacturer spi_nor_macronix = {
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 2d1cbb1f37c8..9e9b107f2018 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -414,14 +414,17 @@ static void micron_st_nor_default_init(struct spi_nor *nor)
+ 	nor->flags |= SNOR_F_HAS_LOCK;
+ 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
+ 	nor->params->quad_enable = NULL;
+-	nor->params->set_4byte_addr_mode =
+-		spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
+ }
+ 
+ static void micron_st_nor_late_init(struct spi_nor *nor)
+ {
++	struct spi_nor_flash_parameter *params = nor->params;
++
+ 	if (nor->info->mfr_flags & USE_FSR)
+-		nor->params->ready = micron_st_nor_ready;
++		params->ready = micron_st_nor_ready;
++	if (!params->set_4byte_addr_mode)
++		params->set_4byte_addr_mode =
++			spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
+ }
+ 
+ static const struct spi_nor_fixups micron_st_nor_fixups = {
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
