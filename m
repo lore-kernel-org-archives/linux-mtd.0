@@ -4,67 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 825EDC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:54:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C7DC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eC/doJaeUnEc9aAYUnF0EX2PdsnmW+sMDICNpBV2mKg=; b=sDJmotDGNXByhA
-	59BWzsZEoI0lHKILgAhEj0L7ktzrfW0TDLAnfumcXh1v26iQKDE25gW1ErPKjO6d4kRZAFYUCeO2x
-	f7Ty3yICgpi5jHK5Vm8Ma6YuwaRW55BokU41JM622D2n1lCDdGc+bID90GwkiPJ6H2Wk/lXuVA52e
-	iflF65Zr3FpGX5o09uoLvIRnvlaFQLm1ux4AenMTnOkplV4w5E/GOqMgh+GyDcxQwY9qasHcxx3Le
-	7pW/g+CU8Ax3NS0NzdZXsiuBFGpxWTRR9AnD/gk3AsHefwNdfuFTv7mVVar3jYSAjgLocGK99EvlO
-	d4cwH6zuOZQhnA9QIDCg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=GRFaZu7nnqsaiXC0phvK/2NJfMK3dlnBqZvoP+cOdks=; b=gZ+n5Sz5LpaqIs
+	yYQCic8A0zTFQCgp//mmfKJr7RqFDfOxtb955BroEU9wQyufwhDiI4n8hZZkS6yJ0VgS9IgRC0n7J
+	E7hYQtLGnI+fOjGteWAHW2ah9+KZNpPGxF3aZ0lOFuXn8hbJohVXrUooxra5T2mr87+eKfs0hYkQJ
+	qXhnoIfgMOpgR3/gReW0hjDX0dvyedxBIRLZqYc6DNaV53SH5fJXwgkY6N52MgqdGVZjnf9yjB73F
+	EzX53diVt/8KCrPkr8z9X+W7U66FqLPP4ny8/0Wdtk/NiyNSrCJuLxIzVf8I9Wt3PL5dpcj1Y0/aa
+	jfB7l2jgwZHrhg6pukQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndtYm-0092pn-O6; Mon, 11 Apr 2022 12:54:24 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1ndta1-0093UL-Og; Mon, 11 Apr 2022 12:55:41 +0000
+Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndtYN-0092Zy-T6
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:54:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1649681639; x=1681217639;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=TSw59bFX+PePbwORebeZ9+oAAG98COq920SoMVZze4g=;
- b=QJHT9sY0+/sZAnM8Ej31ot3mwvjBhGuoPsOJCwXY47xdKDfin3EgfKYF
- +5uxOPHNaS5npA2VkbkpvVAnC/yMg41COiVhMbLonVP6XYvZxWUvTYydL
- rSnbQY19K6d6xpRtgyZTJMcTVd/8tN67rK7WUgacnLOK89fvsQywI1EOW
- Pj8xvHVI20l0lWI/RajMmLNTe/r56sx/j93PH4oU6QeaiObUV4OhwOED5
- vOzZx3z5la5IbpL0TTzzGZQdjrgP08+Hnr6l4rHKSExbdLh8FT400BWZw
- w7bvVWN6yeBJwFqPbL5IMdNwKMvwUl2wo1Hv3bkwW4r4uEnIWueKntXYw Q==;
-X-IronPort-AV: E=Sophos;i="5.90,251,1643698800"; d="scan'208";a="155133690"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 11 Apr 2022 05:53:58 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 11 Apr 2022 05:53:58 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 11 Apr 2022 05:53:56 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <p.yadav@ti.com>, <michael@walle.cc>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v3 3/3] mtd: spi-nor: Favor the BFPT-parsed
- set_4byte_addr_mode method
-Date: Mon, 11 Apr 2022 15:53:46 +0300
-Message-ID: <20220411125346.118274-4-tudor.ambarus@microchip.com>
+ id 1ndtZy-0093Ra-0A
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:55:39 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:b509:6862:2557:437a])
+ by baptiste.telenet-ops.be with bizsmtp
+ id HQvX2700U1G7NMJ01QvXyl; Mon, 11 Apr 2022 14:55:32 +0200
+Received: from rox.of.borg ([192.168.97.57])
+ by ramsan.of.borg with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1ndtZr-000ARl-6C; Mon, 11 Apr 2022 14:55:31 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1ndtZq-009JJB-OB; Mon, 11 Apr 2022 14:55:30 +0200
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Duc Nguyen <duc.nguyen.ub@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] memory: renesas-rpc-if: Simplify single/double data register
+ access
+Date: Mon, 11 Apr 2022 14:55:29 +0200
+Message-Id: <19358863deae03b1b26f473e878305a1c6e40d19.1649681638.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220411125346.118274-1-tudor.ambarus@microchip.com>
-References: <20220411125346.118274-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_055400_071151_0CAFFAA2 
-X-CRM114-Status: GOOD (  12.21  )
+X-CRM114-CacheID: sfid-20220411_055538_201190_743EF2B7 
+X-CRM114-Status: UNSURE (   8.18  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,108 +71,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-JESD216 SFDP defines in the BFPT standard methods to enter and exit the
-4-Byte Address Mode. The flash parameters and settings that are retrieved
-from SFDP have higher precedence than the static initialized ones, because
-they should be more accurate and less error prone than those initialized
-statically. Favor the BFPT-parsed set_4byte_addr_mode method and use the
-generic core methods where possible.
-This patch may introduce regressions in case BFPT contains wrong data. The
-fix is to introduce a post_bfpt() fixup hook and update the wrong BFPT
-data.
+For manual write and read, factor out the common access to the first
+data register by keeping track of the current data pointer.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-v3: no changes
+ drivers/memory/renesas-rpc-if.c | 28 ++++++++--------------------
+ 1 file changed, 8 insertions(+), 20 deletions(-)
 
- drivers/mtd/spi-nor/core.c      |  7 ++++++-
- drivers/mtd/spi-nor/macronix.c  | 10 ++++++++--
- drivers/mtd/spi-nor/micron-st.c |  9 ++++++---
- 3 files changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4d45cda4f9d3..888516d98884 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2416,6 +2416,8 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
-  */
- static void spi_nor_late_init_params(struct spi_nor *nor)
- {
-+	struct spi_nor_flash_parameter *params = nor->params;
-+
- 	if (nor->manufacturer && nor->manufacturer->fixups &&
- 	    nor->manufacturer->fixups->late_init)
- 		nor->manufacturer->fixups->late_init(nor);
-@@ -2423,6 +2425,10 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
- 	if (nor->info->fixups && nor->info->fixups->late_init)
- 		nor->info->fixups->late_init(nor);
+diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+index 019a0822bde0e413..fb2a507ca2badc70 100644
+--- a/drivers/memory/renesas-rpc-if.c
++++ b/drivers/memory/renesas-rpc-if.c
+@@ -488,7 +488,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ 	case RPCIF_DATA_OUT:
+ 		while (pos < rpc->xferlen) {
+ 			u32 bytes_left = rpc->xferlen - pos;
+-			u32 nbytes, data[2];
++			u32 nbytes, data[2], *p = data;
  
-+	/* Default method kept for backward compatibility. */
-+	if (!params->set_4byte_addr_mode)
-+		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
-+
- 	spi_nor_init_flags(nor);
- 	spi_nor_init_fixup_flags(nor);
+ 			smcr = rpc->smcr | RPCIF_SMCR_SPIE;
  
-@@ -2490,7 +2496,6 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
- 	struct device_node *np = spi_nor_get_flash_node(nor);
+@@ -502,15 +502,9 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ 			rpc->xfer_size = nbytes;
  
- 	params->quad_enable = spi_nor_sr2_bit1_quad_enable;
--	params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode_brwr;
- 	params->otp.org = &info->otp_org;
+ 			memcpy(data, rpc->buffer + pos, nbytes);
+-			if (nbytes == 8) {
+-				regmap_write(rpc->regmap, RPCIF_SMWDR1,
+-					     data[0]);
+-				regmap_write(rpc->regmap, RPCIF_SMWDR0,
+-					     data[1]);
+-			} else {
+-				regmap_write(rpc->regmap, RPCIF_SMWDR0,
+-					     data[0]);
+-			}
++			if (nbytes == 8)
++				regmap_write(rpc->regmap, RPCIF_SMWDR1, *p++);
++			regmap_write(rpc->regmap, RPCIF_SMWDR0, *p++);
  
- 	/* Default to 16-bit Write Status (01h) Command */
-diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-index 85e8655d362c..c267cbcc7f1d 100644
---- a/drivers/mtd/spi-nor/macronix.c
-+++ b/drivers/mtd/spi-nor/macronix.c
-@@ -105,12 +105,18 @@ static const struct flash_info macronix_nor_parts[] = {
- static void macronix_nor_default_init(struct spi_nor *nor)
- {
- 	nor->params->quad_enable = spi_nor_sr1_bit6_quad_enable;
--	nor->params->set_4byte_addr_mode =
--		spi_nor_set_4byte_addr_mode_en4b_ex4b;
-+}
-+
-+static void macronix_nor_late_init(struct spi_nor *nor)
-+{
-+	if (!nor->params->set_4byte_addr_mode)
-+		nor->params->set_4byte_addr_mode =
-+			spi_nor_set_4byte_addr_mode_en4b_ex4b;
- }
+ 			regmap_write(rpc->regmap, RPCIF_SMCR, smcr);
+ 			ret = wait_msg_xfer_end(rpc);
+@@ -552,7 +546,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ 		}
+ 		while (pos < rpc->xferlen) {
+ 			u32 bytes_left = rpc->xferlen - pos;
+-			u32 nbytes, data[2];
++			u32 nbytes, data[2], *p = data;
  
- static const struct spi_nor_fixups macronix_nor_fixups = {
- 	.default_init = macronix_nor_default_init,
-+	.late_init = macronix_nor_late_init,
- };
+ 			/* nbytes may only be 1, 2, 4, or 8 */
+ 			nbytes = bytes_left >= max ? max : (1 << ilog2(bytes_left));
+@@ -569,15 +563,9 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ 			if (ret)
+ 				goto err_out;
  
- const struct spi_nor_manufacturer spi_nor_macronix = {
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 2d1cbb1f37c8..9e9b107f2018 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -414,14 +414,17 @@ static void micron_st_nor_default_init(struct spi_nor *nor)
- 	nor->flags |= SNOR_F_HAS_LOCK;
- 	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
- 	nor->params->quad_enable = NULL;
--	nor->params->set_4byte_addr_mode =
--		spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
- }
+-			if (nbytes == 8) {
+-				regmap_read(rpc->regmap, RPCIF_SMRDR1,
+-					    &data[0]);
+-				regmap_read(rpc->regmap, RPCIF_SMRDR0,
+-					    &data[1]);
+-			} else {
+-				regmap_read(rpc->regmap, RPCIF_SMRDR0,
+-					    &data[0]);
+-			}
++			if (nbytes == 8)
++				regmap_read(rpc->regmap, RPCIF_SMRDR1, p++);
++			regmap_read(rpc->regmap, RPCIF_SMRDR0, p++);
+ 			memcpy(rpc->buffer + pos, data, nbytes);
  
- static void micron_st_nor_late_init(struct spi_nor *nor)
- {
-+	struct spi_nor_flash_parameter *params = nor->params;
-+
- 	if (nor->info->mfr_flags & USE_FSR)
--		nor->params->ready = micron_st_nor_ready;
-+		params->ready = micron_st_nor_ready;
-+	if (!params->set_4byte_addr_mode)
-+		params->set_4byte_addr_mode =
-+			spi_nor_set_4byte_addr_mode_wren_en4b_ex4b;
- }
- 
- static const struct spi_nor_fixups micron_st_nor_fixups = {
+ 			pos += nbytes;
 -- 
 2.25.1
 
