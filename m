@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2763CC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 05:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90122C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 05:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wW0UZast+i56hTE6ir8Hr+a2/n10cVvrI7CDGahpqdM=; b=INp/rSTL9xAoie
-	3nEZwCJEVi8KbCX6pGQ/Sh/uRuBmUXsaHyRLXzcCAX5iSqHvRAlHsVa17PoNPi0uyxwubrl8nC7Mw
-	GmMkrpWSpqOZcc21SBl49tpGET8Jjz1UvujLQ5zcIj/QS+jVV4R+T4gKiELagK+hIpnAuvgbm7FeK
-	J+5gFT3ZI/kpLptuDrDBzYCls13gbadhMYbna29gn99b+FupZGKosaRaWjp8fv+MCk9X8GlJp1MEo
-	XTRcF5Ki/AbldMtEzxv4tHxHTTQH5GpO6rdBEBrpjdGjP2Y7ZFqnLNHs2adC4N5riwysTFC1i3o5O
-	kDQOftS6zuLp5g7A2jjg==;
+	List-Owner; bh=zJQR2NYiYx05XV9/lySNQ2zBX6kbL5u53Kds4YiZLHk=; b=Bfq2Kvub9L+bvf
+	qHBAzN8HgsSd8OOY7XG4/IRS8ERzVj6tZTlOK8uJoD4KVkMFYCUlZLUkAjCSU81XKxIQXWN0tykMS
+	x4nqH+S84yvfPg3ePq8RJFoGRv8A1q3gz8LMBM4dNXm3WmMEyYqQTCQymmoUf0k2l5poNzdtVUu9F
+	mJulKUT53iz+RGq2c4ahHA2CaClUL2bRL9blL0LsUHh7vE+81pfyemcFw0MXI4GMCXb9W/kLRJob5
+	bpt5kE+fzxpNLw5gtgl4tvPZu/Qd3tbn65L+Wdi7tup/gxDOmqKirTxNJ3qNQUeDisQ81cvWlQbrA
+	p3tpTXAW900AHI7wTdUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndmXa-006k47-69; Mon, 11 Apr 2022 05:24:42 +0000
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+	id 1ndmXK-006jyl-8c; Mon, 11 Apr 2022 05:24:26 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndmXB-006jw4-V7
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 05:24:19 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id
- g12-20020a17090a640c00b001cb59d7a57cso4295704pjj.1
- for <linux-mtd@lists.infradead.org>; Sun, 10 Apr 2022 22:24:15 -0700 (PDT)
+ id 1ndmX5-006jug-Sb
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 05:24:13 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id p25so6882708pfn.13
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Apr 2022 22:24:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=5sVg7z31jpIusDzTr5G4xksLbWxKA1T1MLuNkptAu4U=;
- b=fnArYG1gqp3fAeMnHAiu4UW0fz42MD7B28QvtaiHeUz1I0hc1fl/tkdxb1UJIp00LG
- cosp6G1hS2uqhuYDIdJlq/KQ8rQDX8VRqGP3T6YtBKht5+ob0E5x+IgFXRnMkr5r3pQK
- x+PgfF8sNXteT6gofKtCx9QcX/WEQIA5kTUVRkYswmVrTjZA/QtDyOg+YymCeu6zcG2Q
- n1BV55LB64NIQF8aXCr5E7IQRql7JMqLCnn/0ePOz5kTc4cPHZvVyXlVMBndpkfLBiQD
- GNznLrJqfLq3p3xNr6KEJ3OGbHX2YOi4jKoXyo6pDbl4XEAbKKmFIjLFY+C6JdgSBbIj
- zJYA==
+ bh=EB0vQ0XNRgCW1YkKahpSaNX8vJALs/K5F4HXqNGGxCA=;
+ b=TUcVBXRO2m1umo5kcL7qyUJXjkrqpGf6tFWy2HwoHY6rVw2iFZi1zfRy1XwDrYYG2R
+ 6x81pNty/4/SOynNo4sbsYx4CoCteiLfpqncyKLXUiK1lrTAAxGc2UPB/9JQkkvdwbNI
+ o0IWhaOytBkTnO3Fg0MAzA2j7wwQEdxIdM+TTHnCI+2OxwEYy4+bLyCIdto63yTL0gDn
+ dXCpPfSRowm96F6C/czjcsbKEC8DStGxdZLOvkF26/Z+VtUSzFzT1KdAm/quuNQOXDH9
+ gdHbFSNUe9KEO80FkKGv1hjZG6nfQzEHuhdjHbABUdMpwXE40cDKzA1vxjtgRGCCo/Bl
+ Y/lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=5sVg7z31jpIusDzTr5G4xksLbWxKA1T1MLuNkptAu4U=;
- b=0116XN1JLe4QvlNh74b7Qh0q02YfWDk7ke//aGRPwEpuJSxBPin2RFG1JJmOi0HaBY
- i4AAPTvYFzOC/mY4Za47/LV+1wVJx/McAD622yX8IbERyWmcHCnhQ3HINEQjdJ04gZZJ
- vCYMDZxyaTFcysjECIuUgm8LZyyIeWJ21qwmvgH7oKd25XDCKQoxwimxmD5sLVT6NIVw
- bULG9qlp5pUagcfo75zHjsuddu/oJZ1Ai4BdD6IOFtEQhEMQJ+FlCn5FNESY23ZBYBQn
- aAo/ZNdQLpaNnYVOUvf9l1e331YJR4ZZqTwTTipSnOUZeIG5LIoHEJT0XC6e0OnfEDwJ
- Qdjg==
-X-Gm-Message-State: AOAM533vHVs17GQrvTqPA70C8n5IY27kfxkiw0GxnkKkAdNKRQzT/9l6
- Cr2YfHsTGvLqFTULoFZNfdUOvAHa0FU=
-X-Google-Smtp-Source: ABdhPJzf1AqZQHbrcejWoANGCOuZxjTQbuw8HtcQL+Q7IKNJsdGd3znW1wr543qaLCjAmvQbbGUORw==
-X-Received: by 2002:a17:90b:4f44:b0:1c7:9f03:9b2d with SMTP id
- pj4-20020a17090b4f4400b001c79f039b2dmr34965310pjb.24.1649654655002; 
- Sun, 10 Apr 2022 22:24:15 -0700 (PDT)
+ bh=EB0vQ0XNRgCW1YkKahpSaNX8vJALs/K5F4HXqNGGxCA=;
+ b=JR/i6SFYyNHB35GYLksbT/WmXfFcRyMVo2WvwMEtwFDaGVE9kX+/Gn8HBmdlDw5dzG
+ ugMyaXhn/nhM+gF7Sm5hlMjdSEMgk3OAO8JcV1wNqTNBIxXRWdfFd3WCJDbmCFMnGo1E
+ Y519WANkKlvigb3P4ecNXhjlQs3bxQBnMbglP0stFvyHinkp6SCv+5mjKkykyzk5XVXJ
+ OQh0t0Bfs4CG8q52UNHf/IIgF1ZBMVewbZ586KrQ9ZNlZGueHRMN6L7YI5cijww+kS1R
+ +FjW373lu2qMWJ3cZfAE8YCDJ6+qpOaI1zCDRLTtSS4FNZ+NdqX/hWHyqvb4hp/yYeyp
+ L89w==
+X-Gm-Message-State: AOAM532iAyMu52EHPptciETvl/58VX/DBnUeki9DvMkn8tvQS4rdVF+U
+ DOPagaC7vO7/kTrL4ZYEDnKZFd16tmI=
+X-Google-Smtp-Source: ABdhPJwEhPQXH5OV4Hi/FzkCLsQ/TF+dW/SNRHyvHLNhF2CcC4K9fi8Azc6CPBGvxosBBVnQVIZkxA==
+X-Received: by 2002:a05:6a00:10c2:b0:4fd:a140:d5a9 with SMTP id
+ d2-20020a056a0010c200b004fda140d5a9mr31116305pfu.77.1649654649914; 
+ Sun, 10 Apr 2022 22:24:09 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
  [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- ne24-20020a17090b375800b001cb62235013sm6064261pjb.5.2022.04.10.22.24.12
+ ne24-20020a17090b375800b001cb62235013sm6064261pjb.5.2022.04.10.22.24.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 10 Apr 2022 22:24:14 -0700 (PDT)
+ Sun, 10 Apr 2022 22:24:09 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v10 4/4] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and
- fixups
-Date: Mon, 11 Apr 2022 14:23:25 +0900
-Message-Id: <6eaf336b290b42d313d862bafd072cb39e4ebf29.1649641729.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v10 2/4] mtd: spi-nor: spansion: Add support for volatile QE
+ bit
+Date: Mon, 11 Apr 2022 14:23:23 +0900
+Message-Id: <8669d17c7dad0abed63e9f057ce3cfa6105de3c7.1649641729.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1649641729.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1649641729.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220410_222418_070115_1EC700E8 
-X-CRM114-Status: GOOD (  17.60  )
+X-CRM114-CacheID: sfid-20220410_222411_970763_C9D300EE 
+X-CRM114-Status: GOOD (  16.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,127 +94,128 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
-
-For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
-uniform sector sizes are supported. This is due to missing or incorrect
-entries in SMPT. Fixup for other sector sizes configurations will be
-followed up as needed.
-
-Tested on Xilinx Zynq-7000 FPGA board.
+Some of Infineon chips support volatile version of configuration registers
+and it is recommended to update volatile registers in the field application
+due to a risk of the non-volatile registers corruption by power interrupt.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
 Changes in v10:
-  - Cleanup fixups and ID table based on other patches in this series
-
+  - Remove dependencies on other series
+  
 Changes in v9:
-  - Use late_init() hook to fix mode clocks and writesize
-  - Use PARSE_SFDP instead of NO_SFDP_FLAGS
-  - Use MFR_FLAGS for USE_CLSR
-  - Add comment block to explain about addr mode in post_bfpt_fixups()
-
+  - Rename function per mwalle's series
+  
 Changes in v8:
-  - Call write_disable in error case only
-  - Use spi_nor_read_reg() helper
-  - Use nor->bouncebuf instead of variable on stack
-  - Update ID table to use FLAGS macro
+  - Use spi_nor_read/write_reg() functions
+  - Use nor->bouncebuf instead of a variable on stack
   
 Changes in v7:
-  - Add missing device info table in v6
+  - Add missing macro definitions in v6
   
 Changes in v6:
-  - Remove 2Gb multi die pacakge support
+  - Remove multi die package support
 
 Changes in v5:
-  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
-
+  - No change
+  
 Changes in v4:
-  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
-  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
-
+  - No change
+  
 Changes in v3:
-  - Remove S25HL256T and S25HS256T
-  - Add S25HL02GT and S25HS02GT 
-  - Add support for multi-die package parts support
-  - Remove erase_map fix for top/split sector layout
-  - Set ECC data unit size (16B) to writesize
+  - Add multi-die package parts support
 
- drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ drivers/mtd/spi-nor/spansion.c | 70 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
 diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index e58e864c308d..b78e5180b488 100644
+index f24e546e04a5..b073a7fe8e15 100644
 --- a/drivers/mtd/spi-nor/spansion.c
 +++ b/drivers/mtd/spi-nor/spansion.c
-@@ -125,6 +125,40 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
- 	return 0;
- }
+@@ -14,6 +14,8 @@
+ #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+ #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+ #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
++#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
++#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
+ #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
+ #define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
+ #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
+@@ -23,6 +25,74 @@
+ #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+ #define SPINOR_OP_CYPRESS_RD_FAST		0xee
  
-+static int s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
-+				   const struct sfdp_parameter_header *bfpt_header,
-+				   const struct sfdp_bfpt *bfpt)
++/**
++ * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
++ *                                      register.
++ * @nor:	pointer to a 'struct spi_nor'
++ *
++ * It is recommended to update volatile registers in the field application due
++ * to a risk of the non-volatile registers corruption by power interrupt. This
++ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
++ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
++ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
++ * also set during Flash power-up.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
 +{
-+	/* Replace Quad Enable with volatile version */
-+	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
++	struct spi_mem_op op;
++	u8 *buf = nor->bouncebuf;
++	u8 cfr1v_written;
++	int ret;
 +
-+	return cypress_nor_set_page_size(nor);
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR1V, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_IN(1, buf, 1));
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	if (buf[0] & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
++		return 0;
++
++	/* Update the Quad Enable bit. */
++	ret = spi_nor_write_enable(nor);
++	if (ret)
++		return ret;
++
++	buf[0] |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
++				SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR1V, 1),
++				SPI_MEM_OP_NO_DUMMY,
++				SPI_MEM_OP_DATA_OUT(1, buf, 1));
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	cfr1v_written = buf[0];
++
++	/* Read back and check it. */
++	op = (struct spi_mem_op)
++		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
++			   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR1V, 1),
++			   SPI_MEM_OP_NO_DUMMY,
++			   SPI_MEM_OP_DATA_IN(1, buf, 1));
++	ret = spi_mem_exec_op(nor->spimem, &op);
++	if (ret)
++		return ret;
++
++	if (buf[0] != cfr1v_written) {
++		dev_err(nor->dev, "CFR1: Read back test failed\n");
++		return -EIO;
++	}
++
++	return 0;
 +}
-+
-+static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/*
-+	 * Some of the older versions of flash have 3byte opcodes in 4BAIT.
-+	 * Unset the flag so that core can convert to 4byte opcodes.
-+	 */
-+	nor->flags &= ~SNOR_F_HAS_4BAIT;
-+}
-+
-+void s25hx_t_late_init(struct spi_nor *nor)
-+{
-+	/* Fast Read 4B requires mode cycles */
-+	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
-+
-+	/* The writesize should be ECC data unit size */
-+	nor->params->writesize = 16;
-+}
-+
-+static struct spi_nor_fixups s25hx_t_fixups = {
-+	.post_bfpt = s25hx_t_post_bfpt_fixup,
-+	.post_sfdp = s25hx_t_post_sfdp_fixup,
-+	.late_init = s25hx_t_late_init,
-+};
 +
  /**
   * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
   * @nor:		pointer to a 'struct spi_nor'
-@@ -380,6 +414,26 @@ static const struct flash_info spansion_nor_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.addr_width = 3,
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.addr_width = 3,
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.addr_width = 3,
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.addr_width = 3,
-+		.fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
- 		FLAGS(SPI_NOR_NO_ERASE) },
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
 -- 
 2.25.1
 
