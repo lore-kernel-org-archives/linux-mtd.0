@@ -4,52 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D14F0C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 17:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFA03C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 17:29:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
 	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I9rV52sK0QNBSBajDbUI6vt2kzddxKQvl7ewKQYmszI=; b=azIpbXJ6lJNvB4
-	2EIiE7Pa+JfofnLaoE1dJDPDdAe39FJl1vUgGNoJbVMYRPOs+OPvqat8Ekc4XEXqvgk2GB1iU4Cwj
-	sBquBWwD2V8ls4nJYuE1WGyLydJNIO+wKpMUCLtqSBHj8mwISN8tv2FPJpZnaOfogwqU2uaXJDtbb
-	/Lj5CJcaAFpsIvnZhFoj6ks56burbsdLpYfAxNhgxTG4M2jBbXQVfxS5S3M6O/X5716hVDxm3Oke9
-	AE9/P8E6EMtz5Dm/werdf0C7lYOxSQgkh7aEA6beAqdLY2SxuNtdYrkLNm6POzTNYTVClBVwm8KoU
-	qVlVwSdwjWc77pmyFgyg==;
+	List-Owner; bh=hW2maeOnVO0vc70FQf/4UXBixSAJTS9lytKq4kbACPU=; b=ue/pWLnZUZUVE3
+	Mij8WE2mQGyPvTfY1HKw6MIfiTjkaNQgG9In9LtPVJ/z2d3IBqIAAi48GYDYVkWiON52866q5MEne
+	27JghRiIebGdgsTn4ynklH681+YbMCscxOtWE+J5M50jxjlYzg9GTDNxTb8wFY9jwtKQ9g7Hk0a3m
+	ANB9bG1YgEFUEMdCuASCAaVHNl5w5vw2i+v9aEE7sVb4MMn6DlFpmE4Zd8kQ+vy1TFMU3vV6WO3I+
+	/U1euSdW0ZdgbWhsfEHeD8Xvkzwv08QsCvLfK79UOb34RnGFfppyQ5D+UuNEZfVvdBri8259OVxSF
+	r7G3BCT63UGS2sjtxSkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndxo5-009sLy-BT; Mon, 11 Apr 2022 17:26:29 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1ndxq3-009swD-PT; Mon, 11 Apr 2022 17:28:31 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndxo2-009sKP-IE; Mon, 11 Apr 2022 17:26:27 +0000
+ id 1ndxq1-009sum-3i; Mon, 11 Apr 2022 17:28:30 +0000
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 80BF421606;
- Mon, 11 Apr 2022 17:26:23 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id ABD701F7AD;
+ Mon, 11 Apr 2022 17:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
- t=1649697983;
+ t=1649698106;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ojOMmoWG3Vi82iwkKmDthce/DTUxrqsrVMcEPPdM3So=;
- b=QZwWZVQwC0bnchneRkqJ/+jzsU6T9BsE/QwjE1iflJ8e+QPH7qzL+AxcI+atiGlV8qm9Lo
- u8oIaWSdY7hbFlYvzT8ENcrgX9LIGNQj4Ik1HCmhtpjbfJ75vgExpzBPpp974aNYAtu6v8
- bf5VKoGfQqIUb3Ou/OOGio4KxiUFZwg=
+ bh=0RiNf7uoJjg1rRFObzVZQSCMAd1nof/h0vLpUgMcwvY=;
+ b=tfXHkMaj5kpUcLtvBYnwRGxDxcXmodIyKTVNxARm8whPlAkOVHL3pBXy48YlCR99uput93
+ ek64inXcfBYSt9NuV9MWohA/Liu5eXfW+58ujnwevThluScwhFajBAp+/PR+hCYJW8ogrY
+ iu/7/TOOXGQ1NMcWDFWaoeOCSwaX7H0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
- s=susede2_ed25519; t=1649697983;
+ s=susede2_ed25519; t=1649698106;
  h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
  cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ojOMmoWG3Vi82iwkKmDthce/DTUxrqsrVMcEPPdM3So=;
- b=98et+OqtZl3DiPU61ep6rcrI2VbwKFWZL1iuQ8dNt7YkOb55uCdVju/GMJmDyvRi7cAHwR
- HPLi3jycKdDWeJCw==
+ bh=0RiNf7uoJjg1rRFObzVZQSCMAd1nof/h0vLpUgMcwvY=;
+ b=y/QeT70zXSjm5PP3weiVBlhCkwkEL69tQO+HTTi+7j+oI3RtiZJDs5egZuujl2LcaWZ24F
+ apjvnh1HQMyDZeAA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
- by relay2.suse.de (Postfix) with ESMTP id 1C7B9A3B83;
- Mon, 11 Apr 2022 17:26:23 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 775CCA3B82;
+ Mon, 11 Apr 2022 17:28:26 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
- id 7FF53DA7F7; Mon, 11 Apr 2022 19:22:18 +0200 (CEST)
-Date: Mon, 11 Apr 2022 19:22:18 +0200
+ id 0F66CDA7F7; Mon, 11 Apr 2022 19:24:22 +0200 (CEST)
+Date: Mon, 11 Apr 2022 19:24:21 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
@@ -66,10 +68,11 @@ Cc: Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
  linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH 08/27] btrfs: use bdev_max_active_zones instead of open
- coding it
-Message-ID: <20220411172218.GT15609@twin.jikos.cz>
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Coly Li <colyli@suse.de>
+Subject: Re: [PATCH 24/27] block: remove QUEUE_FLAG_DISCARD
+Message-ID: <20220411172421.GU15609@twin.jikos.cz>
 Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
  linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -86,17 +89,18 @@ Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
  cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
  linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
  ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Coly Li <colyli@suse.de>
 References: <20220409045043.23593-1-hch@lst.de>
- <20220409045043.23593-9-hch@lst.de>
+ <20220409045043.23593-25-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220409045043.23593-9-hch@lst.de>
+In-Reply-To: <20220409045043.23593-25-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_102626_785056_2D29806C 
-X-CRM114-Status: UNSURE (   8.47  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220411_102829_380626_BA3172E6 
+X-CRM114-Status: GOOD (  14.64  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,14 +113,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 Reply-To: dsterba@suse.cz
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Apr 09, 2022 at 06:50:24AM +0200, Christoph Hellwig wrote:
+On Sat, Apr 09, 2022 at 06:50:40AM +0200, Christoph Hellwig wrote:
+> Just use a non-zero max_discard_sectors as an indicator for discard
+> support, similar to what is done for write zeroes.
+> =
+
+> The only places where needs special attention is the RAID5 driver,
+> which must clear discard support for security reasons by default,
+> even if the default stacking rules would allow for it.
+> =
+
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Acked-by: Christoph B=F6hmwalder <christoph.boehmwalder@linbit.com> [btrf=
+s]
+> Acked-by: Coly Li <colyli@suse.de> [bcache]
+> ---
+>  arch/um/drivers/ubd_kern.c          |  2 --
+>  block/blk-core.c                    |  2 +-
+>  block/blk-lib.c                     |  2 +-
+>  block/blk-mq-debugfs.c              |  1 -
+>  block/ioctl.c                       |  3 +--
+>  drivers/block/drbd/drbd_main.c      |  2 +-
+>  drivers/block/drbd/drbd_nl.c        | 19 ++-----------------
+>  drivers/block/drbd/drbd_receiver.c  |  3 +--
+>  drivers/block/loop.c                | 11 +++--------
+>  drivers/block/nbd.c                 |  5 +----
+>  drivers/block/null_blk/main.c       |  1 -
+>  drivers/block/rbd.c                 |  1 -
+>  drivers/block/rnbd/rnbd-clt.c       |  2 --
+>  drivers/block/rnbd/rnbd-srv-dev.h   |  3 ---
+>  drivers/block/virtio_blk.c          |  2 --
+>  drivers/block/xen-blkback/xenbus.c  |  2 +-
+>  drivers/block/xen-blkfront.c        |  2 --
+>  drivers/block/zram/zram_drv.c       |  1 -
+>  drivers/md/bcache/request.c         |  4 ++--
+>  drivers/md/bcache/super.c           |  3 +--
+>  drivers/md/bcache/sysfs.c           |  2 +-
+>  drivers/md/dm-cache-target.c        |  9 +--------
+>  drivers/md/dm-clone-target.c        |  9 +--------
+>  drivers/md/dm-log-writes.c          |  3 +--
+>  drivers/md/dm-raid.c                |  9 ++-------
+>  drivers/md/dm-table.c               |  9 ++-------
+>  drivers/md/dm-thin.c                | 11 +----------
+>  drivers/md/dm.c                     |  3 +--
+>  drivers/md/md-linear.c              | 11 +----------
+>  drivers/md/raid0.c                  |  7 -------
+>  drivers/md/raid1.c                  | 16 +---------------
+>  drivers/md/raid10.c                 | 18 ++----------------
+>  drivers/md/raid5-cache.c            |  2 +-
+>  drivers/md/raid5.c                  | 12 ++++--------
+>  drivers/mmc/core/queue.c            |  1 -
+>  drivers/mtd/mtd_blkdevs.c           |  1 -
+>  drivers/nvme/host/core.c            |  6 ++----
+>  drivers/s390/block/dasd_fba.c       |  1 -
+>  drivers/scsi/sd.c                   |  2 --
+>  drivers/target/target_core_device.c |  2 +-
+
+For
+
+>  fs/btrfs/extent-tree.c              |  4 ++--
+>  fs/btrfs/ioctl.c                    |  2 +-
 
 Acked-by: David Sterba <dsterba@suse.com>
 
