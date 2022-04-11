@@ -4,57 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AAE1C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:48:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDECEC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:54:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nWLkn6B09iOneGh9ybrhBDVF8TGJMlawCT9Tl3nqNVU=; b=SNUcU33IqJ+Md3
-	zaIV905IS2JLfb1CRm8ee5xkzOMYaygSQYV7LJMtJvUx3LInFwAFiNikZZSoMMF0ObQKlKB9I8xLm
-	EG6m1c19++SbluYRxHkGh5Ou8pOnLDKMt1YPv7clCe/AbeY7j222jaIfZyYDG6VSozi22n9kBrktM
-	rA1Uo8Wbjo7kB14A3YCvX2myZVrgll1Rt+TUbrTNda6TLqeHnfJ2Id7rPC18yZYcvW/o2E1zvIEl3
-	slo0EWaS9iFi+BJeSVgHOI01rzT/nsVVMfSMqApsLUozoLlIwu9H0cC85fJE9JY4BBTaAjlp40bLc
-	acbLLXZCrrF04zyoRJ3w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=FMtqH/wZiU/SdMUcyGMmnVO0xjZEi+P44eg7zghWMsE=; b=u2qx4wOJmfMzjM
+	JjIWq4raWxxz+QuV5XUOgGX/ttcG9CvyIXAg8gcPE5xL8vPszWHUkntkMYIpzHi8ReW55hoi4iTuN
+	mJ8qATuMLzt8w30It0hAL1td700FmKC+Mz9y0DR4kLp7C8ZNPUDquAhtqM1fXPITDxOoFEAdwwKjF
+	Xb2Vm/RAU+cpPQYzftajtbm7RSF2CODT4VwMk2iLS9+zMqwewPmTwyUYI+AneHSxKP+ZMzhVcdfCE
+	ImpfEbXcdTpkDUojy6c+BYCkFNQGC+R2LdyGVzRtKS1eU19vYZGiFPXL63ZABpWU/Hmqhz6RpMoeM
+	HnEIusmvhW1K9567p5WA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndtS2-0091lS-Cq; Mon, 11 Apr 2022 12:47:26 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1ndtYJ-0092YN-WC; Mon, 11 Apr 2022 12:53:56 +0000
+Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndtRy-0091jt-PF
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:47:24 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 08CF01BF205;
- Mon, 11 Apr 2022 12:47:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1649681236;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=zOhGrupBv5BZo/T0IffoldQiJaqfYTq0n0a0T+OCi+I=;
- b=SHrE47RtGnZTw25wVFb9Z4eZEOtLtknUSNPtLyjVtFAd9YTgJgfRqHC4yFrK81LxXd3BNQ
- eGESDWRhWNrlTRBeB60fXo2BJy+duzJm0EG5g9VeOhu3ElExffzi7ziQvXMsg6Jqg1dmVG
- iRLB6rGtvRwjeaiL5jnPP+Un0F3NLh2Acz+W2vgWTZVdVKueXBc9OjlkkM47EqaJh+pM0Y
- FDQwkCQhrGVtKjD66tMHHNtZOopHPfzuCQjF+cNjVwuvHdoJvJyWnYOl7x/7/tb4ItqjAW
- hXi4VvJKep9C+eKsiS0tLC1JdvM28Kk9GphAE992QLXjY4OIu/72kDUng3yHQQ==
-Date: Mon, 11 Apr 2022 14:47:13 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Zheyu Ma <zheyuma97@gmail.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: Use managed device resources
-Message-ID: <20220411144713.3057dd17@xps13>
-In-Reply-To: <20220411112124.3700126-1-zheyuma97@gmail.com>
-References: <20220411112124.3700126-1-zheyuma97@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1ndtYG-0092W7-BV
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:53:54 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:b509:6862:2557:437a])
+ by laurent.telenet-ops.be with bizsmtp
+ id HQto270031G7NMJ01Qtoiv; Mon, 11 Apr 2022 14:53:49 +0200
+Received: from rox.of.borg ([192.168.97.57])
+ by ramsan.of.borg with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1ndtYB-000ARL-DF; Mon, 11 Apr 2022 14:53:47 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1ndtYA-009JGV-J1; Mon, 11 Apr 2022 14:53:46 +0200
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Duc Nguyen <duc.nguyen.ub@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v4] memory: renesas-rpc-if: Fix HF/OSPI data transfer in
+ Manual Mode
+Date: Mon, 11 Apr 2022 14:53:45 +0200
+Message-Id: <cde9bfacf704c81865f57b15d1b48a4793da4286.1649681476.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_054723_114952_081B2EC4 
-X-CRM114-Status: GOOD (  17.30  )
+X-CRM114-CacheID: sfid-20220411_055352_587214_0754428A 
+X-CRM114-Status: GOOD (  16.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,62 +65,188 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgp6aGV5dW1hOTdAZ21haWwuY29tIHdyb3RlIG9uIE1vbiwgMTEgQXByIDIwMjIgMTk6
-MjE6MjQgKzA4MDA6CgpQcmVmaXggc2hvdWxkIGJlICJtdGQ6IHJhd25hbmQ6IGRlbmFsaToiCgo+
-IEFsbCBvZiB0aGUgcmVzb3VyY2VzIHVzZWQgYnkgdGhpcyBkcml2ZXIgaGFzIG1hbmFnZWQgaW50
-ZXJmYWNlcywgc28gdXNlCj4gdGhlbS4gT3RoZXJ3aXNlIHdlIHdpbGwgZ2V0IHRoZSBmb2xsb3dp
-bmcgc3BsYXQ6Cj4gCj4gWyAgICA0LjQ3MjcwM10gZGVuYWxpLW5hbmQtcGNpIDAwMDA6MDA6MDUu
-MDogdGltZW91dCB3aGlsZSB3YWl0aW5nIGZvciBpcnEgMHgxMDAwCj4gWyAgICA0LjQ3NDA3MV0g
-ZGVuYWxpLW5hbmQtcGNpOiBwcm9iZSBvZiAwMDAwOjAwOjA1LjAgZmFpbGVkIHdpdGggZXJyb3Ig
-LTUKPiBbICAgIDQuNDczNTM4XSBuYW5kOiBObyBOQU5EIGRldmljZSBmb3VuZAo+IFsgICAgNC40
-NzQwNjhdIEJVRzogdW5hYmxlIHRvIGhhbmRsZSBwYWdlIGZhdWx0IGZvciBhZGRyZXNzOiBmZmZm
-YzkwMDA1MDAwNDEwCj4gWyAgICA0LjQ3NTE2OV0gI1BGOiBzdXBlcnZpc29yIHdyaXRlIGFjY2Vz
-cyBpbiBrZXJuZWwgbW9kZQo+IFsgICAgNC40NzU1NzldICNQRjogZXJyb3JfY29kZSgweDAwMDIp
-IC0gbm90LXByZXNlbnQgcGFnZQo+IFsgICAgNC40NzgzNjJdIFJJUDogMDAxMDppb3dyaXRlMzIr
-MHg5LzB4NTAKPiBbICAgIDQuNDg2MDY4XSBDYWxsIFRyYWNlOgo+IFsgICAgNC40ODYyNjldICA8
-SVJRPgo+IFsgICAgNC40ODY0NDNdICBkZW5hbGlfaXNyKzB4MTViLzB4MzAwIFtkZW5hbGldCj4g
-WyAgICA0LjQ4Njc4OF0gID8gZGVuYWxpX2RpcmVjdF93cml0ZSsweDUwLzB4NTAgW2RlbmFsaV0K
-PiBbICAgIDQuNDg3MTg5XSAgX19oYW5kbGVfaXJxX2V2ZW50X3BlcmNwdSsweDE2MS8weDNiMAo+
-IFsgICAgNC40ODc1NzFdICBoYW5kbGVfaXJxX2V2ZW50KzB4N2QvMHgxYjAKPiBbICAgIDQuNDg3
-ODg0XSAgaGFuZGxlX2Zhc3Rlb2lfaXJxKzB4MmIwLzB4NzcwCj4gWyAgICA0LjQ4ODIxOV0gIF9f
-Y29tbW9uX2ludGVycnVwdCsweGM4LzB4MWIwCj4gWyAgICA0LjQ4ODU0OV0gIGNvbW1vbl9pbnRl
-cnJ1cHQrMHg5YS8weGMwCj4gCj4gRml4ZXM6IDkzZGI0NDZhNDI0YyAoIm10ZDogbmFuZDogbW92
-ZSByYXcgTkFORCByZWxhdGVkIGNvZGUgdG8gdGhlIHJhdy8gc3ViZGlyIikKPiAKCkV4dHJhIHNw
-YWNlCgo+IFNpZ25lZC1vZmYtYnk6IFpoZXl1IE1hIDx6aGV5dW1hOTdAZ21haWwuY29tPgoKT3Ro
-ZXJ3aXNlIExHVE0uCgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9kZW5hbGlfcGNpLmMg
-fCAxNSArKysrLS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwg
-MTEgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Rl
-bmFsaV9wY2kuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaV9wY2kuYwo+IGluZGV4IDIw
-YzA4NWEzMGFkYy4uZGU3ZTcyMmQzODI2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L2RlbmFsaV9wY2kuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2RlbmFsaV9wY2ku
-Ywo+IEBAIC03NCwyMiArNzQsMjEgQEAgc3RhdGljIGludCBkZW5hbGlfcGNpX3Byb2JlKHN0cnVj
-dCBwY2lfZGV2ICpkZXYsIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkICppZCkKPiAgCQlyZXR1
-cm4gcmV0Owo+ICAJfQo+ICAKPiAtCWRlbmFsaS0+cmVnID0gaW9yZW1hcChjc3JfYmFzZSwgY3Ny
-X2xlbik7Cj4gKwlkZW5hbGktPnJlZyA9IGRldm1faW9yZW1hcChkZW5hbGktPmRldiwgY3NyX2Jh
-c2UsIGNzcl9sZW4pOwo+ICAJaWYgKCFkZW5hbGktPnJlZykgewo+ICAJCWRldl9lcnIoJmRldi0+
-ZGV2LCAiU3BlY3RyYTogVW5hYmxlIHRvIHJlbWFwIG1lbW9yeSByZWdpb25cbiIpOwo+ICAJCXJl
-dHVybiAtRU5PTUVNOwo+ICAJfQo+ICAKPiAtCWRlbmFsaS0+aG9zdCA9IGlvcmVtYXAobWVtX2Jh
-c2UsIG1lbV9sZW4pOwo+ICsJZGVuYWxpLT5ob3N0ID0gZGV2bV9pb3JlbWFwKGRlbmFsaS0+ZGV2
-LCBtZW1fYmFzZSwgbWVtX2xlbik7Cj4gIAlpZiAoIWRlbmFsaS0+aG9zdCkgewo+ICAJCWRldl9l
-cnIoJmRldi0+ZGV2LCAiU3BlY3RyYTogaW9yZW1hcCBmYWlsZWQhIik7Cj4gLQkJcmV0ID0gLUVO
-T01FTTsKPiAtCQlnb3RvIG91dF91bm1hcF9yZWc7Cj4gKwkJcmV0dXJuIC1FTk9NRU07Cj4gIAl9
-Cj4gIAo+ICAJcmV0ID0gZGVuYWxpX2luaXQoZGVuYWxpKTsKPiAgCWlmIChyZXQpCj4gLQkJZ290
-byBvdXRfdW5tYXBfaG9zdDsKPiArCQlyZXR1cm4gcmV0Owo+ICAKPiAgCW5zZWxzID0gZGVuYWxp
-LT5uYmFua3M7Cj4gIAo+IEBAIC0xMTcsMTAgKzExNiw2IEBAIHN0YXRpYyBpbnQgZGVuYWxpX3Bj
-aV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqZGV2LCBjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCAq
-aWQpCj4gIAo+ICBvdXRfcmVtb3ZlX2RlbmFsaToKPiAgCWRlbmFsaV9yZW1vdmUoZGVuYWxpKTsK
-PiAtb3V0X3VubWFwX2hvc3Q6Cj4gLQlpb3VubWFwKGRlbmFsaS0+aG9zdCk7Cj4gLW91dF91bm1h
-cF9yZWc6Cj4gLQlpb3VubWFwKGRlbmFsaS0+cmVnKTsKPiAgCXJldHVybiByZXQ7Cj4gIH0KPiAg
-Cj4gQEAgLTEyOSw4ICsxMjQsNiBAQCBzdGF0aWMgdm9pZCBkZW5hbGlfcGNpX3JlbW92ZShzdHJ1
-Y3QgcGNpX2RldiAqZGV2KQo+ICAJc3RydWN0IGRlbmFsaV9jb250cm9sbGVyICpkZW5hbGkgPSBw
-Y2lfZ2V0X2RydmRhdGEoZGV2KTsKPiAgCj4gIAlkZW5hbGlfcmVtb3ZlKGRlbmFsaSk7Cj4gLQlp
-b3VubWFwKGRlbmFsaS0+cmVnKTsKPiAtCWlvdW5tYXAoZGVuYWxpLT5ob3N0KTsKPiAgfQo+ICAK
-PiAgc3RhdGljIHN0cnVjdCBwY2lfZHJpdmVyIGRlbmFsaV9wY2lfZHJpdmVyID0gewoKClRoYW5r
-cywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+HyperFlash devices fail to probe:
+
+    rpc-if-hyperflash rpc-if-hyperflash: probing of hyperbus device failed
+
+In HyperFlash or Octal-SPI Flash mode, the Transfer Data Enable bits
+(SPIDE) in the Manual Mode Enable Setting Register (SMENR) are derived
+from half of the transfer size, cfr. the rpcif_bits_set() helper
+function.  However, rpcif_reg_{read,write}() does not take the bus size
+into account, and does not double all Manual Mode Data Register access
+sizes when communicating with a HyperFlash or Octal-SPI Flash device.
+
+Fix this, and avoid the back-and-forth conversion between transfer size
+and Transfer Data Enable bits, by explicitly storing the transfer size
+in struct rpcif, and using that value to determine access size in
+rpcif_reg_{read,write}().
+
+Enforce that the "high" Manual Mode Read/Write Data Registers
+(SM[RW]DR1) are only used for 8-byte data accesses.
+While at it, forbid writing to the Manual Mode Read Data Registers,
+as they are read-only.
+
+Fixes: fff53a551db50f5e ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual mode")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> [QSPI]
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+v4:
+  - Add Reviewed-by, Tested-by,
+
+v3:
+  - Add Tested-by,
+  - Update comments to match changed code,
+  - Add explicit {read,write}l() for the 4/8 byte case, to increase
+    readability,
+  - Remove redundant break statements,
+  - Tested HyperFlash on more boards and SoCs.
+
+v2:
+  - Use rpc->xfer_size instead of SPIDE register reads and
+    rpc->bus_size.
+      Note: Alternatively, rpcif_manual_xfer() could bypass regmap and
+      use {read,write}[bwl]() directly, cfr. commit 0d37f69cacb33435
+      ("memory: renesas-rpc-if: Correct QSPI data transfer in Manual
+      mode") in the BSP.
+  - HF dirmap reads are confirmed to work on R-Car M3-W,
+  - Drop RFC.
+---
+ drivers/memory/renesas-rpc-if.c | 60 +++++++++++++++++++++++++--------
+ include/memory/renesas-rpc-if.h |  1 +
+ 2 files changed, 47 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+index 2e545f473cc68fb3..019a0822bde0e413 100644
+--- a/drivers/memory/renesas-rpc-if.c
++++ b/drivers/memory/renesas-rpc-if.c
+@@ -164,25 +164,39 @@ static const struct regmap_access_table rpcif_volatile_table = {
+ 
+ 
+ /*
+- * Custom accessor functions to ensure SMRDR0 and SMWDR0 are always accessed
+- * with proper width. Requires SMENR_SPIDE to be correctly set before!
++ * Custom accessor functions to ensure SM[RW]DR[01] are always accessed with
++ * proper width.  Requires rpcif.xfer_size to be correctly set before!
+  */
+ static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
+ {
+ 	struct rpcif *rpc = context;
+ 
+-	if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
+-		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
+-
+-		if (spide == 0x8) {
++	switch (reg) {
++	case RPCIF_SMRDR0:
++	case RPCIF_SMWDR0:
++		switch (rpc->xfer_size) {
++		case 1:
+ 			*val = readb(rpc->base + reg);
+ 			return 0;
+-		} else if (spide == 0xC) {
++
++		case 2:
+ 			*val = readw(rpc->base + reg);
+ 			return 0;
+-		} else if (spide != 0xF) {
++
++		case 4:
++		case 8:
++			*val = readl(rpc->base + reg);
++			return 0;
++
++		default:
+ 			return -EILSEQ;
+ 		}
++
++	case RPCIF_SMRDR1:
++	case RPCIF_SMWDR1:
++		if (rpc->xfer_size != 8)
++			return -EILSEQ;
++		break;
+ 	}
+ 
+ 	*val = readl(rpc->base + reg);
+@@ -193,18 +207,34 @@ static int rpcif_reg_write(void *context, unsigned int reg, unsigned int val)
+ {
+ 	struct rpcif *rpc = context;
+ 
+-	if (reg == RPCIF_SMRDR0 || reg == RPCIF_SMWDR0) {
+-		u32 spide = readl(rpc->base + RPCIF_SMENR) & RPCIF_SMENR_SPIDE(0xF);
+-
+-		if (spide == 0x8) {
++	switch (reg) {
++	case RPCIF_SMWDR0:
++		switch (rpc->xfer_size) {
++		case 1:
+ 			writeb(val, rpc->base + reg);
+ 			return 0;
+-		} else if (spide == 0xC) {
++
++		case 2:
+ 			writew(val, rpc->base + reg);
+ 			return 0;
+-		} else if (spide != 0xF) {
++
++		case 4:
++		case 8:
++			writel(val, rpc->base + reg);
++			return 0;
++
++		default:
+ 			return -EILSEQ;
+ 		}
++
++	case RPCIF_SMWDR1:
++		if (rpc->xfer_size != 8)
++			return -EILSEQ;
++		break;
++
++	case RPCIF_SMRDR0:
++	case RPCIF_SMRDR1:
++		return -EPERM;
+ 	}
+ 
+ 	writel(val, rpc->base + reg);
+@@ -469,6 +499,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ 
+ 			smenr |= RPCIF_SMENR_SPIDE(rpcif_bits_set(rpc, nbytes));
+ 			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
++			rpc->xfer_size = nbytes;
+ 
+ 			memcpy(data, rpc->buffer + pos, nbytes);
+ 			if (nbytes == 8) {
+@@ -533,6 +564,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ 			regmap_write(rpc->regmap, RPCIF_SMENR, smenr);
+ 			regmap_write(rpc->regmap, RPCIF_SMCR,
+ 				     rpc->smcr | RPCIF_SMCR_SPIE);
++			rpc->xfer_size = nbytes;
+ 			ret = wait_msg_xfer_end(rpc);
+ 			if (ret)
+ 				goto err_out;
+diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
+index 7c93f5177532f187..9c0ad64b8d292d49 100644
+--- a/include/memory/renesas-rpc-if.h
++++ b/include/memory/renesas-rpc-if.h
+@@ -72,6 +72,7 @@ struct rpcif {
+ 	enum rpcif_type type;
+ 	enum rpcif_data_dir dir;
+ 	u8 bus_size;
++	u8 xfer_size;
+ 	void *buffer;
+ 	u32 xferlen;
+ 	u32 smcr;
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
