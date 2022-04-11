@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53D20C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87127C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 12:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VO9VxzwfueKXJVsh5ZOlMrTZIGOI4kLncy4PtwMMWNA=; b=J/p2qtA7qH9Ngy
-	MUzJsYy0qfsw2WFHUnSv1ja+h3Rb8s+jRIU5SdFIzDyZNZ2ukOJ6EZrH01G/P73puqkhF2TeU2wcy
-	GsJ6kxIxTUgVFT8wi8ltNFiFlpaVgevsW24422oxHUOnVogrwaiplmdaD/x5Olr7yfaqCx8x7N4VO
-	bMlzKqU5RH9Gi6iUCiULQjjCKsqMVl+touX20mIFvTUxdvE6I3WxROPDtfR1Khkv2R2uyC0Zvv8BI
-	oX+c2c9OtbvYeQm0lFvJpYan/aJ5Bfm8qUmWbeS5JvqJRSyuIHWa5DQkIY5xvwHLTds05EXnrdZTB
-	Sbce5NwBbBGdT/lldhRw==;
+	List-Owner; bh=+hzx53nUmC7CF7SbShGDyYLXTlSrtPDzxDxIld86Idc=; b=jdnSytndHlUiHe
+	FF9PpfYNaFFXMfDhyEhf8+/dORpfWhMic9mIt3pzGYstJlKmI+ALZR8Q1SMIoAmeJmMUQn+mhzAa2
+	QkUejAIFI6zNSY1Z6YsYCUF8MUD/DQQDncysKHd3todq14RPESIyrKUDx4GMiHxXOMISHqIjOHSDK
+	B2p62hA5Vxe+gyaBVlbBw2x/BOUUfqRdnGeDGM5UbV2VdYaLHAhFGhrHyPaf0WZ7nsjtP7Az/eCqK
+	QIhk2+JYe8hY0aFy0krRvba6lS2jftajjkdFEHJADKIBdLEwxWqxIuZkysSMrR5EqqKN190yq8Mgj
+	iiGXFFQjaiUkiA0M9jjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndtYU-0092dA-6o; Mon, 11 Apr 2022 12:54:06 +0000
-Received: from esa.microchip.iphmx.com ([68.232.153.233])
+	id 1ndtYc-0092jq-Jv; Mon, 11 Apr 2022 12:54:14 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndtYI-0092Xg-B9
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:53:56 +0000
+ id 1ndtYM-0092Yy-P9
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 12:54:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1649681634; x=1681217634;
+ t=1649681639; x=1681217639;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=YxGwEXdiW2HWJutHcMnKMQvWB9GLiCYZWJLMxk1Flq0=;
- b=rDTNCJzCUnDQzBoiKUsj8WlxIRCzR43EXWpHtsSjCEfnPC+8tKCMj4U3
- DVhrGF1bzrZy+05eIcS8+VRYeQ2C9CkUPbUCZna5GdTcDfknrlGKCMGPQ
- Bssx+6wRUAtIdECpMknJNXew2ftDwaZldm4bYuW5A53THgeBK2DuR2P6Q
- 6IuokJaVi7BuJDHAtjdJcGqm5LDn031490SRPG6owGoL1lxfxOckWxRZ7
- PPchsQ+hpsMxzCIQmmq9xpPoNF0LvdGYdgud4QlHiQJXkyo0O03SIbBLM
- TzpOfDQFDGNcrmnqed+YJpMryC1shP5kBrNAgiV5vBZmSCgJKAWT1b6F8 Q==;
-X-IronPort-AV: E=Sophos;i="5.90,251,1643698800"; d="scan'208";a="169171556"
+ bh=06+0IGi/qVCaEzVy2orxTRzRoyFh8SISzaLVMzQyQHQ=;
+ b=Tu1zKdRs8PIxOybuFmsI8ShOB6PxiaE3Ro7DqUJ5IvuUHibGo3zqQpwI
+ 8X5i6bpHnRrR8ci6QtkZcl2Yg+02wlcFrWgU14n1h3TF1GsQ79/NLntCU
+ OVRy5lpKTIQgOIVrT3HTENNWZaPCod9FdHPkt3FlmRSAy6UU9DKQML0pi
+ sLGOva2rjAb2oziSggrjLVzyf5C10bpfV9RoB1VS1pcrlepa/xh8DcXWa
+ uDmTEMmjvjo7glARxWTGSuJjpEWkD0puWJ0V5mV7LcgHktcYESzAMSxl+
+ pGgMiFE6prIZpixeI57i4gZJTENvNWJPutYMVJDmv7C/BsuDov6GDs/Go w==;
+X-IronPort-AV: E=Sophos;i="5.90,251,1643698800"; d="scan'208";a="152228217"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 11 Apr 2022 05:53:53 -0700
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 11 Apr 2022 05:53:57 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 11 Apr 2022 05:53:53 -0700
+ 15.1.2375.17; Mon, 11 Apr 2022 05:53:56 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 11 Apr 2022 05:53:51 -0700
+ 15.1.2375.17 via Frontend Transport; Mon, 11 Apr 2022 05:53:53 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 To: <p.yadav@ti.com>, <michael@walle.cc>
 CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
  <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <nicolas.ferre@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v3 1/3] mtd: spi-nor: Parse BFPT to determine the 4-Byte
- Address Mode methods
-Date: Mon, 11 Apr 2022 15:53:44 +0300
-Message-ID: <20220411125346.118274-2-tudor.ambarus@microchip.com>
+Subject: [PATCH v3 2/3] mtd: spi-nor: Update name and description of the
+ set_4byte_addr_mode BFPT methods
+Date: Mon, 11 Apr 2022 15:53:45 +0300
+Message-ID: <20220411125346.118274-3-tudor.ambarus@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220411125346.118274-1-tudor.ambarus@microchip.com>
 References: <20220411125346.118274-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_055354_496305_7A30347D 
-X-CRM114-Status: GOOD (  21.20  )
+X-CRM114-CacheID: sfid-20220411_055358_932504_C9F79FA6 
+X-CRM114-Status: GOOD (  11.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,365 +76,135 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-BFPT[DWORD(16)] defines the methods to enter and exit the 4-Byte Address
-Mode. Parse BFPT to determine the method. Will rename the methods with
-generic names in a further patch, to keep things trackable in this one.
-
-Some regressions may be introduced by this patch, because the
-params->set_4byte_addr_mode method that was set either in
-spi_nor_init_default_params() or later overwritten in default_init() hooks,
-may now be overwritten with a different value based on the BFPT data. If
-that's the case, the fix is to introduce a post_bfpt fixup hook where one
-should fix the wrong BFPT info.
-
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
----
-v3: move BFPT definitions in sfdp.h as they may be used by manufacturer
-drivers to handle flash ID collisions.
-
- drivers/mtd/spi-nor/core.c      |  63 -------------------
- drivers/mtd/spi-nor/core.h      |   1 -
- drivers/mtd/spi-nor/micron-st.c |  24 --------
- drivers/mtd/spi-nor/sfdp.c      | 105 ++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/sfdp.h      |  29 +++++++++
- drivers/mtd/spi-nor/winbond.c   |  16 +++--
- 6 files changed, 144 insertions(+), 94 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index fe853532204c..2b26a8cef0c3 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -502,69 +502,6 @@ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
- 	return ret;
- }
- 
--/**
-- * spi_nor_set_4byte_addr_mode() - Enter/Exit 4-byte address mode.
-- * @nor:	pointer to 'struct spi_nor'.
-- * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-- *		address mode.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
--{
--	int ret;
--
--	if (nor->spimem) {
--		struct spi_mem_op op = SPI_NOR_EN4B_EX4B_OP(enable);
--
--		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--
--		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = spi_nor_controller_ops_write_reg(nor,
--						       enable ? SPINOR_OP_EN4B :
--								SPINOR_OP_EX4B,
--						       NULL, 0);
--	}
--
--	if (ret)
--		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
--
--	return ret;
--}
--
--/**
-- * spansion_set_4byte_addr_mode() - Set 4-byte address mode for Spansion
-- * flashes.
-- * @nor:	pointer to 'struct spi_nor'.
-- * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-- *		address mode.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
--{
--	int ret;
--
--	nor->bouncebuf[0] = enable << 7;
--
--	if (nor->spimem) {
--		struct spi_mem_op op = SPI_NOR_BRWR_OP(nor->bouncebuf);
--
--		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--
--		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_BRWR,
--						       nor->bouncebuf, 1);
--	}
--
--	if (ret)
--		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
--
--	return ret;
--}
--
- /**
-  * spi_nor_write_ear() - Write Extended Address Register.
-  * @nor:	pointer to 'struct spi_nor'.
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 8b7e597fd38c..c83d5e75c563 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -634,7 +634,6 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- 			     const enum spi_nor_protocol proto);
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
--int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
- int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
- int spi_nor_wait_till_ready(struct spi_nor *nor);
- int spi_nor_global_block_unlock(struct spi_nor *nor);
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 26b9a1c2309d..d2903c5b5b87 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -298,30 +298,6 @@ static const struct flash_info st_nor_parts[] = {
- 	{ "m25px80",    INFO(0x207114,  0, 64 * 1024, 16) },
- };
- 
--/**
-- * micron_st_nor_set_4byte_addr_mode() - Set 4-byte address mode for ST and
-- * Micron flashes.
-- * @nor:	pointer to 'struct spi_nor'.
-- * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-- *		address mode.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--static int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
--{
--	int ret;
--
--	ret = spi_nor_write_enable(nor);
--	if (ret)
--		return ret;
--
--	ret = spi_nor_set_4byte_addr_mode(nor, enable);
--	if (ret)
--		return ret;
--
--	return spi_nor_write_disable(nor);
--}
--
- /**
-  * micron_st_nor_read_fsr() - Read the Flag Status Register.
-  * @nor:	pointer to 'struct spi_nor'
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index a5211543d30d..2e40eba3744d 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -401,6 +401,93 @@ static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
- 	}
- }
- 
-+/**
-+ * spansion_set_4byte_addr_mode() - Set 4-byte address mode for Spansion
-+ * flashes.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-+ *		address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+
-+	nor->bouncebuf[0] = enable << 7;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op = SPI_NOR_BRWR_OP(nor->bouncebuf);
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_BRWR,
-+						       nor->bouncebuf, 1);
-+	}
-+
-+	if (ret)
-+		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-+
-+	return ret;
-+}
-+
-+/**
-+ * spi_nor_set_4byte_addr_mode() - Enter/Exit 4-byte address mode.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-+ *		address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op = SPI_NOR_EN4B_EX4B_OP(enable);
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		ret = spi_nor_controller_ops_write_reg(nor,
-+						       enable ? SPINOR_OP_EN4B :
-+								SPINOR_OP_EX4B,
-+						       NULL, 0);
-+	}
-+
-+	if (ret)
-+		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-+
-+	return ret;
-+}
-+
-+/**
-+ * micron_st_nor_set_4byte_addr_mode() - Set 4-byte address mode for ST and
-+ * Micron flashes.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-+ *		address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_set_4byte_addr_mode(nor, enable);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_write_disable(nor);
-+}
-+
- /**
-  * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -606,6 +693,24 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		break;
- 	}
- 
-+	switch (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_4B_ADDR_MODE_MASK) {
-+	case BFPT_DWORD16_4B_ADDR_MODE_BRWR:
-+		params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
-+		break;
-+
-+	case BFPT_DWORD16_4B_ADDR_MODE_WREN_EN4B_EX4B:
-+		params->set_4byte_addr_mode = micron_st_nor_set_4byte_addr_mode;
-+		break;
-+
-+	case BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B:
-+		params->set_4byte_addr_mode = spi_nor_set_4byte_addr_mode;
-+		break;
-+
-+	default:
-+		dev_dbg(nor->dev, "BFPT: 4-Byte Address Mode method is not recognized or not implemented\n");
-+		break;
-+	}
-+
- 	/* Soft Reset support. */
- 	if (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_SWRST_EN_RST)
- 		nor->flags |= SNOR_F_SOFT_RESET;
-diff --git a/drivers/mtd/spi-nor/sfdp.h b/drivers/mtd/spi-nor/sfdp.h
-index bbf80d2990ab..3a3744da78ba 100644
---- a/drivers/mtd/spi-nor/sfdp.h
-+++ b/drivers/mtd/spi-nor/sfdp.h
-@@ -90,6 +90,32 @@ struct sfdp_bfpt {
- #define BFPT_DWORD15_QER_SR2_BIT1_NO_RD		(0x4UL << 20)
- #define BFPT_DWORD15_QER_SR2_BIT1		(0x5UL << 20) /* Spansion */
- 
-+#define BFPT_DWORD16_EN4B_MASK			GENMASK(31, 24)
-+#define BFPT_DWORD16_EN4B_ALWAYS_4B		BIT(30)
-+#define BFPT_DWORD16_EN4B_4B_OPCODES		BIT(29)
-+#define BFPT_DWORD16_EN4B_16BIT_NV_CR		BIT(28)
-+#define BFPT_DWORD16_EN4B_BRWR			BIT(27)
-+#define BFPT_DWORD16_EN4B_WREAR			BIT(26)
-+#define BFPT_DWORD16_EN4B_WREN_EN4B		BIT(25)
-+#define BFPT_DWORD16_EN4B_EN4B			BIT(24)
-+#define BFPT_DWORD16_EX4B_MASK			GENMASK(18, 14)
-+#define BFPT_DWORD16_EX4B_16BIT_NV_CR		BIT(18)
-+#define BFPT_DWORD16_EX4B_BRWR			BIT(17)
-+#define BFPT_DWORD16_EX4B_WREAR			BIT(16)
-+#define BFPT_DWORD16_EX4B_WREN_EX4B		BIT(15)
-+#define BFPT_DWORD16_EX4B_EX4B			BIT(14)
-+#define BFPT_DWORD16_4B_ADDR_MODE_MASK			\
-+	(BFPT_DWORD16_EN4B_MASK | BFPT_DWORD16_EX4B_MASK)
-+#define BFPT_DWORD16_4B_ADDR_MODE_16BIT_NV_CR		\
-+	(BFPT_DWORD16_EN4B_16BIT_NV_CR | BFPT_DWORD16_EX4B_16BIT_NV_CR)
-+#define BFPT_DWORD16_4B_ADDR_MODE_BRWR			\
-+	(BFPT_DWORD16_EN4B_BRWR | BFPT_DWORD16_EX4B_BRWR)
-+#define BFPT_DWORD16_4B_ADDR_MODE_WREAR			\
-+	(BFPT_DWORD16_EN4B_WREAR | BFPT_DWORD16_EX4B_WREAR)
-+#define BFPT_DWORD16_4B_ADDR_MODE_WREN_EN4B_EX4B	\
-+	(BFPT_DWORD16_EN4B_WREN_EN4B | BFPT_DWORD16_EX4B_WREN_EX4B)
-+#define BFPT_DWORD16_4B_ADDR_MODE_EN4B_EX4B		\
-+	(BFPT_DWORD16_EN4B_EN4B | BFPT_DWORD16_EX4B_EX4B)
- #define BFPT_DWORD16_SWRST_EN_RST		BIT(12)
- 
- #define BFPT_DWORD18_CMD_EXT_MASK		GENMASK(30, 29)
-@@ -107,6 +133,9 @@ struct sfdp_parameter_header {
- 	u8		id_msb;
- };
- 
-+int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-+int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-+int micron_st_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
- int spi_nor_parse_sfdp(struct spi_nor *nor);
- 
- #endif /* __LINUX_MTD_SFDP_H */
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index fe80dffc2e70..374ba82bff49 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -170,19 +170,23 @@ static const struct spi_nor_otp_ops winbond_nor_otp_ops = {
- 	.is_locked = spi_nor_otp_is_locked_sr2,
- };
- 
--static void winbond_nor_default_init(struct spi_nor *nor)
--{
--	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
--}
--
- static void winbond_nor_late_init(struct spi_nor *nor)
- {
- 	if (nor->params->otp.org->n_regions)
- 		nor->params->otp.ops = &winbond_nor_otp_ops;
-+
-+	/*
-+	 * Winbond seems to require that the Extended Address Register to be set
-+	 * to zero when exiting the 4-Byte Address Mode, at least for W25Q256FV.
-+	 * This requirement is not described in the JESD216 SFDP standard, thus
-+	 * it is Winbond specific. Since we do not know if other Winbond flashes
-+	 * have the same requirement, play safe and overwrite the method parsed
-+	 * from BFPT, if any.
-+	 */
-+	nor->params->set_4byte_addr_mode = winbond_nor_set_4byte_addr_mode;
- }
- 
- static const struct spi_nor_fixups winbond_nor_fixups = {
--	.default_init = winbond_nor_default_init,
- 	.late_init = winbond_nor_late_init,
- };
- 
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QkZQVCBkZWZpbmVzIHNvbWUgc3RhbmRhcmQgbWV0aG9kcyB0byBlbnRlciBhbmQgZXhpdCB0aGUg
+NC1CeXRlIEFkZHJlc3MKTW9kZS4gVXNlIGdlbmVyaWMgbmFtZXMgZm9yIHRoZXNlIG1ldGhvZHMg
+YW5kIHVwZGF0ZSB0aGVpciBkZXNjcmlwdGlvbi4KClNpZ25lZC1vZmYtYnk6IFR1ZG9yIEFtYmFy
+dXMgPHR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbT4KUmV2aWV3ZWQtYnk6IFByYXR5dXNoIFlh
+ZGF2IDxwLnlhZGF2QHRpLmNvbT4KLS0tCnYzOiBubyBjaGFuZ2VzCgogZHJpdmVycy9tdGQvc3Bp
+LW5vci9jb3JlLmMgICAgICB8ICAyICstCiBkcml2ZXJzL210ZC9zcGktbm9yL21hY3Jvbml4LmMg
+IHwgIDMgKystCiBkcml2ZXJzL210ZC9zcGktbm9yL21pY3Jvbi1zdC5jIHwgIDMgKystCiBkcml2
+ZXJzL210ZC9zcGktbm9yL3NmZHAuYyAgICAgIHwgMzIgKysrKysrKysrKysrKysrKysrKystLS0t
+LS0tLS0tLS0KIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc2ZkcC5oICAgICAgfCAgNyArKysrLS0tCiBk
+cml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYyAgIHwgIDIgKy0KIDYgZmlsZXMgY2hhbmdlZCwg
+MzAgaW5zZXJ0aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvc3BpLW5vci9jb3JlLmMgYi9kcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYwppbmRleCAyYjI2
+YThjZWYwYzMuLjRkNDVjZGE0ZjlkMyAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9j
+b3JlLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmMKQEAgLTI0OTAsNyArMjQ5MCw3
+IEBAIHN0YXRpYyB2b2lkIHNwaV9ub3JfaW5pdF9kZWZhdWx0X3BhcmFtcyhzdHJ1Y3Qgc3BpX25v
+ciAqbm9yKQogCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBzcGlfbm9yX2dldF9mbGFzaF9ub2Rl
+KG5vcik7CiAKIAlwYXJhbXMtPnF1YWRfZW5hYmxlID0gc3BpX25vcl9zcjJfYml0MV9xdWFkX2Vu
+YWJsZTsKLQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPSBzcGFuc2lvbl9zZXRfNGJ5dGVf
+YWRkcl9tb2RlOworCXBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9kZSA9IHNwaV9ub3Jfc2V0XzRi
+eXRlX2FkZHJfbW9kZV9icndyOwogCXBhcmFtcy0+b3RwLm9yZyA9ICZpbmZvLT5vdHBfb3JnOwog
+CiAJLyogRGVmYXVsdCB0byAxNi1iaXQgV3JpdGUgU3RhdHVzICgwMWgpIENvbW1hbmQgKi8KZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWFjcm9uaXguYyBiL2RyaXZlcnMvbXRkL3Nw
+aS1ub3IvbWFjcm9uaXguYwppbmRleCBkODFhNGNiMjgxMmIuLjg1ZTg2NTVkMzYyYyAxMDA2NDQK
+LS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9tYWNyb25peC5jCisrKyBiL2RyaXZlcnMvbXRkL3Nw
+aS1ub3IvbWFjcm9uaXguYwpAQCAtMTA1LDcgKzEwNSw4IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+Zmxhc2hfaW5mbyBtYWNyb25peF9ub3JfcGFydHNbXSA9IHsKIHN0YXRpYyB2b2lkIG1hY3Jvbml4
+X25vcl9kZWZhdWx0X2luaXQoc3RydWN0IHNwaV9ub3IgKm5vcikKIHsKIAlub3ItPnBhcmFtcy0+
+cXVhZF9lbmFibGUgPSBzcGlfbm9yX3NyMV9iaXQ2X3F1YWRfZW5hYmxlOwotCW5vci0+cGFyYW1z
+LT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCW5v
+ci0+cGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0KKwkJc3BpX25vcl9zZXRfNGJ5dGVfYWRk
+cl9tb2RlX2VuNGJfZXg0YjsKIH0KIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfbm9yX2ZpeHVw
+cyBtYWNyb25peF9ub3JfZml4dXBzID0gewpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5v
+ci9taWNyb24tc3QuYyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvbWljcm9uLXN0LmMKaW5kZXggZDI5
+MDNjNWI1Yjg3Li4yZDFjYmIxZjM3YzggMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
+bWljcm9uLXN0LmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9taWNyb24tc3QuYwpAQCAtNDE0
+LDcgKzQxNCw4IEBAIHN0YXRpYyB2b2lkIG1pY3Jvbl9zdF9ub3JfZGVmYXVsdF9pbml0KHN0cnVj
+dCBzcGlfbm9yICpub3IpCiAJbm9yLT5mbGFncyB8PSBTTk9SX0ZfSEFTX0xPQ0s7CiAJbm9yLT5m
+bGFncyAmPSB+U05PUl9GX0hBU18xNkJJVF9TUjsKIAlub3ItPnBhcmFtcy0+cXVhZF9lbmFibGUg
+PSBOVUxMOwotCW5vci0+cGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2RlID0gbWljcm9uX3N0X25v
+cl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCW5vci0+cGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2Rl
+ID0KKwkJc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX3dyZW5fZW40Yl9leDRiOwogfQogCiBz
+dGF0aWMgdm9pZCBtaWNyb25fc3Rfbm9yX2xhdGVfaW5pdChzdHJ1Y3Qgc3BpX25vciAqbm9yKQpk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMgYi9kcml2ZXJzL210ZC9zcGkt
+bm9yL3NmZHAuYwppbmRleCAyZTQwZWJhMzc0NGQuLmM1ZGQ3OWVmNzVjOCAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmMKKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRw
+LmMKQEAgLTQwMiwxNSArNDAyLDIwIEBAIHN0YXRpYyB2b2lkIHNwaV9ub3JfcmVnaW9uc19zb3J0
+X2VyYXNlX3R5cGVzKHN0cnVjdCBzcGlfbm9yX2VyYXNlX21hcCAqbWFwKQogfQogCiAvKioKLSAq
+IHNwYW5zaW9uX3NldF80Ynl0ZV9hZGRyX21vZGUoKSAtIFNldCA0LWJ5dGUgYWRkcmVzcyBtb2Rl
+IGZvciBTcGFuc2lvbgotICogZmxhc2hlcy4KKyAqIHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9k
+ZV9icndyKCkgLSBTZXQgNC1ieXRlIGFkZHJlc3MgbW9kZSB1c2luZworICogU1BJTk9SX09QX0JS
+V1IuCiAgKiBAbm9yOglwb2ludGVyIHRvICdzdHJ1Y3Qgc3BpX25vcicuCiAgKiBAZW5hYmxlOgl0
+cnVlIHRvIGVudGVyIHRoZSA0LWJ5dGUgYWRkcmVzcyBtb2RlLCBmYWxzZSB0byBleGl0IHRoZSA0
+LWJ5dGUKICAqCQlhZGRyZXNzIG1vZGUuCiAgKgorICogOC1iaXQgdm9sYXRpbGUgYmFuayByZWdp
+c3RlciB1c2VkIHRvIGRlZmluZSBBWzMwOkEyNF0gYml0cy4gTVNCIChiaXRbN10pIGlzCisgKiB1
+c2VkIHRvIGVuYWJsZS9kaXNhYmxlIDQtYnl0ZSBhZGRyZXNzIG1vZGUuIFdoZW4gTVNCIGlzIHNl
+dCB0byDigJgx4oCZLCA0LWJ5dGUKKyAqIGFkZHJlc3MgbW9kZSBpcyBhY3RpdmUgYW5kIEFbMzA6
+MjRdIGJpdHMgYXJlIGRvbuKAmXQgY2FyZS4gV3JpdGUgaW5zdHJ1Y3Rpb24gaXMKKyAqIFNQSU5P
+Ul9PUF9CUldSKDE3aCkgd2l0aCAxIGJ5dGUgb2YgZGF0YS4KKyAqCiAgKiBSZXR1cm46IDAgb24g
+c3VjY2VzcywgLWVycm5vIG90aGVyd2lzZS4KICAqLwotaW50IHNwYW5zaW9uX3NldF80Ynl0ZV9h
+ZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCitpbnQgc3BpX25vcl9z
+ZXRfNGJ5dGVfYWRkcl9tb2RlX2Jyd3Ioc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUp
+CiB7CiAJaW50IHJldDsKIApAQCAtNDM0LDE0ICs0MzksMTUgQEAgaW50IHNwYW5zaW9uX3NldF80
+Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpCiB9CiAKIC8q
+KgotICogc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKCkgLSBFbnRlci9FeGl0IDQtYnl0ZSBh
+ZGRyZXNzIG1vZGUuCisgKiBzcGlfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiKCkg
+LSBFbnRlci9FeGl0IDQtYnl0ZSBhZGRyZXNzIG1vZGUKKyAqIHVzaW5nIFNQSU5PUl9PUF9FTjRC
+L1NQSU5PUl9PUF9FWDRCLgogICogQG5vcjoJcG9pbnRlciB0byAnc3RydWN0IHNwaV9ub3InLgog
+ICogQGVuYWJsZToJdHJ1ZSB0byBlbnRlciB0aGUgNC1ieXRlIGFkZHJlc3MgbW9kZSwgZmFsc2Ug
+dG8gZXhpdCB0aGUgNC1ieXRlCiAgKgkJYWRkcmVzcyBtb2RlLgogICoKICAqIFJldHVybjogMCBv
+biBzdWNjZXNzLCAtZXJybm8gb3RoZXJ3aXNlLgogICovCi1pbnQgc3BpX25vcl9zZXRfNGJ5dGVf
+YWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKQoraW50IHNwaV9ub3Jf
+c2V0XzRieXRlX2FkZHJfbW9kZV9lbjRiX2V4NGIoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBl
+bmFibGUpCiB7CiAJaW50IHJldDsKIApAQCAtNDY1LDE1ICs0NzEsMTUgQEAgaW50IHNwaV9ub3Jf
+c2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAqbm9yLCBib29sIGVuYWJsZSkKIH0K
+IAogLyoqCi0gKiBtaWNyb25fc3Rfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoKSAtIFNldCA0LWJ5
+dGUgYWRkcmVzcyBtb2RlIGZvciBTVCBhbmQKLSAqIE1pY3JvbiBmbGFzaGVzLgorICogc3BpX25v
+cl9zZXRfNGJ5dGVfYWRkcl9tb2RlX3dyZW5fZW40Yl9leDRiKCkgLSBTZXQgNC1ieXRlIGFkZHJl
+c3MgbW9kZSB1c2luZ2YKKyAqIFNQSU5PUl9PUF9XUkVOIGZvbGxvd2VkIGJ5IFNQSU5PUl9PUF9F
+TjRCIG9yIFNQSU5PUl9PUF9FWDRCLgogICogQG5vcjoJcG9pbnRlciB0byAnc3RydWN0IHNwaV9u
+b3InLgogICogQGVuYWJsZToJdHJ1ZSB0byBlbnRlciB0aGUgNC1ieXRlIGFkZHJlc3MgbW9kZSwg
+ZmFsc2UgdG8gZXhpdCB0aGUgNC1ieXRlCiAgKgkJYWRkcmVzcyBtb2RlLgogICoKICAqIFJldHVy
+bjogMCBvbiBzdWNjZXNzLCAtZXJybm8gb3RoZXJ3aXNlLgogICovCi1pbnQgbWljcm9uX3N0X25v
+cl9zZXRfNGJ5dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKQor
+aW50IHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZV93cmVuX2VuNGJfZXg0YihzdHJ1Y3Qgc3Bp
+X25vciAqbm9yLCBib29sIGVuYWJsZSkKIHsKIAlpbnQgcmV0OwogCkBAIC00ODEsNyArNDg3LDcg
+QEAgaW50IG1pY3Jvbl9zdF9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAq
+bm9yLCBib29sIGVuYWJsZSkKIAlpZiAocmV0KQogCQlyZXR1cm4gcmV0OwogCi0JcmV0ID0gc3Bp
+X25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlKG5vciwgZW5hYmxlKTsKKwlyZXQgPSBzcGlfbm9yX3Nl
+dF80Ynl0ZV9hZGRyX21vZGVfZW40Yl9leDRiKG5vciwgZW5hYmxlKTsKIAlpZiAocmV0KQogCQly
+ZXR1cm4gcmV0OwogCkBAIC02OTUsMTUgKzcwMSwxNyBAQCBzdGF0aWMgaW50IHNwaV9ub3JfcGFy
+c2VfYmZwdChzdHJ1Y3Qgc3BpX25vciAqbm9yLAogCiAJc3dpdGNoIChiZnB0LmR3b3Jkc1tCRlBU
+X0RXT1JEKDE2KV0gJiBCRlBUX0RXT1JEMTZfNEJfQUREUl9NT0RFX01BU0spIHsKIAljYXNlIEJG
+UFRfRFdPUkQxNl80Ql9BRERSX01PREVfQlJXUjoKLQkJcGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9t
+b2RlID0gc3BhbnNpb25fc2V0XzRieXRlX2FkZHJfbW9kZTsKKwkJcGFyYW1zLT5zZXRfNGJ5dGVf
+YWRkcl9tb2RlID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2Jyd3I7CiAJCWJyZWFrOwog
+CiAJY2FzZSBCRlBUX0RXT1JEMTZfNEJfQUREUl9NT0RFX1dSRU5fRU40Ql9FWDRCOgotCQlwYXJh
+bXMtPnNldF80Ynl0ZV9hZGRyX21vZGUgPSBtaWNyb25fc3Rfbm9yX3NldF80Ynl0ZV9hZGRyX21v
+ZGU7CisJCXBhcmFtcy0+c2V0XzRieXRlX2FkZHJfbW9kZSA9CisJCQlzcGlfbm9yX3NldF80Ynl0
+ZV9hZGRyX21vZGVfd3Jlbl9lbjRiX2V4NGI7CiAJCWJyZWFrOwogCiAJY2FzZSBCRlBUX0RXT1JE
+MTZfNEJfQUREUl9NT0RFX0VONEJfRVg0QjoKLQkJcGFyYW1zLT5zZXRfNGJ5dGVfYWRkcl9tb2Rl
+ID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlOworCQlwYXJhbXMtPnNldF80Ynl0ZV9hZGRy
+X21vZGUgPQorCQkJc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2VuNGJfZXg0YjsKIAkJYnJl
+YWs7CiAKIAlkZWZhdWx0OgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmgg
+Yi9kcml2ZXJzL210ZC9zcGktbm9yL3NmZHAuaAppbmRleCAzYTM3NDRkYTc4YmEuLjk2MDY2MTA1
+NjllMCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9zZmRwLmgKKysrIGIvZHJpdmVy
+cy9tdGQvc3BpLW5vci9zZmRwLmgKQEAgLTEzMyw5ICsxMzMsMTAgQEAgc3RydWN0IHNmZHBfcGFy
+YW1ldGVyX2hlYWRlciB7CiAJdTgJCWlkX21zYjsKIH07CiAKLWludCBzcGFuc2lvbl9zZXRfNGJ5
+dGVfYWRkcl9tb2RlKHN0cnVjdCBzcGlfbm9yICpub3IsIGJvb2wgZW5hYmxlKTsKLWludCBzcGlf
+bm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUp
+OwotaW50IG1pY3Jvbl9zdF9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZShzdHJ1Y3Qgc3BpX25vciAq
+bm9yLCBib29sIGVuYWJsZSk7CitpbnQgc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2Jyd3Io
+c3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpOworaW50IHNwaV9ub3Jfc2V0XzRieXRl
+X2FkZHJfbW9kZV9lbjRiX2V4NGIoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFibGUpOwor
+aW50IHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZV93cmVuX2VuNGJfZXg0YihzdHJ1Y3Qgc3Bp
+X25vciAqbm9yLAorCQkJCQkgICAgICAgYm9vbCBlbmFibGUpOwogaW50IHNwaV9ub3JfcGFyc2Vf
+c2ZkcChzdHJ1Y3Qgc3BpX25vciAqbm9yKTsKIAogI2VuZGlmIC8qIF9fTElOVVhfTVREX1NGRFBf
+SCAqLwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMgYi9kcml2ZXJz
+L210ZC9zcGktbm9yL3dpbmJvbmQuYwppbmRleCAzNzRiYTgyYmZmNDkuLjU5MGU0ZDJjOTlkNyAx
+MDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci93aW5ib25kLmMKKysrIGIvZHJpdmVycy9t
+dGQvc3BpLW5vci93aW5ib25kLmMKQEAgLTE0Miw3ICsxNDIsNyBAQCBzdGF0aWMgaW50IHdpbmJv
+bmRfbm9yX3NldF80Ynl0ZV9hZGRyX21vZGUoc3RydWN0IHNwaV9ub3IgKm5vciwgYm9vbCBlbmFi
+bGUpCiB7CiAJaW50IHJldDsKIAotCXJldCA9IHNwaV9ub3Jfc2V0XzRieXRlX2FkZHJfbW9kZShu
+b3IsIGVuYWJsZSk7CisJcmV0ID0gc3BpX25vcl9zZXRfNGJ5dGVfYWRkcl9tb2RlX2VuNGJfZXg0
+Yihub3IsIGVuYWJsZSk7CiAJaWYgKHJldCB8fCBlbmFibGUpCiAJCXJldHVybiByZXQ7CiAKLS0g
+CjIuMjUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
