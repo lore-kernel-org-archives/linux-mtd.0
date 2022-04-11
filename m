@@ -4,86 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82E72C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 10:34:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45454C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Apr 2022 11:24:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OFXad9dmuyyoEkYMemn9e1BrVTY9AzxUk3jF0Dtz06w=; b=Hu3cwVlE/pNGh/
-	T9XA6AFPrNaL53ZocbTNVzCatQox7TagsByjWsVncCs/8zLaen7qzCycKrGQ5hX0gbvGbWTtSWALF
-	Esv1Neoka9TW5WYzEiRzcYhcdmMhkhXegV5VkF0STxe+Wbd7MsC9YHMYyjqfTd7FaX9+KEkGHXv2n
-	7XhE2tfDsy73Hk2/oXr7aGPHjTpnkR+bJ1X+7t5Az8AvVa3cENwvw9Qbeu5wbERP60AyLxj2WO4uN
-	UnYrhobkD6uqV43Syx+FBueGEMT0P5WtQoOKtYs3iHrRruNi4pRzXM7rejdA/ijEpGt5HKn2zjjAc
-	8fxieaGRd6nMPC7R41QA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Ts1INYemaPjVvj0nDXKW+wjE7UpwatyU04L919yOUTo=; b=KkTDpd88A5s1UB
+	Rx0hgY8u4hQjHHcguxf4eEOVsbAHkItc8erRS+dygXpI5IClTwLHw/PTlbqROLnInS42vgNiRRTVZ
+	rzFCOVxlycinDfLZVLUHnnxTcdFCMNEIV51N1Gf0/Ut1BzCI4eeck81Dwn/soyNh0jf4v4vj0oGkC
+	pxtMVh9h9L7++5VK3dxyKiDG4687ldr04FvEWLKCpNyEJ9izkgHf7F3+6JWdUOcGTvLVP+9LJBR3p
+	3POSHX9FQEyBLPqmiXaiMKBeq66h6To7ntIzAKqHRDfgCE2HgBD2E+dw7kX+JeX/t5LoSOf+9e1Iy
+	Admi6g11ndbEaFH1ssCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ndrMm-008NO5-3K; Mon, 11 Apr 2022 10:33:52 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1nds8l-008efk-S7; Mon, 11 Apr 2022 11:23:28 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ndr7b-008Fba-NH
- for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 10:18:18 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id
- h126-20020a1c2184000000b0038eb17fb7d6so3163773wmh.2
- for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2022 03:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=BphwVBJjBpMqmQLv0M0byMqAM4KgSCASp8z4utuZbwA=;
- b=prJsemH7plzs4ZQ+OhsYhu3hT7608gElhw5ZhxOppzBLIPiUA/FHeCJ9bMNPT828kA
- HO2w1JR08WeCaWzfqHGhUwDdHfm6oVVNy53yh81nwhWALEgljzC6TBFyBpRePN4IOoNT
- CKFIRKZyBP+Y7RzqTLEZrsBH+UxwB7ISprZJjbNjTnCZdu1KPOw07grHfREEM41U5M6R
- aKm7rUxlUyuFkG1dSXHr98G0caTRvffUNR2w2eREwzqKMzGt0Lr9LW8oeAvL0FInGvz2
- wTJEBzjSFw7Dfex71IJ1c7D9m5hgY/Y80YPwVLoaoch5EAbDoM9yDM8ZutnTVg5eQt/V
- n7rQ==
+ id 1nds75-008deC-Og
+ for linux-mtd@lists.infradead.org; Mon, 11 Apr 2022 11:21:45 +0000
+Received: by mail-pf1-x435.google.com with SMTP id p8so14312389pfh.8
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2022 04:21:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ct0KPIwIFBFQvI2RK89Mz30dFbD3GIANQnxanM+V5Hk=;
+ b=pIsrbL6usz31jkne7q1tPeu0ne1pxxjoT9uAJd0h3YObyCn1tzb/VLB/xZdUVld6lS
+ nNppWDpT6aGeR9pBBW8TIQgIbbS61uE0mv5TMr3iN7jRsITnU0mkdH9BIz8Ty+wjFg6y
+ x8syGq/uRIQ4F/KNpRE4sOwmu7HvaNg+Jb/ZEJNCQTiRc1a6IVDotCUiutJnP2kiVnuc
+ 7VFRyA862wDCxEU5N21FTg3TwaeC6Oynh/oJrndTiubYW/l0WIizvOYjqtZQTblopDU9
+ do18EQGK8mjffeEdwBfZX/W8l0g4aE9zgrQ8LSTs9qN2BjDBsYSC3nzqBb7HrbnB46NE
+ I04w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=BphwVBJjBpMqmQLv0M0byMqAM4KgSCASp8z4utuZbwA=;
- b=eXja2V8x1qP9QZgUPgdbsVsgl/3smt5O+bfEVW4TKv4a8H4DTLFwXCSG5aZrHHSh4h
- /rxuMNg7JGZhqOEhvBRA45+EsLJu63nkgwTRjzkGQIBEwa0aGeI7k8HE+Uouu3rrynpc
- BvstIhweAwBdgb3UNAxE+Vt0E5FOYFud6t9Wiy52wLnzUYQdwsVhZxGqNDoQ+xSPoz9X
- WmlXe398UChpmGPIw92nA6LYlhJs/Ds0PAOtjegWQl5FatnHgdD1uravCbAWtYBeJbP8
- q9QshGd8u3CndnyOdC/J808/+c2lvWKy4DM7fAbVYNlP53FwHXsu5O2v4LMOPqrC7fpA
- rHaw==
-X-Gm-Message-State: AOAM531C90mZ6fccS1Y5qaBae+t6jjSPUWRgL+UU3x1a2mXumo1vljxJ
- EE6wUu1yaQl6604TNqSG1UKWSg==
-X-Google-Smtp-Source: ABdhPJzLlIIfsP2MNbFjOiMDPDX20Kmp7YVg8hJTZYwtZDw7RHhIvSOtAcSltl2it9wRa9TqtX2bAA==
-X-Received: by 2002:a05:600c:2258:b0:38e:bbdc:426 with SMTP id
- a24-20020a05600c225800b0038ebbdc0426mr3669276wmm.184.1649672288935; 
- Mon, 11 Apr 2022 03:18:08 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.googlemail.com with ESMTPSA id
- l3-20020a05600002a300b00207902922cesm9662617wry.15.2022.04.11.03.18.07
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 11 Apr 2022 03:18:08 -0700 (PDT)
-Message-ID: <5c423482-03ee-ab05-b7fa-abac9b37ebb2@linaro.org>
-Date: Mon, 11 Apr 2022 11:18:07 +0100
+ bh=ct0KPIwIFBFQvI2RK89Mz30dFbD3GIANQnxanM+V5Hk=;
+ b=K4EAv78G5cYhvreswv0fkbwVHU23q94KG6v1mTDW4CDrO7xT8RoaYWk+hhChJC8dUQ
+ 5ad86OrgDjV711Tcer6UwMG0x0aA1jz3s3di6+/UQ47zM8o+48KS5+D4CRmrhBe7Q4RL
+ wCWJnQVzRSSJnn2faN6UZAcpscJMDSO1FJCOsMFTeQ1woyH9OnwbQ9b2V3oYLUmQYV6M
+ dC8cONwndfVG0zBH/V6psGFMr0k5JlWws7cjhyVFzaIfLjzaIb9HyZGLsRNJF9tSvenY
+ /PwkNdyTvfcGfrubq4b+0SmBM9Ks4xZqUBZcF5+nbkxnk4f5tAo2j+dcMWqLEfZAI/nu
+ NhFg==
+X-Gm-Message-State: AOAM531szyOhrNfcztcuvDXMS2xWLXKlEp1VOhFHMwOfjLWuVqZoyaTH
+ ohEH9wNm9HQuL2+rRjxRYA==
+X-Google-Smtp-Source: ABdhPJzBOeLgMjpOYtSe2jCq3H+Z3APHHfpZ1ubpgpgwVcb/nNz6K1twzSPaimOwZoj9jFdHzg7vNg==
+X-Received: by 2002:a63:5f42:0:b0:39d:4f86:2f59 with SMTP id
+ t63-20020a635f42000000b0039d4f862f59mr4132369pgb.181.1649676102588; 
+ Mon, 11 Apr 2022 04:21:42 -0700 (PDT)
+Received: from localhost.localdomain ([144.202.91.207])
+ by smtp.gmail.com with ESMTPSA id
+ y3-20020a63de43000000b0039d1172b90fsm7365844pgi.76.2022.04.11.04.21.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 11 Apr 2022 04:21:42 -0700 (PDT)
+From: Zheyu Ma <zheyuma97@gmail.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH] mtd: rawnand: Use managed device resources
+Date: Mon, 11 Apr 2022 19:21:24 +0800
+Message-Id: <20220411112124.3700126-1-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH 2/2] nvmem: add driver handling U-Boot environment
- variables
-Content-Language: en-US
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Tom Rini <trini@konsulko.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- u-boot@lists.denx.de, devicetree@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20220406143225.28107-1-zajec5@gmail.com>
- <20220406143225.28107-2-zajec5@gmail.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220406143225.28107-2-zajec5@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_031811_851288_F4BEA785 
-X-CRM114-Status: GOOD (  14.12  )
+X-CRM114-CacheID: sfid-20220411_042143_861098_F487B3C0 
+X-CRM114-Status: GOOD (  12.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,27 +84,93 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAwNi8wNC8yMDIyIDE1OjMyLCBSYWZhxYIgTWnFgmVja2kgd3JvdGU6Cj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbnZtZW0vS2NvbmZpZyBiL2RyaXZlcnMvbnZtZW0vS2NvbmZpZwo+IGluZGV4
-IDU1NWFhNzdhNTc0ZC4uMTdhNzhiMWJhMDc3IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbnZtZW0v
-S2NvbmZpZwo+ICsrKyBiL2RyaXZlcnMvbnZtZW0vS2NvbmZpZwo+IEBAIC0zMjQsNCArMzI0LDE2
-IEBAIGNvbmZpZyBOVk1FTV9TVU5QTFVTX09DT1RQCj4gICAJICBUaGlzIGRyaXZlciBjYW4gYWxz
-byBiZSBidWlsdCBhcyBhIG1vZHVsZS4gSWYgc28sIHRoZSBtb2R1bGUKPiAgIAkgIHdpbGwgYmUg
-Y2FsbGVkIG52bWVtLXN1bnBsdXMtb2NvdHAuCj4gICAKPiArY29uZmlnIE5WTUVNX1VfQk9PVF9F
-TlYKPiArCXRyaXN0YXRlICJVLUJvb3QgZW52aXJvbm1lbnQgdmFyaWFibGVzIHN1cHBvcnQiCj4g
-KwlkZXBlbmRzIG9uIEFSQ0hfQkNNNDkwOCB8fCBDT01QSUxFX1RFU1QKClRoaXMgbnZtZW0gcHJv
-dmlkZXIgc2VlbXMgbW9yZSBnZW5lcmljLCBzbyB3aHkgQVJDSF9CQ000OTA4IGRlcGVuZGVuY3kg
-aGVyZT8KCgotLXNyaW5pCj4gKwlkZXBlbmRzIG9uIE9GICYmIE1URAo+ICsJc2VsZWN0IENSQzMy
-Cj4gKwloZWxwCj4gKwkgIFUtQm9vdCBzdG9yZXMgaXRzIHNldHVwIGFzIGVudmlyb25tZW50IHZh
-cmlhYmxlcy4gVGhpcyBkcml2ZXIgYWRkcwo+ICsJICBzdXBwb3J0IGZvciB2ZXJpZnlpbmcgJiBl
-eHBvcnRpbmcgc3VjaCBkYXRhLiBJdCBhbHNvIGV4cG9zZXMgdmFyaWFibGVzCj4gKwkgIGFzIE5W
-TUVNIGNlbGxzIHNvIHRoZXkgY2FuIGJlIHJlZmVyZW5jZWQgYnkgb3RoZXIgZHJpdmVycy4KPiAr
-Cj4gKwkgIElmIGNvbXBpbGVkIGFzIG1vZHVsZSBpdCB3aWxsIGJlIGNhbGxlZCBudm1lbV91LWJv
-b3QtZW52Lgo+ICsKPiAgIGVuZGlmCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+All of the resources used by this driver has managed interfaces, so use
+them. Otherwise we will get the following splat:
+
+[    4.472703] denali-nand-pci 0000:00:05.0: timeout while waiting for irq 0x1000
+[    4.474071] denali-nand-pci: probe of 0000:00:05.0 failed with error -5
+[    4.473538] nand: No NAND device found
+[    4.474068] BUG: unable to handle page fault for address: ffffc90005000410
+[    4.475169] #PF: supervisor write access in kernel mode
+[    4.475579] #PF: error_code(0x0002) - not-present page
+[    4.478362] RIP: 0010:iowrite32+0x9/0x50
+[    4.486068] Call Trace:
+[    4.486269]  <IRQ>
+[    4.486443]  denali_isr+0x15b/0x300 [denali]
+[    4.486788]  ? denali_direct_write+0x50/0x50 [denali]
+[    4.487189]  __handle_irq_event_percpu+0x161/0x3b0
+[    4.487571]  handle_irq_event+0x7d/0x1b0
+[    4.487884]  handle_fasteoi_irq+0x2b0/0x770
+[    4.488219]  __common_interrupt+0xc8/0x1b0
+[    4.488549]  common_interrupt+0x9a/0xc0
+
+Fixes: 93db446a424c ("mtd: nand: move raw NAND related code to the raw/ subdir")
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ drivers/mtd/nand/raw/denali_pci.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali_pci.c b/drivers/mtd/nand/raw/denali_pci.c
+index 20c085a30adc..de7e722d3826 100644
+--- a/drivers/mtd/nand/raw/denali_pci.c
++++ b/drivers/mtd/nand/raw/denali_pci.c
+@@ -74,22 +74,21 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 		return ret;
+ 	}
+ 
+-	denali->reg = ioremap(csr_base, csr_len);
++	denali->reg = devm_ioremap(denali->dev, csr_base, csr_len);
+ 	if (!denali->reg) {
+ 		dev_err(&dev->dev, "Spectra: Unable to remap memory region\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	denali->host = ioremap(mem_base, mem_len);
++	denali->host = devm_ioremap(denali->dev, mem_base, mem_len);
+ 	if (!denali->host) {
+ 		dev_err(&dev->dev, "Spectra: ioremap failed!");
+-		ret = -ENOMEM;
+-		goto out_unmap_reg;
++		return -ENOMEM;
+ 	}
+ 
+ 	ret = denali_init(denali);
+ 	if (ret)
+-		goto out_unmap_host;
++		return ret;
+ 
+ 	nsels = denali->nbanks;
+ 
+@@ -117,10 +116,6 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 
+ out_remove_denali:
+ 	denali_remove(denali);
+-out_unmap_host:
+-	iounmap(denali->host);
+-out_unmap_reg:
+-	iounmap(denali->reg);
+ 	return ret;
+ }
+ 
+@@ -129,8 +124,6 @@ static void denali_pci_remove(struct pci_dev *dev)
+ 	struct denali_controller *denali = pci_get_drvdata(dev);
+ 
+ 	denali_remove(denali);
+-	iounmap(denali->reg);
+-	iounmap(denali->host);
+ }
+ 
+ static struct pci_driver denali_pci_driver = {
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
