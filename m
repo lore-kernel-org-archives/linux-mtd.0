@@ -4,75 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8CCEC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 05:03:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED1DC4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 06:37:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x7vFDF9pGK9cOTNOSGzQLz/RvEovozy+APzNfP4yV8U=; b=JkrdQh/D59K2yQ
-	DcOuEA2RXx7e9n8Bdef1lKf4kUwIOBkqXgofA3Dc1sN7aKz2f0BMYEfkMDSo3eUWzWgOziFIZstU5
-	BxFz9SbkrLNvnWAbhUkVvHoRD+hauDSnJSjh/lxn4Kl7aeBJkyyENNUUffhYuUqZCBwOrjFqNuJm3
-	q1NRsFRKSdpVUJ35gWe5jxJRoFQjWEzIP+BNmkk2BwNWokEGRKP9wDPyv8+XiiOrVZBw3Qy2a29J8
-	Wy44Zdj15dLtO+RkSus/ZWk1Jask2P1Rs2zzWx0bZ1nhDy1xwexFEfcLQ6GfP+9daX1i7hlp1Il5V
-	Jf2s19gjHYOioa+KPnGg==;
+	List-Owner; bh=BsujO7ViGBPWeiOUmROrFBR4pBIq4Nrx+v75gk0bkNw=; b=BlQAr1T5xPjbqi
+	ipBhaFPLpTH5aeJvFJvyhgAs67t7Nm/nSbPw/CYYIJIAes99b0RVI+XSim4tOxsYsSXPEqkVCiJNp
+	qADBIBBs7IB+J/cjd0aKdtdOBczhbTMSCf3gR4Qve5ovDnT2LX0ThnvNHg5PqS88PWk/wmxSp31da
+	J9vMwDCRGQvgrfJV1GpkzRCC3dpUVeszIVk61Oxbe5lyghI65pNlTgxoCy9/6mf3ZkMrPu/SLo1c7
+	M5dU2+Bn3Omk/n3PhAQDjxzHqn4vqW5dyprnoDuOTMKwpLqjdiEuEjYUthMmJnO6cNSA07BGSp0bq
+	DYy4HEy0IIojJmz9fThQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ne8g7-00Bk03-LR; Tue, 12 Apr 2022 05:02:59 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1neA9N-00Btye-5J; Tue, 12 Apr 2022 06:37:17 +0000
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ne8g4-00Bjym-HX
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 05:02:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649739776; x=1681275776;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=15fDRfdM1HQDD3vhfb95CPUbHMkDSQ2QlfPPGarHgpc=;
- b=VD+KH/VPZjkRTvgLSq0FZpJH2fVGRYBt2L1MYcqZ6kplC0ejpXF4uM69
- D7Uc+MujovGfDrf8oh4TFSP6OJZruVixPSP2vszo8UMvG2rrjOByCJJL7
- dFp2Ye4IwB7GoDNXdTcqq8c0djJWwf05nawC+2MnDhdKzfK7omk/IbsOW
- Ximms6+Bo51dQrF5QXxqOWuUGqdRx7pZUFXriXLvM5ZlsXoAY1dH6b8cn
- Fy6EaO8abRrOvY4c4Ricdo/+XeSODNlfuD4ZhW5UHMY6+4lhzwrUxNY6S
- 9ogzc3ahTpODTsL2FsWShNu29vD+062Fvkyz9ETDQ3xLHan/Em1b8CO0X w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="261124513"
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="261124513"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2022 22:02:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="623114876"
-Received: from lkp-server02.sh.intel.com (HELO d3fc50ef50de) ([10.239.97.151])
- by fmsmga004.fm.intel.com with ESMTP; 11 Apr 2022 22:02:34 -0700
-Received: from kbuild by d3fc50ef50de with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1ne8fh-0002Wq-UY;
- Tue, 12 Apr 2022 05:02:33 +0000
-Date: Tue, 12 Apr 2022 13:01:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Miaoqian Lin <linmq006@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ id 1neA9K-00Btvo-0F
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 06:37:15 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id
+ a16-20020a17090a6d9000b001c7d6c1bb13so1835262pjk.4
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2022 23:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:subject:date:message-id:in-reply-to:references;
+ bh=z9KCSsSOTorZ297IRaNBlVXKYcv73Yi8iB+F+B3CCNQ=;
+ b=JmmcP1AtLg3fbaMnX+VVeF4cZ4XJEHNbYmBA124tHtTaz7JLrPIaoAmVjTv6WwP1lS
+ yHVzSeQ4kZSs8V8Jqpvqd74EJ1cs7rdj/0KVQI9eTokFX3y+eBfRPtwSckN1oZgHR3Wl
+ RsYgZwIhxmKI3pC0JNARPPOj8y5Vhb9Elxu9Y/nUqFu1dzndBz8f9JSYSC71euSjzFzo
+ UObmYrjsaa/q8LknB3BSu0gZQPRp7nUBwgctAZlhxP02pJkORvNLAolvZ8NONJPWCWQ9
+ k6aUXTmGfmOMBJ4k61QdA/ZWLd18YoiUIgLQYdXxIrgckWETDQ1ZEdkXVe+2PQJZhChW
+ lB0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+ :references;
+ bh=z9KCSsSOTorZ297IRaNBlVXKYcv73Yi8iB+F+B3CCNQ=;
+ b=vmqMGrmQBHcZtGqrIJQG6nhTzE+8gT5VC3/tGdZE8/pxTaIy4XTgTAT0EnNoXsiP2L
+ CyYfnutJze6+YBOBWp7cflDSxove1KTebNA/5r4W7X8yVqmQBybhHOT0MTTyrYJRFdfd
+ gg1c5PIs45XjG+vbO9V20ELsPNvtUmZp2iHEwrws7XuE6NQYyutcSb/q4MdIyU4JQXRG
+ 3cgFd38znwzItp/dqPCiVh0CHuMi9ZqaCk2NpEvFCFczi3woIclaRxgTGNuUzEppAItV
+ ss1nlGnCyA+ftlwar74WuJPYask3OdKoaMq9WBxDQkFZdQVHeFHkSQUomrOSgWVy2e1V
+ dvMA==
+X-Gm-Message-State: AOAM5338J2TlY5gBinXrpuVEtMdhrFLgxBeeiDZ+i/VN/QjhlizP/4k5
+ eucnif1qrzfrCrxNsWNn6Rc=
+X-Google-Smtp-Source: ABdhPJxbRo2HxccOLyjPF69o/uFLKLEC2j4IdcjTAgHfPDXjQ0DQp/HOEXokeWC72a2MvL80rsvHbQ==
+X-Received: by 2002:a17:902:8e82:b0:151:6f68:7088 with SMTP id
+ bg2-20020a1709028e8200b001516f687088mr37030839plb.11.1649745430901; 
+ Mon, 11 Apr 2022 23:37:10 -0700 (PDT)
+Received: from localhost.localdomain ([159.226.95.43])
+ by smtp.googlemail.com with ESMTPSA id
+ nv11-20020a17090b1b4b00b001c71b0bf18bsm1618768pjb.11.2022.04.11.23.37.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 11 Apr 2022 23:37:10 -0700 (PDT)
+From: Miaoqian Lin <linmq006@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pratyush Yadav <p.yadav@ti.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miaoqian Lin <linmq006@gmail.com>,
  Paul Cercueil <paul@crapouillou.net>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Bastian Hecht <hechtb@googlemail.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, kbuild-all@lists.01.org
-Subject: Re: [PATCH] mtd: rawnand: Fix return value check of
+Subject: [PATCH v2] mtd: rawnand: Fix return value check of
  wait_for_completion_timeout
-Message-ID: <202204121253.NcZifMQi-lkp@intel.com>
-References: <20220412020834.7161-1-linmq006@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220412020834.7161-1-linmq006@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date: Tue, 12 Apr 2022 06:36:52 +0000
+Message-Id: <20220412063703.8537-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <202204121253.NcZifMQi-lkp@intel.com>
+References: <202204121253.NcZifMQi-lkp@intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_220256_628033_EFCDD96A 
-X-CRM114-Status: GOOD (  17.94  )
+X-CRM114-CacheID: sfid-20220411_233714_081335_1A8DDFA8 
+X-CRM114-Status: GOOD (  13.67  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,136 +90,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miaoqian,
+wait_for_completion_timeout() returns unsigned long not int.
+It returns 0 if timed out, and positive if completed.
+The check for <= 0 is ambiguous and should be == 0 here
+indicating timeout which is the only error case.
 
-Thank you for the patch! Perhaps something to improve:
+Fixes: 83738d87e3a0 ("mtd: sh_flctl: Add DMA capabilty")
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+---
+change in v2:
+- initialize ret to 1.
+---
+ drivers/mtd/nand/raw/sh_flctl.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on linus/master linux/master v5.18-rc2 next-20220411]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Miaoqian-Lin/mtd-rawnand-Fix-return-value-check-of-wait_for_completion_timeout/20220412-101006
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-config: hexagon-randconfig-r045-20220411 (https://download.01.org/0day-ci/archive/20220412/202204121253.NcZifMQi-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project fe2478d44e4f7f191c43fef629ac7a23d0251e72)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/3de25b46a3f73a3e0031e5186eb4e2afa9098b46
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Miaoqian-Lin/mtd-rawnand-Fix-return-value-check-of-wait_for_completion_timeout/20220412-101006
-        git checkout 3de25b46a3f73a3e0031e5186eb4e2afa9098b46
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/mtd/nand/raw/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/nand/raw/sh_flctl.c:433:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-           if (time_left == 0) {
-               ^~~~~~~~~~~~~~
-   drivers/mtd/nand/raw/sh_flctl.c:447:9: note: uninitialized use occurs here
-           return ret;
-                  ^~~
-   drivers/mtd/nand/raw/sh_flctl.c:433:2: note: remove the 'if' if its condition is always true
-           if (time_left == 0) {
-           ^~~~~~~~~~~~~~~~~~~~
-   drivers/mtd/nand/raw/sh_flctl.c:387:9: note: initialize the variable 'ret' to silence this warning
-           int ret;
-                  ^
-                   = 0
-   1 warning generated.
-
-
-vim +433 drivers/mtd/nand/raw/sh_flctl.c
-
-   377	
-   378	static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
-   379						int len, enum dma_data_direction dir)
-   380	{
-   381		struct dma_async_tx_descriptor *desc = NULL;
-   382		struct dma_chan *chan;
-   383		enum dma_transfer_direction tr_dir;
-   384		dma_addr_t dma_addr;
-   385		dma_cookie_t cookie;
-   386		uint32_t reg;
-   387		int ret;
-   388		unsigned long time_left;
-   389	
-   390		if (dir == DMA_FROM_DEVICE) {
-   391			chan = flctl->chan_fifo0_rx;
-   392			tr_dir = DMA_DEV_TO_MEM;
-   393		} else {
-   394			chan = flctl->chan_fifo0_tx;
-   395			tr_dir = DMA_MEM_TO_DEV;
-   396		}
-   397	
-   398		dma_addr = dma_map_single(chan->device->dev, buf, len, dir);
-   399	
-   400		if (!dma_mapping_error(chan->device->dev, dma_addr))
-   401			desc = dmaengine_prep_slave_single(chan, dma_addr, len,
-   402				tr_dir, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-   403	
-   404		if (desc) {
-   405			reg = readl(FLINTDMACR(flctl));
-   406			reg |= DREQ0EN;
-   407			writel(reg, FLINTDMACR(flctl));
-   408	
-   409			desc->callback = flctl_dma_complete;
-   410			desc->callback_param = flctl;
-   411			cookie = dmaengine_submit(desc);
-   412			if (dma_submit_error(cookie)) {
-   413				ret = dma_submit_error(cookie);
-   414				dev_warn(&flctl->pdev->dev,
-   415					 "DMA submit failed, falling back to PIO\n");
-   416				goto out;
-   417			}
-   418	
-   419			dma_async_issue_pending(chan);
-   420		} else {
-   421			/* DMA failed, fall back to PIO */
-   422			flctl_release_dma(flctl);
-   423			dev_warn(&flctl->pdev->dev,
-   424				 "DMA failed, falling back to PIO\n");
-   425			ret = -EIO;
-   426			goto out;
-   427		}
-   428	
-   429		time_left =
-   430		wait_for_completion_timeout(&flctl->dma_complete,
-   431					msecs_to_jiffies(3000));
-   432	
- > 433		if (time_left == 0) {
-   434			dmaengine_terminate_all(chan);
-   435			dev_err(&flctl->pdev->dev, "wait_for_completion_timeout\n");
-   436			ret = -ETIMEDOUT;
-   437		}
-   438	
-   439	out:
-   440		reg = readl(FLINTDMACR(flctl));
-   441		reg &= ~DREQ0EN;
-   442		writel(reg, FLINTDMACR(flctl));
-   443	
-   444		dma_unmap_single(chan->device->dev, dma_addr, len, dir);
-   445	
-   446		/* ret > 0 is success */
-   447		return ret;
-   448	}
-   449	
-
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index b85b9c6fcc42..2373251f585b 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -384,7 +384,8 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
+ 	dma_addr_t dma_addr;
+ 	dma_cookie_t cookie;
+ 	uint32_t reg;
+-	int ret;
++	int ret = 1;
++	unsigned long time_left;
+ 
+ 	if (dir == DMA_FROM_DEVICE) {
+ 		chan = flctl->chan_fifo0_rx;
+@@ -425,13 +426,14 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
+ 		goto out;
+ 	}
+ 
+-	ret =
++	time_left =
+ 	wait_for_completion_timeout(&flctl->dma_complete,
+ 				msecs_to_jiffies(3000));
+ 
+-	if (ret <= 0) {
++	if (time_left == 0) {
+ 		dmaengine_terminate_all(chan);
+ 		dev_err(&flctl->pdev->dev, "wait_for_completion_timeout\n");
++		ret = -ETIMEDOUT;
+ 	}
+ 
+ out:
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
