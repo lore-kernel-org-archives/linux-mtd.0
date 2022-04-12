@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4255BC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 02:54:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61840C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 02:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HN5OipsK/LWH1k6jYCJLAJHouf4VyLPiq+/BB/yXgFY=; b=XPA3sllGezPXnJ
-	/1X3QBsUOL6T4tOjWmXXiHuyMvrgSyM8snN6eZdQqDy7TmFytn98kwqiL8dlfagCMPZMnstnXJSeI
-	e8tJ7DawUux+He09iMIivcgwMuHDwQe54SQP5R4hhKn2IZgYWav1oZ+CSlmwcLSi72CluzLiFVAZa
-	q+vA5GsfVocOLDwsJHcEtWF7RiKZFkWNB4ttI2+rJAOLQEK0rUygrPnrY/Xwy1JoN3scOxvUUhbRs
-	ehgie0sB+TTy1EnU8GUFEu7CUjdYNCe3+4nRhawC92o0UU+FaoPTXdYEHD7vG72f+WCa4OCcT8Cnm
-	YsikyGQ5YlU7aHPUPmAQ==;
+	List-Owner; bh=9GYdQPrO+gkFA8FDgK5eAc0eMzSWrcO1n6w1JNQqK3s=; b=JMfHX6bkufWdjz
+	fjUFL41nLi4NBLL1Buv/29d+fwFj4DokIlQ/PXMnmiNDy/9alcAEfqdisJDo9MDuaVAnCcadmTpOB
+	ori1qHNCFC2FayErkT2UzGoSsc+rDxmGB13qcwTl7QjZ+Jgy7ZjP1Rs9A5ySpg1d7VGopYfvWcQlf
+	S8KLJlVkdCfQALh2wINE/CxWlxb/O4qg1KT/9RI+l+S/klZ10OGS7Z8maDLw9r4NK/lQCDAw+9BdK
+	SBTQYp/P7TQY0Ay2EE0hrn40e1V2DMD0dMeaUlCPf0YCJ8VYtmXS/xWur9XyzkkKZaz2TQFuklvHb
+	B+YaLXKMKEq8vfBKAZRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ne6es-00BLX5-Gf; Tue, 12 Apr 2022 02:53:34 +0000
+	id 1ne6fB-00BLgs-N9; Tue, 12 Apr 2022 02:53:54 +0000
 Received: from mail-he1eur02on061c.outbound.protection.outlook.com
  ([2a01:111:f400:fe05::61c]
  helo=EUR02-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ne6ed-00BLST-51
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 02:53:21 +0000
+ id 1ne6ef-00BLST-Sw
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 02:53:23 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GhgLAaSM9V+wk+3vlM6FS76tE8glIMZ6gEWQsl3H0zrzUM0orX8nsAwfr7bvE3Ap0sLZAZx6c1BtaeROQGoQPQrhoUsrU20Tq0KOljVC0pFl3OtuoZSQCU8Pr4ZZn9pYLd7ItBKyGgNVtMR9YwxIo+kQEdCle6gbNS1bgjGJvbmxO+0/Vsl/BeDauiFDSlpiq1EZU+XK+VeeAzXDOmEy+ZeZvQDWIOkAJ4IlJotU2K4xXuhqEN1y9UftACPIcmTmF4kPYQZot5PhuD8PTE/Etxv0nA5w/iEch5wi122bFZBYWeFUQNQ3Q4M5lKFjo4Mp6SHZ4Zqgf6AtNsRXD2FJZQ==
+ b=cvh+tAbFdKnFGpQK9LLECkqeBfkhiQg/FKhLqE6y7PQW6KG1Ed1JV7b/5/SUDJ7Ef32gQMyMw6/HIMOQMBvHV8L1iRio24RY1Tgqi50T2inWv19sLRleS+WvF9x5HP8kHWq4kPQMnxjh3DMNKjOJjtkv0U3tvmlNYffmrd6BFQeGlL2iafi+UiwMJPw2qp+SlSYyrrpn//gJ2elPh8JuqhF9ct/9H+o/H64KlfoV05248yEXPotaUw90q4fxqUgjOOH4P1oOhq6n98Mie8m8CaBsvhJSFyRPezWN+Duk8kpQizrZ2ldLeEH++AGIzwH1meHVPyRXLkrzk0/sZ8Zn0w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3kfgyTVBUT02Nl4l0wOEOvPovuVJwU569+90cn98KsM=;
- b=ZtAVzQ4X6CnVjv7WmIZ4CfE/xR9L5zLkcz9K3k1kCarGFAH3szGtCk11r/Omp1scHSU1iAVbADQOv7cctB4147zzhg4FmzkZVMVfN1TojNMshI4s6d0kiLgNAPZ0nsEB6bvRKHy72A9ltAoS835zNB1Dcu6/xnA3jNoKzjE6l6lS3SwrUbsV+GRIKG4vupvMitoEr9T7K14YjSQVXtHGhbfKUCTXBhPiKs+JxVguh6ssIG9eC7PFNesFc47IYKJlVA0HwHgiex5+cUQiJUobm9claMZ1e+Ji3+rvEpIAIVy1BVah6vgs9dTlXDQmKglG/RfLPOd4evQ30/iKBB4MUg==
+ bh=xE1PjYSTS99ZQ1wkNdaH326KXQSKrvFTj+tsti2r+Tg=;
+ b=lwT3RMbGxu8CBD+j3BNraPi7IUY82dRckM4vrVSI+kkXYqcSL1eIXA4EgbsapWUjNYVmmbSA3JiHRL8bU4O0YJbFs3K+nzktIIgnPx/LZPd+CjHpgof26TG6y89H9fdLIpW/+RdgFvSA8U32qzs+1Z903a5ZD9/Jpe9C7CT37x0IC7su+Gm6XrPKJhmJQ0J29rqpdFVMs4mP5eukXQOQ2l89/7BirkKiz9nNo4ulc7kQYX6ajgDk44uF6Cw3JivxgYpYgEgpzdeGh/bLmVHcGah1DNw3V9qqvguqR/feUVa4bVuTumwGP5Tky/gufug3z7Q71ckTeUoFh0LbtcdT9A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3kfgyTVBUT02Nl4l0wOEOvPovuVJwU569+90cn98KsM=;
- b=lepJLnoEkQ/MoYikdyafYfoIjYcZqCRbcrcy/xW+9hndB3zcnpK/6IvL7I21Jn5ChPSGAY6zQIv/ycqP7njKCkGMSWFZdSNsALReM26ekaV3OPegQLa0VBAxINo59X6ftp31LcHdV5f/zfsG5NHyhGvdaJSxoXF2RHbvnWVZmng=
+ bh=xE1PjYSTS99ZQ1wkNdaH326KXQSKrvFTj+tsti2r+Tg=;
+ b=RfXoGUpjN3nzeDgl/wKSQEPhjWz7Na2L53T8zQK0OJ/QR1dUcR2QAS7DHq0V5uYiasAKxDp8mzyzAsccqjFzqJ8hPSx2WegQXy9ItC4WPL4yGeMYwQ9LOHL6zeyD2fKRz6IMyiTCbW2pZQp3H1NRV8EsJAqSOgqxGNKL9uC1VlI=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
  by DBBPR04MB7867.eurprd04.prod.outlook.com (2603:10a6:10:1e5::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.30; Tue, 12 Apr
- 2022 02:53:14 +0000
+ 2022 02:53:16 +0000
 Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
  ([fe80::644f:b22f:2f4:d69d]) by DU2PR04MB8774.eurprd04.prod.outlook.com
  ([fe80::644f:b22f:2f4:d69d%3]) with mapi id 15.20.5144.030; Tue, 12 Apr 2022
- 02:53:14 +0000
+ 02:53:16 +0000
 From: Han Xu <han.xu@nxp.com>
 To: sean@geanix.com,
 	frieder.schrempf@kontron.de,
 	festevam@gmail.com
 Cc: ye.li@nxp.com, peng.fan@nxp.com, han.xu@nxp.com, miquel.raynal@bootlin.com,
  linux-mtd@lists.infradead.org
-Subject: [PATCH v4 4/5] mtd: rawnand: gpmi: Rename the variable ecc_chunk_size
-Date: Mon, 11 Apr 2022 21:52:45 -0500
-Message-Id: <20220412025246.24269-5-han.xu@nxp.com>
+Subject: [PATCH v4 5/5] mtd: rawnand: gpmi: Add large oob bch setting support
+Date: Mon, 11 Apr 2022 21:52:46 -0500
+Message-Id: <20220412025246.24269-6-han.xu@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220412025246.24269-1-han.xu@nxp.com>
 References: <20220412025246.24269-1-han.xu@nxp.com>
@@ -69,61 +69,61 @@ X-ClientProxiedBy: BYAPR05CA0016.namprd05.prod.outlook.com
  (2603:10a6:10:2e1::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f5b82579-0843-4e78-426b-08da1c2f9667
+X-MS-Office365-Filtering-Correlation-Id: 3bc993b2-2c56-4f27-cc21-08da1c2f97e9
 X-MS-TrafficTypeDiagnostic: DBBPR04MB7867:EE_
-X-Microsoft-Antispam-PRVS: <DBBPR04MB7867F7E663374D855A6C3F8097ED9@DBBPR04MB7867.eurprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <DBBPR04MB7867E66DA7324320C2660F7897ED9@DBBPR04MB7867.eurprd04.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xErrbYgfqqOwwuitx8ARzv7BFdfU4wwQjEA5OJiMigEsdYb8mnu9JFytAoJjhuTUBMoUkxDWD2TjRSg57vSErFTILoRmCF5QQD822TToGxLndyCW4a1cK9eO3N2/UitMbRs/Q841cwekoZvEQF8iMxp/uwPK54a0ksO3yX0iW14G46Pvecfi5VVT2n5K3F80QhzUWUYPeHeEZMSPA0FMo8SM986MsvlbmqcNFYCu/beXf4paNIsuoVzvwFfJTokZRI1pzTMbgZ6LKIppOu606ir9xE79k4znC4H9+1JpvrBSLtLHau+FdeEogLFGQu0oes4/0HgJGwhyP9U0KhTWkNTGGRJ9HamZXg3ZtZNcZocPN0PgygsDQrt37VMFwAxQE6qQ2k16520CEARMB0vuzHTHjeLkzsYYTrfGbyl3IwTYlD/nEkBZdIpTkbS/SixirXPUzD1VmCPBsiqC4cR5SRqrSjKZkC1xaqzFksqxh8A9YFwqXyuzeKAJ5FexszChTTiaiaJ+deBLSTOUF1+BSPvcXyBf5gtGu2cqTDcs2BqxZX/vnqm0D3mMdSe+hlTaBQeFkVc/cF2ixQkeFOyq8YBce4znQZZfbmJ/QU68zzsSpB0xNTdKR61B2hhiSEXf0w/HDUy4O0IfdAeLEdsp189GdGqEGO8LXmdY5Eq3u/nk9sjGwZEnRBxx/7a3ocS/NtR5tn8b7+3lbXRF9SxA1Q==
+X-Microsoft-Antispam-Message-Info: DXWHRttLAxyn1MM+mMFZ7x71AVfnPMIGBNRd3wgtPHA3gQX+nroRIqeQm5Y6Y7Ig9Fa+DD7ecIUOInU5iuFRUlGn+srMzi6AdPtAU+QfUff0R0avnKBItvKp0TmMxnOYIQ+0CybCqbxBM+1mbOvU5PmiXM1IcaiAvi5Yr2mZSjMVi6+9muYFqluCajJQD/WUdsM2z389TSqoPWqyqQJbsCc5kMGjpOcLTnT5ILlVbd3lBbDUSeA20ii/8teqVDh47KJDdapi2Is7BaccnVQtzvpkOwBYNt7a5KQ51tsEWjmccRoVRHU05MBO/zJtPj5DxnxUYvuwmWW0lbEaYaZ0koS2bzQQAa7n38w0SKF+W/hzSB6tAPmPtlJcmIVsZ8v3H70MwYlwyGS8h4L3bLBeHNPf76DV4zD3oMkOqoFu8CAgGkyFDLXBC/2TUgI52Sdx+Pc4ZAUZ1BBZK2wp1U6qYsUFNGaxPWPOgj8EdpvoG9fVccAAmCmnjT/kPK3eZCuo3Z16hFLN4oFeUl/zdMU3CKJY6vQjWZjmbIw5p8eJ9UJ+kkQIap4S+mRNnZPc1mTR0OhCF15CtSeXhHUck3fYQvDi7rOb1riU9Z1P5vABa0h0+UVHAnoaMhe3X6xy+mffP0Xa3VoFsQD7LbgAD9W+1/2xNnekMS/CtNFDOzDVbpoILBNSdnV/wMZz8ycbT62CTRuUn8krF5BoOlGhcc3roQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:DU2PR04MB8774.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(86362001)(6486002)(508600001)(2906002)(6512007)(1076003)(2616005)(26005)(186003)(6666004)(83380400001)(8676002)(4326008)(6506007)(38350700002)(38100700002)(52116002)(36756003)(66556008)(66946007)(66476007)(8936002)(5660300002)(316002)(44832011);
+ SFS:(13230001)(4636009)(366004)(52116002)(36756003)(6506007)(38350700002)(38100700002)(66946007)(66476007)(66556008)(8676002)(83380400001)(4326008)(44832011)(8936002)(5660300002)(316002)(508600001)(6486002)(2906002)(86362001)(26005)(186003)(6666004)(2616005)(6512007)(1076003);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zvRC+3XJSiNMnS/0W2M+6r/W4ceui4hk6CVq6AzafpPp9AAiDCr73CaDBwc9?=
- =?us-ascii?Q?77qmbcYlkS4B/lfdhpKXHrcfDHGxTV3Y8adSf0xwqYlPxx4fRvbm7grpMzGs?=
- =?us-ascii?Q?Gexq10pRcHAOvoVnx+elwPNyo7xCi1uZEKyVGLMUN7PLV/3RYdt6Lgfxnpzd?=
- =?us-ascii?Q?L2rGuGc9yaen2NClzheziEswPcQkoPALlg8LXESBPfjfy1TE+sNBXgrGmcYs?=
- =?us-ascii?Q?Lv/wXEMCq2pRWLSdMD1bVwWad7zypjMwUfSAmDenRJJHxTkvLKl61NPghBd8?=
- =?us-ascii?Q?DNn53A2ARgOOGZEq37Km4Eozhma1MtC5jopLozPsEMacqfaTxa/qieCeo0WH?=
- =?us-ascii?Q?F43B5m2NiZBWQ+eQR2gFVrvm08rzLU1iKVGeBxtAUndY5TbofBdp/wDKJvKz?=
- =?us-ascii?Q?RcN20fqOLxFxtb1WPwdBhGp8SxhIuTkiHYuoRgjzyUx3iA0U1BUAZgWB5USO?=
- =?us-ascii?Q?B/HhgRg79uKdUMN5VoZvwt5B+IRvsRpQSz+E9dH/9cAYbkWGToijOiaESsY4?=
- =?us-ascii?Q?AuTu29ru8L8a0DJSAOq+XasCl6+GFD9SRD0HST89mhJNzQ981BFGHr9pvLo6?=
- =?us-ascii?Q?A4ANTvO7R5XoLsoyy3OJjF8c7tsaqWWYbCb2qTEuKMNXRR3EsJxLOgbiytQ2?=
- =?us-ascii?Q?AhZyvyVgkT0NGc+U4p+8BZueZPemhzMABPxEr102KllPNYq1cG5RgyauBItE?=
- =?us-ascii?Q?fWRBGbpWOcjwczHT4yj2KjOAhTs5Rrt1dVJFc3cbWv0lPNhXpnDKycrroTF0?=
- =?us-ascii?Q?daK7PlX1TNZvHEvY6x5xw6RVM+Awv8zE3TdRnaQrxkdUczQaW9wetPHD0SBW?=
- =?us-ascii?Q?WrZk9KzNPLT3Wx6e3iRtanjVzQpxKbzAZQQuMuRPHUTDrO5bCRdMm6U7nTRI?=
- =?us-ascii?Q?VbReck33T6VxwYVt/XQ3lRV4k6f2aFVsNpLEGkfstqiDq/YwKkYadlEAxIN/?=
- =?us-ascii?Q?vwBSy3eI2SQKkAE69ZlnuC5Iv85tFdpt/74sPAnEsCSXYYgfvymDESBD2vos?=
- =?us-ascii?Q?OKN8zTg2beVUS4IWcCXSQIxx16FOs52jazSvGBt4w7jnPLgAuBw7EBInJPvF?=
- =?us-ascii?Q?xREdq7OgaN8J+BhCrC8iI3NKZ0g9wbtdujlJ+zpOWTISA0HL6xb+AvlR39aZ?=
- =?us-ascii?Q?1YgK4SVLBXbATFJYiaMnFaXn9LM0NqgiN/w/lrS9ZGKjypsUcqCHExfwJ4P1?=
- =?us-ascii?Q?o62J2j2Oqp5M+ZqUiCC18nHa1fSDZRiLnFjGkaQ7SssG9EJPrT3Tixo/kgWh?=
- =?us-ascii?Q?CzZ2387xje6ktHSZ6bbYRB5MeIGH3fXjUzNrYq829fqu3Ng/u8nN2yJSrXgf?=
- =?us-ascii?Q?Q1DyIpJ91ACOBLaojHfckg9tvogO6ifanHxE10v/eX6oyCvom5Y5Vjmq5vxU?=
- =?us-ascii?Q?C3CR190Y/gP+7BZdvwG06mvLhB1SRHf/t/V8OXCxwDYEGGt+RjcTYixJjtm7?=
- =?us-ascii?Q?4eUTg81YMQc2b4WlCspfyzb4iKwlzgSTKFnGTuPHp0Cm22kugnZrvRlrqmhn?=
- =?us-ascii?Q?HbiBmLMm8ZsTFom7bSYJo2cmtDkmPCCpluuq40PnBKIcFAl2S6D8h732PmRf?=
- =?us-ascii?Q?zRtwGmlonrNXYel107aAj/vKnRsXGKnbI2+NViL9z3gnS5RQHZYKD03sBldM?=
- =?us-ascii?Q?e4NKBg4ZdMp0XoT8ZIF7gwy2kzwZohZ+8LFPWR28ze/0wmriD7Hroby/MbRA?=
- =?us-ascii?Q?wxbNphB60dwwqGrAFe5IeF/VJJU0UD0kv3vhwMky8wDnM0fyg8iT1vb/MF7o?=
- =?us-ascii?Q?JNntNcUq/w=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zfPd3xd/BABl4mkOG1xV+1MmN7pLg4uwLMY1LTQOjIy41ywMvdRlVt4Vt00V?=
+ =?us-ascii?Q?enZ981u8MTnkDQ6gNtfGSHr99Uqql/A+1xrLsLziE+06BPLiH4sWldEPjKg2?=
+ =?us-ascii?Q?JZxLeldNemgrNFr2Uo4oQs1izzZb0RIU0xmnjqnsCpSmxERiwLjJC3ok/eR9?=
+ =?us-ascii?Q?dCa2yAi9LBx6/JAXGQM6EFoUQMukaAgv3wHVZY8bEQBkIhOkddzqh9egjbRd?=
+ =?us-ascii?Q?0oyK/QOruvXALk1P5PI7KojpbaYzloUbuRtl7Bcl2wLo4mNGLmVEaLUXLAzA?=
+ =?us-ascii?Q?ey9C/1M4oQwfSmteitzR6zJC/6XETaQinX3TjEuJv5/aArQ/2UAcCK4/67wi?=
+ =?us-ascii?Q?dkea54Jui3D2VIlnZ82115NihPKtOgmjj20MINPWXyesonzpBsgPEg7++V+D?=
+ =?us-ascii?Q?qM9h8rBAv/xBpPju8t6SVzeO641I/e8H+NlVvV6Tw5S1q8DTkh3YmgZlAD7l?=
+ =?us-ascii?Q?pG9VM+wadBD+JjgLYm7tTJuR9XdLBlKGKHf5LanceD2MB3l0QE9UudTcrV78?=
+ =?us-ascii?Q?Kmr0JgS+sBLONGy7lVFTSodvVjv/RPGBbsVIj6+vH4MeNvWM+CBAX6JeTSKq?=
+ =?us-ascii?Q?AX/fY05Z8szoW4Zus0y0Oe44To7pJ741ruqAMa3wF1J0WJBGhB0aIo0gsyN4?=
+ =?us-ascii?Q?enzIcz3g2GEMJz79r40DskB6DpTD6wWv/tPWdDlZqTqDlkxREURt63zJdNOa?=
+ =?us-ascii?Q?gBKC9S/4lalo5rz1NHZNRmbJBPLubmO+IK0DEPSsE56JmXWSbv8ffuQq8eqX?=
+ =?us-ascii?Q?xL4vPDSKMRSfKK80pXKVwjEbtwlPs9LrnNu0S6YXkIoDFlYSzQpg4s2HuE7J?=
+ =?us-ascii?Q?+xwg7dh2m+f7mg0cXGsP7Fz3MLqN5t4gbyMSAy8QcVRZn+qod8lXvWg6wtLH?=
+ =?us-ascii?Q?4yPEdqaQo7nFYckbv1VP2Z+pNiHIkTGimmvbIl5mNglk+Co2gwlSE946P5Yk?=
+ =?us-ascii?Q?PRzJfyNDnxcmmv7Z4fIzI7fbMxbwE5PuRiG0+OZbWYQ4eRmYRlQxEiGieB2p?=
+ =?us-ascii?Q?0+H7LZ9uxvpkfWn0JKHQ0X8Kp6j71MHWAQyGtJCXND0LkJs1CzKIH6cKWhCk?=
+ =?us-ascii?Q?m7XPUYigW4zWPxPnKjUYwwvwpa4tKFPnjfCsIULnzSh12T6VaKiXM/q4FAIP?=
+ =?us-ascii?Q?hFqAfdSzF675U1HObrx+VrkfbpbcUmY7lS1geLlEYigIO9PstX21ucmg9KMM?=
+ =?us-ascii?Q?j6Cgvylvkeam5Cm+NRm4+zMLn1uGa4S0lFAASIhGwfxK9VzqNRItUB8/wLrD?=
+ =?us-ascii?Q?FOWnfRRUEoK/b6+fT8x+XNPSZKRt+6t8dVPBb87QHv8+1y/uAqLcEWCS2xvp?=
+ =?us-ascii?Q?15fi57UBiBXNcD9W9nJRp6B3tduJ4bvAL4Z+0SycU47yI65BH1OWkSHYJJLU?=
+ =?us-ascii?Q?8xL8/Dk93y/XrVrO0nXhxQTe/GJ/fPTqjkfCyRRNPN8nMsXcPiMbnjk7gNBI?=
+ =?us-ascii?Q?Xtk2StBoNWO8iJkG2RjHCCFnhuWC4jSeQdLxNMK7GM5YQy039ihwVsSULZII?=
+ =?us-ascii?Q?RFlc6VqDZ9/oSQSq5Mha2RPhhGZVmhQTOpGxT9/o6UXIOnKfUqhJ+qXGkU4S?=
+ =?us-ascii?Q?E2s5SuYRBhgPatksMLEQUHmKTDTv6zf8lRDlnerm9cMiAYDqP03wEL9ZXwok?=
+ =?us-ascii?Q?UErBCfylSF3M+RSguhERUtT0Q+rCFBwm9KB6PkfteHwlSiG8lGNjS3tDfKJn?=
+ =?us-ascii?Q?q8izP6pLpIw1SAyW1fejJHLnmoQJoShAdbYN8yTX2+RaU5M83nPEgGW7r/q7?=
+ =?us-ascii?Q?4+8kXDqFSQ=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5b82579-0843-4e78-426b-08da1c2f9667
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bc993b2-2c56-4f27-cc21-08da1c2f97e9
 X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2022 02:53:14.1548 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2022 02:53:16.7036 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0kpzrXyKs4qGr7mmjxB5QwwsMSLZMMlFbUK64Kp16EW3IWPf8WmW2/JIsyyN3eDM
+X-MS-Exchange-CrossTenant-UserPrincipalName: XknfSz1GAw6sgVgbd4XHEUCYAWerXHG5NnXraQ09phcStZXLkTIhfEyvTgavkB23
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7867
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_195319_670727_8F20EEF9 
-X-CRM114-Status: GOOD (  20.92  )
+X-CRM114-CacheID: sfid-20220411_195321_992918_12EF7F30 
+X-CRM114-Status: GOOD (  26.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,232 +140,301 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is only one variable ecc_chunk_size in bch_geometry data
-structure but two different field in BCH registers. The data0_size in
-BCH_FLASH0LAYOUT0 and datan_size in BCH_FLASH0LAYOUT1 should have
-dedicate variable since they might set to different values in some
-cases. For instance, if need dedicate ecc for meta area, the data0_size
-should be 0 rather than datan_size, but for all other cases, data0_size
-still equals to datan_size and it won't bring any function change.
+The code change proposes a new way to set bch geometry for large oob
+NAND (oobsize > 1KB). In this case, previous implementation can NOT
+guarantee the bad block mark always locates in data chunk, so we need a
+new way to do it. The general idea is,
+
+1.Try all ECC strength from the maximum ecc that controller can support
+  to minimum value required by NAND chip, any ECC strength makes the
+  BBM locate in data chunk can be eligible.
+
+2.If none of them works, using separate ECC for meta, which will add
+  one extra ecc with the same ECC strength as other data chunks. This
+  extra ECC can guarantee BBM located in data chunk, also we need to
+  check if oob can afford it.
 
 Signed-off-by: Han Xu <han.xu@nxp.com>
 
 ---
-Changes since v3:
- - change the commit log that new variables only affect ecc for meta
-   case
-
-Changes since v2:
+ Changes since v2:
+ - calculate the ecc strength from max controller can support to minimum
+   that NAND chips required.
  - split the variable rename to a single patch
+
+ Changes since v1:
+ - split the large oob part to a single patch
 ---
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 52 ++++++++++++----------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  9 ++--
- 2 files changed, 34 insertions(+), 27 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 199 ++++++++++++++++++++-
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |   3 +
+ 2 files changed, 197 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 0f82edc97e9d..1ac0dc8cae22 100644
+index 1ac0dc8cae22..0b68d05846e1 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -218,7 +218,8 @@ static void gpmi_dump_info(struct gpmi_nand_data *this)
- 		"ECC Strength           : %u\n"
- 		"Page Size in Bytes     : %u\n"
- 		"Metadata Size in Bytes : %u\n"
--		"ECC Chunk Size in Bytes: %u\n"
+@@ -266,6 +266,39 @@ static bool gpmi_check_ecc(struct gpmi_nand_data *this)
+ 	return true;
+ }
+ 
++/* check if bbm locates in data chunk rather than ecc chunk */
++static bool bbm_in_data_chunk(struct gpmi_nand_data *this,
++			unsigned int *chunk_num)
++{
++	struct bch_geometry *geo = &this->bch_geometry;
++	struct nand_chip *chip = &this->nand;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	unsigned int i, j;
++
++	if (geo->ecc0_chunk_size != geo->eccn_chunk_size) {
++		dev_err(this->dev,
++			"The size of ecc0_chunk must equal to eccn_chunk\n");
++		return false;
++	}
++
++	i = (mtd->writesize * 8 - geo->metadata_size * 8) /
++		(geo->gf_len * geo->ecc_strength +
++			geo->eccn_chunk_size * 8);
++
++	j = (mtd->writesize * 8 - geo->metadata_size * 8) -
++		(geo->gf_len * geo->ecc_strength +
++			geo->eccn_chunk_size * 8) * i;
++
++	if (j < geo->eccn_chunk_size * 8) {
++		*chunk_num = i+1;
++		dev_dbg(this->dev, "Set ecc to %d and bbm in chunk %d\n",
++				geo->ecc_strength, *chunk_num);
++		return true;
++	}
++
++	return false;
++}
++
+ /*
+  * If we can get the ECC information from the nand chip, we do not
+  * need to calculate them ourselves.
+@@ -415,6 +448,134 @@ static inline int get_ecc_strength(struct gpmi_nand_data *this)
+ 	return round_down(ecc_strength, 2);
+ }
+ 
++static int set_geometry_for_large_oob(struct gpmi_nand_data *this)
++{
++	struct bch_geometry *geo = &this->bch_geometry;
++	struct nand_chip *chip = &this->nand;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	const struct nand_ecc_props *requirements =
++		nanddev_get_ecc_requirements(&chip->base);
++	unsigned int block_mark_bit_offset;
++	unsigned int max_ecc;
++	unsigned int bbm_chunk;
++	unsigned int i;
++
++	/* sanity check for the minimum ecc nand required */
++	if (!(requirements->strength > 0 &&
++	      requirements->step_size > 0))
++		return -EINVAL;
++	geo->ecc_strength = requirements->strength;
++
++	/* check if platform can support this nand */
++	if (!gpmi_check_ecc(this)) {
++		dev_err(this->dev,
++			"unsupported NAND chip, minimum ecc required %d\n",
++			geo->ecc_strength);
++		return -EINVAL;
++	}
++
++	/* calculate the maximum ecc platform can support*/
++	geo->metadata_size = 10;
++	geo->gf_len = 14;
++	geo->ecc0_chunk_size = 1024;
++	geo->eccn_chunk_size = 1024;
++	geo->ecc_chunk_count = mtd->writesize / geo->eccn_chunk_size;
++	max_ecc = min(get_ecc_strength(this),
++		      this->devdata->bch_max_ecc_strength);
++
++	/*
++	 * search a supported ecc strength that makes bbm
++	 * located in data chunk
++	 */
++	geo->ecc_strength = max_ecc;
++	while (!(geo->ecc_strength < requirements->strength)) {
++		if (bbm_in_data_chunk(this, &bbm_chunk))
++			goto geo_setting;
++		geo->ecc_strength -= 2;
++	}
++
++	/* if none of them works, keep using the minimum ecc */
++	/* nand required but changing ecc page layout  */
++	geo->ecc_strength = requirements->strength;
++	/* add extra ecc for meta data */
++	geo->ecc0_chunk_size = 0;
++	geo->ecc_chunk_count = (mtd->writesize / geo->eccn_chunk_size) + 1;
++	geo->ecc_for_meta = 1;
++	/* check if oob can afford this extra ecc chunk */
++	if (mtd->oobsize * 8 < geo->metadata_size * 8 +
++	    geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) {
++		dev_err(this->dev, "unsupported NAND chip with new layout\n");
++		return -EINVAL;
++	}
++
++	/* calculate in which chunk bbm located */
++	bbm_chunk = (mtd->writesize * 8 - geo->metadata_size * 8 -
++		     geo->gf_len * geo->ecc_strength) /
++		     (geo->gf_len * geo->ecc_strength +
++		     geo->eccn_chunk_size * 8) + 1;
++
++geo_setting:
++
++	geo->page_size = mtd->writesize + geo->metadata_size +
++		(geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) / 8;
++	geo->payload_size = mtd->writesize;
++
++	/*
++	 * The auxiliary buffer contains the metadata and the ECC status. The
++	 * metadata is padded to the nearest 32-bit boundary. The ECC status
++	 * contains one byte for every ECC chunk, and is also padded to the
++	 * nearest 32-bit boundary.
++	 */
++	geo->auxiliary_status_offset = ALIGN(geo->metadata_size, 4);
++	geo->auxiliary_size = ALIGN(geo->metadata_size, 4)
++				    + ALIGN(geo->ecc_chunk_count, 4);
++
++	if (!this->swap_block_mark)
++		return 0;
++
++	/* calculate the number of ecc chunk behind the bbm */
++	i = (mtd->writesize / geo->eccn_chunk_size) - bbm_chunk + 1;
++
++	block_mark_bit_offset = mtd->writesize * 8 -
++		(geo->ecc_strength * geo->gf_len * (geo->ecc_chunk_count - i)
++		+ geo->metadata_size * 8);
++
++	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
++	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
++
++	dev_dbg(this->dev, "BCH Geometry :\n"
++		"GF length              : %u\n"
++		"ECC Strength           : %u\n"
++		"Page Size in Bytes     : %u\n"
++		"Metadata Size in Bytes : %u\n"
 +		"ECC0 Chunk Size in Bytes: %u\n"
 +		"ECCn Chunk Size in Bytes: %u\n"
- 		"ECC Chunk Count        : %u\n"
- 		"Payload Size in Bytes  : %u\n"
- 		"Auxiliary Size in Bytes: %u\n"
-@@ -229,7 +230,8 @@ static void gpmi_dump_info(struct gpmi_nand_data *this)
- 		geo->ecc_strength,
- 		geo->page_size,
- 		geo->metadata_size,
--		geo->ecc_chunk_size,
++		"ECC Chunk Count        : %u\n"
++		"Payload Size in Bytes  : %u\n"
++		"Auxiliary Size in Bytes: %u\n"
++		"Auxiliary Status Offset: %u\n"
++		"Block Mark Byte Offset : %u\n"
++		"Block Mark Bit Offset  : %u\n"
++		"Block Mark in chunk	: %u\n"
++		"Ecc for Meta data	: %u\n",
++		geo->gf_len,
++		geo->ecc_strength,
++		geo->page_size,
++		geo->metadata_size,
 +		geo->ecc0_chunk_size,
 +		geo->eccn_chunk_size,
- 		geo->ecc_chunk_count,
- 		geo->payload_size,
- 		geo->auxiliary_size,
-@@ -293,13 +295,14 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
- 			nanddev_get_ecc_requirements(&chip->base)->step_size);
- 		return -EINVAL;
- 	}
--	geo->ecc_chunk_size = ecc_step;
-+	geo->ecc0_chunk_size = ecc_step;
-+	geo->eccn_chunk_size = ecc_step;
- 	geo->ecc_strength = round_up(ecc_strength, 2);
- 	if (!gpmi_check_ecc(this))
- 		return -EINVAL;
- 
- 	/* Keep the C >= O */
--	if (geo->ecc_chunk_size < mtd->oobsize) {
-+	if (geo->eccn_chunk_size < mtd->oobsize) {
- 		dev_err(this->dev,
- 			"unsupported nand chip. ecc size: %d, oob size : %d\n",
- 			ecc_step, mtd->oobsize);
-@@ -309,7 +312,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
- 	/* The default value, see comment in the legacy_set_geometry(). */
- 	geo->metadata_size = 10;
- 
--	geo->ecc_chunk_count = mtd->writesize / geo->ecc_chunk_size;
-+	geo->ecc_chunk_count = mtd->writesize / geo->eccn_chunk_size;
- 
- 	/*
- 	 * Now, the NAND chip with 2K page(data chunk is 512byte) shows below:
-@@ -431,13 +434,15 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 	geo->gf_len = 13;
- 
- 	/* The default for chunk size. */
--	geo->ecc_chunk_size = 512;
--	while (geo->ecc_chunk_size < mtd->oobsize) {
--		geo->ecc_chunk_size *= 2; /* keep C >= O */
-+	geo->ecc0_chunk_size = 512;
-+	geo->eccn_chunk_size = 512;
-+	while (geo->eccn_chunk_size < mtd->oobsize) {
-+		geo->ecc0_chunk_size *= 2; /* keep C >= O */
-+		geo->eccn_chunk_size *= 2; /* keep C >= O */
- 		geo->gf_len = 14;
- 	}
- 
--	geo->ecc_chunk_count = mtd->writesize / geo->ecc_chunk_size;
-+	geo->ecc_chunk_count = mtd->writesize / geo->eccn_chunk_size;
- 
- 	/* We use the same ECC strength for all chunks. */
- 	geo->ecc_strength = get_ecc_strength(this);
-@@ -864,7 +869,7 @@ static int gpmi_raw_len_to_len(struct gpmi_nand_data *this, int raw_len)
- 	 * we are passed in exec_op. Calculate the data length from it.
- 	 */
- 	if (this->bch)
--		return ALIGN_DOWN(raw_len, this->bch_geometry.ecc_chunk_size);
-+		return ALIGN_DOWN(raw_len, this->bch_geometry.eccn_chunk_size);
- 	else
- 		return raw_len;
- }
-@@ -1256,7 +1261,7 @@ static int gpmi_count_bitflips(struct nand_chip *chip, void *buf, int first,
- 
- 			/* Read ECC bytes into our internal raw_buffer */
- 			offset = nfc_geo->metadata_size * 8;
--			offset += ((8 * nfc_geo->ecc_chunk_size) + eccbits) * (i + 1);
-+			offset += ((8 * nfc_geo->eccn_chunk_size) + eccbits) * (i + 1);
- 			offset -= eccbits;
- 			bitoffset = offset % 8;
- 			eccbytes = DIV_ROUND_UP(offset + eccbits, 8);
-@@ -1293,16 +1298,16 @@ static int gpmi_count_bitflips(struct nand_chip *chip, void *buf, int first,
- 			if (i == 0) {
- 				/* The first block includes metadata */
- 				flips = nand_check_erased_ecc_chunk(
--						buf + i * nfc_geo->ecc_chunk_size,
--						nfc_geo->ecc_chunk_size,
-+						buf + i * nfc_geo->eccn_chunk_size,
-+						nfc_geo->eccn_chunk_size,
- 						eccbuf, eccbytes,
- 						this->auxiliary_virt,
- 						nfc_geo->metadata_size,
- 						nfc_geo->ecc_strength);
- 			} else {
- 				flips = nand_check_erased_ecc_chunk(
--						buf + i * nfc_geo->ecc_chunk_size,
--						nfc_geo->ecc_chunk_size,
-+						buf + i * nfc_geo->eccn_chunk_size,
-+						nfc_geo->eccn_chunk_size,
- 						eccbuf, eccbytes,
- 						NULL, 0,
- 						nfc_geo->ecc_strength);
-@@ -1331,20 +1336,21 @@ static void gpmi_bch_layout_std(struct gpmi_nand_data *this)
++		geo->ecc_chunk_count,
++		geo->payload_size,
++		geo->auxiliary_size,
++		geo->auxiliary_status_offset,
++		geo->block_mark_byte_offset,
++		geo->block_mark_bit_offset,
++		bbm_chunk,
++		geo->ecc_for_meta);
++
++	return 0;
++}
++
+ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ {
  	struct bch_geometry *geo = &this->bch_geometry;
- 	unsigned int ecc_strength = geo->ecc_strength >> 1;
- 	unsigned int gf_len = geo->gf_len;
--	unsigned int block_size = geo->ecc_chunk_size;
-+	unsigned int block0_size = geo->ecc0_chunk_size;
-+	unsigned int blockn_size = geo->eccn_chunk_size;
+@@ -550,6 +711,14 @@ static int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ 			return 0;
+ 	}
  
- 	this->bch_flashlayout0 =
- 		BF_BCH_FLASH0LAYOUT0_NBLOCKS(geo->ecc_chunk_count - 1) |
- 		BF_BCH_FLASH0LAYOUT0_META_SIZE(geo->metadata_size) |
- 		BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength, this) |
- 		BF_BCH_FLASH0LAYOUT0_GF(gf_len, this) |
--		BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size, this);
-+		BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block0_size, this);
++	/* for large oob nand */
++	if (mtd->oobsize > 1024) {
++		dev_dbg(this->dev, "use large oob bch geometry\n");
++		err = set_geometry_for_large_oob(this);
++		if (!err)
++			return 0;
++	}
++
+ 	/* otherwise use the minimum ecc nand chip required */
+ 	dev_dbg(this->dev, "use minimum ecc bch geometry\n");
+ 	err = set_geometry_by_ecc_info(this, requirements->strength,
+@@ -1433,24 +1602,44 @@ static int gpmi_ecc_read_subpage(struct nand_chip *chip, uint32_t offs,
+ 		}
+ 	}
  
- 	this->bch_flashlayout1 =
- 		BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(geo->page_size) |
- 		BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength, this) |
- 		BF_BCH_FLASH0LAYOUT1_GF(gf_len, this) |
--		BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this);
-+		BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(blockn_size, this);
- }
++	/*
++	 * if there is an ECC dedicate for meta:
++	 * - need to add an extra ECC size when calculating col and page_size,
++	 *   if the meta size is NOT zero.
++	 * - ecc0_chunk size need to set to the same size as other chunks,
++	 *   if the meta size is zero.
++	 */
++
+ 	meta = geo->metadata_size;
+ 	if (first) {
+-		col = meta + (size + ecc_parity_size) * first;
++		if (geo->ecc_for_meta)
++			col = meta + ecc_parity_size
++				+ (size + ecc_parity_size) * first;
++		else
++			col = meta + (size + ecc_parity_size) * first;
++
+ 		meta = 0;
+ 		buf = buf + first * size;
+ 	}
  
- static int gpmi_ecc_read_page(struct nand_chip *chip, uint8_t *buf,
-@@ -1444,12 +1450,12 @@ static int gpmi_ecc_read_subpage(struct nand_chip *chip, uint32_t offs,
+ 	ecc_parity_size = geo->gf_len * geo->ecc_strength / 8;
+-
+ 	n = last - first + 1;
+-	page_size = meta + (size + ecc_parity_size) * n;
++
++	if (geo->ecc_for_meta && meta)
++		page_size = meta + ecc_parity_size
++			    + (size + ecc_parity_size) * n;
++	else
++		page_size = meta + (size + ecc_parity_size) * n;
++
+ 	ecc_strength = geo->ecc_strength >> 1;
+ 
+-	this->bch_flashlayout0 = BF_BCH_FLASH0LAYOUT0_NBLOCKS(n - 1) |
++	this->bch_flashlayout0 = BF_BCH_FLASH0LAYOUT0_NBLOCKS(
++		(geo->ecc_for_meta ? n : n - 1)) |
  		BF_BCH_FLASH0LAYOUT0_META_SIZE(meta) |
  		BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength, this) |
  		BF_BCH_FLASH0LAYOUT0_GF(geo->gf_len, this) |
--		BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(geo->ecc_chunk_size, this);
-+		BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(geo->eccn_chunk_size, this);
+-		BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(geo->eccn_chunk_size, this);
++		BF_BCH_FLASH0LAYOUT0_DATA0_SIZE((geo->ecc_for_meta ?
++		0 : geo->ecc0_chunk_size), this);
  
  	this->bch_flashlayout1 = BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(page_size) |
  		BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength, this) |
- 		BF_BCH_FLASH0LAYOUT1_GF(geo->gf_len, this) |
--		BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(geo->ecc_chunk_size, this);
-+		BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(geo->eccn_chunk_size, this);
- 
- 	this->bch = true;
- 
-@@ -1618,7 +1624,7 @@ static int gpmi_ecc_read_page_raw(struct nand_chip *chip, uint8_t *buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 	struct bch_geometry *nfc_geo = &this->bch_geometry;
--	int eccsize = nfc_geo->ecc_chunk_size;
-+	int eccsize = nfc_geo->eccn_chunk_size;
- 	int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
- 	u8 *tmp_buf = this->raw_buffer;
- 	size_t src_bit_off;
-@@ -1703,7 +1709,7 @@ static int gpmi_ecc_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 	struct bch_geometry *nfc_geo = &this->bch_geometry;
--	int eccsize = nfc_geo->ecc_chunk_size;
-+	int eccsize = nfc_geo->eccn_chunk_size;
- 	int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
- 	u8 *tmp_buf = this->raw_buffer;
- 	uint8_t *oob = chip->oob_poi;
-@@ -2077,7 +2083,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
- 	ecc->read_oob_raw = gpmi_ecc_read_oob_raw;
- 	ecc->write_oob_raw = gpmi_ecc_write_oob_raw;
- 	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
--	ecc->size	= bch_geo->ecc_chunk_size;
-+	ecc->size	= bch_geo->eccn_chunk_size;
- 	ecc->strength	= bch_geo->ecc_strength;
- 	mtd_set_ooblayout(mtd, &gpmi_ooblayout_ops);
- 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index 5e1c3ddae5f8..5b217feb0ec1 100644
+index 5b217feb0ec1..c3ff56ac62a7 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -30,9 +30,9 @@ struct resources {
-  * @page_size:                The size, in bytes, of a physical page, including
-  *                            both data and OOB.
-  * @metadata_size:            The size, in bytes, of the metadata.
-- * @ecc_chunk_size:           The size, in bytes, of a single ECC chunk. Note
-- *                            the first chunk in the page includes both data and
-- *                            metadata, so it's a bit larger than this value.
-+ * @ecc0_chunk_size:          The size, in bytes, of a first ECC chunk.
-+ * @eccn_chunk_size:          The size, in bytes, of a single ECC chunk after
-+ *                            the first chunk in the page.
-  * @ecc_chunk_count:          The number of ECC chunks in the page,
-  * @payload_size:             The size, in bytes, of the payload buffer.
-  * @auxiliary_size:           The size, in bytes, of the auxiliary buffer.
-@@ -48,7 +48,8 @@ struct bch_geometry {
- 	unsigned int  ecc_strength;
- 	unsigned int  page_size;
- 	unsigned int  metadata_size;
--	unsigned int  ecc_chunk_size;
-+	unsigned int  ecc0_chunk_size;
-+	unsigned int  eccn_chunk_size;
- 	unsigned int  ecc_chunk_count;
- 	unsigned int  payload_size;
- 	unsigned int  auxiliary_size;
+@@ -42,6 +42,8 @@ struct resources {
+  *                            which the underlying physical block mark appears.
+  * @block_mark_bit_offset:    The bit offset into the ECC-based page view at
+  *                            which the underlying physical block mark appears.
++ * @ecc_for_meta:             The flag to indicate if there is a dedicate ecc
++ *                            for meta.
+  */
+ struct bch_geometry {
+ 	unsigned int  gf_len;
+@@ -56,6 +58,7 @@ struct bch_geometry {
+ 	unsigned int  auxiliary_status_offset;
+ 	unsigned int  block_mark_byte_offset;
+ 	unsigned int  block_mark_bit_offset;
++	unsigned int  ecc_for_meta; /* ECC for meta data */
+ };
+ 
+ /**
 -- 
 2.17.1
 
