@@ -4,64 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0578AC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 09:42:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0EF6C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 09:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=N7UGIz7fVB2pmPRNXMeDg9ZNdjSNX5E83L/XGN8PgEg=; b=JpSxvHW6sXnmCam9tsEBfl5oPt
-	E9eQMqJCpS+q4qHYX197XDMt1h0GvR7hcfgT2jGbfmbG9JJDCVEP53twPUrUZsps4VYrvvz4vX1IC
-	iaGc2NToNNEn46d2SJLtFX9u1oCW+EllW3sg5ZF42jm6WNwZ4/6Btmgsv+v3NYC3xHi+UK7xMxpFd
-	u9rIy0xDh+LzmKafiWmBQewCUiOyvQbZ26xgsxJXPte9n+O68RzzVNGqWn/2VdyLdEgpzzDFg3vL1
-	aDxGqjdWc0HFcpzwC1sP4tmvQ3HYW66MFInUNHVf4DwfSz7MEvn11B1MsLWr9Lm/sTeRQsZNkkjps
-	0QVBpplA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Q8nZzDGIv6eDIwVj96fnpMQWT3ZZaUNVtZM7AlXPW6k=; b=xjwp62Dt4s+DVC
+	99+5KjgeokgR2gnuDdrZzn40Qi47GJctmvwQa39rK9VFtl7FTYIHgzcQxrOx/8/SD3pj8OIeQ3E5V
+	nLQsbyz4Y+DUc9vLF5NEgQMzNWrSJswawKdJxoSCgjXyNK8pFEoYyT3l8NABpG+V7sUZaU9yaxYlz
+	K6lpIkywHDk09JMeg1uqD9WSdLDSPeDd5Kl+jaEmLDDdFgiJJNLxE/IpEJzTB69Qp+Or7077Q5LpP
+	XEGc3HBuq0cTOlVjr5x94eIc4yPC4RAyAb3Aga/edNTdEkz27A4EXMX+uq1SGaFmuNmQe2c112KgK
+	BkUfJJADEcFiP3xNB55g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neD2Y-00D03k-Nd; Tue, 12 Apr 2022 09:42:26 +0000
-Received: from www.zeus03.de ([194.117.254.33] helo=mail.zeus03.de)
+	id 1neD5g-00D0t2-Lo; Tue, 12 Apr 2022 09:45:40 +0000
+Received: from mail-qt1-f178.google.com ([209.85.160.178])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neD2U-00Czzf-Rl
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 09:42:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=k1; bh=/gXUO03nZs5ebrOzcOsVdIdl53Fr
- WrU9ROXrk54ZXmQ=; b=y8fK2ZqQ0qZhKrAAy0b8yau0wzvfPfhqtXNe8mTnTQlp
- +Q4R/TpV+XThrTJMk3fWmqRRo+d8qI08xvc2HvMQoszleAmz8KC9kEXPBfCR7lwZ
- JkwYJT+J9z2hDI7kFNQ2TqbXgXQ3EYCfAYNmRNY3VnLWfiY0YF6fUgguF5SQSow=
-Received: (qmail 985089 invoked from network); 12 Apr 2022 11:42:11 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted,
- authenticated); 12 Apr 2022 11:42:11 +0200
-X-UD-Smtp-Session: l3s3148p1@aYgJ4HHcCucgAQnoAGZ4AFi7qjeMIP6q
-Date: Tue, 12 Apr 2022 11:42:11 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>,
- Duc Nguyen <duc.nguyen.ub@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ id 1neD5d-00D0rW-FL
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 09:45:38 +0000
+Received: by mail-qt1-f178.google.com with SMTP id z14so4519584qto.5
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2022 02:45:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=BYcXejDmOeWgzk9C0JmypYS2H5WpNhj4UivpuQIYqc4=;
+ b=m0qub+pHwUVRjSVtzpSiLu8fZQ0J0sinSPFdX6gmUfre4/IBJzJmjdJR4wnNlTbUUC
+ iFkKa7jPRiD7SGTsvWiYlCRSUEnEf+NCTGaAn9TG1aKJbNRymTql3VzPYStmgkp71JQC
+ CsCQXoh26Zu701RLUJQrA5wvtTfkMwYsndOHyOh5jMHIiI9k0uZuWt04Qm/KYBATFAPL
+ 4Jidx/cDQhPlsFRR5Xl0u0AOMGideyvLVNJTkkOYS/zgxhFtcE7j9FCXBq+yfQqY4ojq
+ an183w0eDudNSPO19pB7MAN59S1MV2SOLZYkBWK6xDcxoRtZZxzascJ7aLA/sbHLMSME
+ oMLw==
+X-Gm-Message-State: AOAM53227Ywbe6HcuNHT6cUewR6KzGzqsUNLpC8Um/qzNi9qOc7Bkn6B
+ i1/gwPfvbA1Oh4HAilpcfzpVgIEGYyFpl7zy
+X-Google-Smtp-Source: ABdhPJyvO+euVt+oo2sUGS0EKuKLsdaSKmaLd0UYeEaz6Ga9Nib1D9eysi4r53qdUiA1SFEL52coBg==
+X-Received: by 2002:a05:622a:5c6:b0:2e0:68ec:3bb3 with SMTP id
+ d6-20020a05622a05c600b002e068ec3bb3mr2558122qtb.207.1649756734395; 
+ Tue, 12 Apr 2022 02:45:34 -0700 (PDT)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com.
+ [209.85.128.176]) by smtp.gmail.com with ESMTPSA id
+ p66-20020a374245000000b0069c387c5449sm1565858qka.9.2022.04.12.02.45.33
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 12 Apr 2022 02:45:34 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id
+ 00721157ae682-2ebebe631ccso110360577b3.4
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2022 02:45:33 -0700 (PDT)
+X-Received: by 2002:a81:5210:0:b0:2ef:21e3:54dd with SMTP id
+ g16-20020a815210000000b002ef21e354ddmr2967434ywb.438.1649756733392; Tue, 12
+ Apr 2022 02:45:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <19358863deae03b1b26f473e878305a1c6e40d19.1649681638.git.geert+renesas@glider.be>
+ <YlVJc3z1xXT2emIc@ninjato>
+In-Reply-To: <YlVJc3z1xXT2emIc@ninjato>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 12 Apr 2022 11:45:22 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUGkba3hiRJPEw26oBdc6_MK_eBO==Z9QeinaoeZv8Qbw@mail.gmail.com>
+Message-ID: <CAMuHMdUGkba3hiRJPEw26oBdc6_MK_eBO==Z9QeinaoeZv8Qbw@mail.gmail.com>
 Subject: Re: [PATCH] memory: renesas-rpc-if: Simplify single/double data
  register access
-Message-ID: <YlVJc3z1xXT2emIc@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Sergey Shtylyov <s.shtylyov@omp.ru>,
- Duc Nguyen <duc.nguyen.ub@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <19358863deae03b1b26f473e878305a1c6e40d19.1649681638.git.geert+renesas@glider.be>
-MIME-Version: 1.0
-In-Reply-To: <19358863deae03b1b26f473e878305a1c6e40d19.1649681638.git.geert+renesas@glider.be>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Duc Nguyen <duc.nguyen.ub@renesas.com>, 
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
+ Andrew Gabbasov <andrew_gabbasov@mentor.com>, 
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
+ MTD Maling List <linux-mtd@lists.infradead.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220412_024224_001259_A26D35BC 
-X-CRM114-Status: GOOD (  10.59  )
+X-CRM114-CacheID: sfid-20220412_024537_552690_F8DC5334 
+X-CRM114-Status: GOOD (  23.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,76 +88,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5975333972635873256=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Wolfram,
 
---===============5975333972635873256==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="OELpkJhUqDCsaz5D"
-Content-Disposition: inline
+On Tue, Apr 12, 2022 at 11:42 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> On Mon, Apr 11, 2022 at 02:55:29PM +0200, Geert Uytterhoeven wrote:
+> > For manual write and read, factor out the common access to the first
+> > data register by keeping track of the current data pointer.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Works fine with reading/writing on a V3U, so:
+>
+> Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>
+> I agree the code is more concise. I am not sure, though, if it is really
+> more readable. But I don't mind very much, so except for a small nit:
+>
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
+Thanks!
 
---OELpkJhUqDCsaz5D
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > +                     if (nbytes == 8)
+> > +                             regmap_write(rpc->regmap, RPCIF_SMWDR1, *p++);
+> > +                     regmap_write(rpc->regmap, RPCIF_SMWDR0, *p++);
+>
+> Last '++' can be omitted?
 
-On Mon, Apr 11, 2022 at 02:55:29PM +0200, Geert Uytterhoeven wrote:
-> For manual write and read, factor out the common access to the first
-> data register by keeping track of the current data pointer.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I know. But I think it looks nicer this way ;-)
+The compiler doesn't care anyway.
 
-Works fine with reading/writing on a V3U, so:
+Gr{oetje,eeting}s,
 
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+                        Geert
 
-I agree the code is more concise. I am not sure, though, if it is really
-more readable. But I don't mind very much, so except for a small nit:
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-> +			if (nbytes =3D=3D 8)
-> +				regmap_write(rpc->regmap, RPCIF_SMWDR1, *p++);
-> +			regmap_write(rpc->regmap, RPCIF_SMWDR0, *p++);
-
-Last '++' can be omitted?
-
-
---OELpkJhUqDCsaz5D
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmJVSW8ACgkQFA3kzBSg
-KbYcQw//didRmuvAcnLljb4mtQ3VPVMZBcqWDjRgDKtOO8dvvB1ikHVUDTCWDQbS
-++a0GC/UfJ9vlC+1Q7Qi6+QeRfA9UEE7BWjGpleY25NNW+BHqAidlG8vYQYQRW8v
-axaCY+ifH5k4ui1j3w0peVy2HZp4ruVROEKhOSZP06gHGIg+rTG27ZUPW1/koKd8
-4uvyZxaFkv6eqsWUOp7wy3SYBv6lwaNl111u6DdmxMRW/iSYlC220HQKmDFlIr94
-aNcHTOjFHyuP3RqNoxqPTKEilUKnaM6Brvu9f2RxThL6qt+Mks6AvkMwvbYxnzan
-7X7PWhj8NNiW0BxmoCPgqAp6GMSq0saZr4zO7cXeEa5Kxf5gyb2u+qM+V1bK+WpK
-Io4RgYLSss3zONMx8dB4EApzBHga1pk0Z7bssK23GrMHhq52w40ntbLhpg0Ep7PS
-NEQ2HhyGi43iH3/hufjAbX+tkmeRmUjrPC4xEA9QGGDyMVoVx379KmYhXQjixAar
-B6b675RYUQ7zFZ5bd3sgZaTTsOlhEq7a5tdzesC7b1w2dPTFGXnBeRg8IniSsP/R
-rsZFmvPEVb39UlvqoEoKgjDI+EJqfVVo5RhacONnCVYAuyN8oJn2ObtOoe31Y8rn
-Lg6exmSkJlMZsFnHzG1GBjOtUtXzk8cyuVSN1Vzv6SR30EfnoS8=
-=Kp1i
------END PGP SIGNATURE-----
-
---OELpkJhUqDCsaz5D--
-
-
---===============5975333972635873256==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============5975333972635873256==--
-
