@@ -4,89 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2067C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 12:36:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E3CAC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 13:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AX+yLOPDNuIZOAU/J1SIgkXaLfbydx+QkXX22qO42u8=; b=XcuTk27xxXVsnG
-	wmmljxJoeLi7xr9BOXnFnKnd7ofIRw8zjeK93gBbxhM57J+S18W6GVY2iaOkxjpOak/fJPpFeY13m
-	RMt6WxYXnOY6OkWxZzGiCgg5ttUMhbJYL1ESjgOKOrcRc5ljFep50fgB41hqrNrDiHIOFoGfupe8H
-	Xe8dRdMli3yC4ozjxjrvHBjv32PCx4/Bzw2k2OVyDHNeRAaG0K7ST9WVTo3knSvUaDNnpkiuEYmbs
-	Vjd0JgpG+PUCBs4+HGD0OnoCwP59/OtL/hkl5BdcNQL1T/vQ1hjR7XebzscWtyWAjIrEjTIxzUe82
-	yDMONL1M55UYy1PdEkuw==;
+	List-Owner; bh=WWsgfEAQHm54Ng0u2tPdvrmxn3+T3ltIDzMXNSihheU=; b=vd/2EWzJ5+qC71
+	CUxZm+Zr/UjFkLiJUgVxRQXFaN3PZX/8FBjjKb2ejThe9K/6IwOcOkH43DUu6bHW3lZDX/HZJbpSj
+	s/WiLPBOnD3bRD7Gx3WbDngJWopkmUieLpetb26MqD5Ed3OVyl4DLwX+C4CzHYc+0u72SE+UM2WMv
+	EG6pQvICNTpKN2WfXUVlMX3xn+X9JE3x856JeXZaohyCROB9v+KgzppVm+DRzIknNzhWSqyRTNws0
+	Rg0JCgHBtLLGi29APgMC+x04KfyypTJLIHWEvqzgZqhiwJhAcs3BVLJZOPmyO561l05GieldXOcRs
+	o67YBTXtlUSutGWeL0uA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neFjt-00EBP4-MF; Tue, 12 Apr 2022 12:35:21 +0000
-Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
+	id 1neGxO-00Ei46-T7; Tue, 12 Apr 2022 13:53:22 +0000
+Received: from smtp2.axis.com ([195.60.68.18])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neFUk-00E3rn-96
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 12:19:43 +0000
-Received: by mail-ej1-x62c.google.com with SMTP id r13so36989780ejd.5
- for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2022 05:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :references:from:in-reply-to:content-transfer-encoding;
- bh=B9+cI4IoL52revKm+mDw49Lnf0IFiGCiBvB1l4R4Zhs=;
- b=A6ZS7Z8yI1gNu2iwhHBbnSZ0QbwqlDVmSlNIgYrboFMCpplzOT5VRWB6uCvnftD4ED
- rA9JU84nd4w1lZ87TUCdGOodAaN/hWWeUmGfOWIikMdV2c6IrLSBBnSZGy9pETQxfNpv
- rEpYrUjQ3oi2z2VRoXouRjXsigMtkrGChaDBcTNBMnK74w713fbtoc/HFrb9RX1i7eEe
- TUsREoOo/BgbPe9u7sk1tsBXmY6a6VGYE0Yv5/t9mA9o7vClx/OIL7TxOg1qqDZNuRiJ
- 47btEH27lFwN0nUpE2/xnkKki+WPoQt3EVRqd240hjir6hDDUH32RepsJNlVe395oYTD
- X+wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:references:from:in-reply-to
- :content-transfer-encoding;
- bh=B9+cI4IoL52revKm+mDw49Lnf0IFiGCiBvB1l4R4Zhs=;
- b=0JrsOGWYJ4DjWjT3viSt9PzHQ1pINRWd/cNZ2n/nyqkaQi1HqV0Z/elMAOYMNv12QJ
- Dh/ZkV7s7KIkYDvrvugR2gWgobHHMs2COCRu4beTlehCllR56XbYuiQg1C/eVJKMQKHN
- HyY8vZ+kQw3NKpUzojv9uS+X0px72xXuFcLlWbktlWRubt26fiD0GMVzO5/irSApsjIR
- +bZJjfCMRbBDfZyd4Pn2RVTe2urdQP/t+/8WHLC8OcXSxsclwOxlUYb1VT0c9Z+X4Dhq
- SkaTdUiJVmVwu/AkTXX51B2Q6mLaUxvMiZOqz2URkVf0JVLSjEd0slUpdtzCApyBvCcW
- F2ug==
-X-Gm-Message-State: AOAM532Cp6QVaY7aZenBY49illvc0wC5Xu85rz6bU67Eswli0K6QEMZ7
- m4soDqeQ19dIUKM266waN8dAGQ==
-X-Google-Smtp-Source: ABdhPJxP5FPJxSzsun3ev7AJry3+ba7d3iA+/B0jezlSiH093DYefWri2aUuJXT5chMPrfaGPZCtxQ==
-X-Received: by 2002:a17:906:7307:b0:6da:92e1:9c83 with SMTP id
- di7-20020a170906730700b006da92e19c83mr34466390ejc.459.1649765978985; 
- Tue, 12 Apr 2022 05:19:38 -0700 (PDT)
-Received: from [192.168.0.195] (xdsl-188-155-201-27.adslplus.ch.
- [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
- g14-20020a50e04e000000b0041cd8db541fsm12509112edl.74.2022.04.12.05.19.38
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 12 Apr 2022 05:19:38 -0700 (PDT)
-Message-ID: <16750a7d-de4b-0bba-9513-c45560d279ba@linaro.org>
-Date: Tue, 12 Apr 2022 14:19:37 +0200
+ id 1neGxJ-00Ei05-7f
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 13:53:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1649771597;
+ x=1681307597; h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=LejCdvhc0hzLl8lZPhOSbxuyu0T2rEaAYkiZnsIK59M=;
+ b=Xpl8Tl9c4Dfl8gLllu+N/2Y8W7FTusF9hUvgPn003vGe+kERdJM+qzur
+ ibmmQoao4nrGMJzCfTn5WD2YA1A7whCtNjyRqU6etiLaS9YfNdDvZX3ed
+ 71pErzIzLgvsvtEaiOATuLyDHulyT6LedlCZzlGIJ9DbIUSvtiPXgtqH6
+ KLK/vTk+Hk6I7hX5qhSQtj22QRwtcL8t+CTe/XEMEfw6eXwAkNp5lS6Da
+ 6lzt3PGheH/mLBCI1A3fx5KGQKgPOkLOU/pe8p1BTGHAinaiE/E1Az/hy
+ 483+H2R3KDHthYlW4URe4q46aLpsh9+3jxtaAggwF4sXF0BHQW5v4tP4b g==;
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+To: <vigneshr@ti.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
+ <joern@lazybastard.org>
+CC: <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <robh+dt@kernel.org>, <krzk+dt@kernel.org>, <frowand.list@gmail.com>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 4/4] mtd: phram: Allow cached mappings
+Date: Tue, 12 Apr 2022 15:53:02 +0200
+Message-ID: <20220412135302.1682890-5-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
+References: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] memory: renesas-rpc-if: Simplify single/double data
- register access
-Content-Language: en-US
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Duc Nguyen <duc.nguyen.ub@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <19358863deae03b1b26f473e878305a1c6e40d19.1649681638.git.geert+renesas@glider.be>
- <YlVJc3z1xXT2emIc@ninjato>
- <CAMuHMdUGkba3hiRJPEw26oBdc6_MK_eBO==Z9QeinaoeZv8Qbw@mail.gmail.com>
- <YlVLEnRaARVmWZnZ@ninjato>
- <CAMuHMdWAQ08K6NCdBGrY+-vBrsTQHi6UHaER4eCON1t9JEG1RA@mail.gmail.com>
- <YlVRw4ypp3+0Miz3@ninjato>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <YlVRw4ypp3+0Miz3@ninjato>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220412_051942_437030_3F10C6C8 
-X-CRM114-Status: GOOD (  10.75  )
+X-CRM114-CacheID: sfid-20220412_065317_644416_BC085D50 
+X-CRM114-Status: GOOD (  12.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,20 +69,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 12/04/2022 12:17, Wolfram Sang wrote:
-> 
->> But that's not what happened. I even compared the assembler output of
->> various solutions.
-> 
-> I am sure you did. I just said "it looks like..." to state a reason why
-> I don't think it looks prettier. But this turns to bike-shedding for me,
-> just keep it if everyone else is happy.
+Currently phram always uses ioremap(), but this is unnecessary when
+normal memory is used.  If the reserved-memory node does not specify the
+no-map property, indicating it should be mapped as system RAM and
+ioremap() cannot be used on it, use a cached mapping using
+memremap(MEMREMAP_WB) instead.
 
-I vote for removal of ++, because later someone might wonder why it was
-incremented even if not used.
+On one of my systems this improves read performance by ~70%.
 
-Best regards,
-Krzysztof
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ drivers/mtd/devices/phram.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 506e9edf5c85..89d74a1eff4f 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -34,6 +34,7 @@
+ struct phram_mtd_list {
+ 	struct mtd_info mtd;
+ 	struct list_head list;
++	bool cached;
+ };
+ 
+ static LIST_HEAD(phram_list);
+@@ -96,6 +97,7 @@ static int register_device(struct platform_device *pdev, const char *name,
+ 			   phys_addr_t start, size_t len, uint32_t erasesize)
+ {
+ 	struct device_node *np = pdev ? pdev->dev.of_node : NULL;
++	bool cached = np ? !of_property_read_bool(np, "no-map") : false;
+ 	struct phram_mtd_list *new;
+ 	int ret = -ENOMEM;
+ 
+@@ -103,8 +105,13 @@ static int register_device(struct platform_device *pdev, const char *name,
+ 	if (!new)
+ 		goto out0;
+ 
++	new->cached = cached;
++
+ 	ret = -EIO;
+-	new->mtd.priv = ioremap(start, len);
++	if (cached)
++		new->mtd.priv = memremap(start, len, MEMREMAP_WB);
++	else
++		new->mtd.priv = ioremap(start, len);
+ 	if (!new->mtd.priv) {
+ 		pr_err("ioremap failed\n");
+ 		goto out1;
+@@ -140,7 +147,7 @@ static int register_device(struct platform_device *pdev, const char *name,
+ 	return 0;
+ 
+ out2:
+-	iounmap(new->mtd.priv);
++	cached ? memunmap(new->mtd.priv) : iounmap(new->mtd.priv);
+ out1:
+ 	kfree(new);
+ out0:
+@@ -362,7 +369,7 @@ static int phram_remove(struct platform_device *pdev)
+ 	struct phram_mtd_list *phram = platform_get_drvdata(pdev);
+ 
+ 	mtd_device_unregister(&phram->mtd);
+-	iounmap(phram->mtd.priv);
++	phram->cached ? memunmap(phram->mtd.priv) : iounmap(phram->mtd.priv);
+ 	kfree(phram);
+ 
+ 	return 0;
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
