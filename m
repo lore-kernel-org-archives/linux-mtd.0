@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD158C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 13:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0112CC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 13:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6japhBJfH+ZVDFvFjLbIMetyRTPErg/8PWIcI2ctFjk=; b=FYqaRAMTI4rdEw
-	Kulp8EMzJonnyw6vpLxZLuqIXB3nGKVXF+4nDPdSoaCZZwJjx+E05Nu5jYmJ8y1RHOYkuif761tyj
-	DF6nAO4V2iE7/MqFgb/rYK8OtGwXGULEaCQVNi90BAOGXG2mN5yI1sThgZ2J9UiTTSQTSN38mLyqb
-	SNBZWrM8Ht5FwO7UsmQAW+rSDFOn+HyYuNdmI5eCVJnYDvVnFnCHF1aRJwV2NhKqOHiID5NucjLDE
-	oug3Gs/08Fk3FsDfoet46XbiwwTM8w+R+bBxEIb6uxvd/03oesd2g8xkhhMODPArGsn6MycpYZPAb
-	1b7gZ8mtszTsmL6Zhp4Q==;
+	List-Owner; bh=QONQcnGhCxpBFWkxcV86c5UbKNPHfr1KPuV5q1aOVl0=; b=exUqqf2Fknzsc1
+	ov8y5tiSk9p1I6o5QRsleKwahPe8bkzlDFqespTUzVreZfRD6ZVNG0cGj/Kv6EzkNjYfSQTvV9Dzz
+	Ng1YObTOLU4cuUbQg7CHnkynh0Y9UXwJJ57alc7iYSY+upYiMJsgYj7NwqjhMCRJIq9Q7W4fzbBzK
+	m1MWmTBx+zT1xuPGoOu5IImsGWP20u8eoYKu8vf5tXg8AQwPkZllnLM91HaNlNLFKb18YuqCyVAqm
+	16EAsmxytY4O+3m1lVvQG7pEreA8V7HNOrNhnAkwXfEd+X8Rxi7TBqThmf0FLxFJobSAWZptpmL45
+	RjXW7eJuKM9T0edIxBPA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neGxJ-00Ei1P-W1; Tue, 12 Apr 2022 13:53:18 +0000
+	id 1neGxQ-00Ei50-V0; Tue, 12 Apr 2022 13:53:24 +0000
 Received: from smtp2.axis.com ([195.60.68.18])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neGxE-00Ehx7-U4
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 13:53:15 +0000
+ id 1neGxK-00Ehx7-84
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 13:53:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1649771593;
- x=1681307593; h=from:to:cc:subject:date:message-id:in-reply-to:
+ d=axis.com; q=dns/txt; s=axis-central1; t=1649771598;
+ x=1681307598; h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=jupemliQ8dJWnscgwhDk1djkO0V1yNDM+5JWRzk83NE=;
- b=orNa5E0WJS90ORW603ZpkrDgp4SE9y31VRNwXX+7esmwsQLLYRSXDdrO
- 7zsHRjb77+aiX2lsOmAfh0n9pa8jV4jkOpCjPEBTUyzmRPjlCtB3hgv1U
- 0VPwTWK3Gmc+6h3CiJyjqia3pkp1UvtESWmJ6R0SpMFRJ1NsBIILr5YDk
- k5C56f0KrA7/tCjWWUrbwO7GbzdgUtfyOyC6sNTBQWM0KVBLRYauzeKED
- T3JP5MjMZ5jSP166UJpVgZex45dVyt2S/GlfuDx4vMhgWwdotvMRpe61f
- TkNfUmB1kUXbRLIL3ek2NtyiRL/264H2RY/By11s99t19iuKdpr023kdH Q==;
+ bh=1WivjijgLp2UzgX8W5CgQakX5pH8VwBd0BfhWfMFW+Q=;
+ b=h5rW0KPdAqdC7SUngbxGOAXNzjvdm/Ii1OGhMboHTB0ds+hoBAFF/6y1
+ HHwiosgcIcmXIFTkpMI3bdH3e3ImFDUGGeXIZWOYqT7kWq8PEj8y09r1l
+ 4g1POg2ocvuLRC2WlXDGp8jtYqb3y0tLY80PYPWtVn4C+qP5Fo5cBc7yF
+ 4uVbsGMb9XKKrCrqY4weNJFpJiCUtcWgn5xH9pJLX3zy5CPn/vmU60zV1
+ xV/q1Z1icNtezc+rbBc20uMNUzGOvV5yD+3GCfykhvId2MArBnVW5PhVz
+ qmf5epKmhUoXP1bgK3mHVAsUOld4l3klhJisfX3iZQwXPcbEe73DrBsT4 w==;
 From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 To: <vigneshr@ti.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
  <joern@lazybastard.org>
@@ -43,16 +43,16 @@ CC: <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>,
  <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
  <robh+dt@kernel.org>, <krzk+dt@kernel.org>, <frowand.list@gmail.com>,
  <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/4] dt-bindings: reserved-memory: Support MTD/block device
-Date: Tue, 12 Apr 2022 15:53:00 +0200
-Message-ID: <20220412135302.1682890-3-vincent.whitchurch@axis.com>
+Subject: [PATCH v3 3/4] mtd: phram: Allow probing via reserved-memory
+Date: Tue, 12 Apr 2022 15:53:01 +0200
+Message-ID: <20220412135302.1682890-4-vincent.whitchurch@axis.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
 References: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220412_065313_328169_148E9171 
-X-CRM114-Status: GOOD (  11.21  )
+X-CRM114-CacheID: sfid-20220412_065318_643320_64790BAB 
+X-CRM114-Status: GOOD (  17.97  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,80 +69,163 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add bindings to allow MTD/block devices to be used in reserved-memory
-regions using the "phram" (MTD in PHysical RAM) driver.
-
-This allows things like partitioning to be specified via the existing
-devicetree bindings.
+Allow phram to be probed from the devicetree.  It expects to be in a
+reserved-memory node as documented by the bindings.  This allows things
+like partitioning to be specified via the devicetree.
 
 Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 ---
 
 Notes:
     v3:
-    - Reword description.
-    
-    v2:
-    - Add note on what "phram" means.
-    - Use /schemas/mtd/mtd.yaml instead of relative pathUse /schemas/mtd/mtd.yaml instead of relative path.
+    - Add missing semicolon after MODULE_DEVICE_TABLE causing build errors on some
+      configs.
 
- .../bindings/reserved-memory/phram.yaml       | 47 +++++++++++++++++++
- 1 file changed, 47 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/reserved-memory/phram.yaml
+ drivers/mtd/devices/phram.c | 67 ++++++++++++++++++++++++++++++++++---
+ drivers/of/platform.c       |  1 +
+ 2 files changed, 64 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/reserved-memory/phram.yaml b/Documentation/devicetree/bindings/reserved-memory/phram.yaml
-new file mode 100644
-index 000000000000..6c4db28015f1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reserved-memory/phram.yaml
-@@ -0,0 +1,47 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/reserved-memory/phram.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index d503821a3e60..506e9edf5c85 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -27,6 +27,9 @@
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
+ #include <asm/div64.h>
++#include <linux/platform_device.h>
++#include <linux/of_address.h>
++#include <linux/of.h>
+ 
+ struct phram_mtd_list {
+ 	struct mtd_info mtd;
+@@ -89,8 +92,10 @@ static void unregister_devices(void)
+ 	}
+ }
+ 
+-static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
++static int register_device(struct platform_device *pdev, const char *name,
++			   phys_addr_t start, size_t len, uint32_t erasesize)
+ {
++	struct device_node *np = pdev ? pdev->dev.of_node : NULL;
+ 	struct phram_mtd_list *new;
+ 	int ret = -ENOMEM;
+ 
+@@ -119,13 +124,19 @@ static int register_device(char *name, phys_addr_t start, size_t len, uint32_t e
+ 	new->mtd.erasesize = erasesize;
+ 	new->mtd.writesize = 1;
+ 
++	mtd_set_of_node(&new->mtd, np);
 +
-+title: MTD/block device in RAM
+ 	ret = -EAGAIN;
+ 	if (mtd_device_register(&new->mtd, NULL, 0)) {
+ 		pr_err("Failed to register new device\n");
+ 		goto out2;
+ 	}
+ 
+-	list_add_tail(&new->list, &phram_list);
++	if (pdev)
++		platform_set_drvdata(pdev, new);
++	else
++		list_add_tail(&new->list, &phram_list);
 +
-+description: |
-+  Specifies that the reserved memory region can be used as an MTD or block
-+  device.
+ 	return 0;
+ 
+ out2:
+@@ -278,7 +289,7 @@ static int phram_setup(const char *val)
+ 		goto error;
+ 	}
+ 
+-	ret = register_device(name, start, len, (uint32_t)erasesize);
++	ret = register_device(NULL, name, start, len, (uint32_t)erasesize);
+ 	if (ret)
+ 		goto error;
+ 
+@@ -325,10 +336,54 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
+ module_param_call(phram, phram_param_call, NULL, NULL, 0200);
+ MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id phram_of_match[] = {
++	{ .compatible = "phram" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, phram_of_match);
++#endif
 +
-+  The "phram" node is named after the "MTD in PHysical RAM" driver which
-+  provides an implementation of this functionality in Linux.
++static int phram_probe(struct platform_device *pdev)
++{
++	struct resource *res;
 +
-+maintainers:
-+  - Vincent Whitchurch <vincent.whitchurch@axis.com>
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -ENOMEM;
 +
-+allOf:
-+  - $ref: "reserved-memory.yaml"
-+  - $ref: "/schemas/mtd/mtd.yaml"
++	/* mtd_set_of_node() reads name from "label" */
++	return register_device(pdev, NULL, res->start, resource_size(res),
++			       PAGE_SIZE);
++}
 +
-+properties:
-+  compatible:
-+    const: phram
++static int phram_remove(struct platform_device *pdev)
++{
++	struct phram_mtd_list *phram = platform_get_drvdata(pdev);
 +
-+  reg:
-+    description: region of memory that can be used as an MTD/block device
++	mtd_device_unregister(&phram->mtd);
++	iounmap(phram->mtd.priv);
++	kfree(phram);
 +
-+required:
-+  - compatible
-+  - reg
++	return 0;
++}
 +
-+unevaluatedProperties: false
++static struct platform_driver phram_driver = {
++	.probe		= phram_probe,
++	.remove		= phram_remove,
++	.driver		= {
++		.name		= "phram",
++		.of_match_table	= of_match_ptr(phram_of_match),
++	},
++};
+ 
+ static int __init init_phram(void)
+ {
+-	int ret = 0;
++	int ret;
 +
-+examples:
-+  - |
-+    reserved-memory {
-+        #address-cells = <1>;
-+        #size-cells = <1>;
++	ret = platform_driver_register(&phram_driver);
++	if (ret)
++		return ret;
+ 
+ #ifndef MODULE
+ 	if (phram_paramline[0])
+@@ -336,12 +391,16 @@ static int __init init_phram(void)
+ 	phram_init_called = 1;
+ #endif
+ 
++	if (ret)
++		platform_driver_unregister(&phram_driver);
 +
-+        phram: flash@12340000 {
-+            compatible = "phram";
-+            label = "rootfs";
-+            reg = <0x12340000 0x00800000>;
-+        };
-+    };
+ 	return ret;
+ }
+ 
+ static void __exit cleanup_phram(void)
+ {
+ 	unregister_devices();
++	platform_driver_unregister(&phram_driver);
+ }
+ 
+ module_init(init_phram);
+diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+index a16b74f32aa9..55d62b82c650 100644
+--- a/drivers/of/platform.c
++++ b/drivers/of/platform.c
+@@ -509,6 +509,7 @@ EXPORT_SYMBOL_GPL(of_platform_default_populate);
+ 
+ #ifndef CONFIG_PPC
+ static const struct of_device_id reserved_mem_matches[] = {
++	{ .compatible = "phram" },
+ 	{ .compatible = "qcom,rmtfs-mem" },
+ 	{ .compatible = "qcom,cmd-db" },
+ 	{ .compatible = "qcom,smem" },
 -- 
 2.34.1
 
