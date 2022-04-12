@@ -4,81 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED1DC4332F
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 06:37:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0A2BC433FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 07:07:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BsujO7ViGBPWeiOUmROrFBR4pBIq4Nrx+v75gk0bkNw=; b=BlQAr1T5xPjbqi
-	ipBhaFPLpTH5aeJvFJvyhgAs67t7Nm/nSbPw/CYYIJIAes99b0RVI+XSim4tOxsYsSXPEqkVCiJNp
-	qADBIBBs7IB+J/cjd0aKdtdOBczhbTMSCf3gR4Qve5ovDnT2LX0ThnvNHg5PqS88PWk/wmxSp31da
-	J9vMwDCRGQvgrfJV1GpkzRCC3dpUVeszIVk61Oxbe5lyghI65pNlTgxoCy9/6mf3ZkMrPu/SLo1c7
-	M5dU2+Bn3Omk/n3PhAQDjxzHqn4vqW5dyprnoDuOTMKwpLqjdiEuEjYUthMmJnO6cNSA07BGSp0bq
-	DYy4HEy0IIojJmz9fThQ==;
+	List-Owner; bh=XTNCM2cQW6CXT0wiz9+EuF8P1idrhuThU17M7/EaQfY=; b=0gWPkS1oU5CeDO
+	GiPYRpEHAGHFSaWnUSn92mvfu2YV32cE+CihT0DBV9Pk1Kuq88BTfT6yCtzmRqcxuYKAlO5PZvmW7
+	Avt9BjEf+chsqOTb+WUIFObY4UfXJDcITKzEBv+5sNKUZHFK/xWL5KIYTghdqrZCzQgTBPqPEJtZI
+	hJhe+HUWEUCWgnwGUW6DE9SMPpyp0e8Bo0L292jbF+LxifsVyh3JKIs7qEpIt+59AFG7nSU9EthxD
+	MVoER4h1rf97Z0q9IndOSnGfT4ORm1fpMmzy8LBg/+RncJVybKz+D7ZZ5GZ9dqlrUUCg1mA6f5Dmy
+	20brmqaVKdHOs1//VnRg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neA9N-00Btye-5J; Tue, 12 Apr 2022 06:37:17 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1neAcE-00C3wK-7y; Tue, 12 Apr 2022 07:07:06 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neA9K-00Btvo-0F
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 06:37:15 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id
- a16-20020a17090a6d9000b001c7d6c1bb13so1835262pjk.4
- for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2022 23:37:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:subject:date:message-id:in-reply-to:references;
- bh=z9KCSsSOTorZ297IRaNBlVXKYcv73Yi8iB+F+B3CCNQ=;
- b=JmmcP1AtLg3fbaMnX+VVeF4cZ4XJEHNbYmBA124tHtTaz7JLrPIaoAmVjTv6WwP1lS
- yHVzSeQ4kZSs8V8Jqpvqd74EJ1cs7rdj/0KVQI9eTokFX3y+eBfRPtwSckN1oZgHR3Wl
- RsYgZwIhxmKI3pC0JNARPPOj8y5Vhb9Elxu9Y/nUqFu1dzndBz8f9JSYSC71euSjzFzo
- UObmYrjsaa/q8LknB3BSu0gZQPRp7nUBwgctAZlhxP02pJkORvNLAolvZ8NONJPWCWQ9
- k6aUXTmGfmOMBJ4k61QdA/ZWLd18YoiUIgLQYdXxIrgckWETDQ1ZEdkXVe+2PQJZhChW
- lB0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references;
- bh=z9KCSsSOTorZ297IRaNBlVXKYcv73Yi8iB+F+B3CCNQ=;
- b=vmqMGrmQBHcZtGqrIJQG6nhTzE+8gT5VC3/tGdZE8/pxTaIy4XTgTAT0EnNoXsiP2L
- CyYfnutJze6+YBOBWp7cflDSxove1KTebNA/5r4W7X8yVqmQBybhHOT0MTTyrYJRFdfd
- gg1c5PIs45XjG+vbO9V20ELsPNvtUmZp2iHEwrws7XuE6NQYyutcSb/q4MdIyU4JQXRG
- 3cgFd38znwzItp/dqPCiVh0CHuMi9ZqaCk2NpEvFCFczi3woIclaRxgTGNuUzEppAItV
- ss1nlGnCyA+ftlwar74WuJPYask3OdKoaMq9WBxDQkFZdQVHeFHkSQUomrOSgWVy2e1V
- dvMA==
-X-Gm-Message-State: AOAM5338J2TlY5gBinXrpuVEtMdhrFLgxBeeiDZ+i/VN/QjhlizP/4k5
- eucnif1qrzfrCrxNsWNn6Rc=
-X-Google-Smtp-Source: ABdhPJxbRo2HxccOLyjPF69o/uFLKLEC2j4IdcjTAgHfPDXjQ0DQp/HOEXokeWC72a2MvL80rsvHbQ==
-X-Received: by 2002:a17:902:8e82:b0:151:6f68:7088 with SMTP id
- bg2-20020a1709028e8200b001516f687088mr37030839plb.11.1649745430901; 
- Mon, 11 Apr 2022 23:37:10 -0700 (PDT)
-Received: from localhost.localdomain ([159.226.95.43])
- by smtp.googlemail.com with ESMTPSA id
- nv11-20020a17090b1b4b00b001c71b0bf18bsm1618768pjb.11.2022.04.11.23.37.08
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 11 Apr 2022 23:37:10 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miaoqian Lin <linmq006@gmail.com>,
- Paul Cercueil <paul@crapouillou.net>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Bastian Hecht <hechtb@googlemail.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: rawnand: Fix return value check of
+ id 1neAcA-00C3ot-VA
+ for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 07:07:05 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id D03D2100006;
+ Tue, 12 Apr 2022 07:06:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1649747213;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=hHE9xZlRw6yCvZ9NF+G39h3IwPXo9JEMBwpXiVM9BZY=;
+ b=pop483FddIsrAJGnsnh4fpMhHQtW9fV5e+RCouMqROZqVSvYzfxHBAg/OdfnS6aIQJPDL6
+ Xa8gFv8mzozSV0dnTOAn/eKoVLCEAuf34G2l+3xQsuQPvxb2EJYhpjqD2yQKN+HBB2/XDz
+ BEcUjiLn3nvM6XkRdIHOBmnjCdH8J2lJ/3jL3c4kRweGp8ZWuKOto11K4N5ZN2cnJnuJsf
+ lip2hfwR/6V6rcfKo9PhxpU3G7o/S/5cotLqIAwMNKMo89eRFLwl5tBInVnQlUtACV017C
+ j0cEVktrqX1+sHtiCaIBbUg2ZuJqN0+EV3LqRQVZlUWkctqlRo9GvuicB4L5Og==
+Date: Tue, 12 Apr 2022 09:06:49 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Miaoqian Lin <linmq006@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Pratyush Yadav <p.yadav@ti.com>, Paul Cercueil
+ <paul@crapouillou.net>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Bastian Hecht <hechtb@googlemail.com>, Artem Bityutskiy
+ <artem.bityutskiy@linux.intel.com>, Guennadi Liakhovetski
+ <g.liakhovetski@gmx.de>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: Fix return value check of
  wait_for_completion_timeout
-Date: Tue, 12 Apr 2022 06:36:52 +0000
-Message-Id: <20220412063703.8537-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <202204121253.NcZifMQi-lkp@intel.com>
+Message-ID: <20220412090649.33bb3f8b@xps13>
+In-Reply-To: <20220412063703.8537-1-linmq006@gmail.com>
 References: <202204121253.NcZifMQi-lkp@intel.com>
+ <20220412063703.8537-1-linmq006@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220411_233714_081335_1A8DDFA8 
-X-CRM114-Status: GOOD (  13.67  )
+X-CRM114-CacheID: sfid-20220412_000703_202115_4FEC4FEA 
+X-CRM114-Status: GOOD (  19.55  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,61 +73,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-wait_for_completion_timeout() returns unsigned long not int.
-It returns 0 if timed out, and positive if completed.
-The check for <= 0 is ambiguous and should be == 0 here
-indicating timeout which is the only error case.
-
-Fixes: 83738d87e3a0 ("mtd: sh_flctl: Add DMA capabilty")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
-change in v2:
-- initialize ret to 1.
----
- drivers/mtd/nand/raw/sh_flctl.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index b85b9c6fcc42..2373251f585b 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -384,7 +384,8 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
- 	dma_addr_t dma_addr;
- 	dma_cookie_t cookie;
- 	uint32_t reg;
--	int ret;
-+	int ret = 1;
-+	unsigned long time_left;
- 
- 	if (dir == DMA_FROM_DEVICE) {
- 		chan = flctl->chan_fifo0_rx;
-@@ -425,13 +426,14 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
- 		goto out;
- 	}
- 
--	ret =
-+	time_left =
- 	wait_for_completion_timeout(&flctl->dma_complete,
- 				msecs_to_jiffies(3000));
- 
--	if (ret <= 0) {
-+	if (time_left == 0) {
- 		dmaengine_terminate_all(chan);
- 		dev_err(&flctl->pdev->dev, "wait_for_completion_timeout\n");
-+		ret = -ETIMEDOUT;
- 	}
- 
- out:
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlhb3FpYW4sCgpsaW5tcTAwNkBnbWFpbC5jb20gd3JvdGUgb24gVHVlLCAxMiBBcHIgMjAy
+MiAwNjozNjo1MiArMDAwMDoKCj4gd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCkgcmV0dXJu
+cyB1bnNpZ25lZCBsb25nIG5vdCBpbnQuCj4gSXQgcmV0dXJucyAwIGlmIHRpbWVkIG91dCwgYW5k
+IHBvc2l0aXZlIGlmIGNvbXBsZXRlZC4KPiBUaGUgY2hlY2sgZm9yIDw9IDAgaXMgYW1iaWd1b3Vz
+IGFuZCBzaG91bGQgYmUgPT0gMCBoZXJlCj4gaW5kaWNhdGluZyB0aW1lb3V0IHdoaWNoIGlzIHRo
+ZSBvbmx5IGVycm9yIGNhc2UuCj4gCj4gRml4ZXM6IDgzNzM4ZDg3ZTNhMCAoIm10ZDogc2hfZmxj
+dGw6IEFkZCBETUEgY2FwYWJpbHR5IikKPiBTaWduZWQtb2ZmLWJ5OiBNaWFvcWlhbiBMaW4gPGxp
+bm1xMDA2QGdtYWlsLmNvbT4KPiAtLS0KPiBjaGFuZ2UgaW4gdjI6Cj4gLSBpbml0aWFsaXplIHJl
+dCB0byAxLgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9zaF9mbGN0bC5jIHwgOCArKysr
+Ky0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+
+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zaF9mbGN0bC5jIGIvZHJpdmVy
+cy9tdGQvbmFuZC9yYXcvc2hfZmxjdGwuYwo+IGluZGV4IGI4NWI5YzZmY2M0Mi4uMjM3MzI1MWY1
+ODViIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3NoX2ZsY3RsLmMKPiArKysg
+Yi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9zaF9mbGN0bC5jCj4gQEAgLTM4NCw3ICszODQsOCBAQCBz
+dGF0aWMgaW50IGZsY3RsX2RtYV9maWZvMF90cmFuc2ZlcihzdHJ1Y3Qgc2hfZmxjdGwgKmZsY3Rs
+LCB1bnNpZ25lZCBsb25nICpidWYsCj4gIAlkbWFfYWRkcl90IGRtYV9hZGRyOwo+ICAJZG1hX2Nv
+b2tpZV90IGNvb2tpZTsKPiAgCXVpbnQzMl90IHJlZzsKPiAtCWludCByZXQ7Cj4gKwlpbnQgcmV0
+ID0gMTsKCkRvZXMgbm90IGxvb2sgcmlnaHQuIEkga25vdyB0aGlzIGZ1bmN0aW9uIHJldHVybnMg
+PiAwIG9uIHBvc2l0aXZlCm91dGNvbWVzIGJ1dCB0aGlzIGRvZXMgbm90IG1ha2UgYW55IHNlbnNl
+IGluIHRoZSBmaXJzdCBwbGFjZS4KClRoaXMgZnVuY3Rpb24gaXMgc3RhdGljIGFuZCBvbmx5IGNh
+bGxlZCB0d2ljZSwgcGxlYXNlIHR1cm4gaXQgaW50bwpzb21ldGhpbmcgbGlrZToKCmlmIChkbWFf
+Zmlmb190cmFuc2ZlcigpKQoJZXJyb3IKZWxzZQoJb2sKCj4gKwl1bnNpZ25lZCBsb25nIHRpbWVf
+bGVmdDsKPiAgCj4gIAlpZiAoZGlyID09IERNQV9GUk9NX0RFVklDRSkgewo+ICAJCWNoYW4gPSBm
+bGN0bC0+Y2hhbl9maWZvMF9yeDsKPiBAQCAtNDI1LDEzICs0MjYsMTQgQEAgc3RhdGljIGludCBm
+bGN0bF9kbWFfZmlmbzBfdHJhbnNmZXIoc3RydWN0IHNoX2ZsY3RsICpmbGN0bCwgdW5zaWduZWQg
+bG9uZyAqYnVmLAo+ICAJCWdvdG8gb3V0Owo+ICAJfQo+ICAKPiAtCXJldCA9Cj4gKwl0aW1lX2xl
+ZnQgPQo+ICAJd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCZmbGN0bC0+ZG1hX2NvbXBsZXRl
+LAo+ICAJCQkJbXNlY3NfdG9famlmZmllcygzMDAwKSk7Cj4gIAo+IC0JaWYgKHJldCA8PSAwKSB7
+Cj4gKwlpZiAodGltZV9sZWZ0ID09IDApIHsKPiAgCQlkbWFlbmdpbmVfdGVybWluYXRlX2FsbChj
+aGFuKTsKPiAgCQlkZXZfZXJyKCZmbGN0bC0+cGRldi0+ZGV2LCAid2FpdF9mb3JfY29tcGxldGlv
+bl90aW1lb3V0XG4iKTsKPiArCQlyZXQgPSAtRVRJTUVET1VUOwo+ICAJfQo+ICAKPiAgb3V0OgoK
+ClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
