@@ -4,55 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0112CC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Apr 2022 13:53:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDC98C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Apr 2022 04:24:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QONQcnGhCxpBFWkxcV86c5UbKNPHfr1KPuV5q1aOVl0=; b=exUqqf2Fknzsc1
-	ov8y5tiSk9p1I6o5QRsleKwahPe8bkzlDFqespTUzVreZfRD6ZVNG0cGj/Kv6EzkNjYfSQTvV9Dzz
-	Ng1YObTOLU4cuUbQg7CHnkynh0Y9UXwJJ57alc7iYSY+upYiMJsgYj7NwqjhMCRJIq9Q7W4fzbBzK
-	m1MWmTBx+zT1xuPGoOu5IImsGWP20u8eoYKu8vf5tXg8AQwPkZllnLM91HaNlNLFKb18YuqCyVAqm
-	16EAsmxytY4O+3m1lVvQG7pEreA8V7HNOrNhnAkwXfEd+X8Rxi7TBqThmf0FLxFJobSAWZptpmL45
-	RjXW7eJuKM9T0edIxBPA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cmlj+KjlpPJ1R925727WYRcSfvkoXVwXNx04FGTWEaU=; b=ogh/blp5rql6is
+	/tuxsGHx8mtCGQni3xak1sCeyj9i1o+bXaoy2LAcPPt12wXFbRSHpdEEuldmCveZux3Bgv/AZK1gZ
+	SttLpLox6UN0LJtJGG6mcfdEsNQmzoYUQT113v9MaR4ZSNyHKb0Bw8DTEC6iyj3jBZqdJg2QNVVVA
+	f87zbh/KqOnuD2SdPWEkno9dMtTi6FZ50PHWFeTkljwborz8lRmxTd4Y0g71pObIHGu2UhDbftHRt
+	UPUEirjlRDsdewMSEp8A5DrqQNZg23TGDdpPIayhHX1JMCnXQD6S8OmJmJl2F0cq5zgAVKVMOuybl
+	R7BjKKNRNvjB6nxNk4Bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neGxQ-00Ei50-V0; Tue, 12 Apr 2022 13:53:24 +0000
-Received: from smtp2.axis.com ([195.60.68.18])
+	id 1neUXs-00GjLw-BH; Wed, 13 Apr 2022 04:23:56 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neGxK-00Ehx7-84
- for linux-mtd@lists.infradead.org; Tue, 12 Apr 2022 13:53:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1649771598;
- x=1681307598; h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=1WivjijgLp2UzgX8W5CgQakX5pH8VwBd0BfhWfMFW+Q=;
- b=h5rW0KPdAqdC7SUngbxGOAXNzjvdm/Ii1OGhMboHTB0ds+hoBAFF/6y1
- HHwiosgcIcmXIFTkpMI3bdH3e3ImFDUGGeXIZWOYqT7kWq8PEj8y09r1l
- 4g1POg2ocvuLRC2WlXDGp8jtYqb3y0tLY80PYPWtVn4C+qP5Fo5cBc7yF
- 4uVbsGMb9XKKrCrqY4weNJFpJiCUtcWgn5xH9pJLX3zy5CPn/vmU60zV1
- xV/q1Z1icNtezc+rbBc20uMNUzGOvV5yD+3GCfykhvId2MArBnVW5PhVz
- qmf5epKmhUoXP1bgK3mHVAsUOld4l3klhJisfX3iZQwXPcbEe73DrBsT4 w==;
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-To: <vigneshr@ti.com>, <richard@nod.at>, <miquel.raynal@bootlin.com>,
- <joern@lazybastard.org>
-CC: <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <robh+dt@kernel.org>, <krzk+dt@kernel.org>, <frowand.list@gmail.com>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/4] mtd: phram: Allow probing via reserved-memory
-Date: Tue, 12 Apr 2022 15:53:01 +0200
-Message-ID: <20220412135302.1682890-4-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
-References: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
+ id 1neUXo-00GjLK-QZ
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2022 04:23:54 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id md4so800186pjb.4
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Apr 2022 21:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1CxbwNDx4Ny+ju2Ltk1ypE4SEdHKoNqhyxgHfWmW0g0=;
+ b=M3wVDojv5a8o8VkNO9fyB1VE/OZeGIFm/9UkZjZa2xoOSr4BJQIHJqRaNE7Z24HfYE
+ kjRBzoFaw5Cz5YtviV8tkdGYxF2S+lQINmWg/CqQ/sW1jKEgYdGXD+8T9lfTOZHn/KOU
+ 03gsuJ58xyzWJyXHxbIX6vymjf5OAEV0S2pOhMkRwzvbhnrGguAfbJGTw/bKeGQDLU+q
+ e4wfUTDKupyTuyHY8HU8X4xhXhXhBa93l6PtXejvJiDrTc9n0fFEuoTgQiGkYhiY62Nq
+ Anljxx2U/1oZ3HYaWh7n1BITV3GrJi9AY4Iif23IHwrD/eCusB3yePhry6a3BQEuHcAI
+ qORQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1CxbwNDx4Ny+ju2Ltk1ypE4SEdHKoNqhyxgHfWmW0g0=;
+ b=HpupRLZuGCC5fzSekoyfCglbqvO0eeJN6H6IrRdmGaotOIhEY4B/yufopX7WEiFytr
+ Wtmo08FfYSg5TH3UcwVqMt/RlmmZaFVmkiV/Xz86otY33QmHVxtp5BvkRuBEDPW5UICK
+ bpPnsgrQizxq7zNGmfQoq8plmbmm88ZdTJYvDD8d5ArK6CAllXTRafYN5piKbNiwhskh
+ 1kkSX4+ewj6aDt6NvqxzHQX5E62n/A50cqexqlhx2OeWIX/OwcjBr7WeWhd5g4scF7gg
+ fSqjzYPzo0wNb/ULR0rTocc0AA+Y8Hv8Kf9yPfPnBY/ikYyIESGMv8PE8TkCrexgaxwA
+ FHLA==
+X-Gm-Message-State: AOAM532dRviqqvWfEB0lY/sAqlcJOvJT14tGkmsk0YNwRfC9qpt6owsM
+ lvQLpsY0IFSC0MNMUvxL66zXmvtGUgrqO+Vh
+X-Google-Smtp-Source: ABdhPJwk7LW+RmzXCf8w9Fqo6CTN8op8CyHt7FXf0+tJTbH5HZpSBGrIp+yQo1PLmKoiQkW0/OvqDg==
+X-Received: by 2002:a17:90b:4b42:b0:1cb:a213:65d9 with SMTP id
+ mi2-20020a17090b4b4200b001cba21365d9mr8708382pjb.138.1649823828340; 
+ Tue, 12 Apr 2022 21:23:48 -0700 (PDT)
+Received: from guoguo-omen.lan ([2401:c080:1400:4da2:b701:47d5:9291:4cf9])
+ by smtp.gmail.com with ESMTPSA id
+ b11-20020a621b0b000000b00505c6892effsm8371508pfb.26.2022.04.12.21.23.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 12 Apr 2022 21:23:47 -0700 (PDT)
+From: Chuanhong Guo <gch981213@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Chuanhong Guo <gch981213@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>,
+ Daniel Palmer <daniel@0x0f.com>, linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: spinand: add support for ESMT F50x1G41LB
+Date: Wed, 13 Apr 2022 12:23:31 +0800
+Message-Id: <20220413042337.160263-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220412_065318_643320_64790BAB 
-X-CRM114-Status: GOOD (  17.97  )
+X-CRM114-CacheID: sfid-20220412_212352_918256_2C703A6A 
+X-CRM114-Status: GOOD (  18.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,165 +92,162 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Allow phram to be probed from the devicetree.  It expects to be in a
-reserved-memory node as documented by the bindings.  This allows things
-like partitioning to be specified via the devicetree.
+This patch adds support for ESMT F50L1G41LB and F50D1G41LB.
+It seems that ESMT likes to use random JEDEC ID from other vendors.
+Their 1G chips uses 0xc8 from GigaDevice and 2G/4G chips uses 0x2c from
+Micron. For this reason, the ESMT entry is named esmt_c8 with explicit
+JEDEC ID in variable name.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Datasheets:
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50L1G41LB(2M).pdf
+https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/F50D1G41LB(2M).pdf
+
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
 ---
+ drivers/mtd/nand/spi/Makefile |  2 +-
+ drivers/mtd/nand/spi/core.c   |  1 +
+ drivers/mtd/nand/spi/esmt.c   | 96 +++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |  1 +
+ 4 files changed, 99 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/esmt.c
 
-Notes:
-    v3:
-    - Add missing semicolon after MODULE_DEVICE_TABLE causing build errors on some
-      configs.
-
- drivers/mtd/devices/phram.c | 67 ++++++++++++++++++++++++++++++++++---
- drivers/of/platform.c       |  1 +
- 2 files changed, 64 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index d503821a3e60..506e9edf5c85 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -27,6 +27,9 @@
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include <asm/div64.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_address.h>
-+#include <linux/of.h>
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 9662b9c1d5a9..7e3ab8a9aec7 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
++spinand-objs := core.o esmt.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index ff8336870bc0..6c5d79ec3501 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -927,6 +927,7 @@ static const struct nand_ops spinand_ops = {
+ };
  
- struct phram_mtd_list {
- 	struct mtd_info mtd;
-@@ -89,8 +92,10 @@ static void unregister_devices(void)
- 	}
- }
- 
--static int register_device(char *name, phys_addr_t start, size_t len, uint32_t erasesize)
-+static int register_device(struct platform_device *pdev, const char *name,
-+			   phys_addr_t start, size_t len, uint32_t erasesize)
- {
-+	struct device_node *np = pdev ? pdev->dev.of_node : NULL;
- 	struct phram_mtd_list *new;
- 	int ret = -ENOMEM;
- 
-@@ -119,13 +124,19 @@ static int register_device(char *name, phys_addr_t start, size_t len, uint32_t e
- 	new->mtd.erasesize = erasesize;
- 	new->mtd.writesize = 1;
- 
-+	mtd_set_of_node(&new->mtd, np);
+ static const struct spinand_manufacturer *spinand_manufacturers[] = {
++	&esmt_c8_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/esmt.c b/drivers/mtd/nand/spi/esmt.c
+new file mode 100644
+index 000000000000..79836c05f259
+--- /dev/null
++++ b/drivers/mtd/nand/spi/esmt.c
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author:
++ *	Chuanhong Guo <gch981213@gmail.com>
++ */
 +
- 	ret = -EAGAIN;
- 	if (mtd_device_register(&new->mtd, NULL, 0)) {
- 		pr_err("Failed to register new device\n");
- 		goto out2;
- 	}
- 
--	list_add_tail(&new->list, &phram_list);
-+	if (pdev)
-+		platform_set_drvdata(pdev, new);
-+	else
-+		list_add_tail(&new->list, &phram_list);
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
 +
- 	return 0;
- 
- out2:
-@@ -278,7 +289,7 @@ static int phram_setup(const char *val)
- 		goto error;
- 	}
- 
--	ret = register_device(name, start, len, (uint32_t)erasesize);
-+	ret = register_device(NULL, name, start, len, (uint32_t)erasesize);
- 	if (ret)
- 		goto error;
- 
-@@ -325,10 +336,54 @@ static int phram_param_call(const char *val, const struct kernel_param *kp)
- module_param_call(phram, phram_param_call, NULL, NULL, 0200);
- MODULE_PARM_DESC(phram, "Memory region to map. \"phram=<name>,<start>,<length>[,<erasesize>]\"");
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id phram_of_match[] = {
-+	{ .compatible = "phram" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, phram_of_match);
-+#endif
++/* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
++#define SPINAND_MFR_ESMT_C8			0xc8
 +
-+static int phram_probe(struct platform_device *pdev)
++#define F50L2G41XA_ECC_STATUS_MASK		GENMASK(6, 4)
++#define F50L2G41XA_STATUS_ECC_1_3_BITFLIPS	(1 << 4)
++#define F50L2G41XA_STATUS_ECC_4_6_BITFLIPS	(3 << 4)
++#define F50L2G41XA_STATUS_ECC_7_8_BITFLIPS	(5 << 4)
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++			   SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++			   SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++			   SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++			   SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int f50l1g41lb_ooblayout_ecc(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *region)
 +{
-+	struct resource *res;
++	if (section > 3)
++		return -ERANGE;
 +
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENOMEM;
-+
-+	/* mtd_set_of_node() reads name from "label" */
-+	return register_device(pdev, NULL, res->start, resource_size(res),
-+			       PAGE_SIZE);
-+}
-+
-+static int phram_remove(struct platform_device *pdev)
-+{
-+	struct phram_mtd_list *phram = platform_get_drvdata(pdev);
-+
-+	mtd_device_unregister(&phram->mtd);
-+	iounmap(phram->mtd.priv);
-+	kfree(phram);
++	region->offset = 16 * section + 8;
++	region->length = 8;
 +
 +	return 0;
 +}
 +
-+static struct platform_driver phram_driver = {
-+	.probe		= phram_probe,
-+	.remove		= phram_remove,
-+	.driver		= {
-+		.name		= "phram",
-+		.of_match_table	= of_match_ptr(phram_of_match),
-+	},
++static int f50l1g41lb_ooblayout_free(struct mtd_info *mtd, int section,
++				     struct mtd_oob_region *region)
++{
++	if (section > 3)
++		return -ERANGE;
++
++	region->offset = 16 * section + 2;
++	region->length = 6;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops f50l1g41lb_ooblayout = {
++	.ecc = f50l1g41lb_ooblayout_ecc,
++	.free = f50l1g41lb_ooblayout_free,
 +};
- 
- static int __init init_phram(void)
- {
--	int ret = 0;
-+	int ret;
 +
-+	ret = platform_driver_register(&phram_driver);
-+	if (ret)
-+		return ret;
- 
- #ifndef MODULE
- 	if (phram_paramline[0])
-@@ -336,12 +391,16 @@ static int __init init_phram(void)
- 	phram_init_called = 1;
- #endif
- 
-+	if (ret)
-+		platform_driver_unregister(&phram_driver);
++static const struct spinand_info esmt_c8_spinand_table[] = {
++	SPINAND_INFO("F50L1G41LB",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x01, 0x7f,
++				0x7f, 0x7f),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++	SPINAND_INFO("F50D1G41LB",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0x11, 0x7f,
++				0x7f, 0x7f),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     0,
++		     SPINAND_ECCINFO(&f50l1g41lb_ooblayout, NULL)),
++};
 +
- 	return ret;
- }
++static const struct spinand_manufacturer_ops esmt_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer esmt_c8_spinand_manufacturer = {
++	.id = SPINAND_MFR_ESMT_C8,
++	.name = "ESMT",
++	.chips = esmt_c8_spinand_table,
++	.nchips = ARRAY_SIZE(esmt_c8_spinand_table),
++	.ops = &esmt_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 3aa28240a77f..e19a1554a1e9 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -260,6 +260,7 @@ struct spinand_manufacturer {
+ };
  
- static void __exit cleanup_phram(void)
- {
- 	unregister_devices();
-+	platform_driver_unregister(&phram_driver);
- }
- 
- module_init(init_phram);
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index a16b74f32aa9..55d62b82c650 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -509,6 +509,7 @@ EXPORT_SYMBOL_GPL(of_platform_default_populate);
- 
- #ifndef CONFIG_PPC
- static const struct of_device_id reserved_mem_matches[] = {
-+	{ .compatible = "phram" },
- 	{ .compatible = "qcom,rmtfs-mem" },
- 	{ .compatible = "qcom,cmd-db" },
- 	{ .compatible = "qcom,smem" },
+ /* SPI NAND manufacturers */
++extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
 -- 
-2.34.1
+2.35.1
 
 
 ______________________________________________________
