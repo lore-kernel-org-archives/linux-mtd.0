@@ -4,75 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFEA1C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Apr 2022 14:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6A2FC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Apr 2022 15:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X4pDCrnRAfQiIIVN/rjPX3wqEUOjWaR09iwr+BTP/A8=; b=ZvajSxvyp/kD4z
-	25q0TZ/3MJhiP/lFT00jJXDPRwSca1KwKyKj/8AIJgrV9dovaSji0rvbZPNsN1h2+4yTBaeZcH69v
-	oRh4L5Lb61PdXLrJ0762biFUFGyxjlYtp+A4i99majdXijoJEuyUjfbQiEuCG3qgYYXd4h10lh+oM
-	5aouSLXw0O3tSpBWoxyzipiS/ZYcfJlfgHNkW6wKGApchv0bXXCtHBiBH0Uwodp7KzGu/c8gXthRT
-	VpDb67frJDdLw9OdV8Ao61QypAB1uhQKHmLyNeINqw6uUiTa9dtG/D4rUy/+jYN+6HZtvYDW9L2lZ
-	PXgOI7V45kho5qXgZ9Jg==;
+	List-Owner; bh=6e/KqdqJn6LZgVjwU/AcH1Fr5bP7y2ioficAtp0JBFA=; b=RGytPH2AGFOZoD
+	QzYs1rGT9P60guQ1LuhvOERzGAgzyEqXqFulDDmameR2+JIPVVnFTmyiav7hnpmbNzSKaf9uP8FAd
+	8/mDcJYMPAlbvmU0OSMMUulLv7P/9CBCs2gsJvFB0dsU+57DKjs6xnIYnlFcJBSIO68DEFDdg9x/T
+	dDU7jFepj+BESEJupxn7uZhJGq+2cHp3j30r06mmdf2jX4bSiiDD0kO0Uh5QkLrW4PHByV+Nv349v
+	ftZBqYI6sPCeViqZ1fpyhvrLrxQDufnERmL4RbotF3Qw4aarbZDTBUWsNF21EERie996BiPlzB8pS
+	nTuUhx1KmJGieO/9hvdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neeKi-001U0A-9n; Wed, 13 Apr 2022 14:51:00 +0000
-Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
+	id 1neev3-001aia-KS; Wed, 13 Apr 2022 15:28:33 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neeKe-001Tzg-Op
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2022 14:50:58 +0000
-Received: by mail-ot1-x336.google.com with SMTP id
- c24-20020a9d6c98000000b005e6b7c0a8a8so1337426otr.2
- for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2022 07:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=+NNFF3WYjd8C1QYq4detVhKQK1MffqpGN9VKt8TJvZs=;
- b=By63kXptljWQTyCi/GWdKBpb6G/eWPjK9x+6S4EATkV/dFTtjOxMuSD48XhbDhRbwG
- JrpviCrGwYtMtaDhYdsMiWHPlgyMhpbzli5QgVah2F0HKHZmotoEAfMJ4zlM3CBb2Zqh
- Wrb1s0Ll2Vsfc/Xzb7gRLKWZUA/uUiNvp2iiyUHba0Pz2pcu6Z6PgewIJW7sSINk9w7F
- lpfcyy/QVA+9Y/o5Kb5EBP9NHNvyL5aH2hTFqgDxau/Se+bo9KTATpt+bdb6y82m9chu
- eixTnKsVUniCZLmEOyqqUNGVWS14f1N0CpLT71j9RO6Fb5h2CT4w6c5Gy7585TadB43P
- elSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=+NNFF3WYjd8C1QYq4detVhKQK1MffqpGN9VKt8TJvZs=;
- b=gdeaDOYOkyFJ58AQckq0ZD61CSqw2X0rxPlovn7vzIrj/Do9GZpj/KOSp21io13Lxb
- 4V8O96ih8EbCdepM1op9StK+W+foX8QDLbpTv7ZWIcN/Or4OTIcLSA1rgQSRJ3N3a51m
- 8hDEJhzGU0Gkvet75tolAFe14DIgRxFABfasgyXRlb3jRF/5IEAWTrcp87y0tSk56WFj
- RdTDGJePMprVfdvfKF/xR4HjMZaiX9QmQ+kNyom/MM9fjNZ1xhVMvJFgiyjDG+iogsSd
- v2vqVsjQEdhq5FRhriW5sJhkKl7LWDkXtnDAaxT7h0Kj0SLCEHgJoIwhuy2EHkke/SEX
- s6Pg==
-X-Gm-Message-State: AOAM5306VrebgY1YsM9u+Oklzr+goCxa8t3CHw1xlyf3qkCa8b0HQEei
- uFz+w6c+cEb+Hchuh2zX+/fn37png8e486ewVwU=
-X-Google-Smtp-Source: ABdhPJyn1dTCnUoWxb5z+Sq3ql5W24Hh52Mp7FwrEfgqZXjfodffCZUMuZevwAXM2BfvpWEVe8b6al5mf2N/CV2U+ic=
-X-Received: by 2002:a05:6830:2b0d:b0:5cd:aca2:f3f2 with SMTP id
- l13-20020a0568302b0d00b005cdaca2f3f2mr14990347otv.212.1649861455407; Wed, 13
- Apr 2022 07:50:55 -0700 (PDT)
-MIME-Version: 1.0
+ id 1neeuy-001agB-CR
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2022 15:28:32 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id 7E3141C0002;
+ Wed, 13 Apr 2022 15:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1649863704;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=WGuKkZoZhqAp3vshntO7a0lSfalv/QZe/nQ44NUXLMc=;
+ b=fjHFRViT16sOsvfG3G/TDkG5Aj69mjco8uA9n8i3tjVrkhiNXyvVcYtwx6NANeUlxEiRxs
+ 4azAHfxQyuSZKYkj8sUIg4XpPzMYOysj9o4xNd7TE/imZtURksFoadaX7xHLHByVFdwe+r
+ AO6HhHg5gbB/3Fy2mGcXxzN6RwDV72xDLigcXHG49kkyDcQZhy/gEeJc4nvtHr/H0dc4Ag
+ T/gUbuDShrMYKdqEXBTZPLpghxIfk1k27mLLOwRM0f0kY+4oCMsyezUJigZ2HyKLYe8WpK
+ qqs6Da+AdYt7/XVSQk77BMFNBeK5a0xjtE4cC6D4qYcVUdfhKbQwIS0Syl1/NQ==
+Date: Wed, 13 Apr 2022 17:28:19 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chuanhong Guo <gch981213@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Patrice Chotard
+ <patrice.chotard@foss.st.com>, Boris Brezillon
+ <boris.brezillon@collabora.com>, Christophe Kerello
+ <christophe.kerello@foss.st.com>, Mark Brown <broonie@kernel.org>, Daniel
+ Palmer <daniel@0x0f.com>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spinand: add support for ESMT F50x1G41LB
+Message-ID: <20220413172819.438f79e4@xps13>
+In-Reply-To: <CAJsYDV+3J0ipbR+N-xE=DH-WXsjierdHe_pJtKf1Xbt7fdaiWw@mail.gmail.com>
 References: <20220413083824.247136-1-gch981213@gmail.com>
  <20220413145843.46a3d9b5@xps13>
-In-Reply-To: <20220413145843.46a3d9b5@xps13>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Wed, 13 Apr 2022 22:50:43 +0800
-Message-ID: <CAJsYDV+3J0ipbR+N-xE=DH-WXsjierdHe_pJtKf1Xbt7fdaiWw@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for ESMT F50x1G41LB
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>,
- Patrice Chotard <patrice.chotard@foss.st.com>, 
- Boris Brezillon <boris.brezillon@collabora.com>, 
- Christophe Kerello <christophe.kerello@foss.st.com>,
- Mark Brown <broonie@kernel.org>, 
- Daniel Palmer <daniel@0x0f.com>, open list <linux-kernel@vger.kernel.org>
+ <CAJsYDV+3J0ipbR+N-xE=DH-WXsjierdHe_pJtKf1Xbt7fdaiWw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220413_075056_849210_AA18E63F 
-X-CRM114-Status: GOOD (  21.26  )
+X-CRM114-CacheID: sfid-20220413_082828_731372_6FCD8201 
+X-CRM114-Status: GOOD (  32.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,86 +72,63 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
-
-On Wed, Apr 13, 2022 at 8:58 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> [...]
-> > This patch is made purely based on datasheet info without testing
-> > on any actual chips.
->
-> Do you plan to get one of these any time soon?
-
-No. I already have way more spi-nand chips than I possibly
-need due to my last GigaDevice submission :)
-
-I need to replace the spi-nand driver for mediatek in OpenWrt
-with my recent submission, and this chip is used in one of the
-currently supported router. So I made this patch from
-datasheet for it.
-
-BTW Rockchip added identical chip support in their u-boot.[0]
-I assume they've tested it.
-
-> I am not really confident merging a 100% non-tested driver :)
-
-I can understand that.
-I'll roll this patch out in OpenWrt anyway. I can wait for a test
-there and resubmit piled downstream patches for chip supports
-after next OpenWrt stable release.
-
->
-> [...]
-> > +
-> > +/* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
-> > +#define SPINAND_MFR_ESMT_C8                  0xc8
->
-> What happens if the gigadevice driver probes first?
-
-Their device ID aren't conflicting yet, so nothing will happen
-at the moment.
-
-There is a solution for future conflict: Recent SPI-NAND chips
-contain a parameter page which has the exact chip vendor
-and model. We can do one more detection with the parameter
-page content.
-Winbond W25N01KV is a 2k+96 SPI-NAND with 4-bit ECC.
-It uses the exact same chip id as the current W25N01GV
-(2k+64 1-bit ECC). We need to support detection using
-parameter page for this crazy decision by Winbond anyway.
-I'll try to code something for this with my free time.
-
-My current idea is: We first do a detection based on chip id.
-If that failed, try to read the parameter page. If we got a
-valid one, match the chip vendor and model string.
-
-Any thoughts?
-
-(BTW this ESMT chip is POWERCHIP PSU1GS20DX
-according to the parameter page in their datasheet.
-But I can't find a datasheet for this model number.)
-
->
-> > +
-> > +#define F50L2G41XA_ECC_STATUS_MASK           GENMASK(6, 4)
-> > +#define F50L2G41XA_STATUS_ECC_1_3_BITFLIPS   (1 << 4)
-> > +#define F50L2G41XA_STATUS_ECC_4_6_BITFLIPS   (3 << 4)
-> > +#define F50L2G41XA_STATUS_ECC_7_8_BITFLIPS   (5 << 4)
-
-Oops. These are left-over defines when I discovered that ESMT 2G/4G
-SPI-NANDs are repackaged micron parts and dropped their support
-from this file.
-A v3 is needed anyway. I'll wait for a test before submitting it.
-
-[0]: https://github.com/rockchip-linux/u-boot/commit/52b0060178285488737854a48ddecd381f8b236e
--- 
-Regards,
-Chuanhong Guo
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpnY2g5ODEyMTNAZ21haWwuY29tIHdyb3RlIG9uIFdlZCwgMTMgQXByIDIwMjIgMjI6
+NTA6NDMgKzA4MDA6Cgo+IEhpIQo+IAo+IE9uIFdlZCwgQXByIDEzLCAyMDIyIGF0IDg6NTggUE0g
+TWlxdWVsIFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4gPiBbLi4u
+XSAgCj4gPiA+IFRoaXMgcGF0Y2ggaXMgbWFkZSBwdXJlbHkgYmFzZWQgb24gZGF0YXNoZWV0IGlu
+Zm8gd2l0aG91dCB0ZXN0aW5nCj4gPiA+IG9uIGFueSBhY3R1YWwgY2hpcHMuICAKPiA+Cj4gPiBE
+byB5b3UgcGxhbiB0byBnZXQgb25lIG9mIHRoZXNlIGFueSB0aW1lIHNvb24/ICAKPiAKPiBOby4g
+SSBhbHJlYWR5IGhhdmUgd2F5IG1vcmUgc3BpLW5hbmQgY2hpcHMgdGhhbiBJIHBvc3NpYmx5Cj4g
+bmVlZCBkdWUgdG8gbXkgbGFzdCBHaWdhRGV2aWNlIHN1Ym1pc3Npb24gOikKCjopCgo+IAo+IEkg
+bmVlZCB0byByZXBsYWNlIHRoZSBzcGktbmFuZCBkcml2ZXIgZm9yIG1lZGlhdGVrIGluIE9wZW5X
+cnQKPiB3aXRoIG15IHJlY2VudCBzdWJtaXNzaW9uLCBhbmQgdGhpcyBjaGlwIGlzIHVzZWQgaW4g
+b25lIG9mIHRoZQo+IGN1cnJlbnRseSBzdXBwb3J0ZWQgcm91dGVyLiBTbyBJIG1hZGUgdGhpcyBw
+YXRjaCBmcm9tCj4gZGF0YXNoZWV0IGZvciBpdC4KPiAKPiBCVFcgUm9ja2NoaXAgYWRkZWQgaWRl
+bnRpY2FsIGNoaXAgc3VwcG9ydCBpbiB0aGVpciB1LWJvb3QuWzBdCj4gSSBhc3N1bWUgdGhleSd2
+ZSB0ZXN0ZWQgaXQuCj4gCj4gPiBJIGFtIG5vdCByZWFsbHkgY29uZmlkZW50IG1lcmdpbmcgYSAx
+MDAlIG5vbi10ZXN0ZWQgZHJpdmVyIDopICAKPiAKPiBJIGNhbiB1bmRlcnN0YW5kIHRoYXQuCj4g
+SSdsbCByb2xsIHRoaXMgcGF0Y2ggb3V0IGluIE9wZW5XcnQgYW55d2F5LiBJIGNhbiB3YWl0IGZv
+ciBhIHRlc3QKPiB0aGVyZSBhbmQgcmVzdWJtaXQgcGlsZWQgZG93bnN0cmVhbSBwYXRjaGVzIGZv
+ciBjaGlwIHN1cHBvcnRzCj4gYWZ0ZXIgbmV4dCBPcGVuV3J0IHN0YWJsZSByZWxlYXNlLgoKWWVz
+LCBwbGVhc2UsIGFueSBmZWVkYmFjayBmcm9tIHRoZSBPcGVuV3J0IGNvbW11bml0eSB3b3VsZCBi
+ZSBnb29kLiBJZgp5b3UgY2FuIGdldCBhIFRlc3RlZC1ieSBJJ2xsIHRha2UgdGhlIHBhdGNoIChy
+ZXNlbmQgaXQgd2l0aCB0aGUgdGFnIHNvCnRoYXQgSSBkb24ndCBtaXNzIGl0KS4KCj4gPiBbLi4u
+XSAgCj4gPiA+ICsKPiA+ID4gKy8qIEVTTVQgdXNlcyBHaWdhRGV2aWNlIDB4YzggSkVDREVDIElE
+IG9uIHNvbWUgU1BJIE5BTkRzICovCj4gPiA+ICsjZGVmaW5lIFNQSU5BTkRfTUZSX0VTTVRfQzgg
+ICAgICAgICAgICAgICAgICAweGM4ICAKPiA+Cj4gPiBXaGF0IGhhcHBlbnMgaWYgdGhlIGdpZ2Fk
+ZXZpY2UgZHJpdmVyIHByb2JlcyBmaXJzdD8gIAo+IAo+IFRoZWlyIGRldmljZSBJRCBhcmVuJ3Qg
+Y29uZmxpY3RpbmcgeWV0LCBzbyBub3RoaW5nIHdpbGwgaGFwcGVuCj4gYXQgdGhlIG1vbWVudC4K
+PiAKPiBUaGVyZSBpcyBhIHNvbHV0aW9uIGZvciBmdXR1cmUgY29uZmxpY3Q6IFJlY2VudCBTUEkt
+TkFORCBjaGlwcwo+IGNvbnRhaW4gYSBwYXJhbWV0ZXIgcGFnZSB3aGljaCBoYXMgdGhlIGV4YWN0
+IGNoaXAgdmVuZG9yCj4gYW5kIG1vZGVsLiBXZSBjYW4gZG8gb25lIG1vcmUgZGV0ZWN0aW9uIHdp
+dGggdGhlIHBhcmFtZXRlcgo+IHBhZ2UgY29udGVudC4KPiBXaW5ib25kIFcyNU4wMUtWIGlzIGEg
+MmsrOTYgU1BJLU5BTkQgd2l0aCA0LWJpdCBFQ0MuCj4gSXQgdXNlcyB0aGUgZXhhY3Qgc2FtZSBj
+aGlwIGlkIGFzIHRoZSBjdXJyZW50IFcyNU4wMUdWCj4gKDJrKzY0IDEtYml0IEVDQykuIFdlIG5l
+ZWQgdG8gc3VwcG9ydCBkZXRlY3Rpb24gdXNpbmcKPiBwYXJhbWV0ZXIgcGFnZSBmb3IgdGhpcyBj
+cmF6eSBkZWNpc2lvbiBieSBXaW5ib25kIGFueXdheS4KCjonKQoKPiBJJ2xsIHRyeSB0byBjb2Rl
+IHNvbWV0aGluZyBmb3IgdGhpcyB3aXRoIG15IGZyZWUgdGltZS4KPiBNeSBjdXJyZW50IGlkZWEg
+aXM6IFdlIGZpcnN0IGRvIGEgZGV0ZWN0aW9uIGJhc2VkIG9uIGNoaXAgaWQuCj4gSWYgdGhhdCBm
+YWlsZWQsIHRyeSB0byByZWFkIHRoZSBwYXJhbWV0ZXIgcGFnZS4gSWYgd2UgZ290IGEKPiB2YWxp
+ZCBvbmUsIG1hdGNoIHRoZSBjaGlwIHZlbmRvciBhbmQgbW9kZWwgc3RyaW5nLgo+IAo+IEFueSB0
+aG91Z2h0cz8KClllYWggdGhhdCBsb29rcyByZWFzb25hYmxlLgoKPiAoQlRXIHRoaXMgRVNNVCBj
+aGlwIGlzIFBPV0VSQ0hJUCBQU1UxR1MyMERYCj4gYWNjb3JkaW5nIHRvIHRoZSBwYXJhbWV0ZXIg
+cGFnZSBpbiB0aGVpciBkYXRhc2hlZXQuCj4gQnV0IEkgY2FuJ3QgZmluZCBhIGRhdGFzaGVldCBm
+b3IgdGhpcyBtb2RlbCBudW1iZXIuKQo+IAo+ID4gIAo+ID4gPiArCj4gPiA+ICsjZGVmaW5lIEY1
+MEwyRzQxWEFfRUNDX1NUQVRVU19NQVNLICAgICAgICAgICBHRU5NQVNLKDYsIDQpCj4gPiA+ICsj
+ZGVmaW5lIEY1MEwyRzQxWEFfU1RBVFVTX0VDQ18xXzNfQklURkxJUFMgICAoMSA8PCA0KQo+ID4g
+PiArI2RlZmluZSBGNTBMMkc0MVhBX1NUQVRVU19FQ0NfNF82X0JJVEZMSVBTICAgKDMgPDwgNCkK
+PiA+ID4gKyNkZWZpbmUgRjUwTDJHNDFYQV9TVEFUVVNfRUNDXzdfOF9CSVRGTElQUyAgICg1IDw8
+IDQpICAKPiAKPiBPb3BzLiBUaGVzZSBhcmUgbGVmdC1vdmVyIGRlZmluZXMgd2hlbiBJIGRpc2Nv
+dmVyZWQgdGhhdCBFU01UIDJHLzRHCj4gU1BJLU5BTkRzIGFyZSByZXBhY2thZ2VkIG1pY3JvbiBw
+YXJ0cyBhbmQgZHJvcHBlZCB0aGVpciBzdXBwb3J0Cj4gZnJvbSB0aGlzIGZpbGUuCj4gQSB2MyBp
+cyBuZWVkZWQgYW55d2F5LiBJJ2xsIHdhaXQgZm9yIGEgdGVzdCBiZWZvcmUgc3VibWl0dGluZyBp
+dC4KPiAKPiBbMF06IGh0dHBzOi8vZ2l0aHViLmNvbS9yb2NrY2hpcC1saW51eC91LWJvb3QvY29t
+bWl0LzUyYjAwNjAxNzgyODU0ODg3Mzc4NTRhNDhkZGVjZDM4MWY4YjIzNmUKCgpUaGFua3MsCk1p
+cXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
