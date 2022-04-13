@@ -4,56 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7204EC433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Apr 2022 13:50:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFEA1C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 13 Apr 2022 14:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=YpBt5rcaPP4n+mLrb7g9pcu+XYHnQtm0noViy9uHML8=; b=2zFUsuxAQqiqoF
-	mNcqj+vmG7iV9Tb12fTg7XGIutScAeqiGTlofkprNXRzz8EgYxCVShjdyHaqyoX7jNYB/SMDfZtjQ
-	bYHgGkcNi8LhOizJAIhNjmoRuFoOkU5YUIvMMcjMa2+T5FkRGCKrX3XsZgyinFpvu4GTmkKENGJ+s
-	Xvi5L301jnMV1Q/6GHE1IF5q8IWNmHg/4SaaMiAvJoTzD+C+zMkIa1l3NqFe4jVo9Ca7Kb3TVET1V
-	2gBmTG3l4IW6gcNM/cDRoK+vPfReBgp5l4DyBG/uGj3ciNo1g/6PKz+5r200lLTChCKCyjBvwDJu0
-	VtwB94HRLXqDjXtFBLIw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=X4pDCrnRAfQiIIVN/rjPX3wqEUOjWaR09iwr+BTP/A8=; b=ZvajSxvyp/kD4z
+	25q0TZ/3MJhiP/lFT00jJXDPRwSca1KwKyKj/8AIJgrV9dovaSji0rvbZPNsN1h2+4yTBaeZcH69v
+	oRh4L5Lb61PdXLrJ0762biFUFGyxjlYtp+A4i99majdXijoJEuyUjfbQiEuCG3qgYYXd4h10lh+oM
+	5aouSLXw0O3tSpBWoxyzipiS/ZYcfJlfgHNkW6wKGApchv0bXXCtHBiBH0Uwodp7KzGu/c8gXthRT
+	VpDb67frJDdLw9OdV8Ao61QypAB1uhQKHmLyNeINqw6uUiTa9dtG/D4rUy/+jYN+6HZtvYDW9L2lZ
+	PXgOI7V45kho5qXgZ9Jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nedNH-001GHX-T2; Wed, 13 Apr 2022 13:49:35 +0000
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+	id 1neeKi-001U0A-9n; Wed, 13 Apr 2022 14:51:00 +0000
+Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nedNF-001GGP-Gb
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2022 13:49:35 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c9b8:20d3:ee2b:1cda])
- by andre.telenet-ops.be with bizsmtp
- id JDpP2700S2t8Arn01DpP2a; Wed, 13 Apr 2022 15:49:25 +0200
-Received: from rox.of.borg ([192.168.97.57])
- by ramsan.of.borg with esmtps (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1nedN4-000Seb-Up; Wed, 13 Apr 2022 15:49:22 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
- (envelope-from <geert@linux-m68k.org>)
- id 1nedN4-00AjDf-Fl; Wed, 13 Apr 2022 15:49:22 +0200
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Andrew Gabbasov <andrew_gabbasov@mentor.com>,
- linux-renesas-soc@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] memory: renesas-rpc-if: Simplify single/double data
- register access
-Date: Wed, 13 Apr 2022 15:49:21 +0200
-Message-Id: <c3b2a8d1a69f1b1e8d1a460148406cfb83e52eb4.1649857740.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+ id 1neeKe-001Tzg-Op
+ for linux-mtd@lists.infradead.org; Wed, 13 Apr 2022 14:50:58 +0000
+Received: by mail-ot1-x336.google.com with SMTP id
+ c24-20020a9d6c98000000b005e6b7c0a8a8so1337426otr.2
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2022 07:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=+NNFF3WYjd8C1QYq4detVhKQK1MffqpGN9VKt8TJvZs=;
+ b=By63kXptljWQTyCi/GWdKBpb6G/eWPjK9x+6S4EATkV/dFTtjOxMuSD48XhbDhRbwG
+ JrpviCrGwYtMtaDhYdsMiWHPlgyMhpbzli5QgVah2F0HKHZmotoEAfMJ4zlM3CBb2Zqh
+ Wrb1s0Ll2Vsfc/Xzb7gRLKWZUA/uUiNvp2iiyUHba0Pz2pcu6Z6PgewIJW7sSINk9w7F
+ lpfcyy/QVA+9Y/o5Kb5EBP9NHNvyL5aH2hTFqgDxau/Se+bo9KTATpt+bdb6y82m9chu
+ eixTnKsVUniCZLmEOyqqUNGVWS14f1N0CpLT71j9RO6Fb5h2CT4w6c5Gy7585TadB43P
+ elSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=+NNFF3WYjd8C1QYq4detVhKQK1MffqpGN9VKt8TJvZs=;
+ b=gdeaDOYOkyFJ58AQckq0ZD61CSqw2X0rxPlovn7vzIrj/Do9GZpj/KOSp21io13Lxb
+ 4V8O96ih8EbCdepM1op9StK+W+foX8QDLbpTv7ZWIcN/Or4OTIcLSA1rgQSRJ3N3a51m
+ 8hDEJhzGU0Gkvet75tolAFe14DIgRxFABfasgyXRlb3jRF/5IEAWTrcp87y0tSk56WFj
+ RdTDGJePMprVfdvfKF/xR4HjMZaiX9QmQ+kNyom/MM9fjNZ1xhVMvJFgiyjDG+iogsSd
+ v2vqVsjQEdhq5FRhriW5sJhkKl7LWDkXtnDAaxT7h0Kj0SLCEHgJoIwhuy2EHkke/SEX
+ s6Pg==
+X-Gm-Message-State: AOAM5306VrebgY1YsM9u+Oklzr+goCxa8t3CHw1xlyf3qkCa8b0HQEei
+ uFz+w6c+cEb+Hchuh2zX+/fn37png8e486ewVwU=
+X-Google-Smtp-Source: ABdhPJyn1dTCnUoWxb5z+Sq3ql5W24Hh52Mp7FwrEfgqZXjfodffCZUMuZevwAXM2BfvpWEVe8b6al5mf2N/CV2U+ic=
+X-Received: by 2002:a05:6830:2b0d:b0:5cd:aca2:f3f2 with SMTP id
+ l13-20020a0568302b0d00b005cdaca2f3f2mr14990347otv.212.1649861455407; Wed, 13
+ Apr 2022 07:50:55 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220413083824.247136-1-gch981213@gmail.com>
+ <20220413145843.46a3d9b5@xps13>
+In-Reply-To: <20220413145843.46a3d9b5@xps13>
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Wed, 13 Apr 2022 22:50:43 +0800
+Message-ID: <CAJsYDV+3J0ipbR+N-xE=DH-WXsjierdHe_pJtKf1Xbt7fdaiWw@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for ESMT F50x1G41LB
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>, 
+ Boris Brezillon <boris.brezillon@collabora.com>, 
+ Christophe Kerello <christophe.kerello@foss.st.com>,
+ Mark Brown <broonie@kernel.org>, 
+ Daniel Palmer <daniel@0x0f.com>, open list <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220413_064933_729633_46066CDA 
-X-CRM114-Status: UNSURE (   8.66  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220413_075056_849210_AA18E63F 
+X-CRM114-Status: GOOD (  21.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,83 +89,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-For manual write and read, factor out the common access to the first
-data register by keeping track of the current data pointer.
+Hi!
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
-v2:
-  - Add Tested-by, Reviewed-by,
-  - Remove unneeded pointer post-increments from final dereferences.
----
- drivers/memory/renesas-rpc-if.c | 28 ++++++++--------------------
- 1 file changed, 8 insertions(+), 20 deletions(-)
+On Wed, Apr 13, 2022 at 8:58 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> [...]
+> > This patch is made purely based on datasheet info without testing
+> > on any actual chips.
+>
+> Do you plan to get one of these any time soon?
 
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 019a0822bde0e413..ba9c526833c0f4da 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -488,7 +488,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 	case RPCIF_DATA_OUT:
- 		while (pos < rpc->xferlen) {
- 			u32 bytes_left = rpc->xferlen - pos;
--			u32 nbytes, data[2];
-+			u32 nbytes, data[2], *p = data;
- 
- 			smcr = rpc->smcr | RPCIF_SMCR_SPIE;
- 
-@@ -502,15 +502,9 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 			rpc->xfer_size = nbytes;
- 
- 			memcpy(data, rpc->buffer + pos, nbytes);
--			if (nbytes == 8) {
--				regmap_write(rpc->regmap, RPCIF_SMWDR1,
--					     data[0]);
--				regmap_write(rpc->regmap, RPCIF_SMWDR0,
--					     data[1]);
--			} else {
--				regmap_write(rpc->regmap, RPCIF_SMWDR0,
--					     data[0]);
--			}
-+			if (nbytes == 8)
-+				regmap_write(rpc->regmap, RPCIF_SMWDR1, *p++);
-+			regmap_write(rpc->regmap, RPCIF_SMWDR0, *p);
- 
- 			regmap_write(rpc->regmap, RPCIF_SMCR, smcr);
- 			ret = wait_msg_xfer_end(rpc);
-@@ -552,7 +546,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 		}
- 		while (pos < rpc->xferlen) {
- 			u32 bytes_left = rpc->xferlen - pos;
--			u32 nbytes, data[2];
-+			u32 nbytes, data[2], *p = data;
- 
- 			/* nbytes may only be 1, 2, 4, or 8 */
- 			nbytes = bytes_left >= max ? max : (1 << ilog2(bytes_left));
-@@ -569,15 +563,9 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- 			if (ret)
- 				goto err_out;
- 
--			if (nbytes == 8) {
--				regmap_read(rpc->regmap, RPCIF_SMRDR1,
--					    &data[0]);
--				regmap_read(rpc->regmap, RPCIF_SMRDR0,
--					    &data[1]);
--			} else {
--				regmap_read(rpc->regmap, RPCIF_SMRDR0,
--					    &data[0]);
--			}
-+			if (nbytes == 8)
-+				regmap_read(rpc->regmap, RPCIF_SMRDR1, p++);
-+			regmap_read(rpc->regmap, RPCIF_SMRDR0, p);
- 			memcpy(rpc->buffer + pos, data, nbytes);
- 
- 			pos += nbytes;
+No. I already have way more spi-nand chips than I possibly
+need due to my last GigaDevice submission :)
+
+I need to replace the spi-nand driver for mediatek in OpenWrt
+with my recent submission, and this chip is used in one of the
+currently supported router. So I made this patch from
+datasheet for it.
+
+BTW Rockchip added identical chip support in their u-boot.[0]
+I assume they've tested it.
+
+> I am not really confident merging a 100% non-tested driver :)
+
+I can understand that.
+I'll roll this patch out in OpenWrt anyway. I can wait for a test
+there and resubmit piled downstream patches for chip supports
+after next OpenWrt stable release.
+
+>
+> [...]
+> > +
+> > +/* ESMT uses GigaDevice 0xc8 JECDEC ID on some SPI NANDs */
+> > +#define SPINAND_MFR_ESMT_C8                  0xc8
+>
+> What happens if the gigadevice driver probes first?
+
+Their device ID aren't conflicting yet, so nothing will happen
+at the moment.
+
+There is a solution for future conflict: Recent SPI-NAND chips
+contain a parameter page which has the exact chip vendor
+and model. We can do one more detection with the parameter
+page content.
+Winbond W25N01KV is a 2k+96 SPI-NAND with 4-bit ECC.
+It uses the exact same chip id as the current W25N01GV
+(2k+64 1-bit ECC). We need to support detection using
+parameter page for this crazy decision by Winbond anyway.
+I'll try to code something for this with my free time.
+
+My current idea is: We first do a detection based on chip id.
+If that failed, try to read the parameter page. If we got a
+valid one, match the chip vendor and model string.
+
+Any thoughts?
+
+(BTW this ESMT chip is POWERCHIP PSU1GS20DX
+according to the parameter page in their datasheet.
+But I can't find a datasheet for this model number.)
+
+>
+> > +
+> > +#define F50L2G41XA_ECC_STATUS_MASK           GENMASK(6, 4)
+> > +#define F50L2G41XA_STATUS_ECC_1_3_BITFLIPS   (1 << 4)
+> > +#define F50L2G41XA_STATUS_ECC_4_6_BITFLIPS   (3 << 4)
+> > +#define F50L2G41XA_STATUS_ECC_7_8_BITFLIPS   (5 << 4)
+
+Oops. These are left-over defines when I discovered that ESMT 2G/4G
+SPI-NANDs are repackaged micron parts and dropped their support
+from this file.
+A v3 is needed anyway. I'll wait for a test before submitting it.
+
+[0]: https://github.com/rockchip-linux/u-boot/commit/52b0060178285488737854a48ddecd381f8b236e
 -- 
-2.25.1
-
+Regards,
+Chuanhong Guo
 
 ______________________________________________________
 Linux MTD discussion mailing list
