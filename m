@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E79C4C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 09:09:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9ECC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 09:09:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WWctgw+KyZZQKgb+dJjaIR7omAR/hdX7d1l7gvnNNjc=; b=Ycc0M0QPN4SL+W
-	cnVDfIa1cyarkVbMQobm0IVbx7CG6AHXLV1hW58vjjiUkOYIIECk17brj2FWMkJwHrFp1+1Hdc4Co
-	PUL72Qt0OShv0YCpcoCHrRqhQqQUf2jV6bRnRzEOf7aJMBZHsMfAYm2WG2OtI6nkijbrINcieBtvr
-	d/UeWg0b34cOvEbi6PZJsdQwz5g4HxzuHvrUN5qHj1EYo7+7SFeY6T6tg1lhRRamUSnkn8ixoMI5H
-	eXFCzWWinyeoK5rOnXQc9j/ReEJghL/qf70gJIyrMoUcrgqbkj+Nn9MiwXJRQELpuV3xGh7kyxYYf
-	L/kJwYYCzEfyudik6FBQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tE76kKumFrEY89JuYW5iqZ6tdWaDDXEcpQGRVsIBJM4=; b=3n2yUU07h/8x8T7D0gC8H4yLJJ
+	ZYjcC9U6Z6zFb9kpQQKmSD9JeOl2tkk19CZZlaj+CVHS/Z69pfAmhDQFaA2kMHKJ9sWtW/qOBOnw+
+	xr+xziLPbbLKN+O0HRuHuZR96yl8ghEPyvGDjnOZlQZOz+O/OJHpaxnM1pLhEEKkZGncs8K25sQ17
+	IFWi0iEJAyKJ1gIsSkBtu1X84EdJYWXMLbDiw+AqVtzUmwJMtslSrw+OfaAN+JRftBkKfwC/Ecpts
+	t4zfDbyB1JEH44QkkMcOgp1wmYRAdh7/s9Uo0ezQoF/dD/6123ld+R6LpQlidSXL3lyPIck29Fyvv
+	HUrsU4pQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nevSy-004mAO-Sd; Thu, 14 Apr 2022 09:08:40 +0000
-Received: from smtp1.axis.com ([195.60.68.17])
+	id 1nevSr-004m5w-Pz; Thu, 14 Apr 2022 09:08:33 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nevOc-004kGj-Ja
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 09:04:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1649927050;
- x=1681463050; h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=5reGpRw2ZgFSQZbtLRzu9ib8DlUy/I3RASjMk4c7wAc=;
- b=FWZubmzBRTD1n1nqYmpd5ADG8eXr+X/I7TVdXZCd3DFjhN0gzvVg26xA
- iqa2XZybq01uiqSBbATSWKkViyFeMaiLQ5HMkCMwa1j3KQb56r4+GQxRm
- OZ8Nnl/IaeRry6Er9Xjehb72M2vKJUDPz2HAFaUDM1SYnvHMCFSuMJTAV
- dY1XWeQX2Y09GNYO9eTNFdu4iXki9SQ7IRaB2Q3t2eaVFf6o/VZg9QSzf
- kG2ACcXl692eRKncSeN4fYUd/yINJTSSq+IO2U2dbQqXPyJqM2f0Hl892
- QcDU+AxCPPEagVxV8FK1pl56FYBTi0jjGWEds9MJpfyzP3v5kwomHGxKb g==;
-Date: Thu, 14 Apr 2022 11:04:02 +0200
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-To: kernel test robot <lkp@intel.com>
-CC: "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "joern@lazybastard.org" <joern@lazybastard.org>, "kbuild-all@lists.01.org"
- <kbuild-all@lists.01.org>, kernel <kernel@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "krzk+dt@kernel.org"
- <krzk+dt@kernel.org>, "frowand.list@gmail.com" <frowand.list@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/4] mtd: phram: Allow cached mappings
-Message-ID: <20220414090402.GA11067@axis.com>
-References: <20220412135302.1682890-5-vincent.whitchurch@axis.com>
- <202204131446.omJ5mC54-lkp@intel.com>
+ id 1nevNx-004jz8-W4
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 09:03:31 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id A91842223A;
+ Thu, 14 Apr 2022 11:03:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1649927002;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YYsTz0AETw+Jo2bhSTzYcAAeYKfM5N1Ra7bU1357urA=;
+ b=ir4wCF/1KUj3+6aRDS/Z9w9E9Myrb626mUSIqpljXMGuPyGvI205vKqwMP9CNQT0UrkXEg
+ AqIiDztJ9r468vj0L87nk3qRtJ/QYTbJDBy+ScwLT6J5fXuF2zyo9ZOqzdTqh9WXJ7Cu9H
+ ORqyhvHLkEjeE04v2r4mMCaLOWr0uYs=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <202204131446.omJ5mC54-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date: Thu, 14 Apr 2022 11:03:21 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
+Subject: Re: [PATCH v3 1/3] mtd: spi-nor: Parse BFPT to determine the 4-Byte
+ Address Mode methods
+In-Reply-To: <20220411125346.118274-2-tudor.ambarus@microchip.com>
+References: <20220411125346.118274-1-tudor.ambarus@microchip.com>
+ <20220411125346.118274-2-tudor.ambarus@microchip.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <63b485a1e48d3116f8f49cc427049f81@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_020411_001543_4A9D10D8 
-X-CRM114-Status: GOOD (  11.04  )
+X-CRM114-CacheID: sfid-20220414_020330_271703_66A5FAF4 
+X-CRM114-Status: GOOD (  14.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,46 +69,61 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Apr 13, 2022 at 08:45:59AM +0200, kernel test robot wrote:
-> All errors (new ones prefixed by >>):
+> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+> index a5211543d30d..2e40eba3744d 100644
+> --- a/drivers/mtd/spi-nor/sfdp.c
+> +++ b/drivers/mtd/spi-nor/sfdp.c
+> @@ -401,6 +401,93 @@ static void
+> spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+>  	}
+>  }
 > 
->    In file included from include/linux/io.h:13,
->                     from drivers/mtd/devices/phram.c:21:
->    drivers/mtd/devices/phram.c: In function 'register_device':
-> >> arch/sh/include/asm/io.h:274:33: error: expected expression before 'do'
->      274 | #define iounmap(addr)           do { } while (0)
->          |                                 ^~
->    drivers/mtd/devices/phram.c:150:44: note: in expansion of macro 'iounmap'
->      150 |         cached ? memunmap(new->mtd.priv) : iounmap(new->mtd.priv);
->          |                                            ^~~~~~~
->    drivers/mtd/devices/phram.c: In function 'phram_remove':
-> >> arch/sh/include/asm/io.h:274:33: error: expected expression before 'do'
->      274 | #define iounmap(addr)           do { } while (0)
->          |                                 ^~
->    drivers/mtd/devices/phram.c:372:53: note: in expansion of macro 'iounmap'
->      372 |         phram->cached ? memunmap(phram->mtd.priv) : iounmap(phram->mtd.priv);
->          |                                                     ^~~~~~~
-> 
-> 
-> vim +/do +274 arch/sh/include/asm/io.h
-> 
-> d57d64080ddc0f Paul Mundt        2010-01-19  272  
-> 13f1fc870dd747 Christoph Hellwig 2020-07-14  273  #else /* CONFIG_MMU */
-> 13f1fc870dd747 Christoph Hellwig 2020-07-14 @274  #define iounmap(addr)		do { } while (0)
-> 13f1fc870dd747 Christoph Hellwig 2020-07-14  275  #define ioremap(offset, size)	((void __iomem *)(unsigned long)(offset))
-> 13f1fc870dd747 Christoph Hellwig 2020-07-14  276  #endif /* CONFIG_MMU */
-> d627a2ebd1a303 Paul Mundt        2010-01-28  277  
+> +/**
+> + * spansion_set_4byte_addr_mode() - Set 4-byte address mode for 
+> Spansion
+> + * flashes.
+> + * @nor:	pointer to 'struct spi_nor'.
+> + * @enable:	true to enter the 4-byte address mode, false to exit the 
+> 4-byte
+> + *		address mode.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
 
-Thank you for the report.  This patch could certainly be changed to work
-around this, but ISTM that the right fix is in the SH header file, since
-the problem could hit in other cases too.  I've posted a fix here now:
+Mh, so now some callback functions are in the core like the quad enable
+methods and some are in sfdp.c. I think there should be only the parsing
+in sfdp.c and all the callback methods should be in core.c; as they are
+potentially used by the vendor modules.
 
- https://lore.kernel.org/lkml/20220414081257.1487499-1-vincent.whitchurch@axis.com/
+> @@ -606,6 +693,24 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  		break;
+>  	}
+> 
+> +	switch (bfpt.dwords[BFPT_DWORD(16)] & BFPT_DWORD16_4B_ADDR_MODE_MASK) 
+> {
+
+I was wondering why this is encoded as single bits and not as an
+enumeration. To me it looks like it is intended to support
+different methods at the same time. Thus I think there might be
+multiple bits set in each entry and exit mask at once. The spec
+lists all the entries as x_xxx1, x_xx1x, ..
+
+> +	case BFPT_DWORD16_4B_ADDR_MODE_BRWR:
+.. then this will only match if exactly these two bits are set.
+
+
+> +		params->set_4byte_addr_mode = spansion_set_4byte_addr_mode;
+
+Shouldn't this be getting a neutral name? The quad_enable methods
+were renamed once, too.
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
