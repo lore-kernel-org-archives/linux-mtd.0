@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E730DC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 14:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DAE6C4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 15:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9s+P1Y6tzIhalBMtcLWsifVpw7y6rTk+z+MOMZrbynE=; b=b24KKD0SOEn8iw
-	nITBInbleU2Jegzsc38vs/BZtLwOBQhOiVeloX9zGW1vNIyE1nnfAdDWGffcXqcW3FJCJdssuws10
-	+A0qAjjC4PwcuQrqiyfDflgTEEpRe/OxFLZHkUhtJvjrwRx7E5Y6NCsegkApuA5ylxJgFAnrNyFGE
-	059Y67yPpLy3/nqmYneOhc4P9YcFoOtM9SiqCWhjrsRSakzpPIiGZmR/Uje3+h5cu7NJluR3TG1oD
-	5LEYXoc2UeWY2bc+EtXlaDOhPFXMl+QzNx/iTjStAEIvFchioqv01HNPgkUi7kIhb9yvJGLSgV0Jm
-	0qNdJDRjSY3rHolQlfZw==;
+	List-Owner; bh=0nLz34Zj25ZHSLs1fPM0s3+WoeTvGKsJiTzXfw2MmSI=; b=sWh35xbDaSB+yI
+	uZutkVc1XezYqLKnUNrMUoZZF7lFiSxiS9vRTobxTkOjXusVr5e+GQPY/mPL+X3+VKD/iy0I/1F1D
+	jvNVSrfixKg1uyS9cKZVWl7C8LlzWzfwfSW6AI0FMr2Do1oSq+igciU5y7dQU+UC8pBUNt02+DFmz
+	9SeTo9Za1aZvy3tZOdNBT3yKMSErrDd7yykeYjBq+lpeBzOPDip1hE8RNiMrqfIJ1LMvKgX0K1z3F
+	jBS/9VqO1QyW+c1f6VTuptLQKCqlET6vVU6CtAu8T9IOoTook4yMtxAx8aizDWWskwru7fwVWeTm/
+	nBV2XO5O7nkPdApHDtUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nf0wQ-0067mM-Ph; Thu, 14 Apr 2022 14:59:26 +0000
-Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
+	id 1nf13g-0069hW-OT; Thu, 14 Apr 2022 15:06:56 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nf0wL-0067iW-PP
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 14:59:24 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 1EDD31BF206;
- Thu, 14 Apr 2022 14:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1649948353;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FAf8yLi3lQ6imgrUHohSJNasrVq7HVgTeNQSDWU87gs=;
- b=lEnYzDaWqAHzINN5jDYX7d7Mfkuiz7OUjP//NPHNqOqSmv5dr81IDkm5DKEELYlo4EWrjs
- Aee598u3irhAsKOiSlyPJapwDYZ7iQkNM1ViK5rvwLoNFNEzTSq3XAIJElcvofC/Lz459k
- TOsDc/Tjgx/qSKVoeNriDf3NubHCUx1AmNYGp+xn8pMXCtmuBfiLBBu7n3pwzi1/gi7cYq
- 2iwqNlK+diZNt+VmC6zzBTmnNEAgTr7G2hVOlxqN6inxqqjDlVLAE+/OAO28Oo/GmyovGG
- ORnjovIcReNJ3Gn0dYc94m/YrJQOhA15j4PNcQaRI0ux2yrcHT7A7szjE0JAKw==
-Date: Thu, 14 Apr 2022 16:59:09 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- konrad.dybcio@somainline.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH] mtd: rawnand: qcom: fix memory corruption that causes
- panic
-Message-ID: <20220414165909.249c2325@xps13>
-In-Reply-To: <20220414143907.GA20493@thinkpad>
-References: <1649914773-22434-1-git-send-email-quic_mdalam@quicinc.com>
- <20220414101517.7bbc5e9d@xps13>
- <DM6PR02MB580382FA47C4884AFC1A98D0FAEF9@DM6PR02MB5803.namprd02.prod.outlook.com>
- <2697e757-f446-9cdb-95e0-ea01a642e6d4@quicinc.com>
- <20220414144236.4ea54e20@xps13> <20220414143907.GA20493@thinkpad>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nf13e-0069f4-3L
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 15:06:55 +0000
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ (Authenticated sender: bbrezillon)
+ by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 218D21F47B07;
+ Thu, 14 Apr 2022 16:06:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1649948808;
+ bh=UpSLyopnlq5YAkIaxL8rC/z8gQiFGUjISBXjuDV87YA=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=b0pwOTmW+kxJoLFq5v97T8FjTuaAb8wrqPxesw6cwS+6nTA86EsvdR+Chu26nEWCy
+ Xf3qKjda/0QTX/bFoVGdrjagui6XsSTSQ1L9HwCXh74Rm5w5x0DiRSjHVb0JxxNPNQ
+ bqWf+vIKAbX/hVQfy7h2oTN2Iy0IZKRAebF+sd41nSxF4QV0psAsLqbKE2uWE8/WlE
+ qcVEUlR3nJwD01Nq3MxUmpUKrKWr2rLCJUC36537UvTZAn/x0R6pehthyq6/P2TqtC
+ xv6GBdR7477RO7wlrat+EGIYskHD8T4Xr1PPPiqCP99itD0GSaDanjiPUTpFkJP+5h
+ qVJgqOvlkKTAA==
+Date: Thu, 14 Apr 2022 17:06:44 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Chuanhong Guo <gch981213@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Patrice Chotard
+ <patrice.chotard@foss.st.com>, Christophe Kerello
+ <christophe.kerello@foss.st.com>, Mark Brown <broonie@kernel.org>, Daniel
+ Palmer <daniel@0x0f.com>, linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH 1/2] mtd: spinand: add support for detection with param
+ page
+Message-ID: <20220414170644.4a53484f@collabora.com>
+In-Reply-To: <20220414143426.723168-2-gch981213@gmail.com>
+References: <20220414143426.723168-1-gch981213@gmail.com>
+ <20220414143426.723168-2-gch981213@gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_075922_305953_35DEC4F9 
-X-CRM114-Status: GOOD (  39.51  )
+X-CRM114-CacheID: sfid-20220414_080654_399937_8910C50B 
+X-CRM114-Status: GOOD (  23.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,126 +73,73 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFuaXZhbm5hbiwKCm1hbmlAa2VybmVsLm9yZyB3cm90ZSBvbiBUaHUsIDE0IEFwciAyMDIy
-IDIwOjA5OjA3ICswNTMwOgoKPiBPbiBUaHUsIEFwciAxNCwgMjAyMiBhdCAwMjo0MjozNlBNICsw
-MjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+ID4gSGkgTWQsCj4gPiAKPiA+IHF1aWNfbWRhbGFt
-QHF1aWNpbmMuY29tIHdyb3RlIG9uIFRodSwgMTQgQXByIDIwMjIgMTc6NTA6NDggKzA1MzA6Cj4g
-PiAgIAo+ID4gPiA+IEhpIE1kLAo+ID4gPiA+Cj4gPiA+ID4gcXVpY19tZGFsYW1AcXVpY2luYy5j
-b20gd3JvdGUgb24gVGh1LCAxNCBBcHIgMjAyMiAxMTowOTozMyArMDUzMDoKPiA+ID4gPiAgICAK
-PiA+ID4gPj4gVGhpcyBwYXRjaCBmaXhlcyBhIG1lbW9yeSBjb3JydXB0aW9uIHRoYXQgb2NjdXJy
-ZWQgaW4gdGhlCj4gPiA+ID4+IG5hbmRfc2NhbigpIHBhdGggZm9yIEh5bml4IG5hbmQgZGV2aWNl
-Lgo+ID4gPiA+Pgo+ID4gPiA+PiBPbiBib290LCBmb3IgSHluaXggbmFuZCBkZXZpY2Ugd2lsbCBw
-YW5pYyBhdCBhIHdlaXJkIHBsYWNlOgo+ID4gPiA+PiB8IFVuYWJsZSB0byBoYW5kbGUga2VybmVs
-IE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCB2aXJ0dWFsCj4gPiA+ID4+ICAgIGFkZHJlc3Mg
-MDAwMDAwNzAKPiA+ID4gPj4gfCBbMDAwMDAwNzBdICpwZ2Q9MDAwMDAwMDAKPiA+ID4gPj4gfCBJ
-bnRlcm5hbCBlcnJvcjogT29wczogNSBbIzFdIFBSRUVNUFQgU01QIEFSTSBNb2R1bGVzIGxpbmtl
-ZCBpbjoKPiA+ID4gPj4gfCBDUFU6IDAgUElEOiAxIENvbW06IHN3YXBwZXIvMCBOb3QgdGFpbnRl
-ZCA1LjE3LjAtMDE0NzMtZzEzYWUxNzY5Y2ZiMAo+ID4gPiA+PiAgICAjMzgKPiA+ID4gPj4gfCBI
-YXJkd2FyZSBuYW1lOiBHZW5lcmljIERUIGJhc2VkIHN5c3RlbSBQQyBpcyBhdAo+ID4gPiA+PiB8
-IG5hbmRjX3NldF9yZWcrMHg4LzB4MWMgTFIgaXMgYXQgcWNvbV9uYW5kY19jb21tYW5kKzB4MjBj
-LzB4NWQwCj4gPiA+ID4+IHwgcGMgOiBbPGMwODhiNzRjPl0gICAgbHIgOiBbPGMwODhkOWM4Pl0g
-ICAgcHNyOiAwMDAwMDExMwo+ID4gPiA+PiB8IHNwIDogYzE0YWRjNTAgIGlwIDogYzE0ZWUyMDgg
-IGZwIDogYzBjYzk3MGMKPiA+ID4gPj4gfCByMTA6IDAwMDAwMGEzICByOSA6IDAwMDAwMDAwICBy
-OCA6IDAwMDAwMDQwCj4gPiA+ID4+IHwgcjcgOiBjMTZmNmEwMCAgcjYgOiAwMDAwMDA5MCAgcjUg
-OiAwMDAwMDAwNCAgcjQgOmMxNGVlMDQwCj4gPiA+ID4+IHwgcjMgOiAwMDAwMDAwMCAgcjIgOiAw
-MDAwMDAwYiAgcjEgOiAwMDAwMDAwMCAgcjAgOmMxNGVlMDQwCj4gPiA+ID4+IHwgRmxhZ3M6IG56
-Y3YgIElSUXMgb24gIEZJUXMgb24gIE1vZGUgU1ZDXzMyICBJU0EgQVJNIFNlZ21lbnQgbm9uZQo+
-ID4gPiA+PiB8IENvbnRyb2w6IDEwYzUzODdkICBUYWJsZTogODAyMDQwNmEgIERBQzogMDAwMDAw
-NTEgUmVnaXN0ZXIgcjAKPiA+ID4gPj4gfCBpbmZvcm1hdGlvbjogc2xhYiBrbWFsbG9jLTJrIHN0
-YXJ0IGMxNGVlMDAwIHBvaW50ZXIgb2Zmc2V0Cj4gPiA+ID4+ICAgIDY0IHNpemUgMjA0OAo+ID4g
-PiA+PiB8IFByb2Nlc3Mgc3dhcHBlci8wIChwaWQ6IDEsIHN0YWNrIGxpbWl0ID0gMHgocHRydmFs
-KSkgbmFuZGNfc2V0X3JlZwo+ID4gPiA+PiB8IGZyb20gcWNvbV9uYW5kY19jb21tYW5kKzB4MjBj
-LzB4NWQwIHFjb21fbmFuZGNfY29tbWFuZCBmcm9tCj4gPiA+ID4+IHwgbmFuZF9yZWFkaWRfb3Ar
-MHgxOTgvMHgxZTggbmFuZF9yZWFkaWRfb3AgZnJvbQo+ID4gPiA+PiB8IGh5bml4X25hbmRfaGFz
-X3ZhbGlkX2plZGVjaWQrMHgzMC8weDc4Cj4gPiA+ID4+IHwgaHluaXhfbmFuZF9oYXNfdmFsaWRf
-amVkZWNpZCBmcm9tIGh5bml4X25hbmRfaW5pdCsweGI4LzB4NDU0Cj4gPiA+ID4+IHwgaHluaXhf
-bmFuZF9pbml0IGZyb20gbmFuZF9zY2FuX3dpdGhfaWRzKzB4YTMwLzB4MTRhOAo+ID4gPiA+PiB8
-IG5hbmRfc2Nhbl93aXRoX2lkcyBmcm9tIHFjb21fbmFuZGNfcHJvYmUrMHg2NDgvMHg3YjAKPiA+
-ID4gPj4gfCBxY29tX25hbmRjX3Byb2JlIGZyb20gcGxhdGZvcm1fcHJvYmUrMHg1OC8weGFjCj4g
-PiA+ID4+Cj4gPiA+ID4+IFRoZSBwcm9ibGVtIGlzIHRoYXQgdGhlIG5hbmRfc2NhbigpJ3MgcWNv
-bV9uYW5kX2F0dGFjaF9jaGlwIGNhbGxiYWNrCj4gPiA+ID4+IGlzIHVwZGF0aW5nIHRoZSBuYW5k
-Yy0+bWF4X2N3cGVycGFnZSBmcm9tIDEgdG8gNC5UaGlzIGNhdXNlcyB0aGUKPiA+ID4gPj4gc2df
-aW5pdF90YWJsZSBvZiBjbGVhcl9iYW1fdHJhbnNhY3Rpb24oKSBpbiB0aGUgZHJpdmVyJ3MKPiA+
-ID4gPj4gcWNvbV9uYW5kY19jb21tYW5kKCkgdG8gbWVtc2V0IG11Y2ggbW9yZSB0aGFuIHdoYXQg
-d2FzIGluaXRpYWxseQo+ID4gPiA+PiBhbGxvY2F0ZWQgYnkgYWxsb2NfYmFtX3RyYW5zYWN0aW9u
-KCkuICAgIAo+ID4gPiA+IFRoYW5rcyBmb3IgaW52ZXN0aWdhdGluZyEKPiA+ID4gPiAgICAKPiA+
-ID4gPj4gVGhpcyBwYXRjaCB3aWxsIHVwZGF0ZSBuYW5kYy0+bWF4X2N3cGVycGFnZSAxIHRvIDQg
-YWZ0ZXIgbmFuZF9zY2FuKCkKPiA+ID4gPj4gcmV0dXJucywgYW5kIHJlbW92ZSB1cGRhdGluZyBu
-YW5kYy0+bWF4X2N3cGVycGFnZSBmcm9tCj4gPiA+ID4+IHFjb21fbmFuZF9hdHRhY2hfY2hpcCBj
-YWxsIGJhY2suICAgIAo+ID4gPiA+IFRoZSBmaXggZG9lcyBub3QgbG9vayByaWdodCwgYXMgZmFy
-IGFzIEkgdW5kZXJzdGFuZCwgdGhpcyBzaG91bGQgYmUgcHJvcGVybHkgaGFuZGxlZCBkdXJpbmcg
-dGhlIGF0dGFjaCBwaGFzZS4gVGhhdCBpcyB3aGVyZSB3ZSBoYXZlIGFsbCBpbmZvcm1hdGlvbiBh
-Ym91dCB0aGUgY2hpcCBhbmQgZG8gdGhlIGNvbmZpZ3VyYXRpb24gZm9yIHRoaXMgY2hpcC4KPiA+
-ID4gPgo+ID4gPiA+IElmIHlvdSB1cGRhdGUgbWF4X2N3cGVycGFnZSB0aGVyZSB5b3Ugc2hvdWxk
-IHByb2JhYmx5IHVwZGF0ZSBvdGhlciBpbnRlcm5hbCB2YXJpYWJsZXMgdGhhdCBkZXBlbmQgb24g
-aXQgYXMgd2VsbC4gICAgCj4gPiA+IAo+ID4gPiAgwqDCoCBDdXJyZW50bHkgd2UgYXJlIHVwZGF0
-aW5nIG1heF9jd3BlcnBhZ2XCoCBpbiBxY29tX25hbmRfYXR0YWNoX2NoaXAoKSwgYnV0IHdlIGFy
-ZSBzZWVpbmcgaXNzdWUgZm9yIEh5bml4IG5hbmQgZGV2aWNlIHNpbmNlIG5hbmRfc2Nhbl90YWls
-KCkgaXMgZ2V0dGluZyBjYWxsZWQgYWZ0ZXIgbmFuZF9hdHRhY2goKSBhbmQgaW4gbmFuZF9hdHRh
-Y2goKSB3ZSBhcmUgdXBkYXRpbmcgbWF4X2N3cGVycGFnZSB0byA0IG9yIDggYmFzZWQgb24gcGFn
-ZSBzaXplLgo+ID4gPiAKPiA+ID4gIMKgwqDCoCBGcm9tIG5hbmRfc2Nhbl90YWlsKCkgdGhlcmUg
-aXMgYSBjYWxsIGZvciBuYW5kX21hbnVmYWN0dXJlcl9pbml0KCkgLCBzcGVjaWZpYyB0byBIeW5p
-eCBuYW5kIHJlYWRfaWQgaXMgZ2V0dGluZyBjYWxsZWQgdGhhdCdzIHdoeSB3ZSBhcmUgc2VlaW5n
-IHRoaXMgaXNzdWUgb25seSBmb3IgSHluaXggbmFuZCBkZXZpY2UuIFJlYWQgaWQgc2VxdWVuY2Ug
-YXMgYmVsb3cKPiA+ID4gCj4gPiA+ICDCoMKgIGh5bml4X25hbmRfaGFzX3ZhbGlkX2plZGVjaWQo
-KQo+ID4gPiAKPiA+ID4gIMKgwqDCoMKgwqDCoMKgIMKgIMKgIMKgIMKgIHwKPiA+ID4gCj4gPiA+
-ICDCoMKgIG5hbmRfcmVhZGlkX29wKCkKPiA+ID4gCj4gPiA+ICDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgfAo+ID4gPiAKPiA+ID4gIMKgcWNvbV9uYW5kY19jb21tYW5kKCkKPiA+ID4gCj4gPiA+
-ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwKPiA+ID4gCj4gPiA+IHByZV9jb21tYW5kKCkKPiA+
-ID4gCj4gPiA+ICDCoMKgwqDCoMKgwqDCoMKgwqAgfAo+ID4gPiAKPiA+ID4gY2xlYXJfYmFtX3Ry
-YW5zYWN0aW9uKCnCoMKgIC0tPiBJbiB0aGlzIGNhbGwgd2UgYXJlIGRvaW5nIHNnX2luaXRfdGFi
-bGUoKSB3aGljaCBpcyBjYWxsaW5nIG1lbXNldCgpIGJhc2VkIG9uIG1heF9jd3BlcnBhZ2UuU2lu
-Y2UgaW5pdGlhbGx5IHdlIGhhdmUgYWxsb2NhdGVkIGJhbSB0cmFuc2FjdGlvbiBhcyBwZXIgbWF4
-X2N3cGVycGFnZSA9MSBhbmQgLCBzaW5jZSBuYW5kX2NoaXBfYXR0YWNoKCkgdXBkYXRlZCBtYXhf
-Y3dwZXJwYWdlLMKgIG5vdyB3ZSBhcmUgZG9pbmcgbWVtc2V0IGFzIHBlciBtYXhfY3dwZXJwYWdl
-ID0gNCBvciA4Lgo+ID4gPiAKPiA+ID4gCj4gPiA+IFNvIGFueXdheSB3ZSBoYXZlIHRvIHVwZGF0
-ZWQgbWF4X2N3cGVycGFnZSBhZnRlciBuYW5kX3NjYW4oKSBjYWxsIG9ubHkuwqAgU2luY2UgdGhl
-cmUgaXMgbm8gb3RoZXIgZGVwZW5kZW5jeSBvbiBtYXhfY3dwZXJwYWdlIGluIG5hbmRfYXR0YWNo
-X2NoaXAoKSBhbmQgd2UgYXJlIHVzaW5nIHRoaXMgaW4gYmFtX2FsbG9jKCkgYW5kIGJhbV9jbGVh
-cigpLiAgCj4gPiAKPiA+IFdoeSBkb24ndCB5b3UgdXBkYXRlIHRoZSBzZyB0YWJsZSBhZnRlciBp
-bmNyZWFzaW5nIG1heF9jd3BlcnBhZ2U/Cj4gPiAgIAo+IAo+IE9yIHdlIGNvdWxkIG1vdmUgdGhl
-IGJhbSByZWFsbG9jYXRpb24gaW5zaWRlIHFjb21fbmFuZF9hdHRhY2hfY2hpcCgpIGFzIGJlbG93
-PwoKTXVjaCBiZXR0ZXIgYXBwcm9hY2gsIHllcy4KCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFu
-ZGMuYwo+IGluZGV4IDdjNmVmYTNiNjI1NS4uNThjMTYwNTQ2MzBmIDEwMDY0NAo+IC0tLSBhL2Ry
-aXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQv
-cmF3L3Fjb21fbmFuZGMuYwo+IEBAIC0yNjUzLDkgKzI2NTMsMjMgQEAgc3RhdGljIGludCBxY29t
-X25hbmRfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCj4gICAgICAgICBt
-dGRfc2V0X29vYmxheW91dChtdGQsICZxY29tX25hbmRfb29ibGF5b3V0X29wcyk7Cj4gIAo+ICsg
-ICAgICAgLyogRnJlZSB0aGUgaW5pdGlhbGx5IGFsbG9jYXRlZCBCQU0gdHJhbnNhY3Rpb24gZm9y
-IHJlYWRpbmcgdGhlIE9ORkkgcGFyYW1zICovCj4gKyAgICAgICBpZiAobmFuZGMtPnByb3BzLT5p
-c19iYW0pCj4gKyAgICAgICAgICAgICAgIGZyZWVfYmFtX3RyYW5zYWN0aW9uKG5hbmRjKTsKPiAr
-Cj4gICAgICAgICBuYW5kYy0+bWF4X2N3cGVycGFnZSA9IG1heF90KHVuc2lnbmVkIGludCwgbmFu
-ZGMtPm1heF9jd3BlcnBhZ2UsCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IGN3cGVycGFnZSk7Cj4gIAo+ICsgICAgICAgLyogTm93IGFsbG9jYXRlIHRoZSBCQU0gdHJhbnNh
-Y3Rpb24gYmFzZWQgb24gdXBkYXRlZCBtYXhfY3dwZXJwYWdlICovCj4gKyAgICAgICBpZiAobmFu
-ZGMtPnByb3BzLT5pc19iYW0pIHsKPiArICAgICAgICAgICAgICAgbmFuZGMtPmJhbV90eG4gPSBh
-bGxvY19iYW1fdHJhbnNhY3Rpb24obmFuZGMpOwo+ICsgICAgICAgICAgICAgICBpZiAoIW5hbmRj
-LT5iYW1fdHhuKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2VycihuYW5kYy0+ZGV2
-LAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgImZhaWxlZCB0byBhbGxvY2F0ZSBi
-YW0gdHJhbnNhY3Rpb25cbiIpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRU5P
-TUVNOwo+ICsgICAgICAgICAgICAgICB9Cj4gKyAgICAgICB9Cj4gKwo+ICAgICAgICAgLyoKPiAg
-ICAgICAgICAqIERBVEFfVURfQllURVMgdmFyaWVzIGJhc2VkIG9uIHdoZXRoZXIgdGhlIHJlYWQv
-d3JpdGUgY29tbWFuZCBwcm90ZWN0cwo+ICAgICAgICAgICogc3BhcmUgZGF0YSB3aXRoIEVDQyB0
-b28uIFdlIHByb3RlY3Qgc3BhcmUgZGF0YSBieSBkZWZhdWx0LCBzbyB3ZSBzZXQKPiBAQCAtMjk1
-NiwxNyArMjk3MCw2IEBAIHN0YXRpYyBpbnQgcWNvbV9uYW5kX2hvc3RfaW5pdF9hbmRfcmVnaXN0
-ZXIoc3RydWN0IHFjb21fbmFuZF9jb250cm9sbGVyICpuYW5kYywKPiAgICAgICAgIGlmIChyZXQp
-Cj4gICAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gIAo+IC0gICAgICAgaWYgKG5hbmRjLT5w
-cm9wcy0+aXNfYmFtKSB7Cj4gLSAgICAgICAgICAgICAgIGZyZWVfYmFtX3RyYW5zYWN0aW9uKG5h
-bmRjKTsKPiAtICAgICAgICAgICAgICAgbmFuZGMtPmJhbV90eG4gPSBhbGxvY19iYW1fdHJhbnNh
-Y3Rpb24obmFuZGMpOwo+IC0gICAgICAgICAgICAgICBpZiAoIW5hbmRjLT5iYW1fdHhuKSB7Cj4g
-LSAgICAgICAgICAgICAgICAgICAgICAgZGV2X2VycihuYW5kYy0+ZGV2LAo+IC0gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgImZhaWxlZCB0byBhbGxvY2F0ZSBiYW0gdHJhbnNhY3Rpb25c
-biIpOwo+IC0gICAgICAgICAgICAgICAgICAgICAgIG5hbmRfY2xlYW51cChjaGlwKTsKPiAtICAg
-ICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsKPiAtICAgICAgICAgICAgICAgfQo+
-IC0gICAgICAgfQo+IC0KPiAgICAgICAgIHJldCA9IG10ZF9kZXZpY2VfcGFyc2VfcmVnaXN0ZXIo
-bXRkLCBwcm9iZXMsIE5VTEwsIE5VTEwsIDApOwo+ICAgICAgICAgaWYgKHJldCkKPiAgICAgICAg
-ICAgICAgICAgbmFuZF9jbGVhbnVwKGNoaXApOwo+IAo+IFRoYW5rcywKPiBNYW5pCgoKVGhhbmtz
-LApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On Thu, 14 Apr 2022 22:34:25 +0800
+Chuanhong Guo <gch981213@gmail.com> wrote:
+
+> SPI-NAND detection using chip ID isn't always reliable.
+> Here are two known cases:
+> 1. ESMT uses JEDEC ID from other vendors. This may collapse with future
+>    chips.
+
+Really?! So the manufacturer id matching is not even possible?
+
+> 2. Winbond W25N01KV uses the exact same JEDEC ID as W25N01GV while
+>    having completely different chip parameters.
+> 
+> Recent SPI-NANDs have a parameter page which is stored in the same
+> format as raw NAND ONFI data. There are strings for chip manufacturer
+> and chip model. Chip ECC requirement and memory organization are
+> available too.
+> This patch adds support for detecting SPI-NANDs with the parameter page
+> after ID matching failed. In this detection, memory organization and
+> ECC requirements are taken from the parameter page, and other SPI-NAND
+> specific parameters are obtained by matching chip model string with
+> a separated table.
+
+Oh come on! Looks like they never learn from their mistakes...
+
+> 
+> It's common for vendors to release a series of SPI-NANDs with the same
+> SPI-NAND parameters in different voltages and/or capacities. The chip
+> table defined in this patch supports multiple model strings in one
+> entry, and multiple chip models can be covered using only one entry.
+
+That's really disappointing. And I guess the ONFI-page read commands are
+not even standard, and each vendor will come with its own sequence to
+read it. What's bothering me the most is the fact that ONFI parameter
+pages are not even designed for SPI NANDs. They have a bunch of
+parameters that don't really apply to SPI NANDs, and we're still
+lacking SPI-specific info, like the read/write/erase command variants,
+the maximum SPI bus width (AKA SPI modes)...
+
+To sum-up, if we have to support reading the ONFI parameter page, I'd
+rather keep it vendor-private (but that's assuming the vendor ID
+detection works, and you seem to imply ESMT cheats on that too), and
+use it only as a way to distinguish between 2 chip variants.
+
+> 
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> ---
+> 
+> I'm not brave enough to touch raw nand code without testing, so
+> sanitize_string, onfi_crc16 and nand_bit_wise_majority are
+> duplicated from raw/nand_onfi.c into spi/onfi.c
+> 
+>  drivers/mtd/nand/spi/Makefile |   2 +-
+>  drivers/mtd/nand/spi/core.c   |  23 +--
+>  drivers/mtd/nand/spi/onfi.c   | 296 ++++++++++++++++++++++++++++++++++
+
+Please, no. Try to move the common code to drivers/mtd/nand/onfi.c
+instead of duplicating it. AFAICT, the only thing that's spinand
+specific is spinand_onfi_read() and the last part of
+spinand_onfi_detect(). I'm sure we can find a way to expose
+generic onfi_parsing() helpers.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
