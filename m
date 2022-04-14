@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BCFCC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 08:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E79C4C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 09:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yq9vaeq5JOQUH+KNGhr1jMqwFzkqkQ0xOjZ/PhWaUWs=; b=WGXRpwIqSenh4r
-	/v260ylkkz4FTc378ObJLTG4BlVO4vox6maB/ediYy0vBX4/V6XBb5oDGisZ+otKLBV0GlYvLmM6U
-	dH6HkeiyeGVYd02x3o9r/tdIVYIPxrT9Jp2ZkzW/3lUYTMFk/kW7bnzdY58yYQvYBV5dXkPCjIOHd
-	0kPUe1MwnIBEsJOlvrTy5tzcpHG8lzvt82W1lNS0+b8hjh1rPwqlKEgmgsXhaP0b0C9EXRpZEQ1nd
-	hMmgb3PeGVb+Krl4G0aWME/5rsx8fnij/T8H0f2IlhQWodgZHNBMvOk4nBZx2ybc52L3YSr3jAeDY
-	PUa6yR/97C46AtdUt20A==;
+	List-Owner; bh=WWctgw+KyZZQKgb+dJjaIR7omAR/hdX7d1l7gvnNNjc=; b=Ycc0M0QPN4SL+W
+	cnVDfIa1cyarkVbMQobm0IVbx7CG6AHXLV1hW58vjjiUkOYIIECk17brj2FWMkJwHrFp1+1Hdc4Co
+	PUL72Qt0OShv0YCpcoCHrRqhQqQUf2jV6bRnRzEOf7aJMBZHsMfAYm2WG2OtI6nkijbrINcieBtvr
+	d/UeWg0b34cOvEbi6PZJsdQwz5g4HxzuHvrUN5qHj1EYo7+7SFeY6T6tg1lhRRamUSnkn8ixoMI5H
+	eXFCzWWinyeoK5rOnXQc9j/ReEJghL/qf70gJIyrMoUcrgqbkj+Nn9MiwXJRQELpuV3xGh7kyxYYf
+	L/kJwYYCzEfyudik6FBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neudb-004UcT-Cu; Thu, 14 Apr 2022 08:15:35 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1nevSy-004mAO-Sd; Thu, 14 Apr 2022 09:08:40 +0000
+Received: from smtp1.axis.com ([195.60.68.17])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neudW-004Uaw-M5
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 08:15:33 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id CB6C1FF816;
- Thu, 14 Apr 2022 08:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1649924120;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=nWm9bZunBtm2q1dNTg2vdZaOIRSEGlUFwF3f06as1a8=;
- b=Jgwn6TbX910FliwV1PHbs5lOv5Ghiyr41L5OupnYamnqmBbGbFvnCVCD2WZB0AHnXJiWhx
- cHybwrETldtG0BJG6BlqgfP57Ue3CwehdTARFOh777K7sPWnJ7uagMlX14YcBIG/EzOh8C
- /9c8NuMOHW6xSutXQ87Bou6L2tdk8HE0C1Tb1OlhimWosPi4buyeAkpvywQmHy06eMfGdc
- p0UKKz0Lk+77VbE4rMWHJdyzsbJVREsOLh5dby4YrMVE+cBvehztPZA3snCVVS3BRxYB85
- lcq9EVNxhWS1pNFUp54zjxlH+5oWljKw+UQqVZr6R3yXNKlghJuWCfnClkrMHw==
-Date: Thu, 14 Apr 2022 10:15:17 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc: mani@kernel.org, richard@nod.at, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
- quic_srichara@quicinc.com
-Subject: Re: [PATCH] mtd: rawnand: qcom: fix memory corruption that causes
- panic
-Message-ID: <20220414101517.7bbc5e9d@xps13>
-In-Reply-To: <1649914773-22434-1-git-send-email-quic_mdalam@quicinc.com>
-References: <1649914773-22434-1-git-send-email-quic_mdalam@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nevOc-004kGj-Ja
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 09:04:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1649927050;
+ x=1681463050; h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=5reGpRw2ZgFSQZbtLRzu9ib8DlUy/I3RASjMk4c7wAc=;
+ b=FWZubmzBRTD1n1nqYmpd5ADG8eXr+X/I7TVdXZCd3DFjhN0gzvVg26xA
+ iqa2XZybq01uiqSBbATSWKkViyFeMaiLQ5HMkCMwa1j3KQb56r4+GQxRm
+ OZ8Nnl/IaeRry6Er9Xjehb72M2vKJUDPz2HAFaUDM1SYnvHMCFSuMJTAV
+ dY1XWeQX2Y09GNYO9eTNFdu4iXki9SQ7IRaB2Q3t2eaVFf6o/VZg9QSzf
+ kG2ACcXl692eRKncSeN4fYUd/yINJTSSq+IO2U2dbQqXPyJqM2f0Hl892
+ QcDU+AxCPPEagVxV8FK1pl56FYBTi0jjGWEds9MJpfyzP3v5kwomHGxKb g==;
+Date: Thu, 14 Apr 2022 11:04:02 +0200
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+To: kernel test robot <lkp@intel.com>
+CC: "vigneshr@ti.com" <vigneshr@ti.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "joern@lazybastard.org" <joern@lazybastard.org>, "kbuild-all@lists.01.org"
+ <kbuild-all@lists.01.org>, kernel <kernel@axis.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>, "krzk+dt@kernel.org"
+ <krzk+dt@kernel.org>, "frowand.list@gmail.com" <frowand.list@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] mtd: phram: Allow cached mappings
+Message-ID: <20220414090402.GA11067@axis.com>
+References: <20220412135302.1682890-5-vincent.whitchurch@axis.com>
+ <202204131446.omJ5mC54-lkp@intel.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <202204131446.omJ5mC54-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_011531_063698_38479A0A 
-X-CRM114-Status: GOOD (  24.28  )
+X-CRM114-CacheID: sfid-20220414_020411_001543_4A9D10D8 
+X-CRM114-Status: GOOD (  11.04  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,81 +70,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWQsCgpxdWljX21kYWxhbUBxdWljaW5jLmNvbSB3cm90ZSBvbiBUaHUsIDE0IEFwciAyMDIy
-IDExOjA5OjMzICswNTMwOgoKPiBUaGlzIHBhdGNoIGZpeGVzIGEgbWVtb3J5IGNvcnJ1cHRpb24g
-dGhhdCBvY2N1cnJlZCBpbiB0aGUKPiBuYW5kX3NjYW4oKSBwYXRoIGZvciBIeW5peCBuYW5kIGRl
-dmljZS4KPiAKPiBPbiBib290LCBmb3IgSHluaXggbmFuZCBkZXZpY2Ugd2lsbCBwYW5pYyBhdCBh
-IHdlaXJkIHBsYWNlOgo+IHwgVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRl
-cmVmZXJlbmNlIGF0IHZpcnR1YWwKPiAgIGFkZHJlc3MgMDAwMDAwNzAKPiB8IFswMDAwMDA3MF0g
-KnBnZD0wMDAwMDAwMAo+IHwgSW50ZXJuYWwgZXJyb3I6IE9vcHM6IDUgWyMxXSBQUkVFTVBUIFNN
-UCBBUk0KPiB8IE1vZHVsZXMgbGlua2VkIGluOgo+IHwgQ1BVOiAwIFBJRDogMSBDb21tOiBzd2Fw
-cGVyLzAgTm90IHRhaW50ZWQgNS4xNy4wLTAxNDczLWcxM2FlMTc2OWNmYjAKPiAgICMzOAo+IHwg
-SGFyZHdhcmUgbmFtZTogR2VuZXJpYyBEVCBiYXNlZCBzeXN0ZW0KPiB8IFBDIGlzIGF0IG5hbmRj
-X3NldF9yZWcrMHg4LzB4MWMKPiB8IExSIGlzIGF0IHFjb21fbmFuZGNfY29tbWFuZCsweDIwYy8w
-eDVkMAo+IHwgcGMgOiBbPGMwODhiNzRjPl0gICAgbHIgOiBbPGMwODhkOWM4Pl0gICAgcHNyOiAw
-MDAwMDExMwo+IHwgc3AgOiBjMTRhZGM1MCAgaXAgOiBjMTRlZTIwOCAgZnAgOiBjMGNjOTcwYwo+
-IHwgcjEwOiAwMDAwMDBhMyAgcjkgOiAwMDAwMDAwMCAgcjggOiAwMDAwMDA0MAo+IHwgcjcgOiBj
-MTZmNmEwMCAgcjYgOiAwMDAwMDA5MCAgcjUgOiAwMDAwMDAwNCAgcjQgOmMxNGVlMDQwCj4gfCBy
-MyA6IDAwMDAwMDAwICByMiA6IDAwMDAwMDBiICByMSA6IDAwMDAwMDAwICByMCA6YzE0ZWUwNDAK
-PiB8IEZsYWdzOiBuemN2ICBJUlFzIG9uICBGSVFzIG9uICBNb2RlIFNWQ18zMiAgSVNBIEFSTSBT
-ZWdtZW50IG5vbmUKPiB8IENvbnRyb2w6IDEwYzUzODdkICBUYWJsZTogODAyMDQwNmEgIERBQzog
-MDAwMDAwNTEKPiB8IFJlZ2lzdGVyIHIwIGluZm9ybWF0aW9uOiBzbGFiIGttYWxsb2MtMmsgc3Rh
-cnQgYzE0ZWUwMDAgcG9pbnRlciBvZmZzZXQKPiAgIDY0IHNpemUgMjA0OAo+IHwgUHJvY2VzcyBz
-d2FwcGVyLzAgKHBpZDogMSwgc3RhY2sgbGltaXQgPSAweChwdHJ2YWwpKQo+IHwgbmFuZGNfc2V0
-X3JlZyBmcm9tIHFjb21fbmFuZGNfY29tbWFuZCsweDIwYy8weDVkMAo+IHwgcWNvbV9uYW5kY19j
-b21tYW5kIGZyb20gbmFuZF9yZWFkaWRfb3ArMHgxOTgvMHgxZTgKPiB8IG5hbmRfcmVhZGlkX29w
-IGZyb20gaHluaXhfbmFuZF9oYXNfdmFsaWRfamVkZWNpZCsweDMwLzB4NzgKPiB8IGh5bml4X25h
-bmRfaGFzX3ZhbGlkX2plZGVjaWQgZnJvbSBoeW5peF9uYW5kX2luaXQrMHhiOC8weDQ1NAo+IHwg
-aHluaXhfbmFuZF9pbml0IGZyb20gbmFuZF9zY2FuX3dpdGhfaWRzKzB4YTMwLzB4MTRhOAo+IHwg
-bmFuZF9zY2FuX3dpdGhfaWRzIGZyb20gcWNvbV9uYW5kY19wcm9iZSsweDY0OC8weDdiMAo+IHwg
-cWNvbV9uYW5kY19wcm9iZSBmcm9tIHBsYXRmb3JtX3Byb2JlKzB4NTgvMHhhYwo+IAo+IFRoZSBw
-cm9ibGVtIGlzIHRoYXQgdGhlIG5hbmRfc2NhbigpJ3MgcWNvbV9uYW5kX2F0dGFjaF9jaGlwIGNh
-bGxiYWNrCj4gaXMgdXBkYXRpbmcgdGhlIG5hbmRjLT5tYXhfY3dwZXJwYWdlIGZyb20gMSB0byA0
-LlRoaXMgY2F1c2VzIHRoZQo+IHNnX2luaXRfdGFibGUgb2YgY2xlYXJfYmFtX3RyYW5zYWN0aW9u
-KCkgaW4gdGhlIGRyaXZlcidzCj4gcWNvbV9uYW5kY19jb21tYW5kKCkgdG8gbWVtc2V0IG11Y2gg
-bW9yZSB0aGFuIHdoYXQgd2FzIGluaXRpYWxseQo+IGFsbG9jYXRlZCBieSBhbGxvY19iYW1fdHJh
-bnNhY3Rpb24oKS4KClRoYW5rcyBmb3IgaW52ZXN0aWdhdGluZyEKCj4gVGhpcyBwYXRjaCB3aWxs
-IHVwZGF0ZSBuYW5kYy0+bWF4X2N3cGVycGFnZSAxIHRvIDQgYWZ0ZXIgbmFuZF9zY2FuKCkKPiBy
-ZXR1cm5zLCBhbmQgcmVtb3ZlIHVwZGF0aW5nIG5hbmRjLT5tYXhfY3dwZXJwYWdlIGZyb20KPiBx
-Y29tX25hbmRfYXR0YWNoX2NoaXAgY2FsbCBiYWNrLgoKVGhlIGZpeCBkb2VzIG5vdCBsb29rIHJp
-Z2h0LCBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kLCB0aGlzIHNob3VsZCBiZQpwcm9wZXJseSBoYW5k
-bGVkIGR1cmluZyB0aGUgYXR0YWNoIHBoYXNlLiBUaGF0IGlzIHdoZXJlIHdlIGhhdmUgYWxsCmlu
-Zm9ybWF0aW9uIGFib3V0IHRoZSBjaGlwIGFuZCBkbyB0aGUgY29uZmlndXJhdGlvbiBmb3IgdGhp
-cyBjaGlwLgoKSWYgeW91IHVwZGF0ZSBtYXhfY3dwZXJwYWdlIHRoZXJlIHlvdSBzaG91bGQgcHJv
-YmFibHkgdXBkYXRlIG90aGVyCmludGVybmFsIHZhcmlhYmxlcyB0aGF0IGRlcGVuZCBvbiBpdCBh
-cyB3ZWxsLgoKPiBTaWduZWQtb2ZmLWJ5OiBNZCBTYWRyZSBBbGFtIDxxdWljX21kYWxhbUBxdWlj
-aW5jLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBTcmljaGFyYW4gUiA8cXVpY19zcmljaGFyYUBxdWlj
-aW5jLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jIHwgOCAr
-KysrLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
-KQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPiBpbmRleCAxYTc3NTQyLi5hYTNlYzQ1
-IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+ICsrKyBi
-L2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+IEBAIC0yNjUyLDkgKzI2NTIsNiBA
-QCBzdGF0aWMgaW50IHFjb21fbmFuZF9hdHRhY2hfY2hpcChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlw
-KQo+ICAKPiAgCW10ZF9zZXRfb29ibGF5b3V0KG10ZCwgJnFjb21fbmFuZF9vb2JsYXlvdXRfb3Bz
-KTsKPiAgCj4gLQluYW5kYy0+bWF4X2N3cGVycGFnZSA9IG1heF90KHVuc2lnbmVkIGludCwgbmFu
-ZGMtPm1heF9jd3BlcnBhZ2UsCj4gLQkJCQkgICAgIGN3cGVycGFnZSk7Cj4gLQo+ICAJLyoKPiAg
-CSAqIERBVEFfVURfQllURVMgdmFyaWVzIGJhc2VkIG9uIHdoZXRoZXIgdGhlIHJlYWQvd3JpdGUg
-Y29tbWFuZCBwcm90ZWN0cwo+ICAJICogc3BhcmUgZGF0YSB3aXRoIEVDQyB0b28uIFdlIHByb3Rl
-Y3Qgc3BhcmUgZGF0YSBieSBkZWZhdWx0LCBzbyB3ZSBzZXQKPiBAQCAtMjkwOSw3ICsyOTA2LDcg
-QEAgc3RhdGljIGludCBxY29tX25hbmRfaG9zdF9pbml0X2FuZF9yZWdpc3RlcihzdHJ1Y3QgcWNv
-bV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjLAo+ICAJc3RydWN0IG5hbmRfY2hpcCAqY2hpcCA9ICZo
-b3N0LT5jaGlwOwo+ICAJc3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3RvX210ZChjaGlwKTsK
-PiAgCXN0cnVjdCBkZXZpY2UgKmRldiA9IG5hbmRjLT5kZXY7Cj4gLQlpbnQgcmV0Owo+ICsJaW50
-IHJldCwgY3dwZXJwYWdlOwo+ICAKPiAgCXJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKGRuLCAi
-cmVnIiwgJmhvc3QtPmNzKTsKPiAgCWlmIChyZXQpIHsKPiBAQCAtMjk1NSw2ICsyOTUyLDkgQEAg
-c3RhdGljIGludCBxY29tX25hbmRfaG9zdF9pbml0X2FuZF9yZWdpc3RlcihzdHJ1Y3QgcWNvbV9u
-YW5kX2NvbnRyb2xsZXIgKm5hbmRjLAo+ICAJaWYgKHJldCkKPiAgCQlyZXR1cm4gcmV0Owo+ICAK
-PiArCWN3cGVycGFnZSA9IG10ZC0+d3JpdGVzaXplIC8gTkFORENfU1RFUF9TSVpFOwo+ICsJbmFu
-ZGMtPm1heF9jd3BlcnBhZ2UgPSBtYXhfdCh1bnNpZ25lZCBpbnQsIG5hbmRjLT5tYXhfY3dwZXJw
-YWdlLAo+ICsJCQkJICAgICBjd3BlcnBhZ2UpOwo+ICAJaWYgKG5hbmRjLT5wcm9wcy0+aXNfYmFt
-KSB7Cj4gIAkJZnJlZV9iYW1fdHJhbnNhY3Rpb24obmFuZGMpOwo+ICAJCW5hbmRjLT5iYW1fdHhu
-ID0gYWxsb2NfYmFtX3RyYW5zYWN0aW9uKG5hbmRjKTsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+On Wed, Apr 13, 2022 at 08:45:59AM +0200, kernel test robot wrote:
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from include/linux/io.h:13,
+>                     from drivers/mtd/devices/phram.c:21:
+>    drivers/mtd/devices/phram.c: In function 'register_device':
+> >> arch/sh/include/asm/io.h:274:33: error: expected expression before 'do'
+>      274 | #define iounmap(addr)           do { } while (0)
+>          |                                 ^~
+>    drivers/mtd/devices/phram.c:150:44: note: in expansion of macro 'iounmap'
+>      150 |         cached ? memunmap(new->mtd.priv) : iounmap(new->mtd.priv);
+>          |                                            ^~~~~~~
+>    drivers/mtd/devices/phram.c: In function 'phram_remove':
+> >> arch/sh/include/asm/io.h:274:33: error: expected expression before 'do'
+>      274 | #define iounmap(addr)           do { } while (0)
+>          |                                 ^~
+>    drivers/mtd/devices/phram.c:372:53: note: in expansion of macro 'iounmap'
+>      372 |         phram->cached ? memunmap(phram->mtd.priv) : iounmap(phram->mtd.priv);
+>          |                                                     ^~~~~~~
+> 
+> 
+> vim +/do +274 arch/sh/include/asm/io.h
+> 
+> d57d64080ddc0f Paul Mundt        2010-01-19  272  
+> 13f1fc870dd747 Christoph Hellwig 2020-07-14  273  #else /* CONFIG_MMU */
+> 13f1fc870dd747 Christoph Hellwig 2020-07-14 @274  #define iounmap(addr)		do { } while (0)
+> 13f1fc870dd747 Christoph Hellwig 2020-07-14  275  #define ioremap(offset, size)	((void __iomem *)(unsigned long)(offset))
+> 13f1fc870dd747 Christoph Hellwig 2020-07-14  276  #endif /* CONFIG_MMU */
+> d627a2ebd1a303 Paul Mundt        2010-01-28  277  
+
+Thank you for the report.  This patch could certainly be changed to work
+around this, but ISTM that the right fix is in the SH header file, since
+the problem could hit in other cases too.  I've posted a fix here now:
+
+ https://lore.kernel.org/lkml/20220414081257.1487499-1-vincent.whitchurch@axis.com/
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
