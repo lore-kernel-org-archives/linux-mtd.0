@@ -4,62 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FFB8C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 15:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25685C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 16:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bN7+luRxxTZxI72a6mIiJg02wpkfLFXzBEvnQC6lCIM=; b=VrqrEx+ml+qmG/
-	koNXSd1yG0iyh7R8VtMYf8Sj93m128GdQklY1PNSjUI/Z+mYgjTw4Mw6xiIn80ehttJaihAFiruO5
-	y3W2viVXUTE6ogr1L2QDtlmiZHHcVhPEqEpgSTd168ORR8an4FW+sajbHPgC+B+0Lb+4rCJdrSm0e
-	a90zDzrs0BUmb/yMf6CB7knhpgvchqKJ2v9+2HkB2oDWch/FUh+iFKg+iPMrlBol9rehXj9RElDOq
-	yX7PRKOVsBl1wwtsEtrUDk546rV4ldRSDVtO2U1UpOnnZ6nL/hf6HfbDAbIr2AdfgDOAJXXekyFFg
-	Z02o+Cg+svNT+6BdyDkw==;
+	List-Owner; bh=xd0ryJkUmNc9etRwXh6YzN/GeBGmayOZDnzCz9TsEuw=; b=wd3COa/ZR6aqob
+	xSuYwPCleksOzZa8CmDL7PuMeblyaAURYzO52cz5uI435I0clsw0yhXU7hDQKVBpcu+tOArfmzSN/
+	gAFbq+9p/TOSTV6OdIt6uwB7RF0c+j1swn9hquhPbMKsN0+lqupUd+IbV82goWnEOPqFK5lK77HdQ
+	lMQgWO+MKkI3RAixXHSJfnhJ3Mi5oYAO658rfkJ3AjIk1oFqJ37XFm2GNvPQmiyLq1tKRC+rqUY/K
+	HNCBzqHruVXLhpOwEFwTPQ+ocqEYMUYdzsYPbWj7v3xgjzwk+IIp6+zfy6pSxLjXzsNWBWdP1YfTk
+	qVW587fFtPlyXzNLvV2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nf1mn-006JQQ-UH; Thu, 14 Apr 2022 15:53:33 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1nf1tR-006Kb1-CV; Thu, 14 Apr 2022 16:00:25 +0000
+Received: from mail-oa1-f52.google.com ([209.85.160.52])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nf1mk-006JPq-Pc
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 15:53:32 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 23BB9B82A3F;
- Thu, 14 Apr 2022 15:53:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98755C385A1;
- Thu, 14 Apr 2022 15:53:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649951607;
- bh=vXueds4VuC74iLCMybsPZmL3wsTpJ6AYZXEWJtsFltc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=gVlrHrq9iS0fvnwKbYeUOEnnL9wxjnCbN3bSgvsuN9aJYKMx77j/5W27OQZ9xYl/e
- g7yIjWea4TGP9Rs9l7bSoBH3mf0TcuEQeqTbKbbNZUnGAkGDoKKWuqE0jxNP8hJcRi
- u3viLk71BcM/9sstR79aHyKX8ng6N77guDgz/wLrVN+bY2+YzZdcsezJ+gatRX72r0
- kU6le2F7BlDoRbjf6580EeI8KyuaDXGJJn252kb62h5id5pzPy09f+ZIaxrhn5doAe
- zqcDtY6rEycMwDCi3UXSn7Dl9ApANob09OGNu4YZpqrC3dd6Brgft1X4QgNNw/pVAo
- 6tvGAgnqoFg8A==
-Date: Thu, 14 Apr 2022 21:23:19 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- konrad.dybcio@somainline.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH V2] mtd: rawnand: qcom: fix memory corruption that causes
- panic
-Message-ID: <20220414155319.GB20493@thinkpad>
-References: <1649950217-32272-1-git-send-email-quic_mdalam@quicinc.com>
- <20220414173642.56baedf5@xps13>
+ id 1nf1tN-006KZq-TF
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 16:00:23 +0000
+Received: by mail-oa1-f52.google.com with SMTP id
+ 586e51a60fabf-d6e29fb3d7so5681878fac.7
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2022 09:00:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=CknfC/PGi/RUmPx0vFlSRqvrZjpNZo6qdtUtPEw0y+U=;
+ b=Vf/xVObJ1Goa9CyjN3EclsT/XB6GsxXh3oXGqy5ZmtV5hF4/Hlz7KB6olIpp8KDKKi
+ /RDyGXJno3W7T9907lUnqVgC44hp0fosnSkiuxseIVfhUYto1Jx1xQQ9gCNrimWiw4kQ
+ Z88tfLWP/CbCaZZdjuryT5Kd/GxA7rcozdroprJXyX9elSGNu0zJmiJToUstYzsa6ULz
+ LV81zz+5CQbEGomXFiKqKBMENID1PZ338o4qNRhRH9A9reLUEpDxadG69ETXc93Rd+Ft
+ V6MpB8SSkExpSsp2DEjDVmu5PkGZXBbXnu1FcB+/sL5xCjlOboMLlH5HaxxiDmnZATt5
+ bZvQ==
+X-Gm-Message-State: AOAM533lZvQ/u7qL8fWy7UlcAs6O2vOEC3KVPRnsQ8HsBrvx97MSChTP
+ rFRnNG+8BChLc8Myqd5Brg==
+X-Google-Smtp-Source: ABdhPJyt6ZU+qu6Ic2CDWPvmSCL3DLOmDOsfuZimZMM+GcPDrEth6OE6TsDYi4KFQzehfO07lGAhbQ==
+X-Received: by 2002:a05:6870:210e:b0:e2:7574:47e5 with SMTP id
+ f14-20020a056870210e00b000e2757447e5mr1564303oae.101.1649952018884; 
+ Thu, 14 Apr 2022 09:00:18 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ q6-20020a056870028600b000d9be0ee766sm766951oaf.57.2022.04.14.09.00.15
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 14 Apr 2022 09:00:16 -0700 (PDT)
+Received: (nullmailer pid 2133825 invoked by uid 1000);
+ Thu, 14 Apr 2022 16:00:14 -0000
+Date: Thu, 14 Apr 2022 11:00:14 -0500
+From: Rob Herring <robh@kernel.org>
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc: richard@nod.at, joern@lazybastard.org, linux-mtd@lists.infradead.org,
+ frowand.list@gmail.com, vigneshr@ti.com, krzk+dt@kernel.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, kernel@axis.com,
+ miquel.raynal@bootlin.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] dt-bindings: reserved-memory: Support MTD/block
+ device
+Message-ID: <YlhFDi0uE/3Pdxjt@robh.at.kernel.org>
+References: <20220412135302.1682890-1-vincent.whitchurch@axis.com>
+ <20220412135302.1682890-3-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220414173642.56baedf5@xps13>
+In-Reply-To: <20220412135302.1682890-3-vincent.whitchurch@axis.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_085331_154978_5CAB0BEA 
-X-CRM114-Status: GOOD (  21.96  )
+X-CRM114-CacheID: sfid-20220414_090021_978545_7B3CCFA6 
+X-CRM114-Status: GOOD (  11.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,85 +81,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Apr 14, 2022 at 05:36:42PM +0200, Miquel Raynal wrote:
-> Hi Md,
-> =
+On Tue, 12 Apr 2022 15:53:00 +0200, Vincent Whitchurch wrote:
+> Add bindings to allow MTD/block devices to be used in reserved-memory
+> regions using the "phram" (MTD in PHysical RAM) driver.
+> 
+> This allows things like partitioning to be specified via the existing
+> devicetree bindings.
+> 
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+> 
+> Notes:
+>     v3:
+>     - Reword description.
+> 
+>     v2:
+>     - Add note on what "phram" means.
+>     - Use /schemas/mtd/mtd.yaml instead of relative pathUse /schemas/mtd/mtd.yaml instead of relative path.
+> 
+>  .../bindings/reserved-memory/phram.yaml       | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reserved-memory/phram.yaml
+> 
 
-> quic_mdalam@quicinc.com wrote on Thu, 14 Apr 2022 21:00:17 +0530:
-> =
-
-> > This patch fixes a memory corruption that occurred in the
-> > nand_scan() path for Hynix nand device.
-> > =
-
-> > On boot, for Hynix nand device will panic at a weird place:
-> > | Unable to handle kernel NULL pointer dereference at virtual
-> >   address 00000070
-> > | [00000070] *pgd=3D00000000
-> > | Internal error: Oops: 5 [#1] PREEMPT SMP ARM
-> > | Modules linked in:
-> > | CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.17.0-01473-g13ae1769cfb0
-> >   #38
-> > | Hardware name: Generic DT based system
-> > | PC is at nandc_set_reg+0x8/0x1c
-> > | LR is at qcom_nandc_command+0x20c/0x5d0
-> > | pc : [<c088b74c>]    lr : [<c088d9c8>]    psr: 00000113
-> > | sp : c14adc50  ip : c14ee208  fp : c0cc970c
-> > | r10: 000000a3  r9 : 00000000  r8 : 00000040
-> > | r7 : c16f6a00  r6 : 00000090  r5 : 00000004  r4 :c14ee040
-> > | r3 : 00000000  r2 : 0000000b  r1 : 00000000  r0 :c14ee040
-> > | Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM Segment none
-> > | Control: 10c5387d  Table: 8020406a  DAC: 00000051
-> > | Register r0 information: slab kmalloc-2k start c14ee000 pointer offset
-> >   64 size 2048
-> > | Process swapper/0 (pid: 1, stack limit =3D 0x(ptrval))
-> > | nandc_set_reg from qcom_nandc_command+0x20c/0x5d0
-> > | qcom_nandc_command from nand_readid_op+0x198/0x1e8
-> > | nand_readid_op from hynix_nand_has_valid_jedecid+0x30/0x78
-> > | hynix_nand_has_valid_jedecid from hynix_nand_init+0xb8/0x454
-> > | hynix_nand_init from nand_scan_with_ids+0xa30/0x14a8
-> > | nand_scan_with_ids from qcom_nandc_probe+0x648/0x7b0
-> > | qcom_nandc_probe from platform_probe+0x58/0xac
-> > =
-
-> > The problem is that the nand_scan()'s qcom_nand_attach_chip callback
-> > is updating the nandc->max_cwperpage from 1 to 4.This causes the
-> > sg_init_table of clear_bam_transaction() in the driver's
-> > qcom_nandc_command() to memset much more than what was initially
-> > allocated by alloc_bam_transaction().
-> > =
-
-> > This patch will update nandc->max_cwperpage 1 to 4 after nand_scan()
-> > returns, and remove updating nandc->max_cwperpage from
-> > qcom_nand_attach_chip call back.
-> =
-
-> Please update also the commit log.
-> =
-
-> Fixes: ?
-> Cc: stable ?
-
-Also please add Reported-by to credit Konrad.
-
-Thanks,
-Mani
-
-> =
-
-> > Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> > Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-> > ---
-> > [V2]
-> =
-
-> Thanks,
-> Miqu=E8l
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
