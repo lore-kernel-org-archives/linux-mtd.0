@@ -4,81 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 047FDC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 14:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF6A9C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 14:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=f0WOeiBFCRqoXHbG1WYJuiQNG8sG1665gf0DSBWUQFE=; b=WZkJvD6EbwhsZQ
-	SyrcPw0lL2MXt+nwjzZnuE6/Od4l6oa4zlOu3M6ZoeQyCQQZpXLa7oK2R/N16SazvYWQgARsqKkO+
-	KcXyaoglq+DhtzDR/QDhOvipZJ6wG/HXUrdgamDl1dzjxHRFe3wAj4X/hoISdYMacuuADIe+l8YUN
-	g5mnt6JsIOf3y8pNsf/U1Jv6DF4gt7WelAXkwW8N4YcifgucRkPZM+Ja9XEdmF46itis+u1+mOd4S
-	72aioBkGtKEzk5VvcLvmA73/KK5pb0sXCSdl6GqLurjB8cHJJHmItJVA4+8XgEO0TZMVPckJ2+pFX
-	0ln0oVE7zslx1FWZtXlQ==;
+	List-Owner; bh=4HnPIimDwlJdXEJcNBGCuvFM5kua/bkgcyKVtahTqfE=; b=bjXAZ0defqm8Ng
+	zTZhHNF5Z/DqNokPVNqg+pCrbSXKy2yW1aO92cBbda/GJd7Nlb+Wwi28McGz+rBestgIr4pbfW0RE
+	Ao7tHk5PQno/XVtfS0aaqXual8GtYvO7VwYPpMWoapXIhZjFmNbcLv1C6Uu9baj/asB1hTMmGWpF6
+	Ubjd7/gSWldgqpXlnhHewIbQCquDRnePd0PrTfuXQwXaIbPsNZ+ch5MmlYVDRn2Pv7XSmCtqCYB59
+	qP9HF9Y1W4s3KxeJ3wMdH9jWV0Tgl/cmG45JQC6kRJMUCb/i1o+jEW3nu3UhZg5Rc/FDgOmyp6i7t
+	IZT9UD0vhsJHgHVwK2DA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nf0YZ-0061cy-L4; Thu, 14 Apr 2022 14:34:47 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
+	id 1nf0cy-00631r-58; Thu, 14 Apr 2022 14:39:20 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nf0YV-0061ax-V7
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 14:34:46 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 2so5311680pjw.2
- for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2022 07:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=QnWHu1h/+5yNTn5DXI0S1gHlkBW/TpHNNelrkm6S6IY=;
- b=Tjwt6pWV2Berqzi+TohydZ73/ifhkoiX3EazgM1uAs8rQ3icJLd0DBI7d0ardo1Zar
- eRzPMt+fy8j2wSBaiHZzfSA0QY3pwybgQQw3jzWIwppHY+q20YZFEIcBB4gbAtzleHhT
- filJCCwaaf/lYeRveT+Km4MLeaNwmFc80ldFPhtE1nm+3kQIxpoW91NCAzMLA58BAcjH
- OoV4jn7Q6n4NSTCpUBJ7CW901yKYggw994z590dVHJzyqDBROlAYwFHMGbxvd8YSJWTI
- Pv97wFSotAHXPU2E28jvwYFcQcHpLBF7w3wSG7Mkm+n4FZVUN8oDjs4wVLCaZyZT0Gao
- kFfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=QnWHu1h/+5yNTn5DXI0S1gHlkBW/TpHNNelrkm6S6IY=;
- b=XuWI6JwjXvdnrc13J9z2RyZh/PmWhB00A4XR1scOxwzm3GCJYFbuyagKSuUCzos86Y
- 199Cnpy2PdOu2Kn4eBJjeGHJ5iJZHPUceaYbYAfP90KIHzFOOLVmdvqSzKNvs7XD3LE8
- mzkIfj1BM7zsqqlLsnVxEfI7YnMfEFR6dzO2aJlt0dCU7WNeXGLg4TNMBw74MCmezASx
- 4pny1Rdfk3h6QJE0sEbt8uwD+TziDiqhhpYHwk4w4yvFi1mDbDrwvwLZGiLXE+JwLgar
- IhWHyIYNe5+ZEp0tatAKwMqompSQA9KTPLg3665jQ/5EEHqIKMqfjoxAHHwtubheCTTV
- NVGw==
-X-Gm-Message-State: AOAM530VX1oqCMz/aY3YkxDXeeNDO1ZIOIH+CLEH99N67SD5/p+q+d6J
- u3wL55f/6BfANTqIoL44Jck5zonzL1Nj4gi6
-X-Google-Smtp-Source: ABdhPJxHWXLkFulFWfn8EPHtiW5bOru/kn1SXdHqmrI642qlTynapF9/my+DZOX0i3BKZCOmRyHndg==
-X-Received: by 2002:a17:902:9b87:b0:156:bf3e:9ab5 with SMTP id
- y7-20020a1709029b8700b00156bf3e9ab5mr47469427plp.119.1649946880623; 
- Thu, 14 Apr 2022 07:34:40 -0700 (PDT)
-Received: from guoguo-omen.lan ([2401:c080:1400:4da2:b701:47d5:9291:4cf9])
- by smtp.gmail.com with ESMTPSA id
- k5-20020a17090ac50500b001cd5ffcca96sm4411017pjt.27.2022.04.14.07.34.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 Apr 2022 07:34:40 -0700 (PDT)
-From: Chuanhong Guo <gch981213@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Chuanhong Guo <gch981213@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Patrice Chotard <patrice.chotard@foss.st.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Christophe Kerello <christophe.kerello@foss.st.com>,
- Mark Brown <broonie@kernel.org>, Daniel Palmer <daniel@0x0f.com>,
- linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] mtd: spinand: add support for detection with param page
-Date: Thu, 14 Apr 2022 22:34:25 +0800
-Message-Id: <20220414143426.723168-2-gch981213@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220414143426.723168-1-gch981213@gmail.com>
-References: <20220414143426.723168-1-gch981213@gmail.com>
+ id 1nf0cu-00630k-Il
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 14:39:18 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 93A6C61FD7;
+ Thu, 14 Apr 2022 14:39:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D532C385A9;
+ Thu, 14 Apr 2022 14:39:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649947155;
+ bh=RGUyZXtT7xhmFjEGnsdYrXzQkUtYNpgkCTqBpXWsCdc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=PXPTH4Do4dph65ZojAI5Qq+ND5/ZH8bIk8Df1j3ycjHrLlwb2o4NhJRYQmzjCv+6Q
+ j3hJetyHtO8PMcL45cq7Jjech2zK3RVRL6c8ooStBgG+N5F12YluDqgVmWUXYYeob8
+ l2LEnmCmmeHY4cOY6/tezDUZIij1E26Ol+/9NSTozO4OYgNc+znFxT9AhqILfm7YKS
+ ygdgLKLUmaeXuqS3wT5MUiSEvE709ngzpFEYNl7SwP7+xH1CRN8BFvjydnGwJzHA7m
+ vqW5/hEsYGTBHhsjxRC9C8D5L0Mg6ZS2uUckx/FybHO/obxyF080zhQAXACc2bVxJc
+ zMxq9cFC6xq3Q==
+Date: Thu, 14 Apr 2022 20:09:07 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
+ richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ konrad.dybcio@somainline.org, quic_srichara@quicinc.com
+Subject: Re: [PATCH] mtd: rawnand: qcom: fix memory corruption that causes
+ panic
+Message-ID: <20220414143907.GA20493@thinkpad>
+References: <1649914773-22434-1-git-send-email-quic_mdalam@quicinc.com>
+ <20220414101517.7bbc5e9d@xps13>
+ <DM6PR02MB580382FA47C4884AFC1A98D0FAEF9@DM6PR02MB5803.namprd02.prod.outlook.com>
+ <2697e757-f446-9cdb-95e0-ea01a642e6d4@quicinc.com>
+ <20220414144236.4ea54e20@xps13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220414144236.4ea54e20@xps13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_073444_049202_4BDFEFFF 
-X-CRM114-Status: GOOD (  30.01  )
+X-CRM114-CacheID: sfid-20220414_073916_733937_3687692E 
+X-CRM114-Status: GOOD (  36.93  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,506 +74,193 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SPI-NAND detection using chip ID isn't always reliable.
-Here are two known cases:
-1. ESMT uses JEDEC ID from other vendors. This may collapse with future
-   chips.
-2. Winbond W25N01KV uses the exact same JEDEC ID as W25N01GV while
-   having completely different chip parameters.
+On Thu, Apr 14, 2022 at 02:42:36PM +0200, Miquel Raynal wrote:
+> Hi Md,
+> =
 
-Recent SPI-NANDs have a parameter page which is stored in the same
-format as raw NAND ONFI data. There are strings for chip manufacturer
-and chip model. Chip ECC requirement and memory organization are
-available too.
-This patch adds support for detecting SPI-NANDs with the parameter page
-after ID matching failed. In this detection, memory organization and
-ECC requirements are taken from the parameter page, and other SPI-NAND
-specific parameters are obtained by matching chip model string with
-a separated table.
+> quic_mdalam@quicinc.com wrote on Thu, 14 Apr 2022 17:50:48 +0530:
+> =
 
-It's common for vendors to release a series of SPI-NANDs with the same
-SPI-NAND parameters in different voltages and/or capacities. The chip
-table defined in this patch supports multiple model strings in one
-entry, and multiple chip models can be covered using only one entry.
+> > > Hi Md,
+> > >
+> > > quic_mdalam@quicinc.com wrote on Thu, 14 Apr 2022 11:09:33 +0530:
+> > >  =
 
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
+> > >> This patch fixes a memory corruption that occurred in the
+> > >> nand_scan() path for Hynix nand device.
+> > >>
+> > >> On boot, for Hynix nand device will panic at a weird place:
+> > >> | Unable to handle kernel NULL pointer dereference at virtual
+> > >>    address 00000070
+> > >> | [00000070] *pgd=3D00000000
+> > >> | Internal error: Oops: 5 [#1] PREEMPT SMP ARM Modules linked in:
+> > >> | CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.17.0-01473-g13ae1769cf=
+b0
+> > >>    #38
+> > >> | Hardware name: Generic DT based system PC is at
+> > >> | nandc_set_reg+0x8/0x1c LR is at qcom_nandc_command+0x20c/0x5d0
+> > >> | pc : [<c088b74c>]    lr : [<c088d9c8>]    psr: 00000113
+> > >> | sp : c14adc50  ip : c14ee208  fp : c0cc970c
+> > >> | r10: 000000a3  r9 : 00000000  r8 : 00000040
+> > >> | r7 : c16f6a00  r6 : 00000090  r5 : 00000004  r4 :c14ee040
+> > >> | r3 : 00000000  r2 : 0000000b  r1 : 00000000  r0 :c14ee040
+> > >> | Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM Segment none
+> > >> | Control: 10c5387d  Table: 8020406a  DAC: 00000051 Register r0
+> > >> | information: slab kmalloc-2k start c14ee000 pointer offset
+> > >>    64 size 2048
+> > >> | Process swapper/0 (pid: 1, stack limit =3D 0x(ptrval)) nandc_set_r=
+eg
+> > >> | from qcom_nandc_command+0x20c/0x5d0 qcom_nandc_command from
+> > >> | nand_readid_op+0x198/0x1e8 nand_readid_op from
+> > >> | hynix_nand_has_valid_jedecid+0x30/0x78
+> > >> | hynix_nand_has_valid_jedecid from hynix_nand_init+0xb8/0x454
+> > >> | hynix_nand_init from nand_scan_with_ids+0xa30/0x14a8
+> > >> | nand_scan_with_ids from qcom_nandc_probe+0x648/0x7b0
+> > >> | qcom_nandc_probe from platform_probe+0x58/0xac
+> > >>
+> > >> The problem is that the nand_scan()'s qcom_nand_attach_chip callback
+> > >> is updating the nandc->max_cwperpage from 1 to 4.This causes the
+> > >> sg_init_table of clear_bam_transaction() in the driver's
+> > >> qcom_nandc_command() to memset much more than what was initially
+> > >> allocated by alloc_bam_transaction().  =
 
-I'm not brave enough to touch raw nand code without testing, so
-sanitize_string, onfi_crc16 and nand_bit_wise_majority are
-duplicated from raw/nand_onfi.c into spi/onfi.c
+> > > Thanks for investigating!
+> > >  =
 
- drivers/mtd/nand/spi/Makefile |   2 +-
- drivers/mtd/nand/spi/core.c   |  23 +--
- drivers/mtd/nand/spi/onfi.c   | 296 ++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h   |  50 ++++++
- 4 files changed, 359 insertions(+), 12 deletions(-)
- create mode 100644 drivers/mtd/nand/spi/onfi.c
+> > >> This patch will update nandc->max_cwperpage 1 to 4 after nand_scan()
+> > >> returns, and remove updating nandc->max_cwperpage from
+> > >> qcom_nand_attach_chip call back.  =
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 9662b9c1d5a9..a4e057cbdaf7 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
-+spinand-objs := core.o gigadevice.o macronix.o micron.o onfi.o paragon.o toshiba.o winbond.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index ff8336870bc0..3b51ca7232d0 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -20,7 +20,7 @@
- #include <linux/spi/spi.h>
- #include <linux/spi/spi-mem.h>
- 
--static int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
-+int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
- {
- 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(reg,
- 						      spinand->scratchbuf);
-@@ -34,7 +34,7 @@ static int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
- 	return 0;
- }
- 
--static int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
-+int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
- {
- 	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(reg,
- 						      spinand->scratchbuf);
-@@ -339,7 +339,7 @@ static void spinand_ondie_ecc_save_status(struct nand_device *nand, u8 status)
- 		engine_conf->status = status;
- }
- 
--static int spinand_write_enable_op(struct spinand_device *spinand)
-+int spinand_write_enable_op(struct spinand_device *spinand)
- {
- 	struct spi_mem_op op = SPINAND_WR_EN_DIS_OP(true);
- 
-@@ -496,10 +496,8 @@ static int spinand_erase_op(struct spinand_device *spinand,
- 	return spi_mem_exec_op(spinand->spimem, &op);
- }
- 
--static int spinand_wait(struct spinand_device *spinand,
--			unsigned long initial_delay_us,
--			unsigned long poll_delay_us,
--			u8 *s)
-+int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
-+		 unsigned long poll_delay_us, u8 *s)
- {
- 	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
- 						      spinand->scratchbuf);
-@@ -1006,7 +1004,7 @@ static void spinand_manufacturer_cleanup(struct spinand_device *spinand)
- 		return spinand->manufacturer->ops->cleanup(spinand);
- }
- 
--static const struct spi_mem_op *
-+const struct spi_mem_op *
- spinand_select_op_variant(struct spinand_device *spinand,
- 			  const struct spinand_op_variants *variants)
- {
-@@ -1117,9 +1115,12 @@ static int spinand_detect(struct spinand_device *spinand)
- 
- 	ret = spinand_id_detect(spinand);
- 	if (ret) {
--		dev_err(dev, "unknown raw ID %*phN\n", SPINAND_MAX_ID_LEN,
--			spinand->id.data);
--		return ret;
-+		ret = spinand_onfi_detect(spinand);
-+		if (ret) {
-+			dev_err(dev, "unknown raw ID %*phN\n",
-+				SPINAND_MAX_ID_LEN, spinand->id.data);
-+			return ret;
-+		}
- 	}
- 
- 	if (nand->memorg.ntargets > 1 && !spinand->select_target) {
-diff --git a/drivers/mtd/nand/spi/onfi.c b/drivers/mtd/nand/spi/onfi.c
-new file mode 100644
-index 000000000000..5cc888e3d038
---- /dev/null
-+++ b/drivers/mtd/nand/spi/onfi.c
-@@ -0,0 +1,296 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Detect and match SPI-NAND info using ONFI parameter page
-+ *
-+ * Author:
-+ *	Chuanhong Guo <gch981213@gmail.com>
-+ *
-+ * Part of this code comes from nand_onfi.c in raw nand support.
-+ *
-+ */
-+#include <linux/crc16.h>
-+#include <linux/mtd/onfi.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_IDR_EN BIT(6)
-+#define SPINAND_PARAM_PAGE 1
-+#define ONFI_PARAM_PAGES 3
-+
-+/* Sanitize ONFI strings so we can safely print them */
-+static void sanitize_string(uint8_t *s, size_t len)
-+{
-+	ssize_t i;
-+
-+	/* Null terminate */
-+	s[len - 1] = 0;
-+
-+	/* Remove non printable chars */
-+	for (i = 0; i < len - 1; i++) {
-+		if (s[i] < ' ' || s[i] > 127)
-+			s[i] = '?';
-+	}
-+
-+	/* Remove trailing spaces */
-+	strim(s);
-+}
-+
-+static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
-+{
-+	int i;
-+
-+	while (len--) {
-+		crc ^= *p++ << 8;
-+		for (i = 0; i < 8; i++)
-+			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
-+	}
-+
-+	return crc;
-+}
-+
-+static int spinand_onfi_read(struct spinand_device *spinand, void *buf,
-+			     size_t len)
-+{
-+	const struct spi_mem_op load_page =
-+		SPINAND_PAGE_READ_OP(SPINAND_PARAM_PAGE);
-+	struct spi_mem_op read_cache =
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, buf, len);
-+	int ret;
-+	u8 cfg;
-+
-+	ret = spinand_read_reg_op(spinand, REG_CFG, &cfg);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_write_enable_op(spinand);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_write_reg_op(spinand, REG_CFG, cfg | SPINAND_IDR_EN);
-+	if (ret)
-+		return ret;
-+
-+	ret = spinand_read_reg_op(spinand, REG_CFG, &cfg);
-+	if (ret)
-+		return ret;
-+
-+	if (!(cfg & SPINAND_IDR_EN))
-+		return -EINVAL;
-+
-+	ret = spi_mem_exec_op(spinand->spimem, &load_page);
-+	if (ret)
-+		goto cleanup;
-+
-+	ret = spinand_wait(spinand, SPINAND_READ_INITIAL_DELAY_US,
-+			   SPINAND_READ_POLL_DELAY_US, NULL);
-+	if (ret)
-+		goto cleanup;
-+
-+	while (len) {
-+		ret = spi_mem_adjust_op_size(spinand->spimem, &read_cache);
-+		if (ret)
-+			goto cleanup;
-+		ret = spi_mem_exec_op(spinand->spimem, &read_cache);
-+		if (ret)
-+			goto cleanup;
-+		read_cache.addr.val += read_cache.data.nbytes;
-+		read_cache.data.buf.in += read_cache.data.nbytes;
-+		len -= read_cache.data.nbytes;
-+		read_cache.data.nbytes = len;
-+	}
-+cleanup:
-+	spinand_write_reg_op(spinand, REG_CFG, cfg & ~SPINAND_IDR_EN);
-+	return ret;
-+}
-+
-+static bool spinand_onfi_validate(const struct nand_onfi_params *p)
-+{
-+	u16 crc;
-+
-+	if (strncmp("ONFI", p->sig, 4))
-+		return false;
-+	crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)p, sizeof(*p) - 2);
-+	return crc == le16_to_cpu(p->crc);
-+}
-+
-+/*
-+ * Recover data with bit-wise majority
-+ */
-+static void nand_bit_wise_majority(const void **srcbufs, unsigned int nsrcbufs,
-+				   void *dstbuf, unsigned int bufsize)
-+{
-+	int i, j, k;
-+
-+	for (i = 0; i < bufsize; i++) {
-+		u8 val = 0;
-+
-+		for (j = 0; j < 8; j++) {
-+			unsigned int cnt = 0;
-+
-+			for (k = 0; k < nsrcbufs; k++) {
-+				const u8 *srcbuf = srcbufs[k];
-+
-+				if (srcbuf[i] & BIT(j))
-+					cnt++;
-+			}
-+
-+			if (cnt > nsrcbufs / 2)
-+				val |= BIT(j);
-+		}
-+
-+		((u8 *)dstbuf)[i] = val;
-+	}
-+}
-+
-+static const struct spinand_manufacturer *spinand_onfi_manufacturers[] = {};
-+
-+static const struct spinand_onfi_info *
-+spinand_onfi_chip_match(struct nand_onfi_params *p,
-+			const struct spinand_manufacturer *m)
-+{
-+	size_t i, j;
-+
-+	for (i = 0; i < m->nchips; i++)
-+		for (j = 0; m->onfi_chips[i].models[j]; j++)
-+			if (!strcasecmp(m->onfi_chips[i].models[j], p->model))
-+				return &m->onfi_chips[i];
-+	return NULL;
-+}
-+
-+static const struct spinand_onfi_info *
-+spinand_onfi_manufacturer_match(struct spinand_device *spinand,
-+				struct nand_onfi_params *p)
-+{
-+	const struct spinand_onfi_info *ret;
-+	size_t i;
-+
-+	for (i = 0; i < ARRAY_SIZE(spinand_onfi_manufacturers); i++) {
-+		if (strcasecmp(spinand_onfi_manufacturers[i]->name,
-+			       p->manufacturer))
-+			continue;
-+		spinand->manufacturer = spinand_onfi_manufacturers[i];
-+		ret = spinand_onfi_chip_match(p, spinand_onfi_manufacturers[i]);
-+		if (ret)
-+			return ret;
-+	}
-+	return NULL;
-+}
-+
-+/**
-+ * spinand_onfi_detect() - match SPI-NAND using ONFI parameter page
-+ * @spinand: spinand private structure
-+ *
-+ * Return:
-+ *  0: Success
-+ *  -EINVAL: failed to read a valid parameter page
-+ *  -EOPNOTSUPP: chip isn't supported
-+ */
-+int spinand_onfi_detect(struct spinand_device *spinand)
-+{
-+	struct nand_onfi_params *p = NULL, *pbuf;
-+	size_t params_len = sizeof(*pbuf) * ONFI_PARAM_PAGES;
-+	struct nand_device *nand = spinand_to_nand(spinand);
-+	struct nand_memory_organization *memorg = nanddev_get_memorg(nand);
-+	const struct spi_mem_op *op;
-+	const struct spinand_onfi_info *info;
-+	int i, ret;
-+
-+	pbuf = kzalloc(params_len, GFP_KERNEL);
-+	if (!pbuf)
-+		return -ENOMEM;
-+
-+	ret = spinand_onfi_read(spinand, pbuf, params_len);
-+	if (ret)
-+		goto cleanup;
-+
-+	for (i = 0; i < ONFI_PARAM_PAGES; i++) {
-+		if (spinand_onfi_validate(&pbuf[i])) {
-+			p = &pbuf[i];
-+			break;
-+		}
-+	}
-+
-+	if (!p) {
-+		const void *srcbufs[ONFI_PARAM_PAGES];
-+		unsigned int j;
-+
-+		for (j = 0; j < ONFI_PARAM_PAGES; j++)
-+			srcbufs[j] = pbuf + j;
-+		nand_bit_wise_majority(srcbufs, ONFI_PARAM_PAGES, pbuf,
-+				       sizeof(*pbuf));
-+		if (spinand_onfi_validate(pbuf))
-+			p = pbuf;
-+	}
-+
-+	if (!p) {
-+		ret = -EINVAL;
-+		goto cleanup;
-+	}
-+
-+	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-+	sanitize_string(p->model, sizeof(p->model));
-+
-+	info = spinand_onfi_manufacturer_match(spinand, p);
-+	if (!info) {
-+		dev_err(&spinand->spimem->spi->dev, "unknown chip: %s %s",
-+			p->manufacturer, p->model);
-+		ret = -EOPNOTSUPP;
-+		goto cleanup;
-+	}
-+
-+	/* setup memory organization using info from parameter page */
-+	memorg->pagesize = le32_to_cpu(p->byte_per_page);
-+
-+	/*
-+	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
-+	 * (don't ask me who thought of this...). MTD assumes that these
-+	 * dimensions will be power-of-2, so just truncate the remaining area.
-+	 */
-+	memorg->pages_per_eraseblock =
-+		1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
-+	memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
-+	memorg->luns_per_target = p->lun_count;
-+	memorg->planes_per_lun = 1 << p->interleaved_bits;
-+	memorg->ntargets = 1;
-+
-+	/* See erasesize comment */
-+	memorg->eraseblocks_per_lun =
-+		1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
-+	memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
-+	memorg->bits_per_cell = p->bits_per_cell;
-+
-+	if (p->ecc_bits != 0xff) {
-+		struct nand_ecc_props requirements = {
-+			.strength = p->ecc_bits,
-+			.step_size = p->data_bytes_per_ppage,
-+		};
-+
-+		nanddev_set_ecc_requirements(nand, &requirements);
-+	} else {
-+		ret = -EINVAL;
-+	}
-+
-+	/* setup spi-nand specific ops */
-+	spinand->eccinfo = info->eccinfo;
-+	spinand->flags = info->flags;
-+	spinand->id.len = 0;
-+	spinand->select_target = info->select_target;
-+
-+	op = spinand_select_op_variant(spinand, info->op_variants.read_cache);
-+	if (!op)
-+		return -EOPNOTSUPP;
-+
-+	spinand->op_templates.read_cache = op;
-+
-+	op = spinand_select_op_variant(spinand, info->op_variants.write_cache);
-+	if (!op)
-+		return -EOPNOTSUPP;
-+
-+	spinand->op_templates.write_cache = op;
-+
-+	op = spinand_select_op_variant(spinand, info->op_variants.update_cache);
-+	spinand->op_templates.update_cache = op;
-+
-+cleanup:
-+	kfree(pbuf);
-+	return ret;
-+}
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 3aa28240a77f..dc218082d773 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -255,6 +255,7 @@ struct spinand_manufacturer {
- 	u8 id;
- 	char *name;
- 	const struct spinand_info *chips;
-+	const struct spinand_onfi_info *onfi_chips;
- 	const size_t nchips;
- 	const struct spinand_manufacturer_ops *ops;
- };
-@@ -386,6 +387,46 @@ struct spinand_info {
- 		__VA_ARGS__						\
- 	}
- 
-+/**
-+ * struct spinand_onfi_info - Structure used to describe SPI NAND with ONFI
-+ *			      parameter page
-+ * @models: Model name array. Null terminated.
-+ * @flags: OR-ing of the SPINAND_XXX flags
-+ * @eccinfo: on-die ECC info
-+ * @op_variants: operations variants
-+ * @op_variants.read_cache: variants of the read-cache operation
-+ * @op_variants.write_cache: variants of the write-cache operation
-+ * @op_variants.update_cache: variants of the update-cache operation
-+ * @select_target: function used to select a target/die. Required only for
-+ *		   multi-die chips
-+ *
-+ * Each SPI NAND manufacturer driver should have a spinand_onfi_info table
-+ * describing all the chips supported by the driver.
-+ */
-+struct spinand_onfi_info {
-+	const char **const models;
-+	u32 flags;
-+	struct spinand_ecc_info eccinfo;
-+	struct {
-+		const struct spinand_op_variants *read_cache;
-+		const struct spinand_op_variants *write_cache;
-+		const struct spinand_op_variants *update_cache;
-+	} op_variants;
-+	int (*select_target)(struct spinand_device *spinand,
-+			     unsigned int target);
-+};
-+
-+#define SPINAND_ONFI_MODELS(...)					\
-+	.models = (const char *[]){ __VA_ARGS__, NULL }
-+
-+#define SPINAND_ONFI_INFO(__models, __op_variants, __flags, ...)	\
-+	{								\
-+		__models,						\
-+		.op_variants = __op_variants,				\
-+		.flags = __flags,					\
-+		__VA_ARGS__						\
-+	}
-+
- struct spinand_dirmap {
- 	struct spi_mem_dirmap_desc *wdesc;
- 	struct spi_mem_dirmap_desc *rdesc;
-@@ -511,7 +552,16 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 			   unsigned int table_size,
- 			   enum spinand_readid_method rdid_method);
- 
-+int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val);
-+int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val);
-+int spinand_write_enable_op(struct spinand_device *spinand);
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
-+int spinand_onfi_detect(struct spinand_device *spinand);
-+const struct spi_mem_op *
-+spinand_select_op_variant(struct spinand_device *spinand,
-+			  const struct spinand_op_variants *variants);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
-+int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
-+		 unsigned long poll_delay_us, u8 *s);
- 
- #endif /* __LINUX_MTD_SPINAND_H */
--- 
-2.35.1
+> > > The fix does not look right, as far as I understand, this should be p=
+roperly handled during the attach phase. That is where we have all informat=
+ion about the chip and do the configuration for this chip.
+> > >
+> > > If you update max_cwperpage there you should probably update other in=
+ternal variables that depend on it as well.  =
 
+> > =
+
+> >  =A0=A0 Currently we are updating max_cwperpage=A0 in qcom_nand_attach_=
+chip(), but we are seeing issue for Hynix nand device since nand_scan_tail(=
+) is getting called after nand_attach() and in nand_attach() we are updatin=
+g max_cwperpage to 4 or 8 based on page size.
+> > =
+
+> >  =A0=A0=A0 From nand_scan_tail() there is a call for nand_manufacturer_=
+init() , specific to Hynix nand read_id is getting called that's why we are=
+ seeing this issue only for Hynix nand device. Read id sequence as below
+> > =
+
+> >  =A0=A0 hynix_nand_has_valid_jedecid()
+> > =
+
+> >  =A0=A0=A0=A0=A0=A0=A0 =A0 =A0 =A0 =A0 |
+> > =
+
+> >  =A0=A0 nand_readid_op()
+> > =
+
+> >  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
+> > =
+
+> >  =A0qcom_nandc_command()
+> > =
+
+> >  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
+> > =
+
+> > pre_command()
+> > =
+
+> >  =A0=A0=A0=A0=A0=A0=A0=A0=A0 |
+> > =
+
+> > clear_bam_transaction()=A0=A0 --> In this call we are doing sg_init_tab=
+le() which is calling memset() based on max_cwperpage.Since initially we ha=
+ve allocated bam transaction as per max_cwperpage =3D1 and , since nand_chi=
+p_attach() updated max_cwperpage,=A0 now we are doing memset as per max_cwp=
+erpage =3D 4 or 8.
+> > =
+
+> > =
+
+> > So anyway we have to updated max_cwperpage after nand_scan() call only.=
+=A0 Since there is no other dependency on max_cwperpage in nand_attach_chip=
+() and we are using this in bam_alloc() and bam_clear().
+> =
+
+> Why don't you update the sg table after increasing max_cwperpage?
+> =
+
+
+Or we could move the bam reallocation inside qcom_nand_attach_chip() as bel=
+ow?
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_=
+nandc.c
+index 7c6efa3b6255..58c16054630f 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2653,9 +2653,23 @@ static int qcom_nand_attach_chip(struct nand_chip *c=
+hip)
+ =
+
+        mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
+ =
+
++       /* Free the initially allocated BAM transaction for reading the ONF=
+I params */
++       if (nandc->props->is_bam)
++               free_bam_transaction(nandc);
++
+        nandc->max_cwperpage =3D max_t(unsigned int, nandc->max_cwperpage,
+                                     cwperpage);
+ =
+
++       /* Now allocate the BAM transaction based on updated max_cwperpage =
+*/
++       if (nandc->props->is_bam) {
++               nandc->bam_txn =3D alloc_bam_transaction(nandc);
++               if (!nandc->bam_txn) {
++                       dev_err(nandc->dev,
++                               "failed to allocate bam transaction\n");
++                       return -ENOMEM;
++               }
++       }
++
+        /*
+         * DATA_UD_BYTES varies based on whether the read/write command pro=
+tects
+         * spare data with ECC too. We protect spare data by default, so we=
+ set
+@@ -2956,17 +2970,6 @@ static int qcom_nand_host_init_and_register(struct q=
+com_nand_controller *nandc,
+        if (ret)
+                return ret;
+ =
+
+-       if (nandc->props->is_bam) {
+-               free_bam_transaction(nandc);
+-               nandc->bam_txn =3D alloc_bam_transaction(nandc);
+-               if (!nandc->bam_txn) {
+-                       dev_err(nandc->dev,
+-                               "failed to allocate bam transaction\n");
+-                       nand_cleanup(chip);
+-                       return -ENOMEM;
+-               }
+-       }
+-
+        ret =3D mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+        if (ret)
+                nand_cleanup(chip);
+
+Thanks,
+Mani
 
 ______________________________________________________
 Linux MTD discussion mailing list
