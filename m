@@ -4,64 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DAE6C4332F
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 15:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1CD2C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 15:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0nLz34Zj25ZHSLs1fPM0s3+WoeTvGKsJiTzXfw2MmSI=; b=sWh35xbDaSB+yI
-	uZutkVc1XezYqLKnUNrMUoZZF7lFiSxiS9vRTobxTkOjXusVr5e+GQPY/mPL+X3+VKD/iy0I/1F1D
-	jvNVSrfixKg1uyS9cKZVWl7C8LlzWzfwfSW6AI0FMr2Do1oSq+igciU5y7dQU+UC8pBUNt02+DFmz
-	9SeTo9Za1aZvy3tZOdNBT3yKMSErrDd7yykeYjBq+lpeBzOPDip1hE8RNiMrqfIJ1LMvKgX0K1z3F
-	jBS/9VqO1QyW+c1f6VTuptLQKCqlET6vVU6CtAu8T9IOoTook4yMtxAx8aizDWWskwru7fwVWeTm/
-	nBV2XO5O7nkPdApHDtUg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Bo1ELwjVCzmIoraXO+sHga/i+RSs2kcZVPezw+hHOkI=; b=2hDY4K7wq2S2hQ
+	5GyL1lXfwq2OcigI71m6tK/jNW+/8tnlnuNc9uqeHrC5KoFPIhWVQS4PNC2JRXqmldyGJcn5e/lIJ
+	uGDuUwc3T8Y4FwzBpLwhp7yt1IbUA8t2t7wrQwjy/GHauDvNlMdWV+SheWKwwFTGcnClsVTe2spJ1
+	c0hkPYa+8/MZZAWixPXXDFl4sTtcVfZr13hEaUSQDyZoY2PhRbZxzPSjzqFWXJBciHET+IzVPZimA
+	Le24NCk8phSDoqOJokR2n5m3XDmTUUHJKNLiSkLnyvHXtjIDEASn+Xh9ICXpF/D4frvf0lMTKVvkX
+	YU2BS78PZL0q709NBkqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nf13g-0069hW-OT; Thu, 14 Apr 2022 15:06:56 +0000
-Received: from bhuna.collabora.co.uk ([46.235.227.227])
+	id 1nf1Qe-006EqW-Jm; Thu, 14 Apr 2022 15:30:40 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nf13e-0069f4-3L
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 15:06:55 +0000
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- (Authenticated sender: bbrezillon)
- by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 218D21F47B07;
- Thu, 14 Apr 2022 16:06:48 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1649948808;
- bh=UpSLyopnlq5YAkIaxL8rC/z8gQiFGUjISBXjuDV87YA=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=b0pwOTmW+kxJoLFq5v97T8FjTuaAb8wrqPxesw6cwS+6nTA86EsvdR+Chu26nEWCy
- Xf3qKjda/0QTX/bFoVGdrjagui6XsSTSQ1L9HwCXh74Rm5w5x0DiRSjHVb0JxxNPNQ
- bqWf+vIKAbX/hVQfy7h2oTN2Iy0IZKRAebF+sd41nSxF4QV0psAsLqbKE2uWE8/WlE
- qcVEUlR3nJwD01Nq3MxUmpUKrKWr2rLCJUC36537UvTZAn/x0R6pehthyq6/P2TqtC
- xv6GBdR7477RO7wlrat+EGIYskHD8T4Xr1PPPiqCP99itD0GSaDanjiPUTpFkJP+5h
- qVJgqOvlkKTAA==
-Date: Thu, 14 Apr 2022 17:06:44 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Chuanhong Guo <gch981213@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Patrice Chotard
- <patrice.chotard@foss.st.com>, Christophe Kerello
- <christophe.kerello@foss.st.com>, Mark Brown <broonie@kernel.org>, Daniel
- Palmer <daniel@0x0f.com>, linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH 1/2] mtd: spinand: add support for detection with param
- page
-Message-ID: <20220414170644.4a53484f@collabora.com>
-In-Reply-To: <20220414143426.723168-2-gch981213@gmail.com>
-References: <20220414143426.723168-1-gch981213@gmail.com>
- <20220414143426.723168-2-gch981213@gmail.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+ id 1nf1Qc-006Epg-H3
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 15:30:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1649950239; x=1681486239;
+ h=from:to:cc:subject:date:message-id;
+ bh=7AbcbFgk7EWSyJCT0kIEs/FzXtBXjMhHceTuFImAtF0=;
+ b=w0COCwlxkI5q20LzoLo1aDj50RruwMtGgGIxpq+wemNjugitv0UZ6ykk
+ p2Lk5KMHEevb0z1DvO1T27+JV3ZR/gDu4GCg67QEIBSDvIV4Q3ShANMux
+ W6YpekPbUf0e2Kh2wYG1PI7CQU0ZAdGV9jgfd+Ob2B/tby56RXX0sra3J M=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+ by alexa-out.qualcomm.com with ESMTP; 14 Apr 2022 08:30:36 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+ by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 14 Apr 2022 08:30:34 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+ by ironmsg02-blr.qualcomm.com with ESMTP; 14 Apr 2022 21:00:22 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+ id 94F97229BE; Thu, 14 Apr 2022 21:00:21 +0530 (IST)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: konrad.dybcio@somainline.org, quic_srichara@quicinc.com,
+ quic_mdalam@quicinc.com
+Subject: [PATCH V2] mtd: rawnand: qcom: fix memory corruption that causes panic
+Date: Thu, 14 Apr 2022 21:00:17 +0530
+Message-Id: <1649950217-32272-1-git-send-email-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_080654_399937_8910C50B 
-X-CRM114-Status: GOOD (  23.76  )
+X-CRM114-CacheID: sfid-20220414_083038_639533_609D4B35 
+X-CRM114-Status: GOOD (  15.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,72 +68,115 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 14 Apr 2022 22:34:25 +0800
-Chuanhong Guo <gch981213@gmail.com> wrote:
+This patch fixes a memory corruption that occurred in the
+nand_scan() path for Hynix nand device.
 
-> SPI-NAND detection using chip ID isn't always reliable.
-> Here are two known cases:
-> 1. ESMT uses JEDEC ID from other vendors. This may collapse with future
->    chips.
+On boot, for Hynix nand device will panic at a weird place:
+| Unable to handle kernel NULL pointer dereference at virtual
+  address 00000070
+| [00000070] *pgd=00000000
+| Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+| Modules linked in:
+| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.17.0-01473-g13ae1769cfb0
+  #38
+| Hardware name: Generic DT based system
+| PC is at nandc_set_reg+0x8/0x1c
+| LR is at qcom_nandc_command+0x20c/0x5d0
+| pc : [<c088b74c>]    lr : [<c088d9c8>]    psr: 00000113
+| sp : c14adc50  ip : c14ee208  fp : c0cc970c
+| r10: 000000a3  r9 : 00000000  r8 : 00000040
+| r7 : c16f6a00  r6 : 00000090  r5 : 00000004  r4 :c14ee040
+| r3 : 00000000  r2 : 0000000b  r1 : 00000000  r0 :c14ee040
+| Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM Segment none
+| Control: 10c5387d  Table: 8020406a  DAC: 00000051
+| Register r0 information: slab kmalloc-2k start c14ee000 pointer offset
+  64 size 2048
+| Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+| nandc_set_reg from qcom_nandc_command+0x20c/0x5d0
+| qcom_nandc_command from nand_readid_op+0x198/0x1e8
+| nand_readid_op from hynix_nand_has_valid_jedecid+0x30/0x78
+| hynix_nand_has_valid_jedecid from hynix_nand_init+0xb8/0x454
+| hynix_nand_init from nand_scan_with_ids+0xa30/0x14a8
+| nand_scan_with_ids from qcom_nandc_probe+0x648/0x7b0
+| qcom_nandc_probe from platform_probe+0x58/0xac
 
-Really?! So the manufacturer id matching is not even possible?
+The problem is that the nand_scan()'s qcom_nand_attach_chip callback
+is updating the nandc->max_cwperpage from 1 to 4.This causes the
+sg_init_table of clear_bam_transaction() in the driver's
+qcom_nandc_command() to memset much more than what was initially
+allocated by alloc_bam_transaction().
 
-> 2. Winbond W25N01KV uses the exact same JEDEC ID as W25N01GV while
->    having completely different chip parameters.
-> 
-> Recent SPI-NANDs have a parameter page which is stored in the same
-> format as raw NAND ONFI data. There are strings for chip manufacturer
-> and chip model. Chip ECC requirement and memory organization are
-> available too.
-> This patch adds support for detecting SPI-NANDs with the parameter page
-> after ID matching failed. In this detection, memory organization and
-> ECC requirements are taken from the parameter page, and other SPI-NAND
-> specific parameters are obtained by matching chip model string with
-> a separated table.
+This patch will update nandc->max_cwperpage 1 to 4 after nand_scan()
+returns, and remove updating nandc->max_cwperpage from
+qcom_nand_attach_chip call back.
 
-Oh come on! Looks like they never learn from their mistakes...
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+---
+[V2]
+ * Freed previously alloacted memory for bam txn before updating 
+   max_cwperpage inside qcom_nand_attach_chip().
+ * Moved alloc_bam_transaction() inside qcom_nand_attach_chip().
+   after upding max_cwperpage 4 or 8 based on page size.
 
-> 
-> It's common for vendors to release a series of SPI-NANDs with the same
-> SPI-NAND parameters in different voltages and/or capacities. The chip
-> table defined in this patch supports multiple model strings in one
-> entry, and multiple chip models can be covered using only one entry.
+ drivers/mtd/nand/raw/qcom_nandc.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-That's really disappointing. And I guess the ONFI-page read commands are
-not even standard, and each vendor will come with its own sequence to
-read it. What's bothering me the most is the fact that ONFI parameter
-pages are not even designed for SPI NANDs. They have a bunch of
-parameters that don't really apply to SPI NANDs, and we're still
-lacking SPI-specific info, like the read/write/erase command variants,
-the maximum SPI bus width (AKA SPI modes)...
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 1a77542..048b255 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2651,10 +2651,23 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+ 	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+ 
+ 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
++	/* Free the initially allocated BAM transaction for reading the ONFI params */
++	if (nandc->props->is_bam)
++		free_bam_transaction(nandc);
+ 
+ 	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
+ 				     cwperpage);
+ 
++	/* Now allocate the BAM transaction based on updated max_cwperpage */
++	if (nandc->props->is_bam) {
++		nandc->bam_txn = alloc_bam_transaction(nandc);
++		if (!nandc->bam_txn) {
++			dev_err(nandc->dev,
++				"failed to allocate bam transaction\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	/*
+ 	 * DATA_UD_BYTES varies based on whether the read/write command protects
+ 	 * spare data with ECC too. We protect spare data by default, so we set
+@@ -2955,17 +2968,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nandc->props->is_bam) {
+-		free_bam_transaction(nandc);
+-		nandc->bam_txn = alloc_bam_transaction(nandc);
+-		if (!nandc->bam_txn) {
+-			dev_err(nandc->dev,
+-				"failed to allocate bam transaction\n");
+-			nand_cleanup(chip);
+-			return -ENOMEM;
+-		}
+-	}
+-
+ 	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+ 	if (ret)
+ 		nand_cleanup(chip);
+-- 
+2.7.4
 
-To sum-up, if we have to support reading the ONFI parameter page, I'd
-rather keep it vendor-private (but that's assuming the vendor ID
-detection works, and you seem to imply ESMT cheats on that too), and
-use it only as a way to distinguish between 2 chip variants.
-
-> 
-> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-> ---
-> 
-> I'm not brave enough to touch raw nand code without testing, so
-> sanitize_string, onfi_crc16 and nand_bit_wise_majority are
-> duplicated from raw/nand_onfi.c into spi/onfi.c
-> 
->  drivers/mtd/nand/spi/Makefile |   2 +-
->  drivers/mtd/nand/spi/core.c   |  23 +--
->  drivers/mtd/nand/spi/onfi.c   | 296 ++++++++++++++++++++++++++++++++++
-
-Please, no. Try to move the common code to drivers/mtd/nand/onfi.c
-instead of duplicating it. AFAICT, the only thing that's spinand
-specific is spinand_onfi_read() and the last part of
-spinand_onfi_detect(). I'm sure we can find a way to expose
-generic onfi_parsing() helpers.
 
 ______________________________________________________
 Linux MTD discussion mailing list
