@@ -4,78 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB5CFC433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 07:42:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D2DFC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 07:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PCQmQB4SvltzEy0NVZPAWPAiFE3ggdzBBnSF+TKsJ3A=; b=E7RBAKvSNma62A
-	cgaSpoB+ew91XADpjzvKzta/ZHYcPUMGMZFGaO93DHrzve+z/hzlKR9+z4AiFoQOr9twYnHYtKF15
-	Fyun9AVZu7T4cZiLN2nwFHy75F1KKsolj26CkU0BWIu/AgU5VN+gPqEF7ZmdVvmVeTep6b+B3Af21
-	Y/5N0nYdRSvqxVuGttHD+P1bri1SU1cePJEfaRko5WIrFjsbXbeA5YvuCRlT5+8megpX72rfBCr6Q
-	19Dj5InWV14tEy0FaKPQTSEdavmOsst8kxoK1pqqGEeQq1tjsgruQztJeBeD9wFohp7/W4KzCXUFM
-	56AUgqEzSmX8mHxEu94A==;
+	List-Owner; bh=LTudh3j9JLZ1MCmM9CA3F8KoEg2uoTduQeQxL1CN2yU=; b=J/eeAaIud2qAgp
+	CzZXXA9/1nH2Nh1sHGPp6EJ5p69XGhTLiIFPI/8Z0EY96dJWTxyExVe83fNKLAoGTqjLxsxPQrF4u
+	JldPsb0gdr36zZ2g3raLwTHHtzmGEqXZ3kelRWP/KR3iqY0ON/u3IYYKIE6x0G/X7tMV9T7xXsdes
+	sDcp0d41UyckgwDwYXh1oESm5Q0HRa0RdvGNUEhHew2V/McBXZ+B4KKb/Ipn/4iczQtFhjuNOQ5UL
+	w4YHrBzc3ZIStubdnvLC8p9l+SrQZLNg21Rg3LLiEFj83YE1xDZPIrX/Yke4On6Il1wunH5ml2UOQ
+	1XRw/rXM0zCuYlrB2OtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1neu76-004P2b-Qy; Thu, 14 Apr 2022 07:42:00 +0000
-Received: from mail-qt1-f172.google.com ([209.85.160.172])
+	id 1neuBM-004QQf-7r; Thu, 14 Apr 2022 07:46:24 +0000
+Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1neu73-004OxZ-UO
- for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 07:41:59 +0000
-Received: by mail-qt1-f172.google.com with SMTP id s6so3040174qta.1
- for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2022 00:41:50 -0700 (PDT)
+ id 1neuBJ-004QPH-J7
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 07:46:23 +0000
+Received: by mail-ed1-x530.google.com with SMTP id b15so5284757edn.4
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2022 00:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=wZACf14Zs4ghmlGixfvY80XJb14X/TIhq2Zk1CXUc0Q=;
+ b=I0cbF59t7ZCgQYA0kYGOfxw8nnELP/Q6b+FdU3FMQbe/xZxZwQFZ7VUB/O7k+z5KBH
+ fYPZBuEhgsM36w+2Epeykb7Jr+LyTR4iOXRi7cj2hiW4b66x/yggUVkERvM2eAKYtZNL
+ Yez+IJXTiMQ4HS2qQOAP3ol++6KDw9W3wi1VkZL9gD74j3Xx3dy8XOgob0AHXXt47ud2
+ ByfYBlBI/Lpq8PQ5QoJA9ZfHl1TQ6CLY995X1GH5P4ts85S0P8+Ardjs+AfBE6bOviK1
+ QDK3qtYOlUeNlx/RVezsf1imLPNGSX9inx/ZAB9i1CwbCtk5GOys+zxfYaFICwlM5b7Z
+ ywHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=UHi37QgFrguKoFdX0YvnqEc8jgtMaeE9jDv0V4psTXQ=;
- b=h7YuGeGBi+Lv+3+c4WMA2xQ5N82RZIsw9phec1lGIFKPROcAQDFs6j6xcOVM01Ignk
- K69mze4Jg5M3F7b7/gu5ynvLbjnfQsgmqUN2yrEBLQMwbjCo+U4NWiIhf6Fskf/YFEda
- 3fNmPEbmUQx47Bm0Dhwk9/j4qTvOliDj5MMTZrQuv325G5or4TZACqWsnEARjAnTp5CV
- wb7XKiZUbMFV31Bme2RQUyo4/IviJI7F0qA+RtRj4URwk2oV2Qf4//GHI8Hl3UKcHNUH
- +by52F9ykgrzNXVN+okb/Pcmx104H3fGitVexyUBx88NFTUFe11moaOlMq+9Mm2URGEa
- uE7A==
-X-Gm-Message-State: AOAM531ThWD1vxtwvjr+nJGIvU2n9F0bGp9u8QEOspxnzfw9iBeOGv8v
- KXBUWk5dU56REeqd0OyMiRvmjejiB9XyEA==
-X-Google-Smtp-Source: ABdhPJx2b+jedc30FoL50HiaWEA4CXsAZkg/u2jZoF7kSeHCGuav3w0MVp01Dy5Lyien5uiN2Jl01w==
-X-Received: by 2002:ac8:4292:0:b0:2ed:7cf8:9bb5 with SMTP id
- o18-20020ac84292000000b002ed7cf89bb5mr811361qtl.417.1649922109560; 
- Thu, 14 Apr 2022 00:41:49 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com.
- [209.85.219.172]) by smtp.gmail.com with ESMTPSA id
- q71-20020a37a74a000000b0069c1625250fsm624921qke.79.2022.04.14.00.41.49
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 14 Apr 2022 00:41:49 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id m132so7967829ybm.4
- for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2022 00:41:49 -0700 (PDT)
-X-Received: by 2002:a25:9e89:0:b0:63c:ad37:a5de with SMTP id
- p9-20020a259e89000000b0063cad37a5demr857786ybq.342.1649922108771; Thu, 14 Apr
- 2022 00:41:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <c3b2a8d1a69f1b1e8d1a460148406cfb83e52eb4.1649857740.git.geert+renesas@glider.be>
- <50714f3e-7561-37fd-7a05-222fd6185c47@linaro.org>
-In-Reply-To: <50714f3e-7561-37fd-7a05-222fd6185c47@linaro.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 14 Apr 2022 09:41:37 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWQjJYhtQ9k0ZhoOS0htvr+nM5+Z_SG=WNsg64ZHuytFw@mail.gmail.com>
-Message-ID: <CAMuHMdWQjJYhtQ9k0ZhoOS0htvr+nM5+Z_SG=WNsg64ZHuytFw@mail.gmail.com>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=wZACf14Zs4ghmlGixfvY80XJb14X/TIhq2Zk1CXUc0Q=;
+ b=RpMd7dEFi6hsQpyElMs+/2lN6WTjupzqKlx3yQrNCWJ+U3CF6KntYpblmjRA8h63b5
+ WuiaIU9928iJuyLSGvqFqyGoaHDSEaPjLXA2dAGhk+nqh0LuMwfMWzKMConaUVNMQuMf
+ 2K5tFiJoM/FtMfZGckMeoR6R8CUGSsrlJQZtYmdsJc28YLF2osPX9tLVMRWW40Uke4jh
+ b+q6jBiZXINe7YlQP0Od2kAGMiOsdZ1Buc4yWVUMIVKzbsD/njBeQSpUHI42renjs1RT
+ 3Bx1D5s2m+Q5Vk2VVxkRe6mrcvL3o9gTamoyNUR4w1+WwuzAsgn4oza8ZqMuOZfkq/fc
+ N1bw==
+X-Gm-Message-State: AOAM533Q/un+G5l0gJ7qFSYkIjaLTiRUpzLHlc54FLYIThrdxdeYGUV8
+ TnxL9q/Z5jCrUHPiR5G+8GIl7J2IcxG8q5Ui
+X-Google-Smtp-Source: ABdhPJxyI8NKQhnAT+jqKW9ekCZzczQuBZwb175SSCOVY7zS38N987C/oKEs+Y+lRdq0VCGCzW2r5A==
+X-Received: by 2002:aa7:c793:0:b0:408:4a69:90b4 with SMTP id
+ n19-20020aa7c793000000b004084a6990b4mr1606455eds.58.1649922379386; 
+ Thu, 14 Apr 2022 00:46:19 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-201-27.adslplus.ch.
+ [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
+ 10-20020a170906310a00b006e834953b55sm375111ejx.27.2022.04.14.00.46.18
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 14 Apr 2022 00:46:18 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ linux-mtd@lists.infradead.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ linux-kernel@vger.kernel.org, Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+ linux-renesas-soc@vger.kernel.org,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
 Subject: Re: [PATCH v2] memory: renesas-rpc-if: Simplify single/double data
  register access
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, 
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
- Andrew Gabbasov <andrew_gabbasov@mentor.com>, 
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date: Thu, 14 Apr 2022 09:46:17 +0200
+Message-Id: <164992231509.17172.5871980426499229486.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <c3b2a8d1a69f1b1e8d1a460148406cfb83e52eb4.1649857740.git.geert+renesas@glider.be>
+References: <c3b2a8d1a69f1b1e8d1a460148406cfb83e52eb4.1649857740.git.geert+renesas@glider.be>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220414_004158_035106_3A31EEC4 
-X-CRM114-Status: GOOD (  20.56  )
+X-CRM114-CacheID: sfid-20220414_004621_674267_2FD8D4BF 
+X-CRM114-Status: UNSURE (   7.40  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,42 +96,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Krzysztof,
+On Wed, 13 Apr 2022 15:49:21 +0200, Geert Uytterhoeven wrote:
+> For manual write and read, factor out the common access to the first
+> data register by keeping track of the current data pointer.
+> 
+> 
 
-On Thu, Apr 14, 2022 at 9:28 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> On 13/04/2022 15:49, Geert Uytterhoeven wrote:
-> > For manual write and read, factor out the common access to the first
-> > data register by keeping track of the current data pointer.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-> This does not apply on a next branch. Maybe because I put "memory:
-> renesas-rpc-if: Fix HF/OSPI data transfer in Manual Mode" for fixes?
-> Does this patch depend on that fix?
+Applied, thanks!
 
-There is no functional dependency, but a slight contextual one.
-It should apply with some fuzz:
+[1/1] memory: renesas-rpc-if: Simplify single/double data register access
+      commit: 1f26a60b55aa654c73b5b9eb9eab8a7d687d429d
 
-$ git am --show-current-patch | patch -p1
-patching file drivers/memory/renesas-rpc-if.c
-Hunk #1 succeeded at 458 (offset -30 lines).
-Hunk #2 succeeded at 471 with fuzz 1 (offset -31 lines).
-Hunk #3 succeeded at 515 (offset -31 lines).
-Hunk #4 succeeded at 531 (offset -32 lines).
 
-Gr{oetje,eeting}s,
+You can double check if hunks matched correctly:
 
-                        Geert
+https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git/commit/?h=mem-ctrl-next&id=1f26a60b55aa654c73b5b9eb9eab8a7d687d429d
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
