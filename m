@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAF37C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 13 Apr 2022 15:56:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EFCFC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Apr 2022 05:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qLT0MygHmE99B3D3tNybOVytzoQCMHQd5qFNQn7FuWs=; b=3Z/q18Pr9qSYX2
-	KndMxUszKJzAgzmzIW3Zrcl2VyvLqj133q9BnPz6uGu5HU/E2LysIE1t3Yl7ldO1YHRdt4Skb/a5g
-	XfVyNjt761CsTY6xq07tl5hSS9Rdvvz+yhcnu/i77PM2OPjWpYDZFk99m2xkREmV5aIX9nPQJU2Ar
-	g/tnVLhXRI37SaPeMEdQ8IafL+Vye9p/FSnz7ptDhHm42mVzEQIaoLo4MorFl81q3r530Adsq52fU
-	r2SeI0inrq1jVzlQGJxw1AnAS6aqftStX3Ex6d7eZW7aLQz0Mfs0sIUj7pltAnxDl068hHt6GLe66
-	IjV8X7RCPsu/L+4oiRJA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=f2x5aYPdbIF99ZZdS95jOEpBdMUqj9eUgC1IitcGthk=; b=J15zdSU5E14SQH
+	HBndBuZUMzvYjonFVok7b6WUM0tovtg48UTpTMLuxR2xU0Tn6+6qbMqdV9A3M4O3Sip4U8wPRUk9b
+	QmLY8maYRwI6OB8EFp20eOW0cMZ+MMPM8YRz3mfJmPk+TJ8moSSXa64AuHAw3tGd94QXtKh5LkBAS
+	SCSgbHe/an9SEEn6P1YLk2bZupF1TU4R2BSNjxARxxdCtsz89Er7ly2esl2cCy0fsIdhoiKan31af
+	IJcQowKpp7qDEXJ65QPL8gSWHgfYOb8fAhpIp5Ea2Le9HcRRjgcPnsrrolS8kEDS10L7OyaRCQrJW
+	DrvXdf4+Va0kNm6t9noA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nefLs-001g7p-TZ; Wed, 13 Apr 2022 15:56:16 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1neral-003sOW-5J; Thu, 14 Apr 2022 05:00:27 +0000
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nefLo-001g6h-65
- for linux-mtd@lists.infradead.org; Wed, 13 Apr 2022 15:56:14 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 1CFF3100008;
- Wed, 13 Apr 2022 15:56:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1649865368;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=12qpawHFnERqRE1NkvVMU3NJkzJ4Yl5g9ig69B3bWPM=;
- b=aMSOZK1UmOlTULlnuykZdkNAb2pjqGc/XDZnLDK1qdRm9nPXCEtYOBupVpfrAEBtl5NvOW
- Td40yQsh7PB0hIeFJlibLTig25UjxEo/QBTz8NcbC58oKr2PItDNkNahic7N94cj/YoNRk
- sqH+wjZHJpTDMKeb7gt3L/KnqOAmPz4b0swCVqmcMTKjMpTibj8L36fpWRu1OqBxU7Wj66
- Q9HURR0VzTRr60E95GciEyCGpdusJ/w5iAnvgQ4dUIOw0BA3ChQY3XHf24Hem87F8BUB5C
- Iwxg9WZRwjnnn07Kr1RnI95lnouS6nNaZ7j5ttXWedpLfP+7PuY4JwUzdTBzEw==
-Date: Wed, 13 Apr 2022 17:56:05 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Felix Matouschek <felix@matouschek.org>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2] mtd: spinand: Add support for XTX XT26G0xA
-Message-ID: <20220413175605.758ca842@xps13>
-In-Reply-To: <c49e86c8-5433-343f-d41f-ce6e9dcdf75b@matouschek.org>
-References: <20220408161904.94383-1-felix@matouschek.org>
- <20220411092311.3f0b97b3@xps13>
- <e697bea9-29b6-2f83-7d42-02afd88fa6b1@matouschek.org>
- <20220411220310.14e2da32@xps13>
- <c49e86c8-5433-343f-d41f-ce6e9dcdf75b@matouschek.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nerai-003sNw-UB
+ for linux-mtd@lists.infradead.org; Thu, 14 Apr 2022 05:00:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1649912424; x=1681448424;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=yDlalwWnBkcn2d0X1iU/YSTVgPIyzcIKznXpiKQ8Cl8=;
+ b=DfhewKbueM0nqBN1Ofnxl63cvxA651i7VjAQThGZI8EI/CKBbvhNEmAH
+ ZxNsn3WdWHJYHhUnG5XuWX2bovksPGM7c3J1lKBzV7w2IrzdbGnzAfL6p
+ ag35EAV97DCLb7Sfv8aSaadPtl1th/RdD5QVIJsSJI48RaY/4PU1EoMLY
+ 7PSLvjLNFqK0DSaMcv9ffB/ZCpm9u488+MUoz30JIqhxiXWH4dCdee1w5
+ iWWUF0PyjyOqs5NmdZnAOXEA1R1f5d4Bjr0VLdgliNr1vUg/XCWc35hTO
+ e7X6xUZO5NQ4Eunl9Nkl7nOWr5/JXJvSHz8VIJh7HspNJBqFdVYFwZtMV w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10316"; a="262599514"
+X-IronPort-AV: E=Sophos;i="5.90,258,1643702400"; d="scan'208";a="262599514"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Apr 2022 22:00:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,258,1643702400"; d="scan'208";a="700535052"
+Received: from unknown (HELO localhost.localdomain) ([10.226.216.87])
+ by fmsmga001.fm.intel.com with ESMTP; 13 Apr 2022 22:00:14 -0700
+From: niravkumar.l.rabara@intel.com
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: issi: Add IS25WP512 device
+Date: Thu, 14 Apr 2022 21:00:04 +0800
+Message-Id: <20220414130004.945924-1-niravkumar.l.rabara@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220413_085612_396964_FC09DA3C 
-X-CRM114-Status: GOOD (  12.48  )
+X-CRM114-CacheID: sfid-20220413_220025_059957_CE6CD1D0 
+X-CRM114-Status: GOOD (  15.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,24 +73,88 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgRmVsaXgsCgpmZWxpeEBtYXRvdXNjaGVrLm9yZyB3cm90ZSBvbiBXZWQsIDEzIEFwciAyMDIy
-IDE3OjM4OjI4ICswMjAwOgoKPiBIaSBNaXF1ZWwsCj4gCj4gQW0gMTEuMDQuMjIgdW0gMjI6MDMg
-c2NocmllYiBNaXF1ZWwgUmF5bmFsOgo+ID4+IEFjY29yZGluZyB0byB0aGUgZGF0YS1zaGVldCAo
-c2VjdGlvbiA3LCBwYWdlIDI3KSB0aGUgc3dpdGNoIHNob3VsZCBiZQo+ID4+IGFibGUgdG8gaGFu
-ZGxlIGFsbCB2YWx1ZXMgb2YgdGhlIHN0YXR1cyByZWdpc3Rlci4gU28gc2hvdWxkIEkgcmVtb3Zl
-IHRoZQo+ID4+IGZpbmFsICJyZXR1cm4gLUVJTlZBTCI/ICAKPiA+IAo+ID4gSSB0aGluayBzbywg
-eWVzLiAgCj4gCj4gSSBub3RpY2VkIHRoYXQgdGhlcmUgYXJlIGFjdHVhbGx5IHNvbWUgcG9zc2li
-bGUgdmFsdWVzIGZvciB0aGUgRUNDIGJpdHMgaW4gdGhlIAo+IHN0YXR1cyByZWdpc3RlciwgdGhh
-dCBhcmUgbm90IGNvdmVyZWQgYnkgdGhlIHN3aXRjaCBjYXNlLiBBY2NvcmRpbmcgdG8gdGhlCj4g
-ZGF0YS1zaGVldCB0aGV5IHNob3VsZCBub3QgaGFwcGVuLCBidXQgd291bGQgaXQgYmUgd2lzZSB0
-byBjYXRjaCB0aGVtIGFueXdheXM/Cj4gTWF5YmUgaWYgc29tZXRoaW5nIGdvZXMgd3Jvbmc/CgpZ
-ZXMgb2YgY291cnNlLCB0aGF0IHdhcyBteSBhZHZpY2UgaW4gdGhlIGZpcnN0IHBsYWNlIDopCgo+
-IAo+IFRoYW5rIHlvdSwKPiBGZWxpeAoKClRoYW5rcywKTWlxdcOobAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNz
-aW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LW10ZC8K
+From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+
+Add is25wp512 info to spi_nor_ids[] table entry.
+
+Rename is25lp256_post_bfpt_fixups to is25xx_post_bfpt_fixups
+as a common function for all is25xx post_bfpt fixups.
+
+Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+---
+ drivers/mtd/spi-nor/issi.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index c012bc2486e1..14fe07e55f85 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -9,24 +9,27 @@
+ #include "core.h"
+ 
+ static int
+-is25lp256_post_bfpt_fixups(struct spi_nor *nor,
++is25xx_post_bfpt_fixups(struct spi_nor *nor,
+ 			   const struct sfdp_parameter_header *bfpt_header,
+ 			   const struct sfdp_bfpt *bfpt)
+ {
+ 	/*
+-	 * IS25LP256 supports 4B opcodes, but the BFPT advertises a
+-	 * BFPT_DWORD1_ADDRESS_BYTES_3_ONLY address width.
++	 * IS25XX256 & IS25XX512 supports 4B opcodes,
++	 * but the BFPT advertises BFPT_DWORD1_ADDRESS_BYTES_3_ONLY and
++	 * BFPT_DWORD1_ADDRESS_BYTES_3_OR_4 address width repectively.
+ 	 * Overwrite the address width advertised by the BFPT.
+ 	 */
+-	if ((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
+-		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
++	if (((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
++		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY) ||
++		((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
++		BFPT_DWORD1_ADDRESS_BYTES_3_OR_4))
+ 		nor->addr_width = 4;
+ 
+ 	return 0;
+ }
+ 
+-static const struct spi_nor_fixups is25lp256_fixups = {
+-	.post_bfpt = is25lp256_post_bfpt_fixups,
++static struct spi_nor_fixups is25xx_fixups = {
++	.post_bfpt = is25xx_post_bfpt_fixups,
+ };
+ 
+ static const struct flash_info issi_nor_parts[] = {
+@@ -48,7 +51,7 @@ static const struct flash_info issi_nor_parts[] = {
+ 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512)
+ 		PARSE_SFDP
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		.fixups = &is25lp256_fixups },
++		.fixups = &is25xx_fixups },
+ 	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128)
+@@ -58,7 +61,11 @@ static const struct flash_info issi_nor_parts[] = {
+ 	{ "is25wp256", INFO(0x9d7019, 0, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
+-		.fixups = &is25lp256_fixups },
++		.fixups = &is25xx_fixups },
++	{ "is25wp512", INFO(0x9d701a, 0, 64 * 1024, 1024)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
++		FIXUP_FLAGS(SPI_NOR_4B_OPCODES)
++		.fixups = &is25xx_fixups },
+ 
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2)
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
