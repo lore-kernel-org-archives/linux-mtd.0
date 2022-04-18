@@ -4,69 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 773C0C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 06:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BF15C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 06:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=s7MPrJRPUvn2WdYSy7GKikFTbcMPdTT08ImM3WrPbkI=; b=3W6Fj9C42Uogt5
-	nHGgfrz2qIW0efBfcmNu1eqInXZQ+voL7oSvH19RgPB6DEhBBDRLoKGWfdcMkBkLUbHhMGFC16DQK
-	y54VzDIZqWOZateTVBnwRZekq2eNv8zqwkAgAy2YvHMTJVgXVwFT0ae4AtTP6L/tQaD6kUi3PYHtZ
-	ndct0AJ1R5c4xU4Vioe4rdTEfa17dML0pHss+jn9fh9ji0xByK5pjlvjcVj3ina2cd/Gj/Ls4j1f0
-	mOXRht/Pdvykuv+A0Rn0OPVren1aJeNcvFTxdITL9eCkUzHb9qtceg7+e66N+0g+9xqdg2ud30m65
-	s+88uFl5ocEw9rOxZRGQ==;
+	List-Owner; bh=i4+IpWhUPIa9253HuOQGAZxSN98UgRBHfsZW845Rihc=; b=kkYNT7b+F17OCO
+	tsKbcg8sFEFPps3ehH6zqKOP4WwmRrTq9T/YlqHSMmUooshtG/NEQBgZG43VTg3S0VNsC7LoFJJtM
+	gupWsaUjJ+FYGYfnwmdcf5dhyKPKmJ4H2dEE1myq0HEgJKDTCpJIu1MXDwGLPA6J6sr2ua7qReqDL
+	x84cR0KXN7rr3+F5DE+l7RGUeGT1u+JRghhmnvfIKZjdI+1PQRr1B/NTsk/URtH0QTtLeCH6iyJUr
+	WGCFkPGJwsv20fyWp4fNLp3iFy+ZKH8b+PsR9KqGcX4cUHqUpM5UvlxzZfDQIbikH8Stf3weCA1OE
+	cjhDXw3TFyKyLtQ89I+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngKoI-00FmG7-TQ; Mon, 18 Apr 2022 06:24:30 +0000
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39])
+	id 1ngL09-00Fody-54; Mon, 18 Apr 2022 06:36:45 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngKoG-00FmEa-9T
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 06:24:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1650263068; x=1681799068;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=tNRYDpEsRiA6xjeaEbDZJT5OooHO5zK9cBV4KUdNxW0=;
- b=HW7akKZw5kt2pGn4nSHh+gZfKh2a8HSjDtLc/JcKdbVSPPIMRiQQYLgJ
- i6c54B0jksli4Y9bdUDTsj3JM4+K9mVh4I8TVVbPQa3XMC9VQ0QTbcxBL
- NxMElDdlyRyrxSe0rrxaPVEUfS2gz2B9Pv4jJcpa/bruCJ23ww7Fu7tAc o=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 17 Apr 2022 23:24:27 -0700
-X-QCInternal: smtphost
-Received: from unknown (HELO nasanex01a.na.qualcomm.com) ([10.52.223.231])
- by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Apr 2022 23:24:26 -0700
-Received: from [10.201.2.159] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Sun, 17 Apr
- 2022 23:24:22 -0700
-Message-ID: <b45374be-117c-1da8-1cfc-3a505e5cf167@quicinc.com>
-Date: Mon, 18 Apr 2022 11:54:19 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V3] mtd: rawnand: qcom: fix memory corruption that causes
+ id 1ngL05-00Focs-FD
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 06:36:43 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 75451B80E1A;
+ Mon, 18 Apr 2022 06:36:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70004C385A1;
+ Mon, 18 Apr 2022 06:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650263798;
+ bh=Za6KZ/5oQI4gabmeDq3TrExMqEraIMNG5gnoCNXLvhQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=l9kFt8EZuIrUAF/JaTls8JcrDN6n+dpj4VSswl0aa+oHW0n0ojlF2NT6z9W4WFEPC
+ qodedpLkovtWOHYeAquC0db9IExry7grpRPRbycdENe0US8DpAJrK8JnobmCjJi8zH
+ emd6V13eDaVtwGuc44Sr8CgLafEYoz2OBgOTkolhnj6K1/rkcQVigW39bv6tqtC4Fo
+ n0/f+lWIoRagYWa+JIOFMy0GxoWunDO+EHVrWPOtuOrAoigwo1OCElL7eN/XhaS3+z
+ xu6E0GuRv1jrIJyjYH+EHqEmZyt2jLET4554GXxaWZp+zmCjIEW4JBJpuB5miRF/OV
+ Wyh1oStbW05Sg==
+Date: Mon, 18 Apr 2022 12:06:30 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+ quic_srichara@quicinc.com, stable@vger.kernel.org
+Subject: Re: [PATCH V4] mtd: rawnand: qcom: fix memory corruption that causes
  panic
-Content-Language: en-US
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <konrad.dybcio@somainline.org>,
- <quic_srichara@quicinc.com>, <stable@vger.kernel.org>
-References: <1650259141-20923-1-git-send-email-quic_mdalam@quicinc.com>
- <20220418053024.GA7431@thinkpad>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20220418053024.GA7431@thinkpad>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+Message-ID: <20220418063630.GJ7431@thinkpad>
+References: <1650262991-21588-1-git-send-email-quic_mdalam@quicinc.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1650262991-21588-1-git-send-email-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220417_232428_397643_F0AD1657 
-X-CRM114-Status: GOOD (  20.84  )
+X-CRM114-CacheID: sfid-20220417_233641_859854_3BF80AFD 
+X-CRM114-Status: GOOD (  30.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,90 +70,187 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Ck9uIDQvMTgvMjAyMiAxMTowMCBBTSwgTWFuaXZhbm5hbiBTYWRoYXNpdmFtIHdyb3RlOgo+IE9u
-IE1vbiwgQXByIDE4LCAyMDIyIGF0IDEwOjQ5OjAxQU0gKzA1MzAsIE1kIFNhZHJlIEFsYW0gd3Jv
-dGU6Cj4+IFRoaXMgcGF0Y2ggZml4ZXMgYSBtZW1vcnkgY29ycnVwdGlvbiB0aGF0IG9jY3VycmVk
-IGluIHRoZQo+PiBuYW5kX3NjYW4oKSBwYXRoIGZvciBIeW5peCBuYW5kIGRldmljZS4KPj4KPj4g
-T24gYm9vdCwgZm9yIEh5bml4IG5hbmQgZGV2aWNlIHdpbGwgcGFuaWMgYXQgYSB3ZWlyZCBwbGFj
-ZToKPj4gfCBVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2Ug
-YXQgdmlydHVhbAo+PiAgICBhZGRyZXNzIDAwMDAwMDcwCj4+IHwgWzAwMDAwMDcwXSAqcGdkPTAw
-MDAwMDAwCj4+IHwgSW50ZXJuYWwgZXJyb3I6IE9vcHM6IDUgWyMxXSBQUkVFTVBUIFNNUCBBUk0K
-Pj4gfCBNb2R1bGVzIGxpbmtlZCBpbjoKPj4gfCBDUFU6IDAgUElEOiAxIENvbW06IHN3YXBwZXIv
-MCBOb3QgdGFpbnRlZCA1LjE3LjAtMDE0NzMtZzEzYWUxNzY5Y2ZiMAo+PiAgICAjMzgKPj4gfCBI
-YXJkd2FyZSBuYW1lOiBHZW5lcmljIERUIGJhc2VkIHN5c3RlbQo+PiB8IFBDIGlzIGF0IG5hbmRj
-X3NldF9yZWcrMHg4LzB4MWMKPj4gfCBMUiBpcyBhdCBxY29tX25hbmRjX2NvbW1hbmQrMHgyMGMv
-MHg1ZDAKPj4gfCBwYyA6IFs8YzA4OGI3NGM+XSAgICBsciA6IFs8YzA4OGQ5Yzg+XSAgICBwc3I6
-IDAwMDAwMTEzCj4+IHwgc3AgOiBjMTRhZGM1MCAgaXAgOiBjMTRlZTIwOCAgZnAgOiBjMGNjOTcw
-Ywo+PiB8IHIxMDogMDAwMDAwYTMgIHI5IDogMDAwMDAwMDAgIHI4IDogMDAwMDAwNDAKPj4gfCBy
-NyA6IGMxNmY2YTAwICByNiA6IDAwMDAwMDkwICByNSA6IDAwMDAwMDA0ICByNCA6YzE0ZWUwNDAK
-Pj4gfCByMyA6IDAwMDAwMDAwICByMiA6IDAwMDAwMDBiICByMSA6IDAwMDAwMDAwICByMCA6YzE0
-ZWUwNDAKPj4gfCBGbGFnczogbnpjdiAgSVJRcyBvbiAgRklRcyBvbiAgTW9kZSBTVkNfMzIgIElT
-QSBBUk0gU2VnbWVudCBub25lCj4+IHwgQ29udHJvbDogMTBjNTM4N2QgIFRhYmxlOiA4MDIwNDA2
-YSAgREFDOiAwMDAwMDA1MQo+PiB8IFJlZ2lzdGVyIHIwIGluZm9ybWF0aW9uOiBzbGFiIGttYWxs
-b2MtMmsgc3RhcnQgYzE0ZWUwMDAgcG9pbnRlciBvZmZzZXQKPj4gICAgNjQgc2l6ZSAyMDQ4Cj4+
-IHwgUHJvY2VzcyBzd2FwcGVyLzAgKHBpZDogMSwgc3RhY2sgbGltaXQgPSAweChwdHJ2YWwpKQo+
-PiB8IG5hbmRjX3NldF9yZWcgZnJvbSBxY29tX25hbmRjX2NvbW1hbmQrMHgyMGMvMHg1ZDAKPj4g
-fCBxY29tX25hbmRjX2NvbW1hbmQgZnJvbSBuYW5kX3JlYWRpZF9vcCsweDE5OC8weDFlOAo+PiB8
-IG5hbmRfcmVhZGlkX29wIGZyb20gaHluaXhfbmFuZF9oYXNfdmFsaWRfamVkZWNpZCsweDMwLzB4
-NzgKPj4gfCBoeW5peF9uYW5kX2hhc192YWxpZF9qZWRlY2lkIGZyb20gaHluaXhfbmFuZF9pbml0
-KzB4YjgvMHg0NTQKPj4gfCBoeW5peF9uYW5kX2luaXQgZnJvbSBuYW5kX3NjYW5fd2l0aF9pZHMr
-MHhhMzAvMHgxNGE4Cj4+IHwgbmFuZF9zY2FuX3dpdGhfaWRzIGZyb20gcWNvbV9uYW5kY19wcm9i
-ZSsweDY0OC8weDdiMAo+PiB8IHFjb21fbmFuZGNfcHJvYmUgZnJvbSBwbGF0Zm9ybV9wcm9iZSsw
-eDU4LzB4YWMKPj4KPj4gVGhlIHByb2JsZW0gaXMgdGhhdCB0aGUgbmFuZF9zY2FuKCkncyBxY29t
-X25hbmRfYXR0YWNoX2NoaXAgY2FsbGJhY2sKPj4gaXMgdXBkYXRpbmcgdGhlIG5hbmRjLT5tYXhf
-Y3dwZXJwYWdlIGZyb20gMSB0byA0LlRoaXMgY2F1c2VzIHRoZQo+PiBzZ19pbml0X3RhYmxlIG9m
-IGNsZWFyX2JhbV90cmFuc2FjdGlvbigpIGluIHRoZSBkcml2ZXIncwo+PiBxY29tX25hbmRjX2Nv
-bW1hbmQoKSB0byBtZW1zZXQgbXVjaCBtb3JlIHRoYW4gd2hhdCB3YXMgaW5pdGlhbGx5Cj4+IGFs
-bG9jYXRlZCBieSBhbGxvY19iYW1fdHJhbnNhY3Rpb24oKS4KPj4KPj4gVGhpcyBwYXRjaCB3aWxs
-IHVwZGF0ZSBuYW5kYy0+bWF4X2N3cGVycGFnZSAxIHRvIDQgYWZ0ZXIgbmFuZF9zY2FuKCkKPj4g
-cmV0dXJucywgYW5kIHJlbW92ZSB1cGRhdGluZyBuYW5kYy0+bWF4X2N3cGVycGFnZSBmcm9tCj4+
-IHFjb21fbmFuZF9hdHRhY2hfY2hpcCBjYWxsIGJhY2suCj4gVGhlIGFib3ZlIHN0YXRlbWVudCBp
-cyBzdGlsbCB3cm9uZy4KIMKgwqAgVXBkYXRlZCBpbiBWNCBwYXRjaC4KPgo+PiBDYzogc3RhYmxl
-QHZnZXIua2VybmVsLm9yZwo+PiBGaXhlczogNmEzY2VjNjRmMThjICgibXRkOiByYXduYW5kOiBx
-Y29tOiBjb252ZXJ0IGRyaXZlciB0byBuYW5kX3NjYW4oKSIpCj4+IFJlcG9ydGVkLWJ5OiBLb25y
-YWQgRHliY2lvIDxrb25yYWQuZHliY2lvQHNvbWFpbmxpbmUub3JnPgo+PiBTaWduZWQtb2ZmLWJ5
-OiBNZCBTYWRyZSBBbGFtIDxxdWljX21kYWxhbUBxdWljaW5jLmNvbT4KPj4gU2lnbmVkLW9mZi1i
-eTogU3JpY2hhcmFuIFIgPHF1aWNfc3JpY2hhcmFAcXVpY2luYy5jb20+Cj4+IC0tLQo+PiBbVjNd
-Cj4+ICAgKiBVcGRhdGVkIGNvbW1pdCBtZXNzYWdlIEZpeGVzLCBDYywgUmVwb3J0ZWQtYnkKPiBN
-aXNzaW5nIHRoZSBwcmV2aW91cyBjaGFuZ2Vsb2dzLgoKCiDCoCBVcGRhdGVkIGluIFY0IHBhdGNo
-LgoKPgo+IFRoYW5rcywKPiBNYW5pCj4KPj4gICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25h
-bmRjLmMgfCAyNCArKysrKysrKysrKysrLS0tLS0tLS0tLS0KPj4gICAxIGZpbGUgY2hhbmdlZCwg
-MTMgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29t
-X25hbmRjLmMKPj4gaW5kZXggMWE3NzU0Mi4uMDQ4YjI1NSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVy
-cy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3
-L3Fjb21fbmFuZGMuYwo+PiBAQCAtMjY1MSwxMCArMjY1MSwyMyBAQCBzdGF0aWMgaW50IHFjb21f
-bmFuZF9hdHRhY2hfY2hpcChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQo+PiAgIAllY2MtPmVuZ2lu
-ZV90eXBlID0gTkFORF9FQ0NfRU5HSU5FX1RZUEVfT05fSE9TVDsKPj4gICAKPj4gICAJbXRkX3Nl
-dF9vb2JsYXlvdXQobXRkLCAmcWNvbV9uYW5kX29vYmxheW91dF9vcHMpOwo+PiArCS8qIEZyZWUg
-dGhlIGluaXRpYWxseSBhbGxvY2F0ZWQgQkFNIHRyYW5zYWN0aW9uIGZvciByZWFkaW5nIHRoZSBP
-TkZJIHBhcmFtcyAqLwo+PiArCWlmIChuYW5kYy0+cHJvcHMtPmlzX2JhbSkKPj4gKwkJZnJlZV9i
-YW1fdHJhbnNhY3Rpb24obmFuZGMpOwo+PiAgIAo+PiAgIAluYW5kYy0+bWF4X2N3cGVycGFnZSA9
-IG1heF90KHVuc2lnbmVkIGludCwgbmFuZGMtPm1heF9jd3BlcnBhZ2UsCj4+ICAgCQkJCSAgICAg
-Y3dwZXJwYWdlKTsKPj4gICAKPj4gKwkvKiBOb3cgYWxsb2NhdGUgdGhlIEJBTSB0cmFuc2FjdGlv
-biBiYXNlZCBvbiB1cGRhdGVkIG1heF9jd3BlcnBhZ2UgKi8KPj4gKwlpZiAobmFuZGMtPnByb3Bz
-LT5pc19iYW0pIHsKPj4gKwkJbmFuZGMtPmJhbV90eG4gPSBhbGxvY19iYW1fdHJhbnNhY3Rpb24o
-bmFuZGMpOwo+PiArCQlpZiAoIW5hbmRjLT5iYW1fdHhuKSB7Cj4+ICsJCQlkZXZfZXJyKG5hbmRj
-LT5kZXYsCj4+ICsJCQkJImZhaWxlZCB0byBhbGxvY2F0ZSBiYW0gdHJhbnNhY3Rpb25cbiIpOwo+
-PiArCQkJcmV0dXJuIC1FTk9NRU07Cj4+ICsJCX0KPj4gKwl9Cj4+ICsKPj4gICAJLyoKPj4gICAJ
-ICogREFUQV9VRF9CWVRFUyB2YXJpZXMgYmFzZWQgb24gd2hldGhlciB0aGUgcmVhZC93cml0ZSBj
-b21tYW5kIHByb3RlY3RzCj4+ICAgCSAqIHNwYXJlIGRhdGEgd2l0aCBFQ0MgdG9vLiBXZSBwcm90
-ZWN0IHNwYXJlIGRhdGEgYnkgZGVmYXVsdCwgc28gd2Ugc2V0Cj4+IEBAIC0yOTU1LDE3ICsyOTY4
-LDYgQEAgc3RhdGljIGludCBxY29tX25hbmRfaG9zdF9pbml0X2FuZF9yZWdpc3RlcihzdHJ1Y3Qg
-cWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjLAo+PiAgIAlpZiAocmV0KQo+PiAgIAkJcmV0dXJu
-IHJldDsKPj4gICAKPj4gLQlpZiAobmFuZGMtPnByb3BzLT5pc19iYW0pIHsKPj4gLQkJZnJlZV9i
-YW1fdHJhbnNhY3Rpb24obmFuZGMpOwo+PiAtCQluYW5kYy0+YmFtX3R4biA9IGFsbG9jX2JhbV90
-cmFuc2FjdGlvbihuYW5kYyk7Cj4+IC0JCWlmICghbmFuZGMtPmJhbV90eG4pIHsKPj4gLQkJCWRl
-dl9lcnIobmFuZGMtPmRldiwKPj4gLQkJCQkiZmFpbGVkIHRvIGFsbG9jYXRlIGJhbSB0cmFuc2Fj
-dGlvblxuIik7Cj4+IC0JCQluYW5kX2NsZWFudXAoY2hpcCk7Cj4+IC0JCQlyZXR1cm4gLUVOT01F
-TTsKPj4gLQkJfQo+PiAtCX0KPj4gLQo+PiAgIAlyZXQgPSBtdGRfZGV2aWNlX3BhcnNlX3JlZ2lz
-dGVyKG10ZCwgcHJvYmVzLCBOVUxMLCBOVUxMLCAwKTsKPj4gICAJaWYgKHJldCkKPj4gICAJCW5h
-bmRfY2xlYW51cChjaGlwKTsKPj4gLS0gCj4+IDIuNy40Cj4+CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+On Mon, Apr 18, 2022 at 11:53:11AM +0530, Md Sadre Alam wrote:
+> This patch fixes a memory corruption that occurred in the
+> nand_scan() path for Hynix nand device.
+> =
+
+> On boot, for Hynix nand device will panic at a weird place:
+> | Unable to handle kernel NULL pointer dereference at virtual
+>   address 00000070
+> | [00000070] *pgd=3D00000000
+> | Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+> | Modules linked in:
+> | CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.17.0-01473-g13ae1769cfb0
+>   #38
+> | Hardware name: Generic DT based system
+> | PC is at nandc_set_reg+0x8/0x1c
+> | LR is at qcom_nandc_command+0x20c/0x5d0
+> | pc : [<c088b74c>]    lr : [<c088d9c8>]    psr: 00000113
+> | sp : c14adc50  ip : c14ee208  fp : c0cc970c
+> | r10: 000000a3  r9 : 00000000  r8 : 00000040
+> | r7 : c16f6a00  r6 : 00000090  r5 : 00000004  r4 :c14ee040
+> | r3 : 00000000  r2 : 0000000b  r1 : 00000000  r0 :c14ee040
+> | Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM Segment none
+> | Control: 10c5387d  Table: 8020406a  DAC: 00000051
+> | Register r0 information: slab kmalloc-2k start c14ee000 pointer offset
+>   64 size 2048
+> | Process swapper/0 (pid: 1, stack limit =3D 0x(ptrval))
+> | nandc_set_reg from qcom_nandc_command+0x20c/0x5d0
+> | qcom_nandc_command from nand_readid_op+0x198/0x1e8
+> | nand_readid_op from hynix_nand_has_valid_jedecid+0x30/0x78
+> | hynix_nand_has_valid_jedecid from hynix_nand_init+0xb8/0x454
+> | hynix_nand_init from nand_scan_with_ids+0xa30/0x14a8
+> | nand_scan_with_ids from qcom_nandc_probe+0x648/0x7b0
+> | qcom_nandc_probe from platform_probe+0x58/0xac
+> =
+
+> The problem is that the nand_scan()'s qcom_nand_attach_chip callback
+> is updating the nandc->max_cwperpage from 1 to 4 or 8 based on page size.
+> This causes the sg_init_table of clear_bam_transaction() in the driver's
+> qcom_nandc_command() to memset much more than what was initially
+> allocated by alloc_bam_transaction().
+> =
+
+> This patch will update nandc->max_cwperpage 1 to 4 or 8 based on page
+> size in qcom_nand_attach_chip call back after freeing the previously
+> allocated memory for bam txn as per nandc->max_cwperpage =3D 1 and then
+> again allocating bam txn as per nandc->max_cwperpage =3D 4 or 8 based on
+> page size in qcom_nand_attach_chip call back itself.
+> =
+
+> Cc: stable@vger.kernel.org
+> Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
+> Reported-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+
+I know that you and Sri were involved in creating this patch. So there shou=
+ld
+be a co-developed-by tag for Sri and your signed-off-by should be the last =
+one.
+Like below,
+
+Cc: stable@vger.kernel.org
+Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
+Reported-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Co-developed-by: Sricharan R <quic_srichara@quicinc.com>
+Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+
+With that,
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
+> ---
+> Changes in V4:
+> =
+
+>  * Incorporated "commit log wrong" comment from Mani
+>  * Updated commit log
+> =
+
+> Changes in V3:
+> =
+
+>  * Incorporated "Fixes tags are missing" comment from Miqu=E8l
+>  * Added Fixes tag Fixes:6a3cec64f18c ("mtd: rawnand: qcom: convert drive=
+r to nand_scan()")
+>  * Incorporated "stable tag missing" comment from Miqu=E8l
+>  * Added stable tag Cc: stable@vger.kernel.org
+>  * Incorporated "Reported-by tag missing" comment from Mani
+>  * Added Reported-by tag Reported-by: Konrad Dybcio <konrad.dybcio@somain=
+line.org>
+> =
+
+> Changes in V2:
+> =
+
+>  * Incorporated "alloc_bam_transaction inside qcom_nand_attach_chip" sugg=
+estion from Mani
+>  * Freed previously alloacted memory for bam txn before updating max_cwpe=
+rpage inside =
+
+>    qcom_nand_attach_chip(). =
+
+>  * Moved alloc_bam_transaction() inside qcom_nand_attach_chip(). after up=
+ding max_cwperpage =
+
+>    4 or 8 based on page size.
+> =
+
+>  drivers/mtd/nand/raw/qcom_nandc.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> =
+
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
+m_nandc.c
+> index 1a77542..048b255 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -2651,10 +2651,23 @@ static int qcom_nand_attach_chip(struct nand_chip=
+ *chip)
+>  	ecc->engine_type =3D NAND_ECC_ENGINE_TYPE_ON_HOST;
+>  =
+
+>  	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
+> +	/* Free the initially allocated BAM transaction for reading the ONFI pa=
+rams */
+> +	if (nandc->props->is_bam)
+> +		free_bam_transaction(nandc);
+>  =
+
+>  	nandc->max_cwperpage =3D max_t(unsigned int, nandc->max_cwperpage,
+>  				     cwperpage);
+>  =
+
+> +	/* Now allocate the BAM transaction based on updated max_cwperpage */
+> +	if (nandc->props->is_bam) {
+> +		nandc->bam_txn =3D alloc_bam_transaction(nandc);
+> +		if (!nandc->bam_txn) {
+> +			dev_err(nandc->dev,
+> +				"failed to allocate bam transaction\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * DATA_UD_BYTES varies based on whether the read/write command protects
+>  	 * spare data with ECC too. We protect spare data by default, so we set
+> @@ -2955,17 +2968,6 @@ static int qcom_nand_host_init_and_register(struct=
+ qcom_nand_controller *nandc,
+>  	if (ret)
+>  		return ret;
+>  =
+
+> -	if (nandc->props->is_bam) {
+> -		free_bam_transaction(nandc);
+> -		nandc->bam_txn =3D alloc_bam_transaction(nandc);
+> -		if (!nandc->bam_txn) {
+> -			dev_err(nandc->dev,
+> -				"failed to allocate bam transaction\n");
+> -			nand_cleanup(chip);
+> -			return -ENOMEM;
+> -		}
+> -	}
+> -
+>  	ret =3D mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+>  	if (ret)
+>  		nand_cleanup(chip);
+> -- =
+
+> 2.7.4
+> =
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
