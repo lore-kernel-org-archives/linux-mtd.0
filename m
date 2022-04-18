@@ -4,61 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B29A4C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 12:14:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3268C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 12:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EpWErO7jNXcZdnNKLffB/zwINKgWpxawi5L/s04FzRo=; b=gmjCbP2D6NsBjGiNtlpENYs9Nv
-	g7TyJ0dYA0eRMQXdPHKcOMDEdpeXiyQg/5u/28NkGhLzl7Etve/LpuXE308Yaz11wrFDCw+myWw1I
-	R9fR5klAvVvM1KFqGI7p0g18UkyTYiX3mF1HQCs0Zj3b7VIkQ5Lczl0UuUyfkm4WyocmKnVPlHjbU
-	5g4r3/VIM6Xp1CnwxEakqJ82CznMvlkWupe14QyxRY8comgHUwhpvmdz9MVucZqnDcrYvHj/dAZWC
-	AbVilwAkdgF2bpYxnkMK/ovpNbPI7GIbl+qmzv9SLI3MpdTLlhL0nrWEp9Bcy2JHCKCCmzyqQ7Izb
-	5LcHBKDw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Lp0/R7iPMIhQO/eadKO982cDk5c9JNrBrt0ekGh+m58=; b=s3GbqKXjT6ajMS
+	Eqpcu7QO50IaM/3/Co4MsUIcxl+5af+JbrBB31rn9KVjUKal41tBGS7dPOpDsTXUburgDnMBs/sE8
+	Gv7CoG+n5RG6/mjOaH5UDLiRqc0KOnQmcjnX5zCnxkers/0f+AgcDELc43zPF2gqtjH4g+T3qK6Vg
+	2nwNIs0UD0sOVTnAdDnNh3LRES0Uxb1F1eZg3R76DiduBkfR636dYfX8RZo4RCVHAhTIKkAsAp6D/
+	HltKG2vSvQ1nDVqStaDG4uve6Y4pGrbu0ZNzv+S24E1DodQe1o/5uTqqV3rTl2cXFUck+8a6vxja3
+	++PFd3E/MuJakS9nRZYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngQG5-00Gdkt-2D; Mon, 18 Apr 2022 12:13:33 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1ngQsK-00Gthp-34; Mon, 18 Apr 2022 12:53:04 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngQG2-00GdjF-4z
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 12:13:31 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 920A122175;
- Mon, 18 Apr 2022 14:13:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1650284008;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=sDTjYlCaBa9GLh++sa/WCQdXuUrcubJCdTwx3SdcA1Q=;
- b=hzXAChF9N1ILebUw69v7FcCfSE9sAXERxDXW3a/CotuLCpZBsGXKG1XdWjLEjkWmngXnWn
- gUazAnZpwYWZz0SfXIFiXCWZAbIDjBnh1xOoOE3zQl21SBxUiY9RKR1vj9Sd+tf27qs1U2
- qgWiIvXubT6htCbhqMTTfZv3JAd4bBc=
+ id 1ngQsB-00Gtcp-WC
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 12:52:57 +0000
+Received: by mail-pl1-x629.google.com with SMTP id v12so12270130plv.4
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2022 05:52:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+ h=from:to:cc:in-reply-to:references:subject:message-id:date
+ :mime-version:content-transfer-encoding;
+ bh=F9FMycteyYrs8wEiBExwTDtAcc/2JBQ5GQqodkswvTM=;
+ b=zqMJx9kEO/syGgh/jfUujcMdgZO1Zk4th79yyPJcsdnvdIDI8Xk864jrHuyarDgv8c
+ gBt2ez+Ym/+EaLgC6MfWMHx5OVcgB54eOfckx7Cmdvf3bmGVDc/T0aLwM9rpN+nKDwcO
+ dWklV+ARMeZbUO1+GrFCqFc/xZjiULaGiN1ll1DVCyoNwgzG1P+0Y9ZhUcwBpI/7WQx/
+ gN/pYZdJuI935bVWCVcjkTqu2k20R+5oG6mGhil2uYi4X3QtR1zxXemtHM8NZ8XUvixz
+ 3tQXFtvzqXbRCXIajCtyaq1nqo4kcpEpLyzsTyB3FvSvWQd/rTixV4XGHzsBwq9Bu/vV
+ stDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+ :message-id:date:mime-version:content-transfer-encoding;
+ bh=F9FMycteyYrs8wEiBExwTDtAcc/2JBQ5GQqodkswvTM=;
+ b=XnilxyJ5cTh192hHtg7s+9QDZ8wc5pjd6JuBIHnm9Z9Jl6IWjNfnAD5UGwW9lXKyj2
+ Q/56Ljg6ImD6mWeC4FHerA4DOjSVRr/ScueNdqH9IrA+33OABvi4tk7CNMhFnXUSheXG
+ 4XVfHP7sMOWmuycwsslQsymovFeqmrvCvo83X5ZzLMzBl0yCHwyIbVmpvFDmvvWeOrb+
+ qAUcAFSvgTeYBHn1mBBOshSQj1dr/3DdW5YQGE41+27H4gI6RYKa8tvrp3a2mXKCHtT7
+ XzxgPmfY9jJ3LUNOptCMAs5G5+sPBPM6ErCo6qfb5bkg7GBxaU6N7D8KJHOqvLWHBTcZ
+ iGQw==
+X-Gm-Message-State: AOAM531cH/y87ZdGrZp2ILjZcwo1AQUeliyjV5tB6foxn8/8Au3YrqW3
+ v4QNKgYypfdcJWtYGDgTVvKIvA==
+X-Google-Smtp-Source: ABdhPJyPDIaLEewZhdBb/81ulQRxH4lnSCW72QYENTWzgjKzLqW/EIFRVhnHg8tc4oCKtNOZ6kDuRg==
+X-Received: by 2002:a17:902:6b44:b0:154:4bee:c434 with SMTP id
+ g4-20020a1709026b4400b001544beec434mr10858040plt.43.1650286372060; 
+ Mon, 18 Apr 2022 05:52:52 -0700 (PDT)
+Received: from [127.0.1.1] ([198.8.77.157]) by smtp.gmail.com with ESMTPSA id
+ s24-20020a17090a441800b001ca9b5724a6sm12663301pjg.36.2022.04.18.05.52.49
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 Apr 2022 05:52:51 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+ jfs-discussion@lists.sourceforge.net, linux-raid@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, drbd-dev@lists.linbit.com,
+ xen-devel@lists.xenproject.org, nbd@other.debian.org,
+ linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-block@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+ linux-ext4@vger.kernel.org, dm-devel@redhat.com, linux-nilfs@vger.kernel.org,
+ ocfs2-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+ linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
+ linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
+ linux-bcache@vger.kernel.org, ceph-devel@vger.kernel.org,
+ ntfs3@lists.linux.dev, linux-um@lists.infradead.org,
+ target-devel@vger.kernel.org
+In-Reply-To: <20220415045258.199825-1-hch@lst.de>
+References: <20220415045258.199825-1-hch@lst.de>
+Subject: Re: use block_device based APIs in block layer consumers v3
+Message-Id: <165028636949.14872.7589996414521818725.b4-ty@kernel.dk>
+Date: Mon, 18 Apr 2022 06:52:49 -0600
 MIME-Version: 1.0
-Date: Mon, 18 Apr 2022 14:13:28 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v1 2/2] mtd: spi-nor: expose internal parameters via
- debugfs
-In-Reply-To: <20220418121044.2825448-2-michael@walle.cc>
-References: <20220418121044.2825448-1-michael@walle.cc>
- <20220418121044.2825448-2-michael@walle.cc>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <fca7f401141caee41f574cdd0339a6e1@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_051330_419908_F53B826A 
-X-CRM114-Status: UNSURE (   7.02  )
+X-CRM114-CacheID: sfid-20220418_055256_064371_B85992CE 
+X-CRM114-Status: UNSURE (   9.56  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -71,85 +96,84 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-04-18 14:10, schrieb Michael Walle:
-> There is no way to gather all information to verify support for a new
-> flash chip. Also if you want to convert an existing flash chip to the
-> new SFDP parsing, there is not enough information to determine if the
-> flash will work like before. To ease this development, expose internal
-> parameters via the debugfs.
+On Fri, 15 Apr 2022 06:52:31 +0200, Christoph Hellwig wrote:
+> this series cleanups up the block layer API so that APIs consumed
+> by file systems are (almost) only struct block_devic based, so that
+> file systems don't have to poke into block layer internals like the
+> request_queue.
+> 
+> I also found a bunch of existing bugs related to partition offsets
+> and discard so these are fixed while going along.
+> 
+> [...]
 
-Here's an example:
-# cat params
-name		w25q32dw
-id		ef6016
-size		4.00 MiB
-write size	1
-page size	256
-address width	3
-flags		HAS_SR_TB|HAS_LOCK|HAS_16BIT_SR|NO_READ_CR|SOFT_RESET
+Applied, thanks!
 
-opcodes
-  read		3b
-   dummy cycles	8
-  erase		20
-  program	02
-  8D extension	none
+[01/27] target: remove an incorrect unmap zeroes data deduction
+        commit: 179d8609d8424529e95021df939ed7b0b82b37f1
+[02/27] target: pass a block_device to target_configure_unmap_from_queue
+        commit: 817e8b51eb3d927ce6d56ecf9f48bc3c5b26168b
+[03/27] target: fix discard alignment on partitions
+        commit: 968786b9ef56e75e0109158a4936ffffea962c1e
+[04/27] drbd: remove assign_p_sizes_qlim
+        commit: 40349d0e16cedd0de561f59752c3249780fb749b
+[05/27] drbd: use bdev based limit helpers in drbd_send_sizes
+        commit: 7a38acce229685968b770d1d9e64e01396b93643
+[06/27] drbd: use bdev_alignment_offset instead of queue_alignment_offset
+        commit: c6f23b1a05441a26f765e59dd95e8ba7354f9388
+[07/27] drbd: cleanup decide_on_discard_support
+        commit: 998e9cbcd615e5e6a7baa69e673ee845f812744e
+[08/27] btrfs: use bdev_max_active_zones instead of open coding it
+        commit: c1e7b24416400ef13ff92a1c60c336c9a2834d7b
+[09/27] ntfs3: use bdev_logical_block_size instead of open coding it
+        commit: f09dac9afb8e3ce4b6485dbc091a9b9c742db023
+[10/27] mm: use bdev_is_zoned in claim_swapfile
+        commit: 9964e674559b02619fee2012a56839624143d02e
+[11/27] block: add a bdev_nonrot helper
+        commit: 10f0d2a517796b8f6dc04fb0cc3e49003ae6b0bc
+[12/27] block: add a bdev_write_cache helper
+        commit: 08e688fdb8f7e862092ae64cee20bc8b463d1046
+[13/27] block: add a bdev_fua helper
+        commit: a557e82e5a01826f902bd94fc925c03f253cb712
+[14/27] block: add a bdev_stable_writes helper
+        commit: 36d254893aa6a6e204075c3cce94bb572ac32c04
+[15/27] block: add a bdev_max_zone_append_sectors helper
+        commit: 2aba0d19f4d8c8929b4b3b94a9cfde2aa20e6ee2
+[16/27] block: use bdev_alignment_offset in part_alignment_offset_show
+        commit: 64dcc7c2717395b7c83ffb10f040d3be795d03c1
+[17/27] block: use bdev_alignment_offset in disk_alignment_offset_show
+        commit: 640f2a23911b8388989547f89d055afbb910b88e
+[18/27] block: move bdev_alignment_offset and queue_limit_alignment_offset out of line
+        commit: 89098b075cb74a80083bc4ed6b71d0ee18b6898f
+[19/27] block: remove queue_discard_alignment
+        commit: 4e1462ffe8998749884d61f91be251a7a8719677
+[20/27] block: use bdev_discard_alignment in part_discard_alignment_show
+        commit: f0f975a4dde890bfe25ce17bf07a6495453988a4
+[21/27] block: move {bdev,queue_limit}_discard_alignment out of line
+        commit: 5c4b4a5c6f11c869a57c6bd977143430bc9dc43d
+[22/27] block: refactor discard bio size limiting
+        commit: e3cc28ea28b5f8794db2aed24f8a0282ad2e85a2
+[23/27] block: add a bdev_max_discard_sectors helper
+        commit: cf0fbf894bb543f472f682c486be48298eccf199
+[24/27] block: remove QUEUE_FLAG_DISCARD
+        commit: 70200574cc229f6ba038259e8142af2aa09e6976
+[25/27] block: add a bdev_discard_granularity helper
+        commit: 7b47ef52d0a2025fd1408a8a0990933b8e1e510f
+[26/27] block: decouple REQ_OP_SECURE_ERASE from REQ_OP_DISCARD
+        commit: 44abff2c0b970ae3d310b97617525dc01f248d7c
+[27/27] direct-io: remove random prefetches
+        commit: c22198e78d523c8fa079bbb70b2523bb6aa51849
 
-protocols
-  read		1S-1S-2S
-  write		1S-1S-1S
-  register	1S-1S-1S
+Best regards,
+-- 
+Jens Axboe
 
-erase commands
-  20 (4.00 KiB) [1]
-  52 (32.0 KiB) [2]
-  d8 (64.0 KiB) [3]
-  c7 (4.00 MiB)
 
-sector map
-  region              | erase mask | flags
-  --------------------+------------+----------
-  00000000 - 003fffff |     [ 123] |
-
-# cat capabilities
-Supported read modes by the flash
-1S-1S-1S
-   opcode	03
-   mode cycles	00
-   dummy cycles	00
-1S-1S-1S (fast read)
-   opcode	0b
-   mode cycles	00
-   dummy cycles	08
-1S-1S-2S
-   opcode	3b
-   mode cycles	00
-   dummy cycles	08
-1S-2S-2S
-   opcode	bb
-   mode cycles	02
-   dummy cycles	02
-1S-1S-4S
-   opcode	6b
-   mode cycles	00
-   dummy cycles	08
-1S-4S-4S
-   opcode	eb
-   mode cycles	02
-   dummy cycles	04
-4S-4S-4S
-   opcode	eb
-   mode cycles	02
-   dummy cycles	00
-
-Supported page program modes by the flash
-1S-1S-1S
-   opcode	02
 
 ______________________________________________________
 Linux MTD discussion mailing list
