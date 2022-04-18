@@ -4,87 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3268C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 12:53:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A7EFC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 13:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lp0/R7iPMIhQO/eadKO982cDk5c9JNrBrt0ekGh+m58=; b=s3GbqKXjT6ajMS
-	Eqpcu7QO50IaM/3/Co4MsUIcxl+5af+JbrBB31rn9KVjUKal41tBGS7dPOpDsTXUburgDnMBs/sE8
-	Gv7CoG+n5RG6/mjOaH5UDLiRqc0KOnQmcjnX5zCnxkers/0f+AgcDELc43zPF2gqtjH4g+T3qK6Vg
-	2nwNIs0UD0sOVTnAdDnNh3LRES0Uxb1F1eZg3R76DiduBkfR636dYfX8RZo4RCVHAhTIKkAsAp6D/
-	HltKG2vSvQ1nDVqStaDG4uve6Y4pGrbu0ZNzv+S24E1DodQe1o/5uTqqV3rTl2cXFUck+8a6vxja3
-	++PFd3E/MuJakS9nRZYg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=52Z1VxfNvtqZoaB/VOM+ylhw4iILtKGqO67DLVrYBOs=; b=Uig4fpWBzfW22O
+	U+YwsUdmxsrI/5qud8ihV2Z+4f+F60RCtNjWekVLagSgqKEMteLnsz8feslfKq+hTSt/c9TVYxhPC
+	eDHc5f1/KWYpidMPepJOZe/tCvXMzfy78Uvi8g96nzHlN7BG8SaGvVBd+mGLjXeA/mV1llm6ovTQV
+	7gM6L0e326ltSZgEnoQARLuIIweEWE84/8OREWs1tVGKOIgtYof31I7LhdYtSfPDqC+B3PhEYrxoA
+	9sCZHNDtyigNmdjGZs6GFBkqqanpvr2zKYYq0XlQLtrDA0MiVrK+c8z6qGIs+gg77DGpYPbRYTK9T
+	Q6B0g5+WnAuhNApS0i2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngQsK-00Gthp-34; Mon, 18 Apr 2022 12:53:04 +0000
-Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	id 1ngRc5-00H8FG-FF; Mon, 18 Apr 2022 13:40:21 +0000
+Received: from mail.fmat.eu ([2a03:4000:21:70a:b8c2:1eff:fea5:fc02])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngQsB-00Gtcp-WC
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 12:52:57 +0000
-Received: by mail-pl1-x629.google.com with SMTP id v12so12270130plv.4
- for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2022 05:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=kernel-dk.20210112.gappssmtp.com; s=20210112;
- h=from:to:cc:in-reply-to:references:subject:message-id:date
- :mime-version:content-transfer-encoding;
- bh=F9FMycteyYrs8wEiBExwTDtAcc/2JBQ5GQqodkswvTM=;
- b=zqMJx9kEO/syGgh/jfUujcMdgZO1Zk4th79yyPJcsdnvdIDI8Xk864jrHuyarDgv8c
- gBt2ez+Ym/+EaLgC6MfWMHx5OVcgB54eOfckx7Cmdvf3bmGVDc/T0aLwM9rpN+nKDwcO
- dWklV+ARMeZbUO1+GrFCqFc/xZjiULaGiN1ll1DVCyoNwgzG1P+0Y9ZhUcwBpI/7WQx/
- gN/pYZdJuI935bVWCVcjkTqu2k20R+5oG6mGhil2uYi4X3QtR1zxXemtHM8NZ8XUvixz
- 3tQXFtvzqXbRCXIajCtyaq1nqo4kcpEpLyzsTyB3FvSvWQd/rTixV4XGHzsBwq9Bu/vV
- stDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
- :message-id:date:mime-version:content-transfer-encoding;
- bh=F9FMycteyYrs8wEiBExwTDtAcc/2JBQ5GQqodkswvTM=;
- b=XnilxyJ5cTh192hHtg7s+9QDZ8wc5pjd6JuBIHnm9Z9Jl6IWjNfnAD5UGwW9lXKyj2
- Q/56Ljg6ImD6mWeC4FHerA4DOjSVRr/ScueNdqH9IrA+33OABvi4tk7CNMhFnXUSheXG
- 4XVfHP7sMOWmuycwsslQsymovFeqmrvCvo83X5ZzLMzBl0yCHwyIbVmpvFDmvvWeOrb+
- qAUcAFSvgTeYBHn1mBBOshSQj1dr/3DdW5YQGE41+27H4gI6RYKa8tvrp3a2mXKCHtT7
- XzxgPmfY9jJ3LUNOptCMAs5G5+sPBPM6ErCo6qfb5bkg7GBxaU6N7D8KJHOqvLWHBTcZ
- iGQw==
-X-Gm-Message-State: AOAM531cH/y87ZdGrZp2ILjZcwo1AQUeliyjV5tB6foxn8/8Au3YrqW3
- v4QNKgYypfdcJWtYGDgTVvKIvA==
-X-Google-Smtp-Source: ABdhPJyPDIaLEewZhdBb/81ulQRxH4lnSCW72QYENTWzgjKzLqW/EIFRVhnHg8tc4oCKtNOZ6kDuRg==
-X-Received: by 2002:a17:902:6b44:b0:154:4bee:c434 with SMTP id
- g4-20020a1709026b4400b001544beec434mr10858040plt.43.1650286372060; 
- Mon, 18 Apr 2022 05:52:52 -0700 (PDT)
-Received: from [127.0.1.1] ([198.8.77.157]) by smtp.gmail.com with ESMTPSA id
- s24-20020a17090a441800b001ca9b5724a6sm12663301pjg.36.2022.04.18.05.52.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 18 Apr 2022 05:52:51 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-f2fs-devel@lists.sourceforge.net,
- jfs-discussion@lists.sourceforge.net, linux-raid@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, drbd-dev@lists.linbit.com,
- xen-devel@lists.xenproject.org, nbd@other.debian.org,
- linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-block@vger.kernel.org,
- virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
- linux-ext4@vger.kernel.org, dm-devel@redhat.com, linux-nilfs@vger.kernel.org,
- ocfs2-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
- linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
- linux-bcache@vger.kernel.org, ceph-devel@vger.kernel.org,
- ntfs3@lists.linux.dev, linux-um@lists.infradead.org,
- target-devel@vger.kernel.org
-In-Reply-To: <20220415045258.199825-1-hch@lst.de>
-References: <20220415045258.199825-1-hch@lst.de>
-Subject: Re: use block_device based APIs in block layer consumers v3
-Message-Id: <165028636949.14872.7589996414521818725.b4-ty@kernel.dk>
-Date: Mon, 18 Apr 2022 06:52:49 -0600
+ id 1ngRSC-00H3qu-7S
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 13:30:11 +0000
+Received: from authenticated-user (mail.fmat.eu [94.16.121.4])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.fmat.eu (Postfix) with ESMTPSA id E7FCDE09E4;
+ Mon, 18 Apr 2022 15:29:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=matouschek.org;
+ s=mail; t=1650288600;
+ bh=uiqz7Gu5s8HqRbLTDeK1F7tXaMd+4gRCPmAcg9cGUbU=;
+ h=From:To:Cc:Subject:Date:From;
+ b=AjmWuBlekp6a+YPRPxb2kXN0vuHZQYTIb+nPFQIuKidvkpIVS82x2AFTGzRO/EOAE
+ nVrwj2WPKYVao7hFmV183eZh23s7J694ZKKBob+2XNRkg/K0y58209FcWmevCuoo7j
+ /BYe2JTnhKrUJhaygRM2adxRPJ4XCT4A1dfhXip2QvdIQRp2mi+kuzCmi0sy1xCTjd
+ IEZFFMQShq940VU03WxqPnfpiTvvW+bFpzG7NrcIixKrxoO0XUKYw0+8gqiAa1axh8
+ e90Z3S1eFjN7Ji9V7vBy6nXzvxGKMjIz83K3jnaFfbBrfGZdMxWXkrtovCJy1LbDhy
+ 4rsFWVFaibTWA==
+From: Felix Matouschek <felix@matouschek.org>
+To: linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v3] mtd: spinand: Add support for XTX XT26G0xA
+Date: Mon, 18 Apr 2022 15:28:03 +0200
+Message-Id: <20220418132803.664103-1-felix@matouschek.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_055256_064371_B85992CE 
-X-CRM114-Status: UNSURE (   9.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220418_063009_001096_35305C46 
+X-CRM114-Status: GOOD (  17.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,78 +67,196 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 15 Apr 2022 06:52:31 +0200, Christoph Hellwig wrote:
-> this series cleanups up the block layer API so that APIs consumed
-> by file systems are (almost) only struct block_devic based, so that
-> file systems don't have to poke into block layer internals like the
-> request_queue.
-> 
-> I also found a bunch of existing bugs related to partition offsets
-> and discard so these are fixed while going along.
-> 
-> [...]
+Add support for XTX Technology XT26G01AXXXXX, XTX26G02AXXXXX and
+XTX26G04AXXXXX SPI NAND.
 
-Applied, thanks!
+These are 3V, 1G/2G/4Gbit serial SLC NAND flash devices with on-die ECC
+(8bit strength per 512bytes).
 
-[01/27] target: remove an incorrect unmap zeroes data deduction
-        commit: 179d8609d8424529e95021df939ed7b0b82b37f1
-[02/27] target: pass a block_device to target_configure_unmap_from_queue
-        commit: 817e8b51eb3d927ce6d56ecf9f48bc3c5b26168b
-[03/27] target: fix discard alignment on partitions
-        commit: 968786b9ef56e75e0109158a4936ffffea962c1e
-[04/27] drbd: remove assign_p_sizes_qlim
-        commit: 40349d0e16cedd0de561f59752c3249780fb749b
-[05/27] drbd: use bdev based limit helpers in drbd_send_sizes
-        commit: 7a38acce229685968b770d1d9e64e01396b93643
-[06/27] drbd: use bdev_alignment_offset instead of queue_alignment_offset
-        commit: c6f23b1a05441a26f765e59dd95e8ba7354f9388
-[07/27] drbd: cleanup decide_on_discard_support
-        commit: 998e9cbcd615e5e6a7baa69e673ee845f812744e
-[08/27] btrfs: use bdev_max_active_zones instead of open coding it
-        commit: c1e7b24416400ef13ff92a1c60c336c9a2834d7b
-[09/27] ntfs3: use bdev_logical_block_size instead of open coding it
-        commit: f09dac9afb8e3ce4b6485dbc091a9b9c742db023
-[10/27] mm: use bdev_is_zoned in claim_swapfile
-        commit: 9964e674559b02619fee2012a56839624143d02e
-[11/27] block: add a bdev_nonrot helper
-        commit: 10f0d2a517796b8f6dc04fb0cc3e49003ae6b0bc
-[12/27] block: add a bdev_write_cache helper
-        commit: 08e688fdb8f7e862092ae64cee20bc8b463d1046
-[13/27] block: add a bdev_fua helper
-        commit: a557e82e5a01826f902bd94fc925c03f253cb712
-[14/27] block: add a bdev_stable_writes helper
-        commit: 36d254893aa6a6e204075c3cce94bb572ac32c04
-[15/27] block: add a bdev_max_zone_append_sectors helper
-        commit: 2aba0d19f4d8c8929b4b3b94a9cfde2aa20e6ee2
-[16/27] block: use bdev_alignment_offset in part_alignment_offset_show
-        commit: 64dcc7c2717395b7c83ffb10f040d3be795d03c1
-[17/27] block: use bdev_alignment_offset in disk_alignment_offset_show
-        commit: 640f2a23911b8388989547f89d055afbb910b88e
-[18/27] block: move bdev_alignment_offset and queue_limit_alignment_offset out of line
-        commit: 89098b075cb74a80083bc4ed6b71d0ee18b6898f
-[19/27] block: remove queue_discard_alignment
-        commit: 4e1462ffe8998749884d61f91be251a7a8719677
-[20/27] block: use bdev_discard_alignment in part_discard_alignment_show
-        commit: f0f975a4dde890bfe25ce17bf07a6495453988a4
-[21/27] block: move {bdev,queue_limit}_discard_alignment out of line
-        commit: 5c4b4a5c6f11c869a57c6bd977143430bc9dc43d
-[22/27] block: refactor discard bio size limiting
-        commit: e3cc28ea28b5f8794db2aed24f8a0282ad2e85a2
-[23/27] block: add a bdev_max_discard_sectors helper
-        commit: cf0fbf894bb543f472f682c486be48298eccf199
-[24/27] block: remove QUEUE_FLAG_DISCARD
-        commit: 70200574cc229f6ba038259e8142af2aa09e6976
-[25/27] block: add a bdev_discard_granularity helper
-        commit: 7b47ef52d0a2025fd1408a8a0990933b8e1e510f
-[26/27] block: decouple REQ_OP_SECURE_ERASE from REQ_OP_DISCARD
-        commit: 44abff2c0b970ae3d310b97617525dc01f248d7c
-[27/27] direct-io: remove random prefetches
-        commit: c22198e78d523c8fa079bbb70b2523bb6aa51849
+Tested on Teltonika RUTX10 flashed with OpenWrt.
 
-Best regards,
+Links:
+  - http://www.xtxtech.com/download/?AId=225
+  - https://datasheet.lcsc.com/szlcsc/2005251034_XTX-XT26G01AWSEGA_C558841.pdf
+Signed-off-by: Felix Matouschek <felix@matouschek.org>
+---
+ drivers/mtd/nand/spi/Makefile |   2 +-
+ drivers/mtd/nand/spi/core.c   |   1 +
+ drivers/mtd/nand/spi/xtx.c    | 129 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h   |   1 +
+ 4 files changed, 132 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/xtx.c
+
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index 9662b9c1d5a9..80dabe6ff0f3 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,3 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
++spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index ff8336870bc0..d5b685d1605e 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -933,6 +933,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&paragon_spinand_manufacturer,
+ 	&toshiba_spinand_manufacturer,
+ 	&winbond_spinand_manufacturer,
++	&xtx_spinand_manufacturer,
+ };
+ 
+ static int spinand_manufacturer_match(struct spinand_device *spinand,
+diff --git a/drivers/mtd/nand/spi/xtx.c b/drivers/mtd/nand/spi/xtx.c
+new file mode 100644
+index 000000000000..3911520f718c
+--- /dev/null
++++ b/drivers/mtd/nand/spi/xtx.c
+@@ -0,0 +1,129 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Author:
++ * Felix Matouschek <felix@matouschek.org>
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_XTX	0x0B
++
++#define XT26G0XA_STATUS_ECC_MASK	GENMASK(5, 2)
++#define XT26G0XA_STATUS_ECC_NO_DETECTED	(0 << 2)
++#define XT26G0XA_STATUS_ECC_8_CORRECTED	(3 << 4)
++#define XT26G0XA_STATUS_ECC_UNCOR_ERROR	(2 << 4)
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int xt26g0xa_ooblayout_ecc(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	region->offset = 48;
++	region->length = 16;
++
++	return 0;
++}
++
++static int xt26g0xa_ooblayout_free(struct mtd_info *mtd, int section,
++				   struct mtd_oob_region *region)
++{
++	if (section)
++		return -ERANGE;
++
++	region->offset = 1;
++	region->length = 47;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops xt26g0xa_ooblayout = {
++	.ecc = xt26g0xa_ooblayout_ecc,
++	.free = xt26g0xa_ooblayout_free,
++};
++
++static int xt26g0xa_ecc_get_status(struct spinand_device *spinand,
++					 u8 status)
++{
++	status = status & XT26G0XA_STATUS_ECC_MASK;
++
++	switch (status) {
++	case XT26G0XA_STATUS_ECC_NO_DETECTED:
++		return 0;
++	case XT26G0XA_STATUS_ECC_8_CORRECTED:
++		return 8;
++	case XT26G0XA_STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++	default:
++		break;
++	}
++
++	/* At this point values greater than (2 << 4) are invalid  */
++	if (status > XT26G0XA_STATUS_ECC_UNCOR_ERROR)
++		return -EINVAL;
++
++	/* (1 << 2) through (7 << 2) are 1-7 corrected errors */
++	return status >> 2;
++}
++
++static const struct spinand_info xtx_spinand_table[] = {
++	SPINAND_INFO("XT26G01A",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xE1),
++		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&xt26g0xa_ooblayout,
++				     xt26g0xa_ecc_get_status)),
++	SPINAND_INFO("XT26G02A",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xE2),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&xt26g0xa_ooblayout,
++				     xt26g0xa_ecc_get_status)),
++	SPINAND_INFO("XT26G04A",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_ADDR, 0xE3),
++		     NAND_MEMORG(1, 2048, 64, 128, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(8, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&xt26g0xa_ooblayout,
++				     xt26g0xa_ecc_get_status)),
++};
++
++static const struct spinand_manufacturer_ops xtx_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer xtx_spinand_manufacturer = {
++	.id = SPINAND_MFR_XTX,
++	.name = "XTX",
++	.chips = xtx_spinand_table,
++	.nchips = ARRAY_SIZE(xtx_spinand_table),
++	.ops = &xtx_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 3aa28240a77f..5584d3bb6556 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -266,6 +266,7 @@ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+ extern const struct spinand_manufacturer paragon_spinand_manufacturer;
+ extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
+ extern const struct spinand_manufacturer winbond_spinand_manufacturer;
++extern const struct spinand_manufacturer xtx_spinand_manufacturer;
+ 
+ /**
+  * struct spinand_op_variants - SPI NAND operation variants
 -- 
-Jens Axboe
-
+2.35.3
 
 
 ______________________________________________________
