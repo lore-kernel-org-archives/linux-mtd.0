@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF4C8C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 03:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2EDFC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 05:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:CC:To:From:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gr4lwQ5b0PkqkWlwoV7BRS+/w9VOti6fIKe5mcxNzfc=; b=n1T68743/yi+9Y
-	1ixrIQE00dF3yxXcYfTW3qt0F6qTtHIgDV1x2Smhe2BvgPjGg7AORpdYiB8PhdYENQLBYxPp4yyY9
-	mZAGpNylTqG8PS7oWHQsUrr4zpwRvH6yQfl+v9ykueiQt5BPnb7sc9RQgbvDtlczMFzonEiHkjf31
-	/2QYMGn+OUrSTlEq5padg6zh6Xj7nTsiHUh6giFdZopTgdq1DCGoM56L++sQ/OeRWKR9MRwV+/yct
-	6/P3mE4gnEKvl1ao26dHJ/53thFO3otIGsSio8QYKGE7MBUktdVyoSwBnEFTJnj7q2d5DHnAU3rCQ
-	aV3vm/XTRdGirvnPO7sw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
+	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6Zs//s0Prk3PQGpTsz4CNSg3zeb/8w5VF057hgoqHpU=; b=snVsqFT9FH4t9t
+	LWDra90QawSfsu+n0xKedYmVSsx+My/KGxtSkirv993zSPLMk3lx7ALvfDRKn80wsggf67UMbhfBd
+	Oj4uEC45aKFw9nmELvaqedbV+spG/DMR1erWtZw1cWWJcFtluywaDN+68NjW57b9VJPHraKepjLF3
+	85/zw3E7t84eeedQiu+WAWq7wq9w0ZlfChHpRtVQrB200Kz0vJEsRM6L3q6CB7v97uCgA5HiBGYoU
+	IBEX9xLDkLBuPxJK7aAhjCJg6I0oQPHjPkAd6IA6CjTmYoy5GsBnkQHyOHKtsm+p211efsToHiSEH
+	1/1qB8tV0QtMIwJaci8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngIFa-00FSqC-B4; Mon, 18 Apr 2022 03:40:30 +0000
-Received: from mail-sz.amlogic.com ([211.162.65.117])
+	id 1ngJnL-00FeCm-CB; Mon, 18 Apr 2022 05:19:27 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngIFP-00FSnr-AL; Mon, 18 Apr 2022 03:40:20 +0000
-Received: from [10.28.39.106] (10.28.39.106) by mail-sz.amlogic.com
- (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 18 Apr
- 2022 11:40:10 +0800
-Message-ID: <d5a33645-fac1-9c69-afe6-654bfe93ca48@amlogic.com>
-Date: Mon, 18 Apr 2022 11:40:10 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v4 1/2] mtd: rawnand: meson: discard the common MMC sub
- clock framework
-Content-Language: en-US
-From: Liang Yang <liang.yang@amlogic.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Jerome
- Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Kevin Hilman
- <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan
- <victor.wan@amlogic.com>, XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin
- Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>,
- YongHui Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
- <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>
-References: <20220402074921.13316-1-liang.yang@amlogic.com>
- <20220402074921.13316-2-liang.yang@amlogic.com>
- <20220404103034.48ec16b1@xps13>
- <50105d6b-8ced-1b72-30cb-a709c4a4dd26@amlogic.com>
-In-Reply-To: <50105d6b-8ced-1b72-30cb-a709c4a4dd26@amlogic.com>
-X-Originating-IP: [10.28.39.106]
-X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
- (10.28.11.5)
+ id 1ngJnH-00FeAz-Sm
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 05:19:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1650259163; x=1681795163;
+ h=from:to:cc:subject:date:message-id;
+ bh=EK+0u9UC8xwiVIg1UZKWQ0D//oOqEbDa4F6BgDV60IE=;
+ b=Dly5ZlTMMrmYld0B17c7blFx9y2Yjkcm1H/Np3it5k/dMgpLjeFSjRVN
+ k+nQLH9GJt4Lp9PohQ0rbA+cguNYpVwACI5g2JxNfz0XadgEL77AIfZ2C
+ 5cr7Iat5syB9RNJ3dVuse3h0p/0k1W/oYTx6Yztg4SEdKWeGjM97SbgZH 4=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+ by alexa-out.qualcomm.com with ESMTP; 17 Apr 2022 22:19:20 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+ by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
+ 17 Apr 2022 22:19:19 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+ by ironmsg02-blr.qualcomm.com with ESMTP; 18 Apr 2022 10:49:06 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+ id 3BD3A229F2; Mon, 18 Apr 2022 10:49:04 +0530 (IST)
+From: Md Sadre Alam <quic_mdalam@quicinc.com>
+To: mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: konrad.dybcio@somainline.org, quic_srichara@quicinc.com,
+ quic_mdalam@quicinc.com, stable@vger.kernel.org
+Subject: [PATCH V3] mtd: rawnand: qcom: fix memory corruption that causes panic
+Date: Mon, 18 Apr 2022 10:49:01 +0530
+Message-Id: <1650259141-20923-1-git-send-email-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220417_204019_384654_135B7E4F 
-X-CRM114-Status: GOOD (  11.55  )
+X-CRM114-CacheID: sfid-20220417_221924_001663_032E8B71 
+X-CRM114-Status: GOOD (  15.32  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,44 +68,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWlxdWVsLAoKaSBoYXZlIHNvbWUgY29uZnVzaW9uIHdoZW4gaSBwcmVwYXJlIHRoZSBwYXRj
-aGVzLiBmb3IgRFQgY29tcGF0aWJpbGl0eSwgCml0IGZhbGxzIGJhY2sgdG8gdGhlIG9sZCBEVCB3
-aGVuIGZhaWxlZCB0byBnZXQgcmVzb3VyY2UgYnkgdGhlIG5ldyBEVCwgCmJ1dCB0aGVyZSBpcyBz
-b21lIHBvaW50czoKYS4gb2xkIERUIGRlcGVuZHMgb24gTU1DIHN1YiBjbG9jayBkcml2ZXIsIGJ1
-dCBpdCBuZXZlciBiZSBtZXJnZWQsIHNvIGl0IApjYW4ndCB3b3JrLgpiLiBpZiBpdCBmYWxscyBi
-YWNrIHRvIHRoZSBvbGQgRFQsIGJlc2lkZSB0aGUgcmVnbWFwIGxvb2t1cCBiZWxvdywgaXQgCnNl
-ZW1zIHRoYXQgd2UgaGF2ZSB0byBwcmVzZXJ2ZSB0aGUgY29kZSBvZiB0aGUgb2xkIGNsb2NrIHNl
-dHRpbmcgaW4gCm5mY19jbGtfaW5pdCgpLiBkbyB3ZSBzdGlsbCBuZWVkIHRvIGF2b2lkIGJyZWFr
-IERUIGNvbXBhdGliaWxpdHk/CgpUaGFua3MuCgpPbiAyMDIyLzQvMTEgMTA6NDAsIExpYW5nIFlh
-bmcgd3JvdGU6Cj4+PiDCoMKgwqDCoMKgIG5mYy0+ZGV2ID0gZGV2Owo+Pj4gLcKgwqDCoCByZXMg
-PSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwgSU9SRVNPVVJDRV9NRU0sIDApOwo+Pj4gLcKg
-wqDCoCBuZmMtPnJlZ19iYXNlID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKGRldiwgcmVzKTsKPj4+
-ICvCoMKgwqAgbmZjLT5yZWdfYmFzZSA9IGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZV9i
-eW5hbWUocGRldiwgIm5mYyIpOwo+Pgo+PiBUaGlzIGNoYW5nZSBzZWVtcyB1bnJlbGF0ZWQuCj4g
-Cj4gVG8gYmUgY29uc2lzdGVudCB3aXRoIHRoZSBmb2xsb3dpbmcgCj4gZGV2bV9wbGF0Zm9ybV9p
-b3JlbWFwX3Jlc291cmNlX2J5bmFtZShwZGV2LCAiZW1tYyIpLiBkbyB5b3UgbWVhbiB0aGF0IHdl
-IAo+IGRvbid0IG5lZWQgaXQ/Pgo+Pj4gwqDCoMKgwqDCoCBpZiAoSVNfRVJSKG5mYy0+cmVnX2Jh
-c2UpKQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBQVFJfRVJSKG5mYy0+cmVnX2Jhc2Up
-Owo+Pj4gLcKgwqDCoCBuZmMtPnJlZ19jbGsgPQo+Pj4gLcKgwqDCoMKgwqDCoMKgIHN5c2Nvbl9y
-ZWdtYXBfbG9va3VwX2J5X3BoYW5kbGUoZGV2LT5vZl9ub2RlLAo+Pj4gLcKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgImFtbG9naWMsbW1jLXN5c2NvbiIpOwo+
-Pj4gLcKgwqDCoCBpZiAoSVNfRVJSKG5mYy0+cmVnX2NsaykpIHsKPj4+IC3CoMKgwqDCoMKgwqDC
-oCBkZXZfZXJyKGRldiwgIkZhaWxlZCB0byBsb29rdXAgY2xvY2sgYmFzZVxuIik7Cj4+PiAtwqDC
-oMKgwqDCoMKgwqAgcmV0dXJuIFBUUl9FUlIobmZjLT5yZWdfY2xrKTsKPj4+IC3CoMKgwqAgfQo+
-Pj4gK8KgwqDCoCBuZmMtPnNkX2VtbWNfY2xvY2sgPSBkZXZtX3BsYXRmb3JtX2lvcmVtYXBfcmVz
-b3VyY2VfYnluYW1lKHBkZXYsIAo+Pj4gImVtbWMiKTsKPj4+ICvCoMKgwqAgaWYgKElTX0VSUihu
-ZmMtPnNkX2VtbWNfY2xvY2spKQo+Pj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiBQVFJfRVJSKG5m
-Yy0+c2RfZW1tY19jbG9jayk7Cj4+Cj4+IFdoaWxlIEkgYWdyZWUgdGhpcyBpcyBtdWNoIGJldHRl
-ciB0aGFuIHRoZSBwcmV2aW91cyBzb2x1dGlvbiwgd2UgY2Fubm90Cj4+IGJyZWFrIERUIGNvbXBh
-dGliaWxpdHksIHNvIHlvdSBuZWVkIHRvIHRyeSBnZXR0aW5nIHRoZSBlbW1jIGNsb2NrLCBidXQK
-Pj4gaWYgaXQgZmFpbHMgeW91IHNob3VsZCBmYWxsYmFjayB0byB0aGUgcmVnbWFwIGxvb2t1cC4K
-PiAKPiBvaywgaSB3aWxsIGZpeCBpdCBuZXh0IHZlcnNpb24uIHRoYW5rcy4KPiAKPj4KPj4+IMKg
-wqDCoMKgwqAgaXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAwKTsgCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+This patch fixes a memory corruption that occurred in the
+nand_scan() path for Hynix nand device.
+
+On boot, for Hynix nand device will panic at a weird place:
+| Unable to handle kernel NULL pointer dereference at virtual
+  address 00000070
+| [00000070] *pgd=00000000
+| Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+| Modules linked in:
+| CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.17.0-01473-g13ae1769cfb0
+  #38
+| Hardware name: Generic DT based system
+| PC is at nandc_set_reg+0x8/0x1c
+| LR is at qcom_nandc_command+0x20c/0x5d0
+| pc : [<c088b74c>]    lr : [<c088d9c8>]    psr: 00000113
+| sp : c14adc50  ip : c14ee208  fp : c0cc970c
+| r10: 000000a3  r9 : 00000000  r8 : 00000040
+| r7 : c16f6a00  r6 : 00000090  r5 : 00000004  r4 :c14ee040
+| r3 : 00000000  r2 : 0000000b  r1 : 00000000  r0 :c14ee040
+| Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM Segment none
+| Control: 10c5387d  Table: 8020406a  DAC: 00000051
+| Register r0 information: slab kmalloc-2k start c14ee000 pointer offset
+  64 size 2048
+| Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+| nandc_set_reg from qcom_nandc_command+0x20c/0x5d0
+| qcom_nandc_command from nand_readid_op+0x198/0x1e8
+| nand_readid_op from hynix_nand_has_valid_jedecid+0x30/0x78
+| hynix_nand_has_valid_jedecid from hynix_nand_init+0xb8/0x454
+| hynix_nand_init from nand_scan_with_ids+0xa30/0x14a8
+| nand_scan_with_ids from qcom_nandc_probe+0x648/0x7b0
+| qcom_nandc_probe from platform_probe+0x58/0xac
+
+The problem is that the nand_scan()'s qcom_nand_attach_chip callback
+is updating the nandc->max_cwperpage from 1 to 4.This causes the
+sg_init_table of clear_bam_transaction() in the driver's
+qcom_nandc_command() to memset much more than what was initially
+allocated by alloc_bam_transaction().
+
+This patch will update nandc->max_cwperpage 1 to 4 after nand_scan()
+returns, and remove updating nandc->max_cwperpage from
+qcom_nand_attach_chip call back.
+
+Cc: stable@vger.kernel.org
+Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
+Reported-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+---
+[V3]
+ * Updated commit message Fixes, Cc, Reported-by
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 1a77542..048b255 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2651,10 +2651,23 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+ 	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+ 
+ 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
++	/* Free the initially allocated BAM transaction for reading the ONFI params */
++	if (nandc->props->is_bam)
++		free_bam_transaction(nandc);
+ 
+ 	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
+ 				     cwperpage);
+ 
++	/* Now allocate the BAM transaction based on updated max_cwperpage */
++	if (nandc->props->is_bam) {
++		nandc->bam_txn = alloc_bam_transaction(nandc);
++		if (!nandc->bam_txn) {
++			dev_err(nandc->dev,
++				"failed to allocate bam transaction\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	/*
+ 	 * DATA_UD_BYTES varies based on whether the read/write command protects
+ 	 * spare data with ECC too. We protect spare data by default, so we set
+@@ -2955,17 +2968,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nandc->props->is_bam) {
+-		free_bam_transaction(nandc);
+-		nandc->bam_txn = alloc_bam_transaction(nandc);
+-		if (!nandc->bam_txn) {
+-			dev_err(nandc->dev,
+-				"failed to allocate bam transaction\n");
+-			nand_cleanup(chip);
+-			return -ENOMEM;
+-		}
+-	}
+-
+ 	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+ 	if (ret)
+ 		nand_cleanup(chip);
+-- 
+2.7.4
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
