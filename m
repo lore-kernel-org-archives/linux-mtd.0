@@ -4,76 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49291C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 10:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BA6EC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 11:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=96Mxov05IljxEz1LCJAODteOUtafOYwaImWC2x7hgSE=; b=CDWuQDWCZvn3gS
-	kqz41okazvuNH8DNiREWdduJEqpZG87y3SeMoomlLVHomafEmtG44dGqatrEIn2aOW0wxoKdB0xdl
-	PYjmwHfZahiSDh+Hc0+JyZP4mmy9caeleeA5PHuva0axzwNCzQFQSKtqUw6ZtmRL/4kzOTIaZBTNc
-	Wu5HrVl7QSGiYYDpNyIkrCXkhxM/llxaKxJgSV4R3vq51o9aoRUm08upb4D7Go7zORbEkkUS0+yQD
-	ztjbj4OqjlNhM7Ut4Rs9Elp8Ta0TSsG7LdMIfiauOsGQauUQFfm+CJsOZ+pYBMWyUbHw8KJrDiolv
-	CnBiNmTzDdPC5654W8PA==;
+	List-Owner; bh=xvAbreZV6vdtLcgRkw+AHw28mMl6zPJ8rk9G9/HCxJ8=; b=yOGo3VItirfnLh
+	FpAqXWVU6XQMgGh45VexNWmnKd7gayXqUaRzPji7zXsj1ygaUprdgFj1ALX70qmHYOuOsbFSFLGTj
+	y69QQQyAUaicA7Fypfu1qpdu9akdMUwc/GG1ndHVtaGsQ7M2Y4wVgCbMWDKsTUGdk621izoG6Xiio
+	wwt5yWn0em9SQrHvKiSfMj15U0Gx6RPqsFSe/8C7n/U22GrAdOxT5yDRf85DOMZNgi6U+/RfoyvHo
+	cFTx/UwnoUlK2l6gYcuzs7fDcB1e8zWJD48Lh46VTGBeLq+cc5o0OGRRxCzzTTKVaflWnCgiS3qc5
+	Q5CVB9uF//+njN8ZUCGA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngP32-00GOU5-CA; Mon, 18 Apr 2022 10:56:00 +0000
-Received: from mail-qt1-x830.google.com ([2607:f8b0:4864:20::830])
+	id 1ngPUQ-00GSKc-Ql; Mon, 18 Apr 2022 11:24:18 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngP2z-00GORq-BI
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 10:55:58 +0000
-Received: by mail-qt1-x830.google.com with SMTP id t2so9753138qtw.9
- for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2022 03:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=04JNQ4bNSWDf9nai4sAo8uNf8YU45zdAqbc+gwJY/Os=;
- b=L8QgQHgaLGvKMHF5Cn0gPx8KthUCv7F5DASuU0w83wfC4qP1QWP5tnjqNJ/PL0IW+s
- qwxtvzrSE8oMw24QsmvtNkh1flxQNxzT44tOV8LtU/Ch0Do1KPbQ1IHzVVgy279vv/Gc
- BmTWjXqltOCRGhFjwMe4q0P6Q2wuro597uPlXhjBAzvpQTRc1wdvZ312A5zHF3iA7i0a
- W1qnDSqEheJnoc7P+U51c5+h4Wg/7TdDltSOO31YR5DHhbVJXMuYmbwzPg7R0P/kgQ+J
- 77zdLt3Cpk5US/tnSdytC2TB4GteNhxdD90NA4lZYHwMJknFv5cNBUA9g5ysHTejwTZB
- V5Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=04JNQ4bNSWDf9nai4sAo8uNf8YU45zdAqbc+gwJY/Os=;
- b=lxOpyy7rlGDsfNf3OSd22Y231u9fihz3dKmwHUpMD6G1joSQG7CeaEl4M1idsDaZC2
- Sz4LCNxOHeIOezb3Uy3oDjKBm8PGX+xLBi4xvboJ0CNq6+iyiA+SIo6Trcs4oUzLUOBf
- BDC/L+LwNCmR80t982KKhLonxqupCkxHz7u6e/Xm8MNAf2IlROh5LFGl07C1McLkjayV
- m60672RGJyKXwYztemJquZThpP6mqljzcGSP+6T3Brku9Ms5UZw+YT+mSgLP+50hEKk2
- VDqNyuNs0+xt5LJ2zFb54FboGmbh5GIhnZUDVzPT1byR/z5Fm62OfH9x4oAdIbaw/84W
- dxSQ==
-X-Gm-Message-State: AOAM530cvwI8Nm/QPjgAuFNGqVsb6LjktA8fXjoZZrRx+H+jtbmsacOs
- OZGV2owzzfst44EjCLL9WKP/kWNznDs=
-X-Google-Smtp-Source: ABdhPJyIahOd8LheVs5dSWdbwkvdAFmtzyN6uLbgaP4/mPBCrW3brMLgzIUVShvTAGKnO2Vh6xzAsg==
-X-Received: by 2002:ac8:7fcc:0:b0:2f2:5bf:6c with SMTP id
- b12-20020ac87fcc000000b002f205bf006cmr501496qtk.655.1650279355332; 
- Mon, 18 Apr 2022 03:55:55 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
- by smtp.gmail.com with ESMTPSA id
- i17-20020a05620a405100b0069c45deb548sm6909392qko.130.2022.04.18.03.55.53
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 18 Apr 2022 03:55:55 -0700 (PDT)
-From: cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To: han.xu@nxp.com
-Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Minghao Chi <chi.minghao@zte.com.cn>,
- Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] mtd: nand: gpmi-nand: using pm_runtime_resume_and_get instead
- of pm_runtime_get_sync
-Date: Mon, 18 Apr 2022 10:55:49 +0000
-Message-Id: <20220418105549.2558765-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+ id 1ngPUO-00GSI5-0h
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 11:24:17 +0000
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 040AA22175;
+ Mon, 18 Apr 2022 13:24:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1650281050;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=J2oZS6njRbW/e53awOChfnSOtco2+8cX206eZmrgK1I=;
+ b=JRfy1r/rkKXUDXoTE57Lam4U23codb5EUkQl3fM/m0loGkFFOn+yOdIWyuJhtPg6BiB+HL
+ 5SFP6nY+32GdmPExEYXR+pyQ4fCNE3vTdb1tbHG8/0U03p3UeOvcf6W9X9jhXinGDdpt7O
+ pgqLYxYT8c6YGPzzUYyYNuBOjDSP9kc=
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Michael Walle <michael@walle.cc>
+Subject: [PATCH] mtd: spi-nor: move spi_nor_write_ear() to winbond module
+Date: Mon, 18 Apr 2022 13:24:04 +0200
+Message-Id: <20220418112404.2790469-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_035557_405091_230E55A0 
-X-CRM114-Status: GOOD (  11.90  )
+X-CRM114-CacheID: sfid-20220418_042416_234184_CA456ABD 
+X-CRM114-Status: GOOD (  14.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,66 +71,131 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Minghao Chi <chi.minghao@zte.com.cn>
+The "Extended Address Register" is winbond specific. If the flash is
+larger than 16MiB and is used in 3 byte address mode, it is used to set
+the remaining address bits. Move the write_ear() function the winbond
+module and rename it accordingly.
 
-Using pm_runtime_resume_and_get is more appropriate
-for simplifing code
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ drivers/mtd/spi-nor/core.c    | 34 ---------------------------------
+ drivers/mtd/spi-nor/core.h    |  1 -
+ drivers/mtd/spi-nor/winbond.c | 36 ++++++++++++++++++++++++++++++++++-
+ 3 files changed, 35 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 44b14c9dc9a7..6e7477aef8a7 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -148,11 +148,9 @@ static int gpmi_init(struct gpmi_nand_data *this)
- 	struct resources *r = &this->resources;
- 	int ret;
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index b4f141ad9c9c..848836535cdd 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -520,40 +520,6 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 	return ret;
+ }
  
--	ret = pm_runtime_get_sync(this->dev);
--	if (ret < 0) {
--		pm_runtime_put_noidle(this->dev);
-+	ret = pm_runtime_resume_and_get(this->dev);
-+	if (ret < 0)
- 		return ret;
+-/**
+- * spi_nor_write_ear() - Write Extended Address Register.
+- * @nor:	pointer to 'struct spi_nor'.
+- * @ear:	value to write to the Extended Address Register.
+- *
+- * Return: 0 on success, -errno otherwise.
+- */
+-int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+-{
+-	int ret;
+-
+-	nor->bouncebuf[0] = ear;
+-
+-	if (nor->spimem) {
+-		struct spi_mem_op op =
+-			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
+-				   SPI_MEM_OP_NO_ADDR,
+-				   SPI_MEM_OP_NO_DUMMY,
+-				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
+-
+-		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+-
+-		ret = spi_mem_exec_op(nor->spimem, &op);
+-	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
+-						       nor->bouncebuf, 1);
 -	}
+-
+-	if (ret)
+-		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
+-
+-	return ret;
+-}
+-
+ /**
+  * spi_nor_sr_ready() - Query the Status Register to see if the flash is ready
+  * for new commands.
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index b7fd760e3b47..14bf28473cf3 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -526,7 +526,6 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+ int spi_nor_write_enable(struct spi_nor *nor);
+ int spi_nor_write_disable(struct spi_nor *nor);
+ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+-int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
+ int spi_nor_wait_till_ready(struct spi_nor *nor);
+ int spi_nor_global_block_unlock(struct spi_nor *nor);
+ int spi_nor_lock_and_prep(struct spi_nor *nor);
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 1e8fb571680b..0ca96efee5c9 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -130,6 +130,40 @@ static const struct flash_info winbond_nor_parts[] = {
+ 			      SPI_NOR_QUAD_READ) },
+ };
  
- 	ret = gpmi_reset_block(r->gpmi_regs, false);
++/**
++ * winbond_nor_write_ear() - Write Extended Address Register.
++ * @nor:	pointer to 'struct spi_nor'.
++ * @ear:	value to write to the Extended Address Register.
++ *
++ * Return: 0 on success, -errno otherwise.
++ */
++static int winbond_nor_write_ear(struct spi_nor *nor, u8 ear)
++{
++	int ret;
++
++	nor->bouncebuf[0] = ear;
++
++	if (nor->spimem) {
++		struct spi_mem_op op =
++			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
++				   SPI_MEM_OP_NO_ADDR,
++				   SPI_MEM_OP_NO_DUMMY,
++				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
++
++		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
++
++		ret = spi_mem_exec_op(nor->spimem, &op);
++	} else {
++		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
++						       nor->bouncebuf, 1);
++	}
++
++	if (ret)
++		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
++
++	return ret;
++}
++
+ /**
+  * winbond_nor_set_4byte_addr_mode() - Set 4-byte address mode for Winbond
+  * flashes.
+@@ -156,7 +190,7 @@ static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
  	if (ret)
-@@ -544,11 +542,9 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+ 		return ret;
+ 
+-	ret = spi_nor_write_ear(nor, 0);
++	ret = winbond_nor_write_ear(nor, 0);
  	if (ret)
  		return ret;
  
--	ret = pm_runtime_get_sync(this->dev);
--	if (ret < 0) {
--		pm_runtime_put_autosuspend(this->dev);
-+	ret = pm_runtime_resume_and_get(this->dev);
-+	if (ret < 0)
- 		return ret;
--	}
- 
- 	/*
- 	* Due to erratum #2847 of the MX23, the BCH cannot be soft reset on this
-@@ -2286,11 +2282,9 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
- 	for (i = 0; i < GPMI_MAX_TRANSFERS; i++)
- 		this->transfers[i].direction = DMA_NONE;
- 
--	ret = pm_runtime_get_sync(this->dev);
--	if (ret < 0) {
--		pm_runtime_put_noidle(this->dev);
-+	ret = pm_runtime_resume_and_get(this->dev);
-+	if (ret < 0)
- 		return ret;
--	}
- 
- 	/*
- 	 * This driver currently supports only one NAND chip. Plus, dies share
 -- 
-2.25.1
-
+2.30.2
 
 
 ______________________________________________________
