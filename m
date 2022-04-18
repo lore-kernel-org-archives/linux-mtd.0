@@ -4,78 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5407FC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 05:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F079C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 06:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=t7HlfMAX9egc/ifLp3RkyX9zhFQvFTseC8ffOOv1Xp4=; b=EJ5SgbDo10jS/g
-	kzX782qY3UpFpati717orlIuVPk5LyRKvPZFUzBOPNA8/1iduNdtiZUoKH13W5fW2fB4AGCfUiNX6
-	NJ4rHfsxQBVBmPDhULMeUMMoQS+x+UeXZuQ73jvMCCDeSV8A958hlwxhksO0C2t5hHShq6ViSPYMM
-	bFSTOSjoUoJaWvdCOEaORDTKHI8MwsXQbj5y5ZfGvjNLgt4nEDMijOqynbc3A0rbl1GrK9bCmVYVg
-	13dXH9ZsTL39Tkfz8Aw9ZlTm8bHJjTT44644pmy4FXYf8TEa8OUzwvgk4ly6bTXxDgRYGEg4OQBy5
-	CXxPntAK3z2Q3FobxIjA==;
+	List-Owner; bh=ZcY3rYPmfZ3M0hucl7WiLWXRwdC8qA93JpdSO90Rh9I=; b=FJg+Jo8TeBatUl
+	NCdA622ax5djBDuWsBnw3Wy9aKfIQ51kekBAj/RFr3LsSsUcDVvZ+NvLTgGBbyJBRUlM+SAMJrcGz
+	0OVh8hsbGt0LII4CQIMO2zBAzL03/YFPZlwqjG4fV/+MnaNFFdyz69sGH1z2pGA+vsHpU7bJ/3F8/
+	8T06Zc6fBhHaPQIqCqKnW07xo4f44eoTpAPT2qgjbgSX8Qfc9HjroNT5p8qPL0CTMo3rN26jwhD9R
+	BSplH76eKGmIg66bPgxm05mBiIx2pgYV8Bskdxjd3CX9N5MMPGVZiDpNc21swntwCFr4hJnewQFj/
+	/59PgucK/tDis/rKJOsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngK8z-00FhwL-LC; Mon, 18 Apr 2022 05:41:49 +0000
-Received: from mail-pg1-x529.google.com ([2607:f8b0:4864:20::529])
+	id 1ngKid-00Fl8f-Ho; Mon, 18 Apr 2022 06:18:39 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngK8v-00Fhv6-EU
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 05:41:46 +0000
-Received: by mail-pg1-x529.google.com with SMTP id t184so4008652pgd.4
- for <linux-mtd@lists.infradead.org>; Sun, 17 Apr 2022 22:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=emaA8ssr+l9McjXIGmLyvxFAdViFZdvTmg2A9UtSR8c=;
- b=Od9b1QEVtEdr0xs7D9iaWIlh2pcYqkNL4IhEHWhfFykPq4Y0Aa58SqkOfMAZGhK1TD
- hXZUEPbpl9Zalhet1HbYAzDHjB7MUqTMAXwr0q4ocRazLJwdjRcyQa/mOi2xcljnt649
- +b0cfuF7zpmc8i4c9dca8ZrIkOqISJKrEguYH3k53dwHNWgp3cSy9DxAT/lOOBW6tZbd
- TCTNiNuLjRgOmo7bsOxRL/G65DxpOX51fzXMjLRCRKJFEV0lS5iEef4w0G8hJQyFHpoc
- qdt8SGOcP4wTnIGvs13tnXU2vKpMZ/Po7Tti2nrM1urJinQBpC5A9H+i4qn1Zn6svMNe
- Wdjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=emaA8ssr+l9McjXIGmLyvxFAdViFZdvTmg2A9UtSR8c=;
- b=z1dbtIjrzfr8lu1rTl3AVaIrygdeg7l5kZy9Dg5vCihacnDN4FVlECv//j+7FHJKce
- 0G9PBLip9LGCajDrgbI3c+jTJrND++6I05cy9WXArD7ath7Se1qx22MhQtS1a/xjyH9V
- 0gfWcHPs+3fBiguZtnN5Xyfn5jSo4OWEoD9dapcIMAnM2Kabo0gbgBF5tbq3XewQG96s
- +hqLSivbv8rofqpsZxGjtS5UcvCkbfpsI2qmBX9bVD/JfNOGIgjFaUL9yEYRiVWaRKbe
- eZQzgPZC8APO4qP6EvDZ/XOkSAS3zIPw2tnxl6gT23Msde0yZy93iGlfS7zgKJS3TjRp
- 7Otw==
-X-Gm-Message-State: AOAM533kqz4F4MTAJpp1S92YVU7VccT2XqygPmj+1MPB6acVAMTZCMCV
- O+era9WpF3tEudRRUImYUmDV1b4sfBg=
-X-Google-Smtp-Source: ABdhPJw65Waa9hk39Sq/DLVl3KPlTUEAdbuIywwGAcr/sQQgSikpd5FeriU2fjC3cXMvkyUx8g94AQ==
-X-Received: by 2002:a05:6a00:1a55:b0:50a:7c6d:6c8c with SMTP id
- h21-20020a056a001a5500b0050a7c6d6c8cmr1716683pfv.64.1650260504453; 
- Sun, 17 Apr 2022 22:41:44 -0700 (PDT)
-Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
- [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- f12-20020a056a001acc00b004fb37ecc6b2sm10810873pfv.29.2022.04.17.22.41.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 17 Apr 2022 22:41:44 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
- Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v11 3/3] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and
- fixups
-Date: Mon, 18 Apr 2022 14:41:16 +0900
-Message-Id: <ffd36e40c47dd74ac3a0cadf520f8fdd35add856.1650259501.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1650259501.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1650259501.git.Takahiro.Kuwano@infineon.com>
+ id 1ngKia-00Fl86-PO
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 06:18:38 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 9F4C4CE0EE6;
+ Mon, 18 Apr 2022 06:18:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32FCFC385A1;
+ Mon, 18 Apr 2022 06:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650262712;
+ bh=9oskifXqIiYjZvZC5tbGoi3TIlLus0DwcumHm6gcSfg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=mzVDsw3TrQBkM0ByTgc5Kl02nqK+9z398XeRQjJTr0q+o74gIPN+RpcEwF6jKcsCo
+ V2yPf96oub1Rho5UPg7G4QLHAPtevsKTJaE+5lxkYWnANdNfbKPq0yc7RtBRZ0EInN
+ kKyOFtPaC7k1txPLmeWzGZvRonN3ENVvfXSqRrq+3FdttfY6vkgtTymwCnYQce2Ftv
+ S5aMJFfYk+05xeLaBQSwBFcPo3Isad9gzRos6qdGPD+7Y+pIHFQmgwKVxm29eSnCVd
+ sJImHyPzt3j84VrIGTxUmTX/TxdFmVTH6xrFLChDvlBlBBbjHCISQ13iG2jiaa3uej
+ 26oxJNEIHNKLA==
+Date: Mon, 18 Apr 2022 11:48:24 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: konrad.dybcio@somainline.org
+Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_srichara@quicinc.com,
+ stable@vger.kernel.org, quic_mdalam@quicinc.com
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: fix memory corruption that causes
+ panic
+Message-ID: <20220418061824.GG7431@thinkpad>
+References: <1650259141-20923-1-git-send-email-quic_mdalam@quicinc.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1650259141-20923-1-git-send-email-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220417_224145_553510_D891145C 
-X-CRM114-Status: GOOD (  17.45  )
+X-CRM114-CacheID: sfid-20220417_231837_208880_19FBF77D 
+X-CRM114-Status: GOOD (  29.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,135 +75,117 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+On Mon, Apr 18, 2022 at 10:49:01AM +0530, Md Sadre Alam wrote:
+> This patch fixes a memory corruption that occurred in the
+> nand_scan() path for Hynix nand device.
+> 
+> On boot, for Hynix nand device will panic at a weird place:
+> | Unable to handle kernel NULL pointer dereference at virtual
+>   address 00000070
+> | [00000070] *pgd=00000000
+> | Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+> | Modules linked in:
+> | CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.17.0-01473-g13ae1769cfb0
+>   #38
+> | Hardware name: Generic DT based system
+> | PC is at nandc_set_reg+0x8/0x1c
+> | LR is at qcom_nandc_command+0x20c/0x5d0
+> | pc : [<c088b74c>]    lr : [<c088d9c8>]    psr: 00000113
+> | sp : c14adc50  ip : c14ee208  fp : c0cc970c
+> | r10: 000000a3  r9 : 00000000  r8 : 00000040
+> | r7 : c16f6a00  r6 : 00000090  r5 : 00000004  r4 :c14ee040
+> | r3 : 00000000  r2 : 0000000b  r1 : 00000000  r0 :c14ee040
+> | Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM Segment none
+> | Control: 10c5387d  Table: 8020406a  DAC: 00000051
+> | Register r0 information: slab kmalloc-2k start c14ee000 pointer offset
+>   64 size 2048
+> | Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+> | nandc_set_reg from qcom_nandc_command+0x20c/0x5d0
+> | qcom_nandc_command from nand_readid_op+0x198/0x1e8
+> | nand_readid_op from hynix_nand_has_valid_jedecid+0x30/0x78
+> | hynix_nand_has_valid_jedecid from hynix_nand_init+0xb8/0x454
+> | hynix_nand_init from nand_scan_with_ids+0xa30/0x14a8
+> | nand_scan_with_ids from qcom_nandc_probe+0x648/0x7b0
+> | qcom_nandc_probe from platform_probe+0x58/0xac
+> 
+> The problem is that the nand_scan()'s qcom_nand_attach_chip callback
+> is updating the nandc->max_cwperpage from 1 to 4.This causes the
+> sg_init_table of clear_bam_transaction() in the driver's
+> qcom_nandc_command() to memset much more than what was initially
+> allocated by alloc_bam_transaction().
+> 
+> This patch will update nandc->max_cwperpage 1 to 4 after nand_scan()
+> returns, and remove updating nandc->max_cwperpage from
+> qcom_nand_attach_chip call back.
+> 
 
-The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
+Konrad, can you please verify if this patch fixes the crash on your device?
+Similar crash was seen on SDX65 and this patch fixes the issue.
 
-For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
-uniform sector sizes are supported. This is due to missing or incorrect
-entries in SMPT. Fixup for other sector sizes configurations will be
-followed up as needed.
+Thanks,
+Mani
 
-Tested on Xilinx Zynq-7000 FPGA board.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
----
-Changes in v11:
-  - Cleanup fixups based on other patches in this series
-  
-Changes in v10:
-  - Cleanup fixups and ID table based on other patches in this series
-
-Changes in v9:
-  - Use late_init() hook to fix mode clocks and writesize
-  - Use PARSE_SFDP instead of NO_SFDP_FLAGS
-  - Use MFR_FLAGS for USE_CLSR
-  - Add comment block to explain about addr mode in post_bfpt_fixups()
-
-Changes in v8:
-  - Call write_disable in error case only
-  - Use spi_nor_read_reg() helper
-  - Use nor->bouncebuf instead of variable on stack
-  - Update ID table to use FLAGS macro
-  
-Changes in v7:
-  - Add missing device info table in v6
-  
-Changes in v6:
-  - Remove 2Gb multi die pacakge support
-
-Changes in v5:
-  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
-
-Changes in v4:
-  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
-  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
-
-Changes in v3:
-  - Remove S25HL256T and S25HS256T
-  - Add S25HL02GT and S25HS02GT 
-  - Add support for multi-die package parts support
-  - Remove erase_map fix for top/split sector layout
-  - Set ECC data unit size (16B) to writesize
-
- drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index 493240ebfd70..dd37b829efbc 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -208,6 +208,44 @@ static int cypress_nor_set_page_size(struct spi_nor *nor, u8 addr_width)
- 	return 0;
- }
- 
-+static int
-+s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
-+			 const struct sfdp_parameter_header *bfpt_header,
-+			 const struct sfdp_bfpt *bfpt)
-+{
-+	int ret;
-+
-+	/*
-+	 * From BFPT, the nor->addr_width is set to 3. In Read Any Reg op, the
-+	 * Flash takes 3-byte or 4-byte addr depending current addr mode. Since
-+	 * Read Any Reg op is called in this hook and SMPT parse, we would sync
-+	 * Flash's addr mode and nor->addr_width here.
-+	 */
-+	ret = spi_nor_set_4byte_addr_mode(nor, true);
-+	if (ret)
-+		return ret;
-+	nor->addr_width = 4;
-+
-+	/* Replace Quad Enable with volatile version */
-+	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
-+
-+	return cypress_nor_set_page_size(nor, nor->addr_width);
-+}
-+
-+void s25hx_t_late_init(struct spi_nor *nor)
-+{
-+	/* Fast Read 4B requires mode cycles */
-+	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
-+
-+	/* The writesize should be ECC data unit size */
-+	nor->params->writesize = 16;
-+}
-+
-+static struct spi_nor_fixups s25hx_t_fixups = {
-+	.post_bfpt = s25hx_t_post_bfpt_fixups,
-+	.late_init = s25hx_t_late_init,
-+};
-+
- /**
-  * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -384,6 +422,22 @@ static const struct flash_info spansion_nor_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
- 		FLAGS(SPI_NOR_NO_ERASE) },
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
--- 
-2.25.1
-
+> Cc: stable@vger.kernel.org
+> Fixes: 6a3cec64f18c ("mtd: rawnand: qcom: convert driver to nand_scan()")
+> Reported-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+> ---
+> [V3]
+>  * Updated commit message Fixes, Cc, Reported-by
+> 
+>  drivers/mtd/nand/raw/qcom_nandc.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index 1a77542..048b255 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -2651,10 +2651,23 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
+>  	ecc->engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+>  
+>  	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
+> +	/* Free the initially allocated BAM transaction for reading the ONFI params */
+> +	if (nandc->props->is_bam)
+> +		free_bam_transaction(nandc);
+>  
+>  	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
+>  				     cwperpage);
+>  
+> +	/* Now allocate the BAM transaction based on updated max_cwperpage */
+> +	if (nandc->props->is_bam) {
+> +		nandc->bam_txn = alloc_bam_transaction(nandc);
+> +		if (!nandc->bam_txn) {
+> +			dev_err(nandc->dev,
+> +				"failed to allocate bam transaction\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * DATA_UD_BYTES varies based on whether the read/write command protects
+>  	 * spare data with ECC too. We protect spare data by default, so we set
+> @@ -2955,17 +2968,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (nandc->props->is_bam) {
+> -		free_bam_transaction(nandc);
+> -		nandc->bam_txn = alloc_bam_transaction(nandc);
+> -		if (!nandc->bam_txn) {
+> -			dev_err(nandc->dev,
+> -				"failed to allocate bam transaction\n");
+> -			nand_cleanup(chip);
+> -			return -ENOMEM;
+> -		}
+> -	}
+> -
+>  	ret = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+>  	if (ret)
+>  		nand_cleanup(chip);
+> -- 
+> 2.7.4
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
