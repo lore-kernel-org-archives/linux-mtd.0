@@ -4,50 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A81EDC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 10:18:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49291C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 10:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=M6LjTmGULQkW2RCtVzCvKOy4xoAoAoYzpxwbI5H8WRU=; b=xZz2WXlMB678P4
-	sVjgc3BFefr5GFihHxG7ozMf/GJ7j26rHB1dXgmkjd/1Oe5cTjyvdYlG3pcaVFqiSc1WHyY0BDlvH
-	YWjzfd/n1/V1N1SMq5gvsITOk4itoSjrovW9d+1R6ZD3bfriVc7hOn8ERbfoR5sGCAuJy8SfHqEHk
-	K0oQL7aX8wYymixbV820fYgdagANW41Scwlmchxja24FPSscdPLCYKcsnHWRr13mf3zp71pGbNBP5
-	ty39I7pE2P7lOhF/zzUTVoJyTd2vgCCftBxwKy1zXfl1kyQ3280xtmRKK0OhSAWAOgQh9mcx7zaR6
-	mIwBU6jluuS1cBhSa0AQ==;
+	List-Owner; bh=96Mxov05IljxEz1LCJAODteOUtafOYwaImWC2x7hgSE=; b=CDWuQDWCZvn3gS
+	kqz41okazvuNH8DNiREWdduJEqpZG87y3SeMoomlLVHomafEmtG44dGqatrEIn2aOW0wxoKdB0xdl
+	PYjmwHfZahiSDh+Hc0+JyZP4mmy9caeleeA5PHuva0axzwNCzQFQSKtqUw6ZtmRL/4kzOTIaZBTNc
+	Wu5HrVl7QSGiYYDpNyIkrCXkhxM/llxaKxJgSV4R3vq51o9aoRUm08upb4D7Go7zORbEkkUS0+yQD
+	ztjbj4OqjlNhM7Ut4Rs9Elp8Ta0TSsG7LdMIfiauOsGQauUQFfm+CJsOZ+pYBMWyUbHw8KJrDiolv
+	CnBiNmTzDdPC5654W8PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngOSo-00GGxL-AL; Mon, 18 Apr 2022 10:18:34 +0000
-Received: from edge05.meizu.com ([157.122.146.251] helo=mail.meizu.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngOSk-00GGtY-0i
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 10:18:32 +0000
-Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail12.meizu.com
- (172.16.1.108) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 18 Apr
- 2022 18:18:11 +0800
-Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
- (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 18 Apr
- 2022 18:18:09 +0800
-From: Haowen Bai <baihaowen@meizu.com>
-To: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-CC: Haowen Bai <baihaowen@meizu.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH] jffs2: Use kzalloc instead of kmalloc/memset
-Date: Mon, 18 Apr 2022 18:18:07 +0800
-Message-ID: <1650277088-30838-1-git-send-email-baihaowen@meizu.com>
-X-Mailer: git-send-email 2.7.4
+	id 1ngP32-00GOU5-CA; Mon, 18 Apr 2022 10:56:00 +0000
+Received: from mail-qt1-x830.google.com ([2607:f8b0:4864:20::830])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ngP2z-00GORq-BI
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 10:55:58 +0000
+Received: by mail-qt1-x830.google.com with SMTP id t2so9753138qtw.9
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2022 03:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=04JNQ4bNSWDf9nai4sAo8uNf8YU45zdAqbc+gwJY/Os=;
+ b=L8QgQHgaLGvKMHF5Cn0gPx8KthUCv7F5DASuU0w83wfC4qP1QWP5tnjqNJ/PL0IW+s
+ qwxtvzrSE8oMw24QsmvtNkh1flxQNxzT44tOV8LtU/Ch0Do1KPbQ1IHzVVgy279vv/Gc
+ BmTWjXqltOCRGhFjwMe4q0P6Q2wuro597uPlXhjBAzvpQTRc1wdvZ312A5zHF3iA7i0a
+ W1qnDSqEheJnoc7P+U51c5+h4Wg/7TdDltSOO31YR5DHhbVJXMuYmbwzPg7R0P/kgQ+J
+ 77zdLt3Cpk5US/tnSdytC2TB4GteNhxdD90NA4lZYHwMJknFv5cNBUA9g5ysHTejwTZB
+ V5Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=04JNQ4bNSWDf9nai4sAo8uNf8YU45zdAqbc+gwJY/Os=;
+ b=lxOpyy7rlGDsfNf3OSd22Y231u9fihz3dKmwHUpMD6G1joSQG7CeaEl4M1idsDaZC2
+ Sz4LCNxOHeIOezb3Uy3oDjKBm8PGX+xLBi4xvboJ0CNq6+iyiA+SIo6Trcs4oUzLUOBf
+ BDC/L+LwNCmR80t982KKhLonxqupCkxHz7u6e/Xm8MNAf2IlROh5LFGl07C1McLkjayV
+ m60672RGJyKXwYztemJquZThpP6mqljzcGSP+6T3Brku9Ms5UZw+YT+mSgLP+50hEKk2
+ VDqNyuNs0+xt5LJ2zFb54FboGmbh5GIhnZUDVzPT1byR/z5Fm62OfH9x4oAdIbaw/84W
+ dxSQ==
+X-Gm-Message-State: AOAM530cvwI8Nm/QPjgAuFNGqVsb6LjktA8fXjoZZrRx+H+jtbmsacOs
+ OZGV2owzzfst44EjCLL9WKP/kWNznDs=
+X-Google-Smtp-Source: ABdhPJyIahOd8LheVs5dSWdbwkvdAFmtzyN6uLbgaP4/mPBCrW3brMLgzIUVShvTAGKnO2Vh6xzAsg==
+X-Received: by 2002:ac8:7fcc:0:b0:2f2:5bf:6c with SMTP id
+ b12-20020ac87fcc000000b002f205bf006cmr501496qtk.655.1650279355332; 
+ Mon, 18 Apr 2022 03:55:55 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id
+ i17-20020a05620a405100b0069c45deb548sm6909392qko.130.2022.04.18.03.55.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 Apr 2022 03:55:55 -0700 (PDT)
+From: cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To: han.xu@nxp.com
+Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Minghao Chi <chi.minghao@zte.com.cn>,
+ Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] mtd: nand: gpmi-nand: using pm_runtime_resume_and_get instead
+ of pm_runtime_get_sync
+Date: Mon, 18 Apr 2022 10:55:49 +0000
+Message-Id: <20220418105549.2558765-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Originating-IP: [172.16.137.70]
-X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
- IT-EXMB-1-125.meizu.com (172.16.1.125)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_031830_446479_2CD7C110 
-X-CRM114-Status: UNSURE (   8.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220418_035557_405091_230E55A0 
+X-CRM114-Status: GOOD (  11.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,38 +90,66 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use kzalloc rather than duplicating its implementation, which
-makes code simple and easy to understand.
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+Using pm_runtime_resume_and_get is more appropriate
+for simplifing code
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
 ---
- fs/jffs2/erase.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index 7e9abdb89712..6cde15aac835 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -43,7 +43,7 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
- 	jffs2_dbg(1, "%s(): erase block %#08x (range %#08x-%#08x)\n",
- 		  __func__,
- 		  jeb->offset, jeb->offset, jeb->offset + c->sector_size);
--	instr = kmalloc(sizeof(struct erase_info), GFP_KERNEL);
-+	instr = kzalloc(sizeof(struct erase_info), GFP_KERNEL);
- 	if (!instr) {
- 		pr_warn("kmalloc for struct erase_info in jffs2_erase_block failed. Refiling block for later\n");
- 		mutex_lock(&c->erase_free_sem);
-@@ -57,8 +57,6 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
- 		return;
- 	}
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 44b14c9dc9a7..6e7477aef8a7 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -148,11 +148,9 @@ static int gpmi_init(struct gpmi_nand_data *this)
+ 	struct resources *r = &this->resources;
+ 	int ret;
  
--	memset(instr, 0, sizeof(*instr));
--
- 	instr->addr = jeb->offset;
- 	instr->len = c->sector_size;
+-	ret = pm_runtime_get_sync(this->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(this->dev);
++	ret = pm_runtime_resume_and_get(this->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
  
+ 	ret = gpmi_reset_block(r->gpmi_regs, false);
+ 	if (ret)
+@@ -544,11 +542,9 @@ static int bch_set_geometry(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = pm_runtime_get_sync(this->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_autosuspend(this->dev);
++	ret = pm_runtime_resume_and_get(this->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	/*
+ 	* Due to erratum #2847 of the MX23, the BCH cannot be soft reset on this
+@@ -2286,11 +2282,9 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+ 	for (i = 0; i < GPMI_MAX_TRANSFERS; i++)
+ 		this->transfers[i].direction = DMA_NONE;
+ 
+-	ret = pm_runtime_get_sync(this->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(this->dev);
++	ret = pm_runtime_resume_and_get(this->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	/*
+ 	 * This driver currently supports only one NAND chip. Plus, dies share
 -- 
-2.7.4
+2.25.1
+
 
 
 ______________________________________________________
