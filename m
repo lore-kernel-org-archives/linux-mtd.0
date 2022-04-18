@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BA6EC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 11:24:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39F30C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 18 Apr 2022 11:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xvAbreZV6vdtLcgRkw+AHw28mMl6zPJ8rk9G9/HCxJ8=; b=yOGo3VItirfnLh
-	FpAqXWVU6XQMgGh45VexNWmnKd7gayXqUaRzPji7zXsj1ygaUprdgFj1ALX70qmHYOuOsbFSFLGTj
-	y69QQQyAUaicA7Fypfu1qpdu9akdMUwc/GG1ndHVtaGsQ7M2Y4wVgCbMWDKsTUGdk621izoG6Xiio
-	wwt5yWn0em9SQrHvKiSfMj15U0Gx6RPqsFSe/8C7n/U22GrAdOxT5yDRf85DOMZNgi6U+/RfoyvHo
-	cFTx/UwnoUlK2l6gYcuzs7fDcB1e8zWJD48Lh46VTGBeLq+cc5o0OGRRxCzzTTKVaflWnCgiS3qc5
-	Q5CVB9uF//+njN8ZUCGA==;
+	List-Owner; bh=qqrHgOvZ5VGxEOKUm08MNY5O9ktnZhTcRAXvq3iCXt8=; b=MNLgYn4hrAZZn+
+	6O7tQJRvG6lKhRdecg7aHcm1SLEXz+2QfJxP3O5heHIovLHgL5xeituWwkt/P9vx/E561EkGfizHb
+	MjRnzuCRHMAm1k1rYzSHihKuiwEq2t+hAwIxe9B75sDoEi2cNtEy/O3elkoFCGgfJG1jy07La8QGB
+	yPIfTiXp/BzAe839uPyRiEIhbdDIKsBozT6JwsPIh8vVEbTkFzwnFj4K19K7s4NEFUgO+Grd+yw9J
+	bhKqAKI2lQmNpQpVb9l8rFXraq5HB08cHRmiYOwAucWP17vSTa65O0oWTiYNJgIZ5Qn3PxRIrn0Y8
+	K7YbHoxd2xCVO+4rfypA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngPUQ-00GSKc-Ql; Mon, 18 Apr 2022 11:24:18 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1ngPX5-00GSw9-Vi; Mon, 18 Apr 2022 11:27:04 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngPUO-00GSI5-0h
- for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 11:24:17 +0000
+ id 1ngPX3-00GSuY-3y
+ for linux-mtd@lists.infradead.org; Mon, 18 Apr 2022 11:27:02 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 040AA22175;
- Mon, 18 Apr 2022 13:24:09 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 8991222175;
+ Mon, 18 Apr 2022 13:26:56 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1650281050;
+ s=mail2016061301; t=1650281216;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding;
- bh=J2oZS6njRbW/e53awOChfnSOtco2+8cX206eZmrgK1I=;
- b=JRfy1r/rkKXUDXoTE57Lam4U23codb5EUkQl3fM/m0loGkFFOn+yOdIWyuJhtPg6BiB+HL
- 5SFP6nY+32GdmPExEYXR+pyQ4fCNE3vTdb1tbHG8/0U03p3UeOvcf6W9X9jhXinGDdpt7O
- pgqLYxYT8c6YGPzzUYyYNuBOjDSP9kc=
+ bh=tE+hOTJnGcUnUgDRWuGXseGh2QeCZJYtJ5niXhv0ouQ=;
+ b=GF9v5mT7HOMfLibWpcdhP6WrqTplK8OVbJRvsIJ/nnpTuOUGq8x69BF/EaEDgl4O17rx+b
+ ImTG/lqzpyCLDe/9ZVq7Jb6FfGJZ8Zu1H0P+35/70znI4gjGlP1s9ELuxGymMJe9D3xfTR
+ FcjJOSII2QYQOHsVspSE74HDz/WIZgU=
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>
@@ -47,14 +47,14 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Michael Walle <michael@walle.cc>
-Subject: [PATCH] mtd: spi-nor: move spi_nor_write_ear() to winbond module
-Date: Mon, 18 Apr 2022 13:24:04 +0200
-Message-Id: <20220418112404.2790469-1-michael@walle.cc>
+Subject: [PATCH] mtd: spi-nor: move SECT_4K_PMC special handling
+Date: Mon, 18 Apr 2022 13:26:50 +0200
+Message-Id: <20220418112650.2791459-1-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_042416_234184_CA456ABD 
-X-CRM114-Status: GOOD (  14.54  )
+X-CRM114-CacheID: sfid-20220418_042701_356706_A8D74541 
+X-CRM114-Status: GOOD (  15.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,129 +71,101 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The "Extended Address Register" is winbond specific. If the flash is
-larger than 16MiB and is used in 3 byte address mode, it is used to set
-the remaining address bits. Move the write_ear() function the winbond
-module and rename it accordingly.
+The SECT_4K_PMC flag will set a device specific opcode for the 4k sector
+erase. Instead of handling it in the core, we can move it to a
+late_init(). In that late init, loop over all erase types, look for the
+4k size and replace the opcode.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/core.c    | 34 ---------------------------------
- drivers/mtd/spi-nor/core.h    |  1 -
- drivers/mtd/spi-nor/winbond.c | 36 ++++++++++++++++++++++++++++++++++-
- 3 files changed, 35 insertions(+), 36 deletions(-)
+Please have a closer look here. This is only compile time tested. Also
+I didn't see much reason to reorder the flags.
+
+ drivers/mtd/spi-nor/core.c |  7 +------
+ drivers/mtd/spi-nor/core.h |  2 --
+ drivers/mtd/spi-nor/issi.c | 23 +++++++++++++++++++++--
+ 3 files changed, 22 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index b4f141ad9c9c..848836535cdd 100644
+index 848836535cdd..fd41ab9a8746 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -520,40 +520,6 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	return ret;
- }
- 
--/**
-- * spi_nor_write_ear() - Write Extended Address Register.
-- * @nor:	pointer to 'struct spi_nor'.
-- * @ear:	value to write to the Extended Address Register.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
--{
--	int ret;
--
--	nor->bouncebuf[0] = ear;
--
--	if (nor->spimem) {
--		struct spi_mem_op op =
--			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
--				   SPI_MEM_OP_NO_ADDR,
--				   SPI_MEM_OP_NO_DUMMY,
--				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
--
--		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--
--		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
--						       nor->bouncebuf, 1);
--	}
--
--	if (ret)
--		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
--
--	return ret;
--}
--
- /**
-  * spi_nor_sr_ready() - Query the Status Register to see if the flash is ready
-  * for new commands.
+@@ -2364,12 +2364,7 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+ 	 */
+ 	erase_mask = 0;
+ 	i = 0;
+-	if (no_sfdp_flags & SECT_4K_PMC) {
+-		erase_mask |= BIT(i);
+-		spi_nor_set_erase_type(&map->erase_type[i], 4096u,
+-				       SPINOR_OP_BE_4K_PMC);
+-		i++;
+-	} else if (no_sfdp_flags & SECT_4K) {
++	if (no_sfdp_flags & SECT_4K) {
+ 		erase_mask |= BIT(i);
+ 		spi_nor_set_erase_type(&map->erase_type[i], 4096u,
+ 				       SPINOR_OP_BE_4K);
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index b7fd760e3b47..14bf28473cf3 100644
+index 14bf28473cf3..e355457a8555 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -526,7 +526,6 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
- int spi_nor_write_enable(struct spi_nor *nor);
- int spi_nor_write_disable(struct spi_nor *nor);
- int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
--int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
- int spi_nor_wait_till_ready(struct spi_nor *nor);
- int spi_nor_global_block_unlock(struct spi_nor *nor);
- int spi_nor_lock_and_prep(struct spi_nor *nor);
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 1e8fb571680b..0ca96efee5c9 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -130,6 +130,40 @@ static const struct flash_info winbond_nor_parts[] = {
- 			      SPI_NOR_QUAD_READ) },
+@@ -352,7 +352,6 @@ struct spi_nor_fixups {
+  *                  flags are used together with the SPI_NOR_SKIP_SFDP flag.
+  *   SPI_NOR_SKIP_SFDP:       skip parsing of SFDP tables.
+  *   SECT_4K:                 SPINOR_OP_BE_4K works uniformly.
+- *   SECT_4K_PMC:             SPINOR_OP_BE_4K_PMC works uniformly.
+  *   SPI_NOR_DUAL_READ:       flash supports Dual Read.
+  *   SPI_NOR_QUAD_READ:       flash supports Quad Read.
+  *   SPI_NOR_OCTAL_READ:      flash supports Octal Read.
+@@ -400,7 +399,6 @@ struct flash_info {
+ 	u8 no_sfdp_flags;
+ #define SPI_NOR_SKIP_SFDP		BIT(0)
+ #define SECT_4K				BIT(1)
+-#define SECT_4K_PMC			BIT(2)
+ #define SPI_NOR_DUAL_READ		BIT(3)
+ #define SPI_NOR_QUAD_READ		BIT(4)
+ #define SPI_NOR_OCTAL_READ		BIT(5)
+diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
+index c012bc2486e1..3c7d51d2b050 100644
+--- a/drivers/mtd/spi-nor/issi.c
++++ b/drivers/mtd/spi-nor/issi.c
+@@ -29,6 +29,21 @@ static const struct spi_nor_fixups is25lp256_fixups = {
+ 	.post_bfpt = is25lp256_post_bfpt_fixups,
  };
  
-+/**
-+ * winbond_nor_write_ear() - Write Extended Address Register.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @ear:	value to write to the Extended Address Register.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int winbond_nor_write_ear(struct spi_nor *nor, u8 ear)
++static void pm25lv_nor_late_init(struct spi_nor *nor)
 +{
-+	int ret;
++	struct spi_nor_erase_map *map = &nor->params->erase_map;
++	int i;
 +
-+	nor->bouncebuf[0] = ear;
-+
-+	if (nor->spimem) {
-+		struct spi_mem_op op =
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
-+				   SPI_MEM_OP_NO_ADDR,
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
-+
-+		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-+
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+	} else {
-+		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
-+						       nor->bouncebuf, 1);
-+	}
-+
-+	if (ret)
-+		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
-+
-+	return ret;
++	/* The PM25LV series has a different 4k sector erase opcode */
++	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
++		if (map->erase_type[i].size == 4096)
++			map->erase_type[i].opcode = SPINOR_OP_BE_4K_PMC;
 +}
 +
- /**
-  * winbond_nor_set_4byte_addr_mode() - Set 4-byte address mode for Winbond
-  * flashes.
-@@ -156,7 +190,7 @@ static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	if (ret)
- 		return ret;
++static const struct spi_nor_fixups pm25lv_nor_fixups = {
++	.late_init = pm25lv_nor_late_init,
++};
++
+ static const struct flash_info issi_nor_parts[] = {
+ 	/* ISSI */
+ 	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2)
+@@ -62,9 +77,13 @@ static const struct flash_info issi_nor_parts[] = {
  
--	ret = spi_nor_write_ear(nor, 0);
-+	ret = winbond_nor_write_ear(nor, 0);
- 	if (ret)
- 		return ret;
- 
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2)
+-		NO_SFDP_FLAGS(SECT_4K_PMC) },
++		NO_SFDP_FLAGS(SECT_4K)
++		.fixups = &pm25lv_nor_fixups
++	},
+ 	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4)
+-		NO_SFDP_FLAGS(SECT_4K_PMC) },
++		NO_SFDP_FLAGS(SECT_4K)
++		.fixups = &pm25lv_nor_fixups
++	},
+ 	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ };
 -- 
 2.30.2
 
