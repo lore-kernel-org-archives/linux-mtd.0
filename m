@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45D2DC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:40:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 802CDC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9HvREmw98PlvgUIQdanb5hKd7KymhGed47lWGEUPlMw=; b=MIRkYGZWH+LKL+
-	F1dPzvw7BRb6uRYRNWSPSTkwyym2SP69ueKEKxi3TnVRn9JviWi1thKj59NfJeaiKpFsAlOhtrQOU
-	yJLgXnOqLgfCoxq5xn+L6kZ4gVdYHbvR00hK8EBrm6j/creAy/3zGUxu6PxR97GbsbETO5d33h3lF
-	hohR1X3yxaFAQhAh/0m9Y1qFBd0taDQTSgKzO9/Tn0Z+6kKD/ux25lu5fCTLIBRG21aZpED32m3fT
-	JmcPBzCn4IsJiTV8yED8sGK3m4vOO+UJB+zOgFmiExdUd/6SafbhbxwkBCmXKPSSugNmcQE9lLEP4
-	rhvFpa8M56HTdtoEWtLA==;
+	List-Owner; bh=XgaCfU3xMHGo+OD8fwERF6KeSy9eFNV9OLIFkzXlkuk=; b=CAMkJi18yWtATK
+	cdO8NWZfjhshQto5DGZpJWHgDT/BF7ZmWWztDz8dtntDkpFfmRgWPsUHlsm0Rv/t+cqGY7d42SGeX
+	d/AYpEbecI0qVr0U4uovi4+jeRrlqy8yGfeAXw0Ba6Qq/0gZ30DiVlcGqBQIIn6RqyKq9HoW8ap4D
+	5P3ld99enzWsVDPgzIGEI6LHvJem05aLy7vbZh5nlX9rtlyI5po0jG4WY5aJugBeGrNhlpnPZC0ay
+	G+p3E5PVFXDrlwUkB8rJoz0q/e8p3MUEsEVwbXrLYT4F7NtJn4Piv+fOxMV7ErW4VlJXoi370zFxX
+	KOj5WaOhVR6FOxRT/v1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngqu5-004wXN-Nw; Tue, 19 Apr 2022 16:40:37 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1ngqug-004wtA-Dv; Tue, 19 Apr 2022 16:41:14 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngqsc-004vhH-RX; Tue, 19 Apr 2022 16:39:08 +0000
+ id 1ngqsk-004vmF-Ph; Tue, 19 Apr 2022 16:39:17 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 714FA617D1;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3D8E96183C;
+ Tue, 19 Apr 2022 16:39:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34BBC385A5;
  Tue, 19 Apr 2022 16:39:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F23EEC385AB;
- Tue, 19 Apr 2022 16:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650386346;
- bh=/w2/TuJUuh8aAeAb2m2RYQ0ha5XDa7wX5MqtonXBziw=;
+ s=k20201202; t=1650386354;
+ bh=iNfaqPXbxvJ8CzkrujTl+KTX1dXRxdfsCaFm+BFdUkw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=JSa8soCOWoHbvEvEMCJM5/utpcask8B1DWr5x2vp91tbyaynmX0rTSsEKOTeoQHXR
- xSRS3Xno7rnCUQ3pMwm4mb0C5Nn4Un3kthir4lze9lCf7arGoOqvJyX6s9isYF1BTg
- 81xrpPmbsNyOwda4gry9Su9QAWOc6aLDIvSCivZ6D7ALqa5hnnFk8qqp6WGo4H0jz/
- n3cmV2yg+Hsqp/2KBOQWv4OG8fsDhuMeF3RquJVsVmQ3r03jGQ5Jb/kE9Eg+MfTnPV
- 0fhh0N+QRSE/UK4kqmfvj+oYMYiI2cyul44m5sN6XHaZpuap2KcE/Ox9+lUvfY7liW
- OcEgijUbKxbQQ==
+ b=bfRkXwjMc9oek9+kpE3h7BCEd05AgRXzISzSv39xtx/qe6Q/2hxmd3obXTk9UB36X
+ +q4K5dVdjE3QggFgrTvjYnWJW1DdumolThYG/Etv/6l46iOKZpsTRoAEErpmmuzy/U
+ lUmHdvOnaZOz3V1CaFwc0LstSClQkNGYSguKhmK3DQNsD7u/0DwgzqR9wbmaqBeb3U
+ gj8yt11H4YBBVesxMPSkz9sQGyQQ2mEHodmsWtzBM5xh6K1SJLtjD+piWx4+Ajg4Jr
+ LtTB6YXt4UPB2SD8A7KAOdJAvbYsNgQ2Zzg1xKK1Z0QY63UFZvEjMGPJhE0gvn5f2x
+ 4UMXt0euV9HXA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: robert.jarzmik@free.fr,
 	linux-arm-kernel@lists.infradead.org
@@ -66,16 +66,16 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
  linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
  dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Subject: [PATCH 02/48] ARM: pxa: make mainstone.h private
-Date: Tue, 19 Apr 2022 18:37:24 +0200
-Message-Id: <20220419163810.2118169-3-arnd@kernel.org>
+Subject: [PATCH 03/48] ARM: pxa: make mach/regs-uart.h private
+Date: Tue, 19 Apr 2022 18:37:25 +0200
+Message-Id: <20220419163810.2118169-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_093907_028154_665607B5 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20220419_093915_038079_C987CA0F 
+X-CRM114-Status: GOOD (  15.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,44 +94,48 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-No driver includes this any more, so don't expose it globally.
+This is not used by any drivers, so make it private to the
+platform.
 
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/mainstone.c                    | 2 +-
- arch/arm/mach-pxa/{include/mach => }/mainstone.h | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
- rename arch/arm/mach-pxa/{include/mach => }/mainstone.h (99%)
+ arch/arm/mach-pxa/{include/mach => }/regs-uart.h | 0
+ arch/arm/mach-pxa/viper.c                        | 2 +-
+ arch/arm/mach-pxa/zeus.c                         | 2 +-
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+ rename arch/arm/mach-pxa/{include/mach => }/regs-uart.h (100%)
 
-diff --git a/arch/arm/mach-pxa/mainstone.c b/arch/arm/mach-pxa/mainstone.c
-index d237bd030238..997f6e502201 100644
---- a/arch/arm/mach-pxa/mainstone.c
-+++ b/arch/arm/mach-pxa/mainstone.c
-@@ -45,7 +45,7 @@
- #include <asm/mach/flash.h>
- 
- #include "pxa27x.h"
--#include <mach/mainstone.h>
-+#include "mainstone.h"
+diff --git a/arch/arm/mach-pxa/include/mach/regs-uart.h b/arch/arm/mach-pxa/regs-uart.h
+similarity index 100%
+rename from arch/arm/mach-pxa/include/mach/regs-uart.h
+rename to arch/arm/mach-pxa/regs-uart.h
+diff --git a/arch/arm/mach-pxa/viper.c b/arch/arm/mach-pxa/viper.c
+index 3aa34e9a15d3..4b81c0117971 100644
+--- a/arch/arm/mach-pxa/viper.c
++++ b/arch/arm/mach-pxa/viper.c
+@@ -48,7 +48,7 @@
+ #include "pxa25x.h"
  #include <mach/audio.h>
  #include <linux/platform_data/video-pxafb.h>
+-#include <mach/regs-uart.h>
++#include "regs-uart.h"
+ #include <linux/platform_data/pcmcia-pxa2xx_viper.h>
+ #include "viper.h"
+ 
+diff --git a/arch/arm/mach-pxa/zeus.c b/arch/arm/mach-pxa/zeus.c
+index 97700429633e..5d02f10b5b5a 100644
+--- a/arch/arm/mach-pxa/zeus.c
++++ b/arch/arm/mach-pxa/zeus.c
+@@ -39,7 +39,7 @@
+ 
+ #include "pxa27x.h"
+ #include "devices.h"
+-#include <mach/regs-uart.h>
++#include "regs-uart.h"
+ #include <linux/platform_data/usb-ohci-pxa27x.h>
  #include <linux/platform_data/mmc-pxamci.h>
-diff --git a/arch/arm/mach-pxa/include/mach/mainstone.h b/arch/arm/mach-pxa/mainstone.h
-similarity index 99%
-rename from arch/arm/mach-pxa/include/mach/mainstone.h
-rename to arch/arm/mach-pxa/mainstone.h
-index 1698f2ffd7c7..ba003742e003 100644
---- a/arch/arm/mach-pxa/include/mach/mainstone.h
-+++ b/arch/arm/mach-pxa/mainstone.h
-@@ -1,7 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /*
-- *  arch/arm/mach-pxa/include/mach/mainstone.h
-- *
-  *  Author:	Nicolas Pitre
-  *  Created:	Nov 14, 2002
-  *  Copyright:	MontaVista Software Inc.
+ #include "pxa27x-udc.h"
 -- 
 2.29.2
 
