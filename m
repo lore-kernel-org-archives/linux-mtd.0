@@ -4,65 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B44BFC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 15:41:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05DF4C3526F
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=kyKABVLFdujwv0Ao4bF0VjTXzpRZwfCIhGjMjlkCYDw=; b=v7k
-	AB9I0iT854Ca77WcshfY6nJAwzQLyTFYyc6fGsV/w4M2GpdleYUD/FSur0JHG+tEVF8JfcJH8KD48
-	Esb6t3625meWCCHRKmgusuNV0Zp7P9w9/n3ugo8IpISg+IS0w91jTjt5Vo/tSP31BOlh+hwAYpmV1
-	8HoW0tjKD+H/ps8Ki4K1hGHCujzvRH4MBAovGUEKUJYFETdpyUh7hvQnxHGw6bAqe2pRMJcXWpVp5
-	XFAdGIfFMN9vQWPyeEx1GpuqkNfPnye9ff6UgHh3/a/qK475Ev4poStnwnGbCU0StYAS4R27Sy1SI
-	LA8Mf8VAjK8+vCeVxdw6Eq/uPw9pbxg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZjZrYs4UtREph55XnuaMqjG3qsrUDsrv5NJUXoLT9Po=; b=dGcDdfSdDBVF5F
+	11LuQ+/RKlSbFSAuraWdMpzGLcY3vRSYiJFlPaUQLUkxpfv1fioBTZ5181C3I7Hy6IjZO4kT6LmVf
+	5NfS1T1bv75TmQJ0QQkafLiCLS0xgx8OIWz7Sp+1B2xr2fHCxy9JggHYVXQaXwEnVG/uOdaMGx0Ro
+	0c70pw3qRvhGQSaJ+iO3SLDOpsYQke7atgUiDc+u3g5V/xzE409ff01t1ycODiTHlRBpj9qYy95OK
+	sNq3sPj5DMKHYo6J2xgXhnfXXBOrasgXiS7xjV1VRf/HR8guxkCUBCUgAhh6srtW6NH/LbjnVQtvM
+	858GiRWl45tLxl5tnZkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngpyp-004kRd-4m; Tue, 19 Apr 2022 15:41:27 +0000
-Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
+	id 1ngqsg-004vjM-Lm; Tue, 19 Apr 2022 16:39:10 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngpnX-004f7U-Rl
- for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 15:29:49 +0000
-Received: by mail-yb1-xb36.google.com with SMTP id i20so31661799ybj.7
- for <linux-mtd@lists.infradead.org>; Tue, 19 Apr 2022 08:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:from:date:message-id:subject:to
- :content-transfer-encoding;
- bh=E02F5lsH8xGVU6QEdUH5c4yyZvWGqyn4bO/qquS1MlI=;
- b=kJhSoKWAXO3PWrfQCb9U84QN8xowwWe8+/JAd/IF7FBTlUBzZELAAD8FnlshA214HX
- Mr6PExAE8B6G8YSGAXQ9l9Df6LgpYly4Gy3dwY2nPfZDkO5iQI/I6CtxTt0lvAZqCVGy
- ju40LjaGAcx5mAfohrwbtdLeFrZ3uenRdiOeZBSwFAZLMC0JmtRIIOZaesgcmVbwzSfh
- 4rD/jWBleZnEMR7HLNiYNQTvawKp4Q/MvYHnI1/ERfYVZwDokCWKCD2ZeYcb3E95orm4
- ed+OU29ClMDCE0hYS2owR1MT/9oAFQyLeA7aMsg1tWgIFsgOYXV1wsP+fIJe7rCH8xFH
- QGbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to
- :content-transfer-encoding;
- bh=E02F5lsH8xGVU6QEdUH5c4yyZvWGqyn4bO/qquS1MlI=;
- b=eQ9Ywmwri0spMGxW0rtSuF6HYnmpu1Rt8T8fPVJriJ0zPFJ/hcNAkTFRaWCy0kpEty
- hZZ2e5zUK3Hq46FSxJUlJ7M7j1UnDOzqWkQnAaqpZW27Zo0blf94QwfEwhc/QWGBJnzq
- OxB7Dpe3TskKbu+FqVwYDzCB+jqOksA6GweksdHvVmqp/tuH1w3sqylhpHk7D9Udb7zv
- 4zrwTqg27w0NKh5xym0rtuxgVX8qZydCpE2l1qWhhfusy4rg1EHe+Pmva1AZAZ0bqj27
- BicWHY++nLjpSQ98y9czwlcAVexmmLEpw6tl1Jwa1sUrpAPtXSndzTQYemuJVx4QEVd+
- QOeA==
-X-Gm-Message-State: AOAM5321y8hWescDACg3SyCOra0nohR/oTNjDwghin36fAJ4UrV9ayID
- yyKSY4EUjK+aMMCV6XOspmF2JyQMRtpUva0QzymrpwkDqFo=
-X-Google-Smtp-Source: ABdhPJwOgNH2bT/x3xLg7ToLDpo4w/VXTDGl/iWcQhgrsiNQC9ZAfMJ1pvLLVb9pEpNBFx40LA5axXSujFMLzPKup0k=
-X-Received: by 2002:a25:2405:0:b0:645:3c70:5ba2 with SMTP id
- k5-20020a252405000000b006453c705ba2mr3470218ybk.547.1650382184175; Tue, 19
- Apr 2022 08:29:44 -0700 (PDT)
+ id 1ngqsP-004vbe-KD; Tue, 19 Apr 2022 16:38:56 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0BF76B81BEA;
+ Tue, 19 Apr 2022 16:38:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DADDC385A5;
+ Tue, 19 Apr 2022 16:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650386330;
+ bh=FZxabP3Lf+vmXJCuw613CFE9/4wnNO59YtnyVVUeDJI=;
+ h=From:To:Cc:Subject:Date:From;
+ b=HSVhn/t8iHi95w3pqb1y15mAY6meRjNGbPNpl2GlYxpCrFzPeZOR790DQQe/knRXA
+ yS+mNPjKsB65ZXGW8SGxFQ7fNR3AvfeVZXu9W6Q+CZbSF5MkVbwBmOaGKKMBERIdqk
+ DI86039X4mAzQ0KpITliKZKLHrJC9PeK1QrLuk+C5I/n+30zJDNjqYYlfQdkhAg11w
+ 6qGSTcy9j05Xrq2zDR1bwVkMvruNOitS1pjEKQG1QxFx3V9bHp2360qXyqNsajk+VT
+ ynjXZzd1Zi2MEvuyInWhUHqvxL5C1UgbJIS34bjSEeKRW0dtFHTwy6XxbXamP/T5bf
+ 0Z7TnJPfxPFJg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: robert.jarzmik@free.fr,
+	linux-arm-kernel@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>,
+ Paul Parsons <lost.distance@yahoo.com>, Tomas Cech <sleep_walker@suse.com>,
+ Sergey Lapin <slapin@ossfans.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-input@vger.kernel.org, patches@opensource.cirrus.com,
+ linux-leds@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
+Subject: [PATCH v2 00/48] ARM: PXA multiplatform support
+Date: Tue, 19 Apr 2022 18:37:22 +0200
+Message-Id: <20220419163810.2118169-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-From: Jakob Ruisinger <jakob.ruisinger@gmail.com>
-Date: Tue, 19 Apr 2022 17:29:33 +0200
-Message-ID: <CAOfoWE_bFg2BuVO+GSw6mCxNRt+ecVtRXGApOt1iaWyj-AesUw@mail.gmail.com>
-Subject: UBIFS Read only after corruption
-To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_082947_948342_A4F6C2DD 
-X-CRM114-Status: GOOD (  17.66  )
+X-CRM114-CacheID: sfid-20220419_093854_039986_34E3025C 
+X-CRM114-Status: GOOD (  23.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,132 +85,400 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCkknbSB1c2luZyBhIDIgR0IgTWljcm9uIE5hbmQgRmxhc2ggb24gbXkgQXJtIHY3IFNPQy4K
-T1MgaXMgVWJ1bnR1IDIwLjA0IG9uIGEgNS40IE1haW5saW5lIEtlcm5lbC4KCk15IHJvb3RmcyBp
-cyBib290ZWQgZnJvbSBtdGQyLgpEdXJpbmcgcnVudGltZSBJJ20gb25seSB3cml0aW5nIGp1c3Qg
-c29tZSBsb2cgZmlsZXMgdG8gbXkgZmxhc2gsIHNvCm5vdCBtdWNoIGRhdGEuCkZyb20gbXkgMiBH
-QiBzdG9yYWdlLCAxLDUgR0IgaXMgdXNlZC4KCgpNeSBwcm9ibGVtIGlzIHRoYXQgYWZ0ZXIgc29t
-ZSBob3Vycywgd2hpbGUgbXkgc3lzdGVtIGlzIHJ1bm5pbmcsIG15CnJvb3QgZmlsZXN5c3RlbSBp
-cyBtb3VudGVkIHJlYWQgb25seSBhbmQgaSBnZXQgc29tZSB1YmlmcyBlcnJvciwgc2VlCmJlbG93
-LgpBZnRlciBib290aW5nIHRoZSBzYW1lIGVycm9yIHBlcnNpc3RzLgoKCklmIEkgbWFrZSBhIGJh
-Y2t1cCB3aXRoIGEgY29ycnVwdGVkIHViaWZzIGFuZCBJIGZsYXNoIHRoYXQgdG8gYW5vdGhlcgpT
-T0MsIEkgZ2V0IHRoYXQgc2FtZSBlcnJvciBvbiB0aGF0IG5ldyBtb2R1bGUuClNvIEkgZ3Vlc3Mg
-aXQncyBub3QgYSBoYXJkd2FyZSBwcm9ibGVtLgoKCkF0IHRoZSBtb21lbnQgSSBjcmVhdGUgYSBi
-YWNrdXAgZnJvbSBhIHdvcmtpbmcgaW5zdGFsbGF0aW9uIHdpdGgKCmRkIGlmPS9kZXYvbXRkMiBv
-Zj0vaW1hZ2UudWJpIGJzPTRNCgphbmQgSSBmbGFzaCB0aGF0IGltYWdlIHRvIGEgbmV3IFNPQyB3
-aXRoCgp1Ymlmb3JtYXQgL2Rldi9tdGQyIC15IC1mIGltYWdlLnViae+7v++7vwoKd2hpbGUgbXkg
-c3lzdGVtIGlzIGJvb3RlZCBmcm9tIGEgVVNCIGJvb3Qgc3RpY2suCgoKSSBkb24ndCBrbm93IGlm
-IHRoYXQgImJhY2t1cCBzdHJhdGVneSIgaW1wbGVtZW50cyBzb21lIGVycm9ycy4KCgoKCkhhdmUg
-eW91IGdvdCBhbnkgaWRlYSwgaG93IEkgY2FuIHJlcGFpciBteSBjb3JydXB0ZWQgdWJpZnM/CgoK
-VGhhbmtzCgpIZXJlIGlzIGEgYm9vdCBsb2cgZnJvbSBKVEFHCgoKCkF0dGVtcHRpbmcgZmxhc2gg
-Ym9vdC4uLgp1YmkwOiBkZWZhdWx0IGZhc3RtYXAgcG9vbCBzaXplOiAyNTYKdWJpMDogZGVmYXVs
-dCBmYXN0bWFwIFdMIHBvb2wgc2l6ZTogMTI4CnViaTA6IGF0dGFjaGluZyBtdGQxCnViaTA6IHNj
-YW5uaW5nIGlzIGZpbmlzaGVkCnViaTA6IGF0dGFjaGVkIG10ZDEgKG5hbWUgIm10ZD0yIiwgc2l6
-ZSAyMDMxIE1pQikKdWJpMDogUEVCIHNpemU6IDEzMTA3MiBieXRlcyAoMTI4IEtpQiksIExFQiBz
-aXplOiAxMjY5NzYgYnl0ZXMKdWJpMDogbWluLi9tYXguIEkvTyB1bml0IHNpemVzOiAyMDQ4LzIw
-NDgsIHN1Yi1wYWdlIHNpemUgMjA0OAp1YmkwOiBWSUQgaGVhZGVyIG9mZnNldDogMjA0OCAoYWxp
-Z25lZCAyMDQ4KSwgZGF0YSBvZmZzZXQ6IDQwOTYKdWJpMDogZ29vZCBQRUJzOiAxNjI0OCwgYmFk
-IFBFQnM6IDAsIGNvcnJ1cHRlZCBQRUJzOiAwCnViaTA6IHVzZXIgdm9sdW1lOiAxLCBpbnRlcm5h
-bCB2b2x1bWVzOiAxLCBtYXguIHZvbHVtZXMgY291bnQ6IDEyOAp1YmkwOiBtYXgvbWVhbiBlcmFz
-ZSBjb3VudGVyOiA2Ny8xOCwgV0wgdGhyZXNob2xkOiA0MDk2LCBpbWFnZQpzZXF1ZW5jZSBudW1i
-ZXI6IDEyMTgxMzU5MzYKdWJpMDogYXZhaWxhYmxlIFBFQnM6IDAsIHRvdGFsIHJlc2VydmVkIFBF
-QnM6IDE2MjQ4LCBQRUJzIHJlc2VydmVkIGZvcgpiYWQgUEVCIGhhbmRsaW5nOiAzMjAKCgpbICAg
-MTAuMDg1MTE5XSB1YmkwOiBzY2FubmluZyBpcyBmaW5pc2hlZApbICAgMTAuMTIxNTAwXSB1Ymkw
-OiBhdHRhY2hlZCBtdGQyIChuYW1lICJyb290ZnMiLCBzaXplIDIwMzEgTWlCKQpbICAgMTAuMTI3
-Mzc0XSB1YmkwOiBQRUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwgTEVCIHNpemU6IDEy
-Njk3NiBieXRlcwpbICAgMTAuMTM0MjcwXSB1YmkwOiBtaW4uL21heC4gSS9PIHVuaXQgc2l6ZXM6
-IDIwNDgvMjA0OCwgc3ViLXBhZ2Ugc2l6ZSAyMDQ4ClsgICAxMC4xNDEwNzhdIHViaTA6IFZJRCBo
-ZWFkZXIgb2Zmc2V0OiAyMDQ4IChhbGlnbmVkIDIwNDgpLCBkYXRhIG9mZnNldDogNDA5NgpbICAg
-MTAuMTQ4MDU4XSB1YmkwOiBnb29kIFBFQnM6IDE2MjQ4LCBiYWQgUEVCczogMCwgY29ycnVwdGVk
-IFBFQnM6IDAKWyAgIDEwLjE1NDI1NV0gdWJpMDogdXNlciB2b2x1bWU6IDEsIGludGVybmFsIHZv
-bHVtZXM6IDEsIG1heC4gdm9sdW1lcwpjb3VudDogMTI4ClsgICAxMC4xNjE0OTRdIHViaTA6IG1h
-eC9tZWFuIGVyYXNlIGNvdW50ZXI6IDY3LzE4LCBXTCB0aHJlc2hvbGQ6CjQwOTYsIGltYWdlIHNl
-cXVlbmNlIG51bWJlcjogMTIxODEzNTkzNgpbICAgMTAuMTcwODE1XSB1YmkwOiBhdmFpbGFibGUg
-UEVCczogMCwgdG90YWwgcmVzZXJ2ZWQgUEVCczogMTYyNDgsClBFQnMgcmVzZXJ2ZWQgZm9yIGJh
-ZCBQRUIgaGFuZGxpbmc6IDMyMApbICAgMTAuMTgwMzM4XSB1YmkwOiBiYWNrZ3JvdW5kIHRocmVh
-ZCAidWJpX2JndDBkIiBzdGFydGVkLCBQSUQgMjAxClsgICAxMC4xODc5MzFdIHJ0Yy1kczE2NzIg
-MC0wMDY4OiBzZXR0aW5nIHN5c3RlbSBjbG9jayB0bwoyMDIyLTA0LTE5VDA3OjU0OjMwIFVUQyAo
-MTY1MDM1NDg3MCkKWyAgIDEwLjE5NzMwOF0gQUxTQSBkZXZpY2UgbGlzdDoKWyAgIDEwLjIwMDI4
-OV0gICBObyBzb3VuZGNhcmRzIGZvdW5kLgpbICAgMTAuMjA0MDYyXSBtZDogV2FpdGluZyBmb3Ig
-YWxsIGRldmljZXMgdG8gYmUgYXZhaWxhYmxlIGJlZm9yZSBhdXRvZGV0ZWN0ClsgICAxMC4yMTA5
-MDFdIG1kOiBJZiB5b3UgZG9uJ3QgdXNlIHJhaWQsIHVzZSByYWlkPW5vYXV0b2RldGVjdApbICAg
-MTAuMjE3MzQ5XSBtZDogQXV0b2RldGVjdGluZyBSQUlEIGFycmF5cy4KWyAgIDEwLjIyMTQ3NV0g
-bWQ6IGF1dG9ydW4gLi4uClsgICAxMC4yMjQyNzFdIG1kOiAuLi4gYXV0b3J1biBET05FLgpbICAg
-MTAuMjI4MzkzXSBVQklGUyAodWJpMDowKTogTW91bnRpbmcgaW4gdW5hdXRoZW50aWNhdGVkIG1v
-ZGUKWyAgIDEwLjIzNDI5OF0gVUJJRlMgKHViaTA6MCk6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlm
-c19iZ3QwXzAiIHN0YXJ0ZWQsIFBJRCAyMDMKWyAgIDEwLjI1MjAzMV0gVUJJRlMgKHViaTA6MCk6
-IHJlY292ZXJ5IG5lZWRlZApbICAgMTAuNDE4MzAyXSBVQklGUyAodWJpMDowKTogcmVjb3Zlcnkg
-Y29tcGxldGVkClsgICAxMC40MjI5MDldIFVCSUZTICh1YmkwOjApOiBVQklGUzogbW91bnRlZCBV
-QkkgZGV2aWNlIDAsIHZvbHVtZSAwLApuYW1lICJyb290ZnMiClsgICAxMC40MzAzMzddIFVCSUZT
-ICh1YmkwOjApOiBMRUIgc2l6ZTogMTI2OTc2IGJ5dGVzICgxMjQgS2lCKSwKbWluLi9tYXguIEkv
-TyB1bml0IHNpemVzOiAyMDQ4IGJ5dGVzLzIwNDggYnl0ZXMKWyAgIDEwLjQ0MDI3MF0gVUJJRlMg
-KHViaTA6MCk6IEZTIHNpemU6IDIwMTk5MzQyMDggYnl0ZXMgKDE5MjYgTWlCLAoxNTkwOCBMRUJz
-KSwgam91cm5hbCBzaXplIDkwMjM0ODggYnl0ZXMgKDggTWlCLCA3MiBMRUJzKQpbICAgMTAuNDUx
-MjQzXSBVQklGUyAodWJpMDowKTogcmVzZXJ2ZWQgZm9yIHJvb3Q6IDAgYnl0ZXMgKDAgS2lCKQpb
-ICAgMTAuNDU3MDk2XSBVQklGUyAodWJpMDowKTogbWVkaWEgZm9ybWF0OiB3NC9yMCAobGF0ZXN0
-IGlzIHc1L3IwKSwKVVVJRCAzREVEQUYzOC1EMUQ3LTQ1OTAtODA4OS00MTQyNEM4ODNGNjYsIHNt
-YWxsIExQVCBtb2RlbApbICAgMTAuNDY5NDA3XSBWRlM6IE1vdW50ZWQgcm9vdCAodWJpZnMgZmls
-ZXN5c3RlbSkgb24gZGV2aWNlIDA6MjAuClsgICAxMC40NzYxMTFdIGRldnRtcGZzOiBtb3VudGVk
-CgpbIDEyLjgyNDAzMF0gTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAzOApbICAgMTIu
-ODI1MzA0XSBVQklGUzogcGFyc2UgZXJyb3JzPXJlbW91bnQtcm8KWyAgIDEyLjgzMjc2MF0gVUJJ
-RlMgZXJyb3IgKHViaTA6MCBwaWQgMjM0KToKdWJpZnNfcGFyc2Vfb3B0aW9ucy5jb25zdHByb3Au
-ODogdW5yZWNvZ25pemVkIG1vdW50IG9wdGlvbgoiZXJyb3JzPXJlbW91bnQtcm8iIG9yIG1pc3Np
-bmcgdmFsdWUKWyAgIDEyLjgzNDAyOV0gc3lzdGVtZFsxXTogTW91bnRlZCBLZXJuZWwgRGVidWcg
-RmlsZSBTeXN0ZW0uClsgICAxMi44NDUxODNdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDIzNCk6
-IHViaWZzX3JlbW91bnRfZnM6IGludmFsaWQKb3IgdW5rbm93biByZW1vdW50IHBhcmFtZXRlcgoK
-WyAgIDEzLjQ5NTUyN10gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjQxKTogdWJpZnNfY2hlY2tf
-bm9kZTogYmFkCkNSQzogY2FsY3VsYXRlZCAweDk2NzkwMTU5LCByZWFkIDB4ODQ3ZTBmMmYKWyAg
-IDEzLjUwNTQwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjQxKTogdWJpZnNfY2hlY2tfbm9k
-ZTogYmFkCm5vZGUgYXQgTEVCIDEzODcyOjE2MzEyClsgICAxMy41MDU0MDldICBtYWdpYyAgICAg
-ICAgICAweDYxMDE4MzEKWyAgIDEzLjUxNzEzN10gIGNyYyAgICAgICAgICAgIDB4ODQ3ZTBmMmYK
-WyAgIDEzLjUyMDkxN10gICAgICAgICBub2RlX3R5cGUgICAgICAwIChpbm9kZSBub2RlKU1vdW50
-aW5nIC90bXAuLi4KWyAgIDEzLjUyNTgxMl0gIGdyb3VwX3R5cGUgICAgIDIgKGxhc3Qgb2Ygbm9k
-ZSBncm91cCkKWyAgIDEzLjUzMzExNF0gIHNxbnVtICAgICAgICAgIDExMTczNDU2ClsgICAxMy41
-MzY4NzBdICBsZW4gICAgICAgICAgICAxNjAKWyAgIDEzLjU0MDA2MV0gIGtleSAgICAgICAgICAg
-ICgyMTI1LCBpbm9kZSkKWyAgIDEzLjU0NDE2MV0gIGNyZWF0X3NxbnVtICAgIDU0NTc3ClsgICAx
-My41NDQxNjldICBzaXplICAgICAgICAgICA3MTU4NApbICAgMTMuNTUwODY3XSAgbmxpbmsgICAg
-ICAgICAgNDI5NDk2NzI5NQpbICAgMTMuNTU0NjY3XSAgYXRpbWUgICAgICAgICAgMTYzMjk2MTU4
-My40Mjk0OTY3Mjk1U3RhcnRpbmcgdWRldiBLZXJuZWwgRGV2ClsgICAxMy41NjAxNzVdICBtdGlt
-ZSAgICAgICAgICAtMS40Mjk0OTY3Mjk1IGljZSBNYW5hZ2VyLi4uClsgICAxMy41NjcwNjldICBj
-dGltZSAgICAgICAgICAxNjQ2ODAyODA0LjQyOTQ5NjcyOTUKWyAgIDEzLjU3MzUwOV0gIHVpZCAg
-ICAgICAgICAgIDQyOTQ5NjcyOTUKWyAgIDEzLjU3NzMzMV0gIGdpZCAgICAgICAgICAgIDQyOTQ5
-NjcyOTUKWyAgIDEzLjU3NzM0MF0gIG1vZGUgICAgICAgICAgIDQyOTQ5NjcyOTUKWyAgIDEzLjU4
-NDg4Ml0gIGZsYWdzICAgICAgICAgIDB4ZmZmZmZmZmYKWyAgIDEzLjU4ODY2NF0gIHhhdHRyX2Nu
-dCAgICAgIDQyOTQ5NjcyOTUKWyAgT0sgIF0KWyAgIDEzLjU5MjQ0Nl0gICAgICAgICB4YXR0cl9z
-aXplICAgICA0Mjk0OTY3Mjk1IE1vdW50ZWQgL3RtcC4KWyAgIDEzLjU5NzkzMF0gICAgIHhhdHRy
-X25hbWVzICAgIDQyOTQ5NjcyOTUKWyAgIDEzLjYwMzk1M10gIGNvbXByX3R5cGUgICAgIDB4ZmZm
-ZgpbICAgMTMuNjA3NTQ4XSAgZGF0YSBsZW4gICAgICAgNDI5NDk2NzI5NQpbICBPSyAgXQpbICAg
-MTMuNjExNzY0XSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAyNDEpOiB1Ymlmc19zY2FuOiBiYWQg
-bm9kZQpdIFJlYWNoZWQgdGFyZ2V0IExvY2FsIEYKWyAgIDEzLjYxODk3Nl0gVUJJRlMgZXJyb3Ig
-KHViaTA6MCBwaWQgMjQxKTogdWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOgpjb3JydXB0aW9uIGF0
-IExFQiAxMzg3MjoxNjMxMiBpbGUgU3lzdGVtcy4KWyAgIDEzLjYzMDcyMl0gVUJJRlMgZXJyb3Ig
-KHViaTA6MCBwaWQgMjQxKTogdWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOgpmaXJzdCA4MTkyIGJ5
-dGVzIGZyb20gTEVCIDEzODcyOjE2MzEyClsgICAxMy42NDQxMzldIFVCSUZTIGVycm9yICh1Ymkw
-OjAgcGlkIDI0MSk6IHViaWZzX3NjYW46IExFQiAxMzg3MgpzY2FubmluZyBmYWlsZWQKWyAgIDEz
-LjY1MTg4M10gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjIyKTogbWFrZV9yZXNlcnZhdGlvbjog
-Y2Fubm90CnJlc2VydmUgNDQ1IGJ5dGVzIGluIGpoZWFkIDIsIGVycm9yIC0zMApbICAgMTMuNjUx
-ODkyXSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAyNDEpOiBtYWtlX3Jlc2VydmF0aW9uOiBjYW5u
-b3QKcmVzZXJ2ZSA0MTYgYnl0ZXMgaW4gamhlYWQgMSwgZXJyb3IgLTExNwpbICAgMTMuNjcxNDQ0
-XSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAyMjIpOiBkb193cml0ZXBhZ2U6IGNhbm5vdAp3cml0
-ZSBwYWdlIDAgb2YgaW5vZGUgMjU5MjM1LCBlcnJvciAtMzAKClsgNDU2NS42MzE1ODZdIHN5c3Rl
-bWQtam91cm5hbGRbMjE5XTogRmFpbGVkIHRvIHJvdGF0ZQovdmFyL2xvZy9qb3VybmFsL2NjNDQ2
-Yjk2MWY0NzQ0MTY5NzAxNTlhMDlhZDE3MWRiL3N5c3RlbS5qb3VybmFsOgpSZWFkLW9ubHkgZmls
-ZSBzeXN0ZW0KWyA0NTY1LjY0ODkwM10gc3lzdGVtZC1qb3VybmFsZFsyMTldOiBGYWlsZWQgdG8g
-d3JpdGUgZW50cnkgKDkgaXRlbXMsCjI0OCBieXRlcykgZGVzcGl0ZSB2YWN1dW1pbmcsIGlnbm9y
-aW5nOiBJbnB1dC9vdXRwdXQgZXJyb3IKWyA0NTY1LjY2MDQ2MV0gc3lzdGVtZC1qb3VybmFsZFsy
-MTldOiBGYWlsZWQgdG8gcm90YXRlCi92YXIvbG9nL2pvdXJuYWwvY2M0NDZiOTYxZjQ3NDQxNjk3
-MDE1OWEwOWFkMTcxZGIvc3lzdGVtLmpvdXJuYWw6ClJlYWQtb25seSBmaWxlIHN5c3RlbQpbIDQ1
-NjUuNjc1ODExXSBzeXN0ZW1kLWpvdXJuYWxkWzIxOV06IEZhaWxlZCB0byB3cml0ZSBlbnRyeSAo
-OSBpdGVtcywKMzA4IGJ5dGVzKSwgaWdub3Jpbmc6IElucHV0L291dHB1dCBlcnJvcgpbIDQ1NjUu
-Njg1NzY1XSBzeXN0ZW1kLWpvdXJuYWxkWzIxOV06IEZhaWxlZCB0byByb3RhdGUKL3Zhci9sb2cv
-am91cm5hbC9jYzQ0NmI5NjFmNDc0NDE2OTcwMTU5YTA5YWQxNzFkYi9zeXN0ZW0uam91cm5hbDoK
-UmVhZC1vbmx5IGZpbGUgc3lzdGVtClsgNDU2NS43MDExMDZdIHN5c3RlbWQtam91cm5hbGRbMjE5
-XTogRmFpbGVkIHRvIHdyaXRlIGVudHJ5ICg5IGl0ZW1zLAoyODAgYnl0ZXMpLCBpZ25vcmluZzog
-SW5wdXQvb3V0cHV0IGVycm9yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Arnd Bergmann <arnd@arndb.de>
+
+This revisits a series I sent a few years ago:
+
+https://lore.kernel.org/lkml/20191018154052.1276506-1-arnd@arndb.de/
+
+All the other ARMv5 conversions are under way now, with
+OMAP1 being the only one still not in linux-next yet,
+and PXA completing the set.
+
+Most of the patches are unchanged from before, furtunately
+the PXA code is fairly stable. I addressed Robert's comments,
+pulled in two patches from Dmitry, and added the last a the
+final four patches to finish off the multiplatform conversion.
+
+I hope someone is left to test these on PXA: if this works,
+I'd like to merge it for 5.19. A git tree with these is avaialable
+for testing at
+
+https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/log/?h=pxa-multiplatform-5.18
+
+    Arnd
+
+Arnd Bergmann (46):
+  ARM: pxa: split mach/generic.h
+  ARM: pxa: make mainstone.h private
+  ARM: pxa: make mach/regs-uart.h private
+  ARM: pxa: remove mach/dma.h
+  ARM: pxa: split up mach/hardware.h
+  ARM: pxa: stop using mach/bitfield.h
+  ARM: pxa: move mach/sound.h to linux/platform_data/
+  ARM: pxa: move regs-lcd.h into driver
+  watchdog: sa1100: use platform device registration
+  ARM: pxa: pxa2xx-ac97-lib: use IRQ resource
+  ARM: pxa: move pcmcia board data into mach-pxa
+  ARM: pxa: make addr-map.h header local
+  ARM: pxa: use pdev resource for palmld mmio
+  ARM: pxa: maybe fix gpio lookup tables
+  ARM: pxa: tosa: use gpio descriptor for audio
+  ARM: pxa: poodle: use platform data for poodle asoc driver
+  ARM: pxa: corgi: use gpio descriptors for audio
+  ARM: pxa: hx4700: use gpio descriptors for audio
+  ARM: pxa: lubbock: pass udc irqs as resource
+  ARM: pxa: spitz: use gpio descriptors for audio
+  ARM: pxa: eseries: use gpio lookup for audio
+  ARM: pxa: z2: use gpio lookup for audio device
+  ARM: pxa: magician: use platform driver for audio
+  ARM: pxa: mainstone-wm97xx: use gpio lookup table
+  ARM: pxa: zylonite: use gpio lookup instead mfp header
+  input: touchscreen: mainstone: fix pxa2xx+pxa3xx configuration
+  input: touchscreen: mainstone: sync with zylonite driver
+  Input: touchscreen: use wrapper for pxa2xx ac97 registers
+  ASoC: pxa: use pdev resource for FIFO regs
+  ASoC: pxa: ac97: use normal MMIO accessors
+  ASoC: pxa: i2s: use normal MMIO accessors
+  ARM: pxa: pcmcia: move smemc configuration back to arch
+  ARM: pxa: remove get_clk_frequency_khz()
+  cpufreq: pxa3: move clk register access to clk driver
+  ARM: pxa: move smemc register access from clk to platform
+  ARM: pxa: move clk register definitions to driver
+  power: tosa: simplify probe function
+  ARM: pxa: tosa: use gpio lookup for battery
+  ARM: pxa: remove unused mach/bitfield.h
+  ARM: mmp: remove tavorevb board support
+  ARM: mmp: rename pxa_register_device
+  ARM: pxa: move plat-pxa to drivers/soc/
+  ARM: PXA: fix multi-cpu build of xsc3
+  ARM: pxa: move mach/*.h to mach-pxa/
+  ARM: pxa: remove support for MTD_XIP
+  ARM: pxa: convert to multiplatform
+
+Dmitry Torokhov (2):
+  Input: wm97xx - switch to using threaded IRQ
+  Input: wm97xx - get rid of irq_enable method in wm97xx_mach_ops
+
+ arch/arm/Kconfig                              |  22 --
+ arch/arm/Makefile                             |   1 -
+ arch/arm/common/locomo.c                      |   1 -
+ arch/arm/common/sa1111.c                      |   5 +-
+ arch/arm/include/asm/hardware/sa1111.h        |   2 -
+ arch/arm/mach-mmp/Kconfig                     |  10 +-
+ arch/arm/mach-mmp/Makefile                    |   1 -
+ arch/arm/mach-mmp/devices.c                   |   2 +-
+ arch/arm/mach-mmp/devices.h                   |  10 +-
+ arch/arm/mach-mmp/mfp.h                       |   2 +-
+ arch/arm/mach-mmp/mmp2.h                      |  48 ++---
+ arch/arm/mach-mmp/pxa168.h                    |  60 +++---
+ arch/arm/mach-mmp/pxa910.h                    |  38 ++--
+ arch/arm/mach-mmp/tavorevb.c                  | 113 -----------
+ arch/arm/mach-mmp/ttc_dkb.c                   |   6 +-
+ arch/arm/mach-pxa/Kconfig                     |  14 ++
+ arch/arm/mach-pxa/Makefile                    |  18 +-
+ arch/arm/mach-pxa/Makefile.boot               |   3 -
+ .../mach-pxa/{include/mach => }/addr-map.h    |   0
+ arch/arm/mach-pxa/am300epd.c                  |   2 +-
+ .../arm/mach-pxa/balloon3-pcmcia.c            |   4 +-
+ arch/arm/mach-pxa/balloon3.c                  |   4 +-
+ .../mach-pxa/{include/mach => }/balloon3.h    |   0
+ arch/arm/mach-pxa/cm-x300.c                   |  12 +-
+ arch/arm/mach-pxa/colibri-evalboard.c         |   1 -
+ .../arm/mach-pxa/colibri-pcmcia.c             |   2 +-
+ arch/arm/mach-pxa/colibri-pxa270-income.c     |   1 -
+ arch/arm/mach-pxa/colibri-pxa270.c            |   2 +-
+ arch/arm/mach-pxa/colibri-pxa300.c            |   3 +-
+ arch/arm/mach-pxa/colibri-pxa320.c            |   2 +-
+ arch/arm/mach-pxa/colibri-pxa3xx.c            |   3 +-
+ arch/arm/mach-pxa/colibri.h                   |   2 +-
+ arch/arm/mach-pxa/corgi.c                     |  23 ++-
+ arch/arm/mach-pxa/{include/mach => }/corgi.h  |   0
+ arch/arm/mach-pxa/corgi_pm.c                  |   5 +-
+ arch/arm/mach-pxa/csb726.c                    |   5 +-
+ arch/arm/mach-pxa/csb726.h                    |   2 +-
+ arch/arm/mach-pxa/devices.c                   |  17 +-
+ .../arm/mach-pxa/e740-pcmcia.c                |   4 +-
+ .../{include/mach => }/eseries-gpio.h         |   0
+ arch/arm/mach-pxa/eseries.c                   |  36 +++-
+ arch/arm/mach-pxa/ezx.c                       |   1 -
+ arch/arm/mach-pxa/generic.c                   |  62 ++++--
+ arch/arm/mach-pxa/generic.h                   |   9 -
+ arch/arm/mach-pxa/gumstix.c                   |   1 -
+ arch/arm/mach-pxa/gumstix.h                   |   2 +-
+ arch/arm/mach-pxa/h5000.c                     |   2 +-
+ .../arm/mach-pxa/hx4700-pcmcia.c              |   4 +-
+ arch/arm/mach-pxa/hx4700.c                    |  18 +-
+ arch/arm/mach-pxa/{include/mach => }/hx4700.h |   0
+ arch/arm/mach-pxa/idp.c                       |   2 -
+ arch/arm/mach-pxa/idp.h                       |   2 +-
+ arch/arm/mach-pxa/include/mach/bitfield.h     | 114 -----------
+ arch/arm/mach-pxa/include/mach/dma.h          |  17 --
+ arch/arm/mach-pxa/include/mach/generic.h      |   1 -
+ arch/arm/mach-pxa/include/mach/mtd-xip.h      |  36 ----
+ arch/arm/mach-pxa/include/mach/uncompress.h   |  70 -------
+ arch/arm/mach-pxa/irq.c                       |   5 +-
+ arch/arm/mach-pxa/{include/mach => }/irqs.h   |   0
+ arch/arm/mach-pxa/littleton.c                 |   1 -
+ arch/arm/mach-pxa/lpd270.c                    |   6 +-
+ arch/arm/mach-pxa/lubbock.c                   |  17 +-
+ .../arm/mach-pxa/{include/mach => }/lubbock.h |   4 +-
+ arch/arm/mach-pxa/magician.c                  |  56 +++++-
+ .../mach-pxa/{include/mach => }/magician.h    |   2 +-
+ arch/arm/mach-pxa/mainstone.c                 |  17 +-
+ .../mach-pxa/{include/mach => }/mainstone.h   |   4 +-
+ arch/arm/mach-pxa/mfp-pxa2xx.c                |   3 +-
+ arch/arm/mach-pxa/mfp-pxa2xx.h                |   2 +-
+ arch/arm/mach-pxa/mfp-pxa3xx.c                |   3 +-
+ arch/arm/mach-pxa/mfp-pxa3xx.h                |   2 +-
+ arch/arm/mach-pxa/{include/mach => }/mfp.h    |   2 +-
+ arch/arm/mach-pxa/mioa701.c                   |   4 +-
+ arch/arm/mach-pxa/mxm8x10.c                   |   8 +-
+ arch/arm/mach-pxa/palm27x.c                   |   2 +-
+ .../arm/mach-pxa/palmld-pcmcia.c              |   5 +-
+ arch/arm/mach-pxa/palmld.c                    |  23 ++-
+ arch/arm/mach-pxa/{include/mach => }/palmld.h |   0
+ arch/arm/mach-pxa/palmt5.c                    |  11 +-
+ arch/arm/mach-pxa/palmt5.h                    |   2 +-
+ .../arm/mach-pxa/palmtc-pcmcia.c              |   4 +-
+ arch/arm/mach-pxa/palmtc.c                    |   4 +-
+ arch/arm/mach-pxa/{include/mach => }/palmtc.h |   0
+ arch/arm/mach-pxa/palmte2.c                   |   2 +-
+ arch/arm/mach-pxa/palmtreo.c                  |   4 +-
+ .../arm/mach-pxa/palmtx-pcmcia.c              |   4 +-
+ arch/arm/mach-pxa/palmtx.c                    |  13 +-
+ arch/arm/mach-pxa/{include/mach => }/palmtx.h |   0
+ arch/arm/mach-pxa/palmz72.c                   |   2 +-
+ arch/arm/mach-pxa/pcm027.h                    |   2 +-
+ arch/arm/mach-pxa/pcm990-baseboard.c          |   2 +-
+ arch/arm/mach-pxa/pcm990_baseboard.h          |   2 +-
+ arch/arm/mach-pxa/poodle.c                    |  31 ++-
+ arch/arm/mach-pxa/{include/mach => }/poodle.h |   2 -
+ arch/arm/mach-pxa/pxa-dt.c                    |   2 +-
+ arch/arm/mach-pxa/pxa-regs.h                  |  52 +++++
+ arch/arm/mach-pxa/pxa25x.c                    |  12 +-
+ arch/arm/mach-pxa/pxa25x.h                    |   6 +-
+ arch/arm/mach-pxa/pxa27x-udc.h                |   2 +
+ arch/arm/mach-pxa/pxa27x.c                    |  12 +-
+ arch/arm/mach-pxa/pxa27x.h                    |   6 +-
+ .../mach-pxa/{include/mach => }/pxa2xx-regs.h |  47 +----
+ arch/arm/mach-pxa/pxa2xx.c                    |  30 ++-
+ arch/arm/mach-pxa/pxa300.c                    |   1 +
+ arch/arm/mach-pxa/pxa320.c                    |   1 +
+ .../mach-pxa/{include/mach => }/pxa3xx-regs.h |  71 +------
+ arch/arm/mach-pxa/pxa3xx-ulpi.c               |   2 +-
+ arch/arm/mach-pxa/pxa3xx.c                    |  19 +-
+ arch/arm/mach-pxa/pxa3xx.h                    |   6 +-
+ arch/arm/mach-pxa/pxa930.c                    |   1 +
+ .../mach-pxa/{include/mach => }/regs-ost.h    |   4 +-
+ arch/arm/mach-pxa/regs-rtc.h                  |   2 +-
+ arch/arm/mach-pxa/regs-u2d.h                  |   2 -
+ .../mach-pxa/{include/mach => }/regs-uart.h   |   2 +
+ arch/arm/mach-pxa/reset.c                     |   9 +-
+ arch/arm/mach-pxa/{include/mach => }/reset.h  |   2 +-
+ arch/arm/mach-pxa/sharpsl_pm.c                |   2 +-
+ arch/arm/mach-pxa/sleep.S                     |   9 +-
+ arch/arm/mach-pxa/smemc.c                     |  13 +-
+ arch/arm/mach-pxa/{include/mach => }/smemc.h  |   0
+ arch/arm/mach-pxa/spitz.c                     |  37 +++-
+ arch/arm/mach-pxa/{include/mach => }/spitz.h  |   0
+ arch/arm/mach-pxa/spitz_pm.c                  |   3 +-
+ arch/arm/mach-pxa/standby.S                   |   3 +-
+ arch/arm/mach-pxa/tosa.c                      |  47 ++++-
+ arch/arm/mach-pxa/{include/mach => }/tosa.h   |   0
+ .../arm/mach-pxa/trizeps4-pcmcia.c            |   6 +-
+ arch/arm/mach-pxa/trizeps4.c                  |   6 +-
+ .../mach-pxa/{include/mach => }/trizeps4.h    |   1 +
+ .../arm/mach-pxa/viper-pcmcia.c               |   6 +-
+ .../arm/mach-pxa/viper-pcmcia.h               |   0
+ arch/arm/mach-pxa/viper.c                     |   8 +-
+ .../arm/mach-pxa/vpac270-pcmcia.c             |   4 +-
+ arch/arm/mach-pxa/vpac270.c                   |   4 +-
+ .../arm/mach-pxa/{include/mach => }/vpac270.h |   0
+ arch/arm/mach-pxa/xcep.c                      |   4 +-
+ arch/arm/mach-pxa/z2.c                        |  13 +-
+ arch/arm/mach-pxa/{include/mach => }/z2.h     |   0
+ arch/arm/mach-pxa/zeus.c                      |   8 +-
+ arch/arm/mach-pxa/zylonite.c                  |  34 +++-
+ arch/arm/mach-pxa/zylonite.h                  |   2 +
+ arch/arm/mach-pxa/zylonite_pxa300.c           |   1 +
+ arch/arm/mach-pxa/zylonite_pxa320.c           |   1 +
+ arch/arm/mach-sa1100/generic.c                |   6 +-
+ arch/arm/mach-sa1100/include/mach/reset.h     |   1 -
+ arch/arm/mm/copypage-xsc3.c                   |   2 +
+ arch/mips/alchemy/devboards/db1300.c          |   9 -
+ drivers/ata/pata_palmld.c                     |   3 +-
+ drivers/clk/pxa/clk-pxa.c                     |   8 +-
+ drivers/clk/pxa/clk-pxa.h                     |   9 +-
+ drivers/clk/pxa/clk-pxa25x.c                  |  46 ++---
+ drivers/clk/pxa/clk-pxa27x.c                  |  68 +++----
+ drivers/clk/pxa/clk-pxa2xx.h                  |  58 ++++++
+ drivers/clk/pxa/clk-pxa3xx.c                  | 139 +++++++++++--
+ drivers/cpufreq/pxa2xx-cpufreq.c              |   6 +-
+ drivers/cpufreq/pxa3xx-cpufreq.c              |  65 +++---
+ drivers/input/mouse/pxa930_trkball.c          |   1 -
+ drivers/input/touchscreen/Kconfig             |   2 +
+ drivers/input/touchscreen/mainstone-wm97xx.c  | 130 ++++++------
+ drivers/input/touchscreen/wm97xx-core.c       |  42 +---
+ drivers/input/touchscreen/zylonite-wm97xx.c   |  43 ++--
+ drivers/leds/leds-locomo.c                    |   1 -
+ drivers/mmc/host/pxamci.c                     |   2 +-
+ drivers/mtd/maps/pxa2xx-flash.c               |   2 -
+ drivers/pcmcia/Makefile                       |  13 --
+ drivers/pcmcia/pxa2xx_base.c                  |  48 ++---
+ drivers/pcmcia/pxa2xx_sharpsl.c               |   3 +-
+ drivers/pcmcia/sa1111_generic.c               |   1 -
+ drivers/pcmcia/sa1111_lubbock.c               |   1 -
+ drivers/pcmcia/soc_common.c                   |   2 -
+ drivers/pcmcia/soc_common.h                   | 120 +----------
+ drivers/power/supply/tosa_battery.c           | 189 ++++++++++--------
+ drivers/rtc/rtc-pxa.c                         |   2 -
+ drivers/soc/Kconfig                           |   1 +
+ drivers/soc/Makefile                          |   1 +
+ .../arm/plat-pxa => drivers/soc/pxa}/Kconfig  |   5 +-
+ .../arm/plat-pxa => drivers/soc/pxa}/Makefile |   4 -
+ {arch/arm/plat-pxa => drivers/soc/pxa}/mfp.c  |   2 +-
+ {arch/arm/plat-pxa => drivers/soc/pxa}/ssp.c  |   0
+ drivers/usb/gadget/udc/pxa25x_udc.c           |  37 ++--
+ drivers/usb/gadget/udc/pxa25x_udc.h           |   7 +-
+ drivers/usb/host/ohci-pxa27x.c                |   3 +-
+ .../video/fbdev/pxa3xx-regs.h                 |  24 +--
+ drivers/video/fbdev/pxafb.c                   |   4 +-
+ drivers/watchdog/sa1100_wdt.c                 |  88 +++++---
+ include/linux/clk/pxa.h                       |  16 ++
+ include/linux/platform_data/asoc-poodle.h     |  16 ++
+ .../linux/platform_data/asoc-pxa.h            |   4 +-
+ include/linux/platform_data/video-pxafb.h     |  22 +-
+ .../hardware.h => include/linux/soc/pxa/cpu.h |  61 +-----
+ .../plat => include/linux/soc/pxa}/mfp.h      |   6 +-
+ include/linux/soc/pxa/smemc.h                 |  13 ++
+ include/linux/wm97xx.h                        |   4 -
+ include/pcmcia/soc_common.h                   | 125 ++++++++++++
+ include/sound/pxa2xx-lib.h                    |   4 +
+ sound/arm/pxa2xx-ac97-lib.c                   | 145 +++++++++-----
+ .../arm/pxa2xx-ac97-regs.h                    |  42 ++--
+ sound/arm/pxa2xx-ac97.c                       |   3 +-
+ sound/soc/pxa/corgi.c                         |  43 ++--
+ sound/soc/pxa/e740_wm9705.c                   |  37 ++--
+ sound/soc/pxa/e750_wm9705.c                   |  33 ++-
+ sound/soc/pxa/e800_wm9712.c                   |  33 ++-
+ sound/soc/pxa/em-x270.c                       |   2 +-
+ sound/soc/pxa/hx4700.c                        |  34 ++--
+ sound/soc/pxa/magician.c                      | 141 ++++---------
+ sound/soc/pxa/mioa701_wm9713.c                |   2 +-
+ sound/soc/pxa/palm27x.c                       |   2 +-
+ sound/soc/pxa/poodle.c                        |  51 ++---
+ sound/soc/pxa/pxa2xx-ac97.c                   |  24 ++-
+ sound/soc/pxa/pxa2xx-i2s.c                    | 112 ++++++-----
+ sound/soc/pxa/spitz.c                         |  58 +++---
+ sound/soc/pxa/tosa.c                          |  18 +-
+ sound/soc/pxa/z2.c                            |   8 +-
+ 213 files changed, 1902 insertions(+), 1936 deletions(-)
+ delete mode 100644 arch/arm/mach-mmp/tavorevb.c
+ delete mode 100644 arch/arm/mach-pxa/Makefile.boot
+ rename arch/arm/mach-pxa/{include/mach => }/addr-map.h (100%)
+ rename drivers/pcmcia/pxa2xx_balloon3.c => arch/arm/mach-pxa/balloon3-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/balloon3.h (100%)
+ rename drivers/pcmcia/pxa2xx_colibri.c => arch/arm/mach-pxa/colibri-pcmcia.c (99%)
+ rename arch/arm/mach-pxa/{include/mach => }/corgi.h (100%)
+ rename drivers/pcmcia/pxa2xx_e740.c => arch/arm/mach-pxa/e740-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/eseries-gpio.h (100%)
+ rename drivers/pcmcia/pxa2xx_hx4700.c => arch/arm/mach-pxa/hx4700-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/hx4700.h (100%)
+ delete mode 100644 arch/arm/mach-pxa/include/mach/bitfield.h
+ delete mode 100644 arch/arm/mach-pxa/include/mach/dma.h
+ delete mode 100644 arch/arm/mach-pxa/include/mach/generic.h
+ delete mode 100644 arch/arm/mach-pxa/include/mach/mtd-xip.h
+ delete mode 100644 arch/arm/mach-pxa/include/mach/uncompress.h
+ rename arch/arm/mach-pxa/{include/mach => }/irqs.h (100%)
+ rename arch/arm/mach-pxa/{include/mach => }/lubbock.h (95%)
+ rename arch/arm/mach-pxa/{include/mach => }/magician.h (99%)
+ rename arch/arm/mach-pxa/{include/mach => }/mainstone.h (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/mfp.h (91%)
+ rename drivers/pcmcia/pxa2xx_palmld.c => arch/arm/mach-pxa/palmld-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/palmld.h (100%)
+ rename drivers/pcmcia/pxa2xx_palmtc.c => arch/arm/mach-pxa/palmtc-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/palmtc.h (100%)
+ rename drivers/pcmcia/pxa2xx_palmtx.c => arch/arm/mach-pxa/palmtx-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/palmtx.h (100%)
+ rename arch/arm/mach-pxa/{include/mach => }/poodle.h (98%)
+ create mode 100644 arch/arm/mach-pxa/pxa-regs.h
+ rename arch/arm/mach-pxa/{include/mach => }/pxa2xx-regs.h (76%)
+ rename arch/arm/mach-pxa/{include/mach => }/pxa3xx-regs.h (61%)
+ rename arch/arm/mach-pxa/{include/mach => }/regs-ost.h (94%)
+ rename arch/arm/mach-pxa/{include/mach => }/regs-uart.h (99%)
+ rename arch/arm/mach-pxa/{include/mach => }/reset.h (92%)
+ rename arch/arm/mach-pxa/{include/mach => }/smemc.h (100%)
+ rename arch/arm/mach-pxa/{include/mach => }/spitz.h (100%)
+ rename arch/arm/mach-pxa/{include/mach => }/tosa.h (100%)
+ rename drivers/pcmcia/pxa2xx_trizeps4.c => arch/arm/mach-pxa/trizeps4-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/trizeps4.h (99%)
+ rename drivers/pcmcia/pxa2xx_viper.c => arch/arm/mach-pxa/viper-pcmcia.c (97%)
+ rename include/linux/platform_data/pcmcia-pxa2xx_viper.h => arch/arm/mach-pxa/viper-pcmcia.h (100%)
+ rename drivers/pcmcia/pxa2xx_vpac270.c => arch/arm/mach-pxa/vpac270-pcmcia.c (98%)
+ rename arch/arm/mach-pxa/{include/mach => }/vpac270.h (100%)
+ rename arch/arm/mach-pxa/{include/mach => }/z2.h (100%)
+ create mode 100644 drivers/clk/pxa/clk-pxa2xx.h
+ rename {arch/arm/plat-pxa => drivers/soc/pxa}/Kconfig (83%)
+ rename {arch/arm/plat-pxa => drivers/soc/pxa}/Makefile (51%)
+ rename {arch/arm/plat-pxa => drivers/soc/pxa}/mfp.c (99%)
+ rename {arch/arm/plat-pxa => drivers/soc/pxa}/ssp.c (100%)
+ rename arch/arm/mach-pxa/include/mach/regs-lcd.h => drivers/video/fbdev/pxa3xx-regs.h (90%)
+ create mode 100644 include/linux/clk/pxa.h
+ create mode 100644 include/linux/platform_data/asoc-poodle.h
+ rename arch/arm/mach-pxa/include/mach/audio.h => include/linux/platform_data/asoc-pxa.h (93%)
+ rename arch/arm/mach-pxa/include/mach/hardware.h => include/linux/soc/pxa/cpu.h (75%)
+ rename {arch/arm/plat-pxa/include/plat => include/linux/soc/pxa}/mfp.h (98%)
+ create mode 100644 include/linux/soc/pxa/smemc.h
+ create mode 100644 include/pcmcia/soc_common.h
+ rename arch/arm/mach-pxa/include/mach/regs-ac97.h => sound/arm/pxa2xx-ac97-regs.h (71%)
+
+-- 
+2.29.2
+
+Cc: Daniel Mack <daniel@zonque.org>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: Lubomir Rintel <lkundrak@v3.sk>
+Cc: Paul Parsons <lost.distance@yahoo.com>
+Cc: Tomas Cech <sleep_walker@suse.com>
+Cc: Sergey Lapin <slapin@ossfans.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-ide@vger.kernel.org
+Cc: linux-clk@vger.kernel.org
+Cc: linux-pm@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: patches@opensource.cirrus.com
+Cc: linux-leds@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-rtc@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: alsa-devel@alsa-project.org
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
