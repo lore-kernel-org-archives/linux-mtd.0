@@ -4,62 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBDBCC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 13:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16DD3C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 13:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=md6pMd1UnXv/LwlUQHSbSpZZPyHbbM1GLvak8LcO1y4=; b=OpkyoQvNHNswoPgoYdtwgrX6MA
-	Kke8yC6weQQ30DfKbGam1SPMgBAxE7+Nxwrjevg6nPPnZKGJ7FqkjqwSN2X3KLgL3GbiNRV+6PaGb
-	fyeT3sEa+SqTWhSYVg0Ek5qSn+KEWQcCe3rnY1777GXrSJ6aPKF+oDiojDvQUUf4YMCPoaoP6r0AX
-	YXFxy0Shj2r69DIFYydSKggBL9w7dCzbPywDg7K/MO9lMS45eW0LdOIkgFLlBt7I8NS4DrYxNTZvd
-	Wtgp7Jl2qj7cc4c1z4h7I45Avh7nrhiG3rBd+feL7oGKiOcH7c50bJU3SETJVCTaONPOveezwDL3o
-	bNqAVxNA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=X9IciJffL1FDJw3gvchoS/z2rmyJ29F7L4zzoe7vcrA=; b=cS1Tmogq5FwFW9
+	7j660FF+XeqTR9gQtUYbfx9Vdv8WgwSCclUwSw08vwLK5kLMbN30tCRYD15ghOMT1o/24q+3fqSNR
+	82PaXNfEekzfQwnPHMkw40iyNY+AcsitSSaTUu3JhY5T7sIxg6DAKYEBdN67ap7ny/iM6Q2G4Awgh
+	sL8d4zHMJUy0OMcyrLfj55CvqUn0E15VQy9udCq0h16/UN8jpTPzyz2/1IahAWP9GG+c4H55f5yop
+	wUULTyeQxwZicgfWaK/xTrtOgRA67Elb7ieCqbj5SgGSl//60r5a/zy9hJH7HgaNIDgu7aJINOTar
+	Jg511Is30rz9swNR7wVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngnoC-003o0t-D3; Tue, 19 Apr 2022 13:22:20 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1ngnx9-003rou-Up; Tue, 19 Apr 2022 13:31:36 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngmjD-003Nyr-Or
- for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 12:13:10 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6E432B81867;
- Tue, 19 Apr 2022 12:13:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5340CC385A8;
- Tue, 19 Apr 2022 12:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650370385;
- bh=FzB9R4QNdtle8G5es3X6MThPPUPCJpMLRg4hyaJlBQE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=DWJGvi/jytrDuGlM5FSavn5RIkiTwr07ACM995obH4t8uuuVivW0CbedGWOuDCKnq
- 27FV9Zi3l5J5im79ASlXyvYHMLvMm3lNYXlwezt5s/3h1JpSbi1425kvuwvVaaSUgn
- X7KAxxnT9jLw0PgDiNUvbuCar3P4FbbwGkK3wr2wZ+2rayjy7kzLukUV2816zSZh2r
- /0h9qvl3no4cHgMwXJMLGElcdwLMJM7xLEc2jWf460Xm3HMdKPiwH47W3qMhovJrvq
- NVZxYKY9ytNaDZv2QcwxGuTvnm0qzXD3coO0u2bXeGhdOHFIdBTi7DBNq4hc1OGDXd
- aff6G+DJNy4yw==
-Date: Tue, 19 Apr 2022 13:12:59 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
- Hongli Li <hongli.li@intel.com>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] spi: intel: Implement dirmap hooks
-Message-ID: <Yl6nS0kSdSGOCYM3@sirena.org.uk>
-References: <20220411113158.2037-1-mika.westerberg@linux.intel.com>
- <20220411113158.2037-2-mika.westerberg@linux.intel.com>
+ id 1ngn2P-003W4x-Bl
+ for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 12:32:59 +0000
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23JCWlVZ090706;
+ Tue, 19 Apr 2022 07:32:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1650371567;
+ bh=7pUxGX1NMNsUpg+kjZ7UPIQay8LquMeobEccHiyqJ3o=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=Pu9Srcn5KCAPnw35f14Zdc8hpSi44oYqdO/0I6BZbbNUhSU4wZEg8gfxlTbGDaqaq
+ YTaMUbMihF3MKH7iiEzdyIksndNvyYCuWXiiaoEjhLCxD24gMqN6efRpIFYM+qxB94
+ XEBbOv+Ojw5QK6hbXiFn3DjMq2ZMRbXF6vwrLuDM=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+ by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23JCWlGT037011
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 19 Apr 2022 07:32:47 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 19
+ Apr 2022 07:32:46 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 19 Apr 2022 07:32:46 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23JCWkpC008529;
+ Tue, 19 Apr 2022 07:32:46 -0500
+Date: Tue, 19 Apr 2022 18:02:45 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>,
+ <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH v3 6/9] mtd: spi-nor: core: Add helpers to read/write any
+ register
+Message-ID: <20220419123245.zu4hypebz77ckygn@ti.com>
+References: <20220411091033.98754-1-tudor.ambarus@microchip.com>
+ <20220411091033.98754-7-tudor.ambarus@microchip.com>
+ <0e4ec58c21490dcd9cf82ab89bd8c34c@walle.cc>
+ <e21b0d76bf778f78f432ba27a673222d@walle.cc>
+ <f318dbd9-d4bf-301a-b5c9-556d04d5bfe6@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20220411113158.2037-2-mika.westerberg@linux.intel.com>
-X-Cookie: You buttered your bread, now lie in it.
+Content-Disposition: inline
+In-Reply-To: <f318dbd9-d4bf-301a-b5c9-556d04d5bfe6@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_051308_159295_B350A51F 
-X-CRM114-Status: GOOD (  16.01  )
+X-CRM114-CacheID: sfid-20220419_053258_387413_83155B8F 
+X-CRM114-Status: GOOD (  24.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,115 +83,122 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3875371476959974334=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+On 19/04/22 12:08PM, Tudor.Ambarus@microchip.com wrote:
+> On 4/19/22 14:46, Michael Walle wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the content is safe
+> > =
 
---===============3875371476959974334==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CJk5db7UBq5CSMUG"
-Content-Disposition: inline
+> > Am 2022-04-19 13:19, schrieb Michael Walle:
+> >> Am 2022-04-11 11:10, schrieb Tudor Ambarus:
+> >>> There are manufacturers that use registers indexed by address. Some of
+> >>> them support "read/write any register" opcodes. Provide core methods
+> >>> that
+> >>> can be used by all manufacturers. SPI NOR controller ops are
+> >>> intentionally
+> >>> not supported as we intend to move all the SPI NOR controller drivers
+> >>> under the SPI subsystem.
+> >>>
+> >>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >>> Tested-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> >>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+> >>
+> >> I still don't like it because the function doesn't do
+> >> anything what the function name might suggest. The read
+> >> just executes an op, the write executes an op with a
+> >> write enable before. All the behavior is determined by the
+> >> 'op' argument.
+> >>
+> >> Anyway,
+> >> Reviewed-by: Michael Walle <michael@walle.cc>
+> >>
+> >>> ---
+> >>> v3: no changes
+> >>>
+> >>> =A0drivers/mtd/spi-nor/core.c | 41
+> >>> ++++++++++++++++++++++++++++++++++++++
+> >>> =A0drivers/mtd/spi-nor/core.h |=A0 4 ++++
+> >>> =A02 files changed, 45 insertions(+)
+> >>>
+> >>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >>> index 6165dc7bfd17..42794328d3b6 100644
+> >>> --- a/drivers/mtd/spi-nor/core.c
+> >>> +++ b/drivers/mtd/spi-nor/core.c
+> >>> @@ -307,6 +307,47 @@ ssize_t spi_nor_write_data(struct spi_nor *nor,
+> >>> loff_t to, size_t len,
+> >>> =A0=A0=A0=A0 return nor->controller_ops->write(nor, to, len, buf);
+> >>> =A0}
+> >>>
+> >>> +/**
+> >>> + * spi_nor_read_reg() - read register to flash memory
+> >>> + * @nor:=A0=A0=A0=A0=A0=A0=A0 pointer to 'struct spi_nor'.
+> >>> + * @op:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SPI memory operation. op=
+->data.buf must be DMA-able.
+> >>> + * @proto:=A0 SPI protocol to use for the register operation.
+> >>> + *
+> >>> + * Return: zero on success, -errno otherwise
+> >>> + */
+> >>> +int spi_nor_read_reg(struct spi_nor *nor, struct spi_mem_op *op,
+> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 enum spi_nor_protoc=
+ol proto)
+> >>> +{
+> >>> +=A0=A0=A0 if (!nor->spimem)
+> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EOPNOTSUPP;
+> >>> +
+> >>> +=A0=A0=A0 spi_nor_spimem_setup_op(nor, op, proto);
+> >>> +=A0=A0=A0 return spi_nor_spimem_exec_op(nor, op);
+> >>> +}
+> >>> +
+> >>> +/**
+> >>> + * spi_nor_write_reg() - write register to flash memory
+> >>> + * @nor:=A0=A0=A0=A0=A0=A0=A0 pointer to 'struct spi_nor'
+> >>> + * @op:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SPI memory operation. op=
+->data.buf must be DMA-able.
+> >>> + * @proto:=A0 SPI protocol to use for the register operation.
+> >>> + *
+> >>> + * Return: zero on success, -errno otherwise
+> >>> + */
+> >>> +int spi_nor_write_reg(struct spi_nor *nor, struct spi_mem_op *op,
+> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 enum spi_nor_pro=
+tocol proto)
+> >>> +{
+> >>> +=A0=A0=A0 int ret;
+> >>> +
+> >>> +=A0=A0=A0 if (!nor->spimem)
+> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EOPNOTSUPP;
+> >>> +
+> >>> +=A0=A0=A0 ret =3D spi_nor_write_enable(nor);
+> >>> +=A0=A0=A0 if (ret)
+> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return ret;
+> >>> +=A0=A0=A0 spi_nor_spimem_setup_op(nor, op, proto);
+> >>> +=A0=A0=A0 return spi_nor_spimem_exec_op(nor, op);
+> > =
 
+> > After seeing your next two patches. Shouldn't the
+> > spi_nor_wait_until_ready() call be here too?
+> > =
 
---CJk5db7UBq5CSMUG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> =
 
-On Mon, Apr 11, 2022 at 02:31:58PM +0300, Mika Westerberg wrote:
-> Currently the driver goes over the supported opcodes list each time
-> ->exec_op() is called and finds the suitable for the given operation.
-> This consumes unnecessary amount of CPU cycles because the operation is
-> always the same. For this reason populate dirmap hooks for the driver so
-> that we cache the selected operation and then simply call it on each
-> read/write.
+> I thought of this too, but seems that for a reason that I don't
+> remember, we don't call for spi_nor_wait_until_ready after we
+> write the octal DTR bit. Pratyush, do you remember why?
 
-This breaks an x86 allmodconfig build:
+We are not sure the protocol changed correctly so we can't rely on =
 
-/build/stage/linux/drivers/spi/spi-intel.c: In function =E2=80=98intel_spi_=
-dirmap_read=E2=80=99:
-/build/stage/linux/drivers/spi/spi-intel.c:808:38: error: passing argument =
-2 of =E2=80=98iop->exec_op=E2=80=99 from incompatible pointer type [-Werror=
-=3Dincompatible-pointer-types]
-  808 |         ret =3D iop->exec_op(ispi, desc->mem, iop, &op);
-      |                                  ~~~~^~~~~
-      |                                      |
-      |                                      struct spi_mem *
-/build/stage/linux/drivers/spi/spi-intel.c:808:38: note: expected =E2=80=98=
-const struct intel_spi_mem_op *=E2=80=99 but argument is of type =E2=80=98s=
-truct spi_mem *=E2=80=99
-/build/stage/linux/drivers/spi/spi-intel.c:808:45: error: passing argument =
-3 of =E2=80=98iop->exec_op=E2=80=99 from incompatible pointer type [-Werror=
-=3Dincompatible-pointer-types]
-  808 |         ret =3D iop->exec_op(ispi, desc->mem, iop, &op);
-      |                                             ^~~
-      |                                             |
-      |                                             const struct intel_spi_=
-mem_op *
-/build/stage/linux/drivers/spi/spi-intel.c:808:45: note: expected =E2=80=98=
-const struct spi_mem_op *=E2=80=99 but argument is of type =E2=80=98const s=
-truct intel_spi_mem_op *=E2=80=99
-/build/stage/linux/drivers/spi/spi-intel.c:808:15: error: too many argument=
-s to function =E2=80=98iop->exec_op=E2=80=99
-  808 |         ret =3D iop->exec_op(ispi, desc->mem, iop, &op);
-      |               ^~~
-/build/stage/linux/drivers/spi/spi-intel.c: In function =E2=80=98intel_spi_=
-dirmap_write=E2=80=99:
-/build/stage/linux/drivers/spi/spi-intel.c:824:38: error: passing argument =
-2 of =E2=80=98iop->exec_op=E2=80=99 from incompatible pointer type [-Werror=
-=3Dincompatible-pointer-types]
-  824 |         ret =3D iop->exec_op(ispi, desc->mem, iop, &op);
-      |                                  ~~~~^~~~~
-      |                                      |
-      |                                      struct spi_mem *
-/build/stage/linux/drivers/spi/spi-intel.c:824:38: note: expected =E2=80=98=
-const struct intel_spi_mem_op *=E2=80=99 but argument is of type =E2=80=98s=
-truct spi_mem *=E2=80=99
-/build/stage/linux/drivers/spi/spi-intel.c:824:45: error: passing argument =
-3 of =E2=80=98iop->exec_op=E2=80=99 from incompatible pointer type [-Werror=
-=3Dincompatible-pointer-types]
-  824 |         ret =3D iop->exec_op(ispi, desc->mem, iop, &op);
-      |                                             ^~~
-      |                                             |
-      |                                             const struct intel_spi_=
-mem_op *
-/build/stage/linux/drivers/spi/spi-intel.c:824:45: note: expected =E2=80=98=
-const struct spi_mem_op *=E2=80=99 but argument is of type =E2=80=98const s=
-truct intel_spi_mem_op *=E2=80=99
-/build/stage/linux/drivers/spi/spi-intel.c:824:15: error: too many argument=
-s to function =E2=80=98iop->exec_op=E2=80=99
-  824 |         ret =3D iop->exec_op(ispi, desc->mem, iop, &op);
-      |               ^~~
-cc1: all warnings being treated as errors
+spi_nor_wait_until_ready(). We read the ID instead to be sure.
 
---CJk5db7UBq5CSMUG
-Content-Type: application/pgp-signature; name="signature.asc"
+-- =
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJep0sACgkQJNaLcl1U
-h9CXGwf/Z1pNpFk1a+5idHEjLLL6oaCXehYuZoV/e6gpbbu1B6lTVA4JPe6ueaMJ
-9FUxFE2D2gKbRauWSpbEOrPpiRuuwAENeeoO/AemFcWmQsS4O9uowL3OZ0bYqzt+
-KKOK5CmPbqbd6qbaqvG0we82qBzYQAH99LtExpivHqAFHYxY4/aXLxHF98p56qVA
-DOZ+Sl+cxVC+ez8YkLRtmREMOIwba60swMU6IM/Z/fYW7EvHyzdskOpClz45BsSx
-rVf9w7eht7B3FIXUTIN90VMz+e0jz60+KbaQGKVkZ/jkvexfOvicQQSOZpEvW5Cy
-fhgNatLNzmF0ms/KCmmRy7i8GjgKyQ==
-=rXOb
------END PGP SIGNATURE-----
-
---CJk5db7UBq5CSMUG--
-
-
---===============3875371476959974334==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============3875371476959974334==--
-
