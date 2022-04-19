@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56F13C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB3DEC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9Yem8AAFQVyVEbTN4UxslvyZ+gVJT4onIurUNWFaEzw=; b=3qDQQ3rCCHJjk/
-	VB/7L/39t6Cx3y+E9H7SL4V8kkXdJtf27NdWu5EkQON0jrgJ8VeHBJVtIQJr/X3cTAgc+0uLNDePs
-	70KpxdeukFDX1C1iebveevySsMpSdog3Zp9dW7xS97j9LYr6eL5xSyBgL5CZbEynmZgvBNEUvsDih
-	YT0Ajmpup/qelzpad93OcQlrI3aY5Wa6I5qyHVxBDpGUnqfWPwYvGaNHapIZ23hb/9Ly9U7X3w4l/
-	D8/GPghdfQDFOycKGJKxLVojKAEXopSWH7k9awX0ruTN6B5oiV3e89EjtZDmwe5FbR1nhCnAIlqMF
-	nnd8hqHInJkpgPYUsUtQ==;
+	List-Owner; bh=eiYKl5OrvpCL4Um6lZbZpnHil0HUKdB6xkfUR5pdkvw=; b=kU8Y1xA2j6adwS
+	VfZlSzz7aNRWtUpjyunwGzYeP371vFCM0BA46BXpgTTQy8EJLZco6/lgE9x+0yauKlO5OHfUxBRhz
+	zdh4k3qNMdR539eRUXIcuj510d6eBWOFs0UcCOHKh9vbmiJWW8fe6unH3z0ggvcfPv0fk19ZFrt1Q
+	1D/aWpxd6RcVun1VCajTpNMbJniXSWljK5VTlNWVh+IE1qzNxNUodJ9EzKM0hasI3gCcWwiJjZZVt
+	2tX6ILkwcKJ+MFLk/fdR93laCzuRpnStFBVvGTfMz8jFJug0mOlKgwIhJnSRlNyGxnIh9x223WggP
+	/TMI7Nh2vlMUL0R+WvLw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngr6X-00534x-Hc; Tue, 19 Apr 2022 16:53:29 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1ngr7q-0053gn-BV; Tue, 19 Apr 2022 16:54:50 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngqu5-004wWK-0T; Tue, 19 Apr 2022 16:40:39 +0000
+ id 1ngquC-004wbN-RR; Tue, 19 Apr 2022 16:40:46 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 97611B8196F;
- Tue, 19 Apr 2022 16:40:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E156C385AD;
- Tue, 19 Apr 2022 16:40:26 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 84427B81A22;
+ Tue, 19 Apr 2022 16:40:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4F6BC385A5;
+ Tue, 19 Apr 2022 16:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650386434;
- bh=Me5Zax9Cglx1LkHOlA8xV8JEJklryJyWSe6dcCjrrgY=;
+ s=k20201202; t=1650386442;
+ bh=rF4AqAeeG3pFiw8ba+j1AjJKI0o8rpvYnUVlfmsd5CQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sakbeqPI29Om+/FQz0qrFAi7y4JGvalfYfkXPgEmDAHQE5JutGOtnitKMdhD/p0lN
- DhEAF01KwxuyAz3UGi3jwRt2GxBEtmj4vxHkA3PItSOKP3X54DH90IyriUJPKRYV1X
- BIAvtuns7tePi7NLdUUzAV57aLC7hbjqxyX7AZDclAvUdWuFIT078ADdlzcICL/9+M
- wgI5g6kwYoVtQAA0Eymt32oBHJZSCTUcWvhwf1aLMMuBWcXT5wyS3qq8oCJZh/mBF4
- UDot9x1fEXjfgm7bXqg4vfaXPFcwtqapRVe3zSRHwo/Vvq34alxLUDf9aCVWAxKea7
- RZ4Ev5Hjil72g==
+ b=rZcwYWiPc2XajjwXFY6Hgb0z8xaKQouR3mgetcNfOG0jAxjf+wc+NkAqTEieKNj2K
+ hTb4pSkBn4p6/vPrbGHHFSjrFJKYhOj58gtETWj5zjgxOpUV+N5TFkzWHrEi+oCpGA
+ Z7qHH3Z4/Qz1lfbHK13P/9eVzrzGxLoE72yig5fdPb2W9JmcSPG6EbgjwxoLszNbC8
+ JtYVwf2JvVtYboOyzewKz6pEaGgLg3OpWUMntuI+0iqBattNddhmtXKm3DuOkqoKaX
+ 6oeCBZj9AZy/bFRn3L+Ral/WFjNSaI6bmC11HJKF0hZPiK+pyR2FGR0p1wVrtmDFDN
+ RN3P/E7CISDfQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: robert.jarzmik@free.fr,
 	linux-arm-kernel@lists.infradead.org
@@ -66,18 +66,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
  linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
  dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
- Jens Axboe <axboe@kernel.dk>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH 13/48] ARM: pxa: use pdev resource for palmld mmio
-Date: Tue, 19 Apr 2022 18:37:35 +0200
-Message-Id: <20220419163810.2118169-14-arnd@kernel.org>
+ stable@vger.kernel.org
+Subject: [PATCH 14/48] ARM: pxa: maybe fix gpio lookup tables
+Date: Tue, 19 Apr 2022 18:37:36 +0200
+Message-Id: <20220419163810.2118169-15-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_094037_442201_2D175FFB 
-X-CRM114-Status: GOOD (  19.94  )
+X-CRM114-CacheID: sfid-20220419_094045_261431_499F2B1E 
+X-CRM114-Status: GOOD (  17.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,108 +95,74 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The palmld header is almost unused in drivers, the only
-remaining thing now is the PATA device address, which should
-really be passed as a resource.
+From inspection I found a couple of GPIO lookups that are
+listed with device "gpio-pxa", but actually have a number
+from a different gpio controller.
 
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: linux-ide@vger.kernel.org
+Try to rectify that here, with a guess of what the actual
+device name is.
+
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/palmld-pcmcia.c             |  3 ++-
- arch/arm/mach-pxa/palmld.c                    | 12 +++++++++---
- arch/arm/mach-pxa/{include/mach => }/palmld.h |  2 +-
- drivers/ata/pata_palmld.c                     |  3 +--
- 4 files changed, 13 insertions(+), 7 deletions(-)
- rename arch/arm/mach-pxa/{include/mach => }/palmld.h (98%)
+ arch/arm/mach-pxa/cm-x300.c  | 8 ++++----
+ arch/arm/mach-pxa/magician.c | 2 +-
+ arch/arm/mach-pxa/tosa.c     | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/palmld-pcmcia.c b/arch/arm/mach-pxa/palmld-pcmcia.c
-index 07e0f7438db1..720294a50864 100644
---- a/arch/arm/mach-pxa/palmld-pcmcia.c
-+++ b/arch/arm/mach-pxa/palmld-pcmcia.c
-@@ -13,9 +13,10 @@
- #include <linux/gpio.h>
- 
- #include <asm/mach-types.h>
--#include <mach/palmld.h>
- #include <pcmcia/soc_common.h>
- 
-+#include "palmld.h"
-+
- static struct gpio palmld_pcmcia_gpios[] = {
- 	{ GPIO_NR_PALMLD_PCMCIA_POWER,	GPIOF_INIT_LOW,	"PCMCIA Power" },
- 	{ GPIO_NR_PALMLD_PCMCIA_RESET,	GPIOF_INIT_HIGH,"PCMCIA Reset" },
-diff --git a/arch/arm/mach-pxa/palmld.c b/arch/arm/mach-pxa/palmld.c
-index d85146957004..d821606ce0b5 100644
---- a/arch/arm/mach-pxa/palmld.c
-+++ b/arch/arm/mach-pxa/palmld.c
-@@ -29,8 +29,8 @@
- #include <asm/mach/map.h>
- 
- #include "pxa27x.h"
-+#include "palmld.h"
- #include <linux/platform_data/asoc-pxa.h>
--#include <mach/palmld.h>
- #include <linux/platform_data/mmc-pxamci.h>
- #include <linux/platform_data/video-pxafb.h>
- #include <linux/platform_data/irda-pxaficp.h>
-@@ -279,9 +279,15 @@ static inline void palmld_leds_init(void) {}
-  * HDD
-  ******************************************************************************/
- #if defined(CONFIG_PATA_PALMLD) || defined(CONFIG_PATA_PALMLD_MODULE)
-+static struct resource palmld_ide_resources[] = {
-+	DEFINE_RES_MEM(PALMLD_IDE_PHYS, 0x1000),
-+};
-+
- static struct platform_device palmld_ide_device = {
--	.name	= "pata_palmld",
--	.id	= -1,
-+	.name		= "pata_palmld",
-+	.id		= -1,
-+	.resource	= palmld_ide_resources,
-+	.num_resources	= ARRAY_SIZE(palmld_ide_resources),
- };
- 
- static struct gpiod_lookup_table palmld_ide_gpio_table = {
-diff --git a/arch/arm/mach-pxa/include/mach/palmld.h b/arch/arm/mach-pxa/palmld.h
-similarity index 98%
-rename from arch/arm/mach-pxa/include/mach/palmld.h
-rename to arch/arm/mach-pxa/palmld.h
-index 99a6d8b3a1e3..ee3bc15b71a2 100644
---- a/arch/arm/mach-pxa/include/mach/palmld.h
-+++ b/arch/arm/mach-pxa/palmld.h
-@@ -9,7 +9,7 @@
- #ifndef _INCLUDE_PALMLD_H_
- #define _INCLUDE_PALMLD_H_
- 
--#include "irqs.h" /* PXA_GPIO_TO_IRQ */
-+#include <mach/irqs.h> /* PXA_GPIO_TO_IRQ */
- 
- /** HERE ARE GPIOs **/
- 
-diff --git a/drivers/ata/pata_palmld.c b/drivers/ata/pata_palmld.c
-index 2448441571ed..400e65190904 100644
---- a/drivers/ata/pata_palmld.c
-+++ b/drivers/ata/pata_palmld.c
-@@ -25,7 +25,6 @@
- #include <linux/gpio/consumer.h>
- 
- #include <scsi/scsi_host.h>
--#include <mach/palmld.h>
- 
- #define DRV_NAME "pata_palmld"
- 
-@@ -63,7 +62,7 @@ static int palmld_pata_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	/* remap drive's physical memory address */
--	mem = devm_ioremap(dev, PALMLD_IDE_PHYS, 0x1000);
-+	mem = devm_platform_ioremap_resource(pdev, 0);
- 	if (!mem)
- 		return -ENOMEM;
- 
+diff --git a/arch/arm/mach-pxa/cm-x300.c b/arch/arm/mach-pxa/cm-x300.c
+index 09a5264a27c8..01f364a66446 100644
+--- a/arch/arm/mach-pxa/cm-x300.c
++++ b/arch/arm/mach-pxa/cm-x300.c
+@@ -356,13 +356,13 @@ static struct platform_device cm_x300_spi_gpio = {
+ static struct gpiod_lookup_table cm_x300_spi_gpiod_table = {
+ 	.dev_id         = "spi_gpio",
+ 	.table          = {
+-		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_SCL,
++		GPIO_LOOKUP("pca9555.1", GPIO_LCD_SCL - GPIO_LCD_BASE,
+ 			    "sck", GPIO_ACTIVE_HIGH),
+-		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_DIN,
++		GPIO_LOOKUP("pca9555.1", GPIO_LCD_DIN - GPIO_LCD_BASE,
+ 			    "mosi", GPIO_ACTIVE_HIGH),
+-		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_DOUT,
++		GPIO_LOOKUP("pca9555.1", GPIO_LCD_DOUT - GPIO_LCD_BASE,
+ 			    "miso", GPIO_ACTIVE_HIGH),
+-		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_CS,
++		GPIO_LOOKUP("pca9555.1", GPIO_LCD_CS - GPIO_LCD_BASE,
+ 			    "cs", GPIO_ACTIVE_HIGH),
+ 		{ },
+ 	},
+diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
+index 20ca3e28c7fb..d105deb1e098 100644
+--- a/arch/arm/mach-pxa/magician.c
++++ b/arch/arm/mach-pxa/magician.c
+@@ -681,7 +681,7 @@ static struct platform_device bq24022 = {
+ static struct gpiod_lookup_table bq24022_gpiod_table = {
+ 	.dev_id = "gpio-regulator",
+ 	.table = {
+-		GPIO_LOOKUP("gpio-pxa", EGPIO_MAGICIAN_BQ24022_ISET2,
++		GPIO_LOOKUP("htc-egpio-0", EGPIO_MAGICIAN_BQ24022_ISET2 - MAGICIAN_EGPIO_BASE,
+ 			    NULL, GPIO_ACTIVE_HIGH),
+ 		GPIO_LOOKUP("gpio-pxa", GPIO30_MAGICIAN_BQ24022_nCHARGE_EN,
+ 			    "enable", GPIO_ACTIVE_LOW),
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 5af980d77d39..9476ed0f55e9 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -296,9 +296,9 @@ static struct gpiod_lookup_table tosa_mci_gpio_table = {
+ 	.table = {
+ 		GPIO_LOOKUP("gpio-pxa", TOSA_GPIO_nSD_DETECT,
+ 			    "cd", GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP("gpio-pxa", TOSA_GPIO_SD_WP,
++		GPIO_LOOKUP("sharp-scoop.0", TOSA_GPIO_SD_WP - TOSA_SCOOP_GPIO_BASE,
+ 			    "wp", GPIO_ACTIVE_LOW),
+-		GPIO_LOOKUP("gpio-pxa", TOSA_GPIO_PWR_ON,
++		GPIO_LOOKUP("sharp-scoop.0", TOSA_GPIO_PWR_ON - TOSA_SCOOP_GPIO_BASE,
+ 			    "power", GPIO_ACTIVE_HIGH),
+ 		{ },
+ 	},
 -- 
 2.29.2
 
