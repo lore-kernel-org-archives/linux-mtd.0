@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B0A8C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 12:56:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E07DC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 12:57:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
 	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VTLmkKv92VdXbbAKo3S8oKT1BsdI0lvhvh8U9aJk3n4=; b=VMUl+aPVwvWa3fYOa0afiFnjSa
-	v5RJdgSCx5fvD83sDTwLFcJsPc4ZY84QsXe1u0ywZ66anLrCviD/HmiOJf09qrEKLLWXXUPYKVN5Y
-	PSpHSEAVtp0lrmSdVDadCxgICpeBmo9Md8T3PE4hJUDudL3w5CNzN9JomM/h+7sjDXyWRJCn/SB/4
-	/NyA0NcQlhfLdNFX/I/G5+ClX9rsAaNCYTpe91mkflnmNaioGmjaJbu31LTsvfErnqkc8Bbh2rwEZ
-	QTJTPESZRh0QZr8oPkzp7sMJZusaGG3xXaHxk04PY/oJ3ebNOtfAixzvPKu1RJHdvxCjOsYz8Qm5z
-	ZCMfH5+Q==;
+	bh=Bsmcv7+cSDwtPlL/XMoXp+4pioBKr4pkcIO8XtWBqDM=; b=o3sixGjnJ6CRmuoAT+DzU71R/j
+	sVo/ecB7/mIpxlvfCxBmkz80IsI2SaoX0A1Am+sN+cyGWEc5CIQf2Y+eufaFNeqB54/hFvCelVfEN
+	N5umHiZznLG5EPJKByBDqQA/DynuZQOgv1gHO2+3eUvxJWbm17dG33psq+Lh/Uq3V1r0TMpsfKw28
+	7SwZgR3v1K8k0hJm4wgyeChFrFhwZodGve3Scr0fHfKWzhd6LhpJAymsHRNASu14MOR4SsoAJ6h3X
+	Iy7flii/8NVX1od7K7B5srzC3Qxt3DRe1r85imEk/NPltzorSRWSXxLusIqaQlGxDx8dGCfpQ4AWU
+	27+qAdkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngnOy-003eOC-R7; Tue, 19 Apr 2022 12:56:17 +0000
+	id 1ngnPy-003emM-6v; Tue, 19 Apr 2022 12:57:18 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngmHe-003E6O-1r
- for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 11:44:40 +0000
+ id 1ngmIX-003ENI-88
+ for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 11:45:36 +0000
 Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 5CC672223A;
- Tue, 19 Apr 2022 13:44:36 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 5505F2223A;
+ Tue, 19 Apr 2022 13:45:31 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1650368676;
+ s=mail2016061301; t=1650368731;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ytTDMrGXxvlc63LvzCmDIHDUsFbFzDhfNCsM7lyWuZU=;
- b=gZm6tQ14fNWF84bioeUcYfEXII52GMOy3EeMlvNQVja32LCbsYK4b5fs/1lhAMldw301kW
- n3n/nhdi8IUxqdAQ7qBexD4bDwoxEaRw4N1h3K/Cu+Ae5S2z3rwqhq3A5TRNuAF8lFlJs+
- LCsgufcpXMGyuwSwNwa1h+wu1G2x1J8=
+ bh=6SPcEUcZ+YawrMSu3hoigcoMiMVmg9Z0F3USI6yNgGY=;
+ b=uHsVX957RM6NxNVO7GGvp2lWbPzzK+2KNgU0Kjy650PlXcteHBX1Yx8Qe3pwWeXM5t54+U
+ 5fr6dpTvWPFeZHNiHfZaQoPAt2bxlTEjPVsSQ2Hw6wNn2x4fBzR+pJd4ecWndmduSC8ezh
+ NrEXLZFmXepLrxg3vA7eYvydWRKOy88=
 MIME-Version: 1.0
-Date: Tue, 19 Apr 2022 13:44:36 +0200
+Date: Tue, 19 Apr 2022 13:45:31 +0200
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>
 Cc: p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com
-Subject: Re: [PATCH v3 8/9] mtd: spi-nor: spansion: Rework
- spi_nor_cypress_octal_dtr_enable()
-In-Reply-To: <20220411091033.98754-9-tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v3 9/9] mtd: spi-nor: Introduce templates for SPI NOR
+ operations
+In-Reply-To: <20220411091033.98754-10-tudor.ambarus@microchip.com>
 References: <20220411091033.98754-1-tudor.ambarus@microchip.com>
- <20220411091033.98754-9-tudor.ambarus@microchip.com>
+ <20220411091033.98754-10-tudor.ambarus@microchip.com>
 User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <65eb571492d666cd55a08b4ea66beefe@walle.cc>
+Message-ID: <d912d9834a219162ef46efad7d332ef3@walle.cc>
 X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_044438_465395_C98D953A 
-X-CRM114-Status: GOOD (  27.60  )
+X-CRM114-CacheID: sfid-20220419_044533_643886_505A5E46 
+X-CRM114-Status: GOOD (  16.78  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,206 +75,516 @@ Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 Am 2022-04-11 11:10, schrieb Tudor Ambarus:
-> Introduce template operation to remove code duplication.
-> Split spi_nor_cypress_octal_dtr_enable() in
-> spi_nor_cypress_octal_dtr_ena() spi_nor_cypress_octal_dtr_dis() as it 
-> no
-> longer made sense to try to keep everything alltogether: too many
-> "if (enable)" throughout the code, which made the code difficult to 
-> read.
-> Add debug messages in case spi_nor_read_id() fails.
+> Clean the op declaration and hide the details of each op. With this it
+> results a cleanner, easier to read code. No functional change expected.
 > 
 > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+I haven't gone through all of it.
+
+Acked-by: Michael Walle <michael@walle.cc>
 
 > ---
-> v3: collect R-b, update commit message, add dev_dbg message in case
-> spi_nor_read_id() fails.
+> v3: new patch taken from, no changes
+> https://lore.kernel.org/lkml/20220304093011.198173-1-tudor.ambarus@microchip.com/
 > 
->  drivers/mtd/spi-nor/spansion.c | 128 ++++++++++++++++++---------------
->  1 file changed, 69 insertions(+), 59 deletions(-)
+>  drivers/mtd/spi-nor/core.c      | 101 ++++++-------------------------
+>  drivers/mtd/spi-nor/core.h      | 102 ++++++++++++++++++++++++++++++++
+>  drivers/mtd/spi-nor/micron-st.c |  24 ++++----
+>  drivers/mtd/spi-nor/spansion.c  |  26 +++++---
+>  drivers/mtd/spi-nor/xilinx.c    |  12 ++--
+>  5 files changed, 158 insertions(+), 107 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 42794328d3b6..fe853532204c 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -359,11 +359,7 @@ int spi_nor_write_enable(struct spi_nor *nor)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = SPI_NOR_WREN_OP;
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -390,11 +386,7 @@ int spi_nor_write_disable(struct spi_nor *nor)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = SPI_NOR_WRDI_OP;
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -454,11 +446,7 @@ int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, sr, 0));
+> +		struct spi_mem_op op = SPI_NOR_RDSR_OP(sr);
+> 
+>  		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
+>  			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+> @@ -498,11 +486,7 @@ int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, cr, 0));
+> +		struct spi_mem_op op = SPI_NOR_RDCR_OP(cr);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -531,14 +515,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor
+> *nor, bool enable)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(enable ?
+> -						  SPINOR_OP_EN4B :
+> -						  SPINOR_OP_EX4B,
+> -						  0),
+> -				  SPI_MEM_OP_NO_ADDR,
+> -				  SPI_MEM_OP_NO_DUMMY,
+> -				  SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = SPI_NOR_EN4B_EX4B_OP(enable);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -572,11 +549,7 @@ static int spansion_set_4byte_addr_mode(struct
+> spi_nor *nor, bool enable)
+>  	nor->bouncebuf[0] = enable << 7;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BRWR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
+> +		struct spi_mem_op op = SPI_NOR_BRWR_OP(nor->bouncebuf);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -606,11 +579,7 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+>  	nor->bouncebuf[0] = ear;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
+> +		struct spi_mem_op op = SPI_NOR_WREAR_OP(nor->bouncebuf);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -721,11 +690,7 @@ int spi_nor_global_block_unlock(struct spi_nor 
+> *nor)
+>  		return ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = SPI_NOR_GBULK_OP;
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -760,11 +725,7 @@ int spi_nor_write_sr(struct spi_nor *nor, const
+> u8 *sr, size_t len)
+>  		return ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(len, sr, 0));
+> +		struct spi_mem_op op = SPI_NOR_WRSR_OP(sr, len);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -964,11 +925,7 @@ static int spi_nor_write_sr2(struct spi_nor *nor,
+> const u8 *sr2)
+>  		return ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR2, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, sr2, 0));
+> +		struct spi_mem_op op = SPI_NOR_WRSR2_OP(sr2);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -1000,11 +957,7 @@ static int spi_nor_read_sr2(struct spi_nor *nor, 
+> u8 *sr2)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR2, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, sr2, 0));
+> +		struct spi_mem_op op = SPI_NOR_RDSR2_OP(sr2);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -1033,11 +986,7 @@ static int spi_nor_erase_chip(struct spi_nor 
+> *nor)
+>  	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd.size >> 10));
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CHIP_ERASE, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = SPI_NOR_CHIP_ERASE_OP;
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
+> 
+> @@ -1179,10 +1128,8 @@ int spi_nor_erase_sector(struct spi_nor *nor, 
+> u32 addr)
+> 
+>  	if (nor->spimem) {
+>  		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->erase_opcode, 0),
+> -				   SPI_MEM_OP_ADDR(nor->addr_width, addr, 0),
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> +			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
+> +						nor->addr_width, addr);
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
+> 
+> @@ -1978,10 +1925,7 @@ static int spi_nor_spimem_check_op(struct 
+> spi_nor *nor,
+>  static int spi_nor_spimem_check_readop(struct spi_nor *nor,
+>  				       const struct spi_nor_read_command *read)
+>  {
+> -	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(read->opcode, 0),
+> -					  SPI_MEM_OP_ADDR(3, 0, 0),
+> -					  SPI_MEM_OP_DUMMY(1, 0),
+> -					  SPI_MEM_OP_DATA_IN(2, NULL, 0));
+> +	struct spi_mem_op op = SPI_NOR_READ_OP(read->opcode);
+> 
+>  	spi_nor_spimem_setup_op(nor, &op, read->proto);
+> 
+> @@ -2004,10 +1948,7 @@ static int spi_nor_spimem_check_readop(struct
+> spi_nor *nor,
+>  static int spi_nor_spimem_check_pp(struct spi_nor *nor,
+>  				   const struct spi_nor_pp_command *pp)
+>  {
+> -	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(pp->opcode, 0),
+> -					  SPI_MEM_OP_ADDR(3, 0, 0),
+> -					  SPI_MEM_OP_NO_DUMMY,
+> -					  SPI_MEM_OP_DATA_OUT(2, NULL, 0));
+> +	struct spi_mem_op op = SPI_NOR_PP_OP(pp->opcode);
+> 
+>  	spi_nor_spimem_setup_op(nor, &op, pp->proto);
+> 
+> @@ -2831,10 +2772,7 @@ static void spi_nor_soft_reset(struct spi_nor 
+> *nor)
+>  	struct spi_mem_op op;
+>  	int ret;
+> 
+> -	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 
+> 0),
+> -			SPI_MEM_OP_NO_DUMMY,
+> -			SPI_MEM_OP_NO_ADDR,
+> -			SPI_MEM_OP_NO_DATA);
+> +	op = (struct spi_mem_op)SPINOR_SRSTEN_OP;
+> 
+>  	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> @@ -2844,10 +2782,7 @@ static void spi_nor_soft_reset(struct spi_nor 
+> *nor)
+>  		return;
+>  	}
+> 
+> -	op = (struct spi_mem_op)SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 0),
+> -			SPI_MEM_OP_NO_DUMMY,
+> -			SPI_MEM_OP_NO_ADDR,
+> -			SPI_MEM_OP_NO_DATA);
+> +	op = (struct spi_mem_op)SPINOR_SRST_OP;
+> 
+>  	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> 
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 7c704475946d..8b7e597fd38c 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -18,6 +18,108 @@
+>  		   SPI_MEM_OP_DUMMY(ndummy, 0),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 0))
+> 
+> +#define SPI_NOR_WREN_OP							\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREN, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPI_NOR_WRDI_OP							\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRDI, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPI_NOR_RDSR_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+> +
+> +#define SPI_NOR_WRSR_OP(buf, len)					\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT(len, buf, 0))
+> +
+> +#define SPI_NOR_RDSR2_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR2, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
+> +
+> +#define SPI_NOR_WRSR2_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR2, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
+> +
+> +#define SPI_NOR_RDCR_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+> +
+> +#define SPI_NOR_EN4B_EX4B_OP(enable)					\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B, 
+> 0),	\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPI_NOR_BRWR_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BRWR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
+> +
+> +#define SPI_NOR_WREAR_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT(1, buf, 0))
+> +
+> +#define SPI_NOR_GBULK_OP						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_GBULK, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPI_NOR_CHIP_ERASE_OP						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CHIP_ERASE, 0),		\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPI_NOR_SECTOR_ERASE_OP(opcode, addr_width, addr)		\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
+> +		   SPI_MEM_OP_ADDR(addr_width, addr, 0),		\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPI_NOR_READ_OP(opcode)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
+> +		   SPI_MEM_OP_ADDR(3, 0, 0),				\
+> +		   SPI_MEM_OP_DUMMY(1, 0),				\
+> +		   SPI_MEM_OP_DATA_IN(2, NULL, 0))
+> +
+> +#define SPI_NOR_PP_OP(opcode)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
+> +		   SPI_MEM_OP_ADDR(3, 0, 0),				\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT(2, NULL, 0))
+> +
+> +#define SPINOR_SRSTEN_OP						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRSTEN, 0),			\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+> +#define SPINOR_SRST_OP							\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_SRST, 0),			\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+>  enum spi_nor_option_flags {
+>  	SNOR_F_HAS_SR_TB	= BIT(0),
+>  	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
+> diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> b/drivers/mtd/spi-nor/micron-st.c
+> index a447762c0d78..26b9a1c2309d 100644
+> --- a/drivers/mtd/spi-nor/micron-st.c
+> +++ b/drivers/mtd/spi-nor/micron-st.c
+> @@ -35,6 +35,18 @@
+>  		   SPI_MEM_OP_NO_DUMMY,					\
+>  		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
+> 
+> +#define MICRON_ST_RDFSR_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDFSR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+> +
+> +#define MICRON_ST_CLFSR_OP						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLFSR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+>  static int micron_st_nor_octal_dtr_en(struct spi_nor *nor)
+>  {
+>  	struct spi_mem_op op;
+> @@ -324,11 +336,7 @@ static int micron_st_nor_read_fsr(struct spi_nor
+> *nor, u8 *fsr)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDFSR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, fsr, 0));
+> +		struct spi_mem_op op = MICRON_ST_RDFSR_OP(fsr);
+> 
+>  		if (nor->reg_proto == SNOR_PROTO_8_8_8_DTR) {
+>  			op.addr.nbytes = nor->params->rdsr_addr_nbytes;
+> @@ -363,11 +371,7 @@ static void micron_st_nor_clear_fsr(struct spi_nor 
+> *nor)
+>  	int ret;
+> 
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLFSR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = MICRON_ST_CLFSR_OP;
+> 
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
 > 
 > diff --git a/drivers/mtd/spi-nor/spansion.c 
 > b/drivers/mtd/spi-nor/spansion.c
-> index c5988312cc91..35d8edb515a3 100644
+> index 35d8edb515a3..952db7af6932 100644
 > --- a/drivers/mtd/spi-nor/spansion.c
 > +++ b/drivers/mtd/spi-nor/spansion.c
-> @@ -23,87 +23,81 @@
->  #define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
->  #define SPINOR_OP_CYPRESS_RD_FAST		0xee
+> @@ -30,6 +30,18 @@
+>  		   SPI_MEM_OP_NO_DUMMY,					\
+>  		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
 > 
-> -/**
-> - * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress 
-> flashes.
-> - * @nor:		pointer to a 'struct spi_nor'
-> - * @enable:              whether to enable or disable Octal DTR
-> - *
-> - * This also sets the memory access latency cycles to 24 to allow the 
-> flash to
-> - * run at up to 200MHz.
-> - *
-> - * Return: 0 on success, -errno otherwise.
-> - */
-> -static int cypress_nor_octal_dtr_enable(struct spi_nor *nor, bool 
-> enable)
-> +/* Cypress SPI NOR flash operations. */
-> +#define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
-> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),		\
+> +#define CYPRESS_NOR_RD_ANY_REG_OP(naddr, addr, buf)			\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),		\
 > +		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
 > +		   SPI_MEM_OP_NO_DUMMY,					\
-> +		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
+> +		   SPI_MEM_OP_DATA_IN(1, buf, 0))
 > +
-> +static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
+> +#define SPANSION_CLSR_OP						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_NO_DATA)
+> +
+>  static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
 >  {
 >  	struct spi_mem_op op;
->  	u8 *buf = nor->bouncebuf;
+> @@ -165,12 +177,12 @@ static int s28hs512t_post_bfpt_fixup(struct 
+> spi_nor *nor,
+>  	 * CFR3V[4] and set the correct size.
+>  	 */
+>  	struct spi_mem_op op =
+> -		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 1),
+> -			   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR3V, 1),
+> -			   SPI_MEM_OP_NO_DUMMY,
+> -			   SPI_MEM_OP_DATA_IN(1, nor->bouncebuf, 1));
+> +		CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR3V,
+> +					  nor->bouncebuf);
 >  	int ret;
 > 
-> -	if (enable) {
-> -		/* Use 24 dummy cycles for memory array reads. */
-> -		ret = spi_nor_write_enable(nor);
-> -		if (ret)
-> -			return ret;
-> +	/* Use 24 dummy cycles for memory array reads. */
-> +	*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
-> +	op = (struct spi_mem_op)
-> +		CYPRESS_NOR_WR_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR2V, 1, buf);
+> +	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> +
+>  	ret = spi_mem_exec_op(nor->spimem, &op);
+>  	if (ret)
+>  		return ret;
+> @@ -320,11 +332,7 @@ static void spansion_nor_clear_sr(struct spi_nor 
+> *nor)
+>  	int ret;
 > 
-> -		*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
-> -		op = (struct spi_mem_op)
-> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-> -				   SPI_MEM_OP_ADDR(3, SPINOR_REG_CYPRESS_CFR2V,
-> -						   1),
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
 > -				   SPI_MEM_OP_NO_DUMMY,
-> -				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-> +	ret = spi_nor_write_reg(nor, &op, nor->reg_proto);
-> +	if (ret)
-> +		return ret;
+> -				   SPI_MEM_OP_NO_DATA);
+> +		struct spi_mem_op op = SPANSION_CLSR_OP;
 > 
-> -		ret = spi_mem_exec_op(nor->spimem, &op);
-> -		if (ret)
-> -			return ret;
-> +	ret = spi_nor_wait_till_ready(nor);
-> +	if (ret)
-> +		return ret;
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
 > 
-> -		ret = spi_nor_wait_till_ready(nor);
-> -		if (ret)
-> -			return ret;
-> +	nor->read_dummy = 24;
+> diff --git a/drivers/mtd/spi-nor/xilinx.c 
+> b/drivers/mtd/spi-nor/xilinx.c
+> index 9459ac2609dc..1d2f5db047bd 100644
+> --- a/drivers/mtd/spi-nor/xilinx.c
+> +++ b/drivers/mtd/spi-nor/xilinx.c
+> @@ -15,6 +15,12 @@
+>  #define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
+>  #define XSR_RDY			BIT(7)	/* Ready */
 > 
-> -		nor->read_dummy = 24;
-> -	}
-> +	/* Set the octal and DTR enable bits. */
-> +	buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
-> +	op = (struct spi_mem_op)
-> +		CYPRESS_NOR_WR_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR5V, 1, buf);
-> 
-> -	/* Set/unset the octal and DTR enable bits. */
-> -	ret = spi_nor_write_enable(nor);
-> +	ret = spi_nor_write_reg(nor, &op, nor->reg_proto);
->  	if (ret)
->  		return ret;
-> 
-> -	if (enable) {
-> -		buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
-> -	} else {
-> -		/*
-> -		 * The register is 1-byte wide, but 1-byte transactions are not
-> -		 * allowed in 8D-8D-8D mode. Since there is no register at the
-> -		 * next location, just initialize the value to 0 and let the
-> -		 * transaction go on.
-> -		 */
-> -		buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
-> -		buf[1] = 0;
-> +	/* Read flash ID to make sure the switch was successful. */
-> +	ret = spi_nor_read_id(nor, 4, 3, buf, SNOR_PROTO_8_8_8_DTR);
-> +	if (ret) {
-> +		dev_dbg(nor->dev, "error %d reading JEDEC ID after enabling
-> 8D-8D-8D mode\n", ret);
-> +		return ret;
->  	}
-> 
-> -	op = (struct spi_mem_op)
-> -		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 1),
-> -			   SPI_MEM_OP_ADDR(enable ? 3 : 4,
-> -					   SPINOR_REG_CYPRESS_CFR5V,
-> -					   1),
-> -			   SPI_MEM_OP_NO_DUMMY,
-> -			   SPI_MEM_OP_DATA_OUT(enable ? 1 : 2, buf, 1));
-> +	if (memcmp(buf, nor->info->id, nor->info->id_len))
-> +		return -EINVAL;
-> 
-> -	if (!enable)
-> -		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-> +	return 0;
-> +}
-> 
-> -	ret = spi_mem_exec_op(nor->spimem, &op);
-> +static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
-> +{
-> +	struct spi_mem_op op;
-> +	u8 *buf = nor->bouncebuf;
-> +	int ret;
+> +#define XILINX_RDSR_OP(buf)						\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),			\
+> +		   SPI_MEM_OP_NO_ADDR,					\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_IN(1, buf, 0))
 > +
-> +	/*
-> +	 * The register is 1-byte wide, but 1-byte transactions are not 
-> allowed
-> +	 * in 8D-8D-8D mode. Since there is no register at the next location,
-> +	 * just initialize the value to 0 and let the transaction go on.
-> +	 */
-> +	buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
-> +	buf[1] = 0;
-> +	op = (struct spi_mem_op)
-> +		CYPRESS_NOR_WR_ANY_REG_OP(4, SPINOR_REG_CYPRESS_CFR5V, 2, buf);
-> +	ret = spi_nor_write_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
->  	if (ret)
->  		return ret;
+>  #define S3AN_INFO(_jedec_id, _n_sectors, _page_size)			\
+>  		.id = {							\
+>  			((_jedec_id) >> 16) & 0xff,			\
+> @@ -72,11 +78,7 @@ static int xilinx_nor_read_sr(struct spi_nor *nor, 
+> u8 *sr)
+>  	int ret;
 > 
->  	/* Read flash ID to make sure the switch was successful. */
-> -	if (enable)
-> -		ret = spi_nor_read_id(nor, 4, 3, buf, SNOR_PROTO_8_8_8_DTR);
-> -	else
-> -		ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
-> -	if (ret)
-> +	ret = spi_nor_read_id(nor, 0, 0, buf, SNOR_PROTO_1_1_1);
-> +	if (ret) {
-> +		dev_dbg(nor->dev, "error %d reading JEDEC ID after disabling
-> 8D-8D-8D mode\n", ret);
->  		return ret;
-> +	}
+>  	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, sr, 0));
+> +		struct spi_mem_op op = XILINX_RDSR_OP(sr);
 > 
->  	if (memcmp(buf, nor->info->id, nor->info->id_len))
->  		return -EINVAL;
-> @@ -111,6 +105,22 @@ static int cypress_nor_octal_dtr_enable(struct
-> spi_nor *nor, bool enable)
->  	return 0;
->  }
-> 
-> +/**
-> + * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress 
-> flashes.
-> + * @nor:		pointer to a 'struct spi_nor'
-> + * @enable:              whether to enable or disable Octal DTR
-> + *
-> + * This also sets the memory access latency cycles to 24 to allow the 
-> flash to
-> + * run at up to 200MHz.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int cypress_nor_octal_dtr_enable(struct spi_nor *nor, bool 
-> enable)
-> +{
-> +	return enable ? cypress_nor_octal_dtr_en(nor) :
-> +			cypress_nor_octal_dtr_dis(nor);
-> +}
-> +
->  static void s28hs512t_default_init(struct spi_nor *nor)
->  {
->  	nor->params->octal_dtr_enable = cypress_nor_octal_dtr_enable;
+>  		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
 
 -- 
 -michael
