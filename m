@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1133C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 17:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83DE5C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 17:25:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JV4TNcu3RG8idD7cAr5sUdshqdKs/mLmt8vWrzhDh74=; b=shSBuy3RWkCLMt
-	1fqC4ZsQD5YfQ0TqV9/7I0WNfQq3IENhvmXVmPvsU9msO9+U/Cb3GDKMvmo//UTGwWYef0raFYYF6
-	6jCzDH+JQu0iBUgQuhZM3HuO3hDxSa0DhrFudQbmQKd71g45CVjr63j+mLQzTUk4sA15+EDA/VKMZ
-	YsEs3ZLTsAclefQxveA1A/ZOE5kGYpDhFi0HFZVVW1G/2B5t1890SX3cttzz8IaSifw9C8p/S+DFk
-	qtXyIrqVgK2FaBAJ2bzu7NcAy8A/28S/kl8BKI3DZo0aT3VUDqiWjxaXz99javAlwl0M+kGaD+iXk
-	ti3dK3OdUN3YUOs6+4qQ==;
+	List-Owner; bh=bI4g8fIAlDPGSZI3Vp1H+YnaYDS0CaXLcNgeO4Axwv8=; b=0oGaeJfLqAkly2
+	EYAOs4SJtgEN4EHY7Pc/Gj/j8S8Egx3GKyc2Op3g7NeKpeAfxDHza6ET0zQOh48l4xynRePVxqD3T
+	kR8hFPKrjWfXVQkiw8/1uxV4d3zuFLjrDj32vEjF/Fd5kQdbXiLIE5nlJx31hsZDIfwqiwkDorZde
+	Pm/2tKKxG7txzWHEBbC/UHZb8EmfeyEqlsif2afQ3/aJvTttS3cg+2EzBilSIXMNPVKWkFwz2F3SW
+	s25gM6BuAZAY7r4Hrokri/1AJqLyISbez+9l21iXqnguGohOGIMH861x22ba4xAh64R3YrHLmnu+M
+	Yg6CLs+4OO8CQ8/84tOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngrZd-005HA0-GX; Tue, 19 Apr 2022 17:23:33 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1ngrbZ-005HzZ-Cs; Tue, 19 Apr 2022 17:25:33 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngqxK-004yTK-6B; Tue, 19 Apr 2022 16:44:00 +0000
+ id 1ngqxa-004ydT-Oq; Tue, 19 Apr 2022 16:44:16 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 951AA61877;
- Tue, 19 Apr 2022 16:43:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EC2BC385A5;
- Tue, 19 Apr 2022 16:43:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3A117B81BFB;
+ Tue, 19 Apr 2022 16:44:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61AA5C385AD;
+ Tue, 19 Apr 2022 16:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650386637;
- bh=qlaYFyobKEQjnzQZM9MNp5qNQqkRYezyfa1kDOn31O4=;
+ s=k20201202; t=1650386652;
+ bh=xU/U9xkTvFUXFL8Wopr4rZHXHyzXgLRf0YqQRK4Kvss=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=IfCx1sYsItrvvOhd62OVGq73m59nNboCQp/gH4IxEBVU5zCvpQPCNPA7TuLYFXC6C
- LwaFif0SpZk4iKNSuUv5XERVH3Itoh7apK3zIBcowiSB/8aMiJR+86E55VqZMRViGM
- vxBgMMnsawZno/joMpTCd+ep1ROboUpME3CMorprNKBdA5wmg9bbhuyypuFsCjLW8G
- yE/u4h18EsDdKvT5ABnu1pHVnRKTIiK1fqnwH6cD1Nj0kuQJNcwzeZUE12odIw17Nr
- I4FoURlNeI1+CxCMlSZX0Yt4E6U9SjEz7W8MiBWwtf7IWB7ooRCN+I7IGpKqWmgJa2
- GROrW1/+TSmQA==
+ b=OM0GwvoFjDTXu7F7DMTK9IAJLrdekpoJNNdqgKZOqnT0MxcJctOA38FNelxFTEIEi
+ rfOkyib+5L0BuGs5gSth50JnQfK4wt3P5XbEMzwjlxtkKR2D5Fp6NSpVpT6JKLzOYa
+ sUcSPu9YpMeAuC5R0d9Ntrrwz+yhMHEr/UloCY/EYZJ1RL8i+BYnDoiDTB5kDUDvsN
+ cfM9amClMURurngFRlcw5eiNrdaaZ0Wt5Rgqq1W263FPZpQFgkIEKzYtsp52+Hu//Z
+ ZDG5KKaetJsY/MAdjSi0qUGYxcFLyaW3uLnIWcs9gXXeXABgeTGYRt2fpOditJ3OfS
+ VNvsgnrEcsb+w==
 From: Arnd Bergmann <arnd@kernel.org>
 To: robert.jarzmik@free.fr,
 	linux-arm-kernel@lists.infradead.org
@@ -65,18 +65,17 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
  linux-leds@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
- Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH 39/48] power: tosa: simplify probe function
-Date: Tue, 19 Apr 2022 18:38:01 +0200
-Message-Id: <20220419163810.2118169-40-arnd@kernel.org>
+ dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
+Subject: [PATCH 41/48] ARM: pxa: remove unused mach/bitfield.h
+Date: Tue, 19 Apr 2022 18:38:03 +0200
+Message-Id: <20220419163810.2118169-42-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_094358_420311_6CC991E6 
-X-CRM114-Status: GOOD (  15.83  )
+X-CRM114-CacheID: sfid-20220419_094415_159224_F9B8BEEA 
+X-CRM114-Status: GOOD (  19.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,96 +94,151 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-We have three power supplies that need similar initialization.
-As a preparation for the gpio lookup table conversion, split
-out the initialization into a separate function.
+The sa1111.h header defines some constants using the bitfield
+macros, but those are only used on sa1100, not on pxa, and the
+users include the bitfield header through mach/hardware.h.
 
-Reviewed-by: Sebastian Reichel <sre@kernel.org>
-Acked-by: Sebastian Reichel <sre@kernel.org>
-Cc: linux-pm@vger.kernel.org
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/power/supply/tosa_battery.c | 50 ++++++++++++++---------------
- 1 file changed, 24 insertions(+), 26 deletions(-)
+ arch/arm/include/asm/hardware/sa1111.h    |   2 -
+ arch/arm/mach-pxa/include/mach/bitfield.h | 114 ----------------------
+ 2 files changed, 116 deletions(-)
+ delete mode 100644 arch/arm/mach-pxa/include/mach/bitfield.h
 
-diff --git a/drivers/power/supply/tosa_battery.c b/drivers/power/supply/tosa_battery.c
-index 32cc31cd4761..b26b0eca33e1 100644
---- a/drivers/power/supply/tosa_battery.c
-+++ b/drivers/power/supply/tosa_battery.c
-@@ -343,12 +343,24 @@ static int tosa_bat_resume(struct platform_device *dev)
- #define tosa_bat_resume NULL
- #endif
+diff --git a/arch/arm/include/asm/hardware/sa1111.h b/arch/arm/include/asm/hardware/sa1111.h
+index 2e70db6f22ea..d8c6f8a99dfa 100644
+--- a/arch/arm/include/asm/hardware/sa1111.h
++++ b/arch/arm/include/asm/hardware/sa1111.h
+@@ -13,8 +13,6 @@
+ #ifndef _ASM_ARCH_SA1111
+ #define _ASM_ARCH_SA1111
  
-+static int tosa_power_supply_register(struct device *dev,
-+			struct tosa_bat *bat,
-+			const struct power_supply_desc *desc)
-+{
-+	struct power_supply_config cfg = {
-+		.drv_data = bat,
-+	};
-+
-+	mutex_init(&bat->work_lock);
-+	bat->psy = power_supply_register(dev, desc, &cfg);
-+
-+	return PTR_ERR_OR_ZERO(bat->psy);
-+}
-+
-+
- static int tosa_bat_probe(struct platform_device *dev)
- {
- 	int ret;
--	struct power_supply_config main_psy_cfg = {},
--				   jacket_psy_cfg = {},
--				   bu_psy_cfg = {};
- 
- 	if (!machine_is_tosa())
- 		return -ENODEV;
-@@ -357,36 +369,22 @@ static int tosa_bat_probe(struct platform_device *dev)
- 	if (ret)
- 		return ret;
- 
--	mutex_init(&tosa_bat_main.work_lock);
--	mutex_init(&tosa_bat_jacket.work_lock);
+-#include <mach/bitfield.h>
 -
- 	INIT_WORK(&bat_work, tosa_bat_work);
- 
--	main_psy_cfg.drv_data = &tosa_bat_main;
--	tosa_bat_main.psy = power_supply_register(&dev->dev,
--						  &tosa_bat_main_desc,
--						  &main_psy_cfg);
--	if (IS_ERR(tosa_bat_main.psy)) {
--		ret = PTR_ERR(tosa_bat_main.psy);
-+	ret = tosa_power_supply_register(&dev->dev, &tosa_bat_main,
-+					 &tosa_bat_main_desc);
-+	if (ret)
- 		goto err_psy_reg_main;
--	}
- 
--	jacket_psy_cfg.drv_data = &tosa_bat_jacket;
--	tosa_bat_jacket.psy = power_supply_register(&dev->dev,
--						    &tosa_bat_jacket_desc,
--						    &jacket_psy_cfg);
--	if (IS_ERR(tosa_bat_jacket.psy)) {
--		ret = PTR_ERR(tosa_bat_jacket.psy);
-+	ret = tosa_power_supply_register(&dev->dev, &tosa_bat_jacket,
-+					 &tosa_bat_jacket_desc);
-+	if (ret)
- 		goto err_psy_reg_jacket;
--	}
- 
--	bu_psy_cfg.drv_data = &tosa_bat_bu;
--	tosa_bat_bu.psy = power_supply_register(&dev->dev, &tosa_bat_bu_desc,
--						&bu_psy_cfg);
--	if (IS_ERR(tosa_bat_bu.psy)) {
--		ret = PTR_ERR(tosa_bat_bu.psy);
-+	ret = tosa_power_supply_register(&dev->dev, &tosa_bat_bu,
-+					 &tosa_bat_bu_desc);
-+	if (ret)
- 		goto err_psy_reg_bu;
--	}
- 
- 	ret = request_irq(gpio_to_irq(TOSA_GPIO_BAT0_CRG),
- 				tosa_bat_gpio_isr,
+ /*
+  * Don't ask the (SAC) DMA engines to move less than this amount.
+  */
+diff --git a/arch/arm/mach-pxa/include/mach/bitfield.h b/arch/arm/mach-pxa/include/mach/bitfield.h
+deleted file mode 100644
+index fe2ca441bc0a..000000000000
+--- a/arch/arm/mach-pxa/include/mach/bitfield.h
++++ /dev/null
+@@ -1,114 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- *	FILE    	bitfield.h
+- *
+- *	Version 	1.1
+- *	Author  	Copyright (c) Marc A. Viredaz, 1998
+- *	        	DEC Western Research Laboratory, Palo Alto, CA
+- *	Date    	April 1998 (April 1997)
+- *	System  	Advanced RISC Machine (ARM)
+- *	Language	C or ARM Assembly
+- *	Purpose 	Definition of macros to operate on bit fields.
+- */
+-
+-
+-
+-#ifndef __BITFIELD_H
+-#define __BITFIELD_H
+-
+-#ifndef __ASSEMBLY__
+-#define UData(Data)	((unsigned long) (Data))
+-#else
+-#define UData(Data)	(Data)
+-#endif
+-
+-
+-/*
+- * MACRO: Fld
+- *
+- * Purpose
+- *    The macro "Fld" encodes a bit field, given its size and its shift value
+- *    with respect to bit 0.
+- *
+- * Note
+- *    A more intuitive way to encode bit fields would have been to use their
+- *    mask. However, extracting size and shift value information from a bit
+- *    field's mask is cumbersome and might break the assembler (255-character
+- *    line-size limit).
+- *
+- * Input
+- *    Size      	Size of the bit field, in number of bits.
+- *    Shft      	Shift value of the bit field with respect to bit 0.
+- *
+- * Output
+- *    Fld       	Encoded bit field.
+- */
+-
+-#define Fld(Size, Shft)	(((Size) << 16) + (Shft))
+-
+-
+-/*
+- * MACROS: FSize, FShft, FMsk, FAlnMsk, F1stBit
+- *
+- * Purpose
+- *    The macros "FSize", "FShft", "FMsk", "FAlnMsk", and "F1stBit" return
+- *    the size, shift value, mask, aligned mask, and first bit of a
+- *    bit field.
+- *
+- * Input
+- *    Field     	Encoded bit field (using the macro "Fld").
+- *
+- * Output
+- *    FSize     	Size of the bit field, in number of bits.
+- *    FShft     	Shift value of the bit field with respect to bit 0.
+- *    FMsk      	Mask for the bit field.
+- *    FAlnMsk   	Mask for the bit field, aligned on bit 0.
+- *    F1stBit   	First bit of the bit field.
+- */
+-
+-#define FSize(Field)	((Field) >> 16)
+-#define FShft(Field)	((Field) & 0x0000FFFF)
+-#define FMsk(Field)	(((UData (1) << FSize (Field)) - 1) << FShft (Field))
+-#define FAlnMsk(Field)	((UData (1) << FSize (Field)) - 1)
+-#define F1stBit(Field)	(UData (1) << FShft (Field))
+-
+-
+-/*
+- * MACRO: FInsrt
+- *
+- * Purpose
+- *    The macro "FInsrt" inserts a value into a bit field by shifting the
+- *    former appropriately.
+- *
+- * Input
+- *    Value     	Bit-field value.
+- *    Field     	Encoded bit field (using the macro "Fld").
+- *
+- * Output
+- *    FInsrt    	Bit-field value positioned appropriately.
+- */
+-
+-#define FInsrt(Value, Field) \
+-                	(UData (Value) << FShft (Field))
+-
+-
+-/*
+- * MACRO: FExtr
+- *
+- * Purpose
+- *    The macro "FExtr" extracts the value of a bit field by masking and
+- *    shifting it appropriately.
+- *
+- * Input
+- *    Data      	Data containing the bit-field to be extracted.
+- *    Field     	Encoded bit field (using the macro "Fld").
+- *
+- * Output
+- *    FExtr     	Bit-field value.
+- */
+-
+-#define FExtr(Data, Field) \
+-                	((UData (Data) >> FShft (Field)) & FAlnMsk (Field))
+-
+-
+-#endif /* __BITFIELD_H */
 -- 
 2.29.2
 
