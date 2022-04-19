@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4395DC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:52:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56F13C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 16:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=m2waVwwuYSZG/kX/MNbBmAu/zzUe1nHmyHMROo3Kkv4=; b=TehPPp3hFCaJUS
-	gElrgMMcDozsNDXnpHiIITFT+uG4fdIwRDJgvLULcVXnsumvczd8iabgKWoZOJpa6aFr0nWzS40sP
-	Ya4lAcaS2BsaJ5nKw42Ld2v85CUHZI3tNtzLV0eomDKO6YD9ZIuzAH25I8rAs7laeW6ux4nVpBSEc
-	+diG/YrOx2cUsQ4te0+LbAqrXHd2EPNRs6s7CPHKVOttWxwjYG3G/Y1gUznGlsVennV0OXzOjdA4E
-	QF3Wdwc8ETUH0RGvzoPRcJNMzC9MsQUVWP3cS0hXwOEVpEsMdXcJyG8pljWRFglCxGEk/dZoJs/XH
-	kqyyYeyM0Z75FzEdDd/w==;
+	List-Owner; bh=9Yem8AAFQVyVEbTN4UxslvyZ+gVJT4onIurUNWFaEzw=; b=3qDQQ3rCCHJjk/
+	VB/7L/39t6Cx3y+E9H7SL4V8kkXdJtf27NdWu5EkQON0jrgJ8VeHBJVtIQJr/X3cTAgc+0uLNDePs
+	70KpxdeukFDX1C1iebveevySsMpSdog3Zp9dW7xS97j9LYr6eL5xSyBgL5CZbEynmZgvBNEUvsDih
+	YT0Ajmpup/qelzpad93OcQlrI3aY5Wa6I5qyHVxBDpGUnqfWPwYvGaNHapIZ23hb/9Ly9U7X3w4l/
+	D8/GPghdfQDFOycKGJKxLVojKAEXopSWH7k9awX0ruTN6B5oiV3e89EjtZDmwe5FbR1nhCnAIlqMF
+	nnd8hqHInJkpgPYUsUtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngr5A-0052Ri-Qk; Tue, 19 Apr 2022 16:52:04 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1ngr6X-00534x-Hc; Tue, 19 Apr 2022 16:53:29 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngqtv-004wR6-Bb; Tue, 19 Apr 2022 16:40:31 +0000
+ id 1ngqu5-004wWK-0T; Tue, 19 Apr 2022 16:40:39 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BA9EB6182B;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 97611B8196F;
+ Tue, 19 Apr 2022 16:40:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E156C385AD;
  Tue, 19 Apr 2022 16:40:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD0FC385A5;
- Tue, 19 Apr 2022 16:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650386426;
- bh=ptMtOudbQ5loXUIBoTxa9Js2NvWZa4r2mq6O40yUHH0=;
+ s=k20201202; t=1650386434;
+ bh=Me5Zax9Cglx1LkHOlA8xV8JEJklryJyWSe6dcCjrrgY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=sn7fnX8rRkBuqtQMfRkdqeTmIHa3aEVyEQqy3ea6Rcph7o5+q2+oJQtgfayzkGgGD
- pBrobPc0a288Jt5l21HSNaRfaU6aAdkHaECQNojqoW85epuPmw1VvMwvkSO6N07k/3
- 115Wizs7BJeOANhRCBPtn5ETmJ1DN/7eD9VqdGz01zYvnNHqGUiTr7Xr5IQ32fnJKz
- 73a5FySo1/OXZDPRM/Hg6r35U+vs89tmssHNWG7O1Y8buOzXQepqwD84VLvP022GvN
- c6H9ZVfE372WNIs8vRZiLFyLD+Hr6zPSL7rCagmKzA+O8wvtPs7NCaSk+bRoY9berF
- uj9Ak7o458yOA==
+ b=sakbeqPI29Om+/FQz0qrFAi7y4JGvalfYfkXPgEmDAHQE5JutGOtnitKMdhD/p0lN
+ DhEAF01KwxuyAz3UGi3jwRt2GxBEtmj4vxHkA3PItSOKP3X54DH90IyriUJPKRYV1X
+ BIAvtuns7tePi7NLdUUzAV57aLC7hbjqxyX7AZDclAvUdWuFIT078ADdlzcICL/9+M
+ wgI5g6kwYoVtQAA0Eymt32oBHJZSCTUcWvhwf1aLMMuBWcXT5wyS3qq8oCJZh/mBF4
+ UDot9x1fEXjfgm7bXqg4vfaXPFcwtqapRVe3zSRHwo/Vvq34alxLUDf9aCVWAxKea7
+ RZ4Ev5Hjil72g==
 From: Arnd Bergmann <arnd@kernel.org>
 To: robert.jarzmik@free.fr,
 	linux-arm-kernel@lists.infradead.org
@@ -65,17 +65,19 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
  linux-leds@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org,
  linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
-Subject: [PATCH 12/48] ARM: pxa: make addr-map.h header local
-Date: Tue, 19 Apr 2022 18:37:34 +0200
-Message-Id: <20220419163810.2118169-13-arnd@kernel.org>
+ dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
+ Jens Axboe <axboe@kernel.dk>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH 13/48] ARM: pxa: use pdev resource for palmld mmio
+Date: Tue, 19 Apr 2022 18:37:35 +0200
+Message-Id: <20220419163810.2118169-14-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_094027_566782_54C72E2D 
-X-CRM114-Status: GOOD (  13.44  )
+X-CRM114-CacheID: sfid-20220419_094037_442201_2D175FFB 
+X-CRM114-Status: GOOD (  19.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,205 +96,108 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Drivers should not rely on the contents of this file, so
-move it into the platform directory directly.
+The palmld header is almost unused in drivers, the only
+remaining thing now is the PATA device address, which should
+really be passed as a resource.
 
-Cc: Philipp Zabel <philipp.zabel@gmail.com>
-Cc: Paul Parsons <lost.distance@yahoo.com>
-
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: linux-ide@vger.kernel.org
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/lkml/87mudkmx8g.fsf@belgarion.home/
 ---
- arch/arm/mach-pxa/{include/mach => }/addr-map.h | 0
- arch/arm/mach-pxa/generic.c                     | 2 +-
- arch/arm/mach-pxa/hx4700.c                      | 2 +-
- arch/arm/mach-pxa/lpd270.c                      | 2 +-
- arch/arm/mach-pxa/magician.c                    | 2 +-
- arch/arm/mach-pxa/mainstone.c                   | 2 +-
- arch/arm/mach-pxa/pxa25x.c                      | 2 +-
- arch/arm/mach-pxa/pxa25x.h                      | 2 +-
- arch/arm/mach-pxa/pxa27x.c                      | 2 +-
- arch/arm/mach-pxa/pxa27x.h                      | 2 +-
- arch/arm/mach-pxa/pxa3xx.c                      | 2 +-
- arch/arm/mach-pxa/pxa3xx.h                      | 2 +-
- arch/arm/mach-pxa/trizeps4.h                    | 2 +-
- arch/arm/mach-pxa/xcep.c                        | 2 +-
- 14 files changed, 13 insertions(+), 13 deletions(-)
- rename arch/arm/mach-pxa/{include/mach => }/addr-map.h (100%)
+ arch/arm/mach-pxa/palmld-pcmcia.c             |  3 ++-
+ arch/arm/mach-pxa/palmld.c                    | 12 +++++++++---
+ arch/arm/mach-pxa/{include/mach => }/palmld.h |  2 +-
+ drivers/ata/pata_palmld.c                     |  3 +--
+ 4 files changed, 13 insertions(+), 7 deletions(-)
+ rename arch/arm/mach-pxa/{include/mach => }/palmld.h (98%)
 
-diff --git a/arch/arm/mach-pxa/include/mach/addr-map.h b/arch/arm/mach-pxa/addr-map.h
-similarity index 100%
-rename from arch/arm/mach-pxa/include/mach/addr-map.h
-rename to arch/arm/mach-pxa/addr-map.h
-diff --git a/arch/arm/mach-pxa/generic.c b/arch/arm/mach-pxa/generic.c
-index 3c3cd90bb9b4..f9083c4f0aea 100644
---- a/arch/arm/mach-pxa/generic.c
-+++ b/arch/arm/mach-pxa/generic.c
-@@ -22,7 +22,7 @@
- #include <asm/mach/map.h>
+diff --git a/arch/arm/mach-pxa/palmld-pcmcia.c b/arch/arm/mach-pxa/palmld-pcmcia.c
+index 07e0f7438db1..720294a50864 100644
+--- a/arch/arm/mach-pxa/palmld-pcmcia.c
++++ b/arch/arm/mach-pxa/palmld-pcmcia.c
+@@ -13,9 +13,10 @@
+ #include <linux/gpio.h>
+ 
  #include <asm/mach-types.h>
+-#include <mach/palmld.h>
+ #include <pcmcia/soc_common.h>
  
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/irqs.h>
- #include <mach/reset.h>
- #include <mach/smemc.h>
-diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
-index 191a6c24fe19..140a44cb2989 100644
---- a/arch/arm/mach-pxa/hx4700.c
-+++ b/arch/arm/mach-pxa/hx4700.c
-@@ -40,7 +40,7 @@
- #include <asm/mach/arch.h>
- 
- #include "pxa27x.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/hx4700.h>
- #include <linux/platform_data/irda-pxaficp.h>
- 
-diff --git a/arch/arm/mach-pxa/lpd270.c b/arch/arm/mach-pxa/lpd270.c
-index 7f10b86f85fd..e03436710752 100644
---- a/arch/arm/mach-pxa/lpd270.c
-+++ b/arch/arm/mach-pxa/lpd270.c
-@@ -38,7 +38,7 @@
- 
- #include "pxa27x.h"
- #include "lpd270.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <linux/platform_data/asoc-pxa.h>
- #include <linux/platform_data/video-pxafb.h>
- #include <linux/platform_data/mmc-pxamci.h>
-diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
-index 345a44d15a2c..20ca3e28c7fb 100644
---- a/arch/arm/mach-pxa/magician.c
-+++ b/arch/arm/mach-pxa/magician.c
-@@ -34,7 +34,7 @@
- #include <asm/system_info.h>
- 
- #include "pxa27x.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/magician.h>
- #include <linux/platform_data/video-pxafb.h>
- #include <linux/platform_data/mmc-pxamci.h>
-diff --git a/arch/arm/mach-pxa/mainstone.c b/arch/arm/mach-pxa/mainstone.c
-index c8200fc2159d..f0072e63b456 100644
---- a/arch/arm/mach-pxa/mainstone.c
-+++ b/arch/arm/mach-pxa/mainstone.c
-@@ -51,7 +51,7 @@
- #include <linux/platform_data/irda-pxaficp.h>
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include <linux/platform_data/keypad-pxa27x.h>
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/smemc.h>
- 
- #include "generic.h"
-diff --git a/arch/arm/mach-pxa/pxa25x.c b/arch/arm/mach-pxa/pxa25x.c
-index dfc90b41fba3..8d21c7eef1d2 100644
---- a/arch/arm/mach-pxa/pxa25x.c
-+++ b/arch/arm/mach-pxa/pxa25x.c
-@@ -34,7 +34,7 @@
- #include "pxa25x.h"
- #include <mach/reset.h>
- #include "pm.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/smemc.h>
- 
- #include "generic.h"
-diff --git a/arch/arm/mach-pxa/pxa25x.h b/arch/arm/mach-pxa/pxa25x.h
-index 403bc16c2ed2..4699ebf7b486 100644
---- a/arch/arm/mach-pxa/pxa25x.h
-+++ b/arch/arm/mach-pxa/pxa25x.h
-@@ -2,7 +2,7 @@
- #ifndef __MACH_PXA25x_H
- #define __MACH_PXA25x_H
- 
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/pxa2xx-regs.h>
- #include "mfp-pxa25x.h"
- #include <mach/irqs.h>
-diff --git a/arch/arm/mach-pxa/pxa27x.c b/arch/arm/mach-pxa/pxa27x.c
-index 38fdd22c4dc5..c36a9784fab8 100644
---- a/arch/arm/mach-pxa/pxa27x.c
-+++ b/arch/arm/mach-pxa/pxa27x.c
-@@ -33,7 +33,7 @@
- #include <mach/reset.h>
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include "pm.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/smemc.h>
- 
- #include "generic.h"
-diff --git a/arch/arm/mach-pxa/pxa27x.h b/arch/arm/mach-pxa/pxa27x.h
-index 6c99090647d2..bf2755561fe5 100644
---- a/arch/arm/mach-pxa/pxa27x.h
-+++ b/arch/arm/mach-pxa/pxa27x.h
-@@ -3,7 +3,7 @@
- #define __MACH_PXA27x_H
- 
- #include <linux/suspend.h>
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/pxa2xx-regs.h>
- #include "mfp-pxa27x.h"
- #include <mach/irqs.h>
-diff --git a/arch/arm/mach-pxa/pxa3xx.c b/arch/arm/mach-pxa/pxa3xx.c
-index 7c569fa2a6da..7881888107c7 100644
---- a/arch/arm/mach-pxa/pxa3xx.c
-+++ b/arch/arm/mach-pxa/pxa3xx.c
-@@ -32,7 +32,7 @@
- #include <mach/reset.h>
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include "pm.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/smemc.h>
- #include <mach/irqs.h>
- 
-diff --git a/arch/arm/mach-pxa/pxa3xx.h b/arch/arm/mach-pxa/pxa3xx.h
-index 22ace053ea25..6b424d328680 100644
---- a/arch/arm/mach-pxa/pxa3xx.h
-+++ b/arch/arm/mach-pxa/pxa3xx.h
-@@ -2,7 +2,7 @@
- #ifndef __MACH_PXA3XX_H	
- #define __MACH_PXA3XX_H
- 
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/pxa3xx-regs.h>
- #include <mach/irqs.h>
- 
-diff --git a/arch/arm/mach-pxa/trizeps4.h b/arch/arm/mach-pxa/trizeps4.h
-index 7597b9de11e2..e0f37c0ff06f 100644
---- a/arch/arm/mach-pxa/trizeps4.h
-+++ b/arch/arm/mach-pxa/trizeps4.h
-@@ -11,7 +11,7 @@
- #ifndef _TRIPEPS4_H_
- #define _TRIPEPS4_H_
- 
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/irqs.h> /* PXA_GPIO_TO_IRQ */
- 
- /* physical memory regions */
-diff --git a/arch/arm/mach-pxa/xcep.c b/arch/arm/mach-pxa/xcep.c
-index e6ab428287ae..7389e0199144 100644
---- a/arch/arm/mach-pxa/xcep.c
-+++ b/arch/arm/mach-pxa/xcep.c
-@@ -25,7 +25,7 @@
++#include "palmld.h"
++
+ static struct gpio palmld_pcmcia_gpios[] = {
+ 	{ GPIO_NR_PALMLD_PCMCIA_POWER,	GPIOF_INIT_LOW,	"PCMCIA Power" },
+ 	{ GPIO_NR_PALMLD_PCMCIA_RESET,	GPIOF_INIT_HIGH,"PCMCIA Reset" },
+diff --git a/arch/arm/mach-pxa/palmld.c b/arch/arm/mach-pxa/palmld.c
+index d85146957004..d821606ce0b5 100644
+--- a/arch/arm/mach-pxa/palmld.c
++++ b/arch/arm/mach-pxa/palmld.c
+@@ -29,8 +29,8 @@
  #include <asm/mach/map.h>
  
- #include "pxa25x.h"
--#include <mach/addr-map.h>
-+#include "addr-map.h"
- #include <mach/smemc.h>
+ #include "pxa27x.h"
++#include "palmld.h"
+ #include <linux/platform_data/asoc-pxa.h>
+-#include <mach/palmld.h>
+ #include <linux/platform_data/mmc-pxamci.h>
+ #include <linux/platform_data/video-pxafb.h>
+ #include <linux/platform_data/irda-pxaficp.h>
+@@ -279,9 +279,15 @@ static inline void palmld_leds_init(void) {}
+  * HDD
+  ******************************************************************************/
+ #if defined(CONFIG_PATA_PALMLD) || defined(CONFIG_PATA_PALMLD_MODULE)
++static struct resource palmld_ide_resources[] = {
++	DEFINE_RES_MEM(PALMLD_IDE_PHYS, 0x1000),
++};
++
+ static struct platform_device palmld_ide_device = {
+-	.name	= "pata_palmld",
+-	.id	= -1,
++	.name		= "pata_palmld",
++	.id		= -1,
++	.resource	= palmld_ide_resources,
++	.num_resources	= ARRAY_SIZE(palmld_ide_resources),
+ };
  
- #include "generic.h"
+ static struct gpiod_lookup_table palmld_ide_gpio_table = {
+diff --git a/arch/arm/mach-pxa/include/mach/palmld.h b/arch/arm/mach-pxa/palmld.h
+similarity index 98%
+rename from arch/arm/mach-pxa/include/mach/palmld.h
+rename to arch/arm/mach-pxa/palmld.h
+index 99a6d8b3a1e3..ee3bc15b71a2 100644
+--- a/arch/arm/mach-pxa/include/mach/palmld.h
++++ b/arch/arm/mach-pxa/palmld.h
+@@ -9,7 +9,7 @@
+ #ifndef _INCLUDE_PALMLD_H_
+ #define _INCLUDE_PALMLD_H_
+ 
+-#include "irqs.h" /* PXA_GPIO_TO_IRQ */
++#include <mach/irqs.h> /* PXA_GPIO_TO_IRQ */
+ 
+ /** HERE ARE GPIOs **/
+ 
+diff --git a/drivers/ata/pata_palmld.c b/drivers/ata/pata_palmld.c
+index 2448441571ed..400e65190904 100644
+--- a/drivers/ata/pata_palmld.c
++++ b/drivers/ata/pata_palmld.c
+@@ -25,7 +25,6 @@
+ #include <linux/gpio/consumer.h>
+ 
+ #include <scsi/scsi_host.h>
+-#include <mach/palmld.h>
+ 
+ #define DRV_NAME "pata_palmld"
+ 
+@@ -63,7 +62,7 @@ static int palmld_pata_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	/* remap drive's physical memory address */
+-	mem = devm_ioremap(dev, PALMLD_IDE_PHYS, 0x1000);
++	mem = devm_platform_ioremap_resource(pdev, 0);
+ 	if (!mem)
+ 		return -ENOMEM;
+ 
 -- 
 2.29.2
 
