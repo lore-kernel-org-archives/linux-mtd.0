@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E3C0C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 02:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64C82C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Apr 2022 04:28:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dnvz/HDVmABUoo0rQxci6F8P37YsT624R4N7kNeBOS0=; b=b1KsMvOfCJ2ofP
-	QvotwdU4Fp4YH4+fpVjmDXqA5rFkGai84rdV93TrAfZS2ieGM3ZXWoriaWpKgoqxvhknXkuZFyV8i
-	lTUNKNJMk0nwE56DE1vfmG8FNDmRExJ60qri4f/x+mmy3F2K4qLVicjNj2/QIp7MJynXDF7FMjobd
-	ryZ5ivTHX8/n71aftt6HZIjxEtGTL+tSDiZ2bhhpgAD0luEZq2QbHChYBlUODJnEp4Q9SZZQ+0pdj
-	ShdRrVQb2wO8PAy8o9kfmX8nbrkIib4UxLoJioEuf+PyqL0qZQSawcOIrbICMVlDyXvysBPsicwvw
-	VJfoXA5Im5RLk4kqfnog==;
+	List-Owner; bh=PejaOiAfubQgUsa1goaYUe7y5ollzWiUV9jS2mqA+34=; b=wXO8sitkjggYFg
+	ojHPrIfuYSlbX0k9SDUEFBknxM8WGG9g0RkUzh4ZvK7vYyoytxLQGKyz/EJXO4KZFxsR++NK0+Pfy
+	C2lKgA5jb2o1VLSoen408xwEXi7kYHDLx5R250ukW9XPd2FDqk6jV7MgyV/2QyUWKPFUEjo7R6Vsw
+	iT/ntWpvLqR1kVzRR75O7kkQ8IfjjCBv919v77AXFGPuKEmR4QWcdKw9KoZpZy8Jl7yPFAkGDa8Fk
+	Mr/DgibbsfFuq6SJPs1TUNIVIYw108TNg+xovKkaS7A9jN9WzNSAO+bS1wAx9TKRU0nZo7RksY6Gp
+	gsCsamJEL/9HEaLZrqig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngdFw-00177c-CK; Tue, 19 Apr 2022 02:06:16 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1ngfT5-001QID-DD; Tue, 19 Apr 2022 04:27:59 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngdFm-001771-Bk
- for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 02:06:08 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id u15so29973830ejf.11
- for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2022 19:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=tANnUY+oN6nysqX2LOMo1/bjbo8wm8MiR1aBwOmvUE0=;
- b=duEqTZpHVniX5iyX7aDaVC5aqbEMUr5x7ArYKssGGnD8FKvUoXBso2YJX64S7z5sdj
- +17oWRRmKvqp182oR47UpyQLzAX4fEgC9yLWCA3IyPBXlBJKR4bGOsv6ijMRmA+Q5bAQ
- VHjl3Ht5Env/eJqUppHbAo4kWUA1CIrJvkpm3LWhXmhTOSx7Kmp4vBhYbi+bz7oN2bfi
- kIEdjWzJgVMxVZAkrH2zk7HmO/QNUYEg9SQanvLfW+w/PkItVdawxjYEFxpDnqzBzq2P
- cEIJMQ2qHKTLbLk5TIcKhWpfFC+L4+XKqRzzYoaAS44jPcgsdfjczZNcdsCPXpMtIU/i
- XsIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=tANnUY+oN6nysqX2LOMo1/bjbo8wm8MiR1aBwOmvUE0=;
- b=hnAEq+ne8R6T8rg92jLYWNHitjwc+1dZxOiGIvJSw2AQvl/dsqfcfGCvXRH8Bax5IW
- eUKAM3aseEdNAQTphc9LHdFFKCn2ZV7m0p4i3uAn0/uaQeO0VfDQMt893BNPtnSzB9hD
- a/uVognv/HIXzNyAOjCsRTACAejuOhNQm/BQzUANzzdGuSchvO1X32nIxXBskGVBeaW4
- z1JTviJxQV5XAWJcrOuVcvhB3ekxLBt0ZsKtbOdnpZOxfdYwRgAMiO1EmIVoR7efbUO+
- UmxhYYnLOQz+cSJxJ7L/xFDb9n4pqf2qmSQKw62s+xFKqykMr3oW6TYhyfNCZee+VxJz
- 3RgA==
-X-Gm-Message-State: AOAM531eJU2pm18o/NU7soHlAcOfmuBysFQoUj1bP4wJftquQOgwB9Tb
- g8H5vqrjyfcRyPyDwIexsQVvwkOPhw+h4oIMBvnZHErpcvU=
-X-Google-Smtp-Source: ABdhPJyq0H0+Lj7xvgyymOO9JhHG6I9Bvp53PxJ0U2cldKAK5RJFrVNSlNXVn9CDy4IPq6gbi8jqY1X/JlHMbJobtAU=
-X-Received: by 2002:a17:906:7316:b0:6d7:16be:b584 with SMTP id
- di22-20020a170906731600b006d716beb584mr11287337ejc.759.1650333960742; Mon, 18
- Apr 2022 19:06:00 -0700 (PDT)
+ id 1ngfT2-001QGg-3E
+ for linux-mtd@lists.infradead.org; Tue, 19 Apr 2022 04:27:57 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23J4RiFR107801;
+ Mon, 18 Apr 2022 23:27:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1650342464;
+ bh=FkpkHWADvy6lzB753uq3boA4gZeMnR0i6Mh7h+xhnl8=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=w6e2u4M1eK6OocrY6I0m4vjIPTyX+Ge37vxYMIkl46+vl4Ny+mF4cq6m/EIeOZwtw
+ 0fn8nbG45NqKKAAgjIQFu3W2GAPaayyqo8wWvlv1dwkK3bsFeZvZDVmRFJkg2u9Tl8
+ UyN+xxtSDpy0Lw6FuL+3CJCfJDxeOmpZQuBY3g14=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23J4RiOU065589
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 18 Apr 2022 23:27:44 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 18
+ Apr 2022 23:27:43 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 18 Apr 2022 23:27:43 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23J4RgkX012789;
+ Mon, 18 Apr 2022 23:27:43 -0500
+Date: Tue, 19 Apr 2022 09:57:42 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+CC: <tudor.ambarus@microchip.com>, <michael@walle.cc>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <quic_asutoshd@quicinc.com>, <quic_rampraka@quicinc.com>,
+ <quic_pragalla@quicinc.com>, <quic_sartgarg@quicinc.com>,
+ <quic_nitirawa@quicinc.com>, <quic_sayalil@quicinc.com>
+Subject: Re: [PATCH V8] mtd: spi-nor: winbond: add support for W25Q512NW-IM
+Message-ID: <20220419042742.qqfj6wurpxxqhr6l@ti.com>
+References: <1648191975-1366-1-git-send-email-quic_c_sbhanu@quicinc.com>
 MIME-Version: 1.0
-References: <CABy3iKxexzn2TnYVV8k0=_onqdrjQGoPeLMOd2q8cqzVECvBWw@mail.gmail.com>
- <20220414192413.0db7ef46@xps13>
- <CABy3iKzERYHD8Kj+NNnPdAxTxO6ANwrUJGcJO77385RtY1ddGg@mail.gmail.com>
- <20220415102929.5c654933@xps13>
-In-Reply-To: <20220415102929.5c654933@xps13>
-From: Scott Zhang <macromarship@gmail.com>
-Date: Tue, 19 Apr 2022 10:05:49 +0800
-Message-ID: <CABy3iKwAVYkstq4=fg6cjh4VRAzSwGa7JNy494Ag69e_t9UTjA@mail.gmail.com>
-Subject: Re: ubifs_decompress: cannot decompress 2293 bytes, compressor lzo,
- error -22
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+In-Reply-To: <1648191975-1366-1-git-send-email-quic_c_sbhanu@quicinc.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220418_190606_457267_D129FA73 
-X-CRM114-Status: GOOD (  17.58  )
+X-CRM114-CacheID: sfid-20220418_212756_357409_7BDAB634 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,82 +80,108 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RGVhciBNaXF1ZWw6CiAgICAgSSBoYXZlIGZpeGVkIHRoZSBudWM5ODAgbmFuZCBkcml2ZXIsIG5v
-dyB0aGUgbmFuZGJpdGVycm9ycyB3b3Jrcy4KCiMgLi9uYW5kYml0ZXJycyAvZGV2L210ZDMgLWkK
-aW5jcmVtZW50YWwgYml0ZXJyb3JzIHRlc3QKU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAwIGJpdCBl
-cnJvcnMgcGVyIHN1YnBhZ2UKSW5zZXJ0ZWQgYml0ZXJyb3IgQCAwLzUKUmVhZCByZXBvcnRlZCAx
-IGNvcnJlY3RlZCBiaXQgZXJyb3JzClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgMSBiaXQgZXJyb3Jz
-IHBlciBzdWJwYWdlCkluc2VydGVkIGJpdGVycm9yIEAgMC8yClJlYWQgcmVwb3J0ZWQgMiBjb3Jy
-ZWN0ZWQgYml0IGVycm9ycwpTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDIgYml0IGVycm9ycyBwZXIg
-c3VicGFnZQpJbnNlcnRlZCBiaXRlcnJvciBAIDAvMApSZWFkIHJlcG9ydGVkIDMgY29ycmVjdGVk
-IGJpdCBlcnJvcnMKU3VjY2Vzc2Z1bGx5IGNvcnJlY3RlZCAzIGJpdCBlcnJvcnMgcGVyIHN1YnBh
-Z2UKSW5zZXJ0ZWQgYml0ZXJyb3IgQCAxLzcKUmVhZCByZXBvcnRlZCA0IGNvcnJlY3RlZCBiaXQg
-ZXJyb3JzClN1Y2Nlc3NmdWxseSBjb3JyZWN0ZWQgNCBiaXQgZXJyb3JzIHBlciBzdWJwYWdlCklu
-c2VydGVkIGJpdGVycm9yIEAgMS81ClJlYWQgcmVwb3J0ZWQgNSBjb3JyZWN0ZWQgYml0IGVycm9y
-cwpTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDUgYml0IGVycm9ycyBwZXIgc3VicGFnZQpJbnNlcnRl
-ZCBiaXRlcnJvciBAIDEvMgpSZWFkIHJlcG9ydGVkIDYgY29ycmVjdGVkIGJpdCBlcnJvcnMKU3Vj
-Y2Vzc2Z1bGx5IGNvcnJlY3RlZCA2IGJpdCBlcnJvcnMgcGVyIHN1YnBhZ2UKSW5zZXJ0ZWQgYml0
-ZXJyb3IgQCAxLzAKUmVhZCByZXBvcnRlZCA3IGNvcnJlY3RlZCBiaXQgZXJyb3JzClN1Y2Nlc3Nm
-dWxseSBjb3JyZWN0ZWQgNyBiaXQgZXJyb3JzIHBlciBzdWJwYWdlCkluc2VydGVkIGJpdGVycm9y
-IEAgMi82ClJlYWQgcmVwb3J0ZWQgOCBjb3JyZWN0ZWQgYml0IGVycm9ycwpTdWNjZXNzZnVsbHkg
-Y29ycmVjdGVkIDggYml0IGVycm9ycyBwZXIgc3VicGFnZQpJbnNlcnRlZCBiaXRlcnJvciBAIDIv
-NQpGYWlsZWQgdG8gcmVjb3ZlciAxIGJpdGZsaXBzClJlYWQgZXJyb3IgYWZ0ZXIgOSBiaXQgZXJy
-b3JzIHBlciBwYWdlCgpCdXQgSSBub3RpY2VkIHRoZSBsem8gZGVjb21wcmVzcyBlcnJvciBpcyBz
-dGlsbCB0aGVyZS4KSSBkaWQgIGZvbGxvd2luZyBhY3Rpb25zIHRvIHRlc3QuCi9kZXYvbXRkMyBp
-cyBtb3VudGVkIG9uIC9vcHQgdXNpbmcgdWJpZnMuCnRhciB6Y3ZmIC9yb290L29wdC50YXIuZ3og
-L29wdCAgKGRvbmUgd2l0aG91dCBlcnJvcikKZm9ybWF0IC9vcHQuCnRhciB6eHZmIC9yb290L29w
-dC50YXIuZ3ogLUMgLwoKVGhlbiB3aGVuIEkgcnVuIHBocCBwcm9ncmFtIHdoaWNoIGlzIGluIG9w
-dC4gSSBzYXcgZG1lc2cKWyAgMTE4Ljg1MDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMTUy
-Nik6IHViaWZzX2RlY29tcHJlc3M6IGNhbm5vdApkZWNvbXByZXNzIDIyOTMgYnl0ZXMsIGNvbXBy
-ZXNzb3IgbHpvLCBlcnJvciAtMjIKWyAgMTE4Ljg2MDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBw
-aWQgMTUyNik6IGRvX3JlYWRwYWdlOiBiYWQgZGF0YQpub2RlIChibG9jayAxNSwgaW5vZGUgMzk2
-KQpbICAxMTguODcwMDAwXSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAxNTI2KTogZG9fcmVhZHBh
-Z2U6IGNhbm5vdCByZWFkCnBhZ2UgMTUgb2YgaW5vZGUgMzk2LCBlcnJvciAtMjIKWyAgMTE4Ljg4
-MDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMTUyNik6IHViaWZzX2RlY29tcHJlc3M6IGNh
-bm5vdApkZWNvbXByZXNzIDIyOTMgYnl0ZXMsIGNvbXByZXNzb3IgbHpvLCBlcnJvciAtMjIKWyAg
-MTE4LjkwMDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMTUyNik6IGRvX3JlYWRwYWdlOiBi
-YWQgZGF0YQpub2RlIChibG9jayAxNSwgaW5vZGUgMzk2KQpbICAxMTguOTAwMDAwXSBVQklGUyBl
-cnJvciAodWJpMDowIHBpZCAxNTI2KTogZG9fcmVhZHBhZ2U6IGNhbm5vdCByZWFkCnBhZ2UgMTUg
-b2YgaW5vZGUgMzk2LCBlcnJvciAtMjIKWyAgMTE4LjkyMDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6
-MCBwaWQgMTUyNik6IHViaWZzX2RlY29tcHJlc3M6IGNhbm5vdApkZWNvbXByZXNzIDIyOTMgYnl0
-ZXMsIGNvbXByZXNzb3IgbHpvLCBlcnJvciAtMjIKWyAgMTE4LjkzMDAwMF0gVUJJRlMgZXJyb3Ig
-KHViaTA6MCBwaWQgMTUyNik6IGRvX3JlYWRwYWdlOiBiYWQgZGF0YQpub2RlIChibG9jayAxNSwg
-aW5vZGUgMzk2KQpbICAxMTguOTQwMDAwXSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAxNTI2KTog
-ZG9fcmVhZHBhZ2U6IGNhbm5vdCByZWFkCnBhZ2UgMTUgb2YgaW5vZGUgMzk2LCBlcnJvciAtMjIK
-CkkgcmVtb3ZlZCB0aGUgdWJpZnNfZHVtcF9ub2RlIGNhbGwgdG8gYXZvaWQgbWFueSBkdW1wIHRl
-eHQuIFRoZQpwcm9ibGVtIGlzIHdoZW4gSSBydW4gcGhwIHByb2dyYW0sIGxvdHMgb2YgYWJvdmUg
-bG9ncyBkdW1wZWQuCkJ1dCBJIGRvbid0IHNlZSBhbnkgZWZmZWN0IG9mIHRoZSBhYm92ZSBsb2dz
-LiB0aGUgcHJvZ3JhbSBzZWVtcyBydW5uaW5nLgpJcyB0aGVyZSBhIHBvc3NpYmlsaXR5IHRoZSB1
-bmRlcmx5aW5nIG5hbmQgZHJpdmVyIGRhdGEgaXMgb2ssIGJ1dCB0aGUKbHpvIGNvbXByZXNzL2Rl
-Y29tcHJlc3MgY29kZSBoYXMgYnVncyA/ICBJIGFtIHJ1bm5pbmcgbGludXgtNS40LnkKY2xvbmVk
-IGZyb20ga2VybmVsLm9yZy4KCk9uIEZyaSwgQXByIDE1LCAyMDIyIGF0IDQ6MjkgUE0gTWlxdWVs
-IFJheW5hbCA8bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4gd3JvdGU6Cj4KPiBIaSBTY290dCwK
-Pgo+IG1hY3JvbWFyc2hpcEBnbWFpbC5jb20gd3JvdGUgb24gRnJpLCAxNSBBcHIgMjAyMiAxMjoz
-ODowOSArMDgwMDoKPgo+ID4gSGkuIE1pcXXDqGwuCj4gPiBZZXMuIEkgdHJpZWQgbmFuZGJpdGVy
-cnMsIHRoZSByZXN1bHQgaXMgYmVsb3cuIExvb2tzIGVjYyBpcyBub3Qgd29ya2luZyAuCj4gPgo+
-ID4gW3Jvb3RAamdjeDogfl0jLi9uYW5kYml0ZXJycyAvZGV2L210ZDIgLWkKPiA+IGluY3JlbWVu
-dGFsIGJpdGVycm9ycyB0ZXN0Cj4gPiBTdWNjZXNzZnVsbHkgY29ycmVjdGVkIDAgYml0IGVycm9y
-cyBwZXIgc3VicGFnZQo+ID4gSW5zZXJ0ZWQgYml0ZXJyb3IgQCAwLzUKPiA+IEZhaWxlZCB0byBy
-ZWNvdmVyIDEgYml0ZmxpcHMKPiA+IFJlYWQgZXJyb3IgYWZ0ZXIgMSBiaXQgZXJyb3JzIHBlciBw
-YWdlCj4gPgo+ID4gQnkgY2hlY2tpbmcgdGhlIG5hbmQgZHJpdmVyIHdoaWNoaSBpcyBudWM5ODBf
-bmFuZC5jCj4gPgo+ID4gaHR0cHM6Ly9naXRodWIuY29tL09wZW5OdXZvdG9uL05VQzk4MC1saW51
-eC00LjQueS9ibG9iL21hc3Rlci9kcml2ZXJzL210ZC9uYW5kL251Yzk4MF9uYW5kLmMKPiA+Cj4g
-Pgo+ID4gKiBFbmFibGUgSFcgRUNDIDogdW51c2VkIG9uIG1vc3QgY2hpcHMKPiA+ICovCj4gPiB2
-b2lkIG51Yzk4MF9uYW5kX2VuYWJsZV9od2VjYyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IG1v
-ZGUpCj4gPiB7Cj4gPiBFTlRFUigpOwo+ID4gI2lmZGVmIE5VQzk4MF9OQU5EX0RFQlVHCj4gPiB7
-Cj4gPiBjaGFyICogcHRyPVJFR19TTVJBMDsKPiA+IGludCBpPTA7Cj4gPiBpZiggbW9kZSA9PSBO
-QU5EX0VDQ19SRUFEICkKPiA+IHByaW50aygiW1JdPVxuIik7Cj4gPiBlbHNlCj4gPiBwcmludGso
-IltXXT1cbiIpOwo+ID4KPiA+IGZvcihpPTA7IGk8bXRkLT5vb2JzaXplOyBpKyspCj4gPiB7Cj4g
-PiBwcmludGsoIiVYICIsICoocHRyK2kpICk7Cj4gPiBpZiAoIGkgJSAzMiA9PSAzMSkKPiA+IHBy
-aW50aygiXG4iKTsKPiA+IH0KPiA+IHByaW50aygiXG4iKTsKPiA+IH0KPiA+ICNlbmRpZgo+ID4g
-TEVBVkUoKTsKPiA+IH0KPiA+Cj4gPgo+ID4gSSBndWVzcyB0aGUgbnVjOTgwIGRyaXZlciBkb2Vz
-bid0IHN1cHBvcnQgZWNjIGNvcnJlY3Rpb24uCj4KPiBZb3UgY2Fubm90IHVzZSBOQU5EIHdpdGhv
-dXQgcHJvcGVyIEVDQyBoYW5kbGluZy4KPgo+IFRoYW5rcywKPiBNaXF1w6hsCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+On 25/03/22 12:36PM, Shaik Sajida Bhanu wrote:
+> Add support for winbond W25Q512NW-IM chip.
+> 
+> Below are the tests done:
+> 
+> 1. Verified flashing binary image on spi card using flashrom tool.
+> 2. Verified OTP support, below are the test results:
+> 
+>  localhost / # cat
+>  /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi16/
+>  spi16.0/spi-nor/jedec_id
+>  ef8020
+> 
+>  localhost / # cat
+>  /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi16/
+>  spi16.0/spi-nor/manufacturer
+>  winbond
+> 
+>  localhost / # cat
+>  /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi16/
+>  spi16.0/spi-nor/partname
+>  w25q512nwm
+> 
+>  localhost / # hexdump
+>  /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/sp
+>  i16/spi16.0/spi-nor/sfdp
+>  0000000 4653 5044 0106 ff01 0600 1001 0080 ff00
+>  0000010 0084 0201 00d0 ff00 ffff ffff ffff ffff
+>  0000020 6800 6c65 6f6c 7720 726f 646c ffff ffff
+>  0000030 ffff ffff ffff ffff ffff ffff ffff ffff
+>  *
+>  0000080 20e5 fffb ffff 1fff eb44 6b08 3b08 bb42
+>  0000090 fffe ffff ffff 0000 ffff eb40 200c 520f
+>  00000a0 d810 0000 0233 00a6 e781 d914 63e9 3376
+>  00000b0 757a 757a bdf7 5cd5 f719 ff5d 70e9 a5f9
+>  00000c0 ffff ffff ffff ffff ffff ffff ffff ffff
+>  00000d0 0aff fff0 ff21 ffdc
+>  00000d8
+> 
+>  localhost / # md5sum
+>  /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi
+>  16/spi16.0/spi-nor/sfdp
+>  106d89d6c049110bc94c01517cb4ce24
+>  /sys/bus/platform/devices/soc@0/88dc000.spi/
+>  spi_master/spi16/spi16.0/spi-nor/sfdp
+> 
+> 3. Tested flash lock, below are the test results (looks like the lock is
+>  not working as expected, so when we do lock the whole card and tried to
+>  write, write was successful without any errors.)
+
+What should we do with this then? Drop the locking support? Or is there 
+something wrong/missing in SPI NOR core that needs to be fixed first so 
+locking for this flash works?
+
+> 
+>  localhost ~ # flash_lock -i /dev/mtd0
+>  Device: /dev/mtd0
+>  Start: 0
+>  Len: 0x4000000
+>  Lock status: locked
+>  Return code: 1
+>  localhost ~ # mtd_debug erase /dev/mtd0 0x400000 4096
+>  Erased 4096 bytes from address 0x00400000 in flash
+>  localhost ~ # mtd_debug read /dev/mtd0 0x400000 4096
+>  temp
+>  Copied 4096 bytes from address 0x00400000 in flash
+>  to temp
+>  localhost ~ # mtd_debug write /dev/mtd0 0x400000
+>  4096 temp
+>  Copied 4096 bytes from temp to address 0x00400000
+>  in flash
+>  localhost ~ # flash_lock -u /dev/mtd0
+>  localhost ~ # flash_lock -i /dev/mtd0
+>  Device: /dev/mtd0
+>  Start: 0
+>  Len: 0x4000000
+>  Lock status: unlocked
+>  Return code: 0
+>  localhost ~ # mtd_debug erase /dev/mtd0 0x400000 4096
+>  Erased 4096 bytes from address 0x00400000 in flash
+>  localhost ~ # mtd_debug read /dev/mtd0 0x400000
+>  4096 tempCopied 4096 bytes from address 0x00400000 in
+>  flash to temp
+>  localhost ~ # mtd_debug write /dev/mtd0 0x400000 4096 temp
+>  Copied 4096 bytes from temp to address 0x00400000 in flash
+>  localhost ~ #
+> 
+> Signed-off-by: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
+> Reviewed-by: Doug Anderson <dianders@chromium.org>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+[...]
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
