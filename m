@@ -4,61 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B2EC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 20:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B152C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 21:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ljNVQtxKePi/FulaEqI7vJtLCm7SyP7DuUPdlqj8kmA=; b=mPxh29KFmWFRBzJkaVi9pJPVLu
-	Bp6OZ3C+SYVzCQZW+WfIvOTgh58Tz+cWjx/CHcwNz/SOheKiyIgk3qAgur6uRRiR3+egcnpnQQ+99
-	LKM9o7gLeGl7GjNr6LVQxuhTiPOX6dw1pj22Wx17/SNY8at7UtFTmoXB6q6gbmXT8aYZx9swzcTtL
-	AWAVIE1MvbTjkA7Eb/eeQHNmJqKQNCXuKm7Ng0AovZ9BB5VFhjLhxVgOgCrrleFbwGvkeN6fPWR3l
-	GLtz1iKzCrMXihP0+cSPBtpu/QWGQBnbnINJ7GmBpG+4v3NxgfeK2N7R+d7tEem5O35wPvHFaxT3d
-	inthdEzg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Yh18C3s3zjFSUUHRr4K+xK3/DD7U0OxS4/OGc5JQgbU=; b=CFSy18tN2jqVdB
+	HxAJOUO4tsn5bl2PbCvbe2eKy/WqshVEe3GDXWuNat9t9RU9Meyw0ENgfhaZBO3IENlH8GwO+L6i/
+	ALuqWQD0Eos3vdBs1G+ju9zJ2bqfc0d8RiKc881YbnzHhm319vmpwkSsYRkFLN+6e4nAA2uIjti49
+	8Ble9bTIcmAT5sXPpcZgcf76dj3W2xA61XXNUbwVDfvr+biX12gdlwcjLggF5hV7JM2JlVyH9pRoE
+	bIZoUXcqqKtidvq4KExwHQv/j+obFFju5o/dQanDU9e66VM1iJsI1XS0SgJPpYoDWekeoNI737Yif
+	eprTS/Ofs7OjMQwNcKUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhGaG-00AHVE-BY; Wed, 20 Apr 2022 20:05:52 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nhI4i-00ATII-UG; Wed, 20 Apr 2022 21:41:24 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhGaC-00AHU5-QQ
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 20:05:50 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ id 1nhI4W-00ATDd-IS
+ for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 21:41:14 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id EAE4222249;
- Wed, 20 Apr 2022 22:05:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1650485147;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FM+OM+UGFo7QA8C4D+CNPizdEHpdObWY21ICZbjKN6s=;
- b=FPxIwhgfXCbVq7kuHMWkM11mTzLojrm6GlOjv7VPh8CrrG21YaoiHWFch5cWBErGVJutEO
- Q412TUq5GbC+aHzjpvenYmDwbnokAvQ2pMIxoAZEx10TmhROli2RDX9k8WDn64IPpvAEFt
- FBB61XP0hDHiESEvD2gAZDnzuMFCISM=
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C39B861972;
+ Wed, 20 Apr 2022 21:41:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B471C385A8;
+ Wed, 20 Apr 2022 21:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650490871;
+ bh=ZJASXpwSw7EWB3yJ2BJMT6aN8Jg1dz8Snmgwr1sKRVs=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=FMvsoVGcPrcYM4OlyvF2c0VoWCVd9AMCEaR4+ir5agnFPA8LH1TFactw1hb1tDZhQ
+ BWGY6vrEV1UGKr8rrUyWw6KUFA7eT2L075iXvOK+N6UM36KLAKwPZ/YmIEIPerQhcU
+ DOHL+CUHBYHnIblLJaFBdgH5MZ2wxLYhI5jBkfo4lziTqNCwKX0w0Ipuuhlf90NbCv
+ Z8wjjKaO2XolaUDzXRryJF0l4HWWjXXqbpl15rcR7CbsrXancSKeerCPeg/zrsNIWw
+ 8FmkyJh8EANOshDg9CFapWSmjYx5sxB/bnzd7jNzpeQO0jVtQShqRtbIVOWu5GeZmd
+ XS0Ta2EuS5kYg==
+From: Mark Brown <broonie@kernel.org>
+To: mika.westerberg@linux.intel.com
+Cc: michael@walle.cc, boris.brezillon@collabora.com,
+ tudor.ambarus@microchip.com, hongli.li@intel.com, p.yadav@ti.com,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+In-Reply-To: <20220420104350.19510-1-mika.westerberg@linux.intel.com>
+References: <20220420104350.19510-1-mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v2] spi: intel: Implement dirmap hooks
+Message-Id: <165049086976.143449.15707260832201661600.b4-ty@kernel.org>
+Date: Wed, 20 Apr 2022 22:41:09 +0100
 MIME-Version: 1.0
-Date: Wed, 20 Apr 2022 22:05:46 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Takahiro.Kuwano@infineon.com
-Subject: Re: [PATCH v4 11/11] mtd: spi-nor: micron-st: Remove status polling
- on volatile registers write
-In-Reply-To: <20220420103427.47867-12-tudor.ambarus@microchip.com>
-References: <20220420103427.47867-1-tudor.ambarus@microchip.com>
- <20220420103427.47867-12-tudor.ambarus@microchip.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <f7943a0ef67a5195454448a343f92c79@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220420_130549_047183_A1A1E38C 
-X-CRM114-Status: UNSURE (   5.34  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220420_144112_680403_608D8B32 
+X-CRM114-Status: GOOD (  13.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,19 +67,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-04-20 12:34, schrieb Tudor Ambarus:
-> Writing volatile registers are instant according to Micron and do not
-> need any status polling. Remove status polling on volatile registers 
-> write.
+On Wed, 20 Apr 2022 13:43:50 +0300, Mika Westerberg wrote:
+> Currently the driver goes over the supported opcodes list each time
+> ->exec_op() is called and finds the suitable for the given operation.
+> This consumes unnecessary amount of CPU cycles because the operation is
+> always the same. For this reason populate dirmap hooks for the driver so
+> that we cache the selected operation and then simply call it on each
+> read/write.
 > 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> [...]
 
-Reviewed-by: Michael Walle <michael@walle.cc>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: intel: Implement dirmap hooks
+      commit: c2b5a40c9e50651a29ee9d110f7ebc41b8720efa
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
