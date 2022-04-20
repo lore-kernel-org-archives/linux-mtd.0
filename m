@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8B7BC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 03:00:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4464C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 04:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iLIu4ZMK607U2Pr3EYnkKLGx60W+cSOcPWjM6iZWNbY=; b=jWen+jCaUIe0HC
-	VMz443fSdnPZEQa+poTDte/kt2XrZJOYivE/XISB9MCOmFmT80OEFyiMQYIiUuyX0lxzuX1PrLaQw
-	d8a3G1cQz2G9+aOCVTycpbCv16dtX0pFKT+bA8ydSQPlcpUcKnBokLY1t5zM629Jv9ZSa37obeudJ
-	3J5wntIPt2HUzJ6PApK/fHsXEkucl9uEPvrinTYPuAD2E6daynPXjQ9HBdvWFmb9UWJYPuy37uqxf
-	h+zCyzIOBA5jHUKzyKTVFl0usELWhSE10ilhj48rDn9szb3TL1gAIahZ1EyUFdPsRdtvMXwmOQ2S8
-	/SQ+cFOCyt5m7ckPid1Q==;
+	List-Owner; bh=WCPogq5MQwq2NfmRjhg4G00WdNK2br8W0wqdZbfS4iY=; b=YbYjCOTDQ+6NMZ
+	LdSBc5NH5WrIUEEkuopeqF8N1dQP/NCAeJN+Nfm+9YSNkS8ZnSI8qgZH+eB8LpoorpFbsNCa/yvaO
+	tOqxzqkYvCR3zx5s99CY3rzOWpoRV791S0sOZTx9jbylj2VcVZxueLQubopMoTaoqM9E76WwHk3zS
+	ohgQ4ItNK+/GFZJDFWswlB6LAsZHKKW+XPzCBwXsn7xO/wcnBUFP+ohtbKoEbizELritcHc4Bj2GX
+	KJv6WIsTPBUqiZGKGQjJSs8SkW9+i+2JjH/QTAKA/f+HF3K7fsJZ9Crenk1lNegT/Fi4oY3YtNZMd
+	mvCHqOYXmLZyKoKj6bgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nh0Zr-0073Zu-GA; Wed, 20 Apr 2022 03:00:23 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1nh236-007JOI-Ii; Wed, 20 Apr 2022 04:34:40 +0000
+Received: from lelv0142.ext.ti.com ([198.47.23.249])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nh0Zm-0073ZU-Io
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 03:00:20 +0000
-Received: by mail-ej1-x635.google.com with SMTP id y10so724436ejw.8
- for <linux-mtd@lists.infradead.org>; Tue, 19 Apr 2022 20:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=7053dxRtaDmLXB03zJ7SH1/7Y99Ok5ZEQtgHjrqbopo=;
- b=qh/i5vGRXlz0Yp7bXQUvN2UbPVleRRfpJhvTPNf+T+CLCYzWHG42DRzfaM7suoCPo4
- vJq0i4shnoY3cE9zzeTcEVV5wdcCRfZqMGwBb5EMhlgFu3cMjh68x62P48BpoWoyRdwl
- vi4ip2Oy42edmwRRi7n4gBXSmmoOwNeQxaL49lJxS0LePJQNTkcoOskVzwdBvGiwPV3P
- eOP7pHwgUl5Mr5jh+nk1lDU9bQoPQIcBw1Nf8+kPXKFydTLynEF49sYVN3iTw3qBpKDt
- i0KCEjEGyiwTS7+589ZYi6YQmiTCvgMOK/Z24qGiS9DZs/LNgswCfSxMwo32/uDpf1dY
- Kr6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=7053dxRtaDmLXB03zJ7SH1/7Y99Ok5ZEQtgHjrqbopo=;
- b=OcXUY7+2N+9ax5XSfAnZXiKRYvGSByOMTGTLkssnCX+uffwyfbUNvhIdPuNe4wZjDj
- Mvzo0EoizXhYlcxfCAklSr89xpfW3bJ47G7yY1OkI/WHxKRyTfHTNd8gFLoDmsPThcIX
- wrgMv7MO7L4SJIJTnQZZr9CVUTDTHh+Hk+pA5Ve3ddtFdiFb811jAnGLxkG3lcGeN+EN
- 3y2VKtKWQd2BhB7c4FG7HYl8UVubMeZL2oEuW2BGExaZ6I7rn+/ZlVPRDiC9nCmAWBGj
- /HeqyahQGZxX/Zm4QbWkRnlBnWuQdvTiJRJ9nnCpU828+ZF+hgSF6sc+gzyM4oR0jsLz
- eFqw==
-X-Gm-Message-State: AOAM530xf2p3mM+tXg+a+byadTjfgbpMd6z5NRQfHb4fpTmry60EvGet
- CY3ZnRRUShbG/9z9qgSs6rQ9SGJ23c7VUOJ/bFw=
-X-Google-Smtp-Source: ABdhPJzApsZWhAPIbLr6sK897DOAdFj5wfjVx4g9YpU2fIdiJ8PkMD99XzPK58csRFcmbNUV4/wPmM6P5T3cPhiTTeE=
-X-Received: by 2002:a17:907:d8d:b0:6df:b214:392a with SMTP id
- go13-20020a1709070d8d00b006dfb214392amr16349159ejc.669.1650423615326; Tue, 19
- Apr 2022 20:00:15 -0700 (PDT)
+ id 1nh233-007JMW-HG
+ for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 04:34:39 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23K4YRx9068607;
+ Tue, 19 Apr 2022 23:34:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1650429267;
+ bh=Zz+ZwW1u2a70e9a3ZpME/yjw+6sAVF1thEFIAtUbgN4=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=RBgGVJDyBjWYmbVrTOOmdX637J1Ci7SlUxmmUma/MBes9P5OgDTpR3NVPI3unbmT8
+ jCoPQgIhpbXgoQX/2u7jukbcIOcRQZTG5ludikDJwuLCnlPZZuDz4l6ZXUWlZcz1u5
+ yzaMTDEnV4fJq82K5cR4jrS52juqlWRk6hjVQzJI=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23K4YRox026463
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 19 Apr 2022 23:34:27 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 19
+ Apr 2022 23:34:26 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 19 Apr 2022 23:34:26 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23K4YQLe006258;
+ Tue, 19 Apr 2022 23:34:26 -0500
+Date: Wed, 20 Apr 2022 10:04:25 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: <Tudor.Ambarus@microchip.com>
+CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <Nicolas.Ferre@microchip.com>,
+ <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH v3 6/9] mtd: spi-nor: core: Add helpers to read/write any
+ register
+Message-ID: <20220420043425.l77hmc4zm7cwfwdn@ti.com>
+References: <20220411091033.98754-1-tudor.ambarus@microchip.com>
+ <20220411091033.98754-7-tudor.ambarus@microchip.com>
+ <0e4ec58c21490dcd9cf82ab89bd8c34c@walle.cc>
+ <e21b0d76bf778f78f432ba27a673222d@walle.cc>
+ <f318dbd9-d4bf-301a-b5c9-556d04d5bfe6@microchip.com>
+ <20220419123245.zu4hypebz77ckygn@ti.com>
+ <996f36b1303d191e472f56393aa6398e@walle.cc>
+ <89083a31-b862-de50-fdca-d427fb908a08@microchip.com>
 MIME-Version: 1.0
-References: <CABy3iKxexzn2TnYVV8k0=_onqdrjQGoPeLMOd2q8cqzVECvBWw@mail.gmail.com>
- <20220414192413.0db7ef46@xps13>
- <CABy3iKzERYHD8Kj+NNnPdAxTxO6ANwrUJGcJO77385RtY1ddGg@mail.gmail.com>
- <20220415102929.5c654933@xps13>
- <CABy3iKwAVYkstq4=fg6cjh4VRAzSwGa7JNy494Ag69e_t9UTjA@mail.gmail.com>
- <20220419093317.7fe2ae6c@xps13>
- <542373121.266606.1650354270993.JavaMail.zimbra@nod.at>
- <CABy3iKzeJ4CF74YjF60_F_zbZhhYq_5imuG=BU4fOBrKQ5eqaw@mail.gmail.com>
- <CABy3iKxw1KV6W60-sso7RButgxSDn7WX_FQ6Pz4EVrYQMb-GKw@mail.gmail.com>
-In-Reply-To: <CABy3iKxw1KV6W60-sso7RButgxSDn7WX_FQ6Pz4EVrYQMb-GKw@mail.gmail.com>
-From: Scott Zhang <macromarship@gmail.com>
-Date: Wed, 20 Apr 2022 11:00:04 +0800
-Message-ID: <CABy3iKyZdZ=S9Jo4tu39qXWnzRj0JefKA_5B2BKjU9J3bYAPOA@mail.gmail.com>
-Subject: Re: ubifs_decompress: cannot decompress 2293 bytes, compressor lzo,
- error -22
-To: Richard Weinberger <richard@nod.at>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, 
- Richard Weinberger <richard.weinberger@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <89083a31-b862-de50-fdca-d427fb908a08@microchip.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_200018_666778_B029EED5 
-X-CRM114-Status: GOOD (  33.05  )
+X-CRM114-CacheID: sfid-20220419_213437_780603_4A601395 
+X-CRM114-Status: GOOD (  31.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,140 +86,172 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SSB0cmllZCBhbGwgdGhlIHRlc3RzLiBMb29rcyBhbGwgcGFzc2VkLgoKW3Jvb3RAMzAzbWluaSAv
-cm9vdF0KIyAuL2ZsYXNoX3NwZWVkIC9kZXYvbXRkMwpzY2FubmluZyBmb3IgYmFkIGVyYXNlYmxv
-Y2tzCnNjYW5uZWQgMSBlcmFzZWJsb2NrcywgMCBhcmUgYmFkCnRlc3RpbmcgZXJhc2VibG9jayBy
-ZWFkIHNwZWVkCmVyYXNlYmxvY2sgcmVhZCBzcGVlZCBpcyAyNTYwMCBLaUIvcwp0ZXN0aW5nIHBh
-Z2UgcmVhZCBzcGVlZApwYWdlIHJlYWQgc3BlZWQgaXMgMzIwMDAgS2lCL3MKdGVzdGluZyAyIHBh
-Z2UgcmVhZCBzcGVlZAoyIHBhZ2UgcmVhZCBzcGVlZCBpcyAzMjAwMCBLaUIvcwpUZXN0aW5nIDJ4
-IG11bHRpLWJsb2NrIGVyYXNlIHNwZWVkCjJ4IG11bHRpLWJsb2NrIGVyYXNlIHNwZWVkIGlzIDAg
-S2lCL3MKVGVzdGluZyA0eCBtdWx0aS1ibG9jayBlcmFzZSBzcGVlZAo0eCBtdWx0aS1ibG9jayBl
-cmFzZSBzcGVlZCBpcyAwIEtpQi9zClRlc3RpbmcgOHggbXVsdGktYmxvY2sgZXJhc2Ugc3BlZWQK
-OHggbXVsdGktYmxvY2sgZXJhc2Ugc3BlZWQgaXMgMCBLaUIvcwpUZXN0aW5nIDE2eCBtdWx0aS1i
-bG9jayBlcmFzZSBzcGVlZAoxNnggbXVsdGktYmxvY2sgZXJhc2Ugc3BlZWQgaXMgMCBLaUIvcwpU
-ZXN0aW5nIDMyeCBtdWx0aS1ibG9jayBlcmFzZSBzcGVlZAozMnggbXVsdGktYmxvY2sgZXJhc2Ug
-c3BlZWQgaXMgMCBLaUIvcwpUZXN0aW5nIDY0eCBtdWx0aS1ibG9jayBlcmFzZSBzcGVlZAo2NHgg
-bXVsdGktYmxvY2sgZXJhc2Ugc3BlZWQgaXMgMCBLaUIvcwpmaW5pc2hlZAoKW3Jvb3RAMzAzbWlu
-aSAvcm9vdF0KIyAuL2ZsYXNoX3N0cmVzcyAvZGV2L210ZDMKc2Nhbm5pbmcgZm9yIGJhZCBlcmFz
-ZWJsb2NrcwpzY2FubmVkIDg0OCBlcmFzZWJsb2NrcywgNCBhcmUgYmFkCmRvaW5nIG9wZXJhdGlv
-bnMKMCBvcGVyYXRpb25zIGRvbmUKMTAyNCBvcGVyYXRpb25zIGRvbmUKMjA0OCBvcGVyYXRpb25z
-IGRvbmUKMzA3MiBvcGVyYXRpb25zIGRvbmUKNDA5NiBvcGVyYXRpb25zIGRvbmUKNTEyMCBvcGVy
-YXRpb25zIGRvbmUKNjE0NCBvcGVyYXRpb25zIGRvbmUKNzE2OCBvcGVyYXRpb25zIGRvbmUKODE5
-MiBvcGVyYXRpb25zIGRvbmUKOTIxNiBvcGVyYXRpb25zIGRvbmUKZmluaXNoZWQsIDEwMDAwIG9w
-ZXJhdGlvbnMgZG9uZQoKW3Jvb3RAMzAzbWluaSAvcm9vdF0KIyAuL2ZsYXNoX3RvcnR1cmUgL2Rl
-di9tdGQzCmxpYm10ZDogcnVuIHRvcnR1cmUgdGVzdCBmb3IgUEVCIDAKbGlibXRkOiBQRUIgMCBw
-YXNzZWQgdG9ydHVyZSB0ZXN0LCBkbyBub3QgbWFyayBpdCBhIGJhZApUb3J0dXJlIHRlc3QgaXRl
-cmF0aW9ucyBkb25lOiAxCgpbcm9vdEAzMDNtaW5pIC9yb290XQojIC4vZmxhc2hfdG9ydHVyZSAv
-ZGV2L210ZDMKbGlibXRkOiBydW4gdG9ydHVyZSB0ZXN0IGZvciBQRUIgMApsaWJtdGQ6IFBFQiAw
-IHBhc3NlZCB0b3J0dXJlIHRlc3QsIGRvIG5vdCBtYXJrIGl0IGEgYmFkClRvcnR1cmUgdGVzdCBp
-dGVyYXRpb25zIGRvbmU6IDEKCltyb290QDMwM21pbmkgL3Jvb3RdCiMgLi9mbGFzaF9yZWFkdGVz
-dCAvZGV2L210ZDMKdGVzdGluZyBwYWdlIHJlYWQKVGh1IEphbiAgMSAwMDowOToyOSBVVEMgMTk3
-MDpjb25uZWN0aW9uIHRpbWVvdXQgYW5kIHJlYm9vdCBldGgwJ3MgbmVnb3RpYXRpb24KU2tpcHBp
-bmcgYmFkIGJsb2NrIDg0NApTa2lwcGluZyBiYWQgYmxvY2sgODQ1ClNraXBwaW5nIGJhZCBibG9j
-ayA4NDYKU2tpcHBpbmcgYmFkIGJsb2NrIDg0NwoKW3Jvb3RAMzAzbWluaSAvcm9vdF0KIyAuL25h
-bmRwYWdldGVzdCAvZGV2L210ZDMKaWdub3JpbmcgYmFkIGVyYXNlIGJsb2NrIDg0NAppZ25vcmlu
-ZyBiYWQgZXJhc2UgYmxvY2sgODQ1Cmlnbm9yaW5nIGJhZCBlcmFzZSBibG9jayA4NDYKaWdub3Jp
-bmcgYmFkIGVyYXNlIGJsb2NrIDg0NwplcmFzaW5nIGFsbCBibG9ja3MKZXJhc2VkIDg0OCBlcmFz
-ZWJsb2Nrcwp3cml0aW5nIGFsbCBibG9ja3MKd3JpdHRlbiB1cCB0byBlcmFzZWJsb2NrIDAKd3Jp
-dHRlbiB1cCB0byBlcmFzZWJsb2NrIDI1Ngp3cml0dGVuIHVwIHRvIGVyYXNlYmxvY2sgNTEyCndy
-aXR0ZW4gdXAgdG8gZXJhc2VibG9jayA3NjgKd3JpdHRlbiA4NDggZXJhc2VibG9ja3MKdmVyaWZ5
-aW5nIGFsbCBlcmFzZWJsb2Nrcwp2ZXJpZmllZCB1cCB0byBlcmFzZWJsb2NrIDAKdmVyaWZpZWQg
-dXAgdG8gZXJhc2VibG9jayAyNTYKdmVyaWZpZWQgdXAgdG8gZXJhc2VibG9jayA1MTIKdmVyaWZp
-ZWQgdXAgdG8gZXJhc2VibG9jayA3NjgKdmVyaWZpZWQgODQ4IGVyYXNlYmxvY2tzCmNyb3NzdGVz
-dApyZWFkaW5nIHBhZ2UgYXQgYmxvY2sgMCwgcGFnZSAwCnJlYWRpbmcgcGFnZSBhdCBibG9jayA4
-NDMsIHBhZ2UgNjMKcmVhZGluZyBwYWdlIGF0IGJsb2NrIDAsIHBhZ2UgMAp2ZXJpZnlpbmcgcGFn
-ZXMgcmVhZCBhdCBibG9jayAwIG1hdGNoCmNyb3NzdGVzdCBvawplcmFzZWNyb3NzdGVzdAplcmFz
-aW5nIGJsb2NrIDAKd3JpdGluZyAxc3QgcGFnZSBvZiBibG9jayAwCnJlYWRpbmcgMXN0IHBhZ2Ug
-b2YgYmxvY2sgMAp2ZXJpZnlpbmcgMXN0IHBhZ2Ugb2YgYmxvY2sgMAplcmFzaW5nIGJsb2NrIDAK
-d3JpdGluZyAxc3QgcGFnZSBvZiBibG9jayAwCmVyYXNpbmcgYmxvY2sgODQzCnJlYWRpbmcgMXN0
-IHBhZ2Ugb2YgYmxvY2sgMAp2ZXJpZnlpbmcgMXN0IHBhZ2Ugb2YgYmxvY2sgMAplcmFzZWNyb3Nz
-dGVzdCBvawplcmFzZXRlc3QKZXJhc2luZyBibG9jayAwCndyaXRpbmcgMXN0IHBhZ2Ugb2YgYmxv
-Y2sgMAplcmFzaW5nIGJsb2NrIDAKcmVhZGluZyAxc3QgcGFnZSBvZiBibG9jayAwCnZlcmlmeWlu
-ZyAxc3QgcGFnZSBvZiBibG9jayAwIGlzIGFsbCAweGZmCmVyYXNldGVzdCBvawoKW3Jvb3RAMzAz
-bWluaSAvcm9vdF0KIyAuL25hbmRzdWJwYWdldGVzdCAvZGV2L210ZDMKaWdub3JpbmcgYmFkIGVy
-YXNlIGJsb2NrIDg0NAppZ25vcmluZyBiYWQgZXJhc2UgYmxvY2sgODQ1Cmlnbm9yaW5nIGJhZCBl
-cmFzZSBibG9jayA4NDYKaWdub3JpbmcgYmFkIGVyYXNlIGJsb2NrIDg0NwplcmFzaW5nIGdvb2Qg
-ZXJhc2VibG9ja3MKdmVyaWZ5aW5nIGFsbCBlcmFzZWJsb2NrcyBmb3IgMHhmZgp2ZXJpZmllZCA4
-NDggZXJhc2VibG9ja3MKd3JpdGluZyBmaXJzdCAyIHN1Yi1wYWdlcyBvbiBQRUIgMAp3cml0aW5n
-IGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxCndyaXRpbmcgZmlyc3QgMiBzdWItcGFnZXMgb24g
-UEVCIDIKd3JpdGluZyBmaXJzdCAyIHN1Yi1wYWdlcyBvbiBQRUIgMwp3cml0aW5nIGZpcnN0IDIg
-c3ViLXBhZ2VzIG9uIFBFQiA0CndyaXRpbmcgZmlyc3QgMiBzdWItcGFnZXMgb24gUEVCIDUKd3Jp
-dGluZyBmaXJzdCAyIHN1Yi1wYWdlcyBvbiBQRUIgNgp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2Vz
-IG9uIFBFQiA3CndyaXRpbmcgZmlyc3QgMiBzdWItcGFnZXMgb24gUEVCIDgKd3JpdGluZyBmaXJz
-dCAyIHN1Yi1wYWdlcyBvbiBQRUIgOQp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAx
-MAp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxMQp3cml0aW5nIGZpcnN0IDIgc3Vi
-LXBhZ2VzIG9uIFBFQiAxMgp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxMwp3cml0
-aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxNAp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2Vz
-IG9uIFBFQiAxNQp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxNgp3cml0aW5nIGZp
-cnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxNwp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBF
-QiAxOAp3cml0aW5nIGZpcnN0IDIgc3ViLXBhZ2VzIG9uIFBFQiAxOQouLi4uLgoKZXJpZnlpbmcg
-ZXhwb25lbnRpYWwgb2Zmc2V0ICYgc2l6ZSB3cml0ZXMgb24gUEVCIDg0MAp2ZXJpZnlpbmcgZXhw
-b25lbnRpYWwgb2Zmc2V0ICYgc2l6ZSB3cml0ZXMgb24gUEVCIDg0MQp2ZXJpZnlpbmcgZXhwb25l
-bnRpYWwgb2Zmc2V0ICYgc2l6ZSB3cml0ZXMgb24gUEVCIDg0Mgp2ZXJpZnlpbmcgZXhwb25lbnRp
-YWwgb2Zmc2V0ICYgc2l6ZSB3cml0ZXMgb24gUEVCIDg0MwplcmFzaW5nIGdvb2QgZXJhc2VibG9j
-a3MKdmVyaWZ5aW5nIGFsbCBlcmFzZWJsb2NrcyBmb3IgMHhmZgp2ZXJpZmllZCA4NDggZXJhc2Vi
-bG9ja3MKCk9uIFR1ZSwgQXByIDE5LCAyMDIyIGF0IDU6MTEgUE0gU2NvdHQgWmhhbmcgPG1hY3Jv
-bWFyc2hpcEBnbWFpbC5jb20+IHdyb3RlOgo+Cj4gdGhlIGx6byBlcnJvciBpcyBub3QgYWx3YXlz
-LiBJdCBkaWRuJ3QgaGFwcGVuIG9uIHJvb3QgcGFydGl0aW9uIHlldC4KPiBPbiBvcHQsIG9ubHkg
-d2hlbiBmZXcgZmlsZXMgYXJlIGJlaW5nIHJlYWQsIGRtZXNnIHdvdWxkIGNvbXBsYWluIGx6bwo+
-IGRlY29tcHJlc3MuIEkgZG9uJ3Qga25vdyBob3cgdGhpcyBoYXBwZW4gZm9yIGZpcnN0IHRpbWUu
-IE9ubHkgIHdoZW4KPiB0aGlzIGhhcHBlbnMsIGl0IHN0aWNrcyB0aGVyZSwgSSBkb24ndCBzZWUg
-YW55IHNpZGUgZWZmZWN0LCBzZWFtcwo+IGV2ZXJ5dGhpbmcgY29udGludWVzIHdvcmtpbmcuCj4K
-PiBPbiBUdWUsIEFwciAxOSwgMjAyMiBhdCA1OjAzIFBNIFNjb3R0IFpoYW5nIDxtYWNyb21hcnNo
-aXBAZ21haWwuY29tPiB3cm90ZToKPiA+Cj4gPiBUaGFua3MuCj4gPgo+ID4gSSB3aWxsIGRvIG1v
-cmUgdGVzdHMuCj4gPgo+ID4gSSBjcmVhdGVkIHViaWZzIGJ5IHVzaW5nIGJ1aWxkcm9vdCB3aXRo
-IGRlZmF1bHQgb3B0aW9ucy4KPiA+IE15IG5hbmQgZHJpdmVycyBvbmx5IHBhc3MgYml0ZXJyb3Jz
-IHRlc3QgYXQgdGhlIG1vbWVudC4KPiA+IEkgYW0gdXNpbmcgZGVmYXVsdCBidWlsZHJvb3QgdWJp
-ZnMuaW1nIHNvIEkgZGlkbid0IHRlc3Qgd2l0aCBvdGhlcnMgeWV0Lgo+ID4KPiA+IEkgd2lsbCBs
-ZXQgeW91IGtub3cgYWZ0ZXIgSSBmaW5pc2ggdGhlIHRlc3QuCj4gPgo+ID4gT24gVHVlLCBBcHIg
-MTksIDIwMjIgYXQgMzo0NCBQTSBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PiB3
-cm90ZToKPiA+ID4KPiA+ID4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+ID4gPiA+
-IERpZCB5b3UgcnVuIHRoZSB2YXJpb3VzIG5hbmQgdGVzdHMgYmVzaWRlcyBuYW5kYml0ZXJycz8g
-SWYgdGhleSBhbGwKPiA+ID4gPiBwYXNzIHRoZW4gbWF5YmUgUmljaGFyZCB3aWxsIGJlIG1vcmUg
-aGVscGZ1bCB0aGFuIEkgYW0uLi4KPiA+ID4KPiA+ID4gWy4uLl0KPiA+ID4KPiA+ID4gPj4KPiA+
-ID4gPj4gQnV0IEkgbm90aWNlZCB0aGUgbHpvIGRlY29tcHJlc3MgZXJyb3IgaXMgc3RpbGwgdGhl
-cmUuCj4gPiA+ID4+IEkgZGlkICBmb2xsb3dpbmcgYWN0aW9ucyB0byB0ZXN0Lgo+ID4gPiA+PiAv
-ZGV2L210ZDMgaXMgbW91bnRlZCBvbiAvb3B0IHVzaW5nIHViaWZzLgo+ID4gPiA+PiB0YXIgemN2
-ZiAvcm9vdC9vcHQudGFyLmd6IC9vcHQgIChkb25lIHdpdGhvdXQgZXJyb3IpCj4gPiA+ID4+IGZv
-cm1hdCAvb3B0Lgo+ID4gPiA+PiB0YXIgenh2ZiAvcm9vdC9vcHQudGFyLmd6IC1DIC8KPiA+ID4K
-PiA+ID4gSG93IGRpZCB5b3UgY3JlYXRlIHViaWZzPwo+ID4gPgo+ID4gPiBEb2VzIHlvdXIgbmFu
-ZCBkcml2ZXIgcGFzcyB1YmkgdGVzdHM/Cj4gPiA+Cj4gPiA+ID4+IFRoZW4gd2hlbiBJIHJ1biBw
-aHAgcHJvZ3JhbSB3aGljaCBpcyBpbiBvcHQuIEkgc2F3IGRtZXNnCj4gPiA+ID4+IFsgIDExOC44
-NTAwMDBdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDE1MjYpOiB1Ymlmc19kZWNvbXByZXNzOiBj
-YW5ub3QKPiA+ID4gPj4gZGVjb21wcmVzcyAyMjkzIGJ5dGVzLCBjb21wcmVzc29yIGx6bywgZXJy
-b3IgLTIyCj4gPiA+ID4+IFsgIDExOC44NjAwMDBdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDE1
-MjYpOiBkb19yZWFkcGFnZTogYmFkIGRhdGEKPiA+ID4gPj4gbm9kZSAoYmxvY2sgMTUsIGlub2Rl
-IDM5NikKPiA+ID4gPj4gWyAgMTE4Ljg3MDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMTUy
-Nik6IGRvX3JlYWRwYWdlOiBjYW5ub3QgcmVhZAo+ID4gPiA+PiBwYWdlIDE1IG9mIGlub2RlIDM5
-NiwgZXJyb3IgLTIyCj4gPiA+ID4+IFsgIDExOC44ODAwMDBdIFVCSUZTIGVycm9yICh1YmkwOjAg
-cGlkIDE1MjYpOiB1Ymlmc19kZWNvbXByZXNzOiBjYW5ub3QKPiA+ID4gPj4gZGVjb21wcmVzcyAy
-MjkzIGJ5dGVzLCBjb21wcmVzc29yIGx6bywgZXJyb3IgLTIyCj4gPiA+ID4+IFsgIDExOC45MDAw
-MDBdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDE1MjYpOiBkb19yZWFkcGFnZTogYmFkIGRhdGEK
-PiA+ID4gPj4gbm9kZSAoYmxvY2sgMTUsIGlub2RlIDM5NikKPiA+ID4gPj4gWyAgMTE4LjkwMDAw
-MF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMTUyNik6IGRvX3JlYWRwYWdlOiBjYW5ub3QgcmVh
-ZAo+ID4gPiA+PiBwYWdlIDE1IG9mIGlub2RlIDM5NiwgZXJyb3IgLTIyCj4gPiA+ID4+IFsgIDEx
-OC45MjAwMDBdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDE1MjYpOiB1Ymlmc19kZWNvbXByZXNz
-OiBjYW5ub3QKPiA+ID4gPj4gZGVjb21wcmVzcyAyMjkzIGJ5dGVzLCBjb21wcmVzc29yIGx6bywg
-ZXJyb3IgLTIyCj4gPiA+ID4+IFsgIDExOC45MzAwMDBdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlk
-IDE1MjYpOiBkb19yZWFkcGFnZTogYmFkIGRhdGEKPiA+ID4gPj4gbm9kZSAoYmxvY2sgMTUsIGlu
-b2RlIDM5NikKPiA+ID4gPj4gWyAgMTE4Ljk0MDAwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQg
-MTUyNik6IGRvX3JlYWRwYWdlOiBjYW5ub3QgcmVhZAo+ID4gPiA+PiBwYWdlIDE1IG9mIGlub2Rl
-IDM5NiwgZXJyb3IgLTIyCj4gPiA+ID4+Cj4gPiA+ID4+IEkgcmVtb3ZlZCB0aGUgdWJpZnNfZHVt
-cF9ub2RlIGNhbGwgdG8gYXZvaWQgbWFueSBkdW1wIHRleHQuIFRoZQo+ID4gPiA+PiBwcm9ibGVt
-IGlzIHdoZW4gSSBydW4gcGhwIHByb2dyYW0sIGxvdHMgb2YgYWJvdmUgbG9ncyBkdW1wZWQuCj4g
-PiA+ID4+IEJ1dCBJIGRvbid0IHNlZSBhbnkgZWZmZWN0IG9mIHRoZSBhYm92ZSBsb2dzLiB0aGUg
-cHJvZ3JhbSBzZWVtcyBydW5uaW5nLgo+ID4gPiA+PiBJcyB0aGVyZSBhIHBvc3NpYmlsaXR5IHRo
-ZSB1bmRlcmx5aW5nIG5hbmQgZHJpdmVyIGRhdGEgaXMgb2ssIGJ1dCB0aGUKPiA+ID4gPj4gbHpv
-IGNvbXByZXNzL2RlY29tcHJlc3MgY29kZSBoYXMgYnVncyA/ICBJIGFtIHJ1bm5pbmcgbGludXgt
-NS40LnkKPiA+ID4gPj4gY2xvbmVkIGZyb20ga2VybmVsLm9yZy4KPiA+ID4KPiA+ID4gRG9lcyB0
-aGUgcHJvYmxlbSBvbmx5IGhhcHBlbiB3aXRoIGx6bz8KPiA+ID4KPiA+ID4gUGxlYXNlIHJlLXRl
-c3Qgd2l0aCBubyBjb21wcmVzc29yIGVuYWJsZWQgKGNvbXByPW5vbmUpIGFuZCBhbHNvIG1vdW50
-IHdpdGgKPiA+ID4gdGhlIGNoa19kYXRhX2NyYyBtb3VudCBvcHRpb24uCj4gPiA+Cj4gPiA+IFRo
-YW5rcywKPiA+ID4gLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 19/04/22 12:56PM, Tudor.Ambarus@microchip.com wrote:
+> On 4/19/22 15:46, Michael Walle wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
+the content is safe
+> > =
+
+> > Am 2022-04-19 14:32, schrieb Pratyush Yadav:
+> >> On 19/04/22 12:08PM, Tudor.Ambarus@microchip.com wrote:
+> >>> On 4/19/22 14:46, Michael Walle wrote:
+> >>> > EXTERNAL EMAIL: Do not click links or open attachments unless you k=
+now the content is safe
+> >>> >
+> >>> > Am 2022-04-19 13:19, schrieb Michael Walle:
+> >>> >> Am 2022-04-11 11:10, schrieb Tudor Ambarus:
+> >>> >>> There are manufacturers that use registers indexed by address. So=
+me of
+> >>> >>> them support "read/write any register" opcodes. Provide core meth=
+ods
+> >>> >>> that
+> >>> >>> can be used by all manufacturers. SPI NOR controller ops are
+> >>> >>> intentionally
+> >>> >>> not supported as we intend to move all the SPI NOR controller dri=
+vers
+> >>> >>> under the SPI subsystem.
+> >>> >>>
+> >>> >>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> >>> >>> Tested-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> >>> >>> Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+> >>> >>
+> >>> >> I still don't like it because the function doesn't do
+> >>> >> anything what the function name might suggest. The read
+> >>> >> just executes an op, the write executes an op with a
+> >>> >> write enable before. All the behavior is determined by the
+> >>> >> 'op' argument.
+> >>> >>
+> >>> >> Anyway,
+> >>> >> Reviewed-by: Michael Walle <michael@walle.cc>
+> >>> >>
+> >>> >>> ---
+> >>> >>> v3: no changes
+> >>> >>>
+> >>> >>>=A0 drivers/mtd/spi-nor/core.c | 41
+> >>> >>> ++++++++++++++++++++++++++++++++++++++
+> >>> >>>=A0 drivers/mtd/spi-nor/core.h |=A0 4 ++++
+> >>> >>>=A0 2 files changed, 45 insertions(+)
+> >>> >>>
+> >>> >>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/cor=
+e.c
+> >>> >>> index 6165dc7bfd17..42794328d3b6 100644
+> >>> >>> --- a/drivers/mtd/spi-nor/core.c
+> >>> >>> +++ b/drivers/mtd/spi-nor/core.c
+> >>> >>> @@ -307,6 +307,47 @@ ssize_t spi_nor_write_data(struct spi_nor *n=
+or,
+> >>> >>> loff_t to, size_t len,
+> >>> >>>=A0=A0=A0=A0=A0 return nor->controller_ops->write(nor, to, len, bu=
+f);
+> >>> >>>=A0 }
+> >>> >>>
+> >>> >>> +/**
+> >>> >>> + * spi_nor_read_reg() - read register to flash memory
+> >>> >>> + * @nor:=A0=A0=A0=A0=A0=A0=A0 pointer to 'struct spi_nor'.
+> >>> >>> + * @op:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SPI memory operation=
+. op->data.buf must be DMA-able.
+> >>> >>> + * @proto:=A0 SPI protocol to use for the register operation.
+> >>> >>> + *
+> >>> >>> + * Return: zero on success, -errno otherwise
+> >>> >>> + */
+> >>> >>> +int spi_nor_read_reg(struct spi_nor *nor, struct spi_mem_op *op,
+> >>> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 enum spi_nor_pr=
+otocol proto)
+> >>> >>> +{
+> >>> >>> +=A0=A0=A0 if (!nor->spimem)
+> >>> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EOPNOTSUPP;
+> >>> >>> +
+> >>> >>> +=A0=A0=A0 spi_nor_spimem_setup_op(nor, op, proto);
+> >>> >>> +=A0=A0=A0 return spi_nor_spimem_exec_op(nor, op);
+> >>> >>> +}
+> >>> >>> +
+> >>> >>> +/**
+> >>> >>> + * spi_nor_write_reg() - write register to flash memory
+> >>> >>> + * @nor:=A0=A0=A0=A0=A0=A0=A0 pointer to 'struct spi_nor'
+> >>> >>> + * @op:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 SPI memory operation=
+. op->data.buf must be DMA-able.
+> >>> >>> + * @proto:=A0 SPI protocol to use for the register operation.
+> >>> >>> + *
+> >>> >>> + * Return: zero on success, -errno otherwise
+> >>> >>> + */
+> >>> >>> +int spi_nor_write_reg(struct spi_nor *nor, struct spi_mem_op *op,
+> >>> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 enum spi_nor=
+_protocol proto)
+> >>> >>> +{
+> >>> >>> +=A0=A0=A0 int ret;
+> >>> >>> +
+> >>> >>> +=A0=A0=A0 if (!nor->spimem)
+> >>> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return -EOPNOTSUPP;
+> >>> >>> +
+> >>> >>> +=A0=A0=A0 ret =3D spi_nor_write_enable(nor);
+> >>> >>> +=A0=A0=A0 if (ret)
+> >>> >>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return ret;
+> >>> >>> +=A0=A0=A0 spi_nor_spimem_setup_op(nor, op, proto);
+> >>> >>> +=A0=A0=A0 return spi_nor_spimem_exec_op(nor, op);
+> >>> >
+> >>> > After seeing your next two patches. Shouldn't the
+> >>> > spi_nor_wait_until_ready() call be here too?
+> >>> >
+> >>>
+> >>> I thought of this too, but seems that for a reason that I don't
+> >>> remember, we don't call for spi_nor_wait_until_ready after we
+> >>> write the octal DTR bit. Pratyush, do you remember why?
+> >>
+> >> We are not sure the protocol changed correctly so we can't rely on
+> >> spi_nor_wait_until_ready(). We read the ID instead to be sure.
+> > =
+
+> > So besides the fact that the write_reg only works with the 'correct'
+> > op parameter, it is also tailored to the special use case. For real
+> > write_reg(), the user would actually has to poll the status bit
+> > afterwards? :(
+> > =
+
+> Don't be sad :D. Are the octal DTR methods an exception?
+> If yes, let's add the call to spi_nor_wait_until_ready() in the
+> read/write_any_reg() methods, and let the octal methods handle
+> the specific write themselves, without calling for ready()
+
+It has been a while, but IIRC I asked Cypress about this, because I was =
+
+worried about reading ID while the switch to 8D mode was still in =
+
+progress. They said that volatile register writes are instant and do not =
+
+need any status polling. So the switch to 8D-8D-8D mode would be instant =
+
+and there is no need to wait for anything.
+
+The Cypress S28 flash datasheet does not say this explicitly. It does =
+
+say that writing to non-volatile registers takes time and you need to =
+
+wait for ready for those, but makes no mention of volatile registers. We =
+
+don't ever want to write non-volatile registers so we can ignore that =
+
+problem.
+
+I see the Micron MT35 datasheet say this explicitly, that changes to =
+
+volatile registers are instant.
+
+So I would say that based on my limited sample size, volatile register =
+
+writes for Cypress and Micron flashes do _not_ need =
+
+spi_nor_wait_until_ready().
+
+-- =
+
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
