@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14D3CC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 00:49:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9469BC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 01:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ALProjUe8djq4u8Z4h7/oXChJ7Y7l2fnBzAAoSw9CKs=; b=ZQQsTeZOALaP/n
-	A01dePPRJAEY6coeUN/pOjb6011L1+rPwJQGu7c4MkxgtJ5imIOb5hMLUyB4dAVD2AlxbaHV+7Ft8
-	Yd6tPc/Gb3ouhHeighOPcHYFqnVkZ5TlxCeKH13TPCnYl306sF71MiXah1d5Y5I0X5VPYTP8iQLZr
-	KscwZpju75uasUbcxILt733EQR/+g3sOPxBfmq4wIC4WvBib/g3uN7xm4DezqNAu0drMJF0ULqvnl
-	n2UU2Rzikb0PJKF1+dpZs/uolmrmKmI6uCKN4X7TGy5AZ7dDKXopx7qx5r0leSGVIV4kUo3EN+tTV
-	/kTaktOagmIqdE9X6cyA==;
+	List-Owner; bh=REZhuNixuHtvAft5SBduyAUm9LCK2Y1fbzIqc+ViMPM=; b=pUxX+JpMh/Nc/x
+	gSYy/vSIRPZuF6xdq1cWYMzp9LK6qsQyd2xQ5p6JH230kNHmccfUAlXCs0wsyabePak3hBIamDxUY
+	IaZb1I9jxStEIEeLjXkstcNxa8LMLQpyNUbdOVTDdr9IHKdZpkz+jK+VqOxmthFhJ/git8mRq3JTs
+	ENNRgNcgTFMQGGSAkHyS7cdjz9/QdD28j5TuLhZOzUMTHk0P4aCCQnjKX1OQaSejc4zWL51kdT4bb
+	T8SsQRm3cTAddH/MKBbPS2o2EtnCVt6iY6jU7PtUNvjPP1U6fKM+HnBAAEvw8oIgbKGuUqaYi5iR6
+	fEjGewvYUHPsnPVXGRqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ngyWY-006jLZ-NJ; Wed, 20 Apr 2022 00:48:50 +0000
-Received: from mail-pg1-x533.google.com ([2607:f8b0:4864:20::533])
+	id 1ngykT-006lHP-9u; Wed, 20 Apr 2022 01:03:13 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ngyWV-006jLA-9U
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 00:48:49 +0000
-Received: by mail-pg1-x533.google.com with SMTP id k29so45419pgm.12
- for <linux-mtd@lists.infradead.org>; Tue, 19 Apr 2022 17:48:45 -0700 (PDT)
+ id 1ngykQ-006lH3-3z
+ for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 01:03:11 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id
+ j8-20020a17090a060800b001cd4fb60dccso456041pjj.2
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Apr 2022 18:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=Q5pSUjuC48DcEdWgHfQw7BwS5D2fPS/Cl33MfzgHo6I=;
- b=K4YsHCnpfwK5k6NmZEsrADvrT3gHu2GdlULtsqrtzRihZBlEZc9GfXfV8IcjYPvj23
- dFCq+mtD8Cwa/4p67tPY4ctqiVvK/LofGCmuq4usIDhQ21xkLOhf726Jbuy9DIkiGIXB
- /Pre4ujJDWrqb4jKc8KHvPhJF3qNa9pZOyAIWE4cBrqQG/67cleJ448CetrMZgXlFX6y
- lod4Hg0+mJUwhSL+3dfUhrGtIcly2qTTDwff+qwoWVMb07jF6ewUQ/y9V/9XtezKlZP0
- MX4kAk0oSp3rU/pokSYONI7JHlr852+nFF+ZBWAFXZ5t+z37TQA06yD8m61g+imBgNJ4
- NyFw==
+ bh=KozJ8y1N7LJaqtW59PY72s3DtOeMM08RxBriW6pM7Lw=;
+ b=GCo4bodK2Ws9qILAIHBr7F7QdpzgMtsd+89x1HrESDbBykFzLBeSfX0LMuagnf49cT
+ /Nzr7tgcLYvjY/Id1b1MEHPYVDo1ndyFTmqLVdz1LYmEgnDY/8MD3TCpD/VdEAUya4Gg
+ 9WKkPBYiZvRPoY3m03KyA7X/JcqMNiBdCfNd8ulFT834DFme0LhIhc3IGgjq6k125EOb
+ J0ZjGCqcfCwsyZugeOlxpYJ3X7M328n5JUNyy6nwHVpnTMbi0txckRtAzV/kBSxDhOtp
+ 5d6oUasomEf7i5XsWnT8Pj0Pr6b2PSUXMbAR3u2GtflRe3JyCA5n8BXM0OFwngs56eFj
+ ZhOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=Q5pSUjuC48DcEdWgHfQw7BwS5D2fPS/Cl33MfzgHo6I=;
- b=qy0UL0rlY+rrhL7UsocAoJAM35m7uR3lAfNqEJjYxmfr3nI1zZ13m4wdSOfDGRd9De
- /qDrgwdibPK4jeWk/SxtxPdmk3BxExL/DniKPBenQJ100TB5Ig+8uasW0O+buBVS5wEt
- n1kVN6GATq6zKWCrNNMqqUvcGcXFMPs5boKtk9DE6nTIJyMRCnvnY3MmFICZbjpKK4MD
- nd78i9KuAvEtRnCNTabTTXpLm/FC3xuhSAX2iL9xjm3QEYK7y6U/aEdZGw7hVrXJby+I
- ijCQw948QIF0/grhUL7R5erhjnE5WWbr/1w/5DFcJ6ijoJR8PhRfIpc5vA4l2UvHpq4z
- lr3w==
-X-Gm-Message-State: AOAM533n3pL6yry6iPxKnWVHAT8QpsBHpRHO1ZoM/vQIy1x6aS3dIrIm
- Uo4MoLMrOiHEKmGh7EvwjPPrvsNgZ2g=
-X-Google-Smtp-Source: ABdhPJzY2w1E5Xol79S2UM2EpzYT0y9SqdDOTTuQD7ua9GoNVw11FEr++GGXci9uLQYhQMgQ7SMJMQ==
-X-Received: by 2002:a65:638d:0:b0:39d:74ad:ce0b with SMTP id
- h13-20020a65638d000000b0039d74adce0bmr17220619pgv.103.1650415725260; 
- Tue, 19 Apr 2022 17:48:45 -0700 (PDT)
+ bh=KozJ8y1N7LJaqtW59PY72s3DtOeMM08RxBriW6pM7Lw=;
+ b=dJtgF2tDTnOqiIRKuEIyW4fWhsSucu7eHXjivyQ5IPsNH9IICq5cJNwsYyiNQDHss1
+ pNQRl3EWZxOtvSnPpLndmuzYGtGWEv86LjUB5Hx9VvDwLf7AN0WRYLEI5Tvk1mF7s6FA
+ 4eHtPXzyNs2Yv1Pfe7gWT3TD9R7/exl20kjs6OXIpujuu6PUdgV4rM9BWoug2Uk/scXO
+ j88eskWiyJJqNonaS9f969NCgyn060OkazE3j9Phy640qh0voU9hT+cM9FQappAMIshi
+ EoBt3sAV8ZROn0uRr9uI6Zk8EKrpuo3+wxzQY0XAuha2kJNMkDxNa3VboDUdpJXSL7Js
+ e3yA==
+X-Gm-Message-State: AOAM531pqMn+LoWXhrauQnxEIYJ2e1c9sVmSx4nlkv2M5j387MNJbpBT
+ qE2dsJQkyUi3Ytrav8J6i3M=
+X-Google-Smtp-Source: ABdhPJxRe5IUcC5g63eYeIw2Ytt3lMF7Bh5Smk7zzyyLgWvGhilnrXPS7kUN4wlF/JoBJ6HfqhvBVA==
+X-Received: by 2002:a17:90b:248c:b0:1cb:8764:c1f8 with SMTP id
+ nt12-20020a17090b248c00b001cb8764c1f8mr1532368pjb.34.1650416587365; 
+ Tue, 19 Apr 2022 18:03:07 -0700 (PDT)
 Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
  by smtp.gmail.com with ESMTPSA id
- m15-20020a638c0f000000b003827bfe1f5csm17486117pgd.7.2022.04.19.17.48.43
+ y16-20020a637d10000000b00381268f2c6fsm17908170pgc.4.2022.04.19.18.03.05
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 Apr 2022 17:48:44 -0700 (PDT)
-Message-ID: <a1325412-9de4-4ba2-a617-b014b05c4615@gmail.com>
-Date: Wed, 20 Apr 2022 09:48:41 +0900
+ Tue, 19 Apr 2022 18:03:06 -0700 (PDT)
+Message-ID: <3692dcb8-dddd-2d36-708c-beb3cc52c037@gmail.com>
+Date: Wed, 20 Apr 2022 10:03:04 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.0
@@ -73,12 +74,12 @@ Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
 References: <cover.1650259501.git.Takahiro.Kuwano@infineon.com>
  <92241a7f523474d477a17437c8b6c926b29da4ab.1650259501.git.Takahiro.Kuwano@infineon.com>
- <06f078ca-0b78-5d3b-4eac-c24751604f68@microchip.com>
+ <37da8217-da36-1649-f764-cd9e6dd7ed8c@microchip.com>
 From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <06f078ca-0b78-5d3b-4eac-c24751604f68@microchip.com>
+In-Reply-To: <37da8217-da36-1649-f764-cd9e6dd7ed8c@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_174847_385054_FEAFF6AD 
-X-CRM114-Status: GOOD (  21.16  )
+X-CRM114-CacheID: sfid-20220419_180310_233145_DCA5A1FD 
+X-CRM114-Status: GOOD (  23.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,9 +96,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 4/19/2022 9:53 PM, Tudor.Ambarus@microchip.com wrote:
+On 4/19/2022 5:01 PM, Tudor.Ambarus@microchip.com wrote:
 > On 4/18/22 08:41, tkuw584924@gmail.com wrote:
 >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >>
@@ -170,12 +169,20 @@ On 4/19/2022 9:53 PM, Tudor.Ambarus@microchip.com wrote:
 >> + * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
 >> + * also set during Flash power-up.
 >> + *
+> 
+> cool
+> 
 >> + * Return: 0 on success, -errno otherwise.
 >> + */
 >> +static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
 >> +{
 >> +       struct spi_mem_op op;
 >> +       u32 reg_addr = SPINOR_REG_CYPRESS_CFR1V;
+> 
+> no need for this local variable, use the define directly
+> 
+OK.
+
 >> +       u8 cfr1v_written;
 >> +       int ret;
 >> +
@@ -183,6 +190,11 @@ On 4/19/2022 9:53 PM, Tudor.Ambarus@microchip.com wrote:
 >> +               CYPRESS_NOR_RD_ANY_REG_OP(nor->addr_width, reg_addr,
 >> +                                         nor->bouncebuf);
 >> +       ret = spi_nor_read_reg(nor, &op, SNOR_PROTO_1_1_1);
+> 
+> can we use nor->reg_proto instead of SNOR_PROTO_1_1_1?
+> 
+Yes, I will replace it.
+
 >> +       if (ret)
 >> +               return ret;
 >> +
@@ -195,15 +207,14 @@ On 4/19/2022 9:53 PM, Tudor.Ambarus@microchip.com wrote:
 >> +               CYPRESS_NOR_WR_ANY_REG_OP(nor->addr_width, reg_addr, 1,
 >> +                                         nor->bouncebuf);
 >> +       ret = spi_nor_write_reg(nor, &op, SNOR_PROTO_1_1_1);
+> 
+> same
+> 
+> With these addressed:
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> 
 >> +       if (ret)
 >> +               return ret;
-> 
-> should you call spi_nor_wait_until_ready() here?
-> 
-No. For volatile register write, it finishes immediately and the device
-does not get in busy state. Reading back and verifying the register bit
-is good enough.
-
 >> +
 >> +       cfr1v_written = nor->bouncebuf[0];
 >> +
@@ -230,6 +241,8 @@ is good enough.
 >> 2.25.1
 >>
 > 
+Thank you!
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
