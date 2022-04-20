@@ -4,83 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C32AFC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 06:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A12EC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 07:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l+qokSdSwmJ42+NBsjMUPyKFJYYABATGpHDEkCY17Uw=; b=jIOAa7jNZEM+Is
-	Q8NzPtNnWTK7dXLSd2c/3pHsdIVR4VRPSUubMY34ITpK4zQauGVqdobSUoXhWJZAsKSmDBAWr7QA3
-	f/M5VixE3TF1Bx4ha7vMntAsCpctHW05Wz6JwJAbdEuhmlH7Ryx16PuArJIV0E9qxYScXLaC22P/5
-	PzZMTjyyDjgeV6HDdEdqp2lLihkYE4rgPDIZ4Kl+xZ08n4TxxjLr8dGcdW3sIgwedYt7p7dqmyoN4
-	6H4ypR3TeMP1+Gg0i3dB9LHYktkakXTd0VljSc/DntgDI7w2ec1qmyf6BRwiW6zc3g3tbfBbu+2t4
-	Qt1a+PpEL1p/LgK/2inA==;
+	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
+	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=fc7tVUfoZPdlPqqZRTOcLj6G7qgsseGycBvu9FYM3Dg=; b=3Tk
+	eZEyg73X362r0zxqz4FApGDrC8ukjwU63yvl+ZjutiPeShXf18TaLwLlY0n86iIOe2gqjO8avCRB2
+	mWM6WxAmgEIZFFBFCfm8QoGDSrcVRfXnNXQrZSZ6ZC6ejJ4bB1OaDMx0XvnNKARcWwJdo/BOraNo9
+	tvYHTbrwi5AezlBewdk5jRY8za9Bs92DZ4jzWlFyK9fWQ6evRVP/Hqp1i4F/vJ1/zkPudlLp5V4Bi
+	OsGSBG5gguQQDL5xWnn8iANuvfztJgvkqYijRgPh0UgP6Zu975q9czy5kmUmdJ0pZA/8yq9Ce8UzL
+	Lrp8/noN42boB4RQvnYJ4N3n4N0YDew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nh4In-007f8R-R3; Wed, 20 Apr 2022 06:59:01 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1nh4TK-007gxV-AY; Wed, 20 Apr 2022 07:09:54 +0000
+Received: from mail-yb1-xb2f.google.com ([2607:f8b0:4864:20::b2f])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nh4Ik-007f6X-6o
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 06:59:00 +0000
-Received: by mail-pf1-x432.google.com with SMTP id h1so1089644pfv.12
- for <linux-mtd@lists.infradead.org>; Tue, 19 Apr 2022 23:58:55 -0700 (PDT)
+ id 1nh4TH-007gwg-HY
+ for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 07:09:53 +0000
+Received: by mail-yb1-xb2f.google.com with SMTP id t67so1272486ybi.2
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2022 00:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=0UwgS5Do4p/0YkQBbq77pI5bob7fg4Da/ASGon1NFyI=;
- b=PLUcgdsGaFuwLdvC0I+lLV2xRIoe4c85uG4mL5IHqmNtTV0NAujI8p6PD7WFrm4aLG
- YiHtgQCh0Kl3b96yuhuu0ihMUWbbAZwhYbtpvlA1jGJHBYe0VCclZK9HqcIRTJ21YHmO
- qn6eGrHScMVw+bVXVCsXaCB4FKJeSEkp9DdkYfu7TdD8LduvowBBUVCyd82CPB5h/MVN
- wSApIXe4Um9B7fRSvvlGe3aJE7G86TSzKy7lL5+3m5CmdTPomWkNx682i0ouqbP7SMkH
- 39zRgfHD3K0JyShfGJZYu/KX/Kke6s6pbxWWt3EHZXh3l1qD+c7kOvtopeTZ3HAEm0wE
- KIqQ==
+ h=mime-version:from:date:message-id:subject:to
+ :content-transfer-encoding;
+ bh=mqTGAljTOgG8zdBFd6L46vtXGD6dnBggNGYXa4T13m8=;
+ b=VyKFeM43DEubMNKUHg8N7vkSnxYK/4bIFnQGiTep3iuEoF/Me5VLHVwp7RzA0ZT+ZV
+ vLLrIl+CQtAmiwT3Q6DP1twMCRQgzkiAL/JMjsLvBfIIePFBBjFliu0BrBaJ6QBfPt8P
+ ZCXXFfh5pXuZeqCQ/5+rQ1iEtWTwBM+8iDGgvu+Jj91sH1i/M4r0JR078wTdZDI2Z5Pi
+ 2v6Y3/NrQen9Ux2pa94voN27U1+jiICh20GFXk6T3y2Bec/61/rhBAPmgV3pYlbiTezu
+ YRYligHXpQImptFahUP5FLdWCIzbA6YYuHgu0KXb1HdrY/rojhNEz4NLX8387Dg0FzQU
+ pWvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to
  :content-transfer-encoding;
- bh=0UwgS5Do4p/0YkQBbq77pI5bob7fg4Da/ASGon1NFyI=;
- b=BIqWvJPzG+wShc6JeGKcc5espzRvH9aqchZKCIO/DIbVCQivX7KmXod6N7TT16/r0N
- Vny5HbWZwoUohpeElgE5HSnTTiZd0DptAjGAKYCZxDFZzWvHfXI09mLOnTXnViIElRf6
- 7mneqveIabqlrs9o0J7sD46oTJEDvgyvkbxNU/0gTzaEIAhgBtfanMSVZBWCTo6wqYu7
- pFnK4WQLAdbQn5vqTi2FM7eWpeLNbwThoF3/J8xY2jlmhXimg+8CqM5Yw8Bm1/t9rky3
- LOuvuGaZr6xVThuUE8uOh/5TNjQ6JMq3VHgmF8DbwIhI9TWzljMTllQtI7Sa5MQRhdNE
- 3fMQ==
-X-Gm-Message-State: AOAM530bPZ5V1cQdCzJewUfyLYyLrNWDMUU2r6LXo7HN/xjB/OYWmy0M
- 6mSOTytiss6TzeH0+/uEPRo=
-X-Google-Smtp-Source: ABdhPJxCMh1I1dyASvkMk451j41qIPzTmFK2b3sQ66dYsqkf87jgrSfS6RP8VleSCsWf+9tn7S1Cow==
-X-Received: by 2002:a05:6a00:1385:b0:50a:9768:9eca with SMTP id
- t5-20020a056a00138500b0050a97689ecamr6236577pfg.43.1650437934448; 
- Tue, 19 Apr 2022 23:58:54 -0700 (PDT)
-Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
- by smtp.gmail.com with ESMTPSA id
- u8-20020a62ed08000000b0050a90fd59d5sm6038280pfh.50.2022.04.19.23.58.52
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 Apr 2022 23:58:53 -0700 (PDT)
-Message-ID: <02154c7d-225b-d3a9-df28-f257c3b7e9a7@gmail.com>
-Date: Wed, 20 Apr 2022 15:58:50 +0900
+ bh=mqTGAljTOgG8zdBFd6L46vtXGD6dnBggNGYXa4T13m8=;
+ b=Um9An8pToFaUlzZ6TOgMQumlckoEuz6MijdqQgrehVxDiR6BdEH7rx6k4ByJEoe88A
+ FW1DI/oQUBYM9HcFu2TyyWatlOLYHpf3+t5Tvrq6ydPL9WnLiFn+bNg8aVyVSBpx2+f0
+ DS054Mylr5s3nDYrbruCNKP4xZ5VlWUCicD28bxRVtGclsMbo9jzEARTBmDQNqg0yMnZ
+ Vm44qzCKhZO1Wd76rlMFck9wbHW8kT7U42OrQa0WndFa5Gdu6+s2nWps9ueShOM0w3tR
+ vl4VOAjvTKThq4qFBBm5Vuzl+j2+VGccF8UGv6c/MRHnqteU/Ff1qkGiF1jvLEAD3Ho2
+ 7nxw==
+X-Gm-Message-State: AOAM531BQO7VcBy10qVNipr+DndCdP4CTmTp33GvEB68qdgpLzMDm7uB
+ j0kWahaqGl6mlHJyodQMUuWgiV/ZQPKTrr+IAj7YNZElCOY=
+X-Google-Smtp-Source: ABdhPJxd7gjbLCrkyCA8CxuQPJ8qJBktW670WJPFjKEOiHKmyQ5p1BX3YftLQQ3nsg1hkFXO5ulzQzQ9QS+oYcqdP8k=
+X-Received: by 2002:a25:23c9:0:b0:641:d94c:8bf1 with SMTP id
+ j192-20020a2523c9000000b00641d94c8bf1mr19332014ybj.546.1650438589499; Wed, 20
+ Apr 2022 00:09:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v11 3/3] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs
- and fixups
-Content-Language: en-US
-To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
-References: <cover.1650259501.git.Takahiro.Kuwano@infineon.com>
- <ffd36e40c47dd74ac3a0cadf520f8fdd35add856.1650259501.git.Takahiro.Kuwano@infineon.com>
- <201f90e6-e03b-9469-f3bd-f1ae3b5737dd@microchip.com>
- <c8007288-00ef-bc3d-5337-8db710feee67@gmail.com>
- <9220410a-f3bc-b2cf-8324-604ad5b3953e@microchip.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <9220410a-f3bc-b2cf-8324-604ad5b3953e@microchip.com>
+From: Jakob Ruisinger <jakob.ruisinger@gmail.com>
+Date: Wed, 20 Apr 2022 09:09:37 +0200
+Message-ID: <CAOfoWE8NP1rgUMpA9ycHegwEQRF4YKB934XODt1pO2=-2Zt4JQ@mail.gmail.com>
+Subject: UBIFS Read only after corruption
+To: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_235858_302069_017A3EC5 
-X-CRM114-Status: GOOD (  32.47  )
+X-CRM114-CacheID: sfid-20220420_000951_625650_B2DBE029 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,181 +74,132 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
-
-On 4/20/2022 3:11 PM, Tudor.Ambarus@microchip.com wrote:
-> On 4/20/22 08:34, Takahiro Kuwano wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi Tudor,
->>
->> Thank you for your feedback.
->>
->> On 4/19/2022 6:32 PM, Tudor.Ambarus@microchip.com wrote:
->>> On 4/18/22 08:41, tkuw584924@gmail.com wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>>
->>>> The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
->>>>
->>>> For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
->>>> uniform sector sizes are supported. This is due to missing or incorrect
->>>> entries in SMPT. Fixup for other sector sizes configurations will be
->>>> followed up as needed.
->>>>
->>>> Tested on Xilinx Zynq-7000 FPGA board.
->>>>
->>>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>>> ---
->>>> Changes in v11:
->>>>   - Cleanup fixups based on other patches in this series
->>>>
->>>> Changes in v10:
->>>>   - Cleanup fixups and ID table based on other patches in this series
->>>>
->>>> Changes in v9:
->>>>   - Use late_init() hook to fix mode clocks and writesize
->>>>   - Use PARSE_SFDP instead of NO_SFDP_FLAGS
->>>>   - Use MFR_FLAGS for USE_CLSR
->>>>   - Add comment block to explain about addr mode in post_bfpt_fixups()
->>>>
->>>> Changes in v8:
->>>>   - Call write_disable in error case only
->>>>   - Use spi_nor_read_reg() helper
->>>>   - Use nor->bouncebuf instead of variable on stack
->>>>   - Update ID table to use FLAGS macro
->>>>
->>>> Changes in v7:
->>>>   - Add missing device info table in v6
->>>>
->>>> Changes in v6:
->>>>   - Remove 2Gb multi die pacakge support
->>>>
->>>> Changes in v5:
->>>>   - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
->>>>
->>>> Changes in v4:
->>>>   - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
->>>>   - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
->>>>
->>>> Changes in v3:
->>>>   - Remove S25HL256T and S25HS256T
->>>>   - Add S25HL02GT and S25HS02GT
->>>>   - Add support for multi-die package parts support
->>>>   - Remove erase_map fix for top/split sector layout
->>>>   - Set ECC data unit size (16B) to writesize
->>>>
->>>>  drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 54 insertions(+)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
->>>> index 493240ebfd70..dd37b829efbc 100644
->>>> --- a/drivers/mtd/spi-nor/spansion.c
->>>> +++ b/drivers/mtd/spi-nor/spansion.c
->>>> @@ -208,6 +208,44 @@ static int cypress_nor_set_page_size(struct spi_nor *nor, u8 addr_width)
->>>>         return 0;
->>>>  }
->>>>
->>>> +static int
->>>> +s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
->>>> +                        const struct sfdp_parameter_header *bfpt_header,
->>>> +                        const struct sfdp_bfpt *bfpt)
->>>> +{
->>>> +       int ret;
->>>> +
->>>> +       /*
->>>> +        * From BFPT, the nor->addr_width is set to 3. In Read Any Reg op, the
->>>> +        * Flash takes 3-byte or 4-byte addr depending current addr mode. Since
->>>> +        * Read Any Reg op is called in this hook and SMPT parse, we would sync
->>>
->>> Hi, Takahiro,
->>>
->>> I would like some details, please.
->>> 1/ with "this hook" you refer to cypress_nor_set_page_size(). Why can't you use a
->>> addr_width of value 3 when reading SPINOR_REG_CYPRESS_CFR3V?
->>>
->> If we are sure that the Flash is in 3-byte address mode, we can use the value 3
->> for reading CFR3V. However, the Flash's address mode may be changed prior to
->> Linux MTD probe in some use cases. Actually, in u-boot, it is set to 4-byte
->> address mode. We need to set the Flash's address mode in known state and update
-> 
-> addr_width is set via CFR2Volatile, can we reset the flash at probe instead? Then
-> you'll be sure that the flash is in its default state.
-> 
-Resetting the Flash to revert back to default state should work for this. However,
-we still have SMPT issue below.
-
->> nor->addr_width accordingly. Due to SMPT issue below, value of 4 would be better
->> choice.
->>
->>> 2/ Where in SMPT parse? I looked through the code and couldn't find the Read Any
->>> Reg op used. Why do you need an addr_width of value 4 in SMPT parse?
->>>
->> In the spi_nor_get_map_in_use(), the nor->read_opcode is set to 0x65 (=Read Any Reg).
->> The spi_nor_smpt_addr_width() returns the value of the nor->addr_width due to
-> 
-> ok
-> 
->> SMPT_CMD_ADDRESS_LEN_USE_CURRENT. The nor->addr_width is set to 4 in the
->> spi_nor_parse_4bait() before SMPT parse. Therefore, the host issues Read Any Reg
-> 
-> if 4bait is parsed before SMPT and nor->addr_width is already set to 4 in parse_4bait,
-> then you don't have to do anything for SMPT, right?
-> 
-Currently 4bait is parsed before SMPT. So, if we are sure the Flash is in 4-byte address
-mode (by u-boot, for example), we don't have to do anything. If the Flash is in 3-byte
-address mode (default), SMPT parse does not work correctly.
-
-Please see this about 4BAIT and SMPT issue.
-https://patchwork.ozlabs.org/project/linux-mtd/patch/20201212115817.5122-1-vigneshr@ti.com/
-
-I introduced another workaround for SMPT issue in my previous series.
-https://patchwork.ozlabs.org/project/linux-mtd/patch/9a2d323b2c18485d13f271e3bb213b96fea0e7e1.1649641729.git.Takahiro.Kuwano@infineon.com/
-I withdrew this because this does not work if Flash address mode is not default state.
-But if we can reset the Flash at probe, this should work.
-
-
->> with 4-byte address. We need to set the Flash into 4-byte address mode in advance.
->>
->>>
->>>> +        * Flash's addr mode and nor->addr_width here.
->>>> +        */
->>>> +       ret = spi_nor_set_4byte_addr_mode(nor, true);
->>>> +       if (ret)
->>>> +               return ret;
->>>> +       nor->addr_width = 4;
->>>> +
->>>> +       /* Replace Quad Enable with volatile version */
->>>> +       nor->params->quad_enable = cypress_nor_quad_enable_volatile;
->>>> +
->>>> +       return cypress_nor_set_page_size(nor, nor->addr_width);
->>>> +}
->>>> +
->>>> +void s25hx_t_late_init(struct spi_nor *nor)
->>>> +{
->>>> +       /* Fast Read 4B requires mode cycles */
->>>> +       nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
->>>
->>> Isn't this info already handled in BFPT? What value of num_mode_clocks
->>> do you obtain from BFPT for the non-4B opcode?
->>>
->> There is no parameter in BFPT that describes about Fast Read 1-1-1 op
->> (as we can see 'struct sfdp_bfpt_read' in sfdp.c).
->> The value of num_mode_clocks for Fast Read 1-1-1 is set to 0 in
->> spi_nor_init_default_params().
->>
-> 
-> I see, thanks!
-
-Thanks,
-Takahiro
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCkknbSB1c2luZyBhIDIgR0IgTWljcm9uIE5hbmQgRmxhc2ggb24gbXkgQXJtIHY3IFNPQy4K
+TXkgT1MgaXMgVWJ1bnR1IDIwLjA0IG9uIGEgNS40IE1haW5saW5lIEtlcm5lbC4KCk15IHJvb3Rm
+cyBpcyBib290ZWQgZnJvbSBtdGQyLgpEdXJpbmcgcnVudGltZSBJJ20gb25seSB3cml0aW5nIGp1
+c3Qgc29tZSBsb2cgZmlsZXMgdG8gbXkgZmxhc2gsIHNvCm5vdCBtdWNoIGRhdGEuCkZyb20gbXkg
+MiBHQiBzdG9yYWdlLCAxLDUgR0IgaXMgdXNlZC4KCgpNeSBwcm9ibGVtIGlzIHRoYXQgYWZ0ZXIg
+c29tZSBob3Vycywgd2hpbGUgbXkgc3lzdGVtIGlzIHJ1bm5pbmcsIG15CnJvb3QgZmlsZXN5c3Rl
+bSBpcyBtb3VudGVkIHJlYWQgb25seSBhbmQgSSBnZXQgc29tZSB1YmlmcyBlcnJvciwgc2VlCmJl
+bG93LgpBZnRlciBib290aW5nIHRoZSBzYW1lIGVycm9yIHBlcnNpc3RzLgoKCklmIEkgbWFrZSBh
+IGJhY2t1cCB3aXRoIGEgY29ycnVwdGVkIHViaWZzIGFuZCBJIGZsYXNoIHRoYXQgdG8gYW5vdGhl
+cgpTT0MsIEkgZ2V0IHRoYXQgc2FtZSBlcnJvciBvbiB0aGF0IG5ldyBtb2R1bGUuClNvIEkgZ3Vl
+c3MgaXQncyBub3QgYSBoYXJkd2FyZSBwcm9ibGVtLgoKCkF0IHRoZSBtb21lbnQgSSBjcmVhdGUg
+YSBiYWNrdXAgZnJvbSBhIHdvcmtpbmcgaW5zdGFsbGF0aW9uIHdpdGgKCmRkIGlmPS9kZXYvbXRk
+MiBvZj0vaW1hZ2UudWJpIGJzPTRNCgphbmQgSSBmbGFzaCB0aGF0IGltYWdlIHRvIGEgbmV3IFNP
+QyB3aXRoCgp1Ymlmb3JtYXQgL2Rldi9tdGQyIC15IC1mIGltYWdlLnViae+7v++7vwoKd2hpbGUg
+bXkgc3lzdGVtIGlzIGJvb3RlZCBmcm9tIGEgVVNCIGJvb3Qgc3RpY2suCgoKSSBkb24ndCBrbm93
+IGlmIHRoYXQgImJhY2t1cCBzdHJhdGVneSIgaW1wbGVtZW50cyBzb21lIGVycm9ycy4KCgoKCkhh
+dmUgeW91IGdvdCBhbnkgaWRlYSwgaG93IEkgY2FuIHJlcGFpciBteSBjb3JydXB0ZWQgdWJpZnM/
+CgoKVGhhbmtzCgpIZXJlIGlzIGEgYm9vdCBsb2cgZnJvbSBKVEFHCgoKCkF0dGVtcHRpbmcgZmxh
+c2ggYm9vdC4uLgp1YmkwOiBkZWZhdWx0IGZhc3RtYXAgcG9vbCBzaXplOiAyNTYKdWJpMDogZGVm
+YXVsdCBmYXN0bWFwIFdMIHBvb2wgc2l6ZTogMTI4CnViaTA6IGF0dGFjaGluZyBtdGQxCnViaTA6
+IHNjYW5uaW5nIGlzIGZpbmlzaGVkCnViaTA6IGF0dGFjaGVkIG10ZDEgKG5hbWUgIm10ZD0yIiwg
+c2l6ZSAyMDMxIE1pQikKdWJpMDogUEVCIHNpemU6IDEzMTA3MiBieXRlcyAoMTI4IEtpQiksIExF
+QiBzaXplOiAxMjY5NzYgYnl0ZXMKdWJpMDogbWluLi9tYXguIEkvTyB1bml0IHNpemVzOiAyMDQ4
+LzIwNDgsIHN1Yi1wYWdlIHNpemUgMjA0OAp1YmkwOiBWSUQgaGVhZGVyIG9mZnNldDogMjA0OCAo
+YWxpZ25lZCAyMDQ4KSwgZGF0YSBvZmZzZXQ6IDQwOTYKdWJpMDogZ29vZCBQRUJzOiAxNjI0OCwg
+YmFkIFBFQnM6IDAsIGNvcnJ1cHRlZCBQRUJzOiAwCnViaTA6IHVzZXIgdm9sdW1lOiAxLCBpbnRl
+cm5hbCB2b2x1bWVzOiAxLCBtYXguIHZvbHVtZXMgY291bnQ6IDEyOAp1YmkwOiBtYXgvbWVhbiBl
+cmFzZSBjb3VudGVyOiA2Ny8xOCwgV0wgdGhyZXNob2xkOiA0MDk2LCBpbWFnZQpzZXF1ZW5jZSBu
+dW1iZXI6IDEyMTgxMzU5MzYKdWJpMDogYXZhaWxhYmxlIFBFQnM6IDAsIHRvdGFsIHJlc2VydmVk
+IFBFQnM6IDE2MjQ4LCBQRUJzIHJlc2VydmVkIGZvcgpiYWQgUEVCIGhhbmRsaW5nOiAzMjAKCgpb
+ICAgMTAuMDg1MTE5XSB1YmkwOiBzY2FubmluZyBpcyBmaW5pc2hlZApbICAgMTAuMTIxNTAwXSB1
+YmkwOiBhdHRhY2hlZCBtdGQyIChuYW1lICJyb290ZnMiLCBzaXplIDIwMzEgTWlCKQpbICAgMTAu
+MTI3Mzc0XSB1YmkwOiBQRUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwgTEVCIHNpemU6
+IDEyNjk3NiBieXRlcwpbICAgMTAuMTM0MjcwXSB1YmkwOiBtaW4uL21heC4gSS9PIHVuaXQgc2l6
+ZXM6IDIwNDgvMjA0OCwgc3ViLXBhZ2Ugc2l6ZSAyMDQ4ClsgICAxMC4xNDEwNzhdIHViaTA6IFZJ
+RCBoZWFkZXIgb2Zmc2V0OiAyMDQ4IChhbGlnbmVkIDIwNDgpLCBkYXRhIG9mZnNldDogNDA5Ngpb
+ICAgMTAuMTQ4MDU4XSB1YmkwOiBnb29kIFBFQnM6IDE2MjQ4LCBiYWQgUEVCczogMCwgY29ycnVw
+dGVkIFBFQnM6IDAKWyAgIDEwLjE1NDI1NV0gdWJpMDogdXNlciB2b2x1bWU6IDEsIGludGVybmFs
+IHZvbHVtZXM6IDEsIG1heC4gdm9sdW1lcwpjb3VudDogMTI4ClsgICAxMC4xNjE0OTRdIHViaTA6
+IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDY3LzE4LCBXTCB0aHJlc2hvbGQ6CjQwOTYsIGltYWdl
+IHNlcXVlbmNlIG51bWJlcjogMTIxODEzNTkzNgpbICAgMTAuMTcwODE1XSB1YmkwOiBhdmFpbGFi
+bGUgUEVCczogMCwgdG90YWwgcmVzZXJ2ZWQgUEVCczogMTYyNDgsClBFQnMgcmVzZXJ2ZWQgZm9y
+IGJhZCBQRUIgaGFuZGxpbmc6IDMyMApbICAgMTAuMTgwMzM4XSB1YmkwOiBiYWNrZ3JvdW5kIHRo
+cmVhZCAidWJpX2JndDBkIiBzdGFydGVkLCBQSUQgMjAxClsgICAxMC4xODc5MzFdIHJ0Yy1kczE2
+NzIgMC0wMDY4OiBzZXR0aW5nIHN5c3RlbSBjbG9jayB0bwoyMDIyLTA0LTE5VDA3OjU0OjMwIFVU
+QyAoMTY1MDM1NDg3MCkKWyAgIDEwLjE5NzMwOF0gQUxTQSBkZXZpY2UgbGlzdDoKWyAgIDEwLjIw
+MDI4OV0gICBObyBzb3VuZGNhcmRzIGZvdW5kLgpbICAgMTAuMjA0MDYyXSBtZDogV2FpdGluZyBm
+b3IgYWxsIGRldmljZXMgdG8gYmUgYXZhaWxhYmxlIGJlZm9yZSBhdXRvZGV0ZWN0ClsgICAxMC4y
+MTA5MDFdIG1kOiBJZiB5b3UgZG9uJ3QgdXNlIHJhaWQsIHVzZSByYWlkPW5vYXV0b2RldGVjdApb
+ICAgMTAuMjE3MzQ5XSBtZDogQXV0b2RldGVjdGluZyBSQUlEIGFycmF5cy4KWyAgIDEwLjIyMTQ3
+NV0gbWQ6IGF1dG9ydW4gLi4uClsgICAxMC4yMjQyNzFdIG1kOiAuLi4gYXV0b3J1biBET05FLgpb
+ICAgMTAuMjI4MzkzXSBVQklGUyAodWJpMDowKTogTW91bnRpbmcgaW4gdW5hdXRoZW50aWNhdGVk
+IG1vZGUKWyAgIDEwLjIzNDI5OF0gVUJJRlMgKHViaTA6MCk6IGJhY2tncm91bmQgdGhyZWFkICJ1
+Ymlmc19iZ3QwXzAiIHN0YXJ0ZWQsIFBJRCAyMDMKWyAgIDEwLjI1MjAzMV0gVUJJRlMgKHViaTA6
+MCk6IHJlY292ZXJ5IG5lZWRlZApbICAgMTAuNDE4MzAyXSBVQklGUyAodWJpMDowKTogcmVjb3Zl
+cnkgY29tcGxldGVkClsgICAxMC40MjI5MDldIFVCSUZTICh1YmkwOjApOiBVQklGUzogbW91bnRl
+ZCBVQkkgZGV2aWNlIDAsIHZvbHVtZSAwLApuYW1lICJyb290ZnMiClsgICAxMC40MzAzMzddIFVC
+SUZTICh1YmkwOjApOiBMRUIgc2l6ZTogMTI2OTc2IGJ5dGVzICgxMjQgS2lCKSwKbWluLi9tYXgu
+IEkvTyB1bml0IHNpemVzOiAyMDQ4IGJ5dGVzLzIwNDggYnl0ZXMKWyAgIDEwLjQ0MDI3MF0gVUJJ
+RlMgKHViaTA6MCk6IEZTIHNpemU6IDIwMTk5MzQyMDggYnl0ZXMgKDE5MjYgTWlCLAoxNTkwOCBM
+RUJzKSwgam91cm5hbCBzaXplIDkwMjM0ODggYnl0ZXMgKDggTWlCLCA3MiBMRUJzKQpbICAgMTAu
+NDUxMjQzXSBVQklGUyAodWJpMDowKTogcmVzZXJ2ZWQgZm9yIHJvb3Q6IDAgYnl0ZXMgKDAgS2lC
+KQpbICAgMTAuNDU3MDk2XSBVQklGUyAodWJpMDowKTogbWVkaWEgZm9ybWF0OiB3NC9yMCAobGF0
+ZXN0IGlzIHc1L3IwKSwKVVVJRCAzREVEQUYzOC1EMUQ3LTQ1OTAtODA4OS00MTQyNEM4ODNGNjYs
+IHNtYWxsIExQVCBtb2RlbApbICAgMTAuNDY5NDA3XSBWRlM6IE1vdW50ZWQgcm9vdCAodWJpZnMg
+ZmlsZXN5c3RlbSkgb24gZGV2aWNlIDA6MjAuClsgICAxMC40NzYxMTFdIGRldnRtcGZzOiBtb3Vu
+dGVkCgpbIDEyLjgyNDAzMF0gTkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAzOApbICAg
+MTIuODI1MzA0XSBVQklGUzogcGFyc2UgZXJyb3JzPXJlbW91bnQtcm8KWyAgIDEyLjgzMjc2MF0g
+VUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjM0KToKdWJpZnNfcGFyc2Vfb3B0aW9ucy5jb25zdHBy
+b3AuODogdW5yZWNvZ25pemVkIG1vdW50IG9wdGlvbgoiZXJyb3JzPXJlbW91bnQtcm8iIG9yIG1p
+c3NpbmcgdmFsdWUKWyAgIDEyLjgzNDAyOV0gc3lzdGVtZFsxXTogTW91bnRlZCBLZXJuZWwgRGVi
+dWcgRmlsZSBTeXN0ZW0uClsgICAxMi44NDUxODNdIFVCSUZTIGVycm9yICh1YmkwOjAgcGlkIDIz
+NCk6IHViaWZzX3JlbW91bnRfZnM6IGludmFsaWQKb3IgdW5rbm93biByZW1vdW50IHBhcmFtZXRl
+cgoKWyAgIDEzLjQ5NTUyN10gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjQxKTogdWJpZnNfY2hl
+Y2tfbm9kZTogYmFkCkNSQzogY2FsY3VsYXRlZCAweDk2NzkwMTU5LCByZWFkIDB4ODQ3ZTBmMmYK
+WyAgIDEzLjUwNTQwMF0gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjQxKTogdWJpZnNfY2hlY2tf
+bm9kZTogYmFkCm5vZGUgYXQgTEVCIDEzODcyOjE2MzEyClsgICAxMy41MDU0MDldICBtYWdpYyAg
+ICAgICAgICAweDYxMDE4MzEKWyAgIDEzLjUxNzEzN10gIGNyYyAgICAgICAgICAgIDB4ODQ3ZTBm
+MmYKWyAgIDEzLjUyMDkxN10gICAgICAgICBub2RlX3R5cGUgICAgICAwIChpbm9kZSBub2RlKU1v
+dW50aW5nIC90bXAuLi4KWyAgIDEzLjUyNTgxMl0gIGdyb3VwX3R5cGUgICAgIDIgKGxhc3Qgb2Yg
+bm9kZSBncm91cCkKWyAgIDEzLjUzMzExNF0gIHNxbnVtICAgICAgICAgIDExMTczNDU2ClsgICAx
+My41MzY4NzBdICBsZW4gICAgICAgICAgICAxNjAKWyAgIDEzLjU0MDA2MV0gIGtleSAgICAgICAg
+ICAgICgyMTI1LCBpbm9kZSkKWyAgIDEzLjU0NDE2MV0gIGNyZWF0X3NxbnVtICAgIDU0NTc3Clsg
+ICAxMy41NDQxNjldICBzaXplICAgICAgICAgICA3MTU4NApbICAgMTMuNTUwODY3XSAgbmxpbmsg
+ICAgICAgICAgNDI5NDk2NzI5NQpbICAgMTMuNTU0NjY3XSAgYXRpbWUgICAgICAgICAgMTYzMjk2
+MTU4My40Mjk0OTY3Mjk1U3RhcnRpbmcgdWRldiBLZXJuZWwgRGV2ClsgICAxMy41NjAxNzVdICBt
+dGltZSAgICAgICAgICAtMS40Mjk0OTY3Mjk1IGljZSBNYW5hZ2VyLi4uClsgICAxMy41NjcwNjld
+ICBjdGltZSAgICAgICAgICAxNjQ2ODAyODA0LjQyOTQ5NjcyOTUKWyAgIDEzLjU3MzUwOV0gIHVp
+ZCAgICAgICAgICAgIDQyOTQ5NjcyOTUKWyAgIDEzLjU3NzMzMV0gIGdpZCAgICAgICAgICAgIDQy
+OTQ5NjcyOTUKWyAgIDEzLjU3NzM0MF0gIG1vZGUgICAgICAgICAgIDQyOTQ5NjcyOTUKWyAgIDEz
+LjU4NDg4Ml0gIGZsYWdzICAgICAgICAgIDB4ZmZmZmZmZmYKWyAgIDEzLjU4ODY2NF0gIHhhdHRy
+X2NudCAgICAgIDQyOTQ5NjcyOTUKWyAgT0sgIF0KWyAgIDEzLjU5MjQ0Nl0gICAgICAgICB4YXR0
+cl9zaXplICAgICA0Mjk0OTY3Mjk1IE1vdW50ZWQgL3RtcC4KWyAgIDEzLjU5NzkzMF0gICAgIHhh
+dHRyX25hbWVzICAgIDQyOTQ5NjcyOTUKWyAgIDEzLjYwMzk1M10gIGNvbXByX3R5cGUgICAgIDB4
+ZmZmZgpbICAgMTMuNjA3NTQ4XSAgZGF0YSBsZW4gICAgICAgNDI5NDk2NzI5NQpbICBPSyAgXQpb
+ICAgMTMuNjExNzY0XSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAyNDEpOiB1Ymlmc19zY2FuOiBi
+YWQgbm9kZQpdIFJlYWNoZWQgdGFyZ2V0IExvY2FsIEYKWyAgIDEzLjYxODk3Nl0gVUJJRlMgZXJy
+b3IgKHViaTA6MCBwaWQgMjQxKTogdWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOgpjb3JydXB0aW9u
+IGF0IExFQiAxMzg3MjoxNjMxMiBpbGUgU3lzdGVtcy4KWyAgIDEzLjYzMDcyMl0gVUJJRlMgZXJy
+b3IgKHViaTA6MCBwaWQgMjQxKTogdWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOgpmaXJzdCA4MTky
+IGJ5dGVzIGZyb20gTEVCIDEzODcyOjE2MzEyClsgICAxMy42NDQxMzldIFVCSUZTIGVycm9yICh1
+YmkwOjAgcGlkIDI0MSk6IHViaWZzX3NjYW46IExFQiAxMzg3MgpzY2FubmluZyBmYWlsZWQKWyAg
+IDEzLjY1MTg4M10gVUJJRlMgZXJyb3IgKHViaTA6MCBwaWQgMjIyKTogbWFrZV9yZXNlcnZhdGlv
+bjogY2Fubm90CnJlc2VydmUgNDQ1IGJ5dGVzIGluIGpoZWFkIDIsIGVycm9yIC0zMApbICAgMTMu
+NjUxODkyXSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAyNDEpOiBtYWtlX3Jlc2VydmF0aW9uOiBj
+YW5ub3QKcmVzZXJ2ZSA0MTYgYnl0ZXMgaW4gamhlYWQgMSwgZXJyb3IgLTExNwpbICAgMTMuNjcx
+NDQ0XSBVQklGUyBlcnJvciAodWJpMDowIHBpZCAyMjIpOiBkb193cml0ZXBhZ2U6IGNhbm5vdAp3
+cml0ZSBwYWdlIDAgb2YgaW5vZGUgMjU5MjM1LCBlcnJvciAtMzAKClsgNDU2NS42MzE1ODZdIHN5
+c3RlbWQtam91cm5hbGRbMjE5XTogRmFpbGVkIHRvIHJvdGF0ZQovdmFyL2xvZy9qb3VybmFsL2Nj
+NDQ2Yjk2MWY0NzQ0MTY5NzAxNTlhMDlhZDE3MWRiL3N5c3RlbS5qb3VybmFsOgpSZWFkLW9ubHkg
+ZmlsZSBzeXN0ZW0KWyA0NTY1LjY0ODkwM10gc3lzdGVtZC1qb3VybmFsZFsyMTldOiBGYWlsZWQg
+dG8gd3JpdGUgZW50cnkgKDkgaXRlbXMsCjI0OCBieXRlcykgZGVzcGl0ZSB2YWN1dW1pbmcsIGln
+bm9yaW5nOiBJbnB1dC9vdXRwdXQgZXJyb3IKWyA0NTY1LjY2MDQ2MV0gc3lzdGVtZC1qb3VybmFs
+ZFsyMTldOiBGYWlsZWQgdG8gcm90YXRlCi92YXIvbG9nL2pvdXJuYWwvY2M0NDZiOTYxZjQ3NDQx
+Njk3MDE1OWEwOWFkMTcxZGIvc3lzdGVtLmpvdXJuYWw6ClJlYWQtb25seSBmaWxlIHN5c3RlbQpb
+IDQ1NjUuNjc1ODExXSBzeXN0ZW1kLWpvdXJuYWxkWzIxOV06IEZhaWxlZCB0byB3cml0ZSBlbnRy
+eSAoOSBpdGVtcywKMzA4IGJ5dGVzKSwgaWdub3Jpbmc6IElucHV0L291dHB1dCBlcnJvcgpbIDQ1
+NjUuNjg1NzY1XSBzeXN0ZW1kLWpvdXJuYWxkWzIxOV06IEZhaWxlZCB0byByb3RhdGUKL3Zhci9s
+b2cvam91cm5hbC9jYzQ0NmI5NjFmNDc0NDE2OTcwMTU5YTA5YWQxNzFkYi9zeXN0ZW0uam91cm5h
+bDoKUmVhZC1vbmx5IGZpbGUgc3lzdGVtClsgNDU2NS43MDExMDZdIHN5c3RlbWQtam91cm5hbGRb
+MjE5XTogRmFpbGVkIHRvIHdyaXRlIGVudHJ5ICg5IGl0ZW1zLAoyODAgYnl0ZXMpLCBpZ25vcmlu
+ZzogSW5wdXQvb3V0cHV0IGVycm9yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
