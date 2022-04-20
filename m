@@ -4,82 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B5A9C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 05:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96A60C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 05:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=aAa8vzERXMU4iT9zLJHdjD2UI3OHxYXeBVD1gEnnnj4=; b=oRRR0C7yd7h7LW
-	M0EOe2l+XhkHty083p3jCTNkdfJDmGjwaKb1fdygGCdKOzHWYCbw/GJNcQK4TFye2Yt2plo+13Tzy
-	6Yi4Pr9u5v+4+k0nYsQIz1WdJFB9jaY05Di355n6KZ8YlAXmnL5qp8laW3qb2UoyqspjrNQGeqkR7
-	FFyFulNKmMyHFXlL02q5TSbo5Rmmat20owIkTghLUMvTJK4BaSXOWZidtHullmhKtiA4K1mK2AJvl
-	uJUAu5BHGlSyBvbrsStuhAWBn7OUoQi4hKjJr0a+au5xy1UUQEmP30eEJSB2y1Rk3NPfEIFWAlw6P
-	RTPapMrhBv2i9otCB+LQ==;
+	List-Owner; bh=AYh9p0dRiMT5YyxoebCmMLKn6/Zx9UUC97427KUJaVA=; b=niC5CT0zbqR9Qd
+	26nBQBm7oD7Yx13EZColE/Ywcw5FPVkaj5luV4xblAMkxf4zDerkXkZPNLzXbpYmkpd5QDOoCmpEX
+	psOlq+FlPC+BZauYfetOAs/jgKtW3plCWbzpOudktW4hDXkVOsykCHTAdP5KouaMfICWEUZSvx/0e
+	sczd2C9Ij7SBR06uzD8pxFgdXzPWlF/Z5xRVK21Iz5DHVsn55h7f/ZLzMe0QPExVrG+b+TwUTlhCD
+	uO/q+3ARN8n+z+j5sTBwApUpgLHlZ+POn4FO2GJNKU7A9wP1ON9A6SOtmJ0Zv2huSGLlEs76OFQOp
+	SxHX3LkyJ3zCEq0g/AsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nh2z6-007Qqt-Bf; Wed, 20 Apr 2022 05:34:36 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1nh392-007SC6-0h; Wed, 20 Apr 2022 05:44:52 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nh2z3-007QoW-62
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 05:34:34 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id
- z5-20020a17090a468500b001d2bc2743c4so1024023pjf.0
- for <linux-mtd@lists.infradead.org>; Tue, 19 Apr 2022 22:34:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=zTP62sMtntoRKadq9DuTq/QAWSCcC1lU5R/29tcZKU0=;
- b=DBd9e+jFZv8wjyS9BuZtKq5yoKJvpBaRKQguGnJiJBvOKwSLq89Lm9Y4NUVRMz5Apy
- 7Tpfmby+U3wuZH6Oj0HfdCI209e9ZF47rs0hGxtDzkxVG+tmUvt28SS0HwKBAOFHu/L2
- 4Kh4UfXEr3YgzPu2lPJyHaa0OUdmclBMw+qqLze6f/hEInYxs0uuaQPlYjI0lzzVWa1N
- EEGRoDwvQ3tuU+EGluvbk49bLmvKSB5fd2QsZCp39DUXuVmu0ubhz08qWtVLkoh4B7vE
- Nad7v4hm53qIQgG7rcGS9RqcKqFAIBFrIRzykcYYERYz4J9VqNcsW8FlfzrJ04y3BA+B
- 6TYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=zTP62sMtntoRKadq9DuTq/QAWSCcC1lU5R/29tcZKU0=;
- b=WbCjVyyvGyxFoSL6cMmQuK6TvFx0PJtOIhLcJDCTbe42eMcH0LwkSxWvj35TT56y06
- ANWemHm4OYCpBC9D07BnW/S4wHwAr72ipJ1dPEtXBOm+R+gZywbj9oMEbSajU75lc6Gv
- 4rBAGW0YdDnKcoejJgYuITrIXiTvdVrDf7NTxFOo6mpBMZw7jYOsCcOaGNlVwK+txtm7
- xPZuP+JAy2qF8wJpRPeQRrlNjk5b5c3JV43G9tiMlIWX7a9d8nMbQxjYdvJTmJyzUP5K
- 021V2JjzsD1Kb3jAmH46RPVDX9rzJZv5D6NjL1i/FriBDbd+g5SmFpzMSFg4k1coKnKP
- oGaQ==
-X-Gm-Message-State: AOAM533d5Z4im3y/jWnAeHAowEMryDoVFL5V9b7eQc+sbttwA0DjWBMl
- G7ylV6bn/7WLtj4iPsoZENs=
-X-Google-Smtp-Source: ABdhPJysoXPAS7HeUNwEm+I8acKcZ1cQJ54F2tb/KXJbFr1GaC2nZty4kF1gBhFT2qIm9D6WGbyERw==
-X-Received: by 2002:a17:902:6ac1:b0:158:a295:ba71 with SMTP id
- i1-20020a1709026ac100b00158a295ba71mr19306690plt.49.1650432868448; 
- Tue, 19 Apr 2022 22:34:28 -0700 (PDT)
-Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
- by smtp.gmail.com with ESMTPSA id
- c15-20020a17090a674f00b001cba1008a3csm17716605pjm.51.2022.04.19.22.34.26
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 Apr 2022 22:34:28 -0700 (PDT)
-Message-ID: <c8007288-00ef-bc3d-5337-8db710feee67@gmail.com>
-Date: Wed, 20 Apr 2022 14:34:25 +0900
+ id 1nh38p-007S9x-V6; Wed, 20 Apr 2022 05:44:41 +0000
+Received: from [10.28.39.106] (10.28.39.106) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 20 Apr
+ 2022 13:44:33 +0800
+Message-ID: <126691f4-bc6b-10cd-ee2c-ff4006bc6518@amlogic.com>
+Date: Wed, 20 Apr 2022 13:44:32 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
  Thunderbird/91.8.0
-Subject: Re: [PATCH v11 3/3] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs
- and fixups
+Subject: Re: [PATCH v4 1/2] mtd: rawnand: meson: discard the common MMC sub
+ clock framework
 Content-Language: en-US
-To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
-References: <cover.1650259501.git.Takahiro.Kuwano@infineon.com>
- <ffd36e40c47dd74ac3a0cadf520f8fdd35add856.1650259501.git.Takahiro.Kuwano@infineon.com>
- <201f90e6-e03b-9469-f3bd-f1ae3b5737dd@microchip.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <201f90e6-e03b-9469-f3bd-f1ae3b5737dd@microchip.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Jerome
+ Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Kevin Hilman
+ <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin
+ Zhang <kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>,
+ YongHui Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+References: <20220402074921.13316-1-liang.yang@amlogic.com>
+ <20220402074921.13316-2-liang.yang@amlogic.com>
+ <20220404103034.48ec16b1@xps13>
+ <50105d6b-8ced-1b72-30cb-a709c4a4dd26@amlogic.com>
+ <d5a33645-fac1-9c69-afe6-654bfe93ca48@amlogic.com>
+ <20220419102629.1c77aa2a@xps13>
+ <2e382e3e-c231-c9e4-73a1-0637288fcd4f@amlogic.com>
+ <20220419172528.2dd75e7b@xps13>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <20220419172528.2dd75e7b@xps13>
+X-Originating-IP: [10.28.39.106]
+X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
+ (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220419_223433_288083_A1047D7F 
-X-CRM114-Status: GOOD (  32.65  )
+X-CRM114-CacheID: sfid-20220419_224440_061317_5B684FF7 
+X-CRM114-Status: GOOD (  23.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,207 +74,86 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Tudor,
-
-Thank you for your feedback.
-
-On 4/19/2022 6:32 PM, Tudor.Ambarus@microchip.com wrote:
-> On 4/18/22 08:41, tkuw584924@gmail.com wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>
->> The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
->>
->> For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
->> uniform sector sizes are supported. This is due to missing or incorrect
->> entries in SMPT. Fixup for other sector sizes configurations will be
->> followed up as needed.
->>
->> Tested on Xilinx Zynq-7000 FPGA board.
->>
->> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->> ---
->> Changes in v11:
->>   - Cleanup fixups based on other patches in this series
->>
->> Changes in v10:
->>   - Cleanup fixups and ID table based on other patches in this series
->>
->> Changes in v9:
->>   - Use late_init() hook to fix mode clocks and writesize
->>   - Use PARSE_SFDP instead of NO_SFDP_FLAGS
->>   - Use MFR_FLAGS for USE_CLSR
->>   - Add comment block to explain about addr mode in post_bfpt_fixups()
->>
->> Changes in v8:
->>   - Call write_disable in error case only
->>   - Use spi_nor_read_reg() helper
->>   - Use nor->bouncebuf instead of variable on stack
->>   - Update ID table to use FLAGS macro
->>
->> Changes in v7:
->>   - Add missing device info table in v6
->>
->> Changes in v6:
->>   - Remove 2Gb multi die pacakge support
->>
->> Changes in v5:
->>   - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
->>
->> Changes in v4:
->>   - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
->>   - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
->>
->> Changes in v3:
->>   - Remove S25HL256T and S25HS256T
->>   - Add S25HL02GT and S25HS02GT
->>   - Add support for multi-die package parts support
->>   - Remove erase_map fix for top/split sector layout
->>   - Set ECC data unit size (16B) to writesize
->>
->>  drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++++++++++++++++
->>  1 file changed, 54 insertions(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
->> index 493240ebfd70..dd37b829efbc 100644
->> --- a/drivers/mtd/spi-nor/spansion.c
->> +++ b/drivers/mtd/spi-nor/spansion.c
->> @@ -208,6 +208,44 @@ static int cypress_nor_set_page_size(struct spi_nor *nor, u8 addr_width)
->>         return 0;
->>  }
->>
->> +static int
->> +s25hx_t_post_bfpt_fixups(struct spi_nor *nor,
->> +                        const struct sfdp_parameter_header *bfpt_header,
->> +                        const struct sfdp_bfpt *bfpt)
->> +{
->> +       int ret;
->> +
->> +       /*
->> +        * From BFPT, the nor->addr_width is set to 3. In Read Any Reg op, the
->> +        * Flash takes 3-byte or 4-byte addr depending current addr mode. Since
->> +        * Read Any Reg op is called in this hook and SMPT parse, we would sync
-> 
-> Hi, Takahiro,
-> 
-> I would like some details, please.
-> 1/ with "this hook" you refer to cypress_nor_set_page_size(). Why can't you use a
-> addr_width of value 3 when reading SPINOR_REG_CYPRESS_CFR3V?
-> 
-If we are sure that the Flash is in 3-byte address mode, we can use the value 3
-for reading CFR3V. However, the Flash's address mode may be changed prior to
-Linux MTD probe in some use cases. Actually, in u-boot, it is set to 4-byte
-address mode. We need to set the Flash's address mode in known state and update
-nor->addr_width accordingly. Due to SMPT issue below, value of 4 would be better
-choice.
-
-> 2/ Where in SMPT parse? I looked through the code and couldn't find the Read Any
-> Reg op used. Why do you need an addr_width of value 4 in SMPT parse?
-> 
-In the spi_nor_get_map_in_use(), the nor->read_opcode is set to 0x65 (=Read Any Reg).
-The spi_nor_smpt_addr_width() returns the value of the nor->addr_width due to
-SMPT_CMD_ADDRESS_LEN_USE_CURRENT. The nor->addr_width is set to 4 in the 
-spi_nor_parse_4bait() before SMPT parse. Therefore, the host issues Read Any Reg
-with 4-byte address. We need to set the Flash into 4-byte address mode in advance.
-
-> 
->> +        * Flash's addr mode and nor->addr_width here.
->> +        */
->> +       ret = spi_nor_set_4byte_addr_mode(nor, true);
->> +       if (ret)
->> +               return ret;
->> +       nor->addr_width = 4;
->> +
->> +       /* Replace Quad Enable with volatile version */
->> +       nor->params->quad_enable = cypress_nor_quad_enable_volatile;
->> +
->> +       return cypress_nor_set_page_size(nor, nor->addr_width);
->> +}
->> +
->> +void s25hx_t_late_init(struct spi_nor *nor)
->> +{
->> +       /* Fast Read 4B requires mode cycles */
->> +       nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
-> 
-> Isn't this info already handled in BFPT? What value of num_mode_clocks
-> do you obtain from BFPT for the non-4B opcode?
-> 
-There is no parameter in BFPT that describes about Fast Read 1-1-1 op
-(as we can see 'struct sfdp_bfpt_read' in sfdp.c).
-The value of num_mode_clocks for Fast Read 1-1-1 is set to 0 in
-spi_nor_init_default_params().
-
->> +
->> +       /* The writesize should be ECC data unit size */
->> +       nor->params->writesize = 16;
->> +}
->> +
->> +static struct spi_nor_fixups s25hx_t_fixups = {
->> +       .post_bfpt = s25hx_t_post_bfpt_fixups,
->> +       .late_init = s25hx_t_late_init,
->> +};
->> +
->>  /**
->>   * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
->>   * @nor:               pointer to a 'struct spi_nor'
->> @@ -384,6 +422,22 @@ static const struct flash_info spansion_nor_parts[] = {
->>         { "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
->>                 NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
->>                 FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
->> +       { "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
->> +               PARSE_SFDP
->> +               MFR_FLAGS(USE_CLSR)
->> +               .fixups = &s25hx_t_fixups },
->> +       { "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
->> +               PARSE_SFDP
->> +               MFR_FLAGS(USE_CLSR)
->> +               .fixups = &s25hx_t_fixups },
->> +       { "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
->> +               PARSE_SFDP
->> +               MFR_FLAGS(USE_CLSR)
->> +               .fixups = &s25hx_t_fixups },
->> +       { "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
->> +               PARSE_SFDP
->> +               MFR_FLAGS(USE_CLSR)
->> +               .fixups = &s25hx_t_fixups },
-> 
-> After we establish the details from above, would you please run this test_qspi.sh
-> script for all the flashes?
-> 
-> #!/bin/sh 
-> dd if=/dev/urandom of=./qspi_test bs=1M count=6 
-> mtd_debug write /dev/mtd0 0 6291456 qspi_test 
-> mtd_debug erase /dev/mtd0 0 6291456 
-> mtd_debug read /dev/mtd0 0 6291456 qspi_read 
-> hexdump qspi_read 
-> mtd_debug write /dev/mtd0 0 6291456 qspi_test 
-> mtd_debug read /dev/mtd0 0 6291456 qspi_read 
-> sha1sum qspi_test qspi_read 
-> 
-> The two SHA-1 sums must be the same to pass this test. Send us the output,
-> please.
-> 
-OK.
-
-> thanks,
-> ta
-> 
->>         { "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
->>                 FLAGS(SPI_NOR_NO_ERASE) },
->>         { "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
->> --
->> 2.25.1
->>
-> 
-Best Regards,
-Takahiro
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWlxdWVsLAoKT24gMjAyMi80LzE5IDIzOjI1LCBNaXF1ZWwgUmF5bmFsIHdyb3RlOgo+IFsg
+RVhURVJOQUwgRU1BSUwgXQo+IAo+IEhlbGxvLAo+IAo+IGxpYW5nLnlhbmdAYW1sb2dpYy5jb20g
+d3JvdGUgb24gVHVlLCAxOSBBcHIgMjAyMiAxNzoxNzo0OCArMDgwMDoKPiAKPj4gSGVsbG8gTWlx
+dWVsLAo+Pgo+PiBPbiAyMDIyLzQvMTkgMTY6MjYsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4+PiBb
+IEVYVEVSTkFMIEVNQUlMIF0KPj4+Cj4+PiBIZWxsbywKPj4+Cj4+PiBsaWFuZy55YW5nQGFtbG9n
+aWMuY29tIHdyb3RlIG9uIE1vbiwgMTggQXByIDIwMjIgMTE6NDA6MTAgKzA4MDA6Cj4+PiAgICAK
+Pj4+PiBIaSBNaXF1ZWwsCj4+Pj4KPj4+PiBpIGhhdmUgc29tZSBjb25mdXNpb24gd2hlbiBpIHBy
+ZXBhcmUgdGhlIHBhdGNoZXMuIGZvciBEVCBjb21wYXRpYmlsaXR5LCBpdCBmYWxscyBiYWNrIHRv
+IHRoZSBvbGQgRFQgd2hlbiBmYWlsZWQgdG8gZ2V0IHJlc291cmNlIGJ5IHRoZSBuZXcgRFQsIGJ1
+dCB0aGVyZSBpcyBzb21lIHBvaW50czoKPj4+PiBhLiBvbGQgRFQgZGVwZW5kcyBvbiBNTUMgc3Vi
+IGNsb2NrIGRyaXZlciwgYnV0IGl0IG5ldmVyIGJlIG1lcmdlZCwgc28gaXQgY2FuJ3Qgd29yay4K
+Pj4+Cj4+PiBJIGRvbid0IGdldCB3aGF0IHlvdSBtZWFuIGhlcmUsIHNvcnJ5LiBJIGJlbGlldmUg
+dGhlcmUgaXMgYSBuZXcgd2F5IHRvCj4+PiBkZXNjcmliZSB0aGlzIGNsb2NrIGJ1dCBncmFiYmlu
+ZyB0aGUgb25lIGZyb20gdGhlIE1NQyBzdGlsbCB3b3JrcywgZG9lcwo+Pj4gbm90IGl0Pwo+Pj4g
+ICAgCj4+Cj4+IE5vLCBpdCBkb2Vzbid0LiBhZnRlciB0aGUgTkZDIGRyaXZlciB1c2luZyB0aGUg
+TU1DIHN1YiBjbG9jayBmcmFtZXdvcmsgd2FzIG1lcmdlZCBpbnRvIHRoZSBtYWlubGluZSBvZiBr
+ZXJuZWwsIHdlIGRpZG4ndCBjb250aW51ZSB0byBzdWJtaXQgdGhlIHNlcmllcyBvZiBwYXRjaGVz
+IGFib3V0IE1NQyBzdWIgY2xvY2sgYWZ0ZXIgdjkuIHdoZW4gaSBmb3VuZCB0aGF0LCB3ZSBtYWRl
+IGEgZGlzY3Vzc2lvbiB0byBkZWNpZGUgd2hldGhlciB0byByZWNvdmVyIHRoZSBzZXJpZXMgb2Yg
+cGF0Y2hlcyBhYm91dCBNTUMgc3ViIGNsb2NrIGZyYW1ld29yaywgZmluYWxseSwgc2VlIHRoZSBk
+ZXNjcmlwdGlvbiBmcm9tIGNvdmVyIGxldHRlciwgd2UgcGxhbiB0byBhYmFuZG9uIGl0IGFuZCBh
+ZG9wdCB0aGUgbmV3IGNsb2NrIHNjaGVtZSBpbiB0aGlzIHNlcmllcyBvZiBwYXRjaGVzLgo+IAo+
+IEkgYW0gbm90IHN1cmUgdG8gZm9sbG93LiBJcyB0aGUgY3VycmVudCBjb2RlIGNvbXBsZXRlbHkg
+YnJva2VuPyBJCj4gYmVsaWV2ZSBpdCBpcyBub3QsIHNvIEkgZG9uJ3QgdW5kZXJzdGFuZCB5b3Vy
+IGlzc3VlLgoKaSB0aGluayBvbmx5IHRoZSBjb2RlIGFib3V0IHRoZSBjbG9jayBpcyBjb21wbGV0
+ZWx5IGJyb2tlbi4KCj4gCj4gQ2FuIHlvdSBwbGVhc2Ugc3VtbWFyaXplIHRoZSBzaXR1YXRpb24/
+CgpZZXMuIHRoZSBjdXJyZW50IE5GQyBjbG9jayBpbXBsZW1lbnRhdGlvbiBkZXBlbmRzIG9uIHRo
+ZSBmb2xsb3dpbmcgCnNlcmllcyBvZiBwYXRjaGVzIApbaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
+YWxsLzIwMjIwMTIxMDc0NTA4LjQyMTY4LTUtbGlhbmcueWFuZ0BhbWxvZ2ljLmNvbV0sIAp3aGlj
+aCB3ZSBjYWxsICJNZXNvbiBNTUMgU3ViIENsb2NrIENvbnRyb2xsZXIgRHJpdmVyIi4Kd2hlbiBp
+IHdhcyBwcmVwYXJpbmcgdGhlIE5GQyBwYXRjaHNldCBhdCB0aGF0IHRpbWUsIHdlIGRpc2N1c3Nl
+ZCBob3cgdGhlIApjbG9jayBzaG91bGQgYmUgaW1wbGVtZW50ZWQgYmFzZSBvbiB0aGUgc3BlY2lh
+bCBjbG9jayBmcmFtZXdvcmsgZm9yIE5GQyAKYW5kIEVNTUMgcG9ydC4gdGhlbiB3ZSBkZWNpZGVk
+IHRvIGltcGxlbWVudCBhIGRyaXZlciAiTWVzb24gTU1DIFN1YiAKQ2xvY2sgQ29udHJvbGxlciBE
+cml2ZXIiLiBzbyBhbm90aGVyIHBlb3BsZSBiZWdpbiB0byBwcmVwYXJlICJNZXNvbiBNTUMgClN1
+YiBDbG9jayBDb250cm9sbGVyIERyaXZlciIsIGJ1dCBzdWJtaXR0ZWQgaXQgYnkgZGlmZmVyZW50
+IHBhdGNoc2V0LgpmaW5hbGx5LCBub3cgdGhlIG1lc29uIE5GQyBwYXRjaHNldCBpcyBhY2NlcHRl
+ZCBhbmQgbWVyZ2VkLCBidXQgIk1lc29uIApNTUMgU3ViIENsb2NrIENvbnRyb2xsZXIgRHJpdmVy
+IiBwYXRjaHNldCBpcyBub3QuIGFsc28gd2UgZGVjaWRlIHRvIAphYmFuZG9uIHRoZSBwYXRzZXQg
+Ik1lc29uIE1NQyBTdWIgQ2xvY2sgQ29udHJvbGxlciBEcml2ZXIiIGFuZCBpbXBsZW1lbnQgCnRo
+ZSBuZXcgY2xvY2sgZGVzaWduIGluIHRoaXMgc2VyaWVzLgoKPiAKPj4KPj4gVGhhbmtzLgo+Pgo+
+Pj4+IGIuIGlmIGl0IGZhbGxzIGJhY2sgdG8gdGhlIG9sZCBEVCwgYmVzaWRlIHRoZSByZWdtYXAg
+bG9va3VwIGJlbG93LCBpdCBzZWVtcyB0aGF0IHdlIGhhdmUgdG8gcHJlc2VydmUgdGhlIGNvZGUg
+b2YgdGhlIG9sZCBjbG9jayBzZXR0aW5nIGluIG5mY19jbGtfaW5pdCgpLgo+Pj4KPj4+IFllcywg
+cHJvYmFibHkuCj4+PiAgICAKPj4+PiBkbyB3ZSBzdGlsbCBuZWVkIHRvIGF2b2lkIGJyZWFrIERU
+IGNvbXBhdGliaWxpdHk/Cj4+Pgo+Pj4gV2Ugc2hvdWxkIHRyeSBvdXIgYmVzdCB0byBhdm9pZCBi
+cmVha2luZyB0aGUgRFQsIHllcy4KPj4+ICAgIAo+Pj4+Cj4+Pj4gVGhhbmtzLgo+Pj4+Cj4+Pj4g
+T24gMjAyMi80LzExIDEwOjQwLCBMaWFuZyBZYW5nIHdyb3RlOgo+Pj4+Pj4+ICAgwqDCoMKgwqDC
+oCBuZmMtPmRldiA9IGRldjsKPj4+Pj4+PiAtwqDCoMKgIHJlcyA9IHBsYXRmb3JtX2dldF9yZXNv
+dXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7Cj4+Pj4+Pj4gLcKgwqDCoCBuZmMtPnJlZ19i
+YXNlID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKGRldiwgcmVzKTsKPj4+Pj4+PiArwqDCoMKgIG5m
+Yy0+cmVnX2Jhc2UgPSBkZXZtX3BsYXRmb3JtX2lvcmVtYXBfcmVzb3VyY2VfYnluYW1lKHBkZXYs
+ICJuZmMiKTsKPj4+Pj4+Cj4+Pj4+PiBUaGlzIGNoYW5nZSBzZWVtcyB1bnJlbGF0ZWQuCj4+Pj4+
+Cj4+Pj4+IFRvIGJlIGNvbnNpc3RlbnQgd2l0aCB0aGUgZm9sbG93aW5nID4gZGV2bV9wbGF0Zm9y
+bV9pb3JlbWFwX3Jlc291cmNlX2J5bmFtZShwZGV2LCAiZW1tYyIpLiBkbyB5b3UgbWVhbiB0aGF0
+IHdlID4gZG9uJ3QgbmVlZCBpdD8+Cj4+Pj4+Pj4gICDCoMKgwqDCoMKgIGlmIChJU19FUlIobmZj
+LT5yZWdfYmFzZSkpCj4+Pj4+Pj4gICDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIFBUUl9FUlIo
+bmZjLT5yZWdfYmFzZSk7Cj4+Pj4+Pj4gLcKgwqDCoCBuZmMtPnJlZ19jbGsgPQo+Pj4+Pj4+IC3C
+oMKgwqDCoMKgwqDCoCBzeXNjb25fcmVnbWFwX2xvb2t1cF9ieV9waGFuZGxlKGRldi0+b2Zfbm9k
+ZSwKPj4+Pj4+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAiYW1sb2dpYyxtbWMtc3lzY29uIik7Cj4+Pj4+Pj4gLcKgwqDCoCBpZiAoSVNfRVJSKG5mYy0+
+cmVnX2NsaykpIHsKPj4+Pj4+PiAtwqDCoMKgwqDCoMKgwqAgZGV2X2VycihkZXYsICJGYWlsZWQg
+dG8gbG9va3VwIGNsb2NrIGJhc2VcbiIpOwo+Pj4+Pj4+IC3CoMKgwqDCoMKgwqDCoCByZXR1cm4g
+UFRSX0VSUihuZmMtPnJlZ19jbGspOwo+Pj4+Pj4+IC3CoMKgwqAgfQo+Pj4+Pj4+ICvCoMKgwqAg
+bmZjLT5zZF9lbW1jX2Nsb2NrID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlX2J5bmFt
+ZShwZGV2LCA+Pj4gImVtbWMiKTsKPj4+Pj4+PiArwqDCoMKgIGlmIChJU19FUlIobmZjLT5zZF9l
+bW1jX2Nsb2NrKSkKPj4+Pj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIFBUUl9FUlIobmZjLT5z
+ZF9lbW1jX2Nsb2NrKTsKPj4+Pj4+Cj4+Pj4+PiBXaGlsZSBJIGFncmVlIHRoaXMgaXMgbXVjaCBi
+ZXR0ZXIgdGhhbiB0aGUgcHJldmlvdXMgc29sdXRpb24sIHdlIGNhbm5vdAo+Pj4+Pj4gYnJlYWsg
+RFQgY29tcGF0aWJpbGl0eSwgc28geW91IG5lZWQgdG8gdHJ5IGdldHRpbmcgdGhlIGVtbWMgY2xv
+Y2ssIGJ1dAo+Pj4+Pj4gaWYgaXQgZmFpbHMgeW91IHNob3VsZCBmYWxsYmFjayB0byB0aGUgcmVn
+bWFwIGxvb2t1cC4KPj4+Pj4KPj4+Pj4gb2ssIGkgd2lsbCBmaXggaXQgbmV4dCB2ZXJzaW9uLiB0
+aGFua3MuCj4+Pj4+ICAgICA+Pj4+ICAgPj4+Pj4gIMKgwqDCoMKgwqAgaXJxID0gcGxhdGZvcm1f
+Z2V0X2lycShwZGV2LCAwKTsKPj4+Cj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gTWlxdcOobAo+Pj4KPj4+
+IC4KPiAKPiAKPiBUaGFua3MsCj4gTWlxdcOobAo+IAo+IC4KCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tdGQvCg==
