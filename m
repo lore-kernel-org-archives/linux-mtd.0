@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74912C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 06:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C638CC4332F
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 06:42:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rJZoSRNe+bnPwZMrfcA0GemuF6bEWG6VlTIDrEolj2U=; b=jLJ9wETFgwCSLT
-	LplkNccds+kXQEedr7RkIVVLVwnBAkD63tZtrvDBWW1i5l71BA1YeHz1C61Lf4dg1UCIn4zLUY3XV
-	yz15U/qYvkCwdA7+eF/M5lLoWz/laCfaW0FJJBrGvGaD7+nWztY7gBIFjOkfPXFq8y0/3OIfNyp3c
-	qBV4HW2F2sQxfkii2belmvkVIbkFfAW2/1TdaVZ0XMRd4qX1o2D44424kVLfthPQ/F00wula692e+
-	q2sfqph8JJM3m2U3iOdadP6Vtexg7yDpt4hImDL+maYXNuzQZapScNBqR3kB+oUEzcMBir83JhRuv
-	c//eCELD8lqafkIjpkzQ==;
+	List-Owner; bh=Rb86QyQqxBxgO+wxvj+nRnUA9ZD28uoqcQLW2br914s=; b=i/+u/KywUmD28U
+	CZb4yXzvZVTG4e+My1L4o9+LZ5z7johnWWO2oNmw0njFQfzG5DhyuV5nO+NsMBs22/KNJ5Kx+tsTi
+	P7m1Goyz2prQmBcUkWIJBT3GluG5eaKPPOjMSUGXTB9RWImDLuuwOpWDwpO8FLLla/EFUghtrfGTi
+	D+UumPiXBW4lI5MSCf6X4bms8by8wzEH4XBWpPHKgAbfx3XxoCEx0gyDiV6GHfZn+pLTagdCfTUYc
+	3F8DCpH3/ryFEtrPJCVvyoFmDiKOH0l1Tt3CJuiFvJFYso8TQRbMVJbaSwtb0DNPud8OdlKNxG99u
+	vmybyr9EXAwvoplL7SJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhQVh-00Bmzo-QP; Thu, 21 Apr 2022 06:41:49 +0000
-Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
+	id 1nhQVV-00Bmtv-DR; Thu, 21 Apr 2022 06:41:37 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhQVV-00Bmsu-JX
- for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 06:41:39 +0000
-Received: by mail-pg1-x52b.google.com with SMTP id i63so3832945pge.11
- for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2022 23:41:35 -0700 (PDT)
+ id 1nhQVO-00BmpK-3I
+ for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 06:41:31 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id bx5so4082893pjb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2022 23:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=i+5jq0K+JkOdh8wu8Lpj3bWT8rSKlgSozUX72nbpSQg=;
- b=NVTbdlQGHv685oHmakMB4/9iU75sIjZTPvDbPkDti3gdzI+r5amAyhwM2S0+zgBHrk
- gtah6NmmowtmyD7SpqG6Pag+MMSlT24OcIcqi6TTOyQoQwc5rNXxWVf/gEV3hWYCBtxY
- NZB4bJzPj4ECi4NsE9KuwmTWvxhXirrDDhAsZcfvmRpyMNC1aDlKSGm5H9V6yuMYHccc
- 6xzDePgCecx7Hpk3fKjq5zoQ4m0yp/aCIrz4EWjtlQjMH5SZIQcgsYTdBvtkRIRYMDob
- jWFRfxJRlTAfJ8gpjQOYJO1CgA7CIF/2LLtJzkmg1W2VHpbBRetdq70H8utySlb4oHkf
- O+ow==
+ bh=c/9WLo3GEcH1x9DQwW9Dg4T+6FbmlcyVJaIOrmn5cbg=;
+ b=fATmXXt0SizcXafhqKP+QKA5eCf+ykOBEGmhXRKtd44paEMDW8qdmuG6fcOOsMPIwG
+ cFsqzcBAqHpDbydksZ4rZvI+TNZ0tAICCUSuGfM4+tjpQ+kzYaLzoShpdFnAXs+6sSTM
+ ZLR83MR0HW/1OzbFJ7ZemCfqTSoC70NIA7xZE/6fnFG7qh/PHvEke75+MX1MrYEwEGIt
+ xVrbX4iqzhCZsEdvkavY6TTUQtMbxfD5X0AAxNz1aemR5NZlRCWG8QYOhJ/jabJWQV6S
+ xNJuRJM5pICJCMv/Pzn4s2gWplhuMxnXs5LfwZrsDGn3gT8ZCJAuqe7jcFY8jPcjdhML
+ PZqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=i+5jq0K+JkOdh8wu8Lpj3bWT8rSKlgSozUX72nbpSQg=;
- b=EnTzKbQVp8nxY6AssYKKYYVCbjuDytuZLFkrSm25e40OnVJrGOh2fvwiJX9KoEur9d
- MuAVBv0MVLD3PSESdIOlcppJommhjGXAoSte6PAHw5HLawS1YbJ2cXwXyKR7wKB7Mtxg
- H0ceCrdW810736Che5QGNp2QHnfa11CqAtexJeEO4m0lzYJVtw4x/8Xouk8ib1wO44z3
- i4v3WeByaYu+wb0PHHi23u/+MWfQXHPtICrDlgiaRCmeAkoW2jx2dgiLLr8TXwy9yVz6
- q6UGWaGTy+kZfqlvmx93TLJFxkE6Huz1Pf5i1if+FD24r1zsCXRroMo2vyLZKK7Ttl1O
- PKmw==
-X-Gm-Message-State: AOAM533pBm26jCvXGS2unQre/nc/j87NaG2dTzyq2MHDLIUW3qN6MlCE
- Qp8clTEQ4PLZo1Aht81n5Q004eQIQn8=
-X-Google-Smtp-Source: ABdhPJzjPqTsPhHxnZ4TOw1j+ulVNiTCTy5Ea2OGVcUM0YNC8xRNggOdfGNtpNj1vaESo4MnsSDMMg==
-X-Received: by 2002:a63:484f:0:b0:3aa:3f25:25a0 with SMTP id
- x15-20020a63484f000000b003aa3f2525a0mr10246586pgk.559.1650523295210; 
- Wed, 20 Apr 2022 23:41:35 -0700 (PDT)
+ bh=c/9WLo3GEcH1x9DQwW9Dg4T+6FbmlcyVJaIOrmn5cbg=;
+ b=hX4NU6g2iwANBHDNLzlh3jiCslxF58WFQ0dZ0WbfWJerLIg0s08b1rQFJPZrETrXbI
+ /B2SkH2eWqb+iAnX9ko5naSd3wF0OG6sIZKsF22og5pC3tJ150OvcO6StTdPh9qZT2WY
+ PjvAR54HF34Lee/AYPa42rieB8yDonzsgBq3VmI/9jXtXfimWXXhkdRkUeS8VSkmni12
+ irqG7Jxt+EiKha+suVbvbaYaeagFXwCXO1t2NDmh2O4vReFopYExoPufD6HDsff42Ihr
+ i9jPVHh3EbUb3okeikN+jo0ZKkBD6rbsvoFkh/ZxEtVtT0eG01cInU+ExMKM1HrOblNT
+ 9zTQ==
+X-Gm-Message-State: AOAM531Fx1p0CJinfm0BkV7R+/JofGjTeRMDPj6F8P6mRdl2EmEXZRv4
+ X2oTdpKf/Hhgmk9s6LLBav++6WHdnh0=
+X-Google-Smtp-Source: ABdhPJxQLTbzlp0bdyjVYHNhAD2nsjmVPd+PTDqx1vYdPZG0qNsTb4TvqydYHd5DnRzcGAfccetwZw==
+X-Received: by 2002:a17:90b:4a49:b0:1d2:adce:8a89 with SMTP id
+ lb9-20020a17090b4a4900b001d2adce8a89mr8734448pjb.43.1650523286355; 
+ Wed, 20 Apr 2022 23:41:26 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
  [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- x184-20020a6286c1000000b0050ad3051f53sm2075037pfd.147.2022.04.20.23.41.33
+ x184-20020a6286c1000000b0050ad3051f53sm2075037pfd.147.2022.04.20.23.41.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 Apr 2022 23:41:34 -0700 (PDT)
+ Wed, 20 Apr 2022 23:41:26 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v12 5/6] mtd: spi-nor: spansion: Add local function to
- discover page size
-Date: Thu, 21 Apr 2022 15:40:55 +0900
-Message-Id: <b9c8c715eb37a3c701c469d78381429eb1721958.1650519576.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v12 1/6] mtd: spi-nor: Retain nor->addr_width at 4BAIT parse
+Date: Thu, 21 Apr 2022 15:40:51 +0900
+Message-Id: <d705a2c1fc8d0a59c93454aa05642aafe4fc960b.1650519576.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1650519576.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1650519576.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220420_234137_715515_1D45C3B3 
-X-CRM114-Status: GOOD (  17.11  )
+X-CRM114-CacheID: sfid-20220420_234130_194807_4EE1154C 
+X-CRM114-Status: GOOD (  14.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,97 +93,50 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-The page size check in s28hs512t fixup can be used for s25hs/hl-t as well.
-Move that to a newly created local function.
+nor->addr_width may be used as current address mode in SMPT parse. If
+nor->addr_width is set to 4 in 4BAIT parse, correct erase map cannot be
+obtained in Cypress SEMPER Flash family. Retain nor->addr_width value at
+4BAIT parse and set it to 4 later by using SNOR_F_HAS_4BAIT flag.
 
 Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
-Changes in v12:
-  - Rebase on top of Tudor's series
-    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=295933
-  - Remove addr_width param. Use nor->addr_width instead.
+Background information:
+https://patchwork.ozlabs.org/project/linux-mtd/patch/20201212115817.5122-1-vigneshr@ti.com/
 
-Changes in v11:
-  - Rebase on top of Tudor's series
-    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294490
-  - Add addr_width param
+ drivers/mtd/spi-nor/core.c | 7 ++++++-
+ drivers/mtd/spi-nor/sfdp.c | 1 -
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
- drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index dce5fe7498b1..248fe1b221fd 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -176,6 +176,37 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/**
-+ * cypress_nor_set_page_size() - Set page size which corresponds to the flash
-+ *                               configuration.
-+ * @nor:	pointer to a 'struct spi_nor'
-+ *
-+ * The BFPT table advertises a 512B or 256B page size depending on part but the
-+ * page size is actually configurable (with the default being 256B). Read from
-+ * CFR3V[4] and set the correct size.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int cypress_nor_set_page_size(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op =
-+		CYPRESS_NOR_RD_ANY_REG_OP(nor->addr_width,
-+					  CYPRESS_NOR_REG_CFR3V,
-+					  nor->bouncebuf);
-+	int ret;
-+
-+	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	if (nor->bouncebuf[0] & CYPRESS_NOR_REG_CFR3V_PGSZ)
-+		nor->params->page_size = 512;
-+	else
-+		nor->params->page_size = 256;
-+
-+	return 0;
-+}
-+
- /**
-  * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -230,28 +261,7 @@ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
- 				     const struct sfdp_parameter_header *bfpt_header,
- 				     const struct sfdp_bfpt *bfpt)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 40ba45328975..87603a99938f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2210,7 +2210,12 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+ static int spi_nor_set_addr_width(struct spi_nor *nor)
  {
--	/*
--	 * The BFPT table advertises a 512B page size but the page size is
--	 * actually configurable (with the default being 256B). Read from
--	 * CFR3V[4] and set the correct size.
--	 */
--	struct spi_mem_op op =
--		CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR3V,
--					  nor->bouncebuf);
--	int ret;
--
--	spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--
--	ret = spi_mem_exec_op(nor->spimem, &op);
--	if (ret)
--		return ret;
--
--	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
--		nor->params->page_size = 512;
--	else
--		nor->params->page_size = 256;
--
--	return 0;
-+	return cypress_nor_set_page_size(nor);
- }
+ 	if (nor->addr_width) {
+-		/* already configured from SFDP */
++		/*
++		 * Already configured from SFDP. Use an address width of 4 in
++		 * case the device has 4byte opcodes.
++		 */
++		if (nor->addr_width == 3 && nor->flags & SNOR_F_HAS_4BAIT)
++			nor->addr_width = 4;
+ 	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+ 		/*
+ 		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index c5dd79ef75c8..9aeefd070475 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1211,7 +1211,6 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+ 	 * Spansion memory. However this quirk is no longer needed with new
+ 	 * SFDP compliant memories.
+ 	 */
+-	nor->addr_width = 4;
+ 	nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
  
- static const struct spi_nor_fixups s28hs512t_fixups = {
+ 	/* fall through */
 -- 
 2.25.1
 
