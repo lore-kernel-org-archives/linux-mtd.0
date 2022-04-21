@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1DD6C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 10:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 616BDC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 10:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JE8MonjgzRR3LMFRRvPRxMIs8Ym9kuiKKE8C1wGux40=; b=AKtxGx8fRJWyay
-	AP/MXaEt3u2kibdPX3jJLTzDam7mbcsfdsDYgrjjSem2xDw1Zh6ADcv/yL47lJmMWXvFjOYzhpCeG
-	fP3TVkdhhAQ2fGFZ+GndRXIUsd1ChR2eieFwn0Ly9SautM9zjwhGzPn3ZDNc+1e29lR7rTsRZ/5D2
-	atgprG3V0cCU9/0DvK03QQcRCtG9vyHXzDkXuLhQ37BevViViLz8oAYlM4O7Zit92kfesYzszmEcw
-	L4h4cQoI4gP7aRXJkjWbd/7/3TvHqVrRRgE+vrr8tBQtiLvMhUyrTK+ZicIWGp21BsEkmI+6ErD/6
-	JoyKuy/2ukf6M0t7r5iw==;
+	List-Owner; bh=9GxNjZZv00v6UB228vAthwHxJ1VlE566w3oFcnSIvis=; b=rLEb+BZGzaJb+f
+	yq5QTg3PY27LXCMTyaljfsA3KiVHxKVp1u3XnfRUSvWgc3CaU4NHAUaHLImEo5T9VUO3GeZSU1+E2
+	LT2PGY1fOtXe6CbSX8NXDzodrKtLxHIxFgYp01whewOqL9aosCo3HqpNv3w4jO14aa/UcEclBZg+b
+	6KzQjvBNhTuM79jjxMdpJI1icn9KEr2zjF7jnuJWr7o1bF5Kf0PxnxTWP069gn0mTPzx6JS7dhKNC
+	ID5h8eNiDz3DPK5kNVSr3PAhhFadsBTG4IDVnykLi4+8eJFmj940jPStx5lr0BvqhoblCtt+0p3uD
+	uB3fOYSKrNdT7hEjWBtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhUMm-00D5J0-HP; Thu, 21 Apr 2022 10:48:52 +0000
-Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
+	id 1nhURH-00D6LH-1q; Thu, 21 Apr 2022 10:53:31 +0000
+Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhUMj-00D5HU-9M
- for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 10:48:50 +0000
-Received: by mail-pg1-x52d.google.com with SMTP id s137so4319221pgs.5
- for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2022 03:48:48 -0700 (PDT)
+ id 1nhURD-00D6Jv-C1
+ for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 10:53:28 +0000
+Received: by mail-pl1-x630.google.com with SMTP id h12so813356plf.12
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2022 03:53:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=MJGgxlBuLS1VohWFH+8Mvu/ktfG4hX0l1I49nObugHY=;
- b=pGBVhgmB8MUn0YROHWvRwgNnAClwIzKda/P/CJqMdzhHc507Y9+vXeLRe6TXnPaxCW
- bvC9n/s513jdVTiuiEt/QEnXCk7HTeBax16RV185yQlekKayDPVKoNGHCJy/sgXGlNMs
- zbdOucjYXvcrQ+A13ePi3cmL6fYf7fdFyobaLZkrJ6H0Z4OXvSRSv+0Zyow5iSJEkj1F
- D9arhCcG/TaPFevxZaNrPe1pgejspMeLqabZfeQC0OcSP3YEWhYpCpE8KDJW6XXkqNEr
- C5cl/MljYNOjpPxkAYW3kHuVXIE19UB/qQIyuBSIgjrctKr2N/GPUPCn+ybxkDPwjlpp
- f/Ow==
+ bh=mHEUo6GQVIb2odIfFk0jvWk+ukUts3X8qsF9msYmGgM=;
+ b=MyLtvi0z7Siyeq2ogTGMMcrA3iUZ9dixuBS7c2GPoF1oGj3M0A8oTLzePZ9dssjddG
+ TbG/Jdwko1SLWOmi26vdoxPWAmyVzZHUCYYPVVeFaf011WrHEPb5GBWgjdg7TbS+A/h1
+ WaKkrPT8yiLgj14mfsZJ/c343MBY4HkVJUYF0uTUgSdMY6uoHwDvPgTXJv6nXVQ2N9nk
+ Rlc22iCUJSply5icoVMf9Fk5uQBYNqi9CUnUvpalkgHuPWW/8y5Up4GgnfIQs5OsxYEH
+ 9HwiiyEyyRA47m1s/BYSLbWdNB40ppJBASeyavQ5CAHLPzfmibF/h42UVD1vPtUE69zW
+ fgJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=MJGgxlBuLS1VohWFH+8Mvu/ktfG4hX0l1I49nObugHY=;
- b=1cDo6jwUSfczqwrZ9SVXc85sHt4dl5Hw30zH7Q9Ie6XX+AVnNk2T7Q0j+ftVwiQ05V
- YAXwqMRC791F8auZWXKF9pxvWxWQZHdScM1hj7Lv6daMwdpsuFE7zFWCH+0qC+sKsW8P
- OZFHUkXgB90NbYK47GW7SaAJwFOb68JypjcsZPo+tIjz8tLjshUXWv9uAye9j3YxCe6R
- S4HpQI2n22k14eluRoa3ACoIm7AOK/23B9MOuh1Lj04eYxETJ7MLTMQ7ztyxa+47lUpg
- 5MmHb4dCgcl6nCR623yr0RJPmJmXKwdxXhQRrpbDSDGpOxzePduKJPwFCW+w+uV/I1mw
- oWFw==
-X-Gm-Message-State: AOAM533QiVHIy1wkbMsFY6Rb+7AU4jAaPTlf2v4orHDsURQLgiRCgdQg
- PsBq7hkwwaWek71idSYGIb0=
-X-Google-Smtp-Source: ABdhPJwf8DX0VzSiClEYSZ6KHQ5DDmmxoIq+JqXLDluUR854HB0i+3KeJbEK0Aa6atoOywfp+v5NMg==
-X-Received: by 2002:a63:798b:0:b0:3aa:1ad6:4713 with SMTP id
- u133-20020a63798b000000b003aa1ad64713mr14880715pgc.239.1650538128463; 
- Thu, 21 Apr 2022 03:48:48 -0700 (PDT)
+ bh=mHEUo6GQVIb2odIfFk0jvWk+ukUts3X8qsF9msYmGgM=;
+ b=fCjNuGdxt1gz+GgLNjskQ1Pk9NkA2FVDs9iPCTAuPBDvZJ/sCtqF4Vm6aL2JVFXBLZ
+ dRD6ayOZGSALAg9727E0W4dYVXxGeOmkmAhZX+UokA+RBDF3hg0sHcNxQf0bgjDXcObN
+ W4nYth7I+5Kmu56UsW3j5FfNUsvgBw6V6D9xe6xbiLiYVn6QSc1Cf2rvCsTUZHD+Y/2S
+ UeMZ9wk3lqdQPdVqR1gb9i/QKvd5N6JvJ2ojTAHm1Z9kQPl5AgG+xX8sJSLX6zohJ8+b
+ j5pVUELnawNxRnZaKfBoA0oNHVP4Y9B7KaSjaxJ9Dkz56NNm9VNXgP9zYq93xeRbMaMJ
+ ol7Q==
+X-Gm-Message-State: AOAM532SvqeXOvtt/du5EPgymJJ5T/PVz/DZlqHOXIg3bHEwumkYQLz2
+ xA7EjCS7Vt+0AzDEpY4ZFitkLwlKp/M=
+X-Google-Smtp-Source: ABdhPJwgNPtN6rNqMwHZjcnAU5wpYTg+EkE9vn3fK+U3yjWjqf+NaSqLXZWStLhudPYzWFVUlr7Hpw==
+X-Received: by 2002:a17:903:22c4:b0:158:9224:1a8a with SMTP id
+ y4-20020a17090322c400b0015892241a8amr2862528plg.41.1650538404466; 
+ Thu, 21 Apr 2022 03:53:24 -0700 (PDT)
 Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
  by smtp.gmail.com with ESMTPSA id
- y20-20020aa79af4000000b0050832e3caadsm22939269pfp.216.2022.04.21.03.48.46
+ v126-20020a622f84000000b004fa666a1327sm22795399pfv.102.2022.04.21.03.53.22
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 21 Apr 2022 03:48:48 -0700 (PDT)
-Message-ID: <955416e1-f139-fea2-f956-40d0c98e7698@gmail.com>
-Date: Thu, 21 Apr 2022 19:48:45 +0900
+ Thu, 21 Apr 2022 03:53:24 -0700 (PDT)
+Message-ID: <e4668aba-7159-8481-6634-5e7606246c96@gmail.com>
+Date: Thu, 21 Apr 2022 19:53:21 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.0
-Subject: Re: [PATCH v13 1/4] mtd: spi-nor: Retain nor->addr_width at 4BAIT
- parse
+Subject: Re: [PATCH v13 4/4] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs
+ and fixups
 Content-Language: en-US
 To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
 Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
 References: <cover.1650532121.git.Takahiro.Kuwano@infineon.com>
- <d705a2c1fc8d0a59c93454aa05642aafe4fc960b.1650532121.git.Takahiro.Kuwano@infineon.com>
- <4420110b-356f-a738-b5e2-233200e0637f@microchip.com>
+ <5ecc521018a8fe89c5554c7d69a0a9a36eb16737.1650532121.git.Takahiro.Kuwano@infineon.com>
+ <a039deda-89f6-288e-071e-f557aaa0bd1a@microchip.com>
 From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <4420110b-356f-a738-b5e2-233200e0637f@microchip.com>
+In-Reply-To: <a039deda-89f6-288e-071e-f557aaa0bd1a@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220421_034849_378326_69064F19 
-X-CRM114-Status: GOOD (  21.61  )
+X-CRM114-CacheID: sfid-20220421_035327_476425_6E7AB69F 
+X-CRM114-Status: GOOD (  18.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,80 +95,112 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/21/2022 7:38 PM, Tudor.Ambarus@microchip.com wrote:
+On 4/21/2022 7:45 PM, Tudor.Ambarus@microchip.com wrote:
 > On 4/21/22 12:40, tkuw584924@gmail.com wrote:
 >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >>
 >> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 >>
->> In 4BAIT parse, keep nor->addr_width because it may be used as
->> current address mode in SMPT parse later on.
+>> The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
+>>
+>> For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
+>> uniform sector sizes are supported. This is due to missing or incorrect
+>> entries in SMPT. Fixup for other sector sizes configurations will be
+>> followed up as needed.
+>>
+>> Tested on Xilinx Zynq-7000 FPGA board.
 >>
 >> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 >> ---
->>  drivers/mtd/spi-nor/core.c | 7 ++++++-
->>  drivers/mtd/spi-nor/sfdp.c | 1 -
->>  2 files changed, 6 insertions(+), 2 deletions(-)
+>> Changes in v13:
+>>   - Remove part specific set_4byte_addr_mode()
+>>   - Revert SNOR_F_4B_OPCODES
+>>   - Add post_sfdp to fix 3 byte erase opcode in 4BAIT
 >>
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 40ba45328975..87603a99938f 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -2210,7 +2210,12 @@ static int spi_nor_default_setup(struct spi_nor *nor,
->>  static int spi_nor_set_addr_width(struct spi_nor *nor)
->>  {
->>         if (nor->addr_width) {
->> -               /* already configured from SFDP */
->> +               /*
->> +                * Already configured from SFDP. Use an address width of 4 in
->> +                * case the device has 4byte opcodes.
->> +                */
->> +               if (nor->addr_width == 3 && nor->flags & SNOR_F_HAS_4BAIT)
->> +                       nor->addr_width = 4;
->>         } else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+>> Changes in v12:
+>>   - Cleanup fixups based on other patches in this series
+>>   - Add part specific set_4byte_addr_mode()
+>>   - Unset SNOR_F_4B_OPCODES flag to let core to call set_4byte_addr_mode
+>>
+>> Changes in v11:
+>>   - Cleanup fixups based on other patches in this series
+>>
+>> Changes in v10:
+>>   - Cleanup fixups and ID table based on other patches in this series
+>>
+>> Changes in v9:
+>>   - Use late_init() hook to fix mode clocks and writesize
+>>   - Use PARSE_SFDP instead of NO_SFDP_FLAGS
+>>   - Use MFR_FLAGS for USE_CLSR
+>>   - Add comment block to explain about addr mode in post_bfpt_fixups()
+>>
+>> Changes in v8:
+>>   - Call write_disable in error case only
+>>   - Use spi_nor_read_reg() helper
+>>   - Use nor->bouncebuf instead of variable on stack
+>>   - Update ID table to use FLAGS macro
+>>
+>> Changes in v7:
+>>   - Add missing device info table in v6
+>>
+>> Changes in v6:
+>>   - Remove 2Gb multi die pacakge support
+>>
+>> Changes in v5:
+>>   - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
+>>
+>> Changes in v4:
+>>   - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+>>   - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+>>
+>> Changes in v3:
+>>   - Remove S25HL256T and S25HS256T
+>>   - Add S25HL02GT and S25HS02GT
+>>   - Add support for multi-die package parts support
+>>   - Remove erase_map fix for top/split sector layout
+>>   - Set ECC data unit size (16B) to writesize
+>>
+>>  drivers/mtd/spi-nor/spansion.c | 66 ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 66 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index 952d4383f9da..e56c48c3280b 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -203,6 +203,56 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
+>>         return 0;
+>>  }
+>>
+>> +static int
+>> +s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
+>> +                       const struct sfdp_parameter_header *bfpt_header,
+>> +                       const struct sfdp_bfpt *bfpt)
+>> +{
+>> +       /* Replace Quad Enable with volatile version */
+>> +       nor->params->quad_enable = cypress_nor_quad_enable_volatile;
+>> +
+>> +       return cypress_nor_set_page_size(nor);
+>> +}
+>> +
+>> +static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
+>> +{
+>> +       struct spi_nor_erase_type *erase_type =
+>> +                                       nor->params->erase_map.erase_type;
+>> +       int i;
+>> +
+>> +       /*
+>> +        * In some parts, 3byte erase opcodes are advertised by 4BAIT.
+>> +        * Convert them to 4byte erase opcodes.
 > 
-> Can we have this instead?
+> this is a fix, those opcodes don't work with 4 byte addresses, right?
+Right. If we want to use 3byte opcodes with 4byte address, need to call
+set_4byte_addr_mode().
+
+> Looks good!
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 > 
-> commit 61d73dea7e63db4c7a3ffaa7f2b5068fb71c2d8b
-> Author: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> Date:   Thu Apr 21 18:40:21 2022 +0900
-> 
->     mtd: spi-nor: Retain nor->addr_width at 4BAIT parse
->     
->     In 4BAIT parse, keep nor->addr_width because it may be used as
->     current address mode in SMPT parse later on.
->     
->     Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->     Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 2bfa84100d38..7095bf897318 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2272,6 +2272,9 @@ static int spi_nor_default_setup(struct spi_nor *nor,
->  
->  static int spi_nor_set_addr_width(struct spi_nor *nor)
->  {
-> +       if (nor->flags & SNOR_F_HAS_4BAIT)
-> +               nor->addr_width = 4;
-> +
->         if (nor->addr_width) {
->                 /* already configured from SFDP */
->         } else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
-> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> index a5211543d30d..b2cc3bfe0d5c 100644
-> --- a/drivers/mtd/spi-nor/sfdp.c
-> +++ b/drivers/mtd/spi-nor/sfdp.c
-> @@ -1098,7 +1098,6 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
->          * Spansion memory. However this quirk is no longer needed with new
->          * SFDP compliant memories.
->          */
-> -       nor->addr_width = 4;
->         nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
->  
->         /* fall through */
-> 
-Yes, thanks!
+Thank you!
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
