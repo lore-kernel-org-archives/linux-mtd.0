@@ -4,58 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B152C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Apr 2022 21:42:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 824CDC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 06:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yh18C3s3zjFSUUHRr4K+xK3/DD7U0OxS4/OGc5JQgbU=; b=CFSy18tN2jqVdB
-	HxAJOUO4tsn5bl2PbCvbe2eKy/WqshVEe3GDXWuNat9t9RU9Meyw0ENgfhaZBO3IENlH8GwO+L6i/
-	ALuqWQD0Eos3vdBs1G+ju9zJ2bqfc0d8RiKc881YbnzHhm319vmpwkSsYRkFLN+6e4nAA2uIjti49
-	8Ble9bTIcmAT5sXPpcZgcf76dj3W2xA61XXNUbwVDfvr+biX12gdlwcjLggF5hV7JM2JlVyH9pRoE
-	bIZoUXcqqKtidvq4KExwHQv/j+obFFju5o/dQanDU9e66VM1iJsI1XS0SgJPpYoDWekeoNI737Yif
-	eprTS/Ofs7OjMQwNcKUw==;
+	List-Owner; bh=96wgIUsnb4PYkRsRGXtz9cBWRFCuzLrgzZoyEMgxOzk=; b=RHn+YjMhieZ/QE
+	9uZRJLc+Ls9nKFfETcjJlDIYcK31/Z2puEFcSEWwcC70hleHNx8jF3pFk8XQIwlVbuuNPnx3vmeRa
+	ENykdSyf7SXrAPITMWAgvt58qqNUjxnp3ONtsTfgnqoo2OIX4duBQmABqNBRLXgX0RBWAOtk7S2Zp
+	zg9QQ8gjMyIUGQrOHCX0U9D56zbFBO/DUlfgp6fmukCgbYUg/I1kaBcfvq1ok4kWx/em1K1zKXVwd
+	4N8mjFc2xegKGg38YUsTgYsWY/zGswbO9HnjIpK/saQEopd04cnphzFj9JhVkjCrZ7TVx0TgUiJ9T
+	FMGWGVGnCv29rvoYxLfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhI4i-00ATII-UG; Wed, 20 Apr 2022 21:41:24 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1nhQVb-00Bmx5-RK; Thu, 21 Apr 2022 06:41:43 +0000
+Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhI4W-00ATDd-IS
- for linux-mtd@lists.infradead.org; Wed, 20 Apr 2022 21:41:14 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C39B861972;
- Wed, 20 Apr 2022 21:41:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B471C385A8;
- Wed, 20 Apr 2022 21:41:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650490871;
- bh=ZJASXpwSw7EWB3yJ2BJMT6aN8Jg1dz8Snmgwr1sKRVs=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=FMvsoVGcPrcYM4OlyvF2c0VoWCVd9AMCEaR4+ir5agnFPA8LH1TFactw1hb1tDZhQ
- BWGY6vrEV1UGKr8rrUyWw6KUFA7eT2L075iXvOK+N6UM36KLAKwPZ/YmIEIPerQhcU
- DOHL+CUHBYHnIblLJaFBdgH5MZ2wxLYhI5jBkfo4lziTqNCwKX0w0Ipuuhlf90NbCv
- Z8wjjKaO2XolaUDzXRryJF0l4HWWjXXqbpl15rcR7CbsrXancSKeerCPeg/zrsNIWw
- 8FmkyJh8EANOshDg9CFapWSmjYx5sxB/bnzd7jNzpeQO0jVtQShqRtbIVOWu5GeZmd
- XS0Ta2EuS5kYg==
-From: Mark Brown <broonie@kernel.org>
-To: mika.westerberg@linux.intel.com
-Cc: michael@walle.cc, boris.brezillon@collabora.com,
- tudor.ambarus@microchip.com, hongli.li@intel.com, p.yadav@ti.com,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-In-Reply-To: <20220420104350.19510-1-mika.westerberg@linux.intel.com>
-References: <20220420104350.19510-1-mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v2] spi: intel: Implement dirmap hooks
-Message-Id: <165049086976.143449.15707260832201661600.b4-ty@kernel.org>
-Date: Wed, 20 Apr 2022 22:41:09 +0100
+ id 1nhQVS-00Bmr4-Gc
+ for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 06:41:36 +0000
+Received: by mail-pl1-x62a.google.com with SMTP id c23so3996001plo.0
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2022 23:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=LONb1mnj7dnIeWFnJ99f0HXGVnTcXh45wVb4OBVyhJk=;
+ b=S52+/nUwgJIWiuOTIjMtyklP7VuVqJKZciM2Juc4T+WDIgy7MYzeMK7scCQIQaO8fc
+ 6E+tgNKIqxAxdExtMuk/5YxLks8/14WhWaQGkmd/XqsbDA4RggqoLg5ekfWWAxnSyXcG
+ SnVroAhYyEQlhSFlYr/Z+0MRCqpFwgnqRnbYrCHwqWKb6HD8v9GNDWdcwNgFl9RRI8Ts
+ Uypjz1aDOv7Bkg3KGBq0u8W9Npcyc25OIi9ZoQQztjtO/R5vLRqs10gLbBk/ORfk94MI
+ xxVlzPM1gRK8DAhNdVJjpToGqeVqIk+n7XQgJ109XkcHJM9Wjt0mMq9fm+oF8YuuhPkP
+ BKJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=LONb1mnj7dnIeWFnJ99f0HXGVnTcXh45wVb4OBVyhJk=;
+ b=BcXTPQ73IpvPjO4bRXvkYx2BpAxKqWMkNeDyrdIivr8OvhTzrWSRGJN+w+Ypwuarr2
+ FiYOSpjpbJL0TXM4gmQ4X3jYj8U8iGRk5i2nEdEr0LkmMJJi2YkOD2+gJQP8T/0527ul
+ /7e+b6r5XV9E3rVJ5IDmm2knrWAlkPWuz/FTI4/5C+AdktarEvu8GqSJDbClMJflrtZS
+ sJwzX8717pJbKkSB1EeF8cmMVaMfm7P0j8g+G3ASXDt5Rm/TqpiNCe566ZBmfXNsXPBm
+ Ufl8xDQlKmZp3fmLFOnCIm7Xwz4bhd/Q0BOFV8D2zy4VA0bS0BUgUWkvEz93X+1olSsC
+ x7Cg==
+X-Gm-Message-State: AOAM5335QYQS0cXSGdePMvaY+46dwaM6JLrlq4I0CvpJXevYCpJkhdPv
+ Poe6eLgkruHWbPoWKVQaJVj4zvfr/CE=
+X-Google-Smtp-Source: ABdhPJzzCRVfWZVo5n1WhEYduUTwS5oGcUvaK0sA6zrSFJZd8EEWif7RNX8M0VBSSWmdivjPmnKU5A==
+X-Received: by 2002:a17:902:b103:b0:156:c7bb:a852 with SMTP id
+ q3-20020a170902b10300b00156c7bba852mr23663661plr.29.1650523290787; 
+ Wed, 20 Apr 2022 23:41:30 -0700 (PDT)
+Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
+ [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
+ x184-20020a6286c1000000b0050ad3051f53sm2075037pfd.147.2022.04.20.23.41.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 20 Apr 2022 23:41:30 -0700 (PDT)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
+ Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v12 3/6] mtd: spi-nor: spansion: Rename local macros
+Date: Thu, 21 Apr 2022 15:40:53 +0900
+Message-Id: <e7d067a754e3361c29960dec266671f0371c38ef.1650519576.git.Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1650519576.git.Takahiro.Kuwano@infineon.com>
+References: <cover.1650519576.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220420_144112_680403_608D8B32 
-X-CRM114-Status: GOOD (  13.94  )
+X-CRM114-CacheID: sfid-20220420_234134_629646_292E2EE8 
+X-CRM114-Status: GOOD (  18.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,43 +91,211 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 20 Apr 2022 13:43:50 +0300, Mika Westerberg wrote:
-> Currently the driver goes over the supported opcodes list each time
-> ->exec_op() is called and finds the suitable for the given operation.
-> This consumes unnecessary amount of CPU cycles because the operation is
-> always the same. For this reason populate dirmap hooks for the driver so
-> that we cache the selected operation and then simply call it on each
-> read/write.
-> 
-> [...]
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Applied to
+Use CYPRESS_NOR_ prefix for local macros
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+---
+ drivers/mtd/spi-nor/spansion.c | 78 +++++++++++++++++-----------------
+ 1 file changed, 40 insertions(+), 38 deletions(-)
 
-Thanks!
+diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+index 43cd6cd92537..c8abe46e63fe 100644
+--- a/drivers/mtd/spi-nor/spansion.c
++++ b/drivers/mtd/spi-nor/spansion.c
+@@ -9,35 +9,36 @@
+ #include "core.h"
+ 
+ /* flash_info mfr_flag. Used to clear sticky prorietary SR bits. */
+-#define USE_CLSR	BIT(0)
+-
+-#define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
+-#define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
+-#define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
+-#define SPINOR_REG_CYPRESS_CFR2V		0x00800003
+-#define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
+-#define SPINOR_REG_CYPRESS_CFR3V		0x00800004
+-#define SPINOR_REG_CYPRESS_CFR3V_PGSZ		BIT(4) /* Page size. */
+-#define SPINOR_REG_CYPRESS_CFR5V		0x00800006
+-#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN	0x3
+-#define SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS	0
+-#define SPINOR_OP_CYPRESS_RD_FAST		0xee
++#define CYPRESS_NOR_USE_CLSR		BIT(0)
++
++#define CYPRESS_NOR_OP_CLSR		0x30	/* Clear status register 1 */
++#define CYPRESS_NOR_OP_RD_ANY_REG	0x65	/* Read any register */
++#define CYPRESS_NOR_OP_WR_ANY_REG	0x71	/* Write any register */
++#define CYPRESS_NOR_OP_RD_FAST		0xee
++
++#define CYPRESS_NOR_REG_CFR2V			0x00800003
++#define CYPRESS_NOR_REG_CFR2V_MEMLAT_11_24	0xb
++#define CYPRESS_NOR_REG_CFR3V			0x00800004
++#define CYPRESS_NOR_REG_CFR3V_PGSZ		BIT(4) /* Page size. */
++#define CYPRESS_NOR_REG_CFR5V			0x00800006
++#define CYPRESS_NOR_REG_CFR5V_OCT_DTR_EN	0x3
++#define CYPRESS_NOR_REG_CFR5V_OCT_DTR_DS	0
+ 
+ /* Cypress SPI NOR flash operations. */
+ #define CYPRESS_NOR_WR_ANY_REG_OP(naddr, addr, ndata, buf)		\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WR_ANY_REG, 0),		\
++	SPI_MEM_OP(SPI_MEM_OP_CMD(CYPRESS_NOR_OP_WR_ANY_REG, 0),	\
+ 		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_DATA_OUT(ndata, buf, 0))
+ 
+ #define CYPRESS_NOR_RD_ANY_REG_OP(naddr, addr, buf)			\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RD_ANY_REG, 0),		\
++	SPI_MEM_OP(SPI_MEM_OP_CMD(CYPRESS_NOR_OP_RD_ANY_REG, 0),	\
+ 		   SPI_MEM_OP_ADDR(naddr, addr, 0),			\
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_DATA_IN(1, buf, 0))
+ 
+-#define SPANSION_CLSR_OP						\
+-	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 0),			\
++#define CYPRESS_NOR_CLSR_OP						\
++	SPI_MEM_OP(SPI_MEM_OP_CMD(CYPRESS_NOR_OP_CLSR, 0),		\
+ 		   SPI_MEM_OP_NO_ADDR,					\
+ 		   SPI_MEM_OP_NO_DUMMY,					\
+ 		   SPI_MEM_OP_NO_DATA)
+@@ -49,9 +50,9 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
+ 	int ret;
+ 
+ 	/* Use 24 dummy cycles for memory array reads. */
+-	*buf = SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24;
++	*buf = CYPRESS_NOR_REG_CFR2V_MEMLAT_11_24;
+ 	op = (struct spi_mem_op)
+-		CYPRESS_NOR_WR_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR2V, 1, buf);
++		CYPRESS_NOR_WR_ANY_REG_OP(3, CYPRESS_NOR_REG_CFR2V, 1, buf);
+ 
+ 	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
+ 	if (ret)
+@@ -60,9 +61,9 @@ static int cypress_nor_octal_dtr_en(struct spi_nor *nor)
+ 	nor->read_dummy = 24;
+ 
+ 	/* Set the octal and DTR enable bits. */
+-	buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_EN;
++	buf[0] = CYPRESS_NOR_REG_CFR5V_OCT_DTR_EN;
+ 	op = (struct spi_mem_op)
+-		CYPRESS_NOR_WR_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR5V, 1, buf);
++		CYPRESS_NOR_WR_ANY_REG_OP(3, CYPRESS_NOR_REG_CFR5V, 1, buf);
+ 
+ 	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
+ 	if (ret)
+@@ -92,10 +93,10 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
+ 	 * in 8D-8D-8D mode. Since there is no register at the next location,
+ 	 * just initialize the value to 0 and let the transaction go on.
+ 	 */
+-	buf[0] = SPINOR_REG_CYPRESS_CFR5V_OCT_DTR_DS;
++	buf[0] = CYPRESS_NOR_REG_CFR5V_OCT_DTR_DS;
+ 	buf[1] = 0;
+ 	op = (struct spi_mem_op)
+-		CYPRESS_NOR_WR_ANY_REG_OP(4, SPINOR_REG_CYPRESS_CFR5V, 2, buf);
++		CYPRESS_NOR_WR_ANY_REG_OP(4, CYPRESS_NOR_REG_CFR5V, 2, buf);
+ 	ret = spi_nor_write_any_volatile_reg(nor, &op, SNOR_PROTO_8_8_8_DTR);
+ 	if (ret)
+ 		return ret;
+@@ -143,7 +144,7 @@ static void s28hs512t_post_sfdp_fixup(struct spi_nor *nor)
+ 	 */
+ 	if (nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode == 0)
+ 		nor->params->reads[SNOR_CMD_READ_8_8_8_DTR].opcode =
+-			SPINOR_OP_CYPRESS_RD_FAST;
++			CYPRESS_NOR_OP_RD_FAST;
+ 
+ 	/* This flash is also missing the 4-byte Page Program opcode bit. */
+ 	spi_nor_set_pp_settings(&nor->params->page_programs[SNOR_CMD_PP],
+@@ -227,51 +228,51 @@ static const struct flash_info spansion_nor_parts[] = {
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl128s0", INFO6(0x012018, 0x4d0080, 256 * 1024, 64)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fl128s1", INFO6(0x012018, 0x4d0180, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fl256s0", INFO6(0x010219, 0x4d0080, 256 * 1024, 128)
+ 		NO_SFDP_FLAGS(SPI_NOR_SKIP_SFDP | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fl256s1", INFO6(0x010219, 0x4d0180, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fl512s",  INFO6(0x010220, 0x4d0080, 256 * 1024, 256)
+ 		FLAGS(SPI_NOR_HAS_LOCK)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fs128s1", INFO6(0x012018, 0x4d0181, 64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 		.fixups = &s25fs_s_nor_fixups, },
+ 	{ "s25fs256s0", INFO6(0x010219, 0x4d0081, 256 * 1024, 128)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fs256s1", INFO6(0x010219, 0x4d0181, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fs512s",  INFO6(0x010220, 0x4d0081, 256 * 1024, 256)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 		.fixups = &s25fs_s_nor_fixups, },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256)
+ 		NO_SFDP_FLAGS(SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+-		MFR_FLAGS(USE_CLSR)
++		MFR_FLAGS(CYPRESS_NOR_USE_CLSR)
+ 	},
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8) },
+ 	{ "s25sl008a",  INFO(0x010213,      0,  64 * 1024,  16) },
+@@ -328,13 +329,14 @@ static void spansion_nor_clear_sr(struct spi_nor *nor)
+ 	int ret;
+ 
+ 	if (nor->spimem) {
+-		struct spi_mem_op op = SPANSION_CLSR_OP;
++		struct spi_mem_op op = CYPRESS_NOR_CLSR_OP;
+ 
+ 		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+ 
+ 		ret = spi_mem_exec_op(nor->spimem, &op);
+ 	} else {
+-		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_CLSR,
++		ret = spi_nor_controller_ops_write_reg(nor,
++						       CYPRESS_NOR_OP_CLSR,
+ 						       NULL, 0);
+ 	}
+ 
+@@ -390,7 +392,7 @@ static void spansion_nor_late_init(struct spi_nor *nor)
+ 		nor->mtd.erasesize = nor->info->sector_size;
+ 	}
+ 
+-	if (nor->info->mfr_flags & USE_CLSR)
++	if (nor->info->mfr_flags & CYPRESS_NOR_USE_CLSR)
+ 		nor->params->ready = spansion_nor_sr_ready_and_clear;
+ }
+ 
+-- 
+2.25.1
 
-[1/1] spi: intel: Implement dirmap hooks
-      commit: c2b5a40c9e50651a29ee9d110f7ebc41b8720efa
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
 ______________________________________________________
 Linux MTD discussion mailing list
