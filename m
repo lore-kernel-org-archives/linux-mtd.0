@@ -4,75 +4,166 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19499C43217
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 09:41:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC911C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 10:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=d4A4oxveFWx4TvdKdI62HhbXgstbpQGrtx/lBtIFDi0=; b=VNRQz0P6Tli8Qb
-	KJQvOJjGcbid83VoOrGNsW39fYLC3RQPwWemhv6Xf69lzlpeUC0W2XcPfczYp9UTDWkThQdvIF3GP
-	MJBnSP2GqYn2syeOS/tgI2UTU3KiSxiEBgWxgMkQtCWr+rgnNtPBUyRzbSbJ3TAqBO3x4fbYvC67m
-	VC4op7RzCdx8608/fO0yoBeg8FmE/No5ef2UnHOhgqd7pj3njn95gQYpxQnrR/Ff8Qc49NvKTY3Us
-	FTsCYf298Lue006WBqP7yhPIrEfBYihKpwlPt8IxPA87DQm1gKPynjTmZRIXXTwBGxfCKeM8Gfj/I
-	xKTVcvl2rv5vgrwu9UHg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fVArDdvgjcLJ46PPO7eje9HmdvNZlZgnstIfRUN3jNQ=; b=EyzcPl1nSuZjvx
+	peBgf5nIfdVNlj4sFxUp6gtfrBQtUyOBBO5ULxG9NmQTEJfYeqPE61SP4DH/3hN+K5OdXUl2a6Nuf
+	1jaS2ceUt/RV6CPVg9OaUmP4UsrlTRiRJhQt6/Sb2tdLB2z32m1shzGNRvLfGtD1xzHPpoXH7VE+L
+	Kj2Baou7DQDlw9sJLNVowcFhw5I+NQE0Bnb5T/OBT3nP9rVAzbGM0nQ3T+Sqcjo6nFFV2aB62A7Xz
+	sqmIWOxm67/bYJ5Iqdzv/XndoFtQS0NXL1tdGyu00cIWpDLHzQ2f0EN/UsXCGkFWn6m3UEZU8kmPR
+	bEfc5k0885VB6nZLmSDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhTIw-00CojI-NV; Thu, 21 Apr 2022 09:40:50 +0000
-Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
+	id 1nhUCu-00D36n-0s; Thu, 21 Apr 2022 10:38:40 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhTIm-00Coe6-HF
- for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 09:40:45 +0000
-Received: by mail-pg1-x52c.google.com with SMTP id h5so4180476pgc.7
- for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2022 02:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=5u8HneZ8I9IVCo430MeqWNs+TBnyuAdcUVHQil6iLvc=;
- b=IUPSm8dY5Bwje2zX1hun5RDG1pQGIwZ3rcu2acGgWns0B7N4PuVTBK6wPs1aIu1/wj
- w8nJtpEAoKQ495JyaHH9f5IgUYpjl5NPvTfbTNKzoTRjYNp/8BAq2GxPa2jGvpIwxT9A
- fCV5DELOx9cmmVvpfflFBJ3D4/awHq+yRwHOhgIASAqpZWZ011hBA43LMS1yu+GSsb77
- nBcJSHOJmdJBZdL58TdX351QqHCVKW/CrUtLCZ6ce49HQBUM62AFy5nvl+4W4bF6m96l
- eLsvIfamVqNyomramP4cWoS+b0k0buTNpVTvIy2gMjAgmBHW8yW9Jz0bR8BvBxquK55/
- y1ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=5u8HneZ8I9IVCo430MeqWNs+TBnyuAdcUVHQil6iLvc=;
- b=lVOfg22ZUZq9A8HGem2mdAABV6o6D4FU8ov+xl8lBLSJauvjxb3143tpHO5z7F8s5w
- NwE5FzaMc5TzPluaIcwsp8CzBZ+MzUamMeybTGjcekziwMHLvmFbrZ8Uo/iLXfka1f/r
- COYcTKHfHpDY7EyQ7Qoy0pBXcf+pCRP4ylW0KnsWX2pVz9VhJs78PcwczlQ/pY+oWzRW
- dOYyyn8x8+7huPkxakvylcwgHa3Tac5q/KvrXYhPJfSF3lxisdBnlb8kFpcm3sInPH5U
- KRBBUk1/8ccGOPjJstu1aGYSbVSys7fEyARxOyukrmCVeFZ7FYYu4rzEBJ48K/27HaXE
- 7e9A==
-X-Gm-Message-State: AOAM533GbA7jZWt7prxa/ycG7IPlYYXsNJSAzyhdZZ2O4uaiugQsTbjA
- nqJtb9+bhM1YSAhbMnWaYirehrbAy20=
-X-Google-Smtp-Source: ABdhPJxSwXFXL1zeP4BuGEeYRzR8FakccXge3M2etztgqC2CL8bRs9AuJgFiMtDRqIMQy0oB7ynugQ==
-X-Received: by 2002:a63:5a20:0:b0:3aa:2fd0:9e94 with SMTP id
- o32-20020a635a20000000b003aa2fd09e94mr12505014pgb.602.1650534038960; 
- Thu, 21 Apr 2022 02:40:38 -0700 (PDT)
-Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
- [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- k198-20020a633dcf000000b003aa9116ba17sm1503970pga.35.2022.04.21.02.40.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Apr 2022 02:40:38 -0700 (PDT)
-From: tkuw584924@gmail.com
-X-Google-Original-From: Takahiro.Kuwano@infineon.com
-To: linux-mtd@lists.infradead.org
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, p.yadav@ti.com, tkuw584924@gmail.com,
- Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v13 0/4] mtd: spi-nor: Add support for Infineon s25hl-t/s25hs-t
-Date: Thu, 21 Apr 2022 18:40:20 +0900
-Message-Id: <cover.1650532121.git.Takahiro.Kuwano@infineon.com>
-X-Mailer: git-send-email 2.25.1
+ id 1nhUCq-00D35h-Ad
+ for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 10:38:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1650537516; x=1682073516;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=/al/bwqeiK+EHojIFhvaPmepsh9NhEh0oQHWvI4I0tY=;
+ b=Ziw/ujmwKjCRpcvXozsbJ+8cS8c2VE+GzWmCJD0aoi/kgkFDFST0akb8
+ hhscQlHpVnNchgtWnhTdFQQKmviKYJQGZI5XTEY+1OVqHwDmYb3NApg/w
+ I6tCiaUqTQImJeLsfUqcpUADWhSKCApB/zASxtl3H8jHnepPFKtNVPnlG
+ R+mQPL/umLYDJtFIaZkhmcr9aFm1/UOgpmH4FCaD+YPaAMKygHBxJs4cV
+ Z4waDu8jAD/CqQb9JxSsDKPqe7a6NV//MAyEpyrV+niqPBUEHtZRhwvFP
+ +ZU9219ARziVVggO3pr4gLd5zWL+lnxWkICwtkhijm03HwR0+J5/tYnA6 g==;
+X-IronPort-AV: E=Sophos;i="5.90,278,1643698800"; d="scan'208";a="170409169"
+Received: from smtpout.microchip.com (HELO email.microchip.com)
+ ([198.175.253.82])
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 21 Apr 2022 03:38:32 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Thu, 21 Apr 2022 03:38:32 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17 via Frontend Transport; Thu, 21 Apr 2022 03:38:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kdFLlYlq21T9yD+wpfP8mB+ggFfGTqK0OPa9r5c8Xg6X4RQHtLWstmQ6paZw4F0EebO3pTG2f+uue+42F+0P6H6Bcr7Mpgct98MhGPqDvm2ni/lUeIFpsnE8muSZng6Yw4ilXsBN1dj5o2wRi29ARJmYhC8Ca3JWS9Fm8dqCi+0oXEvgifk9SJfo7jZXvWUBVbutyN/DIWINfd2PNgeXXJl93hmYt+8IAFSj4Qxq5MQd4g2FbEe5ZiMxCYdBiZvu7bFDlYuTEjbMTdFxlq9PvjWj00uedoUhzsxHCKhN+OLw1vY8JC0lrW2MlXOmjKlW/PYHQ1PM112pnLASZNvbCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/al/bwqeiK+EHojIFhvaPmepsh9NhEh0oQHWvI4I0tY=;
+ b=GYSwV9ejkQ6OkqYK4asqH3GOpQpVBc2uptPbiYiUejhL8FaMU/WQIVu/0vsZSvEZkZc2yoOvyfSe0p3GsSXe3J3CwoEpdDkl8bo05xv3T9oBLsCDiXbVI5klHow4lENl/8nyY53AdgE6UKPVrwujzRP5e0xEaKT5rgNhcE1GZXldjuCfg4RDUYoW7qsTxff/t72C1Gdr2wFIx+F7iLb5X0r2MJ/NMag0ZxLj52oV+k+Dq+qS6Qi6pMFV6xk40CO5meB2TSUb6VOlKlSxcP8BgjfeRWjiczGg0h3KhaEASBUsVJpvReP0eCp3MzO/hyAKPkyvoBlL0lHiMHMSR67Yww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/al/bwqeiK+EHojIFhvaPmepsh9NhEh0oQHWvI4I0tY=;
+ b=bHPNfgGIAdPvneT++milKKElIhqb91VwsK1Kc6eZsjStkuA5HPaFOBha/SA1CbiWR1yQBPaOcCWQkX5kaBiqAXBNy1koDwVy2bYY7CEidx0OuQSjoZ6wUMEaW2WrqlFYm6LaOk7NKKeHvlZt17s8rBSIV+w11Iv/8taTq66o5ok=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by MN2PR11MB4208.namprd11.prod.outlook.com (2603:10b6:208:17a::16)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.14; Thu, 21 Apr
+ 2022 10:38:27 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::3414:43b2:d8a:bc00]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::3414:43b2:d8a:bc00%7]) with mapi id 15.20.5186.013; Thu, 21 Apr 2022
+ 10:38:27 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <tkuw584924@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+ <p.yadav@ti.com>, <Bacem.Daassi@infineon.com>, <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH v13 1/4] mtd: spi-nor: Retain nor->addr_width at 4BAIT
+ parse
+Thread-Topic: [PATCH v13 1/4] mtd: spi-nor: Retain nor->addr_width at 4BAIT
+ parse
+Thread-Index: AQHYVWvv68wo3t3IT0asmq5tmkva9A==
+Date: Thu, 21 Apr 2022 10:38:27 +0000
+Message-ID: <4420110b-356f-a738-b5e2-233200e0637f@microchip.com>
+References: <cover.1650532121.git.Takahiro.Kuwano@infineon.com>
+ <d705a2c1fc8d0a59c93454aa05642aafe4fc960b.1650532121.git.Takahiro.Kuwano@infineon.com>
+In-Reply-To: <d705a2c1fc8d0a59c93454aa05642aafe4fc960b.1650532121.git.Takahiro.Kuwano@infineon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cdbcba16-5ba2-452e-a183-08da238311d5
+x-ms-traffictypediagnostic: MN2PR11MB4208:EE_
+x-microsoft-antispam-prvs: <MN2PR11MB4208B598DA7D366E68C8BE00F0F49@MN2PR11MB4208.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OcrvYFPdGoEwx/QryqYN0gW9bxsL/iwWrm5ovms89iEvbL9GJMQwRUJcsJyUMgtVzvJd0WoTKNXbsrDQM04dZrfUUvxqo47o39lqyE10mWKk1Heog0FZHpGWmPUzncrkOZKrstSAWwncxNW349z5YFR/XIrSS8P862Ca6E7ybtw1w/DMtEWaDnQVTNaw9hUbQoM689XRrvaiX7ss1hBy6TZEvuvjyWwQue8L40oVbht/fJrcTM0DH/UWVNNUfu7gQNBo0QCvShH2XtSCDGBUz+tsTU9hR6FrMb9r2nxKWAdyMKIfBrOx/uQ2hJrwFhi9M5upYg9FL0cyLZax5xWKfhawQciHu3q4Q/ZgRzm2lKR5hgPlEwfc+wh33aDzLikXNvCpFkFpKZeLqizewK7EwCbc3GIfGqMkAAe3MOAB90IrZDWxcIbK25QF1+hXskvucl0QF8K+XZugJ1UeioRAuJGzKtrl7fBo691n6FMsQz8zcuDGoxxYXumxd9Hv3Ars1XakwHoSk4WgMuFPyRek/0U1AabBuL4GVisn1iJjCKUzVaJsl5c/8XmIl+lUYvaaNvD86e7DT8cBWBTKjliAxkz1D4W2e51w8a4wD00AGiwZUxVEN2jUJ28trQfVqPJlZCHH59kpHDDDuKNvPPP8Fycs4K0yo0hj1HZoVegCSVTkQltjRM0gbRGkXPVne8Hi0HmvX3/snXOMua62IQFyh1Br7CeGBl004nSK9OILHr0R4Taprt7D9AXNS7vyuxxHFpbFCyE6HKI2QEKq8+IucA==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230001)(366004)(31696002)(2906002)(86362001)(66946007)(110136005)(38100700002)(38070700005)(122000001)(6506007)(26005)(6512007)(54906003)(91956017)(186003)(2616005)(508600001)(53546011)(6486002)(76116006)(71200400001)(8936002)(66446008)(66476007)(5660300002)(8676002)(4326008)(66556008)(64756008)(316002)(83380400001)(31686004)(36756003)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dytBOTlPK010dWVtMmFqUXVueEhSSmRmM3RlZTkrL2RESkF6VGZOU0N2TEVQ?=
+ =?utf-8?B?aFZZT0tLM1RJMmNldHpud1orVXVoMTNhT1pmRjNYQ0ZYRjEyZVFrVnJHdk9v?=
+ =?utf-8?B?YXdUTWlBSFN5Q2dpWENhZ2l4dlcyRHhSVXMydzAzWXJvRFFTKzJpNWo3N0ZX?=
+ =?utf-8?B?c2xkYVV3OHRwUWxVL29YZy9vUWxKdHJXOUZJSmZFbEEwK05WdHdZbC94RnRK?=
+ =?utf-8?B?RUV0T2xsZHhuVDVhM0N4S0g3cFZQUWc0RS9YMk9UTmIxcC9uZkNDNVJYTGkv?=
+ =?utf-8?B?bVVpVUlIR2N3WE44Vk9VSUM5NGEvU0dBK3M3bEp5UHZ3akV3Z2NHM2hGMjBa?=
+ =?utf-8?B?VnZ4YUZ3dXo1T2hMa2c0cTBDMXlqUTduOFdoemtVL1NmZ0pLR3daejhLK05v?=
+ =?utf-8?B?dzZaajhhK0JnL2xxOFNSWVFWSVlValdaR0tpbHN5WUhsNGMyV3M0ZjJzNVZ2?=
+ =?utf-8?B?MllXNll1bS9BZ0JoRnl1dFVUOWt0RVFWbHA2a2ZvdVliMmkxWFFoRXF3cTRw?=
+ =?utf-8?B?RG83ZnNzbjlPSmNXZUx4SmFyckFyWEJNV0V4MTBnRGRRbkZaOEJDQ2FLVU83?=
+ =?utf-8?B?VzFUakdZRUNjaXN2SWVSMnhSd0FNQ00rTndhTy8wVjVqeDZXeVdhK2hmRkRB?=
+ =?utf-8?B?cEdXNUI3WmZHRUJxdkhrTm9Zc1Zjdm0wL0tCd1djUGJhR2V1U1dQT1l3TGdz?=
+ =?utf-8?B?MXFWb1BLQUxWSXd1RklEWXpFbHdtQ1A4NDVUNEhLZUUrN3BRNUZORTRTcGFN?=
+ =?utf-8?B?MHUwL1JSVVV6S1BhU2RvQjd1ckE0UmRIay9PRTVkbUprWXdMSnlzdzJkL0Y3?=
+ =?utf-8?B?UzFWK01DdmZSTityMm8vTFJUemhjZy9IUVRoT1ltSUJ4YnpGN3ZkcWlwY3l0?=
+ =?utf-8?B?U1hrem5FUTQ2YmV2MTZTZng2RG9TY2FleS9SclRNLzNDSjNrNjRHUEFDREtO?=
+ =?utf-8?B?UG8zQWNIUnhrT0dkb3VGRUNHS2MySjcwNjVNa05oalRiWHoycXcvOWx1VHZw?=
+ =?utf-8?B?OVNtdHJuSmZDdS9zUHNuUEJvYTlKalJYNG5iV3YzbStzeTl4MXdqZUp0dTNx?=
+ =?utf-8?B?ZmI0dER6REpGbHhCbCtLeUp0bWtOSGhyaDdzWmJLWVNmU2UvbC9NYWhTczZy?=
+ =?utf-8?B?SHNlOWJHZjBwazFDNmVxb1JxZmJJcmxFZEFCQmJIem9BalZ2aG5DcDkvcEdX?=
+ =?utf-8?B?dis2ckJBa2VNUXhITC92OFE3R2FPeUo0aHZuUmpHQitDMXN2ZUFnT29Oc0Vq?=
+ =?utf-8?B?MWNweVRZSzlPRE03NVFuZUgwUGplUElKUU1UUWtsUmhqOHEzWkYvQVFkcERu?=
+ =?utf-8?B?cUowYU5Pb0hNcEhZaEd1aVhjdDQwSCtlTjBDUEFrRWxYOFhiUHAvRnBPcit3?=
+ =?utf-8?B?eHNoUDhyTE1VY1dVZ2ZQakN1QnJmdjlQYXRueGtHK0NpRDNGS0VOZnBaR0py?=
+ =?utf-8?B?cS9LL1A0NWg1QUdBTzBNZ25BcTN1OURnYkJYUnJPd2dUaVB5UGo1clM1aHp2?=
+ =?utf-8?B?VXdpdWY0VnkzaXlNR1dXN0tCTHR0VjdRaDhVYnUwdzhiSndvT0NNb3pBdGl5?=
+ =?utf-8?B?NEVaVU1wQklRODB5S2M4YjdxR3NpUk9sUlV5QzF1NC9nTUcvZkRPNU1yaXor?=
+ =?utf-8?B?ZnkxSVpQWEJNS2ZZdDVSZ3MxVEpjZjg4SWEva0VRQzkyWFk3R3FtR1JhZFB3?=
+ =?utf-8?B?MHFaaFkwcmhUNUMrbEdJUU5lR3RoRHpNcTlxUzhCZzZ4OHREeHpHVjNPckph?=
+ =?utf-8?B?TzM3S0RpdVk2RGMrK2NEUmpXZUQxREdTd2pSSm8zVEQzZU1Yb2JOWkxwMU5N?=
+ =?utf-8?B?VUFFNGZsS0w5ckR3UVV5bll4Nk8rZWt4WVZvNEdGSWQ1TlBOMmNoUDZsUHpp?=
+ =?utf-8?B?dE1FaGpWVEpvcW15b202SVhwc3VoSjBSU3diZy9iUjlyQ082NjhjQ3c3TmVy?=
+ =?utf-8?B?TTBNY3RldEFqQWI2QllTbmN5SHZONlVMTUg0SFcyMy8vcUIycnZuckRQc3Fi?=
+ =?utf-8?B?a0pSaHkxUHpkMXoyVFI5MFZwWmg1NjhYSEJTTGNYSk9kVyt5Y20rOU9CNDRO?=
+ =?utf-8?B?SytJWk5nTW1aWVZJY1loendoZWtaalhCaFhMMlo4Q1Z4TXNSMDhpSG9Fc0FM?=
+ =?utf-8?B?MHRKdGtCVm1ZRGlsV1RMbGMwWG5hK0g1dVlJNzJOckk4VzRKRGNObUlLbEdS?=
+ =?utf-8?B?dFNwVmo3NDdlajdJRXU3ZUlTYzJoeEVQY0docWRlUHBma085T1hhcWZ1Nzhv?=
+ =?utf-8?B?YnhqOXh2SWY1VVI5cVNwTnlBUUZXYjlVVE1pV3ljbFA1bVMxZnRIUVpIRS9m?=
+ =?utf-8?B?YU9PUy8rREptK0VTNzdFbkFWRDVSUUN1YmJjS1JBTkdTREVtVC9tYUcxY1pR?=
+ =?utf-8?Q?nz5oC2xo3Xv3NpbM=3D?=
+Content-ID: <E6970249278A0D4CAE5FFA9FEF433C59@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdbcba16-5ba2-452e-a183-08da238311d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Apr 2022 10:38:27.2778 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oPJ+1+fr2mQTF7OQQ/Csdu8XBvbSgI0Rliae0VSgHotWuZSUXNEmBSIRIMwSy7Dp/gIBIhwLrU2tFS2d90RHjhtcZj0v8V1oypTNi40giUg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4208
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220421_024040_686101_4671A385 
-X-CRM114-Status: GOOD (  15.57  )
+X-CRM114-CacheID: sfid-20220421_033836_640515_3EB8BF7D 
+X-CRM114-Status: GOOD (  23.24  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,278 +180,77 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+On 4/21/22 12:40, tkuw584924@gmail.com wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> 
+> In 4BAIT parse, keep nor->addr_width because it may be used as
+> current address mode in SMPT parse later on.
+> 
+> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+> ---
+>  drivers/mtd/spi-nor/core.c | 7 ++++++-
+>  drivers/mtd/spi-nor/sfdp.c | 1 -
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 40ba45328975..87603a99938f 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2210,7 +2210,12 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+>  static int spi_nor_set_addr_width(struct spi_nor *nor)
+>  {
+>         if (nor->addr_width) {
+> -               /* already configured from SFDP */
+> +               /*
+> +                * Already configured from SFDP. Use an address width of 4 in
+> +                * case the device has 4byte opcodes.
+> +                */
+> +               if (nor->addr_width == 3 && nor->flags & SNOR_F_HAS_4BAIT)
+> +                       nor->addr_width = 4;
+>         } else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
 
-The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
+Can we have this instead?
 
-The datasheets can be found in the following link.
-https://www.infineon.com/dgdl/Infineon-S25HS256T_S25HS512T_S25HS01GT_S25HL256T_S25HL512T_S25HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Quad_SPI-DataSheet-v02_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee674b86ee3&da=t
+commit 61d73dea7e63db4c7a3ffaa7f2b5068fb71c2d8b
+Author: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Date:   Thu Apr 21 18:40:21 2022 +0900
 
-Device ID, SFDP, and test script output:
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hl512t
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342a1a0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe3
-ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
-0100fe0104fff1ff0000f8ff0200f8fff703f8ff0200f1ff0000ff0400ff
-f8ffff03
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-8a0aa90112e154ae3a797df2c211ef61  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> test_qspi.sh
-6+0 records in
-6+0 records out
-6291456 bytes (6.0MB) copied, 0.223713 seconds, 26.8MB/s
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Erased 6291456 bytes from address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0600000
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-97c13104ef8e1f895d72c64b99233c57730ec773  qspi_test
-97c13104ef8e1f895d72c64b99233c57730ec773  qspi_read
-------------------------------------------------------------
+    mtd: spi-nor: Retain nor->addr_width at 4BAIT parse
+    
+    In 4BAIT parse, keep nor->addr_width because it may be used as
+    current address mode in SMPT parse later on.
+    
+    Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+    Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hs512t
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342b1a0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b91e8ffe3
-ec031c608a857a75f766805c84d6ddfff938f8a100000000000080000000
-0000f7f5ffff7b920ffe20ffffd80000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000ee72fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
-0100fe0104fff1ff0100f8ff0200f8fff703f8ff0200f1ff0100ff0400ff
-f8ffff03
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-f17d9e784602187a0933edec3688e30f  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> test_qspi.sh
-6+0 records in
-6+0 records out
-6291456 bytes (6.0MB) copied, 0.222716 seconds, 26.9MB/s
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Erased 6291456 bytes from address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0600000
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-000b392ab4cca7e2be97c68842794a9b10f3f8a3  qspi_test
-000b392ab4cca7e2be97c68842794a9b10f3f8a3  qspi_read
-------------------------------------------------------------
-
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hl01gt
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342a1b0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
-ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
-0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
-f8ffff07
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> test_qspi.sh
-6+0 records in
-6+0 records out
-6291456 bytes (6.0MB) copied, 0.223581 seconds, 26.8MB/s
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Erased 6291456 bytes from address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0600000
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-e5396eabcb16cbba29aa3270d7aac6c505e6d5e2  qspi_test
-e5396eabcb16cbba29aa3270d7aac6c505e6d5e2  qspi_read
-------------------------------------------------------------
-
-------------------------------------------------------------
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-s25hs01gt
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-342b1b0f0390
-zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-spansion
-zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450080103ff00000114000100ff84000102500100ff81000116c801
-00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
-88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
-ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
-0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
-00650090060500a10065009600650095716503d0716503d000000000b02e
-000088a489aa716503967165039600000000000000000000000000000000
-000000000000000000000000000000000000000000000000716505d57165
-05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
-fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
-0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
-f8ffff07
-zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-zynq> test_qspi.sh
-6+0 records in
-6+0 records out
-6291456 bytes (6.0MB) copied, 0.223877 seconds, 26.8MB/s
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Erased 6291456 bytes from address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0600000
-Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
-Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
-4c2f38951f5c524b2e269e535c7efb93ef5a80dc  qspi_test
-4c2f38951f5c524b2e269e535c7efb93ef5a80dc  qspi_read
-------------------------------------------------------------
-
----
-Changes in v13:
-  - Remove patch, Call set_4byte_addr_mode() before spi_nor_quad_enalbe()
-  - Remove patch, Rename local macro
-  - Use 3-byte address width in cypress_nor_quad_enable_volatile()
-  - Add post_sfdp to fix 3 byte erase opcode in 4BAIT
-
-Changes in v12:
-  - Rebase on top of Tudor's series
-    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=295933
-    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294533
-  - New patch: Retain nor->addr_width at 4BAIT parse
-  - New patch: Call set_4byte_addr_mode() before spi_nor_quad_enalbe()
-  - New patch: Rename local macro
-  
-Changes in v11:
-  - Rebase on top of Tudor's series
-    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294490
-  - Remove 'nor->info->addr_width for SMPT parse' patch
-  
-Changes in v10:
-  - Rebase to v5.18-rc1
-  - Remove dependencies on other series
-  - Use nor->info->addr_width for SMPT parse
-  - Add a local function for page size discovery
-  - Clean up volatile QE function
-  
-Changes in v9:
-  - Rebase to v5.17-rc6
-  - Rename function and macro per mwalle's series
-  - Fix some issues in ID table and fixup hook
-
-Changes in v8:
-  - Rebase to v5.17-rc4
-  - Use spi_nor_read_reg and spi_nor_write_reg()
-  
-Changes in v7:
-  - Some changes were missing in v6 patch. Fix it
-
-Changes in v6:
-  - Remove 2Gb dual die package parts and related changes to split mulit
-    die package support into another series of patches  
-
-Changes in v5:
-  - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
-  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
-
-Changes in v4:
-  - Reword 'legacy' to 'default'
-  - Rename spi_nor_read() to spi_nor_default_ready()
-  - Fix dummy cycle calculation in spansion_read_any_reg()
-  - Modify comment for spansion_write_any_reg()
-  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
-  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
-
-Changes in v3:
-  - Split into multiple patches
-  - Remove S25HL256T and S25HS256T
-  - Add S25HL02GT and S25HS02GT 
-  - Add support for multi-die package parts support
-  - Cleanup Read/Write Any Register implementation
-  - Remove erase_map fix for top/split sector layout
-  - Set ECC data unit size (16B) to writesize 
-
-Changes in v2:
-  - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
-  - Check CFR3V[4] to determine page_size instead of force 512B
-  - Depend on the patchset below to support non-uniform sector layout
-    https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/
-
-Takahiro Kuwano (4):
-  mtd: spi-nor: Retain nor->addr_width at 4BAIT parse
-  mtd: spi-nor: spansion: Add support for volatile QE bit
-  mtd: spi-nor: spansion: Add local function to discover page size
-  mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
-
- drivers/mtd/spi-nor/core.c     |   7 +-
- drivers/mtd/spi-nor/sfdp.c     |   1 -
- drivers/mtd/spi-nor/spansion.c | 179 +++++++++++++++++++++++++++++----
- 3 files changed, 163 insertions(+), 24 deletions(-)
-
--- 
-2.25.1
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 2bfa84100d38..7095bf897318 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2272,6 +2272,9 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+ 
+ static int spi_nor_set_addr_width(struct spi_nor *nor)
+ {
++       if (nor->flags & SNOR_F_HAS_4BAIT)
++               nor->addr_width = 4;
++
+        if (nor->addr_width) {
+                /* already configured from SFDP */
+        } else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
+index a5211543d30d..b2cc3bfe0d5c 100644
+--- a/drivers/mtd/spi-nor/sfdp.c
++++ b/drivers/mtd/spi-nor/sfdp.c
+@@ -1098,7 +1098,6 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
+         * Spansion memory. However this quirk is no longer needed with new
+         * SFDP compliant memories.
+         */
+-       nor->addr_width = 4;
+        nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
+ 
+        /* fall through */
 
 ______________________________________________________
 Linux MTD discussion mailing list
