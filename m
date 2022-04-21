@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27378C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 07:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FDACC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 21 Apr 2022 07:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DC0qXu0qO3NLTY358fVBUP+HdmlYqYrilCL7xeIieRU=; b=QBfcCNgGBKJOn4
-	SyLmwPM5JWsV6zGHUvScMFa+/PGgkxPoj9KQ3R5pwKdlae11pHUR9zWWqtWmpOajxSAoOPKmMiSdk
-	AaxLg4S9rjvtgLK8Tqi5V0PqYAKfySdZGot8wK+ixIfDIs3Js9nBUZys+NmjCnAvQFnBSDrcxohOv
-	Fz6eFeh9S5eZpoGwRitf0KIgoUMqywYfc46X0hGSvsUbvAZWBHSxk9TOU7sPzcm02LvVb8jED2sL/
-	b4DmrlH+HvaDs0BHN5CqriecVI02xxSAPJZY+J3xxRDfryJ76m+mwf6TBV4w2XF3TX46lmfaxRte7
-	3k1C4/4z8XHV24gsbmwA==;
+	List-Owner; bh=UbnOeek9x2nte2zV3HlQ+SBzZ+Ca47IplGkpK6Ciric=; b=pkO60APK7TuIQi
+	yUr9WUz8Qy6UJBAHR9t1qwUPnkHDkf44lgl3EZg+yAPqhqoupZI3evKMAc+pEIVtqb755YVJ9JQ+5
+	VCH5NzWzGd6TpO2WkdMTu8I2TzLz6Tm2E0TuOPKBZJO5krXjVsVjavVpIxNwtNcku7Y2/mds+b65x
+	BNbVLH7oDT11C39ZTqawGedpLHDOkYMWKsZDIBNXOeUB5iTpJUCuU/rllbk+pHPJ0nVdLvJc2is31
+	HblgkhAQj3YK0/SlzAxcRzS/Wf4zljM8mbw0WbsSV4Az4vF2gwNDnBFJ5fchPXSi8+lnvywVs/HYm
+	kUnEeY1kYvdYmjCsHUhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhROy-00C5EA-6n; Thu, 21 Apr 2022 07:38:56 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1nhRPB-00C5Ok-Rt; Thu, 21 Apr 2022 07:39:10 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhRN5-00C3rW-OY
- for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 07:37:01 +0000
+ id 1nhRNA-00C3vH-Bw
+ for linux-mtd@lists.infradead.org; Thu, 21 Apr 2022 07:37:06 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 12F95FF804;
- Thu, 21 Apr 2022 07:36:56 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id CCD46FF803;
+ Thu, 21 Apr 2022 07:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1650526618;
+ t=1650526622;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zVGnZRBh2+G0ZueQwAdi2X409UOe0yFExWlQh+HD/eY=;
- b=jilqWnddagPV+DDgoz8P+m6beiSI85dIus7XSjc3wy4dpFYkHdbuC7FfEYaRdEmmv0CuuR
- +qmvMBPi3VTRM/CRzGWtQwB8/li/psBUT1/8R8hvhwcQ4n8CD6urzGMuOIbhsf+0rCzZZA
- 1R1xayZmWcGyjUFiHSPoelQ4SWZXZ55iQSIG+UJr5Bxws0lUUxZmGG1RnKVxFILIRCYJh2
- nR39LhTL5n+Z1s8Av2zPzOZFPfTEhrmHDT0GUkaZ1bDuFIA87FjWbeTeiRc2wRCztfKS9q
- bX0EjEcVL+Fu6nsnuM7Vidr/m/7JrNAsJ/h3yO8b1lD7HuS/RfqWvd+7ENyksQ==
+ bh=uRVVqnMVlYsQL7wBWWqE63v2riceyDIujbiEijbMoEc=;
+ b=h4k4TNo5+1xEirWFkS2ehVFp2K1oNAyJ/5gGYAOyRL0VKsKFJmDWZfTIiIYZODxLyOgmPK
+ fpdGd6FLyskFhfSF2LNXs6Rcu5z5OhqVk6tjXHhoU2MNyV/pSEuokHEtumkn4V9lkl0YmU
+ NMyJjAM9sv1i4QJne9e9w66a/VmPuAdOg3oKF3CKntuBqnJfiFXrHDDfORa2S4km9jPd0F
+ zJO6/WIf5XUlLaA68ACog4I0WwsTHH2lkks4TJhi3IVXxADL8rj4Xt3Rvrqqcnv7b1j/2F
+ zegbRL7QhYT2kW0zx4uYS/2d3MsZqB5zvYyHTa8HkFAYRct5j6pKMiZxfTDTkg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Han Xu <han.xu@nxp.com>, sean@geanix.com, frieder.schrempf@kontron.de,
  festevam@gmail.com
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, ye.li@nxp.com, peng.fan@nxp.com,
  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v4 4/5] mtd: rawnand: gpmi: Rename the variable
- ecc_chunk_size
-Date: Thu, 21 Apr 2022 09:36:56 +0200
-Message-Id: <20220421073656.72556-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v4 3/5] mtd: rawnand: gpmi: Uninline the gpmi_check_ecc
+ function
+Date: Thu, 21 Apr 2022 09:37:01 +0200
+Message-Id: <20220421073701.72621-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220412025246.24269-5-han.xu@nxp.com>
+In-Reply-To: <20220412025246.24269-4-han.xu@nxp.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'2fb038eaeed82811eaecc4248b119218f8a3551b'
+X-linux-mtd-patch-commit: b'109158579e64267439c4491845b770cf530f8cba'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220421_003659_970913_E5A49B0E 
-X-CRM114-Status: UNSURE (   7.94  )
+X-CRM114-CacheID: sfid-20220421_003704_657562_3AF2EDCA 
+X-CRM114-Status: UNSURE (   5.73  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,14 +75,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2022-04-12 at 02:52:45 UTC, Han Xu wrote:
-> There is only one variable ecc_chunk_size in bch_geometry data
-> structure but two different field in BCH registers. The data0_size in
-> BCH_FLASH0LAYOUT0 and datan_size in BCH_FLASH0LAYOUT1 should have
-> dedicate variable since they might set to different values in some
-> cases. For instance, if need dedicate ecc for meta area, the data0_size
-> should be 0 rather than datan_size, but for all other cases, data0_size
-> still equals to datan_size and it won't bring any function change.
+On Tue, 2022-04-12 at 02:52:44 UTC, Han Xu wrote:
+> The gpmi_check_ecc() is not small after adding more strict ecc check,
+> uninline it.
 > 
 > Signed-off-by: Han Xu <han.xu@nxp.com>
 
