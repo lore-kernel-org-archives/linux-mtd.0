@@ -4,85 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4F08C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Apr 2022 09:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 739EBC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Apr 2022 09:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0vqF81nKUAkdiMWKtgGa1qGKoqWHtf9bSnLSHklUr/s=; b=KiTLxMv3+Kx6D3
-	S2jedFfaLD+gLznjh809dnnc3+khZZakxbefmmlwIiFHrSCe3fbPUXLvk8m3vYJvGbFl4UHh9IXO8
-	DO4BaKU9KQQtmJg0+QL0zLhcWgTzR1Z2nRx5VNbXVOH2zQpFnrC59OJ9goyMt8MgoRGM9S7KTDJEZ
-	AWtoJ9x9hRuOyUG/ziKcfhM46pg1wPFuCEyGnhEMDx31WzFDkR1F9wNOQy8XI9Yg7PU+MSlR5kVad
-	TuxkXgHR/GBQ1apuAMZS/xw3YmBzKMhmzady694v1Cb0zDu6HdnpNsXvJU0IT4jJsmxGhrPfNnqDx
-	a1TUF0FVuelAXfQplWow==;
+	List-Owner; bh=EaLG1IIvOI3WiUu0QOovdgiNaaGNS0WMfIA8Jl8fxFk=; b=tMPHil47nQ35M/
+	Ql6rXt0KPLgFPYZ6jJD+XSww6bYclM0ytxPxGAg8RQkdx7rCSKDuN/Qy7OQVYcg2Wjl9de15n9PK8
+	KzUawGlLdzWYgvME8DqXhaThp3ObCUhrZVlXbP4QeEcWOt/8tgipe/tOt/0mw/wLtl3DKsTwTxjSp
+	0Iow9Jh86+fQv2lrJiblwhkaZyKl1xryJDV0euVElcKBQl4mXgZiFduat3PHe4bl7s9ShvGUHWU1c
+	LtVeahX0sTpCjLkV2N2Tii/6MXtPU9ij+ynD6nOg1dV439IaYzMMwkE3X7UnUbkgMnaEROHC05dVT
+	bXUvnatehOAP8e9Ebldw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhpDg-00HLZc-1B; Fri, 22 Apr 2022 09:04:52 +0000
-Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
+	id 1nhpMf-00HMru-DS; Fri, 22 Apr 2022 09:14:09 +0000
+Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhpDd-00HLYg-9m
- for linux-mtd@lists.infradead.org; Fri, 22 Apr 2022 09:04:51 +0000
-Received: by mail-pg1-x532.google.com with SMTP id k29so6837287pgm.12
- for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2022 02:04:47 -0700 (PDT)
+ id 1nhpMb-00HMpW-Rn
+ for linux-mtd@lists.infradead.org; Fri, 22 Apr 2022 09:14:07 +0000
+Received: by mail-pl1-x632.google.com with SMTP id s14so9532426plk.8
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2022 02:14:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=nOUlwNQM9Fp2buiFZVdpSq81lC/GiNCozckvqhthWdg=;
- b=XZWrWx7Eidj8+g5fGerRAUPwuqlpGIabqr9o1krLsmTkLkkzSy9O1yfH/8LFB+PPCg
- dSdo04GGsO+XV50SeRWzsPJI4sv5zCCw7mKnJlz3ZiYYFTDPYID7SnyOsNNHZQT/xH6o
- ayaODiKiDBelQmvwGAG8TT1m9Rv1kAqgKak7uzgyGQzemQkLsScw79XIJsRhi53hHYHs
- XtgwcKvTBSMsDmvPpkm7DU6ZNtOmLAwsVJnkYXFDG30rq6iZR4rNXFNQVGl1BRV90jf4
- n2YTHl1xvlE623DNNGPPQgNSgyw3u59SaIe9L5KBbqPQcevRbd/gRG33jSaWVvUbH1SW
- 9Avw==
+ bh=ng7PaMXIBGweRBN2th/T56ha1W2mLkAemGRgDy0M7po=;
+ b=P2ayleN7mutx1wz5O+tASXZlA6U+QqQj2M/kRWTcmt4kvxRGTCmxVdVgkgcnUP50UM
+ ewIZjyUdgTXxiuhrw5tB0aRAxGfVFmQIIUmOICwfOq7p0SW8XhajkE4s+HyQnZxm/upL
+ TxZQ52eIhTxnagRgbLD33EX3SGxm24m3HqTL+56tMdlpH0pX0OxmqU280uIko2X1HgIf
+ VbwuhzY3lehCj9YwXnDJK3ADYM8z8RWMN09nnR67u7Zmww9C1Lj94z6HBihG2DWYuzO9
+ BdHsrlIzgtN/HHm89tqeSVAXNmcjhwIxQ3KrMZNTJYDpmHAY4m5PNTXO6aPgliihUoWm
+ kmZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=nOUlwNQM9Fp2buiFZVdpSq81lC/GiNCozckvqhthWdg=;
- b=3DI4EYeJ+LnQN/SJxvBbFjQ7Quy0Gvl+HEvYJLNChVK5Qni73IW5GPeMNMEexx1V7w
- BXoLrlhphqiOcGVpySNIvHPGXwo+tXVM9cB+K9r0dRzE66QPsA5oEw15TLoBzi26Jj5K
- Jj/qw5XPg0AcZmTTQDp/kvkhIW87+t4MZ87xc76FtwxefIjUF1NFtNP2KLCviD01a/Zk
- 9qedMGdhiSoBH+19vKcktdhYrec5NGQl3Atf9iJsv4cLOle/d5cWw+U4WN3SXS82LBye
- ofQTmOMcH47w+oiaRgVjsUc4iRwSYu0b45cyb3qkk8/wIDQGmEN0kESeeqyw26GXJGZo
- BdRg==
-X-Gm-Message-State: AOAM532mrLkR2cCV1u3JSvV4wYCflZb+mCjgADf//VwrjU/KyHl+awsI
- nSNCzRSVa9i4v3tyvsOTjybkbQenXuo=
-X-Google-Smtp-Source: ABdhPJxuGY6zRckAwzNGPM/UfNl67DIlhK4/ismhiVyLQn8Zvu63yCdCYU12UanH4x5DwLGrpuE83Q==
-X-Received: by 2002:a62:d402:0:b0:50a:b621:2e with SMTP id
- a2-20020a62d402000000b0050ab621002emr3809294pfh.49.1650618287244; 
- Fri, 22 Apr 2022 02:04:47 -0700 (PDT)
+ bh=ng7PaMXIBGweRBN2th/T56ha1W2mLkAemGRgDy0M7po=;
+ b=DJf/86A74JuwWXnjPMDk5sjasg9V7BtwEpa67NsN5bZfWyEA3NdHHG8GHf0JV+hR02
+ 4mmNh2ooprwikqlOu5Y312sdQSIwJ45nBRxyF7Rcc1MRg5tN1JX+S1ODCb2OeCEaSSpL
+ JGOwT8Rgd/xxr3IlLtpqOnmuFonXUA9C+Z/AUNYmAi9dgYk5vDSyGBP9n5ohWXu85hK3
+ 2O12UNZinawK40S0PCzUzku33LeGTebwa56Fg7ljA8ybjXtoV40+lqxiygdfSJXYrw9X
+ 8XjAbjiOuOybQ/gg61isvlum/8O/DXplrVMAHG5pLoD4KjroM6j9Tp9w0Yx0FouLN3pT
+ TePQ==
+X-Gm-Message-State: AOAM5300Pl5LLXlr3oGFljXGREVaFY7c0vVnkUNi9J+TpnjHJXWbPghK
+ WWW+k0pEsjcTiiXC0BswH98=
+X-Google-Smtp-Source: ABdhPJw5u67bpnB4T/iWBtqBcqmPEhm7a3n3zZhXh3K/gcKAgXeciZuIBKk907LEh5lGc9Yle2LS/g==
+X-Received: by 2002:a17:902:eb86:b0:158:93aa:e92c with SMTP id
+ q6-20020a170902eb8600b0015893aae92cmr3726018plg.14.1650618844437; 
+ Fri, 22 Apr 2022 02:14:04 -0700 (PDT)
 Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
  by smtp.gmail.com with ESMTPSA id
- bm27-20020a656e9b000000b0039e5d327f78sm1578752pgb.44.2022.04.22.02.04.45
+ x17-20020a17090a531100b001cd4989feccsm5378164pjh.24.2022.04.22.02.14.02
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 22 Apr 2022 02:04:46 -0700 (PDT)
-Message-ID: <ac68af4c-9453-fd51-680d-cfbccc9dfaa8@gmail.com>
-Date: Fri, 22 Apr 2022 18:04:43 +0900
+ Fri, 22 Apr 2022 02:14:04 -0700 (PDT)
+Message-ID: <c293adf3-e325-7eab-ebcd-bd704122e06c@gmail.com>
+Date: Fri, 22 Apr 2022 18:14:01 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
-Subject: Re: [PATCH v13 2/4] mtd: spi-nor: spansion: Add support for volatile
- QE bit
+Subject: Re: [PATCH v13 3/4] mtd: spi-nor: spansion: Add local function to
+ discover page size
 Content-Language: en-US
 To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
 Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
  p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
 References: <cover.1650532121.git.Takahiro.Kuwano@infineon.com>
- <2c04068f34e4dbd25da541062f5309b1d9878c22.1650532121.git.Takahiro.Kuwano@infineon.com>
- <fff074e7-07ca-0334-a6f4-f4c0d57577d8@microchip.com>
- <f96c55f6-8d27-57f2-892d-d4fd922bd2e4@gmail.com>
- <cd0599c2-6099-def1-3cfd-f70ae1545565@microchip.com>
- <381db18c-5e6f-9f39-ae92-7fdc21cc4844@microchip.com>
- <abd25802-8d39-7f5e-4fd2-fef96f85e45a@microchip.com>
+ <228838a08ce42b886869cc8d59a4029193afe0d8.1650532121.git.Takahiro.Kuwano@infineon.com>
+ <35eaf3b8-d602-592f-7a9a-865baba14a3f@microchip.com>
 From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <abd25802-8d39-7f5e-4fd2-fef96f85e45a@microchip.com>
+In-Reply-To: <35eaf3b8-d602-592f-7a9a-865baba14a3f@microchip.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220422_020449_392247_1DB2CBCF 
-X-CRM114-Status: GOOD (  18.30  )
+X-CRM114-CacheID: sfid-20220422_021405_936143_96D7EB23 
+X-CRM114-Status: GOOD (  20.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,80 +95,104 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/21/2022 8:48 PM, Tudor.Ambarus@microchip.com wrote:
-> On 4/21/22 14:36, Tudor.Ambarus@microchip.com wrote:
+On 4/21/2022 7:43 PM, Tudor.Ambarus@microchip.com wrote:
+> On 4/21/22 12:40, tkuw584924@gmail.com wrote:
 >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 >>
->> On 4/21/22 13:56, Tudor.Ambarus@microchip.com wrote:
->>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>
->>> On 4/21/22 13:47, Takahiro Kuwano wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> On 4/21/2022 7:41 PM, Tudor.Ambarus@microchip.com wrote:
->>>>> On 4/21/22 12:40, tkuw584924@gmail.com wrote:
->>>> [...]
->>>>>> +/**
->>>>>> + * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
->>>>>> + *                                      register.
->>>>>> + * @nor:       pointer to a 'struct spi_nor'
->>>>>> + *
->>>>>> + * It is recommended to update volatile registers in the field application due
->>>>>> + * to a risk of the non-volatile registers corruption by power interrupt. This
->>>>>> + * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
->>>>>> + * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
->>>>>> + * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
->>>>>> + * also set during Flash power-up.
->>>>>> + *
->>>>>> + * Return: 0 on success, -errno otherwise.
->>>>>> + */
->>>>>> +static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
->>>>>> +{
->>>>>> +       struct spi_mem_op op;
->>>>>> +       u8 cfr1v_written;
->>>>>> +       int ret;
->>>>>> +
->>>>>> +       op = (struct spi_mem_op)
->>>>>> +               CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR1V,
->>>>> nor->addr_width is 3, isn't it? can we use nor->addr_width instead of 3, please?
->>>>>
->>>> No, at the time this method is called, nor->addr_width is set to 4 by
->>>> spi_nor_set_addr_width().
->>>
->>> I see. Allow me some time to re-read this.
+>> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 >>
->> Does this help you?
->> https://github.com/ambarus/linux-0day/commit/05f20ab7ee349628f0e2d22a4d3852038a6c8c70
+>> The page size check in s28hs512t fixup can be used for s25hs/hl-t as well.
+>> Move that to a newly created local function.
+>>
+>> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+>> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>> ---
+>> Changes in v13:
+>>   - (no change)
+>>
+>> Changes in v12:
+>>   - Rebase on top of Tudor's series
+>>     https://patchwork.ozlabs.org/project/linux-mtd/list/?series=295933
+>>   - Remove addr_width param. Use nor->addr_width instead.
+>>
+>> Changes in v11:
+>>   - Rebase on top of Tudor's series
+>>     https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294490
+>>   - Add addr_width param
+>>
+>>  drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++--------------
+>>  1 file changed, 32 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
+>> index 65ae3ade0b95..952d4383f9da 100644
+>> --- a/drivers/mtd/spi-nor/spansion.c
+>> +++ b/drivers/mtd/spi-nor/spansion.c
+>> @@ -172,6 +172,37 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
+>>         return 0;
+>>  }
+>>
+>> +/**
+>> + * cypress_nor_set_page_size() - Set page size which corresponds to the flash
+>> + *                               configuration.
+>> + * @nor:       pointer to a 'struct spi_nor'
+>> + *
+>> + * The BFPT table advertises a 512B or 256B page size depending on part but the
+>> + * page size is actually configurable (with the default being 256B). Read from
+>> + * CFR3V[4] and set the correct size.
+>> + *
+>> + * Return: 0 on success, -errno otherwise.
+>> + */
+>> +static int cypress_nor_set_page_size(struct spi_nor *nor)
+>> +{
+>> +       struct spi_mem_op op =
+>> +               CYPRESS_NOR_RD_ANY_REG_OP(nor->addr_width,
+>> +                                         SPINOR_REG_CYPRESS_CFR3V,
+>> +                                         nor->bouncebuf);
+>> +       int ret;
+>> +
+>> +       ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
+>> +               nor->params->page_size = 512;
+>> +       else
+>> +               nor->params->page_size = 256;
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>  /**
+>>   * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
+>>   * @nor:               pointer to a 'struct spi_nor'
+>> @@ -226,28 +257,7 @@ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
+>>                                      const struct sfdp_parameter_header *bfpt_header,
+>>                                      const struct sfdp_bfpt *bfpt)
+>>  {
+>> -       /*
+>> -        * The BFPT table advertises a 512B page size but the page size is
+>> -        * actually configurable (with the default being 256B). Read from
+>> -        * CFR3V[4] and set the correct size.
+>> -        */
+>> -       struct spi_mem_op op =
+>> -               CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR3V,
 > 
-Yes, I have confirmed it's working on my hardware setup. Thanks a lot.
-
-Some typos in commit description.
-> commit 05f20ab7ee349628f0e2d22a4d3852038a6c8c70
-> Author: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Date:   Thu Apr 21 14:15:42 2022 +0300
+> here you substitute 3 with nor->addr_width behind the doors. It would have
+> worth to have a dedicated patch for this and then come with a patch for
+> the local function. Or at least add a comment in the commit's description.
 > 
->     mtd: spi-nor: core: Couple the number of address bytes with the address mode
->     
->     Some of Infineon chips support volatile version of configuration registers
->     and it is recommended to update volatile registers in the field application
->     due to a risk of the non-volatile registers corruption by power interrupt.
->     Such a volatile configuration register is used to enable the Quad mode.
->     The register write sequence requires the number of bytes of address in
->     order to be programmed. As it was before, the nor->addr_width was set to 4
->     before calling the volatile Quad enable method. This was incorrect as the
->     address mode was still at default (3-byte address), which resulted in
->     incorrect register configuration.
->     Move the setting of the number of bytes of adress after the the Quad enable
-s/adress/address
+I will update commit description.
 
->     method to allow reads or writes to registers that reguire the number of
-s/reguire/require
+>> -                                         nor->bouncebuf);
+>> -       int ret;
+>> -
+>> -       spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+>> -
+>> -       ret = spi_mem_exec_op(nor->spimem, &op);
+These are replaced with spi_nor_read_any_reg().
+I will also add a comment about this.
 
->     address bytes to work with the default address mode. Now the number of
->     address bytes and the adress mode are tightly coupled, which is a natural
-s/adress/address
-
-Thanks again,
+Thanks,
 Takahiro
 
 ______________________________________________________
