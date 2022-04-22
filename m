@@ -4,81 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 739EBC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Apr 2022 09:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F2D9C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Apr 2022 16:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EaLG1IIvOI3WiUu0QOovdgiNaaGNS0WMfIA8Jl8fxFk=; b=tMPHil47nQ35M/
-	Ql6rXt0KPLgFPYZ6jJD+XSww6bYclM0ytxPxGAg8RQkdx7rCSKDuN/Qy7OQVYcg2Wjl9de15n9PK8
-	KzUawGlLdzWYgvME8DqXhaThp3ObCUhrZVlXbP4QeEcWOt/8tgipe/tOt/0mw/wLtl3DKsTwTxjSp
-	0Iow9Jh86+fQv2lrJiblwhkaZyKl1xryJDV0euVElcKBQl4mXgZiFduat3PHe4bl7s9ShvGUHWU1c
-	LtVeahX0sTpCjLkV2N2Tii/6MXtPU9ij+ynD6nOg1dV439IaYzMMwkE3X7UnUbkgMnaEROHC05dVT
-	bXUvnatehOAP8e9Ebldw==;
+	List-Owner; bh=CUdroIjtwWPIovKoV25i603kGjjAJIcBbXxr9JfFgYo=; b=j7L6cS5PlRAJ7h
+	sBF64fY8Q5oAms/SXx9UA/IEyo91u6W/3L5NGxnr42gfwBy2dkQReXCKU5YXvJcVkejsm8qe9eujL
+	ttiE9vWWjl3jx9t1vSfwrZFUh/UL/lfKq9Jr1TEbqr4YYS/aK9ldjAsaJH+yL3w2uAb2f2QHxtkKj
+	zwOKGGdcP8lln8MV8NABZxQreLfoH8Qht1R11mu8bsgh8Ugwfby8510aINRKnaF2jdcxdqo5O/YFh
+	4HeEZ9+gFwpQYfaWPD3MLUz9uaN9NYvFhIQgbWZVO4viFxH4OYf9/KCF/izeB6wNGwTBVj1Dworpr
+	+Z+y9Xn74HhA92yukqTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nhpMf-00HMru-DS; Fri, 22 Apr 2022 09:14:09 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1nhvoj-001KKb-5U; Fri, 22 Apr 2022 16:07:33 +0000
+Received: from mail-ej1-x630.google.com ([2a00:1450:4864:20::630])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nhpMb-00HMpW-Rn
- for linux-mtd@lists.infradead.org; Fri, 22 Apr 2022 09:14:07 +0000
-Received: by mail-pl1-x632.google.com with SMTP id s14so9532426plk.8
- for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2022 02:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=ng7PaMXIBGweRBN2th/T56ha1W2mLkAemGRgDy0M7po=;
- b=P2ayleN7mutx1wz5O+tASXZlA6U+QqQj2M/kRWTcmt4kvxRGTCmxVdVgkgcnUP50UM
- ewIZjyUdgTXxiuhrw5tB0aRAxGfVFmQIIUmOICwfOq7p0SW8XhajkE4s+HyQnZxm/upL
- TxZQ52eIhTxnagRgbLD33EX3SGxm24m3HqTL+56tMdlpH0pX0OxmqU280uIko2X1HgIf
- VbwuhzY3lehCj9YwXnDJK3ADYM8z8RWMN09nnR67u7Zmww9C1Lj94z6HBihG2DWYuzO9
- BdHsrlIzgtN/HHm89tqeSVAXNmcjhwIxQ3KrMZNTJYDpmHAY4m5PNTXO6aPgliihUoWm
- kmZg==
+ id 1nhvoe-001KGW-FG
+ for linux-mtd@lists.infradead.org; Fri, 22 Apr 2022 16:07:30 +0000
+Received: by mail-ej1-x630.google.com with SMTP id k23so17322343ejd.3
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2022 09:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=8Nv4wVafRPQGGjzrRJ7sOfsrvb72oj3DtsnPMIBlpuY=;
+ b=lU5wtAXWwVV+XxN1QmUU5XrH/AvBW48BBwg84fTok2o+saj4QHYrA578F374TBPfQR
+ 13tERuwBHollpS1doUMJS91OVYSo3OTy8aoQAZeasKFbdKvadB77igNMqRGWAqP+fsee
+ YGtyXAnI4wnxfgyBEZkDXAeQnvf1NBti2L/5o6FQS7Tgnkfm8xA3IrWWiJprBNuBfaGC
+ EtaxfSlT1GMZonxf/p5RW1Fiw3gbWdWecpHKD0lO1Uu6qy4govCmAjUO4Qx6vrVo5y5T
+ t5cFe/aVD5s1qOhTkrUOsg78GLA4VS62OeAoFURzXsrm94Yp3zACiQrqfcilGq54Fl0m
+ O8kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=ng7PaMXIBGweRBN2th/T56ha1W2mLkAemGRgDy0M7po=;
- b=DJf/86A74JuwWXnjPMDk5sjasg9V7BtwEpa67NsN5bZfWyEA3NdHHG8GHf0JV+hR02
- 4mmNh2ooprwikqlOu5Y312sdQSIwJ45nBRxyF7Rcc1MRg5tN1JX+S1ODCb2OeCEaSSpL
- JGOwT8Rgd/xxr3IlLtpqOnmuFonXUA9C+Z/AUNYmAi9dgYk5vDSyGBP9n5ohWXu85hK3
- 2O12UNZinawK40S0PCzUzku33LeGTebwa56Fg7ljA8ybjXtoV40+lqxiygdfSJXYrw9X
- 8XjAbjiOuOybQ/gg61isvlum/8O/DXplrVMAHG5pLoD4KjroM6j9Tp9w0Yx0FouLN3pT
- TePQ==
-X-Gm-Message-State: AOAM5300Pl5LLXlr3oGFljXGREVaFY7c0vVnkUNi9J+TpnjHJXWbPghK
- WWW+k0pEsjcTiiXC0BswH98=
-X-Google-Smtp-Source: ABdhPJw5u67bpnB4T/iWBtqBcqmPEhm7a3n3zZhXh3K/gcKAgXeciZuIBKk907LEh5lGc9Yle2LS/g==
-X-Received: by 2002:a17:902:eb86:b0:158:93aa:e92c with SMTP id
- q6-20020a170902eb8600b0015893aae92cmr3726018plg.14.1650618844437; 
- Fri, 22 Apr 2022 02:14:04 -0700 (PDT)
-Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
- by smtp.gmail.com with ESMTPSA id
- x17-20020a17090a531100b001cd4989feccsm5378164pjh.24.2022.04.22.02.14.02
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 22 Apr 2022 02:14:04 -0700 (PDT)
-Message-ID: <c293adf3-e325-7eab-ebcd-bd704122e06c@gmail.com>
-Date: Fri, 22 Apr 2022 18:14:01 +0900
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=8Nv4wVafRPQGGjzrRJ7sOfsrvb72oj3DtsnPMIBlpuY=;
+ b=kmJwMSSKqwmQW8mK0QraclnHZ0iw7wV6OjK2X5jCMCHMeTORiYghvnBxf4b0w0q5CK
+ 61G5ENni340tD0+2HvwBrJ7GtNSKBXyjb1nNrgXlwbHaHfYZEtVWTVNr6p1V4x+puCAF
+ ivP75r0rJ+Fpqc0gKJnAdyXjQiug7VUhWvkmPmgEY5GfJeFCP3Sv/UPtUjEpDbr3IVy+
+ /E33SsGojbcFeGgw8p2Y4fmF68wLO+cLMiimPj3a3H8jHjEqgEUGgrjAMstmhaJ1YYkJ
+ kUCUNkqSVz1lx5xk0r1JQO4mAseY6LoJ86Z0yFrkER38j8y6BRFjJDQhfqCzrm5sS2PM
+ bPlw==
+X-Gm-Message-State: AOAM533snxJiGEV0ZjXQEpgNjBO3uLS5Q2ZaN20kps4Joi1QvAjO6O2T
+ Sd9lF6oEj2l6BsNHL4RrUmpc48T9pPqyyi8dHmNWAQ==
+X-Google-Smtp-Source: ABdhPJwC6vRzHNJ+mNzGL3509TX61XVQCW5erq8ffgjQUFMFg+L55sdL/+zF2mRP8JdoLjEUG/I7lSD/4edam/j/1dI=
+X-Received: by 2002:a17:907:6ea4:b0:6f0:2c28:61b5 with SMTP id
+ sh36-20020a1709076ea400b006f02c2861b5mr5067276ejc.301.1650643641341; Fri, 22
+ Apr 2022 09:07:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v13 3/4] mtd: spi-nor: spansion: Add local function to
- discover page size
-Content-Language: en-US
-To: Tudor.Ambarus@microchip.com, linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- p.yadav@ti.com, Bacem.Daassi@infineon.com, Takahiro.Kuwano@infineon.com
-References: <cover.1650532121.git.Takahiro.Kuwano@infineon.com>
- <228838a08ce42b886869cc8d59a4029193afe0d8.1650532121.git.Takahiro.Kuwano@infineon.com>
- <35eaf3b8-d602-592f-7a9a-865baba14a3f@microchip.com>
-From: Takahiro Kuwano <tkuw584924@gmail.com>
-In-Reply-To: <35eaf3b8-d602-592f-7a9a-865baba14a3f@microchip.com>
+References: <20220328161108.87757-1-bjorn@mork.no>
+In-Reply-To: <20220328161108.87757-1-bjorn@mork.no>
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Fri, 22 Apr 2022 13:07:09 -0300
+Message-ID: <CAAEAJfD7bXTcEg-jqmt7DVFzteCVrk6JR_jEkMzetBG93uQXdg@mail.gmail.com>
+Subject: Re: [PATCH] mtdblock: warn if opened on NAND
+To: =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, 
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220422_021405_936143_96D7EB23 
-X-CRM114-Status: GOOD (  20.99  )
+X-CRM114-CacheID: sfid-20220422_090728_808127_63E093CF 
+X-CRM114-Status: GOOD (  31.37  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,111 +81,92 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/21/2022 7:43 PM, Tudor.Ambarus@microchip.com wrote:
-> On 4/21/22 12:40, tkuw584924@gmail.com wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->>
->> The page size check in s28hs512t fixup can be used for s25hs/hl-t as well.
->> Move that to a newly created local function.
->>
->> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
->> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->> ---
->> Changes in v13:
->>   - (no change)
->>
->> Changes in v12:
->>   - Rebase on top of Tudor's series
->>     https://patchwork.ozlabs.org/project/linux-mtd/list/?series=295933
->>   - Remove addr_width param. Use nor->addr_width instead.
->>
->> Changes in v11:
->>   - Rebase on top of Tudor's series
->>     https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294490
->>   - Add addr_width param
->>
->>  drivers/mtd/spi-nor/spansion.c | 54 ++++++++++++++++++++--------------
->>  1 file changed, 32 insertions(+), 22 deletions(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
->> index 65ae3ade0b95..952d4383f9da 100644
->> --- a/drivers/mtd/spi-nor/spansion.c
->> +++ b/drivers/mtd/spi-nor/spansion.c
->> @@ -172,6 +172,37 @@ static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
->>         return 0;
->>  }
->>
->> +/**
->> + * cypress_nor_set_page_size() - Set page size which corresponds to the flash
->> + *                               configuration.
->> + * @nor:       pointer to a 'struct spi_nor'
->> + *
->> + * The BFPT table advertises a 512B or 256B page size depending on part but the
->> + * page size is actually configurable (with the default being 256B). Read from
->> + * CFR3V[4] and set the correct size.
->> + *
->> + * Return: 0 on success, -errno otherwise.
->> + */
->> +static int cypress_nor_set_page_size(struct spi_nor *nor)
->> +{
->> +       struct spi_mem_op op =
->> +               CYPRESS_NOR_RD_ANY_REG_OP(nor->addr_width,
->> +                                         SPINOR_REG_CYPRESS_CFR3V,
->> +                                         nor->bouncebuf);
->> +       int ret;
->> +
->> +       ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
->> +       if (ret)
->> +               return ret;
->> +
->> +       if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR3V_PGSZ)
->> +               nor->params->page_size = 512;
->> +       else
->> +               nor->params->page_size = 256;
->> +
->> +       return 0;
->> +}
->> +
->>  /**
->>   * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
->>   * @nor:               pointer to a 'struct spi_nor'
->> @@ -226,28 +257,7 @@ static int s28hs512t_post_bfpt_fixup(struct spi_nor *nor,
->>                                      const struct sfdp_parameter_header *bfpt_header,
->>                                      const struct sfdp_bfpt *bfpt)
->>  {
->> -       /*
->> -        * The BFPT table advertises a 512B page size but the page size is
->> -        * actually configurable (with the default being 256B). Read from
->> -        * CFR3V[4] and set the correct size.
->> -        */
->> -       struct spi_mem_op op =
->> -               CYPRESS_NOR_RD_ANY_REG_OP(3, SPINOR_REG_CYPRESS_CFR3V,
-> 
-> here you substitute 3 with nor->addr_width behind the doors. It would have
-> worth to have a dedicated patch for this and then come with a patch for
-> the local function. Or at least add a comment in the commit's description.
-> 
-I will update commit description.
-
->> -                                         nor->bouncebuf);
->> -       int ret;
->> -
->> -       spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
->> -
->> -       ret = spi_mem_exec_op(nor->spimem, &op);
-These are replaced with spi_nor_read_any_reg().
-I will also add a comment about this.
-
-Thanks,
-Takahiro
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCBNYXIgMjgsIDIwMjIgYXQgMToxMSBQTSBCasO4cm4gTW9yayA8Ympvcm5AbW9yay5u
+bz4gd3JvdGU6Cj4KPiBXYXJuaW5nIG9uIGV2ZXJ5IHRyYW5zbGF0ZWQgbXRkIHBhcnRpdGlvbiBy
+ZXN1bHRzIGluIGV4Y2Vzc2l2ZSBsb2cgbm9pc2UKPiBpZiB0aGlzIGRyaXZlciBpcyBsb2FkZWQ6
+Cj4KPiAgIG5hbmQ6IGRldmljZSBmb3VuZCwgTWFudWZhY3R1cmVyIElEOiAweGMyLCBDaGlwIElE
+OiAweGYxCj4gICBuYW5kOiBNYWNyb25peCBNWDMwTEYxRzE4QUMKPiAgIG5hbmQ6IDEyOCBNaUIs
+IFNMQywgZXJhc2Ugc2l6ZTogMTI4IEtpQiwgcGFnZSBzaXplOiAyMDQ4LCBPT0Igc2l6ZTogNjQK
+PiAgIG10NzYyMS1uYW5kIDFlMDAzMDAwLm5hbmQ6IEVDQyBzdHJlbmd0aCBhZGp1c3RlZCB0byA0
+IGJpdHMKPiAgIHJlYWRfYmJ0OiBmb3VuZCBiYnQgYXQgYmxvY2sgMTAyMwo+ICAgMTAgZml4ZWQt
+cGFydGl0aW9ucyBwYXJ0aXRpb25zIGZvdW5kIG9uIE1URCBkZXZpY2UgbXQ3NjIxLW5hbmQKPiAg
+IENyZWF0aW5nIDEwIE1URCBwYXJ0aXRpb25zIG9uICJtdDc2MjEtbmFuZCI6Cj4gICAweDAwMDAw
+MDAwMDAwMC0weDAwMDAwMDA4MDAwMCA6ICJCb290bG9hZGVyIgo+ICAgbXRkYmxvY2s6IE1URCBk
+ZXZpY2UgJ0Jvb3Rsb2FkZXInIGlzIE5BTkQsIHBsZWFzZSBjb25zaWRlciB1c2luZyBVQkkgYmxv
+Y2sgZGV2aWNlcyBpbnN0ZWFkLgo+ICAgMHgwMDAwMDAwODAwMDAtMHgwMDAwMDAxMDAwMDAgOiAi
+Q29uZmlnIgo+ICAgbXRkYmxvY2s6IE1URCBkZXZpY2UgJ0NvbmZpZycgaXMgTkFORCwgcGxlYXNl
+IGNvbnNpZGVyIHVzaW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3RlYWQuCj4gICAweDAwMDAwMDEw
+MDAwMC0weDAwMDAwMDE0MDAwMCA6ICJGYWN0b3J5Igo+ICAgbXRkYmxvY2s6IE1URCBkZXZpY2Ug
+J0ZhY3RvcnknIGlzIE5BTkQsIHBsZWFzZSBjb25zaWRlciB1c2luZyBVQkkgYmxvY2sgZGV2aWNl
+cyBpbnN0ZWFkLgo+ICAgMHgwMDAwMDAxNDAwMDAtMHgwMDAwMDIwMDAwMDAgOiAiS2VybmVsIgo+
+ICAgbXRkYmxvY2s6IE1URCBkZXZpY2UgJ0tlcm5lbCcgaXMgTkFORCwgcGxlYXNlIGNvbnNpZGVy
+IHVzaW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3RlYWQuCj4gICAweDAwMDAwMDU0MDAwMC0weDAw
+MDAwMjAwMDAwMCA6ICJ1YmkiCj4gICBtdGRibG9jazogTVREIGRldmljZSAndWJpJyBpcyBOQU5E
+LCBwbGVhc2UgY29uc2lkZXIgdXNpbmcgVUJJIGJsb2NrIGRldmljZXMgaW5zdGVhZC4KPiAgIDB4
+MDAwMDAyMTQwMDAwLTB4MDAwMDA0MDAwMDAwIDogIktlcm5lbDIiCj4gICBtdGRibG9jazogTVRE
+IGRldmljZSAnS2VybmVsMicgaXMgTkFORCwgcGxlYXNlIGNvbnNpZGVyIHVzaW5nIFVCSSBibG9j
+ayBkZXZpY2VzIGluc3RlYWQuCj4gICAweDAwMDAwNDAwMDAwMC0weDAwMDAwNDEwMDAwMCA6ICJ3
+d2FuIgo+ICAgbXRkYmxvY2s6IE1URCBkZXZpY2UgJ3d3YW4nIGlzIE5BTkQsIHBsZWFzZSBjb25z
+aWRlciB1c2luZyBVQkkgYmxvY2sgZGV2aWNlcyBpbnN0ZWFkLgo+ICAgMHgwMDAwMDQxMDAwMDAt
+MHgwMDAwMDUxMDAwMDAgOiAiZGF0YSIKPiAgIG10ZGJsb2NrOiBNVEQgZGV2aWNlICdkYXRhJyBp
+cyBOQU5ELCBwbGVhc2UgY29uc2lkZXIgdXNpbmcgVUJJIGJsb2NrIGRldmljZXMgaW5zdGVhZC4K
+PiAgIDB4MDAwMDA1MTAwMDAwLTB4MDAwMDA1MjAwMDAwIDogInJvbS1kIgo+ICAgbXRkYmxvY2s6
+IE1URCBkZXZpY2UgJ3JvbS1kJyBpcyBOQU5ELCBwbGVhc2UgY29uc2lkZXIgdXNpbmcgVUJJIGJs
+b2NrIGRldmljZXMgaW5zdGVhZC4KPiAgIDB4MDAwMDA1MjAwMDAwLTB4MDAwMDA1MjgwMDAwIDog
+InJlc2VydmUiCj4gICBtdGRibG9jazogTVREIGRldmljZSAncmVzZXJ2ZScgaXMgTkFORCwgcGxl
+YXNlIGNvbnNpZGVyIHVzaW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3RlYWQuCj4gICBtdGtfc29j
+X2V0aCAxZTEwMDAwMC5ldGhlcm5ldCBldGgwOiBtZWRpYXRlayBmcmFtZSBlbmdpbmUgYXQgMHhi
+ZTEwMDAwMCwgaXJxIDIxCj4KPiBUaGlzIGlzIG1vcmUgbGlrZWx5IHRvIGFubm95IHRoYW4gdG8g
+aGVscCB1c2VycyBvZiBlbWJlZGRlZCBkaXN0cm9zIHdoZXJlCj4gdGhpcyBkcml2ZXIgaXMgZW5h
+YmxlZCBieSBkZWZhdWx0LiAgTWFraW5nIHRoZSBibG9ja2RldnMgYXZhaWxhYmxlIGRvZXMKPiBu
+b3QgaW1wbHkgdGhhdCB0aGV5IGFyZSBpbiB1c2UsIGFuZCB3YXJuaW5nIGFib3V0IGJvb3Rsb2Fk
+ZXIgcGFydGl0aW9ucwo+IG9yIG90aGVyIGRldmljZXMgd2hpY2ggb2J2aW91c2x5IG5ldmVyIHdp
+bGwgYmUgbW91bnRlZCBpcyBtb3JlIGNvbmZ1c2luZwo+IHRoYW4gaGVscGZ1bC4KPgo+IE1vdmUg
+dGhlIHdhcm5pbmcgdG8gb3BlbigpLCB3aGVyZSBpdCB3aWxsIGJlIG9mIG1vcmUgdXNlIC0gYWN0
+dWFsbHkgd2FybmluZwo+IGFueW9uZSB3aG8gbW91bnRzIGEgZmlsZSBzeXN0ZW0gb24gTkFORCB1
+c2luZyBtdGRibG9jay4KPgo+IEZpeGVzOiBlMDc0MDNhOGM2YmUgKCJtdGRibG9jazogV2FybiBp
+ZiBhZGRlZCBmb3IgYSBOQU5EIGRldmljZSIpCj4gU2lnbmVkLW9mZi1ieTogQmrDuHJuIE1vcmsg
+PGJqb3JuQG1vcmsubm8+CgpSZXZpZXdlZC1ieTogRXplcXVpZWwgR2FyY2lhIDxlemVxdWllbEB2
+YW5ndWFyZGlhc3VyLmNvbS5hcj4KCkdpdmVuIGhvdyBhbm5veWluZyBhbmQgbm9pc3kgdGhlIGFi
+b3ZlIGlzIG9uIG1hY2hpbmVzCndoZXJlIG10ZGJsb2NrIGlzIGNvbXBsZXRlbHkgdW51c2VkLCBJ
+IHRoaW5rIHRoaXMgY2hhbmdlCm1ha2VzIHNlbnNlOgoKVGhhbmtzLApFemVxdWllbAoKPiAtLS0K
+PiBJIGRvbid0IGtub3cgd2hhdCB0byBkbyBhYm91dCB0aGUgbXRkYmxvY2tfcm8gcGFydCBvZiB0
+aGUgb3JpZ2luYWwKPiBwYXRjaCBzaW5jZSBpdCBkb2Vzbid0IGhhdmUgYW4gb3BlbiBob29rLiBB
+ZGRpbmcgb25lIGp1c3QgdG8gcHJpbnQKPiB0aGlzIHdhcm5pbmcgc2VlbXMgYSBiaXQgbGlrZSBv
+dmVya2lsbC4uLiAgTWF5YmUganVzdCBkcm9wIHRoZQo+IHdhcm5pbmcgdGhlcmU/IFdoYXQgaGFy
+bSBpcyB0aGVyZSBhY2Nlc3NpbmcgTkFORCBkZXZpY2VzIGFueXdheT8KPgo+IExlYXZpbmcgdGhh
+dCBkZWNpc2lvbiB1cCB0byB5b3UgZXhwZXJ0cyA6LSkKPgo+IEknZCByZWFsbHkgbGlrZSB0byBz
+ZWUgdGhpcyBmaXggZ2V0IGludG8gc3RhYmxlIGJlZm9yZSB0aGUgbWFzc2VzCj4gc3RhcnQgbm90
+aWNpbmcgbm93IHRoYXQgT3BlbldydCBpcyBtb3ZpbmcgdG8gNS4xNS4gIEFzIHlvdSBtYXkgb3IK
+PiBub3Qga25vdywgT3BlbldydCB1bmNvbmRpdGlvbmFsbHkgaW5jbHVkZXMgbXRkYmxvY2sgd2hl
+dGhlciB0aGUKPiB0YXJnZXQgaXMgTkFORCBvciBOT1IuICBTbyB0aGlzIHdpbGwgY2F1c2UgbG90
+cyBvZiBub2lzZSBvbiBhbnkKPiBOQU5EIE9wZW5XcnQgZGV2aWNlLgo+Cj4KPiBCasO4cm4KPgo+
+ICBkcml2ZXJzL210ZC9tdGRibG9jay5jIHwgOCArKysrLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwg
+NCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bXRkL210ZGJsb2NrLmMgYi9kcml2ZXJzL210ZC9tdGRibG9jay5jCj4gaW5kZXggMDNlM2RlM2E1
+ZDc5Li4xZTk0ZTdkMTBiOGIgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbXRkYmxvY2suYwo+
+ICsrKyBiL2RyaXZlcnMvbXRkL210ZGJsb2NrLmMKPiBAQCAtMjU3LDYgKzI1NywxMCBAQCBzdGF0
+aWMgaW50IG10ZGJsb2NrX29wZW4oc3RydWN0IG10ZF9ibGt0cmFuc19kZXYgKm1iZCkKPiAgICAg
+ICAgICAgICAgICAgcmV0dXJuIDA7Cj4gICAgICAgICB9Cj4KPiArICAgICAgIGlmIChtdGRfdHlw
+ZV9pc19uYW5kKG1iZC0+bXRkKSkKPiArICAgICAgICAgICAgICAgcHJfd2FybigiJXM6IE1URCBk
+ZXZpY2UgJyVzJyBpcyBOQU5ELCBwbGVhc2UgY29uc2lkZXIgdXNpbmcgVUJJIGJsb2NrIGRldmlj
+ZXMgaW5zdGVhZC5cbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgbWJkLT50ci0+bmFtZSwg
+bWJkLT5tdGQtPm5hbWUpOwo+ICsKPiAgICAgICAgIC8qIE9LLCBpdCdzIG5vdCBvcGVuLiBDcmVh
+dGUgY2FjaGUgaW5mbyBmb3IgaXQgKi8KPiAgICAgICAgIG10ZGJsay0+Y291bnQgPSAxOwo+ICAg
+ICAgICAgbXV0ZXhfaW5pdCgmbXRkYmxrLT5jYWNoZV9tdXRleCk7Cj4gQEAgLTMyMiwxMCArMzI2
+LDYgQEAgc3RhdGljIHZvaWQgbXRkYmxvY2tfYWRkX210ZChzdHJ1Y3QgbXRkX2Jsa3RyYW5zX29w
+cyAqdHIsIHN0cnVjdCBtdGRfaW5mbyAqbXRkKQo+ICAgICAgICAgaWYgKCEobXRkLT5mbGFncyAm
+IE1URF9XUklURUFCTEUpKQo+ICAgICAgICAgICAgICAgICBkZXYtPm1iZC5yZWFkb25seSA9IDE7
+Cj4KPiAtICAgICAgIGlmIChtdGRfdHlwZV9pc19uYW5kKG10ZCkpCj4gLSAgICAgICAgICAgICAg
+IHByX3dhcm4oIiVzOiBNVEQgZGV2aWNlICclcycgaXMgTkFORCwgcGxlYXNlIGNvbnNpZGVyIHVz
+aW5nIFVCSSBibG9jayBkZXZpY2VzIGluc3RlYWQuXG4iLAo+IC0gICAgICAgICAgICAgICAgICAg
+ICAgIHRyLT5uYW1lLCBtdGQtPm5hbWUpOwo+IC0KPiAgICAgICAgIGlmIChhZGRfbXRkX2Jsa3Ry
+YW5zX2RldigmZGV2LT5tYmQpKQo+ICAgICAgICAgICAgICAgICBrZnJlZShkZXYpOwo+ICB9Cj4g
+LS0KPiAyLjMwLjIKPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
