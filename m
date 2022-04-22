@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9E04C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 22 Apr 2022 23:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5E18C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 22 Apr 2022 23:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=94PfgCubKHNPoSmmYHsCJz2KjuxjH3UIRmcwtTuxQ1k=; b=WzCnI7RX/JV29B
-	UwHd9MCOhA/pf8Xa5V8oZPMYJlP3NHNQfUpGrUpxPelmb2r22XZwewMXK8AQU7/rc1l0HwXc3QKLr
-	1GSz1XDOCOMeFzWrVK5EHbWdUos+eMKH4YOS7FBYQqjsG36OUe1Xx+T4HtjKMyJxWjoIcrUrPScAZ
-	c2CNGvpJDcDa2WZu8/oMlbtR/HQPL36e5Rt1s+cJc7cO32ZmMAojEnr3KZ83aRs1GNMIdqRFP5Kba
-	RHP3eBYHj8gG943JYl7xZe18uvMkYkIZtzBnaecA4GGhZhEbyhwqZDg1eRSxlpdTXGFahrSm0UGV5
-	D+z4FAlFQp/HRJVcKkHQ==;
+	List-Owner; bh=Y4nnYug4Hq1ovq4yfVF6vuatbIHfSmJKKE7QtMWQbCY=; b=kYL61DvDAlDc1h
+	hjWmv8P1dUKSUCiI+ARp4ubfJgt1QAWq8YBaYavl8kFnj4w149nTcU3k1D2NKRdWB4O0JJZsrTf2v
+	9wJx0HP35QKK7gDHtpOFZn9BzigJJ5N46J6HFgoo6RpZTNcFLiRHzIDaTm7DnuTXMTOjJufN5ldpo
+	2wY6d9IC5u62WAPJlHYl881jldT5CpA5HTw3bFwLp/SfWCKdamtb0nu0eh2H0uNs6ecKudR+ACTDY
+	JQ8tRCxkPkOgebTY2Kw7O7AlnmarFjbgbV7yjT82cADdN3DzCpW1jIz7+rBgD0u3LY4XRfT9lnoIx
+	3jGZ8AZYGvRqjh2hWIiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ni2YB-002pcy-Sx; Fri, 22 Apr 2022 23:18:55 +0000
-Received: from mail-ot1-x32a.google.com ([2607:f8b0:4864:20::32a])
+	id 1ni2uf-002sLB-G4; Fri, 22 Apr 2022 23:42:09 +0000
+Received: from mail-oa1-x2e.google.com ([2001:4860:4864:20::2e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ni2Xy-002pZa-Ib; Fri, 22 Apr 2022 23:18:44 +0000
-Received: by mail-ot1-x32a.google.com with SMTP id
- l9-20020a056830268900b006054381dd35so6520366otu.4; 
- Fri, 22 Apr 2022 16:18:40 -0700 (PDT)
+ id 1ni2uQ-002sEr-PH; Fri, 22 Apr 2022 23:41:56 +0000
+Received: by mail-oa1-x2e.google.com with SMTP id
+ 586e51a60fabf-d39f741ba0so10191143fac.13; 
+ Fri, 22 Apr 2022 16:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=sender:date:from:to:cc:subject:message-id:references:mime-version
  :content-disposition:in-reply-to;
- bh=KoWXKICOXrLwboX1KRSR8wabyc5tj+p6lrbCOGJNsB0=;
- b=WfyERyMX7R5AXo/rMMIl6y8nSXixykdVRLEdinY/MomqcCB5r5ZQbLs3BCON1JbJid
- SYBch1vH11Gbyyr7uHnb4uKt0rpEYLwWG6jPVzGB/6YTjnfP6B6nc9E72CRX17Qo8Nv0
- hqL9sBFF2f0anLzd4y4fWfHceVS7UFZj4OgGcGq3zFsQ1W26Ro4FtkgUsgVmFt6FTodv
- WJhhQLAQTlQE5ybgDgtXzSu4H0hkfGnY/mdPQk846Y0PZFkSuevMtu2SOCSNLfL6QGeG
- 2/n/ZJOa7dCF4cmxGePvIEuDB/dkYth22mYrBof0ZAwoE1ogpw42s8W4hmZGYwun6WYu
- NaHA==
+ bh=vXMx7OeCBZiIeZrs0uT2oDD68NpfAYuJIOJDA5UqsVw=;
+ b=OE+X+9KI+J3rDIF1JCA5QGO/m7/xfFwF2sxGgwIVvBiiJHzRiywUg/fAcqzx0YWiJI
+ eh8IapCSFTaVXeWf+ZvDrR2+BrHHjFGTAfKIdJh2sb0tIGaCJgQyR9/pN5/yEtx010Yl
+ 4OYNQeWUC/ZrIOHPVnMz7XJjKJqjuvA05ydXM6CXgYlWOskKHs4B7XuiIrFGYXXhbOb/
+ BG5emwoOMdYDm95oQ5PHJbcZQjKJCGdgulxHS59A2rkRJQtlgLmpBIlWDLRGtKc1APUl
+ IDdSv6jkJKINjLMsVNTPOVLI5j/vmC/UyfxOhE1zqnXY+nEXUgliUWLv7mvcIM0rld3T
+ wIOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
  :references:mime-version:content-disposition:in-reply-to;
- bh=KoWXKICOXrLwboX1KRSR8wabyc5tj+p6lrbCOGJNsB0=;
- b=5KuFYDUkm6q3IxK0ybX+kBPG1f17LKehQn3rn926o6Af2FfnSEsHaZ0vNkuPP2a1jP
- wiKDupMXgWu8Tf2wADYWdAM7IMOjfNYT2gabFzUOoFr6O8aeJXFy/Jg2DFYl4j/PYUFh
- vHa9mGF7o/cJNxh6Cfbk5jGWUDqbJMF/9x+0TycVlC+R/SyX9QTugtARLd/Sw4obGTkD
- JcypDHxjgOuH707pmjUozVx0/FVERiK5+LiAouz30HTwvZmFPZ2hv4CGnB/lrzSpbofJ
- GH0ZFw6k+X3Qo0hWRJ8fR08YuicoP0/jWQ/RDIn4VTxoxpD/XqTPFaB5k4PAKTG7pxUS
- i3mA==
-X-Gm-Message-State: AOAM532hVaFbtfPV4c/UbPohCN+A6Zaew9Xlc9pc68FwsTq8YiMk4TPQ
- jw8B9ojCTINRhrE/u3m4dgE=
-X-Google-Smtp-Source: ABdhPJwKkrwKpAYwt9fhjngX1DM/06254YDKfs9CDiPU2Hx7eNlH3p/K4fmqYt8gQFcOM67kG0jDEA==
-X-Received: by 2002:a05:6830:14cd:b0:605:4e77:6472 with SMTP id
- t13-20020a05683014cd00b006054e776472mr2672213otq.94.1650669519778; 
- Fri, 22 Apr 2022 16:18:39 -0700 (PDT)
+ bh=vXMx7OeCBZiIeZrs0uT2oDD68NpfAYuJIOJDA5UqsVw=;
+ b=nqGIMeQvABwEy5CIcmOGBY8yv9+hu3SHzd5rrQ6rvxp7oHc370KbWh9u0HkDK5W9ON
+ QoHv+rXmUo0IlL36ubjKAtLNIC5mK5OgX7YuSZfJcEC2f7NrZ5tbqiZzaDS4gV6GuxJx
+ tOL1/5ITmH/C7yzzqDYP+H06f/9gLMx1LbH4+ff28lgW5i1YEVIKKJ0vig7NC9NPFduW
+ pOf7a0d0/lwR0iA6BrRggyBxGETo//iFFvqFfvoURMb0qoL6nFgTL1p6w1TQUj6al6h6
+ R1YVsCHGuv6Taojt0+cJdxvWsHNYKcRaafoHD+kfYcDFRPVrJRzIyXk8qqvTfmNb6yyo
+ kwug==
+X-Gm-Message-State: AOAM530tAfeyC0Yz5ZBj6VN8FYlrDO6cM2D9M8K/W72BsLLNe1ETfBH2
+ q01iqqv27SAsqSPoc/SLFCI=
+X-Google-Smtp-Source: ABdhPJyscCRuk9Ea7h4lpY7o125V/lHv8txlEhwT9ckOWkPAGsKVkDIX2wFpL7GtQIz+VTOwStMu1g==
+X-Received: by 2002:a05:6870:2404:b0:e2:8913:98d7 with SMTP id
+ n4-20020a056870240400b000e2891398d7mr6986276oap.16.1650670913075; 
+ Fri, 22 Apr 2022 16:41:53 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
  by smtp.gmail.com with ESMTPSA id
- f15-20020a9d5f0f000000b005e6b67945a3sm1256410oti.15.2022.04.22.16.18.38
+ g16-20020a4a9250000000b0033a7783dda8sm1373161ooh.48.2022.04.22.16.41.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 22 Apr 2022 16:18:38 -0700 (PDT)
-Date: Fri, 22 Apr 2022 16:18:36 -0700
+ Fri, 22 Apr 2022 16:41:51 -0700 (PDT)
+Date: Fri, 22 Apr 2022 16:41:50 -0700
 From: Guenter Roeck <linux@roeck-us.net>
 To: Arnd Bergmann <arnd@kernel.org>
 Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -92,7 +92,7 @@ Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
  dri-devel <dri-devel@lists.freedesktop.org>,
  ALSA Development Mailing List <alsa-devel@alsa-project.org>
 Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
-Message-ID: <20220422231836.GA3202260@roeck-us.net>
+Message-ID: <20220422234150.GA3442771@roeck-us.net>
 References: <20220419163810.2118169-1-arnd@kernel.org>
  <20220422170530.GA2338209@roeck-us.net>
  <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
@@ -102,8 +102,8 @@ MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220422_161842_652555_4E03B091 
-X-CRM114-Status: GOOD (  28.23  )
+X-CRM114-CacheID: sfid-20220422_164154_881622_F1840B36 
+X-CRM114-Status: GOOD (  27.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,15 +151,41 @@ On Sat, Apr 23, 2022 at 12:04:31AM +0200, Arnd Bergmann wrote:
 > > I'll do another round of bisects.
 > 
 
-So ... z2 bisect points to the same patch, but the error is different.
-As mentioned, it does not recognize the initrd. Oddly enough, booting
-from initrd works for the other platforms.
-
-The sx1 boot failure seems to be unrelated to your patch series. It boots
-fine if built from the tip of your branch, but fails to boot in -next.
-That will require a bisect from -next.
+Here is the bisect for the sx1 boot failure.
 
 Guenter
+
+---
+# bad: [e7d6987e09a328d4a949701db40ef63fbb970670] Add linux-next specific files for 20220422
+# good: [b2d229d4ddb17db541098b83524d901257e93845] Linux 5.18-rc3
+git bisect start 'HEAD' 'v5.18-rc3'
+# bad: [479506a21bd2df998017a00f4fe0ea893039d9d0] Merge branch 'drm-next' of git://git.freedesktop.org/git/drm/drm.git
+git bisect bad 479506a21bd2df998017a00f4fe0ea893039d9d0
+# bad: [84fdc506ff63f3f8eb7feaac87821c39bf1dbdfd] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git
+git bisect bad 84fdc506ff63f3f8eb7feaac87821c39bf1dbdfd
+# bad: [0318e72d28be01b99056a7e66572423682eae2bb] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
+git bisect bad 0318e72d28be01b99056a7e66572423682eae2bb
+# good: [813d98e2e26d3f418d925263a82d72d1454b326e] Merge branch 'zstd-linus' of https://github.com/terrelln/linux.git
+git bisect good 813d98e2e26d3f418d925263a82d72d1454b326e
+# bad: [5e87f91cfe6e938eccb88a992687e2ac52eec2a7] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git
+git bisect bad 5e87f91cfe6e938eccb88a992687e2ac52eec2a7
+# bad: [ac4b03d5ad6b887558eb94943f0f2834661dee45] Merge branch 'pxa-multiplatform-5.18' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc into arm/multiplatform-late
+git bisect bad ac4b03d5ad6b887558eb94943f0f2834661dee45
+# good: [6eab9bfd712f63c0977f2d38a45f321816030707] Merge branch 'omap1/multiplatform-prep' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc into arm/multiplatform
+git bisect good 6eab9bfd712f63c0977f2d38a45f321816030707
+# good: [ac571609a9fab9b94bbd8e634ba20e2ab672e32d] input: touchscreen: mainstone: sync with zylonite driver
+git bisect good ac571609a9fab9b94bbd8e634ba20e2ab672e32d
+# good: [77b9aeb6e3cd4de6b320d3a9be5d692594159f9e] ARM: pxa: remove unused mach/bitfield.h
+git bisect good 77b9aeb6e3cd4de6b320d3a9be5d692594159f9e
+# good: [7643a9ca9f8e08f71e15f89dd74863635e981e03] ARM: pxa: convert to multiplatform
+git bisect good 7643a9ca9f8e08f71e15f89dd74863635e981e03
+# good: [bdfb692acfa98c3e8135ab44bc8366636443590a] [MERGED] ASoC: ti: osk5912: Make it CCF clk API compatible
+git bisect good bdfb692acfa98c3e8135ab44bc8366636443590a
+# bad: [b59e8a5fd321fe44bdabd38908b4f899f933cf0f] [TO BE REBASED] ARM: omap1: enable multiplatform
+git bisect bad b59e8a5fd321fe44bdabd38908b4f899f933cf0f
+# good: [4c4467ac74299b14b8cf74406722af8090aa7766] [TO BE REBASED] ARM: OMAP1: clock: Convert to CCF
+git bisect good 4c4467ac74299b14b8cf74406722af8090aa7766
+# first bad commit: [b59e8a5fd321fe44bdabd38908b4f899f933cf0f] [TO BE REBASED] ARM: omap1: enable multiplatform
 
 ______________________________________________________
 Linux MTD discussion mailing list
