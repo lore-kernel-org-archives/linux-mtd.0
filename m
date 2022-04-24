@@ -4,113 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4006C433F5
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Apr 2022 02:10:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 794DEC433F5
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Apr 2022 03:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rxUNOp7sD7gK5tIA3iQrkqNpkDl0cscspcFTAW3gjLg=; b=bRdxWtNlCGiOdg
-	R3rnRJ0m2tZDquwpf2uYzgWF3kICjRcsxp9nB5Dy+ZfgldGhC00Baa6+c3XkPigsRR0p7oi3PW/jZ
-	5TISAumwYfDstPuKgj91ojAZ3SWjjeK5xNZx1jR7SWtheTb2U/BYirGFdSNGhwnstKF0+RnJIwRLX
-	2Ueu62UQCPNMlDcR/UmwV12k/To7bFwsX0zKIOGTZnrmhXuenzhSX3CzBZqZskXr5ZatVXIWBgsVG
-	0jqfC/E4zuu9oxK4M1NkGiJRSpLVmIVWlfqopWyuAMsWIs60TViYeG9aAkQ/QNpZr+3g5wNk+yus0
-	xbgdL2hfO8bGD3ivHINg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Syq3ku/Ho61J8Dqz2+28NTtFNDnx3ygXzmAxT6/CLUc=; b=fpYlnri7whX2W6
+	X8HYIwbulsIwsRY3iRr36bCeBnkIgLV4MeYvYUtdiY/Bp7fV6+kOZPDbO9/kuGf+vbOM4u+d4nFDr
+	1egyjRtChZajYtbaTHmQriJMbHkCi2msguuaWbBUuaRD77tumP7qF4lQCKM2N0TyPX/kOQvmZkgQw
+	3Ey8Doa0mP8BXuOlaThD4hRHYhEno/3/aqfDu0nvkxSpRfVSlxZ/obBQeOVHfuYcPp45qVwNeomkh
+	SMO8DpHFUiX7mIKURhuYdUHkB8WA82FyTGw9Rl1Vj+V8fwZKHMJ1ggZO7Etnida7kQBgyfvHBvYPE
+	RCtouPFs3nz8Od0WlwiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1niRgg-005Wyo-48; Sun, 24 Apr 2022 02:09:22 +0000
-Received: from mail-ot1-x32f.google.com ([2607:f8b0:4864:20::32f])
+	id 1niSt8-005eG8-U4; Sun, 24 Apr 2022 03:26:19 +0000
+Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1niRgT-005Wu2-Iw; Sun, 24 Apr 2022 02:09:11 +0000
-Received: by mail-ot1-x32f.google.com with SMTP id
- t6-20020a056830224600b00605491a5cd7so8323398otd.13; 
- Sat, 23 Apr 2022 19:09:08 -0700 (PDT)
+ id 1niSsu-005eDY-Vy; Sun, 24 Apr 2022 03:26:06 +0000
+Received: by mail-pf1-x431.google.com with SMTP id bo5so11757745pfb.4;
+ Sat, 23 Apr 2022 20:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=sender:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
+ h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=/4WY8lQ2r9E3jRayXo+cM/u5KEpSVq7T3K2hgqZLRN8=;
- b=iMm7j9be64nnY2we3kMeOQC5Pj129NrX5ABYhzCFQgIRJ+Ik/psrhjF5r/pmbNZvJy
- nA3uaouN4tuYuhiNIaHKYw+YwzjV+kJKW5pZWtDU0GTKWu//N59zGG1fdbP9tNgWJRjg
- AqNszvtPvjJNt2cEMqoWc2MQsq1/aQ70s6DAcNDBOaPYwZvIWFR4+Zb0ls+3EVu9eOAb
- KTSMm2n+k9g4CyFP8heqe4gzTDNSh2sRc5XtpvQCIpTgIm/O2folezzCln192gATJAVk
- i8DvmOlTzlnLi/wkKkSV70TYGsg4chRlc2jxJB+NXokPS/xNBOb/lAVbFPkYyy464S89
- OnjQ==
+ bh=6UCURloz2C/UUp8MZeMALDjrLA/KFc0+/kp+RUMTv8A=;
+ b=e7dAhUbHWqmf05a424ZswtbRuWjNN+/xYyMq5h+QxYl4Pjy56rkIT0zIBKYtRZn7+Z
+ t3cLpI6DrZd5jkAPSMf0ij261PrMwzcF66oAjRNekuTjK+Csrbb0OpuWFRY+HZH2hubv
+ bgdUzno7JQ0XvqYW678vHTvJ9iQ1AgrZwP/iBTSb08QaYaiNu1324YZw3pLpGK70fVDz
+ pvOIkxnSXap261IGlPKmDiiVxfJgUPh8QVf/F0D+EIHGeUTESeByXY+DdTodmli94wLg
+ 05cELBcqz5aBYTC+mTii7nMvffQpyvpvhX/oV6I2j8gYG0lKViuCPyvJ8pXFnz0xjDPB
+ pbIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
- :subject:content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=/4WY8lQ2r9E3jRayXo+cM/u5KEpSVq7T3K2hgqZLRN8=;
- b=fLsg+s/Pm41pRgEUHpAaVoLyXmj7PV1FMXySB2JPSeW1/1rQ27jG5BbyA5jI/Ljkkr
- j2YDOtfOXcUMqGIIkDeE3lTl7uhC+4kPd5VH5H7Y5RAlky+Eqi4DwUOUxITRsqvPVINV
- JEdXgEWMOF9VgrA0GiWeXMoCDTbJeYaMj3qKeRuezmcOJyErITtL8ZxfUPURghTuUSLd
- 44W7luc2h+Etjsavj/v2enchp79iJI1eL5hs9MdPXgH3h5Jvp75oVjsPxmDL+yfZC+SQ
- FFYfakezsqXXsKC5/IhvauB8UJ+0q/EZ5YQzo0Jtua2J5SSkPr/qZIKy4Uhc8nyL0qLb
- UOpA==
-X-Gm-Message-State: AOAM532/J631rEUZoieokIscfjnu5MoVfd6Itj19kkesUjIa/aPAn+qj
- /STM8rcs29U1GTIEkOPxXi8=
-X-Google-Smtp-Source: ABdhPJw1Nv7YurwGcrk889YKSXtPCE0PE6W5Bg0YNZLXIur1o0RT75r4zuYxuJBEQLPxL9fB1XCPwg==
-X-Received: by 2002:a05:6830:2b29:b0:605:7cdb:f10b with SMTP id
- l41-20020a0568302b2900b006057cdbf10bmr4208370otv.157.1650766147578; 
- Sat, 23 Apr 2022 19:09:07 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c?
- ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ bh=6UCURloz2C/UUp8MZeMALDjrLA/KFc0+/kp+RUMTv8A=;
+ b=wnQRKEZfw6V7AYJkr2Cgpb5LJ8ixA9HRb9eOIukhS9TPTGskYsztvSTm5fFHhxoDK7
+ XxkOJjP+sj62xW/ey6SioE/czKewiExkSaPsiYcQIYNJIVje3ziLZGVQoZWD+B60mbUv
+ iak7j7wEY3FQdMDC6qOyOWZELhtE+/EOhZul4xSB0YjCR8tDdPH1QPRhaj5NxFTyVo9l
+ yy7Ce7DG5EhTeWon0n8E9vtmAtK/F6vQrvmRiQMJjm5mNXteXKJaBkbZEELtW3A7Xgcz
+ wphWsXrFJlaoSohYYO3f5Z9zg3itjUGxf+59CYAHzejevAHKtnwTpdVN1K7YV/D6Ka1T
+ 88Ig==
+X-Gm-Message-State: AOAM530kxw+BBipGG8ftp5j6iE2NEHg8N089V7Zb1KR94lDc6Jbqloyu
+ aoq2h0C68e+d71/y2iakeAk=
+X-Google-Smtp-Source: ABdhPJyjn3Vf81pjC8G66QDGXMDoAagvOs7RtZY0GfZrvLQRHAUWc6aOH2nuqQzVXk3hrGFLMo14LQ==
+X-Received: by 2002:a63:e146:0:b0:39d:1b00:e475 with SMTP id
+ h6-20020a63e146000000b0039d1b00e475mr10071390pgk.537.1650770763795; 
+ Sat, 23 Apr 2022 20:26:03 -0700 (PDT)
+Received: from guoguo-omen.lan ([222.201.153.219])
  by smtp.gmail.com with ESMTPSA id
- j126-20020acab984000000b002da77222b7dsm2325070oif.22.2022.04.23.19.09.03
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 23 Apr 2022 19:09:06 -0700 (PDT)
-Message-ID: <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
-Date: Sat, 23 Apr 2022 19:09:01 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Philipp Zabel
- <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>,
- Paul Parsons <lost.distance@yahoo.com>, Tomas Cech <sleep_walker@suse.com>,
- Sergey Lapin <slapin@ossfans.org>,
+ r76-20020a632b4f000000b003820643e1c2sm5790724pgr.59.2022.04.23.20.25.57
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 23 Apr 2022 20:26:02 -0700 (PDT)
+From: Chuanhong Guo <gch981213@gmail.com>
+To: linux-spi@vger.kernel.org
+Cc: Chuanhong Guo <gch981213@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Roger Quadros <rogerq@kernel.org>,
  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Dominik Brodowski <linux@dominikbrodowski.net>, Helge Deller
- <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
- Linux PM list <linux-pm@vger.kernel.org>,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org,
- USB list <linux-usb@vger.kernel.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>
-References: <20220419163810.2118169-1-arnd@kernel.org>
- <20220422170530.GA2338209@roeck-us.net>
- <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
- <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
- <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
- <20220422234150.GA3442771@roeck-us.net>
- <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
+ Cai Huoqing <cai.huoqing@linux.dev>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Colin Ian King <colin.king@intel.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Paul Cercueil <paul@crapouillou.net>, Pratyush Yadav <p.yadav@ti.com>,
+ Yu Kuai <yukuai3@huawei.com>,
+ devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
+ BINDINGS), 
+ linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC support),
+ linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC support), 
+ linux-kernel@vger.kernel.org (open list),
+ linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
+Subject: [PATCH v6 0/5] spi: add support for Mediatek SPI-NAND controller
+Date: Sun, 24 Apr 2022 11:25:22 +0800
+Message-Id: <20220424032527.673605-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220423_190909_678820_78BBB29B 
-X-CRM114-Status: GOOD (  29.36  )
+X-CRM114-CacheID: sfid-20220423_202605_097259_398144AD 
+X-CRM114-Status: GOOD (  11.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,84 +98,71 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/23/22 12:55, Arnd Bergmann wrote:
-> On Sat, Apr 23, 2022 at 1:41 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On Sat, Apr 23, 2022 at 12:04:31AM +0200, Arnd Bergmann wrote:
->>> On Fri, Apr 22, 2022 at 10:55 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>> On 4/22/22 12:16, Arnd Bergmann wrote:
->>>>> On Fri, Apr 22, 2022 at 7:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>>>
->>>>> Which machine did you hit this on? Is this on hardware or in qemu?
->>>>>
->>>> qemu, as always. borzoi, spitz, terrier, tosa, z2, and sx1 fail.
->>>> Also, I just noticed that the failure is not always the same.
->>>> z2 fails to boot from initrd, and sx1 fails to boot completely.
->>>
->>> That's a lot of machines failing, I hope at least we got the same bugs more
->>> than once here.
->>>
->>> For the I/O space, I found now that PXA was not using the standard
->>> virtual I/O address yet, but instead used a NULL-based offset.
->>>
->>> I'm not entirely happy with this patch, but this is an outline of what
->>> I think we need to fix that: https://pastebin.com/3nVgQsEw
->>> This one is probably incomplete, at least it breaks sa1100 for now,
->>> and it adds a bogus CONFIG_PCI dependency. I'm also not sure
->>> in what way the last patch in the series triggers it, rather than the
->>> one that removed mach/io.h.
->>>
->>> I had sx1 booting in qemu at least, with the omap1 multiplatform series only.
->>> If you have a custom config for this one, make sure you get the right
->>> DEBUG_LL address.
->>>
->>>> I'll do another round of bisects.
->>>
->>
->> Here is the bisect for the sx1 boot failure.
-> 
-> Odd, I can't reproduce this at all. Do you get any console output at
-> all for this?
-> 
-> Is this the plain omap1_defconfig, or something else?
-> 
+Mediatek has an extended version of their NAND Flash Interface which
+has a SPI-NAND mode. In this mode, the controller can perform 1-bit
+spi-mem ops for up-to 0xa0 bytes and typical SPI-NAND single, dual
+and quad IO page cache ops with 2-byte address. Additionally, the
+page cache ops can be performed with ECC and auto data formatting
+using the ECC engine of the controller.
 
-No, it is my own sx1 specific configuration.
+This patchset implements support of this mode as a separated SPI-MEM
+driver with pipelined ECC engine.
 
-https://github.com/groeck/linux-build-test/blob/master/rootfs/arm/qemu_sx1_defconfig
+Changes since v1:
+ add a blank line between properties in dt binding doc
+ rename ecc-engine to nand-ecc-engine for the generic properties
+ fix warnings/errors from the CI
 
-I don't recall where I got it from but ...
+Changes since v2:
+ use streamed DMA api to avoid an extra memory copy during read
+ make ECC engine config a per-nand context
+ take user-requested ECC strength into account
 
-> One thing I keep having to apply myself is this snippet:
-> 
-> diff --git a/arch/arm/mm/proc-arm925.S b/arch/arm/mm/proc-arm925.S
-> index 0bfad62ea858..87c695703580 100644
-> --- a/arch/arm/mm/proc-arm925.S
-> +++ b/arch/arm/mm/proc-arm925.S
-> @@ -441,7 +441,6 @@ __arm925_setup:
-> 
->   #ifdef CONFIG_CPU_DCACHE_WRITETHROUGH
->          mov     r0, #4                          @ disable write-back
-> on caches explicitly
-> -       mcr     p15, 7, r0, c15, c0, 0
->   #endif
+Change since v3:
+ fix a missed ecc-engine rename in doc from v1
 
-it does not have CONFIG_CPU_DCACHE_WRITETHROUGH enabled.
+Changes since v4:
+ fix typo: piplined -> pipelined
+ fix missing OOB write in snfi driver
+ print page format with dev_dbg instead
+ replace uint*_t copied from vendor driver with u*
 
-Guenter
+Changes since v5:
+ add missing nfi mode register configuration in probe
+ fix an off-by-one bug in mtk_snand_mac_io
 
-> 
->          adr     r5, arm925_crval
-> 
-> I don't remember what the story is behind this, but I can't actually manage
-> to boot omap1_defconfig on qemu with the instruction intact.
-> 
->         Arnd
+Chuanhong Guo (5):
+  mtd: nand: make mtk_ecc.c a separated module
+  spi: add driver for MTK SPI NAND Flash Interface
+  mtd: nand: mtk-ecc: also parse nand-ecc-engine if available
+  spi: dt-bindings: add binding doc for spi-mtk-snfi
+  arm64: dts: mediatek: add mtk-snfi for mt7622
+
+ .../bindings/spi/mediatek,spi-mtk-snfi.yaml   |   88 +
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi      |   12 +
+ drivers/mtd/nand/Kconfig                      |    7 +
+ drivers/mtd/nand/Makefile                     |    1 +
+ drivers/mtd/nand/{raw/mtk_ecc.c => ecc-mtk.c} |    8 +-
+ drivers/mtd/nand/raw/Kconfig                  |    1 +
+ drivers/mtd/nand/raw/Makefile                 |    2 +-
+ drivers/mtd/nand/raw/mtk_nand.c               |    2 +-
+ drivers/spi/Kconfig                           |   10 +
+ drivers/spi/Makefile                          |    1 +
+ drivers/spi/spi-mtk-snfi.c                    | 1470 +++++++++++++++++
+ .../linux/mtd/nand-ecc-mtk.h                  |    0
+ 12 files changed, 1597 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/mediatek,spi-mtk-snfi.yaml
+ rename drivers/mtd/nand/{raw/mtk_ecc.c => ecc-mtk.c} (98%)
+ create mode 100644 drivers/spi/spi-mtk-snfi.c
+ rename drivers/mtd/nand/raw/mtk_ecc.h => include/linux/mtd/nand-ecc-mtk.h (100%)
+
+-- 
+2.35.1
 
 
 ______________________________________________________
