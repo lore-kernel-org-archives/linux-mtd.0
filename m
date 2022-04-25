@@ -4,60 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF4F2C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 25 Apr 2022 08:42:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA5C2C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 25 Apr 2022 12:35:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nxi0o/ZnYcxEYoNsRgrEzkRI2ydHJGTtxELHQuQjQ4c=; b=H7lvMg2lPGnEby
-	WuWWBq8wgHu9DjIgLWw7yzMmQvVM/3vPza0HcodllyVe1CPhMMb1WMpl5p6VrkKgbHv6speF+pzkk
-	RO/4Q7xhnG4hvrxlxJluCE0Dz0MvLWl8LMlY2utsYma/wM81aHN0Pfvfw+3U/+7JvU6xizocpG1Y2
-	JfkGPflPZrlOodov4Wn8QUHFiTqg6ANuofHuXjMKUjaXwKAkhYucviQ4ZYCW0l1lx57bqyD878AYA
-	e40pGCQVrIoQGnVDZVCTOj4MYxotesbhWEZrc5k6V94vdwlLVkcEmGGCh3SG7fA81aZaF4zcjfgho
-	TQn4+tOEHrV01pKJGEIg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=EUjKaD3geoqaMjk8ajyWG9apS5LmDEVYTNolSKNv6Io=; b=aMJXon+V05ii4f
+	8zW5schcmJQ2blLx1f5MPKCQaxsxaEh3BcKz950/T5JZjn7rDEqglwdeFGed0IHw0UhMBxmBsDIpa
+	Snve7skGulV900V8HG1Kl5YtynMIW172QNoJhD8GNUCR7XjgBzwg6Ex+flSynvTnvMgulrbyrC7PB
+	WxQZpqDog6Wt/PF+7VeL4H0pntjJcP2i5RsHjRFRE8mIEyQVtWCOqFWzX3fI+2Phx6LbJQIhwSxvy
+	Aw75/zQtiexnsHRYiQ53QfwIs1jFK4XgMnTu6C2l8Wf/EfNSbJ44CXnTUek1Xf+1XwYiFCgHJE02C
+	oPq2UTFruSS78gqR5+AA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1niuIK-008mhl-Cn; Mon, 25 Apr 2022 08:42:08 +0000
-Received: from relay6-d.mail.gandi.net ([217.70.183.198])
+	id 1nixwA-009WDW-7f; Mon, 25 Apr 2022 12:35:30 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1niuIH-008mfd-A0
- for linux-mtd@lists.infradead.org; Mon, 25 Apr 2022 08:42:06 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 63031C000D;
- Mon, 25 Apr 2022 08:42:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1650876122;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=deyfR/jFFfSBZAa0aePAr9OXuLMhTGf/khYat66l9nE=;
- b=B1oL6rmENQ72/SO9FbFEtrSqvb0mn0UOX1/nlYSe+iAiItjxoRxrTLNwejSIBrY8ThjN6b
- 2wF9/5bhzFLCdlT3vp0GyhUrZlUp24Dusz4zHo3F3tCqFWfy4vnWI9fsZt5ArERQm1otKf
- DbVpDwimXO45kxpzB2/FEqH7GBQL7Gy/PiiYGKU9hogp5iy1bqkdmJvWYeHARX7QrKplHI
- 9bqP/GRx0c+7a1SSfKcf1hfLgFDjktn/I4fpB4VupT1DEay2KDy2eONAA+i9omibGWB0Ou
- wd9QLAf7P2BJGGyq33+EKNyehQ/vY7iWeLj1IXXNzI60fpiCFIY3wBJIfAKSVw==
-Date: Mon, 25 Apr 2022 10:42:01 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jean-Marc Eurin <jmeurin@google.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mtd: mtdoops: Add timestamp to the dumped oops
- header.
-Message-ID: <20220425104201.173e65fa@xps13>
-In-Reply-To: <20220421234244.2172003-1-jmeurin@google.com>
-References: <20220415001321.252848-1-jmeurin@google.com>
- <20220421234244.2172003-1-jmeurin@google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nixw2-009WA2-EG
+ for linux-mtd@lists.infradead.org; Mon, 25 Apr 2022 12:35:26 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nixw0-0003n8-M7; Mon, 25 Apr 2022 14:35:20 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nixw0-0059MX-Lb; Mon, 25 Apr 2022 14:35:19 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nixvy-00E9pa-FN; Mon, 25 Apr 2022 14:35:18 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] mtd-utils: nanddump: fix writing big images on 32bit machines
+Date: Mon, 25 Apr 2022 14:35:16 +0200
+Message-Id: <20220425123516.3372105-1-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220425_014205_548182_A0D672BC 
-X-CRM114-Status: GOOD (  12.92  )
+X-CRM114-CacheID: sfid-20220425_053522_537503_DB9AA434 
+X-CRM114-Status: GOOD (  13.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,32 +71,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Jean-Marc,
+When writing a full 4GiB NAND to a file end_addr becomes 0x100000000.
+With that writing out the first page to the file doesn't happen
+because size_left is calculated to 0x100000000 - 0 = 0x100000000
+which is then truncated to 32bit and becomes zero. Fix this by
+using an appropriate 64bit type for size_left.
 
-jmeurin@google.com wrote on Thu, 21 Apr 2022 16:42:41 -0700:
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ nand-utils/nanddump.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The current header consists of 2 32-bit values which makes it difficult
-> and error prone to expand. This creates a structure for the header.
-> 
-> Some oops only have time relative to boot, this adds an absolute timestamp.
-> 
-> Changelog since v3:
->   Fix the printk format for sizeof to %zu.
-> 
-> Changelog since v2:
-> - Add a timestamp to the header.
-> 
-> Changelog since v1:
-> - Create a header structure to simplify code.
-> - Patches in series.
-> - Patch prefix.
-> 
-> Jean-Marc Eurin (3):
->   mtd: mtdoops: Fix the size of the header read buffer.
->   mtd: mtdoops: Create a header structure for the saved mtdoops.
->   mtd: mtdoops: Add a timestamp to the mtdoops header.
-
-Looks like the last patch was not sent to the list?
+diff --git a/nand-utils/nanddump.c b/nand-utils/nanddump.c
+index d7fc320..47539f5 100644
+--- a/nand-utils/nanddump.c
++++ b/nand-utils/nanddump.c
+@@ -499,7 +499,7 @@ int main(int argc, char * const argv[])
+ 			}
+ 		} else {
+ 			/* Write requested length if oob is omitted */
+-			size_t size_left = end_addr - ofs;
++			long long size_left = end_addr - ofs;
+ 			if (omitoob && (size_left < bs))
+ 				err = ofd_write(ofd, readbuf, size_left);
+ 			else
+-- 
+2.30.2
 
 
 ______________________________________________________
