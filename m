@@ -4,57 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7120EC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Apr 2022 08:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22490C4332F
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Apr 2022 13:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=E7q1Lm92za8MkelswlQifxTtULrLTgRJFHQRhD6j4OI=; b=t2O19v1CbtklCy
-	SrZ8hqwVoAlSpKF581IdZYqPd7EuKnFdY+I+MRgCGBhA0eR7f0lso/ia1YqgW/kEaSp88W/1d9uFg
-	3c4bwb6NpaW+Cuzf7N5gU/YDJzRESc8Xr7UF2kK+zAW4nXz6iLxgYJUk/Bm/qI+jBXxQhWXTuCbjN
-	WmZLBV2kyjsJP0NSOPS/BwRf9ys05CbMD5/MyrqfUV3TLSQOhc9/f9cpijUs8qLZExSmIV1vIun5u
-	twavG7DiCKEbUh9bfv+ISkwvoJgqS0y9bzkh+qWr/6qEY6Tn9JEkK0yPOYCPazA3ae5W0DqSsq1Vq
-	+rvsvhLjlhmLM9Qq6J3Q==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2NWvYxZEvM+W/XsHOecwlgYjOZE+cdIHICnU4LqMGSk=; b=ppBTsLLQpSBjSG
+	7AQB1BUMgkugteOPTnBhryptAxZo5XgIhczwOXwZiSqvagZ5kdaQOBnCpXcSDVObdEytbVISP/EyR
+	lJ2FWhJM62tP7RviIM8tJJ1LfyEq3hXhKveYpoFQu2wBDd1RX+MFDrf9Ad2B80lapQ14IpzU1obMX
+	fAhMZZksmYIb/5RrN1nlrNM0igRRO8Vj5IOdLH1tpOMCyvK5WLZy2mCJfgOXepYYriOSm7dTkHX/s
+	OJJqPesnKVM7sIyKiCCDpZV/lGL7ZA1uKDjEqlWF45OM9QAKv3fT9umyUMWkM58Y9rXF1GZtPjY8+
+	ulijrExh7fRA07G8CzOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njGhl-00DMzc-Da; Tue, 26 Apr 2022 08:37:53 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njGhZ-00DMnM-RB
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2022 08:37:44 +0000
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KnZx46pw4z1JBpb;
- Tue, 26 Apr 2022 16:36:40 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Apr 2022 16:37:33 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 26 Apr
- 2022 16:37:32 +0800
-From: Yang Yingliang <yangyingliang@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <linaro-mm-sig@lists.linaro.org>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>
-Subject: [PATCH 1/3] mtd: rawnand: cadence: fix possible null-ptr-deref in
- cadence_nand_dt_probe()
-Date: Tue, 26 Apr 2022 16:49:11 +0800
-Message-ID: <20220426084913.4021868-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	id 1njLck-00ElYl-PE; Tue, 26 Apr 2022 13:53:02 +0000
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1njLcQ-00ElLb-N2; Tue, 26 Apr 2022 13:52:42 +0000
+Date: Tue, 26 Apr 2022 06:52:42 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: linux-block@vger.kernel.org, linux-efi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Tom Rini <trini@konsulko.com>, Jens Axboe <axboe@kernel.dk>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [RFC PATCH 4/5] mtd_blkdevs: scan partitions on mtdblock if
+ FIT_PARTITION is set
+Message-ID: <Ymf5KpEAGybW8W17@infradead.org>
+References: <Yma3ck/hygQ0badz@makrotopia.org>
 MIME-Version: 1.0
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220426_013742_067655_26D7560F 
-X-CRM114-Status: UNSURE (   8.14  )
-X-CRM114-Notice: Please train this message.
+Content-Disposition: inline
+In-Reply-To: <Yma3ck/hygQ0badz@makrotopia.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,44 +51,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-It will cause null-ptr-deref when using 'res', if platform_get_resource()
-returns NULL, so move using 'res' after devm_ioremap_resource() that
-will check it to avoid null-ptr-deref.
-And use devm_platform_get_and_ioremap_resource() to simplify code.
-
-Fixes: ec4ba01e894d ("mtd: rawnand: Add new Cadence NAND driver to MTD subsystem")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/mtd/nand/raw/cadence-nand-controller.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-index 7eec60ea9056..0d72672f8b64 100644
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -2983,11 +2983,10 @@ static int cadence_nand_dt_probe(struct platform_device *ofdev)
- 	if (IS_ERR(cdns_ctrl->reg))
- 		return PTR_ERR(cdns_ctrl->reg);
- 
--	res = platform_get_resource(ofdev, IORESOURCE_MEM, 1);
--	cdns_ctrl->io.dma = res->start;
--	cdns_ctrl->io.virt = devm_ioremap_resource(&ofdev->dev, res);
-+	cdns_ctrl->io.virt = devm_platform_get_and_ioremap_resource(ofdev, 1, &res);
- 	if (IS_ERR(cdns_ctrl->io.virt))
- 		return PTR_ERR(cdns_ctrl->io.virt);
-+	cdns_ctrl->io.dma = res->start;
- 
- 	dt->clk = devm_clk_get(cdns_ctrl->dev, "nf_clk");
- 	if (IS_ERR(dt->clk))
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCBBcHIgMjUsIDIwMjIgYXQgMDQ6MDA6MDJQTSArMDEwMCwgRGFuaWVsIEdvbGxlIHdy
+b3RlOgo+IEVuYWJsZSBwYXJ0aXRpb24gcGFyc2VycyBvbiBwbGFpbiBtdGRibG9jayBkZXZpY2Vz
+IGluIGNhc2Ugb2YKPiBDT05GSUdfRklUX1BBUlRJVElPTiBiZWluZyBzZWxlY3RlZC4KPiAKPiBT
+aWduZWQtb2ZmLWJ5OiBEYW5pZWwgR29sbGUgPGRhbmllbEBtYWtyb3RvcGlhLm9yZz4KPiAtLS0K
+PiAgZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMuYyB8IDIgKysKPiAgMSBmaWxlIGNoYW5nZWQsIDIg
+aW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRfYmxrZGV2cy5j
+IGIvZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMuYwo+IGluZGV4IGY3MzE3MjExMTQ2NTUwLi5lOTc1
+OWM0MTgyZjhkNSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9tdGRfYmxrZGV2cy5jCj4gKysr
+IGIvZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMuYwo+IEBAIC0zNTksNyArMzU5LDkgQEAgaW50IGFk
+ZF9tdGRfYmxrdHJhbnNfZGV2KHN0cnVjdCBtdGRfYmxrdHJhbnNfZGV2ICpuZXcpCj4gIAl9IGVs
+c2Ugewo+ICAJCXNucHJpbnRmKGdkLT5kaXNrX25hbWUsIHNpemVvZihnZC0+ZGlza19uYW1lKSwK
+PiAgCQkJICIlcyVkIiwgdHItPm5hbWUsIG5ldy0+ZGV2bnVtKTsKPiArI2lmbmRlZiBDT05GSUdf
+RklUX1BBUlRJVElPTgo+ICAJCWdkLT5mbGFncyB8PSBHRU5IRF9GTF9OT19QQVJUOwo+ICsjZW5k
+aWYKClRoaXMgd2lsbCBqdXN0IHJlY3JlYXRlIHRoZSBmaXhlZCByZWdyZXNzaW9uLCBqdXN0IHdp
+dGggdGhlIGV4dHJhCnR3aXN0IG9mIG5lZWTRlm5nIGEgY29tcGxldGVseSB1bnJlbHRlZCBjb25m
+aWcgb3B0aW9uIHRvIHRyaWdnZXIgaXQuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
