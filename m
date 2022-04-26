@@ -4,73 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 936A2C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 26 Apr 2022 14:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD860C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 26 Apr 2022 14:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q25mNQHXiaYOxHPEzN11k1JdlA1kRA8Fns4BL37HM3g=; b=t6oWRLKanIawJp
-	6Z0F957KiWTfC8awh0ktUO3Uq1RbVECkh93pjGxw2P13V6fLchpbjD6jbrMxbFKlnfPs5vlph7XMW
-	tzWtaP9M5fNsCcCLOW1VgId2dnEZP524EjonE0JSOsQsNWn3F54kgq21mO3YmSnf3ZQU1kewSXc+I
-	5WFMXkjjN3P55h1H7gI2oZ8titqEgunWq/1KanJAUb2zIQgQAUfBe5rsveTe52moKBkfyVrOp3W+3
-	1BQvctQIzuvse0Slsr7EOd1Xzw3xcoIaohcWkCVJaBXNf1KoKmnYxe1WLxsRbJ0jtRe0ADhonK2No
-	auDa8X2gdKsd4fb7ieXA==;
+	List-Owner; bh=yi0Y1g1IrkkYK4HyQpxMeoa1vVOxU5S5d7JbIA7mFqk=; b=RgsZnBOl98rMiY
+	bWX62+jFdTcXuCmBrH3k+PHSKCuv+LPBemiHyXqgextQJadsTVmBfKO/qMIv2eXfdbWVwsLASt8Xi
+	DanwvJbOwCZSvcIKk1KvN5M8xyQRieaBLUksDZVYGXNHjjMf5P0/jKR4L1+GXSr+/RXG6rsfujt69
+	XOdy7klp08bvhjl/A49SCJmqkv5bYCTk2XLeg6/KOD1XQnaa3m5lFly7E0rDzsSANzRoqhwkAjXrW
+	x0aGkmOiiUo22+UPnHGjkQEArCKJ60h4uEXmalNdpSv1A3bx+Qp33nPDiWzMLskzOiynmI3oNJWnv
+	6gyzYy/P2ZNGEs+mjjwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njLtz-00EtSn-As; Tue, 26 Apr 2022 14:10:51 +0000
-Received: from mail-ot1-f49.google.com ([209.85.210.49])
+	id 1njLv4-00Eu4k-2S; Tue, 26 Apr 2022 14:11:58 +0000
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njLpW-00Erav-4S
- for linux-mtd@lists.infradead.org; Tue, 26 Apr 2022 14:06:15 +0000
-Received: by mail-ot1-f49.google.com with SMTP id
- w23-20020a056830111700b00603c6d1ce73so13117402otq.9
- for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2022 07:06:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=dq4sezhtXvWjGkw6cGqtobAkYrF6Rziq0liMCjl9hY4=;
- b=zSQGC45MnjKXJevfxOIwzziJH8FAmSiuvG6/fct3AfRKkl/wPcWAvf0elC4Uxz3C7W
- HEGpSVVe8+zNPQhNf8Sl1q8QgSs5/ylhq8HxIKoUO3zhBKm3kqDNozsVkLa7wRC8a/I2
- BC/vsM/dUxC8kWhT06YfrYeeK8Jit5nqqZAINsL7ivni6RcIv1ngLhq5oRgeb7O7DJta
- lMrtqF+0xCco/9tL+FSfty05Pbo2N1pZ0zdnq1Mcmnx5wPMwgz7mnZpq/1/VV50evY5b
- abVidNBVN3EwAIg6ZfOAg1RgYu/jVapPbgA5ttS97FOZ8T/1+F5O627Ca/Br37g1OuTW
- RBmg==
-X-Gm-Message-State: AOAM530enDnObmJf12cgyN9KO0LlGBE7hdy5yvwXAlG9rJGFJnH8Tp2V
- gGYI6Si3oyg8Wn07Hf5o5Q==
-X-Google-Smtp-Source: ABdhPJwuQX0Ade/O3VuDIyJktv/+LSYobOodBwi0egeYaqVmuGT2LJ039zBY7csrpgKSJa69CnyYzw==
-X-Received: by 2002:a05:6830:304e:b0:5af:f66a:56ee with SMTP id
- p14-20020a056830304e00b005aff66a56eemr8623044otr.226.1650981971808; 
- Tue, 26 Apr 2022 07:06:11 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- m65-20020acabc44000000b002ed13d0fe6fsm4813724oif.23.2022.04.26.07.06.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Apr 2022 07:06:11 -0700 (PDT)
-Received: (nullmailer pid 1894220 invoked by uid 1000);
- Tue, 26 Apr 2022 14:06:10 -0000
-Date: Tue, 26 Apr 2022 09:06:10 -0500
-From: Rob Herring <robh@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-rtc@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH] dt-bindings: Drop empty and unreferenced binding .txt
- files
-Message-ID: <Ymf8UkekSzSIzuSp@robh.at.kernel.org>
-References: <20220422191958.2589318-1-robh@kernel.org>
+ id 1njLuY-00Etog-UZ
+ for linux-mtd@lists.infradead.org; Tue, 26 Apr 2022 14:11:28 +0000
+Received: from local
+ by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.94.2) (envelope-from <daniel@makrotopia.org>)
+ id 1njLuP-0005Ql-Pw; Tue, 26 Apr 2022 16:11:17 +0200
+Date: Tue, 26 Apr 2022 15:11:15 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-block@vger.kernel.org, linux-efi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Tom Rini <trini@konsulko.com>, Jens Axboe <axboe@kernel.dk>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [RFC PATCH 4/5] mtd_blkdevs: scan partitions on mtdblock if
+ FIT_PARTITION is set
+Message-ID: <Ymf9gyfkTn/x7u4S@makrotopia.org>
+References: <Yma3ck/hygQ0badz@makrotopia.org> <Ymf5KpEAGybW8W17@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220422191958.2589318-1-robh@kernel.org>
+In-Reply-To: <Ymf5KpEAGybW8W17@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220426_070614_225312_704B0B22 
-X-CRM114-Status: GOOD (  10.84  )
+X-CRM114-CacheID: sfid-20220426_071127_030045_5B78BB8A 
+X-CRM114-Status: GOOD (  19.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,28 +60,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 22 Apr 2022 14:19:57 -0500, Rob Herring wrote:
-> Drop a couple of old, empty .txt binding files which are no longer
-> referenced.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/eeprom/at24.txt | 1 -
->  Documentation/devicetree/bindings/mtd/common.txt  | 1 -
->  Documentation/devicetree/bindings/rtc/rtc.txt     | 1 -
->  3 files changed, 3 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/eeprom/at24.txt
->  delete mode 100644 Documentation/devicetree/bindings/mtd/common.txt
->  delete mode 100644 Documentation/devicetree/bindings/rtc/rtc.txt
-> 
-
-Applied, thanks!
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gVHVlLCBBcHIgMjYsIDIwMjIgYXQgMDY6NTI6NDJBTSAtMDcwMCwgQ2hyaXN0b3BoIEhlbGx3
+aWcgd3JvdGU6Cj4gT24gTW9uLCBBcHIgMjUsIDIwMjIgYXQgMDQ6MDA6MDJQTSArMDEwMCwgRGFu
+aWVsIEdvbGxlIHdyb3RlOgo+ID4gRW5hYmxlIHBhcnRpdGlvbiBwYXJzZXJzIG9uIHBsYWluIG10
+ZGJsb2NrIGRldmljZXMgaW4gY2FzZSBvZgo+ID4gQ09ORklHX0ZJVF9QQVJUSVRJT04gYmVpbmcg
+c2VsZWN0ZWQuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IERhbmllbCBHb2xsZSA8ZGFuaWVsQG1h
+a3JvdG9waWEub3JnPgo+ID4gLS0tCj4gPiAgZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMuYyB8IDIg
+KysKPiA+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4gPiAKPiA+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL210ZC9tdGRfYmxrZGV2cy5jIGIvZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMu
+Ywo+ID4gaW5kZXggZjczMTcyMTExNDY1NTAuLmU5NzU5YzQxODJmOGQ1IDEwMDY0NAo+ID4gLS0t
+IGEvZHJpdmVycy9tdGQvbXRkX2Jsa2RldnMuYwo+ID4gKysrIGIvZHJpdmVycy9tdGQvbXRkX2Js
+a2RldnMuYwo+ID4gQEAgLTM1OSw3ICszNTksOSBAQCBpbnQgYWRkX210ZF9ibGt0cmFuc19kZXYo
+c3RydWN0IG10ZF9ibGt0cmFuc19kZXYgKm5ldykKPiA+ICAJfSBlbHNlIHsKPiA+ICAJCXNucHJp
+bnRmKGdkLT5kaXNrX25hbWUsIHNpemVvZihnZC0+ZGlza19uYW1lKSwKPiA+ICAJCQkgIiVzJWQi
+LCB0ci0+bmFtZSwgbmV3LT5kZXZudW0pOwo+ID4gKyNpZm5kZWYgQ09ORklHX0ZJVF9QQVJUSVRJ
+T04KPiA+ICAJCWdkLT5mbGFncyB8PSBHRU5IRF9GTF9OT19QQVJUOwo+ID4gKyNlbmRpZgo+IAo+
+IFRoaXMgd2lsbCBqdXN0IHJlY3JlYXRlIHRoZSBmaXhlZCByZWdyZXNzaW9uLCBqdXN0IHdpdGgg
+dGhlIGV4dHJhCj4gdHdpc3Qgb2YgbmVlZNGWbmcgYSBjb21wbGV0ZWx5IHVucmVsdGVkIGNvbmZp
+ZyBvcHRpb24gdG8gdHJpZ2dlciBpdC4KCkRvIGhhdmUgYW55IGFsdGVybmF0aXZlIHN1Z2dlc3Rp
+b24gb2YgaG93IHBhcnRpdGlvbiBzY2FubmluZyBjb3VsZApiZSAoaWRlYWxseSBzZWxlY3RpdmVs
+eSkgZW5hYmxlZCBmb3IgbXRkYmxvY2sgKGFuZCB1YmlibG9jaykgZGV2aWNlcz8KQW5kIHdoeSBp
+dCBzaG91bGQgYmUgZGlzYWJsZWQgaW4gZmlyc3QgcGxhY2U/CgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbXRkLwo=
