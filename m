@@ -4,72 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94714C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Apr 2022 15:13:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96262C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Apr 2022 15:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=h1h9mbq1pl6aKCnXW384nKokpXueo5JI1DuS4ASe6tw=; b=MoI5XqPgZRndxD
-	GQc4Uv7kLNRKRgVY4niovZCB2dzpadSbABgsFDpiAmOC0nRx6RU6yrMzJf2ARfChdJw/TP4Cgkms+
-	QOZrRE8xgY1ohKT7peuFv6l7ZjrMSig42vtD03Q0kd2B++ogDgL0cwqc08hiJOpp3NmilC8v75U/c
-	95KcwZb/XwMcE84mHOsSXPChnB68znxc1pGoHSiI318Sz6sutgx4ItfY/lmRMWKEFa7yp04EVWed6
-	q9bYaVU4ltilLUQIOb4qnluj/Ei03oC6K36JsK4xFQuCBXIvvLvmSY8JtlO1A+iVL/hInF/8o94OR
-	eFwvGMNJ38CpAagK8lkA==;
+	List-Owner; bh=dBXxUBTmHZJamqy6OgtB++QoNvARQHA3Tet1tBTj2Fw=; b=OHt1VFtkON643p
+	Gok/Gc5zgqLsRt3virtg/RPEoR/By0rBEllHqv+z8TRkUXL65KDwa7c6Yrj/dVIfD8sm9OIhXpLyN
+	7PJ2WCIL0PPqDQyWT2QLqT4NP5tIDc5L4kjRM72TZz1DcS3sPRvPHbSgBm8vYUNHvCjkmDMnD5IXc
+	LmtsJwfLoquPZReKYEUbMZgFwtSfhBIV9tcLVzJZ98GgZUA0siIi9tQaZDwsZyQnHB1DkhfQULlr9
+	pzfKoE7Ft9qY85RuzCcl2axdgdBt5O2IjFfTaLqhYO+aiJ1gxcrZ/2fIzdonskeN5/6moPQ3EuBKT
+	F4Y8pMbAxv14ba6HKaOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njjM4-001vEU-9Y; Wed, 27 Apr 2022 15:13:24 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1njjYT-001yjx-Iy; Wed, 27 Apr 2022 15:26:13 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njjLr-001vBg-Nq; Wed, 27 Apr 2022 15:13:13 +0000
+ id 1njjYQ-001yiA-K9
+ for linux-mtd@lists.infradead.org; Wed, 27 Apr 2022 15:26:12 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id EBD57FF807;
- Wed, 27 Apr 2022 15:13:03 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id 37C5FFF809;
+ Wed, 27 Apr 2022 15:26:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1651072387;
+ t=1651073167;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=77woMB9sIvE36mfc5Tehmi9aSEDP7KlMxvPibRtT2hY=;
- b=ezWpYA4+8e7y5MyQ8IuWyHLreUzgT/6Y2GMum2gh2jsNxMk4nQbU0HQSmS6K4F/T/OuDdP
- 3n+IB8jRO6U7q369DZZsSacWNPgAWWythX5mundXVJtfVO+YI0m72NSy++vE65oqU6pI3k
- 5W3wvL2Cm3UheSG7FqcDKo8XRpAgUiXovPMQIaPslimXRusFD6bAaAv1Njl2E8umvnxckZ
- jRswnkAuKSohoiTa6W0NqGWu4fKk77ioHnDSLdpACQxmJ1Dm9PG04Hq3Yqpregl9OpshyF
- vedacIlLlmdEZRe+Ot4/HAO/6F9cs+ibR1UrrBcbMa6s/NOlJKQkD7WhbHuAxw==
-Date: Wed, 27 Apr 2022 17:13:02 +0200
+ bh=4wTZZPinydjcjv1I4AgdUoYpVwYx1Dn3FddOafhqD5Y=;
+ b=QWGmZPBP5zuKML1STJVjCP2ZYTRb+zr+JLX8/DOlI80QVASlR5kcTXua9ARdiWCNbuE9I3
+ cQmXalTI45lGAFEMWzjRYYsyW7hdlQjWsIBUo1kswZimYqjPKqzZ0rMD7sroV72KO7YbW5
+ rCyBZXHGfb/M3BtmEkKtieUGVRFKuYreynNW4ZIIe9OhtftJltXMSKLZNoRsjUCSVn+tCn
+ NdXB9P1MCMn9aGdjnC0o88sLQCDplCOtJW5HCA4g7DXtApkxVpUAsXovXBkxVDtJ499qwW
+ HXoRBAmWPNcA+7uWJ2xXHOzq9D2BNhkOLlR25Ew4zTozG7UQ/W1xUX85BAOP6Q==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, Richard Weinberger
- <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Roger Quadros
- <rogerq@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Cai
- Huoqing <cai.huoqing@linux.dev>, Florian Fainelli <f.fainelli@gmail.com>,
- Colin Ian King <colin.king@intel.com>, Wolfram Sang
- <wsa+renesas@sang-engineering.com>, Paul Cercueil <paul@crapouillou.net>,
- Pratyush Yadav <p.yadav@ti.com>, Yu Kuai <yukuai3@huawei.com>, "open
- list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, "moderated list:ARM/Mediatek SoC support"
- <linux-arm-kernel@lists.infradead.org>, "moderated list:ARM/Mediatek SoC
- support" <linux-mediatek@lists.infradead.org>, open list
- <linux-kernel@vger.kernel.org>, "open list:NAND FLASH SUBSYSTEM"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v6 0/5] spi: add support for Mediatek SPI-NAND controller
-Message-ID: <20220427171302.5d374ea9@xps13>
-In-Reply-To: <YmlPlhKTrRXZo/Sx@sirena.org.uk>
-References: <20220424032527.673605-1-gch981213@gmail.com>
- <20220427112857.7ddd7fc8@xps13>
- <CAJsYDV+DfBEmWr7D1aO8F=3WMurAg6aEhf5gY86BXOUSyJ2nXA@mail.gmail.com>
- <YmlPlhKTrRXZo/Sx@sirena.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	richard@nod.at
+Subject: Re: [PATCH 3/3] mtd: rawnand: tmio: check return value after calling
+ platform_get_resource()
+Date: Wed, 27 Apr 2022 17:26:05 +0200
+Message-Id: <20220427152605.100908-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220426084913.4021868-3-yangyingliang@huawei.com>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'9b2152f96f4a243bdfb89027c0d920aa0af810e7'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220427_081311_961209_5698A42A 
-X-CRM114-Status: GOOD (  14.55  )
+X-CRM114-CacheID: sfid-20220427_082610_862549_C6C283C0 
+X-CRM114-Status: UNSURE (   5.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,26 +71,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgTWFyaywKCmJyb29uaWVAa2VybmVsLm9yZyB3cm90ZSBvbiBXZWQsIDI3IEFwciAyMDIyIDE1
-OjEzOjQyICswMTAwOgoKPiBPbiBXZWQsIEFwciAyNywgMjAyMiBhdCAxMDowNDo1N1BNICswODAw
-LCBDaHVhbmhvbmcgR3VvIHdyb3RlOgo+ID4gT24gV2VkLCBBcHIgMjcsIDIwMjIgYXQgNToyOSBQ
-TSBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPiB3cm90ZTogIAo+IAo+
-ID4gPiBUaGUgcGF0Y2ggYWN0dWFsbHkgbG9vayBpbmRlcGVuZGVudCwgc28gaWYgaXQncyBmaW5l
-IGZvciB5b3UgSSBjYW4gdGFrZQo+ID4gPiB0aGUgdHdvIG10ZCBwYXRjaGVzIGFuZCBsZXQgeW91
-IG1lcmdlIHRoZSBzcGkvYmluZGluZyBjaGFuZ2VzLiAgCj4gCj4gPiBPdXQgb2YgY3VyaW9zaXR5
-Ogo+ID4gV291bGRuJ3QgdGhhdCBicmVhayB0aGUgYnVpbGQgZm9yIHNwaSBzdWJzeXN0ZW0/IEJl
-Y2F1c2UuLi4gIAo+IAo+ID4gPiA+ICByZW5hbWUgZHJpdmVycy9tdGQvbmFuZC9yYXcvbXRrX2Vj
-Yy5oID0+IGluY2x1ZGUvbGludXgvbXRkL25hbmQtZWNjLW10ay5oICgxMDAlKSAgCj4gCj4gPiBU
-aGUgc3BpIGRyaXZlciBuZWVkcyB0aGlzIGhlYWRlciBmaWxlIHdoaWNoIGlzIG1vdmVkIGluIHRo
-ZSBtdGQgcGF0Y2guICAKCkFoLCB5ZWFoLCByaWdodC4KCj4gQWgsIHRoYXQnbGwgYmUgYW4gaXNz
-dWUgaW5kZWVkIC0gaWYgSSBjb3VsZCBnZXQgYSBzaWduZWQgdGFnIHdpdGggdGhlCj4gZGVwZW5k
-ZW5jeSBpbiBpdCBJIGNhbiBnbyBhaGVhZCB3aXRoIHRoZSBTUEkgYml0cz8KCk9rLCBJJ2xsIHNo
-YXJlIGFuIGltbXV0YWJsZSB0YWcuCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+On Tue, 2022-04-26 at 08:49:13 UTC, Yang Yingliang wrote:
+> It will cause null-ptr-deref if platform_get_resource() returns NULL,
+> we need check the return value.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
