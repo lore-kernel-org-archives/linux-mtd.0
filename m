@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82439C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Apr 2022 08:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D04F3C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 27 Apr 2022 09:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=289k75ORRfNpus1ARiMG5T9NKpNHaqy3ucIwxPUbL5g=; b=eJzVGJThEBMToM
-	yVz+gMejcWe/tSraMynxR0WaFb51+l5t0JrzEQOt0R88mwag6IYMSlrV6wQ17Qr0ii3Pe41jcam7w
-	rEBL7R1JTQinmYdk1fLcCvtqpnBaFic7O3iY392FmNUnHWgzW6wMl5qacMErz5c3Bewvr8EHpAK+l
-	Q/18IIBZN74w/KJfKozvJ7xO8seQ+am9RENJtzPXm6sCUDGexbJm1nRWtlBifmAKYlI8sJRNKwxjy
-	9uC2pDmvUWPYpLrp8AXfwJknMjv+xzCLyctxAk8H01tRhHi3M3I0g15/nhQcfUg8NTIkMIlACQwgP
-	X8ouLhsvu5IMrOugBrdw==;
+	List-Owner; bh=SJKJdxrgy0aC0BWm+rbZ/e/illSwuwUiS1UMsheAwnI=; b=Y2DYvIUS1fC5IQ
+	MK/+GWCYU5jEHFJJSiMVK78KszvciuGhI7SLhL4uKb5P+r6wl/N+uG43OgjveKLTHxiPvBbFyq8h0
+	ehn0bI4m0+dpCUyfTXJzD17QnD8UaBAeWBzn74ke70eFEwp+U12slRA+96sFN0/baTlvCXNfmUxaY
+	iKaplvAExAo1dFaAne7UZNWDTCpjxkn2Z0TG54yRHA1kNsZOO6JL/nmvXo3Efys/yNXaZE0el5pHT
+	TmTSx698r4auVWIz1t7dd7ZcWf6YGDQxfZA6ZzcacaF+M3agVyUlMzUoJ5kfKwA6+w+W0jt/64EZO
+	HS6er4oncr1YmwpU5LyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njdWI-000dL7-Vy; Wed, 27 Apr 2022 08:59:35 +0000
-Received: from fllv0015.ext.ti.com ([198.47.19.141])
+	id 1njdz9-000kFZ-Ne; Wed, 27 Apr 2022 09:29:23 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njdWF-000dK0-LA
- for linux-mtd@lists.infradead.org; Wed, 27 Apr 2022 08:59:33 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23R8xRXh077668;
- Wed, 27 Apr 2022 03:59:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1651049967;
- bh=/JsFpmWyyIBVaFbOoYwRRqvXrsPjhVSVjKC+q6PG1vA=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=BtXaVlWbkMaAIOGrYeP2rLLGcbXDwZi1bNXRQyOU/Cw3LcZXW+/cxBzIyGd3R/8wK
- mK0GBPVVDDPfrvL6NoDiFxKLRUcThTSeluLC+f5wUvgfvwCDeNWHNdAowc4S8tx29t
- rA/0XtMYSp71XR2cNgRiO7fmgQSbBsUQ2LyOYA+4=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23R8xROf025164
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 27 Apr 2022 03:59:27 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 27
- Apr 2022 03:59:26 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 27 Apr 2022 03:59:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23R8xPad030273;
- Wed, 27 Apr 2022 03:59:26 -0500
-Date: Wed, 27 Apr 2022 14:29:25 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: <Tudor.Ambarus@microchip.com>
-CC: <chentsung@chromium.org>, <michael@walle.cc>, <miquel.raynal@bootlin.com>, 
- <richard@nod.at>, <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [RESEND PATCH] mtd: spi-nor: core: Check written SR value in
- spi_nor_write_16bit_sr_and_check()
-Message-ID: <20220427085925.wlmsnr7qgi5wteod@ti.com>
-References: <20220126073227.3401275-1-chentsung@chromium.org>
- <20220131171929.uk3z5sr453c3eefp@ti.com>
- <0e02112a-317c-e95b-e0d3-7ed2c74c3509@microchip.com>
- <c6b2956d-85f6-19c3-4282-23a72a1b5849@microchip.com>
+ id 1njdyw-000kBh-AN; Wed, 27 Apr 2022 09:29:12 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id 3AB4320003;
+ Wed, 27 Apr 2022 09:28:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1651051743;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=soyn1rvA89oTJzAqYQLvMAQyhAlfHV3ANoWX+URBfFc=;
+ b=M15ZabbSNpJFIBlKT7MK3/iZlLUSspEov+J6NATfLMRrUfJyy/n3kjIJiAjgaWHz7vdjvT
+ Bu1TU3Btr5rX/GaGd9Y/hNHtjlzqNKE5vn+QLCG+yY0jle0LqTImz3oOWdPrZZdUT24F3T
+ 1ZTGrlCEBqAwD+916+F/0QStUomS+38e0Jt4OLn9kjknODOpoVrMOQvWagq7nagWTng5mt
+ Scf7f4hYx2+tvrRNzlyLTlX3Y8nosZG/JGSS5f799m3AkhmogdLAcm1pkdDUDw+ZTZvyHP
+ DvMN2vB3eZzzX+Epxb2bClixrg3e4BXhSPWHqJjM0hXjjFKxvCDPY4l/Om/NDg==
+Date: Wed, 27 Apr 2022 11:28:57 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chuanhong Guo <gch981213@gmail.com>
+Cc: linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Matthias
+ Brugger <matthias.bgg@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Roger Quadros <rogerq@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Cai Huoqing
+ <cai.huoqing@linux.dev>, Florian Fainelli <f.fainelli@gmail.com>, Colin Ian
+ King <colin.king@intel.com>, Wolfram Sang
+ <wsa+renesas@sang-engineering.com>, Paul Cercueil <paul@crapouillou.net>,
+ Pratyush Yadav <p.yadav@ti.com>, Yu Kuai <yukuai3@huawei.com>,
+ devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS), linux-arm-kernel@lists.infradead.org (moderated
+ list:ARM/Mediatek SoC support), linux-mediatek@lists.infradead.org
+ (moderated list:ARM/Mediatek SoC support), linux-kernel@vger.kernel.org
+ (open list), linux-mtd@lists.infradead.org (open list:NAND FLASH SUBSYSTEM)
+Subject: Re: [PATCH v6 0/5] spi: add support for Mediatek SPI-NAND controller
+Message-ID: <20220427112857.7ddd7fc8@xps13>
+In-Reply-To: <20220424032527.673605-1-gch981213@gmail.com>
+References: <20220424032527.673605-1-gch981213@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <c6b2956d-85f6-19c3-4282-23a72a1b5849@microchip.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220427_015931_811567_970E668E 
-X-CRM114-Status: GOOD (  15.31  )
+X-CRM114-CacheID: sfid-20220427_022910_865426_882B86D7 
+X-CRM114-Status: GOOD (  15.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,49 +77,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 27/04/22 07:14AM, Tudor.Ambarus@microchip.com wrote:
-> On 4/27/22 10:11, Tudor Ambarus wrote:
-> > On 1/31/22 19:19, Pratyush Yadav wrote:
-> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>
-> >> On 26/01/22 03:32PM, Chen-Tsung Hsieh wrote:
-> >>> Read back Status Register 1 to ensure that the written byte match the
-> >>> received value and return -EIO if read back test failed.
-> >>>
-> >>> Without this patch, spi_nor_write_16bit_sr_and_check() only check the
-> >>> second half of the 16bit. It causes errors like spi_nor_sr_unlock()
-> >>> return success incorrectly when spi_nor_write_16bit_sr_and_check()
-> >>> doesn't write SR successfully.
-> >>>
-> 
-> cc to stable please
-
-Since this has the Fixes tag, once the patch hits the MTD tree stable 
-should pick it up right?
-
-> 
-> >>> Fixes: 39d1e3340c73 ("mtd: spi-nor: Fix clearing of QE bit on lock()/unlock()")
-> >>> Signed-off-by: Chen-Tsung Hsieh <chentsung@chromium.org>
-> >>
-> >> I don't know much about this bit of code but this patch looks fine to me
-> >> from the surface. Would be nice to hear from Tudor about this too since
-> >> he added the function.
-> > 
-> > Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >>
-> >> Acked-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTWFyaywKCmdjaDk4MTIxM0BnbWFpbC5jb20gd3JvdGUgb24gU3VuLCAyNCBBcHIgMjAyMiAx
+MToyNToyMiArMDgwMDoKCj4gTWVkaWF0ZWsgaGFzIGFuIGV4dGVuZGVkIHZlcnNpb24gb2YgdGhl
+aXIgTkFORCBGbGFzaCBJbnRlcmZhY2Ugd2hpY2gKPiBoYXMgYSBTUEktTkFORCBtb2RlLiBJbiB0
+aGlzIG1vZGUsIHRoZSBjb250cm9sbGVyIGNhbiBwZXJmb3JtIDEtYml0Cj4gc3BpLW1lbSBvcHMg
+Zm9yIHVwLXRvIDB4YTAgYnl0ZXMgYW5kIHR5cGljYWwgU1BJLU5BTkQgc2luZ2xlLCBkdWFsCj4g
+YW5kIHF1YWQgSU8gcGFnZSBjYWNoZSBvcHMgd2l0aCAyLWJ5dGUgYWRkcmVzcy4gQWRkaXRpb25h
+bGx5LCB0aGUKPiBwYWdlIGNhY2hlIG9wcyBjYW4gYmUgcGVyZm9ybWVkIHdpdGggRUNDIGFuZCBh
+dXRvIGRhdGEgZm9ybWF0dGluZwo+IHVzaW5nIHRoZSBFQ0MgZW5naW5lIG9mIHRoZSBjb250cm9s
+bGVyLgo+IAo+IFRoaXMgcGF0Y2hzZXQgaW1wbGVtZW50cyBzdXBwb3J0IG9mIHRoaXMgbW9kZSBh
+cyBhIHNlcGFyYXRlZCBTUEktTUVNCj4gZHJpdmVyIHdpdGggcGlwZWxpbmVkIEVDQyBlbmdpbmUu
+CgoKWy4uLl0KClRoZSBwYXRjaCBhY3R1YWxseSBsb29rIGluZGVwZW5kZW50LCBzbyBpZiBpdCdz
+IGZpbmUgZm9yIHlvdSBJIGNhbiB0YWtlCnRoZSB0d28gbXRkIHBhdGNoZXMgYW5kIGxldCB5b3Ug
+bWVyZ2UgdGhlIHNwaS9iaW5kaW5nIGNoYW5nZXMuCgpXb3VsZCB0aGlzIHdvcmsgZm9yIHlvdT8K
+Cj4gQ2h1YW5ob25nIEd1byAoNSk6Cj4gICBtdGQ6IG5hbmQ6IG1ha2UgbXRrX2VjYy5jIGEgc2Vw
+YXJhdGVkIG1vZHVsZQo+ICAgc3BpOiBhZGQgZHJpdmVyIGZvciBNVEsgU1BJIE5BTkQgRmxhc2gg
+SW50ZXJmYWNlCj4gICBtdGQ6IG5hbmQ6IG10ay1lY2M6IGFsc28gcGFyc2UgbmFuZC1lY2MtZW5n
+aW5lIGlmIGF2YWlsYWJsZQo+ICAgc3BpOiBkdC1iaW5kaW5nczogYWRkIGJpbmRpbmcgZG9jIGZv
+ciBzcGktbXRrLXNuZmkKPiAgIGFybTY0OiBkdHM6IG1lZGlhdGVrOiBhZGQgbXRrLXNuZmkgZm9y
+IG10NzYyMgo+IAo+ICAuLi4vYmluZGluZ3Mvc3BpL21lZGlhdGVrLHNwaS1tdGstc25maS55YW1s
+ICAgfCAgIDg4ICsKPiAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDc2MjIuZHRzaSAg
+ICAgIHwgICAxMiArCj4gIGRyaXZlcnMvbXRkL25hbmQvS2NvbmZpZyAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgIDcgKwo+ICBkcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlICAgICAgICAgICAgICAg
+ICAgICAgfCAgICAxICsKPiAgZHJpdmVycy9tdGQvbmFuZC97cmF3L210a19lY2MuYyA9PiBlY2Mt
+bXRrLmN9IHwgICAgOCArLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnICAgICAgICAg
+ICAgICAgICAgfCAgICAxICsKPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvTWFrZWZpbGUgICAgICAg
+ICAgICAgICAgIHwgICAgMiArLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9tdGtfbmFuZC5jICAg
+ICAgICAgICAgICAgfCAgICAyICstCj4gIGRyaXZlcnMvc3BpL0tjb25maWcgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgMTAgKwo+ICBkcml2ZXJzL3NwaS9NYWtlZmlsZSAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgICAxICsKPiAgZHJpdmVycy9zcGkvc3BpLW10ay1zbmZpLmMgICAg
+ICAgICAgICAgICAgICAgIHwgMTQ3MCArKysrKysrKysrKysrKysrKwo+ICAuLi4vbGludXgvbXRk
+L25hbmQtZWNjLW10ay5oICAgICAgICAgICAgICAgICAgfCAgICAwCj4gIDEyIGZpbGVzIGNoYW5n
+ZWQsIDE1OTcgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPiAgY3JlYXRlIG1vZGUgMTAw
+NjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvbWVkaWF0ZWssc3BpLW10
+ay1zbmZpLnlhbWwKPiAgcmVuYW1lIGRyaXZlcnMvbXRkL25hbmQve3Jhdy9tdGtfZWNjLmMgPT4g
+ZWNjLW10ay5jfSAoOTglKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zcGkvc3BpLW10
+ay1zbmZpLmMKPiAgcmVuYW1lIGRyaXZlcnMvbXRkL25hbmQvcmF3L210a19lY2MuaCA9PiBpbmNs
+dWRlL2xpbnV4L210ZC9uYW5kLWVjYy1tdGsuaCAoMTAwJSkKPiAKCgpUaGFua3MsCk1pcXXDqGwK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
