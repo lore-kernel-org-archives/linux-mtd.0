@@ -4,60 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B290C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Apr 2022 08:19:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D4BCC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Apr 2022 12:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sjPc2lxTtFj9Kk1YM+58wR2I85sAflwYi3oVwHBtrGc=; b=N/1Eme4TO9wid8
-	jK5PWC8WovXVAJSGVu3ICH7+FOS1TPX14n6L/w20I9TNg9edcfR4oL8eUN+vXPQPE3Lys6Bvd9lZZ
-	WKvQZxIIzFVh29Yw/yzGiJgzMbbq4igYYlHOy/SwuZhzd+awlJX6s5o2wGcEyuFw8VY5nGu0fjS9G
-	ZHixvhwAffn/I/J047uNOTs6kUubsScvLKS3I0rmraka1yWIQT/BgCAku2UDtY1t4tmO6tJGTQjK7
-	uY0HM4BBQYjuLKKw8oR2FYxyKb90EQ4/e9rTuawAzsPbOlM7p1RghP6dVKGCEIYmAXq4k/H3R6Zws
-	6OW2v/WDa6oOEKkP947Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=vIrqcXyORLUT3hapEFIqK2VpsXyVyQ9c0KseAp3xzxk=; b=LeNoCGLenZfHjA
+	SgEvDJS04ME5Six8vI7Hv1TIQIf7TpbL2JueuP7t/0hZLQvNytv+x53s6TTCIIqfsJwgCj/UTqFut
+	LesBGFqdL4icXK9p9FY3RZyycKc6m+lN0bBcXpwz/VjJFrR87IxZVGwD2LKI+qgJj4WM5H8HZTjKD
+	MvAVRzV4FxCfUoZs+0B0Cyw/TtfJFW03Hzt5AJMp739JwiVJqX7EQZBkv4VS1SR8cd0P7+35CLts0
+	5/Wt08d7IgFm/tklmDbXjXo31jMqGewrQBaWyNMBp13u3ZHcSvyLSrcC0VBBXk7hPKN3KwIx9/0lq
+	+6kyR25xyOhShaA7MkUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njzMb-005Szp-K8; Thu, 28 Apr 2022 08:19:01 +0000
-Received: from relay3-d.mail.gandi.net ([217.70.183.195])
+	id 1nk3GW-006okV-TS; Thu, 28 Apr 2022 12:29:00 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njzMQ-005StW-6d
- for linux-mtd@lists.infradead.org; Thu, 28 Apr 2022 08:18:51 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 6D05E60008;
- Thu, 28 Apr 2022 08:18:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1651133928;
+ id 1nk3GO-006ogd-QM
+ for linux-mtd@lists.infradead.org; Thu, 28 Apr 2022 12:28:57 +0000
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 23F8322238;
+ Thu, 28 Apr 2022 14:28:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1651148928;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=1r9Gw8bxccInDnBs9TnvRjWw+P42AgdF7L9BUI3UsGs=;
- b=kDuTP9QnyvZav/4/uS7hUm/ffzzCLM9ACOx8ZaTpbKhEdVMf6QSSwpUzB4Pam6UNFbRFxW
- 9TzO2wLNLa6gP5b+kPekYlI5xlhXP98Ta5EbJcq3T59E7Gj8EGcoTu+CuC3N4deDa1aGzC
- wwUonJZ6whugjip/AJcwjN8kDx+WBR8OGSo34ilMTXWvh3L5Ek89592/8JtdUZkLlHY3vC
- dUEG+ZIjrKWb/CY+rzcaj1jYLE2i/K/OgqGEeIlaPjcJ5gkzkyTAKeFJrQHD/Z1RzvzbyC
- W1a5gfd7YOF0FVRCTXA6BdgJM6GU3WBbAPtEdRxxzebVW52EcvKPayV0wBNFnw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Tokunori Ikegami <ikegami.t@gmail.com>,
-	miquel.raynal@bootlin.com
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v7 1/4] mtd: cfi_cmdset_0002: Move and rename
- chip_check/chip_ready/chip_good_for_write
-Date: Thu, 28 Apr 2022 10:18:46 +0200
-Message-Id: <20220428081846.120148-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220323170458.5608-2-ikegami.t@gmail.com>
-References: 
+ content-transfer-encoding:content-transfer-encoding;
+ bh=fLcOFqNhslXVtpzm0Sz5tnRKagmiAXJdwHt8alYGz5A=;
+ b=DMQz895hBHKKokU938aT6iEe6tjwoDZXqOKzBALGmHDVRznaKDqMzlwix1IjzDBs5a4ytP
+ fDqbGAjgQFtXFEtroYy/tvr52QiBz3H57/O5KStNrr21oMqNxDDnbGqdr4yEZYw3QaGJHu
+ t7ZNPqz7NP4lQhbpyzr9vYeb2JkD6O4=
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Michael Walle <michael@walle.cc>
+Subject: [PATCH v2 1/2] mtd: spi-nor: export spi_nor_hwcaps_pp2cmd()
+Date: Thu, 28 Apr 2022 14:28:39 +0200
+Message-Id: <20220428122840.1496876-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'083084df578a8bdb18334f69e7b32d690aaa3247'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220428_011850_432572_FEF16ED5 
-X-CRM114-Status: UNSURE (   5.81  )
+X-CRM114-CacheID: sfid-20220428_052853_039998_B4A5F7AB 
+X-CRM114-Status: UNSURE (   8.46  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,18 +71,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2022-03-23 at 17:04:55 UTC, Tokunori Ikegami wrote:
-> This is a preparation patch for the S29GL064N buffer writes fix. There
-> is no functional change.
-> 
-> Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
-> Signed-off-by: Tokunori Ikegami <ikegami.t@gmail.com>
-> Cc: stable@vger.kernel.org
-> Link: https://lore.kernel.org/r/b687c259-6413-26c9-d4c9-b3afa69ea124@pengutronix.de/
+The function will also be used by the debugfs module.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+changes since rfc (v1):
+ - none
 
-Miquel
+ drivers/mtd/spi-nor/core.c | 2 +-
+ drivers/mtd/spi-nor/core.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index d2b624b2c4cd..dd2ead5ebe9f 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1880,7 +1880,7 @@ int spi_nor_hwcaps_read2cmd(u32 hwcaps)
+ 				  ARRAY_SIZE(hwcaps_read2cmd));
+ }
+ 
+-static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
++int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
+ {
+ 	static const int hwcaps_pp2cmd[][2] = {
+ 		{ SNOR_HWCAPS_PP,		SNOR_CMD_PP },
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index d677a2053903..74fc32067a32 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -669,6 +669,7 @@ int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+ int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+ 
+ int spi_nor_hwcaps_read2cmd(u32 hwcaps);
++int spi_nor_hwcaps_pp2cmd(u32 hwcaps);
+ u8 spi_nor_convert_3to4_read(u8 opcode);
+ void spi_nor_set_read_settings(struct spi_nor_read_command *read,
+ 			       u8 num_mode_clocks,
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
