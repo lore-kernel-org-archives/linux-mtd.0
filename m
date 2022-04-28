@@ -4,63 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74EA7C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 27 Apr 2022 22:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A36FEC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Apr 2022 06:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kJTwwFBqHwPRa8zXBILGPK8re9vFbo8iXtr+A16f8es=; b=dUTMaH0JR/hjOW
-	PKfjSr0xBTCRKqwkQ03fzfTL6o/fY2wwfcsaHjsjwu6dnk47kb0jOjnl5gb1pHJV5k0LmndbXrsmf
-	6eM7929969maVr89N0jROaImaTdqhLrQTdfhItrW1MgPQCglShdgfI4XMk4lmJA/s/opuLiWMQSSl
-	3YajZU3Dagqx96TdeEC+FnsdK9emfG3Cxyvl2iPPa0bPZKqRJYOAdzluOLyHWuABcvpIhljO//c2R
-	lGcfiwH3nU5uVzBfhZkFzFWuE93uSEuPx9K2sQtp/H4GJI3GIDmvimDTuRD0EFvw3a4fBcoh9QS2O
-	w2XtLDXv/0eUQVdWFMgA==;
+	List-Owner; bh=q2VBhxRFZqfQnzo0OLB9zCgnY7p9f/kQqOCVMpCjSrs=; b=L+XJ9vyKviO1mo
+	ZkpF2PmpXfznIy6wZRPBrYTdrbdZHYb1vJEDoDeyWG7GCoTCvyaLFejF/BQXkNwEaLJD9vTcTuy5T
+	o2s875ylBpiKXYm0umRvp+h8nLP61a2d0f4ljsmPiJpECJ8ZnytoKX1g7hlC2u9S9fkRrGBQRn3Bg
+	unBj62d/Ny2BiOpOHSjeS0dnbkBR4BFjR5yUBAe0LguVwNHD9OizoFHu7uNKPkvO5IByiDRQcEdSL
+	udcbwA4d7+jBWw2VYwSCiwentvOO8mffR63ARXE7YrVhCuEOzJ9ST3QLZtJCUoelCTxr07km9fYy5
+	LOtbbzgRVvD/9qapZU5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1njpoR-003jmx-Hh; Wed, 27 Apr 2022 22:07:07 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1njxhx-004uqm-3s; Thu, 28 Apr 2022 06:32:57 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1njpnz-003jaI-KU; Wed, 27 Apr 2022 22:06:41 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 30C4FB82B02;
- Wed, 27 Apr 2022 22:06:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C59B1C385A7;
- Wed, 27 Apr 2022 22:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651097196;
- bh=489hiLJcs6Ide99fGbIyUUwfO7HB+IkkCGXSwNjrVls=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=G/2cUhuQR3ud2rXBziL0oth7g3hoX2Prqkr1UbESIsL88ApimAswbBe4zAQlK9Wz3
- 2n7m/Sij2UzhwGpvx/x/Kvv5dDbKMihZSAXPu2i9pjF5+IDOG/MkNgFDQGrF7gVZk1
- cz5l6d4DdoX1AwJFeI3f48y0gyYwzVktJyeA9r1SkR3d9dHgAlgndCdsMcynqgfoNN
- OG3jhzKpU0TJrOskD+z3GrxODGhLsYDa8jLDolSI+R5FptNvMYRbO/fxhYjAi1U8e4
- ss5/qUdaXYIWtAa3eHZ4xilsuuKDV3h3/ms0xIaWu5kKFvE5n6eiNqSL4IBlpUccQd
- VjkMqDrLL/smA==
-From: Mark Brown <broonie@kernel.org>
-To: gch981213@gmail.com, linux-spi@vger.kernel.org
-Cc: cai.huoqing@linux.dev, paul@crapouillou.net, richard@nod.at,
- krzk+dt@kernel.org, yukuai3@huawei.com, colin.king@intel.com,
- linux-kernel@vger.kernel.org, matthias.bgg@gmail.com, vigneshr@ti.com,
- linux-mtd@lists.infradead.org, f.fainelli@gmail.com, p.yadav@ti.com,
- tsbogend@alpha.franken.de, robh+dt@kernel.org, devicetree@vger.kernel.org,
- linux-mediatek@lists.infradead.org, rogerq@kernel.org,
- linux-arm-kernel@lists.infradead.org, miquel.raynal@bootlin.com,
- wsa+renesas@sang-engineering.com
-In-Reply-To: <20220424032527.673605-1-gch981213@gmail.com>
-References: <20220424032527.673605-1-gch981213@gmail.com>
-Subject: Re: (subset) [PATCH v6 0/5] spi: add support for Mediatek SPI-NAND
- controller
-Message-Id: <165109719250.501011.1358501844817783587.b4-ty@kernel.org>
-Date: Wed, 27 Apr 2022 23:06:32 +0100
+ id 1njxhu-004upc-Kn
+ for linux-mtd@lists.infradead.org; Thu, 28 Apr 2022 06:32:56 +0000
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23S6Wdqn115702;
+ Thu, 28 Apr 2022 01:32:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1651127559;
+ bh=AuCn46SOHizXCif9euMaGC+fc3ayXPHXv/N04x/Z+Lg=;
+ h=Date:Subject:To:CC:References:From:In-Reply-To;
+ b=hOAufCDdTKPVxcbQVRLW3ejTQaZTPsrKUNLeOUGgmxstevT/karR5A4Re31oiJvW+
+ RWUn36VBBjPJFcamRkqAQYMHgarPBcmgz0svSXW6TN0cCXBL2JL9LH+ZskzF6HLoZB
+ ClKyeFtSQeOVm4b4oasc0i9QBS1Xt2OamzFW8Rxg=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23S6WdPo049938
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Thu, 28 Apr 2022 01:32:39 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 28
+ Apr 2022 01:32:39 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 28 Apr 2022 01:32:39 -0500
+Received: from [172.24.145.176] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23S6Wa6s010886;
+ Thu, 28 Apr 2022 01:32:37 -0500
+Message-ID: <b1f196f2-04ec-fa3c-557f-85ec9e6472f3@ti.com>
+Date: Thu, 28 Apr 2022 12:02:35 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH v7 0/4] mtd: cfi_cmdset_0002: Use chip_ready() for write
+ on S29GL064N
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Thorsten Leemhuis
+ <regressions@leemhuis.info>
+CC: Tokunori Ikegami <ikegami.t@gmail.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <stable@vger.kernel.org>
+References: <20220323170458.5608-1-ikegami.t@gmail.com>
+ <6b09d10e-2098-9fb7-be4c-ae67d802cd2d@leemhuis.info>
+ <20220411094047.06556ee1@xps13> <20220427113709.01f460c8@xps13>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20220427113709.01f460c8@xps13>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220427_150639_860898_E3B5768D 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20220427_233254_813579_AE9157CB 
+X-CRM114-Status: GOOD (  11.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,45 +87,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sun, 24 Apr 2022 11:25:22 +0800, Chuanhong Guo wrote:
-> Mediatek has an extended version of their NAND Flash Interface which
-> has a SPI-NAND mode. In this mode, the controller can perform 1-bit
-> spi-mem ops for up-to 0xa0 bytes and typical SPI-NAND single, dual
-> and quad IO page cache ops with 2-byte address. Additionally, the
-> page cache ops can be performed with ECC and auto data formatting
-> using the ECC engine of the controller.
+
+
+On 27/04/22 15:07, Miquel Raynal wrote:
+> Hi Vignesh,
 > 
-> [...]
+> miquel.raynal@bootlin.com wrote on Mon, 11 Apr 2022 09:40:47 +0200:
+> 
+>> Hello,
+>>
+>> regressions@leemhuis.info wrote on Sun, 10 Apr 2022 10:51:17 +0200:
+>>
+>>> Hi, this is your Linux kernel regression tracker. Top-posting for once,
+>>> to make this easily accessible to everyone.
+>>>
+>>> Miquel, Richard, Vignesh: what's up here? This patchset fixes a
+>>> regression. It's quite old, so it's not that urgent, but it looked like
+>>> nothing happened for two and a half week now. Or was progress made
+>>> somewhere?  
+>>
+>> Vignesh, I'm waiting for your review/ack ;)
+> 
 
-Applied to
+Sorry for the delay, I was able to test this series and to see no
+regression on CFI an HyperFlashes that I have access to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+I think series is in good shape now.
 
-Thanks!
+So
 
-[2/5] spi: add driver for MTK SPI NAND Flash Interface
-      commit: 764f1b7481645b2b4488eda26c4da7f331697e6b
-[4/5] spi: dt-bindings: add binding doc for spi-mtk-snfi
-      commit: 69bb9b29bf67e850beece45e9c99ca707eac7e41
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+[...]
 
 ______________________________________________________
 Linux MTD discussion mailing list
