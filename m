@@ -4,91 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38114C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 28 Apr 2022 15:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE5BCC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 28 Apr 2022 16:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:To:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QrQ0MOJg38/NzpX+KyxITqO5+lon+BpzXjP0a6NuiuQ=; b=e4Yv1z1QfDys3X
-	Y0ucNNYG0oBWM6LmONDCfrxF5iXz/Iq9mwsMZkxO5+vmtVRIjtF5wGWr8PD0KZd5sx24JOR3WHwIe
-	vOG+XwdQZekAzzoDMmTrp9j6IOOleQg9VA8tZJdSPXgc2N1cJjwP/dmMdzF4YkEyPbV8DEFkugneM
-	LpwXj6PUMLoJpPyvq7ELoi3zSU2E347kDnjmjI9rh+Se0yQtYpTOaEcMcJvin6Kw1FNCL8B+6RQjx
-	Vn5rb8jUuEDjMSxUWoDaQ0VTFCDroXV/5eQzj2XbrQLUF8P/WuxruiBXYIVyMFYRKkT1l5yzkjVRs
-	AXENUhfFqM1q67OrJXLQ==;
+	List-Owner; bh=2vx1jI+G+lDcp6Fi5US45AxA0tGVbS0NKpHOTWbJyYw=; b=cR01gGi4kJ8pl8
+	z1gdvkrVeW1ZJ+Vk+nrNE6gBj8d1hV5fmX4vKUDoke85VTvIx1iSn4LvA+me84Ci6jZp1uZPFLho0
+	xh5DF8pnCsJpR2NPbx5+BXuQAv/elL9BH8bjcVD+A+QewtexSUsYPzEcFuZIj9HJvNvq4imgB+cJi
+	Pp6GvushFJb9/9+b7IIpir4Lt31FQrGKItLh+YfT0KESUqP8KQ4KvXqodZZKMDtFZ7uR7ffm4d/h8
+	bdOzQvpMrSifTvM/yjkr8XUfg0TWLFgt1WSM+l7PYt7Yn4/duJGtUDdqJvA5ON/tv/9QjTJm4ge/X
+	+veOv/R5HnXOdgRcWhhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nk60e-007e6n-PD; Thu, 28 Apr 2022 15:24:48 +0000
-Received: from mail-lj1-x22a.google.com ([2a00:1450:4864:20::22a])
+	id 1nk7L1-007xCi-FY; Thu, 28 Apr 2022 16:49:55 +0000
+Received: from mail-oa1-x2a.google.com ([2001:4860:4864:20::2a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nk60a-007e3a-9O
- for linux-mtd@lists.infradead.org; Thu, 28 Apr 2022 15:24:47 +0000
-Received: by mail-lj1-x22a.google.com with SMTP id c15so7162491ljr.9
- for <linux-mtd@lists.infradead.org>; Thu, 28 Apr 2022 08:24:42 -0700 (PDT)
+ id 1nk7Ko-007x7w-U9; Thu, 28 Apr 2022 16:49:44 +0000
+Received: by mail-oa1-x2a.google.com with SMTP id
+ 586e51a60fabf-e93bbb54f9so5690468fac.12; 
+ Thu, 28 Apr 2022 09:49:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=SzJXhZg7qGrBl+J121B58kcKO0wVfv/TnHF/oCwmV6o=;
- b=hzmBfUP04rp5lGzXAo7D1RGUZ1S6j/COkdetxgNRb+SU7A+uun0bJ78x2DdmHJ5fHj
- TT3pTRQ0Rm5XlHh4ZjpHbZXAcVunIS5U9CRKGaVwRYQdAbE/kNkUbaxqJAznMOJCUqwU
- jqFTZ68BTSNvbHbajn31p8UYJLPGRUN3tsduXGryeD4ia9HnFkAHrwtYyX8WdlUcKyaP
- 07jVeXi4kaBDcUsV3NuC+nWE2FES5WwKFOvoM2Ge3wq2ijeZwSmKlFpyfPfu/qFRc7fG
- iYqihaFt4y/OCtpE+lKrTKd8hJNdco+9QJB72olUze5Nq9UUsf5tpEjf7opUOc+RVIaA
- 89KQ==
+ h=sender:message-id:date:mime-version:user-agent:content-language:to
+ :cc:references:from:subject:in-reply-to:content-transfer-encoding;
+ bh=XISky4EfFFruGvnkmI6B4SFkxFQ52ohN9Fu2cRfYJfw=;
+ b=OkCy3r1S0ZpJd0xw0VfvdODlVptYGtGD/s68vjFfu+cv5VfksDwVTELspFMjzyqn2l
+ o3HoJm03XsZQdwbEbRWjI+Lb63jSRMQLNDN7FFeOkhyetGmz/gAbkEhkV3TcaKgGRG82
+ vuwvRZEQI4XV6kVyb9AK1+aJWoE9PIAQbe2raaE3M+WY6coymTsE71a+p721Tp/oJ1tu
+ En+rQbHzGa1KawncckJtHDkTWA14zP+YTiLHoNAAclpt3pPZZQzCVaSg0pgbdjB43usw
+ AxIfxdOHjkKVb6pAsbdhR1cE59eZyAmq6cI4Gd58mfC+2jQzc1Zta0D378ut2yf8lfbd
+ NqrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+ :content-language:to:cc:references:from:subject:in-reply-to
  :content-transfer-encoding;
- bh=SzJXhZg7qGrBl+J121B58kcKO0wVfv/TnHF/oCwmV6o=;
- b=ekqpsVmQsvGJvlI6R03F/Bubm/eriFepWe0cm7KFcY+ewfDatslNG+0rP8MEsZsGcX
- Inrmz/UNEuPgjbZjG8tFJIL1bLP+QJEBcQZBCzHH+VclKY2u414T4cOHe2hVqjhVkge8
- UoC+0Ql1HuhV2MqPR7+/NmbZDuxkldMw/h5Vt1SaT4yPGmK7r6/FYVGYQuYA22AJiWdM
- 7QsYmf/vvvxl3DDEjPJiXMAyKZY771/q/KshKZOXEM1SZjGz2o3GeSsvbtsDw6Lw4Hv2
- LuvSQXMk1A/BJVN3x4472Dg1dEWH8BiDZSihI4+PRFgJIlpu4tb3Oov8/jsq39lmSwS6
- tiLg==
-X-Gm-Message-State: AOAM531EAV2PICn7K4FzBWAyHqyKGBKiWm2lWkzIYwSKBx3/h+X8RfyR
- XO3yKeITzkj5uDm0wvO/fJc=
-X-Google-Smtp-Source: ABdhPJxAsRNvdhIkNNUOuQo9jhs45Y/TigHYoQssJn3JBnGYv0FOckyPXgZr4kxnhvowMEuwzIz0AA==
-X-Received: by 2002:a2e:1f11:0:b0:24b:6b35:42e3 with SMTP id
- f17-20020a2e1f11000000b0024b6b3542e3mr21503724ljf.195.1651159481353; 
- Thu, 28 Apr 2022 08:24:41 -0700 (PDT)
-Received: from ?IPV6:2a06:a003:501a:a7ce:d836:2ab4:b41d:7819?
- ([2a06:a004:d009:c8fa:102c:912a:a6e3:41ea])
+ bh=XISky4EfFFruGvnkmI6B4SFkxFQ52ohN9Fu2cRfYJfw=;
+ b=aeLO1L7Kau0d8IPX6CYppXRZU31HT8g6luC+RsHN87/7Mrhi0O4hDgzn9xAH+BroyO
+ ZV3fTQd1VMFNGVQAZ2SsmwdqhcuCkRtQG09/HylRZPCBkNLtTYj9j2M0671+65hgS9+w
+ 0lQE8C9L9X0ZsA6QUucz6QfKbgBCka43gfz9jgUlBM7J3K4Pw6LXPDRbFlTIFYpaJJjB
+ J8l2748X+ht3KGkfHkq4geJ4FCjWbjTetm6onqz0G17IdSWvoB+tX/8WohdGoyI+ppWM
+ Sj5i0hL/b7dGVaucmwqdXrzHflJJJK9ZQYvhaPG5rFQMAbxCV1yC81qVUm2bw2pSpIZa
+ z4+w==
+X-Gm-Message-State: AOAM5320XDrreL46JHaIGfkBm8sXPfvYsWdH4jvfA2veBX6khx8nwJsk
+ 5uEVeOC/NEJZaXraSjkpe5o=
+X-Google-Smtp-Source: ABdhPJzrsKYpUtqCt/iZ06NVVnsLxq83abuM+0rz/PmqCRR+0Jas/OQpo6w5mfl9KOVI8b7KjTk3bw==
+X-Received: by 2002:a05:6870:3289:b0:e9:1a82:c010 with SMTP id
+ q9-20020a056870328900b000e91a82c010mr11417956oac.25.1651164580861; 
+ Thu, 28 Apr 2022 09:49:40 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c?
+ ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
  by smtp.gmail.com with ESMTPSA id
- s11-20020a2e9c0b000000b0024ace83744asm19844lji.116.2022.04.28.08.24.38
+ p17-20020a4a3651000000b0035d9b838f21sm205539ooe.10.2022.04.28.09.49.37
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 28 Apr 2022 08:24:40 -0700 (PDT)
-Message-ID: <25da3f43-c46e-8108-2da9-0e4f2b7cc1a4@gmail.com>
-Date: Thu, 28 Apr 2022 18:24:35 +0300
+ Thu, 28 Apr 2022 09:49:40 -0700 (PDT)
+Message-ID: <dd3ac1fa-67c2-8bdf-f275-9210a9e23054@roeck-us.net>
+Date: Thu, 28 Apr 2022 09:49:36 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: partitions: Add binding for
- Sercomm parser
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: NOGUCHI Hiroshi <drvlabo@gmail.com>, Karim <Karimdplay@gmail.com>,
- M <x1@disroot.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20220406195557.1956-1-csharper2005@gmail.com>
- <20220406195946.2019-1-csharper2005@gmail.com>
- <8d0d8b27-35ff-3693-cf80-897b80c26b4e@linaro.org>
- <57bebf2f-af4c-b2d9-10e5-19e5104946fb@gmail.com>
- <29cfa017-bbaf-3aba-fe1d-06771957dbaa@linaro.org>
- <1b391399-984b-7a63-3265-62ef09caec39@gmail.com>
- <bd533827-b575-caad-c230-af060851b231@gmail.com>
- <db70e53b-7484-43bf-e9c8-b6a2dce1fbb5@linaro.org>
-From: Mikhail Zhilkin <csharper2005@gmail.com>
-In-Reply-To: <db70e53b-7484-43bf-e9c8-b6a2dce1fbb5@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Philipp Zabel
+ <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>,
+ Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, Helge Deller
+ <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
+ Linux PM list <linux-pm@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org,
+ USB list <linux-usb@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+References: <20220419163810.2118169-1-arnd@kernel.org>
+ <20220422170530.GA2338209@roeck-us.net>
+ <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
+ <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
+ <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
+ <20220422234150.GA3442771@roeck-us.net>
+ <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
+ <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
+ <CAK8P3a1LzEG1vo+5nMrnL3TOMcbSKJ3u=StcfY8dajV2raUBjA@mail.gmail.com>
+ <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
+ <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
+ <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+In-Reply-To: <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220428_082444_389171_FADDFA23 
-X-CRM114-Status: GOOD (  12.80  )
+X-CRM114-CacheID: sfid-20220428_094943_044697_31EA80D8 
+X-CRM114-Status: GOOD (  26.22  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,69 +124,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CkhpLCBLcnp5c3p0b2YsCgpPbiA0LzEwLzIwMjIgMTE6MTggQU0sIEtyenlzenRvZiBLb3psb3dz
-a2kgd3JvdGU6Cj4gSSBhbSBzb3JyeSwgYnV0IHlvdSBjaGFuZ2VkIG5vdyBhIGxvdCBpbiB0aGUg
-YmluZGluZ3MgYW5kIGl0IGxvb2tzCj4gZW50aXJlbHkgZGlmZmVyZW50LiBUaGluZ3MgcHJldmlv
-dXNseSBiZWluZyBjb3JyZWN0IG5vdyBhcmUgd3JvbmcsIHNvCj4gcmF0aGVyIHN0YXJ0IGZyb20g
-eW91ciBvbGQgYmluZGluZ3MuLi4KCgpMb29rcyBsaWtlIEknbSBhIGJpdCBjb25mdXNlZC4uLiBJ
-IHVzZSBkdWFsICJjb21wYXRpYmxlIiBpbiBteSByZWFsIGR0cwphbmQgSSByZWFsaXplZCB0aGF0
-OgoKMS4gVGhlcmVmb3JlIEkgaGF2ZSB0byB1c2XCoCBkdWFsICJjb21wYXRpYmxlIiBpbiBleGFt
-cGxlIHRvbzoKCmNvbXBhdGlibGUgPSAic2VyY29tbSxzYy1wYXJ0aXRpb25zIiwgImZpeGVkLXBh
-cnRpdGlvbnMiOwoKMi4gV2hlbiBJJ20gdHJ5aW5nIHRvIHJldXNlICJmaXhlZC1wYXJ0aXRpb25z
-IiBjb21wYXRpYmxlIGZyb20KZml4ZWQtcGFydGl0aW9ucy55YW1sIGluIG15IG5ldyAueWFtbCBJ
-IGdldCAidG9vIGxvbmciIGVycm9ycy4KClJlYWwgZHRzOgoKTGluazoKaHR0cHM6Ly9naXRodWIu
-Y29tL29wZW53cnQvb3BlbndydC9ibG9iL2VkY2MxYTlhNzM0YmIzZmNkYzkyNDIwMjUyOTBkM2Yx
-NzNlNzFiNzgvdGFyZ2V0L2xpbnV4L3JhbWlwcy9kdHMvbXQ3NjIxX2JlZWxpbmVfc21hcnRib3gt
-Z2lnYS5kdHMjTDc5CgpTbywgSSBjdXJyZW50bHkgZm91bmQgYW5vdGhlciBzb2x1dGlvbiAtIHRv
-IGV4dGVuZCBmaXhlZC1wYXJ0aXRpb25zLnlhbWwKd2l0aCAic2VyY29tbSxzYy1wYXJ0aXRpb25z
-Ii4gSXMgSXQgb2sgZnJvbSB5b3VyIHNpZGU/IENhbiBJIHVzZSB0aGlzCmNvZGUgaW4gdjM/Cgpk
-aWZmIC0tZ2l0CmEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRp
-b25zL2ZpeGVkLXBhcnRpdGlvbnMueWFtbApiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKaW5kZXggZWE0Y2FjZTZh
-OTU1Li45ZWViZTM5YTU3ZmIgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKKysrIGIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2ZpeGVkLXBhcnRpdGlv
-bnMueWFtbApAQCAtMTksNyArMTksMTEgQEAgbWFpbnRhaW5lcnM6CsKgCsKgcHJvcGVydGllczoK
-wqDCoCBjb21wYXRpYmxlOgotwqDCoMKgIGNvbnN0OiBmaXhlZC1wYXJ0aXRpb25zCivCoMKgwqAg
-b25lT2Y6CivCoMKgwqDCoMKgIC0gY29uc3Q6IGZpeGVkLXBhcnRpdGlvbnMKK8KgwqDCoMKgwqAg
-LSBpdGVtczoKK8KgwqDCoMKgwqDCoMKgwqDCoCAtIGNvbnN0OiBzZXJjb21tLHNjLXBhcnRpdGlv
-bnMKK8KgwqDCoMKgwqDCoMKgwqDCoCAtIGNvbnN0OiBmaXhlZC1wYXJ0aXRpb25zCsKgCsKgwqAg
-IiNhZGRyZXNzLWNlbGxzIjogdHJ1ZQrCoApAQCAtMjcsNyArMzEsMTggQEAgcHJvcGVydGllczoK
-wqAKwqBwYXR0ZXJuUHJvcGVydGllczoKwqDCoCAiQFswLTlhLWZdKyQiOgotwqDCoMKgICRyZWY6
-ICJwYXJ0aXRpb24ueWFtbCMiCivCoMKgwqAgYWxsT2Y6CivCoMKgwqDCoMKgIC0gJHJlZjogInBh
-cnRpdGlvbi55YW1sIyIKK8KgwqDCoMKgwqAgLSBpZjoKK8KgwqDCoMKgwqDCoMKgwqDCoCBwcm9w
-ZXJ0aWVzOgorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlOgorwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgY29udGFpbnM6CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-Y29uc3Q6IHNlcmNvbW0sc2MtcGFydGl0aW9ucworwqDCoMKgwqDCoMKgwqAgdGhlbjoKK8KgwqDC
-oMKgwqDCoMKgwqDCoCBwcm9wZXJ0aWVzOgorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzY3BhcnQt
-aWQ6CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXNjcmlwdGlvbjogUGFydGl0aW9uIGlk
-IGluIFNlcmNvbW0gcGFydGl0aW9uIG1hcAorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJHJl
-ZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvdWludDMyCsKgCsKgcmVxdWlyZWQ6
-CsKgwqAgLSAiI2FkZHJlc3MtY2VsbHMiCkBAIC0xMTksMyArMTM0LDI5IEBAIGV4YW1wbGVzOgrC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsKwqDCoMKgwqDCoMKgwqDCoCB9OwrCoMKgwqDCoCB9
-OworwqAgLSB8CivCoMKgwqAgcGFydGl0aW9ucyB7CivCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxl
-ID0gInNlcmNvbW0sc2MtcGFydGl0aW9ucyIsICJmaXhlZC1wYXJ0aXRpb25zIjsKK8KgwqDCoMKg
-wqDCoMKgICNhZGRyZXNzLWNlbGxzID0gPDE+OworwqDCoMKgwqDCoMKgwqAgI3NpemUtY2VsbHMg
-PSA8MT47CisKK8KgwqDCoMKgwqDCoMKgIHBhcnRpdGlvbkAwIHsKK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgbGFiZWwgPSAidS1ib290IjsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVnID0gPDB4
-MCAweDEwMDAwMD47CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNjcGFydC1pZD08MD47CivCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHJlYWQtb25seTsKK8KgwqDCoMKgwqDCoMKgIH07CisKK8KgwqDC
-oMKgwqDCoMKgIHBhcnRpdGlvbkAxMDAwMDAgeworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsYWJl
-bCA9ICJkeW5hbWljIHBhcnRpdGlvbiBtYXAiOworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcg
-PSA8MHgxMDAwMDAgMHgxMDAwMDA+OworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzY3BhcnQtaWQg
-PSA8MT47CivCoMKgwqDCoMKgwqDCoCB9OworCivCoMKgwqDCoMKgwqDCoCBwYXJ0aXRpb25AMjAw
-MDAwIHsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGFiZWwgPSAiRmFjdG9yeSI7CivCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIHJlZyA9IDwweDIwMDAwMCAweDEwMDAwMD47CivCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHNjcGFydC1pZCA9IDwyPjsKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVhZC1v
-bmx5OworwqDCoMKgwqDCoMKgwqAgfTsKK8KgwqDCoCB9OwotLSAKMi4yNS4xCgoKPj4gKwo+PiAr
-YWRkaXRpb25hbFByb3BlcnRpZXM6IHRydWUKPiBUaGlzIGlzIHdyb25nLCB3aHkgaXQgYmVjYW1l
-IHRydWU/CgpZb3UncmUgcmlnaHQuIEdvdCBpdAoKCj4gQmVzdCByZWdhcmRzLAo+IEtyenlzenRv
-ZgoKLS0gCkJlc3QgcmVnYXJkcywKTWlraGFpbAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
-IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
-dGQvCg==
+On 4/28/22 06:44, Arnd Bergmann wrote:
+> On Sun, Apr 24, 2022 at 8:48 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>> On Sun, Apr 24, 2022 at 5:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>> On 4/24/22 01:52, Arnd Bergmann wrote:
+>>>> On Sun, Apr 24, 2022 at 4:09 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>>>> into the defconfig file, otherwise the multiplatform target defaults to
+>>>> an ARMv7 instead of ARMv5 build. For an OMAP15xx as in the SX1,
+>>>> you also need to enable CONFIG_ARCH_MULTI_V4T.
+>>>>
+>>>> This is slightly unfortunate, but I don't see any way to avoid it, and the
+>>>> modified defconfig will still work fine with older kernel trees.
+>>>>
+>>>
+>>> Yes, that works. I changed it in my configuration.
+>>
+>> Ok, great!. I managed to boot the z2 machine with PCMCIA support
+>> and it gets around the issue with my patch, correctly detecting the
+>> CF card.
+> 
+> Hi Guenter,
+> 
+> I have now sent out a fix that I'm happy with, and applied it to the
+> pxa-multiplatform-5.18 branch of the soc tree as well as the
+> combined arm/multiplatform tree.
+> 
+> I have not merged this new version into the for-next branch
+> since I would like to see if there are any other regressions first.
+> 
+> Can you run your boot tests on the arm/multiplatform branch
+> and let me know if that fixes everything you found? If that
+> takes a lot of manual steps on your side, I'd just wait for the
+> build bots and merge it after all there are no new compile-time
+> issues.
+> 
+
+-next is pretty badly broken right now due to a series of less than
+perfect mm patches, so testing there won't do any good.
+
+I'll see if I can dig up the multiplatform branch and push it into
+my 'testing' branch.
+
+Guenter
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
