@@ -4,61 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F856C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 12:11:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6258C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 12:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=opQnAPpAU1k+fGL3cxBcAwvb11U4MRcCUKJbe+5N4IU=; b=u+DVzIC4tvVhQT
-	BfOjyHTXwwbYzaWORYuWD2PBG6UTJtfBjjldkmYUFIZuhdx73iaRaRT7zbLVZ35mjNn72CMg0cQbd
-	m4vsPjaDvuHRZ6ETT9jJqD7ttIB12QuZVybnnuCFh4iConOuK3j5vsPWLxqC9OEJAS3GZ7bGc2SOs
-	pwzSe1LsnXomc9LhvsubAMJ4synPubK52CTrHxx3EtuGNpmB7P12JpPNADT1oItm0X4PPrjzlhGp2
-	m+94zAnXd8ok+DYcCEz/8AYw7g2m8w417Igzux9J/hSshgtxYB9BNb3QbZFKhXHUIXPWAzGHf5gn4
-	iW+3JYFErol5h21BadDw==;
+	List-Owner; bh=1yqByjhFS12NSTF+YrNrh76SeV1xqMtfaD863xK/65k=; b=qSHhgT7+l//X0y
+	/fVN/y8O6kCzCDSYth0hYOcCBNfcSJK0dEMFwf01s4XYoYQkK6PcgX7k/YSMZXX3TKFMeNOBn7xcV
+	2FVOmutmb1YZ9R3mqusvOICGZbAj+hpAqMeHWQWODvg8hWFHHgyerfg11ZlEfCVlH7HDA1ZRE5XOm
+	iqdn4FwYf0ECP+8aj7AVPvmBL6D2mPW7/0+NFTrJ05Q58EtRl3dmviv19bYYq7jJLcO6r4/nAsxPb
+	22MIz73DuJKBS2usHwU1sAOfhUTBFhIl0jfUSwPinQTz/aZlvRBsh1ld71S8o6C323dViCzOlyg0O
+	XjXXibl33ziM9iPSMJzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkPSv-00B5ag-2y; Fri, 29 Apr 2022 12:11:17 +0000
-Received: from alexa-out.qualcomm.com ([129.46.98.28])
+	id 1nkQ5d-00BFbH-CG; Fri, 29 Apr 2022 12:51:17 +0000
+Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkPSs-00B5aH-N5
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 12:11:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1651234275; x=1682770275;
- h=from:to:cc:subject:date:message-id;
- bh=KAe00ZDLt5C8s6QUvOWbvZ3TH/GdDmxKdKTGsP7hSVk=;
- b=yXY+YgTNxDii/cdYtFz92UUcuAXf5gct74FuhTYnrdXtAPMuN6ocsFmn
- 7SwGahUN+tknHkqhGSG0Z+zv1vqG7EfVJmwZ238Zi6uhqaDUtQ7zrtJ/y
- 6GJD3GLDDfL5X0HzXqJh7CMKtCcJSBIsQ7l5zLQ1di2a+opLBFMX+KM52 8=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
- by alexa-out.qualcomm.com with ESMTP; 29 Apr 2022 05:11:13 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
- by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 29 Apr 2022 05:11:11 -0700
-X-QCInternal: smtphost
-Received: from c-sbhanu-linux.qualcomm.com ([10.242.50.201])
- by ironmsg02-blr.qualcomm.com with ESMTP; 29 Apr 2022 17:40:50 +0530
-Received: by c-sbhanu-linux.qualcomm.com (Postfix, from userid 2344807)
- id E42E5E32; Fri, 29 Apr 2022 17:40:49 +0530 (IST)
-From: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
-To: tudor.ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- quic_asutoshd@quicinc.com, quic_rampraka@quicinc.com,
- quic_pragalla@quicinc.com, quic_sartgarg@quicinc.com,
- quic_nitirawa@quicinc.com, quic_sayalil@quicinc.com,
- Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
-Subject: [PATCH V9] mtd: spi-nor: winbond: add support for W25Q512NW-IM
-Date: Fri, 29 Apr 2022 17:40:39 +0530
-Message-Id: <1651234239-32217-1-git-send-email-quic_c_sbhanu@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+ id 1nkQ5T-00BFSm-F2
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 12:51:09 +0000
+Received: by mail-ej1-x632.google.com with SMTP id kq17so15262123ejb.4
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Apr 2022 05:51:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=rDzxu9MW9GN24hu7QhGn/9ENmvqmJvE90rNpUC/IGqQ=;
+ b=AHk9xNI2GrdZ+pjC2XWPm9pf9PeG3cO+US4+NvK09Z0Mymct2lnm7lYFdCTJ5pIzGf
+ bOKbRk9rkzPKYQPeA8Mj52SWaVEKwyqNLYpfYVJKTAjPN91ISLakjoNqMopYtv06N1bz
+ fGHT+9S4otZtcVxBalgYU4ohFChLt0FEvMeADyRqkhwZsduABGMwCzmnXDfbVRU1ZR3U
+ TQODJXQxdb9CF19dSELha6IdD6EBm4f15/Th5FXudHtqXslEAnwI4RpoJ0OaPJVekWs0
+ 8tGU3y+hgc1EbGnotEV9yev2xV6g9kIsXrLlYakNsVR+NA7HT0mIizbNjTI3AKtzo6Di
+ +ydA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=rDzxu9MW9GN24hu7QhGn/9ENmvqmJvE90rNpUC/IGqQ=;
+ b=V43lghCzMA22OZurorUcGojyYDfJL2dJQF7BfGbkIBhlLGKrqF7u4claOwLuh/Gwsf
+ bxOenmoThm+cn80H7kADqK60ys9XrqI6p7tMyge1ouu1Af3UTxhvzrShHq6ME9GJI+cs
+ y2yLLN6MjR1Qa5GFJJHEtUMUcPXiC98WwLMk8gr2LYoPvxp16TqvxYJU5/D8geZ7Qs+h
+ 938ZQXow2zbqrSxTnyn0Z7jZPY9nmM6jR3onCOn+sh+UAhEW+Nd5fqmzUjTYVr7nM3UV
+ 3S+lQ0+Y0W7SZb+dVA+jUgFcipOEjnrKJBWE9vl38H0G4k91JQjy+AaIVGxstWuXujTW
+ zU/Q==
+X-Gm-Message-State: AOAM530nP81vmd6+ZIpCUgaa/LtMJcUDPnNaGh9QggftaXp8HoklDtHj
+ A8Yc64wwq6amXyOhTWEMUZ0=
+X-Google-Smtp-Source: ABdhPJw8abQdctpop9AbAHRH+V0cqVAgRfZ2umYQQQl43FRc1mTpnZEldM/qz76veB92TvRxDzeurA==
+X-Received: by 2002:a17:906:5641:b0:6da:8691:3fcc with SMTP id
+ v1-20020a170906564100b006da86913fccmr34926623ejr.50.1651236663092; 
+ Fri, 29 Apr 2022 05:51:03 -0700 (PDT)
+Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it.
+ [93.42.70.190]) by smtp.googlemail.com with ESMTPSA id
+ hf27-20020a1709072c5b00b006f3ef214e33sm615347ejc.153.2022.04.29.05.51.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 29 Apr 2022 05:51:02 -0700 (PDT)
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Ansuel Smith <ansuelsmth@gmail.com>,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 0/2] Add nvmem support for dynamic partitions
+Date: Fri, 29 Apr 2022 14:48:23 +0200
+Message-Id: <20220429124825.21477-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220429_051114_830441_C3771842 
-X-CRM114-Status: GOOD (  11.66  )
+X-CRM114-CacheID: sfid-20220429_055107_526096_5011949A 
+X-CRM114-Status: GOOD (  22.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,114 +86,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for winbond W25Q512NW-IM chip.
+This very small series comes to fix the very annyoing problem of
+partitions declared by parser at runtime NOT supporting nvmem cells
+definition.
 
-Below are the tests done:
+The current implementation is very generic. The idea is to provide an of
+node if defined for everyone and not strictly limit this to nvmem stuff.
+But still the actual change is done only for nvmem-cells mtd. (just to
+make sure) This can totally change by removing the compatible check.
 
-1. Verified flashing binary image on spi card using flashrom tool.
-2. Verified OTP support, below are the test results:
+The idea here is that a user can still use these dynamic parsers
+instead of declaring a fixed-partition and also declare how nvmem-cells
+are defined for the partition.
+This live with the assumption that dynamic partition have always the
+same name and they are known. (this is the case for smem-part partition
+that would require a bootloader reflash to change and for parsers like
+cmdlinepart where the name is always the same.)
+With this assumption, it's easy to fix this problem. Just introduce a
+new partition node that will declare just these special partition.
+Mtdcore then will check if these special declaration are present and
+connect the dynamic partition with the OF node present in the dts. Nvmem
+will automagically fin the OF node and cells will be works based on the
+data provided by the parser.
 
- localhost / # cat
- /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi16/
- spi16.0/spi-nor/jedec_id
- ef8020
+The initial idea was to create a special nvmem driver with a special
+compatible where a user would declare the mtd partition name and this
+driver would search it and register the nvmem cells but that became
+difficult really fast, mtd notifier system is problematic for this kind
+of stuff. So here is the better implementation. A variant of this is
+already tested on openwrt where we have devices that use cmdlinepart.
+(that current variant have defined in the dts the exact copy of
+cmdlinepart in the fixed-partition scheme and we patched the cmdlinepart
+parser to scan this fixed-partition node (that is ignored as cmdlinepart
+have priority) and connect the dynamic partition with the dts node)
 
- localhost / # cat
- /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi16/
- spi16.0/spi-nor/manufacturer
- winbond
+I provided an example of this in the documentation commit.
+In short it's needed to add to the partitions where the compatible parser
+is declared, a partition with just the label declared (instead of the reg).
+Then declare some nvmem-cells and it will all work at runtime.
+Mtdcore will check if a node with the same label is present and assign an
+OF node to the MTD.
 
- localhost / # cat
- /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi16/
- spi16.0/spi-nor/partname
- w25q512nwm
+I currently tested this on my device that have smem-part and the
+gmac driver use nvmem to get the mac-address. This works correctly and
+the same address is provided.
 
- localhost / # hexdump
- /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/sp
- i16/spi16.0/spi-nor/sfdp
- 0000000 4653 5044 0106 ff01 0600 1001 0080 ff00
- 0000010 0084 0201 00d0 ff00 ffff ffff ffff ffff
- 0000020 6800 6c65 6f6c 7720 726f 646c ffff ffff
- 0000030 ffff ffff ffff ffff ffff ffff ffff ffff
- *
- 0000080 20e5 fffb ffff 1fff eb44 6b08 3b08 bb42
- 0000090 fffe ffff ffff 0000 ffff eb40 200c 520f
- 00000a0 d810 0000 0233 00a6 e781 d914 63e9 3376
- 00000b0 757a 757a bdf7 5cd5 f719 ff5d 70e9 a5f9
- 00000c0 ffff ffff ffff ffff ffff ffff ffff ffff
- 00000d0 0aff fff0 ff21 ffdc
- 00000d8
+v3:
+- Fix warning from bot (function not declared as static)
+- Updated code to support also node name
+- Made partition label optional
+v2:
+- Simplify this. Drop dynamic-partition
+- Fix problem with parser with ko
+- Do not pollude mtd_get_of_node
+- Fix problem with Documentation
 
- localhost / # md5sum
- /sys/bus/platform/devices/soc\@0/88dc000.spi/spi_master/spi
- 16/spi16.0/spi-nor/sfdp
- 106d89d6c049110bc94c01517cb4ce24
- /sys/bus/platform/devices/soc@0/88dc000.spi/
- spi_master/spi16/spi16.0/spi-nor/sfdp
+Ansuel Smith (2):
+  dt-bindings: mtd: partitions: Document new partition-dynamic nodes
+  mtd: core: introduce of support for dynamic partitions
 
-Signed-off-by: Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>
-Reviewed-by: Doug Anderson <dianders@chromium.org>
-Reviewed-by: Michael Walle <michael@walle.cc>
+ .../mtd/partitions/partition-dynamic.yaml     | 56 +++++++++++++++++++
+ .../mtd/partitions/qcom,smem-part.yaml        |  4 ++
+ drivers/mtd/mtdcore.c                         | 56 +++++++++++++++++++
+ 3 files changed, 116 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.yaml
 
----
-Changes since V1:
-	- Added space before name of the flash part as suggested by
-	  Doug.
-
-Changes since V2:
-	- Updated chip name as w25q512nwm as suggested by Doug.
-
-Changes since V3:
-	- Updated flash_info flags passing according to
-	  below patch.
-
-Changes since V4:
-	- Added OTP support for SPI card as suggested by Michael Walle.
-	- Updated SFDP flags passing as suggested by Pratyush Yadav.
-
-Changes since V5:
-	- Reordered flags passing info for spi nor as suggested by
-	  Michael Walle.
-
-Changes since V6:
-	- Updated commit subject and added md5sum in commit as suggested
-	  by Michael Walle.
-	- Reordered flags passing info for spi nor which has missed in
-	  V5 patch as suggested by Michael Walle.
-
-Changes since V7:
-	- Updated commit message with test cases info as suggested by
-	  Tudor Ambarus.
-
-Changes since V8:
-	- Removed flash lock flags as lock not working as excepted.
----
- drivers/mtd/spi-nor/winbond.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index fe80dff..f2b625a 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -124,6 +124,9 @@ static const struct flash_info winbond_nor_parts[] = {
- 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_DUAL_READ) },
-+	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024)
-+		PARSE_SFDP
-+		OTP_INFO(256, 3, 0x1000, 0x1000) },
- 	{ "w25q512jvq", INFO(0xef4020, 0, 64 * 1024, 1024)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
- 			      SPI_NOR_QUAD_READ) },
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.34.1
 
 
 ______________________________________________________
