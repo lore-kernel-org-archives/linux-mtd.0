@@ -4,55 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFBABC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 08:40:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3EFBC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 09:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zhbu0TIOA9lb5OPzLj+uRLLfF+nTvdMPTF64n2qStGA=; b=tFMF8usRqT7gkT
-	Ge4UWcVeJ8l/ktbuUZ9aP/sMp7q0zJ73XdJvejDYsUn9No90ds4xHlpK6yjuD/ffJHqMls2o8RXBT
-	6k4WeiQ/QyQvBT52n0BqbbrYe0kCADh0GfX5z7qRAYDI9Hqgw9MLGN3e8CLhTXe5YB3U1i/p9sxNW
-	wcxullEVDzKdxal03SmKwox3p08amV/BfUvZMyWBSHPTl50TobrhKu4IAsWQ41TzAXk21qD/hiI0n
-	TIIHODyJRBS/2BrTFOnch9upXZ9zksKQPza/juwPYoKNxUdleUY7OFRZYWtCecku4PRAyf730yCsO
-	u6z8UBYPf0qlikzC1JrQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=fdVFjowCgKqBvsgItCp34eW/THwoW6UFEf/SDwJNxZE=; b=H35WxYhlh2+odAfIHt4VZZAj+b
+	Y+/IEb1HWn+JBiEwnInp2rA2LQkwWlOVmSRJ6BRvbSOVdj91rKQAqbS7KKhZDIiCcA1ZL/PG9VZ6K
+	AC+SvQ70m8oTU4c4ySBObIdQ1iuKZ/pp8cV9IbFVGdkgvkRfZyGCKdqB8jLlSVfsKK/s3PXX0eF+s
+	qm/CTOlzYzwHI9026khLVeeZZVWOZSRYnpgTxNvfRQrYVq23N40dPNmb9fGBAyIixsKEVsBEFhtlG
+	BV0zyYMZL7s85iflEWRphbTAcQ2x6T0MbPZF75oHpTeYivcdxkzq3kHOsIg4zQvay+rJkg9kJABZY
+	AJVfL4uw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkMAl-00AEc0-Em; Fri, 29 Apr 2022 08:40:19 +0000
-Received: from smtp2.axis.com ([195.60.68.18])
+	id 1nkNBH-00ATCW-Fk; Fri, 29 Apr 2022 09:44:55 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkMAW-00AEWc-1O
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 08:40:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1651221604;
- x=1682757604;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=IJrwqcxhRxiJb00G97DLL+BjIscuo7iLEiybCPMtAmM=;
- b=DByxrnD2awBjaVcD0Un2hFgBwp8+M7torBhjnLto8eMBF47lYgTyVz2a
- jL9th6Zn8eiARU8mRiXHBCa+hrkE8yKOarv2v5XyC4y+7C7haNIJP8GKZ
- Ff8P0EancyIdvgnwUl7akHrWRRJUYtE3Ks2Ur8yFwR6uCCE8V3xXiFVJS
- VSmW9zZMqD5YfZGBw904QkbHF563iAEbeIQlzIrkgFiTs3OCZ/fDLMekj
- IvYASxFZ5SZl18e1a3RTnWDncVC4/1RJWMGIB8wECB8d1xLnoOtyepJeG
- /GOWaZXFE0QYXWgFSZwo8fyV40uyYuoEv+3i3Qat58dAsH+nYUS/vPIQB Q==;
-From: Rickard Andersson <rickaran@axis.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>
-CC: <rickaran@axis.com>, <rickard314.andersson@gmail.com>
-Subject: [PATCH] mtd: rawnand: kioxia: Add support for TH58NVG3S0HBAI4
-Date: Fri, 29 Apr 2022 10:39:31 +0200
-Message-ID: <20220429083931.26795-1-rickaran@axis.com>
-X-Mailer: git-send-email 2.20.1
+ id 1nkNBF-00ATBp-4K
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 09:44:54 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 8763D22238;
+ Fri, 29 Apr 2022 11:44:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1651225490;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=es0PSQekIsrCkXSWsT/g4+RRJjGr5RMyR8HYTLziDzY=;
+ b=LR5P7lh+xBnddAHSoSStD2hEY1vfyhYmKhAv64wrj2P6xLwX5aUF2Pj1ceewHPg/B5p/nd
+ JvSfUdQWjGxWwbTc52mhKjIsMTX9nspMJDhGNhxGH7Pkm2fSNDB6MSWAeMZtarkA5NYGFy
+ YOqEA0OJvZsuJDtcsRoGuycQ5vMa2RE=
 MIME-Version: 1.0
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail03w.axis.com
- (10.20.40.9)
+Date: Fri, 29 Apr 2022 11:44:49 +0200
+From: Michael Walle <michael@walle.cc>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: expose internal parameters via
+ debugfs
+In-Reply-To: <20220429045731.sjhlkyxfxw4zvfxt@ti.com>
+References: <20220428122840.1496876-1-michael@walle.cc>
+ <20220428122840.1496876-2-michael@walle.cc>
+ <20220429045731.sjhlkyxfxw4zvfxt@ti.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <f303280eea2e7a4bc2d14a5cd22727b1@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220429_014004_458456_DE3A5B79 
-X-CRM114-Status: UNSURE (   9.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220429_024453_397838_06CBFE25 
+X-CRM114-Status: GOOD (  15.10  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,63 +71,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Rickard x Andersson <rickaran@axis.com>
+Hi,
 
-Add timings for Kioxia/Toshiba TH58NVG3S0HBAI4. Timings
-for this memory matches the timings selected for
-TH58NVG2S3HBAI4.
+>> +#define SNOR_F_NAME(name) [ilog2(SNOR_F_##name)] = #name
+>> +static const char *const snor_f_names[] = {
+>> +	SNOR_F_NAME(HAS_SR_TB),
+>> +	SNOR_F_NAME(NO_OP_CHIP_ERASE),
+>> +	SNOR_F_NAME(BROKEN_RESET),
+>> +	SNOR_F_NAME(4B_OPCODES),
+>> +	SNOR_F_NAME(HAS_4BAIT),
+>> +	SNOR_F_NAME(HAS_LOCK),
+>> +	SNOR_F_NAME(HAS_16BIT_SR),
+>> +	SNOR_F_NAME(NO_READ_CR),
+>> +	SNOR_F_NAME(HAS_SR_TB_BIT6),
+>> +	SNOR_F_NAME(HAS_4BIT_BP),
+>> +	SNOR_F_NAME(HAS_SR_BP3_BIT6),
+>> +	SNOR_F_NAME(IO_MODE_EN_VOLATILE),
+>> +	SNOR_F_NAME(SOFT_RESET),
+>> +	SNOR_F_NAME(SWP_IS_VOLATILE),
+>> +};
+>> +#undef SNOR_F_NAME
+> 
+> You said you would add a comment here. Changed your mind?
 
-This patch increases eraseblock write speed from 5248 KiB/s
-to 6864 KiB/s and erase block read speed from 8542 KiB/s
-to 18360 KiB/s
+No, it just slipped through.
 
-Tested on i.MX6SX.
+>> +void spi_nor_debugfs_register(struct spi_nor *nor)
+>> +{
+>> +	struct dentry *d;
+>> +	int ret;
+>> +
+>> +	/* Create rootdir once. Will never be deleted again. */
+>> +	if (!rootdir)
+>> +		rootdir = debugfs_create_dir("spi-nor", NULL);
+> 
+> If I compile SPI NOR as module, I insmod it, rmmod it, and then insmod
+> it again, I get:
+> 
+> 	[  360.623465] spi-nor spi0.0: mt35xu512aba (65536 Kbytes)
+> 	[  360.623478] debugfs: Directory 'spi-nor' with parent '/' already 
+> present!
+> 	[  360.632237] spi-nor spi1.0: mt25qu512a (65536 Kbytes)
+> 
+> I guess when you remove the module, rootdir also gets destroyed, and
+> then gets re-initialized on probing again. I am not familiar enough 
+> with
+> the debugfs APIs to suggest a fix though.
 
-Signed-off-by: Rickard x Andersson <rickaran@axis.com>
----
- drivers/mtd/nand/raw/nand_ids.c     | 3 +++
- drivers/mtd/nand/raw/nand_toshiba.c | 6 ++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Thanks for testing. And yes, you are right. I've changed that code
+quite a few times for this damn subdirectory. But it seems I didn't
+get it right. Usually, it's created in the module_init() but since
+we just have an implicit one (and I don't really want to change that),
+that's not an option. Some subsystems don't create a subdirectory at
+all, which doesn't appeal to me.
 
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index d64adbd1ce6b..88c2440b47d8 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -61,6 +61,9 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
- 		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
- 		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
-+	{"TH58NVG3S0HBAI4 8G 3.3V 8-bit",
-+		{ .id = {0x98, 0xd3, 0x91, 0x26, 0x76} },
-+		  SZ_4K, SZ_1K, SZ_256K, 0, 5, 256, NAND_ECC_INFO(8, SZ_512)},
- 
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index cf4f37959421..d3d34d71921f 100644
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -287,8 +287,10 @@ static int toshiba_nand_init(struct nand_chip *chip)
- 	if (!strncmp("TC58NVG0S3E", chip->parameters.model,
- 		     sizeof("TC58NVG0S3E") - 1))
- 		tc58nvg0s3e_init(chip);
--	if (!strncmp("TH58NVG2S3HBAI4", chip->parameters.model,
--		     sizeof("TH58NVG2S3HBAI4") - 1))
-+	if ((!strncmp("TH58NVG2S3HBAI4", chip->parameters.model,
-+		     sizeof("TH58NVG2S3HBAI4") - 1)) ||
-+	    (!strncmp("TH58NVG3S0HBAI4", chip->parameters.model,
-+		     sizeof("TH58NVG3S0HBAI4") - 1)))
- 		th58nvg2s3hbai4_init(chip);
- 
- 	return 0;
--- 
-2.20.1
+I'll first lookup if the directory is already there, if it is, use it,
+if not, create it. That should work. FWIW, the mvpp2 network card driver
+does it too.
 
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
