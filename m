@@ -4,74 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 275F0C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 05:46:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FA1DC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 06:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=LbvMltpRIjgE4jbhss1w2XZDNcmy7I60H2ck1rhRRWo=; b=eLb4TuAYRchRo3
-	IovlgnMfZzt5LrvSsWlH2Lq01sJ7wqUuvWTZsDB3HAQccUNLl9INEf12t/GuqM9quIqR63fQVt5Ba
-	PAbYG5Y3AM4ydJrWvWc4evfgMuDSex604C1fFHc5HN/Iei6lqfVAinGV/LOP8pZ5llk5ussdND2hK
-	Sds40KYjk5vNDewL34XK4p5Z/KPvx8BstLLahUrhCf/eXZoMrGA0x7qwt2bCfwheS3+X//T1CkY42
-	6Yx8YFO2eoWC02C4N2kyx5Bz9Zlef54HXM2W5/i6BZnGVKQJYwEgqQszPYwik+Iml2o69gVTjhdah
-	LrADj+JMQYdZPU/PK6Lw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ldfr0cI900Dw4/m8PWyVBgVmVnw7orIwr0XQ8mIDQnk=; b=d1+Xhlg1Ul6dh5
+	poR/c07hO49h5TKGcv0eovYfS01LBsvknbUZ0XeFheJpvArl7nqjj3Sz6sTou4W98l0DYH9B/Uv8u
+	lQrDHqorIB1FAO4y+8uItuKWy+7/RTzW7FGKCFjJwEslK/wDwDrKfE+Bb6tvC7AAuTafhXaodXpMV
+	vtRnWSOfz2nLJSwwVIqzLZkQI8/z9666LrKMbw0gdfItwDmSs/JM/cDPbszJxaAbplhM9H58si9Gq
+	e4Ce7Cm8E58LgvfHxeC3XWs6PvbfM26TPK/1hetuDc0vs86Lowe62IYs120Y3B4sCkoYemNQeQ+5P
+	JCOQZqA5AX5Noi2N1Tgw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkJSE-009cZA-7K; Fri, 29 Apr 2022 05:46:10 +0000
-Received: from mail-qk1-x733.google.com ([2607:f8b0:4864:20::733])
+	id 1nkJoL-009gQz-RG; Fri, 29 Apr 2022 06:09:01 +0000
+Received: from lelv0143.ext.ti.com ([198.47.23.248])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkJSB-009cYF-9v
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 05:46:08 +0000
-Received: by mail-qk1-x733.google.com with SMTP id b189so5166792qkf.11
- for <linux-mtd@lists.infradead.org>; Thu, 28 Apr 2022 22:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bLTftZOmNCEKWdg/w/LKAiVP4XXhL/YylRxacAEvnUM=;
- b=HZDi7YrcD7xdcirUzbKmgfCUwU2mAUIMxLK6Pfl/vXm8dXaCa6oXJJnM94XedJsXJW
- d7tXeECGF66fkQaVC/8ZnRRdU00yEtUsPABlMNqn9lEgozeeUnTlVm53XHdvZD/Z0tyo
- ZGO/03ZVgKDyEXakICg1glfHPx/pZPDhLUtQSg7B3OEbyJqdpK9h9+exyaL8gWziyIvf
- GOalhUhOrt//j+HanjgDq8+wqT6/KBQZ6Fv+ab2y3KyX/HkpjJge/xXFpggkY5EGxt6J
- nWjex5cU9dc2gOvfd06sbax7dIxjwAO7lyDxCC+4upHoch9N9YGnIgOw6jOMP9crBA1+
- dsRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=bLTftZOmNCEKWdg/w/LKAiVP4XXhL/YylRxacAEvnUM=;
- b=onkwk8PLt/PzNv7zOXS01l/8KnE6hCno93/FqrNaEjI/N82Ar5ZJU4/Td8DdDtw/3P
- U2UU3DH5BGzdyHSCqicajqFbM3ZvTFk1mhUiYXgdpfvAEg8S420dy7LDiGVp+fMhuo3M
- SoSEFA5joZ8ObZ1limyplDsrx7Z0r20nB32C3A8Ni6TnchaHPZzGjkBIfYIbOz6cOd2+
- xLUqxP6aCYZo7TOUNdlHeyK+SePxIvIj8Bp2Vi/DVJ8pVUKw0j55QYu6I7WE1eLCItyd
- eWpJIBACxqqVwGahuvyaB9R2XCqnrht/DAsExDmSD/og0Leh3kx38zoedimQp+K8jCgU
- tYbQ==
-X-Gm-Message-State: AOAM5304Eje+5n1huSEPoIp1kjwtlavwZj56G9O+npr9aV7Rab0Vgvaf
- /AvilplBkeCwlWkvGLsvElk=
-X-Google-Smtp-Source: ABdhPJzXfwoRnrSfH1iu4KqIReOFh1KQsHnmjpSDX7rs/uIg/dywVen246u6DCBlSv5WGou7UcrNog==
-X-Received: by 2002:a37:a90e:0:b0:69f:9b8f:86b4 with SMTP id
- s14-20020a37a90e000000b0069f9b8f86b4mr5555492qke.513.1651211164465; 
- Thu, 28 Apr 2022 22:46:04 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
- by smtp.gmail.com with ESMTPSA id
- f10-20020a05622a104a00b002f35726ccd8sm1188876qte.86.2022.04.28.22.46.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Apr 2022 22:46:03 -0700 (PDT)
-From: cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To: richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Minghao Chi <chi.minghao@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] UBIFS: simplify the return expression of run_gc()
-Date: Fri, 29 Apr 2022 05:45:56 +0000
-Message-Id: <20220429054556.3851784-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+ id 1nkJoJ-009gQ0-Eo
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 06:09:01 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23T68sjS061532;
+ Fri, 29 Apr 2022 01:08:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1651212534;
+ bh=RZgucMwnPVvB+o/MrUBt8zsOyMFS8ZhmghhtAvhsMoo=;
+ h=Date:From:To:CC:Subject:References:In-Reply-To;
+ b=Nafu+WeqBgkJZLIlDaT0EZQwTS6ed5dyWCw29smBf6mNkwsrD2lobMHIk7cAaZbON
+ XcZYWQvaIkR3nqjisWt04WHXCsIBCd3h4W8cnDlDa22Z0mKlbFmXlycHfWOgYL+wY5
+ svMYWrm1ULNGPuOZdvVBm21m0Rd/mNXT3EKMtRBw=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23T68sGc028429
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 29 Apr 2022 01:08:54 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 29
+ Apr 2022 01:08:54 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 29 Apr 2022 01:08:54 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23T68rfp035139;
+ Fri, 29 Apr 2022 01:08:53 -0500
+Date: Fri, 29 Apr 2022 11:38:53 +0530
+From: Pratyush Yadav <p.yadav@ti.com>
+To: Michael Walle <michael@walle.cc>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: move spi_nor_write_ear() to winbond module
+Message-ID: <20220429060852.whf5puyf6nkvm4jn@ti.com>
+References: <20220418112404.2790469-1-michael@walle.cc>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220418112404.2790469-1-michael@walle.cc>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220428_224607_385402_04C02242 
-X-CRM114-Status: GOOD (  10.30  )
+X-CRM114-CacheID: sfid-20220428_230859_619070_34FD3C40 
+X-CRM114-Status: GOOD (  25.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,45 +83,146 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Minghao Chi <chi.minghao@zte.com.cn>
+Hi Michael,
 
-Simplify the return expression.
+On 18/04/22 01:24PM, Michael Walle wrote:
+> The "Extended Address Register" is winbond specific. If the flash is
+> larger than 16MiB and is used in 3 byte address mode, it is used to set
+> the remaining address bits. Move the write_ear() function the winbond
+> module and rename it accordingly.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
----
- fs/ubifs/budget.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+This patch no longer applies due to Tudor's patch c0abb861c5d0 ("mtd: 
+spi-nor: Introduce templates for SPI NOR operations") which changes the 
+contents of spi_nor_write_ear() to use a template. Please rebase and 
+resend so I can apply it.
 
-diff --git a/fs/ubifs/budget.c b/fs/ubifs/budget.c
-index c0b84e960b20..e8b9b756f0ac 100644
---- a/fs/ubifs/budget.c
-+++ b/fs/ubifs/budget.c
-@@ -65,7 +65,7 @@ static void shrink_liability(struct ubifs_info *c, int nr_to_write)
-  */
- static int run_gc(struct ubifs_info *c)
- {
--	int err, lnum;
-+	int lnum;
- 
- 	/* Make some free space by garbage-collecting dirty space */
- 	down_read(&c->commit_sem);
-@@ -76,10 +76,7 @@ static int run_gc(struct ubifs_info *c)
- 
- 	/* GC freed one LEB, return it to lprops */
- 	dbg_budg("GC freed LEB %d", lnum);
--	err = ubifs_return_leb(c, lnum);
--	if (err)
--		return err;
--	return 0;
-+	return ubifs_return_leb(c, lnum);
- }
- 
- /**
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  drivers/mtd/spi-nor/core.c    | 34 ---------------------------------
+>  drivers/mtd/spi-nor/core.h    |  1 -
+>  drivers/mtd/spi-nor/winbond.c | 36 ++++++++++++++++++++++++++++++++++-
+>  3 files changed, 35 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index b4f141ad9c9c..848836535cdd 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -520,40 +520,6 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  	return ret;
+>  }
+>  
+> -/**
+> - * spi_nor_write_ear() - Write Extended Address Register.
+> - * @nor:	pointer to 'struct spi_nor'.
+> - * @ear:	value to write to the Extended Address Register.
+> - *
+> - * Return: 0 on success, -errno otherwise.
+> - */
+> -int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+> -{
+> -	int ret;
+> -
+> -	nor->bouncebuf[0] = ear;
+> -
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
+> -
+> -		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
+> -						       nor->bouncebuf, 1);
+> -	}
+> -
+> -	if (ret)
+> -		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
+> -
+> -	return ret;
+> -}
+> -
+>  /**
+>   * spi_nor_sr_ready() - Query the Status Register to see if the flash is ready
+>   * for new commands.
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index b7fd760e3b47..14bf28473cf3 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -526,7 +526,6 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>  int spi_nor_write_enable(struct spi_nor *nor);
+>  int spi_nor_write_disable(struct spi_nor *nor);
+>  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+> -int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
+>  int spi_nor_wait_till_ready(struct spi_nor *nor);
+>  int spi_nor_global_block_unlock(struct spi_nor *nor);
+>  int spi_nor_lock_and_prep(struct spi_nor *nor);
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 1e8fb571680b..0ca96efee5c9 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -130,6 +130,40 @@ static const struct flash_info winbond_nor_parts[] = {
+>  			      SPI_NOR_QUAD_READ) },
+>  };
+>  
+> +/**
+> + * winbond_nor_write_ear() - Write Extended Address Register.
+> + * @nor:	pointer to 'struct spi_nor'.
+> + * @ear:	value to write to the Extended Address Register.
+> + *
+> + * Return: 0 on success, -errno otherwise.
+> + */
+> +static int winbond_nor_write_ear(struct spi_nor *nor, u8 ear)
+> +{
+> +	int ret;
+> +
+> +	nor->bouncebuf[0] = ear;
+> +
+> +	if (nor->spimem) {
+> +		struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
+> +				   SPI_MEM_OP_NO_ADDR,
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
+> +
+> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
+> +
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +	} else {
+> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
+> +						       nor->bouncebuf, 1);
+> +	}
+> +
+> +	if (ret)
+> +		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+>  /**
+>   * winbond_nor_set_4byte_addr_mode() - Set 4-byte address mode for Winbond
+>   * flashes.
+> @@ -156,7 +190,7 @@ static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = spi_nor_write_ear(nor, 0);
+> +	ret = winbond_nor_write_ear(nor, 0);
+>  	if (ret)
+>  		return ret;
+>  
+> -- 
+> 2.30.2
+> 
+
 -- 
-2.25.1
-
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
 
 ______________________________________________________
 Linux MTD discussion mailing list
