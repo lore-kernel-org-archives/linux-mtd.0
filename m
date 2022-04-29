@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8023C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 08:16:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFBABC433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 08:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CTxPZAPHyWEJVEyyggVvm7JySNKcgObhCvbUphCy5N8=; b=zeEtxW0Dh1+4uh
-	q77bhIrg9k0PS3O3bPS4PY4/pDSYHEdADjAQEfn/t8Wg8hRBDabbyfiCwLQAPMBjeHx/qNCqKDCnJ
-	i0lM0rThPla0f4nY86rJTRgKAvdSPQ2ucnhbgdkBXGO6YpEB1iHbmGyegxDWd/Z/01OWrLoReLbTw
-	yHw/vTfHeBE3aJt8wv95YiT8ttPI38JpNUO/UPZwCRuJiD6KNs7Hngb8ufy1NFBBHHhGLXUij/Qv2
-	tqjSGxts+sXztWa5NpwaKUlmf7gv9ME1C94stD9DgWIULtvnIveiYyG2DYC5Bf0a991DX7MOyoKQB
-	7t+q24SgL4bLgDjr/hmw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zhbu0TIOA9lb5OPzLj+uRLLfF+nTvdMPTF64n2qStGA=; b=tFMF8usRqT7gkT
+	Ge4UWcVeJ8l/ktbuUZ9aP/sMp7q0zJ73XdJvejDYsUn9No90ds4xHlpK6yjuD/ffJHqMls2o8RXBT
+	6k4WeiQ/QyQvBT52n0BqbbrYe0kCADh0GfX5z7qRAYDI9Hqgw9MLGN3e8CLhTXe5YB3U1i/p9sxNW
+	wcxullEVDzKdxal03SmKwox3p08amV/BfUvZMyWBSHPTl50TobrhKu4IAsWQ41TzAXk21qD/hiI0n
+	TIIHODyJRBS/2BrTFOnch9upXZ9zksKQPza/juwPYoKNxUdleUY7OFRZYWtCecku4PRAyf730yCsO
+	u6z8UBYPf0qlikzC1JrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkLo2-00A7Kg-BL; Fri, 29 Apr 2022 08:16:50 +0000
-Received: from relay12.mail.gandi.net ([217.70.178.232])
+	id 1nkMAl-00AEc0-Em; Fri, 29 Apr 2022 08:40:19 +0000
+Received: from smtp2.axis.com ([195.60.68.18])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkLny-00A7GF-Dx
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 08:16:48 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id C3545200003;
- Fri, 29 Apr 2022 08:16:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1651220200;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=RcuqZnYHQxKLgoxggRWjAXqr7/fqSK47D92u/FiDLDg=;
- b=g+AcK2B7JRyT4bac/ldD8VgleEEN/BYQIdNdAilo+nIaIXIigb3ZmX3wru4D0e17Mt6UCW
- +dLVh9MjrRaYYszZzYaZiWs6F46AzGJnNvWjyglnJ8l7Z5LhwhgLiWFe32I+Xg1x/MZbcD
- 4KFcv1PHiGJceFgFtUHdE1IC+3ZpiLgOHwSA+deFyxYQBNEtzJ/JWiibij+KK0GSi4jmGw
- Hk6we4H/dswxY2lqVJ7FeocacC2+PjK5BsRGG7T9rpa9EpOkbwJsSdvnjyvRBLqY9HtgXy
- +z/XmCjSeo81RFx26fwH6tYzx17URFAyLeaH3W/5NJ3fhyfLKZCOnLLb6ieGVQ==
-Date: Fri, 29 Apr 2022 10:16:38 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rickard Andersson <rickaran@axis.com>
-Cc: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <rickard314.andersson@gmail.com>
-Subject: Re: [PATCH] MTD: NAND: Select timings for Kioxia TH58NVG3S0HBAI4
-Message-ID: <20220429101638.14719910@xps13>
-In-Reply-To: <20220429080549.29236-1-rickaran@axis.com>
-References: <20220429080549.29236-1-rickaran@axis.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ id 1nkMAW-00AEWc-1O
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 08:40:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1651221604;
+ x=1682757604;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=IJrwqcxhRxiJb00G97DLL+BjIscuo7iLEiybCPMtAmM=;
+ b=DByxrnD2awBjaVcD0Un2hFgBwp8+M7torBhjnLto8eMBF47lYgTyVz2a
+ jL9th6Zn8eiARU8mRiXHBCa+hrkE8yKOarv2v5XyC4y+7C7haNIJP8GKZ
+ Ff8P0EancyIdvgnwUl7akHrWRRJUYtE3Ks2Ur8yFwR6uCCE8V3xXiFVJS
+ VSmW9zZMqD5YfZGBw904QkbHF563iAEbeIQlzIrkgFiTs3OCZ/fDLMekj
+ IvYASxFZ5SZl18e1a3RTnWDncVC4/1RJWMGIB8wECB8d1xLnoOtyepJeG
+ /GOWaZXFE0QYXWgFSZwo8fyV40uyYuoEv+3i3Qat58dAsH+nYUS/vPIQB Q==;
+From: Rickard Andersson <rickaran@axis.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>
+CC: <rickaran@axis.com>, <rickard314.andersson@gmail.com>
+Subject: [PATCH] mtd: rawnand: kioxia: Add support for TH58NVG3S0HBAI4
+Date: Fri, 29 Apr 2022 10:39:31 +0200
+Message-ID: <20220429083931.26795-1-rickaran@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail03w.axis.com
+ (10.20.40.9)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220429_011646_841737_327E42FC 
-X-CRM114-Status: GOOD (  16.18  )
+X-CRM114-CacheID: sfid-20220429_014004_458456_DE3A5B79 
+X-CRM114-Status: UNSURE (   9.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,51 +64,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgUmlja2FyZCwKCnJpY2thcmFuQGF4aXMuY29tIHdyb3RlIG9uIEZyaSwgMjkgQXByIDIwMjIg
-MTA6MDU6NDkgKzAyMDA6Cgo+IEZyb206IFJpY2thcmQgeCBBbmRlcnNzb24gPHJpY2thcmFuQGF4
-aXMuY29tPgo+IAo+IEFkZCB0aW1pbmdzIGZvciBLaW94aWEvVG9zaGliYSBUSDU4TlZHM1MwSEJB
-STQuIFRpbWluZ3MKPiBmb3IgdGhpcyBtZW1vcnkgbWF0Y2hlcyB0aGUgdGltaW5ncyBzZWxlY3Rl
-ZCBmb3IKPiBUSDU4TlZHMlMzSEJBSTQuCj4gCj4gVGhpcyBwYXRjaCBpbmNyZWFzZXMgZXJhc2Vi
-bG9jayB3cml0ZSBzcGVlZCBmcm9tIDUyNDggS2lCL3MKPiB0byA2ODY0IEtpQi9zIGFuZCBlcmFz
-ZSBibG9jayByZWFkIHNwZWVkIGZyb20gODU0MiBLaUIvcwo+IHRvIDE4MzYwIEtpQi9zCj4gCj4g
-VGVzdGVkIG9uIGkuTVg2U1guCgpQbGVhc2UgY2hhbmdlIHRoZSB0aXRsZSB0byBzb21ldGhpbmcg
-bGlrZToKIm10ZDogcmF3bmFuZDoga2lveGlhOiBBZGQgc3VwcG9ydCBmb3IgVEg1OE5WRzNTMEhC
-QUk0IgoKQW5kIHdlJ2xsIGJlIGdvb2QuCgo+IAo+IFNpZ25lZC1vZmYtYnk6IFJpY2thcmQgeCBB
-bmRlcnNzb24gPHJpY2thcmFuQGF4aXMuY29tPgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jh
-dy9uYW5kX2lkcy5jICAgICB8IDMgKysrCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfdG9z
-aGliYS5jIHwgNiArKysrLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDIg
-ZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRf
-aWRzLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2lkcy5jCj4gaW5kZXggZDY0YWRiZDFj
-ZTZiLi44OGMyNDQwYjQ3ZDggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
-ZF9pZHMuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfaWRzLmMKPiBAQCAtNjEs
-NiArNjEsOSBAQCBzdHJ1Y3QgbmFuZF9mbGFzaF9kZXYgbmFuZF9mbGFzaF9pZHNbXSA9IHsKPiAg
-CXsiVEg1OE5WRzJTM0hCQUk0IDRHIDMuM1YgOC1iaXQiLAo+ICAJCXsgLmlkID0gezB4OTgsIDB4
-ZGMsIDB4OTEsIDB4MTUsIDB4NzZ9IH0sCj4gIAkJICBTWl8ySywgU1pfNTEyLCBTWl8xMjhLLCAw
-LCA1LCAxMjgsIE5BTkRfRUNDX0lORk8oOCwgU1pfNTEyKSB9LAo+ICsJeyJUSDU4TlZHM1MwSEJB
-STQgOEcgMy4zViA4LWJpdCIsCj4gKwkJeyAuaWQgPSB7MHg5OCwgMHhkMywgMHg5MSwgMHgyNiwg
-MHg3Nn0gfSwKPiArCQkgIFNaXzRLLCBTWl8xSywgU1pfMjU2SywgMCwgNSwgMjU2LCBOQU5EX0VD
-Q19JTkZPKDgsIFNaXzUxMil9LAo+ICAKPiAgCUxFR0FDWV9JRF9OQU5EKCJOQU5EIDRNaUIgNVYg
-OC1iaXQiLCAgIDB4NkIsIDQsIFNaXzhLLCBTUF9PUFRJT05TKSwKPiAgCUxFR0FDWV9JRF9OQU5E
-KCJOQU5EIDRNaUIgMywzViA4LWJpdCIsIDB4RTMsIDQsIFNaXzhLLCBTUF9PUFRJT05TKSwKPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF90b3NoaWJhLmMgYi9kcml2ZXJz
-L210ZC9uYW5kL3Jhdy9uYW5kX3Rvc2hpYmEuYwo+IGluZGV4IGNmNGYzNzk1OTQyMS4uZDNkMzRk
-NzE5MjFmIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfdG9zaGliYS5j
-Cj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF90b3NoaWJhLmMKPiBAQCAtMjg3LDgg
-KzI4NywxMCBAQCBzdGF0aWMgaW50IHRvc2hpYmFfbmFuZF9pbml0KHN0cnVjdCBuYW5kX2NoaXAg
-KmNoaXApCj4gIAlpZiAoIXN0cm5jbXAoIlRDNThOVkcwUzNFIiwgY2hpcC0+cGFyYW1ldGVycy5t
-b2RlbCwKPiAgCQkgICAgIHNpemVvZigiVEM1OE5WRzBTM0UiKSAtIDEpKQo+ICAJCXRjNThudmcw
-czNlX2luaXQoY2hpcCk7Cj4gLQlpZiAoIXN0cm5jbXAoIlRINThOVkcyUzNIQkFJNCIsIGNoaXAt
-PnBhcmFtZXRlcnMubW9kZWwsCj4gLQkJICAgICBzaXplb2YoIlRINThOVkcyUzNIQkFJNCIpIC0g
-MSkpCj4gKwlpZiAoKCFzdHJuY21wKCJUSDU4TlZHMlMzSEJBSTQiLCBjaGlwLT5wYXJhbWV0ZXJz
-Lm1vZGVsLAo+ICsJCSAgICAgc2l6ZW9mKCJUSDU4TlZHMlMzSEJBSTQiKSAtIDEpKSB8fAo+ICsJ
-ICAgICghc3RybmNtcCgiVEg1OE5WRzNTMEhCQUk0IiwgY2hpcC0+cGFyYW1ldGVycy5tb2RlbCwK
-PiArCQkgICAgIHNpemVvZigiVEg1OE5WRzNTMEhCQUk0IikgLSAxKSkpCj4gIAkJdGg1OG52ZzJz
-M2hiYWk0X2luaXQoY2hpcCk7Cj4gIAo+ICAJcmV0dXJuIDA7CgoKVGhhbmtzLApNaXF1w6hsCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGlu
-dXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+From: Rickard x Andersson <rickaran@axis.com>
+
+Add timings for Kioxia/Toshiba TH58NVG3S0HBAI4. Timings
+for this memory matches the timings selected for
+TH58NVG2S3HBAI4.
+
+This patch increases eraseblock write speed from 5248 KiB/s
+to 6864 KiB/s and erase block read speed from 8542 KiB/s
+to 18360 KiB/s
+
+Tested on i.MX6SX.
+
+Signed-off-by: Rickard x Andersson <rickaran@axis.com>
+---
+ drivers/mtd/nand/raw/nand_ids.c     | 3 +++
+ drivers/mtd/nand/raw/nand_toshiba.c | 6 ++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+index d64adbd1ce6b..88c2440b47d8 100644
+--- a/drivers/mtd/nand/raw/nand_ids.c
++++ b/drivers/mtd/nand/raw/nand_ids.c
+@@ -61,6 +61,9 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
+ 		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
++	{"TH58NVG3S0HBAI4 8G 3.3V 8-bit",
++		{ .id = {0x98, 0xd3, 0x91, 0x26, 0x76} },
++		  SZ_4K, SZ_1K, SZ_256K, 0, 5, 256, NAND_ECC_INFO(8, SZ_512)},
+ 
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index cf4f37959421..d3d34d71921f 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -287,8 +287,10 @@ static int toshiba_nand_init(struct nand_chip *chip)
+ 	if (!strncmp("TC58NVG0S3E", chip->parameters.model,
+ 		     sizeof("TC58NVG0S3E") - 1))
+ 		tc58nvg0s3e_init(chip);
+-	if (!strncmp("TH58NVG2S3HBAI4", chip->parameters.model,
+-		     sizeof("TH58NVG2S3HBAI4") - 1))
++	if ((!strncmp("TH58NVG2S3HBAI4", chip->parameters.model,
++		     sizeof("TH58NVG2S3HBAI4") - 1)) ||
++	    (!strncmp("TH58NVG3S0HBAI4", chip->parameters.model,
++		     sizeof("TH58NVG3S0HBAI4") - 1)))
+ 		th58nvg2s3hbai4_init(chip);
+ 
+ 	return 0;
+-- 
+2.20.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
