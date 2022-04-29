@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28BB7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 04:18:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBBF2C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 04:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Mf4nI2XmKcakIMQQMk9CmgEBKSv26L8CxaLScSnDzqA=; b=001RaPG+H20d4k
-	N8jTH8rNW8NM5tf79NafGIk2tkXO6Gp7I5CUD1348z/ssqSPfem+2SNAk7AA2N+rchoVKka+Jbgzv
-	N7Dibp5rVdpteqFAlKXX55BWc7oudAUfMveR5R843IK03Bi59pAoXTqVHHX8XP5+70VqIf2NwSdhX
-	d8heoebe3fdNXEmff4POacBMkaYTGVsUySmkd3gswQBaACGQ7cc/jhHjh7hw3cj+ZZWwws599mQ01
-	dmazp2mAY4XyF2lV9xXQ6kJc2FK8MfVSnQoZYH3Uh5wkiPTyswvrjwhmQdu4fEqK7GZSpfrzQ5hQ+
-	eVCp9APnyC3kxfKP0QCg==;
+	List-Owner; bh=udcSh6UBxtfknfUIJIcqtxJTXzFHMMgUph7KCrGqi34=; b=y+/UbR2zIhCGAt
+	F+zF9DahxRJMTBvQCbUnH0To5+eLgZBiyLj42b42pFg7lbevxRCzXARQhne7Rugst+m4ZudrKfYE2
+	oPQGe1RZHA6R2fSPXWY16JkKPD7VL6qDJ4ZP5nhvYkA6iBo6ijtjeCjwbaxuiU66AaQhNslsCI/Lu
+	klDxF3KQ2I9mrfFLv1IUzU015z2mhBQ1Mx2CXVESMP7+N8CUMKjsWilN7AL5lN6KpF8JpwUDVaMgv
+	L9rrOmlET2N2dA4B6Mk1S3PdiaMlxxqRDn8lY+qPPeYs+8rNdJIW8eHMMZZhyzPbMEFcJCGTc8xM7
+	wYrhBw+Dhn/bCMQEoctQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkI5a-009W1O-5M; Fri, 29 Apr 2022 04:18:42 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nkIhJ-009YgO-2H; Fri, 29 Apr 2022 04:57:41 +0000
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkI5X-009Vye-NQ
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 04:18:41 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23T4ILPd116781;
- Thu, 28 Apr 2022 23:18:21 -0500
+ id 1nkIhG-009Yfp-Cu
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 04:57:40 +0000
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23T4vXBG005471;
+ Thu, 28 Apr 2022 23:57:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1651205901;
- bh=IU5qN/m9vf7a5xu5+NjS2c5sZ6lm7tv5VMviUNrWiBU=;
+ s=ti-com-17Q1; t=1651208253;
+ bh=0TEme5eDbaOmRzD/F/IiJHrzxTY/gXFTqT4rl9ovOyw=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=xfbYQj8BUdgb5W576nT6+0j7U7V82nvFtEjKIC6wIWV4+2q3i41EqypVnxT5OENjQ
- 3/184nL1x1N77Szw4pydxBwF5eqbxRCz2TnlrNq6ofiKDnQIEkqmYYFhV02mg40Eff
- C89Cr9BHJkPplrPbpklcMpOm06pTYXmqzsjWGrNk=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23T4ILU6096763
+ b=qKtvVzBfTQi1uGFBbzfeNT1pQm2NlPcJIScDCIqwxLXI101QMV++jdfQnGmvpXWyS
+ a1ZvtUpdMa0KjnOkV+7pYUZzvxsb4s8EoG+w/ZwTEeLunnSp68PpwNP3WjzvYPQJ8e
+ gSzMqYCUEKi4KFwAS6nT62kcECv5y5E1RCnRQ5nU=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+ by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23T4vXjb019774
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 28 Apr 2022 23:18:21 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 28 Apr 2022 23:57:33 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 28
- Apr 2022 23:18:20 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2022 23:57:32 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 28 Apr 2022 23:18:20 -0500
+ Frontend Transport; Thu, 28 Apr 2022 23:57:32 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23T4IKDk014910;
- Thu, 28 Apr 2022 23:18:20 -0500
-Date: Fri, 29 Apr 2022 09:48:19 +0530
+ by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23T4vWFE097281;
+ Thu, 28 Apr 2022 23:57:32 -0500
+Date: Fri, 29 Apr 2022 10:27:31 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
 To: Michael Walle <michael@walle.cc>
 CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
  <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
  Raghavendra <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
  <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: export spi_nor_hwcaps_pp2cmd()
-Message-ID: <20220429041819.pwfixbh4v65yasbg@ti.com>
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: expose internal parameters via
+ debugfs
+Message-ID: <20220429045731.sjhlkyxfxw4zvfxt@ti.com>
 References: <20220428122840.1496876-1-michael@walle.cc>
+ <20220428122840.1496876-2-michael@walle.cc>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220428122840.1496876-1-michael@walle.cc>
+In-Reply-To: <20220428122840.1496876-2-michael@walle.cc>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220428_211839_964679_1E061670 
-X-CRM114-Status: UNSURE (   6.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220428_215738_559258_7A253D25 
+X-CRM114-Status: GOOD (  31.23  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,12 +85,199 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Michael,
+
 On 28/04/22 02:28PM, Michael Walle wrote:
-> The function will also be used by the debugfs module.
+> There is no way to gather all information to verify support for a new
+> flash chip. Also if you want to convert an existing flash chip to the
+> new SFDP parsing, there is not enough information to determine if the
+> flash will work like before. To ease this development, expose internal
+> parameters via the debugfs.
 > 
 > Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> changes since rfc (v1):
+>  - rebase onto latest next
+>  - drop spi_nor_debugfs_unregister() and use devm_add_action() instead
+>  - output style fixes, (0x prefix, whitespace around '|')
+> 
+>  drivers/mtd/spi-nor/Makefile  |   1 +
+>  drivers/mtd/spi-nor/core.c    |   2 +
+>  drivers/mtd/spi-nor/core.h    |   6 +
+>  drivers/mtd/spi-nor/debugfs.c | 248 ++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h   |   2 +
+>  5 files changed, 259 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/debugfs.c
+> 
+> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> index 6b904e439372..e347b435a038 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
+>  spi-nor-objs			+= winbond.o
+>  spi-nor-objs			+= xilinx.o
+>  spi-nor-objs			+= xmc.o
+> +spi-nor-$(CONFIG_DEBUG_FS)	+= debugfs.o
+>  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+>  
+>  obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index dd2ead5ebe9f..9cf058d617a1 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3157,6 +3157,8 @@ static int spi_nor_probe(struct spi_mem *spimem)
+>  	if (ret)
+>  		return ret;
+>  
+> +	spi_nor_debugfs_register(nor);
+> +
+>  	/*
+>  	 * None of the existing parts have > 512B pages, but let's play safe
+>  	 * and add this logic so that if anyone ever adds support for such
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 74fc32067a32..078645ffd987 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -705,4 +705,10 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
+>  	return container_of(mtd, struct spi_nor, mtd);
+>  }
+>  
+> +#ifdef CONFIG_DEBUG_FS
+> +void spi_nor_debugfs_register(struct spi_nor *nor);
+> +#else
+> +static inline void spi_nor_debugfs_register(struct spi_nor *nor) {}
+> +#endif
+> +
+>  #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
+> diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
+> new file mode 100644
+> index 000000000000..2778733ed72c
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/debugfs.c
+> @@ -0,0 +1,248 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/mtd/spi-nor.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/spi/spi-mem.h>
+> +#include <linux/debugfs.h>
+> +
+> +#include "core.h"
+> +
+> +static struct dentry *rootdir;
+> +
+> +#define SNOR_F_NAME(name) [ilog2(SNOR_F_##name)] = #name
+> +static const char *const snor_f_names[] = {
+> +	SNOR_F_NAME(HAS_SR_TB),
+> +	SNOR_F_NAME(NO_OP_CHIP_ERASE),
+> +	SNOR_F_NAME(BROKEN_RESET),
+> +	SNOR_F_NAME(4B_OPCODES),
+> +	SNOR_F_NAME(HAS_4BAIT),
+> +	SNOR_F_NAME(HAS_LOCK),
+> +	SNOR_F_NAME(HAS_16BIT_SR),
+> +	SNOR_F_NAME(NO_READ_CR),
+> +	SNOR_F_NAME(HAS_SR_TB_BIT6),
+> +	SNOR_F_NAME(HAS_4BIT_BP),
+> +	SNOR_F_NAME(HAS_SR_BP3_BIT6),
+> +	SNOR_F_NAME(IO_MODE_EN_VOLATILE),
+> +	SNOR_F_NAME(SOFT_RESET),
+> +	SNOR_F_NAME(SWP_IS_VOLATILE),
+> +};
+> +#undef SNOR_F_NAME
 
-Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+You said you would add a comment here. Changed your mind?
+
+> +
+> +static const char *spi_nor_protocol_name(enum spi_nor_protocol proto)
+> +{
+> +	switch (proto) {
+> +	case SNOR_PROTO_1_1_1:     return "1S-1S-1S";
+> +	case SNOR_PROTO_1_1_2:     return "1S-1S-2S";
+> +	case SNOR_PROTO_1_1_4:     return "1S-1S-4S";
+> +	case SNOR_PROTO_1_1_8:     return "1S-1S-8S";
+> +	case SNOR_PROTO_1_2_2:     return "1S-2S-2S";
+> +	case SNOR_PROTO_1_4_4:     return "1S-4S-4S";
+> +	case SNOR_PROTO_1_8_8:     return "1S-8S-8S";
+> +	case SNOR_PROTO_2_2_2:     return "2S-2S-2S";
+> +	case SNOR_PROTO_4_4_4:     return "4S-4S-4S";
+> +	case SNOR_PROTO_8_8_8:     return "8S-8S-8S";
+> +	case SNOR_PROTO_1_1_1_DTR: return "1D-1D-1D";
+> +	case SNOR_PROTO_1_2_2_DTR: return "1D-2D-2D";
+> +	case SNOR_PROTO_1_4_4_DTR: return "1D-4D-4D";
+> +	case SNOR_PROTO_1_8_8_DTR: return "1D-8D-8D";
+> +	case SNOR_PROTO_8_8_8_DTR: return "8D-8D-8D";
+> +	}
+> +
+> +	return "<unknown>";
+> +}
+> +
+[...]
+> +
+> +static void spi_nor_debugfs_unregister(void *data)
+> +{
+> +	struct spi_nor *nor = data;
+> +
+> +	debugfs_remove(nor->debugfs_root);
+> +	nor->debugfs_root = NULL;
+> +}
+> +
+> +void spi_nor_debugfs_register(struct spi_nor *nor)
+> +{
+> +	struct dentry *d;
+> +	int ret;
+> +
+> +	/* Create rootdir once. Will never be deleted again. */
+> +	if (!rootdir)
+> +		rootdir = debugfs_create_dir("spi-nor", NULL);
+
+If I compile SPI NOR as module, I insmod it, rmmod it, and then insmod 
+it again, I get:
+
+	[  360.623465] spi-nor spi0.0: mt35xu512aba (65536 Kbytes)
+	[  360.623478] debugfs: Directory 'spi-nor' with parent '/' already present!
+	[  360.632237] spi-nor spi1.0: mt25qu512a (65536 Kbytes)
+
+I guess when you remove the module, rootdir also gets destroyed, and 
+then gets re-initialized on probing again. I am not familiar enough with 
+the debugfs APIs to suggest a fix though.
+
+Patch looks good to me otherwise.
+
+> +
+> +	ret = devm_add_action(nor->dev, spi_nor_debugfs_unregister, nor);
+> +	if (ret)
+> +		return;
+> +
+> +	d = debugfs_create_dir(dev_name(nor->dev), rootdir);
+> +	nor->debugfs_root = d;
+> +
+> +	debugfs_create_file("params", 0444, d, nor, &spi_nor_params_fops);
+> +	debugfs_create_file("capabilities", 0444, d, nor,
+> +			    &spi_nor_capabilities_fops);
+> +}
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 5e25a7b75ae2..7d43447768ee 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -365,6 +365,7 @@ struct spi_nor_flash_parameter;
+>   * @write_proto:	the SPI protocol for write operations
+>   * @reg_proto:		the SPI protocol for read_reg/write_reg/erase operations
+>   * @sfdp:		the SFDP data of the flash
+> + * @debugfs_root:	pointer to the debugfs directory
+>   * @controller_ops:	SPI NOR controller driver specific operations.
+>   * @params:		[FLASH-SPECIFIC] SPI NOR flash parameters and settings.
+>   *                      The structure includes legacy flash parameters and
+> @@ -394,6 +395,7 @@ struct spi_nor {
+>  	u32			flags;
+>  	enum spi_nor_cmd_ext	cmd_ext_type;
+>  	struct sfdp		*sfdp;
+> +	struct dentry		*debugfs_root;
+>  
+>  	const struct spi_nor_controller_ops *controller_ops;
+>  
+> -- 
+> 2.30.2
+> 
 
 -- 
 Regards,
