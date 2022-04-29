@@ -4,71 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B24C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 22:07:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13FA8C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 23:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3nc5taTbAcCGIsvNEFQHlwiCdwzxmO26zQP5lFjQ8ik=; b=D12Om0LOrpPmtu
-	mA/L3tetooUp+lxuAwaH7ue4AGyBK5QUPa/9r11sXyzf9uSeMk4NV5D1wc8eP6kLn2r0xgNhebPOG
-	hvhMojRU9Nf3yeO5oZ+DxOoD/j88z1aQ5wBLuDn6UXdmy7+tq6R2bSQdZaWommm+FQtjtO2dMthFi
-	fFulc2DXpZofYhFHQqmNn7KzlhJ2DcJx2IXZlNFfGeel9TjXTcgMRwig6iQlERtwXjdeks/5OYN6q
-	Wbl1WxTs5wSbXNzHc3GvvTaAySyeyzmRpo1SN5x3sMeWrey0YXkY6w4lnAtUhSdAwp23bm4yF4ZZG
-	VYmg9T1vioM/XQUZER+A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=ip3/oH/VROeZESJi6E2d8M0SXFAgDG/vZnQrn8cSHeE=; b=19pRHAMaLaWdrG
+	zVz1ECjhN/tLeE556xG0SVp8WSn8zd8KrBVzbi1E32bU+k+4aV5tD7obLIwd+sKSPdarwUgZ1N0/3
+	VH+X9BCbDukAUKMvlfSjpOTiXjGoY2+rJt4jOpg/x5ks4A70yaJIQLgHed9ombaJutkUXynt8FpUs
+	uZDwFicmaW6dPjaLEzufu1ILRdGbHnML4ebc+fotUfk4K9mfSQltlJGosrfIkiJtCPWBBVKgHND0l
+	dOYhaU3n8zK8m+HMvwu3IyUVevFCyr3HhvDhg0lrfLEghZVTiPx6zK/7nKTF6JlUnVvHlhdqFmnnH
+	f0/Cczuis0oIg04Eqgvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkYm5-00Crlv-Mo; Fri, 29 Apr 2022 22:07:41 +0000
-Received: from smtp5.goneo.de ([85.220.129.30])
+	id 1nkZk6-00CzeI-9P; Fri, 29 Apr 2022 23:09:42 +0000
+Received: from mail-oi1-x22b.google.com ([2607:f8b0:4864:20::22b])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkYm2-00Crkb-15
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 22:07:40 +0000
-Received: from hub2.goneo.de (hub2.goneo.de [IPv6:2001:1640:5::8:53])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by smtp5.goneo.de (Postfix) with ESMTPS id 46EA610A1EAC;
- Sat, 30 Apr 2022 00:07:31 +0200 (CEST)
-Received: from hub2.goneo.de (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by hub2.goneo.de (Postfix) with ESMTPS id A13F310A3308;
- Sat, 30 Apr 2022 00:07:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgemail.eu;
- s=DKIM001; t=1651270049;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=1q+z6VpgMW5CfLYFfaxK2CKjHdBC5T/I0iZwU2I+q4M=;
- b=miGncHUWQkWEToVinxoGbYs7woN+EMNgCygzC4lZuM7Law5PK59kF7wiK0kDFKj3yYDplE
- O8lqi7BAv+hYloSs5MuBLxQLnN+6ej3wEJ5wmk1flRGywS2G4G+935QF/pPvksjXrmrpCe
- hilQPqHKBdBU2F7I/c4hTdFDviyRzk52K3QpWJBGNoX/embP6/bK/Gw1K5GphPQhj85Fqc
- YaHZ1J62+ffAeRIK5s8rSWCrmtI2EHUH11mCothcx5z3aImi4KeebuS5qsCnVjrVeSp6k+
- 97gAXTfWlAHUrip7tMbzrCdmIo5NDlOM84b/iSP26KWZarTGvYpDC5LKdbnY/Q==
-Received: from brot.fritz.box (ip-178-201-230-219.um46.pools.vodafone-ip.de
- [178.201.230.219])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by hub2.goneo.de (Postfix) with ESMTPSA id A1C1D10A3306;
- Sat, 30 Apr 2022 00:07:28 +0200 (CEST)
-From: "Leon M. George" <leon@georgemail.eu>
-To: Pratyush Yadav <p.yadav@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: "Leon M. George" <leon@georgemail.eu>
-Subject: [PATCH] mtd: spi-nor: support eon en25qh256a variant
-Date: Sat, 30 Apr 2022 00:07:16 +0200
-Message-Id: <20220429220716.118584-1-leon@georgemail.eu>
-X-Mailer: git-send-email 2.35.1
+ id 1nkZjt-00CzZ9-GU; Fri, 29 Apr 2022 23:09:31 +0000
+Received: by mail-oi1-x22b.google.com with SMTP id y63so10035622oia.7;
+ Fri, 29 Apr 2022 16:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=sender:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=43bhXKjvki5l9d/uYFdijwNa1GUErzr1H3q463hR+XU=;
+ b=OUSt6wkRUbg0ovBrwSGrseeTfVqA3atJE26IGGL8DNDKMbVWyzV7fWqixesYb9S/mA
+ rgBp/vgWVmZ/2SlxqdaVKFisC/DX2eo4pEgNEmTUveV61siwDvexnXReKJ4KInzJ+JVf
+ qFRYIk57Zf7KE5IqQd6E9kuwLyNvXqeY18u9sXPldsZHCbpZQ9kw31XwNt/jpYsmggt1
+ 3DzogSdIaSMtewj0hqjuAW3EwbG0+z+yCYsMAftASTL8pYSQ3/TIzpEEpEvE1aCdKITD
+ c0o8+XWDHiHzhST5JtA4/c6tGuJLD552k5cdjIV4SeeCvbAOGItN9qS8zGZ2A17U8O+I
+ msTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+ :subject:content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=43bhXKjvki5l9d/uYFdijwNa1GUErzr1H3q463hR+XU=;
+ b=qLYRrqYV9JVirloc0I6h+lRQw5KQULvEjMnu4Lr1hKA3i4PrTVBkijf6WwB63txdgN
+ DcFsR0aU5wyOo2twxilqpXlTM6PPgi4UFT5ToJ4iAcNp3yw9992aVE4WJkvKn45M8IzJ
+ 1FwKf/NejnI6z3fvukimMdSHRTdNQz+Y0GzCH/8qiiIHztjhVniseRn6eaOIB4b4dDnT
+ BEKwSF7979abjlM2SSGfLxEwaUQjGYh46uwU871oNwuBar0IvI323QzmiPEIx7vDjTFX
+ kn9Bs1dMpSyrzbL7SSBAMREDHUOcoXoQi103JBCQ75UCQ2wmkuRizxvLjmE89OzLUKrY
+ 8vKQ==
+X-Gm-Message-State: AOAM532TSflJ3mYzuJEmhDAhwryJkRFSa+vXtOjACzHHtHHEyoXKFZdV
+ eLtJlUiTm+t7KyMyAZlnkYE=
+X-Google-Smtp-Source: ABdhPJwXwAJF7RkFvU52UI/VP0gJxz700pwOLyrX7CYTkoQTpT4bc4rvMjOD84iMZwh8LrG+2Nl3bg==
+X-Received: by 2002:a05:6808:17a7:b0:325:c561:31fb with SMTP id
+ bg39-20020a05680817a700b00325c56131fbmr1544693oib.75.1651273765807; 
+ Fri, 29 Apr 2022 16:09:25 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c?
+ ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id
+ w1-20020a9d77c1000000b0060603221242sm230484otl.18.2022.04.29.16.09.21
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 29 Apr 2022 16:09:24 -0700 (PDT)
+Message-ID: <149509dd-f43d-1b27-4395-81eab4ff3455@roeck-us.net>
+Date: Fri, 29 Apr 2022 16:09:19 -0700
 MIME-Version: 1.0
-X-Rspamd-UID: 191759
-X-Rspamd-UID: 3b6e8c
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Philipp Zabel
+ <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>,
+ Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, Helge Deller
+ <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
+ Linux PM list <linux-pm@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org,
+ USB list <linux-usb@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+References: <20220419163810.2118169-1-arnd@kernel.org>
+ <20220422170530.GA2338209@roeck-us.net>
+ <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
+ <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
+ <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
+ <20220422234150.GA3442771@roeck-us.net>
+ <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
+ <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
+ <CAK8P3a1LzEG1vo+5nMrnL3TOMcbSKJ3u=StcfY8dajV2raUBjA@mail.gmail.com>
+ <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
+ <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
+ <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
+ <6f1b27fa-96d1-4be7-ac6a-762610314f2a@roeck-us.net>
+ <8d6d453a-e6fc-439b-2f34-e60c22fc9e98@roeck-us.net>
+ <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220429_150738_827326_CC24005B 
-X-CRM114-Status: GOOD (  13.68  )
+X-CRM114-CacheID: sfid-20220429_160929_613896_B3FF0A0D 
+X-CRM114-Status: GOOD (  16.34  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,57 +127,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch allows accessing the uppoer 8m on the A variant (EN25QH256A) of
-the EN25QH256 that shares same JEDEC ID.
+On 4/29/22 14:46, Arnd Bergmann wrote:
+> On Fri, Apr 29, 2022 at 10:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>> On 4/29/22 10:48, Guenter Roeck wrote:
+>>>
+>>> I tried the pxa-multiplatform-5.18 branch. Its failures match
+>>> those in v5.18-rc1.
+>>>
+>>
+>> Uuh, wait, the build wasn't complete. There are still some
+>> failures. I'll report later.
+> 
+> Sorry about the breakage, I got a few more reports about minor build errors
+> and warnings, the newly uploaded branches should address all of the ones
+> I got reports for.
+> 
 
-Without this patch, addr_with is detected to be '4' but the read_opcode is
-a plain READ (supporting only 3 byte addresses).
-Setting PARSE_SFDP is enough to detect the read_opcode to READ_4B.
-READ_4B is only supported on the A variant.
+Unless I am missing something the failures are the same as before. See
+https://kerneltests.org/builders/qemu-arm-testing/builds/74/steps/qemubuildcommand/logs/stdio
 
-Both support 4-byte address mode (spi_nor_set_4byte_addr_mode) but that is
-prone to breaking on unexpected reboots if the reset pin isn't connected
-(broken-flash-reset).
+This is with v5.18-rc1-49-ge8ab9a9a2745 which is the tip of
+soc/pxa-multiplatform-5.18.
 
-The no-A variant supports a 'high bank latch mode' that affects read,
-program, and erase commands - similar to the extended address register
-(EAR).
-The HBL bit is manipulated using the ENHBL (0x67) and EXHBL (0x98)
-opcodes.
+Should I check a different branch ?
 
-Should it become necessary to distinguish the two variants in the future,
-the A variant sets the SNOR_HWCAPS_READ_1_1_4 SFDP param - the no-A
-variant doesn't.
-
-Tested with and without fast read on the A variant only.
-
-Signed-off-by: Leon M. George <leon@georgemail.eu>
----
- drivers/mtd/spi-nor/eon.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
-index 8c1c57530281..50a11053711f 100644
---- a/drivers/mtd/spi-nor/eon.c
-+++ b/drivers/mtd/spi-nor/eon.c
-@@ -25,7 +25,8 @@ static const struct flash_info eon_nor_parts[] = {
- 	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
--	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512) },
-+	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512)
-+		PARSE_SFDP },
- 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
- 		NO_SFDP_FLAGS(SECT_4K) },
- };
--- 
-2.35.1
-
+Thanks,
+Guenter
 
 ______________________________________________________
 Linux MTD discussion mailing list
