@@ -4,70 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD97C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 10:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5512EC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 10:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DgEm5Q08DgOvjhGigr+kEGIjxOzQ7Qvc0PF5EjnFXcQ=; b=THH7OGufpUbRHM
-	p3IDwH3u05bxFyoF689GASqjXA3StHnvQrxRtgzuEdXkYuEj4hL8EnRfeCcyUhyrkxvCaHA2vQJZ6
-	KUo3iKPGeGY2kmi5N14Y5dxXWNZPe2ZO0143xrOykQ5dQ9iWxSoZ5p4TLcwNDEB2eprNLG4aHcWFG
-	lj9k+gz/wzZ6ITM4kQnFnitzVOtaV7ip47Uwyzg166YiwCjGL46Ed65alu6BIHVFtB49fCRSmyFPl
-	TGF+XKY+QbTq7bSQ8lH1S4S9UbUqb3Q8IUAQswmD5JeMsLSxW1mzmc3YiIxfXve5CXjDuIemo2cQL
-	Znu3XWBbdTCh5hcEmV3g==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=O/nZ+lh5nNAJpO178YwD22PaGBSiokfrfxg7CKdGKGQ=; b=uh0quPwaVHO76v
+	SVT9W1z1GtJpzA8tcgTDSOmUn60JmYD+p+CGImBCUyAagC37XzpMUnh8rgoopiZfL8Ce/HjlFW3E/
+	gwQFmr4ir38afN9c2Z7bSdWtsx+23ehpjl3qML+NnBh5hw6yNNuFit2U6j7t49f7W71ME2elAms/3
+	fTOjrm6430eZjEsJHcKlJn4W4OefMEpuKCLWPfv8HQPvUW2Xem9Z90z8t2jUsK/KrhUO5G2Ez+U/s
+	EIopoUvmKa3Co3yXFoHrPPzoIpMZ1cDM/Q6AcNBpPQOQPuO7crXEPdA9zrkKemh3o/mXFZNRkP+co
+	UWwrXJolw9fACuWN5P4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkNoL-00Am6t-Eb; Fri, 29 Apr 2022 10:25:17 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1nkNpP-00AmbX-5G; Fri, 29 Apr 2022 10:26:23 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkNet-00AgUN-MN
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 10:15:33 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23TAFQLn036375;
- Fri, 29 Apr 2022 05:15:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1651227326;
- bh=0CLxmnDtB6/A+kmf8Kcha/AUP+LquXNbEjVqjWdMvYY=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=uFF7B/3//hmiFG9scr6E9P9vIJ+EJ3ECUEU4/n0LGaFynjD+RyMPKOZvsjoAFEEDO
- KTB3+Q8BHO/7OdHtCDydwDOIbDv4FnnqFbMfb2ewkqIdf4zn1vwqHLclFnx/8xfOn0
- yeZNtg45HvMYI965w4kSChGwQd7pYc9JIMtOXQJY=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23TAFQAF092312
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 29 Apr 2022 05:15:26 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 29
- Apr 2022 05:15:26 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 29 Apr 2022 05:15:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23TAFPo5056582;
- Fri, 29 Apr 2022 05:15:26 -0500
-Date: Fri, 29 Apr 2022 15:45:25 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Michael Walle <michael@walle.cc>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mtd: spi-nor: move spi_nor_write_ear() to winbond
- module
-Message-ID: <20220429101525.w2wcnhkxyb46pe2j@ti.com>
-References: <20220429100153.2338501-1-michael@walle.cc>
+ id 1nkNjd-00AjL3-Et
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 10:20:27 +0000
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 334AC22175;
+ Fri, 29 Apr 2022 12:20:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1651227622;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=l+V24OcwdobkdB141ZISP+Wg/V3ea1y5pGdeD+L1PAo=;
+ b=fP5aB2yKEL64hfkxO8SHzG4MsVoHyjFivkLCQjdr17mFouICf0I9aTdaYmQ4GsOAhib8Z6
+ I3vKxVz9P3Pa3sYw8Wa3kz7f69K40B3H4iIaSO8SfNLQrQ2l7PZfrkPnvaD/zMoaLXxyWd
+ Bh9KPgQRlkZ2CAGZce090tijdG1iGM0=
+From: Michael Walle <michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Michael Walle <michael@walle.cc>
+Subject: [PATCH v3 1/2] mtd: spi-nor: export spi_nor_hwcaps_pp2cmd()
+Date: Fri, 29 Apr 2022 12:20:17 +0200
+Message-Id: <20220429102018.2361038-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220429100153.2338501-1-michael@walle.cc>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220429_031531_951217_6A39B5AA 
-X-CRM114-Status: UNSURE (   9.26  )
+X-CRM114-CacheID: sfid-20220429_032025_730202_22EEA0BE 
+X-CRM114-Status: UNSURE (   8.67  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -85,21 +71,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 29/04/22 12:01PM, Michael Walle wrote:
-> The "Extended Address Register" is winbond specific. If the flash is
-> larger than 16MiB and is used in 3 byte address mode, it is used to set
-> the remaining address bits. Move the write_ear() function, the opcode
-> macros and the spimem op template into the winbond module and rename
-> them accordingly.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+The function will also be used by the debugfs module.
 
+Signed-off-by: Michael Walle <michael@walle.cc>
 Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+---
+changes since v2:
+ - none
 
+changes since rfc (v1):
+ - none
+
+ drivers/mtd/spi-nor/core.c | 2 +-
+ drivers/mtd/spi-nor/core.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index a31d7fd45eb8..6f61e97ecd75 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1850,7 +1850,7 @@ int spi_nor_hwcaps_read2cmd(u32 hwcaps)
+ 				  ARRAY_SIZE(hwcaps_read2cmd));
+ }
+ 
+-static int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
++int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
+ {
+ 	static const int hwcaps_pp2cmd[][2] = {
+ 		{ SNOR_HWCAPS_PP,		SNOR_CMD_PP },
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 4788e628c335..007ea9896a06 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -662,6 +662,7 @@ int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+ int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+ 
+ int spi_nor_hwcaps_read2cmd(u32 hwcaps);
++int spi_nor_hwcaps_pp2cmd(u32 hwcaps);
+ u8 spi_nor_convert_3to4_read(u8 opcode);
+ void spi_nor_set_read_settings(struct spi_nor_read_command *read,
+ 			       u8 num_mode_clocks,
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
