@@ -4,59 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96341C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 10:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5226FC4332F
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 10:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bbxaUHAmF2+3pWyGZ8PgLGTv8LyA+EBQOdvB8ezPWcY=; b=AZkggiGUKcwCPR
-	yl1L34mtxVxfeIzBochenmhtyR4CfRAnMO9fFbuz3h0XkyrOcpTClGLFJJ3WOuWTHfqm6vEk09rRF
-	cp8lys+TqxWuJxMDHJmCgXQVG3g6OM0DKp3C1feFU4YBfPNp2xB5alHItHWrDQByJpjPETqum8UiA
-	jIKrSIgHL9SctADHBIiWjsAy8CF4X7QJJRCZh6SzFzUJYQAtzSHmfUCN5wGuUAXL55+rYq4jBYFzM
-	ybSyyrZuwD9h/P3OUg6GQtREM1LPpzQZ3BnxBMSfXpyl3PR+5q9TCCLxjgxA27ioRS0OAu3c1bl7l
-	GLoQQqZ2rCbQXD5my+JQ==;
+	List-Owner; bh=RTc7ICK77hBeGqMkoR9FLbgjD7TcH3iLvmaSzwaRGXg=; b=iFciIbNN+UP8Gn
+	AHE4b80cg0NYWljrEnCMSOOOMTgwdEMy8+QUG8aVgU+gcnfkNwZVXHO2LU99EB5hbFRB7snINK/4X
+	wxULU3EeGnswPTvNvIiU6BVWFXeNiR6akwYgK1dCq5bwUVL9v7JYfPA8R8eO4o5x9s9SioQ2q4AOG
+	+F64otUHOjKOHoVa5+FKi18afN+X0HTMVKrB4J5g6QWTfa/VaCwp5SDsydZcjbVNalX06Ts4KNyX3
+	CA749vtIw1c/ZVDtuJ+B1SdPi5kLRmAn1O7mpvURmFcFgh0/kH7jTpuL5hz0wLwdAvW4KX6FDrR5+
+	wneuECSJnn1Z39eXlywQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkNpX-00Amfk-9H; Fri, 29 Apr 2022 10:26:31 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1nkOEs-00Atp5-H6; Fri, 29 Apr 2022 10:52:42 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkNjc-00AjLG-PJ
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 10:20:27 +0000
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id C23222223E;
- Fri, 29 Apr 2022 12:20:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1651227622;
+ id 1nkOEo-00Atn5-3c
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 10:52:39 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id A5899FF80B;
+ Fri, 29 Apr 2022 10:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1651229556;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=R1S2KNuyjkofgQZU0b5VVloFhnEOc6IXwt6isawlmfE=;
- b=n2fl5/9bsf6jDxTAqh3T7xQwX1dhJWoL952pJUnIQ4GKttYTEke7Sab0j8L54Efp8fkx0Z
- Yc9pQagaPTAQEP/SyR7DdmT+NkMMEdiKe5eLAGVuie4ZzxnvbwB+lU0ElRKoFb7OQcm36N
- nl2XiBoD2zqXRYqHkaB9r7aSO90Lwek=
-From: Michael Walle <michael@walle.cc>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Michael Walle <michael@walle.cc>
-Subject: [PATCH v3 2/2] mtd: spi-nor: expose internal parameters via debugfs
-Date: Fri, 29 Apr 2022 12:20:18 +0200
-Message-Id: <20220429102018.2361038-2-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220429102018.2361038-1-michael@walle.cc>
-References: <20220429102018.2361038-1-michael@walle.cc>
+ bh=wzW9cUh6UOXVytZ7otTBtN11xju/vNGhzQGZ27ZQgbI=;
+ b=R9uxkzpFYbyvxiWMln9FuBgLN77uBY6Nck0tPzEFtFKmWVlyqv4vEun836cJ3IG+hT+S7Y
+ Gj1qus7dsakEk1gWuWdltdmNyQndF89BUy8gIxCcwV4pj+uu3WpG1jDJJS/jvNBsjOEXJg
+ N7/1JaGvq3vNtBfDY6ug3+P5k8EerY63xk2LnXCPuHgQED3nR2XAmOkobvG6vjprZxXDdj
+ fDKrotVfhk2asvBfatN0KD9d7TurbnIIkEJXcx34H1lL0IvksYEPMQBK3N9eUMRViWBiLY
+ p5qfFozZyzIrR7iMLkCXBp+iJrtIVq8Yu9uzoarB3ZQ9NSZJFl4aXeiJdqD7bQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>
+Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 2/3] ARM: dts: r9a06g032: Fix the NAND controller node
+Date: Fri, 29 Apr 2022 12:52:28 +0200
+Message-Id: <20220429105229.368728-3-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220429105229.368728-1-miquel.raynal@bootlin.com>
+References: <20220429105229.368728-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220429_032025_163246_8F7CB3A1 
-X-CRM114-Status: GOOD (  26.07  )
+X-CRM114-CacheID: sfid-20220429_035238_397429_C94C8B26 
+X-CRM114-Status: UNSURE (   7.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,356 +78,27 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is no way to gather all information to verify support for a new
-flash chip. Also if you want to convert an existing flash chip to the
-new SFDP parsing, there is not enough information to determine if the
-flash will work like before. To ease this development, expose internal
-parameters via the debugfs.
+Add the missing power-domains property which is mandatory.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-changes since v2:
- - add comment to enum spi_nor_option_flags
- - fix module unloading/loading
+ arch/arm/boot/dts/r9a06g032.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-changes since rfc (v1):
- - rebase onto latest next
- - drop spi_nor_debugfs_unregister() and use devm_add_action() instead
- - output style fixes, (0x prefix, whitespace around '|')
-
- drivers/mtd/spi-nor/Makefile  |   1 +
- drivers/mtd/spi-nor/core.c    |   2 +
- drivers/mtd/spi-nor/core.h    |   7 +
- drivers/mtd/spi-nor/debugfs.c | 249 ++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |   2 +
- 5 files changed, 261 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/debugfs.c
-
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 6b904e439372..e347b435a038 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
- spi-nor-objs			+= winbond.o
- spi-nor-objs			+= xilinx.o
- spi-nor-objs			+= xmc.o
-+spi-nor-$(CONFIG_DEBUG_FS)	+= debugfs.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- 
- obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 6f61e97ecd75..ce5d69317d46 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3127,6 +3127,8 @@ static int spi_nor_probe(struct spi_mem *spimem)
- 	if (ret)
- 		return ret;
- 
-+	spi_nor_debugfs_register(nor);
-+
- 	/*
- 	 * None of the existing parts have > 512B pages, but let's play safe
- 	 * and add this logic so that if anyone ever adds support for such
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 007ea9896a06..858ef19a94bd 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -114,6 +114,7 @@
- 		   SPI_MEM_OP_NO_ADDR,					\
- 		   SPI_MEM_OP_NO_DATA)
- 
-+/* Keep these in sync with the list in debugfs.c */
- enum spi_nor_option_flags {
- 	SNOR_F_HAS_SR_TB	= BIT(0),
- 	SNOR_F_NO_OP_CHIP_ERASE	= BIT(1),
-@@ -698,4 +699,10 @@ static inline struct spi_nor *mtd_to_spi_nor(struct mtd_info *mtd)
- 	return container_of(mtd, struct spi_nor, mtd);
- }
- 
-+#ifdef CONFIG_DEBUG_FS
-+void spi_nor_debugfs_register(struct spi_nor *nor);
-+#else
-+static inline void spi_nor_debugfs_register(struct spi_nor *nor) {}
-+#endif
-+
- #endif /* __LINUX_MTD_SPI_NOR_INTERNAL_H */
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-new file mode 100644
-index 000000000000..1949905eefea
---- /dev/null
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -0,0 +1,249 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/mtd/spi-nor.h>
-+#include <linux/spi/spi.h>
-+#include <linux/spi/spi-mem.h>
-+#include <linux/debugfs.h>
-+
-+#include "core.h"
-+
-+#define SPI_NOR_DEBUGFS_ROOT "spi-nor"
-+
-+#define SNOR_F_NAME(name) [ilog2(SNOR_F_##name)] = #name
-+static const char *const snor_f_names[] = {
-+	SNOR_F_NAME(HAS_SR_TB),
-+	SNOR_F_NAME(NO_OP_CHIP_ERASE),
-+	SNOR_F_NAME(BROKEN_RESET),
-+	SNOR_F_NAME(4B_OPCODES),
-+	SNOR_F_NAME(HAS_4BAIT),
-+	SNOR_F_NAME(HAS_LOCK),
-+	SNOR_F_NAME(HAS_16BIT_SR),
-+	SNOR_F_NAME(NO_READ_CR),
-+	SNOR_F_NAME(HAS_SR_TB_BIT6),
-+	SNOR_F_NAME(HAS_4BIT_BP),
-+	SNOR_F_NAME(HAS_SR_BP3_BIT6),
-+	SNOR_F_NAME(IO_MODE_EN_VOLATILE),
-+	SNOR_F_NAME(SOFT_RESET),
-+	SNOR_F_NAME(SWP_IS_VOLATILE),
-+};
-+#undef SNOR_F_NAME
-+
-+static const char *spi_nor_protocol_name(enum spi_nor_protocol proto)
-+{
-+	switch (proto) {
-+	case SNOR_PROTO_1_1_1:     return "1S-1S-1S";
-+	case SNOR_PROTO_1_1_2:     return "1S-1S-2S";
-+	case SNOR_PROTO_1_1_4:     return "1S-1S-4S";
-+	case SNOR_PROTO_1_1_8:     return "1S-1S-8S";
-+	case SNOR_PROTO_1_2_2:     return "1S-2S-2S";
-+	case SNOR_PROTO_1_4_4:     return "1S-4S-4S";
-+	case SNOR_PROTO_1_8_8:     return "1S-8S-8S";
-+	case SNOR_PROTO_2_2_2:     return "2S-2S-2S";
-+	case SNOR_PROTO_4_4_4:     return "4S-4S-4S";
-+	case SNOR_PROTO_8_8_8:     return "8S-8S-8S";
-+	case SNOR_PROTO_1_1_1_DTR: return "1D-1D-1D";
-+	case SNOR_PROTO_1_2_2_DTR: return "1D-2D-2D";
-+	case SNOR_PROTO_1_4_4_DTR: return "1D-4D-4D";
-+	case SNOR_PROTO_1_8_8_DTR: return "1D-8D-8D";
-+	case SNOR_PROTO_8_8_8_DTR: return "8D-8D-8D";
-+	}
-+
-+	return "<unknown>";
-+}
-+
-+static void spi_nor_print_flags(struct seq_file *s, unsigned long flags,
-+				const char *const *names, int names_len)
-+{
-+	bool sep = false;
-+	int i;
-+
-+	for (i = 0; i < sizeof(flags) * BITS_PER_BYTE; i++) {
-+		if (!(flags & BIT(i)))
-+			continue;
-+		if (sep)
-+			seq_puts(s, " | ");
-+		sep = true;
-+		if (i < names_len && names[i])
-+			seq_puts(s, names[i]);
-+		else
-+			seq_printf(s, "1<<%d", i);
-+	}
-+}
-+
-+static int spi_nor_params_show(struct seq_file *s, void *data)
-+{
-+	struct spi_nor *nor = s->private;
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	struct spi_nor_erase_map *erase_map = &params->erase_map;
-+	struct spi_nor_erase_region *region;
-+	const struct flash_info *info = nor->info;
-+	char buf[16], *str;
-+	int i;
-+
-+	seq_printf(s, "name\t\t%s\n", info->name);
-+	seq_printf(s, "id\t\t%*phn\n", info->id_len, info->id);
-+	string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
-+	seq_printf(s, "size\t\t%s\n", buf);
-+	seq_printf(s, "write size\t%u\n", params->writesize);
-+	seq_printf(s, "page size\t%u\n", params->page_size);
-+	seq_printf(s, "address width\t%u\n", nor->addr_width);
-+
-+	seq_puts(s, "flags\t\t");
-+	spi_nor_print_flags(s, nor->flags, snor_f_names, sizeof(snor_f_names));
-+	seq_puts(s, "\n");
-+
-+	seq_puts(s, "\nopcodes\n");
-+	seq_printf(s, " read\t\t0x%02x\n", nor->read_opcode);
-+	seq_printf(s, "  dummy cycles\t%u\n", nor->read_dummy);
-+	seq_printf(s, " erase\t\t0x%02x\n", nor->erase_opcode);
-+	seq_printf(s, " program\t0x%02x\n", nor->program_opcode);
-+
-+	switch (nor->cmd_ext_type) {
-+	case SPI_NOR_EXT_NONE:
-+		str = "none";
-+		break;
-+	case SPI_NOR_EXT_REPEAT:
-+		str = "repeat";
-+		break;
-+	case SPI_NOR_EXT_INVERT:
-+		str = "invert";
-+		break;
-+	default:
-+		str = "<unknown>";
-+		break;
-+	}
-+	seq_printf(s, " 8D extension\t%s\n", str);
-+
-+	seq_puts(s, "\nprotocols\n");
-+	seq_printf(s, " read\t\t%s\n",
-+		   spi_nor_protocol_name(nor->read_proto));
-+	seq_printf(s, " write\t\t%s\n",
-+		   spi_nor_protocol_name(nor->write_proto));
-+	seq_printf(s, " register\t%s\n",
-+		   spi_nor_protocol_name(nor->reg_proto));
-+
-+	seq_puts(s, "\nerase commands\n");
-+	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-+		struct spi_nor_erase_type *et = &erase_map->erase_type[i];
-+
-+		if (et->size) {
-+			string_get_size(et->size, 1, STRING_UNITS_2, buf,
-+					sizeof(buf));
-+			seq_printf(s, " %02x (%s) [%d]\n", et->opcode, buf, i);
-+		}
-+	}
-+
-+	if (!(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
-+		string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
-+		seq_printf(s, " %02x (%s)\n", SPINOR_OP_CHIP_ERASE, buf);
-+	}
-+
-+	seq_puts(s, "\nsector map\n");
-+	seq_puts(s, " region (in hex)   | erase mask | flags\n");
-+	seq_puts(s, " ------------------+------------+----------\n");
-+	for (region = erase_map->regions;
-+	     region;
-+	     region = spi_nor_region_next(region)) {
-+		u64 start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
-+		u64 flags = region->offset & SNOR_ERASE_FLAGS_MASK;
-+		u64 end = start + region->size - 1;
-+
-+		seq_printf(s, " %08llx-%08llx |     [%c%c%c%c] | %s\n",
-+			   start, end,
-+			   flags & BIT(0) ? '0' : ' ',
-+			   flags & BIT(1) ? '1' : ' ',
-+			   flags & BIT(2) ? '2' : ' ',
-+			   flags & BIT(3) ? '3' : ' ',
-+			   flags & SNOR_OVERLAID_REGION ? "overlaid" : "");
-+	}
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(spi_nor_params);
-+
-+static void spi_nor_print_read_cmd(struct seq_file *s, u32 cap,
-+				   struct spi_nor_read_command *cmd)
-+{
-+	seq_printf(s, " %s%s\n", spi_nor_protocol_name(cmd->proto),
-+		   cap == SNOR_HWCAPS_READ_FAST ? " (fast read)" : "");
-+	seq_printf(s, "  opcode\t0x%02x\n", cmd->opcode);
-+	seq_printf(s, "  mode cycles\t%u\n", cmd->num_mode_clocks);
-+	seq_printf(s, "  dummy cycles\t%u\n", cmd->num_wait_states);
-+}
-+
-+static void spi_nor_print_pp_cmd(struct seq_file *s,
-+				 struct spi_nor_pp_command *cmd)
-+{
-+	seq_printf(s, " %s\n", spi_nor_protocol_name(cmd->proto));
-+	seq_printf(s, "  opcode\t0x%02x\n", cmd->opcode);
-+}
-+
-+static int spi_nor_capabilities_show(struct seq_file *s, void *data)
-+{
-+	struct spi_nor *nor = s->private;
-+	struct spi_nor_flash_parameter *params = nor->params;
-+	u32 hwcaps = params->hwcaps.mask;
-+	int i, cmd;
-+
-+	seq_puts(s, "Supported read modes by the flash\n");
-+	for (i = 0; i < sizeof(hwcaps) * BITS_PER_BYTE; i++) {
-+		if (!(hwcaps & BIT(i)))
-+			continue;
-+
-+		cmd = spi_nor_hwcaps_read2cmd(BIT(i));
-+		if (cmd < 0)
-+			continue;
-+
-+		spi_nor_print_read_cmd(s, BIT(i), &params->reads[cmd]);
-+		hwcaps &= ~BIT(i);
-+	}
-+
-+	seq_puts(s, "\nSupported page program modes by the flash\n");
-+	for (i = 0; i < sizeof(hwcaps) * BITS_PER_BYTE; i++) {
-+		if (!(hwcaps & BIT(i)))
-+			continue;
-+
-+		cmd = spi_nor_hwcaps_pp2cmd(BIT(i));
-+		if (cmd < 0)
-+			continue;
-+
-+		spi_nor_print_pp_cmd(s, &params->page_programs[cmd]);
-+		hwcaps &= ~BIT(i);
-+	}
-+
-+	if (hwcaps)
-+		seq_printf(s, "\nunknown hwcaps 0x%x\n", hwcaps);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(spi_nor_capabilities);
-+
-+static void spi_nor_debugfs_unregister(void *data)
-+{
-+	struct spi_nor *nor = data;
-+
-+	debugfs_remove(nor->debugfs_root);
-+	nor->debugfs_root = NULL;
-+}
-+
-+void spi_nor_debugfs_register(struct spi_nor *nor)
-+{
-+	struct dentry *rootdir, *d;
-+	int ret;
-+
-+	/* Create rootdir once. Will never be deleted again. */
-+	rootdir = debugfs_lookup(SPI_NOR_DEBUGFS_ROOT, NULL);
-+	if (!rootdir)
-+		rootdir = debugfs_create_dir(SPI_NOR_DEBUGFS_ROOT, NULL);
-+
-+	ret = devm_add_action(nor->dev, spi_nor_debugfs_unregister, nor);
-+	if (ret)
-+		return;
-+
-+	d = debugfs_create_dir(dev_name(nor->dev), rootdir);
-+	nor->debugfs_root = d;
-+
-+	debugfs_create_file("params", 0444, d, nor, &spi_nor_params_fops);
-+	debugfs_create_file("capabilities", 0444, d, nor,
-+			    &spi_nor_capabilities_fops);
-+}
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index e505c4a5c530..1ede4c89805a 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -363,6 +363,7 @@ struct spi_nor_flash_parameter;
-  * @write_proto:	the SPI protocol for write operations
-  * @reg_proto:		the SPI protocol for read_reg/write_reg/erase operations
-  * @sfdp:		the SFDP data of the flash
-+ * @debugfs_root:	pointer to the debugfs directory
-  * @controller_ops:	SPI NOR controller driver specific operations.
-  * @params:		[FLASH-SPECIFIC] SPI NOR flash parameters and settings.
-  *                      The structure includes legacy flash parameters and
-@@ -392,6 +393,7 @@ struct spi_nor {
- 	u32			flags;
- 	enum spi_nor_cmd_ext	cmd_ext_type;
- 	struct sfdp		*sfdp;
-+	struct dentry		*debugfs_root;
- 
- 	const struct spi_nor_controller_ops *controller_ops;
- 
+diff --git a/arch/arm/boot/dts/r9a06g032.dtsi b/arch/arm/boot/dts/r9a06g032.dtsi
+index a35bd19c616a..b3ca904c8647 100644
+--- a/arch/arm/boot/dts/r9a06g032.dtsi
++++ b/arch/arm/boot/dts/r9a06g032.dtsi
+@@ -234,6 +234,7 @@ nand_controller: nand-controller@40102000 {
+ 			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&sysctrl R9A06G032_HCLK_NAND>, <&sysctrl R9A06G032_CLK_NAND>;
+ 			clock-names = "hclk", "eclk";
++			power-domains = <&sysctrl>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			status = "disabled";
 -- 
-2.30.2
+2.27.0
 
 
 ______________________________________________________
