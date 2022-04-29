@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FA1DC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 06:09:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2879C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 29 Apr 2022 06:15:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ldfr0cI900Dw4/m8PWyVBgVmVnw7orIwr0XQ8mIDQnk=; b=d1+Xhlg1Ul6dh5
-	poR/c07hO49h5TKGcv0eovYfS01LBsvknbUZ0XeFheJpvArl7nqjj3Sz6sTou4W98l0DYH9B/Uv8u
-	lQrDHqorIB1FAO4y+8uItuKWy+7/RTzW7FGKCFjJwEslK/wDwDrKfE+Bb6tvC7AAuTafhXaodXpMV
-	vtRnWSOfz2nLJSwwVIqzLZkQI8/z9666LrKMbw0gdfItwDmSs/JM/cDPbszJxaAbplhM9H58si9Gq
-	e4Ce7Cm8E58LgvfHxeC3XWs6PvbfM26TPK/1hetuDc0vs86Lowe62IYs120Y3B4sCkoYemNQeQ+5P
-	JCOQZqA5AX5Noi2N1Tgw==;
+	List-Owner; bh=Rg7YpIdz8Lpb1WpdwT9yoZs4dZmvD90Asxqs7WsMvl8=; b=EBbMId5bvOfeAa
+	DC/dodBO1wE9eh6WA9KsfL7STXAgcbn/lJ1mDxGTyT6biWq2/Hq3ZKfepQEs9SqiGJGedr2JNl1Oi
+	leOPwkhpYlyk5KCnbNOCJcCYSn3OQ6GlQN/7wewjN7GPbJUs/O2uw7c6f+9MXTxZmAwDpBH3y8oyo
+	M8mCmjkS16O3GzaMXCSxpqRHu3Zmrl1HUcjkdhNrvWTQQUUuQD8SfBQ4xPzQXffyogaTvTSmAjOIS
+	orZF5hwbluzgNDPtnZnM3/dDW3vtvwm35I+Dfty9NlXWZLH2GhbjAT1C81Nlph5nPtyv6h67GBMey
+	dTcugY56Lq/OIVKEAuug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkJoL-009gQz-RG; Fri, 29 Apr 2022 06:09:01 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1nkJtk-009hy5-JJ; Fri, 29 Apr 2022 06:14:36 +0000
+Received: from fllv0016.ext.ti.com ([198.47.19.142])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkJoJ-009gQ0-Eo
- for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 06:09:01 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23T68sjS061532;
- Fri, 29 Apr 2022 01:08:54 -0500
+ id 1nkJth-009hx9-Ok
+ for linux-mtd@lists.infradead.org; Fri, 29 Apr 2022 06:14:35 +0000
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 23T6EUd9077933;
+ Fri, 29 Apr 2022 01:14:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1651212534;
- bh=RZgucMwnPVvB+o/MrUBt8zsOyMFS8ZhmghhtAvhsMoo=;
+ s=ti-com-17Q1; t=1651212870;
+ bh=xXkrQ3q3z0PdAf/m6HeYDXI5BYXEer6eG+MZS/t7BHQ=;
  h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=Nafu+WeqBgkJZLIlDaT0EZQwTS6ed5dyWCw29smBf6mNkwsrD2lobMHIk7cAaZbON
- XcZYWQvaIkR3nqjisWt04WHXCsIBCd3h4W8cnDlDa22Z0mKlbFmXlycHfWOgYL+wY5
- svMYWrm1ULNGPuOZdvVBm21m0Rd/mNXT3EKMtRBw=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23T68sGc028429
+ b=CJlYJhERM3SB4xjH5NOuMbeuATBA2za+toHXAeMzbcojYcENz/qtleUQO0v8bOWnL
+ s+KFbenpw0YTQcC7AI/176jA6yf0fiywucv3y/TE1ClpcoU8/3NTNT8m1y8MspAlki
+ TLlwN5d4LDNoTNxHVzhXTh7TBmOdLC77HDl6Ma60=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 23T6EUiC123358
  (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 29 Apr 2022 01:08:54 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 29 Apr 2022 01:14:30 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 29
- Apr 2022 01:08:54 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2022 01:14:30 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 29 Apr 2022 01:08:54 -0500
+ Frontend Transport; Fri, 29 Apr 2022 01:14:29 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23T68rfp035139;
- Fri, 29 Apr 2022 01:08:53 -0500
-Date: Fri, 29 Apr 2022 11:38:53 +0530
+ by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 23T6ETeq027808;
+ Fri, 29 Apr 2022 01:14:29 -0500
+Date: Fri, 29 Apr 2022 11:44:28 +0530
 From: Pratyush Yadav <p.yadav@ti.com>
-To: Michael Walle <michael@walle.cc>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: move spi_nor_write_ear() to winbond module
-Message-ID: <20220429060852.whf5puyf6nkvm4jn@ti.com>
-References: <20220418112404.2790469-1-michael@walle.cc>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+CC: <michael@walle.cc>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+ <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: spi-nor: core: Skip setting erase types when
+ SPI_NOR_NO_ERASE is set
+Message-ID: <20220429061428.uouoycktw2i3qamb@ti.com>
+References: <20220308091135.88615-1-tudor.ambarus@microchip.com>
+ <20220401200556.d6amfxdvyf66npyj@ti.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220418112404.2790469-1-michael@walle.cc>
+In-Reply-To: <20220401200556.d6amfxdvyf66npyj@ti.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220428_230859_619070_34FD3C40 
-X-CRM114-Status: GOOD (  25.63  )
+X-CRM114-CacheID: sfid-20220428_231433_918338_0F2250E0 
+X-CRM114-Status: GOOD (  22.96  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,141 +84,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
-
-On 18/04/22 01:24PM, Michael Walle wrote:
-> The "Extended Address Register" is winbond specific. If the flash is
-> larger than 16MiB and is used in 3 byte address mode, it is used to set
-> the remaining address bits. Move the write_ear() function the winbond
-> module and rename it accordingly.
-
-This patch no longer applies due to Tudor's patch c0abb861c5d0 ("mtd: 
-spi-nor: Introduce templates for SPI NOR operations") which changes the 
-contents of spi_nor_write_ear() to use a template. Please rebase and 
-resend so I can apply it.
-
+On 02/04/22 01:35AM, Pratyush Yadav wrote:
+> On 08/03/22 11:11AM, Tudor Ambarus wrote:
+> > Even if SPI_NOR_NO_ERASE was specified at flash declaration, the erase
+> > type of size nor->info->sector_size was incorrectly set as supported.
+> > Don't set erase types when SPI_NOR_NO_ERASE is set.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  drivers/mtd/spi-nor/core.c    | 34 ---------------------------------
->  drivers/mtd/spi-nor/core.h    |  1 -
->  drivers/mtd/spi-nor/winbond.c | 36 ++++++++++++++++++++++++++++++++++-
->  3 files changed, 35 insertions(+), 36 deletions(-)
+> Does this have any practical implications? Since we set MTD_NO_ERASE, 
+> erase should never be called for this flash anyway, right?
 > 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index b4f141ad9c9c..848836535cdd 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -520,40 +520,6 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
->  	return ret;
->  }
->  
-> -/**
-> - * spi_nor_write_ear() - Write Extended Address Register.
-> - * @nor:	pointer to 'struct spi_nor'.
-> - * @ear:	value to write to the Extended Address Register.
-> - *
-> - * Return: 0 on success, -errno otherwise.
-> - */
-> -int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
-> -{
-> -	int ret;
-> -
-> -	nor->bouncebuf[0] = ear;
-> -
-> -	if (nor->spimem) {
-> -		struct spi_mem_op op =
-> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
-> -				   SPI_MEM_OP_NO_ADDR,
-> -				   SPI_MEM_OP_NO_DUMMY,
-> -				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
-> -
-> -		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> -
-> -		ret = spi_mem_exec_op(nor->spimem, &op);
-> -	} else {
-> -		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
-> -						       nor->bouncebuf, 1);
-> -	}
-> -
-> -	if (ret)
-> -		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
-> -
-> -	return ret;
-> -}
-> -
->  /**
->   * spi_nor_sr_ready() - Query the Status Register to see if the flash is ready
->   * for new commands.
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index b7fd760e3b47..14bf28473cf3 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -526,7 +526,6 @@ void spi_nor_spimem_setup_op(const struct spi_nor *nor,
->  int spi_nor_write_enable(struct spi_nor *nor);
->  int spi_nor_write_disable(struct spi_nor *nor);
->  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-> -int spi_nor_write_ear(struct spi_nor *nor, u8 ear);
->  int spi_nor_wait_till_ready(struct spi_nor *nor);
->  int spi_nor_global_block_unlock(struct spi_nor *nor);
->  int spi_nor_lock_and_prep(struct spi_nor *nor);
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index 1e8fb571680b..0ca96efee5c9 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -130,6 +130,40 @@ static const struct flash_info winbond_nor_parts[] = {
->  			      SPI_NOR_QUAD_READ) },
->  };
->  
-> +/**
-> + * winbond_nor_write_ear() - Write Extended Address Register.
-> + * @nor:	pointer to 'struct spi_nor'.
-> + * @ear:	value to write to the Extended Address Register.
-> + *
-> + * Return: 0 on success, -errno otherwise.
-> + */
-> +static int winbond_nor_write_ear(struct spi_nor *nor, u8 ear)
-> +{
-> +	int ret;
-> +
-> +	nor->bouncebuf[0] = ear;
-> +
-> +	if (nor->spimem) {
-> +		struct spi_mem_op op =
-> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 0),
-> +				   SPI_MEM_OP_NO_ADDR,
-> +				   SPI_MEM_OP_NO_DUMMY,
-> +				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 0));
-> +
-> +		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
-> +
-> +		ret = spi_mem_exec_op(nor->spimem, &op);
-> +	} else {
-> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_WREAR,
-> +						       nor->bouncebuf, 1);
-> +	}
-> +
-> +	if (ret)
-> +		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * winbond_nor_set_4byte_addr_mode() - Set 4-byte address mode for Winbond
->   * flashes.
-> @@ -156,7 +190,7 @@ static int winbond_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
->  	if (ret)
->  		return ret;
->  
-> -	ret = spi_nor_write_ear(nor, 0);
-> +	ret = winbond_nor_write_ear(nor, 0);
->  	if (ret)
->  		return ret;
->  
+> > 
+> > Fixes: b199489d37b2 ("mtd: spi-nor: add the framework for SPI NOR")
+> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> > v2:
+> > - add comment, update commit message, split change in individual commit
+> > - add fixes tag and cc to stable.
+> > 
+> >  drivers/mtd/spi-nor/core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index b4f141ad9c9c..64cf7b9df621 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -2392,6 +2392,10 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+> >  					SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
+> >  	}
+> >  
+> > +	/* Skip setting erase types when SPI_NOR_NO_ERASE is set. */
+> > +	if (nor->info->flags & SPI_NOR_NO_ERASE)
+> > +		return;
+
+Can you instead do
+
+	if (!(nor->info->flags & SPI_NOR_NO_ERASE)) {
+		...
+	}
+
+This way when someone adds code to the bottom of this function that sets 
+something other than erase types it will execute for flashes with 
+SPI_NOR_NO_ERASE as well.
+
+> > +
+> >  	/*
+> >  	 * Sector Erase settings. Sort Erase Types in ascending order, with the
+> >  	 * smallest erase size starting at BIT(0).
+> > -- 
+> > 2.25.1
+> > 
+> 
 > -- 
-> 2.30.2
+> Regards,
+> Pratyush Yadav
+> Texas Instruments Inc.
 > 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 -- 
 Regards,
