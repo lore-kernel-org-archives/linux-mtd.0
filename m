@@ -4,74 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FDF0C433F5
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Apr 2022 16:49:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D37C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Apr 2022 18:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:
-	In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/+WiJqXySXKSuU+bYa4RUh+dL1gKbPXTQzGQmMMCNhk=; b=rcPI72XllYj2VA
-	ukiiPjNjM4dHgoUuS08BYX4PaqYopYNEnQtH8+gy8ZmKHTiIpqhAOGVrWkm8FIVqF122YMfb6yOEN
-	wRBakw+eUhF4OboQ9f0mLtS6iScSX0pduX1Vl/sd2qCR1i7ic/tjsGGbpHZPsLkoPYraNUl/jqPh8
-	jOKATWtnpVgOwNKKqjqph4SY1U6b4ANxDoNzA/IBgveH6GTPQaSJ6XwsSZJho01+WPXWEs+S2mGCa
-	gmsVax2RS6EfviMskLoa1oqYbtJvkneKEEb+KLiwa1cl+U3RcsWacS68nM8rQMnlfYLBcgk9tQkle
-	slZGRObBbChgfD54t7nw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=srNROa6xxfXy6ktEuwVNPbJVFiqWy8xJUfjW/M5OXXI=; b=ERmwsbXnH7L2aj
+	eXMcZl2k95p1dU2rCqrlM0Y8+o0z9KwRBmYejVMDN1CEghtVwmVS+EGz950KcssHbAMV/ps0Bpj8Q
+	CIoaVTfqm33iQj8NIE8IstS/WS6XFwaeCk/EZYBfTFGvdBGtAQD0mmsWO0d35kkY5Kn/TsRadhuCu
+	riscB6twYhPqqoOammvJpMl5Nmc71JWut5cPl+WtY6fTFoeKYRWewVvc5WsOepyf3MNJtwVN/mTdC
+	/1XCHTT5ASO6zorqwXF8bVix87NTQ6KXZ328dJ3OaMdLNPtIJYtGBUUuaWzzgEFvFtGIfzaJrYM5F
+	W0Zh3effxCqadDr2l6Bw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkqHZ-00EgDH-B0; Sat, 30 Apr 2022 16:49:21 +0000
-Received: from smtp6.goneo.de ([85.220.129.31])
+	id 1nksF3-00Ey5M-Rg; Sat, 30 Apr 2022 18:54:53 +0000
+Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkqHV-00EgCe-QU
- for linux-mtd@lists.infradead.org; Sat, 30 Apr 2022 16:49:19 +0000
-Received: from hub1.goneo.de (hub1.goneo.de [IPv6:2001:1640:5::8:52])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by smtp6.goneo.de (Postfix) with ESMTPS id 84F8810A330E;
- Sat, 30 Apr 2022 18:49:15 +0200 (CEST)
-Received: from hub1.goneo.de (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits))
- (No client certificate requested)
- by hub1.goneo.de (Postfix) with ESMTPS id DD5EB10A32FA;
- Sat, 30 Apr 2022 18:49:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgemail.eu;
- s=DKIM001; t=1651337353;
- h=from:from:reply-to:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2ZPqV+i/ye7+SzXvsKm6HJp9Yf540Puaa46vMQg8gFM=;
- b=ppqZ48OnpfKDnRrHe0IoxgHiTsnLAv6fNbyKZJ5EpOCVtiTnyHdy2rJL/3Im5mTEQvB1rK
- /phN7R3cGOhXcyqycPrVZvPbYrRwZOhmarKvl+OQ667TRnzXW7aUqLlU6InUzIF1eVknrz
- 5yvDH5dcuSpI4EHtt8TIIfoWrglJff7CjMHi1wJ9EFUYhSEs+zqBoezdi1Q992P7b7H3bd
- y1B94lRB43CE+PyzCsPVgS9tC7EqJ8BLKb8quvAIwPAcI9MfjlIlqyvldcv43ukVOjgi/H
- +Mbzaty0TOZJD0otuMK9JUkSck92Sn/r/Fuj9PtpOtijZucHDXy3GtyeSUKPxg==
-Received: from brot.fritz.box (ip-178-201-230-219.um46.pools.vodafone-ip.de
- [178.201.230.219])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by hub1.goneo.de (Postfix) with ESMTPSA id A80C710A330F;
- Sat, 30 Apr 2022 18:49:13 +0200 (CEST)
-From: "Leon M. George" <leon@georgemail.eu>
-To: Pratyush Yadav <p.yadav@ti.com>,
-	linux-mtd@lists.infradead.org
-Cc: "Leon M. George" <leon@georgemail.eu>
-Subject: [PATCH] mtd: spi-nor: support eon en25qh256a variant
-Date: Sat, 30 Apr 2022 18:48:47 +0200
-Message-Id: <20220430164847.144710-2-leon@georgemail.eu>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220430164847.144710-1-leon@georgemail.eu>
-References: <leon@georgemail.eu> <20220430164847.144710-1-leon@georgemail.eu>
+ id 1nksF0-00Ey4a-MN
+ for linux-mtd@lists.infradead.org; Sat, 30 Apr 2022 18:54:52 +0000
+Received: by mail-wr1-x42c.google.com with SMTP id b19so14697446wrh.11
+ for <linux-mtd@lists.infradead.org>; Sat, 30 Apr 2022 11:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=D0+x/yJ2k7VejWfPmsLmIQrShDrcM1gbM8xZRgFTcbg=;
+ b=aXEUd1SGnNin82HWtus9mmAglNks5GWr7dtfe8+AcqM5IjIdAQYdrCeo+eH86n1tIf
+ oI4uOg6PsfW7B+qjsLC30V8S+gY2ratp7r8YDrd4Wu+ap1Nir/4J6alUhqAQ1g7yLa/T
+ HW5MA/WQou5+/iv/zoKVTMz1Vcu2RMGmC7xXeF6GV0eeTBUuCwldB6YFh9vlPHdKzYsR
+ AiHBlzO946p/cgqIdGyeYJmp+g51qiY+keTuBzIfNBfL0DXQVLohCBkWdKY7wIpqqzXd
+ 1CPWY3fctXVmNmdgZ8KsqybkG/YbQf5a3Y6p7UWbyCWtdqlvTbZ+z4aQPJtvp3aKYLH3
+ fYjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=D0+x/yJ2k7VejWfPmsLmIQrShDrcM1gbM8xZRgFTcbg=;
+ b=oQg74cGs3aiplScwgNKXI/L6AvY4tz+KRD6lDef+bCvmuix7JOVu91qsZllB1yc6WU
+ vdUR0dk6Flp+g+wlqnAKjH7EXm2RZAJp6hdFM62+6GOfa+YbCh5px5vu2KdJQm+t25QE
+ 5qq8N0g/mwi/sXEV4z0ZPYp/XkHPDYow+Jm0iB383zt3L0CAXA2gXeo50zdpBKWm8q7+
+ 86OGVEvDGjjNTXdbT2ZXmtKUs+86bXtF7hAfRMsfWK0Ug5K02RjPU1pMIiV4+Gsd01Q0
+ l6js9/eT66Z6z9KV7QR0syZrgYyViFUNWj7DNfSAdZv5cRmjtQCIU1jkOvxTxeOC8Q+w
+ jjEQ==
+X-Gm-Message-State: AOAM530C7YT/A+ZxBKK1WrcZSn5oTmaRg/v+urd6fEd3xc79qpJrBwDT
+ ij5cI3mgIgIVX0Qr4jIWleM=
+X-Google-Smtp-Source: ABdhPJzmMTPzg9iref6Pzy9FQdMK5YeRUESQ094b8/PWZqrJqqRB9tOkzqUpdIGnyOkQoK8SaBh4WA==
+X-Received: by 2002:a05:6000:86:b0:20a:d7be:e09b with SMTP id
+ m6-20020a056000008600b0020ad7bee09bmr3834720wrx.398.1651344887567; 
+ Sat, 30 Apr 2022 11:54:47 -0700 (PDT)
+Received: from ?IPV6:2a06:a003:501a:a7ce:5405:3d01:56ff:a60d?
+ ([2a06:a004:d009:c8fa:102c:912a:a6e3:41ea])
+ by smtp.gmail.com with ESMTPSA id
+ n6-20020adf8b06000000b0020c5253d921sm2613117wra.109.2022.04.30.11.54.45
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 30 Apr 2022 11:54:47 -0700 (PDT)
+Message-ID: <ee5f293a-e59a-03d8-d9e4-ef35d33b5383@gmail.com>
+Date: Sat, 30 Apr 2022 21:54:43 +0300
 MIME-Version: 1.0
-X-Rspamd-UID: 33b737
-X-Rspamd-UID: 3b25b3
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: [PATCH v2 1/2] dt-bindings: mtd: partitions: Add binding for Sercomm
+ parser
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>
+Cc: NOGUCHI Hiroshi <drvlabo@gmail.com>, Karim <Karimdplay@gmail.com>,
+ M <x1@disroot.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20220406195557.1956-1-csharper2005@gmail.com>
+ <20220406195946.2019-1-csharper2005@gmail.com>
+ <8d0d8b27-35ff-3693-cf80-897b80c26b4e@linaro.org>
+ <57bebf2f-af4c-b2d9-10e5-19e5104946fb@gmail.com>
+ <29cfa017-bbaf-3aba-fe1d-06771957dbaa@linaro.org>
+ <1b391399-984b-7a63-3265-62ef09caec39@gmail.com>
+ <bd533827-b575-caad-c230-af060851b231@gmail.com>
+ <db70e53b-7484-43bf-e9c8-b6a2dce1fbb5@linaro.org>
+ <25da3f43-c46e-8108-2da9-0e4f2b7cc1a4@gmail.com>
+ <b279040a-a782-a2ca-2acb-2d8f07709081@linaro.org>
+ <1c19faf9-fc1c-9adf-d038-97b673a8f0be@gmail.com>
+ <a84df850-149e-9656-43fa-1f040368a9f1@linaro.org>
+ <0450d781-c506-c28e-a0e5-435bee16721f@gmail.com>
+ <2e51842a-d2c9-8953-13aa-02ad3abb3f14@linaro.org>
+From: Mikhail Zhilkin <csharper2005@gmail.com>
+In-Reply-To: <2e51842a-d2c9-8953-13aa-02ad3abb3f14@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220430_094918_038457_552E0498 
-X-CRM114-Status: GOOD (  14.18  )
+X-CRM114-CacheID: sfid-20220430_115450_776034_197C12B6 
+X-CRM114-Status: GOOD (  17.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,60 +106,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: "Leon M. George" <leon@georgemail.eu>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch allows accessing the upper 8m on the A variant (EN25QH256A) of
-the EN25QH256 that shares same JEDEC ID.
-
-Without this patch, addr_with is detected to be '4' but the read_opcode is
-a plain READ (supporting only 3 byte addresses).
-Setting PARSE_SFDP is enough to detect the read_opcode READ_4B on the A
-variant. READ_4B is not available on the no-A variant.
-
-Both variants support 4-byte address mode (spi_nor_set_4byte_addr_mode)
-but that is prone to breaking on unexpected reboots if the reset pin isn't
-connected (broken-flash-reset).
-
-The no-A variant supports a 'high bank latch mode' that affects read,
-program, and erase commands - similar to the extended address register
-(EAR).
-The HBL bit is manipulated using the ENHBL (0x67) and EXHBL (0x98)
-opcodes.
-
-Should it become necessary to distinguish the two variants in the future,
-the A variant sets the SNOR_HWCAPS_READ_1_1_4 SFDP param - the no-A
-variant doesn't.
-
-Tested with and without fast read on the A variant only.
-
-Signed-off-by: Leon M. George <leon@georgemail.eu>
-Tested-by: Leon M. George <leon@georgemail.eu>
----
- drivers/mtd/spi-nor/eon.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
-index 8c1c57530281..50a11053711f 100644
---- a/drivers/mtd/spi-nor/eon.c
-+++ b/drivers/mtd/spi-nor/eon.c
-@@ -25,7 +25,8 @@ static const struct flash_info eon_nor_parts[] = {
- 	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
--	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512) },
-+	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512)
-+		PARSE_SFDP },
- 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
- 		NO_SFDP_FLAGS(SECT_4K) },
- };
--- 
-2.35.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gNC8zMC8yMDIyIDU6MzUgUE0sIEtyenlzenRvZiBLb3psb3dza2kgd3JvdGU6Cgo+PiBkaWZm
+IC0tZ2l0Cj4+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRp
+b25zL2ZpeGVkLXBhcnRpdGlvbnMueWFtbAo+PiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKPj4gaW5kZXggZWE0
+Y2FjZTZhOTU1Li5mYTQ1N2Q1NTU1OWIgMTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKPj4g
+KysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2Zp
+eGVkLXBhcnRpdGlvbnMueWFtbAo+PiBAQCAtMTcsOSArMTcsMjkgQEAgZGVzY3JpcHRpb246IHwK
+Pj4gwqBtYWludGFpbmVyczoKPj4gwqDCoCAtIFJhZmHFgiBNacWCZWNraSA8cmFmYWxAbWlsZWNr
+aS5wbD4KPj4gwqAKPj4gK3NlbGVjdDoKPj4gK8KgIHByb3BlcnRpZXM6Cj4+ICvCoMKgwqAgY29t
+cGF0aWJsZToKPj4gK8KgwqDCoMKgwqAgY29udGFpbnM6Cj4+ICvCoMKgwqDCoMKgwqDCoCBlbnVt
+Ogo+PiArwqDCoMKgwqDCoMKgwqDCoMKgIC0gZml4ZWQtcGFydGl0aW9ucwo+PiArCj4+ICvCoCBy
+ZXF1aXJlZDoKPj4gK8KgwqDCoCAtIGNvbXBhdGlibGUKPiBXaXRoIHlvdXIgYXBwcm9hY2ggeW91
+IGRvIG5vdCBuZWVkIHRoaXMgZW50aXJlIHNlbGVjdC4gSSBwb2ludGVkIG91dCB0bwo+IHlvdSBp
+ZiB5b3Ugd2FudGVkIHRvIHRha2UgdGhlIHN5c2NvbiBhcHByb2FjaC4KPgo+PiArCj4+IMKgcHJv
+cGVydGllczoKPj4gwqDCoCBjb21wYXRpYmxlOgo+PiAtwqDCoMKgIGNvbnN0OiBmaXhlZC1wYXJ0
+aXRpb25zCj4+ICvCoMKgwqAgYW55T2Y6Cj4gb25lT2YKPgo+PiArwqDCoMKgwqDCoCAtIGl0ZW1z
+Ogo+PiArwqDCoMKgwqDCoMKgwqDCoMKgIC0gZW51bToKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIC0gc2VyY29tbSxzYy1wYXJ0aXRpb25zCj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oCAtIGNvbnN0OiBmaXhlZC1wYXJ0aXRpb25zCj4+ICsKPj4gK8KgwqDCoMKgwqAgLSBjb250YWlu
+czoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoCBjb25zdDogZml4ZWQtcGFydGl0aW9ucwo+PiArwqDC
+oMKgwqDCoMKgwqAgbWluSXRlbXM6IDEKPj4gK8KgwqDCoMKgwqDCoMKgIG1heEl0ZW1zOiAyCj4g
+VGhpcyBpcyBhbHNvIG5vdCBuZWVkZWQgaWYgeW91IGRvIG5vIHRha2UgdGhlIHN5c2NvbiBhcHBy
+b2FjaC4KCkkgdHJpZWQgdG8gdGFrZSBpbnRvIGFjY291bnQgYWxsIG9mIHlvdXIgY29tbWVudHM6
+CgpkaWZmIC0tZ2l0CmEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0
+aXRpb25zL2ZpeGVkLXBhcnRpdGlvbnMueWFtbApiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKaW5kZXggZWE0Y2Fj
+ZTZhOTU1Li40NWQ2YTM5NzE1MTQgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9maXhlZC1wYXJ0aXRpb25zLnlhbWwKKysrIGIvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL2ZpeGVkLXBhcnRp
+dGlvbnMueWFtbApAQCAtMTksNyArMTksMTEgQEAgbWFpbnRhaW5lcnM6CsKgCsKgcHJvcGVydGll
+czoKwqDCoCBjb21wYXRpYmxlOgotwqDCoMKgIGNvbnN0OiBmaXhlZC1wYXJ0aXRpb25zCivCoMKg
+wqAgb25lT2Y6CivCoMKgwqDCoMKgIC0gY29uc3Q6IGZpeGVkLXBhcnRpdGlvbnMKK8KgwqDCoMKg
+wqAgLSBpdGVtczoKK8KgwqDCoMKgwqDCoMKgwqDCoCAtIGNvbnN0OiBzZXJjb21tLHNjLXBhcnRp
+dGlvbnMKK8KgwqDCoMKgwqDCoMKgwqDCoCAtIGNvbnN0OiBmaXhlZC1wYXJ0aXRpb25zCsKgCsKg
+wqAgIiNhZGRyZXNzLWNlbGxzIjogdHJ1ZQrCoApAQCAtMjcsNyArMzEsMjAgQEAgcHJvcGVydGll
+czoKwqAKwqBwYXR0ZXJuUHJvcGVydGllczoKwqDCoCAiQFswLTlhLWZdKyQiOgotwqDCoMKgICRy
+ZWY6ICJwYXJ0aXRpb24ueWFtbCMiCivCoMKgwqAgYWxsT2Y6CivCoMKgwqDCoMKgIC0gJHJlZjog
+InBhcnRpdGlvbi55YW1sIyIKK8KgwqDCoMKgwqAgLSBpZjoKK8KgwqDCoMKgwqDCoMKgwqDCoCBw
+cm9wZXJ0aWVzOgorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlOgorwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgY29udGFpbnM6CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgY29uc3Q6IHNlcmNvbW0sc2MtcGFydGl0aW9ucworwqDCoMKgwqDCoMKgwqAgdGhlbjoKK8Kg
+wqDCoMKgwqDCoMKgwqDCoCBwcm9wZXJ0aWVzOgorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZXJj
+b21tLHNjcGFydC1pZDoKK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRlc2NyaXB0aW9uOiBQ
+YXJ0aXRpb24gaWQgaW4gU2VyY29tbSBwYXJ0aXRpb24gbWFwLiBQYXJzZXIKK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCB1c2VzIHRoaXMgaWQgdG8gZ2V0IHBhcnRpdGlvbiBvZmZzZXQg
+YW5kIHNpemUgdmFsdWVzIGZyb20KK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkeW5h
+bWljIHBhcnRpdGlvbiBtYXAuCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAkcmVmOiAvc2No
+ZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzIKwqAKwqByZXF1aXJlZDoKwqDCoCAt
+ICIjYWRkcmVzcy1jZWxscyIKQEAgLTUyLDYgKzY5LDcgQEAgZXhhbXBsZXM6CsKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCByZWcgPSA8MHgwMTAwMDAwIDB4MjAwMDAwPjsKwqDCoMKgwqDCoMKgwqDC
+oCB9OwrCoMKgwqDCoCB9OworCsKgwqAgLSB8CsKgwqDCoMKgIHBhcnRpdGlvbnMgewrCoMKgwqDC
+oMKgwqDCoMKgIGNvbXBhdGlibGUgPSAiZml4ZWQtcGFydGl0aW9ucyI7CkBAIC02NCw2ICs4Miw3
+IEBAIGV4YW1wbGVzOgrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVnID0gPDB4MDAwMDAwMDAg
+MHgxIDB4MDAwMDAwMDA+OwrCoMKgwqDCoMKgwqDCoMKgIH07CsKgwqDCoMKgIH07CisKwqDCoCAt
+IHwKwqDCoMKgwqAgcGFydGl0aW9ucyB7CsKgwqDCoMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJm
+aXhlZC1wYXJ0aXRpb25zIjsKQEAgLTgyLDYgKzEwMSw3IEBAIGV4YW1wbGVzOgrCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgcmVnID0gPDB4MiAweDAwMDAwMDAwIDB4MSAweDAwMDAwMDAwPjsKwqDC
+oMKgwqDCoMKgwqDCoCB9OwrCoMKgwqDCoCB9OworCsKgwqAgLSB8CsKgwqDCoMKgIHBhcnRpdGlv
+bnMgewrCoMKgwqDCoMKgwqDCoMKgIGNvbXBhdGlibGUgPSAiZml4ZWQtcGFydGl0aW9ucyI7CkBA
+IC0xMTksMyArMTM5LDMwIEBAIGV4YW1wbGVzOgrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsK
+wqDCoMKgwqDCoMKgwqDCoCB9OwrCoMKgwqDCoCB9OworCivCoCAtIHwKK8KgwqDCoCBwYXJ0aXRp
+b25zIHsKK8KgwqDCoMKgwqDCoMKgIGNvbXBhdGlibGUgPSAic2VyY29tbSxzYy1wYXJ0aXRpb25z
+IiwgImZpeGVkLXBhcnRpdGlvbnMiOworwqDCoMKgwqDCoMKgwqAgI2FkZHJlc3MtY2VsbHMgPSA8
+MT47CivCoMKgwqDCoMKgwqDCoCAjc2l6ZS1jZWxscyA9IDwxPjsKKworwqDCoMKgwqDCoMKgwqAg
+cGFydGl0aW9uQDAgeworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsYWJlbCA9ICJ1LWJvb3QiOwor
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MHgwIDB4MTAwMDAwPjsKK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgc2VyY29tbSxzY3BhcnQtaWQgPSA8MD47CivCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHJlYWQtb25seTsKK8KgwqDCoMKgwqDCoMKgIH07CisKK8KgwqDCoMKgwqDCoMKgIHBhcnRp
+dGlvbkAxMDAwMDAgeworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsYWJlbCA9ICJkeW5hbWljIHBh
+cnRpdGlvbiBtYXAiOworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MHgxMDAwMDAgMHgx
+MDAwMDA+OworwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZXJjb21tLHNjcGFydC1pZCA9IDwxPjsK
+K8KgwqDCoMKgwqDCoMKgIH07CisKK8KgwqDCoMKgwqDCoMKgIHBhcnRpdGlvbkAyMDAwMDAgewor
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsYWJlbCA9ICJGYWN0b3J5IjsKK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmVnID0gPDB4MjAwMDAwIDB4MTAwMDAwPjsKK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgc2VyY29tbSxzY3BhcnQtaWQgPSA8Mj47CivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlYWQt
+b25seTsKK8KgwqDCoMKgwqDCoMKgIH07CivCoMKgwqAgfTsKLS0gCjIuMjUuMQoKCj4gwqDCoCAi
+I2FkZHJlc3MtY2VsbHMiOiB0cnVlCj4gwqAKPiBAQCAtMjcsNyArNDcsMTggQEAgcHJvcGVydGll
+czoKPiDCoAo+IMKgcGF0dGVyblByb3BlcnRpZXM6Cj4gwqDCoCAiQFswLTlhLWZdKyQiOgo+IC3C
+oMKgwqAgJHJlZjogInBhcnRpdGlvbi55YW1sIyIKPiArwqDCoMKgIGFsbE9mOgo+ICvCoMKgwqDC
+oMKgIC0gJHJlZjogInBhcnRpdGlvbi55YW1sIyIKPiArwqDCoMKgwqDCoCAtIGlmOgo+ICvCoMKg
+wqDCoMKgwqDCoMKgwqAgcHJvcGVydGllczoKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb21w
+YXRpYmxlOgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjb250YWluczoKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnN0OiBzZXJjb21tLHNjLXBhcnRpdGlvbnMKPiAr
+wqDCoMKgwqDCoMKgwqAgdGhlbjoKPiArwqDCoMKgwqDCoMKgwqDCoMKgIHByb3BlcnRpZXM6Cj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2VyY29tbSxzY3BhcnQtaWQ6Cj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGRlc2NyaXB0aW9uOiBQYXJ0aXRpb24gaWQgaW4gU2VyY29tbSBwYXJ0
+aXRpb24gbWFwCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICRyZWY6IC9zY2hlbWFzL3R5
+cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMgo+IEkgdGhpbmsgd2Ugc3RpbGwgZGlkIG5vdCBj
+bGFyaWZ5IHdoeSBkbyB5b3UgbmVlZCB0aGlzIElEIHdoaWNoIGluIGFsbAo+IHlvdXIgZXhhbXBs
+ZXMgaW5jcmVtZW50cyBieSBvbmUuIFRoZSBkZXNjcmlwdGlvbiBiYXNpY2FsbHkgaXMgYSBjb3B5
+IG9mCj4gcHJvcGVydHkgbmFtZSwgc28gaXQgZG9lcyBub3QgZXhwbGFpbiBhbnl0aGluZy4KCkkg
+YWRkZWQgbW9yZSBkZXRhaWxlZCBkZXNjcmlwdGlvbi4KCj4gwqAKPiDCoHJlcXVpcmVkOgo+IMKg
+wqAgLSAiI2FkZHJlc3MtY2VsbHMiCj4gQEAgLTExOSwzICsxNTAsMjkgQEAgZXhhbXBsZXM6Cj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH07Cj4gwqDCoMKgwqDCoMKgwqDCoCB9Owo+IMKgwqDC
+oMKgIH07Cj4gQmxhbmsgbGluZS4KCkZpeGVkLiBBbmQgSSBhZGRlZCBibGFuayBsaW5lcyBiZXR3
+ZWVuIGFscmVhZHkgZXhpc3RpbmcgZXhhbXBsZXMuCgo+PiArwqAgLSB8Cj4+ICvCoMKgwqAgcGFy
+dGl0aW9ucyB7Cj4+ICvCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gInNlcmNvbW0sc2MtcGFy
+dGl0aW9ucyIsICJmaXhlZC1wYXJ0aXRpb25zIjsKPj4gK8KgwqDCoMKgwqDCoMKgICNhZGRyZXNz
+LWNlbGxzID0gPDE+Owo+PiArwqDCoMKgwqDCoMKgwqAgI3NpemUtY2VsbHMgPSA8MT47Cj4+ICsK
+Pj4gK8KgwqDCoMKgwqDCoMKgIHBhcnRpdGlvbkAwIHsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgbGFiZWwgPSAidS1ib290IjsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVnID0gPDB4
+MCAweDEwMDAwMD47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNlcmNvbW0sc2NwYXJ0LWlk
+PTwwPjsKPiBNaXNzaW5nIHNwYWNlcyBhcm91bmQgPS4KClRoYW5rcy4gRml4ZWQuCgo+IEJlc3Qg
+cmVnYXJkcywKPiBLcnp5c3p0b2YKCi0tIApCZXN0IHJlZ2FyZHMsCk1pa2hhaWwKCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
