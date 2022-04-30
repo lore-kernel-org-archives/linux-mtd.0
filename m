@@ -4,86 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8985C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Apr 2022 14:43:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2696BC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Apr 2022 16:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=w+sFjAAUgbQ2dO9oyLQvOgBTrdw7D2/MAwLELl1WKoI=; b=j5NG6hzjmtIxe+
-	Rt9sImfZIfgIeMYjhf+iz57TVpb1Htjwu+l4vMSsK+v4HS2AVsMgCa3757AauNU5+id1r55BY+G+A
-	H3PBzriBJLVQ8/HDcUKiMUZo+1yzVCWYlo52QGvp8BU1vrEFoF0j/NJsDHlTsp/6lILne4qbVRdvj
-	IJ8Jf2l0x0F7oRQBF3J/+KR8O7qOtxk3FuZfR1crdaFyAecC9fWAWmwQqOZuC17zWErFoo+s82qCg
-	+5UfOkr9OPGjnvvTCoD1pNy9yYI6bbq66OCvDH2V2MGDtamAGjnr7entgsrOLb7OcP8wqsJb9Qshn
-	bCkkyczmMqVvrQX4ybOA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aVGIygUvxxzjZqWXThVoEe1fd3qEqHcX9Yg4fEpHhd8=; b=h+2A3hQBzxMZjI
+	Ibd0N5hMTsSs//VPtutCZBcyVwrUc9QMqtyeKqF5p/5NclZblu4MDS4ivgwqtTMATdZfAo5BTlwh3
+	+RCYcQ2bvYBllFQJAzpwOt8KIDQzB/m3TI7crmxdbOSKBYEhbfKPMV1CFgOofP3h40IfO9aGU6hJa
+	oHcmWMc21DFAu0NYi4DscXa0Oe5IvY2hq+WWD3HPNzfk6mdds1cJJUGFGT5pj1HyHQNqrFE6eAsIK
+	J4Gf0WYFJZ3OPL8hqNjAvn7HorhFk6Gx0m233666rC/KQR4Nr52YbCEBV4DHoPF5HsILPB+/Zm9Qu
+	EDTRFL47jRROmvIK+qaQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkoJj-00EVrB-QF; Sat, 30 Apr 2022 14:43:27 +0000
-Received: from mail-ed1-x52b.google.com ([2a00:1450:4864:20::52b])
+	id 1nkq97-00EfBT-7k; Sat, 30 Apr 2022 16:40:37 +0000
+Received: from mail-pg1-x52d.google.com ([2607:f8b0:4864:20::52d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkoJg-00EVpd-Uk
- for linux-mtd@lists.infradead.org; Sat, 30 Apr 2022 14:43:26 +0000
-Received: by mail-ed1-x52b.google.com with SMTP id b24so12056281edu.10
- for <linux-mtd@lists.infradead.org>; Sat, 30 Apr 2022 07:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :references:from:in-reply-to:content-transfer-encoding;
- bh=Ae7sNcHPWMn0vQt8ktazZVFlpIwIv2WIixfHk4+kCCs=;
- b=R03VAAwVTDiVdVvlB4UrMenl7xp/UpjZLcoRbp4/jp5vDn6wjTFrjllooWfuKDUy4C
- mNrMBFMThe2AtywO46d5WROs0dtF4F6lMQm6Hvp1jC4xDt4EViOJ5quaGM2kSY1C16gy
- 9r8ojzX34iXZKf1bql7rTKVqClqgIvmFa8JfGZRyZZR2nR/8eumAWVKR6P7PPwnz9lZu
- MdBjsLya7QzRlZmWxmf9TWxTXZsIDmmIA3G6lMhapcvM/479Kg+UBhtoxzJ4WZymeqkP
- 4fesp6bFshwwuUpjHQvYyUj3LLLG4Sjsa64FPNPrgw/RBjnFI1Oirhl8n3eCs8Y251BU
- 11fA==
+ id 1nkq93-00EfAg-RB; Sat, 30 Apr 2022 16:40:35 +0000
+Received: by mail-pg1-x52d.google.com with SMTP id i62so8730875pgd.6;
+ Sat, 30 Apr 2022 09:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=o2c/Ky9Liyh4deI3k85Qj56knYUJOmGyYJ4Gh53Qh+0=;
+ b=J5tLkjIho8qSRImFkS1JBZAIDt9Ckhz6NfJO5EXdo3g2Ymj5amtXNa2+bD4AoMJhLZ
+ Y5LMBAWd991sE8c6GjPHpvqW1j2mXKZpcghBuiusmjaiTIemotTUluRJ7ANg66zn82us
+ K7QA1yuJ6CwfpZlUTcuQ4+3fB6NrEy/Es4lwfosyFf0Txv8KC+IUuY7xsoCYIVVbqMuO
+ dH+Uxp4PAkT+eHESeGJ6OkhWwN2/4TaOYtkgWSwICI7Lce3msZCvPDJLPeYmjyO0Nhfz
+ sXPMerTuxdzEddifZvICyrGFVHFfNN7MKJPDJVNmto9wNv1j1hPre6HHMt4R1beXw3fD
+ 9WLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:references:from:in-reply-to
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=Ae7sNcHPWMn0vQt8ktazZVFlpIwIv2WIixfHk4+kCCs=;
- b=bde4Nv4xJi8UipIDaOkDtaLYW8Aq5bGT23STbIOOs0FfMCftmzf8OOfNJ8+utW0t7C
- WbqJ5vNMbdVrSoeJhKMkdTWtSVeA1IKiOYC4TCrau+fOVZ7Cp4Ct/aic+UH9WldFd0Ba
- uhMFH5Bbw+Gg7BfE4WnuhlVMfB9fU88s9KxfYMt+c8pOtAgEaehDZZdSboIOfJY2TlUN
- v8SFbtkHRX8rsr4Y1ujlzRWhPQIfwwR+dcuAezQvFXEXM65lf9YW+dpizPF6arYSE6/+
- C+2PC2zerLDKXfRbDgB1LFaKm/np3ixAcj2u99rUINDr3VjnaL3xxdIRgczNfVEAhdXN
- 1zKg==
-X-Gm-Message-State: AOAM531cch1fOkSdmOuUPmNL3bguIE9we+3HrnEqwL6UtJ8gjHHhbwDc
- QohnrcBWZ2q9xfyOQvKygovSYg==
-X-Google-Smtp-Source: ABdhPJw/sjjJ325eTLjgrvQ2SuNf9g5yd69OBocxHWeT36O4SGf1AKPyCMPkC1ksmQ5yoT6VPZtWwQ==
-X-Received: by 2002:aa7:cb4d:0:b0:425:e24f:96ba with SMTP id
- w13-20020aa7cb4d000000b00425e24f96bamr4755602edt.214.1651329802286; 
- Sat, 30 Apr 2022 07:43:22 -0700 (PDT)
-Received: from [192.168.0.180] (xdsl-188-155-176-92.adslplus.ch.
- [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
- ck13-20020a0564021c0d00b00427afbbf5e8sm527102edb.11.2022.04.30.07.43.21
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 30 Apr 2022 07:43:21 -0700 (PDT)
-Message-ID: <62709b53-392f-2463-8124-e109f2d810dd@linaro.org>
-Date: Sat, 30 Apr 2022 16:43:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH 2/2] dt-bindings: mtd: qcom_nandc: document
- qcom,boot_pages binding
-Content-Language: en-US
-To: Ansuel Smith <ansuelsmth@gmail.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>,
+ bh=o2c/Ky9Liyh4deI3k85Qj56knYUJOmGyYJ4Gh53Qh+0=;
+ b=n5Jfgk44Ro4e+0beqTuVlK/BcQd2VZdxSthaRsg/VA8kawRSKMIR6M69oS7/nx0ZVc
+ mAhvGBgEJ3WeHBUh+IXBzHTo0+MgifUKDzag0n/IdELNSYO9ViwonKsBrh8fXKtcTyWP
+ IB8WD+uN+at5zNU0TmdVU5V16g7fb/avJYIy6Fi5wpUlp0ZJVsnHhAQBeDyBghSJflKz
+ QSLF7nd2BBLm2Ar2ehvvGDe9FFnxbZVTT0aYsx9tx7UmvJC2eBFc51iHfkxG4bo3isYc
+ jtHI/0EYkdNRigJb5Y9n7eQlSl83/8hxGSqUgKEsck00q+3Nsx6yU3VOWyQHKezEt++w
+ D6zQ==
+X-Gm-Message-State: AOAM530E1X0l7RMz+Gb6I7hN14Qu/h5IqqnJNSPaRCoiqg8+zJZQE9G0
+ ALPurxx21flTJ/7KRnZP6odJuYZLPsyaBg==
+X-Google-Smtp-Source: ABdhPJwQtMRNhpB/tnTOiMm2a7Q1CLofcPJd1tvvxjrklVDysFZf85RlMKFZG2pRbtqvxaP+Kag8bQ==
+X-Received: by 2002:a63:4f1e:0:b0:3a6:68b7:cedc with SMTP id
+ d30-20020a634f1e000000b003a668b7cedcmr3625624pgb.29.1651336832350; 
+ Sat, 30 Apr 2022 09:40:32 -0700 (PDT)
+Received: from guoguo-omen.lan ([2001:250:3000:7000:c0f1:53a1:ea79:5d2f])
+ by smtp.gmail.com with ESMTPSA id
+ bm2-20020a056a00320200b0050dc76281dbsm1736816pfb.181.2022.04.30.09.40.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 30 Apr 2022 09:40:32 -0700 (PDT)
+From: Chuanhong Guo <gch981213@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Chuanhong Guo <gch981213@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220429211630.7812-1-ansuelsmth@gmail.com>
- <20220429211630.7812-3-ansuelsmth@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220429211630.7812-3-ansuelsmth@gmail.com>
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC support),
+ linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC support), 
+ linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] mtd: nand: ecc-mtk: add external ecc engine support
+Date: Sun,  1 May 2022 00:40:21 +0800
+Message-Id: <20220430164021.537668-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220430_074325_044998_F0037BD7 
-X-CRM114-Status: GOOD (  21.49  )
+X-CRM114-CacheID: sfid-20220430_094033_941695_6A5AC188 
+X-CRM114-Status: GOOD (  23.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,64 +91,447 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 29/04/2022 23:16, Ansuel Smith wrote:
-> Document new qcom,boot_pages binding used to apply special
-> read/write configuration to boot pages.
-> 
-> QCOM apply a special configuration where spare data is not protected
-> by ECC for some special pages (used for boot partition). Add
-> Documentation on how to declare these special pages.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  .../devicetree/bindings/mtd/qcom,nandc.yaml         | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> index 84ad7ff30121..ef243109689d 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> @@ -78,6 +78,17 @@ allOf:
->              Must contain the ADM data type CRCI block instance number
->              specified for the NAND controller on the given platform
->  
-> +        qcom,boot_pages:
+This adds support for using ecc-mtk as an external ECC engine.
 
-No underscores in property names.
+The implemented OOB layout follows the convention to put all ECC data
+at the end of OOB. As a result, the data layout is incompatible with
+MTK NFI piplined ECC mode.
 
-> +          $ref: /schemas/types.yaml#/definitions/uint32-array
-> +          description:
-> +            Some special page used by boot partition have spare data
-> +            not protected by ECC. Use this to declare these special page
-> +            by defining first the offset and then the size.
-> +
-> +            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+---
+ drivers/mtd/nand/ecc-mtk.c | 335 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 331 insertions(+), 4 deletions(-)
 
-Then it look like uint32-matrix.
+diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
+index 9f9b201fe706..998276ada671 100644
+--- a/drivers/mtd/nand/ecc-mtk.c
++++ b/drivers/mtd/nand/ecc-mtk.c
+@@ -15,6 +15,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/mutex.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/nand-ecc-mtk.h>
+ 
+ #define ECC_IDLE_MASK		BIT(0)
+@@ -26,12 +27,14 @@
+ #define ECC_ENCCON		(0x00)
+ #define ECC_ENCCNFG		(0x04)
+ #define		ECC_MS_SHIFT		(16)
++#define		ECC_MAX_MS		(8191)
+ #define ECC_ENCDIADDR		(0x08)
+ #define ECC_ENCIDLE		(0x0C)
+ #define ECC_DECCON		(0x100)
+ #define ECC_DECCNFG		(0x104)
+ #define		DEC_EMPTY_EN		BIT(31)
+ #define		DEC_CNFG_CORRECT	(0x3 << 12)
++#define ECC_DECDIADDR		(0x108)
+ #define ECC_DECIDLE		(0x10C)
+ #define ECC_DECENUM0		(0x114)
+ 
+@@ -59,11 +62,23 @@ struct mtk_ecc {
+ 
+ 	struct completion done;
+ 	struct mutex lock;
++	struct nand_ecc_engine ecc_eng;
+ 	u32 sectors;
++	u32 refcnt;
+ 
+ 	u8 *eccdata;
+ };
+ 
++struct mtk_ecc_host_ctx {
++	struct mtk_ecc_config cfg;
++	struct nand_ecc_req_tweak_ctx req_ctx;
++	u8 *buf;
++	dma_addr_t buf_dma;
++	u32 free_len;
++	u32 parity_len;
++	u32 steps;
++};
++
+ /* ecc strength that each IP supports */
+ static const u8 ecc_strength_mt2701[] = {
+ 	4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
+@@ -75,6 +90,8 @@ static const u8 ecc_strength_mt2712[] = {
+ 	40, 44, 48, 52, 56, 60, 68, 72, 80
+ };
+ 
++static const u8 ecc_strength_mt7621[] = { 4 };
++
+ static const u8 ecc_strength_mt7622[] = {
+ 	4, 6, 8, 10, 12
+ };
+@@ -115,6 +132,13 @@ static int mt7622_ecc_regs[] = {
+ 	[ECC_DECIRQ_STA] =      0x144,
+ };
+ 
++static struct mtk_ecc *nand_to_mtk_ecc(struct nand_device *nand)
++{
++	struct nand_ecc_engine *eng = nand->ecc.engine;
++
++	return container_of(eng, struct mtk_ecc, ecc_eng);
++}
++
+ static inline void mtk_ecc_wait_idle(struct mtk_ecc *ecc,
+ 				     enum mtk_ecc_operation op)
+ {
+@@ -204,6 +228,11 @@ static int mtk_ecc_config(struct mtk_ecc *ecc, struct mtk_ecc_config *config)
+ 
+ 		if (config->sectors)
+ 			ecc->sectors = 1 << (config->sectors - 1);
++
++		if (config->mode != ECC_NFI_MODE)
++			writel(lower_32_bits(config->addr),
++			       ecc->regs + ECC_DECDIADDR);
++
+ 	}
+ 
+ 	return 0;
+@@ -239,8 +268,14 @@ EXPORT_SYMBOL(mtk_ecc_get_stats);
+ 
+ void mtk_ecc_release(struct mtk_ecc *ecc)
+ {
+-	clk_disable_unprepare(ecc->clk);
+-	put_device(ecc->dev);
++	mutex_lock(&ecc->lock);
++
++	ecc->refcnt--;
++	if (!ecc->refcnt) {
++		clk_disable_unprepare(ecc->clk);
++		put_device(ecc->dev);
++	}
++	mutex_unlock(&ecc->lock);
+ }
+ EXPORT_SYMBOL(mtk_ecc_release);
+ 
+@@ -257,6 +292,7 @@ static struct mtk_ecc *mtk_ecc_get(struct device_node *np)
+ {
+ 	struct platform_device *pdev;
+ 	struct mtk_ecc *ecc;
++	int ret;
+ 
+ 	pdev = of_find_device_by_node(np);
+ 	if (!pdev)
+@@ -268,8 +304,17 @@ static struct mtk_ecc *mtk_ecc_get(struct device_node *np)
+ 		return ERR_PTR(-EPROBE_DEFER);
+ 	}
+ 
+-	clk_prepare_enable(ecc->clk);
+-	mtk_ecc_hw_init(ecc);
++	ret = mutex_lock_interruptible(&ecc->lock);
++	if (ret) {
++		dev_err(ecc->dev, "interrupted when attempting to lock\n");
++		return ERR_PTR(ret);
++	}
++	if (!ecc->refcnt) {
++		clk_prepare_enable(ecc->clk);
++		mtk_ecc_hw_init(ecc);
++	}
++	ecc->refcnt++;
++	mutex_unlock(&ecc->lock);
+ 
+ 	return ecc;
+ }
+@@ -450,6 +495,283 @@ unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
+ }
+ EXPORT_SYMBOL(mtk_ecc_get_parity_bits);
+ 
++static int mtk_ecc_host_ooblayout_ecc(struct mtd_info *mtd, int section,
++				      struct mtd_oob_region *oobecc)
++{
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
++
++	if (section)
++		return -ERANGE;
++
++	oobecc->offset = ctx->free_len + 1;
++	oobecc->length = ctx->steps * ctx->parity_len;
++	return 0;
++}
++
++static int mtk_ecc_host_ooblayout_free(struct mtd_info *mtd, int section,
++				       struct mtd_oob_region *oobfree)
++{
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
++
++	if (section)
++		return -ERANGE;
++
++	oobfree->offset = 1;
++	oobfree->length = ctx->free_len;
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops mtk_ecc_host_ooblayout = {
++	.ecc = mtk_ecc_host_ooblayout_ecc,
++	.free = mtk_ecc_host_ooblayout_free,
++};
++
++static int mtk_ecc_host_init_ctx(struct nand_device *nand)
++{
++	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
++	struct nand_ecc_props *conf = &nand->ecc.ctx.conf;
++	struct nand_ecc_props *reqs = &nand->ecc.requirements;
++	struct nand_ecc_props *user = &nand->ecc.user_conf;
++	struct mtd_info *mtd = nanddev_to_mtd(nand);
++	const u8 *ecc_strength = ecc->caps->ecc_strength;
++	int step_size = 0, strength = 0;
++	int ret = 0;
++	struct mtk_ecc_host_ctx *ctx;
++	int steps, parity_len;
++	int i;
++	u32 parity_bits;
++
++	if (user->step_size && user->strength) {
++		step_size = user->step_size;
++		strength = user->strength;
++	} else if (reqs->step_size && reqs->strength) {
++		step_size = reqs->step_size;
++		strength = reqs->strength;
++	} else {
++		dev_err(ecc->dev, "please specify a desired ECC capability.");
++		return -EINVAL;
++	}
++
++	if (step_size * 8 > ECC_MAX_MS ||
++	    strength > ecc_strength[ecc->caps->num_ecc_strength - 1]) {
++		dev_err(ecc->dev, "unable to fulfill ECC capability.");
++		return -EOPNOTSUPP;
++	}
++
++	for (i = 0; i < ecc->caps->num_ecc_strength; i++) {
++		if (strength <= ecc_strength[i]) {
++			strength = ecc_strength[i];
++			break;
++		}
++	}
++
++	parity_bits = fls(1 + 8 * step_size);
++	steps = mtd->writesize / step_size;
++	parity_len = parity_bits * strength;
++	parity_len = DIV_ROUND_UP(parity_len, 8);
++
++	if (parity_len * steps > mtd->oobsize - 1) {
++		dev_err(ecc->dev, "OOB is too small for %d bytes of ECC data.",
++			parity_len * steps);
++		return -EOPNOTSUPP;
++	}
++
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++
++	nand->ecc.ctx.priv = ctx;
++
++	ctx->cfg.mode = ECC_DMA_MODE;
++	ctx->cfg.strength = strength;
++	ctx->cfg.sectors = 1;
++	ctx->cfg.len = step_size;
++
++	ctx->steps = steps;
++	ctx->free_len = mtd->oobsize - 1 - parity_len * steps;
++	ctx->parity_len = parity_len;
++
++	mtd_set_ooblayout(mtd, &mtk_ecc_host_ooblayout);
++	conf->step_size = step_size;
++	conf->strength = strength;
++
++	ctx->buf = dma_alloc_coherent(ecc->dev, step_size + parity_len,
++				      &ctx->buf_dma, GFP_KERNEL);
++	if (!ctx->buf) {
++		ret = -ENOMEM;
++		goto free_ctx;
++	}
++	ret = nand_ecc_init_req_tweaking(&ctx->req_ctx, nand);
++	if (ret)
++		goto free_buf;
++
++	dev_info(ecc->dev, "OOB: free: %u bytes, ECC: %u bytes", ctx->free_len,
++		 ctx->parity_len * ctx->steps);
++	dev_info(ecc->dev, "ECC strength: %d bits per %d bytes\n", strength,
++		 step_size);
++	return 0;
++free_buf:
++	dma_free_coherent(ecc->dev, step_size + parity_len, ctx->buf,
++			  ctx->buf_dma);
++free_ctx:
++	kfree(ctx);
++	return ret;
++}
++
++static void mtk_ecc_host_cleanup_ctx(struct nand_device *nand)
++{
++	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
++	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
++
++	nand_ecc_cleanup_req_tweaking(&ctx->req_ctx);
++	dma_free_coherent(ecc->dev, ctx->cfg.len + ctx->parity_len, ctx->buf,
++			  ctx->buf_dma);
++	kfree(ctx);
++}
++
++static int mtk_ecc_host_prepare_io_req(struct nand_device *nand,
++				       struct nand_page_io_req *req)
++{
++	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
++	struct mtd_info *mtd = nanddev_to_mtd(nand);
++	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
++	int ret, step;
++
++	if (req->mode == MTD_OPS_RAW)
++		return 0;
++
++	nand_ecc_tweak_req(&ctx->req_ctx, req);
++
++	if (req->type == NAND_PAGE_READ)
++		return 0;
++
++	ctx->cfg.op = ECC_ENCODE;
++
++	for (step = 0; step < ctx->steps; step++) {
++		ctx->cfg.addr = dma_map_single(
++			ecc->dev, (u8 *)req->databuf.out + step * ctx->cfg.len,
++			ctx->cfg.len, DMA_TO_DEVICE);
++		ret = dma_mapping_error(ecc->dev, ctx->cfg.addr);
++		if (ret) {
++			dev_err(ecc->dev, "DMA mapping failed.\n");
++			return ret;
++		}
++		ret = mtk_ecc_enable(ecc, &ctx->cfg);
++		if (ret) {
++			dma_unmap_single(ecc->dev, ctx->cfg.addr, ctx->cfg.len,
++					 DMA_TO_DEVICE);
++			return ret;
++		}
++
++		ret = mtk_ecc_wait_done(ecc, ECC_ENCODE);
++		if (ret) {
++			mtk_ecc_disable(ecc);
++			dma_unmap_single(ecc->dev, ctx->cfg.addr, ctx->cfg.len,
++					 DMA_TO_DEVICE);
++			return ret;
++		}
++
++		mtk_ecc_wait_idle(ecc, ECC_ENCODE);
++		dma_unmap_single(ecc->dev, ctx->cfg.addr, ctx->cfg.len,
++				 DMA_TO_DEVICE);
++		__ioread32_copy(ecc->eccdata,
++				ecc->regs + ecc->caps->ecc_regs[ECC_ENCPAR00],
++				round_up(ctx->parity_len, 4));
++		mtd_ooblayout_set_eccbytes(mtd, ecc->eccdata,
++					   (void *)req->oobbuf.out,
++					   ctx->parity_len * step,
++					   ctx->parity_len);
++		mtk_ecc_disable(ecc);
++	}
++
++	return ret;
++}
++
++static int mtk_ecc_host_finish_io_req(struct nand_device *nand,
++				      struct nand_page_io_req *req)
++{
++	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
++	struct mtd_info *mtd = nanddev_to_mtd(nand);
++	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
++	u32 bitflips = 0, failed = 0;
++	int ret, step, i;
++	u32 err;
++
++	/* Nothing to do for a raw operation */
++	if (req->mode == MTD_OPS_RAW)
++		return 0;
++
++	/* This engine does not provide BBM/free OOB bytes protection */
++	if (!req->datalen)
++		return 0;
++
++	/* No more preparation for page write */
++	if (req->type == NAND_PAGE_WRITE) {
++		nand_ecc_restore_req(&ctx->req_ctx, req);
++		return 0;
++	}
++
++	ctx->cfg.op = ECC_DECODE;
++	ctx->cfg.addr = ctx->buf_dma;
++
++	for (step = 0; step < ctx->steps; step++) {
++		memcpy(ctx->buf, req->databuf.in + step * ctx->cfg.len,
++		       ctx->cfg.len);
++		mtd_ooblayout_get_eccbytes(mtd, ctx->buf + ctx->cfg.len,
++					   req->oobbuf.in,
++					   ctx->parity_len * step,
++					   ctx->parity_len);
++
++		ret = mtk_ecc_enable(ecc, &ctx->cfg);
++		if (ret)
++			break;
++
++		ret = mtk_ecc_wait_done(ecc, ECC_DECODE);
++		if (ret)
++			break;
++
++		mtk_ecc_wait_idle(ecc, ECC_DECODE);
++
++		memcpy(req->databuf.in + step * ctx->cfg.len, ctx->buf,
++		       ctx->cfg.len);
++		mtd_ooblayout_set_eccbytes(mtd, ctx->buf + ctx->cfg.len,
++					   req->oobbuf.in,
++					   ctx->parity_len * step,
++					   ctx->parity_len);
++		err = readl(ecc->regs + ECC_DECENUM0);
++		err &= ecc->caps->err_mask;
++		if (err == ecc->caps->err_mask) {
++			// skip empty page
++			for (i = 0 ; i < ctx->cfg.len + ctx->parity_len ; i++)
++				if (ctx->buf[i] != 0xff)
++					break;
++
++			if (i != ctx->cfg.len + ctx->parity_len)
++				failed++;
++		} else {
++			mtd->ecc_stats.corrected += err;
++			bitflips = max_t(u32, bitflips, err);
++		}
++
++		mtk_ecc_disable(ecc);
++	}
++
++	nand_ecc_restore_req(&ctx->req_ctx, req);
++	if (ret)
++		return ret;
++	mtd->ecc_stats.failed += failed;
++	return failed ? -EBADMSG : bitflips;
++}
++
++static struct nand_ecc_engine_ops mtk_ecc_engine_ops = {
++	.init_ctx = mtk_ecc_host_init_ctx,
++	.cleanup_ctx = mtk_ecc_host_cleanup_ctx,
++	.prepare_io_req = mtk_ecc_host_prepare_io_req,
++	.finish_io_req = mtk_ecc_host_finish_io_req,
++};
++
+ static const struct mtk_ecc_caps mtk_ecc_caps_mt2701 = {
+ 	.err_mask = 0x3f,
+ 	.err_shift = 8,
+@@ -546,6 +868,11 @@ static int mtk_ecc_probe(struct platform_device *pdev)
+ 
+ 	ecc->dev = dev;
+ 	mutex_init(&ecc->lock);
++	ecc->ecc_eng.dev = dev;
++	ecc->ecc_eng.integration = NAND_ECC_ENGINE_INTEGRATION_EXTERNAL;
++	ecc->ecc_eng.ops = &mtk_ecc_engine_ops;
++
++	nand_ecc_register_on_host_hw_engine(&ecc->ecc_eng);
+ 	platform_set_drvdata(pdev, ecc);
+ 	dev_info(dev, "probed\n");
+ 
+-- 
+2.35.1
 
-> +
-> +            Refer to the ipq8064 example on how to use this special binding.
-
-Property does not look valid for other variants, so it should be made
-false for them (in allOf:if:then).
-
-> +
->    - if:
->        properties:
->          compatible:
-> @@ -135,6 +146,8 @@ examples:
->          nand-ecc-strength = <4>;
->          nand-bus-width = <8>;
->  
-> +        qcom,boot_pages = <0x0 0x58a0000>;
-> +
->          partitions {
->            compatible = "fixed-partitions";
->            #address-cells = <1>;
-
-
-Best regards,
-Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
