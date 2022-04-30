@@ -4,99 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AC41C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 30 Apr 2022 12:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56922C433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 30 Apr 2022 13:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ThMLsZHtNY5wgu9GHeef/a0/KYpP1QAlIosJM1FvIM0=; b=vXSnRhrbFIGrww
-	DlneI64Watj8tPPxHCeVBFUK3jXo9xqR61dXq6Ss09eksAeBTJ2Gtn33NbCgKOxz7DxLFGtJXCQCu
-	/ZYlSXrXDexhjUk0B6vuLRDuwzKF9bSc33dM4AVQ2HfckQrQ7iSbS66O7D3/sCNW3tpuhL4HytjiW
-	Ptbvv2NS5czfroFRlU0UTObdljKl88vffRGifUjlKAd/xuHaiqjK/y6Bj7BWOJfgwxnoB93t2X0bG
-	6hulyVX/pk5vZWuHrlgxkdBv1cRvo48zyU6Omk1hNeQA4iA6Aj6QGtisS/+28u8wLpWgmPNx0f2XA
-	Da0B8YOHeDxJEXyui6gw==;
+	List-Owner; bh=I5Zy5npCMZyDfAIcEG9GbGPYm5GwlEXmkt7EV7COiwk=; b=yOoGV5BOb10gGx
+	IKa6R1KC+YnKNPzQtygydOIxtr0uNhzUfzyTZnH8wcryMGxmaov9JkxPZBR91BSWMFqwB6PWVJlNS
+	V+FMflrCah20lPwljDA+6rI5mNWp0yhJZd1RjvHXQdJPI7tXryKSugWPwa99l0YIYA2eUpx57zyVW
+	7xuDF8mOaqzXtEaMzbYAgVq9MgqQ3ukKRSWGMhyR0smBhTLxtm9Qasg9TIFbCCXeMd7sLicO1U8QF
+	5K5sqE5Pmw3EURMrGV7tM+ytpUxnN+bfu7gpJy2itTKo6YpPbl6Qj54VAa+u3yBFpuXcBSAAksIoE
+	Xa5r92rhPy011GgLXykA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nkmQ1-00EFBe-ME; Sat, 30 Apr 2022 12:41:49 +0000
-Received: from mail-ot1-x331.google.com ([2607:f8b0:4864:20::331])
+	id 1nknD6-00ELW4-8u; Sat, 30 Apr 2022 13:32:32 +0000
+Received: from mout.kundenserver.de ([212.227.126.131])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nkmPp-00EF7i-8r; Sat, 30 Apr 2022 12:41:38 +0000
-Received: by mail-ot1-x331.google.com with SMTP id
- c5-20020a9d75c5000000b00605ff3b9997so1668500otl.0; 
- Sat, 30 Apr 2022 05:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=sender:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=+4KmgQYfIuFm8h1U7R2YwSpU4hiAkXj3VbXO1u4n31Y=;
- b=bOMCzvCOAKpdv9fXaje9jMI1pqeKHqZONG1kyrwpEn5SRSjZ3gWLYQa3I3V8E0XTqe
- 23L3GQAWJeNEVk7g8b+1UkAgEnQmLz3wKCy7oL9ps0rKBiKWBGcNJePTi8yZdc7eAm1K
- drdd70QPm41ZeopLgQmmcBSPYqUdoh6aLM9KWSTIn7/lTrG/Cl6+v62W2AmGpZwfQKuG
- nJsb/pkjFRynFoTYu5l6pn8u9pt2CaT1jCMhsjk/5NBUgOkrkYq3BZENTznAZdLbqTNg
- OGQz6xI5kVYIDfriuLeWqba0UWos0/qt3bWMGA48AnxKNk/33rWth8ALS3TZQJlUqq9u
- /Xfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
- :subject:content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=+4KmgQYfIuFm8h1U7R2YwSpU4hiAkXj3VbXO1u4n31Y=;
- b=iqilMS7ueIo+5puFAHQ32klAL7v67vDGQKrv1jnUwHix3Wa/AmK9cE5swTW8fRo9d/
- fChM2dBGBYiJTarN+2myeEi3Mfk3EbHwneP2AR0sgyyEeLLpyHk0KTwvoCHpmI5wudIp
- lEWin9jAmIuQtt9LXx7pWSH9QkNzWoLYgAY/Po1/A2fCW+qEsLlkwxeKN9z4hl0DpK5i
- fN/OnzOx2N1kxvL2qmaneUFa2PzoPwa0MjtE6077XZE0S93upvGU4E7d6su8fTloKsPp
- Ay6qVh8N6kst4f7yoEh9sNFspmelIZYeOurMHXjnabzof69SAr8vfbfgEUImOUDl2XnB
- TrLw==
-X-Gm-Message-State: AOAM5316217mz0P0tl5PUOBTJmsV7G6gpQ7vAr02TRaVo78zq3oeFJ5u
- aE/Nvyoy4OhO6CI9LUzHSZM=
-X-Google-Smtp-Source: ABdhPJx/RnInjVQBRODIzLjFN1nUE8Qwa3akS1eWhsyayobpVL5cALhdflWKmFg+xyGlLB5eP7Dd1w==
-X-Received: by 2002:a9d:6957:0:b0:605:de97:1ac9 with SMTP id
- p23-20020a9d6957000000b00605de971ac9mr1368958oto.83.1651322495923; 
- Sat, 30 Apr 2022 05:41:35 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c?
- ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id
- c5-20020a056870b28500b000e686d13881sm3932471oao.27.2022.04.30.05.41.32
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 30 Apr 2022 05:41:35 -0700 (PDT)
-Message-ID: <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
-Date: Sat, 30 Apr 2022 05:41:31 -0700
+ id 1nknD3-00ELVK-9n; Sat, 30 Apr 2022 13:32:30 +0000
+Received: from mail-yw1-f169.google.com ([209.85.128.169]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MirfI-1oNPos0Cgu-00evef; Sat, 30 Apr 2022 15:32:26 +0200
+Received: by mail-yw1-f169.google.com with SMTP id
+ 00721157ae682-2f7c424c66cso110779297b3.1; 
+ Sat, 30 Apr 2022 06:32:25 -0700 (PDT)
+X-Gm-Message-State: AOAM530WrBKSYPHAj9foNx158qOzq9mVUwft39XBvFMqvQcd2wRZ1wk+
+ e+HujISy7FP+LZB3mqDkuK09bedm9EgcBflvCC8=
+X-Google-Smtp-Source: ABdhPJyQsAuOXuwqNSnE+0RumiMVY+a1YoHyKhCVHMghGQo3frV3I1QOJWPIvakdR8DFKer+m5ZGRHZJ5RFDwaJx/vI=
+X-Received: by 2002:a81:1dd1:0:b0:2ea:c38b:65a8 with SMTP id
+ d200-20020a811dd1000000b002eac38b65a8mr3834670ywd.135.1651325544544; Sat, 30
+ Apr 2022 06:32:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
-Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Philipp Zabel
- <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>,
- Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Dominik Brodowski <linux@dominikbrodowski.net>, Helge Deller
- <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
- Linux PM list <linux-pm@vger.kernel.org>,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org,
- USB list <linux-usb@vger.kernel.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
  <20220422170530.GA2338209@roeck-us.net>
  <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
@@ -114,11 +54,61 @@ References: <20220419163810.2118169-1-arnd@kernel.org>
  <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
  <149509dd-f43d-1b27-4395-81eab4ff3455@roeck-us.net>
  <CAK8P3a05vFdBnXXAMPVS82xX29+uinvWPcWxAgvj0TfoOk+1kg@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <CAK8P3a05vFdBnXXAMPVS82xX29+uinvWPcWxAgvj0TfoOk+1kg@mail.gmail.com>
+ <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
+In-Reply-To: <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Sat, 30 Apr 2022 15:32:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3S5OjkKq_u5FpnwzYv+0+typya6Z4MzTez5ZH+do00xQ@mail.gmail.com>
+Message-ID: <CAK8P3a3S5OjkKq_u5FpnwzYv+0+typya6Z4MzTez5ZH+do00xQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>, 
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, 
+ Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, 
+ Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, 
+ linux-clk <linux-clk@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ patches@opensource.cirrus.com, 
+ linux-leds@vger.kernel.org, linux-mmc <linux-mmc@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org, 
+ USB list <linux-usb@vger.kernel.org>, 
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, 
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+X-Provags-ID: V03:K1:0EU4C3mdJlSVn423U1wg8pDWGRFooUoL3n/v4mrwvm8sNv4ZCaA
+ +t+rXc4y928weMxRRlYwf2hjoJIkhIg0ND4FBy4eik6j2YrjAyT+n7bYL5Gvjsd0fksQ+Zb
+ 0267o5T1XSRgyWFlh06ZhW0kTl3EF1FVvBq0JZ1GY/TeLE1OBvEpdoHaxSwIuPC1HB2OcvZ
+ 08X/y2Y1WNX+3yHoa2CxQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uCx7IqH8l9Y=:1yGouRO0n4ZEoiAEA5Dni+
+ 6Gnhi6Q7gNirBE4l4YxGeDpK9aupUmbZpogyNNTvQVsq1385APRppI59pFGnEaAc477xIyyt7
+ fPXiIOaLctrH6pKvTYudjAj2B4YIeV3ZQ98IHWRPIl2+/ElFsHE6qF9dVqitXA6eR7BL+K5zF
+ 1+8d5jsEAV/u7x13ZpOgJ8t5H3zagAEasD3556dGq1n4YcBGbPcjvbux+wIGHWCZwNN6vtcSB
+ DZJdN7j5Ra2SbYB6H2XOqBypDH6/7jsBv3niXn392VvA5iuiJoxQyFMzMJgo2yUikSe4+BgxN
+ s9zU4rGRWzcX7VBKQcHacm2J67uq7xZGIswt+MLTnI+VcsMWoESimM01ov1OQ3cXO4Pala00o
+ ZSSsbJerrxXqYOUXwCmyOERlTqQaYfRDpQDzuWm/04fZStN4q9znVhe9bijrwFJyvzaCVJA2Y
+ 76IUjSyJhmYDTjUnYHh0CEsv6FwCvQGT1bqGCGKN7YMMVDwRkwuanNQNwOHU+smwBSxdaPZxO
+ XB5R4xyrPdGz8dnLmfI80s+hq10cSD/deKKY2+F/NlNZ02ec2xkaYIZHyq894/eGNguZJ0UQe
+ 8M5v9/22rr0rD92FBpcDC2yRWU8P5ajGWLksqjlKLlZH+D/luppJ2cIL5zgcJIMJr9NmtFhby
+ URQ4m167kTp5UbShKQKC8DJd9sNjk4WZRvrLFgAgVhajp/GzEW4tK0+xItTQzyXWzw2y0RQhp
+ pJtr433O4Lhzx2cQHQHbZ4TSCfhUFtE6lyc021nve4q9ynQaDd2y/yeq0paiRH93RC2AVyrAW
+ IBLXF3Nmn0Mudr/qO+O/NN3Nq4S5iLjIuPC6sZsimZji1I4mJk=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220430_054137_366681_F1519842 
-X-CRM114-Status: GOOD (  32.80  )
+X-CRM114-CacheID: sfid-20220430_063229_668333_883FA3C8 
+X-CRM114-Status: GOOD (  20.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -130,79 +120,31 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 4/30/22 01:04, Arnd Bergmann wrote:
-> On Sat, Apr 30, 2022 at 1:09 AM Guenter Roeck <linux@roeck-us.net> wrote:
->> On 4/29/22 14:46, Arnd Bergmann wrote:
->>> On Fri, Apr 29, 2022 at 10:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>> On 4/29/22 10:48, Guenter Roeck wrote:
->>>>>
->>>>> I tried the pxa-multiplatform-5.18 branch. Its failures match
->>>>> those in v5.18-rc1.
->>>>>
->>>>
->>>> Uuh, wait, the build wasn't complete. There are still some
->>>> failures. I'll report later.
->>>
->>> Sorry about the breakage, I got a few more reports about minor build errors
->>> and warnings, the newly uploaded branches should address all of the ones
->>> I got reports for.
->>>
->>
->> Unless I am missing something the failures are the same as before. See
->> https://kerneltests.org/builders/qemu-arm-testing/builds/74/steps/qemubuildcommand/logs/stdio
->>
->> This is with v5.18-rc1-49-ge8ab9a9a2745 which is the tip of
->> soc/pxa-multiplatform-5.18.
->>
->> Should I check a different branch ?
-> 
-> I only addressed the pcmcia probe failure that you reported for the
-> final pxa patch, which
-> previously caused a NULL pointer reference here:
-> 
-> [    1.405319] PC is at pcmcia_init_one+0xf8/0x27c
-> [    1.405476] LR is at devres_add+0x40/0x6c
-> [    1.405611] pc : [<c04bdea0>]    lr : [<c044d808>]    psr: a0000113
-> [    1.405846] sp : c48a5d00  ip : c15f4220  fp : 60000113
-> [    1.406026] r10: 00000000  r9 : c48b000e  r8 : c48b0000
-> [    1.406195] r7 : feeb0000  r6 : feeb000e  r5 : c15ec090  r4 : c15ec020
-> [    1.406395] r3 : 00000002  r2 : 00000000  r1 : c15f4200  r0 : feeb000e
-> 
-> This now seems to work:
-> 
-> [    1.435846] pcmcia_socket pcmcia_socket1: pccard: PCMCIA card
-> inserted into slot 1
-> [    1.456350] pcmcia_socket pcmcia_socket0: pccard: PCMCIA card
-> inserted into slot 0
-> [    1.457489] pcmcia 0.0: pcmcia: registering new device pcmcia0.0 (IRQ: 217)
-> [    1.460275] pata_pcmcia: probe of 0.0 failed with error -12
-> 
-> So it sounds like there are additional bugs that I have to look at. I
-> probably won't
-> be able to do that in time for the merge window. The logs contain a number of
-> warnings, but I have no idea which ones of those are preexisting issue. I had
-> a look at
-> 
-> [    0.689982] pxa-dma pxa-dma.0: error -ENXIO: IRQ index 1 not found
-> 
-Yes, those messages are indeed old.
+On Sat, Apr 30, 2022 at 2:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 4/30/22 01:04, Arnd Bergmann wrote:
+> > and concluded that it must have done this for a long time. In my own qemu
+> > instance, I see a crash from iWMMXt, but that works fine on your machine.
+> > OTOH, your failed instances all look like they either time out or
+> > failed to find a
+> > rootfs. I tried passing an MMC device as root, and that works here.
+> >
+>
+> Booting from mmc works for me as well. Booting from pcmcia worked before,
+> so I assume that there must be some regression.
 
-> and concluded that it must have done this for a long time. In my own qemu
-> instance, I see a crash from iWMMXt, but that works fine on your machine.
-> OTOH, your failed instances all look like they either time out or
-> failed to find a
-> rootfs. I tried passing an MMC device as root, and that works here.
-> 
+Ok, got it, and managed to reproduce the hang now. My "ARM: pxa/sa1100: move
+I/O space to PCI_IOBASE" patch managed to get it to the point of detecting
+the pcmcia device instead of crashing, so I assumed it was enough when it
+clearly was not. Before that patch, it still works, afterwards it hangs with
+"pata_pcmcia: probe of 0.0 failed with error -12" as mentioned above. I'll
+have another look.
 
-Booting from mmc works for me as well. Booting from pcmcia worked before,
-so I assume that there must be some regression.
-
-Guenter
+       Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
