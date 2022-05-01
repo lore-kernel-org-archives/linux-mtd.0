@@ -4,53 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE098C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 18:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 797DDC433F5
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 21:35:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=jAUqBDc4eVs7YIFD88n9uYxeDHECi8LPh4K7L9YKmwg=; b=o88Mt/9Ih/peTy
-	m9XBfaSdiwyEbW3vMM1HWijvUP2tjdAe7tV3To50SAF4W+Ip2aAPwKy5tWseYhTIYz/dGmj1Z5nqY
-	vOHx/xHsS5uTSTE7UiNWiqm3C/z7+MRAyDJsrLMAvwauOYol0mGYUlOjL2qL0h+Edo4doMCiMlSwl
-	RXkY6xxMmbrRhZrtLCCeu2Yid+kYIBOX3BDYXgX6+UhPfg3Du7jY+BLUnKGMmvqe6q+8QV5KMXm12
-	qYuLj0JUgAcmhl+Kkm7j/h6judOboFMyJTe8HoA6N0cEC0B5aKkutlbfJStEnlrY18rqXzV+2dYVI
-	JQQwaK+O473QbvvH6ESQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+KB5YSdwDi4gUJVchwX3OfH129n3Wx4Atg5Mf9hZCIA=; b=QwpkAHkitWQN2A
+	zHXqgtm5HrufUW5yCtmkkFNm5FJTdFbviDxH4404WYipV0/QbBQcdAJjNvyOvcDc1FWinV1cRcKfq
+	51g3QcIqBGpLl7DSY34oZSCRWC8ZZZx49tDj10lGNpzIGva9JpsjQGACnt39Z6vcgNQB7J36OsCY6
+	3T8GsXuIjT4cJj0RRtwRzU5RGRCFEtYUGUzJbsz/mknrloBot71sIkmVHhwUcib5eEX7+O8ATILH+
+	dH0s8H7iZ0Z13vLBYISsd+6OjOshm6v8aD8JmsZKNXhejI+hKM0hXch4EhxOLDcgHxX1x8LHGmENp
+	yTPMnXBlPQY23bhRy52A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlEjA-00GkXQ-JO; Sun, 01 May 2022 18:55:28 +0000
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie5.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlEj6-00GkWu-NK
- for linux-mtd@lists.infradead.org; Sun, 01 May 2022 18:55:27 +0000
-X-IronPort-AV: E=Sophos;i="5.91,190,1647270000"; d="scan'208";a="118526525"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 02 May 2022 03:55:19 +0900
-Received: from localhost.localdomain (unknown [10.226.92.14])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2ED124006181;
- Mon,  2 May 2022 03:55:14 +0900 (JST)
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>, Michael Walle <michael@walle.cc>,
- linux-mtd@lists.infradead.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- linux-renesas-soc@vger.kernel.org
-Subject: [RFC] mtd: spi-nor: Add Renesas AT25QL128A serial nor flash
-Date: Sun,  1 May 2022 19:55:12 +0100
-Message-Id: <20220501185512.51158-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+	id 1nlHD3-00GvW1-Tp; Sun, 01 May 2022 21:34:30 +0000
+Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nlHD1-00GvVC-9b
+ for linux-mtd@lists.infradead.org; Sun, 01 May 2022 21:34:28 +0000
+Received: by mail-yb1-xb36.google.com with SMTP id d12so23293773ybc.4
+ for <linux-mtd@lists.infradead.org>; Sun, 01 May 2022 14:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=XHDe8NwwI9SjN9yPCfdFZVh4P/kcPQDXEmbvi28Ry+g=;
+ b=UhniDGJRP7jnhKBKyFEU7Wm1oj19NfJgHgLTwiUZocIMzFuZcy6/C6VzBVOL++cBvj
+ LrIdaNUAfF6A3gJNASrFvHnAKvQMpgaI3a+ALVbDTJ8eikxSpYzLlQUmI4nPbtXjDg4D
+ 61l+wu6AHbkliq+H0f8Ajl6wMDIrIDWbHXSKpPcelWQXQMMNGkpdczkhdkUi7iNKqqom
+ f4kY22N5GzwsoRBTgxLB4z0sMMH1XkpdSeUqQXDWgVrNldazzOzczD605y1f7K81V1C4
+ 4ugAXmyrIfWO1yaViycscWtZgLZGrFY+/HbQHeYpwIpBVHoKMccEQ7oDjW2RE/A2D6ol
+ 0zew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=XHDe8NwwI9SjN9yPCfdFZVh4P/kcPQDXEmbvi28Ry+g=;
+ b=Lbr3c/6X8aCjL2Q+PzRD4EnCzPS9hF4OOKqqLSnBdVq2BratR+iT7LyqEqtbljDRcC
+ 3Trs0hxImK3e/MPl/sdlOeGObvvqmsmL7mq0btaru9ng4snTn89J/lLr2zCA0hdwgeS/
+ qfhxaYZ2EJz87hiFtqZwL2c+u8L6fxPPDvdPD/g2fVfe4BH/gGqLOGxZD8g7Uqk9h82X
+ 2HNPAcxPMOtBOmc9yz2VJoFJlxVQhlpNUliCJ13bRMJlnsu7ayOYVEOFRQlaoqgmnGtk
+ kzchUFLbuvq3wIiRLjomLtfrTqA1+TqikShv99ThzAR7rC+5sDYNkYxc74Ap3NeARC9Z
+ KBCQ==
+X-Gm-Message-State: AOAM532+bfd2ErNx0CZfAJ4G6h9KCkJMvsNF54UZw8IX5jWtxnfHe1Jk
+ TI4j2Q51EGEQu9LJ2toDPLNYi1W7qBQryeJGO1pAKQ==
+X-Google-Smtp-Source: ABdhPJwyu4GO9ZTopFM1Qtp9g0AYWW/G2gCL2Rkf2k0emOIuL58PKSUnjfCPuXZtMMqa2spe4DyjerPL+kd11/8NfmU=
+X-Received: by 2002:a25:aa94:0:b0:648:62f2:ef4e with SMTP id
+ t20-20020a25aa94000000b0064862f2ef4emr8160978ybi.626.1651440865094; Sun, 01
+ May 2022 14:34:25 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220419163810.2118169-1-arnd@kernel.org>
+ <20220419163810.2118169-16-arnd@kernel.org>
+In-Reply-To: <20220419163810.2118169-16-arnd@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 1 May 2022 23:34:13 +0200
+Message-ID: <CACRpkdbdCzeWgLOhQfEPVz6fYMqDeTYtqQ3uunj1MK+RGcZZKA@mail.gmail.com>
+Subject: Re: [PATCH 15/48] ARM: pxa: tosa: use gpio descriptor for audio
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org, 
+ Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>, 
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, 
+ Paul Parsons <lost.distance@yahoo.com>, Tomas Cech <sleep_walker@suse.com>, 
+ Sergey Lapin <slapin@ossfans.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, 
+ Dominik Brodowski <linux@dominikbrodowski.net>, Helge Deller <deller@gmx.de>, 
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, linux-ide@vger.kernel.org, 
+ linux-clk@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-input@vger.kernel.org, patches@opensource.cirrus.com, 
+ linux-leds@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-rtc@vger.kernel.org, 
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220501_115524_923272_D013A27D 
-X-CRM114-Status: GOOD (  18.86  )
+X-CRM114-CacheID: sfid-20220501_143427_426121_EAEE25CD 
+X-CRM114-Status: GOOD (  12.87  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,171 +101,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for Renesas AT25QL128A serial nor flash.
-Details of flash chip can be found here [1]
+On Tue, Apr 19, 2022 at 6:40 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-[1] https://www.dialog-semiconductor.com/sites/default/files/2022-04/DS-AT25QL128A-129F-022022.pdf
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The audio driver should not use a hardwired gpio number
+> from the header. Change it to use a lookup table.
+>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-Hi All,
- AT25QL128A serial nor flash is connected to RZ/G2UL SMARC EVK.
-But with the current mtd support in mainline, I get the below error
-[    3.928906] spi-nor spi1.0: unrecognized JEDEC id bytes: 1f 42 18 1f 42 18
-[    3.937312] spi-nor: probe of spi1.0 failed with error -2
+Looks good to me!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Then, I created a patch and the issue gone, It can detect the flash
-[    3.937168] spi-nor spi1.0: at25ql128a (16384 Kbytes)
-[    3.942902] 2 fixed-partitions partitions found on MTD device spi1.0
-[    3.949459] Creating 2 MTD partitions on "spi1.0":
-[    3.957540] 0x000000000000-0x000000200000 : "boot"
-[    3.973740] 0x000000200000-0x000001000000 : "user"
-
-
-Able to do read/write/format the partition with this patch.
-So please provide your feedback on this patch.
-
-&sbc {
-	pinctrl-0 = <&qspi0_pins>;
-	pinctrl-names = "default";
-	status = "okay";
-
-	flash@0 {
-		compatible = "jedec,spi-nor";
-		reg = <0>;
-		spi-max-frequency = <50000000>;
-		spi-tx-bus-width = <1>;
-		spi-rx-bus-width = <4>;
-
-		spi-cpol;
-		spi-cpha;
-		m25p,fast-read;
-
-		partitions {
-			compatible = "fixed-partitions";
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			boot@0 {
-				reg = <0x00000000 0x200000>;
-				read-only;
-			};
-			user@200000 {
-				reg = <0x200000 0xE00000>;
-			};
-		};
-	};
-};
----
- drivers/mtd/spi-nor/Makefile  |  1 +
- drivers/mtd/spi-nor/core.c    |  1 +
- drivers/mtd/spi-nor/core.h    |  1 +
- drivers/mtd/spi-nor/renesas.c | 57 +++++++++++++++++++++++++++++++++++
- 4 files changed, 60 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/renesas.c
-
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 6b904e439372..2c2fce8e6132 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -12,6 +12,7 @@ spi-nor-objs			+= intel.o
- spi-nor-objs			+= issi.o
- spi-nor-objs			+= macronix.o
- spi-nor-objs			+= micron-st.o
-+spi-nor-objs			+= renesas.o
- spi-nor-objs			+= spansion.o
- spi-nor-objs			+= sst.o
- spi-nor-objs			+= winbond.o
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index b4f141ad9c9c..ba9f222da00b 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1621,6 +1621,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_issi,
- 	&spi_nor_macronix,
- 	&spi_nor_micron,
-+	&spi_nor_renesas,
- 	&spi_nor_st,
- 	&spi_nor_spansion,
- 	&spi_nor_sst,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index b7fd760e3b47..3d2e39329079 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -511,6 +511,7 @@ extern const struct spi_nor_manufacturer spi_nor_intel;
- extern const struct spi_nor_manufacturer spi_nor_issi;
- extern const struct spi_nor_manufacturer spi_nor_macronix;
- extern const struct spi_nor_manufacturer spi_nor_micron;
-+extern const struct spi_nor_manufacturer spi_nor_renesas;
- extern const struct spi_nor_manufacturer spi_nor_st;
- extern const struct spi_nor_manufacturer spi_nor_spansion;
- extern const struct spi_nor_manufacturer spi_nor_sst;
-diff --git a/drivers/mtd/spi-nor/renesas.c b/drivers/mtd/spi-nor/renesas.c
-new file mode 100644
-index 000000000000..091542c8c088
---- /dev/null
-+++ b/drivers/mtd/spi-nor/renesas.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2005, Intec Automation Inc.
-+ * Copyright (C) 2014, Freescale Semiconductor, Inc.
-+ */
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info renesas_nor_parts[] = {
-+	{ "at25ql128a", INFO(0x1f4218, 0, 64 * 1024, 256)
-+		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) },
-+};
-+
-+/**
-+ * renesas_nor_set_4byte_addr_mode() - Set 4-byte address mode for Renesas
-+ * flashes.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-+ *		address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int renesas_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_set_4byte_addr_mode(nor, enable);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_write_disable(nor);
-+}
-+
-+static void renesas_nor_default_init(struct spi_nor *nor)
-+{
-+	nor->flags |= SNOR_F_HAS_LOCK;
-+	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
-+	nor->params->quad_enable = NULL;
-+	nor->params->set_4byte_addr_mode = renesas_nor_set_4byte_addr_mode;
-+}
-+
-+static const struct spi_nor_fixups renesas_nor_fixups = {
-+	.default_init = renesas_nor_default_init,
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_renesas = {
-+	.name = "renesas",
-+	.parts = renesas_nor_parts,
-+	.nparts = ARRAY_SIZE(renesas_nor_parts),
-+	.fixups = &renesas_nor_fixups,
-+};
--- 
-2.25.1
-
+Yours,
+Linus Walleij
 
 ______________________________________________________
 Linux MTD discussion mailing list
