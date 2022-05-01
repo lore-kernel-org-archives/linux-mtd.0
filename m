@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D94EC433EF
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 21:42:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDE44C433EF
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 21:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=by5DFPV+zxxMVvaH5qC2ywTC723QZ4ar/mc1tju2x0c=; b=jCUbneuOkfRdhU
-	j8l9fv40t9XVcK3Lv5JCM95h5u6Qi3NesLJp9N+M/S5VWo1N1dXZrjuGZesFsT5n7ZDQ/EEdR8knQ
-	rkWwTnU61Sqi/HB5/qNRKmCR/7q6vIahptRNQDwFWp6e25EEPrdD2R7uWIdGV08VhPrap0atZcKpT
-	hZF74N6D8irU9gX9+KsrXxd4TJK6elKfrcl401jube+N8P+AWt/A8HccpuuRsF9Gvd51opCAgvrkM
-	5Px+CtcFBh96VMC11644WILHTxdcRjeDxB5hpr2oeYji9KJokm+s/zvirbwFKBvkHnZAmbMpKXkIQ
-	RrGx5wpXgrAAvWnMdaYw==;
+	List-Owner; bh=zoL5MgoXW99GahezpcATJXBB8AHJlsVFe+xLkzmb+Wc=; b=k0D4utKRFtdVXy
+	T1IHbXVxuo3tUcxV9r8ArmKnAfsIMxb0nA0Aj2+LxM0m4bUKfEI3wG2T+lri7yuUt9Cxf6qg8HpNM
+	wAaugubbKI8N/4/oGkmzWn/4EqpvHVRnCzAmpL8kvAi8dwZho/f1oaIHZTDESpDOcNqAvK1L7taVB
+	5Szp7ziQBBKjOmmv2pAbGBYm2c7treIk1c4Frvt58/DCb8bqVTohUEx4GqgEMGrc2GGY2h2yEj+zC
+	IKVrOBikKp7o6g25KxVkGfeeaQcOHxqPXUqJjJ12UYMLvqbWPs8mmlqycxxWXCQUx7uScuAJ9uaU5
+	Ngma8PQBYcF2GBXwfjzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlHJo-00Gwnd-Hv; Sun, 01 May 2022 21:41:28 +0000
-Received: from mail-yb1-xb2b.google.com ([2607:f8b0:4864:20::b2b])
+	id 1nlHKo-00Gx4L-FO; Sun, 01 May 2022 21:42:30 +0000
+Received: from mail-yw1-x1134.google.com ([2607:f8b0:4864:20::1134])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlHJd-00GwjF-9v
- for linux-mtd@lists.infradead.org; Sun, 01 May 2022 21:41:18 +0000
-Received: by mail-yb1-xb2b.google.com with SMTP id y76so23351431ybe.1
- for <linux-mtd@lists.infradead.org>; Sun, 01 May 2022 14:41:16 -0700 (PDT)
+ id 1nlHKc-00Gwz1-Ff
+ for linux-mtd@lists.infradead.org; Sun, 01 May 2022 21:42:19 +0000
+Received: by mail-yw1-x1134.google.com with SMTP id
+ 00721157ae682-2f83983782fso131683557b3.6
+ for <linux-mtd@lists.infradead.org>; Sun, 01 May 2022 14:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=W/jgoNHxZ0Bthjb3T+ueRSX0j4+9gCUm19tM0i8wHwg=;
- b=IhdUZeb/2gtz8F3Rms9jbaMLWrgk9MgQ3AsdLov4FK3Mlzh5dB5SkLKChzGtZ8IxYp
- G5ca/lqDXuEA1sPhEVPyIa/Q2PZiKGOf7YhqAw/IHqTaRS3tfuxe5vxPkiXcKnSSY+3S
- 7ppRg4LQk2Uv9wR63si1SSy6XwiVLL7qFkHNlWqfSlqs0yLXj9GT9hsHOGdPMLeWa4Z5
- yi/NgdTd0E83Yl+jmXtf3Jut6MVJU1arAhV4mge1OLZtShQSG4PEDF87HlZJ7jAAsXMq
- NvpTbNSoJchK+6lkQfko/fVrXtHXd/BqfkBEUyV3r++82iVekijvFZHqUIOR58kizRlW
- mQmw==
+ :cc; bh=MwcGhzUMzuQB5fGeykDG23vjACySyYiqBWBdUcZ2GFk=;
+ b=GsyTsXTnDN4CY7AA1wrUQT+Y1CVIulHFr4oTp0Tg20CKmvaI7383RxQl+UgGOv+N+2
+ 7ou2YNXArVG+yi2/xmhm3RwrSr3D5kp2Qgn4DGjh7X2FOJT6wCnWESaCleX/OA9RyV1j
+ bwVae0byfjRjtxi5dpkNZn4RfOZ4A1Dd5ugrXFBMXK6tcItRBG80t8J5dKLVZDkoSscm
+ wLvaYka4x9i1J8J19EMXqtisuJV8Y/+IS/CbNSohuvWMsp4QiDVXj73xIQP7ss5xnIhF
+ n2lEDjG6braJDzS8nQh1+rl3rM6D4gPTo91/XI5EArn82a4AseinskiVs5gU1UTGg9+F
+ pAEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=W/jgoNHxZ0Bthjb3T+ueRSX0j4+9gCUm19tM0i8wHwg=;
- b=fqVTdTa31njH+mnVzw4HDTuWU/J2zfzfnqAVGlrONYTGm3zXse3KEziTRwu2lAINND
- TDzXggkwifkbDhg9blX3ua/adOxwWg4Gir1ERp3IXLeKGr0xZYCtkUhlFvnxOalGUOWf
- 1nNMtj7ZFRdtu8/edw/kSBhmZZIcx9otwfAmI3Z+CGv7RlGy5CxFiU4pWZEtE8/kV8E6
- 30K0Hz56EB1LFbvG3+vIcX8d7duNT6Rr3wPFi+8SgZavdh29prXVGLYLdrIJi1gSg/5V
- OXk/vQP2BLQnmwM07CSh/EhuISRtFp+E4alhbe1SLDrsTB7dABXKZQHseCo18nCTq77c
- ybOw==
-X-Gm-Message-State: AOAM530IHXpcep2gMoO+WdqxaLxswpvfwdTUSTvEIIMhVHV8Zamf/Jh8
- v3PZ7ld/dwclkJiDkgZzaazZsBj/i6Dl1dnIfNt5VQ==
-X-Google-Smtp-Source: ABdhPJxQ+Z2MWNpw84rRmTsi9PlMVLP8E3NHAP2/94wScknuaOhbNIB27Lulcn5Bn4eH53rZYcEIPCq8gj4+tkqqRT4=
-X-Received: by 2002:a25:2905:0:b0:649:7a2b:ca72 with SMTP id
- p5-20020a252905000000b006497a2bca72mr2453918ybp.492.1651441275908; Sun, 01
- May 2022 14:41:15 -0700 (PDT)
+ bh=MwcGhzUMzuQB5fGeykDG23vjACySyYiqBWBdUcZ2GFk=;
+ b=0tuYRanEUHhbCvJFSOX5itj6djNiZp8CcL2Frdts6B0ScXAEODO6jBTzBtBlY14mZK
+ oT4i7oXitqUlLOYk4HoGvMMNF7l3yzj43+Sm4ZJPmYMN5m3AlLmrALP7gmFH0RyF6Wdr
+ L3tiphRlU+WeZUqRr+q/Ypm0kT6zSBsj8u2x4YHUyJ1Jw8BvQ0vqEnRKc2rqJdU46hVD
+ 5YIoZ7bbJ/5mILDyc/HrwVHYy619aMJP5e1X7XXxX40xrb7kARKholTh8BDX4oN6+Q5s
+ TtVNGGDwaDfTeHdP94Lq+dq7J5vMlkgdrKP8InyVrDG4XkvyerFiV91QgpbIRa/CTuB/
+ 8qCg==
+X-Gm-Message-State: AOAM532bYa7THLdVF69xKbfMw9W6obx7H8DZdv2XI7stdkVCVP/Vq00/
+ ntZ9hKVGRYaRWhPDKxYzomLijgPExue4+KPIrg5HLQ==
+X-Google-Smtp-Source: ABdhPJweSDfNcHOc9BYhAdVgxvU92j70ljyyRr/zhBZuYvLYJv5UF4MYF8uqkqj6NhL3p2ezG4XOpBAT8/G/pJAvCNA=
+X-Received: by 2002:a81:2108:0:b0:2f5:6938:b2b8 with SMTP id
+ h8-20020a812108000000b002f56938b2b8mr9549829ywh.151.1651441337159; Sun, 01
+ May 2022 14:42:17 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220419163810.2118169-1-arnd@kernel.org>
- <20220419163810.2118169-19-arnd@kernel.org>
-In-Reply-To: <20220419163810.2118169-19-arnd@kernel.org>
+ <20220419163810.2118169-21-arnd@kernel.org>
+In-Reply-To: <20220419163810.2118169-21-arnd@kernel.org>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 1 May 2022 23:41:04 +0200
-Message-ID: <CACRpkdac8dGKSEmc-HpgooJefrDtiKK+_A1Mv7AJM8yQV9UY-w@mail.gmail.com>
-Subject: Re: [PATCH 18/48] ARM: pxa: hx4700: use gpio descriptors for audio
+Date: Sun, 1 May 2022 23:42:05 +0200
+Message-ID: <CACRpkdY3krNDWcGznSB5fNGM9NXw6xA2qWduDidS1KNM-hbynQ@mail.gmail.com>
+Subject: Re: [PATCH 20/48] ARM: pxa: spitz: use gpio descriptors for audio
 To: Arnd Bergmann <arnd@kernel.org>
 Cc: robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org, 
  Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>, 
@@ -83,8 +84,8 @@ Cc: robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org,
  linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, 
  dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220501_144117_535619_245DC087 
-X-CRM114-Status: GOOD (  16.15  )
+X-CRM114-CacheID: sfid-20220501_144218_587284_27CF903D 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,35 +109,12 @@ On Tue, Apr 19, 2022 at 6:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
 > The audio driver should not use a hardwired gpio number
 > from the header. Change it to use a lookup table.
 >
-> Cc: Philipp Zabel <philipp.zabel@gmail.com>
-> Cc: Paul Parsons <lost.distance@yahoo.com>
 > Acked-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 > Cc: alsa-devel@alsa-project.org
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-(...)
-> +static struct gpiod_lookup_table hx4700_audio_gpio_table = {
-> +       .dev_id = "hx4700-audio",
-> +       .table = {
-> +               GPIO_LOOKUP("gpio-pxa", GPIO75_HX4700_EARPHONE_nDET,
-> +                           "earphone-ndet", GPIO_ACTIVE_HIGH),
-
-This looks wrong. The n in nDET in the end of the name of the GPIO line
-means active low does it not?
-
-What I usually do when I see this is to properly set it to
-GPIO_ACTIVE_LOW in the descriptor table, then invert the logic
-where it's getting used.
-
-Also rename to earphone-det instead of -ndet
-
-> +               GPIO_LOOKUP("gpio-pxa", GPIO92_HX4700_HP_DRIVER,
-> +                           "hp-driver", GPIO_ACTIVE_HIGH),
-> +               GPIO_LOOKUP("gpio-pxa", GPIO107_HX4700_SPK_nSD,
-> +                           "spk-nsd", GPIO_ACTIVE_HIGH),
-
-Same here. Rename spk-sd
+Looks good to me!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
