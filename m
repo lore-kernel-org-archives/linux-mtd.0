@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDE44C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 21:42:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4E5AC4167B
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 21:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=zoL5MgoXW99GahezpcATJXBB8AHJlsVFe+xLkzmb+Wc=; b=k0D4utKRFtdVXy
-	T1IHbXVxuo3tUcxV9r8ArmKnAfsIMxb0nA0Aj2+LxM0m4bUKfEI3wG2T+lri7yuUt9Cxf6qg8HpNM
-	wAaugubbKI8N/4/oGkmzWn/4EqpvHVRnCzAmpL8kvAi8dwZho/f1oaIHZTDESpDOcNqAvK1L7taVB
-	5Szp7ziQBBKjOmmv2pAbGBYm2c7treIk1c4Frvt58/DCb8bqVTohUEx4GqgEMGrc2GGY2h2yEj+zC
-	IKVrOBikKp7o6g25KxVkGfeeaQcOHxqPXUqJjJ12UYMLvqbWPs8mmlqycxxWXCQUx7uScuAJ9uaU5
-	Ngma8PQBYcF2GBXwfjzA==;
+	List-Owner; bh=p5EgZiAxCFT/XOOjptYXrjdX0HM6yu8jld/6lAShMk8=; b=E6KXFnhzDgVRIb
+	Aiio5YLEU2dOh4Cu0/wIcUUKcZ46Mj3T//TbpEm8Cx6zoMSgblnL05mGdIeF4UAi9E1db4Q0ZZMn5
+	u3RVfMxQA6sWTncEoH4U+5JTRKdZiB3eB8+WItCGCLvJK0ARERZtVmhs7Lze7uazYZcfhAsMWyPSe
+	9JGQ8cvFlRD4T0d0gCMi1HP7f/4cXM9mw4N4EUNWipzcSlIb3q4cKqgxdq991kHY8dZ0biM+80OdW
+	j12c9CDW4LQRZaXoCFuktXsPe4VnpU0CZu8vAPWQ00OvbireXaiyyDH5+cldDKOjyX9+eyx7OeGH6
+	/mIQJG1mAlOiOQ5knL9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlHKo-00Gx4L-FO; Sun, 01 May 2022 21:42:30 +0000
-Received: from mail-yw1-x1134.google.com ([2607:f8b0:4864:20::1134])
+	id 1nlHNi-00GxmY-Bc; Sun, 01 May 2022 21:45:30 +0000
+Received: from mail-yb1-xb2d.google.com ([2607:f8b0:4864:20::b2d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlHKc-00Gwz1-Ff
- for linux-mtd@lists.infradead.org; Sun, 01 May 2022 21:42:19 +0000
-Received: by mail-yw1-x1134.google.com with SMTP id
- 00721157ae682-2f83983782fso131683557b3.6
- for <linux-mtd@lists.infradead.org>; Sun, 01 May 2022 14:42:17 -0700 (PDT)
+ id 1nlHNX-00Gxjg-2q
+ for linux-mtd@lists.infradead.org; Sun, 01 May 2022 21:45:20 +0000
+Received: by mail-yb1-xb2d.google.com with SMTP id e12so23266853ybc.11
+ for <linux-mtd@lists.infradead.org>; Sun, 01 May 2022 14:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=MwcGhzUMzuQB5fGeykDG23vjACySyYiqBWBdUcZ2GFk=;
- b=GsyTsXTnDN4CY7AA1wrUQT+Y1CVIulHFr4oTp0Tg20CKmvaI7383RxQl+UgGOv+N+2
- 7ou2YNXArVG+yi2/xmhm3RwrSr3D5kp2Qgn4DGjh7X2FOJT6wCnWESaCleX/OA9RyV1j
- bwVae0byfjRjtxi5dpkNZn4RfOZ4A1Dd5ugrXFBMXK6tcItRBG80t8J5dKLVZDkoSscm
- wLvaYka4x9i1J8J19EMXqtisuJV8Y/+IS/CbNSohuvWMsp4QiDVXj73xIQP7ss5xnIhF
- n2lEDjG6braJDzS8nQh1+rl3rM6D4gPTo91/XI5EArn82a4AseinskiVs5gU1UTGg9+F
- pAEg==
+ :cc; bh=2Zs9ZXFuA5R/0ymMTjHB7/FZWKOdSvop8pXLfIOyulA=;
+ b=jIUUFw/Dk0bJvSpV2KhChXMwtNlLYqsYYK4oY1ZrIaM5CwokwxvKI2nY/2x/UYhhSZ
+ cnYvPcNR4I1+2mQEXOx+fTBIepxbMOgfBDYzGHDeV47Jl9VtWIb/nS+yTlzYid021q5y
+ 4rk1aenFHUTcFpOe8yZyA6PrfG7AdYTLzyJZCxoXrUBdmiOH7kD+EpptUWvO22jzMcIN
+ xSCS+MFyhpSsWhXxvfUnHSHIueURSlmIpP3ceYNATHQiGd7mRdyumFBzg7HidVpGXR/K
+ HmLBNFjobzv+Lfi/mc0Jdu1mADUOwm6Q+P8Sv4LOYfSplf9TRRKfiG/zS7FqqwYnszNe
+ 9g7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=MwcGhzUMzuQB5fGeykDG23vjACySyYiqBWBdUcZ2GFk=;
- b=0tuYRanEUHhbCvJFSOX5itj6djNiZp8CcL2Frdts6B0ScXAEODO6jBTzBtBlY14mZK
- oT4i7oXitqUlLOYk4HoGvMMNF7l3yzj43+Sm4ZJPmYMN5m3AlLmrALP7gmFH0RyF6Wdr
- L3tiphRlU+WeZUqRr+q/Ypm0kT6zSBsj8u2x4YHUyJ1Jw8BvQ0vqEnRKc2rqJdU46hVD
- 5YIoZ7bbJ/5mILDyc/HrwVHYy619aMJP5e1X7XXxX40xrb7kARKholTh8BDX4oN6+Q5s
- TtVNGGDwaDfTeHdP94Lq+dq7J5vMlkgdrKP8InyVrDG4XkvyerFiV91QgpbIRa/CTuB/
- 8qCg==
-X-Gm-Message-State: AOAM532bYa7THLdVF69xKbfMw9W6obx7H8DZdv2XI7stdkVCVP/Vq00/
- ntZ9hKVGRYaRWhPDKxYzomLijgPExue4+KPIrg5HLQ==
-X-Google-Smtp-Source: ABdhPJweSDfNcHOc9BYhAdVgxvU92j70ljyyRr/zhBZuYvLYJv5UF4MYF8uqkqj6NhL3p2ezG4XOpBAT8/G/pJAvCNA=
-X-Received: by 2002:a81:2108:0:b0:2f5:6938:b2b8 with SMTP id
- h8-20020a812108000000b002f56938b2b8mr9549829ywh.151.1651441337159; Sun, 01
- May 2022 14:42:17 -0700 (PDT)
+ bh=2Zs9ZXFuA5R/0ymMTjHB7/FZWKOdSvop8pXLfIOyulA=;
+ b=48kd4gR6wYzH32aB86HKV1EwEJ3hoa5zAftDUlWrv6YAXQPZpi7PBANigoBJb8WcOC
+ mhpNe8e6hKZv+GKUDQ5Tiwd4gaztwFKhzSBdyPKrmfuNcOhA2uNOOWFIZyxsWsNPihpR
+ NZXHZgL+mOL1v2UaiGHKyxk7miCpWFzE5GVebWK2deBYCb8a9XZjv9a1+06JJITrL1kJ
+ 9jWBL/mK375q//BLTdfpDSYiHLjQTIUP4StfChDJ0vuUXAIYQGnHTutN1+gl2BcVYqCk
+ 6nufIVQzb2e9RJu3V/zCrm03Vc/djgmboT6bSd/XSEiFIzqtTf6CtKDWMo+6SFItobRm
+ R3Jw==
+X-Gm-Message-State: AOAM530eus6hEOfudgYIfw2tMOoUk1cp4R9TuNd55hNqbJ1nxdcjC3UW
+ IgInsJHQ+S/j/4peTvcPQJ8PHQvID8ksll4vanFgeQ==
+X-Google-Smtp-Source: ABdhPJz9eJE7cneK+kxH13EYMup9tW/2JAXx6cXKgLkzm/eVQ61nD3w0biIeuzEawWWGZ8vTkmgdM3jCm2iwQFey2JY=
+X-Received: by 2002:a25:e684:0:b0:645:d429:78e9 with SMTP id
+ d126-20020a25e684000000b00645d42978e9mr8658475ybh.369.1651441518148; Sun, 01
+ May 2022 14:45:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220419163810.2118169-1-arnd@kernel.org>
- <20220419163810.2118169-21-arnd@kernel.org>
-In-Reply-To: <20220419163810.2118169-21-arnd@kernel.org>
+ <20220419163810.2118169-22-arnd@kernel.org>
+In-Reply-To: <20220419163810.2118169-22-arnd@kernel.org>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 1 May 2022 23:42:05 +0200
-Message-ID: <CACRpkdY3krNDWcGznSB5fNGM9NXw6xA2qWduDidS1KNM-hbynQ@mail.gmail.com>
-Subject: Re: [PATCH 20/48] ARM: pxa: spitz: use gpio descriptors for audio
+Date: Sun, 1 May 2022 23:45:06 +0200
+Message-ID: <CACRpkdZsSdOSq=sdxDZMb8QJCRsrxm280RvYzH2Ns9L5+RtU8g@mail.gmail.com>
+Subject: Re: [PATCH 21/48] ARM: pxa: eseries: use gpio lookup for audio
 To: Arnd Bergmann <arnd@kernel.org>
 Cc: robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org, 
  Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>, 
@@ -84,8 +83,8 @@ Cc: robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org,
  linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org, 
  dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220501_144218_587284_27CF903D 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20220501_144519_214670_C406D02F 
+X-CRM114-Status: GOOD (  14.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,14 +105,24 @@ On Tue, Apr 19, 2022 at 6:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
 > From: Arnd Bergmann <arnd@arndb.de>
 >
-> The audio driver should not use a hardwired gpio number
-> from the header. Change it to use a lookup table.
+> The three eseries machines have very similar drivers for audio, all
+> using the mach/eseries-gpio.h header for finding the gpio numbers.
+>
+> Change these to use gpio descriptors to avoid the header file
+> dependency.
+>
+> I convert the _OFF gpio numbers into GPIO_ACTIVE_LOW ones for
+> consistency here.
 >
 > Acked-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > Cc: alsa-devel@alsa-project.org
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Looks good to me!
+Nice use of active low. Maybe I would simply have dropped
+the _OFF suffix on these GPIO lines as it can be confusing now
+that their active level is encoded but no big deal.
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
