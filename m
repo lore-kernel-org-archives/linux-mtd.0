@@ -4,75 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E3B3C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 05:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C99BC433EF
+	for <linux-mtd@archiver.kernel.org>; Sun,  1 May 2022 05:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ggyl8cWHgfbXWlXUGtGrvhFwTjGvk1mLIhwU8AGb560=; b=wfjiOoApmVJ5mN
-	OkTNw3Cwv+fAe95huHL3BpXL7sNKWzg1/gvvL3tsnFGat/PgxPNkKmv/lzyV1jDvgFXjN921GWsWq
-	cH8/s96cC3keo2FRmPXUvqtkcdnChgPHhvquUU5snBt5w9vokyu9db4vFYPe2eRup4fCLF8vx7AsV
-	pEbQFKMFtNmjtXlsrs9eVviMveKdHKkw9LT6kuPwvzAccx73kiXUc4a/hwZFaQA/FZiRC3r2VBIFk
-	cO0IT8rVkR2txbqUTWRGiDQvY+qn91yKkgwFUC+2auhjLQxsbPDMpRxRRYqxDuX9WHCM0xKCSRkAx
-	Z4EIR64xN+kifWhMD5wQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=aeVykGdX2MPqDf5+qDXLOiCcG4E7IxeWHiuqyCtZCtg=; b=Izi55TTsUptHwq
+	03Wy5HxH2ZfaNi3dKj9hRsLUfDbLzh/eDJl+wA+6rNasNfxjhmCVr+NGThZQy5fqL4glfmjmF4s+B
+	JQw9VXSsPSX9kDIH2vXvVZ5HIgGMYMtu++hNaULtvVkcwINiww8JxW5jO6OCnQiEUm2t90bqsHqc4
+	E/JW+NRWrxwMvqG4fNn5tD1q0TV0cxcWtwYgILcGEtpn8fFwKt0W7lTTXbiTlpGdnAyH2ccm2z02Q
+	dqIZ/Uzs+vrBgHH2JG7yGznv7W7jwJfEZAtzjWtT+oJUBwFm4zY7muzA/xar7h3V+ACjoiudmqEuA
+	km/I+tZoA5iq+4yCRKDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nl1j3-00FZ8Z-CL; Sun, 01 May 2022 05:02:29 +0000
-Received: from mail-oa1-x2c.google.com ([2001:4860:4864:20::2c])
+	id 1nl2O5-00FcHE-4T; Sun, 01 May 2022 05:44:53 +0000
+Received: from mx-out2.startmail.com ([145.131.90.155])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nl1j0-00FZ89-Nu; Sun, 01 May 2022 05:02:27 +0000
-Received: by mail-oa1-x2c.google.com with SMTP id
- 586e51a60fabf-e2442907a1so11772880fac.8; 
- Sat, 30 Apr 2022 22:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=0aKCZgVZHwh4Tv70zY74+bpoUv5Mj7mL2pJZ6Uamnh0=;
- b=Ln32ZkW57DHk3aYeYYGzHho7w7JQd5orJTF5/OJ7Q3YlblYmhE67Hvg/CZnF1R54l6
- fKTSg5LO2nFbIE/JhjzNWLZsGUQFiTU5IDe5snREQYmJiU0BRRjbEOtYmXggrLCwMBpn
- cpQTPJPhseMBEFKoZjGFEsdw3sHBvYzmY1q6Vv2VT8aVXbvl9123tIoSXdGuZruI7KbK
- H63Qbk9J3cfS/9s/wxU4Z06WY6FnZXQxx7RxDAVm5UwBib1jl8Yi11aBMfBmYJBqAqnL
- L9zZO6om03JYIK4Rt9Sujy65oQzcn8b2U/O2aoqed94XIOwMusr2Gx/HIJUipGkHeYa4
- xHJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=0aKCZgVZHwh4Tv70zY74+bpoUv5Mj7mL2pJZ6Uamnh0=;
- b=Sk4tAhL0NTnAN0MijWcwaZs+xlU9n6FuBlTA6XP5BoDLnpjYv03sTJKK6n11Gd39+5
- ix4nKehyn2OAfYg89D5UirOYvrA8tFamXrT/JrFtVuAnqXc49um8m4nv/KY2exzFo61+
- nErh6Tj6ZEHTeKm9xZ2aGELtganjPgOqtr2JFIbNwc65c+EFSA0NVtdzJ/KsBqoCheNd
- PKaFpZyQ5oWtmZ2y5CnGHm8lP/Sm0Y9w6XHLhQnl091TRWorAEabyoMUzFGFksXo/Zny
- 2dBk1m0VfInqaVVfn69/6aB+hZEp8oax/xJnVq8vQfexyW7BG/kdAd02G4yEMrXkUGDt
- qOJg==
-X-Gm-Message-State: AOAM5339GGC5U+tkNfm8UeEsvmRhhDfUANn+QHW0mvshugxgmaSmwJ7n
- eVHsSEUqtHgtK6Gi3j5Nuy45DpHMdkPLg/FU8bw+yGyh7Y5wlA==
-X-Google-Smtp-Source: ABdhPJxkbSmv7zG4Q6GTSFIGixxeDClKJ/03SoB2VGTC4Uoq/VdDkmPjtpXE3JrrRup2rlDG2eEBsHH5wSkon090EyU=
-X-Received: by 2002:a05:6870:c141:b0:e2:9512:de42 with SMTP id
- g1-20020a056870c14100b000e29512de42mr2520243oad.288.1651381345179; Sat, 30
- Apr 2022 22:02:25 -0700 (PDT)
+ id 1nl2O2-00FcGV-EJ
+ for linux-mtd@lists.infradead.org; Sun, 01 May 2022 05:44:51 +0000
+From: "Marty E. Plummer" <hanetzer@startmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
+ s=2020-07; t=1651383887;
+ bh=eIKWJyoaLkJuB+nzU9OpjewDEuEGEm0it8FLQCd8BaE=;
+ h=From:To:Subject:Date:Message-Id:MIME-Version:
+ Content-Transfer-Encoding:From:Subject:To:Date:Sender:Content-Type:
+ Content-Transfer-Encoding:Content-Disposition:Mime-Version:
+ Reply-To:In-Reply-To:References:Message-Id:Autocrypt;
+ b=cZmGGMcQLi8neWNptANOwYRSIn7ZXoRUdTezksV5TgjQC57ZizSyXisUGZdIPuFm4
+ qD6vcRCDR5Qle1tgfYuCoifl9D0KFYd71uxcvc2Ozj/No/9zmU5TRIJO2fRjO96NS2
+ bqD/8U5zh23kL4yaLXq+BjCYPgRgRjijCMowNgrSfH3Du+9el0FRkW3SLN2QDP70vi
+ nFtIaQ3rEC9EqHyTaJAcDpkrzfvF4m0ckemUJkEmmXe1CN/zXjo1ThfX/mtxTkfrLJ
+ ZQtYIHXYcsW1W2sdYBaTLs+jROMSxyzhy2HB/0f8LdZrt6M/Cz3VjhmHvpPTVrdXMX
+ nHT5ZR8Y+nsJg==
+To: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, gengdongjiu@huawei.com,
+ rdunlap@infradead.org, hanetzer@startmail.com,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, tudor.ambarus@microchip.com, p.yadav@ti.com,
+ michael@walle.cc, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, sumit.semwal@linaro.org, christian.koenig@amd.com,
+ cai.huoqing@linux.dev, novikov@ispras.ru, linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] Hi3521a support.
+Date: Sun,  1 May 2022 00:44:40 -0500
+Message-Id: <20220501054440.2434247-1-hanetzer@startmail.com>
 MIME-Version: 1.0
-References: <20220430164021.537668-1-gch981213@gmail.com>
-In-Reply-To: <20220430164021.537668-1-gch981213@gmail.com>
-From: Chuanhong Guo <gch981213@gmail.com>
-Date: Sun, 1 May 2022 13:02:13 +0800
-Message-ID: <CAJsYDVJ8VFELnWP-OrH9qzQjbrLZKA721+xj_ngjegPE=fAyrA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: ecc-mtk: add external ecc engine support
-To: linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, 
- Vignesh Raghavendra <vigneshr@ti.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, 
- "moderated list:ARM/Mediatek SoC support"
- <linux-arm-kernel@lists.infradead.org>, 
- "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220430_220226_814040_02A9B546 
-X-CRM114-Status: UNSURE (   7.27  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220430_224450_702048_C4DD154F 
+X-CRM114-Status: GOOD (  13.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,19 +70,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi!
+Hey folks. Its been a while. Finally got back on the kernel dev train.
+This *mostly* seems to work, but I've ran into an issue which may
+require some upstream support.
 
-On Sun, May 1, 2022 at 12:40 AM Chuanhong Guo <gch981213@gmail.com> wrote:
-> [...]
->
-> +static const u8 ecc_strength_mt7621[] = { 4 };
-> +
+Basic gist, I was attempting to boot a buildroot-built intramfs, was
+mostly working, but it would not give me a login prompt no matter how
+much I badgered it, so I decided to try a flash boot. That also failed,
+and after much banging my head on the desk and annoying people on irc,
+we finally came across *why* it was failing, or at least part of it.
+The kernel parser could produce the mtdblockN partitions based on the
+devicetree, but for whatever reason, when the hisilicon,fmc-spi-nor read
+its superblock, instead of the magic 0x73717368 (sqsh), it read back 0x73717360.
+At first I thought it was a mistake of mine, as we had tried modifying
+the header, and 0x60 is a `, so it could be a hex editing issue, but nope.
+Reading the data in u-boot (2010.06, vendor fork, would like to get mainline
+running on it at some point) showed the correct magic, so its something
+with the controller driver, I guess. CC'ing the people associated with
+that as well, hopefully we can get to the bottom of this.
 
-Oops. This is a leftover line when I tried to split commits.
+Marty E. Plummer (2):
+  clk: hisilicon: add CRG driver Hi3521a SoC
+  arm: hisi: enable Hi3521a soc
+
+ arch/arm/boot/dts/Makefile                |   2 +
+ arch/arm/mach-hisi/Kconfig                |   9 ++
+ drivers/clk/hisilicon/Kconfig             |   8 ++
+ drivers/clk/hisilicon/Makefile            |   1 +
+ drivers/clk/hisilicon/crg-hi3521a.c       | 141 ++++++++++++++++++++++
+ include/dt-bindings/clock/hi3521a-clock.h |  34 ++++++
+ 6 files changed, 195 insertions(+)
+ create mode 100644 drivers/clk/hisilicon/crg-hi3521a.c
+ create mode 100644 include/dt-bindings/clock/hi3521a-clock.h
 
 -- 
-Regards,
-Chuanhong Guo
+2.35.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
