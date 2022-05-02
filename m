@@ -4,47 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E96C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 05:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A29C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 05:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=3IckMH2jcJz8HNf6/F2/IeKpOA1zFSXQuGGDQY8heAk=; b=wxanqeewJ+65Wp
-	sp5QQrXHqlIfmMPvP8p1N0xYnqDQzQYxhM1vdt0DP9SO1HODazOTz4SQTBit6Af25cPrkDkF9LKdu
-	b1AnH2roesQloZbu4TtlI4tnCvbJQ5ToNMjzr5HzF25qaViMu+tFWH1oskZorr9wQblCO7QKClA5i
-	7Jbo2rAj2sYgDA+V4mmj5qSVDmSHh5PXxjpsOOTbTY/Ee5VO9W4JRBnfPKbI7c25rQRpiAlsUiEEV
-	N62Ht2AiWQ99kVFyug7xJJnFHXNgjrNlh/zXPrOUDEhk/vzPPjUAxlEM1R8/7OtjuuOJyRbUqv9JD
-	11ZPBUu2qJaX9D6QVkIw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=X1WpDgRhrXZ9tu68D0cEYOz/dfH3pAvCp/9VQhMtJVA=; b=GDcLWF5nok1Lr6
+	vuF5kjVW6Fz94n1s5v8ZQAgmRUGbBxhLd7p0jRlveYZ2ElVl3ZxvUW93+CCyZpne93AGLs3/veTkS
+	0YEiQtBh91EFKcXj9osMhYWyZE5yowa10TSHo/xZez9D276c1QeD3reCnRf0rpUiZyd4YKuFqmKzW
+	CUNY2aE+QSPfyl1uWVKziIqpECmx7OnDG+/+6rZF9DV3pHUIPIt/9386ojWwuQUMT9PnCJ9K293S3
+	6jxmM8YFD1Wz3puPdKTIWIl///ttfk3VXBiM2YwWcA+6OucCOqB3v1aBZW3X0Fkw0LVMeqmvzUyVj
+	nHf0Mr6/1BWLozHF/v2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlOox-00HaiD-2i; Mon, 02 May 2022 05:42:07 +0000
+	id 1nlOp1-00Hais-IX; Mon, 02 May 2022 05:42:11 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlOov-00Hahq-IO
- for linux-mtd@bombadil.infradead.org; Mon, 02 May 2022 05:42:05 +0000
+ id 1nlOoy-00HaiN-Bc
+ for linux-mtd@bombadil.infradead.org; Mon, 02 May 2022 05:42:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=+dTUFiPSgcPyKn27SG2SzO7pIAPQqql66xRPG3Hmnd0=; b=ZS+Jl8aHtWueRkdYl6tmmnK5X2
- glIsYRJy1nHd7JNVkjdoNq4qALnvkQ2hS1bqXO+rM4QrZP7JnyVz2MFEzBHL1cLtOfWRMgDYRRFQm
- hVmmSUrVBfkM10IqkO+704tPUauNTMZcevGv6XfYRfZHuKFJVOAzsERzgVC2FZE3woLduVBWNK1iP
- Kn7lGVu2eUJ+w8PjsBl0i7POFQ7VqO0x31MNEcTMIGAnrR+cmyVz+0IDlOBdQuZhz/kgU/hEZyC7w
- YV7rA++Ch28bz7UENEAMYAQDe/1XVoij+v4JIOlDjF4yfn3MTZLjhuzGe7mBpVghK9eOpZ1KwvNia
- dKMv4FDQ==;
+ References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+ Content-Type:Content-ID:Content-Description;
+ bh=Tqa27ZTkwRUChUFFhePcdT99JAqNU7Wtt1R4QbW6KOM=; b=EH6Lr/nkI8efcRDg36iw5nLsCC
+ Mx0+fz7ITr/sUBxXRX/dl+k3LvtWo+yjOHEjks/7NE5eIKHT5x4i2Y0AU4W4p8Y2inntRuvtn1jwi
+ ZZzLbGh4/rauE727HbfFMPCiGgqzMxIFhV2hCPgnOC4+Mu1d4ezgXuhlARXGesJzqVRIG0423e/X1
+ U5Lm3Srx4aJZ9P1O+GptWCBraszICk6TlVhfbIzoFoZg6254Xq85a5QScBOULZiq2+G4nUJHiXq3K
+ VRpqp1XJ5SdstxvIpv/8KzO2EYD1d5HVbWcOA4ec5M+0dO8pzkrPdul9HOhLuCQXOGWHBLOVyQplY
+ +ch9yCzw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1nlOot-00EYzz-NC; Mon, 02 May 2022 05:42:03 +0000
+ Hat Linux)) id 1nlOot-00EZ01-QF; Mon, 02 May 2022 05:42:03 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, cluster-devel@redhat.com,
  linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org
-Subject: [PATCH 0/3] Unify filler_t and read_folio
-Date: Mon,  2 May 2022 06:41:56 +0100
-Message-Id: <20220502054159.3471078-1-willy@infradead.org>
+Subject: [PATCH 1/3] jffs2: Pass the file pointer to jffs2_do_readpage_unlock()
+Date: Mon,  2 May 2022 06:41:57 +0100
+Message-Id: <20220502054159.3471078-2-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220502054159.3471078-1-willy@infradead.org>
+References: <20220502054159.3471078-1-willy@infradead.org>
 MIME-Version: 1.0
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -62,27 +64,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-I realised there was no good reason for any of the three filesystems which
-actually use read_cache_page() to pass in something that wasn't a struct
-file pointer.  Indeed, it made each of them more complex.  These aren't
-filesystems I test regularly, so please scrutinise carefully.  This is
-on top of the read_folio() patchset that I posted recently and can be
-found at git://git.infradead.org/users/willy/pagecache.git for-next
+In preparation for unifying the read_cache_page() and read_folio()
+implementations, make jffs2_do_readpage_unlock() get the inode
+from the page instead of passing it in from read_cache_page().
 
-Matthew Wilcox (Oracle) (3):
-  jffs2: Pass the file pointer to jffs2_do_readpage_unlock()
-  nfs: Pass the file pointer to nfs_symlink_filler()
-  fs: Change the type of filler_t
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/jffs2/file.c | 4 ++--
+ fs/jffs2/gc.c   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
- fs/gfs2/aops.c          | 29 +++++++++++------------------
- fs/jffs2/file.c         |  9 ++++-----
- fs/jffs2/gc.c           |  2 +-
- fs/jffs2/os-linux.h     |  2 +-
- fs/nfs/symlink.c        | 16 ++++++++--------
- include/linux/pagemap.h |  6 +++---
- mm/filemap.c            | 40 ++++++++++++++++++++--------------------
- 7 files changed, 48 insertions(+), 56 deletions(-)
-
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index f8616683fbee..492fb2da0403 100644
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -112,7 +112,7 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+ 
+ int jffs2_do_readpage_unlock(void *data, struct page *pg)
+ {
+-	int ret = jffs2_do_readpage_nolock(data, pg);
++	int ret = jffs2_do_readpage_nolock(pg->mapping->host, pg);
+ 	unlock_page(pg);
+ 	return ret;
+ }
+@@ -124,7 +124,7 @@ static int jffs2_read_folio(struct file *file, struct folio *folio)
+ 	int ret;
+ 
+ 	mutex_lock(&f->sem);
+-	ret = jffs2_do_readpage_unlock(folio->mapping->host, &folio->page);
++	ret = jffs2_do_readpage_unlock(file, &folio->page);
+ 	mutex_unlock(&f->sem);
+ 	return ret;
+ }
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 373b3b7c9f44..a53bac7569b6 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -1327,7 +1327,7 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
+ 	 * trying to write out, read_cache_page() will not deadlock. */
+ 	mutex_unlock(&f->sem);
+ 	page = read_cache_page(inode->i_mapping, start >> PAGE_SHIFT,
+-			       jffs2_do_readpage_unlock, inode);
++			       jffs2_do_readpage_unlock, NULL);
+ 	if (IS_ERR(page)) {
+ 		pr_warn("read_cache_page() returned error: %ld\n",
+ 			PTR_ERR(page));
 -- 
 2.34.1
 
