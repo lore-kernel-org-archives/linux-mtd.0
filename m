@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34A0BC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 23:34:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2360C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 23:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=L/+fl74dZAqMQ7rmeTmjVB9octHvwPCFZdIk5DEPo78=; b=j6IRxLjkFuWGS1
-	iD1DlA2XeD7noWRxGQlRsxHtm2ufDEm1d8bMsnHOYVo43KoC0FjQjDkyanjPFMBJgz0nz9fL+7ovD
-	QzFi7BRp9ov+oTwcWdMiZ+4bXGRuDYxmD/IID+dpbcGybcsN/K+6TagEbRsS9uhr9dTEvgsR/uBxK
-	ZYowuwRXRTJvV3UXKH6O7p2nn44wv7RErwQHr8aTRDNx3E+Kwy+1fPP3guEZITV7DItKYRNLgi1NH
-	oKbIVplc0Seo4tsHTr3cgBzNPsVMXs3hDW6UUgaCWO8KHL9YX1Lqhc+FL6GSxsZ1cD0fNGvwddo8b
-	sJYGoQDZCJsWIxCjtRMg==;
+	List-Owner; bh=7Gvn5+heOTrBP73npwAWmUW6Brc/qnIAOXpQMBstqTc=; b=xirh9ML1uIiGar
+	r34/x6uozg1WBtTaKLbU5wQCUogSzyThOfsdAuDTXmlGR+nBObIcv/xC4NOGqsJHnldkwULvwNh+m
+	NyvSbxzQAbhYp4tpL08+Hl48p2HugYJYO863hB7A5EXn52PTMLcIZnFypWyK06AAF1nmBFpuuL2h1
+	rTCt+yankkQE6TYgm09wMSkVCcK9MmhtlP6XxpFgS49DJPPCLXVd316gz1wV3BUMAjJ0tKz9+gQGF
+	OTg/2tWhVYXO7yWoSlcwn/dei1vS6buX6BfS5zWVx0ZFa0IJEbpp41wAV3wL4krGEFSJIkyafyPFX
+	hAACTuDmyOJ593gxMOnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlfYA-0036j3-1S; Mon, 02 May 2022 23:33:54 +0000
-Received: from smtp5.goneo.de ([85.220.129.30])
+	id 1nlfYG-0036jz-5R; Mon, 02 May 2022 23:34:00 +0000
+Received: from smtp6.goneo.de ([2001:1640:5::8:31])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlfY6-0036iV-5w
- for linux-mtd@lists.infradead.org; Mon, 02 May 2022 23:33:52 +0000
-Received: from hub1.goneo.de (hub1.goneo.de [IPv6:2001:1640:5::8:52])
+ id 1nlfYC-0036j1-Oq
+ for linux-mtd@lists.infradead.org; Mon, 02 May 2022 23:33:58 +0000
+Received: from hub1.goneo.de (hub1.goneo.de [85.220.129.52])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by smtp5.goneo.de (Postfix) with ESMTPS id 1ACB310A1EAA;
- Tue,  3 May 2022 01:33:43 +0200 (CEST)
+ by smtp6.goneo.de (Postfix) with ESMTPS id 42B4510A32FD;
+ Tue,  3 May 2022 01:33:53 +0200 (CEST)
 Received: from hub1.goneo.de (localhost [127.0.0.1])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits))
  (No client certificate requested)
- by hub1.goneo.de (Postfix) with ESMTPS id 6704810A32F4;
- Tue,  3 May 2022 01:33:41 +0200 (CEST)
+ by hub1.goneo.de (Postfix) with ESMTPS id 97B7B10A1E85;
+ Tue,  3 May 2022 01:33:51 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgemail.eu;
- s=DKIM001; t=1651534421;
+ s=DKIM001; t=1651534431;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:
+ to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eD3IJmtjRnnvs3/Tsqg+HNWlBYtzaJ2YlpvPvtyVYLg=;
- b=lBEEhsYp1mAyq4mPThwfFWfPrPL+447zluFOMmgHTFwldbvz/C23kMtt5DBV/UZE5brRcY
- q5fHvQjVhE2PnXvqRYd5WyOpTT5aeQciz12BiR1ekeM/MymuYCEWvn04aVbHe1Sgaqpuxc
- KBivW+wdAjagtq40e456wjV0I/4LTYfPTVUhwI5dt21/barTj5P3m3kmaWiGGMHDQmGd+R
- 7ev7juvvgGqoEPy9cqbjZqAu3zbYucu72I1ssPjrLnXrOOS1+I2i4+st7IyN35hJV6FpfG
- FI2HQOQCnc4bkyqwkabBeUkV/AQRSyV3UUGAiUOE4dnpkMVUOfcD1f02Mm8JUA==
+ bh=0D319vm3xEpasyyTRdoZCMAlXyZlL9foxrgpib29jlE=;
+ b=rTzr4I/FDUGjxFhx23WCq6Wn5LL9oI2NF8o+meoRoLGnwzKV7bh6pNyi4oFCngoyVx/hTs
+ LvWfLkSueapERe0Qbr7byjUPhbBNTI8qTRNQ7vAWgK1uJ1wu9zB5t/bxgPlYkenEdSAh48
+ CFRKndaJF0cXkOOovcAWdrHB62T2ixm+9dztsgcvGahapgw4r7XoLlxU2sltQY5swMlifW
+ MzocHVM4qN35+RKVD0RA4K9J/RQDsGVu1DyYrCH/arT60IhWq+4qytDxCSKt5XwWLcFr8T
+ RiV9WuofJLe7MPLhfUCFVF7XBn4rIFOfoA7HgbRyLzt0osGc/RX+bkcB8CXB6A==
 Received: from brot.fritz.box (ip-178-201-230-219.um46.pools.vodafone-ip.de
  [178.201.230.219])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
  (No client certificate requested)
- by hub1.goneo.de (Postfix) with ESMTPSA id B77D610A330F;
- Tue,  3 May 2022 01:33:40 +0200 (CEST)
+ by hub1.goneo.de (Postfix) with ESMTPSA id 558FE10A32FA;
+ Tue,  3 May 2022 01:33:51 +0200 (CEST)
 From: "Leon M. George" <leon@georgemail.eu>
 To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
  p.yadav@ti.com
-Subject: Re: [PATCH] mtd: spi-nor: support eon en25qh256a variant
-Date: Tue,  3 May 2022 01:33:09 +0200
-Message-Id: <20220502233310.791565-1-leon@georgemail.eu>
+Cc: "Leon M. George" <leon@georgemail.eu>
+Subject: [PATCH] mtd: spi-nor: support eon en25qh256a variant
+Date: Tue,  3 May 2022 01:33:10 +0200
+Message-Id: <20220502233310.791565-2-leon@georgemail.eu>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220502115227.2435850-1-michael@walle.cc>
 References: <20220502115227.2435850-1-michael@walle.cc>
 MIME-Version: 1.0
-X-Rspamd-UID: 86e12b
-X-Rspamd-UID: abfa01
+X-Rspamd-UID: 897f4e
+X-Rspamd-UID: 2cc810
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220502_163350_994421_6433BDB0 
-X-CRM114-Status: GOOD (  17.53  )
+X-CRM114-CacheID: sfid-20220502_163356_990640_363DF84A 
+X-CRM114-Status: GOOD (  14.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,102 +88,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Michael and thanks for your reply :-)
+This patch allows accessing the upper 16m on the A variant (EN25QH256A) of
+the EN25QH256 that shares same JEDEC ID.
 
-I hope I'm doing this right (replying with send-email).
+Without this patch, addr_with is detected to be '4' but the read_opcode is
+a plain READ (supporting only 3 byte addresses).
+Setting PARSE_SFDP is enough to detect the read_opcode READ_4B on the A
+variant. READ_4B is not available on the no-A variant.
 
-On Mon,  2 May 2022 13:52:27 +0200
-Michael Walle <michael@walle.cc> wrote:
+Both variants support 4-byte address mode (spi_nor_set_4byte_addr_mode)
+but that is prone to breaking on unexpected reboots if the reset pin isn't
+connected (broken-flash-reset).
 
-> 8m? It's a 32MiB flash right? So it should be the upper 16MiB?
+The no-A variant supports a 'high bank latch mode' that affects read,
+program, and erase commands - similar to the extended address register
+(EAR).
+The HBL bit is manipulated using the ENHBL (0x67) and EXHBL (0x98)
+opcodes.
 
-You're absolutely right. The datasheet calls it the 'higher 128M bank' and
-I mixed up the divisors 8 and 16 in my head - glorious!
+Should it become necessary to distinguish the two variants in the future,
+the A variant sets the SNOR_HWCAPS_READ_1_1_4 SFDP param - the no-A
+variant doesn't.
 
-> So the upper 16MiB never really worked, correct?
+Tested with and without fast read on the A variant only.
 
-Correct. At least for the A variant.
-I'm unsure about the no-A variant but I don't have one of those to test.
-The information about accessing the higher bank is included in the commit
-message just in case anyone wants to work on that.
-
-I could imagine doing an attempt getting the EAR to work but I presume it
-makes more sense if somebody with access to the hardware does it properly.
-
-> Do you have the A variant only? Where did you get the SFDP from the
-> non-A variant? datasheet?
-
-I only have the A variant - yes - and the part about the datasheet is also
-correct.
-Sadly, the layout of the SFDP tables is different between the datasheets
-but I went through them manually and most of the fields have identical
-values.
-
-These are the differences I can spot with my eyes:
-
-        Value          |  address  |   A   |  no-A
------------------------+-----------+-------+-------
- SFDP and table minor  |    0x04   | 0x06  | 0x00
-   revision number     |  / 0x09   |       |
------------------------+-----------+-------+-------
-  param table length   |   0x0b    | 0x10  | 0x09
------------------------+-----------+-------+-------
- supports 1-1-4 opcode |  0x32@7   |   1   |   0
------------------------+-----------+-------+-------
-  1-1-4 dummy clocks   |  0x3a@0:5 |  0x4  | 0x0
------------------------+-----------+-------+-------
-   1-1-4 read opcode   |   0x3b    | 0x6b  | 0xFF
------------------------+-----------+-------+-------
-  sector type 2 size   |   0x4e    | 0x0f  | 0x00
------------------------+-----------+-------+-------
- sector type 2 opcode  |   0x4f    | 0x52  | 0xff
------------------------+-----------+-------+-------
-
-
-The no-A variant datasheet doesn't list the following address ranges:
-
-  0x10 - 0x1f
-  0x54 - 0x63
-
-I guess they'll read as 0xff.
-
-
-> No need for the Tested-by:. That is already implied by the SoB (unless
-> noted otherwise).
-
-I will remove it then.
-
-> Please also submit a SFDP dump, see [1].
-
-Again, I hope I'm doing this right..
-
-Thank you for your valued feedback :-)
-
-
-kind regards,
-Leon
-
+Signed-off-by: Leon M. George <leon@georgemail.eu>
 ---
+ drivers/mtd/spi-nor/eon.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-$ xxd -p sfdp
-53464450060102ff00060110300000ff1c000104100100ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520f3ffffffff0f44eb086b
-083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff353aa50082ea
-14d34c6f76b3fffffffff7bdd55c299689ffe850c081ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffff0ef0ff215cdcffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffff003600279f49fffffcebffffffffffff
-$ md5sum sfdp
-e4078f17a495a38c657f4f39f8851080  sfdp
-$ cat jedec_id
-1c7019
-$ cat partname
-en25qh256
-$ cat manufacturer
-eon
+diff --git a/drivers/mtd/spi-nor/eon.c b/drivers/mtd/spi-nor/eon.c
+index 8c1c57530281..50a11053711f 100644
+--- a/drivers/mtd/spi-nor/eon.c
++++ b/drivers/mtd/spi-nor/eon.c
+@@ -25,7 +25,8 @@ static const struct flash_info eon_nor_parts[] = {
+ 	{ "en25qh64",   INFO(0x1c7017, 0, 64 * 1024,  128)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256) },
+-	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512) },
++	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512)
++		PARSE_SFDP },
+ 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ };
+-- 
+2.35.1
 
 
 ______________________________________________________
