@@ -4,110 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE9EFC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 21:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34A0BC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 23:34:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jr5W3N6jEOdHPJz4znY2BLSN59C6J1SpKUt0uAVX5Vk=; b=u+E9BBbOSO4rAT
-	bq2IChfN+P7U/RntApqJoJ88JjJQE5vqVlo7ine8yJUIIGgDPf22QQ7JW8iRpPa2gHHwnw/wyJSTD
-	O9ZvgqYx9xLha/VT4q+LLxW8/fuwFv3CLrg0MZZstkzYPyK9o1eHsXUXA7/AeUBxvJRSyLrtLG4ff
-	6FY2QcOwpObyjOQPnVoTStsk3ZoDSzUn/HXgQsxYY9bZ0fhdeBiYgI1aFOfjInJw1oRLbYvJNRe8I
-	iLb7SCbEmIoqY9DkJNDIsKuhSGzVkhaYkii+fJCqstjH0WLrpR6+qedkkW+yTyhpRn6XlW6yV87gE
-	LcBbOM8BRYoZ9ryN+KHw==;
+	List-Owner; bh=L/+fl74dZAqMQ7rmeTmjVB9octHvwPCFZdIk5DEPo78=; b=j6IRxLjkFuWGS1
+	iD1DlA2XeD7noWRxGQlRsxHtm2ufDEm1d8bMsnHOYVo43KoC0FjQjDkyanjPFMBJgz0nz9fL+7ovD
+	QzFi7BRp9ov+oTwcWdMiZ+4bXGRuDYxmD/IID+dpbcGybcsN/K+6TagEbRsS9uhr9dTEvgsR/uBxK
+	ZYowuwRXRTJvV3UXKH6O7p2nn44wv7RErwQHr8aTRDNx3E+Kwy+1fPP3guEZITV7DItKYRNLgi1NH
+	oKbIVplc0Seo4tsHTr3cgBzNPsVMXs3hDW6UUgaCWO8KHL9YX1Lqhc+FL6GSxsZ1cD0fNGvwddo8b
+	sJYGoQDZCJsWIxCjtRMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nldCx-002jOO-Tq; Mon, 02 May 2022 21:03:52 +0000
-Received: from mout.kundenserver.de ([212.227.126.130])
+	id 1nlfYA-0036j3-1S; Mon, 02 May 2022 23:33:54 +0000
+Received: from smtp5.goneo.de ([85.220.129.30])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nldCu-002jN1-1P; Mon, 02 May 2022 21:03:50 +0000
-Received: from mail-yw1-f173.google.com ([209.85.128.173]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MQgtC-1nRE0N25x8-00NfoJ; Mon, 02 May 2022 23:03:45 +0200
-Received: by mail-yw1-f173.google.com with SMTP id
- 00721157ae682-2f7d621d1caso161151877b3.11; 
- Mon, 02 May 2022 14:03:43 -0700 (PDT)
-X-Gm-Message-State: AOAM533TzyhAKLHgLT/StsdwiagW4EbAtsmsK0gPK6VR4vfx45TJqDbh
- dz6E2TpgJxE9H4wkVzvVhfLdqnTLJme6bVfZmek=
-X-Google-Smtp-Source: ABdhPJxEvI0WTai1d3ZR4KU3iW8w7Gb+IOi/NcLSYY9Kzki6UUTmpSHsKHSdyZ16RsjoU/k3UwknsKUnnDH1BVJBWs0=
-X-Received: by 2002:a81:ad7:0:b0:2e6:84de:3223 with SMTP id
- 206-20020a810ad7000000b002e684de3223mr13273488ywk.209.1651525422593; Mon, 02
- May 2022 14:03:42 -0700 (PDT)
+ id 1nlfY6-0036iV-5w
+ for linux-mtd@lists.infradead.org; Mon, 02 May 2022 23:33:52 +0000
+Received: from hub1.goneo.de (hub1.goneo.de [IPv6:2001:1640:5::8:52])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by smtp5.goneo.de (Postfix) with ESMTPS id 1ACB310A1EAA;
+ Tue,  3 May 2022 01:33:43 +0200 (CEST)
+Received: from hub1.goneo.de (localhost [127.0.0.1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits))
+ (No client certificate requested)
+ by hub1.goneo.de (Postfix) with ESMTPS id 6704810A32F4;
+ Tue,  3 May 2022 01:33:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgemail.eu;
+ s=DKIM001; t=1651534421;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=eD3IJmtjRnnvs3/Tsqg+HNWlBYtzaJ2YlpvPvtyVYLg=;
+ b=lBEEhsYp1mAyq4mPThwfFWfPrPL+447zluFOMmgHTFwldbvz/C23kMtt5DBV/UZE5brRcY
+ q5fHvQjVhE2PnXvqRYd5WyOpTT5aeQciz12BiR1ekeM/MymuYCEWvn04aVbHe1Sgaqpuxc
+ KBivW+wdAjagtq40e456wjV0I/4LTYfPTVUhwI5dt21/barTj5P3m3kmaWiGGMHDQmGd+R
+ 7ev7juvvgGqoEPy9cqbjZqAu3zbYucu72I1ssPjrLnXrOOS1+I2i4+st7IyN35hJV6FpfG
+ FI2HQOQCnc4bkyqwkabBeUkV/AQRSyV3UUGAiUOE4dnpkMVUOfcD1f02Mm8JUA==
+Received: from brot.fritz.box (ip-178-201-230-219.um46.pools.vodafone-ip.de
+ [178.201.230.219])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by hub1.goneo.de (Postfix) with ESMTPSA id B77D610A330F;
+ Tue,  3 May 2022 01:33:40 +0200 (CEST)
+From: "Leon M. George" <leon@georgemail.eu>
+To: Michael Walle <michael@walle.cc>, linux-mtd@lists.infradead.org,
+ p.yadav@ti.com
+Subject: Re: [PATCH] mtd: spi-nor: support eon en25qh256a variant
+Date: Tue,  3 May 2022 01:33:09 +0200
+Message-Id: <20220502233310.791565-1-leon@georgemail.eu>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220502115227.2435850-1-michael@walle.cc>
+References: <20220502115227.2435850-1-michael@walle.cc>
 MIME-Version: 1.0
-References: <20220419163810.2118169-1-arnd@kernel.org>
- <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
- <CAK8P3a1LzEG1vo+5nMrnL3TOMcbSKJ3u=StcfY8dajV2raUBjA@mail.gmail.com>
- <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
- <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
- <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
- <6f1b27fa-96d1-4be7-ac6a-762610314f2a@roeck-us.net>
- <8d6d453a-e6fc-439b-2f34-e60c22fc9e98@roeck-us.net>
- <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
- <149509dd-f43d-1b27-4395-81eab4ff3455@roeck-us.net>
- <CAK8P3a05vFdBnXXAMPVS82xX29+uinvWPcWxAgvj0TfoOk+1kg@mail.gmail.com>
- <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
- <CAK8P3a3S5OjkKq_u5FpnwzYv+0+typya6Z4MzTez5ZH+do00xQ@mail.gmail.com>
- <CAK8P3a3jiqf_zpBsZyvAb5ZtkwDa7KkqExqDAdpY_pYqkr_NgQ@mail.gmail.com>
- <4dcdbfe2-9edf-320b-d123-3b62c8b5e28e@roeck-us.net>
- <CAK8P3a0ogn1wgPBDHkT=Fb8ufA+y8Ax1Qov2-vRXfC08QqnrQA@mail.gmail.com>
- <c001d58e-9a78-6338-a533-d0f215b3dfd1@roeck-us.net>
-In-Reply-To: <c001d58e-9a78-6338-a533-d0f215b3dfd1@roeck-us.net>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 2 May 2022 23:03:26 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1X3YH0RqqmqgqFAaY94yreD-PfY-pvyMf+xU3nGeqvsg@mail.gmail.com>
-Message-ID: <CAK8P3a1X3YH0RqqmqgqFAaY94yreD-PfY-pvyMf+xU3nGeqvsg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Daniel Mack <daniel@zonque.org>, 
- Haojian Zhuang <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, 
- Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
- Viresh Kumar <viresh.kumar@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- Ulf Hansson <ulf.hansson@linaro.org>,
- Dominik Brodowski <linux@dominikbrodowski.net>, 
- Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
- "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, 
- linux-clk <linux-clk@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- patches@opensource.cirrus.com, 
- linux-leds@vger.kernel.org, linux-mmc <linux-mmc@vger.kernel.org>, 
- linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org, 
- USB list <linux-usb@vger.kernel.org>, 
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>, 
- ALSA Development Mailing List <alsa-devel@alsa-project.org>
-X-Provags-ID: V03:K1:O4oZsAaOi/qiRRsdDkHJcuyKlbCAVMDL7sEfZJQH2VeIT9npLq2
- fDT1FmsbP1t4T0ZxsFKdUB5A6/p2/xWgrLfFE/pZCIYOzaR2eLHEQ1n4zmUHw0osdyGXT0J
- kdnkeenGq6pXuha/ggpr1GwrwZOFrQ656uRQPmY4FlH5xaHHDyApfrTEBblgElYdhU8uskU
- f8MTB0KkzJul8zo03eHvA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BPaJ3EIF6fk=:39u1Z8HBd9InB3vEUd9AMB
- c95dpfnPGV0hBgED1pEzqbnS1FLr4uglOGjbXCB87+H/fWmlFUdU0ubagrfJlJodgN/HB0Bnt
- 2YfIGt7Og3bHUU8difq+GWWG/SZFecCd1LB/mRUJJi5vk38njzrCIhTMbuX22D4KVUrdBxBza
- YRxj1zDS8XlmunCC0ZTOQI6j6Ep9pzUBMb8tmQ3OGHSekFmdtblmzSrb0bMfdLZzIRmQx4SnX
- nwtHVoSZ7DM2JQDEvBpHtoFPXK8WBmn4BwYyCo2JD6VHs5gv6OTXDHnu6Rz1qJ4y+cxNz57+O
- 9tbeMKYM19rg496VjQf2rL51GWCO2tbY80L9TXQ/txktgzDFiK9O1sTuKsZQVwkPBCJZ+k1HB
- qxDm11LFR8p+tNcQCoFA5qFfEACe6rBnYKSYBfwdtMY/2NJmj35ukvUBAaNhJFX6Z8W7v7cI0
- WNjzgZrcYBw4cPQQFFa5ZyZm0fSPkMFi7yyMsXWOZgioYlk5ksnTJqZ3nNxPQFRqo/ZbGjogl
- lb8QGsQBqLjmF23Xa7cjnmLJ+NFI7k/Tl+Ta5JY9/HJpfWNsuagqhP5nAKUAFI3lOutTnqEpN
- qnW1gAdoA+DjByN0E+M+8RTsAvABPhSbZZsCg+9VOHrz982wMP/bIrw1FNjRQ6bszApm9CRW1
- 87foCfgPZh//4231N+7nQG/5ne0paCJ2H/iI2a4eu87IJ5dff/4mPbVJbZjTRaXLhlrZZlgSW
- 1sI6aktu+IJhS6LeKSFm/hjaq5Ood+kH7pnc8fO+pybC5hQ5VYH1EfyTQ2ICbIxBv6/JSBXWp
- 6hSCzLaTrYDfe19WKI4wE46tWZqUQZ/qrQzCLALX6BkHn2TyGM=
+X-Rspamd-UID: 86e12b
+X-Rspamd-UID: abfa01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220502_140348_427751_6B49A11D 
-X-CRM114-Status: GOOD (  16.73  )
+X-CRM114-CacheID: sfid-20220502_163350_994421_6433BDB0 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,92 +87,103 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 2, 2022 at 10:35 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 5/2/22 12:21, Arnd Bergmann wrote:
-> >
->
-> To boot from initrd:
->
-> qemu-system-arm -M z2 -kernel \
->       arch/arm/boot/zImage -no-reboot -initrd \
->       rootfs-armv5.cpio --append \
->       "panic=-1 slub_debug=FZPUA rdinit=/sbin/init console=ttyS0" -nographic \
->       -monitor null -serial stdio
->
-> where rootfs-armv5.cpio is from my repository at github.com.
->
-> https://github.com/groeck/linux-build-test/blob/master/rootfs/arm/rootfs-armv5.cpio.gz
->
+Hello Michael and thanks for your reply :-)
 
-Ok, that works here with any configuration, I don't see a regression.
-Could this be a problem with the size increase? The machine only has
-32MB of RAM, so it's possible that the multiplatform-enabled kernel
-with DT support etc pushes it over the edge, especially with an initramfs.
+I hope I'm doing this right (replying with send-email).
 
-My configuration is clearly a bit different from yours, so I tried giving it
-a larger initramfs file, which randomly crashes elsewhere for me:
+On Mon,  2 May 2022 13:52:27 +0200
+Michael Walle <michael@walle.cc> wrote:
 
-[    0.648659] pxa2xx-uart.0: ttyS0 at MMIO 0x40100000 (irq = 38,
-base_baud = 928571) is a UART1
-[    0.697984] kworker/u2:0 invoked oom-killer:
-gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
-[    0.698278] CPU: 0 PID: 7 Comm: kworker/u2:0 Not tainted
-5.18.0-rc1-00109-gee927ad51300-dirty #52
-[    0.698382] Hardware name: Zipit Z2
-[    0.698520] Workqueue: events_unbound async_run_entry_fn
-[    0.699063]  unwind_backtrace from show_stack+0x18/0x1c
-[    0.699148]  show_stack from dump_header+0x68/0x254
-[    0.699186]  dump_header from out_of_memory+0x474/0x4f0
-[    0.699208]  out_of_memory from __alloc_pages+0xa0c/0xb84
-[    0.699227]  __alloc_pages from shmem_getpage_gfp.constprop.0+0x270/0x9e0
-[    0.699247]  shmem_getpage_gfp.constprop.0 from
-generic_perform_write+0xd8/0x210
-[    0.699268]  generic_perform_write from __generic_file_write_iter+0x130/0x198
-[    0.699286]  __generic_file_write_iter from generic_file_write_iter+0x64/0xd0
-[    0.699302]  generic_file_write_iter from __kernel_write+0x114/0x2b0
-[    0.699321]  __kernel_write from kernel_write+0x68/0x194
-[    0.699337]  kernel_write from xwrite+0x3c/0x78
-[    0.699363]  xwrite from do_copy+0xc0/0x11c
-[    0.699381]  do_copy from write_buffer+0x2c/0x44
-[    0.699397]  write_buffer from flush_buffer+0x3c/0xa0
-[    0.699413]  flush_buffer from __gunzip+0x2a4/0x364
-[    0.699434]  __gunzip from gunzip+0x2c/0x34
-[    0.699449]  gunzip from unpack_to_rootfs+0x19c/0x304
-[    0.699465]  unpack_to_rootfs from do_populate_rootfs+0x6c/0x1dc
-[    0.699483]  do_populate_rootfs from async_run_entry_fn+0x44/0x1a0
-[    0.699502]  async_run_entry_fn from process_one_work+0x1e8/0x544
-[    0.699520]  process_one_work from worker_thread+0x34/0x578
-[    0.699579]  worker_thread from kthread+0xdc/0x114
-[    0.699599]  kthread from ret_from_fork+0x14/0x2c
-[    0.699651] Exception stack(0xc2821fb0 to 0xc2821ff8)
-[    0.699711] 1fa0:                                     00000000
-00000000 00000000 00000000
-[    0.699731] 1fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[    0.699744] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    0.699801] Mem-Info:
-[    0.699889] active_anon:90 inactive_anon:674 isolated_anon:0
-[    0.699889]  active_file:0 inactive_file:0 isolated_file:0
-[    0.699889]  unevictable:0 dirty:0 writeback:0
-[    0.699889]  slab_reclaimable:0 slab_unreclaimable:1691
-[    0.699889]  mapped:0 shmem:771 pagetables:0 bounce:0
-[    0.699889]  kernel_misc_reclaimable:0
-[    0.699889]  free:207 free_pcp:37 free_cma:0
-[    0.699986] Node 0 active_anon:360kB inactive_anon:2696kB
-active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB
-isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:3084kB
-writeback_tmp:0kB kernel_stack:192kB pagetables:0kB all_unreclaimable?
-yes
-[    0.700116] Normal free:828kB boost:1024kB min:1464kB low:1572kB
-high:1680kB reserved_highatomic:0KB active_anon:360kB
-inactive_anon:2696kB active_file:0kB inactive_file:0kB unevictable:0kB
-writepending:0kB present:32768kB managed:12232kB mlocked:0kB
-bounce:0kB free_pcp:148kB local_pcp:148kB free_cma:0kB
-[    0.700177] lowmem_reserve[]: 0 0
-[    0.700247] Normal: 3*4kB (UM) 2*8kB (UM) 2*16kB (M) 0*32kB 0*64kB
-0*128kB 1*256kB (M) 1*512kB (M) 0*1024kB = 828kB
+> 8m? It's a 32MiB flash right? So it should be the upper 16MiB?
 
-       Arnd
+You're absolutely right. The datasheet calls it the 'higher 128M bank' and
+I mixed up the divisors 8 and 16 in my head - glorious!
+
+> So the upper 16MiB never really worked, correct?
+
+Correct. At least for the A variant.
+I'm unsure about the no-A variant but I don't have one of those to test.
+The information about accessing the higher bank is included in the commit
+message just in case anyone wants to work on that.
+
+I could imagine doing an attempt getting the EAR to work but I presume it
+makes more sense if somebody with access to the hardware does it properly.
+
+> Do you have the A variant only? Where did you get the SFDP from the
+> non-A variant? datasheet?
+
+I only have the A variant - yes - and the part about the datasheet is also
+correct.
+Sadly, the layout of the SFDP tables is different between the datasheets
+but I went through them manually and most of the fields have identical
+values.
+
+These are the differences I can spot with my eyes:
+
+        Value          |  address  |   A   |  no-A
+-----------------------+-----------+-------+-------
+ SFDP and table minor  |    0x04   | 0x06  | 0x00
+   revision number     |  / 0x09   |       |
+-----------------------+-----------+-------+-------
+  param table length   |   0x0b    | 0x10  | 0x09
+-----------------------+-----------+-------+-------
+ supports 1-1-4 opcode |  0x32@7   |   1   |   0
+-----------------------+-----------+-------+-------
+  1-1-4 dummy clocks   |  0x3a@0:5 |  0x4  | 0x0
+-----------------------+-----------+-------+-------
+   1-1-4 read opcode   |   0x3b    | 0x6b  | 0xFF
+-----------------------+-----------+-------+-------
+  sector type 2 size   |   0x4e    | 0x0f  | 0x00
+-----------------------+-----------+-------+-------
+ sector type 2 opcode  |   0x4f    | 0x52  | 0xff
+-----------------------+-----------+-------+-------
+
+
+The no-A variant datasheet doesn't list the following address ranges:
+
+  0x10 - 0x1f
+  0x54 - 0x63
+
+I guess they'll read as 0xff.
+
+
+> No need for the Tested-by:. That is already implied by the SoB (unless
+> noted otherwise).
+
+I will remove it then.
+
+> Please also submit a SFDP dump, see [1].
+
+Again, I hope I'm doing this right..
+
+Thank you for your valued feedback :-)
+
+
+kind regards,
+Leon
+
+---
+
+$ xxd -p sfdp
+53464450060102ff00060110300000ff1c000104100100ff84000102c000
+00ffffffffffffffffffffffffffffffffffe520f3ffffffff0f44eb086b
+083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff353aa50082ea
+14d34c6f76b3fffffffff7bdd55c299689ffe850c081ffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffff0ef0ff215cdcffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffff003600279f49fffffcebffffffffffff
+$ md5sum sfdp
+e4078f17a495a38c657f4f39f8851080  sfdp
+$ cat jedec_id
+1c7019
+$ cat partname
+en25qh256
+$ cat manufacturer
+eon
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
