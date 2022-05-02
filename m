@@ -4,55 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D520EC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 18:56:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0509C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  2 May 2022 19:21:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=8lw9kgA7tjVgmZcjw5OZ5PEVqOIdljgXS9kLhxzVhAc=; b=upnry3eilLaTlm
-	z1blfiafbymg3leO1pk1hczA+TLSuUP03bzETbXtB91R6AMgNEXpFIEPzK/tMWF+hmG7wSIvKa5rs
-	Lpv10dawKrcCsSkNoJwIL/z73sfN0tRggSrpIqdz3sV+BR1ZGwmSwuLBfMJ5mtwGGwk6a7g6i3ugU
-	ggLAHTrJY/7OlXBaR2+n4H+D+lxOAn4riEpiWY/baad04UhHEXbBWPp7t8zn/zh7GIs7qAi8oBfLU
-	bS+J59mrsILJcZfXkWDd9JdPgSiY61YmS7jVfTCFEjhoDMiHBFH2EkTIIbEeBxODmsbC9hgEFYzYX
-	88AC3mJf1lyu2eAwkVhQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=crIO0ZGevb7qGzSxghy8Qc6bq2GaAZj9i/eKFEEVgZE=; b=3XO00DHuKL910K
+	26Hssd039RMzrFnOffKg2F6x4uTWB/r0+eHqGCv3F+XAx8x9JIU5YUir9nAkiiwtA4lZyxOTJvN4V
+	sRcCyxiZpjXFGCdZ3jCut+W1mb7WL4m5Br68NXzdfTBzps8DiDrMP3qNnCa/UXEXvT40Wi3ifjtzW
+	AT4ds2YThYowz3eftjk22/ISmqFAniud9HFA0U0jvN3TaNAHddZZeZcAaJ9C0sa9WDo9HDRA4JR7r
+	GWa6qb2pjZ4F/0Hjy6phIJ8Kz+dMDEO4BTAdtBOF04Ks9vwCojEJNAK1U7RjRz7WcokE84l87A6Ku
+	5TD7EqpREwCMw1OM8BWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlbDq-002Hy0-4z; Mon, 02 May 2022 18:56:38 +0000
-Received: from relmlor2.renesas.com ([210.160.252.172]
- helo=relmlie6.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlbDd-002Hw1-FU; Mon, 02 May 2022 18:56:28 +0000
-X-IronPort-AV: E=Sophos;i="5.91,192,1647270000"; d="scan'208";a="119809059"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 03 May 2022 03:56:21 +0900
-Received: from localhost.localdomain (unknown [10.226.92.32])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1E0A940CB0B7;
- Tue,  3 May 2022 03:56:15 +0900 (JST)
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>, Michael Walle <michael@walle.cc>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Chris Paterson <Chris.Paterson2@renesas.com>,
- Biju Das <biju.das@bp.renesas.com>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- linux-renesas-soc@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: Add Renesas AT25QL128A serial nor flash
-Date: Mon,  2 May 2022 19:56:13 +0100
-Message-Id: <20220502185613.83483-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+	id 1nlbbx-002MOJ-9s; Mon, 02 May 2022 19:21:33 +0000
+Received: from mout.kundenserver.de ([217.72.192.73])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nlbbt-002MLk-9V; Mon, 02 May 2022 19:21:30 +0000
+Received: from mail-yw1-f180.google.com ([209.85.128.180]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MXH3Y-1nKh5R2zyI-00Ym1u; Mon, 02 May 2022 21:21:23 +0200
+Received: by mail-yw1-f180.google.com with SMTP id
+ 00721157ae682-2f16645872fso158782007b3.4; 
+ Mon, 02 May 2022 12:21:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533TT8Y23b0gUUWujpP8nvN2Gko8nMDwIA0432bIk+EKZ/T1KNvt
+ 8Qg9qJYUcZyB2gV0XyzdQOmDH3dJDkXQDdBFeII=
+X-Google-Smtp-Source: ABdhPJwUfMAOks7BnV4AzKQEtr1EDQTOee83IkNCHoU3D+nfieXOKuWmJ4Tp85gou+YPOwWYc3gRkPoRLjpjhxYBTNE=
+X-Received: by 2002:a81:ad7:0:b0:2e6:84de:3223 with SMTP id
+ 206-20020a810ad7000000b002e684de3223mr12927652ywk.209.1651519282261; Mon, 02
+ May 2022 12:21:22 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220419163810.2118169-1-arnd@kernel.org>
+ <20220422234150.GA3442771@roeck-us.net>
+ <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
+ <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
+ <CAK8P3a1LzEG1vo+5nMrnL3TOMcbSKJ3u=StcfY8dajV2raUBjA@mail.gmail.com>
+ <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
+ <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
+ <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
+ <6f1b27fa-96d1-4be7-ac6a-762610314f2a@roeck-us.net>
+ <8d6d453a-e6fc-439b-2f34-e60c22fc9e98@roeck-us.net>
+ <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
+ <149509dd-f43d-1b27-4395-81eab4ff3455@roeck-us.net>
+ <CAK8P3a05vFdBnXXAMPVS82xX29+uinvWPcWxAgvj0TfoOk+1kg@mail.gmail.com>
+ <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
+ <CAK8P3a3S5OjkKq_u5FpnwzYv+0+typya6Z4MzTez5ZH+do00xQ@mail.gmail.com>
+ <CAK8P3a3jiqf_zpBsZyvAb5ZtkwDa7KkqExqDAdpY_pYqkr_NgQ@mail.gmail.com>
+ <4dcdbfe2-9edf-320b-d123-3b62c8b5e28e@roeck-us.net>
+In-Reply-To: <4dcdbfe2-9edf-320b-d123-3b62c8b5e28e@roeck-us.net>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 2 May 2022 21:21:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0ogn1wgPBDHkT=Fb8ufA+y8Ax1Qov2-vRXfC08QqnrQA@mail.gmail.com>
+Message-ID: <CAK8P3a0ogn1wgPBDHkT=Fb8ufA+y8Ax1Qov2-vRXfC08QqnrQA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>, 
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, 
+ Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, 
+ Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, 
+ linux-clk <linux-clk@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ patches@opensource.cirrus.com, 
+ linux-leds@vger.kernel.org, linux-mmc <linux-mmc@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org, 
+ USB list <linux-usb@vger.kernel.org>, 
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, 
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+X-Provags-ID: V03:K1:j2ll6QwUBlsqVu3SQWv+S41OphUKyETfxeqQYvR4QEVc6qN6HED
+ z4cNZ4hzT5cwlgKjn8VWqYA8lkIel4/3dvgDd1qD7COaNk3bW/nrF8zIBPLZ2fA4gLU48K6
+ 4scMIcTWmtkHVAdc9dkD8fHNIRjhVgawTFtcaPXyrtNx9qCAN8QVWGItqNoW2vr071QXhww
+ dRjhu26phou9BYX5Ou7/w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:P58+2eHyFq0=:SyyjrINmoiPLOt1RBCKPQI
+ CTitplKK9z4+i5PxziDxwwwksV5fWfw0r3QHFMgXL76cyxWQjxUi+V4W+Hmcfh68xEkb48qpL
+ x2mn3PXipYe8wNUoDF5jLw/MnaYLSc2yY5U1WAIJjl1QQYTqI2saJDXE7/DWOpNXFVepgvm3a
+ DkYRCzaXps50po6QH5I0mpAGue9wZ7UFxJys/ATlVLLGlP1zWaREjQM3NZXUBWI3tksayv68K
+ hEJaEMKaxN+fifOUuMGvKnqMbm1ispdYJsjw7Zw+8f8c7qVdlaD50psmUJHRTAU6OLniTMs+X
+ D7k/LRNdfuz3SmRONZBbY/9CdEhxnrAr++DvnBejF+77LRcyvliElRT/9HSavNLs5DQTO7Zvb
+ pbTzcJ14llwrrRCwLftDfyDZAX8oK5oUUwcOH9lwxGo7EOr/7c60YBLfBw2PNwEjeSJLX1nRP
+ FFF4QGR7bv6qj/2ukPOmIgnZ6+FlkgJTRSOghg1IGI8JONG37XY5yeaDwl1VjMDYhXbClR0o0
+ lH2pL5EuRxcDeMmmy41yfyPcWoFdJjsDP9KOFEVac8FvQgmL/NWoF/GMJb0EcFfs61UoGJq8+
+ jKnwg1+W9eU+WRkR4PWhdV3IR5QsBHIzxtjLN+VQSSlZ63x7gOxeN0ZEpl6G/FVeNx0FJszFu
+ ZBKHwNI42RaROam9rC7mQvj4dIifa0KpCN8YWwploEovzjT2WRqjahy9TzkbVTngLmp/VhbRd
+ rStRjYl/1opTnAvKwv4I1byWOEvd/lfIPbmGLg0nQyjSLNq2sVywsWlIhuAc3fSlvyOujdkdd
+ 730FdMG5jUDcpRATlf7QB2+Hca9aEcCuYvPHnVvJvpMQIPMXOQ=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220502_115625_667964_E3473C55 
-X-CRM114-Status: GOOD (  14.03  )
+X-CRM114-CacheID: sfid-20220502_122129_678276_94EEE6D7 
+X-CRM114-Status: GOOD (  15.76  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,145 +124,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add support for Renesas AT25QL128A serial nor flash.
-Details of flash chip can be found here [1]
+On Mon, May 2, 2022 at 6:26 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> With v5.18-rc1-49-gcb813018b5c1, I still get:
+>
+> [    0.797668] RAMDISK: Couldn't find valid RAM disk image starting at 0.
+> [    0.805262] /dev/root: Can't open blockdev
+> [    0.805487] VFS: Cannot open root device "(null)" or unknown-block(0,0): error -6
+> [    0.805674] Please append a correct "root=" boot option; here are the available partitions:
+>
+> when trying to boot z2 from initrd.
+>
+> The other problems are gone.
 
-[1] https://www.dialog-semiconductor.com/sites/default/files/2022-04/DS-AT25QL128A-129F-022022.pdf
+Ok, progress!
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-$  xxd -p sfdp 
-53464450060101ff00060110300000ff1f00010280000001ffffffffffff
-ffffffffffffffffffffffffffffffffffffe520f1ffffffff0744eb086b
-083b80bbfeffffffffff00ffffff42eb0c200f5210d800ff3362d5008429
-01ceeca1073d7a757a75f7a2d55c19f61cffe810c080ffffffffffffffff
-ffffffffffffffff501650190000ffff
+What is your qemu command line? I see that z2 has no pcmcia device, so
+I tried booting
+from MMC, but this already fails with 5.18-rc1 without any of my
+patches, giving me
 
-:~# md5sum /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/sfdp
-23e3ec56b5b8f986d0488ba4727239dd
+[    0.697481] Creating 3 MTD partitions on "physmap-flash":
+[    0.698161] 0x000000000000-0x000000040000 : "U-Boot Bootloader"
+[    0.702815] 0x000000040000-0x000000060000 : "U-Boot Environment"
+[    0.706541] 0x000000060000-0x000000800000 : "Flash"
+[    0.718066] pxa2xx-mci pxa2xx-mci.0: incomplete constraints, dummy
+supplies not allowed
+[    0.718501] pxa2xx-mci pxa2xx-mci.0: incomplete constraints, dummy
+supplies not allowed
 
-~# cat /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
-1f4218
+Do  you have MMC or some other rootfs working without my patch series?
 
-~# cat /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/partname
-at25ql128a
-
-~# cat /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
-renesas
-
-RFC->v1:
- * Moved the flash definitions to atmel.c
- * Remove macro related to locking as it is untested.
- * Replaced INFO macro with SNOR_ID3
- 
-RFC:
- * https://patchwork.kernel.org/project/linux-renesas-soc/patch/20220501185512.51158-1-biju.das.jz@bp.renesas.com/
----
- drivers/mtd/spi-nor/atmel.c | 55 +++++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.c  |  1 +
- drivers/mtd/spi-nor/core.h  |  1 +
- 3 files changed, 57 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 656dd80a0be7..61cff6de7db2 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -10,6 +10,15 @@
- 
- #define ATMEL_SR_GLOBAL_PROTECT_MASK GENMASK(5, 2)
- 
-+#define SNOR_ID3(_jedec_id) \
-+	.id = { \
-+		((_jedec_id) >> 16) & 0xff, \
-+		((_jedec_id) >> 8) & 0xff, \
-+		(_jedec_id) & 0xff, \
-+	}, \
-+	.id_len = 3, \
-+	.parse_sfdp = true
-+
- /*
-  * The Atmel AT25FS010/AT25FS040 parts have some weird configuration for the
-  * block protection bits. We don't support them. But legacy behavior in linux
-@@ -204,6 +213,52 @@ static const struct flash_info atmel_nor_parts[] = {
- 		NO_SFDP_FLAGS(SECT_4K) },
- };
- 
-+static const struct flash_info renesas_nor_parts[] = {
-+	{ "at25ql128a", SNOR_ID3(0x1f4218) },
-+};
-+
-+/**
-+ * renesas_nor_set_4byte_addr_mode() - Set 4-byte address mode for Renesas
-+ * flashes.
-+ * @nor:	pointer to 'struct spi_nor'.
-+ * @enable:	true to enter the 4-byte address mode, false to exit the 4-byte
-+ *		address mode.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int renesas_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
-+{
-+	int ret;
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = spi_nor_set_4byte_addr_mode(nor, enable);
-+	if (ret)
-+		return ret;
-+
-+	return spi_nor_write_disable(nor);
-+}
-+
-+static void renesas_nor_default_init(struct spi_nor *nor)
-+{
-+	nor->flags &= ~SNOR_F_HAS_16BIT_SR;
-+	nor->params->quad_enable = NULL;
-+	nor->params->set_4byte_addr_mode = renesas_nor_set_4byte_addr_mode;
-+}
-+
-+static const struct spi_nor_fixups renesas_nor_fixups = {
-+	.default_init = renesas_nor_default_init,
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_renesas = {
-+	.name = "renesas",
-+	.parts = renesas_nor_parts,
-+	.nparts = ARRAY_SIZE(renesas_nor_parts),
-+	.fixups = &renesas_nor_fixups,
-+};
-+
- const struct spi_nor_manufacturer spi_nor_atmel = {
- 	.name = "atmel",
- 	.parts = atmel_nor_parts,
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index b4f141ad9c9c..ba9f222da00b 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1621,6 +1621,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_issi,
- 	&spi_nor_macronix,
- 	&spi_nor_micron,
-+	&spi_nor_renesas,
- 	&spi_nor_st,
- 	&spi_nor_spansion,
- 	&spi_nor_sst,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index b7fd760e3b47..3d2e39329079 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -511,6 +511,7 @@ extern const struct spi_nor_manufacturer spi_nor_intel;
- extern const struct spi_nor_manufacturer spi_nor_issi;
- extern const struct spi_nor_manufacturer spi_nor_macronix;
- extern const struct spi_nor_manufacturer spi_nor_micron;
-+extern const struct spi_nor_manufacturer spi_nor_renesas;
- extern const struct spi_nor_manufacturer spi_nor_st;
- extern const struct spi_nor_manufacturer spi_nor_spansion;
- extern const struct spi_nor_manufacturer spi_nor_sst;
--- 
-2.25.1
-
+     Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
