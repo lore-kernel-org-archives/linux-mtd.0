@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F54FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 15:44:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B7F7C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 15:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=HXMar5kHAOC6w6UPn191Me8z3fdE8n2nMAsHNBydbKs=; b=egiCCEaopLDRY8
-	s7ec3SJOiyDN33NhzSIxPiCqtjPUpatJnZgQFla8MnwUBBTNsFuBLSm/22UKHzP75twMAzvvOhlFV
-	vWLDdXKvQtYfhOWqKYhFNT77LqKvGfs+CxqFKehPAkK+brGIvpWlv8nECGv9zY+kKT/EakkPJvCRH
-	TVk17ljDoH+J+sULjzINkSPj1nYazS3dzL1VCNP3z2L8ri85tk/xW7tWgE9ecOn0wLP+GLHfXJc7s
-	XhJtE1rG0EhKZtMkNiX83AtDWI7SO+TrqlzQGfsgryk5zOx+OJAeH/kXQ/IeVeqbcH1f51aVJMk67
-	7Bi4ON3pYa1AV5Hg292Q==;
+	List-Owner; bh=2gbaXu1jJ9NzBc3v3JBCtLk7RUFIKNTD7MCbYp34Ey0=; b=xHc0247046kQ75
+	Sjg6xqQFB6O3YAl7IDeKIySjA/EAIiKsdf/g+bTfY1Nw8gQXOYOO8dsjGuD3oJ289kjP9vA7m3ncg
+	dTyVfNtZL3N64/dTH3W/zXEq2UB8BuqBCuTaYrv+CvRWO/Gh3xsgs4B4xnvwJvZB5PutB8vg2JwTG
+	FIVAnBzIK5UHNvlDxN5yZ5ks9h0sVkUkVqAOa5VYlBT7bXBbSO1ULssHr4wF3u0HhaAzlg0w6BBO/
+	VAZsk9uirHxr50VhIzyUcD5EaPZbPlUtUSdSI9I4iCSabHGdPWyHTpmjnjXp8IfcPSEBGYWQfgkso
+	ZySjQdjx1xoRq7ePxB9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlugY-006ZCW-Qr; Tue, 03 May 2022 15:43:34 +0000
-Received: from mail-wm1-x332.google.com ([2a00:1450:4864:20::332])
+	id 1nluiU-006ZnT-JW; Tue, 03 May 2022 15:45:34 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlugV-006Z8U-TF
- for linux-mtd@lists.infradead.org; Tue, 03 May 2022 15:43:33 +0000
-Received: by mail-wm1-x332.google.com with SMTP id
- v64-20020a1cac43000000b0038cfd1b3a6dso1610706wme.5
- for <linux-mtd@lists.infradead.org>; Tue, 03 May 2022 08:43:28 -0700 (PDT)
+ id 1nluiR-006ZmS-Pg
+ for linux-mtd@lists.infradead.org; Tue, 03 May 2022 15:45:33 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id m20so34195733ejj.10
+ for <linux-mtd@lists.infradead.org>; Tue, 03 May 2022 08:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=cDRsFXOwSjFyheRf7X8Ao9DHLOFKA24q9h+KTiwDV0I=;
- b=ltwqrEm9oTa8rQE4hyHa3WE6OHpLPVxWC0GPdC+pt5u+pcdgfiXouVFdeGxLhCLcPW
- ZrNdvzIuMJA4ipYxZ78e1va4fhIDbPq7Yki00W2CpHTx8Ybs0Eu4eHu5I/SC5sZazUgM
- 8Pt1NQwJf/c+spyJ52x+bpCrkTZzyA583vwVEWJWdHMMVzq73hZaBcESP+CHkj26wXf6
- uMHZv1EKVL0GoYMqFPMbPPbk6/T7gVd+AEEEBZM4cpZbXq5buc7JhjuEjfnTFuAkTOTc
- O/2IEC2C4Ih14963WwgQp5B+ed44pAc6jWbMzruU4uSuu9wowL2DFGTVCWW04E/o2RMD
- w4zw==
+ bh=mINKKACEUSc3nz+5DZb97F3BUF/I57s2OxAWUmNfvkI=;
+ b=CtOHYiswVqrgLZHaIvLLcJVTDwKunZ3vcO9GDZyyGL9OsouVQRjUzC6okDPrLMMbO6
+ cjmw+dSZidAG0zEKjylz97DYzb8FWeO/vgwz53Ctd3iFpMR7we5kKNOo3hHKWukX/tE/
+ LogxrcMw+GHPD5VEDuWKkRpR7zIuMm/qUVLehApFmEpx8BPQAB5kcQeVJtLuucse9QYK
+ 6pbwUHVFPAUgXvkc3up19qOfM/cdb+M2GE8a3U1SqYufTaWOYZi0UlnFmxEJD2UuqZN6
+ hubN3Rs+FlvRh2uOPAwGu3W8YYd6AQvuLx847bUhukuqPG2F4hSUuF3DsEAddbvLVbEG
+ J8aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=cDRsFXOwSjFyheRf7X8Ao9DHLOFKA24q9h+KTiwDV0I=;
- b=5351hbRpzn2ZRgpj4nfXjEl63KoaaEbuheWvqhR933eNJgAPM6RmSnLrtK95JvOzOk
- f5IxRUx8F5AJlVdzazIleoaTBCBiy8MwOfoCSyTjOFWfaiOX3a1RTO75uaH81YDt5hQg
- KRkZTYcq1NR9amPptnHCwKnZ19tWDb+73RYrnlqJTXUygnqe1x7xP8aEjKPdLhdO1bu8
- WsjVNpDrSFz1/k991NyIHssfF311dR//GZJHpOyIHEpfa2m321h/YaAU22cg5GCYZV0O
- pSqdO4RSB89M0qCYiwYEMODOHzFrClsi8uTebl2SKYfZrbyYKhfzcwX10DP8zo9TRu7M
- PHdQ==
-X-Gm-Message-State: AOAM533z2DpcSWfckg+neMkxcyUXYXMmtu0IX8c32TqxYHjaGO/3eoV8
- TZSMpRMVdsBVZXFIwV5auHs=
-X-Google-Smtp-Source: ABdhPJzppyR4INFUGT75DtjAs3oxm7d+Z9BwGCumSgCdVVuDEp5F34+RwxOinhQoVLSlOtY3aLLd6Q==
-X-Received: by 2002:a1c:ac44:0:b0:38e:a7df:3179 with SMTP id
- v65-20020a1cac44000000b0038ea7df3179mr3994322wme.61.1651592607267; 
- Tue, 03 May 2022 08:43:27 -0700 (PDT)
-Received: from vmu1804.lan ([2a06:a003:501a:a7ce::887])
- by smtp.googlemail.com with ESMTPSA id
- l20-20020a05600c1d1400b003942a244ed1sm2254912wms.22.2022.05.03.08.43.26
+ bh=mINKKACEUSc3nz+5DZb97F3BUF/I57s2OxAWUmNfvkI=;
+ b=jjge5Af9RFZB53YARoY9Bz29ddUHhvrHBN0ymQ3yJWF8UfarGoPDhfpFBkumDiBVcS
+ D5reaGOJ6oy6z9LGBTdNIEJShuOJwl+ald9MQqqJErTI1MtTkXqZixA8uJQ3VNWKrNyL
+ 5f5R/kK66qNjMR5ko4RV1NF4qoVXfn3ooTNN6EUdgvjMWFjwZ4iz+CUpR4S/bsO7fIf6
+ uP9CLE7EyMR4KvS0dRSaiQfOh+wbnKRr0pXXmcUsudpgEuGuMYsQ2NUPACDDawnwJBRg
+ BhYCyHJGbab7of9oFj/BehBUyJSIR9RXI5eX2aiw67QLRXqfN+r9xKTwJBz4U0/IMfpY
+ LCYw==
+X-Gm-Message-State: AOAM531Km1SDSEPRlxl7fmdyYWNUKlEgpBzylvZeM2/f48DC3OZGCrKp
+ TpNvLRhiSHQWfbcU2+YPoec=
+X-Google-Smtp-Source: ABdhPJz02pBN9VWvWZakAo8EyGCtLIpnR5f9jaXZwXt64fPpWKFXYnVJ/WyG4ipB+qpc5sSjErRu3Q==
+X-Received: by 2002:a17:907:3c81:b0:6e6:cf3e:6e14 with SMTP id
+ gl1-20020a1709073c8100b006e6cf3e6e14mr16468035ejc.181.1651592729117; 
+ Tue, 03 May 2022 08:45:29 -0700 (PDT)
+Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it.
+ [93.42.70.190]) by smtp.googlemail.com with ESMTPSA id
+ zp26-20020a17090684fa00b006f3ef214e62sm4723961ejb.200.2022.05.03.08.45.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 May 2022 08:43:26 -0700 (PDT)
-From: Mikhail Zhilkin <csharper2005@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Tue, 03 May 2022 08:45:28 -0700 (PDT)
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Manivannan Sadhasivam <mani@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Karim <Karimdplay@gmail.com>,
- M <x1@disroot.org>, Mikhail Zhilkin <csharper2005@gmail.com>
-Subject: [PATCH v3 0/3] mtd: parsers: add support for Sercomm partitions
-Date: Tue,  3 May 2022 15:42:54 +0000
-Message-Id: <20220503154254.2339744-1-csharper2005@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [PATCH v2 0/2] Add support for unprotected spare data page
+Date: Tue,  3 May 2022 17:43:51 +0200
+Message-Id: <20220503154353.4367-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220503_084331_968336_EFA39C61 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20220503_084531_879027_BF718B09 
+X-CRM114-Status: GOOD (  20.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,40 +94,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch series add support for Sercomm mtd partition table parser. It's
-used in some Beeline, Netgear and Sercomm routers. The Sercomm partition
-map table contains real partition offsets, which may differ from device to
-device depending on the number and location of bad blocks on NAND.
+Some background about this.
+On original qsdk ipq8064 based firmware there was a big separation from
+boot partition and user partition. With boot partition we refer to
+partition used to init the router (bootloader, spm firmware and other
+internal stuff) With user partition we refer to linux partition and data
+partition not used to init the router.
+When someone had to write to these boot partition a special mode was
+needed, to switch the nand driver to this special configuration.
 
-Changes since:
+Upstream version of the nandc driver totally dropped this and the result
+is that if someone try to read data from these partition a CRC warning
+is printed and if someone try to write that (if for example someone
+wants to replace the bootloader) result is a broken system as the data
+is badly written.
+
+This series comes to fix this.
+
+A user can declare offset and size of these special partition using the
+qcom,boot-pages binding.
+
+An initial implementation of this assumed that the boot-pages started
+from the start of the nand but we discover that some device have backup
+of these special partition and we can have situation where we have this
+partition scheme
+- APPSBL (require special mode)
+- APPSBLENV (doesn't require special mode)
+- ART
+- APPSBLBK (back of APPSBL require special mode)
+- APPSBLENVBK (back of APPSBLENV doesn't require special mode)
+With this configuration we need to declare sparse boot page and we can't
+assume boot-pages always starts from the start of the nand.
+
+A user can use this form to declare sparse boot pages
+qcom,boot-pages = <0x0 0x0c80000 0x0c80000 0x0500000>;
+
+The driver internally will parse this array, convert it to nand pages
+and check internally on every read/write if this special configuration
+should used for that page or the normal one.
+
+The reason for all of this is that qcom FOR SOME REASON, disable ECC for
+spare data only for these boot partition and we need to reflect this
+special configuration to mute these warning and to permit actually
+writing to these pages.
+
 v2:
- - Fix mistakes in dt-binding
- - Add patch for new vendor prefix
- - Add vendor prefix to scpart-id property
+- Add fixes from Krzysztof in Documentation
 
-v1:
- - Add dt-binding in a separate patch
- - Remove redundant braces and logical NOT operator
- - Define pr_fmt
- - Replace kcalloc by kzalloc
- - Use of_get_child_count() and alloc big enough array before the
-   for_each_child_of_node()
+Ansuel Smith (2):
+  mtd: nand: raw: qcom_nandc: add support for unprotected spare data
+    pages
+  dt-bindings: mtd: qcom_nandc: document qcom,boot-pages binding
 
-Mikhail Zhilkin (3):
-  dt-bindings: Add Sercomm (Suzhou) Corporation vendor prefix
-  dt-bindings: mtd: partitions: Extend fixed-partitions binding
-  mtd: parsers: add support for Sercomm partitions
-
- .../mtd/partitions/fixed-partitions.yaml      |  55 +++-
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- drivers/mtd/parsers/Kconfig                   |   9 +
- drivers/mtd/parsers/Makefile                  |   1 +
- drivers/mtd/parsers/scpart.c                  | 240 ++++++++++++++++++
- 5 files changed, 305 insertions(+), 2 deletions(-)
- create mode 100644 drivers/mtd/parsers/scpart.c
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   |  22 +++
+ drivers/mtd/nand/raw/qcom_nandc.c             | 148 +++++++++++++++++-
+ 2 files changed, 165 insertions(+), 5 deletions(-)
 
 -- 
-2.25.1
+2.34.1
 
 
 ______________________________________________________
