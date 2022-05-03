@@ -4,65 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4079CC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 13:45:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA8EC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 13:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eZWIaGbcGPq8gkFEpmW6CgKJMP6dUm41o/GDD0VBk0c=; b=1+q4Z+TrNvEY0o
-	0l5bXj5neGg5cP2EDEN5ZWTHLtP1xTNBupFXRV37zums0GA0vEDIs3pe74X3Kc+WxBW7B+B+TD6Cn
-	kL0jKE49Nd4Dxs2FdpsHglFoBcO5qEFS4XPXtXCkX/zvQ0ZmwM6ORpnF3BUtEOIg8Wb6TOTRENPL0
-	dom1jn28Gt0dzkex/Qme+4kvtRn6+LwlQCYBXdisn4ibLp1LhI9MQtByfdNlJn6HBgEZT+0x/ucep
-	rQHrv7YM9yuKjgBy3IQ/pECB/VL5mi5L9oWqp4F++khc/0ZRWmHSIsFgM3OjWSKsUysOQdU0Q+R4o
-	VAFjLu+QDcD5NGCtMLCA==;
+	List-Owner; bh=LwmJxQspFc3YGzVn6EwgDfLf6KszHAe3K2H8ftdpCBU=; b=MOrMCWOUx3EYgd
+	20XAvl8dUSWX+Pe0vWOBxizKlyginl+Jy5PRFI0qnBnWkMPd9+HlvkxFI3kCWetLgEqlP/cjxZ88R
+	+B0sG0cNotjdPLSSuwkykRZlh1vGhbpsgT9EYlk8KmOcDDleDnXDaoxPV8/RIvtm9GTejZB0jbSsl
+	qXEruC2gwv1NKDl60mKcujwH+JqGxdEytMTwIhM8l8XFRXhoow2URPwK9E6GwvubelqFmbKA832/z
+	DOzB00xZoFz3clxYatc9siBZAcSgVfbY0ZtdUS7Pfz370LWKD66AEXAsRB0FPsrkrSgKiP49knPRu
+	85Gog96hxa9wDQ+ZySOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlsqH-0064q3-01; Tue, 03 May 2022 13:45:29 +0000
-Received: from mx-out1.startmail.com ([145.131.90.139])
+	id 1nlsz6-0067NK-CX; Tue, 03 May 2022 13:54:36 +0000
+Received: from bhuna.collabora.co.uk ([46.235.227.227])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlsq3-0064m7-Iw; Tue, 03 May 2022 13:45:19 +0000
-Date: Tue, 3 May 2022 08:44:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
- s=2020-07; t=1651585507;
- bh=WTr3zVTTNyCdhxYBth93IvSInDhU8itEfs0ZovXdAsk=;
- h=Date:From:To:Subject:Message-ID:References:MIME-Version:
- Content-Type:Content-Disposition:In-Reply-To:From:Subject:To:Date:
- Sender:Content-Type:Content-Transfer-Encoding:Content-Disposition:
- Mime-Version:Reply-To:In-Reply-To:References:Message-Id:Autocrypt;
- b=WaVWG2a7EZkDtSGaQAtEHj3E1W1Js1SuR+KW4bUakGP5nDUsR2tkQ6jNZeQXuq7jK
- j5J6Q2OtXuLQ3y2V3kwTtDBfBSDnaoLmef2LDTqWudB93MGhmwf2vjabBt3DO5ecpQ
- de/RG4W+++B1dAsxqsIdWzen07qRZ8wq3+OvX8ePVDlt4RP+OVGEP9T8eQlmMuZVtD
- zrxZ0kPws7rlZkPvdWdjixpyaLKYE/FQ1qAUKpRPFUjy8kLzhBcf546UoqyoVAOISD
- rd/gMYSf4O46VwhIlynRvae21fZtiKD+3YKtydrwb0n3agu7nqUd6EEsQu3EWAKY1W
- 7eQ8SQI8vgUGg==
-From: "Marty E. Plummer" <hanetzer@startmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
- devicetree@vger.kernel.org, gengdongjiu@huawei.com,
- krzysztof.kozlowski+dt@linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux@armlinux.org.uk, michael@walle.cc, miquel.raynal@bootlin.com,
- mturquette@baylibre.com, novikov@ispras.ru, olof@lixom.net,
- p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
- robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
- sumit.semwal@linaro.org, tudor.ambarus@microchip.com,
- vigneshr@ti.com, xuwei5@hisilicon.com
-Subject: Re: [RFC v2 2/2] arm: hisi: enable Hi3521a soc
-Message-ID: <20220503134459.pplgvhcckja4ivcg@proprietary-killer>
-References: <20220501054440.2434247-1-hanetzer@startmail.com>
- <20220501173423.2473093-1-hanetzer@startmail.com>
- <20220501173423.2473093-3-hanetzer@startmail.com>
- <4cda3645-c4e8-1b3c-bd80-891afd56449a@linaro.org>
+ id 1nlsyt-0067KI-RG; Tue, 03 May 2022 13:54:25 +0000
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: kholk11) with ESMTPSA id CC0FD1F429C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1651586062;
+ bh=60swnXhouY6PcOi5RAAWpQb5+gqiaMIVdjfxOdCzA8w=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=ecw4pkZJpi0xotAJ+xOHs9Rrnrn6BlJAx4V2ioTkFTjfVj+Hj/W5GC39c6T5FfLYb
+ JY7NlM6EkH/GvJyCApvCJxn9fyZ5+P6cUYUo+IzxR1v85HEZGa0MMm6++G+piVdu1X
+ gYFxGBsi582miZ6WMTht2yN9vMYU9LXza2+UBQCvc5pcli05uTrr2HUrfuefRfM3tw
+ 3spbmXGsuF+euVVGx4LOxhG7TDS0HJAQFoC5OGGvEUkHLEOSjXiKixPMxikuP1hgIy
+ Wg/gSOTWngwe7z2he2dBqCXTPdjj/FZbPi0MgKL0r08ygkGPDe6jkveogodbXQAKXA
+ aus7uEcW72Q1Q==
+Message-ID: <df85d52f-569b-69a6-4310-e38631b533f5@collabora.com>
+Date: Tue, 3 May 2022 15:54:19 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4cda3645-c4e8-1b3c-bd80-891afd56449a@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] mtd: nand: ecc-mtk: add external ecc engine support
+Content-Language: en-US
+To: Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-mediatek@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20220430164021.537668-1-gch981213@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20220430164021.537668-1-gch981213@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220503_064515_943791_7D17AD4E 
-X-CRM114-Status: GOOD (  32.54  )
+X-CRM114-CacheID: sfid-20220503_065424_224744_7C187521 
+X-CRM114-Status: GOOD (  34.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,641 +69,319 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 03, 2022 at 01:47:01PM +0200, Krzysztof Kozlowski wrote:
-> On 01/05/2022 19:34, Marty E. Plummer wrote:
-> > Enable Hisilicon Hi3521A/Hi3520DCV300 SoC. This SoC series includes
-> > hardware mutlimedia codec cores, commonly used in consumer cctv/dvr
-> > security systems and ipcameras. The arm core is a Cortex A7.
-> > 
-> > Add hi3521a.dtsi and hi3521a-rs-dm290e.dts for RaySharp CCTV systems,
-> > marketed under the name Samsung SDR-B74301N.
+Il 30/04/22 18:40, Chuanhong Guo ha scritto:
+> This adds support for using ecc-mtk as an external ECC engine.
 > 
-> Thank you for your patch. There is something to discuss/improve.
+> The implemented OOB layout follows the convention to put all ECC data
+> at the end of OOB. As a result, the data layout is incompatible with
+> MTK NFI piplined ECC mode.
 > 
-> > 
-> > Signed-off-by: Marty E. Plummer <hanetzer@startmail.com>
-> > ---
-> >  arch/arm/boot/dts/Makefile              |   2 +
-> >  arch/arm/boot/dts/hi3521a-rs-dm290e.dts | 134 ++++++++
-> >  arch/arm/boot/dts/hi3521a.dtsi          | 423 ++++++++++++++++++++++++
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> ---
+>   drivers/mtd/nand/ecc-mtk.c | 335 ++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 331 insertions(+), 4 deletions(-)
 > 
-> DTSes go to separate patches.
-Do you mean dts and dtsi need to be separate patches?
-> 
-> >  arch/arm/mach-hisi/Kconfig              |   9 +
-> >  4 files changed, 568 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/hi3521a-rs-dm290e.dts
-> >  create mode 100644 arch/arm/boot/dts/hi3521a.dtsi
-> > 
-> > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> > index 7c16f8a2b738..535cef3b14ab 100644
-> > --- a/arch/arm/boot/dts/Makefile
-> > +++ b/arch/arm/boot/dts/Makefile
-> > @@ -242,6 +242,8 @@ dtb-$(CONFIG_ARCH_GEMINI) += \
-> >  	gemini-ssi1328.dtb \
-> >  	gemini-wbd111.dtb \
-> >  	gemini-wbd222.dtb
-> > +dtb-$(CONFIG_ARCH_HI3521A) += \
-> > +	hi3521a-rs-dm290e.dtb
-> >  dtb-$(CONFIG_ARCH_HI3xxx) += \
-> >  	hi3620-hi4511.dtb
-> >  dtb-$(CONFIG_ARCH_HIGHBANK) += \
-> > diff --git a/arch/arm/boot/dts/hi3521a-rs-dm290e.dts b/arch/arm/boot/dts/hi3521a-rs-dm290e.dts
-> > new file mode 100644
-> > index 000000000000..b24fcf2ca85e
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/hi3521a-rs-dm290e.dts
-> > @@ -0,0 +1,134 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (C) 2017-2022 Marty Plummer <hanetzer@startmail.com>
-> > + */
-> > +
-> > +#include "hi3521a.dtsi"
-> > +
-> > +/ {
-> > +	model = "RaySharp RS-DM-290E DVR Board";
-> > +	compatible = "raysharp,rs-dm-290e", "hisilicon,hi3521a";
-> 
-> Please run checkpatch and fix the warnings.
-> 
-sunova. I could have sworn I had my editor setup right for whitespace
-and such.
-> > +
-> > +	aliases {
-> > +		serial0 = &uart0;
-> > +		serial1 = &uart1;
-> > +		serial2 = &uart2;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path = "serial0:115200n8";
-> > +	};
-> > +
-> > +	memory@800000000 {
-> > +		device_type = "memory";
-> > +		reg = <0x80000000 0xf00000>;
-> > +	};
-> > +};
-> > +
-> > +&hi_sfc {
-> > +	status = "okay";
-> > +	spi-nor@0 {
-> 
-> Looks like wrong node name. You need to run "dtbs_check" and fix
-> warnings related to your DTS.
-> 
-Ah, that's a good thing to know. dt-doc-validate isn't found, doesn't
-seem packaged for gentoo either. I'll see about that asap.
-> > +		// compatible = "jedec,spi-nor";
-> 
-> No dead code in Linux kernel. Commented out stuff sometimes is okay if
-> it is explained with comments.
-> 
-As mentioned in the title, just an RFC, not final.
-> > +		compatible = "macronix,mx25l25635e", "jedec,spi-nor";
-> > +		reg = <0>;
-> > +		spi-max-frequency = <150000000>;
-> > +		// spi-rx-bus-width = <1>;
-> > +		// spi-tx-bus-width = <1>;
-> > +		// m25p,default-addr-width = <4>;
-> > +		// spi-max-frequency = <160000000>;
-> 
-> No dead code.
-> 
-> > +		m25p,fast-read;
-> > +
-> > +		partitions {
-> > +			compatible = "fixed-partitions";
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +			
-> > +			u-boot@0 {
-> > +				label = "u-boot";
-> > +				reg = <0x0 0x50000>;
-> > +				read-only;
-> > +			};
-> > +			u-boot-env@50000 {
-> > +				label = "u-boot-env";
-> > +				reg = <0x50000 0x20000>;
-> > +			};
-> > +			kernel@70000 {
-> > +				label = "kernel";
-> > +				reg = <0x70000 0x700000>;
-> > +			};
-> > +			rootfs@770000 {
-> > +				label = "rootfs";
-> > +				reg = <0x800000 0x300000>;
-> > +				read-only;
-> > +			};
-> > +			extra@b00000 {
-> > +				label = "extra";
-> > +				reg = <0xb00000 0x1500000>;
-> > +			};
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +&dual_timer0 {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&uart0 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&uart0_pmx_func &uart0_cfg_func>;
-> > +	status = "okay";
-> > +};
-> > +
-> > +&pmx0 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&sfc_pmx_func>;
-> > +	uart0_pmx_func: uart0_pmx_func {
-> > +		pinctrl-single,pins = <
-> > +			0x00e8 0x0
-> > +			0x00ec 0x0
-> > +		>;
-> > +	};
-> > +
-> > +	sfc_pmx_func: sfc_pmx_func {
-> > +		pinctrl-single,pins = <
-> > +			0x00c4 0x1
-> > +			0x00c8 0x1
-> > +			0x00cc 0x1
-> > +			0x00d0 0x1
-> > +			0x00d4 0x1
-> > +		>;
-> > +	};
-> > +};
-> > +
-> > +&pmx1 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&sfc_cfg_func>;
-> > +	uart0_cfg_func: uart0_cfg_func {
-> > +		pinctrl-single,pins = <
-> > +			0x00e8 0x0
-> > +			0x00ec 0x0
-> > +		>;
-> > +	};
-> 
-> Blank line
-> 
-> > +	sfc_cfg_func: sfc_cfg_func {
-> > +		pinctrl-single,pins = <
-> > +			0x00c4 0x58
-> > +			0x00c8 0x28
-> > +			0x00cc 0x38
-> > +			0x00d0 0x38
-> > +			0x00d4 0x38
-> > +		>;
-> > +	};
-> > +};
-> > +
-> > +/* &gmac0 { */
-> > +/* 	#address-cells = <1>; */
-> > +/* 	#size-cells = <0>; */
-> > +/* 	phy-handle = <&phy3>; */
-> > +/* 	phy-mode = "rgmii"; */
-> > +/* 	mac-address = [00 00 00 00 00 00]; */
-> > +/* 	status = "okay"; */
-> > +/**/
-> > +/* 	phy3: ethernet-phy@3 { */
-> > +/* 		reg = <3>; */
-> > +/* 	}; */
-> > +/* }; */
-> 
-> 
-> ? What's this?
-> 
-ethernet port. its giving me a bit of trouble at the moment, but it does
-work and has a phy at 3.
-> > diff --git a/arch/arm/boot/dts/hi3521a.dtsi b/arch/arm/boot/dts/hi3521a.dtsi
-> > new file mode 100644
-> > index 000000000000..53993a32fd5d
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/hi3521a.dtsi
-> > @@ -0,0 +1,423 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (C) 2017-2022 Marty Plummer <hanetzer@startmail.com>
-> > + */
-> > +
-> > +#include <dt-bindings/clock/hi3521a-clock.h>
-> > +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +/dts-v1/;
-> 
-> Blank line.
-> 
-> > +/ {
-> > +	#address-cells = <1>;
-> > +	#size-cells = <1>;
-> > +
-> > +	cpus {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +
-> > +		cpu0: cpu@0 {
-> > +			device_type = "cpu";
-> > +			compatible = "arm,cortex-a7";
-> > +			reg = <0>;
-> > +			clock-frequency = <1100000000>;
-> > +		};
-> > +	};
-> > +
-> > +	timer {
-> > +		compatible = "arm,armv7-timer";
-> > +		interrupt-parent = <&gic>;
-> > +		interrupts = <GIC_PPI 13 0xf08>,
-> > +			     <GIC_PPI 14 0xf08>,
-> > +			     <GIC_PPI 11 0xf08>,
-> > +			     <GIC_PPI 10 0xf08>;
-> 
-> Use macros for these interrupts.
-> 
-moot point, turns out enabling this timer is causing the system to lock
-up. Something's weird there.
-> > +		clock-frequency = <24000000>;
-> > +	};
-> > +
-> > +	pmu {
-> > +		compatible = "arm,cortex-a7-pmu";
-> > +		interrupt-parent = <&gic>;
-> > +		interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
-> > +	};
-> > +
-> > +	gic: interrupt-controller@10301000 {
-> > +		compatible = "arm,pl390";
-> > +		#interrupt-cells = <3>;
-> > +		interrupt-controller;
-> > +		reg = <0x10301000 0x1000>, <0x10302000 0x1000>;
-> 
-> Put reg just after compatible. This applies to each other node as well
-> (if it comes with reg).
-> 
-Ah gotcha.
-> > +	};
-> > +
-> > +	xtal24m: xtal24m {
-> 
-> Generic node names, so one of: "clock-0" "clock-xtal24m"
-> 
-Will do.
-> > +		compatible = "fixed-clock";
-> > +		#clock-cells = <0>;
-> > +		clock-frequency = <24000000>;
-> 
-> This does not look like property of the SoC, so should be defined by boards.
-> 
-SoC requires a 24Mhz osc (and a 32khz one as well), so it'll always be
-present regardless.
-> > +	};
-> > +
-> > +	clk_3m: clk_3m {
-> 
-> No underscores in node names, generic node name (see above).
-> 
-early debugging clock, will be removed.
-> > +		compatible = "fixed-clock";
-> > +		#clock-cells = <0>;
-> > +		clock-frequency = <3000000>;
-> 
-> This does not look like property of the SoC, so should be defined by boards.
-> 
-> > +	};
-> > +
-> > +	soc {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <1>;
-> > +		compatible = "simple-bus";
-> > +		interrupt-parent = <&gic>;
-> > +		ranges;
-> > +
-> > +		hi_sfc: spi@10000000 {
-> > +			compatible = "hisilicon,hi3521a-spi-nor", "hisilicon,fmc-spi-nor";
-> > +			#address-cells = <1>;
-> > +			#size-cells = <0>;
-> > +			reg = <0x10000000 0x1000>, <0x14000000 0x10000>;
-> > +			reg-names = "control", "memory";
-> > +			clocks = <&crg HI3521A_FMC_CLK>;
-> > +			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		/* usb0: usb@10030000 { */
-> > +		/* 		compatible = "generic-ohci"; */
-> > +		/* 		reg = <0x10030000 0x1000>; */
-> > +		/* 		interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>; */
-> > +		/* 		clocks = <&crg > */
-> > +		/* 	}; */
-> 
-> No dead code please.
-> 
-> > +		dmac: dma-controller@10060000 {
-> > +			compatible = "arm,pl080", "arm,primecell";
-> > +			arm,primecell-periphid = <0x00041080>;
-> > +			reg = <0x10060000 0x1000>;
-> > +			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_DMAC_CLK>;
-> > +			clock-names = "apb_pclk";
-> > +			lli-bus-interface-ahb1;
-> > +			lli-bus-interface-ahb2;
-> > +			mem-bus-interface-ahb1;
-> > +			mem-bus-interface-ahb2;
-> > +			memcpy-burst-size = <256>;
-> > +			memcpy-bus-width = <32>;
-> > +			#dma-cells = <2>;
-> > +			status = "okay";
-> 
-> No need for status okay, it's by default.
-> 
-ah, good to know.
-> > +		};
-> > +
-> > +		gmac0: ethernet@100a0000 {
-> > +			compatible = "hisilicon,hisi-gmac-v1";
-> > +			reg = <0x100a0000 0x1000>, <0x1204008c 0x4>;
-> > +			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_ETH_CLK>, <&crg HI3521A_ETH_MACIF_CLK>;
-> > +			clock-names = "mac_core", "mac_ifc";
-> > +			/* resets = <&crg 0x78 0>, <&crg 0x78 2>, <&crg 0x78 5>; */
-> > +			/* reset-names = "mac_core", "mac_ifc", "phy"; */
-> > +			/* hisilicon,phy-reset-delays-us = <10000 10000 30000>; */
-> 
-> No dead code.
-> 
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		dual_timer0: timer@12000000 {
-> > +			compatible = "arm,sp804", "arm,primecell";
-> > +			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
-> 
-> A bit weird interrupts... the same?
-> 
-Yes, though I am aware that some sp804 timers do have a separate
-interrupts per pair.
-> > +			reg = <0x12000000 0x1000>;
-> > +			clocks = <&sysctrl HI3521A_TIMER0_CLK>,
-> > +				 <&sysctrl HI3521A_TIMER1_CLK>,
-> > +				 <&crg HI3521A_APB_CLK>;
-> > +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		dual_timer1: timer@12010000 {
-> > +			compatible = "arm,sp804", "arm,primecell";
-> > +			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
-> > +			reg = <0x12010000 0x1000>;
-> > +			clocks = <&sysctrl HI3521A_TIMER2_CLK>,
-> > +				 <&sysctrl HI3521A_TIMER3_CLK>,
-> > +				 <&crg HI3521A_APB_CLK>;
-> > +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		dual_timer2: timer@12020000 {
-> > +			compatible = "arm,sp804", "arm,primecell";
-> > +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
-> > +			reg = <0x12020000 0x1000>;
-> > +			clocks = <&sysctrl HI3521A_TIMER4_CLK>,
-> > +				 <&sysctrl HI3521A_TIMER5_CLK>,
-> > +				 <&crg HI3521A_APB_CLK>;
-> > +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		dual_timer3: timer@12030000 {
-> > +			compatible = "arm,sp804", "arm,primecell";
-> > +			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-> > +				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-> > +			reg = <0x12030000 0x1000>;
-> > +			clocks = <&sysctrl HI3521A_TIMER6_CLK>,
-> > +				 <&sysctrl HI3521A_TIMER7_CLK>,
-> > +				 <&crg HI3521A_APB_CLK>;
-> > +			clock-names = "timer0clk", "timer1clk", "apb_pclk";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		crg: clock-reset-controller@12040000 {
-> > +			compatible = "hisilicon,hi3521a-crg";
-> 
-> Undocumented compatible.  Didn't checkpatch warn about it?
-> 
-As mentioned, RFC. I'm more concerned with getting it to work consistently
-at the moment.
-> > +			#clock-cells = <1>;
-> > +			#reset-cells = <2>;
-> > +			reg = <0x12040000 0x1000>;
-> > +		};
-> > +
-> > +		sysctrl: system-controller@12050000 {
-> > +			compatible = "hisilicon,hi3521a-sysctrl", "syscon";
-> 
-> Same.
-> 
-> > +			reg = <0x12050000 0x1000>;
-> > +			#clock-cells = <1>;
-> > +			#reset-cells = <2>;
-> > +		};
-> > +
-> > +		reboot {
-> > +			compatible = "syscon-reboot";
-> > +			regmap = <&sysctrl>;
-> > +			offset = <0x4>;
-> > +			mask = <0xdeadbeef>;
-> > +		};
-> > +
-> > +		wdt0: watchdog@12070000 {
-> > +			compatible = "arm,sp805", "arm,primecell";
-> > +			arm,primecell-periphid = <0x00141805>;
-> > +			reg = <0x12070000 0x1000>;
-> > +			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_FIXED_3M>;
-> > +			clock-names = "apb_pclk";
-> > +		};
-> > +
-> > +		uart0: serial@12080000 {
-> > +			compatible = "arm,pl011", "arm,primecell";
-> > +			reg = <0x12080000 0x1000>;
-> > +			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_UART0_CLK>, <&crg HI3521A_UART0_CLK>;
-> > +			clock-names = "uartclk", "apb_pclk";
-> > +			dmas = <&dmac 0 1>, <&dmac 1 2>;
-> > +			dma-names = "rx", "tx";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		uart1: serial@12090000 {
-> > +			compatible = "arm,pl011", "arm,primecell";
-> > +			reg = <0x12090000 0x1000>;
-> > +			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_UART1_CLK>;
-> > +			clock-names = "apb_pclk";
-> > +			dmas = <&dmac 2 1>, <&dmac 3 2>;
-> > +			dma-names = "rx", "tx";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		uart2: serial@120a0000 {
-> > +			compatible = "arm,pl011", "arm,primecell";
-> > +			reg = <0x120a0000 0x1000>;
-> > +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_UART2_CLK>;
-> > +			clock-names = "apb_pclk";
-> > +			dmas = <&dmac 4 1>, <&dmac 5 2>;
-> > +			dma-names = "rx", "tx";
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		spi_bus0: spi@120d0000 {
-> > +			compatible = "arm,pl022", "arm,primecell";
-> > +			reg = <0x120d0000 0x1000>;
-> > +			arm,primecell-periphid = <0x00041022>;
-> > +			interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&crg HI3521A_SPI0_CLK>;
-> > +			clock-names = "apb_pclk";
-> > +			dmas = <&dmac 6 1>, <&dmac 7 2>;
-> > +			dma-names = "rx", "tx";
-> > +			num-cs = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		pmx0: pinmux@120f0000 {
-> > +			compatible = "pinctrl-single";
-> > +			reg = <0x120f0000 0x188>;
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +			#pinctrl-cells = <1>;
-> > +			#gpio-range-cells = <3>;
-> > +			ranges;
-> > +
-> > +			pinctrl-single,register-width = <32>;
-> > +			pinctrl-single,function-mask = <7>;
-> > +			/* pin base, nr pins & gpio function */
-> > +			pinctrl-single,gpio-range = <
-> > +				&range 58 4 0
-> > +			>;
-> > +
-> > +			range: gpio-range {
-> > +				#pinctrl-single,gpio-range-cells = <3>;
-> > +			};
-> > +		};
-> > +
-> > +		pmx1: pinmux@120f0800 {
-> > +			compatible = "pinconf-single";
-> > +			reg = <0x120f0800 0x1d4>;
-> > +			#address-cells = <1>;
-> > +			#size-cells = <1>;
-> > +			#pinctrl-cells = <1>;
-> > +			ranges;
-> > +
-> > +			pinctrl-single,register-width = <32>;
-> > +		};
-> > +
-> > +		gpio0: gpio@12150000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x12150000 0x1000>;
-> > +			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio1: gpio@12160000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x12160000 0x1000>;
-> > +			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio2: gpio@12170000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x12170000 0x1000>;
-> > +			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio3: gpio@12180000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x12180000 0x1000>;
-> > +			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio4: gpio@12190000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x12190000 0x1000>;
-> > +			interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio5: gpio@121a0000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x121a0000 0x1000>;
-> > +			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio6: gpio@121b0000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x121b0000 0x1000>;
-> > +			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
-> 
-> Same interrupts as for other nodes? Is it correct?
-> 
-Yep, there are three interrupts for the gpios and they're shared among a
-few each.
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		gpio7: gpio@121c0000 {
-> > +			compatible = "arm,pl061", "arm,primecell";
-> > +			reg = <0x121c0000 0x1000>;
-> > +			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
-> > +			gpio-controller;
-> > +			#gpio-cells = <2>;
-> > +			interrupt-controller;
-> > +			#interrupt-cells = <2>;
-> > +			status = "disabled";
-> > +		};
-> > +_MULTI_V7
-> 
-> 
-> Best regards,
-> Krzysztof
+> diff --git a/drivers/mtd/nand/ecc-mtk.c b/drivers/mtd/nand/ecc-mtk.c
+> index 9f9b201fe706..998276ada671 100644
+> --- a/drivers/mtd/nand/ecc-mtk.c
+> +++ b/drivers/mtd/nand/ecc-mtk.c
+> @@ -15,6 +15,7 @@
+>   #include <linux/of.h>
+>   #include <linux/of_platform.h>
+>   #include <linux/mutex.h>
+> +#include <linux/mtd/nand.h>
+>   #include <linux/mtd/nand-ecc-mtk.h>
+>   
+>   #define ECC_IDLE_MASK		BIT(0)
+> @@ -26,12 +27,14 @@
+>   #define ECC_ENCCON		(0x00)
+>   #define ECC_ENCCNFG		(0x04)
+>   #define		ECC_MS_SHIFT		(16)
+> +#define		ECC_MAX_MS		(8191)
+>   #define ECC_ENCDIADDR		(0x08)
+>   #define ECC_ENCIDLE		(0x0C)
+>   #define ECC_DECCON		(0x100)
+>   #define ECC_DECCNFG		(0x104)
+>   #define		DEC_EMPTY_EN		BIT(31)
+>   #define		DEC_CNFG_CORRECT	(0x3 << 12)
+> +#define ECC_DECDIADDR		(0x108)
+>   #define ECC_DECIDLE		(0x10C)
+>   #define ECC_DECENUM0		(0x114)
+>   
+> @@ -59,11 +62,23 @@ struct mtk_ecc {
+>   
+>   	struct completion done;
+>   	struct mutex lock;
+> +	struct nand_ecc_engine ecc_eng;
+>   	u32 sectors;
+> +	u32 refcnt;
+
+Please always use signed values for refcounts.
+
+>   
+>   	u8 *eccdata;
+>   };
+>   
+> +struct mtk_ecc_host_ctx {
+> +	struct mtk_ecc_config cfg;
+> +	struct nand_ecc_req_tweak_ctx req_ctx;
+> +	u8 *buf;
+> +	dma_addr_t buf_dma;
+> +	u32 free_len;
+> +	u32 parity_len;
+> +	u32 steps;
+> +};
+> +
+>   /* ecc strength that each IP supports */
+>   static const u8 ecc_strength_mt2701[] = {
+>   	4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36,
+> @@ -75,6 +90,8 @@ static const u8 ecc_strength_mt2712[] = {
+>   	40, 44, 48, 52, 56, 60, 68, 72, 80
+>   };
+>   
+> +static const u8 ecc_strength_mt7621[] = { 4 };
+Please remove this one.
+
+> +
+>   static const u8 ecc_strength_mt7622[] = {
+>   	4, 6, 8, 10, 12
+>   };
+> @@ -115,6 +132,13 @@ static int mt7622_ecc_regs[] = {
+>   	[ECC_DECIRQ_STA] =      0x144,
+>   };
+>   
+
+..snip..
+
+> @@ -239,8 +268,14 @@ EXPORT_SYMBOL(mtk_ecc_get_stats);
+>   
+>   void mtk_ecc_release(struct mtk_ecc *ecc)
+>   {
+> -	clk_disable_unprepare(ecc->clk);
+> -	put_device(ecc->dev);
+> +	mutex_lock(&ecc->lock);
+> +
+> +	ecc->refcnt--;
+> +	if (!ecc->refcnt) {
+
+For the sake of readability, be explicit here.
+
+	if (ecc->refcnt == 0)
+
+...also, for safety (since we're talking about data here) it may be worth to add a
+
+	WARN((ecc->refcnt < 0), "sensible warning message here");
+		
+
+> +		clk_disable_unprepare(ecc->clk);
+> +		put_device(ecc->dev);
+> +	}
+> +	mutex_unlock(&ecc->lock);
+>   }
+>   EXPORT_SYMBOL(mtk_ecc_release);
+>   
+
+
+> +
+> +static int mtk_ecc_host_init_ctx(struct nand_device *nand)
+> +{
+> +	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
+> +	struct nand_ecc_props *conf = &nand->ecc.ctx.conf;
+> +	struct nand_ecc_props *reqs = &nand->ecc.requirements;
+> +	struct nand_ecc_props *user = &nand->ecc.user_conf;
+> +	struct mtd_info *mtd = nanddev_to_mtd(nand);
+> +	const u8 *ecc_strength = ecc->caps->ecc_strength;
+
+struct mtk_ecc_host_ctx *ctx; belongs here.
+
+> +	int step_size = 0, strength = 0;
+> +	int ret = 0;
+> +	struct mtk_ecc_host_ctx *ctx;
+
+...not here.
+
+> +	int steps, parity_len;
+> +	int i;
+> +	u32 parity_bits;
+> +
+
+..snip..
+
+> +
+> +	dev_info(ecc->dev, "OOB: free: %u bytes, ECC: %u bytes", ctx->free_len,
+> +		 ctx->parity_len * ctx->steps);
+> +	dev_info(ecc->dev, "ECC strength: %d bits per %d bytes\n", strength,
+> +		 step_size);
+
+I'm not sure that this should really be a dev_info(), or at least not both.. as
+I don't think that this is that much informative anyway.
+
+I'd go for dev_dbg() instead.
+
+> +	return 0;
+> +free_buf:
+> +	dma_free_coherent(ecc->dev, step_size + parity_len, ctx->buf,
+> +			  ctx->buf_dma);
+> +free_ctx:
+> +	kfree(ctx);
+> +	return ret;
+> +}
+> +
+
+..snip..
+
+> +static int mtk_ecc_host_prepare_io_req(struct nand_device *nand,
+> +				       struct nand_page_io_req *req)
+> +{
+> +	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
+> +	struct mtd_info *mtd = nanddev_to_mtd(nand);
+> +	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
+> +	int ret, step;
+> +
+> +	if (req->mode == MTD_OPS_RAW)
+> +		return 0;
+> +
+> +	nand_ecc_tweak_req(&ctx->req_ctx, req);
+> +
+> +	if (req->type == NAND_PAGE_READ)
+> +		return 0;
+> +
+> +	ctx->cfg.op = ECC_ENCODE;
+> +
+> +	for (step = 0; step < ctx->steps; step++) {
+> +		ctx->cfg.addr = dma_map_single(
+> +			ecc->dev, (u8 *)req->databuf.out + step * ctx->cfg.len,
+> +			ctx->cfg.len, DMA_TO_DEVICE);
+> +		ret = dma_mapping_error(ecc->dev, ctx->cfg.addr);
+> +		if (ret) {
+> +			dev_err(ecc->dev, "DMA mapping failed.\n");
+> +			return ret;
+> +		}
+> +		ret = mtk_ecc_enable(ecc, &ctx->cfg);
+> +		if (ret) {
+> +			dma_unmap_single(ecc->dev, ctx->cfg.addr, ctx->cfg.len,
+> +					 DMA_TO_DEVICE);
+> +			return ret;
+> +		}
+> +
+> +		ret = mtk_ecc_wait_done(ecc, ECC_ENCODE);
+> +		if (ret) {
+> +			mtk_ecc_disable(ecc);
+> +			dma_unmap_single(ecc->dev, ctx->cfg.addr, ctx->cfg.len,
+> +					 DMA_TO_DEVICE);
+> +			return ret;
+> +		}
+> +
+> +		mtk_ecc_wait_idle(ecc, ECC_ENCODE);
+> +		dma_unmap_single(ecc->dev, ctx->cfg.addr, ctx->cfg.len,
+> +				 DMA_TO_DEVICE);
+> +		__ioread32_copy(ecc->eccdata,
+> +				ecc->regs + ecc->caps->ecc_regs[ECC_ENCPAR00],
+> +				round_up(ctx->parity_len, 4));
+> +		mtd_ooblayout_set_eccbytes(mtd, ecc->eccdata,
+> +					   (void *)req->oobbuf.out,
+> +					   ctx->parity_len * step,
+> +					   ctx->parity_len);
+> +		mtk_ecc_disable(ecc);
+> +	}
+> +
+> +	return ret;
+
+You have addressed all of the error conditions, so return 0 here.
+
+> +}
+> +
+> +static int mtk_ecc_host_finish_io_req(struct nand_device *nand,
+> +				      struct nand_page_io_req *req)
+> +{
+> +	struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
+> +	struct mtd_info *mtd = nanddev_to_mtd(nand);
+> +	struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
+> +	u32 bitflips = 0, failed = 0;
+> +	int ret, step, i;
+
+> +	u32 err;
+
+It would be more appropriate to call this variable "val" or "regval".
+
+Also, please reorder the variables, you can do it by name...
+
+struct mtk_ecc_host_ctx *ctx = nand_to_ecc_ctx(nand);
+struct mtk_ecc *ecc = nand_to_mtk_ecc(nand);
+struct mtd_info *mtd = nanddev_to_mtd(nand);
+u32 bitflips = 0, failed = 0, regval;
+int ret, step, i;
+
+Please also do the same for the other instances of that.
+
+> +
+> +	/* Nothing to do for a raw operation */
+> +	if (req->mode == MTD_OPS_RAW)
+> +		return 0;
+> +
+> +	/* This engine does not provide BBM/free OOB bytes protection */
+> +	if (!req->datalen)
+> +		return 0;
+> +
+> +	/* No more preparation for page write */
+> +	if (req->type == NAND_PAGE_WRITE) {
+> +		nand_ecc_restore_req(&ctx->req_ctx, req);
+> +		return 0;
+> +	}
+> +
+> +	ctx->cfg.op = ECC_DECODE;
+> +	ctx->cfg.addr = ctx->buf_dma;
+> +
+> +	for (step = 0; step < ctx->steps; step++) {
+> +		memcpy(ctx->buf, req->databuf.in + step * ctx->cfg.len,
+> +		       ctx->cfg.len);
+> +		mtd_ooblayout_get_eccbytes(mtd, ctx->buf + ctx->cfg.len,
+> +					   req->oobbuf.in,
+> +					   ctx->parity_len * step,
+> +					   ctx->parity_len);
+> +
+> +		ret = mtk_ecc_enable(ecc, &ctx->cfg);
+> +		if (ret)
+> +			break;
+> +
+> +		ret = mtk_ecc_wait_done(ecc, ECC_DECODE);
+> +		if (ret)
+
+I think that you forgot to revert the enablement here; translation:
+you probably forgot to call mtk_ecc_disable(ecc).
+Or is there any particular and valid reason to not do that here?
+
+If there is, you should add a comment explaining why.
+
+> +			break;
+> +
+> +		mtk_ecc_wait_idle(ecc, ECC_DECODE);
+> +
+> +		memcpy(req->databuf.in + step * ctx->cfg.len, ctx->buf,
+> +		       ctx->cfg.len);
+
+You can avoid breaking this line, as this results in 87 cols, which is fine.
+Same for the other memcpy before that one, and all other instances.
+
+> +		mtd_ooblayout_set_eccbytes(mtd, ctx->buf + ctx->cfg.len,
+> +					   req->oobbuf.in,
+> +					   ctx->parity_len * step,
+> +					   ctx->parity_len);
+> +		err = readl(ecc->regs + ECC_DECENUM0);
+> +		err &= ecc->caps->err_mask;
+> +		if (err == ecc->caps->err_mask) {
+> +			// skip empty page
+
+C-style comments please. /* */
+
+
+Regards,
+Angelo
 
 ______________________________________________________
 Linux MTD discussion mailing list
