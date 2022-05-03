@@ -4,138 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30F9DC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 06:17:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35A8CC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 07:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=AWObTI/zGX6qEIv6vDQIWjuATlhZ25E1IlAU0a/iROM=; b=0UiS9+d9edB+1q
-	G2rmK4bsaOXAr0rO7ckJF74Q0VfuKelR/alsFe/cFf1PPDS3w9YMbL2WNRxqbP7bpOXPhSk/9PvCU
-	z2G2RgDSPWZyrUOmclZS6LQnxYYNAqL7pAWYVnEp4R6YF8oKukBZh23HGTHg7Q2SL7t0JVRpTrDUK
-	feZ3wIFYLOonDM+e8o9hEmsYEFJA4VY5zvMPVThUI3JFzh1Zd9TcfZnJivA1myrxHw6eaIXS8qavU
-	GdRmA2WM7iIh7hQG0YNHT+UDQANAIXgRoWaduAHxaBzJj7O5oqQYATInulMHkc1T15RrGS/y6fWxG
-	RNLCzii1ov5mXEasdF7g==;
+	List-Owner; bh=VTK4XbIpUIkQ9Mz7NOltIVTXHlbmjM6atPrzIzIofBk=; b=rO+2DQD858adB1
+	WXprbTFm6k7PkRdHfa+btEHs5AzdkZQ6J96oWDr/CFN8qzpwsuJ7Z9To+rPzF/4kZ4D00oo4REB5J
+	iSBcbz73Icr32LvsjQyBku/W+O9SPcS74Uuv1LWxZZkOLlgZoYLFbwSTnrNnM1h9lVcLZhdz2uhx3
+	Z8jCCY+EIcbS7lvsIwJur3EZQYtxLjO1iDALNjSG2GftuY0VjPd4aRVyMul4z7SzOgzLwcQAOFPR+
+	ymmv86Z3ddZtp9hHjnZjiaza+vEpQhPqPv2NRKWTzKYHfGpdbxeDWtuHVJd94xMWyRcKySAitlkFh
+	/2oOT8evyEvXC08LkoVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nllqL-003uET-BH; Tue, 03 May 2022 06:17:05 +0000
-Received: from mail-os0jpn01on2070e.outbound.protection.outlook.com
- ([2a01:111:f403:700c::70e]
- helo=JPN01-OS0-obe.outbound.protection.outlook.com)
+	id 1nlmnI-004BQO-SU; Tue, 03 May 2022 07:18:01 +0000
+Received: from mout.kundenserver.de ([217.72.192.73])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nllm4-003rpb-0u
- for linux-mtd@lists.infradead.org; Tue, 03 May 2022 06:12:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EFb7wnH0Uv3zOJUQ03AG6VLF8YQ/mt+GI0Q+asQUDFsQLQmCjot40VQGKurmMJ72T/8X/k/IatVk2b4TQQ29xJ/ZaU1rHraT2aVc62o5ZQJq461/RnPknjqpZJSpuD0n8biJOCx6qsLlmrVxG/y5NVElOaYaPdWY2nyNMVLQbK8xWubXRRShj3WBc5O23bdnk+c+jUDFTDvdblHbi2Vvx22HsvBFbZclztK3K6ZhuK9XTn6BZcirt2nOxm6Ux66/CPCieProa555Q5mEDj63dJrdyNbzOS3rsIak5q/ydEQT+qWX2c3y18Lv5n4K+mSQcS20K7XIolN9GAxFlnAJOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O5SIBANM+yq4pTkNEcBsec+PRn+SbgFnOV2o/9zt868=;
- b=XoCk9hnTmmzi2mzSk0q+a4aVkiJI/rOxEFW4cWS9yvs7jTeMsldIdEIQ1BaHdsmTPvi2Od8RM8TY7tN1KYP6g8/53FvXgrVbQ/J01YZ6lFvirwUGJP6k40O2McRqeLxxohnma9SH5y5L1nsigX2HHyb2UMxSOaE5ioLBOGKVbhcTCVLPkGAj6FR5WfAvHA7PP/3YOvYFC4N2oKGrldbHOpaGGSYgoyS6TJ/qPX/eosR640DR1xHIRGgfaluOCWsFV0W6rqaqJPNeDnLN6cRaSw2dqhhZElHPF5w4vW4+w9Sujbyj93I2DImj639h/zqPFmzFjvzBYh2kVPg9mkLzRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O5SIBANM+yq4pTkNEcBsec+PRn+SbgFnOV2o/9zt868=;
- b=GubwyDebvRlB7V1gHEr8Y7kDguQzKpliu2IX3YsVcMrCuaq6FX4pcB5SSrhStVqfEy2qdkpMOqHnql5Ge5kfl+Z8ndlmY/TMkR8ymBkoSc+/YWfNVepzwsiy08CZmleBjC9VtCcGfUeTgdiOrrgb0fCQmG8ev9ONqCtMPHlgVCc=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYCPR01MB8520.jpnprd01.prod.outlook.com (2603:1096:400:13b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.12; Tue, 3 May
- 2022 06:12:31 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::3e:970b:c238:f57]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::3e:970b:c238:f57%7]) with mapi id 15.20.5206.014; Tue, 3 May 2022
- 06:12:31 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Michael Walle <michael@walle.cc>
-CC: Chris Paterson <Chris.Paterson2@renesas.com>, "biju.das@bp.renesas.com"
- <biju.das@bp.renesas.com>, "geert+renesas@glider.be"
- <geert+renesas@glider.be>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-renesas-soc@vger.kernel.org"
- <linux-renesas-soc@vger.kernel.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "p.yadav@ti.com" <p.yadav@ti.com>, Prabhakar
- Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>, "richard@nod.at"
- <richard@nod.at>, "tudor.ambarus@microchip.com"
- <tudor.ambarus@microchip.com>, "vigneshr@ti.com" <vigneshr@ti.com>
-Subject: RE: [RFC] mtd: spi-nor: Add Renesas AT25QL128A serial nor flash
-Thread-Topic: [RFC] mtd: spi-nor: Add Renesas AT25QL128A serial nor flash
-Thread-Index: AQHYXY0CUmqyBNs4DUuPavP17i/aHa0LdLEAgAAXYICAAASW4IAAV19ggADDZiA=
-Date: Tue, 3 May 2022 06:12:31 +0000
-Message-ID: <OS0PR01MB59224A6733975F4F4B95512386C09@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20220501185512.51158-1-biju.das.jz@bp.renesas.com>
- <20220502112934.2433516-1-michael@walle.cc>
- <OS0PR01MB5922313B200156135FC439A686C19@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <OS0PR01MB5922A6C8B1587BB67A1A484486C19@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <OS0PR01MB5922953CE1777950ACA2832D86C19@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-In-Reply-To: <OS0PR01MB5922953CE1777950ACA2832D86C19@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1cae03d1-1b98-4242-92ea-08da2ccbe837
-x-ms-traffictypediagnostic: TYCPR01MB8520:EE_
-x-microsoft-antispam-prvs: <TYCPR01MB852020455B179F1D904248E086C09@TYCPR01MB8520.jpnprd01.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qvXHI+S5rD9311X/THJWSY6bGzDIgKxuobAqK4N99nh7/KDFQalpXhsyB+653Fgm2p1ZkscgqAQyW7V994AtnYQrRdkagQrGf0IwxYNvEX3AZngnQZX2qX5G9yCd8BnKGTAp0uzBBQAqE4VhH0br1p+ddRwTqLzzAMpoeiU8iK6IsUaHEAh9OoT1c35iKpsQ5NpFvup5C5/LPku6mpoIV8H18UwmmmDNCSpp/YUUXbeN0VdURk6xfRTfPOg0tsI2Dtxrp5D/nR3q9rw5Y7L+C1bVhG+73x/5C6hF5BQVmriX4a58vSRMI0B/Yt7MPgeOU0ChAAb7s9Jy6ksp6DrX7y76KPRDN598wFPAn/vCEhmH8yuvHvsoUHXL5aIXO/3tOY6Ndf/80xHOSVr3hULgp/hZVAmDScWTJ3IvResUGstav+0+7l03+m7q9U6cW8cUTLSrdw8/w7bq3OU3S7mXddu0upFm3TvrCnQ5ciFQMU9xRlo5Hptk4/kVEzbijdzwk7oQOl6GBenzn1KreB+E11zCnb3p7QrxuxPyKKVHx5KdY6k+Od0Smr60DX7RvO4Wn41eBY56ppvSDyZR4398qRUjUWMolsKKAQptu9fVOfSRY85TZH26TvK82mHAWrvba4zK55W7vUbsyTjGqB6NxsIKq/fagJ+xwg1S94NHD/mHDgj9XwQechgpqesJ7kwuohxe6+CzgGdD483vYMg1fnkNzLIxmLZQIWx1paz1a+dtb/k/+NoKKZakHwtlBu8ReqVO0EYubKUy9dFfzongsQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:OS0PR01MB5922.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(6506007)(4326008)(316002)(7696005)(508600001)(26005)(52536014)(186003)(8936002)(8676002)(66476007)(66556008)(122000001)(55016003)(9686003)(64756008)(66446008)(33656002)(83380400001)(5660300002)(66946007)(76116006)(38070700005)(38100700002)(54906003)(6916009)(86362001)(2906002)(71200400001)(473944003)(357404004);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vpC6gtqq/I7i4vsff0DdF/O2t3sDLf2Sox1Cw/gcknAYzw7dv5qqDo49iqQB?=
- =?us-ascii?Q?zaRBQFa8WQn4jzZ3LShkkoNizPdLf9XueSZlGinBejficKN7r4tdrfogZS5L?=
- =?us-ascii?Q?dOS9im23POHYzooFHE+33Lyp9GnyIANg99mklDcdiCEgwF20Hd6N+C9N4Ole?=
- =?us-ascii?Q?gQ+aVLkD8xfpuxHBRJkNW1IDG1sRM004LTz6EjbunugCJNKKAiMnWtwTlq5V?=
- =?us-ascii?Q?CEGx8q+WdNcyA8m8JdAI+uM1OLrqi4NkzkQAfi83fvLM6ZpS8DXydswiJroi?=
- =?us-ascii?Q?HSNXF6BjbgXxB2WNBAbdR6M5p/wmsGrvgRTm+N987Mxle+ZvPy5Fo5jwISZ+?=
- =?us-ascii?Q?kl7L0bdSRlOFqxhnIqgyL7+em1IbE8gC6Tehsvewzm6BaBIR79zWEVYQbuxE?=
- =?us-ascii?Q?MD8zd++IXMBQAnX9/VX8Vi6EJ16jwNyiW+oR7LVPbmzXVnwGHQ+2J0+GZmws?=
- =?us-ascii?Q?wJvse2x46twMiQJM6Q18ag4r/nSa3H1IQzLvxC2D/ZvE8FzOJlNmI19VoJNe?=
- =?us-ascii?Q?at1nYZBVA61PjuEZ/OcKIWPWhM/WDFBSWgxKhkz/R8yKyZ+W1qtUv9MEeBEw?=
- =?us-ascii?Q?AH+6kSaTlMV+F7KxsT8HHL42bk8hpmcbx0nNNeKzm7OiKIxPXldK6/h63SGh?=
- =?us-ascii?Q?ss8ipWVro0cKiXFI2pp7eKAtgbNICdX4D92M8iBHBOPYDfyNocRexQ3K3ph0?=
- =?us-ascii?Q?jz4EFxcYCpzE+yNJROPgyzf8xJ2fv2mh/Y2m1ekmQpWO8+Q0JZH0n00ckmzV?=
- =?us-ascii?Q?SQvXyciGXJ52PA06pBMJ8XRonmgTNh5CxZ9wn5JWzv0OatDTcD/n0znpgLiN?=
- =?us-ascii?Q?ednrC8r2xXX9DZ+b8+3ZO8h/8fAEA7WvI/MZKwdNBMjkx5Y7okFzB69/4qfy?=
- =?us-ascii?Q?O4MmxL+OeWiyOppnRkZvUjdn4Pd4jZcn3W5lnQJ7Fch1z8czVy3e9E3xE/g6?=
- =?us-ascii?Q?D6uAJUSONIx5e1UhzvfoVpoI+mDM2f9oIH9knQK8LRwQjFQHRiIBU3xgr1fq?=
- =?us-ascii?Q?NTemkJt54Wyrp4Xz68wbalUKZAJR2qvwktPGVa5pnhcRwgHEhYX4ZRlx4sXu?=
- =?us-ascii?Q?zQNrb64hxkijmzChpWfSRybb7XKsywVJLQiQHibMHBFYwUtRwsVUDJEQtMkz?=
- =?us-ascii?Q?ufo03/MqGAliTN/gt1jwYUlhYxOBBCFsMFZ8opf3jD/6aMdMwcRGPt8hnbR+?=
- =?us-ascii?Q?Hw6GvRXYk6LjKms3v3vpZwh45XXZyAeBnBZLnQq1FW7D/GjGVHsyjHu7kW13?=
- =?us-ascii?Q?SnR6OUjFyF80XTbsLtnDUNLjKcMsPWk73yTbotBcXFoiHGOZtiaysQoZ+AHf?=
- =?us-ascii?Q?FBPRUrc/Wnko/iny6jrBpBusj+MmKYDg7TUih7jlBR9125D481hQ5cauIwue?=
- =?us-ascii?Q?rjd7GDqwSqAQ8q/eyQ+WDNzLAogSR4Pe318YnZGl9aZ436cAVXemGX+f2tM5?=
- =?us-ascii?Q?W3rpULXER7rO2kLQ51FZsafYYIt1hY4bdtuO7+CqB19meb+fjr2IN8QXGcWM?=
- =?us-ascii?Q?lcRBmImRtHWaqSu/QFgd7rnuCLFlMtmAnQG7HNf7CLU3zgG0ILyaseJzshNf?=
- =?us-ascii?Q?a2PJpS0MAkws4gkYjTSzt9mKl9Gw6HGgIKHuFI7H2zD3vHcSLUgUlwNmTCxb?=
- =?us-ascii?Q?9IIKa3skHNp7a/a1u7pUYAKdOhIIiRwuZJGnBAIrXtyNQ2m6E18H2t2BU2jb?=
- =?us-ascii?Q?CsmhYeRqWuSBg/zWBq8/t40DvRUpXEPwOM+9NTaQkIL7heIuXe1KIEhTxb4+?=
- =?us-ascii?Q?PqOo8EbdF31l6A3Ky5w92w6DLuV+ZYs=3D?=
+ id 1nlmnB-004BCt-8G; Tue, 03 May 2022 07:17:56 +0000
+Received: from mail-yb1-f181.google.com ([209.85.219.181]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M3DBb-1npMcu1w0j-003a9v; Tue, 03 May 2022 09:17:37 +0200
+Received: by mail-yb1-f181.google.com with SMTP id y76so29742026ybe.1;
+ Tue, 03 May 2022 00:17:37 -0700 (PDT)
+X-Gm-Message-State: AOAM530cnrZF+o2g/W9r40Gneb9xkUlFta7vmTRXNv8iDeWiHZnKolOL
+ fODwLWQ/6NTXK3oKZuKdDBLAb3p6PnM9N+MkO2s=
+X-Google-Smtp-Source: ABdhPJxCVe3OWFLSxYuaWnZW2jE5tiG+RIFx0DlFR531d1DfX2PVw0Rn1+OoRgTZrm5UkwICv0JqKul27jNY+A9f6J8=
+X-Received: by 2002:a25:c604:0:b0:645:d969:97a7 with SMTP id
+ k4-20020a25c604000000b00645d96997a7mr12300750ybf.134.1651562256127; Tue, 03
+ May 2022 00:17:36 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cae03d1-1b98-4242-92ea-08da2ccbe837
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2022 06:12:31.1972 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QQ6yIGc3y3I5s1EghMpkPoZuF7chD1mMeFGXpH2eQDE9JlwHqMVBuQJoAG1fjUvHatfddRA0UR6EaRbXTZAahZuo367368j++bJGl/HjiWc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB8520
+References: <20220419163810.2118169-1-arnd@kernel.org>
+ <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
+ <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
+ <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
+ <6f1b27fa-96d1-4be7-ac6a-762610314f2a@roeck-us.net>
+ <8d6d453a-e6fc-439b-2f34-e60c22fc9e98@roeck-us.net>
+ <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
+ <149509dd-f43d-1b27-4395-81eab4ff3455@roeck-us.net>
+ <CAK8P3a05vFdBnXXAMPVS82xX29+uinvWPcWxAgvj0TfoOk+1kg@mail.gmail.com>
+ <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
+ <CAK8P3a3S5OjkKq_u5FpnwzYv+0+typya6Z4MzTez5ZH+do00xQ@mail.gmail.com>
+ <CAK8P3a3jiqf_zpBsZyvAb5ZtkwDa7KkqExqDAdpY_pYqkr_NgQ@mail.gmail.com>
+ <4dcdbfe2-9edf-320b-d123-3b62c8b5e28e@roeck-us.net>
+ <CAK8P3a0ogn1wgPBDHkT=Fb8ufA+y8Ax1Qov2-vRXfC08QqnrQA@mail.gmail.com>
+ <c001d58e-9a78-6338-a533-d0f215b3dfd1@roeck-us.net>
+ <CAK8P3a1X3YH0RqqmqgqFAaY94yreD-PfY-pvyMf+xU3nGeqvsg@mail.gmail.com>
+ <04840b4f-5b9d-b29a-62f7-e5148d415313@roeck-us.net>
+In-Reply-To: <04840b4f-5b9d-b29a-62f7-e5148d415313@roeck-us.net>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 3 May 2022 09:17:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a39oiWyDwp=BHuCsBVwfzyZ802-NwL9G9r-t6X8KSr6nA@mail.gmail.com>
+Message-ID: <CAK8P3a39oiWyDwp=BHuCsBVwfzyZ802-NwL9G9r-t6X8KSr6nA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>, 
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, 
+ Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, 
+ Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, 
+ linux-clk <linux-clk@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ patches@opensource.cirrus.com, 
+ linux-leds@vger.kernel.org, linux-mmc <linux-mmc@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org, 
+ USB list <linux-usb@vger.kernel.org>, 
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, 
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+X-Provags-ID: V03:K1:ZGFyOeX7d0RPWkadCG58QMIGxqROgAjBTMvnnAiCl0Pa4uvEiMP
+ 0v0wPN0pyiVEUUUGJpMovSuzfphUHrTvxq1ho3lfYIikFUH388N14b7fkDrhqSPjRxiNaWG
+ /sHf/0NVSNcBJ9VBBmgtVdBifIu6/ea1yupMsILKHaOyPU1I8D5wKTAMZhZ3SzwVkaiF8c8
+ 4A/zMupDeMnNLrSPxgbVA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G7Cp4+y39/A=:ncgtjzDOQmKIHuiplAnnry
+ DPFEOi29gpGEctx08Yn19Ue3zHWKDY8e1Hey8mEDy16IS1RpyTiHUIUWsGAFGp4n/Wljk7Fhh
+ FMeJMI0oF6/vF4QIsX5BIQ9E3dbnEuAG81lY3nryU+ShdHMFp5o9kBgpt6IueJWJOSVNYBWXF
+ g+qQBOtJKuVg+DYkGCVK7N0V3zNBRP8hdAUsw/isxVl0FpTFEqLOgS0ZduMysRnpxTA7bydSi
+ u1xQ8hvQpRQl5hNH+yjvTJMbQHBojM6m1Ybffim38YalCc8NcgHhI98Mm2PmAv17KOCf4rufh
+ 7LoWy5k90k/tVRcnp3minuvH1eoCV3p7+4Bl2aAw9Te7YYGMgAJjRhXh4Lk7c0sW+UX3HBHUS
+ iBIgNRV10qlL+tcB5SASDU0U/JpNFZXgfIzIxeQCkuIypq1cofX3kVyLCD5mKTwlmchtfLDDl
+ hemvBrqjG5rCI7d1bm+NNM3P0T7xEG/vWKfg4qZpv45deZ8YSXG7X7rCnbw7xtMswe6E5i7mN
+ jqZ5nK1Ygn+Zc2eUBYZsmjtkJzy4qzk7xdbulKWWN7ZzgB+eC6Ayg9egUo7MyHlIhcjyeIgnA
+ YFjLWyqZOTxmwTppoQCyDIywwuL3uM8VRa9PQelxzow2NVRIgBGWWeYratmlLsSg31ANsayjD
+ uNC/ty1V31xwBPDOM0Y+QKinYWcw75OUpsdZYoZx+34bhG208JhLUIuWJV2p6+rG9PJjtwRzv
+ Du0IjX5o7NMAeqNx3vg8Nwg3oC+2dsBBjhiRqKAmsPRh+c3ZQsn9NPy81kctFai/eqYfHhFPZ
+ IdarGPNKM+lX8wj0tMwaH8t3di7s1LuehVSTP60ZTV3Vg8yuFc=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220502_231240_649849_35F10D65 
-X-CRM114-Status: GOOD (  26.01  )
+X-CRM114-CacheID: sfid-20220503_001753_672729_AB04452C 
+X-CRM114-Status: GOOD (  22.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -152,133 +123,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Michael Walle,
+On Tue, May 3, 2022 at 4:55 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 5/2/22 14:03, Arnd Bergmann wrote:
+> > On Mon, May 2, 2022 at 10:35 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >> On 5/2/22 12:21, Arnd Bergmann wrote:
+>
+> qemu puts initrd in the middle of available memory. With the image size
+> being ~1MB larger than with v5.18-rc, this is too much, and the kernel
+> overwrites part of initrd. This causes it to be corrupted.
+>
+> It looks like that would have happened eventually, your patch series just
+> made it happen now. The kernel is just getting too large to run on such small
+> systems. I worked around the problem in my version of qemu by loading initrd
+> at the end of the (small) RAM. With that, I no longer see the boot failure.
 
-> > Subject: RE: [RFC] mtd: spi-nor: Add Renesas AT25QL128A serial nor
-> > flash
-> >
-> > > Subject: RE: [RFC] mtd: spi-nor: Add Renesas AT25QL128A serial nor
-> > > flash
-> > >
-> > > Hi Michael Walle,
-> > >
-> > > Thanks for the feedback.
-> > >
-> > > > Subject: Re: [RFC] mtd: spi-nor: Add Renesas AT25QL128A serial nor
-> > > > flash
-> > > >
-> > > > >  drivers/mtd/spi-nor/Makefile  |  1 +
-> > > > >  drivers/mtd/spi-nor/core.c    |  1 +
-> > > > >  drivers/mtd/spi-nor/core.h    |  1 +
-> > > > >  drivers/mtd/spi-nor/renesas.c | 57
-> > > > > +++++++++++++++++++++++++++++++++++
-> > > >
-> > > > Please put the flash in atmel.c. There are all the
-> > > > Atmel/Adesto/now Renesas flashes.
-> > >
-> > > OK.
-> > >
-> > > >
-> > > > > +static const struct flash_info renesas_nor_parts[] = {
-> > > > > +	{ "at25ql128a", INFO(0x1f4218, 0, 64 * 1024, 256)
-> > > > > +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ) }, };
-> > > >
-> > > > I suppose this flash supports SFDP. Therefore,
-> > > > 	{ "at25ql128a", PARSE_SFDP },
-> > > > should be enough.
-> > >
-> > > OK. I see some changes related to this in your next mail.
-> > >
-> > > >
-> > > > I see that the 0x1f42xx IDs are also used for the at25sl series.
-> > > > Could you shed some light to what the differences are? Are they
-> > > > compatible, do we have to distiguish between them?
-> 
-> For AT25QL128A flash,
-> 
-> 0x1F:- Manufaturer
-> 0x42:- Memory Type
-> 0x18:- Capacity
-> 
-> I guess, if there is any at25sl128 flash chip, then the Capacity will be
-> same for both the flash.
+Ok, thanks for confirming. If it's just the image size that changed,
+then I think
+we can live with it. Having the kernel image grow by 1MB seems excessive
+though, I'd like to understand better where that increase comes from.
 
-I don't have the md5sum value for at25sl128 flash chip. I believe these values will be different for at25sl128
-And AT25QL128A.
+Starting out from pxa_defconfig, I see a 40KB increase from the final patch
+that moves to multiplatform support, which I think is fine.
 
-Probably we could use md5sum value, if at all we need to distinguish them for at25sl128 if JEDECID is same??
+If you have a z2 specific config, that would probably not enable CONFIG_OF,
+which is always turned on for multiplatform, but again that only adds around
+250KB in my builds (using gcc-11). This is more than I'd like it to be, but
+still much less than 1MB.
 
-Cheers,
-Biju
-
-> 
-> Cheers,
-> Biju
-> 
-> 
-> > > >
-> > > > Last, for a new flash submission we require a SFDP dump. See [1].
-> > > >
-> > > > [1]
-> > >
-> >
-> > Please find xxd output.
-> >
-> > biju@biju-VirtualBox:/tftpboot/RZ-G2UL$  xxd -p sfdp
-> > 53464450060101ff00060110300000ff1f00010280000001ffffffffffff
-> > ffffffffffffffffffffffffffffffffffffe520f1ffffffff0744eb086b
-> > 083b80bbfeffffffffff00ffffff42eb0c200f5210d800ff3362d5008429
-> > 01ceeca1073d7a757a75f7a2d55c19f61cffe810c080ffffffffffffffff
-> > ffffffffffffffff501650190000ffff
-> >
-> > > Please find the output, I did n't have xxd installed on my rootFS,
-> > > so used hexdump.
-> > >
-> > > root@smarc-rzg2ul:~# hexdump
-> > > /sys/devices/platform/soc/10060000.spi/rpc-
-> > > if-spi/spi_master/spi1/spi1.0/spi-nor/sfdp
-> > > 0000000 4653 5044 0106 ff01 0600 1001 0030 ff00
-> > > 0000010 001f 0201 0080 0100 ffff ffff ffff ffff
-> > > 0000020 ffff ffff ffff ffff ffff ffff ffff ffff
-> > > 0000030 20e5 fff1 ffff 07ff eb44 6b08 3b08 bb80
-> > > 0000040 fffe ffff ffff ff00 ffff eb42 200c 520f
-> > > 0000050 d810 ff00 6233 00d5 2984 ce01 a1ec 3d07
-> > > 0000060 757a 757a a2f7 5cd5 f619 ff1c 10e8 80c0
-> > > 0000070 ffff ffff ffff ffff ffff ffff ffff ffff
-> > > 0000080 1650 1950 0000 ffff
-> > > 0000088
-> > > root@smarc-rzg2ul:~# md5sum
-> > > /sys/devices/platform/soc/10060000.spi/rpc-if-
-> > > spi/spi_master/spi1/spi1.0/spi-nor/sfdp
-> > > 23e3ec56b5b8f986d0488ba4727239dd
-> > > /sys/devices/platform/soc/10060000.spi/rpc-if-
-> > > spi/spi_master/spi1/spi1.0/spi-nor/sfdp
-> > >
-> > > root@smarc-rzg2ul:~# cat
-> > > /sys/devices/platform/soc/10060000.spi/rpc-if-
-> > > spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
-> > > 1f4218
-> > > root@smarc-rzg2ul:~# cat
-> > > /sys/devices/platform/soc/10060000.spi/rpc-if-
-> > > spi/spi_master/spi1/spi1.0/spi-nor/partname
-> > > at25ql128a
-> > > root@smarc-rzg2ul:~# cat
-> > > /sys/devices/platform/soc/10060000.spi/rpc-if-
-> > > spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
-> > > renesas
-> > > root@smarc-rzg2ul:~#
-> > >
-> > >
-> > > >
-> > > > > +static void renesas_nor_default_init(struct spi_nor *nor) {
-> > > > > +	nor->flags |= SNOR_F_HAS_LOCK;
-> > > >
-> > > > Did you test locking?
-> > >
-> > > No, I haven't tested locking. Will remove it.
-> > >
-> > > Cheers,
-> > > Biju
+        Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
