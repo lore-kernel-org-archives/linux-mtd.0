@@ -4,56 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16FB9C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 14:51:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 025A0C433F5
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 14:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:
-	Subject:To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hxsuAAGN+HDK2tWBLNECCMXt6BWRWG2mrdmwI5ii2rE=; b=vLtPAguRoSBzLx
-	KQouNpje1XmKIOZcVN8n6NkijruEPm/v5N/E+qUuIjz+Gcw+5FtnukFN332icfqyVs+Htd82BjIQz
-	iKpM0VkJLYLOuKOoHh8sKsQMJG+smuvUezvjpXB4KgsOpROWMTVXrLkrnMKmBvZsnkwhZdXR+GJqD
-	EMtLjAVkf3zmqZvywJoUofEa0uLwHEaR9U68bGbJkMDgO7YqhXICf7LOTvgnYpzEZbax8mqAJV4AT
-	VqGWLGpCga/OJBsFw9rhkdR6USRYN/OwcAvCK5I3KhmJd5tXNzch9vLHRZ66+z/GW2fwdiNwvygaH
-	iKu/XivGlBXhinxGeRsg==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=qjG9zKTBChuR5rvvhZeKnprLFKu40BZP4rSGxkpzExA=; b=3BZLh2cMNJrX8u
+	Dh8KHPin+DgWU+KVdtR+U0KhwLjCDprFk2UnsJ46Iz91xuviy+xSB/v8AgqSwxL86lTi7GPW7nug1
+	6YhgZDYPAxaB0OFd/2Jq+P+uAXQLKThcId0rfcXAjw4riWMoyeIQqUk12SbNNOmshL5+ns8TI8Sry
+	FTo8nwS6oiWpoxAxD8+QjWW7TTpap4lBa2I11xp2v8o2agpSAEJHCX59QGgsHUaOjYIChH64UAYRK
+	zPc2dAS73rNK64Qv694IuYNPmFASsurEpjYwtPo57TPrQFl4J6JtA0gRRImzWIaJztxqKuwhMlu3D
+	w4jSwykH9Zb/Fcpn8L8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nltrY-006KjG-S8; Tue, 03 May 2022 14:50:52 +0000
-Received: from mail.megasoftsol.com ([43.231.250.141])
+	id 1nltwI-006Mka-95; Tue, 03 May 2022 14:55:46 +0000
+Received: from mail-ej1-x62c.google.com ([2a00:1450:4864:20::62c])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nltrV-006KgZ-Lt
- for linux-mtd@lists.infradead.org; Tue, 03 May 2022 14:50:51 +0000
-Received: from localhost (localhost [127.0.0.1])
- by mail.megasoftsol.com (Postfix) with ESMTP id 2910E9075D1
- for <linux-mtd@lists.infradead.org>; Tue,  3 May 2022 20:16:49 +0530 (IST)
-Received: from mail.megasoftsol.com ([127.0.0.1])
- by localhost (mail.megasoftsol.com [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id WcWWshKhxypV for <linux-mtd@lists.infradead.org>;
- Tue,  3 May 2022 20:16:48 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
- by mail.megasoftsol.com (Postfix) with ESMTP id 90EE9906D76
- for <linux-mtd@lists.infradead.org>; Tue,  3 May 2022 20:16:48 +0530 (IST)
-X-Virus-Scanned: amavisd-new at megasoftsol.com
-Received: from mail.megasoftsol.com ([127.0.0.1])
- by localhost (mail.megasoftsol.com [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id IAIY3eJYlNae for <linux-mtd@lists.infradead.org>;
- Tue,  3 May 2022 20:16:48 +0530 (IST)
-Received: from asda.co.uk (unknown [20.97.211.134])
- (Authenticated sender: admin)
- by mail.megasoftsol.com (Postfix) with ESMTPSA id A89A5904FF4
- for <linux-mtd@lists.infradead.org>; Tue,  3 May 2022 20:16:47 +0530 (IST)
-From: ASDA Stores Limited <Hanes.Thomas23877@asda.co.uk>
-To: linux-mtd@lists.infradead.org
-Subject: 2nd Quater puchase request
-Date: 03 May 2022 14:49:15 +0000
-Message-ID: <20220503092157.ED3A5B0FEBC5BA6F@asda.co.uk>
+ id 1nltw4-006Mgq-Nc
+ for linux-mtd@lists.infradead.org; Tue, 03 May 2022 14:55:36 +0000
+Received: by mail-ej1-x62c.google.com with SMTP id n10so16540082ejk.5
+ for <linux-mtd@lists.infradead.org>; Tue, 03 May 2022 07:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=59t7vn28D3yzCeD/SWs0WQWMWUokBjgyTL8jtIQ/mZ4=;
+ b=wyYQAm/yL4YCxQZnJSalcQidq4K2VieDxkJ7UUhCt+AngFV8CNSTl1gULdZ8ouWH3a
+ yN39Hd9vLvj5l98q1Q73+qN2XQluRsg/ZIxg1rCCkpBXOfXWyDoUFwsLg7q3raIuPL2M
+ CbuHA1N2i4l5BWNS9Ad6NovhugumU5uXoOKIFAIOOY1EFIZgg8FDoLd+XEPJzjAWqaYK
+ K+AK+4mF6Ew2tYA6877x1QYSEdUlpH6vE63HrDR9H/9KVh5NaUw3GNrC3ae8TkjeCKFn
+ NyJoU946TQfwq1inDJpG7Um3nsvSVO+TVIixUPCsqBUjfbGv/QJbs/E5tk+B2/lsmilw
+ X+Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=59t7vn28D3yzCeD/SWs0WQWMWUokBjgyTL8jtIQ/mZ4=;
+ b=2fND/nEmfayZJ7O/YPOgHubbFzGMPwdo26FOLfjw6DYkVp8PF1+tvb2KwtbT6AEoOp
+ WUVppJVH96YUVkZDHZL91G+AF51LPyL+pyR/lQXbLmJN0Lb7EyxszqtvXPzAvdIQrldV
+ W87gzYvMrm/lzyYeL95YLOVWL9JFL1pkT3/mEpiXlnkxkmeJ+FOz3DxbqWrrwxKXR0FS
+ /DFN/PcCitLPzwg0a6fPUjzY2IwjKAINHn+Iogo1Y9JorXfQZ+t8/f54iyGChBodpSsz
+ JCdjmZoCROFU/i/9xMILXEoK1tya3KDRvL7tcirb5rwsgP2+MdAhxZDBFzs6M9FOYYP/
+ L7pw==
+X-Gm-Message-State: AOAM532UK7vfTBxEJyIpFz0bnxuU1pU5KU7ExeaJCXhLPGPblMLDG8x5
+ YAvgLI3sG7FxXOVjXWuj+dVyMQ==
+X-Google-Smtp-Source: ABdhPJzrfLJwCJ3gQEW0hRsCRD17fpgu4Gejz8nnGLU7xiWLRfposWniK4q9adqoAsaMHEQW9ESexg==
+X-Received: by 2002:a17:907:7209:b0:6da:9781:ae5d with SMTP id
+ dr9-20020a170907720900b006da9781ae5dmr15134105ejc.73.1651589725490; 
+ Tue, 03 May 2022 07:55:25 -0700 (PDT)
+Received: from [192.168.0.205] (xdsl-188-155-176-92.adslplus.ch.
+ [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
+ s23-20020a056402037700b0042617ba639bsm7956855edw.37.2022.05.03.07.55.23
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 03 May 2022 07:55:24 -0700 (PDT)
+Message-ID: <75a48dfa-6fc9-aed9-b00e-d928bd9f33af@linaro.org>
+Date: Tue, 3 May 2022 16:55:23 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [RFC v2 2/2] arm: hisi: enable Hi3521a soc
+Content-Language: en-US
+To: "Marty E. Plummer" <hanetzer@startmail.com>
+Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
+ devicetree@vger.kernel.org, gengdongjiu@huawei.com,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux@armlinux.org.uk, michael@walle.cc,
+ miquel.raynal@bootlin.com, mturquette@baylibre.com, novikov@ispras.ru,
+ olof@lixom.net, p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
+ robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
+ sumit.semwal@linaro.org, tudor.ambarus@microchip.com, vigneshr@ti.com,
+ xuwei5@hisilicon.com
+References: <20220501054440.2434247-1-hanetzer@startmail.com>
+ <20220501173423.2473093-1-hanetzer@startmail.com>
+ <20220501173423.2473093-3-hanetzer@startmail.com>
+ <4cda3645-c4e8-1b3c-bd80-891afd56449a@linaro.org>
+ <20220503134459.pplgvhcckja4ivcg@proprietary-killer>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220503134459.pplgvhcckja4ivcg@proprietary-killer>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220503_075050_073516_DB4006B2 
-X-CRM114-Status: UNSURE (   0.30  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220503_075532_869114_F63539B0 
+X-CRM114-Status: GOOD (  24.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,26 +99,153 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: sales@asdaa.uk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-RGVhciBsaW51eC1tdGQKCldlIGFyZSBpbnRlcmVzdGVkIGluIGhhdmluZyBzb21lIG9mIHlvdXIg
-aG90IHNlbGxpbmcgcHJvZHVjdCBpbiAKb3VyIHN0b3JlcyBhbmQgb3V0bGV0cyBzcHJlYWQgYWxs
-IG92ZXIgVW5pdGVkIEtpbmdkb20sIE5vcnRoZXJuIApJc2xhbmQgYW5kIEFmcmljYS4gQVNEQSBT
-dG9yZXMgTGltaXRlZCBpcyBvbmUgb2YgdGhlIGhpZ2hlc3QtCnJhbmtpbmcgV2hvbGVzYWxlICYg
-UmV0YWlsIG91dGxldHMgaW4gdGhlIFVuaXRlZCBLaW5nZG9tLiAKICAKV2Ugc2hhbGwgZnVybmlz
-aCBvdXIgZGV0YWlsZWQgY29tcGFueSBwcm9maWxlIGluIG91ciBuZXh0IApjb3JyZXNwb25kZW50
-LiBIb3dldmVyLCBpdCB3b3VsZCBiZSBhcHByZWNpYXRlZCBpZiB5b3UgY2FuIHNlbmQgCnVzIHlv
-dXIgY2F0YWxvZyB0aHJvdWdoIGVtYWlsIHRvIGxlYXJuIG1vcmUgYWJvdXQgeW91ciBjb21wYW55
-J3MgCnByb2R1Y3RzIGFuZCB3aG9sZXNhbGUgcXVvdGUuIEl0IGlzIGhvcGVmdWwgdGhhdCB3ZSBj
-YW4gc3RhcnQgYSAKdmlhYmxlIGxvbmctbGFzdGluZyBidXNpbmVzcyByZWxhdGlvbnNoaXAgKHBh
-cnRuZXJzaGlwKSB3aXRoIHlvdS4gIAogIAogIApZb3VyIHByb21wdCByZXNwb25zZSB3b3VsZCBi
-ZSBkZWxpZ2h0ZnVsbHkgYXBwcmVjaWF0ZWQuIAogIApCZXN0IFdpc2hlcyAKICAKICAKSGFuZXMg
-Uy4gVGhvbWFzIApQcm9jdXJlbWVudCBPZmZpY2UuIApBU0RBIFN0b3JlcyBMaW1pdGVkIApUZWw6
-ICArIDQ0IC0gNzQ1MTI3MTY1MCAKV2hhdHNBcHA6ICsgNDQg4oCTIDc0NDE0NDAzNjAgCldlYnNp
-dGU6IHd3dy5hc2RhLmNvLnVrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+On 03/05/2022 15:44, Marty E. Plummer wrote:
+> On Tue, May 03, 2022 at 01:47:01PM +0200, Krzysztof Kozlowski wrote:
+>> On 01/05/2022 19:34, Marty E. Plummer wrote:
+>>> Enable Hisilicon Hi3521A/Hi3520DCV300 SoC. This SoC series includes
+>>> hardware mutlimedia codec cores, commonly used in consumer cctv/dvr
+>>> security systems and ipcameras. The arm core is a Cortex A7.
+>>>
+>>> Add hi3521a.dtsi and hi3521a-rs-dm290e.dts for RaySharp CCTV systems,
+>>> marketed under the name Samsung SDR-B74301N.
+>>
+>> Thank you for your patch. There is something to discuss/improve.
+>>
+>>>
+>>> Signed-off-by: Marty E. Plummer <hanetzer@startmail.com>
+>>> ---
+>>>  arch/arm/boot/dts/Makefile              |   2 +
+>>>  arch/arm/boot/dts/hi3521a-rs-dm290e.dts | 134 ++++++++
+>>>  arch/arm/boot/dts/hi3521a.dtsi          | 423 ++++++++++++++++++++++++
+>>
+>> DTSes go to separate patches.
+> Do you mean dts and dtsi need to be separate patches?
+
+I mean that any changes to "arch/arm/boot/dts/" have to be separate from
+other changes. These can be still one patch. See other examples on
+mailing lists.
+
+>>
+>>>  arch/arm/mach-hisi/Kconfig              |   9 +
+>>>  4 files changed, 568 insertions(+)
+>>>  create mode 100644 arch/arm/boot/dts/hi3521a-rs-dm290e.dts
+>>>  create mode 100644 arch/arm/boot/dts/hi3521a.dtsi
+>>>
+>>> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+>>> index 7c16f8a2b738..535cef3b14ab 100644
+>>> --- a/arch/arm/boot/dts/Makefile
+>>> +++ b/arch/arm/boot/dts/Makefile
+>>> @@ -242,6 +242,8 @@ dtb-$(CONFIG_ARCH_GEMINI) += \
+>>>  	gemini-ssi1328.dtb \
+>>>  	gemini-wbd111.dtb \
+>>>  	gemini-wbd222.dtb
+>>> +dtb-$(CONFIG_ARCH_HI3521A) += \
+>>> +	hi3521a-rs-dm290e.dtb
+>>>  dtb-$(CONFIG_ARCH_HI3xxx) += \
+>>>  	hi3620-hi4511.dtb
+>>>  dtb-$(CONFIG_ARCH_HIGHBANK) += \
+>>> diff --git a/arch/arm/boot/dts/hi3521a-rs-dm290e.dts b/arch/arm/boot/dts/hi3521a-rs-dm290e.dts
+>>> new file mode 100644
+>>> index 000000000000..b24fcf2ca85e
+>>> --- /dev/null
+>>> +++ b/arch/arm/boot/dts/hi3521a-rs-dm290e.dts
+>>> @@ -0,0 +1,134 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>> +/*
+>>> + * Copyright (C) 2017-2022 Marty Plummer <hanetzer@startmail.com>
+>>> + */
+>>> +
+>>> +#include "hi3521a.dtsi"
+>>> +
+>>> +/ {
+>>> +	model = "RaySharp RS-DM-290E DVR Board";
+>>> +	compatible = "raysharp,rs-dm-290e", "hisilicon,hi3521a";
+>>
+>> Please run checkpatch and fix the warnings.
+>>
+> sunova. I could have sworn I had my editor setup right for whitespace
+> and such.
+
+It's not about whitespace but:
+
+WARNING: DT compatible string "raysharp,rs-dm-290e" appears
+un-documented -- check ./Documentation/devicetree/bindings/
+
+
+WARNING: DT compatible string vendor "raysharp" appears un-documented --
+check ./Documentation/devicetree/bindings/vendor-prefixes.yaml
+
+
+(...)
+
+> Ah gotcha.
+>>> +	};
+>>> +
+>>> +	xtal24m: xtal24m {
+>>
+>> Generic node names, so one of: "clock-0" "clock-xtal24m"
+>>
+> Will do.
+>>> +		compatible = "fixed-clock";
+>>> +		#clock-cells = <0>;
+>>> +		clock-frequency = <24000000>;
+>>
+>> This does not look like property of the SoC, so should be defined by boards.
+>>
+> SoC requires a 24Mhz osc (and a 32khz one as well), so it'll always be
+> present regardless.
+
+Sure, but DTS/DTSI describes hardware. If the clock is not in the SoC
+but on the board, it should be in the board DTSI. Many times such clocks
+are put partially in DTSI and only their specific parts - frequency - in
+the board DTS, to indicate that implementation is relevant to the board,
+not SoC.
+
+>>> +	};
+>>> +
+>>> +	clk_3m: clk_3m {
+>>
+>> No underscores in node names, generic node name (see above).
+>>
+> early debugging clock, will be removed.
+>>> +		compatible = "fixed-clock";
+>>> +		#clock-cells = <0>;
+>>> +		clock-frequency = <3000000>;
+>>
+>> This does not look like property of the SoC, so should be defined by boards.
+
+(...)
+
+>>
+>>> +			status = "disabled";
+>>> +		};
+>>> +
+>>> +		dual_timer0: timer@12000000 {
+>>> +			compatible = "arm,sp804", "arm,primecell";
+>>> +			interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
+>>> +				     <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
+>>
+>> A bit weird interrupts... the same?
+>>
+> Yes, though I am aware that some sp804 timers do have a separate
+> interrupts per pair.
+
+They have also separate interrupts, one combined interrupt or one sole
+interrupt. However what you described here is one interrupt line
+physically connected to two separate pins on the device yet still not
+being somehow shared (shared as "combined interrupt"). I don't think it
+is your case...
+
+
+
+Best regards,
+Krzysztof
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
