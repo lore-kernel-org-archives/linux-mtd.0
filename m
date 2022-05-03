@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B085C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 15:46:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9774AC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 15:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bnLBLb4s0iq952WDHuVQkJAsLbTELcIs2MLMYLwWWxk=; b=DefZ7gGQjWktQ7
-	yN/KS3rbdk82jvVfEhD71/cSo3FdwvsB0AQgLTR9HhFhKzSGtHH8hf7NcX9kleGPFP5W9hh74TKv3
-	rmCLlGKKETpvm4SfcHVl87Zd0uLqVEt1gzMzq19vebMNioEPttzoLTLh7aqzq83t2TF0Q4JGKUWs4
-	5xfVbAIAXZmi5R7e03e/XtDzTBCi4CU0vCnr6FvNBANahjH2rUuv0Q7FZq2Pw7p4m189dUCofPi7N
-	wA5hAQHY20hPYefeZQq9vtWLMQ5ZGzvIignbxT9fFP4NsLFD9EI0ojH7+PjqDBmWqO2N6Ur++xxaE
-	0EvNfy4WHKrYLovklZ9Q==;
+	List-Owner; bh=mVPrRH4SO5z375wRgLcWjFPlGwvmmjgtZXB+mbj+pfw=; b=g+jhcvpPyEvFcc
+	NLiiokPRXR+0TYxwNQUukUwkPbIE2ZPQ4Nhs3mA9T0gbtsoXP/3nryJv0Ufu5dkSsyOOTTojG2VY5
+	h5Z4sLFublH4fijp/MnZ4vuGmh0ucnnjKQEAr2ilf976u4sF+K7d0rSV9+5un9GyEqgJbfpy7tqAs
+	5O6bya+cg/TScyvIkqKT3z+N8fmdwhEEeosrQxVB/yixSweGR0lor9zwa7MYSA2/RiVUvDH/nuPtQ
+	vZj3bLH/KNddjD+gqVburEMt3aphtDGZx4gxtl/S4XK/x1zV4uXyH8UiWOyt5ooUNtf0m4pnPWoQI
+	9MYDX73QsedhhLy1Xz2w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nluib-006Zq0-Ik; Tue, 03 May 2022 15:45:41 +0000
-Received: from mail-ed1-x534.google.com ([2a00:1450:4864:20::534])
+	id 1nlun8-006ar2-KI; Tue, 03 May 2022 15:50:22 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nluiW-006Zn2-1U
- for linux-mtd@lists.infradead.org; Tue, 03 May 2022 15:45:38 +0000
-Received: by mail-ed1-x534.google.com with SMTP id b24so20324116edu.10
- for <linux-mtd@lists.infradead.org>; Tue, 03 May 2022 08:45:32 -0700 (PDT)
+ id 1nlun6-006aqV-Bh
+ for linux-mtd@lists.infradead.org; Tue, 03 May 2022 15:50:21 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id j15so24000978wrb.2
+ for <linux-mtd@lists.infradead.org>; Tue, 03 May 2022 08:50:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=S2tw9LJk+d2FPX5CW//2TgutvMaT3ZAnSGVaZGs0cVc=;
- b=dTJu+AA18pGDu+Mgrone8iJ6Z5vFaP/hKQ8qJv5XDiiu1KshAcRfRm1fj1TNKMUBJT
- 9ElyDG+MwSx8JE84tlJ9mjm70uLNRC02R891DmUZjV0Kxn5fS+n7EYN51GITLL5dkVuC
- vxPWvd1K+x397FdQyz6N56FjkiorFYzmzEy55u9R70soQiG7Q1u+1/sJN/Yk1FbM2BvP
- 6uOcMgkpMJI6TLULOw9vyrs0mooGDkPpAZH2LQGf8ZSl7uW4tGgtxLm/nknqDPbinTNy
- eNfz0qEEe2/fYEzO5N9D6aNU4TNzp8h9/It3hnOMxuvrk1xQ/2kaev5wFhjqdTDLwd/H
- Myqw==
+ bh=kp0I+fDrNRZ+kcOulyBqIwYKgrX5Pypr91NpoQc/0zE=;
+ b=ZFBOAaAsyVFB3azHklpMGisviv1wFqvgeuS+yXrkzNpI26aW8Rx4DIz/LT7mfLZjPt
+ bdSXl4i53f+OSdYghJLapyYcckMhm1aIWxAOhQJWj9MXjGBcX1mpRpKOV1Vn8qMxL+uT
+ rbpSVr+q9XpCTyISVuUqjbeBbgQyt4Mb7cVIlawXk/UCnggkV8Hm2nphDs5FQJAzITBY
+ oVOiFW48hIk39EbzTqNOrPIxn6DY1w8fyciLm7M60NL5RxX91a2ZBhLOcd/UO2Ps2NYy
+ AG5Z1NBvTY2N+gZkwta6wGhtU8KQYzrSLNGfezKuY0g5WSEwdseZf75KgGLAxa/faj0V
+ O4Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=S2tw9LJk+d2FPX5CW//2TgutvMaT3ZAnSGVaZGs0cVc=;
- b=Uo8KvbOOkuWmSSI1c648E7HiHI7XtKzhMEB2svs134RkuETjrMWx45oqPukioEr6Ia
- sPlYoZxfXnprP6RiJrK6tZ0PeeDS0ZlRv3PteEMoD1D5LJAwWdntaAPSIyxQxCVNhrlu
- 3jlQCp47D6NKG0KFtwdhDtua8aSt5t+EEHS39zAhLdc6hQuu3wWklMc166QzZo6wY0Qw
- Vk3eer7j+eFwdfb4JHTB2avZmZyt05x/TSyM+1cltwV6htSFtrgRVM32fLniLlTYRNHw
- ZWDyWt7Qya6JIGe5YnHlYyiSj1gdwimRp877hMekDAFtSYjcEVAR0w+ee1TGGA8EmDy3
- UgMQ==
-X-Gm-Message-State: AOAM53021fPodlDr2wofQcv3FFcDOHyeiGYvwM592NNm0Q8cnwj2wZTK
- SBuQT71qhVGY1BnAFczvlAA=
-X-Google-Smtp-Source: ABdhPJw71h8u7bNYCJUDffMoU514rCTVKO4FY77cSkL3yVy0Qw21I63fWcfq/vLCAnTa/czwvXfPXQ==
-X-Received: by 2002:aa7:dcd5:0:b0:425:e49f:db86 with SMTP id
- w21-20020aa7dcd5000000b00425e49fdb86mr18498439edu.202.1651592731707; 
- Tue, 03 May 2022 08:45:31 -0700 (PDT)
-Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it.
- [93.42.70.190]) by smtp.googlemail.com with ESMTPSA id
- zp26-20020a17090684fa00b006f3ef214e62sm4723961ejb.200.2022.05.03.08.45.30
+ bh=kp0I+fDrNRZ+kcOulyBqIwYKgrX5Pypr91NpoQc/0zE=;
+ b=Wyh3T+QSYphrzX65SBKkus6t5Sn28b6oEdCtgcA47pYZWVecXIb2JaF3Z8zBfvl/Ga
+ InM/nuHyBa/aUd3bdvff+vdNalRhFZbn/unuxi9cENUosq2NGcGmivXuGjXOBaWJIgFG
+ 4/PJiVnSRHljhUGrflWdLQtu7Yao9Vl3ACmg4jJC4AMf6Ca+SlC3fICS7KOyLiyiBYcG
+ Fhy3fdgISObXtW5PiSACLr6yv00CadLiJy107YpJ+L9t9IaamF45T+jPWgNacMgQjohq
+ XnykEVQKXcM2RX+1KtBVoVN9IgS1VNUU79/ySI5CA7Z0i4p+M5PyYkzKb8mB4l1R1QrG
+ i3ZQ==
+X-Gm-Message-State: AOAM533O1n+1wWX5Iba2Ga2aKBn6UHyNMAS1VNb+SJt7oZZyuly+kZRf
+ rlRXm1aehhRC4sBZjYluFPQu2CtQR8XFf99koik=
+X-Google-Smtp-Source: ABdhPJwW896RxEFOdbJcnn2DEmhLXrdedi9FVjmGiZViAFZp1PCH+C2fCuq498nQlWo9yP0OdCiwUA==
+X-Received: by 2002:a5d:690c:0:b0:20a:d9d1:f5ce with SMTP id
+ t12-20020a5d690c000000b0020ad9d1f5cemr13436892wru.295.1651593015655; 
+ Tue, 03 May 2022 08:50:15 -0700 (PDT)
+Received: from vmu1804.lan ([2a06:a004:d009:c8fa:102c:912a:a6e3:41ea])
+ by smtp.googlemail.com with ESMTPSA id
+ p26-20020adfa21a000000b0020c5253d8ecsm9523482wra.56.2022.05.03.08.50.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 03 May 2022 08:45:31 -0700 (PDT)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ Tue, 03 May 2022 08:50:15 -0700 (PDT)
+From: Mikhail Zhilkin <csharper2005@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v2 2/2] dt-bindings: mtd: qcom_nandc: document qcom,
- boot-pages binding
-Date: Tue,  3 May 2022 17:43:53 +0200
-Message-Id: <20220503154353.4367-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220503154353.4367-1-ansuelsmth@gmail.com>
-References: <20220503154353.4367-1-ansuelsmth@gmail.com>
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Karim <Karimdplay@gmail.com>,
+ M <x1@disroot.org>, Mikhail Zhilkin <csharper2005@gmail.com>
+Subject: [PATCH v3 2/3] dt-bindings: mtd: partitions: Extend fixed-partitions
+ binding
+Date: Tue,  3 May 2022 15:50:07 +0000
+Message-Id: <20220503155007.2339847-1-csharper2005@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220503154254.2339744-1-csharper2005@gmail.com>
+References: <20220503154254.2339744-1-csharper2005@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220503_084536_136706_8B772F6F 
-X-CRM114-Status: GOOD (  13.64  )
+X-CRM114-CacheID: sfid-20220503_085020_459543_78BB6D50 
+X-CRM114-Status: GOOD (  14.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,60 +95,114 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document new qcom,boot_pages binding used to apply special
-read/write configuration to boot pages.
+Extend fixed-partitions binding for support of Sercomm partition parser
+(add "sercomm,sc-partitions" compatible).
 
-QCOM apply a special configuration where spare data is not protected
-by ECC for some special pages (used for boot partition). Add
-Documentation on how to declare these special pages.
-
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
 ---
- .../devicetree/bindings/mtd/qcom,nandc.yaml   | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ .../mtd/partitions/fixed-partitions.yaml      | 55 ++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-index 84ad7ff30121..fafeca0cafff 100644
---- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-@@ -102,6 +102,26 @@ allOf:
-             - const: rx
-             - const: cmd
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+index ea4cace6a955..ad3ccd250802 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+@@ -19,7 +19,11 @@ maintainers:
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,ipq8074-nand
-+
-+    then:
-+      properties:
-+        qcom,boot-pages:
-+          $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+          description:
-+            Some special page used by boot partition have spare data
-+            not protected by ECC. Use this to declare these special page
-+            by defining first the offset and then the size.
-+
-+            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-+
-+            Refer to the ipq8064 example on how to use this special binding.
-+
+ properties:
+   compatible:
+-    const: fixed-partitions
++    oneOf:
++      - const: fixed-partitions
++      - items:
++          - const: sercomm,sc-partitions
++          - const: fixed-partitions
+ 
+   "#address-cells": true
+ 
+@@ -27,7 +31,24 @@ properties:
+ 
+ patternProperties:
+   "@[0-9a-f]+$":
+-    $ref: "partition.yaml#"
++    allOf:
++      - $ref: "partition.yaml#"
++      - if:
++          properties:
++            compatible:
++              contains:
++                const: sercomm,sc-partitions
++        then:
++          properties:
++            sercomm,scpart-id:
++              description: Partition id in Sercomm partition map. Mtd
++                parser uses this id to find a record in the partition map
++                containing offset and size of the current partition. The
++                values from partition map overrides partition offset and
++                size defined in reg property of the dts. Frequently these
++                values are the same, but may differ if device has bad
++                eraseblocks on a flash.
++              $ref: /schemas/types.yaml#/definitions/uint32
+ 
  required:
-   - compatible
-   - reg
-@@ -135,6 +155,8 @@ examples:
-         nand-ecc-strength = <4>;
-         nand-bus-width = <8>;
- 
-+        qcom,boot-pages = <0x0 0x58a0000>;
+   - "#address-cells"
+@@ -52,6 +73,7 @@ examples:
+             reg = <0x0100000 0x200000>;
+         };
+     };
 +
-         partitions {
-           compatible = "fixed-partitions";
-           #address-cells = <1>;
+   - |
+     partitions {
+         compatible = "fixed-partitions";
+@@ -64,6 +86,7 @@ examples:
+             reg = <0x00000000 0x1 0x00000000>;
+         };
+     };
++
+   - |
+     partitions {
+         compatible = "fixed-partitions";
+@@ -82,6 +105,7 @@ examples:
+             reg = <0x2 0x00000000 0x1 0x00000000>;
+         };
+     };
++
+   - |
+     partitions {
+         compatible = "fixed-partitions";
+@@ -119,3 +143,30 @@ examples:
+             };
+         };
+     };
++
++  - |
++    partitions {
++        compatible = "sercomm,sc-partitions", "fixed-partitions";
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        partition@0 {
++            label = "u-boot";
++            reg = <0x0 0x100000>;
++            sercomm,scpart-id = <0>;
++            read-only;
++        };
++
++        partition@100000 {
++            label = "dynamic partition map";
++            reg = <0x100000 0x100000>;
++            sercomm,scpart-id = <1>;
++        };
++
++        partition@200000 {
++            label = "Factory";
++            reg = <0x200000 0x100000>;
++            sercomm,scpart-id = <2>;
++            read-only;
++        };
++    };
 -- 
-2.34.1
+2.25.1
 
 
 ______________________________________________________
