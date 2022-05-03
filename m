@@ -4,67 +4,168 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA9B7C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 08:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8164AC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 08:28:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xGkJAQx2hepqu1z045CMEoMeEz6uQf/q361oul35Omc=; b=ZTosuW4zWs8T7T
-	dIsByNlVjkU4dgpq4v1mwgOT+75h/RuW8sd7x2ECNYGtl5pfqADshmZt6+3aySnCVxqxtJqm6aDPo
-	Rqvol2X/L5dN4ool6qP7l/cOCmv27+HheOH+Cib6alsnRR1HlaVQBLmp5Rsb/jNu+Njefla3DcNYC
-	V3p89Jq8uPNEn1JTSYfubzeJeLPyjDTjZyja6OVrhA5PGgzYc9hZaiRllWZtqTileYUAO4/88QZjo
-	JQiD4g396RqV8/f9vTZECl5Zk1miLpH4wRByKhYP1bSRIulb7XSkhR+Ma1YBWwlODjA4pztgo2k4z
-	a6WUygYwuR6d48sHk7/w==;
+	List-Owner; bh=QWPTdcjYNvsmv7VR3JGunZzi1Zh5EyCXwCDQMcFmY2Y=; b=lPgeOdizF/FPuA
+	q51WugquEVjVt/QV+wAHUhXDzFuUzJkGCxuxmxIIsNczMa3qTun7kgkb8ni5dKLwE2Bvsqzvp1Blz
+	rzTrx46YlZjr6BFDV3WR/n/IHmoug7eOsvKqIP6od63Bu033/K6AGqAjF0kfQMf2WrvAa70P9Bba5
+	wlbIcWOuIlvskqaMSaPssI+MbtP26UEWm+znbz2LBEzc6Ae0Tk++ic6jRVADMv310pwYm4y1kabto
+	geM8T/chFkdaaEhO8Jq1PkmElDdDOdWG0Hq+80n0IGKWWQgLhG0DVLuar3/P8Ye2aJ0TgFuI0qDkJ
+	OuqdyFp2mCFZj8+ksi/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nlnio-004Ziu-Ow; Tue, 03 May 2022 08:17:26 +0000
-Received: from esa.microchip.iphmx.com ([68.232.154.123])
+	id 1nlntG-004cp1-Gm; Tue, 03 May 2022 08:28:14 +0000
+Received: from esa.microchip.iphmx.com ([68.232.153.233])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlniG-004ZK8-FC
- for linux-mtd@lists.infradead.org; Tue, 03 May 2022 08:16:54 +0000
+ id 1nlntA-004cnR-3c
+ for linux-mtd@lists.infradead.org; Tue, 03 May 2022 08:28:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1651565812; x=1683101812;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=l+i55jB+7x9VYYrOiJrA+DkLmZ+QWX7oLl6mG9C/S6I=;
- b=aFpb2HuzjZiNtIyqyctpyRDhBPZwfoFsf5Mejf4r5bCaSWK719o/en7c
- UQJi5QCf933eSP1Llcps+n1xWn1Ly6BaxYnc9MwAL9b4VPgyCw1n8f0FP
- aw6Jhc5KphjFR7NDoiZ5/zxVwLQmrOSv947l0wHQs/ksUzCkv3qXzQIid
- s9uX9mIQ/Jz2ou19O3dZ5plDfwCUzxBsgzsgbXxafm3Ig5KXZEjtxWrna
- pofgwnPD6ELYrN4WxgzxTMbpsua4i2oD54yNpapVqcdI3KJv8mLukAboe
- iyU/7ZkcZH0pE9SC6lPjsozbSb15yLqPOEsnzfx2SLKczrBs1Vd5hUuRG g==;
-X-IronPort-AV: E=Sophos;i="5.91,194,1647327600"; d="scan'208";a="94355384"
+ t=1651566488; x=1683102488;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=UZh8DB2Q7cqurY1yQB7f9ryIjR3V/3pEgNQnSHMTjVM=;
+ b=nELkJjWg04vXq9n7AF9dO9OnUhbfohfjujspZ8ZejEVl+LJMVOpb9plR
+ 2i+MqFShcTMFywCs0PVJ11mMnT/WxbE6be5dv87J3T6RXrUmxXCixlWd7
+ 0PjwtDmEEpnXpnaw9jzmlCC+AQnSkftyPKdkLCbKkrml5sx6YDrBR0ntv
+ NhZx2WvaJX+IIQ26oE30In6JQHnbSOL0Ln2Gf6Q1diTL7/FRhl6xGVIly
+ AbAnOmeYeI+68KS4PZCDMGPcgw7cQ1ehKiP0flHgGEHrCxremLdh1eNoX
+ vot9/Zm3jPsSgyoSqeEXxxS/stI4j1lhqK1CKXm/Fg4F+3rh4hjk4dp3D g==;
+X-IronPort-AV: E=Sophos;i="5.91,194,1647327600"; d="scan'208";a="162116947"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 03 May 2022 01:16:51 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 03 May 2022 01:28:02 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Tue, 3 May 2022 01:16:51 -0700
-Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Tue, 3 May 2022 01:16:49 -0700
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+ 15.1.2375.17; Tue, 3 May 2022 01:28:01 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, 
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17 via Frontend
+ Transport; Tue, 3 May 2022 01:28:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K2f7RtCMG6qFtYvWADLx8c4dUeDbn+Tx7GavT3YfD4opqQxyk3lgbew3ZIjuUl+I1w0EGqaJfRZvQ+O0lmkvOrtabJ8Wr4xaIqb5U+mmVBGY6eOipppPs+uY5S5/BV5EE/dJ56TzyBM9e0pdgvNjiddDSxj/Pb3sx4GwxYQXKmjcfbArLP26VIuCljULlDULI7XQTwe3KoXPeO3BLeJcjg+Pw9nSAopSlNaRjOQ6ZGLgC9JKFhjtS2O3A9IF6DELfW/nt9XOR9n8vccHz0ULHWv13VnqtSi1qYNYxMFiU5UTfhztFO39w3BJdLywcSGQbH1xc1wQtWwz8PeCgwTN7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UZh8DB2Q7cqurY1yQB7f9ryIjR3V/3pEgNQnSHMTjVM=;
+ b=V7dU0kG9dG1CwcFk7yvykPyMFHW3q9L4TPUAocVdeB4I0AsRxeg9Gntpp7XAI/kJw8zk4NMVFDW9fVmlA7IB2DAgPX1y45qHynf0PvfhBOYfKy5i+6MzVW7T6YWlApxFMQwKMw6wfjvGU8dPCBsS7jboVbbeC7qND0KUd64rsryNcXiyWMyth+PsN11nlfrbaKGeP7hZIHd5hA02JFOf1rSk+dA8Pviwi9m0zVhWBNYguh2jkJtd45sgDN6ZjkvHIDamPhueTJiZJTBnumpbWTQ1vSSpNbkDWdo7L0kjJFXKsJtmETgAY6TrOzXBfPZSmrCQ+k6Unn3W9gvXvg2y8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UZh8DB2Q7cqurY1yQB7f9ryIjR3V/3pEgNQnSHMTjVM=;
+ b=JxkkAQQqPPS3CbyyyMJaZQXGQOil4wN64LSu9NhKSxzH0CVyYqqGBAOeaLWskyY2rOWjSjbnj8dBJXftasPyuayS406d5vlGnOFIt2FTosr6IlBa56rdt6YqYIQqQUZgF5XmiuPbSYs+UyUcJHAjSkUPYrVp5NHcqwk1Z7Oui6o=
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com (2603:10b6:806:f9::23)
+ by BYAPR11MB3799.namprd11.prod.outlook.com (2603:10b6:a03:fb::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.23; Tue, 3 May
+ 2022 08:27:53 +0000
+Received: from SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::2447:4025:79e6:7c08]) by SA2PR11MB4874.namprd11.prod.outlook.com
+ ([fe80::2447:4025:79e6:7c08%6]) with mapi id 15.20.5206.024; Tue, 3 May 2022
+ 08:27:53 +0000
+From: <Tudor.Ambarus@microchip.com>
 To: <tkuw584924@gmail.com>, <p.yadav@ti.com>, <michael@walle.cc>
 CC: <miquel.raynal@bootlin.com>, <richard@nod.at>,
  <Bacem.Daassi@infineon.com>, <Takahiro.Kuwano@infineon.com>,
- <linux-mtd@lists.infradead.org>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v14 8/8] mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and
- fixups
-Date: Tue, 3 May 2022 11:16:27 +0300
-Message-ID: <20220503081627.341870-9-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220503081627.341870-1-tudor.ambarus@microchip.com>
+ <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v14 2/8] mtd: spi-nor: core: Shrink the storage size of
+ the flash_info's addr_nbytes
+Thread-Topic: [PATCH v14 2/8] mtd: spi-nor: core: Shrink the storage size of
+ the flash_info's addr_nbytes
+Thread-Index: AQHYXseuq3YSHHTCj06vQeNRyC7f8A==
+Date: Tue, 3 May 2022 08:27:53 +0000
+Message-ID: <b45a7071-ebe8-d910-32ad-bb5148a683ff@microchip.com>
 References: <20220503081627.341870-1-tudor.ambarus@microchip.com>
+ <20220503081627.341870-3-tudor.ambarus@microchip.com>
+In-Reply-To: <20220503081627.341870-3-tudor.ambarus@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a5cb3b8b-4f11-4e1e-e300-08da2cded169
+x-ms-traffictypediagnostic: BYAPR11MB3799:EE_
+x-microsoft-antispam-prvs: <BYAPR11MB37996123D6E2B255EE9D7431F0C09@BYAPR11MB3799.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nReioU3Wbsiawd0bEg8TOuV2JDbDxkvYYA7LL/x7UMH6BosalN17AcVJrta8yx2sk5CjNy40XloZKZVC19OPljFx8Dt82cUFg7Z2OVTcj8ICyieHLC8v08kCNA2R0Db4uyuMVHqj0BlASFhF5e9qGUCsM6RTcELwoTLv7JvgY+wClQV2gbnCEdGQ8AmgCzQRtTfSS79dpu5amGtqqortYEyq28nptIXf1tfH4XOVWl/SSdBqEE73EcX88iIzJuP8Suq0yetPOjQGNHll6J1A+60IDC9abt8sgI8Exut0eNX0DauAM7jtwFZO5g4VmrVwa2IUaiOXTiW7WfXAckmwhZ0brg/QC8mThiYOOvwg/EuF65EoF+C0wYM5QVYBzwjpaNWJEXS/3uaMH5NxYz9/r0iLBgg2WBqtibzRbUq9Ou9G8ZDTYy194T/ZWu4cS2vcDuD6Qae1aNKy6Sv5B1RUI76fw4XHNdbxmPVhQSrVrPD/Okh4SKYyxLx3eq0Omzo6TlyuZUK+JK1hzzJ+UUk2e/BhT83A6wuBKMRHaV7E3rRGZE1Iap8zZXmWRIKKE7gsvJwq45uXWr7o4LSIfDsYXxIpWSXVaJ2aSPVKOS13OJl8pz/mFGxU7mZGSdxUsI0aLF7CDskLyKQddSrqtV9ZiSISL9bhXzavqboIf/4i85LG7MM86hZn9SP/bCKlJbOrsXuOmAoJosXy6OT7oYda3xYrSiPSc5Xy3k7tgINAAKS7Scz/JtO4ASMLbRSP/JBSFCLAAOLZGD4NCx6BKLn4Zw==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SA2PR11MB4874.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230001)(366004)(26005)(36756003)(186003)(4744005)(316002)(2616005)(38100700002)(38070700005)(2906002)(53546011)(6506007)(31686004)(508600001)(122000001)(64756008)(66476007)(66446008)(83380400001)(54906003)(6512007)(110136005)(4326008)(8676002)(5660300002)(6486002)(91956017)(66556008)(66946007)(76116006)(31696002)(71200400001)(8936002)(86362001)(43740500002)(45980500001);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MjdrcktpYkpaSVdhWkdGZmZGY2puNXJlY25wYTlDZ285OHFDK0RJV2I3eFhC?=
+ =?utf-8?B?aGZKL0VVRmtXZXZzK2R1SkZYN1RpSy94ZnRsU2RORHN0M3BKYzV4SE5RUXcv?=
+ =?utf-8?B?SUN1UVhIZ2UxWWVGK1UwWG05cDRETGFCWUIxcGdhRjlsL0JYNzdLOFFhdlpQ?=
+ =?utf-8?B?d1VZalplamNNR2NNT2cwMHJ5OXE3VjdEU0VhdkFNUzAwWjlUdVBmcWcyN0tj?=
+ =?utf-8?B?U3Y4N1VkU1l1U0VrdE4yMktZL293cCsxWnVKbnI1aTBTaHFEbU54K1FrUEtB?=
+ =?utf-8?B?TnJ3MEM0S2s5ZTlKdUpyaGpJcGozNVJ2Z2E4ZGJaRjc4QUh3MDZEYU1iMzI3?=
+ =?utf-8?B?eDJPcWlPQVZnRTl5aUJsVkFDVzlNanRNOUFzcFQrYXhINXE1clJ4a3VoVWw0?=
+ =?utf-8?B?WUpDanJtRUFTT3RwUFZOQWZEbjdIM0NxVVNxMG5qT0o1ZnM2aTFjYXlkOGhV?=
+ =?utf-8?B?UnRlVCtHY3N6NzdTVC80UGMybjNHWGt2SlBBRk15WGord1dMUU9YUU9jRG1p?=
+ =?utf-8?B?ZmpFSGc5MWU0azlOcXU2N3NBUXlCd1dFWHZpOGNBaTd1emk3eGdDTWh5cnc0?=
+ =?utf-8?B?NC83KytFbmxQYkJwUTdJNE5YWDJzOURMVHdGVUtkYlRLRXhOT3pXUzA0Zjdk?=
+ =?utf-8?B?MTlydDl2VjJFNHI3MXdzRWc5NDJoRW9BUlI0aXR6TE5BS0Qvb05YaHVSRkxl?=
+ =?utf-8?B?cUZaNlBtOGtjeC9ITXhQWnN3b3JGV1VQd2M3QUZqN2UrUkRqclM5aEhSVXQv?=
+ =?utf-8?B?T1ArOG1KcGFXWWVlVDdYVTVENjN3RXR4MkJYZVNhdVdSNFFUYkRibFhGWWs5?=
+ =?utf-8?B?amg5cEt4dlp6bU1Ua2k4clUwTWlvY2t5aldvN1oySjZURGRhM04rUUd3a3pO?=
+ =?utf-8?B?TDBJSWxWMjNEUXpONkhMNzcwN0NpVmU2emtIOVBhWTJ3bnhyVjNtWU0rU1Nv?=
+ =?utf-8?B?cjE0RVJDZGxuTWVuVU9TQXVoMEJMbHA0QmpGbWlvNXE4YjhkV2ZQM3FCV3dC?=
+ =?utf-8?B?bStLM2tyZXFUUzdiQ2hjRVZRNS93UDVLc1NQUTVsSHE3OUs5czBrUmN4T2Zw?=
+ =?utf-8?B?TE9oUW9hWExzZFBteDhNZkd3L2ZyUnhTYnFPWUo5eGlHZjhOcWlabFJ3L2Fu?=
+ =?utf-8?B?WGllRXNmTjJZOGdGaFlYQmlyK3JQSkd4eUJKQ2oydDZGYlBidUdoOVFEYS9G?=
+ =?utf-8?B?a1JyZ20yVHJnMHNQMjBwOU9nS0xELzdzNXdqVi9nbkdLZlFGRDlaVUY4ajk1?=
+ =?utf-8?B?TlFNdDh5UEsyVUpYZW1tZGxyQnZPT1kzMS9kTEhDUUJwQ1o0cDRWQXFRZG5V?=
+ =?utf-8?B?cHZnME1RWU94bUxESkhDRWZXaFVwM1BsQzdoMktDRUxxWm15M3o3ZXo3UCtp?=
+ =?utf-8?B?Rmd3dUlkbXVFYmFBYjRqQnhRWTZ0UWQ5QTFIQnYrc251MXRUSC85V21rWTFC?=
+ =?utf-8?B?YU1pbWpCRmU2RXM2YmErRVVTcW5YNFRCYWVxeWVhcVRUU2c0K04yQmdFYkdo?=
+ =?utf-8?B?ZEM3eVdZQVNFa3pXdnIxNEJxUEZrSStuLyt0SkRTWE9RY2JCMGNjQytKZWsz?=
+ =?utf-8?B?WTQ0Q05KSUVma1FuQzdvTzBLeUM5Wkc4b3BTclY4emsyR2Z1S2MwcXp2NWhq?=
+ =?utf-8?B?YncwdDNxVXFHZ21wWmpOWHA2cXFNc0lFOFZIbGJEQ0tBVndLdHRmclpRYTVI?=
+ =?utf-8?B?bkJtc3lDcU9Bci9UeGFKRzVmZHo4VjFtYlVnUFpZR29ybmVNU0RXeXNOWTZm?=
+ =?utf-8?B?aVpHYmpKZEdUUE1nS08yY3RXRXpnaXpkaEIzTmdnbFptM0VwZjBWQ2Myb3lu?=
+ =?utf-8?B?RnpQZUhoamw3WWh1R05rK1JRRW5MQlBqTFpaRTR4Vmh3S2lTUUE5eFNYWjZj?=
+ =?utf-8?B?bkY0cjU3a0I4STFCTmlwRmFsM0ltaWxiT1pGRE45TUtYeE5xY2VsZmxkZzN4?=
+ =?utf-8?B?bVpJWmIxbE1LU3Q0MXVBV2hjSDNEaHlzNjBqVHg2OVdTb25KMHNUQnBVcitT?=
+ =?utf-8?B?U3pLR0hlZjB3TVpjd0RSZGhNbmpsRzhaZDBIWllZMSthZ3lvOFk3THhpeWNP?=
+ =?utf-8?B?dTMva2FBaFVRL05mMkpuNUo5eGVTaUVHMkZ5K082amoyN0tDMjVHUXV1VkY5?=
+ =?utf-8?B?aS9aSWVGa1R0R0kyUG1id1I1ckdudkptUGVsdGw4Q3JjckM5NEtxK1A0WnBv?=
+ =?utf-8?B?OU9SK296NFV0NFlwOXJJUUcyc25CdFJsdVVyRnR0bVV0bFArRnZINHk4M1J4?=
+ =?utf-8?B?L2VnMmk1WCtKUFNZOEdSTlZLb3UyOGcrUmNRMEN3MTdvTmxTVzdtcWU5YWlM?=
+ =?utf-8?B?TGlsbU41VUdPK21FUGU0RVQya0UyMllobW45RHdSeDhsdmxjcGR0RGNPeE85?=
+ =?utf-8?Q?KsG9SQqit+1sopPc=3D?=
+Content-ID: <3A3AE1CB59ED7744952B9553EFE9ED1B@namprd11.prod.outlook.com>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4874.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5cb3b8b-4f11-4e1e-e300-08da2cded169
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2022 08:27:53.3460 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7uyaaI3Tbn7LaufqEvXDgWb7WEr2rsp6bAaJX7PlNEb3zPjT8znV/7RFjp5LVTyvmsIRFxgHovbLLdbaLRtVPx2Yz1fVwmqPZi2BRVisjH0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3799
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220503_011652_649608_637BC0B1 
-X-CRM114-Status: GOOD (  20.40  )
+X-CRM114-CacheID: sfid-20220503_012808_388084_7A110A3B 
+X-CRM114-Status: GOOD (  16.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,188 +182,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+On 5/3/22 11:16, Tudor Ambarus wrote:
+> The maximum number of address bytes in SPI NOR is 4. Shrink the storage
+> size of the flash_info's addr_nbytes.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+>  drivers/mtd/spi-nor/core.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 5fc3d4a8add1..fe7683fe1b4d 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -493,7 +493,7 @@ struct flash_info {
+>  	unsigned sector_size;
+>  	u16 n_sectors;
+>  	u16 page_size;
+> -	u16 addr_nbytes;
+> +	u8 addr_nbytes;
 
-The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
+I think we can remove the nor->info->addr_nbytes entirely if we choose
+to add late_init hooks instead for those couple of flashes that use it.
+This will shrink the size for the big array of patches that we have.
+Opinions?
 
-These Infineon chips support volatile version of configuration registers
-and it is recommended to update volatile registers in the field application
-due to a risk of the non-volatile registers corruption by power interrupt.
-Add support for volatile QE bit.
-
-For the single-die package parts (512Mb and 1Gb), only bottom 4KB and
-uniform sector sizes are supported. This is due to missing or incorrect
-entries in SMPT. Fixup for other sector sizes configurations will be
-followed up as needed.
-
-Tested on Xilinx Zynq-7000 FPGA board.
-
-Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/spansion.c | 125 +++++++++++++++++++++++++++++++++
- 1 file changed, 125 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/spansion.c b/drivers/mtd/spi-nor/spansion.c
-index e130f5398763..f78a15b985ea 100644
---- a/drivers/mtd/spi-nor/spansion.c
-+++ b/drivers/mtd/spi-nor/spansion.c
-@@ -14,6 +14,8 @@
- #define SPINOR_OP_CLSR		0x30	/* Clear status register 1 */
- #define SPINOR_OP_RD_ANY_REG			0x65	/* Read any register */
- #define SPINOR_OP_WR_ANY_REG			0x71	/* Write any register */
-+#define SPINOR_REG_CYPRESS_CFR1V		0x00800002
-+#define SPINOR_REG_CYPRESS_CFR1V_QUAD_EN	BIT(1)	/* Quad Enable */
- #define SPINOR_REG_CYPRESS_CFR2V		0x00800003
- #define SPINOR_REG_CYPRESS_CFR2V_MEMLAT_11_24	0xb
- #define SPINOR_REG_CYPRESS_CFR3V		0x00800004
-@@ -113,6 +115,63 @@ static int cypress_nor_octal_dtr_dis(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/**
-+ * cypress_nor_quad_enable_volatile() - enable Quad I/O mode in volatile
-+ *                                      register.
-+ * @nor:	pointer to a 'struct spi_nor'
-+ *
-+ * It is recommended to update volatile registers in the field application due
-+ * to a risk of the non-volatile registers corruption by power interrupt. This
-+ * function sets Quad Enable bit in CFR1 volatile. If users set the Quad Enable
-+ * bit in the CFR1 non-volatile in advance (typically by a Flash programmer
-+ * before mounting Flash on PCB), the Quad Enable bit in the CFR1 volatile is
-+ * also set during Flash power-up.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int cypress_nor_quad_enable_volatile(struct spi_nor *nor)
-+{
-+	struct spi_mem_op op;
-+	u8 cfr1v_written;
-+	int ret;
-+
-+	op = (struct spi_mem_op)
-+		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_nbytes,
-+					  SPINOR_REG_CYPRESS_CFR1V,
-+					  nor->bouncebuf);
-+
-+	if (nor->bouncebuf[0] & SPINOR_REG_CYPRESS_CFR1V_QUAD_EN)
-+		return 0;
-+
-+	/* Update the Quad Enable bit. */
-+	nor->bouncebuf[0] |= SPINOR_REG_CYPRESS_CFR1V_QUAD_EN;
-+	op = (struct spi_mem_op)
-+		CYPRESS_NOR_WR_ANY_REG_OP(nor->params->addr_nbytes,
-+					  SPINOR_REG_CYPRESS_CFR1V, 1,
-+					  nor->bouncebuf);
-+	ret = spi_nor_write_any_volatile_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	cfr1v_written = nor->bouncebuf[0];
-+
-+	/* Read back and check it. */
-+	op = (struct spi_mem_op)
-+		CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_nbytes,
-+					  SPINOR_REG_CYPRESS_CFR1V,
-+					  nor->bouncebuf);
-+	ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-+	if (ret)
-+		return ret;
-+
-+	if (nor->bouncebuf[0] != cfr1v_written) {
-+		dev_err(nor->dev, "CFR1: Read back test failed\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * cypress_nor_set_page_size() - Set page size which corresponds to the flash
-  *                               configuration.
-@@ -144,6 +203,56 @@ static int cypress_nor_set_page_size(struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int
-+s25hx_t_post_bfpt_fixup(struct spi_nor *nor,
-+			const struct sfdp_parameter_header *bfpt_header,
-+			const struct sfdp_bfpt *bfpt)
-+{
-+	/* Replace Quad Enable with volatile version */
-+	nor->params->quad_enable = cypress_nor_quad_enable_volatile;
-+
-+	return cypress_nor_set_page_size(nor);
-+}
-+
-+static void s25hx_t_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	struct spi_nor_erase_type *erase_type =
-+					nor->params->erase_map.erase_type;
-+	int i;
-+
-+	/*
-+	 * In some parts, 3byte erase opcodes are advertised by 4BAIT.
-+	 * Convert them to 4byte erase opcodes.
-+	 */
-+	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-+		switch (erase_type[i].opcode) {
-+		case SPINOR_OP_SE:
-+			erase_type[i].opcode = SPINOR_OP_SE_4B;
-+			break;
-+		case SPINOR_OP_BE_4K:
-+			erase_type[i].opcode = SPINOR_OP_BE_4K_4B;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+}
-+
-+static void s25hx_t_late_init(struct spi_nor *nor)
-+{
-+	/* Fast Read 4B requires mode cycles */
-+	nor->params->reads[SNOR_CMD_READ_FAST].num_mode_clocks = 8;
-+
-+	/* The writesize should be ECC data unit size */
-+	nor->params->writesize = 16;
-+}
-+
-+static struct spi_nor_fixups s25hx_t_fixups = {
-+	.post_bfpt = s25hx_t_post_bfpt_fixup,
-+	.post_sfdp = s25hx_t_post_sfdp_fixup,
-+	.late_init = s25hx_t_late_init,
-+};
-+
- /**
-  * cypress_nor_octal_dtr_enable() - Enable octal DTR on Cypress flashes.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -320,6 +429,22 @@ static const struct flash_info spansion_nor_parts[] = {
- 	{ "s25fl256l",  INFO(0x016019,      0,  64 * 1024, 512)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
- 		FIXUP_FLAGS(SPI_NOR_4B_OPCODES) },
-+	{ "s25hl512t",  INFO6(0x342a1a, 0x0f0390, 256 * 1024, 256)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hl01gt",  INFO6(0x342a1b, 0x0f0390, 256 * 1024, 512)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hs512t",  INFO6(0x342b1a, 0x0f0390, 256 * 1024, 256)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
-+	{ "s25hs01gt",  INFO6(0x342b1b, 0x0f0390, 256 * 1024, 512)
-+		PARSE_SFDP
-+		MFR_FLAGS(USE_CLSR)
-+		.fixups = &s25hx_t_fixups },
- 	{ "cy15x104q",  INFO6(0x042cc2, 0x7f7f7f, 512 * 1024, 1)
- 		FLAGS(SPI_NOR_NO_ERASE) },
- 	{ "s28hs512t",   INFO(0x345b1a,      0, 256 * 1024, 256)
--- 
-2.25.1
-
+Thanks,
+ta
+>  
+>  	bool parse_sfdp;
+>  	u16 flags;
 
 ______________________________________________________
 Linux MTD discussion mailing list
