@@ -4,37 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E833FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 14:23:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42464C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  3 May 2022 14:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wV1u/QNeHx7A417OxNmw0kOjrL2qs8b2czvL66mVlkc=; b=oOrN4jKE3gfZfu
-	7fB2FIFfBEwXQk5K2/DhhMTnyxo0nGVwXhydbCSbdFjYQrUSnbvDYIoZ/FY/MhPl2WCjhjsRImH2S
-	Ef8pBAArxQoAk9wIlol6l5XVc6squW47etUckJwKvaMqnVkvWw4yBpX9EuVFD53wGP1ZIAkRvK7DJ
-	RUzdyGxTVxHDC8IUpEwXtseMimv1QY86iThys+mk5MCDomESqj6QSDxHwdE6Ba3KbGyrcUIodSUCA
-	hExZa0ZEXBO7Kmb6OAzXS27MkrMM5AnsNLdqNx2V1S5gB0AGe5AJ7UeypIRi6tlp0aQ/KhtsPc3v7
-	dQDCcBUFwvFJvbt3YOUg==;
+	List-Owner; bh=TvwOCmt3fn8gv3DkKjC96/lMHrzfIYLbMF762RyvkaA=; b=h1xnPKdQiqfjfz
+	bv4xj/FIji8e5Yf4BUEoKLz7tLiTVEJ9MJHo+sTvCU3HWhzWW9xRzNb0RXbJNRqkfEEFAoM4GQSz7
+	KMIUou4foMP+HU8feC9DT0qIZYi+7EKtx2daKBGOvItpNECuXd2wLOsky2DesnS2WwlJta9rCOg3e
+	2BPypmevZWsYSwWLAOWzulA0VxDwarIv6hjkZuGGERCl1ZPkgBaOFvMyVbh/4Kbwfeb7m7hWrzqpX
+	7UAzQk0hFAsgtzieR7j9YaU2rz5TDexLdWbt82fsPJ1DjJ3tz/cJGoqsX5k2J/yYSs8okHdP8pUkq
+	Sjmyc7j68BaXlEp0Xu6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nltQq-006F25-AM; Tue, 03 May 2022 14:23:16 +0000
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1nltQn-006F1Q-TM; Tue, 03 May 2022 14:23:13 +0000
-Date: Tue, 3 May 2022 07:23:13 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] fs: Change the type of filler_t
-Message-ID: <YnE60WTzSzxt9OxY@infradead.org>
-References: <20220502054159.3471078-1-willy@infradead.org>
- <20220502054159.3471078-4-willy@infradead.org>
+	id 1nltXo-006H8C-IC; Tue, 03 May 2022 14:30:28 +0000
+Received: from mout.kundenserver.de ([212.227.126.187])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nltXb-006H2b-Jf; Tue, 03 May 2022 14:30:17 +0000
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MKKdD-1nXvh83puB-00LjIV; Tue, 03 May 2022 16:30:09 +0200
+Received: by mail-wr1-f48.google.com with SMTP id x18so23677451wrc.0;
+ Tue, 03 May 2022 07:30:09 -0700 (PDT)
+X-Gm-Message-State: AOAM530K0oWrMwgXkg2q/3TjLEhO1vJprDM+T65EfnFrp/4utsMPp5pC
+ vNBWXUncrICgP2eVqcarGBW9281slbttVcJDXM4=
+X-Google-Smtp-Source: ABdhPJzBrB6Hq8d9DfigwWJUnvR6JgldisGRuo8lFweHaJxUdm7WjYyRpRzeyy/XN6uA5q8KyUIXhqy6JFoQk/SEnPM=
+X-Received: by 2002:a05:6000:707:b0:20c:4fd8:1d61 with SMTP id
+ bs7-20020a056000070700b0020c4fd81d61mr13363100wrb.407.1651588209550; Tue, 03
+ May 2022 07:30:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220502054159.3471078-4-willy@infradead.org>
+References: <20220419163810.2118169-1-arnd@kernel.org>
+ <CAK8P3a09+nFS3g1rgvTW9da3tMiAhHjkjZVs1QOJOj8TJ-9MDg@mail.gmail.com>
+ <6f1b27fa-96d1-4be7-ac6a-762610314f2a@roeck-us.net>
+ <8d6d453a-e6fc-439b-2f34-e60c22fc9e98@roeck-us.net>
+ <CAK8P3a2Ekvis1YcrJZtuga+XQdbeTC98PkOszCpS2DiZri7VMQ@mail.gmail.com>
+ <149509dd-f43d-1b27-4395-81eab4ff3455@roeck-us.net>
+ <CAK8P3a05vFdBnXXAMPVS82xX29+uinvWPcWxAgvj0TfoOk+1kg@mail.gmail.com>
+ <b13783aa-9225-d52a-3800-c97ad772688b@roeck-us.net>
+ <CAK8P3a3S5OjkKq_u5FpnwzYv+0+typya6Z4MzTez5ZH+do00xQ@mail.gmail.com>
+ <CAK8P3a3jiqf_zpBsZyvAb5ZtkwDa7KkqExqDAdpY_pYqkr_NgQ@mail.gmail.com>
+ <4dcdbfe2-9edf-320b-d123-3b62c8b5e28e@roeck-us.net>
+ <CAK8P3a0ogn1wgPBDHkT=Fb8ufA+y8Ax1Qov2-vRXfC08QqnrQA@mail.gmail.com>
+ <c001d58e-9a78-6338-a533-d0f215b3dfd1@roeck-us.net>
+ <CAK8P3a1X3YH0RqqmqgqFAaY94yreD-PfY-pvyMf+xU3nGeqvsg@mail.gmail.com>
+ <04840b4f-5b9d-b29a-62f7-e5148d415313@roeck-us.net>
+ <CAK8P3a39oiWyDwp=BHuCsBVwfzyZ802-NwL9G9r-t6X8KSr6nA@mail.gmail.com>
+ <d4eb4752-d8c0-715a-1d69-829f39c88d2e@roeck-us.net>
+In-Reply-To: <d4eb4752-d8c0-715a-1d69-829f39c88d2e@roeck-us.net>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 3 May 2022 16:29:52 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0tgEwEJkrcGD5A2WnLsgUhbax+a_mFr8-a+kKc-dUDow@mail.gmail.com>
+Message-ID: <CAK8P3a0tgEwEJkrcGD5A2WnLsgUhbax+a_mFr8-a+kKc-dUDow@mail.gmail.com>
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, Robert Jarzmik <robert.jarzmik@free.fr>, 
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Daniel Mack <daniel@zonque.org>, 
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Philipp Zabel <philipp.zabel@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>, 
+ Paul Parsons <lost.distance@yahoo.com>, Sergey Lapin <slapin@ossfans.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>, 
+ Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, 
+ linux-clk <linux-clk@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ patches@opensource.cirrus.com, 
+ linux-leds@vger.kernel.org, linux-mmc <linux-mmc@vger.kernel.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-rtc@vger.kernel.org, 
+ USB list <linux-usb@vger.kernel.org>, 
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>, 
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+X-Provags-ID: V03:K1:8S+xUlZg7gnacHwrWnrm9WPeRmbPy1y8LPTED2FFYcB2cxun37Q
+ r2w4PRWjtTNCUMVwp+4RjGt+AjNoLdfv8GdeGi+jMK73W2fnurngb+pml1BWKeIIJdp7MWp
+ jdft61kDykoZ48XUDQ9BucKRWEhMiQkgoXYA3aMyq0v1PflLNzRvVW035bXSgtY5CmEwdNm
+ Ez/r4x3gaZsVif0eoyIRg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QaOhw/afxvQ=:/4Bjk1eIiNQd+IAZcvHTtf
+ MSuz4rh296DzQp512OxEPGmF6dHoe5vp8kHRt8z7Re6INd7X3yTWuH7YMTvDvcMnXRJuS2yoH
+ dWSuNXrxFd96kuj6XddqN0nusJj1JTSAtv/WWrLEkrSW5q4rHMNsvIkHvbTA38n6f47W0nZMu
+ V1O49iKDJkFoAwhtV0Xs7k6IMYxIVq0xy58+NTFticdxxXa5hxXIy705izK6daTu/UK+CFAf6
+ uXRwcAspgHbN1VXbamFU8Xy3NtmuhEEonI0k5bDVfil5xjP3NH7Z/JmW7giPP0mkZIgKgFFc3
+ nXNgNSbDOEgkA2CqfhnHwT8E/eVat43vxcmPhIvDRNEqmOHxx4Lt1gWGzBT8yEHJ66p0lCGnl
+ X/Fe+IXnT9yFtH7yKexqwtzeYY9Qaylpz4IfIJ4bteHbtmjIlbDO9BifrpSAMTJxXSqETU09b
+ PG2ygC3B589z4pRN5zyTPsqkyV3+pbE3D9T/0W3mqFHvw5NQW9tINs+f3a6DF8IhbX6jbySeF
+ Uaeex1VIOk0/kIZsc9SuyGhkjF0sz5lnsPRLT+stvYWPDg1JXeCAawbBaQhYFVRMTz2AAWEMF
+ kszPRUVSoo1tACbgzTPHRWjhmb2GSUjR4uSDx0odTnoasZmJgOJwLOvSz5M8k7T0s+ykn3yPk
+ 7HKPi3H7KL91IM3YMzvCiLk2CJYGlR/14yFp4PJAfRjPxGT8CuP60bxBrJEVZKrD7afI=
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20220503_073015_981235_9755DEEE 
+X-CRM114-Status: GOOD (  22.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -51,229 +121,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 02, 2022 at 06:41:59AM +0100, Matthew Wilcox (Oracle) wrote:
-> By making filler_t the same as read_folio, we can use the same function
-> for both in gfs2.  We can push the use of folios down one more level
-> in jffs2 and nfs.  We also increase type safety for future users of the
-> various read_cache_page() family of functions by forcing the parameter
-> to be a pointer to struct file (or NULL).
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/gfs2/aops.c          | 29 +++++++++++------------------
->  fs/jffs2/file.c         |  9 ++++-----
->  fs/jffs2/gc.c           |  2 +-
->  fs/jffs2/os-linux.h     |  2 +-
->  fs/nfs/symlink.c        | 14 +++++++-------
->  include/linux/pagemap.h |  6 +++---
->  mm/filemap.c            | 40 ++++++++++++++++++++--------------------
->  7 files changed, 47 insertions(+), 55 deletions(-)
-> 
-> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-> index 340bf5d0e835..1016631bcbdc 100644
-> --- a/fs/gfs2/aops.c
-> +++ b/fs/gfs2/aops.c
-> @@ -464,21 +464,24 @@ static int stuffed_readpage(struct gfs2_inode *ip, struct page *page)
->  	return 0;
->  }
->  
-> -
-> -static int __gfs2_readpage(void *file, struct page *page)
-> +/**
-> + * gfs2_read_folio - read a folio from a file
-> + * @file: The file to read
-> + * @folio: The folio in the file
-> + */
-> +static int gfs2_read_folio(struct file *file, struct folio *folio)
->  {
-> -	struct folio *folio = page_folio(page);
-> -	struct inode *inode = page->mapping->host;
-> +	struct inode *inode = folio->mapping->host;
->  	struct gfs2_inode *ip = GFS2_I(inode);
->  	struct gfs2_sbd *sdp = GFS2_SB(inode);
->  	int error;
->  
->  	if (!gfs2_is_jdata(ip) ||
-> -	    (i_blocksize(inode) == PAGE_SIZE && !page_has_buffers(page))) {
-> +	    (i_blocksize(inode) == PAGE_SIZE && !folio_buffers(folio))) {
->  		error = iomap_read_folio(folio, &gfs2_iomap_ops);
->  	} else if (gfs2_is_stuffed(ip)) {
-> -		error = stuffed_readpage(ip, page);
-> -		unlock_page(page);
-> +		error = stuffed_readpage(ip, &folio->page);
-> +		folio_unlock(folio);
->  	} else {
->  		error = mpage_read_folio(folio, gfs2_block_map);
->  	}
-> @@ -489,16 +492,6 @@ static int __gfs2_readpage(void *file, struct page *page)
->  	return error;
->  }
->  
-> -/**
-> - * gfs2_read_folio - read a folio from a file
-> - * @file: The file to read
-> - * @folio: The folio in the file
-> - */
-> -static int gfs2_read_folio(struct file *file, struct folio *folio)
-> -{
-> -	return __gfs2_readpage(file, &folio->page);
-> -}
-> -
->  /**
->   * gfs2_internal_read - read an internal file
->   * @ip: The gfs2 inode
-> @@ -523,7 +516,7 @@ int gfs2_internal_read(struct gfs2_inode *ip, char *buf, loff_t *pos,
->  		amt = size - copied;
->  		if (offset + size > PAGE_SIZE)
->  			amt = PAGE_SIZE - offset;
-> -		page = read_cache_page(mapping, index, __gfs2_readpage, NULL);
-> +		page = read_cache_page(mapping, index, gfs2_read_folio, NULL);
->  		if (IS_ERR(page))
->  			return PTR_ERR(page);
->  		p = kmap_atomic(page);
-> diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-> index 492fb2da0403..ba86acbe12d3 100644
-> --- a/fs/jffs2/file.c
-> +++ b/fs/jffs2/file.c
-> @@ -110,21 +110,20 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
->  	return ret;
->  }
->  
-> -int jffs2_do_readpage_unlock(void *data, struct page *pg)
-> +int __jffs2_read_folio(struct file *file, struct folio *folio)
->  {
-> -	int ret = jffs2_do_readpage_nolock(pg->mapping->host, pg);
-> -	unlock_page(pg);
-> +	int ret = jffs2_do_readpage_nolock(folio->mapping->host, &folio->page);
-> +	folio_unlock(folio);
->  	return ret;
->  }
->  
-> -
->  static int jffs2_read_folio(struct file *file, struct folio *folio)
->  {
->  	struct jffs2_inode_info *f = JFFS2_INODE_INFO(folio->mapping->host);
->  	int ret;
->  
->  	mutex_lock(&f->sem);
-> -	ret = jffs2_do_readpage_unlock(file, &folio->page);
-> +	ret = __jffs2_read_folio(file, folio);
->  	mutex_unlock(&f->sem);
->  	return ret;
->  }
-> diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-> index a53bac7569b6..5c6602f3c189 100644
-> --- a/fs/jffs2/gc.c
-> +++ b/fs/jffs2/gc.c
-> @@ -1327,7 +1327,7 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
->  	 * trying to write out, read_cache_page() will not deadlock. */
->  	mutex_unlock(&f->sem);
->  	page = read_cache_page(inode->i_mapping, start >> PAGE_SHIFT,
-> -			       jffs2_do_readpage_unlock, NULL);
-> +			       __jffs2_read_folio, NULL);
->  	if (IS_ERR(page)) {
->  		pr_warn("read_cache_page() returned error: %ld\n",
->  			PTR_ERR(page));
-> diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-> index 173eccac691d..921d782583d6 100644
-> --- a/fs/jffs2/os-linux.h
-> +++ b/fs/jffs2/os-linux.h
-> @@ -155,7 +155,7 @@ extern const struct file_operations jffs2_file_operations;
->  extern const struct inode_operations jffs2_file_inode_operations;
->  extern const struct address_space_operations jffs2_file_address_operations;
->  int jffs2_fsync(struct file *, loff_t, loff_t, int);
-> -int jffs2_do_readpage_unlock(void *data, struct page *pg);
-> +int __jffs2_read_folio(struct file *file, struct folio *folio);
->  
->  /* ioctl.c */
->  long jffs2_ioctl(struct file *, unsigned int, unsigned long);
-> diff --git a/fs/nfs/symlink.c b/fs/nfs/symlink.c
-> index 8b53538bcc75..0e27a2e4e68b 100644
-> --- a/fs/nfs/symlink.c
-> +++ b/fs/nfs/symlink.c
-> @@ -26,21 +26,21 @@
->   * and straight-forward than readdir caching.
->   */
->  
-> -static int nfs_symlink_filler(void *data, struct page *page)
-> +static int nfs_symlink_filler(struct file *file, struct folio *folio)
->  {
-> -	struct inode *inode = page->mapping->host;
-> +	struct inode *inode = folio->mapping->host;
->  	int error;
->  
-> -	error = NFS_PROTO(inode)->readlink(inode, page, 0, PAGE_SIZE);
-> +	error = NFS_PROTO(inode)->readlink(inode, &folio->page, 0, PAGE_SIZE);
->  	if (error < 0)
->  		goto error;
-> -	SetPageUptodate(page);
-> -	unlock_page(page);
-> +	folio_mark_uptodate(folio);
-> +	folio_unlock(folio);
->  	return 0;
->  
->  error:
-> -	SetPageError(page);
-> -	unlock_page(page);
-> +	folio_set_error(folio);
-> +	folio_unlock(folio);
->  	return -EIO;
->  }
->  
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index b70192f56454..831b28dab01a 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -492,7 +492,7 @@ static inline gfp_t readahead_gfp_mask(struct address_space *x)
->  	return mapping_gfp_mask(x) | __GFP_NORETRY | __GFP_NOWARN;
->  }
->  
-> -typedef int filler_t(void *, struct page *);
-> +typedef int filler_t(struct file *, struct folio *);
->  
->  pgoff_t page_cache_next_miss(struct address_space *mapping,
->  			     pgoff_t index, unsigned long max_scan);
-> @@ -747,9 +747,9 @@ static inline struct page *grab_cache_page(struct address_space *mapping,
->  }
->  
->  struct folio *read_cache_folio(struct address_space *, pgoff_t index,
-> -		filler_t *filler, void *data);
-> +		filler_t *filler, struct file *file);
->  struct page *read_cache_page(struct address_space *, pgoff_t index,
-> -		filler_t *filler, void *data);
-> +		filler_t *filler, struct file *file);
->  extern struct page * read_cache_page_gfp(struct address_space *mapping,
->  				pgoff_t index, gfp_t gfp_mask);
->  
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 079f8cca7959..81a0ed08a82c 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3483,7 +3483,7 @@ EXPORT_SYMBOL(generic_file_mmap);
->  EXPORT_SYMBOL(generic_file_readonly_mmap);
->  
->  static struct folio *do_read_cache_folio(struct address_space *mapping,
-> -		pgoff_t index, filler_t filler, void *data, gfp_t gfp)
-> +		pgoff_t index, filler_t filler, struct file *file, gfp_t gfp)
->  {
->  	struct folio *folio;
->  	int err;
-> @@ -3504,9 +3504,9 @@ static struct folio *do_read_cache_folio(struct address_space *mapping,
->  
->  filler:
->  		if (filler)
-> -			err = filler(data, &folio->page);
-> +			err = filler(file, folio);
->  		else
-> -			err = mapping->a_ops->read_folio(data, folio);
-> +			err = mapping->a_ops->read_folio(file, folio);
+On Tue, May 3, 2022 at 4:04 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 5/3/22 00:17, Arnd Bergmann wrote:
+>
+> > If you have a z2 specific config, that would probably not enable CONFIG_OF,
+> > which is always turned on for multiplatform, but again that only adds around
+> > 250KB in my builds (using gcc-11). This is more than I'd like it to be, but
+> > still much less than 1MB.
+> >
+>
+> Maybe it is a bit less; I only compared the size of "Image". Either case,
+> it is enough to cause the problem. I am not sure if it is worth the time
+> trying to track this down further.
 
-Wouldn't it just make sense to just pass mapping->a_ops->read_folio as
-the filler here from the callers that currently pass NULL?
+Sure, I'm not worried about the boot regression any more, as that is definitely
+explained by the size growth. The only question is whether the patches make
+the kernel grow more than it should. The 40+250KB I measured seem
+within my expectations, so unless you have specific data showing much
+more, I think we're good.
 
-Otherwise this looks good:
+Thanks for all the help!
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+        Arnd
 
 ______________________________________________________
 Linux MTD discussion mailing list
