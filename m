@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED470C433FE
-	for <linux-mtd@archiver.kernel.org>; Wed,  4 May 2022 20:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20D21C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed,  4 May 2022 20:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7cTiHlDxXlDURqNtjgAm4Fp5UUem865TfIKpp0f+7tk=; b=tymejhAz64vVPMEwLyj0kzaduC
-	s6Fzdj+93fdz7qP7DSbw+9QlhrNZ18wSlxGWDtPr76D7jR6gKUYQTU6aDDMNOgzxDoDsN/KmZ38ZV
-	Kug3Y3Wa9VUefRBFkLTIih4mf7aA2/8xYebJHHRCIwbCp3Hwj8qaLq4EPkvXYC2X9iebMhOj7BWbX
-	eC8d782ggFjR3lGyvRTunu8agkf35HM2Ykh3tRX5FXlEk4YM6LM3iZmvnbnxk0eei4GIkMzv4rsuv
-	wOk2oqGJdeWgQ9FGhz5mSLP9Q/DJuLZOceFjv/SV9gNo8BZq8lnPljwROlxZytx1Wn9TPY1vePzbZ
-	ytu+3Btg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=wnAwyYJS7/GLKnVJ8nd03QVBaKvY4G0PtvMSpusFCWM=; b=PWt/o38dxZlmUB
+	wuNQX07RZRuTJtt4JFcmZTmbJIjSWSUkHQGVzaPzhHWEyBU6EzPWH8ErU3ZYEqpYc0GjUPsGvxVy0
+	OwNoyLjOnEGywBarRVYw7lw/fu0iTthVBMeq6tjkk9iTam210R7fpbhhs6hmdk9qB4Ikmm7Gn+iJx
+	zimtSGei89l8+yxG649sqmk2MADsgaJlKPUzkeVY7ElXVnjTbgFoRnU+y0aJR70i03nWmuig90/WF
+	De6fqHz6r/Y8gwT7Pm8oJqzVHscfSXe5/Kwwg7giV12QH74aBAIjoo8wFGjgOtqyrUy+G5AT99Z1L
+	uCnmSh0/FpHf9eqBulzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nmLmN-00CcOV-4U; Wed, 04 May 2022 20:39:23 +0000
-Received: from mail-ej1-x62a.google.com ([2a00:1450:4864:20::62a])
+	id 1nmLza-00CgfM-3j; Wed, 04 May 2022 20:53:02 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmLmJ-00CcKh-Fl
- for linux-mtd@lists.infradead.org; Wed, 04 May 2022 20:39:21 +0000
-Received: by mail-ej1-x62a.google.com with SMTP id g6so5120072ejw.1
- for <linux-mtd@lists.infradead.org>; Wed, 04 May 2022 13:39:16 -0700 (PDT)
+ id 1nmLzW-00CgeJ-P5
+ for linux-mtd@lists.infradead.org; Wed, 04 May 2022 20:53:00 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id kq17so5157063ejb.4
+ for <linux-mtd@lists.infradead.org>; Wed, 04 May 2022 13:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:to:references:from
- :in-reply-to:content-transfer-encoding;
- bh=Z2dVs5miBxmXIySFSNiW8pDoiQoVKCwO3mjzMYv3Zec=;
- b=Z3rTg8R+bJUJWRg/IqgFAIFPaCR7ziAiygfcpmxywJGxkFelZ6ryfoerwCQFWwBGuh
- BuoMD1Ye30enuoDCP5jTZ8WN8YiA0Ycp8uR+6PTS9wmOfcw3aTg0BgHGe5qL+KKtwWeL
- ONuIUbWjegJbQT2F1WLK8wmWWn2DG5HrkbArMLk8OE8AwVOV3tuRbATvzcfVfVO+dqt3
- 6yiXjYYMhew0GLY/3t9n62r8VbRlMZIEPROXPtkZqubcZ86T6ih6pnpdRwON2VwKDLw7
- xobGgdk4Q7SjknBYnViPJ8XgdX+EJB+iagSiDtrtYl826TDbKWpC0od7jAOgfxE5ETcR
- 4LiA==
+ h=message-id:date:from:to:cc:subject:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to;
+ bh=pRe2tTAP4iLVD9RQ1l2haGJ7VnUp8txM+9KQIOzBu28=;
+ b=jILl5MWmUcKv0gRrOEGVXQoMprsX6370Dpkgt5Gb6buyuJg/ZvaC2KanQpr95fUdC5
+ UvKWiCaITL8lsYFF5ONDpgubS/9ThEle+ooWtsY4Fx4Ui6VIfovfQec+SQih7RZsljCq
+ atbMUdd8/iW0Dv4Sobelt7Me5zPNywDn/PB0wLbmDVnG1AggdVP8O9ZVGyB1kM9f7HdN
+ Um9VQRIGzVsKCD6PqVvkByd2VEkmn8bzOVUSLg8HnCJGp0HbxWnQpZP/Lx4ejndyyKDC
+ deU+oM7GjcvGCDZkjbJB5HMlzUMPqryXKCHp9XiJI3cZoWHC1EBzoZ1osAngBZat2lNm
+ lHvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :to:references:from:in-reply-to:content-transfer-encoding;
- bh=Z2dVs5miBxmXIySFSNiW8pDoiQoVKCwO3mjzMYv3Zec=;
- b=MhsL/VZFb5cjbL0uOMmWcid+v9y/D2FMYwdsefabK19JulLHi2HZ6pWkFbBUqJpX3I
- auQHJjwqJK9L7d0gt5UyMSJllK8Wn2UAsN8wf4EBXO5OIzMkpw3fVEArhVGlAliROCAy
- 3z9WBiiDtTaSZ7agdGgsCHel2C1e8RVaNmuBnulEKsvz33sfHYASs5GbYAuvgeNVWI8s
- xjHnGlxneZGezQZBmSlkWvw74jhCPj/F0rk14f/A798NhTxzv8DlrRHSDZcqn7Oubo5b
- 26dpSi0jgU/4iFz8OikHXtGu8/sTwp1mvA8XBFTPd/1W79ZOlwEMUBRSLgvRLBrhHWn8
- PkmA==
-X-Gm-Message-State: AOAM530Kwt55phNP0d47XQ5jUk9u/nTkJyGKAEodT+PO+GII5A0JSNfO
- jkgRModxs81njK5r2HLmNxw=
-X-Google-Smtp-Source: ABdhPJz/STYDRpY8rzebL057RwSwOIeG+CcAiMnBZMkP5z3+WXgOu4hNxD/b2WeJThieF8B9LgOK8A==
-X-Received: by 2002:a17:906:9c82:b0:6df:c5f0:d456 with SMTP id
- fj2-20020a1709069c8200b006dfc5f0d456mr22153238ejc.287.1651696755643; 
- Wed, 04 May 2022 13:39:15 -0700 (PDT)
-Received: from [192.168.26.149]
- (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
- by smtp.googlemail.com with ESMTPSA id
- bf16-20020a0564021a5000b0042617ba63aesm9675481edb.56.2022.05.04.13.39.14
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 04 May 2022 13:39:15 -0700 (PDT)
-Message-ID: <b2d90156-f29d-88a0-58b8-7fb32c08c837@gmail.com>
-Date: Wed, 4 May 2022 22:39:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
- Thunderbird/96.0
-Subject: Re: [RESEND PATCH v3 1/2] dt-bindings: mtd: partitions: Document new
- partition-dynamic nodes
-To: Ansuel Smith <ansuelsmth@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+ h=x-gm-message-state:message-id:date:from:to:cc:subject:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=pRe2tTAP4iLVD9RQ1l2haGJ7VnUp8txM+9KQIOzBu28=;
+ b=P259hOI/nYuoFZf3uU/gJc2iWbB/fbRDzC+6e/3o/CEcD4p8YHxUbf4raB3u4J+KUF
+ MCj+CRGSGRzVZh4shBTzH8QBisU4zVnw7Q7JJGr1LFhI9I9TAhyAp/vfWwsSZkQMSajk
+ 7IUQYw6asYcsSD+eRNRL3TPDqy4cGu6KR/cfinNYGUzsIK+N2fV6XRGXy4a9jiavoBCx
+ zqIO+pMlY/mLNB1fev5yUX+AJluo09Mzk9fdjwtddfS2MGEeWNLT2AqKkIhOxS6iuCfr
+ iuhjLPjbwZK48bfOdW5xvI0DdR0uGEzaPZI5S1k8fGcdgmzh+e8Lw3+V8eNQ1Jn1iE+3
+ wERQ==
+X-Gm-Message-State: AOAM532OhqEdiPthNrKgWqr+8oFEvFutqb18csuY5seoxbGoyczQm6+v
+ cU94JHHA2E/71010ULcX9mM=
+X-Google-Smtp-Source: ABdhPJzUPx5ca3YpEtyRn/Ia/vQI0/QOeBYo6/fu7vmJIzscOdsk6y5HMvEUfYIdkeTSLTjLrQf50Q==
+X-Received: by 2002:a17:907:7247:b0:6f4:ed49:cd3f with SMTP id
+ ds7-20020a170907724700b006f4ed49cd3fmr418987ejc.172.1651697575554; 
+ Wed, 04 May 2022 13:52:55 -0700 (PDT)
+Received: from Ansuel-xps. (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
+ by smtp.gmail.com with ESMTPSA id
+ ml13-20020a170906cc0d00b006f3ef214e08sm6052832ejb.110.2022.05.04.13.52.54
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 04 May 2022 13:52:55 -0700 (PDT)
+Message-ID: <6272e7a7.1c69fb81.dae8f.70aa@mx.google.com>
+X-Google-Original-Message-ID: <YnLnpZhibOjDxC4g@Ansuel-xps.>
+Date: Wed, 4 May 2022 22:52:53 +0200
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+ Manivannan Sadhasivam <mani@kernel.org>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v3 1/2] dt-bindings: mtd: partitions: Document new
+ partition-dynamic nodes
 References: <20220429124825.21477-1-ansuelsmth@gmail.com>
  <20220429124825.21477-2-ansuelsmth@gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20220429124825.21477-2-ansuelsmth@gmail.com>
+ <b2d90156-f29d-88a0-58b8-7fb32c08c837@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <b2d90156-f29d-88a0-58b8-7fb32c08c837@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220504_133919_581675_802DEC30 
-X-CRM114-Status: GOOD (  33.93  )
+X-CRM114-CacheID: sfid-20220504_135258_893173_4800CF9E 
+X-CRM114-Status: GOOD (  44.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,129 +94,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 29.04.2022 14:48, Ansuel Smith wrote:
-> Document new partition-dynamic nodes used to provide an OF node for
-> partition registred at runtime by parsers. This is required for nvmem
-> system to declare and detect nvmem-cells.
-> 
-> With these special partitions, the reg / offset is not required.
-> The node name must be in the form of "partition name"-dynamic.
-> If the partition can't be displayed using the node name, it's possible
-> to use the label binding that will be used instead of the node name.
-> The node name or the label binding is used to match the partition
-> allocated by the parser at runtime and the parser will provide reg
-> and offset of the mtd.
-> 
-> NVMEM will use the data from the parser and provide the NVMEM cells
-> declared in the DTS, "connecting" the dynamic partition with a
-> static declaration of cells in them.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->   .../mtd/partitions/partition-dynamic.yaml     | 56 +++++++++++++++++++
->   .../mtd/partitions/qcom,smem-part.yaml        |  4 ++
->   2 files changed, 60 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.yaml
-> new file mode 100644
-> index 000000000000..e0efa58e4fac
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/partition-dynamic.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/partition-dynamic.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Dynamic Partition
-
-I'm not native but that "Dynamic Partition" sounds pretty natural and
-I'm wondering if you shouldn't make that binding dynamic-partition.yaml
-
-Any natives to comment on this? :)
-
-
-> +description: |
-> +  This binding describes a single flash partition that is dynamically allocated
-> +  by a dedicated parser that is not a fixed-partition parser.
-> +
-> +  A dynamic partition require the node ending with the "-dynamic" tag and if the
-> +  dynamic partition name can't be displayed using the node name, the label
-> +  properties can be used. The node name or the label have to match the dynamic
-> +  partition allocated by the parser.
-> +
-> +  These special partition definition can be used to give a dynamic partition
-> +  an OF node to declare NVMEM cells. An example is declaring the partition
-> +  label and all the NVMEM cells in it. The parser will detect the correct reg
-> +  and offset and the NVMEM will register the cells in it based on the data
-> +  extracted by the parser.
-> +
-> +maintainers:
-> +  - Ansuel Smith <ansuelsmth@gmail.com>
-> +
-> +properties:
-> +  label:
-> +    description: The label / name for the partition assigned by the parser at
-> +      runtime. This is needed for sybsystem like NVMEM to define cells and
-> +      register with this OF node.
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    flash {
-> +      partitions {
-> +        compatible = "qcom,smem-part";
-> +
-> +        art-dynamic {
-> +          compatible = "nvmem-cells";
-> +          #address-cells = <1>;
-> +          #size-cells = <1>;
-> +          label = "0:art";
-> +
-> +          macaddr_art_0: macaddr@0 {
-> +            reg = <0x0 0x6>;
-> +          };
-> +
-> +          macaddr_art_6: macaddr@6 {
-> +            reg = <0x6 0x6>;
-> +          };
-> +        };
-> +      };
-> +    };
-
-I see that we need a property (like "label") for storing partition name
-as it may contain characters not allowed in $nodename.
-
-Is there a reason to play with all that foo-dynamic $nodename then? With
-fallback from "label" to extracting foo from *-dynamic pattern?
-
-Could we just be lazy, keep things simple and require "label" property?
-
-Then we could e.g. require $nodename to be pattern ^partition-[0-9a-f]+$
-It's what leds-gpio.yaml does for reference.
-
-Example:
-
-partitions {
-	compatible = "foo";
-
-	partition-1 {
-		label = "bootloader";
-	};
-
-	partition-2 {
-		label = "0:art";
-	};
-};
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gV2VkLCBNYXkgMDQsIDIwMjIgYXQgMTA6Mzk6MTRQTSArMDIwMCwgUmFmYcWCIE1pxYJlY2tp
+IHdyb3RlOgo+IE9uIDI5LjA0LjIwMjIgMTQ6NDgsIEFuc3VlbCBTbWl0aCB3cm90ZToKPiA+IERv
+Y3VtZW50IG5ldyBwYXJ0aXRpb24tZHluYW1pYyBub2RlcyB1c2VkIHRvIHByb3ZpZGUgYW4gT0Yg
+bm9kZSBmb3IKPiA+IHBhcnRpdGlvbiByZWdpc3RyZWQgYXQgcnVudGltZSBieSBwYXJzZXJzLiBU
+aGlzIGlzIHJlcXVpcmVkIGZvciBudm1lbQo+ID4gc3lzdGVtIHRvIGRlY2xhcmUgYW5kIGRldGVj
+dCBudm1lbS1jZWxscy4KPiA+IAo+ID4gV2l0aCB0aGVzZSBzcGVjaWFsIHBhcnRpdGlvbnMsIHRo
+ZSByZWcgLyBvZmZzZXQgaXMgbm90IHJlcXVpcmVkLgo+ID4gVGhlIG5vZGUgbmFtZSBtdXN0IGJl
+IGluIHRoZSBmb3JtIG9mICJwYXJ0aXRpb24gbmFtZSItZHluYW1pYy4KPiA+IElmIHRoZSBwYXJ0
+aXRpb24gY2FuJ3QgYmUgZGlzcGxheWVkIHVzaW5nIHRoZSBub2RlIG5hbWUsIGl0J3MgcG9zc2li
+bGUKPiA+IHRvIHVzZSB0aGUgbGFiZWwgYmluZGluZyB0aGF0IHdpbGwgYmUgdXNlZCBpbnN0ZWFk
+IG9mIHRoZSBub2RlIG5hbWUuCj4gPiBUaGUgbm9kZSBuYW1lIG9yIHRoZSBsYWJlbCBiaW5kaW5n
+IGlzIHVzZWQgdG8gbWF0Y2ggdGhlIHBhcnRpdGlvbgo+ID4gYWxsb2NhdGVkIGJ5IHRoZSBwYXJz
+ZXIgYXQgcnVudGltZSBhbmQgdGhlIHBhcnNlciB3aWxsIHByb3ZpZGUgcmVnCj4gPiBhbmQgb2Zm
+c2V0IG9mIHRoZSBtdGQuCj4gPiAKPiA+IE5WTUVNIHdpbGwgdXNlIHRoZSBkYXRhIGZyb20gdGhl
+IHBhcnNlciBhbmQgcHJvdmlkZSB0aGUgTlZNRU0gY2VsbHMKPiA+IGRlY2xhcmVkIGluIHRoZSBE
+VFMsICJjb25uZWN0aW5nIiB0aGUgZHluYW1pYyBwYXJ0aXRpb24gd2l0aCBhCj4gPiBzdGF0aWMg
+ZGVjbGFyYXRpb24gb2YgY2VsbHMgaW4gdGhlbS4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogQW5z
+dWVsIFNtaXRoIDxhbnN1ZWxzbXRoQGdtYWlsLmNvbT4KPiA+IC0tLQo+ID4gICAuLi4vbXRkL3Bh
+cnRpdGlvbnMvcGFydGl0aW9uLWR5bmFtaWMueWFtbCAgICAgfCA1NiArKysrKysrKysrKysrKysr
+KysrCj4gPiAgIC4uLi9tdGQvcGFydGl0aW9ucy9xY29tLHNtZW0tcGFydC55YW1sICAgICAgICB8
+ICA0ICsrCj4gPiAgIDIgZmlsZXMgY2hhbmdlZCwgNjAgaW5zZXJ0aW9ucygrKQo+ID4gICBjcmVh
+dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0
+aXRpb25zL3BhcnRpdGlvbi1keW5hbWljLnlhbWwKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvcGFydGl0aW9ucy9wYXJ0aXRpb24tZHlu
+YW1pYy55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRp
+b25zL3BhcnRpdGlvbi1keW5hbWljLnlhbWwKPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gPiBp
+bmRleCAwMDAwMDAwMDAwMDAuLmUwZWZhNThlNGZhYwo+ID4gLS0tIC9kZXYvbnVsbAo+ID4gKysr
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9wYXJ0aXRpb25zL3BhcnRp
+dGlvbi1keW5hbWljLnlhbWwKPiA+IEBAIC0wLDAgKzEsNTYgQEAKPiA+ICsjIFNQRFgtTGljZW5z
+ZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlCj4gPiArJVlBTUwgMS4y
+Cj4gPiArLS0tCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvcGFy
+dGl0aW9ucy9wYXJ0aXRpb24tZHluYW1pYy55YW1sIwo+ID4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZp
+Y2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIwo+ID4gKwo+ID4gK3RpdGxlOiBEeW5h
+bWljIFBhcnRpdGlvbgo+IAo+IEknbSBub3QgbmF0aXZlIGJ1dCB0aGF0ICJEeW5hbWljIFBhcnRp
+dGlvbiIgc291bmRzIHByZXR0eSBuYXR1cmFsIGFuZAo+IEknbSB3b25kZXJpbmcgaWYgeW91IHNo
+b3VsZG4ndCBtYWtlIHRoYXQgYmluZGluZyBkeW5hbWljLXBhcnRpdGlvbi55YW1sCj4gCj4gQW55
+IG5hdGl2ZXMgdG8gY29tbWVudCBvbiB0aGlzPyA6KQo+IAo+CgpUaGUgbmFtaW5nIGZvciB0aGUg
+ZmlsZSBpcyB1c2VkIHRvIGtlZXAgdGhlIHN0YW5kYXJkIG9mCltwYXJzZXJdLXBhcnRpdGlvbi55
+YW1sLiBBZ3JlZSB0aGF0IHdlIHNob3VsZCBmaW5kIGEgYmV0dGVyIG5hbWluZyBmb3IKYWxsIG9m
+IHRoaXMuCgo+ID4gK2Rlc2NyaXB0aW9uOiB8Cj4gPiArICBUaGlzIGJpbmRpbmcgZGVzY3JpYmVz
+IGEgc2luZ2xlIGZsYXNoIHBhcnRpdGlvbiB0aGF0IGlzIGR5bmFtaWNhbGx5IGFsbG9jYXRlZAo+
+ID4gKyAgYnkgYSBkZWRpY2F0ZWQgcGFyc2VyIHRoYXQgaXMgbm90IGEgZml4ZWQtcGFydGl0aW9u
+IHBhcnNlci4KPiA+ICsKPiA+ICsgIEEgZHluYW1pYyBwYXJ0aXRpb24gcmVxdWlyZSB0aGUgbm9k
+ZSBlbmRpbmcgd2l0aCB0aGUgIi1keW5hbWljIiB0YWcgYW5kIGlmIHRoZQo+ID4gKyAgZHluYW1p
+YyBwYXJ0aXRpb24gbmFtZSBjYW4ndCBiZSBkaXNwbGF5ZWQgdXNpbmcgdGhlIG5vZGUgbmFtZSwg
+dGhlIGxhYmVsCj4gPiArICBwcm9wZXJ0aWVzIGNhbiBiZSB1c2VkLiBUaGUgbm9kZSBuYW1lIG9y
+IHRoZSBsYWJlbCBoYXZlIHRvIG1hdGNoIHRoZSBkeW5hbWljCj4gPiArICBwYXJ0aXRpb24gYWxs
+b2NhdGVkIGJ5IHRoZSBwYXJzZXIuCj4gPiArCj4gPiArICBUaGVzZSBzcGVjaWFsIHBhcnRpdGlv
+biBkZWZpbml0aW9uIGNhbiBiZSB1c2VkIHRvIGdpdmUgYSBkeW5hbWljIHBhcnRpdGlvbgo+ID4g
+KyAgYW4gT0Ygbm9kZSB0byBkZWNsYXJlIE5WTUVNIGNlbGxzLiBBbiBleGFtcGxlIGlzIGRlY2xh
+cmluZyB0aGUgcGFydGl0aW9uCj4gPiArICBsYWJlbCBhbmQgYWxsIHRoZSBOVk1FTSBjZWxscyBp
+biBpdC4gVGhlIHBhcnNlciB3aWxsIGRldGVjdCB0aGUgY29ycmVjdCByZWcKPiA+ICsgIGFuZCBv
+ZmZzZXQgYW5kIHRoZSBOVk1FTSB3aWxsIHJlZ2lzdGVyIHRoZSBjZWxscyBpbiBpdCBiYXNlZCBv
+biB0aGUgZGF0YQo+ID4gKyAgZXh0cmFjdGVkIGJ5IHRoZSBwYXJzZXIuCj4gPiArCj4gPiArbWFp
+bnRhaW5lcnM6Cj4gPiArICAtIEFuc3VlbCBTbWl0aCA8YW5zdWVsc210aEBnbWFpbC5jb20+Cj4g
+PiArCj4gPiArcHJvcGVydGllczoKPiA+ICsgIGxhYmVsOgo+ID4gKyAgICBkZXNjcmlwdGlvbjog
+VGhlIGxhYmVsIC8gbmFtZSBmb3IgdGhlIHBhcnRpdGlvbiBhc3NpZ25lZCBieSB0aGUgcGFyc2Vy
+IGF0Cj4gPiArICAgICAgcnVudGltZS4gVGhpcyBpcyBuZWVkZWQgZm9yIHN5YnN5c3RlbSBsaWtl
+IE5WTUVNIHRvIGRlZmluZSBjZWxscyBhbmQKPiA+ICsgICAgICByZWdpc3RlciB3aXRoIHRoaXMg
+T0Ygbm9kZS4KPiA+ICsKPiA+ICthZGRpdGlvbmFsUHJvcGVydGllczogdHJ1ZQo+ID4gKwo+ID4g
+K2V4YW1wbGVzOgo+ID4gKyAgLSB8Cj4gPiArICAgIGZsYXNoIHsKPiA+ICsgICAgICBwYXJ0aXRp
+b25zIHsKPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAicWNvbSxzbWVtLXBhcnQiOwo+ID4gKwo+
+ID4gKyAgICAgICAgYXJ0LWR5bmFtaWMgewo+ID4gKyAgICAgICAgICBjb21wYXRpYmxlID0gIm52
+bWVtLWNlbGxzIjsKPiA+ICsgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47Cj4gPiArICAg
+ICAgICAgICNzaXplLWNlbGxzID0gPDE+Owo+ID4gKyAgICAgICAgICBsYWJlbCA9ICIwOmFydCI7
+Cj4gPiArCj4gPiArICAgICAgICAgIG1hY2FkZHJfYXJ0XzA6IG1hY2FkZHJAMCB7Cj4gPiArICAg
+ICAgICAgICAgcmVnID0gPDB4MCAweDY+Owo+ID4gKyAgICAgICAgICB9Owo+ID4gKwo+ID4gKyAg
+ICAgICAgICBtYWNhZGRyX2FydF82OiBtYWNhZGRyQDYgewo+ID4gKyAgICAgICAgICAgIHJlZyA9
+IDwweDYgMHg2PjsKPiA+ICsgICAgICAgICAgfTsKPiA+ICsgICAgICAgIH07Cj4gPiArICAgICAg
+fTsKPiA+ICsgICAgfTsKPiAKPiBJIHNlZSB0aGF0IHdlIG5lZWQgYSBwcm9wZXJ0eSAobGlrZSAi
+bGFiZWwiKSBmb3Igc3RvcmluZyBwYXJ0aXRpb24gbmFtZQo+IGFzIGl0IG1heSBjb250YWluIGNo
+YXJhY3RlcnMgbm90IGFsbG93ZWQgaW4gJG5vZGVuYW1lLgo+IAo+IElzIHRoZXJlIGEgcmVhc29u
+IHRvIHBsYXkgd2l0aCBhbGwgdGhhdCBmb28tZHluYW1pYyAkbm9kZW5hbWUgdGhlbj8gV2l0aAo+
+IGZhbGxiYWNrIGZyb20gImxhYmVsIiB0byBleHRyYWN0aW5nIGZvbyBmcm9tICotZHluYW1pYyBw
+YXR0ZXJuPwo+IAoKSG9uZXN0bHkgdGhlICItZHluYW1pYyIgdGhpbmcgaXMgdG8gY29ycmVjdGx5
+IGhhbmRsZSB0aGlzICIic3RyYW5nZSIiCkRvY3VtZW50YXRpb24uIEF0IHRpbWVzIHVzaW5nIHRo
+ZSBwYXR0ZXJuIGNhdXNlZCB0b25zIG9mIHByb2JsZW1zIHdpdGgKcGF0dGVybiBzbyBJIGhhZCB0
+aGlzIGJyaWdodCBpZGVhIG9mIHVzaW5nIHRoZSBzdWZmaXggIi1keW5hbWljIiB0bwpjbGVhcnkg
+ZGlmZmVyZW50aWF0ZSB0aGVzZSBzcGVjaWFsIHBhcnRpdGlvbiBmcm9tIGZpeGVkIG9uZS4KCj4g
+Q291bGQgd2UganVzdCBiZSBsYXp5LCBrZWVwIHRoaW5ncyBzaW1wbGUgYW5kIHJlcXVpcmUgImxh
+YmVsIiBwcm9wZXJ0eT8KPiAKClRoaXMgaXMgcHJvYmxlbWF0aWMgdG8gY29ycmVjdGx5IGFzc2ln
+biBhIHBhdHRlcm5Qcm9wZXJ0aWVzIHRvIGFueSB1c2VyCm9yIHRoaXMgcGFyc2VyLgoKPiBUaGVu
+IHdlIGNvdWxkIGUuZy4gcmVxdWlyZSAkbm9kZW5hbWUgdG8gYmUgcGF0dGVybiBecGFydGl0aW9u
+LVswLTlhLWZdKyQKPiBJdCdzIHdoYXQgbGVkcy1ncGlvLnlhbWwgZG9lcyBmb3IgcmVmZXJlbmNl
+Lgo+IAoKTWhoaCBvayBJIGNhbiB0b3RhbGx5IG1ha2UgdGhpcyBjaGFuZ2UuIE15IGNvbmNlcm4g
+aXMgdGhhdCBzb21lb25lIHdvdWxkCmdldCBjb25mdXNlZCB0aGlua2luZyB0aGV5IGFyZSBmaXhl
+ZCBwYXJ0aXRpb24gZGVjbGFyZWQgb24gdG9wIG9mIHRoZQpwYXJzZXIuIEJ1dCB5aGVhIHRoaXMg
+Y2FuIGFsc28gd29yay4uLiBJdCdzIHJlYWxseSBhIHNpbWlsYXIKaW1wbGVtZW50YXRpb24gb2Yg
+d2hhdCBJIGFscmVhZHkgdG8gd2l0aCBkeW5hbWljLiBJZiB5b3Ugd2FudCBJIGNhbiBkbwp0aGlz
+IGNoYW5nZSBhbmQgc2VuZCBhIHY0LgoKPiBFeGFtcGxlOgo+IAo+IHBhcnRpdGlvbnMgewo+IAlj
+b21wYXRpYmxlID0gImZvbyI7Cj4gCj4gCXBhcnRpdGlvbi0xIHsKPiAJCWxhYmVsID0gImJvb3Rs
+b2FkZXIiOwo+IAl9Owo+IAo+IAlwYXJ0aXRpb24tMiB7Cj4gCQlsYWJlbCA9ICIwOmFydCI7Cj4g
+CX07Cj4gfTsKCi0tIAoJQW5zdWVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
