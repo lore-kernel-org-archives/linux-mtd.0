@@ -4,57 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80F2CC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A35F1C433EF
 	for <linux-mtd@archiver.kernel.org>; Fri,  6 May 2022 07:03:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=4DTxyQc4A9OH+Knyg6YJG4ZXVV5hMDHIkDKGedCgKi8=; b=u3w6nyYpaQLoHF
-	8ANILajLTLz963By2JXuRxqIzcrKRk2ol8lW0fX1uqnMWQ9i9k+l+NP/i3fO8Q+GH5mzY+EVAOvCb
-	i9RYs6zRRpUvl37vjGxUvwQvlAfZDz6BJCrG4N5j9o3WNaLHtDUWt6JdXKoFsFdcnizAPW6yiPif7
-	gFkpduzGgIxeX0EzvBpqcJgsiQaiC9kGPIBeLhjOemSjAt+K/YhIIshkRDtNPm+/llkD1K3cWGwI8
-	A5CLnnJ+QVGqm9pRRVw8M+F6qNuIoCMIVje036Qyh28AlfLmCye15sSQViaZxteW3St7sdeL9kNYX
-	3Y3jQd/xUeXhdXoqAe6A==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fVZgsLwCk7ztLCVbUp7HPDxYGhLe/WxA4P/wx6+xytQ=; b=2bOsRI7P/X/CTB
+	acXW+ffTO19g29Xtf1cDRSqpqnqsNulOZkeLGrB5Lz34/MBg/r0pvFsuim11dOMgUkhimH1hsBxrd
+	l5Nf32FUbsg1TyTlSP3BenzFo+5FVLS98FQdvIjdxR5SkkXzs/GB08tUUNtYQzMWJYhN/6T6F72r8
+	11E1mC209wFbwdOJWLg/40QLpNNWcIxbR/CgPOkXExHRmx7jQCMAknK+CXEP27a7eUDddP2nGbuBG
+	tS8B0Bq9bk6yo6gSjbCJ1l1kKKFvSD0DznqU6xSYmXF1rYDe63k6MFdkXmXm4z5PCuvWN3Z0GE8oM
+	YbGL0DXhrXmdY4FHDv3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nmrzk-001jeB-7I; Fri, 06 May 2022 07:03:20 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1nmrzo-001jfX-SC; Fri, 06 May 2022 07:03:24 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmrzg-001ja1-1f
- for linux-mtd@lists.infradead.org; Fri, 06 May 2022 07:03:18 +0000
-Received: from kwepemi100010.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KvhMx0mNHzhYmj;
- Fri,  6 May 2022 15:02:37 +0800 (CST)
+ id 1nmrzj-001jaX-Da
+ for linux-mtd@lists.infradead.org; Fri, 06 May 2022 07:03:22 +0000
+Received: from kwepemi500001.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KvhMJ31qBzfb1c;
+ Fri,  6 May 2022 15:02:04 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- kwepemi100010.china.huawei.com (7.221.188.54) with Microsoft SMTP Server
+ kwepemi500001.china.huawei.com (7.221.188.114) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 6 May 2022 15:03:08 +0800
+ 15.1.2375.24; Fri, 6 May 2022 15:03:10 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 6 May
- 2022 15:03:07 +0800
+ 2022 15:03:09 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
  <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>,
  <s.hauer@pengutronix.de>, <arne.edholm@axis.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
  <yukuai3@huawei.com>
-Subject: [PATCH v2 0/2] Fix high cpu usage of ubi_bgt thread
-Date: Fri, 6 May 2022 15:17:02 +0800
-Message-ID: <20220506071704.222501-1-chengzhihao1@huawei.com>
+Subject: [PATCH v2 2/2] ubi: fastmap: Check wl_pool for free peb before wear
+ leveling
+Date: Fri, 6 May 2022 15:17:04 +0800
+Message-ID: <20220506071704.222501-3-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220506071704.222501-1-chengzhihao1@huawei.com>
+References: <20220506071704.222501-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220506_000316_327785_E8DB57B1 
-X-CRM114-Status: UNSURE (   5.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220506_000319_863672_BA8C0D9B 
+X-CRM114-Status: GOOD (  15.35  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,24 +73,140 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-v1->v2:
-  Update fm pool filling strategy, consider reserve enough free count
-  for fastmap non anchor pebs while filling fm_wl_pool.
-  Remove 'fm_next_anchor' and check 'fm_anchor' during wear leveling.
-  Check wl_pool for free peb before wear leveling.
+UBI fetches free peb from wl_pool during wear leveling, so UBI should
+check wl_pool's empty status before wear leveling. Otherwise, UBI will
+miss wear leveling chances when free pebs are run out.
 
-Zhihao Cheng (2):
-  ubi: fastmap: Fix high cpu usage of ubi_bgt by making sure wl_pool not
-    empty
-  ubi: fastmap: Check wl_pool for free peb before wear leveling
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/ubi/fastmap-wl.c | 52 ++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/wl.c         | 14 ++++++++--
+ drivers/mtd/ubi/wl.h         |  2 ++
+ 3 files changed, 66 insertions(+), 2 deletions(-)
 
- drivers/mtd/ubi/fastmap-wl.c | 115 ++++++++++++++++++++++++++++-------
- drivers/mtd/ubi/fastmap.c    |  11 ----
- drivers/mtd/ubi/ubi.h        |   4 +-
- drivers/mtd/ubi/wl.c         |  33 ++++++----
- drivers/mtd/ubi/wl.h         |   2 +
- 5 files changed, 117 insertions(+), 48 deletions(-)
-
+diff --git a/drivers/mtd/ubi/fastmap-wl.c b/drivers/mtd/ubi/fastmap-wl.c
+index 21ea5ca8270b..15c286546d28 100644
+--- a/drivers/mtd/ubi/fastmap-wl.c
++++ b/drivers/mtd/ubi/fastmap-wl.c
+@@ -269,6 +269,58 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+ 	return ret;
+ }
+ 
++/**
++ * next_peb_for_wl - returns next PEB to be used internally by the
++ * WL sub-system.
++ *
++ * @ubi: UBI device description object
++ */
++static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi)
++{
++	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
++	int pnum;
++
++	if (pool->used == pool->size)
++		return NULL;
++
++	pnum = pool->pebs[pool->used];
++	return ubi->lookuptbl[pnum];
++}
++
++/**
++ * need_wear_leveling - checks whether to trigger a wear leveling work.
++ * UBI fetches free PEB from wl_pool, we check free PEBs from both 'wl_pool'
++ * and 'ubi->free', because free PEB in 'ubi->free' tree maybe moved into
++ * 'wl_pool' by ubi_refill_pools().
++ *
++ * @ubi: UBI device description object
++ */
++static bool need_wear_leveling(struct ubi_device *ubi)
++{
++	int ec;
++	struct ubi_wl_entry *e;
++
++	if (!ubi->used.rb_node)
++		return false;
++
++	e = next_peb_for_wl(ubi);
++	if (!e) {
++		if (!ubi->free.rb_node)
++			return false;
++		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
++		ec = e->ec;
++	} else {
++		ec = e->ec;
++		if (ubi->free.rb_node) {
++			e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
++			ec = max(ec, e->ec);
++		}
++	}
++	e = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, u.rb);
++
++	return ec - e->ec >= UBI_WL_THRESHOLD;
++}
++
+ /* get_peb_for_wl - returns a PEB to be used internally by the WL sub-system.
+  *
+  * @ubi: UBI device description object
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index afcdacb9d0e9..55bae06cf408 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -670,7 +670,11 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 	ubi_assert(!ubi->move_from && !ubi->move_to);
+ 	ubi_assert(!ubi->move_to_put);
+ 
++#ifdef CONFIG_MTD_UBI_FASTMAP
++	if (!next_peb_for_wl(ubi) ||
++#else
+ 	if (!ubi->free.rb_node ||
++#endif
+ 	    (!ubi->used.rb_node && !ubi->scrub.rb_node)) {
+ 		/*
+ 		 * No free physical eraseblocks? Well, they must be waiting in
+@@ -1003,8 +1007,6 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+ {
+ 	int err = 0;
+-	struct ubi_wl_entry *e1;
+-	struct ubi_wl_entry *e2;
+ 	struct ubi_work *wrk;
+ 
+ 	spin_lock(&ubi->wl_lock);
+@@ -1017,6 +1019,13 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+ 	 * the WL worker has to be scheduled anyway.
+ 	 */
+ 	if (!ubi->scrub.rb_node) {
++#ifdef CONFIG_MTD_UBI_FASTMAP
++		if (!need_wear_leveling(ubi))
++			goto out_unlock;
++#else
++		struct ubi_wl_entry *e1;
++		struct ubi_wl_entry *e2;
++
+ 		if (!ubi->used.rb_node || !ubi->free.rb_node)
+ 			/* No physical eraseblocks - no deal */
+ 			goto out_unlock;
+@@ -1032,6 +1041,7 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
+ 
+ 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD))
+ 			goto out_unlock;
++#endif
+ 		dbg_wl("schedule wear-leveling");
+ 	} else
+ 		dbg_wl("schedule scrubbing");
+diff --git a/drivers/mtd/ubi/wl.h b/drivers/mtd/ubi/wl.h
+index c93a53293786..5ebe374a08ae 100644
+--- a/drivers/mtd/ubi/wl.h
++++ b/drivers/mtd/ubi/wl.h
+@@ -5,6 +5,8 @@
+ static void update_fastmap_work_fn(struct work_struct *wrk);
+ static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root);
+ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi);
++static struct ubi_wl_entry *next_peb_for_wl(struct ubi_device *ubi);
++static bool need_wear_leveling(struct ubi_device *ubi);
+ static void ubi_fastmap_close(struct ubi_device *ubi);
+ static inline void ubi_fastmap_init(struct ubi_device *ubi, int *count)
+ {
 -- 
 2.31.1
 
