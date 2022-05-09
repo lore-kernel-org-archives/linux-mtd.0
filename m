@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BDE1C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 22:10:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5DA9C4332F
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 22:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PxUEMMa/W5rIUGLN51XGOLJnVDqL6ig4p79P56oNj5Q=; b=xrL1MDkE0gNKqz
-	rM1SYt5BaR+YBBpbnDOnqBHzNnfWjUfyAksNDe2kOrR9XOa+aCQe4S0cIYYqvkLDKYaawfVQ/m0rc
-	wu8vAmKJmg36ocDqHIHyHY7ESOlrqgQKV4jPaRHNEEPSci0v9R2e6GmHkrh/hv2PanXoNA+Pmd/8A
-	gRTqoZf3RQg/RfWMA1U3mvq3+beLGl91/aXeMG5AnD2R3yieU5E6ItQzbFyIrE+XpR9l7xVhSojO/
-	kvK66uxRk/Qu+xsEpYMYe7zj+ZAfmH/ii8uqRlxyKp2xTn9LUs2N66y6lyvrTjz/mSFxB5fe6YKdO
-	o8PZFaG6cbTq4UJjf2vA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7tdmnBRDJbYAztcdmTi4WlR8iBM6mBsCH1rfH+U8w2M=; b=ZKgI4MmmVIacP5
+	z64rvbxpOyFpe8znxAOZ9My6n5HjOwRYTg21Rph8jJn5UYMXiM7QN+GEUA4raO7XGbR9nq9qyAa4X
+	7NmWM7Z8dNp52Gb9Ch5E7ubelPs27d1kL9nPUnLIVYpT7bEAnKY4syZ6yOti/oAD8J0SAKY8vpMKO
+	piwp8Qqzhc3SWorD8mZp7fFOZfYBh4OxyNJHWliKAEmISxV+QfAlD9R2u1kxpUSyAn22EzCKrgrQi
+	LP5em6GFrA38uCQ+6/+5cDOmAJGtChhjzmG+OCoBx7j1SLpNeaWdnQbzclRXGxJBtnV3TiAFtnX0Q
+	+XeuwW10XzcUIvicH8gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1noBaV-00GVYh-Ah; Mon, 09 May 2022 22:10:43 +0000
-Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
+	id 1noBaS-00GVXe-9y; Mon, 09 May 2022 22:10:40 +0000
+Received: from mail-pj1-x102e.google.com ([2607:f8b0:4864:20::102e])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1noBaP-00GVW3-LI
- for linux-mtd@lists.infradead.org; Mon, 09 May 2022 22:10:41 +0000
-Received: by mail-pg1-x536.google.com with SMTP id e5so13147549pgc.5
- for <linux-mtd@lists.infradead.org>; Mon, 09 May 2022 15:10:36 -0700 (PDT)
+ id 1noBaO-00GVUt-0S
+ for linux-mtd@lists.infradead.org; Mon, 09 May 2022 22:10:38 +0000
+Received: by mail-pj1-x102e.google.com with SMTP id
+ cq17-20020a17090af99100b001dc0386cd8fso540655pjb.5
+ for <linux-mtd@lists.infradead.org>; Mon, 09 May 2022 15:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=WMBkDT4MwAVUx1VJVXQ/SZN0uDynjlbwo/vUUyYwJbM=;
- b=D32zs3UPVgoVsGRJMFrnGMLKCYXdx83qZmJ1McrQSnJF4U1XoTmzGmh5PzMhPNFN5Q
- EFiQGZzWoZ44XSw0neo0mL4IEt2aRne/ObjlSvBzopow4o4n1Xxo1nwkJGws/JhxTMHZ
- hdADdMMQSCKnQOhR0q1hEy9P8EjCuhx6VdJUhGat9b2HjfPVGSyqb1LUw98e1JL5V6nV
- Hpab7aNQXI2o4aCy+BJH9NeITVldSN7SD92FymeqIuDqwBTwLbrQjEA70OIm5/O2PgUY
- ADGB10ry51t0rpP+aTTVJ+Vi0V35tqk2EXyfW4U9Xpp3iPjmTsMn3+48s2zUqMP32Fiw
- LxFw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ocpMlWxEqIkwVsz7H1W/S7L/4Tt1sGmOGlX6KmBtkrU=;
+ b=KvED7zk0uNIj2Tc2q3YFU7rT4m59SPa+riad9r5tbMQVhRgSH/yggYk9uU3WgM1WYm
+ 44QX89Evb3jRh4rAYWvqc4hHHkVUtUO+cQ+UxmoVvEjX5V0Oh/axhe6HDQgtRf420Ka7
+ fpyND3OfCFqaN9VP8f9HEJ6d0nptIHgxklDRdSYdOFC+WruHvl+yy2GY9hB6/WVnzE+l
+ um+w7CszXEr0+4rvHZr7RbWh/BWDdsRSzOiHAL/Wxy9Ku0+VsTlrNM7/LpjPCPsSra1X
+ 3KmbBOuoyGbxxzRl5utlUReWklri4tTSw5peCHowC/qlzUI5KDUCpxzirN7Npxww9Bay
+ D+uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=WMBkDT4MwAVUx1VJVXQ/SZN0uDynjlbwo/vUUyYwJbM=;
- b=Huh3LwRoc4D4bvNl8zNYKt2lS3HR1O3y3c88dr9MCDy8wBpL3LbG02VMPLebLmLb2a
- 2s/vn7jjtfYl6H261CogDySqWxASqcH1kTtwdSU4wX6CFT7oz1L/5mwfgIxnoqLGzhCk
- SI5hzgptbAgF6NnEw3urtu/f3thNbg7M3wuHhBfscjKpxbGKNFQ7L7ytoJuiORG+vpRf
- sXhGZXgEzi7JOYiRlnY84zrTu1o+RYuKyQIs0gIBdYYdtqM5ppGxH6aoxS16csmjB+nh
- NaxKxrWDGTZV5QnX+yP7Pxs7mT4dYTuBtRaOPoj/B8u2UwYV6Ai4OaHib8OAOLBiuEFi
- JyJg==
-X-Gm-Message-State: AOAM533ejN9q9iWtpFuJ1uYOJYtjgvvMWRkMOyIZtN4F4xPMb9qpLlJW
- 7qRDUOVVfWuBh23wGlLDLtNXxx40+8k=
-X-Google-Smtp-Source: ABdhPJwVy2jVGoOUI3tT/fMYVtz7Evch5lu9MEjbJ+Js57kLLK0fZcS/GetkrxfdZX61OyuF2xlMDw==
-X-Received: by 2002:aa7:8094:0:b0:505:b544:d1ca with SMTP id
- v20-20020aa78094000000b00505b544d1camr17949491pff.26.1652134236114; 
- Mon, 09 May 2022 15:10:36 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ocpMlWxEqIkwVsz7H1W/S7L/4Tt1sGmOGlX6KmBtkrU=;
+ b=ZqoMThOAVDa0+4F4NMLHOi6K+F/fudjyD4oMri0pXNwJThY3cTW+2jvCSzk32mevoh
+ hLC29qp00tJMyvn7cWbivLtY3fbL1mMVcnA/nsKFgpPsdpMy/h4BzhJv+jVsdhYKzLaK
+ vIqaGRE04jjwfPQer1T/pQ6S4wQIx+kvEGy5lmNYAPfax3J8Q+5xgOBS6m6z+T4UEs+e
+ 33W9HWkZzEYskd4K5FjiqEb7933HzkjyQxyeJKJouVwA98W/Sqqtrc/8v2YPGPBkDBEr
+ gpVXJXGbQsWx1rOq2MdKUs2f6VxRTXyD/Sza3wsfrfyABptlD+4C+jfXcRmPRwZL2sV0
+ RxvQ==
+X-Gm-Message-State: AOAM533jGbIOG7FORrLZcjqx+nd1mGSXESDQZNzB+6LjXl0CCahTS0WY
+ STjZuAPH6A915YrgcGSdcugSwem2Cm0=
+X-Google-Smtp-Source: ABdhPJzFtz6l+M29D77S3xfvoOaPR/8p4eqvQLH0XXkeRVPqbWgpS35mlZN9ARPIMvUp4NOaTf1SEg==
+X-Received: by 2002:a17:90b:3b42:b0:1dc:5cdf:5649 with SMTP id
+ ot2-20020a17090b3b4200b001dc5cdf5649mr28181995pjb.239.1652134233184; 
+ Mon, 09 May 2022 15:10:33 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
  [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- q27-20020a056a0002bb00b0050dc76281ebsm9043247pfs.197.2022.05.09.15.10.34
+ q27-20020a056a0002bb00b0050dc76281ebsm9043247pfs.197.2022.05.09.15.10.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 May 2022 15:10:35 -0700 (PDT)
+ Mon, 09 May 2022 15:10:32 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, michael@walle.cc, tkuw584924@gmail.com,
- Bacem.Daassi@infineon.com
-Subject: [PATCH v15 1/8] mtd: spi-nor: s/addr_width/addr_nbytes
-Date: Tue, 10 May 2022 07:10:02 +0900
-Message-Id: <c56fb52bf191e3ae77572b042c2ff452f4919612.1652063152.git.Takahiro.Kuwano@infineon.com>
+ Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v15 0/8] mtd: spi-nor: Add support for Infineon s25hl-t/s25hs-t
+Date: Tue, 10 May 2022 07:10:01 +0900
+Message-Id: <cover.1652063152.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1652063152.git.Takahiro.Kuwano@infineon.com>
-References: <cover.1652063152.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220509_151037_756019_5C68793C 
-X-CRM114-Status: GOOD (  25.04  )
+X-CRM114-CacheID: sfid-20220509_151036_128361_3A38628A 
+X-CRM114-Status: GOOD (  16.11  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,540 +90,302 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 
-Address width was an unfortunate name, as it means the number of IO lines
-used for the address, whereas in the code it is used as the number of
-address bytes. s/addr_width/addr_nbytes throughout the entire SPI NOR
-framework.
+The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+The datasheets can be found in the following link.
+https://www.infineon.com/dgdl/Infineon-S25HS256T_S25HS512T_S25HS01GT_S25HL256T_S25HL512T_S25HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Quad_SPI-DataSheet-v02_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee674b86ee3&da=t
+
+Device ID, SFDP, and test script output:
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hl512t
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342a1a0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe3
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff703f8ff0200f1ff0000ff0400ff
+f8ffff03
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+8a0aa90112e154ae3a797df2c211ef61  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.221878 seconds, 27.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+9ef41f0cece253ea6b6537ab19e0878841954444  qspi_test
+9ef41f0cece253ea6b6537ab19e0878841954444  qspi_read
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hs01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.221968 seconds, 27.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+43cf65d1b77dc4bdc31ca002166f150a97843cb2  qspi_test
+43cf65d1b77dc4bdc31ca002166f150a97843cb2  qspi_read
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hl01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342a1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.221797 seconds, 27.1MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+e4d22bbd91abe16d43dc4a0539ac49d653e99611  qspi_test
+e4d22bbd91abe16d43dc4a0539ac49d653e99611  qspi_read
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hs01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.221968 seconds, 27.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+43cf65d1b77dc4bdc31ca002166f150a97843cb2  qspi_test
+43cf65d1b77dc4bdc31ca002166f150a97843cb2  qspi_read
+------------------------------------------------------------
+
 ---
- drivers/mtd/spi-nor/controllers/aspeed-smc.c |  6 +--
- drivers/mtd/spi-nor/controllers/hisi-sfc.c   |  2 +-
- drivers/mtd/spi-nor/controllers/nxp-spifi.c  |  8 ++--
- drivers/mtd/spi-nor/core.c                   | 46 ++++++++++----------
- drivers/mtd/spi-nor/core.h                   | 12 ++---
- drivers/mtd/spi-nor/issi.c                   |  2 +-
- drivers/mtd/spi-nor/otp.c                    | 12 ++---
- drivers/mtd/spi-nor/sfdp.c                   | 32 +++++++-------
- drivers/mtd/spi-nor/xilinx.c                 |  2 +-
- include/linux/mtd/spi-nor.h                  |  4 +-
- 10 files changed, 63 insertions(+), 63 deletions(-)
+Changes in v15:
+  - add missing read any reg call in volatile quad enable method (patch 8/8)
 
-diff --git a/drivers/mtd/spi-nor/controllers/aspeed-smc.c b/drivers/mtd/spi-nor/controllers/aspeed-smc.c
-index acfe010f9dd7..5ac8c321535b 100644
---- a/drivers/mtd/spi-nor/controllers/aspeed-smc.c
-+++ b/drivers/mtd/spi-nor/controllers/aspeed-smc.c
-@@ -350,10 +350,10 @@ static void aspeed_smc_send_cmd_addr(struct spi_nor *nor, u8 cmd, u32 addr)
- 	__be32 temp;
- 	u32 cmdaddr;
- 
--	switch (nor->addr_width) {
-+	switch (nor->addr_nbytes) {
- 	default:
- 		WARN_ONCE(1, "Unexpected address width %u, defaulting to 3\n",
--			  nor->addr_width);
-+			  nor->addr_nbytes);
- 		fallthrough;
- 	case 3:
- 		cmdaddr = addr & 0xFFFFFF;
-@@ -709,7 +709,7 @@ static int aspeed_smc_chip_setup_finish(struct aspeed_smc_chip *chip)
- 	const struct aspeed_smc_info *info = controller->info;
- 	u32 cmd;
- 
--	if (chip->nor.addr_width == 4 && info->set_4b)
-+	if (chip->nor.addr_nbytes == 4 && info->set_4b)
- 		info->set_4b(chip);
- 
- 	/* This is for direct AHB access when using Command Mode. */
-diff --git a/drivers/mtd/spi-nor/controllers/hisi-sfc.c b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-index 94a969185ceb..5070d72835ec 100644
---- a/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/controllers/hisi-sfc.c
-@@ -237,7 +237,7 @@ static int hisi_spi_nor_dma_transfer(struct spi_nor *nor, loff_t start_off,
- 	reg = readl(host->regbase + FMC_CFG);
- 	reg &= ~(FMC_CFG_OP_MODE_MASK | SPI_NOR_ADDR_MODE_MASK);
- 	reg |= FMC_CFG_OP_MODE_NORMAL;
--	reg |= (nor->addr_width == 4) ? SPI_NOR_ADDR_MODE_4BYTES
-+	reg |= (nor->addr_nbytes == 4) ? SPI_NOR_ADDR_MODE_4BYTES
- 		: SPI_NOR_ADDR_MODE_3BYTES;
- 	writel(reg, host->regbase + FMC_CFG);
- 
-diff --git a/drivers/mtd/spi-nor/controllers/nxp-spifi.c b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-index 9032b9ab2eaf..ab3990e6ac25 100644
---- a/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/controllers/nxp-spifi.c
-@@ -203,7 +203,7 @@ static ssize_t nxp_spifi_write(struct spi_nor *nor, loff_t to, size_t len,
- 	      SPIFI_CMD_DATALEN(len) |
- 	      SPIFI_CMD_FIELDFORM_ALL_SERIAL |
- 	      SPIFI_CMD_OPCODE(nor->program_opcode) |
--	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
-+	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_nbytes + 1);
- 	writel(cmd, spifi->io_base + SPIFI_CMD);
- 
- 	for (i = 0; i < len; i++)
-@@ -230,7 +230,7 @@ static int nxp_spifi_erase(struct spi_nor *nor, loff_t offs)
- 
- 	cmd = SPIFI_CMD_FIELDFORM_ALL_SERIAL |
- 	      SPIFI_CMD_OPCODE(nor->erase_opcode) |
--	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
-+	      SPIFI_CMD_FRAMEFORM(spifi->nor.addr_nbytes + 1);
- 	writel(cmd, spifi->io_base + SPIFI_CMD);
- 
- 	return nxp_spifi_wait_for_cmd(spifi);
-@@ -252,12 +252,12 @@ static int nxp_spifi_setup_memory_cmd(struct nxp_spifi *spifi)
- 	}
- 
- 	/* Memory mode supports address length between 1 and 4 */
--	if (spifi->nor.addr_width < 1 || spifi->nor.addr_width > 4)
-+	if (spifi->nor.addr_nbytes < 1 || spifi->nor.addr_nbytes > 4)
- 		return -EINVAL;
- 
- 	spifi->mcmd |= SPIFI_CMD_OPCODE(spifi->nor.read_opcode) |
- 		       SPIFI_CMD_INTLEN(spifi->nor.read_dummy / 8) |
--		       SPIFI_CMD_FRAMEFORM(spifi->nor.addr_width + 1);
-+		       SPIFI_CMD_FRAMEFORM(spifi->nor.addr_nbytes + 1);
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 2bfa84100d38..7db6b41d7c30 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -38,7 +38,7 @@
-  */
- #define CHIP_ERASE_2MB_READY_WAIT_JIFFIES	(40UL * HZ)
- 
--#define SPI_NOR_MAX_ADDR_WIDTH	4
-+#define SPI_NOR_MAX_ADDR_NBYTES	4
- 
- #define SPI_NOR_SRST_SLEEP_MIN 200
- #define SPI_NOR_SRST_SLEEP_MAX 400
-@@ -198,7 +198,7 @@ static ssize_t spi_nor_spimem_read_data(struct spi_nor *nor, loff_t from,
- {
- 	struct spi_mem_op op =
- 		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
--			   SPI_MEM_OP_ADDR(nor->addr_width, from, 0),
-+			   SPI_MEM_OP_ADDR(nor->addr_nbytes, from, 0),
- 			   SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
- 			   SPI_MEM_OP_DATA_IN(len, buf, 0));
- 	bool usebouncebuf;
-@@ -262,7 +262,7 @@ static ssize_t spi_nor_spimem_write_data(struct spi_nor *nor, loff_t to,
- {
- 	struct spi_mem_op op =
- 		SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 0),
--			   SPI_MEM_OP_ADDR(nor->addr_width, to, 0),
-+			   SPI_MEM_OP_ADDR(nor->addr_nbytes, to, 0),
- 			   SPI_MEM_OP_NO_DUMMY,
- 			   SPI_MEM_OP_DATA_OUT(len, buf, 0));
- 	ssize_t nbytes;
-@@ -1134,7 +1134,7 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	if (nor->spimem) {
- 		struct spi_mem_op op =
- 			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
--						nor->addr_width, addr);
-+						nor->addr_nbytes, addr);
- 
- 		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
- 
-@@ -1147,13 +1147,13 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	 * Default implementation, if driver doesn't have a specialized HW
- 	 * control
- 	 */
--	for (i = nor->addr_width - 1; i >= 0; i--) {
-+	for (i = nor->addr_nbytes - 1; i >= 0; i--) {
- 		nor->bouncebuf[i] = addr & 0xff;
- 		addr >>= 8;
- 	}
- 
- 	return spi_nor_controller_ops_write_reg(nor, nor->erase_opcode,
--						nor->bouncebuf, nor->addr_width);
-+						nor->bouncebuf, nor->addr_nbytes);
- }
- 
- /**
-@@ -2270,9 +2270,9 @@ static int spi_nor_default_setup(struct spi_nor *nor,
- 	return 0;
- }
- 
--static int spi_nor_set_addr_width(struct spi_nor *nor)
-+static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
- {
--	if (nor->addr_width) {
-+	if (nor->addr_nbytes) {
- 		/* already configured from SFDP */
- 	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
- 		/*
-@@ -2287,26 +2287,26 @@ static int spi_nor_set_addr_width(struct spi_nor *nor)
- 		 * Force all 8D-8D-8D flashes to use an address width of 4 to
- 		 * avoid this situation.
- 		 */
--		nor->addr_width = 4;
--	} else if (nor->info->addr_width) {
--		nor->addr_width = nor->info->addr_width;
-+		nor->addr_nbytes = 4;
-+	} else if (nor->info->addr_nbytes) {
-+		nor->addr_nbytes = nor->info->addr_nbytes;
- 	} else {
--		nor->addr_width = 3;
-+		nor->addr_nbytes = 3;
- 	}
- 
--	if (nor->addr_width == 3 && nor->params->size > 0x1000000) {
-+	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
--		nor->addr_width = 4;
-+		nor->addr_nbytes = 4;
- 	}
- 
--	if (nor->addr_width > SPI_NOR_MAX_ADDR_WIDTH) {
-+	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
- 		dev_dbg(nor->dev, "address width is too large: %u\n",
--			nor->addr_width);
-+			nor->addr_nbytes);
- 		return -EINVAL;
- 	}
- 
- 	/* Set 4byte opcodes when possible. */
--	if (nor->addr_width == 4 && nor->flags & SNOR_F_4B_OPCODES &&
-+	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
- 	    !(nor->flags & SNOR_F_HAS_4BAIT))
- 		spi_nor_set_4byte_opcodes(nor);
- 
-@@ -2325,7 +2325,7 @@ static int spi_nor_setup(struct spi_nor *nor,
- 	if (ret)
- 		return ret;
- 
--	return spi_nor_set_addr_width(nor);
-+	return spi_nor_set_addr_nbytes(nor);
- }
- 
- /**
-@@ -2518,7 +2518,7 @@ static void spi_nor_sfdp_init_params_deprecated(struct spi_nor *nor)
- 
- 	if (spi_nor_parse_sfdp(nor)) {
- 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
--		nor->addr_width = 0;
-+		nor->addr_nbytes = 0;
- 		nor->flags &= ~SNOR_F_4B_OPCODES;
- 	}
- }
-@@ -2739,7 +2739,7 @@ static int spi_nor_init(struct spi_nor *nor)
- 	     nor->flags & SNOR_F_SWP_IS_VOLATILE))
- 		spi_nor_try_unlock_all(nor);
- 
--	if (nor->addr_width == 4 &&
-+	if (nor->addr_nbytes == 4 &&
- 	    nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
- 	    !(nor->flags & SNOR_F_4B_OPCODES)) {
- 		/*
-@@ -2866,7 +2866,7 @@ static void spi_nor_put_device(struct mtd_info *mtd)
- void spi_nor_restore(struct spi_nor *nor)
- {
- 	/* restore the addressing mode */
--	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
-+	if (nor->addr_nbytes == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
- 	    nor->flags & SNOR_F_BROKEN_RESET)
- 		nor->params->set_4byte_addr_mode(nor, false);
- 
-@@ -3056,7 +3056,7 @@ static int spi_nor_create_read_dirmap(struct spi_nor *nor)
- {
- 	struct spi_mem_dirmap_info info = {
- 		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 0),
--				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 0),
-+				      SPI_MEM_OP_ADDR(nor->addr_nbytes, 0, 0),
- 				      SPI_MEM_OP_DUMMY(nor->read_dummy, 0),
- 				      SPI_MEM_OP_DATA_IN(0, NULL, 0)),
- 		.offset = 0,
-@@ -3087,7 +3087,7 @@ static int spi_nor_create_write_dirmap(struct spi_nor *nor)
- {
- 	struct spi_mem_dirmap_info info = {
- 		.op_tmpl = SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 0),
--				      SPI_MEM_OP_ADDR(nor->addr_width, 0, 0),
-+				      SPI_MEM_OP_ADDR(nor->addr_nbytes, 0, 0),
- 				      SPI_MEM_OP_NO_DUMMY,
- 				      SPI_MEM_OP_DATA_OUT(0, NULL, 0)),
- 		.offset = 0,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 80d4831a4f34..5fc3d4a8add1 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -90,9 +90,9 @@
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_NO_DATA)
- 
--#define SPI_NOR_SECTOR_ERASE_OP(opcode, addr_width, addr)		\
-+#define SPI_NOR_SECTOR_ERASE_OP(opcode, addr_nbytes, addr)		\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 0),				\
--		   SPI_MEM_OP_ADDR(addr_width, addr, 0),		\
-+		   SPI_MEM_OP_ADDR(addr_nbytes, addr, 0),		\
- 		   SPI_MEM_OP_NO_DUMMY,					\
- 		   SPI_MEM_OP_NO_DATA)
- 
-@@ -434,7 +434,7 @@ struct spi_nor_fixups {
-  *                  isn't necessarily called a "sector" by the vendor.
-  * @n_sectors:      the number of sectors.
-  * @page_size:      the flash's page size.
-- * @addr_width:     the flash's address width.
-+ * @addr_nbytes:    number of address bytes to send.
-  *
-  * @parse_sfdp:     true when flash supports SFDP tables. The false value has no
-  *                  meaning. If one wants to skip the SFDP tables, one should
-@@ -493,7 +493,7 @@ struct flash_info {
- 	unsigned sector_size;
- 	u16 n_sectors;
- 	u16 page_size;
--	u16 addr_width;
-+	u16 addr_nbytes;
- 
- 	bool parse_sfdp;
- 	u16 flags;
-@@ -555,11 +555,11 @@ struct flash_info {
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = 256,					\
- 
--#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width)	\
-+#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
- 		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = (_page_size),				\
--		.addr_width = (_addr_width),				\
-+		.addr_nbytes = (_addr_nbytes),				\
- 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
- 
- #define OTP_INFO(_len, _n_regions, _base, _offset)			\
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index c012bc2486e1..23e331cc42a9 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -20,7 +20,7 @@ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
- 	 */
- 	if ((bfpt->dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) ==
- 		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
--		nor->addr_width = 4;
-+		nor->addr_nbytes = 4;
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-index fa63d8571218..00ab0d2d6d2f 100644
---- a/drivers/mtd/spi-nor/otp.c
-+++ b/drivers/mtd/spi-nor/otp.c
-@@ -35,13 +35,13 @@
-  */
- int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
- {
--	u8 addr_width, read_opcode, read_dummy;
-+	u8 addr_nbytes, read_opcode, read_dummy;
- 	struct spi_mem_dirmap_desc *rdesc;
- 	enum spi_nor_protocol read_proto;
- 	int ret;
- 
- 	read_opcode = nor->read_opcode;
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	read_dummy = nor->read_dummy;
- 	read_proto = nor->read_proto;
- 	rdesc = nor->dirmap.rdesc;
-@@ -54,7 +54,7 @@ int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf)
- 	ret = spi_nor_read_data(nor, addr, len, buf);
- 
- 	nor->read_opcode = read_opcode;
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->read_dummy = read_dummy;
- 	nor->read_proto = read_proto;
- 	nor->dirmap.rdesc = rdesc;
-@@ -85,11 +85,11 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- {
- 	enum spi_nor_protocol write_proto;
- 	struct spi_mem_dirmap_desc *wdesc;
--	u8 addr_width, program_opcode;
-+	u8 addr_nbytes, program_opcode;
- 	int ret, written;
- 
- 	program_opcode = nor->program_opcode;
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	write_proto = nor->write_proto;
- 	wdesc = nor->dirmap.wdesc;
- 
-@@ -113,7 +113,7 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
- 
- out:
- 	nor->program_opcode = program_opcode;
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->write_proto = write_proto;
- 	nor->dirmap.wdesc = wdesc;
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index a5211543d30d..61ae8c8c5237 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -134,7 +134,7 @@ struct sfdp_4bait {
- 
- /**
-  * spi_nor_read_raw() - raw read of serial flash memory. read_opcode,
-- *			addr_width and read_dummy members of the struct spi_nor
-+ *			addr_nbytes and read_dummy members of the struct spi_nor
-  *			should be previously
-  * set.
-  * @nor:	pointer to a 'struct spi_nor'
-@@ -178,21 +178,21 @@ static int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
- static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
- 			     size_t len, void *buf)
- {
--	u8 addr_width, read_opcode, read_dummy;
-+	u8 addr_nbytes, read_opcode, read_dummy;
- 	int ret;
- 
- 	read_opcode = nor->read_opcode;
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	read_dummy = nor->read_dummy;
- 
- 	nor->read_opcode = SPINOR_OP_RDSFDP;
--	nor->addr_width = 3;
-+	nor->addr_nbytes = 3;
- 	nor->read_dummy = 8;
- 
- 	ret = spi_nor_read_raw(nor, addr, len, buf);
- 
- 	nor->read_opcode = read_opcode;
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->read_dummy = read_dummy;
- 
- 	return ret;
-@@ -462,11 +462,11 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
--		nor->addr_width = 3;
-+		nor->addr_nbytes = 3;
- 		break;
- 
- 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
--		nor->addr_width = 4;
-+		nor->addr_nbytes = 4;
- 		break;
- 
- 	default:
-@@ -637,12 +637,12 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- }
- 
- /**
-- * spi_nor_smpt_addr_width() - return the address width used in the
-+ * spi_nor_smpt_addr_nbytes() - return the number of address bytes used in the
-  *			       configuration detection command.
-  * @nor:	pointer to a 'struct spi_nor'
-  * @settings:	configuration detection command descriptor, dword1
-  */
--static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
-+static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings)
- {
- 	switch (settings & SMPT_CMD_ADDRESS_LEN_MASK) {
- 	case SMPT_CMD_ADDRESS_LEN_0:
-@@ -653,7 +653,7 @@ static u8 spi_nor_smpt_addr_width(const struct spi_nor *nor, const u32 settings)
- 		return 4;
- 	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
- 	default:
--		return nor->addr_width;
-+		return nor->addr_nbytes;
- 	}
- }
- 
-@@ -690,7 +690,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	u32 addr;
- 	int err;
- 	u8 i;
--	u8 addr_width, read_opcode, read_dummy;
-+	u8 addr_nbytes, read_opcode, read_dummy;
- 	u8 read_data_mask, map_id;
- 
- 	/* Use a kmalloc'ed bounce buffer to guarantee it is DMA-able. */
-@@ -698,7 +698,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
--	addr_width = nor->addr_width;
-+	addr_nbytes = nor->addr_nbytes;
- 	read_dummy = nor->read_dummy;
- 	read_opcode = nor->read_opcode;
- 
-@@ -709,7 +709,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 			break;
- 
- 		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
--		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
-+		nor->addr_nbytes = spi_nor_smpt_addr_nbytes(nor, smpt[i]);
- 		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
- 		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
- 		addr = smpt[i + 1];
-@@ -756,7 +756,7 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	/* fall through */
- out:
- 	kfree(buf);
--	nor->addr_width = addr_width;
-+	nor->addr_nbytes = addr_nbytes;
- 	nor->read_dummy = read_dummy;
- 	nor->read_opcode = read_opcode;
- 	return ret;
-@@ -1044,7 +1044,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	/*
- 	 * We need at least one 4-byte op code per read, program and erase
- 	 * operation; the .read(), .write() and .erase() hooks share the
--	 * nor->addr_width value.
-+	 * nor->addr_nbytes value.
- 	 */
- 	if (!read_hwcaps || !pp_hwcaps || !erase_mask)
- 		goto out;
-@@ -1098,7 +1098,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	 * Spansion memory. However this quirk is no longer needed with new
- 	 * SFDP compliant memories.
- 	 */
--	nor->addr_width = 4;
-+	nor->addr_nbytes = 4;
- 	nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
- 
- 	/* fall through */
-diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-index 1d2f5db047bd..5723157739fc 100644
---- a/drivers/mtd/spi-nor/xilinx.c
-+++ b/drivers/mtd/spi-nor/xilinx.c
-@@ -31,7 +31,7 @@
- 		.sector_size = (8 * (_page_size)),			\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = (_page_size),				\
--		.addr_width = 3,					\
-+		.addr_nbytes = 3,					\
- 		.flags = SPI_NOR_NO_FR
- 
- /* Xilinx S3AN share MFR with Atmel SPI NOR */
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 5e25a7b75ae2..07b1324d434b 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -353,7 +353,7 @@ struct spi_nor_flash_parameter;
-  * @bouncebuf_size:	size of the bounce buffer
-  * @info:		SPI NOR part JEDEC MFR ID and other info
-  * @manufacturer:	SPI NOR manufacturer
-- * @addr_width:		number of address bytes
-+ * @addr_nbytes:	number of address bytes
-  * @erase_opcode:	the opcode for erasing a sector
-  * @read_opcode:	the read opcode
-  * @read_dummy:		the dummy needed by the read operation
-@@ -382,7 +382,7 @@ struct spi_nor {
- 	size_t			bouncebuf_size;
- 	const struct flash_info	*info;
- 	const struct spi_nor_manufacturer *manufacturer;
--	u8			addr_width;
-+	u8			addr_nbytes;
- 	u8			erase_opcode;
- 	u8			read_opcode;
- 	u8			read_dummy;
+Changes in v14:
+  - add prerequisite patches for s25hl-t/s25hs-t addition.
+  - squash volatile quad enable method to the patch that adds the flashes
+    to avoid unused function warning.
+
+Changes in v13:
+  - Remove patch, Call set_4byte_addr_mode() before spi_nor_quad_enalbe()
+  - Remove patch, Rename local macro
+  - Use 3-byte address width in cypress_nor_quad_enable_volatile()
+  - Add post_sfdp to fix 3 byte erase opcode in 4BAIT
+
+Changes in v12:
+  - Rebase on top of Tudor's series
+    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=295933
+    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294533
+  - New patch: Retain nor->addr_width at 4BAIT parse
+  - New patch: Call set_4byte_addr_mode() before spi_nor_quad_enalbe()
+  - New patch: Rename local macro
+  
+Changes in v11:
+  - Rebase on top of Tudor's series
+    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294490
+  - Remove 'nor->info->addr_width for SMPT parse' patch
+  
+Changes in v10:
+  - Rebase to v5.18-rc1
+  - Remove dependencies on other series
+  - Use nor->info->addr_width for SMPT parse
+  - Add a local function for page size discovery
+  - Clean up volatile QE function
+  
+Changes in v9:
+  - Rebase to v5.17-rc6
+  - Rename function and macro per mwalle's series
+  - Fix some issues in ID table and fixup hook
+
+Changes in v8:
+  - Rebase to v5.17-rc4
+  - Use spi_nor_read_reg and spi_nor_write_reg()
+  
+Changes in v7:
+  - Some changes were missing in v6 patch. Fix it
+
+Changes in v6:
+  - Remove 2Gb dual die package parts and related changes to split mulit
+    die package support into another series of patches  
+
+Changes in v5:
+  - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
+  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
+
+Changes in v4:
+  - Reword 'legacy' to 'default'
+  - Rename spi_nor_read() to spi_nor_default_ready()
+  - Fix dummy cycle calculation in spansion_read_any_reg()
+  - Modify comment for spansion_write_any_reg()
+  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+
+Changes in v3:
+  - Split into multiple patches
+  - Remove S25HL256T and S25HS256T
+  - Add S25HL02GT and S25HS02GT 
+  - Add support for multi-die package parts support
+  - Cleanup Read/Write Any Register implementation
+  - Remove erase_map fix for top/split sector layout
+  - Set ECC data unit size (16B) to writesize 
+
+Changes in v2:
+  - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
+  - Check CFR3V[4] to determine page_size instead of force 512B
+  - Depend on the patchset below to support non-uniform sector layout
+    https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/*** BLURB HERE ***
+
+
+
+Takahiro Kuwano (3):
+  mtd: spi-nor: Retain nor->addr_width at 4BAIT parse
+  mtd: spi-nor: spansion: Add local function to discover page size
+  mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
+
+Tudor Ambarus (5):
+  mtd: spi-nor: s/addr_width/addr_nbytes
+  mtd: spi-nor: core: Shrink the storage size of the flash_info's
+    addr_nbytes
+  mtd: spi-nor: sfdp: Clarify that nor->read_{opcode, dummy} are
+    uninitialized
+  mtd: spi-nor: Do not change nor->addr_nbytes at SFDP parsing time
+  mtd: spi-nor: core: Couple the number of address bytes with the
+    address mode
+
+ drivers/mtd/spi-nor/controllers/aspeed-smc.c |   6 +-
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c   |   2 +-
+ drivers/mtd/spi-nor/controllers/nxp-spifi.c  |   8 +-
+ drivers/mtd/spi-nor/core.c                   | 155 ++++++++--------
+ drivers/mtd/spi-nor/core.h                   |  14 +-
+ drivers/mtd/spi-nor/issi.c                   |   2 +-
+ drivers/mtd/spi-nor/otp.c                    |  12 +-
+ drivers/mtd/spi-nor/sfdp.c                   |  43 ++---
+ drivers/mtd/spi-nor/spansion.c               | 183 ++++++++++++++++---
+ drivers/mtd/spi-nor/xilinx.c                 |   2 +-
+ include/linux/mtd/spi-nor.h                  |   4 +-
+ 11 files changed, 285 insertions(+), 146 deletions(-)
+
 -- 
 2.25.1
 
