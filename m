@@ -4,70 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B7C0C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 15:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63398C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 16:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eYn/rPkA20m/bJ+uGUkD3t0lyxJn9xV3QeN0k81abaI=; b=gjq5xKpweJq07O
-	R5xkXZHbnVJINwlznZoSLrwdldOcySKEoevEUcQLAZkR7vQvVdxoPu4Lr3MfoG63mPlj6M/bvTiTQ
-	/Tl4Rd5le6FfaSNxqY+EMTX+TV/Un1QrPMC1aXQ9xgq+fhuHOa6ZpNmSAVb6r++MqIjKEPJH8LS2/
-	6AbUIoj4mk5X4YUiAPnXKtMBhjOgQP7qYPM6fX6tTAk3l6/auC10TwCV8i//Y2Z/OMSt2dE7d/44q
-	H3OIc3QI5II4kmLeok6IbErr4DAQvQDOAw8d1oHqC/hOFeknEbW+3pM5uz8J7ITUIRAXXOo+uj2p2
-	2umcnhjT6IH1IiCXA2zw==;
+	List-Owner; bh=Q5uQe8WIzCfIYFXMTmXKiQmIbncAdu3w5I/Q/pbstZ4=; b=OEmBo5eBB6PjKn
+	5vTdH3HTtw9YYMZCk6yo2RM4o4/jJmhn9AbLryJSagIq25LOHvwHM1ayeiP76ttOaQhgcttkrHpkQ
+	n+01Am4OMfPbkyJfSmP+rfFsiSC11XUEPgKHGDw2QXVzsMa+yMHybkJKU7MnR+hZZmjv/z9dyMARI
+	8TxaADcoD61Go4xBGnLi9uUdqajV6Me5szcvbBvMdQ1T+rbO0zB2S9G9NgmHdHv2Kk+152tGf7U4C
+	iHUjBrJGbojUedh+zTlweLw3v5u1cg6d2JEyzGITdK4b6rjNcOp2FI76vjXYfXYO+9fa9u5nLfi5i
+	1b0YBa8a2URyR5RJGKYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1no5e2-00FCln-HE; Mon, 09 May 2022 15:49:58 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1no6Ao-00FMen-BI; Mon, 09 May 2022 16:23:50 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1no5dy-00FCjm-3b
- for linux-mtd@lists.infradead.org; Mon, 09 May 2022 15:49:56 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id B5C4FFF808;
- Mon,  9 May 2022 15:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1652111392;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=CUUv6K9HUQMVxkSzrSE4KhjsJz1JhiINmm328pujPPw=;
- b=Lrru+TMTTVd1adxG9RLTHIBU+LKCG4GA4zd0DW4uuPIx7bBf1Dqvzcl0/J29bsLX5UXcrh
- 10VKfQsU1+Vi0gU3v02cKsi74VZ7yKCtqz267L76de+ju2cYcBAL2rTvzSR0pMG1PdPShv
- 4aUdahXFv7mzYYCWmSDbMJS2Ju3ZPs0W8HZZLOOtFibhWVuVL0TjWpAtkxYvMlL1UZW1Wh
- rQyI9AXqcJ7l/JaJSHanoTM+1nq8gpxn4LsmnCRicpXb7/2DkxLB2jQ+SIAbef0coe5aOC
- mRMv1+pEcnBFQwgP0RjT9BwMmFTy+yovPab8ozXEd3CXOLh6SPL7h03lmRi6SQ==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
- <linux-mtd@lists.infradead.org>
-Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
- Gareth Williams <gareth.williams.jx@renesas.com>,
- Phil Edworthy <phil.edworthy@renesas.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- devicetree@vger.kernel.org, Milan Stevanovic <milan.stevanovic@se.com>,
- Jimmy Lalande <jimmy.lalande@se.com>,
- Pascal Eberhard <pascal.eberhard@se.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Herve Codina <herve.codina@bootlin.com>,
- Clement Leger <clement.leger@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 2/2] mtd: rawnand: renesas: Use runtime PM instead of the
- raw clock API
-Date: Mon,  9 May 2022 17:49:43 +0200
-Message-Id: <20220509154943.25422-3-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220509154943.25422-1-miquel.raynal@bootlin.com>
-References: <20220509154943.25422-1-miquel.raynal@bootlin.com>
+ id 1no6Ai-00FMZ8-Uk
+ for linux-mtd@lists.infradead.org; Mon, 09 May 2022 16:23:48 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 5C5C1B817E3;
+ Mon,  9 May 2022 16:23:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D49C385AC;
+ Mon,  9 May 2022 16:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652113423;
+ bh=FwXO3JACkg3sY4dA/R+BvoEHsuUOyXZesgC8uLp382Y=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=r8uSniqMZqOXFG9O7Nk2Dk2ArAW8XkksmnqlDJ+zFtLseUC0uM5wlwP6iQjVnEUtb
+ GU09qu8I4chB+Kewwt7nmV0MfK05y2oikCySLw8TWXbzQr5n+xtn0KvG7XLB/bmXwj
+ TkHu5PCrY6eiG+FiEAE2VTaeC+E+9FaXtfyxaWrGUAtmZP960adBkqjgORqnmAfVUz
+ hXG1Rnt1WpNyLI+GVin684xH/TzgevDgdIbp1DdQ8r8T5QG7tcOcJ5rC6OV7VXjS/8
+ TKGQZfVWW9yu9QzUI//IXm4wuqGyWWbGwv0Id5li44ruIR51jpCJuuWJzKhDBGmyON
+ 8mpI+NeW9WMXQ==
+Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
+ (envelope-from <mchehab@kernel.org>)
+ id 1no6Ae-006xVX-Jf; Mon, 09 May 2022 18:23:40 +0200
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ "Daniel Vetter" <daniel@ffwll.ch>, "David Airlie" <airlied@linux.ie>,
+ "Greg KH" <gregkh@linuxfoundation.org>, "Jaroslav Kysela" <perex@perex.cz>,
+ "Kai Vehmanen" <kai.vehmanen@intel.com>,
+ "Lucas De Marchi" <lucas.demarchi@intel.com>,
+ "Pierre-Louis Bossart" <pierre-louis.bossart@intel.com>,
+ "Takashi Iwai" <tiwai@suse.com>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-mtd@lists.infradead.org,
+ mauro.chehab@linux.intel.com
+Subject: [PATCH v6 3/4] module: set holders when symbol_get() is used
+Date: Mon,  9 May 2022 18:23:38 +0200
+Message-Id: <e8058ca7a0b84479f4075654cecff811916639ce.1652113087.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <cover.1652113087.git.mchehab@kernel.org>
+References: <cover.1652113087.git.mchehab@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220509_084954_493371_2A839AAC 
-X-CRM114-Status: GOOD (  20.12  )
+X-CRM114-CacheID: sfid-20220509_092345_290796_596DC510 
+X-CRM114-Status: GOOD (  19.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,149 +87,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This NAND controller is part of a well defined power domain handled by
-the runtime PM core. Let's keep the harmony with the other RZ/N1 drivers
-and exclusively use the runtime PM API to enable/disable the clocks.
+Some Kernel modules use symbol_get() or symbol_request() in order
+to bind into other drivers. That's the case, for instance, of
+media dvb drivers that hook the frontend drivers via I2C using
+dvb_attach() macro.
 
-We still need to retrieve the external clock rate in order to derive the
-NAND timings, but that is not a big deal, we can still do that in the
-probe and just save this value to reuse it later.
+When such bindings happen, one needs first to unload/unbind the
+driver that got the symbol before being able to unload/unbind the
+module that contains the needed symbol.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Add a logic to document it via /proc/modules and via lsmod.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 ---
- .../mtd/nand/raw/renesas-nand-controller.c    | 58 +++++++++----------
- 1 file changed, 26 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/renesas-nand-controller.c b/drivers/mtd/nand/raw/renesas-nand-controller.c
-index 6db063b230a9..432c7c22c16c 100644
---- a/drivers/mtd/nand/raw/renesas-nand-controller.c
-+++ b/drivers/mtd/nand/raw/renesas-nand-controller.c
-@@ -16,6 +16,7 @@
- #include <linux/mtd/rawnand.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
+See [PATCH v6 0/4] at: https://lore.kernel.org/all/cover.1652113087.git.mchehab@kernel.org/
+
+ drivers/mtd/chips/gen_probe.c           | 4 ++--
+ include/linux/module.h                  | 4 ++--
+ kernel/module/main.c                    | 3 ++-
+ samples/hw_breakpoint/data_breakpoint.c | 2 +-
+ 4 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 4d4f97841016..f1e97633ac09 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -208,10 +208,10 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
+ 	if (!probename)
+ 		return NULL;
  
- #define COMMAND_REG 0x00
-@@ -216,8 +217,7 @@ struct rnandc {
- 	struct nand_controller controller;
- 	struct device *dev;
- 	void __iomem *regs;
--	struct clk *hclk;
--	struct clk *eclk;
-+	unsigned long ext_clk_rate;
- 	unsigned long assigned_cs;
- 	struct list_head chips;
- 	struct nand_chip *selected_chip;
-@@ -891,7 +891,7 @@ static int rnandc_setup_interface(struct nand_chip *chip, int chipnr,
- {
- 	struct rnand_chip *rnand = to_rnand(chip);
- 	struct rnandc *rnandc = to_rnandc(chip->controller);
--	unsigned int period_ns = 1000000000 / clk_get_rate(rnandc->eclk);
-+	unsigned int period_ns = 1000000000 / rnandc->ext_clk_rate;
- 	const struct nand_sdr_timings *sdr;
- 	unsigned int cyc, cle, ale, bef_dly, ca_to_data;
- 
-@@ -1319,6 +1319,7 @@ static int rnandc_chips_init(struct rnandc *rnandc)
- static int rnandc_probe(struct platform_device *pdev)
- {
- 	struct rnandc *rnandc;
-+	struct clk *eclk;
- 	int irq, ret;
- 
- 	rnandc = devm_kzalloc(&pdev->dev, sizeof(*rnandc), GFP_KERNEL);
-@@ -1335,29 +1336,10 @@ static int rnandc_probe(struct platform_device *pdev)
- 	if (IS_ERR(rnandc->regs))
- 		return PTR_ERR(rnandc->regs);
- 
--	/* APB clock */
--	rnandc->hclk = devm_clk_get(&pdev->dev, "hclk");
--	if (IS_ERR(rnandc->hclk))
--		return PTR_ERR(rnandc->hclk);
--
--	/* External NAND bus clock */
--	rnandc->eclk = devm_clk_get(&pdev->dev, "eclk");
--	if (IS_ERR(rnandc->eclk))
--		return PTR_ERR(rnandc->eclk);
--
--	ret = clk_prepare_enable(rnandc->hclk);
--	if (ret)
--		return ret;
--
--	ret = clk_prepare_enable(rnandc->eclk);
--	if (ret)
--		goto disable_hclk;
--
- 	rnandc_dis_interrupts(rnandc);
- 	irq = platform_get_irq_optional(pdev, 0);
- 	if (irq == -EPROBE_DEFER) {
--		ret = irq;
--		goto disable_eclk;
-+		return irq;
- 	} else if (irq < 0) {
- 		dev_info(&pdev->dev, "No IRQ found, fallback to polling\n");
- 		rnandc->use_polling = true;
-@@ -1365,12 +1347,27 @@ static int rnandc_probe(struct platform_device *pdev)
- 		ret = devm_request_irq(&pdev->dev, irq, rnandc_irq_handler, 0,
- 				       "renesas-nand-controller", rnandc);
- 		if (ret < 0)
--			goto disable_eclk;
-+			return ret;
+-	probe_function = __symbol_get(probename);
++	probe_function = __symbol_get(probename, THIS_MODULE);
+ 	if (!probe_function) {
+ 		request_module("cfi_cmdset_%4.4X", type);
+-		probe_function = __symbol_get(probename);
++		probe_function = __symbol_get(probename, THIS_MODULE);
  	}
+ 	kfree(probename);
  
- 	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret)
--		goto disable_eclk;
-+		return ret;
-+
-+	devm_pm_runtime_enable(&pdev->dev);
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* The external NAND bus clock rate is needed for computing timings */
-+	eclk = clk_get(&pdev->dev, "eclk");
-+	if (IS_ERR(eclk)) {
-+		ret = PTR_ERR(eclk);
-+		goto dis_runtime_pm;
-+	}
-+
-+	rnandc->ext_clk_rate = clk_get_rate(eclk);
-+	clk_put(eclk);
+diff --git a/include/linux/module.h b/include/linux/module.h
+index a66b9be92ef5..07a77c2618b5 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -298,8 +298,8 @@ struct notifier_block;
  
- 	rnandc_clear_fifo(rnandc);
+ extern int modules_disabled; /* for sysctl */
+ /* Get/put a kernel symbol (calls must be symmetric) */
+-void *__symbol_get(const char *symbol);
+-#define symbol_get(x) ((typeof(&x))(__symbol_get(__stringify(x))))
++void *__symbol_get(const char *symbol, struct module *this);
++#define symbol_get(x) ((typeof(&x))(__symbol_get(__stringify(x), THIS_MODULE)))
  
-@@ -1378,14 +1375,12 @@ static int rnandc_probe(struct platform_device *pdev)
- 
- 	ret = rnandc_chips_init(rnandc);
- 	if (ret)
--		goto disable_eclk;
-+		goto dis_runtime_pm;
- 
- 	return 0;
- 
--disable_eclk:
--	clk_disable_unprepare(rnandc->eclk);
--disable_hclk:
--	clk_disable_unprepare(rnandc->hclk);
-+dis_runtime_pm:
-+	pm_runtime_put(&pdev->dev);
- 
- 	return ret;
+ /* modules using other modules: kdb wants to see this. */
+ struct module_use {
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 6044aeba0f18..ec1baa67d6e7 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -1259,7 +1259,7 @@ static void free_module(struct module *mod)
+ #endif
  }
-@@ -1396,8 +1391,7 @@ static int rnandc_remove(struct platform_device *pdev)
  
- 	rnandc_chips_cleanup(rnandc);
- 
--	clk_disable_unprepare(rnandc->eclk);
--	clk_disable_unprepare(rnandc->hclk);
-+	pm_runtime_put(&pdev->dev);
- 
- 	return 0;
+-void *__symbol_get(const char *symbol)
++void *__symbol_get(const char *symbol, struct module *this)
+ {
+ 	struct find_symbol_arg fsa = {
+ 		.name	= symbol,
+@@ -1273,6 +1273,7 @@ void *__symbol_get(const char *symbol)
+ 		return NULL;
+ 	}
+ 	preempt_enable();
++	ref_module_dependency(fsa.owner, this);
+ 	return (void *)kernel_symbol_value(fsa.sym);
  }
+ EXPORT_SYMBOL_GPL(__symbol_get);
+diff --git a/samples/hw_breakpoint/data_breakpoint.c b/samples/hw_breakpoint/data_breakpoint.c
+index 418c46fe5ffc..30b3261a894b 100644
+--- a/samples/hw_breakpoint/data_breakpoint.c
++++ b/samples/hw_breakpoint/data_breakpoint.c
+@@ -41,7 +41,7 @@ static int __init hw_break_module_init(void)
+ {
+ 	int ret;
+ 	struct perf_event_attr attr;
+-	void *addr = __symbol_get(ksym_name);
++	void *addr = __symbol_get(ksym_name, THIS_MODULE);
+ 
+ 	if (!addr)
+ 		return -ENXIO;
 -- 
-2.27.0
+2.35.3
 
 
 ______________________________________________________
