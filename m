@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F28EC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 15:34:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE280C433FE
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 15:50:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rPfD8ZU4TORCRzM33IFk3apzgqZRAUSDTwfKwlVd56w=; b=u/KuhOo54ouqoi
-	ZaXQy7GmvhNuDsmEgtMCzvIKBIWzipdf+OnHgIyK1b2las8mwZEiw/Jy+aJ5iWfELYwMPQFZdjNKM
-	/3PEAWgefZyVhbsXLcjW41hbgdJIiGd4YvM58XP8xbcnycpVVErr4EWzIeQPmWCgH/wSdhiKu8IDh
-	vC9CIggDBGGQLS4utQtSJIAjHcc8S9mcn3DZ0ajdkp/R765YkNBX3gS5l3E03CjadcfDyM2GJH3xs
-	bIOXf+cUAgDeNMMwvmiMhesMU0bKhxaVel4+qPRM77G699zjtzJt94FrpCcxoX3S7fueA9PhUb6Zb
-	at42Eb/aw1xE/+2IaniA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=K7kfmWgGMQ5gI7IxEEdDU7UR1EF4xSj3J894O3J5V5U=; b=xlHCJb2EF+KHou
+	49/AhcbjRvbvq6V1Mt4Tdnzlgn6mdvUQAFYSTSbyiA9XS/LocS22E4D7u9vNuITaf2NAllOd5U+eP
+	TOCfiEFcLIQOB6EOY9XAI0vOeGGS+jgL5KuDn2BueHw/LGdit17DxSJ2Lclzy87EL6Mth70Dlvyso
+	onTSElCr9aqv0j1q48/XWZ6UEMQ+h82IS/GVHskmNbLTm7vT0oKXIU2CKiS/IKLPd6fDGc7shhPPy
+	GCHoLhaNdzZyglmpPw9RiPt/JjFFOF7kurSJGCCtEKnYDsq4eZxzgOyNKYqu7JCO9af3QyNOhlEZa
+	rznAh6EIXIunBzd50fQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1no5PD-00F8XE-16; Mon, 09 May 2022 15:34:39 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1no5dz-00FCkg-VS; Mon, 09 May 2022 15:49:56 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1no5P9-00F8WP-B2
- for linux-mtd@lists.infradead.org; Mon, 09 May 2022 15:34:37 +0000
+ id 1no5du-00FCha-Ui
+ for linux-mtd@lists.infradead.org; Mon, 09 May 2022 15:49:52 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id BC631FF804;
- Mon,  9 May 2022 15:34:25 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id EBE9CFF803;
+ Mon,  9 May 2022 15:49:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1652110469;
+ t=1652111386;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5KLuJlfNEA5Fbzc0NZoL/MBREpZ4szczQ+9JCfaD3NQ=;
- b=PL0vubCc5JiqT/rNnrn6CLfeOz8ceMyyGjJByHomeB+MrDwcanoPmdG4jr2hvLzAdshhrw
- Hh+zBfc/KwdW02sYBG+yGBs9US0CJLUaD2iCp/xyyZTDD3hwaU44OKB2dY8tgRvxRUNH6z
- 4SOCmxt/URhi5TR2ix8H4gxKMSmcFBUq6G0ViYZ+9ZO7bfPjIus3b1NZhiaJkVE/+FPSOg
- NFDlaTPcgbTyGhMaKRAAeXa3VMHyoBn63lQYiDuYW+bmpLDfIl1o61PHrmBcspF7Uby8lF
- UI5nEEerrxJzH7eR1VHHfYCTh5jn3UFFr9YWUANcjAfiktQB2iHWfrTBiu5f2Q==
-Date: Mon, 9 May 2022 17:34:24 +0200
+ content-transfer-encoding:content-transfer-encoding;
+ bh=mIquRG577JqEJQFRHPKavgPrOYAE9YyAjroW6Bm9Lt8=;
+ b=KxqAo1RleezPKdee9P+jVaqAyQbjagyU8gaRVXDs4FXLK4B6FzQv2yjd1aHJLkmjG07OrJ
+ ffUV3tzsSFEHDqZ6BEBlxRrK27uA0gWSbvbQmEmA4Dh6kFB2vuym4+SuDFBjbvrOtphu4Z
+ iQFQmZgWfuB/0CsHuXxWBNhto1uv3SHroBgRZOon0MHdzmyf5QZTwEAsZh2ycSbP4WneDB
+ Pv58t3m1SFOl1LVSVBPgH3AoHywPaRs12EeBfM8ia00TcGWvzNt7Yv9dywlKtnQ7fR7I1v
+ k0+sSq837fgso/EVxl02udUfYyxU+jT4Jvkw5bs7JXR0MKJ+vLdDIxO1OGpxTw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush
- Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Linux-Renesas
- <linux-renesas-soc@vger.kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
- Gareth Williams <gareth.williams.jx@renesas.com>, Phil Edworthy
- <phil.edworthy@renesas.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED
- DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 3/3] mtd: rawnand: renesas: Use runtime PM instead of
- the raw clock API
-Message-ID: <20220509173424.75ec0d1a@xps13>
-In-Reply-To: <CAMuHMdVnx3O15aQw4Oxw-hfPZFUidMGQ_5HfQun9m_fKkAnm3w@mail.gmail.com>
-References: <20220429105229.368728-1-miquel.raynal@bootlin.com>
- <20220429105229.368728-4-miquel.raynal@bootlin.com>
- <CAMuHMdVnx3O15aQw4Oxw-hfPZFUidMGQ_5HfQun9m_fKkAnm3w@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ <linux-mtd@lists.infradead.org>
+Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ devicetree@vger.kernel.org, Milan Stevanovic <milan.stevanovic@se.com>,
+ Jimmy Lalande <jimmy.lalande@se.com>,
+ Pascal Eberhard <pascal.eberhard@se.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Clement Leger <clement.leger@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 0/2] mtd: rawnand: renesas: Runtime PM use
+Date: Mon,  9 May 2022 17:49:41 +0200
+Message-Id: <20220509154943.25422-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220509_083435_553785_D21C6A0F 
-X-CRM114-Status: GOOD (  12.60  )
+X-CRM114-CacheID: sfid-20220509_084951_198543_B206F15A 
+X-CRM114-Status: GOOD (  11.65  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,26 +75,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgR2VlcnQsCgoKPiA+ICAgICAgICAgcmV0ID0gZG1hX3NldF9tYXNrKCZwZGV2LT5kZXYsIERN
-QV9CSVRfTUFTSygzMikpOwo+ID4gICAgICAgICBpZiAocmV0KQo+ID4gLSAgICAgICAgICAgICAg
-IGdvdG8gZGlzYWJsZV9lY2xrOwo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gPiAr
-Cj4gPiArICAgICAgIHBtX3J1bnRpbWVfZW5hYmxlKCZwZGV2LT5kZXYpOwo+ID4gKyAgICAgICBw
-bV9ydW50aW1lX2dldF9zeW5jKCZwZGV2LT5kZXYpOyAgCj4gCj4gcmV0ID0gcG1fcnVudGltZV9y
-ZXN1bWVfYW5kX2dldCkuLi4pOwo+IGlmIChyZXQgPCAwKSAuLi4KCkkgYWxzbyBjaGFuZ2VkIHRo
-ZSBlbmFibGUgY2FsbCB0byB1c2UgZGV2bV9wbV9ydW50aW1lX2VuYWJsZSgpIGFuZApkcm9wcGVk
-IHRoZSBjYWxscyB0byBwbV9ydW50aW1lX2Rpc2FibGUoKSBiZWxvdyAoc2FtZSBpbiB0aGUgUlRD
-CmRyaXZlcikuCgo+IAo+ID4gKwo+ID4gKyAgICAgICAvKiBUaGUgZXh0ZXJuYWwgTkFORCBidXMg
-Y2xvY2sgcmF0ZSBpcyBuZWVkZWQgZm9yIGNvbXB1dGluZyB0aW1pbmdzICovCj4gPiArICAgICAg
-IGVjbGsgPSBjbGtfZ2V0KCZwZGV2LT5kZXYsICJlY2xrIik7Cj4gPiArICAgICAgIGlmIChJU19F
-UlIoZWNsaykpIHsKPiA+ICsgICAgICAgICAgICAgICByZXQgPSBQVFJfRVJSKGVjbGspOwo+ID4g
-KyAgICAgICAgICAgICAgIGdvdG8gZGlzX3J1bnRpbWVfcG07Cj4gPiArICAgICAgIH0KPiA+ICsK
-PiA+ICsgICAgICAgcm5hbmRjLT5leHRfY2xrX3JhdGUgPSBjbGtfZ2V0X3JhdGUoZWNsayk7Cj4g
-PiArICAgICAgIGNsa19wdXQoZWNsayk7Cj4gPgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRp
-c2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwo=
+There was a small mistake when first introducing this controller driver:
+the power-domain property was missing in the device tree because there
+was only one controller supported at this time (UART) and this is a
+Synopsis IP which did not support power domains. The idea is to always
+use these power domains when available, so let's add it to the bindings,
+the DT and use it from the driver through the runtimpe PM API instead of
+doing raw clk API calls.
+
+Changes in v2:
+* Dropped the DT patch merged by Geert.
+* Used devm_pm_runtime_enable() instead of pm_runtime_enable() and
+  dropped the pm_runtime_disable() calls.
+* Used pm_runtime_resume_and_get() instead of pm_runtime_get_sync().
+* Collected the tags on the bindings.
+
+Miquel Raynal (2):
+  dt-bindings: mtd: renesas: Fix the NAND controller description
+  mtd: rawnand: renesas: Use runtime PM instead of the raw clock API
+
+ .../bindings/mtd/renesas-nandc.yaml           |  5 ++
+ .../mtd/nand/raw/renesas-nand-controller.c    | 58 +++++++++----------
+ 2 files changed, 31 insertions(+), 32 deletions(-)
+
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
