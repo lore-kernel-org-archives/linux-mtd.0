@@ -4,72 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 440DDC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 11:11:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 443FBC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 12:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OxkfKMUAzg7HETv7xsWTpvfbn5P9xBAOnzulfNEq7Kg=; b=tR45EBuR/6Qp/B
-	C89o+UjWZYGsRE+pWyPx15lXsGf133eePGaa0BemXsMAtp6oOCpJUXL8OVLT8VRm7gu4BB/gM1hV2
-	8p3ci3qzpK0OsOevClFebqtczOdQygwyDTNZwePeycD+/EEWvDMA76cejS6xubK8nObCuiGHUFSZj
-	n5gi8fMqrNHof0Y44NAfdwpP3DLacaWGp5RKoF1Rw0AGnr37+QLfnavdAjfVEDIIq/PZzyo6+GLa+
-	RV46DDi3E31t+Qigl+SagC43GR7qAIefjyo5r8jiFaxXp2h2Z8bLB9KYWkynOSYx0Y+ZMCI3ViolM
-	jZW8IReb5UlY2UM3nkSw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=cVF0J2NIodazwsM5OiigbiLut4ksJYxYuFWYgRibJTE=; b=oJd/Dztmou8phb
+	BGcUbD6YA0eWXZJSmCdFtiOrPWGfkc6GPtcIp74zdYrpsTZVsppei2Jc0CLfM0MFULMly5wHM8gAD
+	HJBfa1BF4IZlls3+RAArSCADYXFriFTG8t5/6DpitUWhk3FxCWZtSfnNVNJkWLw+KRBY6jK564tja
+	/WAIf0RJIQWRp1t8jPrTdDjdWOXH1TYdbAsa9a6eSn9VvViwRxnZqUuuuv1ofwh+8LW7yUxnweN5T
+	pzwhaX0dk5At5J3bMy+A7ratcETy09u47fFEmBAgzFcI0BIZlS/vz1siPDtY1LBwbxHoY0YHgJw6G
+	y71cBL1e+bo1NX9IdOjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1no1IN-00E0fi-Pn; Mon, 09 May 2022 11:11:19 +0000
-Received: from lelv0142.ext.ti.com ([198.47.23.249])
+	id 1no2Ui-00EN1a-PG; Mon, 09 May 2022 12:28:08 +0000
+Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1no1IK-00E0dn-Gq
- for linux-mtd@lists.infradead.org; Mon, 09 May 2022 11:11:18 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 249BB9jj066312;
- Mon, 9 May 2022 06:11:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1652094669;
- bh=vndduWuikymFtFGeCUAaA7OplM3JUKbgEoaQpyTwuks=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=psp1b+YQ1WB1VttDrtd1COkZtrj3a+2LUuZ6/N4eYky9zFfEWCNUPcVTCgmX20jaj
- /8Hp0dVCXRe63VNZHXbzcev1L9PtjPYtkqPpovD5hAdcZuG3CbWC+1Ee6PsX3p91cg
- 2jJ7X76PjOFTmKY/7heJXYd9U8eo/siEF9OEbyWI=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 249BB911020080
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 9 May 2022 06:11:09 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 9
- May 2022 06:11:09 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 9 May 2022 06:11:08 -0500
-Received: from pratyush-4F-325.dhcp.ti.com (ileax41-snat.itg.ti.com
- [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 249BB6Cj002174;
- Mon, 9 May 2022 06:11:07 -0500
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, Michael Walle
- <michael@walle.cc>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: move spi_nor_write_ear() to winbond
- module
-Date: Mon, 9 May 2022 16:41:05 +0530
-Message-ID: <165209461431.3971394.16610033211689877768.b4-ty@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220429100153.2338501-1-michael@walle.cc>
-References: <20220429100153.2338501-1-michael@walle.cc>
+ id 1no2Uf-00EMxs-Ev
+ for linux-mtd@lists.infradead.org; Mon, 09 May 2022 12:28:07 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:8886:2b92:63eb:2922])
+ by albert.telenet-ops.be with bizsmtp
+ id UcTv270070moLbn06cTv0Z; Mon, 09 May 2022 14:27:58 +0200
+Received: from rox.of.borg ([192.168.97.57])
+ by ramsan.of.borg with esmtps (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1no2UU-003XSj-Ik; Mon, 09 May 2022 14:27:54 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+ (envelope-from <geert@linux-m68k.org>)
+ id 1no2UU-003Ba7-0r; Mon, 09 May 2022 14:27:54 +0200
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Bastian Hecht <hechtb@googlemail.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH/RFC] dt-bindings: mtd: Remove Renesas FLCTL NAND controller
+ support
+Date: Mon,  9 May 2022 14:27:52 +0200
+Message-Id: <ef70e24a57d2342458fe11b7b13775ffac1f1bd0.1652098726.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220509_041116_661351_1474639E 
-X-CRM114-Status: UNSURE (   9.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220509_052805_683405_18F0F1B3 
+X-CRM114-Status: GOOD (  14.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,24 +71,85 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 29 Apr 2022 12:01:53 +0200, Michael Walle wrote:
-> The "Extended Address Register" is winbond specific. If the flash is
-> larger than 16MiB and is used in 3 byte address mode, it is used to set
-> the remaining address bits. Move the write_ear() function, the opcode
-> macros and the spimem op template into the winbond module and rename
-> them accordingly.
-> 
-> 
-> [...]
+The DT bindings for the Renesas FLCTL NAND controller document only support a
+single SoC, namely the Renesas R-Mobile AP4 (SH7372).
+Linux dropped support for this SoC in commit 59b89af1d5551c12 ("ARM:
+shmobile: sh7372: Remove Legacy C SoC code") in v4.1.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next, thanks!
-[1/1] mtd: spi-nor: move spi_nor_write_ear() to winbond module
-      (no commit info)
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+The FLCTL NAND controller (or an enhanced version) is also present on
+SH-Mobile AG5 (sh73a0) and R-Mobile A1 (r8a7740), but the sole boards
+supported upstream (KMC KZM-A9-GT resp. Atmark Techno Armadillo-800-EVA)
+use eMMC NAND instead of raw NAND FLASH.
 
---
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+What's the policy w.r.t. stale DT bindings?
+Should it be converted to json-schema instead?
+drivers/mtd/nand/raw/sh_flctl.c still implements these bindings.
+The driver cannot be removed, as it is also used on the non-DT
+SH7723-based AP-325RXA platform.
+---
+ .../devicetree/bindings/mtd/flctl-nand.txt    | 49 -------------------
+ 1 file changed, 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/flctl-nand.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/flctl-nand.txt b/Documentation/devicetree/bindings/mtd/flctl-nand.txt
+deleted file mode 100644
+index 427f46dc60add134..0000000000000000
+--- a/Documentation/devicetree/bindings/mtd/flctl-nand.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-FLCTL NAND controller
+-
+-Required properties:
+-- compatible : "renesas,shmobile-flctl-sh7372"
+-- reg : Address range of the FLCTL
+-- interrupts : flste IRQ number
+-- nand-bus-width : bus width to NAND chip
+-
+-Optional properties:
+-- dmas: DMA specifier(s)
+-- dma-names: name for each DMA specifier. Valid names are
+-	     "data_tx", "data_rx", "ecc_tx", "ecc_rx"
+-
+-The DMA fields are not used yet in the driver but are listed here for
+-completing the bindings.
+-
+-The device tree may optionally contain sub-nodes describing partitions of the
+-address space. See partition.txt for more detail.
+-
+-Example:
+-
+-	flctl@e6a30000 {
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		compatible = "renesas,shmobile-flctl-sh7372";
+-		reg = <0xe6a30000 0x100>;
+-		interrupts = <0x0d80>;
+-
+-		nand-bus-width = <16>;
+-
+-		dmas = <&dmac 1 /* data_tx */
+-			&dmac 2;> /* data_rx */
+-		dma-names = "data_tx", "data_rx";
+-
+-		system@0 {
+-			label = "system";
+-			reg = <0x0 0x8000000>;
+-		};
+-
+-		userdata@8000000 {
+-			label = "userdata";
+-			reg = <0x8000000 0x10000000>;
+-		};
+-
+-		cache@18000000 {
+-			label = "cache";
+-			reg = <0x18000000 0x8000000>;
+-		};
+-	};
+-- 
+2.25.1
 
 
 ______________________________________________________
