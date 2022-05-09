@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CD7AC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 22:10:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C613BC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon,  9 May 2022 22:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4soBzv9TnB89ZiBtlWE30Vf7tWcrbe+KXrrnZYBFLkA=; b=Ji+NPW1hBks4Pr
-	BCQQopUdJI20Sv/C1KYEeZ5fxOBLNQHKK56I9JkJeEVTrkeiutaN+vf+g8YntypY2uM2dqmUEHdAJ
-	9VFZuCxTW/jIyNT9kGcl19HRM+nZa6fOB8EKDp/lseX/WsWQGzaNZUYold6SYrF666VEHUpHUjahp
-	JyBNJFPZGEpPTrtPvrHR9EyXIJ18/W9jsBXjQHFyt5Mu7kELtpykWwZb+XKhbReSPbICupJ5vtl1o
-	RfUIzwcN6EuSE3Fl38JmTM36MAzdz9SXd1/sztlsN9MP+EVrJ/svjA4TmIKKDs1ltCXCm5vvGqcUG
-	9F+fT7ap7Pff7MMLILEw==;
+	List-Owner; bh=g/0K+rEg1wcLDoAkBOosXkqWFaKVmTJRyupgfW9XeSU=; b=bBoHZUROBakESy
+	trHsCfbxxQD1RFF/nzdFjN88EvNALOXVffETBBFEo9GNnS3rdvL6kmxcBjJhe8y65nR4yZCcci/uM
+	mYMycdtxGEJId+97qWx/LJBiSa9zlnVcakFt7QVoufJrId7Z2xfvMEt3F2xnHSVa6klGh16oiq4i1
+	IFPmtvNiXPJg3EQApLHEYL+gMwmu/0b7YwiJKhaw9RYN66DpSrIX776nK1OrbaNJ2Cl5V52QjMVHq
+	I+pRElmBgRxbAe/m/af7NzUcQLm/QWDSaoskcWiHD9IdbPrgjqC1xL9FY80qIz3pgVsZ97DxVBBQi
+	wJ3xygftkn1nsuCHQhBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1noBac-00GVbf-JE; Mon, 09 May 2022 22:10:50 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1noBae-00GVcZ-Mk; Mon, 09 May 2022 22:10:52 +0000
+Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1noBaW-00GVYm-G4
- for linux-mtd@lists.infradead.org; Mon, 09 May 2022 22:10:46 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id i1so15129908plg.7
- for <linux-mtd@lists.infradead.org>; Mon, 09 May 2022 15:10:43 -0700 (PDT)
+ id 1noBaY-00GVZp-T2
+ for linux-mtd@lists.infradead.org; Mon, 09 May 2022 22:10:48 +0000
+Received: by mail-pf1-x429.google.com with SMTP id p8so13379635pfh.8
+ for <linux-mtd@lists.infradead.org>; Mon, 09 May 2022 15:10:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=7HKKBFOcD4MUwoJ4y1a6WCtfS1tCYpkpKK9VvMZzuIA=;
- b=JeUDau7li5Yy/KWv5XyNvPcGwzQWp9sxYQ7BL0fJ36JHkzncmMUkIdZMp7X0NfN90T
- m7LiVoDjuwkGrxp+Ddiz9RwzxLCIkKyIucHbDCVoQTvsgRKLe9VtzcX/N0VbqQJ45yse
- 7gDCE8emUud0H8kyctPYT5EwghS6IpvxTDf8flrFeb93dkBrrcM1j/kJlL0CSF4Efban
- 4OdC66k8hETndiMq4yjC5cOuzLH2hj+SjudMVAISiBTcpSWo0VoWc+ggkHeJlUhSKhSi
- 97g9Av6ViKBG6e+KRDdknBZiOjukpw91R+mhszKvFY9MEOIXw5vaWGySUcC6x7ktrICx
- m06g==
+ bh=GlboxtcXw2K3DEmnOIQgG9eRSQYANBtcoIDqjvEyDKA=;
+ b=SV6l0ktDkxQ6jH0zhNUeELNUjMuAsn0z1ALa5w/dGKRS0tOGo5+/3n/KMgUiToTuq1
+ 7AO7lBZL2WX0X7KEO8eu+3BIBiLf5BDPoPOCIuVH9jWy30dd29zMtJljkwbfOFQuT0Be
+ rOFWwtSlNO2mRIbUvz4wD4Y9bQRMda+Wvym0tW4F4kP90ZP0UVMr4xTno5Ek54HpTZHD
+ 3CAC3VaRa18BrFv99lGxiOB/W74Y9T9V7JJUb0BmfAxk98SKZJWarCb44ZOUEpzm8HeN
+ ZUq9qoodWpDktoRWFWg/Kek/8C/nIAZWu7eK9irfjuqXPu3TD/WZBnxWaOnHBJ2lMjsw
+ QqFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=7HKKBFOcD4MUwoJ4y1a6WCtfS1tCYpkpKK9VvMZzuIA=;
- b=3pz0Jeu2CR7XXAue3d38sXu1t50ttpGJmaozQYQ3S2KDNt+qSxeJS62AMRhkyuQI0R
- LSRqUw95EdqN8x+Lnyo4rlNGdxhOUVL+byr9NG9DaNxSN7mtYsMLh2zvdrmLqdOwzWaB
- hYfxx+Dcxh/CFFSh/QmWh9hOwt6DyhAQYMK/DiqtFyr7kCsWXvLAyfZjbQZS5rW3xIa9
- EJ2/zi2IW0LWmFfHFXlS8SGIxNLoQJbBLSzaqxd7VAQWhOGUNeo9KV4gG1OhwVAhq6XI
- EnBSLeevZpmeNvp9bCEh2zcGzXIdkNNnHfQeP5oaUWAvfdlhO1AJ67Cioq9YiukaBNDD
- JW8g==
-X-Gm-Message-State: AOAM532BQRuQujfISfzLEmwNPU8eEiNejz4ozo1E3A4HqTEQLChiTpoj
- jzF8p54nrM88gwKcqsnxHSO2yx4m4sg=
-X-Google-Smtp-Source: ABdhPJwonpV8P7eRl8+gQYLEQIUtiIvi6433VEA3OGYgzkT6BFer5QHnqU9FM6/MyGhLbybeSwQaOw==
-X-Received: by 2002:a17:902:ec88:b0:15e:c17d:b092 with SMTP id
- x8-20020a170902ec8800b0015ec17db092mr18084594plg.88.1652134243101; 
- Mon, 09 May 2022 15:10:43 -0700 (PDT)
+ bh=GlboxtcXw2K3DEmnOIQgG9eRSQYANBtcoIDqjvEyDKA=;
+ b=psrcSBAsVoDhSbMofy773eFFRjhcTrF9RoLwYX70X51CgN70QKuNFrMPWqdBlRF3IK
+ nugStEdD+OEWbKNOtOVZ5EOe5KFm/m3a+LBifvndX8SQe663LKMvDav2Ku7UUUVZaXCC
+ l9Io3aQ9aDUvqOrDIdDGfP/moOjQXlu1JJ/2fUOL4l5RzaSLmGtPC6FNtmoVy7/k8wsS
+ qtMuSi2ftXkBdyHC3cc/dxl2iVPS0GPDA0YFAcDyFO31+fWVhcOuC/S5qR9+VizaSX49
+ OPd2EPWXI/HdAH8ia+5+a4Smr572GNELbX+UzPPs12GU0vgBoFE07LjXQK0zgidvtM9L
+ Yhow==
+X-Gm-Message-State: AOAM531/4ZwcUC/RJrgabglkYpbE8Ng4+4bDL2iA9ic4qjCZacrlto7i
+ Ha1Zrs5g4gd4gh1u+ZYKoa2l2xpmxds=
+X-Google-Smtp-Source: ABdhPJxg281jRb0ikmjpqPRYDOev1llgFG4ADwiDlFKSHFNc14sTiU+UjDXBEPI3XUYuH1rLGEwodw==
+X-Received: by 2002:a62:cd49:0:b0:50d:b02e:11df with SMTP id
+ o70-20020a62cd49000000b0050db02e11dfmr17924880pfg.4.1652134245496; 
+ Mon, 09 May 2022 15:10:45 -0700 (PDT)
 Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp.
  [118.238.38.77]) by smtp.gmail.com with ESMTPSA id
- q27-20020a056a0002bb00b0050dc76281ebsm9043247pfs.197.2022.05.09.15.10.41
+ q27-20020a056a0002bb00b0050dc76281ebsm9043247pfs.197.2022.05.09.15.10.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 May 2022 15:10:42 -0700 (PDT)
+ Mon, 09 May 2022 15:10:45 -0700 (PDT)
 From: tkuw584924@gmail.com
 X-Google-Original-From: Takahiro.Kuwano@infineon.com
 To: linux-mtd@lists.infradead.org
 Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, richard@nod.at,
  vigneshr@ti.com, p.yadav@ti.com, michael@walle.cc, tkuw584924@gmail.com,
  Bacem.Daassi@infineon.com, Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Subject: [PATCH v15 4/8] mtd: spi-nor: Do not change nor->addr_nbytes at SFDP
- parsing time
-Date: Tue, 10 May 2022 07:10:05 +0900
-Message-Id: <ccff78b42bab8d6eb0ffa2127f4fe6c4daddf6af.1652063152.git.Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v15 5/8] mtd: spi-nor: core: Couple the number of address
+ bytes with the address mode
+Date: Tue, 10 May 2022 07:10:06 +0900
+Message-Id: <e79c68ce2a82ecfa301962104c877401417a5a62.1652063152.git.Takahiro.Kuwano@infineon.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1652063152.git.Takahiro.Kuwano@infineon.com>
 References: <cover.1652063152.git.Takahiro.Kuwano@infineon.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220509_151044_581414_ECD34481 
-X-CRM114-Status: GOOD (  19.22  )
+X-CRM114-CacheID: sfid-20220509_151046_982470_8864D7CF 
+X-CRM114-Status: GOOD (  26.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,147 +94,205 @@ Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-At the SFDP parsing time we should not change members of struct spi_nor,
-but instead fill members of struct spi_nor_flash_parameters which could
-leter on be used by callers. The caller will then decide if SFDP params
-should be used and more importantly when they should be used. Clean the
-code flow and don't initialize nor->addr_nbytes at SFDP parsing time.
+Some of Infineon chips support volatile version of configuration registers
+and it is recommended to update volatile registers in the field application
+due to a risk of the non-volatile registers corruption by power interrupt.
+Such a volatile configuration register is used to enable the Quad mode.
+The register write sequence requires the number of bytes of address in
+order to be programmed. As it was before, the nor->addr_nbytes was set to 4
+before calling the volatile Quad enable method. This was incorrect because
+the Write Any Register command does not have a 4B opcode equivalent and the
+address mode was still at default (3-byte mode) and not changed to 4 by
+entering in the 4 Byte Address Mode, so the operation failed.
 
+Move the setting of the number of bytes of address after the Quad Enable
+method to allow reads or writes to registers that require the number of
+address bytes to work with the default address mode. The number of address
+bytes and the address mode are tightly coupled, this is a natural change.
+
+Other (standard) Quad Enable methods are not affected, as they don't
+require the number of address bytes, so no functionality changes expected.
+
+Reported-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 Tested-By: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
 ---
- drivers/mtd/spi-nor/core.c |  5 ++---
- drivers/mtd/spi-nor/core.h |  2 ++
- drivers/mtd/spi-nor/sfdp.c | 18 ++++++------------
- 3 files changed, 10 insertions(+), 15 deletions(-)
+ drivers/mtd/spi-nor/core.c | 134 +++++++++++++++++++------------------
+ 1 file changed, 70 insertions(+), 64 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 7db6b41d7c30..dd71deba9f11 100644
+index dd71deba9f11..1c14a95a23fd 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2272,8 +2272,8 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+@@ -2270,49 +2270,6 @@ static int spi_nor_default_setup(struct spi_nor *nor,
+ 	return 0;
+ }
  
- static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
+-static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
+-{
+-	if (nor->params->addr_nbytes) {
+-		nor->addr_nbytes = nor->params->addr_nbytes;
+-	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
+-		/*
+-		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
+-		 * in this protocol an odd address width cannot be used because
+-		 * then the address phase would only span a cycle and a half.
+-		 * Half a cycle would be left over. We would then have to start
+-		 * the dummy phase in the middle of a cycle and so too the data
+-		 * phase, and we will end the transaction with half a cycle left
+-		 * over.
+-		 *
+-		 * Force all 8D-8D-8D flashes to use an address width of 4 to
+-		 * avoid this situation.
+-		 */
+-		nor->addr_nbytes = 4;
+-	} else if (nor->info->addr_nbytes) {
+-		nor->addr_nbytes = nor->info->addr_nbytes;
+-	} else {
+-		nor->addr_nbytes = 3;
+-	}
+-
+-	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
+-		/* enable 4-byte addressing if the device exceeds 16MiB */
+-		nor->addr_nbytes = 4;
+-	}
+-
+-	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
+-		dev_dbg(nor->dev, "address width is too large: %u\n",
+-			nor->addr_nbytes);
+-		return -EINVAL;
+-	}
+-
+-	/* Set 4byte opcodes when possible. */
+-	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
+-	    !(nor->flags & SNOR_F_HAS_4BAIT))
+-		spi_nor_set_4byte_opcodes(nor);
+-
+-	return 0;
+-}
+-
+ static int spi_nor_setup(struct spi_nor *nor,
+ 			 const struct spi_nor_hwcaps *hwcaps)
  {
--	if (nor->addr_nbytes) {
--		/* already configured from SFDP */
+@@ -2322,10 +2279,7 @@ static int spi_nor_setup(struct spi_nor *nor,
+ 		ret = nor->params->setup(nor, hwcaps);
+ 	else
+ 		ret = spi_nor_default_setup(nor, hwcaps);
+-	if (ret)
+-		return ret;
+-
+-	return spi_nor_set_addr_nbytes(nor);
++	return ret;
+ }
+ 
+ /**
+@@ -2707,6 +2661,74 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
+ 	return nor->params->quad_enable(nor);
+ }
+ 
++static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
++{
 +	if (nor->params->addr_nbytes) {
 +		nor->addr_nbytes = nor->params->addr_nbytes;
- 	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
- 		/*
- 		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
-@@ -2518,7 +2518,6 @@ static void spi_nor_sfdp_init_params_deprecated(struct spi_nor *nor)
- 
- 	if (spi_nor_parse_sfdp(nor)) {
- 		memcpy(nor->params, &sfdp_params, sizeof(*nor->params));
--		nor->addr_nbytes = 0;
- 		nor->flags &= ~SNOR_F_4B_OPCODES;
- 	}
- }
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index fe7683fe1b4d..41df8bc8e008 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -345,6 +345,7 @@ struct spi_nor_otp {
-  * @writesize		Minimal writable flash unit size. Defaults to 1. Set to
-  *			ECC unit size for ECC-ed flashes.
-  * @page_size:		the page size of the SPI NOR flash memory.
-+ * @addr_nbytes:	number of address bytes to send.
-  * @rdsr_dummy:		dummy cycles needed for Read Status Register command
-  *			in octal DTR mode.
-  * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
-@@ -377,6 +378,7 @@ struct spi_nor_flash_parameter {
- 	u64				size;
- 	u32				writesize;
- 	u32				page_size;
-+	u8				addr_nbytes;
- 	u8				rdsr_dummy;
- 	u8				rdsr_addr_nbytes;
- 
-diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-index 058ce218d2af..90d7c25f7281 100644
---- a/drivers/mtd/spi-nor/sfdp.c
-+++ b/drivers/mtd/spi-nor/sfdp.c
-@@ -178,19 +178,16 @@ static int spi_nor_read_raw(struct spi_nor *nor, u32 addr, size_t len, u8 *buf)
- static int spi_nor_read_sfdp(struct spi_nor *nor, u32 addr,
- 			     size_t len, void *buf)
++	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
++		/*
++		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
++		 * in this protocol an odd address width cannot be used because
++		 * then the address phase would only span a cycle and a half.
++		 * Half a cycle would be left over. We would then have to start
++		 * the dummy phase in the middle of a cycle and so too the data
++		 * phase, and we will end the transaction with half a cycle left
++		 * over.
++		 *
++		 * Force all 8D-8D-8D flashes to use an address width of 4 to
++		 * avoid this situation.
++		 */
++		nor->addr_nbytes = 4;
++	} else if (nor->info->addr_nbytes) {
++		nor->addr_nbytes = nor->info->addr_nbytes;
++	} else {
++		nor->addr_nbytes = 3;
++	}
++
++	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
++		/* enable 4-byte addressing if the device exceeds 16MiB */
++		nor->addr_nbytes = 4;
++	}
++
++	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
++		dev_dbg(nor->dev, "address width is too large: %u\n",
++			nor->addr_nbytes);
++		return -EINVAL;
++	}
++
++	/* Set 4byte opcodes when possible. */
++	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
++	    !(nor->flags & SNOR_F_HAS_4BAIT))
++		spi_nor_set_4byte_opcodes(nor);
++
++	return 0;
++}
++
++static int spi_nor_set_addr_mode(struct spi_nor *nor)
++{
++	int ret;
++
++	ret = spi_nor_set_addr_nbytes(nor);
++	if (ret)
++		return ret;
++
++	if (nor->addr_nbytes == 4 && nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
++	    !(nor->flags & SNOR_F_4B_OPCODES)) {
++		/*
++		 * If the RESET# pin isn't hooked up properly, or the system
++		 * otherwise doesn't perform a reset command in the boot
++		 * sequence, it's impossible to 100% protect against unexpected
++		 * reboots (e.g., crashes). Warn the user (or hopefully, system
++		 * designer) that this is bad.
++		 */
++		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
++			  "enabling reset hack; may not recover from unexpected reboots\n");
++		nor->params->set_4byte_addr_mode(nor, true);
++	}
++
++	return 0;
++}
++
+ static int spi_nor_init(struct spi_nor *nor)
  {
--	u8 addr_nbytes;
- 	int ret;
+ 	int err;
+@@ -2738,22 +2760,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ 	     nor->flags & SNOR_F_SWP_IS_VOLATILE))
+ 		spi_nor_try_unlock_all(nor);
  
--	addr_nbytes = nor->addr_nbytes;
+-	if (nor->addr_nbytes == 4 &&
+-	    nor->read_proto != SNOR_PROTO_8_8_8_DTR &&
+-	    !(nor->flags & SNOR_F_4B_OPCODES)) {
+-		/*
+-		 * If the RESET# pin isn't hooked up properly, or the system
+-		 * otherwise doesn't perform a reset command in the boot
+-		 * sequence, it's impossible to 100% protect against unexpected
+-		 * reboots (e.g., crashes). Warn the user (or hopefully, system
+-		 * designer) that this is bad.
+-		 */
+-		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
+-			  "enabling reset hack; may not recover from unexpected reboots\n");
+-		nor->params->set_4byte_addr_mode(nor, true);
+-	}
 -
- 	nor->read_opcode = SPINOR_OP_RDSFDP;
- 	nor->addr_nbytes = 3;
- 	nor->read_dummy = 8;
- 
- 	ret = spi_nor_read_raw(nor, addr, len, buf);
- 
--	nor->addr_nbytes = addr_nbytes;
- 	/* Restore setup to its uninitialized state. */
-+	nor->addr_nbytes = 0;
- 	nor->read_opcode = 0;
- 	nor->read_dummy = 0;
- 
-@@ -461,11 +458,11 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
- 	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
--		nor->addr_nbytes = 3;
-+		params->addr_nbytes = 3;
- 		break;
- 
- 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
--		nor->addr_nbytes = 4;
-+		params->addr_nbytes = 4;
- 		break;
- 
- 	default:
-@@ -652,7 +649,7 @@ static u8 spi_nor_smpt_addr_nbytes(const struct spi_nor *nor, const u32 settings
- 		return 4;
- 	case SMPT_CMD_ADDRESS_LEN_USE_CURRENT:
- 	default:
--		return nor->addr_nbytes;
-+		return nor->params->addr_nbytes;
- 	}
+-	return 0;
++	return spi_nor_set_addr_mode(nor);
  }
  
-@@ -689,7 +686,6 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	u32 addr;
- 	int err;
- 	u8 i;
--	u8 addr_nbytes;
- 	u8 read_data_mask, map_id;
- 
- 	/* Use a kmalloc'ed bounce buffer to guarantee it is DMA-able. */
-@@ -697,8 +693,6 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
--	addr_nbytes = nor->addr_nbytes;
--
- 	map_id = 0;
- 	/* Determine if there are any optional Detection Command Descriptors */
- 	for (i = 0; i < smpt_len; i += 2) {
-@@ -753,8 +747,8 @@ static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt,
- 	/* fall through */
- out:
- 	kfree(buf);
--	nor->addr_nbytes = addr_nbytes;
- 	/* Restore setup to its uninitialized state. */
-+	nor->addr_nbytes = 0;
- 	nor->read_dummy = 0;
- 	nor->read_opcode = 0;
- 	return ret;
-@@ -1096,7 +1090,7 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
- 	 * Spansion memory. However this quirk is no longer needed with new
- 	 * SFDP compliant memories.
+ /**
+@@ -3014,7 +3021,6 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	 * - select op codes for (Fast) Read, Page Program and Sector Erase.
+ 	 * - set the number of dummy cycles (mode cycles + wait states).
+ 	 * - set the SPI protocols for register and memory accesses.
+-	 * - set the address width.
  	 */
--	nor->addr_nbytes = 4;
-+	params->addr_nbytes = 4;
- 	nor->flags |= SNOR_F_4B_OPCODES | SNOR_F_HAS_4BAIT;
- 
- 	/* fall through */
+ 	ret = spi_nor_setup(nor, hwcaps);
+ 	if (ret)
 -- 
 2.25.1
 
