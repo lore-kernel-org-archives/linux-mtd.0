@@ -4,61 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C905C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 10 May 2022 12:18:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 761A7C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 10 May 2022 13:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Qezugmsnb/W2lnJ4Pp18YJhohQGjkx/6U7ONIy+DOKo=; b=UJ/PEAn+zgex3P
-	4tIwIkbF/74Yqjcn9V7OZ0LhcO1DmtBEpKSDRvUQ4cZ9MCFH7Zz3M/YkhuGG3LweKpVKZZmWYUgla
-	owCTLWYqkRNQJmY2f4f66+zGXbjcsXCvpe9WXKHGvpXpIy5oOMuaqDHeTqDlb2mtFuSPcBePJBZVx
-	l5qnsbFi4Liq4LK06QFJTH5cv1MKB0zc1eMrGJGrpnrAUdD48xfjP4+C3kbdmeymnSdLpvwbSBQzb
-	rpuQaFEd3P/N4gSMf2wteMcHXg6AknO7IaxlgCOdaEWuZ1JuW38j9MhLUSgcvtptjxEwayw77Be0k
-	IZtsIUrBQXREmWTuXEbQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=iimFJ6U2wZQtUuYQEuZtXHxdEbffDvf2ecxNug1oOsc=; b=3Lk3fdHepO+YgG
+	NR1lCOx2GWZDzEgD/u9rJl29/NbBKc+TWoUC+JshMswWmJBBCujRrz7nXSyJcd080PxxvYS6Je6dU
+	dwIVgGf5Ba7lAiM8lswSVHIQApM44u/n9qeJ50FN+OhwBE6nj7/ExzV7JoVmj/24Pi86oeZn/Axuq
+	v3q2d2eyUQX+PEAy3JKeAjqTGrQ3VSvbgFtp0C4X9e6FL6lY60xFi07rzp99agvn9AqEHES+6RKrX
+	Hs5rGrLB/O0InulIXLmRm9oh/QsY2Ko5UTK09+qJiARyRlvKcgatUxfd/saI1RwXc9ED2SWXd4bZl
+	tN8fi5AqId52KvEVoD8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1noOoH-001nof-Rb; Tue, 10 May 2022 12:17:49 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1noPfq-0029s9-GQ; Tue, 10 May 2022 13:13:10 +0000
+Received: from mail-ej1-x633.google.com ([2a00:1450:4864:20::633])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1noOoB-001nlQ-Ur
- for linux-mtd@lists.infradead.org; Tue, 10 May 2022 12:17:45 +0000
-Received: from kwepemi100001.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KyH932tctzhZ0x;
- Tue, 10 May 2022 20:17:11 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- kwepemi100001.china.huawei.com (7.221.188.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 10 May 2022 20:17:38 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 10 May
- 2022 20:17:37 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
- <mcoquelin.stm32@gmail.com>, <kirill.shutemov@linux.intel.com>,
- <s.hauer@pengutronix.de>, <gregkh@linuxfoundation.org>,
- <arne.edholm@axis.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
-Subject: [PATCH v3 3/3] ubi: ubi_create_volume: Fix use-after-free when volume
- creation failed
-Date: Tue, 10 May 2022 20:31:26 +0800
-Message-ID: <20220510123126.1820335-4-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220510123126.1820335-1-chengzhihao1@huawei.com>
-References: <20220510123126.1820335-1-chengzhihao1@huawei.com>
+ id 1noPfn-0029qO-Fx
+ for linux-mtd@lists.infradead.org; Tue, 10 May 2022 13:13:08 +0000
+Received: by mail-ej1-x633.google.com with SMTP id m20so32843996ejj.10
+ for <linux-mtd@lists.infradead.org>; Tue, 10 May 2022 06:13:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=a8nsbDVM3+ugAvLUdOVtBpKzHJmbj2uNhbXgOFH/eJI=;
+ b=AnRe9hbLDU4378bYA9cF2a6iUW3egeQ9QvWhmKm361s28mYdqUrA9SIcpVI4xXjwEN
+ eTul0MaL3zQkDWl4pmybOatQSybEJ6ZZxs/1O02BGfuyP7eEeOQb+uOZfqKrkF/xA6Ek
+ cfmgaG6nLhV7cnfSVdjsll7iUxNghIEEIyC/UXH8OVVpcsCuiBHDKI5UU4w89xq4IhOw
+ H3SdJv6Jzww/oSvqH6/EyUlRv/AYdYcNK0wfBmiEwj5QFWEpJbHmj8KfgXCfA/JffpBQ
+ GauqSYzSI13is2OXMdYr51tNODq1LRhWVq2tVEnXfhbtmzqYiCiTN3tM+/ERMFoVTPxI
+ pyzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=a8nsbDVM3+ugAvLUdOVtBpKzHJmbj2uNhbXgOFH/eJI=;
+ b=wQR+bf+p5Kx5017+/U07EwicEsUjCynWdsJRU0YJ2ash+MiKQv8FLwrlJixxCenJvm
+ vrpfPnKEFWnQ7UwguUpH52E28/pICADvF/wWJ037qkbBGdy4kGOWZjPBucdSUIrg/JcH
+ nuIhQB0yR0D+oKxmVJSPIoOCV5gB3GVa56nzabABxifCmtfbXPnyw5xqAVsM2v2jdG0/
+ LoNvyqS3AKEQVbfscUMFmFc6vVgEAqX/ukiueQBhLoipVlVvqoEVzui5gjr4uBFdGRTU
+ n5frONHV87jUpbpO87wGVMA3eUaojPsPrGEtAkuqyTdzk9mTxTvB14zIxnGYne0dlgMJ
+ FY1w==
+X-Gm-Message-State: AOAM5334+Xz7+w3/slMW6hVUAVkhuSlcTON6IdtVRvknfdRXUCoty74S
+ yvS3EebnTBgPwKXu8W+DC8g=
+X-Google-Smtp-Source: ABdhPJyKLcgPLVK3BnN2dYFDhPUmBSSxHbYC+pI0CgxzhC11PgneRKZ3lBk6N9uh4k02mrlu+Uaxmw==
+X-Received: by 2002:a17:906:4fd5:b0:6f8:5aa9:6f13 with SMTP id
+ i21-20020a1709064fd500b006f85aa96f13mr15355764ejw.267.1652188385347; 
+ Tue, 10 May 2022 06:13:05 -0700 (PDT)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl.
+ [194.187.74.233]) by smtp.gmail.com with ESMTPSA id
+ q2-20020a1709064c8200b006f3ef214dccsm6110815eju.50.2022.05.10.06.13.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 10 May 2022 06:13:05 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Daniel Golle <daniel@makrotopia.org>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V3] mtd: call of_platform_populate() for MTD partitions
+Date: Tue, 10 May 2022 15:12:59 +0200
+Message-Id: <20220510131259.555-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220510_051744_203718_F77A458D 
-X-CRM114-Status: UNSURE (   7.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220510_061307_608911_E001179B 
+X-CRM114-Status: GOOD (  17.09  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,49 +85,52 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is an use-after-free problem for 'eba_tbl' in ubi_create_volume()'s
-error handling path:
-
-  ubi_eba_replace_table(vol, eba_tbl)
-    vol->eba_tbl = tbl
-out_mapping:
-  ubi_eba_destroy_table(eba_tbl)   // Free 'eba_tbl'
-out_unlock:
-  put_device(&vol->dev)
-    vol_release
-      kfree(tbl->entries)	  // UAF
-
-Fix it by removing redundant 'eba_tbl' releasing.
-Fetch a reproducer in [Link].
-
-Fixes: 493cfaeaa0c9b ("mtd: utilize new cdev_device_add helper function")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=215965
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/mtd/ubi/vmt.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 1bc7b3a05604..6ea95ade4ca6 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -309,7 +309,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	ubi->volumes[vol_id] = NULL;
- 	ubi->vol_count -= 1;
- 	spin_unlock(&ubi->volumes_lock);
--	ubi_eba_destroy_table(eba_tbl);
- out_acc:
- 	spin_lock(&ubi->volumes_lock);
- 	ubi->rsvd_pebs -= vol->reserved_pebs;
--- 
-2.31.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RnJvbTogUmFmYcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPgoKVW50aWwgdGhpcyBjaGFu
+Z2UgTVREIHN1YnN5c3RlbSBzdXBwb3J0ZWQgaGFuZGxpbmcgcGFydGl0aW9ucyBvbmx5IHdpdGgK
+TVREIHBhcnRpdGlvbnMgcGFyc2Vycy4gVGhhdCdzIGEgc3BlY2lmaWMgLyBsaW1pdGVkIEFQSSBk
+ZXNpZ25lZCBhcm91bmQKcGFydGl0aW9ucy4KClNvbWUgTVREIHBhcnRpdGlvbnMgbWF5IGhvd2V2
+ZXIgcmVxdWlyZSBkaWZmZXJlbnQgaGFuZGxpbmcuIFRoZXkgbWF5CmNvbnRhaW4gc3BlY2lmaWMg
+ZGF0YSB0aGF0IG5lZWRzIHRvIGJlIHBhcnNlZCBhbmQgc29tZWhvdyBleHRyYWN0ZWQuIEZvcgp0
+aGF0IHB1cnBvc2UgTVREIHN1YnN5c3RlbSBzaG91bGQgYWxsb3cgYmluZGluZyBvZiBzdGFuZGFy
+ZCBwbGF0Zm9ybQpkcml2ZXJzLgoKQW4gZXhhbXBsZSBjYW4gYmUgVS1Cb290IChzdWIpcGFydGl0
+aW9uIHdpdGggZW52aXJvbm1lbnQgdmFyaWFibGVzLgpUaGVyZSBleGlzdCBhICJ1LWJvb3QsZW52
+IiBEVCBiaW5kaW5nIGZvciBNVEQgKHN1YilwYXJ0aXRpb24gdGhhdApyZXF1aXJlcyBhbiBOVk1F
+TSBkcml2ZXIuCgpSZWY6IDVkYjFjMmRiYzA0YyAoImR0LWJpbmRpbmdzOiBudm1lbTogYWRkIFUt
+Qm9vdCBlbnZpcm9ubWVudCB2YXJpYWJsZXMgYmluZGluZyIpClNpZ25lZC1vZmYtYnk6IFJhZmHF
+giBNacWCZWNraSA8cmFmYWxAbWlsZWNraS5wbD4KLS0tClYyOiBGaXggY2FzZSBmb3IgIyBDT05G
+SUdfTVREX1BBUlRJVElPTkVEX01BU1RFUiBpcyBub3Qgc2V0CiAgICBtYXN0ZXItPmRldiBjYW4n
+dCBiZSB1c2VkIGJsaW5kbHkgYXMgaXQgbWF5IHBvaW50IHRvIHVucmVnaXN0ZXJlZAogICAgZGV2
+aWNlIGFuZCBjYXVzZSBXQVJOSU5HcwpWMzogVXNlIGVhc2llciB0byBmb2xsb3cgbG9naWMgZm9y
+IHNldHRpbmcgImRldiIgdmFyaWFibGUgKyBhZGQgY29tbWVudAotLS0KIGRyaXZlcnMvbXRkL210
+ZHBhcnQuYyB8IDkgKysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspCgpk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbXRkcGFydC5jIGIvZHJpdmVycy9tdGQvbXRkcGFydC5j
+CmluZGV4IDM1NzY2MWI2MmM5NC4uZDQ0MmZhOTRjODcyIDEwMDY0NAotLS0gYS9kcml2ZXJzL210
+ZC9tdGRwYXJ0LmMKKysrIGIvZHJpdmVycy9tdGQvbXRkcGFydC5jCkBAIC0xNyw2ICsxNyw3IEBA
+CiAjaW5jbHVkZSA8bGludXgvbXRkL3BhcnRpdGlvbnMuaD4KICNpbmNsdWRlIDxsaW51eC9lcnIu
+aD4KICNpbmNsdWRlIDxsaW51eC9vZi5oPgorI2luY2x1ZGUgPGxpbnV4L29mX3BsYXRmb3JtLmg+
+CiAKICNpbmNsdWRlICJtdGRjb3JlLmgiCiAKQEAgLTU3NywxMCArNTc4LDE2IEBAIHN0YXRpYyBp
+bnQgbXRkX3BhcnRfb2ZfcGFyc2Uoc3RydWN0IG10ZF9pbmZvICptYXN0ZXIsCiAJc3RydWN0IG10
+ZF9wYXJ0X3BhcnNlciAqcGFyc2VyOwogCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnA7CiAJc3RydWN0
+IHByb3BlcnR5ICpwcm9wOworCXN0cnVjdCBkZXZpY2UgKmRldjsKIAljb25zdCBjaGFyICpjb21w
+YXQ7CiAJY29uc3QgY2hhciAqZml4ZWQgPSAiZml4ZWQtcGFydGl0aW9ucyI7CiAJaW50IHJldCwg
+ZXJyID0gMDsKIAorCWRldiA9ICZtYXN0ZXItPmRldjsKKwkvKiBVc2UgcGFyZW50IGRldmljZSAo
+Y29udHJvbGxlcikgaWYgdGhlIHRvcCBsZXZlbCBNVEQgaXMgbm90IHJlZ2lzdGVyZWQgKi8KKwlp
+ZiAoIUlTX0VOQUJMRUQoQ09ORklHX01URF9QQVJUSVRJT05FRF9NQVNURVIpICYmICFtdGRfaXNf
+cGFydGl0aW9uKG1hc3RlcikpCisJCWRldiA9IG1hc3Rlci0+ZGV2LnBhcmVudDsKKwogCW5wID0g
+bXRkX2dldF9vZl9ub2RlKG1hc3Rlcik7CiAJaWYgKG10ZF9pc19wYXJ0aXRpb24obWFzdGVyKSkK
+IAkJb2Zfbm9kZV9nZXQobnApOwpAQCAtNTkzLDYgKzYwMCw3IEBAIHN0YXRpYyBpbnQgbXRkX3Bh
+cnRfb2ZfcGFyc2Uoc3RydWN0IG10ZF9pbmZvICptYXN0ZXIsCiAJCQljb250aW51ZTsKIAkJcmV0
+ID0gbXRkX3BhcnRfZG9fcGFyc2UocGFyc2VyLCBtYXN0ZXIsIHBwYXJ0cywgTlVMTCk7CiAJCWlm
+IChyZXQgPiAwKSB7CisJCQlvZl9wbGF0Zm9ybV9wb3B1bGF0ZShucCwgTlVMTCwgTlVMTCwgZGV2
+KTsKIAkJCW9mX25vZGVfcHV0KG5wKTsKIAkJCXJldHVybiByZXQ7CiAJCX0KQEAgLTYwMCw2ICs2
+MDgsNyBAQCBzdGF0aWMgaW50IG10ZF9wYXJ0X29mX3BhcnNlKHN0cnVjdCBtdGRfaW5mbyAqbWFz
+dGVyLAogCQlpZiAocmV0IDwgMCAmJiAhZXJyKQogCQkJZXJyID0gcmV0OwogCX0KKwlvZl9wbGF0
+Zm9ybV9wb3B1bGF0ZShucCwgTlVMTCwgTlVMTCwgZGV2KTsKIAlvZl9ub2RlX3B1dChucCk7CiAK
+IAkvKgotLSAKMi4zNC4xCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
