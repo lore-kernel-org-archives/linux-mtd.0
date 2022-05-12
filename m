@@ -4,61 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BA5AC433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 15:28:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D433FC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 15:28:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CXqmSH7l8jdTkEZVCFz0gQkPoaoiWvveWKHqg7q1bCE=; b=f6wau+M92ML8wQ
-	aNfGCi/xL5K/1eI9mwhCbLM21jx6BzH/Au0srPNX5z0tagQKv7IoA7KQgRDp2FeRaM5DxX/9IL0xW
-	ZqZU+E3MmeWDiaZeMnwfw4aLcA0NwmrtBI01ZKpl+S6tofOr4kVHddiBqGnojw80igzBX8yb3we8G
-	Cuzq4pYW8UUB9Kb9/Y9ZnEAm2qoIvfQR0vBqeS3lARajFXROJPQes63anqcDW2T8rBANzQsO72riN
-	nEAk+KFtcgaVc4xBUSN0XEJ6IyY5BD8N7qNj+/e5nn4gMd69OkkAWUH6Rf1lVhy0hg1W66XVrfKtx
-	7Rv6P5zR/s4Wl6fH25Ow==;
+	List-Owner; bh=vN1ZCTIbNMWHbaoPNQQlcsPDsBLpjIFoCEgOSKpe+vU=; b=13gwT+RBvlO/hI
+	408fSENYk1cv3f/cj/DpN3wEG32hNPXcwJEGJG+OnElmowSbT8drUZWQqhtSZBzB/Ww2XaMZ4GdcJ
+	w1aGLBFEYo4lkQcuR1G/JPIax5DWr8C4DAo0J3RnQu4RdRr5x6KXUYtv1hyM/j1A5hQ29xcBHv3NV
+	4LXCumDASVhtswByVV0ocYLjC0aVr6HmVqzPZ7fglD9ZulP0RShByrM7LA1VwQFf9MXWkISP+NCIW
+	rIC5YB3B+sieshzf0UhIEeNGxDqL9izZbmfO1OX9q1soGgbg7goygM1x7DBDQVrxUz5MiUtfQtxgU
+	tgDU/m4aL+0Q8I3ggdHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npAjS-00CcI6-9f; Thu, 12 May 2022 15:28:02 +0000
-Received: from relay11.mail.gandi.net ([2001:4b98:dc4:8::231])
+	id 1npAjU-00CcJy-My; Thu, 12 May 2022 15:28:04 +0000
+Received: from relay8-d.mail.gandi.net ([2001:4b98:dc4:8::228])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npAjI-00Cc7v-E4
- for linux-mtd@lists.infradead.org; Thu, 12 May 2022 15:27:54 +0000
+ id 1npAjL-00CcAd-Bg
+ for linux-mtd@lists.infradead.org; Thu, 12 May 2022 15:27:57 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id D67E9100009;
- Thu, 12 May 2022 15:27:47 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id 0F88B1BF20D;
+ Thu, 12 May 2022 15:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1652369269;
+ t=1652369273;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bTo/5H4S2lfutSVjIFOtxPBKa00dzpI8fzGECTbektk=;
- b=aMsmRGb40cMjNgTpHK9UOyDX84s78UdssoaQX1PkEC+Upxlmnpw92Iujxww/AY3xQwVr07
- guLl1RlV4KHyGHnKTe6wS7jqzazkiWhl/e62oUjw7QHcDmULKa7T3xzX3zOLkefp5MZK5a
- HEIjOJ3CipcCXiou1eKSOanrkOWyWA1H4qDdQOXOrJUhZEBc3QE2YLQ+j3HqeFZS7HKv2O
- xS5rnfKjsKJVl4guSf/1bsPn/bfckpS4JSFYNAt+LAk9j17GWorKyK40jZdGomMD/UcwBU
- sNhlD27RMDxwZdTduVnJ1ga1kZN/8d+XL8G81wvZ3ID/iGs3bqyQeIR0hEr00A==
+ bh=ryxbj/hbMDpiluY0P3QJ3SMPgo/AK7nhfWgga+S7D50=;
+ b=anp53aNS8qZcPRGRZCtXP/0V80hNU2PzkYAVKjccc8htr4LlpsUi6kkCtEGqpKPsI2zJvl
+ EqA4Y0AdzfkWCgvCU8mibe6ZmhzgvqtFsWAHH34L01KOFcHLBec5PzLVX/S2RBmWCQfQn4
+ cYYWD+C+CxDp/O9sP70iz0xLdLfVIhKjtlB0PT2cN0OqKkoaiNDoqsQYhZgmqqfW02x2dp
+ UCS7FuYGlCuCJdHHduyr1iwfZLLY3y2EDyqxC1+CsBD9bmHj71CrGG6ddyK4+ymk06uptB
+ 3Udqa0v8/mWM0tdK+frbbTbmcxTTxwiLF4lqHWUdkqDMkHPRubdHDE+1WOZDsA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: cgel.zte@gmail.com,
-	miquel.raynal@bootlin.com
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Minghao Chi <chi.minghao@zte.com.cn>,
- Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] mtd: rawnand: cs553x: simplify the return expression of
- cs553x_write_ctrl_byte()
-Date: Thu, 12 May 2022 17:27:47 +0200
-Message-Id: <20220512152747.245142-1-miquel.raynal@bootlin.com>
+To: Rickard Andersson <rickaran@axis.com>, miquel.raynal@bootlin.com,
+ richard@nod.at, linux-mtd@lists.infradead.org
+Cc: rickard314.andersson@gmail.com
+Subject: Re: [PATCH] mtd: rawnand: kioxia: Add support for TH58NVG3S0HBAI4
+Date: Thu, 12 May 2022 17:27:52 +0200
+Message-Id: <20220512152752.245210-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220505022354.61458-1-chi.minghao@zte.com.cn>
+In-Reply-To: <20220429083931.26795-1-rickaran@axis.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'c96f824af0e9f88299430db8360dfc9e6c40df36'
+X-linux-mtd-patch-commit: b'773898127ebff6056d207c9b5901e97573999b74'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220512_082752_670790_9F76667C 
-X-CRM114-Status: UNSURE (   4.75  )
+X-CRM114-CacheID: sfid-20220512_082755_612723_7560759B 
+X-CRM114-Status: UNSURE (   7.69  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,13 +73,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2022-05-05 at 02:23:54 UTC, cgel.zte@gmail.com wrote:
-> From: Minghao Chi <chi.minghao@zte.com.cn>
+On Fri, 2022-04-29 at 08:39:31 UTC, Rickard Andersson wrote:
+> From: Rickard x Andersson <rickaran@axis.com>
 > 
-> Simplify the return expression.
+> Add timings for Kioxia/Toshiba TH58NVG3S0HBAI4. Timings
+> for this memory matches the timings selected for
+> TH58NVG2S3HBAI4.
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+> This patch increases eraseblock write speed from 5248 KiB/s
+> to 6864 KiB/s and erase block read speed from 8542 KiB/s
+> to 18360 KiB/s
+> 
+> Tested on i.MX6SX.
+> 
+> Signed-off-by: Rickard x Andersson <rickaran@axis.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
