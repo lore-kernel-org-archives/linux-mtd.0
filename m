@@ -4,49 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1D21C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 18:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92256C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 18:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=paaaFMLhMFhnQOG2ICHaU8e8Fg7evk3m4PwwQHb+fdA=; b=Q8UjYzLVACZMQi
-	Fi+wC5tf/twEQ5hqXdIdtjl8TXKq+AHZG/6+cM5M5d9zwyJsWfOtpyKif1RpOYcHWbq6uBSYCnqEo
-	yZVu0bPVobnkZr7oJQQWWUn+iXUT54CkUoIG7bRfh1ZM6AhiA+LBcyRqT2Cl4d+h1gblk0S6Pq0fr
-	NezvTDUjsi8M9XBtJMfZ/+YdLTqBw9f1MYp36VnNDZpIj/4WBQ+J3EgXfzOmQeajrt49feTYZ7gC7
-	+Yndj3LyrhvBm6TCrpg6aYe5Oby0K+MAa2i45JBYzkbSn6vz+Boehi6o/6OLCl7EQr16UG52s4vO+
-	vf4shfl5S259EwzfO45g==;
+	List-Owner; bh=TnLkbF7dV6iYAa8AZztbid9pG3XW24aDj1eisMk9rBc=; b=GLLKAmjCovxWc5
+	wncn8f3XQLts+9wjkdHj+OOPmUE5N3sfy9PkPY2tPPFdeQrPIjxe9PbL+VG+sKJlpKp88jLmPYbo/
+	V5nhqs5+YDxZPFn+IntuQtVYl7DntQHkU77OOOEX7gEJct+cohg2ugQRmUzU9KuRuw735xPbkBJBy
+	7ivCCOVmiKpu4qGHWIoK5DXwoXOxAvIpd8o8SiUtPz1jnAUIWbleZKtVLOTkKEwM7HWzVdtjSAacj
+	PfyvRhw1hNzp8W41L7bvMjR+jnC/5msTrPDwQJyxiazJNlAcf5o0RwGG8kqn1Kj3Bn0aI2k68KQ/P
+	1PJOLgG4PNCeKoyG1aKQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npDpM-00D8OZ-5J; Thu, 12 May 2022 18:46:20 +0000
-Received: from relmlor1.renesas.com ([210.160.252.171]
- helo=relmlie5.idc.renesas.com)
+	id 1npDte-00D9RC-VX; Thu, 12 May 2022 18:50:47 +0000
+Received: from relmlor2.renesas.com ([210.160.252.172]
+ helo=relmlie6.idc.renesas.com)
  by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npDpB-00D8Kw-BK; Thu, 12 May 2022 18:46:11 +0000
-X-IronPort-AV: E=Sophos;i="5.91,220,1647270000"; d="scan'208";a="119513527"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 13 May 2022 03:46:04 +0900
+ id 1npDtc-00D9Ov-9q
+ for linux-mtd@lists.infradead.org; Thu, 12 May 2022 18:50:45 +0000
+X-IronPort-AV: E=Sophos;i="5.91,220,1647270000"; d="scan'208";a="120800635"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 13 May 2022 03:50:38 +0900
 Received: from localhost.localdomain (unknown [10.226.93.50])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id A141E400C737;
- Fri, 13 May 2022 03:46:01 +0900 (JST)
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8268340E703F;
+ Fri, 13 May 2022 03:50:36 +0900 (JST)
 From: Phil Edworthy <phil.edworthy@renesas.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Heiko Stuebner <heiko@sntech.de>
+ Vignesh Raghavendra <vigneshr@ti.com>
 Cc: Phil Edworthy <phil.edworthy@renesas.com>,
- Richard Weinberger <richard@nod.at>, Yihao Han <hanyihao@vivo.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org
-Subject: [PATCH] mtd: rawnand: rockchip: Check before clk_disable_unprepare()
+ Richard Weinberger <richard@nod.at>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: rawnand: mpc5121: Check before clk_disable_unprepare()
  not needed
-Date: Thu, 12 May 2022 19:45:58 +0100
-Message-Id: <20220512184558.45966-1-phil.edworthy@renesas.com>
+Date: Thu, 12 May 2022 19:50:33 +0100
+Message-Id: <20220512185033.46901-1-phil.edworthy@renesas.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220512_114609_537521_2B0F32C6 
-X-CRM114-Status: GOOD (  11.07  )
+X-CRM114-CacheID: sfid-20220512_115044_480943_248FD32C 
+X-CRM114-Status: UNSURE (   9.33  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,35 +71,23 @@ to do so here.
 
 Signed-off-by: Phil Edworthy <phil.edworthy@renesas.com>
 ---
-Note: this has not been tested at all
----
- drivers/mtd/nand/raw/rockchip-nand-controller.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/mpc5121_nfc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/rockchip-nand-controller.c b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-index cbaa4f1c83da..f133985cc053 100644
---- a/drivers/mtd/nand/raw/rockchip-nand-controller.c
-+++ b/drivers/mtd/nand/raw/rockchip-nand-controller.c
-@@ -911,8 +911,7 @@ static int rk_nfc_enable_clks(struct device *dev, struct rk_nfc *nfc)
- 	ret = clk_prepare_enable(nfc->ahb_clk);
- 	if (ret) {
- 		dev_err(dev, "failed to enable ahb clk\n");
--		if (!IS_ERR(nfc->nfc_clk))
--			clk_disable_unprepare(nfc->nfc_clk);
-+		clk_disable_unprepare(nfc->nfc_clk);
- 		return ret;
- 	}
+diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
+index 5b9271b9c326..800d774aed8e 100644
+--- a/drivers/mtd/nand/raw/mpc5121_nfc.c
++++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
+@@ -595,8 +595,7 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct mpc5121_nfc_prv *prv = nand_get_controller_data(chip);
  
-@@ -921,8 +920,7 @@ static int rk_nfc_enable_clks(struct device *dev, struct rk_nfc *nfc)
+-	if (prv->clk)
+-		clk_disable_unprepare(prv->clk);
++	clk_disable_unprepare(prv->clk);
  
- static void rk_nfc_disable_clks(struct rk_nfc *nfc)
- {
--	if (!IS_ERR(nfc->nfc_clk))
--		clk_disable_unprepare(nfc->nfc_clk);
-+	clk_disable_unprepare(nfc->nfc_clk);
- 	clk_disable_unprepare(nfc->ahb_clk);
- }
- 
+ 	if (prv->csreg)
+ 		iounmap(prv->csreg);
 -- 
 2.34.1
 
