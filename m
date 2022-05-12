@@ -4,65 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98583C433FE
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 15:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E40FC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 15:27:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=KWf5EOZB4SZvFgQcTVzWpgINu2RrKnguQvDxd2OqMSg=; b=019D4PgL5uQmJL
-	nsMNFXkCJVuVm6LegN31uRQWINpUS9/EryNeXH+5S+FuTQa2o0wxBH/qhyYmZq1R8CQZu0lu2b/a/
-	61tc9ASkxIhLHzFzXH150sw8fmssPSDxzEjRRTaYiYP3PD15qY04XII4BRATV4xZKo4iORBnJ+UZV
-	Fh5Q59A8ftm82nHOeYtU35eN6dOeQzPoca/oaWFIbvAl2Pmc2XyIqFU18cUtBmlRkhFbzR1rUAv/j
-	MPEJCVykV5Lc4IW2aEuoEy9BkD7Sf/F/Sj9MbERBBerUKt/d4DFjcJ+EMnVUMsY21pQ4icg8DsGoV
-	UmlwN991Exgm5FSAUJEA==;
+	List-Owner; bh=Rstv+s6rq1DGvnwjnWsNN0qIs/r0P3B7nBRFZRbHe1w=; b=jx+ffVGx6eT+gx
+	RFO8dcPlcSAxtpBGG9xqYMtDqWNtozTyjvdQ1gM55raQDbp7rtgHqxUyq+1XBuAnGr/pU2QY7VjNQ
+	uwlv3HyF3ZYCKc6WfQjrZII6kd0GaValyY/+1+a5lnqZ1wUPCx8U2Ag6Gtl2QoTBufP+sDeOENfmG
+	yEEQzZ5IMU60WTZGxONQxLFtl05FF/O+dn+SpjscdSMnoMSTF7ytDVJjNLjP8qpC7RJeUlkp1aUV3
+	HeAlpVEdxIJYi2KMR+rq+wajRfZPAAvNibChbVrTXuNE/qoCudMwuPTKv1Nns99f1edfeWZMtiJJR
+	kAtZaDl19DAJ0ytymjgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npAj0-00CbvN-AA; Thu, 12 May 2022 15:27:34 +0000
-Received: from relay5-d.mail.gandi.net ([2001:4b98:dc4:8::225])
+	id 1npAj4-00Cbxj-01; Thu, 12 May 2022 15:27:38 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npAiw-00CbsB-Uw
- for linux-mtd@lists.infradead.org; Thu, 12 May 2022 15:27:32 +0000
+ id 1npAj0-00CbuH-Q0
+ for linux-mtd@lists.infradead.org; Thu, 12 May 2022 15:27:36 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 9BFC61C0003;
- Thu, 12 May 2022 15:27:25 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id 4B979FF80A;
+ Thu, 12 May 2022 15:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1652369247;
+ t=1652369252;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xe6gof0su9adg1T78nGygOfJDwljHm2NDQAvr9m7iDU=;
- b=UFjVnqD79eYZ3HPa0Iv172QpaHho0LkO+Ptoi6Xc6jTCniR2gbNiY4fPXOX7qbcamAYVJY
- YtXg6K01OIHYKiEo+aMJZC6mkglf4J6bYd19v1vm9XbyyGPIREP8RFbpUbU6wesZp30+W0
- CkgRkZbhy4D9Qn0zQvKRpJMcOi/YPwKn8simKQodtnc4bPUSpU4D2m9/gvTtZv5R/IthpX
- ln33PLd0TjKxCyCYaniL5vzU6f+X7tcp5Vz+i5BJH9uffsbJNyeboMfUVVhiIt4N3c6gpI
- c5bMdkRoKt9D8TZfcRk+pq59HJgaTJOy0ux/pMbxCz0+l6AV/Ru66I2q284WrA==
+ bh=0jukDAbwzYSWdiOPQ0S4TYjlu0C4+K1D88a+eyX0k8k=;
+ b=TvEpQLCeK9xIbPmHfjanIb5faJSs8CvJ1xFKcZAH2RgxqWqIH3/tvMskKK59xJuC12S/i4
+ SfZbkxqJ2jsmnSZxwmUmHDtfACmvstEKib9+JgdzMkVZMKdbXTK9HA+oWd4XhhijGhRsws
+ uF3bfXJ/D9nYdkAhFCC+uBNLm43yMuMKMtU+PdWFLQIqDIbzXLSbJ/b0NlNqjgXrjCgNCr
+ 1SwAYC280rolWSqVS69XnYco3cxAO3s7cDnrMSgG6XCnD5mSXdfA4ONWqScF6MoNRUl+/6
+ WpMGHQj0iazYQaDJ/N5L4XAAQl3K75Ymb+mLW2zjXaRu+PxlBl6RETNCGU5aFQ==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mikhail Zhilkin <csharper2005@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: =?utf-8?b?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Karim <Karimdplay@gmail.com>,
- M <x1@disroot.org>
-Subject: Re: [PATCH v3 2/3] dt-bindings: mtd: partitions: Extend
- fixed-partitions binding
-Date: Thu, 12 May 2022 17:27:25 +0200
-Message-Id: <20220512152725.244872-1-miquel.raynal@bootlin.com>
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
+ linux-mtd@lists.infradead.org
+Cc: linux-renesas-soc@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ devicetree@vger.kernel.org, Milan Stevanovic <milan.stevanovic@se.com>,
+ Jimmy Lalande <jimmy.lalande@se.com>,
+ Pascal Eberhard <pascal.eberhard@se.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Clement Leger <clement.leger@bootlin.com>
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: renesas: Use runtime PM instead of
+ the raw clock API
+Date: Thu, 12 May 2022 17:27:29 +0200
+Message-Id: <20220512152729.244940-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220503155007.2339847-1-csharper2005@gmail.com>
+In-Reply-To: <20220509154943.25422-3-miquel.raynal@bootlin.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'33f6106400b60b0e3287efbd0a9f29476d278f06'
+X-linux-mtd-patch-commit: b'7363d3efa9da88ba9ddf4fed660d72499e86dc26'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220512_082731_188974_8925A3DA 
-X-CRM114-Status: UNSURE (   4.84  )
+X-CRM114-CacheID: sfid-20220512_082735_028551_C9CCDCC5 
+X-CRM114-Status: UNSURE (   9.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,14 +87,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2022-05-03 at 15:50:07 UTC, Mikhail Zhilkin wrote:
-> Extend fixed-partitions binding for support of Sercomm partition parser
-> (add "sercomm,sc-partitions" compatible).
+On Mon, 2022-05-09 at 15:49:43 UTC, Miquel Raynal wrote:
+> This NAND controller is part of a well defined power domain handled by
+> the runtime PM core. Let's keep the harmony with the other RZ/N1 drivers
+> and exclusively use the runtime PM API to enable/disable the clocks.
 > 
-> Signed-off-by: Mikhail Zhilkin <csharper2005@gmail.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> We still need to retrieve the external clock rate in order to derive the
+> NAND timings, but that is not a big deal, we can still do that in the
+> probe and just save this value to reuse it later.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next.
 
 Miquel
 
