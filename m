@@ -4,50 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92256C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 18:51:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0976FC433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 12 May 2022 19:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=TnLkbF7dV6iYAa8AZztbid9pG3XW24aDj1eisMk9rBc=; b=GLLKAmjCovxWc5
-	wncn8f3XQLts+9wjkdHj+OOPmUE5N3sfy9PkPY2tPPFdeQrPIjxe9PbL+VG+sKJlpKp88jLmPYbo/
-	V5nhqs5+YDxZPFn+IntuQtVYl7DntQHkU77OOOEX7gEJct+cohg2ugQRmUzU9KuRuw735xPbkBJBy
-	7ivCCOVmiKpu4qGHWIoK5DXwoXOxAvIpd8o8SiUtPz1jnAUIWbleZKtVLOTkKEwM7HWzVdtjSAacj
-	PfyvRhw1hNzp8W41L7bvMjR+jnC/5msTrPDwQJyxiazJNlAcf5o0RwGG8kqn1Kj3Bn0aI2k68KQ/P
-	1PJOLgG4PNCeKoyG1aKQ==;
+	List-Owner; bh=NQ649morClnt+CCq0Bz9JeT6WhhtfIHSgLof3CQqPQQ=; b=X5pXMC9iXpYSoz
+	eaBIU0yWOnaUkyelnj7BTCNT3J4JxuLTJA0zHmaH/PIwookHjxBoKmq62Yt+VR9Fhi4Ln+DkW21K0
+	307ZsHu8ClPOFBHXA1QwOM5ZR3EkBp4jIlm25wFx46XTw/nQuCn6WVRPdH2th3Ln5kvtqBqnTUvOI
+	TumVui2Cs9WgVJ3DNntIKcHVIOKtRgd5Bpu5H1VVkhD1nLIlSfA8CqwcpTn1nU9iPkiPotChio51X
+	JJLEMjgi+eJjRhdLF9zsCudctolusIF2E2PIwBmQfYvKL++EmPszfgZSeUr6J7zpNUtATuejXCKWz
+	1WYad4DUjYsSIJRvEGNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npDte-00D9RC-VX; Thu, 12 May 2022 18:50:47 +0000
-Received: from relmlor2.renesas.com ([210.160.252.172]
- helo=relmlie6.idc.renesas.com)
- by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npDtc-00D9Ov-9q
- for linux-mtd@lists.infradead.org; Thu, 12 May 2022 18:50:45 +0000
-X-IronPort-AV: E=Sophos;i="5.91,220,1647270000"; d="scan'208";a="120800635"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 13 May 2022 03:50:38 +0900
-Received: from localhost.localdomain (unknown [10.226.93.50])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8268340E703F;
- Fri, 13 May 2022 03:50:36 +0900 (JST)
-From: Phil Edworthy <phil.edworthy@renesas.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Phil Edworthy <phil.edworthy@renesas.com>,
- Richard Weinberger <richard@nod.at>,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: rawnand: mpc5121: Check before clk_disable_unprepare()
- not needed
-Date: Thu, 12 May 2022 19:50:33 +0100
-Message-Id: <20220512185033.46901-1-phil.edworthy@renesas.com>
-X-Mailer: git-send-email 2.34.1
+	id 1npEds-00DIGV-Py; Thu, 12 May 2022 19:38:32 +0000
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1npEdp-00DIFy-MA
+ for linux-mtd@lists.infradead.org; Thu, 12 May 2022 19:38:31 +0000
+Received: from local
+ by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.94.2) (envelope-from <daniel@makrotopia.org>)
+ id 1npEdo-0004tZ-51; Thu, 12 May 2022 21:38:28 +0200
+Date: Thu, 12 May 2022 20:38:22 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: linux-block@vger.kernel.org, linux-efi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Tom Rini <trini@konsulko.com>, Jens Axboe <axboe@kernel.dk>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v3 1/5] block: add new flag to add partitions read-only
+Message-ID: <Yn1iLmV06aVHyHvG@makrotopia.org>
 MIME-Version: 1.0
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220512_115044_480943_248FD32C 
-X-CRM114-Status: UNSURE (   9.33  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220512_123829_758520_52B1E521 
+X-CRM114-Status: GOOD (  12.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,32 +61,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-All code in clk_disable_unprepare() already checks the clk ptr using
-IS_ERR_OR_NULL so there is no need to check it again before calling it.
-A lot of other drivers already rely on this behaviour, so it's safe
-to do so here.
+Add flag ADDPART_FLAG_READONLY to allow partition parsers marking a
+partition to be set read-only.
+This is needed for the uImage.FIT partition parser added by a follow-up
+commit: we need to be sure the contents of uImage.FIT sub-images
+remain unaltered they are validated using a hash within the uImage.FIT
+structure which also serves as partition table.
 
-Signed-off-by: Phil Edworthy <phil.edworthy@renesas.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/mtd/nand/raw/mpc5121_nfc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ block/blk.h             | 1 +
+ block/partitions/core.c | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/mpc5121_nfc.c b/drivers/mtd/nand/raw/mpc5121_nfc.c
-index 5b9271b9c326..800d774aed8e 100644
---- a/drivers/mtd/nand/raw/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/raw/mpc5121_nfc.c
-@@ -595,8 +595,7 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct mpc5121_nfc_prv *prv = nand_get_controller_data(chip);
+diff --git a/block/blk.h b/block/blk.h
+index 434017701403fb..c20592fe9bed4b 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -404,6 +404,7 @@ void blk_free_ext_minor(unsigned int minor);
+ #define ADDPART_FLAG_NONE	0
+ #define ADDPART_FLAG_RAID	1
+ #define ADDPART_FLAG_WHOLEDISK	2
++#define ADDPART_FLAG_READONLY	4
+ int bdev_add_partition(struct gendisk *disk, int partno, sector_t start,
+ 		sector_t length);
+ int bdev_del_partition(struct gendisk *disk, int partno);
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index 8a0ec929023bcd..3e70860beb655e 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -399,6 +399,9 @@ static struct block_device *add_partition(struct gendisk *disk, int partno,
+ 			goto out_del;
+ 	}
  
--	if (prv->clk)
--		clk_disable_unprepare(prv->clk);
-+	clk_disable_unprepare(prv->clk);
- 
- 	if (prv->csreg)
- 		iounmap(prv->csreg);
++	if (flags & ADDPART_FLAG_READONLY)
++		bdev->bd_read_only = true;
++
+ 	/* everything is up and running, commence */
+ 	err = xa_insert(&disk->part_tbl, partno, bdev, GFP_KERNEL);
+ 	if (err)
 -- 
-2.34.1
+2.36.0
 
 
 ______________________________________________________
