@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD428C433FE
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 13:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DA83C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 13:36:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mmtt5TgE7v/lDtY7/snnlzhjZeZ2bDXXP9E2vL92bHs=; b=ikew0vfXbfmpa4
-	kLiJ07J/scKmFmTMytRGFD2U0g6n6+qQr6Y5ZHCZs/yn0XAaXvDHQsWaWKD1i9VoetzDgov9Unzai
-	LxGK0fQvz/BW8WLNsPlt5ULSocPazRqJHAFS8OlehAAxD1uSZ1a8WG8ERaUOZllRKCGIfSPabz27V
-	n8HhdaeHza2zDZTpyBvntxF9+9o1xrKP5k+GKqAXUL/K2JCtNYa9ZEChs1Cf1JxENj1tHMLuVExO9
-	UyVFQOgeRaZrpdYp9xIoOcNdC+lWOzf5XNuyXb7E0L9uSxzIJ9k/d+gx4EHXMpu9e+oEQDIJUyJbb
-	W35tXdXSs5ZcYVLRaZig==;
+	List-Owner; bh=KkJ4bcfYsX9LAoPa/hjf+VOfPaqer+y2jYHs+bR2g4U=; b=A7gwOfQ3KKO7js
+	HSLjdOKlSqaHWaXZcEfzn85zBf/qjhIs6WyHQY7aHZNqR4/zfL54t+kQijhjoQUxvuypiseg4H2pz
+	hQD/ukp+1xXZzBroBvC0gUWB1/lXo+JEPcZo/WgaYC0qm0jQ6I/XINbHlJigVTiVaqrc+wSIUHSQy
+	shwfkPP3q0Ur++VHYNtXhhIQNtAbJD8Nu/Wu0VX/R62LnUlskxVnU/36fxiBRZOfk2F3wsvxd9CtQ
+	FGEMg8ViIXxVGXVDpWkJeBS12TURh+HqRd6olNUkEwYedPsunAxcF3owgKlAh78l1uraqxwuvxxzo
+	zR1JQFOt0NDrTT931XTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npVSH-00GIGn-Bp; Fri, 13 May 2022 13:35:41 +0000
+	id 1npVSP-00GIKA-89; Fri, 13 May 2022 13:35:49 +0000
 Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npVSD-00GIDP-Uq
- for linux-mtd@lists.infradead.org; Fri, 13 May 2022 13:35:39 +0000
+ id 1npVSE-00GIDH-0f
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2022 13:35:41 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id ABD222224D;
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 62C1822249;
  Fri, 13 May 2022 15:35:28 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  s=mail2016061301; t=1652448928;
@@ -37,10 +37,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=xavI/gAisc47AB04Lxd4coGNq76/GR9N74Rm+AMG6uI=;
- b=kV8Y0Jw3EDQL4i0NJHEfAhJ6F0g6bKhBayKgmBQbhkRYWqUV4GlnZm/c8aLAPLdcgiqASR
- jB9UiWS2jzfGWRVwAQbsciLbjfFAWZDf3zNygvuEogdP7bBYgQR2ZGhJwDOvhfRGQjEWQn
- Bxjdq579wN/jjTOL8dfZlo92oVv+MAg=
+ bh=MRhm9+AKqiCcFzEMtgbAPpFPGlNCeXLEsZ2HWJ7ms0c=;
+ b=ZhTR67jMRyktCADJBzMCgBxZXj5Y48+NC4yRJ2e+cLkHVKej8MxqnREkz56Kx/05gT3slt
+ shj3wLY+wp3CwbGtPvULuvDRGPXlnntCSem8E5uTc/o/w2jVA4DScBmhSui79amE1ZeOHH
+ nqyem7xqbK3UCQ9qct/bCAF0zhKN3cQ=
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
@@ -48,16 +48,16 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 3/6] mtd: spi-nor: remember full JEDEC flash ID
-Date: Fri, 13 May 2022 15:35:17 +0200
-Message-Id: <20220513133520.3945820-4-michael@walle.cc>
+Subject: [PATCH 2/6] mtd: spi-nor: sysfs: hide manufacturer if it is not set
+Date: Fri, 13 May 2022 15:35:16 +0200
+Message-Id: <20220513133520.3945820-3-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220513133520.3945820-1-michael@walle.cc>
 References: <20220513133520.3945820-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220513_063538_178096_574A303A 
-X-CRM114-Status: GOOD (  17.17  )
+X-CRM114-CacheID: sfid-20220513_063538_668253_DE0F3055 
+X-CRM114-Status: GOOD (  12.48  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,74 +74,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-At the moment, we print the JEDEC ID that is stored in our database. The
-generic flash support won't have such an entry in our database. To find
-out the JEDEC ID later we will have to cache it. There is also another
-advantage: If the flash is found in the database, the ID could be
-truncated because the ID of the entry is used which can be shorter. Some
-flashes still holds valuable information in the bytes after the JEDEC ID
-and come in handy during debugging of when coping with INFO6() entries.
-These are not accessible for now.
-
-Save a copy of the ID bytes after reading and display it via debugfs.
+The manufacturer may be optional when pure SFDP flashes are supported.
+Hide the sysfs property if no manufacturer is set.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- drivers/mtd/spi-nor/core.c    | 5 +++++
- drivers/mtd/spi-nor/debugfs.c | 2 +-
- include/linux/mtd/spi-nor.h   | 3 +++
- 3 files changed, 9 insertions(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor | 3 +++
+ drivers/mtd/spi-nor/sysfs.c                             | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index ce5d69317d46..65cd8e668579 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1664,6 +1664,11 @@ static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
- 		return ERR_PTR(ret);
- 	}
+diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+index e9ef69aef20b..c800621eff95 100644
+--- a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
++++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+@@ -15,6 +15,9 @@ KernelVersion:	5.14
+ Contact:	linux-mtd@lists.infradead.org
+ Description:	(RO) Manufacturer of the SPI NOR flash.
  
-+	/* Cache the complete flash ID. */
-+	nor->id = devm_kmemdup(nor->dev, id, SPI_NOR_MAX_ID_LEN, GFP_KERNEL);
-+	if (!nor->id)
-+		return ERR_PTR(-ENOMEM);
-+
- 	info = spi_nor_match_id(nor, id);
- 	if (!info) {
- 		dev_err(nor->dev, "unrecognized JEDEC id bytes: %*ph\n",
-diff --git a/drivers/mtd/spi-nor/debugfs.c b/drivers/mtd/spi-nor/debugfs.c
-index eaf84f7a0676..23d51e7ba0a7 100644
---- a/drivers/mtd/spi-nor/debugfs.c
-+++ b/drivers/mtd/spi-nor/debugfs.c
-@@ -81,7 +81,7 @@ static int spi_nor_params_show(struct seq_file *s, void *data)
- 	int i;
++		The attribute is not present if the flash device isn't
++		known to the kernel and is only probed by its SFDP
++		tables.
  
- 	seq_printf(s, "name\t\t%s\n", info->name);
--	seq_printf(s, "id\t\t%*ph\n", info->id_len, info->id);
-+	seq_printf(s, "id\t\t%*ph\n", SPI_NOR_MAX_ID_LEN, nor->id);
- 	string_get_size(params->size, 1, STRING_UNITS_2, buf, sizeof(buf));
- 	seq_printf(s, "size\t\t%s\n", buf);
- 	seq_printf(s, "write size\t%u\n", params->writesize);
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 1ede4c89805a..4dd6cd7389ca 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -349,6 +349,8 @@ struct spi_nor_flash_parameter;
-  * @bouncebuf:		bounce buffer used when the buffer passed by the MTD
-  *                      layer is not DMA-able
-  * @bouncebuf_size:	size of the bounce buffer
-+ * @id:			The flash's ID bytes. Always contains
-+ *			SPI_NOR_MAX_ID_LEN bytes.
-  * @info:		SPI NOR part JEDEC MFR ID and other info
-  * @manufacturer:	SPI NOR manufacturer
-  * @addr_width:		number of address bytes
-@@ -379,6 +381,7 @@ struct spi_nor {
- 	struct spi_mem		*spimem;
- 	u8			*bouncebuf;
- 	size_t			bouncebuf_size;
-+	u8			*id;
- 	const struct flash_info	*info;
- 	const struct spi_nor_manufacturer *manufacturer;
- 	u8			addr_width;
+ What:		/sys/bus/spi/devices/.../spi-nor/partname
+ Date:		April 2021
+diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+index 4c3b351aef24..20563c1926f4 100644
+--- a/drivers/mtd/spi-nor/sysfs.c
++++ b/drivers/mtd/spi-nor/sysfs.c
+@@ -74,6 +74,8 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
+ 	struct spi_mem *spimem = spi_get_drvdata(spi);
+ 	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
+ 
++	if (attr == &dev_attr_manufacturer.attr && !nor->manufacturer)
++		return 0;
+ 	if (attr == &dev_attr_jedec_id.attr && !nor->info->id_len)
+ 		return 0;
+ 
 -- 
 2.30.2
 
