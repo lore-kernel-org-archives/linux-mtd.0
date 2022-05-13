@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DAC7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 13:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2BFAC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 13:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=eg0yUeq7atw7efTiy7habRW1NdDHFoAkqAOeBAz/1hs=; b=fxcmzVurroDV12
-	ozWNxECwZM5T5kwbJWZIU91IN8piFfbLATaOvIjHLZYFhHCR/R9a7r5gCM4EzjnRoL/3AuUURTx8f
-	B885Pr+cfJcFLFw3NwTDBMdM1scHkGHImPbZJO7D00tE44dGYrOcOAlc/TifS+HPBfdCznzaL80Sm
-	jvrqpr5PK4JPxDePYqf2TrUVXu+WQZVap5HWUjYuLA70C7EPhoqMpwwFcCfXuJh9hf6dcRjFNOy5K
-	7Pg9pTlc+kyZ180Fe/4y66xJ8Dohf8/TOWsiL71t2yjsKQif/HIwumzCHL4CFrDVwasxZKBUnxfYU
-	muf9GsGBlocHCcBry+Gw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=a79f792Q1HK3sIDlg7Eiauvn+I+fWsWLn6knXFpVW+0=; b=G/ch93dApZHpGF
+	mEoSLVtMm0R7k0eWCHkLrJNXqj4Y1WstxEU0/CgYRUcFHgsmlyrzWxIfrSFdcR3WtbxYtaTrhdzkC
+	HUpKrRd3kMEIMCEXGLgTz9DcrRpfi4Zvwui67YPT/ptgqN1zh0D/QWA8o3uYWMvPKA/PxUtzRVcIp
+	ZFsUtaOtRJMOsd7j/2x2dHTqfOhHZa7U2ySaCABwgBpZO1d1T1L7yd4Z8H53q54ABYb8CpbniX6DY
+	ToG7FJ4rz3tfq/H97iTmtcZNlMtFajXeZqtLDtMHba2cbL0zkz1uo/J+PYK9NFQNjrLF6AdQb3z1e
+	CAa3j+7FCBbTqzWyOXWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npVSM-00GIJA-JZ; Fri, 13 May 2022 13:35:46 +0000
+	id 1npVSR-00GIKl-BT; Fri, 13 May 2022 13:35:51 +0000
 Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npVSD-00GIDB-W7
+ id 1npVSD-00GIDE-Us
  for linux-mtd@lists.infradead.org; Fri, 13 May 2022 13:35:41 +0000
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest
  SHA256) (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 2B11822248;
- Fri, 13 May 2022 15:35:26 +0200 (CEST)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id DFE65221D4;
+ Fri, 13 May 2022 15:35:27 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1652448927;
+ s=mail2016061301; t=1652448928;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=9a3C05i3H9s2knOEOFTZJX5xBjffmFcZg9b98Yc2nfA=;
- b=crrxnZQZKwp9DDY63NSh2FDstmTvQeAH7hOpYpu8dSdlKV4P6+gMSEyTgiTLWYPfZ6CHy6
- N/p+hBI9XxtwsZz1VVTK15O8CcBIckWxtq0xOov2/C6FYxzsjCU2wbGtIgqLplomaBVGld
- R69Mqc80A/4RwkBPyGm3uYMuwIrqjqM=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9ZoXseUxXDuBhnUU+CGsQXKX/xQuLPABnNgtpp1mC+U=;
+ b=YQJ0xJ6ilUYAf2PtdFVg0FFO7xDDVImh8oloeDySiX/UTZmczh09vDOmjmGjqNbBy1W72O
+ +xVqWrrrnVPOkQkd4SEjgEoE21WbuM4NfMKz+eueT95K9CghOTvA9jClPAsWO0H5K8rNqX
+ MSzsMTjNPw/UxRUrSGu7Qj8oob+aiQI=
 From: Michael Walle <michael@walle.cc>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
@@ -47,15 +48,16 @@ To: Tudor Ambarus <tudor.ambarus@microchip.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
 Cc: linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH 0/6] mtd: spi-nor: generic flash driver
-Date: Fri, 13 May 2022 15:35:14 +0200
-Message-Id: <20220513133520.3945820-1-michael@walle.cc>
+Subject: [PATCH 1/6] mtd: spi-nor: hide jedec_id sysfs attribute if not present
+Date: Fri, 13 May 2022 15:35:15 +0200
+Message-Id: <20220513133520.3945820-2-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220513133520.3945820-1-michael@walle.cc>
+References: <20220513133520.3945820-1-michael@walle.cc>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220513_063538_247647_3E69DD40 
-X-CRM114-Status: UNSURE (   8.87  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220513_063538_202388_EECD6C92 
+X-CRM114-Status: GOOD (  14.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,28 +74,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Add a generic flash driver, which is used when we don't find a matching
-flash in our database. All the basic features of a flash can be discovered
-by SFDP and most (if not all) newer flashes support it.
+Some non-jedec compliant flashes (like the Everspin flashes) don't have
+an ID at all. Hide the attribute in this case.
 
-Michael Walle (6):
-  mtd: spi-nor: hide jedec_id sysfs attribute if not present
-  mtd: spi-nor: sysfs: hide manufacturer if it is not set
-  mtd: spi-nor: remember full JEDEC flash ID
-  mtd: spi-nor: move function declaration out of sfdp.h
-  mtd: spi-nor: add generic flash driver
-  mtd: spi-nor: sysfs: print JEDEC ID for generic flash driver
+Fixes: 36ac02286265 ("mtd: spi-nor: add initial sysfs support")
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ .../ABI/testing/sysfs-bus-spi-devices-spi-nor      |  3 +++
+ drivers/mtd/spi-nor/sysfs.c                        | 14 ++++++++++++++
+ 2 files changed, 17 insertions(+)
 
- .../ABI/testing/sysfs-bus-spi-devices-spi-nor |  6 +++++
- drivers/mtd/spi-nor/core.c                    | 18 +++++++++++++
- drivers/mtd/spi-nor/core.h                    |  3 +++
- drivers/mtd/spi-nor/debugfs.c                 |  2 +-
- drivers/mtd/spi-nor/sfdp.c                    | 27 +++++++++++++++++++
- drivers/mtd/spi-nor/sfdp.h                    |  2 --
- drivers/mtd/spi-nor/sysfs.c                   | 20 +++++++++++++-
- include/linux/mtd/spi-nor.h                   |  3 +++
- 8 files changed, 77 insertions(+), 4 deletions(-)
-
+diff --git a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+index d76cd3946434..e9ef69aef20b 100644
+--- a/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
++++ b/Documentation/ABI/testing/sysfs-bus-spi-devices-spi-nor
+@@ -5,6 +5,9 @@ Contact:	linux-mtd@lists.infradead.org
+ Description:	(RO) The JEDEC ID of the SPI NOR flash as reported by the
+ 		flash device.
+ 
++		The attribute is not present if the flash doesn't support
++		the "Read JEDEC ID" command (9Fh). This is the case for
++		non-JEDEC compliant flashes.
+ 
+ What:		/sys/bus/spi/devices/.../spi-nor/manufacturer
+ Date:		April 2021
+diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+index 9aec9d8a98ad..4c3b351aef24 100644
+--- a/drivers/mtd/spi-nor/sysfs.c
++++ b/drivers/mtd/spi-nor/sysfs.c
+@@ -67,6 +67,19 @@ static struct bin_attribute *spi_nor_sysfs_bin_entries[] = {
+ 	NULL
+ };
+ 
++static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
++					struct attribute *attr, int n)
++{
++	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
++	struct spi_mem *spimem = spi_get_drvdata(spi);
++	struct spi_nor *nor = spi_mem_get_drvdata(spimem);
++
++	if (attr == &dev_attr_jedec_id.attr && !nor->info->id_len)
++		return 0;
++
++	return 0444;
++}
++
+ static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
+ 					    struct bin_attribute *attr, int n)
+ {
+@@ -82,6 +95,7 @@ static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
+ 
+ static const struct attribute_group spi_nor_sysfs_group = {
+ 	.name		= "spi-nor",
++	.is_visible	= spi_nor_sysfs_is_visible,
+ 	.is_bin_visible	= spi_nor_sysfs_is_bin_visible,
+ 	.attrs		= spi_nor_sysfs_entries,
+ 	.bin_attrs	= spi_nor_sysfs_bin_entries,
 -- 
 2.30.2
 
