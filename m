@@ -4,144 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD5AFC433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 16:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF9A7C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 17:17:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
-	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=md4mqkZwVYCycjkBuOQ+X/HJEMO0GTZvZqjArSXzjvs=; b=1+Ukz4Uf9GG2c110MyZB1Z1Qjf
-	30Y8iBvDelgcNZUCVuR+uDpCKtVq+31aA+WPwW2vAw87EyAE7IPapAHV+h8HdOiY3+V1i5a2uG+WZ
-	/FRc3G+KxjlfCuFwKxamN6Ybzhy0cMYycBrqWhtWI7LeF+qBAS4HmjZwAkfBFi5XW0a6qBvJ1pAMg
-	eW9NKBhJvTt9vkiBPMRFVmSOLnrILfTT6SxOguCQrlnkWOCIcaJKkW6EmxFuYhGhWCtG6X56lsx0A
-	00oZ2hL6x6pEXrbhcaO3/b5x87fNmZGeXo/YMFTd/YdPQNvLEHoxzhCTEHM4GV0OIw+pswk/gC5zS
-	Xpm9ZiPQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7IJf0qmwHTypwU62QZcFdYcFufsCJ649go2hAtnXf/U=; b=07f3NqzMBptC7g
+	M3hmVYkMEQF3UTXhhTh40mntYgEjwRgU/dF6/VDDqomumDHh31ju1gVQCnSMlxfh950FagBSURby5
+	h46hYAJfuEG+WDyvp6Rjf4qhX8FedUm6oaMxzR8anRW1vNAOOYQaggsSUbXFbI2xyyTT6Gn9SlFyd
+	+w9Q/3B9IJJZVt++KA5S/Qik/cIy9SobPO6jTwkQqOTzkI+8j7ZE9Z1pg1QaEuIdnvHSm0orQ6D6K
+	tTg1Lqq/MiBcMlo41AvaHfWF0exwlfeMCElz6Glsf8mw99we+zIRmz9ueYhVgSpM5GhlGC8JiVP07
+	PgzVqMowV46WbkJlK4CA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npY5S-00Gpp0-2X; Fri, 13 May 2022 16:24:18 +0000
-Received: from mail-ve1eur01on0714.outbound.protection.outlook.com
- ([2a01:111:f400:fe1f::714]
- helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+	id 1npYtv-00H0sl-4N; Fri, 13 May 2022 17:16:27 +0000
+Received: from mail-qt1-f176.google.com ([209.85.160.176])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npY5P-00Gpo1-4q
- for linux-mtd@lists.infradead.org; Fri, 13 May 2022 16:24:16 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VEgUFUfG5S9JF81gzil81Z3P9dGVUfTXOCj5EO3QObxlNX3Zbq1maErXPUExZe6CqEq4T6kNWCUyh2+tWKMZrfo+Ju5LdIPqu3Soi4PiEw+HiFI034kVB7AURqbKV11in5m2jFiNPaiiVEo9jwuQVcFZKb8rG+Fjvos1K85tx48VP6feHktOJc52BqOFmaJZCKUg/2GX2/oWat8EE6vJJEgFUaxczfruQN6hiH24BxNANcymOFOgziGsM1N+1DNnDpTKfyjv2UnQA6uBB05V9WsdxUfQPglls22q9wwsXvdiRH3lsqjtfxtcXbD2O4eG6KI5z7XTlWAi7AmxuZCotA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aL4EOGafSiArWzeHjTttw0SmsRh0ctJvuIcggITtIIA=;
- b=TbDxEUcYZQC2xYO5L6ZgDS2+hCGd2+bAj8OKtTwdbdntrn4DxCgOrNYvHg9hB4lS9NsfF7E5yS8ndC2PDdj10IG4LBV7Nphzf00cdWt85dSe5s46GY1NOGBCLm5XuvDD+Sy3q1/21RFpiHi8xxvYE5Q2awmz7mlR34m6iSZNyn84ZxAARxf/Al9Ki9j/fqc6ul4zPZjvZasFYXry+6ll+tSNM+ich9QGi+JmK8FTl0EDPs4NO9nuQqrS1GghJA+pSUUoMo11cX+1ySDUm6gPgQvE5s3elZzIJF/sElfPDyi8nyldp5wYd6mu5rySgMH89JJTBRFSz83b5NoBpuNAPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com; 
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aL4EOGafSiArWzeHjTttw0SmsRh0ctJvuIcggITtIIA=;
- b=foswN9KC7RuBuaLGrKnJElVc3T/DGEVJ5gfv8lCEav5RE+Yj9I/GmqpbyQzjYWwK5XjSkaxNjc+LW2pfTmgZlZdYSuJOWH5J5Z/DQN9fuPMSeJRBg/X6M9bOzOXMixHoshIkFH1GbTDuWyayc+Gg19B0tjna693gtxra2Ds60LI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia.com;
-Received: from AS4PR07MB8658.eurprd07.prod.outlook.com (2603:10a6:20b:4cd::12)
- by AM9PR07MB8004.eurprd07.prod.outlook.com (2603:10a6:20b:30e::24)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.4; Fri, 13 May
- 2022 16:09:43 +0000
-Received: from AS4PR07MB8658.eurprd07.prod.outlook.com
- ([fe80::1d35:9369:bda:b3a0]) by AS4PR07MB8658.eurprd07.prod.outlook.com
- ([fe80::1d35:9369:bda:b3a0%6]) with mapi id 15.20.5273.005; Fri, 13 May 2022
- 16:09:43 +0000
-Message-ID: <d59ec4e0-3bce-2b44-1fc5-54a26fe77c7f@nokia.com>
-Date: Fri, 13 May 2022 18:09:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] mtd: spi-nor: Support Dual and Quad Read on Macronix
- mx25u25635f
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org
-References: <20220513094759.44185-1-alexander.sverdlin@nokia.com>
- <34eccc66cc75dd0ffbf8a77780b6f8a7@walle.cc>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-In-Reply-To: <34eccc66cc75dd0ffbf8a77780b6f8a7@walle.cc>
-X-ClientProxiedBy: AM6PR04CA0068.eurprd04.prod.outlook.com
- (2603:10a6:20b:f0::45) To AS4PR07MB8658.eurprd07.prod.outlook.com
- (2603:10a6:20b:4cd::12)
+ id 1npYtr-00H0rD-Iz
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2022 17:16:25 +0000
+Received: by mail-qt1-f176.google.com with SMTP id x22so7323690qto.2
+ for <linux-mtd@lists.infradead.org>; Fri, 13 May 2022 10:16:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=raRyjvi/nNYnyN2p2YoiBhtLtPa6DvP11Zh+f/IjRsk=;
+ b=R6oG9fC4dMpyg3MxLK/tbrgZhRjAJTnLgZfvaCnpqR1yHE2IZfdThoPPx05OQ3AodH
+ wnIniZp8cE4avRsY9x+3z3LaBaH77O/RlExO8ZrIJ3WCefeb4D/uCelMPUTQHMfvmEjF
+ pq01YPQ5DNYDvM7URw4i4bQW6JLw3qYVzbKoTIk9Zt0ndb7iy9sIHXE/yACs4rG3+Pvg
+ Ks7aX2ZJqG74Cf7u5Zh74DCmNcjU9IhX2AaH5TOLVXdcZEhoJIC/r+betIKA1i97cxDq
+ KpW4LaRvvO19p8QLo2QUa17Xl3Rdac+U1lCrJgBtx6Pipx9Fp1RUlk+7EL3QUpqfcjPZ
+ vjrQ==
+X-Gm-Message-State: AOAM533PaFzuNnseUfCXaT8UTCsJFI2aos9EYtqS4A/4A+QIjlim/A6Z
+ a7RMEEyXjkSHs1J5fDQGGnNSlR392H3Gzw==
+X-Google-Smtp-Source: ABdhPJyyVqkEsRz5g7e5pV3XOnit4wLWd5XbXLRtamXthlAhDLQRpc+GHJXsxdAbbHLRmdRs3Rv/4Q==
+X-Received: by 2002:ac8:4e86:0:b0:2f3:f4dd:82b5 with SMTP id
+ 6-20020ac84e86000000b002f3f4dd82b5mr5483832qtp.444.1652462180617; 
+ Fri, 13 May 2022 10:16:20 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com.
+ [209.85.128.172]) by smtp.gmail.com with ESMTPSA id
+ i21-20020ac871d5000000b002f3fb488d6bsm1773240qtp.41.2022.05.13.10.16.19
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 13 May 2022 10:16:20 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id
+ 00721157ae682-2f16645872fso97062247b3.4
+ for <linux-mtd@lists.infradead.org>; Fri, 13 May 2022 10:16:19 -0700 (PDT)
+X-Received: by 2002:a81:2143:0:b0:2fb:1274:247e with SMTP id
+ h64-20020a812143000000b002fb1274247emr6840940ywh.384.1652462179266; Fri, 13
+ May 2022 10:16:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 55eb0835-6d6b-420b-d41b-08da34fafd83
-X-MS-TrafficTypeDiagnostic: AM9PR07MB8004:EE_
-X-Microsoft-Antispam-PRVS: <AM9PR07MB8004878527233589E81ACE2788CA9@AM9PR07MB8004.eurprd07.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8iRbXRqt7chIaR/OfiRypxMiWapIw38cKECgKHa9lYY/vVFFlSb37tusXtSt1rtjMuc6ylxVMf08B6KnzqJgm7ba/0GENxwexVw6mH+jTR4cqQ3hQ52CTEyRG4z/hL6Lm4ufAMF8PC/NasJ0SOgFG8K4Pdj3tQVztz0kyL+B6peb2PiPPDK/URdP4WUDFwTj/Jhmup2B8yxTZZH7GOykVgD7Tsvg8v+tw+YeXgdyXe2eA8JwRgYRtUkIFCwWFiQGVAmDAbGnSZyvTvWr6ewQM1pAUniNH1JEr8BSwVT2YbivZvpN9hrFT0/VCqBbStZD88WsNL9xS3sREJSdTYJ0wjMIpTivC4SEi5W0E90y4fsSpsyQSTXuO1xJ++b8pKvT6jjMixRc7BiBB6jgVp49yLDfN5IRHNFFmCgw5FOmYmrxb86ie/CzOJTL5FF2jzyjhaVfuqqakj7aw8IP8qevSyNIEAcysFwPAplFIZkheFkf75yggWViV1irY++62TV1YNtsv56LcBVgbebV5FpZ9+hVr8y4tTqL2e24bxqqG//Dssq2mLeKXlU2EHRz1I1rRTuiVSSEinOnhAEwl8wkqTy/eUYNOOzkfGC7VxSLk0kSL8tNhSgRMBa30uEsDy+rEBDogfPzpqJq3F/H2r1VmiCx0T8r4NYtPZ3dnf5cDXzKWARnFFgwwDuT9XyZlrLWCJq8T7T+0S68Sqn4Sb8fuVrq7Ft4BosKU06j9n1CKURxTg48kisITUQB14yOJ8q5RMkEnG7v5dK0ftCuVlm20W2k87k89C4B+5CeKkDYtcAXwD/p2oGbQviyXw3l8aub8eTHYR/4UC8wtjRlfeK3fB3KBbB84JqZiswTWXz5iNQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:AS4PR07MB8658.eurprd07.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(38350700002)(26005)(6512007)(2616005)(6506007)(52116002)(6666004)(5660300002)(8936002)(2906002)(31686004)(44832011)(36756003)(66556008)(66946007)(54906003)(508600001)(82960400001)(86362001)(31696002)(66476007)(6486002)(966005)(8676002)(4326008)(316002)(186003)(38100700002)(6916009)(43740500002)(45980500001);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cUQ3aEZJR1QxMU9yaFRkL1BpcTJYVHdmRGxmWnJ4a3RwOU1pSWZUaGk1VG8r?=
- =?utf-8?B?QTkwclBXaDNUNm5WenRHdEdCRjBnVFdPMGQ0WVdWcFllanh0NGV5WTVRaW5Y?=
- =?utf-8?B?WTNyQzFJMUVkV1ZETlFaQUcxOW1saklja3kzVFFYUE5oNjNUa1l6K1BzL3Zk?=
- =?utf-8?B?VXFBZVAwemVNdDNZRmIyV0xMckNVcXFTaFpMMTF3TVB5UFFtYlhyMkFtMEgz?=
- =?utf-8?B?TnFjZDY0Mnl5OW9kM1VNSWdqL0xlK1grTVF2RDM5WkFDR1QvdFFwWFJndnB5?=
- =?utf-8?B?TFFjNDRHWFNzYjlNdGE5bThJZ0xIRW1QWlBBSXV1bnArMXhpbWpMdFlBU0JF?=
- =?utf-8?B?SXBCSHQrdWpKNHBjMUhqbmx2Uy9uSC85Uk1kdy94MmUvQjlxTlA3cUtMaktm?=
- =?utf-8?B?bVk4RUtEZWRGTmpZSUcvRytacGZWaHNFeXM1WFBFZlpxN2VQMWJSQ3c1ODJm?=
- =?utf-8?B?QjlGOUdGZzVwQzN1UGZsbS80Nno0WVRZRUpiMWd2M3pyYkNQd2U0UGlRR2dp?=
- =?utf-8?B?Y0F5UFN6OVY2a2JnSGJGTFpqWk5DVDRmOEtwRWhCSFkxM2w5OXhXdVQ3YUhN?=
- =?utf-8?B?R3Jpbk1zM1lLcS91YzNHVmxBL2NUajlyRkxHaXR3SmZhOGN4ck1RZVd4aDF0?=
- =?utf-8?B?a0RJK1Y5RHBMRDJ5M0hLUmZZM2dlWVpNaHJ2SzFlUk01cFhNK2pyVGQvL3dG?=
- =?utf-8?B?Z3JYdDFtaDEzL3VCdVYvcGJwaDYwVXBUZC90bzFlWDNMQWMzMXQxRUZ0UUVw?=
- =?utf-8?B?ODN3UjZ3dmF3UVFlTFF2UTNzdUQwMDJMNVJQclpNd3JONml3aFBlTitjVFgz?=
- =?utf-8?B?UE1UL0s1cXRVOEh6MXorTTZ0YjR1eXB2ZmdqcjFCL3RuY0lGUUZWdERsVUFH?=
- =?utf-8?B?b0pQck5YNWpwZW1EMDRBTGFtbU9FcG9oQkFCSDNwdG4rTjhRRmVVaUlPNXoz?=
- =?utf-8?B?NVBKRE5QVmlqaTc3U2JXcGl4SThPc1JMOEVpbCthdmlpenFxS3paemZOWnlX?=
- =?utf-8?B?aStLem5CbVlRZGVuM1p6WHNQK0dadTI2ellYeCszNndIUCt5blNsWWVUZkRY?=
- =?utf-8?B?SGhTUlk2RFliajRHOHBrNDcycmZzeXRHUVNNNFNUTlBOLytpWjM3aExPYTlI?=
- =?utf-8?B?amdlWFlnRGF0eER6SWVHcmZkZnBmcmdxcjhvbG9OSjFZV3AxMGwrNkJjR2Ry?=
- =?utf-8?B?dDhUbENadzc0MlRxVElVQmwzUkU2bmE1bWVOR2RnS3lzVUJoblJRbnoyb3B4?=
- =?utf-8?B?aWx4YmNPS1VQRHRsZTJ6RXJDZVVOTU5kM2xOQVdtVjR6MDRZZHk4S0YrTS9Y?=
- =?utf-8?B?S1VOeTBKWENNdXRpR3hOc1JLandaQnhrS3QrVGxnZDBZTHRCYlNtNmRBVnNB?=
- =?utf-8?B?WEdJMVdKME5IZkVKWCszS3pYdS9pZVF0c2NWcVhvaG04MGlORzRRdzIwZklE?=
- =?utf-8?B?MTlxMFBiSjY1dHdGTUtjVDc5bStFWFRXcFgvQk1tN0x6b25reCtKalJwYUFO?=
- =?utf-8?B?NksxMW9DRkE2MWJkd1cycHU4Zk04SUlFajFjbWMvaUhYTi9QYTZ3b3plK01D?=
- =?utf-8?B?NEZZQmJ4ZURCSEhkdWJWNTB0NnNWaGZON3kvZDdPbG4wdEZ1eG1wL0xjUTU2?=
- =?utf-8?B?VHRzbzhMVDk5b3k4c282OEFHVkFoMzZTK0h6MERTanJpMjZRMTdVWlYyTUYz?=
- =?utf-8?B?Y0lXdWk5TG5QYzRFMU5vTjBtaXNwcmp6WkJ3d0FZTG5NVElHaDBqNjBpa0xG?=
- =?utf-8?B?alRxSU83NFQ3dXVzMkIrVTBJSThJdktTZ2dYeUk1UDlkRzZ0aUdpdmNUdG5M?=
- =?utf-8?B?V1hpTnBOVm9MOUFJQUZvS01NbGlqRWFLQzhSN1dqQW84akVybVlxNnBMRGpB?=
- =?utf-8?B?OWpyUUtYQmFMR0VBaHZxOVprMkRINGhJdHZlcm9MQTFraGZ6bFczMDQvZmhI?=
- =?utf-8?B?cVhqUW5MS2lKQlBURWU3d2I0a3AxVldDR3B3RElTQkZuS08xbGVsakgwc3RG?=
- =?utf-8?B?azBRby9PVWhtUkhhVExNOERWNkNkWmIyQ1RZTmIxbVJzZlY1MzlDZTRCQjFP?=
- =?utf-8?B?YU1hLzFxcDJHd0tSdFZDKzdsdndmc216WlJHckZYM01qcHNaT1NYbElzeFho?=
- =?utf-8?B?M1h0bFNHcWJEK0dWT1cwY2RHZ0lxdzNMRDQySUtWaGttVmhubmdEb1NqUVMx?=
- =?utf-8?B?cWQwQjRjMFB6WmhrdTdzQVNNaU5YZkcwaktYVGdWL3pXcC9OYW1aY1Q3eTc5?=
- =?utf-8?B?L3lUMVA5L09sNHNub28wTjAwZTFBQ3c3bC9MQ0ZUMi8wZGJycGJKbzJCMGhT?=
- =?utf-8?B?WFA0N3pEQnptU0orNnpQVlgwUURVendkMTFJMk5raXR4blpDV0JqajlXTjFW?=
- =?utf-8?Q?laMmO0z7b5gYbY5Q=3D?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55eb0835-6d6b-420b-d41b-08da34fafd83
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR07MB8658.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2022 16:09:43.0464 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n8PlMpoE7Z+jt2yGHSW8ro5aqVjgO4b1EoMPuP/CVgUftvxIJSivFM/YNAeB0km45g+E+pgolKg6tyyxhPg1m7S9FrsKOU6LXlOqoGe2csc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR07MB8004
+References: <20220513104957.257721-1-miquel.raynal@bootlin.com>
+ <20220513104957.257721-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20220513104957.257721-3-miquel.raynal@bootlin.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 13 May 2022 19:16:07 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWFV0PcvEYJht__pTDTq3jj-CW2KegwGMyDgfeJhtpSRw@mail.gmail.com>
+Message-ID: <CAMuHMdWFV0PcvEYJht__pTDTq3jj-CW2KegwGMyDgfeJhtpSRw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] mtd: rawnand: renesas: Use runtime PM instead of
+ the raw clock API
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>, 
+ Gareth Williams <gareth.williams.jx@renesas.com>,
+ Phil Edworthy <phil.edworthy@renesas.com>, 
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
+ Michael Walle <michael@walle.cc>,
+ MTD Maling List <linux-mtd@lists.infradead.org>, 
+ Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Milan Stevanovic <milan.stevanovic@se.com>, 
+ Jimmy Lalande <jimmy.lalande@se.com>, Pascal Eberhard <pascal.eberhard@se.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Herve Codina <herve.codina@bootlin.com>, 
+ Clement Leger <clement.leger@bootlin.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220513_092415_223652_FA5067E5 
-X-CRM114-Status: UNSURE (   7.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220513_101623_661433_A8FF4809 
+X-CRM114-Status: GOOD (  20.45  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,46 +101,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Michael,
+On Fri, May 13, 2022 at 12:50 PM Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> This NAND controller is part of a well defined power domain handled by
+> the runtime PM core. Let's keep the harmony with the other RZ/N1 drivers
+> and exclusively use the runtime PM API to enable/disable the clocks.
+>
+> We still need to retrieve the external clock rate in order to derive the
+> NAND timings, but that is not a big deal, we can still do that in the
+> probe and just save this value to reuse it later.
+>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
->> According to datasheet both Dual and Quad Read is supported. The read test
->> shows x3.8 speed gain.
-> 
-> Does it have SFDP? Try adding PARSE_SFDP instead of the
-> NO_SFDP_FLAGS.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Some issues with its SFDP were known:
-https://patchwork.ozlabs.org/project/linux-mtd/patch/1492068234-9509-1-git-send-email-dev@kresin.me/
- 
-> Please post an SFDP dump of this flash [1].
+Gr{oetje,eeting}s,
 
->xxd -p /sys/bus/spi/devices/spi0.0/sfdp
-53464450060102ff00060110300000ffc2000104100100ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520fbffffffff0f44eb086b
-083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff8749b50082d2
-04d24403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffff7f8fffff215cdcffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffff002050169df9c06485cbffffffffffff
+                        Geert
 
->md5sum /sys/bus/spi/devices/spi0.0/sfdp
-bc360997e729ce1f77f1ff728621d94f /sys/bus/spi/devices/spi0.0/sfdp
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->cat /sys/bus/spi/devices/spi0.0/jedec_id
-c22539
-
->cat /sys/bus/spi/devices/spi0.0/partname
-mx25u25635f
-
->cat /sys/bus/spi/devices/spi0.0/manufacturer
-macronix
-
--- 
-Best regards,
-Alexander Sverdlin.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
