@@ -4,87 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF9A7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 17:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92F2BC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 13 May 2022 17:22:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7IJf0qmwHTypwU62QZcFdYcFufsCJ649go2hAtnXf/U=; b=07f3NqzMBptC7g
-	M3hmVYkMEQF3UTXhhTh40mntYgEjwRgU/dF6/VDDqomumDHh31ju1gVQCnSMlxfh950FagBSURby5
-	h46hYAJfuEG+WDyvp6Rjf4qhX8FedUm6oaMxzR8anRW1vNAOOYQaggsSUbXFbI2xyyTT6Gn9SlFyd
-	+w9Q/3B9IJJZVt++KA5S/Qik/cIy9SobPO6jTwkQqOTzkI+8j7ZE9Z1pg1QaEuIdnvHSm0orQ6D6K
-	tTg1Lqq/MiBcMlo41AvaHfWF0exwlfeMCElz6Glsf8mw99we+zIRmz9ueYhVgSpM5GhlGC8JiVP07
-	PgzVqMowV46WbkJlK4CA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hFK/BUKeTJinDCGXrjTsVI2/3aE1YQlYRIlgCL0Hlsk=; b=FUjfYxOTC3WNoagIRs3yvaQUjV
+	VPCPU9CHs5SN596n2n3U43TGg0TdQjyoKQnTquu9Dh2QpJJm62xUkamkjJjYe1ae9kIn8VUT8ny3J
+	SxehRvwRja64v0dWpVl3Zya++NJeGW2gbpQ++knSAjbBJljexk4iehqTy5i5XkTiH0BxA6qF+Jhij
+	YQj/vSGf0ANkfDRa6bjho1TR5p01lNkAXUyZ3S5BR4Eie9PPYIYkNPBeJ27sXS9WDof1U0SBOIR1K
+	KkqcH1+OwD2o8dVD1zr0Wo9SAj3e2wPWITEh2c6imStFvHzqyoxcHqM/qS9gcXxbTgVlrnSOi6aDN
+	W86D4Z8Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npYtv-00H0sl-4N; Fri, 13 May 2022 17:16:27 +0000
-Received: from mail-qt1-f176.google.com ([209.85.160.176])
+	id 1npYzL-00H3ox-SD; Fri, 13 May 2022 17:22:03 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npYtr-00H0rD-Iz
- for linux-mtd@lists.infradead.org; Fri, 13 May 2022 17:16:25 +0000
-Received: by mail-qt1-f176.google.com with SMTP id x22so7323690qto.2
- for <linux-mtd@lists.infradead.org>; Fri, 13 May 2022 10:16:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=raRyjvi/nNYnyN2p2YoiBhtLtPa6DvP11Zh+f/IjRsk=;
- b=R6oG9fC4dMpyg3MxLK/tbrgZhRjAJTnLgZfvaCnpqR1yHE2IZfdThoPPx05OQ3AodH
- wnIniZp8cE4avRsY9x+3z3LaBaH77O/RlExO8ZrIJ3WCefeb4D/uCelMPUTQHMfvmEjF
- pq01YPQ5DNYDvM7URw4i4bQW6JLw3qYVzbKoTIk9Zt0ndb7iy9sIHXE/yACs4rG3+Pvg
- Ks7aX2ZJqG74Cf7u5Zh74DCmNcjU9IhX2AaH5TOLVXdcZEhoJIC/r+betIKA1i97cxDq
- KpW4LaRvvO19p8QLo2QUa17Xl3Rdac+U1lCrJgBtx6Pipx9Fp1RUlk+7EL3QUpqfcjPZ
- vjrQ==
-X-Gm-Message-State: AOAM533PaFzuNnseUfCXaT8UTCsJFI2aos9EYtqS4A/4A+QIjlim/A6Z
- a7RMEEyXjkSHs1J5fDQGGnNSlR392H3Gzw==
-X-Google-Smtp-Source: ABdhPJyyVqkEsRz5g7e5pV3XOnit4wLWd5XbXLRtamXthlAhDLQRpc+GHJXsxdAbbHLRmdRs3Rv/4Q==
-X-Received: by 2002:ac8:4e86:0:b0:2f3:f4dd:82b5 with SMTP id
- 6-20020ac84e86000000b002f3f4dd82b5mr5483832qtp.444.1652462180617; 
- Fri, 13 May 2022 10:16:20 -0700 (PDT)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com.
- [209.85.128.172]) by smtp.gmail.com with ESMTPSA id
- i21-20020ac871d5000000b002f3fb488d6bsm1773240qtp.41.2022.05.13.10.16.19
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 13 May 2022 10:16:20 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id
- 00721157ae682-2f16645872fso97062247b3.4
- for <linux-mtd@lists.infradead.org>; Fri, 13 May 2022 10:16:19 -0700 (PDT)
-X-Received: by 2002:a81:2143:0:b0:2fb:1274:247e with SMTP id
- h64-20020a812143000000b002fb1274247emr6840940ywh.384.1652462179266; Fri, 13
- May 2022 10:16:19 -0700 (PDT)
+ id 1npYzH-00H3kp-Jd
+ for linux-mtd@lists.infradead.org; Fri, 13 May 2022 17:22:01 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 0374D221D4;
+ Fri, 13 May 2022 19:21:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1652462513;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=QMV8VRxmSptJXLRk6YRt/p7jiW7WuIAN+Y3frdH9Rt0=;
+ b=eWYiklEo44ZYsfC1Bt+l2zVQZYk65FzJe5tSi1A3/ClC5oZi7njpRcslmOah4tktSnm9Y2
+ ePVWvTK+XECyPeTripAfD5pIt7w7RZkRTqW/B5oSt1cyWar6GVKK7W2lelWSibH5kZI0Kj
+ Y6PTTjgbhOEWd/aO5ZNigpAOjhPDl2o=
 MIME-Version: 1.0
-References: <20220513104957.257721-1-miquel.raynal@bootlin.com>
- <20220513104957.257721-3-miquel.raynal@bootlin.com>
-In-Reply-To: <20220513104957.257721-3-miquel.raynal@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 13 May 2022 19:16:07 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWFV0PcvEYJht__pTDTq3jj-CW2KegwGMyDgfeJhtpSRw@mail.gmail.com>
-Message-ID: <CAMuHMdWFV0PcvEYJht__pTDTq3jj-CW2KegwGMyDgfeJhtpSRw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: renesas: Use runtime PM instead of
- the raw clock API
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Magnus Damm <magnus.damm@gmail.com>, 
- Gareth Williams <gareth.williams.jx@renesas.com>,
- Phil Edworthy <phil.edworthy@renesas.com>, 
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, 
- Michael Walle <michael@walle.cc>,
- MTD Maling List <linux-mtd@lists.infradead.org>, 
- Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Milan Stevanovic <milan.stevanovic@se.com>, 
- Jimmy Lalande <jimmy.lalande@se.com>, Pascal Eberhard <pascal.eberhard@se.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Herve Codina <herve.codina@bootlin.com>, 
- Clement Leger <clement.leger@bootlin.com>
+Date: Fri, 13 May 2022 19:21:52 +0200
+From: Michael Walle <michael@walle.cc>
+To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: Support Dual and Quad Read on Macronix
+ mx25u25635f
+In-Reply-To: <d59ec4e0-3bce-2b44-1fc5-54a26fe77c7f@nokia.com>
+References: <20220513094759.44185-1-alexander.sverdlin@nokia.com>
+ <34eccc66cc75dd0ffbf8a77780b6f8a7@walle.cc>
+ <d59ec4e0-3bce-2b44-1fc5-54a26fe77c7f@nokia.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <a6515b6d3c790be8a66f30069a05df56@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220513_101623_661433_A8FF4809 
-X-CRM114-Status: GOOD (  20.45  )
+X-CRM114-CacheID: sfid-20220513_102159_831203_DF67CC5C 
+X-CRM114-Status: UNSURE (   8.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,35 +72,51 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, May 13, 2022 at 12:50 PM Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> This NAND controller is part of a well defined power domain handled by
-> the runtime PM core. Let's keep the harmony with the other RZ/N1 drivers
-> and exclusively use the runtime PM API to enable/disable the clocks.
->
-> We still need to retrieve the external clock rate in order to derive the
-> NAND timings, but that is not a big deal, we can still do that in the
-> probe and just save this value to reuse it later.
->
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Hi,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Am 2022-05-13 18:09, schrieb Alexander Sverdlin:
+>>> According to datasheet both Dual and Quad Read is supported. The read 
+>>> test
+>>> shows x3.8 speed gain.
+>> 
+>> Does it have SFDP? Try adding PARSE_SFDP instead of the
+>> NO_SFDP_FLAGS.
+> 
+> Some issues with its SFDP were known:
+> https://patchwork.ozlabs.org/project/linux-mtd/patch/1492068234-9509-1-git-send-email-dev@kresin.me/
 
-Gr{oetje,eeting}s,
+That doesn't seem to be the case for your flash. The quad and
+dual flags you've added, will enable SFDP parsing anyway. So
+instead of adding these flags, just adding PARSE_SFDP should
+work, too. We still have to keep the SPI_NOR_4B_OPCODES.
 
-                        Geert
+>> Please post an SFDP dump of this flash [1].
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>> xxd -p /sys/bus/spi/devices/spi0.0/sfdp
+> 53464450060102ff00060110300000ffc2000104100100ff84000102c000
+> 00ffffffffffffffffffffffffffffffffffe520fbffffffff0f44eb086b
+> 083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff8749b50082d2
+> 04d24403673830b030b0f7bdd55c4a9e29fff050f985ffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffff7f8fffff215cdcffffffffffffffffffffff
+                           ^^^^^^^^^^^^^^^^
+
+That's the 4BAIT table.
+
+
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffff002050169df9c06485cbffffffffffff
+
+-michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
