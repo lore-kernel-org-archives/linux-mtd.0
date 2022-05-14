@@ -4,76 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F35C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 14 May 2022 01:53:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C526FC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 14 May 2022 02:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Lkzl+v+tWktguR+1rUAmkX699V2NPGDjWhwY+DA1lWg=; b=3diRJLofmbw3Ad
-	k6UGLfdjkoAkxgbOFUSXhvkil4SrzfoAFF5lIDgIeuq0I+JtC1u0jr+ZdmlWNseajwV8IaRnxfZ3p
-	Olo7WB/7ewJBVE/c8zrwjWuwmMT6R1QWnVjic7gLhrubF078T3R7hQXZHOmvdsqJHwtAyDKsudHaf
-	v0C911PkmQU5Gc2OW/qmOXSAU1Cs27wifi1QzqcN7e9rBx+8zpDBUbwXcO0Yfv+Wp2AHdzyhxbEBa
-	5W3Ba2wl+KCl1wXFi7DEVLiMSHfH9Ms5/cGEebmlHCKEwMpT1dqVIMUzDm6HUj4DiMnwGDKlTN4LH
-	2LLmQh6WJrLYVB6gBaOg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
+	References:CC:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yqP7Gn02f9sDHs9ayWc9l/OLlLVfkY0qekpPRYZ4aUE=; b=J3V8lyYQ/VVkX0guieb3HQAK76
+	mNZbL9TrNb0pD464atMXTHEYVxU5znf6WimNl7J5IdJH1r60n7B2VimcZbJvPTluX8EWN3QH5w99e
+	AoSx1kmSS+QcpHcoJVqxfEHrFQda4poFU3IahWj+4DWhae/mraLCKUz8T9pTiCg5/c5/LrB+iAou7
+	o57yl0+PJfGBgzZpgGD3rMwBbA9qbLZtmTz7PQkLmhNM3gnMyBG0145SEBUX2yov4Pw3nqAUs1KA6
+	HgNuHZv32k1UihykhjMVSWROGHPpDyYFEcMaAKq6BnXv6icpR1etgEVR8xWoZ0MkW5k7SO0WCb9n7
+	VP2q4sow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1npgxg-000WgS-Fu; Sat, 14 May 2022 01:52:52 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1nphHJ-000YJK-7Y; Sat, 14 May 2022 02:13:09 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1npgxR-000Wfi-GW; Sat, 14 May 2022 01:52:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652493157; x=1684029157;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=RcLuLGGwbVePLOb+KFTMTX4VKymqOx1Gc+kdRlxjhqc=;
- b=h9pmVTIk7vgx4Opviq0YH8impYetjeo9xjbqjR3ggaOrQuUYYSyaoGAL
- j4AnjaUMph2jpxA6v6icPfuFWryqO9ZlvXYe9J5RimghNsWA4Mnw/jcrA
- W4qeAIPn950FIg7wzeYqUY/axWKmk+myzcI2GXZ/RQQ4s4oMxLLYzUaFX
- Vh2jnf1s/moIVQD2C2rlKHHIOmmBP23JfdBsEV6Sbmg0Sbwf0+AF7Cpnt
- 3RqP5YAR07KP5cC5tM+CeL4PzEmxiv6MS9pMSx90XUxS/kzl8AKjp5hhq
- TPk8RnsTEQpdmoxEqIcnavTZEONTJzrVvwc+Eg03b3ksx6bx5XYWy4YaE w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10346"; a="269289081"
-X-IronPort-AV: E=Sophos;i="5.91,223,1647327600"; d="scan'208";a="269289081"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 May 2022 18:52:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,223,1647327600"; d="scan'208";a="712631468"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
- by fmsmga001.fm.intel.com with ESMTP; 13 May 2022 18:52:30 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1npgxJ-000MIi-SJ;
- Sat, 14 May 2022 01:52:29 +0000
-Date: Sat, 14 May 2022 09:51:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Liang Yang <liang.yang@amlogic.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: kbuild-all@lists.01.org, Liang Yang <liang.yang@amlogic.com>,
- Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
- Victor Wan <victor.wan@amlogic.com>,
- XianWei Zhao <xianwei.zhao@amlogic.com>,
- Kelvin Zhang <kelvin.zhang@amlogic.com>,
- BiChao Zheng <bichao.zheng@amlogic.com>,
- YongHui Yu <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] mtd: rawnand: meson: fix the clock
-Message-ID: <202205140935.9YRSlRhB-lkp@intel.com>
-References: <20220513123404.48513-3-liang.yang@amlogic.com>
+ id 1nphHG-000YH3-0O
+ for linux-mtd@lists.infradead.org; Sat, 14 May 2022 02:13:07 +0000
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L0TXX73tlzfbJx;
+ Sat, 14 May 2022 10:11:40 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 14 May 2022 10:12:56 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 14 May 2022 10:12:56 +0800
+Subject: Re: [PATCH -next] mtd: st_spi_fsm: add missing
+ clk_disable_unprepare() stfsm_remove()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <richard@nod.at>, <vigneshr@ti.com>
+References: <20220513100322.2664431-1-yangyingliang@huawei.com>
+ <20220513122248.146d6944@xps13>
+From: Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <0d7ee262-6286-ec41-884e-3ab5863b68b4@huawei.com>
+Date: Sat, 14 May 2022 10:12:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220513123404.48513-3-liang.yang@amlogic.com>
+In-Reply-To: <20220513122248.146d6944@xps13>
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220513_185237_604510_F299EC1D 
-X-CRM114-Status: GOOD (  12.13  )
+X-CRM114-CacheID: sfid-20220513_191306_244118_54274332 
+X-CRM114-Status: GOOD (  12.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,49 +69,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Liang,
-
-I love your patch! Yet something to improve:
-
-[auto build test ERROR on mtd/mtd/next]
-[also build test ERROR on mtd/mtd/fixes mtd/nand/next v5.18-rc6 next-20220513]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Liang-Yang/fix-the-meson-NFC-clock/20220513-203700
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
-config: m68k-buildonly-randconfig-r001-20220512 (https://download.01.org/0day-ci/archive/20220514/202205140935.9YRSlRhB-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/2a8371d672486fa71241af04615efeff5efed94b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Liang-Yang/fix-the-meson-NFC-clock/20220513-203700
-        git checkout 2a8371d672486fa71241af04615efeff5efed94b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   m68k-linux-ld: drivers/mtd/nand/raw/meson_nand.o: in function `meson_nfc_probe':
->> meson_nand.c:(.text+0xcf8): undefined reference to `clk_divider_ops'
->> m68k-linux-ld: meson_nand.c:(.text+0xd38): undefined reference to `devm_clk_register'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiAyMDIyLzUvMTMgMTg6MjIsIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4gSGksCj4KPiB5
+YW5neWluZ2xpYW5nQGh1YXdlaS5jb20gd3JvdGUgb24gRnJpLCAxMyBNYXkgMjAyMiAxODowMzoy
+MiArMDgwMDoKPgo+PiBDbG9jayBzb3VyY2UgaXMgcHJlcGFyZWQgYW5kIGVuYWJsZWQgYnkgY2xr
+X3ByZXBhcmVfZW5hYmxlKCkKPj4gaW4gcHJvYmUgZnVuY3Rpb24sIGJ1dCBubyBkaXNhYmxlIG9y
+IHVucHJlcGFyZSBpbiByZW1vdmUgZnVuY3Rpb24uCj4gCQkJIG5vdCBkaXNhYmxlZCBvciB1bnBy
+ZXBhcmVkCj4KPiBPdGhlcndpc2UgbG9va3MgZ29vZC4KRG8gSSBuZWVkIHRvIHJlc2VuZCBpdCA/
+CgpUaGFua3MsCllhbmcKPgo+PiBTaWduZWQtb2ZmLWJ5OiBZYW5nIFlpbmdsaWFuZyA8eWFuZ3lp
+bmdsaWFuZ0BodWF3ZWkuY29tPgo+PiAtLS0KPj4gICBkcml2ZXJzL210ZC9kZXZpY2VzL3N0X3Nw
+aV9mc20uYyB8IDIgKysKPj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4+Cj4+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9kZXZpY2VzL3N0X3NwaV9mc20uYyBiL2RyaXZlcnMv
+bXRkL2RldmljZXMvc3Rfc3BpX2ZzbS5jCj4+IGluZGV4IDk4Mzk5OWMwMjBkNi4uZDMzNzdiMTBm
+YzBmIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL210ZC9kZXZpY2VzL3N0X3NwaV9mc20uYwo+PiAr
+KysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3N0X3NwaV9mc20uYwo+PiBAQCAtMjEyNiw2ICsyMTI2
+LDggQEAgc3RhdGljIGludCBzdGZzbV9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRl
+dikKPj4gICB7Cj4+ICAgCXN0cnVjdCBzdGZzbSAqZnNtID0gcGxhdGZvcm1fZ2V0X2RydmRhdGEo
+cGRldik7Cj4+ICAgCj4+ICsJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGZzbS0+Y2xrKTsKPj4gKwo+
+PiAgIAlyZXR1cm4gbXRkX2RldmljZV91bnJlZ2lzdGVyKCZmc20tPm10ZCk7Cj4+ICAgfQo+PiAg
+IAo+Cj4gVGhhbmtzLAo+IE1pcXXDqGwKPiAuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBs
+aXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRk
+Lwo=
