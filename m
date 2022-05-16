@@ -4,67 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACC20C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 May 2022 07:15:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E664C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 16 May 2022 07:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:CC:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qMCTvj8nGgaNVIg9QueoP+sTyhfGRSoX2UWnB2Mgzl8=; b=Z9IzUG9c5ydOaz
-	K+k+0VhtcAZo6UsqMSaB31UCmyQrCqimCsCyzSVY0V/ZH1fCE/60abUMWeDmrpTUxhzNv9JboAnox
-	HTlpTTo15BpoT98+B9aINQZA0QXoyIaegRpH70ApH38hiBHOZpScQq5tO2KBPU55W2RHQHAofdsPk
-	1MozDraGIE2luXktCy3rg0WzF1nEgJcdN6q/A5NyokrqaXisZv7u8cZbPDKuIfici8ZsDe7hI5dJu
-	v4ieJsRmMce2+1nDsUVIeHr7UaHOM5ofepr0HKzb43dx300h8kEZuIsFeTsAZl+QcpK7FJPBV0TOg
-	4hVYjzpgB4Z3L9Dqaanw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
+	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=kp7LEuFEoQ8wv/9wAZPyoQbrUMRzkXtUqb5wKGNQ6Q4=; b=doONGBf4AI+tvhnCPqiGjRn2/A
+	OjsG3Q7shIwqFGcH3VLGQDnVZh8/+qIG/5Kllqi8SgzpF0u6G1GaoXlwBsaefYuLMqcgfGeXgc2LG
+	/5x/r4l383c+AbED5jSl2h8Saev6cYr5Yz/6RGFt9FQ4GUfEYBZuel4bd5OWYSY3US6RFCC/Ofe3r
+	92WZPiHZFNKYfMwc/uPcKO0SB1W58gtfihfGcJykpY2s1KrdioYActZ1Di/NfbhifVQ42o1vErm6B
+	eS4+JCZQ3aNaXFXkW7t/BugsMD8RNTNEPYrl3CAEF/d4lZ82d2VKGp6nPcgrLmk1aBFjuAEcDHtt/
+	fsmL3FCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nqUx0-006NoA-7J; Mon, 16 May 2022 07:15:30 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nqVJg-006VZS-W5; Mon, 16 May 2022 07:38:57 +0000
+Received: from mail-vi1eur04on0700.outbound.protection.outlook.com
+ ([2a01:111:f400:fe0e::700]
+ helo=EUR04-VI1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nqUwx-006NmV-Dd
- for linux-mtd@lists.infradead.org; Mon, 16 May 2022 07:15:29 +0000
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 24G7FJmI068884;
- Mon, 16 May 2022 02:15:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1652685320;
- bh=cR++IIMsHkX281dJMBwzNwRdTa5fQCYsMQcoZixdIdE=;
- h=Date:From:To:CC:Subject;
- b=IBTg0GQFynmIpfZ4UhXwNkPcTQSIZjfr4n8eaJETIqg0aDahhz6s8tavzj5xh8Sd/
- FH52x5qdjzCQD+5oPZ7x4Dpj7LfRfb2a3UIucetpmXOjRFUSYde6A0A115VROKnYUM
- LTHS0bTkb8443LKpqVUxLuCXfECrgxYfs/hCV0fc=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 24G7FJjN017890
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 16 May 2022 02:15:19 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 16
- May 2022 02:15:19 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 16 May 2022 02:15:19 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 24G7FIZn061658;
- Mon, 16 May 2022 02:15:19 -0500
-Date: Mon, 16 May 2022 12:45:18 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>,
- Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>
-Subject: [GIT PULL] mtd: spi-nor: changes for 5.19
-Message-ID: <20220516071518.orf7n7k4fhtpcj3x@ti.com>
+ id 1nqVJc-006VYL-Ht
+ for linux-mtd@lists.infradead.org; Mon, 16 May 2022 07:38:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AkC7fq5lF9W4Mv0ET+4dxfzf/FvsbJoUcNb7pKQjH4XDdV5lm0EBmBnvrwHnegVy6wQgLn6RtUOUS0rV8MYcO7Fv9LYzzd3sJOSzHQIPwVSZy2pSUJqYZK/6TSLIl7XpENkPs186/baAf2pgxh7Np45p4WhujWgsMdJAEx0+EiNpAJ8BvxXcpZQaCCq+w2hJxBLQcTVAXNxJ9Bq4X+j/CVjntPY1ChQDiBmRHZoth/Az6W3ntOa+b8MuJKH1G/Zlpuh5UfmhG6lMZGeyF2EKg/w7t/l5OkA/SYxfUs6eBhd+ZkmNbahnIxx854bu0NbmBw6jdAlthZ+SFOAs9ABA3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/1FxcVc7VY86yEc9M2pBy1GLKNPbgugBg4Hi55b1Kys=;
+ b=dFgBm3ODYdYCy0lPWYhKzdwiB+Dq5ArQDrY9fUitcHx4lzT1CNSyX2buZV5ah3TndFAfYW3PtgCV/U/GgQZojEf5usgI0N+wO6E/Nh0Z3KlLqScshyWUFPf8nwXtHiLJdfw6IOHkFZh/bT0Y/kjHpqsNqQaQ036bQLLfliS+C9oCjZZ0wks9f8HyAuc4eOqV5Et0PeOqWmUubW+HMgjXjLGFFX1/K7NoCTAkZJuUvWnAdMkept/X/KJMz7EAWx1zbwe4ZByvcd3WmtyaZWRvcPgjncRkSjce2Bqh2PX/UaMmFWN+sec26VrABrZBdieR9DSfjjPVVgFRrBgkSo1zqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com; 
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/1FxcVc7VY86yEc9M2pBy1GLKNPbgugBg4Hi55b1Kys=;
+ b=cT1OeGQgG4zPsKmxY+8+c9mQp9w1w/0qszlWgxTK67GPTRAARtHVVniajdlwGezkyRxTTN6Tm6PFcTP9fTzIQM1djCIhMlfbByMtPKpTeK0OCtjObhZRFjh49UCQm+zvfyt3WlnqTGhBWRmno4YdpEXbspO/5TVNBSvROQHrafs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by AS4PR10MB5443.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:4be::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.18; Mon, 16 May
+ 2022 07:38:46 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d0e:eb72:973:1e71]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::d0e:eb72:973:1e71%5]) with mapi id 15.20.5250.018; Mon, 16 May 2022
+ 07:38:46 +0000
+Message-ID: <05966ece-65c8-ff7c-cb44-55c4d5a5542e@kontron.de>
+Date: Mon, 16 May 2022 09:38:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 1/2] mtd: spinand: add support for detection with param
+ page
+Content-Language: en-US
+To: Chuanhong Guo <gch981213@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Christophe Kerello <christophe.kerello@foss.st.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Palmer <daniel@0x0f.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20220414143426.723168-1-gch981213@gmail.com>
+ <20220414143426.723168-2-gch981213@gmail.com>
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20220414143426.723168-2-gch981213@gmail.com>
+X-ClientProxiedBy: AS8P251CA0015.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:2f2::14) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
 MIME-Version: 1.0
-Content-Disposition: inline
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 787a1983-6d61-4848-eb81-08da370f1c0b
+X-MS-TrafficTypeDiagnostic: AS4PR10MB5443:EE_
+X-Microsoft-Antispam-PRVS: <AS4PR10MB5443993EC726646B4FC6B15FE9CF9@AS4PR10MB5443.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YL67Q+Pnz/edZg9vDJlPLvyzA4t8f8UsSToXqpObW/bMxYQZ6/97otaW30L1tNCP+dVUlYChGzYoukIXQZjuo0gayKd6jMKD0fW8Y+HzMPQaWNUmk7ZlW5J2ZTxBuAgfIuSvvYbZFGmE4kSHS77HN64jpxAgWoZUP2dC/reygRBCBOZodV/S76zsX745XWfyUb5UTbbWr41X/RU+lQ3LSn9MX9s0lP8+IT1tMy9VCfyjOU5OsK9j5ixZkWz2OJroFnC1J1FJUvVrDdIc8QlN+ntz24RbRMwzDAznjA0qCqNj+RUWcNx2kjfJZLWAFtv8IYJ1Xo0ycByQ1s6gtqAoGez1R9UsJkHvSG/oW4/n6VOvEezN/IhyFy/TNaZ+NOKEoQMbgXd1+TPpRt6hec+dFHfgf8VIgglPLC2KS9oBhWahX99tqNQm7Kb/ycUrNMkhktpgSAw7Z97VnPvMi4oPQT2ntu4ZXwpiocRQqIfjr1nCik0bHn8F6sOcWZwgecWZXvyMv+IkTRSCoQOUmD5yL26XfwEQuceIuz4KTupRtpKACZkOMImip2MIEuDwN9u4M8AZLPRptTRT2qFIJmGemlqz8K8aaTEBJOm3eTwtXj/rFSIcasXIRlUV1cKEtxhmbn3vYd/f8ebyVuCuLXpvFLL34DqSrxGaLTu6nMrlByTbELGo9LbmGvQF6fi58jwyIq4xkrJWKiZM379HkNt05UTgnXJn6cC+uzPKMZdn6N3h4jJ/vVp92Ie0cvs+acAWWTDMLjdm0Kx9vbIiIP+SJksicEJpDAmCZlZB3MHxu8PU2l4FP6KihVnUQs0cQjzcAgp9+4zh30x7galp0VqQdg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(13230001)(4636009)(366004)(86362001)(316002)(54906003)(66476007)(66556008)(66946007)(31696002)(31686004)(5660300002)(38100700002)(8936002)(30864003)(6486002)(44832011)(36756003)(2906002)(508600001)(7416002)(6506007)(6512007)(186003)(4326008)(8676002)(966005)(83380400001)(26005)(2616005)(21314003)(45980500001)(43740500002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SmNxWE0zWEY4bndLUlA3VUVBT1Y5RWFoeDJESUxJSkVhU0dWQTA0RC92MS9a?=
+ =?utf-8?B?RmY0czNhWm4wdUN3VmU5WEVidnR2U3oyZU1LZFFxK3AzeW81MTZYb0Y4TlIy?=
+ =?utf-8?B?RkgxK0lXeU1jQ25MOFBvdWkzTDlTVXdxTUVHU3NLM1MvSUdSNTRGempRRjZa?=
+ =?utf-8?B?NTZLSlF3WUkrYkp3WWhHUUNvdUdrVnpac2ZpUkREUVJBOW5XTW1Dc20zTkxJ?=
+ =?utf-8?B?QlF4SWZDSEdHZHBNUlAzb2QwOFlSOGVwMUtXMVJ0NW82anc3SlJtaFhqcEZW?=
+ =?utf-8?B?VUo4ejZiQ09mcDhPNVF2ZXp1d2kvM091dWhJNkdWM2dsQkovc1BJT1I5a3R0?=
+ =?utf-8?B?U0YvTExlZEJoRnBOUzRNK0Nad3Q4VVd6OFJ5ZmhBcjU3Z294eVpOYUtqK3Fv?=
+ =?utf-8?B?ZGxqOExIZnI3T2FwamZDS0p5b0FhOWJkYytUUUR5dUltR2xiL3J2Z3pkN0dD?=
+ =?utf-8?B?OWsyMTNWTUtVcjJoZXdBdmFxTTI2Zm92ZGR4dzQ5bnFwT29XMTJ6M0VwRVZo?=
+ =?utf-8?B?ekRhVDlIeXVvcEh4Nm5CMHZlVEIrVTl3NlRab3dmVURLOXAxa2RVV2FoYjVz?=
+ =?utf-8?B?Y3Jwbk1DckdqeVRIdHUwK21UcS9lTUU4TDY1V0tXZXpmVnU4YmhVczYwMDdY?=
+ =?utf-8?B?QlFWRmZ2Q1Q4NDdmYUJERkZjQjdjWVJHSStjekM4Wml5eUd5QUJCaXZrNnlZ?=
+ =?utf-8?B?VlVjaG54clhPN2JCU0tJT2p2NDNkcCtGdGlCOWVGS0JFZUVMZDlUTGZDV3hK?=
+ =?utf-8?B?MDFzMzdpbGVHZGpzWVZpWlpkdHQ4TDlUeXlTTy8vZU1XMHpkcnZMc1IrcktO?=
+ =?utf-8?B?K3RKS1BWVkVPakZQZTUxcWZyVSt5MWptRGlaRCtTRm9ua0NMZStKU1BXZkU2?=
+ =?utf-8?B?R2lHNGx6amdXUDNPd3VDK1lDaDF6NXlxOTRyZUxaalRIRk05MkVJWEFlblho?=
+ =?utf-8?B?REF6NlFnMmpQYkNOdW5PYThwYUdWZ05sbkpRemlOWEE3dmlPNjNSU2cyNHdp?=
+ =?utf-8?B?WTUzV082YUxpODRqY3BzZkNhV2JtSnQ3SHZPMWM0K3YvSWpFUUxSYUtlMnBx?=
+ =?utf-8?B?WUhneFgyQ09XdHYvNUlQaUJUVFJ4NGZIRnNsT29jNGIxT1loNHpDSEdUWm5u?=
+ =?utf-8?B?aUZHVmV2Q3pub1RkT0xVd3o0dkFiWnRxZXR5M21BR1NuM01XVGdkUjIralU5?=
+ =?utf-8?B?VGFadGxkVDM4bGdjcmZpa211V3FreEVUdTFUR2dOamtPa2Q5azZlOUl3WVBi?=
+ =?utf-8?B?WllkTlFJaHZCSmhLbUw4RmdTSmpCbjZQRG1TV0F0ZWkwZEUzL2VSTTlTV3hU?=
+ =?utf-8?B?NmFmQmN1NlR0TzI4ZzVsMWxnT3NLUFg2QnNGNHRILzk5MkJjb0djeHhVM0ZQ?=
+ =?utf-8?B?SDhGWHhrM29FVkExYUcxaEZIVDFNZytTS095T3ZYSDl5VkxUdmNDdExqdnN5?=
+ =?utf-8?B?eXJ6WXluUC8yNmZvWmdBSmhuejA3TTlWNFBNN1Yxa01OQW9ydUpmREV4eHA5?=
+ =?utf-8?B?aTdUL01YOFUxcjNiVWhzRFB2YlYySFVWSDhxcUtmeWtmbFFxVXArcnR1b0Vn?=
+ =?utf-8?B?SU5CaUpsYTkwK1NjZWZ1aU5FL1dUWXRsOG92dDVLOFJSUmt4aEdGVHpEcXFy?=
+ =?utf-8?B?aXJ0R1V2T3UyQmJ4QVdaNm90K3pEbU1zSWhhZ0JoQjdjU1ByMy9QTC8zVVpu?=
+ =?utf-8?B?UU1nLzhkWFozbGs1ZnhMU1JORzJSZVZFQXVWcG9oS0FVYVhOejNjMTJjN0lU?=
+ =?utf-8?B?QUl2NVFFSjBtdFVuUGl5R2RSV09jZHAxRStNNUFCK1pUZWZGU3l5VU96LzE5?=
+ =?utf-8?B?V2NDeFRTNXBsRkxwTDBaOWFGUkpSTk0vWWV5aVNrUHIxWG5YUGM1c2RsTkgy?=
+ =?utf-8?B?SDg0MXVocmtNZFpXY1BvQldkZElsNk5RTFpXcktRZklSWDJWaFdQMkYvUXpT?=
+ =?utf-8?B?TDducVBqRy9BOW1qYjllaDJqcEpxcWRNN2daa0JjRmFCSXZpMTUxMk1pTTA3?=
+ =?utf-8?B?b2NQcFR6Y2lOelM5bTE0NVBSaDR0eTZ6SVo0T2VobmlqUWp2Z3h0TnVhU1Q4?=
+ =?utf-8?B?Unh4VTBwdGZ6SEpSUExyb0FmYXJRV1o2OWNsdi9TaEhOaEkra25teXM3WExr?=
+ =?utf-8?B?VmtKNnJPRFA4NUpielRGNTZvNmNzYXdiUmlwb25GOWFQbWYzdHJJL0x3eldS?=
+ =?utf-8?B?cm1kRTBWRzFOa2ExcFB3anN5ckw0RXhONklWWUFHcjhGS21WU2o1bDFENGs1?=
+ =?utf-8?B?L01tVkwrY2FweEh5ZUxSSThFS1hWNEx2bkx1VmZtVmdWNGQ1Z1pjMnRydGdE?=
+ =?utf-8?B?T2FSYy8xM3hBUERFMUMxMy9mNmpTZTEvVUJCZVFuK2ROVFdXTDU1N1ZnN3Yr?=
+ =?utf-8?Q?J1vqVsdCG8x4iYgY=3D?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 787a1983-6d61-4848-eb81-08da370f1c0b
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2022 07:38:46.3270 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SvFwE8wvnsvY+QmAjs3MxuyYoHQTrTcBOf4k/6xJ5vCqCaIVvnE6VegeCxXSJ6mTAZxAwkV25RSE9+HDO4mqOJQH/6YNLHpSGrimOSwLGJQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR10MB5443
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220516_001527_667901_38C4B26E 
-X-CRM114-Status: GOOD (  13.38  )
+X-CRM114-CacheID: sfid-20220516_003852_956375_EFC9A57B 
+X-CRM114-Status: GOOD (  37.75  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,89 +159,518 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Chuanhong,
 
-This is the SPI NOR PR for 5.19.
+Am 14.04.22 um 16:34 schrieb Chuanhong Guo:
+> SPI-NAND detection using chip ID isn't always reliable.
+> Here are two known cases:
+> 1. ESMT uses JEDEC ID from other vendors. This may collapse with future
+>    chips.
+> 2. Winbond W25N01KV uses the exact same JEDEC ID as W25N01GV while
+>    having completely different chip parameters.
 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+I think they share the same first byte of the JEDEC ID, but the second
+byte actually differs and would allow to differentiate between them, right?
 
-The following changes since commit b2d229d4ddb17db541098b83524d901257e93845:
+I have this patchset [1] that I didn't manage to send upstream yet which
+adds support for the W25N02KV. I added the second ID byte to detect them.
 
-  Linux 5.18-rc3 (2022-04-17 13:57:31 -0700)
+Still your approach using the ONFI data is more flexible of course and
+probably a better way to handle this. I will see if I can find some time
+to add support for the W25N02KV based on your patches.
 
-are available in the Git repository at:
+Best regards
+Frieder
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/spi-nor/for-5.19
+[1]
+https://github.com/fschrempf/linux/commits/feature/upstream/winbond-spinand-support
 
-for you to fetch changes up to c47452194641b5d27c20e557c84a46c85fd7ce37:
-
-  mtd: spi-nor: debugfs: fix format specifier (2022-05-12 17:56:44 +0530)
-
-----------------------------------------------------------------
-SPI NOR core changes:
-- Read back written SR value to make sure the write was done correctly.
-- Introduce a common function for Read ID that manufacturer drivers can
-  use to verify the Octal DTR switch worked correctly.
-- Add helpers for read/write any register commands so manufacturer
-  drivers don't open code it every time.
-- Clarify rdsr dummy cycles documentation.
-- Add debugfs entry to expose internal flash parameters and state.
-
-SPI NOR manufacturer drivers changes:
-- Add support for Winbond W25Q512NW-IM, and Eon EN25QH256A.
-- Move spi_nor_write_ear() to Winbond module since only Winbond flashes
-  use it.
-- Rework Micron and Cypress Octal DTR enable methods to improve
-  readability.
-- Use the common Read ID function to verify switch to Octal DTR mode for
-  Micron and Cypress flashes.
-- Skip polling status on volatile register writes for Micron and Cypress
-  flashes since the operation is instant.
-
-----------------------------------------------------------------
-Chen-Tsung Hsieh (1):
-      mtd: spi-nor: core: Check written SR value in spi_nor_write_16bit_sr_and_check()
-
-Leon M. George (1):
-      mtd: spi-nor: support eon en25qh256a variant
-
-Michael Walle (5):
-      mtd: spi-nor: amend the rdsr dummy cycles documentation
-      mtd: spi-nor: move spi_nor_write_ear() to winbond module
-      mtd: spi-nor: export spi_nor_hwcaps_pp2cmd()
-      mtd: spi-nor: expose internal parameters via debugfs
-      mtd: spi-nor: debugfs: fix format specifier
-
-Shaik Sajida Bhanu (1):
-      mtd: spi-nor: winbond: add support for W25Q512NW-IM
-
-Tudor Ambarus (11):
-      mtd: spi-nor: Rename method, s/spi_nor_match_id/spi_nor_match_name
-      mtd: spi-nor: Introduce spi_nor_match_id()
-      mtd: spi-nor: core: Use auto-detection only once
-      mtd: spi-nor: core: Introduce method for RDID op
-      mtd: spi-nor: manufacturers: Use spi_nor_read_id() core method
-      mtd: spi-nor: core: Add helpers to read/write any register
-      mtd: spi-nor: micron-st: Rework spi_nor_micron_octal_dtr_enable()
-      mtd: spi-nor: spansion: Rework spi_nor_cypress_octal_dtr_enable()
-      mtd: spi-nor: Introduce templates for SPI NOR operations
-      mtd: spi-nor: spansion: Remove status polling on volatile registers write
-      mtd: spi-nor: micron-st: Remove status polling on volatile registers write
-
- drivers/mtd/spi-nor/Makefile    |   1 +
- drivers/mtd/spi-nor/core.c      | 286 +++++++++++++++++++---------------------
- drivers/mtd/spi-nor/core.h      | 123 ++++++++++++++++-
- drivers/mtd/spi-nor/debugfs.c   | 249 ++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/eon.c       |   3 +-
- drivers/mtd/spi-nor/micron-st.c | 181 ++++++++++++-------------
- drivers/mtd/spi-nor/spansion.c  | 187 +++++++++++++-------------
- drivers/mtd/spi-nor/winbond.c   |  45 ++++++-
- drivers/mtd/spi-nor/xilinx.c    |  12 +-
- include/linux/mtd/spi-nor.h     |   4 +-
- 10 files changed, 746 insertions(+), 345 deletions(-)
- create mode 100644 drivers/mtd/spi-nor/debugfs.c
+> 
+> Recent SPI-NANDs have a parameter page which is stored in the same
+> format as raw NAND ONFI data. There are strings for chip manufacturer
+> and chip model. Chip ECC requirement and memory organization are
+> available too.
+> This patch adds support for detecting SPI-NANDs with the parameter page
+> after ID matching failed. In this detection, memory organization and
+> ECC requirements are taken from the parameter page, and other SPI-NAND
+> specific parameters are obtained by matching chip model string with
+> a separated table.
+> 
+> It's common for vendors to release a series of SPI-NANDs with the same
+> SPI-NAND parameters in different voltages and/or capacities. The chip
+> table defined in this patch supports multiple model strings in one
+> entry, and multiple chip models can be covered using only one entry.
+> 
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> ---
+> 
+> I'm not brave enough to touch raw nand code without testing, so
+> sanitize_string, onfi_crc16 and nand_bit_wise_majority are
+> duplicated from raw/nand_onfi.c into spi/onfi.c
+> 
+>  drivers/mtd/nand/spi/Makefile |   2 +-
+>  drivers/mtd/nand/spi/core.c   |  23 +--
+>  drivers/mtd/nand/spi/onfi.c   | 296 ++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spinand.h   |  50 ++++++
+>  4 files changed, 359 insertions(+), 12 deletions(-)
+>  create mode 100644 drivers/mtd/nand/spi/onfi.c
+> 
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+> index 9662b9c1d5a9..a4e057cbdaf7 100644
+> --- a/drivers/mtd/nand/spi/Makefile
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -spinand-objs := core.o gigadevice.o macronix.o micron.o paragon.o toshiba.o winbond.o
+> +spinand-objs := core.o gigadevice.o macronix.o micron.o onfi.o paragon.o toshiba.o winbond.o
+>  obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index ff8336870bc0..3b51ca7232d0 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -20,7 +20,7 @@
+>  #include <linux/spi/spi.h>
+>  #include <linux/spi/spi-mem.h>
+>  
+> -static int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
+> +int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
+>  {
+>  	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(reg,
+>  						      spinand->scratchbuf);
+> @@ -34,7 +34,7 @@ static int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
+>  	return 0;
+>  }
+>  
+> -static int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
+> +int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
+>  {
+>  	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(reg,
+>  						      spinand->scratchbuf);
+> @@ -339,7 +339,7 @@ static void spinand_ondie_ecc_save_status(struct nand_device *nand, u8 status)
+>  		engine_conf->status = status;
+>  }
+>  
+> -static int spinand_write_enable_op(struct spinand_device *spinand)
+> +int spinand_write_enable_op(struct spinand_device *spinand)
+>  {
+>  	struct spi_mem_op op = SPINAND_WR_EN_DIS_OP(true);
+>  
+> @@ -496,10 +496,8 @@ static int spinand_erase_op(struct spinand_device *spinand,
+>  	return spi_mem_exec_op(spinand->spimem, &op);
+>  }
+>  
+> -static int spinand_wait(struct spinand_device *spinand,
+> -			unsigned long initial_delay_us,
+> -			unsigned long poll_delay_us,
+> -			u8 *s)
+> +int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
+> +		 unsigned long poll_delay_us, u8 *s)
+>  {
+>  	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(REG_STATUS,
+>  						      spinand->scratchbuf);
+> @@ -1006,7 +1004,7 @@ static void spinand_manufacturer_cleanup(struct spinand_device *spinand)
+>  		return spinand->manufacturer->ops->cleanup(spinand);
+>  }
+>  
+> -static const struct spi_mem_op *
+> +const struct spi_mem_op *
+>  spinand_select_op_variant(struct spinand_device *spinand,
+>  			  const struct spinand_op_variants *variants)
+>  {
+> @@ -1117,9 +1115,12 @@ static int spinand_detect(struct spinand_device *spinand)
+>  
+>  	ret = spinand_id_detect(spinand);
+>  	if (ret) {
+> -		dev_err(dev, "unknown raw ID %*phN\n", SPINAND_MAX_ID_LEN,
+> -			spinand->id.data);
+> -		return ret;
+> +		ret = spinand_onfi_detect(spinand);
+> +		if (ret) {
+> +			dev_err(dev, "unknown raw ID %*phN\n",
+> +				SPINAND_MAX_ID_LEN, spinand->id.data);
+> +			return ret;
+> +		}
+>  	}
+>  
+>  	if (nand->memorg.ntargets > 1 && !spinand->select_target) {
+> diff --git a/drivers/mtd/nand/spi/onfi.c b/drivers/mtd/nand/spi/onfi.c
+> new file mode 100644
+> index 000000000000..5cc888e3d038
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/onfi.c
+> @@ -0,0 +1,296 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Detect and match SPI-NAND info using ONFI parameter page
+> + *
+> + * Author:
+> + *	Chuanhong Guo <gch981213@gmail.com>
+> + *
+> + * Part of this code comes from nand_onfi.c in raw nand support.
+> + *
+> + */
+> +#include <linux/crc16.h>
+> +#include <linux/mtd/onfi.h>
+> +#include <linux/mtd/spinand.h>
+> +
+> +#define SPINAND_IDR_EN BIT(6)
+> +#define SPINAND_PARAM_PAGE 1
+> +#define ONFI_PARAM_PAGES 3
+> +
+> +/* Sanitize ONFI strings so we can safely print them */
+> +static void sanitize_string(uint8_t *s, size_t len)
+> +{
+> +	ssize_t i;
+> +
+> +	/* Null terminate */
+> +	s[len - 1] = 0;
+> +
+> +	/* Remove non printable chars */
+> +	for (i = 0; i < len - 1; i++) {
+> +		if (s[i] < ' ' || s[i] > 127)
+> +			s[i] = '?';
+> +	}
+> +
+> +	/* Remove trailing spaces */
+> +	strim(s);
+> +}
+> +
+> +static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
+> +{
+> +	int i;
+> +
+> +	while (len--) {
+> +		crc ^= *p++ << 8;
+> +		for (i = 0; i < 8; i++)
+> +			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
+> +	}
+> +
+> +	return crc;
+> +}
+> +
+> +static int spinand_onfi_read(struct spinand_device *spinand, void *buf,
+> +			     size_t len)
+> +{
+> +	const struct spi_mem_op load_page =
+> +		SPINAND_PAGE_READ_OP(SPINAND_PARAM_PAGE);
+> +	struct spi_mem_op read_cache =
+> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, buf, len);
+> +	int ret;
+> +	u8 cfg;
+> +
+> +	ret = spinand_read_reg_op(spinand, REG_CFG, &cfg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = spinand_write_enable_op(spinand);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = spinand_write_reg_op(spinand, REG_CFG, cfg | SPINAND_IDR_EN);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = spinand_read_reg_op(spinand, REG_CFG, &cfg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (!(cfg & SPINAND_IDR_EN))
+> +		return -EINVAL;
+> +
+> +	ret = spi_mem_exec_op(spinand->spimem, &load_page);
+> +	if (ret)
+> +		goto cleanup;
+> +
+> +	ret = spinand_wait(spinand, SPINAND_READ_INITIAL_DELAY_US,
+> +			   SPINAND_READ_POLL_DELAY_US, NULL);
+> +	if (ret)
+> +		goto cleanup;
+> +
+> +	while (len) {
+> +		ret = spi_mem_adjust_op_size(spinand->spimem, &read_cache);
+> +		if (ret)
+> +			goto cleanup;
+> +		ret = spi_mem_exec_op(spinand->spimem, &read_cache);
+> +		if (ret)
+> +			goto cleanup;
+> +		read_cache.addr.val += read_cache.data.nbytes;
+> +		read_cache.data.buf.in += read_cache.data.nbytes;
+> +		len -= read_cache.data.nbytes;
+> +		read_cache.data.nbytes = len;
+> +	}
+> +cleanup:
+> +	spinand_write_reg_op(spinand, REG_CFG, cfg & ~SPINAND_IDR_EN);
+> +	return ret;
+> +}
+> +
+> +static bool spinand_onfi_validate(const struct nand_onfi_params *p)
+> +{
+> +	u16 crc;
+> +
+> +	if (strncmp("ONFI", p->sig, 4))
+> +		return false;
+> +	crc = onfi_crc16(ONFI_CRC_BASE, (u8 *)p, sizeof(*p) - 2);
+> +	return crc == le16_to_cpu(p->crc);
+> +}
+> +
+> +/*
+> + * Recover data with bit-wise majority
+> + */
+> +static void nand_bit_wise_majority(const void **srcbufs, unsigned int nsrcbufs,
+> +				   void *dstbuf, unsigned int bufsize)
+> +{
+> +	int i, j, k;
+> +
+> +	for (i = 0; i < bufsize; i++) {
+> +		u8 val = 0;
+> +
+> +		for (j = 0; j < 8; j++) {
+> +			unsigned int cnt = 0;
+> +
+> +			for (k = 0; k < nsrcbufs; k++) {
+> +				const u8 *srcbuf = srcbufs[k];
+> +
+> +				if (srcbuf[i] & BIT(j))
+> +					cnt++;
+> +			}
+> +
+> +			if (cnt > nsrcbufs / 2)
+> +				val |= BIT(j);
+> +		}
+> +
+> +		((u8 *)dstbuf)[i] = val;
+> +	}
+> +}
+> +
+> +static const struct spinand_manufacturer *spinand_onfi_manufacturers[] = {};
+> +
+> +static const struct spinand_onfi_info *
+> +spinand_onfi_chip_match(struct nand_onfi_params *p,
+> +			const struct spinand_manufacturer *m)
+> +{
+> +	size_t i, j;
+> +
+> +	for (i = 0; i < m->nchips; i++)
+> +		for (j = 0; m->onfi_chips[i].models[j]; j++)
+> +			if (!strcasecmp(m->onfi_chips[i].models[j], p->model))
+> +				return &m->onfi_chips[i];
+> +	return NULL;
+> +}
+> +
+> +static const struct spinand_onfi_info *
+> +spinand_onfi_manufacturer_match(struct spinand_device *spinand,
+> +				struct nand_onfi_params *p)
+> +{
+> +	const struct spinand_onfi_info *ret;
+> +	size_t i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(spinand_onfi_manufacturers); i++) {
+> +		if (strcasecmp(spinand_onfi_manufacturers[i]->name,
+> +			       p->manufacturer))
+> +			continue;
+> +		spinand->manufacturer = spinand_onfi_manufacturers[i];
+> +		ret = spinand_onfi_chip_match(p, spinand_onfi_manufacturers[i]);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * spinand_onfi_detect() - match SPI-NAND using ONFI parameter page
+> + * @spinand: spinand private structure
+> + *
+> + * Return:
+> + *  0: Success
+> + *  -EINVAL: failed to read a valid parameter page
+> + *  -EOPNOTSUPP: chip isn't supported
+> + */
+> +int spinand_onfi_detect(struct spinand_device *spinand)
+> +{
+> +	struct nand_onfi_params *p = NULL, *pbuf;
+> +	size_t params_len = sizeof(*pbuf) * ONFI_PARAM_PAGES;
+> +	struct nand_device *nand = spinand_to_nand(spinand);
+> +	struct nand_memory_organization *memorg = nanddev_get_memorg(nand);
+> +	const struct spi_mem_op *op;
+> +	const struct spinand_onfi_info *info;
+> +	int i, ret;
+> +
+> +	pbuf = kzalloc(params_len, GFP_KERNEL);
+> +	if (!pbuf)
+> +		return -ENOMEM;
+> +
+> +	ret = spinand_onfi_read(spinand, pbuf, params_len);
+> +	if (ret)
+> +		goto cleanup;
+> +
+> +	for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+> +		if (spinand_onfi_validate(&pbuf[i])) {
+> +			p = &pbuf[i];
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!p) {
+> +		const void *srcbufs[ONFI_PARAM_PAGES];
+> +		unsigned int j;
+> +
+> +		for (j = 0; j < ONFI_PARAM_PAGES; j++)
+> +			srcbufs[j] = pbuf + j;
+> +		nand_bit_wise_majority(srcbufs, ONFI_PARAM_PAGES, pbuf,
+> +				       sizeof(*pbuf));
+> +		if (spinand_onfi_validate(pbuf))
+> +			p = pbuf;
+> +	}
+> +
+> +	if (!p) {
+> +		ret = -EINVAL;
+> +		goto cleanup;
+> +	}
+> +
+> +	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+> +	sanitize_string(p->model, sizeof(p->model));
+> +
+> +	info = spinand_onfi_manufacturer_match(spinand, p);
+> +	if (!info) {
+> +		dev_err(&spinand->spimem->spi->dev, "unknown chip: %s %s",
+> +			p->manufacturer, p->model);
+> +		ret = -EOPNOTSUPP;
+> +		goto cleanup;
+> +	}
+> +
+> +	/* setup memory organization using info from parameter page */
+> +	memorg->pagesize = le32_to_cpu(p->byte_per_page);
+> +
+> +	/*
+> +	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
+> +	 * (don't ask me who thought of this...). MTD assumes that these
+> +	 * dimensions will be power-of-2, so just truncate the remaining area.
+> +	 */
+> +	memorg->pages_per_eraseblock =
+> +		1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+> +	memorg->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+> +	memorg->luns_per_target = p->lun_count;
+> +	memorg->planes_per_lun = 1 << p->interleaved_bits;
+> +	memorg->ntargets = 1;
+> +
+> +	/* See erasesize comment */
+> +	memorg->eraseblocks_per_lun =
+> +		1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
+> +	memorg->max_bad_eraseblocks_per_lun = le32_to_cpu(p->blocks_per_lun);
+> +	memorg->bits_per_cell = p->bits_per_cell;
+> +
+> +	if (p->ecc_bits != 0xff) {
+> +		struct nand_ecc_props requirements = {
+> +			.strength = p->ecc_bits,
+> +			.step_size = p->data_bytes_per_ppage,
+> +		};
+> +
+> +		nanddev_set_ecc_requirements(nand, &requirements);
+> +	} else {
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	/* setup spi-nand specific ops */
+> +	spinand->eccinfo = info->eccinfo;
+> +	spinand->flags = info->flags;
+> +	spinand->id.len = 0;
+> +	spinand->select_target = info->select_target;
+> +
+> +	op = spinand_select_op_variant(spinand, info->op_variants.read_cache);
+> +	if (!op)
+> +		return -EOPNOTSUPP;
+> +
+> +	spinand->op_templates.read_cache = op;
+> +
+> +	op = spinand_select_op_variant(spinand, info->op_variants.write_cache);
+> +	if (!op)
+> +		return -EOPNOTSUPP;
+> +
+> +	spinand->op_templates.write_cache = op;
+> +
+> +	op = spinand_select_op_variant(spinand, info->op_variants.update_cache);
+> +	spinand->op_templates.update_cache = op;
+> +
+> +cleanup:
+> +	kfree(pbuf);
+> +	return ret;
+> +}
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index 3aa28240a77f..dc218082d773 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -255,6 +255,7 @@ struct spinand_manufacturer {
+>  	u8 id;
+>  	char *name;
+>  	const struct spinand_info *chips;
+> +	const struct spinand_onfi_info *onfi_chips;
+>  	const size_t nchips;
+>  	const struct spinand_manufacturer_ops *ops;
+>  };
+> @@ -386,6 +387,46 @@ struct spinand_info {
+>  		__VA_ARGS__						\
+>  	}
+>  
+> +/**
+> + * struct spinand_onfi_info - Structure used to describe SPI NAND with ONFI
+> + *			      parameter page
+> + * @models: Model name array. Null terminated.
+> + * @flags: OR-ing of the SPINAND_XXX flags
+> + * @eccinfo: on-die ECC info
+> + * @op_variants: operations variants
+> + * @op_variants.read_cache: variants of the read-cache operation
+> + * @op_variants.write_cache: variants of the write-cache operation
+> + * @op_variants.update_cache: variants of the update-cache operation
+> + * @select_target: function used to select a target/die. Required only for
+> + *		   multi-die chips
+> + *
+> + * Each SPI NAND manufacturer driver should have a spinand_onfi_info table
+> + * describing all the chips supported by the driver.
+> + */
+> +struct spinand_onfi_info {
+> +	const char **const models;
+> +	u32 flags;
+> +	struct spinand_ecc_info eccinfo;
+> +	struct {
+> +		const struct spinand_op_variants *read_cache;
+> +		const struct spinand_op_variants *write_cache;
+> +		const struct spinand_op_variants *update_cache;
+> +	} op_variants;
+> +	int (*select_target)(struct spinand_device *spinand,
+> +			     unsigned int target);
+> +};
+> +
+> +#define SPINAND_ONFI_MODELS(...)					\
+> +	.models = (const char *[]){ __VA_ARGS__, NULL }
+> +
+> +#define SPINAND_ONFI_INFO(__models, __op_variants, __flags, ...)	\
+> +	{								\
+> +		__models,						\
+> +		.op_variants = __op_variants,				\
+> +		.flags = __flags,					\
+> +		__VA_ARGS__						\
+> +	}
+> +
+>  struct spinand_dirmap {
+>  	struct spi_mem_dirmap_desc *wdesc;
+>  	struct spi_mem_dirmap_desc *rdesc;
+> @@ -511,7 +552,16 @@ int spinand_match_and_init(struct spinand_device *spinand,
+>  			   unsigned int table_size,
+>  			   enum spinand_readid_method rdid_method);
+>  
+> +int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val);
+> +int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val);
+> +int spinand_write_enable_op(struct spinand_device *spinand);
+>  int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+> +int spinand_onfi_detect(struct spinand_device *spinand);
+> +const struct spi_mem_op *
+> +spinand_select_op_variant(struct spinand_device *spinand,
+> +			  const struct spinand_op_variants *variants);
+>  int spinand_select_target(struct spinand_device *spinand, unsigned int target);
+> +int spinand_wait(struct spinand_device *spinand, unsigned long initial_delay_us,
+> +		 unsigned long poll_delay_us, u8 *s);
+>  
+>  #endif /* __LINUX_MTD_SPINAND_H */
 
 ______________________________________________________
 Linux MTD discussion mailing list
