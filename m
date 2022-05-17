@@ -4,61 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB0F2C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 May 2022 16:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E85D1C433FE
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 May 2022 20:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=meXu0UpYMqBKUv811mZ7ncOk5674auFOG7ghbCTICyI=; b=z49bGqL/OmmQy3
-	DUggpYW80UW3k9DA+uyOyCeAzYJUflCoVWuaql1eQthwf/oduK4jxc88ZmufJwwodieWzb271kimp
-	y+7eI2ujN0UIn9ClBFtQ7uEAc4s8ttYW52FTOrm7BEUdmz8G0GrHjhQxaeHINjaQkegneqVLNTmmV
-	qaw/OqJLpXQs0vNtqz7tNFSRPDRuePd6eNx5dkwp5wpBVmpOZEq9tAkvJAOeHkuJFxEDyv7IK5Jik
-	7ZldODvcsI7kHmCoaykl+1sBXRIEeO3JH7jjmgCMm5DEQLM602dZ0g8NmwlrtBWGqu1KddhcqxThU
-	Co8Bn2U2Zv5VDq1o+7lw==;
+	List-Owner; bh=dGQCUHSceHEW3dzKVgcWmeCmKl/GDADVEgkcgCErXhA=; b=3sj4k86knOQ8qZ
+	rMX7IXStXUdkdeUamNOoux/XKqD/gawyihsG0JWChLrsgcc4UAUfPLwmaVi9iwbVRVnUXkXcrKH8j
+	y1u4ZlhdSErgwD8I/MWYnnJERhxCx2+/mN2JVTy+zUnzBhrvTLWRQ38GHrPSahHxFEKTJR28Rr/05
+	z6DNyWvknsmpupeX8VYpkjtQEtRNby75inDVL64Z2XBgLiQRGuPsTrcZwokkYkE51ypin+fffmPhn
+	E5wlCUji5SLT1l6mIPd0LkbUIufri209+HmlwsDOzlSK7sskcQ2KgsVWR0mEZReVJW7qp4bc941rW
+	0sG/TJ04uDu9E90iqLPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nr0E7-00EsSL-ER; Tue, 17 May 2022 16:39:15 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1nr4Es-00Fqw1-MC; Tue, 17 May 2022 20:56:18 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nr0E4-00EsQz-Pb
- for linux-mtd@lists.infradead.org; Tue, 17 May 2022 16:39:14 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id D4C7520007;
- Tue, 17 May 2022 16:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1652805546;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=aJtYRAFDXyv5D+rHulqoB18CgiwzQYEhSBBo7r1UZLw=;
- b=PqMnphmKa+Oeky287RYM6Gq9ilrPz5qh6vlWGabmt0SxoEEMfRyJy6QaOyf/QenK1DHyuL
- QmOqnHWpZqIVA1obxIcKlkrO81q9Qh636+wv7kshjVm2jfxIMtAhW/ZFiDmp44tLGMeEee
- oEtkBtthnoNsPWdK+Upl0Kl5GbvHbXuB5ak+TBPYYCJh17n9F4ytJd9u1hdq+h6sK6idXH
- mX09Xz3HaojL85ZSnh2qDTWk1Cz1c4M3zF3AGPru+9foDCbsrGwG4O6bJb2mXr7zh/Kv1u
- cGkg7siIRlvwMEDEApgDBZUiChPcJvWIMUWuY5nOXiICKcD4ixk0pfxSYw6H+Q==
-Date: Tue, 17 May 2022 18:39:03 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Mikhail Zhilkin <csharper2005@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Karim
- <Karimdplay@gmail.com>, M <x1@disroot.org>
-Subject: Re: [PATCH v5 0/3] Add support for Sercomm partitions
-Message-ID: <20220517183903.2b34819c@xps-13>
-In-Reply-To: <20220516184217.4e2957fc@xps-13>
-References: <20220516151228.885222-1-csharper2005@gmail.com>
- <20220516184217.4e2957fc@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+ id 1nr4Eq-00Fqtb-1F
+ for linux-mtd@lists.infradead.org; Tue, 17 May 2022 20:56:17 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id p189so57700wmp.3
+ for <linux-mtd@lists.infradead.org>; Tue, 17 May 2022 13:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:from:to:cc:subject:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=SttB0Al2SmA1Ml2eTj/wShEo5Nwp1X2GJB1Zw/Jq5fs=;
+ b=XAvJ64DTg2filoPTc7irccoZINdkOQRv9oxEwoMQGDhK4O1U80pzXCFuZjJVE3FjWp
+ wzyfulpgNydLZVyljEzJHhtWMj9TFHHiioK0yIligTXDdr1L2F7tFsWbpKCz8Nm7vjD1
+ yiDrUo8mdB8Jqn5GQhTTPNZVk4ZnTLL07oF7cdSEAGneTPaznZcwQrFAIlMth93g4PyC
+ sW2qatOQM3Lek969GECns1t2VlOEOK2/0KvGW+q6kJJ7DqrATSSGGlpJd9aWE8fozGGl
+ r7K5fNQnME+1rDbh7xE5bhnLOB9GWe+Ucl/mHSw8/fHLTtRSNGDk5iq8NcGtQP8hlqGG
+ h67A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:from:to:cc:subject:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=SttB0Al2SmA1Ml2eTj/wShEo5Nwp1X2GJB1Zw/Jq5fs=;
+ b=doucdRgD4ope1xh8vSmd32p6RtEQgcgY4I0HvRtGYHa6gHjzVO+z2LJXQM4KmmpXYz
+ S+Aeu8f7cG7ls912uAlQ5AqGANlGDVocEBj2VRe6gVtOJ0a7UA1U+kAgj4jZ3cmdF8dL
+ 9DKIQ1HmnK2jxS+DV+4P9qzMwebV+phBOX25YQCJbWoV41aZd/N9Ycduep/gSjZx7890
+ Qw5qKVhM7eVwoAjqxjIFK0y3tar9R7aye/1BCWmGswDmNd3OydXFlMjZ+CVDHhQN2Pk8
+ fC9j8N18jW6tRQiQVBG7zNeaIMu4MzUBTguDSs2Jp2Gb0sJcJzT5iq//xeox6M7JY9FR
+ 8IDQ==
+X-Gm-Message-State: AOAM53236GgPSHxgPAg6HiIrNChgY2vpgbYYCTH+YySmX49DoE+3mrUu
+ oRcOblOOcw+sXvbUkTeoE0s=
+X-Google-Smtp-Source: ABdhPJxlpNKQuhQSJ2hEFYuSL2olvE3fgInpxw9a5UdtqtVkXl3QVdrp6UlvAJnusHS8jfSHPkGvdg==
+X-Received: by 2002:a7b:c5cd:0:b0:38c:8b1b:d220 with SMTP id
+ n13-20020a7bc5cd000000b0038c8b1bd220mr22753995wmk.118.1652820972354; 
+ Tue, 17 May 2022 13:56:12 -0700 (PDT)
+Received: from Ansuel-xps. (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
+ by smtp.gmail.com with ESMTPSA id
+ e25-20020adfa459000000b0020c5253d8dcsm73870wra.40.2022.05.17.13.56.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 May 2022 13:56:11 -0700 (PDT)
+Message-ID: <62840beb.1c69fb81.9bdaf.070c@mx.google.com>
+X-Google-Original-Message-ID: <YoQL6ULpjb9muRvn@Ansuel-xps.>
+Date: Tue, 17 May 2022 22:56:09 +0200
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: mtd: qcom_nandc: document
+ qcom,boot-pages binding
+References: <20220503154353.4367-1-ansuelsmth@gmail.com>
+ <20220503154353.4367-3-ansuelsmth@gmail.com>
+ <20220516184912.GA3063673-robh@kernel.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220516184912.GA3063673-robh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220517_093913_004730_40E4A1E5 
-X-CRM114-Status: GOOD (  21.49  )
+X-CRM114-CacheID: sfid-20220517_135616_113228_77FA0532 
+X-CRM114-Status: GOOD (  23.86  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,45 +94,94 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8sCgptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tIHdyb3RlIG9uIE1vbiwgMTYgTWF5IDIw
-MjIgMTg6NDI6MTcgKzAyMDA6Cgo+IEhpIE1pa2hhaWwsCj4gCj4gY3NoYXJwZXIyMDA1QGdtYWls
-LmNvbSB3cm90ZSBvbiBNb24sIDE2IE1heSAyMDIyIDE1OjEyOjI4ICswMDAwOgo+IAo+ID4gVGhp
-cyBwYXRjaCBzZXJpZXMgYWRkIHN1cHBvcnQgZm9yIFNlcmNvbW0gbXRkIHBhcnRpdGlvbiB0YWJs
-ZSBwYXJzZXIuIEl0J3MKPiA+IHVzZWQgaW4gc29tZSBCZWVsaW5lLCBOZXRnZWFyIGFuZCBTZXJj
-b21tIHJvdXRlcnMuIFRoZSBTZXJjb21tIHBhcnRpdGlvbgo+ID4gbWFwIHRhYmxlIGNvbnRhaW5z
-IHJlYWwgcGFydGl0aW9uIG9mZnNldHMsIHdoaWNoIG1heSBkaWZmZXIgZnJvbSBkZXZpY2UgdG8K
-PiA+IGRldmljZSBkZXBlbmRpbmcgb24gdGhlIG51bWJlciBhbmQgbG9jYXRpb24gb2YgYmFkIGJs
-b2NrcyBvbiBOQU5ELiAgCj4gCj4gU2VyaWVzIGFwcGxpZWQgaW4gcGxhY2Ugb2YgdGhlIHByZXZp
-b3VzIHZlcnNpb24gb24gbXRkL25leHQuCgpBY3R1YWxseSB3ZSBoYXZlIGEgbmV3IHJvYm90IHdh
-cm5pbmcsIHNvIEkndmUgZHJvcHBlZCBwYXRjaCAzLzMgYW5kIGtlcHQKdGhlIGJpbmRpbmdzIGZv
-ciB0aGlzIHJlbGVhc2UuCgpUaGFua3MsCk1pcXXDqGwKPiAKPiA+IAo+ID4gQ2hhbmdlcyBzaW5j
-ZToKPiA+IHY0Ogo+ID4gIC0gQWRkIEFja2VkLWJ5IHRvIHRoZSBmaXJzdCBwYXRjaAo+ID4gCj4g
-PiB2MzoKPiA+ICAtIEZpeCBjb21taXQgbWVzc2FnZSBvZiB0aGUgZmlyc3QgcGF0Y2gKPiA+ICAt
-IEFkZCBSZXZpZXdlZC1ieSB0byB0aGUgc2Vjb25kIHBhdGNoCj4gPiAKPiA+IHYyOgo+ID4gIC0g
-Rml4IG1pc3Rha2VzIGluIGR0LWJpbmRpbmcKPiA+ICAtIEFkZCBwYXRjaCBmb3IgbmV3IHZlbmRv
-ciBwcmVmaXgKPiA+ICAtIEFkZCB2ZW5kb3IgcHJlZml4IHRvIHNjcGFydC1pZCBwcm9wZXJ0eQo+
-ID4gCj4gPiB2MToKPiA+ICAtIEFkZCBkdC1iaW5kaW5nIGluIGEgc2VwYXJhdGUgcGF0Y2gKPiA+
-ICAtIFJlbW92ZSByZWR1bmRhbnQgYnJhY2VzIGFuZCBsb2dpY2FsIE5PVCBvcGVyYXRvcgo+ID4g
-IC0gRGVmaW5lIHByX2ZtdAo+ID4gIC0gUmVwbGFjZSBrY2FsbG9jIGJ5IGt6YWxsb2MKPiA+ICAt
-IFVzZSBvZl9nZXRfY2hpbGRfY291bnQoKSBhbmQgYWxsb2MgYmlnIGVub3VnaCBhcnJheSBiZWZv
-cmUgdGhlCj4gPiAgICBmb3JfZWFjaF9jaGlsZF9vZl9ub2RlKCkKPiA+IAo+ID4gTWlraGFpbCBa
-aGlsa2luICgzKToKPiA+ICAgZHQtYmluZGluZ3M6IEFkZCBTZXJjb21tIChTdXpob3UpIENvcnBv
-cmF0aW9uIHZlbmRvciBwcmVmaXgKPiA+ICAgZHQtYmluZGluZ3M6IG10ZDogcGFydGl0aW9uczog
-RXh0ZW5kIGZpeGVkLXBhcnRpdGlvbnMgYmluZGluZwo+ID4gICBtdGQ6IHBhcnNlcnM6IGFkZCBz
-dXBwb3J0IGZvciBTZXJjb21tIHBhcnRpdGlvbnMKPiA+IAo+ID4gIC4uLi9tdGQvcGFydGl0aW9u
-cy9maXhlZC1wYXJ0aXRpb25zLnlhbWwgICAgICB8ICA1NSArKystCj4gPiAgLi4uL2RldmljZXRy
-ZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnlhbWwgIHwgICAyICsKPiA+ICBkcml2ZXJzL210
-ZC9wYXJzZXJzL0tjb25maWcgICAgICAgICAgICAgICAgICAgfCAgIDkgKwo+ID4gIGRyaXZlcnMv
-bXRkL3BhcnNlcnMvTWFrZWZpbGUgICAgICAgICAgICAgICAgICB8ICAgMSArCj4gPiAgZHJpdmVy
-cy9tdGQvcGFyc2Vycy9zY3BhcnQuYyAgICAgICAgICAgICAgICAgIHwgMjQwICsrKysrKysrKysr
-KysrKysrKwo+ID4gIDUgZmlsZXMgY2hhbmdlZCwgMzA1IGluc2VydGlvbnMoKyksIDIgZGVsZXRp
-b25zKC0pCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL3BhcnNlcnMvc2NwYXJ0
-LmMKPiA+ICAgCj4gCj4gCj4gVGhhbmtzLAo+IE1pcXXDqGwKCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbXRkLwo=
+On Mon, May 16, 2022 at 01:49:12PM -0500, Rob Herring wrote:
+> On Tue, May 03, 2022 at 05:43:53PM +0200, Ansuel Smith wrote:
+> > Document new qcom,boot_pages binding used to apply special
+> 
+> s/boot_pages/boot-pages/
+> 
+> > read/write configuration to boot pages.
+> > 
+> > QCOM apply a special configuration where spare data is not protected
+> > by ECC for some special pages (used for boot partition). Add
+> > Documentation on how to declare these special pages.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 22 +++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > index 84ad7ff30121..fafeca0cafff 100644
+> > --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> > @@ -102,6 +102,26 @@ allOf:
+> >              - const: rx
+> >              - const: cmd
+> >  
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - qcom,ipq8074-nand
+> > +
+> > +    then:
+> > +      properties:
+> > +        qcom,boot-pages:
+> > +          $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> 
+> You need to define the dimensions. Something like this:
+> 
+>              items:
+>                items:
+>                  - description: offset
+>                  - description: size
+>
+
+Considering this is not limited to one item how should I declare that an
+user can declare multiple items? (the user can declare multiple zones)
+Declaring minItems without a maxItems? 
+
+I assume in the suggested form it's assumed
+minItems: 1
+maxItems: 1
+so this would be problematic.
+
+> > +          description:
+> > +            Some special page used by boot partition have spare data
+> > +            not protected by ECC. Use this to declare these special page
+> > +            by defining first the offset and then the size.
+> > +
+> > +            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
+> > +
+> > +            Refer to the ipq8064 example on how to use this special binding.
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> > @@ -135,6 +155,8 @@ examples:
+> >          nand-ecc-strength = <4>;
+> >          nand-bus-width = <8>;
+> >  
+> > +        qcom,boot-pages = <0x0 0x58a0000>;
+> > +
+> >          partitions {
+> >            compatible = "fixed-partitions";
+> >            #address-cells = <1>;
+> > -- 
+> > 2.34.1
+> > 
+> > 
+
+-- 
+	Ansuel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
