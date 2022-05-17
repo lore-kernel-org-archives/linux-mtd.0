@@ -4,76 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F9B7C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 17 May 2022 12:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A13DC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 May 2022 12:38:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TOCtk10O+dtTzrQcxVS2giGb/+y1JJbr0uVW3rVSn5c=; b=xkVULizvCrGm9h
-	UgN78KzwxkFAVh6yOEB3MEpt5duKIkXiVPA6wOfOoJJVPlqndEvEtlf/WjOT5tV4Z5tJKZeM3JTfD
-	wSLP3vIa9J4Lj+EWAEaOUYTaQS3v5s2ZV7MYaJQE2Huy9RGM2Ky53OtT8eMoKY03WCJ4EniQ1VCyc
-	ph/GuuDxi1wuRuatZJ7mcZmEmxInGnX9QSBJFmEzoDVFKGycwtMdGrWFDkAvmUjC/IUYF04XHMP2n
-	gPzWHZXbIq2nJHO6cmQZItbqQFbmFAtWxoC+ZU8Oe/6J1RHxKMOFnS5k6LEMzi1Y0U5c7O/EXHxDt
-	UV1RZJobtvmMn6AfavCw==;
+	List-Owner; bh=myv1eKQRkzUg1R0hnt9B5nfaJspehhktWrMeVwBeFv8=; b=nb8RejGzpSBeJ2
+	CZ0I6oC21Sc9W/1Lxk6NodpzVz/q0c/uzdDKH6+o1FawbjKnQSS3wrzHt1fx/+e6Mm83wqL/5Wida
+	RUxOOQ+/2ZdLF+5J1BjZZxiNZoTpvoyozY6cU8OpTCItBHUUA/ybQ/0lZqltoFWBWxpQzO/E/vBMZ
+	T+BwUAUphIb3fNKIf5rhS3iK4Atjuhiqkr1R731jzGSglj78mMQClinIeyPiwzGci8+U393elKPs4
+	Qb8EUyWvG4N2QbkFEo6ZedLNshOG7sKybOR7XH8YcXiZCjHTvyXiNyPlS/DeciWj6I/hNV67WUeYp
+	jQa+sDZpozZcV8cYs2pA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nqwPA-00DZzD-1w; Tue, 17 May 2022 12:34:24 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1nqwSM-00DbUL-ES; Tue, 17 May 2022 12:37:42 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nqwOx-00DZsg-EB; Tue, 17 May 2022 12:34:13 +0000
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
- by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 24HCXiuX090876;
- Tue, 17 May 2022 07:33:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1652790824;
- bh=jX/75826u0dAvndf/WCTgLn1BPxJ18FVo/2uucSrT3Y=;
- h=Date:From:To:CC:Subject:References:In-Reply-To;
- b=ksCA4A3K9ssPA9nasc1mvGNYBJRLlfv+cVMJ1NgTBdWUOI9f/I3BARSCJtQewvqIi
- xkA9MBYoWj2ZVU4RmoTY4etI9m6jghCOtHMUdCZOmvs4Rg47zPO9VoNGJ4otocPobm
- w5d9sFsBjpbZYMq1I/G37MsCJv1o0CLcWvkcX13U=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 24HCXi48070260
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 17 May 2022 07:33:44 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 17
- May 2022 07:33:44 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 17 May 2022 07:33:44 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 24HCXh78095767;
- Tue, 17 May 2022 07:33:44 -0500
-Date: Tue, 17 May 2022 18:03:43 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
-CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <andrew@aj.id.au>,
- <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <richard@nod.at>,
- <joel@jms.id.au>, <tudor.ambarus@microchip.com>,
- <miquel.raynal@bootlin.com>, <chin-ting_kuo@aspeedtech.com>,
+ id 1nqwS6-00DbMX-Tl; Tue, 17 May 2022 12:37:29 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id CE49DC000A;
+ Tue, 17 May 2022 12:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1652791039;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=CNk04l4NOC/ZJltN0oDjVZ65rbHSyBSEB0Mh7KZb4cs=;
+ b=OKixoUAzBr0gjNgzwuuG4zDfpZTtIoGcuyz32KgTQOL5Mfi1xjZ3bxpVMYENvIMfEWjIow
+ DuMjb7DygiJTTAKOtK1OZ2Uq97GgnHKuRqV0sHmvATc1wocToGkA7df1t79N2f/Pm45YUh
+ Oreu5M87LqSYIjJwhEsON/UF/1iWRVrqxIPfUGzPLbFwFF3OE/SefLKxQsPz2y5fYHMRoO
+ ev5RYWF495gBDLTRZnJdXRGA0UKZ7s6oQ5CfYlxlWZfMvfB0S3Z3VuxhpQVfur7qxNFskI
+ k5asL+EjpMo2FEvhuDOr+BSajbrGL/n5qOkypWHkEEhBpBbqVXnkuOAJzlwB8Q==
+Date: Tue, 17 May 2022 14:37:13 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>
+Cc: Pratyush Yadav <p.yadav@ti.com>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <andrew@aj.id.au>, <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <richard@nod.at>, <joel@jms.id.au>,
+ <tudor.ambarus@microchip.com>, <chin-ting_kuo@aspeedtech.com>,
  <linux-aspeed@lists.ozlabs.org>, <vigneshr@ti.com>,
  <linux-kernel@vger.kernel.org>
 Subject: Re: (subset) [PATCH v7 00/11] spi: spi-mem: Convert Aspeed SMC
  driver to spi-mem
-Message-ID: <20220517123343.5cust7y6uqeeamjs@ti.com>
+Message-ID: <20220517143713.47676b4c@xps-13>
+In-Reply-To: <a17b2446-f5a6-d606-8ef4-3931b8bc94da@kaod.org>
 References: <20220509175616.1089346-1-clg@kaod.org>
  <165272636363.750911.14933122170662994904.b4-ty@kernel.org>
  <20220517110509.2e6xbwot63yl6a3c@ti.com>
  <a17b2446-f5a6-d606-8ef4-3931b8bc94da@kaod.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a17b2446-f5a6-d606-8ef4-3931b8bc94da@kaod.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220517_053411_604286_AFCF4142 
-X-CRM114-Status: GOOD (  34.73  )
+X-CRM114-CacheID: sfid-20220517_053727_472092_28F61F4D 
+X-CRM114-Status: GOOD (  28.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,172 +74,80 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Cedric,
-
-On 17/05/22 02:03PM, C=E9dric Le Goater wrote:
-> Pratyush,
-> =
-
-> On 5/17/22 13:05, Pratyush Yadav wrote:
-> > Hi Cedric,
-> > =
-
-> > On 16/05/22 07:39PM, Mark Brown wrote:
-> > > On Mon, 9 May 2022 19:56:05 +0200, C=E9dric Le Goater wrote:
-> > > > This series adds a new SPI driver using the spi-mem interface for t=
-he
-> > > > Aspeed static memory controllers of the AST2600, AST2500 and AST2400
-> > > > SoCs.
-> > > > =
-
-> > > >   * AST2600 Firmware SPI Memory Controller (FMC)
-> > > >   * AST2600 SPI Flash Controller (SPI1 and SPI2)
-> > > >   * AST2500 Firmware SPI Memory Controller (FMC)
-> > > >   * AST2500 SPI Flash Controller (SPI1 and SPI2)
-> > > >   * AST2400 New Static Memory Controller (also referred as FMC)
-> > > >   * AST2400 SPI Flash Controller (SPI)
-> > > > =
-
-> > > > [...]
-> > > =
-
-> > > Applied to
-> > > =
-
-> > >     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git f=
-or-next
-> > > =
-
-> > > Thanks!
-> > > =
-
-> > > [02/11] dt-bindings: spi: Convert the Aspeed SMC controllers device t=
-ree binding
-> > >          commit: ce9858ea499da025684a7a5f19823c2c3f14bdce
-> > > [03/11] spi: spi-mem: Convert Aspeed SMC driver to spi-mem
-> > >          commit: 9c63b846e6df43e5b3d31263f7db545f32deeda3
-> > > [04/11] spi: aspeed: Add support for direct mapping
-> > >          commit: 9da06d7bdec7dad8018c23b180e410ef2e7a4367
-> > > [05/11] spi: aspeed: Adjust direct mapping to device size
-> > >          commit: bb084f94e1bca4a5c4f689d7aa9b410220c1ed71
-> > > [06/11] spi: aspeed: Workaround AST2500 limitations
-> > >          commit: 5785eedee42c34cfec496199a80fa8ec9ddcf7fe
-> > > [07/11] spi: aspeed: Add support for the AST2400 SPI controller
-> > >          commit: 53526ab27d9c256504f267713aea60db7af18fb0
-> > > [08/11] spi: aspeed: Calibrate read timings
-> > >          commit: eeaec1ea05c0e0f08e04c6844f20cc24a2fcc0f4
-> > =
-
-> > I have repeatedly objected to this patch [0][1][2] and you have
-> > repeatedly decided to not address my objections.
-> =
-
-> That's a very harsh way of saying things. I did not decide anything
-> or ignore your comments. I answered your questions and acknowledged
-> that indeed the read training was done under the dirmap handler but
-> this was not a concern today since we had all the required information
-> from spimem.
-
-I think the correct thing to do here would be to move this patch out of =
-
-your main series. Since the old driver did not have this feature anyway, =
-
-it is not necessary for the conversion to achieve feature parity. Then =
-
-have a separate series to drive the conversation on how to best =
-
-implement this contentious feature.
-
-> =
-
-> We waited _together_, 5 or 6 weeks, for more inputs on how to address
-> the concerns you raised regarding the sustainability of this method.
-> =
-
-> > I won't spend any more time fighting it.
-> =
-
-> This is not a fight. I don't know why you interpret it that way.
-
-I interpret it this way because I feel you have ignored my comments and =
-
-have kept this patch in regardless. But maybe I _am_ being too harsh. So =
-
-apologies if I have interpreted things wrong.
-
-> =
-
-> Now, since you object so explicitly, and since this patchset has
-> not reached the Linux kernel yet, we should consider dropping it.
-> I rather do that than push crap in mainline. But then, please,
-> provide solutions and not only objections !
-
-Yes please. I would like to have this patch dropped, and then reopen =
-
-this discussion in a separate thread.
-
-I have provided solutions before but maybe you missed them. Please see =
-
-[3]. Specifically patches 1 and 3. These are still not very refined and =
-
-might not be accepted in their current state (especially patch 3 since =
-
-it does the calibration after registering the device with MTD), but they =
-
-should be a good starting point for discussion.
-
-And we might end up deciding to just use the dirmap_create() hook to do =
-
-the calibration, but it is important to have this conversation =
-
-separately and clearly instead of it being missed as part of a large =
-
-patch series.
-
-> =
-
-> > But I will say that you should not expect any
-> > guarantees that SPI NOR or SPI NAND will not break your calibration in
-> > the future if they decide to move the dirmap_create() call around.
-> =
-
-> If that's the case one day, we have multiple solutions :
-> =
-
->   - stop doing the training
->   - move the training to the appropriate handler if it exists
-
-This is my preferred option, [3] is a good starting point for proposing =
-
-that handler.
-
->   - use a default value
-> > > [11/11] mtd: spi-nor: aspeed: set the decoding size to at least 2MB f=
-or AST2600
-> > >          commit: 73ae97e3cabb580639f02f12a192324a53c4bebb
-> > > =
-
-> > =
-
-> > [0] https://patchwork.kernel.org/project/spi-devel-general/patch/202203=
-25100849.2019209-9-clg@kaod.org/
-> > [1] https://patchwork.kernel.org/project/spi-devel-general/patch/202202=
-14094231.3753686-9-clg@kaod.org/
-> > [2] https://lore.kernel.org/all/20220208190636.h6dubktkmuosvdxo@ti.com/
-[3] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D233504&st=
-ate=3D%2A&archive=3Dboth
-
--- =
-
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ8OpZHJpYywKCmNsZ0BrYW9kLm9yZyB3cm90ZSBvbiBUdWUsIDE3IE1heSAyMDIyIDE0OjAz
+OjAyICswMjAwOgoKPiBQcmF0eXVzaCwKPiAKPiBPbiA1LzE3LzIyIDEzOjA1LCBQcmF0eXVzaCBZ
+YWRhdiB3cm90ZToKPiA+IEhpIENlZHJpYywKPiA+IAo+ID4gT24gMTYvMDUvMjIgMDc6MzlQTSwg
+TWFyayBCcm93biB3cm90ZTogIAo+ID4+IE9uIE1vbiwgOSBNYXkgMjAyMiAxOTo1NjowNSArMDIw
+MCwgQ8OpZHJpYyBMZSBHb2F0ZXIgd3JvdGU6ICAKPiA+Pj4gVGhpcyBzZXJpZXMgYWRkcyBhIG5l
+dyBTUEkgZHJpdmVyIHVzaW5nIHRoZSBzcGktbWVtIGludGVyZmFjZSBmb3IgdGhlCj4gPj4+IEFz
+cGVlZCBzdGF0aWMgbWVtb3J5IGNvbnRyb2xsZXJzIG9mIHRoZSBBU1QyNjAwLCBBU1QyNTAwIGFu
+ZCBBU1QyNDAwCj4gPj4+IFNvQ3MuCj4gPj4+Cj4gPj4+ICAgKiBBU1QyNjAwIEZpcm13YXJlIFNQ
+SSBNZW1vcnkgQ29udHJvbGxlciAoRk1DKQo+ID4+PiAgICogQVNUMjYwMCBTUEkgRmxhc2ggQ29u
+dHJvbGxlciAoU1BJMSBhbmQgU1BJMikKPiA+Pj4gICAqIEFTVDI1MDAgRmlybXdhcmUgU1BJIE1l
+bW9yeSBDb250cm9sbGVyIChGTUMpCj4gPj4+ICAgKiBBU1QyNTAwIFNQSSBGbGFzaCBDb250cm9s
+bGVyIChTUEkxIGFuZCBTUEkyKQo+ID4+PiAgICogQVNUMjQwMCBOZXcgU3RhdGljIE1lbW9yeSBD
+b250cm9sbGVyIChhbHNvIHJlZmVycmVkIGFzIEZNQykKPiA+Pj4gICAqIEFTVDI0MDAgU1BJIEZs
+YXNoIENvbnRyb2xsZXIgKFNQSSkKPiA+Pj4KPiA+Pj4gWy4uLl0gIAo+ID4+Cj4gPj4gQXBwbGll
+ZCB0bwo+ID4+Cj4gPj4gICAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9r
+ZXJuZWwvZ2l0L2Jyb29uaWUvc3BpLmdpdCBmb3ItbmV4dAo+ID4+Cj4gPj4gVGhhbmtzIQo+ID4+
+Cj4gPj4gWzAyLzExXSBkdC1iaW5kaW5nczogc3BpOiBDb252ZXJ0IHRoZSBBc3BlZWQgU01DIGNv
+bnRyb2xsZXJzIGRldmljZSB0cmVlIGJpbmRpbmcKPiA+PiAgICAgICAgICBjb21taXQ6IGNlOTg1
+OGVhNDk5ZGEwMjU2ODRhN2E1ZjE5ODIzYzJjM2YxNGJkY2UKPiA+PiBbMDMvMTFdIHNwaTogc3Bp
+LW1lbTogQ29udmVydCBBc3BlZWQgU01DIGRyaXZlciB0byBzcGktbWVtCj4gPj4gICAgICAgICAg
+Y29tbWl0OiA5YzYzYjg0NmU2ZGY0M2U1YjNkMzEyNjNmN2RiNTQ1ZjMyZGVlZGEzCj4gPj4gWzA0
+LzExXSBzcGk6IGFzcGVlZDogQWRkIHN1cHBvcnQgZm9yIGRpcmVjdCBtYXBwaW5nCj4gPj4gICAg
+ICAgICAgY29tbWl0OiA5ZGEwNmQ3YmRlYzdkYWQ4MDE4YzIzYjE4MGU0MTBlZjJlN2E0MzY3Cj4g
+Pj4gWzA1LzExXSBzcGk6IGFzcGVlZDogQWRqdXN0IGRpcmVjdCBtYXBwaW5nIHRvIGRldmljZSBz
+aXplCj4gPj4gICAgICAgICAgY29tbWl0OiBiYjA4NGY5NGUxYmNhNGE1YzRmNjg5ZDdhYTliNDEw
+MjIwYzFlZDcxCj4gPj4gWzA2LzExXSBzcGk6IGFzcGVlZDogV29ya2Fyb3VuZCBBU1QyNTAwIGxp
+bWl0YXRpb25zCj4gPj4gICAgICAgICAgY29tbWl0OiA1Nzg1ZWVkZWU0MmMzNGNmZWM0OTYxOTlh
+ODBmYThlYzlkZGNmN2ZlCj4gPj4gWzA3LzExXSBzcGk6IGFzcGVlZDogQWRkIHN1cHBvcnQgZm9y
+IHRoZSBBU1QyNDAwIFNQSSBjb250cm9sbGVyCj4gPj4gICAgICAgICAgY29tbWl0OiA1MzUyNmFi
+MjdkOWMyNTY1MDRmMjY3NzEzYWVhNjBkYjdhZjE4ZmIwCj4gPj4gWzA4LzExXSBzcGk6IGFzcGVl
+ZDogQ2FsaWJyYXRlIHJlYWQgdGltaW5ncwo+ID4+ICAgICAgICAgIGNvbW1pdDogZWVhZWMxZWEw
+NWMwZTBmMDhlMDRjNjg0NGYyMGNjMjRhMmZjYzBmNCAgCj4gPiAKPiA+IEkgaGF2ZSByZXBlYXRl
+ZGx5IG9iamVjdGVkIHRvIHRoaXMgcGF0Y2ggWzBdWzFdWzJdIGFuZCB5b3UgaGF2ZQo+ID4gcmVw
+ZWF0ZWRseSBkZWNpZGVkIHRvIG5vdCBhZGRyZXNzIG15IG9iamVjdGlvbnMuICAgCj4gVGhhdCdz
+IGEgdmVyeSBoYXJzaCB3YXkgb2Ygc2F5aW5nIHRoaW5ncy4gSSBkaWQgbm90IGRlY2lkZSBhbnl0
+aGluZwo+IG9yIGlnbm9yZSB5b3VyIGNvbW1lbnRzLiBJIGFuc3dlcmVkIHlvdXIgcXVlc3Rpb25z
+IGFuZCBhY2tub3dsZWRnZWQKPiB0aGF0IGluZGVlZCB0aGUgcmVhZCB0cmFpbmluZyB3YXMgZG9u
+ZSB1bmRlciB0aGUgZGlybWFwIGhhbmRsZXIgYnV0Cj4gdGhpcyB3YXMgbm90IGEgY29uY2VybiB0
+b2RheSBzaW5jZSB3ZSBoYWQgYWxsIHRoZSByZXF1aXJlZCBpbmZvcm1hdGlvbgo+IGZyb20gc3Bp
+bWVtLgo+IAo+IFdlIHdhaXRlZCBfdG9nZXRoZXJfLCA1IG9yIDYgd2Vla3MsIGZvciBtb3JlIGlu
+cHV0cyBvbiBob3cgdG8gYWRkcmVzcwo+IHRoZSBjb25jZXJucyB5b3UgcmFpc2VkIHJlZ2FyZGlu
+ZyB0aGUgc3VzdGFpbmFiaWxpdHkgb2YgdGhpcyBtZXRob2QuCj4gCj4gPiBJIHdvbid0IHNwZW5k
+IGFueSBtb3JlIHRpbWUgZmlnaHRpbmcgaXQuICAgCj4gVGhpcyBpcyBub3QgYSBmaWdodC4gSSBk
+b24ndCBrbm93IHdoeSB5b3UgaW50ZXJwcmV0IGl0IHRoYXQgd2F5Lgo+IAo+IE5vdywgc2luY2Ug
+eW91IG9iamVjdCBzbyBleHBsaWNpdGx5LCBhbmQgc2luY2UgdGhpcyBwYXRjaHNldCBoYXMKPiBu
+b3QgcmVhY2hlZCB0aGUgTGludXgga2VybmVsIHlldCwgd2Ugc2hvdWxkIGNvbnNpZGVyIGRyb3Bw
+aW5nIGl0Lgo+IEkgcmF0aGVyIGRvIHRoYXQgdGhhbiBwdXNoIGNyYXAgaW4gbWFpbmxpbmUuIEJ1
+dCB0aGVuLCBwbGVhc2UsCj4gcHJvdmlkZSBzb2x1dGlvbnMgYW5kIG5vdCBvbmx5IG9iamVjdGlv
+bnMgIQo+IAo+ID4gQnV0IEkgd2lsbCBzYXkgdGhhdCB5b3Ugc2hvdWxkIG5vdCBleHBlY3QgYW55
+Cj4gPiBndWFyYW50ZWVzIHRoYXQgU1BJIE5PUiBvciBTUEkgTkFORCB3aWxsIG5vdCBicmVhayB5
+b3VyIGNhbGlicmF0aW9uIGluCj4gPiB0aGUgZnV0dXJlIGlmIHRoZXkgZGVjaWRlIHRvIG1vdmUg
+dGhlIGRpcm1hcF9jcmVhdGUoKSBjYWxsIGFyb3VuZC4gIAo+IAo+IElmIHRoYXQncyB0aGUgY2Fz
+ZSBvbmUgZGF5LCB3ZSBoYXZlIG11bHRpcGxlIHNvbHV0aW9ucyA6Cj4gCj4gICAgLSBzdG9wIGRv
+aW5nIHRoZSB0cmFpbmluZwoKTm90IHJlYWxseSBhbiBvcHRpb24sIGlzbid0IGl0PwoKPiAgICAt
+IG1vdmUgdGhlIHRyYWluaW5nIHRvIHRoZSBhcHByb3ByaWF0ZSBoYW5kbGVyIGlmIGl0IGV4aXN0
+cwoKU29ycnkgZm9yIGp1bXBpbmcgaW4gc28gbGF0ZSwgYnV0IHdoeSBub3QgdXNpbmcgdGhpcyBz
+b2x1dGlvbiBhbHJlYWR5CmlmIHRoZXJlIGFyZSBjb25jZXJucyBhYm91dCB0aGUgY3VycmVudCBs
+b2NhdGlvbj8gSXQgZG9lcyBub3QgbG9vayBsaWtlCmEgY29tcGxleCBzb2x1dGlvbiB0byBpbXBs
+ZW1lbnQsIGJ1dCBJIG1pZ2h0IGJlIG92ZXJsb29raW5nIHNvbWV0aGluZy4KClRoaXMgY2FuIGFs
+c28gYmUgZG9uZSBmb3IgdGhlIG5leHQga2VybmVsIHJlbGVhc2UuCgo+ICAgIC0gdXNlIGEgZGVm
+YXVsdCB2YWx1ZQo+ICAgPj4gWzExLzExXSBtdGQ6IHNwaS1ub3I6IGFzcGVlZDogc2V0IHRoZSBk
+ZWNvZGluZyBzaXplIHRvIGF0IGxlYXN0IDJNQiBmb3IgQVNUMjYwMAo+ID4+ICAgICAgICAgIGNv
+bW1pdDogNzNhZTk3ZTNjYWJiNTgwNjM5ZjAyZjEyYTE5MjMyNGE1M2M0YmViYgo+ID4+ICAKPiA+
+IAo+ID4gWzBdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9zcGktZGV2ZWwt
+Z2VuZXJhbC9wYXRjaC8yMDIyMDMyNTEwMDg0OS4yMDE5MjA5LTktY2xnQGthb2Qub3JnLwo+ID4g
+WzFdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9zcGktZGV2ZWwtZ2VuZXJh
+bC9wYXRjaC8yMDIyMDIxNDA5NDIzMS4zNzUzNjg2LTktY2xnQGthb2Qub3JnLwo+ID4gWzJdIGh0
+dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIyMDIwODE5MDYzNi5oNmR1Ymt0a211b3N2ZHhv
+QHRpLmNvbS8gIAo+IAo+IFJlZ2FyZHMsCj4gCj4gQ8OpZHJpYy4KCgpUaGFua3MsCk1pcXXDqGwK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
