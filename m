@@ -4,76 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6786CC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 16 May 2022 18:49:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 604B0C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 17 May 2022 00:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9TGEjJ/9Ff/aNiqrarHvi5FwR55uWCFU6C2rs0WRoP8=; b=OV0S7gOrXlfmjm
-	TLHB+UWZRtT/9V4GunQedLcDMYl10TzW0BWsMMI5UKC2DUzvePPPYx0eVM2fye54e2xBpV1wy909Q
-	G74vZSE5Bsh9ZVlOLtzj2bg5BTHX5mZt4xHXIOWNOHrMNjCirGmnh29NmcXlufg7qJJqtPVRXL50B
-	l+9H14Y8WlItJNao07ORyjYcHTOTGwCY9FBEunyNPeLOKofTOG1lBXAicygNf1Qgg8npgBuNzFDkT
-	RcKusGxYGUdoo/TjwHDmyJGSH6TfdnHmTJ8FUy9uwzI2FK1buVV8xRq3BVoxhNoYXToV64IGlkFvs
-	S50lvj193NFGNm2XIZVg==;
+	List-Owner; bh=lFAWBMLUylX3UMk85TeNizP5DCS/js4RfzK7Ea+y/UM=; b=ZUEw4eVMlbG10m
+	6kpWSoB9NT23rLg4hakz+4WcFgkmDp3CsB50Yfvjcc4Pr+2V1kB6+I9VHSng0ALktdFcJPoBLiaug
+	DisQ3cPX4IM4P7MDF1koxYaZymMRVQ/hhfy+q8Mq2volNioYq0MQs0wk4iSlaJfK3YpwQvMTlolyK
+	PT/Ek+zLPZWiGCj2Mj04ADXbI+WoKbvlGN0helPHB8KtpgZYOJidYDWc43k2NzcSYQzB1v6LX6i/Q
+	kwADb7qE82Vz4DAX/CAY3OWudbaFFnn5X16EQVqXbYWSHI5zhN9PZsihhi+H9DTQtW3lywghfviwW
+	nftcRcyQDNnGLP0xXX7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nqfmS-009emP-Az; Mon, 16 May 2022 18:49:20 +0000
-Received: from mail-ot1-f51.google.com ([209.85.210.51])
+	id 1nqlQl-00B2eP-7z; Tue, 17 May 2022 00:51:19 +0000
+Received: from mail-oa1-f45.google.com ([209.85.160.45])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nqfmQ-009ekP-3p
- for linux-mtd@lists.infradead.org; Mon, 16 May 2022 18:49:19 +0000
-Received: by mail-ot1-f51.google.com with SMTP id
- 31-20020a9d0822000000b00605f1807664so10668593oty.3
- for <linux-mtd@lists.infradead.org>; Mon, 16 May 2022 11:49:15 -0700 (PDT)
+ id 1nqlQi-00B2e0-Ae
+ for linux-mtd@lists.infradead.org; Tue, 17 May 2022 00:51:17 +0000
+Received: by mail-oa1-f45.google.com with SMTP id
+ 586e51a60fabf-d39f741ba0so22377509fac.13
+ for <linux-mtd@lists.infradead.org>; Mon, 16 May 2022 17:51:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=TtCUUUT+nHAc8CW7oHLx12ILRqYzV6X9OXA+TWI+EEw=;
- b=5vcjlZDPIb+2QioUeVoAv3G5PCbRBdfAnMXa2O7oOKIzLqr7+CTPYTjCj4RU09jsRC
- jMX0HYq3bt2OWOXtUdhDb0dDw2mQHfPiPLKy4VJPl2zxmbGSfEvAv2k5o6/Crx6LJUOv
- KNsdyUhHgCxbiPhKIzh8HoUAHKa3gcAjjDcOFizbeSZzuhPEXtyfScqjN27wswbd7K9B
- oZJVbXlpaC34n8ysZjotgU0xLkcV5ckWTUF4yc1eHx8lOcEllDif78w+I9phpqjvetj7
- l03gPs4ebFw3wbqoikNg/mZonJ9kH884vNzE1umHM64idUjpimKtfu2C54o7YF6hZN7i
- MYxQ==
-X-Gm-Message-State: AOAM533BULkUbl8vOLS5VAUUljm++pqySoEhk1GlLzf0OchWJA1YfY3P
- Gf+VJmGGSdBsL4EVJcqadiuJ7MezPg==
-X-Google-Smtp-Source: ABdhPJxWWS6qu5qSJOpfAr1qWYqIWns8KVfKkkW1r2Y0uSLIoj2zOsjB8OHgBlBnp2+p9gsPvcRjZQ==
-X-Received: by 2002:a05:6830:264f:b0:606:7dbc:aebb with SMTP id
- f15-20020a056830264f00b006067dbcaebbmr6641366otu.93.1652726954709; 
- Mon, 16 May 2022 11:49:14 -0700 (PDT)
+ bh=BN4iM9sQbJEV3JEbs6Nxmd/DqEFeyh4AGc2qP9BhUps=;
+ b=EH1JZH6H9a3uoJzzoh0MvqO4QABUF4MJIx0OemHqkP4OqAj+Qh04RGq4azfImESN4I
+ N1Q1kA/E32d8a5M4mExzmRF4K/R7eQmXMk07oeY1AsQzzCV9v9XZ8M+U1xiI9sz8GrVt
+ gwufi6+j3mhTKncyg1JBAVWJDPut/5ddpC78gx2yOQqTQQhl4mqj3EuIn1BX8vNI4AEd
+ BbszZmhJCKMoXM88yTZbFL1I1TTe9co+oMf9YiQMCd2BmsZWm33nkN5vPKFvKZTwRiEJ
+ Y0cHF1+jaxltGVE3QlNLMJAFs+pI7pcJCGoiXXdVdBnARXjEmZaihDj3r5JJyr83Dr9n
+ wSmQ==
+X-Gm-Message-State: AOAM5326cFeWdfaCEWp94Bfk2fUrkqq1v5USAaw3k6a6REosAi8aqFpf
+ vdIdM2PCyEta7LBrKoqobQ==
+X-Google-Smtp-Source: ABdhPJyBYMgt9qDgNwOKWlMSsg9Hins9woDar0FSMx89U7YzHjdTwYL0S9eYbYUUCjOUN8uMnjFa+w==
+X-Received: by 2002:a05:6870:b620:b0:f1:8837:ecd0 with SMTP id
+ cm32-20020a056870b62000b000f18837ecd0mr6844838oab.22.1652748674772; 
+ Mon, 16 May 2022 17:51:14 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- m19-20020a4add13000000b0035f627ac898sm4375618oou.10.2022.05.16.11.49.13
+ f27-20020a056830309b00b0060603221268sm124759ots.56.2022.05.16.17.51.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 May 2022 11:49:13 -0700 (PDT)
-Received: (nullmailer pid 3068015 invoked by uid 1000);
- Mon, 16 May 2022 18:49:12 -0000
-Date: Mon, 16 May 2022 13:49:12 -0500
+ Mon, 16 May 2022 17:51:14 -0700 (PDT)
+Received: (nullmailer pid 3690141 invoked by uid 1000);
+ Tue, 17 May 2022 00:51:13 -0000
+Date: Mon, 16 May 2022 19:51:13 -0500
 From: Rob Herring <robh@kernel.org>
-To: Ansuel Smith <ansuelsmth@gmail.com>
-Cc: Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Manivannan Sadhasivam <mani@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Vignesh Raghavendra <vigneshr@ti.com>,
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] dt-bindings: mtd: qcom_nandc: document
- qcom,boot-pages binding
-Message-ID: <20220516184912.GA3063673-robh@kernel.org>
-References: <20220503154353.4367-1-ansuelsmth@gmail.com>
- <20220503154353.4367-3-ansuelsmth@gmail.com>
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Bastian Hecht <hechtb@googlemail.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH/RFC] dt-bindings: mtd: Remove Renesas FLCTL NAND
+ controller support
+Message-ID: <20220517005113.GA3685447-robh@kernel.org>
+References: <ef70e24a57d2342458fe11b7b13775ffac1f1bd0.1652098726.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220503154353.4367-3-ansuelsmth@gmail.com>
+In-Reply-To: <ef70e24a57d2342458fe11b7b13775ffac1f1bd0.1652098726.git.geert+renesas@glider.be>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220516_114918_194346_60827EB5 
-X-CRM114-Status: GOOD (  19.29  )
+X-CRM114-CacheID: sfid-20220516_175116_407883_BB7B8A2E 
+X-CRM114-Status: GOOD (  14.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,74 +88,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, May 03, 2022 at 05:43:53PM +0200, Ansuel Smith wrote:
-> Document new qcom,boot_pages binding used to apply special
-
-s/boot_pages/boot-pages/
-
-> read/write configuration to boot pages.
+On Mon, May 09, 2022 at 02:27:52PM +0200, Geert Uytterhoeven wrote:
+> The DT bindings for the Renesas FLCTL NAND controller document only support a
+> single SoC, namely the Renesas R-Mobile AP4 (SH7372).
+> Linux dropped support for this SoC in commit 59b89af1d5551c12 ("ARM:
+> shmobile: sh7372: Remove Legacy C SoC code") in v4.1.
 > 
-> QCOM apply a special configuration where spare data is not protected
-> by ECC for some special pages (used for boot partition). Add
-> Documentation on how to declare these special pages.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> The FLCTL NAND controller (or an enhanced version) is also present on
+> SH-Mobile AG5 (sh73a0) and R-Mobile A1 (r8a7740), but the sole boards
+> supported upstream (KMC KZM-A9-GT resp. Atmark Techno Armadillo-800-EVA)
+> use eMMC NAND instead of raw NAND FLASH.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> index 84ad7ff30121..fafeca0cafff 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> @@ -102,6 +102,26 @@ allOf:
->              - const: rx
->              - const: cmd
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,ipq8074-nand
-> +
-> +    then:
-> +      properties:
-> +        qcom,boot-pages:
-> +          $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> What's the policy w.r.t. stale DT bindings?
+> Should it be converted to json-schema instead?
 
-You need to define the dimensions. Something like this:
+Wouldn't be high on my list.
 
-             items:
-               items:
-                 - description: offset
-                 - description: size
+> drivers/mtd/nand/raw/sh_flctl.c still implements these bindings.
+> The driver cannot be removed, as it is also used on the non-DT
+> SH7723-based AP-325RXA platform.
 
-> +          description:
-> +            Some special page used by boot partition have spare data
-> +            not protected by ECC. Use this to declare these special page
-> +            by defining first the offset and then the size.
-> +
-> +            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-> +
-> +            Refer to the ipq8064 example on how to use this special binding.
-> +
->  required:
->    - compatible
->    - reg
-> @@ -135,6 +155,8 @@ examples:
->          nand-ecc-strength = <4>;
->          nand-bus-width = <8>;
->  
-> +        qcom,boot-pages = <0x0 0x58a0000>;
-> +
->          partitions {
->            compatible = "fixed-partitions";
->            #address-cells = <1>;
-> -- 
-> 2.34.1
-> 
-> 
+But you could remove the DT support in the driver? I'd just leave this 
+as-is if you don't do that.
+
+Rob
 
 ______________________________________________________
 Linux MTD discussion mailing list
