@@ -4,71 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F049C433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 08:52:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B3FCC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 09:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Wj+wJfP6L+lntAW7U/kBGyTZd1ZLXn0adonuuIMWfuY=; b=FPagjOlkSEMrdG
-	5bAVXAK9rguQpHNCQtjY0s737JDIVPsLD9rszIl0almJXxh6bKR3hn/p1EfWoCzCZsJ9rvTQDbFFE
-	Bnj8MYp+4rzggCRkCYd7evN6NuElyLXEo+JvGw6zuORW+Sa9zRBSdEzAmK8b8LO/6QztD/6XBa+ES
-	Sw8K4M+lFXjzN1CIIoixU0CjI+30ubPcxn+8YbzqLj0Bo9UcSsF63KFKEpimyx86bYJ8OrsM+GxJO
-	UXt+g8+mfmb22ubCfOwEl6NnnFGIbSUIK84dD42cg93gSJ57GZ7IHvRs25sj4tZSyMjLZ+3Fe6Bin
-	DAqbqiL1DFMdQr/TnDyw==;
+	List-Owner; bh=AynNuIsfnwtcrHLsAsXlDDMvH/HUOKPEgLFAx9GX6CA=; b=c5ys8rTL3RRG7I
+	KXsF1awF5lEmAcs0EHX9OirKbHgxB/P9dB2OXl1/00VnvWazCGOi9FNgO/J0frO5EgleXnRnquw9Z
+	8nyMMg9LdRLLMK7Zpagr0IjyA6R+3eOWkkO+KSiDlvsow+DETfUceaIF1+Lsnu1TbkhSlDRVIAdpf
+	9JYDKjK0+FIxTw2hsgxo1ZwbtdMrKHJhVCc8BcuAwReROfHftFCb50tw2oYvOdMCH5TXN5pr/CQBh
+	S393oZkfRBbQfTE+lmht01CVuS09U/cqStQnMjCszjjK93X+yFfd+W9Lidr6s6sMTOp/5s5psjYQG
+	ImHRuqaF3Gu9JSG66ANQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nrFPp-000fhn-Jg; Wed, 18 May 2022 08:52:21 +0000
-Received: from 3.mo548.mail-out.ovh.net ([188.165.32.156])
+	id 1nrFjZ-000lTX-4n; Wed, 18 May 2022 09:12:45 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrFPc-000feJ-K3
- for linux-mtd@lists.infradead.org; Wed, 18 May 2022 08:52:11 +0000
-Received: from mxplan5.mail.ovh.net (unknown [10.108.1.6])
- by mo548.mail-out.ovh.net (Postfix) with ESMTPS id A88812369D;
- Wed, 18 May 2022 08:52:00 +0000 (UTC)
-Received: from kaod.org (37.59.142.107) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Wed, 18 May
- 2022 10:51:59 +0200
-Authentication-Results: garm.ovh; auth=pass
- (GARM-107S0014f754fc7-15cb-49af-bbdd-8a187c23a99f,
- DB10E105899AAE3BCA8ABEF0D93527152A7ECCF8) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 82.64.250.170
-Message-ID: <b3bfa5a6-caac-94ed-6741-04db9c2a9ee0@kaod.org>
-Date: Wed, 18 May 2022 10:51:58 +0200
+ id 1nrFjW-000lRP-H9
+ for linux-mtd@lists.infradead.org; Wed, 18 May 2022 09:12:43 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id
+ o13-20020a17090a9f8d00b001df3fc52ea7so5010736pjp.3
+ for <linux-mtd@lists.infradead.org>; Wed, 18 May 2022 02:12:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=47vXU6jXH02oEd2J9tEVhRXBIAtgqo529/X6Ouj9Nc0=;
+ b=B+J05oKuEQ6hODddZGm9w3AxKR02pxofZzcWfAucJPCDmDfLN5IR4fPY1qmeM+ccow
+ I0uhULxU1bPihzh0X9CngtnUX5mtmuWpNQwAP5HytVy4ge/uq6aoTQ256ABvank9oqOd
+ F6bdBKu9BCkKvaS0BaouwOLIwtCroq7vRKP1BONocpwaYBA7lxRt6uVH4Eyq8naJuueD
+ LzpZzmZJLZhNyQoadRkM3U6DHSzzX5w7g03xEbbhhDYkp9yi3ASYM6l/2XXsN31oJe9Q
+ /ssDcK0RKZPgkcc/1rp+IjzZjAEcJy8npseTlvvZ+fS07TeLGypNz3Bg/p38kR+DJClV
+ gc9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=47vXU6jXH02oEd2J9tEVhRXBIAtgqo529/X6Ouj9Nc0=;
+ b=NSUazJBwIC/hVtvv2oZ+0Kf95BgaEvkaTzSDc8JwShwpPeoFmkhI5I9KmqVlWq8vAU
+ LEn5pwW/dQ1N7opNlvxA6fVvR+pjFQXrka2OEYZolqcgD1930Gq2zXJLmyqWmj5p+5U1
+ m/ejSN0sLEYW64UiEsnNNZbrCDni9CdCOSVs8UfeyfLdXomFW9eJCKeDwi8gtfc3dTZ8
+ 9SJAM/JgOQH7lmFjgdVrl6noErUPnpDTNpQYM0L2iBHr0r0TLzQ3/LbfdkHRWJ7gPczE
+ b4o9boL4OoNf7n86891mnrj5WZzSfoOoQKcZJFme1uqFw8bpaBSD1tBo5v4OghL/MQYy
+ YAKg==
+X-Gm-Message-State: AOAM530wMUHcv+VTW20mZmMLv8979Gg3d0CzjwuYXBb02DyncF9fMNcr
+ 4mtJ+dF6kw636Bld0cxVt/k=
+X-Google-Smtp-Source: ABdhPJyWs83B2rzcZ9byiKeFARxVKSKBsjrjCw/BJy2RpLZWXAfF3DZQELcNE7g6w6YW/T7A9ZiqOQ==
+X-Received: by 2002:a17:903:230b:b0:15e:bc9c:18c7 with SMTP id
+ d11-20020a170903230b00b0015ebc9c18c7mr26238576plh.29.1652865161862; 
+ Wed, 18 May 2022 02:12:41 -0700 (PDT)
+Received: from [192.168.1.3] (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
+ by smtp.gmail.com with ESMTPSA id
+ c17-20020a170902c1d100b0015e8d4eb243sm1114886plc.141.2022.05.18.02.12.39
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 18 May 2022 02:12:41 -0700 (PDT)
+Message-ID: <977be2c6-3902-a022-9e7c-2c93eb280919@gmail.com>
+Date: Wed, 18 May 2022 18:12:38 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [RFC PATCH 3/6] mtd: spi-nor: core: run calibration when
- initialization is done
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v15 6/8] mtd: spi-nor: Retain nor->addr_width at 4BAIT
+ parse
 Content-Language: en-US
-To: Pratyush Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Michael
- Walle <michael@walle.cc>, Richard Weinberger <richard@nod.at>, Vignesh
- Raghavendra <vigneshr@ti.com>, Mark Brown <broonie@kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>, Joel Stanley <joel@jms.id.au>
-References: <20210311191216.7363-1-p.yadav@ti.com>
- <20210311191216.7363-4-p.yadav@ti.com> <20220517160226.4107f282@xps-13>
- <20220518060640.os5fp5rez4ie7qc4@ti.com> <20220518091931.279c5398@xps-13>
- <20220518075651.mvdhfnfbgutecgyq@ti.com>
-From: =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-In-Reply-To: <20220518075651.mvdhfnfbgutecgyq@ti.com>
-X-Originating-IP: [37.59.142.107]
-X-ClientProxiedBy: DAG1EX2.mxp5.local (172.16.2.2) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 37372b08-b3f9-44cc-83f6-bcc565d4553b
-X-Ovh-Tracer-Id: 12947848930754923396
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvfedrheelgddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfhisehtjeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepleelieeigfekfeeitddvieegteeuteekffekleehuefgteetgedvkefghefggfeknecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhnsggprhgtphhtthhopedupdhrtghpthhtohepjhhovghlsehjmhhsrdhiugdrrghu
+To: Michael Walle <michael@walle.cc>
+Cc: tudor.ambarus@microchip.com, p.yadav@ti.com,
+ linux-mtd@lists.infradead.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, Bacem.Daassi@infineon.com,
+ Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+References: <cover.1652063152.git.Takahiro.Kuwano@infineon.com>
+ <dac51af409be97ab316a9de5c0297359df7d2e2d.1652063152.git.Takahiro.Kuwano@infineon.com>
+ <99cf396f9210279e28dc1656a652efb4@walle.cc>
+ <93de6975-c734-06d4-7865-bbe7f90cba4a@gmail.com>
+ <0eea594f72858ec0ee099d45da71bc96@walle.cc>
+ <57fd05cd-e0a7-b41a-53f0-c419ddc53a1a@gmail.com>
+ <03b554e5-2182-f1e6-3954-e0128d21b840@gmail.com>
+ <e5a57f5e138366da9c97803656fc492a@walle.cc>
+From: Takahiro Kuwano <tkuw584924@gmail.com>
+In-Reply-To: <e5a57f5e138366da9c97803656fc492a@walle.cc>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220518_015209_040023_9F3D1D0D 
-X-CRM114-Status: GOOD (  32.12  )
+X-CRM114-CacheID: sfid-20220518_021242_633793_7E5E8AA2 
+X-CRM114-Status: UNSURE (   7.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,129 +99,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello,
-
-On 5/18/22 09:56, Pratyush Yadav wrote:
-> On 18/05/22 09:19AM, Miquel Raynal wrote:
->> Hi Pratyush,
->>
->> p.yadav@ti.com wrote on Wed, 18 May 2022 11:37:05 +0530:
->>
->>> +Cedric
->>>
->>> On 17/05/22 04:02PM, Miquel Raynal wrote:
->>>> Hi Pratyush,
->>>>
->>>> p.yadav@ti.com wrote on Fri, 12 Mar 2021 00:42:13 +0530:
->>>>    
->>>>> Once the flash is initialized tell the controller it can run
->>>>> calibration procedures if needed. This can be useful when calibration is
->>>>> needed to run at higher clock speeds.
->>>>>
->>>>> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
->>>>> ---
->>>>>   drivers/mtd/spi-nor/core.c | 12 ++++++++++--
->>>>>   1 file changed, 10 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->>>>> index 88888df009f0..e0cbcaf1be89 100644
->>>>> --- a/drivers/mtd/spi-nor/core.c
->>>>> +++ b/drivers/mtd/spi-nor/core.c
->>>>> @@ -3650,6 +3650,7 @@ static int spi_nor_probe(struct spi_mem *spimem)
->>>>>   	 * checking what's really supported using spi_mem_supports_op().
->>>>>   	 */
->>>>>   	const struct spi_nor_hwcaps hwcaps = { .mask = SNOR_HWCAPS_ALL };
->>>>> +	struct spi_mem_op op;
->>>>>   	char *flash_name;
->>>>>   	int ret;
->>>>>   
->>>>> @@ -3709,8 +3710,15 @@ static int spi_nor_probe(struct spi_mem *spimem)
->>>>>   	if (ret)
->>>>>   		return ret;
->>>>>   
->>>>> -	return mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->>>>> -				   data ? data->nr_parts : 0);
->>>>> +	ret = mtd_device_register(&nor->mtd, data ? data->parts : NULL,
->>>>> +				  data ? data->nr_parts : 0);
->>>>> +	if (ret)
->>>>> +		return ret;
->>>>> +
->>>>> +	op = spi_nor_spimem_get_read_op(nor);
->>>>
->>>> Isn't this too specific? I really don't know much about spi-nors, but I
->>>> find odd to have this op being created here, why not moving this into
->>>> the _do_calibration() helper?
->>>
->>> Maybe the naming confused you but this is a function in the SPI NOR
->>> core, not in SPI MEM. SPI NOR supports both SPI MEM based controllers
->>> and "legacy" controllers, so the convention is to add the "spimem"
->>> prefix before SPI MEM specific functions. So I don't get the comment
->>> about it being too specific. It is too specific to what?
->>
->> Mmh right, it's fine then.
->>
->>>
->>> And how can spi_mem_do_calibration() know what op the flash uses to read
->>> data? SPI NOR or SPI NAND would know it, but not SPI MEM. That is why we
->>> pass in that information to spi_mem_do_calibration().
->>
->> But here the op is "spi-nor wide", I would have expected a
->> per-device op. But that is not a big deal, that is something that can
->> also be updated later if needed I guess.
+On 5/18/2022 5:35 PM, Michael Walle wrote:
+> Hi,
 > 
-> It is per-device. The op is generated using nor->read_opcode,
-> nor->addr_width, nor->read_dummy, etc. So if you have 2 NOR flashes on
-> your system with different opcodes, it would work for both.
+> Am 2022-05-18 08:04, schrieb Takahiro Kuwano:
+>> Any comments on how to handle this?
 > 
->>
->> One last question, is there something that mtd_device_register() does
->> that is really needed for the calibration to work? Otherwise I would
->> rather prefer to have that calibration happening before the user gets
->> access to the device.
-
-Which would mean calling it right after :
-
-	ret = spi_nor_create_read_dirmap(nor);
-	if (ret)
-		return ret;
-
-	ret = spi_nor_create_write_dirmap(nor);
-	if (ret)
-		return ret;
-
-> The calibration works by reading a known pattern that is already written
-> to the flash again and again and seeing what delays work and what don't.
-> For that to happen, the controller driver needs to know where the
-> pattern is stored. 
-
-Why don't you simply choose some random place, first 16KB for instance,
-and check that the data is random enough ? If not, declare calibration
-not possible and choose a default safe setting which is anyhow a
-requirement for calibration. Retry at reboot as data might have changed.
-
-> This series does that by looking at the MTD
-> partitions. For that to happen, we need to create those partitions
-> first, which happens after mtd_device_register().
-
-hmm, that might work for some boards. This is not at all the case for
-the BMC boards. Vendors can put any kind of flash model and/or layout
-and the driver needs to be more generic.
-
-> But I am planning to use device tree to get that information now so this
-> should no longer be needed and we can do calibration before registering
-> the device with MTD.
-
-Perfect, we can move the calibration hook in spi_nor_create_read_dirmap()
-then, or in devm_spi_mem_dirmap_create(), which would make more sense IMHO.
+> It's not even been a week since the former mail. Please give us some
+> time :)
+> 
+Sorry, I need to be more patient.
 
 Thanks,
-
-C.
+Takahiro
 
 ______________________________________________________
 Linux MTD discussion mailing list
