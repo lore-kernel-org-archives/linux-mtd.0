@@ -4,84 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C5FDC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 19:02:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E174C433FE
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 23:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:To:From:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gs+y6hM2EEa9SaR4yYpReR1Q9+M1zw1tPlfJBzoGi5k=; b=MbxnZBw7pBh38G
-	0h9izpyNKuwXkGX0cnh9QJPvRRzKMgO7Xw1f9K7r+r6m854k4p0SJzRWy/6SGAWLPpC/Jk/Z4YAxM
-	8O93TmhnC+z/auQocuCmNgv5HcpDHSlB/tqlYnyk+aZHmvJ7dShCmsFVkLVrzaMaAlA0AErOBCiYy
-	3+dtUJF/q3/W6OAmBcFaE2/8hPPXxdX9EdKegtEZfRkLqFJgFbjJOaifLQ1L+81b1P2mhNCCAVtOw
-	TeX6oDUx4SnwfxMMtYJ8/C3XKGSYcNUiG48ahbfT/UV5xSEWZ2WlEwl3wI45IR7twzZroKjH9lYpL
-	FMDNWu01DiVMrbEXluWw==;
+	List-Owner; bh=S6b65WRzLAX3Nj66B9NJR8WONN6j0Bybd/BxLfSCZP4=; b=3z8s5j8ki50SMY
+	gPPYzOsPEEF43OZGXggx9zjmRLi48OSLEp6lMd9x+z3qUJs8fZJZCXu8gBpPqrmnQ4oz8QbIlom8e
+	CdKpL2oKfPJYMxuWGIVZGHkNu007dCoAqSYhcPX3QQIBD/rkuWZg3IAtcuNlNcaAHx57z0eMklYUp
+	W1SA3lCCmHzZvZSlNPZXiZyXhzz+wKUV3iF9gaw8cXDP7nRAbT15kTdi5K/lw9xoviRE/hyiRSQv0
+	dig6V9g/3rZ8Pl6CM5QMMlGKueuBtko43I+uWT8xqplKXOl0J7YxQMiZkDIBKhRiulbmUrUM0Go05
+	tOZQ0UOK9nANENaBOedA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nrOvn-003WqG-NH; Wed, 18 May 2022 19:01:59 +0000
-Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
+	id 1nrTAP-004I1I-EF; Wed, 18 May 2022 23:33:21 +0000
+Received: from mail-wr1-x430.google.com ([2a00:1450:4864:20::430])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrOvk-003WoN-ED
- for linux-mtd@lists.infradead.org; Wed, 18 May 2022 19:01:57 +0000
-Received: by mail-wm1-x330.google.com with SMTP id
- k126-20020a1ca184000000b003943fd07180so1522276wme.3
- for <linux-mtd@lists.infradead.org>; Wed, 18 May 2022 12:01:53 -0700 (PDT)
+ id 1nrTAJ-004Hye-QD
+ for linux-mtd@lists.infradead.org; Wed, 18 May 2022 23:33:17 +0000
+Received: by mail-wr1-x430.google.com with SMTP id j24so4809950wrb.1
+ for <linux-mtd@lists.infradead.org>; Wed, 18 May 2022 16:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:from:to:subject:references:mime-version
- :content-disposition:in-reply-to;
- bh=rBZnRO68NWo3V5gqiqABKmLdz8NjuPd3CbKCN2Cz/cM=;
- b=gKUIj8Ge35wSfOVwEdHduPahXbAzwGd8SskUVAoHshrofyjcZoeby0X7wFdYx7u1q8
- MnbWe7PLjcF5/CnGMS41f9DC53DH+5qoAeYYlIkqoytoWRxweNxNTiGES5owVyfgnGie
- YGyCANJ7NxqfnedK2/FbZJJA8f7z83WKsux1pm01qs71XM2H3r4LnuBhTmcDUYP574qX
- DRuaxngNaxTLeBEnEQfIf6fnYRfNWn0LzBXBugzHN6JXFO578ctmVEH1QFd4iL3GVvp1
- 8Ocn4Ab8dpl4tfiIKOf+dt9ZFVFi87cX/21EU4X2wVXZ2eZhJoCLJ9emamYoWlfOHgr/
- 7YtQ==
+ h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+ :content-transfer-encoding;
+ bh=o3G9z8T78DTVnGIhhir4CiLyiUwFhPexNUSMPntUVWo=;
+ b=cPyTooRLhSLuj4xtKEF+jqq05kUgSoP1/SoepWsIb42B23Nn+toWC9ie4Bhw5xdETM
+ TGW6MNWUcosF15M5vEf9kh41fmBFqQC26h8O9sx18ZJ1tLbfLkVC1YKx4tDVRSNz0xD4
+ ilIAwbgGThFwD2TGTVm6vA4nEJaXmteCdLoIj4Bpe52m6Y6YnJEKfhBZukrfrE6NJugE
+ cfFLSwRHXDanuANwkl8jx+179uR0WEe7v+0LjYnFBl4uzDiNrS7kPQwk7JxDFSRPYVyS
+ PeF2FPmB0VKNmau4XdHADfVmi7zY1ksyD53iYl4lETvmtpvOiMIC7Zqgi/gyGlDU4fnR
+ TvNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:from:to:subject:references
- :mime-version:content-disposition:in-reply-to;
- bh=rBZnRO68NWo3V5gqiqABKmLdz8NjuPd3CbKCN2Cz/cM=;
- b=71/eRRJmpyMqlkI1T2dT4Bg222ERn1pBKpDmKFzw2XlqkMoOlR9Lx3AHcOVo3WgjBz
- XqJ73Sp1aDQehEJkkwQqfNv5t3KyPlgvBsl/j9CKP6Ok33LyvOl712apLXnkbtjHcsad
- ROW48PhiKek5sCh2ccAZ/mghmyBvA0NeZsPoscteDLJwNkKTd0I5j6Kc+g1Hik9BQt8N
- 70E4CUtMD523SyJoCwdlSrC0HD+kZiFx2oxsJha4+tv1+RQ3qUcaeBYHZFBpnZpGfD+K
- AtNY7GYaw8n5HBxnXviM3Pl7DS2I9lweSlXrgkbxg8o8egJvYVlTOuJh2Py/XXQzgxev
- dx7w==
-X-Gm-Message-State: AOAM530QYGe27O8lQ4kihufcBMTavqnlAgzKWMaD0Oa3ReffXiNHmw5E
- aYL5/F1BsGq8K7wMT5EU2/8=
-X-Google-Smtp-Source: ABdhPJwFABL9st5eY1kCZPAqEZTG5BH2l111z7uQRFbd2WAbEua6u8ho/o92KmJ7E6hl6JcXlsiVqg==
-X-Received: by 2002:a05:600c:354a:b0:394:8fa4:73bc with SMTP id
- i10-20020a05600c354a00b003948fa473bcmr1186452wmq.37.1652900512510; 
- Wed, 18 May 2022 12:01:52 -0700 (PDT)
-Received: from Ansuel-xps. (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
- by smtp.gmail.com with ESMTPSA id
- c14-20020a05600c0a4e00b003942a244ec4sm2527846wmq.9.2022.05.18.12.01.51
+ h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=o3G9z8T78DTVnGIhhir4CiLyiUwFhPexNUSMPntUVWo=;
+ b=wbyGNiT9e55W90NZwHVd9ezSKmnWOKT0lZbs9S7efVOeOhm8KuhCFvvwYzk0+8VjLO
+ dWzBpkDB+iVb1cnTJk03MUOppP08eaDWxH7FZ/wBSDV2BNoEu2qmn3tHDHcgNNeSKjAi
+ Wc3fH/BPXRYO4eSvt12SD8OpgboYVdw3fAGNLZ2SuGdN+HXn1GKU9q1/NJLfrneqpeqt
+ ikpPSiVT+1d7azqozbuUi4hehXGy4lzEr8yu7XyKKKBmiAWEBOOspYtB8vDSvt413Cj+
+ wFAFbyzW/1jdDTDWutVFUIL+JcexnCLeTTOr+eDYxWhSUwmrfjlOydGm8MhpvDwT4oqf
+ xhrg==
+X-Gm-Message-State: AOAM5307P6ILdOGSayePMEmBYYve3LXeDAKram9x8cxfPqo5B/NYn/2x
+ Shc7wn+o4l9bl0DYnyWsWI8=
+X-Google-Smtp-Source: ABdhPJwyBZdPuWSVpQ3TXkUHx8UnAbrjTQmm5q5gHUpjnyDq+SevbOrKWD4RXJBrhJ0oQRGAhJVxnw==
+X-Received: by 2002:a5d:6dab:0:b0:20c:84b1:5d4e with SMTP id
+ u11-20020a5d6dab000000b0020c84b15d4emr1597515wrs.470.1652916793270; 
+ Wed, 18 May 2022 16:33:13 -0700 (PDT)
+Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it.
+ [93.42.70.190]) by smtp.googlemail.com with ESMTPSA id
+ j25-20020adfa799000000b0020d042efd11sm3217476wrc.61.2022.05.18.16.33.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 May 2022 12:01:52 -0700 (PDT)
-Message-ID: <628542a0.1c69fb81.8800.d06a@mx.google.com>
-X-Google-Original-Message-ID: <YoVCnbKs3xgDNnzT@Ansuel-xps.>
-Date: Wed, 18 May 2022 21:01:49 +0200
+ Wed, 18 May 2022 16:33:12 -0700 (PDT)
 From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Manivannan Sadhasivam <mani@kernel.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ Ansuel Smith <ansuelsmth@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: mtd: qcom_nandc: document
- qcom,boot-pages binding
-References: <20220518184256.21238-1-ansuelsmth@gmail.com>
- <20220518184256.21238-3-ansuelsmth@gmail.com>
+Subject: [PATCH v4 2/2] mtd: core: introduce of support for dynamic partitions
+Date: Thu, 19 May 2022 01:32:58 +0200
+Message-Id: <20220518233258.5483-3-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220518233258.5483-1-ansuelsmth@gmail.com>
+References: <20220518233258.5483-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220518184256.21238-3-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220518_120156_514474_75731156 
-X-CRM114-Status: GOOD (  20.47  )
+X-CRM114-CacheID: sfid-20220518_163315_884956_55EAB184 
+X-CRM114-Status: GOOD (  19.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,73 +94,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 18, 2022 at 08:42:56PM +0200, Ansuel Smith wrote:
-> Document new qcom,boot-pages binding used to apply special
-> read/write configuration to boot pages.
-> 
-> QCOM apply a special configuration where spare data is not protected
-> by ECC for some special pages (used for boot partition). Add
-> Documentation on how to declare these special pages.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 26 +++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> index 84ad7ff30121..3b8244db2ae8 100644
-> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-> @@ -102,6 +102,30 @@ allOf:
->              - const: rx
->              - const: cmd
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,ipq8074-nand
+We have many parser that register mtd partitions at runtime. One example
+is the cmdlinepart or the smem-part parser where the compatible is defined
+in the dts and the partitions gets detected and registered by the
+parser. This is problematic for the NVMEM subsystem that requires an OF node
+to detect NVMEM cells.
 
-Ignore this revision, this is wrong since this should be ipq8064...
-Will resend tomorrow v4 with this fixed. 
+To fix this problem, introduce an additional logic that will try to
+assign an OF node to the MTD if declared.
 
-> +
-> +    then:
-> +      properties:
-> +        qcom,boot-pages:
-> +          $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +          items:
-> +            items:
-> +              - description: offset
-> +              - description: size
-> +          description:
-> +            Some special page used by boot partition have spare data
-> +            not protected by ECC. Use this to declare these special page
-> +            by defining first the offset and then the size.
-> +
-> +            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-> +
-> +            Refer to the ipq8064 example on how to use this special binding.
-> +
->  required:
->    - compatible
->    - reg
-> @@ -135,6 +159,8 @@ examples:
->          nand-ecc-strength = <4>;
->          nand-bus-width = <8>;
->  
-> +        qcom,boot-pages = <0x0 0x58a0000>;
-> +
->          partitions {
->            compatible = "fixed-partitions";
->            #address-cells = <1>;
-> -- 
-> 2.34.1
-> 
+On MTD addition, it will be checked if the MTD has an OF node and if
+not declared will check if a partition with the same label is
+declared in DTS. If an exact match is found, the partition dynamically
+allocated by the parser will have a connected OF node.
 
+The NVMEM subsystem will detect the OF node and register any NVMEM cells
+declared statically in the DTS.
+
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/mtd/mtdcore.c | 49 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 7731796024e0..807194efb580 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -546,6 +546,54 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
+ 	return 0;
+ }
+ 
++static void mtd_check_of_node(struct mtd_info *mtd)
++{
++	struct device_node *partitions, *parent_dn, *mtd_dn = NULL;
++	struct mtd_info *parent;
++	const char *mtd_name;
++	bool found = false;
++	int plen;
++
++	/* Check if MTD already has a device node */
++	if (dev_of_node(&mtd->dev))
++		return;
++
++	/* Check if a partitions node exist */
++	parent = mtd->parent;
++	parent_dn = dev_of_node(&parent->dev);
++	if (!parent_dn)
++		return;
++
++	partitions = of_get_child_by_name(parent_dn, "partitions");
++	if (!partitions)
++		goto exit_parent;
++
++	/* Search if a partition is defined with the same name */
++	for_each_child_of_node(partitions, mtd_dn) {
++		/* Skip partition with no label */
++		mtd_name = of_get_property(mtd_dn, "label", &plen);
++		if (!mtd_name)
++			continue;
++
++		if (!strncmp(mtd->name, mtd_name, plen)) {
++			found = true;
++			break;
++		}
++	}
++
++	if (!found)
++		goto exit_partitions;
++
++	/* Set of_node only for nvmem */
++	if (of_device_is_compatible(mtd_dn, "nvmem-cells"))
++		mtd_set_of_node(mtd, mtd_dn);
++
++exit_partitions:
++	of_node_put(partitions);
++exit_parent:
++	of_node_put(parent_dn);
++}
++
+ /**
+  *	add_mtd_device - register an MTD device
+  *	@mtd: pointer to new MTD device info structure
+@@ -651,6 +699,7 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	mtd->dev.devt = MTD_DEVT(i);
+ 	dev_set_name(&mtd->dev, "mtd%d", i);
+ 	dev_set_drvdata(&mtd->dev, mtd);
++	mtd_check_of_node(mtd);
+ 	of_node_get(mtd_get_of_node(mtd));
+ 	error = device_register(&mtd->dev);
+ 	if (error)
 -- 
-	Ansuel
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
