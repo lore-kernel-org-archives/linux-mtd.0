@@ -4,62 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D477CC433FE
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 18:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C5FDC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 19:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=w6bIyhUtNZviR0uZU5rg86Tk6vkizXsUHLu5KiBwHoM=; b=GmdPVDInGCygiH
-	XkyK2XFn3C/tOrm0Idf1liOc7/dnAOb9jhJUpgZ9na9vtbOgk5vNnZbtb83z5KsDxFuz0ud/XPOkH
-	GnhaCRkfj7YhXwuoSmnyEihzdH/dIjid3bv2gNXg5ym+5nJRgOQL7uJvr8meCTfluIG1g+2B0UIf1
-	8GXFABpLMde2igM3j+taZKEO3YTp3h/wjY2uX/3+gIHyShmwlbs3FGirgKKT1yBQUWPbFJGd52nax
-	6I0w3JRrx0ecjYkBcb4Xs8jvGlsetsv7dUBoEnXr23n3d5aYOLXeLzdN409dxhtaiNVmuk/FtHvU+
-	uEwDR39NgBnrCCUqa4SQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Subject:To:From:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gs+y6hM2EEa9SaR4yYpReR1Q9+M1zw1tPlfJBzoGi5k=; b=MbxnZBw7pBh38G
+	0h9izpyNKuwXkGX0cnh9QJPvRRzKMgO7Xw1f9K7r+r6m854k4p0SJzRWy/6SGAWLPpC/Jk/Z4YAxM
+	8O93TmhnC+z/auQocuCmNgv5HcpDHSlB/tqlYnyk+aZHmvJ7dShCmsFVkLVrzaMaAlA0AErOBCiYy
+	3+dtUJF/q3/W6OAmBcFaE2/8hPPXxdX9EdKegtEZfRkLqFJgFbjJOaifLQ1L+81b1P2mhNCCAVtOw
+	TeX6oDUx4SnwfxMMtYJ8/C3XKGSYcNUiG48ahbfT/UV5xSEWZ2WlEwl3wI45IR7twzZroKjH9lYpL
+	FMDNWu01DiVMrbEXluWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nrOde-003TRS-Oh; Wed, 18 May 2022 18:43:14 +0000
-Received: from mail-wm1-x333.google.com ([2a00:1450:4864:20::333])
+	id 1nrOvn-003WqG-NH; Wed, 18 May 2022 19:01:59 +0000
+Received: from mail-wm1-x330.google.com ([2a00:1450:4864:20::330])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrOdb-003TPy-51
- for linux-mtd@lists.infradead.org; Wed, 18 May 2022 18:43:13 +0000
-Received: by mail-wm1-x333.google.com with SMTP id
- m2-20020a1ca302000000b003943bc63f98so1501554wme.4
- for <linux-mtd@lists.infradead.org>; Wed, 18 May 2022 11:43:07 -0700 (PDT)
+ id 1nrOvk-003WoN-ED
+ for linux-mtd@lists.infradead.org; Wed, 18 May 2022 19:01:57 +0000
+Received: by mail-wm1-x330.google.com with SMTP id
+ k126-20020a1ca184000000b003943fd07180so1522276wme.3
+ for <linux-mtd@lists.infradead.org>; Wed, 18 May 2022 12:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=629EuCNPVzAl5BBiBBvqoC7bqwWqe2HUHf+13KFi4EU=;
- b=N7x9i4oKZ4spJf0nC2xpourbHxhcMVu1vA8uxqp5db6agGtadWpvfKgcSZy22+razd
- khZ0cUQWoy5hjWYylmTD1NFHpSGizMg6fRaNDnQm2QlQ+aEarO4QJ32JZyYRTsyngtjX
- 6dPEhuvVZUaye94Mqb90L+BRJwrvfHuiMaoC17GrGBnJ8e3R8mVi8MjvFDOMlUePZCD9
- 0VfRzgsQox21clqN0799qYokGk+yT8mwnpyR3Uc1sSL1Bz8Dp3HffTJ+w0+tkV0l2T78
- rPoQT5NzN3z6Mn088Dl9UpHyCbOjYnttWzROnXrzuHSba7O4XP3RKFmu83NAVelwIKkC
- xTyA==
+ h=message-id:date:from:to:subject:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=rBZnRO68NWo3V5gqiqABKmLdz8NjuPd3CbKCN2Cz/cM=;
+ b=gKUIj8Ge35wSfOVwEdHduPahXbAzwGd8SskUVAoHshrofyjcZoeby0X7wFdYx7u1q8
+ MnbWe7PLjcF5/CnGMS41f9DC53DH+5qoAeYYlIkqoytoWRxweNxNTiGES5owVyfgnGie
+ YGyCANJ7NxqfnedK2/FbZJJA8f7z83WKsux1pm01qs71XM2H3r4LnuBhTmcDUYP574qX
+ DRuaxngNaxTLeBEnEQfIf6fnYRfNWn0LzBXBugzHN6JXFO578ctmVEH1QFd4iL3GVvp1
+ 8Ocn4Ab8dpl4tfiIKOf+dt9ZFVFi87cX/21EU4X2wVXZ2eZhJoCLJ9emamYoWlfOHgr/
+ 7YtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=629EuCNPVzAl5BBiBBvqoC7bqwWqe2HUHf+13KFi4EU=;
- b=RaGPt3qqTFsBEWry1R91YYupcjjLJkQD93EIP+6s+fMUmMr4jXTU2BOAzGMfjFIJ5S
- UUb2ntjEtYGettS4z/5XmvjKfgWbRD86Hmf6AIUwJT0O7+LL86b1b7JkH3uEk6dcJPrd
- XH/+aRv2lFzJn+zjb37hW3J7k2I8+mXhaWbLDPqudtB2gHlsLSbddfPvKSrlzbcZLWMz
- kBiNVeYnzBcO5kmtfl5aMP+iilRF4MODxuLSRYH/+6mMt2sbxQfwJA43aZpUxcbFppqg
- q8oUl3F+yqOfxos9w5HYdllSRPcp6ku3ChdcAdM93UeK2HBYkr3jS2Z+WQycDzJYdMd5
- d/DA==
-X-Gm-Message-State: AOAM532HLxXOVpvtOxTzyag3w9FzFqLHUlb6QF8//kiKqU3rfidirT4j
- ULDYCza5ocpiq8KfzKqdIF0=
-X-Google-Smtp-Source: ABdhPJwv3JxgSmNPpRs7CVBBT2W/2LDoLrHtng0kDykKkolE2BmoGPlfR5Iwtvh5hNhPGcBkeIxznw==
-X-Received: by 2002:a7b:cb84:0:b0:382:a9b9:2339 with SMTP id
- m4-20020a7bcb84000000b00382a9b92339mr1137496wmi.91.1652899386459; 
- Wed, 18 May 2022 11:43:06 -0700 (PDT)
-Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it.
- [93.42.70.190]) by smtp.googlemail.com with ESMTPSA id
- q9-20020adf9dc9000000b0020d02ddf4d5sm2768546wre.5.2022.05.18.11.43.05
+ h=x-gm-message-state:message-id:date:from:to:subject:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=rBZnRO68NWo3V5gqiqABKmLdz8NjuPd3CbKCN2Cz/cM=;
+ b=71/eRRJmpyMqlkI1T2dT4Bg222ERn1pBKpDmKFzw2XlqkMoOlR9Lx3AHcOVo3WgjBz
+ XqJ73Sp1aDQehEJkkwQqfNv5t3KyPlgvBsl/j9CKP6Ok33LyvOl712apLXnkbtjHcsad
+ ROW48PhiKek5sCh2ccAZ/mghmyBvA0NeZsPoscteDLJwNkKTd0I5j6Kc+g1Hik9BQt8N
+ 70E4CUtMD523SyJoCwdlSrC0HD+kZiFx2oxsJha4+tv1+RQ3qUcaeBYHZFBpnZpGfD+K
+ AtNY7GYaw8n5HBxnXviM3Pl7DS2I9lweSlXrgkbxg8o8egJvYVlTOuJh2Py/XXQzgxev
+ dx7w==
+X-Gm-Message-State: AOAM530QYGe27O8lQ4kihufcBMTavqnlAgzKWMaD0Oa3ReffXiNHmw5E
+ aYL5/F1BsGq8K7wMT5EU2/8=
+X-Google-Smtp-Source: ABdhPJwFABL9st5eY1kCZPAqEZTG5BH2l111z7uQRFbd2WAbEua6u8ho/o92KmJ7E6hl6JcXlsiVqg==
+X-Received: by 2002:a05:600c:354a:b0:394:8fa4:73bc with SMTP id
+ i10-20020a05600c354a00b003948fa473bcmr1186452wmq.37.1652900512510; 
+ Wed, 18 May 2022 12:01:52 -0700 (PDT)
+Received: from Ansuel-xps. (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
+ by smtp.gmail.com with ESMTPSA id
+ c14-20020a05600c0a4e00b003942a244ec4sm2527846wmq.9.2022.05.18.12.01.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 May 2022 11:43:05 -0700 (PDT)
+ Wed, 18 May 2022 12:01:52 -0700 (PDT)
+Message-ID: <628542a0.1c69fb81.8800.d06a@mx.google.com>
+X-Google-Original-Message-ID: <YoVCnbKs3xgDNnzT@Ansuel-xps.>
+Date: Wed, 18 May 2022 21:01:49 +0200
 From: Ansuel Smith <ansuelsmth@gmail.com>
 To: Manivannan Sadhasivam <mani@kernel.org>, Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -69,15 +72,16 @@ To: Manivannan Sadhasivam <mani@kernel.org>, Andy Gross <agross@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v3 0/2] Add support for unprotected spare data page
-Date: Wed, 18 May 2022 20:42:54 +0200
-Message-Id: <20220518184256.21238-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH v3 2/2] dt-bindings: mtd: qcom_nandc: document
+ qcom,boot-pages binding
+References: <20220518184256.21238-1-ansuelsmth@gmail.com>
+ <20220518184256.21238-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220518184256.21238-3-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220518_114311_249577_3AA55BD8 
-X-CRM114-Status: GOOD (  20.23  )
+X-CRM114-CacheID: sfid-20220518_120156_514474_75731156 
+X-CRM114-Status: GOOD (  20.47  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,68 +98,73 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some background about this.
-On original qsdk ipq8064 based firmware there was a big separation from
-boot partition and user partition. With boot partition we refer to
-partition used to init the router (bootloader, spm firmware and other
-internal stuff) With user partition we refer to linux partition and data
-partition not used to init the router.
-When someone had to write to these boot partition a special mode was
-needed, to switch the nand driver to this special configuration.
+On Wed, May 18, 2022 at 08:42:56PM +0200, Ansuel Smith wrote:
+> Document new qcom,boot-pages binding used to apply special
+> read/write configuration to boot pages.
+> 
+> QCOM apply a special configuration where spare data is not protected
+> by ECC for some special pages (used for boot partition). Add
+> Documentation on how to declare these special pages.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 26 +++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> index 84ad7ff30121..3b8244db2ae8 100644
+> --- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+> @@ -102,6 +102,30 @@ allOf:
+>              - const: rx
+>              - const: cmd
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq8074-nand
 
-Upstream version of the nandc driver totally dropped this and the result
-is that if someone try to read data from these partition a CRC warning
-is printed and if someone try to write that (if for example someone
-wants to replace the bootloader) result is a broken system as the data
-is badly written.
+Ignore this revision, this is wrong since this should be ipq8064...
+Will resend tomorrow v4 with this fixed. 
 
-This series comes to fix this.
-
-A user can declare offset and size of these special partition using the
-qcom,boot-pages binding.
-
-An initial implementation of this assumed that the boot-pages started
-from the start of the nand but we discover that some device have backup
-of these special partition and we can have situation where we have this
-partition scheme
-- APPSBL (require special mode)
-- APPSBLENV (doesn't require special mode)
-- ART
-- APPSBLBK (back of APPSBL require special mode)
-- APPSBLENVBK (back of APPSBLENV doesn't require special mode)
-With this configuration we need to declare sparse boot page and we can't
-assume boot-pages always starts from the start of the nand.
-
-A user can use this form to declare sparse boot pages
-qcom,boot-pages = <0x0 0x0c80000 0x0c80000 0x0500000>;
-
-The driver internally will parse this array, convert it to nand pages
-and check internally on every read/write if this special configuration
-should used for that page or the normal one.
-
-The reason for all of this is that qcom FOR SOME REASON, disable ECC for
-spare data only for these boot partition and we need to reflect this
-special configuration to mute these warning and to permit actually
-writing to these pages.
-
-v3:
-- Fix typo in Docmunetation commit desription
-- Add items description for uint32-matrix
-v2:
-- Add fixes from Krzysztof in Documentation
-
-Ansuel Smith (2):
-  mtd: nand: raw: qcom_nandc: add support for unprotected spare data
-    pages
-  dt-bindings: mtd: qcom_nandc: document qcom,boot-pages binding
-
- .../devicetree/bindings/mtd/qcom,nandc.yaml   |  26 +++
- drivers/mtd/nand/raw/qcom_nandc.c             | 148 +++++++++++++++++-
- 2 files changed, 169 insertions(+), 5 deletions(-)
+> +
+> +    then:
+> +      properties:
+> +        qcom,boot-pages:
+> +          $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +          items:
+> +            items:
+> +              - description: offset
+> +              - description: size
+> +          description:
+> +            Some special page used by boot partition have spare data
+> +            not protected by ECC. Use this to declare these special page
+> +            by defining first the offset and then the size.
+> +
+> +            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
+> +
+> +            Refer to the ipq8064 example on how to use this special binding.
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -135,6 +159,8 @@ examples:
+>          nand-ecc-strength = <4>;
+>          nand-bus-width = <8>;
+>  
+> +        qcom,boot-pages = <0x0 0x58a0000>;
+> +
+>          partitions {
+>            compatible = "fixed-partitions";
+>            #address-cells = <1>;
+> -- 
+> 2.34.1
+> 
 
 -- 
-2.34.1
-
+	Ansuel
 
 ______________________________________________________
 Linux MTD discussion mailing list
