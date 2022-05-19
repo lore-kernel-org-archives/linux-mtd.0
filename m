@@ -4,81 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2418C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 18 May 2022 23:33:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21468C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 19 May 2022 12:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WMgcmjBIBZ+fVHjvkgrikj4as2erGjzocLvRJWeGQwg=; b=oFqSPRwpcTzk8M
-	qayiQ00goURJFST2Zd0FJfvBg2R2ijnxSY08uvdg6TE65Eilwzi+HaB85KHioV+T2Mhj6mImCDCNy
-	405OJ/0tMrLNkO2Cy+UqAOqO0TfNEvbutCu/dE8FYy/qzy0dF+J4pxRHnmOVwJ+e7Wg87wFzTCdtR
-	bzPr+SWvWFgtmywKbqtfrN8x2WyZWgazRzlocpZ5PWHvhRgKcMCfgcggYnmE5F3VzEgV2oac7FYpX
-	9IyFzx/+GXHTF3uyQUQ/Z6ncXOz//MLw0rCjKGeMRgmbqreljXtFSnYOg0MCcDHyB6ysp0rRrwE8X
-	+I7ZP04fmL/Zd1S++t9g==;
+	List-Owner; bh=rII+dRDWvEE7lZiOT0btANztJVWCHAdtEFGEUoO4sUQ=; b=h+LnF69yUxXqUI
+	UHVdyVg036zbZMc6I7icjPqJIlEQNt7R6Lpch0pL6FLL75V3R4GhAnR2pwQI366unmo+xydKXf4yc
+	dSMy/mzk0eX9GfVjnZaYH/BwoGsQsjOQhl7695ZJHJRufyDY+Z71YADn8XCiFj3wVamnX4eJobJ34
+	QIk812Okot2puQU6MzusceInTm6wyie0eQDGxRJeDO7vOaQxnUyS9cCnXOWH3in/AnvPhIbDEevdE
+	LndOjRpo0+tTsKo1P+OLGXF+3Rc5QxN4vHC+hVckf1mCPYnZ+EdZf5ZgZwg6z6ZQ4q0Vi5qtCyL+x
+	V1vFzftAuALoK0AHozvA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nrTAN-004I0U-Jb; Wed, 18 May 2022 23:33:19 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1nrfGD-006fW4-V6; Thu, 19 May 2022 12:28:09 +0000
+Received: from jabberwock.ucw.cz ([46.255.230.98])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrTAI-004HyK-Ou
- for linux-mtd@lists.infradead.org; Wed, 18 May 2022 23:33:16 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id j24so4809921wrb.1
- for <linux-mtd@lists.infradead.org>; Wed, 18 May 2022 16:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:subject:date:message-id:in-reply-to:references:mime-version
- :content-transfer-encoding;
- bh=tPbG+1Qsh5nbAzaiZ8E/pw1mS5ghkz1deStVQwXqkP4=;
- b=VGx115cjLF+9JtQTO0M/Lx7jnhO4p03qIpnSdOE2KVl7vxxeYJVK2X5ZzA7yvUv0ur
- xqm0VeAv67/JQtCQgEDee0y7tlGRr7Ixxe5+ViQutEgQeZeNYXlrYEf5c3xZOUB3Hd/l
- QBA0aas54guBiLOl4xXwaUraYBlfmn1Pt0JF5aBxhiFgFSYlWxfvZBouDoVJ3PcQgI1Y
- Nwcc8L77SG82PVtThUiPjS1tzr/MaaUngdlSdwxyIRItD+x91p5JKRPsXdc8QYCh1Fbw
- Xq2CB6g/gHrgeXPZ56PMsTlLjE5r0l3cyqvW89gMikJ/3qG4kE3Ps2dFZe8YSq3Ys/17
- HZ0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=tPbG+1Qsh5nbAzaiZ8E/pw1mS5ghkz1deStVQwXqkP4=;
- b=E/sXk/TL+c2w+1NTFlJ00g+BuzTbgGVplA3azPEEkaTiv6ZZ4KVull/U69MNpYNDum
- /WZdLxshirKRVMLdcXWzPnzUI7civFoI/rhoL+SOw4hLAzyV6CDYweNbSAaPv2GmEAsi
- +9aoXfhikaMb3vvi4EItkMCgLX70sd5fNm0keHQ+JgcCSSXNfcRfQ68Cy53TJT0SHtts
- /fEwespOpGJBdZIVG5PlZZhyw8KBxOo0t1fyQSu8saEJzPENrCiXabcxyI6PFbzUjhF6
- 1BrtD7t+lFlGqQhkxkhZiy4UK/6TR9SGm3KymQ/Gr4Nmfq9d8rUWS07Ye/F3hwK/SJT2
- p2Dw==
-X-Gm-Message-State: AOAM53081JFtXeDucUpL+fB4/uqLJnU+piopSOZiv1bCcTgi0fBTrcOx
- 0q1rwWhS9dDRq2CQyUmHdjc=
-X-Google-Smtp-Source: ABdhPJzqihmw4n6FOdPzo7A6p0tJo0zukMbN/45Svsp6+TcDeaV6CrpCCK1wVn2iJ59bOG1ZpBaV1g==
-X-Received: by 2002:adf:f001:0:b0:20d:22b:183c with SMTP id
- j1-20020adff001000000b0020d022b183cmr1538233wro.313.1652916792084; 
- Wed, 18 May 2022 16:33:12 -0700 (PDT)
-Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it.
- [93.42.70.190]) by smtp.googlemail.com with ESMTPSA id
- j25-20020adfa799000000b0020d042efd11sm3217476wrc.61.2022.05.18.16.33.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 May 2022 16:33:11 -0700 (PDT)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Ansuel Smith <ansuelsmth@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/2] dt-bindings: mtd: partitions: Document new
- dynamic-partition nodes
-Date: Thu, 19 May 2022 01:32:57 +0200
-Message-Id: <20220518233258.5483-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220518233258.5483-1-ansuelsmth@gmail.com>
-References: <20220518233258.5483-1-ansuelsmth@gmail.com>
+ id 1nrfG9-006fTd-L5
+ for linux-mtd@lists.infradead.org; Thu, 19 May 2022 12:28:07 +0000
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+ id 20D5C1C0B92; Thu, 19 May 2022 14:27:58 +0200 (CEST)
+Date: Thu, 19 May 2022 14:27:46 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Arseny Maslennikov <ar@cs.msu.ru>
+Cc: Walt Drummond <walt@drummond.us>, Theodore Ts'o <tytso@mit.edu>,
+ "Eric W. Biederman" <ebiederm@xmission.com>, aacraid@microsemi.com,
+ viro@zeniv.linux.org.uk, anna.schumaker@netapp.com, arnd@arndb.de,
+ bsegall@google.com, bp@alien8.de, chuck.lever@oracle.com,
+ bristot@redhat.com, dave.hansen@linux.intel.com,
+ dwmw2@infradead.org, dietmar.eggemann@arm.com, dinguyen@kernel.org,
+ geert@linux-m68k.org, gregkh@linuxfoundation.org, hpa@zytor.com,
+ idryomov@gmail.com, mingo@redhat.com, yzaikin@google.com,
+ ink@jurassic.park.msu.ru, jejb@linux.ibm.com, jmorris@namei.org,
+ bfields@fieldses.org, jlayton@kernel.org, jirislaby@kernel.org,
+ john.johansen@canonical.com, juri.lelli@redhat.com,
+ keescook@chromium.org, mcgrof@kernel.org,
+ martin.petersen@oracle.com, mattst88@gmail.com, mgorman@suse.de,
+ oleg@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
+ rth@twiddle.net, richard@nod.at, serge@hallyn.com,
+ rostedt@goodmis.org, tglx@linutronix.de,
+ trond.myklebust@hammerspace.com, vincent.guittot@linaro.org,
+ x86@kernel.org, linux-kernel@vger.kernel.org,
+ ceph-devel@vger.kernel.org, kvm@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-m68k@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] signals: Support more than 64 signals
+Message-ID: <20220519122746.GA3904@localhost>
+References: <20220103181956.983342-1-walt@drummond.us>
+ <87iluzidod.fsf@email.froward.int.ebiederm.org>
+ <YdSzjPbVDVGKT4km@mit.edu>
+ <87pmp79mxl.fsf@email.froward.int.ebiederm.org>
+ <YdTI16ZxFFNco7rH@mit.edu>
+ <CADCN6nzT-Dw-AabtwWrfVRDd5HzMS3EOy8WkeomicJF07nQyoA@mail.gmail.com>
+ <YdiUiHAhLyfgpvVY@cello>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <YdiUiHAhLyfgpvVY@cello>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220518_163314_847265_045C28AD 
-X-CRM114-Status: GOOD (  19.80  )
+X-CRM114-CacheID: sfid-20220519_052805_867776_3BA27BCB 
+X-CRM114-Status: GOOD (  14.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,106 +85,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document new dynamic-partition nodes used to provide an OF node for
-partition registred at runtime by parsers. This is required for nvmem
-system to declare and detect nvmem-cells.
+Hi!
 
-With these special partitions, the reg / offset is not required.
-The label binding is used to match the partition allocated by the
-parser at runtime and the parser will provide reg and offset of the mtd.
+> > The only standard tools that support SIGINFO are sleep, dd and ping,
+> > (and kill, for obvious reasons) so it's not like there's a vast hole
+> > in the tooling or something, nor is there a large legacy software base
+> > just waiting for SIGINFO to appear.   So while I very much enjoyed
+> > figuring out how to make SIGINFO work ...
+> 
+> As far as I recall, GNU make on *BSD does support SIGINFO (Not a
+> standard tool, but obviously an established one).
+> 
+> The developers of strace have expressed interest in SIGINFO support
+> to print tracer status messages (unfortunately, not on a public list).
+> Computational software can use this instead of stderr progress spam, if
+> run in an interactive fashion on a terminal, as it frequently is. There
+> is a user base, it's just not very vocal on kernel lists. :)
 
-NVMEM will use the data from the parser and provide the NVMEM cells
-declared in the DTS, "connecting" the dynamic partition with a
-static declaration of cells in them.
+And often it would be useful if cp supported this. Yes, this
+is feature I'd like to see.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- .../mtd/partitions/dynamic-partition.yaml     | 57 +++++++++++++++++++
- .../mtd/partitions/qcom,smem-part.yaml        |  4 ++
- 2 files changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml
+BR,							Pavel
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml
-new file mode 100644
-index 000000000000..f57d7b9cae7f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/dynamic-partition.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Dynamic Partition
-+
-+description: |
-+  This binding describes a single flash partition that is dynamically allocated
-+  by a dedicated parser that is not a fixed-partition parser.
-+
-+  Each child of the parser partition node is then compared and if a match with
-+  the provided label is found then the OF node is assigned.
-+
-+  These special partition definition can be used to give a dynamic partition
-+  an OF node to declare NVMEM cells. An example is declaring the partition
-+  label and all the NVMEM cells in it. The parser will detect the correct reg
-+  and offset and the NVMEM will register the cells in it based on the data
-+  extracted by the parser.
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+properties:
-+  label:
-+    description: The label / name for the partition assigned by the parser at
-+      runtime. This is needed for sybsystem like NVMEM to define cells and
-+      register with this OF node.
-+
-+required:
-+  - label
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    flash {
-+      partitions {
-+        compatible = "qcom,smem-part";
-+
-+        partition-art {
-+          compatible = "nvmem-cells";
-+          #address-cells = <1>;
-+          #size-cells = <1>;
-+          label = "0:art";
-+
-+          macaddr_art_0: macaddr@0 {
-+            reg = <0x0 0x6>;
-+          };
-+
-+          macaddr_art_6: macaddr@6 {
-+            reg = <0x6 0x6>;
-+          };
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-index cf3f8c1e035d..b6fa25949fe2 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
-@@ -19,6 +19,10 @@ properties:
-   compatible:
-     const: qcom,smem-part
- 
-+patternProperties:
-+  "^partition-[0-9a-z]+$":
-+    $ref: dynamic-partition.yaml#
-+
- required:
-   - compatible
- 
 -- 
-2.34.1
-
 
 ______________________________________________________
 Linux MTD discussion mailing list
