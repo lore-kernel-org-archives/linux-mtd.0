@@ -4,51 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A82CAC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 May 2022 08:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 494C3C433F5
+	for <linux-mtd@archiver.kernel.org>; Fri, 20 May 2022 12:12:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OGu42tYD0xxbS74UwzggBW6vp4AK3KPHIC6D2S9Pgzg=; b=AGdTjk9RykUFef
-	bD/6KXN9TeMV1ZNMz9jj1t1htD3gbXJ0t5Un1RYw0VfwYHF3FlMZXwZgb7V5Hr3CL4oAT8+wbHyI/
-	5iRrgSYcBc33ZDulAD3RXNCDvuTPNWbcMdLrreYrC5+M99oaPMYfI+NJDNq1huvRpigOHLX2X9byJ
-	Twzqrd8OhCfhpFEm225VvJ8HeqXD7E58ICu5T3HcJbnxLubmd30Mupri1boJmeMEolC4B2bAloREg
-	yr/FDId1c5ZTAZoGw8sLbdc5SHRdacyO8q5HfWgz23p/D0+GTrRDY2TrB1EudOMM5OjjbZSDe5CcH
-	IgYgJlh5StH/QKNs//aQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cFKr/P/okUp4jTg57U1Jl/hEFJF8zRNGIquPPKjD7Eg=; b=KaQagTc0rfUzYs
+	pG/+FNL3wFHPvJbYVAeBxMAqipT6Qb1p41h6s16GU3nDmgbK7rrM+QdKs0IlhHOWz5NCdlYv4ZfYs
+	3lf8wg1fchc3m7JJsct/+34hGbS258mdMwxxsXgqSrTJgBPCx1wBsXZnbMYqY7cK1fxydPa5Ay/4C
+	cHc5l0Z79vbLatBllf1i2H5rA1tez4DbrmoStdAuVHjZK4CUy8wFYpt7bOcV5EAp95YER8K8Hdozy
+	Ng0+7DGjDCSE9Mj0NwIiuLXFjnJ5KihrKo5770Zd5W/VIbRfmQwXRUnCQk+75OyMYXdDPbphrq5Cm
+	5+k2m2aq08EaCz4+opgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nryK4-00BMnr-M4; Fri, 20 May 2022 08:49:24 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1ns1Ua-00CG4p-5V; Fri, 20 May 2022 12:12:28 +0000
+Received: from relay5-d.mail.gandi.net ([217.70.183.197])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nryJz-00BMlw-TZ
- for linux-mtd@lists.infradead.org; Fri, 20 May 2022 08:49:22 +0000
-Received: from kwepemi500023.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4L4L2w3fBTz1J9jS;
- Fri, 20 May 2022 16:47:52 +0800 (CST)
-Received: from huawei.com (10.175.112.208) by kwepemi500023.china.huawei.com
- (7.221.188.76) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 20 May
- 2022 16:49:15 +0800
-From: Peng Wu <wupeng58@huawei.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
- <christophe.jaillet@wanadoo.fr>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <stable@vger.kernel.org>, <liwei391@huawei.com>, <wupeng58@huawei.com>
-Subject: [PATCH v2] mtd: rawnand: cafe: fix drivers probe/remove methods
-Date: Fri, 20 May 2022 08:44:25 +0000
-Message-ID: <20220520084425.116686-1-wupeng58@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ id 1ns1UW-00CG3K-3M
+ for linux-mtd@lists.infradead.org; Fri, 20 May 2022 12:12:26 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id 43FA41C0006;
+ Fri, 20 May 2022 12:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1653048738;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=hgs2sF9iE7uYWTY0qOXcrdPIEeqIgpmmRoDLCr0HrII=;
+ b=fM4ubfwDLn8YakInehSTLh8SgNcCh3GTSU2VC5Z+IJmAGVxb2WxhPbzmG4p55SyFEq9mn9
+ qvvnHkq4do9NBQq6IxAIomYWAyx/44HYGwm4vowUxfyAZZmX2Wzdia1KhBytmPFxV/oHdF
+ KbH7KVppjVy+l/L1ZdV+j3SCn3ihFN98R6ZgNcUUgacXOZgiP4BHd6n1YYVIoc/fzy+Ld1
+ jhvvm78TwaGAni68eG7KwSMN6hbJnIk6dI44pKWYoh4Z2WHrGerB3KaCW48nhJsjVFalHs
+ xSyufRYQVkSkfSRgpqr2uFQX50he+d2o92fSbgy67weTi1MZP2GJHsrimBFBRw==
+Date: Fri, 20 May 2022 14:12:16 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Pratyush Yadav <p.yadav@ti.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Tudor Ambarus <tudor.ambarus@microchip.com>, Michael
+ Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>
+Subject: Re: [GIT PULL] mtd: spi-nor: changes for 5.19
+Message-ID: <20220520141216.38bcadb9@xps-13>
+In-Reply-To: <20220516071518.orf7n7k4fhtpcj3x@ti.com>
+References: <20220516071518.orf7n7k4fhtpcj3x@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [10.175.112.208]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500023.china.huawei.com (7.221.188.76)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220520_014920_154158_80CDB0A4 
-X-CRM114-Status: UNSURE (   9.85  )
+X-CRM114-CacheID: sfid-20220520_051224_666443_55375114 
+X-CRM114-Status: UNSURE (   8.43  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -61,64 +68,22 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Driver should call pci_disable_device() if it returns from
-cafe_nand_probe() with error.
-
-Meanwhile, the driver calls pci_enable_device() in
-cafe_nand_probe(), but never calls pci_disable_device()
-during removal.
-
-Signed-off-by: Peng Wu <wupeng58@huawei.com>
----
-v2:
-- fix the subject prefix with "mtd: ranwnand: cafe:"
----
- drivers/mtd/nand/raw/cafe_nand.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 9dbf031716a6..af119e376352 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -679,8 +679,10 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	pci_set_master(pdev);
- 
- 	cafe = kzalloc(sizeof(*cafe), GFP_KERNEL);
--	if (!cafe)
--		return  -ENOMEM;
-+	if (!cafe) {
-+		err = -ENOMEM;
-+		goto out_disable_device;
-+	}
- 
- 	mtd = nand_to_mtd(&cafe->nand);
- 	mtd->dev.parent = &pdev->dev;
-@@ -801,6 +803,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	pci_iounmap(pdev, cafe->mmio);
-  out_free_mtd:
- 	kfree(cafe);
-+ out_disable_device:
-+	pci_disable_device(pdev);
-  out:
- 	return err;
- }
-@@ -822,6 +826,7 @@ static void cafe_nand_remove(struct pci_dev *pdev)
- 	pci_iounmap(pdev, cafe->mmio);
- 	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
- 	kfree(cafe);
-+	pci_disable_device(pdev);
- }
- 
- static const struct pci_device_id cafe_nand_tbl[] = {
--- 
-2.17.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUHJhdHl1c2gsCgpwLnlhZGF2QHRpLmNvbSB3cm90ZSBvbiBNb24sIDE2IE1heSAyMDIyIDEy
+OjQ1OjE4ICswNTMwOgoKPiBIaSwKPiAKPiBUaGlzIGlzIHRoZSBTUEkgTk9SIFBSIGZvciA1LjE5
+Lgo+IAo+IFJlZ2FyZHMsCj4gUHJhdHl1c2ggWWFkYXYKPiBUZXhhcyBJbnN0cnVtZW50cyBJbmMu
+Cj4gCj4gVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCBiMmQyMjlkNGRkYjE3ZGI1
+NDEwOThiODM1MjRkOTAxMjU3ZTkzODQ1Ogo+IAo+ICAgTGludXggNS4xOC1yYzMgKDIwMjItMDQt
+MTcgMTM6NTc6MzEgLTA3MDApCj4gCj4gYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRv
+cnkgYXQ6Cj4gCj4gICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9n
+aXQvbXRkL2xpbnV4LmdpdCB0YWdzL3NwaS1ub3IvZm9yLTUuMTkKPiAKPiBmb3IgeW91IHRvIGZl
+dGNoIGNoYW5nZXMgdXAgdG8gYzQ3NDUyMTk0NjQxYjVkMjdjMjBlNTU3Yzg0YTQ2Yzg1ZmQ3Y2Uz
+NzoKPiAKPiAgIG10ZDogc3BpLW5vcjogZGVidWdmczogZml4IGZvcm1hdCBzcGVjaWZpZXIgKDIw
+MjItMDUtMTIgMTc6NTY6NDQgKzA1MzApCgpQdWxsZWQsIHRoYW5rcyEKCk1pcXXDqGwKCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
