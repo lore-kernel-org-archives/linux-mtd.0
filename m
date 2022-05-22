@@ -4,53 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E324C433F5
-	for <linux-mtd@archiver.kernel.org>; Fri, 20 May 2022 17:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7F70C433FE
+	for <linux-mtd@archiver.kernel.org>; Sun, 22 May 2022 05:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tsvq9TBI9ApHCvN4fng89wyid7Y60u2PyrR17Of4L58=; b=wZc8LbwOO0Vqjv
-	kLyXwQB2cFmu69xQegP3oCuFJe7NsyLfIW6o5EZK8gLfhv/DhXAXKL8DDQyBd3FG3DInjCi4nrD/I
-	sfWJfgssut7CzK9svKDKYTrurUG3nuoJ4L0NCIA47IHWmWY1r2HIjhnUOEUDtIEMVRKvAmvZmCZhU
-	bdYVPgOfwEHRu51+EtaGXyYo3mGQU4FxBmL31Q45alovJvXRfsCV1CktnITM+xQ5qu097fPikpWEj
-	hOlYWoMi8TNI9aYd/6B0xhq3BV8qSIp5o22k+YGKVVwLaNKUJ4eReAEagn4NXAcALX+/WOR232/Df
-	Jt0KCBsG5vRy1THBAliQ==;
+	List-Owner; bh=Q69qeIym7q1NEhHx2ktq2dbjy/JJM54Bu73oxJoOHes=; b=hxD7ijyIm6fjrx
+	6aLtoyekf5QartjsQMZ5hPkQec0EJ8cHCJH8UEJw1qegMUxX95FSsvkWOJERsubSsaETeFZ64LBjw
+	I6IhzEH0xDpIoT4URK7XuduiD4Y9KF/9JU1Ho+zSf3I37VI6WXU3Oj8ur3rQ2xd3x4UsOxQPZIt+8
+	eFBv+CqduBTBrI1L8wCcyanTx3GWfx3UA7Rek8hPWzIjlFu0Y2VAik3bH5C/fkSSCv2qD5JMD3e9o
+	borAujbn2DJ4ryjhms2K+ivze2GDJtJ7ZPsab/msXpJSpBWDVSagxXYiTIci195Y/syrJ7Qkkrq1o
+	7yTXoqfF00oxQrxTVkEg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ns67w-00Dqhl-TE; Fri, 20 May 2022 17:09:24 +0000
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
- helo=smtp.smtpout.orange.fr)
+	id 1nseTj-000dbs-8e; Sun, 22 May 2022 05:50:11 +0000
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ns67t-00DqdU-TL
- for linux-mtd@lists.infradead.org; Fri, 20 May 2022 17:09:23 +0000
-Received: from [192.168.1.18] ([86.243.180.246]) by smtp.orange.fr with ESMTPA
- id s67knGiLCm7vss67kn9UzI; Fri, 20 May 2022 19:09:16 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Fri, 20 May 2022 19:09:16 +0200
-X-ME-IP: 86.243.180.246
-Message-ID: <2c788d15-e771-377a-2dd2-796c86cf6f8a@wanadoo.fr>
-Date: Fri, 20 May 2022 19:09:12 +0200
+ id 1nseTf-000daR-Ox
+ for linux-mtd@lists.infradead.org; Sun, 22 May 2022 05:50:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1653198607; x=1684734607;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=lURrqWQ4Bp3TuV0mtrGGqW8+CVdAW7nh+lfYSkx6HmI=;
+ b=dBS5L0PQNVJ1AfZdyZJ2FADsrZEUx0+WcefZLcffYv/xGCMzZ6XodOsO
+ SjG5KOgZWR4d3Na8HRjQnz2z6cCnCWTQUZnBBLc/caUK4ijlazamjFgA4
+ QooXyfdaKWeYuW9W1Tc+ruB7KPxiS8nJEmKo5jtqbLf8DUqKuaQDmGcmV
+ aHXrnK5dNGq8TA8/2xIyQ2ROu/65JipNd+siF382HGKEjohRcSYIqMI7J
+ GHtoTqwckFD5YKeu7rteirzJ2SqOEWkG1ffPNqS0CbUymlLfVKEru6d4+
+ heVOX5z2C2jTK1Ji/RQUQ8tt6y3PlPWryIpqn8qwL34t3xgh9TVo0NYFK Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10354"; a="270528601"
+X-IronPort-AV: E=Sophos;i="5.91,243,1647327600"; d="scan'208";a="270528601"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 May 2022 22:50:01 -0700
+X-IronPort-AV: E=Sophos;i="5.91,243,1647327600"; d="scan'208";a="600047771"
+Received: from unknown (HELO jiaqingz-server.sh.intel.com) ([10.239.48.171])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 May 2022 22:50:00 -0700
+From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+To: linux-mtd@lists.infradead.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>
+Cc: linux-kernel@vger.kernel.org, Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Subject: [PATCH 2/2] mtd: spi-nor: micron: Add SPI_NOR_DUAL_READ flag on
+ mt25ql02g
+Date: Sun, 22 May 2022 13:48:02 +0800
+Message-Id: <20220522054802.1719443-2-jiaqing.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220522054802.1719443-1-jiaqing.zhao@linux.intel.com>
+References: <20220522054802.1719443-1-jiaqing.zhao@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v2] mtd: rawnand: cafe: fix drivers probe/remove methods
-Content-Language: en-US
-From: Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Peng Wu <wupeng58@huawei.com>, miquel.raynal@bootlin.com, richard@nod.at, 
- vigneshr@ti.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, liwei391@huawei.com,
- Kernel Janitors <kernel-janitors@vger.kernel.org>
-References: <20220520084425.116686-1-wupeng58@huawei.com>
- <7b1b26e4-cc8e-3375-788c-56b5b548367d@wanadoo.fr>
-In-Reply-To: <7b1b26e4-cc8e-3375-788c-56b5b548367d@wanadoo.fr>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220520_100922_122439_1874659F 
-X-CRM114-Status: GOOD (  19.94  )
+X-CRM114-CacheID: sfid-20220521_225007_849352_AEBEDC2F 
+X-CRM114-Status: GOOD (  11.12  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,51 +72,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-CgpMZSAyMC8wNS8yMDIyIMOgIDE4OjUzLCBDaHJpc3RvcGhlIEpBSUxMRVQgYSDDqWNyaXTCoDoK
-PiBMZSAyMC8wNS8yMDIyIMOgIDEwOjQ0LCBQZW5nIFd1IGEgw6ljcml0wqA6Cj4+IERyaXZlciBz
-aG91bGQgY2FsbCBwY2lfZGlzYWJsZV9kZXZpY2UoKSBpZiBpdCByZXR1cm5zIGZyb20KPj4gY2Fm
-ZV9uYW5kX3Byb2JlKCkgd2l0aCBlcnJvci4KPj4KPj4gTWVhbndoaWxlLCB0aGUgZHJpdmVyIGNh
-bGxzIHBjaV9lbmFibGVfZGV2aWNlKCkgaW4KPj4gY2FmZV9uYW5kX3Byb2JlKCksIGJ1dCBuZXZl
-ciBjYWxscyBwY2lfZGlzYWJsZV9kZXZpY2UoKQo+PiBkdXJpbmcgcmVtb3ZhbC4KPj4KPj4gU2ln
-bmVkLW9mZi1ieTogUGVuZyBXdSA8d3VwZW5nNThAaHVhd2VpLmNvbT4KPj4gLS0tCj4+IHYyOgo+
-PiAtIGZpeCB0aGUgc3ViamVjdCBwcmVmaXggd2l0aCAibXRkOiByYW53bmFuZDogY2FmZToiCj4+
-IC0tLQo+PiDCoCBkcml2ZXJzL210ZC9uYW5kL3Jhdy9jYWZlX25hbmQuYyB8IDkgKysrKysrKy0t
-Cj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+
-Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9jYWZlX25hbmQuYyAKPj4gYi9k
-cml2ZXJzL210ZC9uYW5kL3Jhdy9jYWZlX25hbmQuYwo+PiBpbmRleCA5ZGJmMDMxNzE2YTYuLmFm
-MTE5ZTM3NjM1MiAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvY2FmZV9uYW5k
-LmMKPj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvY2FmZV9uYW5kLmMKPj4gQEAgLTY3OSw4
-ICs2NzksMTAgQEAgc3RhdGljIGludCBjYWZlX25hbmRfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBk
-ZXYsCj4+IMKgwqDCoMKgwqAgcGNpX3NldF9tYXN0ZXIocGRldik7Cj4+IMKgwqDCoMKgwqAgY2Fm
-ZSA9IGt6YWxsb2Moc2l6ZW9mKCpjYWZlKSwgR0ZQX0tFUk5FTCk7Cj4+IC3CoMKgwqAgaWYgKCFj
-YWZlKQo+PiAtwqDCoMKgwqDCoMKgwqAgcmV0dXJuwqAgLUVOT01FTTsKPj4gK8KgwqDCoCBpZiAo
-IWNhZmUpIHsKPj4gK8KgwqDCoMKgwqDCoMKgIGVyciA9IC1FTk9NRU07Cj4+ICvCoMKgwqDCoMKg
-wqDCoCBnb3RvIG91dF9kaXNhYmxlX2RldmljZTsKPj4gK8KgwqDCoCB9Cj4+IMKgwqDCoMKgwqAg
-bXRkID0gbmFuZF90b19tdGQoJmNhZmUtPm5hbmQpOwo+PiDCoMKgwqDCoMKgIG10ZC0+ZGV2LnBh
-cmVudCA9ICZwZGV2LT5kZXY7Cj4+IEBAIC04MDEsNiArODAzLDggQEAgc3RhdGljIGludCBjYWZl
-X25hbmRfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBkZXYsCj4+IMKgwqDCoMKgwqAgcGNpX2lvdW5t
-YXAocGRldiwgY2FmZS0+bW1pbyk7Cj4+IMKgwqAgb3V0X2ZyZWVfbXRkOgo+PiDCoMKgwqDCoMKg
-IGtmcmVlKGNhZmUpOwo+PiArIG91dF9kaXNhYmxlX2RldmljZToKPj4gK8KgwqDCoCBwY2lfZGlz
-YWJsZV9kZXZpY2UocGRldik7Cj4+IMKgwqAgb3V0Ogo+PiDCoMKgwqDCoMKgIHJldHVybiBlcnI7
-Cj4+IMKgIH0KPj4gQEAgLTgyMiw2ICs4MjYsNyBAQCBzdGF0aWMgdm9pZCBjYWZlX25hbmRfcmVt
-b3ZlKHN0cnVjdCBwY2lfZGV2ICpwZGV2KQo+PiDCoMKgwqDCoMKgIHBjaV9pb3VubWFwKHBkZXYs
-IGNhZmUtPm1taW8pOwo+PiDCoMKgwqDCoMKgIGRtYV9mcmVlX2NvaGVyZW50KCZjYWZlLT5wZGV2
-LT5kZXYsIDIxMTIsIGNhZmUtPmRtYWJ1ZiwgCj4+IGNhZmUtPmRtYWFkZHIpOwo+IAo+IEhpLAo+
-IAo+IE5vdCByZWxhdGVkIHRvIHRoaXMgcGF0Y2ggLCBidXQgSSB3b25kZXIgaWYgdGhpcyBkbWFf
-ZnJlZV9jb2hlcmVudCgpIGlzIAo+IG5lZWRlZC4KPiBJdCBpcyBhbHJlYWR5IHBhcnQgb2YgY2Fm
-ZV9uYW5kX2RldGFjaF9jaGlwKCkgd2hpY2ggaXMgYSAuZGV0YWNoX2NoaXAoKSAKPiBmdW5jdGlv
-bi4KPiAKPiBJcyB0aGlzIC5kZXRhY2hfY2hpcCgpIGZ1bmN0aW9uIGFscmVhZHkgY2FsbGVkIChi
-eSBuYW5kX2NsZWFudXAoKSkgCj4gc29tZXdoZXJlIGluIHRoZSByZW1vdmFsIHByb2Nlc3M/Cj4g
-CgpJbiBmYWN0IHRoZSAic29tZXdoZXJlIiBpcyBqdXN0IDMgbGluZXMgYWJvdmUgdGhlIGRtYV9m
-cmVlX2NvaGVyZW50KCkgCmNhbGwuIFNvIEkgZGVmaW5pdGl2ZWx5IHRoaW5rIHRoYXQgdGhpcyBs
-aW5lIHNob3VsZCBiZSBheGVkLgoKQ0oKCgo+IENKCj4gCj4gCj4+IMKgwqDCoMKgwqAga2ZyZWUo
-Y2FmZSk7Cj4+ICvCoMKgwqAgcGNpX2Rpc2FibGVfZGV2aWNlKHBkZXYpOwo+PiDCoCB9Cj4+IMKg
-IHN0YXRpYyBjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCBjYWZlX25hbmRfdGJsW10gPSB7Cj4g
-Cj4gCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+The Micron mt25ql02g supports x2 width dual mode operation. This patch
+adds the SPI_NOR_DUAL_READ flag to its flash_info entry.
+
+Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+---
+ drivers/mtd/spi-nor/micron-st.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index 8a20475ce77a..da0251c1a263 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -233,7 +233,7 @@ static const struct flash_info st_nor_parts[] = {
+ 	},
+ 	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096)
+ 		FLAGS(NO_CHIP_ERASE)
+-		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ)
++		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 		MFR_FLAGS(USE_FSR)
+ 	},
+ 	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096)
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
