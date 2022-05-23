@@ -4,59 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A44D7C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 09:24:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5633BC433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 09:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2Y6ZeqUecsqmTZl5Xk9afOPgHu5xIRovJn7DDUCzEG4=; b=Z1E5VeTKc2KcnwwM3Nm5KXAOHF
-	JHOFFlAwSLpPrGarjZ06Mkd19d6C7ild2WtfvVbdghDK+tK/4inRoZ63PWG5ycrQ0iHS2fu3TVNSA
-	KTV+h+5nK7+/EhtTI/AAdsmqq27SudyMTT0qJuOskeNyjaWk/f/8T8hA9miJv0oBe0y613fDrdbyl
-	rPBN5tq0AqsuB4H8zd6h1RCC7p/bdDADGnGdK+9XhqidI9Hoq12DOrakB0WhCfMLq1OyQIcclJiue
-	+qiANXEBRKEwSO0+RwGLQNJxSc6suFBO++i3mt/plhfXhI2b1YrBHUkdD3LajYqj3Ejddv/3WCPYH
-	UOCqfjqQ==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=u+Rk3GpPrBsJjRUvqE4FWQbqZmpZUT1SYvZT+veYutI=; b=N24CLyC1trGKKW
+	B7/9wpIi8OtNJXKFg4ZD6usJzTUopu9gb59G/WJ7cQXj9zmKCF+SZaCIbzTlFzZb4vSXG8hT9/teM
+	HZqu922NtKCYkij6z+jcVR5T1TXoOclks5/y61xGIPqakOcMHMPTrmBbczpGU8qsueWGgFg9XftSV
+	lZoYeEVlhg56WUyrg0/2sh6l11fsGJ6p+tnveZNUtieoBNEaW6NEEo4JyQh7mKF/V0gQCWRUh+hhI
+	OGbvQmMuQ0SJz7RzKUV/t/4KBFQZuXDeUCWl47r13cjv2mbXPWsnLhzJq/l7Gd0ernr2wHibRUaRl
+	xf5z8VEQUxogNwCiZXeg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nt4Ip-002ogN-Cc; Mon, 23 May 2022 09:24:39 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nt4Pz-002rp2-Bl; Mon, 23 May 2022 09:32:03 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nt3TE-002SFd-JX
- for linux-mtd@lists.infradead.org; Mon, 23 May 2022 08:31:22 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 4B3AE2223E;
- Mon, 23 May 2022 10:31:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1653294676;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Ly0UmeNynDgNtRQp+orPY0kwugyj6xbwvEBd6Kt/dw8=;
- b=S8m2L8yr2UEIHNSkiZO6wNSyacQ4w1KGb+TFXG8wa4XcLG3owla0hPZQYk/uXETMbN/Bjd
- QE7wXrECymmzPnj6wECr4jlTIF49NbbDS+Nr6bwCHvero0gg6F5hT5tFnbXPwmMa+ab6V2
- BUqomywdACYY1hPUa6Zp2mBK/rkC9+Q=
+ id 1nt2or-002AAA-Ma
+ for linux-mtd@bombadil.infradead.org; Mon, 23 May 2022 07:49:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+ :In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID:
+ Sender:Reply-To:Content-ID:Content-Description;
+ bh=S91S5YSl2qby4jcOZNzyZD401a43DQd0oxyZ1lnOhAY=; b=S9CIl+eWW4paqgsemBegQJL9nx
+ Pzq8cw+kFo4OW8BmXBeCor7Th7kW7AO0XoB5/uGwS6MCGpn+rWb+zmFlHCQYHNoJLjcIb9JGiElW7
+ IW6+vQuO2sCRk7AJt2ENBO5/F9Ty9mzX7IEFuwvP9zXQdIfypajrKzAVxOngmumdYErQS5H0o7vca
+ JfKC7b7Hh2dR0vmZePHLwcCR/WMnXvBWmTTfVbeEi/ZluIi4zQUPb+Uy7gQY2uWNdPFw8DYFeE7B1
+ QOiEBodG+78twwm5OpOuYIQx+FUrUZdQZN1rV7aw1oWkXv7rD1FmOgzUfBBpjpgVP2w8yZ47bv1M6
+ zGok1yfQ==;
+Received: from szxga01-in.huawei.com ([45.249.212.187])
+ by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nt17y-000sat-Ln
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2022 06:01:18 +0000
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L668Z2CpDzgY8H;
+ Mon, 23 May 2022 13:58:54 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 23 May 2022 14:00:21 +0800
+Message-ID: <c2f49973-e5be-475a-1b92-77fc6e86ba37@huawei.com>
+Date: Mon, 23 May 2022 14:00:21 +0800
 MIME-Version: 1.0
-Date: Mon, 23 May 2022 10:31:13 +0200
-From: Michael Walle <michael@walle.cc>
-To: Paul Barker <paul.barker@sancloud.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, Stuart Rubin <stuart.rubin@trustiphi.com>
-Subject: Re: Sending vendor specific commands to spi-nor flash
-In-Reply-To: <416958ee-c2df-0981-8c77-298561d09381@sancloud.com>
-References: <416958ee-c2df-0981-8c77-298561d09381@sancloud.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <418e465f5156adb340976bac209539f8@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH -next] jffs2: fix memory leak in jffs2_do_fill_super
+To: <richard@nod.at>, <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>, 
+ <linux-kernel@vger.kernel.org>
+CC: <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20220412093816.2280678-1-libaokun1@huawei.com>
+From: "libaokun (A)" <libaokun1@huawei.com>
+In-Reply-To: <20220412093816.2280678-1-libaokun1@huawei.com>
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_013120_879207_3741C686 
-X-CRM114-Status: GOOD (  29.92  )
+X-CRM114-CacheID: sfid-20220523_070115_762908_453D3ED0 
+X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,65 +77,53 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-Am 2022-05-18 14:32, schrieb Paul Barker:
-> We're looking to add support for sending vendor specific commands to
-> Micron Authenta flash devices over the SPI bus.
-
-Please elaborate a bit more on the use case. Is this something specific
-to the flash or is it more of a general feature?
-
-> Since we're using the
-> MTD block interface to support a filesystem on the SPI flash we need
-> to send these vendor specific commands via some sort of IOCTL.
-> 
-> I can see a couple of ways to achieve this (as follows) and would like
-> to get some feedback from the MTD & spi-nor maintainers on which
-> approach is preferred:
-> 
-> 1) Add new IOCTLs to the mtdchar device to support these vendor
-> specific operations. An initial set of patches was sent back in
-> October 2021 which took this route [1], but no further progress was
-> made. The new IOCTLs would exist for all mtdchar devices (regardless
-> of vendor) if we go this route and we'd need to ensure -EINVAL or
-> -ENOTSUPP is returned as appropriate if these IOCTLs are called on a
-> device which does not implement them.
-> 
-> 2) Add a vendor-specific IOCTL layer to the mtdchar device interface.
-> When the mtdchar IOCTL handler is called with a command not defined in
-> mtdchar.c, pass the call on to a device-specific IOCTL handler which
-> can potentially handle vendor specific commands.
-> 
-> 3) Add a generic SPI transfer IOCTL for spi-nor MTD devices. This
-> would avoid the need to define IOCTLs for every vendor specific
-> command supported by SPI flash devices. Instead, knowledge of the
-> vendor specific commands would be kept in userspace and the kernel
-> would simply provide an API for sending & receiving arbitrary bytes
-> over the SPI bus. This is similar to the MMC_IOC_CMD IOCTL supported
-> by the MMC driver.
-> 
-> My preference would be for option (3) since it minimizes the scope of
-> the changes we need to make in the kernel. We're not tied to this
-> though, so let us know if a different option is preferred.
-
-I'm not sure we should allow a generic "issue anything to the spi
-flash". It it is just a one time thing, like for example, program
-a password during production, or program non-volatile memory during
-production of the board, I'm fine with it. Most probably, calling
-that ioctl will also call add_taint(). This will also need to go
-with proper userspace util support.
-
-But if it is something for general use, please provide a proper API
-and don't write userspace drivers.
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+cGluZwoK5ZyoIDIwMjIvNC8xMiAxNzozOCwgQmFva3VuIExpIOWGmemBkzoKPiBJZiBqZmZzMl9p
+Z2V0KCkgb3IgZF9tYWtlX3Jvb3QoKSBpbiBqZmZzMl9kb19maWxsX3N1cGVyKCkgcmV0dXJucwo+
+IGFuIGVycm9yLCB3ZSBjYW4gb2JzZXJ2ZSB0aGUgZm9sbG93aW5nIGttZW1sZWFrIHJlcG9ydDoK
+Pgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gdW5yZWZl
+cmVuY2VkIG9iamVjdCAweGZmZmY4ODgxMDVhNjUzNDAgKHNpemUgNjQpOgo+ICAgIGNvbW0gIm1v
+dW50IiwgcGlkIDcxMCwgamlmZmllcyA0MzAyODUxNTU4IChhZ2UgNTguMjM5cykKPiAgICBoZXgg
+ZHVtcCAoZmlyc3QgMzIgYnl0ZXMpOgo+ICAgICAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgIC4uLi4uLi4uLi4uLi4uLi4KPiAgICAgIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwICAuLi4uLi4uLi4uLi4uLi4uCj4g
+ICAgYmFja3RyYWNlOgo+ICAgICAgWzxmZmZmZmZmZjg1OWM0NWU1Pl0ga21lbV9jYWNoZV9hbGxv
+Y190cmFjZSsweDQ3NS8weDhhMAo+ICAgICAgWzxmZmZmZmZmZjg2MTYwMTQ2Pl0gamZmczJfc3Vt
+X2luaXQrMHg5Ni8weDFhMAo+ICAgICAgWzxmZmZmZmZmZjg2MTQwZTI1Pl0gamZmczJfZG9fbW91
+bnRfZnMrMHg3NDUvMHgyMTIwCj4gICAgICBbPGZmZmZmZmZmODYxNDlmZWM+XSBqZmZzMl9kb19m
+aWxsX3N1cGVyKzB4MzVjLzB4ODEwCj4gICAgICBbPGZmZmZmZmZmODYxNGFhZTk+XSBqZmZzMl9m
+aWxsX3N1cGVyKzB4MmI5LzB4M2IwCj4gICAgICBbLi4uXQo+IHVucmVmZXJlbmNlZCBvYmplY3Qg
+MHhmZmZmODg4MWJkN2YwMDAwIChzaXplIDY1NTM2KToKPiAgICBjb21tICJtb3VudCIsIHBpZCA3
+MTAsIGppZmZpZXMgNDMwMjg1MTU1OCAoYWdlIDU4LjIzOXMpCj4gICAgaGV4IGR1bXAgKGZpcnN0
+IDMyIGJ5dGVzKToKPiAgICAgIGJiIGJiIGJiIGJiIGJiIGJiIGJiIGJiIGJiIGJiIGJiIGJiIGJi
+IGJiIGJiIGJiICAuLi4uLi4uLi4uLi4uLi4uCj4gICAgICBiYiBiYiBiYiBiYiBiYiBiYiBiYiBi
+YiBiYiBiYiBiYiBiYiBiYiBiYiBiYiBiYiAgLi4uLi4uLi4uLi4uLi4uLgo+ICAgIGJhY2t0cmFj
+ZToKPiAgICAgIFs8ZmZmZmZmZmY4NTg1NzliYT5dIGttYWxsb2Nfb3JkZXIrMHhkYS8weDExMAo+
+ICAgICAgWzxmZmZmZmZmZjg1ODU3YTExPl0ga21hbGxvY19vcmRlcl90cmFjZSsweDIxLzB4MTMw
+Cj4gICAgICBbPGZmZmZmZmZmODU5YzJlZDE+XSBfX2ttYWxsb2MrMHg3MTEvMHg4YTAKPiAgICAg
+IFs8ZmZmZmZmZmY4NjE2MDE4OT5dIGpmZnMyX3N1bV9pbml0KzB4ZDkvMHgxYTAKPiAgICAgIFs8
+ZmZmZmZmZmY4NjE0MGUyNT5dIGpmZnMyX2RvX21vdW50X2ZzKzB4NzQ1LzB4MjEyMAo+ICAgICAg
+WzxmZmZmZmZmZjg2MTQ5ZmVjPl0gamZmczJfZG9fZmlsbF9zdXBlcisweDM1Yy8weDgxMAo+ICAg
+ICAgWzxmZmZmZmZmZjg2MTRhYWU5Pl0gamZmczJfZmlsbF9zdXBlcisweDJiOS8weDNiMAo+ICAg
+ICAgWy4uLl0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
+Cj4gVGhpcyBpcyBiZWNhdXNlIHRoZSByZXNvdXJjZXMgYWxsb2NhdGVkIGluIGpmZnMyX3N1bV9p
+bml0KCkgYXJlIG5vdAo+IHJlbGVhc2VkLiBDYWxsIGpmZnMyX3N1bV9leGl0KCkgdG8gcmVsZWFz
+ZSB0aGVzZSByZXNvdXJjZXMgdG8gc29sdmUKPiB0aGUgcHJvYmxlbS4KPgo+IEZpeGVzOiBlNjMx
+ZGRiYTU4ODcgKCJbSkZGUzJdIEFkZCBlcmFzZSBibG9jayBzdW1tYXJ5IHN1cHBvcnQgKG1vdW50
+IHRpbWUgaW1wcm92ZW1lbnQpIikKPiBTaWduZWQtb2ZmLWJ5OiBCYW9rdW4gTGkgPGxpYmFva3Vu
+MUBodWF3ZWkuY29tPgo+IC0tLQo+ICAgZnMvamZmczIvZnMuYyB8IDEgKwo+ICAgMSBmaWxlIGNo
+YW5nZWQsIDEgaW5zZXJ0aW9uKCspCj4KPiBkaWZmIC0tZ2l0IGEvZnMvamZmczIvZnMuYyBiL2Zz
+L2pmZnMyL2ZzLmMKPiBpbmRleCA3MWYwM2E1ZDM2ZWQuLmY4M2E0NjhiNjQ4OCAxMDA2NDQKPiAt
+LS0gYS9mcy9qZmZzMi9mcy5jCj4gKysrIGIvZnMvamZmczIvZnMuYwo+IEBAIC02MDQsNiArNjA0
+LDcgQEAgaW50IGpmZnMyX2RvX2ZpbGxfc3VwZXIoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwgc3Ry
+dWN0IGZzX2NvbnRleHQgKmZjKQo+ICAgCWpmZnMyX2ZyZWVfcmF3X25vZGVfcmVmcyhjKTsKPiAg
+IAlrdmZyZWUoYy0+YmxvY2tzKTsKPiAgIAlqZmZzMl9jbGVhcl94YXR0cl9zdWJzeXN0ZW0oYyk7
+Cj4gKwlqZmZzMl9zdW1fZXhpdChjKTsKPiAgICBvdXRfaW5vaGFzaDoKPiAgIAlrZnJlZShjLT5p
+bm9jYWNoZV9saXN0KTsKPiAgICBvdXRfd2J1ZjoKCgoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxp
+bmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LW10ZC8K
