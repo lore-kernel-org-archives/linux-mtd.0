@@ -4,71 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B23AC433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 12:33:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C63AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 14:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=TdomORSv5OMaa4kFoMsZZ+lUeRDgXrZDTY/pbft9SzQ=; b=1/MLyuCSuJNOuQ
-	FltZf4CXDC6Wqp7axiwrT1SzwSoVfv3GgyWhUewfnWl9fbFodkI0oGrJnOEbD/zo8BZWuZTin3EOj
-	OjjOGkWiBwH8G9sPdePgcLdGiTcvm86swhM/Xkcr360WO+UE6xtHlzd0egze9PcVHtCBCmJgFxd65
-	5ts1CaV4oGJbxIgoAurD46hDWDEWMUNA0IdegM+mpXyR81uQ29h6gEbFAAsfUx3wwYgBqJNiTGKXp
-	JqoSGYpaty1h0i6Q5ccnkV3RF4+3nzR6OWMFFcFvRsW+MDOfQ4koEAStm28e2AEd74aByW+CZRi0n
-	IFdtKbSxMiE0WU6RCoBQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Nf+zBGmRKoYkW1kptsl5qfFZkNC/Y1MkKvocmJ/Pe/g=; b=bZKAnAee/Klg5R
+	WSKtMwJct/O0wSBK+C2Hm1fL+gLH38AUYO4cv5JFOr2oyPY/qkS/lMIe/YhL3fUu1sh9j5kT2TVhU
+	1/PZqC3x6Zy6bP4hdLirccgpSx49eoda5qyuCeffiJOcn29jiSorOk1QRgkzryCbUC5w+r5TvBGx1
+	aoNO8qw1+Gql9Aeaqh0Xq02OaEPX4xe5meZSBjBY0KlmoIlE404Dk8kaswt3xwTPqvSuoX+2GzSAq
+	foysBZTqy4MUTlQ5kd46/ZdQXxRZk/xd0/njH59MnhB9dDDMyBXmk5vwLhNCANna+rkTjMApf8dOd
+	MGppOxU1Th8o8u7RYUOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nt7Ff-004BCA-N3; Mon, 23 May 2022 12:33:36 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1nt8dl-004cYf-Aj; Mon, 23 May 2022 14:02:33 +0000
+Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nt71F-0043tx-2i
- for linux-mtd@lists.infradead.org; Mon, 23 May 2022 12:18:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653308321; x=1684844321;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=CgscfHbRv1zAuiZTsJog1ODh28vnfZ4B3mVu+ZHpAYM=;
- b=K83b2J6u6SmWGMZ1IcS5SGnkWpEqheM84iC9/Ashst3UWuWfA2zmWW3i
- 1NWlVT1vjIJ6TxZyRqwjAxPn1odxMIc8bREXg5fyxa/mSFzGjN2LAkRma
- /ord6HdmSb/fFj9IS+04tAS2L3pvuvVx/gKb05/EFMvQIx3zPcsAa47y/
- QUgz5AS7DI0iJ7+upLqTcjEAWmDcEMbj2Obunb3UoGQ0nXzorgHdbdY6s
- a9sW4AEsWjiGIQW8eDNyKq4b+MUwlYw8OGR48tr+TQlblA3Cgcj3aLZr/
- /l/TMUqmTz8CYLGozpRsEC5UkHq4lgESDmQ9Njo1O/QXsxuo673cjpzWC g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10355"; a="253078389"
-X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; d="scan'208";a="253078389"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 May 2022 05:18:37 -0700
-X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; d="scan'208";a="600620980"
-Received: from jiaqingz-mobl.ccr.corp.intel.com (HELO [10.249.171.16])
- ([10.249.171.16])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 May 2022 05:18:35 -0700
-Message-ID: <2b859cff-2403-0526-f3ae-749920b3fd8b@linux.intel.com>
-Date: Mon, 23 May 2022 20:18:32 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 1/2] mtd: spi-nor: macronix: Add support for mx66l2g45g
-Content-Language: en-US
-To: Michael Walle <michael@walle.cc>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
+ id 1nt8dX-004cUT-TG; Mon, 23 May 2022 14:02:21 +0000
+Received: by mail-pl1-x62d.google.com with SMTP id b5so6135097plx.10;
+ Mon, 23 May 2022 07:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=/uPYvFeZZTkSS8WJjVNbiWQjecsqWmcRfd8xMpRg01E=;
+ b=P3PHrmTAKhkPTFWosISHQujRQUzSuvYr35CbU+SPaqg2lslJhSb5IyhvSw0mzzk9kR
+ 82VlQKVbOpAqMmhcG7IX6OeFBEZp+1hl6ojaXwFqjLlN/G0vLW8Mh7DfPebUGmT2oki6
+ SuvLQOxErrRKGAlI4FhXZ27F5tjbsx1XMsJX2M4LoiA03rh+VZvGDVyLCSXgjXdbwmSz
+ bbmNG/+XdAz7/JLXaFY+53DLwEhWI6AkVCxzEEdDlHT9VmAQ8fm9PpyHyQkh0BMcBboR
+ abIYgucvKt8pUeTdldsxwNL2sCrMeEAGZQLVYAkduBTspicz7QzptSqQ34NPk/yyfIND
+ ++tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=/uPYvFeZZTkSS8WJjVNbiWQjecsqWmcRfd8xMpRg01E=;
+ b=F8By8UkcgpZp6oMoUdK9UN8F/s9HRS1L5ktFe76JADDpLfgoZSAAu78fybqqiQ57m5
+ gIK1d4sUGvQndI6bcWh3VXFVJR604YYveGzVv5Bn04P9kVp5czQ2AmPyl3ykMkSfcmYV
+ O/0aD8UHyT6x/JzBhYNwCMALxAGxdeNUzriaY20MpVHC5w/VfQTDXi1cT5cbt29fqd/I
+ ATx6Wiu0R6MJuZka0EOJtm5XUZPTo1cfaHYpQharJnEaaZIvKTtIhvjNkRo6q0sm1ya+
+ GNwdroeKs5yeMbDdXjgUHN/FQB1UnHVVA4lzHxIpNVqGejz190nDHe+6c17DYoFW4U9Z
+ Xerw==
+X-Gm-Message-State: AOAM532+4tT/hfwmhVyUGaIwNF/7qZ3Z91JR2rf9SuFq6r/Kr0XiDMBw
+ PClPfVONGRXaNT02ikzcr0mU+iONSIot3w==
+X-Google-Smtp-Source: ABdhPJycRpTQOgsr2QIRd/XkuP5twDc97y3ftQbX8ngGJKEKcSlErTYDksg8GPnzJ06vkOrXGmWP7w==
+X-Received: by 2002:a17:903:32d2:b0:161:d485:613f with SMTP id
+ i18-20020a17090332d200b00161d485613fmr23118997plr.173.1653314534606; 
+ Mon, 23 May 2022 07:02:14 -0700 (PDT)
+Received: from localhost.localdomain ([202.120.234.246])
+ by smtp.googlemail.com with ESMTPSA id
+ i5-20020a62c105000000b0050dc7628169sm7203366pfg.67.2022.05.23.07.02.10
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 23 May 2022 07:02:14 -0700 (PDT)
+From: Miaoqian Lin <linmq006@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-References: <20220522054802.1719443-1-jiaqing.zhao@linux.intel.com>
- <04c432289041752d113c15245361ade8@walle.cc>
- <b3e85d41-9415-b911-6f61-941885af1955@linux.intel.com>
- <fac4b7877f600a4067534fca672dc842@walle.cc>
- <2bf3394e-0a78-c760-16ce-936c12b66b93@linux.intel.com>
- <24cf182693a522ed1f7afd61c7c37029@walle.cc>
-From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-In-Reply-To: <24cf182693a522ed1f7afd61c7c37029@walle.cc>
+Cc: linmq006@gmail.com
+Subject: [PATCH] mtd: maps: Fix refcount leak in of_flash_probe_versatile
+Date: Mon, 23 May 2022 18:02:05 +0400
+Message-Id: <20220523140205.48625-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_051841_289583_48A6CD72 
-X-CRM114-Status: GOOD (  15.44  )
+X-CRM114-CacheID: sfid-20220523_070219_987179_5C933E38 
+X-CRM114-Status: GOOD (  10.27  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,75 +89,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Okay I've found this was a driver issue. After switching to the new aspeed
-spi-mem driver[1], the sysfs interface works.
+of_find_matching_node_and_match() returns a node pointer with refcount
+incremented, we should use of_node_put() on it when not need anymore.
+Add missing of_node_put() to avoid refcount leak.
 
-# xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450060102ff00060110300000ffc2000104100100ff84000102c000
-00ffffffffffffffffffffffffffffffffffe520fbffffffff7f44eb086b
-083b04bbfeffffffffff00ffffff44eb0c200f5210d800ff8749bd0084d2
-04e24403673830b030b0f7bdff5c4a9e29fff050f985ffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffff7f8fffff215cdcffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffff003600279df9c06485cbffffffffffff
-# md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-bc3c1443db0c6359432c3cccb6f97943  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
-c2201c
-# cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
-mx66l2g45g
-# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
-macronix
+Fixes: b0afd44bc192 ("mtd: physmap_of: add a hook for Versatile write protection")
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+---
+ drivers/mtd/maps/physmap-versatile.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Since I'm using kernel 5.15, I copied the /drivers/mtd/spi-nor from 5.18-rc7
-(I know this it not a clean way, but it works), and applied the SNOR_ID3()
-patch. Verified using SNOR_ID3() macro works with this mx66l2g45g and the
-values dumped from sysfs are the same.
+diff --git a/drivers/mtd/maps/physmap-versatile.c b/drivers/mtd/maps/physmap-versatile.c
+index ad7cd9cfaee0..297a50957356 100644
+--- a/drivers/mtd/maps/physmap-versatile.c
++++ b/drivers/mtd/maps/physmap-versatile.c
+@@ -207,6 +207,7 @@ int of_flash_probe_versatile(struct platform_device *pdev,
+ 
+ 		versatile_flashprot = (enum versatile_flashprot)devid->data;
+ 		rmap = syscon_node_to_regmap(sysnp);
++		of_node_put(sysnp);
+ 		if (IS_ERR(rmap))
+ 			return PTR_ERR(rmap);
+ 
+-- 
+2.25.1
 
-[    1.696350] spi spi0.0: setup: ignoring unsupported mode bits 200
-[    1.703786] spi-nor spi0.0: mx66l2g45g (262144 Kbytes)
-[    1.764440] spi-aspeed-smc 1e620000.spi: CE0 read buswidth:2 [0x203c0641]
-
-Due to the lockdown in Shanghai, I am unable to test my 2nd patch at this
-time, please temporarily ignore it.
-
-I will perform more tests and update the patch later.
-
-[1] https://lore.kernel.org/linux-mtd/a17b2446-f5a6-d606-8ef4-3931b8bc94da@kaod.org/
-
-Thanks,
-Jiaqing
-
-On 2022-05-23 19:59, Michael Walle wrote:
-> Hi,
-> 
-> Am 2022-05-23 12:12, schrieb Jiaqing Zhao:
->>> Am 2022-05-23 10:50, schrieb Jiaqing Zhao:
->>>> Yes this one supports SFDP according to its spec.
->>>>
->>>> On my setup, I cannot see the sysfs object. Do I need to enable some specific
->>>> kernel config or it's SPI controller related? My setup is running kernel 5.15.
->>>
->>> No, it should be there since v5.14. See commit 36ac02286265. And you shouldn't
->>> need to enable any special configuration option.
->>>
->>> Did you do a "find /sys -name sfdp"?
->>>
->>> -michael
->>
->> I tried, it give empty result. The system I'm working on disables kernel module,
->> and the SPI controller driver calls spi_nor_probe() directly, will this be the
->> issue?
->>
->> And is it possible to manually load the spi-nor driver via the bind interface?
->> If it is possible, what should the parameters be?
-> 
-> Is your spi flash probed at all?
-> 
-> -michael
 
 ______________________________________________________
 Linux MTD discussion mailing list
