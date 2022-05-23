@@ -4,75 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7D01C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 14:29:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF328C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 14:32:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=OZHBw68uCmwIBx+jWqx3FgVHLw7WdpwtOJYTqfkYwvY=; b=ExFOSGxW2J63Fg
-	ZbbHWIXdKUSPnClKpPzq0lWSpLrlAS48ECiwVHkhkfFb6vg4ciYInQDxkJYt317T3jGisIbKcWZMs
-	GJzYV2BllXNBDKV/2ODgTzLBxeIBEAa0RQBjaYT6ySMpyX2czo1My7pNI3ghhe7rZnyCT3a6VyLaf
-	sYL8yefvx0pQPuivJ5kPIg80YblVF9fAk1/l+xPZCdSaWpavtTo+stUlyj/bGYh2o/V3MH/wNM2vv
-	S2dFQYagnHiv66LiqwtlPOwUN+irJMwnxN5MCWZQ6vW0kqcZltpgDr4/cXY+YU8iSCJsxyDXu1GM9
-	emYVrf8pn6T5gpphbfaw==;
+	List-Owner; bh=Ast08ZsbQUQc8RqGLTMDZiaLpL6tWa/+63KcLtSVA0Q=; b=poMgaVDQ9Ce+QV
+	/tXHEbYWCMTyNUCCw77o+e2KdT2LwzeAPqEhacLPvH74pfNdwuR6Z83UL0IsG41LPUVALRtmBMgTo
+	vpqSsyFvTcQ6DZd/UX6CxhetHIndbesEDT8n+E7P4oM9HuHTOmQVIz/8bMP/ZyG3O050n6DObhlbf
+	6EJlA4or2VNXEnWh764G8OnoCGq5pBjsGWouqLaZmxaUIdvNRtQX4QN+7IMNCNcOrkEOgeiyki2PI
+	mpP3UROum0yDvpHsJzWWIjVL5McUBY9PP9Qyqxk6iA669UbmNriHLc5uc2+hiiDAzcpBqCF+2S0bd
+	q3/ZiPFJ2kAGEAR79ZNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nt93T-004icV-Il; Mon, 23 May 2022 14:29:07 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1nt960-004jC4-Kk; Mon, 23 May 2022 14:31:44 +0000
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nt93P-004iaN-9D
- for linux-mtd@lists.infradead.org; Mon, 23 May 2022 14:29:05 +0000
-Received: by mail-ej1-x632.google.com with SMTP id f9so29287800ejc.0
- for <linux-mtd@lists.infradead.org>; Mon, 23 May 2022 07:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=malat-biz.20210112.gappssmtp.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=gGEKaRL/00sKBHtj1hUxzGszVFwNUoCR3h2OByy1v5w=;
- b=PgJUjLKHURCjSmk42QVyCWSoJV+H0m1LxJrjAUL0xPQDH4TJf0WL0ZA3QxF5I/uF0k
- nycCZr7WbpmWu/RMHE8ogPHz1IyBBlBVJU/aLemja4FM8ucSIyoyFM7n08Z53rvsXisC
- jms5AJ+DvW/Qu8ar+YJ5rrsUllkOU4rD5K/pIakn+NRqFwrVBSxdXuIA+wRfE5qwgq/M
- dFUt3IdchFnQkqhWPCA5pwjyKdHOhi1Ez+9VgX3sxzHm+6imr9osUJx44mNaFjQG9hl9
- /xQNbjvxc329bSIOyqI1tsE0zOoiZd7dV5XNpMbJ9zsZy+F+KAxIwVzRH8h62UIxF1HF
- ARaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=gGEKaRL/00sKBHtj1hUxzGszVFwNUoCR3h2OByy1v5w=;
- b=Wqu0VRmvrE4Ir8pNmVYDzmzL35t2VfeySCNusA2s7GRsqd3mQHv1jk7MPkw1KSWva3
- BVsr1pz6IN9aeKayxUKPetXITSPAmIKjdiT2krSpr/Z4RdMwTy+XyrLit36MiUoP2sBi
- xsAnrC9zQr4/OSt10tKNEptxKQFwSP9meKZoyJFHMel+8bz1CiRkPqszZg706w0SuAVj
- 2LepJnNtheam7YJTxPRxacUakoHgS884q2g8EuvLhN/B/7+ZmP2nFE8ZP6dmFj82hJgL
- w2NhfIEN00EPUuEjx/aHiHdjsxGdjhrGp08k+JYu0Se3iKEh2F+89gxVB5yLUjbTfncS
- 2XLA==
-X-Gm-Message-State: AOAM530+XybYhf1Sk6Yn+Issupw87heAHWbtK88+zbY2WwRGw6GQ5kmZ
- L7Z+wv3dYtVMT82T5WzQh4g8B0OLq669ZA==
-X-Google-Smtp-Source: ABdhPJxlgmV9DSbvu2Zh5aV26tUxOqNApPjJGp419HhV0pXpmzudNbsAML6QDeYwa8iixqwMPHQt8A==
-X-Received: by 2002:a17:907:7ea2:b0:6fe:d945:7fe with SMTP id
- qb34-20020a1709077ea200b006fed94507femr1026528ejc.228.1653316140469; 
- Mon, 23 May 2022 07:29:00 -0700 (PDT)
-Received: from ntb.petris.klfree.czf
- ([2a02:8070:d483:ed00:4bcc:154f:5c11:5870])
- by smtp.googlemail.com with ESMTPSA id
- i2-20020aa7c702000000b0042617ba6380sm8252640edq.10.2022.05.23.07.28.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 May 2022 07:28:59 -0700 (PDT)
-From: Petr Malat <oss@malat.biz>
-To: linux-mtd@lists.infradead.org
-Cc: Joern Engel <joern@lazybastard.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Petr Malat <oss@malat.biz>
-Subject: [PATCH] mtd: phram: Map RAM using memremap instead of ioremap
-Date: Mon, 23 May 2022 16:28:25 +0200
-Message-Id: <20220523142825.3144904-1-oss@malat.biz>
-X-Mailer: git-send-email 2.30.2
+ id 1nt95x-004jAW-6U
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2022 14:31:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1653316301; x=1684852301;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=YBrLOC6FryVEjG7ppN/ojmlQfMwF99DKj61Ta0XGn4g=;
+ b=Z3QDwmkxUAq+KTeiapx3oVDvM44XQpqfOItrTKiVzwa8Dysoko3IwWm+
+ 2jGrQ5rt8P/6/crhnJwv2XrLDi/2psDoVhyudtPSeL72NgVmN5zrw3IrO
+ VDvNbleSafbxiHZbJ1wxnI6LgZEdvGLVMshYUxXVX2cTLfhgWq/SPRIx2
+ r2SSCG0xeSBPElBAANCMPZxXb3vrQbG8D69rsIxbt3qQpsvJsOd9bU78Q
+ UWUr5/KciJsw93KizzM5QnCR+xxemdPPg90gZa4zeggAM7pkCfjkzI0xb
+ wg1tFi19AJaN60GcFDoWFxj93cah5Y8ic3Q/HckExJX71J9W82RgS+n9k w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10356"; a="273357308"
+X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; d="scan'208";a="273357308"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 May 2022 07:31:39 -0700
+X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; d="scan'208";a="600678415"
+Received: from unknown (HELO jiaqingz-server.sh.intel.com) ([10.239.48.171])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 May 2022 07:31:37 -0700
+From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+To: linux-mtd@lists.infradead.org, Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>
+Cc: linux-kernel@vger.kernel.org, Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Subject: [PATCH v2] mtd: spi-nor: macronix: Add support for mx66l2g45g
+Date: Mon, 23 May 2022 22:30:02 +0800
+Message-Id: <20220523143002.1754922-1-jiaqing.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_072903_598471_4087D7E3 
-X-CRM114-Status: GOOD (  11.68  )
+X-CRM114-CacheID: sfid-20220523_073141_319214_E86E1A25 
+X-CRM114-Status: UNSURE (   9.20  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,103 +75,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-One can't use memcpy on memory obtained by ioremap, because IO memory
-may have different alignment and size access restriction than the system
-memory. Use memremap as phram driver operates on RAM.
+Macronix mx66l2g45g is a 3V, 2Gbit (256MB) NOR flash that supports
+x1, x2, and x4 operation modes.
 
-This fixes an unaligned access on ARM64, which could be triggered with
-e.g. dd if=/dev/phram/by-name/testdev bs=8190 count=1
+Tested read/write/erase with Aspeed AST2600 BMC SoC operating in x2
+mode at 50MHz, using Aspeed spi-mem driver.
 
-   Unable to handle kernel paging request at virtual address ffffffc01208bfbf
-   Mem abort info:
-     ESR = 0x96000021
-     EC = 0x25: DABT (current EL), IL = 32 bits
-     SET = 0, FnV = 0
-     EA = 0, S1PTW = 0
-   Data abort info:
-     ISV = 0, ISS = 0x00000021
-     CM = 0, WnR = 0
-   swapper pgtable: 4k pages, 39-bit VAs, pgdp=0000000000cd5000
-   [ffffffc01208bfbf] pgd=00000002fffff003, p4d=00000002fffff003, pud=00000002fffff003, pmd=0000000100b43003, pte=0068000022221717
-   Internal error: Oops: 96000021 [#1] PREEMPT SMP
-   CPU: 2 PID: 14768 Comm: dd Tainted: G           O      5.10.116-f13ddced70 #1
-   Hardware name: AXM56xx Victoria (DT)
-   pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-   pc : __memcpy+0x168/0x230
-   lr : phram_read+0x68/0xb0 [phram]
-   sp : ffffffc0138f3bd0
-   x29: ffffffc0138f3bd0 x28: 0000000034a50090
-   x27: 0000000000000000 x26: ffffff81176ce000
-   x25: 0000000000000000 x24: 0000000000000000
-   x23: ffffffc0138f3cb8 x22: ffffff8109475000
-   x21: 0000000000000000 x20: ffffff81176ce000
-   x19: 0000000000001fff x18: 0000000000000020
-   x17: 0000000000000000 x16: 0000000000000000
-   x15: ffffff8125861410 x14: 0000000000000000
-   x13: 0000000000000000 x12: 0000000000000000
-   x11: 0000000000000000 x10: 0000000000000000
-   x9 : 0000000000000000 x8 : 0000000000000000
-   x7 : 0000000000000000 x6 : 0000000000000000
-   x5 : ffffff81176cffff x4 : ffffffc01208bfff
-   x3 : ffffff81176cff80 x2 : ffffffffffffffef
-   x1 : ffffffc01208bfc0 x0 : ffffff81176ce000
-   Call trace:
-    __memcpy+0x168/0x230
-    mtd_read_oob_std+0x80/0x90
-    mtd_read_oob+0x8c/0x150
-    mtd_read+0x54/0x80
-    mtdchar_read+0xdc/0x2c0
-    vfs_read+0xb8/0x1e4
-    ksys_read+0x78/0x10c
-    __arm64_sys_read+0x28/0x34
-    do_el0_svc+0x94/0x1f0
-    el0_svc+0x20/0x30
-    el0_sync_handler+0x1a4/0x1c0
-    el0_sync+0x180/0x1c0
-   Code: a984346c a9c4342c f1010042 54fffee8 (a97c3c8e)
-   ---[ end trace 5707221d643416b6 ]---
-
-Signed-off-by: Petr Malat <oss@malat.biz>
+Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
 ---
- drivers/mtd/devices/phram.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/spi-nor/macronix.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index d503821a3e60..25d3674b4e51 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -83,7 +83,7 @@ static void unregister_devices(void)
- 
- 	list_for_each_entry_safe(this, safe, &phram_list, list) {
- 		mtd_device_unregister(&this->mtd);
--		iounmap(this->mtd.priv);
-+		memunmap(this->mtd.priv);
- 		kfree(this->mtd.name);
- 		kfree(this);
- 	}
-@@ -99,9 +99,9 @@ static int register_device(char *name, phys_addr_t start, size_t len, uint32_t e
- 		goto out0;
- 
- 	ret = -EIO;
--	new->mtd.priv = ioremap(start, len);
-+	new->mtd.priv = memremap(start, len, MEMREMAP_WB);
- 	if (!new->mtd.priv) {
--		pr_err("ioremap failed\n");
-+		pr_err("memremap failed\n");
- 		goto out1;
- 	}
- 
-@@ -129,7 +129,7 @@ static int register_device(char *name, phys_addr_t start, size_t len, uint32_t e
- 	return 0;
- 
- out2:
--	iounmap(new->mtd.priv);
-+	memunmap(new->mtd.priv);
- out1:
- 	kfree(new);
- out0:
+diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+index d81a4cb2812b..fd24ce9f02e2 100644
+--- a/drivers/mtd/spi-nor/macronix.c
++++ b/drivers/mtd/spi-nor/macronix.c
+@@ -95,6 +95,8 @@ static const struct flash_info macronix_nor_parts[] = {
+ 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+ 			      SPI_NOR_QUAD_READ) },
++	{ "mx66l2g45g",  INFO(0xc2201c, 0, 64 * 1024, 4096)
++		PARSE_SFDP },
+ 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048)
+ 		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
+ 	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
 -- 
-2.30.2
+2.34.1
 
 
 ______________________________________________________
