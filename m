@@ -4,58 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43C5AC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 17:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2599C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 20:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lZuUEU929g97aigrFSVUKnUv0yKBCkYnp7L7A936YiA=; b=mKEKvla7qggi0tT0VPKkRjWh/i
-	X8Q/Mvg8KOfRoqWNhNDctps8qdDDDduHH7bEB+X01HwF+zh0f9UB6jY05OsaxyEOsvtpqTitm065r
-	noeGIWRIbNus56y55uAM3AwhTFb7RBfPL1/izK8eRZ/ZfpmZhs44OKFLHYMLbWg9MAQ3iCei59qVt
-	2m7Ti/aZt77rg96EB0eyG4q8CByli7xvBjGb7p7puKE6S5hoJypjVkVElBFzok7G6ZxRyfsebKLUh
-	Kjxs9qxPu7XwbyNvdKcDpYdz+/QypyyE2Qv56s4xa1xIoIGTPh2IkFrI8XiZX2kLzwtp8jkEtrZcV
-	+cOpBVRQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=+i0mmvsLjcNxMoWdG1WvHkT9dw0wST948Mnyrz9luN8=; b=1cCGIXEWMyUS4+O2WEIcIZgzCK
+	OlVVrAR1nkGD8QT8th2t396gsomyyWHqAcW3lHZFM68Z7ICW1pYZzSMfoYnfKDKMP/+4OV+Fx147I
+	PrevB8vgXyUVxGnBwSpG3AS5r2Q1r4DX5Qejc+G3x/VaoYZ/lg9HP8O4aydWk7k0AJC4MIyYsqA/f
+	peOEAgGEGzKZYx6cGOBz/t4fpqV1dhO2dy1fSUNZlvtNv/rPRqk0xbYh7YrTdIuWRluD1Hzi1lLcx
+	bhTsPesi9O/dI4QNGMTuYJe8f6JK4WBXQ87kN0sBs+uooMzyOe/2iuqXl/39kj1yxTUXdEn78uNsP
+	vFTouftQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntBUG-005JIv-Kj; Mon, 23 May 2022 17:04:56 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1ntEnO-005oaS-LP; Mon, 23 May 2022 20:36:54 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntBUD-005JHY-HT
- for linux-mtd@lists.infradead.org; Mon, 23 May 2022 17:04:55 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 65E722223A;
- Mon, 23 May 2022 19:04:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1653325485;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=jb6PERdk6i9UFuOnXNXUP3rrDZ8XeDfZdaGqhadGnCU=;
- b=Ih5AmYm8o1wIkM6kcDHNAbqqH2sSuEv1mYQKGBnAgUS3MHS26G0HujQQ36/S8RVWPFcfSn
- Vq2LBEL+oL6sqFXVRAU8YnD4c0yakjpr3QdQBeJsSswrm4md5PdEEhXdN9QSoBajQDiaDT
- iRdpv9dd8Sv7E5C/cEz5vIjYFlY13jk=
+ id 1ntEnK-005oZZ-O0
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2022 20:36:53 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id EEAF8608110A;
+ Mon, 23 May 2022 22:36:40 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+ with ESMTP id zyipqiJcGFwc; Mon, 23 May 2022 22:36:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 6CBA26081119;
+ Mon, 23 May 2022 22:36:40 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+ by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+ with ESMTP id 00yZaR6kcrDe; Mon, 23 May 2022 22:36:40 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+ by lithops.sigma-star.at (Postfix) with ESMTP id 4CE06608110A;
+ Mon, 23 May 2022 22:36:40 +0200 (CEST)
+Date: Mon, 23 May 2022 22:36:40 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: libaokun <libaokun1@huawei.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, 
+ linux-mtd <linux-mtd@lists.infradead.org>, 
+ linux-kernel <linux-kernel@vger.kernel.org>, yukuai3 <yukuai3@huawei.com>
+Message-ID: <1917663619.89751.1653338200219.JavaMail.zimbra@nod.at>
+In-Reply-To: <c2f49973-e5be-475a-1b92-77fc6e86ba37@huawei.com>
+References: <20220412093816.2280678-1-libaokun1@huawei.com>
+ <c2f49973-e5be-475a-1b92-77fc6e86ba37@huawei.com>
+Subject: Re: [PATCH -next] jffs2: fix memory leak in jffs2_do_fill_super
 MIME-Version: 1.0
-Date: Mon, 23 May 2022 19:04:44 +0200
-From: Michael Walle <michael@walle.cc>
-To: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: spi-nor: macronix: Add support for mx66l2g45g
-In-Reply-To: <20220523150334.1758649-1-jiaqing.zhao@linux.intel.com>
-References: <20220523150334.1758649-1-jiaqing.zhao@linux.intel.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <e310ab2100f459346ae6cfa77c9ada19@walle.cc>
-X-Sender: michael@walle.cc
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: jffs2: fix memory leak in jffs2_do_fill_super
+Thread-Index: VWz2X8e4SAV95IUGqJG18OwMjo62Kw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_100453_780271_4DEA668E 
-X-CRM114-Status: UNSURE (   7.42  )
+X-CRM114-CacheID: sfid-20220523_133650_975675_6F264704 
+X-CRM114-Status: UNSURE (   5.89  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,28 +72,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-05-23 17:03, schrieb Jiaqing Zhao:
-> Macronix mx66l2g45g is a 3V, 2Gbit (256MB) NOR flash that supports
-> x1, x2, and x4 operation modes.
-> 
-> Tested read/write/erase with Aspeed AST2600 BMC SoC operating in x2
-> mode at 50MHz, using Aspeed spi-mem driver.
-> 
-> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
-
-Reviewed-by: Michael Walle <michael@walle.cc>
-
-# is this picked up by b4? link goes to the sfdp dump
-Link: 
-https://lore.kernel.org/r/2b859cff-2403-0526-f3ae-749920b3fd8b@linux.intel.com
-
--michael
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImxpYmFva3VuIiA8bGliYW9r
+dW4xQGh1YXdlaS5jb20+Cj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiRGF2aWQg
+V29vZGhvdXNlIiA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRA
+bGlzdHMuaW5mcmFkZWFkLm9yZz4sCj4gImxpbnV4LWtlcm5lbCIgPGxpbnV4LWtlcm5lbEB2Z2Vy
+Lmtlcm5lbC5vcmc+Cj4gQ0M6ICJ5dWt1YWkzIiA8eXVrdWFpM0BodWF3ZWkuY29tPiwgImxpYmFv
+a3VuIiA8bGliYW9rdW4xQGh1YXdlaS5jb20+Cj4gR2VzZW5kZXQ6IE1vbnRhZywgMjMuIE1haSAy
+MDIyIDA4OjAwOjIxCj4gQmV0cmVmZjogUmU6IFtQQVRDSCAtbmV4dF0gamZmczI6IGZpeCBtZW1v
+cnkgbGVhayBpbiBqZmZzMl9kb19maWxsX3N1cGVyCgo+IHBpbmcKClRoYW5rcyBmb3IgeW91ciB0
+aW1lLiBZb3UgcGF0Y2ggd2lsbCBiZSBwYXJ0IG9mIHRoZSB1cGNvbWluZyBtZXJnZSB3aW5kb3cu
+CkknbSBwcmVwYXJpbmcgcmlnaHQgbm93IG15IHF1ZXVlLgoKVGhhbmtzLAovL3JpY2hhcmQKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51
+eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
