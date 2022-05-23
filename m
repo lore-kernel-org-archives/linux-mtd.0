@@ -4,60 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F2E2C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 08:37:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B0D6C433F5
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 09:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FTzgQI9mIAmBm2hdeQ3uf3UgjSTBsZyUifaFYmBIGMw=; b=yxbSRJE+lPkEbwxD2isMBBs08O
-	/zFhqK4S2QpRcFGtmoCiweb71DLRTShg22UGrrLSm9Mhb6pDkYyTZ08VB9n0/mVFe5rbXkgAVHUJR
-	cjXPkRWnCIi7ZwakGJ3t9CCKLRtvtyoT2QJBhSoleg2lfPgcRHQ2BdGLa5aOq2sOvHZoopDw4tdfp
-	5H+66kCYG0SnmZJf6JYUpZ5nj3QI8j1iv+uD3gwlsmHRK9Q30dAyGJ8n8s4LkLYRMa4xpECDC0vQ5
-	85ltQr+aihGjgiYkqqTBSottVm8CKzfq/247IYtLDgAMTmeXR0bUiUO5c3EDwXxxPL+nk2xmVLo1p
-	Q2oSxsgQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:To:From:Date:
+	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
+	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=7tS4/Dr6fYLkHW521+KKlEpX0ruI2SZhu+i+oxlWK60=; b=WISj1b36PezIvE
+	csda+rziXmP9Zd4YrCz0dDViSoMiBNY/5kKCtIkfjndd362bQX+intCbYDHvXU2l5KscBUSjEUetS
+	xR0mkBmi2r5wT/9PQulS493fiQA+UDGXgzjxw6TTPCbZHtPGtr1aaBruazmtF+0c1bnYtQlIrmLM9
+	aHNl5O8nXR3Gnfh0i8zmSgOz9SG7+dhDAYeVf5h6jWxF4xDuEyif6M13Nne4wPjsXu7yxA5Sleqpr
+	4m/IG0m1ojvclEnHAn1It8sxK6K1Dth8iTjKL3kNVmEeRAjDoLTlGESz1eyO8Y6ddhlwFYETxc8JC
+	0stAeCP3f2B5Nu3chW0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nt3Yw-002UTU-Cd; Mon, 23 May 2022 08:37:14 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1nt42m-002i2D-4Q; Mon, 23 May 2022 09:08:04 +0000
+Received: from mail.tireplot.pl ([46.183.184.141])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nt32A-002GiE-KW
- for linux-mtd@lists.infradead.org; Mon, 23 May 2022 08:03:24 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id BEEB62223E;
- Mon, 23 May 2022 10:03:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1653292998;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=viZm/10OcsyYDfI4zcvzPEqIUAuMcVQMGHS11NyoqCU=;
- b=rzyRiyMplNYpkNlTswdcfFl/9ZAlOULv3f4nYk5h8RoA8pS+DopSACMlctDaiwRs9rbBdW
- /tCLruXOiw5IZOCTpTkUS8LyV1DNhPsGmQHem8grzTsQQuy9zC9rACRQ/XgoCtTGppIQ23
- Thphe6d75F+ROTnQbFgL1UeHRHKnSqE=
+ id 1nt3Ed-002MJW-Rm
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2022 08:16:19 +0000
+Received: by mail.tireplot.pl (Postfix, from userid 1001)
+ id D186D4A3FA; Mon, 23 May 2022 10:06:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tireplot.pl; s=mail;
+ t=1653293305; bh=Rfzvu4C+yJ1wyuJ4V+t/udh6cgYEQVnY6S5ltO4wdNg=;
+ h=Date:From:To:Subject:From;
+ b=tOBSbjFaTRR0snOFKlUxM6q6TxUhGahRPwwjQnnZrRH9Knl+nvn5LxOdMGsBy4OBg
+ RAYTfvL/WVoTWeZrnTBphkcXcrzL1JJPOloHu6udNHnred0XvhVZWHm/AJ5Fsyi5FT
+ XlLjwa+weEqYWJLm4qaSlvtywCTsdJptU083x1iiiS+gU5u4xqMpinIgYlytTMCpfi
+ WJt0o0XPE1zj0Z6U0D+rL476yc9mbbr0d3oRX2sFineKeRSqE+P93RN5mIeI0uTbrr
+ 16jFbrtU0+D3OOW35rOze1vQCYgJHbOugqTGeflm8KjogbHBhiMKh2MxbWfE9tbasq
+ lumC1aeNEA5qw==
+Received: by mail.tireplot.pl for <linux-mtd@lists.infradead.org>;
+ Mon, 23 May 2022 08:05:32 GMT
+Message-ID: <20220523084501-0.1.2k.fyn5.0.o95ql0uplp@tireplot.pl>
+Date: Mon, 23 May 2022 08:05:32 GMT
+From: =?UTF-8?Q?"Arkadiusz_Soko=C5=82owski"?=
+ <arkadiusz.sokolowski@tireplot.pl>
+To: <linux-mtd@lists.infradead.org>
+Subject: Koszty instalacji fotowoltaicznej
+X-Mailer: mail.tireplot.pl
 MIME-Version: 1.0
-Date: Mon, 23 May 2022 10:03:16 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Martijn
- Braam <martijn@brixit.nl>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: gigadevice: add support for gd25lq128e
-In-Reply-To: <20220523055541.724422-1-tom@tom-fitzhenry.me.uk>
-References: <20220523055541.724422-1-tom@tom-fitzhenry.me.uk>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <65339d49135ffb578b5cd5ae459cea8a@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_010322_898052_A06026DF 
-X-CRM114-Status: GOOD (  18.98  )
+X-CRM114-CacheID: sfid-20220523_011616_086826_2D8EA430 
+X-CRM114-Status: UNSURE (   0.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,74 +61,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-05-23 07:55, schrieb Tom Fitzhenry:
-> The GD25LQ128EWIGR[0] reports an JEDEC id with a different vendor,
-> otherwise it seems to fit neatly in the gigadevice list.
-
-According to JEP106BC the vendor code 0x25 is Tristar. I'm
-not sure what is going on here.
-
-> Tested to work on the Pine64 PinePhone Pro[1].
-> 
-> Attribution: initial version was written by
-> Martijn Braam <martijn@brixit.nl> for the Pine64 vendor kernel[2].
-> 
-> Also in use in vendor u-boot builds[3].
-> 
-> 0. https://www.gigadevice.com/flash-memory/gd25lq128e/
-> 1. https://wiki.pine64.org/wiki/PinePhone_Pro
-> 2. https://gitlab.com/pine64-org/linux/-/merge_requests/29
-> 3.
-> https://github.com/Tow-Boot/Tow-Boot/blob/b94838dfb8971cdeb841d3922051aaa8e108b085/boards/pine64-pinephonePro/0001-mtd-spi-nor-ids-Add-GigaDevice-GD25LQ128E-entry.patch
-
-Do we need this? If you like you can provide a datasheet
-with the Link: tag at the end of the commit.
-
-This flash supports SFDP, please provide an SFDP dump, see [1].
-
-> Signed-off-by: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
-> ---
->  drivers/mtd/spi-nor/gigadevice.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/gigadevice.c 
-> b/drivers/mtd/spi-nor/gigadevice.c
-> index 33895002eeea..871c9dee11dc 100644
-> --- a/drivers/mtd/spi-nor/gigadevice.c
-> +++ b/drivers/mtd/spi-nor/gigadevice.c
-> @@ -56,6 +56,10 @@ static const struct flash_info 
-> gigadevice_nor_parts[] = {
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> +	{ "gd25lq128e", INFO(0x257018, 0, 64 * 1024, 256)
-> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-
-Did you test locking?
-
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ) },
-
-As this flash supports SFDP, please use SNOR_ID3(0x257018)
-and drop both the INFO() and the NO_SFDP_FLAGS(). You'll
-need my SNOR_ID3() patches [2].
-
->  	{ "gd25q128", INFO(0xc84018, 0, 64 * 1024, 256)
->  		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/4304e19f3399a0a6e856119d01ccabe0@walle.cc/
-[2] 
-https://lore.kernel.org/linux-mtd/20220510140232.3519184-1-michael@walle.cc/
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+RHppZcWEIGRvYnJ5LAoKc3R3b3J6eWxpxZtteSBzcGVjamFsbsSFIG9mZXJ0xJkgZGxhIGZpcm0s
+IG5hIGtvbXBsZWtzb3fEhSBvYnPFgnVnxJkgaW53ZXN0eWNqaSB3IGZvdG93b2x0YWlrxJkuICAK
+ClNwZWNqYWxpenVqZW15IHNpxJkgdyB6YWtyZXNpZSBkb2JvcnUsIG1vbnRhxbx1IGkgc2Vyd2lz
+aWUgaW5zdGFsYWNqaSBmb3Rvd29sdGFpY3pueWNoLCBkeXNwb251amVteSBuYWpub3dvY3plxZtu
+aWVqc3p5bWkgcm96d2nEhXphbmlhLCBrdMOzcmUgemFwZXduacSFIFBhxYRzdHd1IG9jemVraXdh
+bmUgcmV6dWx0YXR5LgoKTW/FvGVteSBwcnp5Z290b3dhxIcgZGxhIFBhxYRzdHdhIHdzdMSZcG7E
+hSBrYWxrdWxhY2rEmSBpIHByemVhbmFsaXpvd2HEhyBlZmVrdHkgbW/FvGxpd2UgZG8gb3NpxIVn
+bmnEmWNpYS4KCkN6eSBzxIUgUGHFhHN0d28gb3R3YXJjaSBuYSB3c3TEmXBuxIUgcm96bW93xJkg
+dyB0eW0gdGVtYWNpZT8KClBvemRyYXdpYW0KQXJrYWRpdXN6IFNva2/Fgm93c2tpCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
