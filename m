@@ -4,75 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF988C433F5
-	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 14:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40218C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 23 May 2022 14:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=m3ZOHJyAJd8eAtAYRBiXcC8G8LetfiUOqWTZ+OgNLmk=; b=AwJe3uel5Du9oj
-	5aDuRDYnADfcBgp4MDuOuQVOFrWx3hO+d2WcfCGP32ZxG4iWyzwPucewH/fDoFuEVIH+oEFsSzkI5
-	KBgJNJDn1lfD/9b9vPEQZfdJz5S5fGweKGn1epWPLv8wzHjaMXCEvs+f/DPaYmgDm7pQBr/GtMAoa
-	9EMC7oDeocR/PxiahDt1hlsSEywMgmFB/HtUoPstTFOkZG2DAsQ9/bovEtlgZWiIoVgxvttTzfKyB
-	hfJSrjvtIYEQ5PxUV83b6YdA9SHcp7/B9GrdR3BZm7/kWUtNRpkOM9/6SWzie+AHiz3ANfsepHlhX
-	RLmNryPnnJM0Wwzol73A==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=dZmx+hv6vy7DX1gHd9/jfLYwubYQ7PIOUgfcV/o6a0U=; b=qKiuF350xgPs4u
+	jkHZ4NwjvkEc17Bw66JWEsDPQ0oBsAL8C04Z60/ozRyuboy6JnJeMuMd1II627Ezvi93BJZRFJb2z
+	sNKv4hoWg7DiAjLSA7J0TlylajEg9haEIoJygU22Q9shgS+WKQ3cEFecFmMgdRUNErR7TNl9Aswmh
+	I+/VJ/QuAwnp6hgoXA5J4no6bcnzzvOOU6OGBXn/TW0YJ0pBW7SosVnUbpDJNqWvLpU0rROggVbSr
+	7HyDZdom6iUVMBX3OX+Jx7tw9QZkXWvnVK4nu4G3J7gyRKfFOx2WGDZsKZ0E8Q12AbNbd80YygWlk
+	t/WnzOPYWQQ5I66nQTKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nt97X-004jXA-7F; Mon, 23 May 2022 14:33:19 +0000
-Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
+	id 1nt97w-004jgB-1L; Mon, 23 May 2022 14:33:44 +0000
+Received: from mga18.intel.com ([134.134.136.126])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nt97M-004jUl-2A; Mon, 23 May 2022 14:33:09 +0000
-Received: by mail-pj1-x102d.google.com with SMTP id z11so4418201pjc.3;
- Mon, 23 May 2022 07:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=o5VXWNPSZA3rC+8/IoRn3B39pVcambgp6FwS9mwBIhE=;
- b=VGALFZc0nYQQoedtnupkwyTglseKhWTY2On5GWZjTBnVdfqeZRtT6V0EiUpJ4SUwsd
- r9zRnVuzUcyDeEjRa1u++eT4aTIC52q/m+Q/fVKQ3QanGuFNW7G8l2O3IGcZdTJf9Ptj
- vNJdha+QWBjmlb2h2upXjluOrjOKlA/5fjH+VuGtiQR8mnzvfFkot6ua1qompAvmKTP2
- rsM61K6/prGiCKWrP1ZOyPEXy7YHuCvAioTCZowwRpVdsQ9hyzAaHmZZbUFHIKue0Jum
- rInuwPcIRCPqJKhB2ASaMyZ7xevms3Vtn1jH86zuT5wA4Ado2Qk5+j7P/uwRR4EidLRf
- k4Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=o5VXWNPSZA3rC+8/IoRn3B39pVcambgp6FwS9mwBIhE=;
- b=YHRTfUPJgkTY1BstxLWXSdF3rlsajBS6nbrK8UaUUbCEX72fYQX/+WA2qLJc8Gt+6o
- LSAbBcsFXJuXl7UhMB8GMUHqqdCWSIrrZGuuBzM3uQoSiBlqTaK+/x+H6/Tf3O2a6ez1
- VeOkzJxoZXDRjTu/1mn7F1fQjS0WCV7LenPDq16Kef3/3RT709MrzEW4TMT6WPSICa/r
- n6GGPWBkQVMpZ+yfvHx1BNe0Q5ANMTl/J8h5+bpR6kDwojwZlJKGjtciUeglO/h1/vof
- 98tMMQ/98NKX0JQLyKY3c9NtfcCi/J6iJlHJLWeaBBrwIHvEB/W3EYthDe+oweULlTtn
- URXA==
-X-Gm-Message-State: AOAM5322HhGdfeI3nn7NWyPY0d02JG/VDD4JC2sPxgGKjSIqBJShuk5S
- mPEzVmuAkN5966LTUV2XWk0=
-X-Google-Smtp-Source: ABdhPJy22fsu+i3GK5N2DZ0aRKa6iZuZr30HkITvLYPMJ/oH+EPw7wfRAJ0866/BtpxvxVyX7CHwLg==
-X-Received: by 2002:a17:90a:6c66:b0:1df:9399:9189 with SMTP id
- x93-20020a17090a6c6600b001df93999189mr26896192pjj.179.1653316387168; 
- Mon, 23 May 2022 07:33:07 -0700 (PDT)
-Received: from localhost.localdomain ([202.120.234.246])
- by smtp.googlemail.com with ESMTPSA id
- n18-20020a6563d2000000b003f655cf45c0sm4835848pgv.63.2022.05.23.07.33.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 May 2022 07:33:06 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: linmq006@gmail.com
-Subject: [PATCH] mtd: maps: Fix refcount leak in ap_flash_init
-Date: Mon, 23 May 2022 18:32:55 +0400
-Message-Id: <20220523143255.4376-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ id 1nt97s-004jdJ-Bd
+ for linux-mtd@lists.infradead.org; Mon, 23 May 2022 14:33:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1653316420; x=1684852420;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=IuGXxsgG3ZhE9KtfQ6orMoFZqsUCaaLiOomnMzr6usE=;
+ b=UfCJ2qYUejT9NJSPAzx66d8a/AsmVBGcF6GWRy6/GRhk3wYemtzfF5hP
+ yhpu2qwQL0OnMUrRtJpngMb/U6CJJW3hWoJT/pY1zRpxiEhqfVITdp1RD
+ V1E+r6AK0CmsQMtNU8ZHVPk3enMubURPUKdV7CcmqhiNB70336xigDjAL
+ AC/WgrLGzdaZALf/Oti9C0X3ZGxty8lMk6u25HWQYm3BU8wxwzOjbrOyf
+ idzCA4bPZ8f+k8CL2nz6/qjlrLngdf9V6Rwv/U36MIHUgehq5erBCe03w
+ csZoaWjcxVbIFFCaD9p1g+gw3371sCrCNaBQLN00vWIA1L6+pCiDg6D/z w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10356"; a="255304352"
+X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; d="scan'208";a="255304352"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 May 2022 07:33:35 -0700
+X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; d="scan'208";a="600679342"
+Received: from jiaqingz-mobl.ccr.corp.intel.com (HELO [10.249.171.16])
+ ([10.249.171.16])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 May 2022 07:33:34 -0700
+Message-ID: <fde9bd5a-7161-9222-4719-4279b2416163@linux.intel.com>
+Date: Mon, 23 May 2022 22:33:31 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v2] mtd: spi-nor: macronix: Add support for mx66l2g45g
+Content-Language: en-US
+To: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
+ Michael Walle <michael@walle.cc>
+Cc: linux-kernel@vger.kernel.org
+References: <20220523143002.1754922-1-jiaqing.zhao@linux.intel.com>
+From: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+In-Reply-To: <20220523143002.1754922-1-jiaqing.zhao@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_073308_138438_8624BC6C 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20220523_073340_541006_2D948E3A 
+X-CRM114-Status: GOOD (  13.28  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,31 +80,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-of_find_matching_node() returns a node pointer with refcount
-incremented, we should use of_node_put() on it when not need anymore.
-Add missing of_node_put() to avoid refcount leak.
+Use PARSE_SFDP for now as the SNOR_ID3() patch is not merged yet, will
+switch to it after it is merged.
 
-Fixes: b0afd44bc192 ("mtd: physmap_of: add a hook for Versatile write protection")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
- drivers/mtd/maps/physmap-versatile.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/maps/physmap-versatile.c b/drivers/mtd/maps/physmap-versatile.c
-index ad7cd9cfaee0..6ba6a1dd127c 100644
---- a/drivers/mtd/maps/physmap-versatile.c
-+++ b/drivers/mtd/maps/physmap-versatile.c
-@@ -93,6 +93,7 @@ static int ap_flash_init(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 	ebi_base = of_iomap(ebi, 0);
-+	of_node_put(ebi);
- 	if (!ebi_base)
- 		return -ENODEV;
- 
--- 
-2.25.1
-
+On 2022-05-23 22:30, Jiaqing Zhao wrote:
+> Macronix mx66l2g45g is a 3V, 2Gbit (256MB) NOR flash that supports
+> x1, x2, and x4 operation modes.
+> 
+> Tested read/write/erase with Aspeed AST2600 BMC SoC operating in x2
+> mode at 50MHz, using Aspeed spi-mem driver.
+> 
+> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+> ---
+>  drivers/mtd/spi-nor/macronix.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
+> index d81a4cb2812b..fd24ce9f02e2 100644
+> --- a/drivers/mtd/spi-nor/macronix.c
+> +++ b/drivers/mtd/spi-nor/macronix.c
+> @@ -95,6 +95,8 @@ static const struct flash_info macronix_nor_parts[] = {
+>  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>  			      SPI_NOR_QUAD_READ) },
+> +	{ "mx66l2g45g",  INFO(0xc2201c, 0, 64 * 1024, 4096)
+> +		PARSE_SFDP },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048)
+>  		NO_SFDP_FLAGS(SPI_NOR_QUAD_READ) },
+>  	{ "mx66u2g45g",	 INFO(0xc2253c, 0, 64 * 1024, 4096)
 
 ______________________________________________________
 Linux MTD discussion mailing list
