@@ -4,74 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E69C0C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 22:28:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A209EC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 22:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z4GACxGHUQQI9Csz5umq0RSDl1IVlSjUcce9oPas2bE=; b=JL6seqbHrWqTzk
-	eieMJ/QtfCXtSWDA/QjTw3OqlfkLkqliFIcAkODNw6NAYyN63yeeMj5pmZwr5t9fCbgvSuabRT7O7
-	osHBfyC7Wlr+EgUAIzqKrX7W7x20J2ub5NHIrrnudCG2ZKfOOerkpQiOFAIDHmCDBHtU/4dy0Uw6W
-	vNKlx70hzhJjeHGJZACMYqU6MffyztCgUvNnp30gFe2CNBiHaOZV0M2kNRzscUtfNRSlHowh6SDW2
-	VgCQpb5aTqsiXYfvoDQfWCMmkIaO+RwHZIbm/gi71U+Lj7aCIOvmEdA3dRBU4OSQ+btEWyCM7uW3b
-	hst7lCZRJTDzvyjdgaaw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=mYMhZqTjLYeRrL3G8cNXLEb+8/hbjn5NptcDAUmEpHU=; b=k+bpbtDXzCzHT4jbH6H2eFLyvB
+	/rbosAUW/CZ0xw9vNmxzfqQV+cEeW8YiGrha/jt8LC5EHh2yIRzyB71dON4xcvDy4R5bH2jhV+WIb
+	vbMi4vqBKYlbJ9JrZkJITR4xggxxc+ylNgPC0Ku0IMFcz1bHMaFb9/S3U8FjwDre18CbjnH6fKVpi
+	FEnUGStyeVKln03+qz7mj3cyL2RELt4Kv3E0PzuovrSgkrSfTOCZ2fxhpYYI5XNoBsg3mekgU+vJO
+	Sk+GIY4yPgP5dJfO+FdBvkwf2w7GM455WxSepZGyq7s/p5F2BoLvaJGuVhIXYgQSnFB4oOqJOdufs
+	398yC9Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntd0C-009KC4-98; Tue, 24 May 2022 22:27:44 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1ntd3W-009KsL-L3; Tue, 24 May 2022 22:31:10 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntd08-009KB8-Fc
- for linux-mtd@lists.infradead.org; Tue, 24 May 2022 22:27:41 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 1ntd3U-009Kqv-5j
+ for linux-mtd@lists.infradead.org; Tue, 24 May 2022 22:31:09 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D87E761796;
- Tue, 24 May 2022 22:27:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4C610C36AE3;
- Tue, 24 May 2022 22:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653431257;
- bh=0/gdY3/qf3nt8CaGhYiLvknHYmLj9oilZf94ifwRrcw=;
- h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
- b=npxK6HKQH3T7GmYI1wyOHNYj01zx3NQ5oB4vUe9gJXqxq3ga/CKlsjJ90cgJkFDaq
- dXoH+Ew3pi3drWepkvXs+2MU4tqGe5V9wOd3yCvhMg48iQXerKt8ejzIhBAWefsczI
- yX6ae5R/j0Zs/FFEIeOWXOkwkiWstz8xw2td4hgdskEVZx1EmvS4AV8EZ64wmMM9JD
- +wFBLDsWO6NTjkloEnW31nidQNJOOb3rniiznI8aoNqb3XQ4QaW/czN2RQpY6i9JPW
- GyVwfh3EcNRK5zo0sBDqXYiWYIgiupn8GVdQGbO0obYU7XBYfrpzXg34F4gMD5i5e9
- 58mfcW06hpj4A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
- (localhost.localdomain [127.0.0.1])
- by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
- 3B19CE8DD61; Tue, 24 May 2022 22:27:37 +0000 (UTC)
-Subject: Re: [GIT PULL] mtd: Changes for 5.19
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20220523112459.29000c2d@xps-13>
-References: <20220523112459.29000c2d@xps-13>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list
- <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20220523112459.29000c2d@xps-13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.19
-X-PR-Tracked-Commit-Id: 2c51d0d88020b4d3c9bbe7d9df2796b2c2ce05b8
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d335371940179318df97d66baef13987ee6e796b
-Message-Id: <165343125723.3997.9953251172151290451.pr-tracker-bot@kernel.org>
-Date: Tue, 24 May 2022 22:27:37 +0000
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Vignesh Raghavendra <vigneshr@ti.com>,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Michael Walle <michael@walle.cc>, Pratyush Yadav <p.yadav@ti.com>,
+ by ssl.serverraum.org (Postfix) with ESMTPSA id ADA11221D4;
+ Wed, 25 May 2022 00:30:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1653431456;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=lhGQ7tI7wUakb4EC0eKrtQPP0/Pvguw0Yv+MToZjl2E=;
+ b=AkCfXPN7d5TXu1LEgNEP3517qTQIuyfHqvMT91ZTbkKaH6rNMxHCcV/2yKKm6zSKCeSMRj
+ IlubmWCkPfKRzqlldBgBuvH0jUa6gCoXlz9EUZdBhhcYVNM7iYuzPnErdIRGhh7O0govft
+ p6mbpfi1z7FNnPVFdDReNeE9+nAeNsc=
+MIME-Version: 1.0
+Date: Wed, 25 May 2022 00:30:50 +0200
+From: Michael Walle <michael@walle.cc>
+To: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Martijn
+ Braam <martijn@brixit.nl>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: gigadevice: add support for gd25lq128e
+In-Reply-To: <28d3925a-983a-fcb8-19af-6e6baf892d53@tom-fitzhenry.me.uk>
+References: <20220523055541.724422-1-tom@tom-fitzhenry.me.uk>
+ <65339d49135ffb578b5cd5ae459cea8a@walle.cc>
+ <28d3925a-983a-fcb8-19af-6e6baf892d53@tom-fitzhenry.me.uk>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <10c2bc96821e9a907e54ef1675dc4c60@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220524_152740_594143_BC6C550E 
-X-CRM114-Status: UNSURE (   6.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220524_153108_405378_ACB044C0 
+X-CRM114-Status: GOOD (  16.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,24 +71,75 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Mon, 23 May 2022 11:24:59 +0200:
+Am 2022-05-24 22:50, schrieb Tom Fitzhenry:
+> On 23/5/22 18:03, Michael Walle wrote:
+>> According to JEP106BC the vendor code 0x25 is Tristar. I'm
+>> not sure what is going on here.
+> 
+> Nor I! The board schematic[0] reports the use of GD25LQ128EWIGR
+> (vendor Gigadevices), but indeed the chip itself reports vendor
+> Tristar.
+> 
+> I will ask the community/vendor about this discrepancy.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.19
+Yes that would be great. Could also be one of the other
+25h vendors, usually the continuation code is just ignored.
+I'd bet it some china SPI flash.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d335371940179318df97d66baef13987ee6e796b
+I don't think it is a Gigadevice because the datasheet says its ID
+is c86018.
 
-Thank you!
+>> This flash supports SFDP, please provide an SFDP dump, see [1].
+> 
+> I will include this in my v2 patch. For posterity, here's the dump:
+> 
+> $ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> 53464450060101ff00060110300000ff9d05010380000002ffffffffffff
+> ffffffffffffffffffffffffffffffffffffe520f9ffffffff0744eb086b
+> 083b80bbfeffffffffff00ffffff44eb0c200f5210d800ff234ac90082d8
+> 11c7cccd68467a757a75f7a2d55c4a422cfff030c080ffffffffffffffff
+> ffffffffffffffff501950169cf9c0648fecffff
+> $ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> de4d6be54e479d60859b0ca8a0ee9216  
+> /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+> 257018
+> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+> gd25lq128e
+> $ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+> gigadevice
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks.
+
+> I have attached the parsed sfdp, according to
+> https://github.com/petris/sfdp-parser
+> 
+>> Did you test locking?
+> 
+> No. The datasheet mentions Status Register locking, but I will look
+> into how to adequately test this.
+
+Or just drop the locking flags for now if you like.
+
+>> As this flash supports SFDP, please use SNOR_ID3(0x257018)
+>> and drop both the INFO() and the NO_SFDP_FLAGS(). You'll
+>> need my SNOR_ID3() patches [2].
+> 
+> SGTM, will do.
+
+If you don't find the vendor and don't need locking, there is
+also a generic SFDP flash driver [1]. You could give it a try
+and add a Tested-by there.
+
+-michael
+
+[1] 
+https://lore.kernel.org/linux-mtd/20220513133520.3945820-1-michael@walle.cc/
 
 ______________________________________________________
 Linux MTD discussion mailing list
