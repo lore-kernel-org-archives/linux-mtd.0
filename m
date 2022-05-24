@@ -4,82 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D0DC433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 07:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E67EC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 07:20:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CYQ6UeXuIMeYl/2AvQDwhR5mi3dH73dr3lw8Kd+ZNFI=; b=lIjoSq2B52CwyG
-	U58i7FYC42lg4uQmuymUIzxmsaU75gNa+nAaIhaXO6mW39jdnA5S8HeivyFfYgRYDUUqqeGoQ6nQK
-	oDpFWtudCQTzchGVZOIHkHxOAGROHgFoWGTSuWSprwX0PLuvQXzW7QWeY+8KgbNu3WGnQI7yQkaSe
-	usCz/rpPZRpvqoh3WnyPS0i8eIweDiZtXwgTLxD42y0Lq76Vk3Sq1LDlGm8U3Gv0NciauSNGv0re9
-	XPJ3aQXW2vl/B0nQ7ak3BxzRgf0OKiznhvnQ1awOiY4tGzL8HqTPAJa5tsIU5dxkY8N2SLqbrLUxJ
-	8Z7TExxREYwwPgN9178w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=NNAXdd+aVLB+IGmDtafUy9oegkQ/RNnMJfRsHeRwq2Q=; b=ZhNZB1mVgm5vPugTzaZRgtxSaz
+	A8QHT2KUst5sBnvzK7PvL3g+Me94Jwdz7W2p6SiMCV89L5w+r4jX8ct0wwjSVtWcDETfiQCHUKYTh
+	os+ze8EoupqxAHUA1Th9nq+5DBFVAsatN2RsZMRKNX3UCH+8RylNWJcO3YTAe80YjmmzgVIPhDZya
+	EvqOfqI9L6n/K103GOAu6GnJLT2eF94ub/8GazH8NV4VGL6+8h2lsZ6sbE6QUc+EBc80l77rMXrUm
+	9G1Os6UbLR+ICdfdUp7pcmFn+0/7Z0b2qzuQgDFmTulLpTkfRiqhXC28qZIvlTL3yxcLmq6DPR0Fl
+	CmwsL2Lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntOjm-00728o-Q3; Tue, 24 May 2022 07:13:50 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1ntOpc-0073T0-Lq; Tue, 24 May 2022 07:19:52 +0000
+Received: from ssl.serverraum.org ([176.9.125.105])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntOji-007281-PE
- for linux-mtd@lists.infradead.org; Tue, 24 May 2022 07:13:48 +0000
-Received: by mail-ej1-x632.google.com with SMTP id i27so33382025ejd.9
- for <linux-mtd@lists.infradead.org>; Tue, 24 May 2022 00:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=malat-biz.20210112.gappssmtp.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=eunu73/8rviOeHUzBMMB6FIOIz37GALKRdpDRhaNFC0=;
- b=z+alSYku/zecfz4dsYeNtbJLpLWjCHXWWjA3QK+XPcKBlpmeNZBmH/5/fvsx2SR9ng
- uWNNkIri6AlIvZrnsE5YfJ/5MiC/krGK/33Waum1Lkwn0u9CrsjmGdhEv8cmMW1qau2e
- ueoBmn/oQpKn6uYPa4Rfyh9ZWr0lHIrR5aYXi1wIO5NdSaxYGjJJztPMIHNWX5OpsWQh
- +LGfYGZ7/csDux8l6avPyC0i6uNoNwzdPL71AjNZHZUOU/P/1qxcnpjWRbGoEGExClLr
- GFUhaatl5OBjomy4aatrZQxqb9xGAcalTWOBz9Dkdp8ZNFG1FtENIKbf55rbn6HKqoQt
- WHEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=eunu73/8rviOeHUzBMMB6FIOIz37GALKRdpDRhaNFC0=;
- b=NCZIiuSfCCVIH1NjJWXIeK7aIsjb5KS0HMEd6oKx/N3g1+tZg7ntkw+6A96t4cHYxP
- glE6FuSdk+x+fWMYmbXrQOLopnn7KhBNlTAWvHi8jKnJqhelBOTaK8yqHBO44FTW9n5w
- pZB1UHQj5lmHMglxWsBaJsm4z+zTFI03iNL3TS0FySvi60UZH+r3SesPN5HtIW05W0GA
- rkKeONOTA8KfV+666EMmUzRF0y2IP+1fsrZVbqUFRheW2XTtPE4kJSSK6e3NHh+BnAaO
- mhlJZaK9RUPCxx9QBZzfCAmgzU4XpBWmxUm7eDZWSUsaUKf8pU0D9tknq5DUwhe6HoRT
- Pvzg==
-X-Gm-Message-State: AOAM530Mby5own2kwCoum/q2YonZy8AHKSoBiMovvx7h02rHvk4NAkcE
- AzoYMFkKNpi3KzF0GyJ4mZpWqkN9cOheozvB
-X-Google-Smtp-Source: ABdhPJyxpBX7gEiMHY622uqEJnEc+74EkHsDKkKTLnzD3C0VLXIHvwms/bjENrYL/Aah+zTlqZeh0g==
-X-Received: by 2002:a17:907:6e22:b0:6fe:b668:101 with SMTP id
- sd34-20020a1709076e2200b006feb6680101mr15613909ejc.247.1653376423765; 
- Tue, 24 May 2022 00:13:43 -0700 (PDT)
-Received: from ntb.petris.klfree.czf
- ([2a02:8070:d483:ed00:4bcc:154f:5c11:5870])
- by smtp.gmail.com with ESMTPSA id
- ee46-20020a056402292e00b0042617ba63aesm9193489edb.56.2022.05.24.00.13.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 May 2022 00:13:43 -0700 (PDT)
-Date: Tue, 24 May 2022 09:13:41 +0200
-From: Petr Malat <oss@malat.biz>
-To: David Laight <David.Laight@aculab.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Joern Engel <joern@lazybastard.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] mtd: phram: Map RAM using memremap instead of ioremap
-Message-ID: <YoyFpbhLB1E+8ilr@ntb.petris.klfree.czf>
-References: <20220523142825.3144904-1-oss@malat.biz>
- <3cab9a7f4ed34ca0b742a62c2bdc3bce@AcuMS.aculab.com>
- <Youn9AmqY6/EExDw@ntb.petris.klfree.czf>
- <e33f91a3eacc4aa3a08e6465fef9265c@AcuMS.aculab.com>
+ id 1ntOpZ-0073Rx-L3
+ for linux-mtd@lists.infradead.org; Tue, 24 May 2022 07:19:51 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 865732222E;
+ Tue, 24 May 2022 09:19:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1653376781;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=K/htG7OyW5YqCjznA1oXKYQhkz8pG2pTnLrCkASZVoo=;
+ b=ksnNzOVQTrqvIX7KFcA/r0rYwmv2R4E/MZsYZwjPUJvVCkviboit4z2Ko7iAOwlVW2sLAa
+ JGfP6tS8OCbVwPUrITcOOl8nSgeZ0dzFRc2ihvxi2vkyrxhe1NnxY9I0tGeEbgwPItk3No
+ RZ4rDiVGCjoAVYoZvbTDOTixXV2Of3I=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <e33f91a3eacc4aa3a08e6465fef9265c@AcuMS.aculab.com>
+Date: Tue, 24 May 2022 09:19:38 +0200
+From: Michael Walle <michael@walle.cc>
+To: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mtd: spi-nor: macronix: Add support for mx66l2g45g
+In-Reply-To: <91183d9f-a4a2-b237-b097-2ba546f9308c@linux.intel.com>
+References: <20220523150334.1758649-1-jiaqing.zhao@linux.intel.com>
+ <e310ab2100f459346ae6cfa77c9ada19@walle.cc>
+ <91183d9f-a4a2-b237-b097-2ba546f9308c@linux.intel.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <02b3a83b5fafa7099d79fac7ca9250f2@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220524_001347_081452_A7A5A39B 
-X-CRM114-Status: GOOD (  25.08  )
+X-CRM114-CacheID: sfid-20220524_001949_917960_7C598EEF 
+X-CRM114-Status: UNSURE (   8.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,57 +70,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, May 23, 2022 at 04:09:20PM +0000, David Laight wrote:
-> From: Petr Malat
-> > Sent: 23 May 2022 16:28
-> > On Mon, May 23, 2022 at 02:51:41PM +0000, David Laight wrote:
-> > > From: Petr Malat
-> > > > Sent: 23 May 2022 15:28
-> > > >
-> > > > One can't use memcpy on memory obtained by ioremap, because IO memory
-> > > > may have different alignment and size access restriction than the system
-> > > > memory. Use memremap as phram driver operates on RAM.
-> > >
-> > > Does that actually help?
-> > > The memcpy() is still likely to issue unaligned accesses
-> > > that the hardware can't handle.
-> > 
-> > Yes, it solves the issue. Memcpy can cause unaligned access only on
-> > platforms, which can handle it. And on ARM64 it's handled only for
-> > RAM and not for a device memory (__pgprot(PROT_DEVICE_*)).
+Am 2022-05-24 05:35, schrieb Jiaqing Zhao:
+> On 2022-05-24 01:04, Michael Walle wrote:
+>> Am 2022-05-23 17:03, schrieb Jiaqing Zhao:
+>>> Macronix mx66l2g45g is a 3V, 2Gbit (256MB) NOR flash that supports
+>>> x1, x2, and x4 operation modes.
+>>> 
+>>> Tested read/write/erase with Aspeed AST2600 BMC SoC operating in x2
+>>> mode at 50MHz, using Aspeed spi-mem driver.
+>>> 
+>>> Signed-off-by: Jiaqing Zhao <jiaqing.zhao@linux.intel.com>
+>> 
+>> Reviewed-by: Michael Walle <michael@walle.cc>
+>> 
+>> # is this picked up by b4? link goes to the sfdp dump
 > 
-> Does mapping it as memory cause it to be cached?
-> So the hardware only sees cache line reads (which are aligned)
-> and the cpu support for misaligned memory accesses then
-> stop the faults?
-Yes, this is controlled by the MEMREMAP_WB flag, which sets up
-a mapping, which "matches the default mapping for System RAM on
-the architecture. This is usually a read-allocate write-back cache.
+> May I ask what do you mean by "is this picked up by b4?"
 
-> On x86 (which I know a lot more about) memcpy() has a nasty
-> habit of getting implemented as 'rep movsb' relying on the
-> cpu to speed it up.
-> But that doesn't happen for uncached addresses - so you get
-> very slow byte copies.
-> OTOH misaligned PCIe transfers generate TLP that have the
-> correct byte enables for the end words.
-> Provided the PCIe target isn't broken they are fine.
-With memremap one should get the same behavior and performance
-as with the system memory and it seems to be a good choice for
-"Physical system RAM" MTD driver, but if one uses it for actual
-IO memory, he should use ioremam, memcpy_toio and memcpy_fromio.
-Using these prevents the crash on arm64 as well, but could lead
-to a performance degradation on some platforms.
+It was question to the maintainers (or myself). b4 the tool
+the spi-nor maintainers [1] use to pick up the patches. And,
+no it is not picked up automatically.
 
-If you think there could be users using the driver for a real IO
-mem, I can provide both behaviors and let the user choose with an
-option.
-  Petr
+-michael
+
+[1] 
+https://people.kernel.org/monsieuricon/introducing-b4-and-patch-attestation
+
+>> Link: 
+>> https://lore.kernel.org/r/2b859cff-2403-0526-f3ae-749920b3fd8b@linux.intel.com
 
 ______________________________________________________
 Linux MTD discussion mailing list
