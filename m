@@ -4,60 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44B01C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 04:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71D0DC433F5
+	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 07:14:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=zLUts+tkvVR1UI1Zk/Eax5TmqYtafeDIB/dT0YriCpo=; b=0TyH88nW1jpd07
-	XBZnVTMnTLW8mBxv1vV4uvzVpLUKIZeFxNMJkpMCospfRNTTbC95XM7//LhJUNX3qxGee4s+0loO8
-	sgx8ctlh5oqwetwUcJ7QpNF83OXvANDlgm8ogkwSu91U+FG/682b7UbWNzXx23fr3JXDaPSkIrd+5
-	+8TKPjX3YOtf/R2Nrdx0LuEodhrj8itK6PZCSsJma1mVBQOlVtlse0WZPyuuZfLNX0OYHOisNceYt
-	MQ9mRaHgVgp5NkhDkpCeQRK+J4z32YKHjpnN2ywPh4Uy9Pg6YEd3itzCzb1NXFCkIDo5s0Pa2yHfB
-	+X0jn2KTov7xCApMF/jA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=CYQ6UeXuIMeYl/2AvQDwhR5mi3dH73dr3lw8Kd+ZNFI=; b=lIjoSq2B52CwyG
+	U58i7FYC42lg4uQmuymUIzxmsaU75gNa+nAaIhaXO6mW39jdnA5S8HeivyFfYgRYDUUqqeGoQ6nQK
+	oDpFWtudCQTzchGVZOIHkHxOAGROHgFoWGTSuWSprwX0PLuvQXzW7QWeY+8KgbNu3WGnQI7yQkaSe
+	usCz/rpPZRpvqoh3WnyPS0i8eIweDiZtXwgTLxD42y0Lq76Vk3Sq1LDlGm8U3Gv0NciauSNGv0re9
+	XPJ3aQXW2vl/B0nQ7ak3BxzRgf0OKiznhvnQ1awOiY4tGzL8HqTPAJa5tsIU5dxkY8N2SLqbrLUxJ
+	8Z7TExxREYwwPgN9178w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntMTw-006nsv-EP; Tue, 24 May 2022 04:49:20 +0000
-Received: from azure-sdnproxy.icoremail.net ([20.232.28.96]
- helo=azure-sdnproxy-3.icoremail.net)
- by bombadil.infradead.org with smtp (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntMTr-006nrD-MG
- for linux-mtd@lists.infradead.org; Tue, 24 May 2022 04:49:18 +0000
-Received: from ubuntu.localdomain (unknown [124.236.130.193])
- by mail-app3 (Coremail) with SMTP id cC_KCgDX36OqY4xig7u_AA--.14600S2;
- Tue, 24 May 2022 12:48:55 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-mtd@lists.infradead.org
-Cc: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- linux-kernel@vger.kernel.org, Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] mtd: Fix deadlock caused by cancel_work_sync in sm_release
-Date: Tue, 24 May 2022 12:48:41 +0800
-Message-Id: <20220524044841.10517-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgDX36OqY4xig7u_AA--.14600S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW5XrWkWFy8Zr1DZw1DZFb_yoW8Jw1Dpr
- WrCry8JFW8Ar4DJ34DKa13ZF4ru34kKFW7Kr1UK3W5ZrZ5XFnIg345KFyFgFWfGFy8A39I
- vFs2grW5ZF1rZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDU0xBIdaVrnRJUUUkq14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
- rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
- 1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
- JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
- CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
- 2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
- W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r45
- MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
- 0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
- wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
- W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
- cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjX4S5UUUUU==
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAgQAAVZdtZ1wIAAZst
+	id 1ntOjm-00728o-Q3; Tue, 24 May 2022 07:13:50 +0000
+Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ntOji-007281-PE
+ for linux-mtd@lists.infradead.org; Tue, 24 May 2022 07:13:48 +0000
+Received: by mail-ej1-x632.google.com with SMTP id i27so33382025ejd.9
+ for <linux-mtd@lists.infradead.org>; Tue, 24 May 2022 00:13:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=malat-biz.20210112.gappssmtp.com; s=20210112;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=eunu73/8rviOeHUzBMMB6FIOIz37GALKRdpDRhaNFC0=;
+ b=z+alSYku/zecfz4dsYeNtbJLpLWjCHXWWjA3QK+XPcKBlpmeNZBmH/5/fvsx2SR9ng
+ uWNNkIri6AlIvZrnsE5YfJ/5MiC/krGK/33Waum1Lkwn0u9CrsjmGdhEv8cmMW1qau2e
+ ueoBmn/oQpKn6uYPa4Rfyh9ZWr0lHIrR5aYXi1wIO5NdSaxYGjJJztPMIHNWX5OpsWQh
+ +LGfYGZ7/csDux8l6avPyC0i6uNoNwzdPL71AjNZHZUOU/P/1qxcnpjWRbGoEGExClLr
+ GFUhaatl5OBjomy4aatrZQxqb9xGAcalTWOBz9Dkdp8ZNFG1FtENIKbf55rbn6HKqoQt
+ WHEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=eunu73/8rviOeHUzBMMB6FIOIz37GALKRdpDRhaNFC0=;
+ b=NCZIiuSfCCVIH1NjJWXIeK7aIsjb5KS0HMEd6oKx/N3g1+tZg7ntkw+6A96t4cHYxP
+ glE6FuSdk+x+fWMYmbXrQOLopnn7KhBNlTAWvHi8jKnJqhelBOTaK8yqHBO44FTW9n5w
+ pZB1UHQj5lmHMglxWsBaJsm4z+zTFI03iNL3TS0FySvi60UZH+r3SesPN5HtIW05W0GA
+ rkKeONOTA8KfV+666EMmUzRF0y2IP+1fsrZVbqUFRheW2XTtPE4kJSSK6e3NHh+BnAaO
+ mhlJZaK9RUPCxx9QBZzfCAmgzU4XpBWmxUm7eDZWSUsaUKf8pU0D9tknq5DUwhe6HoRT
+ Pvzg==
+X-Gm-Message-State: AOAM530Mby5own2kwCoum/q2YonZy8AHKSoBiMovvx7h02rHvk4NAkcE
+ AzoYMFkKNpi3KzF0GyJ4mZpWqkN9cOheozvB
+X-Google-Smtp-Source: ABdhPJyxpBX7gEiMHY622uqEJnEc+74EkHsDKkKTLnzD3C0VLXIHvwms/bjENrYL/Aah+zTlqZeh0g==
+X-Received: by 2002:a17:907:6e22:b0:6fe:b668:101 with SMTP id
+ sd34-20020a1709076e2200b006feb6680101mr15613909ejc.247.1653376423765; 
+ Tue, 24 May 2022 00:13:43 -0700 (PDT)
+Received: from ntb.petris.klfree.czf
+ ([2a02:8070:d483:ed00:4bcc:154f:5c11:5870])
+ by smtp.gmail.com with ESMTPSA id
+ ee46-20020a056402292e00b0042617ba63aesm9193489edb.56.2022.05.24.00.13.42
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 24 May 2022 00:13:43 -0700 (PDT)
+Date: Tue, 24 May 2022 09:13:41 +0200
+From: Petr Malat <oss@malat.biz>
+To: David Laight <David.Laight@aculab.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Joern Engel <joern@lazybastard.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] mtd: phram: Map RAM using memremap instead of ioremap
+Message-ID: <YoyFpbhLB1E+8ilr@ntb.petris.klfree.czf>
+References: <20220523142825.3144904-1-oss@malat.biz>
+ <3cab9a7f4ed34ca0b742a62c2bdc3bce@AcuMS.aculab.com>
+ <Youn9AmqY6/EExDw@ntb.petris.klfree.czf>
+ <e33f91a3eacc4aa3a08e6465fef9265c@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <e33f91a3eacc4aa3a08e6465fef9265c@AcuMS.aculab.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220523_214915_890124_0A8B2572 
-X-CRM114-Status: UNSURE (   9.71  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220524_001347_081452_A7A5A39B 
+X-CRM114-Status: GOOD (  25.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,53 +91,57 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-There is a deadlock between sm_release and sm_cache_flush_work
-which is a work item. The cancel_work_sync in sm_release will
-not return until sm_cache_flush_work is finished. If we hold
-mutex_lock and use cancel_work_sync to wait the work item to
-finish, the work item also requires mutex_lock. As a result,
-the sm_release will be blocked forever. The race condition is
-shown below:
+On Mon, May 23, 2022 at 04:09:20PM +0000, David Laight wrote:
+> From: Petr Malat
+> > Sent: 23 May 2022 16:28
+> > On Mon, May 23, 2022 at 02:51:41PM +0000, David Laight wrote:
+> > > From: Petr Malat
+> > > > Sent: 23 May 2022 15:28
+> > > >
+> > > > One can't use memcpy on memory obtained by ioremap, because IO memory
+> > > > may have different alignment and size access restriction than the system
+> > > > memory. Use memremap as phram driver operates on RAM.
+> > >
+> > > Does that actually help?
+> > > The memcpy() is still likely to issue unaligned accesses
+> > > that the hardware can't handle.
+> > 
+> > Yes, it solves the issue. Memcpy can cause unaligned access only on
+> > platforms, which can handle it. And on ARM64 it's handled only for
+> > RAM and not for a device memory (__pgprot(PROT_DEVICE_*)).
+> 
+> Does mapping it as memory cause it to be cached?
+> So the hardware only sees cache line reads (which are aligned)
+> and the cpu support for misaligned memory accesses then
+> stop the faults?
+Yes, this is controlled by the MEMREMAP_WB flag, which sets up
+a mapping, which "matches the default mapping for System RAM on
+the architecture. This is usually a read-allocate write-back cache.
 
-    (Thread 1)             |   (Thread 2)
-sm_release                 |
-  mutex_lock(&ftl->mutex)  | sm_cache_flush_work
-                           |   mutex_lock(&ftl->mutex)
-  cancel_work_sync         |   ...
+> On x86 (which I know a lot more about) memcpy() has a nasty
+> habit of getting implemented as 'rep movsb' relying on the
+> cpu to speed it up.
+> But that doesn't happen for uncached addresses - so you get
+> very slow byte copies.
+> OTOH misaligned PCIe transfers generate TLP that have the
+> correct byte enables for the end words.
+> Provided the PCIe target isn't broken they are fine.
+With memremap one should get the same behavior and performance
+as with the system memory and it seems to be a good choice for
+"Physical system RAM" MTD driver, but if one uses it for actual
+IO memory, he should use ioremam, memcpy_toio and memcpy_fromio.
+Using these prevents the crash on arm64 as well, but could lead
+to a performance degradation on some platforms.
 
-This patch moves del_timer_sync and cancel_work_sync out of
-mutex_lock in order to mitigate deadlock.
-
-Fixes: 7d17c02a01a1 ("mtd: Add new SmartMedia/xD FTL")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- drivers/mtd/sm_ftl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index 0cff2cda1b5..7f955fade83 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -1111,9 +1111,9 @@ static void sm_release(struct mtd_blktrans_dev *dev)
- {
- 	struct sm_ftl *ftl = dev->priv;
- 
--	mutex_lock(&ftl->mutex);
- 	del_timer_sync(&ftl->timer);
- 	cancel_work_sync(&ftl->flush_work);
-+	mutex_lock(&ftl->mutex);
- 	sm_cache_flush(ftl);
- 	mutex_unlock(&ftl->mutex);
- }
--- 
-2.17.1
-
+If you think there could be users using the driver for a real IO
+mem, I can provide both behaviors and let the user choose with an
+option.
+  Petr
 
 ______________________________________________________
 Linux MTD discussion mailing list
