@@ -4,41 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B79BEC433F5
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 May 2022 16:32:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51317C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 May 2022 16:32:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RhXmwFx8m6fym0Qf2ASsOHfdkSYZboQWJ55pTOSHFpQ=; b=YxRQOEYpud7Db+
-	wNtVsOqeVhQ16CaqT0Y/B1YSI9MUwfcgJR53kClSc4zr1FTcuX2BKxourPDWHXHUcznBVn0pZeOuS
-	+UrFG0XTQmRZpkgxdnoubddnnOLJqw3itsjdatjvQuiLfvQ71L0u8r7etolHNOiuHzaJsno7Epiw5
-	JT4ZqLEsXuAScyIhU+3nDo0r4zr6PFuz2k1GOuPMlODfGPSGQddAzBRTxxGPdsrYYMAchcuse9al4
-	WWTPrLj6Zh6JYwwOKNTvl14Rzw2KH9BYDFLsFfIfJAz0f1A5pjc6CnDRZ3QLoFq4gAi7i3bjWwDCI
-	LU8HDJExWe2dwLrZKTOw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4YW6eRVdfwj7KjbfRF3n+FXtnD9hmd0DZGa+WGGQYs4=; b=T7GtoDnI+d+WUd
+	W14PA8zOnFljovCpL0hH2q/deFMFfWc4r5AvDJ8TwxTUu6FLAi+DOoBNldk4fNPtcG0o49i9/mTpP
+	M1OPtVNyQZm/qNikXryXItQxvrytyV7UqtsuXHfIE3ewKqsZu0LbSKu+HAy0hQmeKLEtExV+s7Rhk
+	Bc0jADBj8ejfGSkBdI+GKIjt8SnTPtvUERmkEtDG2HnsVESE42d36qg23BPSlchaiKVkfV3zWQDe5
+	fgZV4cmgUcLaFinMsfxFcRClAhNHUHviEwApgtA2VNSO1dAfKt2OxtRxvdUL0uCYRGYsxhSxAHYgG
+	Pj/99joZqLPjx5j5oDBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nttv6-00Bpm5-7K; Wed, 25 May 2022 16:31:36 +0000
+	id 1nttvV-00Bq1o-FZ; Wed, 25 May 2022 16:32:01 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nttuo-00Bpdl-9e
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2022 16:31:21 +0000
+	id 1nttus-00BphC-93
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2022 16:31:24 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id C08CDE0008;
-	Wed, 25 May 2022 16:31:08 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id C31EBE0009;
+	Wed, 25 May 2022 16:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1653496271;
+	t=1653496280;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=tYJZPCIG0EE+FCTD4oYRNrBq9QHQjuKN28smJ+ZiWkM=;
-	b=nrBsHSlbEjP9pKVPpF38ZEgBKlUxoeHdA/pZ7MVXH/wlBuBw4ErUUp0TUu7pF/3B/JG55p
-	yVk/oUbOUcSDJud01SxzHFTat7wUX7I3xr5JOQJlZvO7eU8ekvJ2X+SR+Dd8OGZkQ7jkvy
-	7YH2fUujr/Pau5Jg6xPVg6dMGByhVW7lkvL/gq4XRH2PrC2om0MhzvlgobSVWoU3uM4Bdy
-	Io0nxCoEcMUtiicpcFd6bhC/xVTK0MfCsEolKpllkiFpg6ksA6vHHYfYWtI0vBIA6Lrob/
-	M4iKmdfgzVUCz1WfHshQ2mDMVTDXVejaKpF7wzt1kojJETU+ZS6w1e64oL831w==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdW2h279F2CgooOxuJhjtKHFu4krkpE8XufK54bFY80=;
+	b=ECWvPZroO7OaHNUwz1Vl56v1cj6VA2yMDFSPvS2YWYL6jk7DamNCXpMOgVx+yIAQBmkUnx
+	7FKSSnGJzbquB9AYJ3r1Rdmy4zmZarHko3TjtEgor9TFEz+Y2BkHNGbaZrCu1UaOyv37m4
+	ZXZtPH7qss5nlIFWn2ou0XJ1632RSs55wfJlP/Sq1xun6MEUhavmReqxJdgOFrhZrjR4tM
+	3YbWaU7w41M6Rouog1UyAWQHVKD1gsrQP6x4Zwg66v0PDVjqptH6o5u/ZPjeqshExOWkiy
+	dZ+k1DTiDyPBWlYf0v8WlDTyv69gln+239AdzCTy36wb1psz+3oJgb7/VI5U5g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -50,14 +51,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Jaime Liao <jaimeliao@mxic.com.tw>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [RFC PATCH 0/8] mtd: spi-nor: read while write support
-Date: Wed, 25 May 2022 18:31:00 +0200
-Message-Id: <20220525163108.266705-1-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 8/8] mtd: spi-nor: Enhance locking to support reads while writes
+Date: Wed, 25 May 2022 18:31:08 +0200
+Message-Id: <20220525163108.266705-9-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220525163108.266705-1-miquel.raynal@bootlin.com>
+References: <20220525163108.266705-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220525_093118_634448_A2D9C4FC 
-X-CRM114-Status: GOOD (  26.40  )
+X-CRM114-CacheID: sfid-20220525_093122_644893_A9E17C21 
+X-CRM114-Status: GOOD (  30.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,97 +72,334 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGVsbG8gZm9sa3MsCgpJJ3ZlIGJlZW4gdGhpbmtpbmcgbGF0ZWx5IGFib3V0IGEgc29sdXRpb24g
-dG8gbWFrZSBtdGQgYSBsaXR0bGUgYml0IGxlc3MKc2VyaWFsaXplZCBpbiBvcmRlciB0byBnYWlu
-IHBlcmZvcm1hbmNlcyBpbiBkaWZmZXJlbnQgc2l0dWF0aW9ucywgYW5kCnRvZGF5IEkgYW0gZm9j
-dXNpbmcgb24gZW5hYmxpbmcgcmVhZHMgZHVyaW5nIHdyaXRlcyBvbiBhIG11bHRpLWJhbmsKU1BJ
-LU5PUiBjaGlwLiBJJ3ZlIGhhZCB0aGUgSS9PIHNjaGVkdWxlciBmZWF0dXJlIGluIG1pbmQgZm9y
-IGEgbG9uZyB0aW1lCmJ1dCB0aGUgbW9yZSBJIHRob3VnaHQgYWJvdXQgaXQsIHRoZSBsZXNzIHJl
-bGV2YW50IGl0IGJlY2FtZS4gV2hpbGUKZHJhZnRpbmcgaWRlYXMgb24gcGFwZXIgYW5kIGxvb2tp
-bmcgYXQgdGhlIGFjdHVhbCBzcGktbm9yIGNvZGUgKHdoaWNoIGJ5CnRoZSB3YXkgaXMgbXVjaCBf
-bXVjaF8gY2xlYW5lciB0aGVzZSBkYXlzIHRoYW4gaXQgd2FzIGJlZm9yZSwgdGhhbmtzIGZvcgph
-bGwgdGhhdCB3b3JrISksIGl0IGFwcGVhcmVkIHRvIG1lIHRoYXQganVzdCBwbGF5aW5nIGEgbGl0
-dGxlIGJpdCB3aXRoCnRoZSBsb2NraW5nIG1lY2hhbmlzbSBjb3VsZCBzYXZlIHVzIGZyb20gYSBt
-YXNzaXZlbHkgaW5jb21wYXRpYmxlCm10ZC13aWRlIHNlcmllcywgYW5kIHNvIHRoaXMgaXMgdGhl
-IHBhdGggSSB0b29rLgoKVGhpcyBSRkMgcmVhbGx5IGlzIGFuIGF0dGVtcHQgYXQgc3VwcG9ydGlu
-ZyBNYWNyb25peCByZWFkLXdoaWxlLXdyaXRlCmZlYXR1cmUuIEl0IGhhcyBub3QgeWV0IGJlZW4g
-dGVzdGVkLCBJIGFtIHdhaXRpbmcgdG8gcmVjZWl2ZSB0aGUKcmVsZXZhbnQgaGFyZHdhcmUsIGJ1
-dCB0aGUgbWFpbiBpZGVhIHNob3VsZCByZW1haW4gdGhlIHNhbWUgb3ZlciB0aGUKaXRlcmF0aW9u
-cywgdW5sZXNzIHNvbWV0aGluZyBiaWcgZ2V0cyBkaXNjb3ZlcmVkIGluIHRoZSBtZWFuIHRpbWUu
-CgpUaGVyZSBpcyBub3RoaW5nIE1hY3Jvbml4IHNwZWNpZmljIGluIHRoZSBpbXBsZW1lbnRhdGlv
-biwgdGhlIG9wZXJhdGlvbnMKYW5kIG9wY29kZXMgYXJlIGV4YWN0bHkgdGhlIHNhbWUgYXMgYmVm
-b3JlLiBUaGUgb25seSBkaWZmZXJlbmNlIGJlaW5nOgp3ZSBtYXkgY29uc2lkZXIgdGhlIGNoaXAg
-dXNhYmxlIHdoZW4gaXQgaXMgaW4gdGhlIGJ1c3kgc3RhdGUgZHVyaW5nIGEKd3JpdGUgb3IgYW4g
-ZXJhc2UuIEFueSBjaGlwIHdpdGggYW4gaW50ZXJuYWwgc3BsaXQgYWxsb3dpbmcgdG8gcGVyZm9y
-bQpwYXJhbGxlbCBvcGVyYXRpb25zIG1pZ2h0IHBvc3NpYmx5IGxldmVyYWdlIHRoZSBiZW5lZml0
-cyBvZiB0aGlzCmltcGxlbWVudGF0aW9uLgoKVGhlIGZpcnN0IHBhdGNoZXMgYXJlIGp1c3QgcmVm
-YWN0b3JpbmcgYW5kIHByZXBhcmF0aW9uIHdvcmssIHRoZXJlIGlzCmFsbW9zdCBubyBmdW5jdGlv
-bmFsIGNoYW5nZSwgaXQncyBqdXN0IGEgd2F5IHRvIHByZXBhcmUgdGhlIGludHJvZHVjdGlvbgpv
-ZiB0aGUgbmV3IGxvY2tpbmcgbWVjaGFuaXNtIGFuZCBob3BlZnVsbHkgcHJvdmlkZSB0aGUgY2xl
-YW5lc3QgYW5kCnNpbXBsZXN0IGRpZmYgcG9zc2libGUgZm9yIHRoaXMgbmV3IGZlYXR1cmUuIFRo
-ZSBhY3R1YWwgY2hhbmdlIGlzIGFsbApjb250YWluZWQgaW4gIm10ZDogc3BpLW5vcjogRW5oYW5j
-ZSBsb2NraW5nIHRvIHN1cHBvcnQgcmVhZHMgd2hpbGUKd3JpdGVzIi4gVGhlIGxvZ2ljIGlzIGRl
-c2NyaWJlZCBpbiB0aGUgY29tbWl0IGxvZyBhbmQgY29weS9wYXN0ZWQgaGVyZQpmb3IgY2xhcml0
-eToKCiIKVGhlIGZvbGxvd2luZyBjb25zdHJhaW50cyBoYXZlIHRvIGJlIHRha2VuIGludG8gYWNj
-b3VudDoKMSM6IEEgc2luZ2xlIG9wZXJhdGlvbiBjYW4gYmUgcGVyZm9ybWVkIGluIGEgZ2l2ZW4g
-YmFuay4KMiM6IE9ubHkgYSBzaW5nbGUgcHJvZ3JhbSBvciBlcmFzZSBvcGVyYXRpb24gY2FuIGhh
-cHBlbiBvbiB0aGUgZW50aXJlIGNoaXAuCjMjOiBUaGUgSS9PIGJ1cyBpcyB1bmlxdWUgYW5kIHRo
-dXMgaXMgdGhlIG1vc3QgY29uc3RyYWluZWQgcmVzb3VyY2UsIGFsbAogICAgc3BpLW5vciBvcGVy
-YXRpb25zIHJlcXVpcmluZyBhY2Nlc3MgdG8gdGhlIHNwaSBidXMgKHRocm91Z2ggdGhlIHNwaQog
-ICAgY29udHJvbGxlcikgbXVzdCBiZSBzZXJpYWxpemVkIHVudGlsIHRoZSBidXMgZXhjaGFuZ2Vz
-IGFyZSBvdmVyLiBTbwogICAgd2UgbXVzdCBlbnN1cmUgYSBzaW5nbGUgb3BlcmF0aW9uIGNhbiBi
-ZSAic2VudCIgYXQgYSB0aW1lLgo0IzogQW55IG90aGVyIG9wZXJhdGlvbiB0aGF0IHdvdWxkIG5v
-dCBiZSBlaXRoZXIgYSByZWFkIG9yIGEgd3JpdGUgb3IgYW4KICAgIGVyYXNlIGlzIGNvbnNpZGVy
-ZWQgcmVxdWlyaW5nIGFjY2VzcyB0byB0aGUgZnVsbCBjaGlwIGFuZCBjYW5ub3QgYmUKICAgIHBh
-cmFsbGVsaXplZCwgd2UgdGhlbiBuZWVkIHRvIGVuc3VyZSB0aGUgZnVsbCBjaGlwIGlzIGluIHRo
-ZSBpZGxlCiAgICBzdGF0ZSB3aGVuIHRoaXMgb2NjdXJzLgoKQWxsIHRoZXNlIGNvbnN0cmFpbnRz
-IGNhbiBlYXNpbHkgYmUgbWFuYWdlZCB3aXRoIGEgcHJvcGVyIGxvY2tpbmcgbW9kZWw6CjEjOiBJ
-cyBwcm90ZWN0ZWQgYnkgYSBwZXItYmFuayBtdXRleC4gT25seSBhIHNpbmdsZSBvcGVyYXRpb24g
-Y2FuIGhhcHBlbgogICAgaW4gYSBzcGVjaWZpYyBiYW5rIGF0IGFueSB0aW1lcy4gSWYgdGhlIGJh
-bmsgbXV0ZXggaXMgbm90IGF2YWlsYWJsZSwKICAgIHRoZSBvcGVyYXRpb24gY2Fubm90IHN0YXJ0
-LgoyIzogSXMgaGFuZGxlZCBieSB0aGUgcGVfbW9kZSBtdXRleCB3aGljaCBpcyBhY3F1aXJlZCBi
-ZWZvcmUgYW55IHdyaXRlCiAgICBvciBlcmFzZSwgYW5kIGlzIHJlbGVhc2VkIG9ubHkgYXQgdGhl
-IHZlcnkgZW5kIG9mIHRoZQogICAgb3BlcmF0aW9uLiBUaGlzIHdheSwgbm8gb3RoZXIgZGVzdHJ1
-Y3RpdmUgb3BlcmF0aW9uIG9uIHRoZSBjaGlwIGNhbgogICAgc3RhcnQgZHVyaW5nIHRoaXMgdGlt
-ZSBmcmFtZS4KMyM6IEEgZGV2aWNlLXdpZGUgbXV0ZXggaXMgaW50cm9kdWNlZCBpbiBvcmRlciB0
-byBjYXB0dXJlIGFuZCBzZXJpYWxpemUKICAgIGJ1cyBhY2Nlc3NlZC4gVGhpcyBpcyB0aGUgb25l
-IGJlaW5nIHJlbGVhc2VkICJzb29uZXIiIHRoYW4gYmVmb3JlLAogICAgYmVjYXVzZSB3ZSBvbmx5
-IG5lZWQgdG8gcHJvdGVjdCB0aGUgY2hpcCBhZ2FpbnN0IG90aGVyIFNQSSBhY2Nlc3NlcwogICAg
-ZHVyaW5nIHRoZSBJL08gcGhhc2UsIHdoaWNoIGZvciB0aGUgZGVzdHJ1Y3RpdmUgb3BlcmF0aW9u
-cyBpcyB0aGUKICAgIGJlZ2lubmluZyBvZiB0aGUgb3BlcmF0aW9uICh3aGVuIHdlIHNlbmQgdGhl
-IGNvbW1hbmQgY3ljbGVzIGFuZAogICAgZXZlbnR1YWxseSB0aGUgZGF0YSksIHdoaWxlIHRoZSBz
-ZWNvbmQgcGFydCBvZiB0aGUgb3BlcmF0aW9uICh0aGUKICAgIGVyYXNlIGRlbGF5IG9yIHRoZSBw
-cm9ncmFtbWF0aW9uIGRlbGF5KSBpcyB3aGVuIHdlIGNhbiBkbyBzb21ldGhpbmcKICAgIGVsc2Ug
-d2l0aCBhbm90aGVyIGJhbmsuCjQjOiBJcyBoYW5kbGVkIGJ5IHRoZSAiZ2VuZXJpYyIgaGVscGVy
-cyB3aGljaCBleGlzdGVkIGJlZm9yZSwgd2hlcmUKICAgIGJhc2ljYWxseSBhbGwgdGhlIGxvY2tz
-IGFyZSB0YWtlbiBiZWZvcmUgdGhlIG9wZXJhdGlvbiBjYW4gc3RhcnQsCiAgICBhbmQgYWxsIGxv
-Y2tzIGFyZSByZWxlYXNlZCBvbmNlIGRvbmUuCgpBcyBtYW55IGRldmljZXMgc3RpbGwgZG8gbm90
-IHN1cHBvcnQgdGhpcyBmZWF0dXJlLCB0aGUgb3JpZ2luYWwgbG9jayBpcwphbHNvIGtlcHQgaW4g
-YSB1bmlvbjogZWl0aGVyIHRoZSBmZWF0dXJlIGlzIGF2YWlsYWJsZSBhbmQgd2UgaW5pdGlhbGl6
-ZQphbmQgdXNlIHRoZSBuZXcgbG9ja3MsIG9yIGl0IGlzIG5vdCBhbmQgd2Uga2VlcCB1c2luZyB0
-aGUgcHJldmlvdXMKbG9naWMuCiIKCkkgYW0gbm90IDEwMCUgc3VyZSB5ZXQgdGhpcyBhcHByb2Fj
-aCBpcyB0aGUgcmlnaHQgb25lLCBub3IgaWYgdGhlCnJlc3VsdHMgd2lsbCBiZSBvdXRzdGFuZGlu
-Zy4gRm9yIG5vdyBJJ3ZlIHByZXBhcmVkIGEgcGF0Y2ggWzFdIGZvciB0aGUKZmxhc2hfc3BlZWQu
-YyB0ZXN0IHRvb2wgaW4gb3JkZXIgdG8gbWVhc3VyZSB0aGUgaW1wYWN0LgoKRmVlZGJhY2ssIHJl
-bWFya3MgYW5kIHRob3VnaHMgYXJlIHdlbGNvbWUhCgpbMV0gaHR0cHM6Ly9naXRodWIuY29tL21p
-cXVlbHJheW5hbC9tdGQtdXRpbHMvY29tcGFyZS9tYXN0ZXIuLi5yd3cKCkNoZWVycywKTWlxdcOo
-bAoKTWlxdWVsIFJheW5hbCAoOCk6CiAgbXRkOiBzcGktbm9yOiBDcmVhdGUgbWFjcm9zIHRvIGRl
-ZmluZSBjaGlwIElEcyBhbmQgZ2VvbWV0cmllcwogIG10ZDogc3BpLW5vcjogSW50cm9kdWNlIHRo
-ZSBjb25jZXB0IG9mIGJhbmsKICBtdGQ6IHNwaS1ub3I6IEFkZCBhIG1hY3JvIHRvIGRlZmluZSBt
-b3JlIGJhbmtzCiAgbXRkOiBzcGktbm9yOiBSZW9yZGVyIHRoZSBwcmVwYXJhdGlvbiB2cyBsb2Nr
-aW5nIHN0ZXBzCiAgbXRkOiBzcGktbm9yOiBTZXBhcmF0ZSBwcmVwYXJhdGlvbiBhbmQgbG9ja2lu
-ZwogIG10ZDogc3BpLW5vcjogUHJlcGFyZSB0aGUgaW50cm9kdWN0aW9uIG9mIGEgbmV3IGxvY2tp
-bmcgbWVjaGFuaXNtCiAgbXRkOiBzcGktbm9yOiBBZGQgYSBSV1cgZmxhZwogIG10ZDogc3BpLW5v
-cjogRW5oYW5jZSBsb2NraW5nIHRvIHN1cHBvcnQgcmVhZHMgd2hpbGUgd3JpdGVzCgogZHJpdmVy
-cy9tdGQvc3BpLW5vci9jb3JlLmMgIHwgMjE3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrLS0tLQogZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmggIHwgIDYxICsrKysrLS0tLS0KIGlu
-Y2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaCB8ICAxMiArLQogMyBmaWxlcyBjaGFuZ2VkLCAyNDAg
-aW5zZXJ0aW9ucygrKSwgNTAgZGVsZXRpb25zKC0pCgotLSAKMi4zNC4xCgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LW10ZC8K
+On devices featuring several banks, the Read While Write (RWW) feature
+is here to improve the overall performance when performing parallel
+reads and writes at different locations (different banks). The following
+constraints have to be taken into account:
+1#: A single operation can be performed in a given bank.
+2#: Only a single program or erase operation can happen on the entire chip.
+3#: The I/O bus is unique and thus is the most constrained resource, all
+    spi-nor operations requiring access to the spi bus (through the spi
+    controller) must be serialized until the bus exchanges are over. So
+    we must ensure a single operation can be "sent" at a time.
+4#: Any other operation that would not be either a read or a write or an
+    erase is considered requiring access to the full chip and cannot be
+    parallelized, we then need to ensure the full chip is in the idle
+    state when this occurs.
+
+All these constraints can easily be managed with a proper locking model:
+1#: Is protected by a per-bank mutex. Only a single operation can happen
+    in a specific bank at any times. If the bank mutex is not available,
+    the operation cannot start.
+2#: Is handled by the pe_mode mutex which is acquired before any write
+    or erase, and is released only at the very end of the
+    operation. This way, no other destructive operation on the chip can
+    start during this time frame.
+3#: A device-wide mutex is introduced in order to capture and serialize
+    bus accessed. This is the one being released "sooner" than before,
+    because we only need to protect the chip against other SPI accesses
+    during the I/O phase, which for the destructive operations is the
+    beginning of the operation (when we send the command cycles and
+    eventually the data), while the second part of the operation (the
+    erase delay or the programmation delay) is when we can do something
+    else with another bank.
+4#: Is handled by the "generic" helpers which existed before, where
+    basically all the locks are taken before the operation can start,
+    and all locks are released once done.
+
+As many devices still do not support this feature, the original lock is
+also kept in a union: either the feature is available and we initialize
+and use the new locks, or it is not and we keep using the previous
+logic.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/spi-nor/core.c  | 134 +++++++++++++++++++++++++++++++++---
+ include/linux/mtd/spi-nor.h |  12 +++-
+ 2 files changed, 134 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 3d8e5f9961b9..872a3934f9a6 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1081,6 +1081,61 @@ static void spi_nor_unprep(struct spi_nor *nor)
+ 		nor->controller_ops->unprepare(nor);
+ }
+ 
++static bool spi_nor_parallel_locking(struct spi_nor *nor)
++{
++	return nor->info->n_banks > 1 && nor->info->no_sfdp_flags & SPI_NOR_RWW;
++}
++
++static void spi_nor_lock_all_banks(struct spi_nor *nor)
++{
++	int i;
++
++	for (i = 0; i < nor->info->n_banks; i++)
++		mutex_lock(&nor->locks.bank[i]);
++}
++
++static void spi_nor_unlock_all_banks(struct spi_nor *nor)
++{
++	int i;
++
++	for (i = 0; i < nor->info->n_banks; i++)
++		mutex_unlock(&nor->locks.bank[i]);
++}
++
++static void spi_nor_lock_banks(struct spi_nor *nor, loff_t start, size_t len)
++{
++	int first, last, i;
++
++	first = DIV_ROUND_DOWN_ULL(start, nor->params->bank_size);
++	last = DIV_ROUND_DOWN_ULL(start + len - 1, nor->params->bank_size);
++
++	for (i = first; i < last; i++)
++		mutex_lock(&nor->locks.bank[i]);
++}
++
++static void spi_nor_unlock_banks(struct spi_nor *nor, loff_t start, size_t len)
++{
++	int first, last, i;
++
++	first = DIV_ROUND_DOWN_ULL(start, nor->params->bank_size);
++	last = DIV_ROUND_DOWN_ULL(start + len - 1, nor->params->bank_size);
++
++	for (i = first; i < last; i++)
++		mutex_unlock(&nor->locks.bank[i]);
++}
++
++static void spi_nor_lock_device(struct spi_nor *nor)
++{
++	if (spi_nor_parallel_locking(nor))
++		mutex_lock(&nor->locks.device);
++}
++
++static void spi_nor_unlock_device(struct spi_nor *nor)
++{
++	if (spi_nor_parallel_locking(nor))
++		mutex_unlock(&nor->locks.device);
++}
++
+ /* Generic helpers for internal locking and serialization */
+ int spi_nor_lock_and_prep(struct spi_nor *nor)
+ {
+@@ -1090,14 +1145,26 @@ int spi_nor_lock_and_prep(struct spi_nor *nor)
+ 	if (ret)
+ 		return ret;
+ 
+-	mutex_lock(&nor->lock);
++	if (!spi_nor_parallel_locking(nor)) {
++		mutex_lock(&nor->lock);
++	} else {
++		spi_nor_lock_all_banks(nor);
++		mutex_lock(&nor->locks.pe_mode);
++		mutex_lock(&nor->locks.device);
++	}
+ 
+ 	return 0;
+ }
+ 
+ void spi_nor_unlock_and_unprep(struct spi_nor *nor)
+ {
+-	mutex_unlock(&nor->lock);
++	if (!spi_nor_parallel_locking(nor)) {
++		mutex_unlock(&nor->lock);
++	} else {
++		mutex_unlock(&nor->locks.device);
++		mutex_unlock(&nor->locks.pe_mode);
++		spi_nor_unlock_all_banks(nor);
++	}
+ 
+ 	spi_nor_unprep(nor);
+ }
+@@ -1111,14 +1178,24 @@ static int spi_nor_lock_and_prep_pe(struct spi_nor *nor, loff_t start, size_t le
+ 	if (ret)
+ 		return ret;
+ 
+-	mutex_lock(&nor->lock);
++	if (!spi_nor_parallel_locking(nor)) {
++		mutex_lock(&nor->lock);
++	} else {
++		spi_nor_lock_banks(nor, start, len);
++		mutex_lock(&nor->locks.pe_mode);
++	}
+ 
+ 	return 0;
+ }
+ 
+ static void spi_nor_unlock_and_unprep_pe(struct spi_nor *nor, loff_t start, size_t len)
+ {
+-	mutex_unlock(&nor->lock);
++	if (!spi_nor_parallel_locking(nor)) {
++		mutex_unlock(&nor->lock);
++	} else {
++		mutex_unlock(&nor->locks.pe_mode);
++		spi_nor_unlock_banks(nor, start, len);
++	}
+ 
+ 	spi_nor_unprep(nor);
+ }
+@@ -1132,14 +1209,20 @@ static int spi_nor_lock_and_prep_rd(struct spi_nor *nor, loff_t start, size_t le
+ 	if (ret)
+ 		return ret;
+ 
+-	mutex_lock(&nor->lock);
++	if (!spi_nor_parallel_locking(nor))
++		mutex_lock(&nor->lock);
++	else
++		spi_nor_lock_banks(nor, start, len);
+ 
+ 	return 0;
+ }
+ 
+ static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size_t len)
+ {
+-	mutex_unlock(&nor->lock);
++	if (!spi_nor_parallel_locking(nor))
++		mutex_unlock(&nor->lock);
++	else
++		spi_nor_unlock_banks(nor, start, len);
+ 
+ 	spi_nor_unprep(nor);
+ }
+@@ -1448,11 +1531,16 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
+ 			dev_vdbg(nor->dev, "erase_cmd->size = 0x%08x, erase_cmd->opcode = 0x%02x, erase_cmd->count = %u\n",
+ 				 cmd->size, cmd->opcode, cmd->count);
+ 
++			spi_nor_lock_device(nor);
++
+ 			ret = spi_nor_write_enable(nor);
+-			if (ret)
++			if (ret) {
++				spi_nor_unlock_device(nor);
+ 				goto destroy_erase_cmd_list;
++			}
+ 
+ 			ret = spi_nor_erase_sector(nor, addr);
++			spi_nor_unlock_device(nor);
+ 			if (ret)
+ 				goto destroy_erase_cmd_list;
+ 
+@@ -1505,11 +1593,16 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
+ 		unsigned long timeout;
+ 
++		spi_nor_lock_device(nor);
++
+ 		ret = spi_nor_write_enable(nor);
+-		if (ret)
++		if (ret) {
++			spi_nor_unlock_device(nor);
+ 			goto erase_err;
++		}
+ 
+ 		ret = spi_nor_erase_chip(nor);
++		spi_nor_unlock_device(nor);
+ 		if (ret)
+ 			goto erase_err;
+ 
+@@ -1534,11 +1627,16 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	/* "sector"-at-a-time erase */
+ 	} else if (spi_nor_has_uniform_erase(nor)) {
+ 		while (len) {
++			spi_nor_lock_device(nor);
++
+ 			ret = spi_nor_write_enable(nor);
+-			if (ret)
++			if (ret) {
++				spi_nor_unlock_device(nor);
+ 				goto erase_err;
++			}
+ 
+ 			ret = spi_nor_erase_sector(nor, addr);
++			spi_nor_unlock_device(nor);
+ 			if (ret)
+ 				goto erase_err;
+ 
+@@ -1756,7 +1854,9 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ 		addr = spi_nor_convert_addr(nor, addr);
+ 
++		spi_nor_lock_device(nor);
+ 		ret = spi_nor_read_data(nor, addr, len, buf);
++		spi_nor_unlock_device(nor);
+ 		if (ret == 0) {
+ 			/* We shouldn't see 0-length reads */
+ 			ret = -EIO;
+@@ -1819,11 +1919,16 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 		addr = spi_nor_convert_addr(nor, addr);
+ 
++		spi_nor_lock_device(nor);
++
+ 		ret = spi_nor_write_enable(nor);
+-		if (ret)
++		if (ret) {
++			spi_nor_unlock_device(nor);
+ 			goto write_err;
++		}
+ 
+ 		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
++		spi_nor_unlock_device(nor);
+ 		if (ret < 0)
+ 			goto write_err;
+ 		written = ret;
+@@ -3060,7 +3165,14 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 
+ 	nor->info = info;
+ 
+-	mutex_init(&nor->lock);
++	if (!spi_nor_parallel_locking(nor)) {
++		mutex_init(&nor->lock);
++	} else {
++		mutex_init(&nor->locks.device);
++		mutex_init(&nor->locks.pe_mode);
++		for (i = 0; i < nor->info->n_banks; i++)
++			mutex_init(&nor->locks.bank[i]);
++	}
+ 
+ 	/* Init flash parameters based on flash_info struct and SFDP */
+ 	ret = spi_nor_init_params(nor);
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 5e25a7b75ae2..772da9b074d9 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -346,6 +346,9 @@ struct spi_nor_flash_parameter;
+  * struct spi_nor - Structure for defining the SPI NOR layer
+  * @mtd:		an mtd_info structure
+  * @lock:		the lock for the read/write/erase/lock/unlock operations
++ * @locks.device:	the lock for the I/O bus
++ * @locks.pe_mode:	the lock for the program/erase mode for RWW operations
++ * @locks.bank:		the lock for every available bank
+  * @dev:		pointer to an SPI device or an SPI NOR controller device
+  * @spimem:		pointer to the SPI memory device
+  * @bouncebuf:		bounce buffer used when the buffer passed by the MTD
+@@ -375,7 +378,14 @@ struct spi_nor_flash_parameter;
+  */
+ struct spi_nor {
+ 	struct mtd_info		mtd;
+-	struct mutex		lock;
++	union {
++		struct mutex	lock;
++		struct {
++			struct mutex device;
++			struct mutex pe_mode;
++			struct mutex *bank;
++		} locks;
++	};
+ 	struct device		*dev;
+ 	struct spi_mem		*spimem;
+ 	u8			*bouncebuf;
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
