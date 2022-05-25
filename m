@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 839AFC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 25 May 2022 16:32:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBE8FC433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 May 2022 16:32:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g1p6nsR3ZHXQH9U3OVHEYMmoXfNwEGAwTs4DgUWpdqc=; b=3I7J6I2gTghy3t
-	HdjbQtwQth2dicNTuaNAOPtOfhEj9xlngfab2bq9NTDjjlkdFZFGmif70AA3Rp77TdjjZgjyv2hNv
-	cPd8iJNrc2YL9x36STamdvGRlNAU++Llp142YndkbM+dMfmOelcWSUpIicVYS5P3etssRa7xsHYOM
-	O/W9xJI8YrlO1b6VzHsGEVyJVACaXpqmlEsg5c9msODdqg9BfXLjQI4TFUiDihpkalVZ9gt/wRGU0
-	ZRrvOaMm9fOsywxQzWFyrsbaNe5tuOUnKxA/37FadgPorCVyYE9Pm3bZHILmCkR5c0ZBl5IKM3eio
-	7Kei8iv8ZyvBxSgPyVdg==;
+	List-Owner; bh=eL1B2Omj6K24w7FxrtttJ4zgCS6T1xfnhujgy7wELck=; b=wKMB8GcOnVpQYA
+	sijMJYR4Cd6Rt3thWJyVkEGLveDfPEP8qX9WsURdTZ5+rAWDR+/Orl0eUMtBJ/3lbuCz6aFYYCFIf
+	lmTSO562Bw6ueL+q8E3kJkdqzVIT2HUlsw3GdNd+T79/7Yj/Nl//C7GLav2aTT2UpVqlN/y4Gnytm
+	XVnvejNFCYoV9Mc61ETJVcsD3lT0pxosviRk+4DQCkWIzRV1gd7OsSn8QayP8fkexp0dBHEsEdlUP
+	Roz2mdGCAPXmPVgfkylcj54ODlme6Lvpesh/jwMgy3Jt6HnA3ikGizKSR1ApymmdpTRcFWkGrxayo
+	qLKl9MJ2Cj3k+C8aefnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nttvA-00Bpnb-DA; Wed, 25 May 2022 16:31:40 +0000
+	id 1nttvP-00Bpxj-OZ; Wed, 25 May 2022 16:31:56 +0000
 Received: from relay4-d.mail.gandi.net ([217.70.183.196])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nttup-00BpeC-Hs
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2022 16:31:21 +0000
+	id 1nttur-00BpgS-1G
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2022 16:31:22 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 879B1E0007;
-	Wed, 25 May 2022 16:31:13 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 8C908E000E;
+	Wed, 25 May 2022 16:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1653496274;
+	t=1653496279;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=62VJmhPGzq3clpTzKO5NxJUPggFTPubZR9Y/V5plOjE=;
-	b=Guu0ZN5wm0OPjdrEP2Hw+9RZIYw/6RXCI8e3vvT0ZGQhsoEModH9aTPxp5BLM1oSl5Qyz9
-	/tKEv/YmMcD4MQ2ExuF2u2042TPnK797Js3DTV3QDr3AxDakxHnLx0YBeiO3wYDhuCFTW+
-	d7lkCEFw6dPzAQ9cql6MUTxGCijteYdh62BpliifMxG6tsrxxgctC7pz908GWZ6RmV3+pk
-	+eXllbyjIqPBaJE5V34JaJ8r1nj71s6ryINFhpJKSncdTy/J2MvqEERxx7hmxzVlqkZ2qJ
-	qrhOz33xqNwhhOX3Gg/2K0WafSBxcbEQKgqKn/8OF6KPdgtQh6Y+NSUO401k8Q==
+	bh=SlVoDWTN32ySJyC58i/cvEz2QO5oQQi4aCp+ddxnJSs=;
+	b=Ku9JASpbSwxPBpS1mE+bbaBUlXp8pM0UMuN6j+Qo0AdGVvuFnjwBeV0vS/0j6BgoKtmsd5
+	poMignotbvXmoH1tJ8ahRMLZUClKRYt/nQ96K6g8HD6Lek0Q/n+zt1jGOogBmudaZXlyPr
+	/7V8vz4AKqQvOo2wTExgzNFRWKZGBnqm/0NX70PxH9zsCT4Sf4V+ZabNiirxA/YkPXoGot
+	e6VPmBdWrHjrDo0qGHkMuia6yPFrIeOQvSxzU2ioDCF+92nEFZo9Yit00h3tCrsuSz4KXS
+	TDp4d3x/IRJIE1RiRGoONABUr41DEd9QxU/XTGIoFyCMmcd3putwL/6GYTI31g==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Richard Weinberger <richard@nod.at>,
 	Vignesh Raghavendra <vigneshr@ti.com>,
@@ -51,17 +51,16 @@ Cc: Julien Su <juliensu@mxic.com.tw>,
 	Jaime Liao <jaimeliao@mxic.com.tw>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [RFC PATCH 3/8] mtd: spi-nor: Add a macro to define more banks
-Date: Wed, 25 May 2022 18:31:03 +0200
-Message-Id: <20220525163108.266705-4-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 7/8] mtd: spi-nor: Add a RWW flag
+Date: Wed, 25 May 2022 18:31:07 +0200
+Message-Id: <20220525163108.266705-8-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220525163108.266705-1-miquel.raynal@bootlin.com>
 References: <20220525163108.266705-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220525_093119_759632_98207601 
-X-CRM114-Status: UNSURE (   8.68  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220525_093121_259030_0EBB7FC1 
+X-CRM114-Status: GOOD (  12.69  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,31 +77,49 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most of the chips on the market only feature a single bank. However, new
-chips may support more than a single bank, with the possibility to
-parallelize some operations. Let's introduce an INFOB() macro which also
-takes a n_bank parameter.
+Introduce a new (no SFDP) flag for the feature that we are about to
+support: Read While Write. This means, if the chip has several banks and
+supports RWW, once a page of data to write has been transferred into the
+chip's internal SRAM, another read operation happening on a different
+bank can be performed during the tPROG delay.
+
+Adding this new flag involves enlarging the no_sfdp_flags variable to 16
+bits.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/spi-nor/core.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index f237aaeeb458..5200246942da 100644
+index 5200246942da..dc29586bfed8 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -443,6 +443,10 @@ struct flash_info {
- 	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
- 	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+@@ -361,6 +361,7 @@ struct spi_nor_fixups {
+  *   SPI_NOR_OCTAL_READ:      flash supports Octal Read.
+  *   SPI_NOR_OCTAL_DTR_READ:  flash supports octal DTR Read.
+  *   SPI_NOR_OCTAL_DTR_PP:    flash supports Octal DTR Page Program.
++ *   SPI_NOR_RWW:             flash supports reads while write.
+  *
+  * @fixup_flags:    flags that indicate support that can be discovered via SFDP
+  *                  ideally, but can not be discovered for this particular flash
+@@ -401,7 +402,7 @@ struct flash_info {
+ #define NO_CHIP_ERASE			BIT(7)
+ #define SPI_NOR_NO_FR			BIT(8)
  
-+#define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
-+	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
-+	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), (_n_banks)),
-+
- #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
- 	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
- 	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+-	u8 no_sfdp_flags;
++	u16 no_sfdp_flags;
+ #define SPI_NOR_SKIP_SFDP		BIT(0)
+ #define SECT_4K				BIT(1)
+ #define SECT_4K_PMC			BIT(2)
+@@ -410,6 +411,7 @@ struct flash_info {
+ #define SPI_NOR_OCTAL_READ		BIT(5)
+ #define SPI_NOR_OCTAL_DTR_READ		BIT(6)
+ #define SPI_NOR_OCTAL_DTR_PP		BIT(7)
++#define SPI_NOR_RWW			BIT(8)
+ 
+ 	u8 fixup_flags;
+ #define SPI_NOR_4B_OPCODES		BIT(0)
 -- 
 2.34.1
 
