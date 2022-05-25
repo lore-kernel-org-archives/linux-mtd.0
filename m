@@ -4,62 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAEF4C433F5
-	for <linux-mtd@archiver.kernel.org>; Tue, 24 May 2022 22:37:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B131C433F5
+	for <linux-mtd@archiver.kernel.org>; Wed, 25 May 2022 08:08:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HvBqB3siTu+1SpEzBLum0JaO/qRc51zHq9vXy9qrVHc=; b=WmmJ7WoctI/03/MtY1fi5ImfB4
-	/3dYIJpcnFQ3wPt5KRi3Sqp4aDitLGNn5YrLapFg0uekf2PYsttq2jxC3Ri9P+DnKZfncDUPw7qgq
-	wzoA1/+QOETNmHUSqlrg17Lh2P/HnvorOitWbISYlEsz9bLJhL+i5olOc5g3ntVXzF+KgY+6Sr/K7
-	lkvmoehNPrTIfL+dPx6rdFSwMNFYSq4022G55LV7P26ewSzXQIpyfD9Zso6GqsCJkHjasYZtQ4RC6
-	e9DrKy/peJhQzIrnBoSD/ahiet1a0wvLLSjHzvcdm5p7yZMAZc3z7ycTP34zA6m1Er5L6ZGt/Q1Sh
-	ECWjNkpQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Subject:From:Cc:To:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=fSUZYnSlcH7U8RNM4eqbT1QnBJCZxhDyZz4wOiB+Xps=; b=dP3hHR0hbc7anz
+	LjHfOivvMmfdhQRBuQpOUHX2HTzHx3JjQXl2PUEoKhxa5BRjCYDLCeVC9IHoh1OW691RDPJADj5pY
+	4Y7I3RFkXK/z/Xr7HUKhBRHgFuN9DkC3ujY3Az4n2YEBqU9n1oZUuu3Hx9ldorH13I7BC8z8fi9Ky
+	pzCjfCfRDi5Lr8BfbEKqCHvkl18JnJeM5tSFK82Uo0Ie3Paq8zY+22viNtULaJPIHJz9KnnRG/lrr
+	4Ywd4MiPxW3GOIyUhEsmcT/LM5w5kA0xZ1E4aDcV0QtDSKwVAXUsp7qOcQm/rxx1zo6oCmqUrItgU
+	NLNChC7fOQrUs34wQkmw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntd9f-009LmI-MR; Tue, 24 May 2022 22:37:31 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1ntm36-00AHN8-Gq; Wed, 25 May 2022 08:07:20 +0000
+Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntd9U-009LjF-7n; Tue, 24 May 2022 22:37:21 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 53AF4221D4;
- Wed, 25 May 2022 00:37:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1653431836;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BCs0HAhZARemmsGo2G3uYjUYYZKrxsWqOtnmQSTd4i4=;
- b=qPSxEn4u8PQszAO0bIWyhCcQ2fFkT1WRWKaFop4Ned9HNlrWohdTRSlwViw9Uw2wVywxYD
- QA9m0ZXsWTsfY/HgMqkRqQesg5m2Ej4NQpUxSUhqGLoSPPf+RjlcYl8+MADAad+IFX/c3p
- sOy3B/P1jOT4sO8fNi2cQ6ZhXg5xtBs=
+ id 1ntm2v-00AHLT-RC
+ for linux-mtd@lists.infradead.org; Wed, 25 May 2022 08:07:11 +0000
+Received: by mail-ed1-x530.google.com with SMTP id p26so26014306eds.5
+ for <linux-mtd@lists.infradead.org>; Wed, 25 May 2022 01:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:content-language:to:cc:from
+ :subject:content-transfer-encoding;
+ bh=K0TSn2fqvwK9SDiwJiRffb/eDZSZxCAGCJGbT9SkTtc=;
+ b=CPH4puU00SpN4r0xq5dXYT/9N8r3QYL8RRabLLQKg1tmtWnmC9EoFiVIGQNrxhfVeY
+ V3g/XsGz9jrl5z3TuSIDKAynEJ6x3W1KqDPAcg4noVeOLzZWCWYeWxh6Q8WBh1TlEyE1
+ vR7XRtPoKqCSc+EDNGF0rCZQtO4bIq/vafTTflUwzDL89V8JGPdS+nBVBSlJOEF1bTMf
+ JZEceNXOlF/Eyjq+gDZvCD5Yw+tdloey87nLY6T9HdFnlfxQNWjekE2D1HdS0AXGqbLv
+ yX/nCKyOoiGm/xMIopFljwGVDU6F7aJGmwOlsJX+QF03hJOqINjrLILBSqkl83bgvbqd
+ M4DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent
+ :content-language:to:cc:from:subject:content-transfer-encoding;
+ bh=K0TSn2fqvwK9SDiwJiRffb/eDZSZxCAGCJGbT9SkTtc=;
+ b=hpwtVkWh9KXcb8g+G9v5iX1NVeNFvMSGQqOiDxyqpzhrP4n9lJPgxaQi4bSW7hImWO
+ 64dhA1B9nx9rrlPXOA5yynKyYw0VZHKrLUOCrI7YanHsS0GasHfNM7htNx7E3KLGAvfd
+ 466iEUoEYQSCKFMrdJYZh+pP/iOTzyn2SXawOaxKXL4WedWMPP5idsTv6G7IdEYQR4xx
+ Cw7Ab+n1SQ+oaQkKyyJ+Br0ciJZFtrActQquz498BExxr2pnytCr4bXeO9gpVJLWuXYl
+ DZbhgu2M/K0S+mr4CkggMH5VIKwg3v38/mCGwBh7od02fHC/ROaqoqgmakIeJm1TyaB6
+ vTug==
+X-Gm-Message-State: AOAM5315/PTAZaPJe9fjlOb+g1nHEknNgPBVPzjNQe3u8lpmYV7bGruu
+ tb/eyZlTKzeeWeEBDhzMJWH+Aw==
+X-Google-Smtp-Source: ABdhPJxu0J/w/m+jAc1o4NHhbkNTu7E6Qn+2GZlYcRX8vJJeJnGbs2EzXlc/+SXbjKrJIwqyRkBRtw==
+X-Received: by 2002:a05:6402:3047:b0:42a:fbe9:4509 with SMTP id
+ bs7-20020a056402304700b0042afbe94509mr32502177edb.159.1653466025277; 
+ Wed, 25 May 2022 01:07:05 -0700 (PDT)
+Received: from [192.168.0.177] (xdsl-188-155-176-92.adslplus.ch.
+ [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
+ ot22-20020a170906ccd600b006f4cb79d9a8sm2783035ejb.75.2022.05.25.01.07.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 25 May 2022 01:07:04 -0700 (PDT)
+Message-ID: <b36280be-9993-9a78-0960-4094efeed1aa@linaro.org>
+Date: Wed, 25 May 2022 10:07:03 +0200
 MIME-Version: 1.0
-Date: Wed, 25 May 2022 00:37:16 +0200
-From: Michael Walle <michael@walle.cc>
-To: chf.fritz@googlemail.com
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Nicolas
- Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, ClaudiuBeznea
- <claudiu.beznea@microchip.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: atmel: Add at25ql641 support
-In-Reply-To: <48b49de3712267780916b665d3b2a3323e6f10ce.camel@googlemail.com>
-References: <48b49de3712267780916b665d3b2a3323e6f10ce.camel@googlemail.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <0123ee0e70df13b340230a38cb44548f@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Content-Language: en-US
+To: workflows@vger.kernel.org,
+ Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Getting rid of infradead.org - corrupted subjects
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220524_153720_488730_92B7D982 
-X-CRM114-Status: GOOD (  14.67  )
+X-CRM114-CacheID: sfid-20220525_010709_958308_41A200E1 
+X-CRM114-Status: UNSURE (   7.86  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,48 +90,42 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi all,
 
-Am 2022-05-24 21:20, schrieb Christoph Fritz:
-> This patch adds AT25QL641 to the list of supported nor flashs.
+The address list is semi-random as I don't know whom to approach.
 
-Please mention on which spi host controller this flash was
-tested.
+Problem: infradead.org corrupts email subjects by changing:
+s/,/, /
 
-> Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
-> ---
->  drivers/mtd/spi-nor/atmel.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-> index 656dd80a0be7..dfbc12071093 100644
-> --- a/drivers/mtd/spi-nor/atmel.c
-> +++ b/drivers/mtd/spi-nor/atmel.c
-> @@ -186,6 +186,8 @@ static const struct flash_info atmel_nor_parts[] = 
-> {
->  		.fixups = &atmel_nor_global_protection_fixups },
->  	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64)
->  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "at25ql641",	INFO(0x1f4317, 0, 64 * 1024, 128)
-> +		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+Examples:
+1. Previous discussion with Uwe about linux-arm-kernel:
+https://lore.kernel.org/all/20220215125856.es2euyoqo6mp4y2t@pengutronix.de/
 
-This flash supports SFDP, please use either SNOR_ID3() (you'll
-have to pick my pending patches first [1]) or use
-   { "at25ql641", INFO(0x1f4317, 0, 0, 0) PARSE_SFDP },
-which will then be replaced with SNOR_ID3() once it is available.
+2. My last email for MTD
+Modified email:
+https://lore.kernel.org/linux-mtd/20220408063720.12826-1-krzysztof.kozlowski@linaro.org/
+Proper email:
+https://lore.kernel.org/all/3e550deb-7c27-894b-a0b5-62609a60f17f@microchip.com/
 
->  	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8)
->  		NO_SFDP_FLAGS(SECT_4K) },
->  	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16)
+When people use Patchwork or b4, the email from the list is being used,
+thus the one with a changed subject. Example:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9547c4e74f6b4b56c2f9e4e7a286ce126fd333fa
+The subject should be "dt-bindings: mtd: jedec,spi-nor: remove unneeded
+properties" (no space after coma)
 
--michael
+This leads to real commits with a bit odd subject. At least not the
+original subject.
 
-[1] https://lore.kernel.org/r/966de7ad5f563f9a29db91c5309a71c6@walle.cc/
+Can we do something about infradead? Get rid of it and move the mailing
+lists to vger.kernel.org? Or fix it?
+
+Best regards,
+Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
