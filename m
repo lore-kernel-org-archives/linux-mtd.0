@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F561C433F5
-	for <linux-mtd@archiver.kernel.org>; Thu, 26 May 2022 01:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FB37C433F5
+	for <linux-mtd@archiver.kernel.org>; Thu, 26 May 2022 05:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XOhmcgDkpTmrK6OhETgp5iLqezCRGxwXsKYes2zqOtc=; b=KEGj4HW/szwxyL
-	zVkFPR9d9Yc37jwR9dZ+yxOoGe6vY9KIO47tMGGgokn7aFYun3gguVK6hz/k9yyeqmHEfesBCRcdk
-	MrBTt4ZE0/G+RCSeEt8uNHi9OcJDTo8+umzwIH8Zic3P3KHOIwkf6ST3R69YSIq00RJKIsGO10eja
-	cw4+7tSpAZcWbEtsyGdg6JoDCXwMygzWjKMox22M1yAJdaUUOAqDg4oWLdKcaumiyQZ+JbiFE69OF
-	yVhSf63eE1++N1IDyiRe39UpCGkDN5Fo0gsJzXShRej9iwlqFU9Nnqcnm5cmk3i6Tx9/aP/TeYMxv
-	uatcihhL4Iituuln4o8g==;
+	List-Owner; bh=MqEkhkXIakD44YelOxbIk/yW127W6he9jE5au0AkNsE=; b=R4Ezs4dL743Uzs
+	5g4SNYshEmNuweO/UEH/rodUXqPKWS7xYe7cHv3XiiIsApde/1nLUh8S8y5dgx0fpnIzbeloBulcG
+	Ui5U+yMUtb33mxnh0n9BCy7U9vEg29ELWV6UiuhMw3IcaJp6/U2FOzXHWNzIXWSn2LxJkRJRCnA8Q
+	mGGY9QKuo2HbYAdVtgd3EMgSyBmbqjLkZ2iCgrQFYebnHqw1jl8+PRo9iYWLXfMHK/2H7Q7XsKoFj
+	sxXkEW9oly6LdHYjZ4XT4xtHj1Prv1pcVk0IaaduG+rKjF0uqLjoSbnoR91aiI6yIryGwYz8uQLUX
+	biy6rLtx6BLeL/0vgrFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nu2k8-00DEqK-LS; Thu, 26 May 2022 01:56:52 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1nu6AU-00DXIh-M4; Thu, 26 May 2022 05:36:18 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nu2k5-00DEok-Ir
-	for linux-mtd@lists.infradead.org; Thu, 26 May 2022 01:56:51 +0000
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L7rbz0xYmzgYNr;
-	Thu, 26 May 2022 09:55:11 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 26 May 2022 09:56:42 +0800
-Message-ID: <45daf51c-c9ec-d4d9-1aee-27fe4bb4b1da@huawei.com>
-Date: Thu, 26 May 2022 09:56:42 +0800
+	id 1nu6AR-00DXI4-7o; Thu, 26 May 2022 05:36:16 +0000
+Received: from [10.28.39.121] (10.28.39.121) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 26 May
+ 2022 13:34:46 +0800
+Message-ID: <f82fdbaa-fed4-cbd3-b559-53bdd373b923@amlogic.com>
+Date: Thu, 26 May 2022 13:34:45 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH -next] jffs2: fix memory leak in jffs2_do_fill_super
-To: Richard Weinberger <richard@nod.at>
-CC: David Woodhouse <dwmw2@infradead.org>, linux-mtd
-	<linux-mtd@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-	yukuai3 <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20220412093816.2280678-1-libaokun1@huawei.com>
- <c2f49973-e5be-475a-1b92-77fc6e86ba37@huawei.com>
- <1917663619.89751.1653338200219.JavaMail.zimbra@nod.at>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <1917663619.89751.1653338200219.JavaMail.zimbra@nod.at>
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH] mtd: rawnand: meson: Fix a potential double free issue
+Content-Language: en-US
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Neil Armstrong <narmstrong@baylibre.com>,
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Yixun Lan
+	<yixun.lan@amlogic.com>, Jianxin Pan <jianxin.pan@amlogic.com>
+CC: <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>
+References: <ec15c358b8063f7c50ff4cd628cf0d2e14e43f49.1653064877.git.christophe.jaillet@wanadoo.fr>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <ec15c358b8063f7c50ff4cd628cf0d2e14e43f49.1653064877.git.christophe.jaillet@wanadoo.fr>
+X-Originating-IP: [10.28.39.121]
+X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
+ (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220525_185649_840093_08571A6D 
-X-CRM114-Status: UNSURE (   7.32  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220525_223615_495147_1C449383 
+X-CRM114-Status: GOOD (  12.61  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,23 +64,54 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjIvNS8yNCA0OjM2LCBSaWNoYXJkIFdlaW5iZXJnZXIg5YaZ6YGTOgo+IC0tLS0tIFVy
-c3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPj4gVm9uOiAibGliYW9rdW4iIDxsaWJhb2t1bjFAaHVh
-d2VpLmNvbT4KPj4gQW46ICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiRGF2aWQgV29vZGhv
-dXNlIiA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4sICJsaW51eC1tdGQiIDxsaW51eC1tdGRAbGlzdHMu
-aW5mcmFkZWFkLm9yZz4sCj4+ICJsaW51eC1rZXJuZWwiIDxsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnPgo+PiBDQzogInl1a3VhaTMiIDx5dWt1YWkzQGh1YXdlaS5jb20+LCAibGliYW9rdW4i
-IDxsaWJhb2t1bjFAaHVhd2VpLmNvbT4KPj4gR2VzZW5kZXQ6IE1vbnRhZywgMjMuIE1haSAyMDIy
-IDA4OjAwOjIxCj4+IEJldHJlZmY6IFJlOiBbUEFUQ0ggLW5leHRdIGpmZnMyOiBmaXggbWVtb3J5
-IGxlYWsgaW4gamZmczJfZG9fZmlsbF9zdXBlcgo+PiBwaW5nCj4gVGhhbmtzIGZvciB5b3VyIHRp
-bWUuIFlvdSBwYXRjaCB3aWxsIGJlIHBhcnQgb2YgdGhlIHVwY29taW5nIG1lcmdlIHdpbmRvdy4K
-PiBJJ20gcHJlcGFyaW5nIHJpZ2h0IG5vdyBteSBxdWV1ZS4KPgo+IFRoYW5rcywKPiAvL3JpY2hh
-cmQKPiAuCgpUaGFuayB5b3UgZm9yIHlvdXIgcmV2aWV3IQoKLS0gCldpdGggQmVzdCBSZWdhcmRz
-LApCYW9rdW4gTGkKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
+Hi Christophe,
+
+On 2022/5/21 0:41, Christophe JAILLET wrote:
+> [ EXTERNAL EMAIL ]
+> 
+> When meson_nfc_nand_chip_cleanup() is called, it will call:
+> 	meson_nfc_free_buffer(&meson_chip->nand);
+> 	nand_cleanup(&meson_chip->nand);
+> 
+> nand_cleanup() in turn will call nand_detach() which calls the
+> .detach_chip() which is here meson_nand_detach_chip().
+> 
+> meson_nand_detach_chip() already calls meson_nfc_free_buffer(), so we
+> could double free some memory.
+> 
+> Fix it by removing the unneeded explicit call to meson_nfc_free_buffer().
+> 
+> Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> This patch is speculative, so review with care.
+> ---
+>   drivers/mtd/nand/raw/meson_nand.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+> index ac3be92872d0..032180183339 100644
+> --- a/drivers/mtd/nand/raw/meson_nand.c
+> +++ b/drivers/mtd/nand/raw/meson_nand.c
+> @@ -1307,7 +1307,6 @@ static int meson_nfc_nand_chip_cleanup(struct meson_nfc *nfc)
+>   		if (ret)
+>   			return ret;
+>   
+> -		meson_nfc_free_buffer(&meson_chip->nand);
+>   		nand_cleanup(&meson_chip->nand);
+>   		list_del(&meson_chip->node);
+>   	}
+
+Acked-by: Liang Yang <liang.yang@amlogic.com>
+
+Thanks,
+Liang
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
