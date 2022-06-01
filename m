@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7760EC43334
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jun 2022 19:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D4FBC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jun 2022 21:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9qX8RckSOzqXipO+GzFi4WqKd2HTM2M8QXGHHzodg5I=; b=sIDws6soK3xfXx
-	8t4OutGo1afp0WeOo2Z2UQQIIPpwb9cD1cHxJTsPhsY/fTs+2gOqkW0e8YsvgE1+vyVcRlRUtRFVn
-	Ym5/6JWKeLbb+0zmb4YZWIKOsEtRpueOsHO0MRD0D5hkmBhsjh6mzHDVAp6XJiC+lBJIZbl3aTA4w
-	tYRN6ZKOhJNv/pkM3w56wcvZb7+8h0rQqlNmxUsRxHLDCBIIW5I6Es9dqiAwVuGgXwWT1nDwGaGmg
-	/Wf22XJGd9zDCmyi37vd9W3/jiw9euJF3XgEnWEoGM4kCDUkhrrXaA3daDY6EQxe8XewXDcpLtEVO
-	ZUDUSdioFfiXR9/ksbFQ==;
+	List-Owner; bh=uHZWlXQVQ/relArH66m7w0aA5kTbHhs80XHJye51qRo=; b=wqgikO72sRt5tr
+	X7O8SCiC4UlSJmeDPZ4NkZO3zuLGdGIL9Xjo3KJtyYIcQPiCapE1WTh0n95DIps8J7Jy8dQCn3pZs
+	/pZcDD7pyW6ET44h+tHFP8tV1c7H3zLBldD8pR2ldtdr8AOHPz4uVnPuRbvXAkCUY9DAGt4nccfhO
+	WNFUktsKZ/cWt2cp6nNnke4YWo2Iozpj4IUeLFKeGg72GzmOtPdmFouLodO39WwUrPXtoygn8Tlwp
+	EQGebsPIM/AgwcnzKB3toi+FirxWCQpz/K9MhrWKZW2T+kgc7MVU4W+2/4ZvGXY1ejTx2s9xoxDoO
+	XOIOrgFgGi387L1W7ktA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nwUND-000CxG-8g; Wed, 01 Jun 2022 19:51:19 +0000
-Received: from mail-oi1-f180.google.com ([209.85.167.180])
+	id 1nwVYU-000PN8-AO; Wed, 01 Jun 2022 21:07:02 +0000
+Received: from mail-oa1-f49.google.com ([209.85.160.49])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nwUN1-000Cts-5e; Wed, 01 Jun 2022 19:51:08 +0000
-Received: by mail-oi1-f180.google.com with SMTP id k187so4037848oif.1;
-        Wed, 01 Jun 2022 12:51:06 -0700 (PDT)
+	id 1nwVYR-000PLl-Kl
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2022 21:07:01 +0000
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-f2cd424b9cso4350847fac.7
+        for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2022 14:06:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gn5G0sk6V7ansC6nBxDu6+mXNt9uJIpkYkYkuE5zjDs=;
-        b=0Vqy+klibrPHQJ11yES2PwoY4JmjQikA2/tVJGXGnIMOYLqI9L7jSG/pT66c74oy0t
-         4YX6lMnnySR/uitt4umMYvsMRuEGgy92hlfcdG5U/vzw3PXM2mEYqAVsLJivpl/SjPOs
-         Nd3rouTZsE7pnoiYyo9Da1NiOZp8K+kQc4T1SPEkSiJn/FhwgHD+8PM0QpyzW/BbLSON
-         q/c4Kw18YZE+0Q4pUh3+y4EjUV1ptGyrNApx5GGJpX8CPH+QFAd6pUgGN6fgaBuyERgM
-         kMQM3lF4eKL0OWOSzcWnLr/+FhaxU81rZf5prIq6L3crsonU9N5qmjpHg6rK1N5BDVn5
-         lNog==
-X-Gm-Message-State: AOAM531QMlMw2E+WXYyGE3ULe+W7T3nr4Ma+4y0lSijlABssirTmgHRZ
-	Pp+TZ4erU3teOdsH0MjtJzhV2qd46w==
-X-Google-Smtp-Source: ABdhPJwAJpzi0PcdaldTmKtUN95zZ7XXm0EePIpfGX5LC4bNAZ845Iwj0Rw0ZOPMk6mqDxpbS339oA==
-X-Received: by 2002:aca:f143:0:b0:32b:dc40:c1c4 with SMTP id p64-20020acaf143000000b0032bdc40c1c4mr12678221oih.293.1654113065824;
-        Wed, 01 Jun 2022 12:51:05 -0700 (PDT)
+        bh=1aYbxtI2kFcJW8TF891pB+yFKcjcjCKbFierwXKVFJQ=;
+        b=cFzv5zBhFFPKKFFmStTL7Aro4xEGuCHk4/HHWbKSYG0mrPP/hGw2j2kb53s3N3mvZr
+         fb1lyvCrDUEan7sAn7gj2FVshDhg+j7i0KhNy9AVyGVtEowsf7T9AH/PHlcKDRQCpfsI
+         vW/fWU9mCkM0RUgFBHHEAtT1iqcVbKoo/GB7vA0U9xrlfCgQ0y7EeP89q7y9rsoblVf6
+         OWK/Y3YaWBgUKmgTFYWvD8qXTprmLSn0+t6qjs/gt20QBx3lLEUJ7jn8EJ8Z3DkT0lTz
+         lqsz9dGBPgevACjjxXAPzkDrgvYwo6CyVAl+MfME1ilzHHRNqw3ludQ3EbE4VsAHD8W0
+         I0iA==
+X-Gm-Message-State: AOAM533Kd1jiGFcGWlvBdIpdZGVLHffxgJHB9mGCDTfo2hBL2u6pVBvK
+	iv3cALnVBop6jh0ZTS0hJQ==
+X-Google-Smtp-Source: ABdhPJwraQ5k2e5C8qqSpHN0k6lN1vr8yIKqmcHArZfs6vcu6Kkp/p4ie3BdK7sHr/cGEQ0IZSfAuw==
+X-Received: by 2002:a05:6870:6196:b0:e1:e1a2:5c65 with SMTP id a22-20020a056870619600b000e1e1a25c65mr921650oah.190.1654117616097;
+        Wed, 01 Jun 2022 14:06:56 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id bc32-20020a05682016a000b0035eb4e5a6dasm1361259oob.48.2022.06.01.12.51.04
+        by smtp.gmail.com with ESMTPSA id oh27-20020a0568702c9b00b000f324b1e645sm1076782oab.22.2022.06.01.14.06.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jun 2022 12:51:05 -0700 (PDT)
-Received: (nullmailer pid 320227 invoked by uid 1000);
-	Wed, 01 Jun 2022 19:51:04 -0000
-Date: Wed, 1 Jun 2022 14:51:04 -0500
+        Wed, 01 Jun 2022 14:06:55 -0700 (PDT)
+Received: (nullmailer pid 452850 invoked by uid 1000);
+	Wed, 01 Jun 2022 21:06:55 -0000
+Date: Wed, 1 Jun 2022 16:06:55 -0500
 From: Rob Herring <robh@kernel.org>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-kernel@lists.infradead.org, XianWei Zhao <xianwei.zhao@amlogic.com>, Jerome Brunet <jbrunet@baylibre.com>, YongHui Yu <yonghui.yu@amlogic.com>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, linux-amlogic@lists.infradead.org, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, Kelvin Zhang <kelvin.zhang@amlogic.com>
-Subject: Re: [PATCH v5 1/4] dt-bindings: nand: meson: fix meson nfc clock
-Message-ID: <20220601195104.GA320194-robh@kernel.org>
-References: <20220513123404.48513-1-liang.yang@amlogic.com>
- <20220513123404.48513-2-liang.yang@amlogic.com>
+To: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Manivannan Sadhasivam <mani@kernel.org>, linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: partitions: Document new
+ dynamic-partition nodes
+Message-ID: <20220601210655.GA380852-robh@kernel.org>
+References: <20220518233258.5483-1-ansuelsmth@gmail.com>
+ <20220518233258.5483-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220513123404.48513-2-liang.yang@amlogic.com>
+In-Reply-To: <20220518233258.5483-2-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220601_125107_248686_F004A4AE 
-X-CRM114-Status: GOOD (  13.56  )
+X-CRM114-CacheID: sfid-20220601_140659_725775_090419AA 
+X-CRM114-Status: GOOD (  33.88  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,28 +80,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 13 May 2022 20:34:01 +0800, Liang Yang wrote:
-> EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK'
-> which is defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is
-> the divider and bit6~7 is the mux for fix pll and xtal. At the beginning,
-> a common MMC and NAND sub-clock was discussed and planed to be implemented
-> as NFC clock provider, but now this series of patches of a common MMC and
-> NAND sub-clock are never being accepted and the current binding was never
-> valid. the reasons are:
-> 1. EMMC and NAND, which are mutually exclusive anyway
-> 2. coupling the EMMC and NAND.
-> 3. it seems that a common MMC and NAND sub-clock is over engineered.
-> and let us see the link for more information:
-> https://lore.kernel.org/all/20220121074508.42168-5-liang.yang@amlogic.com
-> so The meson nfc can't work now, let us rework the clock.
+On Thu, May 19, 2022 at 01:32:57AM +0200, Ansuel Smith wrote:
+> Document new dynamic-partition nodes used to provide an OF node for
+> partition registred at runtime by parsers. This is required for nvmem
+> system to declare and detect nvmem-cells.
 > 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> With these special partitions, the reg / offset is not required.
+> The label binding is used to match the partition allocated by the
+> parser at runtime and the parser will provide reg and offset of the mtd.
+> 
+> NVMEM will use the data from the parser and provide the NVMEM cells
+> declared in the DTS, "connecting" the dynamic partition with a
+> static declaration of cells in them.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
->  .../bindings/mtd/amlogic,meson-nand.txt       | 29 ++++++++-----------
->  1 file changed, 12 insertions(+), 17 deletions(-)
+>  .../mtd/partitions/dynamic-partition.yaml     | 57 +++++++++++++++++++
+>  .../mtd/partitions/qcom,smem-part.yaml        |  4 ++
+>  2 files changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml
+> new file mode 100644
+> index 000000000000..f57d7b9cae7f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/dynamic-partition.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/dynamic-partition.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Dynamic Partition
+> +
+> +description: |
+> +  This binding describes a single flash partition that is dynamically allocated
+> +  by a dedicated parser that is not a fixed-partition parser.
+> +
+> +  Each child of the parser partition node is then compared and if a match with
+> +  the provided label is found then the OF node is assigned.
+> +
+> +  These special partition definition can be used to give a dynamic partition
+> +  an OF node to declare NVMEM cells. An example is declaring the partition
+> +  label and all the NVMEM cells in it. The parser will detect the correct reg
+> +  and offset and the NVMEM will register the cells in it based on the data
+> +  extracted by the parser.
+> +
+> +maintainers:
+> +  - Ansuel Smith <ansuelsmth@gmail.com>
+> +
+> +properties:
+> +  label:
+> +    description: The label / name for the partition assigned by the parser at
+> +      runtime. This is needed for sybsystem like NVMEM to define cells and
 
-Acked-by: Rob Herring <robh@kernel.org>
+typo
+
+> +      register with this OF node.
+> +
+> +required:
+> +  - label
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    flash {
+> +      partitions {
+> +        compatible = "qcom,smem-part";
+> +
+> +        partition-art {
+> +          compatible = "nvmem-cells";
+> +          #address-cells = <1>;
+> +          #size-cells = <1>;
+> +          label = "0:art";
+> +
+> +          macaddr_art_0: macaddr@0 {
+> +            reg = <0x0 0x6>;
+> +          };
+> +
+> +          macaddr_art_6: macaddr@6 {
+> +            reg = <0x6 0x6>;
+> +          };
+
+There's a problem with the schema structure for this which is a common 
+problem where we have parent and child nodes with parent defined 
+properties in the child nodes (label in this case). The issue is that 
+there is not a single schema applied to the child node which contains 
+all possible properties sub-node names. This is necessary to check for 
+extra, undocumented properties using unevaluatedProperties. The creation 
+of spi-periphera-props.yaml is an example of how to address this. I 
+suspect that all the partition schemas may need similar restructuring.
+
+The nvmem-cells schema may happen to already have 'label', so it happens 
+to work (that and unevaluatedProperties is probably missing in places).
+
+Given this schema is really just one property which is already 
+documented for 'partition' nodes, all we really need is to say is if 
+'reg' is not present, then 'label' is required:
+
+if:
+  not:
+    required: [ reg ]
+then:
+  required: [ label ]
+
+
+> +        };
+> +      };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> index cf3f8c1e035d..b6fa25949fe2 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+> @@ -19,6 +19,10 @@ properties:
+>    compatible:
+>      const: qcom,smem-part
+>  
+> +patternProperties:
+> +  "^partition-[0-9a-z]+$":
+> +    $ref: dynamic-partition.yaml#
+> +
+>  required:
+>    - compatible
+>  
+> -- 
+> 2.34.1
+> 
+> 
 
 ______________________________________________________
 Linux MTD discussion mailing list
