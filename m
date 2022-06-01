@@ -4,69 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65666C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jun 2022 18:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7760EC43334
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jun 2022 19:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0QEqUUhFsaCb/hcDSG9VE1d79lU+HLF8SnNMakLWRjk=; b=zhXng/WNdh7uEX
-	7fNs+0MqlKMLg0iIMDJGnw7fvHb4UFCOAFEwYYZhCQmMwISEvXODuN6qjCT3ezTetGQkfFroS70By
-	4U9KUaQK/vpMpjO/9xsx+B9JG1OiQdaYqhMWB2W5qzS+a141EfgfIqDu4sv21pnzcgxKlxaFQcqzb
-	WlJpSQHcME12D25N2OZGwRGyWgvnMTJvEeFwh6w0NmFzrpSgor80PLxI/rMWJcrQWImmi8TJ1fi9w
-	AjRJ9eV0QD0LcgfoHRJo5GwjKHmIzDxPFGowFsYZylGYTDBXqYMdd+ZsysITZYncJQK5YuQaolmBP
-	0be/wu7YHqsCRiBEUHsw==;
+	List-Owner; bh=9qX8RckSOzqXipO+GzFi4WqKd2HTM2M8QXGHHzodg5I=; b=sIDws6soK3xfXx
+	8t4OutGo1afp0WeOo2Z2UQQIIPpwb9cD1cHxJTsPhsY/fTs+2gOqkW0e8YsvgE1+vyVcRlRUtRFVn
+	Ym5/6JWKeLbb+0zmb4YZWIKOsEtRpueOsHO0MRD0D5hkmBhsjh6mzHDVAp6XJiC+lBJIZbl3aTA4w
+	tYRN6ZKOhJNv/pkM3w56wcvZb7+8h0rQqlNmxUsRxHLDCBIIW5I6Es9dqiAwVuGgXwWT1nDwGaGmg
+	/Wf22XJGd9zDCmyi37vd9W3/jiw9euJF3XgEnWEoGM4kCDUkhrrXaA3daDY6EQxe8XewXDcpLtEVO
+	ZUDUSdioFfiXR9/ksbFQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nwT1M-00HYl8-NJ; Wed, 01 Jun 2022 18:24:40 +0000
-Received: from mx-out1.startmail.com ([145.131.90.139])
+	id 1nwUND-000CxG-8g; Wed, 01 Jun 2022 19:51:19 +0000
+Received: from mail-oi1-f180.google.com ([209.85.167.180])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nwT1B-00HYhR-SX; Wed, 01 Jun 2022 18:24:31 +0000
-Date: Wed, 1 Jun 2022 13:24:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
-	s=2020-07; t=1654107865;
-	bh=6QDUqmhuM8l1tVdeJi5firhjmNHPasPFCys26Iie+VU=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:From:Subject:To:Date:
-	 Sender:Content-Type:Content-Transfer-Encoding:Content-Disposition:
-	 Mime-Version:Reply-To:In-Reply-To:References:Message-Id:Autocrypt;
-	b=P1EAv5a9i3kopW4ykn8OWCntXzA5gWdkPwbERsEnYcy/tjRQveyLYsTwQphYppYkg
-	 vY/DjjN/zYCSSGli2wMbqrr16cYWnTVI3aZENthlFVht1jr/vUBu68fEHxPsS18HWe
-	 kuKcS1obKaJqlvVPh8fYsb0VD0w/AmUz6Ms/DirGW2NAnw15+/ydJPKJi6rfcsuLVP
-	 ZY/F4blN3h7f0Cwev/KOyE1FVIaH8s2PXlmxB6LQTeW4ovz+LVcCLGYSVZYuCRVJJg
-	 DM+p+GmiybFO0t1oXTpAX4PYIYLTufWrHsai6V6Mac7D7rCvWF7XFfcYkwlSjuCLPO
-	 LCDpcIHp5et0A==
-From: "Marty E. Plummer" <hanetzer@startmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
-	devicetree@vger.kernel.org, gengdongjiu@huawei.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux@armlinux.org.uk, michael@walle.cc, miquel.raynal@bootlin.com,
-	mturquette@baylibre.com, novikov@ispras.ru, olof@lixom.net,
-	p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
-	robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
-	sumit.semwal@linaro.org, tudor.ambarus@microchip.com,
-	vigneshr@ti.com, xuwei5@hisilicon.com
-Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
-Message-ID: <20220601182418.okoofgannw6vbcxo@proprietary-killer>
-References: <20220501054440.2434247-1-hanetzer@startmail.com>
- <20220501173423.2473093-1-hanetzer@startmail.com>
- <20220501173423.2473093-2-hanetzer@startmail.com>
- <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
- <20220601105846.7hriawg3stxb657f@proprietary-killer>
- <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
- <20220601110616.xmxih663kxgupszv@proprietary-killer>
- <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
+	id 1nwUN1-000Cts-5e; Wed, 01 Jun 2022 19:51:08 +0000
+Received: by mail-oi1-f180.google.com with SMTP id k187so4037848oif.1;
+        Wed, 01 Jun 2022 12:51:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gn5G0sk6V7ansC6nBxDu6+mXNt9uJIpkYkYkuE5zjDs=;
+        b=0Vqy+klibrPHQJ11yES2PwoY4JmjQikA2/tVJGXGnIMOYLqI9L7jSG/pT66c74oy0t
+         4YX6lMnnySR/uitt4umMYvsMRuEGgy92hlfcdG5U/vzw3PXM2mEYqAVsLJivpl/SjPOs
+         Nd3rouTZsE7pnoiYyo9Da1NiOZp8K+kQc4T1SPEkSiJn/FhwgHD+8PM0QpyzW/BbLSON
+         q/c4Kw18YZE+0Q4pUh3+y4EjUV1ptGyrNApx5GGJpX8CPH+QFAd6pUgGN6fgaBuyERgM
+         kMQM3lF4eKL0OWOSzcWnLr/+FhaxU81rZf5prIq6L3crsonU9N5qmjpHg6rK1N5BDVn5
+         lNog==
+X-Gm-Message-State: AOAM531QMlMw2E+WXYyGE3ULe+W7T3nr4Ma+4y0lSijlABssirTmgHRZ
+	Pp+TZ4erU3teOdsH0MjtJzhV2qd46w==
+X-Google-Smtp-Source: ABdhPJwAJpzi0PcdaldTmKtUN95zZ7XXm0EePIpfGX5LC4bNAZ845Iwj0Rw0ZOPMk6mqDxpbS339oA==
+X-Received: by 2002:aca:f143:0:b0:32b:dc40:c1c4 with SMTP id p64-20020acaf143000000b0032bdc40c1c4mr12678221oih.293.1654113065824;
+        Wed, 01 Jun 2022 12:51:05 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id bc32-20020a05682016a000b0035eb4e5a6dasm1361259oob.48.2022.06.01.12.51.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jun 2022 12:51:05 -0700 (PDT)
+Received: (nullmailer pid 320227 invoked by uid 1000);
+	Wed, 01 Jun 2022 19:51:04 -0000
+Date: Wed, 1 Jun 2022 14:51:04 -0500
+From: Rob Herring <robh@kernel.org>
+To: Liang Yang <liang.yang@amlogic.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-kernel@lists.infradead.org, XianWei Zhao <xianwei.zhao@amlogic.com>, Jerome Brunet <jbrunet@baylibre.com>, YongHui Yu <yonghui.yu@amlogic.com>, Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, linux-amlogic@lists.infradead.org, Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, Vignesh Raghavendra <vigneshr@ti.com>, linux-mtd@lists.infradead.org, Kelvin Zhang <kelvin.zhang@amlogic.com>
+Subject: Re: [PATCH v5 1/4] dt-bindings: nand: meson: fix meson nfc clock
+Message-ID: <20220601195104.GA320194-robh@kernel.org>
+References: <20220513123404.48513-1-liang.yang@amlogic.com>
+ <20220513123404.48513-2-liang.yang@amlogic.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
+In-Reply-To: <20220513123404.48513-2-liang.yang@amlogic.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220601_112430_261644_47A15F4C 
-X-CRM114-Status: GOOD (  17.55  )
+X-CRM114-CacheID: sfid-20220601_125107_248686_F004A4AE 
+X-CRM114-Status: GOOD (  13.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,49 +78,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 01, 2022 at 01:09:28PM +0200, Krzysztof Kozlowski wrote:
-> On 01/06/2022 13:06, Marty E. Plummer wrote:
-> > On Wed, Jun 01, 2022 at 01:00:38PM +0200, Krzysztof Kozlowski wrote:
-> >> On 01/06/2022 12:58, Marty E. Plummer wrote:
-> >>> On Tue, May 03, 2022 at 01:37:42PM +0200, Krzysztof Kozlowski wrote:
-> >>>> On 01/05/2022 19:34, Marty E. Plummer wrote:
-> >>>>> Add CRG driver for Hi3521A SoC. CRG (Clock and Reset Generator) module
-> >>>>> generates clock and reset signals used by other module blocks on SoC.
-> >>>>>
-> >>>>> Signed-off-by: Marty E. Plummer <hanetzer@startmail.com>
-> >>>>> ---
-> >>>>>  drivers/clk/hisilicon/Kconfig             |   8 ++
-> >>>>>  drivers/clk/hisilicon/Makefile            |   1 +
-> >>>>>  drivers/clk/hisilicon/crg-hi3521a.c       | 141 ++++++++++++++++++++++
-> >>>>>  include/dt-bindings/clock/hi3521a-clock.h |  34 ++++++
-> >>>>
-> >>>> Bindings go to separate patch. Your patchset is unmerge'able.
-> >>>>
-> >>> So, assuming I have the following patches:
-> >>> 1: +include/dt-bindings/clock/hi3521a-clock.h
-> >>> 2: +drivers/clk/hisilicon/crg-hi3521a.c
-> >>> 3: +Documentation/devicetree/bindings/whatever
-> >>>
-> >>> In what order should they be applied?
-> >>
-> >> Applied or sent? The maintainer will apply them in proper order, this is
-> >> bisectable.
-> >>
-> >>
-> > Either or. Whatever makes the workload easier is what I'm looking for.
+On Fri, 13 May 2022 20:34:01 +0800, Liang Yang wrote:
+> EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK'
+> which is defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is
+> the divider and bit6~7 is the mux for fix pll and xtal. At the beginning,
+> a common MMC and NAND sub-clock was discussed and planed to be implemented
+> as NFC clock provider, but now this series of patches of a common MMC and
+> NAND sub-clock are never being accepted and the current binding was never
+> valid. the reasons are:
+> 1. EMMC and NAND, which are mutually exclusive anyway
+> 2. coupling the EMMC and NAND.
+> 3. it seems that a common MMC and NAND sub-clock is over engineered.
+> and let us see the link for more information:
+> https://lore.kernel.org/all/20220121074508.42168-5-liang.yang@amlogic.com
+> so The meson nfc can't work now, let us rework the clock.
 > 
-> Sorry, you need to be more specific. Apply is not a job for you, for the
-> patch submitter.
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> ---
+>  .../bindings/mtd/amlogic,meson-nand.txt       | 29 ++++++++-----------
+>  1 file changed, 12 insertions(+), 17 deletions(-)
 > 
-> Then you miss here important piece - which is the first patch. DTS goes
-> always via separate branch (or even tree) from driver changes. That's
-> why bindings are always separate first patches.
-> 
-So, add a 4: arch/arm/boot/dts/soc.dtsi and 5: arch/arm/boot/dts/board.dts
-to the above list, or should those be the same patch as well?
 
-> Best regards,
-> Krzysztof
+Acked-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
