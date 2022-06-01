@@ -4,91 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49790C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jun 2022 11:10:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E7F2CCA473
+	for <linux-mtd@archiver.kernel.org>; Wed,  1 Jun 2022 15:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Z8VBdFZmBZ5Cn1UoS9vKLbEYfc1Wl4N2Gc8y7/aJNyY=; b=Sl7cV1jauIznmX
-	Ot/YK/uU0DEdncknCo0euG24UxZ4E9pJW76eaPjC4LjclC4At0Jp+Gb4jMlEn1f793ba93MQC6+mM
-	qCaig2f0Whshv9n9BzIlJ3mV7RVEIEDU/GoSAVFMEQTzrVLD3un/PVquuPRvjgHZCDFL1MdaRGBkH
-	Dxa3yc/jDjZ6PXo7jvUSmWzMZtEwiHppShLzT1GQGMovO7iophyPj93peJBt9Wui0a09Ket78NvoE
-	lVjuk/7K/8se60o114R4uKY3x8YQPNiTg5x6W2HXoP7tRDoI+TCI+KIoyrm4kAKMf6n6nvEa/fg4H
-	Bg4Ky84dn8DWso32rMog==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=sWxahkD/Vyt5VuZ+gxY1isUWxtns852BBdfRhQhI2vk=; b=ADJP80C+fRQzND
+	99o2FbO644m8X97MuzcxXBZ7qJnNIf5Q0LK4KLOvPlbE8miXv78QGBGjF+VLWx1hUiWP4LxC9YvJJ
+	RvQ37c42HglgQKrzrJHjJFj9ZVpECOTX+rsNVQRBL35mVI9MlYhPcJmIfeBRzGeEygWndK40llrWY
+	762hHmeNZhCGBbR9wAyaJFH6MdTNm0TzX7GvHSjlRuc63WxDDUSTcz0uwHO6U+4oU3LfwK9dEeTe4
+	7NBqVDuEXPqq6VrcOW2lruRAltRGVlC+0DW8DvZ1pZJac+t+askBJ5aMvDXAo6YEdmnuROI+u3/ud
+	9ZXS2eMFbdztwaNeP54Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nwMEz-00FX67-M8; Wed, 01 Jun 2022 11:10:17 +0000
-Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
+	id 1nwPwW-00GqH4-LG; Wed, 01 Jun 2022 15:07:28 +0000
+Received: from smtp1.axis.com ([195.60.68.17])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nwMEI-00FWjp-9q
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2022 11:09:35 +0000
-Received: by mail-ej1-x62e.google.com with SMTP id rs12so2951834ejb.13
-        for <linux-mtd@lists.infradead.org>; Wed, 01 Jun 2022 04:09:31 -0700 (PDT)
+	id 1nwPwS-00GqDo-17
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2022 15:07:25 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Z68BPkHGmXG4mVETeBafciiA8RC/qdrJ/VFB7M66ZuE=;
-        b=tqFGCJ4RTJkEK92PVGNoVh28xEJj+O7VYJlTwHo8Ex+LN1g3ttEtaR5yBGgp+NwdQA
-         uEvtSphrWBkwxpsJauJj8Vs3u9uyps9R5QwNJVV/TzE/pKPUnm0MzUEg3jXms9hUoNt9
-         93AIyMB/GQkj16HIlF+tY/USUtmVIoddsFUkG2eaKksAgyI7+Ugl3bm6YNpoANHHSIrj
-         rJ0NCUi/wo0vk24/Nr+lSqphmvn3gGFLzsRph+HKDGaJ2FnLxngiYOpudXgVnNRk3ZqR
-         n4dM63Kovfe7kSFz1y25kQe5OjdgjS1jsf2sAMJSRpTFIbTcE4yyHDGX4ZYXOVv4bYn1
-         Qy0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Z68BPkHGmXG4mVETeBafciiA8RC/qdrJ/VFB7M66ZuE=;
-        b=xTsWY4LV+iZ3WlspjrLcsYHM0aC2eV2NWaW/XtCaPy6CrZuVRamUvi4QgWlu+qgPx3
-         BsDb+FhnwQ6YTaIfhiOYruNDCxRphll8i5lL+qWHbsJINdko5HQA2fNsUb+8G4k2JFPT
-         AVwNfj8QMnZPHnI86JEGJinNXx4fII66WoefMXx1SbTaEANKnV/yKXC1t5gEWU5Ongft
-         3CxmNxCI4UBMDdAEnpgR7FAWhVAInDKMYm0F0fAHCNyxpKG//Bpsyo5c0rDsb7usd5mp
-         rE43PV5I8nzvINy7BJnuweYDPkzCwzzE6ny7SkJl5d5ESWn1mE3lI4Jfjyi9BX5ZdnDp
-         1U/g==
-X-Gm-Message-State: AOAM533MztQFpQrohON+8bI4oKvMtzD4jwbKA4/WensKCj2w+XpbZtR4
-	WIBAKW9sPUULgGg1LuQ/Q520Kw==
-X-Google-Smtp-Source: ABdhPJw2asZRW4TmqBmTFmIGcRc+9YuVnLYnMGhIYn+0EBLNBJi0x7ztJ0JcgXHC4UAKHMxJAiE5bQ==
-X-Received: by 2002:a17:907:d86:b0:6ff:1557:a080 with SMTP id go6-20020a1709070d8600b006ff1557a080mr30424418ejc.678.1654081770533;
-        Wed, 01 Jun 2022 04:09:30 -0700 (PDT)
-Received: from [192.168.0.179] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
-        by smtp.gmail.com with ESMTPSA id e26-20020a170906081a00b006f39ffe23fdsm627514ejd.0.2022.06.01.04.09.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jun 2022 04:09:30 -0700 (PDT)
-Message-ID: <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
-Date: Wed, 1 Jun 2022 13:09:28 +0200
+  d=axis.com; q=dns/txt; s=axis-central1; t=1654096044;
+  x=1685632044;
+  h=from:to:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=xjtIuoxXUELXl+UEmg3UTMIXOqDINNA9RSRcP7yUye0=;
+  b=Sc1LCHYuANlU/fXz/2Mjsx4dsV8bcBgcnVmN/C3t6/osd/D/V0suek+f
+   a+KgoWL8IQnqMGpKeCdyWobsikbv7NrNzQbRdwuc5uiKcyvdGVkhLhVcz
+   JwD6q3HUTEdZa0y2EZkYDXMD7Z23oFfXdITepR5yXTgcZj1DmPA5dpzJV
+   IDDsafxB9egKnx3iZW0a2pCheR/QQKPMMV7cnobeB43HobSlwEWVhwdzJ
+   K1SYIwED6zbFDLLPKc9hbp/GwoKpxlqu1l8ZDwlREtTkRWHbPWgyvyw8n
+   yNcrqE+j68L0sR5WlPoQ+svoC48CYluz2jKw6ES2yzkLPKTtR39Lu9nE4
+   g==;
+From: Rickard X Andersson <Rickard.Andersson@axis.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Question regarding raw NAND and UBIFS
+Thread-Topic: Question regarding raw NAND and UBIFS
+Thread-Index: AQHYdaqZkmT2gI2s9kypWG6/OiGb9A==
+Date: Wed, 1 Jun 2022 15:07:15 +0000
+Message-ID: <535b915640b84befa2d40d072420262a@axis.com>
+Accept-Language: sv-SE, en-US
+Content-Language: sv-SE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.0.5.60]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
-Content-Language: en-US
-To: "Marty E. Plummer" <hanetzer@startmail.com>
-Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
- devicetree@vger.kernel.org, gengdongjiu@huawei.com,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux@armlinux.org.uk, michael@walle.cc,
- miquel.raynal@bootlin.com, mturquette@baylibre.com, novikov@ispras.ru,
- olof@lixom.net, p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
- robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
- sumit.semwal@linaro.org, tudor.ambarus@microchip.com, vigneshr@ti.com,
- xuwei5@hisilicon.com
-References: <20220501054440.2434247-1-hanetzer@startmail.com>
- <20220501173423.2473093-1-hanetzer@startmail.com>
- <20220501173423.2473093-2-hanetzer@startmail.com>
- <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
- <20220601105846.7hriawg3stxb657f@proprietary-killer>
- <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
- <20220601110616.xmxih663kxgupszv@proprietary-killer>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220601110616.xmxih663kxgupszv@proprietary-killer>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220601_040934_394048_C3C90097 
-X-CRM114-Status: GOOD (  13.63  )
+X-CRM114-CacheID: sfid-20220601_080724_590910_DD028C15 
+X-CRM114-Status: UNSURE (   4.93  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,46 +71,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 01/06/2022 13:06, Marty E. Plummer wrote:
-> On Wed, Jun 01, 2022 at 01:00:38PM +0200, Krzysztof Kozlowski wrote:
->> On 01/06/2022 12:58, Marty E. Plummer wrote:
->>> On Tue, May 03, 2022 at 01:37:42PM +0200, Krzysztof Kozlowski wrote:
->>>> On 01/05/2022 19:34, Marty E. Plummer wrote:
->>>>> Add CRG driver for Hi3521A SoC. CRG (Clock and Reset Generator) module
->>>>> generates clock and reset signals used by other module blocks on SoC.
->>>>>
->>>>> Signed-off-by: Marty E. Plummer <hanetzer@startmail.com>
->>>>> ---
->>>>>  drivers/clk/hisilicon/Kconfig             |   8 ++
->>>>>  drivers/clk/hisilicon/Makefile            |   1 +
->>>>>  drivers/clk/hisilicon/crg-hi3521a.c       | 141 ++++++++++++++++++++++
->>>>>  include/dt-bindings/clock/hi3521a-clock.h |  34 ++++++
->>>>
->>>> Bindings go to separate patch. Your patchset is unmerge'able.
->>>>
->>> So, assuming I have the following patches:
->>> 1: +include/dt-bindings/clock/hi3521a-clock.h
->>> 2: +drivers/clk/hisilicon/crg-hi3521a.c
->>> 3: +Documentation/devicetree/bindings/whatever
->>>
->>> In what order should they be applied?
->>
->> Applied or sent? The maintainer will apply them in proper order, this is
->> bisectable.
->>
->>
-> Either or. Whatever makes the workload easier is what I'm looking for.
+Hi,
 
-Sorry, you need to be more specific. Apply is not a job for you, for the
-patch submitter.
+On a system with two raw NAND chips of same type and size is it possible to create a MTD partition that spans over both devices and use UBIFS on that MTD partition? Any drawbacks or risks?
 
-Then you miss here important piece - which is the first patch. DTS goes
-always via separate branch (or even tree) from driver changes. That's
-why bindings are always separate first patches.
+I plan to create a partition that uses 100 % of one NAND and 50 % of the other.
 
 Best regards,
-Krzysztof
-
+Rickard Andersson
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
