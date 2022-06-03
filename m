@@ -4,57 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8AD6C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jun 2022 13:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E69A8C43334
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jun 2022 14:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=XsJduDx8McyfR0g4BVlucdp9VupTOS5+UvxQbh6pmLI=; b=fpGzP5E8vKu4Ev
-	bUTzoaXnMXUp1VWzV3a4rBxHx5tkirv1OMOVc+Gbfl7xpLwBOt/KC82UNClHU7SM0kZeeqP5Pet1g
-	+9pOYeP49bxwTbXrIas99LFKV2hBegjnGTdZ7HjL4cQwMejrUJdE6CHAfb7o1ZMeVpabeX2Z12v6P
-	oTNaCUuL/3FGm1ajXrgUjx54Hj8Q6SWQHKO9UNUbdzjmzu/IsXbj2BViKC2nqRw5xdXRCDOazjT5K
-	CAAmd/bkuHbY7pMUJuSjUgpHVWmGirqNUo6IvTuO5iRuS5o+Sqwzmg13w9hZno/LjlT3f19akuje6
-	39ZkuvUgY/RPAu6oATLw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ykxZ7dF7s2CC7lKkLehsEMLdyAljecJ2sJ0YPMR4uOc=; b=V+wWaTxa7Bwbmt
+	OY41aBaZqDmlylG38P1ELVw9JPr/LN4pnODfjj7n6wo9XCA0j2J0dsyabPZcAA7DY0o0YUYdhtCZ6
+	uIJquWV0AaTG6n0cNSd8KFWUc1q07t7PGzULhtP+uWwVrsmQ9dI9d48gNQ/wTVO/noFOgBJYIAh+v
+	xcD/QUN4JSIocBXm25TpDbOsX9cV17dAkJZt+XUnxnDo/jOaWPNDp/F+ksjf66tvyLq4KcSXzi6OZ
+	T8i23cssNjADA5tH+dPpbJKE3qSpBFcmhrX1/BCjVhw+cRwf6sP0IJTTSPR7Z0Srfu4p3hxzRnYpS
+	EAOQpLMthpHxw6bU+KHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nx7mb-007aua-QO; Fri, 03 Jun 2022 13:56:09 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1nx7sV-007bvK-Hk; Fri, 03 Jun 2022 14:02:15 +0000
+Received: from out4-smtp.messagingengine.com ([66.111.4.28])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nx7mX-007atv-Dp
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2022 13:56:08 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id DA49F1BF206;
-	Fri,  3 Jun 2022 13:56:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1654264563;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HiwH0hvs5Ie9tHnRP/S+sMx19tdadmBe9hY2JmXi0ps=;
-	b=FHNYJVXCx0BN1YP0CK/i+WpkuldlwrKR/7EWovJl9ozjABZFP/sTPa6bpvD941ducnu3t4
-	8uIBKbQpadb4MaZ7Orb5gwAVjjrLid0sVbYY0ysZfklPz93EhhGfnXGH8q1YU6z0gKn6Pw
-	3fHM0vlSshRLYIkuPLH3rD8p/B93+UffQCtvt5DXjWtWTPodsWx+7//t5uy+uYsWqBotoA
-	MPFA3TYHzIwo0Qof8GPTwnNdo+i37jQKfisy6lDc/lnnTGozWSUlH6pN4OOQBFj3MF5bDT
-	6quGniNFT5+uGb4/1jio1iSLzLfJbkkFCoFU9LSqB49Az30CUxZuwiR/s+kxCQ==
-Date: Fri, 3 Jun 2022 15:56:00 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Cc: richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spinand: Add support for ATO25D1GA
-Message-ID: <20220603155600.3eab9890@xps-13>
-In-Reply-To: <20220603135149.11570-1-aidanmacdonald.0x0@gmail.com>
-References: <20220603135149.11570-1-aidanmacdonald.0x0@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1nx7sR-007bs4-71
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2022 14:02:13 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 47D9E5C0102;
+	Fri,  3 Jun 2022 10:02:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 03 Jun 2022 10:02:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	tom-fitzhenry.me.uk; h=cc:cc:content-transfer-encoding:date:date
+	:from:from:in-reply-to:message-id:mime-version:reply-to:sender
+	:subject:subject:to:to; s=fm1; t=1654264925; x=1654351325; bh=W+
+	eqGuBXNTJREah5NjPEs8MO/LOIrmZ4w8DTz9PEUKM=; b=qa++gpww3sM7jROf29
+	Msxeiz9MXxdD9M/sKlJTFOvUkRUpZo0RMEBKZGqq86WSrvoB1kaKfjtogUd58FDh
+	jrKrYHeR+EoKBZX/buSMyw9wuSXsVSkp8hWUkvxnhxhpQKpC6l/1U3dwsDJ//AvB
+	U95vA1p9vxPip/dTBuugHoaOVEVaep1/hps1LMHDxNGMohAQmmHFi9JS89wBI5Wb
+	9dL4izCJPHJh3kN2cuFtfJLRKv9b1QxM88toqq5pgmkDvwrY/t+vR2nIRaV6CH/i
+	1EK7AL7qHpXrNkNEYwktqQX9ccbBUdskLU1JFa7+IGs4QjEi1Zshh3I4i2vfqe2d
+	Auaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1654264925; x=1654351325; bh=W+eqGuBXNTJREah5NjPEs8MO/LOIrmZ4w8D
+	Tz9PEUKM=; b=EZ+Ehd1s/kimSqtsf0NZ+ENsR5b6CQRNc2hpgNAktVZvKgNSp4y
+	aQBDOnnE8LAgsy/mMoWY1N2HTCMpSwrptNmgXB4cyJjpSG6VnUz/sBbBtYdZxrfE
+	N0r3AGLUaY5yXsCWvr4zQI0xig9I21AaXXQbcU+BA+aOkYM7Za5kwcLPb95uKs7T
+	pw2rJHvJ6lFX9NrlxyDMU0nfmGKwxRPmrrQmO2auyNPsF7PPWdtjAZCp7QW+prS5
+	PNsUp60unu5vi1PdImV7Uj5WUtf6vgJLcn6ESAE13mI1X5o++WsUZb00cTuuHT+F
+	QLMKOTVYaBSLjrivaQ5vDaCHOhcl8lC/Vbw==
+X-ME-Sender: <xms:WxSaYvqvWGqiT4Jpz7Ll5tcxOqbu1E-AdzxjGghbB2jkky_7y0WQtw>
+    <xme:WxSaYpqlS0Q8Z64LW7rQm_-gIrM55N9D9vkDsRS1noMvxL-5z14ipS8y-6PVXFgkM
+    mYbdnchOZc4mcU_Pg>
+X-ME-Received: <xmr:WxSaYsM2VjhlM3c9KH19oRS10e-EVoJuXNK0PUANjmivKeSaZPrGd60K6ht2I6mju54FOtVEwxyhCN_Oy-Vv-Gg0P03HMA1jidc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrleeigdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefvohhmucfhihht
+    iihhvghnrhihuceothhomhesthhomhdqfhhithiihhgvnhhrhidrmhgvrdhukheqnecugg
+    ftrfgrthhtvghrnhepvddtkeejgeegieetgfeggefggfejgfefudeufffhieeilefggfdu
+    gfejvdetuedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpphhinhgvieegrdhorh
+    hgpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpehtohhmsehtohhmqdhfihhtiihhvghnrhihrdhmvgdruhhk
+X-ME-Proxy: <xmx:WxSaYi7vj0yx5aeUkiERZHbWtmtws26t_qv_50uDsJ3Uz_WUFtSmfw>
+    <xmx:WxSaYu7u14gjKroRlnofacK25yMWhhfvigRy5PNEW77re2j1DtXP2A>
+    <xmx:WxSaYqgr6WyzPiXjIWBK3k3C0JWxFIQGxDT4hdbbyKUNzLo9kqGy1Q>
+    <xmx:XRSaYmh4QYAN5Q3gdYBVfByp33VGAbXPkPHud1VkOCxcCbkfWU_ohw>
+Feedback-ID: iefc945ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Jun 2022 10:02:00 -0400 (EDT)
+From: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <p.yadav@ti.com>,
+	Michael Walle <michael@walle.cc>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>,
+	linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: siliconkaiser: add support for sk25lp128
+Date: Fri,  3 Jun 2022 23:59:34 +1000
+Message-Id: <20220603135933.143372-1-tom@tom-fitzhenry.me.uk>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220603_065605_788892_E7DFA12D 
-X-CRM114-Status: GOOD (  23.95  )
+X-CRM114-CacheID: sfid-20220603_070211_819672_36C2FA00 
+X-CRM114-Status: GOOD (  14.84  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,98 +102,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgQWlkYW4sCgphaWRhbm1hY2RvbmFsZC4weDBAZ21haWwuY29tIHdyb3RlIG9uIEZyaSwgIDMg
-SnVuIDIwMjIgMTQ6NTE6NDkgKzAxMDA6Cgo+IEFkZCBzdXBwb3J0IGZvciB0aGUgQVRPMjVEMUdB
-IFNQSSBOQU5EIGZsYXNoLgo+IAo+IERhdGFzaGVldDoKPiAtIGh0dHBzOi8vYXR0YS5zemxjc2Mu
-Y29tL3VwbG9hZC9wdWJsaWMvcGRmL3NvdXJjZS8yMDE5MTIxMi9DNDY5MzIwXzA0NTk5RDY3QjAz
-QjA3ODA0NEVCNjVGRjVBRUREREU5LnBkZgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFpZGFuIE1hY0Rv
-bmFsZCA8YWlkYW5tYWNkb25hbGQuMHgwQGdtYWlsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQv
-bmFuZC9zcGkvTWFrZWZpbGUgfCAgMiArLQo+ICBkcml2ZXJzL210ZC9uYW5kL3NwaS9hdG8uYyAg
-ICB8IDg2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gIGRyaXZlcnMvbXRk
-L25hbmQvc3BpL2NvcmUuYyAgIHwgIDEgKwo+ICBpbmNsdWRlL2xpbnV4L210ZC9zcGluYW5kLmgg
-ICB8ICAxICsKPiAgNCBmaWxlcyBjaGFuZ2VkLCA4OSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
-KC0pCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL3NwaS9hdG8uYwo+IAo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3NwaS9NYWtlZmlsZSBiL2RyaXZlcnMvbXRk
-L25hbmQvc3BpL01ha2VmaWxlCj4gaW5kZXggODBkYWJlNmZmMGYzLi5hZTE3YzEzZDFhYmUgMTAw
-NjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9zcGkvTWFrZWZpbGUKPiArKysgYi9kcml2ZXJz
-L210ZC9uYW5kL3NwaS9NYWtlZmlsZQo+IEBAIC0xLDMgKzEsMyBAQAo+ICAjIFNQRFgtTGljZW5z
-ZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4gLXNwaW5hbmQtb2JqcyA6PSBjb3JlLm8gZ2lnYWRldmlj
-ZS5vIG1hY3Jvbml4Lm8gbWljcm9uLm8gcGFyYWdvbi5vIHRvc2hpYmEubyB3aW5ib25kLm8geHR4
-Lm8KPiArc3BpbmFuZC1vYmpzIDo9IGF0by5vIGNvcmUubyBnaWdhZGV2aWNlLm8gbWFjcm9uaXgu
-byBtaWNyb24ubyBwYXJhZ29uLm8gdG9zaGliYS5vIHdpbmJvbmQubyB4dHgubwoKSSB3b3VsZCBr
-ZWVwIGNvcmUubyBmaXJzdCBpbiB0aGF0IGxpc3QsIGV2ZW4gaWYgaXQgYnJlYWtzIGFscGhhYmV0
-aWNhbApvcmRlcmluZyBzbGlnaHRseSA6KQoKT3RoZXJ3aXNlIHRoZSBwYXRjaCBsb29rcyBnb29k
-IHRvIG1lLgoKPiAgb2JqLSQoQ09ORklHX01URF9TUElfTkFORCkgKz0gc3BpbmFuZC5vCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2F0by5jIGIvZHJpdmVycy9tdGQvbmFuZC9z
-cGkvYXRvLmMKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAwMDAwMC4uODJi
-Mzc3YzA2ODEyCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvc3BpL2F0
-by5jCj4gQEAgLTAsMCArMSw4NiBAQAo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BM
-LTIuMAo+ICsvKgo+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMjIgQWlkYW4gTWFjRG9uYWxkCj4gKyAq
-Cj4gKyAqIEF1dGhvcjogQWlkYW4gTWFjRG9uYWxkIDxhaWRhbm1hY2RvbmFsZC4weDBAZ21haWwu
-Y29tPgo+ICsgKi8KPiArCj4gKyNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4KPiArI2luY2x1ZGUg
-PGxpbnV4L2tlcm5lbC5oPgo+ICsjaW5jbHVkZSA8bGludXgvbXRkL3NwaW5hbmQuaD4KPiArCj4g
-Kwo+ICsjZGVmaW5lIFNQSU5BTkRfTUZSX0FUTwkJMHg5Ygo+ICsKPiArCj4gK3N0YXRpYyBTUElO
-QU5EX09QX1ZBUklBTlRTKHJlYWRfY2FjaGVfdmFyaWFudHMsCj4gKwkJU1BJTkFORF9QQUdFX1JF
-QURfRlJPTV9DQUNIRV9YNF9PUCgwLCAxLCBOVUxMLCAwKSwKPiArCQlTUElOQU5EX1BBR0VfUkVB
-RF9GUk9NX0NBQ0hFX09QKHRydWUsIDAsIDEsIE5VTEwsIDApLAo+ICsJCVNQSU5BTkRfUEFHRV9S
-RUFEX0ZST01fQ0FDSEVfT1AoZmFsc2UsIDAsIDEsIE5VTEwsIDApKTsKPiArCj4gK3N0YXRpYyBT
-UElOQU5EX09QX1ZBUklBTlRTKHdyaXRlX2NhY2hlX3ZhcmlhbnRzLAo+ICsJCVNQSU5BTkRfUFJP
-R19MT0FEX1g0KHRydWUsIDAsIE5VTEwsIDApLAo+ICsJCVNQSU5BTkRfUFJPR19MT0FEKHRydWUs
-IDAsIE5VTEwsIDApKTsKPiArCj4gK3N0YXRpYyBTUElOQU5EX09QX1ZBUklBTlRTKHVwZGF0ZV9j
-YWNoZV92YXJpYW50cywKPiArCQlTUElOQU5EX1BST0dfTE9BRF9YNChmYWxzZSwgMCwgTlVMTCwg
-MCksCj4gKwkJU1BJTkFORF9QUk9HX0xPQUQoZmFsc2UsIDAsIE5VTEwsIDApKTsKPiArCj4gKwo+
-ICtzdGF0aWMgaW50IGF0bzI1ZDFnYV9vb2JsYXlvdXRfZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRk
-LCBpbnQgc2VjdGlvbiwKPiArCQkJCSAgIHN0cnVjdCBtdGRfb29iX3JlZ2lvbiAqcmVnaW9uKQo+
-ICt7Cj4gKwlpZiAoc2VjdGlvbiA+IDMpCj4gKwkJcmV0dXJuIC1FUkFOR0U7Cj4gKwo+ICsJcmVn
-aW9uLT5vZmZzZXQgPSAoMTYgKiBzZWN0aW9uKSArIDg7Cj4gKwlyZWdpb24tPmxlbmd0aCA9IDg7
-Cj4gKwlyZXR1cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGludCBhdG8yNWQxZ2Ffb29ibGF5b3V0
-X2ZyZWUoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzZWN0aW9uLAo+ICsJCQkJICAgc3RydWN0
-IG10ZF9vb2JfcmVnaW9uICpyZWdpb24pCj4gK3sKPiArCWlmIChzZWN0aW9uID4gMykKPiArCQly
-ZXR1cm4gLUVSQU5HRTsKPiArCj4gKwlpZiAoc2VjdGlvbikgewo+ICsJCXJlZ2lvbi0+b2Zmc2V0
-ID0gKDE2ICogc2VjdGlvbik7Cj4gKwkJcmVnaW9uLT5sZW5ndGggPSA4Owo+ICsJfSBlbHNlIHsK
-PiArCQkvKiBmaXJzdCBieXRlIG9mIHNlY3Rpb24gMCBpcyByZXNlcnZlZCBmb3IgdGhlIEJCTSAq
-Lwo+ICsJCXJlZ2lvbi0+b2Zmc2V0ID0gMTsKPiArCQlyZWdpb24tPmxlbmd0aCA9IDc7Cj4gKwl9
-Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRkX29v
-YmxheW91dF9vcHMgYXRvMjVkMWdhX29vYmxheW91dCA9IHsKPiArCS5lY2MgPSBhdG8yNWQxZ2Ff
-b29ibGF5b3V0X2VjYywKPiArCS5mcmVlID0gYXRvMjVkMWdhX29vYmxheW91dF9mcmVlLAo+ICt9
-Owo+ICsKPiArCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3BpbmFuZF9pbmZvIGF0b19zcGluYW5k
-X3RhYmxlW10gPSB7Cj4gKwlTUElOQU5EX0lORk8oIkFUTzI1RDFHQSIsCj4gKwkJICAgICBTUElO
-QU5EX0lEKFNQSU5BTkRfUkVBRElEX01FVEhPRF9PUENPREVfQUREUiwgMHgxMiksCj4gKwkJICAg
-ICBOQU5EX01FTU9SRygxLCAyMDQ4LCA2NCwgNjQsIDEwMjQsIDIwLCAxLCAxLCAxKSwKPiArCQkg
-ICAgIE5BTkRfRUNDUkVRKDEsIDUxMiksCj4gKwkJICAgICBTUElOQU5EX0lORk9fT1BfVkFSSUFO
-VFMoJnJlYWRfY2FjaGVfdmFyaWFudHMsCj4gKwkJCQkJICAgICAgJndyaXRlX2NhY2hlX3Zhcmlh
-bnRzLAo+ICsJCQkJCSAgICAgICZ1cGRhdGVfY2FjaGVfdmFyaWFudHMpLAo+ICsJCSAgICAgU1BJ
-TkFORF9IQVNfUUVfQklULAo+ICsJCSAgICAgU1BJTkFORF9FQ0NJTkZPKCZhdG8yNWQxZ2Ffb29i
-bGF5b3V0LCBOVUxMKSksCj4gK307Cj4gKwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNwaW5hbmRf
-bWFudWZhY3R1cmVyX29wcyBhdG9fc3BpbmFuZF9tYW51Zl9vcHMgPSB7Cj4gK307Cj4gKwo+ICtj
-b25zdCBzdHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgYXRvX3NwaW5hbmRfbWFudWZhY3R1cmVy
-ID0gewo+ICsJLmlkID0gU1BJTkFORF9NRlJfQVRPLAo+ICsJLm5hbWUgPSAiQVRPIiwKPiArCS5j
-aGlwcyA9IGF0b19zcGluYW5kX3RhYmxlLAo+ICsJLm5jaGlwcyA9IEFSUkFZX1NJWkUoYXRvX3Nw
-aW5hbmRfdGFibGUpLAo+ICsJLm9wcyA9ICZhdG9fc3BpbmFuZF9tYW51Zl9vcHMsCj4gK307Cj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYyBiL2RyaXZlcnMvbXRkL25h
-bmQvc3BpL2NvcmUuYwo+IGluZGV4IGQ1YjY4NWQxNjA1ZS4uOWQ3MzkxMGE3YWU4IDEwMDY0NAo+
-IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvc3BpL2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25h
-bmQvc3BpL2NvcmUuYwo+IEBAIC05MjcsNiArOTI3LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBu
-YW5kX29wcyBzcGluYW5kX29wcyA9IHsKPiAgfTsKPiAgCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c3BpbmFuZF9tYW51ZmFjdHVyZXIgKnNwaW5hbmRfbWFudWZhY3R1cmVyc1tdID0gewo+ICsJJmF0
-b19zcGluYW5kX21hbnVmYWN0dXJlciwKPiAgCSZnaWdhZGV2aWNlX3NwaW5hbmRfbWFudWZhY3R1
-cmVyLAo+ICAJJm1hY3Jvbml4X3NwaW5hbmRfbWFudWZhY3R1cmVyLAo+ICAJJm1pY3Jvbl9zcGlu
-YW5kX21hbnVmYWN0dXJlciwKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFu
-ZC5oIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gaW5kZXggNTU4NGQzYmI2NTU2Li42
-ZDMzOTJhN2VkYzYgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4g
-KysrIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpbmFuZC5oCj4gQEAgLTI2MCw2ICsyNjAsNyBAQCBz
-dHJ1Y3Qgc3BpbmFuZF9tYW51ZmFjdHVyZXIgewo+ICB9Owo+ICAKPiAgLyogU1BJIE5BTkQgbWFu
-dWZhY3R1cmVycyAqLwo+ICtleHRlcm4gY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVy
-IGF0b19zcGluYW5kX21hbnVmYWN0dXJlcjsKPiAgZXh0ZXJuIGNvbnN0IHN0cnVjdCBzcGluYW5k
-X21hbnVmYWN0dXJlciBnaWdhZGV2aWNlX3NwaW5hbmRfbWFudWZhY3R1cmVyOwo+ICBleHRlcm4g
-Y29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIG1hY3Jvbml4X3NwaW5hbmRfbWFudWZh
-Y3R1cmVyOwo+ICBleHRlcm4gY29uc3Qgc3RydWN0IHNwaW5hbmRfbWFudWZhY3R1cmVyIG1pY3Jv
-bl9zcGluYW5kX21hbnVmYWN0dXJlcjsKCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC1tdGQvCg==
+Add support for the siliconkaiser sk25lp128 chip.
+
+This is the flash chip used in the PinePhone Pro[0], found by physical
+inspection of the board.[1]
+
+I cannot find a datasheet, but this chip supports SFDP.
+
+This patch depends on SNOR_ID3().[2]
+
+https://lore.kernel.org/all/20220510140232.3519184-1-michael@walle.cc/
+
+Tested done: checked that the Pinephone Pro boots when a ROM is written to
+/dev/mtdblock0.
+
+$ xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450060101ff00060110300000ff9d05010380000002ffffffffffff
+ffffffffffffffffffffffffffffffffffffe520f9ffffffff0744eb086b
+083b80bbfeffffffffff00ffffff44eb0c200f5210d800ff234ac90082d8
+11c7cccd68467a757a75f7a2d55c4a422cfff030c080ffffffffffffffff
+ffffffffffffffff501950169cf9c0648fecffff
+$ md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+de4d6be54e479d60859b0ca8a0ee9216
+/sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+$ cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+257018
+$ cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+sk25lp128
+$ cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+siliconkaiser
+
+0. https://wiki.pine64.org/wiki/PinePhone_Pro#Specifications
+1. Thanks to https://github.com/Biktorgj for finding that.
+2. "mtd: spi-nor: introduce SNOR_ID3()" https://lore.kernel.org/all/20220510140232.3519184-1-michael@walle.cc/
+
+Link: https://lore.kernel.org/all/20220510140232.3519184-1-michael@walle.cc/
+Signed-off-by: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
+---
+ drivers/mtd/spi-nor/Makefile        |  1 +
+ drivers/mtd/spi-nor/core.c          |  1 +
+ drivers/mtd/spi-nor/core.h          |  1 +
+ drivers/mtd/spi-nor/siliconkaiser.c | 15 +++++++++++++++
+ 4 files changed, 18 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/siliconkaiser.c
+
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index e347b435a038..314ac7773369 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -12,6 +12,7 @@ spi-nor-objs			+= intel.o
+ spi-nor-objs			+= issi.o
+ spi-nor-objs			+= macronix.o
+ spi-nor-objs			+= micron-st.o
++spi-nor-objs			+= siliconkaiser.o
+ spi-nor-objs			+= spansion.o
+ spi-nor-objs			+= sst.o
+ spi-nor-objs			+= winbond.o
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index fdde80d9f388..e542d3009915 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1624,6 +1624,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_issi,
+ 	&spi_nor_macronix,
+ 	&spi_nor_micron,
++	&spi_nor_siliconkaiser,
+ 	&spi_nor_st,
+ 	&spi_nor_spansion,
+ 	&spi_nor_sst,
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 87183cff3251..8997099f6c5e 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -625,6 +625,7 @@ extern const struct spi_nor_manufacturer spi_nor_intel;
+ extern const struct spi_nor_manufacturer spi_nor_issi;
+ extern const struct spi_nor_manufacturer spi_nor_macronix;
+ extern const struct spi_nor_manufacturer spi_nor_micron;
++extern const struct spi_nor_manufacturer spi_nor_siliconkaiser;
+ extern const struct spi_nor_manufacturer spi_nor_st;
+ extern const struct spi_nor_manufacturer spi_nor_spansion;
+ extern const struct spi_nor_manufacturer spi_nor_sst;
+diff --git a/drivers/mtd/spi-nor/siliconkaiser.c b/drivers/mtd/spi-nor/siliconkaiser.c
+new file mode 100644
+index 000000000000..82bb6094caa9
+--- /dev/null
++++ b/drivers/mtd/spi-nor/siliconkaiser.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/mtd/spi-nor.h>
++
++#include "core.h"
++
++static const struct flash_info siliconkaiser_nor_parts[] = {
++  { "sk25lp128", SNOR_ID3(0x257018) },
++};
++
++const struct spi_nor_manufacturer spi_nor_siliconkaiser = {
++	.name = "siliconkaiser",
++	.parts = siliconkaiser_nor_parts,
++	.nparts = ARRAY_SIZE(siliconkaiser_nor_parts),
++};
+-- 
+2.36.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
