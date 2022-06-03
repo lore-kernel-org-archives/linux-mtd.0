@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BAD5C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jun 2022 16:25:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C6AAC433EF
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jun 2022 16:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:To
-	:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=AB45u8pUfnkfip1wspFpJVm1oseZrR3Bk4VZUYoia3w=; b=UzhD5+PMpvYnJU
-	N8YX/pReuX63JCPpw9dvuw6kVws0hxziqSXHwXCDjw6uJWyIUdm8+gGxLEf+q0w/1ahnMapwD5Rng
-	+ugkmQK6OKzotnAeZ6PZJ/Gv22UhbVl99/sTO9aeHTpZYhjj5Cnubyb0Kf3Mozml4M0/DKrKwA28l
-	gt2cYVMcQZMdDj1Qv36CrmKEayhqlBZyXwaaQvh+Tnp6trSazc0fB7ENSeIZZGWrP3h8osB4uNINf
-	Vx4rwhCys5/gw3i1ahp84fKiUBDcWlzEOVKiLKHgJj5Vt2j5uJCXLgHles1u5U8LNVnN/NnzOI5d0
-	SNL3f7Oze/qFQTW/ttLw==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=z7QSijIDzq053p8IfXP3s1t3Scf8fo6G9VUsXWHa1+o=; b=FAVJvLo2P2614C
+	vx++UFcHdXrfvBNrgav2u3kvjTpa5zUnBO60ec7MJZ6Gdzvpy1O4tLALfXdKMqxh14x0oIu9EipAt
+	RDDpxhJtQoVH2w2otZeKMX/YeMud7hltdiHwLGEUgMYiojf6yHJsbCFuUhZpZcAnBprKYY2fWwtpc
+	xMAQcNYUv5kMuSO5hskOQY96IBSifQ0UGki8+PYcljW7u0Sufw4+S9Be5YHUCvx+WMSXnNtLhA1AH
+	Tv1TAjLcoeMnlEITNboir6SAcvujRiRzw8PLaY3esrJm7ij+EA++zvXGVNIH+N0YjNezMDB6wxiEy
+	fOX658JCw1xE6inJYNvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxA6u-008A51-7l; Fri, 03 Jun 2022 16:25:16 +0000
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38])
+	id 1nxAbt-008EKM-3w; Fri, 03 Jun 2022 16:57:17 +0000
+Received: from relay11.mail.gandi.net ([217.70.178.231])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxA6q-008A42-FH
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2022 16:25:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1654273512; x=1685809512;
-  h=from:to:cc:subject:date:message-id;
-  bh=XLCDfbekxNScYaP5NXrBc4VjDuRQ8ud7lpz1B0GaoFw=;
-  b=s4f/2JGYSfzgZ3LasiClSvm8XshDPfOVOGk2k3NEZ7ojQp7ElHd3tFwX
-   trb5PJVUcvcaw1O5OQJOwpcrM1SyaHLfD2pX4hVZr5tFxyX0RbCnd6cJ7
-   FJ1dFsOFlTebm4jZV5iHcEz7gY98c/nueWmLJhn+qVNYYRbkyv2125QIW
-   o=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 03 Jun 2022 09:25:07 -0700
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 03 Jun 2022 09:25:04 -0700
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-	id 781E920DEE; Fri,  3 Jun 2022 21:55:02 +0530 (IST)
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-To: mani@kernel.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: quic_srichara@quicinc.com,
-	quic_mdalam@quicinc.com
-Subject: [PATCH] mtd: rawnand: qcom: Implement exec_op()
-Date: Fri,  3 Jun 2022 21:54:58 +0530
-Message-Id: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	id 1nxAbp-008EI9-DE
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2022 16:57:16 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 92AEC100003;
+	Fri,  3 Jun 2022 16:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1654275430;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QZE9qS7TQkY684bsp1aOtO1TIYwTBearn5vIKQv58Zc=;
+	b=BORFok4Mtr0Fzd56JjplsJYQ5nnKMlBm87bQ0CFW/MPvO4A67a+s5wuK3Vb7b6aagOQ9eA
+	uCqZXPzFv1uKEV+9je4mjG4fRKjP0UTsWWekvdzrlu8Vt/Vb5FVdErmqkV1Lnhxh0uWy0M
+	m++iKvsl/vmefO/rnocUtWyDxxU8jMyV+gKLuYWyl3MstfGlak/KjiYvcLd8xs0nfj6zDr
+	uVuNX7Gig32mxWNC+g9Adc++kF8uQDH9C9ONbtqAhnyn/VvWa34sF/ODKeBrUee7thU6xI
+	2ZvXOWmeNb5RiExfK6XP4OFQEnW1pow0tYKqIyjkq0SoOq04BaK/EHE7iV4SQw==
+Date: Fri, 3 Jun 2022 18:57:06 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Md Sadre Alam <quic_mdalam@quicinc.com>
+Cc: mani@kernel.org, richard@nod.at, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
+Subject: Re: [PATCH] mtd: rawnand: qcom: Implement exec_op()
+Message-ID: <20220603185706.55e85123@xps-13>
+In-Reply-To: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
+References: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220603_092512_593986_2537BA5C 
-X-CRM114-Status: GOOD (  25.13  )
+X-CRM114-CacheID: sfid-20220603_095713_826751_CFA1642C 
+X-CRM114-Status: GOOD (  32.66  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,481 +67,268 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Implement exec_op() so we can later get rid of the legacy interface
-implementation.
-
-Co-developed-by: Sricharan R <quic_srichara@quicinc.com>
-Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 368 +++++++++++++++++++++-----------------
- 1 file changed, 204 insertions(+), 164 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 048b255..507921b 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -14,6 +14,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/delay.h>
-+#include <linux/iopoll.h>
- #include <linux/dma/qcom_bam_dma.h>
- 
- /* NANDc reg offsets */
-@@ -1305,15 +1306,13 @@ static int nandc_param(struct qcom_nand_host *host)
- }
- 
- /* sets up descriptors for NAND_CMD_ERASE1 */
--static int erase_block(struct qcom_nand_host *host, int page_addr)
-+static int erase_block(struct qcom_nand_host *host)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 
- 	nandc_set_reg(chip, NAND_FLASH_CMD,
- 		      OP_BLOCK_ERASE | PAGE_ACC | LAST_PAGE);
--	nandc_set_reg(chip, NAND_ADDR0, page_addr);
--	nandc_set_reg(chip, NAND_ADDR1, 0);
- 	nandc_set_reg(chip, NAND_DEV0_CFG0,
- 		      host->cfg0_raw & ~(7 << CW_PER_PAGE));
- 	nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
-@@ -1321,14 +1320,8 @@ static int erase_block(struct qcom_nand_host *host, int page_addr)
- 	nandc_set_reg(chip, NAND_FLASH_STATUS, host->clrflashstatus);
- 	nandc_set_reg(chip, NAND_READ_STATUS, host->clrreadstatus);
- 
--	write_reg_dma(nandc, NAND_FLASH_CMD, 3, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
- 	write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
--
--	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
--
--	write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
--	write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
- 
- 	return 0;
- }
-@@ -1343,16 +1336,12 @@ static int read_id(struct qcom_nand_host *host, int column)
- 		return 0;
- 
- 	nandc_set_reg(chip, NAND_FLASH_CMD, OP_FETCH_ID);
--	nandc_set_reg(chip, NAND_ADDR0, column);
--	nandc_set_reg(chip, NAND_ADDR1, 0);
- 	nandc_set_reg(chip, NAND_FLASH_CHIP_SELECT,
- 		      nandc->props->is_bam ? 0 : DM_EN);
- 	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
- 
--	write_reg_dma(nandc, NAND_FLASH_CMD, 4, NAND_BAM_NEXT_SGL);
--	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
--
--	read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
-+	write_reg_dma(nandc, NAND_FLASH_CHIP_SELECT, 1, NAND_BAM_NEXT_SGL);
- 
- 	return 0;
- }
-@@ -1491,7 +1480,6 @@ static void parse_erase_write_errors(struct qcom_nand_host *host, int command)
- 
- 	for (i = 0; i < num_cw; i++) {
- 		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
--
- 		if (flash_status & FS_MPU_ERR)
- 			host->status &= ~NAND_STATUS_WP;
- 
-@@ -1523,86 +1511,6 @@ static void post_command(struct qcom_nand_host *host, int command)
- }
- 
- /*
-- * Implements chip->legacy.cmdfunc. It's  only used for a limited set of
-- * commands. The rest of the commands wouldn't be called by upper layers.
-- * For example, NAND_CMD_READOOB would never be called because we have our own
-- * versions of read_oob ops for nand_ecc_ctrl.
-- */
--static void qcom_nandc_command(struct nand_chip *chip, unsigned int command,
--			       int column, int page_addr)
--{
--	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	bool wait = false;
--	int ret = 0;
--
--	pre_command(host, command);
--
--	switch (command) {
--	case NAND_CMD_RESET:
--		ret = reset(host);
--		wait = true;
--		break;
--
--	case NAND_CMD_READID:
--		nandc->buf_count = 4;
--		ret = read_id(host, column);
--		wait = true;
--		break;
--
--	case NAND_CMD_PARAM:
--		ret = nandc_param(host);
--		wait = true;
--		break;
--
--	case NAND_CMD_ERASE1:
--		ret = erase_block(host, page_addr);
--		wait = true;
--		break;
--
--	case NAND_CMD_READ0:
--		/* we read the entire page for now */
--		WARN_ON(column != 0);
--
--		host->use_ecc = true;
--		set_address(host, 0, page_addr);
--		update_rw_regs(host, ecc->steps, true, 0);
--		break;
--
--	case NAND_CMD_SEQIN:
--		WARN_ON(column != 0);
--		set_address(host, 0, page_addr);
--		break;
--
--	case NAND_CMD_PAGEPROG:
--	case NAND_CMD_STATUS:
--	case NAND_CMD_NONE:
--	default:
--		break;
--	}
--
--	if (ret) {
--		dev_err(nandc->dev, "failure executing command %d\n",
--			command);
--		free_descs(nandc);
--		return;
--	}
--
--	if (wait) {
--		ret = submit_descs(nandc);
--		if (ret)
--			dev_err(nandc->dev,
--				"failure submitting descs for command %d\n",
--				command);
--	}
--
--	free_descs(nandc);
--
--	post_command(host, command);
--}
--
--/*
-  * when using BCH ECC, the HW flags an error in NAND_FLASH_STATUS if it read
-  * an erased CW, and reports an erased CW in NAND_ERASED_CW_DETECT_STATUS.
-  *
-@@ -2044,7 +1952,6 @@ static int qcom_nandc_read_page(struct nand_chip *chip, uint8_t *buf,
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	u8 *data_buf, *oob_buf = NULL;
--
- 	nand_read_page_op(chip, page, 0, NULL, 0);
- 	data_buf = buf;
- 	oob_buf = oob_required ? chip->oob_poi : NULL;
-@@ -2366,64 +2273,6 @@ static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
- }
- 
- /*
-- * the three functions below implement chip->legacy.read_byte(),
-- * chip->legacy.read_buf() and chip->legacy.write_buf() respectively. these
-- * aren't used for reading/writing page data, they are used for smaller data
-- * like reading	id, status etc
-- */
--static uint8_t qcom_nandc_read_byte(struct nand_chip *chip)
--{
--	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	u8 *buf = nandc->data_buffer;
--	u8 ret = 0x0;
--
--	if (host->last_command == NAND_CMD_STATUS) {
--		ret = host->status;
--
--		host->status = NAND_STATUS_READY | NAND_STATUS_WP;
--
--		return ret;
--	}
--
--	if (nandc->buf_start < nandc->buf_count)
--		ret = buf[nandc->buf_start++];
--
--	return ret;
--}
--
--static void qcom_nandc_read_buf(struct nand_chip *chip, uint8_t *buf, int len)
--{
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	int real_len = min_t(size_t, len, nandc->buf_count - nandc->buf_start);
--
--	memcpy(buf, nandc->data_buffer + nandc->buf_start, real_len);
--	nandc->buf_start += real_len;
--}
--
--static void qcom_nandc_write_buf(struct nand_chip *chip, const uint8_t *buf,
--				 int len)
--{
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	int real_len = min_t(size_t, len, nandc->buf_count - nandc->buf_start);
--
--	memcpy(nandc->data_buffer + nandc->buf_start, buf, real_len);
--
--	nandc->buf_start += real_len;
--}
--
--/* we support only one external chip for now */
--static void qcom_nandc_select_chip(struct nand_chip *chip, int chipnr)
--{
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--
--	if (chipnr <= 0)
--		return;
--
--	dev_warn(nandc->dev, "invalid chip select\n");
--}
--
--/*
-  * NAND controller page layout info
-  *
-  * Layout with ECC enabled:
-@@ -2738,8 +2587,207 @@ static int qcom_nand_attach_chip(struct nand_chip *chip)
- 	return 0;
- }
- 
-+static int nandc_status(struct nand_chip *chip)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-+
-+	memcpy(nandc->data_buffer, &host->status, 1);
-+
-+	return 0;
-+}
-+
-+static int qcom_nand_send_command(struct nand_chip *chip, u8 command)
-+{
-+	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	int ret = 0;
-+
-+	pre_command(host, command);
-+
-+	switch (command) {
-+	case NAND_CMD_RESET:
-+		ret = reset(host);
-+		break;
-+	case NAND_CMD_READID:
-+		nandc->buf_count = 4;
-+		ret = read_id(host, 0);
-+		break;
-+	case NAND_CMD_PARAM:
-+		ret = nandc_param(host);
-+		break;
-+	case NAND_CMD_ERASE1:
-+		ret = erase_block(host);
-+		break;
-+	case NAND_CMD_STATUS:
-+		ret = nandc_status(chip);
-+		break;
-+	case NAND_CMD_READ0:
-+		host->use_ecc = true;
-+		update_rw_regs(host, ecc->steps, true, 0);
-+		break;
-+	case NAND_CMD_ERASE2:
-+		break;
-+	case NAND_CMD_SEQIN:
-+		break;
-+	case NAND_CMD_PAGEPROG:
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int qcom_nand_send_address(struct nand_chip *chip,
-+				  const struct nand_op_instr *instr, int cmd)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	u32 page_addr = 0x0, page_mask = 0x0;
-+
-+	page_addr = instr->ctx.addr.addrs[0];
-+
-+	/*
-+	 *Form page address for erase, read, write to using existing api
-+	 */
-+
-+	switch (cmd) {
-+	case NAND_CMD_ERASE1:
-+		page_addr = instr->ctx.addr.addrs[0];
-+		page_mask = instr->ctx.addr.addrs[1];
-+		page_mask <<= 8;
-+		page_addr = (page_addr | page_mask);
-+		page_mask = instr->ctx.addr.addrs[2];
-+		page_mask <<= 16;
-+		page_addr = (page_addr | page_mask);
-+		page_mask = instr->ctx.addr.addrs[3];
-+		page_mask <<= 24;
-+		page_addr = (page_addr | page_mask);
-+		break;
-+	case NAND_CMD_READ0:
-+	case NAND_CMD_SEQIN:
-+		page_addr = instr->ctx.addr.addrs[3];
-+		page_addr <<= 24;
-+		page_mask = instr->ctx.addr.addrs[2];
-+		page_mask <<= 16;
-+		page_addr |= page_mask;
-+		page_mask = instr->ctx.addr.addrs[1];
-+		page_mask <<= 8;
-+		page_addr |= page_mask;
-+		page_mask = instr->ctx.addr.addrs[0];
-+		page_addr |= page_mask;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (cmd == NAND_CMD_PARAM)
-+		return 0;
-+
-+	nandc_set_reg(chip, NAND_ADDR0, page_addr);
-+	nandc_set_reg(chip, NAND_ADDR1, 0);
-+
-+	if (cmd != NAND_CMD_SEQIN)
-+		write_reg_dma(nandc, NAND_ADDR0, 2, 0);
-+
-+	return 0;
-+}
-+
-+static void qcom_nand_read_buf(struct nand_chip *chip, u8 *buf, int len)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+
-+	memcpy(buf, nandc->data_buffer, len);
-+}
-+
-+static int qcom_nand_exec_instr(struct nand_chip *chip,
-+				const struct nand_op_instr *instr)
-+{
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-+	u32 status;
-+	int ret = 0;
-+	bool wait = false;
-+	static int opcode;
-+
-+	switch (instr->type) {
-+	case NAND_OP_CMD_INSTR:
-+		ret = qcom_nand_send_command(chip, instr->ctx.cmd.opcode);
-+		if (instr->ctx.cmd.opcode == NAND_CMD_RESET)
-+			wait = true;
-+		opcode = instr->ctx.cmd.opcode;
-+		break;
-+	case NAND_OP_ADDR_INSTR:
-+		qcom_nand_send_address(chip, instr, opcode);
-+		if (opcode != NAND_CMD_READ0 && opcode != NAND_CMD_READSTART &&
-+		    opcode != NAND_CMD_PARAM && opcode != NAND_CMD_SEQIN)
-+			wait = true;
-+		break;
-+	case NAND_OP_DATA_IN_INSTR:
-+		qcom_nand_read_buf(chip, instr->ctx.data.buf.in, instr->ctx.data.len);
-+		break;
-+	case NAND_OP_DATA_OUT_INSTR:
-+		wait = false;
-+		break;
-+	case NAND_OP_WAITRDY_INSTR:
-+		ret = readl_poll_timeout(nandc->base + NAND_FLASH_STATUS, status,
-+					 (status & FS_READY_BSY_N), 20,
-+					 instr->ctx.waitrdy.timeout_ms * 1000);
-+		if (opcode == NAND_CMD_PARAM)
-+			wait = true;
-+	default:
-+		break;
-+	}
-+
-+	if (wait) {
-+		if (opcode != NAND_CMD_PARAM)
-+			write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-+
-+		if (opcode == NAND_CMD_READID)
-+			read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
-+
-+		if (opcode == NAND_CMD_ERASE1) {
-+			read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-+			write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
-+			write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
-+		}
-+
-+		ret = submit_descs(nandc);
-+		if (ret)
-+			dev_err(nandc->dev, "failure submitting descs for command 0x%02x\n",
-+				opcode);
-+
-+		free_descs(nandc);
-+		post_command(host, opcode);
-+	}
-+
-+	return ret;
-+}
-+
-+static int qcom_nand_exec_op(struct nand_chip *chip,
-+			     const struct nand_operation *op,
-+				bool check_only)
-+{
-+	unsigned int i;
-+	int ret = 0;
-+
-+	if (check_only)
-+		return 0;
-+
-+	for (i = 0; i < op->ninstrs; i++) {
-+		ret = qcom_nand_exec_instr(chip, &op->instrs[i]);
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
- static const struct nand_controller_ops qcom_nandc_ops = {
- 	.attach_chip = qcom_nand_attach_chip,
-+	.exec_op = qcom_nand_exec_op,
- };
- 
- static void qcom_nandc_unalloc(struct qcom_nand_controller *nandc)
-@@ -2938,14 +2986,6 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
- 	mtd->owner = THIS_MODULE;
- 	mtd->dev.parent = dev;
- 
--	chip->legacy.cmdfunc	= qcom_nandc_command;
--	chip->legacy.select_chip	= qcom_nandc_select_chip;
--	chip->legacy.read_byte	= qcom_nandc_read_byte;
--	chip->legacy.read_buf	= qcom_nandc_read_buf;
--	chip->legacy.write_buf	= qcom_nandc_write_buf;
--	chip->legacy.set_features	= nand_get_set_features_notsupp;
--	chip->legacy.get_features	= nand_get_set_features_notsupp;
--
- 	/*
- 	 * the bad block marker is readable only when we read the last codeword
- 	 * of a page with ECC disabled. currently, the nand_base and nand_bbt
--- 
-2.7.4
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8sCgpxdWljX21kYWxhbUBxdWljaW5jLmNvbSB3cm90ZSBvbiBGcmksICAzIEp1biAyMDIy
+IDIxOjU0OjU4ICswNTMwOgoKPiBJbXBsZW1lbnQgZXhlY19vcCgpIHNvIHdlIGNhbiBsYXRlciBn
+ZXQgcmlkIG9mIHRoZSBsZWdhY3kgaW50ZXJmYWNlCj4gaW1wbGVtZW50YXRpb24uCgpUaGFua3Mg
+Zm9yIGRvaW5nIHRoaXMgY29udmVyc2lvbiEKCj4gCj4gQ28tZGV2ZWxvcGVkLWJ5OiBTcmljaGFy
+YW4gUiA8cXVpY19zcmljaGFyYUBxdWljaW5jLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBTcmljaGFy
+YW4gUiA8cXVpY19zcmljaGFyYUBxdWljaW5jLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBNZCBTYWRy
+ZSBBbGFtIDxxdWljX21kYWxhbUBxdWljaW5jLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFu
+ZC9yYXcvcWNvbV9uYW5kYy5jIHwgMzY4ICsrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0t
+LS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyMDQgaW5zZXJ0aW9ucygrKSwgMTY0IGRlbGV0aW9u
+cygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMg
+Yi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMKPiBpbmRleCAwNDhiMjU1Li41MDc5
+MjFiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+ICsr
+KyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+IEBAIC0xNCw2ICsxNCw3IEBA
+Cj4gICNpbmNsdWRlIDxsaW51eC9vZi5oPgo+ICAjaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+
+Cj4gICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgo+ICsjaW5jbHVkZSA8bGludXgvaW9wb2xsLmg+
+Cj4gICNpbmNsdWRlIDxsaW51eC9kbWEvcWNvbV9iYW1fZG1hLmg+Cj4gIAo+ICAvKiBOQU5EYyBy
+ZWcgb2Zmc2V0cyAqLwo+IEBAIC0xMzA1LDE1ICsxMzA2LDEzIEBAIHN0YXRpYyBpbnQgbmFuZGNf
+cGFyYW0oc3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0KQo+ICB9Cj4gIAo+ICAvKiBzZXRzIHVw
+IGRlc2NyaXB0b3JzIGZvciBOQU5EX0NNRF9FUkFTRTEgKi8KPiAtc3RhdGljIGludCBlcmFzZV9i
+bG9jayhzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgKmhvc3QsIGludCBwYWdlX2FkZHIpCj4gK3N0YXRp
+YyBpbnQgZXJhc2VfYmxvY2soc3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0KQo+ICB7Cj4gIAlz
+dHJ1Y3QgbmFuZF9jaGlwICpjaGlwID0gJmhvc3QtPmNoaXA7Cj4gIAlzdHJ1Y3QgcWNvbV9uYW5k
+X2NvbnRyb2xsZXIgKm5hbmRjID0gZ2V0X3Fjb21fbmFuZF9jb250cm9sbGVyKGNoaXApOwo+ICAK
+PiAgCW5hbmRjX3NldF9yZWcoY2hpcCwgTkFORF9GTEFTSF9DTUQsCj4gIAkJICAgICAgT1BfQkxP
+Q0tfRVJBU0UgfCBQQUdFX0FDQyB8IExBU1RfUEFHRSk7Cj4gLQluYW5kY19zZXRfcmVnKGNoaXAs
+IE5BTkRfQUREUjAsIHBhZ2VfYWRkcik7Cj4gLQluYW5kY19zZXRfcmVnKGNoaXAsIE5BTkRfQURE
+UjEsIDApOwo+ICAJbmFuZGNfc2V0X3JlZyhjaGlwLCBOQU5EX0RFVjBfQ0ZHMCwKPiAgCQkgICAg
+ICBob3N0LT5jZmcwX3JhdyAmIH4oNyA8PCBDV19QRVJfUEFHRSkpOwo+ICAJbmFuZGNfc2V0X3Jl
+ZyhjaGlwLCBOQU5EX0RFVjBfQ0ZHMSwgaG9zdC0+Y2ZnMV9yYXcpOwo+IEBAIC0xMzIxLDE0ICsx
+MzIwLDggQEAgc3RhdGljIGludCBlcmFzZV9ibG9jayhzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgKmhv
+c3QsIGludCBwYWdlX2FkZHIpCj4gIAluYW5kY19zZXRfcmVnKGNoaXAsIE5BTkRfRkxBU0hfU1RB
+VFVTLCBob3N0LT5jbHJmbGFzaHN0YXR1cyk7Cj4gIAluYW5kY19zZXRfcmVnKGNoaXAsIE5BTkRf
+UkVBRF9TVEFUVVMsIGhvc3QtPmNscnJlYWRzdGF0dXMpOwo+ICAKPiAtCXdyaXRlX3JlZ19kbWEo
+bmFuZGMsIE5BTkRfRkxBU0hfQ01ELCAzLCBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4gKwl3cml0ZV9y
+ZWdfZG1hKG5hbmRjLCBOQU5EX0ZMQVNIX0NNRCwgMSwgTkFORF9CQU1fTkVYVF9TR0wpOwo+ICAJ
+d3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9ERVYwX0NGRzAsIDIsIE5BTkRfQkFNX05FWFRfU0dM
+KTsKPiAtCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfRVhFQ19DTUQsIDEsIE5BTkRfQkFNX05F
+WFRfU0dMKTsKPiAtCj4gLQlyZWFkX3JlZ19kbWEobmFuZGMsIE5BTkRfRkxBU0hfU1RBVFVTLCAx
+LCBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4gLQo+IC0Jd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9G
+TEFTSF9TVEFUVVMsIDEsIDApOwo+IC0Jd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9SRUFEX1NU
+QVRVUywgMSwgTkFORF9CQU1fTkVYVF9TR0wpOwo+ICAKPiAgCXJldHVybiAwOwo+ICB9Cj4gQEAg
+LTEzNDMsMTYgKzEzMzYsMTIgQEAgc3RhdGljIGludCByZWFkX2lkKHN0cnVjdCBxY29tX25hbmRf
+aG9zdCAqaG9zdCwgaW50IGNvbHVtbikKPiAgCQlyZXR1cm4gMDsKPiAgCj4gIAluYW5kY19zZXRf
+cmVnKGNoaXAsIE5BTkRfRkxBU0hfQ01ELCBPUF9GRVRDSF9JRCk7Cj4gLQluYW5kY19zZXRfcmVn
+KGNoaXAsIE5BTkRfQUREUjAsIGNvbHVtbik7Cj4gLQluYW5kY19zZXRfcmVnKGNoaXAsIE5BTkRf
+QUREUjEsIDApOwo+ICAJbmFuZGNfc2V0X3JlZyhjaGlwLCBOQU5EX0ZMQVNIX0NISVBfU0VMRUNU
+LAo+ICAJCSAgICAgIG5hbmRjLT5wcm9wcy0+aXNfYmFtID8gMCA6IERNX0VOKTsKPiAgCW5hbmRj
+X3NldF9yZWcoY2hpcCwgTkFORF9FWEVDX0NNRCwgMSk7Cj4gIAo+IC0Jd3JpdGVfcmVnX2RtYShu
+YW5kYywgTkFORF9GTEFTSF9DTUQsIDQsIE5BTkRfQkFNX05FWFRfU0dMKTsKPiAtCXdyaXRlX3Jl
+Z19kbWEobmFuZGMsIE5BTkRfRVhFQ19DTUQsIDEsIE5BTkRfQkFNX05FWFRfU0dMKTsKPiAtCj4g
+LQlyZWFkX3JlZ19kbWEobmFuZGMsIE5BTkRfUkVBRF9JRCwgMSwgTkFORF9CQU1fTkVYVF9TR0wp
+Owo+ICsJd3JpdGVfcmVnX2RtYShuYW5kYywgTkFORF9GTEFTSF9DTUQsIDEsIE5BTkRfQkFNX05F
+WFRfU0dMKTsKPiArCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfRkxBU0hfQ0hJUF9TRUxFQ1Qs
+IDEsIE5BTkRfQkFNX05FWFRfU0dMKTsKPiAgCj4gIAlyZXR1cm4gMDsKPiAgfQo+IEBAIC0xNDkx
+LDcgKzE0ODAsNiBAQCBzdGF0aWMgdm9pZCBwYXJzZV9lcmFzZV93cml0ZV9lcnJvcnMoc3RydWN0
+IHFjb21fbmFuZF9ob3N0ICpob3N0LCBpbnQgY29tbWFuZCkKPiAgCj4gIAlmb3IgKGkgPSAwOyBp
+IDwgbnVtX2N3OyBpKyspIHsKPiAgCQl1MzIgZmxhc2hfc3RhdHVzID0gbGUzMl90b19jcHUobmFu
+ZGMtPnJlZ19yZWFkX2J1ZltpXSk7Cj4gLQo+ICAJCWlmIChmbGFzaF9zdGF0dXMgJiBGU19NUFVf
+RVJSKQo+ICAJCQlob3N0LT5zdGF0dXMgJj0gfk5BTkRfU1RBVFVTX1dQOwo+ICAKPiBAQCAtMTUy
+Myw4NiArMTUxMSw2IEBAIHN0YXRpYyB2b2lkIHBvc3RfY29tbWFuZChzdHJ1Y3QgcWNvbV9uYW5k
+X2hvc3QgKmhvc3QsIGludCBjb21tYW5kKQo+ICB9Cj4gIAo+ICAvKgo+IC0gKiBJbXBsZW1lbnRz
+IGNoaXAtPmxlZ2FjeS5jbWRmdW5jLiBJdCdzICBvbmx5IHVzZWQgZm9yIGEgbGltaXRlZCBzZXQg
+b2YKPiAtICogY29tbWFuZHMuIFRoZSByZXN0IG9mIHRoZSBjb21tYW5kcyB3b3VsZG4ndCBiZSBj
+YWxsZWQgYnkgdXBwZXIgbGF5ZXJzLgo+IC0gKiBGb3IgZXhhbXBsZSwgTkFORF9DTURfUkVBRE9P
+QiB3b3VsZCBuZXZlciBiZSBjYWxsZWQgYmVjYXVzZSB3ZSBoYXZlIG91ciBvd24KPiAtICogdmVy
+c2lvbnMgb2YgcmVhZF9vb2Igb3BzIGZvciBuYW5kX2VjY19jdHJsLgo+IC0gKi8KPiAtc3RhdGlj
+IHZvaWQgcWNvbV9uYW5kY19jb21tYW5kKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIHVuc2lnbmVk
+IGludCBjb21tYW5kLAo+IC0JCQkgICAgICAgaW50IGNvbHVtbiwgaW50IHBhZ2VfYWRkcikKPiAt
+ewo+IC0Jc3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0ID0gdG9fcWNvbV9uYW5kX2hvc3QoY2hp
+cCk7Cj4gLQlzdHJ1Y3QgbmFuZF9lY2NfY3RybCAqZWNjID0gJmNoaXAtPmVjYzsKPiAtCXN0cnVj
+dCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMgPSBnZXRfcWNvbV9uYW5kX2NvbnRyb2xsZXIo
+Y2hpcCk7Cj4gLQlib29sIHdhaXQgPSBmYWxzZTsKPiAtCWludCByZXQgPSAwOwo+IC0KPiAtCXBy
+ZV9jb21tYW5kKGhvc3QsIGNvbW1hbmQpOwo+IC0KPiAtCXN3aXRjaCAoY29tbWFuZCkgewo+IC0J
+Y2FzZSBOQU5EX0NNRF9SRVNFVDoKPiAtCQlyZXQgPSByZXNldChob3N0KTsKPiAtCQl3YWl0ID0g
+dHJ1ZTsKPiAtCQlicmVhazsKPiAtCj4gLQljYXNlIE5BTkRfQ01EX1JFQURJRDoKPiAtCQluYW5k
+Yy0+YnVmX2NvdW50ID0gNDsKPiAtCQlyZXQgPSByZWFkX2lkKGhvc3QsIGNvbHVtbik7Cj4gLQkJ
+d2FpdCA9IHRydWU7Cj4gLQkJYnJlYWs7Cj4gLQo+IC0JY2FzZSBOQU5EX0NNRF9QQVJBTToKPiAt
+CQlyZXQgPSBuYW5kY19wYXJhbShob3N0KTsKPiAtCQl3YWl0ID0gdHJ1ZTsKPiAtCQlicmVhazsK
+PiAtCj4gLQljYXNlIE5BTkRfQ01EX0VSQVNFMToKPiAtCQlyZXQgPSBlcmFzZV9ibG9jayhob3N0
+LCBwYWdlX2FkZHIpOwo+IC0JCXdhaXQgPSB0cnVlOwo+IC0JCWJyZWFrOwo+IC0KPiAtCWNhc2Ug
+TkFORF9DTURfUkVBRDA6Cj4gLQkJLyogd2UgcmVhZCB0aGUgZW50aXJlIHBhZ2UgZm9yIG5vdyAq
+Lwo+IC0JCVdBUk5fT04oY29sdW1uICE9IDApOwo+IC0KPiAtCQlob3N0LT51c2VfZWNjID0gdHJ1
+ZTsKPiAtCQlzZXRfYWRkcmVzcyhob3N0LCAwLCBwYWdlX2FkZHIpOwo+IC0JCXVwZGF0ZV9yd19y
+ZWdzKGhvc3QsIGVjYy0+c3RlcHMsIHRydWUsIDApOwo+IC0JCWJyZWFrOwo+IC0KPiAtCWNhc2Ug
+TkFORF9DTURfU0VRSU46Cj4gLQkJV0FSTl9PTihjb2x1bW4gIT0gMCk7Cj4gLQkJc2V0X2FkZHJl
+c3MoaG9zdCwgMCwgcGFnZV9hZGRyKTsKPiAtCQlicmVhazsKPiAtCj4gLQljYXNlIE5BTkRfQ01E
+X1BBR0VQUk9HOgo+IC0JY2FzZSBOQU5EX0NNRF9TVEFUVVM6Cj4gLQljYXNlIE5BTkRfQ01EX05P
+TkU6Cj4gLQlkZWZhdWx0Ogo+IC0JCWJyZWFrOwo+IC0JfQo+IC0KPiAtCWlmIChyZXQpIHsKPiAt
+CQlkZXZfZXJyKG5hbmRjLT5kZXYsICJmYWlsdXJlIGV4ZWN1dGluZyBjb21tYW5kICVkXG4iLAo+
+IC0JCQljb21tYW5kKTsKPiAtCQlmcmVlX2Rlc2NzKG5hbmRjKTsKPiAtCQlyZXR1cm47Cj4gLQl9
+Cj4gLQo+IC0JaWYgKHdhaXQpIHsKPiAtCQlyZXQgPSBzdWJtaXRfZGVzY3MobmFuZGMpOwo+IC0J
+CWlmIChyZXQpCj4gLQkJCWRldl9lcnIobmFuZGMtPmRldiwKPiAtCQkJCSJmYWlsdXJlIHN1Ym1p
+dHRpbmcgZGVzY3MgZm9yIGNvbW1hbmQgJWRcbiIsCj4gLQkJCQljb21tYW5kKTsKPiAtCX0KPiAt
+Cj4gLQlmcmVlX2Rlc2NzKG5hbmRjKTsKPiAtCj4gLQlwb3N0X2NvbW1hbmQoaG9zdCwgY29tbWFu
+ZCk7Cj4gLX0KPiAtCj4gLS8qCj4gICAqIHdoZW4gdXNpbmcgQkNIIEVDQywgdGhlIEhXIGZsYWdz
+IGFuIGVycm9yIGluIE5BTkRfRkxBU0hfU1RBVFVTIGlmIGl0IHJlYWQKPiAgICogYW4gZXJhc2Vk
+IENXLCBhbmQgcmVwb3J0cyBhbiBlcmFzZWQgQ1cgaW4gTkFORF9FUkFTRURfQ1dfREVURUNUX1NU
+QVRVUy4KPiAgICoKPiBAQCAtMjA0NCw3ICsxOTUyLDYgQEAgc3RhdGljIGludCBxY29tX25hbmRj
+X3JlYWRfcGFnZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50OF90ICpidWYsCj4gIAlzdHJ1
+Y3QgcWNvbV9uYW5kX2hvc3QgKmhvc3QgPSB0b19xY29tX25hbmRfaG9zdChjaGlwKTsKPiAgCXN0
+cnVjdCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMgPSBnZXRfcWNvbV9uYW5kX2NvbnRyb2xs
+ZXIoY2hpcCk7Cj4gIAl1OCAqZGF0YV9idWYsICpvb2JfYnVmID0gTlVMTDsKPiAtCj4gIAluYW5k
+X3JlYWRfcGFnZV9vcChjaGlwLCBwYWdlLCAwLCBOVUxMLCAwKTsKPiAgCWRhdGFfYnVmID0gYnVm
+Owo+ICAJb29iX2J1ZiA9IG9vYl9yZXF1aXJlZCA/IGNoaXAtPm9vYl9wb2kgOiBOVUxMOwo+IEBA
+IC0yMzY2LDY0ICsyMjczLDYgQEAgc3RhdGljIGludCBxY29tX25hbmRjX2Jsb2NrX21hcmtiYWQo
+c3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgbG9mZl90IG9mcykKPiAgfQo+ICAKPiAgLyoKPiAtICog
+dGhlIHRocmVlIGZ1bmN0aW9ucyBiZWxvdyBpbXBsZW1lbnQgY2hpcC0+bGVnYWN5LnJlYWRfYnl0
+ZSgpLAo+IC0gKiBjaGlwLT5sZWdhY3kucmVhZF9idWYoKSBhbmQgY2hpcC0+bGVnYWN5LndyaXRl
+X2J1ZigpIHJlc3BlY3RpdmVseS4gdGhlc2UKPiAtICogYXJlbid0IHVzZWQgZm9yIHJlYWRpbmcv
+d3JpdGluZyBwYWdlIGRhdGEsIHRoZXkgYXJlIHVzZWQgZm9yIHNtYWxsZXIgZGF0YQo+IC0gKiBs
+aWtlIHJlYWRpbmcJaWQsIHN0YXR1cyBldGMKPiAtICovCj4gLXN0YXRpYyB1aW50OF90IHFjb21f
+bmFuZGNfcmVhZF9ieXRlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXApCj4gLXsKPiAtCXN0cnVjdCBx
+Y29tX25hbmRfaG9zdCAqaG9zdCA9IHRvX3Fjb21fbmFuZF9ob3N0KGNoaXApOwo+IC0Jc3RydWN0
+IHFjb21fbmFuZF9jb250cm9sbGVyICpuYW5kYyA9IGdldF9xY29tX25hbmRfY29udHJvbGxlcihj
+aGlwKTsKPiAtCXU4ICpidWYgPSBuYW5kYy0+ZGF0YV9idWZmZXI7Cj4gLQl1OCByZXQgPSAweDA7
+Cj4gLQo+IC0JaWYgKGhvc3QtPmxhc3RfY29tbWFuZCA9PSBOQU5EX0NNRF9TVEFUVVMpIHsKPiAt
+CQlyZXQgPSBob3N0LT5zdGF0dXM7Cj4gLQo+IC0JCWhvc3QtPnN0YXR1cyA9IE5BTkRfU1RBVFVT
+X1JFQURZIHwgTkFORF9TVEFUVVNfV1A7Cj4gLQo+IC0JCXJldHVybiByZXQ7Cj4gLQl9Cj4gLQo+
+IC0JaWYgKG5hbmRjLT5idWZfc3RhcnQgPCBuYW5kYy0+YnVmX2NvdW50KQo+IC0JCXJldCA9IGJ1
+ZltuYW5kYy0+YnVmX3N0YXJ0KytdOwo+IC0KPiAtCXJldHVybiByZXQ7Cj4gLX0KPiAtCj4gLXN0
+YXRpYyB2b2lkIHFjb21fbmFuZGNfcmVhZF9idWYoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdWlu
+dDhfdCAqYnVmLCBpbnQgbGVuKQo+IC17Cj4gLQlzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIg
+Km5hbmRjID0gZ2V0X3Fjb21fbmFuZF9jb250cm9sbGVyKGNoaXApOwo+IC0JaW50IHJlYWxfbGVu
+ID0gbWluX3Qoc2l6ZV90LCBsZW4sIG5hbmRjLT5idWZfY291bnQgLSBuYW5kYy0+YnVmX3N0YXJ0
+KTsKPiAtCj4gLQltZW1jcHkoYnVmLCBuYW5kYy0+ZGF0YV9idWZmZXIgKyBuYW5kYy0+YnVmX3N0
+YXJ0LCByZWFsX2xlbik7Cj4gLQluYW5kYy0+YnVmX3N0YXJ0ICs9IHJlYWxfbGVuOwo+IC19Cj4g
+LQo+IC1zdGF0aWMgdm9pZCBxY29tX25hbmRjX3dyaXRlX2J1ZihzdHJ1Y3QgbmFuZF9jaGlwICpj
+aGlwLCBjb25zdCB1aW50OF90ICpidWYsCj4gLQkJCQkgaW50IGxlbikKPiAtewo+IC0Jc3RydWN0
+IHFjb21fbmFuZF9jb250cm9sbGVyICpuYW5kYyA9IGdldF9xY29tX25hbmRfY29udHJvbGxlcihj
+aGlwKTsKPiAtCWludCByZWFsX2xlbiA9IG1pbl90KHNpemVfdCwgbGVuLCBuYW5kYy0+YnVmX2Nv
+dW50IC0gbmFuZGMtPmJ1Zl9zdGFydCk7Cj4gLQo+IC0JbWVtY3B5KG5hbmRjLT5kYXRhX2J1ZmZl
+ciArIG5hbmRjLT5idWZfc3RhcnQsIGJ1ZiwgcmVhbF9sZW4pOwo+IC0KPiAtCW5hbmRjLT5idWZf
+c3RhcnQgKz0gcmVhbF9sZW47Cj4gLX0KPiAtCj4gLS8qIHdlIHN1cHBvcnQgb25seSBvbmUgZXh0
+ZXJuYWwgY2hpcCBmb3Igbm93ICovCj4gLXN0YXRpYyB2b2lkIHFjb21fbmFuZGNfc2VsZWN0X2No
+aXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgaW50IGNoaXBucikKPiAtewo+IC0Jc3RydWN0IHFj
+b21fbmFuZF9jb250cm9sbGVyICpuYW5kYyA9IGdldF9xY29tX25hbmRfY29udHJvbGxlcihjaGlw
+KTsKPiAtCj4gLQlpZiAoY2hpcG5yIDw9IDApCj4gLQkJcmV0dXJuOwo+IC0KPiAtCWRldl93YXJu
+KG5hbmRjLT5kZXYsICJpbnZhbGlkIGNoaXAgc2VsZWN0XG4iKTsKPiAtfQo+IC0KPiAtLyoKPiAg
+ICogTkFORCBjb250cm9sbGVyIHBhZ2UgbGF5b3V0IGluZm8KPiAgICoKPiAgICogTGF5b3V0IHdp
+dGggRUNDIGVuYWJsZWQ6Cj4gQEAgLTI3MzgsOCArMjU4NywyMDcgQEAgc3RhdGljIGludCBxY29t
+X25hbmRfYXR0YWNoX2NoaXAoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKPiAgCXJldHVybiAwOwo+
+ICB9Cj4gIAo+ICtzdGF0aWMgaW50IG5hbmRjX3N0YXR1cyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlw
+KQo+ICt7Cj4gKwlzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIgKm5hbmRjID0gZ2V0X3Fjb21f
+bmFuZF9jb250cm9sbGVyKGNoaXApOwo+ICsJc3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0ID0g
+dG9fcWNvbV9uYW5kX2hvc3QoY2hpcCk7Cj4gKwo+ICsJbWVtY3B5KG5hbmRjLT5kYXRhX2J1ZmZl
+ciwgJmhvc3QtPnN0YXR1cywgMSk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gK3N0YXRp
+YyBpbnQgcWNvbV9uYW5kX3NlbmRfY29tbWFuZChzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1OCBj
+b21tYW5kKQo+ICt7Cj4gKwlzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgKmhvc3QgPSB0b19xY29tX25h
+bmRfaG9zdChjaGlwKTsKPiArCXN0cnVjdCBxY29tX25hbmRfY29udHJvbGxlciAqbmFuZGMgPSBn
+ZXRfcWNvbV9uYW5kX2NvbnRyb2xsZXIoY2hpcCk7Cj4gKwlzdHJ1Y3QgbmFuZF9lY2NfY3RybCAq
+ZWNjID0gJmNoaXAtPmVjYzsKPiArCj4gKwlpbnQgcmV0ID0gMDsKPiArCj4gKwlwcmVfY29tbWFu
+ZChob3N0LCBjb21tYW5kKTsKPiArCj4gKwlzd2l0Y2ggKGNvbW1hbmQpIHsKPiArCWNhc2UgTkFO
+RF9DTURfUkVTRVQ6Cj4gKwkJcmV0ID0gcmVzZXQoaG9zdCk7Cj4gKwkJYnJlYWs7Cj4gKwljYXNl
+IE5BTkRfQ01EX1JFQURJRDoKPiArCQluYW5kYy0+YnVmX2NvdW50ID0gNDsKPiArCQlyZXQgPSBy
+ZWFkX2lkKGhvc3QsIDApOwo+ICsJCWJyZWFrOwo+ICsJY2FzZSBOQU5EX0NNRF9QQVJBTToKPiAr
+CQlyZXQgPSBuYW5kY19wYXJhbShob3N0KTsKPiArCQlicmVhazsKPiArCWNhc2UgTkFORF9DTURf
+RVJBU0UxOgo+ICsJCXJldCA9IGVyYXNlX2Jsb2NrKGhvc3QpOwo+ICsJCWJyZWFrOwo+ICsJY2Fz
+ZSBOQU5EX0NNRF9TVEFUVVM6Cj4gKwkJcmV0ID0gbmFuZGNfc3RhdHVzKGNoaXApOwo+ICsJCWJy
+ZWFrOwo+ICsJY2FzZSBOQU5EX0NNRF9SRUFEMDoKPiArCQlob3N0LT51c2VfZWNjID0gdHJ1ZTsK
+Ci0+ZXhlY19vcCgpIGFuZCBFQ0MgYXJlIG9ydGhvZ29uYWwKCj4gKwkJdXBkYXRlX3J3X3JlZ3Mo
+aG9zdCwgZWNjLT5zdGVwcywgdHJ1ZSwgMCk7Cj4gKwkJYnJlYWs7Cj4gKwljYXNlIE5BTkRfQ01E
+X0VSQVNFMjoKPiArCQlicmVhazsKPiArCWNhc2UgTkFORF9DTURfU0VRSU46Cj4gKwkJYnJlYWs7
+Cj4gKwljYXNlIE5BTkRfQ01EX1BBR0VQUk9HOgo+ICsJCWJyZWFrOwoKSSBhbSBzb3JyeSBidXQg
+dGhpcyBpcyBub3QgZm9sbG93aW5nIC0+ZXhlY19vcCgpIG1haW4gaWRlYS4gVGhlCmNvbnRyb2xs
+ZXIgaXMganVzdCBoZXJlIHRvIGZvcndhcmQgcmVxdWVzdHMgdG8gdGhlIGRldmljZSBpdCBtdXN0
+CnJlc3BlY3QgYSBudW1iZXIgb2YgY3ljbGVzIGJ1dCB0aGF0J3MgcHJldHR5IG11Y2ggYWxsLiBI
+ZXJlIHlvdSBhcmUKYWN0dWFsbHkgcmUtd3JpdGluZyAtPmNtZGZ1bmMoKSB3aGljaCBpcyBub3Qg
+d2hhdCB3ZSBleHBlY3QuCgoKPiArCWRlZmF1bHQ6Cj4gKwkJYnJlYWs7Cj4gKwl9Cj4gKwo+ICsJ
+cmV0dXJuIHJldDsKPiArfQo+ICsKPiArc3RhdGljIGludCBxY29tX25hbmRfc2VuZF9hZGRyZXNz
+KHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4gKwkJCQkgIGNvbnN0IHN0cnVjdCBuYW5kX29wX2lu
+c3RyICppbnN0ciwgaW50IGNtZCkKPiArewo+ICsJc3RydWN0IHFjb21fbmFuZF9jb250cm9sbGVy
+ICpuYW5kYyA9IGdldF9xY29tX25hbmRfY29udHJvbGxlcihjaGlwKTsKPiArCXUzMiBwYWdlX2Fk
+ZHIgPSAweDAsIHBhZ2VfbWFzayA9IDB4MDsKPiArCj4gKwlwYWdlX2FkZHIgPSBpbnN0ci0+Y3R4
+LmFkZHIuYWRkcnNbMF07Cj4gKwo+ICsJLyoKPiArCSAqRm9ybSBwYWdlIGFkZHJlc3MgZm9yIGVy
+YXNlLCByZWFkLCB3cml0ZSB0byB1c2luZyBleGlzdGluZyBhcGkKPiArCSAqLwo+ICsKPiArCXN3
+aXRjaCAoY21kKSB7Cj4gKwljYXNlIE5BTkRfQ01EX0VSQVNFMToKPiArCQlwYWdlX2FkZHIgPSBp
+bnN0ci0+Y3R4LmFkZHIuYWRkcnNbMF07Cj4gKwkJcGFnZV9tYXNrID0gaW5zdHItPmN0eC5hZGRy
+LmFkZHJzWzFdOwo+ICsJCXBhZ2VfbWFzayA8PD0gODsKPiArCQlwYWdlX2FkZHIgPSAocGFnZV9h
+ZGRyIHwgcGFnZV9tYXNrKTsKPiArCQlwYWdlX21hc2sgPSBpbnN0ci0+Y3R4LmFkZHIuYWRkcnNb
+Ml07Cj4gKwkJcGFnZV9tYXNrIDw8PSAxNjsKPiArCQlwYWdlX2FkZHIgPSAocGFnZV9hZGRyIHwg
+cGFnZV9tYXNrKTsKPiArCQlwYWdlX21hc2sgPSBpbnN0ci0+Y3R4LmFkZHIuYWRkcnNbM107Cj4g
+KwkJcGFnZV9tYXNrIDw8PSAyNDsKPiArCQlwYWdlX2FkZHIgPSAocGFnZV9hZGRyIHwgcGFnZV9t
+YXNrKTsKPiArCQlicmVhazsKPiArCWNhc2UgTkFORF9DTURfUkVBRDA6Cj4gKwljYXNlIE5BTkRf
+Q01EX1NFUUlOOgo+ICsJCXBhZ2VfYWRkciA9IGluc3RyLT5jdHguYWRkci5hZGRyc1szXTsKPiAr
+CQlwYWdlX2FkZHIgPDw9IDI0Owo+ICsJCXBhZ2VfbWFzayA9IGluc3RyLT5jdHguYWRkci5hZGRy
+c1syXTsKPiArCQlwYWdlX21hc2sgPDw9IDE2Owo+ICsJCXBhZ2VfYWRkciB8PSBwYWdlX21hc2s7
+Cj4gKwkJcGFnZV9tYXNrID0gaW5zdHItPmN0eC5hZGRyLmFkZHJzWzFdOwo+ICsJCXBhZ2VfbWFz
+ayA8PD0gODsKPiArCQlwYWdlX2FkZHIgfD0gcGFnZV9tYXNrOwo+ICsJCXBhZ2VfbWFzayA9IGlu
+c3RyLT5jdHguYWRkci5hZGRyc1swXTsKPiArCQlwYWdlX2FkZHIgfD0gcGFnZV9tYXNrOwoKU2Ft
+ZSBoZXJlLCBqdXN0IHdyaXRlIHRoZSBudW1iZXIgb2YgYWRkcmVzcyBjeWNsZXMgdGhhdCB3ZXJl
+IHJlcXVlc3RlZApieSB0aGUgY29yZS4KCj4gKwkJYnJlYWs7Cj4gKwlkZWZhdWx0Ogo+ICsJCWJy
+ZWFrOwo+ICsJfQo+ICsKPiArCWlmIChjbWQgPT0gTkFORF9DTURfUEFSQU0pCj4gKwkJcmV0dXJu
+IDA7Cj4gKwo+ICsJbmFuZGNfc2V0X3JlZyhjaGlwLCBOQU5EX0FERFIwLCBwYWdlX2FkZHIpOwo+
+ICsJbmFuZGNfc2V0X3JlZyhjaGlwLCBOQU5EX0FERFIxLCAwKTsKPiArCj4gKwlpZiAoY21kICE9
+IE5BTkRfQ01EX1NFUUlOKQo+ICsJCXdyaXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfQUREUjAsIDIs
+IDApOwo+ICsKPiArCXJldHVybiAwOwo+ICt9Cj4gKwo+ICtzdGF0aWMgdm9pZCBxY29tX25hbmRf
+cmVhZF9idWYoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdTggKmJ1ZiwgaW50IGxlbikKPiArewo+
+ICsJc3RydWN0IHFjb21fbmFuZF9jb250cm9sbGVyICpuYW5kYyA9IGdldF9xY29tX25hbmRfY29u
+dHJvbGxlcihjaGlwKTsKPiArCj4gKwltZW1jcHkoYnVmLCBuYW5kYy0+ZGF0YV9idWZmZXIsIGxl
+bik7CgpJcyB0aGlzIGJvdW5jZSBidWZmZXIgbmVlZGVkPwoKPiArfQo+ICsKPiArc3RhdGljIGlu
+dCBxY29tX25hbmRfZXhlY19pbnN0cihzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+ICsJCQkJY29u
+c3Qgc3RydWN0IG5hbmRfb3BfaW5zdHIgKmluc3RyKQo+ICt7Cj4gKwlzdHJ1Y3QgcWNvbV9uYW5k
+X2NvbnRyb2xsZXIgKm5hbmRjID0gZ2V0X3Fjb21fbmFuZF9jb250cm9sbGVyKGNoaXApOwo+ICsJ
+c3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0ID0gdG9fcWNvbV9uYW5kX2hvc3QoY2hpcCk7Cj4g
+Kwl1MzIgc3RhdHVzOwo+ICsJaW50IHJldCA9IDA7Cj4gKwlib29sIHdhaXQgPSBmYWxzZTsKPiAr
+CXN0YXRpYyBpbnQgb3Bjb2RlOwo+ICsKPiArCXN3aXRjaCAoaW5zdHItPnR5cGUpIHsKPiArCWNh
+c2UgTkFORF9PUF9DTURfSU5TVFI6Cj4gKwkJcmV0ID0gcWNvbV9uYW5kX3NlbmRfY29tbWFuZChj
+aGlwLCBpbnN0ci0+Y3R4LmNtZC5vcGNvZGUpOwo+ICsJCWlmIChpbnN0ci0+Y3R4LmNtZC5vcGNv
+ZGUgPT0gTkFORF9DTURfUkVTRVQpCj4gKwkJCXdhaXQgPSB0cnVlOwo+ICsJCW9wY29kZSA9IGlu
+c3RyLT5jdHguY21kLm9wY29kZTsKPiArCQlicmVhazsKPiArCWNhc2UgTkFORF9PUF9BRERSX0lO
+U1RSOgo+ICsJCXFjb21fbmFuZF9zZW5kX2FkZHJlc3MoY2hpcCwgaW5zdHIsIG9wY29kZSk7Cj4g
+KwkJaWYgKG9wY29kZSAhPSBOQU5EX0NNRF9SRUFEMCAmJiBvcGNvZGUgIT0gTkFORF9DTURfUkVB
+RFNUQVJUICYmCj4gKwkJICAgIG9wY29kZSAhPSBOQU5EX0NNRF9QQVJBTSAmJiBvcGNvZGUgIT0g
+TkFORF9DTURfU0VRSU4pCj4gKwkJCXdhaXQgPSB0cnVlOwo+ICsJCWJyZWFrOwo+ICsJY2FzZSBO
+QU5EX09QX0RBVEFfSU5fSU5TVFI6Cj4gKwkJcWNvbV9uYW5kX3JlYWRfYnVmKGNoaXAsIGluc3Ry
+LT5jdHguZGF0YS5idWYuaW4sIGluc3RyLT5jdHguZGF0YS5sZW4pOwo+ICsJCWJyZWFrOwo+ICsJ
+Y2FzZSBOQU5EX09QX0RBVEFfT1VUX0lOU1RSOgo+ICsJCXdhaXQgPSBmYWxzZTsKPiArCQlicmVh
+azsKPiArCWNhc2UgTkFORF9PUF9XQUlUUkRZX0lOU1RSOgo+ICsJCXJldCA9IHJlYWRsX3BvbGxf
+dGltZW91dChuYW5kYy0+YmFzZSArIE5BTkRfRkxBU0hfU1RBVFVTLCBzdGF0dXMsCj4gKwkJCQkJ
+IChzdGF0dXMgJiBGU19SRUFEWV9CU1lfTiksIDIwLAo+ICsJCQkJCSBpbnN0ci0+Y3R4LndhaXRy
+ZHkudGltZW91dF9tcyAqIDEwMDApOwo+ICsJCWlmIChvcGNvZGUgPT0gTkFORF9DTURfUEFSQU0p
+Cj4gKwkJCXdhaXQgPSB0cnVlOwo+ICsJZGVmYXVsdDoKPiArCQlicmVhazsKPiArCX0KPiArCj4g
+KwlpZiAod2FpdCkgewo+ICsJCWlmIChvcGNvZGUgIT0gTkFORF9DTURfUEFSQU0pCj4gKwkJCXdy
+aXRlX3JlZ19kbWEobmFuZGMsIE5BTkRfRVhFQ19DTUQsIDEsIE5BTkRfQkFNX05FWFRfU0dMKTsK
+PiArCj4gKwkJaWYgKG9wY29kZSA9PSBOQU5EX0NNRF9SRUFESUQpCj4gKwkJCXJlYWRfcmVnX2Rt
+YShuYW5kYywgTkFORF9SRUFEX0lELCAxLCBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4gKwo+ICsJCWlm
+IChvcGNvZGUgPT0gTkFORF9DTURfRVJBU0UxKSB7Cj4gKwkJCXJlYWRfcmVnX2RtYShuYW5kYywg
+TkFORF9GTEFTSF9TVEFUVVMsIDEsIE5BTkRfQkFNX05FWFRfU0dMKTsKPiArCQkJd3JpdGVfcmVn
+X2RtYShuYW5kYywgTkFORF9GTEFTSF9TVEFUVVMsIDEsIDApOwo+ICsJCQl3cml0ZV9yZWdfZG1h
+KG5hbmRjLCBOQU5EX1JFQURfU1RBVFVTLCAxLCBOQU5EX0JBTV9ORVhUX1NHTCk7Cj4gKwkJfQo+
+ICsKPiArCQlyZXQgPSBzdWJtaXRfZGVzY3MobmFuZGMpOwo+ICsJCWlmIChyZXQpCj4gKwkJCWRl
+dl9lcnIobmFuZGMtPmRldiwgImZhaWx1cmUgc3VibWl0dGluZyBkZXNjcyBmb3IgY29tbWFuZCAw
+eCUwMnhcbiIsCj4gKwkJCQlvcGNvZGUpOwo+ICsKPiArCQlmcmVlX2Rlc2NzKG5hbmRjKTsKPiAr
+CQlwb3N0X2NvbW1hbmQoaG9zdCwgb3Bjb2RlKTsKPiArCX0KPiArCj4gKwlyZXR1cm4gcmV0Owo+
+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IHFjb21fbmFuZF9leGVjX29wKHN0cnVjdCBuYW5kX2NoaXAg
+KmNoaXAsCj4gKwkJCSAgICAgY29uc3Qgc3RydWN0IG5hbmRfb3BlcmF0aW9uICpvcCwKPiArCQkJ
+CWJvb2wgY2hlY2tfb25seSkKPiArewo+ICsJdW5zaWduZWQgaW50IGk7Cj4gKwlpbnQgcmV0ID0g
+MDsKPiArCj4gKwlpZiAoY2hlY2tfb25seSkKPiArCQlyZXR1cm4gMDsKPiArCj4gKwlmb3IgKGkg
+PSAwOyBpIDwgb3AtPm5pbnN0cnM7IGkrKykgewo+ICsJCXJldCA9IHFjb21fbmFuZF9leGVjX2lu
+c3RyKGNoaXAsICZvcC0+aW5zdHJzW2ldKTsKPiArCQlpZiAocmV0KQo+ICsJCQlicmVhazsKPiAr
+CX0KPiArCj4gKwlyZXR1cm4gcmV0Owo+ICt9Cj4gKwo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG5h
+bmRfY29udHJvbGxlcl9vcHMgcWNvbV9uYW5kY19vcHMgPSB7Cj4gIAkuYXR0YWNoX2NoaXAgPSBx
+Y29tX25hbmRfYXR0YWNoX2NoaXAsCj4gKwkuZXhlY19vcCA9IHFjb21fbmFuZF9leGVjX29wLAo+
+ICB9Owo+ICAKPiAgc3RhdGljIHZvaWQgcWNvbV9uYW5kY191bmFsbG9jKHN0cnVjdCBxY29tX25h
+bmRfY29udHJvbGxlciAqbmFuZGMpCj4gQEAgLTI5MzgsMTQgKzI5ODYsNiBAQCBzdGF0aWMgaW50
+IHFjb21fbmFuZF9ob3N0X2luaXRfYW5kX3JlZ2lzdGVyKHN0cnVjdCBxY29tX25hbmRfY29udHJv
+bGxlciAqbmFuZGMsCj4gIAltdGQtPm93bmVyID0gVEhJU19NT0RVTEU7Cj4gIAltdGQtPmRldi5w
+YXJlbnQgPSBkZXY7Cj4gIAo+IC0JY2hpcC0+bGVnYWN5LmNtZGZ1bmMJPSBxY29tX25hbmRjX2Nv
+bW1hbmQ7Cj4gLQljaGlwLT5sZWdhY3kuc2VsZWN0X2NoaXAJPSBxY29tX25hbmRjX3NlbGVjdF9j
+aGlwOwo+IC0JY2hpcC0+bGVnYWN5LnJlYWRfYnl0ZQk9IHFjb21fbmFuZGNfcmVhZF9ieXRlOwo+
+IC0JY2hpcC0+bGVnYWN5LnJlYWRfYnVmCT0gcWNvbV9uYW5kY19yZWFkX2J1ZjsKPiAtCWNoaXAt
+PmxlZ2FjeS53cml0ZV9idWYJPSBxY29tX25hbmRjX3dyaXRlX2J1ZjsKPiAtCWNoaXAtPmxlZ2Fj
+eS5zZXRfZmVhdHVyZXMJPSBuYW5kX2dldF9zZXRfZmVhdHVyZXNfbm90c3VwcDsKPiAtCWNoaXAt
+PmxlZ2FjeS5nZXRfZmVhdHVyZXMJPSBuYW5kX2dldF9zZXRfZmVhdHVyZXNfbm90c3VwcDsKPiAt
+Cj4gIAkvKgo+ICAJICogdGhlIGJhZCBibG9jayBtYXJrZXIgaXMgcmVhZGFibGUgb25seSB3aGVu
+IHdlIHJlYWQgdGhlIGxhc3QgY29kZXdvcmQKPiAgCSAqIG9mIGEgcGFnZSB3aXRoIEVDQyBkaXNh
+YmxlZC4gY3VycmVudGx5LCB0aGUgbmFuZF9iYXNlIGFuZCBuYW5kX2JidAoKClRoYW5rcywKTWlx
+dcOobAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
