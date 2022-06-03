@@ -4,58 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2529AC43334
-	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jun 2022 12:47:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5FB8C43334
+	for <linux-mtd@archiver.kernel.org>; Fri,  3 Jun 2022 13:40:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=lQ61+oGWsQFmknTEZgGcUWbNGMTMl10J9m8lSsyRB6Q=; b=ZYjd34rTfXT1da
-	CFkBuSOEPy7xW5JHsdD+h1BvzOn+S8ZDhE4kQ/JwzAeMukJcN9dW2yY3BbPpyCiNcJO3IifptD8uB
-	C2tJ1jD8wUU8of3G18ZQSMxLRLosWODjoS5yGWy7/PAaULWXF+1igqAQL8/0QQ8qqy6f/29APq3u7
-	GS5wB0LiQy/d6lrW/GzL4VGgTr40jCxuYpopNfJAcBJfry0pwWIwqgKVeS4pTQpbyV+9ZAJ4Ybd5N
-	6/CsMCc+4J47c9+a6STbtR+oRFKq/EJP/QGelua/sEfBJq55dAOxDaS9WzoL5+9G5iUDem68yhxGE
-	vRxtQ0ULHlAAEaOeGsRw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yuMj3wC4Dh9FKjKDLy2CazV4bCM0KDXIx6tDAThCGPU=; b=uiEhyEr4ie6XzD
+	ttyHoNZwXfMmbDoo4zc76CfP17+Kyro3BAS+K6ZW128EU5thsgG9/hQeaDjDOc5p/nHs7dgQtFWOf
+	yl7huaMbFPNetcXXGxwuInzi1tLf1R+7fBk9epDuCIz1vXhzgFMhM5oOMKtR+5Bjc8DtVRaVTvxkX
+	0Nbf8wMrX9368ZnehAIQBc/7qobuJ+kdSTJ21jBk+BOobXqQHIXCdzPtp0ffWk/6mmHm5JuNqXikq
+	sJq85laFDDSeIR3hkV6cY/MqoVbBUEXoaytoeFC5MEOsnVZ3mQf0q6A1tLNEw9+R1zsuWSHZTZwm1
+	+f/C8+SBh5ly5TtnqrPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nx6i0-007TsY-CY; Fri, 03 Jun 2022 12:47:20 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1nx7Xb-007Ymt-Lf; Fri, 03 Jun 2022 13:40:39 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nx6hw-007TqX-7y
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2022 12:47:19 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 51AF4609B3C1;
-	Fri,  3 Jun 2022 14:47:09 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id CPGJgO34VG6Q; Fri,  3 Jun 2022 14:47:08 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id C2DD5609B3C2;
-	Fri,  3 Jun 2022 14:47:08 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id PlKBWE2AaC1S; Fri,  3 Jun 2022 14:47:08 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 994E7609B3C1;
-	Fri,  3 Jun 2022 14:47:08 +0200 (CEST)
-Date: Fri, 3 Jun 2022 14:47:08 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <735024820.130152.1654260428562.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] JFFS2, UBI and UBIFS updates for v5.19-rc1
+	id 1nx7XY-007Ym0-M4
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2022 13:40:38 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 0E7721BF207;
+	Fri,  3 Jun 2022 13:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1654263629;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/PDivizaxZ+AZVI8p6z9vlgef9z49p8d3VW+VGNrFXQ=;
+	b=FyImQt/znIZ3l9LMdZ0YhyUCnm8jZNezAY+ZF2LrLu5+lFQyM6ady0UJG32AVkeNcXDR1b
+	eQqgT8r55nCwyn+w87wZtn52dhsFvmEQmOrr98AaC2wCDFSb5yeHuJasulwXo1ubBOgB52
+	2ZdD/b/c0tSyL6Xmesr/4co48HjYzx65CUOCkP7ByAC+iTcuV6FFG5+8VZ8ONelSLgc/MZ
+	/nIPfrKqOkV/Um8Mzbk7mzYbqSYkEY7k0247463pkejI/L7GnCiSO5hbWJGGgrKdDW5mCp
+	N+QKuEvj8NkAMLRjc09Leu0e4zzHtr/MUaNE8AptT3KletmN9jvAB2jQMtB4fA==
+Date: Fri, 3 Jun 2022 15:40:24 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Uwe =?UTF-8?B?S2xlaW5lLUs=?=
+ =?UTF-8?B?w7ZuaWc=?= <u.kleine-koenig@pengutronix.de>,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mtd: mxc-nand: Drop undocumented
+ properties from example
+Message-ID: <20220603154024.27ae9ad5@xps-13>
+In-Reply-To: <20220531150515.GB1742958-robh@kernel.org>
+References: <20220525205947.2487165-1-robh@kernel.org>
+	<20220527093839.3byc6r6ixuu5givt@pengutronix.de>
+	<20220531150515.GB1742958-robh@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: 1D42N45nL6ShMgyGtxZkZMfsOi2J+w==
-Thread-Topic: JFFS2, UBI and UBIFS updates for v5.19-rc1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220603_054716_483571_AE4252B3 
-X-CRM114-Status: UNSURE (   6.17  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220603_064036_892626_82BCC75C 
+X-CRM114-Status: GOOD (  19.50  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,65 +73,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Linus,
-
-The following changes since commit 42226c989789d8da4af1de0c31070c96726d990c:
-
-  Linux 5.18-rc7 (2022-05-15 18:08:58 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.19-rc1
-
-for you to fetch changes up to 8c03a1c21d72210f81cb369cc528e3fde4b45411:
-
-  ubi: ubi_create_volume: Fix use-after-free when volume creation failed (2022-05-27 16:49:41 +0200)
-
-----------------------------------------------------------------
-This pull request contains fixes for JFFS2, UBI and UBIFS
-
-JFFS2:
-        - Fixes for a memory leak
-
-UBI:
-        - Fixes for fastmap (UAF, high CPU usage)
-
-UBIFS:
-        - Minor cleanups
-
-----------------------------------------------------------------
-Baokun Li (1):
-      jffs2: fix memory leak in jffs2_do_fill_super
-
-Haowen Bai (2):
-      jffs2: Use kzalloc instead of kmalloc/memset
-      ubifs: Use NULL instead of using plain integer as pointer
-
-Minghao Chi (1):
-      ubifs: Simplify the return expression of run_gc()
-
-Zhihao Cheng (3):
-      ubi: fastmap: Fix high cpu usage of ubi_bgt by making sure wl_pool not empty
-      ubi: fastmap: Check wl_pool for free peb before wear leveling
-      ubi: ubi_create_volume: Fix use-after-free when volume creation failed
-
- drivers/mtd/ubi/fastmap-wl.c | 121 +++++++++++++++++++++++++++++++++++--------
- drivers/mtd/ubi/fastmap.c    |  11 ----
- drivers/mtd/ubi/ubi.h        |   4 +-
- drivers/mtd/ubi/vmt.c        |   1 -
- drivers/mtd/ubi/wl.c         |  33 ++++++++----
- drivers/mtd/ubi/wl.h         |   2 +
- fs/jffs2/erase.c             |   6 +--
- fs/jffs2/fs.c                |   1 +
- fs/ubifs/budget.c            |   7 +--
- fs/ubifs/xattr.c             |   2 +-
- 10 files changed, 129 insertions(+), 59 deletions(-)
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgUm9iLCBNYXJjLAoKcm9iaEBrZXJuZWwub3JnIHdyb3RlIG9uIFR1ZSwgMzEgTWF5IDIwMjIg
+MTA6MDU6MTUgLTA1MDA6Cgo+IE9uIEZyaSwgTWF5IDI3LCAyMDIyIGF0IDExOjM4OjM5QU0gKzAy
+MDAsIE1hcmMgS2xlaW5lLUJ1ZGRlIHdyb3RlOgo+ID4gT24gMjUuMDUuMjAyMiAxNTo1OTo0Niwg
+Um9iIEhlcnJpbmcgd3JvdGU6ICAKPiA+ID4gV2l0aCB1bmV2YWx1YXRlZFByb3BlcnRpZXMgaXNz
+dWVzIGZpeGVkLCAnbmFuZC1idXMtd2lkdGgnIGFuZAo+ID4gPiAnbmFuZC1lY2MtbW9kZScgYXJl
+IGZsYWdnZWQgYXMgdW5kb2N1bWVudGVkLiBSZW1vdmluZyB0aGVtIGZyb20gdGhlIGV4YW1wbGUK
+PiA+ID4gaXMgdGhlIGVhc2llc3Qgc29sdXRpb24gdG8gc2lsZW5jZSB0aGUgd2FybmluZ3MuCj4g
+PiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3JnPiAg
+Cj4gPiAKPiA+IEF0IGxlYXN0IHRoZSAnbmFuZC1idXMtd2lkdGgnIHByb3BlcnR5IGlzIGRlc2Ny
+aWJlZCBpbgo+ID4gIm5hbmQtY29udHJvbGxlci55YW1sIiBhbmQgdGhlICJteGMtbmFuZC55YW1s
+IiByZWZlcnMgdG8gaXQuCj4gPiAKPiA+IHwgYWxsT2Y6Cj4gPiB8ICAgLSAkcmVmOiAibmFuZC1j
+b250cm9sbGVyLnlhbWwiCj4gPiAKPiA+IElzIHRoaXMgcmVmIGJyb2tlbj8gIAo+IAo+IE5vcGUs
+IHJlYWQgbXkgbm90ZSBiZWxvdy4gJ25hbmQtYnVzLXdpZHRoJyBpcyBkb2N1bWVudGVkIGFzIGEg
+bmFuZCBjaGlwIAo+IChjaGlsZCBub2RlKSBwcm9wZXJ0eSwgbm90IGEgbmFuZCBjb250cm9sbGVy
+IHByb3BlcnR5Lgo+IAo+IAo+ID4gcmVnYXJkcywKPiA+IE1hcmMKPiA+ICAgCj4gPiA+IC0tLQo+
+ID4gPiBUaGVzZSBwcm9wZXJ0aWVzIG1heSBiZSBkZXByZWNhdGVkLCBidXQgdGhleSBhcmUgc3Rp
+bGwgd2lkZWx5IHVzZWQgaW4KPiA+ID4gYmluZGluZ3MuIFRoZXkgZWl0aGVyIG5lZWQgdG8gYmUg
+ZG9jdW1lbnRlZCAoYW5kIG1hcmtlZCBkZXByZWNhdGVkKSBvcgo+ID4gPiByZW1vdmVkIGZyb20g
+Y3VycmVudCB1c2VycyAoaS5lLiBkdHMgZmlsZXMpLiAgCgpJIGRvbid0IG1pbmQga2VlcGluZyB0
+aGVtIHVuZG9jdW1lbnRlZCB0byBlbmNvdXJhZ2UgcGVvcGxlIHRvIG1pZ3JhdGUKdG8gYSBiZXR0
+ZXIgZGVzY3JpcHRpb24uIEZvciB0aGUgcmVjb3JkLCBpbiB0aGUgcGFzdCBjb250cm9sbGVycyBh
+bmQKZGV2aWNlcyB3aGVyZSBub3Qgc2VwYXJhdGVkIGluIHRoZSBkZXNjcmlwdGlvbiwgaGVuY2Ug
+d2UgaGFkIE5BTkQgY2hpcApzcGVjaWZpYyBwcm9wZXJ0aWVzIGxhbmRpbmcgaW4gdG8gdGhlIE5B
+TkQgY29udHJvbGxlciBkZXNjcmlwdGlvbi4KClNvIEknbSBmaW5lIHdpdGggdGhlIGN1cnJlbnQg
+YXBwcm9hY2guCgpUaGFua3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxp
+c3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
+Cg==
