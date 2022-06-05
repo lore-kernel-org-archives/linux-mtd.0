@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B41BC43334
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jun 2022 14:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2F9DC433EF
+	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jun 2022 15:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+Yc46tW+T4DqmQ5iTvc+NbI3j0hXTAfjaA1uGXhp/mQ=; b=yY3ZZL+LzxUNKm
-	EsEgoVVcBtdJa+dEJ9Pt0rvWlcVlLQLOrnB56PCb5bQJWXS5WEoZkI+z+4HF2sKkJYeVFRIk2lN91
-	wFHGr5zFsE+yLCzOL+BAzbyyjMkin6O8fdObrn0FfAjF79KbrtXS1TNuygHkTt7AAFwWrgS1pOKdg
-	1SFPRNf/dElomA4q4d5GmR+zgKtA85Aw58UMGbm6cMoqTOOXWlX258lFuzdsQVV08d35DbWU3qZM9
-	Wvn+X/Q9hiCBu0qw3D/j5JL1w+PArHuN4LeN4XSuJjGsy1256TANT37lYC7WNGZENudg1iU1Z53Gb
-	nfxPkJr04Gyj8czDcBoQ==;
+	List-Owner; bh=cGC3Y3l5XmLicLsj3ccEpOJ1m/lZ18nn1wST+6wnoX8=; b=Q61eYBy2Olp1cl
+	mSBFnU+MjbQl+p1PRfC8BL7icuPpcwlhYo/gEZ/Wvf4derK4VgI0pH5fWB/ey/a3R3Cb9jEkMVKQZ
+	WogEOBqiYPuFTklcskeQbdFR4NHftuiWJ4wJeiXQeYBoozdz7d/VI0GNI3lIPz6GzfjLrgu5GRzSo
+	G3Vw3n51mNCUQgdk5jGH1WZm4tkiWvPU8Efr4JP3Zw0IjRaSfQhX1KWmxm76Jp6E7liNXOB2/+0Dt
+	P0n20/XMP+M2Af4dRFamG4ojwfBt9+o9SdqHfY0es3Tez/QrSU71tYL48pEw0ILW78ui58gbQMdID
+	p7fIECf/xCiT5ymrYmkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxreW-00Eg7E-Ii; Sun, 05 Jun 2022 14:54:52 +0000
-Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
+	id 1nxrkG-00EhPC-QG; Sun, 05 Jun 2022 15:00:48 +0000
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxreR-00Eg5x-Ps
-	for linux-mtd@lists.infradead.org; Sun, 05 Jun 2022 14:54:49 +0000
-Received: by mail-ej1-x634.google.com with SMTP id gl15so10657838ejb.4
-        for <linux-mtd@lists.infradead.org>; Sun, 05 Jun 2022 07:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=nr9goO6JCR6ynsOrkzdJyNSIrUg9yZwLsbH12VXCnv0=;
-        b=nrithu8KVe+0Ef6h0ePei9GiCMv2WDKM8GSaIfn0Ar6bNX8ASc1AN2K35a49/JrU3Y
-         j7k1YP5G4ugVlQjqD7hAuCd2aeuhbtK5rX6bFyzvxtHlkP8M/y5F145phmQbiR4J3Jvl
-         R85UOsOC9MPCyuuEjTYVXzl71SqvDMby/ip4U7POqd0Bra5XOdQ20YGXgH53LrsGPh59
-         gaeHsgWIzTUjQj+iouDOtdS6cR7/jwTbqvSsWJPR03Wh9u0yKHTDO7v4BwhVD5myoo4K
-         i17inQ2rz0Q/j8o8eagXaXgmEB/kFnFtQJ2FfBE+qb1ojXv8ba+1MEVFeWTTPR7YewC8
-         d02g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=nr9goO6JCR6ynsOrkzdJyNSIrUg9yZwLsbH12VXCnv0=;
-        b=J4xQlNB+g7+A1V6Y3S5w8bCZ86+WInODUAMz/xd4jUJTfzagM/kxOfW0tMmfyXfR0W
-         lx1wvNDkddqMZOneUgV6zzsEueQPSb1N1Wpe5yGRC5fZjIdXVNHM027WuMUJVphJ/lLh
-         lPQX3ODLNh1RTHHW8ZqtlusdPF7t4WZv7t679ze/ZRxCFAXstBwDcW6dCiQOLCAOKkLm
-         oCc3iGK3+LUFR+pJ/zYDaiJF/EahzlYkYlFTrBBaCqLxjOEGyxUBJEXIsLA+4UcNFT6+
-         b+k8sZKJHi7t7W4kZUI4GbPoKeJy7wcuo+1FfdaBSMkIMUuzWUhBDHS8GsOQYpEHoYK9
-         BpEA==
-X-Gm-Message-State: AOAM530tneHNWRFfyrZicC7UP1FE+h5BTnsKmDNNGF7aLGYhHDm3JNrP
-	gBiwCtCUBI6vsIX43tTY6OaNzw==
-X-Google-Smtp-Source: ABdhPJzJldMnVHXS3QDl/dM42X4k0XAaCUYXOZ4XIGmGG7wyaMi/VlfLe5nM4rkal6LkB6xfrPpcNQ==
-X-Received: by 2002:a17:907:3f9f:b0:6fe:f9e2:9c6a with SMTP id hr31-20020a1709073f9f00b006fef9e29c6amr18158922ejc.479.1654440885697;
-        Sun, 05 Jun 2022 07:54:45 -0700 (PDT)
-Received: from [192.168.0.181] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
-        by smtp.gmail.com with ESMTPSA id a23-20020aa7cf17000000b0042dc882c823sm7009190edy.70.2022.06.05.07.54.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Jun 2022 07:54:45 -0700 (PDT)
-Message-ID: <34e6715e-795c-3d64-1341-31da9bd27563@linaro.org>
-Date: Sun, 5 Jun 2022 16:54:43 +0200
+	id 1nxrkD-00EhMf-Rr
+	for linux-mtd@lists.infradead.org; Sun, 05 Jun 2022 15:00:47 +0000
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 4FA063200900;
+	Sun,  5 Jun 2022 11:00:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 05 Jun 2022 11:00:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	tom-fitzhenry.me.uk; h=cc:cc:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to; s=fm1; t=1654441236; x=
+	1654527636; bh=NzQT6pX+H9knuipMBv6sOU7BVxvQ4VWlGZa4zEQowUo=; b=t
+	Q2Rr74on1dYCKIbhfC/hvepgt8HDkotgHsf0vRlY9+a8aXdduJyCc3hBW/yS4JKK
+	9hLMrl2mv/n96yfCHlWYkrRGU4mCfzTqDiqaF6athN+VlQCXrF4PUi62jdC+Gro5
+	Q5CGErPunDoIQJxq+9jpneHmEwD2rjlheodVbH0tkziSfI8JC4flNplhEUUavYJi
+	XbBenPEYtt5a47trL5hjGkWzUXOLka8RVha6LN5sTffa2JPCGSGVmWllAcemLru1
+	U4PS0LdWFP3Ya0/Fow/cDw5xnNmzGj5c+EndgTToCvPN8HTiyfBfb3hn8MtxlD7P
+	15b7ec36fXLo9NSIHE5Pg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1654441236; x=1654527636; bh=NzQT6pX+H9knuipMBv6sOU7BVxvQ
+	4VWlGZa4zEQowUo=; b=CTQAYd1LpUm9+LtRmJVLiGUcr5dOu4yF3DLO3m+qtdkk
+	2CLVZ/NsXJy/60Qzf1B0mQiMdaFpfR42dxHMa07sHc33kF9W2k38H430t1KNaCqp
+	/oDqWv/o2UUbmT0BfsOsy5ba7Avj7P/zC/xFgdmjBk7OnvimzKz2GN1UW94xx9IN
+	ZM0f6yypn/24kDBuIGQnUexQ4gwVr1+xB1uuSVd7DNVErwa5DB15Inr69fy+6tzi
+	HwIZ7qgOG8uElF0EFgNFTOj/t3t/gsCeZQw6CEiGDwoZgK+aYYlMXMfZwLqUQtcu
+	z8VJaybX9AvoS07rbBn0w20e8kASWUqTZiEE2JOpEg==
+X-ME-Sender: <xms:E8WcYoBYQyg9ZRe0Fjl14ZIX3sLLhW0JZOnUcnedIemNIDl9W8Jtcg>
+    <xme:E8WcYqjKJYSTShPZPX7uvmQ2VpZnpOypLgDixfRztJIzDnYGLW_XSb_eQ2f2RiYgr
+    cPxsE2FcJdcjcBf6Q>
+X-ME-Received: <xmr:E8WcYrmRarJ8HCbXwHIpuGybqu5V2_g9sOLfed32lIQOqIlLwlG_rl92J4zoMoTx2t1I62hqcxrsBTcEs6BQO34>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddttddgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufhffjgfkfgggtgesthdtredttdertdenucfhrhhomhepvfhomhcu
+    hfhithiihhgvnhhrhicuoehtohhmsehtohhmqdhfihhtiihhvghnrhihrdhmvgdruhhkqe
+    enucggtffrrghtthgvrhhnpeejteeukefgveejffdtveelkedtheeujefhudelvdeifeef
+    teelhedvteehhfefheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepthhomhesthhomhdqfhhi
+    thiihhgvnhhrhidrmhgvrdhukh
+X-ME-Proxy: <xmx:FMWcYuytu7-s5tODMF5aCVomcJAVX_XZa2RISAZUpr5k9PghLrpKiw>
+    <xmx:FMWcYtTZ_noXc1oHIXtvmCFfpd7jRh2sPONtpNjG4MFy7ldEFhkeeA>
+    <xmx:FMWcYpbTjX77_sjPvMkJ7p4bFXv7qaUmCF_EqjKya_1hBnel9H18dA>
+    <xmx:FMWcYtb3N5wX0FaDFdOOW1uuos4WvEV5Hv9BMHT8VET9CTpHqbB4lA>
+Feedback-ID: iefc945ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 5 Jun 2022 11:00:33 -0400 (EDT)
+From: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
+To: Michael Walle <michael@walle.cc>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,  Pratyush Yadav
+ <p.yadav@ti.com>,  Miquel Raynal <miquel.raynal@bootlin.com>,  Richard
+ Weinberger <richard@nod.at>,  Vignesh Raghavendra <vigneshr@ti.com>,
+  Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>,
+  linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: introduce SNOR_ID3()
+References: <20220510140232.3519184-1-michael@walle.cc>
+	<20220510140232.3519184-2-michael@walle.cc>
+Date: Sun, 05 Jun 2022 17:00:28 +0200
+In-Reply-To: <20220510140232.3519184-2-michael@walle.cc> (Michael Walle's
+	message of "Tue, 10 May 2022 16:02:31 +0200")
+Message-ID: <87v8tfcfzn.fsf@tom-fitzhenry.me.uk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
-Content-Language: en-US
-To: "Marty E. Plummer" <hanetzer@startmail.com>
-Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
- devicetree@vger.kernel.org, gengdongjiu@huawei.com,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux@armlinux.org.uk, michael@walle.cc,
- miquel.raynal@bootlin.com, mturquette@baylibre.com, novikov@ispras.ru,
- olof@lixom.net, p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
- robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
- sumit.semwal@linaro.org, tudor.ambarus@microchip.com, vigneshr@ti.com,
- xuwei5@hisilicon.com
-References: <20220501054440.2434247-1-hanetzer@startmail.com>
- <20220501173423.2473093-1-hanetzer@startmail.com>
- <20220501173423.2473093-2-hanetzer@startmail.com>
- <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
- <20220601105846.7hriawg3stxb657f@proprietary-killer>
- <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
- <20220601110616.xmxih663kxgupszv@proprietary-killer>
- <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
- <20220601182418.okoofgannw6vbcxo@proprietary-killer>
- <b1b87be5-a048-b713-c9f2-84b948aa6718@linaro.org>
- <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220605_075447_921511_81704514 
-X-CRM114-Status: GOOD (  14.82  )
+X-CRM114-CacheID: sfid-20220605_080046_358396_40FC24A6 
+X-CRM114-Status: UNSURE (   6.10  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,38 +109,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 03/06/2022 13:22, Marty E. Plummer wrote:
-> On Thu, Jun 02, 2022 at 08:37:43AM +0200, Krzysztof Kozlowski wrote:
->> On 01/06/2022 20:24, Marty E. Plummer wrote:
->>
->>>>> Either or. Whatever makes the workload easier is what I'm looking for.
->>>>
->>>> Sorry, you need to be more specific. Apply is not a job for you, for the
->>>> patch submitter.
->>>>
->>>> Then you miss here important piece - which is the first patch. DTS goes
->>>> always via separate branch (or even tree) from driver changes. That's
->>>> why bindings are always separate first patches.
->>>>
->>> So, add a 4: arch/arm/boot/dts/soc.dtsi and 5: arch/arm/boot/dts/board.dts
->>> to the above list, or should those be the same patch as well?
->>
->> For me does not matter, sub architecture maintainer might have preference.
->>
-> Fair enough. That being said, for the dt-bindings patch, is it
-> permissible to include #define CLOCK_FOO 1337 and so on for clocks which
-> haven't been wired up in the driver yet? As in, you know they're there,
-> and are important enough to model, but you haven't gotten to that point
-> yet?
+In "Add support for the siliconkaiser sk25lp128 chip."[0], I have tested
+that this patch works on the sk25lp128.
 
-What would be the benefit to include them now? I imagine that if you
-plan to add such clocks to the driver in next week or something, and you
-need to use them in DTS, then it's fine. If that's not the case,
-probably there is little sense in defining them upfront...
+Thanks!
 
+Tested-by: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
 
-Best regards,
-Krzysztof
+0. https://lore.kernel.org/all/20220603141603.145777-1-tom@tom-fitzhenry.me.uk/
 
 ______________________________________________________
 Linux MTD discussion mailing list
