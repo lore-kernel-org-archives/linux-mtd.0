@@ -4,76 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE784C433EF
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jun 2022 07:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B41BC43334
+	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jun 2022 14:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
-	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NX1x6teJdfRsEp5OpQ8lk1BhR49TuCylo0BB4Ozqpo0=; b=wq7qs2KXh45G0u
-	sseQibsG6FuFaGoZD4sdwkfQMCdIX1JmbzXsPQNEBIkomd6WMrkcbyJpdz42jpK1TBnIgzB2Kj1OI
-	pogM/e5pT4z5PA4tFWgrzjbz8BwgVb7FPElhPD23ELZnwYsg7EimDBWnf/Io8JKFzsDfsfZ8CIo9U
-	x9zyo4+771WI6nrc1xzm0lxphU8RP4COxjX0LxZFFNJ2M+rBquWlmwNZkh0UyvibouSzFWQ7NCliT
-	eV5tVF/o4qLakv9XGCZCT+iWHurfcgOMNdA1V4QAQOEnaQJd1K5nc9Stq2gQyH7BwZ+kl8+v/o9K2
-	YCyWcGHwV3IikYvDBaBA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=+Yc46tW+T4DqmQ5iTvc+NbI3j0hXTAfjaA1uGXhp/mQ=; b=yY3ZZL+LzxUNKm
+	EsEgoVVcBtdJa+dEJ9Pt0rvWlcVlLQLOrnB56PCb5bQJWXS5WEoZkI+z+4HF2sKkJYeVFRIk2lN91
+	wFHGr5zFsE+yLCzOL+BAzbyyjMkin6O8fdObrn0FfAjF79KbrtXS1TNuygHkTt7AAFwWrgS1pOKdg
+	1SFPRNf/dElomA4q4d5GmR+zgKtA85Aw58UMGbm6cMoqTOOXWlX258lFuzdsQVV08d35DbWU3qZM9
+	Wvn+X/Q9hiCBu0qw3D/j5JL1w+PArHuN4LeN4XSuJjGsy1256TANT37lYC7WNGZENudg1iU1Z53Gb
+	nfxPkJr04Gyj8czDcBoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxkMN-00Dsl7-In; Sun, 05 Jun 2022 07:07:39 +0000
-Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
+	id 1nxreW-00Eg7E-Ii; Sun, 05 Jun 2022 14:54:52 +0000
+Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxkMK-00Dskf-OV
-	for linux-mtd@lists.infradead.org; Sun, 05 Jun 2022 07:07:37 +0000
-Received: by mail-pj1-x102c.google.com with SMTP id l7-20020a17090aaa8700b001dd1a5b9965so10226106pjq.2
-        for <linux-mtd@lists.infradead.org>; Sun, 05 Jun 2022 00:07:34 -0700 (PDT)
+	id 1nxreR-00Eg5x-Ps
+	for linux-mtd@lists.infradead.org; Sun, 05 Jun 2022 14:54:49 +0000
+Received: by mail-ej1-x634.google.com with SMTP id gl15so10657838ejb.4
+        for <linux-mtd@lists.infradead.org>; Sun, 05 Jun 2022 07:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IXhtIIwrHhpC545+iRgGHYieqqcWvvqmIcwI7xt4Nsk=;
-        b=iR5Gf7A2/kjLk8Exxps3G0dFRVC1OZjJzS+j2VngWMWquMTrT0tMlu+kwyY+F7EMMI
-         lGoZzbndHfDZ4cObymGJCKclk4t2eUSMdCQReDhUxzX4pRTRhUECii4OdVqCZo7/MLRv
-         syITFdMzOJw61554abpUPmNjaYgNN1bo4ZoAP1ymyoWSietZE/1pr3cfS252SQh558kG
-         qEFZLPguUBe4DBV/fZx4ZTTdbY5aE4vCY3KgmuQJB+9LM1igdu3RLOoRkqSbocJiCNdC
-         b7+HeRs4HzS5LATNdkmXyFN/8d0xEiEYUFaV1hSLyycfFxdH5gv+B3pf1d5C3OcMs9YS
-         PU2Q==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=nr9goO6JCR6ynsOrkzdJyNSIrUg9yZwLsbH12VXCnv0=;
+        b=nrithu8KVe+0Ef6h0ePei9GiCMv2WDKM8GSaIfn0Ar6bNX8ASc1AN2K35a49/JrU3Y
+         j7k1YP5G4ugVlQjqD7hAuCd2aeuhbtK5rX6bFyzvxtHlkP8M/y5F145phmQbiR4J3Jvl
+         R85UOsOC9MPCyuuEjTYVXzl71SqvDMby/ip4U7POqd0Bra5XOdQ20YGXgH53LrsGPh59
+         gaeHsgWIzTUjQj+iouDOtdS6cR7/jwTbqvSsWJPR03Wh9u0yKHTDO7v4BwhVD5myoo4K
+         i17inQ2rz0Q/j8o8eagXaXgmEB/kFnFtQJ2FfBE+qb1ojXv8ba+1MEVFeWTTPR7YewC8
+         d02g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=IXhtIIwrHhpC545+iRgGHYieqqcWvvqmIcwI7xt4Nsk=;
-        b=DgaoakJMaTGlHJlksNyx4q8NwHgVAlJpKkEl9Zjhl0npKA1xBN2yn/tCH3cLekjARm
-         tg0OmXUF+AdynmJxaGQJHAKJxy490xhaQEicWmCnED5LjPondTt/krZxJjn4hIsRcVfP
-         j6sYCQbNxg14pmPlP5dWee//5rdWOX0oYZT8h4EyZVAlAAdOylyc8T9UW+mFxVgYonT9
-         wKsOmOthzdruIUXqeecZIxoVFqVtg4d/pciEsEdFDNdtTP+6jyMfCJNw1H27aBScPd6Z
-         71FAnEWBRvwy4GUP1SjGsznQrxU0jn3O3YNhTgJtDigy0/s5+ivKYW+dZcVNjoyvA47n
-         Ex6Q==
-X-Gm-Message-State: AOAM533UTgYLr4/89JDG9k0h8r0TOVk0H2LhYytT4Rue0NT3I7hCZiJy
-	QCVp3zd7oFs10ItTyxpQ+Q8=
-X-Google-Smtp-Source: ABdhPJyMTGLeCNNm+FCrSgXi3l1iw0Qz5IzzU1+Oa/PBBWrms0PoJZlcnhW8wVTcnShhAvR8SNJp+Q==
-X-Received: by 2002:a17:903:210a:b0:167:78c0:dd70 with SMTP id o10-20020a170903210a00b0016778c0dd70mr700900ple.157.1654412854448;
-        Sun, 05 Jun 2022 00:07:34 -0700 (PDT)
-Received: from localhost.localdomain ([202.120.234.246])
-        by smtp.googlemail.com with ESMTPSA id x28-20020aa78f1c000000b0050dc7628196sm442504pfr.112.2022.06.05.00.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Jun 2022 00:07:33 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Miaoqian Lin <linmq006@gmail.com>,
-	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-	linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: parsers: ofpart: Fix refcount leak in bcm4908_partitions_fw_offset
-Date: Sun,  5 Jun 2022 11:07:23 +0400
-Message-Id: <20220605070726.5979-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=nr9goO6JCR6ynsOrkzdJyNSIrUg9yZwLsbH12VXCnv0=;
+        b=J4xQlNB+g7+A1V6Y3S5w8bCZ86+WInODUAMz/xd4jUJTfzagM/kxOfW0tMmfyXfR0W
+         lx1wvNDkddqMZOneUgV6zzsEueQPSb1N1Wpe5yGRC5fZjIdXVNHM027WuMUJVphJ/lLh
+         lPQX3ODLNh1RTHHW8ZqtlusdPF7t4WZv7t679ze/ZRxCFAXstBwDcW6dCiQOLCAOKkLm
+         oCc3iGK3+LUFR+pJ/zYDaiJF/EahzlYkYlFTrBBaCqLxjOEGyxUBJEXIsLA+4UcNFT6+
+         b+k8sZKJHi7t7W4kZUI4GbPoKeJy7wcuo+1FfdaBSMkIMUuzWUhBDHS8GsOQYpEHoYK9
+         BpEA==
+X-Gm-Message-State: AOAM530tneHNWRFfyrZicC7UP1FE+h5BTnsKmDNNGF7aLGYhHDm3JNrP
+	gBiwCtCUBI6vsIX43tTY6OaNzw==
+X-Google-Smtp-Source: ABdhPJzJldMnVHXS3QDl/dM42X4k0XAaCUYXOZ4XIGmGG7wyaMi/VlfLe5nM4rkal6LkB6xfrPpcNQ==
+X-Received: by 2002:a17:907:3f9f:b0:6fe:f9e2:9c6a with SMTP id hr31-20020a1709073f9f00b006fef9e29c6amr18158922ejc.479.1654440885697;
+        Sun, 05 Jun 2022 07:54:45 -0700 (PDT)
+Received: from [192.168.0.181] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
+        by smtp.gmail.com with ESMTPSA id a23-20020aa7cf17000000b0042dc882c823sm7009190edy.70.2022.06.05.07.54.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Jun 2022 07:54:45 -0700 (PDT)
+Message-ID: <34e6715e-795c-3d64-1341-31da9bd27563@linaro.org>
+Date: Sun, 5 Jun 2022 16:54:43 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
+Content-Language: en-US
+To: "Marty E. Plummer" <hanetzer@startmail.com>
+Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
+ devicetree@vger.kernel.org, gengdongjiu@huawei.com,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux@armlinux.org.uk, michael@walle.cc,
+ miquel.raynal@bootlin.com, mturquette@baylibre.com, novikov@ispras.ru,
+ olof@lixom.net, p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
+ robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
+ sumit.semwal@linaro.org, tudor.ambarus@microchip.com, vigneshr@ti.com,
+ xuwei5@hisilicon.com
+References: <20220501054440.2434247-1-hanetzer@startmail.com>
+ <20220501173423.2473093-1-hanetzer@startmail.com>
+ <20220501173423.2473093-2-hanetzer@startmail.com>
+ <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
+ <20220601105846.7hriawg3stxb657f@proprietary-killer>
+ <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
+ <20220601110616.xmxih663kxgupszv@proprietary-killer>
+ <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
+ <20220601182418.okoofgannw6vbcxo@proprietary-killer>
+ <b1b87be5-a048-b713-c9f2-84b948aa6718@linaro.org>
+ <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220605_000736_833242_A7AEBAD6 
-X-CRM114-Status: GOOD (  10.39  )
+X-CRM114-CacheID: sfid-20220605_075447_921511_81704514 
+X-CRM114-Status: GOOD (  14.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,39 +109,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-of_find_node_by_path() returns a node pointer with refcount incremented,
-we should use of_node_put() on it when not need anymore.
-Add missing of_node_put() to avoid refcount leak.
+On 03/06/2022 13:22, Marty E. Plummer wrote:
+> On Thu, Jun 02, 2022 at 08:37:43AM +0200, Krzysztof Kozlowski wrote:
+>> On 01/06/2022 20:24, Marty E. Plummer wrote:
+>>
+>>>>> Either or. Whatever makes the workload easier is what I'm looking for.
+>>>>
+>>>> Sorry, you need to be more specific. Apply is not a job for you, for the
+>>>> patch submitter.
+>>>>
+>>>> Then you miss here important piece - which is the first patch. DTS goes
+>>>> always via separate branch (or even tree) from driver changes. That's
+>>>> why bindings are always separate first patches.
+>>>>
+>>> So, add a 4: arch/arm/boot/dts/soc.dtsi and 5: arch/arm/boot/dts/board.dts
+>>> to the above list, or should those be the same patch as well?
+>>
+>> For me does not matter, sub architecture maintainer might have preference.
+>>
+> Fair enough. That being said, for the dt-bindings patch, is it
+> permissible to include #define CLOCK_FOO 1337 and so on for clocks which
+> haven't been wired up in the driver yet? As in, you know they're there,
+> and are important enough to model, but you haven't gotten to that point
+> yet?
 
-Fixes: bb17230c61a6 ("mtd: parsers: ofpart: support BCM4908 fixed partitions")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
- drivers/mtd/parsers/ofpart_bcm4908.c | 3 +++
- 1 file changed, 3 insertions(+)
+What would be the benefit to include them now? I imagine that if you
+plan to add such clocks to the driver in next week or something, and you
+need to use them in DTS, then it's fine. If that's not the case,
+probably there is little sense in defining them upfront...
 
-diff --git a/drivers/mtd/parsers/ofpart_bcm4908.c b/drivers/mtd/parsers/ofpart_bcm4908.c
-index 0eddef4c198e..bb072a0940e4 100644
---- a/drivers/mtd/parsers/ofpart_bcm4908.c
-+++ b/drivers/mtd/parsers/ofpart_bcm4908.c
-@@ -35,12 +35,15 @@ static long long bcm4908_partitions_fw_offset(void)
- 		err = kstrtoul(s + len + 1, 0, &offset);
- 		if (err) {
- 			pr_err("failed to parse %s\n", s + len + 1);
-+			of_node_put(root);
- 			return err;
- 		}
- 
-+		of_node_put(root);
- 		return offset << 10;
- 	}
- 
-+	of_node_put(root);
- 	return -ENOENT;
- }
- 
--- 
-2.25.1
 
+Best regards,
+Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
