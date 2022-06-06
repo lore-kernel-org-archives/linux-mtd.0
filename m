@@ -4,96 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C5C2C43334
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 07:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A316CC43334
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 11:27:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CbNIL4BKcouVn3La6dz8dxjLpzvjFHjiGhEZSt767OE=; b=YS00mOtrFAMxc3
-	yJrbHEBlvwZI5FkQ85gvWXPCDiH+dDLMlZEENL/2vFhw/RabVpD6jGNniFu/bFu4Cwy+rZL59iUDa
-	dQdGRgq/2OrY6YZG2o69smtJkgujtbtKWGBb1PG4F8thHHdRT0ZxkcPDafwwtkygD2CFabXrAo2Pv
-	NeaYE6en/0CuJKj99nYL8fho7l1oYjIV8gqNtGsGkBBMP5VqwZAeWtLJPl+hZX9X5lwZjNxAZvRjX
-	geiHRO99ONxm5vhomIVaOXLx1iRA39MkECMA8ty9bwMlG6K5cjIxrKJYPm2UpSTG0+cDhWg3UOPuZ
-	zAUQb83KSYisqwa6/PYg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=IULGCZY8p11eZq1IA+ZFyQTesmpvG/x9ZhV24M3KF0M=; b=L3forCLcwzJfl8
+	tvPfdJN+/Uh3raixzq9877XH+nmPDGZ0GoJbgC2iLCiDSIs0qoqq3FhKw7u/WSQ1YFDk9hBZgEJTt
+	XYCIriQ93lg4Vy8rqpxTj3DTW8T5MhTUCB4xVbDIZ1Dllin5Yjfg59PtrzPDLgHFX1JDI3S5BwkBU
+	0MI2pj+yKf/U4GWN2oFpyTq2nx5+bMW8gY5Ya/YQCeKTCCyf5trXqQcJJA5S8Vusdu6hwPg9cUE93
+	4UlmX1d9UYNcw/tv+sDYiEQKT8fB73PB9OmFlw8YOpoLP5hpRTC6lpEU0tPlLd0siqpMMfR6UUcDW
+	S6AnxuNGINDfd4aQgDqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ny7Bp-00HVGO-4p; Mon, 06 Jun 2022 07:30:17 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1nyAsZ-000wqi-A7; Mon, 06 Jun 2022 11:26:39 +0000
+Received: from mail-dm3nam02on20614.outbound.protection.outlook.com ([2a01:111:f400:7e83::614] helo=NAM02-DM3-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ny7Be-00HVDU-4j
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2022 07:30:08 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id n10so27227220ejk.5
-        for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2022 00:30:02 -0700 (PDT)
+	id 1nyAsN-000wnL-Kr; Mon, 06 Jun 2022 11:26:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=erc0TpAEdY+FIb0aGMGfO11Ha9nVRmYpCGwICrPTT41SfTZkQW+PzJD3ED+L2lIM7AGmcrRy9dHcGODsK8u+vsu+cwcUz1V13UDtiEHdGYOhl/gY0UZPO4meA+HKjiUu1qUyqxreS29IrEnaqpOxCOi05WhVmCKwxIKOb3a0K7QnBQGiovKj+8hFgDJdd+3vXNeamHuv9DcypKYXiUHzv9jm4fcvcLHEAuqaJpgqCMBHIL6i5PBlgdmmswAAHmX4IJz28IkQndq94vL7bLaCuZ45Tqoqc+3OmpkqF6+UR7J7Y/9aw+qrWdYBb7+7ja1h38gYksugz1wPKZV2MPEtJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RQNi6+nRCuD9tAryUrXQYztjDu9fT3dlG0qO5h6x6bM=;
+ b=gadeZCpcEWNrbwUQMCYgGNVNJBtk5YDyVe3ySKQc3EY5QGvMuiyB1vJrnvga+YWjELBy+UI0ANcUom5BsJs4P8aB4bJvjKSg1HrD1ziim+Ash+6zY5LO1vCDRH0s0vOaDyg1rKUpfkwJCZKPXMgE9hUbDA4yAkGTAdyHy6NdzR9bkthhI75GwZhzEpFY5+zJxw/KsE/G8EegP8kVM0UYa+WhmVr08Bf34DBx4X7O2YvQdT/Pgj154C85RvGQlJ0QTiuUbJBAFR6JbjZVFYi1XjyJXXT/FEGLs+ol9+58to86VXf3OAeGqVDA/jdd84j+xynmb59hGkhXSUDYlw/KAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=C20vxMWdqTwD6Z42rEEVzIJpyd097nkNjpEAy8hCZfk=;
-        b=FT0hiO/wt9Ln26hReszWV7kve6WAQ7SHRAXHuM3oRcyMcf62QkOMqSeKO7K5Q78tV5
-         jqZbs/pnJHNkKXfFb5szKb/IknvxYaw6NxhOfSQMJu39Orgpud1c0nHJEYhlJwBSG3g4
-         MmGf34twiFLhdqro9wTstyDge0JufEnO8kpC6eFUvoJMSFadTBbyjOMQe0j2P8JJ0S/D
-         iWAc3DOU0+HSvwVqGySRPfQDMJMQ+d9ne1njR2H81Dx76MXiTUbI3BF2QydGU6s0Z4OR
-         2sLoyhzZDAB6++fqC4WXdwKsoNeRFox4yH28AxiIaBKfcq7eroLmoOeZx8H74tM6VFRp
-         BpAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=C20vxMWdqTwD6Z42rEEVzIJpyd097nkNjpEAy8hCZfk=;
-        b=qSmGn+onRadMO2ViZ9Ic0wLSUlpPHIIJU6ZWBEusl4aRrK6uy1Kfg6M+wYycyRMJiN
-         YrDEAcZ9xYWVKYaYNg7XFseurzQsFVjixUXEY2nbfnh+kobGl2YKm5dxVNbD8U77ZMvT
-         BKEtBPlzPC3OTsdAB+W0dFLr22l7GSsB33XkhgsoFzNHCR8AU0m34+lwyEtkSp2iS6Eo
-         UiGM+99YdA/N8ovm5v/o/KJ5Cb1ff5ay/S9ENIb4f6fpBeJSDFHZ7NVXcX9brdx+k4Iq
-         oJLOP+9SEstbwwTfX1z7BWp/fxA0TY8gaiPX2Z705SmQQTtTowMmM2Z3wzKUp5yA1agC
-         hzfA==
-X-Gm-Message-State: AOAM530wG8XCrThj01zfeOJrUJef4NSdoJV7cg+7BpOjViPP9TBD1d6t
-	TeCpvHg747jMk5PVYrulywxAQA==
-X-Google-Smtp-Source: ABdhPJwDrG9m7vAQS+VF/GQXXz1IT+Mgco25TxBuVlJNzEy+22mr0JP9+ZK6aVbHXdWQQHWMrTExsA==
-X-Received: by 2002:a17:907:3daa:b0:6fe:88ab:fe8c with SMTP id he42-20020a1709073daa00b006fe88abfe8cmr20075363ejc.575.1654500601591;
-        Mon, 06 Jun 2022 00:30:01 -0700 (PDT)
-Received: from [192.168.0.181] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
-        by smtp.gmail.com with ESMTPSA id t11-20020a17090605cb00b00706c1327f4bsm5994755ejt.23.2022.06.06.00.30.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jun 2022 00:30:01 -0700 (PDT)
-Message-ID: <8e81de5f-dfb7-e34f-ff5f-44b52421fa24@linaro.org>
-Date: Mon, 6 Jun 2022 09:29:59 +0200
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RQNi6+nRCuD9tAryUrXQYztjDu9fT3dlG0qO5h6x6bM=;
+ b=oE9v1ZpbXxqczKETS2WPoL9gGV85IbgApIYgM4R55tEK0i9BCr8xQBWavKB6znmuOMBz3ZhTISvk1qGAxIMk9gqneQFNRQTRi9vCzum3q9lifcyYhlf5sp8qAS6pMXrLZ4NDqm/5l0zBWSLn7/c3KAFQy39DUByQzg65UR+LqKk=
+Received: from SN4PR0801CA0016.namprd08.prod.outlook.com
+ (2603:10b6:803:29::26) by SN6PR02MB4127.namprd02.prod.outlook.com
+ (2603:10b6:805:30::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.15; Mon, 6 Jun
+ 2022 11:26:20 +0000
+Received: from SN1NAM02FT0012.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:29:cafe::11) by SN4PR0801CA0016.outlook.office365.com
+ (2603:10b6:803:29::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.13 via Frontend
+ Transport; Mon, 6 Jun 2022 11:26:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com; pr=C
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0012.mail.protection.outlook.com (10.97.4.93) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5314.12 via Frontend Transport; Mon, 6 Jun 2022 11:26:20 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 6 Jun 2022 04:26:19 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 6 Jun 2022 04:26:19 -0700
+Received: from [10.140.6.18] (port=43350 helo=xhdlakshmis40.xilinx.com)
+	by smtp.xilinx.com with esmtp (Exim 4.90)
+	(envelope-from <amit.kumar-mahapatra@xilinx.com>)
+	id 1nyAsE-0000SR-Qt; Mon, 06 Jun 2022 04:26:19 -0700
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+To: <broonie@kernel.org>, <p.yadav@ti.com>, <miquel.raynal@bootlin.com>,
+	<richard@nod.at>, <vigneshr@ti.com>
+CC: <git@xilinx.com>, <michal.simek@xilinx.com>, <linux-spi@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<michael@walle.cc>, <linux-mtd@lists.infradead.org>, Amit Kumar Mahapatra
+	<amit.kumar-mahapatra@xilinx.com>
+Subject: [RFC PATCH 0/2] spi: Add support for stacked/parallel memories
+Date: Mon, 6 Jun 2022 16:56:05 +0530
+Message-ID: <20220606112607.20800-1-amit.kumar-mahapatra@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: "Marty E. Plummer" <hanetzer@startmail.com>
-Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
- devicetree@vger.kernel.org, gengdongjiu@huawei.com,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux@armlinux.org.uk, michael@walle.cc,
- miquel.raynal@bootlin.com, mturquette@baylibre.com, novikov@ispras.ru,
- olof@lixom.net, p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
- robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
- sumit.semwal@linaro.org, tudor.ambarus@microchip.com, vigneshr@ti.com,
- xuwei5@hisilicon.com
-References: <20220501054440.2434247-1-hanetzer@startmail.com>
- <20220501173423.2473093-1-hanetzer@startmail.com>
- <20220501173423.2473093-2-hanetzer@startmail.com>
- <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
- <20220601105846.7hriawg3stxb657f@proprietary-killer>
- <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
- <20220601110616.xmxih663kxgupszv@proprietary-killer>
- <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
- <20220601182418.okoofgannw6vbcxo@proprietary-killer>
- <b1b87be5-a048-b713-c9f2-84b948aa6718@linaro.org>
- <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
- <34e6715e-795c-3d64-1341-31da9bd27563@linaro.org>
-In-Reply-To: <34e6715e-795c-3d64-1341-31da9bd27563@linaro.org>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 28d63e8f-bab4-46ae-9f9b-08da47af6174
+X-MS-TrafficTypeDiagnostic: SN6PR02MB4127:EE_
+X-Microsoft-Antispam-PRVS: 	<SN6PR02MB4127F056CFFA38DD08E6E9EEBAA29@SN6PR02MB4127.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	0D/AkC3Vz8HJH3MC7+GjH1cHJ5v97vJ+Uo3AjQ4vMMNV7N8J3LyRARQBw/AoJiMV6DlIcI0rVy0gGyfsdTRGynFUX2a/LgH4b9KE7eLsdO46RVMvsd2icyUqmH+9SiMSbF/Cff6MW4eRMVcbNfEqx+Fn7rY/i3HPbTSIMTRhMACIg8on3S+EwehvUE/NCw3MSGb8WS3ir1uAKDIbr8+UO9wfew2ji+KtixiUA4/Ik2Avai/9X1ymvO6lt5WqfUyr/TIaK42nIwwo4/BVMoxoHiBmHpfw5CwYEWrgWoN/12GskaPox73KgncJdAb3l18jUahGQmDqqPflYp5mM3nkODWX9NBjE+Rr2faxx2XgPfisheP814EnPX7+GOqTQH7vmKBOuCCBItsThNxPQfJnpQ18/pcypQFqCdteyPaHqh8jVh3Wv4w8/DhHtWe3ezYDmpcpN7kLLyGOCcTjxdYL2HU//dk4kk4Vcgb7UQfoMpd7MxgQnx7+hoPQGu0O8bmvO6Gh7OSuS24MSrAHqmEdkjuOKPLoMXTy24NAhj6aULaCyV1DJgrXIqQqjk4TbSx+ofJabRNiDW9jty4U1BXEt4LCQEVQFJyKhg5soRGF83uj0UwJODbCz85K+bFCOk4oAuyR11E6HfUlEsJPedQSiJ5rVIzHgAcdel7m/TuzPYuNF5oNXoCF8zsviMt2slHLVBy8fcstGZL62QpQIO4ngA==
+X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230001)(4636009)(46966006)(40470700004)(36840700001)(36860700001)(36756003)(83380400001)(8676002)(40460700003)(70206006)(26005)(110136005)(54906003)(70586007)(9786002)(8936002)(356005)(5660300002)(7416002)(508600001)(7636003)(47076005)(426003)(336012)(4326008)(2906002)(2616005)(6666004)(82310400005)(316002)(107886003)(1076003)(7696005)(186003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2022 11:26:20.5447
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28d63e8f-bab4-46ae-9f9b-08da47af6174
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	SN1NAM02FT0012.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4127
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220606_003006_255357_9676A860 
-X-CRM114-Status: GOOD (  16.98  )
+X-CRM114-CacheID: sfid-20220606_042627_728672_C6F88EAD 
+X-CRM114-Status: GOOD (  10.70  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,47 +123,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 05/06/2022 16:54, Krzysztof Kozlowski wrote:
-> On 03/06/2022 13:22, Marty E. Plummer wrote:
->> On Thu, Jun 02, 2022 at 08:37:43AM +0200, Krzysztof Kozlowski wrote:
->>> On 01/06/2022 20:24, Marty E. Plummer wrote:
->>>
->>>>>> Either or. Whatever makes the workload easier is what I'm looking for.
->>>>>
->>>>> Sorry, you need to be more specific. Apply is not a job for you, for the
->>>>> patch submitter.
->>>>>
->>>>> Then you miss here important piece - which is the first patch. DTS goes
->>>>> always via separate branch (or even tree) from driver changes. That's
->>>>> why bindings are always separate first patches.
->>>>>
->>>> So, add a 4: arch/arm/boot/dts/soc.dtsi and 5: arch/arm/boot/dts/board.dts
->>>> to the above list, or should those be the same patch as well?
->>>
->>> For me does not matter, sub architecture maintainer might have preference.
->>>
->> Fair enough. That being said, for the dt-bindings patch, is it
->> permissible to include #define CLOCK_FOO 1337 and so on for clocks which
->> haven't been wired up in the driver yet? As in, you know they're there,
->> and are important enough to model, but you haven't gotten to that point
->> yet?
-> 
-> What would be the benefit to include them now? I imagine that if you
-> plan to add such clocks to the driver in next week or something, and you
-> need to use them in DTS, then it's fine. If that's not the case,
-> probably there is little sense in defining them upfront...
+This RFC is the continuation to the discussion which happened on
+'commit f89504300e94 ("spi: Stacked/parallel memories bindings")' for
+adding dtbinding support  for stacked/parallel memories.
 
-Actually I see one more benefit - since IDs should be incremented by
-one, you can define all of them upfront thus having some
-logical/alphabetical order/grouping. If you extend the bindings header
-with new IDs later, they must go to the end of the list, thus maybe
-ordering will not be that nice.
+The purpose of this patch series is to demonstrate the changes in spi-nor,
+spi core and ZynqMP GQSPI driver w.r.t to stacked/parallel memories
+support.Please go through the series and share you comments.
 
-If you want, go ahead with all IDs. Just remeber that these must be IDs,
-not register values or some programming offsets.
+To support stacked/parallel configuration following changes are done to spi
+core and spi-nor.
 
-Best regards,
-Krzysztof
+- The chip select member (chip_select) of the spi_device structure is changed
+to an array (chip_select[2]). This array is used to store the CS values coming
+form the "reg" DT property.
+
+- Added a new member (cs_index_mask) in the spi_device structure to hold the
+index information of above chip_select array. SPI-NOR is not aware of the
+chip_select values, For any incoming request SPI-NOR will decide the flash
+index with the help of individual flash size and the configuration type
+(single/stacked/parallel). SPI-NOR will pass on the flash index information
+to the SPI core by setting the appropriate bit(s) of "cs_index_mask".
+For example if nth bit of "cs_index_mask" is set then the driver would
+assert chip_slect[n].
+
+- The flash parameter member(*params) of the spi_nor structure is changed
+to an array (*params[2]). The array is used to store the parameters of each
+flash connected in stacked/parallel configuration.
+
+This patch series targets flashes of same make connected in stacked
+configuration and for parallel configuration both the flashes should be
+identical.
+---
+BRANCH: mtd/next
+---
+Amit Kumar Mahapatra (2):
+  spi: Add multiple CS support for a single SPI device
+  mtd: spi-nor: Add support for stacked/parallel memories
+
+ drivers/mtd/spi-nor/core.c     | 104 +++++++++++++++++++++++++++++----
+ drivers/mtd/spi-nor/core.h     |   5 ++
+ drivers/spi/spi-zynqmp-gqspi.c |  30 ++++++++--
+ drivers/spi/spi.c              |  10 +++-
+ include/linux/mtd/spi-nor.h    |   8 ++-
+ include/linux/spi/spi.h        |  10 +++-
+ 6 files changed, 146 insertions(+), 21 deletions(-)
+
+-- 
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
