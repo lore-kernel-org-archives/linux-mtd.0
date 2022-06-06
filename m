@@ -4,39 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C21E3C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 20:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71FECCCA483
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 20:41:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=55yLpMuRZSRx/0bXki3nE5KkW8KqdCOWb5NxUibDflg=; b=ROMi94zRBfRRe8
-	ac9JFfcwa6bQp844yfjShLqVoU9vty8K7On8jGiY/ifOc7rUtHXqorMVcSKFRIxd5E1P2wvXFANY7
-	3L09XUR6ps4uc2pVsfZtj72WFeVncTB/QMCPFm4NS/phTeE+2ZBSmkyOORXd2XNAaRHSsp9koseOt
-	MhusmqU/LxoSszLfetlc0UOOE68U9ur3axMTCtMgu7AXC6iJtXg46z4pwEfF7LAgsWEd9A6/QNfeG
-	gXzaQ+tbeFMIZhQOlRIJEVIflK4Ep8rIjoRdUgx/vtCZaPSRq1hpFcrBv6NkDGShDUvl54lDkbSO3
-	Px7/hjTY2GmTYVJCG++g==;
+	List-Owner; bh=MYgfYZmg436/fSyc+kE/1OZqoexHyfGRvAVNOf2K7a8=; b=hsAawrphrqZ5Y+
+	nvnzJX6u+GaD6wKjkOD9EVrQsLYyW1p6tHEeicDezdSRuQ3nm32hKs6Pq0QYSchhQ6DCPbxdb46ls
+	+TOLYMfvn1YXXksg0XbUFbhblMqQw9mX6pQhi9pcYkc7rOeLpEtrMPTVugTvnKC9ogmHL2OHpEFMo
+	FggdC7uFpRLBD8QicQsRmjtVn+Vhp3dlVGOVxP5wTRJWZzQSctaERtuCQT366N6cuH8yZgMNbEGQc
+	5QGB2zbhOpc7HCiHVTj6vL5ztSOuPFnCZ+t+UaWF/Isp308mSABcS5rFD4LkTYNz88h4cxlZVw9YS
+	YrhIbXqw4y9357ZkXWmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyJX8-002hlM-NB; Mon, 06 Jun 2022 20:41:06 +0000
+	id 1nyJXF-002hrN-I0; Mon, 06 Jun 2022 20:41:13 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyJX3-002hhN-Mq
+	id 1nyJX3-002hhO-Nn
 	for linux-mtd@bombadil.infradead.org; Mon, 06 Jun 2022 20:41:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=NFScYX57GEbw0yH/d1QXpe8YFpfaQsvuaQCT3ii6ess=; b=mDp4J3wn+JfgTBMvZgEUqjDjOc
-	MdvHmectsbLkZvfTk8nG6ytXS1+4dBHiC4pMAhcy3dH+w+BngrUwTH364Opf+ULDH9RffR6xS8W1s
-	NvNCsPvgWsTpdK5si++BB7gskVwFgeJKaRz9oSkBMT/tvUH1htLz8dXlAm4tajf1oQVpZT/iQpp3Z
-	3qvjBqAGoN/HgsaNXSczCYJXunICX2cMGKbV8nqWYAZ1dFtuqgFYtfMpTC7xMxk50hUBGd3mZWqxV
-	6hlTudv8DYvIDVhKEtAVCLpJUOSZgQOHlnJd6eZoWquUE4SD1aKFk5s64qg6Qy5XVFt9b2QyPeQP8
-	VdadEfOg==;
+	bh=jUHtPvxpwYn/CbCKtCO4gIDrDPVTvyaQoVGtIQShqV8=; b=jSXisP6LX46D6Mw+iXYFF/5dHQ
+	Cq+5Fi0773+cVC4U9ukK6uPnYuWIfkHADg3G9SiZaN1QWdL8Bw8OwfYPT7xfddEiqh5OKP81yWVIY
+	qERnKHNvRO9zfbKpGHImXAVxsBisgmn/CxiCns5EQmSUyg3J6K8R2kkkIDgNoaevsqaLFhC5Wxh52
+	Z38Ws7TQ5Dp7rpDRe4MO4DakZ/+co05qxKtyfgyK3bXqUiSNs9vH9ETqmdeoiAv+unUA3cgwymN9t
+	pq0eOgOppmxZCcU/ekIrK65xO/nlqiG9Pvvr5StvpmfjnqBIWv5xh9xJykbFL+Cw79+wHE0k8kIBA
+	U9JkUfCw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyJWy-00B19s-0v; Mon, 06 Jun 2022 20:40:56 +0000
+	id 1nyJWx-00B19e-EV; Mon, 06 Jun 2022 20:40:55 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -54,9 +54,9 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	ocfs2-devel@oss.oracle.com,
 	linux-mtd@lists.infradead.org,
 	virtualization@lists.linux-foundation.org
-Subject: [PATCH 18/20] zsmalloc: Convert to migrate_folio
-Date: Mon,  6 Jun 2022 21:40:48 +0100
-Message-Id: <20220606204050.2625949-19-willy@infradead.org>
+Subject: [PATCH 11/20] ubifs: Convert to filemap_migrate_folio()
+Date: Mon,  6 Jun 2022 21:40:41 +0100
+Message-Id: <20220606204050.2625949-12-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220606204050.2625949-1-willy@infradead.org>
 References: <20220606204050.2625949-1-willy@infradead.org>
@@ -77,42 +77,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-zsmalloc doesn't really use folios, but it needs to be called like this
-in order to migrate an individual page.  Convert from a folio back to
-a page until we decide how to handle migration better for zsmalloc.
+filemap_migrate_folio() is a little more general than ubifs really needs,
+but it's better to share the code.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- mm/zsmalloc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/ubifs/file.c | 29 ++---------------------------
+ 1 file changed, 2 insertions(+), 27 deletions(-)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 5d5fc04385b8..8ed79121195a 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -1865,9 +1865,11 @@ static bool zs_page_isolate(struct page *page, isolate_mode_t mode)
- 	return true;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 04ced154960f..f2353dd676ef 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1461,29 +1461,6 @@ static bool ubifs_dirty_folio(struct address_space *mapping,
+ 	return ret;
  }
  
--static int zs_page_migrate(struct address_space *mapping, struct page *newpage,
--		struct page *page, enum migrate_mode mode)
-+static int zs_migrate_folio(struct address_space *mapping,
-+		struct folio *dst, struct folio *src, enum migrate_mode mode)
+-#ifdef CONFIG_MIGRATION
+-static int ubifs_migrate_page(struct address_space *mapping,
+-		struct page *newpage, struct page *page, enum migrate_mode mode)
+-{
+-	int rc;
+-
+-	rc = migrate_page_move_mapping(mapping, newpage, page, 0);
+-	if (rc != MIGRATEPAGE_SUCCESS)
+-		return rc;
+-
+-	if (PagePrivate(page)) {
+-		detach_page_private(page);
+-		attach_page_private(newpage, (void *)1);
+-	}
+-
+-	if (mode != MIGRATE_SYNC_NO_COPY)
+-		migrate_page_copy(newpage, page);
+-	else
+-		migrate_page_states(newpage, page);
+-	return MIGRATEPAGE_SUCCESS;
+-}
+-#endif
+-
+ static bool ubifs_release_folio(struct folio *folio, gfp_t unused_gfp_flags)
  {
-+	struct page *newpage = &dst->page;
-+	struct page *page = &src->page;
- 	struct zs_pool *pool;
- 	struct size_class *class;
- 	struct zspage *zspage;
-@@ -1966,7 +1968,7 @@ static void zs_page_putback(struct page *page)
- 
- static const struct address_space_operations zsmalloc_aops = {
- 	.isolate_page = zs_page_isolate,
--	.migratepage = zs_page_migrate,
-+	.migrate_folio = zs_migrate_folio,
- 	.putback_page = zs_page_putback,
+ 	struct inode *inode = folio->mapping->host;
+@@ -1649,10 +1626,8 @@ const struct address_space_operations ubifs_file_address_operations = {
+ 	.write_end      = ubifs_write_end,
+ 	.invalidate_folio = ubifs_invalidate_folio,
+ 	.dirty_folio	= ubifs_dirty_folio,
+-#ifdef CONFIG_MIGRATION
+-	.migratepage	= ubifs_migrate_page,
+-#endif
+-	.release_folio    = ubifs_release_folio,
++	.migrate_folio	= filemap_migrate_folio,
++	.release_folio	= ubifs_release_folio,
  };
  
+ const struct inode_operations ubifs_file_inode_operations = {
 -- 
 2.35.1
 
