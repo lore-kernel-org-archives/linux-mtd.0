@@ -4,111 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66998C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 11:27:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E62AC433EF
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 11:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0IRmvlcMkMVAuVGUB8lZ5UIywUYHH25XZjl5M1bxoWo=; b=x1hTDlGRdtCwU3
-	Pg2FYfUfZfb8XP4ZN65MasQNdLWCiJnwOe311fngLthBjFFOuqjPjnBoziyV50wJzfwrz4Bfi8sLb
-	Qp632wRvvVVRJZYBPltJws+2T5p3WEhBpBm5KJYS9uqFXssNe/yvg+3VpPlxulM5msMzIDEXLcLcV
-	8IASfSXJBoLn5yLg3AdqWMM6toTtfT/V+mQwE+GzYdPE049lUR1Zzv+o7ymJ2DhfOzBlsjOLQf6PF
-	WHqDUBujqYC9m998sQJJAPklfICVHXABJJ6+Vn5pi7WhqdGMgchY7cjtxZKRpcW2dW6HeVbZpZ9e+
-	Gkfk25oBzqTHKGHnOWDw==;
+	List-Owner; bh=qRPkiANum0PJqJKihXqAy2R2+/8gcEADqb8ZLXiaCl8=; b=OhwK72RpMa5oTT
+	xaMwI4W1tO3Fg+z0ip7Wdw67imPkLjqBox0Q8KEfwDGHu6tx0lQlvThlKmMkyeWJaOc2p+pFjHf2U
+	kkzySS7rh5Diz0XLCidZUe24PhNSqGteFV2BoN+HBWSOB5zjjaxwgiyzrm9TDuyHvZ9QsWdPjVQPI
+	oUWIJBm578FszDcXM0G+Oos/987sFqVR5IMdjNSV0621ghRq57dfvaGAiZns/sWeWp9IErjrdNJ+x
+	31dcyJFeMwJK2wsxaDsiy7uNDcXR9l+gLHoGM8Xo9ceGOHYfl7jBB8f1gAsgxf/PK6TMu4GapQx26
+	TA21nUHAzAdD3Y2yELcw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyAsz-000x03-Bs; Mon, 06 Jun 2022 11:27:05 +0000
-Received: from mail-mw2nam12on20606.outbound.protection.outlook.com ([2a01:111:f400:fe5a::606] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
+	id 1nyB14-000zBa-39; Mon, 06 Jun 2022 11:35:26 +0000
+Received: from mx-out2.startmail.com ([145.131.90.155])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyAsU-000wow-5I; Mon, 06 Jun 2022 11:26:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C4vBQtp9Xw9ZKcVheCUk6g4D571irGG/gSlaXzDmUHsHR3ecYi8JyqE64NipAMh2VuKD7zApNauzN4GdWCqzLDlt9LxQhGZy27GMkQWfPoZ/2RbdsTNtGRiJraktLmiaR+MniuiHomBsz8wsegHjSNRRzd4KWGff3Nkqw7b8Y3DdvAZTVW4sCiGVPZvGxBdreTG1g0e/6NbgLhGbupdBKrHl76kWtkQzCkKaex5MMacr3RoAtihVfeayEQQ0W5EazNauhRkABLVZJ99GqKVmdcn3pzRUGFNPP9pJAjJoD/J/iIWA3F3lOcJ3gJRYWMlS3RyZEjk535+qbVtmnPgdIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cTw0GOAJ5U4D8/h4SvBhXXjOBPiraVH2nLE+I5hcXWQ=;
- b=IRYWIrCkZ83Wiy2EomqY6hZcb+9TbOiVAB8/o6i22wtox/TE9NW7h/W4+Lz4pewyUCtERw8jMXbgIGSIOFqENeisWNAzjcxzrzrA9LFP7oA1Xe+Lckw1NRTs1v2ysAq2AIH1ewil7IGUjc78xZP6KZFHAzhO/ceICDcd7fKn++2IGm4FTHne0Gnr5zOTGyDUtZb8tDtlo6OQBiI7vyoiz4MKYNwxDhhI1/Vcc8EIST9NTP9ZTCtnuzLo9Ztg3uJMIh2qzmbsSCQTTAEIImhb+V9ZTNUbgGQMTDqIn3l5nuOnWQx2ilENou6yj6hnVRI8WH0IcX6WZcM7IW7HVIG1Cw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cTw0GOAJ5U4D8/h4SvBhXXjOBPiraVH2nLE+I5hcXWQ=;
- b=NWZZ0PvuIBPZPCXPpnuOJ2YQSXhHBcdByMNqu/I4WFHnzwRF4NqnPDGGfHo1UPCZae1IPF7yzrvJ7vpATLP4WZ+I6SDjE6uWSOpCp8tE5/z7FZ8pbMX98K72tU4JwanmQxffv0eOO9L9PZy4qVOvycz9ADjXT9qERjRe0M9BmvE=
-Received: from SN6PR16CA0041.namprd16.prod.outlook.com (2603:10b6:805:ca::18)
- by DM6PR02MB6137.namprd02.prod.outlook.com (2603:10b6:5:1d6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.15; Mon, 6 Jun
- 2022 11:26:28 +0000
-Received: from SN1NAM02FT0021.eop-nam02.prod.protection.outlook.com
- (2603:10b6:805:ca:cafe::2a) by SN6PR16CA0041.outlook.office365.com
- (2603:10b6:805:ca::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.19 via Frontend
- Transport; Mon, 6 Jun 2022 11:26:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com; pr=C
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0021.mail.protection.outlook.com (10.97.5.32) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5314.12 via Frontend Transport; Mon, 6 Jun 2022 11:26:28 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 6 Jun 2022 04:26:26 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 6 Jun 2022 04:26:26 -0700
-Received: from [10.140.6.18] (port=43350 helo=xhdlakshmis40.xilinx.com)
-	by smtp.xilinx.com with esmtp (Exim 4.90)
-	(envelope-from <amit.kumar-mahapatra@xilinx.com>)
-	id 1nyAsM-0000SR-2B; Mon, 06 Jun 2022 04:26:26 -0700
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-To: <broonie@kernel.org>, <p.yadav@ti.com>, <miquel.raynal@bootlin.com>,
-	<richard@nod.at>, <vigneshr@ti.com>
-CC: <git@xilinx.com>, <michal.simek@xilinx.com>, <linux-spi@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<michael@walle.cc>, <linux-mtd@lists.infradead.org>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@xilinx.com>
-Subject: [RFC PATCH 2/2] mtd: spi-nor: Add support for stacked/parallel memories
-Date: Mon, 6 Jun 2022 16:56:07 +0530
-Message-ID: <20220606112607.20800-3-amit.kumar-mahapatra@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220606112607.20800-1-amit.kumar-mahapatra@xilinx.com>
-References: <20220606112607.20800-1-amit.kumar-mahapatra@xilinx.com>
+	id 1nyB0q-000z7e-3Y; Mon, 06 Jun 2022 11:35:13 +0000
+Date: Mon, 6 Jun 2022 06:34:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
+	s=2020-07; t=1654515303;
+	bh=mpbBAztguTTQhW8kMhRiNpwOFt1Qp+y0cn4YlTLDqU8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:From:Subject:To:Date:
+	 Sender:Content-Type:Content-Transfer-Encoding:Content-Disposition:
+	 Mime-Version:Reply-To:In-Reply-To:References:Message-Id:Autocrypt;
+	b=QIRX6sLoDs7XzIES1QbkQlBAdvLFB3+wHstX4KHaYKoYZGM7W0jLDNOuiPtKin7eK
+	 XWs9DZQenKc4on+0PYYYNEo61rQtGTgm4zAyTn/cF90hcppkMWPNSz+YLpYf2QP9e6
+	 aVpldliyDEUeeSNx7Khu7Zmu3h7Jzht5DiAEVy3if3t/wfPOON8eiruiU+WzHjkc1y
+	 Wqp2CP4OLCsH8WqdWj65VflnPSLSfREfTCXLbuC2yJYbBdzIj72wE3NkjZs3ufNNtg
+	 zRkUVrec5B9d19oaODMXL94ARZ7107f7ZgUw4gfU/oLJgbF7Ej1oXVdzjyi75zXAn3
+	 l3cu65Qs0MNgA==
+From: "Marty E. Plummer" <hanetzer@startmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
+	devicetree@vger.kernel.org, gengdongjiu@huawei.com,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux@armlinux.org.uk, michael@walle.cc, miquel.raynal@bootlin.com,
+	mturquette@baylibre.com, novikov@ispras.ru, olof@lixom.net,
+	p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
+	robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
+	sumit.semwal@linaro.org, tudor.ambarus@microchip.com,
+	vigneshr@ti.com, xuwei5@hisilicon.com
+Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
+Message-ID: <20220606113455.7dv6bnk25ki6tau7@proprietary-killer>
+References: <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
+ <20220601105846.7hriawg3stxb657f@proprietary-killer>
+ <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
+ <20220601110616.xmxih663kxgupszv@proprietary-killer>
+ <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
+ <20220601182418.okoofgannw6vbcxo@proprietary-killer>
+ <b1b87be5-a048-b713-c9f2-84b948aa6718@linaro.org>
+ <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
+ <34e6715e-795c-3d64-1341-31da9bd27563@linaro.org>
+ <8e81de5f-dfb7-e34f-ff5f-44b52421fa24@linaro.org>
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ae01345c-a822-463d-a509-08da47af65fc
-X-MS-TrafficTypeDiagnostic: DM6PR02MB6137:EE_
-X-Microsoft-Antispam-PRVS: 	<DM6PR02MB61370E484CA7B7646B381ADDBAA29@DM6PR02MB6137.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	Xz0wtkHYcID9lGKG1VNxbOFnvIbY0AkeXAf1nMBgexNoywbd6WvT6HQlNhlCOsneePRA/jVlEFDMRC+nZNj4Awqtk+uop/4Q4/dn2eXKmOkWMdIo56GdddpjYe2H1b7IiYVVM+7aE9cIP9t4ZnoJS3DugwuLET5NdLRKfyr7y7jZjlvefS1t3YJabZyFF13LkutPDI/1Zg873v+fvjoRNqB8u1+ZQ2LP/qFbTlGtuwuJ4o3xOB9uHrWp5tL8Po4B3gUS8lq3ymV5JMICTc7KF8ThD6UfG9OXUrL8g+GoIS/0qqlvtkuHDlN0V/7HRf7797cZaax4X6H2bG77NnIkhVDYP0A+AZXB1cHbv74Iq85xaOz/TcF7C1C0QgTfhkMLKDq0xTNN/7knX3uugTHiZ+68Wu7uIH+bX8FRTVRGwKPdxrCS3xFpD4QvQJtGBIHfDd1IjKTuo9aCbvlG7/JDzIdFh+hq2LO53a6Vajv1BUvQvMqPQyeuJ3bEfyGasxUMFtIXbB7upK2uWufPonYGesBxtFCRjqq+kkB4RzzHQLqnmxVad9r6ocxpZjuUvi8OCxiRctWHCf6k6TL2XUS+MAIl5kW2UPEa7GVhn5QJvVF0LVxd8dMb+rR2sgr6EX1j1dZGdSnG3ikg5oZ61N79w9Djr3j4y+ltcjQIlOQBdv91Ewc5maAnaHyV5O8Nd7ntc5etxCM4W47SsRsG/4quug==
-X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230001)(4636009)(46966006)(40470700004)(36840700001)(36756003)(36860700001)(110136005)(83380400001)(40460700003)(70586007)(8676002)(54906003)(26005)(70206006)(9786002)(8936002)(356005)(7636003)(5660300002)(508600001)(7416002)(47076005)(4326008)(426003)(2906002)(186003)(2616005)(6666004)(107886003)(316002)(82310400005)(1076003)(7696005)(336012)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2022 11:26:28.1470
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae01345c-a822-463d-a509-08da47af65fc
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	SN1NAM02FT0021.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6137
+Content-Disposition: inline
+In-Reply-To: <8e81de5f-dfb7-e34f-ff5f-44b52421fa24@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220606_042634_275819_DFA68A51 
-X-CRM114-Status: GOOD (  21.18  )
+X-CRM114-CacheID: sfid-20220606_043512_499729_9C550AE9 
+X-CRM114-Status: GOOD (  26.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,245 +85,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While initializing the flash parameter structure, size of each flash is
-updated with the values coming from "stacked-memories" and
-"parallel-memories" DT properties.
-
-Two new nor->flags (SNOR_F_HAS_STACKED and SNOR_F_HAS_PARALLEL) are added
-to distinguish between the stacked and parallel configuration.
-
-In parallel configuration all the operations need to be performed on both
-the flashes simultaneously, So during each operation SPI-NOR needs to set
-0th bit(CS0) & 1st bit(CS1) in nor->spimem->spi->cs_index_mask. The GQSPI
-driver will then assert CS0 & CS1.
-
-In stacked configuration the SPI-NOR, with individual flash size information,
-will determining the flash on which the operation need to be performed and
-it will set the appropriate CS bit in nor->spimem->spi->cs_index_mask.
-
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
----
- drivers/mtd/spi-nor/core.c  | 104 +++++++++++++++++++++++++++++++-----
- drivers/mtd/spi-nor/core.h  |   5 ++
- include/linux/mtd/spi-nor.h |   8 ++-
- 3 files changed, 104 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 502967c76c5f..5d9bbb28659a 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2463,6 +2463,9 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
-  */
- static void spi_nor_late_init_params(struct spi_nor *nor)
- {
-+	struct device_node *np = spi_nor_get_flash_node(nor);
-+	u64 flash_size[SNOR_FLASH_CNT_MAX];
-+
- 	if (nor->manufacturer && nor->manufacturer->fixups &&
- 	    nor->manufacturer->fixups->late_init)
- 		nor->manufacturer->fixups->late_init(nor);
-@@ -2479,6 +2482,27 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
- 	 */
- 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
- 		spi_nor_init_default_locking_ops(nor);
-+
-+	/*
-+	 * The flashes that are connected in stacked mode should be of same make.
-+	 * Except the flash size all other properties are identical for all the
-+	 * flashes connected in stacked mode.
-+	 * The flashes that are connected in parallel mode should be identical.
-+	 */
-+	if (!of_property_read_u64_array(np, "stacked-memories", &flash_size[0], SNOR_FLASH_CNT_MAX)) {
-+		nor->flags |= SNOR_F_HAS_STACKED;
-+	} else if (!of_property_read_u64_array(np, "parallel-memories", &flash_size[0], SNOR_FLASH_CNT_MAX)){
-+		nor->flags |= SNOR_F_HAS_PARALLEL;
-+	}
-+
-+	if (nor->flags & (SNOR_F_HAS_STACKED | SNOR_F_HAS_PARALLEL)) {
-+		nor->params[1] = devm_kzalloc(nor->dev, sizeof(*nor->params[0]), GFP_KERNEL);
-+		if (!nor->params[1])
-+			return -ENOMEM;
-+		memcpy(nor->params[1], nor->params[0], sizeof(*nor->params[0]));
-+		nor->params[1]->size = flash_size[1];
-+	}
-+	return 0;
- }
- 
- /**
-@@ -2614,8 +2638,8 @@ static int spi_nor_init_params(struct spi_nor *nor)
- {
- 	int ret;
- 
--	nor->params = devm_kzalloc(nor->dev, sizeof(*nor->params), GFP_KERNEL);
--	if (!nor->params)
-+	nor->params[0] = devm_kzalloc(nor->dev, sizeof(*nor->params[0]), GFP_KERNEL);
-+	if (!nor->params[0])
- 		return -ENOMEM;
- 
- 	spi_nor_init_default_params(nor);
-@@ -2677,19 +2701,51 @@ static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-  */
- static int spi_nor_quad_enable(struct spi_nor *nor)
- {
--	if (!nor->params->quad_enable)
--		return 0;
-+	u8 idx;
-+	int err;
- 
--	if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
--	      spi_nor_get_protocol_width(nor->write_proto) == 4))
--		return 0;
-+	if (nor->flags & SNOR_F_HAS_PARALLEL) {
-+		if (!nor->params[0]->quad_enable)
-+			return 0;
- 
--	return nor->params->quad_enable(nor);
-+		if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-+		    spi_nor_get_protocol_width(nor->write_proto) == 4))
-+			return 0;
-+		/*
-+		 * In parallel mode both chip selects i.e., CS0 &
-+		 * CS1 need to be asserted simulatneously.
-+		 */
-+		 nor->spimem->spi->cs_index_mask = SPI_NOR_ENABLE_BOTH_CS;
-+		err = nor->params[0]->quad_enable(nor);
-+	} else {
-+		for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+			if (nor->params[idx] != NULL) {
-+
-+				if (!nor->params[idx]->quad_enable)
-+					return 0;
-+
-+				if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-+				    spi_nor_get_protocol_width(nor->write_proto) == 4))
-+					return 0;
-+
-+				/*
-+				 * Set the appropriate CS index before
-+				 * issuing the command.
-+				 */
-+				nor->spimem->spi->cs_index_mask = 0x01 << idx;
-+				err = nor->params[idx]->quad_enable(nor);
-+				if (err)
-+					return err;
-+			}
-+		}
-+	}
-+	return err;
- }
- 
- static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
-+	int idx;
- 
- 	err = spi_nor_octal_dtr_enable(nor, true);
- 	if (err) {
-@@ -2730,7 +2786,25 @@ static int spi_nor_init(struct spi_nor *nor)
- 		 */
- 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
- 			  "enabling reset hack; may not recover from unexpected reboots\n");
--		nor->params->set_4byte_addr_mode(nor, true);
-+		if (nor->flags & SNOR_F_HAS_PARALLEL) {
-+			/*
-+			 * In parallel mode both chip selects i.e., CS0 &
-+			 * CS1 need to be asserted simulatneously.
-+			 */
-+			nor->spimem->spi->cs_index_mask = SPI_NOR_ENABLE_BOTH_CS;
-+			nor->params[0]->set_4byte_addr_mode(nor, true);
-+		} else {
-+			for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+				if (nor->params[idx] != NULL) {
-+					/*
-+					 * Select the appropriate CS index before
-+					 * issuing the command.
-+					 */
-+					nor->spimem->spi->cs_index_mask = 0x01 << idx;
-+					nor->params[idx]->set_4byte_addr_mode(nor, true);
-+				}
-+			}
-+		}
- 	}
- 
- 	return 0;
-@@ -2913,6 +2987,8 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- {
- 	struct mtd_info *mtd = &nor->mtd;
- 	struct device *dev = nor->dev;
-+	u64 total_sz =0;
-+	int idx;
- 
- 	spi_nor_set_mtd_locking_ops(nor);
- 	spi_nor_set_mtd_otp_ops(nor);
-@@ -2926,9 +3002,13 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 		mtd->flags |= MTD_NO_ERASE;
- 	else
- 		mtd->_erase = spi_nor_erase;
--	mtd->writesize = nor->params->writesize;
--	mtd->writebufsize = nor->params->page_size;
--	mtd->size = nor->params->size;
-+	mtd->writesize = nor->params[0]->writesize;
-+	mtd->writebufsize = nor->params[0]->page_size;
-+	for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+		if (nor->params[idx] != NULL)
-+			total_sz += nor->params[idx]->size;
-+	}
-+	mtd->size = total_sz;
- 	mtd->_read = spi_nor_read;
- 	/* Might be already set by some SST flashes. */
- 	if (!mtd->_write)
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 3f841ec36e56..4e8bf3cbe331 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -11,6 +11,9 @@
- 
- #define SPI_NOR_MAX_ID_LEN	6
- 
-+/* In parallel configuration enable both CS */
-+#define SPI_NOR_ENABLE_BOTH_CS	(BIT(0) | BIT(1))
-+
- /* Standard SPI NOR flash operations. */
- #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 0),			\
-@@ -130,6 +133,8 @@ enum spi_nor_option_flags {
- 	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
- 	SNOR_F_SOFT_RESET	= BIT(12),
- 	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
-+	SNOR_F_HAS_STACKED	= BIT(14),
-+	SNOR_F_HAS_PARALLEL	= BIT(15),
- };
- 
- struct spi_nor_read_command {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 1ede4c89805a..40800e7235ee 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -128,6 +128,12 @@
- #define SR2_LB3			BIT(5)	/* Security Register Lock Bit 3 */
- #define SR2_QUAD_EN_BIT7	BIT(7)
- 
-+/*
-+ * Maximum number of flashes that can be connected
-+ * in stacked/parallel configuration
-+ */
-+#define	SNOR_FLASH_CNT_MAX	2
-+
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
-@@ -397,7 +403,7 @@ struct spi_nor {
- 
- 	const struct spi_nor_controller_ops *controller_ops;
- 
--	struct spi_nor_flash_parameter *params;
-+	struct spi_nor_flash_parameter *params[SNOR_FLASH_CNT_MAX];
- 
- 	struct {
- 		struct spi_mem_dirmap_desc *rdesc;
--- 
-2.17.1
-
+On Mon, Jun 06, 2022 at 09:29:59AM +0200, Krzysztof Kozlowski wrote:
+> On 05/06/2022 16:54, Krzysztof Kozlowski wrote:
+> > On 03/06/2022 13:22, Marty E. Plummer wrote:
+> >> On Thu, Jun 02, 2022 at 08:37:43AM +0200, Krzysztof Kozlowski wrote:
+> >>> On 01/06/2022 20:24, Marty E. Plummer wrote:
+> >>>
+> >>>>>> Either or. Whatever makes the workload easier is what I'm looking for.
+> >>>>>
+> >>>>> Sorry, you need to be more specific. Apply is not a job for you, for the
+> >>>>> patch submitter.
+> >>>>>
+> >>>>> Then you miss here important piece - which is the first patch. DTS goes
+> >>>>> always via separate branch (or even tree) from driver changes. That's
+> >>>>> why bindings are always separate first patches.
+> >>>>>
+> >>>> So, add a 4: arch/arm/boot/dts/soc.dtsi and 5: arch/arm/boot/dts/board.dts
+> >>>> to the above list, or should those be the same patch as well?
+> >>>
+> >>> For me does not matter, sub architecture maintainer might have preference.
+> >>>
+> >> Fair enough. That being said, for the dt-bindings patch, is it
+> >> permissible to include #define CLOCK_FOO 1337 and so on for clocks which
+> >> haven't been wired up in the driver yet? As in, you know they're there,
+> >> and are important enough to model, but you haven't gotten to that point
+> >> yet?
+> > 
+> > What would be the benefit to include them now? I imagine that if you
+> > plan to add such clocks to the driver in next week or something, and you
+> > need to use them in DTS, then it's fine. If that's not the case,
+> > probably there is little sense in defining them upfront...
+> 
+> Actually I see one more benefit - since IDs should be incremented by
+> one, you can define all of them upfront thus having some
+> logical/alphabetical order/grouping. If you extend the bindings header
+> with new IDs later, they must go to the end of the list, thus maybe
+> ordering will not be that nice.
+> 
+> If you want, go ahead with all IDs. Just remeber that these must be IDs,
+> not register values or some programming offsets.
+> 
+Yeah, this was my intent. There are a number of non-standard,
+proprietary IP blocks on this soc who's 'organized clock number' come
+'in between' the more standard bits, depending on how you decide to
+organize them (based on their parent clocks, based on the order they
+appear in the crg register block, whatever). I *do* intend on hopefully
+putting together drivers for these as well, though that's a long-term
+stretch goal.
+> Best regards,
+> Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
