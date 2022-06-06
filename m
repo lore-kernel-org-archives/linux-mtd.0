@@ -4,71 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E62AC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 11:35:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3E63C43334
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 13:17:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qRPkiANum0PJqJKihXqAy2R2+/8gcEADqb8ZLXiaCl8=; b=OhwK72RpMa5oTT
-	xaMwI4W1tO3Fg+z0ip7Wdw67imPkLjqBox0Q8KEfwDGHu6tx0lQlvThlKmMkyeWJaOc2p+pFjHf2U
-	kkzySS7rh5Diz0XLCidZUe24PhNSqGteFV2BoN+HBWSOB5zjjaxwgiyzrm9TDuyHvZ9QsWdPjVQPI
-	oUWIJBm578FszDcXM0G+Oos/987sFqVR5IMdjNSV0621ghRq57dfvaGAiZns/sWeWp9IErjrdNJ+x
-	31dcyJFeMwJK2wsxaDsiy7uNDcXR9l+gLHoGM8Xo9ceGOHYfl7jBB8f1gAsgxf/PK6TMu4GapQx26
-	TA21nUHAzAdD3Y2yELcw==;
+	List-Owner; bh=LxcKnCpTzXswFrmigzTfMCKxt66Y4W54JLC+MWAsAkc=; b=S/NtJS/OsRf+oQ
+	jlv27Pgoz4wVrWNHW77NHqWrvIWJ0FpyeUjwQ0LzqpwvzSwmsk9uEjzjZvjLszA0F0dClSEUGlTYh
+	Re5xlA3s6SNhf1n05CMi9Sk9JmiBsomkPSpN4xu+ADi3Mdp6UCpwIk+QA8zrnzU8zcsIwBLydv9y/
+	Xk1nZlkCxV9k++ybUQrE2ZriulZBR0P9Rr3h6PggBjfo/pZjT2f8Qzpk0rpknatu9bQ07QgL6aadW
+	KtuHGCoxP1DiNvgDxMiVNxFrM/rU3djYdpPucppaF1GAZKJ5Pi5AYRTc7jEz828RpUvKlSMHYWKc7
+	7e+Mf8ntAmSkixVeujJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyB14-000zBa-39; Mon, 06 Jun 2022 11:35:26 +0000
-Received: from mx-out2.startmail.com ([145.131.90.155])
+	id 1nyCb2-001Jwi-BH; Mon, 06 Jun 2022 13:16:40 +0000
+Received: from relay6-d.mail.gandi.net ([2001:4b98:dc4:8::226])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyB0q-000z7e-3Y; Mon, 06 Jun 2022 11:35:13 +0000
-Date: Mon, 6 Jun 2022 06:34:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
-	s=2020-07; t=1654515303;
-	bh=mpbBAztguTTQhW8kMhRiNpwOFt1Qp+y0cn4YlTLDqU8=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:From:Subject:To:Date:
-	 Sender:Content-Type:Content-Transfer-Encoding:Content-Disposition:
-	 Mime-Version:Reply-To:In-Reply-To:References:Message-Id:Autocrypt;
-	b=QIRX6sLoDs7XzIES1QbkQlBAdvLFB3+wHstX4KHaYKoYZGM7W0jLDNOuiPtKin7eK
-	 XWs9DZQenKc4on+0PYYYNEo61rQtGTgm4zAyTn/cF90hcppkMWPNSz+YLpYf2QP9e6
-	 aVpldliyDEUeeSNx7Khu7Zmu3h7Jzht5DiAEVy3if3t/wfPOON8eiruiU+WzHjkc1y
-	 Wqp2CP4OLCsH8WqdWj65VflnPSLSfREfTCXLbuC2yJYbBdzIj72wE3NkjZs3ufNNtg
-	 zRkUVrec5B9d19oaODMXL94ARZ7107f7ZgUw4gfU/oLJgbF7Ej1oXVdzjyi75zXAn3
-	 l3cu65Qs0MNgA==
-From: "Marty E. Plummer" <hanetzer@startmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: arnd@arndb.de, cai.huoqing@linux.dev, christian.koenig@amd.com,
-	devicetree@vger.kernel.org, gengdongjiu@huawei.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux@armlinux.org.uk, michael@walle.cc, miquel.raynal@bootlin.com,
-	mturquette@baylibre.com, novikov@ispras.ru, olof@lixom.net,
-	p.yadav@ti.com, rdunlap@infradead.org, richard@nod.at,
-	robh+dt@kernel.org, sboyd@kernel.org, soc@kernel.org,
-	sumit.semwal@linaro.org, tudor.ambarus@microchip.com,
-	vigneshr@ti.com, xuwei5@hisilicon.com
-Subject: Re: [RFC v2 1/2] clk: hisilicon: add CRG driver Hi3521a SoC
-Message-ID: <20220606113455.7dv6bnk25ki6tau7@proprietary-killer>
-References: <f42cb4d0-7133-eea5-b456-b5169bebfad1@linaro.org>
- <20220601105846.7hriawg3stxb657f@proprietary-killer>
- <630b0d13-6778-2508-6a34-9daa0358047d@linaro.org>
- <20220601110616.xmxih663kxgupszv@proprietary-killer>
- <a2a98c6d-2ff7-89f6-0711-c8f8b99e85c2@linaro.org>
- <20220601182418.okoofgannw6vbcxo@proprietary-killer>
- <b1b87be5-a048-b713-c9f2-84b948aa6718@linaro.org>
- <20220603112227.hmzwy7xxl6ddezqh@proprietary-killer>
- <34e6715e-795c-3d64-1341-31da9bd27563@linaro.org>
- <8e81de5f-dfb7-e34f-ff5f-44b52421fa24@linaro.org>
+	id 1nyCaq-001JtA-RP; Mon, 06 Jun 2022 13:16:30 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 7186BC0003;
+	Mon,  6 Jun 2022 13:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1654521383;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dQDCUWiaArUFsK25Jve/jpN86Aw1Yf44ItEzqpSXpVs=;
+	b=ioQTT1/+srI3Q+x8OAhYuiB9c098Zk08LyTJIlo7mME7F78c+Yvf3OuYhsfvDwgQdm8Jzg
+	bwObpKik8g+LxLBua0SYuUmAmnUWxa+MBVXcTGsStITfE86XGlorfdha3Lk2RnOwLryRkD
+	o6fG236aW7lXu+NEi9T7EMNUZsm5ShOcqfYVPwVMIriZ+AtxuGqz/9ecJg04IvWYGi/6F5
+	95jS9ySNw2h/Babg7LQlic9Gdqm6+D/JxWHGKMddSg+PbnCUzYe3RcQwwfKvExMrGOhjFo
+	SrW0aX6IRADS+VVxLXviLh09j9M2B/5eg4FaGCjMc3aPHaKiDBI0vjlLo14PSQ==
+Date: Mon, 6 Jun 2022 15:16:20 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Claudiu Beznea
+ <claudiu.beznea@microchip.com>, kernel@pengutronix.de,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 08/14] mtd: rawnand: atmel: Warn about failure to
+ unregister mtd device
+Message-ID: <20220606151620.0282cece@xps-13>
+In-Reply-To: <20220603210758.148493-9-u.kleine-koenig@pengutronix.de>
+References: <20220603210758.148493-1-u.kleine-koenig@pengutronix.de>
+	<20220603210758.148493-9-u.kleine-koenig@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8e81de5f-dfb7-e34f-ff5f-44b52421fa24@linaro.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220606_043512_499729_9C550AE9 
-X-CRM114-Status: GOOD (  26.40  )
+X-CRM114-CacheID: sfid-20220606_061629_222090_4F6D5886 
+X-CRM114-Status: GOOD (  18.49  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,61 +71,45 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 06, 2022 at 09:29:59AM +0200, Krzysztof Kozlowski wrote:
-> On 05/06/2022 16:54, Krzysztof Kozlowski wrote:
-> > On 03/06/2022 13:22, Marty E. Plummer wrote:
-> >> On Thu, Jun 02, 2022 at 08:37:43AM +0200, Krzysztof Kozlowski wrote:
-> >>> On 01/06/2022 20:24, Marty E. Plummer wrote:
-> >>>
-> >>>>>> Either or. Whatever makes the workload easier is what I'm looking for.
-> >>>>>
-> >>>>> Sorry, you need to be more specific. Apply is not a job for you, for the
-> >>>>> patch submitter.
-> >>>>>
-> >>>>> Then you miss here important piece - which is the first patch. DTS goes
-> >>>>> always via separate branch (or even tree) from driver changes. That's
-> >>>>> why bindings are always separate first patches.
-> >>>>>
-> >>>> So, add a 4: arch/arm/boot/dts/soc.dtsi and 5: arch/arm/boot/dts/board.dts
-> >>>> to the above list, or should those be the same patch as well?
-> >>>
-> >>> For me does not matter, sub architecture maintainer might have preference.
-> >>>
-> >> Fair enough. That being said, for the dt-bindings patch, is it
-> >> permissible to include #define CLOCK_FOO 1337 and so on for clocks which
-> >> haven't been wired up in the driver yet? As in, you know they're there,
-> >> and are important enough to model, but you haven't gotten to that point
-> >> yet?
-> > 
-> > What would be the benefit to include them now? I imagine that if you
-> > plan to add such clocks to the driver in next week or something, and you
-> > need to use them in DTS, then it's fine. If that's not the case,
-> > probably there is little sense in defining them upfront...
-> 
-> Actually I see one more benefit - since IDs should be incremented by
-> one, you can define all of them upfront thus having some
-> logical/alphabetical order/grouping. If you extend the bindings header
-> with new IDs later, they must go to the end of the list, thus maybe
-> ordering will not be that nice.
-> 
-> If you want, go ahead with all IDs. Just remeber that these must be IDs,
-> not register values or some programming offsets.
-> 
-Yeah, this was my intent. There are a number of non-standard,
-proprietary IP blocks on this soc who's 'organized clock number' come
-'in between' the more standard bits, depending on how you decide to
-organize them (based on their parent clocks, based on the order they
-appear in the crg register block, whatever). I *do* intend on hopefully
-putting together drivers for these as well, though that's a long-term
-stretch goal.
-> Best regards,
-> Krzysztof
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgVXdlLAoKdS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRlIHdyb3RlIG9uIEZyaSwgIDMg
+SnVuIDIwMjIgMjM6MDc6NTIgKzAyMDA6Cgo+IFRoZSBMaW51eCBkZXZpY2UgY29yZSBkb2Vzbid0
+IGludGVuZCByZW1vdmUgY2FsbGJhY2tzIHRvIGZhaWwuIElmIGFuCj4gZXJyb3IgY29kZSBpcyBy
+ZXR1cm5lZCB0aGUgZGV2aWNlIGlzIHJlbW92ZWQgYW55aG93LiBTbyB3YWlsIGxvdWRseSBpZgo+
+IHRoZSBhdG1lbCBzcGVjaWZpYyByZW1vdmUgY2FsbGJhY2sgZmFpbHMgYW5kIHJldHVybiAwIGFu
+eWhvdyB0byBzdXBwcmVzcwo+IHRoZSBnZW5lcmljIChhbmQgbGl0dGxlIGhlbHBmdWwpIGVycm9y
+IG1lc3NhZ2UgYnkgdGhlIGRldmljZSBjb3JlLgo+IAo+IEFsc28gY2hlY2sgdGhlIHJlbW92ZSBj
+YWxsYmFjayB0byBhY3R1YWxseSBleGlzdCBiZWZvcmUgY2FsbGluZyBpdC4gVGhhdAo+IG1pZ2h0
+IGhhcHBlbiBpZiBuYy0+Y2Fwcy0+b3BzIHBvaW50cyB0byBhdG1lbF9uYW5kX2NvbnRyb2xsZXJf
+b3BzLgoKSSBiZWxpZXZlIHlvdSBnb3QgbWlzbGVhZCBieSBncmVwcGluZyB0aGUgY29kZSBiZWNh
+dXNlIHRoZXJlIGlzOgoKKiBzdHJ1Y3QgbmFuZF9jb250cm9sbGVyX29wcyBhdG1lbF9uYW5kX2Nv
+bnRyb2xsZXJfb3BzCiAgLT4gdGhpcyBpcyBhIE5BTkQtd2lkZSBjb250cm9sbGVyIG9wcyBzdHJ1
+Y3R1cmUKCiogc3RydWN0IGF0bWVsX25hbmRfY29udHJvbGxlcl9vcHMgYXRtZWxfPHNtdGc+X25j
+X29wcwogIC0+IHRoaXMgaXMgYSBkcml2ZXIgc3BlY2lmaWMgc3RydWN0dXJlIHRvIHByb3ZpZGUg
+ZGlmZmVyZW50CiAgICAgcmVnaXN0cmF0aW9uIGhlbHBlcnMuCgpUaGUgbGF0dGVyIGFsd2F5cyBw
+cm92aWRlIGEgcHJvYmUgYW5kIGEgcmVtb3ZlIGltcGxlbWVudGF0aW9uLCBzbyBJCmJlbGlldmUg
+dGhlIGFkZGl0aW9uIGlmIHRoZSAiaWYgKG5jLT5jYXBzLT5vcHMtPnJlbW92ZSkiIGNoZWNrIGlz
+IG5vdApyZWxldmFudCwgdW5sZXNzIEkgbWlzc2VkIHNvbWV0aGluZy4KCj4gVGhpcyBpcyBhIHBy
+ZXBhcmF0aW9uIGZvciBtYWtpbmcgcGxhdGZvcm0gcmVtb3ZlIGNhbGxiYWNrcyByZXR1cm4gdm9p
+ZC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmln
+QHBlbmd1dHJvbml4LmRlPgo+IC0tLQo+ICBkcml2ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9uYW5k
+LWNvbnRyb2xsZXIuYyB8IDUgKysrKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9h
+dG1lbC9uYW5kLWNvbnRyb2xsZXIuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2F0bWVsL25hbmQt
+Y29udHJvbGxlci5jCj4gaW5kZXggNmVmMTQ0NDJjNzFhLi5iYzZlZTY5NGY0ZTIgMTAwNjQ0Cj4g
+LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvYXRtZWwvbmFuZC1jb250cm9sbGVyLmMKPiArKysg
+Yi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9hdG1lbC9uYW5kLWNvbnRyb2xsZXIuYwo+IEBAIC0yNjI5
+LDcgKzI2MjksMTAgQEAgc3RhdGljIGludCBhdG1lbF9uYW5kX2NvbnRyb2xsZXJfcmVtb3ZlKHN0
+cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gIHsKPiAgCXN0cnVjdCBhdG1lbF9uYW5kX2Nv
+bnRyb2xsZXIgKm5jID0gcGxhdGZvcm1fZ2V0X2RydmRhdGEocGRldik7Cj4gIAo+IC0JcmV0dXJu
+IG5jLT5jYXBzLT5vcHMtPnJlbW92ZShuYyk7Cj4gKwlpZiAobmMtPmNhcHMtPm9wcy0+cmVtb3Zl
+KQo+ICsJCVdBUk5fT04obmMtPmNhcHMtPm9wcy0+cmVtb3ZlKG5jKSk7Cj4gKwo+ICsJcmV0dXJu
+IDA7Cj4gIH0KPiAgCj4gIHN0YXRpYyBfX21heWJlX3VudXNlZCBpbnQgYXRtZWxfbmFuZF9jb250
+cm9sbGVyX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYpCgoKVGhhbmtzLApNaXF1w6hsCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgg
+TVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
