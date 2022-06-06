@@ -4,65 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EB96C43334
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 19:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5293AC43334
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 19:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SWCn7XFoPUUQZe65Uh9esR0qmUYJrIO5o26fNdh+r9A=; b=C33XqW1LNYjpl2daZuAeMCBO1h
-	n/0sbuaR2GyODJARHjnVR/wxw/LDna5EZUzQUhAtiooaGYi1cU7Ep6XKepIBCwRbgguxANY/N9Q5y
-	QoMpEDiToudqVquh7CZDusRMrYUnK8p2l8LcwJhO93jtfqY7nYjOCEry71lO87N47yB08gR2ZoYH6
-	xd6TroFcfxXNnxPmw6qGSHhRtz5PmvJrknltcqET09kuI/mHJl72gZmCpzHPrACGHcQtGHil1WKf5
-	M2OOGoht3h8cf5WMTtmmKhRsjQ5/0JP+BKIdpKqCekDJ/rC9//gRu+m+JJPX8ZFXNB+/n1Voz3trZ
-	/DE+bEug==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=e+Z3LG7SNODRMQTs/YPRgyZu0WEHJZC8EhImqM/8iLo=; b=BuTNyVhfXBSDMC
+	32qa/FXGJs03ntYGXM5/Xgo6zgveXghJgwUgXZZH3buYiLux7dKOjoPYkw4nttoc7bNbCIoWU82uo
+	AS+k1dGqO2zL7RUn0W/BMXrhwSdYkGvIkvHnqRy7EbvSrDwca0dXv36f5Pb7qjOJTBQljpGpyK3Xm
+	4cpRWYsEdZwULNr6f40Dug/2KxvbWiW7IWoo8UtAt9HGOSR4EDeUtVPKhJlB6/qPbwv1YZhrKvKFb
+	fItBKIOyb3ZaXmD5Jo9Fo+3F+FRMcjOlZWDPnFz1w/Rafua8jTW07RptnCdEj9Z84ehV4ycWLzUAG
+	0C86J/2HjU/q7PDC0ZlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyIY7-002Uar-Q0; Mon, 06 Jun 2022 19:38:03 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1nyIYI-002Udi-RL; Mon, 06 Jun 2022 19:38:14 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyIY4-002UZI-SC
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2022 19:38:03 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1nyIXY-0000GP-Sn; Mon, 06 Jun 2022 21:37:28 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1nyIXY-006r97-Jv; Mon, 06 Jun 2022 21:37:27 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1nyIXW-00EcdK-J8; Mon, 06 Jun 2022 21:37:26 +0200
-Date: Mon, 6 Jun 2022 21:37:21 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Richard Weinberger <richard@nod.at>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	linux-mtd@lists.infradead.org, kernel@pengutronix.de,
-	Claudiu Beznea <claudiu.beznea@microchip.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 08/14] mtd: rawnand: atmel: Warn about failure to
- unregister mtd device
-Message-ID: <20220606193721.w2cjrnhtsvrkvumf@pengutronix.de>
-References: <20220603210758.148493-1-u.kleine-koenig@pengutronix.de>
- <20220603210758.148493-9-u.kleine-koenig@pengutronix.de>
- <20220606151620.0282cece@xps-13>
+	id 1nyIYG-002Uc4-Lv
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2022 19:38:14 +0000
+Received: by mail-ej1-x629.google.com with SMTP id gl15so17061854ejb.4
+        for <linux-mtd@lists.infradead.org>; Mon, 06 Jun 2022 12:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=wewyUGB+MJ5gdkpntOxz6kYdJxFvnOUj7HOagZs9XQM=;
+        b=elE/+CPaZABsWl1U3cjNPi+bQkhyTqILk+3H/um8P9I0w/jjn5w4MtSauBtYWI2Dyl
+         LciKnQjyd58tprO5GkjCzcxrazetIztdDrJ9UzZLRjgcyfL2hvKlDgJWy3SkU0KBpXcE
+         JzezjzVjbnZLHITYmtVJpJC88iuPm1/WQTxhHKEZGWQH4lmB59dBEuszhijdIoqMrMuC
+         vXfSsdnLALSvgjqiZsaL2HQfKaWqY/zM4q4fDFFiTpv6RoNbHGLA9xtWPmWiN+QJQE45
+         aWxoeDC6EH0Qt8INsBxHvfVVGz4uylPfsJdFBfIBiYB/GjwAgQaGYjOVlO54unzIHkkw
+         ZvIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wewyUGB+MJ5gdkpntOxz6kYdJxFvnOUj7HOagZs9XQM=;
+        b=YoS4URIePd4Pnp3m5hLWZSxKXFL4B2H4+/xkizvX3/heKexbCASnM4pcDfMW92YiyE
+         YmknKrxPem6NsGeWQLH3/4Q0LIoovmJU8x9O5IoQWxMs+uIqUUHsOqRv380BqMt6lRSA
+         qESV7vlnIJGOdj7Tyr5u3uf7zuhWDoqFsdK/U/i7c+ydVTo3br6pRwipECk1rhgrUDmn
+         98Jlrdb2njZwkrAv7sI6drkRBf7ilHXPNmjqdoLfGiQAnnC0EjiMAMR/0LytSWoN51Sd
+         UcBGcmD6EuKVHyTS8ftLe/2h4Q+RrRG2PjsRG9UfJaK4+B+XMwK4/l1tquoMtMrnAkYU
+         wl3Q==
+X-Gm-Message-State: AOAM531FSMOeGf0CRdPkoyGEhyL/vrF8F2yAF8SEdwgbOJ8svN++IJZ3
+	qK9KJYRy0+5oQTpjnbfArPMbX/yK5Ws=
+X-Google-Smtp-Source: ABdhPJy/giT/dLTQIdQ/VQ6siJQXwh/tJgFH4YQ4wgrkwwVo69GW97hSRAgOAB8p+yTnUbHodchecw==
+X-Received: by 2002:a17:907:9712:b0:6ff:c09:33a2 with SMTP id jg18-20020a170907971200b006ff0c0933a2mr22137298ejc.50.1654544277879;
+        Mon, 06 Jun 2022 12:37:57 -0700 (PDT)
+Received: from debian64.daheim (p5b0d7c1c.dip0.t-ipconnect.de. [91.13.124.28])
+        by smtp.gmail.com with ESMTPSA id n24-20020aa7c698000000b0042bb229e81esm9032106edq.15.2022.06.06.12.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jun 2022 12:37:57 -0700 (PDT)
+Received: from localhost.daheim ([127.0.0.1])
+	by debian64.daheim with esmtp (Exim 4.95)
+	(envelope-from <chunkeey@gmail.com>)
+	id 1nyGfi-00099V-Co;
+	Mon, 06 Jun 2022 21:37:57 +0200
+Message-ID: <588e42b7-b28b-15c3-4f24-297c27fb4676@gmail.com>
+Date: Mon, 6 Jun 2022 21:37:57 +0200
 MIME-Version: 1.0
-In-Reply-To: <20220606151620.0282cece@xps-13>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] mtd: rawnand: add support for Toshiba TC58NVG0S3HTA00
+ NAND flash
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, =?UTF-8?Q?Andreas_B=c3=b6hler?=
+ <dev@aboehler.at>
+References: <20220420104034.6333-1-dev@aboehler.at>
+ <bdd78c78-be40-1c31-f46e-41ed2a0cbd04@isd.uni-stuttgart.de>
+ <20220606155919.23001410@xps-13>
+From: Christian Lamparter <chunkeey@gmail.com>
+In-Reply-To: <20220606155919.23001410@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220606_123800_972583_3F174A90 
-X-CRM114-Status: GOOD (  19.01  )
+X-CRM114-CacheID: sfid-20220606_123812_764861_A1614DCD 
+X-CRM114-Status: GOOD (  25.82  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,87 +94,59 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7625753921933757035=="
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-
---===============7625753921933757035==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="dzjn72tjyjvsaphg"
-Content-Disposition: inline
-
-
---dzjn72tjyjvsaphg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jun 06, 2022 at 03:16:20PM +0200, Miquel Raynal wrote:
-> Hi Uwe,
->=20
-> u.kleine-koenig@pengutronix.de wrote on Fri,  3 Jun 2022 23:07:52 +0200:
->=20
-> > The Linux device core doesn't intend remove callbacks to fail. If an
-> > error code is returned the device is removed anyhow. So wail loudly if
-> > the atmel specific remove callback fails and return 0 anyhow to suppress
-> > the generic (and little helpful) error message by the device core.
-> >=20
-> > Also check the remove callback to actually exist before calling it. That
-> > might happen if nc->caps->ops points to atmel_nand_controller_ops.
->=20
-> I believe you got mislead by grepping the code because there is:
->=20
-> * struct nand_controller_ops atmel_nand_controller_ops
->   -> this is a NAND-wide controller ops structure
->=20
-> * struct atmel_nand_controller_ops atmel_<smtg>_nc_ops
->   -> this is a driver specific structure to provide different
->      registration helpers.
->=20
-> The latter always provide a probe and a remove implementation, so I
-> believe the addition if the "if (nc->caps->ops->remove)" check is not
-> relevant, unless I missed something.
-
-You're right. I assume it's easiest for you if I send a v2 with all 14
-patches? If you consider this a waste of bytes, please advise. The
-patches are independant, so it would work if you pick up 1-7 + 9-14,
-too. Then I'd resend a fixed patch 8 individually.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---dzjn72tjyjvsaphg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmKeV24ACgkQwfwUeK3K
-7Al1uwf+JpZAxh2cevd0cAXaHZx7IynU8NioTc11Z8MY1CL2KFC7A5IfFj/ccqLu
-yMbgkbu4Gi6tzL8BXx06UFMrJdVZ9NBDpPsl9IWaGYNGDbvC1hcRv/aD2LceyD//
-XNCIi1gVj//iZbtz/n9dBUJA6hMmIM8fF7z3+8jKYF3D96x33QZGjcyu5pTGJLv0
-jbNG8EKfsV28b1q8CgUFgqImRmx+vV9SD8sNK7wgvHMzPEG7GQoZGLkr+6pn7Tms
-qswQXuZUMT52iZq9zW0pF2ceylK73sVohpgOH5Y0btmrhuV3BheJSbaTCSsKQk32
-oFAspmgcfT/7Lc328Jj6up6DzRBpug==
-=SsBW
------END PGP SIGNATURE-----
-
---dzjn72tjyjvsaphg--
-
-
---===============7625753921933757035==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============7625753921933757035==--
-
+SGkgTWlxdcOobCwKCk9uIDA2LzA2LzIwMjIgMTU6NTksIE1pcXVlbCBSYXluYWwgd3JvdGU6Cj4g
+Y2hyaXN0aWFuLmxhbXBhcnRlckBpc2QudW5pLXN0dXR0Z2FydC5kZSB3cm90ZSBvbiBTdW4sIDUg
+SnVuIDIwMjIKPj4gV2hhdCB0byBkbyBpbiB0aGlzIHNpdHVhdGlvbj8gQmVjYXVzZSB0aGUgcGF0
+Y2ggYXMgaXMgaXMgY2F1c2luZyBib290IGZhaWx1cmVzCj4+IGZvciBkZXZpY2VzIHdpdGggb3Ro
+ZXIgS2lveGlhL1Rvc2hpYmEgY2hpcHMuIFRoaXMgaXMgYmVjYXVzZSB0aGV5IGFsc28KPj4gbWF0
+Y2ggdGhlIGZpcnN0IGZvdXIgYnl0ZXMgYnV0IGhhdmUgZGlmZmVyZW50IE9PQiBzaXplcyAoNjQs
+IGluc3RlYWQgb2YgMTI4KS4KPj4KPj4gQW5kcmVhcyBoYXMgcHJvcG9zZWQgdGhlIGZvbGxvd2lu
+ZzogdXBkYXRlIHRoZSBpZF9sZW4gdG8gOCwgdGhpcyB3aWxsIGhlbHAKPj4gZml4IHRoZSBib290
+IGZhaWx1cmVzIHdpdGggb3RoZXIgY2hpcHMgbGlrZSB0aGUgVEM1OEJWRzBTM0hUQTAwLCBzaW5j
+ZSBpdAo+PiBoYXMgZGlmZmVyZW50IHZhbHVlcyBmb3IgdGhlIGNoaXAtaWQgYWZ0ZXIgdGhlIDR0
+aCBieXRlLnwKPj4gfAo+Pgo+PiB8eyJUQzU4TlZHMFMzSFRBMDAgMUcgMy4zViA4LWJpdCIsIHsg
+LmlkID0gezB4OTgsIDB4ZjEsIDB4ODAsIDB4MTV9IH0sIFNaXzJLLCBTWl8xMjgsIFNaXzEyOEss
+IDAsIDgsIDEyOCwgTkFORF9FQ0NfSU5GTyg4LCBTWl81MTIpLCB9LHwKPj4KPj4gfHxSZXZlcnRp
+bmcgd291bGQgYmUgYW4gb3B0aW9uLCBidXQgaWYgdGhpcyBpcyBhIGNvdW50ZXJmZWl0IHNpdHVh
+dGlvbiB0aGVuCj4+IHNpbWlsYXIgImNoaXBzIiBjb3VsZCBlbmQgdXAgaW4gb3RoZXIgZGV2aWNl
+cyBhbmQgd2UgYXJlIGp1c3QgdW5sdWNreQo+PiBvbmVzIHRoYXQgYXJlIHRoZSBmaXJzdCB0byBy
+ZXBvcnQgaXQgOi0oIC4KPiAKPiBEbyB5b3UgaGF2ZSBhIHdheSB0byBwcm9iZSB0aGUgYW1vdW50
+IG9mIGFmZmVjdGVkIGRldmljZXMgYW1vbmcgdGhlCj4gY29tbXVuaXR5IG9yIHBlcmhhcHMgYnkg
+dGFsa2luZyB0byB0aGUgdmVuZG9yPwoKU28gZmFyIG5vLiBJIGp1c3QgaGVhcmQgYWJvdXQgdGhl
+IChuZXc/KSBBVk0gRnJpdHpCb3ggNzUzMCByZXZpc2lvbnMuIFRoZXNlCndlcmUgcHJvYmFibHkg
+Y3JlYXRlZCBiZWNhdXNlIG9mIHNob3J0YWdlcy9wcmljZSBoaWtlcz8gRnJvbSB3aGF0IEkgY2Fu
+CnRlbGwgKGJlaW5nIHNvbWV3aGF0IGJpYXNlZCB0aGVyZSkgdGhlIEZyaXR6IUJveCA3NTMwIGFu
+ZCB0aGVpciB2YXJpYW50cwoodGhlcmUgYXJlIGN1dC1kb3duIDc1MjAgYW5kIDc1MTAgbW9kZWxz
+KSBhcyB3ZWxsIGFzIHJlYnJhbmRlZCBtb2RlbHMKZnJvbSB2YXJpb3VzIElTUHMgaW4gR2VybWFu
+eS4KCk9uZSB0aGluZyBJIHdhbnQgdG8gcG9pbnQgb3V0IGlzIHRoYXQgQW5kcmVhcyBtZW50aW9u
+ZWQgaW4gdGhlIGdpdGh1YiBpc3N1ZToKIkkgYWxzbyBmb3VuZCBvdXQgdGhhdCBBVk0gbWF0Y2hl
+cyBqdXN0IHRoZSBmb3VyLWJ5dGUgSUQgaW4gaXRzIEdQTCBzb3VyY2UgY29kZS4iCgpObyBpZGVh
+IHdoYXQgdG8gdGhpbmsgYWJvdXQgdGhpcz8gQ291bGQgQVZNIGtub3cgYWJvdXQgdGhpcwp0byBz
+b21lIGRlZ3JlZT8KCklzIHRoZXJlIGEgd2F5IHRvIGNvbnRhY3QgVG9zaGliYS9LaW94aWE/IFRo
+ZSBlLW1haWwgYWRkcmVzcyBJIGZvdW5kIGluCmEgcHJldmlvdXMgcGF0Y2ggc2VlbXMgdG8gYmUg
+ZGVhZCA6KC4gQW55b25lPwoKKEtpb3hpYSBzZWVtcyB0byBoYXZlIGEgQjJCIHdlYnNpdGUgYWJv
+dXQgdGhpcyB0b3BpYzoKaHR0cHM6Ly9wZXJzb25hbC5raW94aWEuY29tL2VuLWVtZWEvc3VwcG9y
+dC9wYXJhbGxlbC1pbXBvcnQuaHRtbAoKVGhvdWdoLCBJIGRvbid0IHRoaW5rIHRoaXMgaXMgZ2Vh
+cmVkIHRvd2FyZHMgdXMsIHRoZSBlbmQtdXNlcnMuLi4pCgo+IFJldmVydGluZyBzZWVtcyB0aGUg
+c2FmZXN0IG9wdGlvbiBoZXJlLCBub3Qga25vd2luZyBob3cgbWFueSBkZXZpY2VzCj4gaGF2ZSB0
+aGVzZSBkYW1hZ2VkL2NvdW50ZXJmZWl0IGNoaXBzLiBJZiBpdCBpcyBqdXN0IGEgY291cGxlIGFu
+ZCBvbmx5IG9uCj4gRnJpdHpib3hlcywgYXMgc3VnZ2VzdGVkIGluIHRoZSBHaXRodWIgaXNzdWUg
+dGhpcyBwYXRjaCBjb3VsZCBiZQo+IGNhcnJpZWQgdGhyb3VnaCBPcGVuV1JUIGFuZCB0aGF0IHdv
+dWxkIHNlZW0gbW9yZSBmdXR1cmUgcHJvb2YgSU1ITy4KCk9rLCBJJ2xsIG1vdmUgQW5kcmVhcyBt
+b2RpZmllZCBwYXRjaCBhcm91bmQgYW5kIGFkZCBpdCB0byB0aGUKaXBxNDB4eCcgZGV2aWNlLXN1
+cHBvcnQgcGF0Y2ggaGVhcC4KCj4gVGhlIHNlY29uZCBzb2x1dGlvbiAoZW5sYXJnaW5nIHRoZSBJ
+RCBsZW5ndGgpIG1pZ2h0IHdvcmssIGJ1dCBmZWVscwo+IGRpcnR5LCB0aGF0J3Mgd2h5IEkgd291
+bGQgZ28gZm9yIHJldmVydGluZyB0aGlzIGltbWVkaWF0ZWx5IChJIHdpbGwKPiBzZW5kIGl0IHRo
+cm91Z2ggZml4ZXMpLCBzbyB0aGF0IHRoZSBzdXBwb3J0IGZvciB0aGlzIGNoaXAgbWlnaHQganVz
+dAo+IGRpc2FwcGVhciAic2lsZW50bHkiLiBUaGVuIHdlIGhhdmUgYW5vdGhlciByZWxlYXNlIHRv
+IGRlY2lkZSB3aGV0aGVyCj4gaXQgaXMgYXBwcm9wcmlhdGUgdG8gdXNlIHRoZSA4LWJ5dGUgSUQg
+aGFjayBpbiB0aGUgbWFpbmxpbmUga2VybmVsLgo+IAo+IENhbiB5b3UgcGxlYXNlIHNlbmQgYSBw
+YXRjaD8KClllcywgc2hvdWxkIGJlIGluIHlvdXIgaW5ib3guCgpSZWdhcmRzLApDaHJpc3RpYW4K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
