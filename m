@@ -4,71 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5292AC43334
-	for <linux-mtd@archiver.kernel.org>; Sun,  5 Jun 2022 23:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7706BC43334
+	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 04:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RpVTuH1XhRRB9bHz/VR3mlaIDqRKVPdHCZmEi1TFFdg=; b=1g+CtmPQh2Relt
-	GuIK37OtwGc3e8NCTfeEXdnFA2JdGIoQURdX17FZ3dNcN9RZCH+pFk0arvUWlcKj7+7JI9lWnm5mu
-	CroJvj1mSYiYPCjE1mrAnPKxyW1itEwOyD6E+XR30Co8XKIrXJpVH9B9Ow0ppM6Y9iyDmG3o8tsEm
-	WHzphl/8LF/zrpqqrT5xgIdVIujI8IvCHbFQnQybeu4k7IFOnzck38lhOYOFPQ8ir9+t7SLyBXChC
-	dOp6PTMJXKq5XQBdXUC4+9fsjzYusTpO9j+zSpKRAjCpoTdeqAYkOJaVE2q7BCANXL1Tzp+zlUKop
-	Bsvh9dt5ufkl5+mbio2w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=QIMvQqt2gdnAzXoY6eUDeiA3QVR30uerWC0zlIoD6Dc=; b=GTVNPBS3MZF3dR
+	XqIuo49YeYGn4JwxW9IroI3pqvWgon+fl7mKP8WWdchFvAvJYfFAtJlTZuNSP/hXQDuo97mS8r9V4
+	ebvu3kPtXoGhNMcc/2ZV2f4EVYk407PXhttKhJuXbRET2TOlj//ITNUxv6CW10KwsfQfEnHJThU4Q
+	hlR2VtpQlmyb0kI3m3VXWH0RmC0hdS28ZOwEQBf/hyWSzWpZRzXccNVGp405EKlfojlLTXX20acVd
+	DjS8J5/eDzBr1cZ7yhyBkuvY8sPzc1tpEi4jbnpxkCQJZnf3gHYG/9Uzs4LmaWMo2Ib62/aSOGbVV
+	71zoEtJRUFcqQp+sV18A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxzxw-00Fga9-Vg; Sun, 05 Jun 2022 23:47:29 +0000
-Received: from mga03.intel.com ([134.134.136.65])
+	id 1ny3uG-00Ge6c-2K; Mon, 06 Jun 2022 03:59:56 +0000
+Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxzxt-00FgZf-Ke
-	for linux-mtd@lists.infradead.org; Sun, 05 Jun 2022 23:47:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654472845; x=1686008845;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n/CPBD9mjhSpvD3GBbfLc0rRsVqgVN0gzOX/Kll/qEY=;
-  b=m4KHsr1KY52qilqrWH7QkAvQh+d+ooUc5iK+Z0ZshnQncv7+H1W2cLYb
-   EfWewPwT5D5FcmHHrPQJssqGHdOP/wFEfDEGuvHd8Dua0ES/wMLVufegU
-   4Qcj7k61W0sXAfJp4YgxLaI24iITzITsxDEUINnfRGhCLMRke9RjGO92S
-   lQtp52CeXYwVjBWxSo396fPkh5PgUY6EljLA1aJF9vywe4WM11W4VRiPy
-   N36YYnl1HUKN/RNrIo9DFKHHGHc0EArz5xStJCDQkkIQ+nFH1gZEY/Bld
-   uxvrX6LXpKW7tiRIMz1iQocvT2+B4vbPdqahnWNAHFJ/Uz5gfvxJl/zrw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10369"; a="276704266"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; 
-   d="scan'208";a="276704266"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2022 16:46:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; 
-   d="scan'208";a="708839521"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 05 Jun 2022 16:46:01 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-	(envelope-from <lkp@intel.com>)
-	id 1nxzwW-000CKp-IR;
-	Sun, 05 Jun 2022 23:46:00 +0000
-Date: Mon, 6 Jun 2022 07:45:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, kbuild-all@lists.01.org,
-	quic_srichara@quicinc.com, quic_mdalam@quicinc.com
-Subject: Re: [PATCH] mtd: rawnand: qcom: Implement exec_op()
-Message-ID: <202206060716.xdJ89V2D-lkp@intel.com>
-References: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
+	id 1ny3u9-00Ge5m-VC
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2022 03:59:54 +0000
+Received: by mail-pj1-x102b.google.com with SMTP id 3-20020a17090a174300b001e426a02ac5so13647848pjm.2
+        for <linux-mtd@lists.infradead.org>; Sun, 05 Jun 2022 20:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=F3dlgaXmkDpDEty0Y4DNCWJHlmIObEDWkeyV88bJ1Pg=;
+        b=BJBW1yOCWpOULW0xyTrerbG4y7zPYfn1I61YNgD7Y70F8Q1r8/DhnX8ELeAIikMmoJ
+         1H06V89YylT/lmz+v7kGZMokx4yYvi7KuCd1pDt5Y40Noi2+c7TUw3BkWmdFzXUQG51A
+         QN4+Vd8DTPCp8UYaqAUVXnQHlgojK8SufP8tdKga6bUuZKJGQg1ylbJIdt+LAvTSx3GR
+         ByuG3q2sjMJLEkYCtghZO2ndpj8NR7n/fR64SQA+FUbygh4oHy4nFvHjeeYYEa68cYJj
+         t5Dxl0vt7EJ01dSGs75qVqBGbcyiz6DOX+DKxCX5fiyQTQ6v9OphrCyKgwD/kiSFJCRU
+         ytJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=F3dlgaXmkDpDEty0Y4DNCWJHlmIObEDWkeyV88bJ1Pg=;
+        b=QJIV99d53ZeYpYrSrZWR5vnt358mL5WlFG0nBrSfMotgErpnBnBU/jJyz9OjAh3fTD
+         R6rjwMnYu7IxU8E1C1DItjr5rvg+75BRm+3yAAJJwgXAny1EvGo8GwBLPdyaqysY3I6h
+         T5Q4ZBUA8E1Um8Cjepe70hlqjhLET/uv6c0MfhaH3rx4mSjO8LW27soQIpdDKEavyETI
+         Vxp1xAwb2PsrigmIoOD6SJbBgzjaxxgBkm6orcOnYHc8KzhMDicViRJMJXy9qNIH5h5A
+         uZ3fY38GPrDIYkGboDTQ5mmWNoBytdEHy6W608/l1dLqlJAxmMvNxGLqVYuDRkx/rNAs
+         9YWw==
+X-Gm-Message-State: AOAM530Q7+tlg4qim4tmc1WgBLd3nNiaL+FnTD1R+ieXHBM86VMLEmoD
+	j2DpD1oNWvgCEZmy/gliePcAO332z6w=
+X-Google-Smtp-Source: ABdhPJz018j7KIAM1lyTIrFxMTwuSnzEkr87RwbyQbdQnw5vzBA49wIGQTCLtHW+Xps8wJVjcivrFQ==
+X-Received: by 2002:a17:90a:9914:b0:1db:d10f:1fcf with SMTP id b20-20020a17090a991400b001dbd10f1fcfmr59116261pjp.241.1654487984072;
+        Sun, 05 Jun 2022 20:59:44 -0700 (PDT)
+Received: from localhost (subs03-180-214-233-92.three.co.id. [180.214.233.92])
+        by smtp.gmail.com with ESMTPSA id bi16-20020a056a00311000b0050dc762815asm2798215pfb.52.2022.06.05.20.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Jun 2022 20:59:43 -0700 (PDT)
+Date: Mon, 6 Jun 2022 10:59:40 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	David Howells <dhowells@redhat.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Baokun Li <libaokun1@huawei.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Kyeong Yoo <kyeong.yoo@alliedtelesis.co.nz>,
+	hongnanli <hongnan.li@linux.alibaba.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: partly outside array bounds warning on fs/jffs2/summary.c, GCC 12.1.0
+Message-ID: <Yp17rHxRb6d5JrHd@debian.me>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1654273498-31998-1-git-send-email-quic_mdalam@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220605_164725_766201_DD7BB7EC 
-X-CRM114-Status: GOOD (  12.90  )
+X-CRM114-CacheID: sfid-20220605_205950_065665_DE904E64 
+X-CRM114-Status: UNSURE (   8.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,119 +94,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Md,
+Hi everyone,
 
-Thank you for the patch! Perhaps something to improve:
+When I build arm64 kernel with GCC 12.1.0 (bcm2711_defconfig), I get
+partly outside array bounds warning on fs/jffs2/summary.c:
 
-[auto build test WARNING on mtd/nand/next]
-[also build test WARNING on v5.18 next-20220603]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+  CC [M]  fs/jffs2/summary.o
+In file included from fs/jffs2/summary.c:23:
+In function 'jffs2_sum_add_mem',
+    inlined from 'jffs2_sum_add_inode_mem' at fs/jffs2/summary.c:130:9:
+fs/jffs2/nodelist.h:43:28: warning: array subscript 'union jffs2_sum_mem[0]' is partly outside array bounds of 'unsigned char[26]' [-Warray-bounds]
+   43 | #define je16_to_cpu(x) ((x).v16)
+      |                        ~~~~^~~~~
+fs/jffs2/summary.c:71:17: note: in expansion of macro 'je16_to_cpu'
+   71 |         switch (je16_to_cpu(item->u.nodetype)) {
+      |                 ^~~~~~~~~~~
+In file included from fs/jffs2/summary.c:17:
+In function 'kmalloc',
+    inlined from 'jffs2_sum_add_inode_mem' at fs/jffs2/summary.c:118:37:
+./include/linux/slab.h:600:24: note: object of size 26 allocated by 'kmem_cache_alloc_trace'
+  600 |                 return kmem_cache_alloc_trace(
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~
+  601 |                                 kmalloc_caches[kmalloc_type(flags)][index],
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  602 |                                 flags, size);
+      |                                 ~~~~~~~~~~~~
+In file included from fs/jffs2/nodelist.h:22:
+In function 'jffs2_sum_add_mem',
+    inlined from 'jffs2_sum_add_inode_mem' at fs/jffs2/summary.c:130:9:
+fs/jffs2/summary.c:79:73: warning: array subscript 'union jffs2_sum_mem[0]' is partly outside array bounds of 'unsigned char[26]' [-Warray-bounds]
+   79 |                         s->sum_size += JFFS2_SUMMARY_DIRENT_SIZE(item->d.nsize);
+fs/jffs2/summary.h:34:80: note: in definition of macro 'JFFS2_SUMMARY_DIRENT_SIZE'
+   34 | #define JFFS2_SUMMARY_DIRENT_SIZE(x) (sizeof(struct jffs2_sum_dirent_flash) + (x))
+      |                                                                                ^
+In function 'kmalloc',
+    inlined from 'jffs2_sum_add_inode_mem' at fs/jffs2/summary.c:118:37:
+./include/linux/slab.h:600:24: note: object of size 26 allocated by 'kmem_cache_alloc_trace'
+  600 |                 return kmem_cache_alloc_trace(
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~
+  601 |                                 kmalloc_caches[kmalloc_type(flags)][index],
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  602 |                                 flags, size);
+      |                                 ~~~~~~~~~~~~
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Md-Sadre-Alam/mtd-rawnand-qcom-Implement-exec_op/20220605-235824
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
-config: arm64-randconfig-r021-20220605 (https://download.01.org/0day-ci/archive/20220606/202206060716.xdJ89V2D-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 416a5080d89066029f9889dc23f94de47c2fa895)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/5ab4409034966f5503f62ef2df59408762a9e872
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Md-Sadre-Alam/mtd-rawnand-qcom-Implement-exec_op/20220605-235824
-        git checkout 5ab4409034966f5503f62ef2df59408762a9e872
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/mtd/nand/raw/ drivers/nfc/nfcmrvl/
+I first found these warnings when reviewing linux-5.18.y stable rc [1],
+for which Greg recommends me to contact JFFS subsystem developers.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Thanks.
 
-All warnings (new ones prefixed by >>):
-
->> drivers/mtd/nand/raw/qcom_nandc.c:2727:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-           default:
-           ^
-   drivers/mtd/nand/raw/qcom_nandc.c:2727:2: note: insert 'break;' to avoid fall-through
-           default:
-           ^
-           break; 
-   1 warning generated.
-
-
-vim +2727 drivers/mtd/nand/raw/qcom_nandc.c
-
-  2691	
-  2692	static int qcom_nand_exec_instr(struct nand_chip *chip,
-  2693					const struct nand_op_instr *instr)
-  2694	{
-  2695		struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-  2696		struct qcom_nand_host *host = to_qcom_nand_host(chip);
-  2697		u32 status;
-  2698		int ret = 0;
-  2699		bool wait = false;
-  2700		static int opcode;
-  2701	
-  2702		switch (instr->type) {
-  2703		case NAND_OP_CMD_INSTR:
-  2704			ret = qcom_nand_send_command(chip, instr->ctx.cmd.opcode);
-  2705			if (instr->ctx.cmd.opcode == NAND_CMD_RESET)
-  2706				wait = true;
-  2707			opcode = instr->ctx.cmd.opcode;
-  2708			break;
-  2709		case NAND_OP_ADDR_INSTR:
-  2710			qcom_nand_send_address(chip, instr, opcode);
-  2711			if (opcode != NAND_CMD_READ0 && opcode != NAND_CMD_READSTART &&
-  2712			    opcode != NAND_CMD_PARAM && opcode != NAND_CMD_SEQIN)
-  2713				wait = true;
-  2714			break;
-  2715		case NAND_OP_DATA_IN_INSTR:
-  2716			qcom_nand_read_buf(chip, instr->ctx.data.buf.in, instr->ctx.data.len);
-  2717			break;
-  2718		case NAND_OP_DATA_OUT_INSTR:
-  2719			wait = false;
-  2720			break;
-  2721		case NAND_OP_WAITRDY_INSTR:
-  2722			ret = readl_poll_timeout(nandc->base + NAND_FLASH_STATUS, status,
-  2723						 (status & FS_READY_BSY_N), 20,
-  2724						 instr->ctx.waitrdy.timeout_ms * 1000);
-  2725			if (opcode == NAND_CMD_PARAM)
-  2726				wait = true;
-> 2727		default:
-  2728			break;
-  2729		}
-  2730	
-  2731		if (wait) {
-  2732			if (opcode != NAND_CMD_PARAM)
-  2733				write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
-  2734	
-  2735			if (opcode == NAND_CMD_READID)
-  2736				read_reg_dma(nandc, NAND_READ_ID, 1, NAND_BAM_NEXT_SGL);
-  2737	
-  2738			if (opcode == NAND_CMD_ERASE1) {
-  2739				read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-  2740				write_reg_dma(nandc, NAND_FLASH_STATUS, 1, 0);
-  2741				write_reg_dma(nandc, NAND_READ_STATUS, 1, NAND_BAM_NEXT_SGL);
-  2742			}
-  2743	
-  2744			ret = submit_descs(nandc);
-  2745			if (ret)
-  2746				dev_err(nandc->dev, "failure submitting descs for command 0x%02x\n",
-  2747					opcode);
-  2748	
-  2749			free_descs(nandc);
-  2750			post_command(host, opcode);
-  2751		}
-  2752	
-  2753		return ret;
-  2754	}
-  2755	
+[1]: https://lore.kernel.org/stable/YpxU%2FbVogip64iQF@debian.me/ 
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+An old man doll... just what I always wanted! - Clara
 
 ______________________________________________________
 Linux MTD discussion mailing list
