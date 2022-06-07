@@ -4,78 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8290FCCA473
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 03:39:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B518C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 06:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Zikl2lhwk8WZaNqXlJAO76Qe4+0qKOj3x7nPdNDnxuM=; b=qzhyKKdhZ/03XV
-	0U0koThMidf4bO8Rc3L4Ttz9vjWSHfcspytkR/p13wzQLz2zdjRckVnnrCRVAs7uLYM8HjbKLuxiG
-	fGphRobOVuXmQat79nsXHhN2MsaI2MyoyMUIixXIytm4OY35+iS0KxnhZCZoqB9XIIv4GWFCsw4Hc
-	NQBei1C96p23pu+kLziXCwyplaFK6CdmMKBOG3DEzt0hoiqMKuG5KclPlehkNTxukU7BITC1d7BbV
-	OkYkZUSph1B7GW5EIg6CB1SOZ+uZSU92SC2V+GbZ4Bw8gWCz2GOOzFEMTzBzqof1bfXAxM3xYIe++
-	uyv40biNq1zHS4bKyLGg==;
+	List-Owner; bh=vv113Bg3YrQdDVt8eu6apPKRWTwaFAqAtHRJYibvgr0=; b=YLQIINCgyFmhiU
+	xFtIfQs37OEfc+7R8x/PnmJW89UAimwuv8UPBK3AqjG86akZrAtdlPHHrmPuCW3zLdXiND+rkJREG
+	ZPc0+oFiAjdDH73ndst4zv3gqNwdXb0LeriFtkTUdHODmTd+J4V4XdNR37t/4jwziOkckfzKn9m21
+	EoQ6UwlVdYT8wyqhVMCqAqbV/ZR7ax/m/hmE9GDimWDB4ESGhrQb556ayO0Xo3DklweHY8xl3g799
+	9P7pDP2kBbANK5menSWD55RtLi5Ydq5caLcSJj2aoGT9qyYxPMHA2GSHlyW+2CWv1e6S85CsDulfi
+	uUOctf1CT4rBYBI59gbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyQ3Q-004V77-Pf; Tue, 07 Jun 2022 03:38:52 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1nySTS-004xWJ-Kx; Tue, 07 Jun 2022 06:13:54 +0000
+Received: from relay3-d.mail.gandi.net ([2001:4b98:dc4:8::223])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyQ3N-004V4p-KO
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2022 03:38:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654573129; x=1686109129;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=w4xeyqU+kOhDYzyqy82v69OYCHkAH6xk8Nd95qrz48A=;
-  b=lPAqA2NtxRsXo3gnCmDHYO9Yqkcf/ccsstu5cSYaMZZHEmbgAjmoZ/hq
-   TdOkmXHQcF758Yop2HcLisWs+Ue2XBaJaHP5MiVe7rLY+RFFPIuMyjJ/f
-   O9YM7Q7HiP8KyNR07furp+m7XsXRSBNoAfxYCnkCmv1/rIuoZhh+KEsPb
-   NVhYV+cCFsP+gYa02Jj7Qcvkzv6h66g29R9PcZq6t8HSuSDEAGPYBCDHy
-   ah1P7eyEh7vShg3JgF7hmRQhSKSGD222J5550ePuU9ZppjqXrNn9rr5SE
-   NULw0jZguupJD0KvaDXv1PWFeuo/tyXgVoYu43G+N2+DL8z7QXruFGRUW
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="256542173"
-X-IronPort-AV: E=Sophos;i="5.91,282,1647327600"; 
-   d="scan'208";a="256542173"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2022 20:38:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,282,1647327600"; 
-   d="scan'208";a="579430786"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 06 Jun 2022 20:38:40 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-	(envelope-from <lkp@intel.com>)
-	id 1nyQ3D-000DJf-KE;
-	Tue, 07 Jun 2022 03:38:39 +0000
-Date: Tue, 7 Jun 2022 11:37:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-fsdevel@vger.kernel.org
-Cc: kbuild-all@lists.01.org,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
-	linux-mtd@lists.infradead.org,
-	virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 04/20] mm/migrate: Convert buffer_migrate_page() to
- buffer_migrate_folio()
-Message-ID: <202206071139.aWSx4GHH-lkp@intel.com>
-References: <20220606204050.2625949-5-willy@infradead.org>
+	id 1nySTP-004xSg-6C
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2022 06:13:54 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 9B77160004;
+	Tue,  7 Jun 2022 06:13:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1654582425;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mMzz6j60B/6ZcgXDNcvKMvG327YtbI6lKJdhb55gzxo=;
+	b=oIkJB4jldi4wUPyDkJRMgmnCmSV8cs6m+Rmk5aKcsfUhaZ2CXwPfEjf6VT3qtuCSJz852p
+	9Th8yHiVOp1Q9ZC3PAUol1iVMr6GZlgrlItsr73RAHPgoRRtBHZoBAp7caveSld78xyypM
+	rTjC3dhheE217vk8zKAKmAM9JVfGp6zyrc2rBaJw6wV9YPIDpOO51SWhHh4/1O25cDxJvS
+	LnXfimDdXA7k9dgzxdrv7AtAk+LfVJJxj89FKtd8for0ZW/5DnrsmV5N7iCkrASwTYnK+b
+	E0HDzQU2XyyCHpvbmQ191qJx11l5mo5Z2C11hxHqyrZEEJnu/keb1NXq39QCTw==
+Date: Tue, 7 Jun 2022 08:13:42 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Lamparter <chunkeey@gmail.com>
+Cc: linux-mtd@lists.infradead.org, dev@aboehler.at
+Subject: Re: [PATCH] Revert "mtd: rawnand: add support for Toshiba
+ TC58NVG0S3HTA00 NAND flash"
+Message-ID: <20220607081342.174b9584@xps-13>
+In-Reply-To: <20220606192952.34957-1-chunkeey@gmail.com>
+References: <20220606155919.23001410@xps-13>
+	<20220606192952.34957-1-chunkeey@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220606204050.2625949-5-willy@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220606_203849_758109_0595B836 
-X-CRM114-Status: GOOD (  13.48  )
+X-CRM114-CacheID: sfid-20220606_231351_435244_1F8C99AC 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,72 +67,50 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi "Matthew,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on linus/master]
-[also build test WARNING on v5.19-rc1 next-20220606]
-[cannot apply to jaegeuk-f2fs/dev-test trondmy-nfs/linux-next kdave/for-next xfs-linux/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/Convert-aops-migratepage-to-aops-migrate_folio/20220607-044509
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f2906aa863381afb0015a9eb7fefad885d4e5a56
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20220607/202206071139.aWSx4GHH-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/96e64ba8b1be545885d89f44b1d8b968b22bdb4d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Matthew-Wilcox-Oracle/Convert-aops-migratepage-to-aops-migrate_folio/20220607-044509
-        git checkout 96e64ba8b1be545885d89f44b1d8b968b22bdb4d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> mm/migrate.c:775: warning: expecting prototype for buffer_migrate_folio_noref(). Prototype was for buffer_migrate_folio_norefs() instead
-
-
-vim +775 mm/migrate.c
-
-89cb0888ca1483a Jan Kara                2018-12-28  758  
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  759) /**
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  760)  * buffer_migrate_folio_noref() - Migration function for folios with buffers.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  761)  * @mapping: The address space containing @src.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  762)  * @dst: The folio to migrate to.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  763)  * @src: The folio to migrate from.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  764)  * @mode: How to migrate the folio.
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  765)  *
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  766)  * Like buffer_migrate_folio() except that this variant is more careful
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  767)  * and checks that there are also no buffer head references. This function
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  768)  * is the right one for mappings where buffer heads are directly looked
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  769)  * up and referenced (such as block device mappings).
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  770)  *
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  771)  * Return: 0 on success or a negative errno on failure.
-89cb0888ca1483a Jan Kara                2018-12-28  772   */
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  773) int buffer_migrate_folio_norefs(struct address_space *mapping,
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  774) 		struct folio *dst, struct folio *src, enum migrate_mode mode)
-89cb0888ca1483a Jan Kara                2018-12-28 @775  {
-96e64ba8b1be545 Matthew Wilcox (Oracle  2022-06-06  776) 	return __buffer_migrate_folio(mapping, dst, src, mode, true);
-89cb0888ca1483a Jan Kara                2018-12-28  777  }
-9361401eb7619c0 David Howells           2006-09-30  778  #endif
-1d8b85ccf1ed53a Christoph Lameter       2006-06-23  779  
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQ2hyaXN0aWFuLAoKY2h1bmtlZXlAZ21haWwuY29tIHdyb3RlIG9uIE1vbiwgIDYgSnVuIDIw
+MjIgMjE6Mjk6NTIgKzAyMDA6Cgo+IFRoaXMgcmV2ZXJ0cyBjb21taXQgMzM4MDU1N2ZjN2UyOGQ5
+YmNlNzYwN2UxNmQ5OGYxMjNkMzZkYTRjYS4KPiAKPiBJdCB0dXJuZWQgb3V0IHRoaXMgIjQtYnl0
+ZSIgSUQgbWlnaHQgaGF2ZSBiZWVuIGFuIGhvbmVzdCBtaXN0YWtlLgo+IFJlZ3JldHRhYmx5LCB0
+aGUgY2hpcCBBbmRyZWFzIGhhcyBtaWdodCBiZSBhIGNvdW50ZXJmZWl0IG9yIGlzCj4gZGFtYWdl
+ZCBpbiBzb21lIG90aGVyIHdheSBhbmQgc2hvdWxkbid0IGhhdmUgZW5kZWQgdXAgaW4gYSByb3V0
+ZXIuCj4gCj4gQW5kcmVhcyByZXBvcnRlZCBoaXMgY2hpcCBpcyByZXR1cm5pbmcganVzdCBmb3Vy
+IGJ5dGVzOgo+ICI5OCBmMSA4MCAxNSAwMCAwMCAwMCAwMCIuCj4gCj4gSG93ZXZlciwgYWNjb3Jk
+aW5nIHRvIEtpb3hpYS9Ub3NoaWJhJ3MgZGF0YXNoZWV0LCB0aGVyZSBzaG91bGQKPiBoYXZlIGJl
+ZW4gYXQgbGVhc3QgYW5vdGhlciBieXRlIHRoYXQgd291bGQgaGF2ZSBjb250YWluZWQgdGhlCj4g
+Y29ycmVjdCBPT0Igc2l6ZSB0aGF0IEFuZHJlYXMgbmVlZGVkLgoKTWF5YmUgaGVyZSB3ZSBzaG91
+bGQgbWVudGlvbiB0aGUgb3RoZXIgYWx0ZXJuYXRpdmUgYW5kIGV4cGxhaW4gd2h5IHdlCndlbnQg
+Zm9yIGFuIGltbWVkaWF0ZSByZXZlcnQgaW5zdGVhZCAoa25vd2luZyB0aGF0IHdlIHduYXQgdG8g
+YnV5IHRpbWUKdG8gZXZlbnR1YWxseSBwcm9wZXJseSBmaXggaXQgYW5kIHBvc3NpYmx5IGludmVu
+dG9yeSB0aGUgYnJva2VuIGNoaXBzLiAKCj4gVGhhbmtzIHRvIFBldGVyLXZkTCBmb3IgcmVwb3J0
+aW5nIHRoaXMgaXNzdWUgYW5kIEhhbm51IE55bWFuCj4gYXMgd2VsbCBhcyBuZWcybGVkIHdobyBk
+aWQgdGhlIGRlYnVnZ2luZy4KCk1heWJlIHlvdSBjYW4gcmVmZXIgaGVyZSB0byBPcGVuV1JUIHRv
+b2xzIG90aGVyd2lzZSB0aGUgbmFtZXMgZG8gbm90Cm1lYW4gYW55dGhpbmc/Cgo+IENjOiBBbmRy
+ZWFzIEI8QzM+PEI2PmhsZXIgPGRldkBhYm9laGxlci5hdD4KCkxvb2tzIGxpa2UgdGhlcmUgaXMg
+YW4gaXNzdWUgd2l0aCBBbmRyZWFzJyBuYW1lLCBJIGNhbiBmaXggaXQgaW5saW5lIGlmCnlvdSBk
+b24ndCBrbm93IGhvdyB0byBwcm9jZWVkLCBhbmQgaWYgeW91IGdpdmUgbWUgdGhlIHJpZ2h0IGNo
+YXJhY3Rlcgp0byBwdXQgdGhlcmUuCgo+IEJ1Z0xpbms6IGh0dHBzOi8vZ2l0aHViLmNvbS9vcGVu
+d3J0L29wZW53cnQvaXNzdWVzLzk5NjIKCkxpbms6IGlzIGVub3VnaCA6KQoKPiBTaWduZWQtb2Zm
+LWJ5OiBDaHJpc3RpYW4gTGFtcGFydGVyIDxjaHVua2VleUBnbWFpbC5jb20+Cj4gLS0tCj4gIGRy
+aXZlcnMvbXRkL25hbmQvcmF3L25hbmRfaWRzLmMgfCAzIC0tLQo+ICAxIGZpbGUgY2hhbmdlZCwg
+MyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFu
+ZF9pZHMuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L25hbmRfaWRzLmMKPiBpbmRleCA4OGMyNDQw
+YjQ3ZDguLmRhY2M1NTI5YjNkZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9u
+YW5kX2lkcy5jCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9pZHMuYwo+IEBAIC0y
+OSw5ICsyOSw2IEBAIHN0cnVjdCBuYW5kX2ZsYXNoX2RldiBuYW5kX2ZsYXNoX2lkc1tdID0gewo+
+ICAJeyJUQzU4TlZHMFMzRSAxRyAzLjNWIDgtYml0IiwKPiAgCQl7IC5pZCA9IHsweDk4LCAweGQx
+LCAweDkwLCAweDE1LCAweDc2LCAweDE0LCAweDAxLCAweDAwfSB9LAo+ICAJCSAgU1pfMkssIFNa
+XzEyOCwgU1pfMTI4SywgMCwgOCwgNjQsIE5BTkRfRUNDX0lORk8oMSwgU1pfNTEyKSwgfSwKPiAt
+CXsiVEM1OE5WRzBTM0hUQTAwIDFHIDMuM1YgOC1iaXQiLAo+IC0JCXsgLmlkID0gezB4OTgsIDB4
+ZjEsIDB4ODAsIDB4MTV9IH0sCj4gLQkJICBTWl8ySywgU1pfMTI4LCBTWl8xMjhLLCAwLCA0LCAx
+MjgsIE5BTkRfRUNDX0lORk8oOCwgU1pfNTEyKSwgfSwKPiAgCXsiVEM1OE5WRzJTMEYgNEcgMy4z
+ViA4LWJpdCIsCj4gIAkJeyAuaWQgPSB7MHg5OCwgMHhkYywgMHg5MCwgMHgyNiwgMHg3NiwgMHgx
+NSwgMHgwMSwgMHgwOH0gfSwKPiAgCQkgIFNaXzRLLCBTWl81MTIsIFNaXzI1NkssIDAsIDgsIDIy
+NCwgTkFORF9FQ0NfSU5GTyg0LCBTWl81MTIpIH0sCgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVRE
+IGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtbXRkLwo=
