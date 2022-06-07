@@ -4,89 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B829DC43334
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 07:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B3DFC43334
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 07:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gWqaQo85O1tIBIatNPiKEOJOMjfvkZ3QvYzJGUOse8A=; b=ySxE579pAphV4v
-	9QxDQ7FsO7oA29pSsmNPVzVrz543JiuoNkHpRVu66DF8qzTasMCv569VMtOgTzBGqTli6KQ1/T5Uw
-	VsYdR0HlH6IKsyhdvhnEFDgEgUr2MxMBLr2Er9IEc/cjowN2MOXzDy8DeI5uwSqSEKtMFp/rmTYvr
-	39/IJ0d4emP3BvdA6niuVIuNbtEwK9X0ER0IZ+WTHj/0mA7xxqpPgm1jx8uuDhV4A5s2+3SXUaLT+
-	CTl2mEXNKEuXB4KZz2rxLknJdGvr3lIOAtJOx4YXGeNYlWU7JNlCQcTtWFdPZ+Ptf2QSFzMjG8807
-	peQUPy47Kk01F0ZM2Ccg==;
+	List-Owner; bh=infsMWt+MQbN/fOm0N076cgte5r/012zEJp/nh5xwIU=; b=v+VdQk2dUwZxWY
+	IHtppK447r+x6/DXthmgur27Rh1hwSBpQJLqb8RJgwXXPLAFtGQ+lhgcoY2Od89+nWJsnEsKSWEwZ
+	RcwyuOzDXJ1InXrjNJrnF0YsgkIsCDuYmWg+Q6fGVYkAcr9MzGJlwXjgPMLOGl5K6fKa9PAviyMMp
+	fOZ5bO6heBbe0UPV4tgHSsPqDs7/FYf0CGKDl6P6Amo2Ib9L27sQ/qtdvKXqSP2JzaxujRHc84NBq
+	bKOpYmmXLz+m54ORLrIAX6069DWFKRSqhW8VXb5G85caS2sz0S48MXEWZnApvTysJb0tE7iNhPTeP
+	hdxGOINubfVKq0CGSjew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyTPD-005MpJ-Sv; Tue, 07 Jun 2022 07:13:35 +0000
-Received: from mail-wm1-x32b.google.com ([2a00:1450:4864:20::32b])
+	id 1nyTm6-005Un7-2m; Tue, 07 Jun 2022 07:37:14 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyTOG-005MLo-UG
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2022 07:12:39 +0000
-Received: by mail-wm1-x32b.google.com with SMTP id r123-20020a1c2b81000000b0039c1439c33cso8983129wmr.5
-        for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2022 00:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=hV9ibKa+5FNAjQgy5QNiMgxjWN0tLjtbBZr6sMB8+Q8=;
-        b=zvk7iA/34h/WCj5IyLEzFyarVpBveV+Ub4CzbBtdV7qFdQFCeBaBVp1VyjjmZfZ06M
-         PbeRy2dP5bbH0dZRJUpHdmRTPoO3RzyEZNMmRdyhOFIXO6wsci8zXehtX2EKqFRk94Sz
-         yGLX4rOgtCxD9W3RPr8Fw5CHA/8Inl6ERNabJW9gKsmrbDYVCL78/DG/CXz76EBS4Xmj
-         3hQ3Uf6GckYlGgHHDLzfxVy1U9elpvnYxH7FnzFhKuWRR2jYqMmqHMMheB+LHviI7YUN
-         MyNkrXn9Qu+mBs7z2/YWm23lEqtem7Iqk+n3hZNYnSaky9CX5WiL62yeReaMwEDvARUo
-         VVNw==
+	id 1nyTm3-005UjI-99
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2022 07:37:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1654587426;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=poSLf3SQpSQVqGAvfY9ZUAc4mDsdNw09sPQoA12+Xn0=;
+	b=Ei+tS59UADcqRz8t/v6zXFGm4EirBPntNruDT19yvMF9YHB0MHFhp3IEyb+cuD0A992nYg
+	D39RQmqe/dt0C1JFN17d4H6Tw+rzmJJNiqBkd5Qr+Z2n5LKSvSi0fssMroXBAMVSEW6qnJ
+	HECw1UpOfT6vHDEHvIqVFVk+w02e7rk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-499-evPXKXV5OnC4iFBq_tJw5w-1; Tue, 07 Jun 2022 03:36:25 -0400
+X-MC-Unique: evPXKXV5OnC4iFBq_tJw5w-1
+Received: by mail-wr1-f72.google.com with SMTP id o18-20020a5d4a92000000b00213b4eebc25so2930463wrq.21
+        for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2022 00:36:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=hV9ibKa+5FNAjQgy5QNiMgxjWN0tLjtbBZr6sMB8+Q8=;
-        b=yfJSHdv8hcmGEAiXv5LtA2dItjbNxBkSKKWgnJLDkN5J9yXxgG5Sp49xBtSVOfW4eb
-         DZ5L5VrRw/qrWP4Uj9v+QP66OhcBg7VN5p15MiwiF41UnUXLXoo8N2VF76RpofyBtiDf
-         QzmlZ4nGoGhIPQWs9lqxRaLKi4YEBceTl3Obh2XiRUi/mgw1zOJ2bkk6mHXb2TnUVDQb
-         V7QZLja4W+bWQqTPRxL8OH3fK/dl85pBn+q81MChPh742a6ry3ggjA/dhQE2JX5NUQxq
-         fKpbm2dVjt/jPU9YX0OL4qbTHOdVOSMz3y676ec0IKpF1uT6S05yKzX5lAUt8O5xaEGA
-         rk0g==
-X-Gm-Message-State: AOAM533CNdk/nq/m5gQL4Dd8SrvLJVgv7isAORRjEW9AsnamegU7Ygzn
-	E9NjncPOurW+xqSbE4xor4WwaQ==
-X-Google-Smtp-Source: ABdhPJzlssNl6pDyIvExhHNcmbJ/WP0P23bmwp4ZRY1qET14Oc7c06VwNQoOLjo6L5f2tNzIkvpUkw==
-X-Received: by 2002:a05:600c:3513:b0:39c:2a32:37a6 with SMTP id h19-20020a05600c351300b0039c2a3237a6mr25770455wmq.161.1654585953165;
-        Tue, 07 Jun 2022 00:12:33 -0700 (PDT)
-Received: from ?IPV6:2001:861:44c0:66c0:87c5:1f51:1550:2ebc? ([2001:861:44c0:66c0:87c5:1f51:1550:2ebc])
-        by smtp.gmail.com with ESMTPSA id h4-20020adffd44000000b002102d4ed579sm17017696wrs.39.2022.06.07.00.12.31
+        bh=poSLf3SQpSQVqGAvfY9ZUAc4mDsdNw09sPQoA12+Xn0=;
+        b=tbi8WJoZ/VQ+X57IioZnFZhg9DKzn6M7s4FLQxolh/jSqp97Knd3ctMeVHRX3tyYhm
+         v1RefKuLJ+2rFGhIGO/SYVyELbOFtvVe4fzot4Zp4aZCSu2uupDYTr8oFavzoJCnB0dz
+         hyIPFC3Bsnos09olo8PNWPS8bqKxHoYwnUnHd5ANLQjXkYgicP1Qhfef179T2n9mnOeQ
+         b1feG07aOx7V4wdz+W6W6umS/HW0Xir3tl4OLZN9UUAr22KRPmw8jxxFzwCNXto+7R2R
+         /gjDDVeRoUqwTbFdwUCV/M3QeuesTyukCJC2wPXGIi3RnL2bixTePgHLb99fQq/FT3vv
+         cOUw==
+X-Gm-Message-State: AOAM532PKS79co9U0y0oGN0tUN48mqBWR2K2+DHsnpl+AjB/LwtVoVh+
+	cnrW5/YgEVrf49/DrHHl8nUmXO3KO2seLC0QLbc9+Cda9NIT4mQP6M+Dlc6Mvn7T+w+pORsXiJO
+	uq/Luy5ceg2Y5AD3VkI8gdkQUxw==
+X-Received: by 2002:a05:600c:4ec9:b0:397:750a:798a with SMTP id g9-20020a05600c4ec900b00397750a798amr56010313wmq.169.1654587384018;
+        Tue, 07 Jun 2022 00:36:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/TT1zDaD6ih4ST/0Z6l6/VJexv/LUjWrit9gRiSM2S633qB8aLjqIdjv8Hs+falCUt0H+YA==
+X-Received: by 2002:a05:600c:4ec9:b0:397:750a:798a with SMTP id g9-20020a05600c4ec900b00397750a798amr56010293wmq.169.1654587383789;
+        Tue, 07 Jun 2022 00:36:23 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c709:500:4c8d:4886:f874:7b6f? (p200300cbc70905004c8d4886f8747b6f.dip0.t-ipconnect.de. [2003:cb:c709:500:4c8d:4886:f874:7b6f])
+        by smtp.gmail.com with ESMTPSA id j37-20020a05600c1c2500b0039c235fb6a5sm19943141wms.8.2022.06.07.00.36.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jun 2022 00:12:32 -0700 (PDT)
-Message-ID: <791b3e4e-7348-997a-0ead-136739ec10bf@baylibre.com>
-Date: Tue, 7 Jun 2022 09:12:35 +0200
+        Tue, 07 Jun 2022 00:36:22 -0700 (PDT)
+Message-ID: <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
+Date: Tue, 7 Jun 2022 09:36:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH v6 5/5] mtd: rawnand: meson: not support legacy clock
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 15/20] balloon: Convert to migrate_folio
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+ virtualization@lists.linux-foundation.org
+References: <20220606204050.2625949-1-willy@infradead.org>
+ <20220606204050.2625949-16-willy@infradead.org>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20220606204050.2625949-16-willy@infradead.org>
+Authentication-Results: relay.mimecast.com;
+	auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=david@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Language: en-US
-To: Liang Yang <liang.yang@amlogic.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: kernel test robot <lkp@intel.com>, Rob Herring <robh+dt@kernel.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>, Jianxin Pan <jianxin.pan@amlogic.com>,
- Victor Wan <victor.wan@amlogic.com>, XianWei Zhao
- <xianwei.zhao@amlogic.com>, Kelvin Zhang <kelvin.zhang@amlogic.com>,
- BiChao Zheng <bichao.zheng@amlogic.com>, YongHui Yu
- <yonghui.yu@amlogic.com>, linux-arm-kernel@lists.infradead.org,
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20220607064731.13367-1-liang.yang@amlogic.com>
- <20220607064731.13367-6-liang.yang@amlogic.com>
-From: Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-In-Reply-To: <20220607064731.13367-6-liang.yang@amlogic.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220607_001237_049896_736C613C 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20220607_003711_462131_BCC849B2 
+X-CRM114-Status: GOOD (  20.79  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,41 +105,69 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On 07/06/2022 08:47, Liang Yang wrote:
-> meson NFC driver use common clock interfaces. so the test robot report
-> some errors once using the legacy clock with HAVE_LEGACY_CLK on.
+On 06.06.22 22:40, Matthew Wilcox (Oracle) wrote:
+> This is little more than changing the types over; there's no real work
+> being done in this function.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->   drivers/mtd/nand/raw/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  mm/balloon_compaction.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index 67b7cb67c030..5169412a4af4 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -395,7 +395,7 @@ config MTD_NAND_STM32_FMC2
->   
->   config MTD_NAND_MESON
->   	tristate "Support for NAND controller on Amlogic's Meson SoCs"
-> -	depends on ARCH_MESON || COMPILE_TEST
-> +	depends on ARCH_MESON || COMPILE_TEST || !HAVE_LEGACY_CLK
+> diff --git a/mm/balloon_compaction.c b/mm/balloon_compaction.c
+> index 4b8eab4b3f45..3f75b876ad76 100644
+> --- a/mm/balloon_compaction.c
+> +++ b/mm/balloon_compaction.c
+> @@ -230,11 +230,10 @@ static void balloon_page_putback(struct page *page)
+>  
+>  
+>  /* move_to_new_page() counterpart for a ballooned page */
+> -static int balloon_page_migrate(struct address_space *mapping,
+> -		struct page *newpage, struct page *page,
+> -		enum migrate_mode mode)
+> +static int balloon_migrate_folio(struct address_space *mapping,
+> +		struct folio *dst, struct folio *src, enum migrate_mode mode)
+>  {
+> -	struct balloon_dev_info *balloon = balloon_page_device(page);
+> +	struct balloon_dev_info *balloon = balloon_page_device(&src->page);
+>  
+>  	/*
+>  	 * We can not easily support the no copy case here so ignore it as it
+> @@ -244,14 +243,14 @@ static int balloon_page_migrate(struct address_space *mapping,
+>  	if (mode == MIGRATE_SYNC_NO_COPY)
+>  		return -EINVAL;
+>  
+> -	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> -	VM_BUG_ON_PAGE(!PageLocked(newpage), newpage);
+> +	VM_BUG_ON_FOLIO(!folio_test_locked(src), src);
+> +	VM_BUG_ON_FOLIO(!folio_test_locked(dst), dst);
+>  
+> -	return balloon->migratepage(balloon, newpage, page, mode);
+> +	return balloon->migratepage(balloon, &dst->page, &src->page, mode);
+>  }
+>  
+>  const struct address_space_operations balloon_aops = {
+> -	.migratepage = balloon_page_migrate,
+> +	.migrate_folio = balloon_migrate_folio,
+>  	.isolate_page = balloon_page_isolate,
+>  	.putback_page = balloon_page_putback,
+>  };
 
-I think depending on CCF would be better than excluding legacy clock.
+I assume you're working on conversion of the other callbacks as well,
+because otherwise, this ends up looking a bit inconsistent and confusing :)
 
->   	select MFD_SYSCON
->   	help
->   	  Enables support for NAND controller on Amlogic's Meson SoCs.
+Change LGTM.
 
-Neil
+-- 
+Thanks,
+
+David / dhildenb
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
