@@ -4,98 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90279CCA47C
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 09:49:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5412DC43334
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 09:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WXUvVDeU8Ot0uEQNIiTvAni2gImW2h8Udqbi5ldj7PQ=; b=CHyzcZP49SP8tZ
-	3kyaua1SsgORxATmBx7d2IzalbKRIdOCsi/wQyLylE6tZxIDPIRVfBvGMt2AxQPUzlTmJyLGdxJNF
-	F2m9J2mN4da5CdUsQ/axP0jcvZct2QDOs6c9DtKrSKDzXa5M+aEddJA0yQsnczlKbWBlvGBKDQmeA
-	5hwDSIjjotfJSI/3cQ4Fv7U0bEeFA/ZBKcCW0ZMoUhgbRPA5IRFYOVLuwXszJhjzm30mASVjT/F5d
-	EEkEr6qMc642Ox3YKgWWNPmW1elcPomlV6kYiwzmdKsC2Vu+tt8WdIhXfx9igO5X0KGJ2ll5MyE/H
-	Q8kESBDN/9hzTnx6M+gw==;
+	List-Owner; bh=fc2lVyOwZgjWMCr97/MRMoRdjfWyOLQdMO2JeXKwQJo=; b=rDWwe6/V500e3F
+	VwvUpO7jYsP8sU8ch+Lr9In5/3Ovsag3l2OxL5xKwihRA0aup0KdC2E0ACIVKwkGPmgwkN/3ka3ga
+	xnbfHsl1gq0EqLaZHSp+ZxWOGM/viOPDjgyI12Fare2VbJDGzhzQ3FVIAMs1TsG8BioYHktISpBkX
+	6fykKcDuGWoJFXlGvUDPhocSwXy6AkxS6WwcK5YWZaLtSttv8i2ceeRsIFnBBKX0gPVUsVi4l3/J6
+	G5xw6j1RKgdTZCKF0YVf1zY3wUzIcQHAx0iqgBJ0QSmxrgGYMjD0u6lEvVCTHDmZhPCLqyfciMoCL
+	2WpXMvlgoOr8QDDqmeDw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyVpD-006O8Z-SF; Tue, 07 Jun 2022 09:48:35 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1nyVrd-006PjU-Qq; Tue, 07 Jun 2022 09:51:05 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyVaE-006Fyp-8f; Tue, 07 Jun 2022 09:33:08 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 2579Wc0I091949;
-	Tue, 7 Jun 2022 04:32:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1654594358;
-	bh=4gEuMclZBhRQsDp0tvKaU3YrWccQZAGJURM8nh1W4Dc=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=k3vx5fmY3w2g9Kjy9vS3FS56toxZSl4jg/ajU1hdRRImusYUUI39kNg2qhLfeXCDd
-	 F7OzJAHN5T4gAJh/8Fu9mAhSWZ+FGGvj2oIwfhncphIoKXvPIxSBH/WdWhJW7XynOc
-	 YBUg7FOlGe/94JgUoQ+dgpWXspuXRavwoYOd/Kzs=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 2579WcaD112036
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 7 Jun 2022 04:32:38 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 7
- Jun 2022 04:32:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 7 Jun 2022 04:32:37 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-	by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 2579WbvB057541;
-	Tue, 7 Jun 2022 04:32:37 -0500
-Date: Tue, 7 Jun 2022 15:02:36 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Joel Stanley <joel@jms.id.au>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicolas Ferre
-	<nicolas.ferre@microchip.com>,
-        Alexandre Belloni
-	<alexandre.belloni@bootlin.com>,
-        Claudiu Beznea
-	<claudiu.beznea@microchip.com>,
-        Stefan Agner <stefan@agner.ch>, Lucas Stach
-	<dev@lynxeye.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter
-	<jonathanh@nvidia.com>,
-        Liang Yang <liang.yang@amlogic.com>,
-        Neil Armstrong
-	<narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>, <kernel@pengutronix.de>,
-        <linux-mtd@lists.infradead.org>, Michael Walle
-	<michael@walle.cc>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras
-	<paulus@samba.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-tegra@vger.kernel.org>, Jerome Brunet <jbrunet@baylibre.com>,
-        Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>,
-        <linux-amlogic@lists.infradead.org>
-Subject: Re: [PATCH 00/14] mtd: Fix platform remove callbacks to always
- return 0
-Message-ID: <20220607093236.67txulke76mi6t75@ti.com>
-References: <20220603210758.148493-1-u.kleine-koenig@pengutronix.de>
- <20220606151841.682a5939@xps-13>
+	id 1nyVed-006IQH-PB; Tue, 07 Jun 2022 09:37:41 +0000
+Received: from [10.28.39.121] (10.28.39.121) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 7 Jun 2022
+ 17:37:32 +0800
+Message-ID: <e06acb65-50fe-46e6-a302-0238c902d1a2@amlogic.com>
+Date: Tue, 7 Jun 2022 17:37:31 +0800
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220606151841.682a5939@xps-13>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v6 5/5] mtd: rawnand: meson: not support legacy clock
+Content-Language: en-US
+To: Neil Armstrong <narmstrong@baylibre.com>, Miquel Raynal
+	<miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC: kernel test robot <lkp@intel.com>, Rob Herring <robh+dt@kernel.org>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+	Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+	XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+	<kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui
+ Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20220607064731.13367-1-liang.yang@amlogic.com>
+ <20220607064731.13367-6-liang.yang@amlogic.com>
+ <791b3e4e-7348-997a-0ead-136739ec10bf@baylibre.com>
+From: Liang Yang <liang.yang@amlogic.com>
+In-Reply-To: <791b3e4e-7348-997a-0ead-136739ec10bf@baylibre.com>
+X-Originating-IP: [10.28.39.121]
+X-ClientProxiedBy: mail-sz.amlogic.com (10.28.11.5) To mail-sz.amlogic.com
+ (10.28.11.5)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220607_023306_443116_381706E9 
-X-CRM114-Status: GOOD (  20.99  )
+X-CRM114-CacheID: sfid-20220607_023739_874608_3F7D29E6 
+X-CRM114-Status: UNSURE (   9.13  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,108 +69,32 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Miquel,
-
-On 06/06/22 03:18PM, Miquel Raynal wrote:
-> Hi Folks,
-> =
-
-> u.kleine-koenig@pengutronix.de wrote on Fri,  3 Jun 2022 23:07:44 +0200:
-> =
-
-> > Hello,
-> > =
-
-> > this series prepares to make platform remove callbacks return void.
-> > Therefor first update them to always return 0. The rationale is that the
-> > Linux device model doesn't handle failures on remove and if a remove
-> > callback returns an error, it just emits a quite generic error message
-> > and still removes the device.
-> =
-
-> Tudor, Pratyush, Richard, Vignesh,
-> =
-
-> The series looks good to me (besides the atmel patch), I think it's
-> best to take it directly through mtd/next instead of going through all
-> the different internal branches, please let me know if you disagree
-> with the idea.
-
-Patch 2 does not look good to me. It modifies the aspeed-smc driver in =
-
-drivers/mtd/spi-nor/controllers/ but the driver has been moved to =
-
-drivers/spi/ in Mark's next branch [0]. The patch would likely conflict =
-
-with that.
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/com=
-mit?id=3D9c63b846e6df43e5b3d31263f7db545f32deeda3
-
-> =
-
-> Cheers,
-> Miqu=E8l
-> =
-
-> > =
-
-> > Best regards
-> > Uwe
-> > =
-
-> > Uwe Kleine-K=F6nig (14):
-> >   mtd: hyperbus: Make hyperbus_unregister_device() return void
-> >   mtd: spi-nor: aspeed-smc: Make aspeed_smc_unregister() return void
-> >   mtd: powernv_flash: Warn about failure to unregister mtd device
-> >   mtd: st-spi_fsm: Warn about failure to unregister mtd device
-> >   mtd: lpddr2_nvm: Warn about failure to unregister mtd device
-> >   mtd: spear_smi: Don't skip cleanup after mtd_device_unregister()
-> >     failed
-> >   mtd: spear_smi: Drop if with an always false condition
-> >   mtd: rawnand: atmel: Warn about failure to unregister mtd device
-> >   mtd: rawnand: omap2: Suppress error message after WARN in .remove()
-> >   mtd: rawnand: tegra: Don't skip cleanup after mtd_device_unregister()
-> >     failed
-> >   mtd: rawnand: meson: Don't skip cleanup after mtd_device_unregister()
-> >     failed
-> >   mtd: rawnand: meson: Drop cleaning platform data in .remove()
-> >   mtd: physmap: Don't skip cleanup after mtd_device_unregister() failed
-> >   mtd: physmap: Drop if with an always false condition
-> > =
-
-> >  drivers/mtd/devices/powernv_flash.c          |  4 +++-
-> >  drivers/mtd/devices/spear_smi.c              | 10 ++--------
-> >  drivers/mtd/devices/st_spi_fsm.c             |  4 +++-
-> >  drivers/mtd/hyperbus/hbmc-am654.c            |  6 +++---
-> >  drivers/mtd/hyperbus/hyperbus-core.c         |  8 ++------
-> >  drivers/mtd/hyperbus/rpc-if.c                |  5 +++--
-> >  drivers/mtd/lpddr/lpddr2_nvm.c               |  4 +++-
-> >  drivers/mtd/maps/physmap-core.c              | 13 +++----------
-> >  drivers/mtd/nand/raw/atmel/nand-controller.c |  5 ++++-
-> >  drivers/mtd/nand/raw/meson_nand.c            | 16 +++-------------
-> >  drivers/mtd/nand/raw/omap2.c                 |  6 ++----
-> >  drivers/mtd/nand/raw/tegra_nand.c            |  5 +----
-> >  drivers/mtd/spi-nor/controllers/aspeed-smc.c |  8 ++++----
-> >  include/linux/mtd/hyperbus.h                 |  4 +---
-> >  14 files changed, 37 insertions(+), 61 deletions(-)
-> > =
-
-> > base-commit: 4b0986a3613c92f4ec1bdc7f60ec66fea135991f
-> =
-
-
--- =
-
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgTmVpbCwKCk9uIDIwMjIvNi83IDE1OjEyLCBOZWlsIEFybXN0cm9uZyB3cm90ZToKPiBbIEVY
+VEVSTkFMIEVNQUlMIF0KPiAKPiBIaSwKPiAKPiBPbiAwNy8wNi8yMDIyIDA4OjQ3LCBMaWFuZyBZ
+YW5nIHdyb3RlOgo+PiBtZXNvbiBORkMgZHJpdmVyIHVzZSBjb21tb24gY2xvY2sgaW50ZXJmYWNl
+cy4gc28gdGhlIHRlc3Qgcm9ib3QgcmVwb3J0Cj4+IHNvbWUgZXJyb3JzIG9uY2UgdXNpbmcgdGhl
+IGxlZ2FjeSBjbG9jayB3aXRoIEhBVkVfTEVHQUNZX0NMSyBvbi4KPj4KPj4gUmVwb3J0ZWQtYnk6
+IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBMaWFu
+ZyBZYW5nIDxsaWFuZy55YW5nQGFtbG9naWMuY29tPgo+PiAtLS0KPj4gwqAgZHJpdmVycy9tdGQv
+bmFuZC9yYXcvS2NvbmZpZyB8IDIgKy0KPj4gwqAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
+KCspLCAxIGRlbGV0aW9uKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jh
+dy9LY29uZmlnIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvS2NvbmZpZwo+PiBpbmRleCA2N2I3Y2I2
+N2MwMzAuLjUxNjk0MTJhNGFmNCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcv
+S2NvbmZpZwo+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9LY29uZmlnCj4+IEBAIC0zOTUs
+NyArMzk1LDcgQEAgY29uZmlnIE1URF9OQU5EX1NUTTMyX0ZNQzIKPj4gwqAgY29uZmlnIE1URF9O
+QU5EX01FU09OCj4+IMKgwqDCoMKgwqAgdHJpc3RhdGUgIlN1cHBvcnQgZm9yIE5BTkQgY29udHJv
+bGxlciBvbiBBbWxvZ2ljJ3MgTWVzb24gU29DcyIKPj4gLcKgwqDCoCBkZXBlbmRzIG9uIEFSQ0hf
+TUVTT04gfHwgQ09NUElMRV9URVNUCj4+ICvCoMKgwqAgZGVwZW5kcyBvbiBBUkNIX01FU09OIHx8
+IENPTVBJTEVfVEVTVCB8fCAhSEFWRV9MRUdBQ1lfQ0xLCj4gCj4gSSB0aGluayBkZXBlbmRpbmcg
+b24gQ0NGIHdvdWxkIGJlIGJldHRlciB0aGFuIGV4Y2x1ZGluZyBsZWdhY3kgY2xvY2suCj4KaW5k
+ZWVkLiBpIHdpbGwgdXNlIENPTU1PTl9DTEsgbGF0ZXIuIHRoYW5rcy4KCj4+IMKgwqDCoMKgwqAg
+c2VsZWN0IE1GRF9TWVNDT04KPj4gwqDCoMKgwqDCoCBoZWxwCj4+IMKgwqDCoMKgwqDCoMKgIEVu
+YWJsZXMgc3VwcG9ydCBmb3IgTkFORCBjb250cm9sbGVyIG9uIEFtbG9naWMncyBNZXNvbiBTb0Nz
+Lgo+IAo+IE5laWwKPiAKPiAuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLwo=
