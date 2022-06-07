@@ -4,63 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DED1C43334
-	for <linux-mtd@archiver.kernel.org>; Mon,  6 Jun 2022 21:00:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A454C43334
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 00:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=74V9nwg2pz2HgB0MjgR1awlHa7qFQyAWdXAIYCDf/6I=; b=Oy+yl03Nb2HHhh
-	AyjQqg7UEMqXD9eEKciDLUKOH5xGOiZ1cVp/z/KsweaElNQ0iPmvuZMZgt11DCUObfwztuRGBO7m8
-	ZA0XSqK+sZ/Ur1TKLvofEW+XAeSVwaqnotNQribWqrxMzLJkxsRtz7Gr2Dv/ZqfIBghQpEWSNZA5v
-	YVpB7AfNVqq4oBZVBQxJ5SEcVc5swUzGu0j72/m+QPcd5KuXoVTTJSfv+juMZy3mLwUwlzs5YBVDU
-	2owzj79tDF+zv83c0saDKSuf3UHRRoa9rU74z3WsOB6ujrtL/hF7AEL9Tcg70gGsHzxCYL/YZzn7R
-	2NcyKccxBG2gWF63eFJg==;
+	List-Owner; bh=asBhpsKAtNfaEQNpOyXUKIA53eCm2h4n03OjX351ksQ=; b=xGRrW0EztE5IIl
+	7J2VDOXe2aGJtAg7hBAkKniuAR/km93pq3IPgKY+xQE0qO3gnOZD/BOgvvWG/kH9j3/hE8NXzAmxS
+	pSlyLO7KyBzuJ8H47Kvsh9DvUyqFXEpf2HaTHYxsNvTfZO18j3vqcewG7mmTq1s9rruXkhDjgxBjh
+	iCb0gla8I/gHbopsXHXnta4tZOsXKcCst4jOT61ijZe5wLisDNiSzG1CWrlmlMRuTSLd8T+bxEAyb
+	+P5ZUIWicfppd80Vaq2GGdVgOgZz14G4Vf3z2I1ji1NDLe/qnJ2CTPGbtNvEk0j5qCJCskJtEUrNP
+	jbtlduzaWkoLsB8mx2Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyJoy-002nzX-O6; Mon, 06 Jun 2022 20:59:32 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1nyNIb-003v6Z-Ak; Tue, 07 Jun 2022 00:42:21 +0000
+Received: from fudo.makrotopia.org ([2a07:2ec0:3002::71])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyJox-002nz6-G8
-	for linux-mtd@bombadil.infradead.org; Mon, 06 Jun 2022 20:59:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=pP2rySBonQba80aJJurpf3Ufu7YzAk6PE/UfFF5JjqU=; b=CVvFIaE3DO4F579aJn2Gv8sjJ1
-	3s4aun59FYY8/cIm392ktBNn3Yfrt/zZI2FAKlmO4E3xMwJb3V8p0zjyiYNlXYHugx4ESqJjlHfb1
-	QG1qZiDzGvDgU/60lg9IfnGfI2mfaTj+stxEAcrFL6CEOIqb5GzPU9vw1qrk6uFLJAOZ3IkEmbCQE
-	LzelMikinFLOzolvWeyxZFad1TDhzqH1x/JkOTw+Xol4LnPrnKqEGccXqc7eFHbh9ziaHCXeJ+DmM
-	rrw8vPHosmQOe6zaJs4TsqpU+ayfdzgl+HFiB3jtxCoXtL62mYflqoIljhWxTii99IWQIy6G281e+
-	VVfyP2fw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyJWx-00B19W-2b; Mon, 06 Jun 2022 20:40:55 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: linux-fsdevel@vger.kernel.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-aio@kvack.org,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com,
-	linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net,
-	ocfs2-devel@oss.oracle.com,
-	linux-mtd@lists.infradead.org,
-	virtualization@lists.linux-foundation.org
-Subject: [PATCH 07/20] nfs: Convert to migrate_folio
-Date: Mon,  6 Jun 2022 21:40:37 +0100
-Message-Id: <20220606204050.2625949-8-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220606204050.2625949-1-willy@infradead.org>
-References: <20220606204050.2625949-1-willy@infradead.org>
+	id 1nyNIY-003v55-8E
+	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2022 00:42:19 +0000
+Received: from local
+	by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.94.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1nyNIM-0000rx-Ke; Tue, 07 Jun 2022 02:42:06 +0200
+Date: Tue, 7 Jun 2022 01:42:01 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-block@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Tom Rini <trini@konsulko.com>, Jens Axboe <axboe@kernel.dk>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v3 4/5] mtd_blkdevs: add option to enable scanning for
+ partitions
+Message-ID: <Yp6e2XXJ7SlkdX+B@makrotopia.org>
+References: <Yn1ibyUeXZttNX2a@makrotopia.org>
+ <20220603154804.2705bcb6@xps-13>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220603154804.2705bcb6@xps-13>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20220606_174218_333562_79AD517C 
+X-CRM114-Status: GOOD (  26.56  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,96 +62,103 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Use a folio throughout this function.  migrate_page() will be converted
-later.
+On Fri, Jun 03, 2022 at 03:48:04PM +0200, Miquel Raynal wrote:
+> Hi Daniel,
+> =
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/nfs/file.c     |  4 +---
- fs/nfs/internal.h |  6 ++++--
- fs/nfs/write.c    | 16 ++++++++--------
- 3 files changed, 13 insertions(+), 13 deletions(-)
+> daniel@makrotopia.org wrote on Thu, 12 May 2022 20:39:27 +0100:
+> =
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index 2d72b1b7ed74..549baed76351 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -533,9 +533,7 @@ const struct address_space_operations nfs_file_aops = {
- 	.write_end = nfs_write_end,
- 	.invalidate_folio = nfs_invalidate_folio,
- 	.release_folio = nfs_release_folio,
--#ifdef CONFIG_MIGRATION
--	.migratepage = nfs_migrate_page,
--#endif
-+	.migrate_folio = nfs_migrate_folio,
- 	.launder_folio = nfs_launder_folio,
- 	.is_dirty_writeback = nfs_check_dirty_writeback,
- 	.error_remove_page = generic_error_remove_page,
-diff --git a/fs/nfs/internal.h b/fs/nfs/internal.h
-index 8f8cd6e2d4db..437ebe544aaf 100644
---- a/fs/nfs/internal.h
-+++ b/fs/nfs/internal.h
-@@ -578,8 +578,10 @@ void nfs_clear_pnfs_ds_commit_verifiers(struct pnfs_ds_commit_info *cinfo)
- #endif
- 
- #ifdef CONFIG_MIGRATION
--extern int nfs_migrate_page(struct address_space *,
--		struct page *, struct page *, enum migrate_mode);
-+int nfs_migrate_folio(struct address_space *, struct folio *dst,
-+		struct folio *src, enum migrate_mode);
-+#else
-+#define nfs_migrate_folio NULL
- #endif
- 
- static inline int
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 1c706465d090..649b9e633459 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -2119,27 +2119,27 @@ int nfs_wb_page(struct inode *inode, struct page *page)
- }
- 
- #ifdef CONFIG_MIGRATION
--int nfs_migrate_page(struct address_space *mapping, struct page *newpage,
--		struct page *page, enum migrate_mode mode)
-+int nfs_migrate_folio(struct address_space *mapping, struct folio *dst,
-+		struct folio *src, enum migrate_mode mode)
- {
- 	/*
--	 * If PagePrivate is set, then the page is currently associated with
-+	 * If the private flag is set, the folio is currently associated with
- 	 * an in-progress read or write request. Don't try to migrate it.
- 	 *
- 	 * FIXME: we could do this in principle, but we'll need a way to ensure
- 	 *        that we can safely release the inode reference while holding
--	 *        the page lock.
-+	 *        the folio lock.
- 	 */
--	if (PagePrivate(page))
-+	if (folio_test_private(src))
- 		return -EBUSY;
- 
--	if (PageFsCache(page)) {
-+	if (folio_test_fscache(src)) {
- 		if (mode == MIGRATE_ASYNC)
- 			return -EBUSY;
--		wait_on_page_fscache(page);
-+		folio_wait_fscache(src);
- 	}
- 
--	return migrate_page(mapping, newpage, page, mode);
-+	return migrate_page(mapping, &dst->page, &src->page, mode);
- }
- #endif
- 
--- 
-2.35.1
+> > Add Kconfig boolean CONFIG_MTD_BLOCK_PARTITIONS and enable block
+> > partition parsers on non-NAND mtdblock devices in case it is selected.
+> > =
 
+> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > ---
+> >  drivers/mtd/Kconfig       | 11 +++++++++++
+> >  drivers/mtd/mtd_blkdevs.c |  4 +++-
+> >  2 files changed, 14 insertions(+), 1 deletion(-)
+> > =
+
+> > diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> > index 796a2eccbef0b8..12874dec15692a 100644
+> > --- a/drivers/mtd/Kconfig
+> > +++ b/drivers/mtd/Kconfig
+> > @@ -69,6 +69,17 @@ config MTD_BLOCK_RO
+> >  	  You do not need this option for use with the DiskOnChip devices. For
+> >  	  those, enable NFTL support (CONFIG_NFTL) instead.
+> >  =
+
+> > +config MTD_BLOCK_PARTITIONS
+> > +	bool "Scan for partitions on MTD block devices"
+> > +	depends on MTD_BLOCK || MTD_BLOCK_RO
+> > +	default y if FIT_PARTITION
+> > +	help
+> > +	  Scan MTD block devices for partitions (ie. MBR, GPT, uImage.FIT, ..=
+.).
+> > +	  (NAND devices are omitted, ubiblock should be used instead when)
+> > +
+> > +	  Unless your MTD partitions contain sub-partitions mapped using a
+> > +	  partition table, say no.
+> > +
+> >  comment "Note that in some cases UBI block is preferred. See MTD_UBI_B=
+LOCK."
+> >  	depends on MTD_BLOCK || MTD_BLOCK_RO
+> >  =
+
+> > diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> > index f7317211146550..c67ce2e6fbeb0a 100644
+> > --- a/drivers/mtd/mtd_blkdevs.c
+> > +++ b/drivers/mtd/mtd_blkdevs.c
+> > @@ -359,7 +359,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *n=
+ew)
+> >  	} else {
+> >  		snprintf(gd->disk_name, sizeof(gd->disk_name),
+> >  			 "%s%d", tr->name, new->devnum);
+> > -		gd->flags |=3D GENHD_FL_NO_PART;
+> > +
+> > +		if (!IS_ENABLED(CONFIG_MTD_BLOCK_PARTITIONS) || mtd_type_is_nand(new=
+->mtd))
+> > +			gd->flags |=3D GENHD_FL_NO_PART;
+> =
+
+> I really wonder if we need this in mtdblock ? Isn't ubiblock enough?
+
+One of the ideas behind this series is to be able to use the exact same
+image (which includes a rootfs filesystem sub-image) on devices with
+different boot storage options instead of having to write kernel and
+root filesystems separately in a storage-type specific manner.
+
+So the very same uImage.FIT on devices with block-based storage can be
+written into a GPT partition (see 3/5), on devices with NAND flash
+where UBI is used into a UBI volume (see 5/5) and on devices with NOR
+flash into an MTD partition (this patch).
+
+> =
+
+> Anyhow,
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thank you for the review!
+
+
+> =
+
+> I'll let Richard ack the ubiblock patch.
+> =
+
+> Thanks,
+> Miqu=E8l
+> =
+
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 ______________________________________________________
 Linux MTD discussion mailing list
