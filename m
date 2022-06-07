@@ -4,69 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7A59C43334
-	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 14:13:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 571F5C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  7 Jun 2022 14:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JqcshLiPX16z6aVqH3uvEq7I225PeawJY4Pr4EXvMKI=; b=Km7Pa2BZIazC21
-	Kps4Dy+2+gOAY3zng8RTVHZx+mrRV7YQ/sWn2b2DBOxWEJlKrLUofx2rX/GuTDthNl7vtdk+zy/e9
-	rkPLf1CWueVMgwUWIHycHBpjGpRr14NhCYQMBc7qw9wr//Gzh+kTknIUruVPjr2nVqTt4qIbMpQsU
-	2t77DkPFSZahEUi+mRIDXhIKwDjFRpHHZRRfQ/YsUg7GjA4hhoPbwCmPAdDcZAXWS4586bPTXO9zo
-	GAerEO1EztRblI51NWPuZsnv7abqC9x5cldHKclve4IE1H4jR6nTL94GXAkPtrpDBrIPvTo4xryW2
-	ITLSZPPOQn9Z19zGDy/Q==;
+	List-Owner; bh=an4JP71KpWHhm91WgQpxV9oLebgTT3ItmrcoEVRhAzM=; b=KneNaHYsDDIasq
+	NrAsZfjuH8/9yL4LO/kNbR633Xm7SLxugnD+/Ib1ClLFvg1YYgITOGMLfmz+w7WtQCdnPsQbbbD/s
+	UreLr6xNDLKn5+lY7gD60r9q9dCvdeB4WXl37lvCtaIL0AcB7sZxaIMsMtb17quni2vWdtDlDEmhd
+	1nzLVG+4C/z1gFEy3wdBONfIyns0MZCQzi8LFOvmAWh7ETrNTmktDpHbze9YUM5akBGxkvsRBGHuU
+	UwOmfrkLf8zaLrXZkIZDgucTrwWX+kLA2Gb/+fg6ZZlxRFoR6E4iQPPOXjvcBZL2vI1lWLiaacSgC
+	cH8plctLHuG7Vsnis4zg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyZx7-007yXa-Ax; Tue, 07 Jun 2022 14:13:01 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1nya8f-0082zM-SP; Tue, 07 Jun 2022 14:24:57 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyZx4-007yUs-83
-	for linux-mtd@lists.infradead.org; Tue, 07 Jun 2022 14:12:59 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E73716157A;
-	Tue,  7 Jun 2022 14:12:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15294C385A5;
-	Tue,  7 Jun 2022 14:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1654611175;
-	bh=tOlTuXrCdHXR6tngcOYuj9xb6Z7sf9Xjv7iA3sFggYc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KH4AWZwnRnDjxQDeZmq+Cmgtn6CDh5+jO2Zb7+EQMAhBVKoINQHyhMuThDfmevcBt
-	 ZTDUUyjmeiOD4Tibu/IbzEYR2NAYUYA59os4W+XauvN7beQS/xos5AiLJDnwVrndUB
-	 rM5amS1fGMBjy59vEfHyiqOmGRTu9UYaqMyg/YOisI7Va9vKbs3Qac9qJhRxKkexml
-	 aU8UhPgCJH+avMFetQh4PoMZ0XdyT5aMEOm1EY4vsbeKaZ9Hwl8hfcWkqD8AjYVwK9
-	 ukNPlmqK55f0NoRDtDaBQC0MTDoeqZPUvqzfB4UPasrcLeVxKToaglkKnnAk9WRCro
-	 RPY6qgXxQqaTw==
-Date: Tue, 7 Jun 2022 19:42:42 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Ansuel Smith <ansuelsmth@gmail.com>
-Cc: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: mtd: qcom_nandc: document
- qcom,boot-pages binding
-Message-ID: <20220607141242.GA1882@thinkpad>
-References: <20220519190112.6344-1-ansuelsmth@gmail.com>
- <20220519190112.6344-3-ansuelsmth@gmail.com>
- <20220607091522.GB5410@thinkpad>
- <629f3127.1c69fb81.2590d.39ac@mx.google.com>
+	id 1nya81-0082bB-QF
+	for linux-mtd@bombadil.infradead.org; Tue, 07 Jun 2022 14:24:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=TMQU2bbtV5kjI1Y7uBOgpmsi6MujvLdf4se1f0ultbQ=; b=T3tONSSZEZI3TnW91MAPGKwqdn
+	ynmJAoI6mOfrbbq8Jqf2czJGvi9Q0ukvLmmikcGSI8ZqHSwvRkTwLUTylDBqG6RaX8/3fM9Nvve4c
+	VqFvCNQX2J5+bZcWx69Xcxl0FnIF/+ozKW4FHlSZHfTn6FEQTfoWOYo1nVdtg5lJcedIUJr0ygYNv
+	BxeGZpOaFU4iqywNAUPFsAq2KhxI0Hbg9OXTdHy26nItEezSSsuIGEVlhH9A3QRH3TI9Fv56fknf8
+	0pc9AkwczXake1fj6Qt6cCxOadkgaG3Xkumb8mMGujy60/hhxbEX20y0v48fX/CV/o6oaLLnenmYd
+	w0xneMdA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1nya7z-00BhZy-2Z; Tue, 07 Jun 2022 14:24:15 +0000
+Date: Tue, 7 Jun 2022 15:24:15 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-aio@kvack.org,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+	ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+	virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 15/20] balloon: Convert to migrate_folio
+Message-ID: <Yp9fj/Si2qyb61Y3@casper.infradead.org>
+References: <20220606204050.2625949-1-willy@infradead.org>
+ <20220606204050.2625949-16-willy@infradead.org>
+ <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <629f3127.1c69fb81.2590d.39ac@mx.google.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220607_071258_413082_D5B03A38 
-X-CRM114-Status: GOOD (  29.73  )
+In-Reply-To: <e4d017a4-556d-bb5f-9830-a8843591bc8d@redhat.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,65 +67,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKdW4gMDcsIDIwMjIgYXQgMDk6MDU6MTZBTSArMDIwMCwgQW5zdWVsIFNtaXRoIHdy
-b3RlOgo+IE9uIFR1ZSwgSnVuIDA3LCAyMDIyIGF0IDAyOjQ1OjIyUE0gKzA1MzAsIE1hbml2YW5u
-YW4gU2FkaGFzaXZhbSB3cm90ZToKPiA+IE9uIFRodSwgTWF5IDE5LCAyMDIyIGF0IDA5OjAxOjEy
-UE0gKzAyMDAsIEFuc3VlbCBTbWl0aCB3cm90ZToKPiA+ID4gRG9jdW1lbnQgbmV3IHFjb20sYm9v
-dC1wYWdlcyBiaW5kaW5nIHVzZWQgdG8gYXBwbHkgc3BlY2lhbAo+ID4gPiByZWFkL3dyaXRlIGNv
-bmZpZ3VyYXRpb24gdG8gYm9vdCBwYWdlcy4KPiA+ID4gCj4gPiA+IFFDT00gYXBwbHkgYSBzcGVj
-aWFsIGNvbmZpZ3VyYXRpb24gd2hlcmUgc3BhcmUgZGF0YSBpcyBub3QgcHJvdGVjdGVkCj4gPiA+
-IGJ5IEVDQyBmb3Igc29tZSBzcGVjaWFsIHBhZ2VzICh1c2VkIGZvciBib290IHBhcnRpdGlvbiku
-IEFkZAo+ID4gPiBEb2N1bWVudGF0aW9uIG9uIGhvdyB0byBkZWNsYXJlIHRoZXNlIHNwZWNpYWwg
-cGFnZXMuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbnN1ZWwgU21pdGggPGFuc3VlbHNt
-dGhAZ21haWwuY29tPgo+ID4gPiAtLS0KPiA+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210
-ZC9xY29tLG5hbmRjLnlhbWwgICB8IDI2ICsrKysrKysrKysrKysrKysrKysKPiA+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspCj4gPiA+IAo+ID4gPiBkaWZmIC0tZ2l0IGEvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Fjb20sbmFuZGMueWFtbAo+ID4gPiBp
-bmRleCA4NGFkN2ZmMzAxMjEuLmE1OWFlOTUyNWY0ZSAxMDA2NDQKPiA+ID4gLS0tIGEvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwKPiA+ID4gKysr
-IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9xY29tLG5hbmRjLnlhbWwK
-PiA+ID4gQEAgLTEwMiw2ICsxMDIsMzAgQEAgYWxsT2Y6Cj4gPiA+ICAgICAgICAgICAgICAtIGNv
-bnN0OiByeAo+ID4gPiAgICAgICAgICAgICAgLSBjb25zdDogY21kCj4gPiA+ICAKPiA+ID4gKyAg
-LSBpZjoKPiA+ID4gKyAgICAgIHByb3BlcnRpZXM6Cj4gPiA+ICsgICAgICAgIGNvbXBhdGlibGU6
-Cj4gPiA+ICsgICAgICAgICAgY29udGFpbnM6Cj4gPiA+ICsgICAgICAgICAgICBlbnVtOgo+ID4g
-PiArICAgICAgICAgICAgICAtIHFjb20saXBxODA2eC1uYW5kCj4gPiA+ICsKPiA+ID4gKyAgICB0
-aGVuOgo+ID4gPiArICAgICAgcHJvcGVydGllczoKPiA+ID4gKyAgICAgICAgcWNvbSxib290LXBh
-Z2VzOgo+ID4gCj4gPiBFdmVudGhvdWdoIHRoZSBwYWdlIGxheW91dCBpcyB3aGF0IG1ha2luZyB0
-aGUgZGlmZmVyZW5jZSwgaGVyZSB0aGUgYm9vdAo+ID4gcGFydGl0aW9uIG9mZnNldCBhbmQgc2l6
-ZSBhcmUgZ2V0dGluZyBzcGVjaWZpZWQuIFNvIGhvdyBhYm91dCwgY2hhbmdpbmcgaXQKPiA+IHRv
-ICJxY29tLGJvb3QtcGFydGl0aW9ucyI/Cj4gPiAKPiA+IFRoYW5rcywKPiA+IE1hbmkKPiA+Cj4g
-Cj4gWWVwLCB5b3UgYXJlIGNvcnJlY3QgYW5kIHRoZSBuYW1pbmcgaXMgY29uZnVzaW5nLiBXaWxs
-IGRvIHRoZSBjaGFuZ2UuCj4gRGlkIHlvdSBjaGVjayB0aGUgY29kZSBpZiB5b3Ugbm90aWNlIHNv
-bWV0aGluZyB0byBpbXByb3ZlIC8gYW4gaWRlYSBvZiBhCj4gYmV0dGVyIGltcGxlbWVudGF0aW9u
-IG9yIGJldHRlciBuYW1pbmc/Cj4gSnVzdCB0byBza2lwIHNlbmRpbmcgbXVsdGlwbGUgcmV2aXNp
-b24gd2l0aCBzbWFsbCBjaGFuZ2VzLgo+IAoKWWVwLCBJIGRvIGhhdmUgc29tZSBjb21tZW50cy4g
-V2lsbCBzaGFyZSB0aGVtLgoKVGhhbmtzLApNYW5pCgo+ID4gPiArICAgICAgICAgICRyZWY6IC9z
-Y2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMi1tYXRyaXgKPiA+ID4gKyAgICAg
-ICAgICBpdGVtczoKPiA+ID4gKyAgICAgICAgICAgIGl0ZW1zOgo+ID4gPiArICAgICAgICAgICAg
-ICAtIGRlc2NyaXB0aW9uOiBvZmZzZXQKPiA+ID4gKyAgICAgICAgICAgICAgLSBkZXNjcmlwdGlv
-bjogc2l6ZQo+ID4gPiArICAgICAgICAgIGRlc2NyaXB0aW9uOgo+ID4gPiArICAgICAgICAgICAg
-U29tZSBzcGVjaWFsIHBhZ2UgdXNlZCBieSBib290IHBhcnRpdGlvbiBoYXZlIHNwYXJlIGRhdGEK
-PiA+ID4gKyAgICAgICAgICAgIG5vdCBwcm90ZWN0ZWQgYnkgRUNDLiBVc2UgdGhpcyB0byBkZWNs
-YXJlIHRoZXNlIHNwZWNpYWwgcGFnZQo+ID4gPiArICAgICAgICAgICAgYnkgZGVmaW5pbmcgZmly
-c3QgdGhlIG9mZnNldCBhbmQgdGhlbiB0aGUgc2l6ZS4KPiA+ID4gKwo+ID4gPiArICAgICAgICAg
-ICAgSXQncyBpbiB0aGUgZm9ybSBvZiA8b2Zmc2V0MSBzaXplMSBvZmZzZXQyIHNpemUyIG9mZnNl
-dDMgLi4uPgo+ID4gPiArCj4gPiA+ICsgICAgICAgICAgICBSZWZlciB0byB0aGUgaXBxODA2NCBl
-eGFtcGxlIG9uIGhvdyB0byB1c2UgdGhpcyBzcGVjaWFsIGJpbmRpbmcuCj4gPiA+ICsKPiA+ID4g
-IHJlcXVpcmVkOgo+ID4gPiAgICAtIGNvbXBhdGlibGUKPiA+ID4gICAgLSByZWcKPiA+ID4gQEAg
-LTEzNSw2ICsxNTksOCBAQCBleGFtcGxlczoKPiA+ID4gICAgICAgICAgbmFuZC1lY2Mtc3RyZW5n
-dGggPSA8ND47Cj4gPiA+ICAgICAgICAgIG5hbmQtYnVzLXdpZHRoID0gPDg+Owo+ID4gPiAgCj4g
-PiA+ICsgICAgICAgIHFjb20sYm9vdC1wYWdlcyA9IDwweDAgMHg1OGEwMDAwPjsKPiA+ID4gKwo+
-ID4gPiAgICAgICAgICBwYXJ0aXRpb25zIHsKPiA+ID4gICAgICAgICAgICBjb21wYXRpYmxlID0g
-ImZpeGVkLXBhcnRpdGlvbnMiOwo+ID4gPiAgICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+
-Owo+ID4gPiAtLSAKPiA+ID4gMi4zNC4xCj4gPiA+IAo+ID4gCj4gPiAtLSAKPiA+IOCuruCuo+Cu
-v+CuteCuo+CvjeCuo+CuqeCvjSDgrprgrqTgrr7grprgrr/grrXgrq7gr40KPiAKPiAtLSAKPiAJ
-QW5zdWVsCgotLSAK4K6u4K6j4K6/4K614K6j4K+N4K6j4K6p4K+NIOCumuCupOCuvuCumuCuv+Cu
-teCuruCvjQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+On Tue, Jun 07, 2022 at 09:36:21AM +0200, David Hildenbrand wrote:
+> On 06.06.22 22:40, Matthew Wilcox (Oracle) wrote:
+> >  const struct address_space_operations balloon_aops = {
+> > -	.migratepage = balloon_page_migrate,
+> > +	.migrate_folio = balloon_migrate_folio,
+> >  	.isolate_page = balloon_page_isolate,
+> >  	.putback_page = balloon_page_putback,
+> >  };
+> 
+> I assume you're working on conversion of the other callbacks as well,
+> because otherwise, this ends up looking a bit inconsistent and confusing :)
+
+My intention was to finish converting aops for the next merge window.
+
+However, it seems to me that we goofed back in 2016 by merging
+commit bda807d44454.  isolate_page() and putback_page() should
+never have been part of address_space_operations.
+
+I'm about to embark on creating a new migrate_operations struct
+for drivers to use that contains only isolate/putback/migrate.
+No filesystem uses isolate/putback, so those can just be deleted.
+Both migrate_operations & address_space_operations will contain a
+migrate callback.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
