@@ -4,39 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 153FFC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 15:10:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF358C43334
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 15:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RsQG3GnoXjXQMW3xklACvKXTPCUMBC+dxLkX5tmtpts=; b=bGWyLr7aIMsi/f
-	z31kWW2ziFpquNVDrFgLxO4YSIZ2yV2L9gTQOVrv18TfR2aDddP+D08/8ns2T+hYJIgtmRFw8qomz
-	9rME5Fq9MVDkHd4b2OzegphhdXhMR/bigHf6qOi8O0TP/b7m2+ZFXZMpDG0jlc6oFemurBwPYeOxu
-	4KEF/cI9+eK/SyENDB0BOO+J1MjsJ7IVeQltxt1ynUuNDOQF98/IxJwibTXQ5eqIT8DUZRzkYnT0Q
-	dOALK9vO29BhvRtfPxzS5F3v0F0fOT1JGnG7nF/OlaX9YC+QEEauwkIDkeuANAjRKvwX6sjNObQ/S
-	o2ntoGZxOkLSOJ/PxlYg==;
+	List-Owner; bh=oOYmnrs72wiGBM9492PRK299BVSjev98t5nG0NFvJBA=; b=MTy6Vmw3vOhj6n
+	UuPynu9NYCCqtbmcMSSQJK8ieL640tbPIV5P+nI1G+IyTs0JZgUmbhFYe/RjkUfwLXGVh8QkKHq+9
+	A6NRwwit4HQaTPdRqsEuzQJAOnSSyyixcjnOLYsD4avdENpa5GL52drPO/TY2MVsnbEtims58Plfq
+	jl5MOIgrSqjbCdOKDkhcjfB7fyt3f5NlfgJMGC6EOHqahqQsZicWEnlBqKdm6C6EOXu6PT5pJ05Ys
+	9uwxn5cSe/AFhvL5XOU7TpVJM2Nn4+M7xPL8iY4RISqYCQ4Hi7iyeiVV9FDaVI91Nss+ykRniBEdy
+	5vhNKuexXOmIVQ+HTheA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxJg-00Dvui-Pr; Wed, 08 Jun 2022 15:09:52 +0000
+	id 1nyxJR-00DviL-Iu; Wed, 08 Jun 2022 15:09:37 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxJO-00DvgH-3R
-	for linux-mtd@bombadil.infradead.org; Wed, 08 Jun 2022 15:09:34 +0000
+	id 1nyxJM-00DvgH-Bm
+	for linux-mtd@bombadil.infradead.org; Wed, 08 Jun 2022 15:09:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=ebo5nyfkwGkX0SM0pROh1Dct7QqdSa3ZjR42/FbSW98=; b=VP4hPmud7SPFmC3bIKYlVqSBNM
-	ye5qs83/sHqcoYsTLqQd+m9uMu5ak7kQqhrxPejY6kjGezj2IywtVb2KqugczyFSDrVR4wV9pSrVK
-	iSf/0bC449kpqY51nqYYffjd6WE1rtpD+iRnk+HIYHGnjNZhOOroRGUq/pB0InvMW4DRxGDTxdKau
-	LV1b+mg2Re0TultwkHBXglCIcQryDYl7+UF2rFc7QVpqSYJdzc0Al5iEjRY7dgk86mOekBEL9k1YS
-	ihpfsRLVoOMwePjy82T+0hAWr4N6/fZmtc9OYicZTzmrFQgTMbaOM2r5zfKDW1WGYyLJ19faZbb2i
-	WKGEyvZA==;
+	bh=L/W62gIhDvny0+evT6hKu8mfiF8YLXl9JHSXNMT2CL8=; b=E/cR7+jnh4MZjUekK6MX3paPTV
+	rpyCm/XiDAOZDdkAxiR6ENBOGDspVwZofRubYVUCyfBG/q0G2P76APSKvJQYDoJJHnpbIZIfvndzv
+	b2tINK8pbPtEv8uVgJlVmXLf0Zb7aTLK/Av4cH/ZFWlwIwtyIRzsKjAlUgHGt/pj4W+imiRHLVDU6
+	HWs4rwESaohScBPmkWkya7wcDDvYQG1mSEtqOj+cki1hdMlVwH8fFsV0sNL2uKq8yjL+T8WmSb+iF
+	zAP5EwizELetbeBerNs7aFo2HX55u2FQyB9sVWH9wzoFE+fXlWb8vKSJpwwQJNZs4KPFu+kaJl/nK
+	iSwBCYeA==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxCt-00CjFK-V0; Wed, 08 Jun 2022 15:02:51 +0000
+	id 1nyxCu-00CjFS-Ds; Wed, 08 Jun 2022 15:02:52 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -55,9 +55,9 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-mtd@lists.infradead.org,
 	virtualization@lists.linux-foundation.org,
 	Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 03/19] fs: Add aops->migrate_folio
-Date: Wed,  8 Jun 2022 16:02:33 +0100
-Message-Id: <20220608150249.3033815-4-willy@infradead.org>
+Subject: [PATCH v2 07/19] mm/migrate: Convert expected_page_refs() to folio_expected_refs()
+Date: Wed,  8 Jun 2022 16:02:37 +0100
+Message-Id: <20220608150249.3033815-8-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220608150249.3033815-1-willy@infradead.org>
 References: <20220608150249.3033815-1-willy@infradead.org>
@@ -78,177 +78,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Provide a folio-based replacement for aops->migratepage.  Update the
-documentation to document migrate_folio instead of migratepage.
+Now that both callers have a folio, convert this function to
+take a folio & rename it.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- Documentation/filesystems/locking.rst |  5 ++--
- Documentation/filesystems/vfs.rst     | 13 ++++++-----
- Documentation/vm/page_migration.rst   | 33 ++++++++++++++-------------
- include/linux/fs.h                    |  4 +++-
- mm/compaction.c                       |  4 +++-
- mm/migrate.c                          | 11 +++++----
- 6 files changed, 40 insertions(+), 30 deletions(-)
+ mm/migrate.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
-index c0fe711f14d3..3d28b23676bd 100644
---- a/Documentation/filesystems/locking.rst
-+++ b/Documentation/filesystems/locking.rst
-@@ -253,7 +253,8 @@ prototypes::
- 	void (*free_folio)(struct folio *);
- 	int (*direct_IO)(struct kiocb *, struct iov_iter *iter);
- 	bool (*isolate_page) (struct page *, isolate_mode_t);
--	int (*migratepage)(struct address_space *, struct page *, struct page *);
-+	int (*migrate_folio)(struct address_space *, struct folio *dst,
-+			struct folio *src, enum migrate_mode);
- 	void (*putback_page) (struct page *);
- 	int (*launder_folio)(struct folio *);
- 	bool (*is_partially_uptodate)(struct folio *, size_t from, size_t count);
-@@ -281,7 +282,7 @@ release_folio:		yes
- free_folio:		yes
- direct_IO:
- isolate_page:		yes
--migratepage:		yes (both)
-+migrate_folio:		yes (both)
- putback_page:		yes
- launder_folio:		yes
- is_partially_uptodate:	yes
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-index a08c652467d7..3ae1b039b03f 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -740,7 +740,8 @@ cache in your filesystem.  The following members are defined:
- 		/* isolate a page for migration */
- 		bool (*isolate_page) (struct page *, isolate_mode_t);
- 		/* migrate the contents of a page to the specified target */
--		int (*migratepage) (struct page *, struct page *);
-+		int (*migrate_folio)(struct mapping *, struct folio *dst,
-+				struct folio *src, enum migrate_mode);
- 		/* put migration-failed page back to right list */
- 		void (*putback_page) (struct page *);
- 		int (*launder_folio) (struct folio *);
-@@ -935,12 +936,12 @@ cache in your filesystem.  The following members are defined:
- 	is successfully isolated, VM marks the page as PG_isolated via
- 	__SetPageIsolated.
- 
--``migrate_page``
-+``migrate_folio``
- 	This is used to compact the physical memory usage.  If the VM
--	wants to relocate a page (maybe off a memory card that is
--	signalling imminent failure) it will pass a new page and an old
--	page to this function.  migrate_page should transfer any private
--	data across and update any references that it has to the page.
-+	wants to relocate a folio (maybe from a memory device that is
-+	signalling imminent failure) it will pass a new folio and an old
-+	folio to this function.  migrate_folio should transfer any private
-+	data across and update any references that it has to the folio.
- 
- ``putback_page``
- 	Called by the VM when isolated page's migration fails.
-diff --git a/Documentation/vm/page_migration.rst b/Documentation/vm/page_migration.rst
-index 8c5cb8147e55..e0f73ddfabb1 100644
---- a/Documentation/vm/page_migration.rst
-+++ b/Documentation/vm/page_migration.rst
-@@ -181,22 +181,23 @@ which are function pointers of struct address_space_operations.
-    Once page is successfully isolated, VM uses page.lru fields so driver
-    shouldn't expect to preserve values in those fields.
- 
--2. ``int (*migratepage) (struct address_space *mapping,``
--|	``struct page *newpage, struct page *oldpage, enum migrate_mode);``
--
--   After isolation, VM calls migratepage() of driver with the isolated page.
--   The function of migratepage() is to move the contents of the old page to the
--   new page
--   and set up fields of struct page newpage. Keep in mind that you should
--   indicate to the VM the oldpage is no longer movable via __ClearPageMovable()
--   under page_lock if you migrated the oldpage successfully and returned
--   MIGRATEPAGE_SUCCESS. If driver cannot migrate the page at the moment, driver
--   can return -EAGAIN. On -EAGAIN, VM will retry page migration in a short time
--   because VM interprets -EAGAIN as "temporary migration failure". On returning
--   any error except -EAGAIN, VM will give up the page migration without
--   retrying.
--
--   Driver shouldn't touch the page.lru field while in the migratepage() function.
-+2. ``int (*migrate_folio) (struct address_space *mapping,``
-+|	``struct folio *dst, struct folio *src, enum migrate_mode);``
-+
-+   After isolation, VM calls the driver's migrate_folio() with the
-+   isolated folio.  The purpose of migrate_folio() is to move the contents
-+   of the source folio to the destination folio and set up the fields
-+   of destination folio.  Keep in mind that you should indicate to the
-+   VM the source folio is no longer movable via __ClearPageMovable()
-+   under folio if you migrated the source successfully and returned
-+   MIGRATEPAGE_SUCCESS.  If driver cannot migrate the folio at the
-+   moment, driver can return -EAGAIN. On -EAGAIN, VM will retry folio
-+   migration in a short time because VM interprets -EAGAIN as "temporary
-+   migration failure".  On returning any error except -EAGAIN, VM will
-+   give up the folio migration without retrying.
-+
-+   Driver shouldn't touch the folio.lru field while in the migrate_folio()
-+   function.
- 
- 3. ``void (*putback_page)(struct page *);``
- 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 5d8ee3155ca2..47431cf8fbb3 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -362,9 +362,11 @@ struct address_space_operations {
- 	void (*free_folio)(struct folio *folio);
- 	ssize_t (*direct_IO)(struct kiocb *, struct iov_iter *iter);
- 	/*
--	 * migrate the contents of a page to the specified target. If
-+	 * migrate the contents of a folio to the specified target. If
- 	 * migrate_mode is MIGRATE_ASYNC, it must not block.
- 	 */
-+	int (*migrate_folio)(struct address_space *, struct folio *dst,
-+			struct folio *src, enum migrate_mode);
- 	int (*migratepage) (struct address_space *,
- 			struct page *, struct page *, enum migrate_mode);
- 	int (*launder_folio)(struct folio *);
-diff --git a/mm/compaction.c b/mm/compaction.c
-index f23efba1d118..458f49f9ab09 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1042,7 +1042,9 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 				goto isolate_fail_put;
- 
- 			mapping = page_mapping(page);
--			migrate_dirty = !mapping || mapping->a_ops->migratepage;
-+			migrate_dirty = !mapping ||
-+					mapping->a_ops->migrate_folio ||
-+					mapping->a_ops->migratepage;
- 			unlock_page(page);
- 			if (!migrate_dirty)
- 				goto isolate_fail_put;
 diff --git a/mm/migrate.c b/mm/migrate.c
-index 3ce6fee87efa..e064b998ead0 100644
+index 2975f0c4d7cf..2e2f41572066 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -856,14 +856,17 @@ static int move_to_new_folio(struct folio *dst, struct folio *src,
+@@ -336,13 +336,18 @@ void pmd_migration_entry_wait(struct mm_struct *mm, pmd_t *pmd)
+ }
+ #endif
  
- 		if (!mapping)
- 			rc = migrate_page(mapping, &dst->page, &src->page, mode);
--		else if (mapping->a_ops->migratepage)
-+		else if (mapping->a_ops->migrate_folio)
- 			/*
--			 * Most pages have a mapping and most filesystems
--			 * provide a migratepage callback. Anonymous pages
-+			 * Most folios have a mapping and most filesystems
-+			 * provide a migrate_folio callback. Anonymous folios
- 			 * are part of swap space which also has its own
--			 * migratepage callback. This is the most common path
-+			 * migrate_folio callback. This is the most common path
- 			 * for page migration.
- 			 */
-+			rc = mapping->a_ops->migrate_folio(mapping, dst, src,
-+								mode);
-+		else if (mapping->a_ops->migratepage)
- 			rc = mapping->a_ops->migratepage(mapping, &dst->page,
- 							&src->page, mode);
- 		else
+-static int expected_page_refs(struct address_space *mapping, struct page *page)
++static int folio_expected_refs(struct address_space *mapping,
++		struct folio *folio)
+ {
+-	int expected_count = 1;
++	int refs = 1;
++	if (!mapping)
++		return refs;
+ 
+-	if (mapping)
+-		expected_count += compound_nr(page) + page_has_private(page);
+-	return expected_count;
++	refs += folio_nr_pages(folio);
++	if (folio_get_private(folio))
++		refs++;
++
++	return refs;
+ }
+ 
+ /*
+@@ -359,7 +364,7 @@ int folio_migrate_mapping(struct address_space *mapping,
+ 	XA_STATE(xas, &mapping->i_pages, folio_index(folio));
+ 	struct zone *oldzone, *newzone;
+ 	int dirty;
+-	int expected_count = expected_page_refs(mapping, &folio->page) + extra_count;
++	int expected_count = folio_expected_refs(mapping, folio) + extra_count;
+ 	long nr = folio_nr_pages(folio);
+ 
+ 	if (!mapping) {
+@@ -669,7 +674,7 @@ static int __buffer_migrate_folio(struct address_space *mapping,
+ 		return migrate_page(mapping, &dst->page, &src->page, mode);
+ 
+ 	/* Check whether page does not have extra refs before we do more work */
+-	expected_count = expected_page_refs(mapping, &src->page);
++	expected_count = folio_expected_refs(mapping, src);
+ 	if (folio_ref_count(src) != expected_count)
+ 		return -EAGAIN;
+ 
 -- 
 2.35.1
 
