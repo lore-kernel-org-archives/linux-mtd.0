@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 585C4C43334
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 08:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55216C43334
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 08:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=OPNt5g2RNPpEshpW0ZH4fa4JDDXMrK18jOo2y5mhUSI=; b=vklDUx5d+51tOL
-	OeLxigRtzFtfvUUCMdFOYZfyjUtOaV2v3vxvdJO4N1dsNIepmoVQhDi1soM/y7WtrLQJCigE5oZdP
-	kuK5CKPwNLA1Pe3Eh0TlcepSJB2z8+kZmpAN4POBnvGmVyRJLyLKYYX5zXkMUGkrR02WigH+fItI5
-	mCjqiSbBnrInXkStCfdmZYvmrmXZt9ZYysLvtB1zciLmbEbwkj6GVJ7Pxx5KyAzci42YZQBSiC7QP
-	wF65PvKrz0JFbNXqG+82Ve0uJKZ2dyl2v1dJnqk1xmPtRo1KPN0ZwUPVg6DG9q9KyKbdssVGVrpfT
-	oTikZgT4zKPyqfAqy5aw==;
+	List-Owner; bh=OPNt5g2RNPpEshpW0ZH4fa4JDDXMrK18jOo2y5mhUSI=; b=PJ2At7rAWaGBH6
+	nDslW5YFW9DU9LG+/EJTRBMyNAxIlxRbT6HPZ5lvRC38G+jXL61RND9yxQp1mRQ4ngzxUSv76TX7F
+	uYNHJRqmQeXGcov6l6qIpqKrRQC4Q3T//0aQW903l9OhY5a2dOHfXZBf1phe1sn3q0cEuFTyI41Sq
+	jltr/5VR6gZ7yupZgN4MTNrbRmj2cCtT5Sep5UBCujIIy+puorsOnwLRGXWRLTcauUoO6G6+HJtMj
+	/A2Nma3JxB6OGn+gpz8uXaPhjv5iqtWeDck85KzIpJFZOyAUrdB35p9A3WwQBBpPTF0R8/7GEV8wY
+	ffzSoNxu+8A3MKI3p/rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyqlE-00Bpqp-UO; Wed, 08 Jun 2022 08:09:52 +0000
+	id 1nyqmW-00BqFX-MP; Wed, 08 Jun 2022 08:11:12 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyqlC-00Bppr-Jn; Wed, 08 Jun 2022 08:09:50 +0000
-Date: Wed, 8 Jun 2022 01:09:50 -0700
+	id 1nyqmU-00BqEE-LB; Wed, 08 Jun 2022 08:11:10 +0000
+Date: Wed, 8 Jun 2022 01:11:10 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -34,13 +34,14 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
 	ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
 	virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 01/20] fs: Add aops->migrate_folio
-Message-ID: <YqBZTpzF/B6kduqm@infradead.org>
+Subject: Re: [PATCH 02/20] mm/migrate: Convert fallback_migrate_page() to
+ fallback_migrate_folio()
+Message-ID: <YqBZnjIZvr1RIdI4@infradead.org>
 References: <20220606204050.2625949-1-willy@infradead.org>
- <20220606204050.2625949-2-willy@infradead.org>
+ <20220606204050.2625949-3-willy@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220606204050.2625949-2-willy@infradead.org>
+In-Reply-To: <20220606204050.2625949-3-willy@infradead.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
