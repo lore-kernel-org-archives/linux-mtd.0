@@ -4,39 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CB8C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 15:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96582C43334
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 15:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MYgfYZmg436/fSyc+kE/1OZqoexHyfGRvAVNOf2K7a8=; b=qJ/xE+VOztjend
-	ZwYZUxnjGVw4D4+aCzx2ZmYd/bx9P5Kde29Y2m8b0MVakjUym5o2lPNEZKol30hKVjY52k3fNJjjY
-	RlU8PywMoNRgvIsGZCdApKVP6AJnO1GNAChh/Aw4u5RItCPmZR/xKcKDQmC8UFgM33G/ve9J9EO89
-	qqlAXhrP5xcwmE6SKSPWpstl0EUIS7xg2SPftejXw4CgsnW2DK6IQfx3QvE3ORnMQkCtm5WEYB+/A
-	ecBfCpQZpybCazkwXXW/ckTdLG/s67iMLI6vq4A1HbETFH/RYAl5p3eADwis+VjSLJweWva29/yUk
-	zZ8P41zO15pQyPbev4jw==;
+	List-Owner; bh=17H8jfIclU6u6YzpSlAB6ejbj2UzASld3d6kw7aq2+8=; b=uqTeD9CVrMmRDh
+	8vc5W9wuMzsCdTMHNb0cDARHJWE/Dct0j4gTrch0/psKdsW/m2yVdtb4qTVqd6yYH/fv5UygH31mb
+	n4y0i35eQjwzQ2H3PITDxsTRmvuCA2Lkn80Y+savA01DDW/bYL5tDsN0Nph4BO2QuiE/wDohFbTbe
+	XAsunebReKMT9JUaCq25QnNA3SFNL+FRx4we5u1rnRMgrT9ngAgYm0WOqqFPmvtA717yy9e9K85fk
+	8dKlfsucZLNbYoDDpHHftIEpOsTgXFJdFXPEn/Y97FQDnkQvUQkStpg7FjI+b0ITleFYk11bKvMwC
+	f0ItNLcx+AgBDMADQyGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxEs-00DtFL-8N; Wed, 08 Jun 2022 15:04:54 +0000
+	id 1nyxF1-00DtKQ-C9; Wed, 08 Jun 2022 15:05:03 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxEn-00DtBr-VF
+	id 1nyxEo-00DtBr-Me
 	for linux-mtd@bombadil.infradead.org; Wed, 08 Jun 2022 15:04:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=jUHtPvxpwYn/CbCKtCO4gIDrDPVTvyaQoVGtIQShqV8=; b=F0wkIwdh5JarabWL7s440hCeed
-	JG7M+RAPNvEs0qtJ0odlvedPM5u6UNyXbTmEBm4Hx35BoOjFV1oKCmRWs7a2p1I7DWzzzvlvH7zxb
-	NwAy72/kutKMINfwHD8wNSSOmlkp/ZbcRgANHqqHoyDCAzRFMPKBCLvDG/+pf/SqWyA6xVonIuvPK
-	3Vo2mRZDOuHUiWFb793CtPIl0KBu+BtlMkUJpzHLOBoi3MTThxjS7QgPBZ4bWXFBqmBv38WY81zoI
-	IOHo+aIWKHbzH55lED0UDiMkvsiu5YHhPck8zRT5hnVZDoeLyNfO5FO+6YtWEQzYK/lnegSOXMkks
-	Gp33NrTQ==;
+	bh=GbYk6WOt1dmTqgVV6yE5r+zIsB4v0sAfl69wEExYZVA=; b=Avm4ohsfCHV3ITlqMqf2jpVpw0
+	IMOZj7fyZbC5iV7nTa3UiJKE6MY3T5i/uCrkDUsFF4AHwZozCQI/jezfAirc4Rt7lV10DpHdXgpVv
+	HwvO3PQ82Ljpfj+bVRM9nX+FqP5at4G8638Lf/Y23JZBOfbCSUVhSfGzlTCXeJ412NWBXtTRK4tPV
+	l5nw5SoD+S2LeVACUshYo3NXuTXLJgcnVCt8pC7bTFlOs1hz2JEx+tlk60ClyMU/daGv1TEYDSIYc
+	3CGKxaOONIbpGJeCBheEf/lTy+OxqCrdvV8s5fcYLlnAxJzahzGG9Rz01UBxjf+ktT1m08pyVoDQI
+	fQR1vsVA==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxCu-00CjFe-U7; Wed, 08 Jun 2022 15:02:52 +0000
+	id 1nyxCv-00CjFk-6D; Wed, 08 Jun 2022 15:02:53 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -54,9 +54,9 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	ocfs2-devel@oss.oracle.com,
 	linux-mtd@lists.infradead.org,
 	virtualization@lists.linux-foundation.org
-Subject: [PATCH v2 13/19] ubifs: Convert to filemap_migrate_folio()
-Date: Wed,  8 Jun 2022 16:02:43 +0100
-Message-Id: <20220608150249.3033815-14-willy@infradead.org>
+Subject: [PATCH v2 16/19] hugetlb: Convert to migrate_folio
+Date: Wed,  8 Jun 2022 16:02:46 +0100
+Message-Id: <20220608150249.3033815-17-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220608150249.3033815-1-willy@infradead.org>
 References: <20220608150249.3033815-1-willy@infradead.org>
@@ -77,61 +77,135 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-filemap_migrate_folio() is a little more general than ubifs really needs,
-but it's better to share the code.
+This involves converting migrate_huge_page_move_mapping().  We also need a
+folio variant of hugetlb_set_page_subpool(), but that's for a later patch.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/ubifs/file.c | 29 ++---------------------------
- 1 file changed, 2 insertions(+), 27 deletions(-)
+ fs/hugetlbfs/inode.c    | 23 ++++++++++++++---------
+ include/linux/migrate.h |  6 +++---
+ mm/migrate.c            | 18 +++++++++---------
+ 3 files changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 04ced154960f..f2353dd676ef 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1461,29 +1461,6 @@ static bool ubifs_dirty_folio(struct address_space *mapping,
- 	return ret;
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 14d33f725e05..eca1d0fabd7e 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -954,28 +954,33 @@ static int hugetlbfs_symlink(struct user_namespace *mnt_userns,
+ 	return error;
  }
  
--#ifdef CONFIG_MIGRATION
--static int ubifs_migrate_page(struct address_space *mapping,
--		struct page *newpage, struct page *page, enum migrate_mode mode)
--{
--	int rc;
--
--	rc = migrate_page_move_mapping(mapping, newpage, page, 0);
--	if (rc != MIGRATEPAGE_SUCCESS)
--		return rc;
--
--	if (PagePrivate(page)) {
--		detach_page_private(page);
--		attach_page_private(newpage, (void *)1);
--	}
--
--	if (mode != MIGRATE_SYNC_NO_COPY)
--		migrate_page_copy(newpage, page);
--	else
--		migrate_page_states(newpage, page);
--	return MIGRATEPAGE_SUCCESS;
--}
--#endif
--
- static bool ubifs_release_folio(struct folio *folio, gfp_t unused_gfp_flags)
+-static int hugetlbfs_migrate_page(struct address_space *mapping,
+-				struct page *newpage, struct page *page,
++#ifdef CONFIG_MIGRATION
++static int hugetlbfs_migrate_folio(struct address_space *mapping,
++				struct folio *dst, struct folio *src,
+ 				enum migrate_mode mode)
  {
- 	struct inode *inode = folio->mapping->host;
-@@ -1649,10 +1626,8 @@ const struct address_space_operations ubifs_file_address_operations = {
- 	.write_end      = ubifs_write_end,
- 	.invalidate_folio = ubifs_invalidate_folio,
- 	.dirty_folio	= ubifs_dirty_folio,
--#ifdef CONFIG_MIGRATION
--	.migratepage	= ubifs_migrate_page,
--#endif
--	.release_folio    = ubifs_release_folio,
-+	.migrate_folio	= filemap_migrate_folio,
-+	.release_folio	= ubifs_release_folio,
+ 	int rc;
+ 
+-	rc = migrate_huge_page_move_mapping(mapping, newpage, page);
++	rc = migrate_huge_page_move_mapping(mapping, dst, src);
+ 	if (rc != MIGRATEPAGE_SUCCESS)
+ 		return rc;
+ 
+-	if (hugetlb_page_subpool(page)) {
+-		hugetlb_set_page_subpool(newpage, hugetlb_page_subpool(page));
+-		hugetlb_set_page_subpool(page, NULL);
++	if (hugetlb_page_subpool(&src->page)) {
++		hugetlb_set_page_subpool(&dst->page,
++					hugetlb_page_subpool(&src->page));
++		hugetlb_set_page_subpool(&src->page, NULL);
+ 	}
+ 
+ 	if (mode != MIGRATE_SYNC_NO_COPY)
+-		migrate_page_copy(newpage, page);
++		folio_migrate_copy(dst, src);
+ 	else
+-		migrate_page_states(newpage, page);
++		folio_migrate_flags(dst, src);
+ 
+ 	return MIGRATEPAGE_SUCCESS;
+ }
++#else
++#define hugetlbfs_migrate_folio NULL
++#endif
+ 
+ static int hugetlbfs_error_remove_page(struct address_space *mapping,
+ 				struct page *page)
+@@ -1142,7 +1147,7 @@ static const struct address_space_operations hugetlbfs_aops = {
+ 	.write_begin	= hugetlbfs_write_begin,
+ 	.write_end	= hugetlbfs_write_end,
+ 	.dirty_folio	= noop_dirty_folio,
+-	.migratepage    = hugetlbfs_migrate_page,
++	.migrate_folio  = hugetlbfs_migrate_folio,
+ 	.error_remove_page	= hugetlbfs_error_remove_page,
  };
  
- const struct inode_operations ubifs_file_inode_operations = {
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 82f00ad69a54..59d64a1e6b4b 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -42,8 +42,8 @@ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+ 
+ extern void migrate_page_states(struct page *newpage, struct page *page);
+ extern void migrate_page_copy(struct page *newpage, struct page *page);
+-extern int migrate_huge_page_move_mapping(struct address_space *mapping,
+-				  struct page *newpage, struct page *page);
++int migrate_huge_page_move_mapping(struct address_space *mapping,
++		struct folio *dst, struct folio *src);
+ extern int migrate_page_move_mapping(struct address_space *mapping,
+ 		struct page *newpage, struct page *page, int extra_count);
+ void migration_entry_wait_on_locked(swp_entry_t entry, pte_t *ptep,
+@@ -74,7 +74,7 @@ static inline void migrate_page_copy(struct page *newpage,
+ 				     struct page *page) {}
+ 
+ static inline int migrate_huge_page_move_mapping(struct address_space *mapping,
+-				  struct page *newpage, struct page *page)
++				  struct folio *dst, struct folio *src)
+ {
+ 	return -ENOSYS;
+ }
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 4d8115ca93bb..bed0de86f3ae 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -474,26 +474,26 @@ EXPORT_SYMBOL(folio_migrate_mapping);
+  * of folio_migrate_mapping().
+  */
+ int migrate_huge_page_move_mapping(struct address_space *mapping,
+-				   struct page *newpage, struct page *page)
++				   struct folio *dst, struct folio *src)
+ {
+-	XA_STATE(xas, &mapping->i_pages, page_index(page));
++	XA_STATE(xas, &mapping->i_pages, folio_index(src));
+ 	int expected_count;
+ 
+ 	xas_lock_irq(&xas);
+-	expected_count = 2 + page_has_private(page);
+-	if (!page_ref_freeze(page, expected_count)) {
++	expected_count = 2 + folio_has_private(src);
++	if (!folio_ref_freeze(src, expected_count)) {
+ 		xas_unlock_irq(&xas);
+ 		return -EAGAIN;
+ 	}
+ 
+-	newpage->index = page->index;
+-	newpage->mapping = page->mapping;
++	dst->index = src->index;
++	dst->mapping = src->mapping;
+ 
+-	get_page(newpage);
++	folio_get(dst);
+ 
+-	xas_store(&xas, newpage);
++	xas_store(&xas, dst);
+ 
+-	page_ref_unfreeze(page, expected_count - 1);
++	folio_ref_unfreeze(src, expected_count - 1);
+ 
+ 	xas_unlock_irq(&xas);
+ 
 -- 
 2.35.1
 
