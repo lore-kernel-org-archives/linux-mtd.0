@@ -4,39 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96582C43334
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 15:05:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80902C43334
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 15:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=17H8jfIclU6u6YzpSlAB6ejbj2UzASld3d6kw7aq2+8=; b=uqTeD9CVrMmRDh
-	8vc5W9wuMzsCdTMHNb0cDARHJWE/Dct0j4gTrch0/psKdsW/m2yVdtb4qTVqd6yYH/fv5UygH31mb
-	n4y0i35eQjwzQ2H3PITDxsTRmvuCA2Lkn80Y+savA01DDW/bYL5tDsN0Nph4BO2QuiE/wDohFbTbe
-	XAsunebReKMT9JUaCq25QnNA3SFNL+FRx4we5u1rnRMgrT9ngAgYm0WOqqFPmvtA717yy9e9K85fk
-	8dKlfsucZLNbYoDDpHHftIEpOsTgXFJdFXPEn/Y97FQDnkQvUQkStpg7FjI+b0ITleFYk11bKvMwC
-	f0ItNLcx+AgBDMADQyGQ==;
+	List-Owner; bh=6vM1H6aqgCKkJHfqeGgTvgfCHH4iGyGzNiz30wY7V/I=; b=jSSfM9KbgQ5KYX
+	39GjOJdZNiTBZLJVSo0o9IUIfZSNohi5ImByL5pn0Apgv/WfNiKh/UwBWCrC5CnsDQf+1hnuD8qBT
+	7/XR/abrygUgOQmBDNLEiHnapCK5godHRsyo5J6bOgecliZKhqX00iyw2HY+hq1/aScpN9giBFW9F
+	xbhdASMFGhHB5hA8f8/+JxLoKUj8z2CuQWjpDniKyrFX2xr1CHbtogs4U5iM6M1BmWeZdbIf+UlTp
+	BPQ/EDnKbjXOwTROMj3RGvTsvp9LwzUeDlVPfVdRgk2YDWILXPjWnxj4lXs6ohiIhTPy+KMZ2YJRJ
+	BPcNOVm39USWuBwSe5Iw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxF1-00DtKQ-C9; Wed, 08 Jun 2022 15:05:03 +0000
+	id 1nyxF5-00DtM2-BP; Wed, 08 Jun 2022 15:05:07 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxEo-00DtBr-Me
-	for linux-mtd@bombadil.infradead.org; Wed, 08 Jun 2022 15:04:50 +0000
+	id 1nyxEp-00DtBr-HQ
+	for linux-mtd@bombadil.infradead.org; Wed, 08 Jun 2022 15:04:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=GbYk6WOt1dmTqgVV6yE5r+zIsB4v0sAfl69wEExYZVA=; b=Avm4ohsfCHV3ITlqMqf2jpVpw0
-	IMOZj7fyZbC5iV7nTa3UiJKE6MY3T5i/uCrkDUsFF4AHwZozCQI/jezfAirc4Rt7lV10DpHdXgpVv
-	HwvO3PQ82Ljpfj+bVRM9nX+FqP5at4G8638Lf/Y23JZBOfbCSUVhSfGzlTCXeJ412NWBXtTRK4tPV
-	l5nw5SoD+S2LeVACUshYo3NXuTXLJgcnVCt8pC7bTFlOs1hz2JEx+tlk60ClyMU/daGv1TEYDSIYc
-	3CGKxaOONIbpGJeCBheEf/lTy+OxqCrdvV8s5fcYLlnAxJzahzGG9Rz01UBxjf+ktT1m08pyVoDQI
-	fQR1vsVA==;
+	bh=rXRIRcK5aBVZ2wBOi68suVknWfPexbmGif0IEKfZsbs=; b=lsRn9gaO5tAEYD/OWJOs5+zBTI
+	NCwTDYynMk1lnd9OTbJ4EfJRYdVl+3dODL7tzXJVPHXM+7SlQHXOVlUsUboFXhSdXz3aSmA3UKZ6F
+	L5v7sh+GECC4njYbIAGlnHpfB8UwcWrwo0wyP4BhZlRei7kEvvdyW2VaiPkXgO55R9kKQgx/YjEqw
+	tYFIlMpDyJj5vqIZK5lcNkMFc7QTZ02ItadvJCgbfwAGx5UGipfrdrSUQujOmia2pjwzdNOAWZ616
+	V6c9pTOiEz7pLpSwn0iaK2fRQggU3GplOvlDyjFYnosAScOy2AdneQp1BzdO4NPq9SyDvONshsH4r
+	X68Lp0aw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyxCv-00CjFk-6D; Wed, 08 Jun 2022 15:02:53 +0000
+	id 1nyxCt-00CjFG-OC; Wed, 08 Jun 2022 15:02:51 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -54,9 +54,9 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	ocfs2-devel@oss.oracle.com,
 	linux-mtd@lists.infradead.org,
 	virtualization@lists.linux-foundation.org
-Subject: [PATCH v2 16/19] hugetlb: Convert to migrate_folio
-Date: Wed,  8 Jun 2022 16:02:46 +0100
-Message-Id: <20220608150249.3033815-17-willy@infradead.org>
+Subject: [PATCH v2 01/19] secretmem: Remove isolate_page
+Date: Wed,  8 Jun 2022 16:02:31 +0100
+Message-Id: <20220608150249.3033815-2-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220608150249.3033815-1-willy@infradead.org>
 References: <20220608150249.3033815-1-willy@infradead.org>
@@ -77,135 +77,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This involves converting migrate_huge_page_move_mapping().  We also need a
-folio variant of hugetlb_set_page_subpool(), but that's for a later patch.
+The isolate_page operation is never called for filesystems, only
+for device drivers which call SetPageMovable.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/hugetlbfs/inode.c    | 23 ++++++++++++++---------
- include/linux/migrate.h |  6 +++---
- mm/migrate.c            | 18 +++++++++---------
- 3 files changed, 26 insertions(+), 21 deletions(-)
+ mm/secretmem.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 14d33f725e05..eca1d0fabd7e 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -954,28 +954,33 @@ static int hugetlbfs_symlink(struct user_namespace *mnt_userns,
- 	return error;
- }
- 
--static int hugetlbfs_migrate_page(struct address_space *mapping,
--				struct page *newpage, struct page *page,
-+#ifdef CONFIG_MIGRATION
-+static int hugetlbfs_migrate_folio(struct address_space *mapping,
-+				struct folio *dst, struct folio *src,
- 				enum migrate_mode mode)
- {
- 	int rc;
- 
--	rc = migrate_huge_page_move_mapping(mapping, newpage, page);
-+	rc = migrate_huge_page_move_mapping(mapping, dst, src);
- 	if (rc != MIGRATEPAGE_SUCCESS)
- 		return rc;
- 
--	if (hugetlb_page_subpool(page)) {
--		hugetlb_set_page_subpool(newpage, hugetlb_page_subpool(page));
--		hugetlb_set_page_subpool(page, NULL);
-+	if (hugetlb_page_subpool(&src->page)) {
-+		hugetlb_set_page_subpool(&dst->page,
-+					hugetlb_page_subpool(&src->page));
-+		hugetlb_set_page_subpool(&src->page, NULL);
- 	}
- 
- 	if (mode != MIGRATE_SYNC_NO_COPY)
--		migrate_page_copy(newpage, page);
-+		folio_migrate_copy(dst, src);
- 	else
--		migrate_page_states(newpage, page);
-+		folio_migrate_flags(dst, src);
- 
- 	return MIGRATEPAGE_SUCCESS;
- }
-+#else
-+#define hugetlbfs_migrate_folio NULL
-+#endif
- 
- static int hugetlbfs_error_remove_page(struct address_space *mapping,
- 				struct page *page)
-@@ -1142,7 +1147,7 @@ static const struct address_space_operations hugetlbfs_aops = {
- 	.write_begin	= hugetlbfs_write_begin,
- 	.write_end	= hugetlbfs_write_end,
- 	.dirty_folio	= noop_dirty_folio,
--	.migratepage    = hugetlbfs_migrate_page,
-+	.migrate_folio  = hugetlbfs_migrate_folio,
- 	.error_remove_page	= hugetlbfs_error_remove_page,
+diff --git a/mm/secretmem.c b/mm/secretmem.c
+index 206ed6b40c1d..1c7f1775b56e 100644
+--- a/mm/secretmem.c
++++ b/mm/secretmem.c
+@@ -133,11 +133,6 @@ static const struct file_operations secretmem_fops = {
+ 	.mmap		= secretmem_mmap,
  };
  
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 82f00ad69a54..59d64a1e6b4b 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -42,8 +42,8 @@ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+-static bool secretmem_isolate_page(struct page *page, isolate_mode_t mode)
+-{
+-	return false;
+-}
+-
+ static int secretmem_migratepage(struct address_space *mapping,
+ 				 struct page *newpage, struct page *page,
+ 				 enum migrate_mode mode)
+@@ -155,7 +150,6 @@ const struct address_space_operations secretmem_aops = {
+ 	.dirty_folio	= noop_dirty_folio,
+ 	.free_folio	= secretmem_free_folio,
+ 	.migratepage	= secretmem_migratepage,
+-	.isolate_page	= secretmem_isolate_page,
+ };
  
- extern void migrate_page_states(struct page *newpage, struct page *page);
- extern void migrate_page_copy(struct page *newpage, struct page *page);
--extern int migrate_huge_page_move_mapping(struct address_space *mapping,
--				  struct page *newpage, struct page *page);
-+int migrate_huge_page_move_mapping(struct address_space *mapping,
-+		struct folio *dst, struct folio *src);
- extern int migrate_page_move_mapping(struct address_space *mapping,
- 		struct page *newpage, struct page *page, int extra_count);
- void migration_entry_wait_on_locked(swp_entry_t entry, pte_t *ptep,
-@@ -74,7 +74,7 @@ static inline void migrate_page_copy(struct page *newpage,
- 				     struct page *page) {}
- 
- static inline int migrate_huge_page_move_mapping(struct address_space *mapping,
--				  struct page *newpage, struct page *page)
-+				  struct folio *dst, struct folio *src)
- {
- 	return -ENOSYS;
- }
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 4d8115ca93bb..bed0de86f3ae 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -474,26 +474,26 @@ EXPORT_SYMBOL(folio_migrate_mapping);
-  * of folio_migrate_mapping().
-  */
- int migrate_huge_page_move_mapping(struct address_space *mapping,
--				   struct page *newpage, struct page *page)
-+				   struct folio *dst, struct folio *src)
- {
--	XA_STATE(xas, &mapping->i_pages, page_index(page));
-+	XA_STATE(xas, &mapping->i_pages, folio_index(src));
- 	int expected_count;
- 
- 	xas_lock_irq(&xas);
--	expected_count = 2 + page_has_private(page);
--	if (!page_ref_freeze(page, expected_count)) {
-+	expected_count = 2 + folio_has_private(src);
-+	if (!folio_ref_freeze(src, expected_count)) {
- 		xas_unlock_irq(&xas);
- 		return -EAGAIN;
- 	}
- 
--	newpage->index = page->index;
--	newpage->mapping = page->mapping;
-+	dst->index = src->index;
-+	dst->mapping = src->mapping;
- 
--	get_page(newpage);
-+	folio_get(dst);
- 
--	xas_store(&xas, newpage);
-+	xas_store(&xas, dst);
- 
--	page_ref_unfreeze(page, expected_count - 1);
-+	folio_ref_unfreeze(src, expected_count - 1);
- 
- 	xas_unlock_irq(&xas);
- 
+ static int secretmem_setattr(struct user_namespace *mnt_userns,
 -- 
 2.35.1
 
