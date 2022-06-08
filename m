@@ -4,84 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18B1DC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 00:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84F8DC43334
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 03:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2Qu1OxgKHm8/oEtncUtBWyQYdzPeLcL60cexfbjvONQ=; b=GmlqFdF2i1tQHp
-	zHt9ZxL/G9OfmQ36Eo4WIcAzuIWdxttkOlCULJHaeTIVnJ0U87FPNnk1gZlrD2mKze+HWdDnMkmDc
-	7L7RiHJJkeae9uvudAlZVLMJw4aTuUMQrkh40hIRenQLtW67FkLJ47RwYL0qgi36C+3/LPaoi744l
-	6wW4XNVX6AvYf3avAQesyudBq9FMzTwMyTYAYFnBytZfMDnSCL1r6MoZBaUkuOpiTllj5FTsi8YAF
-	LTcpK2qvpGUCZRJMaT+S1/eQqc9yd4VUWEmNwuK3TKBDTcgXCF9rIzI6uDOcKRcdu/Yju+i94ecoU
-	EEPsH5RrqtIse4xgNMjQ==;
+	List-Owner; bh=yLxhduzMTNcFyE2fNn7hfNJ0e8uXb6Yr/ZHC1MnQvXk=; b=0Ss4pVtVTdXq8R
+	x8MJuFbMu2MvQSK0/H8gafmIvT5hEvAfSFOZ9FX3lAtYocc/Ux9GBAAfEcSxmlTWTRFGNBsYM4A1Z
+	0aSO4FYjVosHKOa4UgpdkLmQNtuLTG4nQN32idOQZHUvGi+N77tou3cnUT575PT/tygI19JHz1VQF
+	xHPf4YhNhOiEofa1DfgtHmVt6mVzgnBle1P7qwf9P34gE0pbxCJkyHEsAkH8EaYP5RmH1mItIx4KP
+	yg2KnMtsZ16+AcnUQ9ilWfdzHKrOmg3dpjRMdG9s3sj7jXMQA2bFLzNsoRhwi48vuvyIxluueLITe
+	84cA2fk3DqGGYuzv8dkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyjIW-00A4WZ-SS; Wed, 08 Jun 2022 00:11:44 +0000
-Received: from mail-ej1-x634.google.com ([2a00:1450:4864:20::634])
+	id 1nylvk-00AT7k-5D; Wed, 08 Jun 2022 03:00:24 +0000
+Received: from mga18.intel.com ([134.134.136.126])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyjIR-00A4TX-Vz
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2022 00:11:41 +0000
-Received: by mail-ej1-x634.google.com with SMTP id fu3so36791042ejc.7
-        for <linux-mtd@lists.infradead.org>; Tue, 07 Jun 2022 17:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=peEtDnuQnzaJUUeMjl4LqwaDIeftlXgdWfg5usfizDM=;
-        b=arIWg9P/rpW9RjH2/kZdbxLIEKz/qsOVFMIqQpAOBi1CmHQHyeKnT3tHNY8v9dM5x5
-         UXW7jWkClwvY9b4vrujSkFYIhe9xrWuOCSW12rU6R44Zh0knenIBmnnZ3LdpEKufbG+U
-         CVJ73XAj52QFqzGPtaWPDlDkd+0byXkcESSP6Q1e0Gm6QtngzyYcayvCjXTUYp8CgpwI
-         Hl0NE62SXCgcvGCGiMZbQd82St+lH2TTvcnsLPuinDOoL7TbTrc8b1/ndsSN/WcocjB8
-         KXjmSKD2y9P75k1+dDXYm/wxo5z6U1PF2TQEM7BImXBlFibG658W5fQayCDsA8ThHlBE
-         5Law==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=peEtDnuQnzaJUUeMjl4LqwaDIeftlXgdWfg5usfizDM=;
-        b=3092H4kWTK/DfUs7+ety+YCDjLKbs4YPKXuz+kF79/cFvJRwhhNbsnKCJeiYCz8g7H
-         dvBHl+jdXmoHeUKLoSMtuAw5sPTF1enIzM8FnjDp1w2qO1Tur8bd+XsjohVdrf/DLwc9
-         EfORSHcpJdQ+VtM3H3J5czNaI2B0b6aI+iu3b8dB7rx4tTQgx6W8tmnw2o4z9sppwc2T
-         c5OSlPjc/zRyW73eR0lyZnyRGCwe47AvUpZwrK2RAodWuJCMaGUA5Oz/G5ESxEpNckbM
-         oTHU9beNYOze9/mw9lvGP9T01yLRjW3Q2qokw1AzxA6JmnQijBJ7rKwcGC79vkrz6y82
-         PydQ==
-X-Gm-Message-State: AOAM531vhw8cSYffPXVqilxCGt9fwxy6255CK9gZWkgTVQOAhoPnHkSf
-	3MbTuEMuZNywLvzko32Sbyg=
-X-Google-Smtp-Source: ABdhPJwVcxROaQW6z1CnZo/uOEvNYmnun8vP30SLXWhuaCTc7t9UfttE1pcsJ8QJRiOq/sMxdxLHng==
-X-Received: by 2002:a17:906:685:b0:6fa:8e17:e9b5 with SMTP id u5-20020a170906068500b006fa8e17e9b5mr30668613ejb.522.1654647095641;
-        Tue, 07 Jun 2022 17:11:35 -0700 (PDT)
-Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
-        by smtp.googlemail.com with ESMTPSA id o19-20020a1709061b1300b006fed85c1a8fsm8434947ejg.202.2022.06.07.17.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jun 2022 17:11:35 -0700 (PDT)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Manivannan Sadhasivam <mani@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
+	id 1nylvh-00AT5b-QU
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2022 03:00:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654657221; x=1686193221;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ckah9uOFCDFUelCaEvV/+QIv1I4STuicWWUVywSxw9Y=;
+  b=R8r4M53nLQQR1RFkElniRsLh0CX9wuCFMEdowGEJavdP8sY+ivkhe9bg
+   YhHsqyiVD9TGiklxkxguIfiwHrZFveW2LIKmKZAPIc0UD+2LQ5FY8gN9m
+   qXFI4zPpwQpOpc9hU1eMOfhKTw+gICqt1ZyCQjrqFb0OSkQT/Cr9cagy9
+   1h7TX53nVYGL6nFCT3rw/mhT3/EWVNKBGMmDz36TVbatFwRrDbahdmb37
+   GFxsrmB7k/hZEN7S9FWm4K64LXHevagznyOsxd8TC1hCecY4oC+8meARG
+   pkbIoeOsLCypkPduxSswe/wWpi8i1wo6V9nFTFGfHxUZ5w+WiPA2Gx3gq
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10371"; a="259867033"
+X-IronPort-AV: E=Sophos;i="5.91,285,1647327600"; 
+   d="scan'208";a="259867033"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2022 20:00:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,285,1647327600"; 
+   d="scan'208";a="555210754"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 07 Jun 2022 20:00:15 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+	(envelope-from <lkp@intel.com>)
+	id 1nylva-000ECJ-Nl;
+	Wed, 08 Jun 2022 03:00:14 +0000
+Date: Wed, 8 Jun 2022 10:59:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tom Fitzhenry <tom@tom-fitzhenry.me.uk>,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <p.yadav@ti.com>, Michael Walle <michael@walle.cc>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v5 3/3] mtd: nand: raw: qcom_nandc: reorder qcom_nand_host struct
-Date: Wed,  8 Jun 2022 02:10:30 +0200
-Message-Id: <20220608001030.18813-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220608001030.18813-1-ansuelsmth@gmail.com>
-References: <20220608001030.18813-1-ansuelsmth@gmail.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: kbuild-all@lists.01.org, Tom Fitzhenry <tom@tom-fitzhenry.me.uk>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: siliconkaiser: add support for sk25lp128
+Message-ID: <202206081011.jPVWbSvo-lkp@intel.com>
+References: <20220603135933.143372-1-tom@tom-fitzhenry.me.uk>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220603135933.143372-1-tom@tom-fitzhenry.me.uk>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220607_171140_059034_E0D64A63 
-X-CRM114-Status: GOOD (  11.56  )
+X-CRM114-CacheID: sfid-20220607_200021_964503_8F6E790E 
+X-CRM114-Status: GOOD (  15.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,44 +87,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Reorder qcom_nand_host to save holes in the struct.
+Hi Tom,
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Thank you for the patch! Yet something to improve:
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 06ee9a836a3b..110f839c9e51 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -475,11 +475,13 @@ struct qcom_nand_host {
- 	int cs;
- 	int cw_size;
- 	int cw_data;
--	bool use_ecc;
--	bool bch_enabled;
- 	int ecc_bytes_hw;
- 	int spare_bytes;
- 	int bbm_size;
-+
-+	bool codeword_fixup;
-+	bool use_ecc;
-+	bool bch_enabled;
- 	u8 status;
- 	int last_command;
- 
-@@ -490,7 +492,6 @@ struct qcom_nand_host {
- 	u32 clrflashstatus;
- 	u32 clrreadstatus;
- 
--	bool codeword_fixup;
- 	int nr_boot_partitions;
- 	struct qcom_nand_boot_partition *boot_partitions;
- };
+[auto build test ERROR on mtd/spi-nor/next]
+[also build test ERROR on v5.19-rc1 next-20220607]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Tom-Fitzhenry/mtd-spi-nor-siliconkaiser-add-support-for-sk25lp128/20220605-163120
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git spi-nor/next
+config: csky-randconfig-r024-20220607 (https://download.01.org/0day-ci/archive/20220608/202206081011.jPVWbSvo-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/9ee4927880d43f8611d371e7cc7d8854a927de66
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Tom-Fitzhenry/mtd-spi-nor-siliconkaiser-add-support-for-sk25lp128/20220605-163120
+        git checkout 9ee4927880d43f8611d371e7cc7d8854a927de66
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=csky SHELL=/bin/bash drivers/mtd/spi-nor/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> drivers/mtd/spi-nor/siliconkaiser.c:8:18: error: implicit declaration of function 'SNOR_ID3' [-Werror=implicit-function-declaration]
+       8 |   { "sk25lp128", SNOR_ID3(0x257018) },
+         |                  ^~~~~~~~
+>> drivers/mtd/spi-nor/siliconkaiser.c:8:18: error: initializer element is not constant
+   drivers/mtd/spi-nor/siliconkaiser.c:8:18: note: (near initialization for 'siliconkaiser_nor_parts[0].id[0]')
+   cc1: some warnings being treated as errors
+
+
+vim +/SNOR_ID3 +8 drivers/mtd/spi-nor/siliconkaiser.c
+
+     6	
+     7	static const struct flash_info siliconkaiser_nor_parts[] = {
+   > 8	  { "sk25lp128", SNOR_ID3(0x257018) },
+     9	};
+    10	
+
 -- 
-2.36.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 ______________________________________________________
 Linux MTD discussion mailing list
