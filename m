@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C9F9C43334
-	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 08:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E1CC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed,  8 Jun 2022 08:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jKE+TaDfX1WNnrp2HscXnGv2sDG2S2PVjgeee0yEqiU=; b=SkxUSK513L/GGl
-	YtemtC8J+b4iuyNJYp7JslhHNvf/EjpliYO4LlFUbgR3igkBFZVlGBdFpzBL+CRx3qOVVY6lTRzRN
-	hNYjZgZdsPVW1oC2zUisrXmpXjXGVO9p6wtIGeExkMC+V7/WPN2av43X/B71S71QRC4R8ryEeFZid
-	iEcsuUC7VM+ryOKoKTw+iBg8I+7JhHCq9iRtQgoAkhKEGpYyLb4NQv76/PRLfhEAVX3JYs9ppt7pm
-	SfvbF5+B+TZOJveZIZLmXK2XtycOiPac2amaaIGLbBjakWuOUFRFU9muAnonULP3dBMLoFd4w70Mz
-	zVPQgG89YRDnKq+ZXyYA==;
+	List-Owner; bh=OPNt5g2RNPpEshpW0ZH4fa4JDDXMrK18jOo2y5mhUSI=; b=b+9f7eEl2WJetk
+	XI4N+4ijAFMRSTY8Bmw2GwV0set0dyQkHz4lSOHSSVcGp99ep5rffAsgCkLHHZ4X6fKbRjrUkHI8E
+	sx6gVth8V7ErPMqaVIfBnfPKsLNf3WU11rlqwPz2WXdG2c62Vl7cT+SKqm1v7BTqJ63BStCmeKoDy
+	LbIHwU7W77JcR1qvk1D6wlIL4ONmgoI7dWlrZBN0CkDl4Nt6gn7lJtr+v9b2f9Sfy86LkIWpHexu+
+	byYYX9iEfnqp4/u+UKZGWQ/kZODknB3y8CUlqb7GptSRMGLDaUErR0cW9vcmc2jSqTrdSBEKaEQa9
+	PBOeO2tpSF2mkwAjb+Cg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyqwd-00Bv0e-FA; Wed, 08 Jun 2022 08:21:39 +0000
+	id 1nyqwn-00Bv6e-OG; Wed, 08 Jun 2022 08:21:49 +0000
 Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyqus-00Bu45-Rw; Wed, 08 Jun 2022 08:19:50 +0000
-Date: Wed, 8 Jun 2022 01:19:50 -0700
+	id 1nyqvL-00BuLl-NH; Wed, 08 Jun 2022 08:20:19 +0000
+Date: Wed, 8 Jun 2022 01:20:19 -0700
 From: Christoph Hellwig <hch@infradead.org>
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -34,13 +34,13 @@ Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
 	ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
 	virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 10/20] btrfs: Convert btrfs_migratepage to migrate_folio
-Message-ID: <YqBbpob9igYBSWGr@infradead.org>
+Subject: Re: [PATCH 13/20] aio: Convert to migrate_folio
+Message-ID: <YqBbwx5MhNRpqou/@infradead.org>
 References: <20220606204050.2625949-1-willy@infradead.org>
- <20220606204050.2625949-11-willy@infradead.org>
+ <20220606204050.2625949-14-willy@infradead.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220606204050.2625949-11-willy@infradead.org>
+In-Reply-To: <20220606204050.2625949-14-willy@infradead.org>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -56,10 +56,6 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
-
-On Mon, Jun 06, 2022 at 09:40:40PM +0100, Matthew Wilcox (Oracle) wrote:
-> Use filemap_migrate_folio() to do the bulk of the work, and then copy
-> the ordered flag across if needed.
 
 Looks good:
 
