@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F031C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 12:43:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C117EC433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 12:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=hjxAAAz0M948KuvKg4a4jgCSS+Dnnf9SeQBcCW7VKcE=; b=uQiO87DrV8FgSV
-	akwDovfikgQWdqI97w7WLyKo19HmLvytTgD2Q0+GxkSAxJFrzhjMC01ncXR6mjDbcMx1w2crVqBtv
-	ThCuXmCkWjRFUH+pkratcefCtLB/feX1CiJGQ9vTIS+J84B5BGUY6xEenmwagfRoqNDl9UtV+Rcbj
-	ib+Vf0wQ1ALGmb7vYAMefCdgFI+ZKfIgr6G7xAbZE4e/GysZwdcvQUvixZih0JfSbFBKdKTD3ot8i
-	3fgjRcQt7rINXLX6BC9saJdDh2iqxA7vumMgJE0Fecf5aFFQ7sAUVWGz5AjPxYj7aam7dr2Vj5Up8
-	YC05Rrf6mO7In5L9lg7g==;
+	List-Owner; bh=J5ScTYjQ0fdqWet06tx7uv5QG6JJ5l3aSa9td9h5wsk=; b=o8oFyPdaFKNTrD
+	EbJdyY8ajYbfGMt0OzgAvemhIDRCVrKXsSrdSA8V6ija9TVoEVmt+An0ahvndrr0aZPF1ogHeVx7d
+	TZ4asWxCxEJ9/xp2XppF02P4VSVsaSpuv1K1v07FvwVnruQIPMCm+c2YqI6v5QswpHllUE5y+0hVT
+	I+m5+7sP04wYX30MAhThHjqPLp96Xy7kH4NoQtS6VWY4gnC179OSNQOc6WNrlDAtnAesXIP5SrSQn
+	1KvE1FaqpakuzOoqAu75DSI8Z1/uztqyvMZUG8IFyQbYJHGkf0gKiNhOMF+1En66A9+7e+3mVDojR
+	oPIbPyW7wAM9cBxzkTuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHVZ-001pwH-Bf; Thu, 09 Jun 2022 12:43:29 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1nzHVv-001q9z-Qp; Thu, 09 Jun 2022 12:43:51 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHV6-001pey-Rs; Thu, 09 Jun 2022 12:43:02 +0000
+	id 1nzHVB-001phV-FN; Thu, 09 Jun 2022 12:43:08 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 23D0DFF808;
-	Thu,  9 Jun 2022 12:42:58 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 138A1FF809;
+	Thu,  9 Jun 2022 12:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1654778579;
+	t=1654778583;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e8ABBpdWcIcruCHUor6UAEtImYahjYa4OSrvNiOjESM=;
-	b=ifEf3NZypWRbu1J9oQlH6AkCJCtmZYhoBkoVq7DXrcmUuAmWYOdGxnP+gQOmscKEQr5j4m
-	5yc29jAvEM92Ktk1o6En6oOMqDm0V6gN3u7B94PHqmjn7zm9UwR1Eb95AvczgaBC6p7Q1r
-	jWjnX/Bx0lctD9hLR/X77IJJyOn2qWqvqZeyYnUhrGiizAjz65dTDTnbIUiGwheCUlK2Jj
-	QEj2iUjeVDZsjVUC+l+QbVwVGOUIUbjTTkSCCjoFSbHRP5JdyAAGjoP1jx8UVAv6mos0u/
-	gG30T1dlu9HDl2dPa8hIEyALHvQ8EuwzVftChk+9oQNqTrMu1EHcGuWGtqbGDA==
+	bh=nh1UKK3uyNrH1iUfVE+joZpnh8MNcC8j9ct+8ypJk6k=;
+	b=VkTw0SskS0M+TzRZihBsjVCjSeIzjHkS/C9SS1ZaqAkVbS08Pcoe3q0mFI3p2v3fZk+ycb
+	F6n6ClM4/EoVcRDErsK4sLyMAHM8n1wbKogIVO1jPBzr24macRRuhoaVgpMTKWt8L8gDDZ
+	shFiW6eE5LOVkePyW11D0LDJWirnuoHehhQNQ7H339YHNjwF7Bt1GcjdLMu8sqlWFmxJG4
+	a1fQWnBOtixmCS1FQoTkzkEsoGTIq64YANYLs8dWdwcB9IViJfBccFiM3ZIlralVafHPjD
+	slnJn44xdUFRPsvWf8giArI5kFYMREhq0fXptZn47eTgF7DdJCbNe0xRk/C+Bw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Miaoqian Lin <linmq006@gmail.com>,
 	Linus Walleij <linus.walleij@linaro.org>,
@@ -48,17 +48,17 @@ To: Miaoqian Lin <linmq006@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: maps: Fix refcount leak in ap_flash_init
-Date: Thu,  9 Jun 2022 14:42:57 +0200
-Message-Id: <20220609124257.133067-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH] mtd: maps: Fix refcount leak in of_flash_probe_versatile
+Date: Thu,  9 Jun 2022 14:43:02 +0200
+Message-Id: <20220609124302.133097-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220523143255.4376-1-linmq006@gmail.com>
+In-Reply-To: <20220523140205.48625-1-linmq006@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'77087a04c8fd554134bddcb8a9ff87b21f357926'
+X-linux-mtd-patch-commit: b'33ec82a6d2b119938f26e5c8040ed5d92378eb54'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_054301_100157_56FBC934 
+X-CRM114-CacheID: sfid-20220609_054305_756594_7D824E5C 
 X-CRM114-Status: UNSURE (   7.96  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
@@ -77,8 +77,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2022-05-23 at 14:32:55 UTC, Miaoqian Lin wrote:
-> of_find_matching_node() returns a node pointer with refcount
+On Mon, 2022-05-23 at 14:02:05 UTC, Miaoqian Lin wrote:
+> of_find_matching_node_and_match() returns a node pointer with refcount
 > incremented, we should use of_node_put() on it when not need anymore.
 > Add missing of_node_put() to avoid refcount leak.
 > 
