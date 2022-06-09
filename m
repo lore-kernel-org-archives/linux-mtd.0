@@ -4,59 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F553C43334
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 865A4C43334
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:24:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=REIEQ9gP79J5GzgAHocMKPuJHU9NKCGdqT/r6GKBwRs=; b=ojuz65AQ/DZbVM
-	8gRGZQfGoM0OC3Mw6+7VvX3q1YtF2N3QiQ/tX7cACRxXIkf4m4T9tdxt/KFOc5YmrDfG9MhJZ8IGk
-	ke3BbY0ves0jISp1xMonE1+VCej9qT1q5lj4nUdu37Q4bf3ezgTuimdSd6jrotIsEBNBbEjLTWnFl
-	MjcMgdywcxZ+Fl8XQGOME+CFRGhwYlu0+SA0isWr4P1XH1syV5qk/GACRU7x8zIvu+2wo3fy/YlHn
-	YPBhByy7cin57h2SiX2UDE5tQ08RMh72Aj/Bt3gDu/uo6czbiYCWUH8frTyQZ/c9ZqHDD7Rk4/Igy
-	SsVPxXN8/YzonpyrXHuA==;
+	List-Owner; bh=bYyySV9hjbhUliNUITQxjE0WOiXIF4uRmq/wAj09y1k=; b=duAGVTZhw7VOQj
+	siP3+xR8q5aChGKfwNxXfmsiueB1P8sYLOIygLeJ2GMe7PdqZ7+h+VvVIq2jrSvZlUL/OhTqEqmcW
+	wWaNfkUzSnWlseraARDJvVneH8RDSlcrkhK316x5236k0neQCGZjw/vDg50K//zbsWAUFBWC1bCdk
+	3iKnWqwTYB5f++9ver4fKyjEhWIoCbl3web490UuLzzdZxF58wVo9NxR7zaUdnRkxe/rgGx3tOGFN
+	DeWmgO9gD2/gzVqwlK4183VsYYASRApUmJvPuhmCtdH7bYEikPVhmu9buwTlyMibwe5JGPpiTEG4B
+	B0F9vqyTwoClD4Nu6SNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzI01-0023sM-JZ; Thu, 09 Jun 2022 13:14:58 +0000
-Received: from relay9-d.mail.gandi.net ([217.70.183.199])
+	id 1nzI9C-0027z2-Cx; Thu, 09 Jun 2022 13:24:26 +0000
+Received: from mail-ej1-x629.google.com ([2a00:1450:4864:20::629])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHvq-00215g-Pc
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 13:10:42 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id C4EFAFF803;
-	Thu,  9 Jun 2022 13:10:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1654780237;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iDdTQJH21wnVJzJGeiGX4/UOPovJLTiw/9VizdL98JQ=;
-	b=Z6+iHR4Lf4yyD5IbQSVmRRiHEdWZ5ohOtBh41fibad4s+aQdrxDtS3QS+wNoCUIHCwvKp9
-	rcN2GeuyCbbewDRrlbl88bYelgEC4YUMvfcunV1Qn4mTTBgCVliubaEXqpPaZ0s1i6PMdd
-	NbgMQoKKUi382rwv1/jrZskIhYb9RbnPPt9YalhCXWKPSlhoH0BAL6Me+Fr43X/3qIREkl
-	M55qQ6hmKzeC+WSP2jzmcDdQJIwwLwEDmxoOaLYfvqGe/3pQdK8XM/IAZFkoxoHtKfajIg
-	B+UXJqIUscBDPWviAh3BZUbrjgoT9JFWwWmNgT7thlCocWFeTEgQ6zeyTE2Q0w==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christian Lamparter <chunkeey@gmail.com>,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	dev@aboehler.at
-Subject: Re: [PATCH v2] Revert "mtd: rawnand: add support for Toshiba TC58NVG0S3HTA00 NAND flash"
-Date: Thu,  9 Jun 2022 15:10:36 +0200
-Message-Id: <20220609131036.293589-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220607185918.1048204-1-chunkeey@gmail.com>
-References: 
+	id 1nzI96-0027uO-DG
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 13:24:22 +0000
+Received: by mail-ej1-x629.google.com with SMTP id m20so47384051ejj.10
+        for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2022 06:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=h1crhyNkxdVEN3CIxYVK7t53ZLK9qDm4UCcsQqJ+Rts=;
+        b=pioTNJHBVbpcPvAVlnA3Q0cqli37oqdjpdca2x8CUHWxtVwwLuPVKVE4iBB4+MVKyi
+         6H4B/5G+opxYnMVZJmdfdwmX08lm/LvuoEGsj0BAhxDIyh1y7NzqgGYLsEVBq/qTrEmk
+         pFXQ9hlmzeCKUsioteKcbVWYjkRbgVZtvpkPiBwaGbiRhaZ+HprAvJUHirPrjxf12sU1
+         Mowt2c6QsIpJJL1M1AkZf1YeJLdfQc+ta/5TYNMip/SGdqfyPwkzUS++lVokcQ5i0gMZ
+         5pMcA2yRQ5Soa/Q66dC37V4Snsqysxp0HDmj9xQ+6J8e2dXpqgJwhKK9VegRC+nAz80D
+         H6uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=h1crhyNkxdVEN3CIxYVK7t53ZLK9qDm4UCcsQqJ+Rts=;
+        b=KMjbMIrl4MqJcqZQ5vJ7fPG0seCvHyYY7eLxW43KKa/Mztr1ARfYEvUjinXlhxjqOa
+         bnAUlYJLbKBKpTo9CofGuwz23Hz+Wp2DYzTNOUN/vysvIaMHcWeYaewH7GhjqEZNkJwK
+         JIj+vzPogu6U1O4MLFbOUu/XVk3v/01HguD1QTKv7EtBSXBPXcHnRIXeFP4m/dspjko0
+         5yEpPTfOzmyDL1WI5Ysiy1prDu5VX/yY1E8jPVvtpuarrSDSuU3SyvZJ6iJ9+cv5yVLs
+         qoKIpd1drg+e5raIzVJxINmxfkveHNrZ+36jSFXbXBv3czcKoHm08xQ6wXokTd6rF4Vb
+         QABg==
+X-Gm-Message-State: AOAM532CMvLV/z1qShXSTpULnkkjZeRWER31lEcfbYXKpCVUpA6WxJUC
+	LN1BhoXoxAxyYaf3lKFkhLs=
+X-Google-Smtp-Source: ABdhPJxoHTEbLyuwFopQW13K9S6opBZJnCprTRSR+I/lRaicgiQ4ygq8ugA6bX9xqCbxXfqfvNu+kg==
+X-Received: by 2002:a17:907:9496:b0:711:f459:664 with SMTP id dm22-20020a170907949600b00711f4590664mr7676144ejc.704.1654781056564;
+        Thu, 09 Jun 2022 06:24:16 -0700 (PDT)
+Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
+        by smtp.googlemail.com with ESMTPSA id i2-20020a056402054200b004315050d7dfsm8360263edx.81.2022.06.09.06.24.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 06:24:16 -0700 (PDT)
+From: Ansuel Smith <ansuelsmth@gmail.com>
+To: Manivannan Sadhasivam <mani@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <bjorn.andersson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-mtd@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [PATCH v6 2/3] mtd: nand: raw: qcom_nandc: add support for unprotected spare data pages
+Date: Thu,  9 Jun 2022 15:23:43 +0200
+Message-Id: <20220609132344.17548-3-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220609132344.17548-1-ansuelsmth@gmail.com>
+References: <20220609132344.17548-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'2c5947cffd81ac8181346efacdca3c777ab330ba'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_061039_003347_5A02ADA0 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20220609_062420_531095_B9D6DF96 
+X-CRM114-Status: GOOD (  36.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,42 +98,413 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2022-06-07 at 18:59:18 UTC, Christian Lamparter wrote:
-> This reverts commit 3380557fc7e28d9bce7607e16d98f123d36da4ca.
-> 
-> It turned out this "4-byte" ID might have been an honest mistake.
-> Regrettably, the chip Andreas has might be a counterfeit or is
-> damaged in some other way and shouldn't have ended up in a router.
-> 
-> Andreas reported his chip is returning just four bytes:
-> "98 f1 80 15 00 00 00 00".
-> 
-> However, according to Kioxia/Toshiba's datasheet, there should
-> have been at least another byte that would have contained the
-> correct OOB size that Andreas needed.
-> 
-> Miquel and Andreas are both favoring reverting the patch over
-> further, possibly hacky modifications:
-> "[Reverting] is the safest option here. Apart from this device, we
-> do not know how many devices have these damaged/counterfeit chips.
-> If it is just a couple and only on Fritzboxes, as suggested in the
-> Github issue the patch could be carried through OpenWrt[...]"
-> 
-> Thanks to several users on the openwrt forum and github issue,
-> who stayed along for the ride:
->  - Peter-vdL for reporting the issue and testing patches.
->  - neg2led and Hannu Nyman who did all the
->    datasheet digging and debugging.
-> 
-> Cc: Andreas Boehler <dev@aboehler.at>
-> Suggested-by: Andreas Boehler <dev@aboehler.at>
-> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Link: https://github.com/openwrt/openwrt/issues/9962
-> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+IPQ8064 nand have special pages where a different layout scheme is used.
+These special page are used by boot partition and on reading them
+lots of warning are reported about wrong ECC data and if written to
+results in broken data and not bootable device.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+The layout scheme used by these special page consist in using 512 bytes
+as the codeword size (even for the last codeword) while writing to CFG0
+register. This forces the NAND controller to unprotect the 4 bytes of
+spare data.
 
-Miquel
+Since the kernel is unaware of this different layout for these special
+page, it does try to protect the spare data too during read/write and
+warn about CRC errors.
+
+Add support for this by permitting the user to declare these special
+pages in dts by declaring offset and size of the partition. The driver
+internally will convert these value to nand pages.
+
+On user read/write the page is checked and if it's a boot page the
+correct layout is used.
+
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 204 +++++++++++++++++++++++++++++-
+ 1 file changed, 199 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 7fbbd3e7784c..29a16534bee3 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -80,8 +80,10 @@
+ #define	DISABLE_STATUS_AFTER_WRITE	4
+ #define	CW_PER_PAGE			6
+ #define	UD_SIZE_BYTES			9
++#define	UD_SIZE_BYTES_MASK		GENMASK(18, 9)
+ #define	ECC_PARITY_SIZE_BYTES_RS	19
+ #define	SPARE_SIZE_BYTES		23
++#define	SPARE_SIZE_BYTES_MASK		GENMASK(26, 23)
+ #define	NUM_ADDR_CYCLES			27
+ #define	STATUS_BFR_READ			30
+ #define	SET_RD_MODE_AFTER_STATUS	31
+@@ -102,6 +104,7 @@
+ #define	ECC_MODE			4
+ #define	ECC_PARITY_SIZE_BYTES_BCH	8
+ #define	ECC_NUM_DATA_BYTES		16
++#define	ECC_NUM_DATA_BYTES_MASK		GENMASK(25, 16)
+ #define	ECC_FORCE_CLK_OPEN		30
+ 
+ /* NAND_DEV_CMD1 bits */
+@@ -418,6 +421,19 @@ struct qcom_nand_controller {
+ 	const struct qcom_nandc_props *props;
+ };
+ 
++/*
++ * NAND special boot partitions
++ *
++ * @page_offset:		offset of the partition where spare data is not protected
++ *				by ECC (value in pages)
++ * @page_offset:		size of the partition where spare data is not protected
++ *				by ECC (value in pages)
++ */
++struct qcom_nand_boot_partition {
++	u32 page_offset;
++	u32 page_size;
++};
++
+ /*
+  * NAND chip structure
+  *
+@@ -434,6 +450,8 @@ struct qcom_nand_controller {
+  * @ecc_bytes_hw:		ECC bytes used by controller hardware for this
+  *				chip
+  *
++ * @codeword_fixup:		keep track of the current layout used by
++ *				the driver for read/write operation.
+  * @use_ecc:			request the controller to use ECC for the
+  *				upcoming read/write
+  * @bch_enabled:		flag to tell whether BCH ECC mode is used
+@@ -445,6 +463,11 @@ struct qcom_nand_controller {
+  * @cfg0, cfg1, cfg0_raw..:	NANDc register configurations needed for
+  *				ecc/non-ecc mode for the current nand flash
+  *				device
++ *
++ * @nr_boot_partitions:		count of the boot partitions where spare data is not
++ *				protected by ECC
++ * @boot_partitions:		array of boot partitions where offset and size of the
++ *				boot partitions are stored
+  */
+ struct qcom_nand_host {
+ 	struct nand_chip chip;
+@@ -457,6 +480,7 @@ struct qcom_nand_host {
+ 	int spare_bytes;
+ 	int bbm_size;
+ 
++	bool codeword_fixup;
+ 	bool use_ecc;
+ 	bool bch_enabled;
+ 	u8 status;
+@@ -468,6 +492,9 @@ struct qcom_nand_host {
+ 	u32 ecc_bch_cfg;
+ 	u32 clrflashstatus;
+ 	u32 clrreadstatus;
++
++	int nr_boot_partitions;
++	struct qcom_nand_boot_partition *boot_partitions;
+ };
+ 
+ /*
+@@ -477,6 +504,7 @@ struct qcom_nand_host {
+  * @is_bam - whether NAND controller is using BAM
+  * @is_qpic - whether NAND CTRL is part of qpic IP
+  * @qpic_v2 - flag to indicate QPIC IP version 2
++ * @use_codeword_fixup - whether NAND has different layout for boot partitions
+  * @dev_cmd_reg_start - NAND_DEV_CMD_* registers starting offset
+  */
+ struct qcom_nandc_props {
+@@ -484,6 +512,7 @@ struct qcom_nandc_props {
+ 	bool is_bam;
+ 	bool is_qpic;
+ 	bool qpic_v2;
++	bool use_codeword_fixup;
+ 	u32 dev_cmd_reg_start;
+ };
+ 
+@@ -1703,7 +1732,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+ 	oob_size1 = host->bbm_size;
+ 
+-	if (qcom_nandc_is_last_cw(ecc, cw)) {
++	if (qcom_nandc_is_last_cw(ecc, cw) && !host->codeword_fixup) {
+ 		data_size2 = ecc->size - data_size1 -
+ 			     ((ecc->steps - 1) * 4);
+ 		oob_size2 = (ecc->steps * 4) + host->ecc_bytes_hw +
+@@ -1784,7 +1813,7 @@ check_for_erased_page(struct qcom_nand_host *host, u8 *data_buf,
+ 	}
+ 
+ 	for_each_set_bit(cw, &uncorrectable_cws, ecc->steps) {
+-		if (qcom_nandc_is_last_cw(ecc, cw)) {
++		if (qcom_nandc_is_last_cw(ecc, cw) && !host->codeword_fixup) {
+ 			data_size = ecc->size - ((ecc->steps - 1) * 4);
+ 			oob_size = (ecc->steps * 4) + host->ecc_bytes_hw;
+ 		} else {
+@@ -1942,7 +1971,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 	for (i = 0; i < ecc->steps; i++) {
+ 		int data_size, oob_size;
+ 
+-		if (qcom_nandc_is_last_cw(ecc, i)) {
++		if (qcom_nandc_is_last_cw(ecc, i) && !host->codeword_fixup) {
+ 			data_size = ecc->size - ((ecc->steps - 1) << 2);
+ 			oob_size = (ecc->steps << 2) + host->ecc_bytes_hw +
+ 				   host->spare_bytes;
+@@ -2039,6 +2068,78 @@ static int copy_last_cw(struct qcom_nand_host *host, int page)
+ 	return ret;
+ }
+ 
++static bool qcom_nandc_is_boot_partition(struct qcom_nand_host *host, int page)
++{
++	struct qcom_nand_boot_partition *boot_partition;
++	u32 start, end;
++	int i;
++
++	/*
++	 * Since the frequent access will be to the non-boot partitions like rootfs,
++	 * optimize the page check by:
++
++	 * 1. Checking if the page lies after the last boot partition.
++	 * 2. Checking from the boot partition end.
++	 *
++	 * This comes from the fact that an example partition table is:
++	 * mtd0: 00c80000 00020000 "qcadata"	(require codeword fix)
++	 * mtd1: 00500000 00020000 "APPSBL"	(require codeword fix)
++	 * mtd2: 00080000 00020000 "APPSBLENV"	(doesn't require codeword fix)
++	 * mtd3: 00140000 00020000 "art"	(doesn't require codeword fix)
++	 * mtd4: 00140000 00020000 "artbak"	(doesn't require codeword fix)
++	 * mtd5: 00400000 00020000 "kernel"	(doesn't require codeword fix)
++	 * mtd6: 06080000 00020000 "ubi"	(doesn't require codeword fix)
++	 * mtd7: 00700000 00020000 "reserve"	(doesn't require codeword fix)
++	 *
++	 * where the boot partition are always the first partition and rootfs
++	 * partition are at the end.
++	 *
++	 * Defining a big single boot partition is not possible since some
++	 * device have the following partition table:
++	 * mtd0: 00c80000 00020000 "qcadata" (require codeword fix)
++	 * mtd1: 00500000 00020000 "APPSBL"  (require codeword fix)
++	 * mtd2: 00080000 00020000 "APPSBLENV" (doesn't require codeword fix)
++	 * mtd3: 00140000 00020000 "APPSBL2"  (require codeword fix)
++	 *
++	 * where a backup partition is placed after a partition where the
++	 * codeword fix should not be used.
++	 */
++	for (i = host->nr_boot_partitions - 1; i >= 0; i--) {
++		boot_partition = &host->boot_partitions[i];
++		start = boot_partition->page_offset;
++		end = start + boot_partition->page_size;
++
++		if (page < end && page >= start)
++			return true;
++	}
++
++	return false;
++}
++
++static void
++qcom_nandc_codeword_fixup(struct qcom_nand_host *host, int page)
++{
++	bool codeword_fixup = qcom_nandc_is_boot_partition(host, page);
++
++	/* Skip conf write if we are already in the correct mode */
++	if (codeword_fixup == host->codeword_fixup)
++		return;
++
++	host->codeword_fixup = codeword_fixup;
++
++	host->cw_data = codeword_fixup ? 512 : 516;
++	host->spare_bytes = host->cw_size - host->ecc_bytes_hw -
++			    host->bbm_size - host->cw_data;
++
++	host->cfg0 &= ~(SPARE_SIZE_BYTES_MASK | UD_SIZE_BYTES_MASK);
++	host->cfg0 |= host->spare_bytes << SPARE_SIZE_BYTES |
++		      host->cw_data << UD_SIZE_BYTES;
++
++	host->ecc_bch_cfg &= ~ECC_NUM_DATA_BYTES_MASK;
++	host->ecc_bch_cfg |= host->cw_data << ECC_NUM_DATA_BYTES;
++	host->ecc_buf_cfg = (host->cw_data - 1) << NUM_STEPS;
++}
++
+ /* implements ecc->read_page() */
+ static int qcom_nandc_read_page(struct nand_chip *chip, uint8_t *buf,
+ 				int oob_required, int page)
+@@ -2047,6 +2148,9 @@ static int qcom_nandc_read_page(struct nand_chip *chip, uint8_t *buf,
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	u8 *data_buf, *oob_buf = NULL;
+ 
++	if (host->nr_boot_partitions)
++		qcom_nandc_codeword_fixup(host, page);
++
+ 	nand_read_page_op(chip, page, 0, NULL, 0);
+ 	data_buf = buf;
+ 	oob_buf = oob_required ? chip->oob_poi : NULL;
+@@ -2066,6 +2170,9 @@ static int qcom_nandc_read_page_raw(struct nand_chip *chip, uint8_t *buf,
+ 	int cw, ret;
+ 	u8 *data_buf = buf, *oob_buf = chip->oob_poi;
+ 
++	if (host->nr_boot_partitions)
++		qcom_nandc_codeword_fixup(host, page);
++
+ 	for (cw = 0; cw < ecc->steps; cw++) {
+ 		ret = qcom_nandc_read_cw_raw(mtd, chip, data_buf, oob_buf,
+ 					     page, cw);
+@@ -2086,6 +2193,9 @@ static int qcom_nandc_read_oob(struct nand_chip *chip, int page)
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 
++	if (host->nr_boot_partitions)
++		qcom_nandc_codeword_fixup(host, page);
++
+ 	clear_read_regs(nandc);
+ 	clear_bam_transaction(nandc);
+ 
+@@ -2106,6 +2216,9 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 	u8 *data_buf, *oob_buf;
+ 	int i, ret;
+ 
++	if (host->nr_boot_partitions)
++		qcom_nandc_codeword_fixup(host, page);
++
+ 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+ 
+ 	clear_read_regs(nandc);
+@@ -2121,7 +2234,7 @@ static int qcom_nandc_write_page(struct nand_chip *chip, const uint8_t *buf,
+ 	for (i = 0; i < ecc->steps; i++) {
+ 		int data_size, oob_size;
+ 
+-		if (qcom_nandc_is_last_cw(ecc, i)) {
++		if (qcom_nandc_is_last_cw(ecc, i) && !host->codeword_fixup) {
+ 			data_size = ecc->size - ((ecc->steps - 1) << 2);
+ 			oob_size = (ecc->steps << 2) + host->ecc_bytes_hw +
+ 				   host->spare_bytes;
+@@ -2178,6 +2291,9 @@ static int qcom_nandc_write_page_raw(struct nand_chip *chip,
+ 	u8 *data_buf, *oob_buf;
+ 	int i, ret;
+ 
++	if (host->nr_boot_partitions)
++		qcom_nandc_codeword_fixup(host, page);
++
+ 	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+ 	clear_read_regs(nandc);
+ 	clear_bam_transaction(nandc);
+@@ -2196,7 +2312,7 @@ static int qcom_nandc_write_page_raw(struct nand_chip *chip,
+ 		data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+ 		oob_size1 = host->bbm_size;
+ 
+-		if (qcom_nandc_is_last_cw(ecc, i)) {
++		if (qcom_nandc_is_last_cw(ecc, i) && !host->codeword_fixup) {
+ 			data_size2 = ecc->size - data_size1 -
+ 				     ((ecc->steps - 1) << 2);
+ 			oob_size2 = (ecc->steps << 2) + host->ecc_bytes_hw +
+@@ -2256,6 +2372,9 @@ static int qcom_nandc_write_oob(struct nand_chip *chip, int page)
+ 	int data_size, oob_size;
+ 	int ret;
+ 
++	if (host->nr_boot_partitions)
++		qcom_nandc_codeword_fixup(host, page);
++
+ 	host->use_ecc = true;
+ 	clear_bam_transaction(nandc);
+ 
+@@ -2904,6 +3023,74 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 
+ static const char * const probes[] = { "cmdlinepart", "ofpart", "qcomsmem", NULL };
+ 
++static int qcom_nand_host_parse_boot_partitions(struct qcom_nand_controller *nandc,
++						struct qcom_nand_host *host,
++						struct device_node *dn)
++{
++	struct nand_chip *chip = &host->chip;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct qcom_nand_boot_partition *boot_partition;
++	struct device *dev = nandc->dev;
++	int partitions_count, i, j, ret;
++
++	if (!of_find_property(dn, "qcom,boot-partitions", NULL))
++		return 0;
++
++	partitions_count = of_property_count_u32_elems(dn, "qcom,boot-partitions");
++	if (partitions_count <= 0) {
++		dev_err(dev, "Error parsing boot partition\n");
++		return ret;
++	}
++
++	host->nr_boot_partitions = partitions_count / 2;
++	host->boot_partitions = devm_kcalloc(dev, host->nr_boot_partitions,
++					     sizeof(*host->boot_partitions), GFP_KERNEL);
++	if (!host->boot_partitions) {
++		host->nr_boot_partitions = 0;
++		return -ENOMEM;
++	}
++
++	for (i = 0, j = 0; i < host->nr_boot_partitions; i++, j += 2) {
++		boot_partition = &host->boot_partitions[i];
++
++		ret = of_property_read_u32_index(dn, "qcom,boot-partitions", j,
++						 &boot_partition->page_offset);
++		if (ret) {
++			dev_err(dev, "Error parsing boot partition offset at index %d", i);
++			host->nr_boot_partitions = 0;
++			return ret;
++		}
++
++		if (boot_partition->page_offset % mtd->writesize) {
++			dev_err(dev, "Boot partition offset not multiple of writesize at index %i\n",
++				i);
++			host->nr_boot_partitions = 0;
++			return -EINVAL;
++		}
++		/* Convert offset to nand pages */
++		boot_partition->page_offset /= mtd->writesize;
++
++		ret = of_property_read_u32_index(dn, "qcom,boot-partitions", j + 1,
++						 &boot_partition->page_size);
++		if (ret) {
++			dev_err(dev, "Error parsing boot partition size at index %d\n", i);
++			host->nr_boot_partitions = 0;
++			return ret;
++		}
++
++		if (boot_partition->page_size % mtd->writesize) {
++			dev_err(dev, "Boot partition size not multiple of writesize at index %i",
++				i);
++			host->nr_boot_partitions = 0;
++			return -EINVAL;
++		}
++		/* Convert size to nand pages */
++		boot_partition->page_size /= mtd->writesize;
++	}
++
++	return 0;
++}
++
+ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 					    struct qcom_nand_host *host,
+ 					    struct device_node *dn)
+@@ -2972,6 +3159,12 @@ static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
+ 	if (ret)
+ 		nand_cleanup(chip);
+ 
++	if (nandc->props->use_codeword_fixup) {
++		ret = qcom_nand_host_parse_boot_partitions(nandc, host, dn);
++		if (ret)
++			return ret;
++	}
++
+ 	return ret;
+ }
+ 
+@@ -3137,6 +3330,7 @@ static int qcom_nandc_remove(struct platform_device *pdev)
+ static const struct qcom_nandc_props ipq806x_nandc_props = {
+ 	.ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT),
+ 	.is_bam = false,
++	.use_codeword_fixup = true,
+ 	.dev_cmd_reg_start = 0x0,
+ };
+ 
+-- 
+2.36.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
