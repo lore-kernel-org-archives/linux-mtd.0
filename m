@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0303C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 10:48:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93DB1C43334
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 11:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5Ogn6IyiXhtU1c/TIeaCbzY7N2Ny3xL2XoaUbN066s4=; b=gJafEzjmgkCjLA
-	xsVaA3fibDPdgZuI0m4oV7A47BQAFj5RpdtAfYN3q93Rz4SEZaIPQtnBNWyijMAKRLvtatLE774+l
-	uU+PU4yZ9wHcWsSr0dpnBymyp8DviLvKMXEovTPYYVAIep/yqW4zRORfhtKd+p12/DJ0z5ROcy6Cs
-	X93ld21fnRdf2JpwiLJI8Rtrm8ar96aQDKgUt2jZsD59dcNRrMtxeCa3j4kfkJbH/9VSGwNMtN9jA
-	nSXMD4YEyAGvEuviMji6xD+q/N9hyKHIUBxhQWzOG5DOtiiLgMUdjYN1MUIU9HjehSlHsjEQ8wVxG
-	NC/gt9tlIsR+1x6MtFCw==;
+	List-Owner; bh=xKoMTNoaE0IButg8swvVXPuVN3SaahhwvWeV7+J1sCY=; b=P6zJmaZSvgqhp3
+	aREbY33ghvNmPtRXRnbTUXtjgzOdgpBJyrP3GocGuWTfQcgDCxWXDc/k1MgAvrW9gIuiK55D8qXbd
+	IdiKmkf2rDEZbM54lBovgSNs7nBIwfuf3jWZ5Xqh26GSn3+ErlAXxmh/J2X2wwBcdcEnUe7sRiTIy
+	3CA5+H38YRHouigDRX8snnQnNISUnjwsSakxAuXshYMW00O4qCuP8Y/QTrBUwCYkc/VI381khtQjn
+	x5xtOiW84amQsKDuYXN+EvxavAY5SW3+RDf/c6BSrq97ttGatkc/xHHCn4yiyarW32WXw+mODgR2c
+	D99gKQGOuxcoXITbLq2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzFiO-0017sl-FQ; Thu, 09 Jun 2022 10:48:36 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1nzGA6-001DjV-46; Thu, 09 Jun 2022 11:17:14 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzFiK-0017qL-5c
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 10:48:34 +0000
+	id 1nzGA3-001Dic-0T
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 11:17:13 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 81AA561DAA;
-	Thu,  9 Jun 2022 10:48:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD59C34114;
-	Thu,  9 Jun 2022 10:48:26 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4F4F261DDD;
+	Thu,  9 Jun 2022 11:17:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73055C34114;
+	Thu,  9 Jun 2022 11:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1654771710;
-	bh=fzrWexAskT7761OX6YVLpBV0uk5ZpeEoL980M4D3UYo=;
+	s=k20201202; t=1654773429;
+	bh=i4y+kKhqo1/9kIpy8Z3cfCpottSPUqX6cuBdqT/GrnM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T4tHsGIzjTjEj6emD016kI2+9negOY8WK6XJwW/Czy9mjKVCilf0dspL6QLJFZWMe
-	 m/CXhgKNyia+kNN0KG6CRloxkv7yPn49QagcfAqgIyRDAf24xpG/aXzFzZ1i78HO7y
-	 AYVe/KlZWI8JRsW2V9sjLlbXWu6RqSdy4uLMHQpAnWg5uuH00l8FwYEd4suhPZkSU6
-	 boPl/mJpnbPGuJDl0zt1eGK25+lf73zfFT1bJR3f0nfcGAufXq9qGYHuxiUywTFBsN
-	 7wM8DR015BDwak8YJkABHrI2Yqjkvpri32Rh8KX/rXAkY2rJm1sQ/cr+RkeiAo/id0
-	 aJOkyEuolb2YA==
-Date: Thu, 9 Jun 2022 16:18:18 +0530
+	b=gEgxX+jBfkAeTo6kIoJKSN17TsXJGqeHXB5ZtYkTMY9pdkHRri0dsaTnX0m/A/lGR
+	 FTLsLhP9F1cY9sSVTY/N496hByTpN6AYYX/eCelvEE01odmXC0nacjhOjiTyUXxLLR
+	 vmZ+5H9qoAEAPcZRWDWXFqSY6nLssuT5GgOAondT7fOv/o/s6eC+Q1lto5C87o3lVr
+	 IY3T/wHFplAlRg+Nfp7Msa/o4FKfBP7KQ1qwcJUsBj9Eu2WcyAbsLsdE5OcJzH2b/F
+	 EAVUmwPAqRdqtyEXp64t/DLFmiYCzct8BTwE9DJzcZOUfkdp5SdClYbN9MyfNHwnmm
+	 IA9i5Y66xKMrA==
+Date: Thu, 9 Jun 2022 16:46:55 +0530
 From: Manivannan Sadhasivam <mani@kernel.org>
 To: Ansuel Smith <ansuelsmth@gmail.com>
 Cc: Andy Gross <agross@kernel.org>,
@@ -54,19 +54,19 @@ Cc: Andy Gross <agross@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] mtd: nand: raw: qcom_nandc: reorder
- qcom_nand_host struct
-Message-ID: <20220609104818.GE2758@thinkpad>
+Subject: Re: [PATCH v5 1/3] mtd: nand: raw: qcom_nandc: add support for
+ unprotected spare data pages
+Message-ID: <20220609111655.GF2758@thinkpad>
 References: <20220608001030.18813-1-ansuelsmth@gmail.com>
- <20220608001030.18813-4-ansuelsmth@gmail.com>
- <20220609072240.GB2758@thinkpad>
- <62a1caf0.1c69fb81.a67af.bdf8@mx.google.com>
+ <20220608001030.18813-2-ansuelsmth@gmail.com>
+ <20220609075254.GC2758@thinkpad>
+ <62a1ca5a.1c69fb81.d403.b325@mx.google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <62a1caf0.1c69fb81.a67af.bdf8@mx.google.com>
+In-Reply-To: <62a1ca5a.1c69fb81.d403.b325@mx.google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_034832_287771_66B7BCE9 
-X-CRM114-Status: GOOD (  23.11  )
+X-CRM114-CacheID: sfid-20220609_041711_197548_3EE4FAFF 
+X-CRM114-Status: GOOD (  60.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,46 +78,226 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBKdW4gMDksIDIwMjIgYXQgMTI6MjY6NTNQTSArMDIwMCwgQW5zdWVsIFNtaXRoIHdy
-b3RlOgo+IE9uIFRodSwgSnVuIDA5LCAyMDIyIGF0IDEyOjUyOjQwUE0gKzA1MzAsIE1hbml2YW5u
-YW4gU2FkaGFzaXZhbSB3cm90ZToKPiA+IE9uIFdlZCwgSnVuIDA4LCAyMDIyIGF0IDAyOjEwOjMw
-QU0gKzAyMDAsIEFuc3VlbCBTbWl0aCB3cm90ZToKPiA+ID4gUmVvcmRlciBxY29tX25hbmRfaG9z
-dCB0byBzYXZlIGhvbGVzIGluIHRoZSBzdHJ1Y3QuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5
-OiBBbnN1ZWwgU21pdGggPGFuc3VlbHNtdGhAZ21haWwuY29tPgo+ID4gCj4gPiBJZiB0aGlzIHBh
-dGNoIGdldHMgbW92ZWQgdG8gMi8zLCB5b3UgY291bGQgc2F2ZSBmZXcgY2hhbmdlcy4gQWxzbywg
-ZG8gdGhlIHNhbWUKPiA+IGZvciBvdGhlciBzdHJ1Y3RzIGFzIHdlbGwuCj4gPiAKPiA+IFRoYW5r
-cywKPiA+IE1hbmkKPiA+Cj4gCj4gU2luY2UgMi8zIGFscmVhZHkgaGFkIGxvdHMgb2YgY2hhbmdl
-cyBkaWRuJ3Qgd2FudCB0byBwdXQgYSBzdHJ1Y3QKPiByZW9yZGVyIGluIGl0IHNpbmNlIGl0IGRv
-ZXMgdG91Y2ggYWxzbyBvdGhlciB2YWx1ZXMuIFRlbGwgbWUgaWYgSSBzaG91bGQKPiBzcXVhc2gg
-dGhlIDIgY29tbWl0Lgo+IAoKTm90IHNxdWFzaGluZyBidXQgSSBtZWFuIHRvIG1vdmUgdGhpcyBw
-YXRjaCBiZWZvcmUgdGhlIGRyaXZlciBjaGFuZ2UgKDEvMyksIHNvCnRoYXQgImNvZGV3b3JkX2Zp
-eHVwIiBjYW4gYmUgYWRkZWQgaW4gdGhlIGNvcnJlY3QgcGxhY2UuCgpBbHNvIG1vdmUgdGhlIHJl
-c3BlY3RpdmUgS2RvYyBjb21tZW50cy4KClRoYW5rcywKTWFuaQoKPiA+ID4gLS0tCj4gPiA+ICBk
-cml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRjLmMgfCA3ICsrKystLS0KPiA+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gPiA+IAo+ID4gPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jIGIvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4gPiA+IGluZGV4IDA2ZWU5YTgzNmEzYi4uMTEwZjgz
-OWM5ZTUxIDEwMDY0NAo+ID4gPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9xY29tX25hbmRj
-LmMKPiA+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jCj4gPiA+IEBA
-IC00NzUsMTEgKzQ3NSwxMyBAQCBzdHJ1Y3QgcWNvbV9uYW5kX2hvc3Qgewo+ID4gPiAgCWludCBj
-czsKPiA+ID4gIAlpbnQgY3dfc2l6ZTsKPiA+ID4gIAlpbnQgY3dfZGF0YTsKPiA+ID4gLQlib29s
-IHVzZV9lY2M7Cj4gPiA+IC0JYm9vbCBiY2hfZW5hYmxlZDsKPiA+ID4gIAlpbnQgZWNjX2J5dGVz
-X2h3Owo+ID4gPiAgCWludCBzcGFyZV9ieXRlczsKPiA+ID4gIAlpbnQgYmJtX3NpemU7Cj4gPiA+
-ICsKPiA+ID4gKwlib29sIGNvZGV3b3JkX2ZpeHVwOwo+ID4gPiArCWJvb2wgdXNlX2VjYzsKPiA+
-ID4gKwlib29sIGJjaF9lbmFibGVkOwo+ID4gPiAgCXU4IHN0YXR1czsKPiA+ID4gIAlpbnQgbGFz
-dF9jb21tYW5kOwo+ID4gPiAgCj4gPiA+IEBAIC00OTAsNyArNDkyLDYgQEAgc3RydWN0IHFjb21f
-bmFuZF9ob3N0IHsKPiA+ID4gIAl1MzIgY2xyZmxhc2hzdGF0dXM7Cj4gPiA+ICAJdTMyIGNscnJl
-YWRzdGF0dXM7Cj4gPiA+ICAKPiA+ID4gLQlib29sIGNvZGV3b3JkX2ZpeHVwOwo+ID4gPiAgCWlu
-dCBucl9ib290X3BhcnRpdGlvbnM7Cj4gPiA+ICAJc3RydWN0IHFjb21fbmFuZF9ib290X3BhcnRp
-dGlvbiAqYm9vdF9wYXJ0aXRpb25zOwo+ID4gPiAgfTsKPiA+ID4gLS0gCj4gPiA+IDIuMzYuMQo+
-ID4gPiAKPiA+IAo+ID4gLS0gCj4gPiDgrq7grqPgrr/grrXgrqPgr43grqPgrqngr40g4K6a4K6k
-4K6+4K6a4K6/4K614K6u4K+NCj4gCj4gLS0gCj4gCUFuc3VlbAoKLS0gCuCuruCuo+Cuv+CuteCu
-o+CvjeCuo+CuqeCvjSDgrprgrqTgrr7grprgrr/grrXgrq7gr40KCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+On Thu, Jun 09, 2022 at 12:24:22PM +0200, Ansuel Smith wrote:
+> On Thu, Jun 09, 2022 at 01:22:54PM +0530, Manivannan Sadhasivam wrote:
+> > On Wed, Jun 08, 2022 at 02:10:28AM +0200, Ansuel Smith wrote:
+> > > IPQ8064 nand have special pages where a different layout scheme is used.
+> > > These special page are used by boot partition and on reading them
+> > > lots of warning are reported about wrong ECC data and if written to
+> > > results in broken data and not bootable device.
+> > > 
+> > > The layout scheme used by these special page consist in using 512 bytes
+> > > as the codeword size (even for the last codeword) while writing to CFG0
+> > > register. This forces the NAND controller to unprotect the 4 bytes of
+> > > spare data.
+> > > 
+> > > Since the kernel is unaware of this different layout for these special
+> > > page, it does try to protect the spare data too during read/write and
+> > > warn about CRC errors.
+> > > 
+> > > Add support for this by permitting the user to declare these special
+> > > pages in dts by declaring offset and size of the partition. The driver
+> > > internally will convert these value to nand pages.
+> > > 
+> > > On user read/write the page is checked and if it's a boot page the
+> > > correct layout is used.
+> > > 
+> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > > ---
+> > >  drivers/mtd/nand/raw/qcom_nandc.c | 174 +++++++++++++++++++++++++++++-
+> > >  1 file changed, 169 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> > > index 1a77542c6d67..06ee9a836a3b 100644
+> > > --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> > > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> > > @@ -80,8 +80,10 @@
+> > >  #define	DISABLE_STATUS_AFTER_WRITE	4
+> > >  #define	CW_PER_PAGE			6
+> > >  #define	UD_SIZE_BYTES			9
+> > > +#define	UD_SIZE_BYTES_MASK		GENMASK(18, 9)
+> > >  #define	ECC_PARITY_SIZE_BYTES_RS	19
+> > >  #define	SPARE_SIZE_BYTES		23
+> > > +#define	SPARE_SIZE_BYTES_MASK		GENMASK(26, 23)
+> > >  #define	NUM_ADDR_CYCLES			27
+> > >  #define	STATUS_BFR_READ			30
+> > >  #define	SET_RD_MODE_AFTER_STATUS	31
+> > > @@ -102,6 +104,7 @@
+> > >  #define	ECC_MODE			4
+> > >  #define	ECC_PARITY_SIZE_BYTES_BCH	8
+> > >  #define	ECC_NUM_DATA_BYTES		16
+> > > +#define	ECC_NUM_DATA_BYTES_MASK		GENMASK(25, 16)
+> > >  #define	ECC_FORCE_CLK_OPEN		30
+> > >  
+> > >  /* NAND_DEV_CMD1 bits */
+> > > @@ -418,6 +421,19 @@ struct qcom_nand_controller {
+> > >  	const struct qcom_nandc_props *props;
+> > >  };
+> > >  
+> > > +/*
+> > > + * NAND special boot partitions
+> > > + *
+> > > + * @page_offset:		offset of the partition where spare data is not protected
+> > > + *				by ECC (value in pages)
+> > 
+> > s/page_offset/offset
+> >
+> 
+> Mhhh i changed this to page_offset since the struct is called
+> boot_partition and it can be confusing since internally the values is in
+> pages. Someone can think that the real partition offset/size is used
+> instead of the value converted in pages.
+
+Hmm, okay.
+
+> 
+> > > + * @page_offset:		size of the partition where spare data is not protected
+> > > + *				by ECC (value in pages)
+> > 
+
+[...]
+
+> > > +static bool
+> > > +qcom_nandc_is_boot_page(struct qcom_nand_host *host, int page)
+> > 
+> > Move function name to previous line. If it exceeds 100 lines then wrap
+> > arguments.
+> > 
+> > s/qcom_nandc_is_boot_page/qcom_nandc_is_boot_partition
+> > 
+> 
+> Again considering the check is done on the page and not on the
+> partition, wonder what is correct.
+> 
+
+But the end goal is to detect if the page belongs to boot partitionis, right?
+
+Also, mixing up boot_pages and boot_partitions is confusing. Let's stick to the
+fact that this patch checks for pages belonging to the boot partition.
+
+> > > +{
+> > > +	struct qcom_nand_boot_partition *boot_partition;
+> > > +	u32 start, end;
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < host->nr_boot_partitions; i++) {
+> > > +		boot_partition = &host->boot_partitions[i];
+> > > +		start = boot_partition->page_offset;
+> > > +		end = start + boot_partition->page_size;
+> > > +
+> > > +		/* Boot pages are normally at the start of
+> > 
+> > Block comments should start with:
+> > 
+> > 	/*
+> > 	 * ...
+> > 
+> > Also, are you sure that only few pages in the partitions have different layout
+> > and not all pages? If not, then this comment needs to be reworded.
+> > 
+> 
+> I probably worderd this bad...
+> Each page of the boot partitions require the codeword fix.
+> But other may have the normal codeword
+> For example this is from a Netgear router:
+> mtd0: 00c80000 00020000 "qcadata" (require codeword fix)
+> mtd1: 00500000 00020000 "APPSBL"  (require codeword fix)
+> mtd2: 00080000 00020000 "APPSBLENV" (doesn't require codeword fix)
+> mtd3: 00140000 00020000 "art"       (doesn't)
+> mtd4: 00140000 00020000 "artbak"    (doesn't)
+> mtd5: 00400000 00020000 "kernel"    (doesn't)
+> mtd6: 06080000 00020000 "ubi"       (doesn't)
+> mtd7: 00700000 00020000 "reserve"   (doesn't)
+> 
+> This is part of the case tho as there are some partition table with
+> something like
+> 
+> mtd0: 00c80000 00020000 "qcadata" (require codeword fix)
+> mtd1: 00500000 00020000 "APPSBL"  (require codeword fix)
+> mtd2: 00080000 00020000 "APPSBLENV" (doesn't require codeword fix)
+> mtd3: 00140000 00020000 "APPSBL2"  (require codeword fix)
+> [...]
+> 
+> In all case 99% of the time in a normal system what you commonly write
+> are the rootfs partition that are AFTER the boot partition so checking
+> if the page is after such partition should speed up the check.
+
+This should be included in the comment.
+
+> Now that I think about it, a good idea is also start checking the
+> boot_partition table from the end to improve the checking even more.
+> 
+
+Yes and if the page lies after last boot partition then we can bail out in the
+first iteration itself. But the binding should make it clear that the offset
+should be specified in ascending order.
+
+> So tell me if the comments is wronlgy worded.
+> 
+
+Based on the above algorithm:
+
+/*
+ * Since the frequent access will be to the non-boot partitions like rootfs,
+ * optimize the page check by:
+
+ * 1. Checking if the page lies after the last boot partition.
+ * 2. Checking from the boot partition end.
+ */
+
+> > > +		 * the nand in various partition.
+> > > +		 * Check the page from the boot page end first
+> > > +		 * to save one extra check and optimize this
+> > > +		 * in case real no-boot partition are used.
+> > > +		 */
+> > > +		if (page < end && page >= start)
+> > > +			return true;
+> > > +	}
+> > > +
+> > > +	return false;
+> > > +}
+> > > +
+> > > +static void
+> > > +qcom_nandc_codeword_fixup(struct qcom_nand_host *host, int page)
+> > > +{
+> > > +	bool codeword_fixup = qcom_nandc_is_boot_page(host, page);
+> > > +
+> > > +	/* Skip conf write if we are already in the correct mode */
+> > > +	if (codeword_fixup == host->codeword_fixup)
+> > > +		return;
+> > > +
+> > > +	host->codeword_fixup = codeword_fixup;
+> > > +
+> > > +	host->cw_data = codeword_fixup ? 512 : 516;
+> > > +	host->spare_bytes = host->cw_size - host->ecc_bytes_hw -
+> > > +			    host->bbm_size - host->cw_data;
+> > > +
+> > > +	host->cfg0 &= ~(SPARE_SIZE_BYTES_MASK | UD_SIZE_BYTES_MASK);
+> > > +	host->cfg0 |= host->spare_bytes << SPARE_SIZE_BYTES |
+> > > +		      host->cw_data << UD_SIZE_BYTES;
+> > > +
+> > > +	host->ecc_bch_cfg &= ~ECC_NUM_DATA_BYTES_MASK;
+> > > +	host->ecc_bch_cfg |= host->cw_data << ECC_NUM_DATA_BYTES;
+> > > +	host->ecc_buf_cfg = (codeword_fixup ? 0x1ff : 0x203) << NUM_STEPS;
+> > 
+> > s/1ff/(512 - 1)
+> > s/203/(516 - 1)
+> > 
+> 
+> ok. I wonder if this can just be reduced to (host->cw_data - 1) and
+> skipping the check entirely.
+> 
+
+Yeah, that sounds even good.
+
+Thanks,
+Mani
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
