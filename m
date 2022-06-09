@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1508EC43334
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:14:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F553C43334
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PMByqmlNoTxyWfYFy220Uq2En0SxDcdRmVPY1C9RBtQ=; b=rEaKDWAvCVT/pM
-	kAmIWULbl5eGgb3eRibQr7F41NsJ21/tORBf1LVwsfZuE9wwmwkqmqnWdweiwtnmSmA0GqX8tk57d
-	V9L75wJGImE7PHZejz1GhHc79jjY6ZxhXMLrQAFylM4+Tnics90/pia7SRB4JGc2GUxEyvsPq88P/
-	bB64/OvnTngk1u/OhbqSw8iNl7RyKBcaLTs9FlbmYQ3eZq8TDF1aJg5aLTlw+oRJgLSEGttTXy6va
-	WLoO52mYLfPB9jh6ITVjFnjAShWfqMUDOQIAlXP14Jkh0e5OGxuHFvaZH0e16a81x0kANg8LtnTQO
-	BLA6ucps3FYGu1G1z8QQ==;
+	List-Owner; bh=REIEQ9gP79J5GzgAHocMKPuJHU9NKCGdqT/r6GKBwRs=; b=ojuz65AQ/DZbVM
+	8gRGZQfGoM0OC3Mw6+7VvX3q1YtF2N3QiQ/tX7cACRxXIkf4m4T9tdxt/KFOc5YmrDfG9MhJZ8IGk
+	ke3BbY0ves0jISp1xMonE1+VCej9qT1q5lj4nUdu37Q4bf3ezgTuimdSd6jrotIsEBNBbEjLTWnFl
+	MjcMgdywcxZ+Fl8XQGOME+CFRGhwYlu0+SA0isWr4P1XH1syV5qk/GACRU7x8zIvu+2wo3fy/YlHn
+	YPBhByy7cin57h2SiX2UDE5tQ08RMh72Aj/Bt3gDu/uo6czbiYCWUH8frTyQZ/c9ZqHDD7Rk4/Igy
+	SsVPxXN8/YzonpyrXHuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHzl-0023dW-Ac; Thu, 09 Jun 2022 13:14:41 +0000
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	id 1nzI01-0023sM-JZ; Thu, 09 Jun 2022 13:14:58 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHvd-0020wc-P8
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 13:10:27 +0000
+	id 1nzHvq-00215g-Pc
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 13:10:42 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 61FBF40002;
-	Thu,  9 Jun 2022 13:10:23 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id C4EFAFF803;
+	Thu,  9 Jun 2022 13:10:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1654780224;
+	t=1654780237;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SXXb6P9Cvl1Zw0pt22LdE638pd3NE17nBJYMk4WRUpQ=;
-	b=hq7VmEw3j/yIDUeup7m471TiSKlOzA2mlV5ZB2IjEsMBVyRSRy5nezwp7rwoma8nmsp0jC
-	WYfDmg70dhurrG05jWfEuBhIIQwbMev9XxYiSRtWdGI7jzFdTb0JG1gecrPgqE895Y2t+h
-	rU4ru4yMyjam2qD44gyxEER3yVd6M74hKMoYA/DVbzw8zt6jFrsV7YsSobXHMLi/vPkgtA
-	2dxcgzf/MEmUzzyp/kyzPgfFcQBQU35vKWh5dIUtDBk0By4ZTZIfI3ViIEYuLM3oLfp4ir
-	H2Hkan5nLKW5zmpO29afrG1HGwPuvLWlqFmhZnp6ndMdsG0IUz8WaJjMalpZ8g==
+	bh=iDdTQJH21wnVJzJGeiGX4/UOPovJLTiw/9VizdL98JQ=;
+	b=Z6+iHR4Lf4yyD5IbQSVmRRiHEdWZ5ohOtBh41fibad4s+aQdrxDtS3QS+wNoCUIHCwvKp9
+	rcN2GeuyCbbewDRrlbl88bYelgEC4YUMvfcunV1Qn4mTTBgCVliubaEXqpPaZ0s1i6PMdd
+	NbgMQoKKUi382rwv1/jrZskIhYb9RbnPPt9YalhCXWKPSlhoH0BAL6Me+Fr43X/3qIREkl
+	M55qQ6hmKzeC+WSP2jzmcDdQJIwwLwEDmxoOaLYfvqGe/3pQdK8XM/IAZFkoxoHtKfajIg
+	B+UXJqIUscBDPWviAh3BZUbrjgoT9JFWwWmNgT7thlCocWFeTEgQ6zeyTE2Q0w==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: =?utf-8?b?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtdchar: prevent integer overflow in a safety check
-Date: Thu,  9 Jun 2022 15:10:22 +0200
-Message-Id: <20220609131022.293516-1-miquel.raynal@bootlin.com>
+To: Christian Lamparter <chunkeey@gmail.com>,
+	linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	dev@aboehler.at
+Subject: Re: [PATCH v2] Revert "mtd: rawnand: add support for Toshiba TC58NVG0S3HTA00 NAND flash"
+Date: Thu,  9 Jun 2022 15:10:36 +0200
+Message-Id: <20220609131036.293589-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220516070601.11428-2-kernel@kempniu.pl>
+In-Reply-To: <20220607185918.1048204-1-chunkeey@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'a1eda864c04cf24ea1130334963c6199318f6f95'
+X-linux-mtd-patch-commit: b'2c5947cffd81ac8181346efacdca3c777ab330ba'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_061026_020340_74C73540 
-X-CRM114-Status: GOOD (  15.90  )
+X-CRM114-CacheID: sfid-20220609_061039_003347_5A02ADA0 
+X-CRM114-Status: GOOD (  14.74  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,36 +68,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uLCAyMDIyLTA1LTE2IGF0IDA3OjA2OjAwIFVUQywgPT91dGYtOD9iP1RXbGphR0hGZ2lC
-THhKbHdhV1hGaEE9PT89IHdyb3RlOgo+IENvbW1pdCA2NDIwYWMwYWY5NWQgKCJtdGRjaGFyOiBw
-cmV2ZW50IHVuYm91bmRlZCBhbGxvY2F0aW9uIGluIE1FTVdSSVRFCj4gaW9jdGwiKSBhZGRlZCBh
-IHNhZmV0eSBjaGVjayB0byBtdGRjaGFyX3dyaXRlX2lvY3RsKCkgd2hpY2ggYXR0ZW1wdHMgdG8K
-PiBlbnN1cmUgdGhhdCB0aGUgd3JpdGUgcmVxdWVzdCBzZW50IGJ5IHVzZXIgc3BhY2UgZG9lcyBu
-b3QgZXh0ZW5kIGJleW9uZAo+IHRoZSBNVEQgZGV2aWNlJ3Mgc2l6ZS4gIEhvd2V2ZXIsIHRoYXQg
-Y2hlY2sgY29udGFpbnMgYW4gYWRkaXRpb24gb2YgdHdvCj4gc3RydWN0IG10ZF93cml0ZV9yZXEg
-ZmllbGRzLCAnc3RhcnQnIGFuZCAnbGVuJywgYm90aCBvZiB3aGljaCBhcmUgdTY0Cj4gdmFyaWFi
-bGVzLiAgVGhlIHJlc3VsdCBvZiB0aGF0IGFkZGl0aW9uIGNhbiBvdmVyZmxvdywgYWxsb3dpbmcg
-dGhlCj4gc2FmZXR5IGNoZWNrIHRvIGJlIGJ5cGFzc2VkLgo+IAo+IFRoZSBhcmd1YWJseSBzaW1w
-bGVzdCBmaXggLSBjaGFuZ2luZyB0aGUgZGF0YSB0eXBlcyBvZiB0aGUgcmVsZXZhbnQKPiBzdHJ1
-Y3QgbXRkX3dyaXRlX3JlcSBmaWVsZHMgLSBpcyBub3QgZmVhc2libGUgYXMgaXQgd291bGQgYnJl
-YWsgdXNlcgo+IHNwYWNlLgo+IAo+IEZpeCBieSBtYWtpbmcgbXRkY2hhcl93cml0ZV9pb2N0bCgp
-IHRydW5jYXRlIHRoZSB2YWx1ZSBwcm92aWRlZCBieSB1c2VyCj4gc3BhY2UgaW4gdGhlICdsZW4n
-IGZpZWxkIG9mIHN0cnVjdCBtdGRfd3JpdGVfcmVxLCBzbyB0aGF0IG9ubHkgdGhlIGxvd2VyCj4g
-MzIgYml0cyBvZiB0aGF0IGZpZWxkIGFyZSB1c2VkLCBwcmV2ZW50aW5nIHRoZSBvdmVyZmxvdy4K
-PiAKPiBXaGlsZSB0aGUgJ29vYmxlbicgZmllbGQgb2Ygc3RydWN0IG10ZF93cml0ZV9yZXEgaXMg
-bm90IGN1cnJlbnRseSB1c2VkCj4gaW4gYW55IHNpbWlsYXJseSBmbGF3ZWQgc2FmZXR5IGNoZWNr
-LCBhbHNvIHRydW5jYXRlIGl0IHRvIDMyIGJpdHMsIGZvcgo+IGNvbnNpc3RlbmN5IHdpdGggdGhl
-ICdsZW4nIGZpZWxkIGFuZCB3aXRoIG90aGVyIE1URCByb3V0aW5lcyBoYW5kbGluZwo+IE9PQiBk
-YXRhLgo+IAo+IFVwZGF0ZSBpbmNsdWRlL3VhcGkvbXRkL210ZC1hYmkuaCBhY2NvcmRpbmdseS4K
-PiAKPiBTdWdnZXN0ZWQtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Cj4g
-U2lnbmVkLW9mZi1ieTogTWljaGHFgiBLxJlwaWXFhCA8a2VybmVsQGtlbXBuaXUucGw+CgpBcHBs
-aWVkIHRvIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L210
-ZC9saW51eC5naXQgbXRkL25leHQsIHRoYW5rcy4KCk1pcXVlbAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LW10ZC8K
+On Tue, 2022-06-07 at 18:59:18 UTC, Christian Lamparter wrote:
+> This reverts commit 3380557fc7e28d9bce7607e16d98f123d36da4ca.
+> 
+> It turned out this "4-byte" ID might have been an honest mistake.
+> Regrettably, the chip Andreas has might be a counterfeit or is
+> damaged in some other way and shouldn't have ended up in a router.
+> 
+> Andreas reported his chip is returning just four bytes:
+> "98 f1 80 15 00 00 00 00".
+> 
+> However, according to Kioxia/Toshiba's datasheet, there should
+> have been at least another byte that would have contained the
+> correct OOB size that Andreas needed.
+> 
+> Miquel and Andreas are both favoring reverting the patch over
+> further, possibly hacky modifications:
+> "[Reverting] is the safest option here. Apart from this device, we
+> do not know how many devices have these damaged/counterfeit chips.
+> If it is just a couple and only on Fritzboxes, as suggested in the
+> Github issue the patch could be carried through OpenWrt[...]"
+> 
+> Thanks to several users on the openwrt forum and github issue,
+> who stayed along for the ride:
+>  - Peter-vdL for reporting the issue and testing patches.
+>  - neg2led and Hannu Nyman who did all the
+>    datasheet digging and debugging.
+> 
+> Cc: Andreas Boehler <dev@aboehler.at>
+> Suggested-by: Andreas Boehler <dev@aboehler.at>
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Link: https://github.com/openwrt/openwrt/issues/9962
+> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+
+Miquel
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
