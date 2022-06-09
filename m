@@ -4,65 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D268C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:10:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09335C43334
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uNobCljpO4e8TNHU+MVZOpM+mPMGU9TSQpjFpYxZHe0=; b=sb9+w6kuAiHWvA
-	6lHN9MgqnnbSuoC06GDYBsHFHy/cA6y3O1opcJpwhsf2s0RdGiTQI2bZDhZOsIYEoIHh9RRAK/zoB
-	xJdgFW/PUeHbRO72q+Sz+nV1tVqLHNEJwbT582I+64VaTEgwYh/SRoiTD9Lfn+7KN+2TFkddMn85y
-	kiJoOHHwpfFYDD8i7pWdH1/Q3M/F+wWowLebYQtkAnxe87ZT+s0ctAqmm+R5+0ehOZZfOzEcu6NBr
-	zGh2WF6z97GmbgqYDjJWklRPvTap3Ug+2WTBr6Xmuufk93wusWS/d4JoSdAv5ili/i4pSH9f49T8S
-	ZEr5OT0WNJqiQW327MHA==;
+	List-Owner; bh=V9V/CQ/FYWmhpZ5bUEF5tHcW5WwuLkiaxuJIIX3yQmE=; b=nJ4U7Aw4turPAf
+	pvg10l3ROyVG5ZTKb2KH2+YOkF4dHludr0oeaGT7lBou4EAXXSok1qkzyo1KpuqdidJTwVRl21Jqk
+	XD+Mbfh95T8yOfD20zDi9JKnkTXosUA2qMPA+qchV5sRsVVH2c66oGawu7x686Slk5OYyzo3Hmo5+
+	UJpWAGFVWI07EfeAstNbplCPac7qx++uyQK3rRTJrTF3wFpniQwK38ZyuIFrdT9q+T26ci/K6cf4+
+	Adi1BtLr++jEpYJU70mJX3Urok80Qn08QEKlGTluf/wD6F9ArtTwvyWCrYpbMhLJc4h7o4W5eBeet
+	XL4D0FG/tI0QGFSs9lkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHvN-0020m0-20; Thu, 09 Jun 2022 13:10:09 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1nzHvQ-0020oG-JP; Thu, 09 Jun 2022 13:10:12 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzHuT-0020Cx-3s; Thu, 09 Jun 2022 13:09:14 +0000
+	id 1nzHuY-0020FM-Bs
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 13:09:20 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 18D8D10000E;
-	Thu,  9 Jun 2022 13:09:10 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 97ACD20009;
+	Thu,  9 Jun 2022 13:09:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1654780151;
+	t=1654780155;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VJMObUxXvW1JPqBpJkJyr++Eelvwt8iY4c63Bcq0+xA=;
-	b=RCDcCAOl1AM1+Up9PZaNnKrAoE+dssIqLtQOAAW7D+vuXpYRKqF1weI/XkdDVvIbsKq5b9
-	kMaMKVS70gNdgc6vJKAikQy0TpaiL2yqbM3Y1hjSgYcM3JjyxOXygVWcoB65jBLFKNWpTL
-	hPEsH/w9N8VAE2MEm2VfCNg2uguhnInr/Nl55YXBULGWz6sismrzq735BmMvjIKIQkNSQZ
-	n5XYtIyVWucGps6heVnMQV13xoJyZOQE4W78CpX1oavZxDJBGlgahbdgdygzAKemb//mI6
-	xg+J7HeHkwWVIY9frK7nNsQjg30GICQnZJYC3ukMYfbZxdF2eDn81oaiQvuf3A==
+	bh=76ID1qG848oQm5UwwOhDI34TRH1xRk+pntVD79SlXiw=;
+	b=LumBFhFNyp9KcDAI2N7mHKWgqL/riK3DISahT3CqJCSqWvw4G1ll1OZ+s02FQv/5+AZA/j
+	Y/T/FShiXrqJJp/IWZ4TXNZP5WZHQvJGSE3P1HntP3FqtPZGMp1f43HX9d2sTYQsY8lIoz
+	Vnf1ucIrVAVFsFkjiG7ZfndYYpIjpWg06SPzV4DkiXk2XZCHbEGSjGIl+iTwN4xHAFylXO
+	mMPkogCqan8AoCncB09XOMGfruwIJnfdcC4rR6FMfQ4NIdC58WG50ckka94pNYHAirZZlu
+	8adCR1uncuuwfndGN9+h7vjduxkaiU7MeoTNrY6Rz9joQDW5eCXTZu6WyOw2Iw==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
 	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	kernel@pengutronix.de
-Subject: Re: [PATCH v2] mtd: rawnand: atmel: Warn about failure to unregister mtd device
-Date: Thu,  9 Jun 2022 15:09:09 +0200
-Message-Id: <20220609130909.293073-1-miquel.raynal@bootlin.com>
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: kernel@pengutronix.de,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 14/14] mtd: physmap: Drop if with an always false condition
+Date: Thu,  9 Jun 2022 15:09:14 +0200
+Message-Id: <20220609130914.293104-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220607062503.211345-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20220603210758.148493-15-u.kleine-koenig@pengutronix.de>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'1cc82e09fc20dbb1f3aa41e9924c48e8194da754'
+X-linux-mtd-patch-commit: b'f88c97c1332d6d760d193ce3d76765f8105b1cda'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_060913_343143_D0A17A65 
-X-CRM114-Status: UNSURE (   8.42  )
+X-CRM114-CacheID: sfid-20220609_060918_584730_265F43B8 
+X-CRM114-Status: UNSURE (   7.95  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,17 +76,15 @@ Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCAyMDIyLTA2LTA3IGF0IDA2OjI1OjAzIFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
-Sz1DMz1CNm5pZz89IHdyb3RlOgo+IFRoZSBMaW51eCBkZXZpY2UgY29yZSBkb2Vzbid0IGludGVu
-ZCByZW1vdmUgY2FsbGJhY2tzIHRvIGZhaWwuIElmIGFuCj4gZXJyb3IgY29kZSBpcyByZXR1cm5l
-ZCB0aGUgZGV2aWNlIGlzIHJlbW92ZWQgYW55aG93LiBTbyB3YWlsIGxvdWRseSBpZgo+IHRoZSBh
-dG1lbCBzcGVjaWZpYyByZW1vdmUgY2FsbGJhY2sgZmFpbHMgYW5kIHJldHVybiAwIGFueWhvdyB0
-byBzdXBwcmVzcwo+IHRoZSBnZW5lcmljIChhbmQgbGl0dGxlIGhlbHBmdWwpIGVycm9yIG1lc3Nh
-Z2UgYnkgdGhlIGRldmljZSBjb3JlLgo+IAo+IFRoaXMgaXMgYSBwcmVwYXJhdGlvbiBmb3IgbWFr
-aW5nIHBsYXRmb3JtIHJlbW92ZSBjYWxsYmFja3MgcmV0dXJuIHZvaWQuCj4gCj4gU2lnbmVkLW9m
-Zi1ieTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4K
-CkFwcGxpZWQgdG8gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9n
-aXQvbXRkL2xpbnV4LmdpdCBtdGQvbmV4dCwgdGhhbmtzLgoKTWlxdWVsCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
-c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLwo=
+T24gRnJpLCAyMDIyLTA2LTAzIGF0IDIxOjA3OjU4IFVUQywgPT91dGYtOD9xP1V3ZV9LbGVpbmUt
+Sz1DMz1CNm5pZz89IHdyb3RlOgo+IFRoZSByZW1vdmUgY2FsbGJhY2sgaXMgb25seSBjYWxsZWQg
+YWZ0ZXIgcHJvYmUgY29tcGxldGVkIHN1Y2Nlc3NmdWxseS4KPiBJbiB0aGlzIGNhc2UgcGxhdGZv
+cm1fc2V0X2RydmRhdGEoKSB3YXMgY2FsbGVkIHdpdGggYSBub24tTlVMTCBhcmd1bWVudAo+IGFu
+ZCBzbyBpbmZvIGlzIG5ldmVyIE5VTEwuCj4gCj4gVGhpcyBpcyBhIHByZXBhcmF0aW9uIGZvciBt
+YWtpbmcgcGxhdGZvcm0gcmVtb3ZlIGNhbGxiYWNrcyByZXR1cm4gdm9pZC4KPiAKPiBTaWduZWQt
+b2ZmLWJ5OiBVd2UgS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1dHJvbml4LmRl
+PgoKQXBwbGllZCB0byBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
+L2dpdC9tdGQvbGludXguZ2l0IG10ZC9uZXh0LCB0aGFua3MuCgpNaXF1ZWwKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlz
+Y3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9saW51eC1tdGQvCg==
