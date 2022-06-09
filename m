@@ -4,67 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51A93C43334
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 07:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 564F3C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 09:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9dQ3VriEKAGVvF/MdscCgHjmO3ScF7LlcBYReJkWNpc=; b=aSV4pg1EtwYAFm
-	6ZEGfoMD0Jz2ZRPbqRZTXLBisPuIfCZDCAlsujJOy42I/BUuSx/ukaJVt50XtCCKl7so6qKa0iKQt
-	rE18hz6Z5CZZ4JbsgUg3cNKUGYjRBKNvRJo8HR8TCezBupBzpsmNxpn99uo1A27LNjGRcVUv/lM51
-	Z/JAUIdCFYk8zlPv7uYKOwIGiO0yYy5ZdalblgNBLUlJMjVCMSQ/q0GdEdN2k9tvxXFGgh0Q5o+TS
-	JTiQPlrNk4HXR51A6jHPbcU8emF57OiDE8K0lyzBnCsV5J2Wb4WWMiWhXK6HkDCTTwCQJfpQKiJl1
-	pHzn4vC4BjL1KoRnWvlQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kXNAkuCC3mZ2zrr4H/u8QmclGRD1vRe94lzf/mZt5SQ=; b=wWd6eT1jIQNkxI
+	I/PXsno6B9xPOQu2XuJwrnzyjNAiQrIPsvgazww/sKYANrVHvQmVoNzyFxnIYWhxD9Nzjxt6zphgV
+	sel8NKETFdlSd/R30bVP028FZkfREhEbFOYdx6HU+BDWTH0dfyV9vF/4m2zPf+Z//QQqfjfwMX9SC
+	4X3VfQ/PfV97AlAjo2Xj8j177jd9MfsNpfERA79cg5A3ALcKqT5v2ZNmL2SmyMsoPuHTVBsbqc69m
+	1AUaP5yROrpCMbFd/JmfrIW6nScNedkCSaHsIS6Dw0UBf7DsgAnRK7tzhs6GkLol61/BC92Am5/ts
+	uX8BgWxDnVPmg7g8CHaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzCyh-0000JR-DH; Thu, 09 Jun 2022 07:53:15 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1nzE4R-000VZZ-F8; Thu, 09 Jun 2022 09:03:16 +0000
+Received: from mail-pg1-x52b.google.com ([2607:f8b0:4864:20::52b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzCyc-0000Fm-JQ
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 07:53:13 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id E6619B829F9;
-	Thu,  9 Jun 2022 07:53:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C5D4C34114;
-	Thu,  9 Jun 2022 07:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1654761187;
-	bh=P3FLNlZhGb3NkhkHCxICHx9Dpls3bm2gQnBATFpOF5c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GhgjJQ9I0cybj/OzgI8ZYMTl0Lsr9RRvQ/YBDZuyJTNdw9DPyzNfGsyCx29xiBruO
-	 jOymaSYJ57LUxHpOBz/qfP+SJawhMJZP2YLp5pEkieB2cu+4Ysge5HOICBbqxivd56
-	 E3JOxpLkNo8quJvYJlqsfcUeAa5cs6usYEXMbdhq+WFAlhmFv8GDnY3rNKiidtZbHF
-	 +9cEtD27eLK32vAG/7USmTQtoEKN/Zg2uwK1TolmlCyPyJFICO77SZdubcjSpS4qLv
-	 tz/EG+x87joXiVN/CpnwFR+mBIowfJ+6lMWE1pntu8xLXN7AYMQ0wnsSJVmTUXIJPl
-	 VQ/PN/XQ9JP2A==
-Date: Thu, 9 Jun 2022 13:22:54 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Ansuel Smith <ansuelsmth@gmail.com>
-Cc: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] mtd: nand: raw: qcom_nandc: add support for
- unprotected spare data pages
-Message-ID: <20220609075254.GC2758@thinkpad>
-References: <20220608001030.18813-1-ansuelsmth@gmail.com>
- <20220608001030.18813-2-ansuelsmth@gmail.com>
+	id 1nzE11-000Tmt-D4
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 08:59:48 +0000
+Received: by mail-pg1-x52b.google.com with SMTP id y187so21284800pgd.3
+        for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2022 01:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N3xXFOz1ahH26aWAh7dx496kkM8FljSDIL9zei2dr5A=;
+        b=SdJru8cSJEN20uLtxJrWHj4AwK3mrGtVZ3y64FnBRcPucbmeNtrLCchk4dyYR5Nyr6
+         KRIBz6dWinFuMbTaDwvfMS5JoEOSsv5cDKDGAnlPPvoojI+j0cZyeV5ea3GoULRl6CFZ
+         a7ECKUlS6BOShYosPT68rMQNBeukT/naEcETMJ3I9Ov2Hg+zH/c2wW8i64qgRAGb687e
+         S+UzbqgZdgjAs/MQCs6NWGFtoxHcNL4oWq5IAb0nCCaC6L3/P7Q6MOaEikt7DoNut4sy
+         kkUuEYtED75yUWkjZgidT/U/+l9NBiImPJRqWDx8kNGXTzy/GEkYWXfbfvkwlzlgLHHx
+         ub/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N3xXFOz1ahH26aWAh7dx496kkM8FljSDIL9zei2dr5A=;
+        b=x+lo4lB7KoQ+5jygCQfvWlVsC+Zjfx+YnLjLwBt/fWbgYB6I4dWKRZbNvdAHVqMhUO
+         8n1PqU92ycevg/jCso8OgFJfWbV5xUlKTvy08v/wLoXXAXmwySBQJ903G0V6lO26PS6X
+         k8kAIaS0mMX87gPNEUwbtRqYAUE9ZqKr9zy4sWDqBlAmUymsfLQTWZ5zwXdrrFH/MAAu
+         ZdVe/YTB6ulRnW0JDPIJtMa3IbsBMCtr9edrZptjBCLe4k3sXNDkEocES+72Lz7TDSAa
+         fHqgE+1U6CGNOfR0ZRxqdSdHCYmpMv3L2oLIkBCySNcfPrjxHtAeC+OE16n4uuEsY/ut
+         qbNg==
+X-Gm-Message-State: AOAM532GAexgia26BA87pbGyd0oP2+O7EQTB20LKD5djPlw8FThPU+Bh
+	0I+AtS/tgVLNxMwH5Uf2Eflr0t8B9v4=
+X-Google-Smtp-Source: ABdhPJy/Jc1myCZeTS9BlrDTVH/xT940Ms9ltBWQGoV9ogVD8t6LvI6pNC8/FmGjLi29QykRrjav4w==
+X-Received: by 2002:a65:6044:0:b0:3fc:674:8f5a with SMTP id a4-20020a656044000000b003fc06748f5amr33876035pgp.436.1654765180986;
+        Thu, 09 Jun 2022 01:59:40 -0700 (PDT)
+Received: from ISCNPF1JZGWX.infineon.com (fp76ee264d.knge102.ap.nuro.jp. [118.238.38.77])
+        by smtp.gmail.com with ESMTPSA id ja13-20020a170902efcd00b00168adae4eb2sm575997plb.262.2022.06.09.01.59.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 01:59:40 -0700 (PDT)
+From: tkuw584924@gmail.com
+X-Google-Original-From: Takahiro.Kuwano@infineon.com
+To: linux-mtd@lists.infradead.org
+Cc: tudor.ambarus@microchip.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	p.yadav@ti.com,
+	michael@walle.cc,
+	tkuw584924@gmail.com,
+	Bacem.Daassi@infineon.com,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Subject: [PATCH v16 0/8] mtd: spi-nor: Add support for Infineon s25hl-t/s25hs-t
+Date: Thu,  9 Jun 2022 17:57:37 +0900
+Message-Id: <cover.1654741888.git.Takahiro.Kuwano@infineon.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220608001030.18813-2-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_005310_992573_7C658652 
-X-CRM114-Status: GOOD (  52.80  )
+X-CRM114-CacheID: sfid-20220609_015943_531023_D83C71BE 
+X-CRM114-Status: GOOD (  15.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,254 +89,312 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCBKdW4gMDgsIDIwMjIgYXQgMDI6MTA6MjhBTSArMDIwMCwgQW5zdWVsIFNtaXRoIHdy
-b3RlOgo+IElQUTgwNjQgbmFuZCBoYXZlIHNwZWNpYWwgcGFnZXMgd2hlcmUgYSBkaWZmZXJlbnQg
-bGF5b3V0IHNjaGVtZSBpcyB1c2VkLgo+IFRoZXNlIHNwZWNpYWwgcGFnZSBhcmUgdXNlZCBieSBi
-b290IHBhcnRpdGlvbiBhbmQgb24gcmVhZGluZyB0aGVtCj4gbG90cyBvZiB3YXJuaW5nIGFyZSBy
-ZXBvcnRlZCBhYm91dCB3cm9uZyBFQ0MgZGF0YSBhbmQgaWYgd3JpdHRlbiB0bwo+IHJlc3VsdHMg
-aW4gYnJva2VuIGRhdGEgYW5kIG5vdCBib290YWJsZSBkZXZpY2UuCj4gCj4gVGhlIGxheW91dCBz
-Y2hlbWUgdXNlZCBieSB0aGVzZSBzcGVjaWFsIHBhZ2UgY29uc2lzdCBpbiB1c2luZyA1MTIgYnl0
-ZXMKPiBhcyB0aGUgY29kZXdvcmQgc2l6ZSAoZXZlbiBmb3IgdGhlIGxhc3QgY29kZXdvcmQpIHdo
-aWxlIHdyaXRpbmcgdG8gQ0ZHMAo+IHJlZ2lzdGVyLiBUaGlzIGZvcmNlcyB0aGUgTkFORCBjb250
-cm9sbGVyIHRvIHVucHJvdGVjdCB0aGUgNCBieXRlcyBvZgo+IHNwYXJlIGRhdGEuCj4gCj4gU2lu
-Y2UgdGhlIGtlcm5lbCBpcyB1bmF3YXJlIG9mIHRoaXMgZGlmZmVyZW50IGxheW91dCBmb3IgdGhl
-c2Ugc3BlY2lhbAo+IHBhZ2UsIGl0IGRvZXMgdHJ5IHRvIHByb3RlY3QgdGhlIHNwYXJlIGRhdGEg
-dG9vIGR1cmluZyByZWFkL3dyaXRlIGFuZAo+IHdhcm4gYWJvdXQgQ1JDIGVycm9ycy4KPiAKPiBB
-ZGQgc3VwcG9ydCBmb3IgdGhpcyBieSBwZXJtaXR0aW5nIHRoZSB1c2VyIHRvIGRlY2xhcmUgdGhl
-c2Ugc3BlY2lhbAo+IHBhZ2VzIGluIGR0cyBieSBkZWNsYXJpbmcgb2Zmc2V0IGFuZCBzaXplIG9m
-IHRoZSBwYXJ0aXRpb24uIFRoZSBkcml2ZXIKPiBpbnRlcm5hbGx5IHdpbGwgY29udmVydCB0aGVz
-ZSB2YWx1ZSB0byBuYW5kIHBhZ2VzLgo+IAo+IE9uIHVzZXIgcmVhZC93cml0ZSB0aGUgcGFnZSBp
-cyBjaGVja2VkIGFuZCBpZiBpdCdzIGEgYm9vdCBwYWdlIHRoZQo+IGNvcnJlY3QgbGF5b3V0IGlz
-IHVzZWQuCj4gCj4gU2lnbmVkLW9mZi1ieTogQW5zdWVsIFNtaXRoIDxhbnN1ZWxzbXRoQGdtYWls
-LmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvcWNvbV9uYW5kYy5jIHwgMTc0ICsr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTY5IGluc2Vy
-dGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25h
-bmQvcmF3L3Fjb21fbmFuZGMuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+
-IGluZGV4IDFhNzc1NDJjNmQ2Ny4uMDZlZTlhODM2YTNiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
-bXRkL25hbmQvcmF3L3Fjb21fbmFuZGMuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3Fj
-b21fbmFuZGMuYwo+IEBAIC04MCw4ICs4MCwxMCBAQAo+ICAjZGVmaW5lCURJU0FCTEVfU1RBVFVT
-X0FGVEVSX1dSSVRFCTQKPiAgI2RlZmluZQlDV19QRVJfUEFHRQkJCTYKPiAgI2RlZmluZQlVRF9T
-SVpFX0JZVEVTCQkJOQo+ICsjZGVmaW5lCVVEX1NJWkVfQllURVNfTUFTSwkJR0VOTUFTSygxOCwg
-OSkKPiAgI2RlZmluZQlFQ0NfUEFSSVRZX1NJWkVfQllURVNfUlMJMTkKPiAgI2RlZmluZQlTUEFS
-RV9TSVpFX0JZVEVTCQkyMwo+ICsjZGVmaW5lCVNQQVJFX1NJWkVfQllURVNfTUFTSwkJR0VOTUFT
-SygyNiwgMjMpCj4gICNkZWZpbmUJTlVNX0FERFJfQ1lDTEVTCQkJMjcKPiAgI2RlZmluZQlTVEFU
-VVNfQkZSX1JFQUQJCQkzMAo+ICAjZGVmaW5lCVNFVF9SRF9NT0RFX0FGVEVSX1NUQVRVUwkzMQo+
-IEBAIC0xMDIsNiArMTA0LDcgQEAKPiAgI2RlZmluZQlFQ0NfTU9ERQkJCTQKPiAgI2RlZmluZQlF
-Q0NfUEFSSVRZX1NJWkVfQllURVNfQkNICTgKPiAgI2RlZmluZQlFQ0NfTlVNX0RBVEFfQllURVMJ
-CTE2Cj4gKyNkZWZpbmUJRUNDX05VTV9EQVRBX0JZVEVTX01BU0sJCUdFTk1BU0soMjUsIDE2KQo+
-ICAjZGVmaW5lCUVDQ19GT1JDRV9DTEtfT1BFTgkJMzAKPiAgCj4gIC8qIE5BTkRfREVWX0NNRDEg
-Yml0cyAqLwo+IEBAIC00MTgsNiArNDIxLDE5IEBAIHN0cnVjdCBxY29tX25hbmRfY29udHJvbGxl
-ciB7Cj4gIAljb25zdCBzdHJ1Y3QgcWNvbV9uYW5kY19wcm9wcyAqcHJvcHM7Cj4gIH07Cj4gIAo+
-ICsvKgo+ICsgKiBOQU5EIHNwZWNpYWwgYm9vdCBwYXJ0aXRpb25zCj4gKyAqCj4gKyAqIEBwYWdl
-X29mZnNldDoJCW9mZnNldCBvZiB0aGUgcGFydGl0aW9uIHdoZXJlIHNwYXJlIGRhdGEgaXMgbm90
-IHByb3RlY3RlZAo+ICsgKgkJCQlieSBFQ0MgKHZhbHVlIGluIHBhZ2VzKQoKcy9wYWdlX29mZnNl
-dC9vZmZzZXQKCj4gKyAqIEBwYWdlX29mZnNldDoJCXNpemUgb2YgdGhlIHBhcnRpdGlvbiB3aGVy
-ZSBzcGFyZSBkYXRhIGlzIG5vdCBwcm90ZWN0ZWQKPiArICoJCQkJYnkgRUNDICh2YWx1ZSBpbiBw
-YWdlcykKCnMvcGFnZV9vZmZzZXQvc2l6ZQoKPiArICovCj4gK3N0cnVjdCBxY29tX25hbmRfYm9v
-dF9wYXJ0aXRpb24gewo+ICsJdTMyIHBhZ2Vfb2Zmc2V0Owo+ICsJdTMyIHBhZ2Vfc2l6ZTsKCnNh
-bWUgaGVyZQoKPiArfTsKPiArCj4gIC8qCj4gICAqIE5BTkQgY2hpcCBzdHJ1Y3R1cmUKPiAgICoK
-PiBAQCAtNDQ0LDYgKzQ2MCwxMyBAQCBzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIgewo+ICAg
-KiBAY2ZnMCwgY2ZnMSwgY2ZnMF9yYXcuLjoJTkFORGMgcmVnaXN0ZXIgY29uZmlndXJhdGlvbnMg
-bmVlZGVkIGZvcgo+ICAgKgkJCQllY2Mvbm9uLWVjYyBtb2RlIGZvciB0aGUgY3VycmVudCBuYW5k
-IGZsYXNoCj4gICAqCQkJCWRldmljZQo+ICsgKgo+ICsgKiBAY29kZXdvcmRfZml4dXA6CQlrZWVw
-IHRyYWNrIG9mIHRoZSBjdXJyZW50IGxheW91dCB1c2VkIGJ5Cj4gKyAqCQkJCXRoZSBkcml2ZXIg
-Zm9yIHJlYWQvd3JpdGUgb3BlcmF0aW9uLgo+ICsgKiBAbnJfYm9vdF9wYXJ0aXRpb25zOgkJY291
-bnQgb2YgdGhlIGJvb3QgcGFydGl0aW9ucyB3aGVyZSBzcGFyZSBkYXRhIGlzIG5vdAo+ICsgKgkJ
-CQlwcm90ZWN0ZWQgYnkgRUNDCgpBbGlnbiB0aGUgS2RvYyBjb21tZW50cyB3LnIudCBvdGhlciBt
-ZW1iZXJzLgoKPiArICogQGJvb3RfcGFnZXM6CQkJYXJyYXkgb2YgYm9vdCBwYXJ0aXRpb25zIHdo
-ZXJlIG9mZnNldCBhbmQgc2l6ZSBvZiB0aGUKPiArICoJCQkJYm9vdCBwYXJ0aXRpb25zIGFyZSBz
-dG9yZWQKCnMvYm9vdF9wYWdlcy9ib290X3BhcnRpdGlvbnMKCj4gICAqLwo+ICBzdHJ1Y3QgcWNv
-bV9uYW5kX2hvc3Qgewo+ICAJc3RydWN0IG5hbmRfY2hpcCBjaGlwOwo+IEBAIC00NjYsNiArNDg5
-LDEwIEBAIHN0cnVjdCBxY29tX25hbmRfaG9zdCB7Cj4gIAl1MzIgZWNjX2JjaF9jZmc7Cj4gIAl1
-MzIgY2xyZmxhc2hzdGF0dXM7Cj4gIAl1MzIgY2xycmVhZHN0YXR1czsKPiArCj4gKwlib29sIGNv
-ZGV3b3JkX2ZpeHVwOwo+ICsJaW50IG5yX2Jvb3RfcGFydGl0aW9uczsKPiArCXN0cnVjdCBxY29t
-X25hbmRfYm9vdF9wYXJ0aXRpb24gKmJvb3RfcGFydGl0aW9uczsKPiAgfTsKPiAgCj4gIC8qCj4g
-QEAgLTQ3NSw2ICs1MDIsNyBAQCBzdHJ1Y3QgcWNvbV9uYW5kX2hvc3Qgewo+ICAgKiBAaXNfYmFt
-IC0gd2hldGhlciBOQU5EIGNvbnRyb2xsZXIgaXMgdXNpbmcgQkFNCj4gICAqIEBpc19xcGljIC0g
-d2hldGhlciBOQU5EIENUUkwgaXMgcGFydCBvZiBxcGljIElQCj4gICAqIEBxcGljX3YyIC0gZmxh
-ZyB0byBpbmRpY2F0ZSBRUElDIElQIHZlcnNpb24gMgo+ICsgKiBAdXNlX2NvZGV3b3JkX2ZpeHVw
-IC0gd2hldGhlciBOQU5EIGhhcyBkaWZmZXJlbnQgbGF5b3V0IGZvciBib290IHBhcnRpdGlvbnMK
-PiAgICogQGRldl9jbWRfcmVnX3N0YXJ0IC0gTkFORF9ERVZfQ01EXyogcmVnaXN0ZXJzIHN0YXJ0
-aW5nIG9mZnNldAo+ICAgKi8KPiAgc3RydWN0IHFjb21fbmFuZGNfcHJvcHMgewo+IEBAIC00ODIs
-NiArNTEwLDcgQEAgc3RydWN0IHFjb21fbmFuZGNfcHJvcHMgewo+ICAJYm9vbCBpc19iYW07Cj4g
-IAlib29sIGlzX3FwaWM7Cj4gIAlib29sIHFwaWNfdjI7Cj4gKwlib29sIHVzZV9jb2Rld29yZF9m
-aXh1cDsKPiAgCXUzMiBkZXZfY21kX3JlZ19zdGFydDsKPiAgfTsKPiAgCj4gQEAgLTE3MDEsNyAr
-MTczMCw3IEBAIHFjb21fbmFuZGNfcmVhZF9jd19yYXcoc3RydWN0IG10ZF9pbmZvICptdGQsIHN0
-cnVjdCBuYW5kX2NoaXAgKmNoaXAsCj4gIAlkYXRhX3NpemUxID0gbXRkLT53cml0ZXNpemUgLSBo
-b3N0LT5jd19zaXplICogKGVjYy0+c3RlcHMgLSAxKTsKPiAgCW9vYl9zaXplMSA9IGhvc3QtPmJi
-bV9zaXplOwo+ICAKPiAtCWlmIChxY29tX25hbmRjX2lzX2xhc3RfY3coZWNjLCBjdykpIHsKPiAr
-CWlmIChxY29tX25hbmRjX2lzX2xhc3RfY3coZWNjLCBjdykgJiYgIWhvc3QtPmNvZGV3b3JkX2Zp
-eHVwKSB7Cj4gIAkJZGF0YV9zaXplMiA9IGVjYy0+c2l6ZSAtIGRhdGFfc2l6ZTEgLQo+ICAJCQkg
-ICAgICgoZWNjLT5zdGVwcyAtIDEpICogNCk7Cj4gIAkJb29iX3NpemUyID0gKGVjYy0+c3RlcHMg
-KiA0KSArIGhvc3QtPmVjY19ieXRlc19odyArCj4gQEAgLTE3ODIsNyArMTgxMSw3IEBAIGNoZWNr
-X2Zvcl9lcmFzZWRfcGFnZShzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgKmhvc3QsIHU4ICpkYXRhX2J1
-ZiwKPiAgCX0KPiAgCj4gIAlmb3JfZWFjaF9zZXRfYml0KGN3LCAmdW5jb3JyZWN0YWJsZV9jd3Ms
-IGVjYy0+c3RlcHMpIHsKPiAtCQlpZiAocWNvbV9uYW5kY19pc19sYXN0X2N3KGVjYywgY3cpKSB7
-Cj4gKwkJaWYgKHFjb21fbmFuZGNfaXNfbGFzdF9jdyhlY2MsIGN3KSAmJiAhaG9zdC0+Y29kZXdv
-cmRfZml4dXApIHsKPiAgCQkJZGF0YV9zaXplID0gZWNjLT5zaXplIC0gKChlY2MtPnN0ZXBzIC0g
-MSkgKiA0KTsKPiAgCQkJb29iX3NpemUgPSAoZWNjLT5zdGVwcyAqIDQpICsgaG9zdC0+ZWNjX2J5
-dGVzX2h3Owo+ICAJCX0gZWxzZSB7Cj4gQEAgLTE5NDAsNyArMTk2OSw3IEBAIHN0YXRpYyBpbnQg
-cmVhZF9wYWdlX2VjYyhzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgKmhvc3QsIHU4ICpkYXRhX2J1ZiwK
-PiAgCWZvciAoaSA9IDA7IGkgPCBlY2MtPnN0ZXBzOyBpKyspIHsKPiAgCQlpbnQgZGF0YV9zaXpl
-LCBvb2Jfc2l6ZTsKPiAgCj4gLQkJaWYgKHFjb21fbmFuZGNfaXNfbGFzdF9jdyhlY2MsIGkpKSB7
-Cj4gKwkJaWYgKHFjb21fbmFuZGNfaXNfbGFzdF9jdyhlY2MsIGkpICYmICFob3N0LT5jb2Rld29y
-ZF9maXh1cCkgewo+ICAJCQlkYXRhX3NpemUgPSBlY2MtPnNpemUgLSAoKGVjYy0+c3RlcHMgLSAx
-KSA8PCAyKTsKPiAgCQkJb29iX3NpemUgPSAoZWNjLT5zdGVwcyA8PCAyKSArIGhvc3QtPmVjY19i
-eXRlc19odyArCj4gIAkJCQkgICBob3N0LT5zcGFyZV9ieXRlczsKPiBAQCAtMjAzNyw2ICsyMDY2
-LDU1IEBAIHN0YXRpYyBpbnQgY29weV9sYXN0X2N3KHN0cnVjdCBxY29tX25hbmRfaG9zdCAqaG9z
-dCwgaW50IHBhZ2UpCj4gIAlyZXR1cm4gcmV0Owo+ICB9Cj4gIAo+ICtzdGF0aWMgYm9vbAo+ICtx
-Y29tX25hbmRjX2lzX2Jvb3RfcGFnZShzdHJ1Y3QgcWNvbV9uYW5kX2hvc3QgKmhvc3QsIGludCBw
-YWdlKQoKTW92ZSBmdW5jdGlvbiBuYW1lIHRvIHByZXZpb3VzIGxpbmUuIElmIGl0IGV4Y2VlZHMg
-MTAwIGxpbmVzIHRoZW4gd3JhcAphcmd1bWVudHMuCgpzL3Fjb21fbmFuZGNfaXNfYm9vdF9wYWdl
-L3Fjb21fbmFuZGNfaXNfYm9vdF9wYXJ0aXRpb24KCj4gK3sKPiArCXN0cnVjdCBxY29tX25hbmRf
-Ym9vdF9wYXJ0aXRpb24gKmJvb3RfcGFydGl0aW9uOwo+ICsJdTMyIHN0YXJ0LCBlbmQ7Cj4gKwlp
-bnQgaTsKPiArCj4gKwlmb3IgKGkgPSAwOyBpIDwgaG9zdC0+bnJfYm9vdF9wYXJ0aXRpb25zOyBp
-KyspIHsKPiArCQlib290X3BhcnRpdGlvbiA9ICZob3N0LT5ib290X3BhcnRpdGlvbnNbaV07Cj4g
-KwkJc3RhcnQgPSBib290X3BhcnRpdGlvbi0+cGFnZV9vZmZzZXQ7Cj4gKwkJZW5kID0gc3RhcnQg
-KyBib290X3BhcnRpdGlvbi0+cGFnZV9zaXplOwo+ICsKPiArCQkvKiBCb290IHBhZ2VzIGFyZSBu
-b3JtYWxseSBhdCB0aGUgc3RhcnQgb2YKCkJsb2NrIGNvbW1lbnRzIHNob3VsZCBzdGFydCB3aXRo
-OgoKCS8qCgkgKiAuLi4KCkFsc28sIGFyZSB5b3Ugc3VyZSB0aGF0IG9ubHkgZmV3IHBhZ2VzIGlu
-IHRoZSBwYXJ0aXRpb25zIGhhdmUgZGlmZmVyZW50IGxheW91dAphbmQgbm90IGFsbCBwYWdlcz8g
-SWYgbm90LCB0aGVuIHRoaXMgY29tbWVudCBuZWVkcyB0byBiZSByZXdvcmRlZC4KCj4gKwkJICog
-dGhlIG5hbmQgaW4gdmFyaW91cyBwYXJ0aXRpb24uCj4gKwkJICogQ2hlY2sgdGhlIHBhZ2UgZnJv
-bSB0aGUgYm9vdCBwYWdlIGVuZCBmaXJzdAo+ICsJCSAqIHRvIHNhdmUgb25lIGV4dHJhIGNoZWNr
-IGFuZCBvcHRpbWl6ZSB0aGlzCj4gKwkJICogaW4gY2FzZSByZWFsIG5vLWJvb3QgcGFydGl0aW9u
-IGFyZSB1c2VkLgo+ICsJCSAqLwo+ICsJCWlmIChwYWdlIDwgZW5kICYmIHBhZ2UgPj0gc3RhcnQp
-Cj4gKwkJCXJldHVybiB0cnVlOwo+ICsJfQo+ICsKPiArCXJldHVybiBmYWxzZTsKPiArfQo+ICsK
-PiArc3RhdGljIHZvaWQKPiArcWNvbV9uYW5kY19jb2Rld29yZF9maXh1cChzdHJ1Y3QgcWNvbV9u
-YW5kX2hvc3QgKmhvc3QsIGludCBwYWdlKQo+ICt7Cj4gKwlib29sIGNvZGV3b3JkX2ZpeHVwID0g
-cWNvbV9uYW5kY19pc19ib290X3BhZ2UoaG9zdCwgcGFnZSk7Cj4gKwo+ICsJLyogU2tpcCBjb25m
-IHdyaXRlIGlmIHdlIGFyZSBhbHJlYWR5IGluIHRoZSBjb3JyZWN0IG1vZGUgKi8KPiArCWlmIChj
-b2Rld29yZF9maXh1cCA9PSBob3N0LT5jb2Rld29yZF9maXh1cCkKPiArCQlyZXR1cm47Cj4gKwo+
-ICsJaG9zdC0+Y29kZXdvcmRfZml4dXAgPSBjb2Rld29yZF9maXh1cDsKPiArCj4gKwlob3N0LT5j
-d19kYXRhID0gY29kZXdvcmRfZml4dXAgPyA1MTIgOiA1MTY7Cj4gKwlob3N0LT5zcGFyZV9ieXRl
-cyA9IGhvc3QtPmN3X3NpemUgLSBob3N0LT5lY2NfYnl0ZXNfaHcgLQo+ICsJCQkgICAgaG9zdC0+
-YmJtX3NpemUgLSBob3N0LT5jd19kYXRhOwo+ICsKPiArCWhvc3QtPmNmZzAgJj0gfihTUEFSRV9T
-SVpFX0JZVEVTX01BU0sgfCBVRF9TSVpFX0JZVEVTX01BU0spOwo+ICsJaG9zdC0+Y2ZnMCB8PSBo
-b3N0LT5zcGFyZV9ieXRlcyA8PCBTUEFSRV9TSVpFX0JZVEVTIHwKPiArCQkgICAgICBob3N0LT5j
-d19kYXRhIDw8IFVEX1NJWkVfQllURVM7Cj4gKwo+ICsJaG9zdC0+ZWNjX2JjaF9jZmcgJj0gfkVD
-Q19OVU1fREFUQV9CWVRFU19NQVNLOwo+ICsJaG9zdC0+ZWNjX2JjaF9jZmcgfD0gaG9zdC0+Y3df
-ZGF0YSA8PCBFQ0NfTlVNX0RBVEFfQllURVM7Cj4gKwlob3N0LT5lY2NfYnVmX2NmZyA9IChjb2Rl
-d29yZF9maXh1cCA/IDB4MWZmIDogMHgyMDMpIDw8IE5VTV9TVEVQUzsKCnMvMWZmLyg1MTIgLSAx
-KQpzLzIwMy8oNTE2IC0gMSkKCj4gK30KPiArCj4gIC8qIGltcGxlbWVudHMgZWNjLT5yZWFkX3Bh
-Z2UoKSAqLwo+ICBzdGF0aWMgaW50IHFjb21fbmFuZGNfcmVhZF9wYWdlKHN0cnVjdCBuYW5kX2No
-aXAgKmNoaXAsIHVpbnQ4X3QgKmJ1ZiwKPiAgCQkJCWludCBvb2JfcmVxdWlyZWQsIGludCBwYWdl
-KQo+IEBAIC0yMDQ1LDYgKzIxMjMsOSBAQCBzdGF0aWMgaW50IHFjb21fbmFuZGNfcmVhZF9wYWdl
-KHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIHVpbnQ4X3QgKmJ1ZiwKPiAgCXN0cnVjdCBxY29tX25h
-bmRfY29udHJvbGxlciAqbmFuZGMgPSBnZXRfcWNvbV9uYW5kX2NvbnRyb2xsZXIoY2hpcCk7Cj4g
-IAl1OCAqZGF0YV9idWYsICpvb2JfYnVmID0gTlVMTDsKPiAgCj4gKwlpZiAoaG9zdC0+bnJfYm9v
-dF9wYXJ0aXRpb25zKQo+ICsJCXFjb21fbmFuZGNfY29kZXdvcmRfZml4dXAoaG9zdCwgcGFnZSk7
-Cj4gKwo+ICAJbmFuZF9yZWFkX3BhZ2Vfb3AoY2hpcCwgcGFnZSwgMCwgTlVMTCwgMCk7Cj4gIAlk
-YXRhX2J1ZiA9IGJ1ZjsKPiAgCW9vYl9idWYgPSBvb2JfcmVxdWlyZWQgPyBjaGlwLT5vb2JfcG9p
-IDogTlVMTDsKPiBAQCAtMjA2NCw2ICsyMTQ1LDkgQEAgc3RhdGljIGludCBxY29tX25hbmRjX3Jl
-YWRfcGFnZV9yYXcoc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwgdWludDhfdCAqYnVmLAo+ICAJaW50
-IGN3LCByZXQ7Cj4gIAl1OCAqZGF0YV9idWYgPSBidWYsICpvb2JfYnVmID0gY2hpcC0+b29iX3Bv
-aTsKPiAgCj4gKwlpZiAoaG9zdC0+bnJfYm9vdF9wYXJ0aXRpb25zKQo+ICsJCXFjb21fbmFuZGNf
-Y29kZXdvcmRfZml4dXAoaG9zdCwgcGFnZSk7Cj4gKwo+ICAJZm9yIChjdyA9IDA7IGN3IDwgZWNj
-LT5zdGVwczsgY3crKykgewo+ICAJCXJldCA9IHFjb21fbmFuZGNfcmVhZF9jd19yYXcobXRkLCBj
-aGlwLCBkYXRhX2J1Ziwgb29iX2J1ZiwKPiAgCQkJCQkgICAgIHBhZ2UsIGN3KTsKPiBAQCAtMjA4
-NCw2ICsyMTY4LDkgQEAgc3RhdGljIGludCBxY29tX25hbmRjX3JlYWRfb29iKHN0cnVjdCBuYW5k
-X2NoaXAgKmNoaXAsIGludCBwYWdlKQo+ICAJc3RydWN0IHFjb21fbmFuZF9jb250cm9sbGVyICpu
-YW5kYyA9IGdldF9xY29tX25hbmRfY29udHJvbGxlcihjaGlwKTsKPiAgCXN0cnVjdCBuYW5kX2Vj
-Y19jdHJsICplY2MgPSAmY2hpcC0+ZWNjOwo+ICAKPiArCWlmIChob3N0LT5ucl9ib290X3BhcnRp
-dGlvbnMpCj4gKwkJcWNvbV9uYW5kY19jb2Rld29yZF9maXh1cChob3N0LCBwYWdlKTsKPiArCj4g
-IAljbGVhcl9yZWFkX3JlZ3MobmFuZGMpOwo+ICAJY2xlYXJfYmFtX3RyYW5zYWN0aW9uKG5hbmRj
-KTsKPiAgCj4gQEAgLTIxMDQsNiArMjE5MSw5IEBAIHN0YXRpYyBpbnQgcWNvbV9uYW5kY193cml0
-ZV9wYWdlKHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGNvbnN0IHVpbnQ4X3QgKmJ1ZiwKPiAgCXU4
-ICpkYXRhX2J1ZiwgKm9vYl9idWY7Cj4gIAlpbnQgaSwgcmV0Owo+ICAKPiArCWlmIChob3N0LT5u
-cl9ib290X3BhcnRpdGlvbnMpCj4gKwkJcWNvbV9uYW5kY19jb2Rld29yZF9maXh1cChob3N0LCBw
-YWdlKTsKPiArCj4gIAluYW5kX3Byb2dfcGFnZV9iZWdpbl9vcChjaGlwLCBwYWdlLCAwLCBOVUxM
-LCAwKTsKPiAgCj4gIAljbGVhcl9yZWFkX3JlZ3MobmFuZGMpOwo+IEBAIC0yMTE5LDcgKzIyMDks
-NyBAQCBzdGF0aWMgaW50IHFjb21fbmFuZGNfd3JpdGVfcGFnZShzdHJ1Y3QgbmFuZF9jaGlwICpj
-aGlwLCBjb25zdCB1aW50OF90ICpidWYsCj4gIAlmb3IgKGkgPSAwOyBpIDwgZWNjLT5zdGVwczsg
-aSsrKSB7Cj4gIAkJaW50IGRhdGFfc2l6ZSwgb29iX3NpemU7Cj4gIAo+IC0JCWlmIChxY29tX25h
-bmRjX2lzX2xhc3RfY3coZWNjLCBpKSkgewo+ICsJCWlmIChxY29tX25hbmRjX2lzX2xhc3RfY3co
-ZWNjLCBpKSAmJiAhaG9zdC0+Y29kZXdvcmRfZml4dXApIHsKPiAgCQkJZGF0YV9zaXplID0gZWNj
-LT5zaXplIC0gKChlY2MtPnN0ZXBzIC0gMSkgPDwgMik7Cj4gIAkJCW9vYl9zaXplID0gKGVjYy0+
-c3RlcHMgPDwgMikgKyBob3N0LT5lY2NfYnl0ZXNfaHcgKwo+ICAJCQkJICAgaG9zdC0+c3BhcmVf
-Ynl0ZXM7Cj4gQEAgLTIxNzYsNiArMjI2Niw5IEBAIHN0YXRpYyBpbnQgcWNvbV9uYW5kY193cml0
-ZV9wYWdlX3JhdyhzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+ICAJdTggKmRhdGFfYnVmLCAqb29i
-X2J1ZjsKPiAgCWludCBpLCByZXQ7Cj4gIAo+ICsJaWYgKGhvc3QtPm5yX2Jvb3RfcGFydGl0aW9u
-cykKPiArCQlxY29tX25hbmRjX2NvZGV3b3JkX2ZpeHVwKGhvc3QsIHBhZ2UpOwo+ICsKPiAgCW5h
-bmRfcHJvZ19wYWdlX2JlZ2luX29wKGNoaXAsIHBhZ2UsIDAsIE5VTEwsIDApOwo+ICAJY2xlYXJf
-cmVhZF9yZWdzKG5hbmRjKTsKPiAgCWNsZWFyX2JhbV90cmFuc2FjdGlvbihuYW5kYyk7Cj4gQEAg
-LTIxOTQsNyArMjI4Nyw3IEBAIHN0YXRpYyBpbnQgcWNvbV9uYW5kY193cml0ZV9wYWdlX3Jhdyhz
-dHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAo+ICAJCWRhdGFfc2l6ZTEgPSBtdGQtPndyaXRlc2l6ZSAt
-IGhvc3QtPmN3X3NpemUgKiAoZWNjLT5zdGVwcyAtIDEpOwo+ICAJCW9vYl9zaXplMSA9IGhvc3Qt
-PmJibV9zaXplOwo+ICAKPiAtCQlpZiAocWNvbV9uYW5kY19pc19sYXN0X2N3KGVjYywgaSkpIHsK
-PiArCQlpZiAocWNvbV9uYW5kY19pc19sYXN0X2N3KGVjYywgaSkgJiYgIWhvc3QtPmNvZGV3b3Jk
-X2ZpeHVwKSB7Cj4gIAkJCWRhdGFfc2l6ZTIgPSBlY2MtPnNpemUgLSBkYXRhX3NpemUxIC0KPiAg
-CQkJCSAgICAgKChlY2MtPnN0ZXBzIC0gMSkgPDwgMik7Cj4gIAkJCW9vYl9zaXplMiA9IChlY2Mt
-PnN0ZXBzIDw8IDIpICsgaG9zdC0+ZWNjX2J5dGVzX2h3ICsKPiBAQCAtMjI1NCw2ICsyMzQ3LDkg
-QEAgc3RhdGljIGludCBxY29tX25hbmRjX3dyaXRlX29vYihzdHJ1Y3QgbmFuZF9jaGlwICpjaGlw
-LCBpbnQgcGFnZSkKPiAgCWludCBkYXRhX3NpemUsIG9vYl9zaXplOwo+ICAJaW50IHJldDsKPiAg
-Cj4gKwlpZiAoaG9zdC0+bnJfYm9vdF9wYXJ0aXRpb25zKQo+ICsJCXFjb21fbmFuZGNfY29kZXdv
-cmRfZml4dXAoaG9zdCwgcGFnZSk7Cj4gKwo+ICAJaG9zdC0+dXNlX2VjYyA9IHRydWU7Cj4gIAlj
-bGVhcl9iYW1fdHJhbnNhY3Rpb24obmFuZGMpOwo+ICAKPiBAQCAtMjkwMiw2ICsyOTk4LDcxIEBA
-IHN0YXRpYyBpbnQgcWNvbV9uYW5kY19zZXR1cChzdHJ1Y3QgcWNvbV9uYW5kX2NvbnRyb2xsZXIg
-Km5hbmRjKQo+ICAKPiAgc3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCBwcm9iZXNbXSA9IHsgImNt
-ZGxpbmVwYXJ0IiwgIm9mcGFydCIsICJxY29tc21lbSIsIE5VTEwgfTsKPiAgCj4gK3N0YXRpYyBp
-bnQgcWNvbV9uYW5kX2hvc3RfcGFyc2VfYm9vdF9wYXJ0aXRpb25zKHN0cnVjdCBxY29tX25hbmRf
-Y29udHJvbGxlciAqbmFuZGMsCj4gKwkJCQkJCXN0cnVjdCBxY29tX25hbmRfaG9zdCAqaG9zdCwK
-PiArCQkJCQkJc3RydWN0IGRldmljZV9ub2RlICpkbikKPiArewo+ICsJc3RydWN0IG5hbmRfY2hp
-cCAqY2hpcCA9ICZob3N0LT5jaGlwOwo+ICsJc3RydWN0IG10ZF9pbmZvICptdGQgPSBuYW5kX3Rv
-X210ZChjaGlwKTsKPiArCXN0cnVjdCBxY29tX25hbmRfYm9vdF9wYXJ0aXRpb24gKmJvb3RfcGFy
-dGl0aW9uOwo+ICsJc3RydWN0IGRldmljZSAqZGV2ID0gbmFuZGMtPmRldjsKPiArCWludCBwYXJ0
-aXRpb25zX2NvdW50LCBpLCBqLCByZXQ7Cj4gKwo+ICsJaWYgKCFuYW5kYy0+cHJvcHMtPnVzZV9j
-b2Rld29yZF9maXh1cCkKPiArCQlyZXR1cm4gMDsKCk1vdmUgdGhpcyBjaGVjayB0byBjYWxsZXIg
-YXMgSSBzdWdnZXN0ZWQgcHJldmlvdXNseS4KCj4gKwo+ICsJaWYgKCFvZl9maW5kX3Byb3BlcnR5
-KGRuLCAicWNvbSxib290LXBhcnRpdGlvbnMiLCBOVUxMKSkKPiArCQlyZXR1cm4gMDsKPiArCj4g
-KwlwYXJ0aXRpb25zX2NvdW50ID0gb2ZfcHJvcGVydHlfY291bnRfdTMyX2VsZW1zKGRuLCAicWNv
-bSxib290LXBhcnRpdGlvbnMiKTsKPiArCWlmIChwYXJ0aXRpb25zX2NvdW50IDwgMCkgewoKcGFy
-dGl0aW9uc19jb3VudCA8PSAwCgo+ICsJCWRldl9lcnIoZGV2LCAiRXJyb3IgcGFyc2luZyBib290
-IHBhcnRpdGlvbi4iKTsKCkFkZCBuZXdsaW5lIGF0IHRoZSBlbmQgb2YgZXJyb3IgbWVzc2FnZQoK
-PiArCQlyZXR1cm4gcmV0Owo+ICsJfQo+ICsKPiArCWhvc3QtPm5yX2Jvb3RfcGFydGl0aW9ucyA9
-IHBhcnRpdGlvbnNfY291bnQgLyAyOwo+ICsJaG9zdC0+Ym9vdF9wYXJ0aXRpb25zID0gZGV2bV9r
-Y2FsbG9jKGRldiwgaG9zdC0+bnJfYm9vdF9wYXJ0aXRpb25zLAo+ICsJCQkJCSAgICAgc2l6ZW9m
-KCpob3N0LT5ib290X3BhcnRpdGlvbnMpLCBHRlBfS0VSTkVMKTsKPiArCWlmICghaG9zdC0+Ym9v
-dF9wYXJ0aXRpb25zKQoKaG9zdC0+bnJfYm9vdF9wYXJ0aXRpb25zID0gMDsKCj4gKwkJcmV0dXJu
-IC1FTk9NRU07Cj4gKwo+ICsJZm9yIChpID0gMCwgaiA9IDA7IGkgPCBob3N0LT5ucl9ib290X3Bh
-cnRpdGlvbnM7IGkrKywgaiArPSAyKSB7Cj4gKwkJYm9vdF9wYXJ0aXRpb24gPSAmaG9zdC0+Ym9v
-dF9wYXJ0aXRpb25zW2ldOwo+ICsKPiArCQlyZXQgPSBvZl9wcm9wZXJ0eV9yZWFkX3UzMl9pbmRl
-eChkbiwgInFjb20sYm9vdC1wYXJ0aXRpb25zIiwgaiwKPiArCQkJCQkJICZib290X3BhcnRpdGlv
-bi0+cGFnZV9vZmZzZXQpOwo+ICsJCWlmIChyZXQpIHsKPiArCQkJZGV2X2VycihkZXYsICJFcnJv
-ciBwYXJzaW5nIGJvb3QgcGFydGl0aW9uIG9mZnNldCBhdCBpbmRleCAlZCIsIGkpOwoKQWRkIG5l
-d2xpbmUgYXQgdGhlIGVuZCBvZiBlcnJvciBtZXNzYWdlLiBEbyB0aGUgc2FtZSBmb3IgYWxsIGVy
-cm9yIHByaW50cy4KCj4gKwkJCXJldHVybiByZXQ7Cj4gKwkJfQo+ICsKPiArCQlpZiAoYm9vdF9w
-YXJ0aXRpb24tPnBhZ2Vfb2Zmc2V0ICUgbXRkLT53cml0ZXNpemUpIHsKPiArCQkJZGV2X2Vycihk
-ZXYsICJCb290IHBhcnRpdGlvbiBvZmZzZXQgbm90IG11bHRpcGxlIG9mIHdyaXRlc2l6ZSBhdCBp
-bmRleCAlaSIsCj4gKwkJCQlpKTsKPiArCQkJcmV0dXJuIC1FSU5WQUw7Cj4gKwkJfQo+ICsJCS8q
-IENvbnZlcnQgb2Zmc2V0IHRvIG5hbmQgcGFnZXMgKi8KCnMvcGFnZXMvcGFydGl0aW9ucwoKPiAr
-CQlib290X3BhcnRpdGlvbi0+cGFnZV9vZmZzZXQgLz0gbXRkLT53cml0ZXNpemU7CgpzL3BhZ2Vf
-b2Zmc2V0L29mZnNldAoKPiArCj4gKwkJcmV0ID0gb2ZfcHJvcGVydHlfcmVhZF91MzJfaW5kZXgo
-ZG4sICJxY29tLGJvb3QtcGFydGl0aW9ucyIsIGogKyAxLAo+ICsJCQkJCQkgJmJvb3RfcGFydGl0
-aW9uLT5wYWdlX3NpemUpOwo+ICsJCWlmIChyZXQpIHsKPiArCQkJZGV2X2VycihkZXYsICJFcnJv
-ciBwYXJzaW5nIGJvb3QgcGFydGl0aW9uIHNpemUgYXQgaW5kZXggJWQiLCBpKTsKPiArCQkJcmV0
-dXJuIHJldDsKPiArCQl9Cj4gKwo+ICsJCWlmIChib290X3BhcnRpdGlvbi0+cGFnZV9zaXplICUg
-bXRkLT53cml0ZXNpemUpIHsKCnMvcGFnZV9zaXplL3NpemUgaGVyZSBhbmQgYmVsb3cKCj4gKwkJ
-CWRldl9lcnIoZGV2LCAiQm9vdCBwYXJ0aXRpb24gc2l6ZSBub3QgbXVsdGlwbGUgb2Ygd3JpdGVz
-aXplIGF0IGluZGV4ICVpIiwKPiArCQkJCWkpOwo+ICsJCQlyZXR1cm4gLUVJTlZBTDsKPiArCQl9
-Cj4gKwkJLyogQ29udmVydCBzaXplIHRvIG5hbmQgcGFnZXMgKi8KCnMvcGFnZXMvcGFydGl0aW9u
-cwoKVGhhbmtzLApNYW5pCgo+ICsJCWJvb3RfcGFydGl0aW9uLT5wYWdlX3NpemUgLz0gbXRkLT53
-cml0ZXNpemU7Cj4gKwl9Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gIHN0YXRpYyBpbnQg
-cWNvbV9uYW5kX2hvc3RfaW5pdF9hbmRfcmVnaXN0ZXIoc3RydWN0IHFjb21fbmFuZF9jb250cm9s
-bGVyICpuYW5kYywKPiAgCQkJCQkgICAgc3RydWN0IHFjb21fbmFuZF9ob3N0ICpob3N0LAo+ICAJ
-CQkJCSAgICBzdHJ1Y3QgZGV2aWNlX25vZGUgKmRuKQo+IEBAIC0yOTcwLDYgKzMxMzEsOCBAQCBz
-dGF0aWMgaW50IHFjb21fbmFuZF9ob3N0X2luaXRfYW5kX3JlZ2lzdGVyKHN0cnVjdCBxY29tX25h
-bmRfY29udHJvbGxlciAqbmFuZGMsCj4gIAlpZiAocmV0KQo+ICAJCW5hbmRfY2xlYW51cChjaGlw
-KTsKPiAgCj4gKwlxY29tX25hbmRfaG9zdF9wYXJzZV9ib290X3BhcnRpdGlvbnMobmFuZGMsIGhv
-c3QsIGRuKTsKPiArCj4gIAlyZXR1cm4gcmV0Owo+ICB9Cj4gIAo+IEBAIC0zMTM1LDYgKzMyOTgs
-NyBAQCBzdGF0aWMgaW50IHFjb21fbmFuZGNfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
-KnBkZXYpCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgcWNvbV9uYW5kY19wcm9wcyBpcHE4MDZ4X25h
-bmRjX3Byb3BzID0gewo+ICAJLmVjY19tb2RlcyA9IChFQ0NfUlNfNEJJVCB8IEVDQ19CQ0hfOEJJ
-VCksCj4gIAkuaXNfYmFtID0gZmFsc2UsCj4gKwkudXNlX2NvZGV3b3JkX2ZpeHVwID0gdHJ1ZSwK
-PiAgCS5kZXZfY21kX3JlZ19zdGFydCA9IDB4MCwKPiAgfTsKPiAgCj4gLS0gCj4gMi4zNi4xCj4g
-CgotLSAK4K6u4K6j4K6/4K614K6j4K+N4K6j4K6p4K+NIOCumuCupOCuvuCumuCuv+CuteCuruCv
-jQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+
+The S25HL-T/S25HS-T family is the Infineon SEMPER Flash with Quad SPI.
+
+The datasheets can be found in the following link.
+https://www.infineon.com/dgdl/Infineon-S25HS256T_S25HS512T_S25HS01GT_S25HL256T_S25HL512T_S25HL01GT_256-Mb_(32-MB)_512-Mb_(64-MB)_1-Gb_(128-MB)_HS-T_(1.8-V)_HL-T_(3.0-V)_Semper_Flash_with_Quad_SPI-DataSheet-v02_00-EN.pdf?fileId=8ac78c8c7d0d8da4017d0ee674b86ee3&da=t
+
+Device ID, SFDP, and test script output:
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hl512t
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342a1a0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe3
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff703f8ff0200f1ff0000ff0400ff
+f8ffff03
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+8a0aa90112e154ae3a797df2c211ef61  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.230748 seconds, 26.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+8fd5e1d95c3a5b8d7d66ade561f51fe5257897ff  qspi_test
+8fd5e1d95c3a5b8d7d66ade561f51fe5257897ff  qspi_read
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hs512t
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b1a0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff1f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b91e8ffe3
+ec031c608a857a75f766805c84d6ddfff938f8a100000000000080000000
+0000f7f5ffff7b920ffe20ffffd80000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000ee72fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb03fe0302fff8fffb03f8ff0100f1ff
+0100fe0104fff1ff0100f8ff0200f8fff703f8ff0200f1ff0100ff0400ff
+f8ffff03
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+f17d9e784602187a0933edec3688e30f  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.230827 seconds, 26.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+3c4cc1be627a88da0364b2a866fbb6ac04dba80e  qspi_test
+3c4cc1be627a88da0364b2a866fbb6ac04dba80e  qspi_read
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hl01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342a1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.230878 seconds, 26.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+50b8cc948f8b05fa5650a6d0ba74be8f95ff3332  qspi_test
+50b8cc948f8b05fa5650a6d0ba74be8f95ff3332  qspi_read
+------------------------------------------------------------
+
+------------------------------------------------------------
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+s25hs01gt
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+342b1b0f0390
+zynq> cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+spansion
+zynq> xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+53464450080103ff00000114000100ff84000102500100ff81000116c801
+00ff8700011c580100ffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffe720faffffffff3f48eb086b00ff
+88bbfeffffffffff00ffffff48eb0c2000ff00ff12d823faff8b82e7ffe6
+ec031c608a857a75f766805c8cd6ddfff938f8a1000000000000bc000000
+0000f7f5ffff7b920ffe21ffffdc0000800000000000c0ffc3ebc8ffe3eb
+00650090060500a10065009600650095716503d0716503d000000000b02e
+000088a489aa716503967165039600000000000000000000000000000000
+000000000000000000000000000000000000000000000000716505d57165
+05d50000a015fc65ff0804008000fc65ff4002008000fd65ff0402008000
+fe0002fff1ff0100f8ff0100f8fffb07fe0302fff8fffb07f8ff0100f1ff
+0100fe0104fff1ff0000f8ff0200f8fff707f8ff0200f1ff0000ff0400ff
+f8ffff07
+zynq> md5sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+1ad5a0d7d7e0e656986c1e678c416a7e  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+zynq> test_qspi.sh
+6+0 records in
+6+0 records out
+6291456 bytes (6.0MB) copied, 0.230712 seconds, 26.0MB/s
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Erased 6291456 bytes from address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0600000
+Copied 6291456 bytes from qspi_test to address 0x00000000 in flash
+Copied 6291456 bytes from address 0x00000000 in flash to qspi_read
+e9515a880d836d9fdfa8b2b7c870825fd8300cc1  qspi_test
+e9515a880d836d9fdfa8b2b7c870825fd8300cc1  qspi_read
+------------------------------------------------------------
+
+Changes in v16:
+  - stop restoring read_opcode, read_dummy and addr_nbytes to uninitialized
+    state at SFDP parsing time
+
+Changes in v15:
+  - add missing read any reg call in volatile quad enable method (patch 8/8)
+
+Changes in v14:
+  - add prerequisite patches for s25hl-t/s25hs-t addition.
+  - squash volatile quad enable method to the patch that adds the flashes
+    to avoid unused function warning.
+
+Changes in v13:
+  - Remove patch, Call set_4byte_addr_mode() before spi_nor_quad_enalbe()
+  - Remove patch, Rename local macro
+  - Use 3-byte address width in cypress_nor_quad_enable_volatile()
+  - Add post_sfdp to fix 3 byte erase opcode in 4BAIT
+
+Changes in v12:
+  - Rebase on top of Tudor's series
+    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=295933
+    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294533
+  - New patch: Retain nor->addr_width at 4BAIT parse
+  - New patch: Call set_4byte_addr_mode() before spi_nor_quad_enalbe()
+  - New patch: Rename local macro
+  
+Changes in v11:
+  - Rebase on top of Tudor's series
+    https://patchwork.ozlabs.org/project/linux-mtd/list/?series=294490
+  - Remove 'nor->info->addr_width for SMPT parse' patch
+  
+Changes in v10:
+  - Rebase to v5.18-rc1
+  - Remove dependencies on other series
+  - Use nor->info->addr_width for SMPT parse
+  - Add a local function for page size discovery
+  - Clean up volatile QE function
+  
+Changes in v9:
+  - Rebase to v5.17-rc6
+  - Rename function and macro per mwalle's series
+  - Fix some issues in ID table and fixup hook
+
+Changes in v8:
+  - Rebase to v5.17-rc4
+  - Use spi_nor_read_reg and spi_nor_write_reg()
+  
+Changes in v7:
+  - Some changes were missing in v6 patch. Fix it
+
+Changes in v6:
+  - Remove 2Gb dual die package parts and related changes to split mulit
+    die package support into another series of patches  
+
+Changes in v5:
+  - Fix 'if (ret == 1)' to 'if (ret < 0)' in spansion_read_any_reg()
+  - Add NO_CHIP_ERASE flag to S25HL02GT and S25HS02GT
+
+Changes in v4:
+  - Reword 'legacy' to 'default'
+  - Rename spi_nor_read() to spi_nor_default_ready()
+  - Fix dummy cycle calculation in spansion_read_any_reg()
+  - Modify comment for spansion_write_any_reg()
+  - Merge block comments about SMPT in s25hx_t_post_sfdp_fixups()
+  - Remove USE_CLSR flags from S25HL02GT and S25HS02GT
+
+Changes in v3:
+  - Split into multiple patches
+  - Remove S25HL256T and S25HS256T
+  - Add S25HL02GT and S25HS02GT 
+  - Add support for multi-die package parts support
+  - Cleanup Read/Write Any Register implementation
+  - Remove erase_map fix for top/split sector layout
+  - Set ECC data unit size (16B) to writesize 
+
+Changes in v2:
+  - Remove SPI_NOR_SKIP_SFDP flag and clean up related fixups
+  - Check CFR3V[4] to determine page_size instead of force 512B
+  - Depend on the patchset below to support non-uniform sector layout
+    https://lore.kernel.org/linux-mtd/cover.1601612872.git.Takahiro.Kuwano@infineon.com/*** BLURB HERE ***
+
+
+Takahiro Kuwano (7):
+  mtd: spi-nor: s/addr_width/addr_nbytes
+  mtd: spi-nor: Do not change nor->addr_nbytes at SFDP  parsing time
+  mtd: spi-nor: core: Return error code from set_4byte_addr_mode()
+  mtd: spi-nor: core: Couple the number of address  bytes with the
+    address mode
+  mtd: spi-nor: Do not change nor->params->addr_nbytes at 4BAIT parsing
+    time
+  mtd: spi-nor: spansion: Add local function to discover page size
+  mtd: spi-nor: spansion: Add s25hl-t/s25hs-t IDs and fixups
+
+Tudor Ambarus (1):
+  mtd: spi-nor: core: Shrink the storage size of the flash_info's
+    addr_nbytes
+
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c  |   2 +-
+ drivers/mtd/spi-nor/controllers/nxp-spifi.c |   8 +-
+ drivers/mtd/spi-nor/core.c                  | 155 +++++++++--------
+ drivers/mtd/spi-nor/core.h                  |  14 +-
+ drivers/mtd/spi-nor/issi.c                  |   2 +-
+ drivers/mtd/spi-nor/otp.c                   |  12 +-
+ drivers/mtd/spi-nor/sfdp.c                  |  31 ++--
+ drivers/mtd/spi-nor/spansion.c              | 183 +++++++++++++++++---
+ drivers/mtd/spi-nor/xilinx.c                |   2 +-
+ include/linux/mtd/spi-nor.h                 |   4 +-
+ 10 files changed, 280 insertions(+), 133 deletions(-)
+
+-- 
+2.25.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
