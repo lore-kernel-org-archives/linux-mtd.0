@@ -4,84 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BD1EC43334
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 13:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A66CCA481
+	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 14:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5vjppTTDP9vJklgFPzJV/tu5XrkCuBOpd5PXEYp2aRw=; b=18y06m8FL+gsKg
-	yutauXgsL8fCzdbEh4rKrdtYcNMD0VHEBEj9fcT7d9VlAYfgGhgGoZsysv/cssWKwbZfNGoELu+hY
-	YvatEOaOx17jU22h1amVaGNCCoyFn89idRkcySwyDms9Ja5t/IBSzX+FKdUM6StD7z5berX+DO6Ks
-	5i2IIfQpui9YZrsIM0ZsjXPbHZqO9eoACCQSQgJl27c2s390fBMShZXvYwiEL62yzU4TBK2Ohb5V7
-	2qTRerniOjp7xWyT/xErcyKAOw2KIbl25geW4vMIx6foYEHngkj0KUJpHU+odB+BEMokxxnwmOvIC
-	CYq6yDw+h9v94IhVzldA==;
+	List-Owner; bh=KvhDGvmMHzM+I+BLuBK97MQ8uaVKaPPFpO74g1fy0hg=; b=cmE3L7GaePAS3q
+	Nj9oOHkeVbk9Uk8U4vH/nwib5nTJwuD9sgv+BPGRnQ+WjqfUfzN/LkHI6vy0EsT6IriruRYXDRiL5
+	C7z6h/Z/F7LXXrjYWOJXa6RGcXpdbTXEmsFJhvHWaqHUNiiNgeXTiE4w/cD2R9bC/umkz4ESiSlnq
+	I7svr5Xb7kxtJIOXKROcwW1rFoZZXjSfIpOYlQ+h1bf3JXgBPJ+0aBKRjbPBBozTM6BD0dXjl2uK5
+	tq0dXqx6U1MAyYPUCCcc5MvwTYEIzfDq9Hl3qpW7gLwqtggm2zF/Si6rsbq4WmaXKi9SZmzkBcbLK
+	5ShMSw71A6djia0U3NeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzI9G-00281d-Ta; Thu, 09 Jun 2022 13:24:31 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1nzJFn-002Wcr-Ne; Thu, 09 Jun 2022 14:35:19 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzI97-0027un-W9
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 13:24:23 +0000
-Received: by mail-ed1-x531.google.com with SMTP id z7so31167566edm.13
-        for <linux-mtd@lists.infradead.org>; Thu, 09 Jun 2022 06:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6jeqtgRl8bKHnXZ4AwxPt+xAQ0F0PxiC5aWs7JdMOrY=;
-        b=cJVhmrHYyT63kIWknwWNHq8H3Fm9koj9Te576ocCrSOqv18WrgBUMotLdhsN3HIdgM
-         /aoYBLe/1EthBKwzLMOnDMzMig7pgkcWUDz16SM9QlGmsvii3FqSwftw9IOpua1hqHWt
-         25Lmz9S4wLtucB+FC0jlpNDPXt28Iw7T+JqGvOtDSU9eNPMNLImvrJ4EyIofVj3wjzF/
-         NmsQbdligcS3Jl35T6bp6lduzJbYTPUS2LCFpZA5Koky7S9y1t5KWRyGqqGgjh0huMkj
-         4YDSGmibIrJm/1RE4XIvWQzFiHPn6y7ILU3OChbYMf6D77+KLKMiE9opqoyC8nXEIaNw
-         Emdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6jeqtgRl8bKHnXZ4AwxPt+xAQ0F0PxiC5aWs7JdMOrY=;
-        b=NyDu1waWgQEB5m6vaPlbIn6eRElZwc1TnYDPk3ZlKlJIH3Yer16Vn5nVTCksI28IDJ
-         /RenWa530ev35nGlWlgC61rycBR/0j+ywJsSj4N4bom8toKqBPzT60pDdR4f2iEEN9Hl
-         d7CN/Fmr3dTWk/B4AK/7wiCSK1xQW37GECt/Deh4HMARdhRGXaLhTel8msG8hE2iHxW7
-         wgDhiJ05LFuFBBYAQSfGOXGCGJOZ4tRFJNU3uCYTvCNUTlEIp1/SMTEljo9MrggS5D8w
-         CcTBAI6fm4OK4GBOptfaAENxFiWMRWxsghi9bHxepDcgJsBEqDWDjr9kwEC2kWnu3BMM
-         O2bw==
-X-Gm-Message-State: AOAM533QC2gtlsw/HkCAV7dh95rDz83JBrg1y1p/OqIcJ+RSL++Jy2ZJ
-	M5aUlltXvU0jNsAnsgIDtlA=
-X-Google-Smtp-Source: ABdhPJz4eKUEq7ZrMsvoEKZtpxBHOSayxyiXJ2PgF4vC9W0d68Yh4tOffD3uKBEr3qTbYLCZAaDwpA==
-X-Received: by 2002:a05:6402:31fa:b0:42d:cd6d:c8fd with SMTP id dy26-20020a05640231fa00b0042dcd6dc8fdmr44609520edb.347.1654781058277;
-        Thu, 09 Jun 2022 06:24:18 -0700 (PDT)
-Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
-        by smtp.googlemail.com with ESMTPSA id i2-20020a056402054200b004315050d7dfsm8360263edx.81.2022.06.09.06.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jun 2022 06:24:17 -0700 (PDT)
-From: Ansuel Smith <ansuelsmth@gmail.com>
-To: Manivannan Sadhasivam <mani@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [PATCH v6 3/3] dt-bindings: mtd: qcom_nandc: document qcom,boot-partitions binding
-Date: Thu,  9 Jun 2022 15:23:44 +0200
-Message-Id: <20220609132344.17548-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220609132344.17548-1-ansuelsmth@gmail.com>
-References: <20220609132344.17548-1-ansuelsmth@gmail.com>
+	id 1nzJFl-002WcL-VR
+	for linux-mtd@bombadil.infradead.org; Thu, 09 Jun 2022 14:35:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=TA+NCKNN+eR/98pPS94dU7ufUL4m7Zs6MV61a+jrgiQ=; b=mJcV7mgbC23cOsHdB1405TagzU
+	l6AFmpVy5mLOXT20rfyqUCs8GP1EArGlIG1d+bclAU46G00m8RJH75DYvbpvKFAoiuSJW6O1QFxtc
+	2ZX4fS2+npBuj7sf3RvxFNkEweZex+Vj5ENrzd+I9sLOEiAHImqAtc2JJMmXz3zh4NxdT+iutq57l
+	sa2BrKvjamqY1v2cSnnX2SVKVkgqfyixklYyUbrljPQ6xD47cyaOzZMoDzKBVpqtqSMOytkWZDuBZ
+	F+RQnbBADziujlHBIVHKfnYLbBNznbuZDQFAQyeC1t2Akp4vpvYgdDPkd6Xi/SQT+RWagEzzXyc1U
+	YnTwbbOg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1nzJFc-00DcSb-SM; Thu, 09 Jun 2022 14:35:08 +0000
+Date: Thu, 9 Jun 2022 15:35:08 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-aio@kvack.org,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+	linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+	ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+	virtualization@lists.linux-foundation.org,
+	Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2 03/19] fs: Add aops->migrate_folio
+Message-ID: <YqIFHPJZNMrmtXlh@casper.infradead.org>
+References: <20220608150249.3033815-1-willy@infradead.org>
+ <20220608150249.3033815-4-willy@infradead.org>
+ <b2a81248-03fc-afb3-1041-d8206e95e08a@redhat.com>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_062422_090264_CFC96E65 
-X-CRM114-Status: GOOD (  12.88  )
+Content-Disposition: inline
+In-Reply-To: <b2a81248-03fc-afb3-1041-d8206e95e08a@redhat.com>
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,66 +73,248 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document new qcom,boot-partition binding used to apply special
-read/write layout to boot partitions.
+On Thu, Jun 09, 2022 at 02:50:20PM +0200, David Hildenbrand wrote:
+> On 08.06.22 17:02, Matthew Wilcox (Oracle) wrote:
+> > diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesystems/locking.rst
+> > index c0fe711f14d3..3d28b23676bd 100644
+> > --- a/Documentation/filesystems/locking.rst
+> > +++ b/Documentation/filesystems/locking.rst
+> > @@ -253,7 +253,8 @@ prototypes::
+> >  	void (*free_folio)(struct folio *);
+> >  	int (*direct_IO)(struct kiocb *, struct iov_iter *iter);
+> >  	bool (*isolate_page) (struct page *, isolate_mode_t);
+> > -	int (*migratepage)(struct address_space *, struct page *, struct page *);
+> > +	int (*migrate_folio)(struct address_space *, struct folio *dst,
+> > +			struct folio *src, enum migrate_mode);
+> >  	void (*putback_page) (struct page *);
+> 
+> isolate_page/putback_page are leftovers from the previous patch, no?
 
-QCOM apply a special layout where spare data is not protected
-by ECC for some special pages (used for boot partition). Add
-Documentation on how to declare these special pages.
+Argh, right, I completely forgot I needed to update the documentation in
+that patch.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
----
- .../devicetree/bindings/mtd/qcom,nandc.yaml   | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+> > +++ b/Documentation/vm/page_migration.rst
+> > @@ -181,22 +181,23 @@ which are function pointers of struct address_space_operations.
+> >     Once page is successfully isolated, VM uses page.lru fields so driver
+> >     shouldn't expect to preserve values in those fields.
+> >  
+> > -2. ``int (*migratepage) (struct address_space *mapping,``
+> > -|	``struct page *newpage, struct page *oldpage, enum migrate_mode);``
+> > -
+> > -   After isolation, VM calls migratepage() of driver with the isolated page.
+> > -   The function of migratepage() is to move the contents of the old page to the
+> > -   new page
+> > -   and set up fields of struct page newpage. Keep in mind that you should
+> > -   indicate to the VM the oldpage is no longer movable via __ClearPageMovable()
+> > -   under page_lock if you migrated the oldpage successfully and returned
+> > -   MIGRATEPAGE_SUCCESS. If driver cannot migrate the page at the moment, driver
+> > -   can return -EAGAIN. On -EAGAIN, VM will retry page migration in a short time
+> > -   because VM interprets -EAGAIN as "temporary migration failure". On returning
+> > -   any error except -EAGAIN, VM will give up the page migration without
+> > -   retrying.
+> > -
+> > -   Driver shouldn't touch the page.lru field while in the migratepage() function.
+> > +2. ``int (*migrate_folio) (struct address_space *mapping,``
+> > +|	``struct folio *dst, struct folio *src, enum migrate_mode);``
+> > +
+> > +   After isolation, VM calls the driver's migrate_folio() with the
+> > +   isolated folio.  The purpose of migrate_folio() is to move the contents
+> > +   of the source folio to the destination folio and set up the fields
+> > +   of destination folio.  Keep in mind that you should indicate to the
+> > +   VM the source folio is no longer movable via __ClearPageMovable()
+> > +   under folio if you migrated the source successfully and returned
+> > +   MIGRATEPAGE_SUCCESS.  If driver cannot migrate the folio at the
+> > +   moment, driver can return -EAGAIN. On -EAGAIN, VM will retry folio
+> > +   migration in a short time because VM interprets -EAGAIN as "temporary
+> > +   migration failure".  On returning any error except -EAGAIN, VM will
+> > +   give up the folio migration without retrying.
+> > +
+> > +   Driver shouldn't touch the folio.lru field while in the migrate_folio()
+> > +   function.
+> >  
+> >  3. ``void (*putback_page)(struct page *);``
+> 
+> Hmm, here it's a bit more complicated now, because we essentially have
+> two paths: LRU+migrate_folio or !LRU+movable_ops
+> (isolate/migrate/putback page)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-index 84ad7ff30121..482a2c068740 100644
---- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-@@ -102,6 +102,31 @@ allOf:
-             - const: rx
-             - const: cmd
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,ipq806x-nand
+Oh ... actually, this is just documenting the driver side of things.
+I don't really like how it's written.  Here, have some rewritten
+documentation (which is now part of the previous patch):
+
++++ b/Documentation/vm/page_migration.rst
+@@ -152,110 +152,15 @@ Steps:
+ Non-LRU page migration
+ ======================
+
+-Although migration originally aimed for reducing the latency of memory accesses
+-for NUMA, compaction also uses migration to create high-order pages.
++Although migration originally aimed for reducing the latency of memory
++accesses for NUMA, compaction also uses migration to create high-order
++pages.  For compaction purposes, it is also useful to be able to move
++non-LRU pages, such as zsmalloc and virtio-balloon pages.
+
+-Current problem of the implementation is that it is designed to migrate only
+-*LRU* pages. However, there are potential non-LRU pages which can be migrated
+-in drivers, for example, zsmalloc, virtio-balloon pages.
+-
+-For virtio-balloon pages, some parts of migration code path have been hooked
+-up and added virtio-balloon specific functions to intercept migration logics.
+-It's too specific to a driver so other drivers who want to make their pages
+-movable would have to add their own specific hooks in the migration path.
+-
+-To overcome the problem, VM supports non-LRU page migration which provides
+-generic functions for non-LRU movable pages without driver specific hooks
+-in the migration path.
+-
+-If a driver wants to make its pages movable, it should define three functions
+-which are function pointers of struct address_space_operations.
+-
+-1. ``bool (*isolate_page) (struct page *page, isolate_mode_t mode);``
+-
+-   What VM expects from isolate_page() function of driver is to return *true*
+-   if driver isolates the page successfully. On returning true, VM marks the page
+-   as PG_isolated so concurrent isolation in several CPUs skip the page
+-   for isolation. If a driver cannot isolate the page, it should return *false*.
+-
+-   Once page is successfully isolated, VM uses page.lru fields so driver
+-   shouldn't expect to preserve values in those fields.
+-
+-2. ``int (*migratepage) (struct address_space *mapping,``
+-|      ``struct page *newpage, struct page *oldpage, enum migrate_mode);``
+-
+-   After isolation, VM calls migratepage() of driver with the isolated page.
+-   The function of migratepage() is to move the contents of the old page to the
+-   new page
+-   and set up fields of struct page newpage. Keep in mind that you should
+-   indicate to the VM the oldpage is no longer movable via __ClearPageMovable()
+-   under page_lock if you migrated the oldpage successfully and returned
+-   MIGRATEPAGE_SUCCESS. If driver cannot migrate the page at the moment, driver
+-   can return -EAGAIN. On -EAGAIN, VM will retry page migration in a short time
+-   because VM interprets -EAGAIN as "temporary migration failure". On returning
+-   any error except -EAGAIN, VM will give up the page migration without
+-   retrying.
+-
+-   Driver shouldn't touch the page.lru field while in the migratepage() function.
+-
+-3. ``void (*putback_page)(struct page *);``
+-
+-   If migration fails on the isolated page, VM should return the isolated page
+-   to the driver so VM calls the driver's putback_page() with the isolated page.
+-   In this function, the driver should put the isolated page back into its own data
+-   structure.
+-
+-Non-LRU movable page flags
+-
+-   There are two page flags for supporting non-LRU movable page.
+-
+-   * PG_movable
+-
+-     Driver should use the function below to make page movable under page_lock::
+-
+-       void __SetPageMovable(struct page *page, struct address_space *mapping)
+-
+-     It needs argument of address_space for registering migration
+-     family functions which will be called by VM. Exactly speaking,
+-     PG_movable is not a real flag of struct page. Rather, VM
+-     reuses the page->mapping's lower bits to represent it::
+-
+-       #define PAGE_MAPPING_MOVABLE 0x2
+-       page->mapping = page->mapping | PAGE_MAPPING_MOVABLE;
+-
+-     so driver shouldn't access page->mapping directly. Instead, driver should
+-     use page_mapping() which masks off the low two bits of page->mapping under
+-     page lock so it can get the right struct address_space.
+-
+-     For testing of non-LRU movable pages, VM supports __PageMovable() function.
+-     However, it doesn't guarantee to identify non-LRU movable pages because
+-     the page->mapping field is unified with other variables in struct page.
+-     If the driver releases the page after isolation by VM, page->mapping
+-     doesn't have a stable value although it has PAGE_MAPPING_MOVABLE set
+-     (look at __ClearPageMovable). But __PageMovable() is cheap to call whether
+-     page is LRU or non-LRU movable once the page has been isolated because LRU
+-     pages can never have PAGE_MAPPING_MOVABLE set in page->mapping. It is also
+-     good for just peeking to test non-LRU movable pages before more expensive
+-     checking with lock_page() in pfn scanning to select a victim.
+-
+-     For guaranteeing non-LRU movable page, VM provides PageMovable() function.
+-     Unlike __PageMovable(), PageMovable() validates page->mapping and
+-     mapping->a_ops->isolate_page under lock_page(). The lock_page() prevents
+-     sudden destroying of page->mapping.
+-
+-     Drivers using __SetPageMovable() should clear the flag via
+-     __ClearMovablePage() under page_lock() before the releasing the page.
+-
+-   * PG_isolated
+-
+-     To prevent concurrent isolation among several CPUs, VM marks isolated page
+-     as PG_isolated under lock_page(). So if a CPU encounters PG_isolated
+-     non-LRU movable page, it can skip it. Driver doesn't need to manipulate the
+-     flag because VM will set/clear it automatically. Keep in mind that if the
+-     driver sees a PG_isolated page, it means the page has been isolated by the
+-     VM so it shouldn't touch the page.lru field.
+-     The PG_isolated flag is aliased with the PG_reclaim flag so drivers
+-     shouldn't use PG_isolated for its own purposes.
++If a driver wants to make its pages movable, it should define a struct
++movable_operations.  It then needs to call __SetPageMovable() on each
++page that it may be able to move.  This uses the ``page->mapping`` field,
++so this field is not available for the driver to use for other purposes.
+
+ Monitoring Migration
+ =====================
+@@ -286,3 +191,5 @@ THP_MIGRATION_FAIL and PGMIGRATE_FAIL to increase.
+
+ Christoph Lameter, May 8, 2006.
+ Minchan Kim, Mar 28, 2016.
 +
-+    then:
-+      properties:
-+        qcom,boot-partitions:
-+          $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+          items:
-+            items:
-+              - description: offset
-+              - description: size
-+          description:
-+            Boot partition use a different layout where the 4 bytes of spare
-+            data are not protected by ECC. Use this to declare these special
-+            partitions by defining first the offset and then the size.
++.. kernel-doc:: include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -19,6 +19,43 @@ struct migration_target_control;
+  */
+ #define MIGRATEPAGE_SUCCESS            0
+
++/**
++ * struct movable_operations - Driver page migration
++ * @isolate_page:
++ * The VM calls this function to prepare the page to be moved.  The page
++ * is locked and the driver should not unlock it.  The driver should
++ * return ``true`` if the page is movable and ``false`` if it is not
++ * currently movable.  After this function returns, the VM uses the
++ * page->lru field, so the driver must preserve any information which
++ * is usually stored here.
++ *
++ * @migrate_page:
++ * After isolation, the VM calls this function with the isolated
++ * @src page.  The driver should copy the contents of the
++ * @src page to the @dst page and set up the fields of @dst page.
++ * Both pages are locked.
++ * If page migration is successful, the driver should call
++ * __ClearPageMovable(@src) and return MIGRATEPAGE_SUCCESS.
++ * If the driver cannot migrate the page at the moment, it can return
++ * -EAGAIN.  The VM interprets this as a temporary migration failure and
++ * will retry it later.  Any other error value is a permanent migration
++ * failure and migration will not be retried.
++ * The driver shouldn't touch the @src->lru field while in the
++ * migrate_page() function.  It may write to @dst->lru.
++ *
++ * @putback_page:
++ * If migration fails on the isolated page, the VM informs the driver
++ * that the page is no longer a candidate for migration by calling
++ * this function.  The driver should put the isolated page back into
++ * its own data structure.
++ */
++struct movable_operations {
++       bool (*isolate_page)(struct page *, isolate_mode_t);
++       int (*migrate_page)(struct page *dst, struct page *src,
++                       enum migrate_mode);
++       void (*putback_page)(struct page *);
++};
 +
-+            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-+            and should be declared in ascending order.
-+
-+            Refer to the ipq8064 example on how to use this special binding.
-+
- required:
-   - compatible
-   - reg
-@@ -135,6 +160,8 @@ examples:
-         nand-ecc-strength = <4>;
-         nand-bus-width = <8>;
- 
-+        qcom,boot-partitions = <0x0 0x58a0000>;
-+
-         partitions {
-           compatible = "fixed-partitions";
-           #address-cells = <1>;
--- 
-2.36.1
+ /* Defined in mm/debug.c: */
+ extern const char *migrate_reason_names[MR_TYPES];
+
+
+
 
 
 ______________________________________________________
