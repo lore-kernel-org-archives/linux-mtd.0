@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B8D7C433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jun 2022 20:38:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FFD6C43334
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jun 2022 23:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=VsmcZK+Qf1p3Mm3ArTAo1/YwsyH8N78HcOTJ1j10yLQ=; b=3ATg+kHLcX0hz0
-	VbmRYVK2dd6IwC+wilL7iri6cb+TXG9A7ujyK+He0AGcj7d+dlEygCv+IAF7E2RyNyWFyyF4Fg6l3
-	jBO2TSfkofQHAUInC948ZcvTAEhLHhQSUIZYGKRCg53rCqMlQ0o4w2ZgPvOeUEKihM20NaIMD46iz
-	ANFqZTrI9MaaBTBUD4tlz0D1MOxyoVDiFlQQX31nVwL091+74Z0ihm9FiKWCfRqvOVQ/Ta+0kJ80K
-	uAv+YgISS/OtS9/tJ+UsxyNZXCqDUWD5UfdPOw2JwH25UFA6DLrZDIqTqU2O93freGPyMizcROvcE
-	XglSfRkcuJgPuhWP4LFQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
+	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=nyUa4kLgcbWNagZ1AWZQTqJxPpZsNKhddyJR+U4uaEo=; b=n2xGeeyZnNp+Id
+	/lpdFBjt9gPwJNu3Y15J0fy/aMP9NHWa8SrjCbysvDJRL4U3I+mymnRSye97KmD+R09YnIaEw416p
+	tJM5dKTnN4hKVzOV6HRy1QwpZQ9tkYij0ZieQ+FKDDBtXmc//h8HBobXuDCFsYCTtJu97jWLuA6Fg
+	9KB2+RaFIhr/AhByTxqYfbgPRxMYoxx7yYATWAQ+lxJOFPwiTTkkamoH23VeWKdn/icqXPwoVe8ij
+	anx7URe406raxklVwis0adhemlRjYqb196MaGMZB4dBQ4EKHnRc10/hPFWjW/QNIcF/jjp8Zxifj7
+	02nlfHJSAu5Kd94csBpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzlOb-009nYJ-Gu; Fri, 10 Jun 2022 20:38:17 +0000
-Received: from mail-il1-f178.google.com ([209.85.166.178])
+	id 1nznuM-00AMrD-7u; Fri, 10 Jun 2022 23:19:14 +0000
+Received: from mail-io1-f54.google.com ([209.85.166.54])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzlOY-009nXN-S6
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2022 20:38:16 +0000
-Received: by mail-il1-f178.google.com with SMTP id h7so164922ila.10
-        for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2022 13:38:13 -0700 (PDT)
+	id 1nznuI-00AMqR-WB
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2022 23:19:12 +0000
+Received: by mail-io1-f54.google.com with SMTP id d123so529483iof.10
+        for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2022 16:19:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4m3Bo0gVkhfyIGU9xra6MloozgwWOG3t7N6ZclZnQ/I=;
-        b=SO4IRZk1Lbd657+nB7hdNMeHFeULFZM46SSABiYbEbg9pjKOGj6FfchXsQQMUR52MY
-         H2JdTkyuDj/WfZd3C0MtC/N3GE256yf3yY9Gt1ySyezrRNjCBrSTBnkMn7ahvOQuFYKx
-         TPP6L77h34TCDJ3vxnodZlKqA1RJeNWj8qEmGND94Fwcks0xekIN7+3NQTzGVfkCEHsQ
-         DQhsCqpx8AAkFjsSf4t0Q9xQhEKjw1dmpiLDcKol/oExJEecg+Dw1Hs1nDyZsijteAbi
-         2JH7eVknBDs6g2Zn0P1wkFT8QSXDvAZajmyilEkvaAX/OZ3ufn6I9kgMvXWhKDf1XJS4
-         gIzA==
-X-Gm-Message-State: AOAM5312/qES2qToLTdcBc84YQQVpcMujSeKx6mkDQNUWc6dzy5nNCSL
-	jwoMp6m9NdbiRVvXdrdDWAjuiXhoGQ==
-X-Google-Smtp-Source: ABdhPJyVB3wPO8qibfrXXcaLUISXcn2Swhm7rrrKY18ybttaAXPFa7pxNWCllTPtZVYk3Nc3HqhWMw==
-X-Received: by 2002:a92:cbcd:0:b0:2d1:ba4f:2f4f with SMTP id s13-20020a92cbcd000000b002d1ba4f2f4fmr25692107ilq.181.1654893492813;
-        Fri, 10 Jun 2022 13:38:12 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.251])
-        by smtp.googlemail.com with ESMTPSA id z20-20020a056638001400b003316f4b9b26sm16014jao.131.2022.06.10.13.38.11
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=I85nzJQvpanBbnKRqJtMLn+dRbMroiljIODt3AC3sUA=;
+        b=8PUKXhI+HJnxp8AINjD0jQuXlLiKAFVqU58pseSPn61jAHRyJTSIdukwsr99DEgK7/
+         Cmb0cX5SxyoXpSBN4xU0z7+QKb1hmQ0/uC2og9TFERvQaMnw74GJ6XiejJK4fWZABHRz
+         8uUglAAwHi+cUrGQOw6oREC50QyuUBL5iLykFJLcZq51imhEF5tZqjvXGJqEdlWLCrlr
+         NfeV4GVBOb8tgOxMpIJrDx/VlO30PJhL7XJdGb65R1HDgLwwE/8ay9ifKeZlL05N9bej
+         qDm/us+D5bxCqQ0Vr7QcDoMgR4mfXxcDxWDo4W0XnxAjkAhdYdAJokmLI8ZrihztAFpc
+         UO7Q==
+X-Gm-Message-State: AOAM533QjBfbTemxUF3YhR0rQmLtVxKL6mYVbZ05ZPUnrIij9pTsG2CW
+	J46HiZ3n6O03krZAwTxzlw==
+X-Google-Smtp-Source: ABdhPJyek+/IffazigJpKri07/SwvYOlBtivddM8UGvJatPh3EPESw3a8N+6KkBOSBAS1qj4+6zFxg==
+X-Received: by 2002:a6b:2c87:0:b0:669:c37b:342b with SMTP id s129-20020a6b2c87000000b00669c37b342bmr1736787ios.158.1654903149861;
+        Fri, 10 Jun 2022 16:19:09 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id y21-20020a027315000000b00331c06bf620sm176633jab.154.2022.06.10.16.19.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jun 2022 13:38:12 -0700 (PDT)
+        Fri, 10 Jun 2022 16:19:09 -0700 (PDT)
+Received: (nullmailer pid 2450359 invoked by uid 1000);
+	Fri, 10 Jun 2022 23:19:06 -0000
 From: Rob Herring <robh@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: mtd/partitions: Convert arm-firmware-suite to DT schema
-Date: Fri, 10 Jun 2022 14:37:44 -0600
-Message-Id: <20220610203746.2191518-1-robh@kernel.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+To: Rob Herring <robh@kernel.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>, Linus Walleij <linus.walleij@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>
+In-Reply-To: <20220610203746.2191518-1-robh@kernel.org>
+References: <20220610203746.2191518-1-robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: mtd/partitions: Convert arm-firmware-suite to DT schema
+Date: Fri, 10 Jun 2022 17:19:06 -0600
+Message-Id: <1654903146.326838.2450358.nullmailer@robh.at.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220610_133814_950422_082F8226 
-X-CRM114-Status: GOOD (  13.32  )
+X-CRM114-CacheID: sfid-20220610_161911_075440_97213C67 
+X-CRM114-Status: GOOD (  12.19  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,83 +71,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Convert the arm,arm-firmware-suite partition binding to DT schema
-format. Simple conversion as there's only a compatible property.
+On Fri, 10 Jun 2022 14:37:44 -0600, Rob Herring wrote:
+> Convert the arm,arm-firmware-suite partition binding to DT schema
+> format. Simple conversion as there's only a compatible property.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../mtd/partitions/arm,arm-firmware-suite.txt | 17 -----------
+>  .../partitions/arm,arm-firmware-suite.yaml    | 30 +++++++++++++++++++
+>  2 files changed, 30 insertions(+), 17 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
+> 
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../mtd/partitions/arm,arm-firmware-suite.txt | 17 -----------
- .../partitions/arm,arm-firmware-suite.yaml    | 30 +++++++++++++++++++
- 2 files changed, 30 insertions(+), 17 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt b/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
-deleted file mode 100644
-index d5c5616f6db5..000000000000
---- a/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--ARM AFS - ARM Firmware Suite Partitions
--=======================================
--
--The ARM Firmware Suite is a flash partitioning system found on the
--ARM reference designs: Integrator AP, Integrator CP, Versatile AB,
--Versatile PB, the RealView family, Versatile Express and Juno.
--
--Required properties:
--- compatible : (required) must be "arm,arm-firmware-suite"
--
--Example:
--
--flash@0 {
--	partitions {
--		compatible = "arm,arm-firmware-suite";
--	};
--};
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml b/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
-new file mode 100644
-index 000000000000..baf19ac0ea1f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
-@@ -0,0 +1,30 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/arm,arm-firmware-suite.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ARM Firmware Suite (AFS) Partitions
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+
-+description: |
-+  The ARM Firmware Suite is a flash partitioning system found on the
-+  ARM reference designs: Integrator AP, Integrator CP, Versatile AB,
-+  Versatile PB, the RealView family, Versatile Express and Juno.
-+
-+properties:
-+  compatible:
-+    const: arm,arm-firmware-suite
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    flash@0 {
-+        partitions {
-+            compatible = "arm,arm-firmware-suite";
-+        };
-+    };
-+...
--- 
-2.34.1
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.example.dts:18.17-22.11: Warning (unit_address_vs_reg): /example-0/flash@0: node has a unit name, but no reg or ranges property
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
 
 ______________________________________________________
