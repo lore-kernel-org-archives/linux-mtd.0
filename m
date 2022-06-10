@@ -4,97 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E7B5C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  9 Jun 2022 23:09:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A662CCA47E
+	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jun 2022 10:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xJMA3Ph+U8dCtY4S7l8tgb0LqFFeGErTQreQlGXaDUQ=; b=ECBGrtdqu5BQfH
-	hTEzGMgDKxdZWwD8Tn9XNIdcbH4vRq67k8uS/7OnPTBYJ9tBcCKxfTy5DrPobgZr3TeyGhDPhxQrs
-	tNN0HB+DubPncLgvF9WyNlE3wseF8O/E8amGuIYopfC11wtRLQGJA+R1AAY/LJxmamJTwIF5E4lpk
-	kNeyZNHPga4AKqTOz2Erm3qEDcHKbkYVeheeDuNLboc4DbZlSM0oOOHgI7CM58YzJtKIEbej9P/No
-	4g+3aIVt8fgGWmsHMtftXkVRcEMADq/wx33NDA6tNxFhYRW4AusLq0z5RFwnH86xhS8I770U7xIuo
-	xED2W+dUckw8t9QB5nHQ==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0wjNm9MN+LIV3CgviWf/fpAwTiDOHe5W7YBBQAkiizA=; b=RSJrVMvybUhbE9
+	GW6kJTfN28l/aDO4iliF/iVi8PrJEqUQ2Nx5B7NQ9y0/CRLlpoWn6pEqqa0kt9mlYeQ8U8Op8wltS
+	rfMju67rcMtjGSR0caITTyFJrAkTnrSWPuJbO4lMxmQ1kpNU5kkhRWnweW5eSketjTH6aAZPgoME8
+	0/Bmqo9JYRVbzRBjEiqC/zg4uNqHxOME8Y+XyYkhjsdkrObN9E+RvIexnFVucnhbT8RUXpEimAetQ
+	U8Rw/bo+PuOLStp0ZQN0gLus1iECqbW2qldXVoL84IqlRtwhaNaIFu1xx3G3NuhnWFpAVRu4ll1jW
+	U3/1jaKGUUwxswL8DH7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzRHU-004WD1-LS; Thu, 09 Jun 2022 23:09:36 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1nzbYZ-007Ta4-Jg; Fri, 10 Jun 2022 10:07:55 +0000
+Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nzRHS-004WC8-3s
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2022 23:09:35 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A49541FF09;
-	Thu,  9 Jun 2022 23:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1654816172;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qJ6CI0mpfkDIaS/pnwJC/3BIuCFzValbcslJLDqCmdg=;
-	b=I4/06b2ltiKrPbL7GgKqUfyrBDeCyX3UBUG59EJr4ULzJeSHMklpbChcFfJ1kbSeucBXix
-	La6qOv94FBGz6zARxy9vvZ/rfr+o4fJAO1+4sOg84lO5ESeVeDRRH4GNx2iw82Lzfy4RBp
-	n/81rXgBPEK2N99/Wl5n9BN9FjCnnSs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1654816172;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qJ6CI0mpfkDIaS/pnwJC/3BIuCFzValbcslJLDqCmdg=;
-	b=L3W4XRXz86YAqVEeWGz5ZqCwllS9CYkUvRzkZLgLEjLQjJDb2qGw16RPUqD736ufsddkqi
-	GP6X1OhCsdJk3BBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31C9113456;
-	Thu,  9 Jun 2022 23:09:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id kuItC6x9omLpJgAAMHmgww
-	(envelope-from <dsterba@suse.cz>); Thu, 09 Jun 2022 23:09:32 +0000
-Date: Fri, 10 Jun 2022 01:05:01 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: dsterba@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	cluster-devel@redhat.com, linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+	id 1nzbSz-007Qdn-22
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2022 10:02:16 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:6907:80d7:a5b:48f8])
+	by laurent.telenet-ops.be with bizsmtp
+	id hN262700a35NJNs01N27Xl; Fri, 10 Jun 2022 12:02:07 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1nzbSw-003RJy-GI; Fri, 10 Jun 2022 12:02:06 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1nzbSw-00BJfo-0t; Fri, 10 Jun 2022 12:02:06 +0200
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Magnus Damm <magnus.damm@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-renesas-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
 	linux-mtd@lists.infradead.org,
-	virtualization@lists.linux-foundation.org,
-	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2 12/19] btrfs: Convert btrfs_migratepage to
- migrate_folio
-Message-ID: <20220609230501.GY20633@twin.jikos.cz>
-Mail-Followup-To: dsterba@suse.cz, Matthew Wilcox <willy@infradead.org>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-aio@kvack.org,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-	linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-	ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
-	virtualization@lists.linux-foundation.org,
-	Christoph Hellwig <hch@lst.de>
-References: <20220608150249.3033815-1-willy@infradead.org>
- <20220608150249.3033815-13-willy@infradead.org>
- <20220609163323.GV20633@twin.jikos.cz>
- <YqIwjEO1a0Sbxbym@casper.infradead.org>
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH/RFC] arm64: defconfig: Enable HyperBus support
+Date: Fri, 10 Jun 2022 12:02:02 +0200
+Message-Id: <ebc73cabe3dbfc517883c605cad2178b00d010dc.1654855135.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YqIwjEO1a0Sbxbym@casper.infradead.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220609_160934_347547_1DE5DB37 
-X-CRM114-Status: GOOD (  22.57  )
+X-CRM114-CacheID: sfid-20220610_030209_389049_5E40CBFC 
+X-CRM114-Status: UNSURE (   8.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,49 +65,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Reply-To: dsterba@suse.cz
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 09, 2022 at 06:40:28PM +0100, Matthew Wilcox wrote:
-> On Thu, Jun 09, 2022 at 06:33:23PM +0200, David Sterba wrote:
-> > On Wed, Jun 08, 2022 at 04:02:42PM +0100, Matthew Wilcox (Oracle) wrote:
-> > > Use filemap_migrate_folio() to do the bulk of the work, and then copy
-> > > the ordered flag across if needed.
-> > > 
-> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > Acked-by: David Sterba <dsterba@suse.com>
-> > 
-> > > +static int btrfs_migrate_folio(struct address_space *mapping,
-> > > +			     struct folio *dst, struct folio *src,
-> > >  			     enum migrate_mode mode)
-> > >  {
-> > > -	int ret;
-> > > +	int ret = filemap_migrate_folio(mapping, dst, src, mode);
-> > >  
-> > > -	ret = migrate_page_move_mapping(mapping, newpage, page, 0);
-> > >  	if (ret != MIGRATEPAGE_SUCCESS)
-> > >  		return ret;
-> > >  
-> > > -	if (page_has_private(page))
-> > > -		attach_page_private(newpage, detach_page_private(page));
-> > 
-> > If I'm reading it correctly, the private pointer does not need to be set
-> > like that anymore because it's done somewhere during the
-> > filemap_migrate_folio() call.
-> 
-> That's correct.  Everything except moving the ordered flag across is
-> done for you, and I'm kind of tempted to modify folio_migrate_flags()
-> to copy the ordered flag across as well.  Then you could just use
-> filemap_migrate_folio() directly.
+Enable modular support for HyperBus, which is used on R-Car Gen3 and
+Gen4 platforms.
 
-Either way it works for me. If it would mean an unsafe change in folios
-or complicate other code I'm fine with the migration callback that
-does additional work for btrfs that could be changed later.
+Note that the actual Renesas RPC-IF HyperBus driver (RPCIF_HYPERBUS) is
+not enabled, as it depends on MTD_CFI_BE_BYTE_SWAP.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+I think we cannot just enable MTD_CFI_BE_BYTE_SWAP in a generic kernel,
+as that may break other platforms.  Is that correct?
+
+To be queued in renesas-devel for v5.20, after the above has been
+resolved.
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index c8cbb98ea6bc4d21..afda8325ca9b675a 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -270,6 +270,7 @@ CONFIG_MTD_NAND_MARVELL=y
+ CONFIG_MTD_NAND_FSL_IFC=y
+ CONFIG_MTD_NAND_QCOM=y
+ CONFIG_MTD_SPI_NOR=y
++CONFIG_MTD_HYPERBUS=m
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=m
+ CONFIG_VIRTIO_BLK=y
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
