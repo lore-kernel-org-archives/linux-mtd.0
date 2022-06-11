@@ -4,62 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FFD6C43334
-	for <linux-mtd@archiver.kernel.org>; Fri, 10 Jun 2022 23:19:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCFDAC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat, 11 Jun 2022 02:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nyUa4kLgcbWNagZ1AWZQTqJxPpZsNKhddyJR+U4uaEo=; b=n2xGeeyZnNp+Id
-	/lpdFBjt9gPwJNu3Y15J0fy/aMP9NHWa8SrjCbysvDJRL4U3I+mymnRSye97KmD+R09YnIaEw416p
-	tJM5dKTnN4hKVzOV6HRy1QwpZQ9tkYij0ZieQ+FKDDBtXmc//h8HBobXuDCFsYCTtJu97jWLuA6Fg
-	9KB2+RaFIhr/AhByTxqYfbgPRxMYoxx7yYATWAQ+lxJOFPwiTTkkamoH23VeWKdn/icqXPwoVe8ij
-	anx7URe406raxklVwis0adhemlRjYqb196MaGMZB4dBQ4EKHnRc10/hPFWjW/QNIcF/jjp8Zxifj7
-	02nlfHJSAu5Kd94csBpA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=wHP1yTA8YUVHdMuMp+xoDVJSgZe1L8jJapsY1/rtlu0=; b=p2c+50nLXqGP7K
+	FZkIVNwZJpdYGn4cRb19dUY6LP+sDMtuATi8A6rYUwB2i3nt/YPajcKKBuGDCPVQtc2LxheWDfKLx
+	ooIUIJMzfxAGGzlVMCs0K0B+HrV1QnlqB30UOfUqstaC4VkqmXeYgeekvtRVaS11ByLhqIjdiS6r7
+	DipfDUSwZ2sWg73VAx/V1BiJx+TnfoE/JMlWuARruDj65DxZbg9TRiwX2bQNI/xhOPJjRk/AMmY+A
+	dGgeVYrID4udQNtD9S6LToqmrMZqRS4XgaPPVriXnr2tLqonADliBPNMiODJsNU6Ow4M6RjciVwMm
+	3yDExG8nwYcfCXEMK0BQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nznuM-00AMrD-7u; Fri, 10 Jun 2022 23:19:14 +0000
-Received: from mail-io1-f54.google.com ([209.85.166.54])
+	id 1nzqdu-00AyGk-Kg; Sat, 11 Jun 2022 02:14:26 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nznuI-00AMqR-WB
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2022 23:19:12 +0000
-Received: by mail-io1-f54.google.com with SMTP id d123so529483iof.10
-        for <linux-mtd@lists.infradead.org>; Fri, 10 Jun 2022 16:19:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=I85nzJQvpanBbnKRqJtMLn+dRbMroiljIODt3AC3sUA=;
-        b=8PUKXhI+HJnxp8AINjD0jQuXlLiKAFVqU58pseSPn61jAHRyJTSIdukwsr99DEgK7/
-         Cmb0cX5SxyoXpSBN4xU0z7+QKb1hmQ0/uC2og9TFERvQaMnw74GJ6XiejJK4fWZABHRz
-         8uUglAAwHi+cUrGQOw6oREC50QyuUBL5iLykFJLcZq51imhEF5tZqjvXGJqEdlWLCrlr
-         NfeV4GVBOb8tgOxMpIJrDx/VlO30PJhL7XJdGb65R1HDgLwwE/8ay9ifKeZlL05N9bej
-         qDm/us+D5bxCqQ0Vr7QcDoMgR4mfXxcDxWDo4W0XnxAjkAhdYdAJokmLI8ZrihztAFpc
-         UO7Q==
-X-Gm-Message-State: AOAM533QjBfbTemxUF3YhR0rQmLtVxKL6mYVbZ05ZPUnrIij9pTsG2CW
-	J46HiZ3n6O03krZAwTxzlw==
-X-Google-Smtp-Source: ABdhPJyek+/IffazigJpKri07/SwvYOlBtivddM8UGvJatPh3EPESw3a8N+6KkBOSBAS1qj4+6zFxg==
-X-Received: by 2002:a6b:2c87:0:b0:669:c37b:342b with SMTP id s129-20020a6b2c87000000b00669c37b342bmr1736787ios.158.1654903149861;
-        Fri, 10 Jun 2022 16:19:09 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id y21-20020a027315000000b00331c06bf620sm176633jab.154.2022.06.10.16.19.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jun 2022 16:19:09 -0700 (PDT)
-Received: (nullmailer pid 2450359 invoked by uid 1000);
-	Fri, 10 Jun 2022 23:19:06 -0000
-From: Rob Herring <robh@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>, Linus Walleij <linus.walleij@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>
-In-Reply-To: <20220610203746.2191518-1-robh@kernel.org>
-References: <20220610203746.2191518-1-robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: mtd/partitions: Convert arm-firmware-suite to DT schema
-Date: Fri, 10 Jun 2022 17:19:06 -0600
-Message-Id: <1654903146.326838.2450358.nullmailer@robh.at.kernel.org>
+	id 1nzqdp-00AyCd-PB
+	for linux-mtd@lists.infradead.org; Sat, 11 Jun 2022 02:14:24 +0000
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LKhDp3H44zjXX8;
+	Sat, 11 Jun 2022 10:12:42 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 11 Jun 2022 10:14:00 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 11 Jun
+ 2022 10:13:59 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
+	<vigneshr@ti.com>, <Artem.Bityutskiy@nokia.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] ubi: ubi_wl_put_peb: Fix infinite loop when wear-leveling work failed
+Date: Sat, 11 Jun 2022 10:27:06 +0800
+Message-ID: <20220611022706.926980-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220610_161911_075440_97213C67 
-X-CRM114-Status: GOOD (  12.19  )
+X-CRM114-CacheID: sfid-20220610_191422_198228_A3E94C90 
+X-CRM114-Status: GOOD (  10.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,47 +64,91 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 10 Jun 2022 14:37:44 -0600, Rob Herring wrote:
-> Convert the arm,arm-firmware-suite partition binding to DT schema
-> format. Simple conversion as there's only a compatible property.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../mtd/partitions/arm,arm-firmware-suite.txt | 17 -----------
->  .../partitions/arm,arm-firmware-suite.yaml    | 30 +++++++++++++++++++
->  2 files changed, 30 insertions(+), 17 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
-> 
+Following process will trigger an infinite loop in ubi_wl_put_peb():
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+	ubifs_bgt		ubi_bgt
+ubifs_leb_unmap
+  ubi_leb_unmap
+    ubi_eba_unmap_leb
+      ubi_wl_put_peb	wear_leveling_worker
+                          e1 = rb_entry(rb_first(&ubi->used)
+			  e2 = get_peb_for_wl(ubi)
+			  ubi_io_read_vid_hdr  // return err (flash fault)
+			  out_error:
+			    ubi->move_from = ubi->move_to = NULL
+			    wl_entry_destroy(ubi, e1)
+			      ubi->lookuptbl[e->pnum] = NULL
+      retry:
+        e = ubi->lookuptbl[pnum];	// return NULL
+	if (e == ubi->move_from) {	// NULL == NULL gets true
+	  goto retry;			// infinite loop !!!
 
-yamllint warnings/errors:
+$ top
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     COMMAND
+  7676 root     20   0       0      0      0 R 100.0  0.0  ubifs_bgt0_0
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.example.dts:18.17-22.11: Warning (unit_address_vs_reg): /example-0/flash@0: node has a unit name, but no reg or ranges property
+Fix it by:
+ 1) Letting ubi_wl_put_peb() returns directly if wearl leveling entry has
+    been removed from 'ubi->lookuptbl'.
+ 2) Using 'ubi->wl_lock' protecting wl entry deletion to preventing an
+    use-after-free problem for wl entry in ubi_wl_put_peb().
 
-doc reference errors (make refcheckdocs):
+Fetch a reproducer in [Link].
 
-See https://patchwork.ozlabs.org/patch/
+Fixes: 43f9b25a9cdd7b1 ("UBI: bugfix: protect from volume removal")
+Fixes: ee59ba8b064f692 ("UBI: Fix stale pointers in ubi->lookuptbl")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216111
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/ubi/wl.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 55bae06cf408..c95bfbdfa475 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -973,11 +973,13 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 	spin_lock(&ubi->wl_lock);
+ 	ubi->move_from = ubi->move_to = NULL;
+ 	ubi->move_to_put = ubi->wl_scheduled = 0;
++	ubi->lookuptbl[e1->pnum] = NULL;
++	ubi->lookuptbl[e2->pnum] = NULL;
+ 	spin_unlock(&ubi->wl_lock);
+ 
+ 	ubi_free_vid_buf(vidb);
+-	wl_entry_destroy(ubi, e1);
+-	wl_entry_destroy(ubi, e2);
++	kmem_cache_free(ubi_wl_entry_slab, e1);
++	kmem_cache_free(ubi_wl_entry_slab, e2);
+ 
+ out_ro:
+ 	ubi_ro_mode(ubi);
+@@ -1253,6 +1255,18 @@ int ubi_wl_put_peb(struct ubi_device *ubi, int vol_id, int lnum,
+ retry:
+ 	spin_lock(&ubi->wl_lock);
+ 	e = ubi->lookuptbl[pnum];
++	if (!e) {
++		/*
++		 * This wl entry has been removed for some errors by other
++		 * process (eg. wear leveling worker), corresponding process
++		 * (except __erase_worker, which cannot concurrent with
++		 * ubi_wl_put_peb) will set ubi ro_mode at the same time,
++		 * just ignore this wl entry.
++		 */
++		spin_unlock(&ubi->wl_lock);
++		up_read(&ubi->fm_protect);
++		return 0;
++	}
+ 	if (e == ubi->move_from) {
+ 		/*
+ 		 * User is putting the physical eraseblock which was selected to
+-- 
+2.31.1
 
 
 ______________________________________________________
