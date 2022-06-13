@@ -4,70 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E4F6C43334
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jun 2022 06:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973B4C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jun 2022 06:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lxLcEVKUyPgpp1D0U8x62d9avn2q1cG51SbmUbtKjHQ=; b=ZD01X8xoeWQsTI
-	xY/PuJTea3IaakpS773Eu8+yYDzd+EgkEQWdwAhPgLj1zLRk4YLysPZkPb+JZVlx0HRd1EyIWuOdZ
-	i4zDMiVEsRAH0SmpcwzZuEdKy8TjdEcxOd+Sd8GaYlHiHJov+Td1DN2X+G/JmQPnwPSotAjVCYAB5
-	YOcTG1qmCXCFqlxH3q1pKr742VCHK3EDJvsHqnpqvi61XlCehBFonxjIKjX6nLZ4Ge1NU8A6rdbwc
-	9SpVhQ5/j3J5YWMJNXm5XGGEjDeDyA7h9v1YYsnATMIO4oAukGqPtMb5HMFdBdlac7iqlYXbg2hYL
-	1oOLswThQVtrNfFmlMZg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=XaYUYR5m5Iri29XOGRq+wz6Vf2vsoULzlI8NeHaZXaY=; b=PIqt9whb9IrxH3
+	z3t+zN/wvoQPzW0IgWQrhP2pexM2alHlaaU+jBY294vu9k4SHHwpWWlLOuxsqQXxPMBYoqp4S/deD
+	AiOPbkOYWdmFH7jVpugEaSZpEDdpMKQKQUe5l1G5MX5N3xt4Aq8dmWa985pHvAA3qQM85TZ8PIVAj
+	ByNBRU+t/May51gbHIdWO4Van4w5TXVN0ldtOsWlZa8XevCBlS0npyWYhQy99VO7aGDr0z9kUfIxJ
+	qqgic8Cc/UzJiueujpzDY2k+5YZ1D5uimsftycrC40kJ6etBIRs1hMsObGDsYT1hZh/4sluF5EC+w
+	lFB2+Gys5ywG624eGprw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o0dPZ-001cwU-E7; Mon, 13 Jun 2022 06:18:53 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1o0dqA-001iO5-Tt; Mon, 13 Jun 2022 06:46:22 +0000
+Received: from szxga02-in.huawei.com ([45.249.212.188])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o0dPU-001cue-01
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2022 06:18:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655101127; x=1686637127;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RI6qAwFkvyfDJbNSty7ikmbQQ/e8na613HjB1kmUOqU=;
-  b=WDUcbI/f4Wgg30ls1P3w9dDKAxnlGJS+opAF2P8DPqGR2KHX+M8Ppw1O
-   VytTeCR2M2JZqA4VIQ0wqClQkZOg9GE+UaiajFI6eXbjEdWVd3zSoVRcL
-   l8wQk6GpVEXVU8dQIPFG5XNxifUR9/Z9RzrylA3ALDAF2ghcceAiMUUSV
-   wSJMF2IVgr/zoWTSLx+mElKhOURBXC9HjoBz/qb2jHAa7xemIDcQHz6q1
-   t6Anr9/bQK5/GGEgz55S9uTkUc3Ti2dtAFUUvlzEwKgb+/vS87G0AGbNQ
-   lFnWwKyHusfu7f7OwhG6jwjRJCY5tEF/hg+ZUOWiTU3Ww0ug1nEU7xYG/
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10376"; a="364508179"
-X-IronPort-AV: E=Sophos;i="5.91,296,1647327600"; 
-   d="scan'208";a="364508179"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2022 23:18:39 -0700
-X-IronPort-AV: E=Sophos;i="5.91,296,1647327600"; 
-   d="scan'208";a="673098050"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.162])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2022 23:18:34 -0700
-Received: by lahna (sSMTP sendmail emulation); Mon, 13 Jun 2022 09:18:31 +0300
-Date: Mon, 13 Jun 2022 09:18:31 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Oleksandr Ocheretnyi <oocheret@cisco.com>
-Cc: tudor.ambarus@microchip.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
-	michael@walle.cc, richard@nod.at, vigneshr@ti.com,
-	broonie@kernel.org, linux-mtd@lists.infradead.org,
-	linux-spi@vger.kernel.org, mauro.lima@eclypsium.com,
-	lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-	xe-linux-external@cisco.com
-Subject: Re: [PATCH] mtd: spi-nor: handle unsupported FSR opcodes properly
-Message-ID: <YqbWt9f3of+7Z76e@lahna>
-References: <YmZUCIE/ND82BlNh@lahna>
- <20220610191548.3626218-1-oocheret@cisco.com>
+	id 1o0dq6-001iJs-Hl
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2022 06:46:21 +0000
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LM27d1vMhzRj0j;
+	Mon, 13 Jun 2022 14:42:53 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 13 Jun 2022 14:46:00 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600013.china.huawei.com
+ (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 13 Jun
+ 2022 14:45:59 +0800
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <s.hauer@pengutronix.de>,
+	<vigneshr@ti.com>, <Artem.Bityutskiy@nokia.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH v2] ubi: ubi_wl_put_peb: Fix infinite loop when wear-leveling work failed
+Date: Mon, 13 Jun 2022 14:59:04 +0800
+Message-ID: <20220613065904.326567-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220610191548.3626218-1-oocheret@cisco.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220612_231848_091605_2649892C 
-X-CRM114-Status: GOOD (  24.36  )
+X-CRM114-CacheID: sfid-20220612_234619_355422_A5724F4C 
+X-CRM114-Status: GOOD (  11.15  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,75 +69,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Following process will trigger an infinite loop in ubi_wl_put_peb():
 
-On Fri, Jun 10, 2022 at 12:15:48PM -0700, Oleksandr Ocheretnyi wrote:
-> Commit 094d3b9 ("mtd: spi-nor: Add USE_FSR flag for n25q* entries")
-> and following one 8f93826 ("mtd: spi-nor: micron-st: convert USE_FSR
-> to a manufacturer flag") enables SPINOR_OP_RDFSR opcode handling ability,
-> however some controller drivers still cannot handle it properly in
-> the micron_st_nor_ready() call what breaks some mtd callbacks with
-> next error logs:
-> 
-> mtdblock: erase of region [address1, size1] on "BIOS" failed
-> mtdblock: erase of region [address2, size2] on "BIOS" failed
-> 
-> Just skip subsequent processing of the SPINOR_OP_RDFSR opcode's results
-> because of -ENOTSUPP return value of the micron_st_nor_read_fsr()
-> if there is no proper handling of that opcode as it's been before
-> commit 094d3b9 ("mtd: spi-nor: Add USE_FSR flag for n25q* entries")
-> 
-> Signed-off-by: Oleksandr Ocheretnyi <oocheret@cisco.com>
+	ubifs_bgt		ubi_bgt
+ubifs_leb_unmap
+  ubi_leb_unmap
+    ubi_eba_unmap_leb
+      ubi_wl_put_peb	wear_leveling_worker
+                          e1 = rb_entry(rb_first(&ubi->used)
+			  e2 = get_peb_for_wl(ubi)
+			  ubi_io_read_vid_hdr  // return err (flash fault)
+			  out_error:
+			    ubi->move_from = ubi->move_to = NULL
+			    wl_entry_destroy(ubi, e1)
+			      ubi->lookuptbl[e->pnum] = NULL
+      retry:
+        e = ubi->lookuptbl[pnum];	// return NULL
+	if (e == ubi->move_from) {	// NULL == NULL gets true
+	  goto retry;			// infinite loop !!!
 
-I sent similar patch some time ago here:
+$ top
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     COMMAND
+  7676 root     20   0       0      0      0 R 100.0  0.0  ubifs_bgt0_0
 
-https://lore.kernel.org/linux-mtd/20220506105158.43613-1-mika.westerberg@linux.intel.com/#t
+Fix it by:
+ 1) Letting ubi_wl_put_peb() returns directly if wearl leveling entry has
+    been removed from 'ubi->lookuptbl'.
+ 2) Using 'ubi->wl_lock' protecting wl entry deletion to preventing an
+    use-after-free problem for wl entry in ubi_wl_put_peb().
 
-but so far it has not been picked up by the maintainers. I'm fine if we
-go with your patch instead, just one minor comment:
+Fetch a reproducer in [Link].
 
-> ---
->  drivers/mtd/spi-nor/micron-st.c | 6 +++++-
->  drivers/spi/spi-intel.c         | 3 ++-
->  2 files changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-> index a96f74e0f568..507e675d81e0 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -399,8 +399,12 @@ static int micron_st_nor_ready(struct spi_nor *nor)
->  		return sr_ready;
->  
->  	ret = micron_st_nor_read_fsr(nor, nor->bouncebuf);
-> -	if (ret)
-> +	if (ret < 0) {
-> +		/* Check if read FSR is supported. If not, skip it. */
-> +		if (ret == -ENOTSUPP)
-> +			return sr_ready;
->  		return ret;
-> +	}
->  
->  	if (nor->bouncebuf[0] & (FSR_E_ERR | FSR_P_ERR)) {
->  		if (nor->bouncebuf[0] & FSR_E_ERR)
-> diff --git a/drivers/spi/spi-intel.c b/drivers/spi/spi-intel.c
-> index 50f42983b950..f0313a718d1b 100644
-> --- a/drivers/spi/spi-intel.c
-> +++ b/drivers/spi/spi-intel.c
-> @@ -352,7 +352,8 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, size_t len)
->  		val |= HSFSTS_CTL_FCYCLE_RDSR;
->  		break;
->  	default:
-> -		return -EINVAL;
-> +		dev_dbg(ispi->dev, "%#x not supported\n", opcode);
-> +		return -ENOTSUPP;
+Fixes: 43f9b25a9cdd7b1 ("UBI: bugfix: protect from volume removal")
+Fixes: ee59ba8b064f692 ("UBI: Fix stale pointers in ubi->lookuptbl")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216111
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ v1->v2: Don't split wl_entry_destroy(), since kmem_cache_free() can be
+         executed wrapped a spinlock, eg dtl_disable().
+ drivers/mtd/ubi/wl.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-I don't think this is necessary because we already return -EOPNOTSUPP in
-intel_spi_exec_mem_op() so we can just check that one in
-micron_st_nor_ready().
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 55bae06cf408..ee0100740869 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -973,11 +973,11 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 	spin_lock(&ubi->wl_lock);
+ 	ubi->move_from = ubi->move_to = NULL;
+ 	ubi->move_to_put = ubi->wl_scheduled = 0;
++	wl_entry_destroy(ubi, e1);
++	wl_entry_destroy(ubi, e2);
+ 	spin_unlock(&ubi->wl_lock);
+ 
+ 	ubi_free_vid_buf(vidb);
+-	wl_entry_destroy(ubi, e1);
+-	wl_entry_destroy(ubi, e2);
+ 
+ out_ro:
+ 	ubi_ro_mode(ubi);
+@@ -1253,6 +1253,18 @@ int ubi_wl_put_peb(struct ubi_device *ubi, int vol_id, int lnum,
+ retry:
+ 	spin_lock(&ubi->wl_lock);
+ 	e = ubi->lookuptbl[pnum];
++	if (!e) {
++		/*
++		 * This wl entry has been removed for some errors by other
++		 * process (eg. wear leveling worker), corresponding process
++		 * (except __erase_worker, which cannot concurrent with
++		 * ubi_wl_put_peb) will set ubi ro_mode at the same time,
++		 * just ignore this wl entry.
++		 */
++		spin_unlock(&ubi->wl_lock);
++		up_read(&ubi->fm_protect);
++		return 0;
++	}
+ 	if (e == ubi->move_from) {
+ 		/*
+ 		 * User is putting the physical eraseblock which was selected to
+-- 
+2.31.1
 
-With that changed feel free to add my,
-
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
