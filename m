@@ -4,81 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA5F5C43334
-	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jun 2022 14:16:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 919EDC43334
+	for <linux-mtd@archiver.kernel.org>; Mon, 13 Jun 2022 14:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4Amz/Ag3JXX8et4gN2nHpZwThUxeWRUgVUTpFEgrl3o=; b=O0RuP5mHNIPO9S
-	sSU8CdlG8C5NmpmqkB7BeTk+NFQjcSe2ysec2p8icfGQBK3SbDlwZQ1ouJ+Pfe73Exnm93NV6nFQ1
-	gVv0LY/qzjEO5OMTqf3HaLdMtelUI3+QI/dsXjw1v8x0IEYTZKVwAFQN0ajmSUBdEoe0twAY9v7cp
-	5V4+eHtLQqEgHnBdJ6z80QPl3vd9Li9nww4XzgHOLjoNRpJlLEitutfhTnLL/rgwYvJFGwR7TJTPg
-	MXmK8jHy2YTNAxWtMDLw7MKIPW7YOueXNs1RT7vJQmxXP38ovxcVAiJHhNCubligF+7Mpe6XHlM0A
-	PO93R+Zg6YvS8g0I342w==;
+	List-Owner; bh=DggpHACqb1lreiMS1fHGleDw9XLtepKUQm9lQE4zKYA=; b=36GEQwq9TcckDh
+	Np+ZDfY5vBxGsMU8zNJSmTDigZi66LjLLbwrU97TjbAiYF5Y4ZI3UqYn28nXZ0CTnYrx92i9xMXdF
+	155W551ApI0olcUcDQBkCfVeqO1Hmxe3wHeafT3Uj5be2X4LcMIaoS2T5uvXs608r42l6Uad8j6lV
+	mYaIWqm8wOIU6pHDpweqaTmN/KCAWt2QXkSjErGR15tG59ellCuUorZ9MlOK0b8EWfsaZfQ4jKvFe
+	RvlOuYGSHx7gW1yIyMTsOQ4jNmdj/gCfYyxvE2uo3j8mychMxCPw2LDTJ6i+onKCagJY2ZGcJT1B7
+	V+gSTyCsLoECVrTflCwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o0krB-00495R-E9; Mon, 13 Jun 2022 14:15:53 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1o0l3q-004CUz-JH; Mon, 13 Jun 2022 14:28:58 +0000
+Received: from mga04.intel.com ([192.55.52.120])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o0kqx-004908-8I; Mon, 13 Jun 2022 14:15:40 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id gl15so11479704ejb.4;
-        Mon, 13 Jun 2022 07:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=WkY6YC/lq+OgUkV6SbT7L02is3iwBHoji0O6PsezbEM=;
-        b=A/CxupUz2JYW2TKhVixeYcs9exwjKCwCOqMjHjgSygAeb5arPOL/UsaLIkfXyyovsp
-         DwMJlxVOrxmGv5S4qlkbRZKZPhW+tWHMoYiiqdcdVHf3/Iovay5N/IKd16o5RTSaKGoo
-         Jkmgkg83Ib1+rQzR30SbUSo8EM4zP76tKI/Vefzn/qEBnkpxhW2ftInhjS3qi+Jsn48Z
-         G9Dik31zGIIv8/EdAT1DHCAsNkFONfchVE1E59nr+t4rdqcd+dSCiJncQ+Eg149nppRi
-         xTrAxURHbN0O3rzw6CK8TSlhTCHbrvUnsm8AM1ZbNDpQr0jsxqCyaQgrB25m97RdirSK
-         wrHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=WkY6YC/lq+OgUkV6SbT7L02is3iwBHoji0O6PsezbEM=;
-        b=PF1wkVbLUUzyeQcrL+zLWBLQt+hPPvFtpRDULXthvMYiq6SOPP144LYRsm54Iq01wT
-         9yPXQWYyT9uZxs7qbXJ/AEPMOXDwKSqjlAiBM7fpFX2lsLhrjRmHZBSmhy1wweUQkHJe
-         szSqGqpRYu4+lkx/m3M2VIQaVU6vwLUAmRIc2+YXpQ64qcYhQbFudsIH6iOdJTmjX5ym
-         uBpcZV9c2FFPDE2c5wybGmT4RCDxTLRJLYCMtgezZWBXvCj0o9ttXL33iE3bN8jnoZeT
-         SZ+ZvLpkRb0y1YNaf6HuekQJ3LN7jYAd2BTlwKsPBQJWVGhTIJo24GbDAGteLPS5/FYS
-         PoAA==
-X-Gm-Message-State: AOAM53009mF2Qu6q6HYbpEWAzXPb7UTRuU2fOQRZLxubpu+JO3w7qpey
-	i8J5Tiy/TfrzrypM64CaefM=
-X-Google-Smtp-Source: ABdhPJwWib14oqzfqvcsAH0wLXOfpeOSyAk0CLRuFBAN3USZ/7s60hA59eOGyM6r1Dtydm6AzGpTbQ==
-X-Received: by 2002:a17:906:730f:b0:711:db1a:fdb0 with SMTP id di15-20020a170906730f00b00711db1afdb0mr115357ejc.54.1655129736364;
-        Mon, 13 Jun 2022 07:15:36 -0700 (PDT)
-Received: from [192.168.26.149] (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.googlemail.com with ESMTPSA id jt18-20020a170906ca1200b00711edab7622sm3896839ejb.40.2022.06.13.07.15.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jun 2022 07:15:35 -0700 (PDT)
-Message-ID: <ad084c13-55fc-8506-f768-49a0c6ae4f7f@gmail.com>
-Date: Mon, 13 Jun 2022 16:15:34 +0200
+	id 1o0l3m-004CTj-Qk
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2022 14:28:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655130534; x=1686666534;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yo6oWuP1uRTaNxH2baN81HXr0Uua9EFGTDjlZt3dMu8=;
+  b=MSDB1Bk7QSdEzskC2t+jrRbz+jzSerpipisIggorOfJB8p/NhEAQNu0F
+   vpmf8j3NUBFkBFwugwoG3xnYZvW6QothzhUobOe9X1jfyWZTgLu2364lm
+   mBKN9/rFdPaTmOp+0PicaTZ6UjWnaKN0kQZ0+Rd3k1W6naiv9PvOm1DgA
+   XNcpjv0jX33PIJOBRwa0SMcMcShTW5+MzqGNDVy4JMr0hd2hY/qQcS6bB
+   LtqnccgV6tANdBjXaaaGVsbaTCwmDcvU8H+CNsYORo9iP725EOqJYNVfC
+   yEe+duO0cw4w8MHzulv3Oi5XA2rcELm1ImMDh6sxNTZLhWdDb2jXmOjBT
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10377"; a="277076442"
+X-IronPort-AV: E=Sophos;i="5.91,297,1647327600"; 
+   d="scan'208";a="277076442"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2022 07:28:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,297,1647327600"; 
+   d="scan'208";a="611801842"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 13 Jun 2022 07:28:49 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+	(envelope-from <lkp@intel.com>)
+	id 1o0l3g-000Ks1-MG;
+	Mon, 13 Jun 2022 14:28:48 +0000
+Date: Mon, 13 Jun 2022 22:28:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ansuel Smith <ansuelsmth@gmail.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <bjorn.andersson@linaro.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, kbuild-all@lists.01.org,
+	Ansuel Smith <ansuelsmth@gmail.com>
+Subject: Re: [PATCH v5 1/3] mtd: nand: raw: qcom_nandc: add support for
+ unprotected spare data pages
+Message-ID: <202206132205.G3tGFPx7-lkp@intel.com>
+References: <20220608001030.18813-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
- Thunderbird/96.0
-Subject: Re: [PATCH V3 1/2] mtd: allow getting MTD device associated with a
- specific DT node
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tom Rini <trini@konsulko.com>, Ahmad Fatoum <a.fatoum@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org, u-boot@lists.denx.de,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-References: <20220611204651.19947-1-zajec5@gmail.com>
- <20220613160411.48b07515@xps-13>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20220613160411.48b07515@xps-13>
+Content-Disposition: inline
+In-Reply-To: <20220608001030.18813-2-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220613_071539_346739_D5EB058F 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20220613_072854_934055_382B8C30 
+X-CRM114-Status: GOOD (  15.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,77 +88,123 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 13.06.2022 16:04, Miquel Raynal wrote:
->> @@ -1154,6 +1154,34 @@ int __get_mtd_device(struct mtd_info *mtd)
->>   }
->>   EXPORT_SYMBOL_GPL(__get_mtd_device);
->>   
->> +/**
->> + * of_get_mtd_device_by_node - obtain an MTD device associated with a given node
->> + *
->> + * @np: device tree node
->> + */
->> +struct mtd_info *of_get_mtd_device_by_node(struct device_node *np)
-> 
-> Shall we try to use a more of-agnostic syntax or is it too complex here?
+Hi Ansuel,
 
-I need some extra hint, please. This is how many similar functions look
-like:
+Thank you for the patch! Perhaps something to improve:
 
-$ grep -E -r "(get|find).*_by_node" ./include/*
-./include/drm/drm_mipi_dsi.h:struct mipi_dsi_host *of_find_mipi_dsi_host_by_node(struct device_node *node);
-./include/drm/drm_mipi_dsi.h:struct mipi_dsi_device *of_find_mipi_dsi_device_by_node(struct device_node *np);
-./include/linux/usb/phy.h:extern struct usb_phy *devm_usb_get_phy_by_node(struct device *dev,
-./include/linux/usb/phy.h:static inline struct usb_phy *devm_usb_get_phy_by_node(struct device *dev,
-./include/linux/extcon.h:struct extcon_dev *extcon_find_edev_by_node(struct device_node *node);
-./include/linux/extcon.h:static inline struct extcon_dev *extcon_find_edev_by_node(struct device_node *node)
-./include/linux/of_net.h:extern struct net_device *of_find_net_device_by_node(struct device_node *np);
-./include/linux/of_net.h:static inline struct net_device *of_find_net_device_by_node(struct device_node *np)
-./include/linux/devfreq.h:struct devfreq *devfreq_get_devfreq_by_node(struct device_node *node);
-./include/linux/devfreq.h:static inline struct devfreq *devfreq_get_devfreq_by_node(struct device_node *node)
-./include/linux/of_platform.h:extern struct platform_device *of_find_device_by_node(struct device_node *np);
-./include/linux/of_platform.h:static inline struct platform_device *of_find_device_by_node(struct device_node *np)
-./include/linux/backlight.h:struct backlight_device *of_find_backlight_by_node(struct device_node *node);
-./include/linux/backlight.h:of_find_backlight_by_node(struct device_node *node)
-./include/linux/i2c.h:struct i2c_client *of_find_i2c_device_by_node(struct device_node *node);
-./include/linux/i2c.h:struct i2c_adapter *of_find_i2c_adapter_by_node(struct device_node *node);
-./include/linux/i2c.h:struct i2c_adapter *of_get_i2c_adapter_by_node(struct device_node *node);
-./include/linux/i2c.h:static inline struct i2c_client *of_find_i2c_device_by_node(struct device_node *node)
-./include/linux/i2c.h:static inline struct i2c_adapter *of_find_i2c_adapter_by_node(struct device_node *node)
-./include/linux/i2c.h:static inline struct i2c_adapter *of_get_i2c_adapter_by_node(struct device_node *node)
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on mtd/mtd/next mtd/mtd/fixes robh/for-next v5.19-rc2 next-20220610]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Ansuel-Smith/Add-support-for-unprotected-spare-data-page/20220608-104834
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next
+config: hexagon-randconfig-r041-20220613 (https://download.01.org/0day-ci/archive/20220613/202206132205.G3tGFPx7-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project d378268ead93c85803c270277f0243737b536ae7)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/5f9263b88e99a6cae44be5e737cb0928ee420e87
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Ansuel-Smith/Add-support-for-unprotected-spare-data-page/20220608-104834
+        git checkout 5f9263b88e99a6cae44be5e737cb0928ee420e87
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash drivers/mtd/nand/raw/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/mtd/nand/raw/qcom_nandc.c:3020:10: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
+                   return ret;
+                          ^~~
+   drivers/mtd/nand/raw/qcom_nandc.c:3009:33: note: initialize the variable 'ret' to silence this warning
+           int partitions_count, i, j, ret;
+                                          ^
+                                           = 0
+   1 warning generated.
 
 
->> +{
->> +	struct mtd_info *mtd = NULL;
->> +	struct mtd_info *tmp;
->> +	int err;
->> +
->> +	mutex_lock(&mtd_table_mutex);
->> +
->> +	err = -ENODEV;
->> +	mtd_for_each_device(tmp) {
->> +		if (mtd_get_of_node(tmp) == np) {
->> +			mtd = tmp;
->> +			err = __get_mtd_device(mtd);
->> +			break;
->> +		}
->> +	}
->> +
->> +	mutex_unlock(&mtd_table_mutex);
->> +
->> +	return err ? ERR_PTR(err) : mtd;
->> +}
->> +EXPORT_SYMBOL_GPL(of_get_mtd_device_by_node);
->> +
->>   /**
->>    *	get_mtd_device_nm - obtain a validated handle for an MTD device by
->>    *	device name
+vim +/ret +3020 drivers/mtd/nand/raw/qcom_nandc.c
 
+  3000	
+  3001	static int qcom_nand_host_parse_boot_partitions(struct qcom_nand_controller *nandc,
+  3002							struct qcom_nand_host *host,
+  3003							struct device_node *dn)
+  3004	{
+  3005		struct nand_chip *chip = &host->chip;
+  3006		struct mtd_info *mtd = nand_to_mtd(chip);
+  3007		struct qcom_nand_boot_partition *boot_partition;
+  3008		struct device *dev = nandc->dev;
+  3009		int partitions_count, i, j, ret;
+  3010	
+  3011		if (!nandc->props->use_codeword_fixup)
+  3012			return 0;
+  3013	
+  3014		if (!of_find_property(dn, "qcom,boot-partitions", NULL))
+  3015			return 0;
+  3016	
+  3017		partitions_count = of_property_count_u32_elems(dn, "qcom,boot-partitions");
+  3018		if (partitions_count < 0) {
+  3019			dev_err(dev, "Error parsing boot partition.");
+> 3020			return ret;
+  3021		}
+  3022	
+  3023		host->nr_boot_partitions = partitions_count / 2;
+  3024		host->boot_partitions = devm_kcalloc(dev, host->nr_boot_partitions,
+  3025						     sizeof(*host->boot_partitions), GFP_KERNEL);
+  3026		if (!host->boot_partitions)
+  3027			return -ENOMEM;
+  3028	
+  3029		for (i = 0, j = 0; i < host->nr_boot_partitions; i++, j += 2) {
+  3030			boot_partition = &host->boot_partitions[i];
+  3031	
+  3032			ret = of_property_read_u32_index(dn, "qcom,boot-partitions", j,
+  3033							 &boot_partition->page_offset);
+  3034			if (ret) {
+  3035				dev_err(dev, "Error parsing boot partition offset at index %d", i);
+  3036				return ret;
+  3037			}
+  3038	
+  3039			if (boot_partition->page_offset % mtd->writesize) {
+  3040				dev_err(dev, "Boot partition offset not multiple of writesize at index %i",
+  3041					i);
+  3042				return -EINVAL;
+  3043			}
+  3044			/* Convert offset to nand pages */
+  3045			boot_partition->page_offset /= mtd->writesize;
+  3046	
+  3047			ret = of_property_read_u32_index(dn, "qcom,boot-partitions", j + 1,
+  3048							 &boot_partition->page_size);
+  3049			if (ret) {
+  3050				dev_err(dev, "Error parsing boot partition size at index %d", i);
+  3051				return ret;
+  3052			}
+  3053	
+  3054			if (boot_partition->page_size % mtd->writesize) {
+  3055				dev_err(dev, "Boot partition size not multiple of writesize at index %i",
+  3056					i);
+  3057				return -EINVAL;
+  3058			}
+  3059			/* Convert size to nand pages */
+  3060			boot_partition->page_size /= mtd->writesize;
+  3061		}
+  3062	
+  3063		return 0;
+  3064	}
+  3065	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
 ______________________________________________________
 Linux MTD discussion mailing list
