@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A293EC43334
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jun 2022 19:12:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C48CCA473
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jun 2022 19:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M0xIY0L2pITLNYxIIh6qE/vTDyqeEiX28DUZYRYK5YU=; b=da30YlaaheXblT
-	C436M1ieadanH7ESdzSR8FTbFLsa2a8/NUSk8K87Dxip7g8CTtNIOmhBc9V7X88PbWCiKCs83oyRt
-	5g/DN9NUQ5sI0aUmDZV8/k+ejkZwhJ7gXEjxyHy4OnDFlGfaICo3tpBx6TAdjQQRXtW3Df9hPK1ne
-	LzNDX0Ou2sz/oq9dZtsaG0kK/aKqX9dtxdRnoZmDEnlN6an6DmLYSbPN1V2kFuRzWL2KsyNxX9rIf
-	6gCIVvYG8CwYK1b8rAhSA28eqFw1m9QmFaC1IhGWbhuub0Jm4y90JlCKY8XLox11jjbSxQi5i3MgD
-	OmhBuD4211gtpfGIlPxA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=SdHLnfgONY88mJwLniKN8WCL+uQhnr+LShhbWMlvjeg=; b=rYH6S+gIWMWZprMtBOlNcebd36
+	CodZCbK826cMDRBcfiZy8ZcZyO0nIKgabkx76H+sT1p44K1e2pDTUD337bBVWREGBQ5Hqd8+DKl2i
+	ehGKsqg2C33pJ/JOwHAPcJP9NUK43F8jS0QEykSKspJbkJ6gLGeJGACrYw3BStIZx6+FlLX40eeHJ
+	vs2q3VZy/yW1xJmj4VS7NtUVtV3BSoSFwP4IVlLQY0ihAXZ+xsiboHBguMpvY9omcU7dsCNrtEPTF
+	zz8Z1jX8BlQHfNUTgvlsyexZlfU74Hocl10gOvwLLHpw3RDeDRiYrE7Tn67xPtGxxXwy+5VL2j+Yg
+	CMFtjVHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1YR0-00G2h5-8g; Wed, 15 Jun 2022 19:12:10 +0000
-Received: from alln-iport-4.cisco.com ([173.37.142.91])
+	id 1o1YeJ-00G4UV-KZ; Wed, 15 Jun 2022 19:25:55 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1YQv-00G2fl-Et
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2022 19:12:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2629; q=dns/txt; s=iport;
-  t=1655320326; x=1656529926;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Vnvt0MqP5LNDaqxR7L6ZH2qCRCr8hhIb7hMFw1y0Sp0=;
-  b=NM6P90VdhP9+J4/vhbVU/q+MGjpmV/2eEw1fkCSB5e5ZsBqyb76e9q6K
-   qedDhjfZxBxiAr6JJZQbbUPCaM2Iz0p8w9ydauMPPQMzfSZoLxxm6tYle
-   NxtYN/iUPRD4q3Kdj+d802GZ7UkCxr0n9FnEO4uZkUrjBUTlWom7nNXh7
-   U=;
-X-IronPort-AV: E=Sophos;i="5.91,302,1647302400"; 
-   d="scan'208";a="862238780"
-Received: from alln-core-2.cisco.com ([173.36.13.135])
-  by alln-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 15 Jun 2022 19:11:55 +0000
-Received: from sjc-ads-3421.cisco.com (sjc-ads-3421.cisco.com [171.68.249.119])
-	by alln-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 25FJBrvQ017942;
-	Wed, 15 Jun 2022 19:11:54 GMT
-From: Oleksandr Ocheretnyi <oocheret@cisco.com>
-To: mika.westerberg@linux.intel.com, tudor.ambarus@microchip.com,
-        miquel.raynal@bootlin.com, p.yadav@ti.com, michael@walle.cc,
-        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
-Cc: mauro.lima@eclypsium.com, lee.jones@linaro.org,
-        linux-kernel@vger.kernel.org, oocheret@cisco.com,
-        xe-linux-external@cisco.com
-Subject: [PATCH v2] mtd: spi-nor: handle unsupported FSR opcodes properly
-Date: Wed, 15 Jun 2022 12:11:53 -0700
-Message-Id: <20220615191153.3017939-1-oocheret@cisco.com>
-X-Mailer: git-send-email 2.26.2.Cisco
-In-Reply-To: <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
+	id 1o1YeH-00G4TW-2S
+	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2022 19:25:54 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0CCD260DF0;
+	Wed, 15 Jun 2022 19:25:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7D3C34115;
+	Wed, 15 Jun 2022 19:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1655321149;
+	bh=mjycc28titw6b3oBQHfrm902kDC3ORDO+qAz3zRHORo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=l5mpo9Oq2B7L9BefUEXvKAxz7oDNd3WuQ52foZSGBOLylVRsnviPlu8IQ0tbcsDEI
+	 XQrTSo/+rXm/ayE33b7vLdirqWV/UeDv9XdQrx1z4RPgksJCJ3avwSkV2vqGU3FMEG
+	 XmiekWH92Sp0t1AV3PU20x/iQmOisOmaAF7NDUAWIml+SLo7Jhlc3XqTT4xvRorN1+
+	 haS5yI/jKW6Sh0h2v/UZ8oAwiRMUCz4h3ZSDFe3VblTB1hJcIpTTCNQvB8QQ+BbXFP
+	 7xJ2W61KR00XxJGhIm2lNzCyXhpkOL6nBgZE2v8YGAms7dNuCMflJfZUeNeYsPzwVq
+	 c5mwWneRLD50Q==
+Date: Wed, 15 Jun 2022 20:25:43 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Oleksandr Ocheretnyi <oocheret@cisco.com>
+Cc: mika.westerberg@linux.intel.com, tudor.ambarus@microchip.com,
+	miquel.raynal@bootlin.com, p.yadav@ti.com, michael@walle.cc,
+	richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org, mauro.lima@eclypsium.com,
+	lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+	xe-linux-external@cisco.com
+Subject: Re: [PATCH v2] mtd: spi-nor: handle unsupported FSR opcodes properly
+Message-ID: <YqoyN2BplOCSOIa6@sirena.org.uk>
 References: <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
+ <20220615191153.3017939-1-oocheret@cisco.com>
 MIME-Version: 1.0
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 171.68.249.119, sjc-ads-3421.cisco.com
-X-Outbound-Node: alln-core-2.cisco.com
+In-Reply-To: <20220615191153.3017939-1-oocheret@cisco.com>
+X-Cookie: byob, v:
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220615_121206_468079_C15013A6 
-X-CRM114-Status: GOOD (  15.45  )
+X-CRM114-CacheID: sfid-20220615_122553_193068_5B4ADC2E 
+X-CRM114-Status: GOOD (  11.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,78 +72,58 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5867222646942932617=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Originally commit 094d3b9 ("mtd: spi-nor: Add USE_FSR flag for n25q*
-entries") and following one 8f93826 ("mtd: spi-nor: micron-st: convert
-USE_FSR to a manufacturer flag") enabled SPINOR_OP_RDFSR opcode handling
-ability, however some controller drivers still cannot handle it properly
-in the micron_st_nor_ready() call what breaks some mtd callbacks with
-next error logs:
 
-mtdblock: erase of region [address1, size1] on "BIOS" failed
-mtdblock: erase of region [address2, size2] on "BIOS" failed
+--===============5867222646942932617==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h31YcxwvFtDq3oCQ"
+Content-Disposition: inline
 
-The Intel SPI controller does not support low level operations, like
-reading the flag status register (FSR). It only exposes a set of high
-level operations for software to use. For this reason check the return
-value of micron_st_nor_read_fsr() and if the operation was not
-supported, use the status register value only. This allows the chip to
-work even when attached to Intel SPI controller (there are such systems
-out there).
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Oleksandr Ocheretnyi <oocheret@cisco.com>
-Link: https://lore.kernel.org/lkml/YmZUCIE%2FND82BlNh@lahna/
----
- drivers/mtd/spi-nor/micron-st.c | 12 ++++++++++--
- drivers/spi/spi-intel.c         |  3 ++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+--h31YcxwvFtDq3oCQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index a96f74e0f568..fd52e8feea44 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -399,8 +399,16 @@ static int micron_st_nor_ready(struct spi_nor *nor)
- 		return sr_ready;
- 
- 	ret = micron_st_nor_read_fsr(nor, nor->bouncebuf);
--	if (ret)
--		return ret;
-+	if (ret < 0) {
-+		/*
-+		 * Some controllers, such as Intel SPI, do not support low
-+		 * level operations such as reading the flag status
-+		 * register. They only expose small amount of high level
-+		 * operations to the software. If this is the case we use
-+		 * only the status register value.
-+		 */
-+		return (ret == -ENOTSUPP || ret == -EOPNOTSUPP) ? sr_ready : ret;
-+	}
- 
- 	if (nor->bouncebuf[0] & (FSR_E_ERR | FSR_P_ERR)) {
- 		if (nor->bouncebuf[0] & FSR_E_ERR)
-diff --git a/drivers/spi/spi-intel.c b/drivers/spi/spi-intel.c
-index 50f42983b950..2659c8337937 100644
---- a/drivers/spi/spi-intel.c
-+++ b/drivers/spi/spi-intel.c
-@@ -352,7 +352,8 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, size_t len)
- 		val |= HSFSTS_CTL_FCYCLE_RDSR;
- 		break;
- 	default:
--		return -EINVAL;
-+		dev_dbg(ispi->dev, "%#x not supported\n", opcode);
-+		return -EOPNOTSUPP;
- 	}
- 
- 	if (len > INTEL_SPI_FIFO_SZ)
--- 
-2.26.2.Cisco
+On Wed, Jun 15, 2022 at 12:11:53PM -0700, Oleksandr Ocheretnyi wrote:
+> Originally commit 094d3b9 ("mtd: spi-nor: Add USE_FSR flag for n25q*
+> entries") and following one 8f93826 ("mtd: spi-nor: micron-st: convert
+> USE_FSR to a manufacturer flag") enabled SPINOR_OP_RDFSR opcode handling
+> ability, however some controller drivers still cannot handle it properly
+> in the micron_st_nor_ready() call what breaks some mtd callbacks with
+> next error logs:
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--h31YcxwvFtDq3oCQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKqMjYACgkQJNaLcl1U
+h9BXAgf+PejyCaMSeNp44aV3Jxkp2oUooVeKCeh7KO0RIFkhx53PKA9IT4E4gBQ0
+2+bZxWUS+GVU5CHYqtn3rmaoiWLf9bR5+0JIPfWCGfUdkk7+/RR66ewMIc13LIHQ
+9qxAPK/UtYGPbdTL94xkHpRGY8frBpWKIYDcQqGHyjR/b0aYXUedc/ixOLvz88Xs
+Shd7bECwsmrnpzRdKUS7hWI9iPYqNHgKNYHeV4ETupt3Krpka2A97JkXtpHEzIZ8
+e0l3sfmhm3ligaCYcoavd4IIwnnRSWLkb2rdBbj4Rw3QkJ3ckUk8SNrR/csuHArF
+9irMzdcw4uM9CpHtRqvr2KqmFMW/QA==
+=jVgm
+-----END PGP SIGNATURE-----
+
+--h31YcxwvFtDq3oCQ--
+
+
+--===============5867222646942932617==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============5867222646942932617==--
+
