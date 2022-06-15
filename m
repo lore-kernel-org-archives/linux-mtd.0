@@ -4,68 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C35ECC43334
-	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jun 2022 18:11:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34AC9C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 15 Jun 2022 18:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=V9oSfwBXW6OU4Gn9ChSd52qIQzlwMYEzyolPnjry3dQ=; b=yHJrvT4NDopSQr
-	KzUDEhBsYSRyptMhO2nt2TNc3DkeyBBurLtOt26SIULnCjqtx/USdCGXAULyHJgDn9hrOaQyCz+ZA
-	IAzZwrwmF9fwXQv5ClpvStlDe2ibBNx7D9TDk/gBmmj0l6kbfpZvEXQsK1rwI3Ktn6OBqqReIA5w1
-	OM8Kkf8s7xflF79nmC8WEVuQILh4fLKeOCrDO+OzZ2FS/lHNABsSZO8J9d2Oq9rTvGH+YpB41PGNm
-	VRt/NiOtgkF0PpGNpQTql2IlErSChlXwl5wp+1GA01NG1cRLV/xDoXVt1O+30+i+9brxwV1mjNflc
-	IT9B9R3SJQ8BRKCVDs8Q==;
+	List-Owner; bh=MoUZW/DL159sDWDAb4IFisvZ39bMnmwhEl4Fludbseg=; b=kCBbfC1yu493KN
+	RovlpqH1UY4gl+/ngqvAUmXqfesMX+qq6rFXXXbsbsOwkuCucNTAzVFrLBq+R6/25U0prZ9aasUdy
+	jgcaSXHRudHeWSk9b9f5hzjsyncUnJOiWdc4wtd9b/Y+UTbkBDOffCyKAMraOH8sSTLrUmov4MgaV
+	xCFT+HvN/FPClX6N8shXQ9uJlp3Q3CoDxki82sk4V8VAVtI7z3Aaz26PCgjDppptXbkG9IPa8WGXr
+	8GCQAhMLvDyr0Ib8jXDiwhZGZ2b91U8hmQQJfwZVOKWDYCtHWm8t1KtM/8MiW+JXsWxMr1Rcom+I0
+	oz05tvUvy38dFjONnNpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1XTU-00Frxa-UB; Wed, 15 Jun 2022 18:10:40 +0000
-Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
+	id 1o1Xmh-00FvBz-9K; Wed, 15 Jun 2022 18:30:31 +0000
+Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1XTR-00Frw5-AD
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2022 18:10:38 +0000
-Received: from [127.0.0.1] (nyx.walle.cc [158.255.213.36])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ssl.serverraum.org (Postfix) with ESMTPSA id 73E5B22249;
-	Wed, 15 Jun 2022 20:10:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-	t=1655316627;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TS3jYFS6YTAvU3pgkMvxRJI/YD6CxfyrTdrG5rg9tDU=;
-	b=OlchZqjIeXpxF5LKa+OEpi2uZeC6CUN/XH0rxxwQ/x/J6nLbOgm5MbIm2Z9R9PJXpyqyWh
-	ITd9PIHV0TBR+EcsaFzL0mjm/aMwRtzQ1p1ctjGfEYFVgvSbeoDaUZi2Gr+pYPueUu74xN
-	GK5/IzzwgjecRTSUsCYOo2rolRVGf+4=
-Date: Wed, 15 Jun 2022 20:10:13 +0200
-From: Michael Walle <michael@walle.cc>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- "Oleksandr Ocheretnyi -X (oocheret - GLOBALLOGIC INC at Cisco)" <oocheret@cisco.com>
-CC: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "p.yadav@ti.com" <p.yadav@ti.com>, "richard@nod.at" <richard@nod.at>,
- "vigneshr@ti.com" <vigneshr@ti.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "mauro.lima@eclypsium.com" <mauro.lima@eclypsium.com>,
- "lee.jones@linaro.org" <lee.jones@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
-Subject: Re: [PATCH] mtd: spi-nor: handle unsupported FSR opcodes properly
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YqmrIsOEsFoKTwEK@lahna>
-References: <YmZUCIE/ND82BlNh@lahna> <20220610191548.3626218-1-oocheret@cisco.com> <YqbWt9f3of+7Z76e@lahna> <BYAPR11MB27570F2863F7BCDFE629B3DFCDAA9@BYAPR11MB2757.namprd11.prod.outlook.com> <YqmrIsOEsFoKTwEK@lahna>
-Message-ID: <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
+	id 1o1XmT-00Fv8a-JQ; Wed, 15 Jun 2022 18:30:21 +0000
+Received: by mail-ej1-x631.google.com with SMTP id s12so24933810ejx.3;
+        Wed, 15 Jun 2022 11:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=0tVyV2MItMC7Xp0ChiF5DdKmNUp2ewZ5lqSMGrWKASc=;
+        b=gxocVnjFbqdfBUTdrVKam+IQDV5GQh5/vy8ZoEFNIr3dW1TgmwXHMGt1O/02WiD8g2
+         rP91nRYckz7bNxVqzjY+uzKfWAxCUvIGlTimiIZyr973U67kM6RQJbjkuBYEU6ItaRTO
+         a6Nkf4XIURXKD63XwumNXuR2G9e7pxBmVGERbTcqFxc9WBktPlCqnWu9j270IhPmz3SO
+         Ul+bdCduITEeYFAmHvvEluaSNUzwC3X8yAvg6VA+Tq9SGy2HadhTrqK0BywnZVzMNiZt
+         DgJQUc/MhKNTRMk86f/PrDNp9NtcU+w04j7WHxc7Egq9l/9ZJJ6Z/lbMMNoIFELUD6qh
+         9L1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=0tVyV2MItMC7Xp0ChiF5DdKmNUp2ewZ5lqSMGrWKASc=;
+        b=BGVCZ6Oj0VB5pxzti2PFeVj1Kp2tYjGq5B6mlzQdAfRsjkUSljdo1xagWB/Nycc22d
+         gVzaP+z2rUITk4reZnHUXXY/brXON3GtP2MZuHEyQg6DJ7/ofLNdBzxVDKZZKlZzGT/G
+         9oXcMj1kXvXxSTX6skcvTmpiwZqSv2eOqRn3H5G1cMKNARuL9greFiPfySDDqDqNHs3I
+         ANoBW64VoA12ZzeCMbxYe8vjzfMH8ZroEKrCBCDA5g5qeXaDwzJHBO3ZUcsMq0Y/hKB2
+         czDk0O6IpfkaMejbM08WLc2hjNcZDDteFI7nOauZ0yaRQrnDsg/cLAwroSmN5ayQPeA2
+         mDig==
+X-Gm-Message-State: AJIora/biZ6c+NNT5Zkur7c8wced3fAgNHxd/9TpCUbUT49Mleo/gCky
+	KRHD11rYdsLgMOfmvGpRBiw=
+X-Google-Smtp-Source: AGRyM1uM41ebjYsi0V8Q6io3lK1TJ3cHgdXH58BCSObJYShmcsB7lz5YVOLlsr7DzxhCAEvYvfp42g==
+X-Received: by 2002:a17:906:b208:b0:70e:c7f1:f8bf with SMTP id p8-20020a170906b20800b0070ec7f1f8bfmr997939ejz.143.1655317815135;
+        Wed, 15 Jun 2022 11:30:15 -0700 (PDT)
+Received: from [192.168.26.149] (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.googlemail.com with ESMTPSA id fw37-20020a170907502500b0071579abcf3csm5425587ejc.111.2022.06.15.11.30.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jun 2022 11:30:14 -0700 (PDT)
+Message-ID: <c67b209c-4237-4c9f-3150-23a3ef99bc34@gmail.com>
+Date: Wed, 15 Jun 2022 20:30:12 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:96.0) Gecko/20100101
+ Thunderbird/96.0
+Subject: Re: [PATCH V3 2/2] nvmem: add driver handling U-Boot environment
+ variables
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Tom Rini <trini@konsulko.com>, linux-arm-kernel@lists.infradead.org,
+ u-boot@lists.denx.de, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20220611204651.19947-1-zajec5@gmail.com>
+ <20220611204651.19947-2-zajec5@gmail.com>
+ <1ecbb1af-53d6-1ac1-fd9f-b780a7c50fd9@pengutronix.de>
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <1ecbb1af-53d6-1ac1-fd9f-b780a7c50fd9@pengutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220615_111037_554830_DBAC067F 
-X-CRM114-Status: UNSURE (   8.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220615_113017_709639_2CCA1443 
+X-CRM114-Status: GOOD (  12.41  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,36 +92,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 15. Juni 2022 11:49:22 OEZ schrieb Mika Westerberg <mika.westerberg@linux.intel.com>:
->Hi,
->
->On Tue, Jun 14, 2022 at 05:56:54PM +0000, Oleksandr Ocheretnyi -X (oocheret - GLOBALLOGIC INC at Cisco) wrote:
->>    Hello Mika,
->> 
->>    in my case (I work with memory chip n25q128a13 for recent kernels) I'm
->>    getting return value -ENOTSUPP from spi_mem_exec_op() call in the
->>    micron_st_nor_read_fsr() method
->>    [[1]https://elixir.bootlin.com/linux/v5.19-rc2/source/drivers/spi/spi-m
->>    em.c#L326]. So I decided to provide the same errorcode to
->>    intel_spi_hw_cycle() method because older kernel versions throw the
->>    error there. It is fine to use -EOPNOTSUPP return value instead.
->> 
->>    I suspect we need to cover both cases to check -ENOTSUPP as well as
->>    -EOPNOTSUPP to let the driver work properly.
->> 
->>    if (ret == -ENOTSUPP || ret == -EOPNOTSUPP)
->
->I think we should follow the same in the Intel driver and return
->-ENOTSUPP too.
+On 14.06.2022 08:45, Ahmad Fatoum wrote:
+>> +	if (err && !mtd_is_bitflip(err)) {
+>> +		dev_err(dev, "Failed to read from mtd: %d\n", err);
+> 
+> Nitpick: %pe
 
-AFAIK ENOTSUPP is for nfs and shouldn't be used.
+My "err" variable in int, not a pointer (I don't use PTR_ERR()).
 
--michael
+
+>> +static int u_boot_env_add_cells(struct u_boot_env *priv, uint8_t *buf,
+>> +				size_t data_offset, size_t data_len)
+>> +{
+>> +	struct device *dev = priv->dev;
+>> +	char *data = buf + data_offset;
+>> +	char *var, *value, *eq;
+>> +	int idx;
+>> +
+>> +	priv->ncells = 0;
+>> +	for (var = data; var < data + data_len && *var; var += strlen(var) + 1)
+>> +		priv->ncells++;
+>> +
+>> +	priv->cells = devm_kcalloc(dev, priv->ncells, sizeof(*priv->cells), GFP_KERNEL);
+>> +	if (!priv->cells)
+>> +		return -ENOMEM;
+>> +
+>> +	for (var = data, idx = 0;
+>> +	     var < data + data_len && *var;
+>> +	     var = value + strlen(value) + 1, idx++) {
+>> +		eq = strchr(var, '=');
+>> +		if (!eq)
+>> +			break;
+>> +		*eq = '\0';
+>> +		value = eq + 1;
+>> +
+>> +		priv->cells[idx].name = devm_kstrdup(dev, var, GFP_KERNEL);
+>> +		if (!priv->cells[idx].name)
+>> +			return -ENOMEM;
+>> +		priv->cells[idx].offset = data_offset + value - data;
+>> +		priv->cells[idx].bytes = strlen(value);
+> 
+> U-Boot environment can't hold binary values?
+
+I believe it can't. In any case \0 is a always a separator.
+
+
+>> +	}
+>> +
+>> +	if (WARN_ON(idx != priv->ncells))
+>> +		priv->ncells = idx;
+>> +
+>> +	return 0;
+>> +}
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
