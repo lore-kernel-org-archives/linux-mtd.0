@@ -4,73 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDAE4C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 07:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CDDCC43334
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 10:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+ksFGuyHBqx6OLihZ4ctXN4aK+x93xh15Efa/CCtrRs=; b=ZJrQ9ctE5xA7SQ
-	xpgZB81V5d5qPhj6jF2gp6g40GFSw3zBr0ROqVkW2bydP8qjQK+Pr6EiadgALe8/DcuoooT+JV5HW
-	LmXwzanWD0l+Z0aPLTcbutpwmdJQncT4nffet0LppclU5g3ushuXyb+Y4fovORkSDpuoz+2PWBAFO
-	uxL9H2WrNp6J4KInOtqL1SlwR+dira3Kp3a1DJVzWChC+xFrekLRaB5ZIsgX9ZZxpYZQKXn6jjVF4
-	Pmr6on/QW40GGNqr2Ww1uipXvXsv1LjoXr9AzhDH/tiDInT3za1SqreK7L+AKji8XbmUSdTvw2iQv
-	OrZ4r0PuawVbDTCdiDIw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=2sFmWeLujqH2RZjszKhcuhNqY58I1DcIWIJGp0NxIdE=; b=aVYQOvq3UYqebL
+	lw8IxvCwzSeisfTCBZfcQqp3euzQ7DqMozd3kNB+zN3ViVimiOqYge2i67SntfDLhC6LbfkaeHGKz
+	/tf9ZE16/Ipoyw+fdSvlY/Y69RyOpvU7Uyk3G6eILJ9RZuz0+umNHVWz8MiG/9LsyRdvjRoWOnyiQ
+	fw3ySKeUB1xYwBICA1tC5mGx2PNqGcc/VppTwv3re4vtg3D+W1Sn3qZLOk/7+Z6Bm65wWou0l3ldq
+	VTmA+SQLAdsObzzqckPtdpCn4FFWK4L0it1FpkSE8fvFAHxk+WnZVRi/bVB8ZQ0ci4VhSHTT2OxDW
+	YvaRo/akUzrpwT8lgZkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1kAV-00184g-EG; Thu, 16 Jun 2022 07:43:55 +0000
-Received: from mx08-00178001.pphosted.com ([91.207.212.93] helo=mx07-00178001.pphosted.com)
+	id 1o1mqp-001ti7-TZ; Thu, 16 Jun 2022 10:35:47 +0000
+Received: from mga12.intel.com ([192.55.52.136])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1k6v-0016bU-Jy
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 07:40:15 +0000
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G4cRO8008239;
-	Thu, 16 Jun 2022 09:40:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=SipFXcGwtRjKmtMkah7OgGa+SDsq/sC6LlzRtxjzz1Q=;
- b=Iu1xrDjMQnngH3NDjfLk7RYH1PcGlevXAJbB6+ZGPPGw/jcqkMTCxjXFDUHaz7kH4eqX
- 0l787Yz7xLO+ayJ0xMFYxd6XSPiC3ktbb0Gz8J2276Ab4BHI4zP8V7xhapNSYMmEUf7A
- S2hr9MBoSfHE6kl21tdKDeX9FtnlUOEFhjEv+f+bFGK5nhp761/ldV4XtkCDqaOV+K3T
- xz1S9HOiR3mHHDH92IBXy+JAT2iZGjAVQKo5NlVFFDqKzwQNxlgY0/s++EvydvAvB0q4
- UgHENjluQ/B4PyRyTD/vT7sDiPUpTHYwHbe9lNwh0Uwb8xW9Brhp0mt8SnuNcQoeizL6 QQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3gqeb0wy48-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 16 Jun 2022 09:40:04 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EE7EC10002A;
-	Thu, 16 Jun 2022 09:40:01 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DA24421160A;
-	Thu, 16 Jun 2022 09:40:01 +0200 (CEST)
-Received: from localhost (10.48.0.175) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 16 Jun
- 2022 09:39:59 +0200
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Christophe Kerello
-	<christophe.kerello@foss.st.com>
-Subject: [PATCH mtd-utils] nandflipbits: fix corrupted oob
-Date: Thu, 16 Jun 2022 09:39:43 +0200
-Message-ID: <20220616073943.669332-1-christophe.kerello@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+	id 1o1mql-001tgt-Ju
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 10:35:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655375743; x=1686911743;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=bfn7Kr/6Mg81QIsDd2mRVCMs364rPZOp5AMz87j7Fog=;
+  b=lMzypovoHSMG5W3a5fV+LsHyxWdTBrCwGtH7zgiHUJZf7RubDZJO/Djx
+   mF6EIoUfTcb7x+xaUv2xXOeKO8/dEn5+Z1VDXVkbHTZtORpENgVTLZk2f
+   QrHdq+EaRLHqUUyFDWDnLX6OxkAH14wbHNxe5gNW78N80+oIMmooNls1K
+   mSrmN9xaKGbYNPeuqZv2xcUnT1rHveeYH1MG5pxhC0P3v95/OjPPJU8ia
+   kbzHMany296XEdXJANn8BsnPop0nhqkfOmE2glruMqxITiOFAXTx8KW0N
+   p9wzet0qyTTI/UQJKZTJSYwocP0GYFduCd4z+z2i7QJvxOsYFZ8DFccxq
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="259073413"
+X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
+   d="scan'208";a="259073413"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 03:35:37 -0700
+X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
+   d="scan'208";a="727840496"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.162])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 03:35:31 -0700
+Received: by lahna (sSMTP sendmail emulation); Thu, 16 Jun 2022 13:35:28 +0300
+Date: Thu, 16 Jun 2022 13:35:28 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: "Oleksandr Ocheretnyi -X (oocheret - GLOBALLOGIC INC at Cisco)" <oocheret@cisco.com>
+Cc: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+	"p.yadav@ti.com" <p.yadav@ti.com>,
+	"michael@walle.cc" <michael@walle.cc>,
+	"richard@nod.at" <richard@nod.at>,
+	"vigneshr@ti.com" <vigneshr@ti.com>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"mauro.lima@eclypsium.com" <mauro.lima@eclypsium.com>,
+	"lee.jones@linaro.org" <lee.jones@linaro.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: handle unsupported FSR opcodes properly
+Message-ID: <YqsHcL5NPcZ4De77@lahna>
+References: <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
+ <20220615191153.3017939-1-oocheret@cisco.com>
+ <YqrAGKLUazeNH1XK@lahna>
+ <BYAPR11MB2757B1146457E3860389F4D1CDAC9@BYAPR11MB2757.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.48.0.175]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-16_03,2022-06-15_01,2022-02-23_01
+Content-Disposition: inline
+In-Reply-To: <BYAPR11MB2757B1146457E3860389F4D1CDAC9@BYAPR11MB2757.namprd11.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220616_004014_001463_506EA1A3 
-X-CRM114-Status: GOOD (  14.22  )
+X-CRM114-CacheID: sfid-20220616_033543_713632_4DEDE2B8 
+X-CRM114-Status: GOOD (  28.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,40 +88,60 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-If a bit is flipped in block 1 or higher, the OOB is corrupted with the
-OOB of block 0. Mtd_read_oob API has to take into account the block number
-to be able to calculate the right offset.
-
-Fixes: 9fc8db29cf62 ("mtd-utils: Add nandflipbits tool")
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
----
- nand-utils/nandflipbits.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/nand-utils/nandflipbits.c b/nand-utils/nandflipbits.c
-index aa6850f..cd66d0b 100644
---- a/nand-utils/nandflipbits.c
-+++ b/nand-utils/nandflipbits.c
-@@ -249,7 +249,9 @@ int main(int argc, char **argv)
- 
- 			bufoffs += mtd.min_io_size;
- 
--			ret = mtd_read_oob(mtd_desc, &mtd, fd, blkoffs,
-+			ret = mtd_read_oob(mtd_desc, &mtd, fd,
-+					   bit_to_flip->block * mtd.eb_size +
-+					   blkoffs,
- 					   mtd.oob_size, buffer + bufoffs);
- 			if (ret) {
- 				fprintf(stderr, "MTD OOB read failure\n");
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpPbiBUaHUsIEp1biAxNiwgMjAyMiBhdCAwNzo0MDoxOEFNICswMDAwLCBPbGVrc2FuZHIg
+T2NoZXJldG55aSAtWCAob29jaGVyZXQgLSBHTE9CQUxMT0dJQyBJTkMgYXQgQ2lzY28pIHdyb3Rl
+Ogo+ICAgIEhpIE1pa2EsCj4gCj4gICAgICA+IE9yaWdpbmFsbHkgY29tbWl0IDA5NGQzYjkgKCJt
+dGQ6IHNwaS1ub3I6IEFkZCBVU0VfRlNSIGZsYWcgZm9yCj4gICAgICBuMjVxKgo+ICAgICAgPiBl
+bnRyaWVzIikgYW5kIGZvbGxvd2luZyBvbmUgOGY5MzgyNiAoIm10ZDogc3BpLW5vcjogbWljcm9u
+LXN0Ogo+ICAgICAgY29udmVydAo+ICAgICAgPiBVU0VfRlNSIHRvIGEgbWFudWZhY3R1cmVyIGZs
+YWciKSBlbmFibGVkIFNQSU5PUl9PUF9SREZTUiBvcGNvZGUKPiAgICAgIGhhbmRsaW5nCj4gICAg
+ICA+IGFiaWxpdHksIGhvd2V2ZXIgc29tZSBjb250cm9sbGVyIGRyaXZlcnMgc3RpbGwgY2Fubm90
+IGhhbmRsZSBpdAo+ICAgICAgcHJvcGVybHkKPiAgICAgID4gaW4gdGhlIG1pY3Jvbl9zdF9ub3Jf
+cmVhZHkoKSBjYWxsIHdoYXQgYnJlYWtzIHNvbWUgbXRkIGNhbGxiYWNrcwo+ICAgICAgd2l0aAo+
+ICAgICAgPiBuZXh0IGVycm9yIGxvZ3M6Cj4gICAgICA+Cj4gICAgICA+IG10ZGJsb2NrOiBlcmFz
+ZSBvZiByZWdpb24gW2FkZHJlc3MxLCBzaXplMV0gb24gIkJJT1MiIGZhaWxlZAo+ICAgICAgPiBt
+dGRibG9jazogZXJhc2Ugb2YgcmVnaW9uIFthZGRyZXNzMiwgc2l6ZTJdIG9uICJCSU9TIiBmYWls
+ZWQKPiAgICAgID4KPiAgICAgID4gVGhlIEludGVsIFNQSSBjb250cm9sbGVyIGRvZXMgbm90IHN1
+cHBvcnQgbG93IGxldmVsIG9wZXJhdGlvbnMsCj4gICAgICBsaWtlCj4gICAgICA+IHJlYWRpbmcg
+dGhlIGZsYWcgc3RhdHVzIHJlZ2lzdGVyIChGU1IpLiBJdCBvbmx5IGV4cG9zZXMgYSBzZXQgb2YK
+PiAgICAgIGhpZ2gKPiAgICAgID4gbGV2ZWwgb3BlcmF0aW9ucyBmb3Igc29mdHdhcmUgdG8gdXNl
+LiBGb3IgdGhpcyByZWFzb24gY2hlY2sgdGhlCj4gICAgICByZXR1cm4KPiAgICAgID4gdmFsdWUg
+b2YgbWljcm9uX3N0X25vcl9yZWFkX2ZzcigpIGFuZCBpZiB0aGUgb3BlcmF0aW9uIHdhcyBub3QK
+PiAgICAgID4gc3VwcG9ydGVkLCB1c2UgdGhlIHN0YXR1cyByZWdpc3RlciB2YWx1ZSBvbmx5LiBU
+aGlzIGFsbG93cyB0aGUKPiAgICAgIGNoaXAgdG8KPiAgICAgID4gd29yayBldmVuIHdoZW4gYXR0
+YWNoZWQgdG8gSW50ZWwgU1BJIGNvbnRyb2xsZXIgKHRoZXJlIGFyZSBzdWNoCj4gICAgICBzeXN0
+ZW1zCj4gICAgICA+IG91dCB0aGVyZSkuCj4gICAgICA+Cj4gCj4gICAgPiBTaWduZWQtb2ZmLWJ5
+OiBNaWthIFdlc3RlcmJlcmcgPG1pa2Eud2VzdGVyYmVyZ0BsaW51eC5pbnRlbC5jb20+Cj4gCj4g
+ICAgICBJIGRvbid0IHRoaW5rIEkgc2lnbmVkIHRoaXMgb2ZmLgo+IAo+ICAgIEkgdGhvdWdodCBp
+ZiBJIHRha2UgeW91ciBjYXNlICgtRU9QTk9UU1VQUCkgYW5kIHVwZGF0ZSBpdCB3aXRoCj4gICAg
+KC1FTk9UU1VQUCkgSSBuZWVkIHRvIGtlZXAKPiAKPiAgICB5b3VyIFNpZ2hlZC1vZmYtYnk6IG5v
+dGUgYXMgd2VsbC4KClRoYXQncyBub3QgaG93IGl0IHR5cGljYWxseSB3b3Jrcy4gUGVvcGxlIHdp
+bGwgZ2l2ZSB0aGVpciB0YWcgZXhwbGljaXRseQphbmQgdGhlbiB5b3UgY2FuIGFkZCB0aG9zZS4K
+Cj4gICAgPiBTaWduZWQtb2ZmLWJ5OiBPbGVrc2FuZHIgT2NoZXJldG55aSA8b29jaGVyZXRAY2lz
+Y28uY29tPgo+ICAgID4gTGluazogWzFdaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9ZbVpV
+Q0lFJTJGTkQ4MkJsTmhAbGFobmEvCj4gICAgPiAtLS0KPiAKPiAgICBXaGF0IGNoYW5nZWQgYmV0
+d2VlbiB2MSBhbmQgdjI/Cj4gCj4gICAg4oCLSSB1cGRhdGVkIHYxIHBhdGNoIHRha2luZyBpbnRv
+IGFjY291bnQgeW91ciBjaGFuZ2VzCj4gICAgWzJdaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGlu
+dXgtbXRkLzIwMjIwNTA2MTA1MTU4LjQzNjEzLTEtbWlrYS53ZXN0ZXIKPiAgICBiZXJnQGxpbnV4
+LmludGVsLmNvbSB0byBjaGVjayAtRU9QTk9UU1VQUCBjYXNlIGFzIHdlbGwuIEFmdGVyIEkKPiAg
+ICBjb21iaW5lZCBib3RoIHBhdGNoZXMgSSd2ZSBnb3QgdjIuCgpQbGVhc2UgcHV0IHRoYXQgaW5m
+b3JtYXRpb24gYWZ0ZXIgdGhlICctLS0nIGluIHRoZSBwYXRjaC4KCj4gICAgQW5kIGRpZCB5b3Ug
+dGFrZSBpbnRvIGNvbnNpZGVyYXRpb24gdGhlIGNvbW1lbnRzIEkgZ2F2ZT8KPiAKPiAgICDigItJ
+ZiB5b3Ugc2F5IGFib3V0IGtlZXBpbmcgLUVOT1RTVVBQIGFzIGludGVsIGRyaXZlciBlcnJvcmNv
+ZGUgLSBJIHRvb2sKPiAgICBpdCBob3dldmVyIGRvdWJ0ZWQgdG8gdXNlIGl0IGhlcmUgYmVjYXVz
+ZSBvZiBub3RlIGFib3V0IG5mcyBhYm92ZS4KPiAgICBUaGVyZSBpcyBubyBwcm9ibGVtIHRvIHJl
+c3RvcmUgcHJldmlvdXMgdmFyaWFudCB3aXRoIC1FTk9UU1VQUCBpbiBpbnRlbAo+ICAgIGRyaXZl
+ciBlcnJvcmNvZGUuCgpXZWxsIHdlIHdvdWxkIG5lZWQgdG8gZ2V0IHNvbWUgZmVlZGJhY2sgZnJv
+bSBTUEktTk9SIG1haW50YWluZXJzLiBJCndvdWxkIHBlcnNvbmFsbHkga2VlcCB1c2luZyBFTk9U
+U1VQUCB0byBiZSBjb25zaXN0ZW50IHdpdGggdGhlIHJlc3Qgb2YKdGhlIGNvZGUgaW4gU1BJLU5P
+UiBjb2RlIChvciBjb252ZXJ0IGl0IHRvIHVzZSBFT1BOT1RTVVBQIGV2ZXJ5d2hlcmUpCmJ1dCBp
+dCBpcyBub3QgdXAgdG8gbWUgOy0pCgpGb3IgSW50ZWwgZHJpdmVyIGl0IGlzIGZpbmUgdG8gdXNl
+IGVpdGhlciAod2hldGV2ZXIgdGhlIGRlY2lzaW9uIG9mClNQSS1OT1IgbWFpbnRhaW5lcnMnIGlz
+KS4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
