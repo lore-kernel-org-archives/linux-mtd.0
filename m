@@ -4,61 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2089C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 14:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1617FC43334
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 15:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FbJKnpxKV7p3xK1X+Cpr756PvoT5UmwmGlz7LPbEe2A=; b=AZ/8f9b9Xc0yMZ
-	VKK0XpAowajDb8Uazlt/TNH+l8SFLMAPZyt1wgU3vEYXcPVims0BzU3z7IGB9TlIj3c2Q4g3MXWHR
-	Ckay68bgIXQajbAkDXVam/3X73UnkRY8fXKO5tYMS/qXyU87AMBmpkbZmmIiQr2o4KPeXqmwwn2ij
-	tQ9a/HrXFRYPrcoy2KceNQOwtJJC/5FOi+Tbfj8SBGGSFV9nUGIyOpkct44xkJWew2GJw3af8m9To
-	Fx5eNaBn98VR9JSjdFdx2GrJf/ev4AfVOOtUmslRLteg8RMdPIpp7QjkVnXolFREOaZv2y/utR90j
-	4U7kRv8juIpazu+r1nTQ==;
+	List-Owner; bh=6poJlxkHUOCUA+tJYBBqi+DJJfNokI7GX9mYMpaVkBs=; b=AkRziNOIZ0Wf+9
+	sQB1Plqcb0wAE07D/5IJlzWBi7hbQO4zhtlVHsjFPO/rQmfag7rAurMscaEwDxfMscwUqbiJrNCVq
+	TvErSufWWuoT3lKggYLoxZA8CO6Vmp/grkWmLYnhxtDe0rXJKEoDhsAYkmPH9FjSF1XkZfZVrlYxF
+	ZLXpOq9l/5WcSi/vibmnyJhq8Ak3qk2HMpi3QCTLcEqrjJRpdH/OXMAGTK0UoEFHAzKyjLYfC+cFX
+	S+Mm9I8XwpQt4xZGu0Y8ZEGKFsNqE9b6Y1V83BRzfUiPAI2RhuvulxA5JfFXsDJr9Vu0fIP2ZVNsv
+	XRCM3Z+yPAwhYSvHsqjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1qlu-002zf9-FB; Thu, 16 Jun 2022 14:46:58 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1o1rdC-003DPK-2M; Thu, 16 Jun 2022 15:42:02 +0000
+Received: from mail-io1-f53.google.com ([209.85.166.53])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1qlr-002zee-4Q
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 14:46:57 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id B498D1BF205;
-	Thu, 16 Jun 2022 14:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1655390809;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/AgQDX0Gq/OI8+a8WozmyXT5Ol2nvRQf46aPsDnWWlA=;
-	b=FW+RdGfEDOT2EJzxbG8UuFhOhmQLknYXMup9cU9f7Pe+BJxanVliVRibxSUTVLCYEM3i8E
-	7j+HsYDiMPIWJrhcbZkTZ5liG/u3yyiWFcAvsDgP1Lblv2jIEe95kfcEldOPLUUcv4OoMY
-	uLGvEih61OsDvQLDlNhMzbD/eF6kbN+Zk2mB8dai86R9uKAwbjUqE0PHMjLPFpDR1gJtNY
-	ickClivueBUTgBlLqb/4mJ4ynUsiPm2rtnP2eEu55gclBILEXOBFRrPNav7GcCUnfo9Ocx
-	+jcSAC6hiAPZHkfvzkn/mCvWapS0FE/he7dyKazNaDyc8w5t10TvzQTEInDwAg==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Han Xu <han.xu@nxp.com>,
-	kernel@pengutronix.de,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: gpmi: Fix setting busy timeout setting
-Date: Thu, 16 Jun 2022 16:46:47 +0200
-Message-Id: <20220616144647.402987-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220614083138.3455683-1-s.hauer@pengutronix.de>
-References: 
+	id 1o1rd9-003DKr-Eg
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 15:42:00 +0000
+Received: by mail-io1-f53.google.com with SMTP id c189so1880591iof.3
+        for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2022 08:41:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c+Of7pAImRcJq99CbMv/G3hY7m2gLQV0aaUFDPDS9K0=;
+        b=aG/o7Yhi1peAGEoirzDDuwtaQLzWFAKYpMSP4usSwvlPIY6rdnV72/7oOP9DUX4Gz6
+         95M3OLY9qyvYeOgbkWz1NKTTVHjZedf3NrygM7RO8mUIpDSbCZIiNTJa+kCKsqQnk0q4
+         PGb1hlLJikjiz00CnrcVxPvwmLkQjhMqqsQGJxsjnTr+7BHDPTxEWaURdSusG5EliZTm
+         0Dgp7uZLpb+cA4n8qDuu+UhqDNsF6D4Ve+FDFiQ/oO+YJGd9PZJ/VIFmjrG1ID4vKS5G
+         rt5ujipAokJljHQIjygbIya5BkcCIvwYiaiRljI9YNi2cTfvLGfxIsHN+TvddMiPgKR2
+         kQqA==
+X-Gm-Message-State: AJIora9drX3S/0Adm1rZuVbhR/QLG83EIg2njzzyhm3qYYd96nXeRYrC
+	F7OnXWYNX3PRJ8Anq/no/w==
+X-Google-Smtp-Source: AGRyM1tSOR64Ae/eujWzzeeM77A3ZzCWEqAAf7jb/wDwxahhn0VLduHwEjuUuXSJE6UZ5RBW7e3Ang==
+X-Received: by 2002:a05:6638:13d1:b0:331:c916:d6cd with SMTP id i17-20020a05663813d100b00331c916d6cdmr3029714jaj.317.1655394113361;
+        Thu, 16 Jun 2022 08:41:53 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id c9-20020a029609000000b00331d411da60sm1011098jai.75.2022.06.16.08.41.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 08:41:53 -0700 (PDT)
+Received: (nullmailer pid 3528499 invoked by uid 1000);
+	Thu, 16 Jun 2022 15:41:51 -0000
+Date: Thu, 16 Jun 2022 09:41:51 -0600
+From: Rob Herring <robh@kernel.org>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, Manivannan Sadhasivam <mani@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, linux-mtd@lists.infradead.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v8 3/3] dt-bindings: mtd: qcom_nandc: document
+ qcom,boot-partitions binding
+Message-ID: <20220616154151.GA3528396-robh@kernel.org>
+References: <20220616001835.24393-1-ansuelsmth@gmail.com>
+ <20220616001835.24393-4-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'06781a5026350cde699d2d10c9914a25c1524f45'
+Content-Disposition: inline
+In-Reply-To: <20220616001835.24393-4-ansuelsmth@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220616_074655_346174_FC0BD124 
-X-CRM114-Status: GOOD (  12.72  )
+X-CRM114-CacheID: sfid-20220616_084159_511430_1BBBC736 
+X-CRM114-Status: GOOD (  10.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,33 +80,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2022-06-14 at 08:31:38 UTC, Sascha Hauer wrote:
-> The DEVICE_BUSY_TIMEOUT value is described in the Reference Manual as:
+On Thu, 16 Jun 2022 02:18:35 +0200, Christian Marangi wrote:
+> Document new qcom,boot-partition binding used to apply special
+> read/write layout to boot partitions.
 > 
-> | Timeout waiting for NAND Ready/Busy or ATA IRQ. Used in WAIT_FOR_READY
-> | mode. This value is the number of GPMI_CLK cycles multiplied by 4096.
+> QCOM apply a special layout where spare data is not protected
+> by ECC for some special pages (used for boot partition). Add
+> Documentation on how to declare these special pages.
 > 
-> So instead of multiplying the value in cycles with 4096, we have to
-> divide it by that value. Use DIV_ROUND_UP to make sure we are on the
-> safe side, especially when the calculated value in cycles is smaller
-> than 4096 as typically the case.
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/qcom,nandc.yaml   | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
 > 
-> This bug likely never triggered because any timeout != 0 usually will
-> do. In my case the busy timeout in cycles was originally calculated as
-> 2408, which multiplied with 4096 is 0x968000. The lower 16 bits were
-> taken for the 16 bit wide register field, so the register value was
-> 0x8000. With 2970bf5a32f0 ("mtd: rawnand: gpmi: fix controller timings
-> setting") however the value in cycles became 2384, which multiplied
-> with 4096 is 0x950000. The lower 16 bit are 0x0 now resulting in an
-> intermediate timeout when reading from NAND.
-> 
-> Fixes: b1206122069aa ("mtd: rawnand: gpmi: use core timings instead of an empirical derivation")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
-
-Miquel
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ______________________________________________________
 Linux MTD discussion mailing list
