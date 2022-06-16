@@ -4,87 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A58B3C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 14:44:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2089C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 14:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v4Uq6AATsXcF6/7yaJOxEjvdzmd+3YH0O3C3VMxKn6s=; b=ginNXFAvggdbTI
-	hxiYNSLOcWNpMNz2lFesp35y6YbiBGoDiITXycq3aCm78B8nBFPsPEFYD4xNq0cKEh1nxpYUaWbt7
-	qwjCHexxln0AvwFMySgKlIwIVfAydOYEyBID7y2Q8SAC6gCX6JSXGB+nJQoWe6VA/TDUQTP6kAZtb
-	i2O/4JZOmO6/6GdHi/klsCStVDInaQggBMKWOD9vuZ4jXaglcalZDmKuWIxfHrdHPJOhYLioy7ond
-	TE1ubs5xw+N/rh7MYD5jeCAuwwc/IzE5IR9T05UWvCq6Ad5M/bXys9lFmDQdb2LykwCppNugF8BxY
-	IYN13sZfkIwbGab/PPmA==;
+	List-Owner; bh=FbJKnpxKV7p3xK1X+Cpr756PvoT5UmwmGlz7LPbEe2A=; b=AZ/8f9b9Xc0yMZ
+	VKK0XpAowajDb8Uazlt/TNH+l8SFLMAPZyt1wgU3vEYXcPVims0BzU3z7IGB9TlIj3c2Q4g3MXWHR
+	Ckay68bgIXQajbAkDXVam/3X73UnkRY8fXKO5tYMS/qXyU87AMBmpkbZmmIiQr2o4KPeXqmwwn2ij
+	tQ9a/HrXFRYPrcoy2KceNQOwtJJC/5FOi+Tbfj8SBGGSFV9nUGIyOpkct44xkJWew2GJw3af8m9To
+	Fx5eNaBn98VR9JSjdFdx2GrJf/ev4AfVOOtUmslRLteg8RMdPIpp7QjkVnXolFREOaZv2y/utR90j
+	4U7kRv8juIpazu+r1nTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1qiv-002ygI-K3; Thu, 16 Jun 2022 14:43:53 +0000
-Received: from mail-wr1-x42c.google.com ([2a00:1450:4864:20::42c])
+	id 1o1qlu-002zf9-FB; Thu, 16 Jun 2022 14:46:58 +0000
+Received: from relay8-d.mail.gandi.net ([217.70.183.201])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1qis-002yfi-Fv
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 14:43:51 +0000
-Received: by mail-wr1-x42c.google.com with SMTP id n1so1920150wrg.12
-        for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2022 07:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:to:cc:subject:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=985lyW+ymSN+1KX2wglPXmPrHIwR1ZNAwGozRXF+cAk=;
-        b=H+MqRqIcYZJGl+fIARvDt5E+nl599ga3oyDbMLBBisOxfq/SyTCwZG0Klyezq1+CUW
-         sefLQD2EeMqxqaJrfnrkNrFZhVikdu4wMrtck74oCiEmuEgiYmtNpsRIF1tZqnrkF5Mx
-         NZkApEMPJNl/kDFEI1hA+Ue/R0aw1W8KZMZoedgEZYkf3svTuJogxbSWKM4crDZGxinQ
-         0wFVmmTIUPwII1349fc94HNyry9a7jLBlghobSH5Kq06AzNFkA5kw6DqqFRMJMjCCq55
-         jezPkDIchFIXBzf+CG7v9iTSodSWY9/lo0HS0xX3CZ2o6npEv7M2DG1DnlMLEQXeesqV
-         hW4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=985lyW+ymSN+1KX2wglPXmPrHIwR1ZNAwGozRXF+cAk=;
-        b=tTgmYpbKkCAknnkgUz01i79RHEDk6WHZg3chGC7ft1AC+KWSOCcSFHl694cpq1n7lt
-         9g0p9AYx3VUMjXzM4agz2WdCKprguxdxnK67IgQkl+pC/lrwFZ+QbCAjMbJ1FAo05UY/
-         zTMSpw3nMOc4K6BI/LV7/4DtNkTjbxaufw08mgzO8/Vzz5TM4mZgUNJk5g/ocLHV0hO1
-         y1K9yBvLy/kBwYAGIC3VCVSC9NcbgR3EcmtmNopY6dX+QC+MzbxIII1wPR5Azi2odRWd
-         60SU9YxmA+uC31s/1XhzHInFIW6mu6uQZFer6BHJ1w/8CvUX60lDvteOFxAqryKocGGw
-         Tg5Q==
-X-Gm-Message-State: AJIora81V7wyYojuu2IUhBKkKS+WEst7OBnl6ukQe9z5RVY+cSJlnSrz
-	Cmi+NhAuncrzvhOaGW/BFNv2BJTnT8Y=
-X-Google-Smtp-Source: AGRyM1tajG3QG7/QWFCxjmxsAuXLSZv0+YuL9rwSS06bBr1D9gFyr74sDvu5dLu6L6z7sAmN/X6eBg==
-X-Received: by 2002:a05:6000:186f:b0:213:4ece:4086 with SMTP id d15-20020a056000186f00b002134ece4086mr5104454wri.438.1655390626594;
-        Thu, 16 Jun 2022 07:43:46 -0700 (PDT)
-Received: from Ansuel-xps. (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
-        by smtp.gmail.com with ESMTPSA id l16-20020a05600c4f1000b003942a244f40sm6815826wmq.25.2022.06.16.07.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jun 2022 07:43:46 -0700 (PDT)
-Message-ID: <62ab41a2.1c69fb81.aa33.ca40@mx.google.com>
-X-Google-Original-Message-ID: <YqtAplHcHm4Copoe@Ansuel-xps.>
-Date: Thu, 16 Jun 2022 16:39:34 +0200
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Manivannan Sadhasivam <mani@kernel.org>, Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/3] mtd: nand: raw: qcom_nandc: reorder
- qcom_nand_host struct
-References: <20220615000612.3119-1-ansuelsmth@gmail.com>
- <20220615000612.3119-2-ansuelsmth@gmail.com>
- <20220615171132.GA3606@thinkpad>
- <62aa76ad.1c69fb81.7e2d3.0c8e@mx.google.com>
- <20220616163751.2b5962df@xps-13>
+	id 1o1qlr-002zee-4Q
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 14:46:57 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id B498D1BF205;
+	Thu, 16 Jun 2022 14:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1655390809;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/AgQDX0Gq/OI8+a8WozmyXT5Ol2nvRQf46aPsDnWWlA=;
+	b=FW+RdGfEDOT2EJzxbG8UuFhOhmQLknYXMup9cU9f7Pe+BJxanVliVRibxSUTVLCYEM3i8E
+	7j+HsYDiMPIWJrhcbZkTZ5liG/u3yyiWFcAvsDgP1Lblv2jIEe95kfcEldOPLUUcv4OoMY
+	uLGvEih61OsDvQLDlNhMzbD/eF6kbN+Zk2mB8dai86R9uKAwbjUqE0PHMjLPFpDR1gJtNY
+	ickClivueBUTgBlLqb/4mJ4ynUsiPm2rtnP2eEu55gclBILEXOBFRrPNav7GcCUnfo9Ocx
+	+jcSAC6hiAPZHkfvzkn/mCvWapS0FE/he7dyKazNaDyc8w5t10TvzQTEInDwAg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>,
+	linux-mtd@lists.infradead.org
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Han Xu <han.xu@nxp.com>,
+	kernel@pengutronix.de,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: gpmi: Fix setting busy timeout setting
+Date: Thu, 16 Jun 2022 16:46:47 +0200
+Message-Id: <20220616144647.402987-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220614083138.3455683-1-s.hauer@pengutronix.de>
+References: 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220616163751.2b5962df@xps-13>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'06781a5026350cde699d2d10c9914a25c1524f45'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220616_074350_588266_0C909511 
-X-CRM114-Status: GOOD (  18.93  )
+X-CRM114-CacheID: sfid-20220616_074655_346174_FC0BD124 
+X-CRM114-Status: GOOD (  12.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,67 +70,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 16, 2022 at 04:37:51PM +0200, Miquel Raynal wrote:
-> Hi Ansuel/Christian,
-> =
+On Tue, 2022-06-14 at 08:31:38 UTC, Sascha Hauer wrote:
+> The DEVICE_BUSY_TIMEOUT value is described in the Reference Manual as:
+> 
+> | Timeout waiting for NAND Ready/Busy or ATA IRQ. Used in WAIT_FOR_READY
+> | mode. This value is the number of GPMI_CLK cycles multiplied by 4096.
+> 
+> So instead of multiplying the value in cycles with 4096, we have to
+> divide it by that value. Use DIV_ROUND_UP to make sure we are on the
+> safe side, especially when the calculated value in cycles is smaller
+> than 4096 as typically the case.
+> 
+> This bug likely never triggered because any timeout != 0 usually will
+> do. In my case the busy timeout in cycles was originally calculated as
+> 2408, which multiplied with 4096 is 0x968000. The lower 16 bits were
+> taken for the 16 bit wide register field, so the register value was
+> 0x8000. With 2970bf5a32f0 ("mtd: rawnand: gpmi: fix controller timings
+> setting") however the value in cycles became 2384, which multiplied
+> with 4096 is 0x950000. The lower 16 bit are 0x0 now resulting in an
+> intermediate timeout when reading from NAND.
+> 
+> Fixes: b1206122069aa ("mtd: rawnand: gpmi: use core timings instead of an empirical derivation")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-> ansuelsmth@gmail.com wrote on Thu, 16 Jun 2022 02:18:08 +0200:
-> =
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
-> > On Wed, Jun 15, 2022 at 10:41:32PM +0530, Manivannan Sadhasivam wrote:
-> > > On Wed, Jun 15, 2022 at 02:06:10AM +0200, Ansuel Smith wrote:  =
-
-> > > > Reorder structs in nandc driver to save holes.
-> > > > =
-
-> > > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>  =
-
-> > > =
-
-> > > Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-> > > =
-
-> > > Thanks,
-> > > Mani
-> > >  =
-
-> > =
-
-> > I'm sending v8 with a different Sob so I'm not adding the review tag (in
-> > v8).
-> > In short the new Sob is what I will use onwards, wanted to keep the
-> > Ansuel reference but it was suggested to use Christian Marangi and
-> > nothing more. It's just a name change and we are the same person and
-> > nobody is stealing ownership of the patch.
-> > Sorry for the mess.
-> =
-
-> Mmmh strange, but okay. You are supposed to contribute with your real
-> identity, not under pseudonym anyway.
->
-
-You are right, it's something I'm trying to fix... Fact is that the
-original series was old so I didn't want to change the name.
-
-> Also, you could have kept Mani's R-by in v8 but anyway. Mani, can
-> you resend them?
-> =
-
-
-Didn't want to make changes to the patch with the R-by tag just to make
-sure. Better safe than sorry.
-
-> Thanks,
-> Miqu=E8l
-
--- =
-
-	Ansuel
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
