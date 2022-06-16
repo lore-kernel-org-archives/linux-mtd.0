@@ -4,74 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5BB3C433EF
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 13:35:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B042C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 14:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mFPCsEMxADQNZ0n77Oo8Uq+1rcdSbVTqYbCYtbx+JWQ=; b=hcrAP3eNRbihE9
-	GZIoJO7mkcUk0XoU6l6QfvgpQWOatHMBw6ZwvzPaeacy17Hqb8KsrXG8PH7w62+GKe8vLeiaAe1k+
-	PF9f4j3nSCsWPCdGQ+FywODZ9hamHeFvRCZToq179LV6CdR+WKatP4fjUBzhwhg1oBpbw2LbP7+gB
-	rsvb/qTQIX18lbIjPiRSYxwIOLNebmInmgOBNgWazTt3W6bizqyJiuWtdIlaOdUCGe+aHG8sDvdvk
-	Wzialmg/LfniwzakfUlgmacMDLjoRaNnTDgeCd9DhNaV3EtTCl3UMIlkwRDUnWdXk3cJQ721pAKQz
-	qf/DRvZMXGNEWoykBITg==;
+	List-Owner; bh=Y946r20zlE6a7Kqpox70HMx5lk4KOzpx0M+hrbecKHI=; b=sWwxxCJhMZb+ub
+	MeQ8+z0j2Ny8fSrLMyFkiCujp+p3KtI1cBgT6Fa2mKQqUrpes/IC0rKAehs3v6fiLPjAHD1jgDB3G
+	wYhZYWq87jk0jLSrA1BPqqce8qPOu5XhayT3bKiVyFyL04qgfVmfmdIUYPl8XQ7dJWsgj+Wae1spL
+	5gXtB10vB/noFzZPGx6VmLQxfBZBGaphuyM8cst5BXf8cHwIJsqfrSieaDuZUKeyIzch5ypHl06po
+	pNL6YnYj6mmDlA42ZajbUkWbmKxeCMGo1xL/BuSsGGJWAvpWpJENU6CvwRY+5eCSJ56B9rDyzQ5zY
+	m/eLvmt8N+lxARl8DJkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1peG-002U5y-Mz; Thu, 16 Jun 2022 13:35:00 +0000
-Received: from mail-yb1-xb2e.google.com ([2607:f8b0:4864:20::b2e])
+	id 1o1qf6-002wk6-R0; Thu, 16 Jun 2022 14:39:56 +0000
+Received: from relay10.mail.gandi.net ([217.70.178.230])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1peD-002U4h-Hl
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 13:34:58 +0000
-Received: by mail-yb1-xb2e.google.com with SMTP id t1so2231476ybd.2
-        for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2022 06:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E4oRD4fpeOcIe9J3CDXeLQW7t2RI1ucb4W5YyAxRXTc=;
-        b=i+aNtOa0+P+UbHlJ+UN0VZmv+j16VlraJF77uRCdHFS9DDTc2ta8XYvSfxc1rbXh52
-         C9Hwy4bHsghReeEsAOr5frAUR0h/6yvnL98uuM/BV5p6LF6ip1BxtdTvaIJRzEoCoJy7
-         HA80uJ9DSen54oYDsfLIsIyXI8ieNXW53l/JP7kirV0mPi57XiWfohaX1D1/TOvEvTg/
-         mTMITFgeJolEY5F43ftAl1AFapXqkYT57sFcHPxuWR/BDsZNk/fViXrCbaIOdIWGRapw
-         Ef4Vs2gqSuHK2KLCX2E/zi9ktMQtWwZS2eAYxgKkkO8lJ6Wtt4oRt1hPRH4iksDjaemh
-         +Gbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E4oRD4fpeOcIe9J3CDXeLQW7t2RI1ucb4W5YyAxRXTc=;
-        b=aQICFH5ndhgNP545pczXqMp8EAVEOkHkL7/iVnMGFfbNwmeqNraXtTpzGRSyQMYEQh
-         Xe4LNze1SrfE0FrY8OsYHGPzZgK/AMpJW7zpw1VWiaRMsRKQp8uZKre4T2tYiHJX2VD8
-         R6GLpEzNFAnsT1WirZPvvsM8D3fYoB0ck0A8/2ZND4oojbd8uTyLxrMASPYErv5fHus6
-         2LTaosLkcHihAqs0A3CPuzrgbMAy819EtnRrHzJ3Y+4eEzBX7XhHq0ENIm68knfSmD/+
-         OXRhfEgK9iSrznG8F5Bq0FIajhC4V3g7007okLGoYlBgMMk6CvBwSDhu7tt2Nd8kuYot
-         eXSw==
-X-Gm-Message-State: AJIora/B6SbIHbReYMmxsW5zFmlHBPQDbLtCiD6xi4erK9iW/af86nhr
-	NElEYEJNIIOkQH/eymwj+AHgftE4XhknqTHwTcLwu3DbiXk=
-X-Google-Smtp-Source: AGRyM1tOESzLLHsKWOfNIxiAJfDhdbEqfPn3s2ZPVjXgSzXCZ24IEI92hnqOwbzdBIKkU7b9sRdugwSZhPXLa08JRCI=
-X-Received: by 2002:a25:3417:0:b0:664:aab3:7c44 with SMTP id
- b23-20020a253417000000b00664aab37c44mr5233002yba.533.1655386495611; Thu, 16
- Jun 2022 06:34:55 -0700 (PDT)
+	id 1o1qdG-002uNM-F4
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 14:38:04 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 1BA05240007;
+	Thu, 16 Jun 2022 14:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1655390276;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AffThJ0/PxGNjxerxTAn0ejOKaeR6A8gRvY3EvAGqMk=;
+	b=QXO2bGvu8Trep4mecw9AonLkzv9k4fOr6tBtBkomlPNpXhphHVgHbi7Hhj8hmxPcARoW/n
+	6lp9/a+RL+/O3SN8dJ8P2jd4lBFJwVfmxjK4r9ZkC4HfK0QBke6ZkAJOzVAFb6cR076aQ5
+	nTO/gG//tf3+mdtkQuebFCofIDBicPCR8IOKAeVEIsZB87/ZMLWAblNI+n02dd27VOC6nV
+	uJrDpHaaiBQVvgNwIh648zJcMef6aAPHJVyydWSAtt7SP3o9zQELt4isdUgjS/jbExUnTw
+	L+yLeRPq004Pna/T7Js29Yz2olNWugJQrjYe+ed3U4wC/EkvXw8juumsREhtrA==
+Date: Thu, 16 Jun 2022 16:37:51 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: Manivannan Sadhasivam <mani@kernel.org>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Richard Weinberger
+ <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 1/3] mtd: nand: raw: qcom_nandc: reorder
+ qcom_nand_host struct
+Message-ID: <20220616163751.2b5962df@xps-13>
+In-Reply-To: <62aa76ad.1c69fb81.7e2d3.0c8e@mx.google.com>
+References: <20220615000612.3119-1-ansuelsmth@gmail.com>
+	<20220615000612.3119-2-ansuelsmth@gmail.com>
+	<20220615171132.GA3606@thinkpad>
+	<62aa76ad.1c69fb81.7e2d3.0c8e@mx.google.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20220610203746.2191518-1-robh@kernel.org>
-In-Reply-To: <20220610203746.2191518-1-robh@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 16 Jun 2022 15:34:44 +0200
-Message-ID: <CACRpkdaayHZaeC4X1+d_jC0nCvAtw=w2t2m1txj4OtV_LqcnoA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: mtd/partitions: Convert arm-firmware-suite
- to DT schema
-To: Rob Herring <robh@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220616_063457_639977_97095FC6 
-X-CRM114-Status: UNSURE (   8.19  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220616_073802_670203_E1A9CB62 
+X-CRM114-Status: GOOD (  14.01  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,25 +75,29 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 10, 2022 at 10:38 PM Rob Herring <robh@kernel.org> wrote:
-
-> Convert the arm,arm-firmware-suite partition binding to DT schema
-> format. Simple conversion as there's only a compatible property.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-I see your own robot bit you about the unit name but with
-that fixed:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgQW5zdWVsL0NocmlzdGlhbiwKCmFuc3VlbHNtdGhAZ21haWwuY29tIHdyb3RlIG9uIFRodSwg
+MTYgSnVuIDIwMjIgMDI6MTg6MDggKzAyMDA6Cgo+IE9uIFdlZCwgSnVuIDE1LCAyMDIyIGF0IDEw
+OjQxOjMyUE0gKzA1MzAsIE1hbml2YW5uYW4gU2FkaGFzaXZhbSB3cm90ZToKPiA+IE9uIFdlZCwg
+SnVuIDE1LCAyMDIyIGF0IDAyOjA2OjEwQU0gKzAyMDAsIEFuc3VlbCBTbWl0aCB3cm90ZTogIAo+
+ID4gPiBSZW9yZGVyIHN0cnVjdHMgaW4gbmFuZGMgZHJpdmVyIHRvIHNhdmUgaG9sZXMuCj4gPiA+
+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbnN1ZWwgU21pdGggPGFuc3VlbHNtdGhAZ21haWwuY29t
+PiAgCj4gPiAKPiA+IFJldmlld2VkLWJ5OiBNYW5pdmFubmFuIFNhZGhhc2l2YW0gPG1hbmlAa2Vy
+bmVsLm9yZz4KPiA+IAo+ID4gVGhhbmtzLAo+ID4gTWFuaQo+ID4gIAo+IAo+IEknbSBzZW5kaW5n
+IHY4IHdpdGggYSBkaWZmZXJlbnQgU29iIHNvIEknbSBub3QgYWRkaW5nIHRoZSByZXZpZXcgdGFn
+IChpbgo+IHY4KS4KPiBJbiBzaG9ydCB0aGUgbmV3IFNvYiBpcyB3aGF0IEkgd2lsbCB1c2Ugb253
+YXJkcywgd2FudGVkIHRvIGtlZXAgdGhlCj4gQW5zdWVsIHJlZmVyZW5jZSBidXQgaXQgd2FzIHN1
+Z2dlc3RlZCB0byB1c2UgQ2hyaXN0aWFuIE1hcmFuZ2kgYW5kCj4gbm90aGluZyBtb3JlLiBJdCdz
+IGp1c3QgYSBuYW1lIGNoYW5nZSBhbmQgd2UgYXJlIHRoZSBzYW1lIHBlcnNvbiBhbmQKPiBub2Jv
+ZHkgaXMgc3RlYWxpbmcgb3duZXJzaGlwIG9mIHRoZSBwYXRjaC4KPiBTb3JyeSBmb3IgdGhlIG1l
+c3MuCgpNbW1oIHN0cmFuZ2UsIGJ1dCBva2F5LiBZb3UgYXJlIHN1cHBvc2VkIHRvIGNvbnRyaWJ1
+dGUgd2l0aCB5b3VyIHJlYWwKaWRlbnRpdHksIG5vdCB1bmRlciBwc2V1ZG9ueW0gYW55d2F5LgoK
+QWxzbywgeW91IGNvdWxkIGhhdmUga2VwdCBNYW5pJ3MgUi1ieSBpbiB2OCBidXQgYW55d2F5LiBN
+YW5pLCBjYW4KeW91IHJlc2VuZCB0aGVtPwoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1
+c3Npb24gbWFpbGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vbGludXgtbXRkLwo=
