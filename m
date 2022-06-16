@@ -4,79 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CDDCC43334
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 10:36:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76394C43334
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 12:15:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2sFmWeLujqH2RZjszKhcuhNqY58I1DcIWIJGp0NxIdE=; b=aVYQOvq3UYqebL
-	lw8IxvCwzSeisfTCBZfcQqp3euzQ7DqMozd3kNB+zN3ViVimiOqYge2i67SntfDLhC6LbfkaeHGKz
-	/tf9ZE16/Ipoyw+fdSvlY/Y69RyOpvU7Uyk3G6eILJ9RZuz0+umNHVWz8MiG/9LsyRdvjRoWOnyiQ
-	fw3ySKeUB1xYwBICA1tC5mGx2PNqGcc/VppTwv3re4vtg3D+W1Sn3qZLOk/7+Z6Bm65wWou0l3ldq
-	VTmA+SQLAdsObzzqckPtdpCn4FFWK4L0it1FpkSE8fvFAHxk+WnZVRi/bVB8ZQ0ci4VhSHTT2OxDW
-	YvaRo/akUzrpwT8lgZkw==;
+	List-Owner; bh=WGDm3pRL4RlRr6CyqQfFNibh0hdhAWA4tYj5zeFlDAM=; b=lZ9du8vgGvJzK0
+	GJUXuzDBq7bX3u6dNV6pCpwF9raEdF7/6q+TSnF+tlwj3Fdt9K46JMkYSYRGH89l6wPKiGYlTFKFu
+	M6Lvo9FSe2ZanVALfOUFV9XzfPv2R0edAzWfPgM/mTPUE9R/GHc04yBGnCjCBiPrud7hC/KhyMRuW
+	263hAuduQgY7gFdfJkra0K+QqEDW0xGlCrOLwK/Qt6ADSUgH7vzNfhRYCl/yCb2R0MdMIH5EeJcml
+	5a1oTbYkJsfVCZ0qUevQrrBYl2bGNXu+y+wmVq+MwCnMf2oH3eEFhqoz/cSmApNBcmKg9r7yLk4Lh
+	SXVImu762IR7cyV3/huA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1mqp-001ti7-TZ; Thu, 16 Jun 2022 10:35:47 +0000
-Received: from mga12.intel.com ([192.55.52.136])
+	id 1o1oOx-002Gdh-CT; Thu, 16 Jun 2022 12:15:07 +0000
+Received: from alln-iport-7.cisco.com ([173.37.142.94])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1mql-001tgt-Ju
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 10:35:45 +0000
+	id 1o1oOi-002GV2-Pd
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 12:14:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655375743; x=1686911743;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=bfn7Kr/6Mg81QIsDd2mRVCMs364rPZOp5AMz87j7Fog=;
-  b=lMzypovoHSMG5W3a5fV+LsHyxWdTBrCwGtH7zgiHUJZf7RubDZJO/Djx
-   mF6EIoUfTcb7x+xaUv2xXOeKO8/dEn5+Z1VDXVkbHTZtORpENgVTLZk2f
-   QrHdq+EaRLHqUUyFDWDnLX6OxkAH14wbHNxe5gNW78N80+oIMmooNls1K
-   mSrmN9xaKGbYNPeuqZv2xcUnT1rHveeYH1MG5pxhC0P3v95/OjPPJU8ia
-   kbzHMany296XEdXJANn8BsnPop0nhqkfOmE2glruMqxITiOFAXTx8KW0N
-   p9wzet0qyTTI/UQJKZTJSYwocP0GYFduCd4z+z2i7QJvxOsYFZ8DFccxq
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="259073413"
-X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
-   d="scan'208";a="259073413"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 03:35:37 -0700
-X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
-   d="scan'208";a="727840496"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.162])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 03:35:31 -0700
-Received: by lahna (sSMTP sendmail emulation); Thu, 16 Jun 2022 13:35:28 +0300
-Date: Thu, 16 Jun 2022 13:35:28 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: "Oleksandr Ocheretnyi -X (oocheret - GLOBALLOGIC INC at Cisco)" <oocheret@cisco.com>
-Cc: "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"p.yadav@ti.com" <p.yadav@ti.com>,
-	"michael@walle.cc" <michael@walle.cc>,
-	"richard@nod.at" <richard@nod.at>,
-	"vigneshr@ti.com" <vigneshr@ti.com>,
-	"broonie@kernel.org" <broonie@kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-	"mauro.lima@eclypsium.com" <mauro.lima@eclypsium.com>,
-	"lee.jones@linaro.org" <lee.jones@linaro.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: handle unsupported FSR opcodes properly
-Message-ID: <YqsHcL5NPcZ4De77@lahna>
-References: <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
- <20220615191153.3017939-1-oocheret@cisco.com>
- <YqrAGKLUazeNH1XK@lahna>
- <BYAPR11MB2757B1146457E3860389F4D1CDAC9@BYAPR11MB2757.namprd11.prod.outlook.com>
+  d=cisco.com; i=@cisco.com; l=2777; q=dns/txt; s=iport;
+  t=1655381692; x=1656591292;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=utAeUQ7pAkd42bz7uEkmhVg3HUntGqQ92mWa3gY3aqc=;
+  b=YtDcKLSZCB9QnWRttus1/vxcdj+JcTGjkzKta9EHbCTW86LvVubKcOUV
+   VYXNjkAmD/4lM+Fegn6D7EA4Mv/7TQbQS9o9AqozRUuaF6tMThjHrhdfF
+   L07KdUgni/Z2NLPYP8OAGgPDgjCTxIUwcCakOAhVa+4FOnfInPebyBqwQ
+   E=;
+X-IronPort-AV: E=Sophos;i="5.91,305,1647302400"; 
+   d="scan'208";a="871309368"
+Received: from alln-core-4.cisco.com ([173.36.13.137])
+  by alln-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 16 Jun 2022 12:14:47 +0000
+Received: from sjc-ads-3421.cisco.com (sjc-ads-3421.cisco.com [171.68.249.119])
+	by alln-core-4.cisco.com (8.15.2/8.15.2) with ESMTP id 25GCEk4r029590;
+	Thu, 16 Jun 2022 12:14:46 GMT
+From: Oleksandr Ocheretnyi <oocheret@cisco.com>
+To: mika.westerberg@linux.intel.com, tudor.ambarus@microchip.com,
+        miquel.raynal@bootlin.com, p.yadav@ti.com, michael@walle.cc,
+        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+Cc: mauro.lima@eclypsium.com, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org, oocheret@cisco.com,
+        xe-linux-external@cisco.com
+Subject: [PATCH v2] mtd: spi-nor: handle unsupported FSR opcodes properly
+Date: Thu, 16 Jun 2022 05:14:45 -0700
+Message-Id: <20220616121446.293408-1-oocheret@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
+In-Reply-To: <YqsHcL5NPcZ4De77@lahna>
+References: <YqsHcL5NPcZ4De77@lahna>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BYAPR11MB2757B1146457E3860389F4D1CDAC9@BYAPR11MB2757.namprd11.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 171.68.249.119, sjc-ads-3421.cisco.com
+X-Outbound-Node: alln-core-4.cisco.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220616_033543_713632_4DEDE2B8 
-X-CRM114-Status: GOOD (  28.01  )
+X-CRM114-CacheID: sfid-20220616_051452_951051_4347A560 
+X-CRM114-Status: GOOD (  15.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,60 +74,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGksCgpPbiBUaHUsIEp1biAxNiwgMjAyMiBhdCAwNzo0MDoxOEFNICswMDAwLCBPbGVrc2FuZHIg
-T2NoZXJldG55aSAtWCAob29jaGVyZXQgLSBHTE9CQUxMT0dJQyBJTkMgYXQgQ2lzY28pIHdyb3Rl
-Ogo+ICAgIEhpIE1pa2EsCj4gCj4gICAgICA+IE9yaWdpbmFsbHkgY29tbWl0IDA5NGQzYjkgKCJt
-dGQ6IHNwaS1ub3I6IEFkZCBVU0VfRlNSIGZsYWcgZm9yCj4gICAgICBuMjVxKgo+ICAgICAgPiBl
-bnRyaWVzIikgYW5kIGZvbGxvd2luZyBvbmUgOGY5MzgyNiAoIm10ZDogc3BpLW5vcjogbWljcm9u
-LXN0Ogo+ICAgICAgY29udmVydAo+ICAgICAgPiBVU0VfRlNSIHRvIGEgbWFudWZhY3R1cmVyIGZs
-YWciKSBlbmFibGVkIFNQSU5PUl9PUF9SREZTUiBvcGNvZGUKPiAgICAgIGhhbmRsaW5nCj4gICAg
-ICA+IGFiaWxpdHksIGhvd2V2ZXIgc29tZSBjb250cm9sbGVyIGRyaXZlcnMgc3RpbGwgY2Fubm90
-IGhhbmRsZSBpdAo+ICAgICAgcHJvcGVybHkKPiAgICAgID4gaW4gdGhlIG1pY3Jvbl9zdF9ub3Jf
-cmVhZHkoKSBjYWxsIHdoYXQgYnJlYWtzIHNvbWUgbXRkIGNhbGxiYWNrcwo+ICAgICAgd2l0aAo+
-ICAgICAgPiBuZXh0IGVycm9yIGxvZ3M6Cj4gICAgICA+Cj4gICAgICA+IG10ZGJsb2NrOiBlcmFz
-ZSBvZiByZWdpb24gW2FkZHJlc3MxLCBzaXplMV0gb24gIkJJT1MiIGZhaWxlZAo+ICAgICAgPiBt
-dGRibG9jazogZXJhc2Ugb2YgcmVnaW9uIFthZGRyZXNzMiwgc2l6ZTJdIG9uICJCSU9TIiBmYWls
-ZWQKPiAgICAgID4KPiAgICAgID4gVGhlIEludGVsIFNQSSBjb250cm9sbGVyIGRvZXMgbm90IHN1
-cHBvcnQgbG93IGxldmVsIG9wZXJhdGlvbnMsCj4gICAgICBsaWtlCj4gICAgICA+IHJlYWRpbmcg
-dGhlIGZsYWcgc3RhdHVzIHJlZ2lzdGVyIChGU1IpLiBJdCBvbmx5IGV4cG9zZXMgYSBzZXQgb2YK
-PiAgICAgIGhpZ2gKPiAgICAgID4gbGV2ZWwgb3BlcmF0aW9ucyBmb3Igc29mdHdhcmUgdG8gdXNl
-LiBGb3IgdGhpcyByZWFzb24gY2hlY2sgdGhlCj4gICAgICByZXR1cm4KPiAgICAgID4gdmFsdWUg
-b2YgbWljcm9uX3N0X25vcl9yZWFkX2ZzcigpIGFuZCBpZiB0aGUgb3BlcmF0aW9uIHdhcyBub3QK
-PiAgICAgID4gc3VwcG9ydGVkLCB1c2UgdGhlIHN0YXR1cyByZWdpc3RlciB2YWx1ZSBvbmx5LiBU
-aGlzIGFsbG93cyB0aGUKPiAgICAgIGNoaXAgdG8KPiAgICAgID4gd29yayBldmVuIHdoZW4gYXR0
-YWNoZWQgdG8gSW50ZWwgU1BJIGNvbnRyb2xsZXIgKHRoZXJlIGFyZSBzdWNoCj4gICAgICBzeXN0
-ZW1zCj4gICAgICA+IG91dCB0aGVyZSkuCj4gICAgICA+Cj4gCj4gICAgPiBTaWduZWQtb2ZmLWJ5
-OiBNaWthIFdlc3RlcmJlcmcgPG1pa2Eud2VzdGVyYmVyZ0BsaW51eC5pbnRlbC5jb20+Cj4gCj4g
-ICAgICBJIGRvbid0IHRoaW5rIEkgc2lnbmVkIHRoaXMgb2ZmLgo+IAo+ICAgIEkgdGhvdWdodCBp
-ZiBJIHRha2UgeW91ciBjYXNlICgtRU9QTk9UU1VQUCkgYW5kIHVwZGF0ZSBpdCB3aXRoCj4gICAg
-KC1FTk9UU1VQUCkgSSBuZWVkIHRvIGtlZXAKPiAKPiAgICB5b3VyIFNpZ2hlZC1vZmYtYnk6IG5v
-dGUgYXMgd2VsbC4KClRoYXQncyBub3QgaG93IGl0IHR5cGljYWxseSB3b3Jrcy4gUGVvcGxlIHdp
-bGwgZ2l2ZSB0aGVpciB0YWcgZXhwbGljaXRseQphbmQgdGhlbiB5b3UgY2FuIGFkZCB0aG9zZS4K
-Cj4gICAgPiBTaWduZWQtb2ZmLWJ5OiBPbGVrc2FuZHIgT2NoZXJldG55aSA8b29jaGVyZXRAY2lz
-Y28uY29tPgo+ICAgID4gTGluazogWzFdaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC9ZbVpV
-Q0lFJTJGTkQ4MkJsTmhAbGFobmEvCj4gICAgPiAtLS0KPiAKPiAgICBXaGF0IGNoYW5nZWQgYmV0
-d2VlbiB2MSBhbmQgdjI/Cj4gCj4gICAg4oCLSSB1cGRhdGVkIHYxIHBhdGNoIHRha2luZyBpbnRv
-IGFjY291bnQgeW91ciBjaGFuZ2VzCj4gICAgWzJdaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGlu
-dXgtbXRkLzIwMjIwNTA2MTA1MTU4LjQzNjEzLTEtbWlrYS53ZXN0ZXIKPiAgICBiZXJnQGxpbnV4
-LmludGVsLmNvbSB0byBjaGVjayAtRU9QTk9UU1VQUCBjYXNlIGFzIHdlbGwuIEFmdGVyIEkKPiAg
-ICBjb21iaW5lZCBib3RoIHBhdGNoZXMgSSd2ZSBnb3QgdjIuCgpQbGVhc2UgcHV0IHRoYXQgaW5m
-b3JtYXRpb24gYWZ0ZXIgdGhlICctLS0nIGluIHRoZSBwYXRjaC4KCj4gICAgQW5kIGRpZCB5b3Ug
-dGFrZSBpbnRvIGNvbnNpZGVyYXRpb24gdGhlIGNvbW1lbnRzIEkgZ2F2ZT8KPiAKPiAgICDigItJ
-ZiB5b3Ugc2F5IGFib3V0IGtlZXBpbmcgLUVOT1RTVVBQIGFzIGludGVsIGRyaXZlciBlcnJvcmNv
-ZGUgLSBJIHRvb2sKPiAgICBpdCBob3dldmVyIGRvdWJ0ZWQgdG8gdXNlIGl0IGhlcmUgYmVjYXVz
-ZSBvZiBub3RlIGFib3V0IG5mcyBhYm92ZS4KPiAgICBUaGVyZSBpcyBubyBwcm9ibGVtIHRvIHJl
-c3RvcmUgcHJldmlvdXMgdmFyaWFudCB3aXRoIC1FTk9UU1VQUCBpbiBpbnRlbAo+ICAgIGRyaXZl
-ciBlcnJvcmNvZGUuCgpXZWxsIHdlIHdvdWxkIG5lZWQgdG8gZ2V0IHNvbWUgZmVlZGJhY2sgZnJv
-bSBTUEktTk9SIG1haW50YWluZXJzLiBJCndvdWxkIHBlcnNvbmFsbHkga2VlcCB1c2luZyBFTk9U
-U1VQUCB0byBiZSBjb25zaXN0ZW50IHdpdGggdGhlIHJlc3Qgb2YKdGhlIGNvZGUgaW4gU1BJLU5P
-UiBjb2RlIChvciBjb252ZXJ0IGl0IHRvIHVzZSBFT1BOT1RTVVBQIGV2ZXJ5d2hlcmUpCmJ1dCBp
-dCBpcyBub3QgdXAgdG8gbWUgOy0pCgpGb3IgSW50ZWwgZHJpdmVyIGl0IGlzIGZpbmUgdG8gdXNl
-IGVpdGhlciAod2hldGV2ZXIgdGhlIGRlY2lzaW9uIG9mClNQSS1OT1IgbWFpbnRhaW5lcnMnIGlz
-KS4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+Originally commit 094d3b9 ("mtd: spi-nor: Add USE_FSR flag for n25q*
+entries") and following one 8f93826 ("mtd: spi-nor: micron-st: convert
+USE_FSR to a manufacturer flag") enabled SPINOR_OP_RDFSR opcode handling
+ability, however some controller drivers still cannot handle it properly
+in the micron_st_nor_ready() call what breaks some mtd callbacks with
+next error logs:
+
+mtdblock: erase of region [address1, size1] on "BIOS" failed
+mtdblock: erase of region [address2, size2] on "BIOS" failed
+
+The Intel SPI controller does not support low level operations, like
+reading the flag status register (FSR). It only exposes a set of high
+level operations for software to use. For this reason check the return
+value of micron_st_nor_read_fsr() and if the operation was not
+supported, use the status register value only. This allows the chip to
+work even when attached to Intel SPI controller (there are such systems
+out there).
+
+Signed-off-by: Oleksandr Ocheretnyi <oocheret@cisco.com>
+Link: https://lore.kernel.org/lkml/YmZUCIE%2FND82BlNh@lahna/
+---
+ PATCH v2 updates PATCH v1 taking into account changes from
+ https://lore.kernel.org/linux-mtd/20220506105158.43613-1-mika.westerberg@linux.intel.com
+ to check -EOPNOTSUPP value from micron_st_nor_read_fsr() as well.
+
+ drivers/mtd/spi-nor/micron-st.c | 12 ++++++++++--
+ drivers/spi/spi-intel.c         |  3 ++-
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index a96f74e0f568..fd52e8feea44 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -399,8 +399,16 @@ static int micron_st_nor_ready(struct spi_nor *nor)
+ 		return sr_ready;
+ 
+ 	ret = micron_st_nor_read_fsr(nor, nor->bouncebuf);
+-	if (ret)
+-		return ret;
++	if (ret < 0) {
++		/*
++		 * Some controllers, such as Intel SPI, do not support low
++		 * level operations such as reading the flag status
++		 * register. They only expose small amount of high level
++		 * operations to the software. If this is the case we use
++		 * only the status register value.
++		 */
++		return (ret == -ENOTSUPP || ret == -EOPNOTSUPP) ? sr_ready : ret;
++	}
+ 
+ 	if (nor->bouncebuf[0] & (FSR_E_ERR | FSR_P_ERR)) {
+ 		if (nor->bouncebuf[0] & FSR_E_ERR)
+diff --git a/drivers/spi/spi-intel.c b/drivers/spi/spi-intel.c
+index 50f42983b950..f0313a718d1b 100644
+--- a/drivers/spi/spi-intel.c
++++ b/drivers/spi/spi-intel.c
+@@ -352,7 +352,8 @@ static int intel_spi_hw_cycle(struct intel_spi *ispi, u8 opcode, size_t len)
+ 		val |= HSFSTS_CTL_FCYCLE_RDSR;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		dev_dbg(ispi->dev, "%#x not supported\n", opcode);
++		return -ENOTSUPP;
+ 	}
+ 
+ 	if (len > INTEL_SPI_FIFO_SZ)
+-- 
+2.27.0
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
