@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76610C43334
-	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 00:19:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8949DC43334
+	for <linux-mtd@archiver.kernel.org>; Thu, 16 Jun 2022 05:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=G/C/D9p1kUd67bCSxmFhmwOy+3bgus6N0bqPVsQ1SbU=; b=cTtL52mQsnBYfo
-	JzNEvAzDRksQQQFVbKISxrupCWVyhXYT7LeWO9tnwhIehTO5E96/1LN6yIvjgjT4BTXxUDBptJzb5
-	eFeOZEwjPpFtkA9Qm8YBnRycgWqJrBdzfUrbKQgB6kTcmkh52KU9Q5pob78UBnY33//qsYDlByyDu
-	kfgB/chw3dg3LQyWFb1EV2sFOvfFtpY7ohRaAaR9r+IFxSPI1dGM3OVJbgUb/5bfnfv7UCImqYspP
-	6eCiEQbenM218KWmQpuOtHpgQGMcSBNex3+c8iExA6/3Rw0BylZnC3mKthqQ6H2MJD6W5URkqQ1M/
-	S2obsDSL7cjY2oeTdtgA==;
+	List-Owner; bh=gxVHRttlKd7JT0/rp2NmqIIjFld7iUxUO87l6U+nLFk=; b=1Wm13NgX63e2i3
+	G4o9VxXda5Ee5+PgVP3avC63Q9f91Jkl0zaZwpwqbVHTQ/nqyCt+90psK2imrOAOWt7Pl0IbQxdEb
+	dJ4No5wJjQjZRV5kl5zV/dk1BZ380zcvsnBuswX0O7H2axna3Cy3OaTV9g7HhyE0p7+eC34J8eO+O
+	8jSaHjn20Fq5OMLXcNmymfY6h20dLfLXHNxkcQIVfuHZXfPnWe5K8TNIo6MsfREIptEFZZ6oroXR3
+	tl3g//u0gSzT0VziDvW0yj/NgoYfnrtDimdA8I5KhIfoSFeX12N+S1eBybmzTu4t3+HytSLPBiOKr
+	LS8Ue71NZ+6iBdTQ9MTg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1dDz-00H6WV-7j; Thu, 16 Jun 2022 00:19:03 +0000
-Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
+	id 1o1i4e-000WmL-CA; Thu, 16 Jun 2022 05:29:44 +0000
+Received: from mga03.intel.com ([134.134.136.65])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o1dDn-00H6NA-6P
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 00:18:52 +0000
-Received: by mail-ej1-x635.google.com with SMTP id n10so26258027ejk.5
-        for <linux-mtd@lists.infradead.org>; Wed, 15 Jun 2022 17:18:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uWi4nF3LCftLqINeiaIVVz1nfL07lMarTNt9vrQsNMw=;
-        b=PQ8nC5MVuAQT7r6QqDlFmyFHetwIZW8peR92ySiznfAD+szpx2xul39fjQAQ2Ed1m9
-         +vObU6FawxJDctyqr1bXpTNoFTG3avWjYpijMddHnWck1MpAkBxSCnXsKWeEytgw4i1H
-         E2WLbzluS/warij6VGMOWWl4T3JIhRoZUxNzYcpzZXB5V0JRy8Ui22PtXNG1VL8CR1bY
-         ZTDNbdM1BzsNAYXzkQXS6HdMEAwx99VXLRsc9lQVatqAQpWK9k8+sS1t6n4fb+Ztydmc
-         edVVwVDtjK8w8sJ90P7BesMfDBI9tOEEPhGz0bS+hMtzdNEcZ3ZZQFy4N5SK7kIMs5sI
-         jIig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uWi4nF3LCftLqINeiaIVVz1nfL07lMarTNt9vrQsNMw=;
-        b=Wv4Bf9oL8tYKSFjw0pf3I1HJ6UJCz/iq0MFGh+xPigXF/t8tR+pAFRIYvoOSrW/e5c
-         7xxKQhWTewM4vocTS4kKXXts7RhXwKvkPvpVL47nxHKErKNaf6fjztDKtunCtQNTmhNQ
-         Ep/fsy3x4ImXmrRcnpFca/VuuC4yX9F90SXXCkM1FAq7dH9lORWZlc2zsJ5+YHOqdbCC
-         B9rXppKWUyu75MMgUzFrEPtk7lQk/huByOKYt65w8IRcPkP4h2r0a2jB1QlNRoZRUBkY
-         C5L1OwapRtsRtCY11rRcRpdcU7ulcFtzHYkUFiu+zmQVecrlds4BZ220ijLQSSpb3Yi1
-         BVcQ==
-X-Gm-Message-State: AJIora9UvhudcdSoJGc/eDIAYA6nggeKqqVISn0hB6DGXdl3cp7gx+5v
-	NboKdDqUVvRqdY5ZeeH7li4=
-X-Google-Smtp-Source: AGRyM1syMaFxhp8KJsk5hEzbDcVwz8aS0zK3BKaXWDAcVtdl18qMKw9nEQga6PpeIIGwYvmzKUqgOQ==
-X-Received: by 2002:a17:907:968b:b0:70f:30b7:9324 with SMTP id hd11-20020a170907968b00b0070f30b79324mr2189545ejc.19.1655338725705;
-        Wed, 15 Jun 2022 17:18:45 -0700 (PDT)
-Received: from localhost.localdomain (93-42-70-190.ip85.fastwebnet.it. [93.42.70.190])
-        by smtp.googlemail.com with ESMTPSA id y11-20020a056402270b00b0042e1cbc4471sm542546edd.3.2022.06.15.17.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jun 2022 17:18:45 -0700 (PDT)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <bjorn.andersson@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH v8 3/3] dt-bindings: mtd: qcom_nandc: document qcom,boot-partitions binding
-Date: Thu, 16 Jun 2022 02:18:35 +0200
-Message-Id: <20220616001835.24393-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220616001835.24393-1-ansuelsmth@gmail.com>
-References: <20220616001835.24393-1-ansuelsmth@gmail.com>
+	id 1o1i4a-000WlE-Sz
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2022 05:29:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655357380; x=1686893380;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yxLlY5sY3j1BaSU2opYF6e/oGGZzthY7yGLwx6OFor0=;
+  b=kM/2+7I5AGJSiXlGoHN1zpnqlgBrelEXfQFfSTvLHeAy7jLhti0G3VV5
+   SC13v8vZSdIk2VuYsbpqTE76lrDgmqSbsczzLBIcmXef3N0LGp0qM+OzG
+   8NLyAVGrFaxvtAoRA+m+cNWb9bAu3D743sQB/WDLdqNHqsk/CID795++J
+   P/SbmQgmtHZdFjj8IrZZuvRZfT/PC7/sVbTJ1WEWH4XS1Xah6NQRVpzK7
+   Zaqsshzj728z5HdkHZ/Mm7N2DLh6CmB9a0cob7OYm0ak8STs8t0+HkPSX
+   L0TgwsJ9WW+Y7T0RcyNaI1U5zKsmWq/Ka1tofJh0kcqt5KU/2W9YkhcSo
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="280203294"
+X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
+   d="scan'208";a="280203294"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2022 22:29:38 -0700
+X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
+   d="scan'208";a="687664970"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.162])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2022 22:29:34 -0700
+Received: by lahna (sSMTP sendmail emulation); Thu, 16 Jun 2022 08:29:31 +0300
+Date: Thu, 16 Jun 2022 08:29:31 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Michael Walle <michael@walle.cc>
+Cc: "Oleksandr Ocheretnyi -X (oocheret - GLOBALLOGIC INC at Cisco)" <oocheret@cisco.com>,
+	"tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+	"p.yadav@ti.com" <p.yadav@ti.com>,
+	"richard@nod.at" <richard@nod.at>,
+	"vigneshr@ti.com" <vigneshr@ti.com>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"mauro.lima@eclypsium.com" <mauro.lima@eclypsium.com>,
+	"lee.jones@linaro.org" <lee.jones@linaro.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
+Subject: Re: [PATCH] mtd: spi-nor: handle unsupported FSR opcodes properly
+Message-ID: <Yqq/u9SAjE0lhxap@lahna>
+References: <YmZUCIE/ND82BlNh@lahna>
+ <20220610191548.3626218-1-oocheret@cisco.com>
+ <YqbWt9f3of+7Z76e@lahna>
+ <BYAPR11MB27570F2863F7BCDFE629B3DFCDAA9@BYAPR11MB2757.namprd11.prod.outlook.com>
+ <YqmrIsOEsFoKTwEK@lahna>
+ <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <6A852B9E-D84C-4F80-9C17-62BFBB98CC8A@walle.cc>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220615_171851_291571_20522ED1 
-X-CRM114-Status: GOOD (  12.68  )
+X-CRM114-CacheID: sfid-20220615_222941_064032_9DC381DF 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,66 +95,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Document new qcom,boot-partition binding used to apply special
-read/write layout to boot partitions.
+On Wed, Jun 15, 2022 at 08:10:13PM +0200, Michael Walle wrote:
+> Am 15. Juni 2022 11:49:22 OEZ schrieb Mika Westerberg <mika.westerberg@linux.intel.com>:
+> >Hi,
+> >
+> >On Tue, Jun 14, 2022 at 05:56:54PM +0000, Oleksandr Ocheretnyi -X (oocheret - GLOBALLOGIC INC at Cisco) wrote:
+> >>    Hello Mika,
+> >> 
+> >>    in my case (I work with memory chip n25q128a13 for recent kernels) I'm
+> >>    getting return value -ENOTSUPP from spi_mem_exec_op() call in the
+> >>    micron_st_nor_read_fsr() method
+> >>    [[1]https://elixir.bootlin.com/linux/v5.19-rc2/source/drivers/spi/spi-m
+> >>    em.c#L326]. So I decided to provide the same errorcode to
+> >>    intel_spi_hw_cycle() method because older kernel versions throw the
+> >>    error there. It is fine to use -EOPNOTSUPP return value instead.
+> >> 
+> >>    I suspect we need to cover both cases to check -ENOTSUPP as well as
+> >>    -EOPNOTSUPP to let the driver work properly.
+> >> 
+> >>    if (ret == -ENOTSUPP || ret == -EOPNOTSUPP)
+> >
+> >I think we should follow the same in the Intel driver and return
+> >-ENOTSUPP too.
+> 
+> AFAIK ENOTSUPP is for nfs and shouldn't be used.
 
-QCOM apply a special layout where spare data is not protected
-by ECC for some special pages (used for boot partition). Add
-Documentation on how to declare these special pages.
-
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- .../devicetree/bindings/mtd/qcom,nandc.yaml   | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-index 84ad7ff30121..482a2c068740 100644
---- a/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-+++ b/Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
-@@ -102,6 +102,31 @@ allOf:
-             - const: rx
-             - const: cmd
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,ipq806x-nand
-+
-+    then:
-+      properties:
-+        qcom,boot-partitions:
-+          $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+          items:
-+            items:
-+              - description: offset
-+              - description: size
-+          description:
-+            Boot partition use a different layout where the 4 bytes of spare
-+            data are not protected by ECC. Use this to declare these special
-+            partitions by defining first the offset and then the size.
-+
-+            It's in the form of <offset1 size1 offset2 size2 offset3 ...>
-+            and should be declared in ascending order.
-+
-+            Refer to the ipq8064 example on how to use this special binding.
-+
- required:
-   - compatible
-   - reg
-@@ -135,6 +160,8 @@ examples:
-         nand-ecc-strength = <4>;
-         nand-bus-width = <8>;
- 
-+        qcom,boot-partitions = <0x0 0x58a0000>;
-+
-         partitions {
-           compatible = "fixed-partitions";
-           #address-cells = <1>;
--- 
-2.36.1
-
+Yes, but that's what the SPI-NOR core is using so I think we want to be
+consistent with it.
 
 ______________________________________________________
 Linux MTD discussion mailing list
