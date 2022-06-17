@@ -4,62 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0233DCCA47F
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jun 2022 06:31:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63289C433EF
+	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jun 2022 06:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0yxyi+8ek16O1+qGgN1l3rEMF1Lp250q7dFU9hMIpL8=; b=NYlj1lfsBo4qAa
-	+8wxlmiqSPnkyheYXw/k7YqiZ+z3z9qQa665ZlkJzrxHXjwL7n/f8sw3zUOcV38pGnf9oxeuyYsee
-	EGL1HuxmsDaCCSqPXKGkZCsSK2fUpM2Zkav7tG4SbYDyxP7dhr7XDWCNWH62dYDvc/sW7czWBDaOC
-	fV76SWUlpzLKO5Yziw3aH/Glilbq49q3YwkMnMWFfiZuvO7bg+u3PMn7rGWPATZ6KT8wilWeyqDLu
-	jNQ3+4DtWh7jlj2GguW02oHNA1v7Y7sX1eEL8PfKpd2QmxEPWluDyftGHoC27Y/38D9ZWdIZSsHY4
-	n4v+bG7y+XeelKpNLYGA==;
+	List-Owner; bh=N7NUQZdbN057WPeM2wNrGeUE8cUjOndyUskA01KtYFw=; b=wfMtVAuORzg3ws
+	DNsPgBfBd9nOgUOCrJijpK2Ndm5STBJhgqF9Mek9VEmSlJuiOggEvixxJymcbuAznvciFlzSe9/tl
+	2k05MJkro74hzOv33FVNnFUD2lNZz23q/ss8jY+EOzQQJ/u8qSuT4CsIVRs2iGfI2aNrfvPyraoLq
+	Kx22DI/9petUum9wqbqFS1avdFNCfwoM9C3qLtxwSKMinTvlV/cvnY12fJb2WOjKs0rzT+GsTe+pZ
+	vNYOyObOdyWM+5Ooqb2YkHOAH/pOl0hxWpEdQUHVB3zWDFxCktGgHPyMSQiRCFj47OoPc5tSTv9ej
+	IgaRwDz2TiIyWfikFjlg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o25Vw-005jRv-OF; Fri, 17 Jun 2022 06:31:28 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1o25W7-005jUC-0Q; Fri, 17 Jun 2022 06:31:39 +0000
+Received: from relay6-d.mail.gandi.net ([217.70.183.198])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o25Vt-005jQw-Dk
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2022 06:31:27 +0000
+	id 1o25W3-005jSn-O7
+	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2022 06:31:37 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id BEE361BF211;
-	Fri, 17 Jun 2022 06:31:20 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 71BB5C0009;
+	Fri, 17 Jun 2022 06:31:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1655447481;
+	t=1655447492;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T1tVZgBV3BS0ceFgD+YF9Gee/DGk44tsKYH0k1uppnk=;
-	b=VUVcoyT9pSozjb9BYHPWZXfBbhqE4y/2qKtQT2eOsDE1bbWJo4N63U5R2m4/liRqRbW/yJ
-	L6AsmeF0B7MbfWdx0EQdt94l3zsvOpQr8jy4F/FjUtw0iGiwIYZ8leqVvOEMpoPnBbQgmH
-	5XFvFp54mMtwUd6wybwCWz4ch5ynoeukFAl4kAsc+bWnbih0yw0HJ7V3d3WokJh2yE75IM
-	lch1zustOgRMtk3s2GI8d5N7JIRK3w3mzS84EnexBntQ1jAVlu7HoaatbY6xAqSdF/fDrS
-	+JHXN6DhpRnYGeGfigQCOO6OI9TvgoGLT1xgwGd648/hocOnuAAvLGDwh+l1hQ==
+	bh=f8tXznjMvYmeHTU3FtjUVkstIS/LPI1XXnIM1Arfyjk=;
+	b=YyzmBzQ/mA9+hQrDOGXRaXbKPmUqe93b5UpijnHVL+c7TTJLW4oUt6s0cbYFx+E5qboLqa
+	YRZcoNWkMMoGuL/qW0vKk1U+O+XORvj6u1pezHBwYpLYF1EdWsiIg1nSgDnbZMwbxLJ/B6
+	jSQTRl2eAJGAQVF0JsqN+4Wh7gWV2onmvqAYYCKsgaZsVY6E9wF5DJKSIGNitNOwzWIE44
+	uhYssYfkgE9KXn7o0z679oXR0RyDo3ylNBlWwCPXyMVabS/EXZM85KJMRfQebSVsxKbXL1
+	xIv6JeMJThE14HDIhgX2KwHfcysW9Us1RcGw32vmHgC6bpmh4M3mJLApUZUFvg==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Yang Yingliang <yangyingliang@huawei.com>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	csharper2005@gmail.com,
-	drvlabo@gmail.com
-Subject: Re: [PATCH -next] mtd: parsers: scpart: add missing of_node_put() in scpart_parse()
-Date: Fri, 17 Jun 2022 08:31:19 +0200
-Message-Id: <20220617063119.446659-1-miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <bjorn.andersson@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 2/3] mtd: nand: raw: qcom_nandc: add support for unprotected spare data pages
+Date: Fri, 17 Jun 2022 08:31:29 +0200
+Message-Id: <20220617063129.446718-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220617014008.851583-1-yangyingliang@huawei.com>
+In-Reply-To: <20220616001835.24393-3-ansuelsmth@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'278811d5a7b2af4e737c88ab3137d3ccc0732ac1'
+X-linux-mtd-patch-commit: b'862bdedd7f4b8aebf00fdb422062e64896e97809'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220616_233125_648158_965903D1 
-X-CRM114-Status: UNSURE (   5.15  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220616_233135_956901_BF5DAC1C 
+X-CRM114-Status: GOOD (  17.36  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,15 +82,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2022-06-17 at 01:40:08 UTC, Yang Yingliang wrote:
-> of_get_child_by_name() will increase the refcount of 'ofpart_node',
-> so add of_node_put() after using it to avoid refcount leak.
+On Thu, 2022-06-16 at 00:18:34 UTC, Christian Marangi wrote:
+> IPQ8064 nand have special pages where a different layout scheme is used.
+> These special page are used by boot partition and on reading them
+> lots of warning are reported about wrong ECC data and if written to
+> results in broken data and not bootable device.
 > 
-> Fixes: 9b78ef0c7997 ("mtd: parsers: add support for Sercomm partitions")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> The layout scheme used by these special page consist in using 512 bytes
+> as the codeword size (even for the last codeword) while writing to CFG0
+> register. This forces the NAND controller to unprotect the 4 bytes of
+> spare data.
+> 
+> Since the kernel is unaware of this different layout for these special
+> page, it does try to protect the spare data too during read/write and
+> warn about CRC errors.
+> 
+> Add support for this by permitting the user to declare these special
+> pages in dts by declaring offset and size of the partition. The driver
+> internally will convert these value to nand pages.
+> 
+> On user read/write the page is checked and if it's a boot page the
+> correct layout is used.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
 Miquel
 
