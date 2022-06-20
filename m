@@ -4,90 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EA0FC433EF
-	for <linux-mtd@archiver.kernel.org>; Fri, 17 Jun 2022 12:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1085C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 20 Jun 2022 05:06:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=FpqGes1qBKrPHDl8oisElABcZQBy2Gu9FvDe2p1pAfk=; b=4skIo7bIrfrWKHozAI2VEcDtyH
-	z6fqVem/mCBn0QNbZfjknZdotBlZThfp+/U8xR3djS8X1t+Mlgt28ACx2sAdwKFaErcH9J6xRFdf8
-	i65FG9U3ChcKIy7udTfskG8K308AQG5fSRXjbT09NiCvDnWbznnC3MX7b1eUJnaNQwE4mdCdQ3KpH
-	9YjCo/UtSbB7zblgQHk7MArWK9Laj4oZzjJIQhu3pENTKeBEwc073mURaIa5tFLIZepL4719BUCCj
-	qTSVzJ5vZNAx9IG6dCELJtVfVywGsSfJEIQ1Sn9alyzRNNLtIX+bQNDL9WUWN638He8Bg6w3ev4m4
-	L+QlMC9Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TNALOUlnGYst4WVQ52Fcz6WQEN1wyyLwGKu8tgfMya4=; b=4tgpCvNhHwusUXElHXTeBcPVc2
+	pZeSbXDjXaoIm3yaeL2TyhwfHyCuOF2JJd1OZXDbnj19vinwG9Jo687ZqaL+F+QQivcVUatDkizsA
+	4boea/7AHyLHj8/fQLDCyDQx3wzZ35OjKKn9jDDzBaqqTFXRWNVwW439D38OgQJ4rCkeUyi7FWtnn
+	g/LW6tf01e5PSX0AYVhCKoWxhfRCIliBX1sSGM2guCzKykZThGEgz1NY3xRoKvOCrisYrHmxqo1x7
+	Bu1ITyzs+sqoSo47Oic5q2XUBNqnyJr2wTfesFbVxiHZ3qlS+ib+6gsL/0Nl/gYEJ1B3kPEwZV0rj
+	oV1gQoqw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o2B0E-007dDZ-Oe; Fri, 17 Jun 2022 12:23:06 +0000
-Received: from mx01.omp.ru ([90.154.21.10])
+	id 1o39ba-00GDrf-Fu; Mon, 20 Jun 2022 05:05:42 +0000
+Received: from mail-ej1-x62e.google.com ([2a00:1450:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o2B0A-007dBT-Su
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2022 12:23:04 +0000
-Received: from [192.168.1.103] (31.173.83.238) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Fri, 17 Jun
- 2022 15:22:41 +0300
-Subject: Re: [PATCH v2] mtd: hyperbus: rpc-if: Fix RPM imbalance in probe
- error path
-To: Geert Uytterhoeven <geert+renesas@glider.be>, Vignesh Raghavendra
-	<vigneshr@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>
-CC: Wolfram Sang <wsa+renesas@sang-engineering.com>, Lad Prabhakar
-	<prabhakar.mahadev-lad.rj@bp.renesas.com>, Biju Das
-	<biju.das.jz@bp.renesas.com>, Krzysztof Kozlowski <krzk@kernel.org>,
-	<linux-renesas-soc@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <f3070e1af480cb252ae183d479a593dbbf947685.1655457790.git.geert+renesas@glider.be>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <f3c26e1b-e2fb-100a-5354-723b69da2bd7@omp.ru>
-Date: Fri, 17 Jun 2022 15:22:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	id 1o39bV-00GDrB-VF
+	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2022 05:05:39 +0000
+Received: by mail-ej1-x62e.google.com with SMTP id u12so18775441eja.8
+        for <linux-mtd@lists.infradead.org>; Sun, 19 Jun 2022 22:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=2JA6OF5giONCzBIvAT6R4r7IVTuA+8tJsxC7EPk7bcA=;
+        b=pHSqPOyXXx2BiygSHZBjLaX9v8btiqkaqWxXvw2oY49V9hwOrzM28Iy5OGzsdF6X2t
+         noOSJfoDU3kisqf9Cs2XKUDdAYW+oNyO6TUQ/TTKlINIRsvbS8PDcOw1OYqNkScdok/F
+         NSe3+ClrOUUL3Yu0efqPzoGnwTUV5c+8N9/FXyNBNQs0axQMAV7cAz/DvQ+kBIExctKD
+         Q8emA1d6QpcmQaqej/ZeSQZmloLgvGuAHzYzBmy4Odtj69RCNB+D/3D03BD+oYSpc+Jb
+         V1y8HMpxEjvVQpiHa2weetk2NOm1LJ+rnxcx5xE+A+kXW9OhactzmD/nSUH6Ag1oNEJY
+         Fg9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=2JA6OF5giONCzBIvAT6R4r7IVTuA+8tJsxC7EPk7bcA=;
+        b=EUoNvZym2emBytRm7XlA2up8Fpw8/FfPML10Yj3q7yCE3kRRdHeV7Cyhx8jJRjAs54
+         F9X/GludQ519cRPW7J6eOgfQllqeQyyiYC9RuyTf2pTrJxqtk9gMPTr0c/4EHpeEJYjT
+         Sshd+/uxzn9jkJ7q/qPTknp3S5WoS1nEy02hahQRX+MAE8qvnVSBqlBrtiLAM2n93E5h
+         nY9yo7O29CeVuQgbcJQlSqvvquuQ2+xZLV2AmYJUtqp2kMPViPrb1cwOQQhhTnA5MXPK
+         v+HALvKDa0ZtdlAOxt/HkpkQFvg0kFSq5SRpkB4oTmveq7ozSsj63p9FKCLcPoG2hZPw
+         idzg==
+X-Gm-Message-State: AJIora9NMEP2VRGrDRYb54yUZeXew6NhX4RzhzwqbRKwU0IoNFlvSDDA
+	dvlf/fYBjyglbgZx+q/j1WCIPbNauWjnYEdbO5c=
+X-Google-Smtp-Source: AGRyM1s6crufN8qkE/9l77vycAKIZcjhetIjzD+AoDRNFBQ+BVygMb3aVZP67MKDuQg3bW9CwZCrTA==
+X-Received: by 2002:a17:907:6d0a:b0:722:b0b5:be69 with SMTP id sa10-20020a1709076d0a00b00722b0b5be69mr4635750ejc.76.1655701531526;
+        Sun, 19 Jun 2022 22:05:31 -0700 (PDT)
+Received: from [192.168.178.86] (clnet-p04-043.ikbnet.co.at. [83.175.81.43])
+        by smtp.gmail.com with ESMTPSA id z7-20020a05640240c700b0042617ba63c2sm9481800edb.76.2022.06.19.22.05.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Jun 2022 22:05:30 -0700 (PDT)
+Message-ID: <ba554562-8c43-555b-6585-e1e195dbd6cd@sigma-star.at>
+Date: Mon, 20 Jun 2022 07:05:29 +0200
 MIME-Version: 1.0
-In-Reply-To: <f3070e1af480cb252ae183d479a593dbbf947685.1655457790.git.geert+renesas@glider.be>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] ubinfo: Fix --vol_id return code for absent volume id
 Content-Language: en-US
-X-Originating-IP: [31.173.83.238]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/17/2022 12:05:45
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 171205 [Jun 17 2022]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 490 490 64947c9fe6ec4170c45683de1592f92a9c3bac07
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.83.238 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: 	127.0.0.199:7.1.2;31.173.83.238:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.83.238
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 06/17/2022 12:08:00
-X-KSE-AttachmentFiltering-Interceptor-Info: protection disabled
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 6/17/2022 10:12:00 AM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+To: Andrew Mellor <andrew.mellor@casa-systems.com>,
+ linux-mtd@lists.infradead.org
+References: <20220606063846.2061-1-andrew.mellor@casa-systems.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+In-Reply-To: <20220606063846.2061-1-andrew.mellor@casa-systems.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220617_052302_983528_00F81719 
-X-CRM114-Status: UNSURE (   7.24  )
+X-CRM114-CacheID: sfid-20220619_220538_355478_B91DD6AB 
+X-CRM114-Status: UNSURE (   5.06  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -100,27 +86,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello!
+Applied to mtd-utils.git master
 
-On 6/17/22 12:26 PM, Geert Uytterhoeven wrote:
+Thanks,
 
-> If rpcif_hw_init() fails, Runtime PM is left enabled.
-> 
-> Fixes: b04cc0d912eb80d3 ("memory: renesas-rpc-if: Add support for RZ/G2L")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-
-[...]
-
-MBR, Sergey
+David
 
 ______________________________________________________
 Linux MTD discussion mailing list
