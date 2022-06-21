@@ -4,34 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BE7CC43334
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C2EDC433EF
 	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jun 2022 08:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ybWp3zhwHKjsnEBz3qeEI1Fj1Ee8T5JuxufO3Jyc7uw=; b=d6iL9SZsBpBiEO
-	Mjpa9ST4NLcMu4tZ6ceU14KbpZCvbDumKqJXqYsgaScqa2tvSoqwNOMMEE0oj8zXnBkD+YYQCi9bb
-	t2r8n2NwERIcUdfri7XGn5qPQooJrnYJtOEaJurFDaNTDFi03NPC0MfxYsPTYPsKq5fnXvQNgVpRI
-	ioKdlOuUI3s/GDuaM0Ae7A8Y0lk4Ktz7Mk6S5+IuR98+krl6UOfYHzYHLwGEyTH8fH9u2mXu9K1FM
-	PDeR+aqsRVMfEnNt/BeglfjYpZ509xW8NQG0IFTSUrtiiMZt5PcvDU3Y2oiOoeS3l2JNnFvEEncRy
-	cUAPJrZU5UGfPkB8IPDA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cPOWhb6iYPlFbIT5fGRxRieI5wcJJJOtc3YQ6lqKZBM=; b=woMtewQcitTHmZ
+	pzwj5ttVoScUVGnCH9GoOeDWPB1aR575MwGYNLBqAi/OULtaS7YEo1jjefimRk3lE5vnUyqGaCVK0
+	vYVSbfvJVWtjWUY1JqoUpEfdVgJJhpcPcYEyGEZmnbjPwZ/Hfo1Kd76bcxQvK5+FLbH0zk0VwiCOt
+	iLZwdJ89/JGWXws6NJpWPCDLRCcfHdxlBP+Tr8734KC33OdWTxxk6w9EhoESzRQ5MCN9LOEr4ldAA
+	49uZne291r+fay/tpZQcFEz9Nrw7he/XgF/CoD61cvlCMmH16GBQ21XAOwBgcJJ6bg411TsOhaOKU
+	WFzkOEuzxuY8eCOVL3lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o3Zfq-004Rdi-6D; Tue, 21 Jun 2022 08:55:50 +0000
-Received: from mail-mw2nam04on2066.outbound.protection.outlook.com ([40.107.101.66] helo=NAM04-MW2-obe.outbound.protection.outlook.com)
+	id 1o3Zfv-004Rgm-Bv; Tue, 21 Jun 2022 08:55:55 +0000
+Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84] helo=NAM10-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o3ZfE-004RTr-M9
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2022 08:55:14 +0000
+	id 1o3ZfJ-004RVD-7h
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2022 08:55:18 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KJmfZS3g+94ncYDlUofnWQ7SBZvNnRruFUO6ZR5Jh+wR/YnO8eIXbd8z591FUptPY2Gf5y1CU5DRjiVHVD5Y3FXi5Nf7RovM6ErD+pyc3ug76GMVW0dahOgyMatXG2aBcLl2YYe6mX1/Z9AXFB0jarSM/S/L1byAuGucXZq0Yz4QpBULOk2m8CrYzKtCprb8iENL4KMu5hggvkak5qpX7soOqeu+9KKuXKdjbLLWkOMJwaN3Rc66RMd3GZFFgEevS605DwYTCxbKDWgYmvH5EApA94NXwxcQhvdEM0DHI2h4lLUlKV4Jn6Qe0zw5/ZzEqF2RvE9zhW/RTQ1Ciku5pw==
+ b=Sr+o4DvsNLqAVk2MvDSAnT0dA7XaRgsZoGI614FA3tFY3zgfppofiLqk0ed6Pp179pDfCN+viY+MIBMb1UbHOf8+LwDK1mbn9K6JnhuEcc1tyOTD0w/o0G0yqCZW0aiPlNoKi4rG7h76jvpac3cKvwaxmIBNQOi26zs+scHfVmxvq/kXoWFb7Or+0eGcR6lww23M5b/MJWvfyLMq8JequdKQKyn0w7DI3eHFrdIijwixD6gARnkg4AnA1402C0fZZhYJnmic8Uo9zP4gfBmVS1nGWGcdhWDjk1BPwC2HQEeVX1bmN9OUi56f2PB9KHEe/Jm5X3iHZxuD2xTvoYQDDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lbkZ1sWSMtBf+eRb5hDyks57KwdxGXM2FnaP9xoBv6U=;
- b=mErzRGJdr+RoF2v2Gg9r4V+xfXBA+h6gSlYv82tzvA1ruEo/sA2BiXbroo4OTuBDgasZctN2Oa5rCGz2TOTvD/rR46SvF4oKfGQFH5ks9mDOYtFRvR0K0quvr91JqN/aNPlXykIjSSPS8r54KUm4mS8fTuWxbKABp9dk6AjIEtmc1pa4VqPQ+a8ghQO0UumJrmY9BszEiZmZsX++yGtJI9uTyXNgYY6CqV3lwHz28osDwHKBeP9+pygxo+AUmqg7MrkCb1xUBilEbNOdkH+bOGQqlvjyrm8+ZE3yk64kUZu6jCpgIdtctIEtYfLqIL9fJWAft8uh0M7RsxwKN9fEZg==
+ bh=ZW0J+X5TWejUyOhD5XIfImghS1Scp3II4SE73b99VLs=;
+ b=GPuI3XemyOMKuSrXSlSURq9CNa9Xq8C7eVE6EtUvaN59z1TE79RhaNbSg/x+qG/F1+/rcC6OyT8Rg0b32+NY4BmTN8nSGkA/gEO9V6BZKmP42WW1MSv1KVkfr/yq0AQAgzeCb4CqygAcKKAcaK8m8dzP0g1BPK+ifIng/fYhV4G48JfGeOVQrReZkxVI0zwrJ10tyHtpwGExw4HeQE8o63PGVENfLP1+qnK7bec4eUaY9zDIqIJ0RKK5uRWGL3ndVawKDAGhcjO3NCJwxdNrTHmPKmyg2/K0MnBz6cycAA9ge2SCKEqd8EvFbowMa4VDaxCdpfwrv0E6/9w3nWJZ4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=bootlin.com smtp.mailfrom=xilinx.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
@@ -39,75 +39,76 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lbkZ1sWSMtBf+eRb5hDyks57KwdxGXM2FnaP9xoBv6U=;
- b=X5HMdiJWV9lqMylizuzTtawnO9/PZBTrl4LDTrBEL2CVw/apKz+Ig10QvCsvz5SaTrcBcUZwelA8FELgrqg6NJnQQiSlvNOMiuOB9uC3Q3YRiogThurNibN0cSfMe79FFRZwJ2k82Dain4nItA+nNhc7G+DthqsPggkrCr3Agr0=
-Received: from DM5PR07CA0165.namprd07.prod.outlook.com (2603:10b6:3:ee::31) by
- MN2PR02MB6766.namprd02.prod.outlook.com (2603:10b6:208:1dc::22) with
+ bh=ZW0J+X5TWejUyOhD5XIfImghS1Scp3II4SE73b99VLs=;
+ b=rZwZ3GcHG4QRi/JGR0SVybse9KtyNNQXTFJaxCyC9AiiCbqtCeXdhT6C0huB6hwob+VXCGNltdD1FTkTFc2opm6MzEnjMWZUdHZASow9UR0sgXPcKOL+fuqPM7GqN3KU7SnfjnZ2+B+izKrXnA1/jJE6SGzYn3LMewlRAy5d/Ak=
+Received: from DM5PR05CA0018.namprd05.prod.outlook.com (2603:10b6:3:d4::28) by
+ MN2PR02MB6352.namprd02.prod.outlook.com (2603:10b6:208:1b8::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.15; Tue, 21 Jun
- 2022 08:55:06 +0000
-Received: from DM3NAM02FT018.eop-nam02.prod.protection.outlook.com
- (2603:10b6:3:ee:cafe::da) by DM5PR07CA0165.outlook.office365.com
- (2603:10b6:3:ee::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.16 via Frontend
- Transport; Tue, 21 Jun 2022 08:55:06 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.16; Tue, 21 Jun
+ 2022 08:55:12 +0000
+Received: from DM3NAM02FT057.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:d4:cafe::62) by DM5PR05CA0018.outlook.office365.com
+ (2603:10b6:3:d4::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15 via Frontend
+ Transport; Tue, 21 Jun 2022 08:55:12 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=xilinx.com;
 Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com; pr=C
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT018.mail.protection.outlook.com (10.13.4.68) with Microsoft SMTP
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com; pr=C
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT057.mail.protection.outlook.com (10.13.5.64) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5353.14 via Frontend Transport; Tue, 21 Jun 2022 08:55:06 +0000
+ 15.20.5353.14 via Frontend Transport; Tue, 21 Jun 2022 08:55:12 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 21 Jun 2022 01:55:05 -0700
+ 15.1.2176.14; Tue, 21 Jun 2022 01:55:11 -0700
 Received: from smtp.xilinx.com (172.19.127.96) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 21 Jun 2022 01:55:05 -0700
+ 15.1.2176.14 via Frontend Transport; Tue, 21 Jun 2022 01:55:11 -0700
 Received: from [10.140.6.18] (port=52928 helo=xhdlakshmis40.xilinx.com)
 	by smtp.xilinx.com with esmtp (Exim 4.90)
 	(envelope-from <amit.kumar-mahapatra@xilinx.com>)
-	id 1o3Zf7-0001C6-Fg; Tue, 21 Jun 2022 01:55:05 -0700
+	id 1o3ZfD-0001C6-6I; Tue, 21 Jun 2022 01:55:11 -0700
 From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
 To: <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
 CC: <git@amd.com>, <boris.brezillon@collabora.com>,
 	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<amit.kumar-mahapatra@amd.com>, <akumarma@amd.com>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@xilinx.com>
-Subject: [PATCH v2 0/2] mtd: rawnand: arasan: Fix clock rate in NV-DDR
-Date: Tue, 21 Jun 2022 14:24:58 +0530
-Message-ID: <20220621085500.1005-1-amit.kumar-mahapatra@xilinx.com>
+	<amit.kumar-mahapatra@amd.com>, <akumarma@amd.com>, Olga Kitaina
+	<okitain@gmail.com>, Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+Subject: [PATCH v2 2/2] mtd: rawnand: arasan: Fix clock rate in NV-DDR
+Date: Tue, 21 Jun 2022 14:25:00 +0530
+Message-ID: <20220621085500.1005-3-amit.kumar-mahapatra@xilinx.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220621085500.1005-1-amit.kumar-mahapatra@xilinx.com>
+References: <20220621085500.1005-1-amit.kumar-mahapatra@xilinx.com>
 MIME-Version: 1.0
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 558e089d-9eb3-4652-d5cc-08da5363bd13
-X-MS-TrafficTypeDiagnostic: MN2PR02MB6766:EE_
-X-Microsoft-Antispam-PRVS: 	<MN2PR02MB6766A960D0396D9A5AA920BCBAB39@MN2PR02MB6766.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 3c78179e-796c-4f11-8858-08da5363c06b
+X-MS-TrafficTypeDiagnostic: MN2PR02MB6352:EE_
+X-Microsoft-Antispam-PRVS: 	<MN2PR02MB6352B51A9315E31F4594ADC1BAB39@MN2PR02MB6352.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	1I2z16qzE9zRco2M1dEkdEljWJbRBBJSG7BnIePVbNpF2Rzmt74kMB+XXnlYJZTuxl62OImlpasn4nVvR+tvSNOD9WXG5uakhHlGAzybn5tOMHo3lvWzg7XUMzwXRAXUqYOsEFEBMsi+2mAxN3fP25/9MJfad9z9UJ95xpvcWk8srMhhJex/wd+j8upl8tFw0qh4c3OGTofbht7GY31VNsoqxdY8+4WHzoR9v0mHJObPAdcIVizSQJcmklNOygcLMe8DYkTy/oaxKN9Rdd80LftmlBftxk1pZb0sk3lIQQZmAfAaLm2IppJZGqqIwzV4MBoCTY5vON9Q8l+k8NAWeuCH5uUi9h4vaamhb8yrRkVhTPd/D0scMCsXCTP7Bhu9ehTRh6/gpeQJwvT2dxfozns8AigjO5QJhXnXyn4XCgTyFipyviUspLOmk0/TuJzhYwNgBEkkne5g2hKP5ryW1FZS7Oeg4k0YExZB35L9aEaQoXchewKPoJJ7T9KnbVGgfZg1QCeMXkjhUVFR2iJoxHDQyDXHHyo6dq7GzErjIOVyDfcjXJQ7nL/dcPA7rkr5bLmGSivy817hIT91yAvP/ckT39oIwxp6Thr9zAMVZfMbCxiRcME4poel2UJxPcxFbqGGpeKRt05xlnJn36lGY40gkAyxppgmtc2I1615xoZtqo2cKvzvjmcwsqmXKCU2N6aIAPoqDshHPzizhL3uBwD8YjsCRtDFIM50Iz0Aaegvz7rrgvcmZgy9rkJoW7Xor51oH6nSAhl/1h+G8ie0dDTz7e0rIMc2KZ6Ts8SmUQZRxUFhzi/sLke1DajyguJgmDLyPr6LkU00rcW745l9Qw==
-X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230016)(4636009)(376002)(346002)(396003)(39860400002)(136003)(46966006)(36840700001)(40470700004)(36756003)(356005)(26005)(7696005)(2906002)(6666004)(54906003)(107886003)(4744005)(1076003)(82310400005)(4326008)(316002)(110136005)(70586007)(70206006)(966005)(8936002)(36860700001)(5660300002)(478600001)(40480700001)(41300700001)(40460700003)(426003)(47076005)(186003)(7636003)(83380400001)(8676002)(9786002)(2616005)(82740400003)(336012)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 	p/vNif7jf/BSVCHiygeHIH2lTn3HBspbNhZldG3G+V+p8SqeinWrQnwVgxsSmnGjcMdpSeJCf+ABYJn6K7UK7I+cT7s8DwWhPorZov8qDDgnKQm3PNyXeSVROPiFi5eDCqXbxH3oKSG/serYX1dvxqv72ahQj/twvz22MKPjkmd2vngGHjs6fEFt6y+nunFnhD00KRLOfhwmqudPj+hJp+Rji5Dw/cdxW1ze9K1zTJ6WQJhux5dIVsn0OkqB6lnicmznyFHriIO5QfguMRBrBVaFhSQfyS2acOhMFs1aFQe2+gCusThdT4B4kkq3inn+Z2x0NuuCWrf++Jf841U9Qbr7Yet8LgdaY+Z1YhehfJLTlmPa9B+13eqsWc+GoePPnqVbas+9k1rFhBS1SKTg8R5jFEtXsjSKIYoFj2vWP7lLS7SAkGLy4E4AOw+Kh1H+ix8oR3nnESu8ooCfZV3anFgqwV4HHyoQMCx4RfDQAFNtYmVqjeZK5GPBaKqtOTE55sYD9BMMF/ZMko7tuFBTJUneB0gN9wqzT5FJMBG/So3S/Zs/+R0s0zUm+wLXWKGD7qe8wzo1HRstbsWtsRQAsxcriqu+Hrs6BhFoTSOmwaDOtdKvBNvsMM0T7ZA3DdUG7/9KmIRFoILeaY6SdWpVn1ytUm2uL5ssxOR2bE3awMzQS5O3Ivf11rR/PebsiSjohUw8gurvQAaJ7NR9VoUMedjjIDiaxoyy/xBPECmQ+jElGxthDJEuDCsyGNRLpBjR
+X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230016)(4636009)(376002)(346002)(39860400002)(396003)(136003)(36840700001)(40470700004)(46966006)(7636003)(2616005)(41300700001)(107886003)(426003)(336012)(1076003)(6666004)(82740400003)(186003)(7696005)(47076005)(36860700001)(356005)(26005)(83380400001)(36756003)(8936002)(316002)(70586007)(70206006)(9786002)(82310400005)(40480700001)(4326008)(5660300002)(2906002)(40460700003)(110136005)(54906003)(478600001)(8676002)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2022 08:55:06.4470
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2022 08:55:12.0549
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 558e089d-9eb3-4652-d5cc-08da5363bd13
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c78179e-796c-4f11-8858-08da5363c06b
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	DM3NAM02FT018.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	DM3NAM02FT057.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6766
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6352
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220621_015512_814364_1042E7DA 
-X-CRM114-Status: UNSURE (   5.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220621_015517_323360_EDA0692B 
+X-CRM114-Status: GOOD (  12.03  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,24 +125,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Based on upstream discussion here:
-https://lore.kernel.org/all/20211127180758.30884-1-okitain@gmail.com/
+From: Olga Kitaina <okitain@gmail.com>
 
-This patch series:
- - Updates NAND bus clock, instead of system clock, as per the timing modes.
- - Fixes clock rate in NV-DDR
+According to the Arasan NAND controller spec, the flash clock rate for SDR
+must be <= 100 MHz, while for NV-DDR it must be the same as the rate of the
+CLK line for the mode. The driver previously always set 100 MHz for NV-DDR,
+which would result in incorrect behavior for NV-DDR modes 0-4.
+
+The appropriate clock rate can be calculated from the NV-DDR timing
+parameters as 1/tCK, or for rates measured in picoseconds,
+10^12 / nand_nvddr_timings->tCK_min.
+
+Signed-off-by: Olga Kitaina <okitain@gmail.com>
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
 ---
-BRANCH: mtd/next
----
-Amit Kumar Mahapatra (1):
-  mtd: rawnand: arasan: Update NAND bus clock instead of system clock
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-Olga Kitaina (1):
-  mtd: rawnand: arasan: Fix clock rate in NV-DDR
-
- drivers/mtd/nand/raw/arasan-nand-controller.c | 26 ++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index 4f6da82dd2b1..0eff069d7f80 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -1044,10 +1044,20 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
+ 				 DQS_BUFF_SEL_OUT(dqs_mode);
+ 	}
+ 
+-	ret = clk_set_rate(nfc->bus_clk, ANFC_XLNX_SDR_DFLT_CORE_CLK);
+-	if (ret) {
+-		dev_err(nfc->dev, "Failed to change bus clock rate\n");
+-		return ret;
++	if (nand_interface_is_sdr(conf)) {
++		ret = clk_set_rate(nfc->bus_clk, ANFC_XLNX_SDR_DFLT_CORE_CLK);
++		if (ret) {
++			dev_err(nfc->dev, "Failed to change bus clock rate\n");
++			return ret;
++		}
++	} else {
++		/* ONFI timings are defined in picoseconds */
++		ret = clk_set_rate(nfc->bus_clk, div_u64((u64)NSEC_PER_SEC * 1000,
++							 conf->timings.nvddr.tCK_min));
++		if (ret) {
++			dev_err(nfc->dev, "Failed to change bus clock rate\n");
++			return ret;
++		}
+ 	}
+ 
+ 	/*
 -- 
 2.17.1
 
