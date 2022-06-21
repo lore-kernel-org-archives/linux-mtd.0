@@ -4,72 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFC83C43334
-	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jun 2022 05:53:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2402C43334
+	for <linux-mtd@archiver.kernel.org>; Tue, 21 Jun 2022 08:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FRTzRDs3yGWlqE58xkmz9GHQ1PPlaLDKVlnl8ZhpUQs=; b=u+NX8GE0Wf8hzD
-	zEplx5ZVYoiBSnpUpRmJkTa8eKJAsjlbLdlYtMcF+/skT+S6dX6NLOzp/0vBxdaGqVCtF9DpgPgtn
-	kpr4iLxL3rB3TztxUlWrlxdRkeYAT2g+ZYb7U+GUuwUml0S9l+3VR8Q82dhkO4Caws8hqkSLVHWoi
-	Qj0yMTEdUacWbO8iTtYW3Kjq/JfnQSmtlciC/QwyZYI2FkHaOPpYjFwDcTg0EBdnWMMg3DklI1l0i
-	TUvZLuDwX5GbZrMiPtMYuSneoJ5SCrtYwhkWKbOs/VBc48qxE+Ngz2G6pqfGCz152+XuajKqWBqID
-	vnOvUTWCjJok6PMzyP+g==;
+	List-Owner; bh=RYFTD2SWKMv7FR3lX7+uF6cKqSxcXqYmx8640UIVSOo=; b=qgNCwjrR3IL4b0
+	e0xCvNvLJCChz8yZIwU1ApQhSX6rA9AE3VWCKmuZDeIjDx4H0KN7ixIgYQ1G4uXWB5s51yPK2Ez/P
+	P1KkFRsVTB5cFPnOgsDU6Ct9f/H7LqMro9xLDJBTmS2m7OUhZ9ywV1QD4iHH/axJObA/Ce8IK/6aR
+	5o6jY5H6MLmmMrzxV6fTOPc5tIUDITL7JLsq3pa4CnIj04lgl4J5RCmUoydEWIIEKhRoljwWPU0Oq
+	L4KVuY5Y/2T63p7QcJtg5aCx1Cx/mXyBkvQq3ZFjhWRmvhEvFnF159U7aio604ARW/zgI8dTW5CTc
+	X6FHte1acu23V7Y05hMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o3WoC-003mEU-Jo; Tue, 21 Jun 2022 05:52:16 +0000
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
+	id 1o3Zfs-004Rem-VL; Tue, 21 Jun 2022 08:55:53 +0000
+Received: from mail-co1nam11on2068.outbound.protection.outlook.com ([40.107.220.68] helo=NAM11-CO1-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o3Wo5-003m60-5M
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2022 05:52:12 +0000
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 25L5ps9h110838;
-	Tue, 21 Jun 2022 00:51:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1655790714;
-	bh=simPKwHrU187gpKzdWj0N4xBhjRsLxWL47Bc/jEmx5k=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=yIgg+8Vu7AST6/jF1cqnnxpsadQSfbWRLTcMLhYDocPdMLA7vxOaZoJHUukNuQZUJ
-	 GEvXSe+y5SUXC7LKXW4X9Pzg1zCEkbMiXK3pxGNUio75NC1INg5bKHPBtDLY44++iN
-	 u7lDUWOmiB0m7wF2V3PgGkHwyAWEjGoJ+HLTi85I=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 25L5psn1009143
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 21 Jun 2022 00:51:54 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
- Jun 2022 00:51:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 21 Jun 2022 00:51:54 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-	by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 25L5pr3u017894;
-	Tue, 21 Jun 2022 00:51:54 -0500
-Date: Tue, 21 Jun 2022 11:21:53 +0530
-From: Pratyush Yadav <p.yadav@ti.com>
-To: <tkuw584924@gmail.com>
-CC: <linux-mtd@lists.infradead.org>, <tudor.ambarus@microchip.com>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <michael@walle.cc>, <Bacem.Daassi@infineon.com>,
-        Takahiro Kuwano
-	<Takahiro.Kuwano@infineon.com>
-Subject: Re: [PATCH v16 1/8] mtd: spi-nor: s/addr_width/addr_nbytes
-Message-ID: <20220621055153.7dw3veo7z2hankna@ti.com>
-References: <cover.1654741888.git.Takahiro.Kuwano@infineon.com>
- <51c3b5f0a73bd6d812122f45c3b19b310332ead1.1654741888.git.Takahiro.Kuwano@infineon.com>
+	id 1o3ZfG-004RUh-Su
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2022 08:55:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=km6V0RKK3y5Y80jfNhVmfFNU0TiJ/vgl7OwHWug9n9SCpD4EFiaUOX9XoIUlUG01uM2hsy47clfUDDz+4KgzzRThs7ij9QyptvA6VgemhGw770bujsuNBzp01hCPqTbQrnhstwuxB96BBPW63PjTw4v6rvviMb/zQS3BL4tTpTJT9LIqbXlSdXnBzx+PZrDjL4+xgSaAfSzRzqfgC1Qe+Otpvm72GMTAktKi1Li8uRCDV2YHEgSkqkWyMM+VHYpWD6q8A9zf19oAlX34XopCcPm7MZQW2oZpKUZ0W3ZTHszBC3OfPeS0J76jpcSlzifEehwuAalkawA3lXuGHvBVbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RWuhFKZkoR9XhhCvX8b1gJ1Kcm2UEsDerZQ3fiBrzK0=;
+ b=m5wNc03JidsKI7kB7bI3S3KnsNGNgRbpXCn5gDgXUYCvgt6cUWs6APZPmO0iE5OXazZkuCpX97w2X/ZwVTaeyNoOFD6+13KVM3Y9fswRJFEAqCWcrNWefZsjcmlg+AxHBSPebQrkPx0re4cmBRluVlM4If8U/KUuALMMCM9l50ADi4erOzp2NsD7vcE7Qe7GWKDeA/zciZD+KV2z05GxmrK/qTe3sq+uzNwNBqzfUx6vl4xzCcjT7gAB3aCf8L5q58JB0IvFy4DrrxisdJjDVnvXxnNhDDIE/2D553fJtJ90QO7dqzyNm5ksMSikGh/6QAtDU86gzYI8flIK1x9zAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=bootlin.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RWuhFKZkoR9XhhCvX8b1gJ1Kcm2UEsDerZQ3fiBrzK0=;
+ b=A/72gAAIPwUAv1+0OM2h2KZRJDa52ibuBOGOGda4/kHXUrJCQGNg6Hps95YTDK1u6xNwtrKRZkCl2hGUcRaMJdgN3oDt5nDkU6z3wRAEcUAlLbHvxjfeSzdJ3Pofgl4u+Gf92963m+jUyd5cs4jhUZD/cgJ4x98rWgeG6tYgl/c=
+Received: from DM5PR07CA0089.namprd07.prod.outlook.com (2603:10b6:4:ae::18) by
+ PH0PR02MB8732.namprd02.prod.outlook.com (2603:10b6:510:db::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5353.17; Tue, 21 Jun 2022 08:55:09 +0000
+Received: from DM3NAM02FT034.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:4:ae:cafe::71) by DM5PR07CA0089.outlook.office365.com
+ (2603:10b6:4:ae::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.16 via Frontend
+ Transport; Tue, 21 Jun 2022 08:55:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com; pr=C
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT034.mail.protection.outlook.com (10.13.4.156) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5353.14 via Frontend Transport; Tue, 21 Jun 2022 08:55:09 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 21 Jun 2022 01:55:08 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 21 Jun 2022 01:55:08 -0700
+Received: from [10.140.6.18] (port=52928 helo=xhdlakshmis40.xilinx.com)
+	by smtp.xilinx.com with esmtp (Exim 4.90)
+	(envelope-from <amit.kumar-mahapatra@xilinx.com>)
+	id 1o3ZfA-0001C6-7b; Tue, 21 Jun 2022 01:55:08 -0700
+From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+To: <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <git@amd.com>, <boris.brezillon@collabora.com>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<amit.kumar-mahapatra@amd.com>, <akumarma@amd.com>, Amit Kumar Mahapatra
+	<amit.kumar-mahapatra@xilinx.com>
+Subject: [PATCH v2 1/2] mtd: rawnand: arasan: Update NAND bus clock instead of system clock
+Date: Tue, 21 Jun 2022 14:24:59 +0530
+Message-ID: <20220621085500.1005-2-amit.kumar-mahapatra@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220621085500.1005-1-amit.kumar-mahapatra@xilinx.com>
+References: <20220621085500.1005-1-amit.kumar-mahapatra@xilinx.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51c3b5f0a73bd6d812122f45c3b19b310332ead1.1654741888.git.Takahiro.Kuwano@infineon.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bb0122d4-8e1c-419d-b76f-08da5363bec2
+X-MS-TrafficTypeDiagnostic: PH0PR02MB8732:EE_
+X-Microsoft-Antispam-PRVS: 	<PH0PR02MB8732F080BBC834BCB665B347BAB39@PH0PR02MB8732.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	adZRKBIUMNp7Hn8lb+8y9lf/XlBU3c688pvFDtPhAC194RZ818vQNLIvkVl53fV4ReSnzkuBnIn0Ni0gQ05yQQwktm/iAy4wK3uZf9O/K3isW0Wcl1gswR/os9FcEM+Dc2dcOnNLyIyPDkiOfuXP9ZV7WcbfLoYELS3asCUE8kjX8Q02j0r0xspxoMAC33NUwUAioMKR2Z3GXiNBeIorCgCwDsW1cZ3iatqbWhyVy1f8nuNMxulJuiLbC/IsUnv/O2zFNYywfUjLj1b66kpHo8RWVfXXgEBKJBGN2nu8qd0S8nyQGE0ZoIT9Oe/xGuStYp4T07zkb3EtEFEPCibVvt3Ug+8xPTGXOWhdvIreJ0/meIIrd/4uXYaU9LbSzQb94b/osZrdkWDKPbEmuOkXVZ1qfWXW7JVyfyI7/p4fT1GfqQocs89PAIYpycGZwL5dtd3IVBH2qx/5JLI+iWCG9/DKVYcA7u0noKxkeZZFns31qymcpsuotU+17a5mqA5Sqh5SLOeqULrifurEQyejRc51rfSDMgPInTsezlu5k+MQeLVYu8gVDhSoeeoLchAUj9gJVTWXJsC8YyRiDRSPFI3PThPKrJtQ0us0KuS0bLGmZIBM3SU61piCh8nXg7oNQ2aH7tWFkAMCtBOdSJ3/TbsetUmFWDp+a6gjFP/TpB8Ki8qDFkdei6Wr/+y02t1Pg/GgCaPr7AldBiXegVDy9ewde8Y8gkji3irntIjQQpz9CjVI75mJpdk6wmbyQryp
+X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(136003)(39860400002)(346002)(46966006)(36840700001)(40470700004)(356005)(107886003)(4326008)(7636003)(40460700003)(478600001)(26005)(82740400003)(15650500001)(70586007)(5660300002)(36860700001)(36756003)(70206006)(2616005)(1076003)(8676002)(7696005)(41300700001)(6666004)(82310400005)(316002)(8936002)(110136005)(186003)(336012)(426003)(47076005)(9786002)(83380400001)(2906002)(40480700001)(54906003)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2022 08:55:09.2708
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb0122d4-8e1c-419d-b76f-08da5363bec2
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: 	DM3NAM02FT034.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB8732
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220620_225209_341769_35581856 
-X-CRM114-Status: UNSURE (   9.04  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220621_015514_982349_1A6FB132 
+X-CRM114-Status: GOOD (  13.72  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,28 +124,63 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Takahiro,
+In current implementation the Arasan NAND driver is updating the
+system clock(i.e., anand->clk) in accordance to the timing modes
+(i.e., SDR or NVDDR). But as per the Arasan NAND controller spec the
+flash clock or the NAND bus clock(i.e., nfc->bus_clk), need to be
+updated instead. This patch keeps the system clock unchanged and updates
+the NAND bus clock as per the timing modes.
 
-On 09/06/22 05:57PM, tkuw584924@gmail.com wrote:
-> From: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
+Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
+Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+---
+ drivers/mtd/nand/raw/arasan-nand-controller.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-Didn't Tudor write this patch? Please attribute authorship to him.
-
-> 
-> Address width was an unfortunate name, as it means the number of IO lines
-> used for the address, whereas in the code it is used as the number of
-> address bytes. s/addr_width/addr_nbytes throughout the entire SPI NOR
-> framework.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> Signed-off-by: Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-> Reviewed-by: Michael Walle <michael@walle.cc>
-> Acked-by: Pratyush Yadav <p.yadav@ti.com>
-
+diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+index 53bd10738418..4f6da82dd2b1 100644
+--- a/drivers/mtd/nand/raw/arasan-nand-controller.c
++++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+@@ -968,6 +968,7 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
+ 	const struct nand_sdr_timings *sdr;
+ 	const struct nand_nvddr_timings *nvddr;
+ 	unsigned int tccs_min, dqs_mode, fast_tcad;
++	int ret;
+ 
+ 	if (nand_interface_is_nvddr(conf)) {
+ 		nvddr = nand_get_nvddr_timings(conf);
+@@ -1043,7 +1044,11 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
+ 				 DQS_BUFF_SEL_OUT(dqs_mode);
+ 	}
+ 
+-	anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
++	ret = clk_set_rate(nfc->bus_clk, ANFC_XLNX_SDR_DFLT_CORE_CLK);
++	if (ret) {
++		dev_err(nfc->dev, "Failed to change bus clock rate\n");
++		return ret;
++	}
+ 
+ 	/*
+ 	 * Due to a hardware bug in the ZynqMP SoC, SDR timing modes 0-1 work
+@@ -1052,8 +1057,13 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
+ 	 * 80MHz when using SDR modes 2-5 with this SoC.
+ 	 */
+ 	if (of_device_is_compatible(np, "xlnx,zynqmp-nand-controller") &&
+-	    nand_interface_is_sdr(conf) && conf->timings.mode >= 2)
+-		anand->clk = ANFC_XLNX_SDR_HS_CORE_CLK;
++	    nand_interface_is_sdr(conf) && conf->timings.mode >= 2) {
++		ret = clk_set_rate(nfc->bus_clk, ANFC_XLNX_SDR_HS_CORE_CLK);
++		if (ret) {
++			dev_err(nfc->dev, "Failed to change bus clock rate\n");
++			return ret;
++		}
++	}
+ 
+ 	return 0;
+ }
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.17.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
