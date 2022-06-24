@@ -4,57 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25C07C43334
-	for <linux-mtd@archiver.kernel.org>; Thu, 23 Jun 2022 13:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B793C43334
+	for <linux-mtd@archiver.kernel.org>; Fri, 24 Jun 2022 13:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+ijEEnOBOpCWtCAiJJb0feWXxaveFDaJ8UvhrJMECTs=; b=0Z0qaJMeOiL19h
-	/XwJsd07y26A8hOtnlUQMXF8kFBho0jCDiOlCZV64V0zyBz05783b26n3ydQ0Mybg04uxWi3jmY9k
-	X8C5fnAnRXAVrBoayHyv08Dj0o7WZ5gHTzqKLf56bpRd3oMSIHHUz0psXOsUroMj8FbTgPd7omaY6
-	cMT1q1wYCBb1lHTERyLJmBNr+9UQCHeniYPdQXt/APGmeuB39yCdsIyVe/mciGXuMZDmOYC6vGCxh
-	7bjAxezVjJCUpjYEZuf3Kg0SWUf41p2kbTOVtEARfNdXWadVvRRqqlw2YgJL0V4aGXi73n2eroKs3
-	81RJtLG+8HYA+RvB3R1Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=fFh9WsokRYChm1t+olj7Qb2+chovREXDxW4fDDxbxMw=; b=oQoP03hi1nlQLl
+	bnnJFY9926SkF2EQ/7DEuTMAT8UFyXBGKrJa2nMn20biQCy4ihaWdRuo9qA3S3gXNt2W5mdVvvE8d
+	563ZOasAFf5qQBB3Qw6q/tCWzi5eBjMWh9Ukzpku/7iNEzGA3uNk5DeYBtg0/qSZfUOdluNcucfzA
+	6rtwJ/BBmPdmtdbkv2CMVszr6rdWlggSDXAYkjp7Sl1ApJmHHi6NK74hWF1wYt+Y+OrbJuUZVnjC1
+	FOqvTI0IlJBITXOBUcG8hO3YvOjhJF1eUdzf3SyA5PokmaL/qvRPp5nIyolvjSG2gVUKB86LLQcnw
+	V8dmRXsHieuf3zV4VxPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4Mpz-00FLum-68; Thu, 23 Jun 2022 13:25:35 +0000
-Received: from relay8-d.mail.gandi.net ([217.70.183.201])
+	id 1o4j7p-002Jks-Hs; Fri, 24 Jun 2022 13:13:29 +0000
+Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4Mpv-00FLmm-AQ
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2022 13:25:33 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 5928D1BF208;
-	Thu, 23 Jun 2022 13:25:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1655990728;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TGuR++xPPjUWlLqJbPCBw/3UC+BNkBSB+PamTH3u9dY=;
-	b=l8+lepEVs9tKAI5uK/0Tqe3etENaFcdsvFOqPkEKq2RcOlq1qlRjIS6WKL5nitbwjZ6lA4
-	Loaw5Z8Iluy7oxsNuT/NlFg2OILde8ottq77k0xBbwOe779NY/T5bR/3tlnPi2hYH4UU40
-	X6oPOzJQlmJOgQTMlAN80Tu7sOU9L2Aaqgr13BCAPxXWkogbw9q26Qf5Ab57CU372lh++T
-	J8DaXBZp5XMe7OUlR35do7SWP+rdp8EWcH/hAZDZ8Wa09km7/wSzBin8TpzLbG2gXyB+pE
-	Aqk8Ic3Hb/N1Slou2uqh/YpZmVQk2NTNDbvW3+EzgJMCu0WfTAuXODSp1F0eGA==
-Date: Thu, 23 Jun 2022 15:25:24 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jiang Jian <jiangjian@cdjrlc.com>
-Cc: vigneshr@ti.com, richard@nod.at, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubi: remove unexpected word "the"
-Message-ID: <20220623152524.3970e49c@xps-13>
-In-Reply-To: <20220621093656.73074-1-jiangjian@cdjrlc.com>
-References: <20220621093656.73074-1-jiangjian@cdjrlc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	id 1o4j7X-002Je6-Gm; Fri, 24 Jun 2022 13:13:15 +0000
+Received: from droid11-sz.amlogic.com (10.28.8.21) by mail-sz.amlogic.com
+ (10.28.11.5) with Microsoft SMTP Server id 15.1.2176.2; Fri, 24 Jun 2022
+ 21:13:00 +0800
+From: Liang Yang <liang.yang@amlogic.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
+CC: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh+dt@kernel.org>,
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+	<narmstrong@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
+	Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+	XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
+	<kelvin.zhang@amlogic.com>, BiChao Zheng <bichao.zheng@amlogic.com>, YongHui
+ Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>
+Subject: [PATCH v7 0/5] fix the meson NFC clock
+Date: Fri, 24 Jun 2022 21:12:50 +0800
+Message-ID: <20220624131257.29906-1-liang.yang@amlogic.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-Originating-IP: [10.28.8.21]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220623_062531_646157_327D1B1A 
-X-CRM114-Status: GOOD (  16.96  )
+X-CRM114-CacheID: sfid-20220624_061311_599016_B6F273E1 
+X-CRM114-Status: GOOD (  10.57  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,38 +60,78 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgSmlhbmcsCgpqaWFuZ2ppYW5AY2RqcmxjLmNvbSB3cm90ZSBvbiBUdWUsIDIxIEp1biAyMDIy
-IDE3OjM2OjU2ICswODAwOgoKPiB0aGVyZSBpcyBhbiB1bmV4cGVjdGVkIHdvcmQgInRoZSIgaW4g
-dGhlIGNvbW1lbnRzIHRoYXQgbmVlZCB0byBiZSByZW1vdmVkCj4gCj4gKiBAZGV2OiBkZXZpY2Ug
-b2JqZWN0IHRvIG1ha2UgdXNlIG9mIHRoZSB0aGUgTGludXggZGV2aWNlIG1vZGVsCj4gKiBAZGV2
-OiBVQkkgZGV2aWNlIG9iamVjdCB0byB1c2UgdGhlIHRoZSBMaW51eCBkZXZpY2UgbW9kZWwKPiAK
-PiBTaWduZWQtb2ZmLWJ5OiBKaWFuZyBKaWFuIDxqaWFuZ2ppYW5AY2RqcmxjLmNvbT4KPiAtLS0K
-PiAgZHJpdmVycy9tdGQvdWJpL3ViaS5oIHwgNCArKy0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyIGlu
-c2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L3ViaS91YmkuaCBiL2RyaXZlcnMvbXRkL3ViaS91YmkuaAo+IGluZGV4IDA3ODExMmUyM2RmZC4u
-ZDkwMzllN2Y2NzAzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS91YmkuaAo+ICsrKyBi
-L2RyaXZlcnMvbXRkL3ViaS91YmkuaAo+IEBAIC0yODEsNyArMjgxLDcgQEAgc3RydWN0IHViaV9l
-YmFfbGViX2Rlc2Mgewo+ICAKPiAgLyoqCj4gICAqIHN0cnVjdCB1Ymlfdm9sdW1lIC0gVUJJIHZv
-bHVtZSBkZXNjcmlwdGlvbiBkYXRhIHN0cnVjdHVyZS4KPiAtICogQGRldjogZGV2aWNlIG9iamVj
-dCB0byBtYWtlIHVzZSBvZiB0aGUgdGhlIExpbnV4IGRldmljZSBtb2RlbAo+ICsgKiBAZGV2OiBk
-ZXZpY2Ugb2JqZWN0IHRvIG1ha2UgdXNlIG9mIHRoZSBMaW51eCBkZXZpY2UgbW9kZWwKPiAgICog
-QGNkZXY6IGNoYXJhY3RlciBkZXZpY2Ugb2JqZWN0IHRvIGNyZWF0ZSBjaGFyYWN0ZXIgZGV2aWNl
-Cj4gICAqIEB1Ymk6IHJlZmVyZW5jZSB0byB0aGUgVUJJIGRldmljZSBkZXNjcmlwdGlvbiBvYmpl
-Y3QKPiAgICogQHZvbF9pZDogdm9sdW1lIElECj4gQEAgLTQzOSw3ICs0MzksNyBAQCBzdHJ1Y3Qg
-dWJpX2RlYnVnX2luZm8gewo+ICAKPiAgLyoqCj4gICAqIHN0cnVjdCB1YmlfZGV2aWNlIC0gVUJJ
-IGRldmljZSBkZXNjcmlwdGlvbiBzdHJ1Y3R1cmUKPiAtICogQGRldjogVUJJIGRldmljZSBvYmpl
-Y3QgdG8gdXNlIHRoZSB0aGUgTGludXggZGV2aWNlIG1vZGVsCj4gKyAqIEBkZXY6IFVCSSBkZXZp
-Y2Ugb2JqZWN0IHRvIHVzZSB0aGUgTGludXggZGV2aWNlIG1vZGVsCgpGb3IgdGhpcyBraW5kIG9m
-IHRyaXZpYWwgY2hhbmdlIEkgc3VnZ2VzdCB0aGF0IHlvdSBnYXRoZXIgY2hhbmdlcyBpbiBhCmdp
-dmVuIHN1YnN5c3RlbSBhbmQgZ3JvdXAgdGhlbSBpbiBhIHZlcnkgbGltaXRlZCBudW1iZXIgb2Yg
-cGF0Y2hlcyBzZW50CmFzIGEgc2luZ2xlIHNlcmllcy4KCj4gICAqIEBjZGV2OiBjaGFyYWN0ZXIg
-ZGV2aWNlIG9iamVjdCB0byBjcmVhdGUgY2hhcmFjdGVyIGRldmljZQo+ICAgKiBAdWJpX251bTog
-VUJJIGRldmljZSBudW1iZXIKPiAgICogQHViaV9uYW1lOiBVQkkgZGV2aWNlIG5hbWUKCgpUaGFu
-a3MsCk1pcXXDqGwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+EMMC and NAND have the same clock control register named 'SD_EMMC_CLOCK'
+which is defined in EMMC port internally. bit0~5 of 'SD_EMMC_CLOCK' is
+the divider and bit6~7 is the mux for fix pll and xtal. At the beginning,
+a common MMC and NAND sub-clock was discussed and planed to be implemented
+as NFC clock provider, but now this series of patches of a common MMC and
+NAND sub-clock are never being accepted and the current binding was never
+valid. the reasons are:
+1. EMMC and NAND, which are mutually exclusive anyway
+2. coupling the EMMC and NAND.
+3. it seems that a common MMC and NAND sub-clock is over engineered.
+and let us see the link for more information:
+https://lore.kernel.org/all/20220121074508.42168-5-liang.yang@amlogic.com
+so The meson nfc can't work now, let us rework the clock.
+
+Changes since v6 [7]
+ - use COMMON_CLK instead of !HAVE_LEGACY_CLK
+
+Changes since v5 [6]
+ - add change log for patch 3/5
+ - add patch 5/5 to fix the reporting error of test robot
+
+Changes since v4 [5]
+ - split the dt binding patch into two patches, one for fixing, 
+   clock, the other for coverting to yaml
+ - split the nfc driver patch into two patches, one for fixing 
+   clock, the other for refining the get nfc resource.
+
+Changes since v3 [4]
+ - use devm_platform_ioremap_resource_byname
+ - dt_binding_check for mtd/amlogic,meson-nand.yaml
+
+Changes since v2 [3]
+ - use fw_name from dts, instead the wrong way using __clk_get_name
+ - reg resource size change to 0x800
+ - use reg-names
+
+Changes since v1 [2]
+ - use clk_parent_data instead of parent_names
+ - define a reg resource instead of sd_emmc_c_clkc 
+
+[1] https://lore.kernel.org/r/20220106033130.37623-1-liang.yang@amlogic.com
+    https://lore.kernel.org/r/20220106032504.23310-1-liang.yang@amlogic.com
+[2] https://lore.kernel.org/all/20220217063346.21691-1-liang.yang@amlogic.com
+[3] https://lore.kernel.org/all/20220318124121.26117-1-liang.yang@amlogic.com
+[4] https://lore.kernel.org/all/20220402074921.13316-1-liang.yang@amlogic.com/
+[5] https://lore.kernel.org/all/20220513123404.48513-1-liang.yang@amlogic.com/
+[6] https://lore.kernel.org/all/20220607064731.13367-1-liang.yang@amlogic.com/
+
+Liang Yang (5):
+  dt-bindings: nand: meson: fix meson nfc clock
+  mtd: rawnand: meson: fix the clock
+  mtd: rawnand: meson: refine resource getting in probe
+  dt-bindings: nand: meson: convert txt to yaml
+  mtd: rawnand: meson: not support legacy clock
+
+ .../bindings/mtd/amlogic,meson-nand.txt       | 60 -------------
+ .../bindings/mtd/amlogic,meson-nand.yaml      | 88 +++++++++++++++++++
+ drivers/mtd/nand/raw/Kconfig                  |  2 +-
+ drivers/mtd/nand/raw/meson_nand.c             | 86 +++++++++---------
+ 4 files changed, 131 insertions(+), 105 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+
+-- 
+2.34.1
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
