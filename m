@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85D71C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 03:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29D7DC43334
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 03:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=RD1CQvXSsA4vbg0XLfJqa+M8nChJm+XUUOkDP/pgehI=; b=Iz2YIRt+zLTP2V
-	4WrsDPuu22Xv6CrrqKHXsG/dRWEeQRqhxTSTTkmNfUCPoNBhsZo9+3DxWLJQ+EwBOhuGPcvFaC47k
-	baHwzr3O9L00fqwase5n+krCQxs4obwmWpkJUi2a8PL437Ifi1Q1o1TBzVVz5N1GpPVMNi2Fj+oHL
-	z+pnNa8BjxjOHUkWmaYgikPQw5jhEmFM+qk13GUm38gH0b1ENh590Ejwocq8bOXOZW7U/czFl+0Kc
-	wHOEoVAer7FmQxacJ3JSZENTdO5/2Y1yqwlpMyC0iyKzh5dwiIPh6cBgOF2wmhf+QpYPnl7ih9hIZ
-	mg5iRDtwrIXlK3eloaQw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=stMeVarFgti+1zMGAoxup+0+kZd9Q6kSmodWCqZsLoU=; b=YkqPUKlxObC+6g
+	oX/TCePmv6Q891CW3535Ree6J5zSiXW/ZqKqUfQ3qPBe2HgxRuAZobOGcB6QuhwFrh4MfQFJs1Z96
+	bqbe3W1M5xPbeuEX951/NmTZJiyJYIt+7EJw613F6hooN2wFNXS0CoB6fA0wsD/7w1G+GW7aCuOIY
+	oTwbM1AgsEwtvzjQ9BbXdsTIDCfuuCT4aaCLMRFq3xJD30opCn8Z9F5dVnidGpcpiDAba24NGmyvE
+	eo/3uJEj22uI5fkBPeOSnBgqLewpBmlKbdVhcPdFcwa1xS8ozy5UvXCf+y8DOVN60ggoPFlwXYrp2
+	bSrJtlOgwbk7lraM5xWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5fFa-00EzY7-VZ; Mon, 27 Jun 2022 03:17:23 +0000
+	id 1o5fFl-00Ezd1-LR; Mon, 27 Jun 2022 03:17:33 +0000
 Received: from mail-sz.amlogic.com ([211.162.65.117])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5fFN-00EzRZ-VX; Mon, 27 Jun 2022 03:17:11 +0000
+	id 1o5fFP-00EzRZ-Rx; Mon, 27 Jun 2022 03:17:13 +0000
 Received: from droid11-sz.amlogic.com (10.28.8.21) by mail-sz.amlogic.com
  (10.28.11.5) with Microsoft SMTP Server id 15.1.2176.2; Mon, 27 Jun 2022
- 11:17:07 +0800
+ 11:17:09 +0800
 From: Liang Yang <liang.yang@amlogic.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, <linux-mtd@lists.infradead.org>
-CC: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh+dt@kernel.org>,
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
-	<narmstrong@baylibre.com>, Martin Blumenstingl
+CC: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Richard Weinberger <richard@nod.at>, Vignesh
+ Raghavendra <vigneshr@ti.com>, Jerome Brunet <jbrunet@baylibre.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
 	<martin.blumenstingl@googlemail.com>, Kevin Hilman <khilman@baylibre.com>,
 	Jianxin Pan <jianxin.pan@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
 	XianWei Zhao <xianwei.zhao@amlogic.com>, Kelvin Zhang
@@ -40,15 +40,17 @@ CC: Liang Yang <liang.yang@amlogic.com>, Rob Herring <robh+dt@kernel.org>,
  Yu <yonghui.yu@amlogic.com>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
 	<devicetree@vger.kernel.org>
-Subject: [PATCH v8 0/5] fix the meson NFC clock
-Date: Mon, 27 Jun 2022 11:16:58 +0800
-Message-ID: <20220627031703.33243-1-liang.yang@amlogic.com>
+Subject: [PATCH v8 1/5] dt-bindings: nand: meson: fix meson nfc clock
+Date: Mon, 27 Jun 2022 11:16:59 +0800
+Message-ID: <20220627031703.33243-2-liang.yang@amlogic.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220627031703.33243-1-liang.yang@amlogic.com>
+References: <20220627031703.33243-1-liang.yang@amlogic.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.28.8.21]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220626_201710_058910_CD1BAC6A 
-X-CRM114-Status: GOOD (  11.36  )
+X-CRM114-CacheID: sfid-20220626_201711_925300_7C45CC60 
+X-CRM114-Status: GOOD (  11.26  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,68 +73,80 @@ the divider and bit6~7 is the mux for fix pll and xtal. At the beginning,
 a common MMC and NAND sub-clock was discussed and planed to be implemented
 as NFC clock provider, but now this series of patches of a common MMC and
 NAND sub-clock are never being accepted and the current binding was never
-valid. the reasons are:
+valid. the reasons for giving up are:
 1. EMMC and NAND, which are mutually exclusive anyway
 2. coupling the EMMC and NAND.
 3. it seems that a common MMC and NAND sub-clock is over engineered.
-and let us see the link for more information:
+and let us see the link fot more information:
 https://lore.kernel.org/all/20220121074508.42168-5-liang.yang@amlogic.com
 so The meson nfc can't work now, let us rework the clock.
 
-Changes since v7 [8]
- - use COMMON_CLK && (ARCH_MESON || COMPILE_TEST) instead of
-   ARCH_MESON || COMPILE_TEST || COMMON_CLK.
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+---
+ .../bindings/mtd/amlogic,meson-nand.txt       | 29 ++++++++-----------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-Changes since v6 [7]
- - use COMMON_CLK instead of !HAVE_LEGACY_CLK
-
-Changes since v5 [6]
- - add change log for patch 3/5
- - add patch 5/5 to fix the reporting error of test robot
-
-Changes since v4 [5]
- - split the dt binding patch into two patches, one for fixing, 
-   clock, the other for coverting to yaml
- - split the nfc driver patch into two patches, one for fixing 
-   clock, the other for refining the get nfc resource.
-
-Changes since v3 [4]
- - use devm_platform_ioremap_resource_byname
- - dt_binding_check for mtd/amlogic,meson-nand.yaml
-
-Changes since v2 [3]
- - use fw_name from dts, instead the wrong way using __clk_get_name
- - reg resource size change to 0x800
- - use reg-names
-
-Changes since v1 [2]
- - use clk_parent_data instead of parent_names
- - define a reg resource instead of sd_emmc_c_clkc 
-
-[1] https://lore.kernel.org/r/20220106033130.37623-1-liang.yang@amlogic.com
-    https://lore.kernel.org/r/20220106032504.23310-1-liang.yang@amlogic.com
-[2] https://lore.kernel.org/all/20220217063346.21691-1-liang.yang@amlogic.com
-[3] https://lore.kernel.org/all/20220318124121.26117-1-liang.yang@amlogic.com
-[4] https://lore.kernel.org/all/20220402074921.13316-1-liang.yang@amlogic.com/
-[5] https://lore.kernel.org/all/20220513123404.48513-1-liang.yang@amlogic.com/
-[6] https://lore.kernel.org/all/20220607064731.13367-1-liang.yang@amlogic.com/
-[7] https://lore.kernel.org/all/20220624131257.29906-1-liang.yang@amlogic.com/
-
-Liang Yang (5):
-  dt-bindings: nand: meson: fix meson nfc clock
-  mtd: rawnand: meson: fix the clock
-  mtd: rawnand: meson: refine resource getting in probe
-  dt-bindings: nand: meson: convert txt to yaml
-  mtd: rawnand: meson: not support legacy clock
-
- .../bindings/mtd/amlogic,meson-nand.txt       | 60 -------------
- .../bindings/mtd/amlogic,meson-nand.yaml      | 88 +++++++++++++++++++
- drivers/mtd/nand/raw/Kconfig                  |  2 +-
- drivers/mtd/nand/raw/meson_nand.c             | 86 +++++++++---------
- 4 files changed, 131 insertions(+), 105 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-
+diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+index 5794ab1147c1..5d5cdfef417f 100644
+--- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+@@ -7,18 +7,19 @@ Required properties:
+ - compatible : contains one of:
+   - "amlogic,meson-gxl-nfc"
+   - "amlogic,meson-axg-nfc"
++
++- reg        : Offset and length of the register set
++
++- reg-names  : "nfc" is the register set for NFC controller and "emmc"
++		is the register set for MCI controller.
++
+ - clocks     :
+ 	A list of phandle + clock-specifier pairs for the clocks listed
+ 	in clock-names.
+ 
+ - clock-names: Should contain the following:
+ 	"core" - NFC module gate clock
+-	"device" - device clock from eMMC sub clock controller
+-	"rx" - rx clock phase
+-	"tx" - tx clock phase
+-
+-- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
+-				controller port C
++	"device" - parent clock for internal NFC
+ 
+ Optional children nodes:
+ Children nodes represent the available nand chips.
+@@ -28,24 +29,18 @@ see Documentation/devicetree/bindings/mtd/nand-controller.yaml for generic bindi
+ 
+ Example demonstrate on AXG SoC:
+ 
+-	sd_emmc_c_clkc: mmc@7000 {
+-		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
+-		reg = <0x0 0x7000 0x0 0x800>;
+-	};
+-
+ 	nand-controller@7800 {
+ 		compatible = "amlogic,meson-axg-nfc";
+-		reg = <0x0 0x7800 0x0 0x100>;
++		reg = <0x0 0x7800 0x0 0x100>,
++		      <0x0 0x7000 0x0 0x800>;
++		reg-names = "nfc", "emmc";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
+ 
+ 		clocks = <&clkc CLKID_SD_EMMC_C>,
+-			<&sd_emmc_c_clkc CLKID_MMC_DIV>,
+-			<&sd_emmc_c_clkc CLKID_MMC_PHASE_RX>,
+-			<&sd_emmc_c_clkc CLKID_MMC_PHASE_TX>;
+-		clock-names = "core", "device", "rx", "tx";
+-		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
++			 <&clkc CLKID_FCLK_DIV2>;
++		clock-names = "core", "device";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&nand_pins>;
 -- 
 2.34.1
 
