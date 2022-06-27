@@ -4,62 +4,135 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C884C43334
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB2A8C43334
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 16:23:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Xn8Rra+4dxQN1Kz3Wp6zxIf5WBeRav3OKkBuqWD4Vgs=; b=bphtd+rpwBy1Q2
-	jXgMM4okmhTeYL83josE1FXzeClxIK2prOmsIx/+LstXIh6A4XZmfvvFtp3DgTR+afsGags0KOIj8
-	oSn4NUs7XVfb7SgZ0tMyk5wk2l7kc25Mn3gMERny/Fa/rlhukuNnitapR3rGZHjxldu5VNLjKUctI
-	q977pODXFXqMZ4+kvJI/jozlJr4yVU1VH4XtbEW3O/pc1IuotWJpJ0SPyDnKgSu8BGsd47HrYxtTg
-	AdgiI6ZUtjIB5acWn2vuXOw4UweHf0IjZkgK+s62XVkgR8UjFgQD89NfFOl0/G5Y9oy8sABYbef45
-	24MYC/UZ9Z7x52JfeQjw==;
+	List-Owner; bh=gH86QuosgX8T3b4jDXJKVCLb8IksjwiUFieGS66NEoU=; b=kgV2nwungKLlcX
+	Mntk9UX0gM+uyehIYJ1HzFU5XzI6fN83o8EjcCH0MHHIZbgKTaHGbPeClm3mH7czquHh4/SIHWbrA
+	5pN/OzQvosv5+RRvnR88vTC5/D+Jv6ig7ecPlFr7d0o6/lnU0CQshBUPkPjoeClEdCj6KBLlSHQCo
+	JISN3SxlGD+7pmQ/5acJfw+Jslc1rzFIBBMjFhk5h6/9svwoFVKipXO2Dd9f1RIqmB/oXqOOpMjfG
+	bmHDutYrwhKFm2Y0yq3q/toZEHm628pAHS/FMuWnQQPm/Xfz6AtylXmCg6vhmBSGh7t+0JW466D/U
+	0afiwBLNRvaHOf6okzbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qiS-001evr-P6; Mon, 27 Jun 2022 15:31:56 +0000
-Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
+	id 1o5rWD-001nIJ-U4; Mon, 27 Jun 2022 16:23:22 +0000
+Received: from mail-bn8nam12on2070.outbound.protection.outlook.com ([40.107.237.70] helo=NAM12-BN8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qi0-001eXk-Gi
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2022 15:31:33 +0000
-Received: from ramsan.of.borg ([84.195.186.194])
-	by xavier.telenet-ops.be with bizsmtp
-	id oFXJ270064C55Sk01FXJap; Mon, 27 Jun 2022 17:31:23 +0200
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1o5qhp-0014yd-Dz; Mon, 27 Jun 2022 17:31:17 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1o5qho-004jEv-IF; Mon, 27 Jun 2022 17:31:16 +0200
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Vignesh Raghavendra <vigneshr@ti.com>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>
-Cc: Mark Brown <broonie@kernel.org>,
-	linux-mtd@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 6/7] memory: renesas-rpc-if: Pass device instead of rpcif to rpcif_*()
-Date: Mon, 27 Jun 2022 17:31:13 +0200
-Message-Id: <e313b7f9a856fd8546aabb20d44d10e3af6676c6.1656341824.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1656341824.git.geert+renesas@glider.be>
-References: <cover.1656341824.git.geert+renesas@glider.be>
+	id 1o5rW9-001nFq-Co
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2022 16:23:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F2UhSIqVgAWVizMmzlRXVJ5cC1K12zlmH/ZgziilACrqOnCbWsOF/sVq7M26/YENkRJMxTD2Kl88w514+6EPfbC6z9bCYgYvawjIHc38Y12VsIvGcunA+A5a8yVsLmYVXyYTm6of2W//ZeELBtBXukVkzmmWFn+YYlX5U/iGtdAeFZPVVFFBAaJvyxud6Yw+pEmTlyMRJSxfkuB4FuFwRcb9Pf6EodtSok4Gj1QDt1zOy6RUvuG7NLCu1L9BGWiBtpzpxW25PR9hYzcPtJOSttmR2bS7u+jVGPsqvctIxWXHL3YlK3HknTbNL113JoKrPtFP9Bkd/TN+VnUqiBsabA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A6HIsa9VXgCtSrsX8db8WUxJNKTxvHcEv0u6Ho0f7xc=;
+ b=UUJyVajBIn8CXOhQj4uJTqeJMpHGaqRvFxa07OVUrHoJs7TS2cqYKFlHjXWrLrTGj1KYeuG+TGIs7o5Vcbl9CFGmiv+mxIaLcLYPA1aWVKfxPLzkIFWwjLN+TUWa3GtekOoTit5UwuFowuWHGAs9e8wGKKDZqMsT7U/3kGRoe+TgPKY7JYKCkvfqUOehkSs3TVY0cxfE/tDdsfo2H5Ak49Mx5fwMXVnNYEtz0NBjA+s8gFeF1DMgua3jjdmU3YqSMVjG/8jc7e7QYTs2F9RjpnXxbQ4rFGwR5V415KlaOXhZq1Ih/9vjNXIw9x0iPtepX04GxRu8MPFRioTrC0xECg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A6HIsa9VXgCtSrsX8db8WUxJNKTxvHcEv0u6Ho0f7xc=;
+ b=Hhywf3ap1W/aA08g2Ke/9Q06e+HKtzVGIifRcMyyUeeNBXfPA+7ZnBJHAnGh5AJge/P2QZfw9AuPiQA747F6DmVSTHnOVlKYvcviT5BNmGcLGtm7PMGwWcrWmCaHK3B9BBNvYTynHpgKcLcxfvBAXEdYbwwgSIiMi/McRsTxlrs=
+Received: from BN7PR12MB2802.namprd12.prod.outlook.com (2603:10b6:408:25::33)
+ by DM5PR12MB2359.namprd12.prod.outlook.com (2603:10b6:4:b4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15; Mon, 27 Jun
+ 2022 16:23:10 +0000
+Received: from BN7PR12MB2802.namprd12.prod.outlook.com
+ ([fe80::30c4:f356:a806:509a]) by BN7PR12MB2802.namprd12.prod.outlook.com
+ ([fe80::30c4:f356:a806:509a%7]) with mapi id 15.20.5373.018; Mon, 27 Jun 2022
+ 16:23:10 +0000
+From: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Amit Kumar Mahapatra
+	<amit.kumar-mahapatra@xilinx.com>
+CC: "vigneshr@ti.com" <vigneshr@ti.com>, "git (AMD-Xilinx)" <git@amd.com>,
+	"boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] mtd: rawnand: arasan: Update NAND bus clock
+ instead of system clock
+Thread-Topic: [PATCH v2 1/2] mtd: rawnand: arasan: Update NAND bus clock
+ instead of system clock
+Thread-Index: AQHYhUyfBAllq+BbXU+3bAWI6powiK1e6nyAgASOXKA=
+Date: Mon, 27 Jun 2022 16:23:10 +0000
+Message-ID:  <BN7PR12MB28020605AA6E17BFA68BDF93DCB99@BN7PR12MB2802.namprd12.prod.outlook.com>
+References: <20220621085500.1005-1-amit.kumar-mahapatra@xilinx.com>
+	<20220621085500.1005-2-amit.kumar-mahapatra@xilinx.com>
+ <20220624204515.6b003ef9@xps-13>
+In-Reply-To: <20220624204515.6b003ef9@xps-13>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ab3ef44e-c601-4bc4-8a4d-08da58595366
+x-ms-traffictypediagnostic: DM5PR12MB2359:EE_
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr,ExtFwd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:  iWFHA8Wdiz3oE+2JsQ4Zh1gluXSL5yu/z4jsu7jbYmk9B+8JTQTXsF/fkgYc6LKwfrLtx9MJ3HzQYYHr8vqZQTy2jDLk+ULLXMPBy7Ar2y45YoxN5+aVmhcj8u4Jps1uxWJEEVBEg1C7qhryjUDzgFOBjKYpPqcBggASylgXZYXGorY5RdzFoXfl955XsOnsxsdVSFSjcjfIZmLpZgDwnG+iL+buoCE0BHK6P8bhp+5EcacUNZjaD4Og0O/vad6S0CbPP7YMbraGLc8TxAi+YxP3MMqo+DyV9PPF0fb20GfHjG+lPFPdLaQso8K7WfgUuR/7/Znqmh/NUWOAwHxfisoVSpSx5sy7Cqyt4vgvvzRw/rGTvnW64kM3u+do8gptrlMTohUnsJfC82rQosuao8yLhV03nHU2OSEF6Y6k7lHmohZHy07rcx2+KjThgRLVBWa4Pe9P+1Bvdy03v+6dNptM3j8yM4TwQ2MU1T0jrr+Nhw1kCI1TAjlhqNRWuH+Xf9chHAeFwEIztPqznWJDLSXfb6bKb0l3FSarn2mMQ+jDiNwNmIxBqZYYNP2qCVhCMd9+Yyf+Xue2MZwGUFgs8asTWBjsrz23h5jTbuw4K2kUhI4PZc9riGzR4jpHcFkol1ctckBedsvgaW3W84n2VBkdLRUB0Whw3IHG9gq7zhUm/0noHQmCcryEJhkVVc3HHE0PwsATbpJ9viqrAiKr71V95+JT6C11z6Tng9CSzE2QFgu21Mbm5WS+RrZ22vOTVcm6DUrk2MO3ghnqDdCSMKWeD7pjamjtuQCyTe28oxY=
+x-forefront-antispam-report:  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2802.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(136003)(366004)(376002)(346002)(39860400002)(66574015)(5660300002)(186003)(8676002)(76116006)(122000001)(41300700001)(52536014)(4326008)(66556008)(66946007)(64756008)(66476007)(66446008)(2906002)(8936002)(86362001)(55016003)(6506007)(53546011)(7696005)(33656002)(316002)(15650500001)(54906003)(83380400001)(110136005)(9686003)(26005)(38100700002)(38070700005)(71200400001)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?UnNZMnJ2cEFSY2kranhRZEtYMnhCaTltNmRCeEdsWWhVNjNKaHpHVnR5Z3NX?=
+ =?utf-8?B?WkVoSU1GeXdnMGVZQmhjYWpHUEtla2ZrQXdBZlVLWnh5MXFUK2dCZXFxa1d5?=
+ =?utf-8?B?MU5ubWZ2U2FBQjRRclc2UkV0UGN4d1V2N3FvTmhJb0J5OEFlV0tYYndxL0t5?=
+ =?utf-8?B?Sys3alhORFFkb004azZ2YWhmOFNoeXBSMWl1cWRvOWMrUGZEVlhSYnUxWnNq?=
+ =?utf-8?B?VVljWjRPeDRURnhtK0dtcFpyRGVaY0g1WEFxcm1iRzFxcmhrL2NDd1RyZ1RR?=
+ =?utf-8?B?TjBueXRRdzZzclA3ZG1xNnl2TFhLSWdUcXZjWW5NL0xYVlpiS3NZNjRnaVNj?=
+ =?utf-8?B?VS90TTM3bi9jdmxsbTBTQk9TbFdmalRTN1djYm5VV1VlMi9jNGQyR01GbEI5?=
+ =?utf-8?B?NFN5Ty9VVXpjN09TYXF6cHQrbDUyWVhUVHBsR2prVVN4ZmpKNWdDTjhDSy9M?=
+ =?utf-8?B?a3NZM0hRMUhYOGxaeDNvQWh0R3BPQkpETFlRWGo1WU9FdWlaZ1hFbTNJbTY3?=
+ =?utf-8?B?M09jU2VSMkthQkgyemVHSGVVOFNDaXRpUGVHY2Mxb2NBeGtoL2U2YXJsMEU3?=
+ =?utf-8?B?ajIxUzh5b1VpenJBRHRKUXI0cVFzL3hKb0tGU1ByMHpoOUNMdFQ0R0JMVk9w?=
+ =?utf-8?B?NndLWWtyZWQ2aGxzUEtrTzg5bjU0bjBGR3Q4Z0o1dFhlWHZhdG4zNGZndzdR?=
+ =?utf-8?B?a3VVZ0VUOWRmSjluNkxYbjFRc3NpcSttQnRjNnhHZmc2VlAxZmU5TklUYkFq?=
+ =?utf-8?B?TXdNek1SVi9GNFFFOEJOVW1uaGc4TXNvYWFpKzJhSVpPbks4aG9TU0JtMytl?=
+ =?utf-8?B?Q2pwOFI2eEdWVjl3dHkyN2ZXYU50NmczUmE2cGs2ck41WnVlNHRpcFBFbTJi?=
+ =?utf-8?B?SWEzc0ZGK3R1ZGZHSGdzY09GaFpXVVo2Y3Z5OGtKYnNqb3piN0c4N3MzdFlS?=
+ =?utf-8?B?RmZBUyt1TVpMU0s3SERveVNzNEV4aHNUQXZPTDJ5M25BL21kdFJrUHNNcFFx?=
+ =?utf-8?B?VVlPanE5ZEY0UEZDOWMrTE9Yenh4eCt2Z0ZmMk1TbThZbjBwOHV4d2JJdUpz?=
+ =?utf-8?B?TnplRktHU0hLYmNCVStBZnNOK1gyMnYyVzZGck1vNlFZUmszbDRFYmx2dUlU?=
+ =?utf-8?B?dVB4MGlFalpOZ1N3ZXczeVBmVy9OZTAyZG9nYk1KTXltaGlFczN0RlRPamF2?=
+ =?utf-8?B?THJ6RWEwdWYySFFDUDd0UlNTcHdkUm5kekREMjlXa3ZjZGNUYVIrZ2dKV1Fp?=
+ =?utf-8?B?RnM5T2NEcXFZWmFGa2Q0RmVJcmllQUV1WDZLM0JnYk0xQkJHaXBSNnNsMTI3?=
+ =?utf-8?B?a3IwanBtY0tUMUFmTzRZenRxVTcvNEVOMGlGM1NTWWNINUlmUDZkdno5R0d1?=
+ =?utf-8?B?cU0zeWZnZmtuQUVSc3VEaHRHR0J2S0FxVU5xcVAvb2dWSEFFblRCZHF3cjc0?=
+ =?utf-8?B?OVJrdlJldkhmREVLMHY0YWo2eEM0ckpNRngxOHkzT2Nnc3hlRVd6c1d0Q2R3?=
+ =?utf-8?B?b2ZQMXVJTnVRR0FoNnhJTkRtRXpiWjhUdUlBeDNsL3FtQWt0YmdlZGpwZDVX?=
+ =?utf-8?B?YndMclV3MTZkeUVyZFBUMXBOakRTU2UzNzZrRXNlUG9YLytTQWg0SUQ1Ums5?=
+ =?utf-8?B?NXVERlkvS3pzRElNaHFJVWdzeFV6eHhrbmJJWi9MNnBJVStSTHF1ZXhnUjlH?=
+ =?utf-8?B?Ly9Wc3l2WGVsZ2lpaVdhTTArQzZKNGpBdXFNSTc1UXRXaG41a2NjdmtmRVNB?=
+ =?utf-8?B?RTZkWGdNc05qQTRnbEhZM0FRbWNONlBGeS9sVCtMUXNiWkgxcFpEQ2lyNXJW?=
+ =?utf-8?B?eGJoR0Y0Tm54Z3dDdzhDVG9VeUQ2Q0FDZEdSNUF3WXkxbXVoTDJxd1pBWUZ0?=
+ =?utf-8?B?dnZoTWJGMmgrbm1iKzcrOE5YcUl0V09jNkNUTGIvcXlYTUx0YWhMdGhsdVBw?=
+ =?utf-8?B?STg3NHk4L3doZ2NBckZmNVFScjVJUW5EeGhjZWpER0Y5RVhEUkZoN2xDSHFH?=
+ =?utf-8?B?YzNMMDhxZUxlV2tzc0lSUGZ6RjZMVE9pR2JOR2Y0R0h3aVIwWjhrYmNEQUth?=
+ =?utf-8?B?dGhld3dsS0lCVTRTUUFMaHhNNVh1VjdPSzg0bFBQdFlwV3crODkycEI3YTYy?=
+ =?utf-8?Q?QSJ4=3D?=
 MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR12MB2802.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab3ef44e-c601-4bc4-8a4d-08da58595366
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2022 16:23:10.0752
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WXx3TIHMpMPtnVoIpSO9PToUvmBhN72JUvEjtPRfaBugBBRLqENweLcmdSpFIGXtYnjxmyzd9EiYhJqme6bOWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2359
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220627_083128_722952_D47FB226 
-X-CRM114-Status: GOOD (  16.10  )
+X-CRM114-CacheID: sfid-20220627_092317_951344_54E81DDF 
+X-CRM114-Status: GOOD (  31.46  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,313 +144,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Most rpcif_*() API functions do not need access to any other fields in
-the rpcif structure than the device pointer.  Simplify dependencies by
-passing the device pointer instead.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/memory/renesas-rpc-if.c | 32 ++++++++++++++++----------------
- drivers/mtd/hyperbus/rpc-if.c   | 18 +++++++++---------
- drivers/spi/spi-rpc-if.c        | 14 +++++++-------
- include/memory/renesas-rpc-if.h | 16 ++++++++--------
- 4 files changed, 40 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index ef0336cbb4c196fb..ec76e603ad24d214 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -299,13 +299,13 @@ static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif_priv *rpc)
- 	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
- }
- 
--int rpcif_hw_init(struct rpcif *rpcif, bool hyperflash)
-+int rpcif_hw_init(struct device *dev, bool hyperflash)
- {
--	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
-+	struct rpcif_priv *rpc = dev_get_drvdata(dev);
- 	u32 dummy;
- 	int ret;
- 
--	ret = pm_runtime_resume_and_get(rpc->dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret)
- 		return ret;
- 
-@@ -352,7 +352,7 @@ int rpcif_hw_init(struct rpcif *rpcif, bool hyperflash)
- 	regmap_write(rpc->regmap, RPCIF_SSLDR, RPCIF_SSLDR_SPNDL(7) |
- 		     RPCIF_SSLDR_SLNDL(7) | RPCIF_SSLDR_SCKDL(7));
- 
--	pm_runtime_put(rpc->dev);
-+	pm_runtime_put(dev);
- 
- 	rpc->bus_size = hyperflash ? 2 : 1;
- 
-@@ -382,10 +382,10 @@ static u8 rpcif_bit_size(u8 buswidth)
- 	return buswidth > 4 ? 2 : ilog2(buswidth);
- }
- 
--void rpcif_prepare(struct rpcif *rpcif, const struct rpcif_op *op, u64 *offs,
-+void rpcif_prepare(struct device *dev, const struct rpcif_op *op, u64 *offs,
- 		   size_t *len)
- {
--	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
-+	struct rpcif_priv *rpc = dev_get_drvdata(dev);
- 
- 	rpc->smcr = 0;
- 	rpc->smadr = 0;
-@@ -470,13 +470,13 @@ void rpcif_prepare(struct rpcif *rpcif, const struct rpcif_op *op, u64 *offs,
- }
- EXPORT_SYMBOL(rpcif_prepare);
- 
--int rpcif_manual_xfer(struct rpcif *rpcif)
-+int rpcif_manual_xfer(struct device *dev)
- {
--	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
-+	struct rpcif_priv *rpc = dev_get_drvdata(dev);
- 	u32 smenr, smcr, pos = 0, max = rpc->bus_size == 2 ? 8 : 4;
- 	int ret = 0;
- 
--	ret = pm_runtime_resume_and_get(rpc->dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -588,13 +588,13 @@ int rpcif_manual_xfer(struct rpcif *rpcif)
- 	}
- 
- exit:
--	pm_runtime_put(rpc->dev);
-+	pm_runtime_put(dev);
- 	return ret;
- 
- err_out:
- 	if (reset_control_reset(rpc->rstc))
--		dev_err(rpc->dev, "Failed to reset HW\n");
--	rpcif_hw_init(rpcif, rpc->bus_size == 2);
-+		dev_err(dev, "Failed to reset HW\n");
-+	rpcif_hw_init(dev, rpc->bus_size == 2);
- 	goto exit;
- }
- EXPORT_SYMBOL(rpcif_manual_xfer);
-@@ -641,9 +641,9 @@ static void memcpy_fromio_readw(void *to,
- 	}
- }
- 
--ssize_t rpcif_dirmap_read(struct rpcif *rpcif, u64 offs, size_t len, void *buf)
-+ssize_t rpcif_dirmap_read(struct device *dev, u64 offs, size_t len, void *buf)
- {
--	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
-+	struct rpcif_priv *rpc = dev_get_drvdata(dev);
- 	loff_t from = offs & (rpc->size - 1);
- 	size_t size = rpc->size - from;
- 	int ret;
-@@ -651,7 +651,7 @@ ssize_t rpcif_dirmap_read(struct rpcif *rpcif, u64 offs, size_t len, void *buf)
- 	if (len > size)
- 		len = size;
- 
--	ret = pm_runtime_resume_and_get(rpc->dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -671,7 +671,7 @@ ssize_t rpcif_dirmap_read(struct rpcif *rpcif, u64 offs, size_t len, void *buf)
- 	else
- 		memcpy_fromio(buf, rpc->dirmap + from, len);
- 
--	pm_runtime_put(rpc->dev);
-+	pm_runtime_put(dev);
- 
- 	return len;
- }
-diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
-index d00d302434030b20..41734e337ac00e40 100644
---- a/drivers/mtd/hyperbus/rpc-if.c
-+++ b/drivers/mtd/hyperbus/rpc-if.c
-@@ -56,7 +56,7 @@ static void rpcif_hb_prepare_read(struct rpcif *rpc, void *to,
- 	op.data.nbytes = len;
- 	op.data.buf.in = to;
- 
--	rpcif_prepare(rpc, &op, NULL, NULL);
-+	rpcif_prepare(rpc->dev, &op, NULL, NULL);
- }
- 
- static void rpcif_hb_prepare_write(struct rpcif *rpc, unsigned long to,
-@@ -70,7 +70,7 @@ static void rpcif_hb_prepare_write(struct rpcif *rpc, unsigned long to,
- 	op.data.nbytes = len;
- 	op.data.buf.out = from;
- 
--	rpcif_prepare(rpc, &op, NULL, NULL);
-+	rpcif_prepare(rpc->dev, &op, NULL, NULL);
- }
- 
- static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
-@@ -81,7 +81,7 @@ static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
- 
- 	rpcif_hb_prepare_read(&hyperbus->rpc, &data, addr, 2);
- 
--	rpcif_manual_xfer(&hyperbus->rpc);
-+	rpcif_manual_xfer(hyperbus->rpc.dev);
- 
- 	return data.x[0];
- }
-@@ -94,7 +94,7 @@ static void rpcif_hb_write16(struct hyperbus_device *hbdev, unsigned long addr,
- 
- 	rpcif_hb_prepare_write(&hyperbus->rpc, addr, &data, 2);
- 
--	rpcif_manual_xfer(&hyperbus->rpc);
-+	rpcif_manual_xfer(hyperbus->rpc.dev);
- }
- 
- static void rpcif_hb_copy_from(struct hyperbus_device *hbdev, void *to,
-@@ -105,7 +105,7 @@ static void rpcif_hb_copy_from(struct hyperbus_device *hbdev, void *to,
- 
- 	rpcif_hb_prepare_read(&hyperbus->rpc, to, from, len);
- 
--	rpcif_dirmap_read(&hyperbus->rpc, from, len, to);
-+	rpcif_dirmap_read(hyperbus->rpc.dev, from, len, to);
- }
- 
- static const struct hyperbus_ops rpcif_hb_ops = {
-@@ -130,9 +130,9 @@ static int rpcif_hb_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, hyperbus);
- 
--	rpcif_enable_rpm(&hyperbus->rpc);
-+	rpcif_enable_rpm(hyperbus->rpc.dev);
- 
--	error = rpcif_hw_init(&hyperbus->rpc, true);
-+	error = rpcif_hw_init(hyperbus->rpc.dev, true);
- 	if (error)
- 		goto out_disable_rpm;
- 
-@@ -150,7 +150,7 @@ static int rpcif_hb_probe(struct platform_device *pdev)
- 	return 0;
- 
- out_disable_rpm:
--	rpcif_disable_rpm(&hyperbus->rpc);
-+	rpcif_disable_rpm(hyperbus->rpc.dev);
- 	return error;
- }
- 
-@@ -160,7 +160,7 @@ static int rpcif_hb_remove(struct platform_device *pdev)
- 
- 	hyperbus_unregister_device(&hyperbus->hbdev);
- 
--	rpcif_disable_rpm(&hyperbus->rpc);
-+	rpcif_disable_rpm(hyperbus->rpc.dev);
- 
- 	return 0;
- }
-diff --git a/drivers/spi/spi-rpc-if.c b/drivers/spi/spi-rpc-if.c
-index 24ec1c83f379ceec..5063587d2c724c7c 100644
---- a/drivers/spi/spi-rpc-if.c
-+++ b/drivers/spi/spi-rpc-if.c
-@@ -58,7 +58,7 @@ static void rpcif_spi_mem_prepare(struct spi_device *spi_dev,
- 		rpc_op.data.dir = RPCIF_NO_DATA;
- 	}
- 
--	rpcif_prepare(rpc, &rpc_op, offs, len);
-+	rpcif_prepare(rpc->dev, &rpc_op, offs, len);
- }
- 
- static bool rpcif_spi_mem_supports_op(struct spi_mem *mem,
-@@ -86,7 +86,7 @@ static ssize_t rpcif_spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
- 
- 	rpcif_spi_mem_prepare(desc->mem->spi, &desc->info.op_tmpl, &offs, &len);
- 
--	return rpcif_dirmap_read(rpc, offs, len, buf);
-+	return rpcif_dirmap_read(rpc->dev, offs, len, buf);
- }
- 
- static int rpcif_spi_mem_dirmap_create(struct spi_mem_dirmap_desc *desc)
-@@ -117,7 +117,7 @@ static int rpcif_spi_mem_exec_op(struct spi_mem *mem,
- 
- 	rpcif_spi_mem_prepare(mem->spi, op, NULL, NULL);
- 
--	return rpcif_manual_xfer(rpc);
-+	return rpcif_manual_xfer(rpc->dev);
- }
- 
- static const struct spi_controller_mem_ops rpcif_spi_mem_ops = {
-@@ -147,7 +147,7 @@ static int rpcif_spi_probe(struct platform_device *pdev)
- 
- 	ctlr->dev.of_node = parent->of_node;
- 
--	rpcif_enable_rpm(rpc);
-+	rpcif_enable_rpm(rpc->dev);
- 
- 	ctlr->num_chipselect = 1;
- 	ctlr->mem_ops = &rpcif_spi_mem_ops;
-@@ -156,7 +156,7 @@ static int rpcif_spi_probe(struct platform_device *pdev)
- 	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_TX_QUAD | SPI_RX_QUAD;
- 	ctlr->flags = SPI_CONTROLLER_HALF_DUPLEX;
- 
--	error = rpcif_hw_init(rpc, false);
-+	error = rpcif_hw_init(rpc->dev, false);
- 	if (error)
- 		goto out_disable_rpm;
- 
-@@ -169,7 +169,7 @@ static int rpcif_spi_probe(struct platform_device *pdev)
- 	return 0;
- 
- out_disable_rpm:
--	rpcif_disable_rpm(rpc);
-+	rpcif_disable_rpm(rpc->dev);
- 	return error;
- }
- 
-@@ -179,7 +179,7 @@ static int rpcif_spi_remove(struct platform_device *pdev)
- 	struct rpcif *rpc = spi_controller_get_devdata(ctlr);
- 
- 	spi_unregister_controller(ctlr);
--	rpcif_disable_rpm(rpc);
-+	rpcif_disable_rpm(rpc->dev);
- 
- 	return 0;
- }
-diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
-index ddf94356752d3315..d2130c2c8c82fbd5 100644
---- a/include/memory/renesas-rpc-if.h
-+++ b/include/memory/renesas-rpc-if.h
-@@ -69,20 +69,20 @@ struct rpcif {
- };
- 
- int rpcif_sw_init(struct rpcif *rpc, struct device *dev);
--int rpcif_hw_init(struct rpcif *rpc, bool hyperflash);
--void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
-+int rpcif_hw_init(struct device *dev, bool hyperflash);
-+void rpcif_prepare(struct device *dev, const struct rpcif_op *op, u64 *offs,
- 		   size_t *len);
--int rpcif_manual_xfer(struct rpcif *rpc);
--ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf);
-+int rpcif_manual_xfer(struct device *dev);
-+ssize_t rpcif_dirmap_read(struct device *dev, u64 offs, size_t len, void *buf);
- 
--static inline void rpcif_enable_rpm(struct rpcif *rpc)
-+static inline void rpcif_enable_rpm(struct device *dev)
- {
--	pm_runtime_enable(rpc->dev);
-+	pm_runtime_enable(dev);
- }
- 
--static inline void rpcif_disable_rpm(struct rpcif *rpc)
-+static inline void rpcif_disable_rpm(struct device *dev)
- {
--	pm_runtime_disable(rpc->dev);
-+	pm_runtime_disable(dev);
- }
- 
- #endif // __RENESAS_RPC_IF_H
--- 
-2.25.1
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGVsbG8gTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1p
+cXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+DQo+IFNlbnQ6IFNhdHVyZGF5
+LCBKdW5lIDI1LCAyMDIyIDEyOjE1IEFNDQo+IFRvOiBBbWl0IEt1bWFyIE1haGFwYXRyYSA8YW1p
+dC5rdW1hci1tYWhhcGF0cmFAeGlsaW54LmNvbT4NCj4gQ2M6IHZpZ25lc2hyQHRpLmNvbTsgZ2l0
+IChBTUQtWGlsaW54KSA8Z2l0QGFtZC5jb20+Ow0KPiBib3Jpcy5icmV6aWxsb25AY29sbGFib3Jh
+LmNvbTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOyBNYWhhcGF0cmEsIEFtaXQgS3VtYXIgPGFtaXQua3VtYXItDQo+IG1haGFw
+YXRyYUBhbWQuY29tPjsgTWFoYXBhdHJhLCBBbWl0IEt1bWFyIDxhbWl0Lmt1bWFyLQ0KPiBtYWhh
+cGF0cmFAYW1kLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAxLzJdIG10ZDogcmF3bmFu
+ZDogYXJhc2FuOiBVcGRhdGUgTkFORCBidXMgY2xvY2sNCj4gaW5zdGVhZCBvZiBzeXN0ZW0gY2xv
+Y2sNCj4gDQo+IEhpIEFtaXQsDQo+IA0KPiBhbWl0Lmt1bWFyLW1haGFwYXRyYUB4aWxpbnguY29t
+IHdyb3RlIG9uIFR1ZSwgMjEgSnVuIDIwMjIgMTQ6MjQ6NTkNCj4gKzA1MzA6DQo+IA0KPiA+IElu
+IGN1cnJlbnQgaW1wbGVtZW50YXRpb24gdGhlIEFyYXNhbiBOQU5EIGRyaXZlciBpcyB1cGRhdGlu
+ZyB0aGUNCj4gPiBzeXN0ZW0gY2xvY2soaS5lLiwgYW5hbmQtPmNsaykgaW4gYWNjb3JkYW5jZSB0
+byB0aGUgdGltaW5nIG1vZGVzDQo+ID4gKGkuZS4sIFNEUiBvciBOVkREUikuIEJ1dCBhcyBwZXIg
+dGhlIEFyYXNhbiBOQU5EIGNvbnRyb2xsZXIgc3BlYyB0aGUNCj4gPiBmbGFzaCBjbG9jayBvciB0
+aGUgTkFORCBidXMgY2xvY2soaS5lLiwgbmZjLT5idXNfY2xrKSwgbmVlZCB0byBiZQ0KPiA+IHVw
+ZGF0ZWQgaW5zdGVhZC4gVGhpcyBwYXRjaCBrZWVwcyB0aGUgc3lzdGVtIGNsb2NrIHVuY2hhbmdl
+ZCBhbmQNCj4gPiB1cGRhdGVzIHRoZSBOQU5EIGJ1cyBjbG9jayBhcyBwZXIgdGhlIHRpbWluZyBt
+b2Rlcy4NCj4gDQo+IFRoaXMgaXMgbm90IHdoYXQgeW91IGRvIGJlbG93LiBJZiB0aGUgY2xvY2sg
+dGhhdCBpcyBjaGFuZ2VkIGlzIHRoZSB3cm9uZyBvbmUsDQo+IHRoZW4ganVzdCBjaGFuZ2UgdGhl
+IGNsb2NrIHVzZWQgaW4gdGhlIGNsa19zZXRfcmF0ZSBjYWxsIGluc3RlYWQgb2YgY2FsbGluZw0K
+PiBjbGtfc2V0X3JhdGUgdHdpY2UgYXQgdGhlIHdyb25nIGxvY2F0aW9uLg0KPiAtPnNldF9pbnRl
+cmZhY2UgaXMgZG9uZSBvbmNlIHBlciBjaGlwLCBpZiB5b3UgaGF2ZSB0d28gZGlmZmVyZW50IGNo
+aXBzDQo+IG9uIHRoZSBzYW1lIHN5c3RlbSB5b3UgbXVzdCBjaGFuZ2UgdGhlIGNsb2NrIHdoZW4g
+eW91IHN3aXRjaCBmcm9tIG9uZQ0KPiBjaGlwIHRvIHRoZSBvdGhlci4gWW91ciBjdXJyZW50IGlt
+cGxlbWVudGF0aW9uIGRpc3Jlc3BlY3RzIHRoYXQsDQo+IHVuZm9ydHVuYXRlbHkuDQoNCg0KIFdp
+bGwgbWFrZSB0aGUgY2hhbmdlcyBpbiB0aGUgbmV4dCBpdGVyYXRpb24uDQo+IA0KPiA+DQo+ID4g
+Rml4ZXM6IDE5N2I4OGZlY2M1MCAoIm10ZDogcmF3bmFuZDogYXJhc2FuOiBBZGQgbmV3IEFyYXNh
+biBOQU5EDQo+ID4gY29udHJvbGxlciIpDQo+IA0KPiBSZXF1aXJlcyBhIENjOiBzdGFibGUgdGFn
+DQoNCldpbGwgdGhpcyBpbiB0aGUgbmV4dCBpdGVyYXRpb24uDQoNClJlZ2FyZHMsDQpBbWl0DQo+
+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEFtaXQgS3VtYXIgTWFoYXBhdHJhIDxhbWl0Lmt1bWFyLQ0K
+PiBtYWhhcGF0cmFAeGlsaW54LmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvbmFuZC9y
+YXcvYXJhc2FuLW5hbmQtY29udHJvbGxlci5jIHwgMTYgKysrKysrKysrKysrKy0tLQ0KPiA+ICAx
+IGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9hcmFzYW4tbmFuZC1jb250cm9sbGVy
+LmMNCj4gPiBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNvbnRyb2xsZXIuYw0K
+PiA+IGluZGV4IDUzYmQxMDczODQxOC4uNGY2ZGE4MmRkMmIxIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNvbnRyb2xsZXIuYw0KPiA+ICsrKyBiL2Ry
+aXZlcnMvbXRkL25hbmQvcmF3L2FyYXNhbi1uYW5kLWNvbnRyb2xsZXIuYw0KPiA+IEBAIC05Njgs
+NiArOTY4LDcgQEAgc3RhdGljIGludCBhbmZjX3NldHVwX2ludGVyZmFjZShzdHJ1Y3QgbmFuZF9j
+aGlwDQo+ICpjaGlwLCBpbnQgdGFyZ2V0LA0KPiA+ICAJY29uc3Qgc3RydWN0IG5hbmRfc2RyX3Rp
+bWluZ3MgKnNkcjsNCj4gPiAgCWNvbnN0IHN0cnVjdCBuYW5kX252ZGRyX3RpbWluZ3MgKm52ZGRy
+Ow0KPiA+ICAJdW5zaWduZWQgaW50IHRjY3NfbWluLCBkcXNfbW9kZSwgZmFzdF90Y2FkOw0KPiA+
+ICsJaW50IHJldDsNCj4gPg0KPiA+ICAJaWYgKG5hbmRfaW50ZXJmYWNlX2lzX252ZGRyKGNvbmYp
+KSB7DQo+ID4gIAkJbnZkZHIgPSBuYW5kX2dldF9udmRkcl90aW1pbmdzKGNvbmYpOyBAQCAtMTA0
+Myw3DQo+ICsxMDQ0LDExIEBAIHN0YXRpYw0KPiA+IGludCBhbmZjX3NldHVwX2ludGVyZmFjZShz
+dHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCBpbnQgdGFyZ2V0LA0KPiA+ICAJCQkJIERRU19CVUZGX1NF
+TF9PVVQoZHFzX21vZGUpOw0KPiA+ICAJfQ0KPiA+DQo+ID4gLQlhbmFuZC0+Y2xrID0gQU5GQ19Y
+TE5YX1NEUl9ERkxUX0NPUkVfQ0xLOw0KPiA+ICsJcmV0ID0gY2xrX3NldF9yYXRlKG5mYy0+YnVz
+X2NsaywgQU5GQ19YTE5YX1NEUl9ERkxUX0NPUkVfQ0xLKTsNCj4gPiArCWlmIChyZXQpIHsNCj4g
+PiArCQlkZXZfZXJyKG5mYy0+ZGV2LCAiRmFpbGVkIHRvIGNoYW5nZSBidXMgY2xvY2sgcmF0ZVxu
+Iik7DQo+ID4gKwkJcmV0dXJuIHJldDsNCj4gPiArCX0NCj4gPg0KPiA+ICAJLyoNCj4gPiAgCSAq
+IER1ZSB0byBhIGhhcmR3YXJlIGJ1ZyBpbiB0aGUgWnlucU1QIFNvQywgU0RSIHRpbWluZyBtb2Rl
+cyAwLTENCj4gPiB3b3JrIEBAIC0xMDUyLDggKzEwNTcsMTMgQEAgc3RhdGljIGludCBhbmZjX3Nl
+dHVwX2ludGVyZmFjZShzdHJ1Y3QNCj4gbmFuZF9jaGlwICpjaGlwLCBpbnQgdGFyZ2V0LA0KPiA+
+ICAJICogODBNSHogd2hlbiB1c2luZyBTRFIgbW9kZXMgMi01IHdpdGggdGhpcyBTb0MuDQo+ID4g
+IAkgKi8NCj4gPiAgCWlmIChvZl9kZXZpY2VfaXNfY29tcGF0aWJsZShucCwgInhsbngsenlucW1w
+LW5hbmQtY29udHJvbGxlciIpICYmDQo+ID4gLQkgICAgbmFuZF9pbnRlcmZhY2VfaXNfc2RyKGNv
+bmYpICYmIGNvbmYtPnRpbWluZ3MubW9kZSA+PSAyKQ0KPiA+IC0JCWFuYW5kLT5jbGsgPSBBTkZD
+X1hMTlhfU0RSX0hTX0NPUkVfQ0xLOw0KPiA+ICsJICAgIG5hbmRfaW50ZXJmYWNlX2lzX3Nkcihj
+b25mKSAmJiBjb25mLT50aW1pbmdzLm1vZGUgPj0gMikgew0KPiA+ICsJCXJldCA9IGNsa19zZXRf
+cmF0ZShuZmMtPmJ1c19jbGssDQo+IEFORkNfWExOWF9TRFJfSFNfQ09SRV9DTEspOw0KPiA+ICsJ
+CWlmIChyZXQpIHsNCj4gPiArCQkJZGV2X2VycihuZmMtPmRldiwgIkZhaWxlZCB0byBjaGFuZ2Ug
+YnVzIGNsb2NrDQo+IHJhdGVcbiIpOw0KPiA+ICsJCQlyZXR1cm4gcmV0Ow0KPiA+ICsJCX0NCj4g
+PiArCX0NCj4gPg0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0NCj4gDQo+IA0KPiBUaGFua3MsDQo+
+IE1pcXXDqGwNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
