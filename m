@@ -4,72 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10D0FC43334
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:29:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3888ACCA473
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GB8NVYKIeu/7KoDmzh3EjLrIHq8nNuoyMjRCao9CGbM=; b=GC+wZ1+eAltH1W
-	IHOtaVcAHyuNaxP2WneJpxuWambOTc9vao9Ng6eyFv3UIwdq8KfOBhfMoj0lFk1BA2MaMaSZBu7er
-	Z7YFt3nMLD86wwuBt1MNjaYmO7ITxwq4izUGCIxDDYTsxNbf3hNiVlqGlkyLRaQk0Rd5+dXMhZ8K4
-	rfXcI2Ago/EVbGC6/KtulMEh/h020/MF/vvqJdlvb7QpgMdsU6R3AwsesznDJ6MGa8dyscOCaLfpS
-	LTGGvow3SsQzW4oere84YGX2C9KCpmkjgj5HV4h0Dfj3kUge2Ke/Pw7tzpuumN5IEnLNztzIGfQ2T
-	8Q3XCN750o+m2ggHku0g==;
+	List-Owner; bh=vBQg65j0cCol9t6hYWEhc496q2r7IfaJcJtJR47yl2o=; b=mfS3jrHAN4kreA
+	qrb3Rk0Q3mT8RzOuI5Rs2eRuwJBVtN3MCTg5ZiE1UnVOXHJHZQKg/6AqQ/+YBZcWQZT4duyfkhokY
+	2Gqk/ts9KWkNbL5zZXtvH7MvB3g5Abx0gkBhPntFOYla0rZ05xN0bwKsChazMk7ai23rbBWGaGGFB
+	FrI7G1N47dyArhorvb7KCJzrT4PpSCGzIa2o6Hvz4i3H940AVxeWii9SEYykuConHx0/rWqWFzXHp
+	VYMpm+JXUJ9nqE+R7JBsoj9xGlWigT0548pil4f742sZ4NjzbKVYmWW4am/i7eRadz9rI3e8Cs9Jb
+	nZtzqABQwdiBYBogjjSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qfa-001e5I-6Q; Mon, 27 Jun 2022 15:28:58 +0000
-Received: from mail-qv1-f49.google.com ([209.85.219.49])
+	id 1o5qi6-001ecr-Ei; Mon, 27 Jun 2022 15:31:34 +0000
+Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qfW-001e3v-Rt; Mon, 27 Jun 2022 15:28:56 +0000
-Received: by mail-qv1-f49.google.com with SMTP id o43so15231860qvo.4;
-        Mon, 27 Jun 2022 08:28:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cew7BXEncqN8cEBUoXDCQbsV+p26HXetoRwi9DMFMVs=;
-        b=1K5pOHQ1cey9t2pt+83RbWKd7Td46Kxi+u9z4I2z84gy487PfZRzfLP9rxd8SNAnKh
-         Mc/4LzdTCyRtaYighDZYSC63SXKrAOgjdz8i6s1zK7HULwxKkaEQKuDU27skKyGDR1py
-         xbXw3SuK7l879zqHn830PJIh19Chc8CqfwD5pGrFVcNxatyIwiSCvKVr5A6YtPYC7Vkq
-         P+z6xvMCzVIIddEwcvdRPZvA6uPTvkpLCPCv7zADusZwZimBtO95KwQAgSbEHgBJSs9T
-         Rvt+t4f5PC517GWix4Kp+Hl0vKwAwFtqthawhzoLWDhiLPhrguQk0eTSRGXzis7aqrxp
-         sAuw==
-X-Gm-Message-State: AJIora+zVuQ0TFP2vCpOuSYAlbrg99z86+7k97EJX9pfQKntXkb3qLsd
-	eR3axqUjCwtky5KCwEDdPress2MutQgWJQ==
-X-Google-Smtp-Source: AGRyM1vLyztJBhMdoVWjq2JjeDrmkTqMpc+JuZ8s+oAYBhu9Gl8MEEQHtXR83EG8iT9kQr3GS2AwnA==
-X-Received: by 2002:a05:622a:487:b0:319:5476:6932 with SMTP id p7-20020a05622a048700b0031954766932mr6274595qtx.351.1656343732389;
-        Mon, 27 Jun 2022 08:28:52 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id y17-20020a05620a25d100b006a6a5d1e240sm9668214qko.34.2022.06.27.08.28.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jun 2022 08:28:51 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id i15so17416440ybp.1;
-        Mon, 27 Jun 2022 08:28:51 -0700 (PDT)
-X-Received: by 2002:a05:6902:905:b0:64a:2089:f487 with SMTP id
- bu5-20020a056902090500b0064a2089f487mr14703242ybb.202.1656343731074; Mon, 27
- Jun 2022 08:28:51 -0700 (PDT)
+	id 1o5qi0-001eXF-15
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2022 15:31:30 +0000
+Received: from ramsan.of.borg ([84.195.186.194])
+	by andre.telenet-ops.be with bizsmtp
+	id oFXH2700L4C55Sk01FXHYi; Mon, 27 Jun 2022 17:31:21 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1o5qhp-0014yb-1K; Mon, 27 Jun 2022 17:31:17 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1o5qho-004jEh-Gp; Mon, 27 Jun 2022 17:31:16 +0200
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>
+Cc: Mark Brown <broonie@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 4/7] memory: renesas-rpc-if: Split-off private data from struct rpcif
+Date: Mon, 27 Jun 2022 17:31:11 +0200
+Message-Id: <062510dcc46c8fefe7a18527d98398c6f4c2bb0f.1656341824.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1656341824.git.geert+renesas@glider.be>
+References: <cover.1656341824.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-References: <20190625075746.10439-1-vigneshr@ti.com> <20190625075746.10439-4-vigneshr@ti.com>
-In-Reply-To: <20190625075746.10439-4-vigneshr@ti.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 27 Jun 2022 17:28:38 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUCdjfAoZm-cb4v+STt5C0T6OejdcCCQNBRqqAHL6JD=w@mail.gmail.com>
-Message-ID: <CAMuHMdUCdjfAoZm-cb4v+STt5C0T6OejdcCCQNBRqqAHL6JD=w@mail.gmail.com>
-Subject: Re: [PATCH v8 3/5] mtd: Add support for HyperBus memory devices
-To: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Boris Brezillon <bbrezillon@kernel.org>, Marek Vasut <marek.vasut@gmail.com>, 
-	Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
-	Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Tokunori Ikegami <ikegami.t@gmail.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	MTD Maling List <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Mason Yang <masonccyang@mxic.com.tw>, Linux ARM <linux-arm-kernel@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220627_082854_943095_DB2A15B1 
-X-CRM114-Status: GOOD (  30.58  )
+X-CRM114-CacheID: sfid-20220627_083128_255041_159007F1 
+X-CRM114-Status: GOOD (  19.94  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,73 +76,258 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Vignesh,
+The rpcif structure is used as a common data structure, shared by the
+RPC-IF core driver and by the HyperBus and SPI child drivers.
+This poses several problems:
+  - Most structure members describe private core driver state, which
+    should not be accessible by the child drivers,
+  - The structure's lifetime is controlled by the child drivers,
+    complicating use by the core driver.
 
-On Tue, Jun 25, 2019 at 10:00 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
-> Cypress' HyperBus is Low Signal Count, High Performance Double Data Rate
-> Bus interface between a host system master and one or more slave
-> interfaces. HyperBus is used to connect microprocessor, microcontroller,
-> or ASIC devices with random access NOR flash memory (called HyperFlash)
-> or self refresh DRAM (called HyperRAM).
->
-> Its a 8-bit data bus (DQ[7:0]) with  Read-Write Data Strobe (RWDS)
-> signal and either Single-ended clock(3.0V parts) or Differential clock
-> (1.8V parts). It uses ChipSelect lines to select b/w multiple slaves.
-> At bus level, it follows a separate protocol described in HyperBus
-> specification[1].
->
-> HyperFlash follows CFI AMD/Fujitsu Extended Command Set (0x0002) similar
-> to that of existing parallel NORs. Since HyperBus is x8 DDR bus,
-> its equivalent to x16 parallel NOR flash with respect to bits per clock
-> cycle. But HyperBus operates at >166MHz frequencies.
-> HyperRAM provides direct random read/write access to flash memory
-> array.
->
-> But, HyperBus memory controllers seem to abstract implementation details
-> and expose a simple MMIO interface to access connected flash.
->
-> Add support for registering HyperFlash devices with MTD framework. MTD
-> maps framework along with CFI chip support framework are used to support
-> communicating with flash.
->
-> Framework is modelled along the lines of spi-nor framework. HyperBus
-> memory controller (HBMC) drivers calls hyperbus_register_device() to
-> register a single HyperFlash device. HyperFlash core parses MMIO access
-> information from DT, sets up the map_info struct, probes CFI flash and
-> registers it with MTD framework.
->
-> Some HBMC masters need calibration/training sequence[3] to be carried
-> out, in order for DLL inside the controller to lock, by reading a known
-> string/pattern. This is done by repeatedly reading CFI Query
-> Identification String. Calibration needs to be done before trying to detect
-> flash as part of CFI flash probe.
->
-> HyperRAM is not supported at the moment.
+Fix this by moving the private core driver state to its own structure,
+managed by the RPC-IF core driver, and store it in the core driver's
+private data field.  This requires absorbing the child's platform
+device, as that was stored in the driver's private data field before.
 
-Thanks for your patch, which is now commit dcc7d3446a0fa19b ("mtd:
-Add support for HyperBus memory devices") in v5.3.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/memory/renesas-rpc-if.c | 75 +++++++++++++++++++++++++--------
+ include/memory/renesas-rpc-if.h | 16 -------
+ 2 files changed, 57 insertions(+), 34 deletions(-)
 
-> HyperBus specification can be found at[1]
-> HyperFlash datasheet can be found at[2]
->
-> [1] https://www.cypress.com/file/213356/download
-> [2] https://www.cypress.com/file/213346/download
-> [3] http://www.ti.com/lit/ug/spruid7b/spruid7b.pdf
->     Table 12-5741. HyperFlash Access Sequence
+diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+index 55dbb3854b09ad43..78e10a7300411191 100644
+--- a/drivers/memory/renesas-rpc-if.c
++++ b/drivers/memory/renesas-rpc-if.c
+@@ -162,14 +162,36 @@ static const struct regmap_access_table rpcif_volatile_table = {
+ 	.n_yes_ranges	= ARRAY_SIZE(rpcif_volatile_ranges),
+ };
+ 
++struct rpcif_priv {
++	struct device *dev;
++	void __iomem *base;
++	void __iomem *dirmap;
++	struct regmap *regmap;
++	struct reset_control *rstc;
++	struct platform_device *vdev;
++	size_t size;
++	enum rpcif_type type;
++	enum rpcif_data_dir dir;
++	u8 bus_size;
++	u8 xfer_size;
++	void *buffer;
++	u32 xferlen;
++	u32 smcr;
++	u32 smadr;
++	u32 command;		/* DRCMR or SMCMR */
++	u32 option;		/* DROPR or SMOPR */
++	u32 enable;		/* DRENR or SMENR */
++	u32 dummy;		/* DRDMCR or SMDMCR */
++	u32 ddr;		/* DRDRENR or SMDRENR */
++};
+ 
+ /*
+  * Custom accessor functions to ensure SM[RW]DR[01] are always accessed with
+- * proper width.  Requires rpcif.xfer_size to be correctly set before!
++ * proper width.  Requires rpcif_priv.xfer_size to be correctly set before!
+  */
+ static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
+ {
+-	struct rpcif *rpc = context;
++	struct rpcif_priv *rpc = context;
+ 
+ 	switch (reg) {
+ 	case RPCIF_SMRDR0:
+@@ -205,7 +227,7 @@ static int rpcif_reg_read(void *context, unsigned int reg, unsigned int *val)
+ 
+ static int rpcif_reg_write(void *context, unsigned int reg, unsigned int val)
+ {
+-	struct rpcif *rpc = context;
++	struct rpcif_priv *rpc = context;
+ 
+ 	switch (reg) {
+ 	case RPCIF_SMWDR0:
+@@ -252,13 +274,12 @@ static const struct regmap_config rpcif_regmap_config = {
+ 	.volatile_table	= &rpcif_volatile_table,
+ };
+ 
+-int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
++int rpcif_sw_init(struct rpcif *rpcif, struct device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
++	struct rpcif_priv *rpc = dev_get_drvdata(dev);
+ 	struct resource *res;
+ 
+-	rpc->dev = dev;
+-
+ 	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
+ 	if (IS_ERR(rpc->base))
+ 		return PTR_ERR(rpc->base);
+@@ -278,12 +299,17 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
+ 
+ 	rpc->type = (uintptr_t)of_device_get_match_data(dev);
+ 	rpc->rstc = devm_reset_control_get_exclusive(dev, NULL);
++	if (IS_ERR(rpc->rstc))
++		return PTR_ERR(rpc->rstc);
+ 
+-	return PTR_ERR_OR_ZERO(rpc->rstc);
++	rpcif->dev = dev;
++	rpcif->dirmap = rpc->dirmap;
++	rpcif->size = rpc->size;
++	return 0;
+ }
+ EXPORT_SYMBOL(rpcif_sw_init);
+ 
+-static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
++static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif_priv *rpc)
+ {
+ 	regmap_write(rpc->regmap, RPCIF_PHYWR, 0xa5390000);
+ 	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000000);
+@@ -297,8 +323,9 @@ static void rpcif_rzg2l_timing_adjust_sdr(struct rpcif *rpc)
+ 	regmap_write(rpc->regmap, RPCIF_PHYADD, 0x80000032);
+ }
+ 
+-int rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
++int rpcif_hw_init(struct rpcif *rpcif, bool hyperflash)
+ {
++	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
+ 	u32 dummy;
+ 	int ret;
+ 
+@@ -357,7 +384,7 @@ int rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+ }
+ EXPORT_SYMBOL(rpcif_hw_init);
+ 
+-static int wait_msg_xfer_end(struct rpcif *rpc)
++static int wait_msg_xfer_end(struct rpcif_priv *rpc)
+ {
+ 	u32 sts;
+ 
+@@ -366,7 +393,7 @@ static int wait_msg_xfer_end(struct rpcif *rpc)
+ 					USEC_PER_SEC);
+ }
+ 
+-static u8 rpcif_bits_set(struct rpcif *rpc, u32 nbytes)
++static u8 rpcif_bits_set(struct rpcif_priv *rpc, u32 nbytes)
+ {
+ 	if (rpc->bus_size == 2)
+ 		nbytes /= 2;
+@@ -379,9 +406,11 @@ static u8 rpcif_bit_size(u8 buswidth)
+ 	return buswidth > 4 ? 2 : ilog2(buswidth);
+ }
+ 
+-void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
++void rpcif_prepare(struct rpcif *rpcif, const struct rpcif_op *op, u64 *offs,
+ 		   size_t *len)
+ {
++	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
++
+ 	rpc->smcr = 0;
+ 	rpc->smadr = 0;
+ 	rpc->enable = 0;
+@@ -465,8 +494,9 @@ void rpcif_prepare(struct rpcif *rpc, const struct rpcif_op *op, u64 *offs,
+ }
+ EXPORT_SYMBOL(rpcif_prepare);
+ 
+-int rpcif_manual_xfer(struct rpcif *rpc)
++int rpcif_manual_xfer(struct rpcif *rpcif)
+ {
++	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
+ 	u32 smenr, smcr, pos = 0, max = rpc->bus_size == 2 ? 8 : 4;
+ 	int ret = 0;
+ 
+@@ -588,7 +618,7 @@ int rpcif_manual_xfer(struct rpcif *rpc)
+ err_out:
+ 	if (reset_control_reset(rpc->rstc))
+ 		dev_err(rpc->dev, "Failed to reset HW\n");
+-	rpcif_hw_init(rpc, rpc->bus_size == 2);
++	rpcif_hw_init(rpcif, rpc->bus_size == 2);
+ 	goto exit;
+ }
+ EXPORT_SYMBOL(rpcif_manual_xfer);
+@@ -635,8 +665,9 @@ static void memcpy_fromio_readw(void *to,
+ 	}
+ }
+ 
+-ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf)
++ssize_t rpcif_dirmap_read(struct rpcif *rpcif, u64 offs, size_t len, void *buf)
+ {
++	struct rpcif_priv *rpc = dev_get_drvdata(rpcif->dev);
+ 	loff_t from = offs & (rpc->size - 1);
+ 	size_t size = rpc->size - from;
+ 	int ret;
+@@ -675,6 +706,7 @@ static int rpcif_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct platform_device *vdev;
+ 	struct device_node *flash;
++	struct rpcif_priv *rpc;
+ 	const char *name;
+ 	int ret;
+ 
+@@ -695,11 +727,18 @@ static int rpcif_probe(struct platform_device *pdev)
+ 	}
+ 	of_node_put(flash);
+ 
++	rpc = devm_kzalloc(dev, sizeof(*rpc), GFP_KERNEL);
++	if (!rpc)
++		return -ENOMEM;
++
+ 	vdev = platform_device_alloc(name, pdev->id);
+ 	if (!vdev)
+ 		return -ENOMEM;
+ 	vdev->dev.parent = dev;
+-	platform_set_drvdata(pdev, vdev);
++
++	rpc->dev = dev;
++	rpc->vdev = vdev;
++	platform_set_drvdata(pdev, rpc);
+ 
+ 	ret = platform_device_add(vdev);
+ 	if (ret) {
+@@ -712,9 +751,9 @@ static int rpcif_probe(struct platform_device *pdev)
+ 
+ static int rpcif_remove(struct platform_device *pdev)
+ {
+-	struct platform_device *vdev = platform_get_drvdata(pdev);
++	struct rpcif_priv *rpc = platform_get_drvdata(pdev);
+ 
+-	platform_device_unregister(vdev);
++	platform_device_unregister(rpc->vdev);
+ 
+ 	return 0;
+ }
+diff --git a/include/memory/renesas-rpc-if.h b/include/memory/renesas-rpc-if.h
+index 9c0ad64b8d292d49..ddf94356752d3315 100644
+--- a/include/memory/renesas-rpc-if.h
++++ b/include/memory/renesas-rpc-if.h
+@@ -64,24 +64,8 @@ enum rpcif_type {
+ 
+ struct rpcif {
+ 	struct device *dev;
+-	void __iomem *base;
+ 	void __iomem *dirmap;
+-	struct regmap *regmap;
+-	struct reset_control *rstc;
+ 	size_t size;
+-	enum rpcif_type type;
+-	enum rpcif_data_dir dir;
+-	u8 bus_size;
+-	u8 xfer_size;
+-	void *buffer;
+-	u32 xferlen;
+-	u32 smcr;
+-	u32 smadr;
+-	u32 command;		/* DRCMR or SMCMR */
+-	u32 option;		/* DROPR or SMOPR */
+-	u32 enable;		/* DRENR or SMENR */
+-	u32 dummy;		/* DRDMCR or SMDMCR */
+-	u32 ddr;		/* DRDRENR or SMDRENR */
+ };
+ 
+ int rpcif_sw_init(struct rpcif *rpc, struct device *dev);
+-- 
+2.25.1
 
-The last link no longer works.  Do you have a replacement?
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 ______________________________________________________
 Linux MTD discussion mailing list
