@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321C6C433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D59D4C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pzOFgwR9TybWlZrWI/TD5ShOonj6KKvLljNOOxIinwI=; b=YB8L2bTKXDnjKd
-	VYQEXIc4UQq4+/T1Ho4ANgstU2mQTMcfcb6hn0ygVqb5kGNsSBNa31DVfBnpqeN3tBr8HvBL/jPH7
-	cnQiQAwzAXNOKUiDXZZuZeHH8fTw+ffwxW73xGmYyJpWLZuf0E3Tng8eVIYq6wBPLW+lbhLX9ah7R
-	/OsXDtGcWBvjvIZT4AleqealsRedFV0F+vCOaFno03Ua31pEis4RhUqVGHgbFV0mPn/5q/gxOj3KX
-	jKIXKur23xI+Pb07W/bJOfvcng3mTzuWTsSRsOTsyk0I3hb2/NfwPZh5lXeCn3vMqiKpSMXral6Af
-	ui3ivlBRvlOeaxtDzi/g==;
+	List-Owner; bh=64qbMbMUswSLytLA39KrlO7/6iT94TtLcntvkvRwwEw=; b=WaNd7vNIsDk989
+	MpD0wJfiPJKhmJrwKWXuVmawNVfzV0DTX3eBJG7QxTRWr8KlQ5fM1KMNlmOWr9SPqmI//k/epOz+1
+	2+ta3t0ylZe2TSlZoyn1kiyhnY5zgAS1eeskrWq5Raih/5p3qoKIQCOTKo/OY4U6zV1SkmBsTF263
+	Wuye5QnHh7L1xQfU7KXaqWuULoOQLH9QLPYUWHofRez3IsTaw08j8aSQM4tD1/mfPFB0U04r+wKyM
+	e6XFKl5U/g5FzfueYrX0NVptRQ0lCh0aS3rB9OhXVOGGGE2VmpCjyAI25tkTvzm70PlhW0BIvZCEp
+	v0e0JreeJgAgx8ZCQGBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qiG-001ejm-9z; Mon, 27 Jun 2022 15:31:44 +0000
-Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
+	id 1o5qi3-001ebK-Hf; Mon, 27 Jun 2022 15:31:31 +0000
+Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qi0-001eXi-Dq
-	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2022 15:31:31 +0000
+	id 1o5qi0-001eXG-1p
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2022 15:31:30 +0000
 Received: from ramsan.of.borg ([84.195.186.194])
-	by xavier.telenet-ops.be with bizsmtp
-	id oFXH2700P4C55Sk01FXHah; Mon, 27 Jun 2022 17:31:23 +0200
+	by andre.telenet-ops.be with bizsmtp
+	id oFXH2700N4C55Sk01FXHYj; Mon, 27 Jun 2022 17:31:21 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.93)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1o5qho-0014yc-VJ; Mon, 27 Jun 2022 17:31:16 +0200
+	id 1o5qhp-0014yZ-1Y; Mon, 27 Jun 2022 17:31:17 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1o5qho-004jEn-HZ; Mon, 27 Jun 2022 17:31:16 +0200
+	id 1o5qho-004jET-FY; Mon, 27 Jun 2022 17:31:16 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Vignesh Raghavendra <vigneshr@ti.com>,
 	Sergey Shtylyov <s.shtylyov@omp.ru>,
@@ -50,16 +50,16 @@ Cc: Mark Brown <broonie@kernel.org>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5/7] memory: renesas-rpc-if: Move resource acquisition to .probe()
-Date: Mon, 27 Jun 2022 17:31:12 +0200
-Message-Id: <2fd9b9e3f60fe555d9dcad499c90e3ec869aa96e.1656341824.git.geert+renesas@glider.be>
+Subject: [PATCH 2/7] memory: renesas-rpc-if: Add dev helper to rpcif_probe()
+Date: Mon, 27 Jun 2022 17:31:09 +0200
+Message-Id: <31051c05581d0200a45357a6d1ab4ad268a1bbf4.1656341824.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1656341824.git.geert+renesas@glider.be>
 References: <cover.1656341824.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220627_083128_626729_5E9213C8 
-X-CRM114-Status: GOOD (  13.58  )
+X-CRM114-CacheID: sfid-20220627_083128_251602_830B7398 
+X-CRM114-Status: GOOD (  12.05  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,98 +76,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-While the acquired resources are tied to the lifetime of the RPC-IF core
-device (through the use of managed resource functions), the actual
-resource acquisition is triggered from the HyperBus and SPI child
-drivers.  Due to this mismatch, unbinding and rebinding the child
-drivers manually fails with -EBUSY:
-
-    # echo rpc-if-hyperflash > /sys/bus/platform/drivers/rpc-if-hyperflash/unbind
-    # echo rpc-if-hyperflash > /sys/bus/platform/drivers/rpc-if-hyperflash/bind
-    rpc-if ee200000.spi: can't request region for resource [mem 0xee200000-0xee2001ff]
-    rpc-if-hyperflash: probe of rpc-if-hyperflash failed with error -16
-
-Fix this by moving all resource acquisition to the core driver's probe
-routine.
+Add a helper variable pointing to the device structure, to avoid going
+through the platform device every time.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/memory/renesas-rpc-if.c | 47 ++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 24 deletions(-)
+ drivers/memory/renesas-rpc-if.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 78e10a7300411191..ef0336cbb4c196fb 100644
+index 829b962e8f034bdd..2421a820e3c5880c 100644
 --- a/drivers/memory/renesas-rpc-if.c
 +++ b/drivers/memory/renesas-rpc-if.c
-@@ -276,31 +276,7 @@ static const struct regmap_config rpcif_regmap_config = {
+@@ -666,14 +666,15 @@ EXPORT_SYMBOL(rpcif_dirmap_read);
  
- int rpcif_sw_init(struct rpcif *rpcif, struct device *dev)
+ static int rpcif_probe(struct platform_device *pdev)
  {
--	struct platform_device *pdev = to_platform_device(dev);
- 	struct rpcif_priv *rpc = dev_get_drvdata(dev);
--	struct resource *res;
--
--	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
--	if (IS_ERR(rpc->base))
--		return PTR_ERR(rpc->base);
--
--	rpc->regmap = devm_regmap_init(dev, NULL, rpc, &rpcif_regmap_config);
--	if (IS_ERR(rpc->regmap)) {
--		dev_err(dev, "failed to init regmap for rpcif, error %ld\n",
--			PTR_ERR(rpc->regmap));
--		return	PTR_ERR(rpc->regmap);
--	}
--
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
--	rpc->dirmap = devm_ioremap_resource(dev, res);
--	if (IS_ERR(rpc->dirmap))
--		return PTR_ERR(rpc->dirmap);
--	rpc->size = resource_size(res);
--
--	rpc->type = (uintptr_t)of_device_get_match_data(dev);
--	rpc->rstc = devm_reset_control_get_exclusive(dev, NULL);
--	if (IS_ERR(rpc->rstc))
--		return PTR_ERR(rpc->rstc);
- 
- 	rpcif->dev = dev;
- 	rpcif->dirmap = rpc->dirmap;
-@@ -707,6 +683,7 @@ static int rpcif_probe(struct platform_device *pdev)
++	struct device *dev = &pdev->dev;
  	struct platform_device *vdev;
  	struct device_node *flash;
- 	struct rpcif_priv *rpc;
-+	struct resource *res;
  	const char *name;
  	int ret;
  
-@@ -731,6 +708,28 @@ static int rpcif_probe(struct platform_device *pdev)
- 	if (!rpc)
- 		return -ENOMEM;
+-	flash = of_get_next_child(pdev->dev.of_node, NULL);
++	flash = of_get_next_child(dev->of_node, NULL);
+ 	if (!flash) {
+-		dev_warn(&pdev->dev, "no flash node found\n");
++		dev_warn(dev, "no flash node found\n");
+ 		return -ENODEV;
+ 	}
  
-+	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
-+	if (IS_ERR(rpc->base))
-+		return PTR_ERR(rpc->base);
-+
-+	rpc->regmap = devm_regmap_init(dev, NULL, rpc, &rpcif_regmap_config);
-+	if (IS_ERR(rpc->regmap)) {
-+		dev_err(dev, "failed to init regmap for rpcif, error %ld\n",
-+			PTR_ERR(rpc->regmap));
-+		return	PTR_ERR(rpc->regmap);
-+	}
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
-+	rpc->dirmap = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(rpc->dirmap))
-+		return PTR_ERR(rpc->dirmap);
-+	rpc->size = resource_size(res);
-+
-+	rpc->type = (uintptr_t)of_device_get_match_data(dev);
-+	rpc->rstc = devm_reset_control_get_exclusive(dev, NULL);
-+	if (IS_ERR(rpc->rstc))
-+		return PTR_ERR(rpc->rstc);
-+
+@@ -683,7 +684,7 @@ static int rpcif_probe(struct platform_device *pdev)
+ 		name = "rpc-if-hyperflash";
+ 	} else	{
+ 		of_node_put(flash);
+-		dev_warn(&pdev->dev, "unknown flash type\n");
++		dev_warn(dev, "unknown flash type\n");
+ 		return -ENODEV;
+ 	}
+ 	of_node_put(flash);
+@@ -691,7 +692,7 @@ static int rpcif_probe(struct platform_device *pdev)
  	vdev = platform_device_alloc(name, pdev->id);
  	if (!vdev)
  		return -ENOMEM;
+-	vdev->dev.parent = &pdev->dev;
++	vdev->dev.parent = dev;
+ 	platform_set_drvdata(pdev, vdev);
+ 
+ 	ret = platform_device_add(vdev);
 -- 
 2.25.1
 
