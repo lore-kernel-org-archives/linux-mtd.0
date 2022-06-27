@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16055CCA473
-	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 321C6C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 27 Jun 2022 15:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Yx38mQ494zOR6O/CVtZ6OfsTPyjUKyUn0ZH8SUVC81o=; b=SAnZ6KhtZ5oXnQ
-	7Bj/rTCj14o29SudT4GUADXwnYeZRK92/3mpMBY9xccoHKRh4fbcEUq+J6O15YMae5+tks2EfcWkd
-	rIe5GKE0ZZI/uToYITNWgnlzE/fIgmMWQXvdULy4/8Zg1vcGbPd+45waIrXu2bQHYT9jZZFXZAAvc
-	NnSaXLsRnqlIUHvAFiO95j+7Cd4fyRLt0Tn/bxpjm3/lzKyvYEn0FhB6dZv1Qh6Hl+Xd55nAgQKYE
-	JIuLuhy5abLneFvC0BsjS0TRJdaI6bOlDHEkjgXN8x+EBiM0T/W71I8YF6u/dsEe4Gs1jPl2GbYq3
-	/ms8b49mRMqPKnCc2/Aw==;
+	List-Owner; bh=pzOFgwR9TybWlZrWI/TD5ShOonj6KKvLljNOOxIinwI=; b=YB8L2bTKXDnjKd
+	VYQEXIc4UQq4+/T1Ho4ANgstU2mQTMcfcb6hn0ygVqb5kGNsSBNa31DVfBnpqeN3tBr8HvBL/jPH7
+	cnQiQAwzAXNOKUiDXZZuZeHH8fTw+ffwxW73xGmYyJpWLZuf0E3Tng8eVIYq6wBPLW+lbhLX9ah7R
+	/OsXDtGcWBvjvIZT4AleqealsRedFV0F+vCOaFno03Ua31pEis4RhUqVGHgbFV0mPn/5q/gxOj3KX
+	jKIXKur23xI+Pb07W/bJOfvcng3mTzuWTsSRsOTsyk0I3hb2/NfwPZh5lXeCn3vMqiKpSMXral6Af
+	ui3ivlBRvlOeaxtDzi/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qiB-001efZ-5a; Mon, 27 Jun 2022 15:31:39 +0000
+	id 1o5qiG-001ejm-9z; Mon, 27 Jun 2022 15:31:44 +0000
 Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o5qi0-001eXg-F6
+	id 1o5qi0-001eXi-Dq
 	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2022 15:31:31 +0000
 Received: from ramsan.of.borg ([84.195.186.194])
 	by xavier.telenet-ops.be with bizsmtp
-	id oFXH2700S4C55Sk01FXHaj; Mon, 27 Jun 2022 17:31:23 +0200
+	id oFXH2700P4C55Sk01FXHah; Mon, 27 Jun 2022 17:31:23 +0200
 Received: from rox.of.borg ([192.168.97.57])
 	by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.93)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1o5qhp-0014ye-0o; Mon, 27 Jun 2022 17:31:17 +0200
+	id 1o5qho-0014yc-VJ; Mon, 27 Jun 2022 17:31:16 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
 	(envelope-from <geert@linux-m68k.org>)
-	id 1o5qho-004jF0-J1; Mon, 27 Jun 2022 17:31:16 +0200
+	id 1o5qho-004jEn-HZ; Mon, 27 Jun 2022 17:31:16 +0200
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Vignesh Raghavendra <vigneshr@ti.com>,
 	Sergey Shtylyov <s.shtylyov@omp.ru>,
@@ -50,16 +50,16 @@ Cc: Mark Brown <broonie@kernel.org>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 7/7] memory: renesas-rpc-if: Reinitialize registers during system resume
-Date: Mon, 27 Jun 2022 17:31:14 +0200
-Message-Id: <923c057c77b146710a82d486f89ce3a8ebda7ccd.1656341824.git.geert+renesas@glider.be>
+Subject: [PATCH 5/7] memory: renesas-rpc-if: Move resource acquisition to .probe()
+Date: Mon, 27 Jun 2022 17:31:12 +0200
+Message-Id: <2fd9b9e3f60fe555d9dcad499c90e3ec869aa96e.1656341824.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1656341824.git.geert+renesas@glider.be>
 References: <cover.1656341824.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220627_083128_671714_5B7226FC 
-X-CRM114-Status: GOOD (  14.76  )
+X-CRM114-CacheID: sfid-20220627_083128_626729_5E9213C8 
+X-CRM114-Status: GOOD (  13.58  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,53 +76,98 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-During PSCI system suspend, R-Car Gen3 SoCs may be powered down, and
-thus the RPC-IF register state may be lost.  Consequently, when using
-the RPC-IF after system resume, data corruption may happen.
+While the acquired resources are tied to the lifetime of the RPC-IF core
+device (through the use of managed resource functions), the actual
+resource acquisition is triggered from the HyperBus and SPI child
+drivers.  Due to this mismatch, unbinding and rebinding the child
+drivers manually fails with -EBUSY:
 
-Fix this by reinitializing the hardware state during system resume.
-As this requires resuming the RPC-IF core device, this can only be done
-when the device is under active control of the HyperBus or SPI child
-driver.
+    # echo rpc-if-hyperflash > /sys/bus/platform/drivers/rpc-if-hyperflash/unbind
+    # echo rpc-if-hyperflash > /sys/bus/platform/drivers/rpc-if-hyperflash/bind
+    rpc-if ee200000.spi: can't request region for resource [mem 0xee200000-0xee2001ff]
+    rpc-if-hyperflash: probe of rpc-if-hyperflash failed with error -16
+
+Fix this by moving all resource acquisition to the core driver's probe
+routine.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/memory/renesas-rpc-if.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/memory/renesas-rpc-if.c | 47 ++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index ec76e603ad24d214..2a49d4511c8296c5 100644
+index 78e10a7300411191..ef0336cbb4c196fb 100644
 --- a/drivers/memory/renesas-rpc-if.c
 +++ b/drivers/memory/renesas-rpc-if.c
-@@ -757,6 +757,20 @@ static int rpcif_remove(struct platform_device *pdev)
- 	return 0;
- }
+@@ -276,31 +276,7 @@ static const struct regmap_config rpcif_regmap_config = {
  
-+static int rpcif_resume(struct device *dev)
-+{
-+	struct rpcif_priv *rpc = dev_get_drvdata(dev);
+ int rpcif_sw_init(struct rpcif *rpcif, struct device *dev)
+ {
+-	struct platform_device *pdev = to_platform_device(dev);
+ 	struct rpcif_priv *rpc = dev_get_drvdata(dev);
+-	struct resource *res;
+-
+-	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
+-	if (IS_ERR(rpc->base))
+-		return PTR_ERR(rpc->base);
+-
+-	rpc->regmap = devm_regmap_init(dev, NULL, rpc, &rpcif_regmap_config);
+-	if (IS_ERR(rpc->regmap)) {
+-		dev_err(dev, "failed to init regmap for rpcif, error %ld\n",
+-			PTR_ERR(rpc->regmap));
+-		return	PTR_ERR(rpc->regmap);
+-	}
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
+-	rpc->dirmap = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(rpc->dirmap))
+-		return PTR_ERR(rpc->dirmap);
+-	rpc->size = resource_size(res);
+-
+-	rpc->type = (uintptr_t)of_device_get_match_data(dev);
+-	rpc->rstc = devm_reset_control_get_exclusive(dev, NULL);
+-	if (IS_ERR(rpc->rstc))
+-		return PTR_ERR(rpc->rstc);
+ 
+ 	rpcif->dev = dev;
+ 	rpcif->dirmap = rpc->dirmap;
+@@ -707,6 +683,7 @@ static int rpcif_probe(struct platform_device *pdev)
+ 	struct platform_device *vdev;
+ 	struct device_node *flash;
+ 	struct rpcif_priv *rpc;
++	struct resource *res;
+ 	const char *name;
+ 	int ret;
+ 
+@@ -731,6 +708,28 @@ static int rpcif_probe(struct platform_device *pdev)
+ 	if (!rpc)
+ 		return -ENOMEM;
+ 
++	rpc->base = devm_platform_ioremap_resource_byname(pdev, "regs");
++	if (IS_ERR(rpc->base))
++		return PTR_ERR(rpc->base);
 +
-+	if (!pm_runtime_enabled(dev)) {
-+		/* Not yet activated or deactivated by child device */
-+		return 0;
++	rpc->regmap = devm_regmap_init(dev, NULL, rpc, &rpcif_regmap_config);
++	if (IS_ERR(rpc->regmap)) {
++		dev_err(dev, "failed to init regmap for rpcif, error %ld\n",
++			PTR_ERR(rpc->regmap));
++		return	PTR_ERR(rpc->regmap);
 +	}
 +
-+	return rpcif_hw_init(dev, rpc->bus_size == 2);
-+}
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dirmap");
++	rpc->dirmap = devm_ioremap_resource(dev, res);
++	if (IS_ERR(rpc->dirmap))
++		return PTR_ERR(rpc->dirmap);
++	rpc->size = resource_size(res);
 +
-+static DEFINE_SIMPLE_DEV_PM_OPS(rpcif_pm_ops, NULL, rpcif_resume);
++	rpc->type = (uintptr_t)of_device_get_match_data(dev);
++	rpc->rstc = devm_reset_control_get_exclusive(dev, NULL);
++	if (IS_ERR(rpc->rstc))
++		return PTR_ERR(rpc->rstc);
 +
- static const struct of_device_id rpcif_of_match[] = {
- 	{ .compatible = "renesas,rcar-gen3-rpc-if", .data = (void *)RPCIF_RCAR_GEN3 },
- 	{ .compatible = "renesas,rzg2l-rpc-if", .data = (void *)RPCIF_RZ_G2L },
-@@ -770,6 +784,7 @@ static struct platform_driver rpcif_driver = {
- 	.driver = {
- 		.name =	"rpc-if",
- 		.of_match_table = rpcif_of_match,
-+		.pm = pm_sleep_ptr(&rpcif_pm_ops),
- 	},
- };
- module_platform_driver(rpcif_driver);
+ 	vdev = platform_device_alloc(name, pdev->id);
+ 	if (!vdev)
+ 		return -ENOMEM;
 -- 
 2.25.1
 
