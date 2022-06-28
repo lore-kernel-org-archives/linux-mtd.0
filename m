@@ -4,88 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B64EC43334
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jun 2022 07:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4FECC43334
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jun 2022 10:48:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=tQpB0qrYcdF8vZUG4z9CYZptLwJZ8yeeKDXYO9nMPV8=; b=sNd1ebpIooEKOr
-	UJZZ7KD7BLkIbAyo8DnWV7ybdWYbhKO9418HeW20KCbcKBrADggOWkNeCMlA1+G8BMagPVS/BgwSm
-	zAWqreZJVTYTGX73N+FPvPaWov3PALE298OdS1JR1whzXLums6Tti9FGkn/U+ZwTXlxShlFNcudo2
-	DBIIwMrGxr8zTkLoVKTzyRt/zsGXN6PgYGwF63eIsk1b+LRM26k9/iru8wcKtkpqEL/e+Gm522iuT
-	0PBBFblr9ibwgLpOwgL6Xy7QhSEPLH2vqWpkW9DM539saJTD22ksLnUP0xEmBYZbrGuAUczTi8W67
-	oSPh/ZUjyqvTM8XrJbTQ==;
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=TKkw2ULt7EYOljUr8Dv/3uAgycdYKFJdn6Fb8zZeYFA=; b=JxM5g105eBvjdt
+	qyccUeVGHDrYRKSPjhN90XBHnQBEAv4BL87XYMzvseox5kvV0hRk6RzGVDosgJxSDkM0QTZZsYw5X
+	i7S2B0QdXny1gN/YKYKIdf1JKvbU9mGmYI+C4Nhy3T0vhFoWfQytK+93Zp9lzuBTeN5pRtpyHvLh3
+	P3Uxp+7W6YHVZHY90qHhzFAG46V3RwH2/iVG0hTGsMXDmDLLFqwxmEBlAwt3JmWPUag2BMXpbx2st
+	LeS1pYrUf+eh/z+jVqO3hOgudl003mpwZVenGjKGDdNPQE8e3FBrcT8tM5bIEHoMFPFKM7q0dSO2r
+	LS2nGRtKo5BMjv8X3yMA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o65dP-004xKz-6K; Tue, 28 Jun 2022 07:27:43 +0000
-Received: from mail-qv1-f45.google.com ([209.85.219.45])
+	id 1o68ln-005lku-DP; Tue, 28 Jun 2022 10:48:35 +0000
+Received: from mail-yw1-x1136.google.com ([2607:f8b0:4864:20::1136])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o65dL-004xHn-TH; Tue, 28 Jun 2022 07:27:41 +0000
-Received: by mail-qv1-f45.google.com with SMTP id y14so18782140qvs.10;
-        Tue, 28 Jun 2022 00:27:37 -0700 (PDT)
+	id 1o68lk-005ljX-RX
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2022 10:48:34 +0000
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-31772f8495fso112487827b3.4
+        for <linux-mtd@lists.infradead.org>; Tue, 28 Jun 2022 03:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=TvBS1CPFquLgQjmgRqByyxoMhBcAVYRHfsLh3BdY+Qc=;
+        b=Usi9eQgoxV7bgqYNBQghlN4B0qR2V5V6rfjC3rcXPHyRJY455nOK4mgUlYshwVDkQN
+         EG3uH3o9eVxTXkOtSt0y27JvcJUQMpMwiC4WkSab7BKyEwO97j0QXk79yFtdMXKbyoZK
+         Q+eVjFMtJpS/fppaCQyOeRfYI4f0oQn9Lgwb28bltlR580sV4dNmYHXoshSw0yYGEIC/
+         4sBI5vKdlrVswrAOY/D73Vse9YcpvIcJhZjX27L9MNvf5Bu0oRjrtSbxODEx12V7+avB
+         NVp88Xm6kHcPhmvlHIRnmdMR5kNV8SXbHaVO1OTghnduETMbaAprYyzk8BfzdLePYYfF
+         +ukg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hwgLtruPC06mcRCnQAsf+kJqHCP1mf00hTNnpiQ34M0=;
-        b=hTXuaIJUG7/E8gtJtdL+2UZmvSDGYn2oL6hOOBthNyuMEpVT/dGnLGheWZK0qD4cUt
-         iCvG82gQsDSDrZadiR+AYBsWrIKdbDxuRjg9MrjMauTospfIOd7O8NiR1n33WvydRfEi
-         CZJOcs05g9AB+Iht/A7grlbd+AORJF/c+QaWKD/rDmN0j+OChTI5vgdzoQ+hDVAOlkwG
-         46/RuknzE6kEnFEVBD/Nq28W7YTIZQwy+g1n7G6cRhEtHIndHGj7o51y69AceDRpirfi
-         9Mwz2HyXmq4NhHrx1Aq8GfVV139qensA3D5Ttf1Sn2e5gcsRocAM9SPKX3kHuIPY31jx
-         j7Rg==
-X-Gm-Message-State: AJIora8E/70+kMKTMUNaOwhOju2Cg5lASmXgbpQD93LjuoXHey1YQE0I
-	YHMFlMtVhoSv/JkzERW8tEEU3QTHenxq7FJP
-X-Google-Smtp-Source: AGRyM1valIU/iaeQxN+PlEF1nKXbvtpbZm+lYNW8XoLIwD7lukmB3X3AklukK83I6j2kfvcP4V5FHw==
-X-Received: by 2002:a05:622a:1444:b0:317:c4aa:5cc5 with SMTP id v4-20020a05622a144400b00317c4aa5cc5mr12215515qtx.328.1656401256081;
-        Tue, 28 Jun 2022 00:27:36 -0700 (PDT)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id p14-20020a05620a056e00b006ab91fd03fasm9712225qkp.19.2022.06.28.00.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 00:27:34 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-317741c86fdso107652667b3.2;
-        Tue, 28 Jun 2022 00:27:33 -0700 (PDT)
-X-Received: by 2002:a81:a092:0:b0:318:5c89:a935 with SMTP id
- x140-20020a81a092000000b003185c89a935mr20762801ywg.383.1656401253054; Tue, 28
- Jun 2022 00:27:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=TvBS1CPFquLgQjmgRqByyxoMhBcAVYRHfsLh3BdY+Qc=;
+        b=6M8pypddoNBdjap6HX1nu2mnfm9NzgCrZcKF3+E45vvLn0+mGEd4pSvHYfRNOgNa6Q
+         eXQ7cp1l1Guz8ELx8AYu4pDM6hse8CDWu8j0qZTyntrvMGgX5FERTyILpsrlxPx7RvMt
+         fErX5GO6LVzRwj7y2zbaVBtSaNZ60xwxG6nmtfJCDh1Zu/cG/RPrxbvYBsxVMgojMNiU
+         HKuNR80/9YCvvzP6ltQL0Z/LERJE8PAM/iLczXrDa1Phl21FXVypXI296DtR7HF42sWL
+         BtVrEPPOKOG/oPruAOgf/dU+gFdZqt9lAKi1wn0GsHtQBgZ6tnAQY89kBs9GDGRzQv1J
+         JBNw==
+X-Gm-Message-State: AJIora/ZpN3kLv8eZFkcpe1Fl/dyRgoYCQ4fpKKU9gQoPLeLaM4lMp+J
+	Qc93RPAbOiQp4VKV3OPedFvxq8KJezRr7tNmyATpztwbymOboA==
+X-Google-Smtp-Source: AGRyM1veEJ+dHNxzAaiO9kYPPy/eRNb0nxNDX23qqgEyPM648hNmewsEY0QJNth2cRVFOgXERKFTcmvAQ2D2MRsSc7s=
+X-Received: by 2002:a05:690c:102:b0:2ef:48d8:24c3 with SMTP id
+ bd2-20020a05690c010200b002ef48d824c3mr20507253ywb.153.1656413309834; Tue, 28
+ Jun 2022 03:48:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220627180432.GA136081@embeddedor>
-In-Reply-To: <20220627180432.GA136081@embeddedor>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 28 Jun 2022 09:27:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-Message-ID: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "the arch/x86 maintainers" <x86@kernel.org>, dm-devel@redhat.com, 
-	linux-m68k <linux-m68k@lists.linux-m68k.org>, 
-	"open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	KVM list <kvm@vger.kernel.org>, 
-	Intel Graphics Development <intel-gfx@lists.freedesktop.org>, 
-	DRI Development <dri-devel@lists.freedesktop.org>, netdev <netdev@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, linux-btrfs <linux-btrfs@vger.kernel.org>, 
-	linux-can@vger.kernel.org, Linux FS Devel <linux-fsdevel@vger.kernel.org>, 
-	linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org, 
-	lvs-devel@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>, 
-	kasan-dev <kasan-dev@googlegroups.com>, Linux MMC List <linux-mmc@vger.kernel.org>, 
-	nvdimm@lists.linux.dev, NetFilter <netfilter-devel@vger.kernel.org>, 
-	coreteam@netfilter.org, linux-perf-users@vger.kernel.org, 
-	linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, scsi <linux-scsi@vger.kernel.org>, 
-	target-devel <target-devel@vger.kernel.org>, USB list <linux-usb@vger.kernel.org>, 
-	virtualization@lists.linux-foundation.org, 
-	V9FS Developers <v9fs-developer@lists.sourceforge.net>, 
-	linux-rdma <linux-rdma@vger.kernel.org>, 
-	ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-hardening@vger.kernel.org
+From: Yegor Yefremov <yegorslists@googlemail.com>
+Date: Tue, 28 Jun 2022 12:48:18 +0200
+Message-ID: <CAGm1_ktXBp-sz3Dud_G0iqOG=vA=Xp-bj-icwNLVgq-AMqKO7A@mail.gmail.com>
+Subject: raw/omap2: erasing issue
+To: linux-mtd@lists.infradead.org
+Cc: Linux-OMAP <linux-omap@vger.kernel.org>, rogerq@kernel.org, 
+	miquel.raynal@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220628_002739_975765_91D22944 
-X-CRM114-Status: GOOD (  19.16  )
+X-CRM114-CacheID: sfid-20220628_034832_948610_2A0BDC16 
+X-CRM114-Status: UNSURE (   8.55  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,28 +76,113 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgR3VzdGF2bywKClRoYW5rcyBmb3IgeW91ciBwYXRjaCEKCk9uIE1vbiwgSnVuIDI3LCAyMDIy
-IGF0IDg6MDQgUE0gR3VzdGF2byBBLiBSLiBTaWx2YQo8Z3VzdGF2b2Fyc0BrZXJuZWwub3JnPiB3
-cm90ZToKPiBUaGVyZSBpcyBhIHJlZ3VsYXIgbmVlZCBpbiB0aGUga2VybmVsIHRvIHByb3ZpZGUg
-YSB3YXkgdG8gZGVjbGFyZQo+IGhhdmluZyBhIGR5bmFtaWNhbGx5IHNpemVkIHNldCBvZiB0cmFp
-bGluZyBlbGVtZW50cyBpbiBhIHN0cnVjdHVyZS4KPiBLZXJuZWwgY29kZSBzaG91bGQgYWx3YXlz
-IHVzZSDigJxmbGV4aWJsZSBhcnJheSBtZW1iZXJz4oCdWzFdIGZvciB0aGVzZQo+IGNhc2VzLiBU
-aGUgb2xkZXIgc3R5bGUgb2Ygb25lLWVsZW1lbnQgb3IgemVyby1sZW5ndGggYXJyYXlzIHNob3Vs
-ZAo+IG5vIGxvbmdlciBiZSB1c2VkWzJdLgoKVGhlc2UgcnVsZXMgYXBwbHkgdG8gdGhlIGtlcm5l
-bCwgYnV0IHVhcGkgaXMgbm90IGNvbnNpZGVyZWQgcGFydCBvZiB0aGUKa2VybmVsLCBzbyBkaWZm
-ZXJlbnQgcnVsZXMgYXBwbHkuICBVYXBpIGhlYWRlciBmaWxlcyBzaG91bGQgd29yayB3aXRoCndo
-YXRldmVyIGNvbXBpbGVyIHRoYXQgY2FuIGJlIHVzZWQgZm9yIGNvbXBpbGluZyB1c2Vyc3BhY2Uu
-CgpHcntvZXRqZSxlZXRpbmd9cywKCiAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0CgotLQpH
-ZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0t
-IGdlZXJ0QGxpbnV4LW02OGsub3JnCgpJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVj
-aG5pY2FsIHBlb3BsZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0CndoZW4gSSdtIHRhbGtp
-bmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxp
-a2UgdGhhdC4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51cyBUb3J2YWxk
-cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Since linux 5.17 I get the following issue when doing ubiformat:
+
+# ubiformat -y /dev/mtd5
+ubiformat: mtd5 (nand), size 265945088 bytes (253.6 MiB), 2029
+eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+libscan: scanning eraseblock 1097 -- 54 % complete  eth1 timed out to bring up
+libscan: scanning eraseblock 2028 -- 100 % complete
+ubiformat: 2001 eraseblocks have valid erase counter, mean value is 9
+ubiformat: 2 eraseblocks are supposedly empty
+ubiformat: 26 bad eraseblocks found, numbers: 3, 4, 5, 6, 8, 9, 10,
+11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30,
+31, 32
+ubiformat: formatting eras[   33.644323] nand: nand_erase_nand:
+attempt to erase a bad block at page 0x00000d40
+ubiformat: formatting eraseblock 28[   33.658809] nand:
+nand_erase_nand: attempt to erase a bad block at page 0x00000d80
+ubiformat: formatting eraseblock 29 --  1 % [   33.674531] nand:
+nand_erase_nand: attempt to erase a bad block at page 0x00000dc0
+ubiformat: formatting eraseblock 30 --  1 % complete [   33.684508]
+nand: nand_erase_nand: attempt to erase a bad block at page 0x00000e00
+ubiformat: formatting eraseblock 34 --  1 % complete  libmtd: error!:
+MEMERASE64 ioctl failed for eraseblock 34 (mtd5)
+        error 5 (Input/output error)
+
+ubiformat: error!: failed to erase eraseblock 34
+           error 5 (Input/output error)
+ubiformat: marking block 34 bad
+ubiformat: formatting eraseblock 35 --  1 % complete  libmtd: error!:
+MEMERASE64 ioctl failed for eraseblock 35 (mtd5)
+        error 5 (Input/output error)
+
+ubiformat: error!: failed to erase eraseblock 35
+           error 5 (Input/output error)
+ubiformat: marking block 35 bad
+ubiformat: formatting eraseblock 36 --  1 % complete  libmtd: error!:
+MEMERASE64 ioctl failed for eraseblock 36 (mtd5)
+        error 5 (Input/output error)
+
+ubiformat: error!: failed to erase eraseblock 36
+           error 5 (Input/output error)
+ubiformat: marking block 36 bad
+ubiformat: formatting eraseblock 37 --  1 % complete  libmtd: error!:
+MEMERASE64 ioctl failed for eraseblock 37 (mtd5)
+        error 5 (Input/output error)
+
+ubiformat: error!: failed to erase eraseblock 37
+           error 5 (Input/output error)
+ubiformat: marking block 37 bad
+
+ubiformat: error!: consecutive bad blocks exceed limit: 4, bad flash?
+# [   36.322563] vwl1271: disabling
+
+git bisect pointed to the following commit:
+
+a9e849efca4f9c7732ea4a81f13ec96208994b22 is the first bad commit
+commit a9e849efca4f9c7732ea4a81f13ec96208994b22
+Author: Roger Quadros <rogerq@kernel.org>
+Date:   Thu Dec 9 11:04:55 2021 +0200
+
+    mtd: rawnand: omap2: move to exec_op interface
+
+    Stop using legacy interface and move to the exec_op interface.
+
+    Signed-off-by: Roger Quadros <rogerq@kernel.org>
+    Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+    Link: https://lore.kernel.org/linux-mtd/20211209090458.24830-4-rogerq@kernel.org
+
+:040000 040000 2341051b8aa8e6b554b8a44d2934f76d1aa460c4
+c1727080ff16c403f4ad5ed840acc90127b632f8 M      drivers
+
+Info to my NAND flash:
+
+[    5.695760] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
+[    5.702193] nand: Micron MT29F2G08ABAEAWP
+[    5.706356] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
+2048, OOB size: 64
+[    5.714204] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
+[    5.719673] 6 cmdlinepart partitions found on MTD device omap2-nand.0
+[    5.726232] Creating 6 MTD partitions on "omap2-nand.0":
+[    5.731594] 0x000000000000-0x000000020000 : "SPL"
+[    5.737788] mtdblock: MTD device 'SPL' is NAND, please consider
+using UBI block devices instead.
+[    5.750113] 0x000000020000-0x000000040000 : "SPL.backup1"
+[    5.756916] mtdblock: MTD device 'SPL.backup1' is NAND, please
+consider using UBI block devices instead.
+[    5.769870] 0x000000040000-0x000000060000 : "SPL.backup2"
+[    5.776695] mtdblock: MTD device 'SPL.backup2' is NAND, please
+consider using UBI block devices instead.
+[    5.789559] 0x000000060000-0x000000080000 : "SPL.backup3"
+[    5.796423] mtdblock: MTD device 'SPL.backup3' is NAND, please
+consider using UBI block devices instead.
+[    5.809341] 0x000000080000-0x000000260000 : "u-boot"
+[    5.816652] mtdblock: MTD device 'u-boot' is NAND, please consider
+using UBI block devices instead.
+[    5.829189] 0x000000260000-0x000010000000 : "UBI"
+[    5.971508] mtdblock: MTD device 'UBI' is NAND, please consider
+using UBI block devices instead.
+
+
+Regards,
+Yegor
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
