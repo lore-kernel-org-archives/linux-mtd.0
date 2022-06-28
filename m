@@ -4,111 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAFD9C43334
-	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jun 2022 15:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7BC4C43334
+	for <linux-mtd@archiver.kernel.org>; Tue, 28 Jun 2022 17:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=R6sZp/1Fv72aaEf9QoGqgCjeoBYeAR4w9gvSqvt67d0=; b=ryV5ZcyxnHKRBP
-	O1MGERr56Ac55f8Y1RIu+SjR3MBuGr0buUdsYCtmPNdOQPAkzh2HqD2hPoQuXKpHLYYARzK/DcJ2s
-	BHFuaQBIMpOM8u3Bb/6a7MnnrXRSerDtbs5WmjbzhWhRJlvmWVMinT+231OiKHuZi4010paAcHlsI
-	YjFsTKNiVfqvPlpx3XjYnhr6a1xRmQEC2zAi/agqSgG+qFNNqVYsC9P4piXZYVO0JRBEWUZDDOtN1
-	ZRzv9hUqiEuzgEsjnRMJDAAbNfVYtTVp1iRWorKzwdCp7/yA/y8GHAhpdzXfH/bK1wQf/FpeBZ1gB
-	3LJqdJ+3TCO2GSTrJ7FQ==;
+	List-Owner; bh=Fc1ftk0V08by/sPHZLuX3xQazA9BaBzx7D9wFDrlcuE=; b=sp1ddtFYAchQUx
+	UXdaAFZ/Y8nVZmwWZQDMlY9MpSkc2FXDMffCkmORFnicze8FXBDdtKh3pYlPBrP3HV4EwFT9yVNrz
+	2qmd/fVh4EMvsc0TC8Kw0XPfXy7xrZH60j9cywv8T10pfygEjM0eXOwopth5DawnnQHNdBD4BzhBT
+	lAdBxTSZNVS61upov11XVr8zDewDABBpEU75wAmID3iPz0AJLxKy2N5XOp2j7XphjoJwFLzHfp2Sc
+	4MYvLq1RALpdUKqP2qTvCuOWp0VgV4DvzTzj+W+IS0vveRKXPAk0utuhaqEVvRRAMAGOseHSUq18Y
+	ZIHeLJLJKFDNMtOY3TrQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6DSJ-0072Tq-5E; Tue, 28 Jun 2022 15:48:47 +0000
-Received: from mail-bn7nam10on2065.outbound.protection.outlook.com ([40.107.92.65] helo=NAM10-BN7-obe.outbound.protection.outlook.com)
+	id 1o6FQZ-007Txr-E0; Tue, 28 Jun 2022 17:55:07 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6DSE-0072Rl-5U
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2022 15:48:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BPvJk3axoscwMMJ6YCf0A+/nuuPXx6P8S+2Lvzufz9DG6mKiRGpxmgnXf+nbgewsSyo+EGpb1Jt9l/ZxymV0WAnTjSjhgJSRfBq8oc3/FT7PCX5vmy2fcYP6nSP2AHWr2wqG9C8UmLIHDOA/EutgmCW1WxIGeBjrY5gHIqHSDWllYac5ScD0IDotNNemCkz0+MTujdSmGQjBxKdVZTMnR93jlAhACW5502VljyJWE8XcnPJddKi6AOYe6lH/CqJf5G47/o88R1djxhKn7nJb8OihhCiZ7jRPLb19B6yZ6B1AKNbjg4c08dMiwBxe7RfJTPLe4yGLsrEWkrn+zPwdsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=06A6iGcl/wfm0nT5KwMP1gllxN6RbErAGeuNtlHvzvU=;
- b=O1uaVLRyh+1BF24hFzJpgnAwx0WSEDJWiFrweR4ugOAt8WaZ5ax+RWQVXDZ/cORCZ6jUdmiUebf042vj7jmn5fDCuStCaik6sVKxdju4dSp9wOtwSg/qS3kSnKdESZ3XE0Dg0vEvPnCJE2peDpKEtUliSow0Vfgh/VSHeBJvhd/MGQM1gUhEd0hqjgXZbVxbcotw25dvT/lcar33qex5SWEWcpfoXcyhXKPGJdxLIbvOCJSJdow+3atE+bM4/55fH8JN7adV6wUNy5BJRjkTx0pJ2PRIeHodzLhfhqHcufFrWL6na1dy3CJW6keATSmJNcnODqPIV5SerzYXX3SvWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=bootlin.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+	id 1o6FQV-007Ttt-QW
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2022 17:55:05 +0000
+Received: by mail-pl1-x635.google.com with SMTP id c4so11735275plc.8
+        for <linux-mtd@lists.infradead.org>; Tue, 28 Jun 2022 10:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=06A6iGcl/wfm0nT5KwMP1gllxN6RbErAGeuNtlHvzvU=;
- b=L3IiVgfDo4cCWYQcyfZPiyyxrjSlZX/e35/WVGoNC+h0goEOqXPzwkA5acWu8SjaNuJRD10qmBlDgPui+ihqHMQiLzAuhlzIUAiIynAkXFe9c7CMmY6Iow4CWQ7WmTa6aAx8+8sg5GZfxQF+mzZ/xR5ATGbqQNLTxWmsxzF296A=
-Received: from SA1PR02CA0023.namprd02.prod.outlook.com (2603:10b6:806:2cf::25)
- by SA2PR02MB7835.namprd02.prod.outlook.com (2603:10b6:806:142::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.17; Tue, 28 Jun
- 2022 15:48:38 +0000
-Received: from SN1NAM02FT0053.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:2cf:cafe::5c) by SA1PR02CA0023.outlook.office365.com
- (2603:10b6:806:2cf::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14 via Frontend
- Transport; Tue, 28 Jun 2022 15:48:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com; pr=C
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0053.mail.protection.outlook.com (10.97.4.115) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5373.15 via Frontend Transport; Tue, 28 Jun 2022 15:48:37 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 28 Jun 2022 08:48:36 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 28 Jun 2022 08:48:36 -0700
-Received: from [10.140.6.18] (port=39110 helo=xhdlakshmis40.xilinx.com)
-	by smtp.xilinx.com with esmtp (Exim 4.90)
-	(envelope-from <amit.kumar-mahapatra@xilinx.com>)
-	id 1o6DS8-000ELN-Ds; Tue, 28 Jun 2022 08:48:36 -0700
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-To: <miquel.raynal@bootlin.com>, <nagasure@xilinx.com>, <vigneshr@ti.com>
-CC: <boris.brezillon@collabora.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <git@amd.com>, <richard@nod.at>,
-	<amit.kumar-mahapatra@amd.com>, Olga Kitaina <okitain@gmail.com>,
-	<stable@vger.kernel.org>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@xilinx.com>
-Subject: [PATCH v3 2/2] mtd: rawnand: arasan: Fix clock rate in NV-DDR
-Date: Tue, 28 Jun 2022 21:18:24 +0530
-Message-ID: <20220628154824.12222-3-amit.kumar-mahapatra@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220628154824.12222-1-amit.kumar-mahapatra@xilinx.com>
-References: <20220628154824.12222-1-amit.kumar-mahapatra@xilinx.com>
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ifakbg1KSXljeCc2KlqlOz+XfzIBohlTVCEx+b5hm2Y=;
+        b=Lpc3rw2lUDFTgNuiFkNi7vJ3FOoQQ8sPNV+A/xT7kPgFFi5TelrrdXlIUbrL4j9GT+
+         3+ei8DuymmFwmq4TMtVSFXVwj/BEoFuIu2AqPN9i6R5zOS+ndUs4OIvpg1Fj2tZP3rAs
+         mZTqNdFC15vlNUFmjWu7inrraPu1BA3Mkzqts=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ifakbg1KSXljeCc2KlqlOz+XfzIBohlTVCEx+b5hm2Y=;
+        b=H4Br37hzk/phnF9laMIIXq0koWYbG6wzJssWT/LuLLUwEn/6Z8kJFgaeNR6g6ngMW2
+         MYYLMHZ0HYx+QavYiLXK+zXOqIYtURIh4xlb6EZXRhYdHqE8AJrDt6Xf7jifDuRpNqXI
+         tNDhwadhv0tCAa5xNnv0jjweidt+gRBuTP4y5MvS9dYXMePLKlwe1SxiwW4XhTEWmSrg
+         agNbtWCoWwmx0qp2q/sqQYh+rndvlf39fYWe/3HC0q6VJopyEohACLjrLFMfcT2Qw4Un
+         GrIQG49mUUSTSJRqlNyKRhGZz74Y/Ab15XiJGdUhh/+R64fCO/esoDoENPZx0mszx2Dn
+         LaJQ==
+X-Gm-Message-State: AJIora8jji0T0YywDVZvlf9oBA+nra1etQo0RgOuVsRbQB2gwbjGHX/1
+	RRJaC27zFTdsejtapEdXtaqeIA==
+X-Google-Smtp-Source: AGRyM1vNNODoy68cNcew+BOwykVJS5AyiEbndqdKVVh3DpwTH+wUBJ1HcGxnO6zSsyx2Hva19xbd8w==
+X-Received: by 2002:a17:90b:3b52:b0:1ec:db2a:b946 with SMTP id ot18-20020a17090b3b5200b001ecdb2ab946mr838564pjb.229.1656438899502;
+        Tue, 28 Jun 2022 10:54:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f15-20020a170902ff0f00b0016a84d232a6sm5432810plj.46.2022.06.28.10.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 10:54:59 -0700 (PDT)
+Date: Tue, 28 Jun 2022 10:54:58 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
+	lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+	nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
+	linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <202206281009.4332AA33@keescook>
+References: <20220627180432.GA136081@embeddedor>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+ <20220628004052.GM23621@ziepe.ca>
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2c9cd016-968a-4c04-2099-08da591daa80
-X-MS-TrafficTypeDiagnostic: SA2PR02MB7835:EE_
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	nE1qpFuko43JNFn5P//HC6+OCXRoLunTNQwNLm1aFen8BtqVef8O7iIpsQcx/utRrpHmEcTh+t3Dq/HTknvNQ4Dpq5X9zhY3jpJQiRBmC+rr/3jnE2bftzphvhU6Dq9DUMJR2WBIRoHxu8Gq8XQHJipFQc4E0bxq+K9UnjIje+iufkbgHsTKWVqc+chdF9vO3zN9Pq2YO3t7hhYROVCY3MLkbAm0FqEI/LSW59p147z5UFqLlDoMoQGeUeZ8PD2CJvlf0yPfSXF3EUnPv7X0n4vOxCKrDu8vv2hJNWUz4XXxeTaPRZrnLOT1e6g1+jX39jYnF7C54kHuCHUHDEY5yIiuhGbiZybInmXi8Tzw8C1QkmTaabH41E1phPxd+YNGwqdpJXsZfbxg5FfdCeXX4oJISr/wgYs229zsawNRL85a5+6bEOllom3eu8mZNRyDR+qfOenC2t15/b0sup8YP3IU1zM9pRlUxeB3VuMjW62vFzeBWL41m1aRNwfat+Z8dN05b8Ey4eK1ZPtK7D4L85Brh6uEFZustCkrA7ySGSmcO1cDx3SQRJsZ5olz00FXYzrTNC80qt3e7DantAkXJqSdqIDEQpTzkngoZybMK4hsqMrjCJvhicJpihOElHhCQs/8aDMmvPtr4wlLu2aBQYPxQwe1AUbmrhCAoizya0KeQ1c+VAkQrkA9ZW4BcmNYNETHpqC5yoLaDpNhg+/0eq80KpOVtlk/hTx1O17ndaZtwgyEXNoDsctPsws66aGHRMuh4TITfyqj35PUECP4e0niZb421aPzKaJLoAzKZrnVz/hX96w2S7OR2dQZr98kJaJPtxNbgcUlMxGTM6nS9w==
-X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230016)(4636009)(346002)(39860400002)(376002)(136003)(396003)(36840700001)(40470700004)(46966006)(8676002)(70586007)(36860700001)(4326008)(70206006)(40480700001)(7416002)(41300700001)(40460700003)(9786002)(26005)(6666004)(478600001)(7636003)(7696005)(82740400003)(186003)(2906002)(36756003)(356005)(8936002)(82310400005)(47076005)(107886003)(2616005)(110136005)(54906003)(336012)(1076003)(5660300002)(316002)(426003)(83380400001)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2022 15:48:37.4856
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c9cd016-968a-4c04-2099-08da591daa80
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	SN1NAM02FT0053.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7835
+Content-Disposition: inline
+In-Reply-To: <20220628004052.GM23621@ziepe.ca>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220628_084842_257659_B08C5328 
-X-CRM114-Status: GOOD (  12.52  )
+X-CRM114-CacheID: sfid-20220628_105503_892154_E84FD58C 
+X-CRM114-Status: GOOD (  16.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,47 +107,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Olga Kitaina <okitain@gmail.com>
+On Mon, Jun 27, 2022 at 09:40:52PM -0300, Jason Gunthorpe wrote:
+> On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
+> > [...]
+> > Fyi, this breaks BPF CI:
+> > 
+> > https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
+> > 
+> >   [...]
+> >   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+> >           struct bpf_lpm_trie_key trie_key;
+> >                                   ^
 
-According to the Arasan NAND controller spec, the flash clock rate for SDR
-must be <= 100 MHz, while for NV-DDR it must be the same as the rate of the
-CLK line for the mode. The driver previously always set 100 MHz for NV-DDR,
-which would result in incorrect behavior for NV-DDR modes 0-4.
+The issue here seems to be a collision between "unknown array size"
+and known sizes:
 
-The appropriate clock rate can be calculated from the NV-DDR timing
-parameters as 1/tCK, or for rates measured in picoseconds,
-10^12 / nand_nvddr_timings->tCK_min.
+struct bpf_lpm_trie_key {
+        __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
+        __u8    data[0];        /* Arbitrary size */
+};
 
-Fixes: 197b88fecc50 ("mtd: rawnand: arasan: Add new Arasan NAND controller")
-CC: stable@vger.kernel.org # 5.8+
-Signed-off-by: Olga Kitaina <okitain@gmail.com>
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
----
- drivers/mtd/nand/raw/arasan-nand-controller.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+struct lpm_key {
+	struct bpf_lpm_trie_key trie_key;
+	__u32 data;
+};
 
-diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
-index c5264fa223c4..d4121d1243bf 100644
---- a/drivers/mtd/nand/raw/arasan-nand-controller.c
-+++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
-@@ -1043,7 +1043,13 @@ static int anfc_setup_interface(struct nand_chip *chip, int target,
- 				 DQS_BUFF_SEL_OUT(dqs_mode);
- 	}
- 
--	anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
-+	if (nand_interface_is_sdr(conf)) {
-+		anand->clk = ANFC_XLNX_SDR_DFLT_CORE_CLK;
-+	} else {
-+		/* ONFI timings are defined in picoseconds */
-+		anand->clk =  div_u64((u64)NSEC_PER_SEC * 1000,
-+				      conf->timings.nvddr.tCK_min);
-+	}
- 
- 	/*
- 	 * Due to a hardware bug in the ZynqMP SoC, SDR timing modes 0-1 work
+This is treating trie_key as a header, which it's not: it's a complete
+structure. :)
+
+Perhaps:
+
+struct lpm_key {
+        __u32 prefixlen;
+        __u32 data;
+};
+
+I don't see anything else trying to include bpf_lpm_trie_key.
+
+> 
+> This will break the rdma-core userspace as well, with a similar
+> error:
+> 
+> /usr/bin/clang-13 -DVERBS_DEBUG -Dibverbs_EXPORTS -Iinclude -I/usr/include/libnl3 -I/usr/include/drm -g -O2 -fdebug-prefix-map=/__w/1/s=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2 -Wcast-function-type -Wformat-nonliteral -Wdate-time -Wnested-externs -Wshadow -Wstrict-prototypes -Wold-style-definition -Werror -Wredundant-decls -g -fPIC   -std=gnu11 -MD -MT libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o -MF libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o.d -o libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o   -c ../libibverbs/cmd_flow.c
+> In file included from ../libibverbs/cmd_flow.c:33:
+> In file included from include/infiniband/cmd_write.h:36:
+> In file included from include/infiniband/cmd_ioctl.h:41:
+> In file included from include/infiniband/verbs.h:48:
+> In file included from include/infiniband/verbs_api.h:66:
+> In file included from include/infiniband/ib_user_ioctl_verbs.h:38:
+> include/rdma/ib_user_verbs.h:436:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_cq_resp base;
+>                                         ^
+> include/rdma/ib_user_verbs.h:644:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_qp_resp base;
+
+This looks very similar, a struct of unknown size is being treated as a
+header struct:
+
+struct ib_uverbs_create_cq_resp {
+        __u32 cq_handle;
+        __u32 cqe;
+        __aligned_u64 driver_data[0];
+};
+
+struct ib_uverbs_ex_create_cq_resp {
+        struct ib_uverbs_create_cq_resp base;
+        __u32 comp_mask;
+        __u32 response_length;
+};
+
+And it only gets used here:
+
+                DECLARE_UVERBS_WRITE(IB_USER_VERBS_CMD_CREATE_CQ,
+                                     ib_uverbs_create_cq,
+                                     UAPI_DEF_WRITE_UDATA_IO(
+                                             struct ib_uverbs_create_cq,
+                                             struct ib_uverbs_create_cq_resp),
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                     UAPI_DEF_METHOD_NEEDS_FN(create_cq)),
+
+which must also be assuming it's a header. So probably better to just
+drop the driver_data field? I don't see anything using it (that I can
+find) besides as a sanity-check that the field exists and is at the end
+of the struct.
+
 -- 
-2.17.1
-
+Kees Cook
 
 ______________________________________________________
 Linux MTD discussion mailing list
