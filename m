@@ -4,63 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61BFBC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 11:38:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46465C43334
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 11:40:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+CuXF9yjV6NuRjFxM+vX/TmrI2y1+YRYtB/u2K1cNyE=; b=ADMZ+bLsoS7P5e
-	PQo18aq1YkePo7H5GNUit/QmAIRYl1wOlfHs0NBvu10OS39hOgV3huVtejLesLHXS5nCZNu+qX7Qk
-	PRwlLv9LcviHRU2Nbbl9TRgaM+QwdjXO10xiZajV2253dqPLNjfd3lHYWj80FJ1nI3lPXIcJWqqFK
-	jw+/J4a5dcoTqP6fthcp8BGbuZdHaBQ+kfXF/JX97sFX48k87qomINeFWCZlzPwQaVJRed3dXC9Tq
-	Sz8bo7VNw3BnLLDP5J+v/qCyjaFw4bkM7uXYu8UIMSUxXprC0FUpF6MVEf0uwCmTAP5Iv0AXSazjQ
-	vPeK0/fwZuB+Iq4mmSwQ==;
+	List-Owner; bh=Fj1y6cX0o/5/+Fh0edPmc3KttaPab3vZXAQEBw4vIWY=; b=nmepoE4t4njkjt
+	M0S5dviNq8Wz5vsgwoRySS2guy3Kokbh6o+LJvy7wvP6W+LIX0OPFBQJbnNNFKsyZlQZsDWAFEaf8
+	M4B4godPzFZhNiadxYuGi+rE2BoFQpxPJfPIsrNv0oOg2kNM/n4QzTAz0At+/GXSOAY+H6QpoxaLb
+	rQdqha5q6i31AU+ShVEGV4srZuGGRGx6xHMlUwy7V1tjsrHulm1/40CGwC12CetGXJFPonB1vCKDI
+	yoLCtWnRMYEk9wEUlHm4aVvvkGMcBfKzsL/CkYQhQ/WQ3Ekz8YPcZuzKgJJHfO/5ROWltvf0TD5ux
+	2YEeCVj+zltxTUX7Fj0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6W0y-00BUg6-Kn; Wed, 29 Jun 2022 11:37:49 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1o6W2s-00BVa0-LE; Wed, 29 Jun 2022 11:39:46 +0000
+Received: from relay7-d.mail.gandi.net ([217.70.183.200])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6VwT-00BSdI-3I
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 11:33:11 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C71B7B82341;
-	Wed, 29 Jun 2022 11:33:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8C7C34114;
-	Wed, 29 Jun 2022 11:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1656502384;
-	bh=aKAZd2e1uYEVsC15zi1agqackTjUA/sJFPPMdwq64Vg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rsTVIPvNIDHx9KUTZ6S4+f4Vfo+nUsWmTDu7tqmDKVAocc+tKftwQud2+Wn5H183D
-	 ocD5S4bKhtov5HwcLwaua7MHHcv2tCOzGbducJJ2iGiHxcZz3oFF5guAcDdwworSga
-	 ZEEhMkySaddaZ8L4oRFyuLTP9a7nQWP4spOFpsod10FbcYounuxu0Xhyi0wo9XgluW
-	 CzjMviGKTeXhFAM0Rt9xd7cTmjis3Kttc1MbSNowtlACAWUshGBStoEf9z0X5vG/y3
-	 MGdW55tqmYhsQdIZC1sIFjhHDAggELZQ0/x0Jtpk38QsSw/1W0UMBgtgoAkluYiFaL
-	 JyL4xEBMSQqbg==
-Message-ID: <5a36197d-7ed5-c06a-0a7e-73b808526dcd@kernel.org>
-Date: Wed, 29 Jun 2022 14:33:00 +0300
+	id 1o6W20-00BV7M-6n
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 11:38:54 +0000
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 4A0C42000E;
+	Wed, 29 Jun 2022 11:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1656502725;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IQXoqYCgE7EIU42/zVADHV9fDPsxC+PutcvlEANepEU=;
+	b=SfTLG3E+wEsfzL0Rw0KxGQptxA0ZkMjSeOj50QLWd1IHA+fIQpXH6hqJNcnj4/GdTBfrBY
+	rElrXwP3avkncWwuTdDQ/yeJ/hunIJBcNv26lnzjwXQV0qwLA/+p2C66Hx58UWGePGKQFg
+	0I/BJvEhy4VCR0NqNVFikj3gkWHpGEOz5/q4Y/LhrU6BjUHmpxH4AdXzHZQunHiOTArtgD
+	hi3KgDoFywlbdS3APWu2bt6ckhN9s1AS4GnrCll6c+0GI7Lj/0jMe66kiCnWRF7SksOh9I
+	ZlNragQsLwETXTzc60g2FHYlUbYaROG5YzpKXbSKN4jZ4u6JJCiyg239mnAIUQ==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Christian Marangi <ansuelsmth@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?utf-8?b?77+9ZWNraQ==?= <rafal@milecki.pl>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/3] mtd: core: introduce of support for dynamic partitions
+Date: Wed, 29 Jun 2022 13:38:43 +0200
+Message-Id: <20220629113843.283665-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220622010628.30414-4-ansuelsmth@gmail.com>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: raw/omap2: erasing issue
-Content-Language: en-US
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: linux-mtd@lists.infradead.org, Linux-OMAP <linux-omap@vger.kernel.org>,
- miquel.raynal@bootlin.com
-References: <CAGm1_ktXBp-sz3Dud_G0iqOG=vA=Xp-bj-icwNLVgq-AMqKO7A@mail.gmail.com>
- <72686231-c372-a4fe-347e-39470790fa65@kernel.org>
- <CAGm1_kvRuWY7t2d_BtuSLGEL1u4njRqha=D0f7eN9F5XG8GrLQ@mail.gmail.com>
- <CAGm1_kuucv71AdPkSW8Eog2T9rZRA3uiL4+ok-aWCVsj-z2eew@mail.gmail.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <CAGm1_kuucv71AdPkSW8Eog2T9rZRA3uiL4+ok-aWCVsj-z2eew@mail.gmail.com>
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'ad9b10d1eaada169bd764abcab58f08538877e26'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220629_043309_505992_8392BAB2 
-X-CRM114-Status: GOOD (  18.21  )
+X-CRM114-CacheID: sfid-20220629_043852_442938_68A78770 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,184 +83,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Yegor,
+On Wed, 2022-06-22 at 01:06:28 UTC, Christian Marangi wrote:
+> We have many parser that register mtd partitions at runtime. One example
+> is the cmdlinepart or the smem-part parser where the compatible is defined
+> in the dts and the partitions gets detected and registered by the
+> parser. This is problematic for the NVMEM subsystem that requires an OF
+> node to detect NVMEM cells.
+> 
+> To fix this problem, introduce an additional logic that will try to
+> assign an OF node to the MTD if declared.
+> 
+> On MTD addition, it will be checked if the MTD has an OF node and if
+> not declared will check if a partition with the same label / node name is
+> declared in DTS. If an exact match is found, the partition dynamically
+> allocated by the parser will have a connected OF node.
+> 
+> The NVMEM subsystem will detect the OF node and register any NVMEM cells
+> declared statically in the DTS.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-On 28/06/2022 14:59, Yegor Yefremov wrote:
-> On Tue, Jun 28, 2022 at 1:57 PM Yegor Yefremov
-> <yegorslists@googlemail.com> wrote:
->>
->> Hi Roger,
->>
->> On Tue, Jun 28, 2022 at 1:44 PM Roger Quadros <rogerq@kernel.org> wrote:
->>>
->>> Hi Yegor,
->>>
->>> On 28/06/2022 13:48, Yegor Yefremov wrote:
->>>> Since linux 5.17 I get the following issue when doing ubiformat:
->>>>
->>>> # ubiformat -y /dev/mtd5
->>>> ubiformat: mtd5 (nand), size 265945088 bytes (253.6 MiB), 2029
->>>> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
->>>> libscan: scanning eraseblock 1097 -- 54 % complete  eth1 timed out to bring up
->>>> libscan: scanning eraseblock 2028 -- 100 % complete
->>>> ubiformat: 2001 eraseblocks have valid erase counter, mean value is 9
->>>> ubiformat: 2 eraseblocks are supposedly empty
->>>> ubiformat: 26 bad eraseblocks found, numbers: 3, 4, 5, 6, 8, 9, 10,
->>>> 11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30,
->>>> 31, 32
->>>
->>> I'm guessing these bad blocks recently added due to the offending patch?
->>
->> Yes.
->>
->>>> ubiformat: formatting eras[   33.644323] nand: nand_erase_nand:
->>>> attempt to erase a bad block at page 0x00000d40
->>>> ubiformat: formatting eraseblock 28[   33.658809] nand:
->>>> nand_erase_nand: attempt to erase a bad block at page 0x00000d80
->>>> ubiformat: formatting eraseblock 29 --  1 % [   33.674531] nand:
->>>> nand_erase_nand: attempt to erase a bad block at page 0x00000dc0
->>>> ubiformat: formatting eraseblock 30 --  1 % complete [   33.684508]
->>>> nand: nand_erase_nand: attempt to erase a bad block at page 0x00000e00
->>>> ubiformat: formatting eraseblock 34 --  1 % complete  libmtd: error!:
->>>> MEMERASE64 ioctl failed for eraseblock 34 (mtd5)
->>>>         error 5 (Input/output error)
->>>>
->>>> ubiformat: error!: failed to erase eraseblock 34
->>>>            error 5 (Input/output error)
->>>> ubiformat: marking block 34 bad
->>>> ubiformat: formatting eraseblock 35 --  1 % complete  libmtd: error!:
->>>> MEMERASE64 ioctl failed for eraseblock 35 (mtd5)
->>>>         error 5 (Input/output error)
->>>>
->>>> ubiformat: error!: failed to erase eraseblock 35
->>>>            error 5 (Input/output error)
->>>> ubiformat: marking block 35 bad
->>>> ubiformat: formatting eraseblock 36 --  1 % complete  libmtd: error!:
->>>> MEMERASE64 ioctl failed for eraseblock 36 (mtd5)
->>>>         error 5 (Input/output error)
->>>>
->>>> ubiformat: error!: failed to erase eraseblock 36
->>>>            error 5 (Input/output error)
->>>> ubiformat: marking block 36 bad
->>>> ubiformat: formatting eraseblock 37 --  1 % complete  libmtd: error!:
->>>> MEMERASE64 ioctl failed for eraseblock 37 (mtd5)
->>>>         error 5 (Input/output error)
->>>>
->>>> ubiformat: error!: failed to erase eraseblock 37
->>>>            error 5 (Input/output error)
->>>> ubiformat: marking block 37 bad
->>>>
->>>> ubiformat: error!: consecutive bad blocks exceed limit: 4, bad flash?
->>>> # [   36.322563] vwl1271: disabling
->>>>
->>>> git bisect pointed to the following commit:
->>>>
->>>> a9e849efca4f9c7732ea4a81f13ec96208994b22 is the first bad commit
->>>> commit a9e849efca4f9c7732ea4a81f13ec96208994b22
->>>> Author: Roger Quadros <rogerq@kernel.org>
->>>> Date:   Thu Dec 9 11:04:55 2021 +0200
->>>>
->>>>     mtd: rawnand: omap2: move to exec_op interface
->>>>
->>>>     Stop using legacy interface and move to the exec_op interface.
->>>>
->>>>     Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>>     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>>>     Link: https://lore.kernel.org/linux-mtd/20211209090458.24830-4-rogerq@kernel.org
->>>>
->>>> :040000 040000 2341051b8aa8e6b554b8a44d2934f76d1aa460c4
->>>> c1727080ff16c403f4ad5ed840acc90127b632f8 M      drivers
->>>>
->>>> Info to my NAND flash:
->>>>
->>>> [    5.695760] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
->>>> [    5.702193] nand: Micron MT29F2G08ABAEAWP
->>>> [    5.706356] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
->>>> 2048, OOB size: 64
->>>> [    5.714204] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
->>>> [    5.719673] 6 cmdlinepart partitions found on MTD device omap2-nand.0
->>>> [    5.726232] Creating 6 MTD partitions on "omap2-nand.0":
->>>> [    5.731594] 0x000000000000-0x000000020000 : "SPL"
->>>> [    5.737788] mtdblock: MTD device 'SPL' is NAND, please consider
->>>> using UBI block devices instead.
->>>> [    5.750113] 0x000000020000-0x000000040000 : "SPL.backup1"
->>>> [    5.756916] mtdblock: MTD device 'SPL.backup1' is NAND, please
->>>> consider using UBI block devices instead.
->>>> [    5.769870] 0x000000040000-0x000000060000 : "SPL.backup2"
->>>> [    5.776695] mtdblock: MTD device 'SPL.backup2' is NAND, please
->>>> consider using UBI block devices instead.
->>>> [    5.789559] 0x000000060000-0x000000080000 : "SPL.backup3"
->>>> [    5.796423] mtdblock: MTD device 'SPL.backup3' is NAND, please
->>>> consider using UBI block devices instead.
->>>> [    5.809341] 0x000000080000-0x000000260000 : "u-boot"
->>>> [    5.816652] mtdblock: MTD device 'u-boot' is NAND, please consider
->>>> using UBI block devices instead.
->>>> [    5.829189] 0x000000260000-0x000010000000 : "UBI"
->>>> [    5.971508] mtdblock: MTD device 'UBI' is NAND, please consider
->>>> using UBI block devices instead.
->>>>
->>>
->>> What platform are you on?
->>> I do remember testing this on omap3-beagle but it does not use BCH8 ECC scheme.
->>
->> I am on am335x [1]
->>
->> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/am335x-baltos-ir5221.dts?h=v5.19-rc4
-> 
-> NAND node definition [1]:
-> 
-> &gpmc {
-> pinctrl-names = "default";
-> pinctrl-0 = <&nandflash_pins_s0>;
-> ranges = <0 0 0x08000000 0x10000000>; /* CS0: NAND */
-> status = "okay";
-> 
-> nand@0,0 {
-> compatible = "ti,omap2-nand";
-> reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-> interrupt-parent = <&gpmc>;
-> interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
->     <1 IRQ_TYPE_NONE>; /* termcount */
-> rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
-> nand-bus-width = <8>;
-> ti,nand-ecc-opt = "bch8";
-> ti,nand-xfer-type = "polled";
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-Could you please change this to "prefetch-polled" and see if it fixes the issue?
-
-> 
-> gpmc,device-nand = "true";
-> gpmc,device-width = <1>;
-> gpmc,sync-clk-ps = <0>;
-> gpmc,cs-on-ns = <0>;
-> gpmc,cs-rd-off-ns = <44>;
-> gpmc,cs-wr-off-ns = <44>;
-> gpmc,adv-on-ns = <6>;
-> gpmc,adv-rd-off-ns = <34>;
-> gpmc,adv-wr-off-ns = <44>;
-> gpmc,we-on-ns = <0>;
-> gpmc,we-off-ns = <40>;
-> gpmc,oe-on-ns = <0>;
-> gpmc,oe-off-ns = <54>;
-> gpmc,access-ns = <64>;
-> gpmc,rd-cycle-ns = <82>;
-> gpmc,wr-cycle-ns = <82>;
-> gpmc,bus-turnaround-ns = <0>;
-> gpmc,cycle2cycle-delay-ns = <0>;
-> gpmc,clk-activation-ns = <0>;
-> gpmc,wr-access-ns = <40>;
-> gpmc,wr-data-mux-bus-ns = <0>;
-> 
-> #address-cells = <1>;
-> #size-cells = <1>;
-> ti,elm-id = <&elm>;
-> };
-> };
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/am335x-baltos.dtsi?h=v5.19-rc4#n185
-
-cheers,
--roger
+Miquel
 
 ______________________________________________________
 Linux MTD discussion mailing list
