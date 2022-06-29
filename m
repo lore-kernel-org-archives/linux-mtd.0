@@ -4,235 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9A2DC433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 14:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3130C43334
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 15:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ecs5gREO4XcmhvRNFqHt/o0bYBEV3s5buFYfREjjP+Q=; b=H+I8YFLWPdpzB4
-	ilypRGSan3uw9bIR7zoVcuMLQqQACoHwUdoMZRZQVgt8g53RDC22yQo/x6rtWy+iVBXH4A7E/g1kQ
-	iyRWIsSWDusrcQR8sTCGPI8wW9cgRGpt0JTPAggiNRh00ZLREj9epj8QUq/TME+DdUakU+bDHvVg0
-	Ceor4U/vV+5opQZKMYhwn+aWjjTifzgqzdHe7NUy5rA7GVAmVT3r8WG/LSpDG7mLnTP0uqOUTjuyk
-	BVOQXokvOUhHfeFDRxnL3uhDGhHi8yRHWbnYiVU8aNAsvTt0CN4gpNVxEgGdd3LqasEDrlj7M/utz
-	XHezsOYkva92KQb7+ZWw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:Reply-To:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Date:Subject:To:From:Mime-Version:
+	Message-Id:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=JTTn3vD2816SfvZJTGyk82tjI/Ny9dUfsp5ANtoAhYw=; b=LttzTnkBix1sx4
+	srnBMgYy7zzjj9J+O9i1hhXEnQVJHCrVkH+4kBeC7EiKSqGdEMuS8ai5x77yqhQIpYi6yT9zFccy6
+	ZcCctCIwhVl/aonoJ5rxV74mC5LKUDA5iqvbIUdUBp+AAfOU3T57neihIYP0LHB5CeIhKLv2lWnBf
+	6WedL8uqzrkVXURKji4cdt/n820gvT+z17p7OeirbTaTwDyN6MQeQVmJ9VISCSRpMhbcelDfkmsWn
+	ipJ2/1cp0ULfgHvKzS5CIqivOUarNd1qr2zLESJb5M0IblW9PD0VLJyuMPS0FhG4PkCCZnGYuxLbs
+	3ZwfSXb2/YuMsiPgBkhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Z2A-00CaMp-Dq; Wed, 29 Jun 2022 14:51:15 +0000
-Received: from mail-il1-x136.google.com ([2607:f8b0:4864:20::136])
+	id 1o6Zdt-00ChjY-Ee; Wed, 29 Jun 2022 15:30:13 +0000
+Received: from rioun.com ([14.58.103.146])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Z24-00CaI2-4V; Wed, 29 Jun 2022 14:51:09 +0000
-Received: by mail-il1-x136.google.com with SMTP id a7so5351447ilj.2;
-        Wed, 29 Jun 2022 07:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pwGATE3wVInOXzoFm3DL2iTGSvGusyPbH0jPamzrOPg=;
-        b=B9oiCLcIrwwsffiAV8BVsVBfXybUkA5/wZMduPrd4uxnlky8stLK2tfDvUXny6iXKr
-         JgHfuIg1T4A2bBVpND7mj4ZD6v4EfH9ADxTObhcX6xPh3I7vZ9BQG5yE8imCWk/OhbYC
-         y77BYpEagODmPwREXk1EwgFqaosr/xKUAyn8S+8EchzGzV3HtL4IfoKvDu4K5Msq2ALx
-         f3dq0MlZFz4EQr6JyLTd/ftNsrK8HspcqE3W8redGkzLH/HNAK9wWORCS20wSfpKl6n9
-         0fVin9rSjvVAY9WniBd6EJIncRKM5IK1k+ieCfjqPXFzsZhYgwSjUnYxv8hhRn4qPsQK
-         coGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pwGATE3wVInOXzoFm3DL2iTGSvGusyPbH0jPamzrOPg=;
-        b=VqzHxwTwW4qgldUqnv/2hSdvB4MFyOifiZKOtIec+iML4r2AyQB8VNbhsFdSch70uS
-         onBs3PkbwqZunRNMOS1mW0grcucz7+ZJ5f4ArO51DRV7nD3gRo7WJ1Jdi8eKK2gnast4
-         X3Dw5/eA6l0i6RsVEanqerd2K3HE4hoAtJ9RRU9Sl+qOETm2YOoJLvvKw16iwB7MyTrV
-         juSdmQfNVgICS8dj5HzpYmBmB/FzFBm3RdYcmIKVR79C13/sasHTZsn+R76ZTVpKvwPq
-         iX1cxhOUjGrWsxGCm8JYH2pSOFgujmEvNrxoBr78GF5KJT30fd5gyd96wGdfycezVjf8
-         V4Tw==
-X-Gm-Message-State: AJIora9Ii5vGNt5DM9z1DqYNlYYI+OLUGbxZVjuV6EuERNJo+7XwUjMy
-	xOYt3vUaJh1sszU/ZGSTals4cUtO7rQKUdryTmc=
-X-Google-Smtp-Source: AGRyM1siTyQHr7dYH2cCZ2A9wYi3Xsx12U7qGA8A84nAaysz0D1Kg/QCuzQFR25at5Ho6J2u+X/CmeSal2jIei9STV8=
-X-Received: by 2002:a05:6e02:168e:b0:2da:a9f0:c1aa with SMTP id
- f14-20020a056e02168e00b002daa9f0c1aamr2147237ila.151.1656514266336; Wed, 29
- Jun 2022 07:51:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de> <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Wed, 29 Jun 2022 16:50:55 +0200
-Message-ID: <CANiq72nmXBv2z-LzEZe47iL39T2Bjjqr4pJqOCta-JCL4rZ9QA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Wolfram Sang <wsa@kernel.org>, =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>, 
-	Sekhar Nori <nsekhar@ti.com>, Bartosz Golaszewski <brgl@bgdev.pl>, Russell King <linux@armlinux.org.uk>, 
-	Scott Wood <oss@buserror.net>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, 
-	Robin van der Gracht <robin@protonic.nl>, Miguel Ojeda <ojeda@kernel.org>, Corey Minyard <minyard@acm.org>, 
-	Peter Huewe <peterhuewe@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Nicolas Ferre <nicolas.ferre@microchip.com>, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	Claudiu Beznea <claudiu.beznea@microchip.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Luca Ceresoli <luca@lucaceresoli.net>, Tudor Ambarus <tudor.ambarus@microchip.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
-	MyungJoo Ham <myungjoo.ham@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, 
-	Michael Hennerich <michael.hennerich@analog.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <narmstrong@baylibre.com>, 
-	Robert Foss <robert.foss@linaro.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, David Airlie <airlied@linux.ie>, 
-	Daniel Vetter <daniel@ffwll.ch>, Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, Phong LE <ple@baylibre.com>, 
-	Adrien Grassein <adrien.grassein@gmail.com>, Peter Senna Tschudin <peter.senna@gmail.com>, 
-	Martin Donnelly <martin.donnelly@ge.com>, Martyn Welch <martyn.welch@collabora.co.uk>, 
-	Douglas Anderson <dianders@chromium.org>, Stefan Mavrodiev <stefan@olimex.com>, 
-	Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	Florian Fainelli <f.fainelli@gmail.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Jiri Kosina <jikos@kernel.org>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Jean Delvare <jdelvare@suse.com>, 
-	George Joseph <george.joseph@fairview5.com>, Juerg Haefliger <juergh@gmail.com>, 
-	Riku Voipio <riku.voipio@iki.fi>, Robert Marko <robert.marko@sartura.hr>, 
-	Luka Perkov <luka.perkov@sartura.hr>, Marc Hulsman <m.hulsman@tudelft.nl>, 
-	Rudolf Marek <r.marek@assembler.cz>, Peter Rosin <peda@axentia.se>, 
-	Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Dan Robertson <dan@dlrobertson.com>, 
-	Rui Miguel Silva <rmfrfs@gmail.com>, Tomasz Duszynski <tduszyns@gmail.com>, 
-	Kevin Tsai <ktsai@capellamicro.com>, Crt Mori <cmo@melexis.com>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Nick Dyer <nick@shmanahar.org>, 
-	Bastien Nocera <hadess@hadess.net>, Hans de Goede <hdegoede@redhat.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, 
-	Jan-Simon Moeller <jansimon.moeller@gmx.de>, =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>, 
-	Colin Leroy <colin@colino.net>, Joe Tessler <jrt@google.com>, 
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Antti Palosaari <crope@iki.fi>, Jasmin Jessich <jasmin@anw.at>, Matthias Schwarzott <zzam@gentoo.org>, 
-	Olli Salonen <olli.salonen@iki.fi>, Akihiro Tsukada <tskd08@gmail.com>, 
-	Kieran Bingham <kieran.bingham@ideasonboard.com>, Tianshu Qiu <tian.shu.qiu@intel.com>, 
-	Dongchun Zhu <dongchun.zhu@mediatek.com>, Shawn Tu <shawnx.tu@intel.com>, 
-	Martin Kepplinger <martink@posteo.de>, Ricardo Ribalda <ribalda@kernel.org>, 
-	Dave Stevenson <dave.stevenson@raspberrypi.com>, Leon Luo <leonl@leopardimaging.com>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Bingbu Cao <bingbu.cao@intel.com>, 
-	"Paul J. Murphy" <paul.j.murphy@intel.com>, 
-	Daniele Alessandrelli <daniele.alessandrelli@intel.com>, 
-	Michael Tretter <m.tretter@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Kyungmin Park <kyungmin.park@samsung.com>, Heungjun Kim <riverful.kim@samsung.com>, 
-	Ramesh Shanmugasundaram <rashanmu@gmail.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>, 
-	=?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>, 
-	Jimmy Su <jimmy.su@intel.com>, Arec Kao <arec.kao@intel.com>, 
-	"Lad, Prabhakar" <prabhakar.csengg@gmail.com>, Shunqian Zheng <zhengsq@rock-chips.com>, 
-	Steve Longerbeam <slongerbeam@gmail.com>, Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>, 
-	Daniel Scally <djrscally@gmail.com>, Wenyou Yang <wenyou.yang@microchip.com>, 
-	Petr Cvek <petrcvekcz@gmail.com>, Akinobu Mita <akinobu.mita@gmail.com>, 
-	Sylwester Nawrocki <s.nawrocki@samsung.com>, Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
-	Sylvain Petinot <sylvain.petinot@foss.st.com>, Mats Randgaard <matrandg@cisco.com>, 
-	Tim Harvey <tharvey@gateworks.com>, Matt Ranostay <matt.ranostay@konsulko.com>, 
-	Eduardo Valentin <edubezval@gmail.com>, "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>, 
-	Lee Jones <lee.jones@linaro.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Support Opensource <support.opensource@diasemi.com>, Robert Jones <rjones@gateworks.com>, 
-	Andy Shevchenko <andy@kernel.org>, Charles Keepax <ckeepax@opensource.cirrus.com>, 
-	Richard Fitzgerald <rf@opensource.cirrus.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tony Lindgren <tony@atomide.com>, 
-	=?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>, 
-	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Eric Piel <eric.piel@tremplin-utc.net>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Vivien Didelot <vivien.didelot@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Woojung Huh <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com, 
-	George McCollister <george.mccollister@gmail.com>, Ido Schimmel <idosch@nvidia.com>, 
-	Petr Machata <petrm@nvidia.com>, Jeremy Kerr <jk@codeconstruct.com.au>, 
-	Matt Johnston <matt@codeconstruct.com.au>, Charles Gorand <charles.gorand@effinnov.com>, 
-	Krzysztof Opasiak <k.opasiak@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
-	Frank Rowand <frowand.list@gmail.com>, Mark Gross <markgross@kernel.org>, 
-	Maximilian Luz <luzmaximilian@gmail.com>, Corentin Chary <corentin.chary@gmail.com>, 
-	=?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
-	Sebastian Reichel <sre@kernel.org>, Tobias Schrammm <t.schramm@manjaro.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Alessandro Zummo <a.zummo@towertech.it>, Jens Frederich <jfrederich@gmail.com>, 
-	Jon Nettleton <jon.nettleton@gmail.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	Felipe Balbi <balbi@kernel.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Daniel Thompson <daniel.thompson@linaro.org>, Jingoo Han <jingoohan1@gmail.com>, 
-	Helge Deller <deller@gmx.de>, Evgeniy Polyakov <zbr@ioremap.net>, 
-	Wim Van Sebroeck <wim@linux-watchdog.org>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
-	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Jaroslav Kysela <perex@perex.cz>, 
-	Takashi Iwai <tiwai@suse.com>, James Schulman <james.schulman@cirrus.com>, 
-	David Rhodes <david.rhodes@cirrus.com>, Lucas Tanure <tanureal@opensource.cirrus.com>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, Oder Chiou <oder_chiou@realtek.com>, 
-	Fabio Estevam <festevam@gmail.com>, Kevin Cernekee <cernekee@chromium.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Maxime Ripard <maxime@cerno.tech>, 
-	=?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
-	Lucas Stach <l.stach@pengutronix.de>, Jagan Teki <jagan@amarulasolutions.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Alex Deucher <alexander.deucher@amd.com>, Lyude Paul <lyude@redhat.com>, 
-	Xin Ji <xji@analogixsemi.com>, Hsin-Yi Wang <hsinyi@chromium.org>, 
-	=?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>, 
-	Yang Li <yang.lee@linux.alibaba.com>, Angela Czubak <acz@semihalf.com>, 
-	Alistair Francis <alistair@alistair23.me>, Eddie James <eajames@linux.ibm.com>, 
-	Joel Stanley <joel@jms.id.au>, Nathan Chancellor <nathan@kernel.org>, 
-	Antoniu Miclaus <antoniu.miclaus@analog.com>, Alexandru Ardelean <ardeleanalex@gmail.com>, 
-	Dmitry Rokosov <DDRokosov@sberdevices.ru>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Stephan Gerhold <stephan@gerhold.net>, 
-	Miaoqian Lin <linmq006@gmail.com>, Gwendal Grignou <gwendal@chromium.org>, 
-	Yang Yingliang <yangyingliang@huawei.com>, Paul Cercueil <paul@crapouillou.net>, 
-	Daniel Palmer <daniel@0x0f.com>, Haibo Chen <haibo.chen@nxp.com>, 
-	Cai Huoqing <cai.huoqing@linux.dev>, Marek Vasut <marex@denx.de>, 
-	Jose Cazarin <joseespiriki@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, 
-	Jean-Baptiste Maneyrol <jean-baptiste.maneyrol@tdk.com>, Michael Srba <Michael.Srba@seznam.cz>, 
-	Nikita Travkin <nikita@trvn.ru>, Maslov Dmitry <maslovdmitry@seeed.cc>, Jiri Valek - 2N <valek@2n.cz>, 
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>, Zheyu Ma <zheyuma97@gmail.com>, 
-	Marco Felsch <m.felsch@pengutronix.de>, Oliver Graute <oliver.graute@kococonnector.com>, 
-	Zheng Yongjun <zhengyongjun3@huawei.com>, CGEL ZTE <cgel.zte@gmail.com>, 
-	Minghao Chi <chi.minghao@zte.com.cn>, Evgeny Novikov <novikov@ispras.ru>, Sean Young <sean@mess.org>, 
-	Kirill Shilimanov <kirill.shilimanov@huawei.com>, 
-	Moses Christopher Bollavarapu <mosescb.dev@gmail.com>, Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Dongliang Mu <mudongliangabcd@gmail.com>, 
-	Colin Ian King <colin.king@intel.com>, lijian <lijian@yulong.com>, 
-	Kees Cook <keescook@chromium.org>, Yan Lei <yan_lei@dahuatech.com>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, Jonas Malaco <jonas@protocubo.io>, 
-	wengjianfeng <wengjianfeng@yulong.com>, Rikard Falkeborn <rikard.falkeborn@gmail.com>, 
-	Wei Yongjun <weiyongjun1@huawei.com>, Tom Rix <trix@redhat.com>, Yizhuo <yzhai003@ucr.edu>, 
-	Martiros Shakhzadyan <vrzh@vrzh.net>, Bjorn Andersson <bjorn.andersson@linaro.org>, 
-	Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
-	Hector Martin <marcan@marcan.st>, Saranya Gopal <saranya.gopal@intel.com>, 
-	=?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>, 
-	Sing-Han Chen <singhanc@nvidia.com>, Wayne Chang <waynec@nvidia.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Alexey Dobriyan <adobriyan@gmail.com>, 
-	Masahiro Yamada <masahiroy@kernel.org>, Vincent Knecht <vincent.knecht@mailoo.org>, 
-	Stephen Kitt <steve@sk2.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
-	Alexey Khoroshilov <khoroshilov@ispras.ru>, Randy Dunlap <rdunlap@infradead.org>, 
-	Alejandro Tafalla <atafalla@dnyon.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, 
-	Seven Lee <wtli@nuvoton.com>, Mac Chiang <mac.chiang@intel.com>, David Lin <CTLIN0@nuvoton.com>, 
-	Daniel Beer <daniel.beer@igorinstitute.com>, Ricard Wanderlof <ricardw@axis.com>, 
-	Simon Trimmer <simont@opensource.cirrus.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, 
-	Viorel Suman <viorel.suman@nxp.com>, Nicola Lunghi <nick83ola@gmail.com>, 
-	Adam Ford <aford173@gmail.com>, linux-i2c@vger.kernel.org, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, openipmi-developer@lists.sourceforge.net, 
-	linux-integrity <linux-integrity@vger.kernel.org>, linux-clk@vger.kernel.org, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, 
-	chrome-platform@lists.linux.dev, linux-rpi-kernel@lists.infradead.org, 
-	linux-input <linux-input@vger.kernel.org>, linux-hwmon@vger.kernel.org, 
-	linux-iio@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-leds@vger.kernel.org, 
-	Linux Media Mailing List <linux-media@vger.kernel.org>, patches@opensource.cirrus.com, 
-	ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-omap@vger.kernel.org, 
-	MTD Maling List <linux-mtd@lists.infradead.org>, 
-	Network Development <netdev@vger.kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
-	Platform Driver <platform-driver-x86@vger.kernel.org>, acpi4asus-user@lists.sourceforge.net, 
-	linux-pm@vger.kernel.org, linux-pwm@vger.kernel.org, 
-	linux-rtc@vger.kernel.org, linux-staging@lists.linux.dev, 
-	linux-serial@vger.kernel.org, USB list <linux-usb@vger.kernel.org>, 
-	Linux Fbdev development list <linux-fbdev@vger.kernel.org>, 
-	Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>, kasan-dev <kasan-dev@googlegroups.com>, 
-	linux-mediatek@lists.infradead.org
+	id 1o6Zdp-00Chht-Ac
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 15:30:11 +0000
+Received: from [192.168.8.101] (unknown [77.81.142.51])
+	by rioun.com (Postfix) with ESMTPA id 41DD410B3C1
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Jun 2022 15:25:40 +0000 (UTC)
+Message-Id: <ZKF8YVX4-6U8G-JQ8V-PEEQ-OJP1U8M17XVU@stcbk.com>
+Mime-Version: 1.0
+From: Euro-Millions Lottery <noreply@stcbk.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [Info] CONGRATULATION Wed Jun 29
+Date: Wed, 29 Jun 2022 11:25:44 -0400
+X-Mailer: MBM 8.5.4-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220629_075108_252801_C6D12129 
-X-CRM114-Status: GOOD (  14.43  )
+X-CRM114-CacheID: sfid-20220629_083009_534888_32B7072E 
+X-CRM114-Status: UNSURE (   0.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -244,16 +50,107 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: info@vajenthura.com
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBKdW4gMjgsIDIwMjIgYXQgNDowOCBQTSBVd2UgS2xlaW5lLUvDtm5pZwo8dS5rbGVp
-bmUta29lbmlnQHBlbmd1dHJvbml4LmRlPiB3cm90ZToKPgo+ICBkcml2ZXJzL2F1eGRpc3BsYXkv
-aHQxNmszMy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCA0ICstLS0KPiAgZHJpdmVy
-cy9hdXhkaXNwbGF5L2xjZDJzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMyAr
-LS0KCkFja2VkLWJ5OiBNaWd1ZWwgT2plZGEgPG9qZWRhQGtlcm5lbC5vcmc+CgpDaGVlcnMsCk1p
-Z3VlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+Attn:=A0Email=A0Account=A0Holder,
+
+
+
+Congratulations
+We=A0happily=A0announce=A0to=A0you=A0the=A0draw=A0(#1526)=A0of=A0the=A0Euro=
+-Millions,=A0online=A0Sweepstakes=A0promotion=A0held=A0in=A0United=A0States=
+.=A0Your=A0active=A0e-mail=A0address=A0attached=A0to=A0the=A0World=A0Wide=
+=A0Web=A0computer=A0generated=A0ticket=A0number:=A0B7607545=A04139=A0with=
+=A0reference=A0number=A0EAAL/JA2C110P7=A0and=A0Serial=A0number=A0USA5365/3,=
+=A0Batch=A0number=A0ZA87-2PY,=A0drew=A0the=A0Lucky=A0Numbers:=A003=A008=A01=
+8=A024=A040=A0Lucky=A0Stars=A003=A011.=A0This=A0subsequently=A0won=A0you=A0=
+the=A0lottery=A0in=A0the=A01st=A0category=A0i.e.=A0matches=A06=A0lucky=A0nu=
+mbers=A0as=A0jackpot=A0prize.=A0You=A0have=A0therefore=A0been=A0allocated=
+=A0to=A0claim=A0a=A0total=A0sum=A0of=A0$11,691,315=A0(Eleven=A0Million,=A0S=
+ix=A0hundred=A0and=A0ninety=A0one=A0thousand,=A0three=A0hundred=A0and=A0fif=
+teen=A0dollars).=A0This=A0is=A0from=A0A=A0total=A0cash=A0prize=A0of=A0$39,9=
+00,000.00=A0Shared=A0amongst=A0the=A0(6)=A0lucky=A0winners=A0in=A0"1st"=A0c=
+ategory.
+
+
+=A0Additional=A0information=A0Jackpot=A0winner(s)=A0Lucky=A0Dip=A0winners=
+=A0Machine=A0used=A0for=A0draw=A0Ball=A0set=A0used=A014=A0SAPPHIRE=A021=A0T=
+his=A0promotion=A0was=A0drawn=A0based=A0on=A0email=A0address=A0as=A0the=A0k=
+ey=A0identification=A0for=A0setting=A0up=A0online=A0accounts.=A0All=A0valid=
+=A0email=A0addresses=A0in=A0the=A0World=A0Wide=A0Web=A0Draw=A0used/particip=
+ants=A0for=A0the=A0online=A0email=A0promotion=A0version=A0were=A0selected=
+=A0randomly=A0via=A0computer=A0balloting=A0from=A0a=A0global=A0website=A0co=
+llaboration=A0with=A0internet=A0companies=A0like=A0eBay,=A0pay=A0pal,=A0lib=
+erty=A0reserve,=A0and=A0Google=A0whom=A0also=A0built=A0their=A0systems=A0an=
+d=A0based=A0their=A0membership=A0registration=A0identity=A0on=A0email=A0add=
+resses=A0supporting=A0this=A0computer=A0draw=A0system=A0done=A0by=A0extract=
+ed=A0email=A0addresses=A0from=A0over=A0100,000=A0unions,=A0associations,=A0=
+and=A0corporate=A0bodies=A0and=A0affiliated=A0members=A0to=A0the=A0National=
+=A0Lottery=A0website=A0and=A0their=A0advertisers=A0listed=A0online.=A0This=
+=A0Online=A0promotion=A0takes=A0place=A0via=A0virtual=A0ticket=A0balloting=
+=A0and=A0it=A0is=A0done=A0Bi-annually.=A0Please=A0note=A0that=A0you're=A0lu=
+cky=A0winning=A0ticket=A0file=A0and=A0number=A0falls=A0within=A0our=A0bookl=
+et=A0representative=A0office=A0in=A0USA,=A0as=A0indicated=A0in=A0your=A0bal=
+lot=A0played=A0coupon.=A0In=A0view=A0of=A0this,=A0your=A0($11,691,315)=A0wo=
+uld=A0be=A0released=A0to=A0you=A0by=A0our=A0payment=A0department=A0in=A0USA.
+
+Contact=A0our=A0Fiduciary=A0agents=A0immediately=A0to=A0commence=A0release=
+=A0of=A0your=A0lottery=A0prize=A0by=A0providing=A0details=A0below.
+
+1.=A0Full=A0Name:
+
+2.=A0Age:
+
+3.=A0Sex:
+4.=A0Address:
+
+5.=A0Occupation:
+
+6.=A0Email=A0Address:
+
+7.=A0Country=A0of=A0origin:
+8.=A0Country=A0of=A0resident:
+9.=A0Telephone:
+
+10.=A0Fax=A0Numbers:
+
+For=A0security=A0reasons,=A0you=A0are=A0advised=A0to=A0keep=A0your=A0winnin=
+g=A0information=A0confidential=A0till=A0your=A0claim=A0is=A0processed=A0and=
+=A0your=A0money=A0remitted=A0to=A0you=A0in=A0whatever=A0choice=A0you=A0want=
+=A0to=A0claim=A0your=A0prize.=A0Precautionary=A0measure=A0to=A0avoid=A0doub=
+le=A0claiming=A0and=A0unwarranted=A0abuse=A0of=A0this=A0program=A0are=A0in=
+=A0place.=A0Please=A0be=A0warned=A0To=A0file=A0for=A0your=A0claim,=A0please=
+=A0contact=A0our=A0fiduciary=A0agent=A0and=A0provide=A0him=A0with=A0your=A0=
+winning=A0email=A0and=A0details.
+
+Euro-Million=A0Lottery=A0Fiduciary=A0Agents:(Mr=A0Leonid=A0Shnayder)
+
+
+
+
+E-mail:=A0info@vajenthura.com
+
+"Please=A0do=A0not=A0reply=A0back=A0to=A0the=A0senders=A0address=A0or=A0the=
+=A0source=A0email=A0address,=A0this=A0notification=A0is=A0sent=A0automatica=
+lly=A0via=A0computer=A0virtual=A0notification=A0to=A0winning=A0email=A0addr=
+esses=A0and=A0a=A0response=A0will=A0not=A0be=A0attended=A0by=A0Human=A0but=
+=A0computer"=A0contact=A0the=A0fiduciary=A0agents=A0above=A0"
+
+Yours=A0Faithfully,
+
+Mrs.=A0Brenda=A0S Riley.
+Online=A0co-coordinator.
+
+EURO-AMERICAN=A0ASIA=A0INTERNATIONAL=A0LOTTERY.
+Copyright=A0(C)=A01994-2022=A0The=A0USA=A0Lottery=A0International=A0Promoti=
+on=A0Inc.
+ALL=A0RIGHTS=A0RESERVED.=A0TERMS=A0OF=A0SERVICE=A0-GUIDELINE.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
