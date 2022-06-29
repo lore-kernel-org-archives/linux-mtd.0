@@ -4,84 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E083C43334
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 18:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38BB7C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 18:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=HJMIdAtWWi5EyAQqr+0wyapsgVvbLlTqxvrJRlTdsjE=; b=H8LJyyN7tM8MWJ
-	Tf4AewnXkA9uY9z5ECs9QlER7Ny3lyl7zwIKhi13zrvi13NnzPLzMYXtQbEXW62FQ9MY111tPkDrw
-	32WKu/5C7y0ryXO6b8D2NQQYAVzgv8WqTfxIVFV7mciTneIYof4lnywJP48fERtj4PVbOU1zQIwr5
-	Msz+Hw7KDDSYhCONjoM76dhiboTtlUqEsvyBG0gEjzSLBFfbM1y1ovoxhgiFtJ7aZ513eGOc6DboL
-	coqO/z9o3nY+sE1P2MBy0MSbuWZ78Xa2UPRN63YOmYnFEfiLTsyfZPqSAvWdCoZdDBsA1ChhHkJkj
-	Y2QgSkv4Bwlz//WSiVWA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=C/+5naaz1Ln2YbGmXEHeCsYe/IVSKbHkQvdMOVbGTEo=; b=CvH0AkKtyjC2AC
+	4TGz6+yraB2ktE7pD8z7D/OXhCxFhxUF7LYJW8tl+C8U3s31lExebBZeh3LtMNLEvCGWLldaMsk4u
+	MM2ieJnmWkCk+M7CY/R/DRrOKb2n/JfPl8rUk8vRpRTFpLRRM67DpahFb3MkRsLhYnRG0rorfLHw6
+	dhu51o+TlLDj8wJfLLZQXrHRNbGZizS1XzS9A8W2ze+8ukptGbq/J9Qd3AfOkAR8w9+4cHEINmShZ
+	ZV/HevU9+1soQ/nmnbymSgS0D80nsZer4O/hE/bfkFMvdtwRvhc8+S2G4cXsv6hRJrYeZjjdoZIlP
+	Z9B7nucKGhKNiotUWv5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6cOr-00DV3V-2K; Wed, 29 Jun 2022 18:26:53 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1o6cm1-00DdaE-7a; Wed, 29 Jun 2022 18:50:49 +0000
+Received: from mail-io1-f48.google.com ([209.85.166.48])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6cOj-00DUzf-JR
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 18:26:47 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id mf9so34373812ejb.0
-        for <linux-mtd@lists.infradead.org>; Wed, 29 Jun 2022 11:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=/64xgRiUt1vtjHTJICjZN/EEDL0sMvHlhgMluGbsqx0=;
-        b=x2E4mYSLVh6dmMDXYftVhxRZrFhJRMJtLQeY1usKMwvluClkcCiiBN78Btu0KYl+rr
-         VqWzaJIx/9upJFb2YZwy2jC8OCOL9QOTVaJSIzlL+u4LQpZWztNzn9d0IQ54v6HfxaWq
-         qyE/rL2wCv/psLNSupk4hQ9d7ZW/Me2UtTq4zvMeeH7VN//7gc6tgOjR1pdLeciw92Zo
-         O+4h8WNcFHiPaVci9RmHOwUDCcea+CuacUCBKxWlBhWAd+uSEtUg6X0gjaTgmc8XTcvb
-         QpnEK0VgVlk53yf6eruRdTQIGKlco3P2ajT3gMWz6OIyLupkmxCBVAKvdH3abrmJhJnQ
-         s0Fw==
+	id 1o6clw-00DdYF-RV
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 18:50:48 +0000
+Received: by mail-io1-f48.google.com with SMTP id v185so10230996ioe.11
+        for <linux-mtd@lists.infradead.org>; Wed, 29 Jun 2022 11:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/64xgRiUt1vtjHTJICjZN/EEDL0sMvHlhgMluGbsqx0=;
-        b=HP7BmS25obGFGQOrIZYia/J/hF1FuZcQ8HNLBvfPyA5zhOfYeVCiLHK2EEf25sDJdn
-         fXC1sU5lM0lDBC2VlIklIkEPUecaZknv4sIVulYeBs7FrbzdeJ5q+ZoHl43eUsBbTOu3
-         VnHqLIQjeaflmqPz/trbkNrudgcTtnGAVEb1ZEpjDEVT1npyABj1drfZXugjK5x1ZPwa
-         U0cOUV6JA14eLBez+DjYu69jhDKMWfojSYuvFrFjq40onYpaB2yRn74CVTMhQo0dVedD
-         5YeOUeBnbQEPRm3l47vZoH5E9XfNEEdHXCKVy3GngXGMDAVxMjLOQ9vZe7YpLH8AVzNb
-         5NFw==
-X-Gm-Message-State: AJIora/0tvLN2kUp8HDKwUeXvLwd1zhVSRsDgFyYVXe5xCh22RmfrgS5
-	Ls05TIMPokvUJQtZD0rBtfG3QiU6c5niQQ==
-X-Google-Smtp-Source: AGRyM1sfeOEPxArayPtvXtsr5u5/zqpD7B812IZXeSbupwIKB9chVw1sBePnM8Kf/X3wTBnJz4Lgag==
-X-Received: by 2002:a17:906:58c7:b0:722:f4bf:cb75 with SMTP id e7-20020a17090658c700b00722f4bfcb75mr4766353ejs.450.1656527201890;
-        Wed, 29 Jun 2022 11:26:41 -0700 (PDT)
-Received: from [192.168.0.187] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
-        by smtp.gmail.com with ESMTPSA id le23-20020a170906ae1700b006f3ef214dbesm7981432ejb.36.2022.06.29.11.26.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jun 2022 11:26:41 -0700 (PDT)
-Message-ID: <1d26b762-a2af-e717-c0c2-0a991bde5617@linaro.org>
-Date: Wed, 29 Jun 2022 20:26:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 6/7] memory: renesas-rpc-if: Pass device instead of rpcif
- to rpcif_*()
-Content-Language: en-US
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Vignesh Raghavendra <vigneshr@ti.com>, Sergey Shtylyov <s.shtylyov@omp.ru>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>
+        bh=lC0FS/YwnawDE3dIPNG4OuxNJ6LL8yKImCI5KP81WTo=;
+        b=axNxPjcdx+MYCI6I022XG97o/U+CuMY2VrhAYBOH7JBWTLC18tun/iTaHtVtGy+Vad
+         DcZsvJvbMrF5fBevQKcMjjw5kqvRky5Q7BDLexYQtTU6rgZY2QaJy9dThe5JkTkjTBV7
+         bigXsK7ZCY0rIqXZDEuA1YQoeaYyYtsqjzwRxRwXffQp+0PRajJmHBL4JQ07msPot+iv
+         2XjPE8ScjyJ/9pG8SCoLzGvpLcnvNCG7brO2EQMZa/DMTf8PWdZL5XKlTDrjwsfHdWil
+         9GRMyHi8n6y7fxXgFz8ljscfcTavcdgqqLHt65ltpNgQMhU1WKAqnFTyNHWLkLhPcbvt
+         gRcA==
+X-Gm-Message-State: AJIora/VWaAlgc8QIFX0bcastxPBgchULAEIWhNGmKqP57f/mHvWZKlL
+	q3qxuTeU8E4G9S8TriHDCA==
+X-Google-Smtp-Source: AGRyM1s9g2WdbEij2eOEMPLKdKNm0dwWC39LBthQsHU267ZmYwdIO2ymTwvBSF9TitvUxDyFhC6YIA==
+X-Received: by 2002:a02:c057:0:b0:339:e390:c94a with SMTP id u23-20020a02c057000000b00339e390c94amr2813647jam.20.1656528641021;
+        Wed, 29 Jun 2022 11:50:41 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id w3-20020a02b0c3000000b00339d4037e7csm7617381jah.44.2022.06.29.11.50.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jun 2022 11:50:40 -0700 (PDT)
+From: Rob Herring <robh@kernel.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>
 Cc: linux-mtd@lists.infradead.org,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Richard Weinberger <richard@nod.at>, linux-renesas-soc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <cover.1656341824.git.geert+renesas@glider.be>
- <e313b7f9a856fd8546aabb20d44d10e3af6676c6.1656341824.git.geert+renesas@glider.be>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <e313b7f9a856fd8546aabb20d44d10e3af6676c6.1656341824.git.geert+renesas@glider.be>
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: mtd/partitions: Convert arm-firmware-suite to DT schema
+Date: Wed, 29 Jun 2022 12:50:30 -0600
+Message-Id: <20220629185031.23826-1-robh@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220629_112645_738252_EB2695FF 
-X-CRM114-Status: GOOD (  10.46  )
+X-CRM114-CacheID: sfid-20220629_115044_923569_AD121411 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,24 +80,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 27/06/2022 17:31, Geert Uytterhoeven wrote:
-> Most rpcif_*() API functions do not need access to any other fields in
-> the rpcif structure than the device pointer.  Simplify dependencies by
-> passing the device pointer instead.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/memory/renesas-rpc-if.c | 32 ++++++++++++++++----------------
->  drivers/mtd/hyperbus/rpc-if.c   | 18 +++++++++---------
->  drivers/spi/spi-rpc-if.c        | 14 +++++++-------
->  include/memory/renesas-rpc-if.h | 16 ++++++++--------
->  4 files changed, 40 insertions(+), 40 deletions(-)
-> 
+Convert the arm,arm-firmware-suite partition binding to DT schema
+format. Simple conversion as there's only a compatible property.
 
-I need some acks here.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+ - Fix example dtc warning
+---
+ .../mtd/partitions/arm,arm-firmware-suite.txt | 17 -----------
+ .../partitions/arm,arm-firmware-suite.yaml    | 28 +++++++++++++++++++
+ 2 files changed, 28 insertions(+), 17 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
 
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt b/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
+deleted file mode 100644
+index d5c5616f6db5..000000000000
+--- a/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-ARM AFS - ARM Firmware Suite Partitions
+-=======================================
+-
+-The ARM Firmware Suite is a flash partitioning system found on the
+-ARM reference designs: Integrator AP, Integrator CP, Versatile AB,
+-Versatile PB, the RealView family, Versatile Express and Juno.
+-
+-Required properties:
+-- compatible : (required) must be "arm,arm-firmware-suite"
+-
+-Example:
+-
+-flash@0 {
+-	partitions {
+-		compatible = "arm,arm-firmware-suite";
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml b/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
+new file mode 100644
+index 000000000000..76c88027b6d2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/arm,arm-firmware-suite.yaml
+@@ -0,0 +1,28 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/arm,arm-firmware-suite.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ARM Firmware Suite (AFS) Partitions
++
++maintainers:
++  - Linus Walleij <linus.walleij@linaro.org>
++
++description: |
++  The ARM Firmware Suite is a flash partitioning system found on the
++  ARM reference designs: Integrator AP, Integrator CP, Versatile AB,
++  Versatile PB, the RealView family, Versatile Express and Juno.
++
++properties:
++  compatible:
++    const: arm,arm-firmware-suite
++
++additionalProperties: false
++
++examples:
++  - |
++    partitions {
++        compatible = "arm,arm-firmware-suite";
++    };
++...
+-- 
+2.34.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
