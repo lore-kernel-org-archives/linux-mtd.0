@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46465C43334
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 11:40:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78406C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 11:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fj1y6cX0o/5/+Fh0edPmc3KttaPab3vZXAQEBw4vIWY=; b=nmepoE4t4njkjt
-	M0S5dviNq8Wz5vsgwoRySS2guy3Kokbh6o+LJvy7wvP6W+LIX0OPFBQJbnNNFKsyZlQZsDWAFEaf8
-	M4B4godPzFZhNiadxYuGi+rE2BoFQpxPJfPIsrNv0oOg2kNM/n4QzTAz0At+/GXSOAY+H6QpoxaLb
-	rQdqha5q6i31AU+ShVEGV4srZuGGRGx6xHMlUwy7V1tjsrHulm1/40CGwC12CetGXJFPonB1vCKDI
-	yoLCtWnRMYEk9wEUlHm4aVvvkGMcBfKzsL/CkYQhQ/WQ3Ekz8YPcZuzKgJJHfO/5ROWltvf0TD5ux
-	2YEeCVj+zltxTUX7Fj0w==;
+	List-Owner; bh=j2wyvpE8z6z/eMw7Obdzcja/kBCeHhWNRWAE0PL6m2I=; b=YmAFR0bYNbVUT7
+	qjuP8DV7pqJr1o4PIn/M7x6/uEYIvHuUeM6sj9NyYT67yVIq6sJ394O2MxZpiL3kS6ANRrRSGcE84
+	+2osPjeWd438j5xpxatdE9AOf34As528VniBdkWHkxle8D+pO+jUgF2EoNRo1i1JCnJwUa9uQShkz
+	80jC6Q941NZULUlmbctrdGI2JClhu/U9TeJXotYpEGROyGRAc065FiP+DerPMRYUvejGE0eY+oHjO
+	hi1h4VzepXNVxBixRrxJ1eImS9H1CLgduL+bH9SfsgD/O3eq1727dywh7lsuczaaBUmiJXhd1IyiP
+	V3goO2MT5gxDiBR5IeuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6W2s-00BVa0-LE; Wed, 29 Jun 2022 11:39:46 +0000
-Received: from relay7-d.mail.gandi.net ([217.70.183.200])
+	id 1o6W33-00BVfE-0g; Wed, 29 Jun 2022 11:39:57 +0000
+Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6W20-00BV7M-6n
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 11:38:54 +0000
+	id 1o6W22-00BV8l-5F
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 11:38:56 +0000
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 4A0C42000E;
-	Wed, 29 Jun 2022 11:38:44 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPSA id 4BB6FFF80D;
+	Wed, 29 Jun 2022 11:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1656502725;
+	t=1656502729;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IQXoqYCgE7EIU42/zVADHV9fDPsxC+PutcvlEANepEU=;
-	b=SfTLG3E+wEsfzL0Rw0KxGQptxA0ZkMjSeOj50QLWd1IHA+fIQpXH6hqJNcnj4/GdTBfrBY
-	rElrXwP3avkncWwuTdDQ/yeJ/hunIJBcNv26lnzjwXQV0qwLA/+p2C66Hx58UWGePGKQFg
-	0I/BJvEhy4VCR0NqNVFikj3gkWHpGEOz5/q4Y/LhrU6BjUHmpxH4AdXzHZQunHiOTArtgD
-	hi3KgDoFywlbdS3APWu2bt6ckhN9s1AS4GnrCll6c+0GI7Lj/0jMe66kiCnWRF7SksOh9I
-	ZlNragQsLwETXTzc60g2FHYlUbYaROG5YzpKXbSKN4jZ4u6JJCiyg239mnAIUQ==
+	bh=fU1llwwXY0ybC66qxXpHVtoRu9HLSB96OOB8Toq8OMY=;
+	b=PSThL+dv+sNkjFPfH38c7TXkzDpfk35XSxmgR5grGF3EZfOyL4Aok/axiwmZd0epblRNY+
+	Ig8gW7wlLSn5d8Pgs5uIEhsPBpwtp8UmeeQr4WRLjZvGVfZsRgymQNI4NxMmhUSpLlQh2w
+	2Th9hAD79+FG+VGLesaX6BF8q/cUnDL+ZagjnXFq6K02ufi5QGOlcafH4Jc8mNi9NvT6pw
+	WcyYKtBjDEkAepHjeNgKTEWU1MqbNMwiF1NPfU8EZOE1wnU/83Mcgww2eLTMfoQGyS1Jgf
+	iteNycL6Yee4niS2jzPhvuuVy8dsEbp++IPHmXFcs4zlypkpNoo83KuHtFaYJA==
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Christian Marangi <ansuelsmth@gmail.com>,
 	Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -55,18 +55,20 @@ To: Christian Marangi <ansuelsmth@gmail.com>,
 	linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] mtd: core: introduce of support for dynamic partitions
-Date: Wed, 29 Jun 2022 13:38:43 +0200
-Message-Id: <20220629113843.283665-1-miquel.raynal@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 2/3] dt-bindings: mtd: partitions: add additional example for qcom,smem-part
+Date: Wed, 29 Jun 2022 13:38:47 +0200
+Message-Id: <20220629113847.283696-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220622010628.30414-4-ansuelsmth@gmail.com>
+In-Reply-To: <20220622010628.30414-3-ansuelsmth@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'ad9b10d1eaada169bd764abcab58f08538877e26'
+X-linux-mtd-patch-commit: b'dd638202dfb6507cd529751b6c39680c292e245e'
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220629_043852_442938_68A78770 
-X-CRM114-Status: GOOD (  15.40  )
+X-CRM114-CacheID: sfid-20220629_043854_470591_CDEFEB2A 
+X-CRM114-Status: UNSURE (   7.27  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,25 +85,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2022-06-22 at 01:06:28 UTC, Christian Marangi wrote:
-> We have many parser that register mtd partitions at runtime. One example
-> is the cmdlinepart or the smem-part parser where the compatible is defined
-> in the dts and the partitions gets detected and registered by the
-> parser. This is problematic for the NVMEM subsystem that requires an OF
-> node to detect NVMEM cells.
-> 
-> To fix this problem, introduce an additional logic that will try to
-> assign an OF node to the MTD if declared.
-> 
-> On MTD addition, it will be checked if the MTD has an OF node and if
-> not declared will check if a partition with the same label / node name is
-> declared in DTS. If an exact match is found, the partition dynamically
-> allocated by the parser will have a connected OF node.
-> 
-> The NVMEM subsystem will detect the OF node and register any NVMEM cells
-> declared statically in the DTS.
+On Wed, 2022-06-22 at 01:06:27 UTC, Christian Marangi wrote:
+> Add additional example for qcom,smem-part to declare a dynamic
+> partition to provide NVMEM cells for the commonly ART partition
+> provided by this parser.
 > 
 > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
