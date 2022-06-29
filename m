@@ -4,77 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CD4EC43334
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 13:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76932C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 13:36:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=qlJPE+4EIqGQyhmERVgU/DtzmQc3J3RI+cuFHpe6pLE=; b=hTRvXH2OJuAo63
-	Kd2HQ1nXJjxom+UXYk0pnUy0zKIYuCYEGFGYCw6pzgva5Ym4bZfyCkT5lWcV8nSD29AAwdNO2GM4u
-	QTfydB2NxB07ns5hDoVWihSNCZZ1aD+rVgaLxi9vM1jWVA0N/OMCWczLaw77RnwJI04lI/Q0DRZ26
-	E265EmfvZEfZU12vTaaDsssKHcu6sBb/xnxUMFmroQtM7kIRuAiI1ME2mwI8g2FSarttCV4lJJk6A
-	QMEakPaB5i+QKP5ykn8w3xc/5M8vhBDoT8r3Qvlhy4QaJGw0w3cAGcSYYcTCBftIjAryD1GWoNlF1
-	io9VFkwAL8GwSB7qKGmw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tQe8GBwnu1OQXX4npdNsgiTek7dfkx6QsMbj4fKy6+g=; b=S0Zh4Xi8oLMuqRR8IO2upx64NN
+	QCNMijpPSAjDAEEYPqbmkDmrOrHAg9xCpZVxQNgFbUeVUpxg/TVgb14trM69av3/Mzb8SOpupWCV0
+	Qqdk4VHeBLdCREsEG9P3jGXJL55Yy/VXwxupKugHp1xKs0NgQyCvAOswGxPArDLrcsq0cxrERgP42
+	XfNneyMAqFqNw2bbZjmcElXDJmXiilGou5fLg2liGNbS/BDrSeEFYh8nc3ytxhj0WupLAqscKskx7
+	YKnDb/oSuVOFsF2q8jJEIkTgIGtqaS2iykurtQddfT/5b+fI/X3hyqzwwCIa2A8+XZcgQvcXI+LYR
+	LRqdQZdw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6XmG-00CE5r-7d; Wed, 29 Jun 2022 13:30:44 +0000
-Received: from mx07-00178001.pphosted.com ([185.132.182.106])
+	id 1o6XrX-00CFqX-Fl; Wed, 29 Jun 2022 13:36:11 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6XmC-00CDwL-LM
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 13:30:42 +0000
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25TB4U1l022248;
-	Wed, 29 Jun 2022 15:30:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=selector1;
- bh=n59iCRyc6//5uNgNXa7K0HkN9RNNpTRt37xRiqWYqug=;
- b=TY5VBsRpNjcmS93ek4VpackfvdhK0nro/rX3k/it4Ywuo3dqGxaP1ryMlOUmmjqe57ox
- ned9ibsggeXr7EtqkLwSrTgANPK1MQ8roJAC0/bEZ69UoDP8hxAcSUoxsUFwGAO0vwSt
- qYm30Cvkvl5FpvzmJ8nPJEX9R5FeZjK7fFQ4Rbe1rMPTb9Bqob8ziSmR70DP96ssHL/P
- SNTYHJeLZ/SXYl7muk1QOIcmsyZHhoRNDXKZLzNza2e8D6qpQVt0JhKCcsl2eAPnGr7e
- uxASVjuCcS0mh7Y86D/hHkk3E6++EUmC337fyDxs254MS2ZOduzUpUDDjNy5XK9Zgf5e OA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3gwsq1f78g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Jun 2022 15:30:31 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7B03910002A;
-	Wed, 29 Jun 2022 15:30:30 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6FA6C21FE96;
-	Wed, 29 Jun 2022 15:30:30 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.20; Wed, 29 Jun
- 2022 15:30:30 +0200
-From: <patrice.chotard@foss.st.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav
-	<p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard
- Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-        <inux-kernel@vger.kernel.org>
-CC: <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: mtd: spi-nor: fix spi_nor_spimem_setup_op() call in spi_nor_erase_{sector,chip}()
-Date: Wed, 29 Jun 2022 15:30:13 +0200
-Message-ID: <20220629133013.3382393-1-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+	id 1o6XrU-00CFon-5y
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 13:36:09 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1o6Xqa-0006SP-06; Wed, 29 Jun 2022 15:35:12 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1o6XqQ-003PNQ-Vz; Wed, 29 Jun 2022 15:35:06 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1o6XqT-001txR-NY; Wed, 29 Jun 2022 15:35:05 +0200
+Date: Wed, 29 Jun 2022 15:35:04 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Wolfram Sang <wsa@kernel.org>, dri-devel@lists.freedesktop.org,
+	linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-leds@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-crypto@vger.kernel.org,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-clk@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-watchdog@vger.kernel.org,
+	acpi4asus-user@lists.sourceforge.net,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-usb@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+	linux-integrity@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-rtc@vger.kernel.org, netdev@vger.kernel.org,
+	chrome-platform@lists.linux.dev, linux-input@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	openipmi-developer@lists.sourceforge.net,
+	linux-hwmon@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	patches@opensource.cirrus.com, UNGLinuxDriver@microchip.com,
+	linux-pwm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	linux-staging@lists.linux.dev
+Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
+Message-ID: <20220629133504.syc6x4ptia3mnof5@pengutronix.de>
+References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de>
+ <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
+ <CAPAsAGwP4Mw_CJfsi7oapABdTBwO1HfiQux6X4UahspU74VjtQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-06-29_17,2022-06-28_01,2022-06-22_01
+In-Reply-To: <CAPAsAGwP4Mw_CJfsi7oapABdTBwO1HfiQux6X4UahspU74VjtQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220629_063041_312955_CA0B7765 
-X-CRM114-Status: GOOD (  16.70  )
+X-CRM114-CacheID: sfid-20220629_063608_296774_CF81D03C 
+X-CRM114-Status: GOOD (  26.08  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,54 +88,100 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1519851136277090314=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-For erase operations, reg_proto must be used as indicated in
-struct spi_nor description in spi-nor.h.
+--===============1519851136277090314==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5z6hgi6euioj5d47"
+Content-Disposition: inline
 
-This issue was found when DT property spi-tx-bus-width is set to 4.
-In this case the spi_mem_op->addr.buswidth is set to 4 for erase command
-which is not correct.
 
-Tested on stm32mp157c-ev1 board with mx66l51235f spi-nor.
+--5z6hgi6euioj5d47
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 0e30f47232ab ("mtd: spi-nor: add support for DTR protocol")
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- drivers/mtd/spi-nor/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[Dropped most people from Cc, keeping only lists]
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 502967c76c5f..61027330848f 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -972,7 +972,7 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
- 	if (nor->spimem) {
- 		struct spi_mem_op op = SPI_NOR_CHIP_ERASE_OP;
- 
--		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
-+		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
- 	} else {
-@@ -1115,7 +1115,7 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
- 						nor->addr_width, addr);
- 
--		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
-+		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
- 
- 		return spi_mem_exec_op(nor->spimem, &op);
- 	} else if (nor->controller_ops->erase) {
--- 
-2.25.1
+On Wed, Jun 29, 2022 at 04:11:26PM +0300, Andrey Ryabinin wrote:
+> On 6/28/22 17:03, Uwe Kleine-K=F6nig wrote:
+> > From: Uwe Kleine-K=F6nig <uwe@kleine-koenig.org>
+> >
+> > The value returned by an i2c driver's remove function is mostly ignored.
+> > (Only an error message is printed if the value is non-zero that the
+> > error is ignored.)
+> >
+> > So change the prototype of the remove function to return no value. This
+> > way driver authors are not tempted to assume that passing an error to
+> > the upper layer is a good idea. All drivers are adapted accordingly.
+> > There is no intended change of behaviour, all callbacks were prepared to
+> > return 0 before.
+> >
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+>                                     | 2 +-
+> >  lib/Kconfig.kasan                                         | 1 +
+>=20
+> > diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> > index f0973da583e0..366e61639cb2 100644
+> > --- a/lib/Kconfig.kasan
+> > +++ b/lib/Kconfig.kasan
+> > @@ -149,6 +149,7 @@ config KASAN_STACK
+> >       depends on KASAN_GENERIC || KASAN_SW_TAGS
+> >       depends on !ARCH_DISABLE_KASAN_INLINE
+> >       default y if CC_IS_GCC
+> > +     depends on !ARM
+> >       help
+> >         Disables stack instrumentation and thus KASAN's ability to dete=
+ct
+> >         out-of-bounds bugs in stack variables.
+>=20
+>=20
+> What is this doing here?
 
+Huh, that is wrong. I needed that for build testing, but it shouldn't
+have been added to the patch. I'm dropping that for the final
+submission.
+
+Thanks for spotting.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--5z6hgi6euioj5d47
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmK8VQUACgkQwfwUeK3K
+7AkL0wf/Ra+JtsXozoGjhV4ADtJcJAo/mOIZQ6qOdPZGqHYkMvBmkEJ9zbvY4Edk
+SwYoapiHgVT4tDX56ekEGnm/x3udNUt5wugpsqDm4oAgYtbBCMEVtHbp3t/AqMp2
+sZcn0JsvUs6FVWSTomD396Pt10x0r+JrPTJVY2pwj1nUUV63/25oIT/4I77IughK
+LvQBMIesHK9damtObmRGqI5Ljz1L6SP7WgiLSEq1R/LjSeEwbURT3ijca95YO2Jv
+YyxoC7TiNJj2uJiisjl/r1T/LdGF6RpMN197XQjcvaZ0sbTZRF2vXlqp3cSyXrCG
+BbT2nohQYXjznouz9TIuBFtA0iX7SA==
+=YEZr
+-----END PGP SIGNATURE-----
+
+--5z6hgi6euioj5d47--
+
+
+--===============1519851136277090314==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============1519851136277090314==--
+
