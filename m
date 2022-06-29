@@ -4,79 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76932C433EF
-	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 13:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2ABFC433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 29 Jun 2022 13:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tQe8GBwnu1OQXX4npdNsgiTek7dfkx6QsMbj4fKy6+g=; b=S0Zh4Xi8oLMuqRR8IO2upx64NN
-	QCNMijpPSAjDAEEYPqbmkDmrOrHAg9xCpZVxQNgFbUeVUpxg/TVgb14trM69av3/Mzb8SOpupWCV0
-	Qqdk4VHeBLdCREsEG9P3jGXJL55Yy/VXwxupKugHp1xKs0NgQyCvAOswGxPArDLrcsq0cxrERgP42
-	XfNneyMAqFqNw2bbZjmcElXDJmXiilGou5fLg2liGNbS/BDrSeEFYh8nc3ytxhj0WupLAqscKskx7
-	YKnDb/oSuVOFsF2q8jJEIkTgIGtqaS2iykurtQddfT/5b+fI/X3hyqzwwCIa2A8+XZcgQvcXI+LYR
-	LRqdQZdw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=7y10ZvQubOoUmOaHr2e3OSI8WOLqdCBJ6DcJ+88NBiw=; b=desPKGk1ukRk9M
+	KX367zVe3tX9eaOydFXs2Dtp6iL/ZKcBHtehKpTJcfs0EbmpKxaVDalofhswGCH4tFCr0L0kmzbBq
+	KMwLNqkSyCvQZ92Iu0t3+XTT7Ls+PvgnZGbVOu9/+cp22+kDEib1FP/PhJL36KSj692Csj07HfuZT
+	ngmzjoWLE2qjY4QcgeB7pixbQwdhVTfueFI7NxBP4pn8ihNh/dq/6XnnC85y2zNsyhiiIL2oPouvs
+	ktjqoJn4q+JQDN3MB2Ri95aMaXFudg7YwvqRB3ufQ261+rZyj0LKURq69RzDC4/vC24z3+vCXmSm7
+	Yrtcc2E0PifO0DPUq2jQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6XrX-00CFqX-Fl; Wed, 29 Jun 2022 13:36:11 +0000
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+	id 1o6XzV-00CIfN-9M; Wed, 29 Jun 2022 13:44:25 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6XrU-00CFon-5y
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 13:36:09 +0000
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1o6Xqa-0006SP-06; Wed, 29 Jun 2022 15:35:12 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1o6XqQ-003PNQ-Vz; Wed, 29 Jun 2022 15:35:06 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1o6XqT-001txR-NY; Wed, 29 Jun 2022 15:35:05 +0200
-Date: Wed, 29 Jun 2022 15:35:04 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Wolfram Sang <wsa@kernel.org>, dri-devel@lists.freedesktop.org,
-	linux-omap@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-leds@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-crypto@vger.kernel.org,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-clk@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-watchdog@vger.kernel.org,
-	acpi4asus-user@lists.sourceforge.net,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-	linux-usb@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-	linux-integrity@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-rtc@vger.kernel.org, netdev@vger.kernel.org,
-	chrome-platform@lists.linux.dev, linux-input@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	openipmi-developer@lists.sourceforge.net,
-	linux-hwmon@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	patches@opensource.cirrus.com, UNGLinuxDriver@microchip.com,
-	linux-pwm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	linux-staging@lists.linux.dev
-Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
-Message-ID: <20220629133504.syc6x4ptia3mnof5@pengutronix.de>
-References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de>
- <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
- <CAPAsAGwP4Mw_CJfsi7oapABdTBwO1HfiQux6X4UahspU74VjtQ@mail.gmail.com>
+	id 1o6XzQ-00CIYU-3y
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2022 13:44:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id B8902B824A9;
+	Wed, 29 Jun 2022 13:44:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D68FC341CB;
+	Wed, 29 Jun 2022 13:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1656510255;
+	bh=fUB+IOSpVTGZ/j6pLA5eR/ugGco5MKiiPXFEt4eqrrk=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=Oj33v0D+HpvOBW1CHjE1hjBGdNxyFBHp6mOWw8zyqUeU3olKRA1W/iMel1YTZcdKY
+	 EAnM0aL4ahbWxi9+SnW/tf5tNj5y+BTO4YvGGQZzgAyJXnhW7L+UDR02u4RXrMCxkt
+	 lxzWNDOahTxH2j3jI9AJ1BLCeIZo8/RHkCnaAA6nc+1v2balS0JBOlNwHe+a7IcNHb
+	 7HP95qaQeHqPSvlNrHtel0ow7yrMpumU5cvU0OALULegLSijHc39nMRgH9hzZYNT/Q
+	 8Wjlwo7a7frjkCJhDJoMO34fyctNwUT8ZSGcmdRf/NLWBd+xz9bdTBUj+ajm2G5dV4
+	 6Bsc2fIN3O6dw==
+Message-ID: <feff53c6-a38c-1592-b3ef-1ff236da17f9@kernel.org>
+Date: Wed, 29 Jun 2022 16:44:11 +0300
 MIME-Version: 1.0
-In-Reply-To: <CAPAsAGwP4Mw_CJfsi7oapABdTBwO1HfiQux6X4UahspU74VjtQ@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: raw/omap2: erasing issue
+Content-Language: en-US
+From: Roger Quadros <rogerq@kernel.org>
+To: Yegor Yefremov <yegorslists@googlemail.com>
+Cc: linux-mtd@lists.infradead.org, Linux-OMAP <linux-omap@vger.kernel.org>,
+ miquel.raynal@bootlin.com
+References: <CAGm1_ktXBp-sz3Dud_G0iqOG=vA=Xp-bj-icwNLVgq-AMqKO7A@mail.gmail.com>
+ <72686231-c372-a4fe-347e-39470790fa65@kernel.org>
+ <CAGm1_kvRuWY7t2d_BtuSLGEL1u4njRqha=D0f7eN9F5XG8GrLQ@mail.gmail.com>
+ <CAGm1_kuucv71AdPkSW8Eog2T9rZRA3uiL4+ok-aWCVsj-z2eew@mail.gmail.com>
+ <5a36197d-7ed5-c06a-0a7e-73b808526dcd@kernel.org>
+In-Reply-To: <5a36197d-7ed5-c06a-0a7e-73b808526dcd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220629_063608_296774_CF81D03C 
-X-CRM114-Status: GOOD (  26.08  )
+X-CRM114-CacheID: sfid-20220629_064420_745480_7579DFB0 
+X-CRM114-Status: GOOD (  25.73  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,100 +73,245 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1519851136277090314=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Hi Yegor,
 
---===============1519851136277090314==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5z6hgi6euioj5d47"
-Content-Disposition: inline
+On 29/06/2022 14:33, Roger Quadros wrote:
+> Hi Yegor,
+> 
+> On 28/06/2022 14:59, Yegor Yefremov wrote:
+>> On Tue, Jun 28, 2022 at 1:57 PM Yegor Yefremov
+>> <yegorslists@googlemail.com> wrote:
+>>>
+>>> Hi Roger,
+>>>
+>>> On Tue, Jun 28, 2022 at 1:44 PM Roger Quadros <rogerq@kernel.org> wrote:
+>>>>
+>>>> Hi Yegor,
+>>>>
+>>>> On 28/06/2022 13:48, Yegor Yefremov wrote:
+>>>>> Since linux 5.17 I get the following issue when doing ubiformat:
+>>>>>
+>>>>> # ubiformat -y /dev/mtd5
+>>>>> ubiformat: mtd5 (nand), size 265945088 bytes (253.6 MiB), 2029
+>>>>> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+>>>>> libscan: scanning eraseblock 1097 -- 54 % complete  eth1 timed out to bring up
+>>>>> libscan: scanning eraseblock 2028 -- 100 % complete
+>>>>> ubiformat: 2001 eraseblocks have valid erase counter, mean value is 9
+>>>>> ubiformat: 2 eraseblocks are supposedly empty
+>>>>> ubiformat: 26 bad eraseblocks found, numbers: 3, 4, 5, 6, 8, 9, 10,
+>>>>> 11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30,
+>>>>> 31, 32
+>>>>
+>>>> I'm guessing these bad blocks recently added due to the offending patch?
+>>>
+>>> Yes.
+>>>
+>>>>> ubiformat: formatting eras[   33.644323] nand: nand_erase_nand:
+>>>>> attempt to erase a bad block at page 0x00000d40
+>>>>> ubiformat: formatting eraseblock 28[   33.658809] nand:
+>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000d80
+>>>>> ubiformat: formatting eraseblock 29 --  1 % [   33.674531] nand:
+>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000dc0
+>>>>> ubiformat: formatting eraseblock 30 --  1 % complete [   33.684508]
+>>>>> nand: nand_erase_nand: attempt to erase a bad block at page 0x00000e00
+>>>>> ubiformat: formatting eraseblock 34 --  1 % complete  libmtd: error!:
+>>>>> MEMERASE64 ioctl failed for eraseblock 34 (mtd5)
+>>>>>         error 5 (Input/output error)
+>>>>>
+>>>>> ubiformat: error!: failed to erase eraseblock 34
+>>>>>            error 5 (Input/output error)
+>>>>> ubiformat: marking block 34 bad
+>>>>> ubiformat: formatting eraseblock 35 --  1 % complete  libmtd: error!:
+>>>>> MEMERASE64 ioctl failed for eraseblock 35 (mtd5)
+>>>>>         error 5 (Input/output error)
+>>>>>
+>>>>> ubiformat: error!: failed to erase eraseblock 35
+>>>>>            error 5 (Input/output error)
+>>>>> ubiformat: marking block 35 bad
+>>>>> ubiformat: formatting eraseblock 36 --  1 % complete  libmtd: error!:
+>>>>> MEMERASE64 ioctl failed for eraseblock 36 (mtd5)
+>>>>>         error 5 (Input/output error)
+>>>>>
+>>>>> ubiformat: error!: failed to erase eraseblock 36
+>>>>>            error 5 (Input/output error)
+>>>>> ubiformat: marking block 36 bad
+>>>>> ubiformat: formatting eraseblock 37 --  1 % complete  libmtd: error!:
+>>>>> MEMERASE64 ioctl failed for eraseblock 37 (mtd5)
+>>>>>         error 5 (Input/output error)
+>>>>>
+>>>>> ubiformat: error!: failed to erase eraseblock 37
+>>>>>            error 5 (Input/output error)
+>>>>> ubiformat: marking block 37 bad
+>>>>>
+>>>>> ubiformat: error!: consecutive bad blocks exceed limit: 4, bad flash?
+>>>>> # [   36.322563] vwl1271: disabling
+>>>>>
+>>>>> git bisect pointed to the following commit:
+>>>>>
+>>>>> a9e849efca4f9c7732ea4a81f13ec96208994b22 is the first bad commit
+>>>>> commit a9e849efca4f9c7732ea4a81f13ec96208994b22
+>>>>> Author: Roger Quadros <rogerq@kernel.org>
+>>>>> Date:   Thu Dec 9 11:04:55 2021 +0200
+>>>>>
+>>>>>     mtd: rawnand: omap2: move to exec_op interface
+>>>>>
+>>>>>     Stop using legacy interface and move to the exec_op interface.
+>>>>>
+>>>>>     Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>>>>     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>>>>     Link: https://lore.kernel.org/linux-mtd/20211209090458.24830-4-rogerq@kernel.org
+>>>>>
+>>>>> :040000 040000 2341051b8aa8e6b554b8a44d2934f76d1aa460c4
+>>>>> c1727080ff16c403f4ad5ed840acc90127b632f8 M      drivers
+>>>>>
+>>>>> Info to my NAND flash:
+>>>>>
+>>>>> [    5.695760] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
+>>>>> [    5.702193] nand: Micron MT29F2G08ABAEAWP
+>>>>> [    5.706356] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
+>>>>> 2048, OOB size: 64
+>>>>> [    5.714204] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
+>>>>> [    5.719673] 6 cmdlinepart partitions found on MTD device omap2-nand.0
+>>>>> [    5.726232] Creating 6 MTD partitions on "omap2-nand.0":
+>>>>> [    5.731594] 0x000000000000-0x000000020000 : "SPL"
+>>>>> [    5.737788] mtdblock: MTD device 'SPL' is NAND, please consider
+>>>>> using UBI block devices instead.
+>>>>> [    5.750113] 0x000000020000-0x000000040000 : "SPL.backup1"
+>>>>> [    5.756916] mtdblock: MTD device 'SPL.backup1' is NAND, please
+>>>>> consider using UBI block devices instead.
+>>>>> [    5.769870] 0x000000040000-0x000000060000 : "SPL.backup2"
+>>>>> [    5.776695] mtdblock: MTD device 'SPL.backup2' is NAND, please
+>>>>> consider using UBI block devices instead.
+>>>>> [    5.789559] 0x000000060000-0x000000080000 : "SPL.backup3"
+>>>>> [    5.796423] mtdblock: MTD device 'SPL.backup3' is NAND, please
+>>>>> consider using UBI block devices instead.
+>>>>> [    5.809341] 0x000000080000-0x000000260000 : "u-boot"
+>>>>> [    5.816652] mtdblock: MTD device 'u-boot' is NAND, please consider
+>>>>> using UBI block devices instead.
+>>>>> [    5.829189] 0x000000260000-0x000010000000 : "UBI"
+>>>>> [    5.971508] mtdblock: MTD device 'UBI' is NAND, please consider
+>>>>> using UBI block devices instead.
+>>>>>
+>>>>
+>>>> What platform are you on?
+>>>> I do remember testing this on omap3-beagle but it does not use BCH8 ECC scheme.
+>>>
+>>> I am on am335x [1]
+>>>
+>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/am335x-baltos-ir5221.dts?h=v5.19-rc4
+>>
+>> NAND node definition [1]:
+>>
+>> &gpmc {
+>> pinctrl-names = "default";
+>> pinctrl-0 = <&nandflash_pins_s0>;
+>> ranges = <0 0 0x08000000 0x10000000>; /* CS0: NAND */
+>> status = "okay";
+>>
+>> nand@0,0 {
+>> compatible = "ti,omap2-nand";
+>> reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
+>> interrupt-parent = <&gpmc>;
+>> interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+>>     <1 IRQ_TYPE_NONE>; /* termcount */
+>> rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
+>> nand-bus-width = <8>;
+>> ti,nand-ecc-opt = "bch8";
+>> ti,nand-xfer-type = "polled";
+> 
+> Could you please change this to "prefetch-polled" and see if it fixes the issue?
+> 
+
+I tried to set ti,nand-xfer-type to "polled" on beagle-c4 board and could not reproduce the issue
+I will need your help please to debug this issue.
+
+Could you please apply the below patch on top of commit a9e849efca4f9c7732ea4a81f13ec96208994b22
+and send me the full kernel log and output of ubiformat command?
+
+Thanks!
+
+cheers,
+-roger
+
+From 2775aca0411755c57f90e9c8a0061853275083b4 Mon Sep 17 00:00:00 2001
+From: Roger Quadros <rogerq@kernel.org>
+Date: Wed, 29 Jun 2022 16:40:51 +0300
+Subject: [PATCH] debug: omap-nand: erase operations
+
+add some debug prints in erase operation failure path
+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+ drivers/mtd/nand/raw/nand_base.c | 12 ++++++++++++
+ drivers/mtd/nand/raw/omap2.c     |  3 +++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 113a2e9f43b1..3b1a599bcec5 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1848,24 +1848,36 @@ int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock)
+ 
+ 		ret = nand_exec_op(chip, &op);
+ 		if (ret)
++		{
++			pr_err("%s: exec_op failed %d\n", __func__, ret);
+ 			return ret;
++		}
+ 
+ 		ret = nand_status_op(chip, &status);
+ 		if (ret)
++		{
++			pr_err("%s: status_op failed %d\n", __func__, ret);
+ 			return ret;
++		}
+ 	} else {
+ 		chip->legacy.cmdfunc(chip, NAND_CMD_ERASE1, -1, page);
+ 		chip->legacy.cmdfunc(chip, NAND_CMD_ERASE2, -1, -1);
+ 
+ 		ret = chip->legacy.waitfunc(chip);
+ 		if (ret < 0)
++		{
++			pr_err("%s: legacy wait failed %d\n", __func__, ret);
+ 			return ret;
++		}
+ 
+ 		status = ret;
+ 	}
+ 
+ 	if (status & NAND_STATUS_FAIL)
++	{
++		pr_err("%s: NAND_STATUS fail\n", __func__);
+ 		return -EIO;
++	}
+ 
+ 	return 0;
+ }
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index 224c91282c87..5b1297333bed 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -2130,7 +2130,10 @@ static int omap_nand_exec_instr(struct nand_chip *chip,
+ 			nand_gpio_waitrdy(chip, info->ready_gpiod, instr->ctx.waitrdy.timeout_ms) :
+ 			nand_soft_waitrdy(chip, instr->ctx.waitrdy.timeout_ms);
+ 		if (ret)
++		{
++			dev_info(&info->pdev->dev, "%s: wait timeout %d, %px\n", __func__, ret, info->ready_gpiod);
+ 			return ret;
++		}
+ 		break;
+ 	}
+ 
+-- 
+2.17.1
 
 
---5z6hgi6euioj5d47
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-[Dropped most people from Cc, keeping only lists]
-
-On Wed, Jun 29, 2022 at 04:11:26PM +0300, Andrey Ryabinin wrote:
-> On 6/28/22 17:03, Uwe Kleine-K=F6nig wrote:
-> > From: Uwe Kleine-K=F6nig <uwe@kleine-koenig.org>
-> >
-> > The value returned by an i2c driver's remove function is mostly ignored.
-> > (Only an error message is printed if the value is non-zero that the
-> > error is ignored.)
-> >
-> > So change the prototype of the remove function to return no value. This
-> > way driver authors are not tempted to assume that passing an error to
-> > the upper layer is a good idea. All drivers are adapted accordingly.
-> > There is no intended change of behaviour, all callbacks were prepared to
-> > return 0 before.
-> >
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > ---
->                                     | 2 +-
-> >  lib/Kconfig.kasan                                         | 1 +
->=20
-> > diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> > index f0973da583e0..366e61639cb2 100644
-> > --- a/lib/Kconfig.kasan
-> > +++ b/lib/Kconfig.kasan
-> > @@ -149,6 +149,7 @@ config KASAN_STACK
-> >       depends on KASAN_GENERIC || KASAN_SW_TAGS
-> >       depends on !ARCH_DISABLE_KASAN_INLINE
-> >       default y if CC_IS_GCC
-> > +     depends on !ARM
-> >       help
-> >         Disables stack instrumentation and thus KASAN's ability to dete=
-ct
-> >         out-of-bounds bugs in stack variables.
->=20
->=20
-> What is this doing here?
-
-Huh, that is wrong. I needed that for build testing, but it shouldn't
-have been added to the patch. I'm dropping that for the final
-submission.
-
-Thanks for spotting.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---5z6hgi6euioj5d47
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmK8VQUACgkQwfwUeK3K
-7AkL0wf/Ra+JtsXozoGjhV4ADtJcJAo/mOIZQ6qOdPZGqHYkMvBmkEJ9zbvY4Edk
-SwYoapiHgVT4tDX56ekEGnm/x3udNUt5wugpsqDm4oAgYtbBCMEVtHbp3t/AqMp2
-sZcn0JsvUs6FVWSTomD396Pt10x0r+JrPTJVY2pwj1nUUV63/25oIT/4I77IughK
-LvQBMIesHK9damtObmRGqI5Ljz1L6SP7WgiLSEq1R/LjSeEwbURT3ijca95YO2Jv
-YyxoC7TiNJj2uJiisjl/r1T/LdGF6RpMN197XQjcvaZ0sbTZRF2vXlqp3cSyXrCG
-BbT2nohQYXjznouz9TIuBFtA0iX7SA==
-=YEZr
------END PGP SIGNATURE-----
-
---5z6hgi6euioj5d47--
-
-
---===============1519851136277090314==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============1519851136277090314==--
-
