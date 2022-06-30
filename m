@@ -4,64 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80360C43334
-	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jun 2022 07:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13660C433EF
+	for <linux-mtd@archiver.kernel.org>; Thu, 30 Jun 2022 08:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rpiiCJEjDaMgBVgfF5fhJQDU+CjfIVV3N96KafdbLMw=; b=ai/WBOJxm1HvST
-	PXwWbNqzotqrfwdh1RGxb9wxo2qjjhK2Pk8ZL670jZerRm7HgRL7KiPCOGQtUMehBlczA3U33qgrG
-	LD/4Vww6Uavkwuxn6w4PERDlb4rmTaf2SciwgVXj4pyXNyoyqyEr0IFRNJjdEazX9+OKNk54im7Wa
-	Byz/wypuJuCYssK9+9cHz/Miu5czb58Dp6XmXTpP1ibzxP5G8t55kLw/mjkWCdGEkLJchY4Z00Vyr
-	dLkURuRF6dZEbsfjZxtOzTrc1nwju4hmnn+nZG19zk5UVALDHJuaz8ykkvW9cUni7MlJtsNBB8vE6
-	USGfmylYS7v5lTN36u8g==;
+	List-Owner; bh=2w70h4tEjBTKRK28SXeDWQMsrStO/u3qNEWc4N8Ex4U=; b=tvVBM8+y6c4Jdv
+	uscvTaMGYxAtWIJHW9o5KZjge6YiDkrfP95BLmsuqeXwn/G3TmLESwgXiXKU21dldDtYM8z/3Kpf9
+	qCzPK7PzOKgPBYPocYRFfLhvsBIZKKXxmzxoAi5HOYNc7KGfrf9XI3+IN8e5qbj6t1AEcOaNqLIZf
+	6FkSILpMDV9cK9Cgk4qP8RI80k6MXSffvJ+S+LzGjIxI5u0Vi0b3zZ/p+S14Aiv8R/XsHrXDvELyH
+	bJrjbU0q8NCUM3I3hXzpaZHBCA48aXXFMcfwUce4oR/3PFGcOj1aXhFXgfh7tOt+qN2IHnOCeSaJH
+	N4MSnWzuLJJuBEE/WOKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6oZ5-00FlkE-5J; Thu, 30 Jun 2022 07:26:15 +0000
-Received: from relay11.mail.gandi.net ([217.70.178.231])
+	id 1o6ppG-00G6Ux-Cz; Thu, 30 Jun 2022 08:47:02 +0000
+Received: from mail-ej1-x62f.google.com ([2a00:1450:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6oZ1-00FliQ-QZ
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2022 07:26:13 +0000
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 5C3B810000C;
-	Thu, 30 Jun 2022 07:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1656573966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RbHADpDXYr/X5U7Qq4I3DXnnwEmjtF/efxJQ5ykP7Io=;
-	b=VherGTDEfCbIuQysIFuAAJsl6Ygh2UoZMdw+yIdXK2X5fZ8d11J5vIhR/7MQtz3xKOt73Y
-	K9iEIF+mDDrNpg3TX0aMXuLLE/O/nfzayqXQ/mBvf5ITXEE7cCyzKOguOiTyhaHVoZ8RNq
-	yjI3bEpAgxb0qxcHG7QwnMDWdGB9eEqB1NtvIRevfN1BSKWnSHhFvPBgoFt/TYPePBlYAc
-	BygPdlDjczkRo9yZCNecazZuGo+pE1TSxp/532OeL3UjaZ7izxi2jFf4lgjHIg7JfBlBc2
-	e21eQOgI9zwOz8TA+mBYNx/5PRKQDgGfhKq/Dr1p3oa2cs7pVD9FnHIKbdA/Mg==
-Date: Thu, 30 Jun 2022 09:25:52 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
+	id 1o6ppD-00G6TG-Dm
+	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2022 08:47:01 +0000
+Received: by mail-ej1-x62f.google.com with SMTP id lw20so37638014ejb.4
+        for <linux-mtd@lists.infradead.org>; Thu, 30 Jun 2022 01:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ijUWiZS99qlF/8rRWRrspTyoZo9W1oBwhdsM2NPK7es=;
+        b=LSQDYNqaVAhiuyHrnxLSnNa4KYDv5v3ZdaOXu5gMU1DNOz4x+YfG+VbjZ3A2gl6eCZ
+         L11gg0aPuodv4gHEIQZvv3w7UoafvFp6QSMCORZOtk7LrTMXRgd4SVEOEyhEZGy/K+N5
+         UZl3y/Q5imBi7T/+mmSKMxsAc6rGkfi9cr/GMX0htQFoC3J+GglHPNgqtaHaKYDlR0Jd
+         /wphyRmcQdqDgvehLCcuADzaIjxjTvPL6CA6lxIli1waynFegdrl7RFXasXziwn+ObtA
+         pa6ahDmX1+PUTGkwA1bOn8GKu6RQZ8ySt3LcCn80K5U/jGZqsgQShDYkkfrrF++6AwhR
+         JVCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ijUWiZS99qlF/8rRWRrspTyoZo9W1oBwhdsM2NPK7es=;
+        b=uK2y0JJNH6BlvTQpLyu+U7rBOFqnQ+hmCyqZWj66620GSr3T0tCzkDcmcW7E4VLvb4
+         MdM40Ci22ZX0h2h0WuODmIZ9kCgVDPdDPj9xRzZ1XGvKpkB5pFZNOOElnb6jG5ebbAf3
+         ryQh+7JDH360tAzkBGtOcMsd4rawq8WJNqTZ45pf4jozJtu9w/fxelvsaGy2qM46/Zh7
+         gowNwRk4xhLzLqC2Grhc2mRhPalm6Xpvk1BUGZxvRvRJbMY5kHBi1mMR9LpMa3dNWgJT
+         aZFdb3ysXem/eWmQoOBwe9vVdH3foB83j6KPaHTBgppgnoQ5FZbqOPASjszVA8Y+8xyV
+         Kj9Q==
+X-Gm-Message-State: AJIora9I75DTsmFLmQ8S3eN3yyG+/McosdWOtNVIxIbjKEEZX/mSuPII
+	E4phw+beGV84L2q32IznMCThgw==
+X-Google-Smtp-Source: AGRyM1snFeJioxa+M3t6BLa7YLUALZZi9c8Py51mZRv9MEGq2s62WIPMl6nK5TS4PB5kSwACpnzQew==
+X-Received: by 2002:a17:907:6e1e:b0:726:be5e:7130 with SMTP id sd30-20020a1709076e1e00b00726be5e7130mr7902698ejc.381.1656578812745;
+        Thu, 30 Jun 2022 01:46:52 -0700 (PDT)
+Received: from [192.168.0.188] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
+        by smtp.gmail.com with ESMTPSA id hx23-20020a170906847700b00722e84c3d44sm8711679ejc.118.2022.06.30.01.46.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jun 2022 01:46:52 -0700 (PDT)
+Message-ID: <2df6673b-6f8d-19c2-90ca-342e3ba72040@linaro.org>
+Date: Thu, 30 Jun 2022 10:46:51 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH 6/7] memory: renesas-rpc-if: Pass device instead of rpcif
+ to rpcif_*()
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Vignesh Raghavendra <vigneshr@ti.com>, Sergey Shtylyov
- <s.shtylyov@omp.ru>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>, Lad Prabhakar
- <prabhakar.mahadev-lad.rj@bp.renesas.com>, Richard Weinberger
- <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ <s.shtylyov@omp.ru>, Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
  linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] memory: renesas-rpc-if: Pass device instead of
- rpcif to rpcif_*()
-Message-ID: <20220630092552.68a8b3ff@xps-13>
-In-Reply-To: <e313b7f9a856fd8546aabb20d44d10e3af6676c6.1656341824.git.geert+renesas@glider.be>
 References: <cover.1656341824.git.geert+renesas@glider.be>
-	<e313b7f9a856fd8546aabb20d44d10e3af6676c6.1656341824.git.geert+renesas@glider.be>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ <e313b7f9a856fd8546aabb20d44d10e3af6676c6.1656341824.git.geert+renesas@glider.be>
+ <20220630092552.68a8b3ff@xps-13>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220630092552.68a8b3ff@xps-13>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220630_002612_163976_1E3874A9 
-X-CRM114-Status: GOOD (  16.61  )
+X-CRM114-CacheID: sfid-20220630_014659_525484_C672CF3E 
+X-CRM114-Status: GOOD (  20.17  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,69 +94,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-SGkgS3J6eXN6dG9mLAoKZ2VlcnQrcmVuZXNhc0BnbGlkZXIuYmUgd3JvdGUgb24gTW9uLCAyNyBK
-dW4gMjAyMiAxNzozMToxMyArMDIwMDoKCj4gTW9zdCBycGNpZl8qKCkgQVBJIGZ1bmN0aW9ucyBk
-byBub3QgbmVlZCBhY2Nlc3MgdG8gYW55IG90aGVyIGZpZWxkcyBpbgo+IHRoZSBycGNpZiBzdHJ1
-Y3R1cmUgdGhhbiB0aGUgZGV2aWNlIHBvaW50ZXIuICBTaW1wbGlmeSBkZXBlbmRlbmNpZXMgYnkK
-PiBwYXNzaW5nIHRoZSBkZXZpY2UgcG9pbnRlciBpbnN0ZWFkLgo+IAo+IFNpZ25lZC1vZmYtYnk6
-IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnQrcmVuZXNhc0BnbGlkZXIuYmU+Cj4gLS0tCj4gIGRy
-aXZlcnMvbWVtb3J5L3JlbmVzYXMtcnBjLWlmLmMgfCAzMiArKysrKysrKysrKysrKysrLS0tLS0t
-LS0tLS0tLS0tLQo+ICBkcml2ZXJzL210ZC9oeXBlcmJ1cy9ycGMtaWYuYyAgIHwgMTggKysrKysr
-KysrLS0tLS0tLS0tCgpbLi4uXQoKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvaHlwZXJidXMv
-cnBjLWlmLmMgYi9kcml2ZXJzL210ZC9oeXBlcmJ1cy9ycGMtaWYuYwo+IGluZGV4IGQwMGQzMDI0
-MzQwMzBiMjAuLjQxNzM0ZTMzN2FjMDBlNDAgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQvaHlw
-ZXJidXMvcnBjLWlmLmMKPiArKysgYi9kcml2ZXJzL210ZC9oeXBlcmJ1cy9ycGMtaWYuYwo+IEBA
-IC01Niw3ICs1Niw3IEBAIHN0YXRpYyB2b2lkIHJwY2lmX2hiX3ByZXBhcmVfcmVhZChzdHJ1Y3Qg
-cnBjaWYgKnJwYywgdm9pZCAqdG8sCj4gIAlvcC5kYXRhLm5ieXRlcyA9IGxlbjsKPiAgCW9wLmRh
-dGEuYnVmLmluID0gdG87Cj4gIAo+IC0JcnBjaWZfcHJlcGFyZShycGMsICZvcCwgTlVMTCwgTlVM
-TCk7Cj4gKwlycGNpZl9wcmVwYXJlKHJwYy0+ZGV2LCAmb3AsIE5VTEwsIE5VTEwpOwo+ICB9Cj4g
-IAo+ICBzdGF0aWMgdm9pZCBycGNpZl9oYl9wcmVwYXJlX3dyaXRlKHN0cnVjdCBycGNpZiAqcnBj
-LCB1bnNpZ25lZCBsb25nIHRvLAo+IEBAIC03MCw3ICs3MCw3IEBAIHN0YXRpYyB2b2lkIHJwY2lm
-X2hiX3ByZXBhcmVfd3JpdGUoc3RydWN0IHJwY2lmICpycGMsIHVuc2lnbmVkIGxvbmcgdG8sCj4g
-IAlvcC5kYXRhLm5ieXRlcyA9IGxlbjsKPiAgCW9wLmRhdGEuYnVmLm91dCA9IGZyb207Cj4gIAo+
-IC0JcnBjaWZfcHJlcGFyZShycGMsICZvcCwgTlVMTCwgTlVMTCk7Cj4gKwlycGNpZl9wcmVwYXJl
-KHJwYy0+ZGV2LCAmb3AsIE5VTEwsIE5VTEwpOwo+ICB9Cj4gIAo+ICBzdGF0aWMgdTE2IHJwY2lm
-X2hiX3JlYWQxNihzdHJ1Y3QgaHlwZXJidXNfZGV2aWNlICpoYmRldiwgdW5zaWduZWQgbG9uZyBh
-ZGRyKQo+IEBAIC04MSw3ICs4MSw3IEBAIHN0YXRpYyB1MTYgcnBjaWZfaGJfcmVhZDE2KHN0cnVj
-dCBoeXBlcmJ1c19kZXZpY2UgKmhiZGV2LCB1bnNpZ25lZCBsb25nIGFkZHIpCj4gIAo+ICAJcnBj
-aWZfaGJfcHJlcGFyZV9yZWFkKCZoeXBlcmJ1cy0+cnBjLCAmZGF0YSwgYWRkciwgMik7Cj4gIAo+
-IC0JcnBjaWZfbWFudWFsX3hmZXIoJmh5cGVyYnVzLT5ycGMpOwo+ICsJcnBjaWZfbWFudWFsX3hm
-ZXIoaHlwZXJidXMtPnJwYy5kZXYpOwo+ICAKPiAgCXJldHVybiBkYXRhLnhbMF07Cj4gIH0KPiBA
-QCAtOTQsNyArOTQsNyBAQCBzdGF0aWMgdm9pZCBycGNpZl9oYl93cml0ZTE2KHN0cnVjdCBoeXBl
-cmJ1c19kZXZpY2UgKmhiZGV2LCB1bnNpZ25lZCBsb25nIGFkZHIsCj4gIAo+ICAJcnBjaWZfaGJf
-cHJlcGFyZV93cml0ZSgmaHlwZXJidXMtPnJwYywgYWRkciwgJmRhdGEsIDIpOwo+ICAKPiAtCXJw
-Y2lmX21hbnVhbF94ZmVyKCZoeXBlcmJ1cy0+cnBjKTsKPiArCXJwY2lmX21hbnVhbF94ZmVyKGh5
-cGVyYnVzLT5ycGMuZGV2KTsKPiAgfQo+ICAKPiAgc3RhdGljIHZvaWQgcnBjaWZfaGJfY29weV9m
-cm9tKHN0cnVjdCBoeXBlcmJ1c19kZXZpY2UgKmhiZGV2LCB2b2lkICp0bywKPiBAQCAtMTA1LDcg
-KzEwNSw3IEBAIHN0YXRpYyB2b2lkIHJwY2lmX2hiX2NvcHlfZnJvbShzdHJ1Y3QgaHlwZXJidXNf
-ZGV2aWNlICpoYmRldiwgdm9pZCAqdG8sCj4gIAo+ICAJcnBjaWZfaGJfcHJlcGFyZV9yZWFkKCZo
-eXBlcmJ1cy0+cnBjLCB0bywgZnJvbSwgbGVuKTsKPiAgCj4gLQlycGNpZl9kaXJtYXBfcmVhZCgm
-aHlwZXJidXMtPnJwYywgZnJvbSwgbGVuLCB0byk7Cj4gKwlycGNpZl9kaXJtYXBfcmVhZChoeXBl
-cmJ1cy0+cnBjLmRldiwgZnJvbSwgbGVuLCB0byk7Cj4gIH0KPiAgCj4gIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgaHlwZXJidXNfb3BzIHJwY2lmX2hiX29wcyA9IHsKPiBAQCAtMTMwLDkgKzEzMCw5IEBA
-IHN0YXRpYyBpbnQgcnBjaWZfaGJfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikK
-PiAgCj4gIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBoeXBlcmJ1cyk7Cj4gIAo+IC0JcnBj
-aWZfZW5hYmxlX3JwbSgmaHlwZXJidXMtPnJwYyk7Cj4gKwlycGNpZl9lbmFibGVfcnBtKGh5cGVy
-YnVzLT5ycGMuZGV2KTsKPiAgCj4gLQllcnJvciA9IHJwY2lmX2h3X2luaXQoJmh5cGVyYnVzLT5y
-cGMsIHRydWUpOwo+ICsJZXJyb3IgPSBycGNpZl9od19pbml0KGh5cGVyYnVzLT5ycGMuZGV2LCB0
-cnVlKTsKPiAgCWlmIChlcnJvcikKPiAgCQlnb3RvIG91dF9kaXNhYmxlX3JwbTsKPiAgCj4gQEAg
-LTE1MCw3ICsxNTAsNyBAQCBzdGF0aWMgaW50IHJwY2lmX2hiX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCj4gIAlyZXR1cm4gMDsKPiAgCj4gIG91dF9kaXNhYmxlX3JwbToKPiAt
-CXJwY2lmX2Rpc2FibGVfcnBtKCZoeXBlcmJ1cy0+cnBjKTsKPiArCXJwY2lmX2Rpc2FibGVfcnBt
-KGh5cGVyYnVzLT5ycGMuZGV2KTsKPiAgCXJldHVybiBlcnJvcjsKPiAgfQoKVGhpcyB3aWxsIG9u
-bHkgYXBwbHkgb24gdG9wIG9mIG10ZC9uZXh0LCBiZWNhdXNlIHRoYXQKcnBjaWZfZGlzYWJsZV9y
-cG0oKSBiYWxhbmNlIGNhbGwgd2FzIHZlcnkgcmVjZW50bHkgY29udHJpYnV0ZWQgYnkgR2VlcnQ6
-Cmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC9mMzA3MGUxYWY0ODBjYjI1MmFlMTgz
-ZDQ3OWE1OTNkYmJmOTQ3Njg1LjE2NTU0NTc3OTAuZ2l0LmdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJl
-LwoKU28gd2UgbmVlZCB0byBmaXJzdCBzaGFyZSBhbiBpbW11dGFibGUgdGFnIG9uIHRoZSBjdXJy
-ZW50IG10ZC9uZXh0CmJyYW5jaC4gUmljaGFyZCwgdGhhdCBpcyBteSB2YWNhdGlvbiBnaWZ0IGZv
-ciB5b3UgOikKCk90aGVyd2lzZSwKCkFja2VkLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5
-bmFsQGJvb3RsaW4uY29tPgoKVGhhbmtzLApNaXF1w6hsCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXggTVREIGRpc2N1c3Npb24gbWFp
-bGluZyBsaXN0Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo=
+On 30/06/2022 09:25, Miquel Raynal wrote:
+> Hi Krzysztof,
+> 
+> geert+renesas@glider.be wrote on Mon, 27 Jun 2022 17:31:13 +0200:
+> 
+>> Most rpcif_*() API functions do not need access to any other fields in
+>> the rpcif structure than the device pointer.  Simplify dependencies by
+>> passing the device pointer instead.
+>>
+>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> ---
+>>  drivers/memory/renesas-rpc-if.c | 32 ++++++++++++++++----------------
+>>  drivers/mtd/hyperbus/rpc-if.c   | 18 +++++++++---------
+> 
+> [...]
+> 
+>> diff --git a/drivers/mtd/hyperbus/rpc-if.c b/drivers/mtd/hyperbus/rpc-if.c
+>> index d00d302434030b20..41734e337ac00e40 100644
+>> --- a/drivers/mtd/hyperbus/rpc-if.c
+>> +++ b/drivers/mtd/hyperbus/rpc-if.c
+>> @@ -56,7 +56,7 @@ static void rpcif_hb_prepare_read(struct rpcif *rpc, void *to,
+>>  	op.data.nbytes = len;
+>>  	op.data.buf.in = to;
+>>  
+>> -	rpcif_prepare(rpc, &op, NULL, NULL);
+>> +	rpcif_prepare(rpc->dev, &op, NULL, NULL);
+>>  }
+>>  
+>>  static void rpcif_hb_prepare_write(struct rpcif *rpc, unsigned long to,
+>> @@ -70,7 +70,7 @@ static void rpcif_hb_prepare_write(struct rpcif *rpc, unsigned long to,
+>>  	op.data.nbytes = len;
+>>  	op.data.buf.out = from;
+>>  
+>> -	rpcif_prepare(rpc, &op, NULL, NULL);
+>> +	rpcif_prepare(rpc->dev, &op, NULL, NULL);
+>>  }
+>>  
+>>  static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
+>> @@ -81,7 +81,7 @@ static u16 rpcif_hb_read16(struct hyperbus_device *hbdev, unsigned long addr)
+>>  
+>>  	rpcif_hb_prepare_read(&hyperbus->rpc, &data, addr, 2);
+>>  
+>> -	rpcif_manual_xfer(&hyperbus->rpc);
+>> +	rpcif_manual_xfer(hyperbus->rpc.dev);
+>>  
+>>  	return data.x[0];
+>>  }
+>> @@ -94,7 +94,7 @@ static void rpcif_hb_write16(struct hyperbus_device *hbdev, unsigned long addr,
+>>  
+>>  	rpcif_hb_prepare_write(&hyperbus->rpc, addr, &data, 2);
+>>  
+>> -	rpcif_manual_xfer(&hyperbus->rpc);
+>> +	rpcif_manual_xfer(hyperbus->rpc.dev);
+>>  }
+>>  
+>>  static void rpcif_hb_copy_from(struct hyperbus_device *hbdev, void *to,
+>> @@ -105,7 +105,7 @@ static void rpcif_hb_copy_from(struct hyperbus_device *hbdev, void *to,
+>>  
+>>  	rpcif_hb_prepare_read(&hyperbus->rpc, to, from, len);
+>>  
+>> -	rpcif_dirmap_read(&hyperbus->rpc, from, len, to);
+>> +	rpcif_dirmap_read(hyperbus->rpc.dev, from, len, to);
+>>  }
+>>  
+>>  static const struct hyperbus_ops rpcif_hb_ops = {
+>> @@ -130,9 +130,9 @@ static int rpcif_hb_probe(struct platform_device *pdev)
+>>  
+>>  	platform_set_drvdata(pdev, hyperbus);
+>>  
+>> -	rpcif_enable_rpm(&hyperbus->rpc);
+>> +	rpcif_enable_rpm(hyperbus->rpc.dev);
+>>  
+>> -	error = rpcif_hw_init(&hyperbus->rpc, true);
+>> +	error = rpcif_hw_init(hyperbus->rpc.dev, true);
+>>  	if (error)
+>>  		goto out_disable_rpm;
+>>  
+>> @@ -150,7 +150,7 @@ static int rpcif_hb_probe(struct platform_device *pdev)
+>>  	return 0;
+>>  
+>>  out_disable_rpm:
+>> -	rpcif_disable_rpm(&hyperbus->rpc);
+>> +	rpcif_disable_rpm(hyperbus->rpc.dev);
+>>  	return error;
+>>  }
+> 
+> This will only apply on top of mtd/next, because that
+> rpcif_disable_rpm() balance call was very recently contributed by Geert:
+> https://lore.kernel.org/linux-mtd/f3070e1af480cb252ae183d479a593dbbf947685.1655457790.git.geert+renesas@glider.be/
+> 
+> So we need to first share an immutable tag on the current mtd/next
+> branch. Richard, that is my vacation gift for you :)
+
+I don't want entire mtd/next. I could take Renesas hyperbus specific
+commits. Another solution is me to rebase on some rcX, if that commit
+was sent as fix for current cycle.
+The third option is to simply resolve a conflict - which should looks
+pretty easy and compile-testable. In that case the commit should be
+rebased on my v5.19-rc1.
+
+Best regards,
+Krzysztof
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
