@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7763DCCA47B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25924CCA482
 	for <linux-mtd@archiver.kernel.org>; Sat,  2 Jul 2022 23:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Iv7WKdAy2U2NcTa2SXdFNRaK/B9bE/PXaEfWREkpGi0=; b=XP4fmM5JQQ/a0n
-	g51eN41yXhClYAAY6clwfx0U0q40Or+GXGwlNiIyOwP/Yfvpgq0z63TozHXDF//bXkAo/xYoX3XwY
-	y+c6CEOFXIGFEBVK9E0XFq/9lLvHRZ3ZGL21RYPNWAvSVJn/A3oe5PmGvGMgY4Exf8HH3TPPLFKZG
-	yqv2EKvYtNWmhjDbn6ccpPvzMyqBcaFg9UrJQmsSrd2WduGhJDS8YB/PGkEuQCqiSozaECspHvN3m
-	QF9eDwu7zePErT7zLI9HLK6y+4k0uXct47q9qnM/CXu82CJoIK3O84tvbnPehHYwMxEKV2OcJBJ+m
-	oFmgoyD2TRlarVMdQXOQ==;
+	List-Owner; bh=4LYj7puzIwM7kMfLd4OE+C9Vkq9ObWviWUt5iEbD7dE=; b=2pTpeNzkJn/uLj
+	DVF2ZPUF/dwyW2VimxBtRyD23f41fLltivfgC1IFAuJwLd6Lozv/gf6VXQeB29VcTzcE6nJnZnfAi
+	8BdDBUCl0VDE4jHNjfMrGLsdsEnUaueD04tqR1tOSrlregU3AighJV+QukibXYkbx7sqOTbOjgqRl
+	jWB0X1y9ApoO8St5ROM+59jIAh/qUnieAPnKqptWW1+8qKmuSiaX71A90+22tyJGHJ3GJjZEciNvV
+	xCIdTiSbKAVicMwkSGLEwwrmezmOn5HEU8d5gX0JaMxDnt+W2goVv8AEccjHwqwbg3eKILT6BlcqJ
+	dQXZvFJjdxUnT/hdWi+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o7mIA-00C91v-OG; Sat, 02 Jul 2022 23:12:46 +0000
-Received: from mail-ej1-x632.google.com ([2a00:1450:4864:20::632])
+	id 1o7mIK-00C984-1U; Sat, 02 Jul 2022 23:12:56 +0000
+Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o7mI7-00C8zp-9U
-	for linux-mtd@lists.infradead.org; Sat, 02 Jul 2022 23:12:44 +0000
-Received: by mail-ej1-x632.google.com with SMTP id sb34so10236239ejc.11
-        for <linux-mtd@lists.infradead.org>; Sat, 02 Jul 2022 16:12:43 -0700 (PDT)
+	id 1o7mIA-00C90H-Vb
+	for linux-mtd@lists.infradead.org; Sat, 02 Jul 2022 23:12:48 +0000
+Received: by mail-ed1-x536.google.com with SMTP id y8so1399173eda.3
+        for <linux-mtd@lists.infradead.org>; Sat, 02 Jul 2022 16:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jtcfJDlBtIQgsJctsItB2jzUjAIsrPcb5sLRSibvewY=;
-        b=qed6BExX6r9RFcO7N/YaPXvv0CuF4LZlMKFRZXUeWaKTX/oo0mMQ0CtWdqXxVK/Pe8
-         tSmMt0syPx0daH/cypM0v17Kii6YdnDYYxAbqphyO7eHeuVf2CwcCNdXT+jIeKK5v/KG
-         gI2C/gfRJmZ09ZKXZE4nK0Kr8eAteRL76xpgvq1HTQxuKUFR7ZTTnwiou1W49TV2xFrQ
-         aVJr8Qdl4HOoixPdSH1HSkHp+qhQdFiLuF9ZUYnnoh7YtC+j7Oti5EtFatHJrSyvhYnQ
-         2L1ybUFJu2Y1KPwc3yfmnkGKC4LiyZO2YCD7imITIa8sdgVNjI92w+oFjLPSnVTJj+qW
-         Bo+g==
+        bh=GtoWH3Twv71XknYtu8BYL5GG9PgQIu+29g9mDNFEswk=;
+        b=i2P13B5htVIAXOVn3aOtys9xFRhh9MhWIKQhDBsF3OJp5Bk6Tk3p+wEq5Q6XG4d+Q3
+         9qOQS/7iMbs9xuGAUzX3Zjx7kCrCo6AP+ujhWDe1vD+uCoKOtHSAz+64zFvWjvDil71i
+         WPHod0c0Et7CBl51X44fINlID1VhPU2FC9DyjvYohqc0cZEF9q/DGtnCan4rlvg1r1oN
+         uRYzVjqWSWHWQW+8qKpJAbUzwMSVYOIUNiagrijfmqWH2mOU3vKbFIKdxRWYiQFXg5tH
+         WLCzXPenfIjxkPuEvrbL2gM8Eg/EoI3WfQJu9RDfA60fIAdhfJ6XCRGoFP5Sq4EN2yQG
+         WGFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jtcfJDlBtIQgsJctsItB2jzUjAIsrPcb5sLRSibvewY=;
-        b=HSf1k86YcPINO3Fea1PcJtF8bplFgEBY4+MCbzBmj2ajqO4V/HY1GONUD2k4AKkgXo
-         8cHrkllvIZFniyZ+k5oVcbnzb50JMVj/MXmk61ZHunExK7XeFXr2YZgHoRZA9yxIjoJ/
-         FNL+ehgtaUENFwrsN6qw5PMDUslFI6mV36SuwW2v13dAxTvXlSWrF9uc489QmnSICV4I
-         M1SXX5mv2G7LpK6Qsz4UrrmwdIT8JUNqQoPnukTpbb9xpIr0hGlufEiqNvyK9oa8Y/ER
-         7vYuqhpEbondf1BQ6zXjGrPksfm82Vmbb9WMt+rRpznm3MB3iKHOWVjVsHWK2QD+LLCI
-         e8ow==
-X-Gm-Message-State: AJIora87VIDONg6YlGTcqScogF40zQCeaqQuN7Dp8EKSdVKu7lpHYk92
-	rDAb9pdgjqhYyXEbNREX9JBt+t+L0YI=
-X-Google-Smtp-Source: AGRyM1uPubQUBkUKfCj6Pab0PNni4xlv9AST3IHTvB/EK4KaVO/XfMVh/qyaIxTVFiFgUYRv+RmQCw==
-X-Received: by 2002:a17:907:608b:b0:722:f954:6e3 with SMTP id ht11-20020a170907608b00b00722f95406e3mr21619271ejc.550.1656803561997;
-        Sat, 02 Jul 2022 16:12:41 -0700 (PDT)
+        bh=GtoWH3Twv71XknYtu8BYL5GG9PgQIu+29g9mDNFEswk=;
+        b=HBCB/0EZYhkakBIocz9zJdnbsbPE06qV7gkL/5tSVcxNuxblKXpCvYmoQ/2Khy9yba
+         VOgQeZmFFzpA0RQAD754VSd5fUSmvKIqmpij81/zXJdafIq1ZK2uwUeOViA+XVNo2EJ1
+         9Knj1wRGYkoP1GHH/ycGeQUnYgb0jvtvKQAD9nEw1wve6Y0tEehxVWDxvllXNKyfVHEm
+         uD2XEosABTmJq0u81DU6SLAyqLkt88NiG2P8lJ86OOdAza8RKzz04r1wE0vgWogJy1De
+         l5+umG4pa6gxslUgz5oRKck6zvSuXtaq04maBhP+mPmNDdJLD1W8SDHySUr14W9RJ7jy
+         uRQA==
+X-Gm-Message-State: AJIora+3njCMX3xcbrq5eVMdIVFjBBANhv19nGtJMozD8tAqogoUuuv7
+	Ee5iGOvSe7KVAhgiO01CGLZthKv9Xqc=
+X-Google-Smtp-Source: AGRyM1u5k9aKO+kjClRFeCmf055a08Jc0GwYvjMkLIuQgHTnWlnBVgpFInI7O5yAAkYBIZg06v854Q==
+X-Received: by 2002:a05:6402:26d6:b0:435:ba41:dbb0 with SMTP id x22-20020a05640226d600b00435ba41dbb0mr28127029edd.242.1656803566388;
+        Sat, 02 Jul 2022 16:12:46 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-2a01-0c23-c4d4-2700-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:c4d4:2700:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id uz12-20020a170907118c00b00711aed17047sm12234329ejb.28.2022.07.02.16.12.41
+        by smtp.googlemail.com with ESMTPSA id uz12-20020a170907118c00b00711aed17047sm12234329ejb.28.2022.07.02.16.12.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jul 2022 16:12:41 -0700 (PDT)
+        Sat, 02 Jul 2022 16:12:46 -0700 (PDT)
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To: linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org
@@ -67,18 +67,17 @@ Cc: linux-kernel@vger.kernel.org,
 	miquel.raynal@bootlin.com,
 	richard@nod.at,
 	vigneshr@ti.com,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 2/8] dt-bindings: mtd: intel: lgm-nand: Fix maximum chip select value
-Date: Sun,  3 Jul 2022 01:12:21 +0200
-Message-Id: <20220702231227.1579176-3-martin.blumenstingl@googlemail.com>
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v3 7/8] mtd: rawnand: intel: Remove unused clk_rate member from struct ebu_nand
+Date: Sun,  3 Jul 2022 01:12:26 +0200
+Message-Id: <20220702231227.1579176-8-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220702231227.1579176-1-martin.blumenstingl@googlemail.com>
 References: <20220702231227.1579176-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220702_161243_366115_4953C13A 
-X-CRM114-Status: GOOD (  11.61  )
+X-CRM114-CacheID: sfid-20220702_161247_062250_22E0DF2B 
+X-CRM114-Status: GOOD (  11.63  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,30 +94,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The Intel LGM NAND IP only supports two chip selects: There's only two
-CS and ADDR_SEL register sets. Fix the maximum allowed chip select value
-according to the dt-bindings.
+The clk_rate member from struct ebu_nand is only written but never read.
+Remove this unused and unneeded member.
 
-Fixes: 2f9cea8eae44f5 ("dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC")
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/raw/intel-nand-controller.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
-index 763ee3e1faf3..04f26196c4c1 100644
---- a/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
-+++ b/Documentation/devicetree/bindings/mtd/intel,lgm-ebunand.yaml
-@@ -51,7 +51,7 @@ patternProperties:
-     properties:
-       reg:
-         minimum: 0
--        maximum: 7
-+        maximum: 1
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index de4f85368988..e486db11ecc3 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -118,7 +118,6 @@ struct ebu_nand_controller {
+ 	struct dma_chan *dma_tx;
+ 	struct dma_chan *dma_rx;
+ 	struct completion dma_access_complete;
+-	unsigned long clk_rate;
+ 	struct clk *clk;
+ 	u32 nd_para0;
+ 	u8 cs_num;
+@@ -636,7 +635,6 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 		dev_err(dev, "failed to enable clock: %d\n", ret);
+ 		return ret;
+ 	}
+-	ebu_host->clk_rate = clk_get_rate(ebu_host->clk);
  
-       nand-ecc-mode: true
- 
+ 	ebu_host->dma_tx = dma_request_chan(dev, "tx");
+ 	if (IS_ERR(ebu_host->dma_tx)) {
 -- 
 2.37.0
 
