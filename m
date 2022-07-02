@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 294C1C43334
-	for <linux-mtd@archiver.kernel.org>; Sat,  2 Jul 2022 23:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8D68C43334
+	for <linux-mtd@archiver.kernel.org>; Sat,  2 Jul 2022 23:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0rfPOWvYbLh18f/q1TpeJHRCruc37q5QnmIMny1jDyw=; b=JfzABgInIRYRBK
-	yy1ONn+A7WkiErg0sq4gEkW2aSKERedvWONL20ux5g13qNPhIu8HHySO8Sj8gPH0f32pKRGSlNaXf
-	PLscmm9MTU5Qb6NMp+piqrcG+s5YCxwvDbrwNSfOmcXrpXDeupFsIvE1q0sxyXM2Y2/cZlco/bOPS
-	tqaNqhI5s2IpepkW4VDb6l+pE+0mnowUvX7DAJ2PTRzuxujqSh0jTu3K3d76bIEKLCHJzs0YyvQZF
-	QX20FjwPmQCB8/+CclXxzaUSNBRctZzFyvEfwyMzTUBA/wj2ZyvJUgccSMDTxKlQhFL4hMt8Q/4/s
-	ipvBPkwo+RRYChYiq/3g==;
+	List-Owner; bh=yuzYPkR1z0kbdFVGV5khKMThQGyW9pWahTimc2LmhB4=; b=W8v6mqq88AlAZy
+	OI9flLriy0T5IdJazUH/KZUkz4B7sBj5XrbnY9Wwl4QDDAOIOKCCFQZ1DNEDhuBNXJZkP22YXeVo2
+	gVMlxN41tO4DhtSacHosSWcNfC55/dnkgK8hdGiFpp0e19nHKUuWcQqL911quVwKWhOrfmenAEW8l
+	d7DOYEhyT0njtHzxOvabs9ugF44gf+l23beycHaToSnyBTLgPa7Ain86F46IMsXU69CRYyYkd6M5d
+	aEyZNa+unJUbEK/RHQsMGUMch8sQ/9wAB29uyY4+Cvy5CNCcNVDcartDNU6brDNEk87zG/d0UgEKM
+	uLrENzDJyWgyegXuhFkQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o7mIN-00C9AQ-Sg; Sat, 02 Jul 2022 23:12:59 +0000
-Received: from mail-ed1-x531.google.com ([2a00:1450:4864:20::531])
+	id 1o7mIE-00C94Y-Td; Sat, 02 Jul 2022 23:12:50 +0000
+Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o7mIB-00C91W-Pt
-	for linux-mtd@lists.infradead.org; Sat, 02 Jul 2022 23:12:49 +0000
-Received: by mail-ed1-x531.google.com with SMTP id ej4so7143182edb.7
-        for <linux-mtd@lists.infradead.org>; Sat, 02 Jul 2022 16:12:46 -0700 (PDT)
+	id 1o7mI8-00C90H-9w
+	for linux-mtd@lists.infradead.org; Sat, 02 Jul 2022 23:12:45 +0000
+Received: by mail-ed1-x536.google.com with SMTP id y8so1399013eda.3
+        for <linux-mtd@lists.infradead.org>; Sat, 02 Jul 2022 16:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rMFZHu8PDqwv5GHr5nbOBzzYZPK8b+QduZ22FxBHIqo=;
-        b=LmMpJrmNWZeApdyuPOlUWyIq9xXhlUREoibq6Q6UO4K47VwQD2ByfL3DwZaGQ/eLhc
-         c9Z46PM3h5NxHMI9zEfHzJnVJ/vacO204dRiwGf+p2amHUA6KBExp/Wcnzu1Jy+CDdQ0
-         k4nDLlsNF+zX36ib8uD8VTPTtbQ6afyLNe2KKOj18X8enaCOmeVmW+r7FnACrAqn5/mF
-         fgRhbJqjwYiwW8V+JQC1wwL3A8VZ1qIsZKomzgx0c61lkRxPyvB6zFZsQ80b1WOF/In0
-         JFMoKYaBxH1tR035v25j5whzFlj78ce0onBkRMDFht5l6aQ9Tqkf6e7XedQDZH63ve+S
-         ieew==
+        bh=yCQTaNx44e60e0RQIQkoEDKE0jArPjhRbsgoDMKp9c8=;
+        b=dgxlSIjFJwSCBjcvyW+PrWZomTklrALAUl2SxmBCl2+hC6/UnRF5C/QTl3DI+XlaVm
+         zPO8X3hufGMWdx72k5+9W8OKCvBdvH9sJi62Lzdwy1jCQ7DwQFh/WtXIhbtDXFnP9DF3
+         n+xyF3SF1GEjaCY5YFD4IqX8XYShGmQ1AP1p/mxjajLRY0pMb941kFcCysS76Nv/vosM
+         Y+1pJzmWG6ZcEky7XuMSGEC9onUjyVQF57dI7uMF/+4W9DNHFjHZZ3esF62Jw1IBV1I3
+         8Ihy3m3EuL2VX4CoUBd3zbxYNfVrTfaHzHIlvmn1KYV702KpO0NM4K51sbBbVJVeNEM2
+         +tPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rMFZHu8PDqwv5GHr5nbOBzzYZPK8b+QduZ22FxBHIqo=;
-        b=q3kCbANkSxopB0XgrwmPOKTW3cgfVp0a+/WEwmQRfUA24X0AHxkxhHKsd+ZnrZurvE
-         hZv7H8IyXmv5aq/R4jCikOuSHehbyYHP+PzTVbaPPkC1wXO7UqiTnaOS4tmaNM1RLlV9
-         y+x962pRPDWk7XDnbBamOH4qFPHimURIMJX/JTqbP24hYN5UOAtsRP6vLjZPpcdvN5vR
-         26T+0orz/Hr7BrjodJ3mHZpPJB0RPVbejlDhdUf2PkeYSWV84rIvzU5A3qQA3Y7d/cct
-         0fH0i9hudDtYAUrvhIF/fObqfaP3QQheMw2ZQmm2HcxzFMikAY4S23k8XAF1rpj95/Yo
-         ML/g==
-X-Gm-Message-State: AJIora9cce06AMv9zTnUUGHxkC5AQ+WbwJX5tevkY2Z8fj5AVQ71Shb0
-	WH9r1C/RXLvFZL01LVBZ/VpEEcqEdcY=
-X-Google-Smtp-Source: AGRyM1sD+hNDqYlRurGJOdDI4Xbt/HFa3sI09ympVXFOMrrvtT1B020+WOXrAo26KkGChwkm/eBf0Q==
-X-Received: by 2002:a05:6402:2549:b0:437:788d:b363 with SMTP id l9-20020a056402254900b00437788db363mr27528790edb.406.1656803565559;
-        Sat, 02 Jul 2022 16:12:45 -0700 (PDT)
+        bh=yCQTaNx44e60e0RQIQkoEDKE0jArPjhRbsgoDMKp9c8=;
+        b=H/8qWEyKdwFiNNnRqsO8a6AMJuXi5tEruhlg/ma5EbwjGZ5kvLVIibjSJfjzwYeq9Z
+         rqjTQ26dEYxZMH03RHnrlBOOHWEGwXp6cn0LntznXahBJPT5H2id4P+jDiZIBEkU3s1T
+         oQulWvU5n2hr9ftBK0VnM/LB4n0t5rJaxz+B++yiCSZL9aihuDE3Zvkkx7NLhwf9oRBO
+         uxVDex5toqj8hTSqvXZ4b18nV+kCVimFlCFqQmMDwiU3k2X70dzHPdJtplzZas0lZ8BU
+         0cLccsw2qpfnxSUGL4yZjNsqGbipAFbevrq4b+tYY5c5ndOmUp81JSwKEzJTTKo04326
+         L7tg==
+X-Gm-Message-State: AJIora9i45Y5+/Bs6PbfcDNgo8oArjv+qn/d98+6UeBkdJkgQIFMUe7m
+	ldrR66FAJtWmy8LOe36i7P9lRSG1Kv8=
+X-Google-Smtp-Source: AGRyM1sKu0kp3FtCCbBKNYht3OJTpZgRKfuJVirFs6MCvvcbODpijjhQI7TKv9HNwbq7BMmmy6Kzag==
+X-Received: by 2002:aa7:c9cf:0:b0:435:de3b:c499 with SMTP id i15-20020aa7c9cf000000b00435de3bc499mr27700806edt.321.1656803562966;
+        Sat, 02 Jul 2022 16:12:42 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-2a01-0c23-c4d4-2700-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:c4d4:2700:f22f:74ff:fe21:725])
-        by smtp.googlemail.com with ESMTPSA id uz12-20020a170907118c00b00711aed17047sm12234329ejb.28.2022.07.02.16.12.44
+        by smtp.googlemail.com with ESMTPSA id uz12-20020a170907118c00b00711aed17047sm12234329ejb.28.2022.07.02.16.12.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Jul 2022 16:12:45 -0700 (PDT)
+        Sat, 02 Jul 2022 16:12:42 -0700 (PDT)
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 To: linux-mtd@lists.infradead.org,
 	devicetree@vger.kernel.org
@@ -68,16 +68,16 @@ Cc: linux-kernel@vger.kernel.org,
 	richard@nod.at,
 	vigneshr@ti.com,
 	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3 6/8] mtd: rawnand: intel: Remove unused nand_pa member from ebu_nand_cs
-Date: Sun,  3 Jul 2022 01:12:25 +0200
-Message-Id: <20220702231227.1579176-7-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v3 3/8] mtd: rawnand: intel: Read the chip-select line from the correct OF node
+Date: Sun,  3 Jul 2022 01:12:22 +0200
+Message-Id: <20220702231227.1579176-4-martin.blumenstingl@googlemail.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220702231227.1579176-1-martin.blumenstingl@googlemail.com>
 References: <20220702231227.1579176-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220702_161247_860526_DC29DB70 
-X-CRM114-Status: GOOD (  11.62  )
+X-CRM114-CacheID: sfid-20220702_161244_383306_33DD1972 
+X-CRM114-Status: GOOD (  16.33  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,34 +94,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The nand_pa member from struct ebu_nand_cs is only written but never
-read. Remove this unused and unneeded member.
+The chip select has to be read from the flash node which is a child node
+of the NAND controller.
 
+Fixes: 0b1039f016e8a3 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- drivers/mtd/nand/raw/intel-nand-controller.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/nand/raw/intel-nand-controller.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index 3df16d5ecae8..de4f85368988 100644
+index e91b879b32bd..3df3f32423f9 100644
 --- a/drivers/mtd/nand/raw/intel-nand-controller.c
 +++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -106,7 +106,6 @@
+@@ -16,6 +16,7 @@
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/nand.h>
  
- struct ebu_nand_cs {
- 	void __iomem *chipaddr;
--	dma_addr_t nand_pa;
- 	u32 addr_sel;
- };
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+@@ -580,6 +581,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct ebu_nand_controller *ebu_host;
++	struct device_node *chip_np;
+ 	struct nand_chip *nand;
+ 	struct mtd_info *mtd;
+ 	struct resource *res;
+@@ -604,7 +606,12 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ebu_host->hsnand))
+ 		return PTR_ERR(ebu_host->hsnand);
  
-@@ -626,7 +625,6 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 	ebu_host->cs[cs].chipaddr = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(ebu_host->cs[cs].chipaddr))
- 		return PTR_ERR(ebu_host->cs[cs].chipaddr);
--	ebu_host->cs[cs].nand_pa = res->start;
+-	ret = device_property_read_u32(dev, "reg", &cs);
++	chip_np = of_get_next_child(dev->of_node, NULL);
++	if (!chip_np)
++		return dev_err_probe(dev, -EINVAL,
++				     "Could not find child node for the NAND chip\n");
++
++	ret = of_property_read_u32(chip_np, "reg", &cs);
+ 	if (ret) {
+ 		dev_err(dev, "failed to get chip select: %d\n", ret);
+ 		return ret;
+@@ -660,7 +667,7 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 	writel(ebu_host->cs[cs].addr_sel | EBU_ADDR_MASK(5) | EBU_ADDR_SEL_REGEN,
+ 	       ebu_host->ebu + EBU_ADDR_SEL(cs));
  
- 	ebu_host->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(ebu_host->clk))
+-	nand_set_flash_node(&ebu_host->chip, dev->of_node);
++	nand_set_flash_node(&ebu_host->chip, chip_np);
+ 
+ 	mtd = nand_to_mtd(&ebu_host->chip);
+ 	if (!mtd->name) {
 -- 
 2.37.0
 
