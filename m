@@ -4,76 +4,149 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B2BC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jul 2022 12:17:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2801C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jul 2022 13:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qsZKRjeHoWzmhL2GLU4a+JXpAYuyOgD8TQnT4vUqnu0=; b=1t+skRFrhkPnOQ
-	w/TbeKpboEs8BiyuO/4C5ZClVoDNofnVOzTwFwG/YtbyuRuFGoZzlA2bbnAOmREd5+MZKiShrqL5J
-	LPSgugM1H9Bl/211uOko9l750bqC3zHr3zOfCim4Bes49tvtKIYIk9At7x/5bwURw7pXeE5AsL5WW
-	60LTq5w9YFMJVcQLMtwCEkKJfGdl/EjNqnySYuJdiTzIwC+v9d0f63hy4YfMeeDwfUrUqaPZmMp+j
-	3I2HK/5WUV3ZC2UjNpg5jmWSP8b+c6Oatd0hCl3lcvsfScBo3Wvv0+fr5dKRVAJwVSqwMcGYMxXH0
-	BVef9lYuiZFZSwuawjDA==;
+	List-Owner; bh=wV60jMBccI75LV+XzmP4mHnksY2VCQgo/Wa3dGX0c2Y=; b=NPBglGdbW/eQ8P
+	KlP6NGtEEdR8gbqfaOd7SiouEPTCBXVN412CzZZg9Bze9jIrT7RXCMe/y+aLFjiwys0bJpSwT6Uzj
+	hEKZndAaN1W8h5j6O0Hj/Dr3IC4V0hXo9FRp3yeSWaz4KMH6s2SSNpbKmzp/Txwzj2gCou2KDahBV
+	bZccuT9D+vYtZ9bpc/IZ2zu5X1MKA1gtUoISpnNWzGHe5j7kniXPl3rvokPNXMXE41P3Uzxmh0t8E
+	K+Ow/DQFUTNvWwZgEp/MJBivFI8pfjHmCpGIEV07I3w3bfybo0jyy0iqs+K9Tq+XMIXMBaqIiSmcU
+	eU1WAJipUCO2Dl8L+ctg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8hU8-0005t0-ML; Tue, 05 Jul 2022 12:16:56 +0000
-Received: from mail-yb1-xb2d.google.com ([2607:f8b0:4864:20::b2d])
+	id 1o8iTW-000S3x-8z; Tue, 05 Jul 2022 13:20:22 +0000
+Received: from mail-am6eur05on2041.outbound.protection.outlook.com ([40.107.22.41] helo=EUR05-AM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8hU4-0005pv-Ph
-	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2022 12:16:55 +0000
-Received: by mail-yb1-xb2d.google.com with SMTP id c143so12918325ybf.3
-        for <linux-mtd@lists.infradead.org>; Tue, 05 Jul 2022 05:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dm/rnI8zxHCVMBAA3pANOHcsAC5gI6T+vkCslv4yZQs=;
-        b=WfkOT+aNHWhGSp0Ifmx3kFAMvu6iKVcZhWlz1DXn7AQyhPDTHgJoWmZM675PDYIAdd
-         LRUYYro0Y1bzlsyNYmRElPGhIMkalSOjQ5FGHjY+gzsy55qK8sky0IepMSKAZjp/KPB2
-         VkQyrgWeohR4X8zgDM76tMwWgaW1SeWh9VUo8BI2ZOo5npsYdscTfZd+pOmRpmZOHkS3
-         VuAFxXxXPd+EDWnYQYt+YMBCQ7+a5GWkBcdI7fxWgi5v51JR4TagQhM/cSJrQWlNWCgn
-         RxNetKiySX96om19/xAD8c7vm4jKn0q2bRkUv2LcXG7JP0vUl6dbTdJ5mdH6e4h0HOaY
-         QZXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dm/rnI8zxHCVMBAA3pANOHcsAC5gI6T+vkCslv4yZQs=;
-        b=0PL2C58acKdU8YICKKoJyttjKPshdSl78DcTs6J40rP/sRdzVKV1DGNCsrHnoAI/Gc
-         6WpVqEKZZYJckixcIlka+NGGSmuRnAeMjn3G9z/IK7X8ca9KnaP+ettU32b3jNMVjb7h
-         wTWZ3cqu0jXZER7PTjc+k976vlMQ0PR34HEQMYSC/rZbTydlVvQCW8X4ITbnIjVTcnMh
-         4rKMv+VjGBHfpgKVO51VqAn2cwQNlyW731AgcCrYFXxlPgo914CezOF3sHcHMeJkzFUr
-         DpHEjy1KMQzO8ESDP378NEmR+cMG2zVU7JLcFKcwdDH7fDFlheHfj1jl3OCPt+kJRhSF
-         W7IQ==
-X-Gm-Message-State: AJIora/Cy0jqdeMRIT7S8hXxU58xkLllJG4aPjdt6Cxck1YkWq1pQPpw
-	c14/JGKFgw0csZjDa9vMjevnpgSRudIUE7V4/8A=
-X-Google-Smtp-Source: AGRyM1t3HFI1Or/ZQ12dMxcQ6TJU/AXAYwtazLcOiEBqPB2+XZv9fSyEmOlXtK3Zdle5Nn4IW9pBlvLUeluT6QmGEdQ=
-X-Received: by 2002:a25:2182:0:b0:66e:2a27:7d30 with SMTP id
- h124-20020a252182000000b0066e2a277d30mr18246147ybh.491.1657023409065; Tue, 05
- Jul 2022 05:16:49 -0700 (PDT)
+	id 1o8iTE-000RwU-El; Tue, 05 Jul 2022 13:20:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KtslqcbqGHQglcejAiA59NSCcsroLSF5mZ+Zuex7NSnZRuiruKdW7NHu1yFe1YBEn2AM83VR09mdFkLREV+wLs5zNtzFO5/YCZIurH0UoT1R862kLqJY+eRfEE3cvs6wP1USfFtEmlbPgrC4m/TkgQ4wHA02y2YFnH09rT4oGpqjQsjYXA5DOFwPGFxXwNk5ol6kDSy+iiZbHtbVtucLo47e04h3otnBq+pAd+MQ5LswrkjiOs2Q8QTnS0P4/x5X2pW2eJxy7Qo2Qa7+2N/Uor9aopFyr4vTt7xWVjdwyCMJU+kBT01FnlFMxoKHfHeB614O58+Cfl96kdF+5fGIUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=djszGhgmEGTOjGiHwqjgYU0W3s5z2S/6KEqIalhNKOo=;
+ b=bj6KYyg3meeS/m80Fz1Mg5K/pShIeCEcPKPeisVANgFypYR80d8AQtDXGoB1xAlNGmv63gj0lDNR8Zn7FI06D9vH925KVWFgpML/NoN1fKG1s+P2HbTfbCl45YOsakKTX+xYmD+llBIfS3rOSKWh0bN+QjOsCHe5ZYcibKWRHpMT+At8Wzzn/CqNDi1mPP1q3VwW0Nv17PuN8wUw5ZhNZUwW43YBHOMXMWTzBSxJA54UGPLWT0EUsCjPZkMt02tYO5iWnJLAw0eKvrwGkL1o5PdTBI8nouK61GEZjwkIWj+fTTM2aWQvLkFhkBRCDsxKfI+jFtf2cwWEqdhpnKAhpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=djszGhgmEGTOjGiHwqjgYU0W3s5z2S/6KEqIalhNKOo=;
+ b=hcu/kjVo8rJq9rC1uPtN4n66D5KDLza+jGLhYj9dH4mAtZPq2JHHbPgnkOX3TDRnkMoss60B/jZzdI+7U5fipXu8OUoULrTcxOdyx/EQ9f3S7bhnhSL+BAAUBSquomycJY02UNbKoHwxm10a1Gnbgm/u7PULEJ0f4GSgV6oBtYw=
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
+ by VI1PR04MB7103.eurprd04.prod.outlook.com (2603:10a6:800:123::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.20; Tue, 5 Jul
+ 2022 13:19:57 +0000
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::5c49:dd85:a8d0:2907]) by DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::5c49:dd85:a8d0:2907%3]) with mapi id 15.20.5395.021; Tue, 5 Jul 2022
+ 13:19:56 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bough Chen
+	<haibo.chen@nxp.com>, "ashish.kumar@nxp.com" <ashish.kumar@nxp.com>,
+	"yogeshgaur.83@gmail.com" <yogeshgaur.83@gmail.com>, "broonie@kernel.org"
+	<broonie@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"singh.kuldeep87k@gmail.com" <singh.kuldeep87k@gmail.com>,
+	"tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>, "p.yadav@ti.com"
+	<p.yadav@ti.com>, "michael@walle.cc" <michael@walle.cc>,
+	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+	<richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>, "shawnguo@kernel.org"
+	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>
+CC: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"festevam@gmail.com" <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "zhengxunli@mxic.com.tw"
+	<zhengxunli@mxic.com.tw>
+Subject: RE: [PATCH 07/11] dt-bindings: spi: spi-nxp-fspi: add a new property
+ nxp,fspi-dll-slvdly
+Thread-Topic: [PATCH 07/11] dt-bindings: spi: spi-nxp-fspi: add a new property
+ nxp,fspi-dll-slvdly
+Thread-Index: AQHYkFF0qJujufsOTUOD0eIhHoBTUq1viBIAgAALOQCAAAJgAIAAKZ1g
+Date: Tue, 5 Jul 2022 13:19:56 +0000
+Message-ID:  <DU2PR04MB87747C9A8F18D8300461D6B197819@DU2PR04MB8774.eurprd04.prod.outlook.com>
+References: <1657012303-6464-1-git-send-email-haibo.chen@nxp.com>
+ <1657012303-6464-7-git-send-email-haibo.chen@nxp.com>
+ <ef676df1-77e0-b8ee-3950-97eade8ddd5b@linaro.org>
+ <VI1PR04MB40167A70FBE772DF91047A4190819@VI1PR04MB4016.eurprd04.prod.outlook.com>
+ <59d360ef-5374-c7a7-2995-854ab3715b25@linaro.org>
+In-Reply-To: <59d360ef-5374-c7a7-2995-854ab3715b25@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6623e09c-720e-4804-7986-08da5e890e1f
+x-ms-traffictypediagnostic: VI1PR04MB7103:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:  MmbikJxpBorj/zrXfLTmYbO3xhZPmsKk4BIQaN4uTA/5l2RNIJKq/oQxrZvNbxPCcsBJWD6i1jVMCAESsdDYKJqGCmGxEwNe0ZDtbkjmgGyoX4cZ8ozlkfbVkWpNK3fsOYFSBmtSmnwBi/amcSnST/YqAoisoQ8n5mije7GG2/g81l5ABjXdCPXqVu5A3E5QoQcos9ul7iZPBpVo98heTcdgtCn/1geYimt1viEwBGOH/ddqVe1TwRP1KIdBD96xdvU8N7H2at1RoCNwTWmSD/3RX77nsoRw84s1SeRxFnpDTvPvfbvjqTiIUHGRvgfl5rhJYMEyfjvu/a0YGbPw/rJGf6EGSex1xN0ROSkGflNcP3H3wIfMEJDkNOjEkn0eeIGMZ01CHkDaAy/Nu+WJm2wZyQMwtA/YAuV/rcxFuGjYNy3fPJ6V4LhBHS/mM0UmMd01f4LtmacsK+0kpWtVtcTvPQwskq/YC46JBUMrSQoaQ2QYANqJKqchzoF/0ZupJ3Wl7ckSqJ9JRODVAxxDvTu9lsKVFPQLuUNddGlaFjEHaHtP6ETABxIY7Au180x6y+Rk5s+e7C1B7FfgZHX1Q470GTmuaJ/zqOJQ+V8Y5eB8wDoCuAqQF4t9CtGDCRlrkI0OtZ2sxos8FUHfBYo7TgGNmhP0r93ePtU6qW6KxFhWJdCil3QQxYWtJ5+sqM6HgkSpee6CObU+UJdwBnvoYhmfRooZoEtmn9oxyjvTMbtqqS+sRUx2vFIGBXL+BZEKgaYlIj1JuJzqwaZrGh6PV6mHXgy7qN7JhGML/SsTqnlZWzSR/VoLjDpRvTAyAl5Tr0qvYJOeEO9zUKVya9TCDw==
+x-forefront-antispam-report:  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(366004)(376002)(396003)(346002)(39860400002)(66476007)(64756008)(8676002)(4326008)(66556008)(66446008)(5660300002)(7416002)(52536014)(8936002)(76116006)(2906002)(66946007)(44832011)(55016003)(86362001)(33656002)(38100700002)(921005)(122000001)(38070700005)(71200400001)(83380400001)(41300700001)(478600001)(9686003)(54906003)(110136005)(316002)(186003)(55236004)(26005)(7696005)(6506007)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?bldoTGx2eWRFZG93MmFncnYzREIyWStDdDc0WHo3RmZEYUU4Rll0V0hHRUFM?=
+ =?utf-8?B?dDlKcHdnNFluOTZVdlY5cUQvR0tKbEE0YzZaaWJPeG02QzBpUUgrdlBvR2sv?=
+ =?utf-8?B?S1dKQ0lRYXVDWktOMjY5dDV1aVArK2hYV00zTm8rSTVJcGlVUERtWWx0aC9Z?=
+ =?utf-8?B?NU56eDVseXpRa3MxZWxNcC81ZThyRU9ORTNBMjBxajdBVEF3aW5FWVZkQ0NO?=
+ =?utf-8?B?Q2JxM2srTEFKY0pUUWN2c0FmSzI3Z292NFZOY0IyTmVjaEJSK2JLQllsNHdz?=
+ =?utf-8?B?MjcyMFlLMFVrOHM0NVhmOFdYRHpJOWVieG5nNkJ0RFpjY3hLTUx0OHV1allp?=
+ =?utf-8?B?b2IwZkt5OWExV2tEb1JCRWczUExocHlOTk14YnlDUFY4dFR2MzQrSy9nYkFW?=
+ =?utf-8?B?OWFnMTlnY0UxYkZxRUZUZ2prTGVENEp5WGRDMnBnTHhvM2hYbUJKNll1U3A3?=
+ =?utf-8?B?YXlRaVJRU293bm5DYmFPZVJRalRRT2FmdlZCNXE0WDErbTMwd2lKRnY3S1hW?=
+ =?utf-8?B?alJTYVFIcGFDazVEeWNwcnBmZjF5bDJIZC9nWkxRWHBmUmNrQXl5TVZFQkRL?=
+ =?utf-8?B?OWlVazVOc3Ayd0d5dWtNMDFqOGU5eXc5K2Fwem9oN0s5azBNQk9EL0R4VitH?=
+ =?utf-8?B?dzgxMVNmMlRpQ2JkVHNqZktjcnJqdWVPZDZCT2EyU01CZG1odGpOQTVyYXpE?=
+ =?utf-8?B?VlEyaHl3SU9qaTczTndrcVhQUlZ4RWRWT2VMRGI0UEFYSHdUdTJIWUlMUkI1?=
+ =?utf-8?B?cVZrazVBZWxscnBGM3VxbDRBQU9GSlVsQjN4aW01M2IwcHRIMHVKaE95bjgy?=
+ =?utf-8?B?MlVUWFF2RStlWjBvcytLbm43ZzBrMUZ2dUVWbjA4c1FiL2FYU3JKdXc4QWNX?=
+ =?utf-8?B?bzE3NXpxSTRPWW5SVWhZOVpvUmVYeldicnJvdStUUHFsOXVFV1MrdzVabER0?=
+ =?utf-8?B?bmQvUHJqOGgyMUFsNERiTjJSOXQyWkluTURybmlxT1FrN1c5U3V6d1JYVXlD?=
+ =?utf-8?B?V0JtVWRCQTVwMEsvR084VDFqd09jRzdEWmNxREQwQVFKdWN5TlpZTTl5MlIz?=
+ =?utf-8?B?SkM2bmRraG9LWEhEYVZpbDBZMnc0VEhLc25HbWJENzZQVTMweWNHQURaMFZO?=
+ =?utf-8?B?YklUY0VpaW92RG9aa0ZtWGhEMUEwekNzdDJLQjV6aU5LQS9FRmtlNDlna1Rs?=
+ =?utf-8?B?MC80OVVwVzdQZjdJYkZsaXROMWppM09MZjNVbks4Mk16QTNxc3VLZTBMbUVm?=
+ =?utf-8?B?bFpNMkg0Q3V4a09sWkg4SzFvdldQTXNYQ1QzVlh1RUlEMmFiWjlIZnBhZWhM?=
+ =?utf-8?B?cFVzTFpqQzExSDdzb2d5WnE2TTJUZ01UbFZhQ2VZckJYTHQ0UGQweFI1UGpL?=
+ =?utf-8?B?V0ZiZlRyUlM4azA3MWtVbDdQK2xOWXRmbERPMExWUHdtSXRMOWQ4dFVtbDgr?=
+ =?utf-8?B?cXBGZlVqMysyT1AyNW53K0lGaFo4SVAxQmh3Y1J1MjU3cVhWNW5UN1FBSWZq?=
+ =?utf-8?B?UWhldWJZREczTmRmYXZmRXFmN3VDSmRPeEhKWnVUdS9ndHpmNS9QN3lzTElZ?=
+ =?utf-8?B?VitJT2hTWWlrVGVaUFJhK1h0TU5lK1RlZHVDelhwdkk1NjBnNTVZaHY1T3pC?=
+ =?utf-8?B?VFBuUStqbk5IYTRrWkFkcTNqRWNJdEdSTXh2SGZ6RWV3R0pTWGgxMkFBQmJh?=
+ =?utf-8?B?OXlWKzFjTEZTTktkYzNQaWZmR2NTenF6VkM1ZnlkTzBIVlBiMjl6SEJUNXVO?=
+ =?utf-8?B?b1NiejJNdjhHbnRDd1FmOGZ6YXlVTGZ2eGM4TkszSW9oUUlNOEpKSzFZOXp6?=
+ =?utf-8?B?QjJ5UHZqUHlnMUZSNkJlZnpCQUxIc0RyZGRranl6ZXZiRmE5REptY1VvWSs2?=
+ =?utf-8?B?alZTWFV2VWtwUllVdU9HTWdaMXU1UW42amNGVDNSN3A4RUV2Y2ZWOGtTb1JB?=
+ =?utf-8?B?aUU0OXU5RGtIYWlYT3dLb3BVQjFRclBxS3dicENzYzY5QUcwN2VKbzFmU25z?=
+ =?utf-8?B?OVRMWHB4STV6S1YrQ3ZLMnlrWUs4U2pIdVlpU1EvN1YxcmJ3RjVlaVlLUTlj?=
+ =?utf-8?B?U2FlQTg3RXEvSlIzUGwzemxVK2tad1F3Vm5HOFpvNGRuZkxLakZFTUZMWFox?=
+ =?utf-8?Q?sIbs=3D?=
 MIME-Version: 1.0
-References: <CAGm1_ktXBp-sz3Dud_G0iqOG=vA=Xp-bj-icwNLVgq-AMqKO7A@mail.gmail.com>
- <72686231-c372-a4fe-347e-39470790fa65@kernel.org> <CAGm1_kvRuWY7t2d_BtuSLGEL1u4njRqha=D0f7eN9F5XG8GrLQ@mail.gmail.com>
- <CAGm1_kuucv71AdPkSW8Eog2T9rZRA3uiL4+ok-aWCVsj-z2eew@mail.gmail.com>
- <5a36197d-7ed5-c06a-0a7e-73b808526dcd@kernel.org> <feff53c6-a38c-1592-b3ef-1ff236da17f9@kernel.org>
- <CAGm1_kvQ-NA4topLTu2hrQqx6picci8d+AeMVBtw44nJ7mYVow@mail.gmail.com>
- <25109f4c-110f-b534-1c5a-c571b5c70333@kernel.org> <CAGm1_ku0pGqfi8a++jNYeYNk1Hv9QgxsjKqOtetk8QzrTcFtPg@mail.gmail.com>
- <981dfc27-cbe5-9672-3647-397e6416578b@kernel.org> <CAGm1_kuXTuhoB1-K=_bFLBicWi5PWuejwO0yhPC6E41RZxe10w@mail.gmail.com>
-In-Reply-To: <CAGm1_kuXTuhoB1-K=_bFLBicWi5PWuejwO0yhPC6E41RZxe10w@mail.gmail.com>
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Date: Tue, 5 Jul 2022 14:16:37 +0200
-Message-ID: <CAGm1_kuDRuxWGW3rZgaNMNiTm-rUuWe=-5pD0BqRJZBTYtW=EA@mail.gmail.com>
-Subject: Re: raw/omap2: erasing issue
-To: Roger Quadros <rogerq@kernel.org>
-Cc: linux-mtd@lists.infradead.org, Linux-OMAP <linux-omap@vger.kernel.org>, 
-	miquel.raynal@bootlin.com
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6623e09c-720e-4804-7986-08da5e890e1f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jul 2022 13:19:56.6507
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IUIAx7jW4DSxWFI12A0N6V7//15VRHcqa82giLfS6nyb20XSd2KQLRT4YBd++N/o
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7103
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220705_051652_903481_2570FCBF 
-X-CRM114-Status: GOOD (  46.42  )
+X-CRM114-CacheID: sfid-20220705_062004_766258_3CEA7406 
+X-CRM114-Status: GOOD (  16.06  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,260 +158,74 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Roger,
-
-On Mon, Jul 4, 2022 at 12:31 PM Yegor Yefremov
-<yegorslists@googlemail.com> wrote:
->
-> Hi Roger,
->
-> On Mon, Jul 4, 2022 at 12:28 PM Roger Quadros <rogerq@kernel.org> wrote:
-> >
-> > Hello Yegor,
-> >
-> > On 04/07/2022 14:28, Yegor Yefremov wrote:
-> > > Hi Roger,
-> > >
-> > > On Thu, Jun 30, 2022 at 1:22 PM Roger Quadros <rogerq@kernel.org> wrote:
-> > >>
-> > >> Hi Yegor,
-> > >>
-> > >> On 29/06/2022 17:23, Yegor Yefremov wrote:
-> > >>> Hi Roger,
-> > >>>
-> > >>> On Wed, Jun 29, 2022 at 3:44 PM Roger Quadros <rogerq@kernel.org> wrote:
-> > >>>>
-> > >>>> Hi Yegor,
-> > >>>>
-> > >>>> On 29/06/2022 14:33, Roger Quadros wrote:
-> > >>>>> Hi Yegor,
-> > >>>>>
-> > >>>>> On 28/06/2022 14:59, Yegor Yefremov wrote:
-> > >>>>>> On Tue, Jun 28, 2022 at 1:57 PM Yegor Yefremov
-> > >>>>>> <yegorslists@googlemail.com> wrote:
-> > >>>>>>>
-> > >>>>>>> Hi Roger,
-> > >>>>>>>
-> > >>>>>>> On Tue, Jun 28, 2022 at 1:44 PM Roger Quadros <rogerq@kernel.org> wrote:
-> > >>>>>>>>
-> > >>>>>>>> Hi Yegor,
-> > >>>>>>>>
-> > >>>>>>>> On 28/06/2022 13:48, Yegor Yefremov wrote:
-> > >>>>>>>>> Since linux 5.17 I get the following issue when doing ubiformat:
-> > >>>>>>>>>
-> > >>>>>>>>> # ubiformat -y /dev/mtd5
-> > >>>>>>>>> ubiformat: mtd5 (nand), size 265945088 bytes (253.6 MiB), 2029
-> > >>>>>>>>> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-> > >>>>>>>>> libscan: scanning eraseblock 1097 -- 54 % complete  eth1 timed out to bring up
-> > >>>>>>>>> libscan: scanning eraseblock 2028 -- 100 % complete
-> > >>>>>>>>> ubiformat: 2001 eraseblocks have valid erase counter, mean value is 9
-> > >>>>>>>>> ubiformat: 2 eraseblocks are supposedly empty
-> > >>>>>>>>> ubiformat: 26 bad eraseblocks found, numbers: 3, 4, 5, 6, 8, 9, 10,
-> > >>>>>>>>> 11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30,
-> > >>>>>>>>> 31, 32
-> > >>>>>>>>
-> > >>>>>>>> I'm guessing these bad blocks recently added due to the offending patch?
-> > >>>>>>>
-> > >>>>>>> Yes.
-> > >>>>>>>
-> > >>>>>>>>> ubiformat: formatting eras[   33.644323] nand: nand_erase_nand:
-> > >>>>>>>>> attempt to erase a bad block at page 0x00000d40
-> > >>>>>>>>> ubiformat: formatting eraseblock 28[   33.658809] nand:
-> > >>>>>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000d80
-> > >>>>>>>>> ubiformat: formatting eraseblock 29 --  1 % [   33.674531] nand:
-> > >>>>>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000dc0
-> > >>>>>>>>> ubiformat: formatting eraseblock 30 --  1 % complete [   33.684508]
-> > >>>>>>>>> nand: nand_erase_nand: attempt to erase a bad block at page 0x00000e00
-> > >>>>>>>>> ubiformat: formatting eraseblock 34 --  1 % complete  libmtd: error!:
-> > >>>>>>>>> MEMERASE64 ioctl failed for eraseblock 34 (mtd5)
-> > >>>>>>>>>         error 5 (Input/output error)
-> > >>>>>>>>>
-> > >>>>>>>>> ubiformat: error!: failed to erase eraseblock 34
-> > >>>>>>>>>            error 5 (Input/output error)
-> > >>>>>>>>> ubiformat: marking block 34 bad
-> > >>>>>>>>> ubiformat: formatting eraseblock 35 --  1 % complete  libmtd: error!:
-> > >>>>>>>>> MEMERASE64 ioctl failed for eraseblock 35 (mtd5)
-> > >>>>>>>>>         error 5 (Input/output error)
-> > >>>>>>>>>
-> > >>>>>>>>> ubiformat: error!: failed to erase eraseblock 35
-> > >>>>>>>>>            error 5 (Input/output error)
-> > >>>>>>>>> ubiformat: marking block 35 bad
-> > >>>>>>>>> ubiformat: formatting eraseblock 36 --  1 % complete  libmtd: error!:
-> > >>>>>>>>> MEMERASE64 ioctl failed for eraseblock 36 (mtd5)
-> > >>>>>>>>>         error 5 (Input/output error)
-> > >>>>>>>>>
-> > >>>>>>>>> ubiformat: error!: failed to erase eraseblock 36
-> > >>>>>>>>>            error 5 (Input/output error)
-> > >>>>>>>>> ubiformat: marking block 36 bad
-> > >>>>>>>>> ubiformat: formatting eraseblock 37 --  1 % complete  libmtd: error!:
-> > >>>>>>>>> MEMERASE64 ioctl failed for eraseblock 37 (mtd5)
-> > >>>>>>>>>         error 5 (Input/output error)
-> > >>>>>>>>>
-> > >>>>>>>>> ubiformat: error!: failed to erase eraseblock 37
-> > >>>>>>>>>            error 5 (Input/output error)
-> > >>>>>>>>> ubiformat: marking block 37 bad
-> > >>>>>>>>>
-> > >>>>>>>>> ubiformat: error!: consecutive bad blocks exceed limit: 4, bad flash?
-> > >>>>>>>>> # [   36.322563] vwl1271: disabling
-> > >>>>>>>>>
-> > >>>>>>>>> git bisect pointed to the following commit:
-> > >>>>>>>>>
-> > >>>>>>>>> a9e849efca4f9c7732ea4a81f13ec96208994b22 is the first bad commit
-> > >>>>>>>>> commit a9e849efca4f9c7732ea4a81f13ec96208994b22
-> > >>>>>>>>> Author: Roger Quadros <rogerq@kernel.org>
-> > >>>>>>>>> Date:   Thu Dec 9 11:04:55 2021 +0200
-> > >>>>>>>>>
-> > >>>>>>>>>     mtd: rawnand: omap2: move to exec_op interface
-> > >>>>>>>>>
-> > >>>>>>>>>     Stop using legacy interface and move to the exec_op interface.
-> > >>>>>>>>>
-> > >>>>>>>>>     Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> > >>>>>>>>>     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > >>>>>>>>>     Link: https://lore.kernel.org/linux-mtd/20211209090458.24830-4-rogerq@kernel.org
-> > >>>>>>>>>
-> > >>>>>>>>> :040000 040000 2341051b8aa8e6b554b8a44d2934f76d1aa460c4
-> > >>>>>>>>> c1727080ff16c403f4ad5ed840acc90127b632f8 M      drivers
-> > >>>>>>>>>
-> > >>>>>>>>> Info to my NAND flash:
-> > >>>>>>>>>
-> > >>>>>>>>> [    5.695760] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
-> > >>>>>>>>> [    5.702193] nand: Micron MT29F2G08ABAEAWP
-> > >>>>>>>>> [    5.706356] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
-> > >>>>>>>>> 2048, OOB size: 64
-> > >>>>>>>>> [    5.714204] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
-> > >>>>>>>>> [    5.719673] 6 cmdlinepart partitions found on MTD device omap2-nand.0
-> > >>>>>>>>> [    5.726232] Creating 6 MTD partitions on "omap2-nand.0":
-> > >>>>>>>>> [    5.731594] 0x000000000000-0x000000020000 : "SPL"
-> > >>>>>>>>> [    5.737788] mtdblock: MTD device 'SPL' is NAND, please consider
-> > >>>>>>>>> using UBI block devices instead.
-> > >>>>>>>>> [    5.750113] 0x000000020000-0x000000040000 : "SPL.backup1"
-> > >>>>>>>>> [    5.756916] mtdblock: MTD device 'SPL.backup1' is NAND, please
-> > >>>>>>>>> consider using UBI block devices instead.
-> > >>>>>>>>> [    5.769870] 0x000000040000-0x000000060000 : "SPL.backup2"
-> > >>>>>>>>> [    5.776695] mtdblock: MTD device 'SPL.backup2' is NAND, please
-> > >>>>>>>>> consider using UBI block devices instead.
-> > >>>>>>>>> [    5.789559] 0x000000060000-0x000000080000 : "SPL.backup3"
-> > >>>>>>>>> [    5.796423] mtdblock: MTD device 'SPL.backup3' is NAND, please
-> > >>>>>>>>> consider using UBI block devices instead.
-> > >>>>>>>>> [    5.809341] 0x000000080000-0x000000260000 : "u-boot"
-> > >>>>>>>>> [    5.816652] mtdblock: MTD device 'u-boot' is NAND, please consider
-> > >>>>>>>>> using UBI block devices instead.
-> > >>>>>>>>> [    5.829189] 0x000000260000-0x000010000000 : "UBI"
-> > >>>>>>>>> [    5.971508] mtdblock: MTD device 'UBI' is NAND, please consider
-> > >>>>>>>>> using UBI block devices instead.
-> > >>>>>>>>>
-> > >>>>>>>>
-> > >>>>>>>> What platform are you on?
-> > >>>>>>>> I do remember testing this on omap3-beagle but it does not use BCH8 ECC scheme.
-> > >>>>>>>
-> > >>>>>>> I am on am335x [1]
-> > >>>>>>>
-> > >>>>>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/am335x-baltos-ir5221.dts?h=v5.19-rc4
-> > >>>>>>
-> > >>>>>> NAND node definition [1]:
-> > >>>>>>
-> > >>>>>> &gpmc {
-> > >>>>>> pinctrl-names = "default";
-> > >>>>>> pinctrl-0 = <&nandflash_pins_s0>;
-> > >>>>>> ranges = <0 0 0x08000000 0x10000000>; /* CS0: NAND */
-> > >>>>>> status = "okay";
-> > >>>>>>
-> > >>>>>> nand@0,0 {
-> > >>>>>> compatible = "ti,omap2-nand";
-> > >>>>>> reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-> > >>>>>> interrupt-parent = <&gpmc>;
-> > >>>>>> interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-> > >>>>>>     <1 IRQ_TYPE_NONE>; /* termcount */
-> > >>>>>> rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
-> > >>>>>> nand-bus-width = <8>;
-> > >>>>>> ti,nand-ecc-opt = "bch8";
-> > >>>>>> ti,nand-xfer-type = "polled";
-> > >>>>>
-> > >>>>> Could you please change this to "prefetch-polled" and see if it fixes the issue?
-> > >>>>>
-> > >>>>
-> > >>>> I tried to set ti,nand-xfer-type to "polled" on beagle-c4 board and could not reproduce the issue
-> > >>>> I will need your help please to debug this issue.
-> > >>>>
-> > >>>> Could you please apply the below patch on top of commit a9e849efca4f9c7732ea4a81f13ec96208994b22
-> > >>>> and send me the full kernel log and output of ubiformat command?
-> > >>>
-> > >>> I'll post the data later.
-> > >>>
-> > >>> The test with the "prefetch-polled" setting looks promising:
-> > >>>
-> > >>> 1. ubiformat runs without issues
-> > >>> 2. I can boot from NAND after "cat MLO > /dev/mtdblock0", etc.
-> > >>> 3. the kernel can mount UBIFS as rootfs
-> > >>>
-> > >>> The only issue I have for now, is that barebox fails to correctly
-> > >>> mount the first partition (the second with UBIFS rootfs - no problem).
-> > >>> This is how I write to NAND:
-> > >>>
-> > >>> ubiformat -y /dev/mtd5
-> > >>> ubiattach -p /dev/mtd5
-> > >>> ubimkvol /dev/ubi0 -N kernel -s 56MiB
-> > >>> mount -t ubifs ubi0:kernel /mnt
-> > >>> cp kernel-fit.itb /mnt
-> > >>> umount /mnt
-> > >>> ubimkvol /dev/ubi0 -N rootfs -s 180MiB
-> > >>> ubiupdatevol /dev/ubi0_1 rootfs.ubifs
-> > >>>
-> > >>> barebox log:
-> > >>>
-> > >>> Booting from NAND
-> > >>> ubi0: scanning is finished
-> > >>> ubi0: registering /dev/nand0.UBI.ubi
-> > >>> ubi0: registering kernel as /dev/nand0.UBI.ubi.kernel
-> > >>> ubi0: registering rootfs as /dev/nand0.UBI.ubi.rootfs
-> > >>> ubi0: attached mtd0 (name "nand0.UBI", size 253 MiB) to ubi0
-> > >>> ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
-> > >>> ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> > >>> ubi0: VID header offset: 512 (aligned 512), data offset: 2048
-> > >>> ubi0: good PEBs: 1999, bad PEBs: 30, corrupted PEBs: 0
-> > >>
-> > >> Note that we now have 30 bad PEBs. I suppose these are not
-> > >> really bad and we need to somehow clear bad block status for these.
-> > >
-> > > Do you mean using u-boot's "nand scrab"? So far, I didn't found any
-> > > other option. There are numerous threads both mtd and barebox mailing
-> > > lists but no implementation.
-> > >
-> > > Unfortunately, I don't have the initial BBT info. So let's hope the
-> > > system can handle this.
-> >
-> >
-> > "nand scrub" will mark all sectors not-bad so doesn't look like the best option.
-> > I was wondering if there is a better way to selectively mark individual sectors not bad.
->
-> Haven't found anything suitable so far.
->
-> > >
-> > > Btw, I have applied your debug patch and executed a ubiformat command
-> > > but the debug messages weren't triggered.
-> >
-> > That is because you no longer see errors during nand erase. Did you try
-> > going back to ti,nand-xfer-type = "polled" ?
->
-> I have applied the patch to a9e849efca4f9c7732ea4a81f13ec96208994b22
-> and at that time our DTS still has xfer type as "polled" and ubiformat
-> command failed as expected.
-
-I think the issue is solved. The bootloader was actually complaining
-about the missing zstd support. I could see this with the latest
-barebox version (2022.06).
-
-I've also switched to "ti,nand-xfer-type = "prefetch-dma";" as other DTS do.
-
-Thanks for your help.
-
-Yegor
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+DQoNCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPkZyb206IEtyenlzenRvZiBLb3psb3dz
+a2kgPGtyenlzenRvZi5rb3psb3dza2lAbGluYXJvLm9yZz4NCj5TZW50OiBUdWVzZGF5LCBKdWx5
+IDUsIDIwMjIgNTozNyBBTQ0KPlRvOiBCb3VnaCBDaGVuIDxoYWliby5jaGVuQG54cC5jb20+OyBh
+c2hpc2gua3VtYXJAbnhwLmNvbTsNCj55b2dlc2hnYXVyLjgzQGdtYWlsLmNvbTsgYnJvb25pZUBr
+ZXJuZWwub3JnOyByb2JoK2R0QGtlcm5lbC5vcmc7DQo+a3J6eXN6dG9mLmtvemxvd3NraStkdEBs
+aW5hcm8ub3JnOyBIYW4gWHUgPGhhbi54dUBueHAuY29tPjsNCj5zaW5naC5rdWxkZWVwODdrQGdt
+YWlsLmNvbTsgdHVkb3IuYW1iYXJ1c0BtaWNyb2NoaXAuY29tOyBwLnlhZGF2QHRpLmNvbTsNCj5t
+aWNoYWVsQHdhbGxlLmNjOyBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tOyByaWNoYXJkQG5vZC5h
+dDsgdmlnbmVzaHJAdGkuY29tOw0KPnNoYXduZ3VvQGtlcm5lbC5vcmc7IHMuaGF1ZXJAcGVuZ3V0
+cm9uaXguZGU7IGtlcm5lbEBwZW5ndXRyb25peC5kZQ0KPkNjOiBsaW51eC1zcGlAdmdlci5rZXJu
+ZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPmRldmljZXRyZWVAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgZmVzdGV2YW1AZ21haWwu
+Y29tOw0KPmRsLWxpbnV4LWlteCA8bGludXgtaW14QG54cC5jb20+OyBsaW51eC1hcm0ta2VybmVs
+QGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+emhlbmd4dW5saUBteGljLmNvbS50dw0KPlN1YmplY3Q6
+IFJlOiBbUEFUQ0ggMDcvMTFdIGR0LWJpbmRpbmdzOiBzcGk6IHNwaS1ueHAtZnNwaTogYWRkIGEg
+bmV3IHByb3BlcnR5DQo+bnhwLGZzcGktZGxsLXNsdmRseQ0KPg0KPk9uIDA1LzA3LzIwMjIgMTI6
+MjgsIEJvdWdoIENoZW4gd3JvdGU6DQo+Pj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4+
+PiBGcm9tOiBLcnp5c3p0b2YgS296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5v
+cmc+DQo+Pj4gU2VudDogMjAyMuW5tDfmnIg15pelIDE3OjQ4DQo+Pj4gVG86IEJvdWdoIENoZW4g
+PGhhaWJvLmNoZW5AbnhwLmNvbT47IGFzaGlzaC5rdW1hckBueHAuY29tOw0KPj4+IHlvZ2VzaGdh
+dXIuODNAZ21haWwuY29tOyBicm9vbmllQGtlcm5lbC5vcmc7IHJvYmgrZHRAa2VybmVsLm9yZzsN
+Cj4+PiBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc7IEhhbiBYdSA8aGFuLnh1QG54
+cC5jb20+Ow0KPj4+IHNpbmdoLmt1bGRlZXA4N2tAZ21haWwuY29tOyB0dWRvci5hbWJhcnVzQG1p
+Y3JvY2hpcC5jb207DQo+Pj4gcC55YWRhdkB0aS5jb207IG1pY2hhZWxAd2FsbGUuY2M7IG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb207DQo+Pj4gcmljaGFyZEBub2QuYXQ7IHZpZ25lc2hyQHRpLmNv
+bTsgc2hhd25ndW9Aa2VybmVsLm9yZzsNCj4+PiBzLmhhdWVyQHBlbmd1dHJvbml4LmRlOyBrZXJu
+ZWxAcGVuZ3V0cm9uaXguZGUNCj4+PiBDYzogbGludXgtc3BpQHZnZXIua2VybmVsLm9yZzsgbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4+PiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9y
+ZzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7DQo+Pj4gZmVzdGV2YW1AZ21haWwuY29t
+OyBkbC1saW51eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsNCj4+PiBsaW51eC1hcm0ta2VybmVs
+QGxpc3RzLmluZnJhZGVhZC5vcmc7IHpoZW5neHVubGlAbXhpYy5jb20udHcNCj4+PiBTdWJqZWN0
+OiBSZTogW1BBVENIIDA3LzExXSBkdC1iaW5kaW5nczogc3BpOiBzcGktbnhwLWZzcGk6IGFkZCBh
+IG5ldw0KPj4+IHByb3BlcnR5IG54cCxmc3BpLWRsbC1zbHZkbHkNCj4+Pg0KPj4+IE9uIDA1LzA3
+LzIwMjIgMTE6MTEsIGhhaWJvLmNoZW5AbnhwLmNvbSB3cm90ZToNCj4+Pj4gRnJvbTogSGFpYm8g
+Q2hlbiA8aGFpYm8uY2hlbkBueHAuY29tPg0KPj4+Pg0KPj4+PiBBZGQgb25lIG9wdGlvbmFsIHBy
+b3BlcnR5IG54cCxmc3BpLWRsbC1zbHZkbHkNCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1ieTogSGFp
+Ym8gQ2hlbiA8aGFpYm8uY2hlbkBueHAuY29tPg0KPj4+PiAtLS0NCj4+Pj4gIERvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLW54cC1mc3BpLnlhbWwgfCA2ICsrKysrKw0K
+Pj4+PiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKQ0KPj4+Pg0KPj4+PiBkaWZmIC0t
+Z2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktbnhwLWZzcGku
+eWFtbA0KPj4+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktbnhw
+LWZzcGkueWFtbA0KPj4+PiBpbmRleCAxYjU1MmMyOTgyNzcuLjZiZDYxNTY1Njg2YSAxMDA2NDQN
+Cj4+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktbnhw
+LWZzcGkueWFtbA0KPj4+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c3BpL3NwaS1ueHAtZnNwaS55YW1sDQo+Pj4+IEBAIC00NSw2ICs0NSwxMiBAQCBwcm9wZXJ0aWVz
+Og0KPj4+PiAgICAgICAgLSBjb25zdDogZnNwaV9lbg0KPj4+PiAgICAgICAgLSBjb25zdDogZnNw
+aQ0KPj4+Pg0KPj4+PiArICBueHAsZnNwaS1kbGwtc2x2ZGx5Og0KPj4+PiArICAgICRyZWY6IC9z
+Y2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMg0KPj4+PiArICAgIGRlc2NyaXB0
+aW9uOiB8DQo+Pj4+ICsgICAgICBTcGVjaWZ5IHRoZSBETEwgc2xhdmUgbGluZSBkZWxheSB2YWx1
+ZS4NCj4+Pg0KPj4+IFdoYXQgYXJlIHRoZSB1bml0cz8NCj4+DQo+PiBEbyB5b3UgbWVhbiBoZXJl
+IG5lZWQgdG8gZ2l2ZSBtb3JlIGRldGFpbCBleHBsYWluIGFib3V0IHRoaXMgcHJvcGVyaXR5Pw0K
+Pj4NCj4+IEhvdyBhYm91dCBjaGFuZ2UgbGlrZSB0aGlzPw0KPj4gICAgU3BlY2lmeSB0aGUgRExM
+IHNsYXZlIGxpbmUgZGVsYXkgdmFsdWUuIFRoZSBkZWxheSB0YXJnZXQgZm9yIHNsYXZlIGRlbGF5
+IGxpbmUgaXM6DQo+KChueHAsZnNwaS1kbGwtc2x2ZGx5KzEpICogMS8zMiAqIGNsb2NrIGN5Y2xl
+IG9mIHJlZmVyZW5jZSBjbG9jayAoc2VyaWFsIHJvb3QgY2xvY2spLg0KPg0KPlRoaXMgd291bGQg
+YmUgZ29vZC4NCj4NCj4+IFRoZSByYW5nZSBvZiB0aGlzIHZhbHVlIGlzIDB+MTYuDQo+DQo+VGhp
+cyBuZWVkcyB0byBnbyB0byBzY2hlbWEgaW5zdGVhZCBhcyAibWF4aW11bTogMTYiLg0KPg0KPkJ1
+dCBzdGlsbCB0aGUgcXVlc3Rpb24gaXMgLSB3aGF0IGFyZSB0aGUgdW5pdHMgdXNlZCBpbiB0aGlz
+ICJkZWxheSI/IG1zPyB1cz8NCg0KSEkgS3J6eXN6dG9mLA0KDQpBY2NvcmRpbmcgdG8gdGhlIGZv
+cm11bGEsIHRoZSByYW5nZSBzaG91bGQgYmUgMH4xNSwgMTYgc2hvdWxkIGRvIG5vdGhpbmcgb3Ig
+bm8gZGVsYXkuDQoNClRoZSB1bml0IHNob3VsZCBiZSBjbG9jayBwaGFzZS4gSW4gb3RoZXIgd29y
+ZHMsIHRoZSBkZWxheSBjYW4gYmUgaW4gcmFuZ2Ugb2YgMS8zMn4xLzIgY2xvY2sgY3ljbGUuDQoN
+Cg0KPg0KPkJlc3QgcmVnYXJkcywNCj5Lcnp5c3p0b2YNCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWls
+aW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQvCg==
