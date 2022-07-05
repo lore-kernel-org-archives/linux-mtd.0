@@ -4,83 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0115C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jul 2022 15:38:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71092C43334
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jul 2022 15:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=byQX280Oe3bLOkG7EuE+ENpCE3c6y/Z08EwUR8xhfVI=; b=K3ZssSyMPK9m4Z
-	p/7ieOlPvZ+2natxaONSm80jBChU+nB6JwvMxevm92fAvrd/Ryptrcl1zRlYtMvGR9FLjQPVhYn1s
-	2yRGjETDkHDgFAJAePtUzkMjf3mp0sCKwJMdsjMrcDfUEQY27RV8Ac4YhqEAaM6GUq6SJdvCiEReN
-	M8NC+yntOcCwfcjAP2ZsXltvHzuJGhpF3QEJaFp9DjTGYxgH8HZ5rIW/kVVQ3h90FLz4JInP1w+Vg
-	xqttunqrSebcj/t2BlJ+p0Ciaydb98+tFHViNfXJhoi9UDXHd5kxTaTk03SB2WOsSoOzOoKsBLKXv
-	MPbDibRaM/5XCL8jdWyQ==;
+	List-Owner; bh=8QpafNhoEb/9VYdtzsFMsCaJlKhO5IEtT01ziOlGOBU=; b=b6o8h2qdRgOpfw
+	xeMiwtW7lRkVB+XiM4iVNXGW8hnT65uF/9ASEyVHah0J8tPlXKyXs7xAZGuMjKUMwiX0TXrNuBM+9
+	Ci6Q6DwI3WrAFU0yZQfwuiK82soth+drMZUaDPfOqmuEAPYAF1BD3jqXVA66HMxYyHKE53Acf/jTa
+	ZsTlRa8QtINRfMkgsle7E9H8XRjGh19kNl1axTvCg10AaBaXiCnMWd7ZJ44KBEuRRoBmQkdX9bBNm
+	CpgAJrFr7DnnHs4SK74I4cOxiSblLScR8REff7QCUXcynj19Ait7seIfL3xXAkea0twcL3fWkWRbT
+	6Oj9f+TqHZuq66XUtkjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8kdF-001Cdr-3i; Tue, 05 Jul 2022 15:38:33 +0000
-Received: from mail-lf1-x12d.google.com ([2a00:1450:4864:20::12d])
+	id 1o8kp4-001HW3-Bv; Tue, 05 Jul 2022 15:50:46 +0000
+Received: from mail-eopbgr30057.outbound.protection.outlook.com ([40.107.3.57] helo=EUR03-AM5-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8kdB-001Cag-Mf
-	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2022 15:38:31 +0000
-Received: by mail-lf1-x12d.google.com with SMTP id f39so21228171lfv.3
-        for <linux-mtd@lists.infradead.org>; Tue, 05 Jul 2022 08:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=5lac26hSsxq2bqnIIbfo8iISJEnKW0GSTyf9EVWeE/Q=;
-        b=fQ22/amhPh/I/Xg9BYSELh7tZekP3MwvTy0jBXI7Rb8+FG2nRtPqMPqIHrO6WVwZIU
-         lTv93pXJqRsza/X+5D34Cd/zOn6u6V5ksIiRnP1qwUgBY0uPPU8hP1+EAZLJAnD7Pyma
-         Zk7HKsXc+Ql4z0/CA3osKYg3Z+PcTp65hZLDhsyw2SK0Bw8uR6+84F4vHVEszweSCXMP
-         mi82fIrrjPFiaKbhBNDYhLDbK2OsDOUThTAaU0vb4MM3xHtG9QkCpRrzezOR2RNm6WnL
-         Al8WFMIioAyE+5TIGbCNNzTl7rPsxHt1VYiUEexZuJxMctYm6XcTk159GzZPhpT8rAl3
-         TmhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5lac26hSsxq2bqnIIbfo8iISJEnKW0GSTyf9EVWeE/Q=;
-        b=aTNHCPx/zwl0rb25f3+GbXT6D7ukQwcmRhAJ2tRoJa5/GgXTKDaCCS1/xOO8nEXCMu
-         ESh5gFhggYFR30vDbQWO623iR069/55QDcmiItlEm0t4BePjxDkcGaHC8JMHa1LhD7/6
-         3G35uhG12u8Z+RS0eY7TvARZa1W46+2JiQrR54dYfuiqB3qYzcNn18Krp0w5PPFeUw2x
-         xrPJ4y/dWJ4mNhp0QKM6ZwlJ+5PptLGBJ0bXV4iGXZFNe6gWJQv0emXA0hnmFgsoliAx
-         NriJHCZecsp6EsHo68OVXRqED4FnYhnfG1RwCWM5Q+oxS/OJdWU6S2EnU55RAehe86x8
-         RB3Q==
-X-Gm-Message-State: AJIora8blz6dCCQ0hCm6vGpyXo0Z/sGr63u5vq/uBHlxoylrcF0Rxqpi
-	aywPVEj3xGyHCwNLjznkUtt6kw==
-X-Google-Smtp-Source: AGRyM1tmXLh3z47oCGKtYz2FIn0NiD6p981KwThQufhF/Jz38GQV4qLcO+NFEqfJnt590d8d+yj6eQ==
-X-Received: by 2002:a05:6512:6d4:b0:47f:74b4:4ec4 with SMTP id u20-20020a05651206d400b0047f74b44ec4mr22043767lff.654.1657035507235;
-        Tue, 05 Jul 2022 08:38:27 -0700 (PDT)
-Received: from [192.168.1.52] ([84.20.121.239])
-        by smtp.gmail.com with ESMTPSA id a9-20020a19ca09000000b00477a6c86f17sm5746920lfg.8.2022.07.05.08.38.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jul 2022 08:38:26 -0700 (PDT)
-Message-ID: <0bd271e9-8d9b-7388-2d9b-65cc39a54f8c@linaro.org>
-Date: Tue, 5 Jul 2022 17:38:24 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
+	id 1o8kp1-001HSl-0N; Tue, 05 Jul 2022 15:50:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TaFOGMI6+RvSN33pShQYA0bZ8U6MGBLp5RH5QDba1q7qmnOoCTqoGl2xB6KkzTDYmhxW8aFDK7Ao0q+2UX6B61TvZAZWlFzoyiFhfvsBlmY0W3QUo6W2LyheSRV/ymT3ALflkuzGmEIYDs1DN4f1T+ljK2vyyES9HyPAnjppTjwjvi/3RmDagbKBBet723rYV+tkDf6fxuseWOVZT+OvM9OwfS6MovUIC9ufZcebsBnBxSPzVto+cpfkfeVtGsDawctoOGsO9L0SP+K1ueIsMN25wFFEMoel20HPBJLj6HnIPgINlWITu03aB6IqIcatx1exf1CprYYSXmxaUJvoFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ew1u1ODITEMy6g8Dy8clqRvrkYxspm6QD3C86Cx7Vxk=;
+ b=Vv5mYGbwQKsAkxh3cd/rD+CTxVm2tSje++2KC6+6EXw2VaFOVbcitKO3qkvwDa8CDehaHm+P0MGmkhehODqyX2yGZdq0uQYXmoKwU/mjaireZNSohvv1VMQh3yv0v4vrAYfxzj5yrqAIYrKWfCZ9emzqQQvbegVyurvq95tLyBuOXaJzr7pNTyqyjiAGEYGCLTqaYJgNV5XUR7IFGq+KNXmnpkl/jQ50A3iiUr60XorYzCabW+uFOA57I3aI9o4DwhGPT6LM3TPOPPEqyFuQ9lowAfW5gbIRjJ4dJeD3qXx7AQYHmbr3GA5ksOOhTAKOuTOOpe6yrPoU/hIcxWlZwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ew1u1ODITEMy6g8Dy8clqRvrkYxspm6QD3C86Cx7Vxk=;
+ b=krhq+vuXj0HDzCI0LyxfKiShAuG0OQQdzH1W0+U7fpKsKciVkvKvGIzvxkM2Cjl2giXtuKtiUXeKfExOqB+l8WY+pbOLOtVrBfX5W8y7mdlVyqlob9LLlxM0kyNvZlbdDuG3uwbNpC10kYPsNfIB77WlwC64SP4MVD1lPqmWJ2A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com (2603:10a6:10:2e1::21)
+ by DB7PR04MB4442.eurprd04.prod.outlook.com (2603:10a6:5:35::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.20; Tue, 5 Jul
+ 2022 15:50:38 +0000
+Received: from DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::5c49:dd85:a8d0:2907]) by DU2PR04MB8774.eurprd04.prod.outlook.com
+ ([fe80::5c49:dd85:a8d0:2907%3]) with mapi id 15.20.5395.021; Tue, 5 Jul 2022
+ 15:50:38 +0000
+Date: Tue, 5 Jul 2022 10:50:31 -0500
+From: Han Xu <han.xu@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Michael Walle <michael@walle.cc>, Bough Chen <haibo.chen@nxp.com>,
+	ashish.kumar@nxp.com, yogeshgaur.83@gmail.com, broonie@kernel.org,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	singh.kuldeep87k@gmail.com, tudor.ambarus@microchip.com,
+	p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+	kernel@pengutronix.de, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-mtd@lists.infradead.org, festevam@gmail.com,
+	dl-linux-imx <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, zhengxunli@mxic.com.tw
 Subject: Re: [PATCH 07/11] dt-bindings: spi: spi-nxp-fspi: add a new property
  nxp,fspi-dll-slvdly
-Content-Language: en-US
-To: Han Xu <han.xu@nxp.com>
-Cc: Michael Walle <michael@walle.cc>, Bough Chen <haibo.chen@nxp.com>,
- ashish.kumar@nxp.com, yogeshgaur.83@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- singh.kuldeep87k@gmail.com, tudor.ambarus@microchip.com, p.yadav@ti.com,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- festevam@gmail.com, dl-linux-imx <linux-imx@nxp.com>,
- linux-arm-kernel@lists.infradead.org, zhengxunli@mxic.com.tw
-References: <1657012303-6464-1-git-send-email-haibo.chen@nxp.com>
- <1657012303-6464-7-git-send-email-haibo.chen@nxp.com>
- <ef676df1-77e0-b8ee-3950-97eade8ddd5b@linaro.org>
+Message-ID: <20220705155031.zk36jsq4q2ac2ow4@umbrella>
+References: <ef676df1-77e0-b8ee-3950-97eade8ddd5b@linaro.org>
  <VI1PR04MB40167A70FBE772DF91047A4190819@VI1PR04MB4016.eurprd04.prod.outlook.com>
  <59d360ef-5374-c7a7-2995-854ab3715b25@linaro.org>
  <DU2PR04MB87747C9A8F18D8300461D6B197819@DU2PR04MB8774.eurprd04.prod.outlook.com>
@@ -89,11 +75,64 @@ References: <1657012303-6464-1-git-send-email-haibo.chen@nxp.com>
  <62f113a0cdb0d58bf04ab0b274912eb7@walle.cc>
  <be521f90-97ce-c61d-d7d6-8f2bde24d824@linaro.org>
  <20220705145226.tarpvub6bh67tj63@umbrella>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220705145226.tarpvub6bh67tj63@umbrella>
+ <0bd271e9-8d9b-7388-2d9b-65cc39a54f8c@linaro.org>
+Content-Disposition: inline
+In-Reply-To: <0bd271e9-8d9b-7388-2d9b-65cc39a54f8c@linaro.org>
+User-Agent: NeoMutt/20171215
+X-ClientProxiedBy: SJ0PR13CA0175.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::30) To DU2PR04MB8774.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e1::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 59b41f85-7619-4b19-8dca-08da5e9e1b2d
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4442:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 	oeH28k31DTubtUw2pOoFxIk1qgHeBXEe1GEHyQAmi2uIIFkKa5NSUqdXR3Inod3moePwvOn/ui5EeRCcjkAei7hkWtISvn6UjRkr82ZAnybWZuuwczKe1XarcUP08jwqP0BCsyvCNbmXHA9cagws04qOMqvp8NlGIJ9F0CO6+Ivx2Sn2EMjNE4wGTBZ5Si0t9Vu4JyCFFKw1SCFX7N9qYMDY5KP36Jxs9zlwrA8Gtkt1s5b5ta/c1hTfBNh+dEFfsh9pIGmuTvxi7r/2MFbzfzhKufdcKcgnLNNV5JHgKJx9aDa2V+JTLmrF98jDYd7vncyD0fSTVBqAJNKQiJNdidzh5iGZYwN3GfVkVv0A0xyLj3nKIhInHXdLM44+oX962MVgQUp2LKpJcpkXZxb6hfcYWIe7tkW9/LIAvgFR7mg2PcEQOo2kbOeTynvTFz8W/nD3HNDposNDxcz1hewR5/ZN+K85551v84m7qO6Rl1qAMXaFq9vdur1NWDwegyPqukOj/nySYpZVdrvjUdKOINBoMip9pTvpN52ORJQV4UjX12q4KeGaTf06oYE8wwXwM1VpzfXgCsSZjjy4r4ySqLRdEPPTriNvts9ZD0L9IasV+9IKidwgZvusk8OxZVkTEUNWsnQNFEwb1cw/ZGmwkeZgIrsh7S4IDSBmZBfI+JXY2QmfaNTLp+KfakjpjEDEo4afFXHcxc1MKih9I0Bd9rQUkR4om4S+rIKA8yQbbSOWkQw3aqaudwM9RX1ycqXA/V5C8dH0Q2tfeMb2MYUbDpDARellR9/XQRs7pdeQrBd1CuAy9gX8EBOqCABK+Uj1
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8774.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(4636009)(39860400002)(366004)(396003)(376002)(346002)(136003)(9686003)(6486002)(86362001)(53546011)(6512007)(26005)(316002)(33716001)(66946007)(66476007)(4326008)(8676002)(6666004)(6916009)(54906003)(478600001)(66556008)(52116002)(41300700001)(6506007)(186003)(1076003)(83380400001)(38350700002)(7416002)(8936002)(44832011)(2906002)(38100700002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?us-ascii?Q?izpXDcYcb5pnfdx9miKPYlPfaDhoxXFXBQ+GryqtXb1aU4FUdMLsLvkrCKg+?=
+ =?us-ascii?Q?84JEwpWAkOgRICT0ETg7fLDfoKcgpFYmAY5hwNKeJc414hnm88KE/3kqNP59?=
+ =?us-ascii?Q?LEJ44JRTdkSFLMYR9z9nu0S2Q86STCI0POKONoBBWQT5JH3XrlW0Yn/ktToc?=
+ =?us-ascii?Q?5OvXFzGmEGJosanqSZhphQUp/THhjHe8yb+p9Wls1CrlCS4TnWJ1wrhOg1eG?=
+ =?us-ascii?Q?5lgNQ78Muypk0kG06redSwae8qs/ELkBaOmY0XjickO+DkW2lqPGjy2yCaC9?=
+ =?us-ascii?Q?iOlv1y74jc8r9JW3GoUZKG4s9BRJ8JT7Wpi3OHKtjQOQgt2swp/j1d7vvhFU?=
+ =?us-ascii?Q?qtFnmopLzIyqDkYCOrZzgtCH7zJ6gKrWLBVQJoGpkZAdI2hCKsHk0tdbCjIB?=
+ =?us-ascii?Q?ioHzXcGj2OTLIpI6dqW1NdYWIAZqXvv4FyB8EJCME/1+2WqR8ZuOnnrIBt6n?=
+ =?us-ascii?Q?7bchuNRfq/Gw9hvSLwtT+WKtHW6rIh8YSrXVoJz6/NJswAFhejUbaDVXsN8w?=
+ =?us-ascii?Q?KtqWNXEGZlj2EAHSCVwwDW6iSZTym8miCu4EmjVSYrhI85qpBcYFOmkDfpjX?=
+ =?us-ascii?Q?pOhNVBLf+u9AlTH/ZsYJRRRQNYvcHoPgapFxHjp5pi8BETitK95CByKq9Eq5?=
+ =?us-ascii?Q?5/g+h9UvY9lAk7IxG8ggOp+QLXKEy55RsxII8/zMfYObpnujJ0oaluutFjQn?=
+ =?us-ascii?Q?D+m2Y5C9oXt2mc9q1ngicT5uBbwhTM8rpIVWb2FszFRNqiGX5tLhyj0hEAXq?=
+ =?us-ascii?Q?cSNlqsN5QD3AhYIU80yfIO45B667c9cFd0u1aJdJtSRrEpRK7axfYpBx2Y2K?=
+ =?us-ascii?Q?MtwOfdazSshrdh+KX9AgINk/NnFqdNeJC60mDMk03UizTwO4jh+YQxogyAC0?=
+ =?us-ascii?Q?KPPel/EiZqImqT6is8vIF/biy5FPBBykO1z+I/Hcl76HU6BInOS9OHuzhaDg?=
+ =?us-ascii?Q?HbLNUbL8op8anYng6hyYxsPjcr8TEBBOvzht59xCUu8nFJbLENIfsclxCbVb?=
+ =?us-ascii?Q?+b8XhtdcvS5MDOhNxdisS6zV+wmdJFCAGIQzBZzaMtmvbT18OTXMW3ptqVN0?=
+ =?us-ascii?Q?rTqbtfeFmgYtaelBNf5qC/DDvGbMgrB0dnl56t1ypmz88gCDN7fOqrTg1kJ9?=
+ =?us-ascii?Q?G12fAQBWSTGlfldykC69Zr+5tRPS4IBt+xW07q8tPKu1bhm02qJbUADpcpoC?=
+ =?us-ascii?Q?ykq6bRRV5cXz1Tf6phMwsb3nZb/aAZ9s35Hzj6iSiPFBMOOEJo9oy2pKWbsi?=
+ =?us-ascii?Q?bQZr3UmppsR2kkX9BmhAYpKJC0+WkRqn5mTh2rPapLMFBAm+OvewAJLgkYNw?=
+ =?us-ascii?Q?Iute7873BqxNtqNO5Pyc0FgpTIrZWL3yOM+oZhIkSg0rhsHLnwUsDvpN4r/p?=
+ =?us-ascii?Q?XcwNHmY7nwknYiSLpnMkgJhJuQKmELFshPsdLjDGMdCEg9jaErCGhUo6yIrz?=
+ =?us-ascii?Q?Pq/9XEI7CXWxzmh7qrLO6gWt85aTZlgzGf272/2F9hQFNPMvNf5hM2TNizwl?=
+ =?us-ascii?Q?cGlCDOckJCaBGwwkXZ6SPuqNCyoc1BTiuITWAGhGn0HXiyGejHx6GCVcTlLC?=
+ =?us-ascii?Q?raEJZ2zvKvG6/ErNzFpqTSEBNAPO6RqZ95E2Npxg?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59b41f85-7619-4b19-8dca-08da5e9e1b2d
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8774.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2022 15:50:38.2820
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7beKaNqnieQRfX/zz8df9Cb7yVA9J3OpwIcH0aGNfYL+6j4k2yySazGJ+GM2bwTK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4442
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220705_083829_799307_D822F347 
-X-CRM114-Status: GOOD (  17.59  )
+X-CRM114-CacheID: sfid-20220705_085043_333971_CB83B0F2 
+X-CRM114-Status: GOOD (  28.85  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,60 +149,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 05/07/2022 16:52, Han Xu wrote:
-> On 22/07/05 04:12PM, Krzysztof Kozlowski wrote:
->> On 05/07/2022 16:06, Michael Walle wrote:
->>>
->>>>>
->>>>> I think you could use here clock cycles or clock phase, but then it 
->>>>> has to be obvious
->>>>> it is that unit.
->>>>
->>>> Hi Krzysztof,
->>>>
->>>> Let me clarify it, in the document a term "delay cell" was used to
->>>> descript this register bit. Each delay cell equals "1/32 clock phase",
->>>> so the unit of delay cell is clock phase. The value user need set in
->>>> DT just number to define how many delay cells needed.
->>>
->>> Then should the unit be "-degrees" and the possible range 0-180?
->>
->> Thanks. We don't have it documented currently, but the unit seems
->> reasonable.
+On 22/07/05 05:38PM, Krzysztof Kozlowski wrote:
+> On 05/07/2022 16:52, Han Xu wrote:
+> > On 22/07/05 04:12PM, Krzysztof Kozlowski wrote:
+> >> On 05/07/2022 16:06, Michael Walle wrote:
+> >>>
+> >>>>>
+> >>>>> I think you could use here clock cycles or clock phase, but then it 
+> >>>>> has to be obvious
+> >>>>> it is that unit.
+> >>>>
+> >>>> Hi Krzysztof,
+> >>>>
+> >>>> Let me clarify it, in the document a term "delay cell" was used to
+> >>>> descript this register bit. Each delay cell equals "1/32 clock phase",
+> >>>> so the unit of delay cell is clock phase. The value user need set in
+> >>>> DT just number to define how many delay cells needed.
+> >>>
+> >>> Then should the unit be "-degrees" and the possible range 0-180?
+> >>
+> >> Thanks. We don't have it documented currently, but the unit seems
+> >> reasonable.
+> > 
+> > IMO, use the unit "-degrees" makes it more complicate. Personaly I would
+> > calculate how many clock cycle delay needed, such as 1/4 clock cycle or half
+> > clock cycle. Using degree brings extra calculation.
 > 
-> IMO, use the unit "-degrees" makes it more complicate. Personaly I would
-> calculate how many clock cycle delay needed, such as 1/4 clock cycle or half
-> clock cycle. Using degree brings extra calculation.
+> And what if the next device uses a bit different divider? Like 1/16?
+> This is why we have standard units so people won't push register values
+> into the bindings.
+> 
+> > 
+> > The granularity of the clock phase change is 1/32 of 180 degree, but the range
+> > 0-180 make people feel it can be set in any degree in range.
+> 
+> Yes, because that's how the bindings are being written - allowing any
+> reasonable value, not register-specific value, to be used because it is
+> the most flexible, hardware-independent and allows further customization
+> of bindings (e.g. new devices). Embedding device programming model into
+> the bindings contradicts it.
+> 
+> Second, nothing stops you from narrowing the acceptable values with an
+> enum. This still allows extension. Your 1/32 does not.
+> 
+> > 
+> > If I describe all details of the relation between "nxp,fspi-dll-slvdly" and
+> > "delay cell" in patch v2, do you think it's clear for users?
+> 
+> 1/32 could be a nice unit, but degrees is better. Just like uV is better
+> than 1/32 of V. Like 1 us is better than 1/32 of ms.
+> 
+> Do you see  in the bindings many other values like time, potential,
+> current or power described in 1/32 units?
 
-And what if the next device uses a bit different divider? Like 1/16?
-This is why we have standard units so people won't push register values
-into the bindings.
+That make sense. I will use degree as the unit and round to register proper
+value in driver as Michael suggested. Thanks for all comments.
 
 > 
-> The granularity of the clock phase change is 1/32 of 180 degree, but the range
-> 0-180 make people feel it can be set in any degree in range.
-
-Yes, because that's how the bindings are being written - allowing any
-reasonable value, not register-specific value, to be used because it is
-the most flexible, hardware-independent and allows further customization
-of bindings (e.g. new devices). Embedding device programming model into
-the bindings contradicts it.
-
-Second, nothing stops you from narrowing the acceptable values with an
-enum. This still allows extension. Your 1/32 does not.
-
-> 
-> If I describe all details of the relation between "nxp,fspi-dll-slvdly" and
-> "delay cell" in patch v2, do you think it's clear for users?
-
-1/32 could be a nice unit, but degrees is better. Just like uV is better
-than 1/32 of V. Like 1 us is better than 1/32 of ms.
-
-Do you see  in the bindings many other values like time, potential,
-current or power described in 1/32 units?
-
-Best regards,
-Krzysztof
+> Best regards,
+> Krzysztof
 
 ______________________________________________________
 Linux MTD discussion mailing list
