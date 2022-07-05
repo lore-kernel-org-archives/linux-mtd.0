@@ -4,101 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70D65C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jul 2022 10:37:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E76BC433EF
+	for <linux-mtd@archiver.kernel.org>; Tue,  5 Jul 2022 10:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oA3XThWUakz5LFIA/3QrBuvMvQACNnoATFBixLB9fJY=; b=dVnD1vlf7A6cQO
-	zzEjpVolATv502wSdk8XWo2OiUO0by/1DQaHqWxXyynk1VTP4PCmMP4+KdWpX7ca5aKJlFD4nTHh2
-	E3TxdPFPrKflCU+4URtDLalzVypERXfb1PgL436mq3c8TP1LEu+v9Jq0toYDvgKT9/Dx09NUy7Hgv
-	pijkz5uA+1uF4jSaXtrYgnOUSQZrs1GnNs0qoAV/iEZTVt38EVFLRykK3meJoEv6ANQOcUF1fS9fz
-	jL9+9hcQL//rx+FOTW4udOSxtmJg4wA+Cb2VGmkrrdgMAeF4WGrA+xmvCqKrOhxMz6DGktHD5ZOnR
-	z0lXopDk0Ti0dblNUQbA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TbwAcUqXYQrB04mDKB5DTQqb/ZGb4Cdr9rr8CirjKYA=; b=nhAtIB/hSCw3Bw2K+QnRWGTXgr
+	lI62jZr5UnDjVWGASgnZTcVY+IbgfCyMUqrhxVTEVgtaaGDgRDEiVFjWFiPUcPOHGITr4lQ5piu0m
+	55GljA1SZTas7je5wKPkFtip5hpJ9ofIyktk6BHkklUGUaNx0QkFC7UX+EhbgRPn66Lo1H6HQ5ez5
+	9IJibpfUrkghjBJbMS821WT+K6KvK97Ykwrm3a8edRkiWrypPwY/txJRX2imX+3bnU81cYMOUbPoI
+	KsEbEspngQMIvo+GNeyi1DHb0Kv/3PtBcXTxxMGK/CCdMZigQ5lbKhixPwWqXQJ/aK4dljf74z4rp
+	9AnWOOTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8fvh-00HC8d-VK; Tue, 05 Jul 2022 10:37:18 +0000
-Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
+	id 1o8fwB-00HCH4-6k; Tue, 05 Jul 2022 10:37:47 +0000
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o8fvW-00HC5U-CO
-	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2022 10:37:07 +0000
-Received: by mail-lf1-x12b.google.com with SMTP id m18so1356686lfg.10
-        for <linux-mtd@lists.infradead.org>; Tue, 05 Jul 2022 03:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KQNw+HNoVVOd6zABLLZO6EOnFM/ym/yFHXExMPN6G6Y=;
-        b=Ue8SmLdOgCBJE7MacWwk7UayrMbTsgXvscTDx+rT9+Z5YqBhG6y3stxceoNeg0AKNW
-         qMqBoDngkBRXgU5GCFjUvK5OfJwPLEfL8FeaATAtyPnvNPgnxewbpTwNk2VTvc4Qt11C
-         lkxEITc/qcHopsPh680BlRThUvSz+Xljtouvn9blWoSG/8jUYgTV+tbHcGKyFok4PXTm
-         nRcLw0kqEyD7kOTxwq0WGHZ4DyEdeAAQDVpekbRFvsWPYi98XUHm0edM8lTWj2owdOiu
-         5EYduGeD/CaEOuu61PpQPBL5VlL04YbzNcS+OBgnB1EVV+LbE3B9y2daIgOauAU9CCXq
-         B1Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KQNw+HNoVVOd6zABLLZO6EOnFM/ym/yFHXExMPN6G6Y=;
-        b=LIBKM2xya+SMbUj2lh1Vk8itmheqB603yTl8sdo1z0WhbJ1suSRjLh5dagiGqa7Nil
-         49hD9QWdsAsfTXcUTWgUHbk216esSfoK9bcRfEhIOWCBO+olf7sswMT9dcWYT3zYaxKX
-         t6X4eYW93TvM/dX1TmhpGXl4WYGQQ+v8s7tdB3k3RvQ34O5HHszwnebIXraWm6Cyn2BB
-         HGmnAI1TZpeJTuITb7EKnFgQ0+i8sGbf+pjqStO4z7HDwUAPiw/MUmd58Z5AR0upzG9B
-         BEgEyQcnacZn2Fl+iUWahd8JB11/mm8qlQkWNRWd+GDqF8GVhwJ4mY1lrzq+iBx9Hpwr
-         I/CQ==
-X-Gm-Message-State: AJIora8TO8/yu7R0dRkdsvfqQVNBwWqHEs9KQr17KYKW/PY574aG4IcA
-	wXjoPAyfVNLvscPqfkMxtnK0wg==
-X-Google-Smtp-Source: AGRyM1vfRzDYpBi1wpu63DmX2uwd1gFLDE0MhoUsAx26SeGlGJwEOS7cclobYWPcXvia+h6MPd2f/w==
-X-Received: by 2002:a05:6512:281d:b0:47f:ac1c:fcf5 with SMTP id cf29-20020a056512281d00b0047fac1cfcf5mr23023535lfb.197.1657017420887;
-        Tue, 05 Jul 2022 03:37:00 -0700 (PDT)
-Received: from [192.168.1.52] ([84.20.121.239])
-        by smtp.gmail.com with ESMTPSA id f9-20020a05651c03c900b0025a79b7fb7dsm5492251ljp.93.2022.07.05.03.36.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jul 2022 03:37:00 -0700 (PDT)
-Message-ID: <59d360ef-5374-c7a7-2995-854ab3715b25@linaro.org>
-Date: Tue, 5 Jul 2022 12:36:58 +0200
+	id 1o8fw0-00HCE5-W5
+	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2022 10:37:38 +0000
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1o8fuq-0001LC-19; Tue, 05 Jul 2022 12:36:24 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1o8fue-004XxA-J7; Tue, 05 Jul 2022 12:36:16 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1o8fuh-0038F6-8t; Tue, 05 Jul 2022 12:36:15 +0200
+Date: Tue, 5 Jul 2022 12:36:15 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Jean Delvare <jdelvare@suse.de>
+Cc: Wolfram Sang <wsa@kernel.org>, Guenter Roeck <groeck@chromium.org>,
+	linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	openipmi-developer@lists.sourceforge.net,
+	linux-integrity@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, chrome-platform@lists.linux.dev,
+	linux-rpi-kernel@lists.infradead.org, linux-input@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+	patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	acpi4asus-user@lists.sourceforge.net, linux-pm@vger.kernel.org,
+	linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, kasan-dev@googlegroups.com,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
+Message-ID: <20220705103615.ceeq7rku53x743ps@pengutronix.de>
+References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de>
+ <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
+ <20220705120852.049dc235@endymion.delvare>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 07/11] dt-bindings: spi: spi-nxp-fspi: add a new property
- nxp,fspi-dll-slvdly
-Content-Language: en-US
-To: Bough Chen <haibo.chen@nxp.com>,
- "ashish.kumar@nxp.com" <ashish.kumar@nxp.com>,
- "yogeshgaur.83@gmail.com" <yogeshgaur.83@gmail.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- Han Xu <han.xu@nxp.com>,
- "singh.kuldeep87k@gmail.com" <singh.kuldeep87k@gmail.com>,
- "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
- "p.yadav@ti.com" <p.yadav@ti.com>, "michael@walle.cc" <michael@walle.cc>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "vigneshr@ti.com" <vigneshr@ti.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>
-Cc: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "festevam@gmail.com" <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "zhengxunli@mxic.com.tw" <zhengxunli@mxic.com.tw>
-References: <1657012303-6464-1-git-send-email-haibo.chen@nxp.com>
- <1657012303-6464-7-git-send-email-haibo.chen@nxp.com>
- <ef676df1-77e0-b8ee-3950-97eade8ddd5b@linaro.org>
- <VI1PR04MB40167A70FBE772DF91047A4190819@VI1PR04MB4016.eurprd04.prod.outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <VI1PR04MB40167A70FBE772DF91047A4190819@VI1PR04MB4016.eurprd04.prod.outlook.com>
+In-Reply-To: <20220705120852.049dc235@endymion.delvare>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mtd@lists.infradead.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220705_033706_491885_4A1C209F 
-X-CRM114-Status: GOOD (  15.11  )
+X-CRM114-CacheID: sfid-20220705_033737_080095_55A153F1 
+X-CRM114-Status: GOOD (  22.40  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,52 +86,114 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3595555591410652658=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gMDUvMDcvMjAyMiAxMjoyOCwgQm91Z2ggQ2hlbiB3cm90ZToKPj4gLS0tLS1PcmlnaW5hbCBN
-ZXNzYWdlLS0tLS0KPj4gRnJvbTogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6eXN6dG9mLmtvemxv
-d3NraUBsaW5hcm8ub3JnPgo+PiBTZW50OiAyMDIy5bm0N+aciDXml6UgMTc6NDgKPj4gVG86IEJv
-dWdoIENoZW4gPGhhaWJvLmNoZW5AbnhwLmNvbT47IGFzaGlzaC5rdW1hckBueHAuY29tOwo+PiB5
-b2dlc2hnYXVyLjgzQGdtYWlsLmNvbTsgYnJvb25pZUBrZXJuZWwub3JnOyByb2JoK2R0QGtlcm5l
-bC5vcmc7Cj4+IGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsgSGFuIFh1IDxoYW4u
-eHVAbnhwLmNvbT47Cj4+IHNpbmdoLmt1bGRlZXA4N2tAZ21haWwuY29tOyB0dWRvci5hbWJhcnVz
-QG1pY3JvY2hpcC5jb207Cj4+IHAueWFkYXZAdGkuY29tOyBtaWNoYWVsQHdhbGxlLmNjOyBtaXF1
-ZWwucmF5bmFsQGJvb3RsaW4uY29tOwo+PiByaWNoYXJkQG5vZC5hdDsgdmlnbmVzaHJAdGkuY29t
-OyBzaGF3bmd1b0BrZXJuZWwub3JnOwo+PiBzLmhhdWVyQHBlbmd1dHJvbml4LmRlOyBrZXJuZWxA
-cGVuZ3V0cm9uaXguZGUKPj4gQ2M6IGxpbnV4LXNwaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc7Cj4+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsKPj4gZmVzdGV2YW1AZ21haWwuY29tOyBkbC1saW51
-eC1pbXggPGxpbnV4LWlteEBueHAuY29tPjsKPj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZy
-YWRlYWQub3JnOyB6aGVuZ3h1bmxpQG14aWMuY29tLnR3Cj4+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
-MDcvMTFdIGR0LWJpbmRpbmdzOiBzcGk6IHNwaS1ueHAtZnNwaTogYWRkIGEgbmV3IHByb3BlcnR5
-Cj4+IG54cCxmc3BpLWRsbC1zbHZkbHkKPj4KPj4gT24gMDUvMDcvMjAyMiAxMToxMSwgaGFpYm8u
-Y2hlbkBueHAuY29tIHdyb3RlOgo+Pj4gRnJvbTogSGFpYm8gQ2hlbiA8aGFpYm8uY2hlbkBueHAu
-Y29tPgo+Pj4KPj4+IEFkZCBvbmUgb3B0aW9uYWwgcHJvcGVydHkgbnhwLGZzcGktZGxsLXNsdmRs
-eQo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IEhhaWJvIENoZW4gPGhhaWJvLmNoZW5AbnhwLmNvbT4K
-Pj4+IC0tLQo+Pj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLW54
-cC1mc3BpLnlhbWwgfCA2ICsrKysrKwo+Pj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMo
-KykKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NwaS9zcGktbnhwLWZzcGkueWFtbAo+PiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9zcGkvc3BpLW54cC1mc3BpLnlhbWwKPj4+IGluZGV4IDFiNTUyYzI5ODI3Ny4uNmJkNjE1
-NjU2ODZhIDEwMDY0NAo+Pj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3NwaS9zcGktbnhwLWZzcGkueWFtbAo+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL3NwaS9zcGktbnhwLWZzcGkueWFtbAo+Pj4gQEAgLTQ1LDYgKzQ1LDEyIEBAIHBy
-b3BlcnRpZXM6Cj4+PiAgICAgICAgLSBjb25zdDogZnNwaV9lbgo+Pj4gICAgICAgIC0gY29uc3Q6
-IGZzcGkKPj4+Cj4+PiArICBueHAsZnNwaS1kbGwtc2x2ZGx5Ogo+Pj4gKyAgICAkcmVmOiAvc2No
-ZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzIKPj4+ICsgICAgZGVzY3JpcHRpb246
-IHwKPj4+ICsgICAgICBTcGVjaWZ5IHRoZSBETEwgc2xhdmUgbGluZSBkZWxheSB2YWx1ZS4KPj4K
-Pj4gV2hhdCBhcmUgdGhlIHVuaXRzPwo+IAo+IERvIHlvdSBtZWFuIGhlcmUgbmVlZCB0byBnaXZl
-IG1vcmUgZGV0YWlsIGV4cGxhaW4gYWJvdXQgdGhpcyBwcm9wZXJpdHk/Cj4gCj4gSG93IGFib3V0
-IGNoYW5nZSBsaWtlIHRoaXM/Cj4gICAgU3BlY2lmeSB0aGUgRExMIHNsYXZlIGxpbmUgZGVsYXkg
-dmFsdWUuIFRoZSBkZWxheSB0YXJnZXQgZm9yIHNsYXZlIGRlbGF5IGxpbmUgaXM6ICgobnhwLGZz
-cGktZGxsLXNsdmRseSsxKSAqIDEvMzIgKiBjbG9jayBjeWNsZSBvZiByZWZlcmVuY2UgY2xvY2sg
-KHNlcmlhbCByb290IGNsb2NrKS4gCgpUaGlzIHdvdWxkIGJlIGdvb2QuCgo+IFRoZSByYW5nZSBv
-ZiB0aGlzIHZhbHVlIGlzIDB+MTYuCgpUaGlzIG5lZWRzIHRvIGdvIHRvIHNjaGVtYSBpbnN0ZWFk
-IGFzICJtYXhpbXVtOiAxNiIuCgpCdXQgc3RpbGwgdGhlIHF1ZXN0aW9uIGlzIC0gd2hhdCBhcmUg
-dGhlIHVuaXRzIHVzZWQgaW4gdGhpcyAiZGVsYXkiPyBtcz8gdXM/CgpCZXN0IHJlZ2FyZHMsCkty
-enlzenRvZgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
+
+--===============3595555591410652658==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gut2agzhpaayxotv"
+Content-Disposition: inline
+
+
+--gut2agzhpaayxotv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 05, 2022 at 12:08:52PM +0200, Jean Delvare wrote:
+> On Tue, 28 Jun 2022 16:03:12 +0200, Uwe Kleine-K=F6nig wrote:
+> > From: Uwe Kleine-K=F6nig <uwe@kleine-koenig.org>
+> >=20
+> > The value returned by an i2c driver's remove function is mostly ignored.
+> > (Only an error message is printed if the value is non-zero that the
+> > error is ignored.)
+> >=20
+> > So change the prototype of the remove function to return no value. This
+> > way driver authors are not tempted to assume that passing an error to
+> > the upper layer is a good idea. All drivers are adapted accordingly.
+> > There is no intended change of behaviour, all callbacks were prepared to
+> > return 0 before.
+> >=20
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+>=20
+> That's a huge change for a relatively small benefit, but if this is
+> approved by the I2C core maintainer then fine with me. For:
+
+Agreed, it's huge. The benefit isn't really measureable, the motivation
+is to improve the situation for driver authors who with the change
+cannot make wrong assumptions about what to return in .remove(). During
+the preparation this uncovered a few bugs. See for example
+bbc126ae381cf0a27822c1f822d0aeed74cc40d9.
+
+> >  drivers/hwmon/adc128d818.c                                | 4 +---
+> >  drivers/hwmon/adt7470.c                                   | 3 +--
+> >  drivers/hwmon/asb100.c                                    | 6 ++----
+> >  drivers/hwmon/asc7621.c                                   | 4 +---
+> >  drivers/hwmon/dme1737.c                                   | 4 +---
+> >  drivers/hwmon/f75375s.c                                   | 5 ++---
+> >  drivers/hwmon/fschmd.c                                    | 6 ++----
+> >  drivers/hwmon/ftsteutates.c                               | 3 +--
+> >  drivers/hwmon/ina209.c                                    | 4 +---
+> >  drivers/hwmon/ina3221.c                                   | 4 +---
+> >  drivers/hwmon/jc42.c                                      | 3 +--
+> >  drivers/hwmon/mcp3021.c                                   | 4 +---
+> >  drivers/hwmon/occ/p8_i2c.c                                | 4 +---
+> >  drivers/hwmon/pcf8591.c                                   | 3 +--
+> >  drivers/hwmon/smm665.c                                    | 3 +--
+> >  drivers/hwmon/tps23861.c                                  | 4 +---
+> >  drivers/hwmon/w83781d.c                                   | 4 +---
+> >  drivers/hwmon/w83791d.c                                   | 6 ++----
+> >  drivers/hwmon/w83792d.c                                   | 6 ++----
+> >  drivers/hwmon/w83793.c                                    | 6 ++----
+> >  drivers/hwmon/w83795.c                                    | 4 +---
+> >  drivers/hwmon/w83l785ts.c                                 | 6 ++----
+> >  drivers/i2c/i2c-core-base.c                               | 6 +-----
+> >  drivers/i2c/i2c-slave-eeprom.c                            | 4 +---
+> >  drivers/i2c/i2c-slave-testunit.c                          | 3 +--
+> >  drivers/i2c/i2c-smbus.c                                   | 3 +--
+> >  drivers/i2c/muxes/i2c-mux-ltc4306.c                       | 4 +---
+> >  drivers/i2c/muxes/i2c-mux-pca9541.c                       | 3 +--
+> >  drivers/i2c/muxes/i2c-mux-pca954x.c                       | 3 +--
+>=20
+> Reviewed-by: Jean Delvare <jdelvare@suse.de>
+
+Thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--gut2agzhpaayxotv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmLEFBwACgkQwfwUeK3K
+7AkavggAgLmynakXX/rOF4Jwy2OuBXH29kecKqPd6xj4yHsu3ggy8kd/hlU4jJib
+vV0H9ioq69hhMqjme5AHJJsueLFi/t/iwuQwuWUKluCBBlx0RXBsVx8qxV7A0uWa
+mdKU3ApPaN7y0cS1jccdN7ydsL3H2ayzIwfQuNqx1G3P/uqXfkusV0fjwQ/rQct3
+qs4t2/QiHUd0tStlGw2eSKxp1z5KRrDMstK17fiZSsw/SYoMyldV8Ame6+gaxx0X
+e93FqM5jj67ovjD3jJanfOwI5vesu4+szu4GK6vHRWvpsieHsSeyS+GNgfM5oLA7
+iguZ0rauzy0je3hrHuKgp1maJ59ibQ==
+=fYiS
+-----END PGP SIGNATURE-----
+
+--gut2agzhpaayxotv--
+
+
+--===============3595555591410652658==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============3595555591410652658==--
+
