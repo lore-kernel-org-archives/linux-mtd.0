@@ -4,112 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DC0BC43334
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Jul 2022 08:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33DD5C43334
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Jul 2022 12:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:From:
-	References:Cc:To:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yxIVNiN7hem7DreuhvTiGqE6EIBPnKE8omttfIMa4zY=; b=S66rdux4C2fOqlREYrZxPfMF38
-	IWmTKkaKeLCs1l5BqzzFhNNE14U7EZ8ecI6jaXQVDxergKF5FdPhazgX/2JSKGjnyoNS3VoJu919X
-	pyikKQ7F98FwWzkqrBFXouNsLqtIDXp3LqcAz7s2ij8916XjVo/VjjQpaErsT+veojz4lzqYjqXBg
-	itI5fSpg4IwUJPPrBo0SC3evchPqmOmDvjIuU8Fdpc5E0yusQ2FCShMb85t7do2z/1K0GP6F9Ua59
-	oq3PTeXdO7oN52XSzWIkxPOrfOnHflhSNjHis15B+ARubQcGuuqozkn0MHofvP/nCg2AuWVKIwvVk
-	Ao+fe83g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=1aC1uqGLmWc5S785fmNxTYMn407jJQhr9A4GVb4ZSYw=; b=hPw0q10scrL9Gi
+	52Md8NcQ7/KzP0hRhC2IIPeaPrrSd1LDdyztAXwjsYOSQFTvdEAYd8zQrPU/Zx7uWQyblkHsXT7Rp
+	qkmEMYpGIMp2oAYwmlLqWm+DpCuc24shHWJMF+eageJYMqQyvGCL3sOkfWL5rLL2Hqz41sRTxvZXe
+	u3VYPWhhCONu/edllHGyTCmE4miXsRbpYmKJe8e/m42tsUK55ac1kQUpI3DP/Th5K137IZS4qlEFW
+	ex4rJK/Fsa4eX52N6FbYwlDK5rl3QgH3NVw/h7+Sx3op82JjaANrK+1zsvscKTAL6z/i4IwTcpclh
+	4QQliND/FeENiWA66tFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9N8N-00FGWN-36; Thu, 07 Jul 2022 08:45:15 +0000
-Received: from mga06b.intel.com ([134.134.136.31] helo=mga06.intel.com)
+	id 1o9Qei-00G0DX-VZ; Thu, 07 Jul 2022 12:30:53 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9N8F-00FGOb-VJ; Thu, 07 Jul 2022 08:45:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657183507; x=1688719507;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=edbKoKalbvq90CBmxogPesuIiDjl8rwJ49B+zZvetjQ=;
-  b=HiiJL9RxGyH8rKpUv2MWjjUuOC/zS0tS8qIGjDPsnd81FSwzIJx2E7o5
-   6/44FElUWps9i5zOXK8V4qHj80Eagp/wB8tJfWMVhL/VUDgOGp95vZINp
-   yEHrFlQOoL9vTDD4lmTGee6/WtJFe4IVTinHz3HWT1nhuPtXWPafTZNyS
-   xcwwxUTDdd9PzQwC0B/i0XZ7C0tVzf+VWqaNOG03Nq3uT8dAKwoWC8i8z
-   q6n7mZnnZB8ksFyNbnXS3f+Vk8I9XyuXQif31Icmp+YKj9VASQdgCGExm
-   mEgN5Ob5btwwwlK51t52mn6wIU3ziGf4KXkiiy0HfEv8ZHv2jkdaEa5Cz
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="345659131"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
-   d="scan'208";a="345659131"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 01:45:06 -0700
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
-   d="scan'208";a="651047273"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.31.6]) ([10.255.31.6])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 01:44:45 -0700
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 088b9c375534d905a4d337c78db3b3bfbb52c4a0
-To: Greg KH <gregkh@linuxfoundation.org>, kernel test robot <lkp@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- virtualization@lists.linux-foundation.org, usbb2k-api-dev@nongnu.org,
- tipc-discussion@lists.sourceforge.net, target-devel@vger.kernel.org,
- sound-open-firmware@alsa-project.org, samba-technical@lists.samba.org,
- rds-devel@oss.oracle.com, patches@opensource.cirrus.com,
- osmocom-net-gprs@lists.osmocom.org,
- openipmi-developer@lists.sourceforge.net, nvdimm@lists.linux.dev,
- ntb@lists.linux.dev, netfilter-devel@vger.kernel.org,
- netdev@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
- megaraidlinux.pdl@broadcom.com, linuxppc-dev@lists.ozlabs.org,
- linux1394-devel@lists.sourceforge.net, linux-x25@vger.kernel.org,
- linux-wpan@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-unionfs@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-staging@lists.linux.dev,
- linux-serial@vger.kernel.org, linux-sctp@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-perf-users@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-parport@lists.infradead.org, linux-parisc@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-nfc@lists.01.org,
- linux-mtd@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-mm@kvack.org, linux-mediatek@lists.infradead.org,
- linux-media@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-integrity@vger.kernel.org, linux-input@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-fpga@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-efi@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-cxl@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, linux-block@vger.kernel.org,
- linux-bcache@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linaro-mm-sig@lists.linaro.org, legousb-devel@lists.sourceforge.net,
- kvm@vger.kernel.org, keyrings@vger.kernel.org,
- isdn4linux@listserv.isdn4linux.de, iommu@lists.linux.dev,
- iommu@lists.linux-foundation.org, intel-wired-lan@lists.osuosl.org,
- greybus-dev@lists.linaro.org, dri-devel@lists.freedesktop.org,
- dm-devel@redhat.com, devicetree@vger.kernel.org, dev@openvswitch.org,
- dccp@vger.kernel.org, damon@lists.linux.dev, coreteam@netfilter.org,
- cgroups@vger.kernel.org, ceph-devel@vger.kernel.org,
- ath11k@lists.infradead.org, apparmor@lists.ubuntu.com,
- amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
- accessrunner-general@lists.sourceforge.net
-References: <62c683a2.g1VSVt6BrQC6ZzOz%lkp@intel.com>
- <YsaUgfPbOg7WuBuB@kroah.com>
-From: "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <c86816fd-aaba-01a9-5def-44868f0a46c9@intel.com>
-Date: Thu, 7 Jul 2022 16:44:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+	id 1o9Qee-00G0Cp-LE
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2022 12:30:50 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id y9so4840691pff.12
+        for <linux-mtd@lists.infradead.org>; Thu, 07 Jul 2022 05:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WpJSj+10jDxel+mpKutSYvc+nWQYQ3afAUsJ/It2YN0=;
+        b=nirKL1QWHP36hMwqbfs7j/3M3CnFOdyU/mhq6mjzaNOZVW8BJhiMuFxnDbifijLiv2
+         EU6RLfK8UYogFyr6hO57mF6rQ2LcQPznrIJ+WoCCADtotE105rv5ly07PyR/sPehMWpn
+         JiDpSPcxYzoGeevzVUxFzoBhc7Es+fnpAWlMTYQhM+9gVj2ErKPIhF7aTQZIvy3L1BkX
+         prLdikSsA/noeiCaShNHE0E5dYn2Aa+xzRQPnAaN0n5WGo1ulKGTDVLAiB4vOb8YVk84
+         VabbgRlpFN5/hLdDxGunqNQ/DbcICvb+B3MQa/M2pBn8ozzLx5u97X4erW4whBY3ZOlD
+         UReg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WpJSj+10jDxel+mpKutSYvc+nWQYQ3afAUsJ/It2YN0=;
+        b=PaPT0rfDOgvKkUF98xANRECuQKp2BhFvk3hxZbXM+Vtqmyi8BAqX27bBXHCWlU5hv4
+         4qPvg7lcht8l92lBJf+POX7TcOx2I5ITd6YiJyTVksIMGy7De/TgMapMdDJ0PggmaSr9
+         bHaZPOpaCpXth/6tXJ+40tc4D2EMHiN5/pRNVzuloiDc/ArJ1gPnXAbzv6pL2O+jhhZE
+         w6Ex7NklA+fR+rggdYihN2lL8E8yMre+Z7K6F91IPXvL8PwBgdsVzq1BNVWhYQ+eFvST
+         xDKVoLAYIeYLGo27Iprg3L9+v3SS5u0owAxW7jcpPbEzbV17EJ9/MVanjDDM4BXskkeY
+         ZKGA==
+X-Gm-Message-State: AJIora/cbOKiCGZ5BBrhUgg30rToZotHPwO8vwZHUiXp7wT23UWullqr
+	lQHrVb0q3sC4W8qRpiNuzUk=
+X-Google-Smtp-Source: AGRyM1shHuIiMyP1DQPGo092XN38rExXflU8JvJ88A9rk6HCbBx7m2Zz0/KEEA62b1u3b9+vSTZwFQ==
+X-Received: by 2002:a17:90b:48c7:b0:1ef:a692:9593 with SMTP id li7-20020a17090b48c700b001efa6929593mr5010948pjb.184.1657197045039;
+        Thu, 07 Jul 2022 05:30:45 -0700 (PDT)
+Received: from mi-HP-ProDesk-680-G4-MT.mioffice.cn ([43.224.245.232])
+        by smtp.gmail.com with ESMTPSA id l18-20020a635b52000000b003fba1a97c49sm25884833pgm.61.2022.07.07.05.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jul 2022 05:30:44 -0700 (PDT)
+From: Guowei Du <duguoweisz@gmail.com>
+To: richard@nod.at
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	duguowei <duguowei@xiaomi.com>
+Subject: [PATCH] ubifs: sequence each shrink task
+Date: Thu,  7 Jul 2022 20:30:33 +0800
+Message-Id: <20220707123033.29042-1-duguoweisz@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-In-Reply-To: <YsaUgfPbOg7WuBuB@kroah.com>
-Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220707_014508_157468_FC540254 
-X-CRM114-Status: GOOD (  10.54  )
+X-CRM114-CacheID: sfid-20220707_053048_758113_81402C82 
+X-CRM114-Status: GOOD (  19.92  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -121,89 +82,116 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+From: duguowei <duguowei@xiaomi.com>
 
+Because of 'list_move_tail', if two or more tasks are shrinking, there
+will be different results for them.
 
-On 7/7/2022 4:08 PM, Greg KH wrote:
-> On Thu, Jul 07, 2022 at 02:56:34PM +0800, kernel test robot wrote:
->> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
->> branch HEAD: 088b9c375534d905a4d337c78db3b3bfbb52c4a0  Add linux-next specific files for 20220706
->>
->> Error/Warning reports:
->>
->> https://lore.kernel.org/linux-doc/202207070644.x48XOOvs-lkp@intel.com
->>
->> Error/Warning: (recently discovered and may have been fixed)
->>
->> Documentation/arm/google/chromebook-boot-flow.rst: WARNING: document isn't included in any toctree
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1108): undefined reference to `__aeabi_ddiv'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1124): undefined reference to `__aeabi_ui2d'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1164): undefined reference to `__aeabi_dmul'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1170): undefined reference to `__aeabi_dadd'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1180): undefined reference to `__aeabi_dsub'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1190): undefined reference to `__aeabi_d2uiz'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x162c): undefined reference to `__aeabi_d2iz'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x16b0): undefined reference to `__aeabi_i2d'
->> dc_dmub_srv.c:(.text+0x10f8): undefined reference to `__aeabi_ui2d'
->> dc_dmub_srv.c:(.text+0x464): undefined reference to `__floatunsidf'
->> dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x33c): undefined reference to `__floatunsidf'
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:975:5: warning: no previous prototype for 'pci_read' [-Wmissing-prototypes]
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:984:5: warning: no previous prototype for 'pci_write' [-Wmissing-prototypes]
->> drivers/vfio/vfio_iommu_type1.c:2141:35: warning: cast to smaller integer type 'enum iommu_cap' from 'void *' [-Wvoid-pointer-to-enum-cast]
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x34c): undefined reference to `__floatunsidf'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x378): undefined reference to `__divdf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x38c): undefined reference to `__muldf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3a0): undefined reference to `__adddf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3b4): undefined reference to `__subdf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3d4): undefined reference to `__fixunsdfsi'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x750): undefined reference to `__fixdfsi'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x7c0): undefined reference to `__floatsidf'
->> powerpc-linux-ld: drivers/pci/endpoint/functions/pci-epf-vntb.c:174: undefined reference to `ntb_link_event'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x468): undefined reference to `__divdf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x46c): undefined reference to `__muldf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x470): undefined reference to `__adddf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x474): undefined reference to `__subdf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x478): undefined reference to `__fixunsdfsi'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x47c): undefined reference to `__fixdfsi'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x480): undefined reference to `__floatsidf'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x60c): undefined reference to `__floatunsidf'
->>
->> Unverified Error/Warning (likely false positive, please contact us if interested):
->>
->> arch/x86/events/core.c:2114 init_hw_perf_events() warn: missing error code 'err'
->> drivers/android/binder.c:1481:19-23: ERROR: from is NULL but dereferenced.
->> drivers/android/binder.c:2920:29-33: ERROR: target_thread is NULL but dereferenced.
->> drivers/android/binder.c:353:25-35: ERROR: node -> proc is NULL but dereferenced.
->> drivers/android/binder.c:4888:16-20: ERROR: t is NULL but dereferenced.
->> drivers/base/regmap/regmap.c:1996:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/char/random.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/gpu/drm/amd/display/dc/os_types.h: drm/drm_print.h is included more than once.
->> drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/greybus/operation.c:617:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> 
-> <snip>
-> 
-> When the compiler crashes, why are you blaming all of these different
-> mailing lists?  Perhaps you need to fix your compiler :)
-> 
-> thanks,
-> 
-> greg k-h
-> 
+For example:
+After the first round, if shrink_run_no of entry equals run_no of task,
+task will break directly at the beginning of next round; if they are
+not equal, task will continue to shrink until encounter one entry
+which has the same number.
 
-Hi Greg,
+It is difficult to confirm the real results of all tasks, so add a lock
+to only allow one task to shrink at the same time.
 
-Sorry for the inconvience, we'll fix it ASAP.
+Signed-off-by: duguowei <duguowei@xiaomi.com>
+---
+ fs/ubifs/shrinker.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-Best Regards,
-Rong Chen
+diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
+index d00a6f20ac7b..900644ef432d 100644
+--- a/fs/ubifs/shrinker.c
++++ b/fs/ubifs/shrinker.c
+@@ -42,6 +42,9 @@ static unsigned int shrinker_run_no;
+ /* Protects 'ubifs_infos' list */
+ DEFINE_SPINLOCK(ubifs_infos_lock);
+ 
++/* Sequence each shrink task*/
++DEFINE_SPINLOCK(ubifs_shrink_lock);
++
+ /* Global clean znode counter (for all mounted UBIFS instances) */
+ atomic_long_t ubifs_clean_zn_cnt;
+ 
+@@ -145,13 +148,12 @@ static int shrink_tnc_trees(int nr, int age, int *contention)
+ {
+ 	struct ubifs_info *c;
+ 	struct list_head *p;
+-	unsigned int run_no;
+ 	int freed = 0;
+ 
+ 	spin_lock(&ubifs_infos_lock);
+-	do {
+-		run_no = ++shrinker_run_no;
+-	} while (run_no == 0);
++	shrinker_run_no++;
++	if (shrinker_run_no == 0)
++		shrinker_run_no = 1;
+ 	/* Iterate over all mounted UBIFS file-systems and try to shrink them */
+ 	p = ubifs_infos.next;
+ 	while (p != &ubifs_infos) {
+@@ -160,7 +162,7 @@ static int shrink_tnc_trees(int nr, int age, int *contention)
+ 		 * We move the ones we do to the end of the list, so we stop
+ 		 * when we see one we have already done.
+ 		 */
+-		if (c->shrinker_run_no == run_no)
++		if (c->shrinker_run_no == shrinker_run_no)
+ 			break;
+ 		if (!mutex_trylock(&c->umount_mutex)) {
+ 			/* Some un-mount is in progress, try next FS */
+@@ -183,7 +185,7 @@ static int shrink_tnc_trees(int nr, int age, int *contention)
+ 		 * OK, now we have TNC locked, the file-system cannot go away -
+ 		 * it is safe to reap the cache.
+ 		 */
+-		c->shrinker_run_no = run_no;
++		c->shrinker_run_no = shrinker_run_no;
+ 		freed += shrink_tnc(c, nr, age, contention);
+ 		mutex_unlock(&c->tnc_mutex);
+ 		spin_lock(&ubifs_infos_lock);
+@@ -283,7 +285,9 @@ unsigned long ubifs_shrink_scan(struct shrinker *shrink,
+ 	int contention = 0;
+ 	unsigned long freed;
+ 	long clean_zn_cnt = atomic_long_read(&ubifs_clean_zn_cnt);
++	int ret = 0;
+ 
++	spin_lock(&ubifs_shrink_lock);
+ 	if (!clean_zn_cnt) {
+ 		/*
+ 		 * No clean znodes, nothing to reap. All we can do in this case
+@@ -293,7 +297,9 @@ unsigned long ubifs_shrink_scan(struct shrinker *shrink,
+ 		 * later.
+ 		 */
+ 		dbg_tnc("no clean znodes, kick a thread");
+-		return kick_a_thread();
++		ret = kick_a_thread();
++		spin_unlock(&ubifs_shrink_lock);
++		return ret;
+ 	}
+ 
+ 	freed = shrink_tnc_trees(nr, OLD_ZNODE_AGE, &contention);
+@@ -310,10 +316,12 @@ unsigned long ubifs_shrink_scan(struct shrinker *shrink,
+ 
+ 	if (!freed && contention) {
+ 		dbg_tnc("freed nothing, but contention");
++		spin_unlock(&ubifs_shrink_lock);
+ 		return SHRINK_STOP;
+ 	}
+ 
+ out:
+ 	dbg_tnc("%lu znodes were freed, requested %lu", freed, nr);
++	spin_unlock(&ubifs_shrink_lock);
+ 	return freed;
+ }
+-- 
+2.36.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
