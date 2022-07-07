@@ -4,124 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4539FC433EF
-	for <linux-mtd@archiver.kernel.org>; Thu,  7 Jul 2022 14:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F293BCCA47F
+	for <linux-mtd@archiver.kernel.org>; Thu,  7 Jul 2022 14:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ZZqTC+JJODa0tI8QFNA8alDbS40VnZ4UjwYd1nCqokI=; b=dj9vbZmk5BEieG
-	iFy9dEWbC+4Lh0gmbaANf8lH4u4Y0ffLy5vrU250JehjIDboS7KgCbqdl9QeyRoPUvvRm17evgdQr
-	yYgzs45bcuYpLHNQgI1S6nHlQLWW7gK47HGVf5uGxlC97A0FmsLTXkoMRHltfQuqC0yQXpW6XFKUk
-	63Bqk68z26B0+qPGdixTmJrwaUQ4vd7WsTuURC4wRxlHMOVeA1CDoSI1hrBMaf0CF1n49NGLxtHHm
-	R3UOgbDtNitIVSEREM+X3e89JhoZglBJdaJbP4ReEDeMRjzubNoI6DDlugo9Gp+U/YqETnYGnmXxF
-	y5CWODtNrwIWwui9mhlw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:Message-ID:Date
+	:Subject:To:From:Reply-To:Cc:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=zUs/ojoNpiJfZgVFhIkzty0AtpDJ5rtGf3PaZBpop9E=; b=3HYXpyl84iUIHN
+	pi1UPH0u2lTKaRw8FwlY5S57I5a1cldJEUoNeC97ZXQ07UMouEzGRk3e4/Oy6zURxNSrUlDVkp4vk
+	7v6UninS9xs9NZTDKvOxtlkM/xU46bLdU8LZUIvSvIw2PD/zJIji3S2jajJWgfWpMoVHCYFPnD7X5
+	fTxfxospWpYnH1UqKgQoMLUdzHBu8U1jaMbCJGdJUlAx6n+gkLWw0umNtHZtwgSMAbP+APuL2lnSx
+	J7DdN18O8quHjRG+exgq88CJhSCz/6JFb2to0acBRgv9L/W0/m3L+aFECiyikL9MkxOhktmpyq10H
+	F/hDLIFpj38HRL6Jsl1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9S60-00GOrL-MK; Thu, 07 Jul 2022 14:03:08 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1o9SvQ-00GeWS-Bw; Thu, 07 Jul 2022 14:56:16 +0000
+Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75] helo=NAM12-DM6-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9S5w-00GOmb-SQ; Thu, 07 Jul 2022 14:03:06 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id j3so6934638pfb.6;
-        Thu, 07 Jul 2022 07:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=afbiyF16Fd4Ewaaf3EKKCpvpR7aHAsNAQp7K3TuQXs4=;
-        b=EzpeppBfdoHkOWruUNAYNHzOi8S5lBuVkWR/uarc/O7MDVJ2qM1NUNdy3hxzZeKinw
-         1f6tPe15AftcBiSP1Sugt5jiQpAKlLcyz+gPyHgHTvK6IkiuSg6SYHkmzqBCpGaHkm3K
-         GirawtqITR+EFkG0pF8QxPm0bxzk97EH7JYJxQXFRi4d1kRfsZVOuxKRapjByLByJ3DF
-         qAVqAZfaAfJT+F8T/W2rPtPmXy6/uaYwejGaDWQ5Frl3XCXwsQlqWF67lU3BIXdseGBS
-         CTJ5pH+oR76s++4uNTCxHCZwHNyWF4xdxY3ay2k5fQlKGRbstnEbIjnAVDZkl7wMQgN9
-         oSpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=afbiyF16Fd4Ewaaf3EKKCpvpR7aHAsNAQp7K3TuQXs4=;
-        b=N1Pm889/ZxFEDqfLXpSp3Pulplms+j8WQItLnmqecLAcF1WB2akH+TmTy/FmGml2/g
-         zRSb+TjdUU6ZILaoXpBAnxekmDO29NhfUPNp6ThNUbpwFhwXpFj76HLWQydqAqjttPO9
-         rsn/+dnFMrmiqiYdyTdIhNOF0RwSJfoxKsQ0BhArZsZ+xXeL8aI5+8dYzfPx3GjuLE4H
-         Isn6n75mNhBJ8c6SXZMtimr9f6eK2nw3hhg+5xDwXPMqpjk7rOWbuoKmow1AJR3TAbie
-         YUq67PbqmcmTKX7eOXB9HCz/eVJUWf26sFCrbJSeABCiOo8JJE6m1UesCXnIbwlVf7j8
-         qdFA==
-X-Gm-Message-State: AJIora/KahlyT5YYkbmw7be7XMyX9GGAIzTECmINdwRfdJFYT6BBNI9j
-	miSSyh9tairCSSaBnCOFfNQ=
-X-Google-Smtp-Source: AGRyM1uGEg1zRLKU3mt/8yK/HfEqKFBdv1eoQpzxhqHLW6DjIp1gLh6JEsU/RWRdBfoHFypH/TfaNQ==
-X-Received: by 2002:a17:90b:4c8f:b0:1ec:cdd0:41b7 with SMTP id my15-20020a17090b4c8f00b001eccdd041b7mr5420238pjb.119.1657202580508;
-        Thu, 07 Jul 2022 07:03:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k127-20020a632485000000b004148cbdd4e5sm1215293pgk.57.2022.07.07.07.02.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jul 2022 07:02:59 -0700 (PDT)
-Date: Thu, 7 Jul 2022 07:02:58 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: kernel test robot <lkp@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	virtualization@lists.linux-foundation.org,
-	usbb2k-api-dev@nongnu.org, tipc-discussion@lists.sourceforge.net,
-	target-devel@vger.kernel.org, sound-open-firmware@alsa-project.org,
-	samba-technical@lists.samba.org, rds-devel@oss.oracle.com,
-	patches@opensource.cirrus.com, osmocom-net-gprs@lists.osmocom.org,
-	openipmi-developer@lists.sourceforge.net, nvdimm@lists.linux.dev,
-	ntb@lists.linux.dev, netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
-	megaraidlinux.pdl@broadcom.com, linuxppc-dev@lists.ozlabs.org,
-	linux1394-devel@lists.sourceforge.net, linux-x25@vger.kernel.org,
-	linux-wpan@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux-watchdog@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
-	linux-sctp@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-raid@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-phy@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-parport@lists.infradead.org,
-	linux-parisc@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-nfc@lists.01.org, linux-mtd@lists.infradead.org,
-	linux-mmc@vger.kernel.org, linux-mm@kvack.org,
-	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-	linux-leds@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-fpga@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-efi@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-cxl@vger.kernel.org, linux-crypto@vger.kernel.org,
-	linux-clk@vger.kernel.org, linux-cifs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org, linaro-mm-sig@lists.linaro.org,
-	legousb-devel@lists.sourceforge.net, kvm@vger.kernel.org,
-	keyrings@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
-	iommu@lists.linux.dev, iommu@lists.linux-foundation.org,
-	intel-wired-lan@lists.osuosl.org, greybus-dev@lists.linaro.org,
-	dri-devel@lists.freedesktop.org, dm-devel@redhat.com,
-	devicetree@vger.kernel.org, dev@openvswitch.org,
-	dccp@vger.kernel.org, damon@lists.linux.dev, coreteam@netfilter.org,
-	cgroups@vger.kernel.org, ceph-devel@vger.kernel.org,
-	ath11k@lists.infradead.org, apparmor@lists.ubuntu.com,
-	amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
-	accessrunner-general@lists.sourceforge.net
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 088b9c375534d905a4d337c78db3b3bfbb52c4a0
-Message-ID: <20220707140258.GA3492673@roeck-us.net>
-References: <62c683a2.g1VSVt6BrQC6ZzOz%lkp@intel.com>
- <YsaUgfPbOg7WuBuB@kroah.com>
+	id 1o9SvM-00GeUT-Qs
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2022 14:56:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UZthMR6lVux4P/eOd8frRrJgIO6u8TLWIulXEeVUxFhyRXq8pmHGkuCnc1Q66GppbZye/kTj+i9Wb3/Tl/x0Sa1O2m+43ONs6oteEs5VFifw41ArCii/EQLifkNoq7bf3P+N9EbAbrf3nrUWx2Lyv6Gk8pNjADXDekuh6KWZaK2+T+RFR+mUt32Iid+gTLAvvDdVhGfwSkySQXC1KJGkxzJ98+A2yp7Zx/8XrC0oe4FKsOGKMjCMUSbS79q3qLtiIcWxQUuJoVuksWDliH//bY0uxBxNyehTIk71GdU9flmACaSy9GyvQY1MCFKOlyQU/7lvCPNGyraA0vtRntBP3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LUmf2jD8PqqBIAFzbA1rfqiyWM4kMPniFJHzMKosyS8=;
+ b=DcTBhtDolcSHnsZ/KF/zADP0pnCuRr7aK/tJJVGnxAgj9jradaVsuZfOG/IESmfqh5mczaP9eoiQZvDEngytzW+s/t45/BehblD7DF17fwVvxB6QCFLcspsjhAwt5mnF6CwBtlYSHfpE7/T10cveYaXK/BBfkEruifzIsaIrh2DCBL2/U575AwaxcCdYnxIaZbZjBt0rZsIyodMdyNaclWcCLZIaZbygla9vRujB+XrvKOxnmXSUiODWjdw9RZbOSSmhUGxZa8ecmcEJgGpFTDa6WtPW9hXgeCy1rzvd4k1a2zvRYGG/usCFb/HtWx+hlE+0KjfQk3JHJ1WECeTHjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LUmf2jD8PqqBIAFzbA1rfqiyWM4kMPniFJHzMKosyS8=;
+ b=Jmn9+cItepwBWt6tCVrDcxV6kUu1RLKH1kvyyhpocAk5KLikJlD+hOID2mgK5qW+PsT5Bv5j6U3KDTXqO7ik6HlAgfpkP3VrTzk+/AroDnuEUKLCnOTwiEbvo58/oOPgfwfbo6SS3VjWvTDQhx9XQwlYL9J65U3y/TBRNwQItGc=
+Received: from PH0PR10MB4615.namprd10.prod.outlook.com (2603:10b6:510:36::24)
+ by CY5PR10MB6264.namprd10.prod.outlook.com (2603:10b6:930:40::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Thu, 7 Jul
+ 2022 14:56:09 +0000
+Received: from PH0PR10MB4615.namprd10.prod.outlook.com
+ ([fe80::88b4:c67c:e2e2:7dbe]) by PH0PR10MB4615.namprd10.prod.outlook.com
+ ([fe80::88b4:c67c:e2e2:7dbe%8]) with mapi id 15.20.5417.016; Thu, 7 Jul 2022
+ 14:56:09 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: mtd:<myname> mount syntax unique to jffs2 ?
+Thread-Topic: mtd:<myname> mount syntax unique to jffs2 ?
+Thread-Index: AQHYkhGwK/2xwm/gQEK75xrq4FBaBw==
+Date: Thu, 7 Jul 2022 14:56:08 +0000
+Message-ID: <e4e609da8c962c5c1b5d53137e9d112affb582cd.camel@infinera.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.3 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=infinera.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f51e8759-a5aa-436a-fe11-08da6028d376
+x-ms-traffictypediagnostic: CY5PR10MB6264:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:  H1RpXWJChh5v6JqCt0lYQyLFiL6+T1yRhxDE7r/s+I8fRGPlvIjuVKZHEVMiYrAiwPmzpbdgMa87LNg0RIRnSXuZHpFlfmSbLEHVknKMbLKP5h9eYebIxQcKooEyYcH/rb9TcKFcTXPVnBtew5ZX95EslQFA+eqUr7wDNBEhljtmzT6ToF5nQEs5URIbYFr8QR9V8f0q7jKAoqcsdoXn8uqZxNi6PNh6hz/LR9ElndHtPx+FT/67CRJC8tY8I3wH9G18L9ZAdOyVeqRRXLqg4az/GKm5e8ct6hUuQbf6AJYEvQ7z5eGjObSF1o1hbNdiYSqI6qazveCRogVV+LeXezfiswbrE/MvsVnD1z7zB927C4OXyM6FfKuZRyryriE2ATt7ebOmdUJgOVoPUPopMHuu7RUVnhTcYhkF19thCDKgcCW8sNFYGEleLQ3bMf6AiXX/UDyvh0MK5QAPw2eQJ0PAU04WEce+bjIZ/RUaxGcYq7enhTK1nQEENSYY/ODB8lTWKJzZTga8/hbQNht6ENHQdqG+qKiTKOngaC6oeVYKwZiyy9QtCdZwdN/XMaD8frIVyWgljmc2e/ZrqFaELTO28MM3/utqQWo0X5CZTiWM1z0kF2V55eLnEMx1MdigurLgvjSlERhkwkRDrKEiZ9BBU512aXjvmakp/55NqXsDfRJkvfz35HXbzQSvpI+spUcpK46GM2DB5zC+NukLJrlIiZfeaoYx40/Sz/rZP8oPUoUJwRMxBIblt566DPM+SmJ5X4X+TZ5AdBABcY6+G1/tSPOur63YmiAnZix/NYmihXeIGh9ncVvvhiZfIeUl
+x-forefront-antispam-report:  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4615.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(346002)(366004)(376002)(39860400002)(136003)(41300700001)(5660300002)(478600001)(71200400001)(6486002)(8936002)(316002)(86362001)(38100700002)(558084003)(2906002)(66946007)(66446008)(91956017)(6916009)(186003)(66556008)(64756008)(8676002)(76116006)(66476007)(2616005)(36756003)(26005)(38070700005)(6506007)(6512007)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:  =?utf-8?B?TTdiZGUxRWZWVEJoVTdyN1ZLQmxzMC9ZQ2tkeE5vRCtBcE91MVVkTE9CMGMv?=
+ =?utf-8?B?R3NrQWo4Yk11QmZ3c3RCTFZUTkExNHh4S1N6RlJJMko3RkFhUE5xb21qWVB3?=
+ =?utf-8?B?MTkwQi9CaG1vL3RQMU1jODBLTWNZMXAzamxpcTRKb3VlZTdyUjBzVm1mTUdn?=
+ =?utf-8?B?WVljbkVKTTdqS1BCaGFZaWRSemRWdlNuR0FhK2FjUFY3Y2VLVjV5UWRwakw3?=
+ =?utf-8?B?Vmt2ZDNHNlZpdEpBWktOOTFUYm10RE5lTGVibC9vZ01oUzdhbDMxeGFCWCtP?=
+ =?utf-8?B?ZU9KUzk1TzhiSjV0cmozVEZqOEx3ZzYxSzllZEFIcWxSZmpIRnJzVUhwK1pT?=
+ =?utf-8?B?QlJOcTk0SHBaWk1jdTlFZWQ3dkF4bWorOFFOOWRxNWNOb3NxTld5UWhKMzdO?=
+ =?utf-8?B?VEFzZlFxTElxd2szNXE0OWxiOUtCMmhtbkFqNzhSbjdtMEFEd3c2MmdwVWxq?=
+ =?utf-8?B?NjBtem9qTHhnYVVSU25uUmRqdTN1aDlEa0tRS3A4d2ZaTm15dmpTeSs1VzNW?=
+ =?utf-8?B?Mk1WeDZXQ0hRZ2gySExRWXYyNWpmcm5aR0ZUbDYrZ1IzZjVUdnZUOURGcFhp?=
+ =?utf-8?B?ZmJmRTRSVmxhQWZ5Sml5b25FTDYzNTd0VGhldUdkMzNTWGdnSVpON0V4VCsr?=
+ =?utf-8?B?ei9qK25vV2dZcXFtVXd6VVN3a3VTT015KzBhK2hrdGNrSmxEVzFTczQ0bkt2?=
+ =?utf-8?B?am5vWFdyTy9mbnR6bXdIblNVTnlMK0RobkkrNkF4eUd2WmY5VVBPY1AzSjky?=
+ =?utf-8?B?blpWR0JuNVd2VUFxWjhHQWZmZ3h1aGgvZ01tMGJYUWE1SDBIYXkwNHZPMUND?=
+ =?utf-8?B?QXhZOEkwVkhQaGFDZEE5RTJYZUZMY3p4S1lCSHpqdXRLY011U1I1Q0dCOGZC?=
+ =?utf-8?B?YzJIUzNpZElGajNrczJINU9ObnAyVFhRd0R6Y0tpN0dyMThOTDFSamx4dGd0?=
+ =?utf-8?B?bjFtYzVhQUd5Q3RzMy95Tkx6Tm1KSmtzQUFnNjluc3dTUkJiSWlSdGt2Q0Ew?=
+ =?utf-8?B?Y2MzTXByVGE0UnVpb3BHVFNRN0hwekd0VDk3RmRzSjJzdEZ6QVRocXBZY0tq?=
+ =?utf-8?B?Z2N1WlRuNDZmd0kram0xdEFLMFFLTEJSSkYyUGdZOEx3eWorTWRrNGdJeTIw?=
+ =?utf-8?B?a0NDU1JWZUZML0pvNVRkRHN5MHAxWUhMVDRlZThweWVLQWh1Y2FiYlJoRFlT?=
+ =?utf-8?B?bVo2a1VoWUQ0eGtxNElGWEhDak9STUt1NmVBdmRtSmlKSmtHcHk2bWxrWlo3?=
+ =?utf-8?B?RTR1U2N0U1pDZ244dVkwNElUeEpHRnJzYTlTVVZ1YVo0WmZmckwyYkEzRC9H?=
+ =?utf-8?B?T1JycEFWdytKSUYvTHRTQytPdDVxSnJZSDdyMVZGdDZXVUplcnRhL2ZybWRQ?=
+ =?utf-8?B?Ry84NFYwcUJ6NzhQUkc2MTZVY3BQZ2tuaFpXbmtaWWRCZVlDaW9tN3RaU3J4?=
+ =?utf-8?B?YUJTc2V5Y0JucGdzR25WQ0NOWHlFcm1ja1dFWVpWdFlmTVlTMC9QaTlLbDZh?=
+ =?utf-8?B?TkthUjU0ck9QNTgybUpOdTQ2Yk1UWkk5QWZuTlBWQzFzRDJuOThvVXpZeXZs?=
+ =?utf-8?B?U3NoTEhZV09SY1JRdWxBQ1EwZTVOWjFmS0dncDZkN0M2NTBQdHdhVEJlM3ht?=
+ =?utf-8?B?TkgreGhyOHNNZ3hmWHV0NFlJOFhLdFRvSTdGd1Jlam8vWjhmMDZNRnF0d3pZ?=
+ =?utf-8?B?NTRpeEM5akJmNnEwTEV5a3loZi9RZGo2UFBLOWtpVTRNT0xvYTJnZWZ4bW9q?=
+ =?utf-8?B?cEFoZ21yWW4wRm1GeXJKcGtqTUZMcVJRYWEycnV5ektEQVJKWnNpTzRzVUxO?=
+ =?utf-8?B?L3FYZjJXL01IbUtwaGZDTEJDYnJIWFdheGpsdVdOWUNKZEdEUFNhMkU0YnN5?=
+ =?utf-8?B?eExpQjJnNVQweWdXcXMrUHRSNmRRaTFQenBxUzB5NlZFeDdYOC8yOVMxeVl4?=
+ =?utf-8?B?dmlNTnpZelp1MG1IdlZRQ25rUnRySnc1OUtqcWlhMDZ6QWZxdjEzVzlPc2Ew?=
+ =?utf-8?B?Q2taTWRoMWpxODlQa1k5Q2pzVkJQVVdUT2dNNmFmaWljT3B0SU5aWDVaTmxw?=
+ =?utf-8?B?ZUQ1WWUya2NYbTdoMlRvMkswSm9YUjByZlRucmpjREU5WGlHS0RReFpGcjVl?=
+ =?utf-8?Q?VTlAZc9cqLSCzxz4LGe6IrazY?=
+Content-ID: <E37A535E9EAB0241AE8C5EAF0248039B@namprd10.prod.outlook.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <YsaUgfPbOg7WuBuB@kroah.com>
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4615.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f51e8759-a5aa-436a-fe11-08da6028d376
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jul 2022 14:56:08.8939
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: N5+lEVGqmtEbxs3JPhRWPTSBaEBbqH1Tne6nWuHNI8ficI0qmUkALcvf2BGH38r7WU9aqY8oJzItNVjY8ZawjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6264
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220707_070304_956905_F5982C70 
-X-CRM114-Status: GOOD (  10.68  )
+X-CRM114-CacheID: sfid-20220707_075613_154901_80A377FC 
+X-CRM114-Status: UNSURE (   7.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,38 +141,10 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 07, 2022 at 10:08:33AM +0200, Greg KH wrote:
+Why does "mtd:myrootfs" work to mount jffs2 rootfs but not squashfs?
+What does squashfs need to support the same ?
 
-[ ... ]
-> > 
-> > Unverified Error/Warning (likely false positive, please contact us if interested):
-> > 
-> > arch/x86/events/core.c:2114 init_hw_perf_events() warn: missing error code 'err'
-> > drivers/android/binder.c:1481:19-23: ERROR: from is NULL but dereferenced.
-> > drivers/android/binder.c:2920:29-33: ERROR: target_thread is NULL but dereferenced.
-> > drivers/android/binder.c:353:25-35: ERROR: node -> proc is NULL but dereferenced.
-> > drivers/android/binder.c:4888:16-20: ERROR: t is NULL but dereferenced.
-> > drivers/base/regmap/regmap.c:1996:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> > drivers/char/random.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> > drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> > drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> > drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> > drivers/gpu/drm/amd/display/dc/os_types.h: drm/drm_print.h is included more than once.
-> > drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> > drivers/greybus/operation.c:617:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
-> 
-> <snip>
-> 
-> When the compiler crashes, why are you blaming all of these different
-> mailing lists?  Perhaps you need to fix your compiler :)
-> 
-
-To be fair, it says above "likely false positive, please contact us
-if interested". Also, the 32-bit build errors _are_ real, and the NULL
-dereferences in the binder driver are at the very least suspicious.
-
-Guenter
-
+ Jocke
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
