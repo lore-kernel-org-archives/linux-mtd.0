@@ -4,58 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C1E0C43334
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jul 2022 11:14:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8D7FC43334
+	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jul 2022 13:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:Message-ID:References:
-	CC:To:From:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mh0GeOp5vZZLiPH6BK0cANi87kfAP/G4AO8cPxKbb+s=; b=G2bBN4CZ3aL9KZnpNq5gaB7Ce9
-	I8+7+UnDycBeNLQbd475nxee75vGwKNasFohM094+8ccPWRNrKHbL4remF+bYCPyipyEdUqbA2fwl
-	foG7bhdkuTx7U5u2OGGG+OZKiH7bXKeUPVqsjdV5qruQFr+1DT0NqSmjwf8/8z7bJUMaPe3LrgSnO
-	XaovlxzP0pxAJb6Q8WVa77x6O9VML4kI0z1fhvUPSnzJ7WU5U5gpOxzge17NrGFjzSikBQ7n4tIrn
-	YvriIZCNmMdVj/uLTFreGPtqcX7fASoA792sNku1O1cqVox3Y/EX0zIozDKaUNrQEzEYiFJhAmufv
-	SgIjRXYQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=i1Su++4w2ro75aC+bDxA6e88+kChjXKaeQ1ReQi16y4=; b=4vGVlSH3F1UXm5
+	PFGD4GEabOJeHsaIXz4drjDjN/JicLA8UZt6njjc2e9luzUr5ecZlfpM2gH9jVcNneuXPM6HzaqTz
+	eglS0VNW9y9j3o1ECaADfpTLzyXGDKNh3JlhveWOyvxKstt8Te57AVXb8GVykX0YUux9P1i4ubMWe
+	MRkDvvxaCtfpUt73kqbyH0keg54aPAdrZKVJFaoNXEs5N58LnLzV0LvAGhbVuAB+ulXBRFu4dB4TN
+	IDxxKE0kVHkMH0HX0XNzoehGiz1/kx7j8SVDHkVVQFpVs+at451638EmlTvarKdK1zNbODWRPpeg3
+	jV+bTinIs7v7x+6Co0bQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9lwe-003MCJ-MM; Fri, 08 Jul 2022 11:14:48 +0000
-Received: from szxga08-in.huawei.com ([45.249.212.255])
+	id 1o9oPo-0040FT-Ih; Fri, 08 Jul 2022 13:53:04 +0000
+Received: from esa2.hc353-39.eu.iphmx.com ([207.54.65.204])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9lwb-003MBi-2V
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2022 11:14:47 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LfVwp4ZBlz1L9Fg;
-	Fri,  8 Jul 2022 19:12:10 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 8 Jul 2022 19:14:38 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 8 Jul 2022 19:14:37 +0800
-Subject: Re: [PATCH -next] ubifs: Fix some kernel-doc comments
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: Yang Li <yang.lee@linux.alibaba.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, "Abaci
- Robot" <abaci@linux.alibaba.com>
-References: <20220602055233.26161-1-yang.lee@linux.alibaba.com>
- <2df4d326-c59a-52d2-c5aa-02954ddca97a@huawei.com>
-Message-ID: <7f4a0b5d-373f-0cb4-f1ea-5712d08a6bdb@huawei.com>
-Date: Fri, 8 Jul 2022 19:14:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	id 1o9oPj-0040Cy-KL
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2022 13:53:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=sequans.com; i=@sequans.com; l=3587; q=dns/txt;
+  s=corp; t=1657288379; x=1688824379;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GE2pGw+Q9401rO85bl3JUB6YoTd2ET+kVwSytIbJiFg=;
+  b=H2fnggVjNGfyip8NQamnsQpeHdvjzYs7Au7pOwRRqvYvps251FlCjqEp
+   aN488Jx7773djHn4hDS2OAMWMoU29j1t712tRsmcmlY3F5kY16EFOHtPo
+   0FrK44EjCDQ2f1p8/KwPGINGFWh86urgiiXbLbw8bKzpB9Un1Hf5Gtmq2
+   4=;
+X-IPAS-Result: =?us-ascii?q?A2F4AADDNchil5bSIB9agliEfZVcnHiBfAsBAQEBAQEBA?=
+ =?us-ascii?q?QEJQgSFBoUOJzQJDgECBAEBAQEDAgMBAQEBAQEDAQEBBQEBAQEBAQYCAQEBA?=
+ =?us-ascii?q?QIQAQEBAQEBAQEJGwYMBRA1hS9GgjUig3crCwFGgVGCfYMZo1QBjBkygQGIG?=
+ =?us-ascii?q?oFlgT2JXIVjgUlEglGCLIURhW4EmBWDBgMJBAcFXRKBH2wBCAQGBwoFMAYCD?=
+ =?us-ascii?q?BgUBAITElMKDAISDAoZDg5DFwwPAxIDDwEHAgkQCBIlCAMCAwgDAgMbCwIDF?=
+ =?us-ascii?q?gkOAx0IChgSEBICBBEaCwgDFj8JAgQOA0IIDgMRBAMPGAkSCBAEBgMyDCULA?=
+ =?us-ascii?q?xQNAQYDBgIFBQEDIAMUAwUkBwMhDyYNDQQiHQMDBSUDAgIbBwICAwIGFQYCA?=
+ =?us-ascii?q?j8tOQgECAQrJA8FAgcvBQQvAh4EBQYRCAIWAgYEBQIEBBYCEAgCCCcXBxMzG?=
+ =?us-ascii?q?QEFWRAJIRwnEAUGFQMhbwUHPg8oNDY8LB8bCoEWLCsWAwQEAwIGGgMDIgIQK?=
+ =?us-ascii?q?QYyAxUGKxUVGhMMKl8GIh2dEAEwXYJpPZUiq26DWZ9+S4N1km04kUuWd6J4h?=
+ =?us-ascii?q?B8wgT8ighZNI4M4URkPjXYBQo45czsCBgsBAQMJjwUBAQ?=
+IronPort-PHdr: A9a23:R2H0KhbVvxzhjxQEwPSwgKP/LTHu14qcDmcuAnoPtbtCf+yZ8oj4O
+ wSHvLMx1gSPBNuEoKwUw8Pt8InYEVQa5piAtH1QOLdtbDQizfssogo7HcSeAlf6JvO5JwYzH
+ cBFSUM3tyrjaRsdF8nxfUDdrWOv5jAOBBr/KRB1JuPoEYLOksi7ze+/94PdbglSmTawYLF/I
+ Bq3oAjSq8IbnZZsJqEtxxXTv3BGYf5WxWRmJVKSmxbz+MK994N9/ipTpvws6ddOXb31cKokQ
+ 7NYCi8mM30u683wqRbDVwqP6WACXWgQjxFFHhLK7BD+Xpf2ryv6qu9w0zSUMMHqUbw5Xymp4
+ qF2QxHqlSgHLSY0/mHJhMFukaxVrhGvqRtwzIDbe4yZKPlzc7nBcd4AWWZNQsBcXDFBDIOma
+ IsPCvIMMulCoIn5uVQOqwe+BQiqBOjyzzFIgWX20rM80+s6FQHG3RAgFM8JvXTKr9X1M70SX
+ v6zzKbTyTXDbu9W1Czm6IfWaxAhvOuDXbRrccbL1UYvEAbFg0yWpIf4MDybyv4DvHKH7+p8S
+ +2vkWgnphlsrzWuwsogl4bEi4AaxF7E+yh0zpo4K9K5RUJnfdOoDJReuzybOoZ1XM4vR2Blt
+ DgnxrMJtpC2fzUHxIonyRPBbfGMbouG4gr7WeufPDt0nnxodKylixqs7ESs1vfwWtS03VpWq
+ CdOj8PCuWoX1xPJ78iKUv59/kC81jmRzw3T8eREIVwslarcNp4h3qY8lpoNvkTHGS/7gET3j
+ K6Tdko/4Oin8f7rYq74qZ+FKo97kAf+Mr80lsOjBuQ4NxACX2md+euiyL3u5UP0TKhQgvA4j
+ KXVqo7WKdkHqqKjHgNY0pov5w66Dzi80dQYmXcHLEhCeBKCl4XpJVLOIPfiDfihhVSjizNrx
+ /HaPrD6GZXCMGHDkKr7crZ78E5Q0hY8zdda555MDLEOO+r8WlXtu9zAEh85Lwu0zv7mBdllz
+ IMRRXqPArOFMKPVqVKI4+MvI/CRZIALvDbxMeIl6OTujH8/g1AdebKk0oAQaHC/AvRmJ0SZY
+ Xz2jtgdFmcKuxIyTPb2h12aTT5Te3GyUrok5jE6D4KmEZ3DRpu2jbOdxii0A4NZZmZaBV+SC
+ 3vna4KEW/IUZCKIPsBhiiAEVaSmS4I52hGuswr6y71hLurT5C0ZtY7s1Nhu6u3ckBE97z10D
+ 8CH326RSGF0m3sERyUq06BnvUx91lCD3LB8g/xZCNxT/PNJUgY1NJ7dyex2Fcv/WgLcftiTR
+ lepXNSmDSstQdI2xt8Ce1x9FMm6jhDfwyqqBKcYlryWBJMq8qLTxXnxKN18y3bA26kslFkmQ
+ tZVOmyomKF/9hLfCJLOk0Wcj6qqb7gT3DbR9GefymqDpEVYUA92UaXYUnETf07Wrcjk6U7ZS
+ 7+uCK8nMhdaycKYK6tKbNPpjU9cS/j+JtvReX++l323BRaSybPfJLbtLmEc2jjNTU0YnygX/
+ G2aLk4/ACm7qm7TBTAoEkjgMG329uwrlnq/Q0kozgfCTEp72ry//h8JzaiCSPQJ07QOvCY9g
+ y55BUu02cmQAN2F8VkyNJ5AaM8wtQ8UnVnSsBZwa8TIEg==
+IronPort-Data: A9a23:kz3AbK+bzqL0j0WAKv1dDrUDeX6TJUtcMsCJ2f8bNWPcYEJGY0x3n
+ WoaXTvUa6rYZWajLdp+Pt6//U9XvMSAnNdkSQc6rywxFiIbosfsO42lIxarNUt+DCFioGFPv
+ 55OOoeYfKjYaleG+39B55C49SEUOYegGOKkUIYoHQguGVQ7IMsZoUs/3bZ/2OaEuPDha++3k
+ YqaT/b3ZRn0gVaYDkpOs/jZ8Ew37Kyo0N8llgVWic5j7Qe2e0Y9Ucp3yZGZdxMUlaENQ4ZW7
+ 86apF2I1juxEyUFU7tJoZ6iGqE+eYM+CCDX4pZgc/b920AS9nJuukoMHKN0hU9/011llvgrm
+ IUV7fRcQy9wVkHHsL11vxVwTHsmZcWqUVIISJSymZX78qHIT5fj6+gtK2QkPqQBw+9+D2tu8
+ NEmOg8XdB/W0opawJrjIgVtrtYiKcPxNcUEt2h9xDfCS/0hRPgvQY2RvJkDhnFq35gIRKuGD
+ yYaQWMHgBDofR5IIFoRApY/gM+zi2DiejtD7lmSoMLb5kCIk1Eqiea1WDbTUviPVfdZoBnJn
+ VjX/jjWKTYACubD6gPQpxpAgceVx3qhA+r+DoaQ8/9znVCXgHYaGRsfUXOxpv6ljk+4HdlYL
+ iQ84ispsbIp3EeiQtT7VBD+q3mB1jYTXN9XFeok+QqN4qXR6gedQGMDS1ZpbN07r883VT0sj
+ HeJgtr2CD0pu7qQIVqM67qUpDK4OC4aBW8fbDAJTE0O5NyLiIUyiA/fC9N/HIaxj8bpAnfxx
+ T6QpSQzjrlVitQEv5hX5njVgjemvJGPVQMs+wzRRSSu6QYRiJOZi5KA9Bv8yORDBZ+gR1CPt
+ lgBtvaM0/oUAsTY/MCSe9nhDI1F9t7cbmCD2wczQMl7n9i+0yLzLdsKulmSMG8zbp5bJFcFd
+ WeK4WtsCIlv0GyCQ5Ufj2iZM80wzLOI+T/NCa2MN4ImjnRZ3+mD8WRiaAu+xWnrm0VErE3eB
+ Xt4WZ/3ZZriIf47pAdavs9EuVPR+ggwxHnIWbfwxAm93LyVaRa9EOlYbwHXPr5isPLf8W05F
+ uqz0ePXm32zt8WgOkHqHXI7fTjm0FBkXcGt9pQLHgJ9ClM2Rz54YxMu/V/RU9Y/xv4O/gs51
+ nu6R15X1VfkzWHKLQiBbXULVV8cdcgXkJ7PBgR1ZQzA8yF6Oe6Htf5PH7NqLehP3LEylpZcE
+ qhaE/hs99wSE1wrDRxGNsKjxGGjHTz27T+z092NO2dkJ8EwH1CYo7cJvGLHrUEzM8Z+juNmy
+ 5XI6+8RacNrq9hKZCoOVM+S8g==
+IronPort-HdrOrdr: A9a23:+ReGJq2sx7PvAnoTzCM12QqjBKUkLtp133Aq2lEZdPWaSKylfq
+ eV7ZImPHDP+VQssR0b9+xoW5PwJk80i6QFhLX5VI3KNGKK1ASVxepZnOjfKlPbehEWjtQtsZ
+ uIrJIVNOHN
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.92,255,1650924000"; 
+   d="scan'208";a="3753160"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-Virus-Scanned: amavisd-new at sequans.com
+From: Valentin Korenblit <vkorenblit@sequans.com>
+To: linux-mtd@lists.infradead.org
+Cc: piotrs@cadence.com,
+	yuehaibing@huawei.com,
+	gomonovych@gmail.com,
+	miquel.raynal@bootlin.com,
+	liushixin2@huawei.com,
+	Valentin Korenblit <vkorenblit@sequans.com>
+Subject: [PATCH 1/1] mtd: rawnand: cadence: support 64-bit slave dma interface
+Date: Fri,  8 Jul 2022 15:52:47 +0200
+Message-Id: <20220708135247.26122-1-vkorenblit@sequans.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <2df4d326-c59a-52d2-c5aa-02954ddca97a@huawei.com>
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220708_041445_474190_E0E3D6AD 
-X-CRM114-Status: GOOD (  10.71  )
+X-CRM114-CacheID: sfid-20220708_065300_033444_68775079 
+X-CRM114-Status: GOOD (  14.52  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,54 +124,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-5ZyoIDIwMjIvNy84IDE3OjE3LCBaaGloYW8gQ2hlbmcg5YaZ6YGTOgo+IOWcqCAyMDIyLzYvMiAx
-Mzo1MiwgWWFuZyBMaSDlhpnpgZM6Cj4+IFJlbW92ZSB3YXJuaW5ncyBmb3VuZCBieSBydW5uaW5n
-IHNjcmlwdHMva2VybmVsLWRvYywKPj4gd2hpY2ggaXMgY2F1c2VkIGJ5IHVzaW5nICdtYWtlIFc9
-MScuCj4+IGZzL3ViaWZzL2pvdXJuYWwuYzoxMjIxOiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJhbWV0
-ZXIgb3IgbWVtYmVyCj4+ICdvbGRfaW5vZGUnIG5vdCBkZXNjcmliZWQgaW4gJ3ViaWZzX2pubF9y
-ZW5hbWUnCj4+IGZzL3ViaWZzL2pvdXJuYWwuYzoxMjIxOiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJh
-bWV0ZXIgb3IgbWVtYmVyICdvbGRfbm0nCj4+IG5vdCBkZXNjcmliZWQgaW4gJ3ViaWZzX2pubF9y
-ZW5hbWUnCj4+IGZzL3ViaWZzL2pvdXJuYWwuYzoxMjIxOiB3YXJuaW5nOiBGdW5jdGlvbiBwYXJh
-bWV0ZXIgb3IgbWVtYmVyCj4+ICduZXdfaW5vZGUnIG5vdCBkZXNjcmliZWQgaW4gJ3ViaWZzX2pu
-bF9yZW5hbWUnCj4+IGZzL3ViaWZzL2pvdXJuYWwuYzoxMjIxOiB3YXJuaW5nOiBGdW5jdGlvbiBw
-YXJhbWV0ZXIgb3IgbWVtYmVyICduZXdfbm0nCj4+IG5vdCBkZXNjcmliZWQgaW4gJ3ViaWZzX2pu
-bF9yZW5hbWUnCj4+IGZzL3ViaWZzL2pvdXJuYWwuYzoxMjIxOiB3YXJuaW5nOiBGdW5jdGlvbiBw
-YXJhbWV0ZXIgb3IgbWVtYmVyCj4+ICd3aGl0ZW91dCcgbm90IGRlc2NyaWJlZCBpbiAndWJpZnNf
-am5sX3JlbmFtZScKPj4gZnMvdWJpZnMvam91cm5hbC5jOjEyMjE6IHdhcm5pbmc6IEV4Y2VzcyBm
-dW5jdGlvbiBwYXJhbWV0ZXIgJ29sZF9kZW50cnknCj4+IGRlc2NyaXB0aW9uIGluICd1Ymlmc19q
-bmxfcmVuYW1lJwo+PiBmcy91Ymlmcy9qb3VybmFsLmM6MTIyMTogd2FybmluZzogRXhjZXNzIGZ1
-bmN0aW9uIHBhcmFtZXRlciAnbmV3X2RlbnRyeScKPj4gZGVzY3JpcHRpb24gaW4gJ3ViaWZzX2pu
-bF9yZW5hbWUnCj4+Cj4+IFJlcG9ydGVkLWJ5OiBBYmFjaSBSb2JvdCA8YWJhY2lAbGludXguYWxp
-YmFiYS5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFlhbmcgTGkgPHlhbmcubGVlQGxpbnV4LmFsaWJh
-YmEuY29tPgo+PiAtLS0KPj4gwqAgZnMvdWJpZnMvam91cm5hbC5jIHwgNyArKysrKy0tCj4+IMKg
-IDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+Cj4+IGRp
-ZmYgLS1naXQgYS9mcy91Ymlmcy9qb3VybmFsLmMgYi9mcy91Ymlmcy9qb3VybmFsLmMKPj4gaW5k
-ZXggNzVkYWIwYWUzOTM5Li4xNjg1N2Q0ZTlhYTggMTAwNjQ0Cj4+IC0tLSBhL2ZzL3ViaWZzL2pv
-dXJuYWwuYwo+PiArKysgYi9mcy91Ymlmcy9qb3VybmFsLmMKPj4gQEAgLTEyMDEsOSArMTIwMSwx
-MiBAQCBpbnQgdWJpZnNfam5sX3hyZW5hbWUoc3RydWN0IHViaWZzX2luZm8gKmMsIAo+PiBjb25z
-dCBzdHJ1Y3QgaW5vZGUgKmZzdF9kaXIsCj4+IMKgwqAgKiB1Ymlmc19qbmxfcmVuYW1lIC0gcmVu
-YW1lIGEgZGlyZWN0b3J5IGVudHJ5Lgo+PiDCoMKgICogQGM6IFVCSUZTIGZpbGUtc3lzdGVtIGRl
-c2NyaXB0aW9uIG9iamVjdAo+PiDCoMKgICogQG9sZF9kaXI6IHBhcmVudCBpbm9kZSBvZiBkaXJl
-Y3RvcnkgZW50cnkgdG8gcmVuYW1lCj4+IC0gKiBAb2xkX2RlbnRyeTogZGlyZWN0b3J5IGVudHJ5
-IHRvIHJlbmFtZQo+PiArICogQG9sZF9pbm9kZTogcGFyZW50IGlub2RlIHRvIHJlbmFtZQo+PiAr
-ICogQG9sZF9ubTogbmFtZSBvZiBvbGQgaW5vZGUgdG8gcmVuYW1lCj4+IMKgwqAgKiBAbmV3X2Rp
-cjogcGFyZW50IGlub2RlIG9mIGRpcmVjdG9yeSBlbnRyeSB0byByZW5hbWUKPj4gLSAqIEBuZXdf
-ZGVudHJ5OiBuZXcgZGlyZWN0b3J5IGVudHJ5IChvciBkaXJlY3RvcnkgZW50cnkgdG8gcmVwbGFj
-ZSkKPj4gKyAqIEBuZXdfaW5vZGU6IG5ldyBpbm9kZSB0byByZW5hbWUKPj4gKyAqIEBuZXdfbm06
-IG5hbWUgb2YgbmV3IGlub2RlIHRvIHJlbmFtZQo+PiArICogQHdoaXRlb3V0OiB3aGl0ZW91dCBp
-bm9kZQo+PiDCoMKgICogQHN5bmM6IG5vbi16ZXJvIGlmIHRoZSB3cml0ZS1idWZmZXIgaGFzIHRv
-IGJlIHN5bmNocm9uaXplZAo+PiDCoMKgICoKPj4gwqDCoCAqIFRoaXMgZnVuY3Rpb24gaW1wbGVt
-ZW50cyB0aGUgcmUtbmFtZSBvcGVyYXRpb24gd2hpY2ggbWF5IGludm9sdmUgCj4+IHdyaXRpbmcg
-dXAKPj4KPiBSZXZpZXdlZC1ieTogWmhpaGFvIENoZW5nIDxjaGVuZ3poaWhhbzFAaHVhd2VpLmNv
-bT4KUGxlYXNlIGlnbm9yZSB0aGlzIHJldmlldyB0YWcsIHNvcnJ5IGZvciB0aGlzIG1pc3Rha2Vu
-IHJlcGx5LCB0aGUgcmV2aWV3IAp0YWcgaXMgZm9yIHYyLgo+IAo+IAo+IF9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExpbnV4IE1URCBkaXNj
-dXNzaW9uIG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtbXRkLwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCg==
+32-bit accesses on 64-bit sdma trigger sdma_err in intr_status register.
+
+Check dma capabilities before reading/writing from/to sdma interface.
+
+Signed-off-by: Valentin Korenblit <vkorenblit@sequans.com>
+---
+ .../mtd/nand/raw/cadence-nand-controller.c    | 56 +++++++++++++++----
+ 1 file changed, 44 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
+index 0b52c1280cf8..9e3216cc1d8e 100644
+--- a/drivers/mtd/nand/raw/cadence-nand-controller.c
++++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
+@@ -1882,17 +1882,33 @@ static int cadence_nand_read_buf(struct cdns_nand_ctrl *cdns_ctrl,
+ 		return status;
+ 
+ 	if (!cdns_ctrl->caps1->has_dma) {
+-		int len_in_words = len >> 2;
++		u8 data_dma_width = cdns_ctrl->caps2.data_dma_width;
++
++		int len_in_words = (data_dma_width == 4) ? len >> 2 : len >> 3;
+ 
+ 		/* read alingment data */
+-		ioread32_rep(cdns_ctrl->io.virt, buf, len_in_words);
++		if (data_dma_width == 4)
++			ioread32_rep(cdns_ctrl->io.virt, buf, len_in_words);
++		else
++			ioread64_rep(cdns_ctrl->io.virt, buf, len_in_words);
++
+ 		if (sdma_size > len) {
++			int read_bytes = (data_dma_width == 4) ?
++				len_in_words << 2 : len_in_words << 3;
++
+ 			/* read rest data from slave DMA interface if any */
+-			ioread32_rep(cdns_ctrl->io.virt, cdns_ctrl->buf,
+-				     sdma_size / 4 - len_in_words);
++			if (data_dma_width == 4)
++				ioread32_rep(cdns_ctrl->io.virt,
++					     cdns_ctrl->buf,
++					     sdma_size / 4 - len_in_words);
++			else
++				ioread64_rep(cdns_ctrl->io.virt,
++					     cdns_ctrl->buf,
++					     sdma_size / 8 - len_in_words);
++
+ 			/* copy rest of data */
+-			memcpy(buf + (len_in_words << 2), cdns_ctrl->buf,
+-			       len - (len_in_words << 2));
++			memcpy(buf + read_bytes, cdns_ctrl->buf,
++			       len - read_bytes);
+ 		}
+ 		return 0;
+ 	}
+@@ -1936,16 +1952,32 @@ static int cadence_nand_write_buf(struct cdns_nand_ctrl *cdns_ctrl,
+ 		return status;
+ 
+ 	if (!cdns_ctrl->caps1->has_dma) {
+-		int len_in_words = len >> 2;
++		u8 data_dma_width = cdns_ctrl->caps2.data_dma_width;
++
++		int len_in_words = (data_dma_width == 4) ? len >> 2 : len >> 3;
++
++		if (data_dma_width == 4)
++			iowrite32_rep(cdns_ctrl->io.virt, buf, len_in_words);
++		else
++			iowrite64_rep(cdns_ctrl->io.virt, buf, len_in_words);
+ 
+-		iowrite32_rep(cdns_ctrl->io.virt, buf, len_in_words);
+ 		if (sdma_size > len) {
++			int written_bytes = (data_dma_width == 4) ?
++				len_in_words << 2 : len_in_words << 3;
++
+ 			/* copy rest of data */
+-			memcpy(cdns_ctrl->buf, buf + (len_in_words << 2),
+-			       len - (len_in_words << 2));
++			memcpy(cdns_ctrl->buf, buf + written_bytes,
++			       len - written_bytes);
++
+ 			/* write all expected by nand controller data */
+-			iowrite32_rep(cdns_ctrl->io.virt, cdns_ctrl->buf,
+-				      sdma_size / 4 - len_in_words);
++			if (data_dma_width == 4)
++				iowrite32_rep(cdns_ctrl->io.virt,
++					      cdns_ctrl->buf,
++					      sdma_size / 4 - len_in_words);
++			else
++				iowrite64_rep(cdns_ctrl->io.virt,
++					      cdns_ctrl->buf,
++					      sdma_size / 8 - len_in_words);
+ 		}
+ 
+ 		return 0;
+-- 
+2.20.1
+
+-- IMPORTANT NOTICE:
+
+
+
+The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium.
+
+
+
+Thank you.
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
