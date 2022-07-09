@@ -4,115 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8D7FC43334
-	for <linux-mtd@archiver.kernel.org>; Fri,  8 Jul 2022 13:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0415AC433EF
+	for <linux-mtd@archiver.kernel.org>; Sat,  9 Jul 2022 08:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=i1Su++4w2ro75aC+bDxA6e88+kChjXKaeQ1ReQi16y4=; b=4vGVlSH3F1UXm5
-	PFGD4GEabOJeHsaIXz4drjDjN/JicLA8UZt6njjc2e9luzUr5ecZlfpM2gH9jVcNneuXPM6HzaqTz
-	eglS0VNW9y9j3o1ECaADfpTLzyXGDKNh3JlhveWOyvxKstt8Te57AVXb8GVykX0YUux9P1i4ubMWe
-	MRkDvvxaCtfpUt73kqbyH0keg54aPAdrZKVJFaoNXEs5N58LnLzV0LvAGhbVuAB+ulXBRFu4dB4TN
-	IDxxKE0kVHkMH0HX0XNzoehGiz1/kx7j8SVDHkVVQFpVs+at451638EmlTvarKdK1zNbODWRPpeg3
-	jV+bTinIs7v7x+6Co0bQ==;
+	List-Owner; bh=hW5HEvMEGtk+9+TNS65Y5XpTJEyyXxImo9up8ZJCmfY=; b=qDSQlcnW7aBgQw
+	l4LPierVRhjjwxX7yKm5OoOiqdZ+iB84UE2JH74ErBFnMPdCQ3gjUC0kxPY23uH8J9Irh8tMp9tKL
+	yP58W5o0Si4Z3c501AvAJq/x6hf3T27P4q/EeGW6hs76sPEbM4tA6AE/ABED5xQwWtt33++Zn2yU0
+	g33eO66x9tfQhwohwviqNwiXRyRQ/vuflcpHqv8EFcuT6hBhcHxGXKBdBYgbsvs+oVLNO+D619KSx
+	N7vtbW7RJo7ov8c3+V0LmdYHYQHK+4PEkBddWm84LO6D1lc1c6hZ5mfv7r+YrNToISylCESIzdKI1
+	lfDawaS7XLTPE/FGb0VA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9oPo-0040FT-Ih; Fri, 08 Jul 2022 13:53:04 +0000
-Received: from esa2.hc353-39.eu.iphmx.com ([207.54.65.204])
+	id 1oA5t4-007MF9-4j; Sat, 09 Jul 2022 08:32:26 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o9oPj-0040Cy-KL
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2022 13:53:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=sequans.com; i=@sequans.com; l=3587; q=dns/txt;
-  s=corp; t=1657288379; x=1688824379;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GE2pGw+Q9401rO85bl3JUB6YoTd2ET+kVwSytIbJiFg=;
-  b=H2fnggVjNGfyip8NQamnsQpeHdvjzYs7Au7pOwRRqvYvps251FlCjqEp
-   aN488Jx7773djHn4hDS2OAMWMoU29j1t712tRsmcmlY3F5kY16EFOHtPo
-   0FrK44EjCDQ2f1p8/KwPGINGFWh86urgiiXbLbw8bKzpB9Un1Hf5Gtmq2
-   4=;
-X-IPAS-Result: =?us-ascii?q?A2F4AADDNchil5bSIB9agliEfZVcnHiBfAsBAQEBAQEBA?=
- =?us-ascii?q?QEJQgSFBoUOJzQJDgECBAEBAQEDAgMBAQEBAQEDAQEBBQEBAQEBAQYCAQEBA?=
- =?us-ascii?q?QIQAQEBAQEBAQEJGwYMBRA1hS9GgjUig3crCwFGgVGCfYMZo1QBjBkygQGIG?=
- =?us-ascii?q?oFlgT2JXIVjgUlEglGCLIURhW4EmBWDBgMJBAcFXRKBH2wBCAQGBwoFMAYCD?=
- =?us-ascii?q?BgUBAITElMKDAISDAoZDg5DFwwPAxIDDwEHAgkQCBIlCAMCAwgDAgMbCwIDF?=
- =?us-ascii?q?gkOAx0IChgSEBICBBEaCwgDFj8JAgQOA0IIDgMRBAMPGAkSCBAEBgMyDCULA?=
- =?us-ascii?q?xQNAQYDBgIFBQEDIAMUAwUkBwMhDyYNDQQiHQMDBSUDAgIbBwICAwIGFQYCA?=
- =?us-ascii?q?j8tOQgECAQrJA8FAgcvBQQvAh4EBQYRCAIWAgYEBQIEBBYCEAgCCCcXBxMzG?=
- =?us-ascii?q?QEFWRAJIRwnEAUGFQMhbwUHPg8oNDY8LB8bCoEWLCsWAwQEAwIGGgMDIgIQK?=
- =?us-ascii?q?QYyAxUGKxUVGhMMKl8GIh2dEAEwXYJpPZUiq26DWZ9+S4N1km04kUuWd6J4h?=
- =?us-ascii?q?B8wgT8ighZNI4M4URkPjXYBQo45czsCBgsBAQMJjwUBAQ?=
-IronPort-PHdr: A9a23:R2H0KhbVvxzhjxQEwPSwgKP/LTHu14qcDmcuAnoPtbtCf+yZ8oj4O
- wSHvLMx1gSPBNuEoKwUw8Pt8InYEVQa5piAtH1QOLdtbDQizfssogo7HcSeAlf6JvO5JwYzH
- cBFSUM3tyrjaRsdF8nxfUDdrWOv5jAOBBr/KRB1JuPoEYLOksi7ze+/94PdbglSmTawYLF/I
- Bq3oAjSq8IbnZZsJqEtxxXTv3BGYf5WxWRmJVKSmxbz+MK994N9/ipTpvws6ddOXb31cKokQ
- 7NYCi8mM30u683wqRbDVwqP6WACXWgQjxFFHhLK7BD+Xpf2ryv6qu9w0zSUMMHqUbw5Xymp4
- qF2QxHqlSgHLSY0/mHJhMFukaxVrhGvqRtwzIDbe4yZKPlzc7nBcd4AWWZNQsBcXDFBDIOma
- IsPCvIMMulCoIn5uVQOqwe+BQiqBOjyzzFIgWX20rM80+s6FQHG3RAgFM8JvXTKr9X1M70SX
- v6zzKbTyTXDbu9W1Czm6IfWaxAhvOuDXbRrccbL1UYvEAbFg0yWpIf4MDybyv4DvHKH7+p8S
- +2vkWgnphlsrzWuwsogl4bEi4AaxF7E+yh0zpo4K9K5RUJnfdOoDJReuzybOoZ1XM4vR2Blt
- DgnxrMJtpC2fzUHxIonyRPBbfGMbouG4gr7WeufPDt0nnxodKylixqs7ESs1vfwWtS03VpWq
- CdOj8PCuWoX1xPJ78iKUv59/kC81jmRzw3T8eREIVwslarcNp4h3qY8lpoNvkTHGS/7gET3j
- K6Tdko/4Oin8f7rYq74qZ+FKo97kAf+Mr80lsOjBuQ4NxACX2md+euiyL3u5UP0TKhQgvA4j
- KXVqo7WKdkHqqKjHgNY0pov5w66Dzi80dQYmXcHLEhCeBKCl4XpJVLOIPfiDfihhVSjizNrx
- /HaPrD6GZXCMGHDkKr7crZ78E5Q0hY8zdda555MDLEOO+r8WlXtu9zAEh85Lwu0zv7mBdllz
- IMRRXqPArOFMKPVqVKI4+MvI/CRZIALvDbxMeIl6OTujH8/g1AdebKk0oAQaHC/AvRmJ0SZY
- Xz2jtgdFmcKuxIyTPb2h12aTT5Te3GyUrok5jE6D4KmEZ3DRpu2jbOdxii0A4NZZmZaBV+SC
- 3vna4KEW/IUZCKIPsBhiiAEVaSmS4I52hGuswr6y71hLurT5C0ZtY7s1Nhu6u3ckBE97z10D
- 8CH326RSGF0m3sERyUq06BnvUx91lCD3LB8g/xZCNxT/PNJUgY1NJ7dyex2Fcv/WgLcftiTR
- lepXNSmDSstQdI2xt8Ce1x9FMm6jhDfwyqqBKcYlryWBJMq8qLTxXnxKN18y3bA26kslFkmQ
- tZVOmyomKF/9hLfCJLOk0Wcj6qqb7gT3DbR9GefymqDpEVYUA92UaXYUnETf07Wrcjk6U7ZS
- 7+uCK8nMhdaycKYK6tKbNPpjU9cS/j+JtvReX++l323BRaSybPfJLbtLmEc2jjNTU0YnygX/
- G2aLk4/ACm7qm7TBTAoEkjgMG329uwrlnq/Q0kozgfCTEp72ry//h8JzaiCSPQJ07QOvCY9g
- y55BUu02cmQAN2F8VkyNJ5AaM8wtQ8UnVnSsBZwa8TIEg==
-IronPort-Data: A9a23:kz3AbK+bzqL0j0WAKv1dDrUDeX6TJUtcMsCJ2f8bNWPcYEJGY0x3n
- WoaXTvUa6rYZWajLdp+Pt6//U9XvMSAnNdkSQc6rywxFiIbosfsO42lIxarNUt+DCFioGFPv
- 55OOoeYfKjYaleG+39B55C49SEUOYegGOKkUIYoHQguGVQ7IMsZoUs/3bZ/2OaEuPDha++3k
- YqaT/b3ZRn0gVaYDkpOs/jZ8Ew37Kyo0N8llgVWic5j7Qe2e0Y9Ucp3yZGZdxMUlaENQ4ZW7
- 86apF2I1juxEyUFU7tJoZ6iGqE+eYM+CCDX4pZgc/b920AS9nJuukoMHKN0hU9/011llvgrm
- IUV7fRcQy9wVkHHsL11vxVwTHsmZcWqUVIISJSymZX78qHIT5fj6+gtK2QkPqQBw+9+D2tu8
- NEmOg8XdB/W0opawJrjIgVtrtYiKcPxNcUEt2h9xDfCS/0hRPgvQY2RvJkDhnFq35gIRKuGD
- yYaQWMHgBDofR5IIFoRApY/gM+zi2DiejtD7lmSoMLb5kCIk1Eqiea1WDbTUviPVfdZoBnJn
- VjX/jjWKTYACubD6gPQpxpAgceVx3qhA+r+DoaQ8/9znVCXgHYaGRsfUXOxpv6ljk+4HdlYL
- iQ84ispsbIp3EeiQtT7VBD+q3mB1jYTXN9XFeok+QqN4qXR6gedQGMDS1ZpbN07r883VT0sj
- HeJgtr2CD0pu7qQIVqM67qUpDK4OC4aBW8fbDAJTE0O5NyLiIUyiA/fC9N/HIaxj8bpAnfxx
- T6QpSQzjrlVitQEv5hX5njVgjemvJGPVQMs+wzRRSSu6QYRiJOZi5KA9Bv8yORDBZ+gR1CPt
- lgBtvaM0/oUAsTY/MCSe9nhDI1F9t7cbmCD2wczQMl7n9i+0yLzLdsKulmSMG8zbp5bJFcFd
- WeK4WtsCIlv0GyCQ5Ufj2iZM80wzLOI+T/NCa2MN4ImjnRZ3+mD8WRiaAu+xWnrm0VErE3eB
- Xt4WZ/3ZZriIf47pAdavs9EuVPR+ggwxHnIWbfwxAm93LyVaRa9EOlYbwHXPr5isPLf8W05F
- uqz0ePXm32zt8WgOkHqHXI7fTjm0FBkXcGt9pQLHgJ9ClM2Rz54YxMu/V/RU9Y/xv4O/gs51
- nu6R15X1VfkzWHKLQiBbXULVV8cdcgXkJ7PBgR1ZQzA8yF6Oe6Htf5PH7NqLehP3LEylpZcE
- qhaE/hs99wSE1wrDRxGNsKjxGGjHTz27T+z092NO2dkJ8EwH1CYo7cJvGLHrUEzM8Z+juNmy
- 5XI6+8RacNrq9hKZCoOVM+S8g==
-IronPort-HdrOrdr: A9a23:+ReGJq2sx7PvAnoTzCM12QqjBKUkLtp133Aq2lEZdPWaSKylfq
- eV7ZImPHDP+VQssR0b9+xoW5PwJk80i6QFhLX5VI3KNGKK1ASVxepZnOjfKlPbehEWjtQtsZ
- uIrJIVNOHN
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.92,255,1650924000"; 
-   d="scan'208";a="3753160"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-X-Virus-Scanned: amavisd-new at sequans.com
-From: Valentin Korenblit <vkorenblit@sequans.com>
-To: linux-mtd@lists.infradead.org
-Cc: piotrs@cadence.com,
-	yuehaibing@huawei.com,
-	gomonovych@gmail.com,
-	miquel.raynal@bootlin.com,
-	liushixin2@huawei.com,
-	Valentin Korenblit <vkorenblit@sequans.com>
-Subject: [PATCH 1/1] mtd: rawnand: cadence: support 64-bit slave dma interface
-Date: Fri,  8 Jul 2022 15:52:47 +0200
-Message-Id: <20220708135247.26122-1-vkorenblit@sequans.com>
-X-Mailer: git-send-email 2.20.1
+	id 1oA5sz-007M91-RR
+	for linux-mtd@lists.infradead.org; Sat, 09 Jul 2022 08:32:24 +0000
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.55])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Lg3J16m2XzlVqW;
+	Sat,  9 Jul 2022 16:30:41 +0800 (CST)
+Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 9 Jul 2022 16:32:12 +0800
+Received: from huawei.com (10.175.101.6) by dggpemm100009.china.huawei.com
+ (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 9 Jul
+ 2022 16:32:11 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yukuai3@huawei.com>,
+	<yi.zhang@huawei.com>
+Subject: [PATCH] ubifs: Fix the issue that UBIFS be read-only due to truncate in the encrypted directory.
+Date: Sat, 9 Jul 2022 16:40:32 +0800
+Message-ID: <20220709084032.831262-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm100009.china.huawei.com (7.185.36.113)
+X-CFilter-Loop: Reflected
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220708_065300_033444_68775079 
-X-CRM114-Status: GOOD (  14.52  )
+X-CRM114-CacheID: sfid-20220709_013222_252118_E9BE45E1 
+X-CRM114-Status: GOOD (  20.60  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -129,110 +69,141 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-32-bit accesses on 64-bit sdma trigger sdma_err in intr_status register.
+The ubifs_compress() function does not compress the data When the
+data length is short than 128 bytes or the compressed data length
+is not ideal.It cause that the compressed length of the truncated
+data in the truncate_data_node() function may be greater than the
+length of the raw data read from the flash.
 
-Check dma capabilities before reading/writing from/to sdma interface.
+The above two lengths are transferred to the ubifs_encrypt()
+function as parameters. This may lead to assertion fails and then
+the file system becomes read-only.
 
-Signed-off-by: Valentin Korenblit <vkorenblit@sequans.com>
+This patch use the actual length of the data in the memory as the
+input parameter for assert comparison, which avoids the problem.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216213
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
 ---
- .../mtd/nand/raw/cadence-nand-controller.c    | 56 +++++++++++++++----
- 1 file changed, 44 insertions(+), 12 deletions(-)
+ fs/ubifs/crypto.c  | 11 +++++++++++
+ fs/ubifs/journal.c | 28 +++++++++++++++++-----------
+ 2 files changed, 28 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-index 0b52c1280cf8..9e3216cc1d8e 100644
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -1882,17 +1882,33 @@ static int cadence_nand_read_buf(struct cdns_nand_ctrl *cdns_ctrl,
- 		return status;
+diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
+index c57b46a352d8..3125e76376ee 100644
+--- a/fs/ubifs/crypto.c
++++ b/fs/ubifs/crypto.c
+@@ -24,6 +24,17 @@ static bool ubifs_crypt_empty_dir(struct inode *inode)
+ 	return ubifs_check_dir_empty(inode) == 0;
+ }
  
- 	if (!cdns_ctrl->caps1->has_dma) {
--		int len_in_words = len >> 2;
-+		u8 data_dma_width = cdns_ctrl->caps2.data_dma_width;
-+
-+		int len_in_words = (data_dma_width == 4) ? len >> 2 : len >> 3;
++/**
++ * ubifs_encrypt - Encrypt data.
++ * @inode: inode which refers to the data node
++ * @dn: data node to encrypt
++ * @in_len: length of data to be compressed
++ * @out_len: allocated memory size for the data area of @dn
++ * @block: logical block number of the block
++ *
++ * This function encrypt a possibly-compressed data in the data node.
++ * The encrypted data length will store in @out_len.
++ */
+ int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
+ 		  unsigned int in_len, unsigned int *out_len, int block)
+ {
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 75dab0ae3939..2b1d7c4297bf 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -1472,23 +1472,25 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
+  * @block: data block number
+  * @dn: data node to re-compress
+  * @new_len: new length
++ * @dn_size: size of the data node @dn in memory
+  *
+  * This function is used when an inode is truncated and the last data node of
+  * the inode has to be re-compressed/encrypted and re-written.
+  */
+ static int truncate_data_node(const struct ubifs_info *c, const struct inode *inode,
+ 			      unsigned int block, struct ubifs_data_node *dn,
+-			      int *new_len)
++			      int *new_len, int dn_size)
+ {
+ 	void *buf;
+-	int err, dlen, compr_type, out_len, old_dlen;
++	int err, dlen, compr_type, out_len, data_size;
  
- 		/* read alingment data */
--		ioread32_rep(cdns_ctrl->io.virt, buf, len_in_words);
-+		if (data_dma_width == 4)
-+			ioread32_rep(cdns_ctrl->io.virt, buf, len_in_words);
-+		else
-+			ioread64_rep(cdns_ctrl->io.virt, buf, len_in_words);
-+
- 		if (sdma_size > len) {
-+			int read_bytes = (data_dma_width == 4) ?
-+				len_in_words << 2 : len_in_words << 3;
-+
- 			/* read rest data from slave DMA interface if any */
--			ioread32_rep(cdns_ctrl->io.virt, cdns_ctrl->buf,
--				     sdma_size / 4 - len_in_words);
-+			if (data_dma_width == 4)
-+				ioread32_rep(cdns_ctrl->io.virt,
-+					     cdns_ctrl->buf,
-+					     sdma_size / 4 - len_in_words);
-+			else
-+				ioread64_rep(cdns_ctrl->io.virt,
-+					     cdns_ctrl->buf,
-+					     sdma_size / 8 - len_in_words);
-+
- 			/* copy rest of data */
--			memcpy(buf + (len_in_words << 2), cdns_ctrl->buf,
--			       len - (len_in_words << 2));
-+			memcpy(buf + read_bytes, cdns_ctrl->buf,
-+			       len - read_bytes);
- 		}
- 		return 0;
+ 	out_len = le32_to_cpu(dn->size);
+ 	buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	dlen = old_dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
++	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
++	data_size = dn_size - UBIFS_DATA_NODE_SZ;
+ 	compr_type = le16_to_cpu(dn->compr_type);
+ 
+ 	if (IS_ENCRYPTED(inode)) {
+@@ -1508,11 +1510,11 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
  	}
-@@ -1936,16 +1952,32 @@ static int cadence_nand_write_buf(struct cdns_nand_ctrl *cdns_ctrl,
- 		return status;
  
- 	if (!cdns_ctrl->caps1->has_dma) {
--		int len_in_words = len >> 2;
-+		u8 data_dma_width = cdns_ctrl->caps2.data_dma_width;
-+
-+		int len_in_words = (data_dma_width == 4) ? len >> 2 : len >> 3;
-+
-+		if (data_dma_width == 4)
-+			iowrite32_rep(cdns_ctrl->io.virt, buf, len_in_words);
-+		else
-+			iowrite64_rep(cdns_ctrl->io.virt, buf, len_in_words);
+ 	if (IS_ENCRYPTED(inode)) {
+-		err = ubifs_encrypt(inode, dn, out_len, &old_dlen, block);
++		err = ubifs_encrypt(inode, dn, out_len, &data_size, block);
+ 		if (err)
+ 			goto out;
  
--		iowrite32_rep(cdns_ctrl->io.virt, buf, len_in_words);
- 		if (sdma_size > len) {
-+			int written_bytes = (data_dma_width == 4) ?
-+				len_in_words << 2 : len_in_words << 3;
-+
- 			/* copy rest of data */
--			memcpy(cdns_ctrl->buf, buf + (len_in_words << 2),
--			       len - (len_in_words << 2));
-+			memcpy(cdns_ctrl->buf, buf + written_bytes,
-+			       len - written_bytes);
-+
- 			/* write all expected by nand controller data */
--			iowrite32_rep(cdns_ctrl->io.virt, cdns_ctrl->buf,
--				      sdma_size / 4 - len_in_words);
-+			if (data_dma_width == 4)
-+				iowrite32_rep(cdns_ctrl->io.virt,
-+					      cdns_ctrl->buf,
-+					      sdma_size / 4 - len_in_words);
-+			else
-+				iowrite64_rep(cdns_ctrl->io.virt,
-+					      cdns_ctrl->buf,
-+					      sdma_size / 8 - len_in_words);
- 		}
+-		out_len = old_dlen;
++		out_len = data_size;
+ 	} else {
+ 		dn->compr_size = 0;
+ 	}
+@@ -1550,6 +1552,7 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+ 	struct ubifs_trun_node *trun;
+ 	struct ubifs_data_node *dn;
+ 	int err, dlen, len, lnum, offs, bit, sz, sync = IS_SYNC(inode);
++	int dn_size;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	ino_t inum = inode->i_ino;
+ 	unsigned int blk;
+@@ -1562,10 +1565,13 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+ 	ubifs_assert(c, S_ISREG(inode->i_mode));
+ 	ubifs_assert(c, mutex_is_locked(&ui->ui_mutex));
  
- 		return 0;
+-	sz = UBIFS_TRUN_NODE_SZ + UBIFS_INO_NODE_SZ +
+-	     UBIFS_MAX_DATA_NODE_SZ * WORST_COMPR_FACTOR;
++	dn_size = COMPRESSED_DATA_NODE_BUF_SZ;
+ 
+-	sz += ubifs_auth_node_sz(c);
++	if (IS_ENCRYPTED(inode))
++		dn_size += UBIFS_CIPHER_BLOCK_SIZE;
++
++	sz =  UBIFS_TRUN_NODE_SZ + UBIFS_INO_NODE_SZ +
++		dn_size + ubifs_auth_node_sz(c);
+ 
+ 	ino = kmalloc(sz, GFP_NOFS);
+ 	if (!ino)
+@@ -1596,15 +1602,15 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+ 			if (dn_len <= 0 || dn_len > UBIFS_BLOCK_SIZE) {
+ 				ubifs_err(c, "bad data node (block %u, inode %lu)",
+ 					  blk, inode->i_ino);
+-				ubifs_dump_node(c, dn, sz - UBIFS_INO_NODE_SZ -
+-						UBIFS_TRUN_NODE_SZ);
++				ubifs_dump_node(c, dn, dn_size);
+ 				goto out_free;
+ 			}
+ 
+ 			if (dn_len <= dlen)
+ 				dlen = 0; /* Nothing to do */
+ 			else {
+-				err = truncate_data_node(c, inode, blk, dn, &dlen);
++				err = truncate_data_node(c, inode, blk, dn,
++						&dlen, dn_size);
+ 				if (err)
+ 					goto out_free;
+ 			}
 -- 
-2.20.1
-
--- IMPORTANT NOTICE:
-
-
-
-The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium.
-
-
-
-Thank you.
+2.31.1
 
 
 ______________________________________________________
