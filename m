@@ -4,55 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0415AC433EF
-	for <linux-mtd@archiver.kernel.org>; Sat,  9 Jul 2022 08:33:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A4FC43334
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Jul 2022 06:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=hW5HEvMEGtk+9+TNS65Y5XpTJEyyXxImo9up8ZJCmfY=; b=qDSQlcnW7aBgQw
-	l4LPierVRhjjwxX7yKm5OoOiqdZ+iB84UE2JH74ErBFnMPdCQ3gjUC0kxPY23uH8J9Irh8tMp9tKL
-	yP58W5o0Si4Z3c501AvAJq/x6hf3T27P4q/EeGW6hs76sPEbM4tA6AE/ABED5xQwWtt33++Zn2yU0
-	g33eO66x9tfQhwohwviqNwiXRyRQ/vuflcpHqv8EFcuT6hBhcHxGXKBdBYgbsvs+oVLNO+D619KSx
-	N7vtbW7RJo7ov8c3+V0LmdYHYQHK+4PEkBddWm84LO6D1lc1c6hZ5mfv7r+YrNToISylCESIzdKI1
-	lfDawaS7XLTPE/FGb0VA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=gY6WF/5a+m6n19Z5Arb+TK0lhlCyQc0E4lutGp40EAs=; b=w5Jltxw7CnpIPr
+	pjmWI7NmYNNAQDPy7b80my3WykRntfb+51rZF9CtukOikxL5BxaHZyyGnBKMTxqs6kJMC+BdLQT2H
+	niydgthg8rG5SAb2aJvAI04/G2dhQwtiXYilbDbHpqIfSTI7NipCKd2e1Ebq7bPY0bMIOFBixLI6z
+	vHsf1I+Hkhn0HZ0/aLrgnDcLgrPBtk2L61NMk5H98ppV62Dn91HRZcgnn1E3AofSKsMBM9hSn+6ap
+	FtWjNLH+lnaNbLmpEW4p6LpF+CvJSpnddWjhI3J+gAGIGRuOZvPrJ9Cq9+9YDtIXvAqFZUkig3uXE
+	pZSjZLneqRNSQRUmZ8cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oA5t4-007MF9-4j; Sat, 09 Jul 2022 08:32:26 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1oAQnr-00AtHI-VV; Sun, 10 Jul 2022 06:52:28 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oA5sz-007M91-RR
-	for linux-mtd@lists.infradead.org; Sat, 09 Jul 2022 08:32:24 +0000
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Lg3J16m2XzlVqW;
-	Sat,  9 Jul 2022 16:30:41 +0800 (CST)
-Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 9 Jul 2022 16:32:12 +0800
-Received: from huawei.com (10.175.101.6) by dggpemm100009.china.huawei.com
- (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 9 Jul
- 2022 16:32:11 +0800
-From: ZhaoLong Wang <wangzhaolong1@huawei.com>
-To: <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yukuai3@huawei.com>,
-	<yi.zhang@huawei.com>
-Subject: [PATCH] ubifs: Fix the issue that UBIFS be read-only due to truncate in the encrypted directory.
-Date: Sat, 9 Jul 2022 16:40:32 +0800
-Message-ID: <20220709084032.831262-1-wangzhaolong1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	id 1oAQnn-00AtGh-1R
+	for linux-mtd@lists.infradead.org; Sun, 10 Jul 2022 06:52:25 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id C7F2EB802C6;
+	Sun, 10 Jul 2022 06:52:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06478C3411E;
+	Sun, 10 Jul 2022 06:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1657435939;
+	bh=7TBmHOFj8aLotQi+NQ2mw6iyHWksq0Lkb+HTF1hlO88=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=EdzOQypJQHXW2vpCwso3zkv6h5BbkEJjestrioYypczh6TVT10RRFVGgLWF1Dtfqr
+	 2cTEZk3yKT/kykwejgBnUBFW/rydJVVWVQn0aJ4LMmA/2R9kBB2sM4tC50KSNLNA1r
+	 XAZn0ycUf8KjRBKoPe0+u1VlVTR+aB+sMRgtqlhzr9EFFEdoS9qJpWVx/gGXglqeGx
+	 BDRp4+Fszx9scmBrhGk/6M/PtOIHKOS8Y3HWjZZJAHOPTBT7lRVbZuTSEoojSMAy3D
+	 8UwFsOpTQUYO4r0fr2qWdCE/b64wcEIGA3B9o5iw0T6/aNU22qKicEiovuDWjVaU1y
+	 xMSqEp03Z33Nw==
+Message-ID: <3f04c503-7f48-3c39-083a-aec076706deb@kernel.org>
+Date: Sun, 10 Jul 2022 12:22:13 +0530
 MIME-Version: 1.0
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm100009.china.huawei.com (7.185.36.113)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: raw/omap2: erasing issue
+Content-Language: en-US
+To: Yegor Yefremov <yegorslists@googlemail.com>
+Cc: linux-mtd@lists.infradead.org, Linux-OMAP <linux-omap@vger.kernel.org>,
+ miquel.raynal@bootlin.com
+References: <CAGm1_ktXBp-sz3Dud_G0iqOG=vA=Xp-bj-icwNLVgq-AMqKO7A@mail.gmail.com>
+ <72686231-c372-a4fe-347e-39470790fa65@kernel.org>
+ <CAGm1_kvRuWY7t2d_BtuSLGEL1u4njRqha=D0f7eN9F5XG8GrLQ@mail.gmail.com>
+ <CAGm1_kuucv71AdPkSW8Eog2T9rZRA3uiL4+ok-aWCVsj-z2eew@mail.gmail.com>
+ <5a36197d-7ed5-c06a-0a7e-73b808526dcd@kernel.org>
+ <feff53c6-a38c-1592-b3ef-1ff236da17f9@kernel.org>
+ <CAGm1_kvQ-NA4topLTu2hrQqx6picci8d+AeMVBtw44nJ7mYVow@mail.gmail.com>
+ <25109f4c-110f-b534-1c5a-c571b5c70333@kernel.org>
+ <CAGm1_ku0pGqfi8a++jNYeYNk1Hv9QgxsjKqOtetk8QzrTcFtPg@mail.gmail.com>
+ <981dfc27-cbe5-9672-3647-397e6416578b@kernel.org>
+ <CAGm1_kuXTuhoB1-K=_bFLBicWi5PWuejwO0yhPC6E41RZxe10w@mail.gmail.com>
+ <CAGm1_kuDRuxWGW3rZgaNMNiTm-rUuWe=-5pD0BqRJZBTYtW=EA@mail.gmail.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <CAGm1_kuDRuxWGW3rZgaNMNiTm-rUuWe=-5pD0BqRJZBTYtW=EA@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220709_013222_252118_E9BE45E1 
-X-CRM114-Status: GOOD (  20.60  )
+X-CRM114-CacheID: sfid-20220709_235223_441704_80BCD630 
+X-CRM114-Status: GOOD (  35.43  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,142 +85,270 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-The ubifs_compress() function does not compress the data When the
-data length is short than 128 bytes or the compressed data length
-is not ideal.It cause that the compressed length of the truncated
-data in the truncate_data_node() function may be greater than the
-length of the raw data read from the flash.
+Hello Yegor,
 
-The above two lengths are transferred to the ubifs_encrypt()
-function as parameters. This may lead to assertion fails and then
-the file system becomes read-only.
+On 05/07/2022 17:46, Yegor Yefremov wrote:
+> Hi Roger,
+> 
+> On Mon, Jul 4, 2022 at 12:31 PM Yegor Yefremov
+> <yegorslists@googlemail.com> wrote:
+>>
+>> Hi Roger,
+>>
+>> On Mon, Jul 4, 2022 at 12:28 PM Roger Quadros <rogerq@kernel.org> wrote:
+>>>
+>>> Hello Yegor,
+>>>
+>>> On 04/07/2022 14:28, Yegor Yefremov wrote:
+>>>> Hi Roger,
+>>>>
+>>>> On Thu, Jun 30, 2022 at 1:22 PM Roger Quadros <rogerq@kernel.org> wrote:
+>>>>>
+>>>>> Hi Yegor,
+>>>>>llo 
+>>>>> On 29/06/2022 17:23, Yegor Yefremov wrote:
+>>>>>> Hi Roger,
+>>>>>>
+>>>>>> On Wed, Jun 29, 2022 at 3:44 PM Roger Quadros <rogerq@kernel.org> wrote:
+>>>>>>>
+>>>>>>> Hi Yegor,
+>>>>>>>
+>>>>>>> On 29/06/2022 14:33, Roger Quadros wrote:
+>>>>>>>> Hi Yegor,
+>>>>>>>>
+>>>>>>>> On 28/06/2022 14:59, Yegor Yefremov wrote:
+>>>>>>>>> On Tue, Jun 28, 2022 at 1:57 PM Yegor Yefremov
+>>>>>>>>> <yegorslists@googlemail.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>> Hi Roger,
+>>>>>>>>>>
+>>>>>>>>>> On Tue, Jun 28, 2022 at 1:44 PM Roger Quadros <rogerq@kernel.org> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> Hi Yegor,
+>>>>>>>>>>>
+>>>>>>>>>>> On 28/06/2022 13:48, Yegor Yefremov wrote:
+>>>>>>>>>>>> Since linux 5.17 I get the following issue when doing ubiformat:
+>>>>>>>>>>>>
+>>>>>>>>>>>> # ubiformat -y /dev/mtd5
+>>>>>>>>>>>> ubiformat: mtd5 (nand), size 265945088 bytes (253.6 MiB), 2029
+>>>>>>>>>>>> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+>>>>>>>>>>>> libscan: scanning eraseblock 1097 -- 54 % complete  eth1 timed out to bring up
+>>>>>>>>>>>> libscan: scanning eraseblock 2028 -- 100 % complete
+>>>>>>>>>>>> ubiformat: 2001 eraseblocks have valid erase counter, mean value is 9
+>>>>>>>>>>>> ubiformat: 2 eraseblocks are supposedly empty
+>>>>>>>>>>>> ubiformat: 26 bad eraseblocks found, numbers: 3, 4, 5, 6, 8, 9, 10,
+>>>>>>>>>>>> 11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30,
+>>>>>>>>>>>> 31, 32
+>>>>>>>>>>>
+>>>>>>>>>>> I'm guessing these bad blocks recently added due to the offending patch?
+>>>>>>>>>>
+>>>>>>>>>> Yes.
+>>>>>>>>>>
+>>>>>>>>>>>> ubiformat: formatting eras[   33.644323] nand: nand_erase_nand:
+>>>>>>>>>>>> attempt to erase a bad block at page 0x00000d40
+>>>>>>>>>>>> ubiformat: formatting eraseblock 28[   33.658809] nand:
+>>>>>>>>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000d80
+>>>>>>>>>>>> ubiformat: formatting eraseblock 29 --  1 % [   33.674531] nand:
+>>>>>>>>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000dc0
+>>>>>>>>>>>> ubiformat: formatting eraseblock 30 --  1 % complete [   33.684508]
+>>>>>>>>>>>> nand: nand_erase_nand: attempt to erase a bad block at page 0x00000e00
+>>>>>>>>>>>> ubiformat: formatting eraseblock 34 --  1 % complete  libmtd: error!:
+>>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 34 (mtd5)
+>>>>>>>>>>>>         error 5 (Input/output error)
+>>>>>>>>>>>>
+>>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 34
+>>>>>>>>>>>>            error 5 (Input/output error)
+>>>>>>>>>>>> ubiformat: marking block 34 bad
+>>>>>>>>>>>> ubiformat: formatting eraseblock 35 --  1 % complete  libmtd: error!:
+>>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 35 (mtd5)
+>>>>>>>>>>>>         error 5 (Input/output error)
+>>>>>>>>>>>>
+>>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 35
+>>>>>>>>>>>>            error 5 (Input/output error)
+>>>>>>>>>>>> ubiformat: marking block 35 bad
+>>>>>>>>>>>> ubiformat: formatting eraseblock 36 --  1 % complete  libmtd: error!:
+>>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 36 (mtd5)
+>>>>>>>>>>>>         error 5 (Input/output error)
+>>>>>>>>>>>>
+>>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 36
+>>>>>>>>>>>>            error 5 (Input/output error)
+>>>>>>>>>>>> ubiformat: marking block 36 bad
+>>>>>>>>>>>> ubiformat: formatting eraseblock 37 --  1 % complete  libmtd: error!:
+>>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 37 (mtd5)
+>>>>>>>>>>>>         error 5 (Input/output error)
+>>>>>>>>>>>>
+>>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 37
+>>>>>>>>>>>>            error 5 (Input/output error)
+>>>>>>>>>>>> ubiformat: marking block 37 bad
+>>>>>>>>>>>>
+>>>>>>>>>>>> ubiformat: error!: consecutive bad blocks exceed limit: 4, bad flash?
+>>>>>>>>>>>> # [   36.322563] vwl1271: disabling
+>>>>>>>>>>>>
+>>>>>>>>>>>> git bisect pointed to the following commit:
+>>>>>>>>>>>>
+>>>>>>>>>>>> a9e849efca4f9c7732ea4a81f13ec96208994b22 is the first bad commit
+>>>>>>>>>>>> commit a9e849efca4f9c7732ea4a81f13ec96208994b22
+>>>>>>>>>>>> Author: Roger Quadros <rogerq@kernel.org>
+>>>>>>>>>>>> Date:   Thu Dec 9 11:04:55 2021 +0200
+>>>>>>>>>>>>
+>>>>>>>>>>>>     mtd: rawnand: omap2: move to exec_op interface
+>>>>>>>>>>>>
+>>>>>>>>>>>>     Stop using legacy interface and move to the exec_op interface.
+>>>>>>>>>>>>
+>>>>>>>>>>>>     Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>>>>>>>>>>>     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>>>>>>>>>>>     Link: https://lore.kernel.org/linux-mtd/20211209090458.24830-4-rogerq@kernel.org
+>>>>>>>>>>>>
+>>>>>>>>>>>> :040000 040000 2341051b8aa8e6b554b8a44d2934f76d1aa460c4
+>>>>>>>>>>>> c1727080ff16c403f4ad5ed840acc90127b632f8 M      drivers
+>>>>>>>>>>>>
+>>>>>>>>>>>> Info to my NAND flash:
+>>>>>>>>>>>>
+>>>>>>>>>>>> [    5.695760] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
+>>>>>>>>>>>> [    5.702193] nand: Micron MT29F2G08ABAEAWP
+>>>>>>>>>>>> [    5.706356] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
+>>>>>>>>>>>> 2048, OOB size: 64
+>>>>>>>>>>>> [    5.714204] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
+>>>>>>>>>>>> [    5.719673] 6 cmdlinepart partitions found on MTD device omap2-nand.0
+>>>>>>>>>>>> [    5.726232] Creating 6 MTD partitions on "omap2-nand.0":
+>>>>>>>>>>>> [    5.731594] 0x000000000000-0x000000020000 : "SPL"
+>>>>>>>>>>>> [    5.737788] mtdblock: MTD device 'SPL' is NAND, please consider
+>>>>>>>>>>>> using UBI block devices instead.
+>>>>>>>>>>>> [    5.750113] 0x000000020000-0x000000040000 : "SPL.backup1"
+>>>>>>>>>>>> [    5.756916] mtdblock: MTD device 'SPL.backup1' is NAND, please
+>>>>>>>>>>>> consider using UBI block devices instead.
+>>>>>>>>>>>> [    5.769870] 0x000000040000-0x000000060000 : "SPL.backup2"
+>>>>>>>>>>>> [    5.776695] mtdblock: MTD device 'SPL.backup2' is NAND, please
+>>>>>>>>>>>> consider using UBI block devices instead.
+>>>>>>>>>>>> [    5.789559] 0x000000060000-0x000000080000 : "SPL.backup3"
+>>>>>>>>>>>> [    5.796423] mtdblock: MTD device 'SPL.backup3' is NAND, please
+>>>>>>>>>>>> consider using UBI block devices instead.
+>>>>>>>>>>>> [    5.809341] 0x000000080000-0x000000260000 : "u-boot"
+>>>>>>>>>>>> [    5.816652] mtdblock: MTD device 'u-boot' is NAND, please consider
+>>>>>>>>>>>> using UBI block devices instead.
+>>>>>>>>>>>> [    5.829189] 0x000000260000-0x000010000000 : "UBI"
+>>>>>>>>>>>> [    5.971508] mtdblock: MTD device 'UBI' is NAND, please consider
+>>>>>>>>>>>> using UBI block devices instead.
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> What platform are you on?
+>>>>>>>>>>> I do remember testing this on omap3-beagle but it does not use BCH8 ECC scheme.
+>>>>>>>>>>
+>>>>>>>>>> I am on am335x [1]
+>>>>>>>>>>
+>>>>>>>>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/am335x-baltos-ir5221.dts?h=v5.19-rc4
+>>>>>>>>>
+>>>>>>>>> NAND node definition [1]:
+>>>>>>>>>
+>>>>>>>>> &gpmc {
+>>>>>>>>> pinctrl-names = "default";
+>>>>>>>>> pinctrl-0 = <&nandflash_pins_s0>;
+>>>>>>>>> ranges = <0 0 0x08000000 0x10000000>; /* CS0: NAND */
+>>>>>>>>> status = "okay";
+>>>>>>>>>
+>>>>>>>>> nand@0,0 {
+>>>>>>>>> compatible = "ti,omap2-nand";
+>>>>>>>>> reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
+>>>>>>>>> interrupt-parent = <&gpmc>;
+>>>>>>>>> interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+>>>>>>>>>     <1 IRQ_TYPE_NONE>; /* termcount */
+>>>>>>>>> rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
+>>>>>>>>> nand-bus-width = <8>;
+>>>>>>>>> ti,nand-ecc-opt = "bch8";
+>>>>>>>>> ti,nand-xfer-type = "polled";
+>>>>>>>>
+>>>>>>>> Could you please change this to "prefetch-polled" and see if it fixes the issue?
+>>>>>>>>
+>>>>>>>
+>>>>>>> I tried to set ti,nand-xfer-type to "polled" on beagle-c4 board and could not reproduce the issue
+>>>>>>> I will need your help please to debug this issue.
+>>>>>>>
+>>>>>>> Could you please apply the below patch on top of commit a9e849efca4f9c7732ea4a81f13ec96208994b22
+>>>>>>> and send me the full kernel log and output of ubiformat command?
+>>>>>>
+>>>>>> I'll post the data later.
+>>>>>>
+>>>>>> The test with the "prefetch-polled" setting looks promising:
+>>>>>>
+>>>>>> 1. ubiformat runs without issues
+>>>>>> 2. I can boot from NAND after "cat MLO > /dev/mtdblock0", etc.
+>>>>>> 3. the kernel can mount UBIFS as rootfs
+>>>>>>
+>>>>>> The only issue I have for now, is that barebox fails to correctly
+>>>>>> mount the first partition (the second with UBIFS rootfs - no problem).
+>>>>>> This is how I write to NAND:
+>>>>>>
+>>>>>> ubiformat -y /dev/mtd5
+>>>>>> ubiattach -p /dev/mtd5
+>>>>>> ubimkvol /dev/ubi0 -N kernel -s 56MiB
+>>>>>> mount -t ubifs ubi0:kernel /mnt
+>>>>>> cp kernel-fit.itb /mnt
+>>>>>> umount /mnt
+>>>>>> ubimkvol /dev/ubi0 -N rootfs -s 180MiB
+>>>>>> ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+>>>>>>
+>>>>>> barebox log:
+>>>>>>
+>>>>>> Booting from NAND
+>>>>>> ubi0: scanning is finished
+>>>>>> ubi0: registering /dev/nand0.UBI.ubi
+>>>>>> ubi0: registering kernel as /dev/nand0.UBI.ubi.kernel
+>>>>>> ubi0: registering rootfs as /dev/nand0.UBI.ubi.rootfs
+>>>>>> ubi0: attached mtd0 (name "nand0.UBI", size 253 MiB) to ubi0
+>>>>>> ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
+>>>>>> ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+>>>>>> ubi0: VID header offset: 512 (aligned 512), data offset: 2048
+>>>>>> ubi0: good PEBs: 1999, bad PEBs: 30, corrupted PEBs: 0
+>>>>>
+>>>>> Note that we now have 30 bad PEBs. I suppose these are not
+>>>>> really bad and we need to somehow clear bad block status for these.
+>>>>
+>>>> Do you mean using u-boot's "nand scrab"? So far, I didn't found any
+>>>> other option. There are numerous threads both mtd and barebox mailing
+>>>> lists but no implementation.
+>>>>
+>>>> Unfortunately, I don't have the initial BBT info. So let's hope the
+>>>> system can handle this.
+>>>
+>>>
+>>> "nand scrub" will mark all sectors not-bad so doesn't look like the best option.
+>>> I was wondering if there is a better way to selectively mark individual sectors not bad.
+>>
+>> Haven't found anything suitable so far.
+>>
+>>>>
+>>>> Btw, I have applied your debug patch and executed a ubiformat command
+>>>> but the debug messages weren't triggered.
+>>>
+>>> That is because you no longer see errors during nand erase. Did you try
+>>> going back to ti,nand-xfer-type = "polled" ?
+>>
+>> I have applied the patch to a9e849efca4f9c7732ea4a81f13ec96208994b22
+>> and at that time our DTS still has xfer type as "polled" and ubiformat
+>> command failed as expected.
+> 
+> I think the issue is solved. The bootloader was actually complaining
+> about the missing zstd support. I could see this with the latest
+> barebox version (2022.06).
+> 
+> I've also switched to "ti,nand-xfer-type = "prefetch-dma";" as other DTS do.
 
-This patch use the actual length of the data in the memory as the
-input parameter for assert comparison, which avoids the problem.
+Just to conclude,
+1) Barebox issue was barebox configuration related.
+2) NAND erase issue was fixed by switching to "prefetch-dma" or "prefetch-polled"
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216213
-Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
----
- fs/ubifs/crypto.c  | 11 +++++++++++
- fs/ubifs/journal.c | 28 +++++++++++++++++-----------
- 2 files changed, 28 insertions(+), 11 deletions(-)
+Does the issue still happen with "polled"? If yes it might be due to too less
+GPMC timing value for Read/Busy signalling.
 
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index c57b46a352d8..3125e76376ee 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -24,6 +24,17 @@ static bool ubifs_crypt_empty_dir(struct inode *inode)
- 	return ubifs_check_dir_empty(inode) == 0;
- }
- 
-+/**
-+ * ubifs_encrypt - Encrypt data.
-+ * @inode: inode which refers to the data node
-+ * @dn: data node to encrypt
-+ * @in_len: length of data to be compressed
-+ * @out_len: allocated memory size for the data area of @dn
-+ * @block: logical block number of the block
-+ *
-+ * This function encrypt a possibly-compressed data in the data node.
-+ * The encrypted data length will store in @out_len.
-+ */
- int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
- 		  unsigned int in_len, unsigned int *out_len, int block)
- {
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 75dab0ae3939..2b1d7c4297bf 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1472,23 +1472,25 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
-  * @block: data block number
-  * @dn: data node to re-compress
-  * @new_len: new length
-+ * @dn_size: size of the data node @dn in memory
-  *
-  * This function is used when an inode is truncated and the last data node of
-  * the inode has to be re-compressed/encrypted and re-written.
-  */
- static int truncate_data_node(const struct ubifs_info *c, const struct inode *inode,
- 			      unsigned int block, struct ubifs_data_node *dn,
--			      int *new_len)
-+			      int *new_len, int dn_size)
- {
- 	void *buf;
--	int err, dlen, compr_type, out_len, old_dlen;
-+	int err, dlen, compr_type, out_len, data_size;
- 
- 	out_len = le32_to_cpu(dn->size);
- 	buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
- 	if (!buf)
- 		return -ENOMEM;
- 
--	dlen = old_dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-+	dlen = le32_to_cpu(dn->ch.len) - UBIFS_DATA_NODE_SZ;
-+	data_size = dn_size - UBIFS_DATA_NODE_SZ;
- 	compr_type = le16_to_cpu(dn->compr_type);
- 
- 	if (IS_ENCRYPTED(inode)) {
-@@ -1508,11 +1510,11 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
- 	}
- 
- 	if (IS_ENCRYPTED(inode)) {
--		err = ubifs_encrypt(inode, dn, out_len, &old_dlen, block);
-+		err = ubifs_encrypt(inode, dn, out_len, &data_size, block);
- 		if (err)
- 			goto out;
- 
--		out_len = old_dlen;
-+		out_len = data_size;
- 	} else {
- 		dn->compr_size = 0;
- 	}
-@@ -1550,6 +1552,7 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 	struct ubifs_trun_node *trun;
- 	struct ubifs_data_node *dn;
- 	int err, dlen, len, lnum, offs, bit, sz, sync = IS_SYNC(inode);
-+	int dn_size;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	ino_t inum = inode->i_ino;
- 	unsigned int blk;
-@@ -1562,10 +1565,13 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 	ubifs_assert(c, S_ISREG(inode->i_mode));
- 	ubifs_assert(c, mutex_is_locked(&ui->ui_mutex));
- 
--	sz = UBIFS_TRUN_NODE_SZ + UBIFS_INO_NODE_SZ +
--	     UBIFS_MAX_DATA_NODE_SZ * WORST_COMPR_FACTOR;
-+	dn_size = COMPRESSED_DATA_NODE_BUF_SZ;
- 
--	sz += ubifs_auth_node_sz(c);
-+	if (IS_ENCRYPTED(inode))
-+		dn_size += UBIFS_CIPHER_BLOCK_SIZE;
-+
-+	sz =  UBIFS_TRUN_NODE_SZ + UBIFS_INO_NODE_SZ +
-+		dn_size + ubifs_auth_node_sz(c);
- 
- 	ino = kmalloc(sz, GFP_NOFS);
- 	if (!ino)
-@@ -1596,15 +1602,15 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 			if (dn_len <= 0 || dn_len > UBIFS_BLOCK_SIZE) {
- 				ubifs_err(c, "bad data node (block %u, inode %lu)",
- 					  blk, inode->i_ino);
--				ubifs_dump_node(c, dn, sz - UBIFS_INO_NODE_SZ -
--						UBIFS_TRUN_NODE_SZ);
-+				ubifs_dump_node(c, dn, dn_size);
- 				goto out_free;
- 			}
- 
- 			if (dn_len <= dlen)
- 				dlen = 0; /* Nothing to do */
- 			else {
--				err = truncate_data_node(c, inode, blk, dn, &dlen);
-+				err = truncate_data_node(c, inode, blk, dn,
-+						&dlen, dn_size);
- 				if (err)
- 					goto out_free;
- 			}
--- 
-2.31.1
+Can you please send a patch with the fix? Thanks!
 
+> 
+> Thanks for your help.
+> 
+> Yegor
+
+cheers,
+-roger
 
 ______________________________________________________
 Linux MTD discussion mailing list
