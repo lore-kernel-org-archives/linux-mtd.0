@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5A4FC43334
-	for <linux-mtd@archiver.kernel.org>; Sun, 10 Jul 2022 06:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 386C7C43334
+	for <linux-mtd@archiver.kernel.org>; Sun, 10 Jul 2022 14:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gY6WF/5a+m6n19Z5Arb+TK0lhlCyQc0E4lutGp40EAs=; b=w5Jltxw7CnpIPr
-	pjmWI7NmYNNAQDPy7b80my3WykRntfb+51rZF9CtukOikxL5BxaHZyyGnBKMTxqs6kJMC+BdLQT2H
-	niydgthg8rG5SAb2aJvAI04/G2dhQwtiXYilbDbHpqIfSTI7NipCKd2e1Ebq7bPY0bMIOFBixLI6z
-	vHsf1I+Hkhn0HZ0/aLrgnDcLgrPBtk2L61NMk5H98ppV62Dn91HRZcgnn1E3AofSKsMBM9hSn+6ap
-	FtWjNLH+lnaNbLmpEW4p6LpF+CvJSpnddWjhI3J+gAGIGRuOZvPrJ9Cq9+9YDtIXvAqFZUkig3uXE
-	pZSjZLneqRNSQRUmZ8cw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:CC
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=8PmH42GgAGs7b1J0mtQ0CHYbnxGCgY5fpeHVDiLbOi8=; b=NL/d/i4jRL6FG9
+	2jsBWfdAGcjKbE80WPKEebywzEWzkmxlj5BPCiK/3pg6VSBv1yxKjy0zGuTCuBniDryU4o+NMl022
+	RivMoB/XtY9fKV5yg81pvlb7zF9KRNLRHleBo4ocFAV2HfdEAGc3lP3tNlNks6Suu4K4vfZ1Ow9lQ
+	QXSMHkXd9LOmmg294cTQoQe3ry1kRnXkHglxfFxu1je/dZEXN+bsJWW8ARqs+eTreHYhKi8DxfBHj
+	KLbXi2ZaSjtygvwDyOanHk0Rl/WwCOVufxhL0psCA3Bpr4b1remZswnc27evHyGCzX6O0gWeZ1Pbw
+	uptcHmkvOhzyveSHIrPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oAQnr-00AtHI-VV; Sun, 10 Jul 2022 06:52:28 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1oAYNW-00C6rq-KN; Sun, 10 Jul 2022 14:57:46 +0000
+Received: from alexa-out.qualcomm.com ([129.46.98.28])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oAQnn-00AtGh-1R
-	for linux-mtd@lists.infradead.org; Sun, 10 Jul 2022 06:52:25 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id C7F2EB802C6;
-	Sun, 10 Jul 2022 06:52:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06478C3411E;
-	Sun, 10 Jul 2022 06:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1657435939;
-	bh=7TBmHOFj8aLotQi+NQ2mw6iyHWksq0Lkb+HTF1hlO88=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EdzOQypJQHXW2vpCwso3zkv6h5BbkEJjestrioYypczh6TVT10RRFVGgLWF1Dtfqr
-	 2cTEZk3yKT/kykwejgBnUBFW/rydJVVWVQn0aJ4LMmA/2R9kBB2sM4tC50KSNLNA1r
-	 XAZn0ycUf8KjRBKoPe0+u1VlVTR+aB+sMRgtqlhzr9EFFEdoS9qJpWVx/gGXglqeGx
-	 BDRp4+Fszx9scmBrhGk/6M/PtOIHKOS8Y3HWjZZJAHOPTBT7lRVbZuTSEoojSMAy3D
-	 8UwFsOpTQUYO4r0fr2qWdCE/b64wcEIGA3B9o5iw0T6/aNU22qKicEiovuDWjVaU1y
-	 xMSqEp03Z33Nw==
-Message-ID: <3f04c503-7f48-3c39-083a-aec076706deb@kernel.org>
-Date: Sun, 10 Jul 2022 12:22:13 +0530
+	id 1oAYNT-00C6pY-Lo
+	for linux-mtd@lists.infradead.org; Sun, 10 Jul 2022 14:57:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1657465064; x=1689001064;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lcyjCDje10SpJWNiPBkba8dsUZ24Y1DlZacBkm+rx+E=;
+  b=hD3ZQEWznFf8BqK3g303iQARZYhr9s0DBHwoUb+YjcGglZU3Rkb7B3mz
+   KzVqrNG4IzzJPunn6DQPJaOgYgReUJ29mL1DbatfHJ58IzYQBaBIZVGdr
+   kxe74wT/F6gJLTsnQOC1066QcGQJ89BRLwaKEhLIhxUes/bAIB4u78VVd
+   g=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 10 Jul 2022 07:57:37 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2022 07:57:37 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Sun, 10 Jul 2022 07:57:36 -0700
+Received: from maru.qualcomm.com (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Sun, 10 Jul
+ 2022 07:57:36 -0700
+From: Jae Hyun Yoo <quic_jaehyoo@quicinc.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+	<p.yadav@ti.com>
+CC: Jamie Iles <quic_jiles@quicinc.com>, Graeme Gregory
+	<quic_ggregory@quicinc.com>, =?UTF-8?q?C=C3=A9dric=20Le=20Goater?=
+	<clg@kaod.org>, Jae Hyun Yoo <quic_jaehyoo@quicinc.com>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: spi-nor: winbond: add support for W25Q512NW-IQ/IN
+Date: Sun, 10 Jul 2022 07:57:21 -0700
+Message-ID: <20220710145721.1207157-1-quic_jaehyoo@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: raw/omap2: erasing issue
-Content-Language: en-US
-To: Yegor Yefremov <yegorslists@googlemail.com>
-Cc: linux-mtd@lists.infradead.org, Linux-OMAP <linux-omap@vger.kernel.org>,
- miquel.raynal@bootlin.com
-References: <CAGm1_ktXBp-sz3Dud_G0iqOG=vA=Xp-bj-icwNLVgq-AMqKO7A@mail.gmail.com>
- <72686231-c372-a4fe-347e-39470790fa65@kernel.org>
- <CAGm1_kvRuWY7t2d_BtuSLGEL1u4njRqha=D0f7eN9F5XG8GrLQ@mail.gmail.com>
- <CAGm1_kuucv71AdPkSW8Eog2T9rZRA3uiL4+ok-aWCVsj-z2eew@mail.gmail.com>
- <5a36197d-7ed5-c06a-0a7e-73b808526dcd@kernel.org>
- <feff53c6-a38c-1592-b3ef-1ff236da17f9@kernel.org>
- <CAGm1_kvQ-NA4topLTu2hrQqx6picci8d+AeMVBtw44nJ7mYVow@mail.gmail.com>
- <25109f4c-110f-b534-1c5a-c571b5c70333@kernel.org>
- <CAGm1_ku0pGqfi8a++jNYeYNk1Hv9QgxsjKqOtetk8QzrTcFtPg@mail.gmail.com>
- <981dfc27-cbe5-9672-3647-397e6416578b@kernel.org>
- <CAGm1_kuXTuhoB1-K=_bFLBicWi5PWuejwO0yhPC6E41RZxe10w@mail.gmail.com>
- <CAGm1_kuDRuxWGW3rZgaNMNiTm-rUuWe=-5pD0BqRJZBTYtW=EA@mail.gmail.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <CAGm1_kuDRuxWGW3rZgaNMNiTm-rUuWe=-5pD0BqRJZBTYtW=EA@mail.gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220709_235223_441704_80BCD630 
-X-CRM114-Status: GOOD (  35.43  )
+X-CRM114-CacheID: sfid-20220710_075743_787855_6AF19DE4 
+X-CRM114-Status: UNSURE (   9.17  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,270 +83,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hello Yegor,
+Add support for Winbond W25Q512NW-IQ/IN
 
-On 05/07/2022 17:46, Yegor Yefremov wrote:
-> Hi Roger,
-> 
-> On Mon, Jul 4, 2022 at 12:31 PM Yegor Yefremov
-> <yegorslists@googlemail.com> wrote:
->>
->> Hi Roger,
->>
->> On Mon, Jul 4, 2022 at 12:28 PM Roger Quadros <rogerq@kernel.org> wrote:
->>>
->>> Hello Yegor,
->>>
->>> On 04/07/2022 14:28, Yegor Yefremov wrote:
->>>> Hi Roger,
->>>>
->>>> On Thu, Jun 30, 2022 at 1:22 PM Roger Quadros <rogerq@kernel.org> wrote:
->>>>>
->>>>> Hi Yegor,
->>>>>llo 
->>>>> On 29/06/2022 17:23, Yegor Yefremov wrote:
->>>>>> Hi Roger,
->>>>>>
->>>>>> On Wed, Jun 29, 2022 at 3:44 PM Roger Quadros <rogerq@kernel.org> wrote:
->>>>>>>
->>>>>>> Hi Yegor,
->>>>>>>
->>>>>>> On 29/06/2022 14:33, Roger Quadros wrote:
->>>>>>>> Hi Yegor,
->>>>>>>>
->>>>>>>> On 28/06/2022 14:59, Yegor Yefremov wrote:
->>>>>>>>> On Tue, Jun 28, 2022 at 1:57 PM Yegor Yefremov
->>>>>>>>> <yegorslists@googlemail.com> wrote:
->>>>>>>>>>
->>>>>>>>>> Hi Roger,
->>>>>>>>>>
->>>>>>>>>> On Tue, Jun 28, 2022 at 1:44 PM Roger Quadros <rogerq@kernel.org> wrote:
->>>>>>>>>>>
->>>>>>>>>>> Hi Yegor,
->>>>>>>>>>>
->>>>>>>>>>> On 28/06/2022 13:48, Yegor Yefremov wrote:
->>>>>>>>>>>> Since linux 5.17 I get the following issue when doing ubiformat:
->>>>>>>>>>>>
->>>>>>>>>>>> # ubiformat -y /dev/mtd5
->>>>>>>>>>>> ubiformat: mtd5 (nand), size 265945088 bytes (253.6 MiB), 2029
->>>>>>>>>>>> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
->>>>>>>>>>>> libscan: scanning eraseblock 1097 -- 54 % complete  eth1 timed out to bring up
->>>>>>>>>>>> libscan: scanning eraseblock 2028 -- 100 % complete
->>>>>>>>>>>> ubiformat: 2001 eraseblocks have valid erase counter, mean value is 9
->>>>>>>>>>>> ubiformat: 2 eraseblocks are supposedly empty
->>>>>>>>>>>> ubiformat: 26 bad eraseblocks found, numbers: 3, 4, 5, 6, 8, 9, 10,
->>>>>>>>>>>> 11, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24, 25, 26, 27, 29, 30,
->>>>>>>>>>>> 31, 32
->>>>>>>>>>>
->>>>>>>>>>> I'm guessing these bad blocks recently added due to the offending patch?
->>>>>>>>>>
->>>>>>>>>> Yes.
->>>>>>>>>>
->>>>>>>>>>>> ubiformat: formatting eras[   33.644323] nand: nand_erase_nand:
->>>>>>>>>>>> attempt to erase a bad block at page 0x00000d40
->>>>>>>>>>>> ubiformat: formatting eraseblock 28[   33.658809] nand:
->>>>>>>>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000d80
->>>>>>>>>>>> ubiformat: formatting eraseblock 29 --  1 % [   33.674531] nand:
->>>>>>>>>>>> nand_erase_nand: attempt to erase a bad block at page 0x00000dc0
->>>>>>>>>>>> ubiformat: formatting eraseblock 30 --  1 % complete [   33.684508]
->>>>>>>>>>>> nand: nand_erase_nand: attempt to erase a bad block at page 0x00000e00
->>>>>>>>>>>> ubiformat: formatting eraseblock 34 --  1 % complete  libmtd: error!:
->>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 34 (mtd5)
->>>>>>>>>>>>         error 5 (Input/output error)
->>>>>>>>>>>>
->>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 34
->>>>>>>>>>>>            error 5 (Input/output error)
->>>>>>>>>>>> ubiformat: marking block 34 bad
->>>>>>>>>>>> ubiformat: formatting eraseblock 35 --  1 % complete  libmtd: error!:
->>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 35 (mtd5)
->>>>>>>>>>>>         error 5 (Input/output error)
->>>>>>>>>>>>
->>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 35
->>>>>>>>>>>>            error 5 (Input/output error)
->>>>>>>>>>>> ubiformat: marking block 35 bad
->>>>>>>>>>>> ubiformat: formatting eraseblock 36 --  1 % complete  libmtd: error!:
->>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 36 (mtd5)
->>>>>>>>>>>>         error 5 (Input/output error)
->>>>>>>>>>>>
->>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 36
->>>>>>>>>>>>            error 5 (Input/output error)
->>>>>>>>>>>> ubiformat: marking block 36 bad
->>>>>>>>>>>> ubiformat: formatting eraseblock 37 --  1 % complete  libmtd: error!:
->>>>>>>>>>>> MEMERASE64 ioctl failed for eraseblock 37 (mtd5)
->>>>>>>>>>>>         error 5 (Input/output error)
->>>>>>>>>>>>
->>>>>>>>>>>> ubiformat: error!: failed to erase eraseblock 37
->>>>>>>>>>>>            error 5 (Input/output error)
->>>>>>>>>>>> ubiformat: marking block 37 bad
->>>>>>>>>>>>
->>>>>>>>>>>> ubiformat: error!: consecutive bad blocks exceed limit: 4, bad flash?
->>>>>>>>>>>> # [   36.322563] vwl1271: disabling
->>>>>>>>>>>>
->>>>>>>>>>>> git bisect pointed to the following commit:
->>>>>>>>>>>>
->>>>>>>>>>>> a9e849efca4f9c7732ea4a81f13ec96208994b22 is the first bad commit
->>>>>>>>>>>> commit a9e849efca4f9c7732ea4a81f13ec96208994b22
->>>>>>>>>>>> Author: Roger Quadros <rogerq@kernel.org>
->>>>>>>>>>>> Date:   Thu Dec 9 11:04:55 2021 +0200
->>>>>>>>>>>>
->>>>>>>>>>>>     mtd: rawnand: omap2: move to exec_op interface
->>>>>>>>>>>>
->>>>>>>>>>>>     Stop using legacy interface and move to the exec_op interface.
->>>>>>>>>>>>
->>>>>>>>>>>>     Signed-off-by: Roger Quadros <rogerq@kernel.org>
->>>>>>>>>>>>     Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>>>>>>>>>>>     Link: https://lore.kernel.org/linux-mtd/20211209090458.24830-4-rogerq@kernel.org
->>>>>>>>>>>>
->>>>>>>>>>>> :040000 040000 2341051b8aa8e6b554b8a44d2934f76d1aa460c4
->>>>>>>>>>>> c1727080ff16c403f4ad5ed840acc90127b632f8 M      drivers
->>>>>>>>>>>>
->>>>>>>>>>>> Info to my NAND flash:
->>>>>>>>>>>>
->>>>>>>>>>>> [    5.695760] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xda
->>>>>>>>>>>> [    5.702193] nand: Micron MT29F2G08ABAEAWP
->>>>>>>>>>>> [    5.706356] nand: 256 MiB, SLC, erase size: 128 KiB, page size:
->>>>>>>>>>>> 2048, OOB size: 64
->>>>>>>>>>>> [    5.714204] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
->>>>>>>>>>>> [    5.719673] 6 cmdlinepart partitions found on MTD device omap2-nand.0
->>>>>>>>>>>> [    5.726232] Creating 6 MTD partitions on "omap2-nand.0":
->>>>>>>>>>>> [    5.731594] 0x000000000000-0x000000020000 : "SPL"
->>>>>>>>>>>> [    5.737788] mtdblock: MTD device 'SPL' is NAND, please consider
->>>>>>>>>>>> using UBI block devices instead.
->>>>>>>>>>>> [    5.750113] 0x000000020000-0x000000040000 : "SPL.backup1"
->>>>>>>>>>>> [    5.756916] mtdblock: MTD device 'SPL.backup1' is NAND, please
->>>>>>>>>>>> consider using UBI block devices instead.
->>>>>>>>>>>> [    5.769870] 0x000000040000-0x000000060000 : "SPL.backup2"
->>>>>>>>>>>> [    5.776695] mtdblock: MTD device 'SPL.backup2' is NAND, please
->>>>>>>>>>>> consider using UBI block devices instead.
->>>>>>>>>>>> [    5.789559] 0x000000060000-0x000000080000 : "SPL.backup3"
->>>>>>>>>>>> [    5.796423] mtdblock: MTD device 'SPL.backup3' is NAND, please
->>>>>>>>>>>> consider using UBI block devices instead.
->>>>>>>>>>>> [    5.809341] 0x000000080000-0x000000260000 : "u-boot"
->>>>>>>>>>>> [    5.816652] mtdblock: MTD device 'u-boot' is NAND, please consider
->>>>>>>>>>>> using UBI block devices instead.
->>>>>>>>>>>> [    5.829189] 0x000000260000-0x000010000000 : "UBI"
->>>>>>>>>>>> [    5.971508] mtdblock: MTD device 'UBI' is NAND, please consider
->>>>>>>>>>>> using UBI block devices instead.
->>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> What platform are you on?
->>>>>>>>>>> I do remember testing this on omap3-beagle but it does not use BCH8 ECC scheme.
->>>>>>>>>>
->>>>>>>>>> I am on am335x [1]
->>>>>>>>>>
->>>>>>>>>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/am335x-baltos-ir5221.dts?h=v5.19-rc4
->>>>>>>>>
->>>>>>>>> NAND node definition [1]:
->>>>>>>>>
->>>>>>>>> &gpmc {
->>>>>>>>> pinctrl-names = "default";
->>>>>>>>> pinctrl-0 = <&nandflash_pins_s0>;
->>>>>>>>> ranges = <0 0 0x08000000 0x10000000>; /* CS0: NAND */
->>>>>>>>> status = "okay";
->>>>>>>>>
->>>>>>>>> nand@0,0 {
->>>>>>>>> compatible = "ti,omap2-nand";
->>>>>>>>> reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
->>>>>>>>> interrupt-parent = <&gpmc>;
->>>>>>>>> interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
->>>>>>>>>     <1 IRQ_TYPE_NONE>; /* termcount */
->>>>>>>>> rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 */
->>>>>>>>> nand-bus-width = <8>;
->>>>>>>>> ti,nand-ecc-opt = "bch8";
->>>>>>>>> ti,nand-xfer-type = "polled";
->>>>>>>>
->>>>>>>> Could you please change this to "prefetch-polled" and see if it fixes the issue?
->>>>>>>>
->>>>>>>
->>>>>>> I tried to set ti,nand-xfer-type to "polled" on beagle-c4 board and could not reproduce the issue
->>>>>>> I will need your help please to debug this issue.
->>>>>>>
->>>>>>> Could you please apply the below patch on top of commit a9e849efca4f9c7732ea4a81f13ec96208994b22
->>>>>>> and send me the full kernel log and output of ubiformat command?
->>>>>>
->>>>>> I'll post the data later.
->>>>>>
->>>>>> The test with the "prefetch-polled" setting looks promising:
->>>>>>
->>>>>> 1. ubiformat runs without issues
->>>>>> 2. I can boot from NAND after "cat MLO > /dev/mtdblock0", etc.
->>>>>> 3. the kernel can mount UBIFS as rootfs
->>>>>>
->>>>>> The only issue I have for now, is that barebox fails to correctly
->>>>>> mount the first partition (the second with UBIFS rootfs - no problem).
->>>>>> This is how I write to NAND:
->>>>>>
->>>>>> ubiformat -y /dev/mtd5
->>>>>> ubiattach -p /dev/mtd5
->>>>>> ubimkvol /dev/ubi0 -N kernel -s 56MiB
->>>>>> mount -t ubifs ubi0:kernel /mnt
->>>>>> cp kernel-fit.itb /mnt
->>>>>> umount /mnt
->>>>>> ubimkvol /dev/ubi0 -N rootfs -s 180MiB
->>>>>> ubiupdatevol /dev/ubi0_1 rootfs.ubifs
->>>>>>
->>>>>> barebox log:
->>>>>>
->>>>>> Booting from NAND
->>>>>> ubi0: scanning is finished
->>>>>> ubi0: registering /dev/nand0.UBI.ubi
->>>>>> ubi0: registering kernel as /dev/nand0.UBI.ubi.kernel
->>>>>> ubi0: registering rootfs as /dev/nand0.UBI.ubi.rootfs
->>>>>> ubi0: attached mtd0 (name "nand0.UBI", size 253 MiB) to ubi0
->>>>>> ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
->>>>>> ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 512
->>>>>> ubi0: VID header offset: 512 (aligned 512), data offset: 2048
->>>>>> ubi0: good PEBs: 1999, bad PEBs: 30, corrupted PEBs: 0
->>>>>
->>>>> Note that we now have 30 bad PEBs. I suppose these are not
->>>>> really bad and we need to somehow clear bad block status for these.
->>>>
->>>> Do you mean using u-boot's "nand scrab"? So far, I didn't found any
->>>> other option. There are numerous threads both mtd and barebox mailing
->>>> lists but no implementation.
->>>>
->>>> Unfortunately, I don't have the initial BBT info. So let's hope the
->>>> system can handle this.
->>>
->>>
->>> "nand scrub" will mark all sectors not-bad so doesn't look like the best option.
->>> I was wondering if there is a better way to selectively mark individual sectors not bad.
->>
->> Haven't found anything suitable so far.
->>
->>>>
->>>> Btw, I have applied your debug patch and executed a ubiformat command
->>>> but the debug messages weren't triggered.
->>>
->>> That is because you no longer see errors during nand erase. Did you try
->>> going back to ti,nand-xfer-type = "polled" ?
->>
->> I have applied the patch to a9e849efca4f9c7732ea4a81f13ec96208994b22
->> and at that time our DTS still has xfer type as "polled" and ubiformat
->> command failed as expected.
-> 
-> I think the issue is solved. The bootloader was actually complaining
-> about the missing zstd support. I could see this with the latest
-> barebox version (2022.06).
-> 
-> I've also switched to "ti,nand-xfer-type = "prefetch-dma";" as other DTS do.
+datasheet:
+https://www.winbond.com/resource-files/W25Q512NW%20RevB%2007192021.pdf
 
-Just to conclude,
-1) Barebox issue was barebox configuration related.
-2) NAND erase issue was fixed by switching to "prefetch-dma" or "prefetch-polled"
+Test result on AST2600 SoC's SPI controller:
+$ cat /sys/bus/platform/devices/1e620000.spi/spi_master/spi0/spi0.1/spi-nor/jedec_id
+ef6020
 
-Does the issue still happen with "polled"? If yes it might be due to too less
-GPMC timing value for Read/Busy signalling.
+$ cat /sys/bus/platform/devices/1e620000.spi/spi_master/spi0/spi0.1/spi-nor/manufacturer
+winbond
 
-Can you please send a patch with the fix? Thanks!
+$ cat /sys/bus/platform/devices/1e620000.spi/spi_master/spi0/spi0.1/spi-nor/partname
+w25q512nwq
 
-> 
-> Thanks for your help.
-> 
-> Yegor
+$ hexdump /sys/bus/platform/devices/1e620000.spi/spi_master/spi0/spi0.1/spi-nor/sfdp
+0000000 4653 5044 0106 ff01 0600 1001 0080 ff00
+0000010 0084 0201 00d0 ff00 ffff ffff ffff ffff
+0000020 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0000080 20e5 fffb ffff 1fff eb44 6b08 3b08 bb42
+0000090 fffe ffff ffff 0000 ffff eb40 200c 520f
+00000a0 d810 0000 0233 00a6 e781 d914 63e9 3376
+00000b0 757a 757a bdf7 5cd5 f719 ff5d 70e9 a5f9
+00000c0 ffff ffff ffff ffff ffff ffff ffff ffff
+00000d0 0aff fff0 ff21 ffdc
+00000d8
 
-cheers,
--roger
+Signed-off-by: Jae Hyun Yoo <quic_jaehyoo@quicinc.com>
+---
+ drivers/mtd/spi-nor/winbond.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index ffaa24055259..d6f1a3b7267e 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -133,6 +133,9 @@ static const struct flash_info winbond_nor_parts[] = {
+ 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_QUAD_READ |
+ 			      SPI_NOR_DUAL_READ) },
++	{ "w25q512nwq", INFO(0xef6020, 0, 64 * 1024, 1024)
++		PARSE_SFDP
++		OTP_INFO(256, 3, 0x1000, 0x1000) },
+ 	{ "w25q512nwm", INFO(0xef8020, 0, 64 * 1024, 1024)
+ 		PARSE_SFDP
+ 		OTP_INFO(256, 3, 0x1000, 0x1000) },
+-- 
+2.25.1
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
