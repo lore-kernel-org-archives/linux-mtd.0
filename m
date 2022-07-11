@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0021C43334
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCD2FCCA47B
 	for <linux-mtd@archiver.kernel.org>; Mon, 11 Jul 2022 22:24:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,52 +12,52 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Plq0SHOH/yWIDgF5tFIisHRVzbsEmfxRu0mQCuorHGA=; b=qWBfE57g8qh/yO
-	++YMlqEEL+ShBVMQJWBOmf/nw5F9D8RWiQkXMp3B7+SgZECcAzAxkT55EXjRCMxBi+8xf8UR0vdrE
-	bwKMrmhlcPkmPDLK0vkYhfLKiyAyauhCvn5sW4X8/QMgaMbaXkqvd0VJJdl43XXgVrIjCt3Ro/kOM
-	CVLR8DH58ARu0InfyxR7A2URgIWxZb8jwBG8oKfRX7ap5I+yAxugHtAaeLh6EEEgRcSKDWUpnISML
-	5IoUmPu1NtexMvM/aS9UxanCWs0UX3KgG42E8n9wB8+VHpLsX+5EanAM8Jnnd4Ux5UvMslZT0zUJH
-	yVGw0A9SnHsG4ZXYIoQQ==;
+	List-Owner; bh=M7iLp7NrSZPC00b35amMcNWZRMnW48OvKOCfPQJAbc0=; b=0nXEq05WMyLw8S
+	cLElXjaupaIrIX/zuni/FXn1kQtbWKDgpcvK73YKGsAgOZKwCVcXTXQ8ypieHv0rQ0SeTXuXLSSL+
+	MxY0a/6DOueIrjaK1UfV3BH90GvNTa8jb+0820k3vkvyqmLb96S6zrBTVcVs+83fcxpo2g6CUu2nt
+	8euCcKaiYTcOmOd4J/TzpiL8aXrEvmZL33IoX94f+HO9MiRdSwrjkSt2Jzf4UE2aWwri/fsEBEcxH
+	83SG2ktPPWflKe+NZkAYvgECYnf6uj+GqMZlkrdc7cdLWqM8qUoLq3Jy5sbWA/INgbVZkotkyPz98
+	NWHLh7srt/d33IQSBvvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oB1oV-005F2k-BJ; Mon, 11 Jul 2022 22:23:35 +0000
-Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
+	id 1oB1oX-005F3Q-8P; Mon, 11 Jul 2022 22:23:37 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oB1oS-005F0D-D7
-	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2022 22:23:33 +0000
-Received: by mail-pj1-x1035.google.com with SMTP id v4-20020a17090abb8400b001ef966652a3so9663351pjr.4
-        for <linux-mtd@lists.infradead.org>; Mon, 11 Jul 2022 15:23:31 -0700 (PDT)
+	id 1oB1oU-005F1u-6b
+	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2022 22:23:35 +0000
+Received: by mail-pl1-x635.google.com with SMTP id f11so5647789plr.4
+        for <linux-mtd@lists.infradead.org>; Mon, 11 Jul 2022 15:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OZFhWlnda4SXoJnWWqvMvV3sR5/zMUvEmc+r8suqDxc=;
-        b=NXIoVtBZLRNtdnYNk75WJuKEh1EQthMAB+vTJbMlnGkk4+c/yHwI7iNBVcQuFg/mZw
-         IcVeDUQpShLeYI5rYsbB3dlj4AaXLFgUMMaPxgPoIqqPKgDF1DJZ6P9xDLSlv6719gE1
-         YtsszF04M/z4BCg+8wVvBAn91Y7QWdFbyvpiM6/5233n4Y8lD1soPMBKdKTpJCk4oe57
-         5fe+2y1ErOgVDb946coFo9YipcNoUgMBX/A8DBUtWF8q5NxF/9LWXHdMVi++qyQYgGgM
-         sRS2nUTPaSrzrrClOYo2X1a5cmMbQ51QkJFdGfGmb0ggyBAQgnNET29g1AU+0Cm1yiqY
-         0Qjw==
+        bh=bwoWAKJGLd9SSlXMcBweio9xAZcHotQKiELuk/jadhs=;
+        b=cUDerjFW+ZfJ27rSAVACN/ymG+8oibDmVlh1CXTofv1OvUiQkDQQEXaYyiJUxuudvF
+         tbqhn+XNzlCTseO+hGlruLk1otnFXW4rLKNcbOT56qh2Qf6fwq6Vi6HqCm52N9aq6yxI
+         HsOOh90lQYPL2mEK+tSIjE+UwhlPErUEid8yv4cpTgBgFRPWmvhSnuSnESs6/4nhq8t4
+         MNMgOd3b+jJYTG8i3e7D0mhwNVVwYVgU881iXoblK3kOwlHDJs7yyFGBWD4QetEx3ytX
+         atBtbUyt55Bz4EwcC+fH3TNPQzBa5SA3vmGtTpRrq2UmGIEZc6Nv6b3E3FLJbF69++vh
+         9wRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OZFhWlnda4SXoJnWWqvMvV3sR5/zMUvEmc+r8suqDxc=;
-        b=UeQaYFMGhsSJJhmZukWvsPPuu5i+xetWZxcwDf4rwUEdwWkSpb/ZyOuuyAXEoHKDEc
-         uZpE4t+wCfzOnxyhYMw/j4pa22ClP2U2RSzbb6+LTJ3PQkj/tCjI5ZFKdFj7OC5ODldH
-         r419K7Xjm+HJRSYu44NrW1hh9E7OrCdEkeH7cgv09NrqcwsUkE1MZJcS9NAc7UULu3Pv
-         xvq73mKb4jvNarajG+oztz2tadVYJbpHAyfvWx65eCroVgWCqz5PEJMU6ClG5HNgSLsN
-         fKfL5cmcJCCTiQwbw5SzrA+qHF4e1WSWEOJ8LaYL6Og04rYikyeAEwWO3LALv0Cb9zZP
-         ckig==
-X-Gm-Message-State: AJIora/9HiKv2ttpnT1GA78GU9VL4t3miM+LI/fcggfq/ciTUN9PkDso
-	6B3PJmsONgR38K3vRuyXZJXqIjvLvqg=
-X-Google-Smtp-Source: AGRyM1uFWCGpl6fspxtDr/tVPfV/5GWUPsNkGgcDYOLqbaCfklQ8MldUdsHxQLL4YKQjdAQ26rOK1A==
-X-Received: by 2002:a17:90a:9f8d:b0:1f0:253e:3ecf with SMTP id o13-20020a17090a9f8d00b001f0253e3ecfmr647419pjp.33.1657578211109;
-        Mon, 11 Jul 2022 15:23:31 -0700 (PDT)
+        bh=bwoWAKJGLd9SSlXMcBweio9xAZcHotQKiELuk/jadhs=;
+        b=qwoCoKA6sBjk3VPGs1ikYpO0SssEKfJOkKcJBtKbLcAuo1ngGvtE4dIInRsUQ4hUgR
+         Yc8+GuWk/aPRUUXDmHCEJnSVsHW4BSyxzXSKXsvE/toIz6UwNIAFHV/XOi6nBUP/icWI
+         5T7kDf5WfAr+rmlbdZYH2t+d+fOhoh1qbriJama2SC4QlL00P42kgJXyIMmiLdwl6hGM
+         RIxXwnp5HYVgZYdJL+oqQXXjS5+GtOUFaK03SiC7g4upCkz7xnqKNvjczDjmoOfc+p4z
+         Szb8p6D7BhvaAXkte7BWTFxzhF6kZKrldgy3j9BRZd8ZVktPnTZVVRtTRXOQY/lGtoQF
+         8zqw==
+X-Gm-Message-State: AJIora8fWfqmTyswuWKRcfRKGmdltysPoQCGNGGUWlOOftCTxxj+LWh4
+	OIMaBPvcl97d6q+V23v85EFTeTgx2eQ=
+X-Google-Smtp-Source: AGRyM1tfnPqPWAZx7h3NfTzcNn4bH4ejXLJRMterUSsiEbLQQlGDh3YmCTxE0k8e6QeBLZOcvMN8bA==
+X-Received: by 2002:a17:90a:710a:b0:1ef:991c:dc67 with SMTP id h10-20020a17090a710a00b001ef991cdc67mr655749pjk.110.1657578212878;
+        Mon, 11 Jul 2022 15:23:32 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z6-20020a170903018600b0016be5f24aaesm5274774plg.163.2022.07.11.15.23.29
+        by smtp.gmail.com with ESMTPSA id z6-20020a170903018600b0016be5f24aaesm5274774plg.163.2022.07.11.15.23.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jul 2022 15:23:30 -0700 (PDT)
+        Mon, 11 Jul 2022 15:23:32 -0700 (PDT)
 From: Florian Fainelli <f.fainelli@gmail.com>
 To: linux-mtd@lists.infradead.org
 Cc: Florian Fainelli <f.fainelli@gmail.com>,
@@ -74,16 +74,16 @@ Cc: Florian Fainelli <f.fainelli@gmail.com>,
 	Colin Ian King <colin.king@intel.com>,
 	linux-kernel@vger.kernel.org (open list),
 	William Zhang <william.zhang@broadcom.com>
-Subject: [PATCH 1/2] mtd: rawnand: brcmnand: Move Kconfig to driver folder
-Date: Mon, 11 Jul 2022 15:23:22 -0700
-Message-Id: <20220711222323.4048197-2-f.fainelli@gmail.com>
+Subject: [PATCH 2/2] mtd: rawnand: brcmnand: Add individual glue driver selection
+Date: Mon, 11 Jul 2022 15:23:23 -0700
+Message-Id: <20220711222323.4048197-3-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220711222323.4048197-1-f.fainelli@gmail.com>
 References: <20220711222323.4048197-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220711_152332_478530_471862FD 
-X-CRM114-Status: GOOD (  18.41  )
+X-CRM114-CacheID: sfid-20220711_152334_276228_65286A3E 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,76 +100,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-In preparation for allowing each of the brcmnand stub to be built
-separately, move the Kconfig entry to the driver folder.
+Allow each platform to define a dedicated Kconfig entry for its glue
+driver such that we can decide on a per-platfomr basis whether to build
+it or not. This allows for a finer grained control over the resulting
+kernel image or set of modules.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/mtd/nand/raw/Kconfig          | 22 +---------------------
- drivers/mtd/nand/raw/brcmnand/Kconfig | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+), 21 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/brcmnand/Kconfig
+ drivers/mtd/nand/raw/brcmnand/Kconfig  | 28 ++++++++++++++++++++++++++
+ drivers/mtd/nand/raw/brcmnand/Makefile |  8 ++++----
+ 2 files changed, 32 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 8b6d7a515445..43a151b4c8fc 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -200,27 +200,7 @@ config MTD_NAND_TMIO
- 	  Support for NAND flash connected to a Toshiba Mobile IO
- 	  Controller in some PDAs, including the Sharp SL6000x.
- 
--config MTD_NAND_BRCMNAND
--	tristate "Broadcom STB NAND controller"
--	depends on ARM || ARM64 || MIPS || COMPILE_TEST
--	depends on HAS_IOMEM
--	help
--	  Enables the Broadcom NAND controller driver. The controller was
--	  originally designed for Set-Top Box but is used on various BCM7xxx,
--	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
--
--if MTD_NAND_BRCMNAND
--
--config MTD_NAND_BRCMNAND_BCMA
--	tristate "Broadcom BCMA NAND controller"
--	depends on BCMA_NFLASH
--	depends on BCMA
--	help
--	  Enables the BRCMNAND controller over BCMA on BCM47186/BCM5358 SoCs.
--	  The glue driver will take care of performing the low-level I/O
--	  operations to interface the BRCMNAND controller over the BCMA bus.
--
--endif # MTD_NAND_BRCMNAND
-+source "drivers/mtd/nand/raw/brcmnand/Kconfig"
- 
- config MTD_NAND_BCM47XXNFLASH
- 	tristate "BCM4706 BCMA NAND controller"
 diff --git a/drivers/mtd/nand/raw/brcmnand/Kconfig b/drivers/mtd/nand/raw/brcmnand/Kconfig
-new file mode 100644
-index 000000000000..d5a0265525ca
---- /dev/null
+index d5a0265525ca..4bc51bf60aca 100644
+--- a/drivers/mtd/nand/raw/brcmnand/Kconfig
 +++ b/drivers/mtd/nand/raw/brcmnand/Kconfig
-@@ -0,0 +1,21 @@
-+config MTD_NAND_BRCMNAND
-+	tristate "Broadcom STB NAND controller"
-+	depends on ARM || ARM64 || MIPS || COMPILE_TEST
-+	depends on HAS_IOMEM
+@@ -9,6 +9,13 @@ config MTD_NAND_BRCMNAND
+ 
+ if MTD_NAND_BRCMNAND
+ 
++config MTD_NAND_BRCMNAND_BCM63XX
++	tristate "Broadcom BCM63xx NAND controller glue"
++	default BCM63XX
 +	help
-+	  Enables the Broadcom NAND controller driver. The controller was
-+	  originally designed for Set-Top Box but is used on various BCM7xxx,
-+	  BCM3xxx, BCM63xxx, iProc/Cygnus and more.
++	  Enables the BRCMNAND glue driver to register the NAND controller
++	  on Broadcom BCM63xx MIPS-based DSL platforms.
 +
-+if MTD_NAND_BRCMNAND
-+
-+config MTD_NAND_BRCMNAND_BCMA
-+	tristate "Broadcom BCMA NAND controller"
-+	depends on BCMA_NFLASH
-+	depends on BCMA
+ config MTD_NAND_BRCMNAND_BCMA
+ 	tristate "Broadcom BCMA NAND controller"
+ 	depends on BCMA_NFLASH
+@@ -18,4 +25,25 @@ config MTD_NAND_BRCMNAND_BCMA
+ 	  The glue driver will take care of performing the low-level I/O
+ 	  operations to interface the BRCMNAND controller over the BCMA bus.
+ 
++config MTD_NAND_BRCMNAND_BCMBCA
++	tristate "Broadcom BCMBCA NAND controller glue"
++	default ARCH_BCMBCA
 +	help
-+	  Enables the BRCMNAND controller over BCMA on BCM47186/BCM5358 SoCs.
-+	  The glue driver will take care of performing the low-level I/O
-+	  operations to interface the BRCMNAND controller over the BCMA bus.
++	  Enables the BRCMNAND glue driver to register the NAND controller
++	  on Broadcom BCA platforms.
 +
-+endif # MTD_NAND_BRCMNAND
++config MTD_NAND_BRCMNAND_BRCMSTB
++	tristate "Broadcom STB Nand controller glue"
++	default ARCH_BRCMSTB
++	help
++	  Enables the BRCMNAND glue driver to register the NAND controller
++	  on Broadcom STB platforms.
++
++config MTD_NAND_BRCMNAND_IPROC
++	tristate "Broadcom iProc NAND controller glue"
++	default ARCH_BCM_IPROC
++	help
++	  Enables the BRCMNAND controller glue driver to register the NAND
++	  controller on Broadcom iProc platforms.
++
+ endif # MTD_NAND_BRCMNAND
+diff --git a/drivers/mtd/nand/raw/brcmnand/Makefile b/drivers/mtd/nand/raw/brcmnand/Makefile
+index 16dc7254200e..9907e3ec4bb2 100644
+--- a/drivers/mtd/nand/raw/brcmnand/Makefile
++++ b/drivers/mtd/nand/raw/brcmnand/Makefile
+@@ -1,10 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # link order matters; don't link the more generic brcmstb_nand.o before the
+ # more specific iproc_nand.o, for instance
+-obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= iproc_nand.o
+-obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm63138_nand.o
+-obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= bcm6368_nand.o
+-obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmstb_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND_IPROC)	+= iproc_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND_BCMBCA)	+= bcm63138_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND_BCM63XX)	+= bcm6368_nand.o
++obj-$(CONFIG_MTD_NAND_BRCMNAND_BRCMSTB)	+= brcmstb_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand.o
+ 
+ obj-$(CONFIG_MTD_NAND_BRCMNAND_BCMA)	+= bcma_nand.o
 -- 
 2.25.1
 
