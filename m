@@ -4,117 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 169EAC433EF
-	for <linux-mtd@archiver.kernel.org>; Mon, 11 Jul 2022 13:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71124C433EF
+	for <linux-mtd@archiver.kernel.org>; Mon, 11 Jul 2022 14:53:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=amHReBBFTelfb6P0dCWOkmwdGeUYn/ilsfU3XJ3kPJk=; b=HfQanolcrwl12W
-	oGNpILylR6qYIhfXRLwwzijcRrqq3gCgJ1IUAi4r3zyP8P6QQU6jIcU9gjAvEKhEBShSf6kfm7qqP
-	zALnoGTYHS9259dOrIfpRh5BAKvxOKLW3SWp1aAem0BGEQWQMvkXhMy8BtJhtejd77WWeSX+ZVfIL
-	CpsdVJqhQWJ7AqQ+WIItx1HJlswRpVQTOKGRn2gPsGjAKGsK6fsZDx40wDuwPmRbTsrCd+h+inyIX
-	q7Wb1Td8ZQNRZ/ha1uzxykDj2W5+GGB5I6CJRRx6CQBarYL11adAFJEuRt11QOaJk11z6PIM9YxtA
-	IfbP1xEaXGTVkbv72L4Q==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=L+9pSwitVnPrzIzK0eTWCPpPgzwQY67tb4raL60LPcc=; b=xvo1P6A8FIq3IfSmBN0lJ+IK0k
+	hrMvI6KyzCLwwbKt92tPSQCilPchBNxSTUfo/jZfy6MVKdoYSD1eO91znUG9ALqsWHpaEtFWNQu++
+	uZ4eSiCfOaHVYb1Mn7zZ21flhvwlGEYzCi7XoYNYn5QhnCjaOViQ5JT4ekgZSH3JwDklPcqFdfgPA
+	ZljmnvQ67KPKqo7tqROX+up4FCDeZc35mh2+JmDu8L6b8rIUqrkHD9a1pb4UL3H4uPWzfhL8+rktD
+	ZQt0KRHlMVb4OuqWXIl/aNvdHg2cemt7Unxqb0QQH8mRYYZzCL8tB4LFHSzA7/vMnPwEG3qPtWkrF
+	sTcHNV7A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oAt2H-001j48-T1; Mon, 11 Jul 2022 13:01:14 +0000
-Received: from mail-mw2nam10on2088.outbound.protection.outlook.com ([40.107.94.88] helo=NAM10-MW2-obe.outbound.protection.outlook.com)
+	id 1oAumT-002bgF-EG; Mon, 11 Jul 2022 14:53:01 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oAspa-001aTL-BJ; Mon, 11 Jul 2022 12:48:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c40vKG4zFatzovLnsmQ70TPkJ8q0iEyRp1vKfryGm3fodKjgmDihsxaIvP/nvh6p+gH7WBTRgJxtHz0VTW4MUulj02Z4atLvDnkajPhZccoY7gvgagBIlmPULCkZlcrBKyZyQ2Z0IfqPxtSviNnCRWFe/wJMd/8Yd21x/8mJHgQJlSz6nzy+4eOnd4Tl9yR4tZ+vW9ql2Gl+xeFIU6eEg4+d8lSPEn7S1J5YiWm5vBN/0GmDH4WUT4xtsIq/fcSPvo2mUCvs4YJlJt2LTiLgJCjjTtqWeXQIEmDxAYEFDokHgyBEyf4tuay9i6nEd/cylBLWZxEgpWRfN9USuv7bYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jEUpOOvAF9l0FyGizId1fTlvlFuzdGKvdO+gXyY6vgI=;
- b=O7z76l9MajwpPLC5/1dmVNL2j8JrL7W8PSI0Q81QsMM8om6zWjVBFhD6PGYmbCR/uyq+NKuRpNolZX4vg8Oc6cGqmbLYF0a3xCvGmN2MRKLDoSttKtmynVRpT8mCfqbsFpQDjTLpVzZ4kQBAto4/5YAtqr/MOkM3Xqd5bW3EbB6H13BXvEaJw3B0xMUv4xquKGRdHqQAKgN5ErjADcwPJg4kmCEpJRmyoBhwF4KvtDMqAATumJF1+FBkxDANRIFWkDUfXG0J8XiFpQuqDKHZ6E+dl0Qsk4PR1pLEDJsVkjbiCDj9uK/C0solvtQINGIJKPPGYIW0tndrB+Vn4tGr8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jEUpOOvAF9l0FyGizId1fTlvlFuzdGKvdO+gXyY6vgI=;
- b=oK0gnS5Zk5GcXUnvcGC4m/ZoKnJJm9bmVySRL94JtRiDpcjd5UwmsWDeA7gv7J6olCkjh+2tUwuUTmh1qu148ZZ9N8Vx3lcqw2UZj6TqT57+QjCVrwjuMJL7s9h9vlauTgAT69pF9YYYJAoyykzD1iVrFuD5qo4uf2oHInjFWHQ=
-Received: from SN6PR01CA0015.prod.exchangelabs.com (2603:10b6:805:b6::28) by
- SA2PR02MB7802.namprd02.prod.outlook.com (2603:10b6:806:14e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.20; Mon, 11 Jul
- 2022 12:48:00 +0000
-Received: from SN1NAM02FT0042.eop-nam02.prod.protection.outlook.com
- (2603:10b6:805:b6:cafe::82) by SN6PR01CA0015.outlook.office365.com
- (2603:10b6:805:b6::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.19 via Frontend
- Transport; Mon, 11 Jul 2022 12:48:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com; pr=C
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0042.mail.protection.outlook.com (10.97.4.129) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5417.15 via Frontend Transport; Mon, 11 Jul 2022 12:48:00 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 11 Jul 2022 05:47:58 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 11 Jul 2022 05:47:58 -0700
-Received: from [10.254.241.52] (port=55252)
-	by smtp.xilinx.com with esmtp (Exim 4.90)
-	(envelope-from <michal.simek@xilinx.com>)
-	id 1oAspR-0006KT-UA; Mon, 11 Jul 2022 05:47:58 -0700
-Message-ID: <40110ff8-5c19-bc54-759b-a51a919788eb@xilinx.com>
-Date: Mon, 11 Jul 2022 14:47:54 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
+	id 1oAumB-002bSi-Ex; Mon, 11 Jul 2022 14:52:44 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id CC5C1B81025;
+	Mon, 11 Jul 2022 14:52:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E66C9C34115;
+	Mon, 11 Jul 2022 14:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1657551160;
+	bh=T5/YgjZEyFa9qar9PBcP/h4QGGDW5ssEp2nL2da/rbk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FruxfvHb7pRbBBKIhc4BZ4LRHPprizlmPVXQS1iaXTGP3mgGGgRP55lY90bNGTJnA
+	 OT1+WTtiPEFSUVn2Tg5wAMGpjjG3usGRRsF6/jUH758RS/RygHWSHg/lMONF2Rqlkq
+	 4X1cHCexjg+mTGOGHaJGJ6nPWWtvjhHaSnFpd3vYobOIzYlxPgZjnRkAZ/Luf40u83
+	 0t9djetXzX5gMjB7V4yP0O1Gm/io7vVDjEJy3sg8p3PodwEUxchAZxGEksxtZB8Blu
+	 sFcf1VXgD+ZN0cIf0lQtlo+upOC9x0DA/NjhmVkz2e4jveY5VCqFuBi3ES8Y2BtO4q
+	 Tmr8GBBH/12eQ==
+Date: Mon, 11 Jul 2022 15:52:34 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Michal Simek <michal.simek@xilinx.com>
+Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
+	vigneshr@ti.com, git@xilinx.com, linux-spi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	michael@walle.cc, linux-mtd@lists.infradead.org
 Subject: Re: [RFC PATCH 1/2] spi: Add multiple CS support for a single SPI
  device
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Amit Kumar Mahapatra
-	<amit.kumar-mahapatra@xilinx.com>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>
-CC: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<vigneshr@ti.com>, <git@xilinx.com>, <michal.simek@xilinx.com>,
-	<linux-spi@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <michael@walle.cc>,
-	<linux-mtd@lists.infradead.org>
+Message-ID: <Ysw5MpvjKM5LKvWd@sirena.org.uk>
 References: <20220606112607.20800-1-amit.kumar-mahapatra@xilinx.com>
  <20220606112607.20800-2-amit.kumar-mahapatra@xilinx.com>
  <YqHfccvhy7e5Bc6m@sirena.org.uk>
-From: Michal Simek <michal.simek@xilinx.com>
-In-Reply-To: <YqHfccvhy7e5Bc6m@sirena.org.uk>
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec0abc3c-580c-4568-be08-08da633b963f
-X-MS-TrafficTypeDiagnostic: SA2PR02MB7802:EE_
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	ZBHZIgrsSvrtimosOA+HbniuIWFCnGWUDf6Vx2oOCOJ1RPbt/0VA0xUArAMqav5nOMPEj4B1lAVZB2YgQwTMkuJPn6tnBy9x0zJVp0Bvy+dUiRlYeYubOXS03qINuPYV73BFvklkRYwqXe+jeAbVuAsYGFieMpjO9G9WZ3F2Kn5XptiZ4S5SOJTsNQFdlmHrDqZuvCcjVrf+c6StKU+xBpjRemI1L+IMWzCf5bZS9rj/Ml3Bx9u9fBQm5vLNfJ+UcmTLVLWI62ObKgKWzXYmoDtWVCcX5u6gRuPj02RdC8yZsJI/LT7QahwU/+yrAMGGxyMTivhY77GcXTt+fqp4vqCVqiuIYUq647emgCUcJRU1VCv78cQy2i4PMlP6OV44yOl7aopAU6kTtxz4uHySEIkAIrq1DcIt4W0p8TZVOMSnP/uRteMTNG8b1+ZNhLS8yMX4uB0M18qiC5vWDxxBcv1B8BBaP+XPgJnNVccTHs85hJeg7Nj22o6U38qBJUK5Z5kO8pJL89DE5rBuy/Ut0TAKYjCQoqfD1pqPAdlP5PH4F9LH3EmQV91WIISlJuUmI8xsfCv1yWJ7rTQWYbvPGne0WnVhcRDh2aZfdB81OcfsPHI/Bof4Cn9nZHcydsNQYJeoWAj1sj/VhE1ENRI2DjzVpufoMBLE4XIdZrN1mr3r7u4iouyZDQlxrI6BOi/z3EeEvZz4UaQkJodtpE20fxQigmUmqOzSrC54BWhwFqEcyUvr6uEnOIF7gT2T5ft5HxdfBm1Qz37dK9SSfRDw/6k4tjMDqqkXCz+ZoO/irLbSONI84bwZ6A9fgzFojSWx9pnF2WVTG+GVMEx9mxHLiudbLvMzLOkYgy5sLgF8hqaJJgk0UhXdvEsROm4l5ceB
-X-Forefront-Antispam-Report: 	CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(136003)(39860400002)(396003)(40470700004)(46966006)(36840700001)(478600001)(6666004)(40480700001)(41300700001)(2906002)(82310400005)(8676002)(36756003)(54906003)(110136005)(4326008)(31696002)(70206006)(53546011)(70586007)(26005)(316002)(31686004)(7636003)(83380400001)(2616005)(356005)(82740400003)(5660300002)(9786002)(44832011)(7416002)(8936002)(40460700003)(186003)(336012)(426003)(47076005)(36860700001)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2022 12:48:00.0389
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec0abc3c-580c-4568-be08-08da633b963f
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: 	SN1NAM02FT0042.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR02MB7802
+ <40110ff8-5c19-bc54-759b-a51a919788eb@xilinx.com>
+MIME-Version: 1.0
+In-Reply-To: <40110ff8-5c19-bc54-759b-a51a919788eb@xilinx.com>
+X-Cookie: I am NOMAD!
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220711_054806_478831_0BB16914 
-X-CRM114-Status: GOOD (  14.63  )
+X-CRM114-CacheID: sfid-20220711_075243_668718_F2727236 
+X-CRM114-Status: GOOD (  19.71  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,51 +74,70 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============2479348139523740317=="
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Hi Mark,
 
-On 6/9/22 13:54, Mark Brown wrote:
-> On Mon, Jun 06, 2022 at 04:56:06PM +0530, Amit Kumar Mahapatra wrote:
-> 
->> ---
->>   drivers/spi/spi-zynqmp-gqspi.c | 30 ++++++++++++++++++++++++++----
->>   drivers/spi/spi.c              | 10 +++++++---
->>   include/linux/spi/spi.h        | 10 +++++++++-
->>   3 files changed, 42 insertions(+), 8 deletions(-)
-> 
-> Please split the core and driver support into separate patches, they are
-> separate things.
-> 
->> --- a/drivers/spi/spi.c
->> +++ b/drivers/spi/spi.c
->> @@ -2082,6 +2082,8 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
->>   {
->>   	u32 value;
->>   	int rc;
->> +	u32 cs[SPI_CS_CNT_MAX];
->> +	u8 idx;
->>   
->>   	/* Mode (clock phase/polarity/etc.) */
->>   	if (of_property_read_bool(nc, "spi-cpha"))
-> 
-> This is changing the DT binding but doesn't have any updates to the
-> binding document.  The binding code also doesn't validate that we don't
-> have too many chip selects.
+--===============2479348139523740317==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="myd8/Fo7asf/V7NN"
+Content-Disposition: inline
 
-I would like to better understand your request here in connection to change in 
-the binding code for validation.
-What exactly do you want to validate?
-That child reg property is not bigger than num-cs in controller node?
 
-Adding also Krzysztof because I was talking to him over IRC about this.
+--myd8/Fo7asf/V7NN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Michal
+On Mon, Jul 11, 2022 at 02:47:54PM +0200, Michal Simek wrote:
+> On 6/9/22 13:54, Mark Brown wrote:
+> > On Mon, Jun 06, 2022 at 04:56:06PM +0530, Amit Kumar Mahapatra wrote:
+
+> > > +	u32 cs[SPI_CS_CNT_MAX];
+> > > +	u8 idx;
+> > >   	/* Mode (clock phase/polarity/etc.) */
+> > >   	if (of_property_read_bool(nc, "spi-cpha"))
+
+> > This is changing the DT binding but doesn't have any updates to the
+> > binding document.  The binding code also doesn't validate that we don't
+> > have too many chip selects.
+
+> I would like to better understand your request here in connection to change
+> in the binding code for validation.
+> What exactly do you want to validate?
+> That child reg property is not bigger than num-cs in controller node?
+
+If you are adding support for multiple chip selects in the driver then
+there must be some mechanism for expressing that in the bindings which I
+would expect to see appear as a change to the binding document.
+
+--myd8/Fo7asf/V7NN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLMOTEACgkQJNaLcl1U
+h9DUywf/elR3ZLKLxsB3PZJFT+KXa1Qr7NqEluE38DikQ0asVPDKT2SyDCuVZBFu
+P1WzVgQFGEAjOkRrNtJYKBi8zPlGyjCp45MoWQeXNMqI/1jyNP0O9ewCBZH8rT2x
+zhtyqxEFRWbPxdGdiNvhUodfbdnWjbE6tgt6XEgnJT+b9yqAUx13OGx5PK4tf8ql
+Bg+I0GCGybcOmQgJ1DPuTY8l1c5Hs2sd3kHCdpgjtEjnSnD7dqOtDQ0lH2vSVVzF
+1tlp1tSqbatA+jmgJSki0T/eVtXpiNHOWq/WBdjEx9nBu8YN28UR8iMVtxeua7Ni
+i8DPKRKrXRFE6Qz2NK5U6/DYNEVDVw==
+=ZBqB
+-----END PGP SIGNATURE-----
+
+--myd8/Fo7asf/V7NN--
+
+
+--===============2479348139523740317==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+--===============2479348139523740317==--
+
