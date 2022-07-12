@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33619C43334
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Jul 2022 16:39:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78676C433EF
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Jul 2022 16:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=oR//XrUNM7ulR4vZxgnw4gejKy777rMsgIPpS6wlbXc=; b=l7KotdSANWGGys
-	ifkg0HDAy+/1pSjv0iS2I4kKDSA4FbmKPzLsMW5lWGLQyfPjrU0DFfvI7c2/idlWBYYjQ2VUa2yCu
-	080GE4wkOLUR/lNy0APxarM/XIYiJCeRuHsxdJUMR6Xg1f22aA6Qm9bDvGESntUlnaILY7spi1S1r
-	UGhNLTxRrvhkQgXvXC6mPeY2tiTRAE/50znIBjQYn6BLm3QAJvOEq1HYk2YossAUsFoOx3EuAc1U0
-	qZi5gxQdC6Trqjm5LT8gDqGOOoiUetGa8DiaId3IS9a2WjdtsPqqjM3S5TDYxT9EE/jYUvqjPEOLY
-	HUXj41CMGOwL2u2t9Yuw==;
+	List-Owner; bh=xETbfTblDgqx44qLZmCfkrga3m+2nGWUNlWI/iyfots=; b=jOsr9PUyOWremt
+	MCAJa/ZM2T2CqZUlozSYqGJ/Yvz/BZBbymVh3JzxJNACIbECbfpLX7Z0uhCG6otEdmkTrQr2NpAiW
+	k4zf41GnFu2zU2V+tLKS+XkFw7Aw5EOC511ZrZMFpq6grfCMVuCRW9k7B+FVh5seXAtQH9NxDfonf
+	CmDbxOlk9h/k7GCsIIXHuDNdmP22vJqX4098Xb21nz0rCr0oqhhI5otW1AxzKNDlTA4VU8wMy7Rrc
+	XvSmsdmXFg7PpjtLiski4EoNTCjAl1XFR1R74AY7jbJ1LNiVu058FkP7qvOYgzPCAnREmAUDeQMkd
+	ifJFqApI5iYPbTSCI42Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBIvH-00CusT-MN; Tue, 12 Jul 2022 16:39:44 +0000
-Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
+	id 1oBIvB-00Cup1-W9; Tue, 12 Jul 2022 16:39:38 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBIuF-00CuCT-8Q
-	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2022 16:38:41 +0000
-Received: by mail-wr1-x435.google.com with SMTP id d16so11931585wrv.10
-        for <linux-mtd@lists.infradead.org>; Tue, 12 Jul 2022 09:38:33 -0700 (PDT)
+	id 1oBIuD-00CuC6-Ko
+	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2022 16:38:40 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id c131-20020a1c3589000000b003a2cc290135so5538773wma.2
+        for <linux-mtd@lists.infradead.org>; Tue, 12 Jul 2022 09:38:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bsQn2grPS7xgXNrR8QS8Z/js+pIZTD+IK94HxJFk+rM=;
-        b=Vc3tXNm7QiJjXb2PTQiQlCHYyKSpT4cw3gmMIXMXtLLDSS5+msg5QkSbx8OcZgwJWB
-         3sJNkhjVy3ykyph+owYKFX0NI7pd7Bshi6xOaJOKQjJSDOGAPkPDtiXBz7Oh7CPy99bf
-         ckoBPbv0Jvu8rNIk/yiiPqlsOQViRLUEfEi3D6ecNMA90ETZK1V4dLgnEztbxQJxOiWy
-         FVadpwlMlqMSvkfJEteuERDldYZRwrBuWgsKqcRriOp5P6eKeSVPQ+FJD8kOYqKlUiGE
-         rbG2mpLuhM11eKznY/j1BC7Ep8pCGcjE/G025iFI8857+aIGwVIzj7KZ/1ZV4T2zVm0d
-         DqBg==
+        bh=BXuXiklFcl+vK0kmoMLD007iJW5hMW9mAc7xKGHZhfc=;
+        b=Vro/dFbucTFTfY+imZQ1WkqMIYTcCBhqfgdDiw/JxxWQ4P0kgHI1akI7oBBajJOTcy
+         fbxA1sjcXfsXZLM99JJDrF61XuA+Yt9jfRPrRvI3zXRuuGT7veCBHYlrtDqUdAQ+D5c1
+         cMitPM2+JPJEXy7DL12czQV+/2Sn+56Qdjx8V6cX8gMRHKptYtO03R1BLJtLKAddLq+L
+         WV3lRDp5jE6pKPVhtV8QTqOEKc52tvlJWaM3udCW28xwQLzT7c42ozqDXTuGjKOWOBVa
+         ho9d/HjLRIza73WOIfqiULK1bQG7PxQh9nnVHAkg4U2TDMLuy79CM6fiq8BlTjB2WWyg
+         Wr0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bsQn2grPS7xgXNrR8QS8Z/js+pIZTD+IK94HxJFk+rM=;
-        b=B+LABV3+gDxm3tI0PQPKuIokaDmCws6zhVbyPDGozVaGKdyU6n/Fqzbk6ygcgeFk8T
-         r5pAaduDHD7sCMJEtZGjpjC21EcR+NIriNqVTEw/KhxL/1ebdG3wX+ymU+doI7j0ShxH
-         M0OZtRHHmcx4DCLz2CQBi2CZOzCFJvRy50N9OQcQ/FClLE4gZRAopcPvBIVOEEvHTtyA
-         VfHaHO1YgNLNSbds3u9XVMSbIdgJpoTNPYtRenjkh8f0NUQWkl+JVQxJiZq9xE/E+I3W
-         ehwg/hxFgKhAxXrxf7lySORU1Q+O1VV+Pi68OZKZFJckgcbp9Ko6iXXvcr5gRaZNFCgk
-         kVog==
-X-Gm-Message-State: AJIora9FuYs4Unl/NiOt38PO0/x6klqqjZHqj5vJkZTf6LE0WaW+Q2R1
-	elxBY6JPTMqnSzeMwWvTwzhVQw==
-X-Google-Smtp-Source: AGRyM1vnzhRsv1t/YSN1aTRxG2Afz1YPqX0pdQKi6vtLJh2KgUD2dcowzt9rE3HD+p/L7p/Z8YYmmQ==
-X-Received: by 2002:a5d:4889:0:b0:21b:293e:9e43 with SMTP id g9-20020a5d4889000000b0021b293e9e43mr22404241wrq.705.1657643912132;
-        Tue, 12 Jul 2022 09:38:32 -0700 (PDT)
-Received: from localhost.localdomain (host-78-150-47-22.as13285.net. [78.150.47.22])
-        by smtp.gmail.com with ESMTPSA id s14-20020a5d424e000000b0021d4d6355efsm8623751wrr.109.2022.07.12.09.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=BXuXiklFcl+vK0kmoMLD007iJW5hMW9mAc7xKGHZhfc=;
+        b=Lmf4vCTwXoU0G4I1gqjz6h/lR8brklDKAu4v8oxNEvKC3lsbx1hKd+VTZnqc0zkeiZ
+         WwLAxcX3ka+fPQKnZCACijfZi8xen3ZNAjJ/EWunCrhoU2+45vvLw0kn3BKnA4ON8JEa
+         Lu6y5s/HcZi5UkLI/B/nX/1FTjbosVuoU2+JOd+fomwcdhMZXZl+jSvhNGOukpXo8Dgq
+         LL0x+UnPdrY09Oe2IQ8AQ+TwVMg8qQgy/buJMWrSRJ4piLoT3TxQL1i/8Xgfd8jRAmEY
+         ObdBGrDPf7nWxVgWyQCCQkqUbe1gA5l8i9FtLb4TpbQH+X0pgQz8tevSY+3OLLQCO9i0
+         s5Gg==
+X-Gm-Message-State: AJIora/2LNZS9yILajoOwj/SsRKglT+MTaFTTF1K0y3UIplV782EskZt
+	H/KM6q3LA+566fXvnpilzObrKA==
+X-Google-Smtp-Source: AGRyM1tb4EZs5ZikIvKJ/L8Kuec2ek3EENJV7eDH3jpkwW7n1kyTihutuzdDuVWp/U0dOXQ1AV41Lw==
+X-Received: by 2002:a05:600c:354e:b0:3a1:9ddf:468d with SMTP id i14-20020a05600c354e00b003a19ddf468dmr4841011wmq.145.1657643911325;
         Tue, 12 Jul 2022 09:38:31 -0700 (PDT)
+Received: from localhost.localdomain (host-78-150-47-22.as13285.net. [78.150.47.22])
+        by smtp.gmail.com with ESMTPSA id s14-20020a5d424e000000b0021d4d6355efsm8623751wrr.109.2022.07.12.09.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jul 2022 09:38:30 -0700 (PDT)
 From: Sudip Mukherjee <sudip.mukherjee@sifive.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Pratyush Yadav <p.yadav@ti.com>,
@@ -73,16 +73,16 @@ Cc: greentime.hu@sifive.com,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Sudip Mukherjee <sudip.mukherjee@sifive.com>
-Subject: [PATCH 2/3] mtd: spi-nor: add support for Quad Page Program to no_sfdp_flags
-Date: Tue, 12 Jul 2022 17:38:22 +0100
-Message-Id: <20220712163823.428126-3-sudip.mukherjee@sifive.com>
+Subject: [PATCH 1/3] mtd: spi-nor: extend no_sfdp_flags to use u16
+Date: Tue, 12 Jul 2022 17:38:21 +0100
+Message-Id: <20220712163823.428126-2-sudip.mukherjee@sifive.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220712163823.428126-1-sudip.mukherjee@sifive.com>
 References: <20220712163823.428126-1-sudip.mukherjee@sifive.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220712_093839_364116_4C418B2B 
-X-CRM114-Status: GOOD (  13.18  )
+X-CRM114-CacheID: sfid-20220712_093837_825044_755BF3FC 
+X-CRM114-Status: GOOD (  12.99  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,51 +99,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some flash chips which does not have a SFDP table can support Quad
-Input Page Program. Enable it in hwcaps if defined.
+Currently no_sfdp_flags is u8 and all the bits have been used. Extend
+it to use u16 so that we can add more support.
 
 Signed-off-by: Sudip Mukherjee <sudip.mukherjee@sifive.com>
 ---
- drivers/mtd/spi-nor/core.c | 5 +++++
- drivers/mtd/spi-nor/core.h | 2 ++
- 2 files changed, 7 insertions(+)
+ drivers/mtd/spi-nor/core.c | 2 +-
+ drivers/mtd/spi-nor/core.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index e5f7691c5bd40..e299fc8fdd3d4 100644
+index ce5d69317d46c..e5f7691c5bd40 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2375,6 +2375,11 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
- 		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
- 					SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
- 	}
-+	if (no_sfdp_flags & SPI_NOR_QUAD_PP) {
-+		params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
-+		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
-+					SPINOR_OP_PP_1_1_4, SNOR_PROTO_1_1_4);
-+	}
+@@ -2335,7 +2335,7 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+ {
+ 	struct spi_nor_flash_parameter *params = nor->params;
+ 	struct spi_nor_erase_map *map = &params->erase_map;
+-	const u8 no_sfdp_flags = nor->info->no_sfdp_flags;
++	const u16 no_sfdp_flags = nor->info->no_sfdp_flags;
+ 	u8 i, erase_mask;
  
- 	/*
- 	 * Sector Erase settings. Sort Erase Types in ascending order, with the
+ 	if (no_sfdp_flags & SPI_NOR_DUAL_READ) {
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 58fbedc94080f..dde636bdb1a7c 100644
+index 61886868cd022..58fbedc94080f 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -462,6 +462,7 @@ struct spi_nor_fixups {
-  *   SPI_NOR_OCTAL_READ:      flash supports Octal Read.
-  *   SPI_NOR_OCTAL_DTR_READ:  flash supports octal DTR Read.
-  *   SPI_NOR_OCTAL_DTR_PP:    flash supports Octal DTR Page Program.
-+ *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
-  *
-  * @fixup_flags:    flags that indicate support that can be discovered via SFDP
-  *                  ideally, but can not be discovered for this particular flash
-@@ -509,6 +510,7 @@ struct flash_info {
- #define SPI_NOR_OCTAL_READ		BIT(5)
- #define SPI_NOR_OCTAL_DTR_READ		BIT(6)
- #define SPI_NOR_OCTAL_DTR_PP		BIT(7)
-+#define SPI_NOR_QUAD_PP			BIT(8)
+@@ -501,7 +501,7 @@ struct flash_info {
+ #define NO_CHIP_ERASE			BIT(7)
+ #define SPI_NOR_NO_FR			BIT(8)
  
- 	u8 fixup_flags;
- #define SPI_NOR_4B_OPCODES		BIT(0)
+-	u8 no_sfdp_flags;
++	u16 no_sfdp_flags;
+ #define SPI_NOR_SKIP_SFDP		BIT(0)
+ #define SECT_4K				BIT(1)
+ #define SPI_NOR_DUAL_READ		BIT(3)
 -- 
 2.30.2
 
