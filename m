@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6517FC433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 12 Jul 2022 16:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33619C43334
+	for <linux-mtd@archiver.kernel.org>; Tue, 12 Jul 2022 16:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=wZIf+wRf8vI9DXicTyl/0MM+1KTxVPjCKMtTzVvvpbM=; b=O7ye45dKjYSYY2
-	ouILwRQSAFc0aEEy09xMjr7OGHmapM8mjoCRH8s/RklfRLSQqaYqMYNGrr24K/ZulgYB3NU8XqEjK
-	bUa7SdQnOWMpCZhoyTPd4OSQH27ae5PSlGdl93AgmPLyjU7OsPKEpbsEYTsKP6RSPPqwGea+DCVh8
-	6HWRyY1+pbVlsfZjBR5n2k9CrAr2qYDdtRGtjOBgRW9Az+BVORo6HGK5P3h0zM71/cop6T9TVnqJm
-	3eLa/AHE1W3epv3WfZhlP68+FlkOT8J3fZJa0ou/GqG0461MLF5iYR/+Lpwp8ZpQ7nZJc8v0U9+PH
-	LdhUPcOTKgX+BHSsAhbQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=oR//XrUNM7ulR4vZxgnw4gejKy777rMsgIPpS6wlbXc=; b=l7KotdSANWGGys
+	ifkg0HDAy+/1pSjv0iS2I4kKDSA4FbmKPzLsMW5lWGLQyfPjrU0DFfvI7c2/idlWBYYjQ2VUa2yCu
+	080GE4wkOLUR/lNy0APxarM/XIYiJCeRuHsxdJUMR6Xg1f22aA6Qm9bDvGESntUlnaILY7spi1S1r
+	UGhNLTxRrvhkQgXvXC6mPeY2tiTRAE/50znIBjQYn6BLm3QAJvOEq1HYk2YossAUsFoOx3EuAc1U0
+	qZi5gxQdC6Trqjm5LT8gDqGOOoiUetGa8DiaId3IS9a2WjdtsPqqjM3S5TDYxT9EE/jYUvqjPEOLY
+	HUXj41CMGOwL2u2t9Yuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBIv2-00CujY-4s; Tue, 12 Jul 2022 16:39:28 +0000
-Received: from mail-wm1-x32e.google.com ([2a00:1450:4864:20::32e])
+	id 1oBIvH-00CusT-MN; Tue, 12 Jul 2022 16:39:44 +0000
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBIuD-00CuBq-JU
-	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2022 16:38:39 +0000
-Received: by mail-wm1-x32e.google.com with SMTP id l42so4977165wms.5
-        for <linux-mtd@lists.infradead.org>; Tue, 12 Jul 2022 09:38:31 -0700 (PDT)
+	id 1oBIuF-00CuCT-8Q
+	for linux-mtd@lists.infradead.org; Tue, 12 Jul 2022 16:38:41 +0000
+Received: by mail-wr1-x435.google.com with SMTP id d16so11931585wrv.10
+        for <linux-mtd@lists.infradead.org>; Tue, 12 Jul 2022 09:38:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s8lmaZ4yA3N+2Tr9olz+V+wBzdb6zjpc/4YMVJzfPW4=;
-        b=P0DNVxXKag6AgXtprOy4l7YJS+89wlkyKE8K5SVwi923xmsQEAFaRQ536opF/PriyL
-         dMbDPB26jWtM2oJpBaHUDyqNMhoTHZebb1fke2X6jIHihDjY5vCBlDylOQ9cdK11lqvX
-         krikO6mEqD4tBQJXEucsgXFDvcrnAiHhvoaFU54BiW350VmkfsaPpltXivRzagOWtr6m
-         Lr/vy87lmAxMrxn5D2TFgX9XWKvu8ltd4V1zt0q4sJ05MHUyfpbQ4pvHYM+n3cjay5UC
-         /hoEfRJgit4UnZtjaoWdmkmXgMfkxF2Z8L2Hkib/PK/CwYjwDlJDrC6QdtJ78CzenIpY
-         JhSQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bsQn2grPS7xgXNrR8QS8Z/js+pIZTD+IK94HxJFk+rM=;
+        b=Vc3tXNm7QiJjXb2PTQiQlCHYyKSpT4cw3gmMIXMXtLLDSS5+msg5QkSbx8OcZgwJWB
+         3sJNkhjVy3ykyph+owYKFX0NI7pd7Bshi6xOaJOKQjJSDOGAPkPDtiXBz7Oh7CPy99bf
+         ckoBPbv0Jvu8rNIk/yiiPqlsOQViRLUEfEi3D6ecNMA90ETZK1V4dLgnEztbxQJxOiWy
+         FVadpwlMlqMSvkfJEteuERDldYZRwrBuWgsKqcRriOp5P6eKeSVPQ+FJD8kOYqKlUiGE
+         rbG2mpLuhM11eKznY/j1BC7Ep8pCGcjE/G025iFI8857+aIGwVIzj7KZ/1ZV4T2zVm0d
+         DqBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=s8lmaZ4yA3N+2Tr9olz+V+wBzdb6zjpc/4YMVJzfPW4=;
-        b=Gu77PhHSSIhhnhgFMO3AJqEGPm56gkuhRi33f3N3Ed1Mpoh2u0OkarslPajai2q+oC
-         O04riUk0UV7DvlfqgUz+mv9mYQde+hcJQ9Uw+woO3IMbNQ9D1IVNFU80acJl4FwV0k4Z
-         aV65pl45ggfHpDGhjbgG30z5EiXGuizv2xyS8TTO3sHOOyXT/eEurrJFVPrRZnt9zqze
-         viPAhCbsMks1EGekTfkNL9+LWirWa+spc53TFt+q8K7d7gRQkErJMCeystbfWDjjL0Ub
-         xMESf/Ikag366G7Uwo+Flq920E8tSLGBUXp+Ln+zQbE4xLEqp4CbxmbBIzYX0uQ/xRaJ
-         Flcw==
-X-Gm-Message-State: AJIora9143FL1I/0VyMIlR/YAIghG8mV/qsiyBuS0rD38HneMbMz4ejR
-	tE0Z5XIx3UWvST7nTuObA2zLPA==
-X-Google-Smtp-Source: AGRyM1vvLeGSg1PfQa4JuYMksqO5aPjsbFbmxqBm+Y4FiwMSJVxequXnCmAnrqvUh3WpMx/2snJuLA==
-X-Received: by 2002:a05:600c:1993:b0:3a1:918d:671b with SMTP id t19-20020a05600c199300b003a1918d671bmr4688804wmq.14.1657643910288;
-        Tue, 12 Jul 2022 09:38:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bsQn2grPS7xgXNrR8QS8Z/js+pIZTD+IK94HxJFk+rM=;
+        b=B+LABV3+gDxm3tI0PQPKuIokaDmCws6zhVbyPDGozVaGKdyU6n/Fqzbk6ygcgeFk8T
+         r5pAaduDHD7sCMJEtZGjpjC21EcR+NIriNqVTEw/KhxL/1ebdG3wX+ymU+doI7j0ShxH
+         M0OZtRHHmcx4DCLz2CQBi2CZOzCFJvRy50N9OQcQ/FClLE4gZRAopcPvBIVOEEvHTtyA
+         VfHaHO1YgNLNSbds3u9XVMSbIdgJpoTNPYtRenjkh8f0NUQWkl+JVQxJiZq9xE/E+I3W
+         ehwg/hxFgKhAxXrxf7lySORU1Q+O1VV+Pi68OZKZFJckgcbp9Ko6iXXvcr5gRaZNFCgk
+         kVog==
+X-Gm-Message-State: AJIora9FuYs4Unl/NiOt38PO0/x6klqqjZHqj5vJkZTf6LE0WaW+Q2R1
+	elxBY6JPTMqnSzeMwWvTwzhVQw==
+X-Google-Smtp-Source: AGRyM1vnzhRsv1t/YSN1aTRxG2Afz1YPqX0pdQKi6vtLJh2KgUD2dcowzt9rE3HD+p/L7p/Z8YYmmQ==
+X-Received: by 2002:a5d:4889:0:b0:21b:293e:9e43 with SMTP id g9-20020a5d4889000000b0021b293e9e43mr22404241wrq.705.1657643912132;
+        Tue, 12 Jul 2022 09:38:32 -0700 (PDT)
 Received: from localhost.localdomain (host-78-150-47-22.as13285.net. [78.150.47.22])
-        by smtp.gmail.com with ESMTPSA id s14-20020a5d424e000000b0021d4d6355efsm8623751wrr.109.2022.07.12.09.38.29
+        by smtp.gmail.com with ESMTPSA id s14-20020a5d424e000000b0021d4d6355efsm8623751wrr.109.2022.07.12.09.38.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 09:38:29 -0700 (PDT)
+        Tue, 12 Jul 2022 09:38:31 -0700 (PDT)
 From: Sudip Mukherjee <sudip.mukherjee@sifive.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Pratyush Yadav <p.yadav@ti.com>,
@@ -73,15 +73,16 @@ Cc: greentime.hu@sifive.com,
 	linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Sudip Mukherjee <sudip.mukherjee@sifive.com>
-Subject: [PATCH 0/3] Add Quad Input Page Program to chips with no SFDP table
-Date: Tue, 12 Jul 2022 17:38:20 +0100
-Message-Id: <20220712163823.428126-1-sudip.mukherjee@sifive.com>
+Subject: [PATCH 2/3] mtd: spi-nor: add support for Quad Page Program to no_sfdp_flags
+Date: Tue, 12 Jul 2022 17:38:22 +0100
+Message-Id: <20220712163823.428126-3-sudip.mukherjee@sifive.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220712163823.428126-1-sudip.mukherjee@sifive.com>
+References: <20220712163823.428126-1-sudip.mukherjee@sifive.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220712_093837_808529_3000D070 
-X-CRM114-Status: UNSURE (   9.31  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20220712_093839_364116_4C418B2B 
+X-CRM114-Status: GOOD (  13.18  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,21 +99,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Some flash chips which do not have a SFDP table supports Quad Input
-Page Program. One of those chips is is25wp256, and this series has been
-tested with that chip. If the spi controller supports quad mode then the
-chip can use Quad Input Page Program to give a much better performance.
+Some flash chips which does not have a SFDP table can support Quad
+Input Page Program. Enable it in hwcaps if defined.
 
-Sudip Mukherjee (3):
-  mtd: spi-nor: extend no_sfdp_flags to use u16
-  mtd: spi-nor: add support for Quad Page Program to no_sfdp_flags
-  mtd: spi-nor: issi: is25wp256: Enable Quad Input Page Program
+Signed-off-by: Sudip Mukherjee <sudip.mukherjee@sifive.com>
+---
+ drivers/mtd/spi-nor/core.c | 5 +++++
+ drivers/mtd/spi-nor/core.h | 2 ++
+ 2 files changed, 7 insertions(+)
 
- drivers/mtd/spi-nor/core.c | 7 ++++++-
- drivers/mtd/spi-nor/core.h | 4 +++-
- drivers/mtd/spi-nor/issi.c | 3 ++-
- 3 files changed, 11 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index e5f7691c5bd40..e299fc8fdd3d4 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2375,6 +2375,11 @@ static void spi_nor_no_sfdp_init_params(struct spi_nor *nor)
+ 		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_8_8_8_DTR],
+ 					SPINOR_OP_PP, SNOR_PROTO_8_8_8_DTR);
+ 	}
++	if (no_sfdp_flags & SPI_NOR_QUAD_PP) {
++		params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
++		spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP_1_1_4],
++					SPINOR_OP_PP_1_1_4, SNOR_PROTO_1_1_4);
++	}
+ 
+ 	/*
+ 	 * Sector Erase settings. Sort Erase Types in ascending order, with the
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 58fbedc94080f..dde636bdb1a7c 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -462,6 +462,7 @@ struct spi_nor_fixups {
+  *   SPI_NOR_OCTAL_READ:      flash supports Octal Read.
+  *   SPI_NOR_OCTAL_DTR_READ:  flash supports octal DTR Read.
+  *   SPI_NOR_OCTAL_DTR_PP:    flash supports Octal DTR Page Program.
++ *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
+  *
+  * @fixup_flags:    flags that indicate support that can be discovered via SFDP
+  *                  ideally, but can not be discovered for this particular flash
+@@ -509,6 +510,7 @@ struct flash_info {
+ #define SPI_NOR_OCTAL_READ		BIT(5)
+ #define SPI_NOR_OCTAL_DTR_READ		BIT(6)
+ #define SPI_NOR_OCTAL_DTR_PP		BIT(7)
++#define SPI_NOR_QUAD_PP			BIT(8)
+ 
+ 	u8 fixup_flags;
+ #define SPI_NOR_4B_OPCODES		BIT(0)
 -- 
 2.30.2
 
