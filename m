@@ -4,77 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D38F5C43334
-	for <linux-mtd@archiver.kernel.org>; Thu, 14 Jul 2022 20:56:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71768C43334
+	for <linux-mtd@archiver.kernel.org>; Thu, 14 Jul 2022 21:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EpTo9aoWcmV3XHGWgOFDVGDH9kfPn2tINsC+CWmF8ac=; b=MsEOPM6N+TJlA2
-	OT3kHGS02uabbES/0vkRbC9xQYkF5XLyx3Mi6QNjcgSIO8BrXCvwRpOPzEZaRZI5QXlzrXAV1+WZS
-	OYlLZIZ8CrtpHkwsa7wsxmX3jEpROH8dyNQdlQFv1cbu2801KxdlAiJD5xSXqLx7L7ozPZyqwJhmO
-	RFt/8hDl8NU5maGQ9yt9z3y56TJXkhAdcTRT7+5WrGSClqhxily5O7K+AnrpOsiOiqb0PuxFjgbKw
-	oAon4/oy3HsqQ9yvr7QxmuBo9xhJhwOx6RVrojQM75n+8i5jLl3KgBje/Vs4sCKprQGahtxLSZcbg
-	mv7q9HN2Fjbk42pO934A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=l0kPAbH3kPd6khtNMn+nUXBD/4a+K7XGhiMek/yk6qc=; b=I00kXzLsAfTc1FuvI/YuyRFCoC
+	pTyfb6OrQEUtoh4MAXSlcLQgi8mzj0gL/nxu9mcRfB4grwl9puPEti5EKTr/5CZMTM5Sci85pjaXZ
+	dcAPQtyCKin2N0noHApu86jShZwMBHbJajG7N9dHzoEci9qR3zCllJFSOy5LD3g7D0ekzuHZUTHkT
+	uyiat1yNX7MT8fgJfTktrMPuoODhR2P2e1jZVEweo97l2Fi4SKgLSEPU/JEFT8F1YwjQsUFc2QomS
+	nwQa6HgOlNf185rqXh+jsrEhD/zkF91U3d5i/aM+uDZQxFSphcLb8MLpRKwKEjeJHWXbXIyILgAX/
+	EPq/hLAA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oC5s9-001YeU-4h; Thu, 14 Jul 2022 20:55:45 +0000
-Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
+	id 1oC6kr-001nev-D0; Thu, 14 Jul 2022 21:52:17 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oC5ry-001YcV-UP; Thu, 14 Jul 2022 20:55:36 +0000
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out1.suse.de (Postfix) with ESMTP id 2C6B534D5B;
-	Thu, 14 Jul 2022 20:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1657832131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZSgLilWzZarIXH8KzBy6OT9I39r0sIeov6Pzt1qEHic=;
-	b=nSr8kGasBJrL9zy9v/TR8zRF6R/eRp45Pz+YgEV/RFQzJW2h0SpZrpKOcqhNVwNooxlDgb
-	jHJICz0Mq9cQEvMm58k493YT6sDeuIWcyZwf1pGWJfz4lu/eO4WhjlHafw4r/o3mtUp6sv
-	RCrIPzWp+W8io03l3sRAgmwebDr9pdg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1657832131;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZSgLilWzZarIXH8KzBy6OT9I39r0sIeov6Pzt1qEHic=;
-	b=ufQJZG8R3C8c6LL3tJzJWynk44IsBIZWEuds+q7tjGpm8wJCEAt2d2e89HDT6IVJrn20kG
-	YFOLLBrw4tZBTiAw==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+	id 1oC6ke-001nZo-Oa; Thu, 14 Jul 2022 21:52:06 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by relay2.suse.de (Postfix) with ESMTPS id 658E22C142;
-	Thu, 14 Jul 2022 20:55:30 +0000 (UTC)
-Date: Thu, 14 Jul 2022 22:55:29 +0200
-From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To: Michael Walle <michael@walle.cc>
-Cc: linux-sunxi@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Pratyush Yadav <p.yadav@ti.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+	by ssl.serverraum.org (Postfix) with ESMTPSA id EEABB22238;
+	Thu, 14 Jul 2022 23:51:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+	t=1657835518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eUOOklFf429NJHGjFaL0HxFv89LnFvPtMIbNqZTM4d0=;
+	b=HSkIfATqx+Z/1khW1hK+6puc0ECVGu02CCNcVyvWwwxFtkmNvepbMsWDMYOqDCJN9552/Q
+	jpV5u9uj2zXqR6KVmUiRi6qnHalq2wx1hvKHbXfAZ7L5VYX18olHGeTivSo0mSj4iuktL4
+	opgvlduW4U0xYcytb9s/OnvmWHuLf7o=
+MIME-Version: 1.0
+Date: Thu, 14 Jul 2022 23:51:56 +0200
+From: Michael Walle <michael@walle.cc>
+To: =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc: linux-sunxi@lists.linux.dev, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland
+ <samuel@sholland.org>, Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush
+ Yadav <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH 1/2] mtd: spi-nor: When a flash memory is missing do not
  report an error
-Message-ID: <20220714205529.GE17705@kitsune.suse.cz>
+In-Reply-To: <20220714205529.GE17705@kitsune.suse.cz>
 References: <701967b0c418db333c66b48d225df60aa9d03ead.1657826188.git.msuchanek@suse.de>
  <d8de86aa0331be697fbef33d5ab2c57a@walle.cc>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d8de86aa0331be697fbef33d5ab2c57a@walle.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ <20220714205529.GE17705@kitsune.suse.cz>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <33abf7b84860049c4a22605578303ff2@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220714_135535_173784_7FA32E44 
-X-CRM114-Status: GOOD (  38.24  )
+X-CRM114-CacheID: sfid-20220714_145204_999998_625BD4A7 
+X-CRM114-Status: GOOD (  29.51  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,113 +74,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 14, 2022 at 09:41:48PM +0200, Michael Walle wrote:
-> Hi,
-> 
-> Am 2022-07-14 21:19, schrieb Michal Suchanek:
-> > It is normal that devices are designed with multiple types of storage,
-> > and only some types of storage are present.
-> > 
-> > The kernel can handle this situation gracefully for many types of
-> > storage devices such as mmc or ata but it reports and error when spi
-> > flash is not present.
-> > 
-> > Only print a notice that the storage device is missing when no response
-> > to the identify command is received.
-> > 
-> > Consider reply buffers with all bits set to the same value no response.
-> 
-> I'm not sure you can compare SPI with ATA and MMC. I'm just speaking of
-> DT now, but there, for ATA and MMC you just describe the controller and
-> it will auto-detect the connected storage. Whereas with SPI you describe
-
-Why does mmc assume storage and SDIO must be descibed? Why the special
-casing?
-
-> both the controller and the flash. So I'd argue that your hardware
-> description is wrong if it describes a flash which is not present.
-
-At any rate the situation is the same - the storage may be present
-sometimes. I don't think assuming some kind of device by defualt is a
-sound practice.
-
-However, when the board is designed for a specific kind of device which
-is not always present, and the kernel can detect the device, it is
-perfectly fine to describe it.
-
-The alternative is to not use the device at all, even when present,
-which is kind of useless.
-
-Thanks
-
-Michal
-
-> 
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 25 +++++++++++++++++++++++--
-> >  1 file changed, 23 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 502967c76c5f..6bab540171a4 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -1652,6 +1652,24 @@ static const struct flash_info
-> > *spi_nor_match_id(struct spi_nor *nor,
-> >  	return NULL;
-> >  }
-> > 
-> > +static const bool buffer_uniform(const u8 *buffer, size_t length)
-> > +{
-> > +	bool all0;
-> > +	size_t i;
-> > +
-> > +	for (all0 = true, i = 0; i < length; i++)
-> > +		if (buffer[i] != 0) {
-> > +			all0 = false;
-> > +			break;
-> > +		}
-> > +	if (all0)
-> > +		return true;
-> > +	for (i = 0; i < length; i++)
-> > +		if (buffer[i] != 0xff)
-> > +			return false;
-> > +	return true;
-> > +}
-> 
-> That seems unnecessarily complex.
-> if (!memchr_inv(id, '\x00', SPI_NOR_MAX_ID_LEN) ||
->     !memchr_inv(id, '\xff', SPI_NOR_MAX_ID_LEN))
-> 
-> should be the same.
-> 
-> -michael
-> 
-> > +
-> >  static const struct flash_info *spi_nor_detect(struct spi_nor *nor)
-> >  {
-> >  	const struct flash_info *info;
-> > @@ -1666,8 +1684,11 @@ static const struct flash_info
-> > *spi_nor_detect(struct spi_nor *nor)
-> > 
-> >  	info = spi_nor_match_id(nor, id);
-> >  	if (!info) {
-> > -		dev_err(nor->dev, "unrecognized JEDEC id bytes: %*ph\n",
-> > -			SPI_NOR_MAX_ID_LEN, id);
-> > +		if (buffer_uniform(id, SPI_NOR_MAX_ID_LEN))
-> > +			dev_info(nor->dev, "No flash memory detected.\n");
-> > +		else
-> > +			dev_err(nor->dev, "unrecognized JEDEC id bytes: %*ph\n",
-> > +				SPI_NOR_MAX_ID_LEN, id);
-> >  		return ERR_PTR(-ENODEV);
-> >  	}
-> >  	return info;
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+QW0gMjAyMi0wNy0xNCAyMjo1NSwgc2NocmllYiBNaWNoYWwgU3VjaMOhbmVrOgo+IE9uIFRodSwg
+SnVsIDE0LCAyMDIyIGF0IDA5OjQxOjQ4UE0gKzAyMDAsIE1pY2hhZWwgV2FsbGUgd3JvdGU6Cj4+
+IEhpLAo+PiAKPj4gQW0gMjAyMi0wNy0xNCAyMToxOSwgc2NocmllYiBNaWNoYWwgU3VjaGFuZWs6
+Cj4+ID4gSXQgaXMgbm9ybWFsIHRoYXQgZGV2aWNlcyBhcmUgZGVzaWduZWQgd2l0aCBtdWx0aXBs
+ZSB0eXBlcyBvZiBzdG9yYWdlLAo+PiA+IGFuZCBvbmx5IHNvbWUgdHlwZXMgb2Ygc3RvcmFnZSBh
+cmUgcHJlc2VudC4KPj4gPgo+PiA+IFRoZSBrZXJuZWwgY2FuIGhhbmRsZSB0aGlzIHNpdHVhdGlv
+biBncmFjZWZ1bGx5IGZvciBtYW55IHR5cGVzIG9mCj4+ID4gc3RvcmFnZSBkZXZpY2VzIHN1Y2gg
+YXMgbW1jIG9yIGF0YSBidXQgaXQgcmVwb3J0cyBhbmQgZXJyb3Igd2hlbiBzcGkKPj4gPiBmbGFz
+aCBpcyBub3QgcHJlc2VudC4KPj4gPgo+PiA+IE9ubHkgcHJpbnQgYSBub3RpY2UgdGhhdCB0aGUg
+c3RvcmFnZSBkZXZpY2UgaXMgbWlzc2luZyB3aGVuIG5vIHJlc3BvbnNlCj4+ID4gdG8gdGhlIGlk
+ZW50aWZ5IGNvbW1hbmQgaXMgcmVjZWl2ZWQuCj4+ID4KPj4gPiBDb25zaWRlciByZXBseSBidWZm
+ZXJzIHdpdGggYWxsIGJpdHMgc2V0IHRvIHRoZSBzYW1lIHZhbHVlIG5vIHJlc3BvbnNlLgo+PiAK
+Pj4gSSdtIG5vdCBzdXJlIHlvdSBjYW4gY29tcGFyZSBTUEkgd2l0aCBBVEEgYW5kIE1NQy4gSSdt
+IGp1c3Qgc3BlYWtpbmcgCj4+IG9mCj4+IERUIG5vdywgYnV0IHRoZXJlLCBmb3IgQVRBIGFuZCBN
+TUMgeW91IGp1c3QgZGVzY3JpYmUgdGhlIGNvbnRyb2xsZXIgCj4+IGFuZAo+PiBpdCB3aWxsIGF1
+dG8tZGV0ZWN0IHRoZSBjb25uZWN0ZWQgc3RvcmFnZS4gV2hlcmVhcyB3aXRoIFNQSSB5b3UgCj4+
+IGRlc2NyaWJlCj4gCj4gV2h5IGRvZXMgbW1jIGFzc3VtZSBzdG9yYWdlIGFuZCBTRElPIG11c3Qg
+YmUgZGVzY2liZWQ/IFdoeSB0aGUgc3BlY2lhbAo+IGNhc2luZz8KCkkgY2FuJ3QgZm9sbG93IHlv
+dSBoZXJlLiBNeSBTRElPIHdpcmVsZXNzIGNhcmQganVzdCB3b3JrcyBpbiBhbiBTRApzbG90IGFu
+ZCBkb2Vzbid0IGhhdmUgdG8gYmUgZGVzY3JpYmVkLgoKPj4gYm90aCB0aGUgY29udHJvbGxlciBh
+bmQgdGhlIGZsYXNoLiBTbyBJJ2QgYXJndWUgdGhhdCB5b3VyIGhhcmR3YXJlCj4+IGRlc2NyaXB0
+aW9uIGlzIHdyb25nIGlmIGl0IGRlc2NyaWJlcyBhIGZsYXNoIHdoaWNoIGlzIG5vdCBwcmVzZW50
+Lgo+IAo+IEF0IGFueSByYXRlIHRoZSBzaXR1YXRpb24gaXMgdGhlIHNhbWUgLSB0aGUgc3RvcmFn
+ZSBtYXkgYmUgcHJlc2VudAo+IHNvbWV0aW1lcy4gSSBkb24ndCB0aGluayBhc3N1bWluZyBzb21l
+IGtpbmQgb2YgZGV2aWNlIGJ5IGRlZnVhbHQgaXMgYQo+IHNvdW5kIHByYWN0aWNlLgoKV2hlcmUg
+aXMgdGhlIGFzc3VtcHRpb24gd2hlbiB0aGUgRFQgdGVsbHMgeW91IHRoZXJlIGlzIGEgZmxhc2gK
+b24gYSBzcGVjaWZpYyBjaGlwIHNlbGVjdCBidXQgYWN0dWFsbHkgdGhlcmUgaXQgaXNuJ3QuIFNo
+b3VsZG4ndAp0aGUgRFQgdGhlbiBiZSBmaXhlZD8KCk1heWJlIEkgZG9uJ3QgdW5kZXJzdGFuZCB5
+b3VyIHByb2JsZW0uIFdoYXQgYXJlIHlvdSB0cnlpbmcgdG8Kc29sdmU/IEkgbWVhbiB0aGlzIGp1
+c3QgZGVtb3RlcyBhbiBlcnJvciB0byBhbiBpbmZvIG1lc3NhZ2UuCgo+IEhvd2V2ZXIsIHdoZW4g
+dGhlIGJvYXJkIGlzIGRlc2lnbmVkIGZvciBhIHNwZWNpZmljIGtpbmQgb2YgZGV2aWNlIHdoaWNo
+Cj4gaXMgbm90IGFsd2F5cyBwcmVzZW50LCBhbmQgdGhlIGtlcm5lbCBjYW4gZGV0ZWN0IHRoZSBk
+ZXZpY2UsIGl0IGlzCj4gcGVyZmVjdGx5IGZpbmUgdG8gZGVzY3JpYmUgaXQuCj4gCj4gVGhlIGFs
+dGVybmF0aXZlIGlzIHRvIG5vdCB1c2UgdGhlIGRldmljZSBhdCBhbGwsIGV2ZW4gd2hlbiBwcmVz
+ZW50LAo+IHdoaWNoIGlzIGtpbmQgb2YgdXNlbGVzcy4KCk9yIGxldCB0aGUgYm9vdGxvYWRlciB1
+cGRhdGUgeW91ciBkZXZpY2UgdHJlZSBhbmQgZGlzYWJsZSB0aGUgZGV2aWNlCmlmIGl0J3Mgbm90
+IHRoZXJlPyBPciBsb2FkIGFuIG92ZXJsYXkgaWYgaXQgaXMgdGhlcmU/CgotbWljaGFlbAoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4
+IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8K
