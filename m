@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D13FBC43334
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Jul 2022 10:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A81BFC43334
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Jul 2022 10:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=Xrs0fDTiTirBcTi2zWxGLMdKIx7p+lpV5yNCh6vs6h0=; b=CyNlvfmxTNWdX9
-	viyRGkdoeFAL06MMIJI8sIh+Nst7MubWcF1L61iL03rwMR3dNH15CYI0Z8mbarkesb5lqRnxlcKvd
-	yTHGd7SSojys/b+NsS5zBd2dRbcMt8f3SpavpjBdfqVpq4ORu0xWh/MCnJAr52Ifvbru51wn/gMgg
-	WAw1CfRbkpNx+tDn5l3mUvNVz5kTRU+zs71gcoIMO8EXXh2Gnb41Ly6I+mA571FwiZ2I/MEJy7ZO+
-	bk02C+WtX2qsIrbawWDdv1k27Iis7MassI+esidPKd2DQw5TQiSU4c77iZUkrnnLaD9BIgzi8DElY
-	JU03uZAvSd4GM3MZFWNQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=KoX9Pz2uoLoa14saQNefz5m3Y5ySa8Wf8Cn2YN7fTnc=; b=vsjErTxMLxN0m8
+	RPGK4dK4bSkBQ2XaS+y6/viNuPH3nmKJ804VIupa4TqSz2UGSFLoNgrabKxvtw7Rap3tcigEnyRTt
+	aiTvE1cuYzNRozcfSFQjI4/DLuUWBHRFhhtawWA2eHWFOuuyHRPi0eAAc/PLkapWT/Pp13bkEbkPA
+	v/SxN/ERvfHo3IvNkIbRI3pdGB3PoWKRoj7JwwmtbxDyOa0l3nSYbd6CaaDPvM1Jd0oYLUg1EU6rY
+	pJULnpTCJxNEc3FRZAtC6PBxg2SG57z/Q456ghtxXvFhGCimC0blQ6ogW5qChBDUY6SXGeeSsatvn
+	bCohKBJvKhC/nTWVMWXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCJ0v-006S3D-8g; Fri, 15 Jul 2022 10:57:41 +0000
+	id 1oCJ16-006S6z-K0; Fri, 15 Jul 2022 10:57:52 +0000
 Received: from relmlor2.renesas.com ([210.160.252.172] helo=relmlie6.idc.renesas.com)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCJ0k-006Ry8-4Y; Fri, 15 Jul 2022 10:57:32 +0000
+	id 1oCJ0o-006Ry8-G1; Fri, 15 Jul 2022 10:57:36 +0000
 X-IronPort-AV: E=Sophos;i="5.92,273,1650898800"; 
-   d="scan'208";a="127981296"
+   d="scan'208";a="127981317"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 15 Jul 2022 19:57:23 +0900
+  by relmlie6.idc.renesas.com with ESMTP; 15 Jul 2022 19:57:34 +0900
 Received: from localhost.localdomain (unknown [10.226.92.160])
-	by relmlir6.idc.renesas.com (Postfix) with ESMTP id E8DAF4251BF2;
-	Fri, 15 Jul 2022 19:57:18 +0900 (JST)
+	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 003B14251BF2;
+	Fri, 15 Jul 2022 19:57:28 +0900 (JST)
 From: Biju Das <biju.das.jz@bp.renesas.com>
 To: Tudor Ambarus <tudor.ambarus@microchip.com>,
 	Pratyush Yadav <p.yadav@ti.com>,
@@ -49,14 +49,16 @@ Cc: Biju Das <biju.das.jz@bp.renesas.com>,
 	Biju Das <biju.das@bp.renesas.com>,
 	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
 	linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v2 0/2] Add Renesas AT25QL128A serial nor flash
-Date: Fri, 15 Jul 2022 11:57:14 +0100
-Message-Id: <20220715105716.2415068-1-biju.das.jz@bp.renesas.com>
+Subject: [PATCH v2 2/2] mtd: spi-nor: Add Renesas AT25QL128A serial nor flash
+Date: Fri, 15 Jul 2022 11:57:16 +0100
+Message-Id: <20220715105716.2415068-3-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220715105716.2415068-1-biju.das.jz@bp.renesas.com>
+References: <20220715105716.2415068-1-biju.das.jz@bp.renesas.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220715_035730_307391_E0291C92 
-X-CRM114-Status: UNSURE (   6.49  )
+X-CRM114-CacheID: sfid-20220715_035734_668700_F2DA53BA 
+X-CRM114-Status: UNSURE (   8.94  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,16 +76,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-This patch series aims to add support for Renesas AT25QL128A serial nor flash
-
+Add support for Renesas AT25QL128A serial nor flash.
 Details of flash chip can be found here [1]
 
 [1] https://www.dialog-semiconductor.com/sites/default/files/2022-04/DS-AT25QL128A-129F-022022.pdf
 
-v1->v2:
- * Add support for SNOR_ID3 macro
- * Added flash definitions into Atmel table.
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+$ xxd -p sfdp 
+53464450060101ff00060110300000ff1f00010280000001ffffffffffff
+ffffffffffffffffffffffffffffffffffffe520f1ffffffff0744eb086b
+083b80bbfeffffffffff00ffffff42eb0c200f5210d800ff3362d5008429
+01ceeca1073d7a757a75f7a2d55c19f61cffe810c080ffffffffffffffff
+ffffffffffffffff501650190000ffff
 
+$ md5sum /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/sfdp
+23e3ec56b5b8f986d0488ba4727239dd  /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/sfdp
+$ cat /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/jedec_id
+1f4218
+$ cat /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/partname
+at25ql128a
+$ cat /sys/devices/platform/soc/10060000.spi/rpc-if-spi/spi_master/spi1/spi1.0/spi-nor/manufacturer
+atmel
+v2->v1:
+ * Added flash definitions into Atmel table.
 RFC->v1:
  * Moved the flash definitions to atmel.c
  * Remove macro related to locking as it is untested.
@@ -91,15 +107,22 @@ RFC->v1:
  
 RFC:
  * https://patchwork.kernel.org/project/linux-renesas-soc/patch/20220501185512.51158-1-biju.das.jz@bp.renesas.com/
-
-Biju Das (2):
-  mtd: spi-nor: add support for SNOR_ID3 macro
-  mtd: spi-nor: Add Renesas AT25QL128A serial nor flash
-
+---
  drivers/mtd/spi-nor/atmel.c | 1 +
- drivers/mtd/spi-nor/core.h  | 9 +++++++++
- 2 files changed, 10 insertions(+)
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
+index 656dd80a0be7..80c24d138b27 100644
+--- a/drivers/mtd/spi-nor/atmel.c
++++ b/drivers/mtd/spi-nor/atmel.c
+@@ -186,6 +186,7 @@ static const struct flash_info atmel_nor_parts[] = {
+ 		.fixups = &atmel_nor_global_protection_fixups },
+ 	{ "at25sl321",	INFO(0x1f4216, 0, 64 * 1024, 64)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "at25ql128a", SNOR_ID3(0x1f4218) },
+ 	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ 	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16)
 -- 
 2.25.1
 
