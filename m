@@ -4,63 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54CB5C43334
-	for <linux-mtd@archiver.kernel.org>; Fri, 15 Jul 2022 11:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 353B4C43334
+	for <linux-mtd@archiver.kernel.org>; Fri, 15 Jul 2022 12:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fdvi4YLmZNhnylgK9wAzVwM24GF0zKaK9YWQZ1khKEo=; b=HfMo3R/mhN1dMDsDZC56digqS/
-	Yz+gN9JBh7hglf2RP23INWrYlVbTahslGmrO8Bdt2fWx7iYz11oNlzLRz860XEdN1+HgNV7emKXxA
-	AfaXn+jnJLbxaEdBrENRTlYL6Obj4tGqC3gQc54s0XBS32pj8RbXya7ldE/WqaFYskUTUAM2VM1zS
-	PkQ+oqkxJp3rf7bYn/iBoc4M5CFc8yv2RR8JRTxqvncuFrShY6z2p0F8T4p94t9gB5C66vRNcuoN4
-	kQUBgonvty2hWDmmSW1/MYnIGytvFIHzXtgOqfL2xEDITk/D0+eIO2hn0UB6fZp7mk20fsoy5Pg0r
-	FU5nHUeg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=4EQYnY/IVd4pTKgmq3QHOaaxR2JHmcG1VNAJIOZ5qwI=; b=nPa+m9+EqVCoBw
+	9Rs/0V3iqjRLAWlPgibjYvr5d7RQBCEWxxzJUYm4U1jY2GGfYRDrNLrmlK3Z2FzA1v7AgG/IhiTJL
+	npYeLUA9CChJrIPSYeXB4cwHp0+2w0xv1ZcJD3ImLtfqP/RDZLDR/0rwVVW9np7ZcJYpvEUXarz7U
+	6yvfkW0MdIqB/dXpL3Moqjyb1wO8uLJQ1FhiAkWOpJwWPjWgDo9oz6gmji+sKIUn1nl67sKJWbHk6
+	n6GOeiwF8bF4Cut3B1+BM5ulaO22pXRHWOifjtTE92KM1t7vSjPWTPe2nnjY53d6zVdmS2lf5RqXi
+	EMY11bX1uM/vkSBZDeiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCJx2-006mqg-3P; Fri, 15 Jul 2022 11:57:44 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCJwz-006moH-O5
-	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2022 11:57:43 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ssl.serverraum.org (Postfix) with ESMTPSA id BB8EF22175;
-	Fri, 15 Jul 2022 13:57:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-	t=1657886257;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IeF/ZV4745DLDYtdFsqkpNDCQqS8SqtwibNm/bx4IMc=;
-	b=tj2/p2eGw1/PBhQrI8h2f+d/MYaa72wZnnR9dHJx6Z9v1kXp7GZ5Ljzht3RxhO1OSjDtxX
-	tUtLFZjsu8Ge9/bDlhhIzAFECyRXaXMkPq3TCdx63jZ+MKFhtIYYGfQnUDJwBj8PHrs6k3
-	Uxt11XEgG8NE6XrlX3t8K3B7HrztQbw=
+	id 1oCKIT-006sGY-78; Fri, 15 Jul 2022 12:19:53 +0000
+Received: from relmlor2.renesas.com ([210.160.252.172] helo=relmlie6.idc.renesas.com)
+	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oCKIP-006sDt-2z
+	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2022 12:19:50 +0000
+X-IronPort-AV: E=Sophos;i="5.92,273,1650898800"; 
+   d="scan'208";a="127988338"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 15 Jul 2022 21:19:41 +0900
+Received: from localhost.localdomain (unknown [10.226.92.160])
+	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 81666429692B;
+	Fri, 15 Jul 2022 21:19:38 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: michael@walle.cc
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	miquel.raynal@bootlin.com,
+	p.yadav@ti.com,
+	quic_c_sbhanu@quicinc.com,
+	richard@nod.at,
+	tudor.ambarus@microchip.com,
+	vigneshr@ti.com,
+	Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: introduce SNOR_ID3()
+Date: Fri, 15 Jul 2022 13:19:34 +0100
+Message-ID: <20220712072304.icesvrfmem5lgr6i@ti.com> (raw)
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220510140232.3519184-2-michael@walle.cc>
+References: <20220510140232.3519184-2-michael@walle.cc>
 MIME-Version: 1.0
-Date: Fri, 15 Jul 2022 13:57:37 +0200
-From: Michael Walle <michael@walle.cc>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das
- <biju.das@bp.renesas.com>, Prabhakar Mahadev Lad
- <prabhakar.mahadev-lad.rj@bp.renesas.com>, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Add support for SNOR_ID3 macro
-In-Reply-To: <20220715105716.2415068-2-biju.das.jz@bp.renesas.com>
-References: <20220715105716.2415068-1-biju.das.jz@bp.renesas.com>
- <20220715105716.2415068-2-biju.das.jz@bp.renesas.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <90beaa944df3778a50278afd2ac4bb8f@walle.cc>
-X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220715_045741_986458_3D4E162C 
-X-CRM114-Status: UNSURE (   5.75  )
+X-CRM114-CacheID: sfid-20220715_051949_258441_6E636C7C 
+X-CRM114-Status: UNSURE (   6.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,21 +65,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
+Message-ID: <20220715121934.5ZgUHBT77rYsJx0CTx_IWZaI7IBPvFynsy-xSQS8fQY@z>
 
-Am 2022-07-15 12:57, schrieb Biju Das:
-> Add SNOR_ID3 macro to get chip info by parsing sfdp.
+On 10/05/22 04:02PM, Michael Walle wrote:
+> Up until now, flashes were defined by specifying the JEDEC ID, the
+> sector size and the number of sectors. This can be read by parsing the
+> SFDP, we don't have to specify it. Thus provide a new macro SNOR_ID3()
+> which just takes the JEDEC ID and implicitly set .parse_sfdp = true. All
+> new flashes which have SFDP should use this macro.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-This is the same as [1]. I'd expect that patch 2/2 will go
-in as soon as [1] is merged.
+Tested the macro with Renesas AT25QL128A serial nor flash. So,
 
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/20220510140232.3519184-2-michael@walle.cc/
+Tested-by: Biju Das <biju.das.jz@bp.renesas.com>
 
 ______________________________________________________
 Linux MTD discussion mailing list
