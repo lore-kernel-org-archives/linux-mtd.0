@@ -4,83 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BE22C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 Jul 2022 08:21:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD1AC43334
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Jul 2022 09:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1M4HHZTE4qn8I+8N3H69pxoXnYkSp5tBy5wwnLZQi8c=; b=p7+6hy2x26Q3fz
-	UjBBc1XX5ESZkm9hnY0wOkK/qe5hMMk0lDiTUYKYe9R4jMfidHqWk3pzvbBkmytN+8w/Eb4de92IP
-	CdcskSZq0v71lNjzLYwDZd7DOKDDyYkuyigWaDOIvxvMKmXP9rPW4tZ4twyRdinNOo4bpEPmUVPJW
-	G+EN4WMF4zf/DYRJi5KJHBPDT8wnglZwFwufJJ0W+LoITJOGoVyfmY+GrtOYdRrLpbIlFr9w42USe
-	pL8KgWecvbvK7vViKZBjDmIGBPODfVr5CfTaIB7y3FXGZJofBYjeysV4AX84VyJHBtZ26xNpS0G2S
-	S7SyyqYijYKK6mQFj4Lw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
+	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LX+f8UMHaXwljFK4Ek1fc5XqtsnSqTnA+mAsSOxW47U=; b=Agdu/v+ifNelBE1BWJqOSKFAMq
+	DNokJMiRuTzsYuIeCwciNdDoC4QTb7n5v0F/hmsYx4WfIl9Inp+pK9MSH6Ck7JKLvlx0XV8m2hYaY
+	wBLQLoBr3q8LtUgamSVNEr0xJeiUdtcKgGr/GmnLJN4WAUglbfoO/NfkPkH0kvejwCKxJOUKqtRYG
+	l8CHrtsd3VCqWCBurDJJMTtNHy63tnzdF0ziUtS022qs9f+QUHymloMT20a/j7+CAhENDG2opQO7n
+	/81MB6kx3khRbdOT+y65vK5+QFy8/ZmZ6eZKZV8bwxIKFLgv8LOEHBKTzTy8TAY0qAZC6jutzugPk
+	1DaF5V9w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCd2Z-00Eg8J-92; Sat, 16 Jul 2022 08:20:43 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1oCdq0-00Etid-Az; Sat, 16 Jul 2022 09:11:48 +0000
+Received: from ssl.serverraum.org ([2a01:4f8:151:8464::1:2])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCd2N-00Eg57-A4; Sat, 16 Jul 2022 08:20:33 +0000
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out1.suse.de (Postfix) with ESMTP id 6A26433BFA;
-	Sat, 16 Jul 2022 08:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1657959629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6HtmE+WcyQ4/KYYsr3vgJVMHchSAXne1Yk9HKQBPmTg=;
-	b=WGbbB2RFvtZPv5fshJHB9RuT8uDTEsaJbab2mSSuRlfm3GJeqYtwi7Y1qp9HsvyOncg16E
-	rXE2LBXSOhmerzpWVZ2cjqjyKPqoKC79zEGUCPZmjZ70CSdRZuryiC/nPGxG7mQ9Db2K4R
-	Nt0q2GpTOn7XUyONmfmJztOobjBufoo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1657959629;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6HtmE+WcyQ4/KYYsr3vgJVMHchSAXne1Yk9HKQBPmTg=;
-	b=uejScnwajvD8zlb1tE1nVomNFmJAo7NyYdmtwctAC1/6gy5OKjpyR15RBPUbVTdkItA+eG
-	Qqgra1AjAUgn3SCQ==
-Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+	id 1oCdpw-00EthB-S5
+	for linux-mtd@lists.infradead.org; Sat, 16 Jul 2022 09:11:46 +0000
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by relay2.suse.de (Postfix) with ESMTPS id 01EAC2C141;
-	Sat, 16 Jul 2022 08:20:28 +0000 (UTC)
-Date: Sat, 16 Jul 2022 10:20:27 +0200
-From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To: Pratyush Yadav <p.yadav@ti.com>
-Cc: Michael Walle <michael@walle.cc>, linux-sunxi@lists.linux.dev,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Tudor Ambarus <tudor.ambarus@microchip.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: When a flash memory is missing do not
- report an error
-Message-ID: <20220716082027.GK17705@kitsune.suse.cz>
-References: <701967b0c418db333c66b48d225df60aa9d03ead.1657826188.git.msuchanek@suse.de>
- <d8de86aa0331be697fbef33d5ab2c57a@walle.cc>
- <20220714205529.GE17705@kitsune.suse.cz>
- <33abf7b84860049c4a22605578303ff2@walle.cc>
- <20220714220744.GF17705@kitsune.suse.cz>
- <20220715092017.2ftoyzm22i4amrbt@ti.com>
+	by ssl.serverraum.org (Postfix) with ESMTPSA id D9C4222239;
+	Sat, 16 Jul 2022 11:11:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+	t=1657962696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yQGL23JsPeSeAEQf+zFFrbIZAmWH8zEFfmNMuLuPhpc=;
+	b=adivtjJ8EP/gIxSf5jgl/wyTKIUeMTPJctYdpQUagTsYiY/I1+k09dm4e8QVscwkFtWpm+
+	we9xa/wMvvkraVLkJjqGs+PspYY7dJflaK+RM5eSb6N0qX+4xNhnv1EWOyXJztxj4c3Fhq
+	h9nP3QjkbhljrVJjDoG+Lapm6FDmjYQ=
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220715092017.2ftoyzm22i4amrbt@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date: Sat, 16 Jul 2022 11:11:35 +0200
+From: Michael Walle <michael@walle.cc>
+To: Jae Hyun Yoo <quic_jaehyoo@quicinc.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
+ <p.yadav@ti.com>, Jamie Iles <quic_jiles@quicinc.com>, Graeme Gregory
+ <quic_ggregory@quicinc.com>, =?UTF-8?Q?C=C3=A9dric_Le_Goater?=
+ <clg@kaod.org>, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mtd: spi-nor: winbond: add support for
+ W25Q512NW-IQ
+In-Reply-To: <20220716000643.3541839-2-quic_jaehyoo@quicinc.com>
+References: <20220716000643.3541839-1-quic_jaehyoo@quicinc.com>
+ <20220716000643.3541839-2-quic_jaehyoo@quicinc.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <52fb683e27b3208d07d9f9d1ab44148d@walle.cc>
+X-Sender: michael@walle.cc
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220716_012031_518651_F12AE4D2 
-X-CRM114-Status: GOOD (  71.35  )
+X-CRM114-CacheID: sfid-20220716_021145_106736_3B722BE3 
+X-CRM114-Status: UNSURE (   6.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,224 +71,28 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jul 15, 2022 at 02:50:17PM +0530, Pratyush Yadav wrote:
-> On 15/07/22 12:07AM, Michal Such=E1nek wrote:
-> > On Thu, Jul 14, 2022 at 11:51:56PM +0200, Michael Walle wrote:
-> > > Am 2022-07-14 22:55, schrieb Michal Such=E1nek:
-> > > > On Thu, Jul 14, 2022 at 09:41:48PM +0200, Michael Walle wrote:
-> > > > > Hi,
-> > > > > =
-
-> > > > > Am 2022-07-14 21:19, schrieb Michal Suchanek:
-> > > > > > It is normal that devices are designed with multiple types of s=
-torage,
-> > > > > > and only some types of storage are present.
-> > > > > >
-> > > > > > The kernel can handle this situation gracefully for many types =
-of
-> > > > > > storage devices such as mmc or ata but it reports and error whe=
-n spi
-> > > > > > flash is not present.
-> > > > > >
-> > > > > > Only print a notice that the storage device is missing when no =
-response
-> > > > > > to the identify command is received.
-> > > > > >
-> > > > > > Consider reply buffers with all bits set to the same value no r=
-esponse.
-> > > > > =
-
-> > > > > I'm not sure you can compare SPI with ATA and MMC. I'm just speak=
-ing
-> > > > > of
-> > > > > DT now, but there, for ATA and MMC you just describe the controll=
-er
-> > > > > and
-> > > > > it will auto-detect the connected storage. Whereas with SPI you
-> > > > > describe
-> > > > =
-
-> > > > Why does mmc assume storage and SDIO must be descibed? Why the spec=
-ial
-> > > > casing?
-> > > =
-
-> > > I can't follow you here. My SDIO wireless card just works in an SD
-> > > slot and doesn't have to be described.
-> > > =
-
-> > > > > both the controller and the flash. So I'd argue that your hardware
-> > > > > description is wrong if it describes a flash which is not present.
-> > > > =
-
-> > > > At any rate the situation is the same - the storage may be present
-> > > > sometimes. I don't think assuming some kind of device by defualt is=
- a
-> > > > sound practice.
-> > > =
-
-> > > Where is the assumption when the DT tells you there is a flash
-> > > on a specific chip select but actually there it isn't. Shouldn't
-> > > the DT then be fixed?
-> > =
-
-> > The DT says there isn't a flash on a specific chip select when there is.
-> > Shouldn't that be fixed?
-> =
-
-> If the board has a flash chip, then DT should describe it. The it does =
-
-> not have one, then DT should not describe it.
-> =
-
-> So if DT says there isn't a flash on a specific CS when there is, then =
-
-> DT should be fixed to describe the flash, and then we can probe it. You =
-
-> both seem to be saying the same thing here, and I agree.
-
-The disagreement is about the situation when there is sometimes a flash
-chip.
-
-As of now the chip is described in the device tree but is disabled, and
-there is no mechanism for enabling it.
-
-If it were enabled the driver could probe it but it is not.
-
-The only real argument against enabling it I head was that if it is
-enabled and missing users would see the kernel printing an error nad
-come here, wasting everyones time.
-
-So here is a patch the makes the kernle not print an error when the chip
-is missing, and limit the error only to the situation when a chip is
-present but not recognized.
-
-> =
-
-> > =
-
-> > > Maybe I don't understand your problem. What are you trying to
-> > > solve? I mean this just demotes an error to an info message.
-> > =
-
-> > Many boards provide multiple storage options - you get a PCB designed to
-> > carry different kinds of storage, some may be socketed, some can be
-> > soldered on in some production batches and not others.
-> =
-
-> Usually for non-enumerable components you can plug in or out, you should =
-
-> use DT overlays to add the correct nodes as needed. For example, CSI =
-
-> cameras just plug into a slot on the board. So you can easily remove one =
-
-> and add another. That is why we do not put the camera node in the board =
-
-> dts, but instead apply it as an overlay from the bootloader.
-
-However, here the device is already enumerated in the device tree, the
-only missing bit of information is if the device is present.
-
-Sure, device tree overlays are useful and the right tool for the job for
-some jobs, but not this one.
-
-Please don't fall into the thinking that when you have a hammer
-everything looks like a nail.
-
-> =
-
-> > =
-
-> > The kernel can handle this for many kinds of storage but not SPI flash.
-> > =
-
-> > I don't see any reason why SPI flash should be a second class storage.
-> > =
-
-> > > > However, when the board is designed for a specific kind of device w=
-hich
-> > > > is not always present, and the kernel can detect the device, it is
-> > > > perfectly fine to describe it.
-> > > > =
-
-> > > > The alternative is to not use the device at all, even when present,
-> > > > which is kind of useless.
-> > > =
-
-> > > Or let the bootloader update your device tree and disable the device
-> > > if it's not there?
-> > =
-
-> > But then it must be in the device tree?
-> > =
-
-> > And then people will complain that if the bootloader does not have this
-> > feature then the kernel prints an error message?
-> =
-
-> Then add the feature to the bootloader? Adding a node in DT for a flash =
-
-> that is not present is wrong.
-
-And how would the bootloader know that it shouild look for a flash if
-it's not described in the device tree?
-
-> =
-
-> > =
-
-> > > Or load an overlay if it is there?
-> > =
-
-> > Or maybe the kernel could just detect if the storage is present?
-> =
-
-> It can't. This is a non-enumerable bus, unlike USB or PCI. And there is =
-
-> no way you can actually detect the presence or absence of a flash =
-
-> reliably. For example, TI chips come with a flash that is capable of =
-
-> 8D-8D-8D mode. If the flash is handed to the kernel in 8D-8D-8D mode, =
-
-> the read ID command will return all 0xff bytes since the kernel expacts =
-
-> communication in 1S-1S-1S mode. With your patch you will say that no =
-
-> flash memory is detected. In reality the flash is present but the kernel =
-
-> just failed to properly detect it.
-
-This is a strawman argument. If your flash chip starts up in 8D-8D-8D
-and you don't tell the kernel to talk to it in 8D-8D-8D it can't talk to
-it no matter what. The id command will fail all the same if the chip is
-there and try to probe it's type - all 0xff is not a valid id. The
-problem is not that you are probing the presence of the chip but that
-you did not describe the chip to the kernel correctly.
-
-Not to mention that the controller in question does not support any
-advanced modes, anyway.
-
-> =
-
-> > =
-
-> > It's not like we don't have an identify command.
-> =
-
-> We do, but it does not let us detect the _absence_ of a flash.
-
-Actually, it does.
-
-Thanks
-
-Michal
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGksCgpBbSAyMDIyLTA3LTE2IDAyOjA2LCBzY2hyaWViIEphZSBIeXVuIFlvbzoKPiBBZGQgc3Vw
+cG9ydCBmb3IgV2luYm9uZCBXMjVRNTEyTlctSVEvSU4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBKYWUg
+SHl1biBZb28gPHF1aWNfamFlaHlvb0BxdWljaW5jLmNvbT4KPiBMaW5rOiAKPiBodHRwczovL3d3
+dy53aW5ib25kLmNvbS9yZXNvdXJjZS1maWxlcy9XMjVRNTEyTlclMjBSZXZCJTIwMDcxOTIwMjEu
+cGRmCj4gUmV2aWV3ZWQtYnk6IEPDqWRyaWMgTGUgR29hdGVyIDxjbGdAa2FvZC5vcmc+CgpUaGFu
+a3MgYWdhaW4gZm9yIGZpbmRpbmcgdGhlIHJlYWwgaXNzdWUgaGVyZSEKClJldmlld2VkLWJ5OiBN
+aWNoYWVsIFdhbGxlIDxtaWNoYWVsQHdhbGxlLmNjPgoKQnV0IGFsc28gc2VlIGJlbG93LgoKPiAk
+IGhleGR1bXAKPiAvc3lzL2J1cy9wbGF0Zm9ybS9kZXZpY2VzLzFlNjIwMDAwLnNwaS9zcGlfbWFz
+dGVyL3NwaTAvc3BpMC4xL3NwaS1ub3Ivc2ZkcAo+IDAwMDAwMDAgNDY1MyA1MDQ0IDAxMDYgZmYw
+MSAwNjAwIDEwMDEgMDA4MCBmZjAwCj4gMDAwMDAxMCAwMDg0IDAyMDEgMDBkMCBmZjAwIGZmZmYg
+ZmZmZiBmZmZmIGZmZmYKPiAwMDAwMDIwIDZmMDAgNzA3NCA3NDIwIDczNjUgZmY3NCBmZmZmIGZm
+ZmYgZmZmZgoKRGlkIHlvdSBub3RpY2VkIHlvdXIgU0ZEUCBkYXRhIGNoYW5nZWQgY29tcGFyZWQg
+dG86Cmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW10ZC8yMDIyMDcxMDE0NTcyMS4xMjA3
+MTU3LTEtcXVpY19qYWVoeW9vQHF1aWNpbmMuY29tLwoKV2hpY2ggbWFrZXMgbWUgd29uZGVyIGlm
+IHlvdSBldmVyIGhhZCBhbiBvZmZzZXQgMAp3aXRoIHRoZSBPVFBfSU5GTygpLiBGb3IgV2luYm9u
+ZCB0aGUgZmlyc3QgT1RQCnJlZ2lvbiBpcyBhY3R1YWxseSB0aGUgU0ZEUC4uIFNvIHlvdSBtaWdo
+dAphY2NpZGVudGFsbHkgbW9kaWZpZWQgaXQuCgotbWljaGFlbAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
