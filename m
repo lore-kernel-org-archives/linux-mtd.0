@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4725C433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 16 Jul 2022 10:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38A4EC43334
+	for <linux-mtd@archiver.kernel.org>; Sat, 16 Jul 2022 11:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MRkGX/7YYY6KeHazQ28izluQvrFIioh1bWuCylizsHY=; b=s7v+HpgU7xAG0b
-	lviYeaZohB7ofnxXkl3G6aUI8NOGAim0geA0RVu4m7/lkUramhtsBBQ3tbrFTVf/qVfFl39AofNUO
-	R6K7ABrM2Bgy6uEgCj9ycn8O2I9zlVKfP/2++tt6aSMuxiVzS0ZXo5azN7YyVgd3hxwjxnVXbLQfN
-	PboXELcdms9BkqhpvBY9nFjL09RHWfohklpzPGZto6Z9vr7lXV9pz3qugp9cFdNePM23KwyMaxYx7
-	vDWqtgM1pWx4rVMShTuG1OcQ8SNPUa02PXw0Qo9BRX+LyzHs48jU2qeUng8gnRGoDvdl0GOakxp4/
-	Q+eLDBZzByejthoQcO/w==;
+	List-Owner; bh=fl7EXssv+k41hy8iMUG3AT1j7sqNyJ9tvvN1SFsDNWs=; b=zpb1299CioxZVy
+	RYcezdIf/N+Zm+UgvTQM73vKmKlL0GoNBodaHa31tWrnunB9uHDfMzABMsnX4phmqMMhdqS1dxiPS
+	uzu+saOkgu07IcpeXDN5+j3umhvKPgLRPxMlxebaGyJbmx/a4zJ479Nz9ZSIPi6SkpZukxHZ8hhuQ
+	evBZ55RNkbSo6oca9A3IwS7AlQ2U9BSDauttskogqIULmP7rq+9lV2eRCoR52lspdseyZ7Z8jV7Gd
+	Fp69wAXEj16W6/aVIRz2KEmf166KdOXFjCGgFXxyQ8y0g3iNK2cbP2Fdp3FmCvkNU2MJnnSBr8jr9
+	CM9HkeLoFQPUcVRM6vkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCfNZ-00FVys-PY; Sat, 16 Jul 2022 10:50:33 +0000
+	id 1oCfX0-00FZtY-4O; Sat, 16 Jul 2022 11:00:18 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCfNN-00FVrI-9N; Sat, 16 Jul 2022 10:50:23 +0000
+	id 1oCfWo-00FZog-Ka; Sat, 16 Jul 2022 11:00:08 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C9931063;
-	Sat, 16 Jul 2022 03:50:11 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B8181063;
+	Sat, 16 Jul 2022 04:00:03 -0700 (PDT)
 Received: from slackpad.lan (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E723F3F73D;
-	Sat, 16 Jul 2022 03:50:07 -0700 (PDT)
-Date: Sat, 16 Jul 2022 11:49:04 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 407D03F73D;
+	Sat, 16 Jul 2022 04:00:00 -0700 (PDT)
+Date: Sat, 16 Jul 2022 11:58:49 +0100
 From: Andre Przywara <andre.przywara@arm.com>
-To: Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>
-Cc: Michael Walle <michael@walle.cc>, linux-sunxi@lists.linux.dev, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+To: Samuel Holland <samuel@sholland.org>
+Cc: Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, Michael Walle
+ <michael@walle.cc>, linux-sunxi@lists.linux.dev, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
  <krzysztof.kozlowski+dt@linaro.org>, Chen-Yu Tsai <wens@csie.org>, Jernej
- Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>, Pratyush Yadav
- <p.yadav@ti.com>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+ Skrabec <jernej.skrabec@gmail.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Pratyush Yadav <p.yadav@ti.com>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 Subject: Re: [PATCH 1/2] mtd: spi-nor: When a flash memory is missing do not
  report an error
-Message-ID: <20220716114904.4d058637@slackpad.lan>
-In-Reply-To: <20220716075421.GJ17705@kitsune.suse.cz>
+Message-ID: <20220716115849.75a27753@slackpad.lan>
+In-Reply-To: <2d4f200c-1ce3-19c6-179f-8d8e0545adfe@sholland.org>
 References: <701967b0c418db333c66b48d225df60aa9d03ead.1657826188.git.msuchanek@suse.de>
 	<d8de86aa0331be697fbef33d5ab2c57a@walle.cc>
 	<20220714205529.GE17705@kitsune.suse.cz>
 	<33abf7b84860049c4a22605578303ff2@walle.cc>
 	<20220714220744.GF17705@kitsune.suse.cz>
 	<20220715132006.077c90f8@donnerap.cambridge.arm.com>
-	<20220716075421.GJ17705@kitsune.suse.cz>
+	<2d4f200c-1ce3-19c6-179f-8d8e0545adfe@sholland.org>
 Organization: Arm Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220716_035021_454370_B6EFB6DC 
-X-CRM114-Status: GOOD (  70.11  )
+X-CRM114-CacheID: sfid-20220716_040006_805387_BBE9D7CB 
+X-CRM114-Status: GOOD (  34.54  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,145 +71,77 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-T24gU2F0LCAxNiBKdWwgMjAyMiAwOTo1NDoyMSArMDIwMApNaWNoYWwgU3VjaMOhbmVrIDxtc3Vj
-aGFuZWtAc3VzZS5kZT4gd3JvdGU6CgpIaSwKCj4gT24gRnJpLCBKdWwgMTUsIDIwMjIgYXQgMDE6
-MjA6MDZQTSArMDEwMCwgQW5kcmUgUHJ6eXdhcmEgd3JvdGU6Cj4gPiBPbiBGcmksIDE1IEp1bCAy
-MDIyIDAwOjA3OjQ0ICswMjAwCj4gPiBNaWNoYWwgU3VjaMOvwr/CvW5layA8bXN1Y2hhbmVrQHN1
-c2UuZGU+IHdyb3RlOgo+ID4gCj4gPiBIaSwKPiA+ICAgCj4gPiA+IE9uIFRodSwgSnVsIDE0LCAy
-MDIyIGF0IDExOjUxOjU2UE0gKzAyMDAsIE1pY2hhZWwgV2FsbGUgd3JvdGU6ICAKPiA+ID4gPiBB
-bSAyMDIyLTA3LTE0IDIyOjU1LCBzY2hyaWViIE1pY2hhbCBTdWNow6/Cv8K9bmVrOiAgICAKPiA+
-ID4gPiA+IE9uIFRodSwgSnVsIDE0LCAyMDIyIGF0IDA5OjQxOjQ4UE0gKzAyMDAsIE1pY2hhZWwg
-V2FsbGUgd3JvdGU6ICAgIAo+ID4gPiA+ID4gPiBIaSwKPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+
-IEFtIDIwMjItMDctMTQgMjE6MTksIHNjaHJpZWIgTWljaGFsIFN1Y2hhbmVrOiAgICAKPiA+ID4g
-PiA+ID4gPiBJdCBpcyBub3JtYWwgdGhhdCBkZXZpY2VzIGFyZSBkZXNpZ25lZCB3aXRoIG11bHRp
-cGxlIHR5cGVzIG9mIHN0b3JhZ2UsCj4gPiA+ID4gPiA+ID4gYW5kIG9ubHkgc29tZSB0eXBlcyBv
-ZiBzdG9yYWdlIGFyZSBwcmVzZW50Lgo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gVGhlIGtl
-cm5lbCBjYW4gaGFuZGxlIHRoaXMgc2l0dWF0aW9uIGdyYWNlZnVsbHkgZm9yIG1hbnkgdHlwZXMg
-b2YKPiA+ID4gPiA+ID4gPiBzdG9yYWdlIGRldmljZXMgc3VjaCBhcyBtbWMgb3IgYXRhIGJ1dCBp
-dCByZXBvcnRzIGFuZCBlcnJvciB3aGVuIHNwaQo+ID4gPiA+ID4gPiA+IGZsYXNoIGlzIG5vdCBw
-cmVzZW50Lgo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gT25seSBwcmludCBhIG5vdGljZSB0
-aGF0IHRoZSBzdG9yYWdlIGRldmljZSBpcyBtaXNzaW5nIHdoZW4gbm8gcmVzcG9uc2UKPiA+ID4g
-PiA+ID4gPiB0byB0aGUgaWRlbnRpZnkgY29tbWFuZCBpcyByZWNlaXZlZC4KPiA+ID4gPiA+ID4g
-Pgo+ID4gPiA+ID4gPiA+IENvbnNpZGVyIHJlcGx5IGJ1ZmZlcnMgd2l0aCBhbGwgYml0cyBzZXQg
-dG8gdGhlIHNhbWUgdmFsdWUgbm8gcmVzcG9uc2UuICAgIAo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+
-ID4gSSdtIG5vdCBzdXJlIHlvdSBjYW4gY29tcGFyZSBTUEkgd2l0aCBBVEEgYW5kIE1NQy4gSSdt
-IGp1c3Qgc3BlYWtpbmcKPiA+ID4gPiA+ID4gb2YKPiA+ID4gPiA+ID4gRFQgbm93LCBidXQgdGhl
-cmUsIGZvciBBVEEgYW5kIE1NQyB5b3UganVzdCBkZXNjcmliZSB0aGUgY29udHJvbGxlcgo+ID4g
-PiA+ID4gPiBhbmQKPiA+ID4gPiA+ID4gaXQgd2lsbCBhdXRvLWRldGVjdCB0aGUgY29ubmVjdGVk
-IHN0b3JhZ2UuIFdoZXJlYXMgd2l0aCBTUEkgeW91Cj4gPiA+ID4gPiA+IGRlc2NyaWJlICAgIAo+
-ID4gPiA+ID4gCj4gPiA+ID4gPiBXaHkgZG9lcyBtbWMgYXNzdW1lIHN0b3JhZ2UgYW5kIFNESU8g
-bXVzdCBiZSBkZXNjaWJlZD8gV2h5IHRoZSBzcGVjaWFsCj4gPiA+ID4gPiBjYXNpbmc/ICAgIAo+
-ID4gPiA+IAo+ID4gPiA+IEkgY2FuJ3QgZm9sbG93IHlvdSBoZXJlLiBNeSBTRElPIHdpcmVsZXNz
-IGNhcmQganVzdCB3b3JrcyBpbiBhbiBTRAo+ID4gPiA+IHNsb3QgYW5kIGRvZXNuJ3QgaGF2ZSB0
-byBiZSBkZXNjcmliZWQuICAKPiA+IAo+ID4gSSB0aGluayB0aGUgZGlmZmVyZW5jZSBpcyB0aGF0
-IE1NQyAoc28gYWxzbyBTRElPKSBpcyBhIGRpc2NvdmVyYWJsZSBidXMsCj4gPiB3aGVyZWFzIFNQ
-SSBpcyBub3QuCj4gPiBJdCdzIGNvbmNlcHR1YWxseSBkYW5nZXJvdXMgdG8gYmxpbmRseSBwcm9i
-ZSBmb3IgU1BJIGNoaXBzLCBhbmQgdGhlIGtlcm5lbAo+ID4gdHJpZXMgdG8gc3RheSBvdXQgb2Yg
-Z3Vlc3NpbmcgZ2FtZXMsIGluIGdlbmVyYWwsIGFuZCBsZWF2ZXMgdGhhdCB1cCB0bwo+ID4gZmly
-bXdhcmUuICAKPiAKPiBUaGVyZSBpcyBubyBndWVzc2luZyBnYW1lIGludm9sdmVkLiBUaGUgU1BJ
-IE5PUiBpcyBmdWxseSBkZXNjcmliZWQgaW4KPiB0aGUgZGV2aWNlIHRyZWUuIFRoZSBvbmx5IG1p
-c3NpbmcgYml0IG9mIGluZm9ybWF0aW9uIGlzIGlmIGl0IGlzIG1vdW50ZWQKPiBvbiB0aGlzIHBh
-cnRpY3VsYXIgYm9hcmQuIFRoYXQgY2FuIGJlIGJyb2JlZCBzYWZlbHkgYW5kIHJlbGlhYmx5LgoK
-Rm9yIHRoaXMgcGFydGljdWxhciBib2FyZDogbWF5YmUuIEluIGdlbmVyYWw6IG5vLiBJIGRvbid0
-IHRoaW5rIHRoZQprZXJuZWwgaXMgdGhlIHBsYWNlIHRvIG1ha2UgdGhvc2UgZGVjaXNpb25zLiBB
-cyBNaWNoYWVsIHNhaWQ6IGlmIHRoZSBEVApleHBsaWNpdGx5IHNheXMgdGhlcmUgaXMgYSBTUEkg
-Zmxhc2gsIGFuZCB0aGVyZSBpc24ndCwgaXQncyBhbiBlcnJvci4KCj4gPiA+ID4gPiA+IGJvdGgg
-dGhlIGNvbnRyb2xsZXIgYW5kIHRoZSBmbGFzaC4gU28gSSdkIGFyZ3VlIHRoYXQgeW91ciBoYXJk
-d2FyZQo+ID4gPiA+ID4gPiBkZXNjcmlwdGlvbiBpcyB3cm9uZyBpZiBpdCBkZXNjcmliZXMgYSBm
-bGFzaCB3aGljaCBpcyBub3QgcHJlc2VudC4gICAgCj4gPiA+ID4gPiAKPiA+ID4gPiA+IEF0IGFu
-eSByYXRlIHRoZSBzaXR1YXRpb24gaXMgdGhlIHNhbWUgLSB0aGUgc3RvcmFnZSBtYXkgYmUgcHJl
-c2VudAo+ID4gPiA+ID4gc29tZXRpbWVzLiBJIGRvbid0IHRoaW5rIGFzc3VtaW5nIHNvbWUga2lu
-ZCBvZiBkZXZpY2UgYnkgZGVmdWFsdCBpcyBhCj4gPiA+ID4gPiBzb3VuZCBwcmFjdGljZS4gICAg
-Cj4gPiA+ID4gCj4gPiA+ID4gV2hlcmUgaXMgdGhlIGFzc3VtcHRpb24gd2hlbiB0aGUgRFQgdGVs
-bHMgeW91IHRoZXJlIGlzIGEgZmxhc2gKPiA+ID4gPiBvbiBhIHNwZWNpZmljIGNoaXAgc2VsZWN0
-IGJ1dCBhY3R1YWxseSB0aGVyZSBpdCBpc24ndC4gU2hvdWxkbid0Cj4gPiA+ID4gdGhlIERUIHRo
-ZW4gYmUgZml4ZWQ/ICAgIAo+ID4gPiAKPiA+ID4gVGhlIERUIHNheXMgdGhlcmUgaXNuJ3QgYSBm
-bGFzaCBvbiBhIHNwZWNpZmljIGNoaXAgc2VsZWN0IHdoZW4gdGhlcmUgaXMuCj4gPiA+IFNob3Vs
-ZG4ndCB0aGF0IGJlIGZpeGVkPwo+ID4gPiAgIAo+ID4gPiA+IE1heWJlIEkgZG9uJ3QgdW5kZXJz
-dGFuZCB5b3VyIHByb2JsZW0uIFdoYXQgYXJlIHlvdSB0cnlpbmcgdG8KPiA+ID4gPiBzb2x2ZT8g
-SSBtZWFuIHRoaXMganVzdCBkZW1vdGVzIGFuIGVycm9yIHRvIGFuIGluZm8gbWVzc2FnZS4gIAo+
-ID4gCj4gPiBUaGUgcGFydGljdWxhciBwcm9ibGVtIGF0IGhhbmQgaXMgdGhhdCBvbiB0aG9zZSBj
-aGVhcCBkZXZlbG9wbWVudCBib2FyZHMKPiA+IFNQSSBmbGFzaCBpcyBzb21ld2hhdCBvcHRpb25h
-bC4gVGhlIFBDQiBvZnRlbiBoYXMgdGhlIGZvb3RwcmludCBmb3IgaXQsIGJ1dAo+ID4gc29tZXRp
-bWVzIGl0IGlzIG5vdCBwb3B1bGF0ZWQsIGJlY2F1c2UgdGhlIHZlbmRvciB3YW50cyB0byBzYXZl
-IHBlbm5pZXMuCj4gPiAKPiA+IEluIHRoaXMgY2FzZSAoT3JhbmdlUGkgWmVybykgdGhlcmUgd2Fz
-IG5vIFNQSSBjaGlwIHNvbGRlcmVkIG9uIHRoZSBmaXJzdAo+ID4gYmF0Y2hlcywgYnV0IGxhdGVy
-IGJvYXJkcyBhcmUgc2hpcHBlZCB3aXRoIGEgZmxhc2ggY2hpcC4gVGhlIGZvb3RwcmludCBpcwo+
-ID4gb24gZXZlcnkgdmVyc2lvbiwgYW5kIEkgZm9yIGluc3RhbmNlIHNvbGRlcmVkIGEgY2hpcCBv
-biBhbiBlYXJseSBib2FyZC4KPiA+ICAgCj4gPiA+IE1hbnkgYm9hcmRzIHByb3ZpZGUgbXVsdGlw
-bGUgc3RvcmFnZSBvcHRpb25zIC0geW91IGdldCBhIFBDQiBkZXNpZ25lZCB0bwo+ID4gPiBjYXJy
-eSBkaWZmZXJlbnQga2luZHMgb2Ygc3RvcmFnZSwgc29tZSBtYXkgYmUgc29ja2V0ZWQsIHNvbWUg
-Y2FuIGJlCj4gPiA+IHNvbGRlcmVkIG9uIGluIHNvbWUgcHJvZHVjdGlvbiBiYXRjaGVzIGFuZCBu
-b3Qgb3RoZXJzLgo+ID4gPiAKPiA+ID4gVGhlIGtlcm5lbCBjYW4gaGFuZGxlIHRoaXMgZm9yIG1h
-bnkga2luZHMgb2Ygc3RvcmFnZSBidXQgbm90IFNQSSBmbGFzaC4KPiA+ID4gCj4gPiA+IEkgZG9u
-J3Qgc2VlIGFueSByZWFzb24gd2h5IFNQSSBmbGFzaCBzaG91bGQgYmUgYSBzZWNvbmQgY2xhc3Mg
-c3RvcmFnZS4gIAo+ID4gCj4gPiBTZWUgYWJvdmUsIFNQSSBpcyBub3QgZGlzY292ZXJhYmxlLCB5
-b3UgbmVlZCB0byBrbm93IGFib3V0IHRoZSBzbGF2ZQo+ID4gZGV2aWNlcy4gIAo+IAo+IFdoaWNo
-IHdlIGRvLCBmcm9tIHRoZSBkZXZpY2UgdHJlZS4gRXhjZXB0IHRoZSBkZXZpY2UgaXMgZGlzYWJs
-ZWQgaW4gdGhlCj4gZGV2aWNlIHRyZWUgc28gdGhlIGtlcm5lbCBkb2VzIG5vdCBwcm9iZSBpdC4K
-ClRoYXQgZG9lc24ndCBjb3VudCwgc3RhdHVzID0gImRpc2FibGUiIGhhcyB0aGUgc2FtZSBlZmZl
-Y3QgYXMgdGhlIG5vZGUKcmVtb3ZlZCwgdGhlIGtlcm5lbCBkb2Vzbid0IHVzZSBpdC4gSXQncyBk
-aXNhYmxlZCBiZWNhdXNlIGl0J3MgYnJva2VuLApvciB0aGUgYm9hcmQgY2F0Y2hlcyBmaXJlcyB3
-aGVuIGl0J3MgYWNjZXNzZWQsIG9yIHRoZSBTUEkgZmxhc2ggaXMKc2VjdXJlIG9ubHksIGFuZCB0
-aGUga2VybmVsIHJlY2VpdmVzIGFuIFNFcnJvciB3aGVuIGFjY2Vzc2luZyBpdCBhbmQKcGFuaWNz
-LiBXZSBkb24ndCBjYXJlIGV4YWN0bHkgd2h5LCB0aGUga2VybmVsIGp1c3Qgc2tpcHMgaXQuCgpJ
-biB0aGlzIGNhc2UgaGF2aW5nIHRoZSBub2RlIGluIERUIGFuZCBtYXJraW5nIGl0IGFzIGRpc2Fi
-bGVkIHdhcyBhCmNvbmNlc3Npb24gdG8gdXNlcnMsIHRvIGFsbG93IHNpbXBsZSBlbmFibGVtZW50
-LCBsaWtlIHRoaXM6Cj0+IGZkdCBhZGRyICRmZHRjb250cm9sYWRkcgo9PiBmZHQgc2V0IC9zb2Mv
-c3BpIHN0YXR1cyAib2theSIKKG9uIHRoZSBVLUJvb3QgcHJvbXB0KQoKQW5kIGl0J3MgYWN0dWFs
-bHkgYSBoaW50IHRoYXQgVS1Cb290IGNhbiBkbyB0aGlzIGF1dG9tYXRpY2FsbHksIG9ubHkgd2UK
-bmVlZCBpdCB0aGUgb3RoZXIgd2F5IGFyb3VuZCB0aGVuICgib2theSIgZnJvbSB0aGUgYmVnaW5u
-aW5nLCBzd2l0Y2hpbmcKdG8gImRpc2FibGVkIiBpZiBuZWVkZWQpLgoKPiA+ID4gPiA+IEhvd2V2
-ZXIsIHdoZW4gdGhlIGJvYXJkIGlzIGRlc2lnbmVkIGZvciBhIHNwZWNpZmljIGtpbmQgb2YgZGV2
-aWNlIHdoaWNoCj4gPiA+ID4gPiBpcyBub3QgYWx3YXlzIHByZXNlbnQsIGFuZCB0aGUga2VybmVs
-IGNhbiBkZXRlY3QgdGhlIGRldmljZSwgaXQgaXMKPiA+ID4gPiA+IHBlcmZlY3RseSBmaW5lIHRv
-IGRlc2NyaWJlIGl0Lgo+ID4gPiA+ID4gCj4gPiA+ID4gPiBUaGUgYWx0ZXJuYXRpdmUgaXMgdG8g
-bm90IHVzZSB0aGUgZGV2aWNlIGF0IGFsbCwgZXZlbiB3aGVuIHByZXNlbnQsCj4gPiA+ID4gPiB3
-aGljaCBpcyBraW5kIG9mIHVzZWxlc3MuICAgIAo+ID4gPiA+IAo+ID4gPiA+IE9yIGxldCB0aGUg
-Ym9vdGxvYWRlciB1cGRhdGUgeW91ciBkZXZpY2UgdHJlZSBhbmQgZGlzYWJsZSB0aGUgZGV2aWNl
-Cj4gPiA+ID4gaWYgaXQncyBub3QgdGhlcmU/ICAgIAo+ID4gCj4gPiBZZXMsIHRoaXMgaXMgd2hh
-dCBJIHdhcyBzdWdnZXN0aW5nIGFscmVhZHk6IFUtQm9vdCBjYW4gZG8gdGhlIGpvYiwgYmVjYXVz
-ZQo+ID4gYSBVLUJvb3QgYnVpbGQgaXMgZGV2aWNlIHNwZWNpZmljLCBhbmQgd2UgY2FuIHRha2Ug
-Y2VydGFpbiByaXNrcyB0aGF0IHRoZQo+ID4gZ2VuZXJpYyBhbmQgc2luZ2xlLWltYWdlIGtlcm5l
-bCB3YW50cyB0byBhdm9pZC4gIAo+IAo+IEZvciBzb21lIGNhc2VzIHRoaXMgbWF5IGJlIHdhcnJh
-bnRlZC4KPiAKPiBIb3dldmVyLCBpbiB0aGlzIGNhc2Ugbm8gYWRkaXRpb25hbCBkZXZpY2Utc3Bl
-Y2lmaWMga25vd2xlZGdlIGJleW9uZAo+IHdoYXQgaXMgYWxycmVhZHkgc3BlY2lmaWVkIGluIHRo
-ZSBkZXZpY2UgdHJlZSBpcyBuZWVkZWQuCj4gCj4gQSBnZW5lcmljIGtlcm5lbCBjYW4gcHJvYmUg
-dGhlIGRldmljZSBqdXN0IGZpbmUuCgpUaGUgZmFjdCB0aGF0IHNvbWV0aW1lcyB0aGVyZSBpcyBh
-IFNQSSBmbGFzaCBhbmQgc29tZXRpbWVzIG5vdCwgaXMgYQpwaXR5IGRldmljZSBzcGVjaWZpYyBw
-cm9ibGVtLiBUaGUga2VybmVsIGRvZXMgbm90IGhhdmUgYW5kIGRvZXMgbm90CndhbnQgdG8gaGF2
-ZSBhbnkga25vd2xlZGdlIG9mIHRoaXMgcGFydGljdWxhciBwcm9ibGVtOiB3ZSBoYXZlIHRoZSBE
-VAp0byB0ZWxsIHVzIGV4YWN0bHkgd2hhdCBkZXZpY2VzIGFyZSB0aGVyZS4gRmlybXdhcmUgaXMg
-ZW5jb3VyYWdlZCB0bwp0d2VhayB0aGUgRFQsIGlmIG5lZWRlZC4KCj4gPiBJbiB0aGlzIGNhc2Ug
-d2Uga25vdyB0aGF0IHRoZXJlIGlzIGEgU1BJIGZsYXNoIGZvb3RwcmludCwgYW5kIGl0IGRvZXMg
-bm8KPiA+IGhhcm0gaW4gdHJ5aW5nIHRvIGNoZWNrIG9uIENTMC4gU28gSSB3YXMgdGhpbmtpbmcg
-YWJvdXQgaW50cm9kdWNpbmcgYQo+ID4gVS1Cb290IEtjb25maWcgdmFyaWFibGUgdG8gcHJvYmUg
-Zm9yIGFuZCBwb3RlbnRpYWxseSBkaXNhYmxlIHRoZSBTUEkgZmxhc2gKPiA+IERUIG5vZGUuIFdl
-IHdvdWxkIHNldCB0aGlzIHZhcmlhYmxlIGluIGRlZmNvbmZpZ3Mgb2YgYm9hcmRzIHdpdGggb3B0
-aW9uYWwKPiA+IFNQSSBmbGFzaC4KPiA+ICAgCj4gPiA+IEJ1dCB0aGVuIGl0IG11c3QgYmUgaW4g
-dGhlIGRldmljZSB0cmVlPyAgCj4gPiAKPiA+IEhvd2V2ZXIgdGhpcyBpbmRlZWQgbWVhbnMgdGhh
-dCB0aGUgU1BJIGZsYXNoIERUIG5vZGUgbXVzdCBiZSBpbiBhbmQgZW5hYmxlZAo+ID4gaW4gdGhl
-IERULCBiZWNhdXNlIHdlICh0cnkgaGFyZCB0bykgb25seSB1c2Ugb3JpZ2luYWwgTGludXggRFQg
-ZmlsZXMsIGFuZAo+ID4gRFRzIG11c3QgaGF2ZSBiZWVuIHJldmlld2VkIHRocm91Z2ggdGhlIGtl
-cm5lbCBNTCBmaXJzdC4gVGhlIFUtQm9vdCBkcml2ZXIKPiA+IHJlbGllcyBvbiB0aGUgRFQgYXMg
-d2VsbCwgc28gdGhlIG9mZmljaWFsIGtlcm5lbCBEVCBjb3B5IHdvdWxkIG5lZWQgdG8gY29tZQo+
-ID4gd2l0aCB0aGF0IG5vZGUgZW5hYmxlZC4gSWRlYWxseSBVLUJvb3Qgd291bGQgZGlzYWJsZSBp
-dCwgaWYgbmVlZGVkLCBhbmQKPiA+IHRoZSBrZXJuZWwgZXJyb3IgbWVzc2FnZSB3b3VsZCBuZXZl
-ciBhcHBlYXIuICAKPiAKPiBZZXMsIHRoYXQncyBhIGdvb2QgcG9pbnQgLSBldmVuIGlmIGl0J3Mg
-ZGVjaWRlZCB0aGF0IHRoZSBrZXJuZWwgd2lsbCBub3QKPiBoYW5kbGUgdGhpcywgdGhlIGRldmlj
-ZSB0cmVlIHN0aWxsIG5lZWRzIHRvIGNvbnRhaW4gdGhlIG5vZGUgZW5hYmxlZCBmb3IKPiB0aGUg
-Ym9vdGxvYWRlciB0byBoYW5kbGUgdGhlIGRldmljZSwgYW55d2F5LgoKWWVzLCBhbmQgSSBhbSBo
-YXBweSB0byBzdXBwb3J0IHRoYXQgY2FzZSB3aGVuIHdlIHNlbmQgYSBwYXRjaCB0byBjaGFuZ2UK
-dGhlIERUIGluIHRoZSBrZXJuZWwgcmVwby4KQnV0IEkgZG9uJ3QgdGhpbmsgd2UgbmVlZCBhbiBh
-Y3R1YWwga2VybmVsIHBhdGNoIHRvIGFkZHJlc3MgdGhpcwpwcm9ibGVtLgoKQ2hlZXJzLApBbmRy
-ZQoKUC5TLiBJIGp1c3Qgc2VlIHRoYXQgc3RhdHVzID0gImRpc2FibGVkIiBpcyBpbiB0aGUgd3Jv
-bmcgbm9kZSwgaXQKc2hvdWxkIGJlIGluIHRoZSBTUEkgc2xhdmUgbm9kZSwgYXMgdGhlIGNvbnRy
-b2xsZXIgYW5kIHRoZSBTUEkgYnVzCml0c2VsZiBhcmUgZmluZS4KCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lv
-biBtYWlsaW5nIGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCg==
+On Fri, 15 Jul 2022 21:28:57 -0500
+Samuel Holland <samuel@sholland.org> wrote:
+
+Hi,
+
+> On 7/15/22 7:20 AM, Andre Przywara wrote:
+> >>>> However, when the board is designed for a specific kind of device which
+> >>>> is not always present, and the kernel can detect the device, it is
+> >>>> perfectly fine to describe it.
+> >>>>
+> >>>> The alternative is to not use the device at all, even when present,
+> >>>> which is kind of useless.    
+> >>>
+> >>> Or let the bootloader update your device tree and disable the device
+> >>> if it's not there?    
+> > 
+> > Yes, this is what I was suggesting already: U-Boot can do the job, because
+> > a U-Boot build is device specific, and we can take certain risks that the
+> > generic and single-image kernel wants to avoid.
+> > In this case we know that there is a SPI flash footprint, and it does no
+> > harm in trying to check on CS0. So I was thinking about introducing a
+> > U-Boot Kconfig variable to probe for and potentially disable the SPI flash
+> > DT node. We would set this variable in defconfigs of boards with optional
+> > SPI flash.  
+> 
+> To support the "does no harm" assertion: the Allwinner Boot ROM will probe for
+> NOR flash (and possibly SPI NAND) on SPI0 + CS0 if no bootable MMC device is
+> found. So the board designer must already assume that JEDEC Read ID commands
+> will be sent over that bus.
+> 
+> >> But then it must be in the device tree?  
+> > 
+> > However this indeed means that the SPI flash DT node must be in and enabled
+> > in the DT, because we (try hard to) only use original Linux DT files, and
+> > DTs must have been reviewed through the kernel ML first. The U-Boot driver
+> > relies on the DT as well, so the official kernel DT copy would need to come
+> > with that node enabled. Ideally U-Boot would disable it, if needed, and
+> > the kernel error message would never appear.  
+> 
+> I don't think this works for newer SoCs where the Boot ROM supports both NOR and
+> SPI NAND. If the board is sold with the flash chip unpopulated, the user could
+> install either kind of chip. So we cannot statically assume which binding will
+> be used. We would need to add a node with the right compatible string after
+> probing for both in the bootloader.
+
+If a *user* decides to *change* the board, it's up to the user
+to make sure the DT matches. Overlays are the typical answer, or people
+change the DT before they build U-Boot. If someone decides to hack
+their board, they have to take care of the respective DT description
+hack as well.
+
+This case here is about the *vendor* shipping different versions of the
+board, which I think is a different case. Technically we now would need
+two DTs: one with, one without the SPI flash node, and let the user
+decide which one to include in U-Boot at build time, depending on which
+version they have.
+
+What I was suggesting is a U-Boot config switch, which would only be
+enabled on those boards where we have this situation (OPi Zero):
+That avoids dangerous situations (because we know it's safe *on this
+particular board*), and avoids the hassle of shipping two firmware
+versions.
+
+Cheers,
+Andre
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
