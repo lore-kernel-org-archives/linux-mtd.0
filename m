@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D376C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Jul 2022 09:28:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A240C43334
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Jul 2022 10:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=JP04cnVO6l3E3XEmbBeqT8OfG84uZKM1Jan6WxDnpxo=; b=InX8E49gabIBWc
-	HJPkXbuVvbILp6exmcEZrdMuBQsb8x2Ra8xvpVjqnHzpWHCPxx0TdL1LMeWr1Y5zxtPMe3PeYdfkF
-	2dRCtRSsNBjAQw/YPm6VWz8KrnpcC37G32RxoAMJrGP9VALu2ig3PwWNoD4NO9lwlpgIHwdOeuV7D
-	e3yZvkHVDjS+WODQHZCDlz3hzMgt9kYHDOhlUTB0Sjv25A+B3eQR2/NZIZEvFY+WMtPcnjbfquCng
-	72iYzJzW2Eoj6b2Qx8M4NIR7aXhfUIfu0ihnPySBzvY6p8bUAJjtVukZWnQP2cCtB94vpsgdSQoI6
-	CcjtFFqUHC7RgeWjhaVQ==;
+	List-Owner; bh=TJeOKPBcGUtKUTAhXO5rzlZI++JXsj6edISN6/7YxgI=; b=ifBWmZ1wAWYHuP
+	hUT1Dp7Bj+uUaP93JQDciHzbLblpJcct2RQwzUUObkXXHFFEIcX4BcFig+hTDphaQz5nqr4Gii982
+	+suKivASXhUnfq6d0SxPt7S66kcb4jesAG6MJtl+8eaFufcJzdGq5EXPD+N21IGELv79FqG6N5xqV
+	uv4s1Xx6KxCW2AKUx22TuGRwzgLgcCDMp98EZNidkpSihrnKrKV+nXUEaBmzkkFUCRpQnFwL/hzfA
+	HzUMU7SxZthL9VZwL/ePWFNTEMaIZvFq+o3cHnYwvIuZ5wU+n65EG+rPVIyZK5RIdmlXq+sYD2Fl7
+	yVj8EtGhZuCmCYrOTaag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDjWA-007MKF-05; Tue, 19 Jul 2022 09:27:50 +0000
+	id 1oDkCI-007r3Y-Sh; Tue, 19 Jul 2022 10:11:23 +0000
 Received: from esa.microchip.iphmx.com ([68.232.153.233])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDjW7-007MHO-6u
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2022 09:27:48 +0000
+	id 1oDkCE-007r0C-8l
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2022 10:11:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1658222867; x=1689758867;
+  t=1658225478; x=1689761478;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=18dzz8j653+mCjnOgW0HLOzsYFodKXYroQICwo3bToY=;
-  b=iLC/TYeLCPAuUxaIf9PROysy58OAFM+UKdlx0KkQbSThvzXE946TKoAZ
-   6VOOqa+3qDkYPIc5Wa9N6CAsRtAOqcDg0rpLblcCP++AI/T3JbbQsXMRf
-   QHGIO+YtiIDNJXQywyAup1yDVqAvR4ZNfdBdCdoHTGvHN7Q4ZGtCo4LPw
-   yldwv1q84lsRJF1NYSa7sQpJ7FG+c6vgiAUdIGSYBb9bFxpsaBFEUFezU
-   FExvh6QBEqSBc3nQPwHIFDi+yRrYpcux0k2l94AR9jMALedt7UhQDmO74
-   O+tXqQYPPg0rAP7sVUob/BL0cboNwpxb1L1b+o0h4ycWkmTt6kYaAVl8U
+  bh=ygSEKwztA9bH5cRhjY/tRO4Cp668A82tN/0MFFZC9vE=;
+  b=ZpWBNulOlc6Ph8Xhf+WIWwNU77WrbLNMgW3zKxTh+hPqo8sHL43IaP4M
+   QEjcwO3tSytsPkAwLQTUcMwGg6o2hbU6j9T7IBfMLnjS8y9elrDxH1c84
+   /zp2XixD2iDN5hPMj6a+NO0czYzd0325SoJOsBf5Bfn7Mu1DkSrWiY0sD
+   pZXYcC2V05PJIaWdRdcVmHiw46769ng2eQeoIsD28fKzKE9TpzMmojVsr
+   ci4+ncuPo+crZf9Xk/OBesEeWRvqSrdmzVPDI97SPEg48nT/621MDmKpw
+   KrdWfU1m8SYhXDCfbxS1OIkj4W4p4S8uvnz3/PsiSvdZGwMg+LgSZl2y4
    g==;
 X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="182789236"
+   d="scan'208";a="172715351"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2022 02:27:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2022 03:11:13 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Tue, 19 Jul 2022 02:27:44 -0700
+ 15.1.2375.17; Tue, 19 Jul 2022 03:11:13 -0700
 Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Tue, 19 Jul 2022 02:27:42 -0700
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Tue, 19 Jul 2022 03:11:11 -0700
 From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <mika.westerberg@linux.intel.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, <michael@walle.cc>,
-	<richard@nod.at>, <miquel.raynal@bootlin.com>,
-	<linux-mtd@lists.infradead.org>, <vigneshr@ti.com>, <p.yadav@ti.com>
-Subject: Re: [PATCH] mtd: spi-nor: micron-st: Skip FSR reading if SPI controller does not support it
-Date: Tue, 19 Jul 2022 12:27:39 +0300
-Message-ID: <165822280254.54276.15501031299133900909.b4-ty@microchip.com>
+To: <mans0n@gorani.run>, <linux-mtd@lists.infradead.org>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
+	<vigneshr@ti.com>, <richard@nod.at>, <p.yadav@ti.com>, <michael@walle.cc>
+Subject: Re: [PATCH v3] mtd: spi-nor: esmt: Use correct name of f25l32qa
+Date: Tue, 19 Jul 2022 13:11:07 +0300
+Message-ID: <165822542709.94389.4476645380679565543.b4-ty@microchip.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220506105158.43613-1-mika.westerberg@linux.intel.com>
-References: <20220506105158.43613-1-mika.westerberg@linux.intel.com>
+In-Reply-To: <20210723141232.15659-1-mans0n@gorani.run>
+References: <20210719152037.33317-1-mans0n@gorani.run> <20210723141232.15659-1-mans0n@gorani.run>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220719_022747_314018_AF59D54C 
-X-CRM114-Status: UNSURE (   9.32  )
+X-CRM114-CacheID: sfid-20220719_031118_350718_8A501AE5 
+X-CRM114-Status: UNSURE (   6.22  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -81,21 +80,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Fri, 6 May 2022 13:51:58 +0300, Mika Westerberg wrote:
-> The Intel SPI controller does not support low level operations, like
-> reading the flag status register (FSR). It only exposes a set of high
-> level operations for software to use. For this reason check the return
-> value of micron_st_nor_read_fsr() and if the operation was not
-> supported, use the status register value only. This allows the chip to
-> work even when attached to Intel SPI controller (there are such systems
-> out there).
+On Fri, 23 Jul 2021 23:12:32 +0900, Sungbo Eo wrote:
+> The flash ID of F25L32QA is 0x8c4016, whereas that of F25L32QA(2S) is
+> 0x8c4116. F25L32QA(2S) is the newer version of F25L32QA and its BPn bits
+> are non-volatile, unlike its older version.
 > 
-> [...]
+> 
 
 Applied to spi-nor/next, thanks!
 
-[1/1] mtd: spi-nor: micron-st: Skip FSR reading if SPI controller does not support it
-      https://git.kernel.org/mtd/c/90c517f435a9
+[1/1] mtd: spi-nor: esmt: Use correct name of f25l32qa
+      https://git.kernel.org/mtd/c/41e4f15f02af
 
 Best regards,
 -- 
