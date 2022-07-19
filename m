@@ -4,59 +4,164 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 559F2C433EF
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Jul 2022 07:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 994BCC43334
+	for <linux-mtd@archiver.kernel.org>; Tue, 19 Jul 2022 07:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y6ik9NuskFZddGrBa+JtEyLLOFwy7QEG0sCAoKzX4jU=; b=HwnskFisHVm6dlHLTccb8IpwYt
-	QeFJ5tkP/8ptkzIXxFG4PwhSq4EowPIo0LqS+0IdB/jF0Nk0ro1B8g4jnk5D/MLoNQTeh82Olnl4Y
-	Edh0iERp9CMc+ZWQsYbpQgveXJmEz8fEPFV+j0qW/AhRNb5ErAdZs+v4L6rd1lafwdL4Xf/TlYXeP
-	FA2jbUpkTUOOalZuyCnXvSLyRwKnBrJc7jo+UeqiVRq1JXSbP75c0nmeRxAWIzdlObx9m3CTQA9q5
-	sl3Ju60naIsupPgOvYzgdksDKkKaQKGLOl2tW+wRD1JZCuOhG7FpPVnH6QogC7K7PYnUV7vTqqfaw
-	6781uB9Q==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-ID:In-Reply-To:
+	References:Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Lgm/C6Ho13MEA4McjZUQ8MvGIKJ9I1EX4l2YWiJUyUA=; b=SUTw7uMX/PuEcH
+	r7iQTnLrQuouUwSB/r4LNBSaQ8PMLjBV8n/z/WhJvoO/16hWdI4i4D/aSCnXg0ZblbAN1lOUo0Ina
+	OrtYwplF4JtcfY1htmgwItWspp5j3PJtVGZY9/dT1RbXKVtJwi8x7xpHGMDRfbvJVKlp7wErFdkq8
+	oYcnFw2S7Xni6m6+8iEL/+ZH3GpRXeXpsC6ruFTr1hYXCG4ZOfjYJASyH4l7l1Fy1FXtXV0EC0AZm
+	zKxtUO0hb+H+rZRml5N8EuVGJ8s2tGuy5/aPW1uGARKMybPIi05GZNbETAJ8hVk4ZJFpyIb9h4eiJ
+	VSHTPbaK4WdhHbo5K6aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDhKA-005oPZ-Sz; Tue, 19 Jul 2022 07:07:18 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1oDhaw-005tk5-QT; Tue, 19 Jul 2022 07:24:38 +0000
+Received: from esa.microchip.iphmx.com ([68.232.154.123])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDhK8-005oMo-8A
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2022 07:07:17 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ssl.serverraum.org (Postfix) with ESMTPSA id 0D0CF221D4;
-	Tue, 19 Jul 2022 09:07:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-	t=1658214431;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+hc/fgBpwn4nfyKBqGshJaCyj+0/ns0DEr+WNZ/nNBE=;
-	b=hp7Q7Us9wZQRMYOhLaKFlYu1g61zrgdBCiRcLQp54CHRWhluJ7isCnS4MExQL3xtF52L1z
-	TNuhUKLRPhMYgzepBS4MQ+yge8hNlHgIzwFUsNb8Z1m3ATNCDCbqJ4Qso4bsu77eOVxAY4
-	D+u/dlGVwitW7ihSZsxLuo/ukGQlY+0=
-MIME-Version: 1.0
-Date: Tue, 19 Jul 2022 09:07:10 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Cc: p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mtd: spi-nor: introduce SNOR_ID3()
-In-Reply-To: <160ddac1-6d0a-c922-1380-09e7823a285e@microchip.com>
+	id 1oDhat-005thB-6j
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2022 07:24:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1658215475; x=1689751475;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=HWNcnheqlmZxv0NHbiVSRCGuSM7yKHBVhZmEx+oiLH0=;
+  b=VUm6A5rw4UvCOdPgL53UA73Z8WE3lJdEH9c4VF7tOhToIJQ/3IDCAD/v
+   lpRhtI7VINfJhaxPM10ZR/Bh6F7HInNqGSdU/obXE13IX6KbJL/NaNujt
+   V3WxP+NKPY8kRoYp4u9D+7OLuywD3j+1np8JXO4AOViL9xOrdgWsSPagJ
+   GRJjX63/CIC7l3+CK20yRcYM8HV9dwfY4voBfL77OVCCvmLLGaUvG98nV
+   wKNlx3Uij0/B6iUukBElYk4+gNw7Vkn+5I2Xqk9ErFlfE9L+0ljjGCKlN
+   ftyQXuju7nSF05ddkTjLev+AlbfEnfPvVItjAVojCMEk4Bs2rxOd1dNH/
+   g==;
+X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
+   d="scan'208";a="168459041"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jul 2022 00:24:28 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Tue, 19 Jul 2022 00:24:28 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17 via Frontend Transport; Tue, 19 Jul 2022 00:24:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AhP50ByQzdt4Cs7zL60clDG0ldfM+eWPvTHp9O5hT6FoHQeFjEO9QTRCdJR5G9ql13vKAaOZU3tKIJTFToqIrXA2C1gdTPg20uJ833NUl5ihUiiWuhd9UF4Yv8yo7qVTbib5nhIFvl02HexacsQEE8FImhsA8CuKHV9lS0/9l52g5pD9U1Zxgj6GG1FZGQ8SPro0jgSPRM/NzDh0CUDivTM1nFIHkgSHZ7Z0a2hIRZk5F1dGr1Ix4BsLlgVjZu6sz5xh0v0jYx9d1UGYRdzGQn/wa1RizOgbX3dYiYuRD4Ib2MjffokGV/WUGsWrjkImz8C9unzMPugJvHJ1PJuFWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HWNcnheqlmZxv0NHbiVSRCGuSM7yKHBVhZmEx+oiLH0=;
+ b=fXFaTmwgne3AiBBrkEGK6NjCM/my0Mw9C5SoSljAvyupCZ12OZbSemoPpzhUZz5R/kQDZTeQtYhaq+sKGpZBMUTWhS2CrilJvdMu5SnRjGY56nADpbwEWDs4s4rRRw9LO4FYQm2OQ/hzfC6n3FbEHMYtawe6VD6n8jB4xLgL2DFvGrsTthYhwLhymxDS1BSL82adYuBJsdT5wamDCjXc2pH/HhX/kxmf2ofgQ/FFS/M4PH9pkRFxA3j3sNjQNGKEOTVR6rq1Mpazls7lkZj9EpdkHIC/udqnhE6Qh4kGL1Y5zi+edVGbDexRRXB+jOZbSi6sfbCY15RjvdkPRNJqVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HWNcnheqlmZxv0NHbiVSRCGuSM7yKHBVhZmEx+oiLH0=;
+ b=tlfvh+Ds07rK60JQGSnfHtbJ+r2zBrPQlYgui8koBrMe3AA+pVCM3lpVpNZ9mEzqFgtOO61ODSdWnxRPL/DClAg5V+mPKEDkcTCufJfC0Xm/GyNEWv24LE2xhGg7QWvSXKR3wnxL95j+gl6bkRmurUQTVagxq5McZwzomzTB8tw=
+Received: from DM4PR11MB6479.namprd11.prod.outlook.com (2603:10b6:8:8c::19) by
+ SA2PR11MB5098.namprd11.prod.outlook.com (2603:10b6:806:11c::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.20; Tue, 19 Jul
+ 2022 07:24:17 +0000
+Received: from DM4PR11MB6479.namprd11.prod.outlook.com
+ ([fe80::1954:e4ab:eafd:9cb4]) by DM4PR11MB6479.namprd11.prod.outlook.com
+ ([fe80::1954:e4ab:eafd:9cb4%5]) with mapi id 15.20.5438.023; Tue, 19 Jul 2022
+ 07:24:17 +0000
+From: <Tudor.Ambarus@microchip.com>
+To: <michael@walle.cc>
+CC: <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: winbond: use SNOR_ID3() for w25q512nwm
+Thread-Topic: [PATCH 2/2] mtd: spi-nor: winbond: use SNOR_ID3() for w25q512nwm
+Thread-Index: AQHYlcsGaT91mZeLa0CO/P6y+1cRGg==
+Date: Tue, 19 Jul 2022 07:24:17 +0000
+Message-ID: <0125cf8a-be06-e422-8e8f-157cf9dccb4c@microchip.com>
 References: <20220510140232.3519184-1-michael@walle.cc>
- <20220510140232.3519184-2-michael@walle.cc>
- <160ddac1-6d0a-c922-1380-09e7823a285e@microchip.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <02125e047cfbf347d81811224be3141e@walle.cc>
-X-Sender: michael@walle.cc
+ <20220510140232.3519184-3-michael@walle.cc>
+ <735a88af-c4f1-a6b3-3f85-ea532b3f39c7@microchip.com>
+ <305d3c9cf8a2362ad23a87f6ea92c6b4@walle.cc>
+ <3e018ae9-66b0-0699-1121-e55c88f37570@microchip.com>
+ <4ac08f08010a71e288b0114fc02d47a4@walle.cc>
+In-Reply-To: <4ac08f08010a71e288b0114fc02d47a4@walle.cc>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e1e53ea6-750e-4c8f-19a9-08da6957b0d0
+x-ms-traffictypediagnostic: SA2PR11MB5098:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ax/AT4xcqeKKXbjz/I1O8YvZFvho5soQw4sxtavh7Ghatv4dwW/iba8iEObTj7FNxV8fsdn1VVJ/F7kPMlOKxbdZEoy8bhkgSyMkfrtmrQsfFo5K1ukDw7/4iBoEprcz9VY5kcUTX2q8a4sZhl6zcH8KNNxY0ifumhcemHnQ85QvsTVlN27tt1Eu0CKWak98TFSLliGS934fphXLHNotMHFJCGPPju3V0aLA5+RTgFL1JyFT0PIcic7cV0gHVBha+oKImaHxd69Od/kvu8MYEundNG0RWPfU05h8yFi3PooQA7eBpGCJ0CUf3KFxa37gO0daiZPu3FiGACu5CvHICsRIcfZrRdVGkIcSk2g8W8DnrXcj1pKVKiRJ0AEEtNFQesGDUxk4RbEe6iUWIxuKPQJww/fJZKwqX4JK4Qb/ACKxcxFKdx6xPRtwhh7PEeiUnmClNjFbjaGm/oW7WhG0HS8sZhg+s4AUpcwxFkXQe/0rmawrqIW+L7R6p6fDONil0fdlYv/bYa44Hrmg4am4I4KFLRGPUkQPuRdB1ic348XUXMBijqq6a5I0f8YJU7MizkIpfJBcMnLs0mmWB83SfXCjoBq1tWa+KPj7uR/f6U3UtIQshx0GV+xozRvCvONibPHfyLasfJv4tBWjNqWBgy9XmWVah0T7ERf22He/+hdqogqFNTTI0/DHeuGbNmB3R+XHWfVNKz9hz6w4H/ji8bZLwps1ST35KM9Uss/khLKJNFHvTHU5aLaefLnK9UXQKY56W99HR9r1aVdV38mMnxO7et/EO7VCksu5d/kxh8VP0+IU7e+ap3mHuPmQezCX0fcld26TH9NwTu5Pc6lZhzqwPNG/8USCdvRMVhe2Cb7BFXN/uLgM/cssM7BMn7Xvm3VO+fKcvHyrMAYgk8qK/g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6479.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(39860400002)(136003)(366004)(396003)(376002)(346002)(2616005)(6512007)(31686004)(4744005)(122000001)(186003)(41300700001)(2906002)(6486002)(5660300002)(26005)(478600001)(71200400001)(76116006)(66476007)(4326008)(64756008)(8676002)(66446008)(66556008)(66946007)(8936002)(86362001)(6916009)(31696002)(38070700005)(36756003)(91956017)(53546011)(38100700002)(54906003)(316002)(6506007)(138113003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SmdTRHhDUWIybStvZWYxRExaOXh3NUc1MGZZK3BTK1VudWNyTXd4cG1XaDBJ?=
+ =?utf-8?B?RGVJNlRCQ2hCS3F1VXVNVWFxM1Urd3JZOE05a0JxRWJEdFRSdllYUzFJS3Jm?=
+ =?utf-8?B?UzNMbDJ5cjlZZ01IVXYwMU5kdGpuSStSMjNIVSsyK3NlYkhIMW81Vzgwc3RI?=
+ =?utf-8?B?V2Y1WVhCK3NNd1MvV3lTVElHMXQ4bVpoRHdtc1M1dit6VkVTd3JWbzVSVENH?=
+ =?utf-8?B?UUFpc2lWODlYQU1oY3NzeFJubXdYWi9uSU81dThSZGlmOXl0ZktoY0R6YnBn?=
+ =?utf-8?B?ZlYxSGtMRjhGSFRtRVF0OC9qR215MlFSa3pPUjF4RTcwVkhpZys5dS9aVDlM?=
+ =?utf-8?B?SDVBeTJXaFNuT2hiUUYzSFNyK2V5ck9Eb29uZERXbXZwRkRVS1I2alo3NElr?=
+ =?utf-8?B?UjB5TXdJZ1JWUXVTeU54QVYzQzVFWHdyWjVmQXI5cHdRRDBFMjdybGdkYWVk?=
+ =?utf-8?B?ZXlibk5SM00xMFJ4Y05kRHlOSFYzV0hTZ0RpcVBMWVlhbWh6emRIbU5DZWpm?=
+ =?utf-8?B?bUtEeTdTTjFuYi93WUcwT3Z6RVp5UmhsamZBSXlLUFh3ZnJDMHFsbTFYcmV3?=
+ =?utf-8?B?UlY2dFBxbWFwM1lHZHdtV1RtV0xTS0FEdFY2MWZHemlyWWlHRUF0bmtkekww?=
+ =?utf-8?B?ZHlGOVNIa3gyQStXdElvLzhERUxSdm1rRUsvaGdOMzlVcDdQbHMzYWtuUkxV?=
+ =?utf-8?B?akIxaWpMcFFrMEk2eDR3UUIyNVI2VmtJcjhVN3JLaWlPYmhGRk93THBlM3pV?=
+ =?utf-8?B?cHJ1cEJnYlpzN042NHBJYWdzYVZRN2o2MmljaTEyQTdPOW45dUhjSkhETkRi?=
+ =?utf-8?B?UmdCSGNRVGJGSEs4V1ZDWTlmT0c2VXpuZDZXbTVueWJ0dFkwSjRUeFhySjR6?=
+ =?utf-8?B?SHpWdzJGMWFveWdpSHZlOUpTQU5mZTU4R3YvNkJ5WDRmZzNBOURkeTZPTndI?=
+ =?utf-8?B?UWtYKzJhaUp0MDVUQ0dFczhzcjhoaG4zMlEraDFoYmNHUDVFMFFiWlRkb0pL?=
+ =?utf-8?B?dFNQd2Y4NUFYcENGOW94S2pkeXVsZ0JPRWNIQlN2NVlOaUo0cUZkOTJyL2pr?=
+ =?utf-8?B?RjAyTmd1SzB6a29NMUZVNVFkcE9RckNsQ1dMTHpZYmJ3cFMyc1lxelR3cmxw?=
+ =?utf-8?B?Y01TSDB6WFFVWTh5emxiNng3SUNZL3BWWVBadTFVeVlFNEVsT05aZi9NZXQ1?=
+ =?utf-8?B?RUtSOEMxN3Z5YjJLbmNvcGQ2Ulp3QXM0Lzd0TjdhZFhONERDWDB4a2F3VUhw?=
+ =?utf-8?B?Nnp4N2o2WHJFbzZDb3Z2K1NIa2lmeThPVUtFM1FrcllkeUR5SkhVQk9wa0cw?=
+ =?utf-8?B?NmY4UXdkNHNNOU1WVmgyVHVQM1J1bXZMYTZCWmZZaGkrU3g0UjdCblUvMENt?=
+ =?utf-8?B?MXFvZU8vNFZaS3BoMGpCWCtOQWFuMzVyTHk2blI1YUErbFlOSFdtdFQreUdo?=
+ =?utf-8?B?RjhtRjgzN3AzaVF3eTVjYkRHWS8zbmUxOTRRS2o3RHFjTy9PeTk3Y0JmV3Nm?=
+ =?utf-8?B?ZC94QUpnWXBZeDVoRjV3aHlXUG9PaDROMllkT1lCYVRpS3lLQ1hGYmZ4N2Ux?=
+ =?utf-8?B?Mk1qSzdNVEhhUVBaRHdESWMvbVB0U2Rvc3Y2VUgyR1czYXJraUtraWpOM2RU?=
+ =?utf-8?B?Q2V1cVdYb0JFKzBvbkQ3Q3Z5Ky83VVBCekZ0bHB3V0tVN0kySVAyR216WTFO?=
+ =?utf-8?B?bjlHYis1U2dKVFJkaFNadDBTODJvS3ZJQS9JVVo5UXBqMGQ3cWZEdTZnN1p6?=
+ =?utf-8?B?WXFhWG9OQ1lLM1JrM3ZIbXk2Q3o5K0VrYVkrZ01YNzhEZVUyelVhM3U5RUZu?=
+ =?utf-8?B?Q0swbkpJak5UT0d2SFRKNmpsd1pYOUJJUmZONlRvTHZrc2NNaHA1bndtZ1FQ?=
+ =?utf-8?B?VEZFTnBNTFlrM1Q5Z1dJRUQrdDBubTlpeWVDNVlhUUtzNGlvZTZHOWZ4aTFk?=
+ =?utf-8?B?UlFMOEZtRFU4TVVjakZmTmwvVkMxLzJLYTV2ajFzbjlkV1poUHJBeUVuaW9Z?=
+ =?utf-8?B?Ty9ocTQ0a05rUGV2TWlkSEVTUi9vbkJsZ28wa2VWaURGMHVzVU1lbnpETnM3?=
+ =?utf-8?B?S0gwMDhLbWxXclk1VURYS043M1hNcWYwVUF4M1RYWXVLR1lBczNVa1dndWNR?=
+ =?utf-8?B?ZU85KzU0L09TeXVoY0F2c2JtZGtoK0x4dlBWTGNucXR2WXRncnRkTmZWMXoz?=
+ =?utf-8?B?Qnc9PQ==?=
+Content-ID: <7B2397005FECC04C8580554B2B352348@namprd11.prod.outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6479.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1e53ea6-750e-4c8f-19a9-08da6957b0d0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2022 07:24:17.5220
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UNbUGrlRr5VGRotu+HLstPFnE3SYGLUbLHCzwlxt+6zOEst3AEfKh7bDhLi12jbSCA3BJVxgvpIt1Bgky4AJ4esy2zgwnXqyPVV8R2iyEUM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5098
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220719_000716_478019_E37D1171 
-X-CRM114-Status: GOOD (  14.73  )
+X-CRM114-CacheID: sfid-20220719_002435_639471_E276F153 
+X-CRM114-Status: GOOD (  13.98  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,43 +173,36 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-07-19 07:57, schrieb Tudor.Ambarus@microchip.com:
-> On 5/10/22 17:02, Michael Walle wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know 
->> the content is safe
->> 
->> Up until now, flashes were defined by specifying the JEDEC ID, the
->> sector size and the number of sectors. This can be read by parsing the
->> SFDP, we don't have to specify it. Thus provide a new macro SNOR_ID3()
->> which just takes the JEDEC ID and implicitly set .parse_sfdp = true. 
->> All
->> new flashes which have SFDP should use this macro.
+On 7/19/22 10:02, Michael Walle wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> I like the idea, but you need to refine it a bit.
-> Your assumptions are true only for flashes that are compliant with SFDP 
-> revB or
-> later because params->page_size is initialized by querying BFPT DWORD
-> 11. I think it would be good to specify this in the comment section.
+> Am 2022-07-19 08:00, schrieb Tudor.Ambarus@microchip.com:
+>> On 7/18/22 10:25, Michael Walle wrote:
+>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know
+>>> the content is safe
+>>>
+>>> Am 2022-07-12 10:40, schrieb Tudor.Ambarus@microchip.com:
+>>>> Shaik, can we have your Tested-by tag on this?
+>>>
+>>> Sigh. His email address bounces with "The email address you
+>>> entered couldn't be found." So don't expect a Tested-by: here.
+>>>
+>>
+>> Would you drop this and pick the other patches that use your SNOR_ID3
+>> and submit them all in a single patch set?
+> 
+> I can collect the other patches, but why drop this if we know
+> for a fact that the flash will work? (Because it is the same
+> as the w25q512nwq)
+> 
 
-Sure.
-
-> Also, I think you introduce
-> a bug in spi_nor_select_erase() when CONFIG_MTD_SPI_NOR_USE_4K_SECTORS 
-> is not
-> selected. wanted_size will be zero, will you select an invalid erase 
-> type?
-
-You mean to squeeze [1] into this one? If so, sure.
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/20220716000643.3541839-1-quic_jaehyoo@quicinc.com/
+Was it tested? I don't mind to queue it, but I thought we only queue
+changes that were tested on actual hw.
 
 ______________________________________________________
 Linux MTD discussion mailing list
