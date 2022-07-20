@@ -4,60 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3706EC43334
-	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jul 2022 13:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C483C43334
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jul 2022 19:56:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Message-ID:References:In-Reply-To:Subject:Cc:To:From
-	:Date:MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ZAIkFnl4ykmWxBsxjg0mCCGcF4ULfBb89S2hEGVA9PQ=; b=K3MJIs1c4WP671ypHYBjVZMZbI
-	ZFPsR36rdfhdRbyyY08JtY9Nh95TVTuAid7ZnkHTDwEGFRLcJfotgz+fJFrhj/fXG3Pih8+VerSXb
-	EDGHc8ao+2U6nFk1N/FLgGjea898NlXEVxQCJqzDKRHKPghLBBN+m3VgiIxkZh2bVElmWOBxCHAHY
-	814HPYCBANj82Jpn2jrrKujxQPNlQ2D3vCCZctPgcbmRmm7XDZCGpniVLY9q0BwTt5qMQFxRDfNj3
-	9Ri6t10kj96D4YF5RrxGR0LbfhX4e1XNC/0k/GdPqZHtX5KKmwrutu0vqXw2xYcYNU4l/qidGc2u8
-	hseqvkOw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=khp5SCzal+gwDz/AqRTr+6J/qngBdUuSEr/1clmcO3E=; b=062bZ8Q5enzscV
+	DlXd5K+H2kH2whnrx+7IRhVmgMTqyhp3Q6tsCBS/T9/wALZtSn0FpQ70p+8A0Zfg69RERcBNPvVlX
+	cP1DWebYF6VE/f887iMr0yN89rk1S0ArTB99XvgUQPuhz6MX2IgIcopcHL/kYw84+ebcDkccYXru+
+	dldVokcRvIZ0EF7JEykW5+trXJTgbYQADFseA0kdZATtyAycccwlHEXHQsgMkugO4Lf2Z+s6Lh+ky
+	olHMCzUZLC9lLe5Qpmll/RDD6Xf1fnjv7jeYGk4QZic0VSevrsTLtwX0jxbG48EHILHVXRJ5tlQrQ
+	0OeZGZNb1Y3wIfalZoRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oEA4U-006Gi6-TH; Wed, 20 Jul 2022 13:49:02 +0000
-Received: from ssl.serverraum.org ([176.9.125.105])
+	id 1oEFnj-00AHpE-4g; Wed, 20 Jul 2022 19:56:07 +0000
+Received: from [43.155.65.254] (helo=smtpbg.qq.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oEA4S-006GeI-Ou
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2022 13:49:02 +0000
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ssl.serverraum.org (Postfix) with ESMTPSA id 5FC752223E;
-	Wed, 20 Jul 2022 15:48:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-	t=1658324928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5SDELbFZivHkdGyHGF1nop4U3jMBC/a0ONji2ciT+Qc=;
-	b=FcfZdyDefl/Euo7ImCUcqieYhONzoiD2qLyGJh5kPiPNtfzkEB03vTNFgxrGMtsRIwWbuH
-	JraLrzdm1V6pCcJSrb5biunhS+MokJDcTYNYiTDcvt7oKVyo6RHhO69AX8Nb0saEk5LT65
-	T853AvIgyG+uP0L8HfSeQD6QsLiAStQ=
+	id 1oEFnb-00AHZ5-HW
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2022 19:56:04 +0000
+X-QQ-mid: bizesmtp86t1658346936tilnfd3r
+Received: from harry-jrlc.. ( [125.70.163.183])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 21 Jul 2022 03:55:27 +0800 (CST)
+X-QQ-SSF: 0100000000200030C000C00A0000020
+X-QQ-FEAT: xqT8U4SkSphJYnHyaylettPgIO47BB3yGPetCKKVCel5otGINx+MloH1vBXBj
+	s4XxNQialnwY9aVHdto/kOIjYF+EY5mRauDF4Gn5XGQOGWoWFaDTI5IdFHkCGIue4ehH4XL
+	61S4HwqJYgSagy6y0wr4WjIc2bVjguvR9LOphvIjTJ/mKD4k+jkAk7Q+t9sRac8JcKtpcwk
+	lrbvptydA4FV7/fUEvdEIyhb/LWMIC53Lfa0MmnJKiqejYvDvkyra0VhfvDprsb+Sr/wTGK
+	lgIv+kk8G8v6rUP+0o2YND8CPPPTXOI4ZCpkInggfgoAimapysKuvJRGxFgQeS3Ro0EIgty
+	9GHmTkBZjZ6qKWeJBXPWfdZAyPRIGetWJqqTH7olpAhmNUl6cIXMjY+k5EcKQ==
+X-QQ-GoodBg: 0
+From: Xin Gao <gaoxin@cdjrlc.com>
+To: miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com
+Cc: jim.cromie@gmail.com,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Xin Gao <gaoxin@cdjrlc.com>
+Subject: [PATCH] mtd:do not initialise statics to 0.
+Date: Thu, 21 Jul 2022 03:55:26 +0800
+Message-Id: <20220720195526.9289-1-gaoxin@cdjrlc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Date: Wed, 20 Jul 2022 15:48:41 +0200
-From: Michael Walle <michael@walle.cc>
-To: Tudor.Ambarus@microchip.com
-Cc: p.yadav@ti.com, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, heiko.thiery@gmail.com
-Subject: Re: [PATCH v1] mtd: spi-nor: unset quad_enable if SFDP doesn't
- specify it
-In-Reply-To: <43041ef1-2b1b-5729-9611-00964d617f63@microchip.com>
-References: <20220304185137.3376011-1-michael@walle.cc>
- <43041ef1-2b1b-5729-9611-00964d617f63@microchip.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <f86d847fe61bbcd832c64ce1d636774e@walle.cc>
-X-Sender: michael@walle.cc
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybglogicsvr:qybglogicsvr6
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220720_064901_021500_47A62B62 
-X-CRM114-Status: GOOD (  16.80  )
+X-CRM114-CacheID: sfid-20220720_125559_900499_1477BD88 
+X-CRM114-Status: UNSURE (   7.91  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,44 +67,34 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-Am 2022-07-19 06:57, schrieb Tudor.Ambarus@microchip.com:
-> On 3/4/22 20:51, Michael Walle wrote:
-> 
-> Hi!
-> 
->> While the first version of JESD216 specify the opcode for 4 bit I/O
->> accesses, it lacks information on how to actually enable this mode.
->> 
->> For now, the one set in spi_nor_init_default_params() will be used.
->> But this one is likely wrong for some flashes, in particular the
->> Macronix MX25L12835F. Thus we need to clear the enable method when
->> parsing the SFDP. Flashes with such an SFDP revision will have to use 
->> a
->> flash (and SFDP revision) specific fixup.
-> 
-> This is equivalent to clearing the default QE method for all those 
-> flashes
-> that support SFDP, with implications for those that support SFDP Rev A.
-> If I continue the logic, I could remove the default QE method from
-> spi_nor_init_default_params(), but I don't think I would like that.
-> You could use a post_bfpt hook without explicitly clearing it here.
-> 
-> Would you please explain more why is clearing the default method better
-> than using a wrong default one, and why you chose to do this just for
-> the Rev A SFDP flashes and you didn't include the no-SFDP flashes as 
-> well?
+do not initialise statics to 0.
 
-Honestly, I don't care too much about this flash. I can't remember
-any details from this 4 months old thread. Sorry. I guess it is
-fine to drop this patch. If someone cares, she or he can
-resurrect this one.
+Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
+---
+ drivers/mtd/maps/scx200_docflash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--michael
+diff --git a/drivers/mtd/maps/scx200_docflash.c b/drivers/mtd/maps/scx200_docflash.c
+index 8462662b7128..a565d69d28d6 100644
+--- a/drivers/mtd/maps/scx200_docflash.c
++++ b/drivers/mtd/maps/scx200_docflash.c
+@@ -24,7 +24,7 @@ MODULE_AUTHOR("Christer Weinigel <wingel@hack.org>");
+ MODULE_DESCRIPTION("NatSemi SCx200 DOCCS Flash Driver");
+ MODULE_LICENSE("GPL");
+ 
+-static int probe = 0;		/* Don't autoprobe */
++static int probe;		/* Don't autoprobe */
+ static unsigned size = 0x1000000; /* 16 MiB the whole ISA address space */
+ static unsigned width = 8;	/* Default to 8 bits wide */
+ static char *flashtype = "cfi_probe";
+-- 
+2.30.2
+
 
 ______________________________________________________
 Linux MTD discussion mailing list
