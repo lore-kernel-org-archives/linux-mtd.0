@@ -4,76 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0579C43334
-	for <linux-mtd@archiver.kernel.org>; Tue, 19 Jul 2022 17:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7584C433EF
+	for <linux-mtd@archiver.kernel.org>; Wed, 20 Jul 2022 09:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iEkIpPvfGco6Zv91fnTzBXNqnmD5mw6l8MM4IhUcIAM=; b=bxC3aaFZFgn8bslv4ajSnp7ODu
-	AkVDe3l8QxPYyj4XBF+hswHhpXuVd5NNGDlqqn6nnPLBK70xNCA4kSdZhGqdqIPD3KKZ49/DbKAix
-	OebpIl3dTLC6NyJF+NzomwYxDBMB1/sH6eK7w/ytpvl7eZGe9lLKRi40OqQZW3cCHbspUx5kBsW9b
-	/8nnIuuejHuFrbS+NREn1jsbrsuSFchlxnwBomfzuCIwuatvI2udidHYj1gtlBIzMEckZC4Hjb/GI
-	Z+/hUKqooIXUQVnUg/9qH397PKfzgdQZKQ4u7kRJLEGkFAOI7w5gIANOCVNn/rp52V5eIhFwk6ZVr
-	C3oXCLbg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=6C0PJfn4qGFuj7FqOGDJSpXiC5kgVOfCVHf5xUYMfHE=; b=0ImbzrI1wT58f4
+	NRASwAtgruobS41hkWe7TvwZwe6w9C5n/IUWuwo8TuyElh5rGiPXo2JoVpFlvTm1oQ9RRTfkrkrTM
+	GYUoJ4gpFMuHpp66VCdijVssod9lEzufg0CaELevFvfi6B6QGGoQOSYAOSaC3a4IDTf24Kq/mfK9V
+	X5F0vrhLCXgCvaT5czbnb0Lsd/+SbrI1IBdUxjtOwKhpb9NdIeI1Ov44qVvXTdgMKexPLaSuvPJ5j
+	4fxJzOYXjoVB+fV6pTAiL2APV1L9yB2Be2pizKDBEmy5Jidu/HCEJwXYX4ZXbvesfTkgllFeeYjrG
+	1ZcFy3TW1dTDe9qErv7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDrPo-00B0An-03; Tue, 19 Jul 2022 17:53:48 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDrPY-00B01m-El; Tue, 19 Jul 2022 17:53:34 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id EF7DC616F9;
-	Tue, 19 Jul 2022 17:53:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F26C341CA;
-	Tue, 19 Jul 2022 17:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1658253211;
-	bh=GI+gJxOPyNxkeHfU9ebTLjaH3IEL1Dm94PwYhl9hk6k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S4wPcfZb6jg68De5mTy/hkg5epiRO2WAZrtjq8IvGLKyEkLNNRjECSsWheqzbSJkO
-	 z2OSXsAFvrm/xt60yBGa2+n24Cp6I5bEcBp10LNjfCJ72IrUhw4OohcW8de6YMEQXX
-	 PY5fzBgKHSQ/u9kfD33STL7BIxvzSvZyj+DscB1oLUc2IejZOmu87AdItzFiTZ6jT2
-	 mAQ1r3Dp1hRA9O0ciDd4YyUgmh8E4Hkcb14EctookT9o8MedApGe0cewv1Ney+yH/T
-	 OSJ4DURtjjSOhT2z5sG6ViWVNSxZW7A8kpnbgC4/zT6aYd1rtGkTQR+bTk6kn+Msi1
-	 QhiscTJ1aok3A==
-Date: Tue, 19 Jul 2022 18:53:25 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>
-Cc: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-	"p.yadav@ti.com" <p.yadav@ti.com>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"richard@nod.at" <richard@nod.at>,
-	"vigneshr@ti.com" <vigneshr@ti.com>,
-	"git@xilinx.com" <git@xilinx.com>,
-	"michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"michael@walle.cc" <michael@walle.cc>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"git (AMD-Xilinx)" <git@amd.com>
-Subject: Re: [RFC PATCH 1/2] spi: Add multiple CS support for a single SPI
- device
-Message-ID: <YtbvlYZoRDz6i+pS@sirena.org.uk>
-References: <20220606112607.20800-1-amit.kumar-mahapatra@xilinx.com>
- <20220606112607.20800-2-amit.kumar-mahapatra@xilinx.com>
- <YqHfccvhy7e5Bc6m@sirena.org.uk>
- <DM6PR12MB2809F6C7D80B60556218D627DCB59@DM6PR12MB2809.namprd12.prod.outlook.com>
- <YrRXTrYN3BuShbzg@sirena.org.uk>
- <DM6PR12MB28091BEB013B6F1903B5CDE3DC8B9@DM6PR12MB2809.namprd12.prod.outlook.com>
- <YtGNnT2cP5HIayp3@sirena.org.uk>
- <BN7PR12MB280220006B18F06E9ADA31F5DC8F9@BN7PR12MB2802.namprd12.prod.outlook.com>
+	id 1oE5cq-0030UJ-J3; Wed, 20 Jul 2022 09:04:12 +0000
+Received: from m12-15.163.com ([220.181.12.15])
+	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oE5cm-00304L-Kc
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2022 09:04:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=GDF/E
+	7WqRUk5DIFmfUxr9+y55qjYw3uJMgUd25WZZDc=; b=RWvBcqn9EFvsfY0yw5E7M
+	UqK3YlkiZtLrlt8F5bnD8Q4Jky8mArLyTP8iZPfrWpiUv5OzH8cemoQFJrNAThAi
+	YFh6Hd4Uo5PiMsDOAW9ayMjyi1JqOXvyEqbUmeb8uWPhb0krlFPpBN0pSd/Uq/An
+	mgX2p9/4alXK042UQAyAPA=
+Received: from localhost.localdomain (unknown [223.104.68.229])
+	by smtp11 (Coremail) with SMTP id D8CowABHhV_mxNdiybcTAA--.26S2;
+	Wed, 20 Jul 2022 17:03:39 +0800 (CST)
+From: Slark Xiao <slark_xiao@163.com>
+To: richard@nod.at,
+	miquel.raynal@bootlin.com,
+	vigneshr@ti.com
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Slark Xiao <slark_xiao@163.com>
+Subject: [PATCH] ubi: block: Fix typo
+Date: Wed, 20 Jul 2022 17:03:31 +0800
+Message-Id: <20220720090331.13691-1-slark_xiao@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <BN7PR12MB280220006B18F06E9ADA31F5DC8F9@BN7PR12MB2802.namprd12.prod.outlook.com>
-X-Cookie: We have ears, earther...FOUR OF THEM!
+X-CM-TRANSID: D8CowABHhV_mxNdiybcTAA--.26S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjfUjPfQUUUUU
+X-Originating-IP: [223.104.68.229]
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiJQtEZGAJpI5YlQAAsA
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220719_105332_603788_E6C5FCE1 
-X-CRM114-Status: GOOD (  15.53  )
+X-CRM114-CacheID: sfid-20220720_020410_324538_BDCE9C9B 
+X-CRM114-Status: UNSURE (   7.97  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,78 +66,35 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8506269393077821279=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
+Remove typo.
 
---===============8506269393077821279==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="goT4hZWVlB+2fFB9"
-Content-Disposition: inline
+Signed-off-by: Slark Xiao <slark_xiao@163.com>
+---
+ drivers/mtd/ubi/block.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 4cf67a2a0d04..4fc7e756d885 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -409,7 +409,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	ret = blk_mq_alloc_tag_set(&dev->tag_set);
+ 	if (ret) {
+ 		dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
+-		goto out_free_dev;;
++		goto out_free_dev;
+ 	}
+ 
+ 
+-- 
+2.25.1
 
---goT4hZWVlB+2fFB9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 19, 2022 at 01:21:41PM +0000, Mahapatra, Amit Kumar wrote:
-
-> I agree, so for checking the controller multiple chip select capability(u=
-sing=20
-> more than one chip select at once) we can define a new spi controller DT=
-=20
-> property like "multi-cs-cap"(please suggest a better name).=20
-> The controller that can support multiple chip selects should have this pr=
-operty=20
-> in the spi controller DT node. The spi core will check ctlr->multi-cs-cap=
- to=20
-> operate multiple chip select in parallel.
-
-I'm not sure this needs to be a DT property, it's more just something we
-infer from the compatible.  The name seems fine, as does the flag in the
-controller data.
-
-> > the chip selects are available and that the controller can do something=
- useful
-> > with them (and probably have an implementation in the core for doing so=
- via
-> > GPIO).
-
-> Here are you referring to the usecase in which a controller implementing =
-multi CS
-> support using GPIO? =20
-
-Yes, we probably ought to.
-
---goT4hZWVlB+2fFB9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLW75QACgkQJNaLcl1U
-h9CJnQf/dhICrU3mfuXOY461g8QV5eETdPaVby8yNx8MlhoRgqDFNvA2zwezWfcJ
-Vdj2/Q3LEjalNXzquO2TSl0gkTWNWi+QDzBjvETXKV7vKYwm59poI8MVBhqI7N99
-RhZyxKvL/6aHGOJP4/WD2/6iQsg1g2lMVb4M0SYM85zZAVJFoA/OuNoBPgGE7jUM
-ldycb+CE7awq5PS5RNcvtb8NWx/GrLvx+fpGG787yzBH207JvbUY0my2m26k2LCD
-gsJA7gzrrxbYjaCH+0Tdb5PMSOf5XN6eOvcq3rNq5D9AHQSPojbqLJF1gNWz+iS7
-uVUdG/qU6Mm16YocVIgnDpsb31WwnA==
-=p2xo
------END PGP SIGNATURE-----
-
---goT4hZWVlB+2fFB9--
-
-
---===============8506269393077821279==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ______________________________________________________
 Linux MTD discussion mailing list
 http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
---===============8506269393077821279==--
-
