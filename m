@@ -4,78 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 736C3C43334
-	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jul 2022 18:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC3F8C43334
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jul 2022 18:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PXiSrAlQgO5J6wcCAwnONH7Z39lrA9A64VdLX8hN9/M=; b=MWunZRQcZjEB2E
-	KCW3l4boCHzfG+t0cZNtC5Q4dSvG5jeQu8QEeU4+WeBUolOPu9rnwb8KNElZbB9YeLrWz6arzU9YP
-	goaRtetWbWBKuSPe+F/2NUSbVYimhLxP8y0hUWDbspNTo5BpO+Zc4/PUAoLF6rdhxQUKrx5jVKpqV
-	hMWwzF+Irksr80F9vRAkMl4A/6Vm3XAUPaz1r12jSxPC4ZQUyDSL5GHlE34haHSzacB8Fh03coqZq
-	4dV77Hen9S7p+GMSGKFt4TXW3qy4D0FvSmXO665a4TzVT7ei0gCNH/sMYkXCGW/HfKbNfu37QtWU8
-	t/U6R5ocry8E5e7IMBrQ==;
+	List-Owner; bh=+Pfk+FnB2WlV0m61STCzv5NTbAaNC4aUddh/oA9q/e8=; b=JwLSynEK7DxIbk
+	anhaNbsGbm1vXO5TH7DaFGlpgmlCy/1yf8MoDbs0M/cF7ViMFmDYiGdNG6v9Bm4WuyBlzzp/DEc40
+	ZSIOjop6iV/yzJmKnKcHNGGcQsMY+o6WgJmWYP19A/JP8tJR7HKR1Ass3UDgrgfVK6hTfQhb9eWs+
+	QDORbtVf0AvrNArxnLe46qJUQpMIWN/sS4xpXK+U+Vx/O2gDGoBKYa5DHAcANUFOfpmTaCf/X/Jub
+	yKwYk/ccUc6ix06RLFwuHLsb83BpsfPtFXXF7IzMEa4X7/8ZSks5qCxuctciT63HEF6cu74VNemCB
+	VL9JyiDFiw/jN+5HUZwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFgEc-008QF8-5y; Sun, 24 Jul 2022 18:21:46 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1oFgLh-008Vrm-DT; Sun, 24 Jul 2022 18:29:05 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFgEZ-008Q0z-Va
-	for linux-mtd@lists.infradead.org; Sun, 24 Jul 2022 18:21:45 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id c12so4087871ede.3
-        for <linux-mtd@lists.infradead.org>; Sun, 24 Jul 2022 11:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NmXCnVFdufDjdmGQv/rvtn4m8BrWQme2Su1t/56URPU=;
-        b=girW7NESLFLL25IYBHi8zI6x7ZyTTkm4ZYrZCH2DOuzjv2KXV0NQQdddfFYcljg8v8
-         l62u9DMjggOlWJi4s1e6q1qmgsN1b8naTUiUEq5xZhrUrhtR/4xDzbbXSNvgtZ4BBgXm
-         CgM4eSW0SGBiz34ee5OyfqV6GOoCrkgqXJv/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NmXCnVFdufDjdmGQv/rvtn4m8BrWQme2Su1t/56URPU=;
-        b=mZ5JjxxNHtBCfeuoBPTYF8aPRm7fcDT7nPzUHPeUEtgRUxrF/JegoBXde1mHI2WZNR
-         IVa2pVFGCzWNxk4m9FfN2x4bZDauLpU4omO9MOmcejYA/BVgobfrLpeqZBh2mBBYltl7
-         Biuh/s7WOZmivdbYHkMHy+L4Lksz2HeBQH2arWErRqJwfx7ScU2dED7I3/foFcslolJ8
-         50Y3GxEnCHFrHD3aZ4FI1VNZjXZpyaAXmv8JTkKmqoEzpEjhy4S2SUa3yAU5NMNyx14J
-         qjRAgLfkfs2HU7lEL2r0BC1WtX7vS6bnEb2PalKDFLh96rRodwrPygAUvmKt+SPimYlv
-         drgw==
-X-Gm-Message-State: AJIora++zGskCNtLOfggMMa/GuZcoH+uTdvI/PlBihF3762o3yNjax4n
-	B/T6YreAcRwVoBpbQlWUzXRwbMTkODpJelcb
-X-Google-Smtp-Source: AGRyM1uFNMFFruCpCjQ5qiuPhGNd4ukDZ6zWbXBMhWe4t2MyYJFzy7+joPA2L8RLniZ+HOF3UEDY5g==
-X-Received: by 2002:a05:6402:48:b0:43a:caa8:756b with SMTP id f8-20020a056402004800b0043acaa8756bmr9675093edu.112.1658686897556;
-        Sun, 24 Jul 2022 11:21:37 -0700 (PDT)
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
-        by smtp.gmail.com with ESMTPSA id sa15-20020a1709076d0f00b0072b32de7794sm4393241ejc.70.2022.07.24.11.21.36
-        for <linux-mtd@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Jul 2022 11:21:36 -0700 (PDT)
-Received: by mail-wr1-f51.google.com with SMTP id b26so13127790wrc.2
-        for <linux-mtd@lists.infradead.org>; Sun, 24 Jul 2022 11:21:36 -0700 (PDT)
-X-Received: by 2002:adf:dd91:0:b0:21e:4e97:c146 with SMTP id
- x17-20020adfdd91000000b0021e4e97c146mr5607771wrl.281.1658686896484; Sun, 24
- Jul 2022 11:21:36 -0700 (PDT)
+	id 1oFgLW-008ViT-74; Sun, 24 Jul 2022 18:28:55 +0000
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 67E4E374FA;
+	Sun, 24 Jul 2022 18:28:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1658687329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vXU3mfPGPs/j/ew1KRBJ1KboWBt6ZAfsknPUbfGyXTo=;
+	b=p9uITAdf/l42HNco51Oc9uxKbXrOd4wkuzyNgELwOMJeAex6ZNoeaLLdDrS7EXM0K9z+wN
+	8Q1o/CE3xdfknINAthlWWm7TeyTLp4y+yGPSs7eNpSEJYD3QqmKGWQ0bi8dTeH3kGb4ISs
+	YkTNGfrwr8A5geQ68/fdTwM4kqjhMpc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1658687329;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vXU3mfPGPs/j/ew1KRBJ1KboWBt6ZAfsknPUbfGyXTo=;
+	b=CXBmskjvWsPSdQvzBdcdh17pBv4/cFdsRrRP6P+RXqT8oQ/LXCHZJtZu1Dh3sKModVXLa/
+	EFHMTminnj865FCQ==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by relay2.suse.de (Postfix) with ESMTPS id A72A02C177;
+	Sun, 24 Jul 2022 18:28:48 +0000 (UTC)
+Date: Sun, 24 Jul 2022 20:28:47 +0200
+From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: Samuel Holland <samuel@sholland.org>, Michael Walle <michael@walle.cc>,
+	linux-sunxi@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Tudor Ambarus <tudor.ambarus@microchip.com>,
+	Pratyush Yadav <p.yadav@ti.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: spi-nor: When a flash memory is missing do not
+ report an error
+Message-ID: <20220724182847.GJ17705@kitsune.suse.cz>
+References: <701967b0c418db333c66b48d225df60aa9d03ead.1657826188.git.msuchanek@suse.de>
+ <d8de86aa0331be697fbef33d5ab2c57a@walle.cc>
+ <20220714205529.GE17705@kitsune.suse.cz>
+ <33abf7b84860049c4a22605578303ff2@walle.cc>
+ <20220714220744.GF17705@kitsune.suse.cz>
+ <20220715132006.077c90f8@donnerap.cambridge.arm.com>
+ <2d4f200c-1ce3-19c6-179f-8d8e0545adfe@sholland.org>
+ <20220716115849.75a27753@slackpad.lan>
 MIME-Version: 1.0
-References: <00000000000040624a05e2a6f2db@google.com> <18701775-c174-96ce-31ce-478d8783b575@I-love.SAKURA.ne.jp>
- <62da6803.1c69fb81.2a10f.9bf1@mx.google.com> <a02e58da-5d30-d138-83d4-5545aba1f035@I-love.SAKURA.ne.jp>
-In-Reply-To: <a02e58da-5d30-d138-83d4-5545aba1f035@I-love.SAKURA.ne.jp>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 24 Jul 2022 11:21:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wju718tshE9a7QGpiA5WzkT_3OxrXQTE_eM9YzFOOWjBg@mail.gmail.com>
-Message-ID: <CAHk-=wju718tshE9a7QGpiA5WzkT_3OxrXQTE_eM9YzFOOWjBg@mail.gmail.com>
-Subject: Re: [syzbot] linux-next boot error: general protection fault in add_mtd_device
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Christian Marangi <ansuelsmth@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, Dmitry Vyukov <dvyukov@google.com>
+Content-Disposition: inline
+In-Reply-To: <20220716115849.75a27753@slackpad.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220724_112144_057264_FE5573E7 
-X-CRM114-Status: GOOD (  10.87  )
+X-CRM114-CacheID: sfid-20220724_112854_433916_4216954E 
+X-CRM114-Status: GOOD (  45.62  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,40 +97,84 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On Sat, Jul 23, 2022 at 6:34 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> Linus, can we have macros like valid_kernel_ptr() ? Macros like
-> valid_kernel_ptr(), valid_kernel_ptr_or_null(), valid_kernel_ptr_or_err() can
-> serve for documentation purpose without runtime cost for non-debug builds.
+On Sat, Jul 16, 2022 at 11:58:49AM +0100, Andre Przywara wrote:
+> On Fri, 15 Jul 2022 21:28:57 -0500
+> Samuel Holland <samuel@sholland.org> wrote:
+> 
+> Hi,
+> 
+> > On 7/15/22 7:20 AM, Andre Przywara wrote:
+> > >>>> However, when the board is designed for a specific kind of device which
+> > >>>> is not always present, and the kernel can detect the device, it is
+> > >>>> perfectly fine to describe it.
+> > >>>>
+> > >>>> The alternative is to not use the device at all, even when present,
+> > >>>> which is kind of useless.    
+> > >>>
+> > >>> Or let the bootloader update your device tree and disable the device
+> > >>> if it's not there?    
+> > > 
+> > > Yes, this is what I was suggesting already: U-Boot can do the job, because
+> > > a U-Boot build is device specific, and we can take certain risks that the
+> > > generic and single-image kernel wants to avoid.
+> > > In this case we know that there is a SPI flash footprint, and it does no
+> > > harm in trying to check on CS0. So I was thinking about introducing a
+> > > U-Boot Kconfig variable to probe for and potentially disable the SPI flash
+> > > DT node. We would set this variable in defconfigs of boards with optional
+> > > SPI flash.  
+> > 
+> > To support the "does no harm" assertion: the Allwinner Boot ROM will probe for
+> > NOR flash (and possibly SPI NAND) on SPI0 + CS0 if no bootable MMC device is
+> > found. So the board designer must already assume that JEDEC Read ID commands
+> > will be sent over that bus.
+> > 
+> > >> But then it must be in the device tree?  
+> > > 
+> > > However this indeed means that the SPI flash DT node must be in and enabled
+> > > in the DT, because we (try hard to) only use original Linux DT files, and
+> > > DTs must have been reviewed through the kernel ML first. The U-Boot driver
+> > > relies on the DT as well, so the official kernel DT copy would need to come
+> > > with that node enabled. Ideally U-Boot would disable it, if needed, and
+> > > the kernel error message would never appear.  
+> > 
+> > I don't think this works for newer SoCs where the Boot ROM supports both NOR and
+> > SPI NAND. If the board is sold with the flash chip unpopulated, the user could
+> > install either kind of chip. So we cannot statically assume which binding will
+> > be used. We would need to add a node with the right compatible string after
+> > probing for both in the bootloader.
+> 
+> If a *user* decides to *change* the board, it's up to the user
+> to make sure the DT matches. Overlays are the typical answer, or people
+> change the DT before they build U-Boot. If someone decides to hack
+> their board, they have to take care of the respective DT description
+> hack as well.
+> 
+> This case here is about the *vendor* shipping different versions of the
+> board, which I think is a different case. Technically we now would need
+> two DTs: one with, one without the SPI flash node, and let the user
+> decide which one to include in U-Boot at build time, depending on which
+> version they have.
 
-No. We have IS_ERR_OR_NULL(), but validating a kernel pointer in
-general is pretty much impossible.
+Technically we don't. The DT is supposed to describe hardware properties
+that cannot be probed. Probing presence of the SPI NOR is perfectly
+possible so it suffices to record that the SPI CS is reserved for a SPI
+NOR, and as much as we don't describe the size we don't need to describe
+or assume the presence either.
 
-You can try to just dereference it - and it's even fairly efficient if
-the exception case is supposed to be very rare.
+> What I was suggesting is a U-Boot config switch, which would only be
+> enabled on those boards where we have this situation (OPi Zero):
+> That avoids dangerous situations (because we know it's safe *on this
+> particular board*), and avoids the hassle of shipping two firmware
+> versions.
 
-But even that is not really "safe", in that it can cause IO accesses
-etc.  Plus it fundamentally cannot catch the likely case - the pointer
-"works", but it's simply stale and doesn't point to the right data.
+Also if we really want to make u-boot probe the device (such as in cases
+when there is choice of mutiple devices) DT also supports "reserved"
+state which may be useful for makring the devices to probe when the DT
+is loaded together with u-boot before passing it to Linux.
 
-And honestly, even if the pointer doesn't actually "work" as a
-pointer, you are actually much better off taking the exception at that
-point, and getting an oops, and just FIXING THE BUG instead.
+Thanks
 
-Having some model where "this pointer fails, so I'll just do something
-else" is completely and utterly wrong.
-
-It's bad for debugging, and it's impossible for any real use.
-
-So the whole notion of "is this pointer safe" is garbage.
-
-The only way to make sure a pointer is safe is to just make sure it's
-initialized properly. Once you start using random pointers, all bets
-are off, and no amount of "let's verify this" will ever help at all.
-It will only hurt.
-
-           Linus
+Michal
 
 ______________________________________________________
 Linux MTD discussion mailing list
