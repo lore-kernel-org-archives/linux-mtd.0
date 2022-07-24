@@ -4,91 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBFADC433EF
-	for <linux-mtd@archiver.kernel.org>; Sat, 23 Jul 2022 21:08:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34034C43334
+	for <linux-mtd@archiver.kernel.org>; Sun, 24 Jul 2022 00:45:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eEUOz973wa98vvzgClUmsL9shqHw9acmPmm3p44vdEE=; b=GCq0CJmbjt5nYP
-	1FhxhhuHh7B6vN8xcY4Egh9E965qQRIrOgHcx31NgqtTDNuZdfK+aRyIdHZxS7Tj7euKr4azE+1SH
-	Zq3Jc7k5w87s0cA68uf75jqfQrhJxUZX8CnU4H/6eKJWE6zOeccBmAALmK/wG6flMQDHNk7HRJ0FD
-	nQBQIp6q3kepd787VMVdfq+gqirtZZzedKXLKKcjs+KegPw3/60/ChhcL36+Lm72r512uvkrRQrmo
-	bfgDD16NpO9FnWYFa8ijjMXQvIr3m6DKLfQ9LA8H1ZCuNfCYRsF/EQEXcolU1kJeUm3ap2Ai1eekL
-	kLB2QDIcMV6fuAMZCyYg==;
+	List-Owner; bh=87w11tDH7cXZffb4Gh3ufFg1BtSmd0drYq9+WRmhi9E=; b=3PAMo5bY8Sp+ON
+	TemlmMYTArgXtyIqzvZK4Efx3LSagMhfjei2qeuXw062H66PIt5toOr3dHXieOxaiPAGi21e8Oadj
+	hiKZnZKWvkFG85EwHJoXKmc/bj46AyoTD1uhL+Oz/zMpph8HjNsozmgssvhtvgVEs+U0nxvetH/17
+	azJa3GUkckN4Q7AXimzzK+y0qOwYEgRj/7EQfaOAUV/y+EGwWJcVmjTpP7/gT+9sWA5WgySDChWYE
+	21oq1EEYbcgFI1JZYmBmx8J1FIGg4TVshyu3jSVmFx9+IprWwB7M9ijJQ0+yeMhBwuX/8NdCfvVtM
+	vImxP/Q5tIdq703UB7jQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFMLs-007Kt0-VS; Sat, 23 Jul 2022 21:07:57 +0000
-Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	id 1oFPjQ-008yUX-TO; Sun, 24 Jul 2022 00:44:28 +0000
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oFM42-007BKA-Rn
-	for linux-mtd@lists.infradead.org; Sat, 23 Jul 2022 20:49:32 +0000
-Received: by mail-pj1-x102f.google.com with SMTP id o5-20020a17090a3d4500b001ef76490983so6941223pjf.2
-        for <linux-mtd@lists.infradead.org>; Sat, 23 Jul 2022 13:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sudomaker-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=4PnudIAj6MuFcPE4enLHz/xhLEoYtTm/viKNsN2ycOQ=;
-        b=RUhsyiy86LH9Fm86MMdX9+B8SK2E9S8eT8i1KfIYzf/FcYPmfwOR1meXyixhSn3pWv
-         Fl9H9ITkukRQhP9rlaxmWmzjIMVlMIA/B77ZkT34OAbixPajEDk4E/I358PBE8emWgeN
-         +5VAPbl2VPyeXncpjZFS46/SlsM8d08OARVmsBEsYO9WjEv9vCwVecEjPTLr0gtKYhl2
-         FfJnDq2ny/F3Gw0sOV9AEwpnaXaMIAO/h3/wxvxi7599MnKcthlj1QltFkdTJaVqSHlr
-         poFFq689alMWoAoYcrOCddNIFIhlx7zxrJOEoiPItcsT5ea6vA3TeWIPACcinpGaVzHc
-         zj+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=4PnudIAj6MuFcPE4enLHz/xhLEoYtTm/viKNsN2ycOQ=;
-        b=N4DssdmHCz9MgevClAiJUXkMbOA/VuCilBMlgcNBqe68NctSAVDoa3Lev5eb0cYWFD
-         PlJl4N+k7HHOXzLmbAs/GdBLCEtBtyDFb/0JyjBKC88iNejcZnKGZQTzdqthvVfjVU+O
-         ot7nD4EcSSNYR7PGO9w8zKDbH60Tm1ICq6Ypy7b4uJ2wMz4XDerqkm2MGdtpEplRfUDX
-         e3fYS9e6M7buM31dKeQNarFoqV0SjoY1+wy4H9VMzzOVTSCMf8ww7Xj5KCiG5LI98CxH
-         sjVMNOAe3Z87itXWt9IVeqTdKnLYnCcIQzwyn/UMR/WBUFD5amdl0qvupp2cANL6SMTY
-         FjRw==
-X-Gm-Message-State: AJIora/oPHcboiW5WLMGSYnuvHN8CyNl7BqAu0FLZPebunPcbzohHdLT
-	1RAjCxPPmOQxmN3nI/gVp0b8TQ==
-X-Google-Smtp-Source: AGRyM1sDNnQZWu+UZjw5MifNt4gL7DYaw4qlXqueCC3LFS/ZmtN+HdmjySKcbm4UciQi96Hckb6vDw==
-X-Received: by 2002:a17:90b:38c2:b0:1f0:59c0:55c with SMTP id nn2-20020a17090b38c200b001f059c0055cmr6675051pjb.166.1658609369617;
-        Sat, 23 Jul 2022 13:49:29 -0700 (PDT)
-Received: from [172.16.24.11] ([188.214.106.178])
-        by smtp.gmail.com with ESMTPSA id l8-20020a17090a3f0800b001ef9479373fsm7974276pjc.4.2022.07.23.13.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Jul 2022 13:49:29 -0700 (PDT)
-Message-ID: <b52a8e97-3b8e-c67b-4440-2d7428edb4fa@sudomaker.com>
-Date: Sun, 24 Jul 2022 04:49:25 +0800
+	id 1oFPjN-008yRX-TJ
+	for linux-mtd@lists.infradead.org; Sun, 24 Jul 2022 00:44:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658623465; x=1690159465;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=p8OqWEFGhu6pLUfSsWTBU7kSxbLrZ2r0vLX0FImwX1o=;
+  b=CyU/HSqdft+sftujnDW17nm4DLgDumHLUojd7bgIN6qz6PKzCHRDi/Sn
+   cgzdd9eCfgkSRDZPDpgyKMW2SbTsSyK7A2/BWF3PvGiLLTelNmMSYuNR+
+   RYZqnyjCEfBdBgcdld2omqjdhliOww7450IWcV62HVXbJ36BSF7zwCHVg
+   OGxefq8ufUmR6E5tYBZ3cfig9E5jSe2Ypaimaya+ZiMenNw7ya234e5cv
+   KCFIZmXZqJZxhttSYjnbICa/yI4ZY35AYHzAaH1bup11jgwuuVKBy1P/P
+   ckvi4H4kvb7QbF5MkWUi5qdaMqyjpdyLmFIqZtQaly1kjSjYPvkZv+S/Q
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10417"; a="274362160"
+X-IronPort-AV: E=Sophos;i="5.93,189,1654585200"; 
+   d="scan'208";a="274362160"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2022 17:44:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,189,1654585200"; 
+   d="scan'208";a="845131504"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 23 Jul 2022 17:44:15 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1oFPjC-0003Iz-1A;
+	Sun, 24 Jul 2022 00:44:14 +0000
+Date: Sun, 24 Jul 2022 08:43:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= <zhouyanjie@wanyeetech.com>,
+	tudor.ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	broonie@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org
+Cc: kbuild-all@lists.01.org, linux-mtd@lists.infradead.org,
+	linux-spi@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	aidanmacdonald.0x0@gmail.com, tmn505@gmail.com,
+	paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+	aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+	jinghui.liu@ingenic.com, sernia.zhou@foxmail.com,
+	reimu@sudomaker.com
+Subject: Re: [PATCH 3/3] SPI: Ingenic: Add SFC support for Ingenic SoCs.
+Message-ID: <202207240839.YeZ8uQ0T-lkp@intel.com>
+References: <1658508510-15400-4-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 2/3] dt-bindings: SPI: Add Ingenic SFC bindings.
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Mark Brown <broonie@kernel.org>
-Cc: Zhou Yanjie <zhouyanjie@wanyeetech.com>, tudor.ambarus@microchip.com,
- p.yadav@ti.com, michael@walle.cc, miquel.raynal@bootlin.com, richard@nod.at,
- vigneshr@ti.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, aidanmacdonald.0x0@gmail.com, tmn505@gmail.com,
- paul@crapouillou.net, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
- rick.tyliu@ingenic.com, jinghui.liu@ingenic.com, sernia.zhou@foxmail.com
-References: <1658508510-15400-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1658508510-15400-3-git-send-email-zhouyanjie@wanyeetech.com>
- <487a93c4-3301-aefd-abba-aabf4cb8ec90@linaro.org>
- <37062a5d-9da3-fbaf-89bd-776f32be36d9@wanyeetech.com>
- <d1a0dd15-3621-14e9-b931-417cefaab017@linaro.org>
- <b5505a46-ce76-d0aa-009e-81d9ba16e1d5@sudomaker.com>
- <YtxLoPOykLDTzTn9@sirena.org.uk>
- <f05045fa-9ecd-d312-0eaa-5d19498453fc@linaro.org>
-From: Mike Yang <reimu@sudomaker.com>
-In-Reply-To: <f05045fa-9ecd-d312-0eaa-5d19498453fc@linaro.org>
+Content-Disposition: inline
+In-Reply-To: <1658508510-15400-4-git-send-email-zhouyanjie@wanyeetech.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20220723_134931_138288_343E03D9 
-X-CRM114-Status: GOOD (  21.72  )
+X-CRM114-CacheID: sfid-20220723_174426_014521_ECAE8497 
+X-CRM114-Status: GOOD (  13.83  )
 X-BeenThere: linux-mtd@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,92 +87,98 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
 Errors-To: linux-mtd-bounces+linux-mtd=archiver.kernel.org@lists.infradead.org
 
-On 7/24/22 04:07, Krzysztof Kozlowski wrote:
-> On 23/07/2022 21:27, Mark Brown wrote:
->> On Sun, Jul 24, 2022 at 02:47:14AM +0800, Mike Yang wrote:
->>> On 7/24/22 01:43, Krzysztof Kozlowski wrote:
->>>> On 23/07/2022 18:50, Zhou Yanjie wrote:
->>
->>>>> No offense, does it really need to be named that way?
->>>>> I can't seem to find documentation with instructions on this :(
->>
->> ...
->>
->>>> All bindings are to follow this rule, so I don't understand why you
->>>> think it is an exception for you?
->>
->>> Zhou didn't ask you to make an exception. They have a valid
->>> point and they're asking why.
->>
->>> You may want to avoid further incidents of this kind by stop
->>> being bossy and actually writing a guideline of naming these
->>> .yaml files and publish it somewhere online.
->>
->> Yeah, I do have to say that I was also completely unaware that
->> there was any enforced convention here.
-> 
-> Indeed, it's not a enforced pattern. But there are many other
-> insignificant ones which we also tend to forget during review, like
-> using words "Device Tree bindings" in title or using unnecessary quotes
-> around "refs" (also in ID of schema). It's not a big deal, but I ask
-> when I notice it.
-
-Good. Thanks for paying attention to these details.
-
-
->> Zhou already mentioned he was unable find the naming guidelines of these .yaml files.
->>
->> Apparently you think it's unacceptable for new contributors of a certain subsystem to use existing code as examples, and/or they're responsible for figuring out what's a good example and what's a bad one in the existing codebase.
-> 
-> It's everywhere in the kernel, what can I say? If you copy existing
-> code, you might copy poor code...
-
-Still, it shouldn't be a responsibility of new contributors to determine the quality of an existing piece of code, unless there are clear guidelines (i.e. one should use the new "cs-gpios" attribute in SPI controllers).
-
-> 
->>
->>>
->>> It might never grow to new devices (because they might be different), so
->>> that is not really an argument.
->>
->> It is an argument. A very valid one.
->>
->> "they *might* be different". You may want to get your hands on real hardware and try another word. Or at least read the datasheets instead of believing your imagination.
->>
->> I would enjoy duplicating the st,stm32-spi.yaml into st,stm32{f,h}{0..7}-spi.yaml if I'm bored at a Sunday afternoon.
->>
->>>
->>> All bindings are to follow this rule, so I don't understand why you
->>> think it is an exception for you?
->>
->> Zhou didn't ask you to make an exception. They have a valid point and they're asking why.
-> 
-> Hm, everyone has the same valid point and such recommendation is to
-> everyone, although it is nothing serious.
-> 
->> You may want to avoid further incidents of this kind by stop being bossy and actually writing a guideline of naming these .yaml files and publish it somewhere online.
-> 
-> I did not see any incident here... Process of review includes comments
-> and there is nothing bad happening when you receive a comment. No
-> incident...
-
-
-Okay. After careful inspection of the Ingenic datasheets, now I have the conclusion: The Ingenic X1000, X1021, X1500, X1501, X1520, X1600, X1800, X1830, X2000, X2100, X2500 have the same SFC controller.
-
-X1600 has a newer version (let's say v2) of the SFC, and X2000-2500 have v3. Others have the original version (let's say v1). Each new version introduced new features such as arbitrary DMA sizes, and the rest features are the same.
-
-
-So IMO the name "ingenic,sfc.yaml" is perfectly logical.
-
-
-Regards,
-Mike Yang
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SGkgIuWRqOeQsOadsCwKClRoYW5rIHlvdSBmb3IgdGhlIHBhdGNoISBQZXJoYXBzIHNvbWV0aGlu
+ZyB0byBpbXByb3ZlOgoKW2F1dG8gYnVpbGQgdGVzdCBXQVJOSU5HIG9uIGJyb29uaWUtc3BpL2Zv
+ci1uZXh0XQpbYWxzbyBidWlsZCB0ZXN0IFdBUk5JTkcgb24gbXRkL3NwaS1ub3IvbmV4dCBsaW51
+cy9tYXN0ZXIgdjUuMTktcmM3IG5leHQtMjAyMjA3MjJdCltJZiB5b3VyIHBhdGNoIGlzIGFwcGxp
+ZWQgdG8gdGhlIHdyb25nIGdpdCB0cmVlLCBraW5kbHkgZHJvcCB1cyBhIG5vdGUuCkFuZCB3aGVu
+IHN1Ym1pdHRpbmcgcGF0Y2gsIHdlIHN1Z2dlc3QgdG8gdXNlICctLWJhc2UnIGFzIGRvY3VtZW50
+ZWQgaW4KaHR0cHM6Ly9naXQtc2NtLmNvbS9kb2NzL2dpdC1mb3JtYXQtcGF0Y2gjX2Jhc2VfdHJl
+ZV9pbmZvcm1hdGlvbl0KCnVybDogICAgaHR0cHM6Ly9naXRodWIuY29tL2ludGVsLWxhYi1sa3Av
+bGludXgvY29tbWl0cy9aaG91LVlhbmppZS9BZGQtU0ZDLXN1cHBvcnQtZm9yLUluZ2VuaWMtU29D
+cy8yMDIyMDcyMy0wMDUwMTEKYmFzZTogICBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
+bGludXgva2VybmVsL2dpdC9icm9vbmllL3NwaS5naXQgZm9yLW5leHQKY29uZmlnOiBhbHBoYS1h
+bGx5ZXNjb25maWcgKGh0dHBzOi8vZG93bmxvYWQuMDEub3JnLzBkYXktY2kvYXJjaGl2ZS8yMDIy
+MDcyNC8yMDIyMDcyNDA4MzkuWWVaOHVRMFQtbGtwQGludGVsLmNvbS9jb25maWcpCmNvbXBpbGVy
+OiBhbHBoYS1saW51eC1nY2MgKEdDQykgMTIuMS4wCnJlcHJvZHVjZSAodGhpcyBpcyBhIFc9MSBi
+dWlsZCk6CiAgICAgICAgd2dldCBodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vaW50
+ZWwvbGtwLXRlc3RzL21hc3Rlci9zYmluL21ha2UuY3Jvc3MgLU8gfi9iaW4vbWFrZS5jcm9zcwog
+ICAgICAgIGNobW9kICt4IH4vYmluL21ha2UuY3Jvc3MKICAgICAgICAjIGh0dHBzOi8vZ2l0aHVi
+LmNvbS9pbnRlbC1sYWItbGtwL2xpbnV4L2NvbW1pdC8wZDlkMGU2MDIzODAyNWEwNGQ0MjhlNjRl
+MTgyMTFjMDM3MjI5Mjg0CiAgICAgICAgZ2l0IHJlbW90ZSBhZGQgbGludXgtcmV2aWV3IGh0dHBz
+Oi8vZ2l0aHViLmNvbS9pbnRlbC1sYWItbGtwL2xpbnV4CiAgICAgICAgZ2l0IGZldGNoIC0tbm8t
+dGFncyBsaW51eC1yZXZpZXcgWmhvdS1ZYW5qaWUvQWRkLVNGQy1zdXBwb3J0LWZvci1Jbmdlbmlj
+LVNvQ3MvMjAyMjA3MjMtMDA1MDExCiAgICAgICAgZ2l0IGNoZWNrb3V0IDBkOWQwZTYwMjM4MDI1
+YTA0ZDQyOGU2NGUxODIxMWMwMzcyMjkyODQKICAgICAgICAjIHNhdmUgdGhlIGNvbmZpZyBmaWxl
+CiAgICAgICAgbWtkaXIgYnVpbGRfZGlyICYmIGNwIGNvbmZpZyBidWlsZF9kaXIvLmNvbmZpZwog
+ICAgICAgIENPTVBJTEVSX0lOU1RBTExfUEFUSD0kSE9NRS8wZGF5IENPTVBJTEVSPWdjYy0xMi4x
+LjAgbWFrZS5jcm9zcyBXPTEgTz1idWlsZF9kaXIgQVJDSD1hbHBoYSBTSEVMTD0vYmluL2Jhc2gg
+ZHJpdmVycy9zcGkvCgpJZiB5b3UgZml4IHRoZSBpc3N1ZSwga2luZGx5IGFkZCBmb2xsb3dpbmcg
+dGFnIHdoZXJlIGFwcGxpY2FibGUKUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BA
+aW50ZWwuY29tPgoKQWxsIHdhcm5pbmdzIChuZXcgb25lcyBwcmVmaXhlZCBieSA+Pik6CgogICBk
+cml2ZXJzL3NwaS9zcGktaW5nZW5pYy1zZmMuYzogSW4gZnVuY3Rpb24gJ2luZ2VuaWNfc2ZjX2V4
+ZWNfb3BfcGlvJzoKPj4gZHJpdmVycy9zcGkvc3BpLWluZ2VuaWMtc2ZjLmM6Mjk5OjE2OiB3YXJu
+aW5nOiBjb252ZXJzaW9uIGZyb20gJ2xvbmcgdW5zaWduZWQgaW50JyB0byAndTMyJyB7YWthICd1
+bnNpZ25lZCBpbnQnfSBjaGFuZ2VzIHZhbHVlIGZyb20gJzE4NDQ2NzQ0MDczNzA5NTUxNTk1JyB0
+byAnNDI5NDk2NzI3NScgWy1Xb3ZlcmZsb3ddCiAgICAgMjk5IHwgICAgICAgICB3cml0ZWwofihJ
+TlRDX01BU0tfRU5EIHwgSU5UQ19NQVNLX1JSRVEpLCBzZmMtPmJhc2UgKyBTRkNfUkVHX0lOVEMp
+OwogICAgICAgICB8ICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fgogICBkcml2ZXJzL3NwaS9zcGktaW5nZW5pYy1zZmMuYzogSW4gZnVuY3Rpb24gJ2luZ2Vu
+aWNfc2ZjX2V4ZWNfb3BfZG1hJzoKICAgZHJpdmVycy9zcGkvc3BpLWluZ2VuaWMtc2ZjLmM6MzU2
+OjE2OiB3YXJuaW5nOiBjb252ZXJzaW9uIGZyb20gJ2xvbmcgdW5zaWduZWQgaW50JyB0byAndTMy
+JyB7YWthICd1bnNpZ25lZCBpbnQnfSBjaGFuZ2VzIHZhbHVlIGZyb20gJzE4NDQ2NzQ0MDczNzA5
+NTUxNTk5JyB0byAnNDI5NDk2NzI3OScgWy1Xb3ZlcmZsb3ddCiAgICAgMzU2IHwgICAgICAgICB3
+cml0ZWwofklOVENfTUFTS19FTkQsIHNmYy0+YmFzZSArIFNGQ19SRUdfSU5UQyk7CiAgIGRyaXZl
+cnMvc3BpL3NwaS1pbmdlbmljLXNmYy5jOiBJbiBmdW5jdGlvbiAnaW5nZW5pY19zZmNfcG9sbF9z
+dGF0dXMnOgogICBkcml2ZXJzL3NwaS9zcGktaW5nZW5pYy1zZmMuYzo0Njk6MTY6IHdhcm5pbmc6
+IGNvbnZlcnNpb24gZnJvbSAnbG9uZyB1bnNpZ25lZCBpbnQnIHRvICd1MzInIHtha2EgJ3Vuc2ln
+bmVkIGludCd9IGNoYW5nZXMgdmFsdWUgZnJvbSAnMTg0NDY3NDQwNzM3MDk1NTE1OTknIHRvICc0
+Mjk0OTY3Mjc5JyBbLVdvdmVyZmxvd10KICAgICA0NjkgfCAgICAgICAgIHdyaXRlbCh+SU5UQ19N
+QVNLX0VORCwgc2ZjLT5iYXNlICsgU0ZDX1JFR19JTlRDKTsKCgp2aW0gKzI5OSBkcml2ZXJzL3Nw
+aS9zcGktaW5nZW5pYy1zZmMuYwoKICAgMjY3CQogICAyNjgJc3RhdGljIGludCBpbmdlbmljX3Nm
+Y19leGVjX29wX3BpbyhzdHJ1Y3QgaW5nZW5pY19zZmMgKnNmYywgY29uc3Qgc3RydWN0IHNwaV9t
+ZW1fb3AgKm9wKQogICAyNjkJewogICAyNzAJCWludCByZXQsIHZhbDsKICAgMjcxCQogICAyNzIJ
+CXZhbCA9IHJlYWRsKHNmYy0+YmFzZSArIFNGQ19SRUdfR0xCKTsKICAgMjczCQl1MzJwX3JlcGxh
+Y2VfYml0cygmdmFsLCBHTEJfVFJBTl9ESVJfUkVBRCwgR0xCX1RSQU5fRElSX01BU0spOwogICAy
+NzQJCXUzMnBfcmVwbGFjZV9iaXRzKCZ2YWwsIEdMQl9PUF9NT0RFX1NMQVZFLCBHTEJfT1BfTU9E
+RV9NQVNLKTsKICAgMjc1CQl3cml0ZWwodmFsLCBzZmMtPmJhc2UgKyBTRkNfUkVHX0dMQik7CiAg
+IDI3NgkKICAgMjc3CQl2YWwgPSBUUkFOX0NPTkZfQ01EX0VOIHwgb3AtPmNtZC5vcGNvZGU7CiAg
+IDI3OAkKICAgMjc5CQlpZiAob3AtPmFkZHIubmJ5dGVzID4gMCkgewogICAyODAJCQl2YWwgfD0g
+RklFTERfUFJFUChUUkFOX0NPTkZfQUREUl9XSURUSF9NQVNLLCBvcC0+YWRkci5uYnl0ZXMpOwog
+ICAyODEJCiAgIDI4MgkJCXdyaXRlbChvcC0+YWRkci52YWwgJiAweGZmZmZmZmZmLCBzZmMtPmJh
+c2UgKyBTRkNfUkVHX0RFVl9BRERSKDApKTsKICAgMjgzCQkJd3JpdGVsKG9wLT5hZGRyLnZhbCA+
+PiAzMiwgc2ZjLT5iYXNlICsgU0ZDX1JFR19ERVZfQUREUl9QTFVTKDApKTsKICAgMjg0CQl9CiAg
+IDI4NQkKICAgMjg2CQlpZiAob3AtPmR1bW15Lm5ieXRlcyA+IDApCiAgIDI4NwkJCXZhbCB8PSBG
+SUVMRF9QUkVQKFRSQU5fQ09ORl9ETVlfQklUU19NQVNLLAogICAyODgJCQkJCW9wLT5kdW1teS5u
+Ynl0ZXMgKiA4IC8gb3AtPmR1bW15LmJ1c3dpZHRoKTsKICAgMjg5CQogICAyOTAJCWlmIChvcC0+
+ZGF0YS5uYnl0ZXMgPiAwKQogICAyOTEJCQl2YWwgfD0gVFJBTl9DT05GX0RBVEFfRU47CiAgIDI5
+MgkKICAgMjkzCQl3cml0ZWwodmFsLCBzZmMtPmJhc2UgKyBTRkNfUkVHX1RSQU5fQ09ORigwKSk7
+CiAgIDI5NAkJd3JpdGVsKG9wLT5kYXRhLm5ieXRlcywgc2ZjLT5iYXNlICsgU0ZDX1JFR19UUkFO
+X0xFTik7CiAgIDI5NQkKICAgMjk2CQlpbmdlbmljX3NmY19zZXRfdHJhbnNmZXJfbW9kZShzZmMs
+IG9wKTsKICAgMjk3CQogICAyOTgJCXdyaXRlbCgweDFmLCBzZmMtPmJhc2UgKyBTRkNfUkVHX1ND
+Uik7CiA+IDI5OQkJd3JpdGVsKH4oSU5UQ19NQVNLX0VORCB8IElOVENfTUFTS19SUkVRKSwgc2Zj
+LT5iYXNlICsgU0ZDX1JFR19JTlRDKTsKICAgMzAwCQogICAzMDEJCXdyaXRlbCgwLCBzZmMtPmJh
+c2UgKyBTRkNfUkVHX01FTV9BRERSKTsKICAgMzAyCQogICAzMDMJCXdyaXRlbChUUklHX0ZMVVNI
+LCBzZmMtPmJhc2UgKyBTRkNfUkVHX1RSSUcpOwogICAzMDQJCXdyaXRlbChUUklHX1NUQVJULCBz
+ZmMtPmJhc2UgKyBTRkNfUkVHX1RSSUcpOwogICAzMDUJCiAgIDMwNgkJcmV0ID0gd2FpdF9mb3Jf
+Y29tcGxldGlvbl90aW1lb3V0KCZzZmMtPmNvbXBsZXRpb24sCiAgIDMwNwkJCQltc2Vjc190b19q
+aWZmaWVzKElOR0VOSUNfU0ZDX1RSQU5TRkVSX1RJTUVPVVQpKTsKICAgMzA4CQlpZiAoIXJldCkg
+ewogICAzMDkJCQl3cml0ZWwoMHgxZiwgc2ZjLT5iYXNlICsgU0ZDX1JFR19JTlRDKTsKICAgMzEw
+CQkJd3JpdGVsKDB4MWYsIHNmYy0+YmFzZSArIFNGQ19SRUdfU0NSKTsKICAgMzExCQkJZGV2X2Vy
+cihzZmMtPmRldiwgImxpbmU6JWQgVGltZW91dCBmb3IgQUNLIGZyb20gU0ZDIGRldmljZVxuIiwg
+X19MSU5FX18pOwogICAzMTIJCQlyZXR1cm4gLUVUSU1FRE9VVDsKICAgMzEzCQl9CiAgIDMxNAkK
+ICAgMzE1CQlpbmdlbmljX3NmY19yZWFkX3J4ZmlmbyhzZmMsIG9wLT5kYXRhLmJ1Zi5pbiwgb3At
+PmRhdGEubmJ5dGVzKTsKICAgMzE2CQlyZWFkbF9wb2xsX3RpbWVvdXQoc2ZjLT5iYXNlICsgU0ZD
+X1JFR19TUiwgdmFsLCB2YWwgJiBTUl9FTkQsIDEwLCAwKTsKICAgMzE3CQogICAzMTgJCXdyaXRl
+bChJTlRDX01BU0tfRU5EIHwgSU5UQ19NQVNLX1JSRVEsIHNmYy0+YmFzZSArIFNGQ19SRUdfU0NS
+KTsKICAgMzE5CQl3cml0ZWwoVFJJR19TVE9QLCBzZmMtPmJhc2UgKyBTRkNfUkVHX1RSSUcpOwog
+ICAzMjAJCiAgIDMyMQkJcmV0dXJuIDA7CiAgIDMyMgl9CiAgIDMyMwkKCi0tIAowLURBWSBDSSBL
+ZXJuZWwgVGVzdCBTZXJ2aWNlCmh0dHBzOi8vMDEub3JnL2xrcAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4IE1URCBkaXNjdXNzaW9u
+IG1haWxpbmcgbGlzdApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LW10ZC8K
